@@ -3,6 +3,7 @@ import { IMessage, ITerminalConnection } from "@jupyterlab/services/lib/terminal
 import "@jupyterlab/terminal/style/index.css";
 import { MessageTypes } from "Contracts/ExplorerContracts";
 import postRobot from "post-robot";
+import { Terminal as XTerminal } from 'xterm';
 import { HttpHeaders } from "../Common/Constants";
 import { Action } from "../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
@@ -11,7 +12,7 @@ import { JupyterLabAppFactory } from "./JupyterLabAppFactory";
 import { TerminalProps } from "./TerminalProps";
 import "./index.css";
 
-let session: ITerminalConnection | undefined;
+let session: ITerminalConnection | undefined | XTerminal;
 
 const createServerSettings = (props: TerminalProps): ServerConnection.ISettings => {
   let body: BodyInit | undefined;
@@ -62,7 +63,37 @@ const initTerminal = async (props: TerminalProps): Promise<void> => {
 
   const serverSettings = createServerSettings(props);
 
-  createTerminalApp(props, serverSettings);
+  //createTerminalApp(props, serverSettings);
+
+  
+  const xterminal = new XTerminal();
+
+  // Ensure newTab.node is set to a valid HTMLDivElement
+  if (!newTab.node || !(newTab.node instanceof HTMLDivElement)) {
+    newTab.node = document.createElement('div'); // Create a div if not already set
+  }
+
+  // Ensure the container is an HTMLDivElement
+  const termContainer = newTab.node as unknown as HTMLDivElement;
+  termContainer.style.width = '100%';
+  termContainer.style.height = '100%';
+
+  // Append the container to the tab system if necessary
+  document.body.appendChild(termContainer); // Optional: Add it to the DOM if needed
+
+  // Attach xterm.js to the correct container
+  xterminal.open(termContainer);
+
+  const termWidget = new Widget();
+  termWidget.node.appendChild(termContainer);
+
+  const panel = new Panel();
+  panel.addWidget(termWidget);
+
+  // Write to the terminal
+  xterminal.write('I am new shell');
+
+  session = xterminal;
 };
 
 const createTerminalApp = async (props: TerminalProps, serverSettings: ServerConnection.ISettings) => {

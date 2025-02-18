@@ -1,5 +1,6 @@
 import * as msal from "@azure/msal-browser";
 import { Link } from "@fluentui/react/lib/Link";
+import { Panel, Widget } from "@phosphor/widgets";
 import { isPublicInternetAccessAllowed } from "Common/DatabaseAccountUtility";
 import { Environment, getEnvironment } from "Common/EnvironmentUtility";
 import { sendMessage } from "Common/MessageHandler";
@@ -17,18 +18,19 @@ import { useQueryCopilot } from "hooks/useQueryCopilot";
 import * as ko from "knockout";
 import React from "react";
 import _ from "underscore";
+import { Terminal as XTerminal } from 'xterm';
 import shallow from "zustand/shallow";
 import { AuthType } from "../AuthType";
 import { BindingHandlersRegisterer } from "../Bindings/BindingHandlersRegisterer";
 import * as Constants from "../Common/Constants";
-import { Areas, ConnectionStatusType, HttpStatusCodes, Notebook, PoolIdType } from "../Common/Constants";
+import { ConnectionStatusType, Notebook, PoolIdType } from "../Common/Constants";
 import { getErrorMessage, getErrorStack, handleError } from "../Common/ErrorHandlingUtils";
 import * as Logger from "../Common/Logger";
 import { QueriesClient } from "../Common/QueriesClient";
 import { readCollection, readSampleCollection } from "../Common/dataAccess/readCollection";
 import { readDatabases } from "../Common/dataAccess/readDatabases";
 import * as DataModels from "../Contracts/DataModels";
-import { ContainerConnectionInfo, IPhoenixServiceInfo, IProvisionData, IResponse } from "../Contracts/DataModels";
+import { IPhoenixServiceInfo, IResponse } from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
 import { GitHubOAuthService } from "../GitHub/GitHubOAuthService";
 import { PhoenixClient } from "../Phoenix/PhoenixClient";
@@ -377,87 +379,87 @@ export default class Explorer {
   }
 
   public async allocateContainer(poolId: PoolIdType, mode?: string): Promise<void> {
-    const shouldUseNotebookStates = poolId === PoolIdType.DefaultPoolId ? true : false;
-    const notebookServerInfo = shouldUseNotebookStates
-      ? useNotebook.getState().notebookServerInfo
-      : useQueryCopilot.getState().notebookServerInfo;
+    // const shouldUseNotebookStates = poolId === PoolIdType.DefaultPoolId ? true : false;
+    // const notebookServerInfo = shouldUseNotebookStates
+    //   ? useNotebook.getState().notebookServerInfo
+    //   : useQueryCopilot.getState().notebookServerInfo;
 
-    const isAllocating = shouldUseNotebookStates
-      ? useNotebook.getState().isAllocating
-      : useQueryCopilot.getState().isAllocatingContainer;
-    if (
-      isAllocating === false &&
-      (notebookServerInfo === undefined ||
-        (notebookServerInfo && notebookServerInfo.notebookServerEndpoint === undefined))
-    ) {
-      const connectionStatus: ContainerConnectionInfo = {
-        status: ConnectionStatusType.Connecting,
-      };
+    // const isAllocating = shouldUseNotebookStates
+    //   ? useNotebook.getState().isAllocating
+    //   : useQueryCopilot.getState().isAllocatingContainer;
+    // if (
+    //   isAllocating === false &&
+    //   (notebookServerInfo === undefined ||
+    //     (notebookServerInfo && notebookServerInfo.notebookServerEndpoint === undefined))
+    // ) {
+    //   const connectionStatus: ContainerConnectionInfo = {
+    //     status: ConnectionStatusType.Connecting,
+    //   };
 
-      shouldUseNotebookStates && useNotebook.getState().setConnectionInfo(connectionStatus);
+    //   shouldUseNotebookStates && useNotebook.getState().setConnectionInfo(connectionStatus);
 
-      let connectionInfo;
-      let provisionData: IProvisionData;
-      try {
-        TelemetryProcessor.traceStart(Action.PhoenixConnection, {
-          dataExplorerArea: Areas.Notebook,
-        });
-        if (shouldUseNotebookStates) {
-          useNotebook.getState().setIsAllocating(true);
-          provisionData = {
-            cosmosEndpoint: userContext?.databaseAccount?.properties?.documentEndpoint,
-            poolId: undefined,
-          };
-        } else {
-          useQueryCopilot.getState().setIsAllocatingContainer(true);
-          provisionData = {
-            poolId: poolId,
-            databaseId: useTabs.getState().activeTab.collection.databaseId,
-            containerId: useTabs.getState().activeTab.collection.id(),
-            mode: mode,
-          };
-        }
-        connectionInfo = await this.phoenixClient.allocateContainer(provisionData);
-        if (!connectionInfo?.data?.phoenixServiceUrl) {
-          throw new Error(`PhoenixServiceUrl is invalid!`);
-        }
-        await this.setNotebookInfo(shouldUseNotebookStates, connectionInfo, connectionStatus);
-        TelemetryProcessor.traceSuccess(Action.PhoenixConnection, {
-          dataExplorerArea: Areas.Notebook,
-        });
-      } catch (error) {
-        TelemetryProcessor.traceFailure(Action.PhoenixConnection, {
-          dataExplorerArea: Areas.Notebook,
-          status: error.status,
-          error: getErrorMessage(error),
-          errorStack: getErrorStack(error),
-        });
-        if (shouldUseNotebookStates) {
-          connectionStatus.status = ConnectionStatusType.Failed;
-          shouldUseNotebookStates
-            ? useNotebook.getState().resetContainerConnection(connectionStatus)
-            : useQueryCopilot.getState().resetContainerConnection();
-          if (error?.status === HttpStatusCodes.Forbidden && error.message) {
-            useDialog.getState().showOkModalDialog("Connection Failed", `${error.message}`);
-          } else {
-            useDialog
-              .getState()
-              .showOkModalDialog(
-                "Connection Failed",
-                "We are unable to connect to the temporary workspace. Please try again in a few minutes. If the error persists, file a support ticket.",
-              );
-          }
-        }
-        throw error;
-      } finally {
-        shouldUseNotebookStates
-          ? useNotebook.getState().setIsAllocating(false)
-          : useQueryCopilot.getState().setIsAllocatingContainer(false);
-        this.refreshCommandBarButtons();
-        this.refreshNotebookList();
-        this._isInitializingNotebooks = false;
-      }
-    }
+    //   let connectionInfo;
+    //   let provisionData: IProvisionData;
+    //   try {
+    //     TelemetryProcessor.traceStart(Action.PhoenixConnection, {
+    //       dataExplorerArea: Areas.Notebook,
+    //     });
+    //     if (shouldUseNotebookStates) {
+    //       useNotebook.getState().setIsAllocating(true);
+    //       provisionData = {
+    //         cosmosEndpoint: userContext?.databaseAccount?.properties?.documentEndpoint,
+    //         poolId: undefined,
+    //       };
+    //     } else {
+    //       useQueryCopilot.getState().setIsAllocatingContainer(true);
+    //       provisionData = {
+    //         poolId: poolId,
+    //         databaseId: useTabs.getState().activeTab.collection.databaseId,
+    //         containerId: useTabs.getState().activeTab.collection.id(),
+    //         mode: mode,
+    //       };
+    //     }
+    //     // connectionInfo = await this.phoenixClient.allocateContainer(provisionData);
+    //     // if (!connectionInfo?.data?.phoenixServiceUrl) {
+    //     //   throw new Error(`PhoenixServiceUrl is invalid!`);
+    //     // }
+    //     // await this.setNotebookInfo(shouldUseNotebookStates, connectionInfo, connectionStatus);
+    //     // TelemetryProcessor.traceSuccess(Action.PhoenixConnection, {
+    //     //   dataExplorerArea: Areas.Notebook,
+    //     // });
+    //   } catch (error) {
+    //     TelemetryProcessor.traceFailure(Action.PhoenixConnection, {
+    //       dataExplorerArea: Areas.Notebook,
+    //       status: error.status,
+    //       error: getErrorMessage(error),
+    //       errorStack: getErrorStack(error),
+    //     });
+    //     if (shouldUseNotebookStates) {
+    //       connectionStatus.status = ConnectionStatusType.Failed;
+    //       shouldUseNotebookStates
+    //         ? useNotebook.getState().resetContainerConnection(connectionStatus)
+    //         : useQueryCopilot.getState().resetContainerConnection();
+    //       if (error?.status === HttpStatusCodes.Forbidden && error.message) {
+    //         useDialog.getState().showOkModalDialog("Connection Failed", `${error.message}`);
+    //       } else {
+    //         useDialog
+    //           .getState()
+    //           .showOkModalDialog(
+    //             "Connection Failed",
+    //             "We are unable to connect to the temporary workspace. Please try again in a few minutes. If the error persists, file a support ticket.",
+    //           );
+    //       }
+    //     }
+    //     throw error;
+    //   } finally {
+    //     shouldUseNotebookStates
+    //       ? useNotebook.getState().setIsAllocating(false)
+    //       : useQueryCopilot.getState().setIsAllocatingContainer(false);
+    //     this.refreshCommandBarButtons();
+    //     this.refreshNotebookList();
+    //     this._isInitializingNotebooks = false;
+    //   }
+    // }
   }
 
   public async setNotebookInfo(
@@ -907,19 +909,19 @@ export default class Explorer {
 
   public async openNotebookTerminal(kind: ViewModels.TerminalKind): Promise<void> {
     if (useNotebook.getState().isPhoenixFeatures) {
-      await this.allocateContainer(PoolIdType.DefaultPoolId);
-      const notebookServerInfo = useNotebook.getState().notebookServerInfo;
-      if (notebookServerInfo && notebookServerInfo.notebookServerEndpoint !== undefined) {
-        this.connectToNotebookTerminal(kind);
-      } else {
-        useDialog
-          .getState()
-          .showOkModalDialog(
-            "Failed to connect",
-            "Failed to connect to temporary workspace. This could happen because of network issues. Please refresh the page and try again.",
-          );
-      }
-    } else {
+    //   //await this.allocateContainer(PoolIdType.DefaultPoolId);
+    //   //const notebookServerInfo = useNotebook.getState().notebookServerInfo;
+    //  // if (notebookServerInfo && notebookServerInfo.notebookServerEndpoint !== undefined) {
+    //     this.connectToNotebookTerminal(kind);
+    //   // } else {
+    //   //   useDialog
+    //   //     .getState()
+    //   //     .showOkModalDialog(
+    //   //       "Failed to connect",
+    //   //       "Failed to connect to temporary workspace. This could happen because of network issues. Please refresh the page and try again.",
+    //   //     );
+    //   // }
+    // } else {
       this.connectToNotebookTerminal(kind);
     }
   }
@@ -972,6 +974,33 @@ export default class Explorer {
     });
 
     useTabs.getState().activateNewTab(newTab);
+
+    const xterminal = new XTerminal();
+
+    // Ensure newTab.node is set to a valid HTMLDivElement
+    if (!newTab.node || !(newTab.node instanceof HTMLDivElement)) {
+      newTab.node = document.createElement('div'); // Create a div if not already set
+    }
+
+    // Ensure the container is an HTMLDivElement
+    const termContainer = newTab.node as unknown as HTMLDivElement;
+    termContainer.style.width = '100%';
+    termContainer.style.height = '100%';
+
+    // Append the container to the tab system if necessary
+    document.body.appendChild(termContainer); // Optional: Add it to the DOM if needed
+
+    // Attach xterm.js to the correct container
+    xterminal.open(termContainer);
+
+    const termWidget = new Widget();
+    termWidget.node.appendChild(termContainer);
+
+    const panel = new Panel();
+    panel.addWidget(termWidget);
+
+    // Write to the terminal
+    xterminal.write('I am new shell');
   }
 
   public async openGallery(
