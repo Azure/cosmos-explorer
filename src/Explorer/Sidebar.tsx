@@ -18,7 +18,10 @@ import { isMaterializedViewsEnabled } from "Common/DatabaseAccountUtility";
 import { Platform, configContext } from "ConfigContext";
 import Explorer from "Explorer/Explorer";
 import { AddDatabasePanel } from "Explorer/Panes/AddDatabasePanel/AddDatabasePanel";
-import { AddMaterializedViewPanel, AddMaterializedViewPanelProps } from "Explorer/Panes/AddMaterializedViewPanel";
+import {
+  AddMaterializedViewPanel,
+  AddMaterializedViewPanelProps,
+} from "Explorer/Panes/AddMaterializedViewPanel/AddMaterializedViewPanel";
 import { Tabs } from "Explorer/Tabs/Tabs";
 import { CosmosFluentProvider, cosmosShorthands, tokens } from "Explorer/Theme/ThemeUtil";
 import { ResourceTree } from "Explorer/Tree/ResourceTree";

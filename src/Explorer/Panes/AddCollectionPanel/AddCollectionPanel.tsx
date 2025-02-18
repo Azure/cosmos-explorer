@@ -26,6 +26,12 @@ import {
   getFullTextLanguageOptions,
 } from "Explorer/Controls/FullTextSeach/FullTextPoliciesComponent";
 import { VectorEmbeddingPoliciesComponent } from "Explorer/Controls/VectorSearch/VectorEmbeddingPoliciesComponent";
+import {
+  getPartitionKey,
+  getPartitionKeyName,
+  getPartitionKeyPlaceHolder,
+  getPartitionKeyTooltipText,
+} from "Explorer/Panes/AddCollectionPanel/AddCollectionPanelUtility";
 import { useSidePanel } from "hooks/useSidePanel";
 import { useTeachingBubble } from "hooks/useTeachingBubble";
 import React from "react";
@@ -41,15 +47,15 @@ import {
   isVectorSearchEnabled,
 } from "Utils/CapabilityUtils";
 import { getUpsellMessage } from "Utils/PricingUtils";
-import { CollapsibleSectionComponent } from "../Controls/CollapsiblePanel/CollapsibleSectionComponent";
-import { ThroughputInput } from "../Controls/ThroughputInput/ThroughputInput";
-import "../Controls/ThroughputInput/ThroughputInput.less";
-import { ContainerSampleGenerator } from "../DataSamples/ContainerSampleGenerator";
-import Explorer from "../Explorer";
-import { useDatabases } from "../useDatabases";
-import { PanelFooterComponent } from "./PanelFooterComponent";
-import { PanelInfoErrorComponent } from "./PanelInfoErrorComponent";
-import { PanelLoadingScreen } from "./PanelLoadingScreen";
+import { CollapsibleSectionComponent } from "../../Controls/CollapsiblePanel/CollapsibleSectionComponent";
+import { ThroughputInput } from "../../Controls/ThroughputInput/ThroughputInput";
+import "../../Controls/ThroughputInput/ThroughputInput.less";
+import { ContainerSampleGenerator } from "../../DataSamples/ContainerSampleGenerator";
+import Explorer from "../../Explorer";
+import { useDatabases } from "../../useDatabases";
+import { PanelFooterComponent } from "../PanelFooterComponent";
+import { PanelInfoErrorComponent } from "../PanelInfoErrorComponent";
+import { PanelLoadingScreen } from "../PanelLoadingScreen";
 
 export interface AddCollectionPanelProps {
   explorer: Explorer;
@@ -143,7 +149,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       collectionId: props.isQuickstart ? `Sample${getCollectionName()}` : "",
       enableIndexing: true,
       isSharded: userContext.apiType !== "Tables",
-      partitionKey: this.getPartitionKey(),
+      partitionKey: getPartitionKey(props.isQuickstart),
       subPartitionKeys: [],
       enableDedicatedThroughput: false,
       createMongoWildCardIndex:
@@ -576,17 +582,14 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               <Stack horizontal>
                 <span className="mandatoryStar">*&nbsp;</span>
                 <Text className="panelTextBold" variant="small">
-                  {this.getPartitionKeyName()}
+                  {getPartitionKeyName()}
                 </Text>
-                <TooltipHost
-                  directionalHint={DirectionalHint.bottomLeftEdge}
-                  content={this.getPartitionKeyTooltipText()}
-                >
+                <TooltipHost directionalHint={DirectionalHint.bottomLeftEdge} content={getPartitionKeyTooltipText()}>
                   <Icon
                     iconName="Info"
                     className="panelInfoIcon"
                     tabIndex={0}
-                    ariaLabel={this.getPartitionKeyTooltipText()}
+                    ariaLabel={getPartitionKeyTooltipText()}
                   />
                 </TooltipHost>
               </Stack>
@@ -600,8 +603,8 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 required
                 size={40}
                 className="panelTextField"
-                placeholder={this.getPartitionKeyPlaceHolder()}
-                aria-label={this.getPartitionKeyName()}
+                placeholder={getPartitionKeyPlaceHolder()}
+                aria-label={getPartitionKeyName()}
                 pattern={userContext.apiType === "Gremlin" ? "^/[^/]*" : ".*"}
                 title={userContext.apiType === "Gremlin" ? "May not use composite partition key" : ""}
                 value={this.state.partitionKey}
@@ -639,8 +642,8 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                         tabIndex={index > 0 ? 1 : 0}
                         className="panelTextField"
                         autoComplete="off"
-                        placeholder={this.getPartitionKeyPlaceHolder(index)}
-                        aria-label={this.getPartitionKeyName()}
+                        placeholder={getPartitionKeyPlaceHolder(index)}
+                        aria-label={getPartitionKeyName()}
                         pattern={".*"}
                         title={""}
                         value={subPartitionKey}
@@ -1053,31 +1056,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     }));
   }
 
-  private getPartitionKeyName(isLowerCase?: boolean): string {
-    const partitionKeyName = userContext.apiType === "Mongo" ? "Shard key" : "Partition key";
-
-    return isLowerCase ? partitionKeyName.toLocaleLowerCase() : partitionKeyName;
-  }
-
-  private getPartitionKeyPlaceHolder(index?: number): string {
-    switch (userContext.apiType) {
-      case "Mongo":
-        return "e.g., categoryId";
-      case "Gremlin":
-        return "e.g., /address";
-      case "SQL":
-        return `${
-          index === undefined
-            ? "Required - first partition key e.g., /TenantId"
-            : index === 0
-            ? "second partition key e.g., /UserId"
-            : "third partition key e.g., /SessionId"
-        }`;
-      default:
-        return "e.g., /address/zipCode";
-    }
-  }
-
   private onCreateNewDatabaseRadioBtnChange(event: React.ChangeEvent<HTMLInputElement>): void {
     if (event.target.checked && !this.state.createNewDatabase) {
       this.setState({
@@ -1173,38 +1151,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     return this.state.enableIndexing
       ? "All properties in your documents will be indexed by default for flexible and efficient queries."
       : "Indexing will be turned off. Recommended if you don't need to run queries or only have key value operations.";
-  }
-
-  private getPartitionKeyTooltipText(): string {
-    if (userContext.apiType === "Mongo") {
-      return "The shard key (field) is used to split your data across many replica sets (shards) to achieve unlimited scalability. It’s critical to choose a field that will evenly distribute your data.";
-    }
-
-    let tooltipText = `The ${this.getPartitionKeyName(
-      true,
-    )} is used to automatically distribute data across partitions for scalability. Choose a property in your JSON document that has a wide range of values and evenly distributes request volume.`;
-
-    if (userContext.apiType === "SQL") {
-      tooltipText += " For small read-heavy workloads or write-heavy workloads of any size, id is often a good choice.";
-    }
-
-    return tooltipText;
-  }
-
-  private getPartitionKey(): string {
-    if (userContext.apiType !== "SQL" && userContext.apiType !== "Mongo") {
-      return "";
-    }
-    if (userContext.features.partitionKeyDefault) {
-      return userContext.apiType === "SQL" ? "/id" : "_id";
-    }
-    if (userContext.features.partitionKeyDefault2) {
-      return userContext.apiType === "SQL" ? "/pk" : "pk";
-    }
-    if (this.props.isQuickstart) {
-      return userContext.apiType === "SQL" ? "/categoryId" : "categoryId";
-    }
-    return "";
   }
 
   private getPartitionKeySubtext(): string {
