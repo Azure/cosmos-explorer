@@ -553,7 +553,7 @@ async function configurePortal(): Promise<Explorer> {
           const { databaseAccount: account, subscriptionId, resourceGroup } = userContext;
 
           let dataPlaneRbacEnabled;
-          if (userContext.apiType === "SQL") {
+          if (isDataplaneRbacSupported(userContext.apiType)) {
             if (LocalStorageUtility.hasItem(StorageKey.DataPlaneRbacEnabled)) {
               const isDataPlaneRbacSetting = LocalStorageUtility.getEntryString(StorageKey.DataPlaneRbacEnabled);
               Logger.logInfo(
