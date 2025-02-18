@@ -195,9 +195,7 @@
     "webpack": "5.88.2",
     "webpack-bundle-analyzer": "4.9.1",
     "webpack-cli": "5.1.4",
-    "webpack-dev-server": "4.15.2",
-    "@xterm/xterm": "5.5.0",
-    "uuid": "11.0.5"
+    "webpack-dev-server": "4.15.2"
   },
   "scripts": {
     "postinstall": "patch-package",
