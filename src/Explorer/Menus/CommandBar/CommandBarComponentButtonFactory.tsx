@@ -1,4 +1,5 @@
 import { KeyboardAction } from "KeyboardShortcuts";
+import { isDataplaneRbacSupported } from "Utils/APITypeUtils";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import AddSqlQueryIcon from "../../../../images/AddSqlQuery_16x16.svg";
@@ -61,7 +62,7 @@ export function createStaticCommandBarButtons(
     }
   }
 
-  if (userContext.apiType === "SQL") {
+  if (isDataplaneRbacSupported(userContext.apiType)) {
     const [loginButtonProps, setLoginButtonProps] = useState<CommandButtonComponentProps | undefined>(undefined);
     const dataPlaneRbacEnabled = useDataPlaneRbac((state) => state.dataPlaneRbacEnabled);
     const aadTokenUpdated = useDataPlaneRbac((state) => state.aadTokenUpdated);
