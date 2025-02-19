@@ -1,4 +1,8 @@
-import { FabricDatabaseConnectionInfo } from "Contracts/FabricMessagesContract";
+import {
+  CosmosDbArtifactType,
+  FabricMirroredDatabaseConnectionInfo,
+  FabricNativeDatabaseConnectionInfo,
+} from "Contracts/FabricMessagesContract";
 import { ParsedResourceTokenConnectionString } from "Platform/Hosted/Helpers/ResourceTokenUtils";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { traceOpen } from "Shared/Telemetry/TelemetryProcessor";
@@ -47,11 +51,13 @@ export interface VCoreMongoConnectionParams {
   connectionString: string;
 }
 
-interface FabricContext {
+export interface FabricContext {
   connectionId: string;
-  databaseConnectionInfo: FabricDatabaseConnectionInfo | undefined;
   isReadOnly: boolean;
   isVisible: boolean;
+  artifactType: CosmosDbArtifactType;
+  mirroredConnectionInfo: FabricMirroredDatabaseConnectionInfo | undefined;
+  nativeConnectionInfo: FabricNativeDatabaseConnectionInfo | undefined;
 }
 
 export type AdminFeedbackControlPolicy =

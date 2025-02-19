@@ -1,6 +1,6 @@
 // TODO convert this file to an action registry in order to have actions and their handlers be more tightly coupled.
-import { configContext, Platform } from "ConfigContext";
 import { useDatabases } from "Explorer/useDatabases";
+import { isFabricMirrored } from "Platform/Fabric/FabricUtil";
 import React from "react";
 import { ActionContracts } from "../../Contracts/ExplorerContracts";
 import * as ViewModels from "../../Contracts/ViewModels";
@@ -58,9 +58,9 @@ function openCollectionTab(
       }
 
       if (
-        configContext.platform === Platform.Fabric &&
+        isFabricMirrored() &&
         !(
-          // whitelist the tab kinds that are allowed to be opened in Fabric
+          // whitelist the tab kinds that are allowed to be opened in Fabric mirrored
           (
             action.tabKind === ActionContracts.TabKind.SQLDocuments ||
             action.tabKind === ActionContracts.TabKind.SQLQuery
