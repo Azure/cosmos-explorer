@@ -1,3 +1,5 @@
+import { DirectionalHint, Icon, Stack, Text, TooltipHost } from "@fluentui/react";
+import React from "react";
 import { userContext } from "UserContext";
 
 export function getPartitionKeyTooltipText(): string {
@@ -55,4 +57,24 @@ export function getPartitionKey(isQuickstart?: boolean): string {
     return userContext.apiType === "SQL" ? "/categoryId" : "categoryId";
   }
   return "";
+}
+
+export function isFreeTierAccount(): boolean {
+  return userContext.databaseAccount?.properties?.enableFreeTier;
+}
+
+export function UniqueKeysHeader(): JSX.Element {
+  const tooltipContent =
+    "Unique keys provide developers with the ability to add a layer of data integrity to their database. By creating a unique key policy when a container is created, you ensure the uniqueness of one or more values per partition key.";
+
+  return (
+    <Stack horizontal>
+      <Text className="panelTextBold" variant="small">
+        Unique keys
+      </Text>
+      <TooltipHost directionalHint={DirectionalHint.bottomLeftEdge} content={tooltipContent}>
+        <Icon iconName="Info" className="panelInfoIcon" tabIndex={0} ariaLabel={tooltipContent} />
+      </TooltipHost>
+    </Stack>
+  );
 }

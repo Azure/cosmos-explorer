@@ -31,6 +31,8 @@ import {
   getPartitionKeyName,
   getPartitionKeyPlaceHolder,
   getPartitionKeyTooltipText,
+  isFreeTierAccount,
+  UniqueKeysHeader,
 } from "Explorer/Panes/AddCollectionPanel/AddCollectionPanelUtility";
 import { useSidePanel } from "hooks/useSidePanel";
 import { useTeachingBubble } from "hooks/useTeachingBubble";
@@ -196,7 +198,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
           />
         )}
 
-        {!this.state.errorMessage && this.isFreeTierAccount() && (
+        {!this.state.errorMessage && isFreeTierAccount() && (
           <PanelInfoErrorComponent
             message={getUpsellMessage(userContext.portalEnv, true, isFirstResourceCreated, true)}
             messageType="info"
@@ -403,10 +405,10 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
                 {!isServerlessAccount() && this.state.isSharedThroughputChecked && (
                   <ThroughputInput
-                    showFreeTierExceedThroughputTooltip={this.isFreeTierAccount() && !isFirstResourceCreated}
+                    showFreeTierExceedThroughputTooltip={isFreeTierAccount() && !isFirstResourceCreated}
                     isDatabase={true}
                     isSharded={this.state.isSharded}
-                    isFreeTier={this.isFreeTierAccount()}
+                    isFreeTier={isFreeTierAccount()}
                     isQuickstart={this.props.isQuickstart}
                     setThroughputValue={(throughput: number) => (this.newDatabaseThroughput = throughput)}
                     setIsAutoscale={(isAutoscale: boolean) => (this.isNewDatabaseAutoscale = isAutoscale)}
@@ -734,10 +736,10 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
           {this.shouldShowCollectionThroughputInput() && (
             <ThroughputInput
-              showFreeTierExceedThroughputTooltip={this.isFreeTierAccount() && !isFirstResourceCreated}
+              showFreeTierExceedThroughputTooltip={isFreeTierAccount() && !isFirstResourceCreated}
               isDatabase={false}
               isSharded={this.state.isSharded}
-              isFreeTier={this.isFreeTierAccount()}
+              isFreeTier={isFreeTierAccount()}
               isQuickstart={this.props.isQuickstart}
               setThroughputValue={(throughput: number) => (this.collectionThroughput = throughput)}
               setIsAutoscale={(isAutoscale: boolean) => (this.isCollectionAutoscale = isAutoscale)}
@@ -752,27 +754,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
           {userContext.apiType === "SQL" && (
             <Stack>
-              <Stack horizontal>
-                <Text className="panelTextBold" variant="small">
-                  Unique keys
-                </Text>
-                <TooltipHost
-                  directionalHint={DirectionalHint.bottomLeftEdge}
-                  content={
-                    "Unique keys provide developers with the ability to add a layer of data integrity to their database. By creating a unique key policy when a container is created, you ensure the uniqueness of one or more values per partition key."
-                  }
-                >
-                  <Icon
-                    iconName="Info"
-                    className="panelInfoIcon"
-                    tabIndex={0}
-                    ariaLabel={
-                      "Unique keys provide developers with the ability to add a layer of data integrity to their database. By creating a unique key policy when a container is created, you ensure the uniqueness of one or more values per partition key."
-                    }
-                  />
-                </TooltipHost>
-              </Stack>
-
+              {UniqueKeysHeader()}
               {this.state.uniqueKeys.map((uniqueKey: string, i: number): JSX.Element => {
                 return (
                   <Stack style={{ marginBottom: 8 }} key={`uniqueKey${i}`} horizontal>
@@ -1143,10 +1125,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     return !!selectedDatabase?.offer();
   }
 
-  private isFreeTierAccount(): boolean {
-    return userContext.databaseAccount?.properties?.enableFreeTier;
-  }
-
   private getFreeTierIndexingText(): string {
     return this.state.enableIndexing
       ? "All properties in your documents will be indexed by default for flexible and efficient queries."
@@ -1222,7 +1200,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
   }
 
   private shouldShowIndexingOptionsForFreeTierAccount(): boolean {
-    if (!this.isFreeTierAccount()) {
+    if (!isFreeTierAccount()) {
       return false;
     }
 

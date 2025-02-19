@@ -7,7 +7,7 @@ import {
 } from "Explorer/Panes/AddCollectionPanel/AddCollectionPanelUtility";
 import React from "react";
 
-export interface AddMVPartitionKeyProps {
+export interface AddMVPartitionKeyComponentProps {
   partitionKey?: string;
   setPartitionKey: React.Dispatch<React.SetStateAction<string>>;
   subPartitionKeys: string[];
@@ -16,7 +16,7 @@ export interface AddMVPartitionKeyProps {
   setUseHashV1: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const AddMVPartitionKey = (props: AddMVPartitionKeyProps): JSX.Element => {
+export const AddMVPartitionKeyComponent = (props: AddMVPartitionKeyComponentProps): JSX.Element => {
   const { partitionKey, setPartitionKey, subPartitionKeys, setSubPartitionKeys, useHashV1, setUseHashV1 } = props;
 
   const partitionKeyValueOnChange = (value: string): void => {
@@ -60,6 +60,7 @@ export const AddMVPartitionKey = (props: AddMVPartitionKeyProps): JSX.Element =>
         aria-label={getPartitionKeyName()}
         pattern=".*"
         value={partitionKey}
+        style={{ marginBottom: 8 }}
         onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
           partitionKeyValueOnChange(event.target.value);
         }}
@@ -88,6 +89,7 @@ export const AddMVPartitionKey = (props: AddMVPartitionKeyProps): JSX.Element =>
               placeholder={getPartitionKeyPlaceHolder(subPartitionKeyIndex)}
               aria-label={getPartitionKeyName()}
               pattern={".*"}
+              title={""}
               value={subPartitionKey}
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                 subPartitionKeysValueOnChange(event.target.value, subPartitionKeyIndex);

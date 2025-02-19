@@ -13,8 +13,9 @@ import {
 import { Collection, Database } from "Contracts/ViewModels";
 import Explorer from "Explorer/Explorer";
 import { getPartitionKey } from "Explorer/Panes/AddCollectionPanel/AddCollectionPanelUtility";
-import { AddMVPartitionKey } from "Explorer/Panes/AddMaterializedViewPanel/AddMVPartitionKey";
-import { AddMVThroughput } from "Explorer/Panes/AddMaterializedViewPanel/AddMVThroughput";
+import { AddMVPartitionKeyComponent } from "Explorer/Panes/AddMaterializedViewPanel/AddMVPartitionKeyComponent";
+import { AddMVThroughputComponent } from "Explorer/Panes/AddMaterializedViewPanel/AddMVThroughputComponent";
+import { AddMVUniqueKeysComponent } from "Explorer/Panes/AddMaterializedViewPanel/AddMVUniqueKeysComponent";
 import { useDatabases } from "Explorer/useDatabases";
 import React, { useEffect, useState } from "react";
 
@@ -32,6 +33,9 @@ export const AddMaterializedViewPanel = (props: AddMaterializedViewPanelProps): 
   const [partitionKey, setPartitionKey] = useState<string>(getPartitionKey());
   const [subPartitionKeys, setSubPartitionKeys] = useState<string[]>([]);
   const [useHashV1, setUseHashV1] = useState<boolean>();
+  const [enableDedicatedThroughput, setEnabledDedicatedThroughput] = useState<boolean>();
+  const [isThroughputCapExceeded, setIsThroughputCapExceeded] = useState<boolean>();
+  const [uniqueKeys, setUniqueKeys] = useState<string[]>([]);
 
   useEffect(() => {
     const sourceContainerOptions: IDropdownOption[] = [];
@@ -58,6 +62,22 @@ export const AddMaterializedViewPanel = (props: AddMaterializedViewPanelProps): 
 
     setSourceContainerOptions(sourceContainerOptions);
   }, []);
+
+  let materializedViewThroughput: number;
+  let isMaterializedViewAutoscale: boolean;
+  let isCostAcknowledged: boolean;
+
+  const materializedViewThroughputOnChange = (materializedViewThroughputValue: number): void => {
+    materializedViewThroughput = materializedViewThroughputValue;
+  };
+
+  const isMaterializedViewAutoscaleOnChange = (isMaterializedViewAutoscaleValue: boolean): void => {
+    isMaterializedViewAutoscale = isMaterializedViewAutoscaleValue;
+  };
+
+  const isCostAknowledgedOnChange = (isCostAcknowledgedValue: boolean): void => {
+    isCostAcknowledged = isCostAcknowledgedValue;
+  };
 
   return (
     <form className="panelFormWrapper" id="panelMaterializedView">
@@ -129,8 +149,21 @@ export const AddMaterializedViewPanel = (props: AddMaterializedViewPanelProps): 
             value={materializedViewDefinition}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => setMaterializedViewDefinition(event.target.value)}
           />
-          <AddMVPartitionKey {...{ partitionKey, setPartitionKey, subPartitionKeys, setSubPartitionKeys }} />
-          <AddMVThroughput />
+          <AddMVPartitionKeyComponent
+            {...{ partitionKey, setPartitionKey, subPartitionKeys, setSubPartitionKeys, useHashV1, setUseHashV1 }}
+          />
+          <AddMVThroughputComponent
+            {...{
+              selectedSourceContainer,
+              enableDedicatedThroughput,
+              setEnabledDedicatedThroughput,
+              materializedViewThroughputOnChange,
+              isMaterializedViewAutoscaleOnChange,
+              setIsThroughputCapExceeded,
+              isCostAknowledgedOnChange,
+            }}
+          />
+          <AddMVUniqueKeysComponent {...{ uniqueKeys, setUniqueKeys }} />
         </Stack>
       </div>
     </form>
