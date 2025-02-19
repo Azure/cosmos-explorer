@@ -114,12 +114,12 @@ export class JupyterLabAppFactory {
     });
 
     // Close terminal when Ctrl key is pressed
-    term.node.addEventListener('keydown', (event: KeyboardEvent) => {
+    term.node.addEventListener("keydown", (event: KeyboardEvent) => {
       if (event.ctrlKey) {
         this.onShellExited(false);
-      } 
+      }
     });
-    
+
     return session;
   }
 }
