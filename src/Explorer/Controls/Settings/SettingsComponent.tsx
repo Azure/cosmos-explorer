@@ -186,7 +186,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.shouldShowPartitionKeyEditor = userContext.apiType === "SQL" && isRunningOnPublicCloud();
       this.isMaterializedView =
         !!this.collection?.materializedViewDefinition() || !!this.collection?.materializedViews();
-      console.log("Is Materialized View:", this.isMaterializedView);
       this.isVectorSearchEnabled = isVectorSearchEnabled() && !hasDatabaseSharedThroughput(this.collection);
       this.isFullTextSearchEnabled = isFullTextSearchEnabled() && !hasDatabaseSharedThroughput(this.collection);
 
