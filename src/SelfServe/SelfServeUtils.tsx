@@ -30,7 +30,7 @@ export enum SelfServeType {
   invalid = "invalid",
   // Add your self serve types here
   // NOTE: text and casing of the enum's value must match the corresponding file in Localization\en\
-  example = "example",
+  example = "SelfServeExample",
   sqlx = "SqlX",
   graphapicompute = "GraphAPICompute",
   materializedviewsbuilder = "MaterializedViewsBuilder",
