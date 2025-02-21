@@ -8,11 +8,7 @@ export interface MaterializedViewComponentProps {
 }
 
 export const MaterializedViewComponent: React.FC<MaterializedViewComponentProps> = ({ collection }) => {
-  // If this container itself defines a materialized view, skip rendering this component.
-  const isTargetContainer = !!collection?.materializedViewDefinition();
-  if (isTargetContainer) {
-    return null;
-  }
+  const isSourceContainer = !!collection?.materializedViews();
 
   return (
     <Stack tokens={{ childrenGap: 8 }} styles={{ root: { maxWidth: 600 } }}>
@@ -26,7 +22,7 @@ export const MaterializedViewComponent: React.FC<MaterializedViewComponentProps>
           about how to define materialized views and how to use them.
         </Text>
       </Stack>
-      <MaterializedViewSourceComponent collection={collection} />
+      {isSourceContainer && <MaterializedViewSourceComponent collection={collection} />}
     </Stack>
   );
 };
