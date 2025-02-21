@@ -484,9 +484,6 @@ const getNewDocumentButtonState = (editorState: ViewModels.DocumentExplorerState
     switch (editorState) {
       case ViewModels.DocumentExplorerState.noDocumentSelected:
       case ViewModels.DocumentExplorerState.existingDocumentNoEdits:
-        // if (!useClientWriteEnabled.getState().clientWriteEnabled) {
-        //   return false;
-        // }
         return true;
       default:
         return false;
@@ -638,7 +635,6 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   );
 
   // State
-  // Subscribe to clientWriteEnabled at the component level
   const clientWriteEnabled = useClientWriteEnabled((state) => state.clientWriteEnabled);
   const [tabStateData, setTabStateData] = useState<TabDivider>(() =>
     readDocumentsTabSubComponentState<TabDivider>(SubComponentName.MainTabDivider, _collection, {
