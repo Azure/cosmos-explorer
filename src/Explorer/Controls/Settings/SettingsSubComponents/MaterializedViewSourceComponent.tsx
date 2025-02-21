@@ -13,29 +13,34 @@ export const MaterializedViewSourceComponent: React.FC<MaterializedViewSourceCom
   const editorContainerRef = useRef<HTMLDivElement>(null);
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor>(null);
 
-  // Get the materialized views from the provided collection.
   const materializedViews = collection?.materializedViews() ?? [];
 
-  // Helper function to fetch the view definition by matching viewId with collection id.
-  const getViewDefinition = (viewId: string): string => {
+  // Helper function to fetch the definition and partition key of targetContainer by traversing through all collections and matching id from MaterializedViews[] with collection id.
+  const getViewDetails = (viewId: string): { definition: string; partitionKey: string[] } => {
     let definition = "";
+    let partitionKey: string[] = [];
     useDatabases.getState().databases.forEach((database) => {
       database.collections().forEach((coll) => {
-        const materializedViewDefinition = coll.materializedViewDefinition();
-        if (materializedViewDefinition && coll.id() === viewId) {
-          definition = materializedViewDefinition.definition;
+        if (coll.id() === viewId) {
+          const materializedViewDefinition = coll.materializedViewDefinition();
+          materializedViewDefinition && (definition = materializedViewDefinition.definition);
+          coll.partitionKey?.paths && (partitionKey = coll.partitionKey.paths);
         }
       });
     });
-    return definition;
+    return { definition, partitionKey };
   };
 
-  // Build the JSON value for the editor using the fetched definitions.
+  //JSON value for the editor using the fetched id and definitions.
   const jsonValue = JSON.stringify(
-    materializedViews.map((view) => ({
-      name: view.id,
-      definition: getViewDefinition(view.id),
-    })),
+    materializedViews.map((view) => {
+      const { definition, partitionKey } = getViewDetails(view.id);
+      return {
+        name: view.id,
+        partitionKey: partitionKey.join(", "),
+        definition,
+      };
+    }),
     null,
     2,
   );
@@ -51,6 +56,7 @@ export const MaterializedViewSourceComponent: React.FC<MaterializedViewSourceCom
         value: jsonValue,
         language: "json",
         ariaLabel: "Materialized Views JSON",
+        readOnly: true,
       });
     };
 
