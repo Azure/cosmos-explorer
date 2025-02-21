@@ -906,22 +906,22 @@ export default class Explorer {
   }
 
   public async openNotebookTerminal(kind: ViewModels.TerminalKind): Promise<void> {
-    if (useNotebook.getState().isPhoenixFeatures) {
-      await this.allocateContainer(PoolIdType.DefaultPoolId);
-      const notebookServerInfo = useNotebook.getState().notebookServerInfo;
-      if (notebookServerInfo && notebookServerInfo.notebookServerEndpoint !== undefined) {
-        this.connectToNotebookTerminal(kind);
-      } else {
-        useDialog
-          .getState()
-          .showOkModalDialog(
-            "Failed to connect",
-            "Failed to connect to temporary workspace. This could happen because of network issues. Please refresh the page and try again.",
-          );
-      }
-    } else {
+    // if (useNotebook.getState().isPhoenixFeatures) {
+    //   await this.allocateContainer(PoolIdType.DefaultPoolId);
+    //   const notebookServerInfo = useNotebook.getState().notebookServerInfo;
+    //   if (notebookServerInfo && notebookServerInfo.notebookServerEndpoint !== undefined) {
+    //     this.connectToNotebookTerminal(kind);
+    //   } else {
+    //     useDialog
+    //       .getState()
+    //       .showOkModalDialog(
+    //         "Failed to connect",
+    //         "Failed to connect to temporary workspace. This could happen because of network issues. Please refresh the page and try again.",
+    //       );
+    //   }
+    // } else {
       this.connectToNotebookTerminal(kind);
-    }
+    // }
   }
 
   private connectToNotebookTerminal(kind: ViewModels.TerminalKind): void {
