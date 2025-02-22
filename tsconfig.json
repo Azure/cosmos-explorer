@@ -15,18 +15,12 @@
     "target": "es2017",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "lib": [
-      "es5",
-      "es6",
-      "dom"
-    ],
+    "lib": ["es5", "es6", "dom"],
     "jsx": "react",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "noEmit": true,
-    "types": [
-      "jest"
-    ],
+    "types": ["jest"],
     "baseUrl": "src"
   },
   "typedocOptions": {
@@ -43,14 +37,8 @@
     "includes": "./src/SelfServe/Documentation",
     "disableSources": true
   },
-  "include": [
-    "src",
-    "./src/**/*",
-    "./utils/**/*"
-  ],
-  "exclude": [
-    "./src/**/__mocks__/**/*"
-  ],
+  "include": ["src", "./src/**/*", "./utils/**/*"],
+  "exclude": ["./src/**/__mocks__/**/*", "./utils/local-proxy/**/*"],
   "ts-node": {
     "compilerOptions": {
       "module": "CommonJS"

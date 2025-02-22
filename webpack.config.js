@@ -24,6 +24,8 @@ const AZURE_TENANT_ID = "72f988bf-86f1-41af-91ab-2d7cd011db47";
 const RESOURCE_GROUP = "de-e2e-tests";
 const AZURE_CLIENT_SECRET = process.env.AZURE_CLIENT_SECRET || process.env.NOTEBOOKS_TEST_RUNNER_CLIENT_SECRET; // TODO Remove. Exists for backwards compat with old .env files. Prefer AZURE_CLIENT_SECRET
 
+const ishttps = process.env.GATEWAY_TLS_ENABLED !== "false"; // false -> false, true -> true, default -> true
+
 if (!AZURE_CLIENT_SECRET) {
   console.warn("AZURE_CLIENT_SECRET is not set. testExplorer.html will not work.");
 }
@@ -126,11 +128,18 @@ module.exports = function (_env = {}, argv = {}) {
       template: "src/Terminal/index.html",
       chunks: ["terminal"],
     }),
-    new HtmlWebpackPlugin({
-      filename: "quickstart.html",
-      template: "src/quickstart.html",
-      chunks: ["quickstart"],
-    }),
+    //todo - dynamically include apis
+    ishttps
+      ? new HtmlWebpackPlugin({
+          filename: "quickstart.html",
+          template: "src/quickstart-sql-only.html",
+          chunks: ["quickstart"],
+        })
+      : new HtmlWebpackPlugin({
+          filename: "quickstart.html",
+          template: "src/quickstart-sql-only-http.html",
+          chunks: ["quickstart"],
+        }),
     new HtmlWebpackPlugin({
       filename: "index.html",
       template: "src/index.html",
@@ -191,6 +200,14 @@ module.exports = function (_env = {}, argv = {}) {
     }),
     new EnvironmentPlugin(envVars),
   ];
+
+  if (process.env.EXPLORER_CONFIG_PATH) {
+    plugins.push(
+      new CopyWebpackPlugin({
+        patterns: [{ from: process.env.EXPLORER_CONFIG_PATH, to: "config.json" }],
+      }),
+    );
+  }
 
   if (argv.analyze) {
     plugins.push(new BundleAnalyzerPlugin());
@@ -269,7 +286,7 @@ module.exports = function (_env = {}, argv = {}) {
       // disableHostCheck: true,
       liveReload: !isCI,
       server: {
-        type: "https",
+        type: ishttps ? "https" : "http",
       },
       host: "0.0.0.0",
       port: envVars.PORT,
