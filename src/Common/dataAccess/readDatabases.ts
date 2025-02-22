@@ -1,4 +1,4 @@
-import { Platform, configContext } from "ConfigContext";
+import { isFabricMirrored, isFabricNative } from "Platform/Fabric/FabricUtil";
 import { AuthType } from "../../AuthType";
 import * as DataModels from "../../Contracts/DataModels";
 import { userContext } from "../../UserContext";
@@ -14,8 +14,8 @@ export async function readDatabases(): Promise<DataModels.Database[]> {
   let databases: DataModels.Database[];
   const clearMessage = logConsoleProgress(`Querying databases`);
 
-  if (configContext.platform === Platform.Fabric && userContext.fabricContext?.databaseConnectionInfo.resourceTokens) {
-    const tokensData = userContext.fabricContext.databaseConnectionInfo;
+  if (isFabricMirrored() && userContext.fabricContext?.mirroredConnectionInfo.resourceTokens) {
+    const tokensData = userContext.fabricContext.mirroredConnectionInfo;
 
     const databaseIdsSet = new Set<string>(); // databaseId
 
@@ -44,6 +44,20 @@ export async function readDatabases(): Promise<DataModels.Database[]> {
         id: databaseId,
         collections: [],
       }));
+    clearMessage();
+    return databases;
+  } else if (isFabricNative() && userContext.fabricContext?.nativeConnectionInfo.databaseName) {
+    const databaseId = userContext.fabricContext.nativeConnectionInfo.databaseName;
+    databases = [
+      {
+        _rid: "",
+        _self: "",
+        _etag: "",
+        _ts: 0,
+        id: databaseId,
+        collections: [],
+      },
+    ];
     clearMessage();
     return databases;
   }

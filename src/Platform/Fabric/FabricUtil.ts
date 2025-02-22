@@ -1,6 +1,7 @@
 import { sendCachedDataMessage } from "Common/MessageHandler";
+import { configContext, Platform } from "ConfigContext";
 import { FabricMessageTypes } from "Contracts/FabricMessageTypes";
-import { FabricDatabaseConnectionInfo } from "Contracts/FabricMessagesContract";
+import { CosmosDbArtifactType, FabricMirroredDatabaseConnectionInfo } from "Contracts/FabricMessagesContract";
 import { updateUserContext, userContext } from "UserContext";
 import { logConsoleError } from "Utils/NotificationConsoleUtils";
 
@@ -18,7 +19,7 @@ const requestDatabaseResourceTokens = async (): Promise<void> => {
 
   lastRequestTimestamp = Date.now();
   try {
-    const fabricDatabaseConnectionInfo = await sendCachedDataMessage<FabricDatabaseConnectionInfo>(
+    const fabricDatabaseConnectionInfo = await sendCachedDataMessage<FabricMirroredDatabaseConnectionInfo>(
       FabricMessageTypes.GetAllResourceTokens,
       [],
       userContext.fabricContext.connectionId,
@@ -31,7 +32,7 @@ const requestDatabaseResourceTokens = async (): Promise<void> => {
     updateUserContext({
       fabricContext: {
         ...userContext.fabricContext,
-        databaseConnectionInfo: fabricDatabaseConnectionInfo,
+        mirroredConnectionInfo: fabricDatabaseConnectionInfo,
         isReadOnly: true,
       },
       databaseAccount: { ...userContext.databaseAccount },
@@ -71,3 +72,10 @@ export const checkDatabaseResourceTokensValidity = (tokenTimestamp: number): voi
     scheduleRefreshDatabaseResourceToken(true);
   }
 };
+
+export const isFabricMirrored = (): boolean =>
+  configContext.platform === Platform.Fabric &&
+  userContext.fabricContext?.artifactType === CosmosDbArtifactType.MIRRORED;
+
+export const isFabricNative = (): boolean =>
+  configContext.platform === Platform.Fabric && userContext.fabricContext?.artifactType === CosmosDbArtifactType.NATIVE;
