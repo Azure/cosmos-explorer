@@ -1,6 +1,7 @@
 import * as Cosmos from "@azure/cosmos";
 import { getAuthorizationTokenUsingResourceTokens } from "Common/getAuthorizationTokenUsingResourceTokens";
 import { AuthorizationToken } from "Contracts/FabricMessageTypes";
+import { EmulatorMasterKey } from "Platform/Emulator/emulatorAccount";
 import { checkDatabaseResourceTokensValidity } from "Platform/Fabric/FabricUtil";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { AuthType } from "../AuthType";
@@ -11,7 +12,7 @@ import { updateUserContext, userContext } from "../UserContext";
 import { isDataplaneRbacSupported } from "../Utils/APITypeUtils";
 import { logConsoleError } from "../Utils/NotificationConsoleUtils";
 import * as PriorityBasedExecutionUtils from "../Utils/PriorityBasedExecutionUtils";
-import { EmulatorMasterKey, HttpHeaders } from "./Constants";
+import { HttpHeaders } from "./Constants";
 import { getErrorMessage } from "./ErrorHandlingUtils";
 
 const _global = typeof self === "undefined" ? window : self;
