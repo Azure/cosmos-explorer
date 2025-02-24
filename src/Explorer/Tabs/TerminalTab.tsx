@@ -49,17 +49,13 @@ class NotebookTerminalComponentAdapter implements ReactAdapter {
         />
       );
     }
-    return this.parameters() ? 
-    ( userContext.features.enableCloudShell ? (
-      <CloudShellTerminalComponent />
-    ) : (
+    return this.parameters() ? (
       <NotebookTerminalComponent
         notebookServerInfo={this.getNotebookServerInfo()}
         databaseAccount={this.getDatabaseAccount()}
         tabId={this.getTabId()}
         username={this.getUsername()}
-      />
-    ) ): (
+      />): (
       <Spinner styles={{ root: { marginTop: 10 } }} size={SpinnerSize.large}></Spinner>
     );
   }
@@ -72,9 +68,6 @@ class CloudShellTerminalComponentAdapter implements ReactAdapter {
   // parameters: true: show, false: hide
   public parameters: ko.Computed<boolean>;
   constructor(
-    private getDatabaseAccount: () => DataModels.DatabaseAccount,
-    private getTabId: () => string,
-    private getUsername: () => string,
     private isAllPublicIPAddressesEnabled: ko.Observable<boolean>,
     private kind: ViewModels.TerminalKind,
   ) {}
@@ -90,7 +83,8 @@ class CloudShellTerminalComponentAdapter implements ReactAdapter {
       );
     }
     return this.parameters() ? (
-      <CloudShellTerminalComponent />
+      <CloudShellTerminalComponent 
+        shellType={this.kind}/>
     ) : (
       <Spinner styles={{ root: { marginTop: 10 } }} size={SpinnerSize.large}></Spinner>
     );
@@ -144,9 +138,6 @@ export default class TerminalTab extends TabsBase {
   private initializeNotebookTerminalAdapter(options: TerminalTabOptions): void {
     if (userContext.features.enableCloudShell) {
       this.terminalComponentAdapter = new CloudShellTerminalComponentAdapter(
-        () => userContext?.databaseAccount,
-        () => this.tabId,
-        () => this.getUsername(),
         this.isAllPublicIPAddressesEnabled,
         options.kind
       );

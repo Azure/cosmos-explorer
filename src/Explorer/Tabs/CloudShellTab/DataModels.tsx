@@ -1,3 +1,7 @@
+/**
+ * Copyright (c) Microsoft Corporation.  All rights reserved.
+ */
+
 export const enum OsType {
     Linux = "linux",
     Windows = "windows"

@@ -1,3 +1,7 @@
+/**
+ * Copyright (c) Microsoft Corporation.  All rights reserved.
+ */
+
 import { v4 as uuidv4 } from 'uuid';
 import { configContext } from "../../../ConfigContext";
 import { armRequest } from "../../../Utils/arm/request";
@@ -23,10 +27,10 @@ export const trackedApiCall = <T extends Array<any>, U>(apiCall: (...args: T) =>
     };
 };
 
-export const getUserRegion = trackedApiCall(async (subscriptionId: string) => {
+export const getUserRegion = trackedApiCall(async (subscriptionId: string, resourceGroup: string, accountName: string) => {
     return await armRequest({
         host: configContext.ARM_ENDPOINT,
-        path: `/subscriptions/${subscriptionId}/locations`,
+        path: `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}`,
         method: "GET",
         apiVersion: "2022-12-01"
       });
@@ -158,3 +162,19 @@ export const getLocale = () => {
     const langLocale = navigator.language;
     return (langLocale && langLocale.length === 2 ? langLocale[1] : 'en-us');
 };
+
+const validCloudShellRegions = new Set(["westus", "southcentralus", "eastus", "northeurope", "westeurope", "centralindia", "southeastasia", "westcentralus", "eastus2euap", "centraluseuap"]);
+const defaultCloudshellRegion = "westus";
+
+export const getNormalizedRegion = (region: string) => {
+    if (!region) return defaultCloudshellRegion;
+    
+    const regionMap: Record<string, string> = {
+      "centralus": "centraluseuap",
+      "eastus2": "eastus2euap"
+    };
+    
+    const normalizedRegion = regionMap[region.toLowerCase()] || region;
+    return validCloudShellRegions.has(normalizedRegion.toLowerCase()) ? normalizedRegion : defaultCloudshellRegion;
+  };
+  
