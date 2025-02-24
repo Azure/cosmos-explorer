@@ -1,4 +1,4 @@
-import { DatabaseRegular, DocumentMultipleRegular, SettingsRegular } from "@fluentui/react-icons";
+import { DatabaseRegular, DocumentMultipleRegular, EyeRegular, SettingsRegular } from "@fluentui/react-icons";
 import { TreeNode } from "Explorer/Controls/TreeComponent/TreeNodeComponent";
 import { collectionWasOpened } from "Explorer/MostRecentActivity/MostRecentActivity";
 import TabsBase from "Explorer/Tabs/TabsBase";
@@ -30,6 +30,7 @@ export const shouldShowScriptNodes = (): boolean => {
 const TreeDatabaseIcon = <DatabaseRegular fontSize={16} />;
 const TreeSettingsIcon = <SettingsRegular fontSize={16} />;
 const TreeCollectionIcon = <DocumentMultipleRegular fontSize={16} />;
+const MaterializedViewCollectionIcon = <EyeRegular fontSize={16} />; //check icon
 
 export const createSampleDataTreeNodes = (sampleDataResourceTokenCollection: ViewModels.CollectionBase): TreeNode[] => {
   const updatedSampleTree: TreeNode = {
@@ -81,7 +82,7 @@ export const createSampleDataTreeNodes = (sampleDataResourceTokenCollection: Vie
   return [updatedSampleTree];
 };
 
-export const createResourceTokenTreeNodes = (collection: ViewModels.CollectionBase): TreeNode[] => {
+export const createResourceTokenTreeNodes = (collection: ViewModels.Collection): TreeNode[] => {
   if (!collection) {
     return [
       {
@@ -111,7 +112,7 @@ export const createResourceTokenTreeNodes = (collection: ViewModels.CollectionBa
     isExpanded: true,
     children,
     className: "collectionNode",
-    iconSrc: TreeCollectionIcon,
+    iconSrc: collection.materializedViewDefinition() ? MaterializedViewCollectionIcon : TreeCollectionIcon,
     onClick: () => {
       // Rewritten version of expandCollapseCollection
       useSelectedNode.getState().setSelectedNode(collection);
@@ -229,7 +230,7 @@ export const buildCollectionNode = (
     children: children,
     className: "collectionNode",
     contextMenu: ResourceTreeContextMenuButtonFactory.createCollectionContextMenuButton(container, collection),
-    iconSrc: TreeCollectionIcon,
+    iconSrc: collection.materializedViewDefinition() ? MaterializedViewCollectionIcon : TreeCollectionIcon,
     onClick: () => {
       useSelectedNode.getState().setSelectedNode(collection);
       collection.openTab();
