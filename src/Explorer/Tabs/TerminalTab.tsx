@@ -10,10 +10,11 @@ import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { userContext } from "../../UserContext";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
+import { NotebookTerminalComponent } from "../Controls/Notebook/NotebookTerminalComponent";
 import Explorer from "../Explorer";
-//import { useNotebook } from "../Notebook/useNotebook";
+import { useNotebook } from "../Notebook/useNotebook";
+import { CloudShellTerminalComponent } from "./CloudShellTerminalComponent";
 import TabsBase from "./TabsBase";
-import XTermComponent from "./XTermComponent";
 
 
 export interface TerminalTabOptions extends ViewModels.TabOptions {
@@ -26,7 +27,7 @@ export interface TerminalTabOptions extends ViewModels.TabOptions {
 /**
  * Notebook terminal tab
  */
-class XTermAdapter implements ReactAdapter {
+class NotebookTerminalComponentAdapter implements ReactAdapter {
   // parameters: true: show, false: hide
   public parameters: ko.Computed<boolean>;
   constructor(
@@ -44,65 +45,82 @@ class XTermAdapter implements ReactAdapter {
         <QuickstartFirewallNotification
           messageType={MessageTypes.OpenPostgresNetworkingBlade}
           screenshot={FirewallRuleScreenshot}
-          shellName={this.getShellNameForDisplay(this.kind)}
+          shellName={getShellNameForDisplay(this.kind)}
+        />
+      );
+    }
+    return this.parameters() ? 
+    ( userContext.features.enableCloudShell ? (
+      <CloudShellTerminalComponent />
+    ) : (
+      <NotebookTerminalComponent
+        notebookServerInfo={this.getNotebookServerInfo()}
+        databaseAccount={this.getDatabaseAccount()}
+        tabId={this.getTabId()}
+        username={this.getUsername()}
+      />
+    ) ): (
+      <Spinner styles={{ root: { marginTop: 10 } }} size={SpinnerSize.large}></Spinner>
+    );
+  }
+}
+
+/**
+ * CloudShell terminal tab
+ */
+class CloudShellTerminalComponentAdapter implements ReactAdapter {
+  // parameters: true: show, false: hide
+  public parameters: ko.Computed<boolean>;
+  constructor(
+    private getDatabaseAccount: () => DataModels.DatabaseAccount,
+    private getTabId: () => string,
+    private getUsername: () => string,
+    private isAllPublicIPAddressesEnabled: ko.Observable<boolean>,
+    private kind: ViewModels.TerminalKind,
+  ) {}
+
+  public renderComponent(): JSX.Element {
+    if (!this.isAllPublicIPAddressesEnabled()) {
+      return (
+        <QuickstartFirewallNotification
+          messageType={MessageTypes.OpenPostgresNetworkingBlade}
+          screenshot={FirewallRuleScreenshot}
+          shellName={getShellNameForDisplay(this.kind)}
         />
       );
     }
     return this.parameters() ? (
-      <XTermComponent />
-      // <NotebookTerminalComponent
-      //   notebookServerInfo={this.getNotebookServerInfo()}
-      //   databaseAccount={this.getDatabaseAccount()}
-      //   tabId={this.getTabId()}
-      //   username={this.getUsername()}
-      // />
+      <CloudShellTerminalComponent />
     ) : (
       <Spinner styles={{ root: { marginTop: 10 } }} size={SpinnerSize.large}></Spinner>
     );
   }
+}
 
-  private getShellNameForDisplay(terminalKind: ViewModels.TerminalKind): string {
-    switch (terminalKind) {
-      case ViewModels.TerminalKind.Postgres:
-        return "PostgreSQL";
-      case ViewModels.TerminalKind.Mongo:
-      case ViewModels.TerminalKind.VCoreMongo:
-        return "MongoDB";
-      default:
-        return "";
-    }
+export const getShellNameForDisplay = (terminalKind: ViewModels.TerminalKind): string => {
+  switch (terminalKind) {
+    case ViewModels.TerminalKind.Postgres:
+      return "PostgreSQL";
+    case ViewModels.TerminalKind.Mongo:
+    case ViewModels.TerminalKind.VCoreMongo:
+      return "MongoDB";
+    default:
+      return "";
   }
 }
 
 export default class TerminalTab extends TabsBase {
-  public readonly html = '<div style="height: 100%" data-bind="react: xtermAdapter"></div>';
+  public readonly html = '<div style="height: 100%" data-bind="react: terminalComponentAdapter"></div>';
   private container: Explorer;
-  private xtermAdapter: XTermAdapter;
+  private terminalComponentAdapter: any;
   private isAllPublicIPAddressesEnabled: ko.Observable<boolean>;
 
   constructor(options: TerminalTabOptions) {
     super(options);
     this.container = options.container;
     this.isAllPublicIPAddressesEnabled = ko.observable(true);
-    this.xtermAdapter = new XTermAdapter(
-      () => null,
-      () => userContext?.databaseAccount,
-      () => this.tabId,
-      () => this.getUsername(),
-      this.isAllPublicIPAddressesEnabled,
-      options.kind,
-    );
-    this.xtermAdapter.parameters = ko.computed<boolean>(() => {
-      if (
-        this.isTemplateReady() &&
-        // useNotebook.getState().isNotebookEnabled &&
-        // useNotebook.getState().notebookServerInfo?.notebookServerEndpoint &&
-        this.isAllPublicIPAddressesEnabled()
-      ) {
-        return true;
-      }
-      return false;
-    });
+    
+    this.initializeNotebookTerminalAdapter(options);
 
     if (options.kind === ViewModels.TerminalKind.Postgres) {
       checkFirewallRules(
@@ -123,6 +141,36 @@ export default class TerminalTab extends TabsBase {
     }
   }
 
+  private initializeNotebookTerminalAdapter(options: TerminalTabOptions): void {
+    if (userContext.features.enableCloudShell) {
+      this.terminalComponentAdapter = new CloudShellTerminalComponentAdapter(
+        () => userContext?.databaseAccount,
+        () => this.tabId,
+        () => this.getUsername(),
+        this.isAllPublicIPAddressesEnabled,
+        options.kind
+      );
+    }
+    else {
+      this.terminalComponentAdapter = new NotebookTerminalComponentAdapter(
+        () => this.getNotebookServerInfo(options),
+        () => userContext?.databaseAccount,
+        () => this.tabId,
+        () => this.getUsername(),
+        this.isAllPublicIPAddressesEnabled,
+        options.kind
+      );
+    }
+    
+    this.terminalComponentAdapter.parameters = ko.computed<boolean>(() =>
+      this.isTemplateReady() &&
+      (userContext.features.enableCloudShell ||
+        (useNotebook.getState().isNotebookEnabled &&
+          useNotebook.getState().notebookServerInfo?.notebookServerEndpoint)) &&
+      this.isAllPublicIPAddressesEnabled()
+    );
+  }
+
   public getContainer(): Explorer {
     return this.container;
   }
@@ -135,41 +183,41 @@ export default class TerminalTab extends TabsBase {
     this.updateNavbarWithTabsButtons();
   }
 
-  // private getNotebookServerInfo(options: TerminalTabOptions): DataModels.NotebookWorkspaceConnectionInfo {
-  //   let endpointSuffix: string;
+  private getNotebookServerInfo(options: TerminalTabOptions): DataModels.NotebookWorkspaceConnectionInfo {
+    let endpointSuffix: string;
 
-  //   switch (options.kind) {
-  //     case ViewModels.TerminalKind.Default:
-  //       endpointSuffix = "";
-  //       break;
+    switch (options.kind) {
+      case ViewModels.TerminalKind.Default:
+        endpointSuffix = "";
+        break;
 
-  //     case ViewModels.TerminalKind.Mongo:
-  //       endpointSuffix = "mongo";
-  //       break;
+      case ViewModels.TerminalKind.Mongo:
+        endpointSuffix = "mongo";
+        break;
 
-  //     case ViewModels.TerminalKind.Cassandra:
-  //       endpointSuffix = "cassandra";
-  //       break;
+      case ViewModels.TerminalKind.Cassandra:
+        endpointSuffix = "cassandra";
+        break;
 
-  //     case ViewModels.TerminalKind.Postgres:
-  //       endpointSuffix = "postgresql";
-  //       break;
+      case ViewModels.TerminalKind.Postgres:
+        endpointSuffix = "postgresql";
+        break;
 
-  //     case ViewModels.TerminalKind.VCoreMongo:
-  //       endpointSuffix = "mongovcore";
-  //       break;
+      case ViewModels.TerminalKind.VCoreMongo:
+        endpointSuffix = "mongovcore";
+        break;
 
-  //     default:
-  //       throw new Error(`Terminal kind: ${options.kind} not supported`);
-  //   }
+      default:
+        throw new Error(`Terminal kind: ${options.kind} not supported`);
+    }
 
-  //   const info: DataModels.NotebookWorkspaceConnectionInfo = useNotebook.getState().notebookServerInfo;
-  //   return {
-  //     authToken: info.authToken,
-  //     notebookServerEndpoint: `${info.notebookServerEndpoint.replace(/\/+$/, "")}/${endpointSuffix}`,
-  //     forwardingId: info.forwardingId,
-  //   };
-  // }
+    const info: DataModels.NotebookWorkspaceConnectionInfo = useNotebook.getState().notebookServerInfo;
+    return {
+      authToken: info.authToken,
+      notebookServerEndpoint: `${info.notebookServerEndpoint.replace(/\/+$/, "")}/${endpointSuffix}`,
+      forwardingId: info.forwardingId,
+    };
+  }
 
   private getUsername(): string {
     if (userContext.apiType !== "VCoreMongo" || !userContext?.vcoreMongoConnectionParams?.adminLogin) {
