@@ -85,9 +85,11 @@ export default class ConflictsTab extends TabsBase {
     super.onTemplateReady((isTemplateReady: boolean) => {
       if (isTemplateReady) {
         const tabContainer: HTMLElement = document.getElementById("content");
+        const defaultWidth = 1000;
+        const clientWidth = tabContainer ? tabContainer.clientWidth : defaultWidth;
         const splitterBounds: SplitterBounds = {
-          min: Constants.DocumentsGridMetrics.DocumentEditorMinWidthRatio * tabContainer.clientWidth,
-          max: Constants.DocumentsGridMetrics.DocumentEditorMaxWidthRatio * tabContainer.clientWidth,
+          min: Constants.DocumentsGridMetrics.DocumentEditorMinWidthRatio * clientWidth,
+          max: Constants.DocumentsGridMetrics.DocumentEditorMaxWidthRatio * clientWidth,
         };
         this.splitter = new Splitter({
           splitterId: "h_splitter2",
