@@ -119,7 +119,7 @@ export const requestPlugin: Cosmos.Plugin<any> = async (requestContext, diagnost
   requestContext.headers["x-ms-proxy-target"] = endpoint();
   console.log(`REQUEST CONTEXT PROXY: ${JSON.stringify(requestContext.headers["x-ms-proxy-target"])}`);
   console.log(`WRITE ENABLED ON ENDPOINT: ${userContext.writeEnabledInSelectedRegion}`);
-  // return await next(requestContext);
+  return await next(requestContext);
 
   // try {
   //   return await next(requestContext);
@@ -130,11 +130,11 @@ export const requestPlugin: Cosmos.Plugin<any> = async (requestContext, diagnost
   //   };
   // }
 
-  try {
-    return await next(requestContext);
-  } catch (error) {
-    console.log(error.code);
-  }
+  // try {
+  //   return await next(requestContext);
+  // } catch (error) {
+  //   console.log(error.code);
+  // }
 };
 
 export const endpoint = () => {
