@@ -74,7 +74,7 @@ export const getCommands = (terminalKind: TerminalKind): string => {
       `mongosh --version \n`;
     case TerminalKind.Cassandra:
       return `curl -s https://ipinfo.io \n` +
-      `curl -OL http://apache.mirror.digitalpacific.com.au/cassandra/4.0.0/apache-cassandra-4.0.0-bin.tar.gz \n` +
+      `curl -OL https://archive.apache.org/dist/cassandra/4.0.0/apache-cassandra-4.0.0-bin.tar.gz \n` +
       `tar -xvzf apache-cassandra-4.0.0-bin.tar.gz \n` +
       `cd apache-cassandra-4.0.0 \n` +
       `mkdir ~/cassandra \n` +
