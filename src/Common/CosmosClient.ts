@@ -120,21 +120,6 @@ export const requestPlugin: Cosmos.Plugin<any> = async (requestContext, diagnost
   console.log(`REQUEST CONTEXT PROXY: ${JSON.stringify(requestContext.headers["x-ms-proxy-target"])}`);
   console.log(`WRITE ENABLED ON ENDPOINT: ${userContext.writeEnabledInSelectedRegion}`);
   return await next(requestContext);
-
-  // try {
-  //   return await next(requestContext);
-  // } catch (error) {
-  //   throw {
-  //     code: error?.code || undefined,
-  //     message: error.message,
-  //   };
-  // }
-
-  // try {
-  //   return await next(requestContext);
-  // } catch (error) {
-  //   console.log(error.code);
-  // }
 };
 
 export const endpoint = () => {
@@ -265,25 +250,6 @@ export function client(): Cosmos.CosmosClient {
       },
     },
   };
-
-  // // Account details from userContext.
-  // // console.log(`userContext details: ${JSON.stringify(userContext)}`);
-  // console.log(`userContext.databaseaccount details: ${JSON.stringify(userContext.databaseAccount)}`);
-  // console.log(
-  //   `userContext?.databaseAccount?.properties?.documentEndpoint details: ${JSON.stringify(
-  //     userContext?.databaseAccount?.properties?.documentEndpoint,
-  //   )}`,
-  // );
-  // console.log(
-  //   `userContext?.databaseAccount?.properties?.readLocations details: ${JSON.stringify(
-  //     userContext?.databaseAccount?.properties?.readLocations,
-  //   )}`,
-  // );
-  // console.log(
-  //   `userContext?.databaseAccount?.properties?.writeLocations details: ${JSON.stringify(
-  //     userContext?.databaseAccount?.properties?.writeLocations,
-  //   )}`,
-  // );
 
   if (configContext.PROXY_PATH !== undefined) {
     (options as any).plugins = [{ on: "request", plugin: requestPlugin }];
