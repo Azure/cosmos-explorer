@@ -21,7 +21,7 @@ export const CloudShellTerminalComponent: React.FC<CloudShellTerminalProps> = ({
          const term = new Terminal({
             cursorBlink: true, 
             fontSize: 14,
-            theme: { background: "#1d1f21", foreground: "#c5c8c6" },
+            theme: { background: "#1d1f21", foreground: "#c5c8c6" },       
         });
 
         // Attach terminal to the DOM

@@ -24,66 +24,23 @@ export const startCloudShellterminal = async (xterminal: Terminal, initCommands:
     const region = userContext.databaseAccount?.location;
     xterminal.writeln(LogInfo(`Database Acount Region identified as '${region}'`));
 
-    const resolvedRegion = getNormalizedRegion(region);
+    const defaultCloudshellRegion = "westus";
+    const resolvedRegion = getNormalizedRegion(region, defaultCloudshellRegion);
+    
     xterminal.writeln(LogInfo(`Requesting Cloudshell instance at '${resolvedRegion}'`));
     
     try {
-      // do not use the subscription from the preferred settings use the one from the context
-      await putEphemeralUserSettings(userContext.subscriptionId, resolvedRegion);
-    } catch (err) {
-      xterminal.writeln(LogError('Unable to update user settings to ephemeral session.'));
-      throw err;
+        var { socketUri, provisionConsoleResponse, targetUri } = await provisionCloudShellSession(resolvedRegion, xterminal);
     }
-
-    // verify user settings after they have been updated to ephemeral
-    try {
-        const userSettings = await getUserSettings();
-        const isValidUserSettings = validateUserSettings(userSettings);
-        if (!isValidUserSettings) {
-            throw new Error("Invalid user settings detected for ephemeral session.");
-        }
-    } catch (err) {
-      xterminal.writeln(LogError('Unable to verify user settings for ephemeral session.'));
-      throw err;
+    catch (err) {
+        xterminal.writeln(LogError(err));   
+        xterminal.writeln(LogError(`Unable to provision console in request region, Falling back to default region i.e. ${defaultCloudshellRegion}`));   
+        var { socketUri, provisionConsoleResponse, targetUri } = await provisionCloudShellSession(defaultCloudshellRegion, xterminal);     
     }
-
-    // trigger callback to provision console internal
-    let provisionConsoleResponse;
-    try {
-        provisionConsoleResponse = await provisionConsole(userContext.subscriptionId, resolvedRegion);
-    } catch (err) {
-      xterminal.writeln(LogError('Unable to provision console.\n\r'));
-      throw err;
-    }
-
-    if (provisionConsoleResponse.properties.provisioningState !== "Succeeded") {
-        xterminal.writeln(LogError("Failed to provision console.\n\r"));
-        throw new Error("Failed to provision console.");
-    }
-
-    xterminal.writeln(LogInfo("Connecting to cloudshell"));
-    xterminal.writeln(LogInfo("Please wait..."));
-    // connect the terminal
-    let connectTerminalResponse;
-    try {
-        connectTerminalResponse = await connectTerminal(provisionConsoleResponse.properties.uri, { rows: xterminal.rows, cols: xterminal.cols });
-    } catch (err) {
-      xterminal.writeln('');
-      xterminal.writeln(LogError('Unable to connect terminal.'));
-      throw err;
-    }
-
-    const targetUri = provisionConsoleResponse.properties.uri + `/terminals?cols=${xterminal.cols}&rows=${xterminal.rows}&version=2019-01-01&shell=bash`;
-    const termId = connectTerminalResponse.id;
-
-    let socketUri = connectTerminalResponse.socketUri.replace(":443/", "");
-    const targetUriBody = targetUri.replace('https://', '').split('?')[0];
-    if (socketUri.indexOf(targetUriBody) === -1) {
-        socketUri = 'wss://' + targetUriBody + '/' + termId;
-    }
-    if (targetUriBody.includes('servicebus')) {
-        const targetUriBodyArr = targetUriBody.split('/');
-        socketUri = 'wss://' + targetUriBodyArr[0] + '/$hc/' + targetUriBodyArr[1] + '/terminals/' + termId;
+    
+    if(!socketUri) {
+        xterminal.writeln(LogError('Unable to provision console. Close and Open the terminal again to retry.'));
+        return{};
     }
 
     const socket = new WebSocket(socketUri);
@@ -189,4 +146,90 @@ export const configureSocket = (socket: WebSocket,  uri: string, terminal: any, 
     };
 
     return socket;
+};
+
+const provisionCloudShellSession = async(
+    resolvedRegion: string, 
+    xterminal: Terminal
+): Promise<{ socketUri?: string; provisionConsoleResponse?: any; targetUri?: string }> => {
+    return new Promise((resolve, reject) => {
+        // Show consent message inside the terminal
+        xterminal.writeln(`\x1B[1;33m⚠️  Are you agreeing to continue with cloudshell terminal at ${resolvedRegion}.\x1B[0m`);
+        xterminal.writeln("\x1B[1;37mPress 'Y' to continue or 'N' to exit.\x1B[0m");
+
+        // Listen for user input
+        const handleKeyPress = xterminal.onKey(async ({ key }: { key: string }) => {
+            // Remove the event listener after first execution
+            handleKeyPress.dispose();
+
+            if (key.toLowerCase() === "y") {
+                xterminal.writeln("\x1B[1;32m✅ Consent given. Terminal ready!\x1B[0m");
+
+                try {
+                    await putEphemeralUserSettings(userContext.subscriptionId, resolvedRegion);
+                } catch (err) {
+                    xterminal.writeln(LogError('Unable to update user settings to ephemeral session.'));
+                    return reject(err);
+                }
+            
+                // verify user settings after they have been updated to ephemeral
+                try {
+                    const userSettings = await getUserSettings();
+                    const isValidUserSettings = validateUserSettings(userSettings);
+                    if (!isValidUserSettings) {
+                        throw new Error("Invalid user settings detected for ephemeral session.");
+                    }
+                } catch (err) {
+                    xterminal.writeln(LogError('Unable to verify user settings for ephemeral session.'));
+                    return reject(err);
+                }
+            
+                // trigger callback to provision console internal
+                let provisionConsoleResponse;
+                try {
+                    provisionConsoleResponse = await provisionConsole(userContext.subscriptionId, resolvedRegion);
+                } catch (err) {
+                    xterminal.writeln(LogError('Unable to provision console.\n\r'));
+                    return reject(err);
+                }
+            
+                if (provisionConsoleResponse.properties.provisioningState !== "Succeeded") {
+                    xterminal.writeln(LogError("Failed to provision console.\n\r"));
+                    return reject(new Error("Failed to provision console."));
+                }
+            
+                xterminal.writeln(LogInfo("Connecting to cloudshell"));
+                xterminal.writeln(LogInfo("Please wait..."));
+                // connect the terminal
+                let connectTerminalResponse;
+                try {
+                    connectTerminalResponse = await connectTerminal(provisionConsoleResponse.properties.uri, { rows: xterminal.rows, cols: xterminal.cols });
+                } catch (err) {
+                    xterminal.writeln('');
+                    xterminal.writeln(LogError('Unable to connect terminal.'));
+                    return reject(err);
+                }
+            
+                const targetUri = provisionConsoleResponse.properties.uri + `/terminals?cols=${xterminal.cols}&rows=${xterminal.rows}&version=2019-01-01&shell=bash`;
+                const termId = connectTerminalResponse.id;
+            
+                let socketUri = connectTerminalResponse.socketUri.replace(":443/", "");
+                const targetUriBody = targetUri.replace('https://', '').split('?')[0];
+                if (socketUri.indexOf(targetUriBody) === -1) {
+                    socketUri = 'wss://' + targetUriBody + '/' + termId;
+                }
+                if (targetUriBody.includes('servicebus')) {
+                    const targetUriBodyArr = targetUriBody.split('/');
+                    socketUri = 'wss://' + targetUriBodyArr[0] + '/$hc/' + targetUriBodyArr[1] + '/terminals/' + termId;
+                }
+                return resolve({ socketUri, provisionConsoleResponse, targetUri });
+
+            } else if (key.toLowerCase() === "n") {
+
+            xterminal.writeln("\x1B[1;31m❌ Consent denied. Exiting...\x1B[0m");
+                setTimeout(() => xterminal.dispose(), 2000); // Close terminal after 2 sec
+                return resolve({});
+            }
+        });
+    }); 
 };

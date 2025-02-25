@@ -3,7 +3,7 @@
  */
 
 export const LogError = (message: string) => {
-    return `\n\r\x1B[1;37m${message}`;
+    return `\x1B[1;31m${message}`;
 }
 
 export const LogInfo = (message: string) => {
