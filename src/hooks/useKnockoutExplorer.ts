@@ -3,11 +3,14 @@ import { createUri } from "Common/UrlUtility";
 import { DATA_EXPLORER_RPC_VERSION } from "Contracts/DataExplorerMessagesContract";
 import { FabricMessageTypes } from "Contracts/FabricMessageTypes";
 import {
+  ArtifactConnectionInfo,
   CosmosDbArtifactType,
   FABRIC_RPC_VERSION,
   FabricMessageV2,
-  FabricNativeDatabaseConnectionInfo,
+  FabricMessageV3,
+  InitializeMessageV3,
 } from "Contracts/FabricMessagesContract";
+import { useDialog } from "Explorer/Controls/Dialog";
 import Explorer from "Explorer/Explorer";
 import { useDataPlaneRbac } from "Explorer/Panes/SettingsPane/SettingsPane";
 import { useSelectedNode } from "Explorer/useSelectedNode";
@@ -49,7 +52,7 @@ import {
 } from "../Platform/Hosted/HostedUtils";
 import { extractFeatures } from "../Platform/Hosted/extractFeatures";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
-import { Node, PortalEnv, updateUserContext, userContext } from "../UserContext";
+import { FabricArtifactInfo, Node, PortalEnv, updateUserContext, userContext } from "../UserContext";
 import {
   acquireMsalTokenForAccount,
   acquireTokenWithMsal,
@@ -109,7 +112,7 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
 
 async function configureFabric(): Promise<Explorer> {
   // These are the versions of Fabric that Data Explorer supports.
-  const SUPPORTED_FABRIC_VERSIONS = [FABRIC_RPC_VERSION];
+  const SUPPORTED_FABRIC_VERSIONS = ["2", FABRIC_RPC_VERSION];
 
   let firstContainerOpened = false;
   let explorer: Explorer;
@@ -125,7 +128,7 @@ async function configureFabric(): Promise<Explorer> {
           return;
         }
 
-        const data: FabricMessageV2 = event.data?.data;
+        const data: FabricMessageV2 | FabricMessageV3 = event.data?.data;
         if (!data) {
           return;
         }
@@ -134,30 +137,51 @@ async function configureFabric(): Promise<Explorer> {
           case "initialize": {
             const fabricVersion = data.version;
             if (!SUPPORTED_FABRIC_VERSIONS.includes(fabricVersion)) {
-              // TODO Surface error to user
+              // TODO Surface error to user and log to telemetry
+              useDialog
+                .getState()
+                .showOkModalDialog("Unsupported Fabric version", `Unsupported Fabric version: ${fabricVersion}`);
+              Logger.logError(`Unsupported Fabric version: ${fabricVersion}`, "Explorer/configureFabric");
               console.error(`Unsupported Fabric version: ${fabricVersion}`);
               return;
             }
 
-            // TODO: Default values points to MIRRORED. This is for old fabric clients to explitly settings these values
-            data.message.artifactType = data.message.artifactType ?? CosmosDbArtifactType.MIRRORED;
-            data.message.isReadOnly = data.message.isReadOnly ?? true;
+            if (fabricVersion === "2") {
+              // ----------------- TODO: Remove this when FabricMessageV2 is deprecated -----------------
+              const initializationMessage = data.message as {
+                connectionId: string;
+                isVisible: boolean;
+              };
 
-            explorer = createExplorerFabric(data.message);
-
-            if (data.message.artifactType === CosmosDbArtifactType.MIRRORED) {
-              // Do not show Home tab for Mirrored
-              useTabs.getState().closeReactTab(ReactTabKind.Home);
+              explorer = createExplorerFabricLegacy(initializationMessage, data.version);
               await scheduleRefreshDatabaseResourceToken(true);
+              resolve(explorer);
+              await explorer.refreshAllDatabases();
+              if (userContext.fabricContext.isVisible) {
+                firstContainerOpened = true;
+                openFirstContainer(explorer, userContext.fabricContext.databaseName);
+              }
+              // -----------------------------------------------------------------------------------------
+            } else if (fabricVersion === FABRIC_RPC_VERSION) {
+              const initializationMessage = data.message as InitializeMessageV3<CosmosDbArtifactType>;
+              explorer = createExplorerFabric(initializationMessage, data.version);
+
+              if (initializationMessage.artifactType === CosmosDbArtifactType.MIRRORED_KEY) {
+                // Do not show Home tab for Mirrored
+                useTabs.getState().closeReactTab(ReactTabKind.Home);
+                await scheduleRefreshDatabaseResourceToken(true);
+              }
+
+              resolve(explorer);
+              await explorer.refreshAllDatabases();
+
+              const { databaseName } = userContext.fabricContext;
+              if (userContext.fabricContext.isVisible && databaseName) {
+                firstContainerOpened = true;
+                openFirstContainer(explorer, databaseName);
+              }
             }
 
-            resolve(explorer);
-            await explorer.refreshAllDatabases();
-
-            if (userContext.fabricContext.isVisible && userContext.fabricContext.mirroredConnectionInfo?.databaseId) {
-              firstContainerOpened = true;
-              openFirstContainer(explorer, userContext.fabricContext.mirroredConnectionInfo.databaseId);
-            }
             break;
           }
           case "newContainer":
@@ -170,13 +194,12 @@ async function configureFabric(): Promise<Explorer> {
           }
           case "explorerVisible": {
             userContext.fabricContext.isVisible = data.message.visible;
-            if (
-              userContext.fabricContext.isVisible &&
-              !firstContainerOpened &&
-              userContext?.fabricContext?.mirroredConnectionInfo?.databaseId !== undefined
-            ) {
-              firstContainerOpened = true;
-              openFirstContainer(explorer, userContext.fabricContext.mirroredConnectionInfo.databaseId);
+            if (userContext.fabricContext.isVisible && !firstContainerOpened) {
+              const { databaseName } = userContext.fabricContext;
+              if (databaseName !== undefined) {
+                firstContainerOpened = true;
+                openFirstContainer(explorer, databaseName);
+              }
             }
             break;
           }
@@ -431,25 +454,67 @@ function configureHostedWithResourceToken(config: ResourceToken): Explorer {
   return explorer;
 }
 
-const createExplorerFabric = (params: {
-  connectionId: string;
-  isVisible: boolean;
-  isReadOnly?: boolean;
-  artifactType?: CosmosDbArtifactType;
-  nativeConnectionInfo?: FabricNativeDatabaseConnectionInfo;
-}): Explorer => {
+/**
+ * Initialization for FabricMessageV2
+ * TODO: delete when FabricMessageV2 is deprecated
+ * @param params
+ * @returns
+ */
+function createExplorerFabricLegacy(
+  params: { connectionId: string; isVisible: boolean },
+  fabricClientRpcVersion: string,
+): Explorer {
+  const artifactInfo: FabricArtifactInfo[CosmosDbArtifactType.MIRRORED_KEY] = {
+    connectionId: params.connectionId,
+    resourceTokenInfo: undefined,
+  };
+
   updateUserContext({
     fabricContext: {
-      connectionId: params.connectionId,
-      mirroredConnectionInfo: undefined, // Set with resource token response
-      isReadOnly: params.isReadOnly,
+      fabricClientRpcVersion,
+      isReadOnly: true,
+      isVisible: params.isVisible ?? true,
+      databaseName: undefined,
+      artifactType: CosmosDbArtifactType.MIRRORED_KEY,
+      artifactInfo,
+    },
+    authType: AuthType.ConnectionString,
+    databaseAccount: {
+      id: "",
+      location: "",
+      type: "",
+      name: "Mounted",
+      kind: AccountKind.Default,
+      properties: {
+        documentEndpoint: undefined,
+      },
+    },
+  });
+  const explorer = new Explorer();
+  return explorer;
+}
+
+/**
+ * Initialization for FabricMessageV3 and above
+ * @param params
+ * @returns
+ */
+const createExplorerFabric = (
+  params: InitializeMessageV3<CosmosDbArtifactType>,
+  fabricClientRpcVersion: string,
+): Explorer => {
+  updateUserContext({
+    fabricContext: {
+      fabricClientRpcVersion,
+      databaseName: undefined,
       isVisible: params.isVisible,
+      isReadOnly: params.isReadOnly,
       artifactType: params.artifactType,
-      nativeConnectionInfo: params.nativeConnectionInfo,
+      artifactInfo: undefined,
     },
   });
 
-  if (params.artifactType === CosmosDbArtifactType.MIRRORED) {
+  if (params.artifactType === CosmosDbArtifactType.MIRRORED_KEY) {
     updateUserContext({
       authType: AuthType.ConnectionString, // TODO: will need its own type and Mirroring could be using AAD
       databaseAccount: {
@@ -462,8 +527,17 @@ const createExplorerFabric = (params: {
           documentEndpoint: undefined,
         },
       },
+      fabricContext: {
+        ...userContext.fabricContext,
+        artifactInfo: {
+          connectionId: (params.artifactConnectionInfo as ArtifactConnectionInfo[CosmosDbArtifactType.MIRRORED_KEY])
+            .connectionId,
+          resourceTokenInfo: undefined,
+        },
+      },
     });
   } else if (params.artifactType === CosmosDbArtifactType.NATIVE) {
+    const nativeParams = params as InitializeMessageV3<CosmosDbArtifactType.NATIVE>;
     // Make it behave like Hosted/AAD/RBAC
     updateUserContext({
       databaseAccount: {
@@ -473,14 +547,20 @@ const createExplorerFabric = (params: {
         name: "Native", // TODO: not used?
         kind: AccountKind.Default,
         properties: {
-          documentEndpoint: params.nativeConnectionInfo.accountEndpoint,
+          documentEndpoint: nativeParams.artifactConnectionInfo.accountEndpoint,
         },
       },
       authType: AuthType.AAD,
       dataPlaneRbacEnabled: true,
-      aadToken: params.nativeConnectionInfo.accessToken,
+      aadToken: nativeParams.artifactConnectionInfo.accessToken,
       masterKey: undefined,
+      fabricContext: {
+        ...userContext.fabricContext,
+        databaseName: nativeParams.artifactConnectionInfo.databaseName,
+      },
     });
+  } else if (params.artifactType === CosmosDbArtifactType.MIRRORED_AAD) {
+    throw new Error("Mirrored AAD is not supported");
   }
 
   const explorer = new Explorer();

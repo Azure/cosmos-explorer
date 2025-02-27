@@ -1,7 +1,8 @@
+import { CosmosDbArtifactType } from "Contracts/FabricMessagesContract";
 import { isFabricMirrored, isFabricNative } from "Platform/Fabric/FabricUtil";
 import { AuthType } from "../../AuthType";
 import * as DataModels from "../../Contracts/DataModels";
-import { userContext } from "../../UserContext";
+import { FabricArtifactInfo, userContext } from "../../UserContext";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { listCassandraKeyspaces } from "../../Utils/arm/generatedClients/cosmos/cassandraResources";
 import { listGremlinDatabases } from "../../Utils/arm/generatedClients/cosmos/gremlinResources";
@@ -14,8 +15,13 @@ export async function readDatabases(): Promise<DataModels.Database[]> {
   let databases: DataModels.Database[];
   const clearMessage = logConsoleProgress(`Querying databases`);
 
-  if (isFabricMirrored() && userContext.fabricContext?.mirroredConnectionInfo.resourceTokens) {
-    const tokensData = userContext.fabricContext.mirroredConnectionInfo;
+  if (
+    isFabricMirrored() &&
+    (userContext.fabricContext?.artifactInfo as FabricArtifactInfo[CosmosDbArtifactType.MIRRORED_KEY]).resourceTokenInfo
+      .resourceTokens
+  ) {
+    const tokensData = (userContext.fabricContext.artifactInfo as FabricArtifactInfo[CosmosDbArtifactType.MIRRORED_KEY])
+      .resourceTokenInfo;
 
     const databaseIdsSet = new Set<string>(); // databaseId
 
@@ -46,8 +52,8 @@ export async function readDatabases(): Promise<DataModels.Database[]> {
       }));
     clearMessage();
     return databases;
-  } else if (isFabricNative() && userContext.fabricContext?.nativeConnectionInfo.databaseName) {
-    const databaseId = userContext.fabricContext.nativeConnectionInfo.databaseName;
+  } else if (isFabricNative() && userContext.fabricContext?.databaseName) {
+    const databaseId = userContext.fabricContext.databaseName;
     databases = [
       {
         _rid: "",

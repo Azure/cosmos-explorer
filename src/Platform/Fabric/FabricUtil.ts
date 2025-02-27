@@ -1,7 +1,7 @@
 import { sendCachedDataMessage } from "Common/MessageHandler";
 import { configContext, Platform } from "ConfigContext";
 import { FabricMessageTypes } from "Contracts/FabricMessageTypes";
-import { CosmosDbArtifactType, FabricMirroredDatabaseConnectionInfo } from "Contracts/FabricMessagesContract";
+import { CosmosDbArtifactType, ResourceTokenInfo } from "Contracts/FabricMessagesContract";
 import { updateUserContext, userContext } from "UserContext";
 import { logConsoleError } from "Utils/NotificationConsoleUtils";
 
@@ -19,21 +19,25 @@ const requestDatabaseResourceTokens = async (): Promise<void> => {
 
   lastRequestTimestamp = Date.now();
   try {
-    const fabricDatabaseConnectionInfo = await sendCachedDataMessage<FabricMirroredDatabaseConnectionInfo>(
+    const resourceTokenInfo = await sendCachedDataMessage<ResourceTokenInfo>(
       FabricMessageTypes.GetAllResourceTokens,
       [],
-      userContext.fabricContext.connectionId,
+      userContext.fabricContext.artifactInfo.connectionId,
     );
 
     if (!userContext.databaseAccount.properties.documentEndpoint) {
-      userContext.databaseAccount.properties.documentEndpoint = fabricDatabaseConnectionInfo.endpoint;
+      userContext.databaseAccount.properties.documentEndpoint = resourceTokenInfo.endpoint;
     }
 
     updateUserContext({
       fabricContext: {
         ...userContext.fabricContext,
-        mirroredConnectionInfo: fabricDatabaseConnectionInfo,
-        isReadOnly: true,
+        databaseName: resourceTokenInfo.databaseId,
+        artifactInfo: {
+          ...userContext.fabricContext.artifactInfo,
+          resourceTokenInfo,
+        },
+        isReadOnly: resourceTokenInfo.isReadOnly ?? userContext.fabricContext.isReadOnly,
       },
       databaseAccount: { ...userContext.databaseAccount },
     });
@@ -75,7 +79,8 @@ export const checkDatabaseResourceTokensValidity = (tokenTimestamp: number): voi
 
 export const isFabricMirrored = (): boolean =>
   configContext.platform === Platform.Fabric &&
-  userContext.fabricContext?.artifactType === CosmosDbArtifactType.MIRRORED;
+  (userContext.fabricContext?.artifactType === CosmosDbArtifactType.MIRRORED_KEY ||
+    userContext.fabricContext?.artifactType === CosmosDbArtifactType.MIRRORED_AAD);
 
 export const isFabricNative = (): boolean =>
   configContext.platform === Platform.Fabric && userContext.fabricContext?.artifactType === CosmosDbArtifactType.NATIVE;

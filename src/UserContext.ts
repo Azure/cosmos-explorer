@@ -1,8 +1,4 @@
-import {
-  CosmosDbArtifactType,
-  FabricMirroredDatabaseConnectionInfo,
-  FabricNativeDatabaseConnectionInfo,
-} from "Contracts/FabricMessagesContract";
+import { CosmosDbArtifactType, ResourceTokenInfo } from "Contracts/FabricMessagesContract";
 import { ParsedResourceTokenConnectionString } from "Platform/Hosted/Helpers/ResourceTokenUtils";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { traceOpen } from "Shared/Telemetry/TelemetryProcessor";
@@ -51,13 +47,21 @@ export interface VCoreMongoConnectionParams {
   connectionString: string;
 }
 
-export interface FabricContext {
-  connectionId: string;
+export interface FabricArtifactInfo {
+  [CosmosDbArtifactType.MIRRORED_KEY]: {
+    connectionId: string;
+    resourceTokenInfo: ResourceTokenInfo | undefined;
+  };
+  [CosmosDbArtifactType.MIRRORED_AAD]: undefined;
+  [CosmosDbArtifactType.NATIVE]: undefined;
+}
+export interface FabricContext<T extends CosmosDbArtifactType> {
+  fabricClientRpcVersion: string;
   isReadOnly: boolean;
   isVisible: boolean;
+  databaseName: string;
   artifactType: CosmosDbArtifactType;
-  mirroredConnectionInfo: FabricMirroredDatabaseConnectionInfo | undefined;
-  nativeConnectionInfo: FabricNativeDatabaseConnectionInfo | undefined;
+  artifactInfo: FabricArtifactInfo[T];
 }
 
 export type AdminFeedbackControlPolicy =
@@ -76,7 +80,7 @@ export type AdminFeedbackPolicySettings = {
 };
 
 export interface UserContext {
-  readonly fabricContext?: FabricContext;
+  readonly fabricContext?: FabricContext<CosmosDbArtifactType>;
   readonly authType?: AuthType;
   readonly masterKey?: string;
   readonly subscriptionId?: string;

@@ -1,9 +1,10 @@
 import { ContainerResponse } from "@azure/cosmos";
 import { Queries } from "Common/Constants";
+import { CosmosDbArtifactType } from "Contracts/FabricMessagesContract";
 import { isFabricMirrored } from "Platform/Fabric/FabricUtil";
 import { AuthType } from "../../AuthType";
 import * as DataModels from "../../Contracts/DataModels";
-import { userContext } from "../../UserContext";
+import { FabricArtifactInfo, userContext } from "../../UserContext";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { listCassandraTables } from "../../Utils/arm/generatedClients/cosmos/cassandraResources";
 import { listGremlinGraphs } from "../../Utils/arm/generatedClients/cosmos/gremlinResources";
@@ -16,11 +17,13 @@ import { handleError } from "../ErrorHandlingUtils";
 export async function readCollections(databaseId: string): Promise<DataModels.Collection[]> {
   const clearMessage = logConsoleProgress(`Querying containers for database ${databaseId}`);
 
-  if (isFabricMirrored() && userContext.fabricContext?.mirroredConnectionInfo.databaseId === databaseId) {
+  if (isFabricMirrored() && userContext.fabricContext?.databaseName === databaseId) {
     const collections: DataModels.Collection[] = [];
     const promises: Promise<ContainerResponse>[] = [];
 
-    for (const collectionResourceId in userContext.fabricContext.mirroredConnectionInfo.resourceTokens) {
+    for (const collectionResourceId in (
+      userContext.fabricContext.artifactInfo as FabricArtifactInfo[CosmosDbArtifactType.MIRRORED_KEY]
+    ).resourceTokenInfo.resourceTokens) {
       // Dictionary key looks like this: dbs/SampleDB/colls/Container
       const resourceIdObj = collectionResourceId.split("/");
       const tokenDatabaseId = resourceIdObj[1];

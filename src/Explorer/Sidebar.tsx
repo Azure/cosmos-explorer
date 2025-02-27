@@ -133,9 +133,7 @@ const GlobalCommands: React.FC<GlobalCommandsProps> = ({ explorer }) => {
         label: `New ${getCollectionName()}`,
         icon: <Add16Regular />,
         onClick: () => {
-          const databaseId = isFabricNative()
-            ? userContext.fabricContext?.nativeConnectionInfo?.databaseName
-            : undefined;
+          const databaseId = isFabricNative() ? userContext.fabricContext?.databaseName : undefined;
           explorer.onNewCollectionClicked({ databaseId });
         },
         keyboardAction: KeyboardAction.NEW_COLLECTION,

@@ -557,7 +557,9 @@ describe("createDatabaseTreeNodes", () => {
           () => {
             updateConfigContext({ platform: Platform.Fabric });
             updateUserContext({
-              fabricContext: { artifactType: CosmosDbArtifactType.MIRRORED } as FabricContext,
+              fabricContext: {
+                artifactType: CosmosDbArtifactType.MIRRORED_KEY,
+              } as FabricContext<CosmosDbArtifactType>,
             });
           },
         ],

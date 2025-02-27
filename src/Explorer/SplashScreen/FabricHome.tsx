@@ -130,9 +130,7 @@ export const FabricHomeScreen: React.FC<SplashScreenProps> = (props: SplashScree
         description: "Create a destination container to store your data",
         icon: <DocumentAddRegular />,
         onClick: () => {
-          const databaseId = isFabricNative()
-            ? userContext.fabricContext?.nativeConnectionInfo?.databaseName
-            : undefined;
+          const databaseId = isFabricNative() ? userContext.fabricContext?.databaseName : undefined;
           props.explorer.onNewCollectionClicked({ databaseId });
         },
       },

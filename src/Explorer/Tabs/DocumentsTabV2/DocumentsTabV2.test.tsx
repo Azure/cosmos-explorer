@@ -342,12 +342,15 @@ describe("Documents tab (noSql API)", () => {
     updateConfigContext({ platform: Platform.Fabric });
     updateUserContext({
       fabricContext: {
-        connectionId: "test",
-        mirroredConnectionInfo: undefined,
-        nativeConnectionInfo: undefined,
-        artifactType: CosmosDbArtifactType.MIRRORED,
+        databaseName: "database",
+        artifactInfo: {
+          connectionId: "test",
+          resourceTokenInfo: undefined,
+        },
+        artifactType: CosmosDbArtifactType.MIRRORED_KEY,
         isReadOnly: true,
         isVisible: true,
+        fabricClientRpcVersion: "rpcVersion",
       },
     });
 

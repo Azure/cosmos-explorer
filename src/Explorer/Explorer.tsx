@@ -43,7 +43,7 @@ import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../Utils/NotificationConsoleUtils";
 import { useSidePanel } from "../hooks/useSidePanel";
-import { useTabs } from "../hooks/useTabs";
+import { ReactTabKind, useTabs } from "../hooks/useTabs";
 import "./ComponentRegisterer";
 import { DialogProps, useDialog } from "./Controls/Dialog";
 import { GalleryTab as GalleryTabKind } from "./Controls/NotebookGallery/GalleryViewerComponent";
@@ -185,6 +185,10 @@ export default class Explorer {
 
     if (userContext.features.notebookBasePath) {
       useNotebook.getState().setNotebookBasePath(userContext.features.notebookBasePath);
+    }
+
+    if (isFabricMirrored()) {
+      useTabs.getState().closeReactTab(ReactTabKind.Home);
     }
 
     this.refreshExplorer();
