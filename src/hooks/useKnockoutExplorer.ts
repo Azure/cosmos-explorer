@@ -21,7 +21,7 @@ import {
   readSubComponentState,
 } from "Shared/AppStatePersistenceUtility";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
-import { useNewPortalBackendEndpoint } from "Utils/EndpointUtils";
+import { isDataplaneRbacSupported } from "Utils/APITypeUtils";
 import { logConsoleError } from "Utils/NotificationConsoleUtils";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
@@ -220,6 +220,11 @@ async function configureFabric(): Promise<Explorer> {
 }
 
 const openFirstContainer = async (explorer: Explorer, databaseName: string, collectionName?: string) => {
+  if (useTabs.getState().openedTabs.length > 0) {
+    // Don't open any tabs if there are already tabs open
+    return;
+  }
+
   // Expand database first
   databaseName = sessionStorage.getItem("openDatabaseName") ?? databaseName;
   const database = useDatabases.getState().databases.find((db) => db.id() === databaseName);
@@ -334,7 +339,7 @@ async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
     );
     if (!userContext.features.enableAadDataPlane) {
       Logger.logInfo(`AAD Feature flag is not enabled for account ${account.name}`, "Explorer/configureHostedWithAAD");
-      if (userContext.apiType === "SQL") {
+      if (isDataplaneRbacSupported(userContext.apiType)) {
         if (LocalStorageUtility.hasItem(StorageKey.DataPlaneRbacEnabled)) {
           const isDataPlaneRbacSetting = LocalStorageUtility.getEntryString(StorageKey.DataPlaneRbacEnabled);
           Logger.logInfo(
@@ -670,20 +675,12 @@ async function configurePortal(): Promise<Explorer> {
         const inputs = message?.inputs;
         const openAction = message?.openAction;
         if (inputs) {
-          if (
-            configContext.BACKEND_ENDPOINT &&
-            configContext.platform === Platform.Portal &&
-            process.env.NODE_ENV === "development"
-          ) {
-            inputs.extensionEndpoint = configContext.PROXY_PATH;
-          }
-
           updateContextsFromPortalMessage(inputs);
 
           const { databaseAccount: account, subscriptionId, resourceGroup } = userContext;
 
           let dataPlaneRbacEnabled;
-          if (userContext.apiType === "SQL") {
+          if (isDataplaneRbacSupported(userContext.apiType)) {
             if (LocalStorageUtility.hasItem(StorageKey.DataPlaneRbacEnabled)) {
               const isDataPlaneRbacSetting = LocalStorageUtility.getEntryString(StorageKey.DataPlaneRbacEnabled);
               Logger.logInfo(
@@ -802,18 +799,17 @@ function updateAADEndpoints(portalEnv: PortalEnv) {
 
 function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
   if (
-    configContext.BACKEND_ENDPOINT &&
+    configContext.PORTAL_BACKEND_ENDPOINT &&
     configContext.platform === Platform.Portal &&
     process.env.NODE_ENV === "development"
   ) {
-    inputs.extensionEndpoint = configContext.PROXY_PATH;
+    inputs.portalBackendEndpoint = configContext.PROXY_PATH;
   }
 
   const authorizationToken = inputs.authorizationToken || "";
   const databaseAccount = inputs.databaseAccount;
 
   updateConfigContext({
-    BACKEND_ENDPOINT: inputs.extensionEndpoint || configContext.BACKEND_ENDPOINT,
     ARM_ENDPOINT: normalizeArmEndpoint(inputs.csmEndpoint || configContext.ARM_ENDPOINT),
     MONGO_PROXY_ENDPOINT: inputs.mongoProxyEndpoint,
     CASSANDRA_PROXY_ENDPOINT: inputs.cassandraProxyEndpoint,
@@ -916,17 +912,7 @@ async function updateContextForSampleData(explorer: Explorer): Promise<void> {
     return;
   }
 
-  let url: string;
-  if (useNewPortalBackendEndpoint(Constants.BackendApi.SampleData)) {
-    url = createUri(configContext.PORTAL_BACKEND_ENDPOINT, "/api/sampledata");
-  } else {
-    const sampleDatabaseEndpoint = useQueryCopilot.getState().copilotUserDBEnabled
-      ? `/api/tokens/sampledataconnection/v2`
-      : `/api/tokens/sampledataconnection`;
-
-    url = createUri(`${configContext.BACKEND_ENDPOINT}`, sampleDatabaseEndpoint);
-  }
-
+  const url: string = createUri(configContext.PORTAL_BACKEND_ENDPOINT, "/api/sampledata");
   const authorizationHeader = getAuthorizationHeader();
   const headers = { [authorizationHeader.header]: authorizationHeader.token };
 
@@ -942,7 +928,7 @@ async function updateContextForSampleData(explorer: Explorer): Promise<void> {
   const sampleDataConnectionInfo = parseResourceTokenConnectionString(data.connectionString);
   updateUserContext({ sampleDataConnectionInfo });
 
-  await explorer.refreshSampleData();
+  explorer.refreshSampleData();
 }
 
 interface SampledataconnectionResponse {

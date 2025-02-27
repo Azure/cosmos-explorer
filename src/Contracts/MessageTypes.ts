@@ -41,6 +41,7 @@ export enum MessageTypes {
   OpenPostgreSQLPasswordReset,
   OpenPostgresNetworkingBlade,
   OpenCosmosDBNetworkingBlade,
+  DisplayNPSSurvey, // unused
   OpenVCoreMongoNetworkingBlade,
   OpenVCoreMongoConnectionStringsBlade,
   GetAuthorizationToken, // unused. Can be removed if the portal uses the same list of enums.

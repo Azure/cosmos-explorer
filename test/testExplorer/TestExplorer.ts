@@ -39,7 +39,6 @@ const initTestExplorer = async (): Promise<void> => {
       csmEndpoint: "https://management.azure.com",
       dnsSuffix: "documents.azure.com",
       serverId: "prod1",
-      extensionEndpoint: "/proxy",
       portalBackendEndpoint: "https://cdb-ms-mpac-pbe.cosmos.azure.com",
       mongoProxyEndpoint: "https://cdb-ms-mpac-mp.cosmos.azure.com",
       cassandraProxyEndpoint: "https://cdb-ms-mpac-cp.cosmos.azure.com",
