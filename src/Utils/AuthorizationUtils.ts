@@ -46,14 +46,14 @@ export function decryptJWTToken(token: string) {
   return JSON.parse(tokenPayload);
 }
 
-export async function getMsalInstance() {
+export async function getMsalInstance(clientId: string = "203f1145-856a-4232-83d4-a43568fba23d"){
   const msalConfig: msal.Configuration = {
     cache: {
       cacheLocation: "localStorage",
     },
     auth: {
       authority: `${configContext.AAD_ENDPOINT}organizations`,
-      clientId: "203f1145-856a-4232-83d4-a43568fba23d",
+      clientId: clientId,
     },
   };
 
@@ -68,7 +68,8 @@ export async function getMsalInstance() {
 export async function acquireMsalTokenForAccount(
   account: DatabaseAccount,
   silent: boolean = false,
-  user_hint?: string,
+  clientId: string = "203f1145-856a-4232-83d4-a43568fba23d",
+  user_hint?: string
 ) {
   if (userContext.databaseAccount.properties?.documentEndpoint === undefined) {
     throw new Error("Database account has no document endpoint defined");
@@ -77,7 +78,7 @@ export async function acquireMsalTokenForAccount(
     /\/+$/,
     "/.default",
   );
-  const msalInstance = await getMsalInstance();
+  const msalInstance = await getMsalInstance(clientId);
   const knownAccounts = msalInstance.getAllAccounts();
   // If user_hint is provided, we will try to use it to find the account.
   // If no account is found, we will use the current active account or first account in the list.
