@@ -13,7 +13,7 @@ import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandBu
 import { NotebookTerminalComponent } from "../Controls/Notebook/NotebookTerminalComponent";
 import Explorer from "../Explorer";
 import { useNotebook } from "../Notebook/useNotebook";
-import { CloudShellTerminalComponent } from "./CloudShellTerminalComponent";
+import { CloudShellTerminalComponent } from "./CloudShellTab/CloudShellTabComponent";
 import TabsBase from "./TabsBase";
 
 

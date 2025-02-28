@@ -17,17 +17,7 @@ export const validateUserSettings = (userSettings: Settings) => {
     }
 }
 
-// https://stackoverflow.com/q/38598280 (Is it possible to wrap a function and retain its types?)
-export const trackedApiCall = <T extends Array<any>, U>(apiCall: (...args: T) => Promise<U>, name: string) => {
-    return async (...args: T): Promise<U> => {
-        const startTime = Date.now();
-        const result = await apiCall(...args);
-        const endTime = Date.now();
-        return result;
-    };
-};
-
-export const getUserRegion = trackedApiCall(async (subscriptionId: string, resourceGroup: string, accountName: string) => {
+export const getUserRegion = async (subscriptionId: string, resourceGroup: string, accountName: string) => {
     return await armRequest({
         host: configContext.ARM_ENDPOINT,
         path: `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}`,
@@ -35,9 +25,9 @@ export const getUserRegion = trackedApiCall(async (subscriptionId: string, resou
         apiVersion: "2022-12-01"
       });
 
-}, "getUserRegion");
+};
 
-export const getUserSettings = trackedApiCall(async (): Promise<Settings> => {
+export const getUserSettings = async (): Promise<Settings> => {
     const resp = await armRequest<any>({
         host: configContext.ARM_ENDPOINT,
         path: `/providers/Microsoft.Portal/userSettings/cloudconsole`,
@@ -53,9 +43,9 @@ export const getUserSettings = trackedApiCall(async (): Promise<Settings> => {
         sessionType: resp?.properties?.sessionType,
         osType: resp?.properties?.preferredOsType
     };
-}, "getUserSettings");
+};
 
-export const putEphemeralUserSettings = trackedApiCall(async (userSubscriptionId: string, userRegion: string) => {
+export const putEphemeralUserSettings = async (userSubscriptionId: string, userRegion: string) => {
     const ephemeralSettings = {
         properties: {
             preferredOsType: OsType.Linux,
@@ -80,7 +70,7 @@ export const putEphemeralUserSettings = trackedApiCall(async (userSubscriptionId
 
     return resp;
 
-}, "putEphemeralUserSettings");
+};
 
 export const verifyCloudshellProviderRegistration = async(subscriptionId: string) => {
     return await armRequest({
@@ -106,7 +96,7 @@ export const registerCloudShellProvider = async (subscriptionId: string) => {
       });
 };
 
-export const provisionConsole = trackedApiCall(async (subscriptionId: string, location: string): Promise<ProvisionConsoleResponse> => {
+export const provisionConsole = async (subscriptionId: string, location: string): Promise<ProvisionConsoleResponse> => {
     const data = {
         properties: {
             osType: OsType.Linux
@@ -124,9 +114,9 @@ export const provisionConsole = trackedApiCall(async (subscriptionId: string, lo
         },
         body: data,
       });
-}, "provisionConsole");
+};
 
-export const connectTerminal = trackedApiCall(async (consoleUri: string, size: { rows: number, cols: number }): Promise<ConnectTerminalResponse> => {
+export const connectTerminal = async (consoleUri: string, size: { rows: number, cols: number }): Promise<ConnectTerminalResponse> => {
     const targetUri = consoleUri + `/terminals?cols=${size.cols}&rows=${size.rows}&version=2019-01-01&shell=bash`;
     const resp = await fetch(targetUri, {
         method: "post",
@@ -141,9 +131,9 @@ export const connectTerminal = trackedApiCall(async (consoleUri: string, size: {
         body: "{}" // empty body is necessary
     });
     return resp.json();
-}, "connectTerminal");
+};
 
-export const authorizeSession = trackedApiCall(async (consoleUri: string): Promise<Authorization> => {
+export const authorizeSession = async (consoleUri: string): Promise<Authorization> => {
     const targetUri = consoleUri + "/authorize";
     const resp = await fetch(targetUri, {
         method: "post",
@@ -156,7 +146,7 @@ export const authorizeSession = trackedApiCall(async (consoleUri: string): Promi
         body: "{}" // empty body is necessary
     });
     return resp.json();
-}, "authorizeSession");
+};
 
 export const getLocale = () => {
     const langLocale = navigator.language;

@@ -154,16 +154,17 @@ const provisionCloudShellSession = async(
 ): Promise<{ socketUri?: string; provisionConsoleResponse?: any; targetUri?: string }> => {
     return new Promise((resolve, reject) => {
         // Show consent message inside the terminal
-        xterminal.writeln(`\x1B[1;33m⚠️  Are you agreeing to continue with cloudshell terminal at ${resolvedRegion}.\x1B[0m`);
+        xterminal.writeln(`\x1B[1;33m⚠️  Are you agreeing to continue with CloudShell terminal at ${resolvedRegion}.\x1B[0m`);
         xterminal.writeln("\x1B[1;37mPress 'Y' to continue or 'N' to exit.\x1B[0m");
 
+        xterminal.focus();
         // Listen for user input
         const handleKeyPress = xterminal.onKey(async ({ key }: { key: string }) => {
             // Remove the event listener after first execution
             handleKeyPress.dispose();
 
             if (key.toLowerCase() === "y") {
-                xterminal.writeln("\x1B[1;32m✅ Consent given. Terminal ready!\x1B[0m");
+                xterminal.writeln("\x1B[1;32mConsent given. Requesting CloudShell. !\x1B[0m");
 
                 try {
                     await putEphemeralUserSettings(userContext.subscriptionId, resolvedRegion);
@@ -198,8 +199,7 @@ const provisionCloudShellSession = async(
                     return reject(new Error("Failed to provision console."));
                 }
             
-                xterminal.writeln(LogInfo("Connecting to cloudshell"));
-                xterminal.writeln(LogInfo("Please wait..."));
+                xterminal.writeln(LogInfo("Connecting to Cloudshell Terminal...\n\r"));
                 // connect the terminal
                 let connectTerminalResponse;
                 try {
@@ -226,7 +226,7 @@ const provisionCloudShellSession = async(
 
             } else if (key.toLowerCase() === "n") {
 
-            xterminal.writeln("\x1B[1;31m❌ Consent denied. Exiting...\x1B[0m");
+            xterminal.writeln("\x1B[1;31m Consent denied. Exiting...\x1B[0m");
                 setTimeout(() => xterminal.dispose(), 2000); // Close terminal after 2 sec
                 return resolve({});
             }
