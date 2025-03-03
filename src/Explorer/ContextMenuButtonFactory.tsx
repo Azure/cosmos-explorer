@@ -1,7 +1,7 @@
 import { configContext, Platform } from "ConfigContext";
 import { TreeNodeMenuItem } from "Explorer/Controls/TreeComponent/TreeNodeComponent";
 import { useDatabases } from "Explorer/useDatabases";
-import { isFabricMirrored, isFabricNative } from "Platform/Fabric/FabricUtil";
+import { isFabric, isFabricNative } from "Platform/Fabric/FabricUtil";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { traceOpen } from "Shared/Telemetry/TelemetryProcessor";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
@@ -42,7 +42,7 @@ export interface DatabaseContextMenuButtonParams {
  * New resource tree (in ReactJS)
  */
 export const createDatabaseContextMenu = (container: Explorer, databaseId: string): TreeNodeMenuItem[] => {
-  if (isFabricMirrored() && userContext.fabricContext?.isReadOnly) {
+  if (isFabric() && userContext.fabricContext?.isReadOnly) {
     return undefined;
   }
 

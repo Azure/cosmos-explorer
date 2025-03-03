@@ -1,7 +1,7 @@
 import { ContainerResponse } from "@azure/cosmos";
 import { Queries } from "Common/Constants";
 import { CosmosDbArtifactType } from "Contracts/FabricMessagesContract";
-import { isFabricMirrored } from "Platform/Fabric/FabricUtil";
+import { isFabric, isFabricMirroredKey } from "Platform/Fabric/FabricUtil";
 import { AuthType } from "../../AuthType";
 import * as DataModels from "../../Contracts/DataModels";
 import { FabricArtifactInfo, userContext } from "../../UserContext";
@@ -17,7 +17,7 @@ import { handleError } from "../ErrorHandlingUtils";
 export async function readCollections(databaseId: string): Promise<DataModels.Collection[]> {
   const clearMessage = logConsoleProgress(`Querying containers for database ${databaseId}`);
 
-  if (isFabricMirrored() && userContext.fabricContext?.databaseName === databaseId) {
+  if (isFabricMirroredKey() && userContext.fabricContext?.databaseName === databaseId) {
     const collections: DataModels.Collection[] = [];
     const promises: Promise<ContainerResponse>[] = [];
 
@@ -55,7 +55,8 @@ export async function readCollections(databaseId: string): Promise<DataModels.Co
     if (
       userContext.authType === AuthType.AAD &&
       !userContext.features.enableSDKoperations &&
-      userContext.apiType !== "Tables"
+      userContext.apiType !== "Tables" &&
+      !isFabric()
     ) {
       return await readCollectionsWithARM(databaseId);
     }

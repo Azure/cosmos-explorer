@@ -1,5 +1,5 @@
 import { CosmosDbArtifactType } from "Contracts/FabricMessagesContract";
-import { isFabricMirrored, isFabricNative } from "Platform/Fabric/FabricUtil";
+import { isFabric, isFabricMirroredKey, isFabricNative } from "Platform/Fabric/FabricUtil";
 import { AuthType } from "../../AuthType";
 import * as DataModels from "../../Contracts/DataModels";
 import { FabricArtifactInfo, userContext } from "../../UserContext";
@@ -16,7 +16,7 @@ export async function readDatabases(): Promise<DataModels.Database[]> {
   const clearMessage = logConsoleProgress(`Querying databases`);
 
   if (
-    isFabricMirrored() &&
+    isFabricMirroredKey() &&
     (userContext.fabricContext?.artifactInfo as FabricArtifactInfo[CosmosDbArtifactType.MIRRORED_KEY]).resourceTokenInfo
       .resourceTokens
   ) {
@@ -72,7 +72,8 @@ export async function readDatabases(): Promise<DataModels.Database[]> {
     if (
       userContext.authType === AuthType.AAD &&
       !userContext.features.enableSDKoperations &&
-      userContext.apiType !== "Tables"
+      userContext.apiType !== "Tables" &&
+      !isFabric()
     ) {
       databases = await readDatabasesWithARM();
     } else {

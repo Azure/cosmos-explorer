@@ -21,7 +21,7 @@ import { CosmosFluentProvider, cosmosShorthands, tokens } from "Explorer/Theme/T
 import { ResourceTree } from "Explorer/Tree/ResourceTree";
 import { useDatabases } from "Explorer/useDatabases";
 import { KeyboardAction, KeyboardActionGroup, KeyboardActionHandler, useKeyboardActionGroup } from "KeyboardShortcuts";
-import { isFabricMirrored, isFabricNative } from "Platform/Fabric/FabricUtil";
+import { isFabric, isFabricMirrored, isFabricNative } from "Platform/Fabric/FabricUtil";
 import { userContext } from "UserContext";
 import { getCollectionName, getDatabaseName } from "Utils/APITypeUtils";
 import { Allotment, AllotmentHandle } from "allotment";
@@ -123,7 +123,11 @@ const GlobalCommands: React.FC<GlobalCommandsProps> = ({ explorer }) => {
   const primaryFocusableRef = useRef<HTMLButtonElement>(null);
 
   const actions = useMemo<GlobalCommand[]>(() => {
-    if (isFabricMirrored() || userContext.apiType === "Postgres" || userContext.apiType === "VCoreMongo") {
+    if (
+      (isFabric() && userContext.fabricContext?.isReadOnly) ||
+      userContext.apiType === "Postgres" ||
+      userContext.apiType === "VCoreMongo"
+    ) {
       // No Global Commands for these API types.
       // In fact, no sidebar for Postgres or VCoreMongo at all, but just in case, we check here anyway.
       return [];

@@ -54,7 +54,7 @@ export enum ReactTabKind {
 export const useTabs: UseStore<TabsState> = create((set, get) => ({
   openedTabs: [] as TabsBase[],
   openedReactTabs: [ReactTabKind.Home],
-  activeTab: undefined,
+  activeTab: undefined as TabsBase,
   activeReactTab: ReactTabKind.Home,
   queryCopilotTabInitialInput: "",
   isTabExecuting: false,

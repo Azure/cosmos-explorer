@@ -20,7 +20,6 @@ import {
 import { queryDocuments } from "Common/dataAccess/queryDocuments";
 import { readDocument } from "Common/dataAccess/readDocument";
 import { updateDocument } from "Common/dataAccess/updateDocument";
-import { Platform, configContext } from "ConfigContext";
 import { ActionType, OpenCollectionTab, TabKind } from "Contracts/ActionContracts";
 import { CommandButtonComponentProps } from "Explorer/Controls/CommandButton/CommandButtonComponent";
 import { useDialog } from "Explorer/Controls/Dialog";
@@ -43,6 +42,7 @@ import { usePrevious } from "Explorer/Tabs/DocumentsTabV2/SelectionHelper";
 import { CosmosFluentProvider, LayoutConstants, cosmosShorthands, tokens } from "Explorer/Theme/ThemeUtil";
 import { useSelectedNode } from "Explorer/useSelectedNode";
 import { KeyboardAction, KeyboardActionGroup, useKeyboardActionGroup } from "KeyboardShortcuts";
+import { isFabric } from "Platform/Fabric/FabricUtil";
 import { QueryConstants } from "Shared/Constants";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
@@ -344,7 +344,7 @@ export const getTabsButtons = ({
   onRevertExistingDocumentClick,
   onDeleteExistingDocumentsClick,
 }: ButtonsDependencies): CommandButtonComponentProps[] => {
-  if (configContext.platform === Platform.Fabric && userContext.fabricContext?.isReadOnly) {
+  if (isFabric() && userContext.fabricContext?.isReadOnly) {
     // All the following buttons require write access
     return [];
   }
@@ -2136,8 +2136,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                     selectedColumnIds={selectedColumnIds}
                     columnDefinitions={columnDefinitions}
                     isRowSelectionDisabled={
-                      isBulkDeleteDisabled ||
-                      (configContext.platform === Platform.Fabric && userContext.fabricContext?.isReadOnly)
+                      isBulkDeleteDisabled || (isFabric() && userContext.fabricContext?.isReadOnly)
                     }
                     onColumnSelectionChange={onColumnSelectionChange}
                     defaultColumnSelection={getInitialColumnSelection()}

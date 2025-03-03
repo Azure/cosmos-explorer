@@ -2,7 +2,7 @@ import * as Cosmos from "@azure/cosmos";
 import { getAuthorizationTokenUsingResourceTokens } from "Common/getAuthorizationTokenUsingResourceTokens";
 import { CosmosDbArtifactType } from "Contracts/FabricMessagesContract";
 import { AuthorizationToken } from "Contracts/FabricMessageTypes";
-import { checkDatabaseResourceTokensValidity, isFabricMirrored } from "Platform/Fabric/FabricUtil";
+import { checkDatabaseResourceTokensValidity, isFabricMirroredKey } from "Platform/Fabric/FabricUtil";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { AuthType } from "../AuthType";
 import { PriorityLevel } from "../Common/Constants";
@@ -43,7 +43,7 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
     return decodeURIComponent(headers.authorization);
   }
 
-  if (isFabricMirrored()) {
+  if (isFabricMirroredKey()) {
     switch (requestInfo.resourceType) {
       case Cosmos.ResourceType.conflicts:
       case Cosmos.ResourceType.container:
