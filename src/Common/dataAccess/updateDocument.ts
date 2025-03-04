@@ -32,10 +32,6 @@ export const updateDocument = async (
     logConsoleInfo(`Successfully updated ${entityName} ${documentId.id()}`);
     return response?.resource;
   } catch (error) {
-    // // If error has diagnostic information, log it.
-    // if (error && error.diagnostics) {
-    //   console.error("Diagnostics:", error.diagnostics);
-    // }
     handleError(error, "UpdateDocument", `Failed to update ${entityName} ${documentId.id()}`);
     throw error;
   } finally {
