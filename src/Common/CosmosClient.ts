@@ -116,7 +116,7 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
 export const requestPlugin: Cosmos.Plugin<any> = async (requestContext, diagnosticNode, next) => {
   requestContext.endpoint = new URL(configContext.PROXY_PATH, window.location.href).href;
   requestContext.headers["x-ms-proxy-target"] = endpoint();
-  return await next(requestContext);
+  return next(requestContext);
 };
 
 export const endpoint = () => {
@@ -227,6 +227,5 @@ export function client(): Cosmos.CosmosClient {
   }
 
   _client = new Cosmos.CosmosClient(options);
-
   return _client;
 }
