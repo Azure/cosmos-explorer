@@ -346,7 +346,7 @@ async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
       `Configuring Data Explorer for ${userContext.apiType} account ${account.name}`,
       "Explorer/configureHostedWithAAD",
     );
-    if (userContext.apiType === "SQL" && userContext.authType === AuthType.AAD) {
+    if (userContext.apiType === "SQL") {
       checkAndUpdateSelectedRegionalEndpoint();
     }
     if (!userContext.features.enableAadDataPlane) {
@@ -710,7 +710,7 @@ async function configurePortal(): Promise<Explorer> {
 
           const { databaseAccount: account, subscriptionId, resourceGroup } = userContext;
 
-          if (userContext.apiType === "SQL" && userContext.authType === AuthType.AAD) {
+          if (userContext.apiType === "SQL") {
             checkAndUpdateSelectedRegionalEndpoint();
           }
 
