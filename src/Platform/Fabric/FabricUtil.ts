@@ -23,12 +23,6 @@ const requestFabricToken = async (): Promise<void> => {
     return;
   }
 
-  if (!userContext.fabricContext || !userContext.databaseAccount) {
-    // This should not happen
-    logConsoleError("Fabric context or database account is missing: cannot request tokens");
-    return;
-  }
-
   lastRequestTimestamp = Date.now();
   try {
     if (isFabricMirrored()) {
@@ -47,6 +41,12 @@ const requestFabricToken = async (): Promise<void> => {
 };
 
 const requestAndStoreDatabaseResourceTokens = async (): Promise<void> => {
+  if (!userContext.fabricContext || !userContext.databaseAccount) {
+    // This should not happen
+    logConsoleError("Fabric context or database account is missing: cannot request tokens");
+    return;
+  }
+
   const resourceTokenInfo = await sendCachedDataMessage<ResourceTokenInfo>(
     FabricMessageTypes.GetAllResourceTokens,
     [],
@@ -88,11 +88,13 @@ const requestAndStoreDatabaseResourceTokens = async (): Promise<void> => {
 };
 
 const requestAndStoreAccessToken = async (): Promise<void> => {
-  const accessTokenInfo = await sendCachedDataMessage<{ accessToken: string }>(
-    FabricMessageTypes.GetAccessToken,
-    [],
-    userContext.fabricContext.artifactInfo?.connectionId,
-  );
+  if (!userContext.fabricContext || !userContext.databaseAccount) {
+    // This should not happen
+    logConsoleError("Fabric context or database account is missing: cannot request tokens");
+    return;
+  }
+
+  const accessTokenInfo = await sendCachedDataMessage<{ accessToken: string }>(FabricMessageTypes.GetAccessToken, []);
 
   updateUserContext({
     aadToken: accessTokenInfo.accessToken,
