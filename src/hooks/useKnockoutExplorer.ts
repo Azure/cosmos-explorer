@@ -14,7 +14,7 @@ import { useDialog } from "Explorer/Controls/Dialog";
 import Explorer from "Explorer/Explorer";
 import { useDataPlaneRbac } from "Explorer/Panes/SettingsPane/SettingsPane";
 import { useSelectedNode } from "Explorer/useSelectedNode";
-import { scheduleRefreshDatabaseResourceToken } from "Platform/Fabric/FabricUtil";
+import { isFabricMirroredKey, scheduleRefreshFabricToken } from "Platform/Fabric/FabricUtil";
 import {
   AppStateComponentNames,
   OPEN_TABS_SUBCOMPONENT_NAME,
@@ -154,7 +154,7 @@ async function configureFabric(): Promise<Explorer> {
               };
 
               explorer = createExplorerFabricLegacy(initializationMessage, data.version);
-              await scheduleRefreshDatabaseResourceToken(true);
+              await scheduleRefreshFabricToken(true);
               resolve(explorer);
               await explorer.refreshAllDatabases();
               if (userContext.fabricContext.isVisible) {
@@ -169,8 +169,11 @@ async function configureFabric(): Promise<Explorer> {
               if (initializationMessage.artifactType === CosmosDbArtifactType.MIRRORED_KEY) {
                 // Do not show Home tab for Mirrored
                 useTabs.getState().closeReactTab(ReactTabKind.Home);
-                await scheduleRefreshDatabaseResourceToken(true);
               }
+
+              // All tokens used in fabric expire
+              // For Mirrored key, we need the token right away to get the database and containers list.
+              await scheduleRefreshFabricToken(isFabricMirroredKey());
 
               resolve(explorer);
               await explorer.refreshAllDatabases();
@@ -188,7 +191,8 @@ async function configureFabric(): Promise<Explorer> {
             explorer.onNewCollectionClicked();
             break;
           case "authorizationToken":
-          case "allResourceTokens_v2": {
+          case "allResourceTokens_v2":
+          case "accessToken": {
             handleCachedDataMessage(data);
             break;
           }

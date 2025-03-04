@@ -11,7 +11,7 @@ import { IGalleryItem } from "Juno/JunoClient";
 import {
   isFabricMirrored,
   isFabricMirroredKey,
-  scheduleRefreshDatabaseResourceToken,
+  scheduleRefreshFabricToken,
 } from "Platform/Fabric/FabricUtil";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { acquireMsalTokenForAccount } from "Utils/AuthorizationUtils";
@@ -356,7 +356,7 @@ export default class Explorer {
 
   public onRefreshResourcesClick = async (): Promise<void> => {
     if (isFabricMirroredKey()) {
-      scheduleRefreshDatabaseResourceToken(true).then(() => this.refreshAllDatabases());
+      scheduleRefreshFabricToken(true).then(() => this.refreshAllDatabases());
       return;
     }
 

@@ -73,6 +73,14 @@ export type FabricMessageV3 =
       message: {
         visible: boolean;
       };
+    }
+  | {
+      type: "accessToken";
+      message: {
+        id: string;
+        error: string | undefined;
+        data: { accessToken: string };
+      };
     };
 
 export enum CosmosDbArtifactType {
