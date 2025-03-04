@@ -171,9 +171,13 @@ async function configureFabric(): Promise<Explorer> {
                 useTabs.getState().closeReactTab(ReactTabKind.Home);
               }
 
-              // All tokens used in fabric expire
+              // All tokens used in fabric expire, so schedule a refresh
               // For Mirrored key, we need the token right away to get the database and containers list.
-              await scheduleRefreshFabricToken(isFabricMirroredKey());
+              if (isFabricMirroredKey()) {
+                await scheduleRefreshFabricToken(true);
+              } else {
+                scheduleRefreshFabricToken(false);
+              }
 
               resolve(explorer);
               await explorer.refreshAllDatabases();
@@ -525,7 +529,7 @@ const createExplorerFabric = (
 
   if (params.artifactType === CosmosDbArtifactType.MIRRORED_KEY) {
     updateUserContext({
-      authType: AuthType.ConnectionString, // TODO: will need its own type and Mirroring could be using AAD
+      authType: AuthType.ConnectionString, // TODO: will need its own type
       databaseAccount: {
         id: "",
         location: "",
@@ -543,6 +547,27 @@ const createExplorerFabric = (
             .connectionId,
           resourceTokenInfo: undefined,
         },
+      },
+    });
+  } else if (params.artifactType === CosmosDbArtifactType.MIRRORED_AAD) {
+    updateUserContext({
+      databaseAccount: {
+        id: "",
+        location: "",
+        type: "",
+        name: "Mounted", // TODO: not used?
+        kind: AccountKind.Default,
+        properties: {
+          documentEndpoint: undefined,
+        },
+      },
+      authType: AuthType.AAD,
+      dataPlaneRbacEnabled: true,
+      aadToken: undefined,
+      masterKey: undefined,
+      fabricContext: {
+        ...userContext.fabricContext,
+        artifactInfo: undefined,
       },
     });
   } else if (params.artifactType === CosmosDbArtifactType.NATIVE) {
@@ -568,8 +593,6 @@ const createExplorerFabric = (
         databaseName: nativeParams.artifactConnectionInfo.databaseName,
       },
     });
-  } else if (params.artifactType === CosmosDbArtifactType.MIRRORED_AAD) {
-    throw new Error("Mirrored AAD is not supported");
   }
 
   const explorer = new Explorer();
