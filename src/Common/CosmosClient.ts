@@ -115,10 +115,7 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
 
 export const requestPlugin: Cosmos.Plugin<any> = async (requestContext, diagnosticNode, next) => {
   requestContext.endpoint = new URL(configContext.PROXY_PATH, window.location.href).href;
-  console.log(`REQUEST CONTEXT ENDPOINT: ${JSON.stringify(requestContext.endpoint)}`);
   requestContext.headers["x-ms-proxy-target"] = endpoint();
-  console.log(`REQUEST CONTEXT PROXY: ${JSON.stringify(requestContext.headers["x-ms-proxy-target"])}`);
-  console.log(`WRITE ENABLED ON ENDPOINT: ${userContext.writeEnabledInSelectedRegion}`);
   return await next(requestContext);
 };
 
@@ -203,46 +200,14 @@ export function client(): Cosmos.CosmosClient {
     _defaultHeaders["x-ms-cosmos-priority-level"] = PriorityLevel.Default;
   }
 
-  // Parsing out endpoint from diagnostics.  Used to find address I need to add to firewall rule.
-  function parseEndpointFromDiag(json: string): string {
-    const suffix: string = ".documents.azure.com";
-    const start: number = json.indexOf("//") + "//".length;
-    const end: number = json.indexOf(suffix) + suffix.length;
-    const endpoint: string = json.substring(start, end);
-
-    return endpoint;
-  }
-  // Used to check current client region configuration.
-  async function fetchConnectedRegions(client: Cosmos.CosmosClient) {
-    // Check currently connected regions.
-    try {
-      // const someMoreThings = await client.databases.readAll().fetchAll();
-      // console.log(`Current list of databases: ${JSON.stringify(someMoreThings)}`);
-      const currentReadRegion = await client.getReadEndpoint();
-      console.log(`Current read endpoint: ${JSON.stringify(currentReadRegion)}`);
-      const currentReadRegions = await client.getReadEndpoints();
-      console.log(`Current account endpoints: ${JSON.stringify(currentReadRegions)}`);
-      // Getting primary region IP that needs to be blocked.
-      // retrieve the regional endpoint of the account
-      const regionalWriteEndpoint = await client.getWriteEndpoint();
-      console.log(`Current write endpoint: ${JSON.stringify(regionalWriteEndpoint)}`);
-      const parsedWriteEndpoint = parseEndpointFromDiag(JSON.stringify(regionalWriteEndpoint));
-      console.log(`Current parsed write endpoint: ${JSON.stringify(parsedWriteEndpoint)}`);
-      // const writeHostAddress = await findHostAddress(parsedWriteEndpoint);
-      // console.log(`Current write host address: ${JSON.stringify(writeHostAddress)}`);
-    } catch (error) {
-      console.error("Error getting read endpoints:", error);
-    }
-  }
-
   const options: Cosmos.CosmosClientOptions = {
     endpoint: endpoint() || "https://cosmos.azure.com", // CosmosClient gets upset if we pass a bad URL. This should never actually get called
     key: userContext.dataPlaneRbacEnabled ? "" : userContext.masterKey,
-    diagnosticLevel: Cosmos.CosmosDbDiagnosticLevel.debugUnsafe,
     tokenProvider,
     userAgentSuffix: "Azure Portal",
     defaultHeaders: _defaultHeaders,
     connectionPolicy: {
+      enableEndpointDiscovery: userContext.selectedRegionalEndpoint ? false : true,
       retryOptions: {
         maxRetryAttemptCount: LocalStorageUtility.getEntryNumber(StorageKey.RetryAttempts),
         fixedRetryIntervalInMilliseconds: LocalStorageUtility.getEntryNumber(StorageKey.RetryInterval),
@@ -262,9 +227,6 @@ export function client(): Cosmos.CosmosClient {
   }
 
   _client = new Cosmos.CosmosClient(options);
-
-  // Log debug vals
-  // fetchConnectedRegions(_client).catch((error) => console.error(error));
 
   return _client;
 }
