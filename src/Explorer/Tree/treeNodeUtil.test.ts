@@ -1,5 +1,6 @@
 import { CapabilityNames } from "Common/Constants";
 import { Platform, updateConfigContext } from "ConfigContext";
+import { CosmosDbArtifactType } from "Contracts/FabricMessagesContract";
 import { TreeNode } from "Explorer/Controls/TreeComponent/TreeNodeComponent";
 import Explorer from "Explorer/Explorer";
 import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
@@ -16,7 +17,7 @@ import {
 } from "Explorer/Tree/treeNodeUtil";
 import { useDatabases } from "Explorer/useDatabases";
 import { useSelectedNode } from "Explorer/useSelectedNode";
-import { updateUserContext } from "UserContext";
+import { FabricContext, updateUserContext } from "UserContext";
 import PromiseSource from "Utils/PromiseSource";
 import { useSidePanel } from "hooks/useSidePanel";
 import { useTabs } from "hooks/useTabs";
@@ -551,7 +552,17 @@ describe("createDatabaseTreeNodes", () => {
       });
 
       it.each([
-        ["in Fabric", () => updateConfigContext({ platform: Platform.Fabric })],
+        [
+          "in Fabric",
+          () => {
+            updateConfigContext({ platform: Platform.Fabric });
+            updateUserContext({
+              fabricContext: {
+                artifactType: CosmosDbArtifactType.MIRRORED_KEY,
+              } as FabricContext<CosmosDbArtifactType>,
+            });
+          },
+        ],
         [
           "for Cassandra API",
           () =>

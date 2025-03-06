@@ -1,7 +1,8 @@
-import { Platform, configContext } from "ConfigContext";
+import { CosmosDbArtifactType } from "Contracts/FabricMessagesContract";
+import { isFabric, isFabricMirroredKey, isFabricNative } from "Platform/Fabric/FabricUtil";
 import { AuthType } from "../../AuthType";
 import * as DataModels from "../../Contracts/DataModels";
-import { userContext } from "../../UserContext";
+import { FabricArtifactInfo, userContext } from "../../UserContext";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { listCassandraKeyspaces } from "../../Utils/arm/generatedClients/cosmos/cassandraResources";
 import { listGremlinDatabases } from "../../Utils/arm/generatedClients/cosmos/gremlinResources";
@@ -14,8 +15,13 @@ export async function readDatabases(): Promise<DataModels.Database[]> {
   let databases: DataModels.Database[];
   const clearMessage = logConsoleProgress(`Querying databases`);
 
-  if (configContext.platform === Platform.Fabric && userContext.fabricContext?.databaseConnectionInfo.resourceTokens) {
-    const tokensData = userContext.fabricContext.databaseConnectionInfo;
+  if (
+    isFabricMirroredKey() &&
+    (userContext.fabricContext?.artifactInfo as FabricArtifactInfo[CosmosDbArtifactType.MIRRORED_KEY]).resourceTokenInfo
+      .resourceTokens
+  ) {
+    const tokensData = (userContext.fabricContext.artifactInfo as FabricArtifactInfo[CosmosDbArtifactType.MIRRORED_KEY])
+      .resourceTokenInfo;
 
     const databaseIdsSet = new Set<string>(); // databaseId
 
@@ -46,13 +52,28 @@ export async function readDatabases(): Promise<DataModels.Database[]> {
       }));
     clearMessage();
     return databases;
+  } else if (isFabricNative() && userContext.fabricContext?.databaseName) {
+    const databaseId = userContext.fabricContext.databaseName;
+    databases = [
+      {
+        _rid: "",
+        _self: "",
+        _etag: "",
+        _ts: 0,
+        id: databaseId,
+        collections: [],
+      },
+    ];
+    clearMessage();
+    return databases;
   }
 
   try {
     if (
       userContext.authType === AuthType.AAD &&
       !userContext.features.enableSDKoperations &&
-      userContext.apiType !== "Tables"
+      userContext.apiType !== "Tables" &&
+      !isFabric()
     ) {
       databases = await readDatabasesWithARM();
     } else {
