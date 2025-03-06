@@ -559,6 +559,7 @@ describe("createDatabaseTreeNodes", () => {
             updateUserContext({
               fabricContext: {
                 artifactType: CosmosDbArtifactType.MIRRORED_KEY,
+                isReadOnly: false,
               } as FabricContext<CosmosDbArtifactType>,
             });
           },
