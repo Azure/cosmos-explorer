@@ -740,7 +740,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
 ]
 `;
 
-exports[`createDatabaseTreeNodes generates the correct tree structure for the SQL API, on Fabric 1`] = `
+exports[`createDatabaseTreeNodes generates the correct tree structure for the SQL API, on Fabric non read-only 1`] = `
 [
   {
     "children": [
@@ -752,6 +752,12 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "iconSrc": {},
             "label": "New SQL Query",
             "onClick": [Function],
+          },
+          {
+            "iconSrc": {},
+            "label": "Delete Container",
+            "onClick": [Function],
+            "styleClass": "deleteCollectionMenuItem",
           },
         ],
         "iconSrc": <DocumentMultipleRegular
@@ -773,6 +779,12 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "iconSrc": {},
             "label": "New SQL Query",
             "onClick": [Function],
+          },
+          {
+            "iconSrc": {},
+            "label": "Delete Container",
+            "onClick": [Function],
+            "styleClass": "deleteCollectionMenuItem",
           },
         ],
         "iconSrc": <DocumentMultipleRegular
@@ -822,6 +834,12 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "label": "New SQL Query",
             "onClick": [Function],
           },
+          {
+            "iconSrc": {},
+            "label": "Delete Container",
+            "onClick": [Function],
+            "styleClass": "deleteCollectionMenuItem",
+          },
         ],
         "iconSrc": <DocumentMultipleRegular
           fontSize={16}
@@ -870,6 +888,12 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "label": "New SQL Query",
             "onClick": [Function],
           },
+          {
+            "iconSrc": {},
+            "label": "Delete Container",
+            "onClick": [Function],
+            "styleClass": "deleteCollectionMenuItem",
+          },
         ],
         "iconSrc": <DocumentMultipleRegular
           fontSize={16}
@@ -902,6 +926,145 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
         "styleClass": "deleteDatabaseMenuItem",
       },
     ],
+    "iconSrc": <DatabaseRegular
+      fontSize={16}
+    />,
+    "isExpanded": true,
+    "isSelected": [Function],
+    "label": "giganticDatabase",
+    "onCollapsed": [Function],
+    "onContextMenuOpen": [Function],
+    "onExpanded": [Function],
+  },
+]
+`;
+
+exports[`createDatabaseTreeNodes generates the correct tree structure for the SQL API, on Fabric read-only 1`] = `
+[
+  {
+    "children": [
+      {
+        "children": undefined,
+        "className": "collectionNode",
+        "contextMenu": [
+          {
+            "iconSrc": {},
+            "label": "New SQL Query",
+            "onClick": [Function],
+          },
+        ],
+        "iconSrc": <DocumentMultipleRegular
+          fontSize={16}
+        />,
+        "isExpanded": true,
+        "isSelected": [Function],
+        "label": "standardCollection",
+        "onClick": [Function],
+        "onCollapsed": [Function],
+        "onContextMenuOpen": [Function],
+        "onExpanded": [Function],
+      },
+      {
+        "children": undefined,
+        "className": "collectionNode",
+        "contextMenu": [
+          {
+            "iconSrc": {},
+            "label": "New SQL Query",
+            "onClick": [Function],
+          },
+        ],
+        "iconSrc": <DocumentMultipleRegular
+          fontSize={16}
+        />,
+        "isExpanded": true,
+        "isSelected": [Function],
+        "label": "conflictsCollection",
+        "onClick": [Function],
+        "onCollapsed": [Function],
+        "onContextMenuOpen": [Function],
+        "onExpanded": [Function],
+      },
+    ],
+    "className": "databaseNode",
+    "contextMenu": undefined,
+    "iconSrc": <DatabaseRegular
+      fontSize={16}
+    />,
+    "isExpanded": true,
+    "isSelected": [Function],
+    "label": "standardDb",
+    "onCollapsed": [Function],
+    "onContextMenuOpen": [Function],
+    "onExpanded": [Function],
+  },
+  {
+    "children": [
+      {
+        "children": undefined,
+        "className": "collectionNode",
+        "contextMenu": [
+          {
+            "iconSrc": {},
+            "label": "New SQL Query",
+            "onClick": [Function],
+          },
+        ],
+        "iconSrc": <DocumentMultipleRegular
+          fontSize={16}
+        />,
+        "isExpanded": true,
+        "isSelected": [Function],
+        "label": "sampleItemsCollection",
+        "onClick": [Function],
+        "onCollapsed": [Function],
+        "onContextMenuOpen": [Function],
+        "onExpanded": [Function],
+      },
+    ],
+    "className": "databaseNode",
+    "contextMenu": undefined,
+    "iconSrc": <DatabaseRegular
+      fontSize={16}
+    />,
+    "isExpanded": true,
+    "isSelected": [Function],
+    "label": "sharedDatabase",
+    "onCollapsed": [Function],
+    "onContextMenuOpen": [Function],
+    "onExpanded": [Function],
+  },
+  {
+    "children": [
+      {
+        "children": undefined,
+        "className": "collectionNode",
+        "contextMenu": [
+          {
+            "iconSrc": {},
+            "label": "New SQL Query",
+            "onClick": [Function],
+          },
+        ],
+        "iconSrc": <DocumentMultipleRegular
+          fontSize={16}
+        />,
+        "isExpanded": true,
+        "isSelected": [Function],
+        "label": "schemaCollection",
+        "onClick": [Function],
+        "onCollapsed": [Function],
+        "onContextMenuOpen": [Function],
+        "onExpanded": [Function],
+      },
+      {
+        "className": "loadMoreNode",
+        "label": "load more",
+        "onClick": [Function],
+      },
+    ],
+    "className": "databaseNode",
+    "contextMenu": undefined,
     "iconSrc": <DatabaseRegular
       fontSize={16}
     />,
@@ -972,7 +1135,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
                   },
                 ],
                 "isSelected": [Function],
-                "label": "mockSproc3",
+                "label": "mockSproc4",
                 "onClick": [Function],
               },
             ],
@@ -990,7 +1153,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
                   },
                 ],
                 "isSelected": [Function],
-                "label": "mockUdf3",
+                "label": "mockUdf4",
                 "onClick": [Function],
               },
             ],
@@ -1008,7 +1171,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
                   },
                 ],
                 "isSelected": [Function],
-                "label": "mockTrigger3",
+                "label": "mockTrigger4",
                 "onClick": [Function],
               },
             ],
