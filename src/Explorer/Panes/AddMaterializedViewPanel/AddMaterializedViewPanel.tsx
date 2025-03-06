@@ -381,11 +381,10 @@ export const AddMaterializedViewPanel = (props: AddMaterializedViewPanelProps): 
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => setDefinition(event.target.value)}
           />
           <AddMVPartitionKeyComponent
-            {...{ partitionKey, setPartitionKey, subPartitionKeys, setSubPartitionKeys, useHashV1, setUseHashV1 }}
+            {...{ partitionKey, setPartitionKey, subPartitionKeys, setSubPartitionKeys, useHashV1 }}
           />
           <AddMVThroughputComponent
             {...{
-              selectedSourceContainer,
               enableDedicatedThroughput,
               setEnabledDedicatedThroughput,
               isSelectedSourceContainerSharedThroughput,

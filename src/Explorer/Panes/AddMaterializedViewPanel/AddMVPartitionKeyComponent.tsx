@@ -13,11 +13,10 @@ export interface AddMVPartitionKeyComponentProps {
   subPartitionKeys: string[];
   setSubPartitionKeys: React.Dispatch<React.SetStateAction<string[]>>;
   useHashV1: boolean;
-  setUseHashV1: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const AddMVPartitionKeyComponent = (props: AddMVPartitionKeyComponentProps): JSX.Element => {
-  const { partitionKey, setPartitionKey, subPartitionKeys, setSubPartitionKeys, useHashV1, setUseHashV1 } = props;
+  const { partitionKey, setPartitionKey, subPartitionKeys, setSubPartitionKeys, useHashV1 } = props;
 
   const partitionKeyValueOnChange = (value: string): void => {
     if (!partitionKey && !value.startsWith("/")) {
