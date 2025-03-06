@@ -420,7 +420,7 @@ export const AddMaterializedViewPanel = (props: AddMaterializedViewPanelProps): 
           <AddMVAdvancedComponent {...{ useHashV1, setUseHashV1, setSubPartitionKeys }} />
         </Stack>
         <PanelFooterComponent buttonLabel="OK" isButtonDisabled={isThroughputCapExceeded} />
-        {isExecuting && (<PanelLoadingScreen />)}
+        {isExecuting && <PanelLoadingScreen />}
       </div>
     </form>
   );

@@ -48,7 +48,7 @@ export const createMaterializedView = async (params: CreateMaterializedViewsPara
       options,
     },
   };
-  
+
   try {
     const createResponse = await createUpdateSqlContainer(
       userContext.subscriptionId,
