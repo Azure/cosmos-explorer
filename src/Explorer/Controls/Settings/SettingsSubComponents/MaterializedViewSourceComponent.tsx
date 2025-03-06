@@ -19,15 +19,16 @@ export const MaterializedViewSourceComponent: React.FC<MaterializedViewSourceCom
   const getViewDetails = (viewId: string): { definition: string; partitionKey: string[] } => {
     let definition = "";
     let partitionKey: string[] = [];
-    useDatabases.getState().databases.forEach((database) => {
-      database.collections().forEach((collection) => {
-        if (collection.id() === viewId) {
-          const materializedViewDefinition = collection.materializedViewDefinition();
-          materializedViewDefinition && (definition = materializedViewDefinition.definition);
-          collection.partitionKey?.paths && (partitionKey = collection.partitionKey.paths);
-        }
-      });
+
+    useDatabases.getState().databases.find((database) => {
+      const collection = database.collections().find((collection) => collection.id() === viewId);
+      if (collection) {
+        const materializedViewDefinition = collection.materializedViewDefinition();
+        materializedViewDefinition && (definition = materializedViewDefinition.definition);
+        collection.partitionKey?.paths && (partitionKey = collection.partitionKey.paths);
+      }
     });
+
     return { definition, partitionKey };
   };
 
