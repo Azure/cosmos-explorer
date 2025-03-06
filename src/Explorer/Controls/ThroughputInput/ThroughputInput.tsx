@@ -35,12 +35,18 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
   setIsThroughputCapExceeded,
   onCostAcknowledgeChange,
 }: ThroughputInputProps) => {
-  const defaultThroughput: number =
+  let defaultThroughput: number;
+  if (
     isFreeTier ||
     isQuickstart ||
     [Constants.WorkloadType.Learning, Constants.WorkloadType.DevelopmentTesting].includes(getWorkloadType())
-      ? AutoPilotUtils.autoPilotThroughput1K
-      : AutoPilotUtils.autoPilotThroughput4K;
+  ) {
+    defaultThroughput = AutoPilotUtils.autoPilotThroughput1K;
+  } else if (getWorkloadType() === Constants.WorkloadType.Production) {
+    defaultThroughput = AutoPilotUtils.autoPilotThroughput10K;
+  } else {
+    defaultThroughput = AutoPilotUtils.autoPilotThroughput4K;
+  }
 
   const [isAutoscaleSelected, setIsAutoScaleSelected] = useState<boolean>(true);
   const [throughput, setThroughput] = useState<number>(defaultThroughput);
@@ -82,6 +88,20 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
       setIsThroughputCapExceeded(true);
     }
   }, []);
+
+  const getDefaultThroughput = (): number => {
+    if (
+      isFreeTier ||
+      isQuickstart ||
+      [Constants.WorkloadType.Learning, Constants.WorkloadType.DevelopmentTesting].includes(getWorkloadType())
+    ) {
+      return AutoPilotUtils.autoPilotThroughput1K;
+    } else if (getWorkloadType() === Constants.WorkloadType.Production) {
+      return AutoPilotUtils.autoPilotThroughput10K;
+    }
+
+    return AutoPilotUtils.autoPilotThroughput4K;
+  };
 
   const checkThroughputCap = (newThroughput: number): boolean => {
     if (throughputCap && throughputCap !== -1 && throughputCap - totalThroughputUsed < newThroughput) {
