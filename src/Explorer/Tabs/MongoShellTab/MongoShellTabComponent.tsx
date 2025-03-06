@@ -1,6 +1,4 @@
-import { useMongoProxyEndpoint } from "Common/MongoProxyClient";
 import React, { Component } from "react";
-import * as Constants from "../../../Common/Constants";
 import { configContext } from "../../../ConfigContext";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
@@ -50,15 +48,13 @@ export default class MongoShellTabComponent extends Component<
   IMongoShellTabComponentStates
 > {
   private _logTraces: Map<string, number>;
-  private _useMongoProxyEndpoint: boolean;
 
   constructor(props: IMongoShellTabComponentProps) {
     super(props);
     this._logTraces = new Map();
-    this._useMongoProxyEndpoint = useMongoProxyEndpoint(Constants.MongoProxyApi.LegacyMongoShell);
 
     this.state = {
-      url: getMongoShellUrl(this._useMongoProxyEndpoint),
+      url: getMongoShellUrl(),
     };
 
     props.onMongoShellTabAccessor({
@@ -113,17 +109,9 @@ export default class MongoShellTabComponent extends Component<
     const resourceId = databaseAccount?.id;
     const accountName = databaseAccount?.name;
     const documentEndpoint = databaseAccount?.properties.mongoEndpoint || databaseAccount?.properties.documentEndpoint;
-    const mongoEndpoint =
-      documentEndpoint.substr(
-        Constants.MongoDBAccounts.protocol.length + 3,
-        documentEndpoint.length -
-          (Constants.MongoDBAccounts.protocol.length + 2 + Constants.MongoDBAccounts.defaultPort.length),
-      ) + Constants.MongoDBAccounts.defaultPort.toString();
     const databaseId = this.props.collection.databaseId;
     const collectionId = this.props.collection.id();
-    const apiEndpoint = this._useMongoProxyEndpoint
-      ? configContext.MONGO_PROXY_ENDPOINT
-      : configContext.BACKEND_ENDPOINT;
+    const apiEndpoint = configContext.MONGO_PROXY_ENDPOINT;
     const encryptedAuthToken: string = userContext.accessToken;
 
     shellIframe.contentWindow.postMessage(
@@ -132,7 +120,7 @@ export default class MongoShellTabComponent extends Component<
         data: {
           resourceId: resourceId,
           accountName: accountName,
-          mongoEndpoint: this._useMongoProxyEndpoint ? documentEndpoint : mongoEndpoint,
+          mongoEndpoint: documentEndpoint,
           authorization: authorization,
           databaseId: databaseId,
           collectionId: collectionId,

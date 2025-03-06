@@ -393,8 +393,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
                 },
               }}
               disabled={isGeneratingQuery}
-              autoComplete="list"
-              aria-expanded={showSamplePrompts}
+              autoComplete="off"
               placeholder="Ask a question in natural language and we’ll generate the query for you."
               aria-labelledby="copilot-textfield-label"
               onRenderSuffix={() => {

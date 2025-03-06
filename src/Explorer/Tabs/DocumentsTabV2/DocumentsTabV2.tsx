@@ -20,7 +20,6 @@ import {
 import { queryDocuments } from "Common/dataAccess/queryDocuments";
 import { readDocument } from "Common/dataAccess/readDocument";
 import { updateDocument } from "Common/dataAccess/updateDocument";
-import { Platform, configContext } from "ConfigContext";
 import { ActionType, OpenCollectionTab, TabKind } from "Contracts/ActionContracts";
 import { CommandButtonComponentProps } from "Explorer/Controls/CommandButton/CommandButtonComponent";
 import { useDialog } from "Explorer/Controls/Dialog";
@@ -43,6 +42,7 @@ import { usePrevious } from "Explorer/Tabs/DocumentsTabV2/SelectionHelper";
 import { CosmosFluentProvider, LayoutConstants, cosmosShorthands, tokens } from "Explorer/Theme/ThemeUtil";
 import { useSelectedNode } from "Explorer/useSelectedNode";
 import { KeyboardAction, KeyboardActionGroup, useKeyboardActionGroup } from "KeyboardShortcuts";
+import { isFabric } from "Platform/Fabric/FabricUtil";
 import { QueryConstants } from "Shared/Constants";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
@@ -344,7 +344,7 @@ export const getTabsButtons = ({
   onRevertExistingDocumentClick,
   onDeleteExistingDocumentsClick,
 }: ButtonsDependencies): CommandButtonComponentProps[] => {
-  if (configContext.platform === Platform.Fabric && userContext.fabricContext?.isReadOnly) {
+  if (isFabric() && userContext.fabricContext?.isReadOnly) {
     // All the following buttons require write access
     return [];
   }
@@ -1150,27 +1150,16 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
           deletePromise = _bulkDeleteNoSqlDocuments(_collection, toDeleteDocumentIds);
         }
       } else {
-        if (isMongoBulkDeleteDisabled) {
-          // TODO: Once new mongo proxy is available for all users, remove the call for MongoProxyClient.deleteDocument().
-          // MongoProxyClient.deleteDocuments() should be called for all users.
-          deletePromise = MongoProxyClient.deleteDocument(
-            _collection.databaseId,
-            _collection as ViewModels.Collection,
-            toDeleteDocumentIds[0],
-          ).then(() => [toDeleteDocumentIds[0]]);
-          // ----------------------------------------------------------------------------------------------------
-        } else {
-          deletePromise = MongoProxyClient.deleteDocuments(
-            _collection.databaseId,
-            _collection as ViewModels.Collection,
-            toDeleteDocumentIds,
-          ).then(({ deletedCount, isAcknowledged }) => {
-            if (deletedCount === toDeleteDocumentIds.length && isAcknowledged) {
-              return toDeleteDocumentIds;
-            }
-            throw new Error(`Delete failed with deletedCount: ${deletedCount} and isAcknowledged: ${isAcknowledged}`);
-          });
-        }
+        deletePromise = MongoProxyClient.deleteDocuments(
+          _collection.databaseId,
+          _collection as ViewModels.Collection,
+          toDeleteDocumentIds,
+        ).then(({ deletedCount, isAcknowledged }) => {
+          if (deletedCount === toDeleteDocumentIds.length && isAcknowledged) {
+            return toDeleteDocumentIds;
+          }
+          throw new Error(`Delete failed with deletedCount: ${deletedCount} and isAcknowledged: ${isAcknowledged}`);
+        });
       }
 
       return deletePromise
@@ -2054,11 +2043,8 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     }
   }, [prevSelectedColumnIds, refreshDocumentsGrid, selectedColumnIds]);
 
-  // TODO: remove isMongoBulkDeleteDisabled when new mongo proxy is enabled for all users
   // TODO: remove partitionKey.systemKey when JS SDK bug is fixed
-  const isMongoBulkDeleteDisabled = !MongoProxyClient.useMongoProxyEndpoint(Constants.MongoProxyApi.BulkDelete);
-  const isBulkDeleteDisabled =
-    (partitionKey.systemKey && !isPreferredApiMongoDB) || (isPreferredApiMongoDB && isMongoBulkDeleteDisabled);
+  const isBulkDeleteDisabled = partitionKey.systemKey && !isPreferredApiMongoDB;
   //  -------------------------------------------------------
 
   const getFilterChoices = (): InputDatalistDropdownOptionSection[] => {
@@ -2150,8 +2136,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                     selectedColumnIds={selectedColumnIds}
                     columnDefinitions={columnDefinitions}
                     isRowSelectionDisabled={
-                      isBulkDeleteDisabled ||
-                      (configContext.platform === Platform.Fabric && userContext.fabricContext?.isReadOnly)
+                      isBulkDeleteDisabled || (isFabric() && userContext.fabricContext?.isReadOnly)
                     }
                     onColumnSelectionChange={onColumnSelectionChange}
                     defaultColumnSelection={getInitialColumnSelection()}

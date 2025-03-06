@@ -1,4 +1,4 @@
-import { Platform, configContext } from "ConfigContext";
+import { isFabric, isFabricMirroredKey } from "Platform/Fabric/FabricUtil";
 import { AuthType } from "../../AuthType";
 import { Offer, ReadDatabaseOfferParams } from "../../Contracts/DataModels";
 import { userContext } from "../../UserContext";
@@ -11,7 +11,7 @@ import { handleError } from "../ErrorHandlingUtils";
 import { readOfferWithSDK } from "./readOfferWithSDK";
 
 export const readDatabaseOffer = async (params: ReadDatabaseOfferParams): Promise<Offer> => {
-  if (configContext.platform === Platform.Fabric) {
+  if (isFabricMirroredKey()) {
     // TODO This works, but is very slow, because it requests the token, so we skip for now
     console.error("Skiping readDatabaseOffer for Fabric");
     return undefined;
@@ -23,7 +23,8 @@ export const readDatabaseOffer = async (params: ReadDatabaseOfferParams): Promis
     if (
       userContext.authType === AuthType.AAD &&
       !userContext.features.enableSDKoperations &&
-      userContext.apiType !== "Tables"
+      userContext.apiType !== "Tables" &&
+      !isFabric()
     ) {
       return await readDatabaseOfferWithARM(params.databaseId);
     }
