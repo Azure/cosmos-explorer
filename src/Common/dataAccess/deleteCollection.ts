@@ -1,3 +1,4 @@
+import { isFabric } from "Platform/Fabric/FabricUtil";
 import { AuthType } from "../../AuthType";
 import { userContext } from "../../UserContext";
 import { deleteCassandraTable } from "../../Utils/arm/generatedClients/cosmos/cassandraResources";
@@ -12,7 +13,7 @@ import { handleError } from "../ErrorHandlingUtils";
 export async function deleteCollection(databaseId: string, collectionId: string): Promise<void> {
   const clearMessage = logConsoleProgress(`Deleting container ${collectionId}`);
   try {
-    if (userContext.authType === AuthType.AAD && !userContext.features.enableSDKoperations) {
+    if (userContext.authType === AuthType.AAD && !userContext.features.enableSDKoperations && !isFabric()) {
       await deleteCollectionWithARM(databaseId, collectionId);
     } else {
       await client().database(databaseId).container(collectionId).delete();
