@@ -89,20 +89,6 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
     }
   }, []);
 
-  const getDefaultThroughput = (): number => {
-    if (
-      isFreeTier ||
-      isQuickstart ||
-      [Constants.WorkloadType.Learning, Constants.WorkloadType.DevelopmentTesting].includes(getWorkloadType())
-    ) {
-      return AutoPilotUtils.autoPilotThroughput1K;
-    } else if (getWorkloadType() === Constants.WorkloadType.Production) {
-      return AutoPilotUtils.autoPilotThroughput10K;
-    }
-
-    return AutoPilotUtils.autoPilotThroughput4K;
-  };
-
   const checkThroughputCap = (newThroughput: number): boolean => {
     if (throughputCap && throughputCap !== -1 && throughputCap - totalThroughputUsed < newThroughput) {
       setThroughputError(
