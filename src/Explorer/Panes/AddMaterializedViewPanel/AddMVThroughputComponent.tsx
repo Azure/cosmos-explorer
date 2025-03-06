@@ -1,5 +1,4 @@
 import { Checkbox, Stack } from "@fluentui/react";
-import { Collection } from "Contracts/ViewModels";
 import { ThroughputInput } from "Explorer/Controls/ThroughputInput/ThroughputInput";
 import { isFreeTierAccount } from "Explorer/Panes/AddCollectionPanel/AddCollectionPanelUtility";
 import { useDatabases } from "Explorer/useDatabases";
@@ -8,9 +7,10 @@ import { getCollectionName } from "Utils/APITypeUtils";
 import { isServerlessAccount } from "Utils/CapabilityUtils";
 
 export interface AddMVThroughputComponentProps {
-  selectedSourceContainer: Collection;
   enableDedicatedThroughput: boolean;
   setEnabledDedicatedThroughput: React.Dispatch<React.SetStateAction<boolean>>;
+  isSelectedSourceContainerSharedThroughput: () => boolean;
+  showCollectionThroughputInput: () => boolean;
   materializedViewThroughputOnChange: (materializedViewThroughputValue: number) => void;
   isMaterializedViewAutoscaleOnChange: (isMaterializedViewAutoscaleValue: boolean) => void;
   setIsThroughputCapExceeded: React.Dispatch<React.SetStateAction<boolean>>;
@@ -19,34 +19,15 @@ export interface AddMVThroughputComponentProps {
 
 export const AddMVThroughputComponent = (props: AddMVThroughputComponentProps): JSX.Element => {
   const {
-    selectedSourceContainer,
     enableDedicatedThroughput,
     setEnabledDedicatedThroughput,
+    isSelectedSourceContainerSharedThroughput,
+    showCollectionThroughputInput,
     materializedViewThroughputOnChange,
     isMaterializedViewAutoscaleOnChange,
     setIsThroughputCapExceeded,
     isCostAknowledgedOnChange,
   } = props;
-
-  const isSelectedSourceContainerSharedThroughput = (): boolean => {
-    if (!selectedSourceContainer) {
-      return false;
-    }
-
-    return !!selectedSourceContainer.getDatabase().offer();
-  };
-
-  const showCollectionThroughputInput = (): boolean => {
-    if (isServerlessAccount()) {
-      return false;
-    }
-
-    if (enableDedicatedThroughput) {
-      return true;
-    }
-
-    return !!selectedSourceContainer && !isSelectedSourceContainerSharedThroughput();
-  };
 
   return (
     <Stack>
@@ -68,7 +49,6 @@ export const AddMVThroughputComponent = (props: AddMVThroughputComponentProps): 
         <ThroughputInput
           showFreeTierExceedThroughputTooltip={isFreeTierAccount() && !useDatabases.getState().isFirstResourceCreated()}
           isDatabase={false}
-          // isSharded={this.state.isSharded}
           isSharded={false}
           isFreeTier={isFreeTierAccount()}
           isQuickstart={false}

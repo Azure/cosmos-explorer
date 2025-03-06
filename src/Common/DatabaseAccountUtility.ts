@@ -28,9 +28,5 @@ export function getWorkloadType(): WorkloadType {
 }
 
 export function isMaterializedViewsEnabled() {
-  return (
-    userContext.features.enableMaterializedViews &&
-    userContext.apiType === "SQL" &&
-    userContext.databaseAccount?.properties?.enableMaterializedViews
-  );
+  return userContext.apiType === "SQL" && userContext.databaseAccount?.properties?.enableMaterializedViews;
 }

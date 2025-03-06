@@ -21,17 +21,23 @@ import { getNewDatabaseSharedThroughputDefault } from "Common/DatabaseUtility";
 import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
 import { configContext, Platform } from "ConfigContext";
 import * as DataModels from "Contracts/DataModels";
-import {
-  FullTextPoliciesComponent,
-  getFullTextLanguageOptions,
-} from "Explorer/Controls/FullTextSeach/FullTextPoliciesComponent";
+import { FullTextPoliciesComponent } from "Explorer/Controls/FullTextSeach/FullTextPoliciesComponent";
 import { VectorEmbeddingPoliciesComponent } from "Explorer/Controls/VectorSearch/VectorEmbeddingPoliciesComponent";
 import {
+  AllPropertiesIndexed,
+  AnalyticalStorageContent,
+  ContainerVectorPolicyTooltipContent,
+  FullTextPolicyDefault,
   getPartitionKey,
   getPartitionKeyName,
   getPartitionKeyPlaceHolder,
   getPartitionKeyTooltipText,
   isFreeTierAccount,
+  isSynapseLinkEnabled,
+  parseUniqueKeys,
+  scrollToSection,
+  SharedDatabaseDefault,
+  shouldShowAnalyticalStoreOptions,
   UniqueKeysHeader,
 } from "Explorer/Panes/AddCollectionPanel/AddCollectionPanelUtility";
 import { useSidePanel } from "hooks/useSidePanel";
@@ -64,40 +70,6 @@ export interface AddCollectionPanelProps {
   databaseId?: string;
   isQuickstart?: boolean;
 }
-
-const SharedDatabaseDefault: DataModels.IndexingPolicy = {
-  indexingMode: "consistent",
-  automatic: true,
-  includedPaths: [],
-  excludedPaths: [
-    {
-      path: "/*",
-    },
-  ],
-};
-
-export const AllPropertiesIndexed: DataModels.IndexingPolicy = {
-  indexingMode: "consistent",
-  automatic: true,
-  includedPaths: [
-    {
-      path: "/*",
-      indexes: [
-        {
-          kind: "Range",
-          dataType: "Number",
-          precision: -1,
-        },
-        {
-          kind: "Range",
-          dataType: "String",
-          precision: -1,
-        },
-      ],
-    },
-  ],
-  excludedPaths: [],
-};
 
 export const DefaultVectorEmbeddingPolicy: DataModels.VectorEmbeddingPolicy = {
   vectorEmbeddings: [],
@@ -167,7 +139,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       vectorEmbeddingPolicy: [],
       vectorIndexingPolicy: [],
       vectorPolicyValidated: true,
-      fullTextPolicy: { defaultLanguage: getFullTextLanguageOptions()[0].key as never, fullTextPaths: [] },
+      fullTextPolicy: FullTextPolicyDefault,
       fullTextIndexes: [],
       fullTextPolicyValidated: true,
     };
@@ -181,7 +153,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
   componentDidUpdate(_prevProps: AddCollectionPanelProps, prevState: AddCollectionPanelState): void {
     if (this.state.errorMessage && this.state.errorMessage !== prevState.errorMessage) {
-      this.scrollToSection("panelContainer");
+      scrollToSection("panelContainer");
     }
   }
 
@@ -802,10 +774,10 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             </Stack>
           )}
 
-          {this.shouldShowAnalyticalStoreOptions() && (
+          {shouldShowAnalyticalStoreOptions() && (
             <Stack className="panelGroupSpacing">
               <Text className="panelTextBold" variant="small">
-                {this.getAnalyticalStorageContent()}
+                {AnalyticalStorageContent()}
               </Text>
 
               <Stack horizontal verticalAlign="center">
@@ -813,7 +785,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   <input
                     className="panelRadioBtn"
                     checked={this.state.enableAnalyticalStore}
-                    disabled={!this.isSynapseLinkEnabled()}
+                    disabled={!isSynapseLinkEnabled()}
                     aria-label="Enable analytical store"
                     aria-checked={this.state.enableAnalyticalStore}
                     name="analyticalStore"
@@ -828,7 +800,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   <input
                     className="panelRadioBtn"
                     checked={!this.state.enableAnalyticalStore}
-                    disabled={!this.isSynapseLinkEnabled()}
+                    disabled={!isSynapseLinkEnabled()}
                     aria-label="Disable analytical store"
                     aria-checked={!this.state.enableAnalyticalStore}
                     name="analyticalStore"
@@ -842,7 +814,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 </div>
               </Stack>
 
-              {!this.isSynapseLinkEnabled() && (
+              {!isSynapseLinkEnabled() && (
                 <Stack className="panelGroupSpacing">
                   <Text variant="small">
                     Azure Synapse Link is required for creating an analytical store{" "}
@@ -872,9 +844,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 title="Container Vector Policy"
                 isExpandedByDefault={false}
                 onExpand={() => {
-                  this.scrollToSection("collapsibleVectorPolicySectionContent");
+                  scrollToSection("collapsibleVectorPolicySectionContent");
                 }}
-                tooltipContent={this.getContainerVectorPolicyTooltipContent()}
+                tooltipContent={ContainerVectorPolicyTooltipContent()}
               >
                 <Stack id="collapsibleVectorPolicySectionContent" styles={{ root: { position: "relative" } }}>
                   <Stack styles={{ root: { paddingLeft: 40 } }}>
@@ -900,7 +872,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 title="Container Full Text Search Policy"
                 isExpandedByDefault={false}
                 onExpand={() => {
-                  this.scrollToSection("collapsibleFullTextPolicySectionContent");
+                  scrollToSection("collapsibleFullTextPolicySectionContent");
                 }}
                 //TODO: uncomment when learn more text becomes available
                 // tooltipContent={this.getContainerFullTextPolicyTooltipContent()}
@@ -928,7 +900,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               isExpandedByDefault={false}
               onExpand={() => {
                 TelemetryProcessor.traceOpen(Action.ExpandAddCollectionPaneAdvancedSection);
-                this.scrollToSection("collapsibleAdvancedSectionContent");
+                scrollToSection("collapsibleAdvancedSectionContent");
               }}
             >
               <Stack className="panelGroupSpacing" id="collapsibleAdvancedSectionContent">
@@ -1142,34 +1114,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     return "";
   }
 
-  private getAnalyticalStorageContent(): JSX.Element {
-    return (
-      <Text variant="small">
-        Enable analytical store capability to perform near real-time analytics on your operational data, without
-        impacting the performance of transactional workloads.{" "}
-        <Link
-          aria-label={Constants.ariaLabelForLearnMoreLink.AnalyticalStore}
-          target="_blank"
-          href="https://aka.ms/analytical-store-overview"
-        >
-          Learn more
-        </Link>
-      </Text>
-    );
-  }
-
-  private getContainerVectorPolicyTooltipContent(): JSX.Element {
-    return (
-      <Text variant="small">
-        Describe any properties in your data that contain vectors, so that they can be made available for similarity
-        queries.{" "}
-        <Link target="_blank" href="https://aka.ms/CosmosDBVectorSetup">
-          Learn more
-        </Link>
-      </Text>
-    );
-  }
-
   //TODO: uncomment when learn more text becomes available
   // private getContainerFullTextPolicyTooltipContent(): JSX.Element {
   //   return (
@@ -1207,39 +1151,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     return this.state.createNewDatabase
       ? this.state.isSharedThroughputChecked
       : this.isSelectedDatabaseSharedThroughput();
-  }
-
-  private shouldShowAnalyticalStoreOptions(): boolean {
-    if (configContext.platform === Platform.Emulator) {
-      return false;
-    }
-
-    switch (userContext.apiType) {
-      case "SQL":
-      case "Mongo":
-        return true;
-      default:
-        return false;
-    }
-  }
-
-  private isSynapseLinkEnabled(): boolean {
-    if (!userContext.databaseAccount) {
-      return false;
-    }
-
-    const { properties } = userContext.databaseAccount;
-    if (!properties) {
-      return false;
-    }
-
-    if (properties.enableAnalyticalStorage) {
-      return true;
-    }
-
-    return properties.capabilities?.some(
-      (capability) => capability.name === Constants.CapabilityNames.EnableStorageAnalytics,
-    );
   }
 
   private shouldShowVectorSearchParameters() {
@@ -1322,11 +1233,11 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
   }
 
   private getAnalyticalStorageTtl(): number {
-    if (!this.isSynapseLinkEnabled()) {
+    if (!isSynapseLinkEnabled()) {
       return undefined;
     }
 
-    if (!this.shouldShowAnalyticalStoreOptions()) {
+    if (!shouldShowAnalyticalStoreOptions()) {
       return undefined;
     }
 
@@ -1338,10 +1249,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     }
 
     return Constants.AnalyticalStorageTtl.Disabled;
-  }
-
-  private scrollToSection(id: string): void {
-    document.getElementById(id)?.scrollIntoView();
   }
 
   private getSampleDBName(): string {
@@ -1378,7 +1285,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       partitionKeyString = "/'$pk'";
     }
 
-    const uniqueKeyPolicy: DataModels.UniqueKeyPolicy = this.parseUniqueKeys();
+    const uniqueKeyPolicy: DataModels.UniqueKeyPolicy = parseUniqueKeys(this.state.uniqueKeys);
     const partitionKeyVersion = this.state.useHashV1 ? undefined : 2;
     const partitionKey: DataModels.PartitionKey = partitionKeyString
       ? {

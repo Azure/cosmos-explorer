@@ -234,7 +234,7 @@ export interface MaterializedView {
 export interface MaterializedViewDefinition {
   definition: string;
   sourceCollectionId: string;
-  sourceCollectionRid: string;
+  sourceCollectionRid?: string;
 }
 
 export interface PartitionKey {
@@ -359,9 +359,7 @@ export interface CreateDatabaseParams {
   offerThroughput?: number;
 }
 
-export interface CreateCollectionParams {
-  createNewDatabase: boolean;
-  collectionId: string;
+export interface CreateCollectionParamsBase {
   databaseId: string;
   databaseLevelThroughput: boolean;
   offerThroughput?: number;
@@ -373,6 +371,16 @@ export interface CreateCollectionParams {
   createMongoWildcardIndex?: boolean;
   vectorEmbeddingPolicy?: VectorEmbeddingPolicy;
   fullTextPolicy?: FullTextPolicy;
+}
+
+export interface CreateCollectionParams extends CreateCollectionParamsBase {
+  createNewDatabase: boolean;
+  collectionId: string;
+}
+
+export interface CreateMaterializedViewsParams extends CreateCollectionParamsBase {
+  materializedViewId: string;
+  materializedViewDefinition: MaterializedViewDefinition;
 }
 
 export interface VectorEmbeddingPolicy {
