@@ -5,10 +5,13 @@ exports[`NotificationConsoleComponent renders the console 1`] = `
   className="notificationConsoleContainer"
 >
   <div
+    aria-expanded={false}
+    aria-label="Console"
     className="notificationConsoleHeader"
     id="notificationConsoleHeader"
     onClick={[Function]}
     onKeyDown={[Function]}
+    role="button"
     tabIndex={0}
   >
     <div
@@ -71,12 +74,8 @@ exports[`NotificationConsoleComponent renders the console 1`] = `
       </span>
     </div>
     <div
-      aria-expanded={false}
-      aria-label="Console"
       className="expandCollapseButton"
       data-test="NotificationConsole/ExpandCollapseButton"
-      role="button"
-      tabIndex={0}
     >
       <img
         alt="Expand icon"
@@ -176,10 +175,13 @@ exports[`NotificationConsoleComponent renders the console 2`] = `
   className="notificationConsoleContainer"
 >
   <div
+    aria-expanded={false}
+    aria-label="Console"
     className="notificationConsoleHeader"
     id="notificationConsoleHeader"
     onClick={[Function]}
     onKeyDown={[Function]}
+    role="button"
     tabIndex={0}
   >
     <div
@@ -244,12 +246,8 @@ exports[`NotificationConsoleComponent renders the console 2`] = `
       </span>
     </div>
     <div
-      aria-expanded={false}
-      aria-label="Console"
       className="expandCollapseButton"
       data-test="NotificationConsole/ExpandCollapseButton"
-      role="button"
-      tabIndex={0}
     >
       <img
         alt="Expand icon"
