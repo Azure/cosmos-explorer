@@ -18,7 +18,7 @@ import {
   Text,
   TextField,
 } from "@fluentui/react";
-import { HttpStatusCodes, NormalizedEventKey } from "Common/Constants";
+import { FeedbackLabels, HttpStatusCodes, NormalizedEventKey } from "Common/Constants";
 import { handleError } from "Common/ErrorHandlingUtils";
 import QueryError, { QueryErrorSeverity } from "Common/QueryError";
 import { createUri } from "Common/UrlUtility";
@@ -579,7 +579,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
                 <Stack horizontal verticalAlign="center" style={{ maxHeight: 20 }}>
                   {userContext.feedbackPolicies?.policyAllowFeedback && (
                     <Stack horizontal verticalAlign="center">
-                      <Text style={{ fontSize: 12 }}>Provide feedback</Text>
+                      <Text style={{ fontSize: 12 }}>{FeedbackLabels.provideFeedback}</Text>
                       {showCallout && !hideFeedbackModalForLikedQueries && (
                         <Callout
                           role="status"
@@ -629,8 +629,9 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
                       <IconButton
                         id="likeBtn"
                         style={{ marginLeft: 10 }}
-                        aria-label="Like"
-                        role="toggle"
+                        aria-label={FeedbackLabels.provideFeedback}
+                        role="button"
+                        title="Like"
                         iconProps={{ iconName: likeQuery === true ? "LikeSolid" : "Like" }}
                         onClick={() => {
                           setShowCallout(!likeQuery);
@@ -648,8 +649,9 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
                       />
                       <IconButton
                         style={{ margin: "0 4px" }}
-                        role="toggle"
-                        aria-label="Dislike"
+                        role="button"
+                        aria-label={FeedbackLabels.provideFeedback}
+                        title="Dislike"
                         iconProps={{ iconName: dislikeQuery === true ? "DislikeSolid" : "Dislike" }}
                         onClick={() => {
                           let toggleStatusValue = "Unpressed";
