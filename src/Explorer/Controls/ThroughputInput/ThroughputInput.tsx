@@ -36,13 +36,15 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
   onCostAcknowledgeChange,
 }: ThroughputInputProps) => {
   let defaultThroughput: number;
+  const workloadType: Constants.WorkloadType = getWorkloadType();
+
   if (
     isFreeTier ||
     isQuickstart ||
-    [Constants.WorkloadType.Learning, Constants.WorkloadType.DevelopmentTesting].includes(getWorkloadType())
+    [Constants.WorkloadType.Learning, Constants.WorkloadType.DevelopmentTesting].includes(workloadType)
   ) {
     defaultThroughput = AutoPilotUtils.autoPilotThroughput1K;
-  } else if (getWorkloadType() === Constants.WorkloadType.Production) {
+  } else if (workloadType === Constants.WorkloadType.Production) {
     defaultThroughput = AutoPilotUtils.autoPilotThroughput10K;
   } else {
     defaultThroughput = AutoPilotUtils.autoPilotThroughput4K;
