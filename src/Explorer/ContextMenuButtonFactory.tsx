@@ -146,7 +146,7 @@ export const createCollectionContextMenuButton = (
     });
   }
 
-  if (configContext.platform !== Platform.Fabric) {
+  if (!isFabric() || (isFabric() && !userContext.fabricContext?.isReadOnly)) {
     items.push({
       iconSrc: DeleteCollectionIcon,
       onClick: (lastFocusedElement?: React.RefObject<HTMLElement>) => {

@@ -1,4 +1,5 @@
 import { OfferDefinition, RequestOptions } from "@azure/cosmos";
+import { isFabric } from "Platform/Fabric/FabricUtil";
 import { AuthType } from "../../AuthType";
 import { Offer, SDKOfferDefinition, ThroughputBucket, UpdateOfferParams } from "../../Contracts/DataModels";
 import { userContext } from "../../UserContext";
@@ -56,7 +57,7 @@ export const updateOffer = async (params: UpdateOfferParams): Promise<Offer> => 
   const clearMessage = logConsoleProgress(`Updating offer for ${offerResourceText}`);
 
   try {
-    if (userContext.authType === AuthType.AAD && !userContext.features.enableSDKoperations) {
+    if (userContext.authType === AuthType.AAD && !userContext.features.enableSDKoperations && !isFabric()) {
       if (params.collectionId) {
         updatedOffer = await updateCollectionOfferWithARM(params);
       } else if (userContext.apiType === "Tables") {

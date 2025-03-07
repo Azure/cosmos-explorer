@@ -17,7 +17,7 @@ import {
 } from "Explorer/Tree/treeNodeUtil";
 import { useDatabases } from "Explorer/useDatabases";
 import { useSelectedNode } from "Explorer/useSelectedNode";
-import { FabricContext, updateUserContext } from "UserContext";
+import { FabricContext, updateUserContext, UserContext } from "UserContext";
 import PromiseSource from "Utils/PromiseSource";
 import { useSidePanel } from "hooks/useSidePanel";
 import { useTabs } from "hooks/useTabs";
@@ -361,9 +361,30 @@ describe("createDatabaseTreeNodes", () => {
     });
   });
 
-  it.each<[string, Platform, boolean, Partial<DataModels.DatabaseAccountExtendedProperties>]>([
-    ["the SQL API, on Fabric", Platform.Fabric, false, { capabilities: [], enableMultipleWriteLocations: true }],
-    ["the SQL API, on Portal", Platform.Portal, false, { capabilities: [], enableMultipleWriteLocations: true }],
+  it.each<[string, Platform, boolean, Partial<DataModels.DatabaseAccountExtendedProperties>, Partial<UserContext>]>([
+    [
+      "the SQL API, on Fabric read-only",
+      Platform.Fabric,
+      false,
+      { capabilities: [], enableMultipleWriteLocations: true },
+      { fabricContext: { isReadOnly: true } as FabricContext<CosmosDbArtifactType> },
+    ],
+    [
+      "the SQL API, on Fabric non read-only",
+      Platform.Fabric,
+      false,
+      { capabilities: [], enableMultipleWriteLocations: true },
+      { fabricContext: { isReadOnly: false } as FabricContext<CosmosDbArtifactType> },
+    ],
+    [
+      "the SQL API, on Portal",
+      Platform.Portal,
+      false,
+      { capabilities: [], enableMultipleWriteLocations: true },
+      {
+        fabricContext: undefined,
+      },
+    ],
     [
       "the Cassandra API, serverless, on Hosted",
       Platform.Hosted,
@@ -374,6 +395,7 @@ describe("createDatabaseTreeNodes", () => {
           { name: CapabilityNames.EnableServerless, description: "" },
         ],
       },
+      { fabricContext: undefined },
     ],
     [
       "the Mongo API, with Notebooks and Phoenix features, on Emulator",
@@ -382,26 +404,31 @@ describe("createDatabaseTreeNodes", () => {
       {
         capabilities: [{ name: CapabilityNames.EnableMongo, description: "" }],
       },
+      { fabricContext: undefined },
     ],
-  ])("generates the correct tree structure for %s", (_, platform, isNotebookEnabled, dbAccountProperties) => {
-    useNotebook.setState({ isPhoenixFeatures: isNotebookEnabled });
-    updateConfigContext({ platform });
-    updateUserContext({
-      databaseAccount: {
-        properties: {
-          enableMultipleWriteLocations: true,
-          ...dbAccountProperties,
-        },
-      } as unknown as DataModels.DatabaseAccount,
-    });
-    const nodes = createDatabaseTreeNodes(
-      explorer,
-      isNotebookEnabled,
-      useDatabases.getState().databases,
-      refreshActiveTab,
-    );
-    expect(nodes).toMatchSnapshot();
-  });
+  ])(
+    "generates the correct tree structure for %s",
+    (_, platform, isNotebookEnabled, dbAccountProperties, userContext) => {
+      useNotebook.setState({ isPhoenixFeatures: isNotebookEnabled });
+      updateConfigContext({ platform });
+      updateUserContext({
+        ...userContext,
+        databaseAccount: {
+          properties: {
+            enableMultipleWriteLocations: true,
+            ...dbAccountProperties,
+          },
+        } as unknown as DataModels.DatabaseAccount,
+      });
+      const nodes = createDatabaseTreeNodes(
+        explorer,
+        isNotebookEnabled,
+        useDatabases.getState().databases,
+        refreshActiveTab,
+      );
+      expect(nodes).toMatchSnapshot();
+    },
+  );
 
   // The above tests focused on the tree structure. The below tests focus on some core behaviors of the nodes.
   // They are not exhaustive, because exhaustive tests here require a lot of mocking and can become very brittle.
@@ -559,6 +586,7 @@ describe("createDatabaseTreeNodes", () => {
             updateUserContext({
               fabricContext: {
                 artifactType: CosmosDbArtifactType.MIRRORED_KEY,
+                isReadOnly: true,
               } as FabricContext<CosmosDbArtifactType>,
             });
           },
