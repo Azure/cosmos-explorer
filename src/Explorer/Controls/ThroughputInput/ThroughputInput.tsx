@@ -35,12 +35,20 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
   setIsThroughputCapExceeded,
   onCostAcknowledgeChange,
 }: ThroughputInputProps) => {
-  const defaultThroughput: number =
+  let defaultThroughput: number;
+  const workloadType: Constants.WorkloadType = getWorkloadType();
+
+  if (
     isFreeTier ||
     isQuickstart ||
-    [Constants.WorkloadType.Learning, Constants.WorkloadType.DevelopmentTesting].includes(getWorkloadType())
-      ? AutoPilotUtils.autoPilotThroughput1K
-      : AutoPilotUtils.autoPilotThroughput4K;
+    [Constants.WorkloadType.Learning, Constants.WorkloadType.DevelopmentTesting].includes(workloadType)
+  ) {
+    defaultThroughput = AutoPilotUtils.autoPilotThroughput1K;
+  } else if (workloadType === Constants.WorkloadType.Production) {
+    defaultThroughput = AutoPilotUtils.autoPilotThroughput10K;
+  } else {
+    defaultThroughput = AutoPilotUtils.autoPilotThroughput4K;
+  }
 
   const [isAutoscaleSelected, setIsAutoScaleSelected] = useState<boolean>(true);
   const [throughput, setThroughput] = useState<number>(defaultThroughput);
