@@ -844,10 +844,10 @@ function checkAndUpdateSelectedRegionalEndpoint() {
     if (validEndpoint) {
       updateUserContext({
         selectedRegionalEndpoint: storedRegionalEndpoint,
-        writeEnabledInSelectedRegion: validWriteEndpoint ? true : false,
+        writeEnabledInSelectedRegion: !!validWriteEndpoint,
         refreshCosmosClient: true,
       });
-      useClientWriteEnabled.setState({ clientWriteEnabled: validWriteEndpoint ? true : false });
+      useClientWriteEnabled.setState({ clientWriteEnabled: !!validWriteEndpoint });
     } else {
       LocalStorageUtility.removeEntry(StorageKey.SelectedRegionalEndpoint);
       updateUserContext({
