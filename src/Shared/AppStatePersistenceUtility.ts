@@ -1,6 +1,7 @@
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
-import { userContext } from "UserContext";
+import { updateUserContext, userContext } from "UserContext";
+import { useClientWriteEnabled } from "hooks/useClientWriteEnabled";
 import * as ViewModels from "../Contracts/ViewModels";
 import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
 
@@ -10,6 +11,7 @@ export enum AppStateComponentNames {
   MostRecentActivity = "MostRecentActivity",
   QueryCopilot = "QueryCopilot",
   DataExplorerAction = "DataExplorerAction",
+  SelectedRegionalEndpoint = "SelectedRegionalEndpoint",
 }
 
 // Subcomponent for DataExplorerAction
@@ -125,6 +127,13 @@ export const createKeyFromPath = (path: StorePath): string => {
  */
 export const deleteAllStates = (): void => {
   LocalStorageUtility.removeEntry(StorageKey.AppState);
+  // Reset interface elements depending on AppState
+  updateUserContext({
+    selectedRegionalEndpoint: undefined,
+    writeEnabledInSelectedRegion: true,
+    refreshCosmosClient: true,
+  });
+  useClientWriteEnabled.setState({ clientWriteEnabled: true });
 };
 
 // Convenience functions
