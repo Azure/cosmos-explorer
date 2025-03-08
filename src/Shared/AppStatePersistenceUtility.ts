@@ -128,12 +128,7 @@ export const createKeyFromPath = (path: StorePath): string => {
 export const deleteAllStates = (): void => {
   LocalStorageUtility.removeEntry(StorageKey.AppState);
   // Reset interface elements depending on AppState
-  updateUserContext({
-    selectedRegionalEndpoint: undefined,
-    writeEnabledInSelectedRegion: true,
-    refreshCosmosClient: true,
-  });
-  useClientWriteEnabled.setState({ clientWriteEnabled: true });
+  resetInterfaceContext();
 };
 
 // Convenience functions
@@ -224,4 +219,13 @@ export const deleteSubComponentState = (
     databaseName: collection.databaseId,
     containerName: collection.id(),
   });
+};
+
+const resetInterfaceContext = (): void => {
+  updateUserContext({
+    selectedRegionalEndpoint: undefined,
+    writeEnabledInSelectedRegion: true,
+    refreshCosmosClient: true,
+  });
+  useClientWriteEnabled.setState({ clientWriteEnabled: true });
 };
