@@ -17,6 +17,9 @@ import { useSelectedNode } from "Explorer/useSelectedNode";
 import { isFabricMirroredKey, scheduleRefreshFabricToken } from "Platform/Fabric/FabricUtil";
 import {
   AppStateComponentNames,
+  deleteState,
+  hasState,
+  loadState,
   OPEN_TABS_SUBCOMPONENT_NAME,
   readSubComponentState,
 } from "Shared/AppStatePersistenceUtility";
@@ -833,8 +836,12 @@ function updateAADEndpoints(portalEnv: PortalEnv) {
 }
 
 function checkAndUpdateSelectedRegionalEndpoint() {
-  if (LocalStorageUtility.hasItem(StorageKey.SelectedRegionalEndpoint)) {
-    const storedRegionalEndpoint = LocalStorageUtility.getEntryString(StorageKey.SelectedRegionalEndpoint);
+  const accountName = userContext.databaseAccount?.name;
+  if (hasState({ componentName: AppStateComponentNames.SelectedRegionalEndpoint, globalAccountName: accountName })) {
+    const storedRegionalEndpoint = loadState({
+      componentName: AppStateComponentNames.SelectedRegionalEndpoint,
+      globalAccountName: accountName,
+    }) as string;
     const validEndpoint = userContext.databaseAccount?.properties?.readLocations?.find(
       (loc) => loc.documentEndpoint === storedRegionalEndpoint,
     );
@@ -849,7 +856,7 @@ function checkAndUpdateSelectedRegionalEndpoint() {
       });
       useClientWriteEnabled.setState({ clientWriteEnabled: !!validWriteEndpoint });
     } else {
-      LocalStorageUtility.removeEntry(StorageKey.SelectedRegionalEndpoint);
+      deleteState({ componentName: AppStateComponentNames.SelectedRegionalEndpoint, globalAccountName: accountName });
       updateUserContext({
         writeEnabledInSelectedRegion: true,
       });

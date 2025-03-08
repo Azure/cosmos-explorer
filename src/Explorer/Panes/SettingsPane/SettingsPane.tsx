@@ -23,7 +23,14 @@ import { InfoTooltip } from "Common/Tooltip/InfoTooltip";
 import { Platform, configContext } from "ConfigContext";
 import { useDialog } from "Explorer/Controls/Dialog";
 import { useDatabases } from "Explorer/useDatabases";
-import { deleteAllStates } from "Shared/AppStatePersistenceUtility";
+import {
+  AppStateComponentNames,
+  deleteAllStates,
+  deleteState,
+  hasState,
+  loadState,
+  saveState,
+} from "Shared/AppStatePersistenceUtility";
 import {
   DefaultRUThreshold,
   LocalStorageUtility,
@@ -147,8 +154,14 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
       : "false",
   );
   const [selectedRegionalEndpoint, setSelectedRegionalEndpoint] = useState<string>(
-    LocalStorageUtility.hasItem(StorageKey.SelectedRegionalEndpoint)
-      ? LocalStorageUtility.getEntryString(StorageKey.SelectedRegionalEndpoint)
+    hasState({
+      componentName: AppStateComponentNames.SelectedRegionalEndpoint,
+      globalAccountName: userContext.databaseAccount?.name,
+    })
+      ? (loadState({
+          componentName: AppStateComponentNames.SelectedRegionalEndpoint,
+          globalAccountName: userContext.databaseAccount?.name,
+        }) as string)
       : "",
   );
   const [retryAttempts, setRetryAttempts] = useState<number>(
@@ -320,11 +333,17 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
       }
     }
 
-    const storedRegionalEndpoint = LocalStorageUtility.getEntryString(StorageKey.SelectedRegionalEndpoint);
+    const storedRegionalEndpoint = loadState({
+      componentName: AppStateComponentNames.SelectedRegionalEndpoint,
+      globalAccountName: userContext.databaseAccount?.name,
+    }) as string;
     const selectedRegionIsGlobal =
       selectedRegionalEndpoint === userContext?.databaseAccount?.properties?.documentEndpoint;
     if (selectedRegionIsGlobal && storedRegionalEndpoint) {
-      LocalStorageUtility.removeEntry(StorageKey.SelectedRegionalEndpoint);
+      deleteState({
+        componentName: AppStateComponentNames.SelectedRegionalEndpoint,
+        globalAccountName: userContext.databaseAccount?.name,
+      });
       updateUserContext({
         selectedRegionalEndpoint: undefined,
         writeEnabledInSelectedRegion: true,
@@ -336,7 +355,13 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
       !selectedRegionIsGlobal &&
       selectedRegionalEndpoint !== storedRegionalEndpoint
     ) {
-      LocalStorageUtility.setEntryString(StorageKey.SelectedRegionalEndpoint, selectedRegionalEndpoint);
+      saveState(
+        {
+          componentName: AppStateComponentNames.SelectedRegionalEndpoint,
+          globalAccountName: userContext.databaseAccount?.name,
+        },
+        selectedRegionalEndpoint,
+      );
       const validWriteEndpoint = userContext.databaseAccount?.properties?.writeLocations?.find(
         (loc) => loc.documentEndpoint === selectedRegionalEndpoint,
       );
@@ -1038,6 +1063,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                       <li>Reset your customized tab layout, including the splitter positions</li>
                       <li>Erase your table column preferences, including any custom columns</li>
                       <li>Clear your filter history</li>
+                      <li>Reset region selection to global</li>
                     </ul>
                   </>,
                 );
