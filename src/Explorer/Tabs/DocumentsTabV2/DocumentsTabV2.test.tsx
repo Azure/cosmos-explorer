@@ -2,6 +2,7 @@ import { FeedResponse, ItemDefinition, Resource } from "@azure/cosmos";
 import { waitFor } from "@testing-library/react";
 import { deleteDocuments } from "Common/dataAccess/deleteDocument";
 import { Platform, updateConfigContext } from "ConfigContext";
+import { CosmosDbArtifactType } from "Contracts/FabricMessagesContract";
 import { useDialog } from "Explorer/Controls/Dialog";
 import { EditorReactProps } from "Explorer/Controls/Editor/EditorReact";
 import { ProgressModalDialog } from "Explorer/Controls/ProgressModalDialog";
@@ -341,10 +342,15 @@ describe("Documents tab (noSql API)", () => {
     updateConfigContext({ platform: Platform.Fabric });
     updateUserContext({
       fabricContext: {
-        connectionId: "test",
-        databaseConnectionInfo: undefined,
+        databaseName: "database",
+        artifactInfo: {
+          connectionId: "test",
+          resourceTokenInfo: undefined,
+        },
+        artifactType: CosmosDbArtifactType.MIRRORED_KEY,
         isReadOnly: true,
         isVisible: true,
+        fabricClientRpcVersion: "rpcVersion",
       },
     });
 

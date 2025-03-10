@@ -3,6 +3,7 @@ import * as Constants from "Common/Constants";
 import { configContext, Platform } from "ConfigContext";
 import * as DataModels from "Contracts/DataModels";
 import { getFullTextLanguageOptions } from "Explorer/Controls/FullTextSeach/FullTextPoliciesComponent";
+import { isFabricNative } from "Platform/Fabric/FabricUtil";
 import React from "react";
 import { userContext } from "UserContext";
 
@@ -84,7 +85,7 @@ export function UniqueKeysHeader(): JSX.Element {
 }
 
 export function shouldShowAnalyticalStoreOptions(): boolean {
-  if (configContext.platform === Platform.Emulator) {
+  if (isFabricNative() || configContext.platform === Platform.Emulator) {
     return false;
   }
 

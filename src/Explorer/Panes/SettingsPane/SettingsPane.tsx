@@ -32,6 +32,7 @@ import {
 } from "Shared/StorageUtility";
 import * as StringUtility from "Shared/StringUtility";
 import { updateUserContext, userContext } from "UserContext";
+import { isDataplaneRbacSupported } from "Utils/APITypeUtils";
 import { acquireMsalTokenForAccount } from "Utils/AuthorizationUtils";
 import { logConsoleError, logConsoleInfo } from "Utils/NotificationConsoleUtils";
 import * as PriorityBasedExecutionUtils from "Utils/PriorityBasedExecutionUtils";
@@ -183,7 +184,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
   const shouldShowCrossPartitionOption = userContext.apiType !== "Gremlin" && !isEmulator;
   const shouldShowParallelismOption = userContext.apiType !== "Gremlin" && !isEmulator;
   const showEnableEntraIdRbac =
-    userContext.apiType === "SQL" &&
+    isDataplaneRbacSupported(userContext.apiType) &&
     userContext.authType === AuthType.AAD &&
     configContext.platform !== Platform.Fabric &&
     !isEmulator;

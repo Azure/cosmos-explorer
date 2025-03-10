@@ -1,13 +1,15 @@
 import * as Cosmos from "@azure/cosmos";
 import { getAuthorizationTokenUsingResourceTokens } from "Common/getAuthorizationTokenUsingResourceTokens";
+import { CosmosDbArtifactType } from "Contracts/FabricMessagesContract";
 import { AuthorizationToken } from "Contracts/FabricMessageTypes";
-import { checkDatabaseResourceTokensValidity } from "Platform/Fabric/FabricUtil";
+import { checkDatabaseResourceTokensValidity, isFabricMirroredKey } from "Platform/Fabric/FabricUtil";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { AuthType } from "../AuthType";
 import { PriorityLevel } from "../Common/Constants";
 import * as Logger from "../Common/Logger";
 import { Platform, configContext } from "../ConfigContext";
-import { updateUserContext, userContext } from "../UserContext";
+import { FabricArtifactInfo, updateUserContext, userContext } from "../UserContext";
+import { isDataplaneRbacSupported } from "../Utils/APITypeUtils";
 import { logConsoleError } from "../Utils/NotificationConsoleUtils";
 import * as PriorityBasedExecutionUtils from "../Utils/PriorityBasedExecutionUtils";
 import { EmulatorMasterKey, HttpHeaders } from "./Constants";
@@ -18,7 +20,7 @@ const _global = typeof self === "undefined" ? window : self;
 export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
   const { verb, resourceId, resourceType, headers } = requestInfo;
 
-  const dataPlaneRBACOptionEnabled = userContext.dataPlaneRbacEnabled && userContext.apiType === "SQL";
+  const dataPlaneRBACOptionEnabled = userContext.dataPlaneRbacEnabled && isDataplaneRbacSupported(userContext.apiType);
   if (userContext.features.enableAadDataPlane || dataPlaneRBACOptionEnabled) {
     Logger.logInfo(
       `AAD Data Plane Feature flag set to ${userContext.features.enableAadDataPlane} for account with disable local auth ${userContext.databaseAccount.properties.disableLocalAuth} `,
@@ -41,7 +43,7 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
     return decodeURIComponent(headers.authorization);
   }
 
-  if (configContext.platform === Platform.Fabric) {
+  if (isFabricMirroredKey()) {
     switch (requestInfo.resourceType) {
       case Cosmos.ResourceType.conflicts:
       case Cosmos.ResourceType.container:
@@ -53,8 +55,13 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
         // User resource tokens
         // TODO userContext.fabricContext.databaseConnectionInfo can be undefined
         headers[HttpHeaders.msDate] = new Date().toUTCString();
-        const resourceTokens = userContext.fabricContext.databaseConnectionInfo.resourceTokens;
-        checkDatabaseResourceTokensValidity(userContext.fabricContext.databaseConnectionInfo.resourceTokensTimestamp);
+        const resourceTokens = (
+          userContext.fabricContext.artifactInfo as FabricArtifactInfo[CosmosDbArtifactType.MIRRORED_KEY]
+        ).resourceTokenInfo.resourceTokens;
+        checkDatabaseResourceTokensValidity(
+          (userContext.fabricContext.artifactInfo as FabricArtifactInfo[CosmosDbArtifactType.MIRRORED_KEY])
+            .resourceTokenInfo.resourceTokensTimestamp,
+        );
         return getAuthorizationTokenUsingResourceTokens(resourceTokens, requestInfo.path, requestInfo.resourceId);
 
       case Cosmos.ResourceType.none:
@@ -65,7 +72,9 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
         // For now, these operations aren't used, so fetching the authorization token is commented out.
         // This provider must return a real token to pass validation by the client, so we return the cached resource token
         // (which is a valid token, but won't work for these operations).
-        const resourceTokens2 = userContext.fabricContext.databaseConnectionInfo.resourceTokens;
+        const resourceTokens2 = (
+          userContext.fabricContext.artifactInfo as FabricArtifactInfo[CosmosDbArtifactType.MIRRORED_KEY]
+        ).resourceTokenInfo.resourceTokens;
         return getAuthorizationTokenUsingResourceTokens(resourceTokens2, requestInfo.path, requestInfo.resourceId);
 
       /* ************** TODO: Uncomment this code if we need to support these operations **************

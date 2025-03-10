@@ -1,5 +1,6 @@
 import {
   Button,
+  makeStyles,
   Menu,
   MenuButton,
   MenuButtonProps,
@@ -7,15 +8,14 @@ import {
   MenuList,
   MenuPopover,
   MenuTrigger,
-  SplitButton,
-  makeStyles,
   mergeClasses,
   shorthands,
+  SplitButton,
 } from "@fluentui/react-components";
 import { Add16Regular, ArrowSync12Regular, ChevronLeft12Regular, ChevronRight12Regular } from "@fluentui/react-icons";
 import { MaterializedViewsLabels } from "Common/Constants";
 import { isMaterializedViewsEnabled } from "Common/DatabaseAccountUtility";
-import { Platform, configContext } from "ConfigContext";
+import { configContext, Platform } from "ConfigContext";
 import Explorer from "Explorer/Explorer";
 import { AddDatabasePanel } from "Explorer/Panes/AddDatabasePanel/AddDatabasePanel";
 import {
@@ -27,6 +27,7 @@ import { CosmosFluentProvider, cosmosShorthands, tokens } from "Explorer/Theme/T
 import { ResourceTree } from "Explorer/Tree/ResourceTree";
 import { useDatabases } from "Explorer/useDatabases";
 import { KeyboardAction, KeyboardActionGroup, KeyboardActionHandler, useKeyboardActionGroup } from "KeyboardShortcuts";
+import { isFabric, isFabricMirrored, isFabricNative } from "Platform/Fabric/FabricUtil";
 import { userContext } from "UserContext";
 import { getCollectionName, getDatabaseName } from "Utils/APITypeUtils";
 import { Allotment, AllotmentHandle } from "allotment";
@@ -129,7 +130,7 @@ const GlobalCommands: React.FC<GlobalCommandsProps> = ({ explorer }) => {
 
   const actions = useMemo<GlobalCommand[]>(() => {
     if (
-      configContext.platform === Platform.Fabric ||
+      (isFabric() && userContext.fabricContext?.isReadOnly) ||
       userContext.apiType === "Postgres" ||
       userContext.apiType === "VCoreMongo"
     ) {
@@ -143,12 +144,15 @@ const GlobalCommands: React.FC<GlobalCommandsProps> = ({ explorer }) => {
         id: "new_collection",
         label: `New ${getCollectionName()}`,
         icon: <Add16Regular />,
-        onClick: () => explorer.onNewCollectionClicked(),
+        onClick: () => {
+          const databaseId = isFabricNative() ? userContext.fabricContext?.databaseName : undefined;
+          explorer.onNewCollectionClicked({ databaseId });
+        },
         keyboardAction: KeyboardAction.NEW_COLLECTION,
       },
     ];
 
-    if (userContext.apiType !== "Tables") {
+    if (configContext.platform !== Platform.Fabric && userContext.apiType !== "Tables") {
       actions.push({
         id: "new_database",
         label: `New ${getDatabaseName()}`,
@@ -313,7 +317,7 @@ export const SidebarContainer: React.FC<SidebarProps> = ({ explorer }) => {
   }, [setLoading]);
 
   const hasGlobalCommands = !(
-    configContext.platform === Platform.Fabric ||
+    isFabricMirrored() ||
     userContext.apiType === "Postgres" ||
     userContext.apiType === "VCoreMongo"
   );
