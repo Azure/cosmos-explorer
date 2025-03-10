@@ -26,6 +26,10 @@ import {
   scrollToSection,
   shouldShowAnalyticalStoreOptions,
 } from "Explorer/Panes/AddCollectionPanel/AddCollectionPanelUtility";
+import {
+  chooseSourceContainerStyle,
+  chooseSourceContainerStyles,
+} from "Explorer/Panes/AddMaterializedViewPanel/AddMaterializedViewPanelStyles";
 import { AddMVAdvancedComponent } from "Explorer/Panes/AddMaterializedViewPanel/AddMVAdvancedComponent";
 import { AddMVAnalyticalStoreComponent } from "Explorer/Panes/AddMaterializedViewPanel/AddMVAnalyticalStoreComponent";
 import { AddMVFullTextSearchComponent } from "Explorer/Panes/AddMaterializedViewPanel/AddMVFullTextSearchComponent";
@@ -321,11 +325,11 @@ export const AddMaterializedViewPanel = (props: AddMaterializedViewPanelProps): 
             </Text>
           </Stack>
           <Dropdown
-            placeholder="Choose existing container"
+            placeholder="Choose source container"
             options={sourceContainerOptions}
             defaultSelectedKey={sourceContainer?.rid}
-            styles={{ title: { height: 27, lineHeight: 27 }, dropdownItem: { fontSize: 12 } }}
-            style={{ width: 300, fontSize: 12 }}
+            styles={chooseSourceContainerStyles()}
+            style={chooseSourceContainerStyle()}
             onChange={(_, options: IDropdownOption) => setSelectedSourceContainer(options.data as Collection)}
           />
           <Separator className="panelSeparator" />
@@ -377,7 +381,7 @@ export const AddMaterializedViewPanel = (props: AddMaterializedViewPanelProps): 
             placeholder={"SELECT c.email, c.accountId FROM c"}
             size={40}
             className="panelTextField"
-            value={definition}
+            value={definition || ""}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => setDefinition(event.target.value)}
           />
           <AddMVPartitionKeyComponent
@@ -418,9 +422,9 @@ export const AddMaterializedViewPanel = (props: AddMaterializedViewPanelProps): 
           )}
           <AddMVAdvancedComponent {...{ useHashV1, setUseHashV1, setSubPartitionKeys }} />
         </Stack>
-        <PanelFooterComponent buttonLabel="OK" isButtonDisabled={isThroughputCapExceeded} />
-        {isExecuting && <PanelLoadingScreen />}
       </div>
+      <PanelFooterComponent buttonLabel="OK" isButtonDisabled={isThroughputCapExceeded} />
+      {isExecuting && <PanelLoadingScreen />}
     </form>
   );
 };

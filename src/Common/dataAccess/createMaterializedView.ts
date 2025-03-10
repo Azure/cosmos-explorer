@@ -10,7 +10,7 @@ import {
 } from "Utils/arm/generatedClients/cosmos/types";
 import { logConsoleInfo, logConsoleProgress } from "Utils/NotificationConsoleUtils";
 
-export const createMaterializedView = async (params: CreateMaterializedViewsParams): Promise<any> => {
+export const createMaterializedView = async (params: CreateMaterializedViewsParams): Promise<Collection> => {
   const clearMessage = logConsoleProgress(
     `Creating a new materialized view ${params.materializedViewId} for database ${params.databaseId}`,
   );
