@@ -1,5 +1,11 @@
+import { MaterializedViewsLabels } from "Common/Constants";
+import { isMaterializedViewsEnabled } from "Common/DatabaseAccountUtility";
 import { configContext, Platform } from "ConfigContext";
 import { TreeNodeMenuItem } from "Explorer/Controls/TreeComponent/TreeNodeComponent";
+import {
+  AddMaterializedViewPanel,
+  AddMaterializedViewPanelProps,
+} from "Explorer/Panes/AddMaterializedViewPanel/AddMaterializedViewPanel";
 import { useDatabases } from "Explorer/useDatabases";
 import { isFabric, isFabricNative } from "Platform/Fabric/FabricUtil";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
@@ -161,6 +167,24 @@ export const createCollectionContextMenuButton = (
       },
       label: `Delete ${getCollectionName()}`,
       styleClass: "deleteCollectionMenuItem",
+    });
+  }
+
+  if (isMaterializedViewsEnabled() && !selectedCollection.materializedViewDefinition()) {
+    items.push({
+      label: MaterializedViewsLabels.NewMaterializedView,
+      onClick: () => {
+        const addMaterializedViewPanelProps: AddMaterializedViewPanelProps = {
+          explorer: container,
+          sourceContainer: selectedCollection,
+        };
+        useSidePanel
+          .getState()
+          .openSidePanel(
+            MaterializedViewsLabels.NewMaterializedView,
+            <AddMaterializedViewPanel {...addMaterializedViewPanelProps} />,
+          );
+      },
     });
   }
 
