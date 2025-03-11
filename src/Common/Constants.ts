@@ -530,6 +530,10 @@ export class ariaLabelForLearnMoreLink {
   public static readonly AzureSynapseLink = "Learn more about Azure Synapse Link.";
 }
 
+export class FeedbackLabels {
+  public static readonly provideFeedback: string = "Provide feedback";
+}
+
 export const QueryCopilotSampleDatabaseId = "CopilotSampleDB";
 export const QueryCopilotSampleContainerId = "SampleContainer";
 
