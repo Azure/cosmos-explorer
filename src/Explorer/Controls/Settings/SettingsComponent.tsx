@@ -1281,6 +1281,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
     const materializedViewComponentProps: MaterializedViewComponentProps = {
       collection: this.collection,
+      explorer: this.props.settingsTab.getContainer(),
     };
 
     const tabs: SettingsV2TabInfo[] = [];

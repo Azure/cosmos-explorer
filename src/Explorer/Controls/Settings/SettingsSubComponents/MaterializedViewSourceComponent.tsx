@@ -1,15 +1,22 @@
 import { PrimaryButton } from "@fluentui/react";
+import Explorer from "Explorer/Explorer";
 import { loadMonaco } from "Explorer/LazyMonaco";
+import { AddMaterializedViewPanel } from "Explorer/Panes/AddMaterializedViewPanel/AddMaterializedViewPanel";
 import { useDatabases } from "Explorer/useDatabases";
+import { useSidePanel } from "hooks/useSidePanel";
 import * as monaco from "monaco-editor";
 import React, { useEffect, useRef } from "react";
 import * as ViewModels from "../../../../Contracts/ViewModels";
 
 export interface MaterializedViewSourceComponentProps {
   collection: ViewModels.Collection;
+  explorer: Explorer;
 }
 
-export const MaterializedViewSourceComponent: React.FC<MaterializedViewSourceComponentProps> = ({ collection }) => {
+export const MaterializedViewSourceComponent: React.FC<MaterializedViewSourceComponentProps> = ({
+  collection,
+  explorer,
+}) => {
   const editorContainerRef = useRef<HTMLDivElement>(null);
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor>(null);
 
@@ -89,7 +96,14 @@ export const MaterializedViewSourceComponent: React.FC<MaterializedViewSourceCom
       <PrimaryButton
         text="Add view"
         styles={{ root: { width: "fit-content", marginTop: 12 } }}
-        onClick={() => console.log("Add view clicked")}
+        onClick={() =>
+          useSidePanel
+            .getState()
+            .openSidePanel(
+              "Add Materialized View",
+              <AddMaterializedViewPanel explorer={explorer} sourceContainer={collection} />,
+            )
+        }
       />
     </div>
   );
