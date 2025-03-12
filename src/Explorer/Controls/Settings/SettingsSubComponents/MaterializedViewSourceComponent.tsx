@@ -51,7 +51,9 @@ export const MaterializedViewSourceComponent: React.FC<MaterializedViewSourceCom
     let disposed = false;
     const initMonaco = async () => {
       const monacoInstance = await loadMonaco();
-      if (disposed || !editorContainerRef.current) return;
+      if (disposed || !editorContainerRef.current) {
+        return;
+      }
 
       editorRef.current = monacoInstance.editor.create(editorContainerRef.current, {
         value: jsonValue,
@@ -86,11 +88,7 @@ export const MaterializedViewSourceComponent: React.FC<MaterializedViewSourceCom
           overflow: "hidden",
         }}
       />
-      <PrimaryButton
-        text="Add view"
-        styles={{ root: { width: "fit-content", marginTop: 12 } }}
-        onClick={() => console.log("Add view clicked")}
-      />
+      <PrimaryButton text="Add view" styles={{ root: { width: "fit-content", marginTop: 12 } }} onClick={() => {}} />
     </div>
   );
 };
