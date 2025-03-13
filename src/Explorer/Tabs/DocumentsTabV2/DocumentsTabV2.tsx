@@ -49,6 +49,7 @@ import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { userContext } from "UserContext";
 import { logConsoleError, logConsoleInfo } from "Utils/NotificationConsoleUtils";
 import { Allotment } from "allotment";
+import { useClientWriteEnabled } from "hooks/useClientWriteEnabled";
 import React, { KeyboardEventHandler, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { format } from "react-string-format";
 import DeleteDocumentIcon from "../../../../images/DeleteDocument.svg";
@@ -296,6 +297,7 @@ export type ButtonsDependencies = {
   selectedRows: Set<TableRowId>;
   editorState: ViewModels.DocumentExplorerState;
   isPreferredApiMongoDB: boolean;
+  clientWriteEnabled: boolean;
   onNewDocumentClick: UiKeyboardEvent;
   onSaveNewDocumentClick: UiKeyboardEvent;
   onRevertNewDocumentClick: UiKeyboardEvent;
@@ -319,6 +321,7 @@ const createUploadButton = (container: Explorer): CommandButtonComponentProps =>
     hasPopup: true,
     disabled:
       useSelectedNode.getState().isDatabaseNodeOrNoneSelected() ||
+      !useClientWriteEnabled.getState().clientWriteEnabled ||
       useSelectedNode.getState().isQueryCopilotCollectionSelected(),
   };
 };
@@ -337,6 +340,7 @@ export const getTabsButtons = ({
   selectedRows,
   editorState,
   isPreferredApiMongoDB,
+  clientWriteEnabled,
   onNewDocumentClick,
   onSaveNewDocumentClick,
   onRevertNewDocumentClick,
@@ -362,6 +366,7 @@ export const getTabsButtons = ({
       hasPopup: false,
       disabled:
         !getNewDocumentButtonState(editorState).enabled ||
+        !clientWriteEnabled ||
         useSelectedNode.getState().isQueryCopilotCollectionSelected(),
       id: NEW_DOCUMENT_BUTTON_ID,
     });
@@ -379,6 +384,7 @@ export const getTabsButtons = ({
       hasPopup: false,
       disabled:
         !getSaveNewDocumentButtonState(editorState).enabled ||
+        !clientWriteEnabled ||
         useSelectedNode.getState().isQueryCopilotCollectionSelected(),
       id: SAVE_BUTTON_ID,
     });
@@ -413,6 +419,7 @@ export const getTabsButtons = ({
       hasPopup: false,
       disabled:
         !getSaveExistingDocumentButtonState(editorState).enabled ||
+        !clientWriteEnabled ||
         useSelectedNode.getState().isQueryCopilotCollectionSelected(),
       id: UPDATE_BUTTON_ID,
     });
@@ -445,7 +452,7 @@ export const getTabsButtons = ({
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: false,
-      disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
+      disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected() || !clientWriteEnabled,
       id: DELETE_BUTTON_ID,
     });
   }
@@ -619,6 +626,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   );
 
   // State
+  const clientWriteEnabled = useClientWriteEnabled((state) => state.clientWriteEnabled);
   const [tabStateData, setTabStateData] = useState<TabDivider>(() =>
     readDocumentsTabSubComponentState<TabDivider>(SubComponentName.MainTabDivider, _collection, {
       leftPaneWidthPercent: 35,
@@ -856,6 +864,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
       selectedRows,
       editorState,
       isPreferredApiMongoDB,
+      clientWriteEnabled,
       onNewDocumentClick,
       onSaveNewDocumentClick,
       onRevertNewDocumentClick,
@@ -1270,6 +1279,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
         selectedRows,
         editorState,
         isPreferredApiMongoDB,
+        clientWriteEnabled,
         onNewDocumentClick,
         onSaveNewDocumentClick,
         onRevertNewDocumentClick,
@@ -1282,6 +1292,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
       selectedRows,
       editorState,
       isPreferredApiMongoDB,
+      clientWriteEnabled,
       onNewDocumentClick,
       onSaveNewDocumentClick,
       onRevertNewDocumentClick,
