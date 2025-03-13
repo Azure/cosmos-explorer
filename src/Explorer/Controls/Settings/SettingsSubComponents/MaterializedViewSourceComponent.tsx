@@ -1,4 +1,5 @@
 import { PrimaryButton } from "@fluentui/react";
+import { MaterializedViewsLabels } from "Common/Constants";
 import Explorer from "Explorer/Explorer";
 import { loadMonaco } from "Explorer/LazyMonaco";
 import { AddMaterializedViewPanel } from "Explorer/Panes/AddMaterializedViewPanel/AddMaterializedViewPanel";
@@ -100,7 +101,7 @@ export const MaterializedViewSourceComponent: React.FC<MaterializedViewSourceCom
           useSidePanel
             .getState()
             .openSidePanel(
-              "Add Materialized View",
+              MaterializedViewsLabels.NewMaterializedView,
               <AddMaterializedViewPanel explorer={explorer} sourceContainer={collection} />,
             )
         }
