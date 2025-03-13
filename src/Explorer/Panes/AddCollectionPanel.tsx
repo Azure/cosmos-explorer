@@ -28,6 +28,7 @@ import {
 import { VectorEmbeddingPoliciesComponent } from "Explorer/Controls/VectorSearch/VectorEmbeddingPoliciesComponent";
 import { useSidePanel } from "hooks/useSidePanel";
 import { useTeachingBubble } from "hooks/useTeachingBubble";
+import { isFabricNative } from "Platform/Fabric/FabricUtil";
 import React from "react";
 import { CollectionCreation } from "Shared/Constants";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
@@ -284,150 +285,152 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
         )}
 
         <div className="panelMainContent">
-          <Stack hidden={userContext.apiType === "Tables"}>
-            <Stack horizontal>
-              <span className="mandatoryStar">*&nbsp;</span>
-              <Text className="panelTextBold" variant="small">
-                Database {userContext.apiType === "Mongo" ? "name" : "id"}
-              </Text>
-              <TooltipHost
-                directionalHint={DirectionalHint.bottomLeftEdge}
-                content={`A database is analogous to a namespace. It is the unit of management for a set of ${getCollectionName(
-                  true,
-                ).toLocaleLowerCase()}.`}
-              >
-                <Icon
-                  iconName="Info"
-                  className="panelInfoIcon"
-                  tabIndex={0}
-                  ariaLabel={`A database is analogous to a namespace. It is the unit of management for a set of ${getCollectionName(
+          {!(isFabricNative() && this.props.databaseId !== undefined) && (
+            <Stack hidden={userContext.apiType === "Tables"}>
+              <Stack horizontal>
+                <span className="mandatoryStar">*&nbsp;</span>
+                <Text className="panelTextBold" variant="small">
+                  Database {userContext.apiType === "Mongo" ? "name" : "id"}
+                </Text>
+                <TooltipHost
+                  directionalHint={DirectionalHint.bottomLeftEdge}
+                  content={`A database is analogous to a namespace. It is the unit of management for a set of ${getCollectionName(
                     true,
                   ).toLocaleLowerCase()}.`}
-                />
-              </TooltipHost>
-            </Stack>
-
-            {configContext.platform !== Platform.Fabric && (
-              <Stack horizontal verticalAlign="center">
-                <div role="radiogroup">
-                  <input
-                    className="panelRadioBtn"
-                    checked={this.state.createNewDatabase}
-                    aria-label="Create new database"
-                    aria-checked={this.state.createNewDatabase}
-                    name="databaseType"
-                    type="radio"
-                    role="radio"
-                    id="databaseCreateNew"
+                >
+                  <Icon
+                    iconName="Info"
+                    className="panelInfoIcon"
                     tabIndex={0}
-                    onChange={this.onCreateNewDatabaseRadioBtnChange.bind(this)}
+                    ariaLabel={`A database is analogous to a namespace. It is the unit of management for a set of ${getCollectionName(
+                      true,
+                    ).toLocaleLowerCase()}.`}
                   />
-                  <span className="panelRadioBtnLabel">Create new</span>
-
-                  <input
-                    className="panelRadioBtn"
-                    checked={!this.state.createNewDatabase}
-                    aria-label="Use existing database"
-                    aria-checked={!this.state.createNewDatabase}
-                    name="databaseType"
-                    type="radio"
-                    role="radio"
-                    tabIndex={0}
-                    onChange={this.onUseExistingDatabaseRadioBtnChange.bind(this)}
-                  />
-                  <span className="panelRadioBtnLabel">Use existing</span>
-                </div>
+                </TooltipHost>
               </Stack>
-            )}
 
-            {this.state.createNewDatabase && (
-              <Stack className="panelGroupSpacing">
-                <input
-                  name="newDatabaseId"
-                  id="newDatabaseId"
-                  aria-required
-                  required
-                  type="text"
-                  autoComplete="off"
-                  pattern="[^/?#\\]*[^/?# \\]"
-                  title="May not end with space nor contain characters '\' '/' '#' '?'"
-                  placeholder="Type a new database id"
-                  size={40}
-                  className="panelTextField"
-                  aria-label="New database id, Type a new database id"
-                  autoFocus
-                  tabIndex={0}
-                  value={this.state.newDatabaseId}
-                  onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                    this.setState({ newDatabaseId: event.target.value })
-                  }
-                />
-
-                {!isServerlessAccount() && (
-                  <Stack horizontal>
-                    <Checkbox
-                      label={`Share throughput across ${getCollectionName(true).toLocaleLowerCase()}`}
-                      checked={this.state.isSharedThroughputChecked}
-                      styles={{
-                        text: { fontSize: 12 },
-                        checkbox: { width: 12, height: 12 },
-                        label: { padding: 0, alignItems: "center" },
-                      }}
-                      onChange={(ev: React.FormEvent<HTMLElement>, isChecked: boolean) =>
-                        this.setState({ isSharedThroughputChecked: isChecked })
-                      }
+              {configContext.platform !== Platform.Fabric && (
+                <Stack horizontal verticalAlign="center">
+                  <div role="radiogroup">
+                    <input
+                      className="panelRadioBtn"
+                      checked={this.state.createNewDatabase}
+                      aria-label="Create new database"
+                      aria-checked={this.state.createNewDatabase}
+                      name="databaseType"
+                      type="radio"
+                      role="radio"
+                      id="databaseCreateNew"
+                      tabIndex={0}
+                      onChange={this.onCreateNewDatabaseRadioBtnChange.bind(this)}
                     />
-                    <TooltipHost
-                      directionalHint={DirectionalHint.bottomLeftEdge}
-                      content={`Throughput configured at the database level will be shared across all ${getCollectionName(
-                        true,
-                      ).toLocaleLowerCase()} within the database.`}
-                    >
-                      <Icon
-                        iconName="Info"
-                        className="panelInfoIcon"
-                        tabIndex={0}
-                        ariaLabel={`Throughput configured at the database level will be shared across all ${getCollectionName(
+                    <span className="panelRadioBtnLabel">Create new</span>
+
+                    <input
+                      className="panelRadioBtn"
+                      checked={!this.state.createNewDatabase}
+                      aria-label="Use existing database"
+                      aria-checked={!this.state.createNewDatabase}
+                      name="databaseType"
+                      type="radio"
+                      role="radio"
+                      tabIndex={0}
+                      onChange={this.onUseExistingDatabaseRadioBtnChange.bind(this)}
+                    />
+                    <span className="panelRadioBtnLabel">Use existing</span>
+                  </div>
+                </Stack>
+              )}
+
+              {this.state.createNewDatabase && (
+                <Stack className="panelGroupSpacing">
+                  <input
+                    name="newDatabaseId"
+                    id="newDatabaseId"
+                    aria-required
+                    required
+                    type="text"
+                    autoComplete="off"
+                    pattern="[^/?#\\]*[^/?# \\]"
+                    title="May not end with space nor contain characters '\' '/' '#' '?'"
+                    placeholder="Type a new database id"
+                    size={40}
+                    className="panelTextField"
+                    aria-label="New database id, Type a new database id"
+                    autoFocus
+                    tabIndex={0}
+                    value={this.state.newDatabaseId}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                      this.setState({ newDatabaseId: event.target.value })
+                    }
+                  />
+
+                  {!isServerlessAccount() && (
+                    <Stack horizontal>
+                      <Checkbox
+                        label={`Share throughput across ${getCollectionName(true).toLocaleLowerCase()}`}
+                        checked={this.state.isSharedThroughputChecked}
+                        styles={{
+                          text: { fontSize: 12 },
+                          checkbox: { width: 12, height: 12 },
+                          label: { padding: 0, alignItems: "center" },
+                        }}
+                        onChange={(ev: React.FormEvent<HTMLElement>, isChecked: boolean) =>
+                          this.setState({ isSharedThroughputChecked: isChecked })
+                        }
+                      />
+                      <TooltipHost
+                        directionalHint={DirectionalHint.bottomLeftEdge}
+                        content={`Throughput configured at the database level will be shared across all ${getCollectionName(
                           true,
                         ).toLocaleLowerCase()} within the database.`}
-                      />
-                    </TooltipHost>
-                  </Stack>
-                )}
+                      >
+                        <Icon
+                          iconName="Info"
+                          className="panelInfoIcon"
+                          tabIndex={0}
+                          ariaLabel={`Throughput configured at the database level will be shared across all ${getCollectionName(
+                            true,
+                          ).toLocaleLowerCase()} within the database.`}
+                        />
+                      </TooltipHost>
+                    </Stack>
+                  )}
 
-                {!isServerlessAccount() && this.state.isSharedThroughputChecked && (
-                  <ThroughputInput
-                    showFreeTierExceedThroughputTooltip={this.isFreeTierAccount() && !isFirstResourceCreated}
-                    isDatabase={true}
-                    isSharded={this.state.isSharded}
-                    isFreeTier={this.isFreeTierAccount()}
-                    isQuickstart={this.props.isQuickstart}
-                    setThroughputValue={(throughput: number) => (this.newDatabaseThroughput = throughput)}
-                    setIsAutoscale={(isAutoscale: boolean) => (this.isNewDatabaseAutoscale = isAutoscale)}
-                    setIsThroughputCapExceeded={(isThroughputCapExceeded: boolean) =>
-                      this.setState({ isThroughputCapExceeded })
-                    }
-                    onCostAcknowledgeChange={(isAcknowledge: boolean) => (this.isCostAcknowledged = isAcknowledge)}
-                  />
-                )}
-              </Stack>
-            )}
-            {!this.state.createNewDatabase && (
-              <Dropdown
-                ariaLabel="Choose an existing database"
-                styles={{ title: { height: 27, lineHeight: 27 }, dropdownItem: { fontSize: 12 } }}
-                style={{ width: 300, fontSize: 12 }}
-                placeholder="Choose an existing database"
-                options={this.getDatabaseOptions()}
-                onChange={(event: React.FormEvent<HTMLDivElement>, database: IDropdownOption) =>
-                  this.setState({ selectedDatabaseId: database.key as string })
-                }
-                defaultSelectedKey={this.props.databaseId}
-                responsiveMode={999}
-              />
-            )}
-            <Separator className="panelSeparator" />
-          </Stack>
+                  {!isServerlessAccount() && this.state.isSharedThroughputChecked && (
+                    <ThroughputInput
+                      showFreeTierExceedThroughputTooltip={this.isFreeTierAccount() && !isFirstResourceCreated}
+                      isDatabase={true}
+                      isSharded={this.state.isSharded}
+                      isFreeTier={this.isFreeTierAccount()}
+                      isQuickstart={this.props.isQuickstart}
+                      setThroughputValue={(throughput: number) => (this.newDatabaseThroughput = throughput)}
+                      setIsAutoscale={(isAutoscale: boolean) => (this.isNewDatabaseAutoscale = isAutoscale)}
+                      setIsThroughputCapExceeded={(isThroughputCapExceeded: boolean) =>
+                        this.setState({ isThroughputCapExceeded })
+                      }
+                      onCostAcknowledgeChange={(isAcknowledge: boolean) => (this.isCostAcknowledged = isAcknowledge)}
+                    />
+                  )}
+                </Stack>
+              )}
+              {!this.state.createNewDatabase && (
+                <Dropdown
+                  ariaLabel="Choose an existing database"
+                  styles={{ title: { height: 27, lineHeight: 27 }, dropdownItem: { fontSize: 12 } }}
+                  style={{ width: 300, fontSize: 12 }}
+                  placeholder="Choose an existing database"
+                  options={this.getDatabaseOptions()}
+                  onChange={(event: React.FormEvent<HTMLDivElement>, database: IDropdownOption) =>
+                    this.setState({ selectedDatabaseId: database.key as string })
+                  }
+                  defaultSelectedKey={this.props.databaseId}
+                  responsiveMode={999}
+                />
+              )}
+              <Separator className="panelSeparator" />
+            </Stack>
+          )}
 
           <Stack>
             <Stack horizontal>
@@ -666,7 +669,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                     </Stack>
                   );
                 })}
-              {userContext.apiType === "SQL" && (
+              {!isFabricNative() && userContext.apiType === "SQL" && (
                 <Stack className="panelGroupSpacing">
                   <DefaultButton
                     styles={{ root: { padding: 0, width: 200, height: 30 }, label: { fontSize: 12 } }}
@@ -747,7 +750,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             />
           )}
 
-          {userContext.apiType === "SQL" && (
+          {!isFabricNative() && userContext.apiType === "SQL" && (
             <Stack>
               <Stack horizontal>
                 <Text className="panelTextBold" variant="small">
@@ -937,7 +940,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               </CollapsibleSectionComponent>
             </Stack>
           )}
-          {userContext.apiType !== "Tables" && (
+          {!isFabricNative() && userContext.apiType !== "Tables" && (
             <CollapsibleSectionComponent
               title="Advanced"
               isExpandedByDefault={false}
@@ -1260,7 +1263,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
   // }
 
   private shouldShowCollectionThroughputInput(): boolean {
-    if (isServerlessAccount()) {
+    if (isFabricNative() || isServerlessAccount()) {
       return false;
     }
 
@@ -1286,7 +1289,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
   }
 
   private shouldShowAnalyticalStoreOptions(): boolean {
-    if (configContext.platform === Platform.Emulator) {
+    if (isFabricNative() || configContext.platform === Platform.Emulator) {
       return false;
     }
 

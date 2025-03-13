@@ -4,16 +4,8 @@ import { configContext, resetConfigContext, updateConfigContext } from "../Confi
 import { DatabaseAccount } from "../Contracts/DataModels";
 import { Collection } from "../Contracts/ViewModels";
 import DocumentId from "../Explorer/Tree/DocumentId";
-import { extractFeatures } from "../Platform/Hosted/extractFeatures";
 import { updateUserContext } from "../UserContext";
-import {
-  deleteDocument,
-  getEndpoint,
-  getFeatureEndpointOrDefault,
-  queryDocuments,
-  readDocument,
-  updateDocument,
-} from "./MongoProxyClient";
+import { deleteDocuments, getEndpoint, queryDocuments, readDocument, updateDocument } from "./MongoProxyClient";
 
 const databaseId = "testDB";
 
@@ -196,20 +188,8 @@ describe("MongoProxyClient", () => {
         expect.any(Object),
       );
     });
-
-    it("builds the correct proxy URL in development", () => {
-      updateConfigContext({
-        MONGO_BACKEND_ENDPOINT: "https://localhost:1234",
-        globallyEnabledMongoAPIs: [],
-      });
-      updateDocument(databaseId, collection, documentId, "{}");
-      expect(window.fetch).toHaveBeenCalledWith(
-        `${configContext.MONGO_PROXY_ENDPOINT}/api/mongo/explorer`,
-        expect.any(Object),
-      );
-    });
   });
-  describe("deleteDocument", () => {
+  describe("deleteDocuments", () => {
     beforeEach(() => {
       resetConfigContext();
       updateUserContext({
@@ -226,9 +206,9 @@ describe("MongoProxyClient", () => {
     });
 
     it("builds the correct URL", () => {
-      deleteDocument(databaseId, collection, documentId);
+      deleteDocuments(databaseId, collection, [documentId]);
       expect(window.fetch).toHaveBeenCalledWith(
-        `${configContext.MONGO_PROXY_ENDPOINT}/api/mongo/explorer`,
+        `${configContext.MONGO_PROXY_ENDPOINT}/api/mongo/explorer/bulkdelete`,
         expect.any(Object),
       );
     });
@@ -238,9 +218,9 @@ describe("MongoProxyClient", () => {
         MONGO_PROXY_ENDPOINT: "https://localhost:1234",
         globallyEnabledMongoAPIs: [],
       });
-      deleteDocument(databaseId, collection, documentId);
+      deleteDocuments(databaseId, collection, [documentId]);
       expect(window.fetch).toHaveBeenCalledWith(
-        `${configContext.MONGO_PROXY_ENDPOINT}/api/mongo/explorer`,
+        `${configContext.MONGO_PROXY_ENDPOINT}/api/mongo/explorer/bulkdelete`,
         expect.any(Object),
       );
     });
@@ -273,35 +253,6 @@ describe("MongoProxyClient", () => {
       });
       const endpoint = getEndpoint(configContext.MONGO_PROXY_ENDPOINT);
       expect(endpoint).toEqual(`${configContext.MONGO_PROXY_ENDPOINT}/api/connectionstring/mongo/explorer`);
-    });
-  });
-
-  describe("getFeatureEndpointOrDefault", () => {
-    beforeEach(() => {
-      resetConfigContext();
-      updateConfigContext({
-        MONGO_PROXY_ENDPOINT: MongoProxyEndpoints.Prod,
-        globallyEnabledMongoAPIs: [],
-      });
-      const params = new URLSearchParams({
-        "feature.mongoProxyEndpoint": MongoProxyEndpoints.Prod,
-        "feature.mongoProxyAPIs": "readDocument|createDocument",
-      });
-      const features = extractFeatures(params);
-      updateUserContext({
-        authType: AuthType.AAD,
-        features: features,
-      });
-    });
-
-    it("returns a local endpoint", () => {
-      const endpoint = getFeatureEndpointOrDefault("readDocument");
-      expect(endpoint).toEqual(`${configContext.MONGO_PROXY_ENDPOINT}/api/mongo/explorer`);
-    });
-
-    it("returns a production endpoint", () => {
-      const endpoint = getFeatureEndpointOrDefault("DeleteDocument");
-      expect(endpoint).toEqual(`${configContext.MONGO_PROXY_ENDPOINT}/api/mongo/explorer`);
     });
   });
 });

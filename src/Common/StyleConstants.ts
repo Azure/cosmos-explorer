@@ -1,10 +1,10 @@
-import { Platform, configContext } from "../ConfigContext";
+import { isFabric } from "Platform/Fabric/FabricUtil";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 export const StyleConstants = require("less-vars-loader!../../less/Common/Constants.less");
 
 export function updateStyles(): void {
-  if (configContext.platform === Platform.Fabric) {
+  if (isFabric()) {
     StyleConstants.AccentMediumHigh = StyleConstants.FabricAccentMediumHigh;
     StyleConstants.AccentMedium = StyleConstants.FabricAccentMedium;
     StyleConstants.AccentLight = StyleConstants.FabricAccentLight;

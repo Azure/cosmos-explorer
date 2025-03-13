@@ -1,3 +1,4 @@
+import { isFabric } from "Platform/Fabric/FabricUtil";
 import { Platform, configContext } from "./../ConfigContext";
 
 export const getDataExplorerWindow = (currentWindow: Window): Window | undefined => {
@@ -7,7 +8,7 @@ export const getDataExplorerWindow = (currentWindow: Window): Window | undefined
       if (currentWindow.parent === currentWindow) {
         return undefined;
       }
-      if (configContext.platform === Platform.Fabric && currentWindow.parent.parent === currentWindow.top) {
+      if (isFabric() && currentWindow.parent.parent === currentWindow.top) {
         // in Fabric data explorer is inside an extension iframe, so we have two parent iframes
         return currentWindow;
       }

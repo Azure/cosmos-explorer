@@ -6,6 +6,7 @@ import StoredProcedure from "Explorer/Tree/StoredProcedure";
 import Trigger from "Explorer/Tree/Trigger";
 import UserDefinedFunction from "Explorer/Tree/UserDefinedFunction";
 import { useDatabases } from "Explorer/useDatabases";
+import { isFabricMirrored } from "Platform/Fabric/FabricUtil";
 import { getItemName } from "Utils/APITypeUtils";
 import { isServerlessAccount } from "Utils/CapabilityUtils";
 import { useTabs } from "hooks/useTabs";
@@ -22,9 +23,7 @@ import { useNotebook } from "../Notebook/useNotebook";
 import { useSelectedNode } from "../useSelectedNode";
 
 export const shouldShowScriptNodes = (): boolean => {
-  return (
-    configContext.platform !== Platform.Fabric && (userContext.apiType === "SQL" || userContext.apiType === "Gremlin")
-  );
+  return !isFabricMirrored() && (userContext.apiType === "SQL" || userContext.apiType === "Gremlin");
 };
 
 const TreeDatabaseIcon = <DatabaseRegular fontSize={16} />;
