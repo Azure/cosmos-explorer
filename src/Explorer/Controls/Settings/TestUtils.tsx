@@ -46,8 +46,6 @@ export const collection = {
       query: "query",
     },
   ]),
-  materializedViews: ko.observable<DataModels.MaterializedView[]>([] as DataModels.MaterializedView[]),
-  materializedViewDefinition: ko.observable<DataModels.MaterializedViewDefinition>({} as DataModels.MaterializedViewDefinition),
   vectorEmbeddingPolicy: ko.observable<DataModels.VectorEmbeddingPolicy>({} as DataModels.VectorEmbeddingPolicy),
   fullTextPolicy: ko.observable<DataModels.FullTextPolicy>({} as DataModels.FullTextPolicy),
   materializedViews: ko.observable<DataModels.MaterializedView[]>([
