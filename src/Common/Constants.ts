@@ -533,6 +533,9 @@ export class ariaLabelForLearnMoreLink {
 export class MaterializedViewsLabels {
   public static readonly NewMaterializedView: string = "New Materialized View";
 }
+export class FeedbackLabels {
+  public static readonly provideFeedback: string = "Provide feedback";
+}
 
 export const QueryCopilotSampleDatabaseId = "CopilotSampleDB";
 export const QueryCopilotSampleContainerId = "SampleContainer";

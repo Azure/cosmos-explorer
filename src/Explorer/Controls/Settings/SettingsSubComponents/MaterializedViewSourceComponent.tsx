@@ -59,7 +59,9 @@ export const MaterializedViewSourceComponent: React.FC<MaterializedViewSourceCom
     let disposed = false;
     const initMonaco = async () => {
       const monacoInstance = await loadMonaco();
-      if (disposed || !editorContainerRef.current) return;
+      if (disposed || !editorContainerRef.current) {
+        return;
+      }
 
       editorRef.current = monacoInstance.editor.create(editorContainerRef.current, {
         value: jsonValue,
