@@ -13,9 +13,15 @@ import {
   SplitButton,
 } from "@fluentui/react-components";
 import { Add16Regular, ArrowSync12Regular, ChevronLeft12Regular, ChevronRight12Regular } from "@fluentui/react-icons";
+import { MaterializedViewsLabels } from "Common/Constants";
+import { isMaterializedViewsEnabled } from "Common/DatabaseAccountUtility";
 import { configContext, Platform } from "ConfigContext";
 import Explorer from "Explorer/Explorer";
 import { AddDatabasePanel } from "Explorer/Panes/AddDatabasePanel/AddDatabasePanel";
+import {
+  AddMaterializedViewPanel,
+  AddMaterializedViewPanelProps,
+} from "Explorer/Panes/AddMaterializedViewPanel/AddMaterializedViewPanel";
 import { Tabs } from "Explorer/Tabs/Tabs";
 import { CosmosFluentProvider, cosmosShorthands, tokens } from "Explorer/Theme/ThemeUtil";
 import { ResourceTree } from "Explorer/Tree/ResourceTree";
@@ -159,6 +165,25 @@ const GlobalCommands: React.FC<GlobalCommandsProps> = ({ explorer }) => {
           useSidePanel.getState().openSidePanel("New " + getDatabaseName(), <AddDatabasePanel explorer={explorer} />);
         },
         keyboardAction: KeyboardAction.NEW_DATABASE,
+      });
+    }
+
+    if (isMaterializedViewsEnabled()) {
+      const addMaterializedViewPanelProps: AddMaterializedViewPanelProps = {
+        explorer,
+      };
+
+      actions.push({
+        id: "new_materialized_view",
+        label: MaterializedViewsLabels.NewMaterializedView,
+        icon: <Add16Regular />,
+        onClick: () =>
+          useSidePanel
+            .getState()
+            .openSidePanel(
+              MaterializedViewsLabels.NewMaterializedView,
+              <AddMaterializedViewPanel {...addMaterializedViewPanelProps} />,
+            ),
       });
     }
 

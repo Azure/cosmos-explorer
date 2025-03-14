@@ -530,6 +530,9 @@ export class ariaLabelForLearnMoreLink {
   public static readonly AzureSynapseLink = "Learn more about Azure Synapse Link.";
 }
 
+export class MaterializedViewsLabels {
+  public static readonly NewMaterializedView: string = "New Materialized View";
+}
 export class FeedbackLabels {
   public static readonly provideFeedback: string = "Provide feedback";
 }

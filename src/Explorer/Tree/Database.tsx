@@ -19,7 +19,7 @@ import { logConsoleError } from "../../Utils/NotificationConsoleUtils";
 import { useSidePanel } from "../../hooks/useSidePanel";
 import { useTabs } from "../../hooks/useTabs";
 import Explorer from "../Explorer";
-import { AddCollectionPanel } from "../Panes/AddCollectionPanel";
+import { AddCollectionPanel } from "../Panes/AddCollectionPanel/AddCollectionPanel";
 import { DatabaseSettingsTabV2 } from "../Tabs/SettingsTabV2";
 import { useDatabases } from "../useDatabases";
 import { useSelectedNode } from "../useSelectedNode";
