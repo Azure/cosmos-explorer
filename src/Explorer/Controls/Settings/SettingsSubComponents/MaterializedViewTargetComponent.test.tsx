@@ -1,11 +1,12 @@
 import { Text } from "@fluentui/react";
+import { Collection } from "Contracts/ViewModels";
 import { shallow } from "enzyme";
 import React from "react";
 import { collection } from "../TestUtils";
 import { MaterializedViewTargetComponent } from "./MaterializedViewTargetComponent";
 
 describe("MaterializedViewTargetComponent", () => {
-  let testCollection: any;
+  let testCollection: Collection;
 
   beforeEach(() => {
     testCollection = {
