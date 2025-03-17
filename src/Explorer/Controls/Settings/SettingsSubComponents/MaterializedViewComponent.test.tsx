@@ -1,12 +1,13 @@
 import { shallow } from "enzyme";
 import React from "react";
-import { collection } from "../TestUtils";
+import { collection, container } from "../TestUtils";
 import { MaterializedViewComponent } from "./MaterializedViewComponent";
 import { MaterializedViewSourceComponent } from "./MaterializedViewSourceComponent";
 import { MaterializedViewTargetComponent } from "./MaterializedViewTargetComponent";
 
 describe("MaterializedViewComponent", () => {
   let testCollection: typeof collection;
+  let testExplorer: typeof container;
 
   beforeEach(() => {
     testCollection = { ...collection };
@@ -18,7 +19,7 @@ describe("MaterializedViewComponent", () => {
       { id: "view2", _rid: "rid2" },
     ]);
     testCollection.materializedViewDefinition(null);
-    const wrapper = shallow(<MaterializedViewComponent collection={testCollection} />);
+    const wrapper = shallow(<MaterializedViewComponent collection={testCollection} explorer={testExplorer} />);
     expect(wrapper.find(MaterializedViewSourceComponent).exists()).toBe(true);
     expect(wrapper.find(MaterializedViewTargetComponent).exists()).toBe(false);
   });
@@ -30,7 +31,7 @@ describe("MaterializedViewComponent", () => {
       sourceCollectionId: "source1",
       sourceCollectionRid: "rid123",
     });
-    const wrapper = shallow(<MaterializedViewComponent collection={testCollection} />);
+    const wrapper = shallow(<MaterializedViewComponent collection={testCollection} explorer={testExplorer} />);
     expect(wrapper.find(MaterializedViewSourceComponent).exists()).toBe(false);
     expect(wrapper.find(MaterializedViewTargetComponent).exists()).toBe(true);
   });
@@ -38,7 +39,7 @@ describe("MaterializedViewComponent", () => {
   it("renders neither component when both are missing", () => {
     testCollection.materializedViews(null);
     testCollection.materializedViewDefinition(null);
-    const wrapper = shallow(<MaterializedViewComponent collection={testCollection} />);
+    const wrapper = shallow(<MaterializedViewComponent collection={testCollection} explorer={testExplorer} />);
     expect(wrapper.find(MaterializedViewSourceComponent).exists()).toBe(false);
     expect(wrapper.find(MaterializedViewTargetComponent).exists()).toBe(false);
   });
