@@ -3,12 +3,15 @@
  */
 
 import { Terminal } from "xterm";
+import { TerminalKind } from "../../../Contracts/ViewModels";
 import { userContext } from "../../../UserContext";
 import { AttachAddon } from "./AttachAddOn";
+import { getCommands } from "./Commands";
 import { authorizeSession, connectTerminal, getNormalizedRegion, getUserSettings, provisionConsole, putEphemeralUserSettings, registerCloudShellProvider, validateUserSettings, verifyCloudshellProviderRegistration } from "./Data";
 import { LogError, LogInfo } from "./LogFormatter";
+import { listKeys } from "Utils/arm/generatedClients/cosmos/databaseAccounts";
 
-export const startCloudShellterminal = async (xterminal: Terminal, initCommands: string, authorizationToken: any) => {
+export const startCloudShellterminal = async (xterminal: Terminal, shellType: TerminalKind) => {
 
     // validate that the subscription id is registered in the Cloudshell namespace
     try {
@@ -43,9 +46,12 @@ export const startCloudShellterminal = async (xterminal: Terminal, initCommands:
         return{};
     }
 
-    const socket = new WebSocket(socketUri);
+    let socket = new WebSocket(socketUri);
 
-    configureSocket(socket, socketUri, xterminal, initCommands, 0);
+    let keys =  await listKeys(userContext.subscriptionId, userContext.resourceGroup, userContext.databaseAccount.name);
+
+    const initCommands = getCommands(shellType, keys.primaryMasterKey);
+    socket = configureSocket(socket, socketUri, xterminal, initCommands, 0);
 
     const attachAddon = new AttachAddon(socket);
     xterminal.loadAddon(attachAddon);

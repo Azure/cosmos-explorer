@@ -51,7 +51,16 @@ export const putEphemeralUserSettings = async (userSubscriptionId: string, userR
             preferredOsType: OsType.Linux,
             preferredShellType: ShellType.Bash,
             preferredLocation: userRegion,
-            networkType: NetworkType.Default,
+            terminalSettings: {
+                fontSize: "Medium",
+                fontStyle: "monospace"
+            },
+            vnetSettings: {
+                networkProfileResourceId: "/subscriptions/80be3961-0521-4a0a-8570-5cd5a4e2f98c/resourceGroups/neesharma-stage/providers/Microsoft.Network/networkProfiles/aci-networkProfile-eastus2",
+                relayNamespaceResourceId: "/subscriptions/80be3961-0521-4a0a-8570-5cd5a4e2f98c/resourceGroups/neesharma-stage/providers/Microsoft.Relay/namespaces/neesharma-stage-relay-namespace",
+                location: "eastus2"
+            },
+            networkType: NetworkType.Isolated,
             sessionType: SessionType.Ephemeral,
             userSubscription: userSubscriptionId,
         }

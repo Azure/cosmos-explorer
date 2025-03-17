@@ -3,8 +3,6 @@ import { Terminal } from "xterm";
 import { FitAddon } from 'xterm-addon-fit';
 import "xterm/css/xterm.css";
 import { TerminalKind } from "../../../Contracts/ViewModels";
-import { getAuthorizationHeader } from "../../../Utils/AuthorizationUtils";
-import { getCommands } from "./Commands";
 import { startCloudShellterminal } from "./UseTerminal";
 
 export interface CloudShellTerminalProps {
@@ -39,8 +37,7 @@ export const CloudShellTerminalComponent: React.FC<CloudShellTerminalProps> = ({
         const handleResize = () => fitAddon.fit();
         window.addEventListener('resize', handleResize);
 
-        const authorizationHeader = getAuthorizationHeader()
-        socketRef.current = startCloudShellterminal(term, getCommands(shellType), authorizationHeader.token);
+        socketRef.current = startCloudShellterminal(term, shellType);
     
         term.onData((data) => {
             if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
