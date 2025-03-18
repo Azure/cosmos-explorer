@@ -47,6 +47,7 @@ interface Options {
   body?: unknown;
   queryParams?: ARMQueryParams;
   contentType?: string;
+  customHeaders?: Record<string, string>;
 }
 
 export async function armRequestWithoutPolling<T>({
@@ -57,6 +58,7 @@ export async function armRequestWithoutPolling<T>({
   body: requestBody,
   queryParams,
   contentType,
+  customHeaders
 }: Options): Promise<{ result: T; operationStatusUrl: string }> {
   const url = new URL(path, host);
   url.searchParams.append("api-version", configContext.armAPIVersion || apiVersion);
@@ -65,7 +67,7 @@ export async function armRequestWithoutPolling<T>({
     queryParams.metricNames && url.searchParams.append("metricnames", queryParams.metricNames);
   }
 
-  if (!userContext.authorizationToken) {
+  if (!userContext.authorizationToken && !customHeaders["Authorization"]) {
     throw new Error("No authority token provided");
   }
 
@@ -74,6 +76,7 @@ export async function armRequestWithoutPolling<T>({
     headers: {
       Authorization: userContext.authorizationToken,
       [HttpHeaders.contentType]: contentType || "application/json",
+      ...customHeaders
     },
     body: requestBody ? JSON.stringify(requestBody) : undefined,
   });
@@ -96,8 +99,15 @@ export async function armRequestWithoutPolling<T>({
   }
 
   const operationStatusUrl = (response.headers && response.headers.get("location")) || "";
-  const responseBody = (await response.json()) as T;
-  return { result: responseBody, operationStatusUrl: operationStatusUrl };
+  if(!response || response.status === 204) {
+    return { result: {} as T, operationStatusUrl: operationStatusUrl };
+  }
+
+  const responseBody = await response.json().catch((error) => {
+    console.error("armRequestWithoutPolling: Error parsing JSON response:", error);
+    return response.text; // Return an empty object if JSON parsing fails
+  });
+  return { result: responseBody as T, operationStatusUrl: operationStatusUrl };
 }
 
 // TODO: This is very similar to what is happening in ResourceProviderClient.ts. Should probably merge them.
@@ -109,6 +119,7 @@ export async function armRequest<T>({
   body: requestBody,
   queryParams,
   contentType,
+  customHeaders
 }: Options): Promise<T> {
   const armRequestResult = await armRequestWithoutPolling<T>({
     host,
@@ -118,6 +129,7 @@ export async function armRequest<T>({
     body: requestBody,
     queryParams,
     contentType,
+    customHeaders
   });
   const operationStatusUrl = armRequestResult.operationStatusUrl;
   if (operationStatusUrl) {
@@ -206,6 +218,14 @@ export async function getOfferingIdsRequest<T>({
   }
 
   const operationStatusUrl = (response.headers && response.headers.get("location")) || "";
-  const responseBody = (await response.json()) as T;
-  return { result: responseBody, operationStatusUrl: operationStatusUrl };
+  if(!response || response.status === 204) {
+    return { result: {} as T, operationStatusUrl: operationStatusUrl };
+  }
+
+  const responseBody = await response.json().catch((error) => {
+    console.error("getOfferingIdsRequest: Error parsing JSON response:", error);
+    return response.text; // Return an empty object if JSON parsing fails
+  });
+
+  return { result: responseBody as T, operationStatusUrl: operationStatusUrl };
 }
