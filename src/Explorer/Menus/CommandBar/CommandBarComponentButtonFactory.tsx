@@ -125,13 +125,13 @@ export function createContextCommandBarButtons(
   const buttons: CommandButtonComponentProps[] = [];
 
   if (!selectedNodeState.isDatabaseNodeOrNoneSelected() && userContext.apiType === "Mongo") {
-    const label = useNotebook.getState().isShellEnabled ? "Open Mongo Shell" : "New Shell";
+    const label = (useNotebook.getState().isShellEnabled || userContext.features.enableCloudShell) ? "Open Mongo Shell" : "New Shell";
     const newMongoShellBtn: CommandButtonComponentProps = {
       iconSrc: HostedTerminalIcon,
       iconAlt: label,
       onCommandClick: () => {
         const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
-        if (useNotebook.getState().isShellEnabled) {
+        if (useNotebook.getState().isShellEnabled || userContext.features.enableCloudShell) {
           container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
         } else {
           selectedCollection && selectedCollection.onNewMongoShellClick();
@@ -145,7 +145,7 @@ export function createContextCommandBarButtons(
   }
 
   if (
-    useNotebook.getState().isShellEnabled &&
+    (useNotebook.getState().isShellEnabled || userContext.features.enableCloudShell) &&
     !selectedNodeState.isDatabaseNodeOrNoneSelected() &&
     userContext.apiType === "Cassandra"
   ) {
