@@ -4,10 +4,9 @@
 
 import { v4 as uuidv4 } from 'uuid';
 import { configContext } from "../../../ConfigContext";
+import { userContext } from '../../../UserContext';
 import { armRequest } from "../../../Utils/arm/request";
 import { Authorization, ConnectTerminalResponse, NetworkType, OsType, ProvisionConsoleResponse, SessionType, Settings, ShellType } from "./DataModels";
-
-const cloudshellToken = "";
 
 export const validateUserSettings = (userSettings: Settings) => {
     if (userSettings.sessionType !== SessionType.Ephemeral && userSettings.osType !== OsType.Linux) {
@@ -27,15 +26,21 @@ export const getUserRegion = async (subscriptionId: string, resourceGroup: strin
 
 };
 
+export const deleteUserSettings = async (): Promise<void> => {
+    await armRequest<void>({
+        host: configContext.ARM_ENDPOINT,
+        path: `/providers/Microsoft.Portal/userSettings/cloudconsole`,
+        method: "DELETE",
+        apiVersion: "2023-02-01-preview"
+      });
+};
+
 export const getUserSettings = async (): Promise<Settings> => {
     const resp = await armRequest<any>({
         host: configContext.ARM_ENDPOINT,
         path: `/providers/Microsoft.Portal/userSettings/cloudconsole`,
         method: "GET",
-        apiVersion: "2023-02-01-preview",
-        customHeaders: {
-            "Authorization": cloudshellToken // Temporily use a hardcoded token
-        }
+        apiVersion: "2023-02-01-preview"
       });
 
     return {
@@ -55,12 +60,7 @@ export const putEphemeralUserSettings = async (userSubscriptionId: string, userR
                 fontSize: "Medium",
                 fontStyle: "monospace"
             },
-            vnetSettings: {
-                networkProfileResourceId: "/subscriptions/80be3961-0521-4a0a-8570-5cd5a4e2f98c/resourceGroups/neesharma-stage/providers/Microsoft.Network/networkProfiles/aci-networkProfile-eastus2",
-                relayNamespaceResourceId: "/subscriptions/80be3961-0521-4a0a-8570-5cd5a4e2f98c/resourceGroups/neesharma-stage/providers/Microsoft.Relay/namespaces/neesharma-stage-relay-namespace",
-                location: "eastus2"
-            },
-            networkType: NetworkType.Isolated,
+            networkType: NetworkType.Default,
             sessionType: SessionType.Ephemeral,
             userSubscription: userSubscriptionId,
         }
@@ -71,25 +71,19 @@ export const putEphemeralUserSettings = async (userSubscriptionId: string, userR
         path: `/providers/Microsoft.Portal/userSettings/cloudconsole`,
         method: "PUT",
         apiVersion: "2023-02-01-preview",
-        body: ephemeralSettings,
-        customHeaders: {
-            "Authorization": cloudshellToken // Temporily use a hardcoded token
-        }
+        body: ephemeralSettings
       });
 
     return resp;
 
 };
 
-export const verifyCloudshellProviderRegistration = async(subscriptionId: string) => {
+export const verifyCloudShellProviderRegistration = async(subscriptionId: string) => {
     return await armRequest({
         host: configContext.ARM_ENDPOINT,
         path: `/subscriptions/${subscriptionId}/providers/Microsoft.CloudShell`,
         method: "GET",
-        apiVersion: "2022-12-01",
-        customHeaders: {
-            "Authorization": cloudshellToken // Temporily use a hardcoded token
-        }
+        apiVersion: "2022-12-01"
       });
 };
 
@@ -98,10 +92,7 @@ export const registerCloudShellProvider = async (subscriptionId: string) => {
         host: configContext.ARM_ENDPOINT,
         path: `/subscriptions/${subscriptionId}/providers/Microsoft.CloudShell/register`,
         method: "POST",
-        apiVersion: "2022-12-01",
-        customHeaders: {
-            "Authorization": cloudshellToken // Temporily use a hardcoded token
-        }
+        apiVersion: "2022-12-01"
       });
 };
 
@@ -118,8 +109,7 @@ export const provisionConsole = async (subscriptionId: string, location: string)
         method: "PUT",
         apiVersion: "2023-02-01-preview",
         customHeaders: {
-            'x-ms-console-preferred-location': location,
-            "Authorization": cloudshellToken  // Temporily use a hardcoded token
+            'x-ms-console-preferred-location': location
         },
         body: data,
       });
@@ -128,12 +118,12 @@ export const provisionConsole = async (subscriptionId: string, location: string)
 export const connectTerminal = async (consoleUri: string, size: { rows: number, cols: number }): Promise<ConnectTerminalResponse> => {
     const targetUri = consoleUri + `/terminals?cols=${size.cols}&rows=${size.rows}&version=2019-01-01&shell=bash`;
     const resp = await fetch(targetUri, {
-        method: "post",
+        method: "POST",
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
             'Content-Length': '2',
-            'Authorization': cloudshellToken,
+            'Authorization': userContext.authorizationToken,
             'x-ms-client-request-id': uuidv4(),
             'Accept-Language': getLocale(),
         },
@@ -145,10 +135,10 @@ export const connectTerminal = async (consoleUri: string, size: { rows: number, 
 export const authorizeSession = async (consoleUri: string): Promise<Authorization> => {
     const targetUri = consoleUri + "/authorize";
     const resp = await fetch(targetUri, {
-        method: "post",
+        method: "POST",
         headers: {
             'Accept': 'application/json',
-            'Authorization': cloudshellToken,
+            'Authorization': userContext.authorizationToken,
             'Accept-Language': getLocale(),
             "Content-Type": 'application/json'
         },

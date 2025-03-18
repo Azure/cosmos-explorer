@@ -114,8 +114,6 @@ export default class TerminalTab extends TabsBase {
     this.container = options.container;
     this.isAllPublicIPAddressesEnabled = ko.observable(true);
     
-    this.initializeNotebookTerminalAdapter(options);
-
     if (options.kind === ViewModels.TerminalKind.Postgres) {
       checkFirewallRules(
         "2022-11-08",
@@ -133,6 +131,9 @@ export default class TerminalTab extends TabsBase {
         this.isAllPublicIPAddressesEnabled,
       );
     }
+    
+    this.initializeNotebookTerminalAdapter(options);
+
   }
 
   private initializeNotebookTerminalAdapter(options: TerminalTabOptions): void {

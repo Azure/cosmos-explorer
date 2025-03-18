@@ -99,8 +99,15 @@ export async function armRequestWithoutPolling<T>({
   }
 
   const operationStatusUrl = (response.headers && response.headers.get("location")) || "";
-  const responseBody = (await response.json()) as T;
-  return { result: responseBody, operationStatusUrl: operationStatusUrl };
+  if(!response || response.status === 204) {
+    return { result: {} as T, operationStatusUrl: operationStatusUrl };
+  }
+
+  const responseBody = await response.json().catch((error) => {
+    console.error("armRequestWithoutPolling: Error parsing JSON response:", error);
+    return response.text; // Return an empty object if JSON parsing fails
+  });
+  return { result: responseBody as T, operationStatusUrl: operationStatusUrl };
 }
 
 // TODO: This is very similar to what is happening in ResourceProviderClient.ts. Should probably merge them.
@@ -211,6 +218,14 @@ export async function getOfferingIdsRequest<T>({
   }
 
   const operationStatusUrl = (response.headers && response.headers.get("location")) || "";
-  const responseBody = (await response.json()) as T;
-  return { result: responseBody, operationStatusUrl: operationStatusUrl };
+  if(!response || response.status === 204) {
+    return { result: {} as T, operationStatusUrl: operationStatusUrl };
+  }
+
+  const responseBody = await response.json().catch((error) => {
+    console.error("getOfferingIdsRequest: Error parsing JSON response:", error);
+    return response.text; // Return an empty object if JSON parsing fails
+  });
+
+  return { result: responseBody as T, operationStatusUrl: operationStatusUrl };
 }

@@ -3,7 +3,7 @@ import { Terminal } from "xterm";
 import { FitAddon } from 'xterm-addon-fit';
 import "xterm/css/xterm.css";
 import { TerminalKind } from "../../../Contracts/ViewModels";
-import { startCloudShellterminal } from "./UseTerminal";
+import { startCloudShellTerminal } from "./UseTerminal";
 
 export interface CloudShellTerminalProps {
     shellType: TerminalKind;
@@ -37,7 +37,7 @@ export const CloudShellTerminalComponent: React.FC<CloudShellTerminalProps> = ({
         const handleResize = () => fitAddon.fit();
         window.addEventListener('resize', handleResize);
 
-        socketRef.current = startCloudShellterminal(term, shellType);
+        socketRef.current = startCloudShellTerminal(term, shellType);
     
         term.onData((data) => {
             if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
