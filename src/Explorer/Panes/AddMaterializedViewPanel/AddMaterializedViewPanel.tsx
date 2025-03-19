@@ -214,7 +214,7 @@ export const AddMaterializedViewPanel = (props: AddMaterializedViewPanelProps): 
     const materializedViewIdTrimmed: string = materializedViewId.trim();
 
     const materializedViewDefinition: DataModels.MaterializedViewDefinition = {
-      sourceCollectionId: sourceContainer.id(),
+      sourceCollectionId: selectedSourceContainer.id(),
       definition: definition,
     };
 
@@ -327,7 +327,7 @@ export const AddMaterializedViewPanel = (props: AddMaterializedViewPanelProps): 
           <Dropdown
             placeholder="Choose source container"
             options={sourceContainerOptions}
-            defaultSelectedKey={sourceContainer?.rid}
+            defaultSelectedKey={selectedSourceContainer?.rid}
             styles={chooseSourceContainerStyles()}
             style={chooseSourceContainerStyle()}
             onChange={(_, options: IDropdownOption) => setSelectedSourceContainer(options.data as Collection)}
