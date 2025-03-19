@@ -17,7 +17,9 @@ export const MaterializedViewComponent: React.FC<MaterializedViewComponentProps>
   return (
     <Stack tokens={{ childrenGap: 8 }} styles={{ root: { maxWidth: 600 } }}>
       <Stack horizontal verticalAlign="center" wrap tokens={{ childrenGap: 8 }}>
-        <Text styles={{ root: { fontWeight: 600 } }}>This container has the following views defined for it.</Text>
+        {isSourceContainer && (
+          <Text styles={{ root: { fontWeight: 600 } }}>This container has the following views defined for it.</Text>
+        )}
         <Text>
           <Link
             target="_blank"
