@@ -124,7 +124,9 @@
     "./src/setupTests.ts",
     "./src/userContext.test.ts",
     "./src/Platform/Hosted/Components/SwitchAccount.tsx",
-    "./src/Platform/Hosted/Components/SwitchSubscription.tsx"
+    "./src/Platform/Hosted/Components/SwitchSubscription.tsx",
+    "./src/Common/Upload/Upload.tsx"
+
   ],
   "include": [
     "src/CellOutputViewer/transforms/**/*",
