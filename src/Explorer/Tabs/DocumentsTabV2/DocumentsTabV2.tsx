@@ -55,6 +55,7 @@ import DeleteDocumentIcon from "../../../../images/DeleteDocument.svg";
 import NewDocumentIcon from "../../../../images/NewDocument.svg";
 import UploadIcon from "../../../../images/Upload_16x16.svg";
 import DiscardIcon from "../../../../images/discard.svg";
+import RefreshIcon from "../../../../images/refresh-cosmos.svg";
 import SaveIcon from "../../../../images/save-cosmos.svg";
 import * as Constants from "../../../Common/Constants";
 import * as HeadersUtility from "../../../Common/HeadersUtility";
@@ -128,8 +129,15 @@ export const useDocumentsTabStyles = makeStyles({
     top: "6px",
     right: 0,
     float: "right",
-    backgroundColor: "white",
     zIndex: 1,
+  },
+  refreshBtn: {
+    position: "absolute",
+    top: "3px",
+    right: "4px",
+    float: "right",
+    zIndex: 1,
+    backgroundColor: "transparent",
   },
   deleteProgressContent: {
     paddingTop: tokens.spacingVerticalL,
@@ -2145,6 +2153,18 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                   />
                 </div>
               </div>
+              {!isPreferredApiMongoDB && (
+                <a
+                  title="Refresh"
+                  className={styles.refreshBtn}
+                  role="button"
+                  onClick={() => refreshDocumentsGrid(false)}
+                  aria-label="Refresh"
+                  tabIndex={0}
+                >
+                  <img src={RefreshIcon} alt="Refresh" />
+                </a>
+              )}
               {tableItems.length > 0 && (
                 <a
                   className={styles.loadMore}
