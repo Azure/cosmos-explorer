@@ -33,7 +33,7 @@ export interface InputTypeaheadComponentProps {
   /**
    * The current string value of <input>
    */
-  onNewValue?: (newValue: string) => void;
+  onNewValue: (newValue?: string) => void;
   // inputValue?:ko.Observable<string>;
 
   /**
@@ -55,7 +55,7 @@ export interface InputTypeaheadComponentProps {
   /**
    * This function gets called when pressing ENTER on the input box
    */
-  submitFct?: (inputValue: string, selection: Item) => void;
+  submitFct?: (inputValue?: string, selection?: Item) => void;
 
   /**
    * Typehead comes with a Search button that we normally remove.
@@ -76,7 +76,7 @@ export interface InputTypeaheadComponentProps {
 
 interface InputTypeaheadComponentState {
   isSuggestionVisible: boolean;
-  selectedChoice: Item;
+  selectedChoice?: Item;
   filteredChoices: Item[];
 }
 
@@ -96,21 +96,21 @@ export class InputTypeaheadComponent extends React.Component<
     };
   }
 
-  private onRenderCell = (item: Item): JSX.Element => {
+  private onRenderCell = (item?: Item): JSX.Element => {
     return (
       <div className="input-typeahead-chocies-container" onClick={() => this.onChoiceClick(item)}>
-        <p className="choice-caption">{item.caption}</p>
-        <span>{item.value}</span>
+        <p className="choice-caption">{item?.caption}</p>
+        <span>{item?.value}</span>
       </div>
     );
   };
 
-  private onChoiceClick = (item: Item): void => {
-    this.props.onNewValue(item.caption);
+  private onChoiceClick = (item?: Item): void => {
+    this.props.onNewValue(item?.caption);
     this.setState({ isSuggestionVisible: false, selectedChoice: item });
   };
 
-  private handleChange = (value: string): void => {
+  private handleChange = (value?: string): void => {
     if (!value) {
       this.setState({ isSuggestionVisible: true });
     }
@@ -130,7 +130,7 @@ export class InputTypeaheadComponent extends React.Component<
     }
   };
 
-  private filterChoiceByValue = (choices: Item[], searchKeyword: string): Item[] => {
+  private filterChoiceByValue = (choices: Item[], searchKeyword?: string): Item[] => {
     return choices.filter((choice) =>
       // @ts-ignore
       Object.keys(choice).some((key) => choice[key].toLowerCase().includes(searchKeyword.toLowerCase())),
@@ -138,7 +138,7 @@ export class InputTypeaheadComponent extends React.Component<
   };
 
   public render(): JSX.Element {
-    const { defaultValue, useTextarea, placeholder, onNewValue } = this.props;
+    const { defaultValue, useTextarea, placeholder, onNewValue, submitFct } = this.props;
     const { isSuggestionVisible, selectedChoice, filteredChoices } = this.state;
     const theme = getTheme();
 
@@ -188,7 +188,7 @@ export class InputTypeaheadComponent extends React.Component<
               styles={iconButtonStyles}
               iconProps={searchIcon}
               ariaLabel="Search Button"
-              onClick={() => this.props.submitFct(defaultValue, selectedChoice)}
+              onClick={() => submitFct && submitFct(defaultValue, selectedChoice)}
             />
           )}
         </Stack>
