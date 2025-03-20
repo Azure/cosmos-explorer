@@ -1,5 +1,10 @@
 import { NumberUiType, OnSaveResult, RefreshResult, SelfServeBaseClass, SmartUiInput } from "./SelfServeTypes";
-import { DecoratorProperties, mapToSmartUiDescriptor, updateContextWithDecorator } from "./SelfServeUtils";
+import {
+  DecoratorProperties,
+  mapToSmartUiDescriptor,
+  SelfServeType,
+  updateContextWithDecorator,
+} from "./SelfServeUtils";
 
 describe("SelfServeUtils", () => {
   it("initialize should be declared for self serve classes", () => {
@@ -7,6 +12,7 @@ describe("SelfServeUtils", () => {
       public initialize: () => Promise<Map<string, SmartUiInput>>;
       public onSave: (currentValues: Map<string, SmartUiInput>) => Promise<OnSaveResult>;
       public onRefresh: () => Promise<RefreshResult>;
+      public getSelfServeType: () => SelfServeType;
     }
     expect(() => new Test().toSelfServeDescriptor()).toThrow("initialize() was not declared for the class 'Test'");
   });
@@ -16,6 +22,7 @@ describe("SelfServeUtils", () => {
       public initialize = jest.fn();
       public onSave: () => Promise<OnSaveResult>;
       public onRefresh: () => Promise<RefreshResult>;
+      public getSelfServeType: () => SelfServeType;
     }
     expect(() => new Test().toSelfServeDescriptor()).toThrow("onSave() was not declared for the class 'Test'");
   });
@@ -25,6 +32,7 @@ describe("SelfServeUtils", () => {
       public initialize = jest.fn();
       public onSave = jest.fn();
       public onRefresh: () => Promise<RefreshResult>;
+      public getSelfServeType: () => SelfServeType;
     }
     expect(() => new Test().toSelfServeDescriptor()).toThrow("onRefresh() was not declared for the class 'Test'");
   });
@@ -34,6 +42,7 @@ describe("SelfServeUtils", () => {
       public initialize = jest.fn();
       public onSave = jest.fn();
       public onRefresh = jest.fn();
+      public getSelfServeType = jest.fn();
     }
     expect(() => new Test().toSelfServeDescriptor()).toThrow(
       "@IsDisplayable decorator was not declared for the class 'Test'",

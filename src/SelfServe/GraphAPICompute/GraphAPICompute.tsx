@@ -362,7 +362,7 @@ export default class GraphAPICompute extends SelfServeBaseClass {
 
   public getSelfServeType = (): SelfServeType => {
     return SelfServeType.graphapicompute;
-  }
+  };
 
   @Values({
     isDynamicDescription: true,

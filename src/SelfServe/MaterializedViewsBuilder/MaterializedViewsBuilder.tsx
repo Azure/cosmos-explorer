@@ -361,7 +361,7 @@ export default class MaterializedViewsBuilder extends SelfServeBaseClass {
 
   public getSelfServeType = (): SelfServeType => {
     return SelfServeType.materializedviewsbuilder;
-  }
+  };
 
   @Values({
     isDynamicDescription: true,

@@ -398,7 +398,7 @@ export default class SqlX extends SelfServeBaseClass {
 
   public getSelfServeType = (): SelfServeType => {
     return SelfServeType.sqlx;
-  }
+  };
 
   @Values({
     isDynamicDescription: true,

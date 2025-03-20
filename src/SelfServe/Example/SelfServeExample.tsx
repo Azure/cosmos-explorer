@@ -171,7 +171,7 @@ export default class SelfServeExample extends SelfServeBaseClass {
 
   public getSelfServeType = (): SelfServeType => {
     return SelfServeType.example;
-  }
+  };
 
   @Values({
     labelTKey: "DescriptionLabel",
