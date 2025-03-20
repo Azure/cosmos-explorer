@@ -2,7 +2,16 @@
  * @module SelfServe/Decorators
  */
 
-import { ChoiceItem, Description, Info, NumberUiType, OnChangeCallback, RefreshParams } from "./SelfServeTypes";
+import MaterializedViewsBuilder from "SelfServe/MaterializedViewsBuilder/MaterializedViewsBuilder";
+import {
+  ChoiceItem,
+  Description,
+  Info,
+  NumberUiType,
+  OnChangeCallback,
+  RefreshParams,
+  SelfServeBaseClass,
+} from "./SelfServeTypes";
 import { addPropertyToMap, buildSmartUiDescriptor, DecoratorProperties } from "./SelfServeUtils";
 
 type ValueOf<T> = T[keyof T];
@@ -128,14 +137,23 @@ const isDescriptionDisplayOptions = (inputOptions: InputOptions): inputOptions i
 };
 
 const addToMap = (...decorators: Decorator[]): PropertyDecorator => {
-  return (target, property) => {
-    let className = target.constructor.name;
+  //eslint-disable-next-line @typescript-eslint/ban-types
+  return (target: SelfServeBaseClass | Function, property) => {
+    //eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const instanceOfSelfServebaseClass: boolean = target instanceof SelfServeBaseClass;
+    //eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const instanceOfMaterializedViewBuilder: boolean = target instanceof MaterializedViewsBuilder;
+    //eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const classNameV2: string = new MaterializedViewsBuilder().getSelfServeType();
+    let className: string = target.constructor.name;
     const propertyName = property.toString();
-    if (className === "Function") {
+    if (target instanceof Function) {
       //eslint-disable-next-line @typescript-eslint/ban-types
       className = (target as Function).name;
       throw new Error(`Property '${propertyName}' in class '${className}'should be not be static.`);
     }
+    //eslint-disable-next-line @typescript-eslint/ban-types
+    // className = (target as MaterializedViewsBuilder).getSelfServeType();
 
     const propertyType = (Reflect.getMetadata("design:type", target, property)?.name as string)?.toLowerCase();
     addPropertyToMap(target, propertyName, className, "type", propertyType);
