@@ -18,7 +18,9 @@ describe("SelfServeUtils", () => {
       public onRefresh: () => Promise<RefreshResult>;
       public getSelfServeType = (): SelfServeType => getSelfServeTypeExample();
     }
-    expect(() => new SelfServeExample().toSelfServeDescriptor()).toThrow("initialize() was not declared for the class 'SelfServeExample'");
+    expect(() => new SelfServeExample().toSelfServeDescriptor()).toThrow(
+      "initialize() was not declared for the class 'SelfServeExample'",
+    );
   });
   it("onSave should be declared for self serve classes", () => {
     class SelfServeExample extends SelfServeBaseClass {
@@ -27,7 +29,9 @@ describe("SelfServeUtils", () => {
       public onRefresh: () => Promise<RefreshResult>;
       public getSelfServeType = (): SelfServeType => getSelfServeTypeExample();
     }
-    expect(() => new SelfServeExample().toSelfServeDescriptor()).toThrow("onSave() was not declared for the class 'SelfServeExample'");
+    expect(() => new SelfServeExample().toSelfServeDescriptor()).toThrow(
+      "onSave() was not declared for the class 'SelfServeExample'",
+    );
   });
 
   it("onRefresh should be declared for self serve classes", () => {
@@ -37,7 +41,9 @@ describe("SelfServeUtils", () => {
       public onRefresh: () => Promise<RefreshResult>;
       public getSelfServeType = (): SelfServeType => getSelfServeTypeExample();
     }
-    expect(() => new SelfServeExample().toSelfServeDescriptor()).toThrow("onRefresh() was not declared for the class 'SelfServeExample'");
+    expect(() => new SelfServeExample().toSelfServeDescriptor()).toThrow(
+      "onRefresh() was not declared for the class 'SelfServeExample'",
+    );
   });
 
   it("@IsDisplayable decorator must be present for self serve classes", () => {
