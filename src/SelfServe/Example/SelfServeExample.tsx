@@ -1,3 +1,4 @@
+import { SelfServeType } from "SelfServe/SelfServeUtils";
 import { IsDisplayable, OnChange, PropertyInfo, RefreshOptions, Values } from "../Decorators";
 import { selfServeTraceStart, selfServeTraceSuccess } from "../SelfServeTelemetryProcessor";
 import {
@@ -167,6 +168,10 @@ export default class SelfServeExample extends SelfServeBaseClass {
     defaults.set("dbThroughput", { value: initializeResponse.dbThroughput, hidden: !enableDbLevelThroughput });
     return defaults;
   };
+
+  public getSelfServeType = (): SelfServeType => {
+    return SelfServeType.example;
+  }
 
   @Values({
     labelTKey: "DescriptionLabel",
