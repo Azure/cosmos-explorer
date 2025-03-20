@@ -237,7 +237,7 @@ export const getPriceMapAndCurrencyCode = async (map: OfferingIdMap): Promise<Pr
   } catch (err) {
     const failureTelemetry = { err, selfServeClassName: SqlX.name };
     selfServeTraceFailure(failureTelemetry, getPriceMapAndCurrencyCodeTimestamp);
-    return { priceMap: undefined, billingCurrency: undefined };
+    return { priceMap: new Map(), billingCurrency: undefined };
   }
 };
 
