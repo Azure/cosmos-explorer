@@ -85,7 +85,7 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
         : `${createKeyspaceQueryPrefix} AND cosmosdb_provisioned_throughput=${newKeySpaceThroughput};`
       : `${createKeyspaceQueryPrefix};`;
     let tableQuery: string;
-    const createTableQueryPrefix = `CREATE TABLE ${keyspaceId}.${tableId.trim()} ${userTableQuery}`;
+    const createTableQueryPrefix = `CREATE TABLE \"${keyspaceId}\".\"${tableId.trim()}\" ${userTableQuery}`;
 
     if (tableThroughput) {
       if (isTableAutoscale) {
