@@ -129,6 +129,7 @@ export const useDocumentsTabStyles = makeStyles({
     top: "6px",
     right: 0,
     float: "right",
+    backgroundColor: "white",
     zIndex: 1,
   },
   refreshBtn: {
