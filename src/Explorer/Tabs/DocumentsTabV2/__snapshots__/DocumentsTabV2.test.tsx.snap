@@ -120,19 +120,6 @@ exports[`Documents tab (noSql API) when rendered should render the page 1`] = `
               />
             </div>
           </div>
-          <a
-            aria-label="Refresh"
-            className="___v9fv2r0_0000000 f1euv43f fudbr5a fiv86kb f150nix6 f19g0ac f3rmtva"
-            onClick={[Function]}
-            role="button"
-            tabIndex={0}
-            title="Refresh"
-          >
-            <img
-              alt="Refresh"
-              src={{}}
-            />
-          </a>
         </div>
       </Allotment.Pane>
       <Allotment.Pane
