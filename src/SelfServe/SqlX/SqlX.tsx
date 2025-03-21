@@ -228,10 +228,12 @@ const calculateCost = (skuName: string, instanceCount: number): Description => {
     let costBreakdown = "";
     for (const regionItem of regions) {
       const incrementalCost = priceMap?.get(regionItem.locationName)?.get(skuName.replace("Cosmos.", ""));
-      if (incrementalCost === undefined || currencyCode === undefined) {
+      if (incrementalCost === undefined) {
         throw new Error(`${regionItem.locationName} not found in price map.`);
       } else if (incrementalCost === 0) {
         throw new Error(`${regionItem.locationName} cost per hour = 0`);
+      } else if (currencyCode === undefined) {
+        throw new Error(`Currency code not found in price map.`);
       }
 
       let regionalInstanceCount = instanceCount;

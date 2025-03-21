@@ -197,6 +197,11 @@ export const getPriceMapAndCurrencyCode = async (map: OfferingIdMap): Promise<Pr
     const priceMap = new Map<string, Map<string, number>>();
     let billingCurrency;
     for (const region of map.keys()) {
+      // if no offering id is found for that region, skipping calling price API
+      const subMap = map.get(region);
+      if (!subMap || subMap.size === 0) {
+        continue;
+      }
       const regionPriceMap = new Map<string, number>();
       const regionShortName = await getRegionShortName(region);
       const requestBody: OfferingIdRequest = {
@@ -253,9 +258,9 @@ export const getOfferingIds = async (regions: Array<RegionItem>): Promise<Offeri
     selfServeClassName: SqlX.name,
   };
   const getOfferingIdsCodeTimestamp = selfServeTraceStart(telemetryData);
+  const offeringIdMap = new Map<string, Map<string, string>>();
 
   try {
-    const offeringIdMap = new Map<string, Map<string, string>>();
     for (const regionItem of regions) {
       const regionOfferingIdMap = new Map<string, string>();
       const regionShortName = await getRegionShortName(regionItem.locationName);
@@ -286,6 +291,6 @@ export const getOfferingIds = async (regions: Array<RegionItem>): Promise<Offeri
   } catch (err) {
     const failureTelemetry = { err, selfServeClassName: SqlX.name };
     selfServeTraceFailure(failureTelemetry, getOfferingIdsCodeTimestamp);
-    return undefined;
+    return offeringIdMap;
   }
 };
