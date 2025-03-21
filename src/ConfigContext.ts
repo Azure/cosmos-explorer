@@ -12,7 +12,6 @@ import {
   allowedGraphEndpoints,
   allowedHostedExplorerEndpoints,
   allowedJunoOrigins,
-  allowedMongoBackendEndpoints,
   allowedMsalRedirectEndpoints,
   defaultAllowedArmEndpoints,
   defaultAllowedBackendEndpoints,
@@ -50,10 +49,8 @@ export interface ConfigContext {
   CATALOG_API_KEY: string;
   ARCADIA_ENDPOINT: string;
   ARCADIA_LIVY_ENDPOINT_DNS_ZONE: string;
-  BACKEND_ENDPOINT?: string;
   PORTAL_BACKEND_ENDPOINT: string;
   NEW_BACKEND_APIS?: BackendApi[];
-  MONGO_BACKEND_ENDPOINT?: string;
   MONGO_PROXY_ENDPOINT: string;
   CASSANDRA_PROXY_ENDPOINT: string;
   NEW_CASSANDRA_APIS?: string[];
@@ -67,6 +64,8 @@ export interface ConfigContext {
   hostedExplorerURL: string;
   armAPIVersion?: string;
   msalRedirectURI?: string;
+  globallyEnabledCassandraAPIs?: string[];
+  globallyEnabledMongoAPIs?: string[];
 }
 
 // Default configuration
@@ -89,7 +88,7 @@ let configContext: Readonly<ConfigContext> = {
     `^https:\\/\\/.*\\.analysis-df\\.net$`,
     `^https:\\/\\/.*\\.analysis-df\\.windows\\.net$`,
     `^https:\\/\\/.*\\.azure-test\\.net$`,
-    `^https:\\/\\/cosmos-explorer-preview\\.azurewebsites\\.net$`,
+    `^https:\\/\\/dataexplorer-preview\\.azurewebsites\\.net$`,
   ], // Webpack injects this at build time
   gitSha: process.env.GIT_SHA,
   hostedExplorerURL: "https://cosmos.azure.com/",
@@ -107,13 +106,14 @@ let configContext: Readonly<ConfigContext> = {
   GITHUB_CLIENT_ID: "6cb2f63cf6f7b5cbdeca", // Registered OAuth app: https://github.com/organizations/AzureCosmosDBNotebooks/settings/applications/1189306
   GITHUB_TEST_ENV_CLIENT_ID: "b63fc8cbf87fd3c6e2eb", // Registered OAuth app: https://github.com/organizations/AzureCosmosDBNotebooks/settings/applications/1777772
   JUNO_ENDPOINT: JunoEndpoints.Prod,
-  BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com",
   PORTAL_BACKEND_ENDPOINT: PortalBackendEndpoints.Prod,
   MONGO_PROXY_ENDPOINT: MongoProxyEndpoints.Prod,
   CASSANDRA_PROXY_ENDPOINT: CassandraProxyEndpoints.Prod,
   NEW_CASSANDRA_APIS: ["postQuery", "createOrDelete", "getKeys", "getSchema"],
   isTerminalEnabled: false,
   isPhoenixEnabled: false,
+  globallyEnabledCassandraAPIs: [],
+  globallyEnabledMongoAPIs: [],
 };
 
 export function resetConfigContext(): void {
@@ -150,24 +150,11 @@ export function updateConfigContext(newContext: Partial<ConfigContext>): void {
 
   if (
     !validateEndpoint(
-      newContext.BACKEND_ENDPOINT,
-      configContext.allowedBackendEndpoints || defaultAllowedBackendEndpoints,
-    )
-  ) {
-    delete newContext.BACKEND_ENDPOINT;
-  }
-
-  if (
-    !validateEndpoint(
       newContext.MONGO_PROXY_ENDPOINT,
       configContext.allowedMongoProxyEndpoints || defaultAllowedMongoProxyEndpoints,
     )
   ) {
     delete newContext.MONGO_PROXY_ENDPOINT;
-  }
-
-  if (!validateEndpoint(newContext.MONGO_BACKEND_ENDPOINT, allowedMongoBackendEndpoints)) {
-    delete newContext.MONGO_BACKEND_ENDPOINT;
   }
 
   if (

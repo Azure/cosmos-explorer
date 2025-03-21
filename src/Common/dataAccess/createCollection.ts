@@ -1,4 +1,5 @@
 import { ContainerRequest, ContainerResponse, DatabaseRequest, DatabaseResponse, RequestOptions } from "@azure/cosmos";
+import { isFabricNative } from "Platform/Fabric/FabricUtil";
 import { AuthType } from "../../AuthType";
 import * as DataModels from "../../Contracts/DataModels";
 import { useDatabases } from "../../Explorer/useDatabases";
@@ -24,7 +25,7 @@ export const createCollection = async (params: DataModels.CreateCollectionParams
   );
   try {
     let collection: DataModels.Collection;
-    if (userContext.authType === AuthType.AAD && !userContext.features.enableSDKoperations) {
+    if (!isFabricNative() && userContext.authType === AuthType.AAD && !userContext.features.enableSDKoperations) {
       if (params.createNewDatabase) {
         const createDatabaseParams: DataModels.CreateDatabaseParams = {
           autoPilotMaxThroughput: params.autoPilotMaxThroughput,
@@ -98,6 +99,9 @@ const createSqlContainer = async (params: DataModels.CreateCollectionParams): Pr
   }
   if (params.vectorEmbeddingPolicy) {
     resource.vectorEmbeddingPolicy = params.vectorEmbeddingPolicy;
+  }
+  if (params.fullTextPolicy) {
+    resource.fullTextPolicy = params.fullTextPolicy;
   }
 
   const rpPayload: ARMTypes.SqlDatabaseCreateUpdateParameters = {
@@ -270,6 +274,7 @@ const createCollectionWithSDK = async (params: DataModels.CreateCollectionParams
     uniqueKeyPolicy: params.uniqueKeyPolicy || undefined,
     analyticalStorageTtl: params.analyticalStorageTtl,
     vectorEmbeddingPolicy: params.vectorEmbeddingPolicy,
+    fullTextPolicy: params.fullTextPolicy,
   } as ContainerRequest; // TODO: remove cast when https://github.com/Azure/azure-cosmos-js/issues/423 is fixed
   const collectionOptions: RequestOptions = {};
   const createDatabaseBody: DatabaseRequest = { id: params.databaseId };

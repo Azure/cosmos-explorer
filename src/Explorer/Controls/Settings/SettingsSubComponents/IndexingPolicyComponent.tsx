@@ -120,11 +120,6 @@ export class IndexingPolicyComponent extends React.Component<
           indexTransformationProgress={this.props.indexTransformationProgress}
           refreshIndexTransformationProgress={this.props.refreshIndexTransformationProgress}
         />
-        {this.props.isVectorSearchEnabled && (
-          <MessageBar messageBarType={MessageBarType.severeWarning}>
-            Container vector policies and vector indexes are not modifiable after container creation
-          </MessageBar>
-        )}
         {isDirty(this.props.indexingPolicyContent, this.props.indexingPolicyContentBaseline) && (
           <MessageBar messageBarType={MessageBarType.warning}>{unsavedEditorWarningMessage("indexPolicy")}</MessageBar>
         )}

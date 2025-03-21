@@ -41,13 +41,13 @@ const getDescriptor = async (selfServeType: SelfServeType): Promise<SelfServeDes
     case SelfServeType.example: {
       const SelfServeExample = await import(/* webpackChunkName: "SelfServeExample" */ "./Example/SelfServeExample");
       const selfServeExample = new SelfServeExample.default();
-      await loadTranslations(selfServeExample.constructor.name);
+      await loadTranslations(selfServeType);
       return selfServeExample.toSelfServeDescriptor();
     }
     case SelfServeType.sqlx: {
       const SqlX = await import(/* webpackChunkName: "SqlX" */ "./SqlX/SqlX");
       const sqlX = new SqlX.default();
-      await loadTranslations(sqlX.constructor.name);
+      await loadTranslations(selfServeType);
       return sqlX.toSelfServeDescriptor();
     }
     case SelfServeType.graphapicompute: {
@@ -55,7 +55,7 @@ const getDescriptor = async (selfServeType: SelfServeType): Promise<SelfServeDes
         /* webpackChunkName: "GraphAPICompute" */ "./GraphAPICompute/GraphAPICompute"
       );
       const graphAPICompute = new GraphAPICompute.default();
-      await loadTranslations(graphAPICompute.constructor.name);
+      await loadTranslations(selfServeType);
       return graphAPICompute.toSelfServeDescriptor();
     }
     case SelfServeType.materializedviewsbuilder: {
@@ -63,7 +63,7 @@ const getDescriptor = async (selfServeType: SelfServeType): Promise<SelfServeDes
         /* webpackChunkName: "MaterializedViewsBuilder" */ "./MaterializedViewsBuilder/MaterializedViewsBuilder"
       );
       const materializedViewsBuilder = new MaterializedViewsBuilder.default();
-      await loadTranslations(materializedViewsBuilder.constructor.name);
+      await loadTranslations(selfServeType);
       return materializedViewsBuilder.toSelfServeDescriptor();
     }
     default:
@@ -103,7 +103,7 @@ const handleMessage = async (event: MessageEvent): Promise<void> => {
 
   const urlSearchParams = new URLSearchParams(window.location.search);
   const selfServeTypeText = urlSearchParams.get("selfServeType") || inputs.selfServeType;
-  const selfServeType = SelfServeType[selfServeTypeText?.toLowerCase() as keyof typeof SelfServeType];
+  const selfServeType = SelfServeType[selfServeTypeText.toLocaleLowerCase() as keyof typeof SelfServeType];
   if (
     !inputs.subscriptionId ||
     !inputs.resourceGroup ||

@@ -2,6 +2,7 @@ import { FeedResponse, ItemDefinition, Resource } from "@azure/cosmos";
 import { waitFor } from "@testing-library/react";
 import { deleteDocuments } from "Common/dataAccess/deleteDocument";
 import { Platform, updateConfigContext } from "ConfigContext";
+import { CosmosDbArtifactType } from "Contracts/FabricMessagesContract";
 import { useDialog } from "Explorer/Controls/Dialog";
 import { EditorReactProps } from "Explorer/Controls/Editor/EditorReact";
 import { ProgressModalDialog } from "Explorer/Controls/ProgressModalDialog";
@@ -49,6 +50,7 @@ jest.mock("Common/dataAccess/queryDocuments", () => ({
         requestCharge: 1,
         activityId: "activityId",
         indexMetrics: "indexMetrics",
+        correlatedActivityId: undefined,
       }),
   })),
 }));
@@ -340,10 +342,15 @@ describe("Documents tab (noSql API)", () => {
     updateConfigContext({ platform: Platform.Fabric });
     updateUserContext({
       fabricContext: {
-        connectionId: "test",
-        databaseConnectionInfo: undefined,
+        databaseName: "database",
+        artifactInfo: {
+          connectionId: "test",
+          resourceTokenInfo: undefined,
+        },
+        artifactType: CosmosDbArtifactType.MIRRORED_KEY,
         isReadOnly: true,
         isVisible: true,
+        fabricClientRpcVersion: "rpcVersion",
       },
     });
 
@@ -384,22 +391,6 @@ describe("Documents tab (noSql API)", () => {
 
     it("should render the page", () => {
       expect(wrapper).toMatchSnapshot();
-    });
-
-    it("clicking on Edit filter should render the Apply Filter button", () => {
-      wrapper
-        .findWhere((node) => node.text() === "Edit Filter")
-        .at(0)
-        .simulate("click");
-      expect(wrapper.findWhere((node) => node.text() === "Apply Filter").exists()).toBeTruthy();
-    });
-
-    it("clicking on Edit filter should render input for filter", () => {
-      wrapper
-        .findWhere((node) => node.text() === "Edit Filter")
-        .at(0)
-        .simulate("click");
-      expect(wrapper.find("Input.filterInput").exists()).toBeTruthy();
     });
   });
 

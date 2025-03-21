@@ -18,7 +18,7 @@ import {
   Text,
   TextField,
 } from "@fluentui/react";
-import { HttpStatusCodes, NormalizedEventKey } from "Common/Constants";
+import { FeedbackLabels, HttpStatusCodes, NormalizedEventKey } from "Common/Constants";
 import { handleError } from "Common/ErrorHandlingUtils";
 import QueryError, { QueryErrorSeverity } from "Common/QueryError";
 import { createUri } from "Common/UrlUtility";
@@ -75,6 +75,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
   const inputEdited = useRef(false);
   const itemRefs = useRef([]);
   const searchInputRef = useRef(null);
+  const copyQueryRef = useRef(null);
   const {
     openFeedbackModal,
     hideFeedbackModalForLikedQueries,
@@ -132,6 +133,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
     document.body.removeChild(queryElement);
 
     setshowCopyPopup(true);
+    copyQueryRef.current.focus();
     setTimeout(() => {
       setshowCopyPopup(false);
     }, 6000);
@@ -305,7 +307,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
     if (isGeneratingQuery === null) {
       return " ";
     } else if (isGeneratingQuery) {
-      return "Content is loading";
+      return "Thinking";
     } else {
       return "Content is updated";
     }
@@ -391,8 +393,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
                 },
               }}
               disabled={isGeneratingQuery}
-              autoComplete="list"
-              aria-expanded={showSamplePrompts}
+              autoComplete="off"
               placeholder="Ask a question in natural language and we’ll generate the query for you."
               aria-labelledby="copilot-textfield-label"
               onRenderSuffix={() => {
@@ -400,6 +401,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
                   <IconButton
                     iconProps={{ iconName: "Send" }}
                     disabled={isGeneratingQuery || !userPrompt.trim()}
+                    allowDisabledFocus={true}
                     style={{ background: "none" }}
                     onClick={() => startGenerateQueryProcess()}
                     aria-label="Send"
@@ -577,7 +579,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
                 <Stack horizontal verticalAlign="center" style={{ maxHeight: 20 }}>
                   {userContext.feedbackPolicies?.policyAllowFeedback && (
                     <Stack horizontal verticalAlign="center">
-                      <Text style={{ fontSize: 12 }}>Provide feedback</Text>
+                      <Text style={{ fontSize: 12 }}>{FeedbackLabels.provideFeedback}</Text>
                       {showCallout && !hideFeedbackModalForLikedQueries && (
                         <Callout
                           role="status"
@@ -627,8 +629,9 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
                       <IconButton
                         id="likeBtn"
                         style={{ marginLeft: 10 }}
-                        aria-label="Like"
-                        role="toggle"
+                        aria-label={FeedbackLabels.provideFeedback}
+                        role="button"
+                        title="Like"
                         iconProps={{ iconName: likeQuery === true ? "LikeSolid" : "Like" }}
                         onClick={() => {
                           setShowCallout(!likeQuery);
@@ -646,8 +649,9 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
                       />
                       <IconButton
                         style={{ margin: "0 4px" }}
-                        role="toggle"
-                        aria-label="Dislike"
+                        role="button"
+                        aria-label={FeedbackLabels.provideFeedback}
+                        title="Dislike"
                         iconProps={{ iconName: dislikeQuery === true ? "DislikeSolid" : "Dislike" }}
                         onClick={() => {
                           let toggleStatusValue = "Unpressed";
@@ -676,6 +680,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
                   )}
                   <CommandBarButton
                     className="copyQuery"
+                    elementRef={copyQueryRef}
                     onClick={copyGeneratedCode}
                     iconProps={{ iconName: "Copy" }}
                     style={{ fontSize: 12, transition: "background-color 0.3s ease", height: "100%" }}
@@ -705,6 +710,9 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
                 </Stack>
               )}
             </Stack>
+          )}
+          {(showFeedbackBar || isGeneratingQuery) && (
+            <span role="alert" className="screenReaderOnly" aria-label={getAriaLabel()} />
           )}
           {isGeneratingQuery && (
             <ProgressIndicator

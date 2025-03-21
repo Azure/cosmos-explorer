@@ -1,7 +1,6 @@
 import { Item, ItemDefinition, PartitionKey, PartitionKeyDefinition, QueryIterator, Resource } from "@azure/cosmos";
 import {
   Button,
-  Input,
   Link,
   MessageBar,
   MessageBarBody,
@@ -10,8 +9,7 @@ import {
   makeStyles,
   shorthands,
 } from "@fluentui/react-components";
-import { Dismiss16Filled } from "@fluentui/react-icons";
-import { KeyCodes, QueryCopilotSampleContainerId, QueryCopilotSampleDatabaseId } from "Common/Constants";
+import { QueryCopilotSampleContainerId, QueryCopilotSampleDatabaseId } from "Common/Constants";
 import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
 import MongoUtility from "Common/MongoUtility";
 import { createDocument } from "Common/dataAccess/createDocument";
@@ -22,10 +20,11 @@ import {
 import { queryDocuments } from "Common/dataAccess/queryDocuments";
 import { readDocument } from "Common/dataAccess/readDocument";
 import { updateDocument } from "Common/dataAccess/updateDocument";
-import { Platform, configContext } from "ConfigContext";
+import { ActionType, OpenCollectionTab, TabKind } from "Contracts/ActionContracts";
 import { CommandButtonComponentProps } from "Explorer/Controls/CommandButton/CommandButtonComponent";
 import { useDialog } from "Explorer/Controls/Dialog";
 import { EditorReact } from "Explorer/Controls/Editor/EditorReact";
+import { InputDataList, InputDatalistDropdownOptionSection } from "Explorer/Controls/InputDataList/InputDataList";
 import { ProgressModalDialog } from "Explorer/Controls/ProgressModalDialog";
 import Explorer from "Explorer/Explorer";
 import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
@@ -35,13 +34,15 @@ import {
   FilterHistory,
   SubComponentName,
   TabDivider,
-  readSubComponentState,
-  saveSubComponentState,
+  deleteDocumentsTabSubComponentState,
+  readDocumentsTabSubComponentState,
+  saveDocumentsTabSubComponentState,
 } from "Explorer/Tabs/DocumentsTabV2/DocumentsTabStateUtil";
 import { usePrevious } from "Explorer/Tabs/DocumentsTabV2/SelectionHelper";
 import { CosmosFluentProvider, LayoutConstants, cosmosShorthands, tokens } from "Explorer/Theme/ThemeUtil";
 import { useSelectedNode } from "Explorer/useSelectedNode";
 import { KeyboardAction, KeyboardActionGroup, useKeyboardActionGroup } from "KeyboardShortcuts";
+import { isFabric } from "Platform/Fabric/FabricUtil";
 import { QueryConstants } from "Shared/Constants";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
@@ -74,6 +75,7 @@ const MAX_FILTER_HISTORY_COUNT = 100; // Datalist will become scrollable, so we 
 const NO_SQL_THROTTLING_DOC_URL =
   "https://learn.microsoft.com/azure/cosmos-db/nosql/troubleshoot-request-rate-too-large";
 const MONGO_THROTTLING_DOC_URL = "https://learn.microsoft.com/azure/cosmos-db/mongodb/prevent-rate-limiting-errors";
+const DATA_EXPLORER_DOC_URL = "https://learn.microsoft.com/en-us/azure/cosmos-db/data-explorer";
 
 const loadMoreHeight = LayoutConstants.rowHeight;
 export const useDocumentsTabStyles = makeStyles({
@@ -89,12 +91,6 @@ export const useDocumentsTabStyles = makeStyles({
     paddingRight: tokens.spacingHorizontalL,
     alignItems: "center",
     ...cosmosShorthands.borderBottom(),
-  },
-  filterInput: {
-    flexGrow: 1,
-  },
-  appliedFilter: {
-    flexGrow: 1,
   },
   tableContainer: {
     marginRight: tokens.spacingHorizontalXXXL,
@@ -146,6 +142,8 @@ export class DocumentsTabV2 extends TabsBase {
   private title: string;
   private resourceTokenPartitionKey: string;
 
+  protected persistedState: OpenCollectionTab;
+
   constructor(options: ViewModels.DocumentsTabOptions) {
     super(options);
 
@@ -153,6 +151,13 @@ export class DocumentsTabV2 extends TabsBase {
     this.title = options.title;
     this.partitionKey = options.partitionKey;
     this.resourceTokenPartitionKey = options.resourceTokenPartitionKey;
+
+    this.persistedState = {
+      actionType: ActionType.OpenCollectionTab,
+      tabKind: options.isPreferredApiMongoDB ? TabKind.MongoDocuments : TabKind.SQLDocuments,
+      databaseResourceId: options.collection.databaseId,
+      collectionResourceId: options.collection.id(),
+    };
   }
 
   public render(): JSX.Element {
@@ -339,7 +344,7 @@ export const getTabsButtons = ({
   onRevertExistingDocumentClick,
   onDeleteExistingDocumentsClick,
 }: ButtonsDependencies): CommandButtonComponentProps[] => {
-  if (configContext.platform === Platform.Fabric && userContext.fabricContext?.isReadOnly) {
+  if (isFabric() && userContext.fabricContext?.isReadOnly) {
     // All the following buttons require write access
     return [];
   }
@@ -556,8 +561,6 @@ export interface IDocumentsTabComponentProps {
   isTabActive: boolean;
 }
 
-const getUniqueId = (collection: ViewModels.CollectionBase): string => `${collection.databaseId}-${collection.id()}`;
-
 const getDefaultSqlFilters = (partitionKeys: string[]) =>
   ['WHERE c.id = "foo"', "ORDER BY c._ts DESC", 'WHERE c.id = "foo" ORDER BY c._ts DESC', "ORDER BY c._ts ASC"].concat(
     partitionKeys.map((partitionKey) => `WHERE c.${partitionKey} = "foo"`),
@@ -583,14 +586,12 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   onIsExecutingChange,
   isTabActive,
 }): JSX.Element => {
-  const [isFilterCreated, setIsFilterCreated] = useState<boolean>(true);
-  const [isFilterExpanded, setIsFilterExpanded] = useState<boolean>(false);
-  const [isFilterFocused, setIsFilterFocused] = useState<boolean>(false);
-  const [appliedFilter, setAppliedFilter] = useState<string>("");
-  const [filterContent, setFilterContent] = useState<string>("");
+  const [filterContent, setFilterContent] = useState<string>(() =>
+    readDocumentsTabSubComponentState<string>(SubComponentName.CurrentFilter, _collection, ""),
+  );
+
   const [documentIds, setDocumentIds] = useState<ExtendedDocumentId[]>([]);
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
-  const filterInput = useRef<HTMLInputElement>(null);
   const styles = useDocumentsTabStyles();
 
   // Query
@@ -610,7 +611,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   // Table user clicked on this row
   const [clickedRowIndex, setClickedRowIndex] = useState<number>(RESET_INDEX);
   // Table multiple selection
-  const [selectedRows, setSelectedRows] = React.useState<Set<TableRowId>>(() => new Set<TableRowId>([0]));
+  const [selectedRows, setSelectedRows] = React.useState<Set<TableRowId>>(() => new Set<TableRowId>());
 
   // Command buttons
   const [editorState, setEditorState] = useState<ViewModels.DocumentExplorerState>(
@@ -619,7 +620,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
   // State
   const [tabStateData, setTabStateData] = useState<TabDivider>(() =>
-    readSubComponentState<TabDivider>(SubComponentName.MainTabDivider, _collection, {
+    readDocumentsTabSubComponentState<TabDivider>(SubComponentName.MainTabDivider, _collection, {
       leftPaneWidthPercent: 35,
     }),
   );
@@ -634,7 +635,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
   // User's filter history
   const [lastFilterContents, setLastFilterContents] = useState<FilterHistory>(() =>
-    readSubComponentState<FilterHistory>(SubComponentName.FilterHistory, _collection, [] as FilterHistory),
+    readDocumentsTabSubComponentState<FilterHistory>(SubComponentName.FilterHistory, _collection, [] as FilterHistory),
   );
 
   // For progress bar for bulk delete (noSql)
@@ -656,29 +657,6 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   const [bulkDeleteMode, setBulkDeleteMode] = useState<"inProgress" | "completed" | "aborting" | "aborted">(undefined);
 
   const setKeyboardActions = useKeyboardActionGroup(KeyboardActionGroup.ACTIVE_TAB);
-
-  useEffect(() => {
-    if (isFilterFocused) {
-      filterInput.current?.focus();
-    }
-  }, [isFilterFocused]);
-
-  // Clicked row must be defined
-  useEffect(() => {
-    if (documentIds.length > 0) {
-      let currentClickedRowIndex = clickedRowIndex;
-      if (
-        (currentClickedRowIndex === RESET_INDEX &&
-          editorState === ViewModels.DocumentExplorerState.noDocumentSelected) ||
-        currentClickedRowIndex > documentIds.length - 1
-      ) {
-        // reset clicked row or the current clicked row is out of bounds
-        currentClickedRowIndex = INITIAL_SELECTED_ROW_INDEX;
-        setSelectedRows(new Set([INITIAL_SELECTED_ROW_INDEX]));
-        onDocumentClicked(currentClickedRowIndex, documentIds);
-      }
-    }
-  }, [documentIds, clickedRowIndex, editorState]);
 
   /**
    * Recursively delete all documents by retrying throttled requests (429).
@@ -773,11 +751,6 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     }, timeout);
   }, [bulkDeleteOperation, bulkDeleteProcess, bulkDeleteMode]);
 
-  const applyFilterButton = {
-    enabled: true,
-    visible: true,
-  };
-
   const partitionKey: DataModels.PartitionKey = useMemo(
     () => _partitionKey || (_collection && _collection.partitionKey),
     [_collection, _partitionKey],
@@ -804,7 +777,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   };
 
   const [selectedColumnIds, setSelectedColumnIds] = useState<string[]>(() => {
-    const persistedColumnsSelection = readSubComponentState<ColumnsSelection>(
+    const persistedColumnsSelection = readDocumentsTabSubComponentState<ColumnsSelection>(
       SubComponentName.ColumnsSelection,
       _collection,
       undefined,
@@ -848,12 +821,8 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   // This is executed in onActivate() in the original code.
   useEffect(() => {
     setKeyboardActions({
-      [KeyboardAction.SEARCH]: () => {
-        onShowFilterClick();
-        return true;
-      },
       [KeyboardAction.CLEAR_SEARCH]: () => {
-        setFilterContent("");
+        updateFilterContent("");
         refreshDocumentsGrid(true);
         return true;
       },
@@ -1181,27 +1150,16 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
           deletePromise = _bulkDeleteNoSqlDocuments(_collection, toDeleteDocumentIds);
         }
       } else {
-        if (isMongoBulkDeleteDisabled) {
-          // TODO: Once new mongo proxy is available for all users, remove the call for MongoProxyClient.deleteDocument().
-          // MongoProxyClient.deleteDocuments() should be called for all users.
-          deletePromise = MongoProxyClient.deleteDocument(
-            _collection.databaseId,
-            _collection as ViewModels.Collection,
-            toDeleteDocumentIds[0],
-          ).then(() => [toDeleteDocumentIds[0]]);
-          // ----------------------------------------------------------------------------------------------------
-        } else {
-          deletePromise = MongoProxyClient.deleteDocuments(
-            _collection.databaseId,
-            _collection as ViewModels.Collection,
-            toDeleteDocumentIds,
-          ).then(({ deletedCount, isAcknowledged }) => {
-            if (deletedCount === toDeleteDocumentIds.length && isAcknowledged) {
-              return toDeleteDocumentIds;
-            }
-            throw new Error(`Delete failed with deletedCount: ${deletedCount} and isAcknowledged: ${isAcknowledged}`);
-          });
-        }
+        deletePromise = MongoProxyClient.deleteDocuments(
+          _collection.databaseId,
+          _collection as ViewModels.Collection,
+          toDeleteDocumentIds,
+        ).then(({ deletedCount, isAcknowledged }) => {
+          if (deletedCount === toDeleteDocumentIds.length && isAcknowledged) {
+            return toDeleteDocumentIds;
+          }
+          throw new Error(`Delete failed with deletedCount: ${deletedCount} and isAcknowledged: ${isAcknowledged}`);
+        });
       }
 
       return deletePromise
@@ -1334,12 +1292,6 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     ],
   );
 
-  const onShowFilterClick = () => {
-    setIsFilterCreated(true);
-    setIsFilterExpanded(true);
-    setIsFilterFocused(true);
-  };
-
   const queryTimeoutEnabled = useCallback(
     (): boolean => !isPreferredApiMongoDB && LocalStorageUtility.getEntryBoolean(StorageKey.QueryTimeoutEnabled),
     [isPreferredApiMongoDB],
@@ -1380,19 +1332,6 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     _collection,
     selectedColumnIds,
   ]);
-
-  const onHideFilterClick = (): void => {
-    setIsFilterExpanded(false);
-  };
-
-  const onCloseButtonKeyDown: KeyboardEventHandler<HTMLSpanElement> = (event) => {
-    if (event.keyCode === KeyCodes.Enter || event.keyCode === KeyCodes.Space) {
-      onHideFilterClick();
-      event.stopPropagation();
-      return false;
-    }
-    return true;
-  };
 
   const updateDocumentIds = (newDocumentsIds: DocumentId[]): void => {
     setDocumentIds(newDocumentsIds);
@@ -1535,13 +1474,8 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   };
 
   const onFilterKeyDown = (e: React.KeyboardEvent<HTMLInputElement>): void => {
-    if (e.key === "Enter") {
+    if (e.key === Constants.NormalizedEventKey.Enter) {
       onApplyFilterClick();
-
-      // Suppress the default behavior of the key
-      e.preventDefault();
-    } else if (e.key === "Escape") {
-      onHideFilterClick();
 
       // Suppress the default behavior of the key
       e.preventDefault();
@@ -1714,7 +1648,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
   // Column definition is a map<id, ColumnDefinition> to garantee uniqueness
   const [columnDefinitions, setColumnDefinitions] = useState<ColumnDefinition[]>(() => {
-    const persistedColumnsSelection = readSubComponentState<ColumnsSelection>(
+    const persistedColumnsSelection = readDocumentsTabSubComponentState<ColumnsSelection>(
       SubComponentName.ColumnsSelection,
       _collection,
       undefined,
@@ -2025,7 +1959,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     const limitedLastFilterContents = lastFilterContents.slice(0, MAX_FILTER_HISTORY_COUNT);
 
     setLastFilterContents(limitedLastFilterContents);
-    saveSubComponentState<FilterHistory>(SubComponentName.FilterHistory, _collection, lastFilterContents);
+    saveDocumentsTabSubComponentState<FilterHistory>(SubComponentName.FilterHistory, _collection, lastFilterContents);
   };
 
   const refreshDocumentsGrid = useCallback(
@@ -2039,10 +1973,6 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
           iterator: createIterator(),
           applyFilterButtonPressed,
         });
-
-        // collapse filter
-        setAppliedFilter(filterContent);
-        setIsFilterExpanded(false);
 
         // If apply filter is pressed, reset current selected document
         if (applyFilterButtonPressed) {
@@ -2086,7 +2016,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
     setSelectedColumnIds(newSelectedColumnIds);
 
-    saveSubComponentState<ColumnsSelection>(SubComponentName.ColumnsSelection, _collection, {
+    saveDocumentsTabSubComponentState<ColumnsSelection>(SubComponentName.ColumnsSelection, _collection, {
       selectedColumnIds: newSelectedColumnIds,
       columnDefinitions,
     });
@@ -2113,176 +2043,141 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     }
   }, [prevSelectedColumnIds, refreshDocumentsGrid, selectedColumnIds]);
 
-  // TODO: remove isMongoBulkDeleteDisabled when new mongo proxy is enabled for all users
   // TODO: remove partitionKey.systemKey when JS SDK bug is fixed
-  const isMongoBulkDeleteDisabled = !MongoProxyClient.useMongoProxyEndpoint(Constants.MongoProxyApi.BulkDelete);
-  const isBulkDeleteDisabled =
-    (partitionKey.systemKey && !isPreferredApiMongoDB) || (isPreferredApiMongoDB && isMongoBulkDeleteDisabled);
+  const isBulkDeleteDisabled = partitionKey.systemKey && !isPreferredApiMongoDB;
   //  -------------------------------------------------------
+
+  const getFilterChoices = (): InputDatalistDropdownOptionSection[] => {
+    const options: InputDatalistDropdownOptionSection[] = [];
+    const nonBlankLastFilters = lastFilterContents.filter((filter) => filter.trim() !== "");
+    if (nonBlankLastFilters.length > 0) {
+      options.push({
+        label: "Saved filters",
+        options: nonBlankLastFilters,
+      });
+    }
+    options.push({
+      label: "Default filters",
+      options: isPreferredApiMongoDB ? defaultMongoFilters : getDefaultSqlFilters(partitionKeyProperties),
+    });
+    return options;
+  };
+
+  const updateFilterContent = (filter: string): void => {
+    if (filter === "" || filter === undefined) {
+      deleteDocumentsTabSubComponentState(SubComponentName.CurrentFilter, _collection);
+    } else {
+      saveDocumentsTabSubComponentState<string>(SubComponentName.CurrentFilter, _collection, filter, true);
+    }
+    setFilterContent(filter);
+  };
 
   return (
     <CosmosFluentProvider className={styles.container}>
       <div className="tab-pane active" role="tabpanel" style={{ display: "flex" }}>
-        {isFilterCreated && (
-          <>
-            {!isFilterExpanded && !isPreferredApiMongoDB && (
-              <div className={styles.filterRow}>
-                <span>SELECT * FROM c</span>
-                <span className={styles.appliedFilter}>{appliedFilter}</span>
-                <Button appearance="primary" size="small" onClick={onShowFilterClick}>
-                  Edit Filter
-                </Button>
-              </div>
-            )}
-            {!isFilterExpanded && isPreferredApiMongoDB && (
-              <div className={styles.filterRow}>
-                {appliedFilter.length > 0 && <span>Filter :</span>}
-                {!(appliedFilter.length > 0) && <span className="noFilterApplied">No filter applied</span>}
-                <span className={styles.appliedFilter}>{appliedFilter}</span>
-                <Button appearance="primary" size="small" onClick={onShowFilterClick}>
-                  Edit Filter
-                </Button>
-              </div>
-            )}
-            {isFilterExpanded && (
-              <div className={styles.filterRow}>
-                {!isPreferredApiMongoDB && <span> SELECT * FROM c </span>}
-                <Input
-                  ref={filterInput}
-                  type="text"
-                  size="small"
-                  list={`filtersList-${getUniqueId(_collection)}`}
-                  className={`filterInput ${styles.filterInput}`}
-                  title="Type a query predicate or choose one from the list."
-                  placeholder={
-                    isPreferredApiMongoDB
-                      ? "Type a query predicate (e.g., {´a´:´foo´}), or choose one from the drop down list, or leave empty to query all documents."
-                      : "Type a query predicate (e.g., WHERE c.id=´1´), or choose one from the drop down list, or leave empty to query all documents."
-                  }
-                  value={filterContent}
-                  autoFocus={true}
-                  onKeyDown={onFilterKeyDown}
-                  onChange={(e) => setFilterContent(e.target.value)}
-                  onBlur={() => setIsFilterFocused(false)}
-                />
-
-                <datalist id={`filtersList-${getUniqueId(_collection)}`}>
-                  {addStringsNoDuplicate(
-                    lastFilterContents,
-                    isPreferredApiMongoDB ? defaultMongoFilters : getDefaultSqlFilters(partitionKeyProperties),
-                  ).map((filter) => (
-                    <option key={filter} value={filter} />
-                  ))}
-                </datalist>
-
-                <Button
-                  appearance="primary"
-                  size="small"
-                  onClick={onApplyFilterClick}
-                  disabled={!applyFilterButton.enabled}
-                  aria-label="Apply filter"
-                  tabIndex={0}
-                >
-                  Apply Filter
-                </Button>
-                {!isPreferredApiMongoDB && isExecuting && (
-                  <Button
-                    appearance="primary"
-                    size="small"
-                    aria-label="Cancel Query"
-                    onClick={() => queryAbortController.abort()}
-                    tabIndex={0}
-                  >
-                    Cancel Query
-                  </Button>
-                )}
-                <Button
-                  aria-label="close filter"
-                  tabIndex={0}
-                  onClick={onHideFilterClick}
-                  onKeyDown={onCloseButtonKeyDown}
-                  appearance="transparent"
-                  size="small"
-                  icon={<Dismiss16Filled />}
-                />
-              </div>
-            )}
-          </>
-        )}
-        {/* <Split> doesn't like to be a flex child */}
-        <div style={{ overflow: "hidden", height: "100%" }}>
-          <Allotment
-            onDragEnd={(sizes: number[]) => {
-              tabStateData.leftPaneWidthPercent = (100 * sizes[0]) / (sizes[0] + sizes[1]);
-              saveSubComponentState<TabDivider>(SubComponentName.MainTabDivider, _collection, tabStateData);
-              setTabStateData(tabStateData);
+        <div className={styles.filterRow}>
+          {!isPreferredApiMongoDB && <span> SELECT * FROM c </span>}
+          <InputDataList
+            dropdownOptions={getFilterChoices()}
+            placeholder={
+              isPreferredApiMongoDB
+                ? "Type a query predicate (e.g., {´a´:´foo´}), or choose one from the drop down list, or leave empty to query all documents."
+                : "Type a query predicate (e.g., WHERE c.id=´1´), or choose one from the drop down list, or leave empty to query all documents."
+            }
+            title="Type a query predicate or choose one from the list."
+            value={filterContent}
+            onChange={updateFilterContent}
+            onKeyDown={onFilterKeyDown}
+            bottomLink={{ text: "Learn more", url: DATA_EXPLORER_DOC_URL }}
+          />
+          <Button
+            appearance="primary"
+            size="small"
+            onClick={() => {
+              if (isExecuting) {
+                if (!isPreferredApiMongoDB) {
+                  queryAbortController.abort();
+                }
+              } else {
+                onApplyFilterClick();
+              }
             }}
+            disabled={isExecuting && isPreferredApiMongoDB}
+            aria-label={!isExecuting || isPreferredApiMongoDB ? "Apply filter" : "Cancel"}
+            tabIndex={0}
           >
-            <Allotment.Pane preferredSize={`${tabStateData.leftPaneWidthPercent}%`} minSize={55}>
-              <div style={{ height: "100%", width: "100%", overflow: "hidden" }} ref={tableContainerRef}>
-                <div className={styles.tableContainer}>
-                  <div
-                    style={
-                      {
-                        height: "100%",
-                        width: `calc(100% + ${calculateOffset(selectedColumnIds.length)}px)`,
-                      } /* Fix to make table not resize beyond parent's width */
-                    }
-                  >
-                    <DocumentsTableComponent
-                      onRefreshTable={() => refreshDocumentsGrid(false)}
-                      items={tableItems}
-                      onItemClicked={(index) => onDocumentClicked(index, documentIds)}
-                      onSelectedRowsChange={onSelectedRowsChange}
-                      selectedRows={selectedRows}
-                      size={tableContainerSizePx}
-                      selectedColumnIds={selectedColumnIds}
-                      columnDefinitions={columnDefinitions}
-                      isRowSelectionDisabled={
-                        isBulkDeleteDisabled ||
-                        (configContext.platform === Platform.Fabric && userContext.fabricContext?.isReadOnly)
-                      }
-                      onColumnSelectionChange={onColumnSelectionChange}
-                      defaultColumnSelection={getInitialColumnSelection()}
-                      collection={_collection}
-                      isColumnSelectionDisabled={isPreferredApiMongoDB}
-                    />
-                  </div>
-                </div>
-                {tableItems.length > 0 && (
-                  <a
-                    className={styles.loadMore}
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => loadNextPage(documentsIterator.iterator, false)}
-                    onKeyDown={onLoadMoreKeyInput}
-                  >
-                    Load more
-                  </a>
-                )}
-              </div>
-            </Allotment.Pane>
-            <Allotment.Pane minSize={30}>
-              <div style={{ height: "100%", width: "100%" }}>
-                {isTabActive && selectedDocumentContent && selectedRows.size <= 1 && (
-                  <EditorReact
-                    language={"json"}
-                    content={selectedDocumentContent}
-                    isReadOnly={false}
-                    ariaLabel={"Document editor"}
-                    lineNumbers={"on"}
-                    theme={"_theme"}
-                    onContentChanged={_onEditorContentChange}
-                    enableWordWrapContextMenuItem={true}
-                  />
-                )}
-                {selectedRows.size > 1 && (
-                  <span style={{ margin: 10 }}>Number of selected documents: {selectedRows.size}</span>
-                )}
-              </div>
-            </Allotment.Pane>
-          </Allotment>
+            {!isExecuting || isPreferredApiMongoDB ? "Apply Filter" : "Cancel"}
+          </Button>
         </div>
+        <Allotment
+          onDragEnd={(sizes: number[]) => {
+            tabStateData.leftPaneWidthPercent = (100 * sizes[0]) / (sizes[0] + sizes[1]);
+            saveDocumentsTabSubComponentState<TabDivider>(SubComponentName.MainTabDivider, _collection, tabStateData);
+            setTabStateData(tabStateData);
+          }}
+        >
+          <Allotment.Pane preferredSize={`${tabStateData.leftPaneWidthPercent}%`} minSize={55}>
+            <div style={{ height: "100%", width: "100%", overflow: "hidden" }} ref={tableContainerRef}>
+              <div className={styles.tableContainer}>
+                <div
+                  style={
+                    {
+                      height: "100%",
+                      width: `calc(100% + ${calculateOffset(selectedColumnIds.length)}px)`,
+                    } /* Fix to make table not resize beyond parent's width */
+                  }
+                >
+                  <DocumentsTableComponent
+                    onRefreshTable={() => refreshDocumentsGrid(false)}
+                    items={tableItems}
+                    onSelectedRowsChange={onSelectedRowsChange}
+                    selectedRows={selectedRows}
+                    size={tableContainerSizePx}
+                    selectedColumnIds={selectedColumnIds}
+                    columnDefinitions={columnDefinitions}
+                    isRowSelectionDisabled={
+                      isBulkDeleteDisabled || (isFabric() && userContext.fabricContext?.isReadOnly)
+                    }
+                    onColumnSelectionChange={onColumnSelectionChange}
+                    defaultColumnSelection={getInitialColumnSelection()}
+                    collection={_collection}
+                    isColumnSelectionDisabled={isPreferredApiMongoDB}
+                  />
+                </div>
+              </div>
+              {tableItems.length > 0 && (
+                <a
+                  className={styles.loadMore}
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => loadNextPage(documentsIterator.iterator, false)}
+                  onKeyDown={onLoadMoreKeyInput}
+                >
+                  Load more
+                </a>
+              )}
+            </div>
+          </Allotment.Pane>
+          <Allotment.Pane minSize={30}>
+            <div style={{ height: "100%", width: "100%" }}>
+              {isTabActive && selectedDocumentContent && selectedRows.size <= 1 && (
+                <EditorReact
+                  language={"json"}
+                  content={selectedDocumentContent}
+                  isReadOnly={false}
+                  ariaLabel={"Document editor"}
+                  lineNumbers={"on"}
+                  theme={"_theme"}
+                  onContentChanged={_onEditorContentChange}
+                  enableWordWrapContextMenuItem={true}
+                />
+              )}
+              {selectedRows.size > 1 && (
+                <span style={{ margin: 10 }}>Number of selected documents: {selectedRows.size}</span>
+              )}
+            </div>
+          </Allotment.Pane>
+        </Allotment>
       </div>
       {bulkDeleteOperation && (
         <ProgressModalDialog

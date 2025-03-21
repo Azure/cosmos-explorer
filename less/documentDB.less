@@ -1830,6 +1830,14 @@ input::-webkit-calendar-picker-indicator::after {
   transform: rotate(90deg);
 }
 
+.customAccordion button:focus {
+  .focus();
+}
+
+.customAccordion {
+  margin-top: 1px;
+}
+
 .datalist-arrow:after:hover {
   content: "\276F";
   position: absolute;
@@ -1906,13 +1914,20 @@ input::-webkit-calendar-picker-indicator::after {
 }
 
 .nav-tabs-margin {
-  height: 32px;
   background-color: #f2f2f2;
 
   .nav-tabs {
     display: flex;
+    flex-wrap: wrap;
     align-items: flex-end;
     height: 100%;
+    margin-bottom: -0.5px;
+
+    li {
+      // Override the bootstrap defaults here to align with our layout constants.
+      margin-bottom: 0px;
+      height: 32px;
+    }
   }
 }
 
@@ -3115,5 +3130,9 @@ a:link {
   position: absolute;
   z-index: 1;
   background: white;
+  height: 100%;
+}
+
+.sidebarContainer {
   height: 100%;
 }

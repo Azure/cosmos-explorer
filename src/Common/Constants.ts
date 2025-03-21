@@ -89,6 +89,7 @@ export class CapabilityNames {
   public static readonly EnableMongo: string = "EnableMongo";
   public static readonly EnableServerless: string = "EnableServerless";
   public static readonly EnableNoSQLVectorSearch: string = "EnableNoSQLVectorSearch";
+  public static readonly EnableNoSQLFullTextSearch: string = "EnableNoSQLFullTextSearch";
 }
 
 export enum CapacityMode {
@@ -96,6 +97,12 @@ export enum CapacityMode {
   Serverless = "Serverless",
 }
 
+export enum WorkloadType {
+  Learning = "Learning",
+  DevelopmentTesting = "Development/Testing",
+  Production = "Production",
+  None = "None",
+}
 // flight names returned from the portal are always lowercase
 export class Flights {
   public static readonly SettingsV2 = "settingsv2";
@@ -118,6 +125,7 @@ export class AfecFeatures {
 
 export class TagNames {
   public static defaultExperience: string = "defaultExperience";
+  public static WorkloadType: string = "hidden-workload-type";
 }
 
 export class MongoDBAccounts {
@@ -148,7 +156,7 @@ export class PortalBackendEndpoints {
 }
 
 export class MongoProxyEndpoints {
-  public static readonly Local: string = "https://localhost:7238";
+  public static readonly Development: string = "https://localhost:7238";
   public static readonly Mpac: string = "https://cdb-ms-mpac-mp.cosmos.azure.com";
   public static readonly Prod: string = "https://cdb-ms-prod-mp.cosmos.azure.com";
   public static readonly Fairfax: string = "https://cdb-ff-prod-mp.cosmos.azure.us";
@@ -158,7 +166,7 @@ export class MongoProxyEndpoints {
 export class MongoProxyApi {
   public static readonly ResourceList: string = "ResourceList";
   public static readonly QueryDocuments: string = "QueryDocuments";
-  public static readonly CreateDocument: string = "CreateDocumen";
+  public static readonly CreateDocument: string = "CreateDocument";
   public static readonly ReadDocument: string = "ReadDocument";
   public static readonly UpdateDocument: string = "UpdateDocument";
   public static readonly DeleteDocument: string = "DeleteDocument";
@@ -515,6 +523,15 @@ export class PriorityLevel {
   public static readonly High = "high";
   public static readonly Low = "low";
   public static readonly Default = "low";
+}
+
+export class ariaLabelForLearnMoreLink {
+  public static readonly AnalyticalStore = "Learn more about analytical store.";
+  public static readonly AzureSynapseLink = "Learn more about Azure Synapse Link.";
+}
+
+export class FeedbackLabels {
+  public static readonly provideFeedback: string = "Provide feedback";
 }
 
 export const QueryCopilotSampleDatabaseId = "CopilotSampleDB";

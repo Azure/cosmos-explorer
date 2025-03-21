@@ -1,20 +1,13 @@
 import { Constants as CosmosSDKConstants } from "@azure/cosmos";
-import {
-  allowedMongoProxyEndpoints_ToBeDeprecated,
-  defaultAllowedMongoProxyEndpoints,
-  validateEndpoint,
-} from "Utils/EndpointUtils";
-import queryString from "querystring";
 import { AuthType } from "../AuthType";
 import { configContext } from "../ConfigContext";
 import * as DataModels from "../Contracts/DataModels";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { Collection } from "../Contracts/ViewModels";
 import DocumentId from "../Explorer/Tree/DocumentId";
-import { hasFlag } from "../Platform/Hosted/extractFeatures";
 import { userContext } from "../UserContext";
 import { logConsoleError } from "../Utils/NotificationConsoleUtils";
-import { ApiType, ContentType, HttpHeaders, HttpStatusCodes, MongoProxyApi, MongoProxyEndpoints } from "./Constants";
+import { ApiType, ContentType, HttpHeaders, HttpStatusCodes } from "./Constants";
 import { MinimalQueryIterator } from "./IteratorUtilities";
 import { sendMessage } from "./MessageHandler";
 
@@ -67,10 +60,6 @@ export function queryDocuments(
   query: string,
   continuationToken?: string,
 ): Promise<QueryResponse> {
-  if (!useMongoProxyEndpoint(MongoProxyApi.ResourceList) || !useMongoProxyEndpoint(MongoProxyApi.QueryDocuments)) {
-    return queryDocuments_ToBeDeprecated(databaseId, collection, isResourceList, query, continuationToken);
-  }
-
   const { databaseAccount } = userContext;
   const resourceEndpoint = databaseAccount.properties.mongoEndpoint || databaseAccount.properties.documentEndpoint;
   const params = {
@@ -89,7 +78,7 @@ export function queryDocuments(
     query,
   };
 
-  const endpoint = getFeatureEndpointOrDefault(MongoProxyApi.ResourceList) || "";
+  const endpoint = getEndpoint(configContext.MONGO_PROXY_ENDPOINT) || "";
 
   const headers = {
     ...defaultHeaders,
@@ -127,76 +116,11 @@ export function queryDocuments(
     });
 }
 
-function queryDocuments_ToBeDeprecated(
-  databaseId: string,
-  collection: Collection,
-  isResourceList: boolean,
-  query: string,
-  continuationToken?: string,
-): Promise<QueryResponse> {
-  const { databaseAccount } = userContext;
-  const resourceEndpoint = databaseAccount.properties.mongoEndpoint || databaseAccount.properties.documentEndpoint;
-  const params = {
-    db: databaseId,
-    coll: collection.id(),
-    resourceUrl: `${resourceEndpoint}dbs/${databaseId}/colls/${collection.id()}/docs/`,
-    rid: collection.rid,
-    rtype: "docs",
-    sid: userContext.subscriptionId,
-    rg: userContext.resourceGroup,
-    dba: databaseAccount.name,
-    pk:
-      collection && collection.partitionKey && !collection.partitionKey.systemKey
-        ? collection.partitionKeyProperties?.[0]
-        : "",
-  };
-
-  const endpoint = getFeatureEndpointOrDefault("resourcelist") || "";
-
-  const headers = {
-    ...defaultHeaders,
-    ...authHeaders(),
-    [CosmosSDKConstants.HttpHeaders.IsQuery]: "true",
-    [CosmosSDKConstants.HttpHeaders.PopulateQueryMetrics]: "true",
-    [CosmosSDKConstants.HttpHeaders.EnableScanInQuery]: "true",
-    [CosmosSDKConstants.HttpHeaders.EnableCrossPartitionQuery]: "true",
-    [CosmosSDKConstants.HttpHeaders.ParallelizeCrossPartitionQuery]: "true",
-    [HttpHeaders.contentType]: "application/query+json",
-  };
-
-  if (continuationToken) {
-    headers[CosmosSDKConstants.HttpHeaders.Continuation] = continuationToken;
-  }
-
-  const path = isResourceList ? "/resourcelist" : "";
-
-  return window
-    .fetch(`${endpoint}${path}?${queryString.stringify(params)}`, {
-      method: "POST",
-      body: JSON.stringify({ query }),
-      headers,
-    })
-    .then(async (response) => {
-      if (response.ok) {
-        return {
-          continuationToken: response.headers.get(CosmosSDKConstants.HttpHeaders.Continuation),
-          documents: (await response.json()).Documents as DataModels.DocumentId[],
-          headers: response.headers,
-        };
-      }
-      await errorHandling(response, "querying documents", params);
-      return undefined;
-    });
-}
-
 export function readDocument(
   databaseId: string,
   collection: Collection,
   documentId: DocumentId,
 ): Promise<DataModels.DocumentId> {
-  if (!useMongoProxyEndpoint(MongoProxyApi.ReadDocument)) {
-    return readDocument_ToBeDeprecated(databaseId, collection, documentId);
-  }
   const { databaseAccount } = userContext;
   const resourceEndpoint = databaseAccount.properties.mongoEndpoint || databaseAccount.properties.documentEndpoint;
   const idComponents = documentId.self.split("/");
@@ -217,7 +141,7 @@ export function readDocument(
         : "",
   };
 
-  const endpoint = getFeatureEndpointOrDefault(MongoProxyApi.ReadDocument);
+  const endpoint = getEndpoint(configContext.MONGO_PROXY_ENDPOINT);
 
   return window
     .fetch(endpoint, {
@@ -237,61 +161,12 @@ export function readDocument(
     });
 }
 
-export function readDocument_ToBeDeprecated(
-  databaseId: string,
-  collection: Collection,
-  documentId: DocumentId,
-): Promise<DataModels.DocumentId> {
-  const { databaseAccount } = userContext;
-  const resourceEndpoint = databaseAccount.properties.mongoEndpoint || databaseAccount.properties.documentEndpoint;
-  const idComponents = documentId.self.split("/");
-  const path = idComponents.slice(0, 4).join("/");
-  const rid = encodeURIComponent(idComponents[5]);
-  const params = {
-    db: databaseId,
-    coll: collection.id(),
-    resourceUrl: `${resourceEndpoint}${path}/${rid}`,
-    rid,
-    rtype: "docs",
-    sid: userContext.subscriptionId,
-    rg: userContext.resourceGroup,
-    dba: databaseAccount.name,
-    pk:
-      documentId && documentId.partitionKey && !documentId.partitionKey.systemKey
-        ? documentId.partitionKeyProperties?.[0]
-        : "",
-  };
-
-  const endpoint = getFeatureEndpointOrDefault("readDocument");
-
-  return window
-    .fetch(`${endpoint}?${queryString.stringify(params)}`, {
-      method: "GET",
-      headers: {
-        ...defaultHeaders,
-        ...authHeaders(),
-        [CosmosSDKConstants.HttpHeaders.PartitionKey]: encodeURIComponent(
-          JSON.stringify(documentId.partitionKeyHeader()),
-        ),
-      },
-    })
-    .then(async (response) => {
-      if (response.ok) {
-        return response.json();
-      }
-      return await errorHandling(response, "reading document", params);
-    });
-}
-
 export function createDocument(
   databaseId: string,
   collection: Collection,
   partitionKeyProperty: string,
   documentContent: unknown,
 ): Promise<DataModels.DocumentId> {
-  if (!useMongoProxyEndpoint(MongoProxyApi.CreateDocument)) {
-    return createDocument_ToBeDeprecated(databaseId, collection, partitionKeyProperty, documentContent);
-  }
   const { databaseAccount } = userContext;
   const resourceEndpoint = databaseAccount.properties.mongoEndpoint || databaseAccount.properties.documentEndpoint;
   const params = {
@@ -308,7 +183,7 @@ export function createDocument(
     documentContent: JSON.stringify(documentContent),
   };
 
-  const endpoint = getFeatureEndpointOrDefault(MongoProxyApi.CreateDocument);
+  const endpoint = getEndpoint(configContext.MONGO_PROXY_ENDPOINT);
 
   return window
     .fetch(`${endpoint}/createDocument`, {
@@ -328,54 +203,12 @@ export function createDocument(
     });
 }
 
-export function createDocument_ToBeDeprecated(
-  databaseId: string,
-  collection: Collection,
-  partitionKeyProperty: string,
-  documentContent: unknown,
-): Promise<DataModels.DocumentId> {
-  const { databaseAccount } = userContext;
-  const resourceEndpoint = databaseAccount.properties.mongoEndpoint || databaseAccount.properties.documentEndpoint;
-  const params = {
-    db: databaseId,
-    coll: collection.id(),
-    resourceUrl: `${resourceEndpoint}dbs/${databaseId}/colls/${collection.id()}/docs/`,
-    rid: collection.rid,
-    rtype: "docs",
-    sid: userContext.subscriptionId,
-    rg: userContext.resourceGroup,
-    dba: databaseAccount.name,
-    pk: collection && collection.partitionKey && !collection.partitionKey.systemKey ? partitionKeyProperty : "",
-  };
-
-  const endpoint = getFeatureEndpointOrDefault("createDocument");
-
-  return window
-    .fetch(`${endpoint}/resourcelist?${queryString.stringify(params)}`, {
-      method: "POST",
-      body: JSON.stringify(documentContent),
-      headers: {
-        ...defaultHeaders,
-        ...authHeaders(),
-      },
-    })
-    .then(async (response) => {
-      if (response.ok) {
-        return response.json();
-      }
-      return await errorHandling(response, "creating document", params);
-    });
-}
-
 export function updateDocument(
   databaseId: string,
   collection: Collection,
   documentId: DocumentId,
   documentContent: string,
 ): Promise<DataModels.DocumentId> {
-  if (!useMongoProxyEndpoint(MongoProxyApi.UpdateDocument)) {
-    return updateDocument_ToBeDeprecated(databaseId, collection, documentId, documentContent);
-  }
   const { databaseAccount } = userContext;
   const resourceEndpoint = databaseAccount.properties.mongoEndpoint || databaseAccount.properties.documentEndpoint;
   const idComponents = documentId.self.split("/");
@@ -396,7 +229,7 @@ export function updateDocument(
         : "",
     documentContent,
   };
-  const endpoint = getFeatureEndpointOrDefault(MongoProxyApi.UpdateDocument);
+  const endpoint = getEndpoint(configContext.MONGO_PROXY_ENDPOINT);
 
   return window
     .fetch(endpoint, {
@@ -414,139 +247,6 @@ export function updateDocument(
         return response.json();
       }
       return await errorHandling(response, "updating document", params);
-    });
-}
-
-export function updateDocument_ToBeDeprecated(
-  databaseId: string,
-  collection: Collection,
-  documentId: DocumentId,
-  documentContent: string,
-): Promise<DataModels.DocumentId> {
-  const { databaseAccount } = userContext;
-  const resourceEndpoint = databaseAccount.properties.mongoEndpoint || databaseAccount.properties.documentEndpoint;
-  const idComponents = documentId.self.split("/");
-  const path = idComponents.slice(0, 5).join("/");
-  const rid = encodeURIComponent(idComponents[5]);
-  const params = {
-    db: databaseId,
-    coll: collection.id(),
-    resourceUrl: `${resourceEndpoint}${path}/${rid}`,
-    rid,
-    rtype: "docs",
-    sid: userContext.subscriptionId,
-    rg: userContext.resourceGroup,
-    dba: databaseAccount.name,
-    pk:
-      documentId && documentId.partitionKey && !documentId.partitionKey.systemKey
-        ? documentId.partitionKeyProperties?.[0]
-        : "",
-  };
-  const endpoint = getFeatureEndpointOrDefault("updateDocument");
-
-  return window
-    .fetch(`${endpoint}?${queryString.stringify(params)}`, {
-      method: "PUT",
-      body: documentContent,
-      headers: {
-        ...defaultHeaders,
-        ...authHeaders(),
-        [HttpHeaders.contentType]: ContentType.applicationJson,
-        [CosmosSDKConstants.HttpHeaders.PartitionKey]: JSON.stringify(documentId.partitionKeyHeader()),
-      },
-    })
-    .then(async (response) => {
-      if (response.ok) {
-        return response.json();
-      }
-      return await errorHandling(response, "updating document", params);
-    });
-}
-
-export function deleteDocument(databaseId: string, collection: Collection, documentId: DocumentId): Promise<void> {
-  if (!useMongoProxyEndpoint(MongoProxyApi.DeleteDocument)) {
-    return deleteDocument_ToBeDeprecated(databaseId, collection, documentId);
-  }
-  const { databaseAccount } = userContext;
-  const resourceEndpoint = databaseAccount.properties.mongoEndpoint || databaseAccount.properties.documentEndpoint;
-  const idComponents = documentId.self.split("/");
-  const path = idComponents.slice(0, 5).join("/");
-  const rid = encodeURIComponent(idComponents[5]);
-  const params = {
-    databaseID: databaseId,
-    collectionID: collection.id(),
-    resourceUrl: `${resourceEndpoint}${path}/${rid}`,
-    resourceID: rid,
-    resourceType: "docs",
-    subscriptionID: userContext.subscriptionId,
-    resourceGroup: userContext.resourceGroup,
-    databaseAccountName: databaseAccount.name,
-    partitionKey:
-      documentId && documentId.partitionKey && !documentId.partitionKey.systemKey
-        ? documentId.partitionKeyProperties?.[0]
-        : "",
-  };
-  const endpoint = getFeatureEndpointOrDefault(MongoProxyApi.DeleteDocument);
-
-  return window
-    .fetch(endpoint, {
-      method: "DELETE",
-      body: JSON.stringify(params),
-      headers: {
-        ...defaultHeaders,
-        ...authHeaders(),
-        [HttpHeaders.contentType]: ContentType.applicationJson,
-      },
-    })
-    .then(async (response) => {
-      if (response.ok) {
-        return undefined;
-      }
-      return await errorHandling(response, "deleting document", params);
-    });
-}
-
-export function deleteDocument_ToBeDeprecated(
-  databaseId: string,
-  collection: Collection,
-  documentId: DocumentId,
-): Promise<void> {
-  const { databaseAccount } = userContext;
-  const resourceEndpoint = databaseAccount.properties.mongoEndpoint || databaseAccount.properties.documentEndpoint;
-  const idComponents = documentId.self.split("/");
-  const path = idComponents.slice(0, 5).join("/");
-  const rid = encodeURIComponent(idComponents[5]);
-  const params = {
-    db: databaseId,
-    coll: collection.id(),
-    resourceUrl: `${resourceEndpoint}${path}/${rid}`,
-    rid,
-    rtype: "docs",
-    sid: userContext.subscriptionId,
-    rg: userContext.resourceGroup,
-    dba: databaseAccount.name,
-    pk:
-      documentId && documentId.partitionKey && !documentId.partitionKey.systemKey
-        ? documentId.partitionKeyProperties?.[0]
-        : "",
-  };
-  const endpoint = getFeatureEndpointOrDefault("deleteDocument");
-
-  return window
-    .fetch(`${endpoint}?${queryString.stringify(params)}`, {
-      method: "DELETE",
-      headers: {
-        ...defaultHeaders,
-        ...authHeaders(),
-        [HttpHeaders.contentType]: ContentType.applicationJson,
-        [CosmosSDKConstants.HttpHeaders.PartitionKey]: JSON.stringify(documentId.partitionKeyHeader()),
-      },
-    })
-    .then(async (response) => {
-      if (response.ok) {
-        return undefined;
-      }
-      return await errorHandling(response, "deleting document", params);
     });
 }
 
@@ -575,7 +275,7 @@ export function deleteDocuments(
     resourceGroup: userContext.resourceGroup,
     databaseAccountName: databaseAccount.name,
   };
-  const endpoint = getFeatureEndpointOrDefault(MongoProxyApi.BulkDelete);
+  const endpoint = getEndpoint(configContext.MONGO_PROXY_ENDPOINT);
 
   return window
     .fetch(`${endpoint}/bulkdelete`, {
@@ -599,9 +299,6 @@ export function deleteDocuments(
 export function createMongoCollectionWithProxy(
   params: DataModels.CreateCollectionParams,
 ): Promise<DataModels.Collection> {
-  if (!useMongoProxyEndpoint(MongoProxyApi.CreateCollectionWithProxy)) {
-    return createMongoCollectionWithProxy_ToBeDeprecated(params);
-  }
   const { databaseAccount } = userContext;
   const shardKey: string = params.partitionKey?.paths[0];
 
@@ -622,7 +319,7 @@ export function createMongoCollectionWithProxy(
     isSharded: !!shardKey,
   };
 
-  const endpoint = getFeatureEndpointOrDefault(MongoProxyApi.CreateCollectionWithProxy);
+  const endpoint = getEndpoint(configContext.MONGO_PROXY_ENDPOINT);
 
   return window
     .fetch(`${endpoint}/createCollection`, {
@@ -642,70 +339,6 @@ export function createMongoCollectionWithProxy(
     });
 }
 
-export function createMongoCollectionWithProxy_ToBeDeprecated(
-  params: DataModels.CreateCollectionParams,
-): Promise<DataModels.Collection> {
-  const { databaseAccount } = userContext;
-  const shardKey: string = params.partitionKey?.paths[0];
-  const mongoParams: DataModels.MongoParameters = {
-    resourceUrl: databaseAccount.properties.mongoEndpoint || databaseAccount.properties.documentEndpoint,
-    db: params.databaseId,
-    coll: params.collectionId,
-    pk: shardKey,
-    offerThroughput: params.autoPilotMaxThroughput || params.offerThroughput,
-    cd: params.createNewDatabase,
-    st: params.databaseLevelThroughput,
-    is: !!shardKey,
-    rid: "",
-    rtype: "colls",
-    sid: userContext.subscriptionId,
-    rg: userContext.resourceGroup,
-    dba: databaseAccount.name,
-    isAutoPilot: !!params.autoPilotMaxThroughput,
-  };
-
-  const endpoint = getFeatureEndpointOrDefault("createCollectionWithProxy");
-
-  return window
-    .fetch(
-      `${endpoint}/createCollection?${queryString.stringify(
-        mongoParams as unknown as queryString.ParsedUrlQueryInput,
-      )}`,
-      {
-        method: "POST",
-        headers: {
-          ...defaultHeaders,
-          ...authHeaders(),
-          [HttpHeaders.contentType]: "application/json",
-        },
-      },
-    )
-    .then(async (response) => {
-      if (response.ok) {
-        return response.json();
-      }
-      return await errorHandling(response, "creating collection", mongoParams);
-    });
-}
-export function getFeatureEndpointOrDefault(feature: string): string {
-  let endpoint;
-  const allowedMongoProxyEndpoints = configContext.allowedMongoProxyEndpoints || [
-    ...defaultAllowedMongoProxyEndpoints,
-    ...allowedMongoProxyEndpoints_ToBeDeprecated,
-  ];
-  if (useMongoProxyEndpoint(feature)) {
-    endpoint = configContext.MONGO_PROXY_ENDPOINT;
-  } else {
-    endpoint =
-      hasFlag(userContext.features.mongoProxyAPIs, feature) &&
-      validateEndpoint(userContext.features.mongoProxyEndpoint, allowedMongoProxyEndpoints)
-        ? userContext.features.mongoProxyEndpoint
-        : configContext.MONGO_BACKEND_ENDPOINT || configContext.BACKEND_ENDPOINT;
-  }
-
-  return getEndpoint(endpoint);
-}
-
 export function getEndpoint(endpoint: string): string {
   let url = endpoint + "/api/mongo/explorer";
 
@@ -717,80 +350,6 @@ export function getEndpoint(endpoint: string): string {
     }
   }
   return url;
-}
-
-export function useMongoProxyEndpoint(mongoProxyApi: string): boolean {
-  const mongoProxyEnvironmentMap: { [key: string]: string[] } = {
-    [MongoProxyApi.ResourceList]: [
-      MongoProxyEndpoints.Local,
-      MongoProxyEndpoints.Mpac,
-      MongoProxyEndpoints.Prod,
-      MongoProxyEndpoints.Fairfax,
-      MongoProxyEndpoints.Mooncake,
-    ],
-    [MongoProxyApi.QueryDocuments]: [
-      MongoProxyEndpoints.Local,
-      MongoProxyEndpoints.Mpac,
-      MongoProxyEndpoints.Prod,
-      MongoProxyEndpoints.Fairfax,
-      MongoProxyEndpoints.Mooncake,
-    ],
-    [MongoProxyApi.CreateDocument]: [
-      MongoProxyEndpoints.Local,
-      MongoProxyEndpoints.Mpac,
-      MongoProxyEndpoints.Prod,
-      MongoProxyEndpoints.Fairfax,
-      MongoProxyEndpoints.Mooncake,
-    ],
-    [MongoProxyApi.ReadDocument]: [
-      MongoProxyEndpoints.Local,
-      MongoProxyEndpoints.Mpac,
-      MongoProxyEndpoints.Prod,
-      MongoProxyEndpoints.Fairfax,
-      MongoProxyEndpoints.Mooncake,
-    ],
-    [MongoProxyApi.UpdateDocument]: [
-      MongoProxyEndpoints.Local,
-      MongoProxyEndpoints.Mpac,
-      MongoProxyEndpoints.Prod,
-      MongoProxyEndpoints.Fairfax,
-      MongoProxyEndpoints.Mooncake,
-    ],
-    [MongoProxyApi.DeleteDocument]: [
-      MongoProxyEndpoints.Local,
-      MongoProxyEndpoints.Mpac,
-      MongoProxyEndpoints.Prod,
-      MongoProxyEndpoints.Fairfax,
-      MongoProxyEndpoints.Mooncake,
-    ],
-    [MongoProxyApi.CreateCollectionWithProxy]: [
-      MongoProxyEndpoints.Local,
-      MongoProxyEndpoints.Mpac,
-      MongoProxyEndpoints.Prod,
-      MongoProxyEndpoints.Fairfax,
-      MongoProxyEndpoints.Mooncake,
-    ],
-    [MongoProxyApi.LegacyMongoShell]: [
-      MongoProxyEndpoints.Local,
-      MongoProxyEndpoints.Mpac,
-      MongoProxyEndpoints.Prod,
-      MongoProxyEndpoints.Fairfax,
-      MongoProxyEndpoints.Mooncake,
-    ],
-    [MongoProxyApi.BulkDelete]: [
-      MongoProxyEndpoints.Local,
-      MongoProxyEndpoints.Mpac,
-      MongoProxyEndpoints.Prod,
-      MongoProxyEndpoints.Fairfax,
-      MongoProxyEndpoints.Mooncake,
-    ],
-  };
-
-  if (!mongoProxyEnvironmentMap[mongoProxyApi] || !configContext.MONGO_PROXY_ENDPOINT) {
-    return false;
-  }
-
-  return mongoProxyEnvironmentMap[mongoProxyApi].includes(configContext.MONGO_PROXY_ENDPOINT);
 }
 
 export class ThrottlingError extends Error {

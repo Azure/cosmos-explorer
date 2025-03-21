@@ -8,7 +8,7 @@ import { MessageTypes } from "Contracts/ExplorerContracts";
 import { useDataPlaneRbac } from "Explorer/Panes/SettingsPane/SettingsPane";
 import { getCopilotEnabled, isCopilotFeatureRegistered } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
 import { IGalleryItem } from "Juno/JunoClient";
-import { scheduleRefreshDatabaseResourceToken } from "Platform/Fabric/FabricUtil";
+import { isFabricMirrored, isFabricMirroredKey, scheduleRefreshFabricToken } from "Platform/Fabric/FabricUtil";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { acquireMsalTokenForAccount } from "Utils/AuthorizationUtils";
 import { allowedNotebookServerUrls, validateEndpoint } from "Utils/EndpointUtils";
@@ -35,7 +35,7 @@ import { PhoenixClient } from "../Phoenix/PhoenixClient";
 import * as ExplorerSettings from "../Shared/ExplorerSettings";
 import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
-import { isAccountNewerThanThresholdInMs, updateUserContext, userContext } from "../UserContext";
+import { updateUserContext, userContext } from "../UserContext";
 import { getCollectionName, getUploadName } from "../Utils/APITypeUtils";
 import { stringToBlob } from "../Utils/BlobUtils";
 import { isCapabilityEnabled } from "../Utils/CapabilityUtils";
@@ -43,7 +43,7 @@ import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../Utils/NotificationConsoleUtils";
 import { useSidePanel } from "../hooks/useSidePanel";
-import { useTabs } from "../hooks/useTabs";
+import { ReactTabKind, useTabs } from "../hooks/useTabs";
 import "./ComponentRegisterer";
 import { DialogProps, useDialog } from "./Controls/Dialog";
 import { GalleryTab as GalleryTabKind } from "./Controls/NotebookGallery/GalleryViewerComponent";
@@ -187,6 +187,10 @@ export default class Explorer {
       useNotebook.getState().setNotebookBasePath(userContext.features.notebookBasePath);
     }
 
+    if (isFabricMirrored()) {
+      useTabs.getState().closeReactTab(ReactTabKind.Home);
+    }
+
     this.refreshExplorer();
   }
 
@@ -278,37 +282,6 @@ export default class Explorer {
     }
   }
 
-  public openNPSSurveyDialog(): void {
-    if (!Platform.Portal || !["Postgres", "SQL", "Mongo"].includes(userContext.apiType)) {
-      return;
-    }
-
-    const ONE_DAY_IN_MS = 86400000;
-    const SEVEN_DAYS_IN_MS = 604800000;
-
-    // Try Cosmos DB subscription - survey shown to 100% of users at day 1 in Data Explorer.
-    if (userContext.isTryCosmosDBSubscription) {
-      if (isAccountNewerThanThresholdInMs(userContext.databaseAccount?.systemData?.createdAt || "", ONE_DAY_IN_MS)) {
-        Logger.logInfo(
-          `Sending message to Portal to check if NPS Survey can be displayed in Try Cosmos DB ${userContext.apiType}`,
-          "Explorer/openNPSSurveyDialog",
-        );
-        sendMessage({ type: MessageTypes.DisplayNPSSurvey });
-      }
-    } else {
-      // Show survey when an existing account is older than 7 days
-      if (
-        !isAccountNewerThanThresholdInMs(userContext.databaseAccount?.systemData?.createdAt || "", SEVEN_DAYS_IN_MS)
-      ) {
-        Logger.logInfo(
-          `Sending message to Portal to check if NPS Survey can be displayed for existing ${userContext.apiType} account older than 7 days`,
-          "Explorer/openNPSSurveyDialog",
-        );
-        sendMessage({ type: MessageTypes.DisplayNPSSurvey });
-      }
-    }
-  }
-
   public async openCESCVAFeedbackBlade(): Promise<void> {
     sendMessage({ type: MessageTypes.OpenCESCVAFeedbackBlade });
     Logger.logInfo(
@@ -378,8 +351,8 @@ export default class Explorer {
   };
 
   public onRefreshResourcesClick = async (): Promise<void> => {
-    if (configContext.platform === Platform.Fabric) {
-      scheduleRefreshDatabaseResourceToken(true).then(() => this.refreshAllDatabases());
+    if (isFabricMirroredKey()) {
+      scheduleRefreshFabricToken(true).then(() => this.refreshAllDatabases());
       return;
     }
 
@@ -1134,7 +1107,7 @@ export default class Explorer {
     if (userContext.apiType !== "Postgres" && userContext.apiType !== "VCoreMongo") {
       userContext.authType === AuthType.ResourceToken
         ? this.refreshDatabaseForResourceToken()
-        : this.refreshAllDatabases();
+        : await this.refreshAllDatabases(); // await: we rely on the databases to be loaded before restoring the tabs further in the flow
     }
     await useNotebook.getState().refreshNotebooksEnabledStateForAccount();
 
@@ -1158,7 +1131,7 @@ export default class Explorer {
       await this.initNotebooks(userContext.databaseAccount);
     }
 
-    await this.refreshSampleData();
+    this.refreshSampleData();
   }
 
   public async configureCopilot(): Promise<void> {
@@ -1183,26 +1156,27 @@ export default class Explorer {
       .setCopilotSampleDBEnabled(copilotEnabled && copilotUserDBEnabled && copilotSampleDBEnabled);
   }
 
-  public async refreshSampleData(): Promise<void> {
-    try {
-      if (!userContext.sampleDataConnectionInfo) {
-        return;
-      }
-      const collection: DataModels.Collection = await readSampleCollection();
-      if (!collection) {
-        return;
-      }
-
-      const databaseId = userContext.sampleDataConnectionInfo?.databaseId;
-      if (!databaseId) {
-        return;
-      }
-
-      const sampleDataResourceTokenCollection = new ResourceTokenCollection(this, databaseId, collection, true);
-      useDatabases.setState({ sampleDataResourceTokenCollection });
-    } catch (error) {
-      Logger.logError(getErrorMessage(error), "Explorer");
+  public refreshSampleData(): void {
+    if (!userContext.sampleDataConnectionInfo) {
       return;
     }
+
+    const databaseId = userContext.sampleDataConnectionInfo?.databaseId;
+    if (!databaseId) {
+      return;
+    }
+
+    readSampleCollection()
+      .then((collection: DataModels.Collection) => {
+        if (!collection) {
+          return;
+        }
+
+        const sampleDataResourceTokenCollection = new ResourceTokenCollection(this, databaseId, collection, true);
+        useDatabases.setState({ sampleDataResourceTokenCollection });
+      })
+      .catch((error) => {
+        Logger.logError(getErrorMessage(error), "Explorer/refreshSampleData");
+      });
   }
 }

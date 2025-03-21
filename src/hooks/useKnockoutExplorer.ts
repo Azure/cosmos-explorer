@@ -2,14 +2,26 @@ import * as Constants from "Common/Constants";
 import { createUri } from "Common/UrlUtility";
 import { DATA_EXPLORER_RPC_VERSION } from "Contracts/DataExplorerMessagesContract";
 import { FabricMessageTypes } from "Contracts/FabricMessageTypes";
-import { FABRIC_RPC_VERSION, FabricMessageV2 } from "Contracts/FabricMessagesContract";
+import {
+  ArtifactConnectionInfo,
+  CosmosDbArtifactType,
+  FABRIC_RPC_VERSION,
+  FabricMessageV2,
+  FabricMessageV3,
+  InitializeMessageV3,
+} from "Contracts/FabricMessagesContract";
+import { useDialog } from "Explorer/Controls/Dialog";
 import Explorer from "Explorer/Explorer";
 import { useDataPlaneRbac } from "Explorer/Panes/SettingsPane/SettingsPane";
 import { useSelectedNode } from "Explorer/useSelectedNode";
-import { scheduleRefreshDatabaseResourceToken } from "Platform/Fabric/FabricUtil";
+import { isFabricMirroredKey, scheduleRefreshFabricToken } from "Platform/Fabric/FabricUtil";
+import {
+  AppStateComponentNames,
+  OPEN_TABS_SUBCOMPONENT_NAME,
+  readSubComponentState,
+} from "Shared/AppStatePersistenceUtility";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
-import { useNewPortalBackendEndpoint } from "Utils/EndpointUtils";
-import { getNetworkSettingsWarningMessage } from "Utils/NetworkUtility";
+import { isDataplaneRbacSupported } from "Utils/APITypeUtils";
 import { logConsoleError } from "Utils/NotificationConsoleUtils";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
@@ -19,7 +31,7 @@ import { AccountKind, Flights } from "../Common/Constants";
 import { normalizeArmEndpoint } from "../Common/EnvironmentUtility";
 import * as Logger from "../Common/Logger";
 import { handleCachedDataMessage, sendMessage, sendReadyMessage } from "../Common/MessageHandler";
-import { Platform, configContext, updateConfigContext } from "../ConfigContext";
+import { configContext, Platform, updateConfigContext } from "../ConfigContext";
 import { ActionType, DataExplorerAction, TabKind } from "../Contracts/ActionContracts";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { DataExplorerInputsFrame } from "../Contracts/ViewModels";
@@ -40,7 +52,7 @@ import {
 } from "../Platform/Hosted/HostedUtils";
 import { extractFeatures } from "../Platform/Hosted/extractFeatures";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
-import { Node, PortalEnv, updateUserContext, userContext } from "../UserContext";
+import { FabricArtifactInfo, Node, PortalEnv, updateUserContext, userContext } from "../UserContext";
 import {
   acquireMsalTokenForAccount,
   acquireTokenWithMsal,
@@ -80,6 +92,9 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
           await updateContextForCopilot(explorer);
           await updateContextForSampleData(explorer);
         }
+
+        restoreOpenTabs();
+
         setExplorer(explorer);
       }
     };
@@ -89,7 +104,6 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
   useEffect(() => {
     if (explorer) {
       applyExplorerBindings(explorer);
-      explorer.openNPSSurveyDialog();
     }
   }, [explorer]);
 
@@ -98,7 +112,7 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
 
 async function configureFabric(): Promise<Explorer> {
   // These are the versions of Fabric that Data Explorer supports.
-  const SUPPORTED_FABRIC_VERSIONS = [FABRIC_RPC_VERSION];
+  const SUPPORTED_FABRIC_VERSIONS = ["2", FABRIC_RPC_VERSION];
 
   let firstContainerOpened = false;
   let explorer: Explorer;
@@ -114,7 +128,7 @@ async function configureFabric(): Promise<Explorer> {
           return;
         }
 
-        const data: FabricMessageV2 = event.data?.data;
+        const data: FabricMessageV2 | FabricMessageV3 = event.data?.data;
         if (!data) {
           return;
         }
@@ -123,38 +137,77 @@ async function configureFabric(): Promise<Explorer> {
           case "initialize": {
             const fabricVersion = data.version;
             if (!SUPPORTED_FABRIC_VERSIONS.includes(fabricVersion)) {
-              // TODO Surface error to user
+              // TODO Surface error to user and log to telemetry
+              useDialog
+                .getState()
+                .showOkModalDialog("Unsupported Fabric version", `Unsupported Fabric version: ${fabricVersion}`);
+              Logger.logError(`Unsupported Fabric version: ${fabricVersion}`, "Explorer/configureFabric");
               console.error(`Unsupported Fabric version: ${fabricVersion}`);
               return;
             }
 
-            explorer = createExplorerFabric(data.message);
-            await scheduleRefreshDatabaseResourceToken(true);
-            resolve(explorer);
-            await explorer.refreshAllDatabases();
-            if (userContext.fabricContext.isVisible && !firstContainerOpened) {
-              firstContainerOpened = true;
-              openFirstContainer(explorer, userContext.fabricContext.databaseConnectionInfo.databaseId);
+            if (fabricVersion === "2") {
+              // ----------------- TODO: Remove this when FabricMessageV2 is deprecated -----------------
+              const initializationMessage = data.message as {
+                connectionId: string;
+                isVisible: boolean;
+              };
+
+              explorer = createExplorerFabricLegacy(initializationMessage, data.version);
+              await scheduleRefreshFabricToken(true);
+              resolve(explorer);
+              await explorer.refreshAllDatabases();
+              if (userContext.fabricContext.isVisible) {
+                firstContainerOpened = true;
+                openFirstContainer(explorer, userContext.fabricContext.databaseName);
+              }
+              // -----------------------------------------------------------------------------------------
+            } else if (fabricVersion === FABRIC_RPC_VERSION) {
+              const initializationMessage = data.message as InitializeMessageV3<CosmosDbArtifactType>;
+              explorer = createExplorerFabric(initializationMessage, data.version);
+
+              if (initializationMessage.artifactType === CosmosDbArtifactType.MIRRORED_KEY) {
+                // Do not show Home tab for Mirrored
+                useTabs.getState().closeReactTab(ReactTabKind.Home);
+              }
+
+              // All tokens used in fabric expire, so schedule a refresh
+              // For Mirrored key, we need the token right away to get the database and containers list.
+              if (isFabricMirroredKey()) {
+                await scheduleRefreshFabricToken(true);
+              } else {
+                scheduleRefreshFabricToken(false);
+              }
+
+              resolve(explorer);
+              await explorer.refreshAllDatabases();
+
+              const { databaseName } = userContext.fabricContext;
+              if (userContext.fabricContext.isVisible && databaseName) {
+                firstContainerOpened = true;
+                openFirstContainer(explorer, databaseName);
+              }
             }
+
             break;
           }
           case "newContainer":
             explorer.onNewCollectionClicked();
             break;
           case "authorizationToken":
-          case "allResourceTokens_v2": {
+          case "allResourceTokens_v2":
+          case "accessToken": {
             handleCachedDataMessage(data);
             break;
           }
           case "explorerVisible": {
             userContext.fabricContext.isVisible = data.message.visible;
-            if (
-              userContext.fabricContext.isVisible &&
-              !firstContainerOpened &&
-              userContext?.fabricContext?.databaseConnectionInfo?.databaseId !== undefined
-            ) {
-              firstContainerOpened = true;
-              openFirstContainer(explorer, userContext.fabricContext.databaseConnectionInfo.databaseId);
+            if (userContext.fabricContext.isVisible && !firstContainerOpened) {
+              const { databaseName } = userContext.fabricContext;
+              if (databaseName !== undefined) {
+                firstContainerOpened = true;
+                openFirstContainer(explorer, databaseName);
+              }
             }
             break;
           }
@@ -175,6 +228,11 @@ async function configureFabric(): Promise<Explorer> {
 }
 
 const openFirstContainer = async (explorer: Explorer, databaseName: string, collectionName?: string) => {
+  if (useTabs.getState().openedTabs.length > 0) {
+    // Don't open any tabs if there are already tabs open
+    return;
+  }
+
   // Expand database first
   databaseName = sessionStorage.getItem("openDatabaseName") ?? databaseName;
   const database = useDatabases.getState().databases.find((db) => db.id() === databaseName);
@@ -289,7 +347,7 @@ async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
     );
     if (!userContext.features.enableAadDataPlane) {
       Logger.logInfo(`AAD Feature flag is not enabled for account ${account.name}`, "Explorer/configureHostedWithAAD");
-      if (userContext.apiType === "SQL") {
+      if (isDataplaneRbacSupported(userContext.apiType)) {
         if (LocalStorageUtility.hasItem(StorageKey.DataPlaneRbacEnabled)) {
           const isDataPlaneRbacSetting = LocalStorageUtility.getEntryString(StorageKey.DataPlaneRbacEnabled);
           Logger.logInfo(
@@ -409,13 +467,29 @@ function configureHostedWithResourceToken(config: ResourceToken): Explorer {
   return explorer;
 }
 
-function createExplorerFabric(params: { connectionId: string; isVisible: boolean }): Explorer {
+/**
+ * Initialization for FabricMessageV2
+ * TODO: delete when FabricMessageV2 is deprecated
+ * @param params
+ * @returns
+ */
+function createExplorerFabricLegacy(
+  params: { connectionId: string; isVisible: boolean },
+  fabricClientRpcVersion: string,
+): Explorer {
+  const artifactInfo: FabricArtifactInfo[CosmosDbArtifactType.MIRRORED_KEY] = {
+    connectionId: params.connectionId,
+    resourceTokenInfo: undefined,
+  };
+
   updateUserContext({
     fabricContext: {
-      connectionId: params.connectionId,
-      databaseConnectionInfo: undefined,
+      fabricClientRpcVersion,
       isReadOnly: true,
       isVisible: params.isVisible ?? true,
+      databaseName: undefined,
+      artifactType: CosmosDbArtifactType.MIRRORED_KEY,
+      artifactInfo,
     },
     authType: AuthType.ConnectionString,
     databaseAccount: {
@@ -432,6 +506,98 @@ function createExplorerFabric(params: { connectionId: string; isVisible: boolean
   const explorer = new Explorer();
   return explorer;
 }
+
+/**
+ * Initialization for FabricMessageV3 and above
+ * @param params
+ * @returns
+ */
+const createExplorerFabric = (
+  params: InitializeMessageV3<CosmosDbArtifactType>,
+  fabricClientRpcVersion: string,
+): Explorer => {
+  updateUserContext({
+    fabricContext: {
+      fabricClientRpcVersion,
+      databaseName: undefined,
+      isVisible: params.isVisible,
+      isReadOnly: params.isReadOnly,
+      artifactType: params.artifactType,
+      artifactInfo: undefined,
+    },
+  });
+
+  if (params.artifactType === CosmosDbArtifactType.MIRRORED_KEY) {
+    updateUserContext({
+      authType: AuthType.ConnectionString, // TODO: will need its own type
+      databaseAccount: {
+        id: "",
+        location: "",
+        type: "",
+        name: "Mounted", // TODO: not used?
+        kind: AccountKind.Default,
+        properties: {
+          documentEndpoint: undefined,
+        },
+      },
+      fabricContext: {
+        ...userContext.fabricContext,
+        artifactInfo: {
+          connectionId: (params.artifactConnectionInfo as ArtifactConnectionInfo[CosmosDbArtifactType.MIRRORED_KEY])
+            .connectionId,
+          resourceTokenInfo: undefined,
+        },
+      },
+    });
+  } else if (params.artifactType === CosmosDbArtifactType.MIRRORED_AAD) {
+    updateUserContext({
+      databaseAccount: {
+        id: "",
+        location: "",
+        type: "",
+        name: "Mounted", // TODO: not used?
+        kind: AccountKind.Default,
+        properties: {
+          documentEndpoint: undefined,
+        },
+      },
+      authType: AuthType.AAD,
+      dataPlaneRbacEnabled: true,
+      aadToken: undefined,
+      masterKey: undefined,
+      fabricContext: {
+        ...userContext.fabricContext,
+        artifactInfo: undefined,
+      },
+    });
+  } else if (params.artifactType === CosmosDbArtifactType.NATIVE) {
+    const nativeParams = params as InitializeMessageV3<CosmosDbArtifactType.NATIVE>;
+    // Make it behave like Hosted/AAD/RBAC
+    updateUserContext({
+      databaseAccount: {
+        id: "",
+        location: "",
+        type: "",
+        name: "Native", // TODO: not used?
+        kind: AccountKind.Default,
+        properties: {
+          documentEndpoint: nativeParams.artifactConnectionInfo.accountEndpoint,
+        },
+      },
+      authType: AuthType.AAD,
+      dataPlaneRbacEnabled: true,
+      aadToken: nativeParams.artifactConnectionInfo.accessToken,
+      masterKey: undefined,
+      fabricContext: {
+        ...userContext.fabricContext,
+        databaseName: nativeParams.artifactConnectionInfo.databaseName,
+      },
+    });
+  }
+
+  const explorer = new Explorer();
+  return explorer;
+};
 
 function configureWithEncryptedToken(config: EncryptedToken): Explorer {
   const apiExperience = DefaultExperienceUtility.getDefaultExperienceFromApiKind(config.encryptedTokenMetadata.apiKind);
@@ -536,20 +702,12 @@ async function configurePortal(): Promise<Explorer> {
         const inputs = message?.inputs;
         const openAction = message?.openAction;
         if (inputs) {
-          if (
-            configContext.BACKEND_ENDPOINT &&
-            configContext.platform === Platform.Portal &&
-            process.env.NODE_ENV === "development"
-          ) {
-            inputs.extensionEndpoint = configContext.PROXY_PATH;
-          }
-
           updateContextsFromPortalMessage(inputs);
 
           const { databaseAccount: account, subscriptionId, resourceGroup } = userContext;
 
           let dataPlaneRbacEnabled;
-          if (userContext.apiType === "SQL") {
+          if (isDataplaneRbacSupported(userContext.apiType)) {
             if (LocalStorageUtility.hasItem(StorageKey.DataPlaneRbacEnabled)) {
               const isDataPlaneRbacSetting = LocalStorageUtility.getEntryString(StorageKey.DataPlaneRbacEnabled);
               Logger.logInfo(
@@ -668,18 +826,17 @@ function updateAADEndpoints(portalEnv: PortalEnv) {
 
 function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
   if (
-    configContext.BACKEND_ENDPOINT &&
+    configContext.PORTAL_BACKEND_ENDPOINT &&
     configContext.platform === Platform.Portal &&
     process.env.NODE_ENV === "development"
   ) {
-    inputs.extensionEndpoint = configContext.PROXY_PATH;
+    inputs.portalBackendEndpoint = configContext.PROXY_PATH;
   }
 
   const authorizationToken = inputs.authorizationToken || "";
   const databaseAccount = inputs.databaseAccount;
 
   updateConfigContext({
-    BACKEND_ENDPOINT: inputs.extensionEndpoint || configContext.BACKEND_ENDPOINT,
     ARM_ENDPOINT: normalizeArmEndpoint(inputs.csmEndpoint || configContext.ARM_ENDPOINT),
     MONGO_PROXY_ENDPOINT: inputs.mongoProxyEndpoint,
     CASSANDRA_PROXY_ENDPOINT: inputs.cassandraProxyEndpoint,
@@ -693,7 +850,9 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
     databaseAccount,
     resourceGroup: inputs.resourceGroup,
     subscriptionId: inputs.subscriptionId,
+    tenantId: inputs.tenantId,
     subscriptionType: inputs.subscriptionType,
+    userName: inputs.userName,
     quotaId: inputs.quotaId,
     portalEnv: inputs.serverId as PortalEnv,
     hasWriteAccess: inputs.hasWriteAccess ?? true,
@@ -728,8 +887,6 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
       });
     }
   }
-
-  getNetworkSettingsWarningMessage(useTabs.getState().setNetworkSettingsWarning);
 
   if (inputs.features) {
     Object.assign(userContext.features, extractFeatures(new URLSearchParams(inputs.features)));
@@ -782,17 +939,7 @@ async function updateContextForSampleData(explorer: Explorer): Promise<void> {
     return;
   }
 
-  let url: string;
-  if (useNewPortalBackendEndpoint(Constants.BackendApi.SampleData)) {
-    url = createUri(configContext.PORTAL_BACKEND_ENDPOINT, "/api/sampledata");
-  } else {
-    const sampleDatabaseEndpoint = useQueryCopilot.getState().copilotUserDBEnabled
-      ? `/api/tokens/sampledataconnection/v2`
-      : `/api/tokens/sampledataconnection`;
-
-    url = createUri(`${configContext.BACKEND_ENDPOINT}`, sampleDatabaseEndpoint);
-  }
-
+  const url: string = createUri(configContext.PORTAL_BACKEND_ENDPOINT, "/api/sampledata");
   const authorizationHeader = getAuthorizationHeader();
   const headers = { [authorizationHeader.header]: authorizationHeader.token };
 
@@ -808,9 +955,23 @@ async function updateContextForSampleData(explorer: Explorer): Promise<void> {
   const sampleDataConnectionInfo = parseResourceTokenConnectionString(data.connectionString);
   updateUserContext({ sampleDataConnectionInfo });
 
-  await explorer.refreshSampleData();
+  explorer.refreshSampleData();
 }
 
 interface SampledataconnectionResponse {
   connectionString: string;
 }
+
+const restoreOpenTabs = () => {
+  const openTabsState = readSubComponentState<(DataExplorerAction | undefined)[]>(
+    AppStateComponentNames.DataExplorerAction,
+    OPEN_TABS_SUBCOMPONENT_NAME,
+    undefined,
+    [],
+  );
+  openTabsState.forEach((openTabState) => {
+    if (openTabState) {
+      handleOpenAction(openTabState, useDatabases.getState().databases, this);
+    }
+  });
+};
