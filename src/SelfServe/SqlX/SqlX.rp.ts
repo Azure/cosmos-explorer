@@ -242,7 +242,7 @@ export const getPriceMapAndCurrencyCode = async (map: OfferingIdMap): Promise<Pr
   } catch (err) {
     const failureTelemetry = { err, selfServeClassName: SqlX.name };
     selfServeTraceFailure(failureTelemetry, getPriceMapAndCurrencyCodeTimestamp);
-    return { priceMap: new Map(), billingCurrency: undefined };
+    return { priceMap: new Map<string, Map<string, number>>(), billingCurrency: undefined };
   }
 };
 
@@ -258,9 +258,9 @@ export const getOfferingIds = async (regions: Array<RegionItem>): Promise<Offeri
     selfServeClassName: SqlX.name,
   };
   const getOfferingIdsCodeTimestamp = selfServeTraceStart(telemetryData);
-  const offeringIdMap = new Map<string, Map<string, string>>();
 
   try {
+    const offeringIdMap = new Map<string, Map<string, string>>();
     for (const regionItem of regions) {
       const regionOfferingIdMap = new Map<string, string>();
       const regionShortName = await getRegionShortName(regionItem.locationName);
@@ -291,6 +291,6 @@ export const getOfferingIds = async (regions: Array<RegionItem>): Promise<Offeri
   } catch (err) {
     const failureTelemetry = { err, selfServeClassName: SqlX.name };
     selfServeTraceFailure(failureTelemetry, getOfferingIdsCodeTimestamp);
-    return offeringIdMap;
+    return new Map<string, Map<string, string>>();
   }
 };
