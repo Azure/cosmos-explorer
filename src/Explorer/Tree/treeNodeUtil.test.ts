@@ -82,7 +82,7 @@ jest.mock("Explorer/Tree/Trigger", () => {
 jest.mock("Common/DatabaseAccountUtility", () => {
   return {
     isPublicInternetAccessAllowed: () => true,
-    isMaterializedViewsEnabled: () => false,
+    isGlobalSecondaryIndexEnabled: () => false,
   };
 });
 

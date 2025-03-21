@@ -5,13 +5,13 @@ import { FullTextPoliciesComponent } from "Explorer/Controls/FullTextSeach/FullT
 import { scrollToSection } from "Explorer/Panes/AddCollectionPanel/AddCollectionPanelUtility";
 import React from "react";
 
-export interface AddMVFullTextSearchComponentProps {
+export interface FullTextSearchComponentProps {
   fullTextPolicy: FullTextPolicy;
   setFullTextPolicy: React.Dispatch<React.SetStateAction<FullTextPolicy>>;
   setFullTextIndexes: React.Dispatch<React.SetStateAction<FullTextIndex[]>>;
   setFullTextPolicyValidated: React.Dispatch<React.SetStateAction<boolean>>;
 }
-export const AddMVFullTextSearchComponent = (props: AddMVFullTextSearchComponentProps): JSX.Element => {
+export const FullTextSearchComponent = (props: FullTextSearchComponentProps): JSX.Element => {
   const { fullTextPolicy, setFullTextPolicy, setFullTextIndexes, setFullTextPolicyValidated } = props;
 
   return (

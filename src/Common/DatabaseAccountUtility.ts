@@ -27,6 +27,6 @@ export function getWorkloadType(): WorkloadType {
   return workloadType;
 }
 
-export function isMaterializedViewsEnabled(): boolean {
+export function isGlobalSecondaryIndexEnabled(): boolean {
   return userContext.apiType === "SQL" && userContext.databaseAccount?.properties?.enableMaterializedViews;
 }

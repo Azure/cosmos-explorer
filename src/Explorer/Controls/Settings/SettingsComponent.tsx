@@ -44,11 +44,11 @@ import {
   ConflictResolutionComponent,
   ConflictResolutionComponentProps,
 } from "./SettingsSubComponents/ConflictResolutionComponent";
-import { IndexingPolicyComponent, IndexingPolicyComponentProps } from "./SettingsSubComponents/IndexingPolicyComponent";
 import {
-  MaterializedViewComponent,
-  MaterializedViewComponentProps,
-} from "./SettingsSubComponents/MaterializedViewComponent";
+  GlobalSecondaryIndexComponent,
+  GlobalSecondaryIndexComponentProps,
+} from "./SettingsSubComponents/GlobalSecondaryIndexComponent";
+import { IndexingPolicyComponent, IndexingPolicyComponentProps } from "./SettingsSubComponents/IndexingPolicyComponent";
 import {
   MongoIndexingPolicyComponent,
   MongoIndexingPolicyComponentProps,
@@ -166,7 +166,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   private shouldShowComputedPropertiesEditor: boolean;
   private shouldShowIndexingPolicyEditor: boolean;
   private shouldShowPartitionKeyEditor: boolean;
-  private isMaterializedView: boolean;
+  private isGlobalSecondaryIndex: boolean;
   private isVectorSearchEnabled: boolean;
   private isFullTextSearchEnabled: boolean;
   private totalThroughputUsed: number;
@@ -184,7 +184,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.shouldShowComputedPropertiesEditor = userContext.apiType === "SQL";
       this.shouldShowIndexingPolicyEditor = userContext.apiType !== "Cassandra" && userContext.apiType !== "Mongo";
       this.shouldShowPartitionKeyEditor = userContext.apiType === "SQL" && isRunningOnPublicCloud();
-      this.isMaterializedView =
+      this.isGlobalSecondaryIndex =
         !!this.collection?.materializedViewDefinition() || !!this.collection?.materializedViews();
       this.isVectorSearchEnabled = isVectorSearchEnabled() && !hasDatabaseSharedThroughput(this.collection);
       this.isFullTextSearchEnabled = isFullTextSearchEnabled() && !hasDatabaseSharedThroughput(this.collection);
@@ -1279,7 +1279,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       explorer: this.props.settingsTab.getContainer(),
     };
 
-    const materializedViewComponentProps: MaterializedViewComponentProps = {
+    const globalSecondaryIndexComponentProps: GlobalSecondaryIndexComponentProps = {
       collection: this.collection,
       explorer: this.props.settingsTab.getContainer(),
     };
@@ -1347,10 +1347,10 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       });
     }
 
-    if (this.isMaterializedView) {
+    if (this.isGlobalSecondaryIndex) {
       tabs.push({
-        tab: SettingsV2TabTypes.MaterializedViewTab,
-        content: <MaterializedViewComponent {...materializedViewComponentProps} />,
+        tab: SettingsV2TabTypes.GlobaleSecondaryIndexTab,
+        content: <GlobalSecondaryIndexComponent {...globalSecondaryIndexComponentProps} />,
       });
     }
 

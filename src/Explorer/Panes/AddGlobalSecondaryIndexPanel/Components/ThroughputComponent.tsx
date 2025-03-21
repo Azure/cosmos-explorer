@@ -6,25 +6,25 @@ import React from "react";
 import { getCollectionName } from "Utils/APITypeUtils";
 import { isServerlessAccount } from "Utils/CapabilityUtils";
 
-export interface AddMVThroughputComponentProps {
+export interface ThroughputComponentProps {
   enableDedicatedThroughput: boolean;
   setEnabledDedicatedThroughput: React.Dispatch<React.SetStateAction<boolean>>;
   isSelectedSourceContainerSharedThroughput: () => boolean;
   showCollectionThroughputInput: () => boolean;
-  materializedViewThroughputOnChange: (materializedViewThroughputValue: number) => void;
-  isMaterializedViewAutoscaleOnChange: (isMaterializedViewAutoscaleValue: boolean) => void;
+  globalSecondaryIndexThroughputOnChange: (globalSecondaryIndexThroughputValue: number) => void;
+  isGlobalSecondaryIndexAutoscaleOnChange: (isGlobalSecondaryIndexAutoscaleValue: boolean) => void;
   setIsThroughputCapExceeded: React.Dispatch<React.SetStateAction<boolean>>;
   isCostAknowledgedOnChange: (isCostAknowledgedValue: boolean) => void;
 }
 
-export const AddMVThroughputComponent = (props: AddMVThroughputComponentProps): JSX.Element => {
+export const ThroughputComponent = (props: ThroughputComponentProps): JSX.Element => {
   const {
     enableDedicatedThroughput,
     setEnabledDedicatedThroughput,
     isSelectedSourceContainerSharedThroughput,
     showCollectionThroughputInput,
-    materializedViewThroughputOnChange,
-    isMaterializedViewAutoscaleOnChange,
+    globalSecondaryIndexThroughputOnChange,
+    isGlobalSecondaryIndexAutoscaleOnChange,
     setIsThroughputCapExceeded,
     isCostAknowledgedOnChange,
   } = props;
@@ -53,10 +53,10 @@ export const AddMVThroughputComponent = (props: AddMVThroughputComponentProps): 
           isFreeTier={isFreeTierAccount()}
           isQuickstart={false}
           setThroughputValue={(throughput: number) => {
-            materializedViewThroughputOnChange(throughput);
+            globalSecondaryIndexThroughputOnChange(throughput);
           }}
           setIsAutoscale={(isAutoscale: boolean) => {
-            isMaterializedViewAutoscaleOnChange(isAutoscale);
+            isGlobalSecondaryIndexAutoscaleOnChange(isAutoscale);
           }}
           setIsThroughputCapExceeded={(isThroughputCapExceeded: boolean) => {
             setIsThroughputCapExceeded(isThroughputCapExceeded);

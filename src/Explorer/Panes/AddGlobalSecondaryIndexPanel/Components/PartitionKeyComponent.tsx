@@ -7,7 +7,7 @@ import {
 } from "Explorer/Panes/AddCollectionPanel/AddCollectionPanelUtility";
 import React from "react";
 
-export interface AddMVPartitionKeyComponentProps {
+export interface PartitionKeyComponentProps {
   partitionKey?: string;
   setPartitionKey: React.Dispatch<React.SetStateAction<string>>;
   subPartitionKeys: string[];
@@ -15,7 +15,7 @@ export interface AddMVPartitionKeyComponentProps {
   useHashV1: boolean;
 }
 
-export const AddMVPartitionKeyComponent = (props: AddMVPartitionKeyComponentProps): JSX.Element => {
+export const PartitionKeyComponent = (props: PartitionKeyComponentProps): JSX.Element => {
   const { partitionKey, setPartitionKey, subPartitionKeys, setSubPartitionKeys, useHashV1 } = props;
 
   const partitionKeyValueOnChange = (value: string): void => {
@@ -50,7 +50,7 @@ export const AddMVPartitionKeyComponent = (props: AddMVPartitionKeyComponentProp
 
       <input
         type="text"
-        id="addmaterializedView-partitionKeyValue"
+        id="addGlobalSecondaryIndex-partitionKeyValue"
         aria-required
         required
         size={40}
@@ -77,8 +77,8 @@ export const AddMVPartitionKeyComponent = (props: AddMVPartitionKeyComponentProp
             ></div>
             <input
               type="text"
-              id="addMaterializedView-partitionKeyValue"
-              key={`addMaterializedView-partitionKeyValue_${subPartitionKeyIndex}`}
+              id="addGlobalSecondaryIndex-partitionKeyValue"
+              key={`addGlobalSecondaryIndex-partitionKeyValue_${subPartitionKeyIndex}`}
               aria-required
               required
               size={40}

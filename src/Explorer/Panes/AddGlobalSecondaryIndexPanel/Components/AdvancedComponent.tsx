@@ -5,12 +5,12 @@ import React from "react";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "Shared/Telemetry/TelemetryProcessor";
 
-export interface AddMVAdvancedComponentProps {
+export interface AdvancedComponentProps {
   useHashV1: boolean;
   setUseHashV1: React.Dispatch<React.SetStateAction<boolean>>;
   setSubPartitionKeys: React.Dispatch<React.SetStateAction<string[]>>;
 }
-export const AddMVAdvancedComponent = (props: AddMVAdvancedComponentProps): JSX.Element => {
+export const AdvancedComponent = (props: AdvancedComponentProps): JSX.Element => {
   const { useHashV1, setUseHashV1, setSubPartitionKeys } = props;
 
   const useHashV1CheckboxOnChange = (isChecked: boolean): void => {
@@ -23,7 +23,7 @@ export const AddMVAdvancedComponent = (props: AddMVAdvancedComponentProps): JSX.
       title="Advanced"
       isExpandedByDefault={false}
       onExpand={() => {
-        TelemetryProcessor.traceOpen(Action.ExpandAddMaterializedViewPaneAdvancedSection);
+        TelemetryProcessor.traceOpen(Action.ExpandAddGlobalSecondaryIndexPaneAdvancedSection);
         scrollToSection("collapsibleAdvancedSectionContent");
       }}
     >

@@ -11,7 +11,7 @@ import {
   TooltipHost,
 } from "@fluentui/react";
 import * as Constants from "Common/Constants";
-import { createMaterializedView } from "Common/dataAccess/createMaterializedView";
+import { createGlobalSecondaryIndex } from "Common/dataAccess/createMaterializedView";
 import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
 import * as DataModels from "Contracts/DataModels";
 import { FullTextIndex, FullTextPolicy, VectorEmbedding, VectorIndex } from "Contracts/DataModels";
@@ -29,14 +29,14 @@ import {
 import {
   chooseSourceContainerStyle,
   chooseSourceContainerStyles,
-} from "Explorer/Panes/AddMaterializedViewPanel/AddMaterializedViewPanelStyles";
-import { AddMVAdvancedComponent } from "Explorer/Panes/AddMaterializedViewPanel/AddMVAdvancedComponent";
-import { AddMVAnalyticalStoreComponent } from "Explorer/Panes/AddMaterializedViewPanel/AddMVAnalyticalStoreComponent";
-import { AddMVFullTextSearchComponent } from "Explorer/Panes/AddMaterializedViewPanel/AddMVFullTextSearchComponent";
-import { AddMVPartitionKeyComponent } from "Explorer/Panes/AddMaterializedViewPanel/AddMVPartitionKeyComponent";
-import { AddMVThroughputComponent } from "Explorer/Panes/AddMaterializedViewPanel/AddMVThroughputComponent";
-import { AddMVUniqueKeysComponent } from "Explorer/Panes/AddMaterializedViewPanel/AddMVUniqueKeysComponent";
-import { AddMVVectorSearchComponent } from "Explorer/Panes/AddMaterializedViewPanel/AddMVVectorSearchComponent";
+} from "Explorer/Panes/AddGlobalSecondaryIndexPanel/AddGlobalSecondaryIndexPanelStyles";
+import { AdvancedComponent } from "Explorer/Panes/AddGlobalSecondaryIndexPanel/Components/AdvancedComponent";
+import { AnalyticalStoreComponent } from "Explorer/Panes/AddGlobalSecondaryIndexPanel/Components/AnalyticalStoreComponent";
+import { FullTextSearchComponent } from "Explorer/Panes/AddGlobalSecondaryIndexPanel/Components/FullTextSearchComponent";
+import { PartitionKeyComponent } from "Explorer/Panes/AddGlobalSecondaryIndexPanel/Components/PartitionKeyComponent";
+import { ThroughputComponent } from "Explorer/Panes/AddGlobalSecondaryIndexPanel/Components/ThroughputComponent";
+import { UniqueKeysComponent } from "Explorer/Panes/AddGlobalSecondaryIndexPanel/Components/UniqueKeysComponent";
+import { VectorSearchComponent } from "Explorer/Panes/AddGlobalSecondaryIndexPanel/Components/VectorSearchComponent";
 import { PanelFooterComponent } from "Explorer/Panes/PanelFooterComponent";
 import { PanelInfoErrorComponent } from "Explorer/Panes/PanelInfoErrorComponent";
 import { PanelLoadingScreen } from "Explorer/Panes/PanelLoadingScreen";
@@ -49,16 +49,16 @@ import * as TelemetryProcessor from "Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "UserContext";
 import { isFullTextSearchEnabled, isServerlessAccount, isVectorSearchEnabled } from "Utils/CapabilityUtils";
 
-export interface AddMaterializedViewPanelProps {
+export interface AddGlobalSecondaryIndexPanelProps {
   explorer: Explorer;
   sourceContainer?: Collection;
 }
-export const AddMaterializedViewPanel = (props: AddMaterializedViewPanelProps): JSX.Element => {
+export const AddGlobalSecondaryIndexPanel = (props: AddGlobalSecondaryIndexPanelProps): JSX.Element => {
   const { explorer, sourceContainer } = props;
 
   const [sourceContainerOptions, setSourceContainerOptions] = useState<IDropdownOption[]>();
   const [selectedSourceContainer, setSelectedSourceContainer] = useState<Collection>(sourceContainer);
-  const [materializedViewId, setMaterializedViewId] = useState<string>();
+  const [globalSecondaryIndexId, setGlobalSecondaryIndexId] = useState<string>();
   const [definition, setDefinition] = useState<string>();
   const [partitionKey, setPartitionKey] = useState<string>(getPartitionKey());
   const [subPartitionKeys, setSubPartitionKeys] = useState<string[]>([]);
@@ -87,13 +87,13 @@ export const AddMaterializedViewPanel = (props: AddMaterializedViewPanelProps): 
       });
 
       database.collections().forEach((collection: Collection) => {
-        const isMaterializedView: boolean = !!collection.materializedViewDefinition();
+        const isGlobalSecondaryIndex: boolean = !!collection.materializedViewDefinition();
         sourceContainerOptions.push({
           key: collection.rid,
           text: collection.id(),
-          disabled: isMaterializedView,
-          ...(isMaterializedView && {
-            title: "This is a materialized view.",
+          disabled: isGlobalSecondaryIndex,
+          ...(isGlobalSecondaryIndex && {
+            title: "This is a global secondary index.",
           }),
           data: collection,
         });
@@ -107,16 +107,16 @@ export const AddMaterializedViewPanel = (props: AddMaterializedViewPanelProps): 
     scrollToSection("panelContainer");
   }, [errorMessage]);
 
-  let materializedViewThroughput: number;
-  let isMaterializedViewAutoscale: boolean;
+  let globalSecondaryIndexThroughput: number;
+  let isGlobalSecondaryIndexAutoscale: boolean;
   let isCostAcknowledged: boolean;
 
-  const materializedViewThroughputOnChange = (materializedViewThroughputValue: number): void => {
-    materializedViewThroughput = materializedViewThroughputValue;
+  const globalSecondaryIndexThroughputOnChange = (globalSecondaryIndexThroughputValue: number): void => {
+    globalSecondaryIndexThroughput = globalSecondaryIndexThroughputValue;
   };
 
-  const isMaterializedViewAutoscaleOnChange = (isMaterializedViewAutoscaleValue: boolean): void => {
-    isMaterializedViewAutoscale = isMaterializedViewAutoscaleValue;
+  const isGlobalSecondaryIndexAutoscaleOnChange = (isGlobalSecondaryIndexAutoscaleValue: boolean): void => {
+    isGlobalSecondaryIndexAutoscale = isGlobalSecondaryIndexAutoscaleValue;
   };
 
   const isCostAknowledgedOnChange = (isCostAcknowledgedValue: boolean): void => {
@@ -176,15 +176,15 @@ export const AddMaterializedViewPanel = (props: AddMaterializedViewPanelProps): 
       return false;
     }
 
-    if (materializedViewThroughput > CollectionCreation.DefaultCollectionRUs100K && !isCostAcknowledged) {
-      const errorMessage = isMaterializedViewAutoscale
+    if (globalSecondaryIndexThroughput > CollectionCreation.DefaultCollectionRUs100K && !isCostAcknowledged) {
+      const errorMessage = isGlobalSecondaryIndexAutoscale
         ? "Please acknowledge the estimated monthly spend."
         : "Please acknowledge the estimated daily spend.";
       setErrorMessage(errorMessage);
       return false;
     }
 
-    if (materializedViewThroughput > CollectionCreation.MaxRUPerPartition) {
+    if (globalSecondaryIndexThroughput > CollectionCreation.MaxRUPerPartition) {
       setErrorMessage("Unsharded collections support up to 10,000 RUs");
       return false;
     }
@@ -211,9 +211,9 @@ export const AddMaterializedViewPanel = (props: AddMaterializedViewPanelProps): 
       return;
     }
 
-    const materializedViewIdTrimmed: string = materializedViewId.trim();
+    const globalSecondaryIdTrimmed: string = globalSecondaryIndexId.trim();
 
-    const materializedViewDefinition: DataModels.MaterializedViewDefinition = {
+    const globalSecondaryIndexDefinition: DataModels.MaterializedViewDefinition = {
       sourceCollectionId: selectedSourceContainer.id(),
       definition: definition,
     };
@@ -253,9 +253,9 @@ export const AddMaterializedViewPanel = (props: AddMaterializedViewPanelProps): 
         shared: isSelectedSourceContainerSharedThroughput(),
       },
       collection: {
-        id: materializedViewIdTrimmed,
-        throughput: materializedViewThroughput,
-        isAutoscale: isMaterializedViewAutoscale,
+        id: globalSecondaryIdTrimmed,
+        throughput: globalSecondaryIndexThroughput,
+        isAutoscale: isGlobalSecondaryIndexAutoscale,
         partitionKeyPaths,
         uniqueKeyPolicy,
         collectionWithDedicatedThroughput: enableDedicatedThroughput,
@@ -271,16 +271,16 @@ export const AddMaterializedViewPanel = (props: AddMaterializedViewPanelProps): 
     let autoPilotMaxThroughput: number;
 
     if (!databaseLevelThroughput) {
-      if (isMaterializedViewAutoscale) {
-        autoPilotMaxThroughput = materializedViewThroughput;
+      if (isGlobalSecondaryIndexAutoscale) {
+        autoPilotMaxThroughput = globalSecondaryIndexThroughput;
       } else {
-        offerThroughput = materializedViewThroughput;
+        offerThroughput = globalSecondaryIndexThroughput;
       }
     }
 
-    const createMaterializedViewParams: DataModels.CreateMaterializedViewsParams = {
-      materializedViewId: materializedViewIdTrimmed,
-      materializedViewDefinition: materializedViewDefinition,
+    const createGlobalSecondaryIndexParams: DataModels.CreateMaterializedViewsParams = {
+      materializedViewId: globalSecondaryIdTrimmed,
+      materializedViewDefinition: globalSecondaryIndexDefinition,
       databaseId: selectedSourceContainer.databaseId,
       databaseLevelThroughput: databaseLevelThroughput,
       offerThroughput: offerThroughput,
@@ -296,23 +296,23 @@ export const AddMaterializedViewPanel = (props: AddMaterializedViewPanelProps): 
     setIsExecuting(true);
 
     try {
-      await createMaterializedView(createMaterializedViewParams);
+      await createGlobalSecondaryIndex(createGlobalSecondaryIndexParams);
       await explorer.refreshAllDatabases();
-      TelemetryProcessor.traceSuccess(Action.CreateMaterializedView, telemetryData, startKey);
+      TelemetryProcessor.traceSuccess(Action.CreateGlobalSecondaryIndex, telemetryData, startKey);
       useSidePanel.getState().closeSidePanel();
     } catch (error) {
       const errorMessage: string = getErrorMessage(error);
       setErrorMessage(errorMessage);
       setShowErrorDetails(true);
       const failureTelemetryData = { ...telemetryData, error: errorMessage, errorStack: getErrorStack(error) };
-      TelemetryProcessor.traceFailure(Action.CreateMaterializedView, failureTelemetryData, startKey);
+      TelemetryProcessor.traceFailure(Action.CreateGlobalSecondaryIndex, failureTelemetryData, startKey);
     } finally {
       setIsExecuting(false);
     }
   };
 
   return (
-    <form className="panelFormWrapper" id="panelMaterializedView" onSubmit={submit}>
+    <form className="panelFormWrapper" id="panelGlobalSecondaryIndex" onSubmit={submit}>
       {errorMessage && (
         <PanelInfoErrorComponent message={errorMessage} messageType="error" showErrorDetails={showErrorDetails} />
       )}
@@ -336,27 +336,27 @@ export const AddMaterializedViewPanel = (props: AddMaterializedViewPanelProps): 
           <Stack horizontal>
             <span className="mandatoryStar">*&nbsp;</span>
             <Text className="panelTextBold" variant="small">
-              View container id
+              Index container id
             </Text>
           </Stack>
           <input
-            id="materializedViewId"
+            id="globalSecondaryIndexId"
             type="text"
             aria-required
             required
             autoComplete="off"
             pattern="[^/?#\\]*[^/?# \\]"
             title="May not end with space nor contain characters '\' '/' '#' '?'"
-            placeholder={`e.g., viewByEmailId`}
+            placeholder={`e.g., indexbyEmailId`}
             size={40}
             className="panelTextField"
-            value={materializedViewId}
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => setMaterializedViewId(event.target.value)}
+            value={globalSecondaryIndexId}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => setGlobalSecondaryIndexId(event.target.value)}
           />
           <Stack horizontal>
             <span className="mandatoryStar">*&nbsp;</span>
             <Text className="panelTextBold" variant="small">
-              Materialized View Definition
+              Global Secondary Index Definition
             </Text>
             <TooltipHost
               directionalHint={DirectionalHint.bottomLeftEdge}
@@ -365,7 +365,7 @@ export const AddMaterializedViewPanel = (props: AddMaterializedViewPanelProps): 
                   href="https://learn.microsoft.com/en-us/azure/cosmos-db/nosql/materialized-views#defining-materialized-views"
                   target="blank"
                 >
-                  Learn more about defining materialized views.
+                  Learn more about defining global secondary indexes.
                 </Link>
               }
             >
@@ -373,7 +373,7 @@ export const AddMaterializedViewPanel = (props: AddMaterializedViewPanelProps): 
             </TooltipHost>
           </Stack>
           <input
-            id="materializedViewDefinition"
+            id="globalSecondaryIndexDefinition"
             type="text"
             aria-required
             required
@@ -384,27 +384,27 @@ export const AddMaterializedViewPanel = (props: AddMaterializedViewPanelProps): 
             value={definition || ""}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => setDefinition(event.target.value)}
           />
-          <AddMVPartitionKeyComponent
+          <PartitionKeyComponent
             {...{ partitionKey, setPartitionKey, subPartitionKeys, setSubPartitionKeys, useHashV1 }}
           />
-          <AddMVThroughputComponent
+          <ThroughputComponent
             {...{
               enableDedicatedThroughput,
               setEnabledDedicatedThroughput,
               isSelectedSourceContainerSharedThroughput,
               showCollectionThroughputInput,
-              materializedViewThroughputOnChange,
-              isMaterializedViewAutoscaleOnChange,
+              globalSecondaryIndexThroughputOnChange,
+              isGlobalSecondaryIndexAutoscaleOnChange,
               setIsThroughputCapExceeded,
               isCostAknowledgedOnChange,
             }}
           />
-          <AddMVUniqueKeysComponent {...{ uniqueKeys, setUniqueKeys }} />
+          <UniqueKeysComponent {...{ uniqueKeys, setUniqueKeys }} />
           {shouldShowAnalyticalStoreOptions() && (
-            <AddMVAnalyticalStoreComponent {...{ explorer, enableAnalyticalStore, setEnableAnalyticalStore }} />
+            <AnalyticalStoreComponent {...{ explorer, enableAnalyticalStore, setEnableAnalyticalStore }} />
           )}
           {showVectorSearchParameters() && (
-            <AddMVVectorSearchComponent
+            <VectorSearchComponent
               {...{
                 vectorEmbeddingPolicy,
                 setVectorEmbeddingPolicy,
@@ -416,11 +416,11 @@ export const AddMaterializedViewPanel = (props: AddMaterializedViewPanelProps): 
             />
           )}
           {showFullTextSearchParameters() && (
-            <AddMVFullTextSearchComponent
+            <FullTextSearchComponent
               {...{ fullTextPolicy, setFullTextPolicy, setFullTextIndexes, setFullTextPolicyValidated }}
             />
           )}
-          <AddMVAdvancedComponent {...{ useHashV1, setUseHashV1, setSubPartitionKeys }} />
+          <AdvancedComponent {...{ useHashV1, setUseHashV1, setSubPartitionKeys }} />
         </Stack>
       </div>
       <PanelFooterComponent buttonLabel="OK" isButtonDisabled={isThroughputCapExceeded} />

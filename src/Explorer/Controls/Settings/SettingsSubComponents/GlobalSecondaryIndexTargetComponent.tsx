@@ -2,12 +2,14 @@ import { Stack, Text } from "@fluentui/react";
 import * as React from "react";
 import * as ViewModels from "../../../../Contracts/ViewModels";
 
-export interface MaterializedViewTargetComponentProps {
+export interface GlobalSecondaryIndexTargetComponentProps {
   collection: ViewModels.Collection;
 }
 
-export const MaterializedViewTargetComponent: React.FC<MaterializedViewTargetComponentProps> = ({ collection }) => {
-  const materializedViewDefinition = collection?.materializedViewDefinition();
+export const GlobalSecondaryIndexTargetComponent: React.FC<GlobalSecondaryIndexTargetComponentProps> = ({
+  collection,
+}) => {
+  const globalSecondaryIndexDefinition = collection?.materializedViewDefinition();
 
   const textHeadingStyle = {
     root: { fontWeight: "600", fontSize: 16 },
@@ -23,19 +25,19 @@ export const MaterializedViewTargetComponent: React.FC<MaterializedViewTargetCom
 
   return (
     <Stack tokens={{ childrenGap: 15 }} styles={{ root: { maxWidth: 600 } }}>
-      <Text styles={textHeadingStyle}>Materialized View Settings</Text>
+      <Text styles={textHeadingStyle}>Global Secondary Index Settings</Text>
 
       <Stack tokens={{ childrenGap: 5 }}>
         <Text styles={{ root: { fontWeight: "600" } }}>Source container</Text>
         <Stack styles={valueBoxStyle}>
-          <Text>{materializedViewDefinition?.sourceCollectionId}</Text>
+          <Text>{globalSecondaryIndexDefinition?.sourceCollectionId}</Text>
         </Stack>
       </Stack>
 
       <Stack tokens={{ childrenGap: 5 }}>
-        <Text styles={{ root: { fontWeight: "600" } }}>Materialized view definition</Text>
+        <Text styles={{ root: { fontWeight: "600" } }}>Global secondary index definition</Text>
         <Stack styles={valueBoxStyle}>
-          <Text>{materializedViewDefinition?.definition}</Text>
+          <Text>{globalSecondaryIndexDefinition?.definition}</Text>
         </Stack>
       </Stack>
     </Stack>

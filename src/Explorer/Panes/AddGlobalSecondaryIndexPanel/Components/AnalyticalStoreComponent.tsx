@@ -8,12 +8,12 @@ import {
 import React from "react";
 import { getCollectionName } from "Utils/APITypeUtils";
 
-export interface AddMVAnalyticalStoreComponentProps {
+export interface AnalyticalStoreComponentProps {
   explorer: Explorer;
   enableAnalyticalStore: boolean;
   setEnableAnalyticalStore: React.Dispatch<React.SetStateAction<boolean>>;
 }
-export const AddMVAnalyticalStoreComponent = (props: AddMVAnalyticalStoreComponentProps): JSX.Element => {
+export const AnalyticalStoreComponent = (props: AnalyticalStoreComponentProps): JSX.Element => {
   const { explorer, enableAnalyticalStore, setEnableAnalyticalStore } = props;
 
   const onEnableAnalyticalStoreRadioButtonChange = (checked: boolean): void => {

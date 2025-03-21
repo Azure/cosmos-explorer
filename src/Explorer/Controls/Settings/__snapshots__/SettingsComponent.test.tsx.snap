@@ -343,16 +343,16 @@ exports[`SettingsComponent renders 1`] = `
         />
       </PivotItem>
       <PivotItem
-        headerText="Materialized Views (Preview)"
-        itemKey="MaterializedViewTab"
-        key="MaterializedViewTab"
+        headerText="Global Secondary Index (Preview)"
+        itemKey="GlobaleSecondaryIndexTab"
+        key="GlobaleSecondaryIndexTab"
         style={
           {
             "marginTop": 20,
           }
         }
       >
-        <MaterializedViewComponent
+        <GlobalSecondaryIndexComponent
           collection={
             {
               "analyticalStorageTtl": [Function],

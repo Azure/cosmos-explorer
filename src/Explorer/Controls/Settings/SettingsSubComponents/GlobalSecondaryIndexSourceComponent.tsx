@@ -1,29 +1,30 @@
 import { PrimaryButton } from "@fluentui/react";
-import { MaterializedViewsLabels } from "Common/Constants";
+import { GlobalSecondaryIndexLabels } from "Common/Constants";
+import { MaterializedView } from "Contracts/DataModels";
 import Explorer from "Explorer/Explorer";
 import { loadMonaco } from "Explorer/LazyMonaco";
-import { AddMaterializedViewPanel } from "Explorer/Panes/AddMaterializedViewPanel/AddMaterializedViewPanel";
+import { AddGlobalSecondaryIndexPanel } from "Explorer/Panes/AddGlobalSecondaryIndexPanel/AddGlobalSecondaryIndexPanel";
 import { useDatabases } from "Explorer/useDatabases";
 import { useSidePanel } from "hooks/useSidePanel";
 import * as monaco from "monaco-editor";
 import React, { useEffect, useRef } from "react";
 import * as ViewModels from "../../../../Contracts/ViewModels";
 
-export interface MaterializedViewSourceComponentProps {
+export interface GlobalSecondaryIndexSourceComponentProps {
   collection: ViewModels.Collection;
   explorer: Explorer;
 }
 
-export const MaterializedViewSourceComponent: React.FC<MaterializedViewSourceComponentProps> = ({
+export const GlobalSecondaryIndexSourceComponent: React.FC<GlobalSecondaryIndexSourceComponentProps> = ({
   collection,
   explorer,
 }) => {
   const editorContainerRef = useRef<HTMLDivElement>(null);
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor>(null);
 
-  const materializedViews = collection?.materializedViews() ?? [];
+  const globalSecondaryIndexes: MaterializedView[] = collection?.materializedViews() ?? [];
 
-  // Helper function to fetch the definition and partition key of targetContainer by traversing through all collections and matching id from MaterializedViews[] with collection id.
+  // Helper function to fetch the definition and partition key of targetContainer by traversing through all collections and matching id from MaterializedView[] with collection id.
   const getViewDetails = (viewId: string): { definition: string; partitionKey: string[] } => {
     let definition = "";
     let partitionKey: string[] = [];
@@ -31,8 +32,8 @@ export const MaterializedViewSourceComponent: React.FC<MaterializedViewSourceCom
     useDatabases.getState().databases.find((database) => {
       const collection = database.collections().find((collection) => collection.id() === viewId);
       if (collection) {
-        const materializedViewDefinition = collection.materializedViewDefinition();
-        materializedViewDefinition && (definition = materializedViewDefinition.definition);
+        const globalSecondaryIndexDefinition = collection.materializedViewDefinition();
+        globalSecondaryIndexDefinition && (definition = globalSecondaryIndexDefinition.definition);
         collection.partitionKey?.paths && (partitionKey = collection.partitionKey.paths);
       }
     });
@@ -42,7 +43,7 @@ export const MaterializedViewSourceComponent: React.FC<MaterializedViewSourceCom
 
   //JSON value for the editor using the fetched id and definitions.
   const jsonValue = JSON.stringify(
-    materializedViews.map((view) => {
+    globalSecondaryIndexes.map((view) => {
       const { definition, partitionKey } = getViewDetails(view.id);
       return {
         name: view.id,
@@ -66,7 +67,7 @@ export const MaterializedViewSourceComponent: React.FC<MaterializedViewSourceCom
       editorRef.current = monacoInstance.editor.create(editorContainerRef.current, {
         value: jsonValue,
         language: "json",
-        ariaLabel: "Materialized Views JSON",
+        ariaLabel: "Global Secondary Index JSON",
         readOnly: true,
       });
     };
@@ -103,8 +104,8 @@ export const MaterializedViewSourceComponent: React.FC<MaterializedViewSourceCom
           useSidePanel
             .getState()
             .openSidePanel(
-              MaterializedViewsLabels.NewMaterializedView,
-              <AddMaterializedViewPanel explorer={explorer} sourceContainer={collection} />,
+              GlobalSecondaryIndexLabels.NewGlobalSecondaryIndex,
+              <AddGlobalSecondaryIndexPanel explorer={explorer} sourceContainer={collection} />,
             )
         }
       />

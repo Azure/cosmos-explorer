@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`AddMaterializedViewPanel render default panel 1`] = `
+exports[`AddGlobalSecondaryIndexPanel render default panel 1`] = `
 <form
   className="panelFormWrapper"
-  id="panelMaterializedView"
+  id="panelGlobalSecondaryIndex"
   onSubmit={[Function]}
 >
   <div
@@ -67,17 +67,17 @@ exports[`AddMaterializedViewPanel render default panel 1`] = `
           className="panelTextBold"
           variant="small"
         >
-          View container id
+          Index container id
         </Text>
       </Stack>
       <input
         aria-required={true}
         autoComplete="off"
         className="panelTextField"
-        id="materializedViewId"
+        id="globalSecondaryIndexId"
         onChange={[Function]}
         pattern="[^/?#\\\\]*[^/?# \\\\]"
-        placeholder="e.g., viewByEmailId"
+        placeholder="e.g., indexbyEmailId"
         required={true}
         size={40}
         title="May not end with space nor contain characters '\\' '/' '#' '?'"
@@ -95,7 +95,7 @@ exports[`AddMaterializedViewPanel render default panel 1`] = `
           className="panelTextBold"
           variant="small"
         >
-          Materialized View Definition
+          Global Secondary Index Definition
         </Text>
         <StyledTooltipHostBase
           content={
@@ -103,7 +103,7 @@ exports[`AddMaterializedViewPanel render default panel 1`] = `
               href="https://learn.microsoft.com/en-us/azure/cosmos-db/nosql/materialized-views#defining-materialized-views"
               target="blank"
             >
-              Learn more about defining materialized views.
+              Learn more about defining global secondary indexes.
             </StyledLinkBase>
           }
           directionalHint={4}
@@ -120,7 +120,7 @@ exports[`AddMaterializedViewPanel render default panel 1`] = `
         aria-required={true}
         autoComplete="off"
         className="panelTextField"
-        id="materializedViewDefinition"
+        id="globalSecondaryIndexDefinition"
         onChange={[Function]}
         placeholder="SELECT c.email, c.accountId FROM c"
         required={true}
@@ -128,26 +128,26 @@ exports[`AddMaterializedViewPanel render default panel 1`] = `
         type="text"
         value=""
       />
-      <AddMVPartitionKeyComponent
+      <PartitionKeyComponent
         partitionKey=""
         setPartitionKey={[Function]}
         setSubPartitionKeys={[Function]}
         subPartitionKeys={[]}
       />
-      <AddMVThroughputComponent
+      <ThroughputComponent
+        globalSecondaryIndexThroughputOnChange={[Function]}
         isCostAknowledgedOnChange={[Function]}
-        isMaterializedViewAutoscaleOnChange={[Function]}
+        isGlobalSecondaryIndexAutoscaleOnChange={[Function]}
         isSelectedSourceContainerSharedThroughput={[Function]}
-        materializedViewThroughputOnChange={[Function]}
         setEnabledDedicatedThroughput={[Function]}
         setIsThroughputCapExceeded={[Function]}
         showCollectionThroughputInput={[Function]}
       />
-      <AddMVUniqueKeysComponent
+      <UniqueKeysComponent
         setUniqueKeys={[Function]}
         uniqueKeys={[]}
       />
-      <AddMVAnalyticalStoreComponent
+      <AnalyticalStoreComponent
         explorer={
           Explorer {
             "_isInitializingNotebooks": false,
@@ -177,7 +177,7 @@ exports[`AddMaterializedViewPanel render default panel 1`] = `
         }
         setEnableAnalyticalStore={[Function]}
       />
-      <AddMVAdvancedComponent
+      <AdvancedComponent
         setSubPartitionKeys={[Function]}
         setUseHashV1={[Function]}
       />

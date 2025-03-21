@@ -8,7 +8,7 @@ import {
 } from "Explorer/Panes/AddCollectionPanel/AddCollectionPanelUtility";
 import React from "react";
 
-export interface AddMVVectorSearchComponentProps {
+export interface VectorSearchComponentProps {
   vectorEmbeddingPolicy: VectorEmbedding[];
   setVectorEmbeddingPolicy: React.Dispatch<React.SetStateAction<VectorEmbedding[]>>;
   vectorIndexingPolicy: VectorIndex[];
@@ -16,7 +16,7 @@ export interface AddMVVectorSearchComponentProps {
   setVectorPolicyValidated: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const AddMVVectorSearchComponent = (props: AddMVVectorSearchComponentProps): JSX.Element => {
+export const VectorSearchComponent = (props: VectorSearchComponentProps): JSX.Element => {
   const {
     vectorEmbeddingPolicy,
     setVectorEmbeddingPolicy,

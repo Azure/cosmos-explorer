@@ -3,12 +3,12 @@ import { UniqueKeysHeader } from "Explorer/Panes/AddCollectionPanel/AddCollectio
 import React from "react";
 import { userContext } from "UserContext";
 
-export interface AddMVUniqueKeysComponentProps {
+export interface UniqueKeysComponentProps {
   uniqueKeys: string[];
   setUniqueKeys: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
-export const AddMVUniqueKeysComponent = (props: AddMVUniqueKeysComponentProps): JSX.Element => {
+export const UniqueKeysComponent = (props: UniqueKeysComponentProps): JSX.Element => {
   const { uniqueKeys, setUniqueKeys } = props;
 
   const updateUniqueKeysOnChange = (value: string, uniqueKeyToReplaceIndex: number): void => {

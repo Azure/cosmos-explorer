@@ -1,11 +1,11 @@
-import { MaterializedViewsLabels } from "Common/Constants";
-import { isMaterializedViewsEnabled } from "Common/DatabaseAccountUtility";
+import { GlobalSecondaryIndexLabels } from "Common/Constants";
+import { isGlobalSecondaryIndexEnabled } from "Common/DatabaseAccountUtility";
 import { configContext, Platform } from "ConfigContext";
 import { TreeNodeMenuItem } from "Explorer/Controls/TreeComponent/TreeNodeComponent";
 import {
-  AddMaterializedViewPanel,
-  AddMaterializedViewPanelProps,
-} from "Explorer/Panes/AddMaterializedViewPanel/AddMaterializedViewPanel";
+  AddGlobalSecondaryIndexPanel,
+  AddGlobalSecondaryIndexPanelProps,
+} from "Explorer/Panes/AddGlobalSecondaryIndexPanel/AddGlobalSecondaryIndexPanel";
 import { useDatabases } from "Explorer/useDatabases";
 import { isFabric, isFabricNative } from "Platform/Fabric/FabricUtil";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
@@ -170,19 +170,19 @@ export const createCollectionContextMenuButton = (
     });
   }
 
-  if (isMaterializedViewsEnabled() && !selectedCollection.materializedViewDefinition()) {
+  if (isGlobalSecondaryIndexEnabled() && !selectedCollection.materializedViewDefinition()) {
     items.push({
-      label: MaterializedViewsLabels.NewMaterializedView,
+      label: GlobalSecondaryIndexLabels.NewGlobalSecondaryIndex,
       onClick: () => {
-        const addMaterializedViewPanelProps: AddMaterializedViewPanelProps = {
+        const addMaterializedViewPanelProps: AddGlobalSecondaryIndexPanelProps = {
           explorer: container,
           sourceContainer: selectedCollection,
         };
         useSidePanel
           .getState()
           .openSidePanel(
-            MaterializedViewsLabels.NewMaterializedView,
-            <AddMaterializedViewPanel {...addMaterializedViewPanelProps} />,
+            GlobalSecondaryIndexLabels.NewGlobalSecondaryIndex,
+            <AddGlobalSecondaryIndexPanel {...addMaterializedViewPanelProps} />,
           );
       },
     });

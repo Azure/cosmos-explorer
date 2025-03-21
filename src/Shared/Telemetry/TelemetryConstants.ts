@@ -2,7 +2,7 @@
 export enum Action {
   CollapseTreeNode,
   CreateCollection,
-  CreateMaterializedView,
+  CreateGlobalSecondaryIndex,
   CreateDocument,
   CreateStoredProcedure,
   CreateTrigger,
@@ -120,7 +120,7 @@ export enum Action {
   NotebooksGalleryPublishedCount,
   SelfServe,
   ExpandAddCollectionPaneAdvancedSection,
-  ExpandAddMaterializedViewPaneAdvancedSection,
+  ExpandAddGlobalSecondaryIndexPaneAdvancedSection,
   SchemaAnalyzerClickAnalyze,
   SelfServeComponent,
   LaunchQuickstart,

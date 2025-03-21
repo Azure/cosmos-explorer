@@ -29,7 +29,7 @@ export const shouldShowScriptNodes = (): boolean => {
 const TreeDatabaseIcon = <DatabaseRegular fontSize={16} />;
 const TreeSettingsIcon = <SettingsRegular fontSize={16} />;
 const TreeCollectionIcon = <DocumentMultipleRegular fontSize={16} />;
-const MaterializedViewCollectionIcon = <EyeRegular fontSize={16} />; //check icon
+const GlobalSecondaryIndexCollectionIcon = <EyeRegular fontSize={16} />; //check icon
 
 export const createSampleDataTreeNodes = (sampleDataResourceTokenCollection: ViewModels.CollectionBase): TreeNode[] => {
   const updatedSampleTree: TreeNode = {
@@ -111,7 +111,7 @@ export const createResourceTokenTreeNodes = (collection: ViewModels.Collection):
     isExpanded: true,
     children,
     className: "collectionNode",
-    iconSrc: collection.materializedViewDefinition() ? MaterializedViewCollectionIcon : TreeCollectionIcon,
+    iconSrc: collection.materializedViewDefinition() ? GlobalSecondaryIndexCollectionIcon : TreeCollectionIcon,
     onClick: () => {
       // Rewritten version of expandCollapseCollection
       useSelectedNode.getState().setSelectedNode(collection);
@@ -229,7 +229,7 @@ export const buildCollectionNode = (
     children: children,
     className: "collectionNode",
     contextMenu: ResourceTreeContextMenuButtonFactory.createCollectionContextMenuButton(container, collection),
-    iconSrc: collection.materializedViewDefinition() ? MaterializedViewCollectionIcon : TreeCollectionIcon,
+    iconSrc: collection.materializedViewDefinition() ? GlobalSecondaryIndexCollectionIcon : TreeCollectionIcon,
     onClick: () => {
       useSelectedNode.getState().setSelectedNode(collection);
       collection.openTab();

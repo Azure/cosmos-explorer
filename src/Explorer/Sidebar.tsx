@@ -13,15 +13,15 @@ import {
   SplitButton,
 } from "@fluentui/react-components";
 import { Add16Regular, ArrowSync12Regular, ChevronLeft12Regular, ChevronRight12Regular } from "@fluentui/react-icons";
-import { MaterializedViewsLabels } from "Common/Constants";
-import { isMaterializedViewsEnabled } from "Common/DatabaseAccountUtility";
+import { GlobalSecondaryIndexLabels } from "Common/Constants";
+import { isGlobalSecondaryIndexEnabled } from "Common/DatabaseAccountUtility";
 import { configContext, Platform } from "ConfigContext";
 import Explorer from "Explorer/Explorer";
 import { AddDatabasePanel } from "Explorer/Panes/AddDatabasePanel/AddDatabasePanel";
 import {
-  AddMaterializedViewPanel,
-  AddMaterializedViewPanelProps,
-} from "Explorer/Panes/AddMaterializedViewPanel/AddMaterializedViewPanel";
+  AddGlobalSecondaryIndexPanel,
+  AddGlobalSecondaryIndexPanelProps,
+} from "Explorer/Panes/AddGlobalSecondaryIndexPanel/AddGlobalSecondaryIndexPanel";
 import { Tabs } from "Explorer/Tabs/Tabs";
 import { CosmosFluentProvider, cosmosShorthands, tokens } from "Explorer/Theme/ThemeUtil";
 import { ResourceTree } from "Explorer/Tree/ResourceTree";
@@ -168,21 +168,21 @@ const GlobalCommands: React.FC<GlobalCommandsProps> = ({ explorer }) => {
       });
     }
 
-    if (isMaterializedViewsEnabled()) {
-      const addMaterializedViewPanelProps: AddMaterializedViewPanelProps = {
+    if (isGlobalSecondaryIndexEnabled()) {
+      const addMaterializedViewPanelProps: AddGlobalSecondaryIndexPanelProps = {
         explorer,
       };
 
       actions.push({
         id: "new_materialized_view",
-        label: MaterializedViewsLabels.NewMaterializedView,
+        label: GlobalSecondaryIndexLabels.NewGlobalSecondaryIndex,
         icon: <Add16Regular />,
         onClick: () =>
           useSidePanel
             .getState()
             .openSidePanel(
-              MaterializedViewsLabels.NewMaterializedView,
-              <AddMaterializedViewPanel {...addMaterializedViewPanelProps} />,
+              GlobalSecondaryIndexLabels.NewGlobalSecondaryIndex,
+              <AddGlobalSecondaryIndexPanel {...addMaterializedViewPanelProps} />,
             ),
       });
     }

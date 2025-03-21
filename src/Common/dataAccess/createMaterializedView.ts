@@ -1,6 +1,6 @@
 import { constructRpOptions } from "Common/dataAccess/createCollection";
 import { handleError } from "Common/ErrorHandlingUtils";
-import { Collection, CreateMaterializedViewsParams } from "Contracts/DataModels";
+import { Collection, CreateMaterializedViewsParams as CreateGlobalSecondaryIndexParams } from "Contracts/DataModels";
 import { userContext } from "UserContext";
 import { createUpdateSqlContainer } from "Utils/arm/generatedClients/cosmos/sqlResources";
 import {
@@ -10,9 +10,9 @@ import {
 } from "Utils/arm/generatedClients/cosmos/types";
 import { logConsoleInfo, logConsoleProgress } from "Utils/NotificationConsoleUtils";
 
-export const createMaterializedView = async (params: CreateMaterializedViewsParams): Promise<Collection> => {
+export const createGlobalSecondaryIndex = async (params: CreateGlobalSecondaryIndexParams): Promise<Collection> => {
   const clearMessage = logConsoleProgress(
-    `Creating a new materialized view ${params.materializedViewId} for database ${params.databaseId}`,
+    `Creating a new global secondary index ${params.materializedViewId} for database ${params.databaseId}`,
   );
 
   const options: CreateUpdateOptions = constructRpOptions(params);
@@ -58,11 +58,15 @@ export const createMaterializedView = async (params: CreateMaterializedViewsPara
       params.materializedViewId,
       rpPayload,
     );
-    logConsoleInfo(`Successfully created materialized view ${params.materializedViewId}`);
+    logConsoleInfo(`Successfully created global secondary index ${params.materializedViewId}`);
 
     return createResponse && (createResponse.properties.resource as Collection);
   } catch (error) {
-    handleError(error, "CreateMaterializedView", `Error while creating materialized view ${params.materializedViewId}`);
+    handleError(
+      error,
+      "CreateGlobalSecondaryIndex",
+      `Error while creating global secondary index ${params.materializedViewId}`,
+    );
     throw error;
   } finally {
     clearMessage();
