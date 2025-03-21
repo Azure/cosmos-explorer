@@ -18,7 +18,7 @@ import { createCollection } from "Common/dataAccess/createCollection";
 import * as DataModels from "Contracts/DataModels";
 import { ContainerSampleGenerator } from "Explorer/DataSamples/ContainerSampleGenerator";
 import Explorer from "Explorer/Explorer";
-import { AllPropertiesIndexed } from "Explorer/Panes/AddCollectionPanel";
+import { AllPropertiesIndexed } from "Explorer/Panes/AddCollectionPanel/AddCollectionPanelUtility";
 import { PromptCard } from "Explorer/QueryCopilot/PromptCard";
 import { useDatabases } from "Explorer/useDatabases";
 import { useCarousel } from "hooks/useCarousel";
