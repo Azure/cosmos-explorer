@@ -2,13 +2,14 @@
  * Copyright (c) Microsoft Corporation.  All rights reserved.
  */
 
+import { RelayNamespaceResponse, VnetModel } from "Explorer/Tabs/CloudShellTab/DataModels";
 import { listKeys } from "Utils/arm/generatedClients/cosmos/databaseAccounts";
 import { Terminal } from "xterm";
 import { TerminalKind } from "../../../Contracts/ViewModels";
 import { userContext } from "../../../UserContext";
 import { AttachAddon } from "./AttachAddOn";
 import { getCommands } from "./Commands";
-import { authorizeSession, connectTerminal, deleteUserSettings, getNormalizedRegion, getUserSettings, provisionConsole, putEphemeralUserSettings, registerCloudShellProvider, validateUserSettings, verifyCloudShellProviderRegistration } from "./Data";
+import { authorizeSession, connectTerminal, getARMInfo, getNormalizedRegion, getUserSettings, provisionConsole, putEphemeralUserSettings, registerCloudShellProvider, verifyCloudShellProviderRegistration } from "./Data";
 import { LogError, LogInfo } from "./LogFormatter";
 
 export const startCloudShellTerminal = async (terminal: Terminal, shellType: TerminalKind) => {
@@ -24,58 +25,184 @@ export const startCloudShellTerminal = async (terminal: Terminal, shellType: Ter
         throw err;
     }
 
-    const region = userContext.databaseAccount?.location;
-    terminal.writeln(LogInfo(`Database Account Region identified as '${region}'`));
+    const settings = await getUserSettings();
+    let vNetSettings = {};
+    if(settings?.properties?.vnetSettings && Object.keys(settings?.properties?.vnetSettings).length > 0) {
 
-    const defaultCloudShellRegion = "westus";
-    const resolvedRegion = getNormalizedRegion(region, defaultCloudShellRegion);
-    
-    try {
-        var { socketUri, provisionConsoleResponse, targetUri } = await provisionCloudShellSession(resolvedRegion, terminal);
-    }
-    catch (err) {
-        terminal.writeln(LogError(err));   
-        terminal.writeln(LogError(`Unable to provision console in request region, Falling back to default region i.e. ${defaultCloudShellRegion}`));   
-        var { socketUri, provisionConsoleResponse, targetUri } = await provisionCloudShellSession(defaultCloudShellRegion, terminal);     
-    }
-    
-    if(!socketUri) {
-        terminal.writeln(LogError('Unable to provision console. Close and Open the terminal again to retry.'));
-        return{};
-    }
+        terminal.writeln(" Network Profile Resource ID: " + settings.properties.vnetSettings.networkProfileResourceId);
+        terminal.writeln(" Relay Namespace Resource ID: " + settings.properties.vnetSettings.relayNamespaceResourceId);
 
-    let socket = new WebSocket(socketUri);
-
-    const dbName = userContext.databaseAccount.name;
-    let keys;
-    if (dbName)
+        vNetSettings = {
+            networkProfileResourceId: settings.properties.vnetSettings.networkProfileResourceId,
+            relayNamespaceResourceId: settings.properties.vnetSettings.relayNamespaceResourceId,
+            location: settings.properties.vnetSettings.location
+        };
+    }
+    else
     {
-        keys =  await listKeys(userContext.subscriptionId, userContext.resourceGroup, dbName);
-    }
-    
-    const initCommands = getCommands(shellType, keys?.primaryMasterKey);
-    socket = configureSocket(socket, socketUri, terminal, initCommands, 0);
-
-    const attachAddon = new AttachAddon(socket);
-    terminal.loadAddon(attachAddon);
-
-    // authorize the session
-    try {
-        const authorizeResponse = await authorizeSession(provisionConsoleResponse.properties.uri);
-        const cookieToken = authorizeResponse.token;
-        const a = document.createElement("img");
-        a.src = targetUri + "&token=" + encodeURIComponent(cookieToken);
-    } catch (err) {
-        terminal.writeln(LogError('Unable to authorize the session'));
-        socket.close();
-        throw err;
+        terminal.writeln("\x1B[1;31m No VNet settings found. Continuing with default settings\x1B[0m");
     }
 
-    terminal.writeln(LogInfo("Connection Successful!!!"));
+    terminal.writeln("\x1B[1;37m Press '1' to continue with current or default setting.\x1B[0m");
+    terminal.writeln("\x1B[1;37m Press '2' to configure new VNet to CloudShell.\x1B[0m");
+    terminal.writeln("\x1B[1;37m Press '3' to Reset CloudShell VNet Settings.\x1B[0m");
+    terminal.writeln("\x1B[1;37m Note: To learn how to configure VNet for CloudShell, go to this link https://aka.ms/cloudhellvnetsetup \x1B[0m");
+
     terminal.focus();
+    
+    let isDefaultSetting = false;
+    const handleKeyPress = terminal.onKey(async ({ key }: { key: string }) => {
 
-    return socket;
+        if (key === "1") {
+            terminal.writeln("\x1B[1;32m Pressed 1, Continuing with current/default settings.\x1B[0m");
+
+            isDefaultSetting = true;
+            handleKeyPress.dispose();
+        }
+       else if (key === "2") {
+            isDefaultSetting = false;
+            handleKeyPress.dispose();
+        }
+        else if (key === "3") {
+            isDefaultSetting = true;
+            vNetSettings = {};
+            handleKeyPress.dispose();
+        }
+        else {
+            terminal.writeln("\x1B[1;31m Entered Wrong Input, only 1 or 2 are allowed. Exiting...\x1B[0m");
+            setTimeout(() => terminal.dispose(), 2000); // Close terminal after 2 sec
+            handleKeyPress.dispose();
+            return;
+        }
+
+        if (!isDefaultSetting) {
+            terminal.writeln("\x1B[1;32m Pressed 2, Enter below details:\x1B[0m");
+            const subscriptionId = await askQuestion(terminal, "Existing VNet Subscription ID");
+            const resourceGroup = await askQuestion(terminal, "Existing VNet Resource Group");
+            const vNetName = await askQuestion(terminal, "Existing VNet Name");
+
+            const vNetConfig = await getARMInfo<VnetModel>(`/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.Network/virtualNetworks/${vNetName}`);
+            
+            terminal.writeln("Suggested Network Profiles:");
+            const ipConfigurationProfiles = vNetConfig.properties.subnets.reduce<{ id: string }[]>(
+                (acc, subnet) => acc.concat(subnet.properties.ipConfigurationProfiles || []),
+                []
+                );
+            for (let i = 0; i < ipConfigurationProfiles.length; i++) {
+                const match = ipConfigurationProfiles[i].id.match(/\/networkProfiles\/([^/]+)/);
+                const result = match ? `/${match[1]}` : null;
+                terminal.writeln(result); 
+            }  
+            
+            const networkProfile = await askQuestion(terminal, "Associated Network Profile");
+
+            const relays = await getARMInfo<RelayNamespaceResponse>(
+                `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.Relay/namespaces`,
+                "2024-01-01");
+            terminal.writeln("Suggested Network Relays:");
+            for (let i = 0; i < relays.value.length; i++) {
+                terminal.writeln(relays.value[i].name); 
+            }  
+
+            const relayName = await askQuestion(terminal, "Network Relay");
+
+            const networkProfileResourceId = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.Network/networkProfiles/${networkProfile}`;
+            const relayResourceId = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.Relay/namespaces/${relayName}`;
+          
+            // const vNetRules = userContext.databaseAccount.properties?.virtualNetworkRules;
+            // if(vNetRules && vNetRules.length > 0) {
+            //     for (let i = 0; i < vNetRules.length; i++) {
+            //         const vNetName = vNetRules[i].id;
+
+            //         terminal.writeln(vNetName); 
+            //     }  
+            // }
+
+            vNetSettings = {
+                networkProfileResourceId: networkProfileResourceId,
+                relayNamespaceResourceId: relayResourceId,
+                location: userContext.databaseAccount.location
+            };
+        }
+
+        const region = userContext.databaseAccount?.location;
+        terminal.writeln(LogInfo(` Database Account Region identified as '${region}'`));
+    
+        const defaultCloudShellRegion = "westus";
+        const resolvedRegion = getNormalizedRegion(region, defaultCloudShellRegion);
+        
+        try {
+            var { socketUri, provisionConsoleResponse, targetUri } = await provisionCloudShellSession(resolvedRegion, terminal, vNetSettings);
+        }
+        catch (err) {
+            terminal.writeln(LogError(err));   
+            terminal.writeln(LogError(`Unable to provision console in request region, Falling back to default region i.e. ${defaultCloudShellRegion}`));   
+            var { socketUri, provisionConsoleResponse, targetUri } = await provisionCloudShellSession(defaultCloudShellRegion, terminal, vNetSettings);     
+        }
+        
+        if(!socketUri) {
+            terminal.writeln(LogError('Unable to provision console. Close and Open the terminal again to retry.'));
+            return{};
+        }
+    
+        let socket = new WebSocket(socketUri);
+    
+        const dbName = userContext.databaseAccount.name;
+        let keys;
+        if (dbName)
+        {
+            keys =  await listKeys(userContext.subscriptionId, userContext.resourceGroup, dbName);
+        }
+        
+        const initCommands = getCommands(shellType, keys?.primaryMasterKey);
+        socket = configureSocket(socket, socketUri, terminal, initCommands, 0);
+    
+        const attachAddon = new AttachAddon(socket);
+        terminal.loadAddon(attachAddon);
+    
+        // authorize the session
+        try {
+            const authorizeResponse = await authorizeSession(provisionConsoleResponse.properties.uri);
+            const cookieToken = authorizeResponse.token;
+            const a = document.createElement("img");
+            a.src = targetUri + "&token=" + encodeURIComponent(cookieToken);
+        } catch (err) {
+            terminal.writeln(LogError('Unable to authorize the session'));
+            socket.close();
+            throw err;
+        }
+    
+        terminal.writeln(LogInfo("Connection Successful!!!"));
+        terminal.focus();
+    
+        return socket;
+    });
 }
+
+
+const askQuestion = (terminal: any, question: string) => {
+    return new Promise<string>((resolve) => {
+        terminal.write(`\x1B[1;34m${question}: \x1B[0m`);
+        terminal.focus();
+        let response = "";
+
+        const dataListener = terminal.onData((data: string) => {
+            if (data === "\r") { // Enter key pressed
+                terminal.writeln(""); // Move to a new line
+                dataListener.dispose();
+                return resolve(response.trim());
+            } else if (data === "\u007F" || data === "\b") { // Handle backspace
+                if (response.length > 0) {
+                    response = response.slice(0, -1);
+                    terminal.write("\b \b"); // Move cursor back, clear character
+                }
+            } else {
+                response += data;
+                terminal.write(data); // Display the typed or pasted characters
+            }
+        });
+    });
+  };
 
 let keepAliveID: NodeJS.Timeout = null;
 let pingCount = 0;
@@ -168,12 +295,13 @@ const sendStartupCommands = (socket: WebSocket, initCommands: string) => {
 
 const provisionCloudShellSession = async(
     resolvedRegion: string, 
-    terminal: Terminal
+    terminal: Terminal,
+    vNetSettings: object
 ): Promise<{ socketUri?: string; provisionConsoleResponse?: any; targetUri?: string }> => {
     return new Promise((resolve, reject) => {
         // Show consent message inside the terminal
-        terminal.writeln(`\x1B[1;33m⚠️  Are you agreeing to continue with CloudShell terminal at ${resolvedRegion}.\x1B[0m`);
-        terminal.writeln("\x1B[1;37mPress 'Y' to continue or 'N' to exit.\x1B[0m");
+        terminal.writeln(`\x1B[1;33m ⚠️ Are you agreeing to continue with CloudShell terminal at ${resolvedRegion}.\x1B[0m`);
+        terminal.writeln("\x1B[1;37m Press 'Y' to continue or 'N' to exit.\x1B[0m");
 
         terminal.focus();
         // Listen for user input
@@ -183,28 +311,14 @@ const provisionCloudShellSession = async(
 
             if (key.toLowerCase() === "y") {
                 terminal.writeln("\x1B[1;32mConsent given. Requesting CloudShell. !\x1B[0m");
-                terminal.writeln(LogInfo('Resetting user settings...'));
-                await deleteUserSettings();
                 terminal.writeln(LogInfo('Applying fresh user settings...'));
                 try {
-                    await putEphemeralUserSettings(userContext.subscriptionId, resolvedRegion);
+                    await putEphemeralUserSettings(userContext.subscriptionId, resolvedRegion, vNetSettings);
                 } catch (err) {
                     terminal.writeln(LogError('Unable to update user settings to ephemeral session.'));
                     return reject(err);
                 }
-            
-                // verify user settings after they have been updated to ephemeral
-                try {
-                    const userSettings = await getUserSettings();
-                    const isValidUserSettings = validateUserSettings(userSettings);
-                    if (!isValidUserSettings) {
-                        throw new Error("Invalid user settings detected for ephemeral session.");
-                    }
-                } catch (err) {
-                    terminal.writeln(LogError('Unable to verify user settings for ephemeral session.'));
-                    return reject(err);
-                }
-            
+
                 // trigger callback to provision console internal
                 let provisionConsoleResponse;
                 try {

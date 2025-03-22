@@ -70,7 +70,6 @@ export const commands = (terminalKind: TerminalKind, config?: CommandConfig): st
                 "psql --version"
             ];
         case TerminalKind.Mongo:
-        case TerminalKind.VCoreMongo:
             return [
                 // 1. Fetch and display location details in a readable format
                 "curl -s https://ipinfo.io | jq -r '\"Region: \" + .region + \" Country: \" + .country + \" City: \" + .city + \" IP Addr: \" + .ip'",
@@ -89,7 +88,28 @@ export const commands = (terminalKind: TerminalKind, config?: CommandConfig): st
                 // 8. Verify mongosh installation
                 "mongosh --version",
                 // 9. Login to MongoDB
-                `mongosh --host ${config.host} --port 10255 --username ${config.name} --password ${config.password} --ssl --sslAllowInvalidCertificates`
+                `mongosh --host ${config.host} --port 10255 --username ${config.name} --password ${config.password} --tls --tlsAllowInvalidCertificates`
+            ];   
+        case TerminalKind.VCoreMongo:
+            return [
+                // 1. Fetch and display location details in a readable format
+                "curl -s https://ipinfo.io | jq -r '\"Region: \" + .region + \" Country: \" + .country + \" City: \" + .city + \" IP Addr: \" + .ip'",
+                // 2. Check if mongosh is installed; if not, proceed with installation
+                "if ! command -v mongosh &> /dev/null; then echo '⚠️ mongosh not found. Installing...'; fi",
+                // 3. Download mongosh if not installed
+                "if ! command -v mongosh &> /dev/null; then curl -LO https://downloads.mongodb.com/compass/mongosh-2.3.8-linux-x64.tgz; fi",
+                // 4. Extract mongosh package if not installed
+                "if ! command -v mongosh &> /dev/null; then tar -xvzf mongosh-2.3.8-linux-x64.tgz; fi",
+                // 5. Move mongosh binaries if not installed
+                "if ! command -v mongosh &> /dev/null; then mkdir -p ~/mongosh && mv mongosh-2.3.8-linux-x64/* ~/mongosh/; fi",
+                // 6. Add mongosh to PATH if not installed
+                "if ! command -v mongosh &> /dev/null; then echo 'export PATH=$HOME/mongosh/bin:$PATH' >> ~/.bashrc; fi",
+                // 7. Source .bashrc to update PATH (even if mongosh was already installed)
+                "source ~/.bashrc",
+                // 8. Verify mongosh installation
+                "mongosh --version",
+                // 9. Login to MongoDBmongosh mongodb+srv://<credentials>@neesharma-stage-mongo-vcore.mongocluster.cosmos.azure.com/?authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000\u0007
+                `mongosh "mongodb+srv://nrj:@${config.endpoint}/?authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000" --tls --tlsAllowInvalidCertificates`
             ];     
         case TerminalKind.Cassandra:
             return [

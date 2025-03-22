@@ -26,6 +26,15 @@ export const getUserRegion = async (subscriptionId: string, resourceGroup: strin
 
 };
 
+export async function getARMInfo<T>(path: string, apiVersion: string = "2024-07-01"): Promise<T> {
+    return await armRequest<T>({
+        host: configContext.ARM_ENDPOINT,
+        path: path,
+        method: "GET",
+        apiVersion: apiVersion
+    });
+};
+
 export const deleteUserSettings = async (): Promise<void> => {
     await armRequest<void>({
         host: configContext.ARM_ENDPOINT,
@@ -43,26 +52,20 @@ export const getUserSettings = async (): Promise<Settings> => {
         apiVersion: "2023-02-01-preview"
       });
 
-    return {
-        location: resp?.properties?.preferredLocation,
-        sessionType: resp?.properties?.sessionType,
-        osType: resp?.properties?.preferredOsType
-    };
+    console.log(resp);
+    return resp;
 };
 
-export const putEphemeralUserSettings = async (userSubscriptionId: string, userRegion: string) => {
+export const putEphemeralUserSettings = async (userSubscriptionId: string, userRegion: string, vNetSettings?: object) => {
     const ephemeralSettings = {
         properties: {
             preferredOsType: OsType.Linux,
             preferredShellType: ShellType.Bash,
             preferredLocation: userRegion,
-            terminalSettings: {
-                fontSize: "Medium",
-                fontStyle: "monospace"
-            },
             networkType: NetworkType.Default,
             sessionType: SessionType.Ephemeral,
             userSubscription: userSubscriptionId,
+            vnetSettings: vNetSettings ?? {}
         }
     };
 

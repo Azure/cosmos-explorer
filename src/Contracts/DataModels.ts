@@ -42,6 +42,11 @@ export interface DatabaseAccountExtendedProperties {
   publicNetworkAccess?: string;
   enablePriorityBasedExecution?: boolean;
   vcoreMongoEndpoint?: string;
+  virtualNetworkRules?: VNetRule[];
+}
+
+export interface VNetRule {
+  id: string;
 }
 
 export interface DatabaseAccountResponseLocation {
