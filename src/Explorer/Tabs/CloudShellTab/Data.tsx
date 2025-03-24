@@ -62,7 +62,7 @@ export const putEphemeralUserSettings = async (userSubscriptionId: string, userR
             preferredOsType: OsType.Linux,
             preferredShellType: ShellType.Bash,
             preferredLocation: userRegion,
-            networkType: NetworkType.Default,
+            networkType: (!vNetSettings || Object.keys(vNetSettings).length === 0) ? NetworkType.Default : (vNetSettings ? NetworkType.Isolated : NetworkType.Default),
             sessionType: SessionType.Ephemeral,
             userSubscription: userSubscriptionId,
             vnetSettings: vNetSettings ?? {}

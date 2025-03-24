@@ -18,10 +18,18 @@ export const CloudShellTerminalComponent: React.FC<CloudShellTerminalProps> = ({
     const fitAddon = new FitAddon();
 
     useEffect(() => {
-         // Initialize XTerm instance
-         const term = new Terminal({
-            cursorBlink: true, 
-            theme: { background: "#1d1f21", foreground: "#c5c8c6" }
+        // Initialize XTerm instance
+        const term = new Terminal({
+            cursorBlink: true,
+            cursorStyle: 'bar',
+            fontFamily: 'Courier New, monospace',
+            fontSize: 14,
+            theme: {
+                background: "#1e1e1e", 
+                foreground: "#d4d4d4", 
+                cursor: "#ffcc00"
+            },
+            scrollback: 1000
         });
 
         term.loadAddon(fitAddon);
@@ -30,8 +38,23 @@ export const CloudShellTerminalComponent: React.FC<CloudShellTerminalProps> = ({
         if (terminalRef.current) {
             term.open(terminalRef.current);
             xtermRef.current = term;
+            
+             // Ensure the CSS is injected only once
+            if (!document.getElementById("xterm-custom-style")) {
+                const style = document.createElement("style");
+                style.id = "xterm-custom-style"; // Unique ID to prevent duplicates
+                style.innerHTML = `
+                    .xterm-text-layer {
+                        transform: translateX(10px); /* Adds left padding */
+                    }
+                `;
+                document.head.appendChild(style);
+            }
         }
-        fitAddon.fit();
+        
+        if (fitAddon) {
+            fitAddon.fit();
+        }
 
         // Adjust terminal size on window resize
         const handleResize = () => fitAddon.fit();
@@ -47,14 +70,20 @@ export const CloudShellTerminalComponent: React.FC<CloudShellTerminalProps> = ({
 
         // Cleanup function to close WebSocket and dispose terminal
         return () => {
+            if (!socketRef.current) return; // Prevent errors if WebSocket is not initialized
             if (socketRef.current) {
                 socketRef.current.close(); // Close WebSocket connection
             }
             window.removeEventListener('resize', handleResize);
             term.dispose(); // Clean up XTerm instance
+
+            const styleElement = document.getElementById("xterm-custom-style");
+            if (styleElement) {
+                styleElement.remove(); // Clean up CSS on unmount
+            }
         };
         
     }, []);
 
-    return <div ref={terminalRef} style={{ width: "100%", height: "500px" }} />;
+    return <div ref={terminalRef} style={{ width: "100%", height: "500px"}} />;
 };

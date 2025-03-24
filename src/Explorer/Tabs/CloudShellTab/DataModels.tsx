@@ -38,9 +38,9 @@ export type UserSettingProperties = {
 }
 
 export type VnetSettings = {
-    networkProfileResourceId: string;
-    relayNamespaceResourceId: string;
-    location: string;
+    networkProfileResourceId?: string;
+    relayNamespaceResourceId?: string;
+    location?: string;
 }
 
 export type ProvisionConsoleResponse = {
