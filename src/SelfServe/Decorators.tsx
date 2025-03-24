@@ -2,14 +2,8 @@
  * @module SelfServe/Decorators
  */
 
-import {
-  ChoiceItem,
-  Description,
-  Info,
-  NumberUiType,
-  OnChangeCallback,
-  RefreshParams
-} from "./SelfServeTypes";
+import { TFunction } from "i18next";
+import { ChoiceItem, Description, Info, NumberUiType, OnChangeCallback, RefreshParams } from "./SelfServeTypes";
 import { addPropertyToMap, buildSmartUiDescriptor, DecoratorProperties, SelfServeType } from "./SelfServeUtils";
 
 type ValueOf<T> = T[keyof T];
@@ -135,22 +129,10 @@ const isDescriptionDisplayOptions = (inputOptions: InputOptions): inputOptions i
 };
 
 const addToMap = (...decorators: Decorator[]): PropertyDecorator => {
-  console.log(decorators)
+  console.log(decorators);
   return async (target, property) => {
-    console.log("--------------------------------------")
-    console.log(property);
-    // console.log((target as SelfServeBaseClass))
-    // console.log((target as SelfServeBaseClass).test)
-    // console.log((target as MaterializedViewsBuilder))
-    // console.log((target as MaterializedViewsBuilder).test)
-    let className: string;
-    if (target.constructor.toString().includes(SelfServeType.materializedviewsbuilder)) {
-      className = SelfServeType.materializedviewsbuilder;
-    } else if (target instanceof Function) {
-      className = target.constructor.name;
-    }
+    let className: string = getTargetName(target);
     const propertyName = property.toString();
-    console.log(propertyName)
     if (className === "Function") {
       //eslint-disable-next-line @typescript-eslint/ban-types
       className = (target as Function).name;
@@ -158,7 +140,7 @@ const addToMap = (...decorators: Decorator[]): PropertyDecorator => {
     }
 
     const propertyType = (Reflect.getMetadata("design:type", target, property)?.name as string)?.toLowerCase();
-    console.log(propertyType)
+    console.log(propertyType);
     addPropertyToMap(target, propertyName, className, "type", propertyType);
     addPropertyToMap(target, propertyName, className, "dataFieldName", propertyName);
 
@@ -226,14 +208,7 @@ export const Values = (inputOptions: InputOptions): PropertyDecorator => {
  */
 export const IsDisplayable = (): ClassDecorator => {
   return (target) => {
-    let targetName: string;
-    console.log(target.prototype)
-    console.log(target.toString())
-    if (target.toString().includes(SelfServeType.materializedviewsbuilder)) {
-      targetName = SelfServeType.materializedviewsbuilder;
-    } else if (target instanceof Function) {
-      targetName = target.constructor.name;
-    }
+    let targetName: string = getTargetName(target);
     buildSmartUiDescriptor(targetName, target.prototype);
   };
 };
@@ -244,16 +219,26 @@ export const IsDisplayable = (): ClassDecorator => {
  * how often the auto refresh of the page occurs.
  */
 export const RefreshOptions = (refreshParams: RefreshParams): ClassDecorator => {
-  console.log(refreshParams)
+  console.log(refreshParams);
   return (target) => {
-    console.log(target.prototype);
-    console.log(target.toString())
-    let targetName: string;
-    if (target.toString().includes(SelfServeType.materializedviewsbuilder)) {
-      targetName = SelfServeType.materializedviewsbuilder;
-    } else if (target instanceof Function) {
-      targetName = target.constructor.name;
-    }
+    let targetName: string = getTargetName(target);
     addPropertyToMap(target.prototype, "root", targetName, "refreshParams", refreshParams);
   };
+};
+
+const getTargetName = (target: TFunction | object): string => {
+  const targetString: string = target.toString();
+  let targetName: string;
+  if (targetString.includes(SelfServeType.example)) {
+    targetName = SelfServeType.example;
+  } else if (targetString.includes(SelfServeType.graphapicompute)) {
+    targetName = SelfServeType.graphapicompute;
+  } else if (targetString.includes(SelfServeType.materializedviewsbuilder)) {
+    targetName = SelfServeType.materializedviewsbuilder;
+  } else if (targetString.includes(SelfServeType.sqlx)) {
+    targetName = SelfServeType.sqlx;
+  } else {
+    targetName = target.constructor.name;
+  }
+  return targetName;
 };
