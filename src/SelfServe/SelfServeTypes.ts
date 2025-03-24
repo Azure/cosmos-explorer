@@ -122,7 +122,7 @@ export abstract class SelfServeBaseClass {
   public abstract onRefresh: () => Promise<RefreshResult>;
 
   public abstract getSelfServeType: () => SelfServeType;
-
+  public test: string = "hello";
   /**@internal */
   public toSelfServeDescriptor(): SelfServeDescriptor {
     const className: string = this.getSelfServeType();

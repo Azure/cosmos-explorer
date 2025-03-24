@@ -2,6 +2,7 @@
  * @module SelfServe/Decorators
  */
 
+import MaterializedViewsBuilder from "SelfServe/MaterializedViewsBuilder/MaterializedViewsBuilder";
 import {
   ChoiceItem,
   Description,
@@ -140,6 +141,10 @@ const addToMap = (...decorators: Decorator[]): PropertyDecorator => {
     console.log(target);
     console.log(target instanceof SelfServeBaseClass)
     console.log(target.constructor.name)
+    console.log((target as SelfServeBaseClass))
+    console.log((target as SelfServeBaseClass).test)
+    console.log((target as MaterializedViewsBuilder))
+    console.log((target as MaterializedViewsBuilder).test)
     let className = target.constructor.name;
     const propertyName = property.toString();
     if (className === "Function") {
