@@ -226,7 +226,7 @@ export const RefreshOptions = (refreshParams: RefreshParams): ClassDecorator => 
   };
 };
 
-const getTargetName = (target: TFunction | object): string => {
+const getTargetName = (target: TFunction | Object): string => {
   const targetString: string = target.toString();
   let targetName: string;
   if (targetString.includes(SelfServeType.example)) {
