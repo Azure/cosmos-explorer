@@ -35,6 +35,13 @@ describe("Query Utils", () => {
       version: 2,
     };
   };
+  const generatePartitionKeysForPaths = (paths: string[]): DataModels.PartitionKey => {
+    return {
+      paths: paths,
+      kind: "Hash",
+      version: 2,
+    };
+  };
 
   describe("buildDocumentsQueryPartitionProjections()", () => {
     it("should return empty string if partition key is undefined", () => {
@@ -88,6 +95,18 @@ describe("Query Utils", () => {
       const query: string = QueryUtils.buildDocumentsQuery("", ["id"], generatePartitionKeyForPath("/id"), ["id"]);
 
       expect(query).toContain("c.id");
+    });
+
+    it("should always include {} for any missing partition keys", () => {
+      const query = QueryUtils.buildDocumentsQuery(
+        "",
+        ["a", "b", "c"],
+        generatePartitionKeysForPaths(["/a", "/b", "/c"]),
+        [],
+      );
+      expect(query).toContain('IIF(IS_DEFINED(c["a"]), c["a"], {})');
+      expect(query).toContain('IIF(IS_DEFINED(c["b"]), c["b"], {})');
+      expect(query).toContain('IIF(IS_DEFINED(c["c"]), c["c"], {})');
     });
   });
 
@@ -201,18 +220,6 @@ describe("Query Utils", () => {
       expect(expectedPartitionKeyValues).toContain(documentContent["Category"]);
     });
 
-    it("should extract no partition key values in the case nested partition key", () => {
-      const singlePartitionKeyDefinition: PartitionKeyDefinition = {
-        kind: PartitionKeyKind.Hash,
-        paths: ["/Location.type"],
-      };
-      const partitionKeyValues: PartitionKey[] = extractPartitionKeyValues(
-        documentContent,
-        singlePartitionKeyDefinition,
-      );
-      expect(partitionKeyValues.length).toBe(0);
-    });
-
     it("should extract all partition key values for hierarchical and nested partition keys", () => {
       const mixedPartitionKeyDefinition: PartitionKeyDefinition = {
         kind: PartitionKeyKind.MultiHash,
@@ -224,6 +231,53 @@ describe("Query Utils", () => {
       );
       expect(partitionKeyValues.length).toBe(2);
       expect(partitionKeyValues).toEqual(["United States", "Point"]);
+    });
+
+    it("if any partition key is null or empty string, the partitionKeyValues shall match", () => {
+      const newDocumentContent = {
+        ...documentContent,
+        ...{
+          Country: null,
+          Location: {
+            type: "",
+            coordinates: [-121.49, 46.206],
+          },
+        },
+      };
+
+      const mixedPartitionKeyDefinition: PartitionKeyDefinition = {
+        kind: PartitionKeyKind.MultiHash,
+        paths: ["/Country", "/Location/type"],
+      };
+      const partitionKeyValues: PartitionKey[] = extractPartitionKeyValues(
+        newDocumentContent,
+        mixedPartitionKeyDefinition,
+      );
+      expect(partitionKeyValues.length).toBe(2);
+      expect(partitionKeyValues).toEqual([null, ""]);
+    });
+
+    it("if any partition key doesn't exist, it should still set partitionkey value as {}", () => {
+      const newDocumentContent = {
+        ...documentContent,
+        ...{
+          Country: null,
+          Location: {
+            coordinates: [-121.49, 46.206],
+          },
+        },
+      };
+
+      const mixedPartitionKeyDefinition: PartitionKeyDefinition = {
+        kind: PartitionKeyKind.MultiHash,
+        paths: ["/Country", "/Location/type"],
+      };
+      const partitionKeyValues: PartitionKey[] = extractPartitionKeyValues(
+        newDocumentContent,
+        mixedPartitionKeyDefinition,
+      );
+      expect(partitionKeyValues.length).toBe(2);
+      expect(partitionKeyValues).toEqual([null, {}]);
     });
   });
 });

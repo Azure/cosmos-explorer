@@ -1028,6 +1028,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     );
 
     const selectedDocumentId = documentIds[clickedRowIndex as number];
+    const originalPartitionKeyValue = selectedDocumentId.partitionKeyValue;
     selectedDocumentId.partitionKeyValue = partitionKeyValueArray;
 
     onExecutionErrorChange(false);
@@ -1063,9 +1064,14 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
           setColumnDefinitionsFromDocument(documentContent);
         },
         (error) => {
+          // in case of any kind of failures of accidently changing partition key, restore the original
+          // so that when user navigates away from current document and comes back,
+          // it doesnt fail to load due to using the invalid partition keys
+          selectedDocumentId.partitionKeyValue = originalPartitionKeyValue;
           onExecutionErrorChange(true);
           const errorMessage = getErrorMessage(error);
           useDialog.getState().showOkModalDialog("Update document failed", errorMessage);
+
           TelemetryProcessor.traceFailure(
             Action.UpdateDocument,
             {
