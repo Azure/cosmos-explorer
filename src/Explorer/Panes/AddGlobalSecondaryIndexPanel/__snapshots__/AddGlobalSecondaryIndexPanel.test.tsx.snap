@@ -67,7 +67,7 @@ exports[`AddGlobalSecondaryIndexPanel render default panel 1`] = `
           className="panelTextBold"
           variant="small"
         >
-          Index container id
+          Global secondary index container id
         </Text>
       </Stack>
       <input
@@ -95,7 +95,7 @@ exports[`AddGlobalSecondaryIndexPanel render default panel 1`] = `
           className="panelTextBold"
           variant="small"
         >
-          Global Secondary Index Definition
+          Global secondary index definition
         </Text>
         <StyledTooltipHostBase
           content={

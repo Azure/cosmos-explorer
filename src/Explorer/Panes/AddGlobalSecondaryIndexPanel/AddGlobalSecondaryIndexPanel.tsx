@@ -336,7 +336,7 @@ export const AddGlobalSecondaryIndexPanel = (props: AddGlobalSecondaryIndexPanel
           <Stack horizontal>
             <span className="mandatoryStar">*&nbsp;</span>
             <Text className="panelTextBold" variant="small">
-              Index container id
+              Global secondary index container id
             </Text>
           </Stack>
           <input
@@ -356,7 +356,7 @@ export const AddGlobalSecondaryIndexPanel = (props: AddGlobalSecondaryIndexPanel
           <Stack horizontal>
             <span className="mandatoryStar">*&nbsp;</span>
             <Text className="panelTextBold" variant="small">
-              Global Secondary Index Definition
+              Global secondary index definition
             </Text>
             <TooltipHost
               directionalHint={DirectionalHint.bottomLeftEdge}

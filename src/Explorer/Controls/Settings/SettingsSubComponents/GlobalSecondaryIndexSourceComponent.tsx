@@ -98,7 +98,7 @@ export const GlobalSecondaryIndexSourceComponent: React.FC<GlobalSecondaryIndexS
         }}
       />
       <PrimaryButton
-        text="Add view"
+        text="Add index"
         styles={{ root: { width: "fit-content", marginTop: 12 } }}
         onClick={() =>
           useSidePanel
