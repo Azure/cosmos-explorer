@@ -202,7 +202,7 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
                 required={true}
                 autoComplete="off"
                 styles={getTextFieldStyles()}
-                pattern="[^/?#\\-]*[^/?#- \\]"
+                pattern="[^\/?#\\-]*[^\/?#- \\]"
                 title="May not end with space nor contain characters '\' '/' '#' '?' '-'"
                 placeholder="Type a new keyspace id"
                 size={40}
@@ -292,7 +292,7 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
               required={true}
               ariaLabel="addCollection-table Id Create table"
               autoComplete="off"
-              pattern="[^/?#\\-]*[^/?#- \\]"
+              pattern="[^\/?#\\-]*[^\/?#- \\]"
               title="May not end with space nor contain characters '\' '/' '#' '?' '-'"
               placeholder="Enter table Id"
               size={20}

@@ -64,7 +64,13 @@ export default class UserDefinedFunctionTabContent extends Component<
     _event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     newValue?: string,
   ): void => {
-    this.saveButton.enabled = this.isValidId(newValue) && this.isNotEmpty(newValue);
+    const inputElement = _event.currentTarget as HTMLInputElement;
+    let isValidId: boolean = true;
+    if (inputElement) {
+      isValidId = inputElement.reportValidity();
+    }
+
+    this.saveButton.enabled = this.isNotEmpty(newValue) && isValidId;
     this.setState({ udfId: newValue });
   };
 
@@ -238,29 +244,6 @@ export default class UserDefinedFunctionTabContent extends Component<
     });
   }
 
-  private isValidId(id: string): boolean {
-    if (!id) {
-      return false;
-    }
-
-    const invalidStartCharacters = /^[/?#\\]/;
-    if (invalidStartCharacters.test(id)) {
-      return false;
-    }
-
-    const invalidMiddleCharacters = /^.+[/?#\\]/;
-    if (invalidMiddleCharacters.test(id)) {
-      return false;
-    }
-
-    const invalidEndCharacters = /.*[/?#\\ ]$/;
-    if (invalidEndCharacters.test(id)) {
-      return false;
-    }
-
-    return true;
-  }
-
   private isNotEmpty(value: string): boolean {
     return !!value;
   }
@@ -284,7 +267,8 @@ export default class UserDefinedFunctionTabContent extends Component<
           required
           readOnly={!isUdfIdEditable}
           type="text"
-          pattern="[^/?#\\]*[^/?# \\]"
+          pattern="[^\/?#\\]*[^\/?# \\]"
+          title="May not end with space nor contain characters '\' '/' '#' '?' '-'"
           placeholder="Enter the new user defined function id"
           size={40}
           value={udfId}

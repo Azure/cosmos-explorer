@@ -455,11 +455,12 @@ export default class StoredProcedureTabComponent extends React.Component<
   }
 
   public handleIdOnChange(event: React.ChangeEvent<HTMLInputElement>): void {
+    const isValidId: boolean = event.currentTarget.reportValidity();
     if (this.state.saveButton.visible) {
       this.setState({
         id: event.target.value,
         saveButton: {
-          enabled: true,
+          enabled: isValidId,
           visible: this.props.scriptTabBaseInstance.isNew(),
         },
         discardButton: {
@@ -528,7 +529,7 @@ export default class StoredProcedureTabComponent extends React.Component<
               className="formTree"
               type="text"
               required
-              pattern="[^/?#\\]*[^/?# \\]"
+              pattern="[^\/?#\\]*[^\/?# \\]"
               title="May not end with space nor contain characters '\' '/' '#' '?'"
               aria-label="Stored procedure id"
               placeholder="Enter the new stored procedure id"

@@ -351,7 +351,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                     required
                     type="text"
                     autoComplete="off"
-                    pattern="[^/?#\\]*[^/?# \\]"
+                    pattern="[^\/?#\\]*[^\/?# \\]"
                     title="May not end with space nor contain characters '\' '/' '#' '?'"
                     placeholder="Type a new database id"
                     size={40}
@@ -459,7 +459,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               aria-required
               required
               autoComplete="off"
-              pattern="[^/?#\\]*[^/?# \\]"
+              pattern="[^\/?#\\]*[^\/?# \\]"
               title="May not end with space nor contain characters '\' '/' '#' '?'"
               placeholder={`e.g., ${getCollectionName()}1`}
               size={40}

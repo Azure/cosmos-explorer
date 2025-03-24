@@ -267,22 +267,25 @@ export default abstract class ScriptTabBase extends TabsBase implements ViewMode
       return false;
     }
 
-    const invalidStartCharacters = /^[/?#\\]/;
-    if (invalidStartCharacters.test(id)) {
-      return false;
-    }
+    const validIdRegex = /[^\/?#\\]*[^\/?# \\]/;
+    return validIdRegex.test(id);
 
-    const invalidMiddleCharacters = /^.+[/?#\\]/;
-    if (invalidMiddleCharacters.test(id)) {
-      return false;
-    }
+    //const invalidStartCharacters = /^[/?#\\]/;
+    //if (invalidStartCharacters.test(id)) {
+    //  return false;
+    //}
 
-    const invalidEndCharacters = /.*[/?#\\ ]$/;
-    if (invalidEndCharacters.test(id)) {
-      return false;
-    }
+    //const invalidMiddleCharacters = /^.+[/?#\\]/;
+    //if (invalidMiddleCharacters.test(id)) {
+    //  return false;
+    //}
 
-    return true;
+    //const invalidEndCharacters = /.*[/?#\\ ]$/;
+    //if (invalidEndCharacters.test(id)) {
+    //  return false;
+    //}
+
+    //return true;
   }
 
   private static _isNotEmpty(value: string): boolean {

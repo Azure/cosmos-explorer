@@ -235,7 +235,7 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
                 aria-required
                 required
                 autoComplete="off"
-                pattern="[^/?#\\]*[^/?# \\]"
+                pattern="[^\/?#\\]*[^\/?# \\]"
                 title="May not end with space nor contain characters '\' '/' '#' '?'"
                 placeholder={`e.g., ${getCollectionName()}1`}
                 size={40}
