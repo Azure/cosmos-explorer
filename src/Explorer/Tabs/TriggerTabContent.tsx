@@ -297,7 +297,7 @@ export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentS
           required
           type="text"
           pattern="[^\/?#\\]*[^\/?# \\]"
-          title="May not end with space nor contain characters '\' '/' '#' '?' '-'"
+          title="May not end with space nor contain characters '\' '/' '#' '?'"
           placeholder="Enter the new trigger id"
           size={40}
           value={triggerId}

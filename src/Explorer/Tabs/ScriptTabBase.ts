@@ -269,23 +269,6 @@ export default abstract class ScriptTabBase extends TabsBase implements ViewMode
 
     const validIdRegex = /[^\/?#\\]*[^\/?# \\]/;
     return validIdRegex.test(id);
-
-    //const invalidStartCharacters = /^[/?#\\]/;
-    //if (invalidStartCharacters.test(id)) {
-    //  return false;
-    //}
-
-    //const invalidMiddleCharacters = /^.+[/?#\\]/;
-    //if (invalidMiddleCharacters.test(id)) {
-    //  return false;
-    //}
-
-    //const invalidEndCharacters = /.*[/?#\\ ]$/;
-    //if (invalidEndCharacters.test(id)) {
-    //  return false;
-    //}
-
-    //return true;
   }
 
   private static _isNotEmpty(value: string): boolean {
