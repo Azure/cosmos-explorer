@@ -226,7 +226,15 @@ export const Values = (inputOptions: InputOptions): PropertyDecorator => {
  */
 export const IsDisplayable = (): ClassDecorator => {
   return (target) => {
-    buildSmartUiDescriptor(target.name, target.prototype);
+    let targetName: string;
+    console.log(target.prototype)
+    console.log(target.toString())
+    if (target.toString().includes(SelfServeType.materializedviewsbuilder)) {
+      targetName = SelfServeType.materializedviewsbuilder;
+    } else if (target instanceof Function) {
+      targetName = target.constructor.name;
+    }
+    buildSmartUiDescriptor(targetName, target.prototype);
   };
 };
 
@@ -238,8 +246,10 @@ export const IsDisplayable = (): ClassDecorator => {
 export const RefreshOptions = (refreshParams: RefreshParams): ClassDecorator => {
   console.log(refreshParams)
   return (target) => {
+    console.log(target.prototype);
+    console.log(target.toString())
     let targetName: string;
-    if (target.constructor.toString().includes(SelfServeType.materializedviewsbuilder)) {
+    if (target.toString().includes(SelfServeType.materializedviewsbuilder)) {
       targetName = SelfServeType.materializedviewsbuilder;
     } else if (target instanceof Function) {
       targetName = target.constructor.name;
