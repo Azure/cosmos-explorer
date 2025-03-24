@@ -8,8 +8,7 @@ import {
   Info,
   NumberUiType,
   OnChangeCallback,
-  RefreshParams,
-  SelfServeBaseClass
+  RefreshParams
 } from "./SelfServeTypes";
 import { addPropertyToMap, buildSmartUiDescriptor, DecoratorProperties, SelfServeType } from "./SelfServeUtils";
 
@@ -136,13 +135,10 @@ const isDescriptionDisplayOptions = (inputOptions: InputOptions): inputOptions i
 };
 
 const addToMap = (...decorators: Decorator[]): PropertyDecorator => {
+  console.log(decorators)
   return async (target, property) => {
     console.log("--------------------------------------")
-    console.log(target);
-    console.log(target instanceof SelfServeBaseClass)
-    console.log(target.constructor.name)
-    console.log(target.constructor.toString())
-    console.log(target.constructor.prototype)
+    console.log(property);
     // console.log((target as SelfServeBaseClass))
     // console.log((target as SelfServeBaseClass).test)
     // console.log((target as MaterializedViewsBuilder))
@@ -154,6 +150,7 @@ const addToMap = (...decorators: Decorator[]): PropertyDecorator => {
       className = target.constructor.name;
     }
     const propertyName = property.toString();
+    console.log(propertyName)
     if (className === "Function") {
       //eslint-disable-next-line @typescript-eslint/ban-types
       className = (target as Function).name;
@@ -161,6 +158,7 @@ const addToMap = (...decorators: Decorator[]): PropertyDecorator => {
     }
 
     const propertyType = (Reflect.getMetadata("design:type", target, property)?.name as string)?.toLowerCase();
+    console.log(propertyType)
     addPropertyToMap(target, propertyName, className, "type", propertyType);
     addPropertyToMap(target, propertyName, className, "dataFieldName", propertyName);
 
@@ -238,7 +236,14 @@ export const IsDisplayable = (): ClassDecorator => {
  * how often the auto refresh of the page occurs.
  */
 export const RefreshOptions = (refreshParams: RefreshParams): ClassDecorator => {
+  console.log(refreshParams)
   return (target) => {
-    addPropertyToMap(target.prototype, "root", target.name, "refreshParams", refreshParams);
+    let targetName: string;
+    if (target.constructor.toString().includes(SelfServeType.materializedviewsbuilder)) {
+      targetName = SelfServeType.materializedviewsbuilder;
+    } else if (target instanceof Function) {
+      targetName = target.constructor.name;
+    }
+    addPropertyToMap(target.prototype, "root", targetName, "refreshParams", refreshParams);
   };
 };
