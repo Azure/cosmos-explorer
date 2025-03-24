@@ -11,7 +11,7 @@ import {
   RefreshParams,
   SelfServeBaseClass
 } from "./SelfServeTypes";
-import { addPropertyToMap, buildSmartUiDescriptor, DecoratorProperties } from "./SelfServeUtils";
+import { addPropertyToMap, buildSmartUiDescriptor, DecoratorProperties, SelfServeType } from "./SelfServeUtils";
 
 type ValueOf<T> = T[keyof T];
 interface Decorator {
@@ -147,7 +147,12 @@ const addToMap = (...decorators: Decorator[]): PropertyDecorator => {
     // console.log((target as SelfServeBaseClass).test)
     // console.log((target as MaterializedViewsBuilder))
     // console.log((target as MaterializedViewsBuilder).test)
-    let className = target.constructor.name;
+    let className: string;
+    if (target.constructor.toString().includes(SelfServeType.materializedviewsbuilder)) {
+      className = SelfServeType.materializedviewsbuilder;
+    } else if (target instanceof Function) {
+      className = target.constructor.name;
+    }
     const propertyName = property.toString();
     if (className === "Function") {
       //eslint-disable-next-line @typescript-eslint/ban-types
