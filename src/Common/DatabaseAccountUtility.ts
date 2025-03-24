@@ -1,3 +1,5 @@
+import { TagNames, WorkloadType } from "Common/Constants";
+import { Tags } from "Contracts/DataModels";
 import { userContext } from "../UserContext";
 
 function isVirtualNetworkFilterEnabled() {
@@ -14,4 +16,13 @@ function isPrivateEndpointConnectionsEnabled() {
 
 export function isPublicInternetAccessAllowed(): boolean {
   return !isVirtualNetworkFilterEnabled() && !isIpRulesEnabled() && !isPrivateEndpointConnectionsEnabled();
+}
+
+export function getWorkloadType(): WorkloadType {
+  const tags: Tags = userContext?.databaseAccount?.tags;
+  const workloadType: WorkloadType = tags && (tags[TagNames.WorkloadType] as WorkloadType);
+  if (!workloadType) {
+    return WorkloadType.None;
+  }
+  return workloadType;
 }

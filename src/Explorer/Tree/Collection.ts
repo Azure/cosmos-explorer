@@ -1,6 +1,7 @@
 import { Resource, StoredProcedureDefinition, TriggerDefinition, UserDefinedFunctionDefinition } from "@azure/cosmos";
 import { useNotebook } from "Explorer/Notebook/useNotebook";
 import { DocumentsTabV2 } from "Explorer/Tabs/DocumentsTabV2/DocumentsTabV2";
+import { isFabricMirrored } from "Platform/Fabric/FabricUtil";
 import * as ko from "knockout";
 import * as _ from "underscore";
 import * as Constants from "../../Common/Constants";
@@ -34,7 +35,6 @@ import QueryTablesTab from "../Tabs/QueryTablesTab";
 import { CollectionSettingsTabV2 } from "../Tabs/SettingsTabV2";
 import { useDatabases } from "../useDatabases";
 import { useSelectedNode } from "../useSelectedNode";
-import { Platform, configContext } from "./../../ConfigContext";
 import ConflictId from "./ConflictId";
 import DocumentId from "./DocumentId";
 import StoredProcedure from "./StoredProcedure";
@@ -210,7 +210,7 @@ export default class Collection implements ViewModels.Collection {
     });
 
     const showScriptsMenus: boolean =
-      configContext.platform != Platform.Fabric && (userContext.apiType === "SQL" || userContext.apiType === "Gremlin");
+      !isFabricMirrored() && (userContext.apiType === "SQL" || userContext.apiType === "Gremlin");
     this.showStoredProcedures = ko.observable<boolean>(showScriptsMenus);
     this.showTriggers = ko.observable<boolean>(showScriptsMenus);
     this.showUserDefinedFunctions = ko.observable<boolean>(showScriptsMenus);

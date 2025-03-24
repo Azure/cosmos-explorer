@@ -6,12 +6,12 @@
 import { CommandBar as FluentCommandBar, ICommandBarItemProps } from "@fluentui/react";
 import { useNotebook } from "Explorer/Notebook/useNotebook";
 import { KeyboardActionGroup, useKeyboardActionGroup } from "KeyboardShortcuts";
+import { isFabric } from "Platform/Fabric/FabricUtil";
 import { userContext } from "UserContext";
 import * as React from "react";
 import create, { UseStore } from "zustand";
 import { ConnectionStatusType, PoolIdType } from "../../../Common/Constants";
 import { StyleConstants } from "../../../Common/StyleConstants";
-import { Platform, configContext } from "../../../ConfigContext";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../../Explorer";
 import { useSelectedNode } from "../../useSelectedNode";
@@ -93,19 +93,18 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
     );
   }
 
-  const rootStyle =
-    configContext.platform === Platform.Fabric
-      ? {
-          root: {
-            backgroundColor: "transparent",
-            padding: "2px 8px 0px 8px",
-          },
-        }
-      : {
-          root: {
-            backgroundColor: backgroundColor,
-          },
-        };
+  const rootStyle = isFabric()
+    ? {
+        root: {
+          backgroundColor: "transparent",
+          padding: "2px 8px 0px 8px",
+        },
+      }
+    : {
+        root: {
+          backgroundColor: backgroundColor,
+        },
+      };
 
   const allButtons = staticButtons.concat(contextButtons).concat(controlButtons);
   const keyboardHandlers = CommandBarUtil.createKeyboardHandlers(allButtons);

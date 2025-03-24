@@ -5,6 +5,7 @@ import { checkFirewallRules } from "Explorer/Tabs/Shared/CheckFirewallRules";
 import * as ko from "knockout";
 import * as React from "react";
 import FirewallRuleScreenshot from "../../../images/firewallRule.png";
+import VcoreFirewallRuleScreenshot from "../../../images/vcoreMongoFirewallRule.png";
 import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
@@ -42,7 +43,11 @@ class NotebookTerminalComponentAdapter implements ReactAdapter {
       return (
         <QuickstartFirewallNotification
           messageType={MessageTypes.OpenPostgresNetworkingBlade}
-          screenshot={FirewallRuleScreenshot}
+          screenshot={
+            this.kind === ViewModels.TerminalKind.Mongo || this.kind === ViewModels.TerminalKind.VCoreMongo
+              ? VcoreFirewallRuleScreenshot
+              : FirewallRuleScreenshot
+          }
           shellName={this.getShellNameForDisplay(this.kind)}
         />
       );

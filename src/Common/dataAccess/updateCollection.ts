@@ -1,4 +1,5 @@
 import { ContainerDefinition, RequestOptions } from "@azure/cosmos";
+import { isFabric } from "Platform/Fabric/FabricUtil";
 import { AuthType } from "../../AuthType";
 import { Collection } from "../../Contracts/DataModels";
 import { userContext } from "../../UserContext";
@@ -36,7 +37,8 @@ export async function updateCollection(
     if (
       userContext.authType === AuthType.AAD &&
       !userContext.features.enableSDKoperations &&
-      userContext.apiType !== "Tables"
+      userContext.apiType !== "Tables" &&
+      !isFabric()
     ) {
       collection = await updateCollectionWithARM(databaseId, collectionId, newCollection);
     } else {

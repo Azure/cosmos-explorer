@@ -6,6 +6,7 @@ export interface ArmEntity {
   location: string;
   type: string;
   kind: string;
+  tags?: Tags;
 }
 
 export interface DatabaseAccount extends ArmEntity {
@@ -670,3 +671,5 @@ export interface FeatureRegistration {
     state: string;
   };
 }
+
+export type Tags = { [key: string]: string };
