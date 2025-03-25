@@ -23,6 +23,7 @@ import { InfoTooltip } from "Common/Tooltip/InfoTooltip";
 import { Platform, configContext } from "ConfigContext";
 import { useDialog } from "Explorer/Controls/Dialog";
 import { useDatabases } from "Explorer/useDatabases";
+import { isFabric } from "Platform/Fabric/FabricUtil";
 import {
   AppStateComponentNames,
   deleteAllStates,
@@ -162,7 +163,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
           componentName: AppStateComponentNames.SelectedRegionalEndpoint,
           globalAccountName: userContext.databaseAccount?.name,
         }) as string)
-      : "",
+      : undefined,
   );
   const [retryAttempts, setRetryAttempts] = useState<number>(
     LocalStorageUtility.hasItem(StorageKey.RetryAttempts)
@@ -686,38 +687,36 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
               </AccordionPanel>
             </AccordionItem>
           )}
-          {userContext.apiType === "SQL" &&
-            userContext.authType === AuthType.AAD &&
-            configContext.platform !== Platform.Fabric && (
-              <AccordionItem value="3">
-                <AccordionHeader>
-                  <div className={styles.header}>Region Selection</div>
-                </AccordionHeader>
-                <AccordionPanel>
-                  <div className={styles.settingsSectionContainer}>
-                    <div className={styles.settingsSectionDescription}>
-                      Changes region the Cosmos Client uses to access account.
-                    </div>
-                    <div>
-                      <span className={styles.subHeader}>Select Region</span>
-                      <InfoTooltip className={styles.headerIcon}>
-                        Changes the account endpoint used to perform client operations.
-                      </InfoTooltip>
-                    </div>
-                    <Dropdown
-                      placeholder={
-                        selectedRegionalEndpoint
-                          ? regionOptions.find((option) => option.key === selectedRegionalEndpoint)?.text
-                          : regionOptions[0]?.text
-                      }
-                      onChange={handleOnSelectedRegionOptionChange}
-                      options={regionOptions}
-                      styles={{ root: { marginBottom: "10px" } }}
-                    />
+          {userContext.apiType === "SQL" && userContext.authType === AuthType.AAD && !isFabric() && (
+            <AccordionItem value="3">
+              <AccordionHeader>
+                <div className={styles.header}>Region Selection</div>
+              </AccordionHeader>
+              <AccordionPanel>
+                <div className={styles.settingsSectionContainer}>
+                  <div className={styles.settingsSectionDescription}>
+                    Changes region the Cosmos Client uses to access account.
                   </div>
-                </AccordionPanel>
-              </AccordionItem>
-            )}
+                  <div>
+                    <span className={styles.subHeader}>Select Region</span>
+                    <InfoTooltip className={styles.headerIcon}>
+                      Changes the account endpoint used to perform client operations.
+                    </InfoTooltip>
+                  </div>
+                  <Dropdown
+                    placeholder={
+                      selectedRegionalEndpoint
+                        ? regionOptions.find((option) => option.key === selectedRegionalEndpoint)?.text
+                        : regionOptions[0]?.text
+                    }
+                    onChange={handleOnSelectedRegionOptionChange}
+                    options={regionOptions}
+                    styles={{ root: { marginBottom: "10px" } }}
+                  />
+                </div>
+              </AccordionPanel>
+            </AccordionItem>
+          )}
           {userContext.apiType === "SQL" && !isEmulator && (
             <>
               <AccordionItem value="4">
@@ -1052,7 +1051,15 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                   "Clear History",
                   undefined,
                   "Are you sure you want to proceed?",
-                  () => deleteAllStates(),
+                  () => {
+                    deleteAllStates();
+                    updateUserContext({
+                      selectedRegionalEndpoint: undefined,
+                      writeEnabledInSelectedRegion: true,
+                      refreshCosmosClient: true,
+                    });
+                    useClientWriteEnabled.setState({ clientWriteEnabled: true });
+                  },
                   "Cancel",
                   undefined,
                   <>
