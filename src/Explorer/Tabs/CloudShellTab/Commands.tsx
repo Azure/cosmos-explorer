@@ -67,7 +67,8 @@ export const commands = (terminalKind: TerminalKind, config?: CommandConfig): st
                 // 10. Source .bashrc to update PATH (even if psql was already installed)
                 "source ~/.bashrc",
                 // 11. Verify PostgreSQL installation
-                "psql --version"
+                "psql --version",
+                `psql 'read -p "Enter Database Name: " dbname && read -p "Enter Username: " username && host=${config.endpoint} port=5432 dbname=$dbname user=$username sslmode=require'`
             ];
         case TerminalKind.Mongo:
             return [
