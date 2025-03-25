@@ -207,7 +207,7 @@ export function client(): Cosmos.CosmosClient {
     userAgentSuffix: "Azure Portal",
     defaultHeaders: _defaultHeaders,
     connectionPolicy: {
-      enableEndpointDiscovery: userContext.selectedRegionalEndpoint ? false : true,
+      enableEndpointDiscovery: !userContext.selectedRegionalEndpoint,
       retryOptions: {
         maxRetryAttemptCount: LocalStorageUtility.getEntryNumber(StorageKey.RetryAttempts),
         fixedRetryIntervalInMilliseconds: LocalStorageUtility.getEntryNumber(StorageKey.RetryInterval),
