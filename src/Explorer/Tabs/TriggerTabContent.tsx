@@ -1,7 +1,7 @@
 import { TriggerDefinition } from "@azure/cosmos";
 import { Dropdown, IDropdownOption, Label, TextField } from "@fluentui/react";
 import { KeyboardAction } from "KeyboardShortcuts";
-import { ValidCosmosDbResourceIdDescription, ValidCosmosDbResourceIdRegex } from "Utils/ValidationUtils";
+import { ValidCosmosDbIdDescription, ValidCosmosDbIdInputPattern } from "Utils/ValidationUtils";
 import React, { Component } from "react";
 import DiscardIcon from "../../../images/discard.svg";
 import SaveIcon from "../../../images/save-cosmos.svg";
@@ -297,8 +297,8 @@ export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentS
           autoFocus
           required
           type="text"
-          pattern={ValidCosmosDbResourceIdRegex.source}
-          title={ValidCosmosDbResourceIdDescription}
+          pattern={ValidCosmosDbIdInputPattern.source}
+          title={ValidCosmosDbIdDescription}
           placeholder="Enter the new trigger id"
           size={40}
           value={triggerId}

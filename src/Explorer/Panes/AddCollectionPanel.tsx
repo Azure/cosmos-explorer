@@ -42,7 +42,7 @@ import {
   isVectorSearchEnabled,
 } from "Utils/CapabilityUtils";
 import { getUpsellMessage } from "Utils/PricingUtils";
-import { ValidCosmosDbResourceIdDescription, ValidCosmosDbResourceIdRegex } from "Utils/ValidationUtils";
+import { ValidCosmosDbIdDescription, ValidCosmosDbIdInputPattern } from "Utils/ValidationUtils";
 import { CollapsibleSectionComponent } from "../Controls/CollapsiblePanel/CollapsibleSectionComponent";
 import { ThroughputInput } from "../Controls/ThroughputInput/ThroughputInput";
 import "../Controls/ThroughputInput/ThroughputInput.less";
@@ -352,8 +352,8 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                     required
                     type="text"
                     autoComplete="off"
-                    pattern={ValidCosmosDbResourceIdRegex.source}
-                    title={ValidCosmosDbResourceIdDescription}
+                    pattern={ValidCosmosDbIdInputPattern.source}
+                    title={ValidCosmosDbIdDescription}
                     placeholder="Type a new database id"
                     size={40}
                     className="panelTextField"
@@ -460,8 +460,8 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               aria-required
               required
               autoComplete="off"
-              pattern={ValidCosmosDbResourceIdRegex.source}
-              title={ValidCosmosDbResourceIdDescription}
+              pattern={ValidCosmosDbIdInputPattern.source}
+              title={ValidCosmosDbIdDescription}
               placeholder={`e.g., ${getCollectionName()}1`}
               size={40}
               className="panelTextField"

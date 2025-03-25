@@ -28,7 +28,7 @@ import { RightPaneForm } from "Explorer/Panes/RightPaneForm/RightPaneForm";
 import { useDatabases } from "Explorer/useDatabases";
 import { userContext } from "UserContext";
 import { getCollectionName } from "Utils/APITypeUtils";
-import { ValidCosmosDbResourceIdDescription, ValidCosmosDbResourceIdRegex } from "Utils/ValidationUtils";
+import { ValidCosmosDbIdDescription, ValidCosmosDbIdInputPattern } from "Utils/ValidationUtils";
 import { useSidePanel } from "hooks/useSidePanel";
 import * as React from "react";
 
@@ -236,8 +236,8 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
                 aria-required
                 required
                 autoComplete="off"
-                pattern={ValidCosmosDbResourceIdRegex.source}
-                title={ValidCosmosDbResourceIdDescription}
+                pattern={ValidCosmosDbIdInputPattern.source}
+                title={ValidCosmosDbIdDescription}
                 placeholder={`e.g., ${getCollectionName()}1`}
                 size={40}
                 className="panelTextField"

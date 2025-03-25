@@ -1,6 +1,6 @@
 import { Checkbox, Stack, Text, TextField } from "@fluentui/react";
 import { getNewDatabaseSharedThroughputDefault } from "Common/DatabaseUtility";
-import { ValidCosmosDbResourceIdDescription, ValidCosmosDbResourceIdRegex } from "Utils/ValidationUtils";
+import { ValidCosmosDbIdDescription, ValidCosmosDbIdInputPattern } from "Utils/ValidationUtils";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import * as Constants from "../../../Common/Constants";
 import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
@@ -205,8 +205,8 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
             type="text"
             aria-required="true"
             autoComplete="off"
-            pattern={ValidCosmosDbResourceIdRegex.source}
-            title={ValidCosmosDbResourceIdDescription}
+            pattern={ValidCosmosDbIdInputPattern.source}
+            title={ValidCosmosDbIdDescription}
             size={40}
             aria-label={databaseIdLabel}
             placeholder={databaseIdPlaceHolder}

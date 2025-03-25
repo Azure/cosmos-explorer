@@ -7,7 +7,7 @@ import { Action } from "Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "UserContext";
 import { isServerlessAccount } from "Utils/CapabilityUtils";
-import { ValidCosmosDbResourceIdDescription, ValidCosmosDbResourceIdRegex } from "Utils/ValidationUtils";
+import { ValidCosmosDbIdDescription, ValidCosmosDbIdInputPattern } from "Utils/ValidationUtils";
 import { useSidePanel } from "hooks/useSidePanel";
 import React, { FunctionComponent, useState } from "react";
 import { ThroughputInput } from "../../Controls/ThroughputInput/ThroughputInput";
@@ -203,8 +203,8 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
                 required={true}
                 autoComplete="off"
                 styles={getTextFieldStyles()}
-                pattern={ValidCosmosDbResourceIdRegex.source}
-                title={ValidCosmosDbResourceIdDescription}
+                pattern={ValidCosmosDbIdInputPattern.source}
+                title={ValidCosmosDbIdDescription}
                 placeholder="Type a new keyspace id"
                 size={40}
                 value={newKeyspaceId}
@@ -293,8 +293,8 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
               required={true}
               ariaLabel="addCollection-table Id Create table"
               autoComplete="off"
-              pattern={ValidCosmosDbResourceIdRegex.source}
-              title={ValidCosmosDbResourceIdDescription}
+              pattern={ValidCosmosDbIdInputPattern.source}
+              title={ValidCosmosDbIdDescription}
               placeholder="Enter table Id"
               size={20}
               value={tableId}
