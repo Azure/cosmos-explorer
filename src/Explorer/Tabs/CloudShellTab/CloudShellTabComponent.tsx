@@ -22,7 +22,7 @@ export const CloudShellTerminalComponent: React.FC<CloudShellTerminalProps> = ({
         const term = new Terminal({
             cursorBlink: true,
             cursorStyle: 'bar',
-            fontFamily: 'Courier New, monospace',
+            fontFamily: 'monospace',
             fontSize: 14,
             theme: {
                 background: "#1e1e1e", 
@@ -38,18 +38,6 @@ export const CloudShellTerminalComponent: React.FC<CloudShellTerminalProps> = ({
         if (terminalRef.current) {
             term.open(terminalRef.current);
             xtermRef.current = term;
-            
-             // Ensure the CSS is injected only once
-            if (!document.getElementById("xterm-custom-style")) {
-                const style = document.createElement("style");
-                style.id = "xterm-custom-style"; // Unique ID to prevent duplicates
-                style.innerHTML = `
-                    .xterm-text-layer {
-                        transform: translateX(10px); /* Adds left padding */
-                    }
-                `;
-                document.head.appendChild(style);
-            }
         }
         
         if (fitAddon) {
@@ -76,11 +64,6 @@ export const CloudShellTerminalComponent: React.FC<CloudShellTerminalProps> = ({
             }
             window.removeEventListener('resize', handleResize);
             term.dispose(); // Clean up XTerm instance
-
-            const styleElement = document.getElementById("xterm-custom-style");
-            if (styleElement) {
-                styleElement.remove(); // Clean up CSS on unmount
-            }
         };
         
     }, []);

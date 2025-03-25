@@ -108,8 +108,8 @@ export const commands = (terminalKind: TerminalKind, config?: CommandConfig): st
                 "source ~/.bashrc",
                 // 8. Verify mongosh installation
                 "mongosh --version",
-                // 9. Login to MongoDBmongosh mongodb+srv://<credentials>@neesharma-stage-mongo-vcore.mongocluster.cosmos.azure.com/?authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000\u0007
-                `mongosh "mongodb+srv://nrj:@${config.endpoint}/?authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000" --tls --tlsAllowInvalidCertificates`
+                // 10. Login to MongoDBmongosh mongodb+srv://<credentials>@neesharma-stage-mongo-vcore.mongocluster.cosmos.azure.com/?authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000\u0007
+                `read -p "Enter username: " username && mongosh "mongodb+srv://$username:@${config.endpoint}/?authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000" --tls --tlsAllowInvalidCertificates`
             ];     
         case TerminalKind.Cassandra:
             return [

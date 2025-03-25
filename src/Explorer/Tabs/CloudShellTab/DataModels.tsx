@@ -23,6 +23,12 @@ export const enum SessionType {
     Ephemeral = "Ephemeral"
 }
 
+export const enum UserInputs {
+    NoReset = "1",
+    ConfigureVNet = "2",
+    ResetVNet = "3"
+};
+
 export type Settings = {
     properties: UserSettingProperties
 };

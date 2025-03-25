@@ -2,7 +2,7 @@
  * Copyright (c) Microsoft Corporation.  All rights reserved.
  */
 
-import { RelayNamespaceResponse, VnetModel, VnetSettings } from "Explorer/Tabs/CloudShellTab/DataModels";
+import { RelayNamespaceResponse, UserInputs, VnetModel, VnetSettings } from "Explorer/Tabs/CloudShellTab/DataModels";
 import { listKeys } from "Utils/arm/generatedClients/cosmos/databaseAccounts";
 import { Terminal } from "xterm";
 import { TerminalKind } from "../../../Contracts/ViewModels";
@@ -16,18 +16,7 @@ export const startCloudShellTerminal = async (terminal: Terminal, shellType: Ter
 
     // validate that the subscription id is registered in the CloudShell namespace
     terminal.writeln("");
-    try {
-        terminal.writeln("\x1B[34mVerifying CloudShell provider registration...\x1B[0m");
-        const response: any = await verifyCloudShellProviderRegistration(userContext.subscriptionId);
-        if (response.registrationState !== "Registered") {
-            terminal.writeln("\x1B[33mCloudShell provider registration is not found. Registering now...\x1B[0m");
-            await registerCloudShellProvider(userContext.subscriptionId);
-            terminal.writeln("\x1B[32mCloudShell provider registration completed successfully.\x1B[0m");
-        }
-    } catch (err) {
-        terminal.writeln("\x1B[31mError: Unable to verify CloudShell provider registration.\x1B[0m");
-        throw err;
-    }
+    await ensureCloudShellRegistration(terminal);
 
     terminal.writeln("");
     terminal.writeln("\x1B[34mFetching user settings...\x1B[0m");
@@ -68,14 +57,13 @@ export const startCloudShellTerminal = async (terminal: Terminal, shellType: Ter
 
     terminal.focus();
     
-    let isDefaultSetting = false;
     const handleKeyPress = terminal.onKey(async ({ key }: { key: string }) => {
         terminal.writeln("")
-        if (key === "1") {
+        if (key === UserInputs.NoReset) {
             terminal.writeln("\x1B[34mYou selected option 1: Proceeding with current/default settings.\x1B[0m");
             handleKeyPress.dispose();
         }
-       else if (key === "2") {
+       else if (key === UserInputs.ConfigureVNet) {
             terminal.writeln("\x1B[34mYou selected option 2: Please provide the following details.\x1B[0m");
             handleKeyPress.dispose();
 
@@ -118,7 +106,7 @@ export const startCloudShellTerminal = async (terminal: Terminal, shellType: Ter
                 location: vNetConfig.location
             };
         }
-        else if (key === "3") {
+        else if (key === UserInputs.ResetVNet) {
             terminal.writeln("\x1B[34mYou selected option 3: Resetting VNet settings to default.\x1B[0m");
 
             vNetSettings = {};
@@ -346,26 +334,38 @@ const provisionCloudShellSession = async(
                     return reject(err);
                 }
 
-                // trigger callback to provision console internal
                 let provisionConsoleResponse;
-                try {
-                    provisionConsoleResponse = await provisionConsole(userContext.subscriptionId, resolvedRegion);
-                } catch (err) {
-                    terminal.writeln(LogError('Unable to provision console.'));
-                    return reject(err);
+                const retryCount = 3;
+                for (let i = 0; i < retryCount; i++) {
+                    terminal.writeln(`\x1B[34mAttempting to provision console (Attempt ${i + 1}/${retryCount})...\x1B[0m`);
+                     // trigger callback to provision console internal
+                    try {
+                        provisionConsoleResponse = await provisionConsole(userContext.subscriptionId, resolvedRegion);
+                    } catch (err) {
+                        terminal.writeln(LogError('Unable to provision console.'));
+                        return reject(err);
+                    }
+
+                    // Add check for provisioning state
+                    if (provisionConsoleResponse.properties.provisioningState !== "Succeeded") {
+                        await wait(5000);
+                    }
+                    else {
+                        break;
+                    }
                 }
 
-                // Add check for provisioning state
+                 // Add check for provisioning state
                 if (provisionConsoleResponse.properties.provisioningState !== "Succeeded") {
-                    terminal.writeln(LogError("Failed to provision console."));
-                    return reject(new Error("Failed to provision console."));
+                    terminal.writeln(`\x1B[1;31mUnable to provision, Provisioning state: ${provisionConsoleResponse.properties.provisioningState}\x1B[0m`);
+                    return reject(new Error("Unable to provision, Provisioning state: ${provisionConsoleResponse.properties.provisioningState}"));
                 }
-            
+
                 terminal.writeln("\x1B[34mConnecting to CloudShell Terminal...\x1B[0m");
                 // connect the terminal
                 let connectTerminalResponse;
                 try {
-                    connectTerminalResponse = await connectTerminal(provisionConsoleResponse.properties.uri, { rows: terminal.rows, cols: terminal.cols });
+                    connectTerminalResponse = await connectTerminal(provisionConsoleResponse.properties.uri, { rows: terminal.rows, cols: terminal.cols});
                 } catch (err) {
                     terminal.writeln(LogError(`Unable to connect terminal. ${err}`));
                     return reject(err);
@@ -394,3 +394,21 @@ const provisionCloudShellSession = async(
         });
     }); 
 };
+
+const ensureCloudShellRegistration =  async(terminal: Terminal)  => {
+    try {
+        terminal.writeln("\x1B[34mVerifying CloudShell provider registration...\x1B[0m");
+        const response: any = await verifyCloudShellProviderRegistration(userContext.subscriptionId);
+        if (response.registrationState !== "Registered") {
+            terminal.writeln("\x1B[33mCloudShell provider registration is not found. Registering now...\x1B[0m");
+            await registerCloudShellProvider(userContext.subscriptionId);
+            terminal.writeln("\x1B[32mCloudShell provider registration completed successfully.\x1B[0m");
+        }
+    } catch (err) {
+        terminal.writeln("\x1B[31mError: Unable to verify CloudShell provider registration.\x1B[0m");
+        throw err;
+    }
+}
+
+const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+

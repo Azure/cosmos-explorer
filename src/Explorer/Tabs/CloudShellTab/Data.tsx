@@ -52,7 +52,6 @@ export const getUserSettings = async (): Promise<Settings> => {
         apiVersion: "2023-02-01-preview"
       });
 
-    console.log(resp);
     return resp;
 };
 
@@ -69,16 +68,13 @@ export const putEphemeralUserSettings = async (userSubscriptionId: string, userR
         }
     };
 
-    const resp = await armRequest({
+    return await armRequest({
         host: configContext.ARM_ENDPOINT,
         path: `/providers/Microsoft.Portal/userSettings/cloudconsole`,
         method: "PUT",
         apiVersion: "2023-02-01-preview",
         body: ephemeralSettings
       });
-
-    return resp;
-
 };
 
 export const verifyCloudShellProviderRegistration = async(subscriptionId: string) => {
