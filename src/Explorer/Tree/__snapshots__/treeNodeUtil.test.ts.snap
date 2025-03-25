@@ -30,7 +30,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": <DocumentMultipleRegular
+        "iconSrc": <EyeRegular
           fontSize={16}
         />,
         "isExpanded": true,
@@ -72,7 +72,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": <DocumentMultipleRegular
+        "iconSrc": <EyeRegular
           fontSize={16}
         />,
         "isExpanded": true,
@@ -145,7 +145,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": <DocumentMultipleRegular
+        "iconSrc": <EyeRegular
           fontSize={16}
         />,
         "isExpanded": true,
@@ -264,7 +264,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": <DocumentMultipleRegular
+        "iconSrc": <EyeRegular
           fontSize={16}
         />,
         "isExpanded": true,
@@ -369,7 +369,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": <DocumentMultipleRegular
+        "iconSrc": <EyeRegular
           fontSize={16}
         />,
         "isExpanded": true,
@@ -442,7 +442,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": <DocumentMultipleRegular
+        "iconSrc": <EyeRegular
           fontSize={16}
         />,
         "isExpanded": true,
@@ -546,7 +546,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": <DocumentMultipleRegular
+        "iconSrc": <EyeRegular
           fontSize={16}
         />,
         "isExpanded": true,
@@ -696,7 +696,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": <DocumentMultipleRegular
+        "iconSrc": <EyeRegular
           fontSize={16}
         />,
         "isExpanded": true,
@@ -760,7 +760,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": <DocumentMultipleRegular
+        "iconSrc": <EyeRegular
           fontSize={16}
         />,
         "isExpanded": true,
@@ -787,7 +787,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": <DocumentMultipleRegular
+        "iconSrc": <EyeRegular
           fontSize={16}
         />,
         "isExpanded": true,
@@ -841,7 +841,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": <DocumentMultipleRegular
+        "iconSrc": <EyeRegular
           fontSize={16}
         />,
         "isExpanded": true,
@@ -895,7 +895,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": <DocumentMultipleRegular
+        "iconSrc": <EyeRegular
           fontSize={16}
         />,
         "isExpanded": true,
@@ -953,7 +953,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "onClick": [Function],
           },
         ],
-        "iconSrc": <DocumentMultipleRegular
+        "iconSrc": <EyeRegular
           fontSize={16}
         />,
         "isExpanded": true,
@@ -974,7 +974,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "onClick": [Function],
           },
         ],
-        "iconSrc": <DocumentMultipleRegular
+        "iconSrc": <EyeRegular
           fontSize={16}
         />,
         "isExpanded": true,
@@ -1010,7 +1010,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "onClick": [Function],
           },
         ],
-        "iconSrc": <DocumentMultipleRegular
+        "iconSrc": <EyeRegular
           fontSize={16}
         />,
         "isExpanded": true,
@@ -1046,7 +1046,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "onClick": [Function],
           },
         ],
-        "iconSrc": <DocumentMultipleRegular
+        "iconSrc": <EyeRegular
           fontSize={16}
         />,
         "isExpanded": true,
@@ -1208,7 +1208,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": <DocumentMultipleRegular
+        "iconSrc": <EyeRegular
           fontSize={16}
         />,
         "isExpanded": true,
@@ -1311,7 +1311,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": <DocumentMultipleRegular
+        "iconSrc": <EyeRegular
           fontSize={16}
         />,
         "isExpanded": true,
@@ -1445,7 +1445,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": <DocumentMultipleRegular
+        "iconSrc": <EyeRegular
           fontSize={16}
         />,
         "isExpanded": true,
@@ -1625,7 +1625,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": <DocumentMultipleRegular
+        "iconSrc": <EyeRegular
           fontSize={16}
         />,
         "isExpanded": true,
@@ -1799,7 +1799,7 @@ exports[`createDatabaseTreeNodes using NoSQL API on Hosted Platform creates expe
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": <DocumentMultipleRegular
+        "iconSrc": <EyeRegular
           fontSize={16}
         />,
         "isExpanded": true,
@@ -1897,7 +1897,7 @@ exports[`createDatabaseTreeNodes using NoSQL API on Hosted Platform creates expe
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": <DocumentMultipleRegular
+        "iconSrc": <EyeRegular
           fontSize={16}
         />,
         "isExpanded": true,
@@ -2031,7 +2031,7 @@ exports[`createDatabaseTreeNodes using NoSQL API on Hosted Platform creates expe
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": <DocumentMultipleRegular
+        "iconSrc": <EyeRegular
           fontSize={16}
         />,
         "isExpanded": true,
@@ -2211,7 +2211,7 @@ exports[`createDatabaseTreeNodes using NoSQL API on Hosted Platform creates expe
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": <DocumentMultipleRegular
+        "iconSrc": <EyeRegular
           fontSize={16}
         />,
         "isExpanded": true,
@@ -2266,7 +2266,7 @@ exports[`createResourceTokenTreeNodes creates the expected tree nodes 1`] = `
       },
     ],
     "className": "collectionNode",
-    "iconSrc": <DocumentMultipleRegular
+    "iconSrc": <EyeRegular
       fontSize={16}
     />,
     "isExpanded": true,
