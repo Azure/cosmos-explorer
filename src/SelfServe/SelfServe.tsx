@@ -28,6 +28,11 @@ const loadTranslationFile = async (className: string): Promise<void> => {
   } catch (e) {
     translations = await import(/* webpackChunkName: "Localization-en-[request]" */ `../Localization/en/${fileName}`);
   }
+
+  if (className == "MaterializedViewsBuilder") {
+    className = "p";
+  }
+  
   i18n.addResourceBundle(language, className, translations.default, true);
 };
 
