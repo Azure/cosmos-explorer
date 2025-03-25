@@ -1,6 +1,7 @@
 import { UserDefinedFunctionDefinition } from "@azure/cosmos";
 import { Label, TextField } from "@fluentui/react";
 import { KeyboardAction } from "KeyboardShortcuts";
+import { ValidCosmosDbResourceIdDescription, ValidCosmosDbResourceIdRegex } from "Utils/ValidationUtils";
 import React, { Component } from "react";
 import DiscardIcon from "../../../images/discard.svg";
 import SaveIcon from "../../../images/save-cosmos.svg";
@@ -267,8 +268,8 @@ export default class UserDefinedFunctionTabContent extends Component<
           required
           readOnly={!isUdfIdEditable}
           type="text"
-          pattern="[^\/?#\\]*[^\/?# \\]"
-          title="May not end with space nor contain characters '\' '/' '#' '?' '-'"
+          pattern={ValidCosmosDbResourceIdRegex.source}
+          title={ValidCosmosDbResourceIdDescription}
           placeholder="Enter the new user defined function id"
           size={40}
           value={udfId}

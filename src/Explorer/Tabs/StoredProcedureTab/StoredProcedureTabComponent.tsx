@@ -1,6 +1,7 @@
 import { Resource, StoredProcedureDefinition } from "@azure/cosmos";
 import { Pivot, PivotItem } from "@fluentui/react";
 import { KeyboardAction } from "KeyboardShortcuts";
+import { ValidCosmosDbResourceIdDescription, ValidCosmosDbResourceIdRegex } from "Utils/ValidationUtils";
 import React from "react";
 import ExecuteQueryIcon from "../../../../images/ExecuteQuery.svg";
 import DiscardIcon from "../../../../images/discard.svg";
@@ -529,8 +530,8 @@ export default class StoredProcedureTabComponent extends React.Component<
               className="formTree"
               type="text"
               required
-              pattern="[^\/?#\\]*[^\/?# \\]"
-              title="May not end with space nor contain characters '\' '/' '#' '?'"
+              pattern={ValidCosmosDbResourceIdRegex.source}
+              title={ValidCosmosDbResourceIdDescription}
               aria-label="Stored procedure id"
               placeholder="Enter the new stored procedure id"
               size={40}
