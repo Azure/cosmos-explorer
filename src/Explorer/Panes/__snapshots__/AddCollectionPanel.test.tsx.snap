@@ -88,7 +88,6 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
           aria-label="New database id, Type a new database id"
           aria-required={true}
           autoComplete="off"
-          autoFocus={true}
           className="panelTextField"
           id="newDatabaseId"
           name="newDatabaseId"

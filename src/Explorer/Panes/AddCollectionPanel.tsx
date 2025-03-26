@@ -358,7 +358,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                     size={40}
                     className="panelTextField"
                     aria-label="New database id, Type a new database id"
-                    autoFocus
                     tabIndex={0}
                     value={this.state.newDatabaseId}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
@@ -786,7 +785,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                           : "Comma separated paths e.g. /firstName,/address/zipCode"
                       }
                       className="panelTextField"
-                      autoFocus
                       value={uniqueKey}
                       onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                         const uniqueKeys = this.state.uniqueKeys.map((uniqueKey: string, j: number) => {
