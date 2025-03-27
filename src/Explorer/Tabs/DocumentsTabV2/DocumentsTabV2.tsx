@@ -2158,19 +2158,18 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                     isColumnSelectionDisabled={isPreferredApiMongoDB}
                   />
                 </div>
-                {!isPreferredApiMongoDB &&
-                  tableContainerSizePx?.width >= calculateOffset(selectedColumnIds.length) + 200 && (
-                    <div
-                      title="Refresh"
-                      className={styles.refreshBtn}
-                      role="button"
-                      onClick={() => refreshDocumentsGrid(false)}
-                      aria-label="Refresh"
-                      tabIndex={0}
-                    >
-                      <img src={RefreshIcon} alt="Refresh" />
-                    </div>
-                  )}
+                {tableContainerSizePx?.width >= calculateOffset(selectedColumnIds.length) + 200 && (
+                  <div
+                    title="Refresh"
+                    className={styles.refreshBtn}
+                    role="button"
+                    onClick={() => refreshDocumentsGrid(false)}
+                    aria-label="Refresh"
+                    tabIndex={0}
+                  >
+                    <img src={RefreshIcon} alt="Refresh" />
+                  </div>
+                )}
               </div>
               {tableItems.length > 0 && (
                 <a
