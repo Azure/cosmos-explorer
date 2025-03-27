@@ -61,9 +61,8 @@ export function buildDocumentsQueryPartitionProjections(
         projectedProperty += `[${projection}]`;
       }
     });
-    const fullAccess = `${collectionAlias}${projectedProperty}`;
-    const wrappedProjection = `IIF(IS_DEFINED(${fullAccess}), ${fullAccess}, {})`;
-    projections.push(wrappedProjection);
+
+    projections.push(`${collectionAlias}${projectedProperty}`);
   }
 
   return projections.join(",");
@@ -131,8 +130,6 @@ export const extractPartitionKeyValues = (
 
     if (value !== undefined) {
       partitionKeyValues.push(value);
-    } else {
-      partitionKeyValues.push({});
     }
   });
 
