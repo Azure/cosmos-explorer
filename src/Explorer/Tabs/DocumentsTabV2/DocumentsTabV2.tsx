@@ -2159,17 +2159,17 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                   />
                 </div>
                 {tableContainerSizePx?.width >= calculateOffset(selectedColumnIds.length) + 200 && (
-                    <div
-                      title="Refresh"
-                      className={styles.refreshBtn}
-                      role="button"
-                      onClick={() => refreshDocumentsGrid(false)}
-                      aria-label="Refresh"
-                      tabIndex={0}
-                    >
-                      <img src={RefreshIcon} alt="Refresh" />
-                    </div>
-                  )}
+                  <div
+                    title="Refresh"
+                    className={styles.refreshBtn}
+                    role="button"
+                    onClick={() => refreshDocumentsGrid(false)}
+                    aria-label="Refresh"
+                    tabIndex={0}
+                  >
+                    <img src={RefreshIcon} alt="Refresh" />
+                  </div>
+                )}
               </div>
               {tableItems.length > 0 && (
                 <a
