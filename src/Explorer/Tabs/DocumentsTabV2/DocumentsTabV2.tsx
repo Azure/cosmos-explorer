@@ -2158,8 +2158,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                     isColumnSelectionDisabled={isPreferredApiMongoDB}
                   />
                 </div>
-                {!isPreferredApiMongoDB &&
-                  tableContainerSizePx?.width >= calculateOffset(selectedColumnIds.length) + 200 && (
+                {tableContainerSizePx?.width >= calculateOffset(selectedColumnIds.length) + 200 && (
                     <div
                       title="Refresh"
                       className={styles.refreshBtn}
