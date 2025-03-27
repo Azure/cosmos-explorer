@@ -20,7 +20,7 @@ const loadTranslationFile = async (
   selfServeType?: SelfServeType,
 ): Promise<void> => {
   const language = i18n.languages[0];
-  let namespace: string;
+  let namespace: string; // className is used as a key to retrieve the localized strings
   let fileName: string;
   if (className instanceof SelfServeBaseClass) {
     fileName = `${selfServeType}.json`;
