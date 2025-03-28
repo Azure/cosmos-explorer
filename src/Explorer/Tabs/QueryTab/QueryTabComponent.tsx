@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-console */
 import { FeedOptions, QueryOperationOptions } from "@azure/cosmos";
+import { AuthType } from "AuthType";
 import QueryError, { createMonacoErrorLocationResolver, createMonacoMarkersForQueryErrors } from "Common/QueryError";
 import { SplitterDirection } from "Common/Splitter";
 import { Platform, configContext } from "ConfigContext";
@@ -21,6 +22,7 @@ import { QueryConstants } from "Shared/Constants";
 import { LocalStorageUtility, StorageKey, getRUThreshold, ruThresholdEnabled } from "Shared/StorageUtility";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { Allotment } from "allotment";
+import { useClientWriteEnabled } from "hooks/useClientWriteEnabled";
 import { QueryCopilotState, useQueryCopilot } from "hooks/useQueryCopilot";
 import { TabsState, useTabs } from "hooks/useTabs";
 import React, { Fragment, createRef } from "react";
@@ -484,7 +486,9 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
           commandButtonLabel: label,
           ariaLabel: label,
           hasPopup: false,
-          disabled: !this.saveQueryButton.enabled,
+          disabled:
+            !this.saveQueryButton.enabled ||
+            (!useClientWriteEnabled.getState().clientWriteEnabled && userContext.authType === AuthType.AAD),
         });
       }
 
@@ -696,6 +700,7 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
   }
 
   private unsubscribeCopilotSidebar: () => void;
+  private unsubscribeClientWriteEnabled: () => void;
 
   componentDidMount(): void {
     useTabs.subscribe((state: TabsState) => {
@@ -712,10 +717,17 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
 
     useCommandBar.getState().setContextButtons(this.getTabsButtons());
     document.addEventListener("keydown", this.handleCopilotKeyDown);
+
+    this.unsubscribeClientWriteEnabled = useClientWriteEnabled.subscribe(() => {
+      useCommandBar.getState().setContextButtons(this.getTabsButtons());
+    });
   }
 
   componentWillUnmount(): void {
     document.removeEventListener("keydown", this.handleCopilotKeyDown);
+    if (this.unsubscribeClientWriteEnabled) {
+      this.unsubscribeClientWriteEnabled();
+    }
   }
 
   private getEditorAndQueryResult(): JSX.Element {
