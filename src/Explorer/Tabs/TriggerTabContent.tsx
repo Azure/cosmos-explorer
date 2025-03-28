@@ -1,6 +1,7 @@
 import { TriggerDefinition } from "@azure/cosmos";
 import { Dropdown, IDropdownOption, Label, TextField } from "@fluentui/react";
 import { KeyboardAction } from "KeyboardShortcuts";
+import { ValidCosmosDbIdDescription, ValidCosmosDbIdInputPattern } from "Utils/ValidationUtils";
 import React, { Component } from "react";
 import DiscardIcon from "../../../images/discard.svg";
 import SaveIcon from "../../../images/save-cosmos.svg";
@@ -192,29 +193,6 @@ export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentS
     });
   }
 
-  private isValidId(id: string): boolean {
-    if (!id) {
-      return false;
-    }
-
-    const invalidStartCharacters = /^[/?#\\]/;
-    if (invalidStartCharacters.test(id)) {
-      return false;
-    }
-
-    const invalidMiddleCharacters = /^.+[/?#\\]/;
-    if (invalidMiddleCharacters.test(id)) {
-      return false;
-    }
-
-    const invalidEndCharacters = /.*[/?#\\ ]$/;
-    if (invalidEndCharacters.test(id)) {
-      return false;
-    }
-
-    return true;
-  }
-
   private isNotEmpty(value: string): boolean {
     return !!value;
   }
@@ -286,7 +264,13 @@ export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentS
     _event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     newValue?: string,
   ): void => {
-    this.saveButton.enabled = this.isValidId(newValue) && this.isNotEmpty(newValue);
+    const inputElement = _event.currentTarget as HTMLInputElement;
+    let isValidId: boolean = true;
+    if (inputElement) {
+      isValidId = inputElement.reportValidity();
+    }
+
+    this.saveButton.enabled = this.isNotEmpty(newValue) && isValidId;
     this.setState({ triggerId: newValue });
   };
 
@@ -313,7 +297,8 @@ export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentS
           autoFocus
           required
           type="text"
-          pattern="[^/?#\\]*[^/?# \\]"
+          pattern={ValidCosmosDbIdInputPattern.source}
+          title={ValidCosmosDbIdDescription}
           placeholder="Enter the new trigger id"
           size={40}
           value={triggerId}

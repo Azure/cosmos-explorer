@@ -1,6 +1,7 @@
 import { Resource, StoredProcedureDefinition } from "@azure/cosmos";
 import { Pivot, PivotItem } from "@fluentui/react";
 import { KeyboardAction } from "KeyboardShortcuts";
+import { ValidCosmosDbIdDescription, ValidCosmosDbIdInputPattern } from "Utils/ValidationUtils";
 import React from "react";
 import ExecuteQueryIcon from "../../../../images/ExecuteQuery.svg";
 import DiscardIcon from "../../../../images/discard.svg";
@@ -455,11 +456,12 @@ export default class StoredProcedureTabComponent extends React.Component<
   }
 
   public handleIdOnChange(event: React.ChangeEvent<HTMLInputElement>): void {
+    const isValidId: boolean = event.currentTarget.reportValidity();
     if (this.state.saveButton.visible) {
       this.setState({
         id: event.target.value,
         saveButton: {
-          enabled: true,
+          enabled: isValidId,
           visible: this.props.scriptTabBaseInstance.isNew(),
         },
         discardButton: {
@@ -528,8 +530,8 @@ export default class StoredProcedureTabComponent extends React.Component<
               className="formTree"
               type="text"
               required
-              pattern="[^/?#\\]*[^/?# \\]"
-              title="May not end with space nor contain characters '\' '/' '#' '?'"
+              pattern={ValidCosmosDbIdInputPattern.source}
+              title={ValidCosmosDbIdDescription}
               aria-label="Stored procedure id"
               placeholder="Enter the new stored procedure id"
               size={40}
