@@ -35,10 +35,7 @@ const costPerHourDefaultValue: Description = {
   textTKey: userContext.apiType === "SQL" ? "GlobalsecondaryindexesCostText" : "CostText",
   type: DescriptionType.Text,
   link: {
-    href:
-      userContext.apiType === "SQL"
-        ? "https://aka.ms/cosmos-db-globalsecondaryindexesbuilder-pricing"
-        : "https://aka.ms/cosmos-db-materializedviewsbuilder-pricing",
+    href: "https://aka.ms/cosmos-db-materializedviewsbuilder-pricing",
     textTKey:
       userContext.apiType === "SQL" ? "GlobalsecondaryindexesBuilderPricing" : "MaterializedviewsBuilderPricing",
   },
@@ -81,10 +78,7 @@ const onNumberOfInstancesChange = (
       value: {
         textTKey: "WarningBannerOnUpdate",
         link: {
-          href:
-            userContext.apiType === "SQL"
-              ? "https://aka.ms/cosmos-db-globalsecondaryindexesbuilder-pricing"
-              : "https://aka.ms/cosmos-db-materializedviewsbuilder-pricing",
+          href: "https://aka.ms/cosmos-db-materializedviewsbuilder-pricing",
           textTKey:
             userContext.apiType === "SQL" ? "GlobalsecondaryindexesBuilderPricing" : "MaterializedviewsBuilderPricing",
         },
@@ -125,10 +119,7 @@ const onEnableMaterializedViewsBuilderChange = (
       value: {
         textTKey: "WarningBannerOnUpdate",
         link: {
-          href:
-            userContext.apiType === "SQL"
-              ? "https://aka.ms/cosmos-db-globalsecondaryindexesbuilder-pricing"
-              : "https://aka.ms/cosmos-db-materializedviewsbuilder-pricing",
+          href: "https://aka.ms/cosmos-db-materializedviewsbuilder-pricing",
           textTKey:
             userContext.apiType === "SQL" ? "GlobalsecondaryindexesBuilderPricing" : "MaterializedviewsBuilderPricing",
         },
@@ -146,10 +137,7 @@ const onEnableMaterializedViewsBuilderChange = (
         textTKey:
           userContext.apiType === "SQL" ? "GlobalsecondaryindexesWarningBannerOnDelete" : "WarningBannerOnDelete",
         link: {
-          href:
-            userContext.apiType === "SQL"
-              ? "https://aka.ms/cosmos-db-globalsecondaryindexes"
-              : "https://aka.ms/cosmos-db-materializedviews",
+          href: "https://learn.microsoft.com/en-us/azure/cosmos-db/nosql/materialized-views",
           textTKey:
             userContext.apiType === "SQL"
               ? "GlobalsecondaryindexesDeprovisioningDetailsText"
@@ -205,10 +193,7 @@ const getInstancesMax = async (): Promise<number> => {
 const NumberOfInstancesDropdownInfo: Info = {
   messageTKey: userContext.apiType === "SQL" ? "GlobalsecondaryindexesResizingDecisionText" : "ResizingDecisionText",
   link: {
-    href:
-      userContext.apiType === "SQL"
-        ? "https://aka.ms/cosmos-db-globalsecondaryindexesbuilder-size"
-        : "https://aka.ms/cosmos-db-materializedviewsbuilder-size",
+    href: "https://aka.ms/cosmos-db-materializedviewsbuilder-size",
     textTKey: userContext.apiType === "SQL" ? "GlobalsecondaryindexesesizingDecisionLink" : "ResizingDecisionLink",
   },
 };
@@ -216,10 +201,7 @@ const NumberOfInstancesDropdownInfo: Info = {
 const ApproximateCostDropDownInfo: Info = {
   messageTKey: userContext.apiType === "SQL" ? "GlobalsecondaryindexesCostText" : "CostText",
   link: {
-    href:
-      userContext.apiType === "SQL"
-        ? "https://aka.ms/cosmos-db-globalsecondaryindexesbuilder-pricing"
-        : "https://aka.ms/cosmos-db-materializedviewsbuilder-pricing",
+    href: "https://aka.ms/cosmos-db-materializedviewsbuilder-pricing",
     textTKey:
       userContext.apiType === "SQL" ? "GlobalsecondaryindexesBuilderPricing" : "MaterializedviewsBuilderPricing",
   },
@@ -400,10 +382,7 @@ export default class MaterializedViewsBuilder extends SelfServeBaseClass {
           : "MaterializedViewsBuilderDescription",
       type: DescriptionType.Text,
       link: {
-        href:
-          userContext.apiType === "SQL"
-            ? "https://aka.ms/cosmos-db-globalsecondaryindexes"
-            : "https://aka.ms/cosmos-db-materializedviews",
+        href: "https://learn.microsoft.com/en-us/azure/cosmos-db/nosql/materialized-views",
         textTKey: userContext.apiType === "SQL" ? "LearnAboutGlobalSecondaryIndexes" : "LearnAboutMaterializedViews",
       },
     },
