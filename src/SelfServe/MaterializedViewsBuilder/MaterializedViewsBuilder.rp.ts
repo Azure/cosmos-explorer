@@ -123,11 +123,23 @@ export const refreshMaterializedViewsBuilderProvisioning = async (): Promise<Ref
     if (response.properties.status === ResourceStatus.Running.toString()) {
       return { isUpdateInProgress: false, updateInProgressMessageTKey: undefined };
     } else if (response.properties.status === ResourceStatus.Creating.toString()) {
-      return { isUpdateInProgress: true, updateInProgressMessageTKey: userContext.apiType === "SQL" ? "GlobalsecondaryindexesCreateMessage" : "CreateMessage"};
+      return {
+        isUpdateInProgress: true,
+        updateInProgressMessageTKey:
+          userContext.apiType === "SQL" ? "GlobalsecondaryindexesCreateMessage" : "CreateMessage",
+      };
     } else if (response.properties.status === ResourceStatus.Deleting.toString()) {
-      return { isUpdateInProgress: true, updateInProgressMessageTKey: userContext.apiType === "SQL" ? "GlobalsecondaryindexesDeleteMessage" : "DeleteMessage"};
+      return {
+        isUpdateInProgress: true,
+        updateInProgressMessageTKey:
+          userContext.apiType === "SQL" ? "GlobalsecondaryindexesDeleteMessage" : "DeleteMessage",
+      };
     } else {
-      return { isUpdateInProgress: true, updateInProgressMessageTKey: userContext.apiType === "SQL" ? "GlobalsecondaryindexesUpdateMessage" : "UpdateMessage"};
+      return {
+        isUpdateInProgress: true,
+        updateInProgressMessageTKey:
+          userContext.apiType === "SQL" ? "GlobalsecondaryindexesUpdateMessage" : "UpdateMessage",
+      };
     }
   } catch {
     //TODO differentiate between different failures

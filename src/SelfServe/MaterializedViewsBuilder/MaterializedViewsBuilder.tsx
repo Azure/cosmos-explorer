@@ -35,8 +35,12 @@ const costPerHourDefaultValue: Description = {
   textTKey: userContext.apiType === "SQL" ? "GlobalsecondaryindexesCostText" : "CostText",
   type: DescriptionType.Text,
   link: {
-    href: userContext.apiType === "SQL" ? "https://aka.ms/cosmos-db-globalsecondaryindexesbuilder-pricing" : "https://aka.ms/cosmos-db-materializedviewsbuilder-pricing",
-    textTKey: userContext.apiType === "SQL" ? "GlobalsecondaryindexesBuilderPricing" : "MaterializedviewsBuilderPricing",
+    href:
+      userContext.apiType === "SQL"
+        ? "https://aka.ms/cosmos-db-globalsecondaryindexesbuilder-pricing"
+        : "https://aka.ms/cosmos-db-materializedviewsbuilder-pricing",
+    textTKey:
+      userContext.apiType === "SQL" ? "GlobalsecondaryindexesBuilderPricing" : "MaterializedviewsBuilderPricing",
   },
 };
 
@@ -77,8 +81,12 @@ const onNumberOfInstancesChange = (
       value: {
         textTKey: "WarningBannerOnUpdate",
         link: {
-          href: userContext.apiType === "SQL" ? "https://aka.ms/cosmos-db-globalsecondaryindexesbuilder-pricing" : "https://aka.ms/cosmos-db-materializedviewsbuilder-pricing",
-          textTKey: userContext.apiType === "SQL" ? "GlobalsecondaryindexesBuilderPricing" : "MaterializedviewsBuilderPricing",
+          href:
+            userContext.apiType === "SQL"
+              ? "https://aka.ms/cosmos-db-globalsecondaryindexesbuilder-pricing"
+              : "https://aka.ms/cosmos-db-materializedviewsbuilder-pricing",
+          textTKey:
+            userContext.apiType === "SQL" ? "GlobalsecondaryindexesBuilderPricing" : "MaterializedviewsBuilderPricing",
         },
       } as Description,
       hidden: false,
@@ -117,8 +125,12 @@ const onEnableMaterializedViewsBuilderChange = (
       value: {
         textTKey: "WarningBannerOnUpdate",
         link: {
-          href: userContext.apiType === "SQL" ? "https://aka.ms/cosmos-db-globalsecondaryindexesbuilder-pricing" : "https://aka.ms/cosmos-db-materializedviewsbuilder-pricing",
-          textTKey: userContext.apiType === "SQL" ? "GlobalsecondaryindexesBuilderPricing" : "MaterializedviewsBuilderPricing",
+          href:
+            userContext.apiType === "SQL"
+              ? "https://aka.ms/cosmos-db-globalsecondaryindexesbuilder-pricing"
+              : "https://aka.ms/cosmos-db-materializedviewsbuilder-pricing",
+          textTKey:
+            userContext.apiType === "SQL" ? "GlobalsecondaryindexesBuilderPricing" : "MaterializedviewsBuilderPricing",
         },
       } as Description,
       hidden: false,
@@ -131,10 +143,17 @@ const onEnableMaterializedViewsBuilderChange = (
   } else {
     currentValues.set("warningBanner", {
       value: {
-        textTKey: userContext.apiType === "SQL" ? "GlobalsecondaryindexesWarningBannerOnDelete" : "WarningBannerOnDelete",
+        textTKey:
+          userContext.apiType === "SQL" ? "GlobalsecondaryindexesWarningBannerOnDelete" : "WarningBannerOnDelete",
         link: {
-          href: userContext.apiType === "SQL" ? "https://aka.ms/cosmos-db-globalsecondaryindexes" : "https://aka.ms/cosmos-db-materializedviews",
-          textTKey: userContext.apiType === "SQL" ? "GlobalsecondaryindexesDeprovisioningDetailsText" : "DeprovisioningDetailsText",
+          href:
+            userContext.apiType === "SQL"
+              ? "https://aka.ms/cosmos-db-globalsecondaryindexes"
+              : "https://aka.ms/cosmos-db-materializedviews",
+          textTKey:
+            userContext.apiType === "SQL"
+              ? "GlobalsecondaryindexesDeprovisioningDetailsText"
+              : "DeprovisioningDetailsText",
         },
       } as Description,
       hidden: false,
@@ -186,7 +205,10 @@ const getInstancesMax = async (): Promise<number> => {
 const NumberOfInstancesDropdownInfo: Info = {
   messageTKey: userContext.apiType === "SQL" ? "GlobalsecondaryindexesResizingDecisionText" : "ResizingDecisionText",
   link: {
-    href: userContext.apiType === "SQL" ? "https://aka.ms/cosmos-db-globalsecondaryindexesbuilder-size" : "https://aka.ms/cosmos-db-materializedviewsbuilder-size",
+    href:
+      userContext.apiType === "SQL"
+        ? "https://aka.ms/cosmos-db-globalsecondaryindexesbuilder-size"
+        : "https://aka.ms/cosmos-db-materializedviewsbuilder-size",
     textTKey: userContext.apiType === "SQL" ? "GlobalsecondaryindexesesizingDecisionLink" : "ResizingDecisionLink",
   },
 };
@@ -194,8 +216,12 @@ const NumberOfInstancesDropdownInfo: Info = {
 const ApproximateCostDropDownInfo: Info = {
   messageTKey: userContext.apiType === "SQL" ? "GlobalsecondaryindexesCostText" : "CostText",
   link: {
-    href: userContext.apiType === "SQL" ? "https://aka.ms/cosmos-db-globalsecondaryindexesbuilder-pricing" : "https://aka.ms/cosmos-db-materializedviewsbuilder-pricing",
-    textTKey: userContext.apiType === "SQL" ? "GlobalsecondaryindexesBuilderPricing" : "MaterializedviewsBuilderPricing",
+    href:
+      userContext.apiType === "SQL"
+        ? "https://aka.ms/cosmos-db-globalsecondaryindexesbuilder-pricing"
+        : "https://aka.ms/cosmos-db-materializedviewsbuilder-pricing",
+    textTKey:
+      userContext.apiType === "SQL" ? "GlobalsecondaryindexesBuilderPricing" : "MaterializedviewsBuilderPricing",
   },
 };
 
@@ -368,10 +394,16 @@ export default class MaterializedViewsBuilder extends SelfServeBaseClass {
 
   @Values({
     description: {
-      textTKey: userContext.apiType === "SQL" ? "GlobalsecondaryindexesBuilderDescription" : "MaterializedViewsBuilderDescription",
+      textTKey:
+        userContext.apiType === "SQL"
+          ? "GlobalsecondaryindexesBuilderDescription"
+          : "MaterializedViewsBuilderDescription",
       type: DescriptionType.Text,
       link: {
-        href: userContext.apiType === "SQL" ? "https://aka.ms/cosmos-db-globalsecondaryindexes" : "https://aka.ms/cosmos-db-materializedviews",
+        href:
+          userContext.apiType === "SQL"
+            ? "https://aka.ms/cosmos-db-globalsecondaryindexes"
+            : "https://aka.ms/cosmos-db-materializedviews",
         textTKey: userContext.apiType === "SQL" ? "LearnAboutGlobalSecondaryIndexes" : "LearnAboutMaterializedViews",
       },
     },
