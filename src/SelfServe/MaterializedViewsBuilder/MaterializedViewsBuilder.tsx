@@ -32,7 +32,7 @@ import {
 import { userContext } from "../../UserContext";
 
 const costPerHourDefaultValue: Description = {
-  textTKey: "CostText",
+  textTKey: userContext.apiType === "SQL" ? "GlobalsecondaryindexesCostText" : "CostText",
   type: DescriptionType.Text,
   link: {
     href: userContext.apiType === "SQL" ? "https://aka.ms/cosmos-db-globalsecondaryindexesbuilder-pricing" : "https://aka.ms/cosmos-db-materializedviewsbuilder-pricing",
@@ -192,7 +192,7 @@ const NumberOfInstancesDropdownInfo: Info = {
 };
 
 const ApproximateCostDropDownInfo: Info = {
-  messageTKey: "CostText",
+  messageTKey: userContext.apiType === "SQL" ? "GlobalsecondaryindexesCostText" : "CostText",
   link: {
     href: userContext.apiType === "SQL" ? "https://aka.ms/cosmos-db-globalsecondaryindexesbuilder-pricing" : "https://aka.ms/cosmos-db-materializedviewsbuilder-pricing",
     textTKey: userContext.apiType === "SQL" ? "GlobalsecondaryindexesBuilderPricing" : "MaterializedviewsBuilderPricing",
