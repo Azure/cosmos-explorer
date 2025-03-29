@@ -137,7 +137,10 @@ const onEnableMaterializedViewsBuilderChange = (
         textTKey:
           userContext.apiType === "SQL" ? "GlobalsecondaryindexesWarningBannerOnDelete" : "WarningBannerOnDelete",
         link: {
-          href: "https://learn.microsoft.com/en-us/azure/cosmos-db/nosql/materialized-views",
+          href:
+            userContext.apiType === "SQL"
+              ? "https://learn.microsoft.com/en-us/azure/cosmos-db/nosql/materialized-views"
+              : "https://learn.microsoft.com/en-us/azure/cosmos-db/cassandra/materialized-views",
           textTKey:
             userContext.apiType === "SQL"
               ? "GlobalsecondaryindexesDeprovisioningDetailsText"
@@ -382,7 +385,10 @@ export default class MaterializedViewsBuilder extends SelfServeBaseClass {
           : "MaterializedViewsBuilderDescription",
       type: DescriptionType.Text,
       link: {
-        href: "https://learn.microsoft.com/en-us/azure/cosmos-db/nosql/materialized-views",
+        href:
+          userContext.apiType === "SQL"
+            ? "https://learn.microsoft.com/en-us/azure/cosmos-db/nosql/materialized-views"
+            : "https://learn.microsoft.com/en-us/azure/cosmos-db/cassandra/materialized-views",
         textTKey: userContext.apiType === "SQL" ? "LearnAboutGlobalSecondaryIndexes" : "LearnAboutMaterializedViews",
       },
     },
