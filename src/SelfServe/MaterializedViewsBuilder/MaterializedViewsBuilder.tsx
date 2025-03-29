@@ -29,17 +29,20 @@ import {
   updateMaterializedViewsBuilderResource,
 } from "./MaterializedViewsBuilder.rp";
 
+import { userContext } from "../../UserContext";
+
 const costPerHourDefaultValue: Description = {
-  textTKey: "CostText",
+  textTKey: userContext.apiType === "SQL" ? "GlobalsecondaryindexesCostText" : "CostText",
   type: DescriptionType.Text,
   link: {
     href: "https://aka.ms/cosmos-db-materializedviewsbuilder-pricing",
-    textTKey: "MaterializedviewsBuilderPricing",
+    textTKey:
+      userContext.apiType === "SQL" ? "GlobalsecondaryindexesBuilderPricing" : "MaterializedviewsBuilderPricing",
   },
 };
 
 const metricsStringValue: Description = {
-  textTKey: "MetricsText",
+  textTKey: userContext.apiType === "SQL" ? "GlobalsecondaryindexesMetricsText" : "MetricsText",
   type: DescriptionType.Text,
   link: {
     href: generateBladeLink(BladeType.Metrics),
@@ -76,7 +79,8 @@ const onNumberOfInstancesChange = (
         textTKey: "WarningBannerOnUpdate",
         link: {
           href: "https://aka.ms/cosmos-db-materializedviewsbuilder-pricing",
-          textTKey: "MaterializedviewsBuilderPricing",
+          textTKey:
+            userContext.apiType === "SQL" ? "GlobalsecondaryindexesBuilderPricing" : "MaterializedviewsBuilderPricing",
         },
       } as Description,
       hidden: false,
@@ -116,7 +120,8 @@ const onEnableMaterializedViewsBuilderChange = (
         textTKey: "WarningBannerOnUpdate",
         link: {
           href: "https://aka.ms/cosmos-db-materializedviewsbuilder-pricing",
-          textTKey: "MaterializedviewsBuilderPricing",
+          textTKey:
+            userContext.apiType === "SQL" ? "GlobalsecondaryindexesBuilderPricing" : "MaterializedviewsBuilderPricing",
         },
       } as Description,
       hidden: false,
@@ -129,10 +134,17 @@ const onEnableMaterializedViewsBuilderChange = (
   } else {
     currentValues.set("warningBanner", {
       value: {
-        textTKey: "WarningBannerOnDelete",
+        textTKey:
+          userContext.apiType === "SQL" ? "GlobalsecondaryindexesWarningBannerOnDelete" : "WarningBannerOnDelete",
         link: {
-          href: "https://aka.ms/cosmos-db-materializedviews",
-          textTKey: "DeprovisioningDetailsText",
+          href:
+            userContext.apiType === "SQL"
+              ? "https://learn.microsoft.com/en-us/azure/cosmos-db/nosql/materialized-views"
+              : "https://learn.microsoft.com/en-us/azure/cosmos-db/cassandra/materialized-views",
+          textTKey:
+            userContext.apiType === "SQL"
+              ? "GlobalsecondaryindexesDeprovisioningDetailsText"
+              : "DeprovisioningDetailsText",
         },
       } as Description,
       hidden: false,
@@ -182,18 +194,19 @@ const getInstancesMax = async (): Promise<number> => {
 };
 
 const NumberOfInstancesDropdownInfo: Info = {
-  messageTKey: "ResizingDecisionText",
+  messageTKey: userContext.apiType === "SQL" ? "GlobalsecondaryindexesResizingDecisionText" : "ResizingDecisionText",
   link: {
     href: "https://aka.ms/cosmos-db-materializedviewsbuilder-size",
-    textTKey: "ResizingDecisionLink",
+    textTKey: userContext.apiType === "SQL" ? "GlobalsecondaryindexesesizingDecisionLink" : "ResizingDecisionLink",
   },
 };
 
 const ApproximateCostDropDownInfo: Info = {
-  messageTKey: "CostText",
+  messageTKey: userContext.apiType === "SQL" ? "GlobalsecondaryindexesCostText" : "CostText",
   link: {
     href: "https://aka.ms/cosmos-db-materializedviewsbuilder-pricing",
-    textTKey: "MaterializedviewsBuilderPricing",
+    textTKey:
+      userContext.apiType === "SQL" ? "GlobalsecondaryindexesBuilderPricing" : "MaterializedviewsBuilderPricing",
   },
 };
 
@@ -366,11 +379,17 @@ export default class MaterializedViewsBuilder extends SelfServeBaseClass {
 
   @Values({
     description: {
-      textTKey: "MaterializedViewsBuilderDescription",
+      textTKey:
+        userContext.apiType === "SQL"
+          ? "GlobalsecondaryindexesBuilderDescription"
+          : "MaterializedViewsBuilderDescription",
       type: DescriptionType.Text,
       link: {
-        href: "https://aka.ms/cosmos-db-materializedviews",
-        textTKey: "LearnAboutMaterializedViews",
+        href:
+          userContext.apiType === "SQL"
+            ? "https://learn.microsoft.com/en-us/azure/cosmos-db/nosql/materialized-views"
+            : "https://learn.microsoft.com/en-us/azure/cosmos-db/cassandra/materialized-views",
+        textTKey: userContext.apiType === "SQL" ? "LearnAboutGlobalSecondaryIndexes" : "LearnAboutMaterializedViews",
       },
     },
   })
@@ -378,7 +397,7 @@ export default class MaterializedViewsBuilder extends SelfServeBaseClass {
 
   @OnChange(onEnableMaterializedViewsBuilderChange)
   @Values({
-    labelTKey: "MaterializedViewsBuilder",
+    labelTKey: userContext.apiType === "SQL" ? "GlobalSecondaryIndexesBuilder" : "MaterializedViewsBuilder",
     trueLabelTKey: "Provisioned",
     falseLabelTKey: "Deprovisioned",
   })
