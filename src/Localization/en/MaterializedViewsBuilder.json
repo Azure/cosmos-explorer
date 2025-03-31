@@ -59,7 +59,7 @@
     "GlobalsecondaryindexesUpdateSuccesseMessage": "Global secondary indexes builder resource updated.",
     "GlobalsecondaryindexesUpdateFailureMessage": "Global secondary indexes builder resource update failed.",
     "GlobalsecondaryindexesDeleteMessage": "Global secondary indexes builder resource is being deleted.",
-    "GlobalsecondaryindexesDeleteInitializeMessage": "Global secondary indexes Builder resource will be deleted.",
+    "GlobalsecondaryindexesDeleteInitializeMessage": "Global secondary indexes builder resource will be deleted.",
     "GlobalsecondaryindexesDeleteSuccesseMessage": "Global secondary indexes builder resource deleted.",
     "GlobalsecondaryindexesDeleteFailureMessage": "Global secondary indexes builder resource deletion failed.",
     "GlobalsecondaryindexesCostText": "Hourly cost of the global secondary indexes builder resource depends on the SKU selection, number of instances per region, and number of regions.",
