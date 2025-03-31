@@ -62,7 +62,6 @@ import { ThroughputInput } from "../../Controls/ThroughputInput/ThroughputInput"
 import { ContainerSampleGenerator } from "../../DataSamples/ContainerSampleGenerator";
 import Explorer from "../../Explorer";
 import { useDatabases } from "../../useDatabases";
-import "../Controls/ThroughputInput/ThroughputInput.less";
 import { PanelFooterComponent } from "../PanelFooterComponent";
 import { PanelInfoErrorComponent } from "../PanelInfoErrorComponent";
 import { PanelLoadingScreen } from "../PanelLoadingScreen";
