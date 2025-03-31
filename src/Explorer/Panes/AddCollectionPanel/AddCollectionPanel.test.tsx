@@ -1,6 +1,6 @@
 import { shallow } from "enzyme";
 import React from "react";
-import Explorer from "../Explorer";
+import Explorer from "../../Explorer";
 import { AddCollectionPanel } from "./AddCollectionPanel";
 
 const props = {
