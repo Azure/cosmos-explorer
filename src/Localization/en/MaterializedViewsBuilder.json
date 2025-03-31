@@ -52,7 +52,7 @@
     "GlobalsecondaryindexesBuilderPricing": "Learn more about global secondary indexes pricing.",
     "GlobalsecondaryindexesCreateMessage": "Global secondary indexes builder resource is being created.",
     "GlobalsecondaryindexesCreateInitializeMessage": "Global secondary indexes builder resource will be provisioned.",
-    "GlobalsecondaryindexesCreateSuccesseMessage": "Global secondary indexes Builder resource provisioned.",
+    "GlobalsecondaryindexesCreateSuccesseMessage": "Global secondary indexes builder resource provisioned.",
     "GlobalsecondaryindexesCreateFailureMessage": "Global secondary indexes Builder resource provisioning failed.",
     "GlobalsecondaryindexesUpdateMessage": "Global secondary indexes Builder resource is being updated.",
     "GlobalsecondaryindexesUpdateInitializeMessage": "Global secondary indexes Builder resource will be updated.",
