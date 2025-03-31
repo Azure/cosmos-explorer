@@ -62,7 +62,7 @@
     "GlobalsecondaryindexesDeleteInitializeMessage": "Global secondary indexes Builder resource will be deleted.",
     "GlobalsecondaryindexesDeleteSuccesseMessage": "Global secondary indexes Builder resource deleted.",
     "GlobalsecondaryindexesDeleteFailureMessage": "Global secondary indexes Builder resource deletion failed.",
-    "GlobalsecondaryindexesCostText": "Hourly cost of the Global secondary indexes Builder resource depends on the SKU selection, number of instances per region, and number of regions.",
+    "GlobalsecondaryindexesCostText": "Hourly cost of the global secondary indexes builder resource depends on the SKU selection, number of instances per region, and number of regions.",
     "GlobalsecondaryindexesMetricsText": "Monitor the CPU and memory usage for the global secondary indexes builder instances in ",
     "GlobalsecondaryindexesResizingDecisionText": "To understand if the global secondary indexes builder is the right size, ",
     "GlobalsecondaryindexesesizingDecisionLink": "learn more about global secondary indexes builder sizing.",
