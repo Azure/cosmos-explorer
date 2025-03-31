@@ -281,15 +281,20 @@ export default class MaterializedViewsBuilder extends SelfServeBaseClass {
           portalNotification: {
             initialize: {
               titleTKey: "DeleteInitializeTitle",
-              messageTKey: "DeleteInitializeMessage",
+              messageTKey:
+                userContext.apiType === "SQL"
+                  ? "GlobalsecondaryindexesDeleteInitializeMessage"
+                  : "DeleteInitializeMessage",
             },
             success: {
               titleTKey: "DeleteSuccessTitle",
-              messageTKey: "DeleteSuccesseMessage",
+              messageTKey:
+                userContext.apiType === "SQL" ? "GlobalsecondaryindexesDeleteSuccesseMessage" : "DeleteSuccesseMessage",
             },
             failure: {
               titleTKey: "DeleteFailureTitle",
-              messageTKey: "DeleteFailureMessage",
+              messageTKey:
+                userContext.apiType === "SQL" ? "GlobalsecondaryindexesDeleteFailureMessage" : "DeleteFailureMessage",
             },
           },
         };
@@ -302,15 +307,20 @@ export default class MaterializedViewsBuilder extends SelfServeBaseClass {
           portalNotification: {
             initialize: {
               titleTKey: "UpdateInitializeTitle",
-              messageTKey: "UpdateInitializeMessage",
+              messageTKey:
+                userContext.apiType === "SQL"
+                  ? "GlobalsecondaryindexesUpdateInitializeMessage"
+                  : "UpdateInitializeMessage",
             },
             success: {
               titleTKey: "UpdateSuccessTitle",
-              messageTKey: "UpdateSuccesseMessage",
+              messageTKey:
+                userContext.apiType === "SQL" ? "GlobalsecondaryindexesUpdateSuccesseMessage" : "UpdateSuccesseMessage",
             },
             failure: {
               titleTKey: "UpdateFailureTitle",
-              messageTKey: "UpdateFailureMessage",
+              messageTKey:
+                userContext.apiType === "SQL" ? "GlobalsecondaryindexesUpdateFailureMessage" : "UpdateFailureMessage",
             },
           },
         };
@@ -324,15 +334,20 @@ export default class MaterializedViewsBuilder extends SelfServeBaseClass {
         portalNotification: {
           initialize: {
             titleTKey: "CreateInitializeTitle",
-            messageTKey: "CreateInitializeMessage",
+            messageTKey:
+              userContext.apiType === "SQL"
+                ? "GlobalsecondaryindexesCreateInitializeMessage"
+                : "CreateInitializeMessage",
           },
           success: {
             titleTKey: "CreateSuccessTitle",
-            messageTKey: "CreateSuccesseMessage",
+            messageTKey:
+              userContext.apiType === "SQL" ? "GlobalsecondaryindexesCreateSuccesseMessage" : "CreateSuccesseMessage",
           },
           failure: {
             titleTKey: "CreateFailureTitle",
-            messageTKey: "CreateFailureMessage",
+            messageTKey:
+              userContext.apiType === "SQL" ? "GlobalsecondaryindexesCreateFailureMessage" : "CreateFailureMessage",
           },
         },
       };
