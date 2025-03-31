@@ -65,7 +65,7 @@
     "GlobalsecondaryindexesCostText": "Hourly cost of the Global secondary indexes Builder resource depends on the SKU selection, number of instances per region, and number of regions.",
     "GlobalsecondaryindexesMetricsText": "Monitor the CPU and memory usage for the Global secondary indexes Builder instances in ",
     "GlobalsecondaryindexesResizingDecisionText": "To understand if the Global secondary indexes Builder is the right size, ",
-    "GlobalsecondaryindexesesizingDecisionLink": "learn more about Global secondary indexes Builder sizing.",
+    "GlobalsecondaryindexesesizingDecisionLink": "learn more about global secondary indexes builder sizing.",
     "GlobalsecondaryindexesWarningBannerOnUpdate": "Adding or modifying global secondary indexes builder instances may affect your bill.",
     "GlobalsecondaryindexesWarningBannerOnDelete": "After deprovisioning the global secondary indexes builder, your global secondary indexes will no longer be updated with new source changes. Global secondary indexes builder is compute in your account that performs read operations on source collection for any updates and applies them on global secondary indexes as per their definition."
 }
