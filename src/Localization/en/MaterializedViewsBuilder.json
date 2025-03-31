@@ -54,7 +54,7 @@
     "GlobalsecondaryindexesCreateInitializeMessage": "Global secondary indexes builder resource will be provisioned.",
     "GlobalsecondaryindexesCreateSuccesseMessage": "Global secondary indexes builder resource provisioned.",
     "GlobalsecondaryindexesCreateFailureMessage": "Global secondary indexes builder resource provisioning failed.",
-    "GlobalsecondaryindexesUpdateMessage": "Global secondary indexes Builder resource is being updated.",
+    "GlobalsecondaryindexesUpdateMessage": "Global secondary indexes builder resource is being updated.",
     "GlobalsecondaryindexesUpdateInitializeMessage": "Global secondary indexes Builder resource will be updated.",
     "GlobalsecondaryindexesUpdateSuccesseMessage": "Global secondary indexes Builder resource updated.",
     "GlobalsecondaryindexesUpdateFailureMessage": "Global secondary indexes Builder resource updation failed.",
