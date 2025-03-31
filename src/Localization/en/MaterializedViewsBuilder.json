@@ -46,7 +46,7 @@
     "WarningBannerOnUpdate": "Adding or modifying Materializedviews Builder instances may affect your bill.",
     "WarningBannerOnDelete": "After deprovisioning the Materializedviews Builder, your materializedviews will not be updated with new source changes anymore. Materializedviews builder is compute in your account that performs read operations on source collection for any updates and applies them on materialized views as per the materializedview definition.",
     "GlobalsecondaryindexesBuilderDescription": "Provision a global secondary indexes builder for your Azure Cosmos DB account. The global secondary indexes builder is compute in your account that performs read operations on source collections for any updates and populates the global secondary indexes as per their definition.",
-    "GlobalsecondaryindexesBuilder": "Global secondary indexes Builder",
+    "GlobalsecondaryindexesBuilder": "Global secondary indexes builder",
     "LearnAboutGlobalSecondaryIndexes": "Learn more about global secondary indexes.",
     "GlobalsecondaryindexesDeprovisioningDetailsText": "Learn more about global secondary indexes.",
     "GlobalsecondaryindexesBuilderPricing": "Learn more about global secondary indexes pricing.",
