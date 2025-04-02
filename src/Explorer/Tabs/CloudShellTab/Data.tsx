@@ -26,12 +26,22 @@ export const getUserRegion = async (subscriptionId: string, resourceGroup: strin
 
 };
 
-export async function getARMInfo<T>(path: string, apiVersion: string = "2024-07-01"): Promise<T> {
+export async function GetARMCall<T>(path: string, apiVersion: string = "2024-07-01"): Promise<T> {
     return await armRequest<T>({
         host: configContext.ARM_ENDPOINT,
         path: path,
         method: "GET",
         apiVersion: apiVersion
+    });
+};
+
+export async function PutARMCall<T>(path: string, request: object, apiVersion: string = "2024-07-01"): Promise<T> {
+    return await armRequest<T>({
+        host: configContext.ARM_ENDPOINT,
+        path: path,
+        method: "PUT",
+        apiVersion: apiVersion,
+        body: request
     });
 };
 
