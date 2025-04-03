@@ -18,7 +18,7 @@
     "CreateInitializeTitle": "Provisioning resource",
     "CreateInitializeMessage": "Materialized views Builder resource will be provisioned.",
     "CreateSuccessTitle": "Resource provisioned",
-    "CreateSuccesseMessage": "Materialized views Builder resource provisioned.",
+    "CreateSuccesseMessage": "Materialized views builder resource provisioned.",
     "CreateFailureTitle": "Failed to provision resource",
     "CreateFailureMessage": "Materialized views builder resource provisioning failed.",
     "UpdateMessage": "Materialized views builder resource is being updated.",
