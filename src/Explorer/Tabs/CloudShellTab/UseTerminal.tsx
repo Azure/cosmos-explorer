@@ -22,7 +22,6 @@ import {
   registerCloudShellProvider,
   verifyCloudShellProviderRegistration
 } from "./Data";
-import { LogError, LogInfo } from "./LogFormatter";
 
 // Constants
 const DEFAULT_CLOUDSHELL_REGION = "westus";
@@ -31,7 +30,7 @@ const MAX_RETRY_COUNT = 10;
 const MAX_PING_COUNT = 20 * 60; // 20 minutes (60 seconds/minute)
 const STANDARD_SKU = "Standard";
 const DEFAULT_VNET_ADDRESS_PREFIX = "10.0.0.0/16";
-const DEFAULT_SUBNET_ADDRESS_PREFIX = "10.0.0.0/24";
+const DEFAULT_SUBNET_ADDRESS_PREFIX = "10.0.1.0/24";
 const DEFAULT_CONTAINER_INSTANCE_OID = "88536fb9-d60a-4aee-8195-041425d6e927";
 
 /**
@@ -50,14 +49,13 @@ const terminalLog = {
   info: (message: string) => `\x1B[34m${message}\x1B[0m`,
   
   // Resource information
-  database: (message: string) => `\x1B[35m🔶 Database: ${message}\x1B[0m`,
-  vnet: (message: string) => `\x1B[36m🔷 Network: ${message}\x1B[0m`,
-  cloudshell: (message: string) => `\x1B[32m🔹 CloudShell: ${message}\x1B[0m`,
+  database: (message: string) => `\x1B[35m🔶  Database: ${message}\x1B[0m`,
+  vnet: (message: string) => `\x1B[36m🔷  Network: ${message}\x1B[0m`,
+  cloudshell: (message: string) => `\x1B[32m🔷  CloudShell: ${message}\x1B[0m`,
   
   // Data formatting
   item: (label: string, value: string) => `  • ${label}: \x1B[32m${value}\x1B[0m`,
-  progress: (operation: string, status: string, percent?: number) => 
-    `\x1B[34m  ${operation}: \x1B[36m${status}${percent !== undefined ? ` (${percent}%)` : ''}\x1B[0m`,
+  progress: (operation: string, status: string) => `\x1B[34m${operation}: \x1B[36m${status}\x1B[0m`,
   
   // User interaction
   prompt: (message: string) => `\x1B[1;37m${message}\x1B[0m`,
@@ -72,6 +70,12 @@ export const startCloudShellTerminal = async (terminal: Terminal, shellType: Ter
   await ensureCloudShellProviderRegistered(terminal);
 
   const { resolvedRegion, defaultCloudShellRegion } = determineCloudShellRegion(terminal);
+
+  // Ask for user consent for region
+  const consentGranted = await askForRegionConsent(terminal, resolvedRegion);
+  if (!consentGranted) {
+    return {}; // Exit if user declined
+  }
 
   // Check database network restrictions
   const hasNetworkRestrictions = hasDatabaseNetworkRestrictions();
@@ -89,21 +93,28 @@ export const startCloudShellTerminal = async (terminal: Terminal, shellType: Ter
 
     // If CloudShell has VNet settings, check with database config
     if (vNetSettings && vNetSettings.networkProfileResourceId) {
-      const isVNetInDatabaseConfig = await isCloudShellVNetInDatabaseConfig(vNetSettings, terminal);
+      const isContinueWithSameVnet = await askForVNetConfigConsent(terminal);
+      
+      if(isContinueWithSameVnet) {
+        const isVNetInDatabaseConfig = await isCloudShellVNetInDatabaseConfig(vNetSettings, terminal);
 
-      if (!isVNetInDatabaseConfig) {
-        terminal.writeln(terminalLog.warning("CloudShell VNet is not configured in database access list"));
-        const addToDatabase = await askToAddVNetToDatabase(terminal, vNetSettings);
+        if (!isVNetInDatabaseConfig) {
+          terminal.writeln(terminalLog.warning("CloudShell VNet is not configured in database access list"));
+          const addToDatabase = await askToAddVNetToDatabase(terminal, vNetSettings);
 
-        if (addToDatabase) {
-          await addCloudShellVNetToDatabase(vNetSettings, terminal);
+          if (addToDatabase) {
+            await addCloudShellVNetToDatabase(vNetSettings, terminal);
+          } else {
+            // User declined to add VNet to database, need to recreate
+            terminal.writeln(terminalLog.warning("Will configure new VNet..."));
+            vNetSettings = undefined;
+          }
         } else {
-          // User declined to add VNet to database, need to recreate
-          terminal.writeln(terminalLog.warning("Will configure new VNet..."));
-          vNetSettings = undefined;
+          terminal.writeln(terminalLog.success("CloudShell VNet is already in database configuration"));
         }
-      } else {
-        terminal.writeln(terminalLog.success("CloudShell VNet is already in database configuration"));
+      }
+      else {
+        vNetSettings = undefined; // User declined to use existing VNet settings
       }
     }
 
@@ -124,7 +135,7 @@ export const startCloudShellTerminal = async (terminal: Terminal, shellType: Ter
 
   terminal.writeln("");
   // Provision CloudShell session
-  terminal.writeln(terminalLog.cloudshell(`Provisioning in ${resolvedRegion}`));
+  terminal.writeln(terminalLog.cloudshell(`Provisioning Started....`));
 
   let sessionDetails: {
     socketUri?: string;
@@ -135,7 +146,7 @@ export const startCloudShellTerminal = async (terminal: Terminal, shellType: Ter
   try {
     sessionDetails = await provisionCloudShellSession(resolvedRegion, terminal, finalVNetSettings);
   } catch (err) {
-    terminal.writeln(LogError(err));
+    terminal.writeln(terminalLog.error(err));
     terminal.writeln(terminalLog.error("Failed to provision in primary region"));
     terminal.writeln(terminalLog.warning(`Attempting with fallback region: ${defaultCloudShellRegion}`));
 
@@ -143,7 +154,7 @@ export const startCloudShellTerminal = async (terminal: Terminal, shellType: Ter
   }
 
   if (!sessionDetails.socketUri) {
-    terminal.writeln(LogError('Unable to provision console. Please try again later.'));
+    terminal.writeln(terminalLog.error('Unable to provision console. Please try again later.'));
     return {};
   }
 
@@ -157,6 +168,31 @@ export const startCloudShellTerminal = async (terminal: Terminal, shellType: Ter
   );
 
   return socket;
+};
+
+/**
+ * Asks the user if they want to use existing VNet settings or create new ones
+ */
+const askForVNetConfigConsent = async (terminal: Terminal): Promise<boolean> => {
+  // Ask for consent
+  terminal.writeln("");
+  terminal.writeln(terminalLog.prompt("Use this existing network configuration? (Y/N)"));
+  terminal.writeln(terminalLog.info("Answering 'N' will configure a new network for CloudShell"));
+
+  return new Promise<boolean>((resolve) => {
+    const keyListener = terminal.onKey(({ key }: { key: string }) => {
+      keyListener.dispose();
+      terminal.writeln("");
+
+      if (key.toLowerCase() === 'y') {
+        terminal.writeln(terminalLog.success("Proceeding with existing network configuration"));
+        resolve(true);
+      } else {
+        terminal.writeln(terminalLog.info("Will configure new network settings"));
+        resolve(false);
+      }
+    });
+  });
 };
 
 /**
@@ -255,10 +291,9 @@ const addCloudShellVNetToDatabase = async (vNetSettings: VnetSettings, terminal:
       await updateDatabaseWithVNetRule(currentDbAccount, cloudShellSubnetId, dbAccountId, terminal);
     } else {
       terminal.writeln(terminalLog.info("Monitoring existing VNet operation..."));
+      // Step 6: Monitor the update progress
+      await monitorVNetAdditionProgress(cloudShellSubnetId, dbAccountId, terminal);
     }
-
-    // Step 6: Monitor the update progress
-    await monitorVNetAdditionProgress(cloudShellSubnetId, dbAccountId, terminal);
 
   } catch (err) {
     terminal.writeln(terminalLog.error(`Error updating database network configuration: ${err.message}`));
@@ -470,7 +505,7 @@ const updateDatabaseWithVNetRule = async (currentDbAccount: any, cloudShellSubne
   // Update the database account
   terminal.writeln(terminalLog.subheader("Submitting VNet update request to database"));
   await PutARMCall(dbAccountId, updatePayload, "2023-04-15");
-  terminal.writeln(terminalLog.info("Request submitted. Monitoring progress..."));
+  terminal.writeln(terminalLog.success("Updated Database account with Cloud Shell Vnet"));
 };
 
 /**
@@ -599,37 +634,6 @@ const isVNetOperationInProgress = async (dbAccountId: string): Promise<boolean> 
 };
 
 /**
- * Asks for user consent about VNet configuration
- */
-const askForVNetConfigConsent = async (terminal: Terminal, vNetSettings: VnetSettings): Promise<boolean> => {
-  terminal.writeln(terminalLog.header("Network Configuration Notice"));
-  terminal.writeln(terminalLog.warning("Your database has network restrictions and CloudShell has existing VNet settings."));
-
-  // Show existing VNet settings
-  terminal.writeln(terminalLog.subheader("Existing CloudShell Network"));
-  terminal.writeln(terminalLog.item("Location", vNetSettings.location));
-  terminal.writeln(terminalLog.item("Network Profile", vNetSettings.networkProfileResourceId));
-
-  terminal.writeln(terminalLog.warning("To connect to your database, CloudShell VNet should match your database network settings."));
-  terminal.writeln(terminalLog.prompt("Use existing network settings? (y/n)"));
-
-  return new Promise<boolean>((resolve) => {
-    const keyListener = terminal.onKey(({ key }: { key: string }) => {
-      keyListener.dispose();
-      terminal.writeln("");
-
-      if (key.toLowerCase() === 'y') {
-        terminal.writeln(terminalLog.success("Continuing with existing network settings"));
-        resolve(true);
-      } else {
-        terminal.writeln(terminalLog.warning("Will configure new network settings..."));
-        resolve(false);
-      }
-    });
-  });
-};
-
-/**
  * Ensures that the CloudShell provider is registered for the current subscription
  */
 const ensureCloudShellProviderRegistered = async (terminal: Terminal): Promise<void> => {
@@ -698,10 +702,6 @@ const retrieveCloudShellVnetSettings = async (settings: Settings, terminal: Term
 const determineCloudShellRegion = (terminal: Terminal): { resolvedRegion: string; defaultCloudShellRegion: string } => {
   const region = userContext.databaseAccount?.location;
   const resolvedRegion = getNormalizedRegion(region, DEFAULT_CLOUDSHELL_REGION);
-
-  terminal.writeln(terminalLog.header("Region Configuration"));
-  terminal.writeln(terminalLog.item("Database Region", region || "Not detected"));
-  terminal.writeln(terminalLog.item("CloudShell Region", resolvedRegion));
 
   return { resolvedRegion, defaultCloudShellRegion: DEFAULT_CLOUDSHELL_REGION };
 };
@@ -1026,82 +1026,126 @@ const provisionCloudShellSession = async (
   terminal: Terminal,
   vNetSettings: object
 ): Promise<{ socketUri?: string; provisionConsoleResponse?: any; targetUri?: string }> => {
-  return new Promise((resolve, reject) => {
-    terminal.writeln("");
-    terminal.writeln(terminalLog.header("CloudShell availability notice"));
-    terminal.writeln(terminalLog.warning(`Would you like to continue with CloudShell in ${resolvedRegion}?`));
-    terminal.writeln(terminalLog.prompt("Press 'Y' to proceed or 'N' to cancel"));
+  return new Promise( async (resolve, reject) => {
+    try {
 
-    terminal.focus();
-
-    const handleKeyPress = terminal.onKey(async ({ key }: { key: string }) => {
-      handleKeyPress.dispose();
-
-      if (key.toLowerCase() === "y") {
-        terminal.writeln(terminalLog.success("Proceeding with CloudShell provisioning"));
-        terminal.writeln("");
-
-        try {
-          // Apply user settings
-          terminal.writeln(LogInfo('Configuring session settings'));
-          await putEphemeralUserSettings(userContext.subscriptionId, resolvedRegion, vNetSettings);
-
-          // Provision console
-          terminal.writeln(terminalLog.cloudshell("Provisioning resources"));
-          let provisionConsoleResponse;
-          let attemptCounter = 0;
-
-          do {
-            provisionConsoleResponse = await provisionConsole(userContext.subscriptionId, resolvedRegion);
-            terminal.writeln(terminalLog.progress("Provisioning", 
-              provisionConsoleResponse.properties.provisioningState, 
-              Math.round((attemptCounter / 10) * 100)));
-            
-            attemptCounter++;
-
-            if (provisionConsoleResponse.properties.provisioningState !== "Succeeded") {
-              await wait(POLLING_INTERVAL_MS);
-            }
-          } while (provisionConsoleResponse.properties.provisioningState !== "Succeeded" && attemptCounter < 10);
-
-          if (provisionConsoleResponse.properties.provisioningState !== "Succeeded") {
-            const errorMessage = `Provisioning failed: ${provisionConsoleResponse.properties.provisioningState}`;
-            terminal.writeln(terminalLog.error(errorMessage));
-            return reject(new Error(errorMessage));
-          }
-
-          // Connect terminal
-          terminal.writeln(terminalLog.info("Establishing connection"));
-          const connectTerminalResponse = await connectTerminal(
-            provisionConsoleResponse.properties.uri,
-            { rows: terminal.rows, cols: terminal.cols }
-          );
-
-          const targetUri = `${provisionConsoleResponse.properties.uri}/terminals?cols=${terminal.cols}&rows=${terminal.rows}&version=2019-01-01&shell=bash`;
-          const termId = connectTerminalResponse.id;
-
-          // Determine socket URI
-          let socketUri = connectTerminalResponse.socketUri.replace(":443/", "");
-          const targetUriBody = targetUri.replace('https://', '').split('?')[0];
-
-          if (socketUri.indexOf(targetUriBody) === -1) {
-            socketUri = `wss://${targetUriBody}/${termId}`;
-          }
-
-          if (targetUriBody.includes('servicebus')) {
-            const targetUriBodyArr = targetUriBody.split('/');
-            socketUri = `wss://${targetUriBodyArr[0]}/$hc/${targetUriBodyArr[1]}/terminals/${termId}`;
-          }
-
-          return resolve({ socketUri, provisionConsoleResponse, targetUri });
-        } catch (err) {
-          terminal.writeln(LogError(`Provisioning failed: ${err.message}`));
-          return reject(err);
+      terminal.writeln(terminalLog.header("Configuring CloudShell Session"));
+      // Check if vNetSettings is available and not empty
+      const hasVNetSettings = vNetSettings && Object.keys(vNetSettings).length > 0;
+      if (hasVNetSettings) {
+        const vNetConfig = vNetSettings as VnetSettings;
+        const networkProfileId = vNetConfig.networkProfileResourceId;
+        const profileName = networkProfileId.split('/').pop();
+        
+        terminal.writeln(terminalLog.vnet("Enabling private network configuration"));
+        terminal.writeln(terminalLog.item("Network Profile", profileName));
+        
+        if (vNetConfig.relayNamespaceResourceId) {
+          const relayName = vNetConfig.relayNamespaceResourceId.split('/').pop();
+          terminal.writeln(terminalLog.item("Relay Namespace", relayName));
         }
-      } else if (key.toLowerCase() === "n") {
-        terminal.writeln(terminalLog.error("Operation canceled"));
+              
+        terminal.writeln(terminalLog.item("Region", resolvedRegion));
+        terminal.writeln(terminalLog.success("CloudShell will use this VNet to connect to your database"));
+      }
+      else {
+        terminal.writeln(terminalLog.warning("No VNet configuration provided"));
+        terminal.writeln(terminalLog.warning("CloudShell will be provisioned with public network access"));
+
+        if (hasDatabaseNetworkRestrictions()) {
+          terminal.writeln(terminalLog.error("Warning: Your database has network restrictions"));
+          terminal.writeln(terminalLog.error("CloudShell may not be able to connect without proper VNet configuration"));
+        }
+      }
+      terminal.writeln(terminalLog.warning("Any previous VNet settings will be overridden"));
+
+       // Apply user settings
+      await putEphemeralUserSettings(userContext.subscriptionId, resolvedRegion, vNetSettings);
+      terminal.writeln(terminalLog.success("Session settings applied"));
+      // Provision console
+      let provisionConsoleResponse;
+      let attemptCounter = 0;
+
+      do {
+        provisionConsoleResponse = await provisionConsole(userContext.subscriptionId, resolvedRegion);
+        terminal.writeln(terminalLog.progress("Provisioning", provisionConsoleResponse.properties.provisioningState));
+        
+        attemptCounter++;
+
+        if (provisionConsoleResponse.properties.provisioningState !== "Succeeded") {
+          await wait(POLLING_INTERVAL_MS);
+        }
+      } while (provisionConsoleResponse.properties.provisioningState !== "Succeeded" && attemptCounter < 10);
+
+      if (provisionConsoleResponse.properties.provisioningState !== "Succeeded") {
+        const errorMessage = `Provisioning failed: ${provisionConsoleResponse.properties.provisioningState}`;
+        terminal.writeln(terminalLog.error(errorMessage));
+        return reject(new Error(errorMessage));
+      }
+      // Connect terminal
+      const connectTerminalResponse = await connectTerminal(
+        provisionConsoleResponse.properties.uri,
+        { rows: terminal.rows, cols: terminal.cols }
+      );
+
+      const targetUri = `${provisionConsoleResponse.properties.uri}/terminals?cols=${terminal.cols}&rows=${terminal.rows}&version=2019-01-01&shell=bash`;
+      const termId = connectTerminalResponse.id;
+
+      // Determine socket URI
+      let socketUri = connectTerminalResponse.socketUri.replace(":443/", "");
+      const targetUriBody = targetUri.replace('https://', '').split('?')[0];
+
+      if (socketUri.indexOf(targetUriBody) === -1) {
+        socketUri = `wss://${targetUriBody}/${termId}`;
+      }
+
+      if (targetUriBody.includes('servicebus')) {
+        const targetUriBodyArr = targetUriBody.split('/');
+        socketUri = `wss://${targetUriBodyArr[0]}/$hc/${targetUriBodyArr[1]}/terminals/${termId}`;
+      }
+
+      return resolve({ socketUri, provisionConsoleResponse, targetUri });
+    } catch (err) {
+      terminal.writeln(terminalLog.error(`Provisioning failed: ${err.message}`));
+      return reject(err);
+    }
+  });
+};
+
+/**
+ * Asks the user for consent to use the specified CloudShell region
+ */
+const askForRegionConsent = async (terminal: Terminal, resolvedRegion: string): Promise<boolean> => {
+  terminal.writeln(terminalLog.header("CloudShell Region Confirmation"));
+  terminal.writeln(terminalLog.info("The CloudShell container will be provisioned in a specific Azure region."));
+  // Data residency and compliance information
+  terminal.writeln(terminalLog.subheader("Important Information"));
+  const dbRegion = userContext.databaseAccount?.location || "unknown";
+  terminal.writeln(terminalLog.item("Database Region", dbRegion));
+  terminal.writeln(terminalLog.item("CloudShell Container Region", resolvedRegion));
+
+  terminal.writeln(terminalLog.subheader("What this means to you?"));
+  terminal.writeln(terminalLog.item("Data Residency", "Commands and query results will be processed in this region"));
+  terminal.writeln(terminalLog.item("Network", "Database connections will originate from this region"));
+
+  // Consent question
+  terminal.writeln("");
+  terminal.writeln(terminalLog.prompt("Would you like to provision Azure CloudShell in the '" + resolvedRegion + "' region?"));
+  terminal.writeln(terminalLog.prompt("Press 'Y' to continue or 'N' to cancel (Y/N)"));
+
+  return new Promise<boolean>((resolve) => {
+    const keyListener = terminal.onKey(({ key }: { key: string }) => {
+      keyListener.dispose();
+      terminal.writeln("");
+
+      if (key.toLowerCase() === 'y') {
+        terminal.writeln(terminalLog.success("Proceeding with CloudShell in " + resolvedRegion));
+        terminal.writeln(terminalLog.separator());
+        resolve(true);
+      } else {
+        terminal.writeln(terminalLog.error("CloudShell provisioning canceled"));
         setTimeout(() => terminal.dispose(), 2000);
-        return resolve({});
+        resolve(false);
       }
     });
   });
@@ -1133,19 +1177,16 @@ const establishTerminalConnection = async (
   // Attach the terminal addon
   const attachAddon = new AttachAddon(socket);
   terminal.loadAddon(attachAddon);
+  terminal.writeln(terminalLog.success("Connection established"));
 
   // Authorize the session
   try {
-    terminal.writeln(terminalLog.info("Authorizing session"));
     const authorizeResponse = await authorizeSession(provisionConsoleResponse.properties.uri);
     const cookieToken = authorizeResponse.token;
 
     // Load auth token with a hidden image
     const img = document.createElement("img");
     img.src = `${targetUri}&token=${encodeURIComponent(cookieToken)}`;
-
-    terminal.writeln(terminalLog.success("Session authorized successfully"));
-    terminal.writeln(LogInfo("Connection established"));
     terminal.focus();
   } catch (err) {
     terminal.writeln(terminalLog.error("Authorization failed"));
