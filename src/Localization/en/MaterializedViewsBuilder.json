@@ -42,7 +42,7 @@
     "MetricsBlade": "the metrics blade.",
     "MonitorUsage": "Monitor Usage",
     "ResizingDecisionText": "To understand if the materialized views Builder is the right size, ",
-    "ResizingDecisionLink": "learn more about materialized views Builder sizing.",
+    "ResizingDecisionLink": "learn more about materialized views builder sizing.",
     "WarningBannerOnUpdate": "Adding or modifying materialized views builder instances may affect your bill.",
     "WarningBannerOnDelete": "After deprovisioning the materialized views builder, your materialized views will not be updated with new source changes anymore. Materialized views builder is compute in your account that performs read operations on source containers for any updates and applies them on materialized views as per the materialized view definition.",
     "GlobalsecondaryindexesBuilderDescription": "Provision a global secondary indexes builder for your Azure Cosmos DB account. The global secondary indexes builder is compute in your account that performs read operations on source collections for any updates and populates the global secondary indexes as per their definition.",
