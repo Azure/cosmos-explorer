@@ -116,7 +116,7 @@ export const ConnectTab: React.FC = (): JSX.Element => {
       <Pivot>
         {userContext.hasWriteAccess && (
           <PivotItem headerText="Read-write Keys">
-            <Stack style={{ margin: 10 }}>
+            <Stack style={{ margin: 10, overflow: "auto", maxHeight: "calc(100vh - 300px)" }}>
               <Stack horizontal verticalAlign="end" style={{ marginBottom: 8 }}>
                 <TextField
                   label="PRIMARY KEY"
@@ -185,7 +185,7 @@ export const ConnectTab: React.FC = (): JSX.Element => {
           </PivotItem>
         )}
         <PivotItem headerText="Read-only Keys">
-          <Stack style={{ margin: 10 }}>
+          <Stack style={{ margin: 10, overflow: "auto", maxHeight: "calc(100vh - 300px)" }}>
             <Stack horizontal verticalAlign="end" style={{ marginBottom: 8 }}>
               <TextField
                 label="PRIMARY READ-ONLY KEY"
