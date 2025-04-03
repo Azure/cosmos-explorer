@@ -16,10 +16,10 @@ export const ConnectTab: React.FC = (): JSX.Element => {
   const [primaryReadonlyMasterKey, setPrimaryReadonlyMasterKey] = useState<string>("");
   const [secondaryReadonlyMasterKey, setSecondaryReadonlyMasterKey] = useState<string>("");
   const uri: string = userContext.databaseAccount.properties?.documentEndpoint;
-  const primaryConnectionStr = `AccountEndpoint=${uri};AccountKey=${primaryMasterKey}`;
-  const secondaryConnectionStr = `AccountEndpoint=${uri};AccountKey=${secondaryMasterKey}`;
-  const primaryReadonlyConnectionStr = `AccountEndpoint=${uri};AccountKey=${primaryReadonlyMasterKey}`;
-  const secondaryReadonlyConnectionStr = `AccountEndpoint=${uri};AccountKey=${secondaryReadonlyMasterKey}`;
+  const primaryConnectionStr = `AccountEndpoint=${uri};AccountKey=${primaryMasterKey};`;
+  const secondaryConnectionStr = `AccountEndpoint=${uri};AccountKey=${secondaryMasterKey};`;
+  const primaryReadonlyConnectionStr = `AccountEndpoint=${uri};AccountKey=${primaryReadonlyMasterKey};`;
+  const secondaryReadonlyConnectionStr = `AccountEndpoint=${uri};AccountKey=${secondaryReadonlyMasterKey};`;
   const maskedValue: string =
     "*********************************************************************************************************************************";
   const [showPrimaryMasterKey, setShowPrimaryMasterKey] = useState<boolean>(false);
