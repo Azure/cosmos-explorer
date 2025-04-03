@@ -1,6 +1,6 @@
 {
     "MaterializedViewsBuilderDescription": "Provision a materialized views builder cluster for your Azure Cosmos DB account. Materialized views builder is compute in your account that performs read operations on source collection for any updates and applies them on materialized views as per the materializedview definition.",
-    "MaterializedViewsBuilder": "Materialized views Builder",
+    "MaterializedViewsBuilder": "Materialized views builder",
     "Provisioned": "Provisioned",
     "Deprovisioned": "Deprovisioned",
     "LearnAboutMaterializedViews": "Learn more about materialized views.",
