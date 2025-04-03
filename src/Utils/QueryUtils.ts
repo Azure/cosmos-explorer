@@ -47,6 +47,7 @@ export function buildDocumentsQueryPartitionProjections(
   for (const index in partitionKey.paths) {
     // TODO: Handle "/" in partition key definitions
     const projectedProperties: string[] = partitionKey.paths[index].split("/").slice(1);
+    const isSystemPartitionKey: boolean = partitionKey.systemKey || false;
     let projectedProperty = "";
 
     projectedProperties.forEach((property: string) => {
@@ -62,8 +63,12 @@ export function buildDocumentsQueryPartitionProjections(
       }
     });
     const fullAccess = `${collectionAlias}${projectedProperty}`;
-    const wrappedProjection = `IIF(IS_DEFINED(${fullAccess}), ${fullAccess}, {})`;
-    projections.push(wrappedProjection);
+    if (!isSystemPartitionKey) {
+      const wrappedProjection = `IIF(IS_DEFINED(${fullAccess}), ${fullAccess}, {})`;
+      projections.push(wrappedProjection);
+    } else {
+      projections.push(fullAccess);
+    }
   }
 
   return projections.join(",");

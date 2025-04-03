@@ -2079,8 +2079,8 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
   return (
     <CosmosFluentProvider className={styles.container}>
-      <div className="tab-pane active" role="tabpanel" style={{ display: "flex" }}>
-        <div className={styles.filterRow}>
+      <div data-test={"DocumentsTab"} className="tab-pane active" role="tabpanel" style={{ display: "flex" }}>
+        <div data-test={"DocumentsTab/Filter"} className={styles.filterRow}>
           {!isPreferredApiMongoDB && <span> SELECT * FROM c </span>}
           <InputDataList
             dropdownOptions={getFilterChoices()}
@@ -2122,7 +2122,11 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
           }}
         >
           <Allotment.Pane preferredSize={`${tabStateData.leftPaneWidthPercent}%`} minSize={55}>
-            <div style={{ height: "100%", width: "100%", overflow: "hidden" }} ref={tableContainerRef}>
+            <div
+              data-test={"DocumentsTab/DocumentsPane"}
+              style={{ height: "100%", width: "100%", overflow: "hidden" }}
+              ref={tableContainerRef}
+            >
               <div className={styles.tableContainer}>
                 <div
                   style={
@@ -2164,7 +2168,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
             </div>
           </Allotment.Pane>
           <Allotment.Pane minSize={30}>
-            <div style={{ height: "100%", width: "100%" }}>
+            <div data-test={"DocumentsTab/ResultsPane"} style={{ height: "100%", width: "100%" }}>
               {isTabActive && selectedDocumentContent && selectedRows.size <= 1 && (
                 <EditorReact
                   language={"json"}
