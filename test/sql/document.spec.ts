@@ -26,14 +26,12 @@ for (const { name, databaseId, containerId, expectedDocumentIds } of documentTes
 
     for (const docId of expectedDocumentIds) {
       test.describe(`Document ID: ${docId}`, () => {
-        test(`should load and view document ${docId}`, async ({ page }) => {
+        test(`should load and view document ${docId}`, async () => {
           const span = documentsTab.documentsListPane.getByText(docId, { exact: true }).nth(0);
           await span.waitFor();
           await expect(span).toBeVisible();
-          // await page.waitForTimeout(3000);
 
           await span.click();
-          // await page.waitForTimeout(5000);
           await expect(documentsTab.resultsEditor.locator).toBeAttached({ timeout: 60 * 1000 });
 
           const resultText = await documentsTab.resultsEditor.text();
