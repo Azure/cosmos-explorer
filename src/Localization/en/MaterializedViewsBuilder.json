@@ -16,7 +16,7 @@
     "CosmosD32s": "Cosmos.D32s (General Purpose Cosmos Compute with 32 vCPUs, 128 GB Memory)",
     "CreateMessage": "Materialized views builder resource is being created.",
     "CreateInitializeTitle": "Provisioning resource",
-    "CreateInitializeMessage": "Materialized views Builder resource will be provisioned.",
+    "CreateInitializeMessage": "Materialized views builder resource will be provisioned.",
     "CreateSuccessTitle": "Resource provisioned",
     "CreateSuccesseMessage": "Materialized views builder resource provisioned.",
     "CreateFailureTitle": "Failed to provision resource",
