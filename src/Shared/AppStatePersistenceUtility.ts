@@ -10,6 +10,7 @@ export enum AppStateComponentNames {
   MostRecentActivity = "MostRecentActivity",
   QueryCopilot = "QueryCopilot",
   DataExplorerAction = "DataExplorerAction",
+  SelectedRegionalEndpoint = "SelectedRegionalEndpoint",
 }
 
 // Subcomponent for DataExplorerAction
