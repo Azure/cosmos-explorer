@@ -7,21 +7,40 @@ import { listKeys } from "Utils/arm/generatedClients/cosmos/databaseAccounts";
 import { v4 as uuidv4 } from 'uuid';
 import { Terminal } from "xterm";
 import { TerminalKind } from "../../../Contracts/ViewModels";
+import { 
+  IsPublicAccessAvailable, 
+  hasPrivateEndpointsRestrictions, 
+  hasVNetRestrictions 
+} from "Explorer/Tabs/Shared/CheckFirewallRules";
 import { userContext } from "../../../UserContext";
 import { AttachAddon } from "./AttachAddOn";
 import { getCommands } from "./Commands";
 import {
   authorizeSession,
   connectTerminal,
-  GetARMCall,
+  createNetworkProfile,
+  createRelay,
+  createRoleOnNetworkProfile,
+  createRoleOnRelay,
+  getAccountDetails,
+  getDatabaseOperations,
+  getNetworkProfileInfo,
   getNormalizedRegion,
+  getRelay,
+  getSubnetInformation,
   getUserSettings,
+  getVnet,
+  getVnetInformation,
   provisionConsole,
-  PutARMCall,
   putEphemeralUserSettings,
   registerCloudShellProvider,
+  setShellType,
+  updateDatabaseAccount,
+  updateSubnetInformation,
+  updateVnet,
   verifyCloudShellProviderRegistration
 } from "./Data";
+import { terminalLog } from "./LogFormatter";
 
 // Constants
 const DEFAULT_CLOUDSHELL_REGION = "westus";
@@ -34,38 +53,12 @@ const DEFAULT_SUBNET_ADDRESS_PREFIX = "10.0.1.0/24";
 const DEFAULT_CONTAINER_INSTANCE_OID = "88536fb9-d60a-4aee-8195-041425d6e927";
 
 /**
- * Standardized terminal logging functions for consistent formatting
- */
-const terminalLog = {
-  // Section headers
-  header: (message: string) => `\n\x1B[1;34m┌─ ${message} ${"─".repeat(Math.max(45 - message.length, 0))}\x1B[0m`,
-  subheader: (message: string) => `\x1B[1;36m├ ${message}\x1B[0m`,
-  sectionEnd: () => `\x1B[1;34m└${"─".repeat(50)}\x1B[0m\n`,
-  
-  // Status messages
-  success: (message: string) => `\x1B[32m✓ ${message}\x1B[0m`,
-  warning: (message: string) => `\x1B[33m⚠ ${message}\x1B[0m`,
-  error: (message: string) => `\x1B[31m✗ ${message}\x1B[0m`,
-  info: (message: string) => `\x1B[34m${message}\x1B[0m`,
-  
-  // Resource information
-  database: (message: string) => `\x1B[35m🔶  Database: ${message}\x1B[0m`,
-  vnet: (message: string) => `\x1B[36m🔷  Network: ${message}\x1B[0m`,
-  cloudshell: (message: string) => `\x1B[32m🔷  CloudShell: ${message}\x1B[0m`,
-  
-  // Data formatting
-  item: (label: string, value: string) => `  • ${label}: \x1B[32m${value}\x1B[0m`,
-  progress: (operation: string, status: string) => `\x1B[34m${operation}: \x1B[36m${status}\x1B[0m`,
-  
-  // User interaction
-  prompt: (message: string) => `\x1B[1;37m${message}\x1B[0m`,
-  separator: () => `\x1B[30;1m${"─".repeat(50)}\x1B[0m`
-};
-
-/**
  * Main function to start a CloudShell terminal
  */
 export const startCloudShellTerminal = async (terminal: Terminal, shellType: TerminalKind) => {
+  // Set the shell type to use the appropriate API version for all calls
+  setShellType(shellType);
+
   terminal.writeln(terminalLog.header("Initializing Azure CloudShell"));
   await ensureCloudShellProviderRegistered(terminal);
 
@@ -77,57 +70,72 @@ export const startCloudShellTerminal = async (terminal: Terminal, shellType: Ter
     return {}; // Exit if user declined
   }
 
-  // Check database network restrictions
-  const hasNetworkRestrictions = hasDatabaseNetworkRestrictions();
+  const isAllPublicAccessEnabled = await IsPublicAccessAvailable(shellType);
 
   let settings: Settings | undefined;
-  let vNetSettings: VnetSettings | undefined;
+  let cloudShellVnetSettings: VnetSettings | undefined;
   let finalVNetSettings: VnetSettings | {};
 
-  if (hasNetworkRestrictions) {
+  if (!isAllPublicAccessEnabled) {
     // Fetch and process user settings for restricted networks
     terminal.writeln(terminalLog.database("Network restrictions detected"));
     terminal.writeln(terminalLog.info("Loading CloudShell configuration..."));
-    settings = await fetchUserSettings(terminal);
-    vNetSettings = await retrieveCloudShellVnetSettings(settings, terminal);
-
+    settings = await getUserSettings();
+    if (!settings) {
+      terminal.writeln(terminalLog.warning("No existing user settings found."));
+    }
+    else {    
+      cloudShellVnetSettings = await retrieveCloudShellVnetSettings(settings, terminal);
+    }
+ 
     // If CloudShell has VNet settings, check with database config
-    if (vNetSettings && vNetSettings.networkProfileResourceId) {
+    if (cloudShellVnetSettings && cloudShellVnetSettings.networkProfileResourceId) {
+
+      //TODO: askForVNetConfigConsent consent should change to support private end point 
+      // if shell type is vcore or for any other shell as  private endpoint restrictions
       const isContinueWithSameVnet = await askForVNetConfigConsent(terminal);
       
       if(isContinueWithSameVnet) {
-        const isVNetInDatabaseConfig = await isCloudShellVNetInDatabaseConfig(vNetSettings, terminal);
+        // TODO: isCloudShellVNetInDatabaseConfig call should handle private endpoint check also. 
+        // a private endpoint is associated with the vnet and subnet. 
+        // vcore supports only private endpoint, it doesnot support vnet, dbAccount?.properties?.privateEndpointConnections doesn't have any info. ARM call might needs to make to get private endpoint info
+        const isVNetInDatabaseConfig = await isCloudShellVNetInDatabaseConfig(cloudShellVnetSettings, terminal);
 
         if (!isVNetInDatabaseConfig) {
           terminal.writeln(terminalLog.warning("CloudShell VNet is not configured in database access list"));
-          const addToDatabase = await askToAddVNetToDatabase(terminal, vNetSettings);
+          // TODO: Add logic in askToAddVNetToDatabase to ask accordingly if user has private endpoint or vnet settings
+          const addToDatabase = await askToAddVNetToDatabase(terminal, cloudShellVnetSettings);
 
           if (addToDatabase) {
-            await addCloudShellVNetToDatabase(vNetSettings, terminal);
+            // TODO: Add a logic to add private endpoint to database if user has private endpoint settings in the database
+            await addCloudShellVNetToDatabase(cloudShellVnetSettings, terminal);
           } else {
             // User declined to add VNet to database, need to recreate
             terminal.writeln(terminalLog.warning("Will configure new VNet..."));
-            vNetSettings = undefined;
+            cloudShellVnetSettings = undefined;
           }
         } else {
           terminal.writeln(terminalLog.success("CloudShell VNet is already in database configuration"));
         }
       }
       else {
-        vNetSettings = undefined; // User declined to use existing VNet settings
+        cloudShellVnetSettings = undefined; // User declined to use existing VNet settings
       }
     }
 
-    // Configure VNet if needed
-    if (!vNetSettings || !vNetSettings.networkProfileResourceId) {
-      terminal.writeln(terminalLog.subheader("Configuring network infrastructure"));
-      finalVNetSettings = await configureCloudShellVNet(terminal, resolvedRegion, vNetSettings);
+    if (!cloudShellVnetSettings || !cloudShellVnetSettings.networkProfileResourceId) {
 
-      // Add the new VNet to database configuration
+      //TODO: Add logic to check if the user has existing VNet or private endpoint (which would be associated with the Vnet) settings in the database with cloudshell as CloudShellDelegation,
+      //  if yes, use that vnet to get network profile and get the existing relay and 
+      // use that for cloudshell, else create only those resources which are required and ternminal write the existing relay and vnet settings.which it is going to use.
+      terminal.writeln(terminalLog.subheader("Configuring network infrastructure"));
+      finalVNetSettings = await configureCloudShellVNet(terminal, resolvedRegion);
+
+       // TODO: Add a logic to add private endpoint to database if user has private endpoint settings in the database
       await addCloudShellVNetToDatabase(finalVNetSettings as VnetSettings, terminal);
     } else {
       terminal.writeln(terminalLog.success("Using existing network configuration"));
-      finalVNetSettings = vNetSettings;
+      finalVNetSettings = cloudShellVnetSettings;
     }
   } else {
     terminal.writeln(terminalLog.database("Public access enabled. Skipping VNet configuration."));
@@ -144,13 +152,13 @@ export const startCloudShellTerminal = async (terminal: Terminal, shellType: Ter
   };
 
   try {
-    sessionDetails = await provisionCloudShellSession(resolvedRegion, terminal, finalVNetSettings);
+    sessionDetails = await provisionCloudShellSession(resolvedRegion, terminal, finalVNetSettings, isAllPublicAccessEnabled);
   } catch (err) {
     terminal.writeln(terminalLog.error(err));
     terminal.writeln(terminalLog.error("Failed to provision in primary region"));
     terminal.writeln(terminalLog.warning(`Attempting with fallback region: ${defaultCloudShellRegion}`));
 
-    sessionDetails = await provisionCloudShellSession(defaultCloudShellRegion, terminal, finalVNetSettings);
+    sessionDetails = await provisionCloudShellSession(defaultCloudShellRegion, terminal, finalVNetSettings, isAllPublicAccessEnabled);
   }
 
   if (!sessionDetails.socketUri) {
@@ -171,13 +179,21 @@ export const startCloudShellTerminal = async (terminal: Terminal, shellType: Ter
 };
 
 /**
- * Asks the user if they want to use existing VNet settings or create new ones
+ * Asks the user if they want to use existing network configuration (VNet or private endpoint)
  */
-const askForVNetConfigConsent = async (terminal: Terminal): Promise<boolean> => {
+const askForVNetConfigConsent = async (terminal: Terminal, shellType: TerminalKind = null): Promise<boolean> => {
+  // Check if this shell type supports only private endpoints
+  const isPrivateEndpointOnlyShell = shellType === TerminalKind.VCoreMongo;
+  // Check if the database has private endpoints configured
+  const hasPrivateEndpoints = hasPrivateEndpointsRestrictions();
+  
+  // Determine which network type to mention based on shell type and database configuration
+  const networkType = isPrivateEndpointOnlyShell || hasPrivateEndpoints ? "private endpoint" : "network";
+  
   // Ask for consent
   terminal.writeln("");
-  terminal.writeln(terminalLog.prompt("Use this existing network configuration? (Y/N)"));
-  terminal.writeln(terminalLog.info("Answering 'N' will configure a new network for CloudShell"));
+  terminal.writeln(terminalLog.prompt(`Use this existing ${networkType} configuration? (Y/N)`));
+  terminal.writeln(terminalLog.info(`Answering 'N' will configure a new ${networkType} for CloudShell`));
 
   return new Promise<boolean>((resolve) => {
     const keyListener = terminal.onKey(({ key }: { key: string }) => {
@@ -185,10 +201,10 @@ const askForVNetConfigConsent = async (terminal: Terminal): Promise<boolean> => 
       terminal.writeln("");
 
       if (key.toLowerCase() === 'y') {
-        terminal.writeln(terminalLog.success("Proceeding with existing network configuration"));
+        terminal.writeln(terminalLog.success(`Proceeding with existing ${networkType} configuration`));
         resolve(true);
       } else {
-        terminal.writeln(terminalLog.info("Will configure new network settings"));
+        terminal.writeln(terminalLog.info(`Will configure new ${networkType} settings`));
         resolve(false);
       }
     });
@@ -203,7 +219,7 @@ const isCloudShellVNetInDatabaseConfig = async (vNetSettings: VnetSettings, term
     terminal.writeln(terminalLog.subheader("Verifying if CloudShell VNet is configured in database"));
 
     // Get the subnet ID from the CloudShell Network Profile
-    const netProfileInfo = await GetARMCall<any>(vNetSettings.networkProfileResourceId);
+    const netProfileInfo = await getNetworkProfileInfo<any>(vNetSettings.networkProfileResourceId);
 
     if (!netProfileInfo?.properties?.containerNetworkInterfaceConfigurations?.[0]
       ?.properties?.ipConfigurations?.[0]?.properties?.subnet?.id) {
@@ -225,9 +241,8 @@ const isCloudShellVNetInDatabaseConfig = async (vNetSettings: VnetSettings, term
     const vnetRules = dbAccount.properties.virtualNetworkRules;
 
     // Check if the CloudShell subnet is already in the rules
-    const isAlreadyConfigured = vnetRules.some(rule => rule.id === cloudShellSubnetId);
+    return vnetRules.some(rule => rule.id === cloudShellSubnetId);
 
-    return isAlreadyConfigured;
   } catch (err) {
     terminal.writeln(terminalLog.error("Error checking database VNet configuration"));
     return false;
@@ -271,7 +286,7 @@ const addCloudShellVNetToDatabase = async (vNetSettings: VnetSettings, terminal:
     const { cloudShellSubnetId, cloudShellVnetId } = await getCloudShellNetworkIds(vNetSettings, terminal);
 
     // Step 2: Get current database account details
-    const { dbAccountId, currentDbAccount } = await getDatabaseAccountDetails(terminal);
+    const { currentDbAccount } = await getDatabaseAccountDetails(terminal);
 
     // Step 3: Check if VNet is already configured in database
     if (await isVNetAlreadyConfigured(cloudShellSubnetId, currentDbAccount, terminal)) {
@@ -280,7 +295,7 @@ const addCloudShellVNetToDatabase = async (vNetSettings: VnetSettings, terminal:
 
     // Step 4: Check network resource statuses
     const { vnetInfo, subnetInfo, operationInProgress } =
-      await checkNetworkResourceStatuses(cloudShellSubnetId, cloudShellVnetId, dbAccountId, terminal);
+      await checkNetworkResourceStatuses(cloudShellSubnetId, cloudShellVnetId, currentDbAccount.id, terminal);
 
     // Step 5: If no operation in progress, update the subnet and database
     if (!operationInProgress) {
@@ -288,11 +303,11 @@ const addCloudShellVNetToDatabase = async (vNetSettings: VnetSettings, terminal:
       await enableCosmosDBServiceEndpoint(cloudShellSubnetId, subnetInfo, terminal);
 
       // Step 5b: Update database account with VNet rule
-      await updateDatabaseWithVNetRule(currentDbAccount, cloudShellSubnetId, dbAccountId, terminal);
+      await updateDatabaseWithVNetRule(currentDbAccount, cloudShellSubnetId, currentDbAccount.id, terminal);
     } else {
       terminal.writeln(terminalLog.info("Monitoring existing VNet operation..."));
       // Step 6: Monitor the update progress
-      await monitorVNetAdditionProgress(cloudShellSubnetId, dbAccountId, terminal);
+      await monitorVNetAdditionProgress(cloudShellSubnetId, currentDbAccount.id, terminal);
     }
 
   } catch (err) {
@@ -305,7 +320,7 @@ const addCloudShellVNetToDatabase = async (vNetSettings: VnetSettings, terminal:
  * Gets the subnet and VNet IDs from CloudShell Network Profile
  */
 const getCloudShellNetworkIds = async (vNetSettings: VnetSettings, terminal: Terminal): Promise<{ cloudShellSubnetId: string; cloudShellVnetId: string }> => {
-  const netProfileInfo = await GetARMCall<any>(vNetSettings.networkProfileResourceId, "2023-05-01");
+  const netProfileInfo = await getNetworkProfileInfo<any>(vNetSettings.networkProfileResourceId);
 
   if (!netProfileInfo?.properties?.containerNetworkInterfaceConfigurations?.[0]
     ?.properties?.ipConfigurations?.[0]?.properties?.subnet?.id) {
@@ -328,14 +343,12 @@ const getCloudShellNetworkIds = async (vNetSettings: VnetSettings, terminal: Ter
 /**
  * Gets the database account details
  */
-const getDatabaseAccountDetails = async (terminal: Terminal): Promise<{ dbAccountId: string; currentDbAccount: any }> => {
+const getDatabaseAccountDetails = async (terminal: Terminal): Promise<{ currentDbAccount: any }> => {
   const dbAccount = userContext.databaseAccount;
-  const dbAccountId = `/subscriptions/${userContext.subscriptionId}/resourceGroups/${userContext.resourceGroup}/providers/Microsoft.DocumentDB/databaseAccounts/${dbAccount.name}`;
-
   terminal.writeln(terminalLog.database("Verifying current configuration"));
-  const currentDbAccount = await GetARMCall<any>(dbAccountId, "2023-04-15");
+  const currentDbAccount = await getAccountDetails(dbAccount.id);
 
-  return { dbAccountId, currentDbAccount };
+  return { currentDbAccount };
 };
 
 /**
@@ -372,8 +385,8 @@ const checkNetworkResourceStatuses = async (
 
   if (cloudShellVnetId && cloudShellSubnetId) {
     // Get VNet and subnet resource status
-    vnetInfo = await GetARMCall<any>(cloudShellVnetId, "2023-05-01");
-    subnetInfo = await GetARMCall<any>(cloudShellSubnetId, "2023-05-01");
+    vnetInfo = await getVnetInformation<any>(cloudShellVnetId);
+    subnetInfo = await getSubnetInformation<any>(cloudShellSubnetId);
 
     // Check if there's an ongoing operation on the VNet or subnet
     const vnetProvisioningState = vnetInfo?.properties?.provisioningState;
@@ -390,7 +403,7 @@ const checkNetworkResourceStatuses = async (
     }
 
     // Also check database operations
-    const latestDbAccount = await GetARMCall<any>(dbAccountId, "2023-04-15");
+    const latestDbAccount = await getAccountDetails<any>(dbAccountId);
 
     if (latestDbAccount.properties.virtualNetworkRules) {
       const isPendingAdd = latestDbAccount.properties.virtualNetworkRules.some(
@@ -455,14 +468,14 @@ const enableCosmosDBServiceEndpoint = async (cloudShellSubnetId: string, subnetI
       };
 
       // Apply the subnet update
-      await PutARMCall(subnetUrl, subnetUpdatePayload, "2023-05-01");
+      await updateSubnetInformation(subnetUrl, subnetUpdatePayload);
 
       // Wait for the subnet update to complete
       let subnetUpdateComplete = false;
       let subnetRetryCount = 0;
 
       while (!subnetUpdateComplete && subnetRetryCount < MAX_RETRY_COUNT) {
-        const updatedSubnet = await GetARMCall<any>(subnetUrl, "2023-05-01");
+        const updatedSubnet = await getSubnetInformation<any>(subnetUrl);
 
         const endpointEnabled = updatedSubnet.properties.serviceEndpoints &&
           updatedSubnet.properties.serviceEndpoints.some(
@@ -504,7 +517,7 @@ const updateDatabaseWithVNetRule = async (currentDbAccount: any, cloudShellSubne
 
   // Update the database account
   terminal.writeln(terminalLog.subheader("Submitting VNet update request to database"));
-  await PutARMCall(dbAccountId, updatePayload, "2023-04-15");
+  await updateDatabaseAccount(dbAccountId, updatePayload);
   terminal.writeln(terminalLog.success("Updated Database account with Cloud Shell Vnet"));
 };
 
@@ -522,7 +535,7 @@ const monitorVNetAdditionProgress = async (cloudShellSubnetId: string, dbAccount
 
   while (!updateComplete && retryCount < MAX_RETRY_COUNT) {
     // Check if the VNet is now in the database account 
-    const updatedDbAccount = await GetARMCall<any>(dbAccountId, "2023-04-15");
+    const updatedDbAccount = await getAccountDetails<any>(dbAccountId);
     
     const isVNetAdded = updatedDbAccount.properties.virtualNetworkRules?.some(
       (rule: any) => rule.id === cloudShellSubnetId && (!rule.status || rule.status === 'Succeeded')
@@ -535,7 +548,7 @@ const monitorVNetAdditionProgress = async (cloudShellSubnetId: string, dbAccount
     }
     
     // If not yet added, check for operation progress
-    const operations = await GetARMCall<any>(`${dbAccountId}/operations`, "2023-04-15");
+    const operations = await getDatabaseOperations<any>(dbAccountId);
     
     // Find network-related operations
     const networkOps = operations.value?.filter(
@@ -585,55 +598,6 @@ const monitorVNetAdditionProgress = async (cloudShellSubnetId: string, dbAccount
 };
 
 /**
- * Checks if the database account has network restrictions
- */
-const hasDatabaseNetworkRestrictions = (): boolean => {
-  const dbAccount = userContext.databaseAccount;
-
-  if (!dbAccount) {
-    return false;
-  }
-
-  // Check for virtual network filters
-  const hasVNetFilters = dbAccount.properties.virtualNetworkRules && dbAccount.properties.virtualNetworkRules.length > 0;
-
-  // Check for IP-based firewall
-  const hasIpRules = dbAccount.properties.isVirtualNetworkFilterEnabled;
-
-  // Check for private endpoints
-  const hasPrivateEndpoints = dbAccount.properties.privateEndpointConnections &&
-    dbAccount.properties.privateEndpointConnections.length > 0;
-
-  return hasVNetFilters || hasIpRules || hasPrivateEndpoints;
-};
-
-/**
- * Checks if there's an ongoing VNet operation for the database account
- */
-const isVNetOperationInProgress = async (dbAccountId: string): Promise<boolean> => {
-  try {
-    // Get the ongoing operations for the database account
-    const operationsUrl = `${dbAccountId}/operations`;
-    const operations = await GetARMCall<any>(operationsUrl);
-
-    if (!operations || !operations.value || !operations.value.length) {
-      return false;
-    }
-
-    // Check if there's any network-related operation in progress
-    return operations.value.some(
-      (op: any) =>
-        op.properties.status === 'InProgress' &&
-        (op.properties.description?.toLowerCase().includes('network') ||
-          op.properties.description?.toLowerCase().includes('vnet'))
-    );
-  } catch (err) {
-    // If we can't check operations, assume no operations in progress
-    return false;
-  }
-};
-
-/**
  * Ensures that the CloudShell provider is registered for the current subscription
  */
 const ensureCloudShellProviderRegistered = async (terminal: Terminal): Promise<void> => {
@@ -653,31 +617,21 @@ const ensureCloudShellProviderRegistered = async (terminal: Terminal): Promise<v
 };
 
 /**
- * Fetches user settings safely, handling errors
- */
-const fetchUserSettings = async (terminal: Terminal): Promise<Settings | undefined> => {
-  try {
-    return await getUserSettings();
-  } catch (err) {
-    terminal.writeln(terminalLog.warning("No user settings found. Using defaults."));
-    return undefined;
-  }
-};
-
-/**
  * Retrieves existing VNet settings from user settings if available
  */
 const retrieveCloudShellVnetSettings = async (settings: Settings, terminal: Terminal): Promise<VnetSettings> => {
   if (settings?.properties?.vnetSettings && Object.keys(settings.properties.vnetSettings).length > 0) {
     try {
-      const netProfileInfo = await GetARMCall<any>(settings.properties.vnetSettings.networkProfileResourceId);
+      const netProfileInfo = await getNetworkProfileInfo<any>(settings.properties.vnetSettings.networkProfileResourceId);
 
       terminal.writeln(terminalLog.header("Existing Network Configuration"));
 
-      const vnetResourceId = netProfileInfo.properties.containerNetworkInterfaceConfigurations[0]
-        .properties.ipConfigurations[0].properties.subnet.id.replace(/\/subnets\/[^/]+$/, '');
+      const subnetId = netProfileInfo.properties.containerNetworkInterfaceConfigurations[0]
+      .properties.ipConfigurations[0].properties.subnet.id;
+      const vnetResourceId = subnetId.replace(/\/subnets\/[^/]+$/, '');
 
       terminal.writeln(terminalLog.item("VNet", vnetResourceId));
+      terminal.writeln(terminalLog.item("Subnet", subnetId));
       terminal.writeln(terminalLog.item("Location", settings.properties.vnetSettings.location));
       terminal.writeln(terminalLog.item("Network Profile", settings.properties.vnetSettings.networkProfileResourceId));
       terminal.writeln(terminalLog.item("Relay Namespace", settings.properties.vnetSettings.relayNamespaceResourceId));
@@ -709,31 +663,33 @@ const determineCloudShellRegion = (terminal: Terminal): { resolvedRegion: string
 /**
  * Configures a new VNet for CloudShell
  */
-const configureCloudShellVNet = async (terminal: Terminal, resolvedRegion: string, vNetSettings: VnetSettings): Promise<VnetSettings> => {
+const configureCloudShellVNet = async (terminal: Terminal, resolvedRegion: string): Promise<VnetSettings> => {
+
+  // TODO: Use professional and shorter names for resources
   const randomSuffix = Math.floor(10000 + Math.random() * 90000);
 
   const subnetName = `cloudshell-subnet-${randomSuffix}`;
   const vnetName = `cloudshell-vnet-${randomSuffix}`;
-  const networkProfileName = `cloudshell-netprofile-${randomSuffix}`;
+  const networkProfileName = `cloudshell-network-profile-${randomSuffix}`;
   const relayName = `cloudshell-relay-${randomSuffix}`;
 
   terminal.writeln(terminalLog.header("Network Resource Configuration"));
 
   const azureContainerInstanceOID = await askQuestion(
     terminal,
-    "Azure Container Instance OID",
+    "Enter Azure Container Instance OID (Refer. https://learn.microsoft.com/en-us/azure/cloud-shell/vnet/deployment#get-the-azure-container-instance-id)",
     DEFAULT_CONTAINER_INSTANCE_OID
   );
 
   const vNetSubscriptionId = await askQuestion(
     terminal,
-    "VNet subscription ID",
+    "Enter Virtual Network Subscription ID",
     userContext.subscriptionId
   );
 
   const vNetResourceGroup = await askQuestion(
     terminal,
-    "VNet resource group",
+    "Enter Virtual Network Resource Group",
     userContext.resourceGroup
   );
 
@@ -749,7 +705,7 @@ const configureCloudShellVNet = async (terminal: Terminal, resolvedRegion: strin
   );
 
   // Step 2: Create Network Profile
-  await createNetworkProfile(
+  await createNetworkProfileWithVnet(
     vNetSubscriptionId,
     vNetResourceGroup,
     vnetName,
@@ -836,13 +792,13 @@ const createCloudShellVnet = async (
   };
 
   terminal.writeln(terminalLog.vnet(`Creating VNet: ${vnetName}`));
-  let vNetResponse = await PutARMCall<any>(
+  let vNetResponse = await updateVnet<any>(
     `/subscriptions/${vNetSubscriptionId}/resourceGroups/${vNetResourceGroup}/providers/Microsoft.Network/virtualNetworks/${vnetName}`,
     vNetConfigPayload
   );
 
   while (vNetResponse?.properties?.provisioningState !== "Succeeded") {
-    vNetResponse = await GetARMCall<any>(
+    vNetResponse = await getVnet<any>(
       `/subscriptions/${vNetSubscriptionId}/resourceGroups/${vNetResourceGroup}/providers/Microsoft.Network/virtualNetworks/${vnetName}`
     );
 
@@ -862,7 +818,7 @@ const createCloudShellVnet = async (
 /**
  * Creates a Network Profile for CloudShell
  */
-const createNetworkProfile = async (
+const createNetworkProfileWithVnet = async (
   vNetSubscriptionId: string,
   vNetResourceGroup: string,
   vnetName: string,
@@ -897,14 +853,13 @@ const createNetworkProfile = async (
   };
 
   terminal.writeln(terminalLog.vnet("Creating Network Profile"));
-  let networkProfileResponse = await PutARMCall<any>(
+  let networkProfileResponse = await createNetworkProfile<any>(
     `/subscriptions/${vNetSubscriptionId}/resourceGroups/${vNetResourceGroup}/providers/Microsoft.Network/networkProfiles/${networkProfileName}`,
-    createNetworkProfilePayload,
-    "2024-01-01"
+    createNetworkProfilePayload
   );
 
   while (networkProfileResponse?.properties?.provisioningState !== "Succeeded") {
-    networkProfileResponse = await GetARMCall<any>(
+    networkProfileResponse = await getNetworkProfileInfo<any>(
       `/subscriptions/${vNetSubscriptionId}/resourceGroups/${vNetResourceGroup}/providers/Microsoft.Network/networkProfiles/${networkProfileName}`
     );
 
@@ -939,14 +894,13 @@ const createNetworkRelay = async (
   };
 
   terminal.writeln(terminalLog.vnet("Creating Relay Namespace"));
-  let relayResponse = await PutARMCall<any>(
+  let relayResponse = await createRelay<any>(
     `/subscriptions/${vNetSubscriptionId}/resourceGroups/${vNetResourceGroup}/providers/Microsoft.Relay/namespaces/${relayName}`,
-    relayPayload,
-    "2024-01-01"
+    relayPayload
   );
 
   while (relayResponse?.properties?.provisioningState !== "Succeeded") {
-    relayResponse = await GetARMCall<any>(
+    relayResponse = await getRelay<any>(
       `/subscriptions/${vNetSubscriptionId}/resourceGroups/${vNetResourceGroup}/providers/Microsoft.Relay/namespaces/${relayName}`
     );
 
@@ -981,10 +935,9 @@ const assignRoleToNetworkProfile = async (
   };
 
   terminal.writeln(terminalLog.info("Assigning permissions to Network Profile"));
-  await PutARMCall<any>(
+  await createRoleOnNetworkProfile<any>(
     `/subscriptions/${vNetSubscriptionId}/resourceGroups/${vNetResourceGroup}/providers/Microsoft.Network/networkProfiles/${networkProfileName}/providers/Microsoft.Authorization/roleAssignments/${nfRoleName}`,
-    networkProfileRoleAssignmentPayload,
-    "2022-04-01"
+    networkProfileRoleAssignmentPayload
   );
 
   terminal.writeln(terminalLog.success("Network Profile permissions assigned"));
@@ -1009,10 +962,9 @@ const assignRoleToRelay = async (
   };
 
   terminal.writeln(terminalLog.info("Assigning permissions to Relay Namespace"));
-  await PutARMCall<any>(
+  await createRoleOnRelay<any>(
     `/subscriptions/${vNetSubscriptionId}/resourceGroups/${vNetResourceGroup}/providers/Microsoft.Relay/namespaces/${relayName}/providers/Microsoft.Authorization/roleAssignments/${relayRoleName}`,
-    relayRoleAssignmentPayload,
-    "2022-04-01"
+    relayRoleAssignmentPayload
   );
 
   terminal.writeln(terminalLog.success("Relay Namespace permissions assigned"));
@@ -1024,7 +976,8 @@ const assignRoleToRelay = async (
 const provisionCloudShellSession = async (
   resolvedRegion: string,
   terminal: Terminal,
-  vNetSettings: object
+  vNetSettings: object,
+  isAllPublicAccessEnabled: boolean
 ): Promise<{ socketUri?: string; provisionConsoleResponse?: any; targetUri?: string }> => {
   return new Promise( async (resolve, reject) => {
     try {
@@ -1052,7 +1005,7 @@ const provisionCloudShellSession = async (
         terminal.writeln(terminalLog.warning("No VNet configuration provided"));
         terminal.writeln(terminalLog.warning("CloudShell will be provisioned with public network access"));
 
-        if (hasDatabaseNetworkRestrictions()) {
+        if (!isAllPublicAccessEnabled) {
           terminal.writeln(terminalLog.error("Warning: Your database has network restrictions"));
           terminal.writeln(terminalLog.error("CloudShell may not be able to connect without proper VNet configuration"));
         }

@@ -1,7 +1,7 @@
 import { Spinner, SpinnerSize } from "@fluentui/react";
 import { MessageTypes } from "Contracts/ExplorerContracts";
 import { QuickstartFirewallNotification } from "Explorer/Quickstart/QuickstartFirewallNotification";
-import { checkFirewallRules } from "Explorer/Tabs/Shared/CheckFirewallRules";
+import { checkNetworkRules } from "Explorer/Tabs/Shared/CheckFirewallRules";
 import * as ko from "knockout";
 import * as React from "react";
 import FirewallRuleScreenshot from "../../../images/firewallRule.png";
@@ -65,23 +65,16 @@ class NotebookTerminalComponentAdapter implements ReactAdapter {
  * CloudShell terminal tab
  */
 class CloudShellTerminalComponentAdapter implements ReactAdapter {
+
   // parameters: true: show, false: hide
   public parameters: ko.Computed<boolean>;
   constructor(
-    private isAllPublicIPAddressesEnabled: ko.Observable<boolean>,
     private kind: ViewModels.TerminalKind,
   ) {}
 
   public renderComponent(): JSX.Element {
-    if (!this.isAllPublicIPAddressesEnabled()) {
-      return (
-        <QuickstartFirewallNotification
-          messageType={MessageTypes.OpenPostgresNetworkingBlade}
-          screenshot={FirewallRuleScreenshot}
-          shellName={getShellNameForDisplay(this.kind)}
-        />
-      );
-    }
+
+    console.log("this.parameters() " + this.parameters() );
     return this.parameters() ? (
       <CloudShellTerminalComponent 
         shellType={this.kind}/>
@@ -109,38 +102,24 @@ export default class TerminalTab extends TabsBase {
   private terminalComponentAdapter: any;
   private isAllPublicIPAddressesEnabled: ko.Observable<boolean>;
 
-  constructor(options: TerminalTabOptions) {
+  constructor (options: TerminalTabOptions) {
     super(options);
     this.container = options.container;
     this.isAllPublicIPAddressesEnabled = ko.observable(true);
     
-    if (options.kind === ViewModels.TerminalKind.Postgres) {
-      checkFirewallRules(
-        "2022-11-08",
-        (rule) => rule.properties.startIpAddress === "0.0.0.0" && rule.properties.endIpAddress === "255.255.255.255",
-        this.isAllPublicIPAddressesEnabled,
-      );
-    }
-
-    if (options.kind === ViewModels.TerminalKind.VCoreMongo) {
-      checkFirewallRules(
-        "2023-03-01-preview",
-        (rule) =>
-          rule.name.startsWith("AllowAllAzureServicesAndResourcesWithinAzureIps") ||
-          (rule.properties.startIpAddress === "0.0.0.0" && rule.properties.endIpAddress === "255.255.255.255"),
-        this.isAllPublicIPAddressesEnabled,
-      );
-    }
+    checkNetworkRules(options.kind, this.isAllPublicIPAddressesEnabled);
     
     this.initializeNotebookTerminalAdapter(options);
-
   }
 
-  private initializeNotebookTerminalAdapter(options: TerminalTabOptions): void {
+  private async initializeNotebookTerminalAdapter(options: TerminalTabOptions): Promise<void> {
     if (userContext.features.enableCloudShell) {
       this.terminalComponentAdapter = new CloudShellTerminalComponentAdapter(
-        this.isAllPublicIPAddressesEnabled,
         options.kind
+      );
+
+      this.terminalComponentAdapter.parameters = ko.computed<boolean>(() =>
+        this.isTemplateReady()
       );
     }
     else {
@@ -152,15 +131,14 @@ export default class TerminalTab extends TabsBase {
         this.isAllPublicIPAddressesEnabled,
         options.kind
       );
+
+      this.terminalComponentAdapter.parameters = ko.computed<boolean>(() =>
+        this.isTemplateReady() &&
+        useNotebook.getState().isNotebookEnabled &&
+        useNotebook.getState().notebookServerInfo?.notebookServerEndpoint &&
+        this.isAllPublicIPAddressesEnabled()
+      );
     }
-    
-    this.terminalComponentAdapter.parameters = ko.computed<boolean>(() =>
-      this.isTemplateReady() &&
-      (userContext.features.enableCloudShell ||
-        (useNotebook.getState().isNotebookEnabled &&
-          useNotebook.getState().notebookServerInfo?.notebookServerEndpoint)) &&
-      this.isAllPublicIPAddressesEnabled()
-    );
   }
 
   public getContainer(): Explorer {

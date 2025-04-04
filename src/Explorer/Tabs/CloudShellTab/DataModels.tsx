@@ -1,7 +1,7 @@
 /**
  * Copyright (c) Microsoft Corporation.  All rights reserved.
  */
-
+import { TerminalKind } from "../../../Contracts/ViewModels";
 
 export const enum OsType {
     Linux = "linux",
@@ -150,5 +150,36 @@ export type RelayNamespaceResponse = {
     value: RelayNamespace[];
 };
 
+/**
+ * Resource types for API versioning
+ */
+export enum ResourceType {
+    NETWORK = "NETWORK",
+    DATABASE = "DATABASE",
+    VNET = "VNET",
+    SUBNET = "SUBNET",
+    RELAY = "RELAY",
+    ROLE = "ROLE"
+  }
+
+// Type definition for API_VERSIONS configuration
+export type ApiVersionsConfig = {
+    // Global default API version
+    DEFAULT: string;
+    
+    // Resource-specific default API versions
+    RESOURCE_DEFAULTS: {
+      [key in ResourceType]: string;
+    };
+    
+    // Shell-type specific configurations
+    SHELL_TYPES: {
+      [key in TerminalKind]?: {
+        // Resource-specific overrides for this shell type
+        [key in ResourceType]?: string;
+      };
+    };
+  };
+  
 
 

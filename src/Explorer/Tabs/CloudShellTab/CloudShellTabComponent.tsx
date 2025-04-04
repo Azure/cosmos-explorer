@@ -5,12 +5,13 @@ import "xterm/css/xterm.css";
 import { TerminalKind } from "../../../Contracts/ViewModels";
 import { startCloudShellTerminal } from "./UseTerminal";
 
+
 export interface CloudShellTerminalProps {
     shellType: TerminalKind;
 }
 
 export const CloudShellTerminalComponent: React.FC<CloudShellTerminalProps> = ({
-  shellType
+    shellType
 }: CloudShellTerminalProps) => {
     const terminalRef = useRef(null); // Reference for terminal container
     const xtermRef = useRef(null);    // Reference for XTerm instance
