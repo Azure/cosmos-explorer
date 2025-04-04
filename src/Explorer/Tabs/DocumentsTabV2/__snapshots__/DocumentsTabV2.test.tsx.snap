@@ -6,6 +6,7 @@ exports[`Documents tab (noSql API) when rendered should render the page 1`] = `
 >
   <div
     className="tab-pane active"
+    data-test="DocumentsTab"
     role="tabpanel"
     style={
       {
@@ -15,6 +16,7 @@ exports[`Documents tab (noSql API) when rendered should render the page 1`] = `
   >
     <div
       className="___11ktxfv_0000000 f1o614cb fy9rknc f22iagw fsnqrgy f1f5gg8d fjodcmx f122n59 f1f09k3d fg706s2 frpde29"
+      data-test="DocumentsTab/Filter"
     >
       <span>
          SELECT * FROM c 
@@ -65,6 +67,7 @@ exports[`Documents tab (noSql API) when rendered should render the page 1`] = `
         preferredSize="35%"
       >
         <div
+          data-test="DocumentsTab/DocumentsPane"
           style={
             {
               "height": "100%",
@@ -126,6 +129,7 @@ exports[`Documents tab (noSql API) when rendered should render the page 1`] = `
         minSize={30}
       >
         <div
+          data-test="DocumentsTab/ResultsPane"
           style={
             {
               "height": "100%",
