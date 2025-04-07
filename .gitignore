@@ -21,3 +21,5 @@ GettingStarted-ignore*.ipynb
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+/.vs/cosmos-explorer
+/.vs/slnx.sqlite-journal
