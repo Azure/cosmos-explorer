@@ -3,8 +3,7 @@ import { Terminal } from "xterm";
 import { FitAddon } from 'xterm-addon-fit';
 import "xterm/css/xterm.css";
 import { TerminalKind } from "../../../Contracts/ViewModels";
-import { startCloudShellTerminal } from "./UseTerminal";
-
+import { startCloudShellTerminal } from "./Core/CloudShellTerminalCore";
 
 export interface CloudShellTerminalProps {
     shellType: TerminalKind;
@@ -49,17 +48,21 @@ export const CloudShellTerminalComponent: React.FC<CloudShellTerminalProps> = ({
         const handleResize = () => fitAddon.fit();
         window.addEventListener('resize', handleResize);
 
-        socketRef.current = startCloudShellTerminal(term, shellType);
-    
-        term.onData((data) => {
-            if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
-                socketRef.current.send(data);
-            }
-        });
+        try {
+            socketRef.current = startCloudShellTerminal(term, shellType);
+            term.onData((data) => {
+                if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+                    socketRef.current.send(data);
+                }
+            });
+        } catch (error) {
+            console.error("Failed to initialize CloudShell terminal:", error);
+            term.writeln(`\x1B[31mError initializing terminal: ${error.message}\x1B[0m`);
+        }
 
         // Cleanup function to close WebSocket and dispose terminal
         return () => {
-            if (!socketRef.current) return; // Prevent errors if WebSocket is not initialized
+            if (!socketRef.current) return;
             if (socketRef.current) {
                 socketRef.current.close(); // Close WebSocket connection
             }
@@ -67,7 +70,7 @@ export const CloudShellTerminalComponent: React.FC<CloudShellTerminalProps> = ({
             term.dispose(); // Clean up XTerm instance
         };
         
-    }, []);
+    }, [shellType]);
 
     return <div ref={terminalRef} style={{ width: "100%", height: "500px"}} />;
 };

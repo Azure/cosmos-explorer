@@ -91,7 +91,7 @@ export async function IsPublicAccessAvailable(kind: ViewModels.TerminalKind): Pr
     );
   }
 
-  return hasDatabaseNetworkRestrictions();
+  return !hasDatabaseNetworkRestrictions();
 }
 
 /**
