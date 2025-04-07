@@ -180,7 +180,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
             type: policy.indexType,
             indexingSearchListSize: policy.indexingSearchListSize,
             quantizationByteSize: policy.quantizationByteSize,
-            vectorIndexShardKey: policy.vectorIndexShardKey
+            vectorIndexShardKey: policy.vectorIndexShardKey,
           }) as VectorIndex,
       );
     const validationPassed = vectorEmbeddingPolicyData.every(
@@ -251,7 +251,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
       vectorEmbeddings[index].vectorIndexShardKey = [value];
     }
     setVectorEmbeddingPolicyData(vectorEmbeddings);
-  }
+  };
 
   const onVectorEmbeddingPolicyChange = (
     index: number,
@@ -422,23 +422,18 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
                         }
                       />
                     </Stack>
-                    <Stack
-                      style={{ marginLeft: "10px" }}
-                    >
-                      <Label
-                        disabled={disabled || vectorEmbeddingPolicy.indexType !== "diskANN"}
-                        styles={labelStyles}
-                      >Shard key</Label>
+                    <Stack style={{ marginLeft: "10px" }}>
+                      <Label disabled={disabled || vectorEmbeddingPolicy.indexType !== "diskANN"} styles={labelStyles}>
+                        Shard key
+                      </Label>
                       <TextField
                         disabled={disabled || vectorEmbeddingPolicy.indexType !== "diskANN"}
                         id={`vector-policy-vectorIndexShardKey-${index + 1}`}
                         styles={textFieldStyles}
                         value={String(vectorEmbeddingPolicy.vectorIndexShardKey?.[0] ?? "")}
-                        onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                          onShardKeyChange(index, event)
-                        }
+                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => onShardKeyChange(index, event)}
                       />
-                    </Stack>                  
+                    </Stack>
                   </Stack>
                 )}
               </Stack>
