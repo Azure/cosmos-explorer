@@ -30,7 +30,7 @@
     "UpdateFailureMessage": "Materialized views builder resource update failed.",
     "DeleteMessage": "Materialized views builder resource is being deleted.",
     "DeleteInitializeTitle": "Deleting resource",
-    "DeleteInitializeMessage": "Materialized views Builder resource will be deleted.",
+    "DeleteInitializeMessage": "Materialized views builder resource will be deleted.",
     "DeleteSuccessTitle": "Resource deleted",
     "DeleteSuccesseMessage": "Materialized views Builder resource deleted.",
     "DeleteFailureTitle": "Failed to delete resource",
