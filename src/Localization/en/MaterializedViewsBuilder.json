@@ -32,7 +32,7 @@
     "DeleteInitializeTitle": "Deleting resource",
     "DeleteInitializeMessage": "Materialized views builder resource will be deleted.",
     "DeleteSuccessTitle": "Resource deleted",
-    "DeleteSuccesseMessage": "Materialized views Builder resource deleted.",
+    "DeleteSuccesseMessage": "Materialized views builder resource deleted.",
     "DeleteFailureTitle": "Failed to delete resource",
     "DeleteFailureMessage": "Materialized views Builder resource deletion failed.",
     "ApproximateCost": "Approximate Cost Per Hour",
