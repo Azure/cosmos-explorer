@@ -41,7 +41,7 @@
     "MetricsText": "Monitor the CPU and memory usage for the materialized views Builder instances in ",
     "MetricsBlade": "the metrics blade.",
     "MonitorUsage": "Monitor Usage",
-    "ResizingDecisionText": "To understand if the materialized views Builder is the right size, ",
+    "ResizingDecisionText": "To understand if the materialized views builder is the right size, ",
     "ResizingDecisionLink": "learn more about materialized views builder sizing.",
     "WarningBannerOnUpdate": "Adding or modifying materialized views builder instances may affect your bill.",
     "WarningBannerOnDelete": "After deprovisioning the materialized views builder, your materialized views will not be updated with new source changes anymore. Materialized views builder is compute in your account that performs read operations on source containers for any updates and applies them on materialized views as per the materialized view definition.",
