@@ -36,7 +36,7 @@
     "DeleteFailureTitle": "Failed to delete resource",
     "DeleteFailureMessage": "Materialized views builder resource deletion failed.",
     "ApproximateCost": "Approximate Cost Per Hour",
-    "CostText": "Hourly cost of the materialized views Builder resource depends on the SKU selection, number of instances per region, and number of regions.",
+    "CostText": "Hourly cost of the materialized views builder resource depends on the SKU selection, number of instances per region, and number of regions.",
     "MetricsString": "Metrics",
     "MetricsText": "Monitor the CPU and memory usage for the materialized views builder instances in ",
     "MetricsBlade": "the metrics blade.",
