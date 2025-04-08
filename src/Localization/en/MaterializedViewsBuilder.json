@@ -38,7 +38,7 @@
     "ApproximateCost": "Approximate Cost Per Hour",
     "CostText": "Hourly cost of the materialized views Builder resource depends on the SKU selection, number of instances per region, and number of regions.",
     "MetricsString": "Metrics",
-    "MetricsText": "Monitor the CPU and memory usage for the materialized views Builder instances in ",
+    "MetricsText": "Monitor the CPU and memory usage for the materialized views builder instances in ",
     "MetricsBlade": "the metrics blade.",
     "MonitorUsage": "Monitor Usage",
     "ResizingDecisionText": "To understand if the materialized views builder is the right size, ",
