@@ -23,7 +23,7 @@
     "CreateFailureMessage": "Materialized views builder resource provisioning failed.",
     "UpdateMessage": "Materialized views builder resource is being updated.",
     "UpdateInitializeTitle": "Updating resource",
-    "UpdateInitializeMessage": "Materialized views Builder resource will be updated.",
+    "UpdateInitializeMessage": "Materialized views builder resource will be updated.",
     "UpdateSuccessTitle": "Resource updated",
     "UpdateSuccesseMessage": "Materialized views Builder resource updated.",
     "UpdateFailureTitle": "Failed to update resource",
