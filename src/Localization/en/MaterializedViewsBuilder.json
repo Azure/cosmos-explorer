@@ -27,7 +27,7 @@
     "UpdateSuccessTitle": "Resource updated",
     "UpdateSuccesseMessage": "Materialized views builder resource updated.",
     "UpdateFailureTitle": "Failed to update resource",
-    "UpdateFailureMessage": "Materialized views Builder resource updation failed.",
+    "UpdateFailureMessage": "Materialized views builder resource update failed.",
     "DeleteMessage": "Materialized views builder resource is being deleted.",
     "DeleteInitializeTitle": "Deleting resource",
     "DeleteInitializeMessage": "Materialized views Builder resource will be deleted.",
