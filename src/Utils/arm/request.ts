@@ -47,6 +47,7 @@ interface Options {
   body?: unknown;
   queryParams?: ARMQueryParams;
   contentType?: string;
+  customHeaders?: Record<string, string>;
 }
 
 export async function armRequestWithoutPolling<T>({
@@ -57,6 +58,7 @@ export async function armRequestWithoutPolling<T>({
   body: requestBody,
   queryParams,
   contentType,
+  customHeaders
 }: Options): Promise<{ result: T; operationStatusUrl: string }> {
   const url = new URL(path, host);
   url.searchParams.append("api-version", configContext.armAPIVersion || apiVersion);
@@ -65,7 +67,7 @@ export async function armRequestWithoutPolling<T>({
     queryParams.metricNames && url.searchParams.append("metricnames", queryParams.metricNames);
   }
 
-  if (!userContext.authorizationToken) {
+  if (!userContext.authorizationToken && !customHeaders["Authorization"]) {
     throw new Error("No authority token provided");
   }
 
@@ -74,6 +76,7 @@ export async function armRequestWithoutPolling<T>({
     headers: {
       Authorization: userContext.authorizationToken,
       [HttpHeaders.contentType]: contentType || "application/json",
+      ...customHeaders
     },
     body: requestBody ? JSON.stringify(requestBody) : undefined,
   });
@@ -109,6 +112,7 @@ export async function armRequest<T>({
   body: requestBody,
   queryParams,
   contentType,
+  customHeaders
 }: Options): Promise<T> {
   const armRequestResult = await armRequestWithoutPolling<T>({
     host,
@@ -118,6 +122,7 @@ export async function armRequest<T>({
     body: requestBody,
     queryParams,
     contentType,
+    customHeaders
   });
   const operationStatusUrl = armRequestResult.operationStatusUrl;
   if (operationStatusUrl) {
