@@ -89,6 +89,7 @@ export enum Action {
   PhoenixDBAccountAllowed,
   DeleteCellFromMenu,
   OpenTerminal,
+  OpenCloudShellTerminal,
   CreateMongoCollectionWithWildcardIndex,
   ClickCommandBarButton,
   RefreshResourceTreeMyNotebooks,
