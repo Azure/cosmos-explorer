@@ -1,0 +1,242 @@
+/**
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Core functionality for CloudShell terminal management
+ */
+
+import { Terminal } from "xterm";
+import { TerminalKind } from "../../../Contracts/ViewModels";
+import { userContext } from "../../../UserContext";
+import {
+  authorizeSession,
+  connectTerminal,
+  provisionConsole,
+  putEphemeralUserSettings,
+  registerCloudShellProvider,
+  verifyCloudShellProviderRegistration
+} from "./Data/CloudShellClient";
+import { ShellTypeHandler } from "./ShellTypes/ShellTypeFactory";
+import { AttachAddon } from "./Utils/AttachAddOn";
+import { askConfirmation, wait } from "./Utils/CommonUtils";
+import { getNormalizedRegion } from "./Utils/RegionUtils";
+
+// Constants
+const DEFAULT_CLOUDSHELL_REGION = "westus";
+const POLLING_INTERVAL_MS = 5000;
+const MAX_RETRY_COUNT = 10;
+const MAX_PING_COUNT = 20 * 60; // 20 minutes (60 seconds/minute)
+
+/**
+ * Main function to start a CloudShell terminal
+ */
+export const startCloudShellTerminal = 
+  async (terminal: Terminal, shellType: TerminalKind): Promise<WebSocket> => {
+
+  await ensureCloudShellProviderRegistered();
+
+  const resolvedRegion = determineCloudShellRegion();
+  // Ask for user consent for region
+  const consentGranted = await askConfirmation(terminal, "This shell might be in a different region than the database region. Do you want to proceed?");
+  if (!consentGranted) {
+    return null; // Exit if user declined
+  }
+
+  terminal.writeln(`Connecting to CloudShell.....`);
+  
+  let sessionDetails: {
+    socketUri?: string;
+    provisionConsoleResponse?: any;
+    targetUri?: string;
+  };
+
+  sessionDetails = await provisionCloudShellSession(resolvedRegion, terminal);
+
+  if (!sessionDetails.socketUri) {
+    return null;
+  }
+
+  // Get the shell handler for this type
+  const shellHandler = ShellTypeHandler.getHandler(shellType);
+  // Configure WebSocket connection with shell-specific commands
+  const socket = await establishTerminalConnection(
+    terminal,
+    shellHandler,
+    sessionDetails.socketUri,
+    sessionDetails.provisionConsoleResponse,
+    sessionDetails.targetUri
+  );
+
+  return socket;
+};
+
+/**
+ * Ensures that the CloudShell provider is registered for the current subscription
+ */
+export const ensureCloudShellProviderRegistered = async (): Promise<void> => {
+  try {
+    const response: any = await verifyCloudShellProviderRegistration(userContext.subscriptionId);
+
+    if (response.registrationState !== "Registered") {
+      await registerCloudShellProvider(userContext.subscriptionId);
+    }
+  } catch (err) {
+    throw err;
+  }
+};
+
+/**
+ * Determines the appropriate CloudShell region
+ */
+export const determineCloudShellRegion = (): string => {
+  return  getNormalizedRegion(userContext.databaseAccount?.location, DEFAULT_CLOUDSHELL_REGION);
+};
+
+/**
+ * Provisions a CloudShell session
+ */
+export const provisionCloudShellSession = async (
+  resolvedRegion: string,
+  terminal: Terminal
+): Promise<{ socketUri?: string; provisionConsoleResponse?: any; targetUri?: string }> => {
+  return new Promise( async (resolve, reject) => {
+    try {
+       // Apply user settings
+      await putEphemeralUserSettings(userContext.subscriptionId, resolvedRegion);
+      
+      // Provision console
+      let provisionConsoleResponse;
+      let attemptCounter = 0;
+
+      do {
+        provisionConsoleResponse = await provisionConsole(resolvedRegion);
+        attemptCounter++;
+
+        if (provisionConsoleResponse.properties.provisioningState !== "Succeeded") {
+          await wait(POLLING_INTERVAL_MS);
+        }
+      } while (provisionConsoleResponse.properties.provisioningState !== "Succeeded" && attemptCounter < 10);
+
+      if (provisionConsoleResponse.properties.provisioningState !== "Succeeded") {
+        const errorMessage = `Provisioning failed: ${provisionConsoleResponse.properties.provisioningState}`;
+        return reject(new Error(errorMessage));
+      }
+      
+      // Connect terminal
+      const connectTerminalResponse = await connectTerminal(
+        provisionConsoleResponse.properties.uri,
+        { rows: terminal.rows, cols: terminal.cols }
+      );
+
+      const targetUri = `${provisionConsoleResponse.properties.uri}/terminals?cols=${terminal.cols}&rows=${terminal.rows}&version=2019-01-01&shell=bash`;
+      const termId = connectTerminalResponse.id;
+
+      // Determine socket URI
+      let socketUri = connectTerminalResponse.socketUri.replace(":443/", "");
+      const targetUriBody = targetUri.replace('https://', '').split('?')[0];
+
+      if (socketUri.indexOf(targetUriBody) === -1) {
+        socketUri = `wss://${targetUriBody}/${termId}`;
+      }
+
+      if (targetUriBody.includes('servicebus')) {
+        const targetUriBodyArr = targetUriBody.split('/');
+        socketUri = `wss://${targetUriBodyArr[0]}/$hc/${targetUriBodyArr[1]}/terminals/${termId}`;
+      }
+
+      return resolve({ socketUri, provisionConsoleResponse, targetUri });
+    } catch (err) {
+      return reject(err);
+    }
+  });
+};
+
+
+/**
+ * Establishes a terminal connection via WebSocket
+ */
+export const establishTerminalConnection = async (
+  terminal: Terminal,
+  shellHandler: any,
+  socketUri: string,
+  provisionConsoleResponse: any,
+  targetUri: string
+): Promise<WebSocket> => {
+
+  let socket = new WebSocket(socketUri);
+
+  // Get shell-specific initial commands 
+  const initCommands = await shellHandler.getInitialCommands();
+
+  // Configure the socket
+  socket = await configureSocketConnection(socket, socketUri, terminal, initCommands, 0);
+
+  // Attach the terminal addon
+  const attachAddon = new AttachAddon(socket);
+  terminal.loadAddon(attachAddon);
+
+  // Authorize the session
+  try {
+    const authorizeResponse = await authorizeSession(provisionConsoleResponse.properties.uri);
+    const cookieToken = authorizeResponse.token;
+
+    // Load auth token with a hidden image
+    const img = document.createElement("img");
+    img.src = `${targetUri}&token=${encodeURIComponent(cookieToken)}`;
+    terminal.focus();
+  } catch (err) {
+    socket.close();
+    throw err;
+  }
+
+  return socket;
+};
+
+/**
+ * Configures a WebSocket connection for the terminal
+ */
+export const configureSocketConnection = async (
+  socket: WebSocket,
+  uri: string,
+  terminal: Terminal,
+  initCommands: string,
+  socketRetryCount: number
+): Promise<WebSocket> => {
+  
+  sendTerminalStartupCommands(socket, initCommands);
+
+  socket.onerror = async () => {
+    if (socketRetryCount < MAX_RETRY_COUNT && socket.readyState !== WebSocket.CLOSED) {
+      await configureSocketConnection(socket, uri, terminal, initCommands, socketRetryCount + 1, attachAddon);
+    } else {
+      socket.close();
+    }
+  };
+
+  return socket;
+};
+
+export const sendTerminalStartupCommands = (socket: WebSocket, initCommands: string): void => {
+  let keepAliveID: NodeJS.Timeout = null;
+  let pingCount = 0;
+
+  if (socket && socket.readyState === WebSocket.OPEN) {
+    socket.send(initCommands);
+  } else {
+    socket.onopen = () => {
+      socket.send(initCommands);
+
+      const keepSocketAlive = (socket: WebSocket) => {
+        if (socket.readyState === WebSocket.OPEN) {
+          if (pingCount >= MAX_PING_COUNT) {
+            socket.close();
+          } else {
+            socket.send('');
+            pingCount++;
+            keepAliveID = setTimeout(() => keepSocketAlive(socket), 1000);
+          }
+        }
+      };
+
+      keepSocketAlive(socket);
+    };
+  }
+}

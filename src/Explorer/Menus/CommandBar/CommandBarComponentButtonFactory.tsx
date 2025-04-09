@@ -126,13 +126,15 @@ export function createContextCommandBarButtons(
   const buttons: CommandButtonComponentProps[] = [];
 
   if (!selectedNodeState.isDatabaseNodeOrNoneSelected() && userContext.apiType === "Mongo") {
-    const label = useNotebook.getState().isShellEnabled ? "Open Mongo Shell" : "New Shell";
+    const label = (useNotebook.getState().isShellEnabled || userContext.features.enableCloudShell) ? "Open Mongo Shell" : "New Shell";
     const newMongoShellBtn: CommandButtonComponentProps = {
       iconSrc: HostedTerminalIcon,
       iconAlt: label,
       onCommandClick: () => {
         const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
-        if (useNotebook.getState().isShellEnabled) {
+        if (userContext.features.enableCloudShell) {
+          container.openCloudShellTerminal(ViewModels.TerminalKind.Mongo);
+        } else if (useNotebook.getState().isShellEnabled) {
           container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
         } else {
           selectedCollection && selectedCollection.onNewMongoShellClick();
@@ -146,7 +148,7 @@ export function createContextCommandBarButtons(
   }
 
   if (
-    useNotebook.getState().isShellEnabled &&
+    (useNotebook.getState().isShellEnabled || userContext.features.enableCloudShell) &&
     !selectedNodeState.isDatabaseNodeOrNoneSelected() &&
     userContext.apiType === "Cassandra"
   ) {
@@ -155,7 +157,11 @@ export function createContextCommandBarButtons(
       iconSrc: HostedTerminalIcon,
       iconAlt: label,
       onCommandClick: () => {
-        container.openNotebookTerminal(ViewModels.TerminalKind.Cassandra);
+        if (userContext.features.enableCloudShell) {
+          container.openCloudShellTerminal(ViewModels.TerminalKind.Cassandra);
+        } else {
+          container.openNotebookTerminal(ViewModels.TerminalKind.Cassandra);
+        }
       },
       commandButtonLabel: label,
       ariaLabel: label,
@@ -455,7 +461,9 @@ function createOpenTerminalButtonByKind(
     iconSrc: HostedTerminalIcon,
     iconAlt: label,
     onCommandClick: () => {
-      if (useNotebook.getState().isNotebookEnabled) {
+      if (userContext.features.enableCloudShell) {
+        container.openCloudShellTerminal(terminalKind);
+      } else if (useNotebook.getState().isNotebookEnabled) {
         container.openNotebookTerminal(terminalKind);
       }
     },
