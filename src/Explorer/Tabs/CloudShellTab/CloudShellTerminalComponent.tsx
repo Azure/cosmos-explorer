@@ -36,6 +36,7 @@ export const CloudShellTerminalComponent: React.FC<CloudShellTerminalComponentPr
 
         term.loadAddon(fitAddon);
 
+        fitAddon.fit(); // Fit the terminal to the container size
         // Attach terminal to the DOM
         if (terminalRef.current) {
             term.open(terminalRef.current);
