@@ -1046,7 +1046,6 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     );
 
     const selectedDocumentId = documentIds[clickedRowIndex as number];
-    const originalPartitionKeyValue = selectedDocumentId.partitionKeyValue;
     selectedDocumentId.partitionKeyValue = partitionKeyValueArray;
 
     onExecutionErrorChange(false);
@@ -1082,10 +1081,6 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
           setColumnDefinitionsFromDocument(documentContent);
         },
         (error) => {
-          // in case of any kind of failures of accidently changing partition key, restore the original
-          // so that when user navigates away from current document and comes back,
-          // it doesnt fail to load due to using the invalid partition keys
-          selectedDocumentId.partitionKeyValue = originalPartitionKeyValue;
           onExecutionErrorChange(true);
           const errorMessage = getErrorMessage(error);
           useDialog.getState().showOkModalDialog("Update document failed", errorMessage);
@@ -2099,8 +2094,8 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
   return (
     <CosmosFluentProvider className={styles.container}>
-      <div data-test={"DocumentsTab"} className="tab-pane active" role="tabpanel" style={{ display: "flex" }}>
-        <div data-test={"DocumentsTab/Filter"} className={styles.filterRow}>
+      <div className="tab-pane active" role="tabpanel" style={{ display: "flex" }}>
+        <div className={styles.filterRow}>
           {!isPreferredApiMongoDB && <span> SELECT * FROM c </span>}
           <InputDataList
             dropdownOptions={getFilterChoices()}
@@ -2142,11 +2137,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
           }}
         >
           <Allotment.Pane preferredSize={`${tabStateData.leftPaneWidthPercent}%`} minSize={55}>
-            <div
-              data-test={"DocumentsTab/DocumentsPane"}
-              style={{ height: "100%", width: "100%", overflow: "hidden" }}
-              ref={tableContainerRef}
-            >
+            <div style={{ height: "100%", width: "100%", overflow: "hidden" }} ref={tableContainerRef}>
               <div className={styles.tableContainer}>
                 <div
                   style={
@@ -2200,7 +2191,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
             </div>
           </Allotment.Pane>
           <Allotment.Pane minSize={30}>
-            <div data-test={"DocumentsTab/ResultsPane"} style={{ height: "100%", width: "100%" }}>
+            <div style={{ height: "100%", width: "100%" }}>
               {isTabActive && selectedDocumentContent && selectedRows.size <= 1 && (
                 <EditorReact
                   language={"json"}
