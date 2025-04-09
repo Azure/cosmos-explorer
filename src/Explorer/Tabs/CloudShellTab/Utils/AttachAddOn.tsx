@@ -1,11 +1,11 @@
 
+import { AbstractShellHandler } from 'Explorer/Tabs/CloudShellTab/ShellTypes/AbstractShellHandler';
 import { IDisposable, ITerminalAddon, Terminal } from 'xterm';
 
 interface IAttachOptions {
     bidirectional?: boolean;
     startMarker?: string;
-    endMarker?: string;
-    terminalSuppressedData?: string;
+    shellHandler?: AbstractShellHandler;
 }
 
 export class AttachAddon implements ITerminalAddon {
@@ -14,11 +14,10 @@ export class AttachAddon implements ITerminalAddon {
     private _disposables: IDisposable[] = [];
     private _socketData: string;
 
-    private _flag: boolean = true;
+    private _allowTerminalWrite: boolean = true;
 
     private _startMarker: string;
-    private _endMarker: string;
-    private _terminalSuppressedData: string;
+    private _shellHandler: AbstractShellHandler;
 
     constructor(socket: WebSocket, options?: IAttachOptions) {
         this._socket = socket;
@@ -26,10 +25,9 @@ export class AttachAddon implements ITerminalAddon {
         this._socket.binaryType = 'arraybuffer';
         this._bidirectional = !(options && options.bidirectional === false);
         this._startMarker = options?.startMarker;
-        this._endMarker = options?.endMarker;
-        this._terminalSuppressedData = options?.terminalSuppressedData;
+        this._shellHandler = options?.shellHandler;
         this._socketData = '';
-        this._flag = true;
+        this._allowTerminalWrite = true;
     }
 
     public activate(terminal: Terminal): void {
@@ -82,15 +80,21 @@ export class AttachAddon implements ITerminalAddon {
                 }
 
                 if (data.includes(this._startMarker)) {
-                    this._flag = false;
-                    terminal.write("Preparing environment...\r\n");
+                    this._allowTerminalWrite = false;
+                    terminal.write(`Preparing ${this._shellHandler.getShellName()} environment...\r\n`);
                 }
-                if (this._flag && this._terminalSuppressedData && this._terminalSuppressedData.length > 0 && !data.includes(this._terminalSuppressedData)) {
+                if (this._allowTerminalWrite && 
+                    this._shellHandler?.getTerminalSuppressedData() && 
+                    this._shellHandler?.getTerminalSuppressedData().length > 0 && 
+                    !data.includes(this._shellHandler?.getTerminalSuppressedData())) {
                     terminal.write(data);
                 }
 
-                if (data.includes(this._endMarker)) {
-                    this._flag = true;
+                console.log('data', data);
+                console.log("connection command", this._shellHandler.getConnectionCommand());
+                console.log("----")
+                if (data.includes(this._shellHandler.getConnectionCommand())) {
+                    this._allowTerminalWrite = true;
                 }
             })
         );

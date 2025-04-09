@@ -32,10 +32,8 @@ export class PostgresShellHandler extends AbstractShellHandler {
     ];
   }
 
-  public getConnectionCommands(config: any): string[] {
-    return [
-      `psql 'read -p "Enter Database Name: " dbname && read -p "Enter Username: " username && host=${config.endpoint} port=5432 dbname=$dbname user=$username sslmode=require'`
-    ];
+  public getConnectionCommand(): string {
+    return `psql 'read -p "Enter Database Name: " dbname && read -p "Enter Username: " username && host=${this.getEndpoint()} port=5432 dbname=$dbname user=$username sslmode=require'`;
   }
 
   public getTerminalSuppressedData(): string {
