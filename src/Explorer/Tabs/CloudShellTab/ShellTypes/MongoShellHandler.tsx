@@ -5,10 +5,17 @@
 
 import { userContext } from "../../../../UserContext";
 import { AbstractShellHandler } from "./AbstractShellHandler";
+import { getHostFromUrl } from "../Utils/CommonUtils";
 
 const PACKAGE_VERSION: string = "2.3.8";
 
 export class MongoShellHandler extends AbstractShellHandler {
+
+  private _key: string;
+  constructor(private key: string) {
+    super(); 
+    this.key = key;
+  }
 
   public getShellName(): string {
     return "MongoDB";
@@ -29,10 +36,8 @@ export class MongoShellHandler extends AbstractShellHandler {
     ];
   }
 
-  public getConnectionCommands(config: any): string[] {
-    return [
-      `mongosh --host ${config.host} --port 10255 --username ${config.name} --password ${config.password} --tls --tlsAllowInvalidCertificates`
-    ];
+  public getConnectionCommand(): string {
+    return `mongosh --host ${getHostFromUrl(this.getEndpoint())} --port 10255 --username ${userContext.databaseAccount?.name} --password ${this._key} --tls --tlsAllowInvalidCertificates`;
   }
 
   public getTerminalSuppressedData(): string {

@@ -14,7 +14,7 @@ import {
   registerCloudShellProvider,
   verifyCloudShellProviderRegistration
 } from "./Data/CloudShellClient";
-import { END_MARKER, START_MARKER } from "./ShellTypes/AbstractShellHandler";
+import { START_MARKER, AbstractShellHandler } from "./ShellTypes/AbstractShellHandler";
 import { ShellTypeHandlerFactory } from "./ShellTypes/ShellTypeFactory";
 import { AttachAddon } from "./Utils/AttachAddOn";
 import { askConfirmation, wait } from "./Utils/CommonUtils";
@@ -62,7 +62,7 @@ export const startCloudShellTerminal =
   }
 
   // Get the shell handler for this type
-  const shellHandler = ShellTypeHandlerFactory.getHandler(shellType);
+  const shellHandler = await ShellTypeHandlerFactory.getHandler(shellType);
   // Configure WebSocket connection with shell-specific commands
   const socket = await establishTerminalConnection(
     terminal,
@@ -162,7 +162,7 @@ export const provisionCloudShellSession = async (
  */
 export const establishTerminalConnection = async (
   terminal: Terminal,
-  shellHandler: any,
+  shellHandler: AbstractShellHandler,
   socketUri: string,
   provisionConsoleResponse: any,
   targetUri: string
@@ -171,15 +171,14 @@ export const establishTerminalConnection = async (
   let socket = new WebSocket(socketUri);
 
   // Get shell-specific initial commands 
-  const initCommands = await shellHandler.getInitialCommands();
+  const initCommands = shellHandler.getInitialCommands();
 
   // Configure the socket
   socket = await configureSocketConnection(socket, socketUri, terminal, initCommands, 0);
 
   const options = {
     startMarker: START_MARKER,
-    endMarker: END_MARKER,
-    terminalSuppressedData: shellHandler.getTerminalSuppressedData()
+    shellHandler: shellHandler
   };
 
   // Attach the terminal addon
