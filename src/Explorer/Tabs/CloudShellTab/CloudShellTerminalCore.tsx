@@ -19,6 +19,11 @@ import { ShellTypeHandlerFactory } from "./ShellTypes/ShellTypeFactory";
 import { AttachAddon } from "./Utils/AttachAddOn";
 import { askConfirmation, wait } from "./Utils/CommonUtils";
 import { getNormalizedRegion } from "./Utils/RegionUtils";
+import {
+  formatErrorMessage,
+  formatInfoMessage,
+  formatWarningMessage
+} from "./Utils/TerminalLogFormats";
 
 // Constants
 const DEFAULT_CLOUDSHELL_REGION = "westus";
@@ -36,12 +41,12 @@ export const startCloudShellTerminal =
 
   const resolvedRegion = determineCloudShellRegion();
   // Ask for user consent for region
-  const consentGranted = await askConfirmation(terminal, "This shell might be in a different region than the database region. Do you want to proceed?");
+  const consentGranted = await askConfirmation(terminal, formatWarningMessage("This shell might be in a different region than the database region. Do you want to proceed?"));
   if (!consentGranted) {
     return null; // Exit if user declined
   }
 
-  terminal.writeln(`Connecting to CloudShell.....`);
+  terminal.writeln(formatInfoMessage("Connecting to CloudShell....."));
   
   let sessionDetails: {
     socketUri?: string;
@@ -52,6 +57,7 @@ export const startCloudShellTerminal =
   sessionDetails = await provisionCloudShellSession(resolvedRegion, terminal);
 
   if (!sessionDetails.socketUri) {
+    terminal.writeln(formatErrorMessage("Failed to establish a connection. Please try again later."));
     return null;
   }
 
