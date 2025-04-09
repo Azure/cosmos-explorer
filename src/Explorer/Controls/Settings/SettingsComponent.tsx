@@ -1349,7 +1349,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
     if (this.isGlobalSecondaryIndex) {
       tabs.push({
-        tab: SettingsV2TabTypes.GlobaleSecondaryIndexTab,
+        tab: SettingsV2TabTypes.GlobalSecondaryIndexTab,
         content: <GlobalSecondaryIndexComponent {...globalSecondaryIndexComponentProps} />,
       });
     }

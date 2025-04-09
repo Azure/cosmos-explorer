@@ -57,7 +57,7 @@ export enum SettingsV2TabTypes {
   ComputedPropertiesTab,
   ContainerVectorPolicyTab,
   ThroughputBucketsTab,
-  GlobaleSecondaryIndexTab,
+  GlobalSecondaryIndexTab,
 }
 
 export enum ContainerPolicyTabTypes {
@@ -172,7 +172,7 @@ export const getTabTitle = (tab: SettingsV2TabTypes): string => {
       return "Container Policies";
     case SettingsV2TabTypes.ThroughputBucketsTab:
       return "Throughput Buckets";
-    case SettingsV2TabTypes.GlobaleSecondaryIndexTab:
+    case SettingsV2TabTypes.GlobalSecondaryIndexTab:
       return "Global Secondary Index (Preview)";
     default:
       throw new Error(`Unknown tab ${tab}`);

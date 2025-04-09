@@ -344,8 +344,8 @@ exports[`SettingsComponent renders 1`] = `
       </PivotItem>
       <PivotItem
         headerText="Global Secondary Index (Preview)"
-        itemKey="GlobaleSecondaryIndexTab"
-        key="GlobaleSecondaryIndexTab"
+        itemKey="GlobalSecondaryIndexTab"
+        key="GlobalSecondaryIndexTab"
         style={
           {
             "marginTop": 20,
