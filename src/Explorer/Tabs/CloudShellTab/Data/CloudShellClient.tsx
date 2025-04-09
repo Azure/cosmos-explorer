@@ -8,14 +8,14 @@ import { configContext } from "../../../../ConfigContext";
 import { userContext } from '../../../../UserContext';
 import { armRequest } from "../../../../Utils/arm/request";
 import {
-    Authorization,
-    ConnectTerminalResponse,
-    NetworkType,
-    OsType,
-    ProvisionConsoleResponse,
-    SessionType,
-    Settings,
-    ShellType
+  Authorization,
+  ConnectTerminalResponse,
+  NetworkType,
+  OsType,
+  ProvisionConsoleResponse,
+  SessionType,
+  Settings,
+  ShellType
 } from "../Models/DataModels";
 import { getLocale } from '../Utils/CommonUtils';
 

@@ -29,6 +29,7 @@ export class AttachAddon implements ITerminalAddon {
         this._endMarker = options?.endMarker;
         this._terminalSuppressedData = options?.terminalSuppressedData;
         this._socketData = '';
+        this._flag = true;
     }
 
     public activate(terminal: Terminal): void {
