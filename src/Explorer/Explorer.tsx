@@ -909,6 +909,10 @@ export default class Explorer {
     await this.notebookManager?.notebookContentClient.updateItemChildrenInPlace(item);
   }
 
+  public openCloudShellTerminal(kind: ViewModels.TerminalKind): void {
+    this.connectToNotebookTerminal(kind);
+  }
+
   public async openNotebookTerminal(kind: ViewModels.TerminalKind): Promise<void> {
     if (useNotebook.getState().isPhoenixFeatures) {
       await this.allocateContainer(PoolIdType.DefaultPoolId);
