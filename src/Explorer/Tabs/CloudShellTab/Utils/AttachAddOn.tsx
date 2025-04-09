@@ -3,6 +3,9 @@ import { IDisposable, ITerminalAddon, Terminal } from 'xterm';
 
 interface IAttachOptions {
     bidirectional?: boolean;
+    startMarker?: string;
+    endMarker?: string;
+    terminalSuppressedData?: string;
 }
 
 export class AttachAddon implements ITerminalAddon {
@@ -11,11 +14,20 @@ export class AttachAddon implements ITerminalAddon {
     private _disposables: IDisposable[] = [];
     private _socketData: string;
 
+    private _flag: boolean = true;
+
+    private _startMarker: string;
+    private _endMarker: string;
+    private _terminalSuppressedData: string;
+
     constructor(socket: WebSocket, options?: IAttachOptions) {
         this._socket = socket;
         // always set binary type to arraybuffer, we do not handle blobs
         this._socket.binaryType = 'arraybuffer';
         this._bidirectional = !(options && options.bidirectional === false);
+        this._startMarker = options?.startMarker;
+        this._endMarker = options?.endMarker;
+        this._terminalSuppressedData = options?.terminalSuppressedData;
         this._socketData = '';
     }
 
@@ -67,7 +79,18 @@ export class AttachAddon implements ITerminalAddon {
                     this._socketData += data;
                     data = '';
                 }
-                terminal.write(data);
+
+                if (data.includes(this._startMarker)) {
+                    this._flag = false;
+                    terminal.write("Preparing environment...\r\n");
+                }
+                if (this._flag && this._terminalSuppressedData && this._terminalSuppressedData.length > 0 && !data.includes(this._terminalSuppressedData)) {
+                    terminal.write(data);
+                }
+
+                if (data.includes(this._endMarker)) {
+                    this._flag = true;
+                }
             })
         );
 
