@@ -14,7 +14,8 @@ import {
   registerCloudShellProvider,
   verifyCloudShellProviderRegistration
 } from "./Data/CloudShellClient";
-import { ShellTypeHandler } from "./ShellTypes/ShellTypeFactory";
+import { END_MARKER, START_MARKER } from "./ShellTypes/AbstractShellHandler";
+import { ShellTypeHandlerFactory } from "./ShellTypes/ShellTypeFactory";
 import { AttachAddon } from "./Utils/AttachAddOn";
 import { askConfirmation, wait } from "./Utils/CommonUtils";
 import { getNormalizedRegion } from "./Utils/RegionUtils";
@@ -55,7 +56,7 @@ export const startCloudShellTerminal =
   }
 
   // Get the shell handler for this type
-  const shellHandler = ShellTypeHandler.getHandler(shellType);
+  const shellHandler = ShellTypeHandlerFactory.getHandler(shellType);
   // Configure WebSocket connection with shell-specific commands
   const socket = await establishTerminalConnection(
     terminal,
@@ -169,8 +170,14 @@ export const establishTerminalConnection = async (
   // Configure the socket
   socket = await configureSocketConnection(socket, socketUri, terminal, initCommands, 0);
 
+  const options = {
+    startMarker: START_MARKER,
+    endMarker: END_MARKER,
+    terminalSuppressedData: shellHandler.getTerminalSuppressedData()
+  };
+
   // Attach the terminal addon
-  const attachAddon = new AttachAddon(socket);
+  const attachAddon = new AttachAddon(socket, options);
   terminal.loadAddon(attachAddon);
 
   // Authorize the session
@@ -205,7 +212,7 @@ export const configureSocketConnection = async (
 
   socket.onerror = async () => {
     if (socketRetryCount < MAX_RETRY_COUNT && socket.readyState !== WebSocket.CLOSED) {
-      await configureSocketConnection(socket, uri, terminal, initCommands, socketRetryCount + 1, attachAddon);
+      await configureSocketConnection(socket, uri, terminal, initCommands, socketRetryCount + 1);
     } else {
       socket.close();
     }

@@ -8,17 +8,13 @@ import { CassandraShellHandler } from "./CassandraShellHandler";
 import { MongoShellHandler } from "./MongoShellHandler";
 import { PostgresShellHandler } from "./PostgresShellHandler";
 import { VCoreMongoShellHandler } from "./VCoreMongoShellHandler";
+import { AbstractShellHandler } from "./AbstractShellHandler";
 
-export interface ShellTypeConfig {
-  getShellName(): string;
-  getInitialCommands(): Promise<string>;
-}
-
-export class ShellTypeHandler {
+export class ShellTypeHandlerFactory {
   /**
    * Gets the appropriate handler for the given shell type
    */
-  public static getHandler(shellType: TerminalKind): ShellTypeConfig {
+  public static getHandler(shellType: TerminalKind): AbstractShellHandler {
     switch (shellType) {
       case TerminalKind.Postgres:
         return new PostgresShellHandler();
@@ -30,23 +26,6 @@ export class ShellTypeHandler {
         return new CassandraShellHandler();
       default:
         throw new Error(`Unsupported shell type: ${shellType}`);
-    }
-  }
-
-  /**
-   * Gets the display name for a shell type
-   */
-  public static getShellNameForDisplay(terminalKind: TerminalKind): string {
-    switch (terminalKind) {
-      case TerminalKind.Postgres:
-        return "PostgreSQL";
-      case TerminalKind.Mongo:
-      case TerminalKind.VCoreMongo:
-        return "MongoDB";
-      case TerminalKind.Cassandra:
-        return "Cassandra";
-      default:
-        return "";
     }
   }
 }
