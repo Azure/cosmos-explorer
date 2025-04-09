@@ -36,6 +36,6 @@ export class VCoreMongoShellHandler extends AbstractShellHandler {
   }
 
   public getTerminalSuppressedData(): string {
-    return "Non-Generic MongoDB Shell";
+    return "Warning: Non-Genuine MongoDB Detected";
   }
 }
