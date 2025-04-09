@@ -29,10 +29,8 @@ export class VCoreMongoShellHandler extends AbstractShellHandler {
     ];
   }
 
-  public getConnectionCommands(config: any): string[] {
-    return [
-      `read -p "Enter username: " username && mongosh "mongodb+srv://$username:@${config.endpoint}/?authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000" --tls --tlsAllowInvalidCertificates`
-    ];
+  public getConnectionCommand(): string {
+    return `read -p "Enter username: " username && mongosh "mongodb+srv://$username:@${this.getEndpoint()}/?authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000" --tls --tlsAllowInvalidCertificates`;
   }
 
   public getTerminalSuppressedData(): string {

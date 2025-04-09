@@ -4,11 +4,18 @@
  */
 
 import { userContext } from "../../../../UserContext";
+import { getHostFromUrl } from "../Utils/CommonUtils";
 import { AbstractShellHandler } from "./AbstractShellHandler";
 
 const PACKAGE_VERSION: string = "5.0.3";
 
 export class CassandraShellHandler extends AbstractShellHandler {
+  
+  private _key: string;
+  constructor(private key: string) {
+    super(); 
+    this.key = key;
+  }
 
   public getShellName(): string {
     return "Cassandra";
@@ -31,10 +38,8 @@ export class CassandraShellHandler extends AbstractShellHandler {
     ];
   }
 
-  public getConnectionCommands(config: any): string[] {
-    return [
-      `cqlsh ${config.host} 10350 -u ${config.name} -p ${config.password} --ssl --protocol-version=4`
-    ];
+  public getConnectionCommand(): string {
+    return `cqlsh ${getHostFromUrl(this.getEndpoint())} 10350 -u ${userContext.databaseAccount?.name} -p ${this._key} --ssl --protocol-version=4`;
   }
 
   public getTerminalSuppressedData(): string {
