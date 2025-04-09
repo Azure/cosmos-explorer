@@ -26,7 +26,7 @@ export function getAzureCLICredentials(): AzureCliCredential {
 
 export async function getAzureCLICredentialsToken(): Promise<string> {
   const credentials = getAzureCLICredentials();
-  const token = (await credentials.getToken("https://management.core.windows.net//.default"))?.token || "";
+  const token = (await credentials.getToken("https://management.core.windows.net//.default")).token;
   return token;
 }
 
@@ -37,7 +37,6 @@ export enum TestAccount {
   Mongo = "Mongo",
   Mongo32 = "Mongo32",
   SQL = "SQL",
-  SQLReadOnly = "SQLReadOnly",
 }
 
 export const defaultAccounts: Record<TestAccount, string> = {
@@ -47,7 +46,6 @@ export const defaultAccounts: Record<TestAccount, string> = {
   [TestAccount.Mongo]: "github-e2etests-mongo",
   [TestAccount.Mongo32]: "github-e2etests-mongo32",
   [TestAccount.SQL]: "github-e2etests-sql",
-  [TestAccount.SQLReadOnly]: "github-e2etests-sql-readonly",
 };
 
 export const resourceGroupName = process.env.DE_TEST_RESOURCE_GROUP ?? "de-e2e-tests";
@@ -216,25 +214,6 @@ export class QueryTab {
   }
 }
 
-export class DocumentsTab {
-  documentsFilter: Locator;
-  documentsListPane: Locator;
-  documentResultsPane: Locator;
-  resultsEditor: Editor;
-
-  constructor(
-    public frame: Frame,
-    public tabId: string,
-    public tab: Locator,
-    public locator: Locator,
-  ) {
-    this.documentsFilter = this.locator.getByTestId("DocumentsTab/Filter");
-    this.documentsListPane = this.locator.getByTestId("DocumentsTab/DocumentsPane");
-    this.documentResultsPane = this.locator.getByTestId("DocumentsTab/ResultsPane");
-    this.resultsEditor = new Editor(this.frame, this.documentResultsPane.getByTestId("EditorReact/Host/Loaded"));
-  }
-}
-
 type PanelOpenOptions = {
   closeTimeout?: number;
 };
@@ -251,12 +230,6 @@ export class DataExplorer {
     const tab = this.tab(tabId);
     const queryTab = tab.getByTestId("QueryTab");
     return new QueryTab(this.frame, tabId, tab, queryTab);
-  }
-
-  documentsTab(tabId: string): DocumentsTab {
-    const tab = this.tab(tabId);
-    const documentsTab = tab.getByTestId("DocumentsTab");
-    return new DocumentsTab(this.frame, tabId, tab, documentsTab);
   }
 
   /** Select the primary global command button.
@@ -319,10 +292,6 @@ export class DataExplorer {
     await databaseNode.expand();
 
     return await this.waitForNode(`${databaseId}/${containerId}`);
-  }
-
-  async waitForContainerItemsNode(databaseId: string, containerId: string): Promise<TreeNode> {
-    return await this.waitForNode(`${databaseId}/${containerId}/Items`);
   }
 
   /** Select the tree node with the specified id */
