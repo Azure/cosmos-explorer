@@ -143,6 +143,8 @@ export enum Action {
   ReadPersistedTabState,
   SavePersistedTabState,
   DeletePersistedTabState,
+  CloudShellUserConsent,
+  CloudShellTerminalSession
 }
 
 export const ActionModifiers = {
