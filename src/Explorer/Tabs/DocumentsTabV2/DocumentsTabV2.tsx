@@ -496,10 +496,7 @@ const _loadNextPageInternal = (
   iterator: QueryIterator<ItemDefinition & Resource>,
 ): Promise<DataModels.DocumentId[]> => {
   TelemetryProcessor.traceStart(Action.ExecuteQuery);
-  return iterator.fetchNext().then((response) => {
-    TelemetryProcessor.traceSuccess(Action.ExecuteQuery, { dataExplorerArea: Constants.Areas.Tab });
-    return response.resources;
-  });
+  return iterator.fetchNext().then((response) => response.resources);
 };
 
 // Export to expose to unit tests
