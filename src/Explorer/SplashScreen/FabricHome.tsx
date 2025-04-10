@@ -160,25 +160,26 @@ export const FabricHomeScreen: React.FC<SplashScreenProps> = (props: SplashScree
   };
 
   const title = "Build your database";
-  return (<>
-    <CosmosFluentProvider className={styles.homeContainer}>
-      <SampleDataImportDialog
-        open={openSampleDataImportDialog}
-        setOpen={setOpenSampleDataImportDialog}
-        explorer={props.explorer}
-        databaseName={userContext.fabricContext?.databaseName}
-      />
-      <div className={styles.title} role="heading" aria-label={title}>
-        {title}
-      </div>
-      {getSplashScreenButtons()}
-      <div className={styles.footer}>
-        Need help?{" "}
-        <Link href="https://cosmos.azure.com/docs" target="_blank">
-          Learn more <img src={LinkIcon} alt="Learn more" />
-        </Link>
-      </div>
-    </CosmosFluentProvider >
-  </>
+  return (
+    <>
+      <CosmosFluentProvider className={styles.homeContainer}>
+        <SampleDataImportDialog
+          open={openSampleDataImportDialog}
+          setOpen={setOpenSampleDataImportDialog}
+          explorer={props.explorer}
+          databaseName={userContext.fabricContext?.databaseName}
+        />
+        <div className={styles.title} role="heading" aria-label={title}>
+          {title}
+        </div>
+        {getSplashScreenButtons()}
+        <div className={styles.footer}>
+          Need help?{" "}
+          <Link href="https://cosmos.azure.com/docs" target="_blank">
+            Learn more <img src={LinkIcon} alt="Learn more" />
+          </Link>
+        </div>
+      </CosmosFluentProvider>
+    </>
   );
 };

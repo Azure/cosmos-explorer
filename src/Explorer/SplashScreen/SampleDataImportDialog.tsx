@@ -1,4 +1,13 @@
-import { Button, Dialog, DialogActions, DialogBody, DialogContent, DialogSurface, DialogTitle, Spinner } from "@fluentui/react-components";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogBody,
+  DialogContent,
+  DialogSurface,
+  DialogTitle,
+  Spinner,
+} from "@fluentui/react-components";
 import { CheckmarkCircleRegular } from "@fluentui/react-icons";
 import Explorer from "Explorer/Explorer";
 import { checkContainerExists, createContainer, importData } from "Explorer/SplashScreen/SampleUtil";
@@ -13,10 +22,10 @@ import * as ViewModels from "../../Contracts/ViewModels";
  * @returns
  */
 export const SampleDataImportDialog: React.FC<{
-  open: boolean,
-  setOpen: (open: boolean) => void,
-  explorer: Explorer,
-  databaseName: string,
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  explorer: Explorer;
+  databaseName: string;
 }> = (props) => {
   const [status, setStatus] = useState<"idle" | "creating" | "importing" | "completed" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -32,8 +41,6 @@ export const SampleDataImportDialog: React.FC<{
   }, [props.open]);
 
   const handleStartImport = async (): Promise<void> => {
-
-
     setStatus("creating");
     const containerName = "sampledata";
     const databaseName = props.databaseName;
@@ -137,10 +144,12 @@ export const SampleDataImportDialog: React.FC<{
           <DialogTitle>Importing Sample Data</DialogTitle>
           <DialogContent>{renderContent()}</DialogContent>
           <DialogActions>
-            <Button appearance="primary" onClick={handleActionOnClick}>{getButtonLabel()}</Button>
+            <Button appearance="primary" onClick={handleActionOnClick}>
+              {getButtonLabel()}
+            </Button>
           </DialogActions>
         </DialogBody>
       </DialogSurface>
     </Dialog>
   );
-}
+};
