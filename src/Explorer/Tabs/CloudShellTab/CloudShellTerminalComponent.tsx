@@ -17,7 +17,6 @@ export const CloudShellTerminalComponent: React.FC<CloudShellTerminalComponentPr
     const terminalRef = useRef(null); // Reference for terminal container
     const xtermRef = useRef(null);    // Reference for XTerm instance
     const socketRef = useRef(null);   // Reference for WebSocket
-    const fitAddon = new FitAddon();
 
     useEffect(() => {
         // Initialize XTerm instance
@@ -34,18 +33,33 @@ export const CloudShellTerminalComponent: React.FC<CloudShellTerminalComponentPr
             scrollback: 1000
         });
 
+        const fitAddon = new FitAddon();
         term.loadAddon(fitAddon);
-
-        fitAddon.fit(); // Fit the terminal to the container size
         // Attach terminal to the DOM
         if (terminalRef.current) {
             term.open(terminalRef.current);
             xtermRef.current = term;
         }
+        setTimeout(() => {
+            fitAddon.fit();
+        }, 0);
 
-        // Adjust terminal size on window resize
-        const handleResize = () => fitAddon.fit();
-        window.addEventListener('resize', handleResize);
+        // Use ResizeObserver instead of window resize
+        const resizeObserver = new ResizeObserver(() => {
+            const container = terminalRef.current;
+            if (
+                container &&
+                container.offsetWidth > 0 &&
+                container.offsetHeight > 0
+            ) {
+                try {
+                    fitAddon.fit();
+                } catch (e) {
+                    console.warn("Fit failed on resize:", e);
+                }
+            }
+        });
+        resizeObserver.observe(terminalRef.current);
 
         socketRef.current = startCloudShellTerminal(term, props.shellType);
 
@@ -55,10 +69,11 @@ export const CloudShellTerminalComponent: React.FC<CloudShellTerminalComponentPr
             if (socketRef.current && socketRef.current.readyState && socketRef.current.readyState === WebSocket.OPEN) {
                 socketRef.current.close(); // Close WebSocket connection
             }
-            window.removeEventListener('resize', handleResize);
+            if (resizeObserver && terminalRef.current) {
+                resizeObserver.unobserve(terminalRef.current);
+            }
             term.dispose(); // Clean up XTerm instance
         };
-        
     }, []);
 
     return <div ref={terminalRef} style={{ width: "100%", height: "500px"}} />;
