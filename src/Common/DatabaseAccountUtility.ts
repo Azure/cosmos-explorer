@@ -1,5 +1,6 @@
 import { TagNames, WorkloadType } from "Common/Constants";
 import { Tags } from "Contracts/DataModels";
+import { isFabric } from "Platform/Fabric/FabricUtil";
 import { userContext } from "../UserContext";
 
 function isVirtualNetworkFilterEnabled() {
@@ -28,5 +29,7 @@ export function getWorkloadType(): WorkloadType {
 }
 
 export function isGlobalSecondaryIndexEnabled(): boolean {
-  return userContext.apiType === "SQL" && userContext.databaseAccount?.properties?.enableMaterializedViews;
+  return (
+    !isFabric() && userContext.apiType === "SQL" && userContext.databaseAccount?.properties?.enableMaterializedViews
+  );
 }
