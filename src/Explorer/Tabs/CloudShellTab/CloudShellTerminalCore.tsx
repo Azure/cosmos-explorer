@@ -3,8 +3,12 @@
  * Core functionality for CloudShell terminal management
  */
 
+import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
 import { Terminal } from "xterm";
+import { Areas } from "../../../Common/Constants";
 import { TerminalKind } from "../../../Contracts/ViewModels";
+import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../../UserContext";
 import {
   authorizeSession,
@@ -14,7 +18,7 @@ import {
   registerCloudShellProvider,
   verifyCloudShellProviderRegistration
 } from "./Data/CloudShellClient";
-import { START_MARKER, AbstractShellHandler } from "./ShellTypes/AbstractShellHandler";
+import { AbstractShellHandler, START_MARKER } from "./ShellTypes/AbstractShellHandler";
 import { ShellTypeHandlerFactory } from "./ShellTypes/ShellTypeFactory";
 import { AttachAddon } from "./Utils/AttachAddOn";
 import { askConfirmation, wait } from "./Utils/CommonUtils";
@@ -37,42 +41,72 @@ const MAX_PING_COUNT = 20 * 60; // 20 minutes (60 seconds/minute)
 export const startCloudShellTerminal = 
   async (terminal: Terminal, shellType: TerminalKind): Promise<WebSocket> => {
 
-  await ensureCloudShellProviderRegistered();
+  const startKey = TelemetryProcessor.traceStart(Action.CloudShellTerminalSession, {
+    shellType: TerminalKind[shellType],
+    dataExplorerArea: Areas.CloudShell
+  });
 
-  const resolvedRegion = determineCloudShellRegion();
-  // Ask for user consent for region
-  const consentGranted = await askConfirmation(terminal, formatWarningMessage("This shell might be in a different region than the database region. Do you want to proceed?"));
-  if (!consentGranted) {
-    return null; // Exit if user declined
+  try {
+    await ensureCloudShellProviderRegistered();
+
+    const resolvedRegion = determineCloudShellRegion();
+    // Ask for user consent for region
+    const consentGranted = await askConfirmation(terminal, formatWarningMessage("This shell might be in a different region than the database region. Do you want to proceed?"));
+    
+    // Track user decision
+    TelemetryProcessor.trace(Action.CloudShellUserConsent, 
+      consentGranted ? ActionModifiers.Success : ActionModifiers.Cancel, 
+      { dataExplorerArea: Areas.CloudShell }
+    );
+
+    if (!consentGranted) {
+      return null; // Exit if user declined
+    }
+
+    terminal.writeln(formatInfoMessage("Connecting to CloudShell....."));
+    
+    let sessionDetails: {
+      socketUri?: string;
+      provisionConsoleResponse?: any;
+      targetUri?: string;
+    };
+
+    sessionDetails = await provisionCloudShellSession(resolvedRegion, terminal);
+
+    if (!sessionDetails.socketUri) {
+      terminal.writeln(formatErrorMessage("Failed to establish a connection. Please try again later."));
+      return null;
+    }
+
+    // Get the shell handler for this type
+    const shellHandler = await ShellTypeHandlerFactory.getHandler(shellType);
+    // Configure WebSocket connection with shell-specific commands
+    const socket = await establishTerminalConnection(
+      terminal,
+      shellHandler,
+      sessionDetails.socketUri,
+      sessionDetails.provisionConsoleResponse,
+      sessionDetails.targetUri
+    );
+
+    TelemetryProcessor.traceSuccess(Action.CloudShellTerminalSession, {
+      shellType: TerminalKind[shellType],
+      dataExplorerArea: Areas.CloudShell,
+      region: resolvedRegion
+    }, startKey);
+
+    return socket;
   }
+  catch (err) {
+    TelemetryProcessor.traceFailure(Action.CloudShellTerminalSession, {
+      shellType: TerminalKind[shellType],
+      dataExplorerArea: Areas.CloudShell,
+      error: getErrorMessage(error),
+      errorStack: getErrorStack(error)
+    }, startKey); 
 
-  terminal.writeln(formatInfoMessage("Connecting to CloudShell....."));
-  
-  let sessionDetails: {
-    socketUri?: string;
-    provisionConsoleResponse?: any;
-    targetUri?: string;
-  };
-
-  sessionDetails = await provisionCloudShellSession(resolvedRegion, terminal);
-
-  if (!sessionDetails.socketUri) {
-    terminal.writeln(formatErrorMessage("Failed to establish a connection. Please try again later."));
-    return null;
-  }
-
-  // Get the shell handler for this type
-  const shellHandler = await ShellTypeHandlerFactory.getHandler(shellType);
-  // Configure WebSocket connection with shell-specific commands
-  const socket = await establishTerminalConnection(
-    terminal,
-    shellHandler,
-    sessionDetails.socketUri,
-    sessionDetails.provisionConsoleResponse,
-    sessionDetails.targetUri
-  );
-
-  return socket;
+    terminal.writeln(formatErrorMessage(`Failed with error.${getErrorMessage(error)}`));
+  }  
 };
 
 /**

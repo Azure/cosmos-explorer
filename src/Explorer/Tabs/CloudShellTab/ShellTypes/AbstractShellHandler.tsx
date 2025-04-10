@@ -1,4 +1,5 @@
 export const START_MARKER = `echo "START INITIALIZATION" > /dev/null`;
+export const DISABLE_HISTORY = `set +o history`;
 
 export abstract class AbstractShellHandler {
   
@@ -14,6 +15,7 @@ export abstract class AbstractShellHandler {
 
     const allCommands = [
       START_MARKER,
+      DISABLE_HISTORY,
       ...setupCommands,
       connectionCommand
     ];
