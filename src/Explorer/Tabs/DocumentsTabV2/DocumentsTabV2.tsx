@@ -495,7 +495,6 @@ const getNewDocumentButtonState = (editorState: ViewModels.DocumentExplorerState
 const _loadNextPageInternal = (
   iterator: QueryIterator<ItemDefinition & Resource>,
 ): Promise<DataModels.DocumentId[]> => {
-  TelemetryProcessor.traceStart(Action.ExecuteQuery);
   return iterator.fetchNext().then((response) => response.resources);
 };
 
