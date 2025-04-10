@@ -48,6 +48,7 @@ import { Action } from "Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "UserContext";
 import { isFullTextSearchEnabled, isServerlessAccount, isVectorSearchEnabled } from "Utils/CapabilityUtils";
+import { ValidCosmosDbIdDescription, ValidCosmosDbIdInputPattern } from "Utils/ValidationUtils";
 
 export interface AddGlobalSecondaryIndexPanelProps {
   explorer: Explorer;
@@ -345,8 +346,8 @@ export const AddGlobalSecondaryIndexPanel = (props: AddGlobalSecondaryIndexPanel
             aria-required
             required
             autoComplete="off"
-            pattern="[^/?#\\]*[^/?# \\]"
-            title="May not end with space nor contain characters '\' '/' '#' '?'"
+            pattern={ValidCosmosDbIdInputPattern.source}
+            title={ValidCosmosDbIdDescription}
             placeholder={`e.g., indexbyEmailId`}
             size={40}
             className="panelTextField"
