@@ -1,6 +1,8 @@
 import { FeedOptions, ItemDefinition, QueryIterator, Resource } from "@azure/cosmos";
+import { Action, ActionModifiers } from "Shared/Telemetry/TelemetryConstants";
 import { isVectorSearchEnabled } from "Utils/CapabilityUtils";
 import { LocalStorageUtility, StorageKey } from "../../Shared/StorageUtility";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Queries } from "../Constants";
 import { client } from "../CosmosClient";
 
@@ -11,6 +13,7 @@ export const queryDocuments = (
   options: FeedOptions,
 ): QueryIterator<ItemDefinition & Resource> => {
   options = getCommonQueryOptions(options);
+  TelemetryProcessor.trace(Action.ExecuteQuery, ActionModifiers.Submit);
   return client().database(databaseId).container(containerId).items.query(query, options);
 };
 

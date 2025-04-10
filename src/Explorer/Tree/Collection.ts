@@ -1040,9 +1040,22 @@ export default class Collection implements ViewModels.Collection {
   }
 
   public async uploadFiles(files: FileList): Promise<{ data: UploadDetailsRecord[] }> {
-    const data = await Promise.all(Array.from(files).map((file) => this.uploadFile(file)));
-
-    return { data };
+    try {
+      TelemetryProcessor.trace(Action.UploadDocuments, ActionModifiers.Start, {
+        nbFiles: files.length,
+      });
+      const data = await Promise.all(Array.from(files).map((file) => this.uploadFile(file)));
+      TelemetryProcessor.trace(Action.UploadDocuments, ActionModifiers.Success, {
+        nbFiles: files.length,
+      });
+      return { data };
+    } catch (error) {
+      TelemetryProcessor.trace(Action.UploadDocuments, ActionModifiers.Failed, {
+        error: getErrorMessage(error),
+        errorStack: getErrorStack(error),
+      });
+      throw error;
+    }
   }
 
   private uploadFile(file: File): Promise<UploadDetailsRecord> {
