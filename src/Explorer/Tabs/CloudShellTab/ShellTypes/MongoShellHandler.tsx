@@ -14,7 +14,7 @@ export class MongoShellHandler extends AbstractShellHandler {
   private _key: string;
   constructor(private key: string) {
     super(); 
-    this.key = key;
+    this._key = key;
   }
 
   public getShellName(): string {
