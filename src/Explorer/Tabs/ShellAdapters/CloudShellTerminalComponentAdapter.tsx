@@ -24,7 +24,6 @@ export class CloudShellTerminalComponentAdapter implements ReactAdapter {
   ) {}
 
   public renderComponent(): JSX.Element {
-    console.log("his.isAllPublicIPAddressesEnabled(): ", this.isAllPublicIPAddressesEnabled());
     if (!this.isAllPublicIPAddressesEnabled()) {
       return (
         <QuickstartFirewallNotification
@@ -39,7 +38,6 @@ export class CloudShellTerminalComponentAdapter implements ReactAdapter {
       );
     }
 
-    console.log("this.parameters():", this.parameters());
     return this.parameters() ? (
       <CloudShellTerminalComponent
         databaseAccount={this.getDatabaseAccount()}
