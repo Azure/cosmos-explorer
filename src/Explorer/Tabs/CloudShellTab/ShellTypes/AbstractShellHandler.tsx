@@ -15,7 +15,7 @@ export abstract class AbstractShellHandler {
     const allCommands = [
       START_MARKER,
       ...setupCommands,
-      ...connectionCommand
+      connectionCommand
     ];
   
     return allCommands.join("\n").concat("\n");
