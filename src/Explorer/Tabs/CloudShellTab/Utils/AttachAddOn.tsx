@@ -90,9 +90,6 @@ export class AttachAddon implements ITerminalAddon {
                     terminal.write(data);
                 }
 
-                console.log('data', data);
-                console.log("connection command", this._shellHandler.getConnectionCommand());
-                console.log("----")
                 if (data.includes(this._shellHandler.getConnectionCommand())) {
                     this._allowTerminalWrite = true;
                 }
