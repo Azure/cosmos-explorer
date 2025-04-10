@@ -1268,8 +1268,8 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
         ? `the selected ${selectedRows.size} items`
         : "the selected item"
       : isPlural
-        ? `the selected ${selectedRows.size} documents`
-        : "the selected document";
+      ? `the selected ${selectedRows.size} documents`
+      : "the selected document";
     const msg = `Are you sure you want to delete ${documentName}?`;
 
     useDialog
@@ -2236,17 +2236,17 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
             )}
             {(bulkDeleteProcess.failedIds.length > 0 ||
               (bulkDeleteProcess.throttledIds.length > 0 && bulkDeleteMode !== "inProgress")) && (
-                <MessageBar intent="error" style={{ marginBottom: tokens.spacingVerticalL }}>
-                  <MessageBarBody>
-                    <MessageBarTitle>Error</MessageBarTitle>
-                    Failed to delete{" "}
-                    {bulkDeleteMode === "inProgress"
-                      ? bulkDeleteProcess.failedIds.length
-                      : bulkDeleteProcess.failedIds.length + bulkDeleteProcess.throttledIds.length}{" "}
-                    document(s).
-                  </MessageBarBody>
-                </MessageBar>
-              )}
+              <MessageBar intent="error" style={{ marginBottom: tokens.spacingVerticalL }}>
+                <MessageBarBody>
+                  <MessageBarTitle>Error</MessageBarTitle>
+                  Failed to delete{" "}
+                  {bulkDeleteMode === "inProgress"
+                    ? bulkDeleteProcess.failedIds.length
+                    : bulkDeleteProcess.failedIds.length + bulkDeleteProcess.throttledIds.length}{" "}
+                  document(s).
+                </MessageBarBody>
+              </MessageBar>
+            )}
             {bulkDeleteProcess.hasBeenThrottled && (
               <MessageBar intent="warning">
                 <MessageBarBody>
