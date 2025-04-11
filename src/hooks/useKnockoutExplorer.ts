@@ -215,6 +215,10 @@ async function configureFabric(): Promise<Explorer> {
             }
             break;
           }
+          case "refreshResourceTree": {
+            explorer.onRefreshResourcesClick();
+            break;
+          }
           default:
             console.error(`Unknown Fabric message type: ${JSON.stringify(data)}`);
             break;
