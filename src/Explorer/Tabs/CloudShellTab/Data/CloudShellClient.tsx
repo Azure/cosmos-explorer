@@ -120,6 +120,11 @@ export const connectTerminal = async (consoleUri: string, size: { rows: number, 
       },
       body: "{}" // empty body is necessary
   });
+
+  if (!resp.ok) {
+      throw new Error(`Failed to connect to terminal: ${resp.status} ${resp.statusText}`);
+  }
+
   return resp.json();
 };
 
@@ -135,5 +140,9 @@ export const authorizeSession = async (consoleUri: string): Promise<Authorizatio
       },
       body: "{}" // empty body is necessary
   });
+
+  if (!resp.ok) {
+      throw new Error(`Failed to authorize session: ${resp.status} ${resp.statusText}`);
+  }
   return resp.json();
 };

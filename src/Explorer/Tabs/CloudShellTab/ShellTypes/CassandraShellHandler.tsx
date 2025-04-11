@@ -22,7 +22,7 @@ export class CassandraShellHandler extends AbstractShellHandler {
   }
 
   public getEndpoint(): string {
-    return userContext.databaseAccount?.properties?.cassandraEndpoint;
+    return userContext?.databaseAccount?.properties?.cassandraEndpoint;
   }
 
   public getSetUpCommands(): string[] {
@@ -39,10 +39,19 @@ export class CassandraShellHandler extends AbstractShellHandler {
   }
 
   public getConnectionCommand(): string {
-    return `cqlsh ${getHostFromUrl(this.getEndpoint())} 10350 -u ${userContext.databaseAccount?.name} -p ${this._key} --ssl --protocol-version=4`;
+    if (!this.getEndpoint()) {
+      return `echo '${this.getShellName()} endpoint not found.'`;
+    }
+
+    const dbName = userContext?.databaseAccount?.name;
+    if (!dbName) {
+      return "echo 'Database name not found.'";
+    }
+
+    return `cqlsh ${getHostFromUrl(this.getEndpoint())} 10350 -u ${dbName} -p ${this._key} --ssl --protocol-version=4`;
   }
 
   public getTerminalSuppressedData(): string {
-    return "Non-Generic MongoDB Shell";
+    return "";
   }
 }
