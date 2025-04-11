@@ -1,14 +1,14 @@
-import { TerminalKind } from "../../../../../Contracts/ViewModels";
-import { userContext } from "../../../../../UserContext";
-import { listKeys } from "../../../../../Utils/arm/generatedClients/cosmos/databaseAccounts";
-import { CassandraShellHandler } from "../CassandraShellHandler";
-import { MongoShellHandler } from "../MongoShellHandler";
-import { PostgresShellHandler } from "../PostgresShellHandler";
-import { ShellTypeHandlerFactory } from "../ShellTypeFactory";
-import { VCoreMongoShellHandler } from "../VCoreMongoShellHandler";
+import { TerminalKind } from "../../../../Contracts/ViewModels";
+import { userContext } from "../../../../UserContext";
+import { listKeys } from "../../../../Utils/arm/generatedClients/cosmos/databaseAccounts";
+import { CassandraShellHandler } from "./CassandraShellHandler";
+import { MongoShellHandler } from "./MongoShellHandler";
+import { PostgresShellHandler } from "./PostgresShellHandler";
+import { ShellTypeHandlerFactory } from "./ShellTypeFactory";
+import { VCoreMongoShellHandler } from "./VCoreMongoShellHandler";
 
 // Mock dependencies
-jest.mock("../../../../../UserContext", () => ({
+jest.mock("../../../../UserContext", () => ({
   userContext: {
     databaseAccount: { name: "testDbName" },
     subscriptionId: "testSubId",
@@ -16,7 +16,7 @@ jest.mock("../../../../../UserContext", () => ({
   }
 }));
 
-jest.mock("../../../../../Utils/arm/generatedClients/cosmos/databaseAccounts", () => ({
+jest.mock("../../../../Utils/arm/generatedClients/cosmos/databaseAccounts", () => ({
   listKeys: jest.fn()
 }));
 

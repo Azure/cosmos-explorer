@@ -3,10 +3,10 @@
  * Tests for VCore MongoDB shell type handler
  */
 
-import { VCoreMongoShellHandler } from '../VCoreMongoShellHandler';
+import { VCoreMongoShellHandler } from './VCoreMongoShellHandler';
 
 // Mock dependencies
-jest.mock("../../../../../UserContext", () => ({
+jest.mock("../../../../UserContext", () => ({
   userContext: {
     databaseAccount: {
       properties: {

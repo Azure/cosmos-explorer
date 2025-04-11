@@ -1,5 +1,5 @@
-import * as CommonUtils from "../../Utils/CommonUtils";
-import { CassandraShellHandler } from "../CassandraShellHandler";
+import * as CommonUtils from "../Utils/CommonUtils";
+import { CassandraShellHandler } from "./CassandraShellHandler";
 
 // Define mock state that can be modified by tests
 const mockState = {
@@ -12,7 +12,7 @@ const mockState = {
 };
 
 // Mock dependencies using factory functions
-jest.mock("../../../../../UserContext", () => ({
+jest.mock("../../../../UserContext", () => ({
   get userContext() {
     return {
       get databaseAccount() {
@@ -22,7 +22,7 @@ jest.mock("../../../../../UserContext", () => ({
   }
 }));
 
-jest.mock("../../Utils/CommonUtils", () => ({
+jest.mock("../Utils/CommonUtils", () => ({
   getHostFromUrl: jest.fn().mockReturnValue("test-endpoint.cassandra.cosmos.azure.com")
 }));
 
