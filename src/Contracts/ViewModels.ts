@@ -1,4 +1,5 @@
 import {
+  JSONObject,
   QueryMetrics,
   Resource,
   StoredProcedureDefinition,
@@ -206,6 +207,12 @@ export interface Collection extends CollectionBase {
   onDragOver(source: Collection, event: { originalEvent: DragEvent }): void;
   onDrop(source: Collection, event: { originalEvent: DragEvent }): void;
   uploadFiles(fileList: FileList): Promise<{ data: UploadDetailsRecord[] }>;
+  bulkInsertDocuments(documents: JSONObject[]): Promise<{
+    numSucceeded: number;
+    numFailed: number;
+    numThrottled: number;
+    errors: string[];
+  }>;
 }
 
 /**

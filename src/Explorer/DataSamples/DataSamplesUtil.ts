@@ -6,6 +6,7 @@ import Explorer from "../Explorer";
 import { useDatabases } from "../useDatabases";
 import { ContainerSampleGenerator } from "./ContainerSampleGenerator";
 
+// TODO: this does not seem to be used. Remove?
 export class DataSamplesUtil {
   private static readonly DialogTitle = "Create Sample Container";
   constructor(private container: Explorer) {}
