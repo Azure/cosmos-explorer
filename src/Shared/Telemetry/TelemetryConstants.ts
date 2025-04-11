@@ -3,6 +3,7 @@
 export enum Action {
   CollapseTreeNode,
   CreateCollection, // Used in Fabric. Please do not rename.
+  CreateGlobalSecondaryIndex,
   CreateDocument, // Used in Fabric. Please do not rename.
   CreateStoredProcedure,
   CreateTrigger,
@@ -120,6 +121,7 @@ export enum Action {
   NotebooksGalleryPublishedCount,
   SelfServe,
   ExpandAddCollectionPaneAdvancedSection,
+  ExpandAddGlobalSecondaryIndexPaneAdvancedSection,
   SchemaAnalyzerClickAnalyze,
   SelfServeComponent,
   LaunchQuickstart,

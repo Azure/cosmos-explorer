@@ -143,6 +143,8 @@ export interface Collection extends CollectionBase {
   geospatialConfig: ko.Observable<DataModels.GeospatialConfig>;
   documentIds: ko.ObservableArray<DocumentId>;
   computedProperties: ko.Observable<DataModels.ComputedProperties>;
+  materializedViews: ko.Observable<DataModels.MaterializedView[]>;
+  materializedViewDefinition: ko.Observable<DataModels.MaterializedViewDefinition>;
 
   cassandraKeys: CassandraTableKeys;
   cassandraSchema: CassandraTableKey[];
