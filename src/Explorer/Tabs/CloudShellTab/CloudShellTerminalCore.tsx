@@ -101,11 +101,11 @@ export const startCloudShellTerminal =
     TelemetryProcessor.traceFailure(Action.CloudShellTerminalSession, {
       shellType: TerminalKind[shellType],
       dataExplorerArea: Areas.CloudShell,
-      error: getErrorMessage(error),
-      errorStack: getErrorStack(error)
+      error: getErrorMessage(err),
+      errorStack: getErrorStack(err)
     }, startKey); 
 
-    terminal.writeln(formatErrorMessage(`Failed with error.${getErrorMessage(error)}`));
+    terminal.writeln(formatErrorMessage(`Failed with error.${getErrorMessage(err)}`));
   }  
 };
 

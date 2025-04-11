@@ -22,7 +22,7 @@ export class MongoShellHandler extends AbstractShellHandler {
   }
 
   public getEndpoint(): string {
-    return userContext.databaseAccount?.properties?.mongoEndpoint;
+    return userContext?.databaseAccount?.properties?.mongoEndpoint;
   }
 
   public getSetUpCommands(): string[] {
@@ -37,7 +37,15 @@ export class MongoShellHandler extends AbstractShellHandler {
   }
 
   public getConnectionCommand(): string {
-    return `mongosh --host ${getHostFromUrl(this.getEndpoint())} --port 10255 --username ${userContext.databaseAccount?.name} --password ${this._key} --tls --tlsAllowInvalidCertificates`;
+    if (!this.getEndpoint()) {
+      return `echo '${this.getShellName()} endpoint not found.'`;
+    }
+
+    const dbName = userContext?.databaseAccount?.name;
+    if (!dbName) {
+      return "echo 'Database name not found.'";
+    }
+    return `mongosh --host ${getHostFromUrl(this.getEndpoint())} --port 10255 --username ${dbName} --password ${this._key} --tls --tlsAllowInvalidCertificates`;
   }
 
   public getTerminalSuppressedData(): string {
