@@ -1,5 +1,8 @@
 import { QueryOperationOptions } from "@azure/cosmos";
+import { Action } from "Shared/Telemetry/TelemetryConstants";
+import * as Constants from "../Common/Constants";
 import { QueryResults } from "../Contracts/ViewModels";
+import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
 
 interface QueryResponse {
   // [Todo] remove any
@@ -21,7 +24,9 @@ export function nextPage(
   firstItemIndex: number,
   queryOperationOptions?: QueryOperationOptions,
 ): Promise<QueryResults> {
+  TelemetryProcessor.traceStart(Action.ExecuteQuery);
   return documentsIterator.fetchNext(queryOperationOptions).then((response) => {
+    TelemetryProcessor.traceSuccess(Action.ExecuteQuery, { dataExplorerArea: Constants.Areas.Tab });
     const documents = response.resources;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const headers = (response as any).headers || {}; // TODO this is a private key. Remove any
