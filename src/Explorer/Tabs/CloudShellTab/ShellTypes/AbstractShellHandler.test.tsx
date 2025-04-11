@@ -1,4 +1,4 @@
-import { AbstractShellHandler, DISABLE_HISTORY, START_MARKER } from "../AbstractShellHandler";
+import { AbstractShellHandler, DISABLE_HISTORY, START_MARKER } from "./AbstractShellHandler";
 
 // Mock implementation for testing
 class MockShellHandler extends AbstractShellHandler {

@@ -3,10 +3,10 @@
  * Tests for PostgreSQL shell type handler
  */
 
-import { PostgresShellHandler } from '../PostgresShellHandler';
+import { PostgresShellHandler } from './PostgresShellHandler';
 
 // Mock dependencies
-jest.mock("../../../../../UserContext", () => ({
+jest.mock("../../../../UserContext", () => ({
   userContext: {
     databaseAccount: {
       properties: {
@@ -63,7 +63,7 @@ describe('PostgresShellHandler', () => {
     it('should handle missing PostgreSQL endpoint', () => {
       // Re-mock UserContext with missing endpoint
       jest.resetModules();
-      jest.doMock("../../../../../UserContext", () => ({
+      jest.doMock("../../../../UserContext", () => ({
         userContext: {
           databaseAccount: {
             properties: {}
@@ -72,7 +72,7 @@ describe('PostgresShellHandler', () => {
       }));
       
       // Import fresh instance with updated mock
-      const { PostgresShellHandler } = require('../PostgresShellHandler');
+      const { PostgresShellHandler } = require('./PostgresShellHandler');
       const handler = new PostgresShellHandler();
       
       expect(handler.getEndpoint()).toBeUndefined();
@@ -83,7 +83,7 @@ describe('PostgresShellHandler', () => {
       
       // Reset mock to original state for subsequent tests
       jest.resetModules();
-      jest.doMock("../../../../../UserContext", () => ({
+      jest.doMock("../../../../UserContext", () => ({
         userContext: {
           databaseAccount: {
             properties: {
@@ -97,19 +97,19 @@ describe('PostgresShellHandler', () => {
     it('should handle null userContext', () => {
       // Re-mock UserContext as null
       jest.resetModules();
-      jest.doMock("../../../../../UserContext", () => ({
+      jest.doMock("../../../../UserContext", () => ({
         userContext: null
       }));
       
       // Import fresh instance with updated mock
-      const { PostgresShellHandler } = require('../PostgresShellHandler');
+      const { PostgresShellHandler } = require('./PostgresShellHandler');
       const handler = new PostgresShellHandler();
       
       expect(handler.getEndpoint()).toBeUndefined();
       
       // Reset mock to original state for subsequent tests
       jest.resetModules();
-      jest.doMock("../../../../../UserContext", () => ({
+      jest.doMock("../../../../UserContext", () => ({
         userContext: {
           databaseAccount: {
             properties: {
@@ -123,21 +123,21 @@ describe('PostgresShellHandler', () => {
     it('should handle null databaseAccount', () => {
       // Re-mock UserContext with null databaseAccount
       jest.resetModules();
-      jest.doMock("../../../../../UserContext", () => ({
+      jest.doMock("../../../../UserContext", () => ({
         userContext: {
           databaseAccount: null
         }
       }));
       
       // Clear cache and import fresh instance with updated mock
-      const { PostgresShellHandler } = require('../PostgresShellHandler');
+      const { PostgresShellHandler } = require('./PostgresShellHandler');
       const handler = new PostgresShellHandler();
       
       expect(handler.getEndpoint()).toBeUndefined();
       
       // Reset mock to original state for subsequent tests
       jest.resetModules();
-      jest.doMock("../../../../../UserContext", () => ({
+      jest.doMock("../../../../UserContext", () => ({
         userContext: {
           databaseAccount: {
             properties: {
