@@ -3,12 +3,12 @@
  * Tests for Mongo shell type handler
  */
 
-import { userContext } from "../../../../../UserContext";
-import * as CommonUtils from "../../Utils/CommonUtils";
-import { MongoShellHandler } from '../MongoShellHandler';
+import { userContext } from "../../../../UserContext";
+import * as CommonUtils from "../Utils/CommonUtils";
+import { MongoShellHandler } from './MongoShellHandler';
 
 // Mock dependencies
-jest.mock("../../../../../UserContext", () => ({
+jest.mock("../../../../UserContext", () => ({
   userContext: {
     databaseAccount: {
       name: 'test-account',
@@ -19,7 +19,7 @@ jest.mock("../../../../../UserContext", () => ({
   }
 }));
 
-jest.mock("../../Utils/CommonUtils", () => ({
+jest.mock("../Utils/CommonUtils", () => ({
   getHostFromUrl: jest.fn().mockReturnValue('test-mongo.documents.azure.com')
 }));
 
