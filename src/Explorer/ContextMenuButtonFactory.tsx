@@ -1,5 +1,11 @@
+import { GlobalSecondaryIndexLabels } from "Common/Constants";
+import { isGlobalSecondaryIndexEnabled } from "Common/DatabaseAccountUtility";
 import { configContext, Platform } from "ConfigContext";
 import { TreeNodeMenuItem } from "Explorer/Controls/TreeComponent/TreeNodeComponent";
+import {
+  AddGlobalSecondaryIndexPanel,
+  AddGlobalSecondaryIndexPanelProps,
+} from "Explorer/Panes/AddGlobalSecondaryIndexPanel/AddGlobalSecondaryIndexPanel";
 import { useDatabases } from "Explorer/useDatabases";
 import { isFabric, isFabricNative } from "Platform/Fabric/FabricUtil";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
@@ -161,6 +167,24 @@ export const createCollectionContextMenuButton = (
       },
       label: `Delete ${getCollectionName()}`,
       styleClass: "deleteCollectionMenuItem",
+    });
+  }
+
+  if (isGlobalSecondaryIndexEnabled() && !selectedCollection.materializedViewDefinition()) {
+    items.push({
+      label: GlobalSecondaryIndexLabels.NewGlobalSecondaryIndex,
+      onClick: () => {
+        const addMaterializedViewPanelProps: AddGlobalSecondaryIndexPanelProps = {
+          explorer: container,
+          sourceContainer: selectedCollection,
+        };
+        useSidePanel
+          .getState()
+          .openSidePanel(
+            GlobalSecondaryIndexLabels.NewGlobalSecondaryIndex,
+            <AddGlobalSecondaryIndexPanel {...addMaterializedViewPanelProps} />,
+          );
+      },
     });
   }
 
