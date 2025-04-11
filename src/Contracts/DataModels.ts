@@ -210,7 +210,7 @@ export interface IndexingPolicy {
 export interface VectorIndex {
   path: string;
   type: "flat" | "diskANN" | "quantizedFlat";
-  diskANNShardKey?: string;
+  vectorIndexShardKey?: string[];
   indexingSearchListSize?: number;
   quantizationByteSize?: number;
 }
