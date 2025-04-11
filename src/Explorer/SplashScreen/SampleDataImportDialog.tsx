@@ -6,13 +6,23 @@ import {
   DialogContent,
   DialogSurface,
   DialogTitle,
+  makeStyles,
   Spinner,
+  tokens,
 } from "@fluentui/react-components";
-import { CheckmarkCircleRegular } from "@fluentui/react-icons";
 import Explorer from "Explorer/Explorer";
 import { checkContainerExists, createContainer, importData } from "Explorer/SplashScreen/SampleUtil";
 import React, { useEffect, useState } from "react";
 import * as ViewModels from "../../Contracts/ViewModels";
+
+const SAMPLE_DATA_CONTAINER_NAME = "SampleData";
+
+const useStyles = makeStyles({
+  dialogContent: {
+    alignItems: "center",
+    marginBottom: tokens.spacingVerticalL,
+  },
+});
 
 /**
  * This dialog:
@@ -29,23 +39,23 @@ export const SampleDataImportDialog: React.FC<{
 }> = (props) => {
   const [status, setStatus] = useState<"idle" | "creating" | "importing" | "completed" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const containerName = "sampledata";
+  const containerName = SAMPLE_DATA_CONTAINER_NAME;
   const [collection, setCollection] = useState<ViewModels.Collection>(undefined);
+  const styles = useStyles();
 
   useEffect(() => {
     // Reset state when dialog opens
     if (props.open) {
       setStatus("idle");
-      setErrorMessage(null);
+      setErrorMessage(undefined);
     }
   }, [props.open]);
 
   const handleStartImport = async (): Promise<void> => {
     setStatus("creating");
-    const containerName = "sampledata";
     const databaseName = props.databaseName;
     if (checkContainerExists(databaseName, containerName)) {
-      const msg = `The container ${containerName} in database ${databaseName} already exists. Please delete it and retry.`;
+      const msg = `The container "${containerName}" in database "${databaseName}" already exists. Please delete it and retry.`;
       setStatus("error");
       setErrorMessage(msg);
       return;
@@ -93,27 +103,14 @@ export const SampleDataImportDialog: React.FC<{
   const renderContent = () => {
     switch (status) {
       case "idle":
-        return `Create a container ${containerName} and import sample data into it. This may take a few minutes.`;
+        return `Create a container "${containerName}" and import sample data into it. This may take a few minutes.`;
+
       case "creating":
-        return (
-          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <Spinner labelPosition="above" label={`Creating container ${containerName}...`} />
-          </div>
-        );
+        return <Spinner size="small" labelPosition="above" label={`Creating container "${containerName}"...`} />;
       case "importing":
-        return (
-          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <Spinner labelPosition="above" label={`Importing sample data into container ${containerName}...`} />
-            <span></span>
-          </div>
-        );
+        return <Spinner size="small" labelPosition="above" label={`Importing data into "${containerName}"...`} />;
       case "completed":
-        return (
-          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <CheckmarkCircleRegular />
-            <span>Successfully created container and imported sample data!</span>
-          </div>
-        );
+        return `Successfully created "${containerName}" with sample data.`;
       case "error":
         return (
           <div style={{ color: "red" }}>
@@ -141,10 +138,16 @@ export const SampleDataImportDialog: React.FC<{
     <Dialog open={props.open} onOpenChange={(event, data) => props.setOpen(data.open)}>
       <DialogSurface>
         <DialogBody>
-          <DialogTitle>Importing Sample Data</DialogTitle>
-          <DialogContent>{renderContent()}</DialogContent>
+          <DialogTitle>Sample Data</DialogTitle>
+          <DialogContent>
+            <div className={styles.dialogContent}>{renderContent()}</div>
+          </DialogContent>
           <DialogActions>
-            <Button appearance="primary" onClick={handleActionOnClick}>
+            <Button
+              appearance="primary"
+              onClick={handleActionOnClick}
+              disabled={status === "creating" || status === "importing"}
+            >
               {getButtonLabel()}
             </Button>
           </DialogActions>
