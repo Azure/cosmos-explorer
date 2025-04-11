@@ -88,6 +88,7 @@ export enum Action {
   PhoenixDBAccountAllowed,
   DeleteCellFromMenu,
   OpenTerminal,
+  OpenCloudShellTerminal,
   CreateMongoCollectionWithWildcardIndex,
   ClickCommandBarButton,
   RefreshResourceTreeMyNotebooks,
@@ -144,6 +145,8 @@ export enum Action {
   ReadPersistedTabState,
   SavePersistedTabState,
   DeletePersistedTabState,
+  CloudShellUserConsent,
+  CloudShellTerminalSession
 }
 
 export const ActionModifiers = {
