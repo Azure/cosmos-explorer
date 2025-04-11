@@ -363,18 +363,28 @@ describe("createDatabaseTreeNodes", () => {
 
   it.each<[string, Platform, boolean, Partial<DataModels.DatabaseAccountExtendedProperties>, Partial<UserContext>]>([
     [
-      "the SQL API, on Fabric read-only",
+      "the SQL API, on Fabric read-only (mirrored)",
       Platform.Fabric,
       false,
       { capabilities: [], enableMultipleWriteLocations: true },
-      { fabricContext: { isReadOnly: true } as FabricContext<CosmosDbArtifactType> },
+      {
+        fabricContext: {
+          isReadOnly: true,
+          artifactType: CosmosDbArtifactType.MIRRORED_KEY,
+        } as FabricContext<CosmosDbArtifactType>,
+      },
     ],
     [
-      "the SQL API, on Fabric non read-only",
+      "the SQL API, on Fabric non read-only (native)",
       Platform.Fabric,
       false,
       { capabilities: [], enableMultipleWriteLocations: true },
-      { fabricContext: { isReadOnly: false } as FabricContext<CosmosDbArtifactType> },
+      {
+        fabricContext: {
+          isReadOnly: false,
+          artifactType: CosmosDbArtifactType.NATIVE,
+        } as FabricContext<CosmosDbArtifactType>,
+      },
     ],
     [
       "the SQL API, on Portal",
