@@ -15,7 +15,7 @@ export class VCoreMongoShellHandler extends AbstractShellHandler {
   }
 
   public getEndpoint(): string {
-    return userContext.databaseAccount?.properties?.vcoreMongoEndpoint;
+    return userContext?.databaseAccount?.properties?.vcoreMongoEndpoint;
   }
 
   public getSetUpCommands(): string[] {
@@ -30,7 +30,11 @@ export class VCoreMongoShellHandler extends AbstractShellHandler {
   }
 
   public getConnectionCommand(): string {
-    return `read -p "Enter username: " username && mongosh "mongodb+srv://$username:@${this.getEndpoint()}/?authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000" --tls --tlsAllowInvalidCertificates`;
+    const endpoint = this.getEndpoint()
+    if (!endpoint) {
+      return `echo '${this.getShellName()} endpoint not found.'`;
+    }
+    return `read -p "Enter username: " username && mongosh "mongodb+srv://$username:@${endpoint}/?authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000" --tls --tlsAllowInvalidCertificates`;
   }
 
   public getTerminalSuppressedData(): string {
