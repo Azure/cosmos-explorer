@@ -104,6 +104,16 @@ const useSidebarStyles = makeStyles({
       display: "flex",
     },
   },
+  accessibleContent: {
+    "@media (max-width: 420px)": {
+      overflow: "scroll",
+    },
+  },
+  minHeight: {
+    "@media (max-width: 420px)": {
+      minHeight: "300px",
+    },
+  },
 });
 
 interface GlobalCommandsProps {
@@ -324,11 +334,16 @@ export const SidebarContainer: React.FC<SidebarProps> = ({ explorer }) => {
 
   return (
     <div className="sidebarContainer">
-      <Allotment ref={allotment} onChange={onChange} onDragEnd={onDragEnd} className="resourceTreeAndTabs">
+      <Allotment
+        ref={allotment}
+        onChange={onChange}
+        onDragEnd={onDragEnd}
+        className={`resourceTreeAndTabs ${styles.accessibleContent}`}
+      >
         {/* Collections Tree - Start */}
         {hasSidebar && (
           // When collapsed, we force the pane to 24 pixels wide and make it non-resizable.
-          <Allotment.Pane minSize={24} preferredSize={250}>
+          <Allotment.Pane className={styles.minHeight} minSize={24} preferredSize={250}>
             <CosmosFluentProvider className={mergeClasses(styles.sidebar)}>
               <div className={styles.sidebarContainer}>
                 {loading && (
@@ -382,7 +397,7 @@ export const SidebarContainer: React.FC<SidebarProps> = ({ explorer }) => {
             </CosmosFluentProvider>
           </Allotment.Pane>
         )}
-        <Allotment.Pane minSize={200}>
+        <Allotment.Pane className={styles.minHeight} minSize={200}>
           <Tabs explorer={explorer} />
         </Allotment.Pane>
       </Allotment>
