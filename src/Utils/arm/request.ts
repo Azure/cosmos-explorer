@@ -71,13 +71,15 @@ export async function armRequestWithoutPolling<T>({
     throw new Error("No authority token provided");
   }
 
+  const headers: Record<string, string> = {
+    ...(userContext?.authorizationToken ? { Authorization: userContext.authorizationToken } : {}),
+    [HttpHeaders.contentType]: contentType || "application/json",
+    ...(customHeaders || {})
+  };
+
   const response = await window.fetch(url.href, {
     method,
-    headers: {
-      Authorization: userContext.authorizationToken,
-      [HttpHeaders.contentType]: contentType || "application/json",
-      ...customHeaders
-    },
+    headers,
     body: requestBody ? JSON.stringify(requestBody) : undefined,
   });
   if (!response.ok) {
