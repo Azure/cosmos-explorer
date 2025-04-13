@@ -58,7 +58,7 @@ export async function armRequestWithoutPolling<T>({
   body: requestBody,
   queryParams,
   contentType,
-  customHeaders
+  customHeaders,
 }: Options): Promise<{ result: T; operationStatusUrl: string }> {
   const url = new URL(path, host);
   url.searchParams.append("api-version", configContext.armAPIVersion || apiVersion);
@@ -74,7 +74,7 @@ export async function armRequestWithoutPolling<T>({
   const headers: Record<string, string> = {
     ...(userContext?.authorizationToken ? { Authorization: userContext.authorizationToken } : {}),
     [HttpHeaders.contentType]: contentType || "application/json",
-    ...(customHeaders || {})
+    ...(customHeaders || {}),
   };
 
   const response = await window.fetch(url.href, {
@@ -114,7 +114,7 @@ export async function armRequest<T>({
   body: requestBody,
   queryParams,
   contentType,
-  customHeaders
+  customHeaders,
 }: Options): Promise<T> {
   const armRequestResult = await armRequestWithoutPolling<T>({
     host,
@@ -124,7 +124,7 @@ export async function armRequest<T>({
     body: requestBody,
     queryParams,
     contentType,
-    customHeaders
+    customHeaders,
   });
   const operationStatusUrl = armRequestResult.operationStatusUrl;
   if (operationStatusUrl) {

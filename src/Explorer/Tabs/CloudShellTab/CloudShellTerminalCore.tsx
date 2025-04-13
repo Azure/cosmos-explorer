@@ -16,18 +16,14 @@ import {
   provisionConsole,
   putEphemeralUserSettings,
   registerCloudShellProvider,
-  verifyCloudShellProviderRegistration
+  verifyCloudShellProviderRegistration,
 } from "./Data/CloudShellClient";
 import { AbstractShellHandler, START_MARKER } from "./ShellTypes/AbstractShellHandler";
 import { ShellTypeHandlerFactory } from "./ShellTypes/ShellTypeFactory";
 import { AttachAddon } from "./Utils/AttachAddOn";
 import { askConfirmation, wait } from "./Utils/CommonUtils";
 import { getNormalizedRegion } from "./Utils/RegionUtils";
-import {
-  formatErrorMessage,
-  formatInfoMessage,
-  formatWarningMessage
-} from "./Utils/TerminalLogFormats";
+import { formatErrorMessage, formatInfoMessage, formatWarningMessage } from "./Utils/TerminalLogFormats";
 
 // Constants
 const DEFAULT_CLOUDSHELL_REGION = "westus";
@@ -38,12 +34,10 @@ const MAX_PING_COUNT = 20 * 60; // 20 minutes (60 seconds/minute)
 /**
  * Main function to start a CloudShell terminal
  */
-export const startCloudShellTerminal = 
-  async (terminal: Terminal, shellType: TerminalKind): Promise<WebSocket> => {
-
+export const startCloudShellTerminal = async (terminal: Terminal, shellType: TerminalKind): Promise<WebSocket> => {
   const startKey = TelemetryProcessor.traceStart(Action.CloudShellTerminalSession, {
     shellType: TerminalKind[shellType],
-    dataExplorerArea: Areas.CloudShell
+    dataExplorerArea: Areas.CloudShell,
   });
 
   let resolvedRegion: string;
@@ -52,12 +46,18 @@ export const startCloudShellTerminal =
 
     resolvedRegion = determineCloudShellRegion();
     // Ask for user consent for region
-    const consentGranted = await askConfirmation(terminal, formatWarningMessage("This shell might be in a different region than the database region. Do you want to proceed?"));
-    
+    const consentGranted = await askConfirmation(
+      terminal,
+      formatWarningMessage(
+        "This shell might be in a different region than the database region. Do you want to proceed?",
+      ),
+    );
+
     // Track user decision
-    TelemetryProcessor.trace(Action.CloudShellUserConsent, 
-      consentGranted ? ActionModifiers.Success : ActionModifiers.Cancel, 
-      { dataExplorerArea: Areas.CloudShell }
+    TelemetryProcessor.trace(
+      Action.CloudShellUserConsent,
+      consentGranted ? ActionModifiers.Success : ActionModifiers.Cancel,
+      { dataExplorerArea: Areas.CloudShell },
     );
 
     if (!consentGranted) {
@@ -65,7 +65,7 @@ export const startCloudShellTerminal =
     }
 
     terminal.writeln(formatInfoMessage("Connecting to CloudShell....."));
-    
+
     let sessionDetails: {
       socketUri?: string;
       provisionConsoleResponse?: any;
@@ -87,30 +87,37 @@ export const startCloudShellTerminal =
       shellHandler,
       sessionDetails.socketUri,
       sessionDetails.provisionConsoleResponse,
-      sessionDetails.targetUri
+      sessionDetails.targetUri,
     );
 
-    TelemetryProcessor.traceSuccess(Action.CloudShellTerminalSession, {
-      shellType: TerminalKind[shellType],
-      dataExplorerArea: Areas.CloudShell,
-      region: resolvedRegion
-    }, startKey);
+    TelemetryProcessor.traceSuccess(
+      Action.CloudShellTerminalSession,
+      {
+        shellType: TerminalKind[shellType],
+        dataExplorerArea: Areas.CloudShell,
+        region: resolvedRegion,
+      },
+      startKey,
+    );
 
     return socket;
-  }
-  catch (err) {
-    TelemetryProcessor.traceFailure(Action.CloudShellTerminalSession, {
-      shellType: TerminalKind[shellType],
-      dataExplorerArea: Areas.CloudShell,
-      region: resolvedRegion,
-      error: getErrorMessage(err),
-      errorStack: getErrorStack(err)
-    }, startKey); 
+  } catch (err) {
+    TelemetryProcessor.traceFailure(
+      Action.CloudShellTerminalSession,
+      {
+        shellType: TerminalKind[shellType],
+        dataExplorerArea: Areas.CloudShell,
+        region: resolvedRegion,
+        error: getErrorMessage(err),
+        errorStack: getErrorStack(err),
+      },
+      startKey,
+    );
 
     terminal.writeln(formatErrorMessage(`Failed with error.${getErrorMessage(err)}`));
 
     return null;
-  }  
+  }
 };
 
 /**
@@ -132,7 +139,7 @@ export const ensureCloudShellProviderRegistered = async (): Promise<void> => {
  * Determines the appropriate CloudShell region
  */
 export const determineCloudShellRegion = (): string => {
-  return  getNormalizedRegion(userContext.databaseAccount?.location, DEFAULT_CLOUDSHELL_REGION);
+  return getNormalizedRegion(userContext.databaseAccount?.location, DEFAULT_CLOUDSHELL_REGION);
 };
 
 /**
@@ -140,13 +147,13 @@ export const determineCloudShellRegion = (): string => {
  */
 export const provisionCloudShellSession = async (
   resolvedRegion: string,
-  terminal: Terminal
+  terminal: Terminal,
 ): Promise<{ socketUri?: string; provisionConsoleResponse?: any; targetUri?: string }> => {
-  return new Promise( async (resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     try {
-       // Apply user settings
+      // Apply user settings
       await putEphemeralUserSettings(userContext.subscriptionId, resolvedRegion);
-      
+
       // Provision console
       let provisionConsoleResponse;
       let attemptCounter = 0;
@@ -164,26 +171,26 @@ export const provisionCloudShellSession = async (
         const errorMessage = `Provisioning failed: ${provisionConsoleResponse.properties.provisioningState}`;
         return reject(new Error(errorMessage));
       }
-      
+
       // Connect terminal
-      const connectTerminalResponse = await connectTerminal(
-        provisionConsoleResponse.properties.uri,
-        { rows: terminal.rows, cols: terminal.cols }
-      );
+      const connectTerminalResponse = await connectTerminal(provisionConsoleResponse.properties.uri, {
+        rows: terminal.rows,
+        cols: terminal.cols,
+      });
 
       const targetUri = `${provisionConsoleResponse.properties.uri}/terminals?cols=${terminal.cols}&rows=${terminal.rows}&version=2019-01-01&shell=bash`;
       const termId = connectTerminalResponse.id;
 
       // Determine socket URI
       let socketUri = connectTerminalResponse.socketUri.replace(":443/", "");
-      const targetUriBody = targetUri.replace('https://', '').split('?')[0];
+      const targetUriBody = targetUri.replace("https://", "").split("?")[0];
 
       if (socketUri.indexOf(targetUriBody) === -1) {
         socketUri = `wss://${targetUriBody}/${termId}`;
       }
 
-      if (targetUriBody.includes('servicebus')) {
-        const targetUriBodyArr = targetUriBody.split('/');
+      if (targetUriBody.includes("servicebus")) {
+        const targetUriBodyArr = targetUriBody.split("/");
         socketUri = `wss://${targetUriBodyArr[0]}/$hc/${targetUriBodyArr[1]}/terminals/${termId}`;
       }
 
@@ -194,7 +201,6 @@ export const provisionCloudShellSession = async (
   });
 };
 
-
 /**
  * Establishes a terminal connection via WebSocket
  */
@@ -203,12 +209,11 @@ export const establishTerminalConnection = async (
   shellHandler: AbstractShellHandler,
   socketUri: string,
   provisionConsoleResponse: any,
-  targetUri: string
+  targetUri: string,
 ): Promise<WebSocket> => {
-
   let socket = new WebSocket(socketUri);
 
-  // Get shell-specific initial commands 
+  // Get shell-specific initial commands
   const initCommands = shellHandler.getInitialCommands();
 
   // Configure the socket
@@ -216,7 +221,7 @@ export const establishTerminalConnection = async (
 
   const options = {
     startMarker: START_MARKER,
-    shellHandler: shellHandler
+    shellHandler: shellHandler,
   };
 
   // Attach the terminal addon
@@ -248,9 +253,8 @@ export const configureSocketConnection = async (
   uri: string,
   terminal: Terminal,
   initCommands: string,
-  socketRetryCount: number
+  socketRetryCount: number,
 ): Promise<WebSocket> => {
-  
   sendTerminalStartupCommands(socket, initCommands);
 
   socket.onerror = async () => {
@@ -279,7 +283,7 @@ export const sendTerminalStartupCommands = (socket: WebSocket, initCommands: str
           if (pingCount >= MAX_PING_COUNT) {
             socket.close();
           } else {
-            socket.send('');
+            socket.send("");
             pingCount++;
             keepAliveID = setTimeout(() => keepSocketAlive(socket), 1000);
           }
@@ -289,4 +293,4 @@ export const sendTerminalStartupCommands = (socket: WebSocket, initCommands: str
       keepSocketAlive(socket);
     };
   }
-}
+};

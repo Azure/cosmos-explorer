@@ -423,11 +423,11 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         title: "PostgreSQL Shell",
         description: "Create table and interact with data using PostgreSQL’s shell interface",
         onClick: () => {
-          if (userContext.features.enableCloudShell){
+          if (userContext.features.enableCloudShell) {
             this.container.openCloudShellTerminal(TerminalKind.Mongo);
           } else {
             this.container.openNotebookTerminal(TerminalKind.Postgres);
-          } 
+          }
         },
       };
     }
@@ -438,10 +438,10 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         title: "Mongo Shell",
         description: "Create a collection and interact with data using MongoDB's shell interface",
         onClick: () => {
-          if (userContext.features.enableCloudShell){
+          if (userContext.features.enableCloudShell) {
             this.container.openCloudShellTerminal(TerminalKind.VCoreMongo);
           } else {
-          this.container.openNotebookTerminal(TerminalKind.VCoreMongo);
+            this.container.openNotebookTerminal(TerminalKind.VCoreMongo);
           }
         },
       };

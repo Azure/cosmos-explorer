@@ -4,14 +4,14 @@
  */
 
 const validCloudShellRegions = new Set([
-  "westus", 
-  "southcentralus", 
-  "eastus", 
-  "northeurope", 
-  "westeurope", 
-  "centralindia", 
-  "southeastasia", 
-  "westcentralus"
+  "westus",
+  "southcentralus",
+  "eastus",
+  "northeurope",
+  "westeurope",
+  "centralindia",
+  "southeastasia",
+  "westcentralus",
 ]);
 
 /**
@@ -21,12 +21,12 @@ const validCloudShellRegions = new Set([
  */
 export const getNormalizedRegion = (region: string, defaultCloudshellRegion: string) => {
   if (!region) return defaultCloudshellRegion;
-  
+
   const regionMap: Record<string, string> = {
-    "centralus": "westcentralus",
-    "eastus2": "eastus"
+    centralus: "westcentralus",
+    eastus2: "eastus",
   };
-  
+
   const normalizedRegion = regionMap[region.toLowerCase()] || region;
   return validCloudShellRegions.has(normalizedRegion.toLowerCase()) ? normalizedRegion : defaultCloudshellRegion;
 };

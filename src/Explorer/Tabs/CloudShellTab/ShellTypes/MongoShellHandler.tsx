@@ -10,10 +10,9 @@ import { getHostFromUrl } from "../Utils/CommonUtils";
 const PACKAGE_VERSION: string = "2.3.8";
 
 export class MongoShellHandler extends AbstractShellHandler {
-
   private _key: string;
   constructor(private key: string) {
-    super(); 
+    super();
     this._key = key;
   }
 
@@ -32,7 +31,7 @@ export class MongoShellHandler extends AbstractShellHandler {
       `if ! command -v mongosh &> /dev/null; then tar -xvzf mongosh-${PACKAGE_VERSION}-linux-x64.tgz; fi`,
       `if ! command -v mongosh &> /dev/null; then mkdir -p ~/mongosh && mv mongosh-${PACKAGE_VERSION}-linux-x64/* ~/mongosh/; fi`,
       "if ! command -v mongosh &> /dev/null; then echo 'export PATH=$HOME/mongosh/bin:$PATH' >> ~/.bashrc; fi",
-      "source ~/.bashrc"
+      "source ~/.bashrc",
     ];
   }
 
@@ -45,7 +44,9 @@ export class MongoShellHandler extends AbstractShellHandler {
     if (!dbName) {
       return "echo 'Database name not found.'";
     }
-    return `mongosh --host ${getHostFromUrl(this.getEndpoint())} --port 10255 --username ${dbName} --password ${this._key} --tls --tlsAllowInvalidCertificates`;
+    return `mongosh --host ${getHostFromUrl(this.getEndpoint())} --port 10255 --username ${dbName} --password ${
+      this._key
+    } --tls --tlsAllowInvalidCertificates`;
   }
 
   public getTerminalSuppressedData(): string {
