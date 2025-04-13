@@ -41,5 +41,4 @@ export class ShellTypeHandlerFactory {
 
     return key;
   }
-  
 }

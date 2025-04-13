@@ -148,7 +148,7 @@ export enum Action {
   DeletePersistedTabState,
   UploadDocuments, // Used in Fabric. Please do not rename.
   CloudShellUserConsent,
-  CloudShellTerminalSession
+  CloudShellTerminalSession,
 }
 
 export const ActionModifiers = {

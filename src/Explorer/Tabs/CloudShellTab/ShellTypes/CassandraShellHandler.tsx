@@ -10,10 +10,9 @@ import { AbstractShellHandler } from "./AbstractShellHandler";
 const PACKAGE_VERSION: string = "5.0.3";
 
 export class CassandraShellHandler extends AbstractShellHandler {
-  
   private _key: string;
   constructor(private key: string) {
-    super(); 
+    super();
     this._key = key;
   }
 
@@ -34,7 +33,7 @@ export class CassandraShellHandler extends AbstractShellHandler {
       "if ! command -v cqlsh &> /dev/null; then echo 'export PATH=$HOME/cassandra/bin:$PATH' >> ~/.bashrc; fi",
       "if ! command -v cqlsh &> /dev/null; then echo 'export SSL_VERSION=TLSv1_2' >> ~/.bashrc; fi",
       "if ! command -v cqlsh &> /dev/null; then echo 'export SSL_VALIDATE=false' >> ~/.bashrc; fi",
-      "source ~/.bashrc"
+      "source ~/.bashrc",
     ];
   }
 

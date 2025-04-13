@@ -30,7 +30,7 @@ export default class TerminalTab extends TabsBase {
     this.isAllPublicIPAddressesEnabled = ko.observable(true);
 
     if (userContext.features.enableCloudShell) {
-      this.notebookTerminalComponentAdapter = new CloudShellTerminalComponentAdapter(        
+      this.notebookTerminalComponentAdapter = new CloudShellTerminalComponentAdapter(
         () => userContext?.databaseAccount,
         () => this.tabId,
         () => this.getUsername(),
@@ -39,16 +39,12 @@ export default class TerminalTab extends TabsBase {
       );
 
       this.notebookTerminalComponentAdapter.parameters = ko.computed<boolean>(() => {
-        if (
-          this.isTemplateReady() &&
-          this.isAllPublicIPAddressesEnabled()
-        ) {
+        if (this.isTemplateReady() && this.isAllPublicIPAddressesEnabled()) {
           return true;
         }
         return false;
       });
-    }
-    else {
+    } else {
       this.notebookTerminalComponentAdapter = new NotebookTerminalComponentAdapter(
         () => this.getNotebookServerInfo(options),
         () => userContext?.databaseAccount,

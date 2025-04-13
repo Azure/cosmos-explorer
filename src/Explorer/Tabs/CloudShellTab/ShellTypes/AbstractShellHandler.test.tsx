@@ -46,11 +46,13 @@ describe("AbstractShellHandler", () => {
       const expectedOutput = [
         START_MARKER,
         DISABLE_HISTORY,
-        "setup-command-1", 
+        "setup-command-1",
         "setup-command-2",
-        "mock-connection-command"
-      ].join("\n").concat("\n");
-      
+        "mock-connection-command",
+      ]
+        .join("\n")
+        .concat("\n");
+
       expect(result).toBe(expectedOutput);
     });
   });
@@ -61,10 +63,7 @@ describe("AbstractShellHandler", () => {
     });
 
     it("should return the setup commands", () => {
-      expect(shellHandler.getSetUpCommands()).toEqual([
-        "setup-command-1", 
-        "setup-command-2"
-      ]);
+      expect(shellHandler.getSetUpCommands()).toEqual(["setup-command-1", "setup-command-2"]);
     });
 
     it("should return the connection command", () => {

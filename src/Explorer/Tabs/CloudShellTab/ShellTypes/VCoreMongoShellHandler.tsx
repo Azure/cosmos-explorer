@@ -9,7 +9,6 @@ import { AbstractShellHandler } from "./AbstractShellHandler";
 const PACKAGE_VERSION: string = "2.3.8";
 
 export class VCoreMongoShellHandler extends AbstractShellHandler {
-
   public getShellName(): string {
     return "MongoDB VCore";
   }
@@ -25,12 +24,12 @@ export class VCoreMongoShellHandler extends AbstractShellHandler {
       `if ! command -v mongosh &> /dev/null; then tar -xvzf mongosh-${PACKAGE_VERSION}-linux-x64.tgz; fi`,
       `if ! command -v mongosh &> /dev/null; then mkdir -p ~/mongosh && mv mongosh-${PACKAGE_VERSION}-linux-x64/* ~/mongosh/; fi`,
       "if ! command -v mongosh &> /dev/null; then echo 'export PATH=$HOME/mongosh/bin:$PATH' >> ~/.bashrc; fi",
-      "source ~/.bashrc"
+      "source ~/.bashrc",
     ];
   }
 
   public getConnectionCommand(): string {
-    const endpoint = this.getEndpoint()
+    const endpoint = this.getEndpoint();
     if (!endpoint) {
       return `echo '${this.getShellName()} endpoint not found.'`;
     }

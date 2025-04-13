@@ -111,11 +111,17 @@ export const createCollectionContextMenuButton = (
           selectedCollection && selectedCollection.onNewMongoShellClick();
         }
       },
-      label: (useNotebook.getState().isShellEnabled || userContext.features.enableCloudShell) ? "Open Mongo Shell" : "New Shell",
+      label:
+        useNotebook.getState().isShellEnabled || userContext.features.enableCloudShell
+          ? "Open Mongo Shell"
+          : "New Shell",
     });
   }
 
-  if ((useNotebook.getState().isShellEnabled || userContext.features.enableCloudShell) && userContext.apiType === "Cassandra") {
+  if (
+    (useNotebook.getState().isShellEnabled || userContext.features.enableCloudShell) &&
+    userContext.apiType === "Cassandra"
+  ) {
     items.push({
       iconSrc: HostedTerminalIcon,
       onClick: () => {

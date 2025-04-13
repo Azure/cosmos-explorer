@@ -9,13 +9,12 @@ import { AbstractShellHandler } from "./AbstractShellHandler";
 const PACKAGE_VERSION: string = "15.2";
 
 export class PostgresShellHandler extends AbstractShellHandler {
-
   public getShellName(): string {
     return "PostgreSQL";
   }
 
   public getEndpoint(): string {
-        return userContext?.databaseAccount?.properties?.postgresqlEndpoint;
+    return userContext?.databaseAccount?.properties?.postgresqlEndpoint;
   }
 
   public getSetUpCommands(): string[] {
@@ -28,12 +27,12 @@ export class PostgresShellHandler extends AbstractShellHandler {
       "if ! command -v psql &> /dev/null; then tar -xvzf readline-8.1.tar.gz; fi",
       "if ! command -v psql &> /dev/null; then cd readline-8.1 && ./configure --prefix=$HOME/pgsql; fi",
       "if ! command -v psql &> /dev/null; then echo 'export PATH=$HOME/pgsql/bin:$PATH' >> ~/.bashrc; fi",
-      "source ~/.bashrc"
+      "source ~/.bashrc",
     ];
   }
 
   public getConnectionCommand(): string {
-    const endpoint = this.getEndpoint()
+    const endpoint = this.getEndpoint();
     if (!endpoint) {
       return `echo '${this.getShellName()} endpoint not found.'`;
     }

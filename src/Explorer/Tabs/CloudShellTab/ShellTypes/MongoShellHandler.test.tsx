@@ -5,26 +5,26 @@
 
 import { userContext } from "../../../../UserContext";
 import * as CommonUtils from "../Utils/CommonUtils";
-import { MongoShellHandler } from './MongoShellHandler';
+import { MongoShellHandler } from "./MongoShellHandler";
 
 // Mock dependencies
 jest.mock("../../../../UserContext", () => ({
   userContext: {
     databaseAccount: {
-      name: 'test-account',
+      name: "test-account",
       properties: {
-        mongoEndpoint: 'https://test-mongo.documents.azure.com:443/'
-      }
-    }
-  }
+        mongoEndpoint: "https://test-mongo.documents.azure.com:443/",
+      },
+    },
+  },
 }));
 
 jest.mock("../Utils/CommonUtils", () => ({
-  getHostFromUrl: jest.fn().mockReturnValue('test-mongo.documents.azure.com')
+  getHostFromUrl: jest.fn().mockReturnValue("test-mongo.documents.azure.com"),
 }));
 
-describe('MongoShellHandler', () => {
-  const testKey = 'test-key';
+describe("MongoShellHandler", () => {
+  const testKey = "test-key";
   let mongoShellHandler: MongoShellHandler;
 
   beforeEach(() => {
@@ -32,108 +32,108 @@ describe('MongoShellHandler', () => {
     jest.clearAllMocks();
   });
 
-  describe('getShellName', () => {
-    it('should return MongoDB', () => {
-      expect(mongoShellHandler.getShellName()).toBe('MongoDB');
+  describe("getShellName", () => {
+    it("should return MongoDB", () => {
+      expect(mongoShellHandler.getShellName()).toBe("MongoDB");
     });
   });
 
-  describe('getEndpoint', () => {
-    it('should return mongoEndpoint from userContext', () => {
-      expect(mongoShellHandler.getEndpoint()).toBe('https://test-mongo.documents.azure.com:443/');
+  describe("getEndpoint", () => {
+    it("should return mongoEndpoint from userContext", () => {
+      expect(mongoShellHandler.getEndpoint()).toBe("https://test-mongo.documents.azure.com:443/");
     });
 
-    it('should return undefined when mongoEndpoint is not available', () => {
+    it("should return undefined when mongoEndpoint is not available", () => {
       // Save original databaseAccount
       const originalDatabaseAccount = userContext.databaseAccount;
-      
+
       // Directly assign the modified databaseAccount
-      (userContext as any).databaseAccount = { 
-        id: 'test-id',
-        name: 'test-account',
-        location: 'test-location',
-        type: 'test-type',
-        kind: 'test-kind',
-        properties: {} 
+      (userContext as any).databaseAccount = {
+        id: "test-id",
+        name: "test-account",
+        location: "test-location",
+        type: "test-type",
+        kind: "test-kind",
+        properties: {},
       };
-      
+
       expect(mongoShellHandler.getEndpoint()).toBeUndefined();
-      
+
       // Restore original
       (userContext as any).databaseAccount = originalDatabaseAccount;
     });
   });
 
-  describe('getSetUpCommands', () => {
-    it('should return an array of setup commands', () => {
+  describe("getSetUpCommands", () => {
+    it("should return an array of setup commands", () => {
       const commands = mongoShellHandler.getSetUpCommands();
-      
+
       expect(Array.isArray(commands)).toBe(true);
       expect(commands.length).toBe(6);
-      expect(commands[1]).toContain('mongosh-2.3.8-linux-x64.tgz');
+      expect(commands[1]).toContain("mongosh-2.3.8-linux-x64.tgz");
     });
   });
 
-  describe('getConnectionCommand', () => {
-    it('should return the correct connection command', () => {
+  describe("getConnectionCommand", () => {
+    it("should return the correct connection command", () => {
       // Save original databaseAccount
       const originalDatabaseAccount = userContext.databaseAccount;
-      
+
       // Directly assign the modified databaseAccount
-      (userContext as any).databaseAccount = { 
-        id: 'test-id',
-        name: 'test-account',
-        location: 'test-location',
-        type: 'test-type',
-        kind: 'test-kind',
-        properties: { mongoEndpoint: 'https://test-mongo.documents.azure.com:443/' } 
+      (userContext as any).databaseAccount = {
+        id: "test-id",
+        name: "test-account",
+        location: "test-location",
+        type: "test-type",
+        kind: "test-kind",
+        properties: { mongoEndpoint: "https://test-mongo.documents.azure.com:443/" },
       };
-      
+
       const command = mongoShellHandler.getConnectionCommand();
-      
+
       expect(command).toBe(
-        'mongosh --host test-mongo.documents.azure.com --port 10255 --username test-account --password test-key --tls --tlsAllowInvalidCertificates'
+        "mongosh --host test-mongo.documents.azure.com --port 10255 --username test-account --password test-key --tls --tlsAllowInvalidCertificates",
       );
-      expect(CommonUtils.getHostFromUrl).toHaveBeenCalledWith('https://test-mongo.documents.azure.com:443/');
-    
+      expect(CommonUtils.getHostFromUrl).toHaveBeenCalledWith("https://test-mongo.documents.azure.com:443/");
+
       // Restore original
       (userContext as any).databaseAccount = originalDatabaseAccount;
     });
 
-    it('should handle missing endpoint', () => {
+    it("should handle missing endpoint", () => {
       // Mock getEndpoint to return undefined
-      jest.spyOn(mongoShellHandler, 'getEndpoint').mockReturnValue(undefined);
+      jest.spyOn(mongoShellHandler, "getEndpoint").mockReturnValue(undefined);
       const command = mongoShellHandler.getConnectionCommand();
-      
+
       expect(command).toBe(`echo '${mongoShellHandler.getShellName()} endpoint not found.'`);
     });
 
-    it('should handle missing database account name', () => {
+    it("should handle missing database account name", () => {
       // Save original databaseAccount
       const originalDatabaseAccount = userContext.databaseAccount;
-      
+
       // Directly assign the modified databaseAccount
-      (userContext as any).databaseAccount = { 
-        id: 'test-id',
-        name: '', // Empty name to simulate missing name
-        location: 'test-location',
-        type: 'test-type',
-        kind: 'test-kind',
-        properties: { mongoEndpoint: 'https://test.com' } 
+      (userContext as any).databaseAccount = {
+        id: "test-id",
+        name: "", // Empty name to simulate missing name
+        location: "test-location",
+        type: "test-type",
+        kind: "test-kind",
+        properties: { mongoEndpoint: "https://test.com" },
       };
-      
+
       const command = mongoShellHandler.getConnectionCommand();
-      
+
       expect(command).toBe("echo 'Database name not found.'");
-      
+
       // Restore original
       (userContext as any).databaseAccount = originalDatabaseAccount;
     });
   });
 
-  describe('getTerminalSuppressedData', () => {
-    it('should return the correct warning message', () => {
-      expect(mongoShellHandler.getTerminalSuppressedData()).toBe('Warning: Non-Genuine MongoDB Detected');
+  describe("getTerminalSuppressedData", () => {
+    it("should return the correct warning message", () => {
+      expect(mongoShellHandler.getTerminalSuppressedData()).toBe("Warning: Non-Genuine MongoDB Detected");
     });
   });
 });
