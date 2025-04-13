@@ -34,7 +34,7 @@ describe("ShellTypeHandlerFactory", () => {
   // Negative test cases
   describe("Negative test cases", () => {
     it("should throw an error for unsupported terminal kind", async () => {
-      await expect(ShellTypeHandlerFactory.getHandler("UnsupportedKind" as TerminalKind))
+      await expect(ShellTypeHandlerFactory.getHandler(("UnsupportedKind" as unknown) as TerminalKind))
         .rejects.toThrow("Unsupported shell type: UnsupportedKind");
     });
     

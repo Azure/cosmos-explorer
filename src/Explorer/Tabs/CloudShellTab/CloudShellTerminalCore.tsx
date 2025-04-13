@@ -108,6 +108,8 @@ export const startCloudShellTerminal =
     }, startKey); 
 
     terminal.writeln(formatErrorMessage(`Failed with error.${getErrorMessage(err)}`));
+
+    return null;
   }  
 };
 
