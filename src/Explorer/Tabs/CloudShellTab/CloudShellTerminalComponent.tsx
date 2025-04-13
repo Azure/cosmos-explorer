@@ -65,8 +65,12 @@ export const CloudShellTerminalComponent: React.FC<CloudShellTerminalComponentPr
 
         // Cleanup function to close WebSocket and dispose terminal
         return () => {
-            if (!socketRef.current) return;
-            if (socketRef.current && socketRef.current.readyState && socketRef.current.readyState === WebSocket.OPEN) {
+            if (!socketRef.current) {
+                return;
+            }
+            if (socketRef.current && 
+                socketRef.current.readyState && 
+                socketRef.current.readyState === WebSocket.OPEN) {
                 socketRef.current.close(); // Close WebSocket connection
             }
             if (resizeObserver && terminalRef.current) {
