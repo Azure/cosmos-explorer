@@ -1,62 +1,69 @@
-# Cloud Shell Component Design
+# Migrate Mongo(RU/vCore)/Postgres/Cassandra shell to CloudShell Design
 
-## Overview
+## CloudShell Overview
 Cloud Shell provides an integrated terminal experience directly within Cosmos Explorer, allowing users to interact with different database engines using their native command-line interfaces.
 
 ## Component Architecture
 
 ```mermaid
 classDiagram
-    class UserContext {
-        +features: FeatureRegistration
-    }
     
     class FeatureRegistration {
+        <<Registers a new flag for switching shell to CloudShell>>
         +enableCloudShell: boolean
     }
     
     class ShellTypeHandlerFactory {
+        <<Initialize corresponding handler based on the type of shell>>
         +getHandler(terminalKind: TerminalKind): ShellTypeHandler
         +getKey(): string
     }
     
-    class ShellTypeHandler {
+    class AbstractShellHandler {
         <<interface>>
-        +getConnectionString(): string
-        +getShellPath(): string
-        +getArguments(): string[]
+        +getShellName(): string
+        +getSetUpCommands(): string[]
+        +getConnectionCommand(): string
+        +getEndpoint(): string
+        +getTerminalSuppressedData(): string[]
+        +getInitialCommands(): string
     }
     
     class CloudShellTerminalComponent {
+        <<React Component to Render CloudShell>>
         -terminalKind: TerminalKind
-        -shellHandler: ShellTypeHandler
+        -shellHandler: AbstractShellHandler
         +render(): ReactElement
     }
     
     class CloudShellTerminalCore {
-        -connectionString: string
-        -shellPath: string
-        -arguments: string[]
-        +initializeTerminal(): void
-        +onData(): void
-        +onResize(): void
+        <<Initialize CloudShell>>
+        +startCloudShellTerminal()
     }
     
     class CloudShellClient {
-        +initializeSession(): Promise
-        +getEndpoint(): string
-        +sendCommand(): Promise
-        +handleResponse(): void
+        <Initialize CloudShell APIs>
+        +getUserRegion(): Promise
+        +deleteUserSettings(): string
+        +getUserSettings(): Promise
+        +putEphemeralUserSettings(): void
+        +verifyCloudShellProviderRegistration: void
+        +registerCloudShellProvider(): void
+        +provisionConsole(): ProvisionConsoleResponse
+        +connectTerminal(): ConnectTerminalResponse
+        +authorizeSession(): Authorization
     }
     
-    class TabsManager {
-        +canOpenCloudShellTab(): boolean
-        +openTab(): void
+    class CloudShellTerminalComponentAdapter {
+        +getDatabaseAccount: DataModels.DatabaseAccount,
+        +getTabId: string,
+        +getUsername: string,
+        +isAllPublicIPAddressesEnabled: ko.Observable<boolean>,
+        +kind: ViewModels.TerminalKind,
     }
     
     class TerminalTab {
-        -terminalKind: TerminalKind
-        +render(): ReactElement
+        -cloudShellTerminalComponentAdapter: CloudShellTerminalComponentAdapter
     }
     
     class ContextMenuButtonFactory {
@@ -66,126 +73,91 @@ classDiagram
     
     UserContext --> FeatureRegistration : contains
     FeatureRegistration ..> ContextMenuButtonFactory : controls UI visibility
-    FeatureRegistration ..> TabsManager : enables tab creation
+    FeatureRegistration ..> CloudShellTerminalComponentAdapter : enables tab creation
     FeatureRegistration ..> CloudShellClient : permits API calls
     
-    TabsManager --> TerminalTab : manages
+    TerminalTab --> CloudShellTerminalComponentAdapter : manages
     ContextMenuButtonFactory --> TerminalTab : creates
     TerminalTab --> CloudShellTerminalComponent : renders
     CloudShellTerminalComponent --> CloudShellTerminalCore : contains
     CloudShellTerminalComponent --> ShellTypeHandlerFactory : uses
     CloudShellTerminalCore --> CloudShellClient : communicates with
-    CloudShellTerminalCore --> ShellTypeHandler : uses configuration from
+    CloudShellTerminalCore --> AbstractShellHandler : uses configuration from
     
-    ShellTypeHandlerFactory --> ShellTypeHandler : creates
+    ShellTypeHandlerFactory --> AbstractShellHandler : creates
     
     class MongoShellHandler {
         -key: string
-        +getConnectionString(): string
-        +getShellPath(): string
-        +getArguments(): string[]
-    }
+        +getShellName(): string
+        +getSetUpCommands(): string[]
+        +getConnectionCommand(): string
+        +getEndpoint(): string
+        +getTerminalSuppressedData(): string[]
+        +getInitialCommands(): string
     
     class VCoreMongoShellHandler {
-        -key: string
-        +getConnectionString(): string
-        +getShellPath(): string
-        +getArguments(): string[]
+        +getShellName(): string
+        +getSetUpCommands(): string[]
+        +getConnectionCommand(): string
+        +getEndpoint(): string
+        +getTerminalSuppressedData(): string[]
+        +getInitialCommands(): string
     }
     
     class CassandraShellHandler {
         -key: string
-        +getConnectionString(): string
-        +getShellPath(): string
-        +getArguments(): string[]
+        +getShellName(): string
+        +getSetUpCommands(): string[]
+        +getConnectionCommand(): string
+        +getEndpoint(): string
+        +getTerminalSuppressedData(): string[]
+        +getInitialCommands(): string
     }
     
     class PostgresShellHandler {
-        +getConnectionString(): string
-        +getShellPath(): string
-        +getArguments(): string[]
+        +getShellName(): string
+        +getSetUpCommands(): string[]
+        +getConnectionCommand(): string
+        +getEndpoint(): string
+        +getTerminalSuppressedData(): string[]
+        +getInitialCommands(): string
     }
     
-    ShellTypeHandler <|.. MongoShellHandler
-    ShellTypeHandler <|.. VCoreMongoShellHandler
-    ShellTypeHandler <|.. CassandraShellHandler
-    ShellTypeHandler <|.. PostgresShellHandler
+    AbstractShellHandler <|.. MongoShellHandler
+    AbstractShellHandler <|.. VCoreMongoShellHandler
+    AbstractShellHandler <|.. CassandraShellHandler
+    AbstractShellHandler <|.. PostgresShellHandler
 ```
 
-## Sequence Flow
-
-### Shell Initialization Flow
-
-```mermaid
-sequenceDiagram
-    participant User
-    participant ContextMenuButtonFactory
-    participant TerminalTab
-    participant CloudShellTerminalComponent
-    participant ShellTypeHandlerFactory
-    participant CloudShellClient
-    participant CloudShellTerminalCore
-    participant ARM as Azure Resource Manager
-
-    User->>ContextMenuButtonFactory: Click CloudShell button
-    ContextMenuButtonFactory->>ContextMenuButtonFactory: isCloudShellEnabled()
-    ContextMenuButtonFactory->>TerminalTab: Create with terminalKind
-    TerminalTab->>CloudShellTerminalComponent: Create with terminalKind
-    CloudShellTerminalComponent->>ShellTypeHandlerFactory: getHandler(terminalKind)
-    ShellTypeHandlerFactory->>ARM: listKeys()
-    ARM-->>ShellTypeHandlerFactory: primaryMasterKey
-    ShellTypeHandlerFactory->>ShellTypeHandler: create handler with key
-    ShellTypeHandlerFactory-->>CloudShellTerminalComponent: return handler
-    CloudShellTerminalComponent->>CloudShellClient: initializeSession()
-    CloudShellTerminalComponent->>CloudShellTerminalCore: Create with handler config
-    CloudShellTerminalCore->>CloudShellClient: connect()
-    CloudShellTerminalCore->>ShellTypeHandler: getConnectionString()
-    CloudShellTerminalCore->>ShellTypeHandler: getShellPath()
-    CloudShellTerminalCore->>ShellTypeHandler: getArguments()
-    CloudShellTerminalCore->>CloudShellTerminalCore: initializeTerminal()
-    CloudShellTerminalComponent-->>TerminalTab: Render terminal UI
-    TerminalTab-->>User: Display interactive terminal
-```
-
-## Feature Flag
+## Changes
 
 The CloudShell functionality is controlled by the feature flag `userContext.features.enableCloudShell`. When this flag is **enabled** (set to true), the following occurs in the application:
 
-1. **UI Components Become Available:**
-   - CloudShell buttons appear in the command bar and context menus
-   - Terminal options appear in database-specific menus
-   - Tab options for opening CloudShell terminals are enabled
+1. **UI Components Become Available:** There is "Open Mongo Shell" or similar button appears on data explorer or quick start window.
 
 2. **Service Capabilities Are Activated:**
    - Backend API calls to CloudShell services are permitted
    - Terminal connection endpoints become accessible
-   - Authentication flows for shell access are enabled
 
 3. **Database-Specific Features Are Unlocked:**
    - Terminal experiences tailored to each database type become available
    - Shell handlers are instantiated based on the database type
-   - Connection strings are generated and sent to the appropriate shells
 
 4. **Telemetry Collection Begins:**
-   - Usage data for CloudShell features is collected
-   - Performance metrics for shell operations are tracked
-   - Error reporting for shell connections is enabled
+   - When CloudShell Starts
+   - User Consent to access  shell out of the region
+   - When shell is connected
+   - When there is an error during CloudShell initialization
 
-The feature is conditionally enabled based on:
-
-- Database account type compatibility (MongoDB, Cassandra, PostgreSQL)
-- Cloud environment (not available in sovereign clouds)
-- Service availability in the current region
-- Account capabilities and permissions
-
-When disabled, all CloudShell functionality is hidden and inaccessible, ensuring a consistent user experience regardless of the feature's state.
+The feature can be enabled by putting `feature.enableCloudShell=true` in url.
+When disabled, all CloudShell functionality is hidden and inaccessible, ensuring a consistent user experience regardless of the feature's state. These shell would be talking to tools federation.
 
 ## Supported Shell Types
 
 | Terminal Kind | Handler Class | Description |
 |---------------|--------------|-------------|
-| Mongo | MongoShellHandler | Handles MongoDB shell connections |
-| VCoreMongo | VCoreMongoShellHandler | Specialized handler for VCore MongoDB instances |
+| Mongo | MongoShellHandler | Handles MongoDB RU shell connections |
+| VCoreMongo | VCoreMongoShellHandler | Handles for VCore MongoDB shell connections |
 | Cassandra | CassandraShellHandler | Handles Cassandra shell connections |
 | Postgres | PostgresShellHandler | Handles PostgreSQL shell connections |
 
@@ -199,10 +171,11 @@ The CloudShell implementation uses the Factory pattern to create appropriate she
    - Retrieves authentication keys from Azure Resource Manager
    - Instantiates specialized handlers with configuration
 
-2. **ShellTypeHandler Interface**: Defines the contract for all shell handlers
-   - `getConnectionString()`: Provides the database connection string
-   - `getShellPath()`: Returns the path to the shell executable
-   - `getArguments()`: Provides command-line arguments for the shell
+2. **ShellTypeHandler Interface i.e. AbstractShellHandler**: Defines the contract for all shell handlers
+   - `getConnectionCommand()`: Returns shell command to connect to database
+   - `getSetUpCommands()`: Returns list of scripts required to set up the environment
+   - `getEndpoint()`: Returns database connection end point
+   - `getTerminalSuppressedData()`: Returns a string which needs to be suppressed
 
 3. **Specialized Handlers**: Implement specific connection logic for each database type
    - Handle authentication differences
@@ -226,7 +199,6 @@ The CloudShell implementation uses the Factory pattern to create appropriate she
    - Initializes the terminal session with backend services
    - Manages communication between the terminal UI and the backend shell process
    - Handles authentication and security for the terminal session
-   - Provides error handling and reconnection logic
 
 7. **ContextMenuButtonFactory**: Creates CloudShell UI entry points
    - Checks if CloudShell is enabled via `userContext.features.enableCloudShell`
@@ -243,86 +215,36 @@ The CloudShell implementation uses the Factory pattern to create appropriate she
 CloudShell components utilize `TelemetryProcessor.trace` to collect usage data and diagnostics information that help improve the service and troubleshoot issues.
 
 ### Telemetry Events
+   - When CloudShell Starts
+   - User Consent to access  shell out of the region
+   - When shell is connected
+   - When there is an error during CloudShell initialization
 
-| Event Name | Description | Collected Data |
+| Action Name | Description | Collected Data |
 |------------|------------|----------------|
-| CloudShellInitiated | Triggered when user starts a CloudShell session | Terminal type, database account type, success/failure |
-| CloudShellCommandExecuted | Triggered when a command is executed | Command type (not the actual command text), execution time, success/failure |
-| CloudShellConnectionFailed | Triggered when connection fails | Error type, terminal type, failure reason |
-| CloudShellSessionDuration | Triggered when session ends | Session duration, terminal type, commands executed count |
-| CloudShellFeatureUsage | Triggered when specific features are used | Feature name, usage count |
+| CloudShellTerminalSession/Start | Triggered when user starts a CloudShell session | Shell Type, dataExplorerArea as <i>CloudShell</i>|
+| CloudShellUserConsent/(Success/Failure) | Records user consent to get cloudshell in other region |  |
+| CloudShellTerminalSession/Success | Records if Terminal creation is successful | Shell Type, Shell Region |
+| CloudShellTerminalSession/Failure | Records of terminal creation is failed | Shell Type, Shell region (if available), error message  |
 
 ### Real-time Use Cases
 
 1. **Performance Monitoring**:
    - Track shell initialization times across different regions and database types
-   - Identify performance bottlenecks in specific shell operations
-   - Monitor command execution latency
 
 2. **Error Detection and Resolution**:
    - Detect increased error rates in real-time
-   - Identify patterns in connection failures
-   - Trigger alerts when error thresholds are exceeded
+   - Identify patterns in failures
    - Correlate errors with specific client configurations
 
 3. **Feature Adoption Analysis**:
    - Measure adoption rates of different terminal types
-   - Track which CloudShell capabilities are most frequently used
-   - Identify user workflows and common command patterns
-   - Inform feature prioritization decisions
 
 4. **User Experience Optimization**:
    - Analyze session duration to understand engagement
    - Identify abandoned sessions and potential pain points
    - Measure the impact of new features on usage patterns
    - Track command completion rates and error recovery
-
-### Implementation Example
-
-```typescript
-// Example of telemetry collection in CloudShell components
-private initializeShellSession(terminalKind: TerminalKind): void {
-  const startTime = Date.now();
-  
-  try {
-    // Shell initialization logic
-    this.shellHandler = await ShellTypeHandlerFactory.getHandler(terminalKind);
-    const success = true;
-    
-    TelemetryProcessor.trace({
-      eventName: "CloudShellInitiated",
-      properties: {
-        terminalKind: terminalKind,
-        databaseType: userContext.databaseAccount.kind,
-        success: String(success),
-        durationMs: String(Date.now() - startTime)
-      },
-      measurements: {
-        durationMs: Date.now() - startTime
-      }
-    });
-  } catch (error) {
-    TelemetryProcessor.trace({
-      eventName: "CloudShellConnectionFailed",
-      properties: {
-        terminalKind: terminalKind,
-        errorType: error.name,
-        errorMessage: error.message,
-        success: "false"
-      }
-    });
-    throw error;
-  }
-}
-```
-
-### Data Privacy
-
-The telemetry system is designed with privacy in mind:
-- No actual command text or queries are collected
-- No connection strings or credentials are logged
-- No personally identifiable information is captured
-- Telemetry complies with data residency requirements
 
 ## Limitations and Regional Availability
 

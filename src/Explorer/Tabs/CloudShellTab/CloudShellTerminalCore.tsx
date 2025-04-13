@@ -46,10 +46,11 @@ export const startCloudShellTerminal =
     dataExplorerArea: Areas.CloudShell
   });
 
+  let resolvedRegion: string;
   try {
     await ensureCloudShellProviderRegistered();
 
-    const resolvedRegion = determineCloudShellRegion();
+    resolvedRegion = determineCloudShellRegion();
     // Ask for user consent for region
     const consentGranted = await askConfirmation(terminal, formatWarningMessage("This shell might be in a different region than the database region. Do you want to proceed?"));
     
@@ -101,6 +102,7 @@ export const startCloudShellTerminal =
     TelemetryProcessor.traceFailure(Action.CloudShellTerminalSession, {
       shellType: TerminalKind[shellType],
       dataExplorerArea: Areas.CloudShell,
+      region: resolvedRegion,
       error: getErrorMessage(err),
       errorStack: getErrorStack(err)
     }, startKey); 
