@@ -67,7 +67,7 @@ export async function armRequestWithoutPolling<T>({
     queryParams.metricNames && url.searchParams.append("metricnames", queryParams.metricNames);
   }
 
-  if (!userContext.authorizationToken && !customHeaders["Authorization"]) {
+  if (!userContext?.authorizationToken && !customHeaders?.["Authorization"]) {
     throw new Error("No authority token provided");
   }
 
