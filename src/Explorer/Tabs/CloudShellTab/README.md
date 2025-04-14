@@ -43,8 +43,6 @@ classDiagram
     
     class CloudShellClient {
         <Initialize CloudShell APIs>
-        +getUserRegion(): Promise
-        +deleteUserSettings(): string
         +getUserSettings(): Promise
         +putEphemeralUserSettings(): void
         +verifyCloudShellProviderRegistration: void

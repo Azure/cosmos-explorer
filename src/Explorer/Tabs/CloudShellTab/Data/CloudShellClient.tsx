@@ -9,6 +9,7 @@ import { userContext } from "../../../../UserContext";
 import { armRequest } from "../../../../Utils/arm/request";
 import {
   Authorization,
+  CloudShellProviderInfo,
   CloudShellSettings,
   ConnectTerminalResponse,
   NetworkType,
@@ -16,18 +17,8 @@ import {
   ProvisionConsoleResponse,
   SessionType,
   ShellType,
-  CloudShellProviderInfo,
 } from "../Models/DataModels";
 import { getLocale } from "../Utils/CommonUtils";
-
-export const deleteUserSettings = async (): Promise<void> => {
-  await armRequest<void>({
-    host: configContext.ARM_ENDPOINT,
-    path: `/providers/Microsoft.Portal/userSettings/cloudconsole`,
-    method: "DELETE",
-    apiVersion: "2023-02-01-preview",
-  });
-};
 
 export const getUserSettings = async (): Promise<CloudShellSettings> => {
   return await armRequest<CloudShellSettings>({

@@ -9,14 +9,23 @@ import { getLocale } from "../Utils/CommonUtils";
 import {
   authorizeSession,
   connectTerminal,
-  deleteUserSettings,
-  getUserAccountInformation,
   getUserSettings,
   provisionConsole,
   putEphemeralUserSettings,
   registerCloudShellProvider,
   verifyCloudShellProviderRegistration,
 } from "./CloudShellClient";
+
+// Instead of redeclaring fetch, modify the global context
+/* eslint-disable @typescript-eslint/no-namespace */
+declare global {
+  namespace NodeJS {
+    interface Global {
+      fetch: jest.Mock;
+    }
+  }
+}
+/* eslint-enable @typescript-eslint/no-namespace */
 
 // Define mock endpoint
 const MOCK_ARM_ENDPOINT = "https://mock-management.azure.com";
@@ -60,66 +69,6 @@ describe("CloudShellClient", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockJsonPromise.mockClear();
-  });
-
-  describe("getUserRegion", () => {
-    it("should call armRequest with correct parameters", async () => {
-      const mockResponse = { location: "eastus" };
-      (armRequest as jest.Mock).mockResolvedValueOnce(mockResponse);
-
-      const result = await getUserAccountInformation("sub-id", "resource-group", "account-name");
-
-      expect(armRequest).toHaveBeenCalledWith({
-        host: MOCK_ARM_ENDPOINT,
-        path: "/subscriptions/sub-id/resourceGroups/resource-group/providers/Microsoft.DocumentDB/databaseAccounts/account-name",
-        method: "GET",
-        apiVersion: "2022-12-01",
-      });
-      expect(result).toEqual(mockResponse);
-    });
-
-    it("should handle errors when ARM request fails", async () => {
-      const mockError = new Error("Failed to get user region");
-      (armRequest as jest.Mock).mockRejectedValueOnce(mockError);
-
-      await expect(getUserAccountInformation("sub-id", "resource-group", "account-name")).rejects.toThrow(
-        "Failed to get user region",
-      );
-
-      expect(armRequest).toHaveBeenCalledWith({
-        host: MOCK_ARM_ENDPOINT,
-        path: "/subscriptions/sub-id/resourceGroups/resource-group/providers/Microsoft.DocumentDB/databaseAccounts/account-name",
-        method: "GET",
-        apiVersion: "2022-12-01",
-      });
-    });
-  });
-
-  describe("deleteUserSettings", () => {
-    it("should call armRequest with correct parameters", async () => {
-      await deleteUserSettings();
-
-      expect(armRequest).toHaveBeenCalledWith({
-        host: MOCK_ARM_ENDPOINT,
-        path: "/providers/Microsoft.Portal/userSettings/cloudconsole",
-        method: "DELETE",
-        apiVersion: "2023-02-01-preview",
-      });
-    });
-
-    it("should handle errors when deletion fails", async () => {
-      const mockError = new Error("Failed to delete user settings");
-      (armRequest as jest.Mock).mockRejectedValueOnce(mockError);
-
-      await expect(deleteUserSettings()).rejects.toThrow("Failed to delete user settings");
-
-      expect(armRequest).toHaveBeenCalledWith({
-        host: MOCK_ARM_ENDPOINT,
-        path: "/providers/Microsoft.Portal/userSettings/cloudconsole",
-        method: "DELETE",
-        apiVersion: "2023-02-01-preview",
-      });
-    });
   });
 
   describe("getUserSettings", () => {
