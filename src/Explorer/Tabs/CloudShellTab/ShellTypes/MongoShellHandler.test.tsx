@@ -50,6 +50,18 @@ describe("MongoShellHandler", () => {
     jest.clearAllMocks();
   });
 
+  // Clean up after each test
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  // Clean up after all tests
+  afterAll(() => {
+    jest.resetAllMocks();
+    jest.restoreAllMocks();
+    jest.resetModules();
+  });
+
   describe("getShellName", () => {
     it("should return MongoDB", () => {
       expect(mongoShellHandler.getShellName()).toBe("MongoDB");

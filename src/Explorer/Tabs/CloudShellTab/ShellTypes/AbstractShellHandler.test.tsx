@@ -26,8 +26,23 @@ class MockShellHandler extends AbstractShellHandler {
 describe("AbstractShellHandler", () => {
   let shellHandler: MockShellHandler;
 
+  // Reset all mocks and spies before each test
   beforeEach(() => {
+    jest.resetAllMocks();
+    jest.restoreAllMocks();
     shellHandler = new MockShellHandler();
+  });
+
+  // Reset everything after all tests
+  afterAll(() => {
+    jest.resetAllMocks();
+    jest.restoreAllMocks();
+    jest.resetModules();
+  });
+
+  // Cleanup after each test
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   describe("getInitialCommands", () => {

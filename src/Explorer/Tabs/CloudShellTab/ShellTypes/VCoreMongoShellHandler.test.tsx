@@ -24,6 +24,18 @@ describe("VCoreMongoShellHandler", () => {
     jest.clearAllMocks();
   });
 
+  // Clean up after each test
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  // Clean up after all tests
+  afterAll(() => {
+    jest.resetAllMocks();
+    jest.restoreAllMocks();
+    jest.resetModules();
+  });
+
   // Positive test cases
   describe("Positive Tests", () => {
     it("should return correct shell name", () => {
