@@ -1,5 +1,5 @@
 import { AzureCliCredential } from "@azure/identity";
-import { expect, Frame, Locator, Page } from "@playwright/test";
+import { Frame, Locator, Page, expect } from "@playwright/test";
 import crypto from "crypto";
 
 const RETRY_COUNT = 3;
@@ -35,6 +35,7 @@ export enum TestAccount {
   Cassandra = "Cassandra",
   Gremlin = "Gremlin",
   Mongo = "Mongo",
+  MongoReadonly = "MongoReadOnly",
   Mongo32 = "Mongo32",
   SQL = "SQL",
   SQLReadOnly = "SQLReadOnly",
@@ -45,6 +46,7 @@ export const defaultAccounts: Record<TestAccount, string> = {
   [TestAccount.Cassandra]: "github-e2etests-cassandra",
   [TestAccount.Gremlin]: "github-e2etests-gremlin",
   [TestAccount.Mongo]: "github-e2etests-mongo",
+  [TestAccount.MongoReadonly]: "github-e2etests-mongo-readonly",
   [TestAccount.Mongo32]: "github-e2etests-mongo32",
   [TestAccount.SQL]: "github-e2etests-sql",
   [TestAccount.SQLReadOnly]: "github-e2etests-sql-readonly",
@@ -272,6 +274,10 @@ export class DataExplorer {
     return this.frame.getByTestId(`CommandBar/Button:${label}`).and(this.frame.locator("css=button"));
   }
 
+  dialogButton(label: string): Locator {
+    return this.frame.getByTestId(`DialogButton:${label}`).and(this.frame.locator("css=button"));
+  }
+
   /** Select the side panel with the specified title */
   panel(title: string): Locator {
     return this.frame.getByTestId(`Panel:${title}`);
@@ -323,6 +329,22 @@ export class DataExplorer {
 
   async waitForContainerItemsNode(databaseId: string, containerId: string): Promise<TreeNode> {
     return await this.waitForNode(`${databaseId}/${containerId}/Items`);
+  }
+
+  async waitForContainerDocumentsNode(databaseId: string, containerId: string): Promise<TreeNode> {
+    return await this.waitForNode(`${databaseId}/${containerId}/Documents`);
+  }
+
+  async waitForCommandBarButton(label: string, timeout?: number): Promise<Locator> {
+    const commandBar = this.commandBarButton(label);
+    await commandBar.waitFor({ state: "visible", timeout });
+    return commandBar;
+  }
+
+  async waitForDialogButton(label: string, timeout?: number): Promise<Locator> {
+    const dialogButton = this.dialogButton(label);
+    await dialogButton.waitFor({ timeout });
+    return dialogButton;
   }
 
   /** Select the tree node with the specified id */

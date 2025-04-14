@@ -1705,7 +1705,8 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     renderObjectForEditor = (value: unknown): string => MongoUtility.tojson(value, null, false);
 
     const _hasShardKeySpecified = (document: unknown): boolean => {
-      return Boolean(extractPartitionKeyValues(document, _getPartitionKeyDefinition() as PartitionKeyDefinition));
+      const partitionKeyDefinition: PartitionKeyDefinition = _getPartitionKeyDefinition() as PartitionKeyDefinition;
+      return partitionKeyDefinition.systemKey || Boolean(extractPartitionKeyValues(document, partitionKeyDefinition));
     };
 
     const _getPartitionKeyDefinition = (): DataModels.PartitionKey => {

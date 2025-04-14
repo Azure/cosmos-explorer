@@ -1,21 +1,21 @@
 import { expect, test } from "@playwright/test";
 
 import { DataExplorer, DocumentsTab, TestAccount } from "../fx";
-import { retry, setPartitionKeys } from "../testData";
+import { retry, serializeMongoToJson, setPartitionKeys } from "../testData";
 import { documentTestCases } from "./testCases";
 
 let explorer: DataExplorer = null!;
 let documentsTab: DocumentsTab = null!;
 
 for (const { name, databaseId, containerId, documents } of documentTestCases) {
-  test.describe(`Test SQL Documents with ${name}`, () => {
+  test.describe(`Test MongoRU Documents with ${name}`, () => {
     test.beforeEach("Open documents tab", async ({ page }) => {
-      explorer = await DataExplorer.open(page, TestAccount.SQLReadOnly);
+      explorer = await DataExplorer.open(page, TestAccount.MongoReadonly);
 
       const containerNode = await explorer.waitForContainerNode(databaseId, containerId);
       await containerNode.expand();
 
-      const containerMenuNode = await explorer.waitForContainerItemsNode(databaseId, containerId);
+      const containerMenuNode = await explorer.waitForContainerDocumentsNode(databaseId, containerId);
       await containerMenuNode.element.click();
 
       documentsTab = explorer.documentsTab("tab0");
@@ -37,24 +37,20 @@ for (const { name, databaseId, containerId, documents } of documentTestCases) {
           await expect(documentsTab.resultsEditor.locator).toBeAttached({ timeout: 60 * 1000 });
 
           const resultText = await documentsTab.resultsEditor.text();
-          const resultData = JSON.parse(resultText!);
+          const resultData = serializeMongoToJson(resultText!);
           expect(resultText).not.toBeNull();
-          expect(resultData?.id).toEqual(docId);
+          expect(resultData?._id).not.toBeNull();
+          expect(resultData?._id).toEqual(docId);
         });
-        test(`should be able to create and delete new document from ${docId}`, async ({ page }) => {
+        test(`should be able to create and delete new document from ${docId}`, async () => {
           const span = documentsTab.documentsListPane.getByText(docId, { exact: true }).nth(0);
           await span.waitFor();
           await expect(span).toBeVisible();
 
           await span.click();
           let newDocumentId;
-          await page.waitForTimeout(5000);
           await retry(async () => {
-            // const discardButton = await explorer.waitForCommandBarButton("Discard", 5000);
-            // if (await discardButton.isEnabled()) {
-            //   await discardButton.click();
-            // }
-            const newDocumentButton = await explorer.waitForCommandBarButton("New Item", 5000);
+            const newDocumentButton = await explorer.waitForCommandBarButton("New Document", 5000);
             await expect(newDocumentButton).toBeVisible();
             await expect(newDocumentButton).toBeEnabled();
             await newDocumentButton.click();
@@ -64,7 +60,7 @@ for (const { name, databaseId, containerId, documents } of documentTestCases) {
             newDocumentId = `${Date.now().toString()}-delete`;
 
             const newDocument = {
-              id: newDocumentId,
+              _id: newDocumentId,
               ...setPartitionKeys(partitionKeys || []),
             };
 
