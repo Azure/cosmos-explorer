@@ -11,13 +11,24 @@ import { updateUserContext } from "../UserContext";
 import { isInvalidParentFrameOrigin } from "../Utils/MessageValidation";
 import "./SelfServe.less";
 import { SelfServeComponent } from "./SelfServeComponent";
-import { SelfServeDescriptor } from "./SelfServeTypes";
+import { SelfServeBaseClass, SelfServeDescriptor } from "./SelfServeTypes";
 import { SelfServeType } from "./SelfServeUtils";
 initializeIcons();
 
-const loadTranslationFile = async (className: string): Promise<void> => {
+const loadTranslationFile = async (
+  className: string | SelfServeBaseClass,
+  selfServeType?: SelfServeType,
+): Promise<void> => {
   const language = i18n.languages[0];
-  const fileName = `${className}.json`;
+  let namespace: string; // className is used as a key to retrieve the localized strings
+  let fileName: string;
+  if (className instanceof SelfServeBaseClass) {
+    fileName = `${selfServeType}.json`;
+    namespace = className.constructor.name;
+  } else {
+    fileName = `${className}.json`;
+    namespace = className;
+  }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let translations: any;
@@ -28,12 +39,16 @@ const loadTranslationFile = async (className: string): Promise<void> => {
   } catch (e) {
     translations = await import(/* webpackChunkName: "Localization-en-[request]" */ `../Localization/en/${fileName}`);
   }
-  i18n.addResourceBundle(language, className, translations.default, true);
+
+  i18n.addResourceBundle(language, namespace, translations.default, true);
 };
 
-const loadTranslations = async (className: string): Promise<void> => {
+const loadTranslations = async (
+  className: string | SelfServeBaseClass,
+  selfServeType: SelfServeType,
+): Promise<void> => {
   await loadTranslationFile("Common");
-  await loadTranslationFile(className);
+  await loadTranslationFile(className, selfServeType);
 };
 
 const getDescriptor = async (selfServeType: SelfServeType): Promise<SelfServeDescriptor> => {
@@ -41,13 +56,13 @@ const getDescriptor = async (selfServeType: SelfServeType): Promise<SelfServeDes
     case SelfServeType.example: {
       const SelfServeExample = await import(/* webpackChunkName: "SelfServeExample" */ "./Example/SelfServeExample");
       const selfServeExample = new SelfServeExample.default();
-      await loadTranslations(selfServeType);
+      await loadTranslations(selfServeExample, selfServeType);
       return selfServeExample.toSelfServeDescriptor();
     }
     case SelfServeType.sqlx: {
       const SqlX = await import(/* webpackChunkName: "SqlX" */ "./SqlX/SqlX");
       const sqlX = new SqlX.default();
-      await loadTranslations(selfServeType);
+      await loadTranslations(sqlX, selfServeType);
       return sqlX.toSelfServeDescriptor();
     }
     case SelfServeType.graphapicompute: {
@@ -55,7 +70,7 @@ const getDescriptor = async (selfServeType: SelfServeType): Promise<SelfServeDes
         /* webpackChunkName: "GraphAPICompute" */ "./GraphAPICompute/GraphAPICompute"
       );
       const graphAPICompute = new GraphAPICompute.default();
-      await loadTranslations(selfServeType);
+      await loadTranslations(graphAPICompute, selfServeType);
       return graphAPICompute.toSelfServeDescriptor();
     }
     case SelfServeType.materializedviewsbuilder: {
@@ -63,7 +78,7 @@ const getDescriptor = async (selfServeType: SelfServeType): Promise<SelfServeDes
         /* webpackChunkName: "MaterializedViewsBuilder" */ "./MaterializedViewsBuilder/MaterializedViewsBuilder"
       );
       const materializedViewsBuilder = new MaterializedViewsBuilder.default();
-      await loadTranslations(selfServeType);
+      await loadTranslations(materializedViewsBuilder, selfServeType);
       return materializedViewsBuilder.toSelfServeDescriptor();
     }
     default:

@@ -24,7 +24,6 @@ async function main() {
       console.log(`SKIPPED: ${account.name}`);
       continue;
     }
-
     if (account.kind === "MongoDB") {
       const mongoDatabases = await client.mongoDBResources.listMongoDBDatabases(resourceGroupName, account.name);
       for (const database of mongoDatabases) {
