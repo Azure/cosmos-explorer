@@ -62,10 +62,12 @@ export const startCloudShellTerminal = async (terminal: Terminal, shellType: Ter
     );
 
     if (!consentGranted) {
+      terminal.writeln(formatWarningMessage(
+        "Failed to start CloudShell terminal. Please try again later."));
       return null; // Exit if user declined
     }
 
-    terminal.writeln(formatInfoMessage("Connecting to CloudShell....."));
+    terminal.writeln(formatInfoMessage("Connecting to CloudShell.....(it might take a few minutes)"));
 
     const sessionDetails: {
       socketUri?: string;

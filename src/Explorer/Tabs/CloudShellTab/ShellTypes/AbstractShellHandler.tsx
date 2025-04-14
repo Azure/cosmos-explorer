@@ -5,7 +5,6 @@ export abstract class AbstractShellHandler {
   abstract getShellName(): string;
   abstract getSetUpCommands(): string[];
   abstract getConnectionCommand(): string;
-  abstract getEndpoint(): string;
   abstract getTerminalSuppressedData(): string;
 
   public getInitialCommands(): string {

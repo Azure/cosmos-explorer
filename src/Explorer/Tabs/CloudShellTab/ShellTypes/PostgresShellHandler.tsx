@@ -9,12 +9,16 @@ import { AbstractShellHandler } from "./AbstractShellHandler";
 const PACKAGE_VERSION: string = "15.2";
 
 export class PostgresShellHandler extends AbstractShellHandler {
-  public getShellName(): string {
-    return "PostgreSQL";
+
+  private _endpoint: string | undefined;
+
+  constructor() {
+    super();
+    this._endpoint = userContext?.databaseAccount?.properties?.postgresqlEndpoint;
   }
 
-  public getEndpoint(): string {
-    return userContext?.databaseAccount?.properties?.postgresqlEndpoint;
+  public getShellName(): string {
+    return "PostgreSQL";
   }
 
   public getSetUpCommands(): string[] {
@@ -32,11 +36,11 @@ export class PostgresShellHandler extends AbstractShellHandler {
   }
 
   public getConnectionCommand(): string {
-    const endpoint = this.getEndpoint();
-    if (!endpoint) {
+
+    if (!this._endpoint) {
       return `echo '${this.getShellName()} endpoint not found.'`;
     }
-    return `read -p "Enter Database Name: " dbname && read -p "Enter Username: " username && psql -h "${endpoint}" -p 5432 -d "$dbname" -U "$username" --set=sslmode=require`;
+    return `read -p "Enter Database Name: " dbname && read -p "Enter Username: " username && psql -h "${this._endpoint}" -p 5432 -d "$dbname" -U "$username" --set=sslmode=require`;
   }
 
   public getTerminalSuppressedData(): string {
