@@ -9,24 +9,16 @@ import { userContext } from "../../../../UserContext";
 import { armRequest } from "../../../../Utils/arm/request";
 import {
   Authorization,
+  CloudShellSettings,
   ConnectTerminalResponse,
   NetworkType,
   OsType,
   ProvisionConsoleResponse,
   SessionType,
-  Settings,
   ShellType,
+  CloudShellProviderInfo,
 } from "../Models/DataModels";
 import { getLocale } from "../Utils/CommonUtils";
-
-export const getUserRegion = async (subscriptionId: string, resourceGroup: string, accountName: string) => {
-  return await armRequest({
-    host: configContext.ARM_ENDPOINT,
-    path: `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}`,
-    method: "GET",
-    apiVersion: "2022-12-01",
-  });
-};
 
 export const deleteUserSettings = async (): Promise<void> => {
   await armRequest<void>({
@@ -37,14 +29,13 @@ export const deleteUserSettings = async (): Promise<void> => {
   });
 };
 
-export const getUserSettings = async (): Promise<Settings> => {
-  const resp = await armRequest<any>({
+export const getUserSettings = async (): Promise<CloudShellSettings> => {
+  return await armRequest<CloudShellSettings>({
     host: configContext.ARM_ENDPOINT,
     path: `/providers/Microsoft.Portal/userSettings/cloudconsole`,
     method: "GET",
     apiVersion: "2023-02-01-preview",
   });
-  return resp;
 };
 
 export const putEphemeralUserSettings = async (
@@ -52,7 +43,7 @@ export const putEphemeralUserSettings = async (
   userRegion: string,
   vNetSettings?: object,
 ) => {
-  const ephemeralSettings = {
+  const ephemeralSettings: CloudShellSettings = {
     properties: {
       preferredOsType: OsType.Linux,
       preferredShellType: ShellType.Bash,
@@ -78,7 +69,7 @@ export const putEphemeralUserSettings = async (
   });
 };
 
-export const verifyCloudShellProviderRegistration = async (subscriptionId: string) => {
+export const verifyCloudShellProviderRegistration = async (subscriptionId: string): Promise<CloudShellProviderInfo> => {
   return await armRequest({
     host: configContext.ARM_ENDPOINT,
     path: `/subscriptions/${subscriptionId}/providers/Microsoft.CloudShell`,
@@ -103,7 +94,7 @@ export const provisionConsole = async (consoleLocation: string): Promise<Provisi
     },
   };
 
-  return await armRequest<any>({
+  return await armRequest<ProvisionConsoleResponse>({
     host: configContext.ARM_ENDPOINT,
     path: `providers/Microsoft.Portal/consoles/default`,
     method: "PUT",

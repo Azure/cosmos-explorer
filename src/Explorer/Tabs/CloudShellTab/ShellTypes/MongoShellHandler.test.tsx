@@ -7,6 +7,24 @@ import { userContext } from "../../../../UserContext";
 import * as CommonUtils from "../Utils/CommonUtils";
 import { MongoShellHandler } from "./MongoShellHandler";
 
+// Define interfaces for type safety
+interface DatabaseAccountProperties {
+  mongoEndpoint?: string;
+}
+
+interface DatabaseAccount {
+  id?: string;
+  name: string;
+  location?: string;
+  type?: string;
+  kind?: string;
+  properties: DatabaseAccountProperties;
+}
+
+interface UserContextType {
+  databaseAccount: DatabaseAccount;
+}
+
 // Mock dependencies
 jest.mock("../../../../UserContext", () => ({
   userContext: {
@@ -48,7 +66,7 @@ describe("MongoShellHandler", () => {
       const originalDatabaseAccount = userContext.databaseAccount;
 
       // Directly assign the modified databaseAccount
-      (userContext as any).databaseAccount = {
+      (userContext as UserContextType).databaseAccount = {
         id: "test-id",
         name: "test-account",
         location: "test-location",
@@ -60,7 +78,7 @@ describe("MongoShellHandler", () => {
       expect(mongoShellHandler.getEndpoint()).toBeUndefined();
 
       // Restore original
-      (userContext as any).databaseAccount = originalDatabaseAccount;
+      (userContext as UserContextType).databaseAccount = originalDatabaseAccount;
     });
   });
 
@@ -80,7 +98,7 @@ describe("MongoShellHandler", () => {
       const originalDatabaseAccount = userContext.databaseAccount;
 
       // Directly assign the modified databaseAccount
-      (userContext as any).databaseAccount = {
+      (userContext as UserContextType).databaseAccount = {
         id: "test-id",
         name: "test-account",
         location: "test-location",
@@ -97,7 +115,7 @@ describe("MongoShellHandler", () => {
       expect(CommonUtils.getHostFromUrl).toHaveBeenCalledWith("https://test-mongo.documents.azure.com:443/");
 
       // Restore original
-      (userContext as any).databaseAccount = originalDatabaseAccount;
+      (userContext as UserContextType).databaseAccount = originalDatabaseAccount;
     });
 
     it("should handle missing endpoint", () => {
@@ -113,7 +131,7 @@ describe("MongoShellHandler", () => {
       const originalDatabaseAccount = userContext.databaseAccount;
 
       // Directly assign the modified databaseAccount
-      (userContext as any).databaseAccount = {
+      (userContext as UserContextType).databaseAccount = {
         id: "test-id",
         name: "", // Empty name to simulate missing name
         location: "test-location",
@@ -127,7 +145,7 @@ describe("MongoShellHandler", () => {
       expect(command).toBe("echo 'Database name not found.'");
 
       // Restore original
-      (userContext as any).databaseAccount = originalDatabaseAccount;
+      (userContext as UserContextType).databaseAccount = originalDatabaseAccount;
     });
   });
 

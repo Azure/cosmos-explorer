@@ -23,7 +23,7 @@ export const enum SessionType {
   Ephemeral = "Ephemeral",
 }
 
-export type Settings = {
+export type CloudShellSettings = {
   properties: UserSettingProperties;
 };
 
@@ -34,6 +34,7 @@ export type UserSettingProperties = {
   preferredShellType: ShellType;
   userSubscription: string;
   sessionType: SessionType;
+  vnetSettings: object;
 };
 
 export type ProvisionConsoleResponse = {
@@ -54,4 +55,29 @@ export type ConnectTerminalResponse = {
   rootDirectory: string;
   socketUri: string;
   tokenUpdated: boolean;
+};
+
+export type ProviderAuthorization = {
+  applicationId: string;
+  roleDefinitionId: string;
+};
+
+export type ProviderResourceType = {
+  resourceType: string;
+  locations: string[];
+  apiVersions: string[];
+  defaultApiVersion?: string;
+  capabilities?: string;
+};
+
+export type RegistrationState = "Registered" | "NotRegistered" | "Registering" | "Unregistering";
+export type RegistrationPolicy = "RegistrationRequired" | "RegistrationOptional";
+
+export type CloudShellProviderInfo = {
+  id: string;
+  namespace: string;
+  authorizations?: ProviderAuthorization[];
+  resourceTypes: ProviderResourceType[];
+  registrationState: RegistrationState;
+  registrationPolicy: RegistrationPolicy;
 };

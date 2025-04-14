@@ -60,7 +60,7 @@ describe("PostgresShellHandler", () => {
 
   // Negative test cases
   describe("Negative Tests", () => {
-    it("should handle missing PostgreSQL endpoint", () => {
+    it("should handle missing PostgreSQL endpoint", async () => {
       // Re-mock UserContext with missing endpoint
       jest.resetModules();
       jest.doMock("../../../../UserContext", () => ({
@@ -72,7 +72,7 @@ describe("PostgresShellHandler", () => {
       }));
 
       // Import fresh instance with updated mock
-      const { PostgresShellHandler } = require("./PostgresShellHandler");
+      const { PostgresShellHandler } = await import("./PostgresShellHandler");
       const handler = new PostgresShellHandler();
 
       expect(handler.getEndpoint()).toBeUndefined();
@@ -94,7 +94,7 @@ describe("PostgresShellHandler", () => {
       }));
     });
 
-    it("should handle null userContext", () => {
+    it("should handle null userContext", async () => {
       // Re-mock UserContext as null
       jest.resetModules();
       jest.doMock("../../../../UserContext", () => ({
@@ -102,7 +102,7 @@ describe("PostgresShellHandler", () => {
       }));
 
       // Import fresh instance with updated mock
-      const { PostgresShellHandler } = require("./PostgresShellHandler");
+      const { PostgresShellHandler } = await import("./PostgresShellHandler");
       const handler = new PostgresShellHandler();
 
       expect(handler.getEndpoint()).toBeUndefined();
@@ -120,7 +120,7 @@ describe("PostgresShellHandler", () => {
       }));
     });
 
-    it("should handle null databaseAccount", () => {
+    it("should handle null databaseAccount", async () => {
       // Re-mock UserContext with null databaseAccount
       jest.resetModules();
       jest.doMock("../../../../UserContext", () => ({
@@ -130,7 +130,7 @@ describe("PostgresShellHandler", () => {
       }));
 
       // Clear cache and import fresh instance with updated mock
-      const { PostgresShellHandler } = require("./PostgresShellHandler");
+      const { PostgresShellHandler } = await import("./PostgresShellHandler");
       const handler = new PostgresShellHandler();
 
       expect(handler.getEndpoint()).toBeUndefined();
