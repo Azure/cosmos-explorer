@@ -71,6 +71,15 @@ describe("CloudShellClient", () => {
     mockJsonPromise.mockClear();
   });
 
+  // Reset all mocks after all tests
+  afterAll(() => {
+    jest.resetAllMocks();
+    jest.restoreAllMocks();
+    if (global.fetch) {
+      delete global.fetch;
+    }
+  });
+
   describe("getUserSettings", () => {
     it("should call armRequest with correct parameters and return settings", async () => {
       const mockSettings = { properties: { preferredLocation: "eastus" } };

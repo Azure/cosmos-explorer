@@ -31,6 +31,18 @@ describe("ShellTypeHandlerFactory", () => {
     jest.clearAllMocks();
   });
 
+  // Clean up after each test
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  // Clean up after all tests
+  afterAll(() => {
+    jest.resetAllMocks();
+    jest.restoreAllMocks();
+    jest.resetModules();
+  });
+
   // Negative test cases
   describe("Negative test cases", () => {
     it("should throw an error for unsupported terminal kind", async () => {

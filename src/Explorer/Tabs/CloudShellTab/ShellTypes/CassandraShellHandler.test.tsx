@@ -32,6 +32,11 @@ jest.mock("../../../../UserContext", () => ({
   },
 }));
 
+// Reset all modules before running tests
+beforeAll(() => {
+  jest.resetModules();
+});
+
 jest.mock("../Utils/CommonUtils", () => ({
   getHostFromUrl: jest.fn().mockReturnValue("test-endpoint.cassandra.cosmos.azure.com"),
 }));
@@ -51,6 +56,18 @@ describe("CassandraShellHandler", () => {
         cassandraEndpoint: "https://test-endpoint.cassandra.cosmos.azure.com:443/",
       },
     };
+  });
+
+  // Clean up after each test
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  // Clean up after all tests
+  afterAll(() => {
+    jest.resetAllMocks();
+    jest.restoreAllMocks();
+    jest.resetModules();
   });
 
   describe("Positive test cases", () => {
