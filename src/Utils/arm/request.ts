@@ -82,6 +82,7 @@ export async function armRequestWithoutPolling<T>({
     headers,
     body: requestBody ? JSON.stringify(requestBody) : undefined,
   });
+
   if (!response.ok) {
     let error: ARMError;
     try {

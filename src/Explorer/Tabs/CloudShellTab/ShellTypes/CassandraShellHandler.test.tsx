@@ -1,6 +1,16 @@
 import * as CommonUtils from "../Utils/CommonUtils";
 import { CassandraShellHandler } from "./CassandraShellHandler";
 
+// Define interfaces for the database account structure
+interface DatabaseAccountProperties {
+  cassandraEndpoint?: string;
+}
+
+interface DatabaseAccount {
+  name?: string;
+  properties?: DatabaseAccountProperties;
+}
+
 // Define mock state that can be modified by tests
 const mockState = {
   databaseAccount: {
@@ -8,7 +18,7 @@ const mockState = {
     properties: {
       cassandraEndpoint: "https://test-endpoint.cassandra.cosmos.azure.com:443/",
     },
-  },
+  } as DatabaseAccount,
 };
 
 // Mock dependencies using factory functions
@@ -90,7 +100,7 @@ describe("CassandraShellHandler", () => {
     });
 
     test("should handle undefined properties when getting endpoint", () => {
-      mockState.databaseAccount = { name: "test-account" } as any;
+      mockState.databaseAccount = { name: "test-account" };
 
       expect(handler.getEndpoint()).toBeUndefined();
     });
@@ -99,7 +109,7 @@ describe("CassandraShellHandler", () => {
       mockState.databaseAccount = {
         name: "test-account",
         properties: {},
-      } as any;
+      };
 
       expect(handler.getEndpoint()).toBeUndefined();
     });
@@ -123,7 +133,7 @@ describe("CassandraShellHandler", () => {
     test("should handle undefined account name", () => {
       mockState.databaseAccount = {
         properties: { cassandraEndpoint: "https://test-endpoint.cassandra.cosmos.azure.com:443/" },
-      } as any;
+      };
 
       expect(handler.getConnectionCommand()).toBe("echo 'Database name not found.'");
     });

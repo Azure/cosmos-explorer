@@ -4,41 +4,39 @@
  */
 
 import { TerminalKind } from "../../../../Contracts/ViewModels";
+import { userContext } from "../../../../UserContext";
+import { listKeys } from "../../../../Utils/arm/generatedClients/cosmos/databaseAccounts";
+import { AbstractShellHandler } from "./AbstractShellHandler";
 import { CassandraShellHandler } from "./CassandraShellHandler";
 import { MongoShellHandler } from "./MongoShellHandler";
 import { PostgresShellHandler } from "./PostgresShellHandler";
 import { VCoreMongoShellHandler } from "./VCoreMongoShellHandler";
-import { AbstractShellHandler } from "./AbstractShellHandler";
-import { userContext } from "../../../../UserContext";
-import { listKeys } from "../../../../Utils/arm/generatedClients/cosmos/databaseAccounts";
 
-export class ShellTypeHandlerFactory {
-  /**
-   * Gets the appropriate handler for the given shell type
-   */
-  public static async getHandler(shellType: TerminalKind): Promise<AbstractShellHandler> {
-    switch (shellType) {
-      case TerminalKind.Postgres:
-        return new PostgresShellHandler();
-      case TerminalKind.Mongo:
-        return new MongoShellHandler(await ShellTypeHandlerFactory.getKey());
-      case TerminalKind.VCoreMongo:
-        return new VCoreMongoShellHandler();
-      case TerminalKind.Cassandra:
-        return new CassandraShellHandler(await ShellTypeHandlerFactory.getKey());
-      default:
-        throw new Error(`Unsupported shell type: ${shellType}`);
-    }
+/**
+ * Gets the appropriate handler for the given shell type
+ */
+export async function getHandler(shellType: TerminalKind): Promise<AbstractShellHandler> {
+  switch (shellType) {
+    case TerminalKind.Postgres:
+      return new PostgresShellHandler();
+    case TerminalKind.Mongo:
+      return new MongoShellHandler(await getKey());
+    case TerminalKind.VCoreMongo:
+      return new VCoreMongoShellHandler();
+    case TerminalKind.Cassandra:
+      return new CassandraShellHandler(await getKey());
+    default:
+      throw new Error(`Unsupported shell type: ${shellType}`);
+  }
+}
+
+export async function getKey(): Promise<string> {
+  const dbName = userContext.databaseAccount.name;
+  let key = "";
+  if (dbName) {
+    const keys = await listKeys(userContext.subscriptionId, userContext.resourceGroup, dbName);
+    key = keys?.primaryMasterKey || "";
   }
 
-  public static async getKey(): Promise<string> {
-    const dbName = userContext.databaseAccount.name;
-    let key = "";
-    if (dbName) {
-      const keys = await listKeys(userContext.subscriptionId, userContext.resourceGroup, dbName);
-      key = keys?.primaryMasterKey || "";
-    }
-
-    return key;
-  }
+  return key;
 }

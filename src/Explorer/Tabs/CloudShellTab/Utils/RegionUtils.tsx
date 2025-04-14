@@ -20,7 +20,9 @@ const validCloudShellRegions = new Set([
  * @param defaultCloudshellRegion Default region to use if the provided region is not supported
  */
 export const getNormalizedRegion = (region: string, defaultCloudshellRegion: string) => {
-  if (!region) return defaultCloudshellRegion;
+  if (!region) {
+    return defaultCloudshellRegion;
+  }
 
   const regionMap: Record<string, string> = {
     centralus: "westcentralus",

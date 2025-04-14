@@ -49,7 +49,7 @@ export class AttachAddon implements ITerminalAddon {
 
         if (typeof data === "object") {
           const enc = new TextDecoder("utf-8");
-          data = enc.decode(ev.data as any);
+          data = enc.decode(ev.data as ArrayBuffer);
         }
 
         // for example of json object look in TerminalHelper in the socket.onMessage
@@ -142,7 +142,7 @@ export class AttachAddon implements ITerminalAddon {
 function addSocketListener<K extends keyof WebSocketEventMap>(
   socket: WebSocket,
   type: K,
-  handler: (this: WebSocket, ev: WebSocketEventMap[K]) => any,
+  handler: (this: WebSocket, ev: WebSocketEventMap[K]) => void,
 ): IDisposable {
   socket.addEventListener(type, handler);
   return {
@@ -159,7 +159,7 @@ function addSocketListener<K extends keyof WebSocketEventMap>(
 export function removeSocketListener<K extends keyof WebSocketEventMap>(
   socket: WebSocket,
   type: K,
-  handler: (this: WebSocket, ev: WebSocketEventMap[K]) => any,
+  handler: (this: WebSocket, ev: WebSocketEventMap[K]) => void,
 ): IDisposable {
   socket.removeEventListener(type, handler);
   return {

@@ -18,8 +18,9 @@ import {
   registerCloudShellProvider,
   verifyCloudShellProviderRegistration,
 } from "./Data/CloudShellClient";
+import { CloudShellProviderInfo, ProvisionConsoleResponse } from "./Models/DataModels";
 import { AbstractShellHandler, START_MARKER } from "./ShellTypes/AbstractShellHandler";
-import { ShellTypeHandlerFactory } from "./ShellTypes/ShellTypeFactory";
+import { getHandler } from "./ShellTypes/ShellTypeFactory";
 import { AttachAddon } from "./Utils/AttachAddOn";
 import { askConfirmation, wait } from "./Utils/CommonUtils";
 import { getNormalizedRegion } from "./Utils/RegionUtils";
@@ -66,13 +67,11 @@ export const startCloudShellTerminal = async (terminal: Terminal, shellType: Ter
 
     terminal.writeln(formatInfoMessage("Connecting to CloudShell....."));
 
-    let sessionDetails: {
+    const sessionDetails: {
       socketUri?: string;
-      provisionConsoleResponse?: any;
+      provisionConsoleResponse?: ProvisionConsoleResponse;
       targetUri?: string;
-    };
-
-    sessionDetails = await provisionCloudShellSession(resolvedRegion, terminal);
+    } = await provisionCloudShellSession(resolvedRegion, terminal);
 
     if (!sessionDetails.socketUri) {
       terminal.writeln(formatErrorMessage("Failed to establish a connection. Please try again later."));
@@ -80,7 +79,7 @@ export const startCloudShellTerminal = async (terminal: Terminal, shellType: Ter
     }
 
     // Get the shell handler for this type
-    const shellHandler = await ShellTypeHandlerFactory.getHandler(shellType);
+    const shellHandler = await getHandler(shellType);
     // Configure WebSocket connection with shell-specific commands
     const socket = await establishTerminalConnection(
       terminal,
@@ -124,14 +123,10 @@ export const startCloudShellTerminal = async (terminal: Terminal, shellType: Ter
  * Ensures that the CloudShell provider is registered for the current subscription
  */
 export const ensureCloudShellProviderRegistered = async (): Promise<void> => {
-  try {
-    const response: any = await verifyCloudShellProviderRegistration(userContext.subscriptionId);
+  const response: CloudShellProviderInfo = await verifyCloudShellProviderRegistration(userContext.subscriptionId);
 
-    if (response.registrationState !== "Registered") {
-      await registerCloudShellProvider(userContext.subscriptionId);
-    }
-  } catch (err) {
-    throw err;
+  if (response.registrationState !== "Registered") {
+    await registerCloudShellProvider(userContext.subscriptionId);
   }
 };
 
@@ -148,57 +143,50 @@ export const determineCloudShellRegion = (): string => {
 export const provisionCloudShellSession = async (
   resolvedRegion: string,
   terminal: Terminal,
-): Promise<{ socketUri?: string; provisionConsoleResponse?: any; targetUri?: string }> => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      // Apply user settings
-      await putEphemeralUserSettings(userContext.subscriptionId, resolvedRegion);
+): Promise<{ socketUri?: string; provisionConsoleResponse?: ProvisionConsoleResponse; targetUri?: string }> => {
+  // Apply user settings
+  await putEphemeralUserSettings(userContext.subscriptionId, resolvedRegion);
 
-      // Provision console
-      let provisionConsoleResponse;
-      let attemptCounter = 0;
+  // Provision console
+  let provisionConsoleResponse;
+  let attemptCounter = 0;
 
-      do {
-        provisionConsoleResponse = await provisionConsole(resolvedRegion);
-        attemptCounter++;
+  do {
+    provisionConsoleResponse = await provisionConsole(resolvedRegion);
+    attemptCounter++;
 
-        if (provisionConsoleResponse.properties.provisioningState !== "Succeeded") {
-          await wait(POLLING_INTERVAL_MS);
-        }
-      } while (provisionConsoleResponse.properties.provisioningState !== "Succeeded" && attemptCounter < 10);
-
-      if (provisionConsoleResponse.properties.provisioningState !== "Succeeded") {
-        const errorMessage = `Provisioning failed: ${provisionConsoleResponse.properties.provisioningState}`;
-        return reject(new Error(errorMessage));
-      }
-
-      // Connect terminal
-      const connectTerminalResponse = await connectTerminal(provisionConsoleResponse.properties.uri, {
-        rows: terminal.rows,
-        cols: terminal.cols,
-      });
-
-      const targetUri = `${provisionConsoleResponse.properties.uri}/terminals?cols=${terminal.cols}&rows=${terminal.rows}&version=2019-01-01&shell=bash`;
-      const termId = connectTerminalResponse.id;
-
-      // Determine socket URI
-      let socketUri = connectTerminalResponse.socketUri.replace(":443/", "");
-      const targetUriBody = targetUri.replace("https://", "").split("?")[0];
-
-      if (socketUri.indexOf(targetUriBody) === -1) {
-        socketUri = `wss://${targetUriBody}/${termId}`;
-      }
-
-      if (targetUriBody.includes("servicebus")) {
-        const targetUriBodyArr = targetUriBody.split("/");
-        socketUri = `wss://${targetUriBodyArr[0]}/$hc/${targetUriBodyArr[1]}/terminals/${termId}`;
-      }
-
-      return resolve({ socketUri, provisionConsoleResponse, targetUri });
-    } catch (err) {
-      return reject(err);
+    if (provisionConsoleResponse.properties.provisioningState !== "Succeeded") {
+      await wait(POLLING_INTERVAL_MS);
     }
+  } while (provisionConsoleResponse.properties.provisioningState !== "Succeeded" && attemptCounter < 10);
+
+  if (provisionConsoleResponse.properties.provisioningState !== "Succeeded") {
+    throw new Error(`Provisioning failed: ${provisionConsoleResponse.properties.provisioningState}`);
+  }
+
+  // Connect terminal
+  const connectTerminalResponse = await connectTerminal(provisionConsoleResponse.properties.uri, {
+    rows: terminal.rows,
+    cols: terminal.cols,
   });
+
+  const targetUri = `${provisionConsoleResponse.properties.uri}/terminals?cols=${terminal.cols}&rows=${terminal.rows}&version=2019-01-01&shell=bash`;
+  const termId = connectTerminalResponse.id;
+
+  // Determine socket URI
+  let socketUri = connectTerminalResponse.socketUri.replace(":443/", "");
+  const targetUriBody = targetUri.replace("https://", "").split("?")[0];
+
+  if (socketUri.indexOf(targetUriBody) === -1) {
+    socketUri = `wss://${targetUriBody}/${termId}`;
+  }
+
+  if (targetUriBody.includes("servicebus")) {
+    const targetUriBodyArr = targetUriBody.split("/");
+    socketUri = `wss://${targetUriBodyArr[0]}/$hc/${targetUriBodyArr[1]}/terminals/${termId}`;
+  }
+
+  return { socketUri, provisionConsoleResponse, targetUri };
 };
 
 /**
@@ -208,7 +196,7 @@ export const establishTerminalConnection = async (
   terminal: Terminal,
   shellHandler: AbstractShellHandler,
   socketUri: string,
-  provisionConsoleResponse: any,
+  provisionConsoleResponse: ProvisionConsoleResponse,
   targetUri: string,
 ): Promise<WebSocket> => {
   let socket = new WebSocket(socketUri);
@@ -269,7 +257,6 @@ export const configureSocketConnection = async (
 };
 
 export const sendTerminalStartupCommands = (socket: WebSocket, initCommands: string): void => {
-  let keepAliveID: NodeJS.Timeout = null;
   let pingCount = 0;
 
   if (socket && socket.readyState === WebSocket.OPEN) {
@@ -285,7 +272,6 @@ export const sendTerminalStartupCommands = (socket: WebSocket, initCommands: str
           } else {
             socket.send("");
             pingCount++;
-            keepAliveID = setTimeout(() => keepSocketAlive(socket), 1000);
           }
         }
       };

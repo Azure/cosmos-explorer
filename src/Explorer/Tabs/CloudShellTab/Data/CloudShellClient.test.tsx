@@ -10,22 +10,13 @@ import {
   authorizeSession,
   connectTerminal,
   deleteUserSettings,
-  getUserRegion,
+  getUserAccountInformation,
   getUserSettings,
   provisionConsole,
   putEphemeralUserSettings,
   registerCloudShellProvider,
   verifyCloudShellProviderRegistration,
 } from "./CloudShellClient";
-
-// Add type declaration for fetch on global object
-declare global {
-  namespace NodeJS {
-    interface Global {
-      fetch: jest.Mock;
-    }
-  }
-}
 
 // Define mock endpoint
 const MOCK_ARM_ENDPOINT = "https://mock-management.azure.com";
@@ -55,7 +46,6 @@ jest.mock("../Utils/CommonUtils", () => ({
 
 // Properly mock fetch with correct typings
 const mockJsonPromise = jest.fn();
-const mockFetchPromise = jest.fn();
 global.fetch = jest.fn().mockImplementationOnce(() => {
   return {
     ok: true,
@@ -77,7 +67,7 @@ describe("CloudShellClient", () => {
       const mockResponse = { location: "eastus" };
       (armRequest as jest.Mock).mockResolvedValueOnce(mockResponse);
 
-      const result = await getUserRegion("sub-id", "resource-group", "account-name");
+      const result = await getUserAccountInformation("sub-id", "resource-group", "account-name");
 
       expect(armRequest).toHaveBeenCalledWith({
         host: MOCK_ARM_ENDPOINT,
@@ -92,7 +82,7 @@ describe("CloudShellClient", () => {
       const mockError = new Error("Failed to get user region");
       (armRequest as jest.Mock).mockRejectedValueOnce(mockError);
 
-      await expect(getUserRegion("sub-id", "resource-group", "account-name")).rejects.toThrow(
+      await expect(getUserAccountInformation("sub-id", "resource-group", "account-name")).rejects.toThrow(
         "Failed to get user region",
       );
 
