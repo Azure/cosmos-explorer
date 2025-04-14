@@ -6,15 +6,18 @@
 import { userContext } from "../../../../UserContext";
 import { AbstractShellHandler } from "./AbstractShellHandler";
 
-const PACKAGE_VERSION: string = "2.3.8";
+const PACKAGE_VERSION: string = "2.5.0";
 
 export class VCoreMongoShellHandler extends AbstractShellHandler {
-  public getShellName(): string {
-    return "MongoDB VCore";
+  private _endpoint: string | undefined;
+
+  constructor() {
+    super();
+    this._endpoint = userContext?.databaseAccount?.properties?.vcoreMongoEndpoint;
   }
 
-  public getEndpoint(): string {
-    return userContext?.databaseAccount?.properties?.vcoreMongoEndpoint;
+  public getShellName(): string {
+    return "MongoDB VCore";
   }
 
   public getSetUpCommands(): string[] {
@@ -29,11 +32,10 @@ export class VCoreMongoShellHandler extends AbstractShellHandler {
   }
 
   public getConnectionCommand(): string {
-    const endpoint = this.getEndpoint();
-    if (!endpoint) {
+    if (!this._endpoint) {
       return `echo '${this.getShellName()} endpoint not found.'`;
     }
-    return `read -p "Enter username: " username && mongosh "mongodb+srv://$username:@${endpoint}/?authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000" --tls --tlsAllowInvalidCertificates`;
+    return `read -p "Enter username: " username && mongosh "mongodb+srv://$username:@${this._endpoint}/?authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000"`;
   }
 
   public getTerminalSuppressedData(): string {

@@ -4,24 +4,22 @@
  */
 
 import { userContext } from "../../../../UserContext";
-import { AbstractShellHandler } from "./AbstractShellHandler";
 import { getHostFromUrl } from "../Utils/CommonUtils";
+import { AbstractShellHandler } from "./AbstractShellHandler";
 
-const PACKAGE_VERSION: string = "2.3.8";
+const PACKAGE_VERSION: string = "2.5.0";
 
 export class MongoShellHandler extends AbstractShellHandler {
   private _key: string;
+  private _endpoint: string | undefined;
   constructor(private key: string) {
     super();
     this._key = key;
+    this._endpoint = userContext?.databaseAccount?.properties?.mongoEndpoint;
   }
 
   public getShellName(): string {
     return "MongoDB";
-  }
-
-  public getEndpoint(): string {
-    return userContext?.databaseAccount?.properties?.mongoEndpoint;
   }
 
   public getSetUpCommands(): string[] {
@@ -36,7 +34,7 @@ export class MongoShellHandler extends AbstractShellHandler {
   }
 
   public getConnectionCommand(): string {
-    if (!this.getEndpoint()) {
+    if (!this._endpoint) {
       return `echo '${this.getShellName()} endpoint not found.'`;
     }
 
@@ -44,7 +42,7 @@ export class MongoShellHandler extends AbstractShellHandler {
     if (!dbName) {
       return "echo 'Database name not found.'";
     }
-    return `mongosh --host ${getHostFromUrl(this.getEndpoint())} --port 10255 --username ${dbName} --password ${
+    return `mongosh --host ${getHostFromUrl(this._endpoint)} --port 10255 --username ${dbName} --password ${
       this._key
     } --tls --tlsAllowInvalidCertificates`;
   }
