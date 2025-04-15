@@ -107,7 +107,7 @@ exports[`Settings Pane should render Default properly 1`] = `
         </AccordionPanel>
       </AccordionItem>
       <AccordionItem
-        value="3"
+        value="4"
       >
         <AccordionHeader>
           <div
@@ -148,7 +148,7 @@ exports[`Settings Pane should render Default properly 1`] = `
         </AccordionPanel>
       </AccordionItem>
       <AccordionItem
-        value="4"
+        value="5"
       >
         <AccordionHeader>
           <div
@@ -219,7 +219,7 @@ exports[`Settings Pane should render Default properly 1`] = `
         </AccordionPanel>
       </AccordionItem>
       <AccordionItem
-        value="5"
+        value="6"
       >
         <AccordionHeader>
           <div
@@ -281,7 +281,7 @@ exports[`Settings Pane should render Default properly 1`] = `
         </AccordionPanel>
       </AccordionItem>
       <AccordionItem
-        value="6"
+        value="7"
       >
         <AccordionHeader>
           <div
@@ -423,7 +423,7 @@ exports[`Settings Pane should render Default properly 1`] = `
         </AccordionPanel>
       </AccordionItem>
       <AccordionItem
-        value="7"
+        value="8"
       >
         <AccordionHeader>
           <div
@@ -459,7 +459,7 @@ exports[`Settings Pane should render Default properly 1`] = `
         </AccordionPanel>
       </AccordionItem>
       <AccordionItem
-        value="8"
+        value="9"
       >
         <AccordionHeader>
           <div
@@ -495,7 +495,7 @@ exports[`Settings Pane should render Default properly 1`] = `
         </AccordionPanel>
       </AccordionItem>
       <AccordionItem
-        value="9"
+        value="10"
       >
         <AccordionHeader>
           <div
@@ -575,7 +575,7 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
       className="customAccordion ___1uf6361_0000000 fz7g6wx"
     >
       <AccordionItem
-        value="6"
+        value="7"
       >
         <AccordionHeader>
           <div
@@ -717,7 +717,7 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
         </AccordionPanel>
       </AccordionItem>
       <AccordionItem
-        value="7"
+        value="8"
       >
         <AccordionHeader>
           <div
@@ -753,7 +753,7 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
         </AccordionPanel>
       </AccordionItem>
       <AccordionItem
-        value="11"
+        value="12"
       >
         <AccordionHeader>
           <div

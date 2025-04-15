@@ -530,6 +530,9 @@ export class ariaLabelForLearnMoreLink {
   public static readonly AzureSynapseLink = "Learn more about Azure Synapse Link.";
 }
 
+export class GlobalSecondaryIndexLabels {
+  public static readonly NewGlobalSecondaryIndex: string = "New Global Secondary Index";
+}
 export class FeedbackLabels {
   public static readonly provideFeedback: string = "Provide feedback";
 }
