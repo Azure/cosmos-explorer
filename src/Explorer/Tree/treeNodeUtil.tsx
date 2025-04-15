@@ -6,7 +6,7 @@ import StoredProcedure from "Explorer/Tree/StoredProcedure";
 import Trigger from "Explorer/Tree/Trigger";
 import UserDefinedFunction from "Explorer/Tree/UserDefinedFunction";
 import { useDatabases } from "Explorer/useDatabases";
-import { isFabricMirrored } from "Platform/Fabric/FabricUtil";
+import { isFabric, isFabricMirrored, isFabricNative } from "Platform/Fabric/FabricUtil";
 import { getItemName } from "Utils/APITypeUtils";
 import { isServerlessAccount } from "Utils/CapabilityUtils";
 import { useTabs } from "hooks/useTabs";
@@ -23,7 +23,7 @@ import { useNotebook } from "../Notebook/useNotebook";
 import { useSelectedNode } from "../useSelectedNode";
 
 export const shouldShowScriptNodes = (): boolean => {
-  return !isFabricMirrored() && (userContext.apiType === "SQL" || userContext.apiType === "Gremlin");
+  return !isFabric() && (userContext.apiType === "SQL" || userContext.apiType === "Gremlin");
 };
 
 const TreeDatabaseIcon = <DatabaseRegular fontSize={16} />;
@@ -220,7 +220,7 @@ export const buildCollectionNode = (
 ): TreeNode => {
   let children: TreeNode[];
   // Flat Tree for Fabric
-  if (configContext.platform !== Platform.Fabric) {
+  if (!isFabricMirrored()) {
     children = buildCollectionNodeChildren(database, collection, isNotebookEnabled, container, refreshActiveTab);
   }
 
@@ -318,7 +318,7 @@ const buildCollectionNodeChildren = (
 
     children.push({
       id,
-      label: database.isDatabaseShared() || isServerlessAccount() ? "Settings" : "Scale & Settings",
+      label: database.isDatabaseShared() || isServerlessAccount() || isFabricNative() ? "Settings" : "Scale & Settings",
       onClick: collection.onSettingsClick.bind(collection),
       isSelected: () =>
         useSelectedNode

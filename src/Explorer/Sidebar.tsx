@@ -340,16 +340,18 @@ export const SidebarContainer: React.FC<SidebarProps> = ({ explorer }) => {
                   <>
                     <div className={styles.floatingControlsContainer}>
                       <div className={styles.floatingControls}>
-                        <button
-                          type="button"
-                          data-test="Sidebar/RefreshButton"
-                          className={styles.floatingControlButton}
-                          disabled={loading}
-                          title="Refresh"
-                          onClick={onRefreshClick}
-                        >
-                          <ArrowSync12Regular />
-                        </button>
+                        {!isFabricNative() && (
+                          <button
+                            type="button"
+                            data-test="Sidebar/RefreshButton"
+                            className={styles.floatingControlButton}
+                            disabled={loading}
+                            title="Refresh"
+                            onClick={onRefreshClick}
+                          >
+                            <ArrowSync12Regular />
+                          </button>
+                        )}
                         <button
                           type="button"
                           className={styles.floatingControlButton}
