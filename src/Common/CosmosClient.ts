@@ -125,7 +125,11 @@ export const endpoint = () => {
     const location = _global.parent ? _global.parent.location : _global.location;
     return configContext.EMULATOR_ENDPOINT || location.origin;
   }
-  return userContext.endpoint || userContext?.databaseAccount?.properties?.documentEndpoint;
+  return (
+    userContext.selectedRegionalEndpoint ||
+    userContext.endpoint ||
+    userContext?.databaseAccount?.properties?.documentEndpoint
+  );
 };
 
 export async function getTokenFromAuthService(
@@ -203,6 +207,7 @@ export function client(): Cosmos.CosmosClient {
     userAgentSuffix: "Azure Portal",
     defaultHeaders: _defaultHeaders,
     connectionPolicy: {
+      enableEndpointDiscovery: !userContext.selectedRegionalEndpoint,
       retryOptions: {
         maxRetryAttemptCount: LocalStorageUtility.getEntryNumber(StorageKey.RetryAttempts),
         fixedRetryIntervalInMilliseconds: LocalStorageUtility.getEntryNumber(StorageKey.RetryInterval),
