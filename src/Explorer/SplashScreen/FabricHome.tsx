@@ -175,7 +175,7 @@ export const FabricHomeScreen: React.FC<SplashScreenProps> = (props: SplashScree
         {getSplashScreenButtons()}
         <div className={styles.footer}>
           Need help?{" "}
-          <Link href="https://cosmos.azure.com/docs" target="_blank">
+          <Link href="https://aka.ms/cosmosdbfabricdocs" target="_blank">
             Learn more <img src={LinkIcon} alt="Learn more" />
           </Link>
         </div>
