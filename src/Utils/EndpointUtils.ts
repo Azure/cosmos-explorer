@@ -52,21 +52,8 @@ export const allowedAadEndpoints: ReadonlyArray<string> = [
 ];
 
 export const defaultAllowedBackendEndpoints: ReadonlyArray<string> = [
-  "https://main.documentdb.ext.azure.com",
-  "https://main.documentdb.ext.azure.cn",
-  "https://main.documentdb.ext.azure.us",
-  "https://main.cosmos.ext.azure",
-  "https://localhost:12901",
   "https://localhost:1234",
 ];
-
-export const PortalBackendIPs: { [key: string]: string[] } = {
-  "https://main.documentdb.ext.azure.com": ["104.42.195.92", "40.76.54.131"],
-  // DE doesn't talk to prod2 (main2) but it might be added
-  //"https://main2.documentdb.ext.azure.com": ["104.42.196.69"],
-  "https://main.documentdb.ext.azure.cn": ["139.217.8.252"],
-  "https://main.documentdb.ext.azure.us": ["52.244.48.71"],
-};
 
 export const PortalBackendOutboundIPs: { [key: string]: string[] } = {
   [PortalBackendEndpoints.Mpac]: ["13.91.105.215", "4.210.172.107"],
@@ -96,14 +83,6 @@ export const defaultAllowedCassandraProxyEndpoints: ReadonlyArray<string> = [
   CassandraProxyEndpoints.Prod,
   CassandraProxyEndpoints.Fairfax,
   CassandraProxyEndpoints.Mooncake,
-];
-
-export const allowedCassandraProxyEndpoints_ToBeDeprecated: ReadonlyArray<string> = [
-  "https://main.documentdb.ext.azure.com",
-  "https://main.documentdb.ext.azure.cn",
-  "https://main.documentdb.ext.azure.us",
-  "https://main.cosmos.ext.azure",
-  "https://localhost:12901",
 ];
 
 export const CassandraProxyOutboundIPs: { [key: string]: string[] } = {
