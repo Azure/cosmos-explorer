@@ -62,8 +62,7 @@ export const startCloudShellTerminal = async (terminal: Terminal, shellType: Ter
     );
 
     if (!consentGranted) {
-      terminal.writeln(formatWarningMessage(
-        "Failed to start CloudShell terminal. Please try again later."));
+      terminal.writeln(formatWarningMessage("Failed to start CloudShell terminal. Please try again later."));
       return null; // Exit if user declined
     }
 

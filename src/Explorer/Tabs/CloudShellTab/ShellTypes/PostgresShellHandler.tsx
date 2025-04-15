@@ -9,7 +9,6 @@ import { AbstractShellHandler } from "./AbstractShellHandler";
 const PACKAGE_VERSION: string = "15.2";
 
 export class PostgresShellHandler extends AbstractShellHandler {
-
   private _endpoint: string | undefined;
 
   constructor() {
@@ -36,7 +35,6 @@ export class PostgresShellHandler extends AbstractShellHandler {
   }
 
   public getConnectionCommand(): string {
-
     if (!this._endpoint) {
       return `echo '${this.getShellName()} endpoint not found.'`;
     }

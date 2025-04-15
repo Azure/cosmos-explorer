@@ -78,10 +78,10 @@ export class AttachAddon implements ITerminalAddon {
           data = "";
         }
 
-        // if (data.includes(this._startMarker)) {
-        //   this._allowTerminalWrite = false;
-        //   terminal.write(`Preparing ${this._shellHandler.getShellName()} environment...\r\n`);
-        // }
+        if (data.includes(this._startMarker)) {
+          this._allowTerminalWrite = false;
+          terminal.write(`Preparing ${this._shellHandler.getShellName()} environment...\r\n`);
+        }
 
         if (this._allowTerminalWrite) {
           const suppressedData = this._shellHandler?.getTerminalSuppressedData();

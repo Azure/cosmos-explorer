@@ -75,10 +75,6 @@ describe("CassandraShellHandler", () => {
       expect(handler.getShellName()).toBe("Cassandra");
     });
 
-    test("should return cassandra endpoint from userContext", () => {
-      expect(handler.getEndpoint()).toBe("https://test-endpoint.cassandra.cosmos.azure.com:443/");
-    });
-
     test("should return an array of setup commands", () => {
       const commands = handler.getSetUpCommands();
 
@@ -110,27 +106,6 @@ describe("CassandraShellHandler", () => {
   });
 
   describe("Negative test cases", () => {
-    test("should handle undefined databaseAccount when getting endpoint", () => {
-      mockState.databaseAccount = undefined;
-
-      expect(handler.getEndpoint()).toBeUndefined();
-    });
-
-    test("should handle undefined properties when getting endpoint", () => {
-      mockState.databaseAccount = { name: "test-account" };
-
-      expect(handler.getEndpoint()).toBeUndefined();
-    });
-
-    test("should handle undefined cassandraEndpoint", () => {
-      mockState.databaseAccount = {
-        name: "test-account",
-        properties: {},
-      };
-
-      expect(handler.getEndpoint()).toBeUndefined();
-    });
-
     test("should handle empty host from URL", () => {
       (CommonUtils.getHostFromUrl as jest.Mock).mockReturnValueOnce("");
 

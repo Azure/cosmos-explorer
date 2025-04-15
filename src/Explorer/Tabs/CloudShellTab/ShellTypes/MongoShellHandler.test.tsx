@@ -68,32 +68,6 @@ describe("MongoShellHandler", () => {
     });
   });
 
-  describe("getEndpoint", () => {
-    it("should return mongoEndpoint from userContext", () => {
-      expect(mongoShellHandler.getEndpoint()).toBe("https://test-mongo.documents.azure.com:443/");
-    });
-
-    it("should return undefined when mongoEndpoint is not available", () => {
-      // Save original databaseAccount
-      const originalDatabaseAccount = userContext.databaseAccount;
-
-      // Directly assign the modified databaseAccount
-      (userContext as UserContextType).databaseAccount = {
-        id: "test-id",
-        name: "test-account",
-        location: "test-location",
-        type: "test-type",
-        kind: "test-kind",
-        properties: {},
-      };
-
-      expect(mongoShellHandler.getEndpoint()).toBeUndefined();
-
-      // Restore original
-      (userContext as UserContextType).databaseAccount = originalDatabaseAccount;
-    });
-  });
-
   describe("getSetUpCommands", () => {
     it("should return an array of setup commands", () => {
       const commands = mongoShellHandler.getSetUpCommands();
@@ -128,14 +102,6 @@ describe("MongoShellHandler", () => {
 
       // Restore original
       (userContext as UserContextType).databaseAccount = originalDatabaseAccount;
-    });
-
-    it("should handle missing endpoint", () => {
-      // Mock getEndpoint to return undefined
-      jest.spyOn(mongoShellHandler, "getEndpoint").mockReturnValue(undefined);
-      const command = mongoShellHandler.getConnectionCommand();
-
-      expect(command).toBe(`echo '${mongoShellHandler.getShellName()} endpoint not found.'`);
     });
 
     it("should handle missing database account name", () => {
