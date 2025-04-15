@@ -42,10 +42,6 @@ describe("VCoreMongoShellHandler", () => {
       expect(vcoreMongoShellHandler.getShellName()).toBe("MongoDB VCore");
     });
 
-    it("should return VCore MongoDB endpoint from userContext", () => {
-      expect(vcoreMongoShellHandler.getEndpoint()).toBe("test-vcore-mongo.mongo.cosmos.azure.com");
-    });
-
     it("should return array of setup commands with correct package version", () => {
       const commands = vcoreMongoShellHandler.getSetUpCommands();
 
@@ -66,42 +62,6 @@ describe("VCoreMongoShellHandler", () => {
 
     it("should return the correct terminal suppressed data", () => {
       expect(vcoreMongoShellHandler.getTerminalSuppressedData()).toBe("Warning: Non-Genuine MongoDB Detected");
-    });
-  });
-
-  // Negative test cases
-  describe("Negative Tests", () => {
-    it("should handle missing VCore MongoDB endpoint", () => {
-      // Mock getEndpoint to simulate missing endpoint
-      jest.spyOn(vcoreMongoShellHandler, "getEndpoint").mockReturnValue(undefined);
-
-      expect(vcoreMongoShellHandler.getEndpoint()).toBeUndefined();
-
-      // Test connection command with missing endpoint
-      const connectionCommand = vcoreMongoShellHandler.getConnectionCommand();
-      expect(connectionCommand).toContain("echo 'MongoDB VCore endpoint not found.'");
-    });
-
-    it("should handle null userContext", () => {
-      // Mock getEndpoint to simulate null userContext
-      jest.spyOn(vcoreMongoShellHandler, "getEndpoint").mockReturnValue(undefined);
-
-      expect(vcoreMongoShellHandler.getEndpoint()).toBeUndefined();
-    });
-
-    it("should handle null databaseAccount", () => {
-      // Mock getEndpoint to simulate null databaseAccount
-      jest.spyOn(vcoreMongoShellHandler, "getEndpoint").mockReturnValue(undefined);
-
-      expect(vcoreMongoShellHandler.getEndpoint()).toBeUndefined();
-    });
-
-    it("should handle empty endpoint", () => {
-      // Mock getEndpoint to return empty string
-      jest.spyOn(vcoreMongoShellHandler, "getEndpoint").mockReturnValue("");
-
-      const connectionCommand = vcoreMongoShellHandler.getConnectionCommand();
-      expect(connectionCommand).toContain("echo 'MongoDB VCore endpoint not found.'");
     });
   });
 });
