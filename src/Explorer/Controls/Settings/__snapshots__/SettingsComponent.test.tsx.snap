@@ -306,6 +306,7 @@ exports[`SettingsComponent renders 1`] = `
               },
             }
           }
+          isReadOnly={false}
         />
       </PivotItem>
       <PivotItem

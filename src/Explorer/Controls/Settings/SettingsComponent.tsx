@@ -12,6 +12,7 @@ import {
   ThroughputBucketsComponentProps,
 } from "Explorer/Controls/Settings/SettingsSubComponents/ThroughputInputComponents/ThroughputBucketsComponent";
 import { useDatabases } from "Explorer/useDatabases";
+import { isFabricNative } from "Platform/Fabric/FabricUtil";
 import { isFullTextSearchEnabled, isVectorSearchEnabled } from "Utils/CapabilityUtils";
 import { isRunningOnPublicCloud } from "Utils/CloudUtils";
 import * as React from "react";
@@ -1277,6 +1278,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       database: useDatabases.getState().findDatabaseWithId(this.collection.databaseId),
       collection: this.collection,
       explorer: this.props.settingsTab.getContainer(),
+      isReadOnly: isFabricNative(),
     };
 
     const globalSecondaryIndexComponentProps: GlobalSecondaryIndexComponentProps = {
