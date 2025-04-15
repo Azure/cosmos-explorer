@@ -756,16 +756,14 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     [_collection, _partitionKey],
   );
   const partitionKeyPropertyHeaders: string[] = useMemo(
-    () => _collection?.partitionKeyPropertyHeaders || partitionKey?.paths,
-    [_collection?.partitionKeyPropertyHeaders, partitionKey?.paths],
+    () => (partitionKey?.systemKey ? [] : _collection?.partitionKeyPropertyHeaders || partitionKey?.paths),
+    [_collection?.partitionKeyPropertyHeaders, partitionKey?.paths, partitionKey?.systemKey],
   );
-  let partitionKeyProperties = useMemo(
-    () =>
-      partitionKeyPropertyHeaders?.map((partitionKeyPropertyHeader) =>
-        partitionKeyPropertyHeader.replace(/[/]+/g, ".").substring(1).replace(/[']+/g, ""),
-      ),
-    [partitionKeyPropertyHeaders],
-  );
+  let partitionKeyProperties = useMemo(() => {
+    return partitionKeyPropertyHeaders?.map((partitionKeyPropertyHeader) =>
+      partitionKeyPropertyHeader.replace(/[/]+/g, ".").substring(1).replace(/[']+/g, ""),
+    );
+  }, [partitionKeyPropertyHeaders]);
 
   const getInitialColumnSelection = () => {
     const defaultColumnsIds = ["id"];
@@ -1730,7 +1728,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
       return partitionKey;
     };
 
-    partitionKeyProperties = partitionKeyProperties?.map((partitionKeyProperty, i) => {
+    partitionKeyProperties = partitionKeyProperties.map((partitionKeyProperty, i) => {
       if (partitionKeyProperty && ~partitionKeyProperty.indexOf(`"`)) {
         partitionKeyProperty = partitionKeyProperty.replace(/["]+/g, "");
       }
