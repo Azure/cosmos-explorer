@@ -9,9 +9,11 @@ trigger:
 pool:
   vmImage: "ubuntu-latest"
 
-defaults:
-  run:
-    workingDirectory: $(System.DefaultWorkingDirectory)/manifest
-
 steps:
   - task: ComponentGovernanceComponentDetection@0
+    inputs:
+      scanType: 'Register'
+      verbosity: 'Verbose'
+      sourceScanPath: 'manifest'
+      detectorsFilter: 'cgmanifest'
+      alertWarningLevel: 'Low'
