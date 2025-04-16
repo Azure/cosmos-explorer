@@ -9,5 +9,9 @@ trigger:
 pool:
   vmImage: "ubuntu-latest"
 
+defaults:
+  run:
+    workingDirectory: $(System.DefaultWorkingDirectory)/manifest
+
 steps:
   - task: ComponentGovernanceComponentDetection@0

@@ -9,10 +9,7 @@
             "CommitHash": "6718ae4e76be007542087b8a674d7a77861c7d08"
           }
         },
-        "DevelopmentDependency": false,
-        "skip": [
-         "package-lock.json"
-        ]
+        "DevelopmentDependency": false
       }
     ]
   }
