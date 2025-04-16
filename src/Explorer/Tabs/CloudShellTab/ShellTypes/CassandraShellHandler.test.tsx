@@ -58,11 +58,6 @@ describe("CassandraShellHandler", () => {
     };
   });
 
-  // Clean up after each test
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
   // Clean up after all tests
   afterAll(() => {
     jest.resetAllMocks();
@@ -79,15 +74,20 @@ describe("CassandraShellHandler", () => {
       const commands = handler.getSetUpCommands();
 
       expect(Array.isArray(commands)).toBe(true);
-      expect(commands.length).toBe(8);
+      expect(commands.length).toBe(5);
       expect(commands).toContain("source ~/.bashrc");
-      expect(commands.some((cmd) => cmd.includes("export PATH=$HOME/cassandra/bin:$PATH"))).toBe(true);
+      expect(
+        commands.some((cmd) =>
+          cmd.includes("if ! command -v cqlsh &> /dev/null; then echo '⚠️ cqlsh not found. Installing...'; fi"),
+        ),
+      ).toBe(true);
+      expect(commands.some((cmd) => cmd.includes("pip3 install --user cqlsh==6.2.0"))).toBe(true);
       expect(commands.some((cmd) => cmd.includes("export SSL_VERSION=TLSv1_2"))).toBe(true);
+      expect(commands.some((cmd) => cmd.includes("export SSL_VALIDATE=false"))).toBe(true);
     });
 
     test("should return correct connection command", () => {
-      const expectedCommand =
-        "cqlsh test-endpoint.cassandra.cosmos.azure.com 10350 -u test-account -p test-key --ssl --protocol-version=4";
+      const expectedCommand = "cqlsh test-endpoint.cassandra.cosmos.azure.com 10350 -u test-account -p test-key --ssl";
 
       expect(handler.getConnectionCommand()).toBe(expectedCommand);
       expect(CommonUtils.getHostFromUrl).toHaveBeenCalledWith("https://test-endpoint.cassandra.cosmos.azure.com:443/");
@@ -99,7 +99,7 @@ describe("CassandraShellHandler", () => {
 
     test("should include the correct package version in setup commands", () => {
       const commands = handler.getSetUpCommands();
-      const hasCorrectPackageVersion = commands.some((cmd) => cmd.includes("apache-cassandra-5.0.3-bin.tar.gz"));
+      const hasCorrectPackageVersion = commands.some((cmd) => cmd.includes("cqlsh==6.2.0"));
 
       expect(hasCorrectPackageVersion).toBe(true);
     });
@@ -111,14 +111,14 @@ describe("CassandraShellHandler", () => {
 
       const command = handler.getConnectionCommand();
 
-      expect(command).toBe("cqlsh  10350 -u test-account -p test-key --ssl --protocol-version=4");
+      expect(command).toBe("cqlsh  10350 -u test-account -p test-key --ssl");
     });
 
     test("should handle empty key", () => {
       const emptyKeyHandler = new CassandraShellHandler("");
 
       expect(emptyKeyHandler.getConnectionCommand()).toBe(
-        "cqlsh test-endpoint.cassandra.cosmos.azure.com 10350 -u test-account -p  --ssl --protocol-version=4",
+        "cqlsh test-endpoint.cassandra.cosmos.azure.com 10350 -u test-account -p  --ssl",
       );
     });
 
@@ -130,9 +130,17 @@ describe("CassandraShellHandler", () => {
       expect(handler.getConnectionCommand()).toBe("echo 'Database name not found.'");
     });
 
-    test("should handle fully undefined userContext", () => {
+    test("should handle undefined database account", () => {
       mockState.databaseAccount = undefined;
-      (CommonUtils.getHostFromUrl as jest.Mock).mockReturnValueOnce("");
+
+      expect(handler.getConnectionCommand()).toBe("echo 'Cassandra endpoint not found.'");
+    });
+
+    test("should handle missing cassandra endpoint", () => {
+      mockState.databaseAccount = {
+        name: "test-account",
+        properties: {},
+      };
 
       expect(handler.getConnectionCommand()).toBe("echo 'Cassandra endpoint not found.'");
     });
