@@ -10,6 +10,16 @@
           }
         },
         "DevelopmentDependency": false
+      },
+      {
+        "Component": {
+          "Type": "git",
+          "Git": {
+            "RepositoryUrl": "https://github.com/jeffwidman/cqlsh",
+            "CommitHash": "dbefab4f3082bd3525e9e39d836734fd905fb8df"
+          }
+        },
+        "DevelopmentDependency": false
       }
     ]
   }
