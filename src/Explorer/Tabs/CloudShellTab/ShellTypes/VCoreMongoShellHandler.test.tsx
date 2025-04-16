@@ -47,7 +47,7 @@ describe("VCoreMongoShellHandler", () => {
 
       expect(Array.isArray(commands)).toBe(true);
       expect(commands.length).toBe(6);
-      expect(commands[1]).toContain("mongosh-2.3.8-linux-x64.tgz");
+      expect(commands[1]).toContain("mongosh-2.5.0-linux-x64.tgz");
       expect(commands[0]).toContain("mongosh not found");
     });
 
@@ -57,7 +57,6 @@ describe("VCoreMongoShellHandler", () => {
       expect(connectionCommand).toContain('read -p "Enter username: " username');
       expect(connectionCommand).toContain("mongodb+srv://$username:@test-vcore-mongo.mongo.cosmos.azure.com");
       expect(connectionCommand).toContain("authMechanism=SCRAM-SHA-256");
-      expect(connectionCommand).toContain("--tls --tlsAllowInvalidCertificates");
     });
 
     it("should return the correct terminal suppressed data", () => {
