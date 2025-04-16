@@ -1,5 +1,5 @@
 import { AzureCliCredential } from "@azure/identity";
-import { expect, Frame, Locator, Page } from "@playwright/test";
+import { Frame, Locator, Page, expect } from "@playwright/test";
 import crypto from "crypto";
 
 const RETRY_COUNT = 3;
@@ -26,7 +26,7 @@ export function getAzureCLICredentials(): AzureCliCredential {
 
 export async function getAzureCLICredentialsToken(): Promise<string> {
   const credentials = getAzureCLICredentials();
-  const token = (await credentials.getToken("https://management.core.windows.net//.default")).token;
+  const token = (await credentials.getToken("https://management.core.windows.net//.default"))?.token || "";
   return token;
 }
 
@@ -35,8 +35,10 @@ export enum TestAccount {
   Cassandra = "Cassandra",
   Gremlin = "Gremlin",
   Mongo = "Mongo",
+  MongoReadonly = "MongoReadOnly",
   Mongo32 = "Mongo32",
   SQL = "SQL",
+  SQLReadOnly = "SQLReadOnly",
 }
 
 export const defaultAccounts: Record<TestAccount, string> = {
@@ -44,8 +46,10 @@ export const defaultAccounts: Record<TestAccount, string> = {
   [TestAccount.Cassandra]: "github-e2etests-cassandra",
   [TestAccount.Gremlin]: "github-e2etests-gremlin",
   [TestAccount.Mongo]: "github-e2etests-mongo",
+  [TestAccount.MongoReadonly]: "github-e2etests-mongo-readonly",
   [TestAccount.Mongo32]: "github-e2etests-mongo32",
   [TestAccount.SQL]: "github-e2etests-sql",
+  [TestAccount.SQLReadOnly]: "github-e2etests-sql-readonly",
 };
 
 export const resourceGroupName = process.env.DE_TEST_RESOURCE_GROUP ?? "de-e2e-tests";
@@ -214,6 +218,25 @@ export class QueryTab {
   }
 }
 
+export class DocumentsTab {
+  documentsFilter: Locator;
+  documentsListPane: Locator;
+  documentResultsPane: Locator;
+  resultsEditor: Editor;
+
+  constructor(
+    public frame: Frame,
+    public tabId: string,
+    public tab: Locator,
+    public locator: Locator,
+  ) {
+    this.documentsFilter = this.locator.getByTestId("DocumentsTab/Filter");
+    this.documentsListPane = this.locator.getByTestId("DocumentsTab/DocumentsPane");
+    this.documentResultsPane = this.locator.getByTestId("DocumentsTab/ResultsPane");
+    this.resultsEditor = new Editor(this.frame, this.documentResultsPane.getByTestId("EditorReact/Host/Loaded"));
+  }
+}
+
 type PanelOpenOptions = {
   closeTimeout?: number;
 };
@@ -232,6 +255,12 @@ export class DataExplorer {
     return new QueryTab(this.frame, tabId, tab, queryTab);
   }
 
+  documentsTab(tabId: string): DocumentsTab {
+    const tab = this.tab(tabId);
+    const documentsTab = tab.getByTestId("DocumentsTab");
+    return new DocumentsTab(this.frame, tabId, tab, documentsTab);
+  }
+
   /** Select the primary global command button.
    *
    * There's only a single "primary" button, but we still require you to pass the label to confirm you're selecting the right button.
@@ -243,6 +272,10 @@ export class DataExplorer {
   /** Select the command bar button with the specified label */
   commandBarButton(label: string): Locator {
     return this.frame.getByTestId(`CommandBar/Button:${label}`).and(this.frame.locator("css=button"));
+  }
+
+  dialogButton(label: string): Locator {
+    return this.frame.getByTestId(`DialogButton:${label}`).and(this.frame.locator("css=button"));
   }
 
   /** Select the side panel with the specified title */
@@ -292,6 +325,26 @@ export class DataExplorer {
     await databaseNode.expand();
 
     return await this.waitForNode(`${databaseId}/${containerId}`);
+  }
+
+  async waitForContainerItemsNode(databaseId: string, containerId: string): Promise<TreeNode> {
+    return await this.waitForNode(`${databaseId}/${containerId}/Items`);
+  }
+
+  async waitForContainerDocumentsNode(databaseId: string, containerId: string): Promise<TreeNode> {
+    return await this.waitForNode(`${databaseId}/${containerId}/Documents`);
+  }
+
+  async waitForCommandBarButton(label: string, timeout?: number): Promise<Locator> {
+    const commandBar = this.commandBarButton(label);
+    await commandBar.waitFor({ state: "visible", timeout });
+    return commandBar;
+  }
+
+  async waitForDialogButton(label: string, timeout?: number): Promise<Locator> {
+    const dialogButton = this.dialogButton(label);
+    await dialogButton.waitFor({ timeout });
+    return dialogButton;
   }
 
   /** Select the tree node with the specified id */
