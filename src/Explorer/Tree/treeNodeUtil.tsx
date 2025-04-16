@@ -81,7 +81,7 @@ export const createSampleDataTreeNodes = (sampleDataResourceTokenCollection: Vie
   return [updatedSampleTree];
 };
 
-export const createResourceTokenTreeNodes = (collection: ViewModels.Collection): TreeNode[] => {
+export const createResourceTokenTreeNodes = (collection: ViewModels.CollectionBase): TreeNode[] => {
   if (!collection) {
     return [
       {
@@ -111,7 +111,7 @@ export const createResourceTokenTreeNodes = (collection: ViewModels.Collection):
     isExpanded: true,
     children,
     className: "collectionNode",
-    iconSrc: collection.materializedViewDefinition() ? GlobalSecondaryIndexCollectionIcon : TreeCollectionIcon,
+    iconSrc: TreeCollectionIcon,
     onClick: () => {
       // Rewritten version of expandCollapseCollection
       useSelectedNode.getState().setSelectedNode(collection);
