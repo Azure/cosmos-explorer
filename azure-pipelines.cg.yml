@@ -10,4 +10,29 @@ pool:
   vmImage: "ubuntu-latest"
 
 steps:
-  - task: ComponentGovernanceComponentDetection@0
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-antimalware.AntiMalware@4
+    displayName: 'AntiMalware'
+    continueOnError: true 
+    inputs:
+      EnableServices: true
+
+  - task: ms.vss-governance-buildtask.governance-build-task-component-detection.ComponentGovernanceComponentDetection@0
+    displayName: 'Component Governance Detection'
+    inputs:
+      alertWarningLevel: Medium
+      failOnAlert: true
+
+  - task: securedevelopmentteam.vss-secure-development-tools.build-task-publishsecurityanalysislogs.PublishSecurityAnalysisLogs@3
+    displayName: 'Publish Security Analysis Logs'
+
+  - task: securedevelopmentteam.vss-secure-development-tools.build-task-postanalysis.PostAnalysis@2
+    displayName: 'Post Analysis'
+    condition: eq(1,2)
+    inputs:
+      GdnBreakFast: true
+      GdnBreakAllTools: false
+      GdnBreakGdnToolCredScan: true
+      GdnBreakGdnToolBinSkim: true
+      GdnBreakGdnToolPoliCheck: true
+      GdnBreakGdnToolPoliCheckSeverity: Error
+
