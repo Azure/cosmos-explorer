@@ -1,7 +1,6 @@
 import { Tree, TreeItemValue, TreeOpenChangeData, TreeOpenChangeEvent } from "@fluentui/react-components";
 import { Home16Regular } from "@fluentui/react-icons";
 import { AuthType } from "AuthType";
-import { Collection } from "Contracts/ViewModels";
 import { useTreeStyles } from "Explorer/Controls/TreeComponent/Styles";
 import { TreeNode, TreeNodeComponent } from "Explorer/Controls/TreeComponent/TreeNodeComponent";
 import {
@@ -61,7 +60,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ explorer }: Resource
 
   const databaseTreeNodes = useMemo(() => {
     return userContext.authType === AuthType.ResourceToken
-      ? createResourceTokenTreeNodes(resourceTokenCollection as Collection)
+      ? createResourceTokenTreeNodes(resourceTokenCollection)
       : createDatabaseTreeNodes(explorer, isNotebookEnabled, databases, refreshActiveTab);
   }, [resourceTokenCollection, databases, isNotebookEnabled, refreshActiveTab]);
 
