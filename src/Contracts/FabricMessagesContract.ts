@@ -81,6 +81,13 @@ export type FabricMessageV3 =
         error: string | undefined;
         data: { accessToken: string };
       };
+    }
+  | {
+      type: "refreshResourceTree";
+      message: {
+        id: string;
+        error: string | undefined;
+      };
     };
 
 export enum CosmosDbArtifactType {
