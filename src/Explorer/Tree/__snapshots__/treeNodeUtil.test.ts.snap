@@ -2412,7 +2412,7 @@ exports[`createResourceTokenTreeNodes creates the expected tree nodes 1`] = `
       },
     ],
     "className": "collectionNode",
-    "iconSrc": <EyeRegular
+    "iconSrc": <DocumentMultipleRegular
       fontSize={16}
     />,
     "isExpanded": true,
