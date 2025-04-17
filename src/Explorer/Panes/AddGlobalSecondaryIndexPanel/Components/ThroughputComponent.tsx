@@ -12,7 +12,6 @@ export interface ThroughputComponentProps {
   isSelectedSourceContainerSharedThroughput: () => boolean;
   showCollectionThroughputInput: () => boolean;
   globalSecondaryIndexThroughputOnChange: (globalSecondaryIndexThroughputValue: number) => void;
-  isGlobalSecondaryIndexAutoscaleOnChange: (isGlobalSecondaryIndexAutoscaleValue: boolean) => void;
   setIsThroughputCapExceeded: React.Dispatch<React.SetStateAction<boolean>>;
   isCostAknowledgedOnChange: (isCostAknowledgedValue: boolean) => void;
 }
@@ -24,7 +23,6 @@ export const ThroughputComponent = (props: ThroughputComponentProps): JSX.Elemen
     isSelectedSourceContainerSharedThroughput,
     showCollectionThroughputInput,
     globalSecondaryIndexThroughputOnChange,
-    isGlobalSecondaryIndexAutoscaleOnChange,
     setIsThroughputCapExceeded,
     isCostAknowledgedOnChange,
   } = props;
@@ -52,12 +50,11 @@ export const ThroughputComponent = (props: ThroughputComponentProps): JSX.Elemen
           isSharded={false}
           isFreeTier={isFreeTierAccount()}
           isQuickstart={false}
+          isGlobalSecondaryIndex={true}
           setThroughputValue={(throughput: number) => {
             globalSecondaryIndexThroughputOnChange(throughput);
           }}
-          setIsAutoscale={(isAutoscale: boolean) => {
-            isGlobalSecondaryIndexAutoscaleOnChange(isAutoscale);
-          }}
+          setIsAutoscale={() => {}}
           setIsThroughputCapExceeded={(isThroughputCapExceeded: boolean) => {
             setIsThroughputCapExceeded(isThroughputCapExceeded);
           }}
