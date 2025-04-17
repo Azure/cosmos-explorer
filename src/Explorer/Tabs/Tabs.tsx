@@ -40,6 +40,14 @@ export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
     });
   }, [setKeyboardHandlers]);
 
+  // Add useEffect to handle context buttons
+  useEffect(() => {
+    if (activeReactTab !== undefined) {
+      // React tabs have no context buttons
+      useCommandBar.getState().setContextButtons([]);
+    }
+  }, [activeReactTab]);
+
   return (
     <div className="tabsManagerContainer">
       <div className="nav-tabs-margin">
@@ -259,9 +267,6 @@ const isQueryErrorThrown = (tab?: Tab, tabKind?: ReactTabKind): boolean => {
 };
 
 const getReactTabContent = (activeReactTab: ReactTabKind, explorer: Explorer): JSX.Element => {
-  // React tabs have no context buttons.
-  useCommandBar.getState().setContextButtons([]);
-
   // eslint-disable-next-line no-console
   switch (activeReactTab) {
     case ReactTabKind.Connect:

@@ -5,7 +5,7 @@ import {
   TriggerDefinition,
   UserDefinedFunctionDefinition,
 } from "@azure/cosmos";
-import Explorer from "../Explorer/Explorer";
+import type Explorer from "../Explorer/Explorer";
 import { ConsoleData } from "../Explorer/Menus/NotificationConsole/ConsoleData";
 import { CassandraTableKey, CassandraTableKeys } from "../Explorer/Tables/TableDataClient";
 import ConflictId from "../Explorer/Tree/ConflictId";
@@ -462,3 +462,6 @@ export interface DropdownOption<T> {
   value: T;
   disable?: boolean;
 }
+
+// Remove the duplicate Explorer interface and export the type
+export type { Explorer };
