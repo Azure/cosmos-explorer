@@ -22,6 +22,7 @@ export interface ScaleComponentProps {
   collection: ViewModels.Collection;
   database: ViewModels.Database;
   isFixedContainer: boolean;
+  isGlobalSecondaryIndex: boolean;
   onThroughputChange: (newThroughput: number) => void;
   throughput: number;
   throughputBaseline: number;
@@ -143,6 +144,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
       throughputError={this.props.throughputError}
       instantMaximumThroughput={this.offer?.instantMaximumThroughput}
       softAllowedMaximumThroughput={this.offer?.softAllowedMaximumThroughput}
+      isGlobalSecondaryIndex={this.props.isGlobalSecondaryIndex}
     />
   );
 
