@@ -8,9 +8,8 @@ import {
   MenuList,
   MenuPopover,
   MenuTrigger,
-  mergeClasses,
   shorthands,
-  SplitButton,
+  SplitButton
 } from "@fluentui/react-components";
 import { Add16Regular, ArrowSync12Regular, ChevronLeft12Regular, ChevronRight12Regular } from "@fluentui/react-icons";
 import { configContext, Platform } from "ConfigContext";
@@ -18,7 +17,6 @@ import Explorer from "Explorer/Explorer";
 import { AddDatabasePanel } from "Explorer/Panes/AddDatabasePanel/AddDatabasePanel";
 import { Tabs } from "Explorer/Tabs/Tabs";
 import { CosmosFluentProvider, cosmosShorthands, tokens } from "Explorer/Theme/ThemeUtil";
-import { ResourceTree } from "Explorer/Tree/ResourceTree";
 import { useDatabases } from "Explorer/useDatabases";
 import { KeyboardAction, KeyboardActionGroup, KeyboardActionHandler, useKeyboardActionGroup } from "KeyboardShortcuts";
 import { isFabric, isFabricMirrored, isFabricNative } from "Platform/Fabric/FabricUtil";
@@ -26,8 +24,10 @@ import { userContext } from "UserContext";
 import { getCollectionName, getDatabaseName } from "Utils/APITypeUtils";
 import { Allotment, AllotmentHandle } from "allotment";
 import { useSidePanel } from "hooks/useSidePanel";
+import { useTheme } from "hooks/useTheme";
 import { debounce } from "lodash";
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { ResourceTree } from "./Tree/ResourceTree";
 
 const useSidebarStyles = makeStyles({
   sidebar: {
@@ -35,38 +35,67 @@ const useSidebarStyles = makeStyles({
   },
   sidebarContainer: {
     height: "100%",
+    width: "100%",
+    borderRight: `1px solid ${tokens.colorNeutralStroke1}`,
+    transition: "all 0.2s ease-in-out",
+    display: "flex",
+    flexDirection: "column",
     backgroundColor: tokens.colorNeutralBackground1,
+    position: "relative",
   },
   expandedContent: {
     display: "grid",
     height: "100%",
+    width: "100%",
     gridTemplateRows: `calc(${tokens.layoutRowHeight} * 2) 1fr`,
   },
   floatingControlsContainer: {
-    position: "relative",
+    position: "absolute",
+    top: 0,
+    right: 0,
     zIndex: 1000,
-    width: "100%",
+    width: "auto",
+    padding: tokens.spacingHorizontalS,
   },
   floatingControls: {
     display: "flex",
     flexDirection: "row",
-    position: "absolute",
-    right: 0,
+    gap: tokens.spacingHorizontalXS,
   },
   floatingControlButton: {
     ...shorthands.border("none"),
     backgroundColor: "transparent",
+    color: tokens.colorNeutralForeground1,
+    cursor: "pointer",
+    padding: tokens.spacingHorizontalXS,
+    borderRadius: tokens.borderRadiusMedium,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    ":hover": {
+      backgroundColor: tokens.colorNeutralBackground1Hover,
+      color: tokens.colorNeutralForeground1,
+    },
+    ":active": {
+      backgroundColor: tokens.colorNeutralBackground1Pressed,
+      color: tokens.colorNeutralForeground1,
+    },
+    ":disabled": {
+      color: tokens.colorNeutralForegroundDisabled,
+      cursor: "not-allowed",
+    },
   },
   globalCommandsContainer: {
     display: "grid",
     alignItems: "center",
     justifyItems: "center",
     width: "100%",
-    containerType: "size", // Use this container for "@container" queries below this.
+    containerType: "size",
+    padding: tokens.spacingHorizontalS,
     ...cosmosShorthands.borderBottom(),
+    backgroundColor: tokens.colorNeutralBackground1,
   },
   loadingProgressBar: {
-    // Float above the content
     position: "absolute",
     width: "100%",
     height: "2px",
@@ -76,7 +105,7 @@ const useSidebarStyles = makeStyles({
     animationDuration: "3s",
     animationName: {
       "0%": {
-        opacity: ".2", // matches indeterminate bar width
+        opacity: ".2",
       },
       "50%": {
         opacity: "1",
@@ -97,6 +126,13 @@ const useSidebarStyles = makeStyles({
     "@container (min-width: 250px)": {
       display: "flex",
     },
+  },
+  treeContainer: {
+    flex: 1,
+    overflow: "auto",
+    paddingLeft: tokens.spacingHorizontalM,
+    backgroundColor: tokens.colorNeutralBackground1,
+    color: tokens.colorNeutralForeground1,
   },
 });
 
@@ -250,6 +286,7 @@ export const SidebarContainer: React.FC<SidebarProps> = ({ explorer }) => {
   const [expandedSize, setExpandedSize] = React.useState(300);
   const hasSidebar = userContext.apiType !== "Postgres" && userContext.apiType !== "VCoreMongo";
   const allotment = useRef<AllotmentHandle>(null);
+  const { isDarkMode } = useTheme();
 
   const expand = useCallback(() => {
     if (!expanded) {
@@ -304,7 +341,7 @@ export const SidebarContainer: React.FC<SidebarProps> = ({ explorer }) => {
         {hasSidebar && (
           // When collapsed, we force the pane to 24 pixels wide and make it non-resizable.
           <Allotment.Pane minSize={24} preferredSize={250}>
-            <CosmosFluentProvider className={mergeClasses(styles.sidebar)}>
+            <CosmosFluentProvider>
               <div className={styles.sidebarContainer}>
                 {loading && (
                   // The Fluent UI progress bar has some issues in reduced-motion environments so we use a simple CSS animation here.
@@ -335,12 +372,11 @@ export const SidebarContainer: React.FC<SidebarProps> = ({ explorer }) => {
                         </button>
                       </div>
                     </div>
-                    <div
-                      className={styles.expandedContent}
-                      style={!hasGlobalCommands ? { gridTemplateRows: "1fr" } : undefined}
-                    >
+                    <div className={styles.expandedContent} style={!hasGlobalCommands ? { gridTemplateRows: "1fr" } : undefined}>
                       {hasGlobalCommands && <GlobalCommands explorer={explorer} />}
-                      <ResourceTree explorer={explorer} />
+                      <div className={styles.treeContainer}>
+                        <ResourceTree explorer={explorer} />
+                      </div>
                     </div>
                   </>
                 ) : (

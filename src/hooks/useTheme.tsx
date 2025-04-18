@@ -20,15 +20,27 @@ export const CustomThemeProvider: FC<ThemeProviderProps> = ({ children, theme })
 
 export const useTheme = () => {
   const { targetDocument } = useFluent();
+  const context = React.useContext(ThemeContext);
+  
   const [isDarkMode, setIsDarkMode] = useState(() => {
-    const hasDarkMode = targetDocument?.body.classList.contains("isDarkMode") ?? true;
-    return hasDarkMode;
+    // First check if we're in a theme context
+    if (context) {
+      return context.isDarkMode;
+    }
+    // Fallback to checking body class
+    return targetDocument?.body.classList.contains("isDarkMode") ?? true;
   });
 
   useEffect(() => {
     if (!targetDocument) return;
 
     const checkTheme = () => {
+      // First check if we're in a theme context
+      if (context) {
+        setIsDarkMode(context.isDarkMode);
+        return;
+      }
+      // Fallback to checking body class
       const hasDarkMode = targetDocument.body.classList.contains("isDarkMode");
       setIsDarkMode(hasDarkMode);
     };
@@ -43,7 +55,7 @@ export const useTheme = () => {
     observer.observe(targetDocument.body, { attributes: true, attributeFilter: ["class"] });
 
     return () => observer.disconnect();
-  }, [targetDocument]);
+  }, [targetDocument, context]);
 
   return {
     isDarkMode

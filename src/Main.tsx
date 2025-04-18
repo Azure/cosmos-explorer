@@ -11,7 +11,7 @@ import { SQLQuickstartTutorial } from "Explorer/Quickstart/Tutorials/SQLQuicksta
 import "allotment/dist/style.css";
 import "bootstrap/dist/css/bootstrap.css";
 import { useCarousel } from "hooks/useCarousel";
-import React from "react";
+import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
 import "../externals/jquery-ui.min.css";
 import "../externals/jquery-ui.min.js";
@@ -82,7 +82,6 @@ const App = (): JSX.Element => {
   const isCopilotCarouselOpen = useCarousel((state) => state.showCopilotCarousel);
   const styles = useStyles();
 
-  console.log("App - Current theme: Dark");
 
   if (config?.platform === Platform.Fabric) {
     loadTheme(appThemeFabric);
@@ -140,13 +139,22 @@ const Root: React.FC = () => {
   // Force dark theme
   const isDarkMode = true;
   const currentTheme = isDarkMode ? webDarkTheme : webLightTheme;
-  const theme = "Dark";
   
-  console.log("Root component - Theme state:", { 
-    isDarkMode, 
-    currentTheme,
-    theme
-  });
+  // Apply theme to body for Fluent UI v8 components
+  useEffect(() => {
+    if (isDarkMode) {
+      document.body.classList.add("isDarkMode");
+      loadTheme(appThemeFabric);
+    } else {
+      document.body.classList.remove("isDarkMode");
+      loadTheme(appThemeFabric);
+    }
+  }, [isDarkMode]);
+
+  // console.log("Root component - Theme state:", { 
+  //   isDarkMode, 
+  //   currentTheme
+  // });
 
   return (
     <ErrorBoundary>
