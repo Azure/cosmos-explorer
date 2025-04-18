@@ -1149,6 +1149,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       collection: this.collection,
       database: this.database,
       isFixedContainer: this.isFixedContainer,
+      isGlobalSecondaryIndex: this.isGlobalSecondaryIndex,
       onThroughputChange: this.onThroughputChange,
       throughput: this.state.throughput,
       throughputBaseline: this.state.throughputBaseline,

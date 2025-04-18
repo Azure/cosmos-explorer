@@ -22,7 +22,6 @@ import {
   FullTextPolicyDefault,
   getPartitionKey,
   isSynapseLinkEnabled,
-  parseUniqueKeys,
   scrollToSection,
   shouldShowAnalyticalStoreOptions,
 } from "Explorer/Panes/AddCollectionPanel/AddCollectionPanelUtility";
@@ -35,7 +34,6 @@ import { AnalyticalStoreComponent } from "Explorer/Panes/AddGlobalSecondaryIndex
 import { FullTextSearchComponent } from "Explorer/Panes/AddGlobalSecondaryIndexPanel/Components/FullTextSearchComponent";
 import { PartitionKeyComponent } from "Explorer/Panes/AddGlobalSecondaryIndexPanel/Components/PartitionKeyComponent";
 import { ThroughputComponent } from "Explorer/Panes/AddGlobalSecondaryIndexPanel/Components/ThroughputComponent";
-import { UniqueKeysComponent } from "Explorer/Panes/AddGlobalSecondaryIndexPanel/Components/UniqueKeysComponent";
 import { VectorSearchComponent } from "Explorer/Panes/AddGlobalSecondaryIndexPanel/Components/VectorSearchComponent";
 import { PanelFooterComponent } from "Explorer/Panes/PanelFooterComponent";
 import { PanelInfoErrorComponent } from "Explorer/Panes/PanelInfoErrorComponent";
@@ -66,14 +64,13 @@ export const AddGlobalSecondaryIndexPanel = (props: AddGlobalSecondaryIndexPanel
   const [useHashV1, setUseHashV1] = useState<boolean>();
   const [enableDedicatedThroughput, setEnabledDedicatedThroughput] = useState<boolean>();
   const [isThroughputCapExceeded, setIsThroughputCapExceeded] = useState<boolean>();
-  const [uniqueKeys, setUniqueKeys] = useState<string[]>([]);
   const [enableAnalyticalStore, setEnableAnalyticalStore] = useState<boolean>();
-  const [vectorEmbeddingPolicy, setVectorEmbeddingPolicy] = useState<VectorEmbedding[]>();
-  const [vectorIndexingPolicy, setVectorIndexingPolicy] = useState<VectorIndex[]>();
-  const [vectorPolicyValidated, setVectorPolicyValidated] = useState<boolean>();
+  const [vectorEmbeddingPolicy, setVectorEmbeddingPolicy] = useState<VectorEmbedding[]>([]);
+  const [vectorIndexingPolicy, setVectorIndexingPolicy] = useState<VectorIndex[]>([]);
+  const [vectorPolicyValidated, setVectorPolicyValidated] = useState<boolean>(true);
   const [fullTextPolicy, setFullTextPolicy] = useState<FullTextPolicy>(FullTextPolicyDefault);
-  const [fullTextIndexes, setFullTextIndexes] = useState<FullTextIndex[]>();
-  const [fullTextPolicyValidated, setFullTextPolicyValidated] = useState<boolean>();
+  const [fullTextIndexes, setFullTextIndexes] = useState<FullTextIndex[]>([]);
+  const [fullTextPolicyValidated, setFullTextPolicyValidated] = useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string>();
   const [showErrorDetails, setShowErrorDetails] = useState<boolean>();
   const [isExecuting, setIsExecuting] = useState<boolean>();
@@ -109,15 +106,10 @@ export const AddGlobalSecondaryIndexPanel = (props: AddGlobalSecondaryIndexPanel
   }, [errorMessage]);
 
   let globalSecondaryIndexThroughput: number;
-  let isGlobalSecondaryIndexAutoscale: boolean;
   let isCostAcknowledged: boolean;
 
   const globalSecondaryIndexThroughputOnChange = (globalSecondaryIndexThroughputValue: number): void => {
     globalSecondaryIndexThroughput = globalSecondaryIndexThroughputValue;
-  };
-
-  const isGlobalSecondaryIndexAutoscaleOnChange = (isGlobalSecondaryIndexAutoscaleValue: boolean): void => {
-    isGlobalSecondaryIndexAutoscale = isGlobalSecondaryIndexAutoscaleValue;
   };
 
   const isCostAknowledgedOnChange = (isCostAcknowledgedValue: boolean): void => {
@@ -178,9 +170,7 @@ export const AddGlobalSecondaryIndexPanel = (props: AddGlobalSecondaryIndexPanel
     }
 
     if (globalSecondaryIndexThroughput > CollectionCreation.DefaultCollectionRUs100K && !isCostAcknowledged) {
-      const errorMessage = isGlobalSecondaryIndexAutoscale
-        ? "Please acknowledge the estimated monthly spend."
-        : "Please acknowledge the estimated daily spend.";
+      const errorMessage: string = "Please acknowledge the estimated monthly spend.";
       setErrorMessage(errorMessage);
       return false;
     }
@@ -221,7 +211,6 @@ export const AddGlobalSecondaryIndexPanel = (props: AddGlobalSecondaryIndexPanel
 
     const partitionKeyTrimmed: string = partitionKey.trim();
 
-    const uniqueKeyPolicy: DataModels.UniqueKeyPolicy = parseUniqueKeys(uniqueKeys);
     const partitionKeyVersion = useHashV1 ? undefined : 2;
     const partitionKeyPaths: DataModels.PartitionKey = partitionKeyTrimmed
       ? {
@@ -256,9 +245,8 @@ export const AddGlobalSecondaryIndexPanel = (props: AddGlobalSecondaryIndexPanel
       collection: {
         id: globalSecondaryIdTrimmed,
         throughput: globalSecondaryIndexThroughput,
-        isAutoscale: isGlobalSecondaryIndexAutoscale,
+        isAutoscale: true,
         partitionKeyPaths,
-        uniqueKeyPolicy,
         collectionWithDedicatedThroughput: enableDedicatedThroughput,
       },
       subscriptionQuotaId: userContext.quotaId,
@@ -268,28 +256,17 @@ export const AddGlobalSecondaryIndexPanel = (props: AddGlobalSecondaryIndexPanel
     const startKey: number = TelemetryProcessor.traceStart(Action.CreateCollection, telemetryData);
     const databaseLevelThroughput: boolean = isSelectedSourceContainerSharedThroughput() && !enableDedicatedThroughput;
 
-    let offerThroughput: number;
-    let autoPilotMaxThroughput: number;
-
-    if (!databaseLevelThroughput) {
-      if (isGlobalSecondaryIndexAutoscale) {
-        autoPilotMaxThroughput = globalSecondaryIndexThroughput;
-      } else {
-        offerThroughput = globalSecondaryIndexThroughput;
-      }
-    }
-
     const createGlobalSecondaryIndexParams: DataModels.CreateMaterializedViewsParams = {
       materializedViewId: globalSecondaryIdTrimmed,
       materializedViewDefinition: globalSecondaryIndexDefinition,
       databaseId: selectedSourceContainer.databaseId,
       databaseLevelThroughput: databaseLevelThroughput,
-      offerThroughput: offerThroughput,
-      autoPilotMaxThroughput: autoPilotMaxThroughput,
+      ...(!databaseLevelThroughput && {
+        autoPilotMaxThroughput: globalSecondaryIndexThroughput,
+      }),
       analyticalStorageTtl: getAnalyticalStorageTtl(),
       indexingPolicy: indexingPolicy,
       partitionKey: partitionKeyPaths,
-      uniqueKeyPolicy: uniqueKeyPolicy,
       vectorEmbeddingPolicy: vectorEmbeddingPolicyFinal,
       fullTextPolicy: fullTextPolicy,
     };
@@ -395,12 +372,10 @@ export const AddGlobalSecondaryIndexPanel = (props: AddGlobalSecondaryIndexPanel
               isSelectedSourceContainerSharedThroughput,
               showCollectionThroughputInput,
               globalSecondaryIndexThroughputOnChange,
-              isGlobalSecondaryIndexAutoscaleOnChange,
               setIsThroughputCapExceeded,
               isCostAknowledgedOnChange,
             }}
           />
-          <UniqueKeysComponent {...{ uniqueKeys, setUniqueKeys }} />
           {shouldShowAnalyticalStoreOptions() && (
             <AnalyticalStoreComponent {...{ explorer, enableAnalyticalStore, setEnableAnalyticalStore }} />
           )}
