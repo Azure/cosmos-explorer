@@ -256,14 +256,11 @@ export const AddGlobalSecondaryIndexPanel = (props: AddGlobalSecondaryIndexPanel
     const startKey: number = TelemetryProcessor.traceStart(Action.CreateCollection, telemetryData);
     const databaseLevelThroughput: boolean = isSelectedSourceContainerSharedThroughput() && !enableDedicatedThroughput;
 
-    let offerThroughput: number;
-
     const createGlobalSecondaryIndexParams: DataModels.CreateMaterializedViewsParams = {
       materializedViewId: globalSecondaryIdTrimmed,
       materializedViewDefinition: globalSecondaryIndexDefinition,
       databaseId: selectedSourceContainer.databaseId,
       databaseLevelThroughput: databaseLevelThroughput,
-      offerThroughput: offerThroughput,
       ...(!databaseLevelThroughput && {
         autoPilotMaxThroughput: globalSecondaryIndexThroughput,
       }),
