@@ -1,0 +1,25 @@
+{
+    "$schema": "https://json.schemastore.org/component-detection-manifest.json",
+    "Registrations": [
+      {
+        "Component": {
+          "Type": "git",
+          "Git": {
+            "RepositoryUrl": "https://github.com/mongodb-js/mongosh",
+            "CommitHash": "6718ae4e76be007542087b8a674d7a77861c7d08"
+          }
+        },
+        "DevelopmentDependency": false
+      },
+      {
+        "Component": {
+          "Type": "git",
+          "Git": {
+            "RepositoryUrl": "https://github.com/jeffwidman/cqlsh",
+            "CommitHash": "dbefab4f3082bd3525e9e39d836734fd905fb8df"
+          }
+        },
+        "DevelopmentDependency": false
+      }
+    ]
+  }
