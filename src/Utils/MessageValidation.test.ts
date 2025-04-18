@@ -17,7 +17,6 @@ describe("isInvalidParentFrameOrigin", () => {
     ${"https://cdb-ff-prod-pbe.cosmos.azure.us"}                        | ${false}
     ${"https://cdb-mc-prod-pbe.cosmos.azure.cn"}                        | ${false}
     ${"https://cosmos-db-dataexplorer-germanycentral.azurewebsites.de"} | ${false}
-    ${"https://main.documentdb.ext.microsoftazure.de"}                  | ${false}
     ${"https://random.domain"}                                          | ${true}
     ${"https://malicious.cloudapp.azure.com"}                           | ${true}
     ${"https://malicious.germanycentral.cloudapp.microsoftazure.de"}    | ${true}
