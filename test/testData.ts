@@ -16,6 +16,23 @@ export interface TestItem {
   randomData: string;
 }
 
+export interface DocumentTestCase {
+  name: string;
+  databaseId: string;
+  containerId: string;
+  documents: TestDocument[];
+}
+
+export interface TestDocument {
+  documentId: string;
+  partitionKeys?: PartitionKey[];
+}
+
+export interface PartitionKey {
+  key: string;
+  value: string | null;
+}
+
 const partitionCount = 4;
 
 // If we increase this number, we need to split bulk creates into multiple batches.
@@ -92,4 +109,47 @@ export async function createTestSQLContainer(includeTestData?: boolean) {
     await database.delete();
     throw e;
   }
+}
+
+export const setPartitionKeys = (partitionKeys: PartitionKey[]) => {
+  const result = {};
+
+  partitionKeys.forEach((partitionKey) => {
+    const { key: keyPath, value: keyValue } = partitionKey;
+    const cleanPath = keyPath.startsWith("/") ? keyPath.slice(1) : keyPath;
+    const keys = cleanPath.split("/");
+    let current = result;
+
+    keys.forEach((key, index) => {
+      if (index === keys.length - 1) {
+        current[key] = keyValue;
+      } else {
+        current[key] = current[key] || {};
+        current = current[key];
+      }
+    });
+  });
+
+  return result;
+};
+
+export const serializeMongoToJson = (text: string) => {
+  const normalized = text.replace(/ObjectId\("([0-9a-fA-F]{24})"\)/g, '"$1"');
+  return JSON.parse(normalized);
+};
+
+export async function retry<T>(fn: () => Promise<T>, retries = 3, delayMs = 1000): Promise<T> {
+  let lastError: unknown;
+  for (let i = 0; i < retries; i++) {
+    try {
+      return await fn();
+    } catch (error) {
+      lastError = error;
+      console.warn(`Retry ${i + 1}/${retries} failed: ${(error as Error).message}`);
+      if (i < retries - 1) {
+        await new Promise((res) => setTimeout(res, delayMs));
+      }
+    }
+  }
+  throw lastError;
 }

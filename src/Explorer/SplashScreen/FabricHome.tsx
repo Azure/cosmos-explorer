@@ -3,6 +3,8 @@
  */
 import { Link, makeStyles, tokens } from "@fluentui/react-components";
 import { DocumentAddRegular, LinkMultipleRegular } from "@fluentui/react-icons";
+import { SampleDataImportDialog } from "Explorer/SplashScreen/SampleDataImportDialog";
+import { CosmosFluentProvider } from "Explorer/Theme/ThemeUtil";
 import { isFabricNative } from "Platform/Fabric/FabricUtil";
 import * as React from "react";
 import { userContext } from "UserContext";
@@ -108,12 +110,10 @@ const FabricHomeScreenButton: React.FC<FabricHomeScreenButtonProps & { className
   onClick,
 }) => {
   const styles = useStyles();
-
-  // TODO Make this a11y copmliant: aria-label for icon
   return (
     <div role="button" className={`${styles.buttonContainer} ${className}`} onClick={onClick}>
       <div className={styles.buttonUpperPart}>{icon}</div>
-      <div className={styles.buttonLowerPart}>
+      <div aria-label={title} className={styles.buttonLowerPart}>
         <div>{title}</div>
         <div>{description}</div>
       </div>
@@ -123,6 +123,8 @@ const FabricHomeScreenButton: React.FC<FabricHomeScreenButtonProps & { className
 
 export const FabricHomeScreen: React.FC<SplashScreenProps> = (props: SplashScreenProps) => {
   const styles = useStyles();
+  const [openSampleDataImportDialog, setOpenSampleDataImportDialog] = React.useState(false);
+
   const getSplashScreenButtons = (): JSX.Element => {
     const buttons: FabricHomeScreenButtonProps[] = [
       {
@@ -138,11 +140,13 @@ export const FabricHomeScreen: React.FC<SplashScreenProps> = (props: SplashScree
         title: "Sample data",
         description: "Automatically load sample data in your database",
         icon: <img src={CosmosDbBlackIcon} />,
+        onClick: () => setOpenSampleDataImportDialog(true),
       },
       {
         title: "App development",
         description: "Start here to use an SDK to build your apps",
         icon: <LinkMultipleRegular />,
+        onClick: () => window.open("https://aka.ms/cosmosdbfabricsdk", "_blank"),
       },
     ];
 
@@ -157,17 +161,25 @@ export const FabricHomeScreen: React.FC<SplashScreenProps> = (props: SplashScree
 
   const title = "Build your database";
   return (
-    <div className={styles.homeContainer}>
-      <div className={styles.title} role="heading" aria-label={title}>
-        {title}
-      </div>
-      {getSplashScreenButtons()}
-      <div className={styles.footer}>
-        Need help?{" "}
-        <Link href="https://cosmos.azure.com/docs" target="_blank">
-          Learn more <img src={LinkIcon} alt="Learn more" />
-        </Link>
-      </div>
-    </div>
+    <>
+      <CosmosFluentProvider className={styles.homeContainer}>
+        <SampleDataImportDialog
+          open={openSampleDataImportDialog}
+          setOpen={setOpenSampleDataImportDialog}
+          explorer={props.explorer}
+          databaseName={userContext.fabricContext?.databaseName}
+        />
+        <div className={styles.title} role="heading" aria-label={title}>
+          {title}
+        </div>
+        {getSplashScreenButtons()}
+        <div className={styles.footer}>
+          Need help?{" "}
+          <Link href="https://aka.ms/cosmosdbfabricdocs" target="_blank">
+            Learn more <img src={LinkIcon} alt="Learn more" />
+          </Link>
+        </div>
+      </CosmosFluentProvider>
+    </>
   );
 };

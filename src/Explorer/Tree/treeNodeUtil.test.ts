@@ -82,6 +82,7 @@ jest.mock("Explorer/Tree/Trigger", () => {
 jest.mock("Common/DatabaseAccountUtility", () => {
   return {
     isPublicInternetAccessAllowed: () => true,
+    isGlobalSecondaryIndexEnabled: () => false,
   };
 });
 
@@ -134,6 +135,15 @@ const baseCollection = {
     kind: "hash",
     version: 2,
   },
+  materializedViews: ko.observable<DataModels.MaterializedView[]>([
+    { id: "view1", _rid: "rid1" },
+    { id: "view2", _rid: "rid2" },
+  ]),
+  materializedViewDefinition: ko.observable<DataModels.MaterializedViewDefinition>({
+    definition: "SELECT * FROM c WHERE c.id = 1",
+    sourceCollectionId: "source1",
+    sourceCollectionRid: "rid123",
+  }),
   storedProcedures: ko.observableArray([]),
   userDefinedFunctions: ko.observableArray([]),
   triggers: ko.observableArray([]),
@@ -363,18 +373,28 @@ describe("createDatabaseTreeNodes", () => {
 
   it.each<[string, Platform, boolean, Partial<DataModels.DatabaseAccountExtendedProperties>, Partial<UserContext>]>([
     [
-      "the SQL API, on Fabric read-only",
+      "the SQL API, on Fabric read-only (mirrored)",
       Platform.Fabric,
       false,
       { capabilities: [], enableMultipleWriteLocations: true },
-      { fabricContext: { isReadOnly: true } as FabricContext<CosmosDbArtifactType> },
+      {
+        fabricContext: {
+          isReadOnly: true,
+          artifactType: CosmosDbArtifactType.MIRRORED_KEY,
+        } as FabricContext<CosmosDbArtifactType>,
+      },
     ],
     [
-      "the SQL API, on Fabric non read-only",
+      "the SQL API, on Fabric non read-only (native)",
       Platform.Fabric,
       false,
       { capabilities: [], enableMultipleWriteLocations: true },
-      { fabricContext: { isReadOnly: false } as FabricContext<CosmosDbArtifactType> },
+      {
+        fabricContext: {
+          isReadOnly: false,
+          artifactType: CosmosDbArtifactType.NATIVE,
+        } as FabricContext<CosmosDbArtifactType>,
+      },
     ],
     [
       "the SQL API, on Portal",

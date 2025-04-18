@@ -1,0 +1,190 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AddGlobalSecondaryIndexPanel render default panel 1`] = `
+<form
+  className="panelFormWrapper"
+  id="panelGlobalSecondaryIndex"
+  onSubmit={[Function]}
+>
+  <div
+    className="panelMainContent"
+  >
+    <Stack>
+      <Stack
+        horizontal={true}
+      >
+        <span
+          className="mandatoryStar"
+        >
+          * 
+        </span>
+        <Text
+          className="panelTextBold"
+          variant="small"
+        >
+          Source container id
+        </Text>
+      </Stack>
+      <Dropdown
+        onChange={[Function]}
+        placeholder="Choose source container"
+        style={
+          {
+            "fontSize": 12,
+            "width": 300,
+          }
+        }
+        styles={
+          {
+            "dropdownItem": {
+              "fontSize": 12,
+            },
+            "dropdownItemDisabled": {
+              "fontSize": 12,
+            },
+            "dropdownItemSelected": {
+              "fontSize": 12,
+            },
+            "title": {
+              "height": 27,
+              "lineHeight": 27,
+            },
+          }
+        }
+      />
+      <Separator
+        className="panelSeparator"
+      />
+      <Stack
+        horizontal={true}
+      >
+        <span
+          className="mandatoryStar"
+        >
+          * 
+        </span>
+        <Text
+          className="panelTextBold"
+          variant="small"
+        >
+          Global secondary index container id
+        </Text>
+      </Stack>
+      <input
+        aria-required={true}
+        autoComplete="off"
+        className="panelTextField"
+        id="globalSecondaryIndexId"
+        onChange={[Function]}
+        pattern="[^\\/?#\\\\]*[^\\/?# \\\\]"
+        placeholder="e.g., indexbyEmailId"
+        required={true}
+        size={40}
+        title="May not end with space nor contain characters '\\' '/' '#' '?'"
+        type="text"
+      />
+      <Stack
+        horizontal={true}
+      >
+        <span
+          className="mandatoryStar"
+        >
+          * 
+        </span>
+        <Text
+          className="panelTextBold"
+          variant="small"
+        >
+          Global secondary index definition
+        </Text>
+        <StyledTooltipHostBase
+          content={
+            <StyledLinkBase
+              href="https://learn.microsoft.com/en-us/azure/cosmos-db/nosql/materialized-views#defining-materialized-views"
+              target="blank"
+            >
+              Learn more about defining global secondary indexes.
+            </StyledLinkBase>
+          }
+          directionalHint={4}
+        >
+          <Icon
+            className="panelInfoIcon"
+            iconName="Info"
+            role="button"
+            tabIndex={0}
+          />
+        </StyledTooltipHostBase>
+      </Stack>
+      <input
+        aria-required={true}
+        autoComplete="off"
+        className="panelTextField"
+        id="globalSecondaryIndexDefinition"
+        onChange={[Function]}
+        placeholder="SELECT c.email, c.accountId FROM c"
+        required={true}
+        size={40}
+        type="text"
+        value=""
+      />
+      <PartitionKeyComponent
+        partitionKey=""
+        setPartitionKey={[Function]}
+        setSubPartitionKeys={[Function]}
+        subPartitionKeys={[]}
+      />
+      <ThroughputComponent
+        globalSecondaryIndexThroughputOnChange={[Function]}
+        isCostAknowledgedOnChange={[Function]}
+        isGlobalSecondaryIndexAutoscaleOnChange={[Function]}
+        isSelectedSourceContainerSharedThroughput={[Function]}
+        setEnabledDedicatedThroughput={[Function]}
+        setIsThroughputCapExceeded={[Function]}
+        showCollectionThroughputInput={[Function]}
+      />
+      <UniqueKeysComponent
+        setUniqueKeys={[Function]}
+        uniqueKeys={[]}
+      />
+      <AnalyticalStoreComponent
+        explorer={
+          Explorer {
+            "_isInitializingNotebooks": false,
+            "isFixedCollectionWithSharedThroughputSupported": [Function],
+            "isTabsContentExpanded": [Function],
+            "onRefreshDatabasesKeyPress": [Function],
+            "onRefreshResourcesClick": [Function],
+            "phoenixClient": PhoenixClient {
+              "armResourceId": undefined,
+              "retryOptions": {
+                "maxTimeout": 5000,
+                "minTimeout": 5000,
+                "retries": 3,
+              },
+            },
+            "provideFeedbackEmail": [Function],
+            "queriesClient": QueriesClient {
+              "container": [Circular],
+            },
+            "refreshNotebookList": [Function],
+            "resourceTree": ResourceTreeAdapter {
+              "container": [Circular],
+              "copyNotebook": [Function],
+              "parameters": [Function],
+            },
+          }
+        }
+        setEnableAnalyticalStore={[Function]}
+      />
+      <AdvancedComponent
+        setSubPartitionKeys={[Function]}
+        setUseHashV1={[Function]}
+      />
+    </Stack>
+  </div>
+  <PanelFooterComponent
+    buttonLabel="OK"
+  />
+</form>
+`;

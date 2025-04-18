@@ -13,9 +13,15 @@ import {
   SplitButton,
 } from "@fluentui/react-components";
 import { Add16Regular, ArrowSync12Regular, ChevronLeft12Regular, ChevronRight12Regular } from "@fluentui/react-icons";
+import { GlobalSecondaryIndexLabels } from "Common/Constants";
+import { isGlobalSecondaryIndexEnabled } from "Common/DatabaseAccountUtility";
 import { configContext, Platform } from "ConfigContext";
 import Explorer from "Explorer/Explorer";
 import { AddDatabasePanel } from "Explorer/Panes/AddDatabasePanel/AddDatabasePanel";
+import {
+  AddGlobalSecondaryIndexPanel,
+  AddGlobalSecondaryIndexPanelProps,
+} from "Explorer/Panes/AddGlobalSecondaryIndexPanel/AddGlobalSecondaryIndexPanel";
 import { Tabs } from "Explorer/Tabs/Tabs";
 import { CosmosFluentProvider, cosmosShorthands, tokens } from "Explorer/Theme/ThemeUtil";
 import { ResourceTree } from "Explorer/Tree/ResourceTree";
@@ -159,6 +165,25 @@ const GlobalCommands: React.FC<GlobalCommandsProps> = ({ explorer }) => {
           useSidePanel.getState().openSidePanel("New " + getDatabaseName(), <AddDatabasePanel explorer={explorer} />);
         },
         keyboardAction: KeyboardAction.NEW_DATABASE,
+      });
+    }
+
+    if (isGlobalSecondaryIndexEnabled()) {
+      const addMaterializedViewPanelProps: AddGlobalSecondaryIndexPanelProps = {
+        explorer,
+      };
+
+      actions.push({
+        id: "new_materialized_view",
+        label: GlobalSecondaryIndexLabels.NewGlobalSecondaryIndex,
+        icon: <Add16Regular />,
+        onClick: () =>
+          useSidePanel
+            .getState()
+            .openSidePanel(
+              GlobalSecondaryIndexLabels.NewGlobalSecondaryIndex,
+              <AddGlobalSecondaryIndexPanel {...addMaterializedViewPanelProps} />,
+            ),
       });
     }
 
@@ -315,16 +340,18 @@ export const SidebarContainer: React.FC<SidebarProps> = ({ explorer }) => {
                   <>
                     <div className={styles.floatingControlsContainer}>
                       <div className={styles.floatingControls}>
-                        <button
-                          type="button"
-                          data-test="Sidebar/RefreshButton"
-                          className={styles.floatingControlButton}
-                          disabled={loading}
-                          title="Refresh"
-                          onClick={onRefreshClick}
-                        >
-                          <ArrowSync12Regular />
-                        </button>
+                        {!isFabricNative() && (
+                          <button
+                            type="button"
+                            data-test="Sidebar/RefreshButton"
+                            className={styles.floatingControlButton}
+                            disabled={loading}
+                            title="Refresh"
+                            onClick={onRefreshClick}
+                          >
+                            <ArrowSync12Regular />
+                          </button>
+                        )}
                         <button
                           type="button"
                           className={styles.floatingControlButton}

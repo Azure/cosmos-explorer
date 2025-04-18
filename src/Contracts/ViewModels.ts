@@ -1,4 +1,5 @@
 import {
+  JSONObject,
   QueryMetrics,
   Resource,
   StoredProcedureDefinition,
@@ -143,6 +144,8 @@ export interface Collection extends CollectionBase {
   geospatialConfig: ko.Observable<DataModels.GeospatialConfig>;
   documentIds: ko.ObservableArray<DocumentId>;
   computedProperties: ko.Observable<DataModels.ComputedProperties>;
+  materializedViews: ko.Observable<DataModels.MaterializedView[]>;
+  materializedViewDefinition: ko.Observable<DataModels.MaterializedViewDefinition>;
 
   cassandraKeys: CassandraTableKeys;
   cassandraSchema: CassandraTableKey[];
@@ -204,6 +207,12 @@ export interface Collection extends CollectionBase {
   onDragOver(source: Collection, event: { originalEvent: DragEvent }): void;
   onDrop(source: Collection, event: { originalEvent: DragEvent }): void;
   uploadFiles(fileList: FileList): Promise<{ data: UploadDetailsRecord[] }>;
+  bulkInsertDocuments(documents: JSONObject[]): Promise<{
+    numSucceeded: number;
+    numFailed: number;
+    numThrottled: number;
+    errors: string[];
+  }>;
 }
 
 /**
