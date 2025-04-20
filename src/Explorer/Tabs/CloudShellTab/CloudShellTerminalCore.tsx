@@ -3,7 +3,7 @@
  * Core functionality for CloudShell terminal management
  */
 
-import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
+import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
 import { Terminal } from "xterm";
 import { Areas } from "../../../Common/Constants";
 import { TerminalKind } from "../../../Contracts/ViewModels";

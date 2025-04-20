@@ -133,7 +133,7 @@ describe("CassandraShellHandler", () => {
     test("should handle undefined database account", () => {
       mockState.databaseAccount = undefined;
 
-      expect(handler.getConnectionCommand()).toBe("echo 'Cassandra endpoint not found.'");
+      expect(handler.getConnectionCommand()).toBe("echo 'Database name not found.'");
     });
 
     test("should handle missing cassandra endpoint", () => {
