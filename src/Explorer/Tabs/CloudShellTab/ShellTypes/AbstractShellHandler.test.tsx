@@ -63,7 +63,7 @@ describe("AbstractShellHandler", () => {
         DISABLE_HISTORY,
         "setup-command-1",
         "setup-command-2",
-        "mock-connection-command" + EXIT_COMMAND,
+        `{ mock-connection-command; } || true;${EXIT_COMMAND}`,
       ]
         .join("\n")
         .concat("\n");
@@ -82,7 +82,7 @@ describe("AbstractShellHandler", () => {
     });
 
     it("should return the connection command", () => {
-      expect(shellHandler.getConnectionCommand()).toBe("mock-connection-command" + EXIT_COMMAND);
+      expect(shellHandler.getConnectionCommand()).toBe(`{ mock-connection-command; } || true;${EXIT_COMMAND}`);
     });
 
     it("should return the endpoint", () => {

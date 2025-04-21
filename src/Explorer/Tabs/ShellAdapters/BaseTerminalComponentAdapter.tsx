@@ -28,7 +28,7 @@ export abstract class BaseTerminalComponentAdapter implements ReactAdapter {
     if (!this.isAllPublicIPAddressesEnabled()) {
       return (
         <QuickstartFirewallNotification
-          messageType={MessageTypes.OpenPostgresNetworkingBlade}
+          messageType={this.getMessageType()}
           screenshot={
             this.kind === ViewModels.TerminalKind.Mongo || this.kind === ViewModels.TerminalKind.VCoreMongo
               ? VcoreFirewallRuleScreenshot
@@ -44,6 +44,18 @@ export abstract class BaseTerminalComponentAdapter implements ReactAdapter {
     ) : (
       <Spinner styles={{ root: { marginTop: 10 } }} size={SpinnerSize.large}></Spinner>
     );
+  }
+
+  private getMessageType(): MessageTypes {
+    switch (this.kind) {
+      case ViewModels.TerminalKind.Postgres:
+        return MessageTypes.OpenPostgresNetworkingBlade;
+      case ViewModels.TerminalKind.Mongo:
+      case ViewModels.TerminalKind.VCoreMongo:
+        return MessageTypes.OpenVCoreMongoNetworkingBlade;
+      default:
+        return MessageTypes.OpenPostgresNetworkingBlade;
+    }
   }
 
   protected abstract renderTerminalComponent(): JSX.Element;

@@ -8,6 +8,9 @@ jest.mock("../../../../UserContext", () => ({
         postgresqlEndpoint: "test-postgres.postgres.database.azure.com",
       },
     },
+    postgresConnectionStrParams: {
+      adminLogin: "test-admin",
+    },
   },
 }));
 

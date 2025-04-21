@@ -8,6 +8,9 @@ jest.mock("../../../../UserContext", () => ({
         vcoreMongoEndpoint: "test-vcore-mongo.mongo.cosmos.azure.com",
       },
     },
+    vcoreMongoConnectionParams: {
+      adminLogin: "username",
+    },
   },
 }));
 
