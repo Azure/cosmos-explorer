@@ -1,4 +1,3 @@
-import { EXIT_COMMAND } from "Explorer/Tabs/CloudShellTab/ShellTypes/AbstractShellHandler";
 import * as CommonUtils from "../Utils/CommonUtils";
 import { CassandraShellHandler } from "./CassandraShellHandler";
 
@@ -88,8 +87,7 @@ describe("CassandraShellHandler", () => {
     });
 
     test("should return correct connection command", () => {
-      const expectedCommand =
-        "cqlsh test-endpoint.cassandra.cosmos.azure.com 10350 -u test-account -p test-key --ssl" + EXIT_COMMAND;
+      const expectedCommand = "cqlsh test-endpoint.cassandra.cosmos.azure.com 10350 -u test-account -p test-key --ssl";
 
       expect(handler.getConnectionCommand()).toBe(expectedCommand);
       expect(CommonUtils.getHostFromUrl).toHaveBeenCalledWith("https://test-endpoint.cassandra.cosmos.azure.com:443/");

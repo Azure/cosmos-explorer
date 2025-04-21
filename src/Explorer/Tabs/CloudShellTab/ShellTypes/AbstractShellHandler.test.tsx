@@ -82,7 +82,7 @@ describe("AbstractShellHandler", () => {
     });
 
     it("should return the connection command", () => {
-      expect(shellHandler.getConnectionCommand()).toBe(`{ mock-connection-command; } || true;${EXIT_COMMAND}`);
+      expect(shellHandler.getConnectionCommand()).toBe("mock-connection-command");
     });
 
     it("should return the endpoint", () => {
