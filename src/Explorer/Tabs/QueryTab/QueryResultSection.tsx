@@ -29,7 +29,11 @@ const ExecuteQueryCallToAction: React.FC = () => {
     <div data-test="QueryTab/ResultsPane/ExecuteCTA" className={styles.executeCallToAction}>
       <div>
         <p>
-          <img className={`${styles.responsiveImg} ${isZoomed ? styles.zoomedImageSize : ''}`} src={RunQuery} aria-hidden="true" />
+          <img
+            className={`${styles.responsiveImg} ${isZoomed ? styles.zoomedImageSize : ""}`}
+            src={RunQuery}
+            aria-hidden="true"
+          />
         </p>
         <p>Execute a query to see the results</p>
       </div>

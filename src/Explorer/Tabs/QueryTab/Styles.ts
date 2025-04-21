@@ -99,7 +99,7 @@ export const useQueryTabStyles = makeStyles({
     display: "flex",
     flexDirection: "row",
   },
-  responsiveImg:{
+  responsiveImg: {
     "@media (max-width: 420px)": {
       width: "50px",
     },
@@ -107,5 +107,4 @@ export const useQueryTabStyles = makeStyles({
   zoomedImageSize: {
     width: "60px",
   },
-
 });
