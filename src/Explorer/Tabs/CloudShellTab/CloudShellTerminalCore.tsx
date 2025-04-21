@@ -45,7 +45,7 @@ export const startCloudShellTerminal = async (terminal: Terminal, shellType: Ter
     const consentGranted = await askConfirmation(
       terminal,
       formatWarningMessage(
-        "This shell might be in a different region than the database region. Do you want to proceed?",
+        "The shell environment may be operating in a region different from that of the database, which could impact performance or data compliance. Do you wish to proceed?",
       ),
     );
 
@@ -57,7 +57,9 @@ export const startCloudShellTerminal = async (terminal: Terminal, shellType: Ter
     );
 
     if (!consentGranted) {
-      terminal.writeln(formatWarningMessage("Failed to start CloudShell terminal. Please try again later."));
+      terminal.writeln(
+        formatErrorMessage("Session ended. Please close this tab and initiate a new shell session if needed."),
+      );
       return null; // Exit if user declined
     }
 

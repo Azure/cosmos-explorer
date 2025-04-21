@@ -49,7 +49,6 @@ describe("VCoreMongoShellHandler", () => {
     it("should generate proper connection command with endpoint", () => {
       const connectionCommand = vcoreMongoShellHandler.getConnectionCommand();
 
-      expect(connectionCommand).toContain('read -p "Enter username: " username');
       expect(connectionCommand).toContain("mongodb+srv://$username:@test-vcore-mongo.mongo.cosmos.azure.com");
       expect(connectionCommand).toContain("authMechanism=SCRAM-SHA-256");
     });

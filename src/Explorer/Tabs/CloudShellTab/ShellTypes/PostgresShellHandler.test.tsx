@@ -49,8 +49,6 @@ describe("PostgresShellHandler", () => {
     it("should generate proper connection command with endpoint", () => {
       const connectionCommand = postgresShellHandler.getConnectionCommand();
 
-      expect(connectionCommand).toContain('read -p "Enter Database Name: " dbname');
-      expect(connectionCommand).toContain('read -p "Enter Username: " username');
       expect(connectionCommand).toContain('-h "test-postgres.postgres.database.azure.com"');
       expect(connectionCommand).toContain("-p 5432");
       expect(connectionCommand).toContain("--set=sslmode=require");

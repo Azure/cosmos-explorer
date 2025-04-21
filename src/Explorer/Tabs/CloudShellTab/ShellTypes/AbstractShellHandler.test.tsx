@@ -1,4 +1,4 @@
-import { AbstractShellHandler, DISABLE_HISTORY, START_MARKER } from "./AbstractShellHandler";
+import { AbstractShellHandler, DISABLE_HISTORY, START_MARKER, EXIT_COMMAND } from "./AbstractShellHandler";
 
 // Mock implementation for testing
 class MockShellHandler extends AbstractShellHandler {
@@ -63,7 +63,7 @@ describe("AbstractShellHandler", () => {
         DISABLE_HISTORY,
         "setup-command-1",
         "setup-command-2",
-        "mock-connection-command",
+        "mock-connection-command" + EXIT_COMMAND,
       ]
         .join("\n")
         .concat("\n");
@@ -82,7 +82,7 @@ describe("AbstractShellHandler", () => {
     });
 
     it("should return the connection command", () => {
-      expect(shellHandler.getConnectionCommand()).toBe("mock-connection-command");
+      expect(shellHandler.getConnectionCommand()).toBe("mock-connection-command" + EXIT_COMMAND);
     });
 
     it("should return the endpoint", () => {
