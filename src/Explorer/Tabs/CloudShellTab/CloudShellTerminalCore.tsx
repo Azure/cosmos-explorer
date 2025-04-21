@@ -61,7 +61,7 @@ export const startCloudShellTerminal = async (terminal: Terminal, shellType: Ter
       return null; // Exit if user declined
     }
 
-    terminal.writeln(formatInfoMessage("Connecting to CloudShell.....(it might take a few minutes)"));
+    terminal.writeln(formatInfoMessage("Connecting to CloudShell. This may take a moment. Please wait..."));
 
     const sessionDetails: {
       socketUri?: string;
