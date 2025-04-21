@@ -27,7 +27,9 @@ export async function getHandler(shellType: TerminalKind): Promise<AbstractShell
 
 export async function getKey(): Promise<string> {
   const dbName = userContext.databaseAccount.name;
-  if (!dbName) return "";
+  if (!dbName) {
+    return "";
+  }
 
   const keys = await listKeys(userContext.subscriptionId, userContext.resourceGroup, dbName);
   return keys?.primaryMasterKey || "";

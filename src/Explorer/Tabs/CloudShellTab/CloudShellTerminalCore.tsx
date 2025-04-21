@@ -1,6 +1,6 @@
-import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
-import { Terminal } from "xterm";
+import { Terminal } from "@xterm/xterm";
 import { Areas } from "../../../Common/Constants";
+import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
 import { TerminalKind } from "../../../Contracts/ViewModels";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";

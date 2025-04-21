@@ -1,5 +1,5 @@
 import { AbstractShellHandler } from "Explorer/Tabs/CloudShellTab/ShellTypes/AbstractShellHandler";
-import { IDisposable, ITerminalAddon, Terminal } from "xterm";
+import { IDisposable, ITerminalAddon, Terminal } from "@xterm/xterm";
 
 interface IAttachOptions {
   bidirectional?: boolean;

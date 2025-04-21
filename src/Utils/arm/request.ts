@@ -72,7 +72,7 @@ export async function armRequestWithoutPolling<T>({
   }
 
   const headers: Record<string, string> = {
-    Authorization: userContext.authorizationToken || customHeaders?.["Authorization"],
+    Authorization: userContext.authorizationToken || customHeaders?.["Authorization"] || "",
     [HttpHeaders.contentType]: contentType || "application/json",
     ...(customHeaders || {}),
   };
