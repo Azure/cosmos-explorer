@@ -49,6 +49,7 @@ import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { userContext } from "UserContext";
 import { logConsoleError, logConsoleInfo } from "Utils/NotificationConsoleUtils";
 import { Allotment } from "allotment";
+import { useClientWriteEnabled } from "hooks/useClientWriteEnabled";
 import React, { KeyboardEventHandler, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { format } from "react-string-format";
 import DeleteDocumentIcon from "../../../../images/DeleteDocument.svg";
@@ -312,6 +313,7 @@ export type ButtonsDependencies = {
   selectedRows: Set<TableRowId>;
   editorState: ViewModels.DocumentExplorerState;
   isPreferredApiMongoDB: boolean;
+  clientWriteEnabled: boolean;
   onNewDocumentClick: UiKeyboardEvent;
   onSaveNewDocumentClick: UiKeyboardEvent;
   onRevertNewDocumentClick: UiKeyboardEvent;
@@ -335,6 +337,7 @@ const createUploadButton = (container: Explorer): CommandButtonComponentProps =>
     hasPopup: true,
     disabled:
       useSelectedNode.getState().isDatabaseNodeOrNoneSelected() ||
+      !useClientWriteEnabled.getState().clientWriteEnabled ||
       useSelectedNode.getState().isQueryCopilotCollectionSelected(),
   };
 };
@@ -353,6 +356,7 @@ export const getTabsButtons = ({
   selectedRows,
   editorState,
   isPreferredApiMongoDB,
+  clientWriteEnabled,
   onNewDocumentClick,
   onSaveNewDocumentClick,
   onRevertNewDocumentClick,
@@ -378,6 +382,7 @@ export const getTabsButtons = ({
       hasPopup: false,
       disabled:
         !getNewDocumentButtonState(editorState).enabled ||
+        !clientWriteEnabled ||
         useSelectedNode.getState().isQueryCopilotCollectionSelected(),
       id: NEW_DOCUMENT_BUTTON_ID,
     });
@@ -395,6 +400,7 @@ export const getTabsButtons = ({
       hasPopup: false,
       disabled:
         !getSaveNewDocumentButtonState(editorState).enabled ||
+        !clientWriteEnabled ||
         useSelectedNode.getState().isQueryCopilotCollectionSelected(),
       id: SAVE_BUTTON_ID,
     });
@@ -429,6 +435,7 @@ export const getTabsButtons = ({
       hasPopup: false,
       disabled:
         !getSaveExistingDocumentButtonState(editorState).enabled ||
+        !clientWriteEnabled ||
         useSelectedNode.getState().isQueryCopilotCollectionSelected(),
       id: UPDATE_BUTTON_ID,
     });
@@ -461,7 +468,7 @@ export const getTabsButtons = ({
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: false,
-      disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
+      disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected() || !clientWriteEnabled,
       id: DELETE_BUTTON_ID,
     });
   }
@@ -635,6 +642,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   );
 
   // State
+  const clientWriteEnabled = useClientWriteEnabled((state) => state.clientWriteEnabled);
   const [tabStateData, setTabStateData] = useState<TabDivider>(() =>
     readDocumentsTabSubComponentState<TabDivider>(SubComponentName.MainTabDivider, _collection, {
       leftPaneWidthPercent: 35,
@@ -772,16 +780,14 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     [_collection, _partitionKey],
   );
   const partitionKeyPropertyHeaders: string[] = useMemo(
-    () => _collection?.partitionKeyPropertyHeaders || partitionKey?.paths,
-    [_collection?.partitionKeyPropertyHeaders, partitionKey?.paths],
+    () => (partitionKey?.systemKey ? [] : _collection?.partitionKeyPropertyHeaders || partitionKey?.paths),
+    [_collection?.partitionKeyPropertyHeaders, partitionKey?.paths, partitionKey?.systemKey],
   );
-  let partitionKeyProperties = useMemo(
-    () =>
-      partitionKeyPropertyHeaders?.map((partitionKeyPropertyHeader) =>
-        partitionKeyPropertyHeader.replace(/[/]+/g, ".").substring(1).replace(/[']+/g, ""),
-      ),
-    [partitionKeyPropertyHeaders],
-  );
+  let partitionKeyProperties = useMemo(() => {
+    return partitionKeyPropertyHeaders?.map((partitionKeyPropertyHeader) =>
+      partitionKeyPropertyHeader.replace(/[/]+/g, ".").substring(1).replace(/[']+/g, ""),
+    );
+  }, [partitionKeyPropertyHeaders]);
 
   const getInitialColumnSelection = () => {
     const defaultColumnsIds = ["id"];
@@ -872,6 +878,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
       selectedRows,
       editorState,
       isPreferredApiMongoDB,
+      clientWriteEnabled,
       onNewDocumentClick,
       onSaveNewDocumentClick,
       onRevertNewDocumentClick,
@@ -1044,6 +1051,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     );
 
     const selectedDocumentId = documentIds[clickedRowIndex as number];
+    const originalPartitionKeyValue = selectedDocumentId.partitionKeyValue;
     selectedDocumentId.partitionKeyValue = partitionKeyValueArray;
 
     onExecutionErrorChange(false);
@@ -1079,6 +1087,10 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
           setColumnDefinitionsFromDocument(documentContent);
         },
         (error) => {
+          // in case of any kind of failures of accidently changing partition key, restore the original
+          // so that when user navigates away from current document and comes back,
+          // it doesnt fail to load due to using the invalid partition keys
+          selectedDocumentId.partitionKeyValue = originalPartitionKeyValue;
           onExecutionErrorChange(true);
           const errorMessage = getErrorMessage(error);
           useDialog.getState().showOkModalDialog("Update document failed", errorMessage);
@@ -1286,6 +1298,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
         selectedRows,
         editorState,
         isPreferredApiMongoDB,
+        clientWriteEnabled,
         onNewDocumentClick,
         onSaveNewDocumentClick,
         onRevertNewDocumentClick,
@@ -1298,6 +1311,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
       selectedRows,
       editorState,
       isPreferredApiMongoDB,
+      clientWriteEnabled,
       onNewDocumentClick,
       onSaveNewDocumentClick,
       onRevertNewDocumentClick,
@@ -1716,7 +1730,8 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     renderObjectForEditor = (value: unknown): string => MongoUtility.tojson(value, null, false);
 
     const _hasShardKeySpecified = (document: unknown): boolean => {
-      return Boolean(extractPartitionKeyValues(document, _getPartitionKeyDefinition() as PartitionKeyDefinition));
+      const partitionKeyDefinition: PartitionKeyDefinition = _getPartitionKeyDefinition() as PartitionKeyDefinition;
+      return partitionKeyDefinition.systemKey || Boolean(extractPartitionKeyValues(document, partitionKeyDefinition));
     };
 
     const _getPartitionKeyDefinition = (): DataModels.PartitionKey => {
@@ -1740,7 +1755,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
       return partitionKey;
     };
 
-    partitionKeyProperties = partitionKeyProperties?.map((partitionKeyProperty, i) => {
+    partitionKeyProperties = partitionKeyProperties.map((partitionKeyProperty, i) => {
       if (partitionKeyProperty && ~partitionKeyProperty.indexOf(`"`)) {
         partitionKeyProperty = partitionKeyProperty.replace(/["]+/g, "");
       }
@@ -2090,8 +2105,8 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
   return (
     <CosmosFluentProvider className={styles.container}>
-      <div className="tab-pane active" role="tabpanel" style={{ display: "flex" }}>
-        <div className={`${styles.filterRow} ${styles.smallScreenContent}`}>
+      <div data-test={"DocumentsTab"} className="tab-pane active" role="tabpanel" style={{ display: "flex" }}>
+        <div data-test={"DocumentsTab/Filter"} className={`${styles.filterRow} ${styles.smallScreenContent}`}>
           {!isPreferredApiMongoDB && <span> SELECT * FROM c </span>}
           <InputDataList
             dropdownOptions={getFilterChoices()}
@@ -2133,7 +2148,11 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
           }}
         >
           <Allotment.Pane preferredSize={`${tabStateData.leftPaneWidthPercent}%`} minSize={55}>
-            <div style={{ height: "100%", width: "100%", overflow: "hidden" }} ref={tableContainerRef}>
+            <div
+              data-test={"DocumentsTab/DocumentsPane"}
+              style={{ height: "100%", width: "100%", overflow: "hidden" }}
+              ref={tableContainerRef}
+            >
               <div className={styles.tableContainer}>
                 <div
                   style={
@@ -2187,7 +2206,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
             </div>
           </Allotment.Pane>
           <Allotment.Pane minSize={30}>
-            <div style={{ height: "100%", width: "100%" }}>
+            <div data-test={"DocumentsTab/ResultsPane"} style={{ height: "100%", width: "100%" }}>
               {isTabActive && selectedDocumentContent && selectedRows.size <= 1 && (
                 <EditorReact
                   language={"json"}

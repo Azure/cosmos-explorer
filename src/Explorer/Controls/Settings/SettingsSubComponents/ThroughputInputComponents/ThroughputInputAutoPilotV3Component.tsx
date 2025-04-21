@@ -80,6 +80,7 @@ export interface ThroughputInputAutoPilotV3Props {
   throughputError?: string;
   instantMaximumThroughput: number;
   softAllowedMaximumThroughput: number;
+  isGlobalSecondaryIndex: boolean;
 }
 
 interface ThroughputInputAutoPilotV3State {
@@ -375,22 +376,26 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
             toolTipElement={getToolTipContainer(this.props.infoBubbleText)}
           />
         </Label>
-        {this.overrideWithProvisionedThroughputSettings() && (
-          <MessageBar
-            messageBarIconProps={{ iconName: "InfoSolid", className: "messageBarInfoIcon" }}
-            styles={messageBarStyles}
-          >
-            {manualToAutoscaleDisclaimerElement}
-          </MessageBar>
+        {!this.props.isGlobalSecondaryIndex && (
+          <>
+            {this.overrideWithProvisionedThroughputSettings() && (
+              <MessageBar
+                messageBarIconProps={{ iconName: "InfoSolid", className: "messageBarInfoIcon" }}
+                styles={messageBarStyles}
+              >
+                {manualToAutoscaleDisclaimerElement}
+              </MessageBar>
+            )}
+            <ChoiceGroup
+              selectedKey={this.props.isAutoPilotSelected.toString()}
+              options={this.options}
+              onChange={this.onChoiceGroupChange}
+              required={this.props.showAsMandatory}
+              ariaLabelledBy={labelId}
+              styles={getChoiceGroupStyles(this.props.wasAutopilotOriginallySet, this.props.isAutoPilotSelected, true)}
+            />
+          </>
         )}
-        <ChoiceGroup
-          selectedKey={this.props.isAutoPilotSelected.toString()}
-          options={this.options}
-          onChange={this.onChoiceGroupChange}
-          required={this.props.showAsMandatory}
-          ariaLabelledBy={labelId}
-          styles={getChoiceGroupStyles(this.props.wasAutopilotOriginallySet, this.props.isAutoPilotSelected, true)}
-        />
       </Stack>
     );
   };

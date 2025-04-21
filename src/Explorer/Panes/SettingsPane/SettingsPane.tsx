@@ -6,7 +6,9 @@ import {
   Checkbox,
   ChoiceGroup,
   DefaultButton,
+  Dropdown,
   IChoiceGroupOption,
+  IDropdownOption,
   ISpinButtonStyles,
   IToggleStyles,
   Position,
@@ -21,7 +23,15 @@ import { InfoTooltip } from "Common/Tooltip/InfoTooltip";
 import { Platform, configContext } from "ConfigContext";
 import { useDialog } from "Explorer/Controls/Dialog";
 import { useDatabases } from "Explorer/useDatabases";
-import { deleteAllStates } from "Shared/AppStatePersistenceUtility";
+import { isFabric } from "Platform/Fabric/FabricUtil";
+import {
+  AppStateComponentNames,
+  deleteAllStates,
+  deleteState,
+  hasState,
+  loadState,
+  saveState,
+} from "Shared/AppStatePersistenceUtility";
 import {
   DefaultRUThreshold,
   LocalStorageUtility,
@@ -37,6 +47,7 @@ import { acquireMsalTokenForAccount } from "Utils/AuthorizationUtils";
 import { logConsoleError, logConsoleInfo } from "Utils/NotificationConsoleUtils";
 import * as PriorityBasedExecutionUtils from "Utils/PriorityBasedExecutionUtils";
 import { getReadOnlyKeys, listKeys } from "Utils/arm/generatedClients/cosmos/databaseAccounts";
+import { useClientWriteEnabled } from "hooks/useClientWriteEnabled";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { useSidePanel } from "hooks/useSidePanel";
 import React, { FunctionComponent, useState } from "react";
@@ -143,6 +154,17 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
       ? LocalStorageUtility.getEntryString(StorageKey.IsGraphAutoVizDisabled)
       : "false",
   );
+  const [selectedRegionalEndpoint, setSelectedRegionalEndpoint] = useState<string>(
+    hasState({
+      componentName: AppStateComponentNames.SelectedRegionalEndpoint,
+      globalAccountName: userContext.databaseAccount?.name,
+    })
+      ? (loadState({
+          componentName: AppStateComponentNames.SelectedRegionalEndpoint,
+          globalAccountName: userContext.databaseAccount?.name,
+        }) as string)
+      : undefined,
+  );
   const [retryAttempts, setRetryAttempts] = useState<number>(
     LocalStorageUtility.hasItem(StorageKey.RetryAttempts)
       ? LocalStorageUtility.getEntryNumber(StorageKey.RetryAttempts)
@@ -189,6 +211,44 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
     configContext.platform !== Platform.Fabric &&
     !isEmulator;
   const shouldShowPriorityLevelOption = PriorityBasedExecutionUtils.isFeatureEnabled() && !isEmulator;
+
+  const uniqueAccountRegions = new Set<string>();
+  const regionOptions: IDropdownOption[] = [];
+  regionOptions.push({
+    key: userContext?.databaseAccount?.properties?.documentEndpoint,
+    text: `Global (Default)`,
+    data: {
+      isGlobal: true,
+      writeEnabled: true,
+    },
+  });
+  userContext?.databaseAccount?.properties?.writeLocations?.forEach((loc) => {
+    if (!uniqueAccountRegions.has(loc.locationName)) {
+      uniqueAccountRegions.add(loc.locationName);
+      regionOptions.push({
+        key: loc.documentEndpoint,
+        text: `${loc.locationName} (Read/Write)`,
+        data: {
+          isGlobal: false,
+          writeEnabled: true,
+        },
+      });
+    }
+  });
+  userContext?.databaseAccount?.properties?.readLocations?.forEach((loc) => {
+    if (!uniqueAccountRegions.has(loc.locationName)) {
+      uniqueAccountRegions.add(loc.locationName);
+      regionOptions.push({
+        key: loc.documentEndpoint,
+        text: `${loc.locationName} (Read)`,
+        data: {
+          isGlobal: false,
+          writeEnabled: false,
+        },
+      });
+    }
+  });
+
   const shouldShowCopilotSampleDBOption =
     userContext.apiType === "SQL" &&
     useQueryCopilot.getState().copilotEnabled &&
@@ -272,6 +332,46 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
           useDataPlaneRbac.setState({ dataPlaneRbacEnabled: false });
         }
       }
+    }
+
+    const storedRegionalEndpoint = loadState({
+      componentName: AppStateComponentNames.SelectedRegionalEndpoint,
+      globalAccountName: userContext.databaseAccount?.name,
+    }) as string;
+    const selectedRegionIsGlobal =
+      selectedRegionalEndpoint === userContext?.databaseAccount?.properties?.documentEndpoint;
+    if (selectedRegionIsGlobal && storedRegionalEndpoint) {
+      deleteState({
+        componentName: AppStateComponentNames.SelectedRegionalEndpoint,
+        globalAccountName: userContext.databaseAccount?.name,
+      });
+      updateUserContext({
+        selectedRegionalEndpoint: undefined,
+        writeEnabledInSelectedRegion: true,
+        refreshCosmosClient: true,
+      });
+      useClientWriteEnabled.setState({ clientWriteEnabled: true });
+    } else if (
+      selectedRegionalEndpoint &&
+      !selectedRegionIsGlobal &&
+      selectedRegionalEndpoint !== storedRegionalEndpoint
+    ) {
+      saveState(
+        {
+          componentName: AppStateComponentNames.SelectedRegionalEndpoint,
+          globalAccountName: userContext.databaseAccount?.name,
+        },
+        selectedRegionalEndpoint,
+      );
+      const validWriteEndpoint = userContext.databaseAccount?.properties?.writeLocations?.find(
+        (loc) => loc.documentEndpoint === selectedRegionalEndpoint,
+      );
+      updateUserContext({
+        selectedRegionalEndpoint: selectedRegionalEndpoint,
+        writeEnabledInSelectedRegion: !!validWriteEndpoint,
+        refreshCosmosClient: true,
+      });
+      useClientWriteEnabled.setState({ clientWriteEnabled: !!validWriteEndpoint });
     }
 
     LocalStorageUtility.setEntryBoolean(StorageKey.RUThresholdEnabled, ruThresholdEnabled);
@@ -421,6 +521,10 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
     option: IChoiceGroupOption,
   ): void => {
     setDefaultQueryResultsView(option.key as SplitterDirection);
+  };
+
+  const handleOnSelectedRegionOptionChange = (ev: React.FormEvent<HTMLInputElement>, option: IDropdownOption): void => {
+    setSelectedRegionalEndpoint(option.key as string);
   };
 
   const handleOnQueryRetryAttemptsSpinButtonChange = (ev: React.MouseEvent<HTMLElement>, newValue?: string): void => {
@@ -583,9 +687,39 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
               </AccordionPanel>
             </AccordionItem>
           )}
+          {userContext.apiType === "SQL" && userContext.authType === AuthType.AAD && !isFabric() && (
+            <AccordionItem value="3">
+              <AccordionHeader>
+                <div className={styles.header}>Region Selection</div>
+              </AccordionHeader>
+              <AccordionPanel>
+                <div className={styles.settingsSectionContainer}>
+                  <div className={styles.settingsSectionDescription}>
+                    Changes region the Cosmos Client uses to access account.
+                  </div>
+                  <div>
+                    <span className={styles.subHeader}>Select Region</span>
+                    <InfoTooltip className={styles.headerIcon}>
+                      Changes the account endpoint used to perform client operations.
+                    </InfoTooltip>
+                  </div>
+                  <Dropdown
+                    placeholder={
+                      selectedRegionalEndpoint
+                        ? regionOptions.find((option) => option.key === selectedRegionalEndpoint)?.text
+                        : regionOptions[0]?.text
+                    }
+                    onChange={handleOnSelectedRegionOptionChange}
+                    options={regionOptions}
+                    styles={{ root: { marginBottom: "10px" } }}
+                  />
+                </div>
+              </AccordionPanel>
+            </AccordionItem>
+          )}
           {userContext.apiType === "SQL" && !isEmulator && (
             <>
-              <AccordionItem value="3">
+              <AccordionItem value="4">
                 <AccordionHeader>
                   <div className={styles.header}>Query Timeout</div>
                 </AccordionHeader>
@@ -626,7 +760,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                 </AccordionPanel>
               </AccordionItem>
 
-              <AccordionItem value="4">
+              <AccordionItem value="5">
                 <AccordionHeader>
                   <div className={styles.header}>RU Limit</div>
                 </AccordionHeader>
@@ -660,7 +794,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                 </AccordionPanel>
               </AccordionItem>
 
-              <AccordionItem value="5">
+              <AccordionItem value="6">
                 <AccordionHeader>
                   <div className={styles.header}>Default Query Results View</div>
                 </AccordionHeader>
@@ -681,8 +815,9 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
               </AccordionItem>
             </>
           )}
+
           {showRetrySettings && (
-            <AccordionItem value="6">
+            <AccordionItem value="7">
               <AccordionHeader>
                 <div className={styles.header}>Retry Settings</div>
               </AccordionHeader>
@@ -755,7 +890,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
             </AccordionItem>
           )}
           {!isEmulator && (
-            <AccordionItem value="7">
+            <AccordionItem value="8">
               <AccordionHeader>
                 <div className={styles.header}>Enable container pagination</div>
               </AccordionHeader>
@@ -779,7 +914,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
             </AccordionItem>
           )}
           {shouldShowCrossPartitionOption && (
-            <AccordionItem value="8">
+            <AccordionItem value="9">
               <AccordionHeader>
                 <div className={styles.header}>Enable cross-partition query</div>
               </AccordionHeader>
@@ -804,7 +939,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
             </AccordionItem>
           )}
           {shouldShowParallelismOption && (
-            <AccordionItem value="9">
+            <AccordionItem value="10">
               <AccordionHeader>
                 <div className={styles.header}>Max degree of parallelism</div>
               </AccordionHeader>
@@ -837,7 +972,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
             </AccordionItem>
           )}
           {shouldShowPriorityLevelOption && (
-            <AccordionItem value="10">
+            <AccordionItem value="11">
               <AccordionHeader>
                 <div className={styles.header}>Priority Level</div>
               </AccordionHeader>
@@ -860,7 +995,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
             </AccordionItem>
           )}
           {shouldShowGraphAutoVizOption && (
-            <AccordionItem value="11">
+            <AccordionItem value="12">
               <AccordionHeader>
                 <div className={styles.header}>Display Gremlin query results as:&nbsp;</div>
               </AccordionHeader>
@@ -881,7 +1016,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
             </AccordionItem>
           )}
           {shouldShowCopilotSampleDBOption && (
-            <AccordionItem value="12">
+            <AccordionItem value="13">
               <AccordionHeader>
                 <div className={styles.header}>Enable sample database</div>
               </AccordionHeader>
@@ -916,7 +1051,15 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                   "Clear History",
                   undefined,
                   "Are you sure you want to proceed?",
-                  () => deleteAllStates(),
+                  () => {
+                    deleteAllStates();
+                    updateUserContext({
+                      selectedRegionalEndpoint: undefined,
+                      writeEnabledInSelectedRegion: true,
+                      refreshCosmosClient: true,
+                    });
+                    useClientWriteEnabled.setState({ clientWriteEnabled: true });
+                  },
                   "Cancel",
                   undefined,
                   <>
@@ -927,6 +1070,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                       <li>Reset your customized tab layout, including the splitter positions</li>
                       <li>Erase your table column preferences, including any custom columns</li>
                       <li>Clear your filter history</li>
+                      <li>Reset region selection to global</li>
                     </ul>
                   </>,
                 );

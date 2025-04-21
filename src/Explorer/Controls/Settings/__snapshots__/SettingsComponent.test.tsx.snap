@@ -60,6 +60,8 @@ exports[`SettingsComponent renders 1`] = `
               "getDatabase": [Function],
               "id": [Function],
               "indexingPolicy": [Function],
+              "materializedViewDefinition": [Function],
+              "materializedViews": [Function],
               "offer": [Function],
               "partitionKey": {
                 "kind": "hash",
@@ -77,6 +79,7 @@ exports[`SettingsComponent renders 1`] = `
           }
           isAutoPilotSelected={false}
           isFixedContainer={false}
+          isGlobalSecondaryIndex={true}
           onAutoPilotSelected={[Function]}
           onMaxAutoPilotThroughputChange={[Function]}
           onScaleDiscardableChange={[Function]}
@@ -139,6 +142,8 @@ exports[`SettingsComponent renders 1`] = `
               "getDatabase": [Function],
               "id": [Function],
               "indexingPolicy": [Function],
+              "materializedViewDefinition": [Function],
+              "materializedViews": [Function],
               "offer": [Function],
               "partitionKey": {
                 "kind": "hash",
@@ -258,6 +263,8 @@ exports[`SettingsComponent renders 1`] = `
               "getDatabase": [Function],
               "id": [Function],
               "indexingPolicy": [Function],
+              "materializedViewDefinition": [Function],
+              "materializedViews": [Function],
               "offer": [Function],
               "partitionKey": {
                 "kind": "hash",
@@ -300,6 +307,7 @@ exports[`SettingsComponent renders 1`] = `
               },
             }
           }
+          isReadOnly={false}
         />
       </PivotItem>
       <PivotItem
@@ -334,6 +342,101 @@ exports[`SettingsComponent renders 1`] = `
           onComputedPropertiesDirtyChange={[Function]}
           resetShouldDiscardComputedProperties={[Function]}
           shouldDiscardComputedProperties={false}
+        />
+      </PivotItem>
+      <PivotItem
+        headerText="Global Secondary Index (Preview)"
+        itemKey="GlobalSecondaryIndexTab"
+        key="GlobalSecondaryIndexTab"
+        style={
+          {
+            "marginTop": 20,
+          }
+        }
+      >
+        <GlobalSecondaryIndexComponent
+          collection={
+            {
+              "analyticalStorageTtl": [Function],
+              "changeFeedPolicy": [Function],
+              "computedProperties": [Function],
+              "conflictResolutionPolicy": [Function],
+              "container": Explorer {
+                "_isInitializingNotebooks": false,
+                "isFixedCollectionWithSharedThroughputSupported": [Function],
+                "isTabsContentExpanded": [Function],
+                "onRefreshDatabasesKeyPress": [Function],
+                "onRefreshResourcesClick": [Function],
+                "phoenixClient": PhoenixClient {
+                  "armResourceId": undefined,
+                  "retryOptions": {
+                    "maxTimeout": 5000,
+                    "minTimeout": 5000,
+                    "retries": 3,
+                  },
+                },
+                "provideFeedbackEmail": [Function],
+                "queriesClient": QueriesClient {
+                  "container": [Circular],
+                },
+                "refreshNotebookList": [Function],
+                "resourceTree": ResourceTreeAdapter {
+                  "container": [Circular],
+                  "copyNotebook": [Function],
+                  "parameters": [Function],
+                },
+              },
+              "databaseId": "test",
+              "defaultTtl": [Function],
+              "fullTextPolicy": [Function],
+              "geospatialConfig": [Function],
+              "getDatabase": [Function],
+              "id": [Function],
+              "indexingPolicy": [Function],
+              "materializedViewDefinition": [Function],
+              "materializedViews": [Function],
+              "offer": [Function],
+              "partitionKey": {
+                "kind": "hash",
+                "paths": [],
+                "version": 2,
+              },
+              "partitionKeyProperties": [
+                "partitionKey",
+              ],
+              "readSettings": [Function],
+              "uniqueKeyPolicy": {},
+              "usageSizeInKB": [Function],
+              "vectorEmbeddingPolicy": [Function],
+            }
+          }
+          explorer={
+            Explorer {
+              "_isInitializingNotebooks": false,
+              "isFixedCollectionWithSharedThroughputSupported": [Function],
+              "isTabsContentExpanded": [Function],
+              "onRefreshDatabasesKeyPress": [Function],
+              "onRefreshResourcesClick": [Function],
+              "phoenixClient": PhoenixClient {
+                "armResourceId": undefined,
+                "retryOptions": {
+                  "maxTimeout": 5000,
+                  "minTimeout": 5000,
+                  "retries": 3,
+                },
+              },
+              "provideFeedbackEmail": [Function],
+              "queriesClient": QueriesClient {
+                "container": [Circular],
+              },
+              "refreshNotebookList": [Function],
+              "resourceTree": ResourceTreeAdapter {
+                "container": [Circular],
+                "copyNotebook": [Function],
+                "parameters": [Function],
+              },
+            }
+          }
         />
       </PivotItem>
     </StyledPivot>
