@@ -8,6 +8,7 @@ import RunQuery from "../../../../images/RunQuery.png";
 import { QueryResults } from "../../../Contracts/ViewModels";
 import { ErrorList } from "./ErrorList";
 import { ResultsView } from "./ResultsView";
+import useZoomLevel from "hooks/useZoomLevel";
 
 export interface ResultsViewProps {
   isMongoDB: boolean;
@@ -23,11 +24,12 @@ interface QueryResultProps extends ResultsViewProps {
 
 const ExecuteQueryCallToAction: React.FC = () => {
   const styles = useQueryTabStyles();
+  const isZoomed = useZoomLevel();
   return (
     <div data-test="QueryTab/ResultsPane/ExecuteCTA" className={styles.executeCallToAction}>
       <div>
         <p>
-          <img src={RunQuery} aria-hidden="true" />
+          <img className={`${styles.responsiveImg} ${isZoomed ? styles.zoomedImageSize : ''}`} src={RunQuery} aria-hidden="true" />
         </p>
         <p>Execute a query to see the results</p>
       </div>

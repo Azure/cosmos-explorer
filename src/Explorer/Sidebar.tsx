@@ -32,6 +32,7 @@ import { userContext } from "UserContext";
 import { getCollectionName, getDatabaseName } from "Utils/APITypeUtils";
 import { Allotment, AllotmentHandle } from "allotment";
 import { useSidePanel } from "hooks/useSidePanel";
+import useZoomLevel from "hooks/useZoomLevel";
 import { debounce } from "lodash";
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
@@ -109,11 +110,18 @@ const useSidebarStyles = makeStyles({
       overflow: "scroll",
     },
   },
-  minHeight: {
+  minHeightResponsive: {
     "@media (max-width: 420px)": {
-      minHeight: "300px",
+      minHeight: "400px",
     },
   },
+  accessibleContentZoom: {
+    overflow: "scroll",
+  },
+
+  minHeightZoom:{
+    minHeight: "400px",
+  }
 });
 
 interface GlobalCommandsProps {
@@ -285,6 +293,7 @@ export const SidebarContainer: React.FC<SidebarProps> = ({ explorer }) => {
   const [expandedSize, setExpandedSize] = React.useState(300);
   const hasSidebar = userContext.apiType !== "Postgres" && userContext.apiType !== "VCoreMongo";
   const allotment = useRef<AllotmentHandle>(null);
+  const isZoomed = useZoomLevel();
 
   const expand = useCallback(() => {
     if (!expanded) {
@@ -338,12 +347,12 @@ export const SidebarContainer: React.FC<SidebarProps> = ({ explorer }) => {
         ref={allotment}
         onChange={onChange}
         onDragEnd={onDragEnd}
-        className={`resourceTreeAndTabs ${styles.accessibleContent}`}
+        className={`resourceTreeAndTabs ${styles.accessibleContent} ${isZoomed ? styles.accessibleContentZoom : ''}`}
       >
         {/* Collections Tree - Start */}
         {hasSidebar && (
           // When collapsed, we force the pane to 24 pixels wide and make it non-resizable.
-          <Allotment.Pane className={styles.minHeight} minSize={24} preferredSize={250}>
+          <Allotment.Pane className={`${styles.minHeightResponsive} ${isZoomed ? styles.minHeightZoom : ''}`} minSize={24} preferredSize={250}>
             <CosmosFluentProvider className={mergeClasses(styles.sidebar)}>
               <div className={styles.sidebarContainer}>
                 {loading && (
@@ -399,7 +408,7 @@ export const SidebarContainer: React.FC<SidebarProps> = ({ explorer }) => {
             </CosmosFluentProvider>
           </Allotment.Pane>
         )}
-        <Allotment.Pane className={styles.minHeight} minSize={200}>
+        <Allotment.Pane className={`${styles.minHeightResponsive} ${isZoomed ? styles.minHeightZoom : ''}`} minSize={200}>
           <Tabs explorer={explorer} />
         </Allotment.Pane>
       </Allotment>

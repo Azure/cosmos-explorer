@@ -25,6 +25,9 @@ export const useQueryTabStyles = makeStyles({
     height: "100%",
     display: "flex",
     flexDirection: "column",
+    "@media (max-width: 420px)": {
+      overflow: "scroll",
+    },
   },
   queryResultsMessage: {
     ...shorthands.margin("5px"),
@@ -38,6 +41,9 @@ export const useQueryTabStyles = makeStyles({
     display: "flex",
     rowGap: "12px",
     flexDirection: "column",
+    "@media (max-width: 420px)": {
+      height: "auto",
+    },
   },
   queryResultsTabContentContainer: {
     display: "flex",
@@ -93,4 +99,13 @@ export const useQueryTabStyles = makeStyles({
     display: "flex",
     flexDirection: "row",
   },
+  responsiveImg:{
+    "@media (max-width: 420px)": {
+      width: "50px",
+    },
+  },
+  zoomedImageSize: {
+    width: "60px",
+  },
+
 });
