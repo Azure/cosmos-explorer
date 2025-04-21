@@ -1,8 +1,3 @@
-/**
- * Copyright (c) Microsoft Corporation.  All rights reserved.
- * Data models for CloudShell
- */
-
 export const enum OsType {
   Linux = "linux",
   Windows = "windows",

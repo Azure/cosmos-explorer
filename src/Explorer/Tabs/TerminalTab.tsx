@@ -29,40 +29,39 @@ export default class TerminalTab extends TabsBase {
     this.container = options.container;
     this.isAllPublicIPAddressesEnabled = ko.observable(true);
 
+    const commonArgs: [
+      () => DataModels.DatabaseAccount,
+      () => string,
+      () => string,
+      ko.Observable<boolean>,
+      ViewModels.TerminalKind,
+    ] = [
+      () => userContext?.databaseAccount,
+      () => this.tabId,
+      () => this.getUsername(),
+      this.isAllPublicIPAddressesEnabled,
+      options.kind,
+    ];
+
     if (userContext.features.enableCloudShell) {
-      this.notebookTerminalComponentAdapter = new CloudShellTerminalComponentAdapter(
-        () => userContext?.databaseAccount,
-        () => this.tabId,
-        () => this.getUsername(),
-        this.isAllPublicIPAddressesEnabled,
-        options.kind,
-      );
+      this.notebookTerminalComponentAdapter = new CloudShellTerminalComponentAdapter(...commonArgs);
 
       this.notebookTerminalComponentAdapter.parameters = ko.computed<boolean>(() => {
-        if (this.isTemplateReady() && this.isAllPublicIPAddressesEnabled()) {
-          return true;
-        }
-        return false;
+        return this.isTemplateReady() && this.isAllPublicIPAddressesEnabled();
       });
     } else {
       this.notebookTerminalComponentAdapter = new NotebookTerminalComponentAdapter(
         () => this.getNotebookServerInfo(options),
-        () => userContext?.databaseAccount,
-        () => this.tabId,
-        () => this.getUsername(),
-        this.isAllPublicIPAddressesEnabled,
-        options.kind,
+        ...commonArgs,
       );
+
       this.notebookTerminalComponentAdapter.parameters = ko.computed<boolean>(() => {
-        if (
+        return (
           this.isTemplateReady() &&
           useNotebook.getState().isNotebookEnabled &&
           useNotebook.getState().notebookServerInfo?.notebookServerEndpoint &&
           this.isAllPublicIPAddressesEnabled()
-        ) {
-          return true;
-        }
-        return false;
+        );
       });
     }
 

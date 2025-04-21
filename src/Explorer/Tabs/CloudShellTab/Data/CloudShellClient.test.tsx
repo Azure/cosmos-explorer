@@ -1,8 +1,3 @@
-/**
- * Copyright (c) Microsoft Corporation.  All rights reserved.
- * Tests for CloudShell API client
- */
-
 import { armRequest } from "../../../../Utils/arm/request";
 import { NetworkType, OsType, SessionType, ShellType } from "../Models/DataModels";
 import { getLocale } from "../Utils/CommonUtils";

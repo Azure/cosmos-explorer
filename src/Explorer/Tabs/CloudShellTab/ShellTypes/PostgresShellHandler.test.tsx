@@ -1,8 +1,3 @@
-/**
- * Copyright (c) Microsoft Corporation. All rights reserved.
- * Tests for PostgreSQL shell type handler
- */
-
 import { PostgresShellHandler } from "./PostgresShellHandler";
 
 // Mock dependencies

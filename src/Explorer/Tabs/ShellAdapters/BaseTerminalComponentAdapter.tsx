@@ -1,0 +1,50 @@
+import { Spinner, SpinnerSize } from "@fluentui/react";
+import { MessageTypes } from "Contracts/ExplorerContracts";
+import { QuickstartFirewallNotification } from "Explorer/Quickstart/QuickstartFirewallNotification";
+import { getShellNameForDisplay } from "Explorer/Tabs/CloudShellTab/Utils/CommonUtils";
+import * as React from "react";
+import FirewallRuleScreenshot from "../../../../images/firewallRule.png";
+import VcoreFirewallRuleScreenshot from "../../../../images/vcoreMongoFirewallRule.png";
+import { ReactAdapter } from "../../../Bindings/ReactBindingHandler";
+import * as DataModels from "../../../Contracts/DataModels";
+import * as ViewModels from "../../../Contracts/ViewModels";
+
+/**
+ * Base terminal component adapter
+ */
+export abstract class BaseTerminalComponentAdapter implements ReactAdapter {
+  // parameters: true: show, false: hide
+  public parameters: ko.Computed<boolean>;
+
+  constructor(
+    protected getDatabaseAccount: () => DataModels.DatabaseAccount,
+    protected getTabId: () => string,
+    protected getUsername: () => string,
+    protected isAllPublicIPAddressesEnabled: ko.Observable<boolean>,
+    protected kind: ViewModels.TerminalKind,
+  ) {}
+
+  public renderComponent(): JSX.Element {
+    if (!this.isAllPublicIPAddressesEnabled()) {
+      return (
+        <QuickstartFirewallNotification
+          messageType={MessageTypes.OpenPostgresNetworkingBlade}
+          screenshot={
+            this.kind === ViewModels.TerminalKind.Mongo || this.kind === ViewModels.TerminalKind.VCoreMongo
+              ? VcoreFirewallRuleScreenshot
+              : FirewallRuleScreenshot
+          }
+          shellName={getShellNameForDisplay(this.kind)}
+        />
+      );
+    }
+
+    return this.parameters() ? (
+      this.renderTerminalComponent()
+    ) : (
+      <Spinner styles={{ root: { marginTop: 10 } }} size={SpinnerSize.large}></Spinner>
+    );
+  }
+
+  protected abstract renderTerminalComponent(): JSX.Element;
+}

@@ -1,8 +1,3 @@
-/**
- * Copyright (c) Microsoft Corporation. All rights reserved.
- * Tests for VCore MongoDB shell type handler
- */
-
 import { VCoreMongoShellHandler } from "./VCoreMongoShellHandler";
 
 // Mock dependencies

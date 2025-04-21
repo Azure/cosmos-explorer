@@ -1,8 +1,3 @@
-/**
- * Copyright (c) Microsoft Corporation. All rights reserved.
- * Factory for creating shell type handlers
- */
-
 import { TerminalKind } from "../../../../Contracts/ViewModels";
 import { userContext } from "../../../../UserContext";
 import { listKeys } from "../../../../Utils/arm/generatedClients/cosmos/databaseAccounts";
@@ -32,11 +27,8 @@ export async function getHandler(shellType: TerminalKind): Promise<AbstractShell
 
 export async function getKey(): Promise<string> {
   const dbName = userContext.databaseAccount.name;
-  let key = "";
-  if (dbName) {
-    const keys = await listKeys(userContext.subscriptionId, userContext.resourceGroup, dbName);
-    key = keys?.primaryMasterKey || "";
-  }
+  if (!dbName) return "";
 
-  return key;
+  const keys = await listKeys(userContext.subscriptionId, userContext.resourceGroup, dbName);
+  return keys?.primaryMasterKey || "";
 }

@@ -1,8 +1,3 @@
-/**
- * Copyright (c) Microsoft Corporation.  All rights reserved.
- * CloudShell API client for various operations
- */
-
 import { v4 as uuidv4 } from "uuid";
 import { configContext } from "../../../../ConfigContext";
 import { userContext } from "../../../../UserContext";

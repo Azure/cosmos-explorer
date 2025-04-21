@@ -1,8 +1,3 @@
-/**
- * Copyright (c) Microsoft Corporation. All rights reserved.
- * Core functionality for CloudShell terminal management
- */
-
 import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
 import { Terminal } from "xterm";
 import { Areas } from "../../../Common/Constants";

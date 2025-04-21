@@ -1,8 +1,3 @@
-/**
- * Copyright (c) Microsoft Corporation. All rights reserved.
- * Tests for Mongo shell type handler
- */
-
 import { userContext } from "../../../../UserContext";
 import * as CommonUtils from "../Utils/CommonUtils";
 import { MongoShellHandler } from "./MongoShellHandler";

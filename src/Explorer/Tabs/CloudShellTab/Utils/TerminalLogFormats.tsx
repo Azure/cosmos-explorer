@@ -1,4 +1,5 @@
-// Terminal color codes
+// This file contains utility functions and constants for formatting terminal messages in a cloud shell environment.
+// It includes ANSI escape codes for colors and functions to format messages for different log levels (info, success, warning, error).
 export const TERMINAL_COLORS = {
   RESET: "\x1b[0m",
   BRIGHT: "\x1b[1m",

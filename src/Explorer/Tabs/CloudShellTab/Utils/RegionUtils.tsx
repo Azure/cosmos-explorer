@@ -1,8 +1,3 @@
-/**
- * Copyright (c) Microsoft Corporation.  All rights reserved.
- * Region utilities for CloudShell
- */
-
 const validCloudShellRegions = new Set([
   "westus",
   "southcentralus",

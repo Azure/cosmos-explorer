@@ -1,8 +1,3 @@
-/**
- * Copyright (c) Microsoft Corporation. All rights reserved.
- * Cassandra shell type handler
- */
-
 import { userContext } from "../../../../UserContext";
 import { getHostFromUrl } from "../Utils/CommonUtils";
 import { AbstractShellHandler } from "./AbstractShellHandler";

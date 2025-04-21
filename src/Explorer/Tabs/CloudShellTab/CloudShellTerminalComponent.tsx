@@ -41,7 +41,7 @@ export const CloudShellTerminalComponent: React.FC<CloudShellTerminalComponentPr
       xtermRef.current = terminal;
     }
 
-     // Defer terminal sizing until after DOM rendering is complete
+    // Defer terminal sizing until after DOM rendering is complete
     setTimeout(() => {
       fitAddon.fit();
     }, 0);

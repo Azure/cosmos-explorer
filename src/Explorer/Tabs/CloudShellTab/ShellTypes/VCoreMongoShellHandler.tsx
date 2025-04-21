@@ -1,8 +1,3 @@
-/**
- * Copyright (c) Microsoft Corporation. All rights reserved.
- * VCore MongoDB shell type handler
- */
-
 import { userContext } from "../../../../UserContext";
 import { AbstractShellHandler } from "./AbstractShellHandler";
 
