@@ -33,7 +33,9 @@ export class PostgresShellHandler extends AbstractShellHandler {
     if (!this._endpoint) {
       return `echo '${this.getShellName()} endpoint not found.'`;
     }
-    return `read -p "Enter Database Name: " dbname && read -p "Enter Username: " username && psql -h "${this._endpoint}" -p 5432 -d "$dbname" -U "$username" --set=sslmode=require`;
+
+    const loginName = userContext.postgresConnectionStrParams.adminLogin;
+    return `psql -h "${this._endpoint}" -p 5432 -d "${loginName}" -U "${loginName}" --set=sslmode=require`;
   }
 
   public getTerminalSuppressedData(): string {

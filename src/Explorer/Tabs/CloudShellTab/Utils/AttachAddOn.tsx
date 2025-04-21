@@ -78,7 +78,7 @@ export class AttachAddon implements ITerminalAddon {
           data = "";
         }
 
-        if (data.includes(this._startMarker)) {
+        if (this._allowTerminalWrite && data.includes(this._startMarker)) {
           this._allowTerminalWrite = false;
           terminal.write(`Preparing ${this._shellHandler.getShellName()} environment...\r\n`);
         }

@@ -24,7 +24,7 @@ export const CloudShellTerminalComponent: React.FC<CloudShellTerminalComponentPr
       cursorBlink: true,
       cursorStyle: "bar",
       fontFamily: "monospace",
-      fontSize: 14,
+      fontSize: 11,
       theme: {
         background: "#1e1e1e",
         foreground: "#d4d4d4",
