@@ -14,6 +14,7 @@ import OpenQueryFromDiskIcon from "../../../../images/OpenQueryFromDisk.svg";
 import OpenInTabIcon from "../../../../images/open-in-tab.svg";
 import SettingsIcon from "../../../../images/settings_15x15.svg";
 import SynapseIcon from "../../../../images/synapse-link.svg";
+import VSCodeIcon from "../../../../images/vscode.svg";
 import { AuthType } from "../../../AuthType";
 import * as Constants from "../../../Common/Constants";
 import { Platform, configContext } from "../../../ConfigContext";
@@ -60,6 +61,8 @@ export function createStaticCommandBarButtons(
       addDivider();
       buttons.push(addSynapseLink);
     }
+    const addVsCode = createOpenVsCodeDialogButton(container);
+    buttons.push(addVsCode);
   }
 
   if (isDataplaneRbacSupported(userContext.apiType)) {
@@ -263,6 +266,18 @@ function createOpenSynapseLinkDialogButton(container: Explorer): CommandButtonCo
     hasPopup: false,
     disabled:
       useSelectedNode.getState().isQueryCopilotCollectionSelected() || useNotebook.getState().isSynapseLinkUpdating,
+    ariaLabel: label,
+  };
+}
+
+function createOpenVsCodeDialogButton(container: Explorer): CommandButtonComponentProps {
+  const label = "Open in VS Code";
+  return {
+    iconSrc: VSCodeIcon,
+    iconAlt: label,
+    onCommandClick: () => container.openInVsCode(),
+    commandButtonLabel: label,
+    hasPopup: false,
     ariaLabel: label,
   };
 }

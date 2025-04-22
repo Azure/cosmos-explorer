@@ -146,6 +146,7 @@ export enum Action {
   SavePersistedTabState,
   DeletePersistedTabState,
   UploadDocuments, // Used in Fabric. Please do not rename.
+  OpenVSCode,
 }
 
 export const ActionModifiers = {
