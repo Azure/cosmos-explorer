@@ -284,22 +284,38 @@ export default class Explorer {
 
   public openInVsCode(): void {
     const startTime = TelemetryProcessor.traceStart(Action.OpenVSCode);
-    const clearInProgressMessage = logConsoleProgress(
-      "Opening VS Code for this account.",
-    );
-    useDialog.getState().closeDialog();
-    try {
-      `vscode://ms-azuretools.vscode-cosmosdb?resourceId=/subscriptions/${userContext.subscriptionId}/resourceGroups/${userContext.resourceGroup}/providers/Microsoft.DocumentDB/databaseAccounts/${userContext?.databaseAccount}&database=${userContext.parsedResourceToken?.databaseId}&container=${userContext.parsedResourceToken?.collectionId}`
-      // preview version of vscode
-      // `vscode-insiders://ms-azuretools.vscode-cosmosdb?resourceId=/subscriptions/${userContext.subscriptionId}/resourceGroups/${userContext.resourceGroup}/providers/Microsoft.DocumentDB/databaseAccounts/${userContext?.databaseAccount}&database=${userContext.parsedResourceToken?.databaseId}&container=${userContext.parsedResourceToken?.databaseId}`
+    const clearInProgressMessage = logConsoleProgress("Opening Visual Studio Code");
+
+    const { subscriptionId, resourceGroup, databaseAccount } = userContext;
+    const activeTab = useTabs.getState().activeTab;
+    const database = activeTab.collection?.databaseId;
+    const container = activeTab.collection?.id();
+
+    if (!database || !container) {
+      logConsoleError("Failed to open Visual Studio Code, a database account and container is required to open in VS Code.");
       clearInProgressMessage();
-      logConsoleInfo("Opening Visual Studio Code for this account");
+      return;
+    }
+
+    const vscodeUrl = `vscode://ms-azuretools.vscode-cosmosdb?resourceId=/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.DocumentDB/databaseAccounts/${databaseAccount.id}&database=${database}&container=${container}`;
+    const vscodeInsidersUrl = `vscode-insiders://ms-azuretools.vscode-cosmosdb?resourceId=/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.DocumentDB/databaseAccounts/${databaseAccount.id}&database=${database}&container=${container}`;
+
+    console.log(userContext);
+    try {
+      logConsoleInfo("Opening Visual Studio Code");
+      const linkOpened = (navigator.userAgent.includes("Insiders") && window.open(vscodeInsidersUrl)) || window.open(vscodeUrl);
+
+      if (!linkOpened) {
+        logConsoleError("Visual Studio Code is not installed on this device");
+        window.open("https://code.visualstudio.com/download", "_blank");
+      }
+
       TelemetryProcessor.traceSuccess(Action.OpenVSCode, {}, startTime);
     } catch (error) {
-      // If the browser can't handle a `vscode://` or `vscode-insiders://` url route them to the VS Code download page
-      clearInProgressMessage();
-      logConsoleError(`**Visual Studio Code** isn't installed on this device. Please install it here: **https://code.visualstudio.com/download**${getErrorMessage(error)}`);
+      logConsoleError(`Failed to open Visual Studio Code. ${getErrorMessage(error)}`);
       TelemetryProcessor.traceFailure(Action.OpenVSCode, {}, startTime);
+    } finally {
+      clearInProgressMessage();
     }
   }
 
