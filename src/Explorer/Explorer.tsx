@@ -292,7 +292,9 @@ export default class Explorer {
     const container = activeTab.collection?.id();
 
     if (!database || !container) {
-      logConsoleError("Failed to open Visual Studio Code, a database account and container is required to open in VS Code.");
+      logConsoleError(
+        "Failed to open Visual Studio Code, a database account and container is required to open in VS Code.",
+      );
       clearInProgressMessage();
       return;
     }
@@ -302,7 +304,8 @@ export default class Explorer {
 
     try {
       logConsoleInfo("Opening Visual Studio Code");
-      const linkOpened = (navigator.userAgent.includes("Insiders") && window.open(vscodeInsidersUrl)) || window.open(vscodeUrl);
+      const linkOpened =
+        (navigator.userAgent.includes("Insiders") && window.open(vscodeInsidersUrl)) || window.open(vscodeUrl);
 
       if (!linkOpened) {
         logConsoleError("Visual Studio Code is not installed on this device");
