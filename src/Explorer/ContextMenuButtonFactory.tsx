@@ -103,9 +103,7 @@ export const createCollectionContextMenuButton = (
       iconSrc: HostedTerminalIcon,
       onClick: () => {
         const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
-        if (userContext.features.enableCloudShell) {
-          container.openCloudShellTerminal(ViewModels.TerminalKind.Mongo);
-        } else if (useNotebook.getState().isShellEnabled) {
+        if (useNotebook.getState().isShellEnabled || userContext.features.enableCloudShell) {
           container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
         } else {
           selectedCollection && selectedCollection.onNewMongoShellClick();
@@ -125,11 +123,7 @@ export const createCollectionContextMenuButton = (
     items.push({
       iconSrc: HostedTerminalIcon,
       onClick: () => {
-        if (userContext.features.enableCloudShell) {
-          container.openCloudShellTerminal(ViewModels.TerminalKind.Cassandra);
-        } else {
-          container.openNotebookTerminal(ViewModels.TerminalKind.Cassandra);
-        }
+        container.openNotebookTerminal(ViewModels.TerminalKind.Cassandra);
       },
       label: "Open Cassandra Shell",
     });

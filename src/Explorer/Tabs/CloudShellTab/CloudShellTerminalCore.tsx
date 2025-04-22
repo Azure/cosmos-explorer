@@ -153,6 +153,10 @@ export const provisionCloudShellSession = async (
     provisionConsoleResponse = await provisionConsole(resolvedRegion);
     attemptCounter++;
 
+    if (provisionConsoleResponse.properties.provisioningState === "Failed") {
+      break;
+    }
+
     if (provisionConsoleResponse.properties.provisioningState !== "Succeeded") {
       await wait(POLLING_INTERVAL_MS);
     }

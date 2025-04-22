@@ -909,12 +909,10 @@ export default class Explorer {
     await this.notebookManager?.notebookContentClient.updateItemChildrenInPlace(item);
   }
 
-  public openCloudShellTerminal(kind: ViewModels.TerminalKind): void {
-    this.connectToNotebookTerminal(kind);
-  }
-
   public async openNotebookTerminal(kind: ViewModels.TerminalKind): Promise<void> {
-    if (useNotebook.getState().isPhoenixFeatures) {
+    if (userContext.features.enableCloudShell) {
+      this.connectToNotebookTerminal(kind);
+    } else if (useNotebook.getState().isPhoenixFeatures) {
       await this.allocateContainer(PoolIdType.DefaultPoolId);
       const notebookServerInfo = useNotebook.getState().notebookServerInfo;
       if (notebookServerInfo && notebookServerInfo.notebookServerEndpoint !== undefined) {

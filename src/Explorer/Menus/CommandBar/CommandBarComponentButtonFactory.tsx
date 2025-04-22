@@ -133,9 +133,7 @@ export function createContextCommandBarButtons(
       iconAlt: label,
       onCommandClick: () => {
         const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
-        if (userContext.features.enableCloudShell) {
-          container.openCloudShellTerminal(ViewModels.TerminalKind.Mongo);
-        } else if (useNotebook.getState().isShellEnabled) {
+        if (useNotebook.getState().isShellEnabled || userContext.features.enableCloudShell) {
           container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
         } else {
           selectedCollection && selectedCollection.onNewMongoShellClick();
@@ -158,11 +156,7 @@ export function createContextCommandBarButtons(
       iconSrc: HostedTerminalIcon,
       iconAlt: label,
       onCommandClick: () => {
-        if (userContext.features.enableCloudShell) {
-          container.openCloudShellTerminal(ViewModels.TerminalKind.Cassandra);
-        } else {
-          container.openNotebookTerminal(ViewModels.TerminalKind.Cassandra);
-        }
+        container.openNotebookTerminal(ViewModels.TerminalKind.Cassandra);
       },
       commandButtonLabel: label,
       ariaLabel: label,
@@ -462,9 +456,7 @@ function createOpenTerminalButtonByKind(
     iconSrc: HostedTerminalIcon,
     iconAlt: label,
     onCommandClick: () => {
-      if (userContext.features.enableCloudShell) {
-        container.openCloudShellTerminal(terminalKind);
-      } else if (useNotebook.getState().isNotebookEnabled) {
+      if (useNotebook.getState().isNotebookEnabled || userContext.features.enableCloudShell) {
         container.openNotebookTerminal(terminalKind);
       }
     },
