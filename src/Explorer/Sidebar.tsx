@@ -30,6 +30,7 @@ import { KeyboardAction, KeyboardActionGroup, KeyboardActionHandler, useKeyboard
 import { isFabric, isFabricMirrored, isFabricNative } from "Platform/Fabric/FabricUtil";
 import { userContext } from "UserContext";
 import { getCollectionName, getDatabaseName } from "Utils/APITypeUtils";
+import { conditionalClass } from "Utils/StyleUtils";
 import { Allotment, AllotmentHandle } from "allotment";
 import { useSidePanel } from "hooks/useSidePanel";
 import useZoomLevel from "hooks/useZoomLevel";
@@ -347,13 +348,16 @@ export const SidebarContainer: React.FC<SidebarProps> = ({ explorer }) => {
         ref={allotment}
         onChange={onChange}
         onDragEnd={onDragEnd}
-        className={`resourceTreeAndTabs ${styles.accessibleContent} ${isZoomed ? styles.accessibleContentZoom : ""}`}
+        className={`resourceTreeAndTabs ${styles.accessibleContent} ${conditionalClass(
+          isZoomed,
+          styles.accessibleContentZoom,
+        )}`}
       >
         {/* Collections Tree - Start */}
         {hasSidebar && (
           // When collapsed, we force the pane to 24 pixels wide and make it non-resizable.
           <Allotment.Pane
-            className={`${styles.minHeightResponsive} ${isZoomed ? styles.minHeightZoom : ""}`}
+            className={`${styles.minHeightResponsive} ${conditionalClass(isZoomed, styles.minHeightZoom)}`}
             minSize={24}
             preferredSize={250}
           >
@@ -413,7 +417,7 @@ export const SidebarContainer: React.FC<SidebarProps> = ({ explorer }) => {
           </Allotment.Pane>
         )}
         <Allotment.Pane
-          className={`${styles.minHeightResponsive} ${isZoomed ? styles.minHeightZoom : ""}`}
+          className={`${styles.minHeightResponsive} ${conditionalClass(isZoomed, styles.minHeightZoom)}`}
           minSize={200}
         >
           <Tabs explorer={explorer} />

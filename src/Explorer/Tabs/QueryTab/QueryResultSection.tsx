@@ -9,6 +9,7 @@ import { QueryResults } from "../../../Contracts/ViewModels";
 import { ErrorList } from "./ErrorList";
 import { ResultsView } from "./ResultsView";
 import useZoomLevel from "hooks/useZoomLevel";
+import { conditionalClass } from "Utils/StyleUtils";
 
 export interface ResultsViewProps {
   isMongoDB: boolean;
@@ -30,7 +31,7 @@ const ExecuteQueryCallToAction: React.FC = () => {
       <div>
         <p>
           <img
-            className={`${styles.responsiveImg} ${isZoomed ? styles.zoomedImageSize : ""}`}
+            className={`${styles.responsiveImg} ${conditionalClass(isZoomed, styles.zoomedImageSize)}`}
             src={RunQuery}
             aria-hidden="true"
           />
