@@ -300,7 +300,6 @@ export default class Explorer {
     const vscodeUrl = `vscode://ms-azuretools.vscode-cosmosdb?resourceId=/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.DocumentDB/databaseAccounts/${databaseAccount.id}&database=${database}&container=${container}`;
     const vscodeInsidersUrl = `vscode-insiders://ms-azuretools.vscode-cosmosdb?resourceId=/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.DocumentDB/databaseAccounts/${databaseAccount.id}&database=${database}&container=${container}`;
 
-    console.log(userContext);
     try {
       logConsoleInfo("Opening Visual Studio Code");
       const linkOpened = (navigator.userAgent.includes("Insiders") && window.open(vscodeInsidersUrl)) || window.open(vscodeUrl);
