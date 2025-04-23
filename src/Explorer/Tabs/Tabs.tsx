@@ -1,3 +1,4 @@
+import { Spinner, SpinnerSize } from "@fluentui/react";
 import { CollectionTabKind } from "Contracts/ViewModels";
 import Explorer from "Explorer/Explorer";
 import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
@@ -15,8 +16,6 @@ import { userContext } from "UserContext";
 import { useTeachingBubble } from "hooks/useTeachingBubble";
 import ko from "knockout";
 import React, { MutableRefObject, useEffect, useRef, useState } from "react";
-import loadingIcon from "../../../images/circular_loader_black_16x16.gif";
-import errorIcon from "../../../images/close-black.svg";
 import errorQuery from "../../../images/error_no_outline.svg";
 import { useObservable } from "../../hooks/useObservable";
 import { ReactTabKind, useTabs } from "../../hooks/useTabs";
@@ -126,7 +125,17 @@ function TabNav({ tab, active, tabKind }: { tab?: Tab; active: boolean; tabKind?
             <span className="statusIconContainer" style={{ width: tabKind === ReactTabKind.Home ? 0 : 18 }}>
               {useObservable(tab?.isExecutionError || ko.observable(false)) && <ErrorIcon tab={tab} active={active} />}
               {isTabExecuting(tab, tabKind) && (
-                <img className="loadingIcon" title="Loading" src={loadingIcon} alt="Loading" />
+                <Spinner 
+                  size={SpinnerSize.small} 
+                  styles={{
+                    circle: {
+                      borderTopColor: "var(--colorNeutralForeground1)",
+                      borderLeftColor: "var(--colorNeutralForeground1)",
+                      borderBottomColor: "var(--colorNeutralForeground1)",
+                      borderRightColor: "var(--colorNeutralBackground1)"
+                    }
+                  }}
+                />
               )}
               {isQueryErrorThrown(tab, tabKind) && (
                 <img
@@ -177,14 +186,11 @@ const CloseButton = ({
     onClick={(event: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
       event.stopPropagation();
       tab ? tab.onCloseTabButtonClick() : useTabs.getState().closeReactTab(tabKind);
-      // tabKind === ReactTabKind.QueryCopilot && useQueryCopilot.getState().resetQueryCopilotStates();
     }}
     tabIndex={active ? 0 : undefined}
     onKeyPress={({ nativeEvent: e }) => (tab ? tab.onKeyPressClose(undefined, e) : onKeyPressReactTabClose(e, tabKind))}
   >
-    <span className="tabIcon close-Icon">
-      <img src={errorIcon} title="Close" alt="Close" aria-label="hidden" />
-    </span>
+    <span className="tabIcon close-Icon" />
   </span>
 );
 
@@ -267,7 +273,6 @@ const isQueryErrorThrown = (tab?: Tab, tabKind?: ReactTabKind): boolean => {
 };
 
 const getReactTabContent = (activeReactTab: ReactTabKind, explorer: Explorer): JSX.Element => {
-  // eslint-disable-next-line no-console
   switch (activeReactTab) {
     case ReactTabKind.Connect:
       return userContext.apiType === "VCoreMongo" ? (
@@ -292,6 +297,6 @@ const getReactTabContent = (activeReactTab: ReactTabKind, explorer: Explorer): J
     case ReactTabKind.QueryCopilot:
       return <QueryCopilotTab explorer={explorer} />;
     default:
-      throw Error(`Unsupported tab kind ${ReactTabKind[activeReactTab]}`);
+      throw new Error(`Unsupported tab kind ${ReactTabKind[activeReactTab]}`);
   }
 };

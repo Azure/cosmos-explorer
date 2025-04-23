@@ -130,7 +130,6 @@ const useSidebarStyles = makeStyles({
   treeContainer: {
     flex: 1,
     overflow: "auto",
-    paddingLeft: tokens.spacingHorizontalM,
     backgroundColor: tokens.colorNeutralBackground1,
     color: tokens.colorNeutralForeground1,
   },

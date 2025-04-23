@@ -99,14 +99,26 @@ const App = (): JSX.Element => {
       <KeyboardShortcutRoot>
         <div
           className="flexContainer"
-          style={{ flex: 1, display: "flex", flexDirection: "column" }}
+          style={{ 
+            flex: 1, 
+            display: "flex", 
+            flexDirection: "column",
+            backgroundColor: "var(--colorNeutralBackground1)",
+            color: "var(--colorNeutralForeground1)"
+          }}
           aria-hidden="false"
           data-test="DataExplorerRoot"
         >
           <div
             id="divExplorer"
             className="flexContainer hideOverflows"
-            style={{ flex: 1, display: "flex", flexDirection: "column" }}
+            style={{ 
+              flex: 1, 
+              display: "flex", 
+              flexDirection: "column",
+              backgroundColor: "var(--colorNeutralBackground1)",
+              color: "var(--colorNeutralForeground1)"
+            }}
           >
             <div id="freeTierTeachingBubble"> </div>
             {/* Main Command Bar - Start */}
@@ -119,6 +131,10 @@ const App = (): JSX.Element => {
               role="contentinfo"
               aria-label="Notification console"
               id="explorerNotificationConsole"
+              style={{
+                backgroundColor: "var(--colorNeutralBackground1)",
+                color: "var(--colorNeutralForeground1)"
+              }}
             >
               <NotificationConsole />
             </div>
@@ -144,17 +160,16 @@ const Root: React.FC = () => {
   useEffect(() => {
     if (isDarkMode) {
       document.body.classList.add("isDarkMode");
+      document.body.style.backgroundColor = "var(--colorNeutralBackground1)";
+      document.body.style.color = "var(--colorNeutralForeground1)";
       loadTheme(appThemeFabric);
     } else {
       document.body.classList.remove("isDarkMode");
+      document.body.style.backgroundColor = "";
+      document.body.style.color = "";
       loadTheme(appThemeFabric);
     }
   }, [isDarkMode]);
-
-  // console.log("Root component - Theme state:", { 
-  //   isDarkMode, 
-  //   currentTheme
-  // });
 
   return (
     <ErrorBoundary>
@@ -171,18 +186,21 @@ if (mainElement) {
 }
 
 function LoadingExplorer(): JSX.Element {
+  const styles = useStyles();
   return (
-    <div className="splashLoaderContainer">
-      <div className="splashLoaderContentContainer">
-        <p className="connectExplorerContent">
-          <img src={hdeConnectImage} alt="Azure Cosmos DB" />
-        </p>
-        <p className="splashLoaderTitle" id="explorerLoadingStatusTitle">
-          Welcome to Azure Cosmos DB
-        </p>
-        <p className="splashLoaderText" id="explorerLoadingStatusText" role="alert">
-          Connecting...
-        </p>
+    <div className={styles.root}>
+      <div className="splashLoaderContainer">
+        <div className="splashLoaderContentContainer">
+          <p className="connectExplorerContent">
+            <img src={hdeConnectImage} alt="Azure Cosmos DB" />
+          </p>
+          <p className="splashLoaderTitle" id="explorerLoadingStatusTitle">
+            Welcome to Azure Cosmos DB
+          </p>
+          <p className="splashLoaderText" id="explorerLoadingStatusText" role="alert">
+            Connecting...
+          </p>
+        </div>
       </div>
     </div>
   );
