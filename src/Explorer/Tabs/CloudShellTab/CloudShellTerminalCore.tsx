@@ -23,9 +23,12 @@ import { formatErrorMessage, formatInfoMessage, formatWarningMessage } from "./U
 
 // Constants
 const DEFAULT_CLOUDSHELL_REGION = "westus";
-const POLLING_INTERVAL_MS = 5000;
+const POLLING_INTERVAL_MS = 2000;
 const MAX_RETRY_COUNT = 10;
 const MAX_PING_COUNT = 20 * 60; // 20 minutes (60 seconds/minute)
+
+let pingCount = 0;
+let keepAliveID: NodeJS.Timeout = null;
 
 /**
  * Main function to start a CloudShell terminal
@@ -160,7 +163,7 @@ export const provisionCloudShellSession = async (
     if (provisionConsoleResponse.properties.provisioningState !== "Succeeded") {
       await wait(POLLING_INTERVAL_MS);
     }
-  } while (provisionConsoleResponse.properties.provisioningState !== "Succeeded" && attemptCounter < 10);
+  } while (provisionConsoleResponse.properties.provisioningState !== "Succeeded" && attemptCounter < MAX_RETRY_COUNT);
 
   if (provisionConsoleResponse.properties.provisioningState !== "Succeeded") {
     throw new Error(`Provisioning failed: ${provisionConsoleResponse.properties.provisioningState}`);
@@ -255,11 +258,17 @@ export const configureSocketConnection = async (
     }
   };
 
+  socket.onclose = () => {
+    if (keepAliveID) {
+        clearTimeout(keepAliveID);
+        pingCount = 0;
+    }
+  }
+
   return socket;
 };
 
 export const sendTerminalStartupCommands = (socket: WebSocket, initCommands: string): void => {
-  let pingCount = 0;
 
   if (socket && socket.readyState === WebSocket.OPEN) {
     socket.send(initCommands);
@@ -267,6 +276,7 @@ export const sendTerminalStartupCommands = (socket: WebSocket, initCommands: str
     socket.onopen = () => {
       socket.send(initCommands);
 
+      // ensures connections don't remain open indefinitely by implementing an automatic timeout after 20 minutes.
       const keepSocketAlive = (socket: WebSocket) => {
         if (socket.readyState === WebSocket.OPEN) {
           if (pingCount >= MAX_PING_COUNT) {
@@ -274,6 +284,10 @@ export const sendTerminalStartupCommands = (socket: WebSocket, initCommands: str
           } else {
             socket.send("");
             pingCount++;
+            // The code uses a recursive setTimeout pattern rather than setInterval, 
+            // which ensures each new ping only happens after the previous one completes 
+            // and naturally stops if the socket closes.
+            keepAliveID = setTimeout(() => keepSocketAlive(socket), 1000);
           }
         }
       };
