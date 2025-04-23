@@ -3,7 +3,6 @@ import { configContext } from "../../../../ConfigContext";
 import { userContext } from "../../../../UserContext";
 import { armRequest } from "../../../../Utils/arm/request";
 import {
-  Authorization,
   CloudShellProviderInfo,
   CloudShellSettings,
   ConnectTerminalResponse,
@@ -114,24 +113,5 @@ export const connectTerminal = async (
     throw new Error(`Failed to connect to terminal: ${resp.status} ${resp.statusText}`);
   }
 
-  return resp.json();
-};
-
-export const authorizeSession = async (consoleUri: string): Promise<Authorization> => {
-  const targetUri = consoleUri + "/authorize";
-  const resp = await fetch(targetUri, {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      Authorization: userContext.authorizationToken,
-      "Accept-Language": getLocale(),
-      "Content-Type": "application/json",
-    },
-    body: "{}", // empty body is necessary
-  });
-
-  if (!resp.ok) {
-    throw new Error(`Failed to authorize session: ${resp.status} ${resp.statusText}`);
-  }
   return resp.json();
 };

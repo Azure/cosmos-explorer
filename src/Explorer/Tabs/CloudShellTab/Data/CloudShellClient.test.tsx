@@ -1,8 +1,6 @@
 import { armRequest } from "../../../../Utils/arm/request";
 import { NetworkType, OsType, SessionType, ShellType } from "../Models/DataModels";
-import { getLocale } from "../Utils/CommonUtils";
 import {
-  authorizeSession,
   connectTerminal,
   getUserSettings,
   provisionConsole,
@@ -334,64 +332,6 @@ describe("CloudShellClient", () => {
         "https://shell.azure.com/console123/terminals?cols=80&rows=24&version=2019-01-01&shell=bash",
         expect.any(Object),
       );
-    });
-  });
-
-  describe("authorizeSession", () => {
-    it("should call fetch with correct parameters", async () => {
-      const consoleUri = "https://shell.azure.com/console123";
-      const mockAuthResponse = {
-        token: "auth-token",
-      };
-
-      // Create a separate mockJsonPromise specific to this test
-      const authMockJsonPromise = jest.fn().mockResolvedValue(mockAuthResponse);
-
-      // Override the global fetch for this specific test
-      global.fetch = jest.fn().mockImplementationOnce(() => {
-        return {
-          ok: true,
-          status: 200,
-          json: authMockJsonPromise,
-          text: jest.fn().mockResolvedValue(""),
-          headers: new Headers(),
-        } as unknown as Promise<Response>;
-      });
-
-      const result = await authorizeSession(consoleUri);
-
-      expect(global.fetch).toHaveBeenCalledWith("https://shell.azure.com/console123/authorize", {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          Authorization: "Bearer mock-token",
-          "Accept-Language": getLocale(),
-          "Content-Type": "application/json",
-        },
-        body: "{}",
-      });
-      expect(authMockJsonPromise).toHaveBeenCalled();
-      expect(result).toEqual(mockAuthResponse);
-    });
-
-    it("should handle errors when session authorization fails", async () => {
-      const consoleUri = "https://shell.azure.com/console123";
-
-      // Mock fetch to return a failed response
-      global.fetch = jest.fn().mockImplementationOnce(() => {
-        return {
-          ok: false,
-          status: 401,
-          statusText: "Unauthorized",
-          json: jest.fn().mockRejectedValue(new Error("Failed to parse JSON")),
-          text: jest.fn().mockResolvedValue("Unauthorized"),
-          headers: new Headers(),
-        } as unknown as Promise<Response>;
-      });
-
-      await expect(authorizeSession(consoleUri)).rejects.toThrow("Failed to authorize session: 401 Unauthorized");
-
-      expect(global.fetch).toHaveBeenCalledWith("https://shell.azure.com/console123/authorize", expect.any(Object));
     });
   });
 });

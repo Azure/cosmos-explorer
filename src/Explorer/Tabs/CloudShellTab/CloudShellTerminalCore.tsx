@@ -6,7 +6,6 @@ import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryCons
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../../UserContext";
 import {
-  authorizeSession,
   connectTerminal,
   provisionConsole,
   putEphemeralUserSettings,
@@ -82,13 +81,7 @@ export const startCloudShellTerminal = async (terminal: Terminal, shellType: Ter
     // Get the shell handler for this type
     const shellHandler = await getHandler(shellType);
     // Configure WebSocket connection with shell-specific commands
-    const socket = await establishTerminalConnection(
-      terminal,
-      shellHandler,
-      sessionDetails.socketUri,
-      sessionDetails.provisionConsoleResponse,
-      sessionDetails.targetUri,
-    );
+    const socket = await establishTerminalConnection(terminal, shellHandler, sessionDetails.socketUri);
 
     TelemetryProcessor.traceSuccess(
       Action.CloudShellTerminalSession,
@@ -201,8 +194,6 @@ export const establishTerminalConnection = async (
   terminal: Terminal,
   shellHandler: AbstractShellHandler,
   socketUri: string,
-  provisionConsoleResponse: ProvisionConsoleResponse,
-  targetUri: string,
 ): Promise<WebSocket> => {
   let socket = new WebSocket(socketUri);
 
@@ -220,20 +211,6 @@ export const establishTerminalConnection = async (
   // Attach the terminal addon
   const attachAddon = new AttachAddon(socket, options);
   terminal.loadAddon(attachAddon);
-
-  // Authorize the session
-  try {
-    const authorizeResponse = await authorizeSession(provisionConsoleResponse.properties.uri);
-    const cookieToken = authorizeResponse.token;
-
-    // Load auth token with a hidden image
-    const img = document.createElement("img");
-    img.src = `${targetUri}&token=${encodeURIComponent(cookieToken)}`;
-    terminal.focus();
-  } catch (err) {
-    socket.close();
-    throw err;
-  }
 
   return socket;
 };
@@ -260,16 +237,15 @@ export const configureSocketConnection = async (
 
   socket.onclose = () => {
     if (keepAliveID) {
-        clearTimeout(keepAliveID);
-        pingCount = 0;
+      clearTimeout(keepAliveID);
+      pingCount = 0;
     }
-  }
+  };
 
   return socket;
 };
 
 export const sendTerminalStartupCommands = (socket: WebSocket, initCommands: string): void => {
-
   if (socket && socket.readyState === WebSocket.OPEN) {
     socket.send(initCommands);
   } else {
@@ -284,8 +260,8 @@ export const sendTerminalStartupCommands = (socket: WebSocket, initCommands: str
           } else {
             socket.send("");
             pingCount++;
-            // The code uses a recursive setTimeout pattern rather than setInterval, 
-            // which ensures each new ping only happens after the previous one completes 
+            // The code uses a recursive setTimeout pattern rather than setInterval,
+            // which ensures each new ping only happens after the previous one completes
             // and naturally stops if the socket closes.
             keepAliveID = setTimeout(() => keepSocketAlive(socket), 1000);
           }
