@@ -294,22 +294,6 @@ const buildCollectionNodeChildren = (
     contextMenu: ResourceTreeContextMenuButtonFactory.createCollectionContextMenuButton(container, collection),
   });
 
-  if (
-    isNotebookEnabled &&
-    userContext.apiType === "Mongo" &&
-    isPublicInternetAccessAllowed() &&
-    useNotebook.getState().isPhoenixFeatures
-  ) {
-    children.push({
-      label: "Schema (Preview)",
-      onClick: collection.onSchemaAnalyzerClick.bind(collection),
-      isSelected: () =>
-        useSelectedNode
-          .getState()
-          .isDataNodeSelected(collection.databaseId, collection.id(), [ViewModels.CollectionTabKind.SchemaAnalyzer]),
-    });
-  }
-
   if (userContext.apiType !== "Cassandra" || !isServerlessAccount()) {
     let id = "";
     if (collection.isSampleCollection) {
