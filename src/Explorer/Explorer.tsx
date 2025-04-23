@@ -296,7 +296,7 @@ export default class Explorer {
 
     try {
       const linkOpened =
-      (navigator.userAgent.includes("Insiders") && window.open(vscodeInsidersUrl)) || window.open(vscodeUrl);
+        (navigator.userAgent.includes("Insiders") && window.open(vscodeInsidersUrl)) || window.open(vscodeUrl);
 
       if (!linkOpened) {
         logConsoleError("Visual Studio Code is not installed on this device");
@@ -305,10 +305,10 @@ export default class Explorer {
 
       TelemetryProcessor.traceSuccess(Action.OpenVSCode, {}, startTime);
     } catch (error) {
-        logConsoleError(`Failed to open Visual Studio Code. ${getErrorMessage(error)}`);
-        TelemetryProcessor.traceFailure(Action.OpenVSCode, {}, startTime);
+      logConsoleError(`Failed to open Visual Studio Code. ${getErrorMessage(error)}`);
+      TelemetryProcessor.traceFailure(Action.OpenVSCode, {}, startTime);
     } finally {
-        clearInProgressMessage();
+      clearInProgressMessage();
     }
   }
 
