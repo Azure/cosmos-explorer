@@ -286,26 +286,17 @@ export default class Explorer {
     const startTime = TelemetryProcessor.traceStart(Action.OpenVSCode);
     const clearInProgressMessage = logConsoleProgress("Opening Visual Studio Code");
 
-    const { subscriptionId, resourceGroup, databaseAccount } = userContext;
     const activeTab = useTabs.getState().activeTab;
-    const database = activeTab.collection?.databaseId;
-    const container = activeTab.collection?.id();
 
-    if (!database || !container) {
-      logConsoleError(
-        "Failed to open Visual Studio Code, a database account and container is required to open in VS Code.",
-      );
-      clearInProgressMessage();
-      return;
-    }
-
-    const vscodeUrl = `vscode://ms-azuretools.vscode-cosmosdb?resourceId=/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.DocumentDB/databaseAccounts/${databaseAccount.id}&database=${database}&container=${container}`;
-    const vscodeInsidersUrl = `vscode-insiders://ms-azuretools.vscode-cosmosdb?resourceId=/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.DocumentDB/databaseAccounts/${databaseAccount.id}&database=${database}&container=${container}`;
+    const baseUrl = `vscode://ms-azuretools.vscode-cosmosdb?resourceId=${userContext.databaseAccount.id}`;
+    const vscodeUrl = activeTab
+      ? `${baseUrl}&database=${activeTab.collection.databaseId}&container=${activeTab.collection?.id()}`
+      : baseUrl;
+    const vscodeInsidersUrl = vscodeUrl.replace("vscode://", "vscode-insiders://");
 
     try {
-      logConsoleInfo("Opening Visual Studio Code");
       const linkOpened =
-        (navigator.userAgent.includes("Insiders") && window.open(vscodeInsidersUrl)) || window.open(vscodeUrl);
+      (navigator.userAgent.includes("Insiders") && window.open(vscodeInsidersUrl)) || window.open(vscodeUrl);
 
       if (!linkOpened) {
         logConsoleError("Visual Studio Code is not installed on this device");
@@ -314,10 +305,10 @@ export default class Explorer {
 
       TelemetryProcessor.traceSuccess(Action.OpenVSCode, {}, startTime);
     } catch (error) {
-      logConsoleError(`Failed to open Visual Studio Code. ${getErrorMessage(error)}`);
-      TelemetryProcessor.traceFailure(Action.OpenVSCode, {}, startTime);
+        logConsoleError(`Failed to open Visual Studio Code. ${getErrorMessage(error)}`);
+        TelemetryProcessor.traceFailure(Action.OpenVSCode, {}, startTime);
     } finally {
-      clearInProgressMessage();
+        clearInProgressMessage();
     }
   }
 

@@ -271,7 +271,7 @@ function createOpenSynapseLinkDialogButton(container: Explorer): CommandButtonCo
 }
 
 function createOpenVsCodeDialogButton(container: Explorer): CommandButtonComponentProps {
-  const label = "Open in VS Code";
+  const label = "VS Code";
   return {
     iconSrc: VSCodeIcon,
     iconAlt: label,
