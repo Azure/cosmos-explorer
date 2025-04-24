@@ -297,10 +297,23 @@ export default class Explorer {
     try {
       const linkOpened =
         (navigator.userAgent.includes("Insiders") && window.open(vscodeInsidersUrl)) || window.open(vscodeUrl);
-
-      if (!linkOpened || !linkOpened.closed || typeof !linkOpened.closed === "undefined") {
-        logConsoleError("Visual Studio Code is not installed on this device");
-        window.open("https://code.visualstudio.com/download", "_blank");
+      
+      if (!linkOpened.closed || typeof linkOpened.closed === "undefined") {
+        linkOpened.close();
+        useDialog.getState().openDialog({
+          isModal: true,
+          title: "Visual Studio Code Not Installed",
+          subText: "It appears Visual Studio Code is not installed on this device. Would you like to download it?",
+          primaryButtonText: "Download",
+          secondaryButtonText: "Cancel",
+          onPrimaryButtonClick: () => {
+            window.open("https://code.visualstudio.com/download", "_blank");
+            useDialog.getState().closeDialog();
+          },
+          onSecondaryButtonClick: () => {
+            useDialog.getState().closeDialog();
+          },
+        });
       }
 
       TelemetryProcessor.traceSuccess(Action.OpenVSCode, {}, startTime);
