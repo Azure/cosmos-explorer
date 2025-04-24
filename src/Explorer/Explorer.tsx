@@ -283,46 +283,17 @@ export default class Explorer {
   }
 
   public openInVsCode(): void {
-    const startTime = TelemetryProcessor.traceStart(Action.OpenVSCode);
-    const clearInProgressMessage = logConsoleProgress("Opening Visual Studio Code");
-
     const activeTab = useTabs.getState().activeTab;
-
     const baseUrl = `vscode://ms-azuretools.vscode-cosmosdb?resourceId=${userContext.databaseAccount.id}`;
     const vscodeUrl = activeTab
       ? `${baseUrl}&database=${activeTab.collection.databaseId}&container=${activeTab.collection?.id()}`
       : baseUrl;
     const vscodeInsidersUrl = vscodeUrl.replace("vscode://", "vscode-insiders://");
 
-    try {
-      const linkOpened =
-        (navigator.userAgent.includes("Insiders") && window.open(vscodeInsidersUrl)) || window.open(vscodeUrl);
-
-      if (!linkOpened.closed || typeof linkOpened.closed === "undefined") {
-        linkOpened.close();
-        useDialog.getState().openDialog({
-          isModal: true,
-          title: "Visual Studio Code Not Installed",
-          subText: "It appears Visual Studio Code is not installed on this device. Would you like to download it?",
-          primaryButtonText: "Download",
-          secondaryButtonText: "Cancel",
-          onPrimaryButtonClick: () => {
-            window.open("https://code.visualstudio.com/download", "_blank");
-            useDialog.getState().closeDialog();
-          },
-          onSecondaryButtonClick: () => {
-            useDialog.getState().closeDialog();
-          },
-        });
-      }
-
-      TelemetryProcessor.traceSuccess(Action.OpenVSCode, {}, startTime);
-    } catch (error) {
-      logConsoleError(`Failed to open Visual Studio Code. ${getErrorMessage(error)}`);
-      TelemetryProcessor.traceFailure(Action.OpenVSCode, {}, startTime);
-    } finally {
-      clearInProgressMessage();
-    }
+    const linkOpened =
+      (navigator.userAgent.includes("insiders") && window.open(vscodeInsidersUrl)) || window.open(vscodeUrl);
+    const myTimeout = setTimeout((linkOpened.location = "https://code.visualstudio.com/download"), 500);
+    clearTimeout(myTimeout);
   }
 
   public async openCESCVAFeedbackBlade(): Promise<void> {
