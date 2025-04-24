@@ -297,7 +297,7 @@ export default class Explorer {
     try {
       const linkOpened =
         (navigator.userAgent.includes("Insiders") && window.open(vscodeInsidersUrl)) || window.open(vscodeUrl);
-      
+
       if (!linkOpened.closed || typeof linkOpened.closed === "undefined") {
         linkOpened.close();
         useDialog.getState().openDialog({
