@@ -298,7 +298,7 @@ export default class Explorer {
       const linkOpened =
         (navigator.userAgent.includes("Insiders") && window.open(vscodeInsidersUrl)) || window.open(vscodeUrl);
 
-      if (!linkOpened || linkOpened.closed || typeof linkOpened.closed === "undefined") {
+      if (!linkOpened || !linkOpened.closed || typeof !linkOpened.closed === "undefined") {
         logConsoleError("Visual Studio Code is not installed on this device");
         window.open("https://code.visualstudio.com/download", "_blank");
       }
