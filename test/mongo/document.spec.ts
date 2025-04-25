@@ -68,7 +68,11 @@ for (const { name, databaseId, containerId, documents } of documentTestCases) {
             await documentsTab.resultsEditor.setText(JSON.stringify(newDocument));
             const saveButton = await explorer.waitForCommandBarButton("Save", 5000);
             await saveButton.click({ timeout: 5000 });
+            await expect(saveButton).toBeHidden({ timeout: 5000 });
           }, 3);
+
+          await documentsTab.setFilter(`{_id: "${newDocumentId}"}`);
+          await documentsTab.filterButton.click();
 
           const newSpan = documentsTab.documentsListPane.getByText(newDocumentId, { exact: true }).nth(0);
           await newSpan.waitFor();
