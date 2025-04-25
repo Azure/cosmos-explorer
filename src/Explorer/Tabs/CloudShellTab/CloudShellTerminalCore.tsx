@@ -24,7 +24,7 @@ import { formatErrorMessage, formatInfoMessage, formatWarningMessage } from "./U
 const DEFAULT_CLOUDSHELL_REGION = "westus";
 const POLLING_INTERVAL_MS = 2000;
 const MAX_RETRY_COUNT = 10;
-const MAX_PING_COUNT = 20 * 60; // 20 minutes (60 seconds/minute)
+const MAX_PING_COUNT = 120 * 60; // 120 minutes (60 seconds/minute)
 
 let pingCount = 0;
 let keepAliveID: NodeJS.Timeout = null;
