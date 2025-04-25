@@ -284,7 +284,7 @@ export default class Explorer {
 
   public openInVsCode(): void {
     const activeTab = useTabs.getState().activeTab;
-    const baseUrl = `vscode://ms-azuretools.vscode-cosmosdb?resourceId=${userContext.databaseAccount.id}`;
+    const baseUrl = `vscod://ms-azuretools.vscode-cosmosdb?resourceId=${userContext.databaseAccount.id}`;
     const vscodeUrl = activeTab
       ? `${baseUrl}&database=${activeTab.collection.databaseId}&container=${activeTab.collection?.id()}`
       : baseUrl;
@@ -292,8 +292,12 @@ export default class Explorer {
 
     const linkOpened =
       (navigator.userAgent.includes("insiders") && window.open(vscodeInsidersUrl)) || window.open(vscodeUrl);
-    const myTimeout = setTimeout((linkOpened.location = "https://code.visualstudio.com/download"), 500);
-    clearTimeout(myTimeout);
+    const vsCodeTimeout = setTimeout(
+      (linkOpened.location = "https://code.visualstudio.com/download"),
+      5000,
+      logConsoleError("Failed to open Visual Studio Code. Please ensure it is installed and try again."),
+    );
+    clearTimeout(vsCodeTimeout);
   }
 
   public async openCESCVAFeedbackBlade(): Promise<void> {
