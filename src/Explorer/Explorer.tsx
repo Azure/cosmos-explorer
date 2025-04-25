@@ -284,7 +284,7 @@ export default class Explorer {
 
   public openInVsCode(): void {
     const activeTab = useTabs.getState().activeTab;
-    const baseUrl = `vscod://ms-azuretools.vscode-cosmosdb?resourceId=${userContext.databaseAccount.id}`;
+    const baseUrl = `vscode://ms-azuretools.vscode-cosmosdb?resourceId=${userContext.databaseAccount.id}`;
     const vscodeUrl = activeTab
       ? `${baseUrl}&database=${activeTab.collection.databaseId}&container=${activeTab.collection?.id()}`
       : baseUrl;
