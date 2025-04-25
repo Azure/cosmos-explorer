@@ -284,17 +284,20 @@ export default class Explorer {
 
   public openInVsCode(): void {
     const activeTab = useTabs.getState().activeTab;
-    const baseUrl = `vscode://ms-azuretools.vscode-cosmosdb?resourceId=${userContext.databaseAccount.id}`;
-    const vscodeUrl = activeTab
-      ? `${baseUrl}&database=${activeTab.collection.databaseId}&container=${activeTab.collection?.id()}`
-      : baseUrl;
+    const resourceId = encodeURIComponent(userContext.databaseAccount.id);
+    const database = encodeURIComponent(activeTab?.collection?.databaseId);
+    const container = encodeURIComponent(activeTab?.collection?.id());
+    const downloadUrl = "https://code.visualstudio.com/download";
+
+    const baseUrl = `vscode://ms-azuretools.vscode-cosmosdb?resourceId=${resourceId}`;
+    const vscodeUrl = activeTab ? `${baseUrl}&database=${database}&container=${container}` : baseUrl;
     const vscodeInsidersUrl = vscodeUrl.replace("vscode://", "vscode-insiders://");
 
     const linkOpened =
       (navigator.userAgent.includes("insiders") && window.open(vscodeInsidersUrl)) || window.open(vscodeUrl);
     const vsCodeTimeout = setTimeout(
-      (linkOpened.location = "https://code.visualstudio.com/download"),
-      5000,
+      (linkOpened.location = downloadUrl),
+      10000,
       logConsoleError("Failed to open Visual Studio Code. Please ensure it is installed and try again."),
     );
     clearTimeout(vsCodeTimeout);
