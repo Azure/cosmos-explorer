@@ -27,7 +27,7 @@ for (const { name, databaseId, containerId, documents } of documentTestCases) {
     });
 
     for (const document of documents) {
-      const { documentId: docId, partitionKeys } = document;
+      const { documentId: docId, partitionKeys, skipCreateDelete } = document;
       test.describe(`Document ID: ${docId}`, () => {
         test(`should load and view document ${docId}`, async () => {
           const span = documentsTab.documentsListPane.getByText(docId, { exact: true }).nth(0);
@@ -42,7 +42,9 @@ for (const { name, databaseId, containerId, documents } of documentTestCases) {
           expect(resultText).not.toBeNull();
           expect(resultData?.id).toEqual(docId);
         });
-        test(`should be able to create and delete new document from ${docId}`, async ({ page }) => {
+
+        const testOrSkip = skipCreateDelete ? test.skip : test;
+        testOrSkip(`should be able to create and delete new document from ${docId}`, async ({ page }) => {
           const span = documentsTab.documentsListPane.getByText(docId, { exact: true }).nth(0);
           await span.waitFor();
           await expect(span).toBeVisible();
