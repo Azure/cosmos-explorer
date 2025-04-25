@@ -50,10 +50,6 @@ for (const { name, databaseId, containerId, documents } of documentTestCases) {
           let newDocumentId;
           await page.waitForTimeout(5000);
           await retry(async () => {
-            // const discardButton = await explorer.waitForCommandBarButton("Discard", 5000);
-            // if (await discardButton.isEnabled()) {
-            //   await discardButton.click();
-            // }
             const newDocumentButton = await explorer.waitForCommandBarButton("New Item", 5000);
             await expect(newDocumentButton).toBeVisible();
             await expect(newDocumentButton).toBeEnabled();
@@ -71,10 +67,15 @@ for (const { name, databaseId, containerId, documents } of documentTestCases) {
             await documentsTab.resultsEditor.setText(JSON.stringify(newDocument));
             const saveButton = await explorer.waitForCommandBarButton("Save", 5000);
             await saveButton.click({ timeout: 5000 });
+            await expect(saveButton).toBeHidden({ timeout: 5000 });
           }, 3);
+
+          await documentsTab.setFilter(`WHERE c.id = "${newDocumentId}"`);
+          await documentsTab.filterButton.click();
 
           const newSpan = documentsTab.documentsListPane.getByText(newDocumentId, { exact: true }).nth(0);
           await newSpan.waitFor();
+
           await newSpan.click();
           await expect(documentsTab.resultsEditor.locator).toBeAttached({ timeout: 60 * 1000 });
 

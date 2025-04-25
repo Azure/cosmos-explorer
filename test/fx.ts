@@ -223,6 +223,9 @@ export class DocumentsTab {
   documentsListPane: Locator;
   documentResultsPane: Locator;
   resultsEditor: Editor;
+  loadMoreButton: Locator;
+  filterInput: Locator;
+  filterButton: Locator;
 
   constructor(
     public frame: Frame,
@@ -234,6 +237,13 @@ export class DocumentsTab {
     this.documentsListPane = this.locator.getByTestId("DocumentsTab/DocumentsPane");
     this.documentResultsPane = this.locator.getByTestId("DocumentsTab/ResultsPane");
     this.resultsEditor = new Editor(this.frame, this.documentResultsPane.getByTestId("EditorReact/Host/Loaded"));
+    this.loadMoreButton = this.documentsListPane.getByTestId("DocumentsTab/LoadMore");
+    this.filterInput = this.documentsFilter.getByTestId("DocumentsTab/FilterInput");
+    this.filterButton = this.documentsFilter.getByTestId("DocumentsTab/ApplyFilter");
+  }
+
+  async setFilter(text: string) {
+    await this.filterInput.fill(text);
   }
 }
 

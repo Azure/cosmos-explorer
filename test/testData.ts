@@ -26,6 +26,7 @@ export interface DocumentTestCase {
 export interface TestDocument {
   documentId: string;
   partitionKeys?: PartitionKey[];
+  skipCreateDelete?: boolean;
 }
 
 export interface PartitionKey {
