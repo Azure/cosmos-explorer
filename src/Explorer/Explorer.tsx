@@ -289,18 +289,33 @@ export default class Explorer {
     const container = encodeURIComponent(activeTab?.collection?.id());
     const downloadUrl = "https://code.visualstudio.com/download";
 
-    const baseUrl = `vscode://ms-azuretools.vscode-cosmosdb?resourceId=${resourceId}`;
+    const baseUrl = `vscod://ms-azuretools.vscode-cosmosdb?resourceId=${resourceId}`;
     const vscodeUrl = activeTab ? `${baseUrl}&database=${database}&container=${container}` : baseUrl;
     const vscodeInsidersUrl = vscodeUrl.replace("vscode://", "vscode-insiders://");
 
-    const linkOpened =
-      (navigator.userAgent.includes("insiders") && window.open(vscodeInsidersUrl)) || window.open(vscodeUrl);
-    const vsCodeTimeout = setTimeout(
-      (linkOpened.location = downloadUrl),
-      10000,
-      logConsoleError("Failed to open Visual Studio Code. Please ensure it is installed and try again."),
-    );
-    clearTimeout(vsCodeTimeout);
+    const startTime = Date.now();
+    let hasRedirected = false;
+
+    const iframe = document.createElement("iframe");
+    iframe.style.display = "none";
+    document.body.appendChild(iframe);
+
+    setTimeout(() => {
+      if (!hasRedirected && Date.now() - startTime < 1200) {
+        hasRedirected = true;
+        window.open(downloadUrl, "_blank");
+      }
+    }, 1000);
+
+    try {
+      iframe.src = vscodeInsidersUrl || vscodeUrl;
+      window.location.href = vscodeInsidersUrl || vscodeUrl;
+    } catch (error) {
+      if (!hasRedirected) {
+        hasRedirected = true;
+        window.open(downloadUrl, "_blank");
+      }
+    }
   }
 
   public async openCESCVAFeedbackBlade(): Promise<void> {
