@@ -289,7 +289,7 @@ export default class Explorer {
     const container = encodeURIComponent(activeTab?.collection?.id());
     const downloadUrl = "https://code.visualstudio.com/download";
 
-    const baseUrl = `vscod://ms-azuretools.vscode-cosmosdb?resourceId=${resourceId}`;
+    const baseUrl = `vscode://ms-azuretools.vscode-cosmosdb?resourceId=${resourceId}`;
     const vscodeUrl = activeTab ? `${baseUrl}&database=${database}&container=${container}` : baseUrl;
     const vscodeInsidersUrl = vscodeUrl.replace("vscode://", "vscode-insiders://");
 
