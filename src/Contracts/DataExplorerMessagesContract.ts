@@ -23,9 +23,8 @@ export type DataExploreMessageV3 =
       type: FabricMessageTypes.OpenSettings;
       settingsId: string;
     };
-
-export type GetCosmosTokenMessageOptions = {
+export interface GetCosmosTokenMessageOptions {
   verb: "connect" | "delete" | "get" | "head" | "options" | "patch" | "post" | "put" | "trace";
   resourceType: "" | "dbs" | "colls" | "docs" | "sprocs" | "pkranges";
   resourceId: string;
-};
+}
