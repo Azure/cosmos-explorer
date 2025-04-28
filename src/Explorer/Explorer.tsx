@@ -291,7 +291,6 @@ export default class Explorer {
 
     const baseUrl = `vscode://ms-azuretools.vscode-cosmosdb?resourceId=${resourceId}`;
     const vscodeUrl = activeTab ? `${baseUrl}&database=${database}&container=${container}` : baseUrl;
-    const vscodeInsidersUrl = vscodeUrl.replace("vscode://", "vscode-insiders://");
 
     const startTime = Date.now();
     let hasRedirected = false;
@@ -308,8 +307,8 @@ export default class Explorer {
     }, 1000);
 
     try {
-      iframe.src = vscodeInsidersUrl || vscodeUrl;
-      window.location.href = vscodeInsidersUrl || vscodeUrl;
+      iframe.src = vscodeUrl;
+      window.location.href = vscodeUrl;
     } catch (error) {
       if (!hasRedirected) {
         hasRedirected = true;
