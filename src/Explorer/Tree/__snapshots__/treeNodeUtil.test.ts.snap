@@ -339,11 +339,6 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
             "onClick": [Function],
           },
           {
-            "isSelected": [Function],
-            "label": "Schema (Preview)",
-            "onClick": [Function],
-          },
-          {
             "id": "",
             "isSelected": [Function],
             "label": "Scale & Settings",
@@ -404,11 +399,6 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
             "id": "",
             "isSelected": [Function],
             "label": "Documents",
-            "onClick": [Function],
-          },
-          {
-            "isSelected": [Function],
-            "label": "Schema (Preview)",
             "onClick": [Function],
           },
           {
@@ -516,11 +506,6 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
             "onClick": [Function],
           },
           {
-            "isSelected": [Function],
-            "label": "Schema (Preview)",
-            "onClick": [Function],
-          },
-          {
             "id": "sampleSettings",
             "isSelected": [Function],
             "label": "Settings",
@@ -608,11 +593,6 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
             "id": "",
             "isSelected": [Function],
             "label": "Documents",
-            "onClick": [Function],
-          },
-          {
-            "isSelected": [Function],
-            "label": "Schema (Preview)",
             "onClick": [Function],
           },
           {
