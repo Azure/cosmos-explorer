@@ -161,7 +161,7 @@ export const PartitionKeyComponent: React.FC<PartitionKeyComponentProps> = ({
   return (
     <Stack tokens={{ childrenGap: 20 }} styles={{ root: { maxWidth: 600 } }}>
       <Stack tokens={{ childrenGap: 10 }}>
-        <Text styles={textHeadingStyle}>Change {partitionKeyName.toLowerCase()}</Text>
+        {!isReadOnly && <Text styles={textHeadingStyle}>Change {partitionKeyName.toLowerCase()}</Text>}
         <Stack horizontal tokens={{ childrenGap: 20 }}>
           <Stack tokens={{ childrenGap: 5 }}>
             <Text styles={textSubHeadingStyle}>Current {partitionKeyName.toLowerCase()}</Text>
