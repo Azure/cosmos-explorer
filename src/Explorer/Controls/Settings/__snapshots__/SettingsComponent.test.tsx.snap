@@ -79,6 +79,7 @@ exports[`SettingsComponent renders 1`] = `
           }
           isAutoPilotSelected={false}
           isFixedContainer={false}
+          isGlobalSecondaryIndex={true}
           onAutoPilotSelected={[Function]}
           onMaxAutoPilotThroughputChange={[Function]}
           onScaleDiscardableChange={[Function]}

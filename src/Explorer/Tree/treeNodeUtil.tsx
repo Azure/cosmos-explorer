@@ -11,7 +11,6 @@ import { getItemName } from "Utils/APITypeUtils";
 import { isServerlessAccount } from "Utils/CapabilityUtils";
 import { useTabs } from "hooks/useTabs";
 import React from "react";
-import { isPublicInternetAccessAllowed } from "../../Common/DatabaseAccountUtility";
 import { Platform, configContext } from "../../ConfigContext";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
@@ -19,7 +18,6 @@ import { userContext } from "../../UserContext";
 import * as ResourceTreeContextMenuButtonFactory from "../ContextMenuButtonFactory";
 import Explorer from "../Explorer";
 import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
-import { useNotebook } from "../Notebook/useNotebook";
 import { useSelectedNode } from "../useSelectedNode";
 
 export const shouldShowScriptNodes = (): boolean => {
@@ -293,22 +291,6 @@ const buildCollectionNodeChildren = (
         ]),
     contextMenu: ResourceTreeContextMenuButtonFactory.createCollectionContextMenuButton(container, collection),
   });
-
-  if (
-    isNotebookEnabled &&
-    userContext.apiType === "Mongo" &&
-    isPublicInternetAccessAllowed() &&
-    useNotebook.getState().isPhoenixFeatures
-  ) {
-    children.push({
-      label: "Schema (Preview)",
-      onClick: collection.onSchemaAnalyzerClick.bind(collection),
-      isSelected: () =>
-        useSelectedNode
-          .getState()
-          .isDataNodeSelected(collection.databaseId, collection.id(), [ViewModels.CollectionTabKind.SchemaAnalyzer]),
-    });
-  }
 
   if (userContext.apiType !== "Cassandra" || !isServerlessAccount()) {
     let id = "";

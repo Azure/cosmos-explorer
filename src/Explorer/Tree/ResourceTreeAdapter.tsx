@@ -241,21 +241,6 @@ export class ResourceTreeAdapter implements ReactAdapter {
       contextMenu: ResourceTreeContextMenuButtonFactory.createCollectionContextMenuButton(this.container, collection),
     });
 
-    if (
-      useNotebook.getState().isNotebookEnabled &&
-      userContext.apiType === "Mongo" &&
-      isPublicInternetAccessAllowed()
-    ) {
-      children.push({
-        label: "Schema (Preview)",
-        onClick: collection.onSchemaAnalyzerClick.bind(collection),
-        isSelected: () =>
-          useSelectedNode
-            .getState()
-            .isDataNodeSelected(collection.databaseId, collection.id(), [ViewModels.CollectionTabKind.SchemaAnalyzer]),
-      });
-    }
-
     if (userContext.apiType !== "Cassandra" || !isServerlessAccount()) {
       children.push({
         label: database.isDatabaseShared() || isServerlessAccount() ? "Settings" : "Scale & Settings",
