@@ -15,6 +15,19 @@ export class VCoreMongoShellHandler extends AbstractShellHandler {
     return "MongoDB VCore";
   }
 
+  /**
+   * Setup commands for MongoDB VCore shell:
+   *
+   * 1. Check if mongosh is already installed
+   * 2. Download mongosh package if not installed
+   * 3. Extract the package to access mongosh binaries
+   * 4. Move extracted files to ~/mongosh directory
+   * 5. Add mongosh binary path to system PATH
+   * 6. Apply PATH changes by sourcing .bashrc
+   *
+   * Each command runs conditionally only if mongosh
+   * is not already present in the environment.
+   */
   public getSetUpCommands(): string[] {
     return [
       "if ! command -v mongosh &> /dev/null; then echo '⚠️ mongosh not found. Installing...'; fi",

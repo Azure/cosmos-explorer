@@ -59,6 +59,16 @@ export const startCloudShellTerminal = async (terminal: Terminal, shellType: Ter
     );
 
     if (!consentGranted) {
+      TelemetryProcessor.traceCancel(
+        Action.CloudShellTerminalSession,
+        {
+          shellType: TerminalKind[shellType],
+          dataExplorerArea: Areas.CloudShell,
+          region: resolvedRegion,
+          isConsent: false,
+        },
+        startKey,
+      );
       terminal.writeln(
         formatErrorMessage("Session ended. Please close this tab and initiate a new shell session if needed."),
       );
@@ -89,6 +99,7 @@ export const startCloudShellTerminal = async (terminal: Terminal, shellType: Ter
         shellType: TerminalKind[shellType],
         dataExplorerArea: Areas.CloudShell,
         region: resolvedRegion,
+        socketUri: sessionDetails.socketUri,
       },
       startKey,
     );
@@ -175,10 +186,15 @@ export const provisionCloudShellSession = async (
   let socketUri = connectTerminalResponse.socketUri.replace(":443/", "");
   const targetUriBody = targetUri.replace("https://", "").split("?")[0];
 
+  // This socket URI transformation logic handles different Azure service endpoint formats.
+  // If the returned socketUri doesn't contain the expected host, we construct it manually.
+  // This ensures compatibility across different Azure regions and deployment configurations.
   if (socketUri.indexOf(targetUriBody) === -1) {
     socketUri = `wss://${targetUriBody}/${termId}`;
   }
 
+  // Special handling for ServiceBus-based endpoints which require a specific URI format
+  // with the hierarchical connection ($hc) path segment for terminal connections
   if (targetUriBody.includes("servicebus")) {
     const targetUriBodyArr = targetUriBody.split("/");
     socketUri = `wss://${targetUriBodyArr[0]}/$hc/${targetUriBodyArr[1]}/terminals/${termId}`;

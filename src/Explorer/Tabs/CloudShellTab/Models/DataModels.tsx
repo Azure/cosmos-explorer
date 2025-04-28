@@ -13,6 +13,19 @@ export const enum NetworkType {
   Isolated = "Isolated",
 }
 
+/**
+ * Azure CloudShell session types:
+ * - Mounted: Sessions with persistent storage via an Azure File Share mount.
+ *   Files and configurations are preserved between sessions, allowing for
+ *   continuity of work across multiple CloudShell sessions.
+ *
+ * - Ephemeral: Temporary sessions without persistent storage.
+ *   All files and changes are discarded when the session ends.
+ *   These sessions start faster but don't retain user data.
+ *
+ * The session type affects resource allocation, startup time,
+ * and whether user files/configurations persist between sessions.
+ */
 export const enum SessionType {
   Mounted = "Mounted",
   Ephemeral = "Ephemeral",

@@ -15,6 +15,21 @@ export class PostgresShellHandler extends AbstractShellHandler {
     return "PostgreSQL";
   }
 
+  /**
+   * PostgreSQL setup commands for CloudShell:
+   *
+   * 1. Check if psql client is already installed
+   * 2. Download PostgreSQL source package if needed
+   * 3. Extract the PostgreSQL package
+   * 4. Create installation directory
+   * 5. Download and extract readline dependency
+   * 6. Configure readline with appropriate installation path
+   * 7. Add PostgreSQL binaries to system PATH
+   * 8. Apply PATH changes
+   *
+   * All installation steps run conditionally only if
+   * psql is not already available in the environment.
+   */
   public getSetUpCommands(): string[] {
     return [
       "if ! command -v psql &> /dev/null; then echo '⚠️ psql not found. Installing...'; fi",
@@ -34,8 +49,12 @@ export class PostgresShellHandler extends AbstractShellHandler {
       return `echo '${this.getShellName()} endpoint not found.'`;
     }
 
+    // Database name is hardcoded as "citus" because Azure Cosmos DB for PostgreSQL
+    // uses Citus as its distributed database extension with this default database name.
+    // All Azure Cosmos DB PostgreSQL deployments follow this convention.
+    // Ref. https://learn.microsoft.com/en-us/azure/cosmos-db/postgresql/reference-limits#database-creation
     const loginName = userContext.postgresConnectionStrParams.adminLogin;
-    return `psql -h "${this._endpoint}" -p 5432 -d "${loginName}" -U "${loginName}" --set=sslmode=require`;
+    return `psql -h "${this._endpoint}" -p 5432 -d "citus" -U "${loginName}" --set=sslmode=require`;
   }
 
   public getTerminalSuppressedData(): string {

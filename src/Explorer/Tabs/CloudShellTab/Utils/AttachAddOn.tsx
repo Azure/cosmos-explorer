@@ -7,6 +7,18 @@ interface IAttachOptions {
   shellHandler?: AbstractShellHandler;
 }
 
+/**
+ * Terminal addon that attaches a terminal to a WebSocket for bidirectional
+ * communication with Azure CloudShell.
+ *
+ * Features:
+ * - Manages bidirectional data flow between terminal and CloudShell WebSocket
+ * - Processes special status messages within the data stream
+ * - Controls terminal output display during shell initialization
+ * - Supports shell-specific customizations via AbstractShellHandler
+ *
+ * @implements {ITerminalAddon}
+ */
 export class AttachAddon implements ITerminalAddon {
   private _socket: WebSocket;
   private _bidirectional: boolean;
@@ -29,6 +41,14 @@ export class AttachAddon implements ITerminalAddon {
     this._allowTerminalWrite = true;
   }
 
+  /**
+   * Activates the addon with the provided terminal
+   *
+   * Sets up event listeners for terminal input and WebSocket messages.
+   * Links the terminal input to the WebSocket and vice versa.
+   *
+   * @param {Terminal} terminal - The XTerm terminal instance
+   */
   public activate(terminal: Terminal): void {
     this.addMessageListener(terminal);
     if (this._bidirectional) {
@@ -40,6 +60,17 @@ export class AttachAddon implements ITerminalAddon {
     this._disposables.push(addSocketListener(this._socket, "error", () => this.dispose()));
   }
 
+  /**
+   * Adds a message listener to process data from the WebSocket
+   *
+   * Handles:
+   * - Status message extraction (between ie_us and ie_ue markers)
+   * - Partial message accumulation
+   * - Shell initialization messages
+   * - Suppression of unwanted shell output
+   *
+   * @param {Terminal} terminal - The XTerm terminal instance
+   */
   public addMessageListener(terminal: Terminal): void {
     this._disposables.push(
       addSocketListener(this._socket, "message", (ev) => {
@@ -105,6 +136,11 @@ export class AttachAddon implements ITerminalAddon {
     }
   }
 
+  /**
+   * Sends string data from the terminal to the WebSocket
+   *
+   * @param {string} data - The data to send
+   */
   private _sendData(data: string): void {
     if (!this._checkOpenSocket()) {
       return;
@@ -112,6 +148,11 @@ export class AttachAddon implements ITerminalAddon {
     this._socket.send(data);
   }
 
+  /**
+   * Sends binary data from the terminal to the WebSocket
+   *
+   * @param {string} data - The string data to convert to binary and send
+   */
   private _sendBinary(data: string): void {
     if (!this._checkOpenSocket()) {
       return;
@@ -139,29 +180,21 @@ export class AttachAddon implements ITerminalAddon {
   }
 }
 
+/**
+ * Adds an event listener to a WebSocket and returns a disposable object
+ * for cleanup
+ *
+ * @param {WebSocket} socket - The WebSocket instance
+ * @param {K} type - The event type to listen for
+ * @param {Function} handler - The event handler function
+ * @returns {IDisposable} An object with a dispose method to remove the listener
+ */
 function addSocketListener<K extends keyof WebSocketEventMap>(
   socket: WebSocket,
   type: K,
   handler: (this: WebSocket, ev: WebSocketEventMap[K]) => void,
 ): IDisposable {
   socket.addEventListener(type, handler);
-  return {
-    dispose: () => {
-      if (!handler) {
-        // Already disposed
-        return;
-      }
-      socket.removeEventListener(type, handler);
-    },
-  };
-}
-
-export function removeSocketListener<K extends keyof WebSocketEventMap>(
-  socket: WebSocket,
-  type: K,
-  handler: (this: WebSocket, ev: WebSocketEventMap[K]) => void,
-): IDisposable {
-  socket.removeEventListener(type, handler);
   return {
     dispose: () => {
       if (!handler) {
