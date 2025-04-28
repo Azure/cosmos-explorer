@@ -18,6 +18,10 @@ export type DataExploreMessageV3 =
   | {
       type: FabricMessageTypes.GetAllResourceTokens;
       id: string;
+    }
+  | {
+      type: FabricMessageTypes.OpenSettings;
+      settingsId: string;
     };
 
 export type GetCosmosTokenMessageOptions = {
