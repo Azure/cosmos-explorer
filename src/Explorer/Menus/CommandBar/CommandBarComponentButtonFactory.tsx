@@ -514,6 +514,6 @@ export function createPostgreButtons(container: Explorer): CommandButtonComponen
 
 export function createVCoreMongoButtons(container: Explorer): CommandButtonComponentProps[] {
   const openVCoreMongoTerminalButton = createOpenTerminalButtonByKind(container, ViewModels.TerminalKind.VCoreMongo);
-
-  return [openVCoreMongoTerminalButton];
+  const addVsCode = createOpenVsCodeDialogButton(container);
+  return [openVCoreMongoTerminalButton, addVsCode];
 }
