@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test";
 
+import { setupCORSBypass } from "../CORSBypass";
 import { DataExplorer, DocumentsTab, TestAccount } from "../fx";
 import { retry, serializeMongoToJson, setPartitionKeys } from "../testData";
 import { documentTestCases } from "./testCases";
@@ -10,6 +11,7 @@ let documentsTab: DocumentsTab = null!;
 for (const { name, databaseId, containerId, documents } of documentTestCases) {
   test.describe(`Test MongoRU Documents with ${name}`, () => {
     test.beforeEach("Open documents tab", async ({ page }) => {
+      await setupCORSBypass(page);
       explorer = await DataExplorer.open(page, TestAccount.MongoReadonly);
 
       const containerNode = await explorer.waitForContainerNode(databaseId, containerId);
