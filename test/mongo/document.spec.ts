@@ -26,6 +26,9 @@ for (const { name, databaseId, containerId, documents } of documentTestCases) {
       await documentsTab.documentsListPane.waitFor();
       await expect(documentsTab.resultsEditor.locator).toBeAttached({ timeout: 60 * 1000 });
     });
+    test.afterEach(async ({ page }) => {
+      await page.unrouteAll({ behavior: "ignoreErrors" });
+    });
 
     for (const document of documents) {
       const { documentId: docId, partitionKeys } = document;

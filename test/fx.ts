@@ -1,4 +1,4 @@
-import { AzureCliCredential } from "@azure/identity";
+import { DefaultAzureCredential } from "@azure/identity";
 import { Frame, Locator, Page, expect } from "@playwright/test";
 import crypto from "crypto";
 
@@ -20,8 +20,8 @@ export function generateUniqueName(baseName, options?: TestNameOptions): string 
   return `${prefix}${baseName}${crypto.randomBytes(length).toString("hex")}${suffix}`;
 }
 
-export function getAzureCLICredentials(): AzureCliCredential {
-  return new AzureCliCredential();
+export function getAzureCLICredentials(): DefaultAzureCredential {
+  return new DefaultAzureCredential();
 }
 
 export async function getAzureCLICredentialsToken(): Promise<string> {
