@@ -303,16 +303,19 @@ export default class Explorer {
       if (!hasRedirected && Date.now() - startTime < 1200) {
         hasRedirected = true;
         window.open(downloadUrl, "_blank");
+        logConsoleInfo("VS Code not detected. Opening download page.");
       }
     }, 1000);
 
     try {
       iframe.src = vscodeUrl;
       window.location.href = vscodeUrl;
+      logConsoleInfo("Opening VS Code");
     } catch (error) {
       if (!hasRedirected) {
         hasRedirected = true;
         window.open(downloadUrl, "_blank");
+        logConsoleError(`Failed to open VS Code: ${getErrorMessage(error)}`);
       }
     }
   }
