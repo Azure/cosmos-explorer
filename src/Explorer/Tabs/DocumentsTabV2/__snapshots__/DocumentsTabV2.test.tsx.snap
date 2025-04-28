@@ -51,6 +51,7 @@ exports[`Documents tab (noSql API) when rendered should render the page 1`] = `
       <Button
         appearance="primary"
         aria-label="Apply filter"
+        data-test="DocumentsTab/ApplyFilter"
         disabled={false}
         onClick={[Function]}
         size="small"
