@@ -1,5 +1,8 @@
 import { shallow } from "enzyme";
-import { PartitionKeyComponent, PartitionKeyComponentProps } from "Explorer/Controls/Settings/SettingsSubComponents/PartitionKeyComponent";
+import {
+  PartitionKeyComponent,
+  PartitionKeyComponentProps,
+} from "Explorer/Controls/Settings/SettingsSubComponents/PartitionKeyComponent";
 import Explorer from "Explorer/Explorer";
 import React from "react";
 
@@ -18,7 +21,7 @@ describe("PartitionKeyComponent", () => {
     const props: PartitionKeyComponentProps = {
       database: mockDatabase,
       collection: mockCollection,
-      explorer
+      explorer,
     };
 
     return { explorer, props };
