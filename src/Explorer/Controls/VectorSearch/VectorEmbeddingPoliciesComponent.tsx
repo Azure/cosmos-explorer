@@ -9,6 +9,7 @@ import {
   Stack,
   TextField,
 } from "@fluentui/react";
+import { InfoTooltip } from "Common/Tooltip/InfoTooltip";
 import { VectorEmbedding, VectorIndex } from "Contracts/DataModels";
 import { CollapsibleSectionComponent } from "Explorer/Controls/CollapsiblePanel/CollapsibleSectionComponent";
 import {
@@ -393,6 +394,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
                         styles={labelStyles}
                       >
                         Quantization byte size
+                        <InfoTooltip>Dynamic by default, can optionally be set to a fixed number</InfoTooltip>
                       </Label>
                       <TextField
                         disabled={
@@ -424,7 +426,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
                     </Stack>
                     <Stack style={{ marginLeft: "10px" }}>
                       <Label disabled={disabled || vectorEmbeddingPolicy.indexType !== "diskANN"} styles={labelStyles}>
-                        Shard key
+                        Vector Index Shard Key
                       </Label>
                       <TextField
                         disabled={disabled || vectorEmbeddingPolicy.indexType !== "diskANN"}
