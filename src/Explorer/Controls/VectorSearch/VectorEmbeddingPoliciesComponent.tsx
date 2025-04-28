@@ -394,7 +394,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
                         styles={labelStyles}
                       >
                         Quantization byte size
-                        <InfoTooltip>Dynamic by default, can optionally be set to a fixed number</InfoTooltip>
+                        <InfoTooltip>Dynamic by default, can optionally be set to a fixed number.</InfoTooltip>
                       </Label>
                       <TextField
                         disabled={
