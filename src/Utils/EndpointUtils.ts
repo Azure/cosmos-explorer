@@ -51,7 +51,10 @@ export const allowedAadEndpoints: ReadonlyArray<string> = [
   "https://login.partner.microsoftonline.cn/",
 ];
 
-export const defaultAllowedBackendEndpoints: ReadonlyArray<string> = ["https://localhost:1234"];
+export const defaultAllowedBackendEndpoints: ReadonlyArray<string> = [
+  "https://localhost:12901",
+  "https://localhost:1234",
+];
 
 export const PortalBackendOutboundIPs: { [key: string]: string[] } = {
   [PortalBackendEndpoints.Mpac]: ["13.91.105.215", "4.210.172.107"],
