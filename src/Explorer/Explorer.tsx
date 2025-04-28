@@ -300,12 +300,12 @@ export default class Explorer {
     document.body.appendChild(iframe);
 
     setTimeout(() => {
-      if (!hasRedirected && Date.now() - startTime < 1200) {
+      if (!hasRedirected && Date.now() - startTime < 2500) {
         hasRedirected = true;
         window.open(downloadUrl, "_blank");
         logConsoleInfo("VS Code not detected. Opening download page.");
       }
-    }, 1000);
+    }, 2500);
 
     try {
       iframe.src = vscodeUrl;
