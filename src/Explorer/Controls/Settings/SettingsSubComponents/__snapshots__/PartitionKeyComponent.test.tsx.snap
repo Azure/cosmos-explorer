@@ -32,7 +32,7 @@ exports[`PartitionKeyComponent renders default component and matches snapshot 1`
         }
       }
     >
-      Change
+      Change 
       partition key
     </Text>
     <Stack
@@ -59,7 +59,7 @@ exports[`PartitionKeyComponent renders default component and matches snapshot 1`
             }
           }
         >
-          Current
+          Current 
           partition key
         </Text>
         <Text
@@ -163,7 +163,7 @@ exports[`PartitionKeyComponent renders read-only component and matches snapshot 
             }
           }
         >
-          Current
+          Current 
           partition key
         </Text>
         <Text
