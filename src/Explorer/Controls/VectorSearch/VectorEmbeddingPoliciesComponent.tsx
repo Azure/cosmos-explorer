@@ -30,6 +30,7 @@ export interface IVectorEmbeddingPoliciesComponentProps {
   discardChanges?: boolean;
   onChangesDiscarded?: () => void;
   disabled?: boolean;
+  isGlobalSecondaryIndex?: boolean;
 }
 
 export interface VectorEmbeddingPolicyData {
@@ -87,6 +88,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
   discardChanges,
   onChangesDiscarded,
   disabled,
+  isGlobalSecondaryIndex,
 }): JSX.Element => {
   const onVectorEmbeddingPathError = (path: string, index?: number): string => {
     let error = "";
@@ -284,6 +286,11 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
     setVectorEmbeddingPolicyData(vectorEmbeddings);
   };
 
+  const getQuantizationByteSizeTooltipContent = (): string => {
+    const containerName: string = isGlobalSecondaryIndex ? "global secondary index" : "container";
+    return `This is dynamically set by the ${containerName} if left blank, or it can be set to a fixed number`;
+  };
+
   return (
     <Stack tokens={{ childrenGap: 4 }}>
       {vectorEmbeddingPolicyData &&
@@ -394,7 +401,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
                         styles={labelStyles}
                       >
                         Quantization byte size
-                        <InfoTooltip>Dynamic by default, can optionally be set to a fixed number.</InfoTooltip>
+                        <InfoTooltip>{getQuantizationByteSizeTooltipContent()}</InfoTooltip>
                       </Label>
                       <TextField
                         disabled={
@@ -426,7 +433,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
                     </Stack>
                     <Stack style={{ marginLeft: "10px" }}>
                       <Label disabled={disabled || vectorEmbeddingPolicy.indexType !== "diskANN"} styles={labelStyles}>
-                        Vector Index Shard Key
+                        Vector index shard key
                       </Label>
                       <TextField
                         disabled={disabled || vectorEmbeddingPolicy.indexType !== "diskANN"}
