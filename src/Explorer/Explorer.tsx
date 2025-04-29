@@ -283,41 +283,55 @@ export default class Explorer {
   }
 
   public openInVsCode(): void {
-    const activeTab = useTabs.getState().activeTab;
-    const resourceId = encodeURIComponent(userContext.databaseAccount.id);
-    const database = encodeURIComponent(activeTab?.collection?.databaseId);
-    const container = encodeURIComponent(activeTab?.collection?.id());
-    const downloadUrl = "https://code.visualstudio.com/download";
+    const openVSCodeDialogProps: DialogProps = {
+      linkProps: {
+        linkText: "Download Visual Studio Code",
+        linkUrl: "https://code.visualstudio.com/download",
+      },
+      isModal: true,
+      title: `Open your Cosmos DB account in Visual Studio Code`,
+      subText: `Please ensure Visual Studio Code is installed on your device.
+      If you don't have it installed, please download it from the link below.`,
+      primaryButtonText: "Open in VS Code",
+      secondaryButtonText: "Cancel",
 
-    const baseUrl = `vscode://ms-azuretools.vscode-cosmosdb?resourceId=${resourceId}`;
-    const vscodeUrl = activeTab ? `${baseUrl}&database=${database}&container=${container}` : baseUrl;
+      onPrimaryButtonClick: () => {
+        TelemetryProcessor.traceStart(Action.OpenVSCode);
 
-    const startTime = Date.now();
-    let hasRedirected = false;
+        const activeTab = useTabs.getState().activeTab;
+        const resourceId = encodeURIComponent(userContext.databaseAccount.id);
+        const database = encodeURIComponent(activeTab?.collection?.databaseId);
+        const container = encodeURIComponent(activeTab?.collection?.id());
+        const baseUrl = `vscode://ms-azuretools.vscode-cosmosdb?resourceId=${resourceId}`;
+        const vscodeUrl = activeTab ? `${baseUrl}&database=${database}&container=${container}` : baseUrl;
+        const startTime = Date.now();
+        let hasRedirected = false;
 
-    const iframe = document.createElement("iframe");
-    iframe.style.display = "none";
-    document.body.appendChild(iframe);
+        setTimeout(() => {
+          if (!hasRedirected && Date.now() - startTime < 1200) {
+            hasRedirected = true;
+            logConsoleInfo(
+              "Visual Studio Code not detected. Please download it from: https://code.visualstudio.com/download",
+            );
+          }
+        }, 1000);
 
-    setTimeout(() => {
-      if (!hasRedirected && Date.now() - startTime < 2500) {
-        hasRedirected = true;
-        window.open(downloadUrl, "_blank");
-        logConsoleInfo("VS Code not detected. Opening download page.");
-      }
-    }, 2500);
-
-    try {
-      iframe.src = vscodeUrl;
-      window.location.href = vscodeUrl;
-      logConsoleInfo("Opening VS Code");
-    } catch (error) {
-      if (!hasRedirected) {
-        hasRedirected = true;
-        window.open(downloadUrl, "_blank");
-        logConsoleError(`Failed to open VS Code: ${getErrorMessage(error)}`);
-      }
-    }
+        try {
+          window.location.href = vscodeUrl;
+        } catch (error) {
+          if (!hasRedirected) {
+            hasRedirected = true;
+            logConsoleError(`Failed to open VS Code: ${getErrorMessage(error)}`);
+          }
+        }
+      },
+      onSecondaryButtonClick: () => {
+        useDialog.getState().closeDialog();
+        TelemetryProcessor.traceCancel(Action.OpenVSCode);
+      },
+    };
+    useDialog.getState().openDialog(openVSCodeDialogProps);
+    TelemetryProcessor.traceStart(Action.OpenVSCode);
   }
 
   public async openCESCVAFeedbackBlade(): Promise<void> {
