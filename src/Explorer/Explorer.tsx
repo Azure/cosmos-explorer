@@ -283,56 +283,61 @@ export default class Explorer {
   }
 
   public openInVsCode(): void {
+    const startTime = Date.now();
+    let vsCodeNotOpened = false;
+
+    setTimeout(() => {
+      if (!vsCodeNotOpened && Date.now() - startTime < 1200) {
+        vsCodeNotOpened = true;
+        useDialog.getState().openDialog(openVSCodeDialogProps);
+      }
+    }, 1000);
+
+    TelemetryProcessor.traceStart(Action.OpenVSCode);
+    this.openVsCodeButtonClick();
+
     const openVSCodeDialogProps: DialogProps = {
       linkProps: {
         linkText: "Download Visual Studio Code",
         linkUrl: "https://code.visualstudio.com/download",
       },
       isModal: true,
-      title: `Open your Cosmos DB account in Visual Studio Code`,
+      title: `Please Download Visual Studio Code`,
       subText: `Please ensure Visual Studio Code is installed on your device.
       If you don't have it installed, please download it from the link below.`,
-      primaryButtonText: "Open in VS Code",
+      primaryButtonText: "Open VS Code",
       secondaryButtonText: "Cancel",
 
       onPrimaryButtonClick: () => {
-        TelemetryProcessor.traceStart(Action.OpenVSCode);
-
-        const activeTab = useTabs.getState().activeTab;
-        const resourceId = encodeURIComponent(userContext.databaseAccount.id);
-        const database = encodeURIComponent(activeTab?.collection?.databaseId);
-        const container = encodeURIComponent(activeTab?.collection?.id());
-        const baseUrl = `vscode://ms-azuretools.vscode-cosmosdb?resourceId=${resourceId}`;
-        const vscodeUrl = activeTab ? `${baseUrl}&database=${database}&container=${container}` : baseUrl;
-        const startTime = Date.now();
-        let vsCodeNotOpened = false;
-
-        setTimeout(() => {
-          if (!vsCodeNotOpened && Date.now() - startTime < 1500) {
-            vsCodeNotOpened = true;
-            logConsoleInfo(
-              "Visual Studio Code not detected. Please download it from: https://code.visualstudio.com/download",
-            );
-          }
-        }, 1000);
-
-        try {
-          window.location.href = vscodeUrl;
-        } catch (error) {
-          if (!vsCodeNotOpened) {
-            vsCodeNotOpened = true;
-            logConsoleError(`Failed to open VS Code: ${getErrorMessage(error)}`);
-          }
-        }
+        this.openVsCodeButtonClick();
+        useDialog.getState().closeDialog();
       },
       onSecondaryButtonClick: () => {
         useDialog.getState().closeDialog();
         TelemetryProcessor.traceCancel(Action.OpenVSCode);
       },
     };
-    useDialog.getState().openDialog(openVSCodeDialogProps);
-    TelemetryProcessor.traceStart(Action.OpenVSCode);
   }
+
+  public openVsCodeButtonClick = (): void => {
+    const activeTab = useTabs.getState().activeTab;
+    const resourceId = encodeURIComponent(userContext.databaseAccount.id);
+    const database = encodeURIComponent(activeTab?.collection?.databaseId);
+    const container = encodeURIComponent(activeTab?.collection?.id());
+    const baseUrl = `vsco://ms-azuretools.vscode-cosmosdb?resourceId=${resourceId}`;
+    const vscodeUrl = activeTab ? `${baseUrl}&database=${database}&container=${container}` : baseUrl;
+    let vsCodeNotOpened = false;
+
+    try {
+      window.location.href = vscodeUrl;
+      TelemetryProcessor.traceStart(Action.OpenVSCode);
+    } catch (error) {
+      if (!vsCodeNotOpened) {
+        vsCodeNotOpened = true;
+        logConsoleError(`Failed to open VS Code: ${getErrorMessage(error)}`);
+      }
+    }
+  };
 
   public async openCESCVAFeedbackBlade(): Promise<void> {
     sendMessage({ type: MessageTypes.OpenCESCVAFeedbackBlade });
