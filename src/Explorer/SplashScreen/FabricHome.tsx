@@ -5,7 +5,7 @@ import { Link, makeStyles, tokens } from "@fluentui/react-components";
 import { DocumentAddRegular, LinkMultipleRegular } from "@fluentui/react-icons";
 import { SampleDataImportDialog } from "Explorer/SplashScreen/SampleDataImportDialog";
 import { CosmosFluentProvider } from "Explorer/Theme/ThemeUtil";
-import { isFabricNative } from "Platform/Fabric/FabricUtil";
+import { isFabricNative, openSettingsConnectionTab } from "Platform/Fabric/FabricUtil";
 import * as React from "react";
 import { userContext } from "UserContext";
 import CosmosDbBlackIcon from "../../../images/CosmosDB_black.svg";
@@ -146,7 +146,7 @@ export const FabricHomeScreen: React.FC<SplashScreenProps> = (props: SplashScree
         title: "App development",
         description: "Start here to use an SDK to build your apps",
         icon: <LinkMultipleRegular />,
-        onClick: () => window.open("https://aka.ms/cosmosdbfabricsdk", "_blank"),
+        onClick: () => openSettingsConnectionTab(),
       },
     ];
 

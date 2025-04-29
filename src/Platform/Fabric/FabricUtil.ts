@@ -128,6 +128,15 @@ export const checkDatabaseResourceTokensValidity = (tokenTimestamp: number): voi
   }
 };
 
+/**
+ * Open the connection tab in the settings page of the Fabric UX extension
+ */
+export const openSettingsConnectionTab = (): void => {
+  if (configContext.platform === Platform.Fabric) {
+    sendCachedDataMessage(FabricMessageTypes.OpenSettings, [{ settingsId: "Connection" }]);
+  }
+};
+
 export const isFabric = (): boolean => configContext.platform === Platform.Fabric;
 export const isFabricMirroredKey = (): boolean =>
   isFabric() && userContext.fabricContext?.artifactType === CosmosDbArtifactType.MIRRORED_KEY;
