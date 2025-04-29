@@ -308,7 +308,7 @@ export default class Explorer {
         let vsCodeNotOpened = false;
 
         setTimeout(() => {
-          if (!vsCodeNotOpened && Date.now() - startTime < 1200) {
+          if (!vsCodeNotOpened && Date.now() - startTime < 1500) {
             vsCodeNotOpened = true;
             logConsoleInfo(
               "Visual Studio Code not detected. Please download it from: https://code.visualstudio.com/download",
