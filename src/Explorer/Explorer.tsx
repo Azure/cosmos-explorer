@@ -305,11 +305,11 @@ export default class Explorer {
         const baseUrl = `vscode://ms-azuretools.vscode-cosmosdb?resourceId=${resourceId}`;
         const vscodeUrl = activeTab ? `${baseUrl}&database=${database}&container=${container}` : baseUrl;
         const startTime = Date.now();
-        let hasRedirected = false;
+        let vsCodeNotOpened = false;
 
         setTimeout(() => {
-          if (!hasRedirected && Date.now() - startTime < 1200) {
-            hasRedirected = true;
+          if (!vsCodeNotOpened && Date.now() - startTime < 1200) {
+            vsCodeNotOpened = true;
             logConsoleInfo(
               "Visual Studio Code not detected. Please download it from: https://code.visualstudio.com/download",
             );
@@ -319,8 +319,8 @@ export default class Explorer {
         try {
           window.location.href = vscodeUrl;
         } catch (error) {
-          if (!hasRedirected) {
-            hasRedirected = true;
+          if (!vsCodeNotOpened) {
+            vsCodeNotOpened = true;
             logConsoleError(`Failed to open VS Code: ${getErrorMessage(error)}`);
           }
         }
