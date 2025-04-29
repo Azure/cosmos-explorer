@@ -9,7 +9,7 @@ let documentsTab: DocumentsTab = null!;
 
 for (const { name, databaseId, containerId, documents } of documentTestCases) {
   test.describe(`Test SQL Documents with ${name}`, () => {
-    test.skip(true, "Temporarily disabling all tests in this spec file");
+    // test.skip(true, "Temporarily disabling all tests in this spec file");
     test.beforeEach("Open documents tab", async ({ page }) => {
       explorer = await DataExplorer.open(page, TestAccount.SQLReadOnly);
 
