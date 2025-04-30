@@ -304,8 +304,7 @@ export default class Explorer {
       isModal: true,
       title: ` Open your Cosmos DB account in Visual Studio Code`,
       subText: `Please ensure Visual Studio Code is installed on your device.
-      If you don't have it installed, please download it from the link below.
-      After installation, ensure you have the Azure Databases and Azure Resources extensions installed.`,
+      If you don't have it installed, please download it from the link below.`,
       primaryButtonText: "Open VS Code",
       secondaryButtonText: "Cancel",
 
