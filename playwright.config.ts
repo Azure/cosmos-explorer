@@ -37,20 +37,51 @@ export default defineConfig({
     },
     {
       name: "firefox",
-      use: { ...devices["Desktop Firefox"] },
+      use: {
+        ...devices["Desktop Firefox"],
+        launchOptions: {
+          firefoxUserPrefs: {
+            "security.fileuri.strict_origin_policy": false,
+            "network.http.referer.XOriginPolicy": 0,
+            "network.http.referer.trimmingPolicy": 0,
+            "privacy.file_unique_origin": false,
+            "security.csp.enable": false,
+            "network.cors_preflight.allow_client_cert": true,
+            "dom.security.https_first": false,
+            "network.http.cross-origin-embedder-policy": false,
+            "network.http.cross-origin-opener-policy": false,
+            "browser.tabs.remote.useCrossOriginPolicy": false,
+            "browser.tabs.remote.useCORP": false,
+          },
+          args: ["--disable-web-security"],
+        },
+      },
     },
     {
       name: "webkit",
-      use: { ...devices["Desktop Safari"] },
+      use: {
+        ...devices["Desktop Safari"],
+      },
     },
-    /* Test against branded browsers. */
     {
       name: "Google Chrome",
-      use: { ...devices["Desktop Chrome"], channel: "chrome" }, // or 'chrome-beta'
+      use: {
+        ...devices["Desktop Chrome"],
+        channel: "chrome",
+        launchOptions: {
+          args: ["--disable-web-security", "--disable-features=IsolateOrigins,site-per-process"],
+        },
+      },
     },
     {
       name: "Microsoft Edge",
-      use: { ...devices["Desktop Edge"], channel: "msedge" }, // or 'msedge-dev'
+      use: {
+        ...devices["Desktop Edge"],
+        channel: "msedge",
+        launchOptions: {
+          args: ["--disable-web-security", "--disable-features=IsolateOrigins,site-per-process"],
+        },
+      },
     },
   ],
 
