@@ -302,7 +302,7 @@ export default class Explorer {
         linkUrl: "https://code.visualstudio.com/download",
       },
       isModal: true,
-      title: `Please Download Visual Studio Code`,
+      title: ` Open your Cosmos DB account in Visual Studio Code`,
       subText: `Please ensure Visual Studio Code is installed on your device.
       If you don't have it installed, please download it from the link below.`,
       primaryButtonText: "Open VS Code",
