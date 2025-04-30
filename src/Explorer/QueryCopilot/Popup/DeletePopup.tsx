@@ -22,12 +22,17 @@ export const DeletePopup = ({
   };
 
   return (
-    <Modal isOpen={showDeletePopup} styles={{ main: { minHeight: "122px", minWidth: "880px" } }}>
+    <Modal
+      isOpen={showDeletePopup}
+      styles={{ main: { minHeight: "122px", minWidth: "880px" } }}
+      titleAriaId="deleteDialogTitle"
+      subtitleAriaId="deleteDialogSubTitle"
+    >
       <Stack style={{ padding: "16px 24px", height: "auto" }}>
-        <Text style={{ height: 24, fontSize: "18px" }}>
+        <Text id="deleteDialogTitle" style={{ height: 24, fontSize: "18px" }}>
           <b>Delete code?</b>
         </Text>
-        <Text style={{ marginTop: 10, marginBottom: 20 }}>
+        <Text id="deleteDialogSubTitle" style={{ marginTop: 10, marginBottom: 20 }}>
           This will clear the query from the query builder pane along with all comments and also reset the prompt pane
         </Text>
         <Stack horizontal tokens={{ childrenGap: 10 }} horizontalAlign="start">
