@@ -5,7 +5,24 @@ export const documentTestCases: DocumentTestCase[] = [
     name: "System Partition Key",
     databaseId: "e2etests-sql-readonly",
     containerId: "systemPartitionKey",
-    documents: [{ documentId: "systempartition", partitionKeys: [] }],
+    documents: [
+      {
+        documentId: "systempartition",
+        partitionKeys: [{ key: "/_partitionKey", value: "partitionKey" }],
+        skipCreateDelete: true,
+      },
+      {
+        documentId: "systempartition_empty",
+        partitionKeys: [{ key: "/_partitionKey", value: "" }],
+        skipCreateDelete: true,
+      },
+      {
+        documentId: "systempartition_null",
+        partitionKeys: [{ key: "/_partitionKey", value: null }],
+        skipCreateDelete: true,
+      },
+      { documentId: "systempartition_missing", partitionKeys: [] },
+    ],
   },
   {
     name: "Single Partition Key",
