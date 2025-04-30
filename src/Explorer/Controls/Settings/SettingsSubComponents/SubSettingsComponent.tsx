@@ -1,4 +1,4 @@
-import { ChoiceGroup, IChoiceGroupOption, Label, Link, MessageBar, Stack, Text, TextField } from "@fluentui/react";
+import { ChoiceGroup, IChoiceGroupOption, Label, Link, MessageBar, Stack, Text, TextField, getTheme, mergeStyleSets } from "@fluentui/react";
 import * as React from "react";
 import * as ViewModels from "../../../../Contracts/ViewModels";
 import { userContext } from "../../../../UserContext";
@@ -25,6 +25,13 @@ import {
 } from "../SettingsUtils";
 import { ToolTipLabelComponent } from "./ToolTipLabelComponent";
 
+const theme = getTheme();
+
+const classNames = mergeStyleSets({
+  hintText: {
+    color: 'var(--colorNeutralForeground1)', // theme-aware
+  },
+});
 export interface SubSettingsComponentProps {
   collection: ViewModels.Collection;
   timeToLive: TtlType;
@@ -181,7 +188,19 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
     userContext.apiType === "Mongo" ? (
       <MessageBar
         messageBarIconProps={{ iconName: "InfoSolid", className: "messageBarInfoIcon" }}
-        styles={{ text: { fontSize: 14 } }}
+        styles={{
+          root: {
+            backgroundColor: 'var(--colorNeutralBackground1)',
+            color: 'var(--colorNeutralForeground1)'
+          },
+          text: {
+            fontSize: 14,
+            color: theme.semanticColors.bodyText,
+          },
+          icon: {
+            color: theme.semanticColors.bodyText,
+          },
+        }}
       >
         To enable time-to-live (TTL) for your collection/documents,
         <Link href="https://docs.microsoft.com/en-us/azure/cosmos-db/mongodb-time-to-live" target="_blank">
@@ -191,7 +210,7 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
       </MessageBar>
     ) : (
       <Stack {...titleAndInputStackProps}>
-        <ChoiceGroup
+        <ChoiceGroup  
           id="timeToLive"
           label="Time to Live"
           selectedKey={this.props.timeToLive}
@@ -323,14 +342,14 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
       )}
 
       {userContext.apiType === "SQL" && this.isLargePartitionKeyEnabled() && (
-        <Text>Large {this.partitionKeyName.toLowerCase()} has been enabled.</Text>
+        <Text className={classNames.hintText}>Large {this.partitionKeyName.toLowerCase()} has been enabled.</Text>
       )}
 
       {userContext.apiType === "SQL" &&
         (this.isHierarchicalPartitionedContainer() ? (
-          <Text>Hierarchically partitioned container.</Text>
-        ) : (
-          <Text>Non-hierarchically partitioned container.</Text>
+          <Text className={classNames.hintText}>Hierarchically partitioned container.</Text>
+      ) : (
+        <Text className={classNames.hintText}>Non-hierarchically partitioned container.</Text>
         ))}
     </Stack>
   );

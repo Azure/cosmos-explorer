@@ -2,7 +2,7 @@
 import "./ReactDevTools";
 
 // CSS Dependencies
-import { initializeIcons, loadTheme } from "@fluentui/react";
+import { initializeIcons, loadTheme, useTheme } from "@fluentui/react";
 import { FluentProvider, makeStyles, webDarkTheme, webLightTheme } from "@fluentui/react-components";
 import { Platform } from "ConfigContext";
 import { QuickstartCarousel } from "Explorer/Quickstart/QuickstartCarousel";
@@ -81,7 +81,7 @@ const App = (): JSX.Element => {
   const isCarouselOpen = useCarousel((state) => state.shouldOpen);
   const isCopilotCarouselOpen = useCarousel((state) => state.showCopilotCarousel);
   const styles = useStyles();
-
+  const theme = useTheme();
 
   if (config?.platform === Platform.Fabric) {
     loadTheme(appThemeFabric);

@@ -235,12 +235,12 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
       );
       return (
         <div>
-          <Text style={{ fontWeight: 600 }}>Updated cost per month</Text>
+          <Text style={{ fontWeight: 600 , color: 'var(--colorNeutralForeground1)' }}>Updated cost per month</Text>
           <Stack horizontal style={{ marginTop: 5, marginBottom: 10 }}>
-            <Text style={{ width: "50%" }}>
+            <Text style={{ width: "50%" , color: 'var(--colorNeutralForeground1)' }}>
               {newPrices.currencySign} {calculateEstimateNumber(newPrices.monthlyPrice / 10)} min
             </Text>
-            <Text style={{ width: "50%" }}>
+            <Text style={{ width: "50%" , color: 'var(--colorNeutralForeground1)'}}>
               {newPrices.currencySign} {calculateEstimateNumber(newPrices.monthlyPrice)} max
             </Text>
           </Stack>
@@ -253,12 +253,12 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
       return (
         <Stack {...checkBoxAndInputStackProps} style={{ marginTop: 15 }}>
           {newThroughput && newThroughputCostElement()}
-          <Text style={{ fontWeight: 600 }}>Current cost per month</Text>
-          <Stack horizontal style={{ marginTop: 5 }}>
-            <Text style={{ width: "50%" }}>
+          <Text style={{ fontWeight: 600, color: 'var(--colorNeutralForeground1)' }}>Current cost per month</Text>
+          <Stack horizontal style={{ marginTop: 5, color: 'var(--colorNeutralForeground1)' }}>
+            <Text style={{ width: "50%" , color: 'var(--colorNeutralForeground1)' }}>
               {prices.currencySign} {calculateEstimateNumber(prices.monthlyPrice / 10)} min
             </Text>
-            <Text style={{ width: "50%" }}>
+            <Text style={{ width: "50%" , color: 'var(--colorNeutralForeground1)' }}>
               {prices.currencySign} {calculateEstimateNumber(prices.monthlyPrice)} max
             </Text>
           </Stack>
@@ -268,7 +268,10 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
 
     return getEstimatedSpendingElement(costElement(), newThroughput ?? throughput, numberOfRegions, prices, true);
   };
-
+  settingsAndScaleStyle = {
+    root: {  width: "33%", 
+      color: 'var(--colorNeutralForeground1)' },
+  };
   private getEstimatedManualSpendElement = (
     throughput: number,
     serverId: string,
@@ -288,36 +291,36 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
       );
       return (
         <div>
-          <Text style={{ fontWeight: 600 }}>Updated cost per month</Text>
+          <Text style={{ fontWeight: 600, color: 'var(--colorNeutralForeground1)' }}>Updated cost per month</Text>
           <Stack horizontal style={{ marginTop: 5, marginBottom: 10 }}>
-            <Text style={{ width: "33%" }}>
+            <Text style={ this.settingsAndScaleStyle.root }>
               {newPrices.currencySign} {calculateEstimateNumber(newPrices.hourlyPrice)}/hr
             </Text>
-            <Text style={{ width: "33%" }}>
+            <Text style={ this.settingsAndScaleStyle.root }>
               {newPrices.currencySign} {calculateEstimateNumber(newPrices.dailyPrice)}/day
             </Text>
-            <Text style={{ width: "33%" }}>
+            <Text style={ this.settingsAndScaleStyle.root }>
               {newPrices.currencySign} {calculateEstimateNumber(newPrices.monthlyPrice)}/mo
             </Text>
           </Stack>
         </div>
       );
     };
-
+ 
     const costElement = (): JSX.Element => {
       const prices: PriceBreakdown = getRuPriceBreakdown(throughput, serverId, numberOfRegions, isMultimaster, false);
       return (
         <Stack {...checkBoxAndInputStackProps} style={{ marginTop: 15 }}>
           {newThroughput && newThroughputCostElement()}
-          <Text style={{ fontWeight: 600 }}>Current cost per month</Text>
+          <Text style={{ fontWeight: 600 , color: 'var(--colorNeutralForeground1)'}}>Current cost per month</Text>
           <Stack horizontal style={{ marginTop: 5 }}>
-            <Text style={{ width: "33%" }}>
+            <Text style={ this.settingsAndScaleStyle.root }>
               {prices.currencySign} {calculateEstimateNumber(prices.hourlyPrice)}/hr
             </Text>
-            <Text style={{ width: "33%" }}>
+            <Text style={ this.settingsAndScaleStyle.root }>
               {prices.currencySign} {calculateEstimateNumber(prices.dailyPrice)}/day
             </Text>
-            <Text style={{ width: "33%" }}>
+            <Text style={ this.settingsAndScaleStyle.root }>
               {prices.currencySign} {calculateEstimateNumber(prices.monthlyPrice)}/mo
             </Text>
           </Stack>
@@ -402,8 +405,8 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     const capacity: string = this.props.isFixed ? "Fixed" : "Unlimited";
     return (
       <Stack {...titleAndInputStackProps}>
-        <Label>Storage capacity</Label>
-        <Text>{capacity}</Text>
+        <Label style={{ color: 'var(--colorNeutralForeground1)'}}>Storage capacity</Label>
+        <Text  style={{ color: 'var(--colorNeutralForeground1)'}}>{capacity}</Text>
       </Stack>
     );
   };
@@ -608,7 +611,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
             </Stack>
           )}
           {this.props.isAutoPilotSelected ? (
-            <Text style={{ marginTop: "40px" }}>
+            <Text style={{ marginTop: "40px" , color: 'var(--colorNeutralForeground1)'}}>
               Based on usage, your {this.props.collectionName ? "container" : "database"} throughput will scale from{" "}
               <b>
                 {AutoPilotUtils.getMinRUsBasedOnUserInput(this.props.maxAutoPilotThroughput)} RU/s (10% of max RU/s) -{" "}
@@ -630,7 +633,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
             </>
           )}
           {!this.overrideWithProvisionedThroughputSettings() && (
-            <Text>
+            <Text style={{ color: 'var(--colorNeutralForeground1)'}}>
               Estimate your required RU/s with
               <Link target="_blank" href="https://cosmos.azure.com/capacitycalculator/">
                 {` capacity calculator`} <FontIcon iconName="NavigateExternalInline" />

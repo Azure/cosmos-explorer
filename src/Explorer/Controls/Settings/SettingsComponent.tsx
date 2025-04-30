@@ -1,4 +1,4 @@
-import { IPivotItemProps, IPivotProps, Pivot, PivotItem } from "@fluentui/react";
+import { IPivotItemProps, IPivotProps, Pivot, PivotItem, Stack, getTheme } from "@fluentui/react";
 import {
   ComputedPropertiesComponent,
   ComputedPropertiesComponentProps,
@@ -1137,6 +1137,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   };
 
   public render(): JSX.Element {
+    const theme = getTheme();
     const scaleComponentProps: ScaleComponentProps = {
       collection: this.collection,
       database: this.database,
@@ -1340,28 +1341,101 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       selectedKey: SettingsV2TabTypes[this.state.selectedTab],
     };
 
-    const pivotItems = tabs.map((tab) => {
-      const pivotItemProps: IPivotItemProps = {
-        itemKey: SettingsV2TabTypes[tab.tab],
-        style: { marginTop: 20 },
-        headerText: getTabTitle(tab.tab),
-      };
+    const pivotStyles = {
+      root: {
+        backgroundColor: 'var(--colorNeutralBackground1)',
+        color: 'var(--colorNeutralForeground1)',
+        selectors: {
+          '& .ms-Pivot-link': {
+            color: 'var(--colorNeutralForeground1)'
+          },
+          '& .ms-Pivot-link.is-selected::before': {
+            backgroundColor: 'var(--colorCompoundBrandBackground)'
+          },
+         
+        }
+      },
+      link: {
+        backgroundColor: 'var(--colorNeutralBackground1)',
+        color: 'var(--colorNeutralForeground1)',
+        selectors: {
+          '&:hover': {
+            backgroundColor: 'var(--colorNeutralBackground1)',
+            color: 'var(--colorNeutralForeground1)'
+          },
+          '&:active': {
+            backgroundColor: 'var(--colorNeutralBackground1)',
+            color: 'var(--colorNeutralForeground1)'
+          },
+          '&[aria-selected="true"]': {
+            backgroundColor: 'var(--colorNeutralBackground1)',
+            color: 'var(--colorNeutralForeground1)',
+            selectors: {
+              '&:hover': {
+                backgroundColor: 'var(--colorNeutralBackground1)',
+                color: 'var(--colorNeutralForeground1)'
+              },
+              '&:active': {
+                backgroundColor: 'var(--colorNeutralBackground1)',
+                color: 'var(--colorNeutralForeground1)'
+              }
+            }
+          }
+        }
+      },
+   
+      itemContainer: {
+        // padding: '20px 24px',
+        backgroundColor: 'var(--colorNeutralBackground1)',
+        color: 'var(--colorNeutralForeground1)'
+      }
+    };
 
-      return (
-        <PivotItem key={pivotItemProps.itemKey} {...pivotItemProps}>
-          {tab.content}
-        </PivotItem>
-      );
-    });
-
+    const contentStyles = {
+      root: {
+        backgroundColor: 'var(--colorNeutralBackground1)',
+        color: 'var(--colorNeutralForeground1)',
+        // padding: '20px 24px'
+      }
+    };
+    
     return (
-      <div className="settingsV2MainContainer">
+      <div className="settingsV2MainContainer" style={{ 
+        backgroundColor: 'var(--colorNeutralBackground1)',
+        color: 'var(--colorNeutralForeground1)',
+        position: 'relative'
+      } as React.CSSProperties}>
         {this.shouldShowKeyspaceSharedThroughputMessage() && (
           <div>This table shared throughput is configured at the keyspace</div>
         )}
 
-        <div className="settingsV2TabsContainer">
-          <Pivot {...pivotProps}>{pivotItems}</Pivot>
+        <div className="settingsV2TabsContainer" style={{ 
+          backgroundColor: 'var(--colorNeutralBackground1)',
+          color: 'var(--colorNeutralForeground1)',
+          position: 'relative',
+          padding: '20px 24px'
+        } as React.CSSProperties}>
+          <Pivot {...pivotProps} styles={pivotStyles}>
+            {tabs.map((tab) => {
+              const pivotItemProps: IPivotItemProps = {
+                itemKey: SettingsV2TabTypes[tab.tab],
+                style: { 
+                  marginTop: 20,
+                  backgroundColor: 'var(--colorNeutralBackground1)',
+                  color: 'var(--colorNeutralForeground1)'
+                },
+                headerText: getTabTitle(tab.tab),
+              };
+
+              return (
+                <PivotItem key={pivotItemProps.itemKey} {...pivotItemProps}>
+                  <Stack styles={contentStyles}>
+                    {tab.content}
+                  </Stack>
+                </PivotItem>
+              );
+            })}
+          </Pivot>
         </div>
       </div>
     );
