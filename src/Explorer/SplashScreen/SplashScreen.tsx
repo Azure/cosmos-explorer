@@ -817,7 +817,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
 
   private vcoreMongoNextStepItems: { link: string; title: string; description: string }[] = [
     {
-      link: "https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/vcore/migration-options",
+      link: "https://learn.microsoft.com/azure/cosmos-db/mongodb/vcore/migration-options",
       title: "Migrate Data",
       description: "",
     },
