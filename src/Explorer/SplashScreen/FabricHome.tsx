@@ -5,7 +5,7 @@ import { Link, makeStyles, tokens } from "@fluentui/react-components";
 import { DocumentAddRegular, LinkMultipleRegular } from "@fluentui/react-icons";
 import { SampleDataImportDialog } from "Explorer/SplashScreen/SampleDataImportDialog";
 import { CosmosFluentProvider } from "Explorer/Theme/ThemeUtil";
-import { isFabricNative, openSettingsConnectionTab } from "Platform/Fabric/FabricUtil";
+import { isFabricNative, isFabricNativeReadOnly, openSettingsConnectionTab } from "Platform/Fabric/FabricUtil";
 import * as React from "react";
 import { userContext } from "UserContext";
 import CosmosDbBlackIcon from "../../../images/CosmosDB_black.svg";
@@ -59,6 +59,15 @@ const useStyles = makeStyles({
     "& svg": {
       width: "32px",
       height: "32px",
+      margin: "auto",
+    },
+  },
+  single: {
+    gridColumn: "1 / 4",
+    gridRow: "1 / 3",
+    "& svg": {
+      width: "64px",
+      height: "64px",
       margin: "auto",
     },
   },
@@ -150,7 +159,11 @@ export const FabricHomeScreen: React.FC<SplashScreenProps> = (props: SplashScree
       },
     ];
 
-    return (
+    return isFabricNativeReadOnly() ? (
+      <div className={styles.buttonsContainer}>
+        <FabricHomeScreenButton className={styles.single} {...buttons[2]} />
+      </div>
+    ) : (
       <div className={styles.buttonsContainer}>
         <FabricHomeScreenButton className={styles.one} {...buttons[0]} />
         <FabricHomeScreenButton className={styles.two} {...buttons[1]} />
@@ -159,7 +172,7 @@ export const FabricHomeScreen: React.FC<SplashScreenProps> = (props: SplashScree
     );
   };
 
-  const title = "Build your database";
+  const title = isFabricNativeReadOnly() ? "Use your database" : "Build your database";
   return (
     <>
       <CosmosFluentProvider className={styles.homeContainer}>

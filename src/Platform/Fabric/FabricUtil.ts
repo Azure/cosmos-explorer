@@ -145,3 +145,4 @@ export const isFabricMirroredAAD = (): boolean =>
 export const isFabricMirrored = (): boolean => isFabricMirroredKey() || isFabricMirroredAAD();
 export const isFabricNative = (): boolean =>
   isFabric() && userContext.fabricContext?.artifactType === CosmosDbArtifactType.NATIVE;
+export const isFabricNativeReadOnly = (): boolean => isFabricNative() && !!userContext.fabricContext?.isReadOnly;
