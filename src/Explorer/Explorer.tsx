@@ -299,7 +299,6 @@ export default class Explorer {
 
     setTimeout(() => {
       const timeOutTime = Date.now() - startTime;
-      console.log("Timed out in: ", timeOutTime);
       if (!vsCodeNotOpened && timeOutTime < 1300) {
         vsCodeNotOpened = true;
         useDialog.getState().openDialog(openVSCodeDialogProps);
