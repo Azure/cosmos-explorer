@@ -773,8 +773,11 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     [_collection, _partitionKey],
   );
   const partitionKeyPropertyHeaders: string[] = useMemo(
-    () => (partitionKey?.systemKey ? [] : _collection?.partitionKeyPropertyHeaders || partitionKey?.paths),
-    [_collection?.partitionKeyPropertyHeaders, partitionKey?.paths, partitionKey?.systemKey],
+    () =>
+      isPreferredApiMongoDB && partitionKey?.systemKey
+        ? []
+        : _collection?.partitionKeyPropertyHeaders || partitionKey?.paths,
+    [_collection?.partitionKeyPropertyHeaders, partitionKey?.paths, partitionKey?.systemKey, isPreferredApiMongoDB],
   );
   let partitionKeyProperties = useMemo(() => {
     return partitionKeyPropertyHeaders?.map((partitionKeyPropertyHeader) =>
@@ -2116,6 +2119,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
           />
           <Button
             appearance="primary"
+            data-test={"DocumentsTab/ApplyFilter"}
             size="small"
             onClick={() => {
               if (isExecuting) {
@@ -2188,6 +2192,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
               {tableItems.length > 0 && (
                 <a
                   className={styles.loadMore}
+                  data-test={"DocumentsTab/LoadMore"}
                   role="button"
                   tabIndex={0}
                   onClick={() => loadNextPage(documentsIterator.iterator, false)}
