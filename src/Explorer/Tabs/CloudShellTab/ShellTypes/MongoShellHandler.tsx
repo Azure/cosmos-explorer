@@ -2,8 +2,6 @@ import { userContext } from "../../../../UserContext";
 import { getHostFromUrl } from "../Utils/CommonUtils";
 import { AbstractShellHandler } from "./AbstractShellHandler";
 
-const PACKAGE_VERSION: string = "2.5.0";
-
 export class MongoShellHandler extends AbstractShellHandler {
   private _key: string;
   private _endpoint: string | undefined;
@@ -18,14 +16,7 @@ export class MongoShellHandler extends AbstractShellHandler {
   }
 
   public getSetUpCommands(): string[] {
-    return [
-      "if ! command -v mongosh &> /dev/null; then echo '⚠️ mongosh not found. Installing...'; fi",
-      `if ! command -v mongosh &> /dev/null; then curl -LO https://downloads.mongodb.com/compass/mongosh-${PACKAGE_VERSION}-linux-x64.tgz; fi`,
-      `if ! command -v mongosh &> /dev/null; then tar -xvzf mongosh-${PACKAGE_VERSION}-linux-x64.tgz; fi`,
-      `if ! command -v mongosh &> /dev/null; then mkdir -p ~/mongosh && mv mongosh-${PACKAGE_VERSION}-linux-x64/* ~/mongosh/; fi`,
-      "if ! command -v mongosh &> /dev/null; then echo 'export PATH=$HOME/mongosh/bin:$PATH' >> ~/.bashrc; fi",
-      "source ~/.bashrc",
-    ];
+    return this.mongoShellSetupCommands();
   }
 
   public getConnectionCommand(): string {
