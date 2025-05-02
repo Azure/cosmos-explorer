@@ -283,40 +283,8 @@ export default class Explorer {
   }
 
   public openInVsCode(): void {
-    const startTime = Date.now();
-    let vsCodeNotOpened = false;
-
-    setTimeout(() => {
-      if (!vsCodeNotOpened && Date.now() - startTime < 1200) {
-        vsCodeNotOpened = true;
-        useDialog.getState().openDialog(openVSCodeDialogProps);
-      }
-    }, 1000);
-
     TelemetryProcessor.traceStart(Action.OpenVSCode);
     this.openVsCodeButtonClick();
-
-    const openVSCodeDialogProps: DialogProps = {
-      linkProps: {
-        linkText: "Download Visual Studio Code",
-        linkUrl: "https://code.visualstudio.com/download",
-      },
-      isModal: true,
-      title: ` Open your Cosmos DB account in Visual Studio Code`,
-      subText: `Please ensure Visual Studio Code is installed on your device.
-      If you don't have it installed, please download it from the link below.`,
-      primaryButtonText: "Open VS Code",
-      secondaryButtonText: "Cancel",
-
-      onPrimaryButtonClick: () => {
-        this.openVsCodeButtonClick();
-        useDialog.getState().closeDialog();
-      },
-      onSecondaryButtonClick: () => {
-        useDialog.getState().closeDialog();
-        TelemetryProcessor.traceCancel(Action.OpenVSCode);
-      },
-    };
   }
 
   public openVsCodeButtonClick = (): void => {
@@ -326,7 +294,17 @@ export default class Explorer {
     const container = encodeURIComponent(activeTab?.collection?.id());
     const baseUrl = `vscode://ms-azuretools.vscode-cosmosdb?resourceId=${resourceId}`;
     const vscodeUrl = activeTab ? `${baseUrl}&database=${database}&container=${container}` : baseUrl;
+    const startTime = Date.now();
     let vsCodeNotOpened = false;
+
+    setTimeout(() => {
+      const timeOutTime = Date.now() - startTime;
+      console.log("Timed out in: ", timeOutTime);
+      if (!vsCodeNotOpened && timeOutTime < 1300) {
+        vsCodeNotOpened = true;
+        useDialog.getState().openDialog(openVSCodeDialogProps);
+      }
+    }, 1000);
 
     try {
       window.location.href = vscodeUrl;
@@ -337,6 +315,29 @@ export default class Explorer {
         logConsoleError(`Failed to open VS Code: ${getErrorMessage(error)}`);
       }
     }
+
+    const openVSCodeDialogProps: DialogProps = {
+      linkProps: {
+        linkText: "Download Visual Studio Code",
+        linkUrl: "https://code.visualstudio.com/download",
+      },
+      isModal: true,
+      title: ` Open your Azure Cosmos DB account in Visual Studio Code`,
+      subText: `Please ensure Visual Studio Code is installed on your device.
+      If you don't have it installed, please download it from the link below.`,
+      primaryButtonText: "Open in VS Code",
+      secondaryButtonText: "Cancel",
+
+      onPrimaryButtonClick: () => {
+        vsCodeNotOpened = false;
+        this.openVsCodeButtonClick();
+        useDialog.getState().closeDialog();
+      },
+      onSecondaryButtonClick: () => {
+        useDialog.getState().closeDialog();
+        TelemetryProcessor.traceCancel(Action.OpenVSCode);
+      },
+    };
   };
 
   public async openCESCVAFeedbackBlade(): Promise<void> {
