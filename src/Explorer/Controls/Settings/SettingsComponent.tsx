@@ -1215,6 +1215,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       isFullTextSearchEnabled: this.isFullTextSearchEnabled,
       shouldDiscardContainerPolicies: this.state.shouldDiscardContainerPolicies,
       resetShouldDiscardContainerPolicyChange: this.resetShouldDiscardContainerPolicies,
+      isGlobalSecondaryIndex: this.isGlobalSecondaryIndex,
     };
 
     const indexingPolicyComponentProps: IndexingPolicyComponentProps = {
