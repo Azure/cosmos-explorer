@@ -12,6 +12,7 @@ exports[`Settings Pane should render Default properly 1`] = `
   >
     <Accordion
       className="customAccordion ___1uf6361_0000000 fz7g6wx"
+      collapsible={true}
     >
       <AccordionItem
         value="1"
@@ -83,7 +84,7 @@ exports[`Settings Pane should render Default properly 1`] = `
                 className="___10gar1i_0000000 f1fow5ox f1ugzwwg"
               >
                 Query results per page
-                 
+
                 <InfoTooltip
                   className="___vtc5hy0_0000000 f10ra9hq f1k6fduh"
                 >
