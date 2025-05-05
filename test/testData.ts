@@ -1,13 +1,16 @@
+import crypto from "crypto";
+
 import { CosmosDBManagementClient } from "@azure/arm-cosmosdb";
 import { BulkOperationType, Container, CosmosClient, Database, JSONObject } from "@azure/cosmos";
-import crypto from "crypto";
+import { AzureIdentityCredentialAdapter } from "@azure/ms-rest-js";
+
 import {
-  TestAccount,
   generateUniqueName,
   getAccountName,
   getAzureCLICredentials,
   resourceGroupName,
   subscriptionId,
+  TestAccount,
 } from "./fx";
 
 export interface TestItem {
@@ -26,6 +29,7 @@ export interface DocumentTestCase {
 export interface TestDocument {
   documentId: string;
   partitionKeys?: PartitionKey[];
+  skipCreateDelete?: boolean;
 }
 
 export interface PartitionKey {
@@ -74,7 +78,8 @@ export async function createTestSQLContainer(includeTestData?: boolean) {
   const databaseId = generateUniqueName("db");
   const containerId = "testcontainer"; // A unique container name isn't needed because the database is unique
   const credentials = getAzureCLICredentials();
-  const armClient = new CosmosDBManagementClient(credentials, subscriptionId);
+  const adaptedCredentials = new AzureIdentityCredentialAdapter(credentials);
+  const armClient = new CosmosDBManagementClient(adaptedCredentials, subscriptionId);
   const accountName = getAccountName(TestAccount.SQL);
   const account = await armClient.databaseAccounts.get(resourceGroupName, accountName);
   const keys = await armClient.databaseAccounts.listKeys(resourceGroupName, accountName);
