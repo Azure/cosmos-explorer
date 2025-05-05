@@ -68,7 +68,7 @@ describe("MongoShellHandler", () => {
       const commands = mongoShellHandler.getSetUpCommands();
 
       expect(Array.isArray(commands)).toBe(true);
-      expect(commands.length).toBe(6);
+      expect(commands.length).toBe(7);
       expect(commands[1]).toContain("mongosh-2.5.0-linux-x64.tgz");
     });
   });

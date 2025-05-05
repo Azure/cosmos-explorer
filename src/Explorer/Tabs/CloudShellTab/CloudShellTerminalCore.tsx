@@ -55,20 +55,16 @@ export const startCloudShellTerminal = async (terminal: Terminal, shellType: Ter
     TelemetryProcessor.trace(
       Action.CloudShellUserConsent,
       consentGranted ? ActionModifiers.Success : ActionModifiers.Cancel,
-      { dataExplorerArea: Areas.CloudShell },
+      {
+        dataExplorerArea: Areas.CloudShell,
+        shellType: TerminalKind[shellType],
+        isConsent: consentGranted,
+        region: resolvedRegion,
+      },
+      startKey,
     );
 
     if (!consentGranted) {
-      TelemetryProcessor.traceCancel(
-        Action.CloudShellTerminalSession,
-        {
-          shellType: TerminalKind[shellType],
-          dataExplorerArea: Areas.CloudShell,
-          region: resolvedRegion,
-          isConsent: false,
-        },
-        startKey,
-      );
       terminal.writeln(
         formatErrorMessage("Session ended. Please close this tab and initiate a new shell session if needed."),
       );
@@ -262,28 +258,27 @@ export const configureSocketConnection = async (
 };
 
 export const sendTerminalStartupCommands = (socket: WebSocket, initCommands: string): void => {
+  // ensures connections don't remain open indefinitely by implementing an automatic timeout after 120 minutes.
+  const keepSocketAlive = (socket: WebSocket) => {
+    if (socket.readyState === WebSocket.OPEN) {
+      if (pingCount >= MAX_PING_COUNT) {
+        socket.close();
+      } else {
+        pingCount++;
+        // The code uses a recursive setTimeout pattern rather than setInterval,
+        // which ensures each new ping only happens after the previous one completes
+        // and naturally stops if the socket closes.
+        keepAliveID = setTimeout(() => keepSocketAlive(socket), 1000);
+      }
+    }
+  };
+
   if (socket && socket.readyState === WebSocket.OPEN) {
     socket.send(initCommands);
+    keepSocketAlive(socket);
   } else {
     socket.onopen = () => {
       socket.send(initCommands);
-
-      // ensures connections don't remain open indefinitely by implementing an automatic timeout after 20 minutes.
-      const keepSocketAlive = (socket: WebSocket) => {
-        if (socket.readyState === WebSocket.OPEN) {
-          if (pingCount >= MAX_PING_COUNT) {
-            socket.close();
-          } else {
-            socket.send("");
-            pingCount++;
-            // The code uses a recursive setTimeout pattern rather than setInterval,
-            // which ensures each new ping only happens after the previous one completes
-            // and naturally stops if the socket closes.
-            keepAliveID = setTimeout(() => keepSocketAlive(socket), 1000);
-          }
-        }
-      };
-
       keepSocketAlive(socket);
     };
   }
