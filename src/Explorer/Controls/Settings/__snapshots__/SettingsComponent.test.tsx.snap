@@ -34,6 +34,7 @@ exports[`SettingsComponent renders 1`] = `
                 "isTabsContentExpanded": [Function],
                 "onRefreshDatabasesKeyPress": [Function],
                 "onRefreshResourcesClick": [Function],
+                "openVsCodeButtonClick": [Function],
                 "phoenixClient": PhoenixClient {
                   "armResourceId": undefined,
                   "retryOptions": {
@@ -116,6 +117,7 @@ exports[`SettingsComponent renders 1`] = `
                 "isTabsContentExpanded": [Function],
                 "onRefreshDatabasesKeyPress": [Function],
                 "onRefreshResourcesClick": [Function],
+                "openVsCodeButtonClick": [Function],
                 "phoenixClient": PhoenixClient {
                   "armResourceId": undefined,
                   "retryOptions": {
@@ -237,6 +239,7 @@ exports[`SettingsComponent renders 1`] = `
                 "isTabsContentExpanded": [Function],
                 "onRefreshDatabasesKeyPress": [Function],
                 "onRefreshResourcesClick": [Function],
+                "openVsCodeButtonClick": [Function],
                 "phoenixClient": PhoenixClient {
                   "armResourceId": undefined,
                   "retryOptions": {
@@ -287,6 +290,7 @@ exports[`SettingsComponent renders 1`] = `
               "isTabsContentExpanded": [Function],
               "onRefreshDatabasesKeyPress": [Function],
               "onRefreshResourcesClick": [Function],
+              "openVsCodeButtonClick": [Function],
               "phoenixClient": PhoenixClient {
                 "armResourceId": undefined,
                 "retryOptions": {
@@ -367,6 +371,7 @@ exports[`SettingsComponent renders 1`] = `
                 "isTabsContentExpanded": [Function],
                 "onRefreshDatabasesKeyPress": [Function],
                 "onRefreshResourcesClick": [Function],
+                "openVsCodeButtonClick": [Function],
                 "phoenixClient": PhoenixClient {
                   "armResourceId": undefined,
                   "retryOptions": {
@@ -417,6 +422,7 @@ exports[`SettingsComponent renders 1`] = `
               "isTabsContentExpanded": [Function],
               "onRefreshDatabasesKeyPress": [Function],
               "onRefreshResourcesClick": [Function],
+              "openVsCodeButtonClick": [Function],
               "phoenixClient": PhoenixClient {
                 "armResourceId": undefined,
                 "retryOptions": {

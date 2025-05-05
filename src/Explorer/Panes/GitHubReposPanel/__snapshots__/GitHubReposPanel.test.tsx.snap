@@ -22,6 +22,7 @@ exports[`GitHub Repos Panel should render Default properly 1`] = `
             "isTabsContentExpanded": [Function],
             "onRefreshDatabasesKeyPress": [Function],
             "onRefreshResourcesClick": [Function],
+            "openVsCodeButtonClick": [Function],
             "phoenixClient": PhoenixClient {
               "armResourceId": undefined,
               "retryOptions": {
