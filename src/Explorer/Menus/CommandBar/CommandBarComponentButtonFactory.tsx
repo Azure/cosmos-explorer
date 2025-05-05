@@ -61,8 +61,12 @@ export function createStaticCommandBarButtons(
       addDivider();
       buttons.push(addSynapseLink);
     }
-    const addVsCode = createOpenVsCodeDialogButton(container);
-    buttons.push(addVsCode);
+    if (
+      userContext.apiType !== "Gremlin"
+    ) {
+      const addVsCode = createOpenVsCodeDialogButton(container);
+      buttons.push(addVsCode);
+    }
   }
 
   if (isDataplaneRbacSupported(userContext.apiType)) {
