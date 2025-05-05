@@ -61,9 +61,7 @@ export function createStaticCommandBarButtons(
       addDivider();
       buttons.push(addSynapseLink);
     }
-    if (
-      userContext.apiType !== "Gremlin"
-    ) {
+    if (userContext.apiType !== "Gremlin") {
       const addVsCode = createOpenVsCodeDialogButton(container);
       buttons.push(addVsCode);
     }
