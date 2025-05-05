@@ -574,6 +574,7 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
   >
     <Accordion
       className="customAccordion ___1uf6361_0000000 fz7g6wx"
+      collapsible={true}
     >
       <AccordionItem
         value="7"
