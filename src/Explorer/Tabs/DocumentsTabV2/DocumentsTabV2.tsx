@@ -26,7 +26,6 @@ import { useDialog } from "Explorer/Controls/Dialog";
 import { EditorReact } from "Explorer/Controls/Editor/EditorReact";
 import { InputDataList, InputDatalistDropdownOptionSection } from "Explorer/Controls/InputDataList/InputDataList";
 import { ProgressModalDialog } from "Explorer/Controls/ProgressModalDialog";
-import Explorer from "Explorer/Explorer";
 import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
 import { querySampleDocuments, readSampleDocument } from "Explorer/QueryCopilot/QueryCopilotUtilities";
 import {
@@ -64,7 +63,7 @@ import * as Logger from "../../../Common/Logger";
 import * as MongoProxyClient from "../../../Common/MongoProxyClient";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";
-import { CollectionBase } from "../../../Contracts/ViewModels";
+import { CollectionBase, UploadDetailsRecord } from "../../../Contracts/ViewModels";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import * as QueryUtils from "../../../Utils/QueryUtils";
 import { defaultQueryFields, extractPartitionKeyValues } from "../../../Utils/QueryUtils";
@@ -302,7 +301,6 @@ type UiKeyboardEvent = (e: KeyboardEvent | React.SyntheticEvent<Element, Event>)
 
 // Export to expose to unit tests
 export type ButtonsDependencies = {
-  _collection: ViewModels.CollectionBase;
   selectedRows: Set<TableRowId>;
   editorState: ViewModels.DocumentExplorerState;
   isPreferredApiMongoDB: boolean;
@@ -313,26 +311,7 @@ export type ButtonsDependencies = {
   onSaveExistingDocumentClick: UiKeyboardEvent;
   onRevertExistingDocumentClick: UiKeyboardEvent;
   onDeleteExistingDocumentsClick: UiKeyboardEvent;
-};
-
-const createUploadButton = (container: Explorer): CommandButtonComponentProps => {
-  const label = "Upload Item";
-  return {
-    id: UPLOAD_BUTTON_ID,
-    iconSrc: UploadIcon,
-    iconAlt: label,
-    onCommandClick: () => {
-      const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
-      selectedCollection && container.openUploadItemsPane();
-    },
-    commandButtonLabel: label,
-    ariaLabel: label,
-    hasPopup: true,
-    disabled:
-      useSelectedNode.getState().isDatabaseNodeOrNoneSelected() ||
-      !useClientWriteEnabled.getState().clientWriteEnabled ||
-      useSelectedNode.getState().isQueryCopilotCollectionSelected(),
-  };
+  onUploadDocumentsClick: UiKeyboardEvent;
 };
 
 // Export to expose to unit tests
@@ -345,7 +324,6 @@ export const UPLOAD_BUTTON_ID = "uploadItemBtn";
 
 // Export to expose in unit tests
 export const getTabsButtons = ({
-  _collection,
   selectedRows,
   editorState,
   isPreferredApiMongoDB,
@@ -356,6 +334,7 @@ export const getTabsButtons = ({
   onSaveExistingDocumentClick,
   onRevertExistingDocumentClick,
   onDeleteExistingDocumentsClick,
+  onUploadDocumentsClick,
 }: ButtonsDependencies): CommandButtonComponentProps[] => {
   if (isFabric() && userContext.fabricContext?.isReadOnly) {
     // All the following buttons require write access
@@ -467,7 +446,20 @@ export const getTabsButtons = ({
   }
 
   if (!isPreferredApiMongoDB) {
-    buttons.push(createUploadButton(_collection.container));
+    const label = "Upload Item";
+    buttons.push({
+      id: UPLOAD_BUTTON_ID,
+      iconSrc: UploadIcon,
+      iconAlt: label,
+      onCommandClick: onUploadDocumentsClick,
+      commandButtonLabel: label,
+      ariaLabel: label,
+      hasPopup: true,
+      disabled:
+        useSelectedNode.getState().isDatabaseNodeOrNoneSelected() ||
+        !useClientWriteEnabled.getState().clientWriteEnabled ||
+        useSelectedNode.getState().isQueryCopilotCollectionSelected(),
+    });
   }
 
   return buttons;
@@ -870,7 +862,6 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     }
 
     updateNavbarWithTabsButtons(isTabActive, {
-      _collection,
       selectedRows,
       editorState,
       isPreferredApiMongoDB,
@@ -881,6 +872,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
       onSaveExistingDocumentClick,
       onRevertExistingDocumentClick,
       onDeleteExistingDocumentsClick,
+      onUploadDocumentsClick,
     });
   }, []);
 
@@ -1286,11 +1278,47 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
       );
   }, [deleteDocuments, documentIds, isPreferredApiMongoDB, selectedRows]);
 
+  const onUploadDocumentsClick = useCallback((): void => {
+    if (!isPreferredApiMongoDB) {
+      const onSuccessUpload = (data: UploadDetailsRecord[]) => {
+        const addedIdsSet = new Set(
+          data
+            .reduce(
+              (result: ItemDefinition[], record) =>
+                result.concat(record.resources && record.resources.length ? record.resources : []),
+              [],
+            )
+            .map((document) => {
+              const partitionKeyValueArray: PartitionKey[] = extractPartitionKeyValues(
+                document,
+                partitionKey as PartitionKeyDefinition,
+              );
+              return newDocumentId(
+                document as ItemDefinition & Resource,
+                partitionKeyProperties,
+                partitionKeyValueArray as string[],
+              );
+            }),
+        );
+
+        const documents = new Set(documentIds);
+        addedIdsSet.forEach((item) => documents.add(item));
+        setDocumentIds(Array.from(documents));
+
+        setSelectedDocumentContent(undefined);
+        setClickedRowIndex(undefined);
+        setSelectedRows(new Set());
+        setEditorState(ViewModels.DocumentExplorerState.noDocumentSelected);
+      };
+
+      _collection.container.openUploadItemsPane(onSuccessUpload);
+    }
+  }, [_collection.container, documentIds, isPreferredApiMongoDB, newDocumentId, partitionKey, partitionKeyProperties]);
+
   // If editor state changes, update the nav
   useEffect(
     () =>
       updateNavbarWithTabsButtons(isTabActive, {
-        _collection,
         selectedRows,
         editorState,
         isPreferredApiMongoDB,
@@ -1299,11 +1327,11 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
         onSaveNewDocumentClick,
         onRevertNewDocumentClick,
         onSaveExistingDocumentClick,
-        onRevertExistingDocumentClick: onRevertExistingDocumentClick,
-        onDeleteExistingDocumentsClick: onDeleteExistingDocumentsClick,
+        onRevertExistingDocumentClick,
+        onDeleteExistingDocumentsClick,
+        onUploadDocumentsClick,
       }),
     [
-      _collection,
       selectedRows,
       editorState,
       isPreferredApiMongoDB,
@@ -1314,6 +1342,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
       onSaveExistingDocumentClick,
       onRevertExistingDocumentClick,
       onDeleteExistingDocumentsClick,
+      onUploadDocumentsClick,
       isTabActive,
     ],
   );
