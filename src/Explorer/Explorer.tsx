@@ -299,14 +299,20 @@ export default class Explorer {
 
     setTimeout(() => {
       const timeOutTime = Date.now() - startTime;
-      if (!vsCodeNotOpened && timeOutTime < 1200) {
+      if (!vsCodeNotOpened && timeOutTime < 1100) {
         vsCodeNotOpened = true;
         useDialog.getState().openDialog(openVSCodeDialogProps);
       }
     }, 1000);
 
+    const link = document.createElement('a');
+    link.href = vscodeUrl;
+    link.rel = 'noopener noreferrer';
+    document.body.appendChild(link);
+
     try {
-      window.location.href = vscodeUrl;
+      link.click();
+      document.body.removeChild(link);
       TelemetryProcessor.traceStart(Action.OpenVSCode);
     } catch (error) {
       if (!vsCodeNotOpened) {
