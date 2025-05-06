@@ -283,43 +283,12 @@ export default class Explorer {
   }
 
   public openInVsCode(): void {
-    TelemetryProcessor.traceStart(Action.OpenVSCode);
-    this.openVsCodeButtonClick();
-  }
-
-  public openVsCodeButtonClick = (): void => {
     const activeTab = useTabs.getState().activeTab;
     const resourceId = encodeURIComponent(userContext.databaseAccount.id);
     const database = encodeURIComponent(activeTab?.collection?.databaseId);
     const container = encodeURIComponent(activeTab?.collection?.id());
     const baseUrl = `vscode://ms-azuretools.vscode-cosmosdb?resourceId=${resourceId}`;
     const vscodeUrl = activeTab ? `${baseUrl}&database=${database}&container=${container}` : baseUrl;
-    const startTime = Date.now();
-    let vsCodeNotOpened = false;
-
-    setTimeout(() => {
-      const timeOutTime = Date.now() - startTime;
-      if (!vsCodeNotOpened && timeOutTime < 1100) {
-        vsCodeNotOpened = true;
-        useDialog.getState().openDialog(openVSCodeDialogProps);
-      }
-    }, 1000);
-
-    const link = document.createElement("a");
-    link.href = vscodeUrl;
-    link.rel = "noopener noreferrer";
-    document.body.appendChild(link);
-
-    try {
-      link.click();
-      document.body.removeChild(link);
-      TelemetryProcessor.traceStart(Action.OpenVSCode);
-    } catch (error) {
-      if (!vsCodeNotOpened) {
-        vsCodeNotOpened = true;
-        logConsoleError(`Failed to open VS Code: ${getErrorMessage(error)}`);
-      }
-    }
 
     const openVSCodeDialogProps: DialogProps = {
       linkProps: {
@@ -334,16 +303,31 @@ export default class Explorer {
       secondaryButtonText: "Cancel",
 
       onPrimaryButtonClick: () => {
-        vsCodeNotOpened = false;
-        this.openVsCodeButtonClick();
-        useDialog.getState().closeDialog();
+        try {
+          const startTime = Date.now();
+          let vsCodeNotOpened = false;
+          setTimeout(() => {
+            const timeOutTime = Date.now() - startTime;
+            if (!vsCodeNotOpened && timeOutTime < 1200) {
+              vsCodeNotOpened = true;
+              logConsoleError(
+                "We were unable to open Visual Studio Code. Please ensure you have it installed and try again.",
+              );
+            }
+          }, 1000);
+          window.location.href = vscodeUrl;
+          TelemetryProcessor.traceStart(Action.OpenVSCode);
+        } catch (error) {
+          logConsoleError(`Failed to open VS Code: ${getErrorMessage(error)}`);
+        }
       },
       onSecondaryButtonClick: () => {
         useDialog.getState().closeDialog();
         TelemetryProcessor.traceCancel(Action.OpenVSCode);
       },
     };
-  };
+    useDialog.getState().openDialog(openVSCodeDialogProps);
+  }
 
   public async openCESCVAFeedbackBlade(): Promise<void> {
     sendMessage({ type: MessageTypes.OpenCESCVAFeedbackBlade });
