@@ -30,7 +30,7 @@ export class MongoShellHandler extends AbstractShellHandler {
     }
     return `mongosh --host ${getHostFromUrl(this._endpoint)} --port 10255 --username ${dbName} --password ${
       this._key
-    } --tls --tlsAllowInvalidCertificates`;
+    } --tls --tlsAllowInvalidCertificates --appName ${this.APP_NAME}`;
   }
 
   public getTerminalSuppressedData(): string {

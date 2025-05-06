@@ -22,6 +22,12 @@ export const EXIT_COMMAND = ` printf "\\033[1;31mSession ended. Please close thi
  * the required methods.
  */
 export abstract class AbstractShellHandler {
+  /**
+   * The name of the application using this shell handler.
+   * This is used for telemetry and logging purposes.
+   */
+  protected APP_NAME = "CosmosExplorerTerminal";
+
   abstract getShellName(): string;
   abstract getSetUpCommands(): string[];
   abstract getConnectionCommand(): string;

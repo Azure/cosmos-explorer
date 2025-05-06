@@ -23,7 +23,7 @@ export class VCoreMongoShellHandler extends AbstractShellHandler {
     }
 
     const userName = userContext.vcoreMongoConnectionParams.adminLogin;
-    return `mongosh "mongodb+srv://${userName}:@${this._endpoint}/?authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000"`;
+    return `mongosh "mongodb+srv://${userName}:@${this._endpoint}/?authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000&appName=${this.APP_NAME}"`;
   }
 
   public getTerminalSuppressedData(): string {
