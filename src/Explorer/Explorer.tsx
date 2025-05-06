@@ -305,9 +305,9 @@ export default class Explorer {
       }
     }, 1000);
 
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = vscodeUrl;
-    link.rel = 'noopener noreferrer';
+    link.rel = "noopener noreferrer";
     document.body.appendChild(link);
 
     try {
