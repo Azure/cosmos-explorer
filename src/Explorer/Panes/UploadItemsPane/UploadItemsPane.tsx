@@ -18,7 +18,7 @@ export type UploadItemsPaneProps = {
   onUpload?: (data: UploadDetailsRecord[]) => void;
 };
 
-export const UploadItemsPane: FunctionComponent<UploadItemsPaneProps> = ({onUpload}) => {
+export const UploadItemsPane: FunctionComponent<UploadItemsPaneProps> = ({ onUpload }) => {
   const [files, setFiles] = useState<FileList>();
   const [uploadFileData, setUploadFileData] = useState<UploadDetailsRecord[]>([]);
   const [formError, setFormError] = useState<string>("");
