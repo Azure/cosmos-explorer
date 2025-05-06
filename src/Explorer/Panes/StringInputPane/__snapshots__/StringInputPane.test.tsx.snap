@@ -12,7 +12,6 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
       "isTabsContentExpanded": [Function],
       "onRefreshDatabasesKeyPress": [Function],
       "onRefreshResourcesClick": [Function],
-      "openVsCodeButtonClick": [Function],
       "phoenixClient": PhoenixClient {
         "armResourceId": undefined,
         "retryOptions": {
