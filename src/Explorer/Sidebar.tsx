@@ -27,7 +27,7 @@ import { CosmosFluentProvider, cosmosShorthands, tokens } from "Explorer/Theme/T
 import { ResourceTree } from "Explorer/Tree/ResourceTree";
 import { useDatabases } from "Explorer/useDatabases";
 import { KeyboardAction, KeyboardActionGroup, KeyboardActionHandler, useKeyboardActionGroup } from "KeyboardShortcuts";
-import { isFabric, isFabricMirrored, isFabricNative } from "Platform/Fabric/FabricUtil";
+import { isFabric, isFabricMirrored, isFabricNative, isFabricNativeReadOnly } from "Platform/Fabric/FabricUtil";
 import { userContext } from "UserContext";
 import { getCollectionName, getDatabaseName } from "Utils/APITypeUtils";
 import { conditionalClass } from "Utils/StyleUtils";
@@ -338,6 +338,7 @@ export const SidebarContainer: React.FC<SidebarProps> = ({ explorer }) => {
 
   const hasGlobalCommands = !(
     isFabricMirrored() ||
+    isFabricNativeReadOnly() ||
     userContext.apiType === "Postgres" ||
     userContext.apiType === "VCoreMongo"
   );

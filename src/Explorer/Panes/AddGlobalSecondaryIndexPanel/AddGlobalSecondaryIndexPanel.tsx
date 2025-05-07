@@ -388,6 +388,7 @@ export const AddGlobalSecondaryIndexPanel = (props: AddGlobalSecondaryIndexPanel
                 setVectorIndexingPolicy,
                 vectorPolicyValidated,
                 setVectorPolicyValidated,
+                isGlobalSecondaryIndex: true,
               }}
             />
           )}

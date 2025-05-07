@@ -1,15 +1,14 @@
 /**
  * Accordion top class
  */
-import { Link, makeStyles, tokens } from "@fluentui/react-components";
+import { makeStyles, tokens } from "@fluentui/react-components";
 import { DocumentAddRegular, LinkMultipleRegular } from "@fluentui/react-icons";
 import { SampleDataImportDialog } from "Explorer/SplashScreen/SampleDataImportDialog";
 import { CosmosFluentProvider } from "Explorer/Theme/ThemeUtil";
-import { isFabricNative } from "Platform/Fabric/FabricUtil";
+import { isFabricNative, isFabricNativeReadOnly } from "Platform/Fabric/FabricUtil";
 import * as React from "react";
 import { userContext } from "UserContext";
 import CosmosDbBlackIcon from "../../../images/CosmosDB_black.svg";
-import LinkIcon from "../../../images/Link_blue.svg";
 import Explorer from "../Explorer";
 
 export interface SplashScreenProps {
@@ -59,6 +58,15 @@ const useStyles = makeStyles({
     "& svg": {
       width: "32px",
       height: "32px",
+      margin: "auto",
+    },
+  },
+  single: {
+    gridColumn: "1 / 4",
+    gridRow: "1 / 3",
+    "& svg": {
+      width: "64px",
+      height: "64px",
       margin: "auto",
     },
   },
@@ -150,7 +158,11 @@ export const FabricHomeScreen: React.FC<SplashScreenProps> = (props: SplashScree
       },
     ];
 
-    return (
+    return isFabricNativeReadOnly() ? (
+      <div className={styles.buttonsContainer}>
+        <FabricHomeScreenButton className={styles.single} {...buttons[2]} />
+      </div>
+    ) : (
       <div className={styles.buttonsContainer}>
         <FabricHomeScreenButton className={styles.one} {...buttons[0]} />
         <FabricHomeScreenButton className={styles.two} {...buttons[1]} />
@@ -159,7 +171,7 @@ export const FabricHomeScreen: React.FC<SplashScreenProps> = (props: SplashScree
     );
   };
 
-  const title = "Build your database";
+  const title = isFabricNativeReadOnly() ? "Use your database" : "Build your database";
   return (
     <>
       <CosmosFluentProvider className={styles.homeContainer}>
@@ -173,12 +185,12 @@ export const FabricHomeScreen: React.FC<SplashScreenProps> = (props: SplashScree
           {title}
         </div>
         {getSplashScreenButtons()}
-        <div className={styles.footer}>
+        {/* <div className={styles.footer}>
           Need help?{" "}
           <Link href="https://aka.ms/cosmosdbfabricdocs" target="_blank">
             Learn more <img src={LinkIcon} alt="Learn more" />
           </Link>
-        </div>
+        </div> */}
       </CosmosFluentProvider>
     </>
   );

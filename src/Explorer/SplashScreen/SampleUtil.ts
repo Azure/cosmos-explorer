@@ -1,3 +1,4 @@
+import { BackendDefaults } from "Common/Constants";
 import { createCollection } from "Common/dataAccess/createCollection";
 import Explorer from "Explorer/Explorer";
 import { useDatabases } from "Explorer/useDatabases";
@@ -35,6 +36,11 @@ export const createContainer = async (
     collectionId: containerName,
     databaseId: databaseName,
     databaseLevelThroughput: false,
+    partitionKey: {
+      paths: [`/${SAMPLE_DATA_PARTITION_KEY}`],
+      kind: "Hash",
+      version: BackendDefaults.partitionKeyVersion,
+    },
   };
   await createCollection(createRequest);
   await explorer.refreshAllDatabases();
@@ -46,6 +52,8 @@ export const createContainer = async (
   const newCollection = database.findCollectionWithId(containerName);
   return newCollection;
 };
+
+const SAMPLE_DATA_PARTITION_KEY = "category"; // This pkey is specifically set for queryCopilotSampleData.json below
 
 export const importData = async (collection: ViewModels.Collection): Promise<void> => {
   // TODO: keep same chunk as ContainerSampleGenerator
