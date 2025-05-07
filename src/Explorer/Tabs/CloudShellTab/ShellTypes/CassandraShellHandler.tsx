@@ -38,9 +38,7 @@ export class CassandraShellHandler extends AbstractShellHandler {
       return "echo 'Database name not found.'";
     }
 
-    return `cqlsh ${getHostFromUrl(this._endpoint)} 10350 -u ${dbName} -p ${this._key} --ssl --browser="${
-      this.APP_NAME
-    }"`;
+    return `cqlsh ${getHostFromUrl(this._endpoint)} 10350 -u ${dbName} -p ${this._key} --ssl`;
   }
 
   public getTerminalSuppressedData(): string {

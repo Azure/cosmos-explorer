@@ -28,9 +28,17 @@ export class MongoShellHandler extends AbstractShellHandler {
     if (!dbName) {
       return "echo 'Database name not found.'";
     }
-    return `mongosh --host ${getHostFromUrl(this._endpoint)} --port 10255 --username ${dbName} --password ${
-      this._key
-    } --tls --tlsAllowInvalidCertificates --appName ${this.APP_NAME}`;
+    return (
+      "mongosh mongodb://" +
+      getHostFromUrl(this._endpoint) +
+      ":10255?appName=" +
+      this.APP_NAME +
+      " --username " +
+      dbName +
+      " --password " +
+      this._key +
+      " --tls --tlsAllowInvalidCertificates"
+    );
   }
 
   public getTerminalSuppressedData(): string {
