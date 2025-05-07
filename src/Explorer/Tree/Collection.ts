@@ -1122,6 +1122,9 @@ export default class Collection implements ViewModels.Collection {
             stats.numSucceeded++;
           } else if (response.statusCode === 429) {
             documentsToAttempt.push(attemptedDocuments[index]);
+          } else if (response.statusCode === 409) {
+            stats.numFailed++;
+            stats.errors.push(`Document with id ${attemptedDocuments[index].id} already exists.`);
           } else {
             stats.numFailed++;
             stats.errors.push(JSON.stringify(response.resourceBody));
