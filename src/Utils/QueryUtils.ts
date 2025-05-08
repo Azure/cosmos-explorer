@@ -124,7 +124,7 @@ export const extractPartitionKeyValues = (
   documentContent: any,
   partitionKeyDefinition: PartitionKeyDefinition,
 ): PartitionKey[] => {
-  if (!partitionKeyDefinition.paths || partitionKeyDefinition.paths.length === 0 || partitionKeyDefinition.systemKey) {
+  if (!partitionKeyDefinition.paths || partitionKeyDefinition.paths.length === 0) {
     return undefined;
   }
 
@@ -136,7 +136,7 @@ export const extractPartitionKeyValues = (
 
     if (value !== undefined) {
       partitionKeyValues.push(value);
-    } else {
+    } else if (!partitionKeyDefinition.systemKey) {
       partitionKeyValues.push({});
     }
   });
