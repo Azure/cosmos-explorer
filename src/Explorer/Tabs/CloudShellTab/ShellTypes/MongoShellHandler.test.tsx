@@ -68,7 +68,7 @@ describe("MongoShellHandler", () => {
       const commands = mongoShellHandler.getSetUpCommands();
 
       expect(Array.isArray(commands)).toBe(true);
-      expect(commands.length).toBe(6);
+      expect(commands.length).toBe(7);
       expect(commands[1]).toContain("mongosh-2.5.0-linux-x64.tgz");
     });
   });
@@ -91,7 +91,7 @@ describe("MongoShellHandler", () => {
       const command = mongoShellHandler.getConnectionCommand();
 
       expect(command).toBe(
-        "mongosh --host test-mongo.documents.azure.com --port 10255 --username test-account --password test-key --tls --tlsAllowInvalidCertificates",
+        "mongosh mongodb://test-mongo.documents.azure.com:10255?appName=CosmosExplorerTerminal --username test-account --password test-key --tls --tlsAllowInvalidCertificates",
       );
       expect(CommonUtils.getHostFromUrl).toHaveBeenCalledWith("https://test-mongo.documents.azure.com:443/");
 

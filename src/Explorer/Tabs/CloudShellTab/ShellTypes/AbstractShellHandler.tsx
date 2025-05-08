@@ -22,6 +22,12 @@ export const EXIT_COMMAND = ` printf "\\033[1;31mSession ended. Please close thi
  * the required methods.
  */
 export abstract class AbstractShellHandler {
+  /**
+   * The name of the application using this shell handler.
+   * This is used for telemetry and logging purposes.
+   */
+  protected APP_NAME = "CosmosExplorerTerminal";
+
   abstract getShellName(): string;
   abstract getSetUpCommands(): string[];
   abstract getConnectionCommand(): string;
@@ -55,5 +61,31 @@ export abstract class AbstractShellHandler {
     ];
 
     return allCommands.join("\n").concat("\n");
+  }
+
+  /**
+   * Setup commands for MongoDB shell:
+   *
+   * 1. Check if mongosh is already installed
+   * 2. Download mongosh package if not installed
+   * 3. Extract the package to access mongosh binaries
+   * 4. Move extracted files to ~/mongosh directory
+   * 5. Add mongosh binary path to system PATH
+   * 6. Apply PATH changes by sourcing .bashrc
+   *
+   * Each command runs conditionally only if mongosh
+   * is not already present in the environment.
+   */
+  protected mongoShellSetupCommands(): string[] {
+    const PACKAGE_VERSION: string = "2.5.0";
+    return [
+      "if ! command -v mongosh &> /dev/null; then echo '⚠️ mongosh not found. Installing...'; fi",
+      `if ! command -v mongosh &> /dev/null; then curl -LO https://downloads.mongodb.com/compass/mongosh-${PACKAGE_VERSION}-linux-x64.tgz; fi`,
+      `if ! command -v mongosh &> /dev/null; then tar -xvzf mongosh-${PACKAGE_VERSION}-linux-x64.tgz; fi`,
+      `if ! command -v mongosh &> /dev/null; then mkdir -p ~/mongosh/bin && mv mongosh-${PACKAGE_VERSION}-linux-x64/bin/mongosh ~/mongosh/bin/  && chmod +x ~/mongosh/bin/mongosh; fi`,
+      `if ! command -v mongosh &> /dev/null; then rm -rf mongosh-${PACKAGE_VERSION}-linux-x64 mongosh-${PACKAGE_VERSION}-linux-x64.tgz; fi`,
+      "if ! command -v mongosh &> /dev/null; then echo 'export PATH=$HOME/mongosh/bin:$PATH' >> ~/.bashrc; fi",
+      "source ~/.bashrc",
+    ];
   }
 }
