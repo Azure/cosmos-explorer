@@ -202,6 +202,8 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
   const showRetrySettings =
     (userContext.apiType === "SQL" || userContext.apiType === "Tables" || userContext.apiType === "Gremlin") &&
     !isEmulator;
+  const showRegionSelection = userContext.apiType === "SQL" && userContext.authType === AuthType.AAD && !isFabric();
+  const showQueryTimeout = userContext.apiType === "SQL" && !isEmulator;
   const shouldShowGraphAutoVizOption = userContext.apiType === "Gremlin" && !isEmulator;
   const shouldShowCrossPartitionOption = userContext.apiType !== "Gremlin" && !isEmulator;
   const shouldShowParallelismOption = userContext.apiType !== "Gremlin" && !isEmulator;
@@ -406,28 +408,62 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
     }
 
     setIsExecuting(false);
-    logConsoleInfo(
-      `Updated items per page setting to ${LocalStorageUtility.getEntryNumber(StorageKey.ActualItemPerPage)}`,
-    );
-    logConsoleInfo(`${crossPartitionQueryEnabled ? "Enabled" : "Disabled"} cross-partition query feed option`);
-    logConsoleInfo(
-      `Updated the max degree of parallelism query feed option to ${LocalStorageUtility.getEntryNumber(
-        StorageKey.MaxDegreeOfParellism,
-      )}`,
-    );
-    logConsoleInfo(`Updated priority level setting to ${LocalStorageUtility.getEntryString(StorageKey.PriorityLevel)}`);
+    setTimeout(() => {
+      shouldShowQueryPageOptions &&
+        logConsoleInfo(
+          `Updated items per page setting to ${LocalStorageUtility.getEntryNumber(StorageKey.ActualItemPerPage)}`,
+        );
 
-    if (shouldShowGraphAutoVizOption) {
-      logConsoleInfo(
-        `Graph result will be displayed as ${
-          LocalStorageUtility.getEntryBoolean(StorageKey.IsGraphAutoVizDisabled) ? "JSON" : "Graph"
-        }`,
-      );
-    }
+      showEnableEntraIdRbac &&
+        logConsoleInfo(
+          `Updated Enable Entra ID RBAC to ${LocalStorageUtility.hasItem(StorageKey.DataPlaneRbacEnabled)}`,
+        );
 
-    logConsoleInfo(
-      `Updated query setting to ${LocalStorageUtility.getEntryString(StorageKey.SetPartitionKeyUndefined)}`,
-    );
+      showRegionSelection && logConsoleInfo(`Updated region ${AppStateComponentNames.SelectedRegionalEndpoint}`);
+
+      showQueryTimeout &&
+        (() => {
+          logConsoleInfo(`${queryTimeout ? "Enabled" : "Disabled"} query timeout`);
+          logConsoleInfo(
+            ruThresholdEnabled
+              ? `RU Limit is ${LocalStorageUtility.getEntryNumber(StorageKey.RUThreshold)} units`
+              : "RU limit disabled",
+          );
+          logConsoleInfo(
+            `Updated default query result view ${LocalStorageUtility.getEntryString(
+              StorageKey.DefaultQueryResultsView,
+            )}`,
+          );
+        })();
+
+      showRetrySettings &&
+        logConsoleInfo(`Updated retry attempts ${LocalStorageUtility.getEntryNumber(StorageKey.RetryAttempts)}`);
+
+      !isEmulator && logConsoleInfo(`${containerPaginationEnabled ? "Enabled" : "Disabled"} container pagination`);
+
+      shouldShowCrossPartitionOption &&
+        logConsoleInfo(`${crossPartitionQueryEnabled ? "Enabled" : "Disabled"} cross-partition query feed option`);
+
+      shouldShowParallelismOption &&
+        logConsoleInfo(
+          `Updated the max degree of parallelism query feed option to ${LocalStorageUtility.getEntryNumber(
+            StorageKey.MaxDegreeOfParellism,
+          )}`,
+        );
+
+      shouldShowPriorityLevelOption &&
+        logConsoleInfo(
+          `Updated priority level setting to ${LocalStorageUtility.getEntryString(StorageKey.PriorityLevel)}`,
+        );
+
+      shouldShowGraphAutoVizOption &&
+        logConsoleInfo(
+          `Graph result will be displayed as ${
+            LocalStorageUtility.getEntryBoolean(StorageKey.IsGraphAutoVizDisabled) ? "JSON" : "Graph"
+          }`,
+        );
+    }, 0);
+
     refreshExplorer && (await explorer.refreshExplorer());
     closeSidePanel();
   };
@@ -688,7 +724,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                 </AccordionPanel>
               </AccordionItem>
             )}
-            {userContext.apiType === "SQL" && userContext.authType === AuthType.AAD && !isFabric() && (
+            {showRegionSelection && (
               <AccordionItem value="3">
                 <AccordionHeader>
                   <div className={styles.header}>Region Selection</div>
@@ -718,7 +754,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                 </AccordionPanel>
               </AccordionItem>
             )}
-            {userContext.apiType === "SQL" && !isEmulator && (
+            {showQueryTimeout && (
               <>
                 <AccordionItem value="4">
                   <AccordionHeader>
