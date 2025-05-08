@@ -282,27 +282,6 @@ export default class Explorer {
     }
   }
 
-  public openInVsCode(): void {
-    const startTime = TelemetryProcessor.traceStart(Action.OpenVSCode);
-    const clearInProgressMessage = logConsoleProgress(
-      "Opening VS Code for this account.",
-    );
-    useDialog.getState().closeDialog();
-    try {
-      `vscode://ms-azuretools.vscode-cosmosdb?resourceId=/subscriptions/${userContext.subscriptionId}/resourceGroups/${userContext.resourceGroup}/providers/Microsoft.DocumentDB/databaseAccounts/${userContext?.databaseAccount}&database=${userContext.parsedResourceToken?.databaseId}&container=${userContext.parsedResourceToken?.collectionId}`
-      // preview version of vscode
-      // `vscode-insiders://ms-azuretools.vscode-cosmosdb?resourceId=/subscriptions/${userContext.subscriptionId}/resourceGroups/${userContext.resourceGroup}/providers/Microsoft.DocumentDB/databaseAccounts/${userContext?.databaseAccount}&database=${userContext.parsedResourceToken?.databaseId}&container=${userContext.parsedResourceToken?.databaseId}`
-      clearInProgressMessage();
-      logConsoleInfo("Opening Visual Studio Code for this account");
-      TelemetryProcessor.traceSuccess(Action.OpenVSCode, {}, startTime);
-    } catch (error) {
-      // If the browser can't handle a `vscode://` or `vscode-insiders://` url route them to the VS Code download page
-      clearInProgressMessage();
-      logConsoleError(`**Visual Studio Code** isn't installed on this device. Please install it here: **https://code.visualstudio.com/download**${getErrorMessage(error)}`);
-      TelemetryProcessor.traceFailure(Action.OpenVSCode, {}, startTime);
-    }
-  }
-
   public async openCESCVAFeedbackBlade(): Promise<void> {
     sendMessage({ type: MessageTypes.OpenCESCVAFeedbackBlade });
     Logger.logInfo(

@@ -359,10 +359,7 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
   public isHierarchicalPartitionedContainer = (): boolean => this.props.collection.partitionKey?.kind === "MultiHash";
 
   public getUniqueKeyVisible = (): boolean => {
-    return (
-      this.props.collection.rawDataModel.uniqueKeyPolicy?.uniqueKeys.length > 0 &&
-      userContext.apiType === "SQL"
-    );
+    return this.props.collection.rawDataModel.uniqueKeyPolicy?.uniqueKeys.length > 0 && userContext.apiType === "SQL";
   };
 
   private getUniqueKeyValue = (): string => {
