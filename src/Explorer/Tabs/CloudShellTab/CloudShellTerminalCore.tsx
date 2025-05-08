@@ -43,13 +43,37 @@ export const startCloudShellTerminal = async (terminal: Terminal, shellType: Ter
     await ensureCloudShellProviderRegistered();
 
     resolvedRegion = determineCloudShellRegion();
-    // Ask for user consent for region
-    const consentGranted = await askConfirmation(
-      terminal,
-      formatWarningMessage(
-        "The shell environment may be operating in a region different from that of the database, which could impact performance or data compliance. Do you wish to proceed?",
+
+    resolvedRegion = determineCloudShellRegion();
+
+    terminal.writeln(formatWarningMessage("⚠️  IMPORTANT: Azure Cloud Shell Region Notice ⚠️"));
+    terminal.writeln(
+      formatInfoMessage(
+        "The Cloud Shell environment will operate in a region that may differ from your database's region.",
       ),
     );
+    terminal.writeln(formatInfoMessage("This has two potential implications:"));
+    terminal.writeln(formatInfoMessage("1. Performance Impact:"));
+    terminal.writeln(
+      formatInfoMessage("   Commands may experience higher latency due to geographic distance between regions."),
+    );
+    terminal.writeln(formatInfoMessage("2. Data Compliance Considerations:"));
+    terminal.writeln(
+      formatInfoMessage(
+        "   Data processed through this shell could temporarily reside in a different geographic region,",
+      ),
+    );
+    terminal.writeln(
+      formatInfoMessage("   which may affect compliance with data residency requirements or regulations specific"),
+    );
+    terminal.writeln(formatInfoMessage("   to your organization."));
+    terminal.writeln("");
+
+    terminal.writeln("\x1b[94mFor more information on Azure Cosmos DB data governance and compliance, please visit:");
+    terminal.writeln("\x1b[94mhttps://learn.microsoft.com/en-us/azure/cosmos-db/data-residency\x1b[0m");
+
+    // Ask for user consent for region
+    const consentGranted = await askConfirmation(terminal, formatWarningMessage("Do you wish to proceed?"));
 
     // Track user decision
     TelemetryProcessor.trace(
