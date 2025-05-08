@@ -44,13 +44,18 @@ export const CostEstimateText: FunctionComponent<CostEstimateTextProps> = ({
   const currencySign: string = getCurrencySign(serverId);
   const multiplier = getMultimasterMultiplier(numberOfRegions, multimasterEnabled);
   const pricePerRu = isAutoscale ? getAutoscalePricePerRu(serverId, multiplier) : getPricePerRu(serverId, multiplier);
+  const estimatedMonthlyCost = "Estimated monthly cost";
 
-  const iconWithEstimatedCostDisclaimer: JSX.Element = <InfoTooltip>{estimatedCostDisclaimer}</InfoTooltip>;
+  const iconWithEstimatedCostDisclaimer: JSX.Element = (
+    <InfoTooltip ariaLabelForTooltip={`${estimatedMonthlyCost} ${currency} ${estimatedCostDisclaimer}`}>
+      {estimatedCostDisclaimer}
+    </InfoTooltip>
+  );
 
   if (isAutoscale) {
     return (
       <Text variant="small">
-        Estimated monthly cost ({currency}){iconWithEstimatedCostDisclaimer}:{" "}
+        {estimatedMonthlyCost} ({currency}){iconWithEstimatedCostDisclaimer}:{" "}
         <b>
           {currencySign + calculateEstimateNumber(monthlyPrice / 10)} -{" "}
           {currencySign + calculateEstimateNumber(monthlyPrice)}{" "}
