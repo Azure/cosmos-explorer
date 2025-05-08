@@ -136,7 +136,7 @@ export const extractPartitionKeyValues = (
 
     if (value !== undefined) {
       partitionKeyValues.push(value);
-    } else {
+    } else if (!partitionKeyDefinition.systemKey) {
       partitionKeyValues.push({});
     }
   });
