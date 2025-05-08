@@ -56,9 +56,6 @@ export interface SubSettingsComponentProps {
   onChangeFeedPolicyChange: (newChangeFeedPolicyState: ChangeFeedPolicyState) => void;
   onSubSettingsSaveableChange: (isSubSettingsSaveable: boolean) => void;
   onSubSettingsDiscardableChange: (isSubSettingsDiscardable: boolean) => void;
-
-  uniqueKeys: string[];
-  uniqueKeysBaseline: string[];
 }
 
 export class SubSettingsComponent extends React.Component<SubSettingsComponentProps> {

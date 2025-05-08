@@ -71,8 +71,18 @@ exports[`SettingsComponent renders 1`] = `
               "partitionKeyProperties": [
                 "partitionKey",
               ],
+              "rawDataModel": {
+                "uniqueKeyPolicy": {
+                  "uniqueKeys": [
+                    {
+                      "paths": [
+                        "/id",
+                      ],
+                    },
+                  ],
+                },
+              },
               "readSettings": [Function],
-              "uniqueKeyPolicy": {},
               "usageSizeInKB": [Function],
               "vectorEmbeddingPolicy": [Function],
             }
@@ -153,8 +163,18 @@ exports[`SettingsComponent renders 1`] = `
               "partitionKeyProperties": [
                 "partitionKey",
               ],
+              "rawDataModel": {
+                "uniqueKeyPolicy": {
+                  "uniqueKeys": [
+                    {
+                      "paths": [
+                        "/id",
+                      ],
+                    },
+                  ],
+                },
+              },
               "readSettings": [Function],
-              "uniqueKeyPolicy": {},
               "usageSizeInKB": [Function],
               "vectorEmbeddingPolicy": [Function],
             }
@@ -274,8 +294,18 @@ exports[`SettingsComponent renders 1`] = `
               "partitionKeyProperties": [
                 "partitionKey",
               ],
+              "rawDataModel": {
+                "uniqueKeyPolicy": {
+                  "uniqueKeys": [
+                    {
+                      "paths": [
+                        "/id",
+                      ],
+                    },
+                  ],
+                },
+              },
               "readSettings": [Function],
-              "uniqueKeyPolicy": {},
               "usageSizeInKB": [Function],
               "vectorEmbeddingPolicy": [Function],
             }
@@ -404,8 +434,18 @@ exports[`SettingsComponent renders 1`] = `
               "partitionKeyProperties": [
                 "partitionKey",
               ],
+              "rawDataModel": {
+                "uniqueKeyPolicy": {
+                  "uniqueKeys": [
+                    {
+                      "paths": [
+                        "/id",
+                      ],
+                    },
+                  ],
+                },
+              },
               "readSettings": [Function],
-              "uniqueKeyPolicy": {},
               "usageSizeInKB": [Function],
               "vectorEmbeddingPolicy": [Function],
             }
