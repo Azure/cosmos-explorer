@@ -729,7 +729,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
             } else if (result.statusCode >= 400) {
               newFailed.push(result.documentId);
               logConsoleError(
-                `Failed to delete document ${result.documentId.id} with status code ${result.statusCode}`,
+                `Failed to delete document ${result.documentId.id()} with status code ${result.statusCode}`,
               );
             }
           });
