@@ -616,7 +616,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
     <RightPaneForm {...genericPaneProps}>
       <div className={`paneMainContent ${styles.container}`}>
         {!isFabricNative() && (
-          <Accordion className={`customAccordion ${styles.firstItem}`}>
+          <Accordion className={`customAccordion ${styles.firstItem}`} collapsible>
             {shouldShowQueryPageOptions && (
               <AccordionItem value="1">
                 <AccordionHeader>

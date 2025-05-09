@@ -6,7 +6,7 @@ import StoredProcedure from "Explorer/Tree/StoredProcedure";
 import Trigger from "Explorer/Tree/Trigger";
 import UserDefinedFunction from "Explorer/Tree/UserDefinedFunction";
 import { useDatabases } from "Explorer/useDatabases";
-import { isFabric, isFabricMirrored, isFabricNative } from "Platform/Fabric/FabricUtil";
+import { isFabric, isFabricMirrored, isFabricNative, isFabricNativeReadOnly } from "Platform/Fabric/FabricUtil";
 import { getItemName } from "Utils/APITypeUtils";
 import { isServerlessAccount } from "Utils/CapabilityUtils";
 import { useTabs } from "hooks/useTabs";
@@ -292,7 +292,7 @@ const buildCollectionNodeChildren = (
     contextMenu: ResourceTreeContextMenuButtonFactory.createCollectionContextMenuButton(container, collection),
   });
 
-  if (userContext.apiType !== "Cassandra" || !isServerlessAccount()) {
+  if ((userContext.apiType !== "Cassandra" || !isServerlessAccount()) && !isFabricNativeReadOnly()) {
     let id = "";
     if (collection.isSampleCollection) {
       id = database.isDatabaseShared() ? "sampleSettings" : "sampleScaleSettings";

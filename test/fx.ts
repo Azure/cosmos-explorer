@@ -1,4 +1,4 @@
-import { AzureCliCredential } from "@azure/identity";
+import { DefaultAzureCredential } from "@azure/identity";
 import { Frame, Locator, Page, expect } from "@playwright/test";
 import crypto from "crypto";
 
@@ -20,8 +20,8 @@ export function generateUniqueName(baseName, options?: TestNameOptions): string 
   return `${prefix}${baseName}${crypto.randomBytes(length).toString("hex")}${suffix}`;
 }
 
-export function getAzureCLICredentials(): AzureCliCredential {
-  return new AzureCliCredential();
+export function getAzureCLICredentials(): DefaultAzureCredential {
+  return new DefaultAzureCredential();
 }
 
 export async function getAzureCLICredentialsToken(): Promise<string> {
@@ -223,6 +223,9 @@ export class DocumentsTab {
   documentsListPane: Locator;
   documentResultsPane: Locator;
   resultsEditor: Editor;
+  loadMoreButton: Locator;
+  filterInput: Locator;
+  filterButton: Locator;
 
   constructor(
     public frame: Frame,
@@ -234,6 +237,13 @@ export class DocumentsTab {
     this.documentsListPane = this.locator.getByTestId("DocumentsTab/DocumentsPane");
     this.documentResultsPane = this.locator.getByTestId("DocumentsTab/ResultsPane");
     this.resultsEditor = new Editor(this.frame, this.documentResultsPane.getByTestId("EditorReact/Host/Loaded"));
+    this.loadMoreButton = this.documentsListPane.getByTestId("DocumentsTab/LoadMore");
+    this.filterInput = this.documentsFilter.getByTestId("DocumentsTab/FilterInput");
+    this.filterButton = this.documentsFilter.getByTestId("DocumentsTab/ApplyFilter");
+  }
+
+  async setFilter(text: string) {
+    await this.filterInput.fill(text);
   }
 }
 
