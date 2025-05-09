@@ -231,6 +231,34 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
       Non-hierarchically partitioned container.
     </Text>
   </Stack>
+  <Stack
+    tokens={
+      {
+        "childrenGap": 5,
+      }
+    }
+  >
+    <StyledTextFieldBase
+      defaultValue="/id"
+      disabled={true}
+      label="Unique keys"
+      styles={
+        {
+          "fieldGroup": {
+            "borderColor": "",
+            "height": 25,
+            "selectors": {
+              ":disabled": {
+                "backgroundColor": undefined,
+                "borderColor": undefined,
+              },
+            },
+            "width": 300,
+          },
+        }
+      }
+    />
+  </Stack>
 </Stack>
 `;
 
@@ -520,6 +548,34 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
       Non-hierarchically partitioned container.
     </Text>
   </Stack>
+  <Stack
+    tokens={
+      {
+        "childrenGap": 5,
+      }
+    }
+  >
+    <StyledTextFieldBase
+      defaultValue="/id"
+      disabled={true}
+      label="Unique keys"
+      styles={
+        {
+          "fieldGroup": {
+            "borderColor": "",
+            "height": 25,
+            "selectors": {
+              ":disabled": {
+                "backgroundColor": undefined,
+                "borderColor": undefined,
+              },
+            },
+            "width": 300,
+          },
+        }
+      }
+    />
+  </Stack>
 </Stack>
 `;
 
@@ -768,6 +824,34 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
     <Text>
       Non-hierarchically partitioned container.
     </Text>
+  </Stack>
+  <Stack
+    tokens={
+      {
+        "childrenGap": 5,
+      }
+    }
+  >
+    <StyledTextFieldBase
+      defaultValue="/id"
+      disabled={true}
+      label="Unique keys"
+      styles={
+        {
+          "fieldGroup": {
+            "borderColor": "",
+            "height": 25,
+            "selectors": {
+              ":disabled": {
+                "backgroundColor": undefined,
+                "borderColor": undefined,
+              },
+            },
+            "width": 300,
+          },
+        }
+      }
+    />
   </Stack>
 </Stack>
 `;
@@ -1083,6 +1167,34 @@ exports[`SubSettingsComponent renders 1`] = `
       Non-hierarchically partitioned container.
     </Text>
   </Stack>
+  <Stack
+    tokens={
+      {
+        "childrenGap": 5,
+      }
+    }
+  >
+    <StyledTextFieldBase
+      defaultValue="/id"
+      disabled={true}
+      label="Unique keys"
+      styles={
+        {
+          "fieldGroup": {
+            "borderColor": "",
+            "height": 25,
+            "selectors": {
+              ":disabled": {
+                "backgroundColor": undefined,
+                "borderColor": undefined,
+              },
+            },
+            "width": 300,
+          },
+        }
+      }
+    />
+  </Stack>
 </Stack>
 `;
 
@@ -1370,6 +1482,34 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
     <Text>
       Non-hierarchically partitioned container.
     </Text>
+  </Stack>
+  <Stack
+    tokens={
+      {
+        "childrenGap": 5,
+      }
+    }
+  >
+    <StyledTextFieldBase
+      defaultValue="/id"
+      disabled={true}
+      label="Unique keys"
+      styles={
+        {
+          "fieldGroup": {
+            "borderColor": "",
+            "height": 25,
+            "selectors": {
+              ":disabled": {
+                "backgroundColor": undefined,
+                "borderColor": undefined,
+              },
+            },
+            "width": 300,
+          },
+        }
+      }
+    />
   </Stack>
 </Stack>
 `;

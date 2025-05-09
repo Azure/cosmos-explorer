@@ -63,12 +63,16 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
   private geospatialVisible: boolean;
   private partitionKeyValue: string;
   private partitionKeyName: string;
+  private uniqueKeyName: string;
+  private uniqueKeyValue: string;
 
   constructor(props: SubSettingsComponentProps) {
     super(props);
     this.geospatialVisible = userContext.apiType === "SQL";
     this.partitionKeyName = userContext.apiType === "Mongo" ? "Shard key" : "Partition key";
     this.partitionKeyValue = this.getPartitionKeyValue();
+    this.uniqueKeyName = "Unique keys";
+    this.uniqueKeyValue = this.getUniqueKeyValue();
   }
 
   componentDidMount(): void {
@@ -351,6 +355,28 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
   public isLargePartitionKeyEnabled = (): boolean => this.props.collection.partitionKey?.version >= 2;
   public isHierarchicalPartitionedContainer = (): boolean => this.props.collection.partitionKey?.kind === "MultiHash";
 
+  public getUniqueKeyVisible = (): boolean => {
+    return this.props.collection.rawDataModel.uniqueKeyPolicy?.uniqueKeys.length > 0 && userContext.apiType === "SQL";
+  };
+
+  private getUniqueKeyValue = (): string => {
+    const paths = this.props.collection.rawDataModel.uniqueKeyPolicy?.uniqueKeys?.[0]?.paths;
+    return paths?.join(", ") || "";
+  };
+
+  private getUniqueKeyComponent = (): JSX.Element => (
+    <Stack {...titleAndInputStackProps}>
+      {this.getUniqueKeyVisible() && (
+        <TextField
+          label={this.uniqueKeyName}
+          disabled
+          styles={getTextFieldStyles(undefined, undefined)}
+          defaultValue={this.uniqueKeyValue}
+        />
+      )}
+    </Stack>
+  );
+
   public render(): JSX.Element {
     return (
       <Stack {...subComponentStackProps}>
@@ -363,6 +389,8 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
         {this.props.changeFeedPolicyVisible && this.getChangeFeedComponent()}
 
         {this.getPartitionKeyComponent()}
+
+        {this.getUniqueKeyComponent()}
       </Stack>
     );
   }
