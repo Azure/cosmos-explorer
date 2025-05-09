@@ -1,4 +1,3 @@
-import { QueryOperationOptions } from "@azure/cosmos";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import * as Constants from "../Common/Constants";
 import { QueryResults } from "../Contracts/ViewModels";
@@ -14,18 +13,14 @@ interface QueryResponse {
 }
 
 export interface MinimalQueryIterator {
-  fetchNext: (queryOperationOptions?: QueryOperationOptions) => Promise<QueryResponse>;
+  fetchNext: () => Promise<QueryResponse>;
 }
 
 // Pick<QueryIterator<any>, "fetchNext">;
 
-export function nextPage(
-  documentsIterator: MinimalQueryIterator,
-  firstItemIndex: number,
-  queryOperationOptions?: QueryOperationOptions,
-): Promise<QueryResults> {
+export function nextPage(documentsIterator: MinimalQueryIterator, firstItemIndex: number): Promise<QueryResults> {
   TelemetryProcessor.traceStart(Action.ExecuteQuery);
-  return documentsIterator.fetchNext(queryOperationOptions).then((response) => {
+  return documentsIterator.fetchNext().then((response) => {
     TelemetryProcessor.traceSuccess(Action.ExecuteQuery, { dataExplorerArea: Constants.Areas.Tab });
     const documents = response.resources;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

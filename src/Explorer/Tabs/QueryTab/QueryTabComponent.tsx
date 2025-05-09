@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-console */
-import { FeedOptions, QueryOperationOptions } from "@azure/cosmos";
+import { FeedOptions } from "@azure/cosmos";
 import { AuthType } from "AuthType";
 import QueryError, { createMonacoErrorLocationResolver, createMonacoMarkersForQueryErrors } from "Common/QueryError";
 import { SplitterDirection } from "Common/Splitter";
@@ -19,7 +19,7 @@ import { CosmosFluentProvider } from "Explorer/Theme/ThemeUtil";
 import { useSelectedNode } from "Explorer/useSelectedNode";
 import { KeyboardAction } from "KeyboardShortcuts";
 import { QueryConstants } from "Shared/Constants";
-import { LocalStorageUtility, StorageKey, getRUThreshold, ruThresholdEnabled } from "Shared/StorageUtility";
+import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { Allotment } from "allotment";
 import { useClientWriteEnabled } from "hooks/useClientWriteEnabled";
@@ -370,21 +370,8 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
       isExecutionError: false,
     });
 
-    let queryOperationOptions: QueryOperationOptions;
-    if (userContext.apiType === "SQL" && ruThresholdEnabled()) {
-      const ruThreshold: number = getRUThreshold();
-      queryOperationOptions = {
-        ruCapPerOperation: ruThreshold,
-      } as QueryOperationOptions;
-    }
-
     const queryDocuments = async (firstItemIndex: number) =>
-      await queryDocumentsPage(
-        this.props.collection && this.props.collection.id(),
-        this._iterator,
-        firstItemIndex,
-        queryOperationOptions,
-      );
+      await queryDocumentsPage(this.props.collection && this.props.collection.id(), this._iterator, firstItemIndex);
     this.props.tabsBaseInstance.isExecuting(true);
     this.setState({
       isExecuting: true,
