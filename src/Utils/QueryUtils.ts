@@ -93,7 +93,7 @@ export const queryPagesUntilContentPresent = async (
     if (results.hasMoreResults && userContext.apiType === "SQL" && ruThresholdEnabled()) {
       const ruThreshold: number = getRUThreshold();
       if (netRequestCharge > ruThreshold) {
-        logConsoleError(`Request discontinued after exceeding the Request Unit threshold of ${ruThreshold}.`);
+        logConsoleError(`Request discontinued after exceeding the Request Unit threshold of ${ruThreshold} RUs.`);
         return results;
       }
     }

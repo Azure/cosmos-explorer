@@ -501,6 +501,51 @@ exports[`Settings Pane should render Default properly 1`] = `
           <div
             className="___15c001r_0000000 fq02s40"
           >
+            Enhanced query control
+          </div>
+        </AccordionHeader>
+        <AccordionPanel>
+          <div
+            className="___1dfa554_0000000 fo7qwa0"
+          >
+            <div
+              className="___10gar1i_0000000 f1fow5ox f1ugzwwg"
+            >
+              Query up to the max degree of parallelism.
+              <a
+                href="https://learn.microsoft.com/en-us/azure/cosmos-db/nosql/performance-tips-query-sdk?tabs=v3&pivots=programming-language-nodejs#enhanced-query-control"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                 
+                Learn more
+                 
+              </a>
+            </div>
+            <StyledCheckboxBase
+              ariaLabel="EnableQueryControl"
+              checked={false}
+              className="padding"
+              label="Enable query control"
+              onChange={[Function]}
+              styles={
+                {
+                  "label": {
+                    "padding": 0,
+                  },
+                }
+              }
+            />
+          </div>
+        </AccordionPanel>
+      </AccordionItem>
+      <AccordionItem
+        value="10"
+      >
+        <AccordionHeader>
+          <div
+            className="___15c001r_0000000 fq02s40"
+          >
             Max degree of parallelism
           </div>
         </AccordionHeader>

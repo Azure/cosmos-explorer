@@ -3,6 +3,7 @@
 exports[`getCommonQueryOptions builds the correct default options objects 1`] = `
 {
   "disableNonStreamingOrderByQuery": true,
+  "enableQueryControl": false,
   "enableScanInQuery": true,
   "forceQueryPlan": true,
   "maxDegreeOfParallelism": 0,
@@ -14,6 +15,7 @@ exports[`getCommonQueryOptions builds the correct default options objects 1`] = 
 exports[`getCommonQueryOptions reads from localStorage 1`] = `
 {
   "disableNonStreamingOrderByQuery": true,
+  "enableQueryControl": false,
   "enableScanInQuery": true,
   "forceQueryPlan": true,
   "maxDegreeOfParallelism": 17,
