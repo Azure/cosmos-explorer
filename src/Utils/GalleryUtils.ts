@@ -245,7 +245,7 @@ export function downloadItem(
     },
     "Cancel",
     undefined,
-    container.getDownloadModalConent(name),
+    container.getDownloadModalContent(name),
   );
 }
 export async function downloadNotebookItem(
