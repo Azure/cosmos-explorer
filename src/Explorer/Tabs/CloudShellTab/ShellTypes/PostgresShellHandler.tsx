@@ -54,7 +54,7 @@ export class PostgresShellHandler extends AbstractShellHandler {
     // All Azure Cosmos DB PostgreSQL deployments follow this convention.
     // Ref. https://learn.microsoft.com/en-us/azure/cosmos-db/postgresql/reference-limits#database-creation
     const loginName = userContext.postgresConnectionStrParams.adminLogin;
-    return `psql -h "${this._endpoint}" -p 5432 -d "citus" -U "${loginName}" --set=sslmode=require`;
+    return `psql -h "${this._endpoint}" -p 5432 -d "citus" -U "${loginName}" --set=sslmode=require --set=application_name=${this.APP_NAME}`;
   }
 
   public getTerminalSuppressedData(): string {
