@@ -21,3 +21,11 @@ export function copyStyles(sourceDoc: Document, targetDoc: Document): void {
     }
   });
 }
+
+/**
+ * Conditionally returns a class name based on a boolean condition.
+ * If the condition is true, returns the `trueValue` class; otherwise, returns `falseValue` (or an empty string if not provided).
+ */
+export function conditionalClass(condition: boolean, trueValue: string, falseValue?: string): string {
+  return condition ? trueValue : falseValue || "";
+}

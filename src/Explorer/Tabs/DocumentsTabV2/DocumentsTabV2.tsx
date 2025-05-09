@@ -144,6 +144,13 @@ export const useDocumentsTabStyles = makeStyles({
   deleteProgressContent: {
     paddingTop: tokens.spacingVerticalL,
   },
+  smallScreenContent: {
+    "@media (max-width: 420px)": {
+      flexWrap: "wrap",
+      minHeight: "max-content",
+      padding: "4px",
+    },
+  },
 });
 
 export class DocumentsTabV2 extends TabsBase {
@@ -2102,7 +2109,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   return (
     <CosmosFluentProvider className={styles.container}>
       <div data-test={"DocumentsTab"} className="tab-pane active" role="tabpanel" style={{ display: "flex" }}>
-        <div data-test={"DocumentsTab/Filter"} className={styles.filterRow}>
+        <div data-test={"DocumentsTab/Filter"} className={`${styles.filterRow} ${styles.smallScreenContent}`}>
           {!isPreferredApiMongoDB && <span> SELECT * FROM c </span>}
           <InputDataList
             dropdownOptions={getFilterChoices()}
