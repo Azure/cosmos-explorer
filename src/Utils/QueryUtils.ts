@@ -1,4 +1,7 @@
 import { PartitionKey, PartitionKeyDefinition } from "@azure/cosmos";
+import { getRUThreshold, ruThresholdEnabled } from "Shared/StorageUtility";
+import { userContext } from "UserContext";
+import { logConsoleError } from "Utils/NotificationConsoleUtils";
 import * as DataModels from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
 
@@ -86,6 +89,15 @@ export const queryPagesUntilContentPresent = async (
     results.roundTrips = roundTrips;
     results.requestCharge = Number(results.requestCharge) + netRequestCharge;
     netRequestCharge = Number(results.requestCharge);
+
+    if (results.hasMoreResults && userContext.apiType === "SQL" && ruThresholdEnabled()) {
+      const ruThreshold: number = getRUThreshold();
+      if (netRequestCharge > ruThreshold) {
+        logConsoleError(`Request discontinued after exceeding the Request Unit threshold of ${ruThreshold}.`);
+        return results;
+      }
+    }
+
     const resultsMetadata = {
       hasMoreResults: results.hasMoreResults,
       itemCount: results.itemCount,

@@ -1,5 +1,4 @@
 import { monaco } from "Explorer/LazyMonaco";
-import { getRUThreshold, ruThresholdEnabled } from "Shared/StorageUtility";
 
 export enum QueryErrorSeverity {
   Error = "Error",
@@ -103,20 +102,9 @@ export interface ErrorEnrichment {
   learnMoreUrl?: string;
 }
 
-const REPLACEMENT_MESSAGES: Record<string, (original: string) => string> = {
-  OPERATION_RU_LIMIT_EXCEEDED: (original) => {
-    if (ruThresholdEnabled()) {
-      const threshold = getRUThreshold();
-      return `Query exceeded the Request Unit (RU) limit of ${threshold} RUs. You can change this limit in Data Explorer settings.`;
-    }
-    return original;
-  },
-};
+const REPLACEMENT_MESSAGES: Record<string, (original: string) => string> = {};
 
-const HELP_LINKS: Record<string, string> = {
-  OPERATION_RU_LIMIT_EXCEEDED:
-    "https://learn.microsoft.com/en-us/azure/cosmos-db/data-explorer#configure-request-unit-threshold",
-};
+const HELP_LINKS: Record<string, string> = {};
 
 export default class QueryError {
   message: string;
