@@ -175,11 +175,6 @@ export const AddGlobalSecondaryIndexPanel = (props: AddGlobalSecondaryIndexPanel
       return false;
     }
 
-    if (globalSecondaryIndexThroughput > CollectionCreation.MaxRUPerPartition) {
-      setErrorMessage("Unsharded collections support up to 10,000 RUs");
-      return false;
-    }
-
     if (showVectorSearchParameters()) {
       if (!vectorPolicyValidated) {
         setErrorMessage("Please fix errors in container vector policy");
