@@ -282,6 +282,69 @@ export default class Explorer {
     }
   }
 
+  public openInVsCode(): void {
+    TelemetryProcessor.traceStart(Action.OpenVSCode);
+    this.openVsCodeButtonClick();
+  }
+
+  private openVsCodeButtonClick(): void {
+    const activeTab = useTabs.getState().activeTab;
+    const resourceId = encodeURIComponent(userContext.databaseAccount.id);
+    const database = encodeURIComponent(activeTab?.collection?.databaseId);
+    const container = encodeURIComponent(activeTab?.collection?.id());
+    const baseUrl = `vscod://ms-azuretools.vscode-cosmosdb?resourceId=${resourceId}`;
+    const vscodeUrl = activeTab ? `${baseUrl}&database=${database}&container=${container}` : baseUrl;
+    const startTime = Date.now();
+    let vsCodeNotOpened = false;
+
+    setTimeout(() => {
+      const timeOutTime = Date.now() - startTime;
+      if (!vsCodeNotOpened && timeOutTime < 1050) {
+        vsCodeNotOpened = true;
+        useDialog.getState().openDialog(openVSCodeDialogProps);
+      }
+    }, 1000);
+
+    const link = document.createElement("a");
+    link.href = vscodeUrl;
+    link.rel = "noopener noreferrer";
+    document.body.appendChild(link);
+
+    try {
+      link.click();
+      document.body.removeChild(link);
+      TelemetryProcessor.traceStart(Action.OpenVSCode);
+    } catch (error) {
+      if (!vsCodeNotOpened) {
+        vsCodeNotOpened = true;
+        logConsoleError(`Failed to open VS Code: ${getErrorMessage(error)}`);
+      }
+    }
+
+    const openVSCodeDialogProps: DialogProps = {
+      linkProps: {
+        linkText: "Download Visual Studio Code",
+        linkUrl: "https://code.visualstudio.com/download",
+      },
+      isModal: true,
+      title: `Open your Azure Cosmos DB account in Visual Studio Code`,
+      subText: `Please ensure Visual Studio Code is installed on your device.
+      If you don't have it installed, please download it from the link below.`,
+      primaryButtonText: "Open in VS Code",
+      secondaryButtonText: "Cancel",
+
+      onPrimaryButtonClick: () => {
+        vsCodeNotOpened = false;
+        this.openVsCodeButtonClick();
+        useDialog.getState().closeDialog();
+      },
+      onSecondaryButtonClick: () => {
+        useDialog.getState().closeDialog();
+        TelemetryProcessor.traceCancel(Action.OpenVSCode);
+      },
+    };
+  }
+
   public async openCESCVAFeedbackBlade(): Promise<void> {
     sendMessage({ type: MessageTypes.OpenCESCVAFeedbackBlade });
     Logger.logInfo(
