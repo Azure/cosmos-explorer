@@ -191,10 +191,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.isFullTextSearchEnabled = isFullTextSearchEnabled() && !hasDatabaseSharedThroughput(this.collection);
 
       this.changeFeedPolicyVisible = userContext.features.enableChangeFeedPolicy;
-      this.throughputBucketsEnabled =
-        userContext.apiType === "SQL" &&
-        userContext.features.enableThroughputBuckets &&
-        userContext.authType === AuthType.AAD;
+      this.throughputBucketsEnabled = userContext.throughputBucketsEnabled;
 
       // Mongo container with system partition key still treat as "Fixed"
       this.isFixedContainer =
