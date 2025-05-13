@@ -302,14 +302,14 @@ export default class Explorer {
       const handleFocusChange = () => {
         if (useDialog.getState().dialogProps?.title === openVSCodeDialogProps.title) {
           useDialog.getState().closeDialog();
-          window.removeEventListener("focus", handleFocusChange);
+          document.removeEventListener("focus", handleFocusChange);
         }
       };
 
       if (!vsCodeNotOpened && timeOutTime < 1050) {
         vsCodeNotOpened = true;
         useDialog.getState().openDialog(openVSCodeDialogProps);
-        window.addEventListener("focus", handleFocusChange);
+        document.addEventListener("focus", handleFocusChange);
       }
     }, 1000);
 
