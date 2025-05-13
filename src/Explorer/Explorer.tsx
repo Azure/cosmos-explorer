@@ -292,7 +292,7 @@ export default class Explorer {
     const resourceId = encodeURIComponent(userContext.databaseAccount.id);
     const database = encodeURIComponent(activeTab?.collection?.databaseId);
     const container = encodeURIComponent(activeTab?.collection?.id());
-    const baseUrl = `vsco://ms-azuretools.vscode-cosmosdb?resourceId=${resourceId}`;
+    const baseUrl = `vscode://ms-azuretools.vscode-cosmosdb?resourceId=${resourceId}`;
     const vscodeUrl = activeTab ? `${baseUrl}&database=${database}&container=${container}` : baseUrl;
     const startTime = Date.now();
     let vsCodeNotOpened = false;
