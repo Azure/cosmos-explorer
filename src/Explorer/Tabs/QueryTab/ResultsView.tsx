@@ -47,13 +47,45 @@ const ResultsTab: React.FC<ResultsViewProps> = ({ queryResults, isMongoDB, execu
     await executeQueryDocumentsPage(firstItemIndex + itemCount - 1);
   };
 
-  const onClickExportResults = (): void => {
-    const blob = new Blob([queryResultsString], { type: "application/json" });
-    const downloadLink = document.createElement("a");
-    downloadLink.href = URL.createObjectURL(blob);
-    downloadLink.download = "query-results.json";
-    downloadLink.click();
-    URL.revokeObjectURL(downloadLink.href);
+  const ExportResults: React.FC = () => {
+    const [exportFormat, setExportFormat] = useState<"csv" | "json">("json");
+
+    const handleExport = (): void => {
+      if (exportFormat === "csv") {
+        const csvData = queryResults.documents
+          .map((doc) => Object.values(doc).join(","))
+          .join("\n");
+        const csvHeader = Object.keys(queryResults.documents[0]).join(",") + "\n";
+        const csvContent = csvHeader + csvData;
+        const csvBlob = new Blob([csvContent], { type: "text/csv" });
+        const csvDownloadLink = document.createElement("a");
+        csvDownloadLink.href = URL.createObjectURL(csvBlob);
+        csvDownloadLink.download = "query-results.csv";
+        csvDownloadLink.click();
+        URL.revokeObjectURL(csvDownloadLink.href);
+      } else if (exportFormat === "json") {
+        const blob = new Blob([queryResultsString], { type: "application/json" });
+        const downloadLink = document.createElement("a");
+        downloadLink.href = URL.createObjectURL(blob);
+        downloadLink.download = "query-results.json";
+        downloadLink.click();
+        URL.revokeObjectURL(downloadLink.href);
+      }
+    };
+
+    return (
+      <div>
+        <Button onClick={handleExport} size="small" appearance="transparent" icon={<CopyArrowRightRegular />}></Button>
+        <select
+          value={exportFormat}
+          onChange={(e) => setExportFormat(e.target.value as "csv" | "json")}
+          aria-label="Select export format"
+        >
+          <option value="json">json</option>
+          <option value="csv">csv</option>
+        </select>
+      </div>
+    );
   };
 
   return (
@@ -76,14 +108,7 @@ const ResultsTab: React.FC<ResultsViewProps> = ({ queryResults, isMongoDB, execu
           aria-label="Copy"
           onClick={onClickCopyResults}
         />
-        <Button
-          size="small"
-          appearance="transparent"
-          icon={<CopyArrowRightRegular />}
-          title="Export to Json"
-          aria-label="Export to Json"
-          onClick={onClickExportResults}
-        />
+        <ExportResults />
       </div>
       <div className={styles.queryResultsViewer}>
         <EditorReact language={"json"} content={queryResultsString} isReadOnly={true} ariaLabel={"Query results"} />
