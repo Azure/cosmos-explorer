@@ -13,7 +13,7 @@ import {
   TableColumnDefinition,
   createTableColumn,
 } from "@fluentui/react-components";
-import { ArrowDownloadRegular, CopyArrowRightRegular, CopyRegular } from "@fluentui/react-icons";
+import { ArrowDownload16Regular, ArrowDownloadRegular, CopyRegular } from "@fluentui/react-icons";
 import { HttpHeaders } from "Common/Constants";
 import MongoUtility from "Common/MongoUtility";
 import { QueryMetrics } from "Contracts/DataModels";
@@ -74,7 +74,7 @@ const ResultsTab: React.FC<ResultsViewProps> = ({ queryResults, isMongoDB, execu
 
     return (
       <div>
-        <Button onClick={handleExport} size="small" appearance="transparent" icon={<CopyArrowRightRegular />}></Button>
+        <Button onClick={handleExport} size="small" appearance="transparent" icon={<ArrowDownload16Regular />}></Button>
         <select
           value={exportFormat}
           onChange={(e) => setExportFormat(e.target.value as "csv" | "json")}
