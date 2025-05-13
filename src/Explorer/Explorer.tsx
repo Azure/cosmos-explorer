@@ -301,8 +301,8 @@ export default class Explorer {
       const timeOutTime = Date.now() - startTime;
       function handleFocusChange() {
         if (useDialog.getState().dialogProps?.title === openVSCodeDialogProps.title) {
-          window.removeEventListener("focus", handleFocusChange);
           useDialog.getState().closeDialog();
+          window.removeEventListener("focus", handleFocusChange);
         }
       }
 
