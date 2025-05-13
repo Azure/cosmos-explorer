@@ -26,7 +26,7 @@ describe("ThroughputBucketsComponent", () => {
 
   it("renders the correct number of buckets", () => {
     render(<ThroughputBucketsComponent {...defaultProps} />);
-    expect(screen.getAllByText(/Group \d+/)).toHaveLength(5);
+    expect(screen.getAllByText(/Bucket \d+/)).toHaveLength(5);
   });
 
   it("renders buckets in the correct order even if input is unordered", () => {
@@ -36,8 +36,14 @@ describe("ThroughputBucketsComponent", () => {
     ];
     render(<ThroughputBucketsComponent {...defaultProps} currentBuckets={unorderedBuckets} />);
 
-    const bucketLabels = screen.getAllByText(/Group \d+/).map((el) => el.textContent);
-    expect(bucketLabels).toEqual(["Group 1 (Data Explorer Query Bucket)", "Group 2", "Group 3", "Group 4", "Group 5"]);
+    const bucketLabels = screen.getAllByText(/Bucket \d+/).map((el) => el.textContent);
+    expect(bucketLabels).toEqual([
+      "Bucket 1 (Data Explorer Query Bucket)",
+      "Bucket 2",
+      "Bucket 3",
+      "Bucket 4",
+      "Bucket 5",
+    ]);
   });
 
   it("renders all provided buckets even if they exceed the max default bucket count", () => {
@@ -53,7 +59,7 @@ describe("ThroughputBucketsComponent", () => {
 
     render(<ThroughputBucketsComponent {...defaultProps} currentBuckets={oversizedBuckets} />);
 
-    expect(screen.getAllByText(/Group \d+/)).toHaveLength(7);
+    expect(screen.getAllByText(/Bucket \d+/)).toHaveLength(7);
 
     expect(screen.getByDisplayValue("50")).toBeInTheDocument();
     expect(screen.getByDisplayValue("60")).toBeInTheDocument();
@@ -171,7 +177,7 @@ describe("ThroughputBucketsComponent", () => {
 
   it("ensures default buckets are used when no buckets are provided", () => {
     render(<ThroughputBucketsComponent {...defaultProps} currentBuckets={[]} />);
-    expect(screen.getAllByText(/Group \d+/)).toHaveLength(5);
+    expect(screen.getAllByText(/Bucket \d+/)).toHaveLength(5);
     expect(screen.getAllByDisplayValue("100")).toHaveLength(5);
   });
 });
