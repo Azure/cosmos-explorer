@@ -299,12 +299,12 @@ export default class Explorer {
 
     setTimeout(() => {
       const timeOutTime = Date.now() - startTime;
-      function handleFocusChange() {
+      const handleFocusChange = () => {
         if (useDialog.getState().dialogProps?.title === openVSCodeDialogProps.title) {
           useDialog.getState().closeDialog();
           window.removeEventListener("focus", handleFocusChange);
         }
-      }
+      };
 
       if (!vsCodeNotOpened && timeOutTime < 1050) {
         vsCodeNotOpened = true;
