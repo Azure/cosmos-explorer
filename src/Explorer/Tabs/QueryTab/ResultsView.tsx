@@ -74,11 +74,18 @@ const ResultsTab: React.FC<ResultsViewProps> = ({ queryResults, isMongoDB, execu
 
     return (
       <div>
-        <Button onClick={handleExport} size="small" appearance="transparent" icon={<ArrowDownload16Regular />}></Button>
+        <Button
+          onClick={handleExport}
+          size="small"
+          appearance="transparent"
+          icon={<ArrowDownload16Regular />}
+          title="Download Query"
+        ></Button>
         <select
           value={exportFormat}
           onChange={(e) => setExportFormat(e.target.value as "csv" | "json")}
-          aria-label="Select export format"
+          aria-label="Select download format"
+          title="Select download format"
         >
           <option value="json">json</option>
           <option value="csv">csv</option>
