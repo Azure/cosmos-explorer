@@ -47,7 +47,7 @@ export const ThroughputComponent = (props: ThroughputComponentProps): JSX.Elemen
         <ThroughputInput
           showFreeTierExceedThroughputTooltip={isFreeTierAccount() && !useDatabases.getState().isFirstResourceCreated()}
           isDatabase={false}
-          isSharded={false}
+          isSharded={true}
           isFreeTier={isFreeTierAccount()}
           isQuickstart={false}
           isGlobalSecondaryIndex={true}

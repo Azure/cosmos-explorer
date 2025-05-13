@@ -1,5 +1,6 @@
-import { AbstractShellHandler } from "Explorer/Tabs/CloudShellTab/ShellTypes/AbstractShellHandler";
 import { IDisposable, ITerminalAddon, Terminal } from "@xterm/xterm";
+import { AbstractShellHandler } from "../ShellTypes/AbstractShellHandler";
+import { formatErrorMessage } from "./TerminalLogFormats";
 
 interface IAttachOptions {
   bidirectional?: boolean;
@@ -56,8 +57,27 @@ export class AttachAddon implements ITerminalAddon {
       this._disposables.push(terminal.onBinary((data) => this._sendBinary(data)));
     }
 
-    this._disposables.push(addSocketListener(this._socket, "close", () => this.dispose()));
-    this._disposables.push(addSocketListener(this._socket, "error", () => this.dispose()));
+    this._disposables.push(addSocketListener(this._socket, "close", () => this._handleSocketClose(terminal)));
+    this._disposables.push(addSocketListener(this._socket, "error", () => this._handleSocketClose(terminal)));
+  }
+
+  /**
+   * Handles socket close events by terminating processes and showing a message
+   */
+  private _handleSocketClose(terminal: Terminal): void {
+    if (terminal) {
+      terminal.writeln(
+        formatErrorMessage("Session ended. Please close this tab and initiate a new shell session if needed."),
+      );
+
+      // Send exit command to terminal
+      if (this._bidirectional) {
+        terminal.write(formatErrorMessage("exit\r\n"));
+      }
+    }
+
+    // Clean up resources
+    this.dispose();
   }
 
   /**

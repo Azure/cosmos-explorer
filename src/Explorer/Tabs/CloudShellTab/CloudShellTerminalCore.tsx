@@ -43,32 +43,52 @@ export const startCloudShellTerminal = async (terminal: Terminal, shellType: Ter
     await ensureCloudShellProviderRegistered();
 
     resolvedRegion = determineCloudShellRegion();
-    // Ask for user consent for region
-    const consentGranted = await askConfirmation(
-      terminal,
-      formatWarningMessage(
-        "The shell environment may be operating in a region different from that of the database, which could impact performance or data compliance. Do you wish to proceed?",
+
+    resolvedRegion = determineCloudShellRegion();
+
+    terminal.writeln(formatWarningMessage("⚠️  IMPORTANT: Azure Cloud Shell Region Notice ⚠️"));
+    terminal.writeln(
+      formatInfoMessage(
+        "The Cloud Shell environment will operate in a region that may differ from your database's region.",
       ),
     );
+    terminal.writeln(formatInfoMessage("This has two potential implications:"));
+    terminal.writeln(formatInfoMessage("1. Performance Impact:"));
+    terminal.writeln(
+      formatInfoMessage("   Commands may experience higher latency due to geographic distance between regions."),
+    );
+    terminal.writeln(formatInfoMessage("2. Data Compliance Considerations:"));
+    terminal.writeln(
+      formatInfoMessage(
+        "   Data processed through this shell could temporarily reside in a different geographic region,",
+      ),
+    );
+    terminal.writeln(
+      formatInfoMessage("   which may affect compliance with data residency requirements or regulations specific"),
+    );
+    terminal.writeln(formatInfoMessage("   to your organization."));
+    terminal.writeln("");
+
+    terminal.writeln("\x1b[94mFor more information on Azure Cosmos DB data governance and compliance, please visit:");
+    terminal.writeln("\x1b[94mhttps://learn.microsoft.com/en-us/azure/cosmos-db/data-residency\x1b[0m");
+
+    // Ask for user consent for region
+    const consentGranted = await askConfirmation(terminal, formatWarningMessage("Do you wish to proceed?"));
 
     // Track user decision
     TelemetryProcessor.trace(
       Action.CloudShellUserConsent,
       consentGranted ? ActionModifiers.Success : ActionModifiers.Cancel,
-      { dataExplorerArea: Areas.CloudShell },
+      {
+        dataExplorerArea: Areas.CloudShell,
+        shellType: TerminalKind[shellType],
+        isConsent: consentGranted,
+        region: resolvedRegion,
+      },
+      startKey,
     );
 
     if (!consentGranted) {
-      TelemetryProcessor.traceCancel(
-        Action.CloudShellTerminalSession,
-        {
-          shellType: TerminalKind[shellType],
-          dataExplorerArea: Areas.CloudShell,
-          region: resolvedRegion,
-          isConsent: false,
-        },
-        startKey,
-      );
       terminal.writeln(
         formatErrorMessage("Session ended. Please close this tab and initiate a new shell session if needed."),
       );
@@ -262,28 +282,27 @@ export const configureSocketConnection = async (
 };
 
 export const sendTerminalStartupCommands = (socket: WebSocket, initCommands: string): void => {
+  // ensures connections don't remain open indefinitely by implementing an automatic timeout after 120 minutes.
+  const keepSocketAlive = (socket: WebSocket) => {
+    if (socket.readyState === WebSocket.OPEN) {
+      if (pingCount >= MAX_PING_COUNT) {
+        socket.close();
+      } else {
+        pingCount++;
+        // The code uses a recursive setTimeout pattern rather than setInterval,
+        // which ensures each new ping only happens after the previous one completes
+        // and naturally stops if the socket closes.
+        keepAliveID = setTimeout(() => keepSocketAlive(socket), 1000);
+      }
+    }
+  };
+
   if (socket && socket.readyState === WebSocket.OPEN) {
     socket.send(initCommands);
+    keepSocketAlive(socket);
   } else {
     socket.onopen = () => {
       socket.send(initCommands);
-
-      // ensures connections don't remain open indefinitely by implementing an automatic timeout after 20 minutes.
-      const keepSocketAlive = (socket: WebSocket) => {
-        if (socket.readyState === WebSocket.OPEN) {
-          if (pingCount >= MAX_PING_COUNT) {
-            socket.close();
-          } else {
-            socket.send("");
-            pingCount++;
-            // The code uses a recursive setTimeout pattern rather than setInterval,
-            // which ensures each new ping only happens after the previous one completes
-            // and naturally stops if the socket closes.
-            keepAliveID = setTimeout(() => keepSocketAlive(socket), 1000);
-          }
-        }
-      };
-
       keepSocketAlive(socket);
     };
   }
