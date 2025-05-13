@@ -292,16 +292,24 @@ export default class Explorer {
     const resourceId = encodeURIComponent(userContext.databaseAccount.id);
     const database = encodeURIComponent(activeTab?.collection?.databaseId);
     const container = encodeURIComponent(activeTab?.collection?.id());
-    const baseUrl = `vscode://ms-azuretools.vscode-cosmosdb?resourceId=${resourceId}`;
+    const baseUrl = `vsco://ms-azuretools.vscode-cosmosdb?resourceId=${resourceId}`;
     const vscodeUrl = activeTab ? `${baseUrl}&database=${database}&container=${container}` : baseUrl;
     const startTime = Date.now();
     let vsCodeNotOpened = false;
 
     setTimeout(() => {
       const timeOutTime = Date.now() - startTime;
+      function handleFocusChange() {
+        if (useDialog.getState().dialogProps?.title === openVSCodeDialogProps.title) {
+          window.removeEventListener("focus", handleFocusChange);
+          useDialog.getState().closeDialog();
+        }
+      }
+
       if (!vsCodeNotOpened && timeOutTime < 1050) {
         vsCodeNotOpened = true;
         useDialog.getState().openDialog(openVSCodeDialogProps);
+        window.addEventListener("focus", handleFocusChange);
       }
     }, 1000);
 
