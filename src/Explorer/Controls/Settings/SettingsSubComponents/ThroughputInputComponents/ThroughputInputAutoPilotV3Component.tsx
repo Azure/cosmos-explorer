@@ -285,7 +285,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         serverId,
         numberOfRegions,
         isMultimaster,
-        true,
+        false,
       );
       return (
         <div>
