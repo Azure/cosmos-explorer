@@ -52,9 +52,7 @@ const ResultsTab: React.FC<ResultsViewProps> = ({ queryResults, isMongoDB, execu
 
     const handleExport = (): void => {
       if (exportFormat === "csv") {
-        const csvData = queryResults.documents
-          .map((doc) => Object.values(doc).join(","))
-          .join("\n");
+        const csvData = queryResults.documents.map((doc) => Object.values(doc).join(",")).join("\n");
         const csvHeader = Object.keys(queryResults.documents[0]).join(",") + "\n";
         const csvContent = csvHeader + csvData;
         const csvBlob = new Blob([csvContent], { type: "text/csv" });
