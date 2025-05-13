@@ -79,7 +79,7 @@ const ResultsTab: React.FC<ResultsViewProps> = ({ queryResults, isMongoDB, execu
           size="small"
           appearance="transparent"
           icon={<ArrowDownloadRegular />}
-          title="Download Query"
+          title="Download Query Results"
         ></Button>
         <select
           value={exportFormat}
