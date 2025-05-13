@@ -61,8 +61,10 @@ export function createStaticCommandBarButtons(
       addDivider();
       buttons.push(addSynapseLink);
     }
-    const addVsCode = createOpenVsCodeDialogButton(container);
-    buttons.push(addVsCode);
+    if (userContext.apiType !== "Gremlin") {
+      const addVsCode = createOpenVsCodeDialogButton(container);
+      buttons.push(addVsCode);
+    }
   }
 
   if (isDataplaneRbacSupported(userContext.apiType)) {
@@ -272,7 +274,7 @@ function createOpenSynapseLinkDialogButton(container: Explorer): CommandButtonCo
 }
 
 function createOpenVsCodeDialogButton(container: Explorer): CommandButtonComponentProps {
-  const label = "Open in VS Code";
+  const label = "Visual Studio Code";
   return {
     iconSrc: VSCodeIcon,
     iconAlt: label,
@@ -515,6 +517,6 @@ export function createPostgreButtons(container: Explorer): CommandButtonComponen
 
 export function createVCoreMongoButtons(container: Explorer): CommandButtonComponentProps[] {
   const openVCoreMongoTerminalButton = createOpenTerminalButtonByKind(container, ViewModels.TerminalKind.VCoreMongo);
-
-  return [openVCoreMongoTerminalButton];
+  const addVsCode = createOpenVsCodeDialogButton(container);
+  return [openVCoreMongoTerminalButton, addVsCode];
 }

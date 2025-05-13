@@ -17,7 +17,15 @@ export const collection = {
     includedPaths: [],
     excludedPaths: [],
   }),
-  uniqueKeyPolicy: {} as DataModels.UniqueKeyPolicy,
+  rawDataModel: {
+    uniqueKeyPolicy: {
+      uniqueKeys: [
+        {
+          paths: ["/id"],
+        },
+      ],
+    },
+  },
   usageSizeInKB: ko.observable(100),
   offer: ko.observable<DataModels.Offer>({
     autoscaleMaxThroughput: undefined,
