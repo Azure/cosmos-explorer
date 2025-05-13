@@ -13,7 +13,7 @@ import {
   TableColumnDefinition,
   createTableColumn,
 } from "@fluentui/react-components";
-import { ArrowDownload16Regular, ArrowDownloadRegular, CopyRegular } from "@fluentui/react-icons";
+import { ArrowDownloadRegular, CopyRegular } from "@fluentui/react-icons";
 import { HttpHeaders } from "Common/Constants";
 import MongoUtility from "Common/MongoUtility";
 import { QueryMetrics } from "Contracts/DataModels";
@@ -78,7 +78,7 @@ const ResultsTab: React.FC<ResultsViewProps> = ({ queryResults, isMongoDB, execu
           onClick={handleExport}
           size="small"
           appearance="transparent"
-          icon={<ArrowDownload16Regular />}
+          icon={<ArrowDownloadRegular />}
           title="Download Query"
         ></Button>
         <select
