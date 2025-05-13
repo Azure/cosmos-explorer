@@ -13,7 +13,7 @@ import {
   TableColumnDefinition,
   createTableColumn,
 } from "@fluentui/react-components";
-import { ArrowDownloadRegular, CopyRegular } from "@fluentui/react-icons";
+import { ArrowDownloadRegular, CopyArrowRightRegular, CopyRegular } from "@fluentui/react-icons";
 import { HttpHeaders } from "Common/Constants";
 import MongoUtility from "Common/MongoUtility";
 import { QueryMetrics } from "Contracts/DataModels";
@@ -47,6 +47,15 @@ const ResultsTab: React.FC<ResultsViewProps> = ({ queryResults, isMongoDB, execu
     await executeQueryDocumentsPage(firstItemIndex + itemCount - 1);
   };
 
+  const onClickExportResults = (): void => {
+    const blob = new Blob([queryResultsString], { type: "application/json" });
+    const downloadLink = document.createElement("a");
+    downloadLink.href = URL.createObjectURL(blob);
+    downloadLink.download = "query-results.json";
+    downloadLink.click();
+    URL.revokeObjectURL(downloadLink.href);
+  };
+
   return (
     <>
       <div className={styles.queryResultsBar}>
@@ -66,6 +75,14 @@ const ResultsTab: React.FC<ResultsViewProps> = ({ queryResults, isMongoDB, execu
           title="Copy to Clipboard"
           aria-label="Copy"
           onClick={onClickCopyResults}
+        />
+        <Button
+          size="small"
+          appearance="transparent"
+          icon={<CopyArrowRightRegular />}
+          title="Export to Json"
+          aria-label="Export to Json"
+          onClick={onClickExportResults}
         />
       </div>
       <div className={styles.queryResultsViewer}>
