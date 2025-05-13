@@ -32,6 +32,7 @@ enum ResultsTabs {
 
 const ResultsTab: React.FC<ResultsViewProps> = ({ queryResults, isMongoDB, executeQueryDocumentsPage }) => {
   const styles = useQueryTabStyles();
+  /* eslint-disable react/prop-types */
   const queryResultsString = queryResults
     ? isMongoDB
       ? MongoUtility.tojson(queryResults.documents, undefined, false)
