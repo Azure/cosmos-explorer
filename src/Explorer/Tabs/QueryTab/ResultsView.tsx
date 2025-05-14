@@ -53,9 +53,20 @@ const ResultsTab: React.FC<ResultsViewProps> = ({ queryResults, isMongoDB, execu
 
     const handleExport = (): void => {
       if (exportFormat === "csv") {
-        const csvData = queryResults.documents.map((doc) => Object.values(doc).join(",")).join("\n");
-        const csvHeader = Object.keys(queryResults.documents[0]).join(",") + "\n";
-        const csvContent = csvHeader + csvData;
+        // Collect all unique headers from all documents
+        const allHeadersSet = new Set<string>();
+        queryResults.documents.forEach((doc) => {
+          Object.keys(doc).forEach((key) => allHeadersSet.add(key));
+        });
+        const allHeaders = Array.from(allHeadersSet);
+        const csvHeader = allHeaders.join(",");
+        // Map each document to a row using all headers, filling missing fields with empty string
+        const csvData = queryResults.documents
+          .map((doc) =>
+            allHeaders.map((header) => (doc[header] !== undefined ? JSON.stringify(doc[header]) : "")).join(","),
+          )
+          .join("\n");
+        const csvContent = `sep=,\n${csvHeader}\n${csvData}`;
         const csvBlob = new Blob([csvContent], { type: "text/csv" });
         const csvDownloadLink = document.createElement("a");
         csvDownloadLink.href = URL.createObjectURL(csvBlob);
@@ -74,13 +85,6 @@ const ResultsTab: React.FC<ResultsViewProps> = ({ queryResults, isMongoDB, execu
 
     return (
       <div>
-        <Button
-          onClick={handleExport}
-          size="small"
-          appearance="transparent"
-          icon={<ArrowDownloadRegular />}
-          title="Download Query Results"
-        ></Button>
         <select
           value={exportFormat}
           onChange={(e) => setExportFormat(e.target.value as "csv" | "json")}
@@ -90,6 +94,13 @@ const ResultsTab: React.FC<ResultsViewProps> = ({ queryResults, isMongoDB, execu
           <option value="json">json</option>
           <option value="csv">csv</option>
         </select>
+        <Button
+          onClick={handleExport}
+          size="small"
+          appearance="transparent"
+          icon={<ArrowDownloadRegular />}
+          title="Download Query Results"
+        ></Button>
       </div>
     );
   };
