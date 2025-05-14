@@ -191,10 +191,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.isFullTextSearchEnabled = isFullTextSearchEnabled() && !hasDatabaseSharedThroughput(this.collection);
 
       this.changeFeedPolicyVisible = userContext.features.enableChangeFeedPolicy;
-      this.throughputBucketsEnabled =
-        userContext.apiType === "SQL" &&
-        userContext.features.enableThroughputBuckets &&
-        userContext.authType === AuthType.AAD;
+      this.throughputBucketsEnabled = userContext.throughputBucketsEnabled;
 
       // Mongo container with system partition key still treat as "Fixed"
       this.isFixedContainer =
@@ -1074,11 +1071,11 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         databaseId: this.collection.databaseId,
         collectionId: this.collection.id(),
         currentOffer: this.collection.offer(),
-        autopilotThroughput: this.collection.offer().autoscaleMaxThroughput
-          ? this.collection.offer().autoscaleMaxThroughput
+        autopilotThroughput: this.collection.offer?.()?.autoscaleMaxThroughput
+          ? this.collection.offer?.()?.autoscaleMaxThroughput
           : undefined,
-        manualThroughput: this.collection.offer().manualThroughput
-          ? this.collection.offer().manualThroughput
+        manualThroughput: this.collection.offer?.()?.manualThroughput
+          ? this.collection.offer?.()?.manualThroughput
           : undefined,
         throughputBuckets: this.state.throughputBuckets,
       });
@@ -1344,7 +1341,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       });
     }
 
-    if (this.throughputBucketsEnabled) {
+    if (this.throughputBucketsEnabled && !hasDatabaseSharedThroughput(this.collection) && this.offer) {
       tabs.push({
         tab: SettingsV2TabTypes.ThroughputBucketsTab,
         content: <ThroughputBucketsComponent {...throughputBucketsComponentProps} />,
