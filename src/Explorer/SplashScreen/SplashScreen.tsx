@@ -462,7 +462,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
       icon = VisualStudioIcon;
       title = "Connect with VS Code";
       description = "Prefer using VS Code? Find your connection strings here";
-      onClick = () => useTabs.getState().openAndActivateReactTab(ReactTabKind.Connect);
+      onClick = () => this.container.openInVsCode();
     }
 
     return {
