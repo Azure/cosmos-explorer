@@ -15,7 +15,7 @@ exports[`Documents tab (noSql API) when rendered should render the page 1`] = `
     }
   >
     <div
-      className="___11ktxfv_0000000 f1o614cb fy9rknc f22iagw fsnqrgy f1f5gg8d fjodcmx f122n59 f1f09k3d fg706s2 frpde29"
+      className="___11ktxfv_0000000 f1o614cb fy9rknc f22iagw fsnqrgy f1f5gg8d fjodcmx f122n59 f1f09k3d fg706s2 frpde29 ___1ngl8o6_0000000 fz7mnu6 fl3egqs flhmrkm"
       data-test="DocumentsTab/Filter"
     >
       <span>
