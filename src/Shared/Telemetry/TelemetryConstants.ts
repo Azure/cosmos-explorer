@@ -149,6 +149,7 @@ export enum Action {
   UploadDocuments, // Used in Fabric. Please do not rename.
   CloudShellUserConsent,
   CloudShellTerminalSession,
+  OpenVSCode,
 }
 
 export const ActionModifiers = {
