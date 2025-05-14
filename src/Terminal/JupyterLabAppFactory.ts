@@ -17,7 +17,7 @@ export class JupyterLabAppFactory {
     if (userContext.apiType === "VCoreMongo" && content?.includes("MongoServerError: Invalid key")) {
       this.restartShell = true;
     }
-    return content?.includes("cosmosuser@");
+    return content?.includes("cosmosshelluser@");
   }
 
   private isMongoShellStarted(content: string | undefined) {
@@ -68,7 +68,6 @@ export class JupyterLabAppFactory {
     const session = await manager.startNew();
     session.messageReceived.connect(async (_, message: IMessage) => {
       const content = message.content && message.content[0]?.toString();
-
       if (this.checkShellStarted && message.type == "stdout") {
         //Close the terminal tab once the shell closed messages are received
         if (!this.isShellStarted) {
@@ -112,6 +111,13 @@ export class JupyterLabAppFactory {
     // Dispose terminal when unloading.
     window.addEventListener("unload", () => {
       panel.dispose();
+    });
+
+    // Close terminal when Ctrl key is pressed
+    term.node.addEventListener("keydown", (event: KeyboardEvent) => {
+      if (event.ctrlKey) {
+        this.onShellExited(false);
+      }
     });
 
     return session;

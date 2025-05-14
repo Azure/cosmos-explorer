@@ -11,6 +11,8 @@ exports[`Delete Popup snapshot test should not render when showDeletePopup is fa
       },
     }
   }
+  subtitleAriaId="deleteDialogSubTitle"
+  titleAriaId="deleteDialogTitle"
 >
   <Stack
     style={
@@ -21,6 +23,7 @@ exports[`Delete Popup snapshot test should not render when showDeletePopup is fa
     }
   >
     <Text
+      id="deleteDialogTitle"
       style={
         {
           "fontSize": "18px",
@@ -33,6 +36,7 @@ exports[`Delete Popup snapshot test should not render when showDeletePopup is fa
       </b>
     </Text>
     <Text
+      id="deleteDialogSubTitle"
       style={
         {
           "marginBottom": 20,
@@ -89,6 +93,8 @@ exports[`Delete Popup snapshot test should render when showDeletePopup is true 1
       },
     }
   }
+  subtitleAriaId="deleteDialogSubTitle"
+  titleAriaId="deleteDialogTitle"
 >
   <Stack
     style={
@@ -99,6 +105,7 @@ exports[`Delete Popup snapshot test should render when showDeletePopup is true 1
     }
   >
     <Text
+      id="deleteDialogTitle"
       style={
         {
           "fontSize": "18px",
@@ -111,6 +118,7 @@ exports[`Delete Popup snapshot test should render when showDeletePopup is true 1
       </b>
     </Text>
     <Text
+      id="deleteDialogSubTitle"
       style={
         {
           "marginBottom": 20,

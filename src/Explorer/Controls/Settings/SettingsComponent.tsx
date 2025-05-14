@@ -12,6 +12,7 @@ import {
   ThroughputBucketsComponentProps,
 } from "Explorer/Controls/Settings/SettingsSubComponents/ThroughputInputComponents/ThroughputBucketsComponent";
 import { useDatabases } from "Explorer/useDatabases";
+import { isFabricNative } from "Platform/Fabric/FabricUtil";
 import { isFullTextSearchEnabled, isVectorSearchEnabled } from "Utils/CapabilityUtils";
 import { isRunningOnPublicCloud } from "Utils/CloudUtils";
 import * as React from "react";
@@ -44,6 +45,10 @@ import {
   ConflictResolutionComponent,
   ConflictResolutionComponentProps,
 } from "./SettingsSubComponents/ConflictResolutionComponent";
+import {
+  GlobalSecondaryIndexComponent,
+  GlobalSecondaryIndexComponentProps,
+} from "./SettingsSubComponents/GlobalSecondaryIndexComponent";
 import { IndexingPolicyComponent, IndexingPolicyComponentProps } from "./SettingsSubComponents/IndexingPolicyComponent";
 import {
   MongoIndexingPolicyComponent,
@@ -162,6 +167,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   private shouldShowComputedPropertiesEditor: boolean;
   private shouldShowIndexingPolicyEditor: boolean;
   private shouldShowPartitionKeyEditor: boolean;
+  private isGlobalSecondaryIndex: boolean;
   private isVectorSearchEnabled: boolean;
   private isFullTextSearchEnabled: boolean;
   private totalThroughputUsed: number;
@@ -179,14 +185,13 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.shouldShowComputedPropertiesEditor = userContext.apiType === "SQL";
       this.shouldShowIndexingPolicyEditor = userContext.apiType !== "Cassandra" && userContext.apiType !== "Mongo";
       this.shouldShowPartitionKeyEditor = userContext.apiType === "SQL" && isRunningOnPublicCloud();
+      this.isGlobalSecondaryIndex =
+        !!this.collection?.materializedViewDefinition() || !!this.collection?.materializedViews();
       this.isVectorSearchEnabled = isVectorSearchEnabled() && !hasDatabaseSharedThroughput(this.collection);
       this.isFullTextSearchEnabled = isFullTextSearchEnabled() && !hasDatabaseSharedThroughput(this.collection);
 
       this.changeFeedPolicyVisible = userContext.features.enableChangeFeedPolicy;
-      this.throughputBucketsEnabled =
-        userContext.apiType === "SQL" &&
-        userContext.features.enableThroughputBuckets &&
-        userContext.authType === AuthType.AAD;
+      this.throughputBucketsEnabled = userContext.throughputBucketsEnabled;
 
       // Mongo container with system partition key still treat as "Fixed"
       this.isFixedContainer =
@@ -1066,11 +1071,11 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         databaseId: this.collection.databaseId,
         collectionId: this.collection.id(),
         currentOffer: this.collection.offer(),
-        autopilotThroughput: this.collection.offer().autoscaleMaxThroughput
-          ? this.collection.offer().autoscaleMaxThroughput
+        autopilotThroughput: this.collection.offer?.()?.autoscaleMaxThroughput
+          ? this.collection.offer?.()?.autoscaleMaxThroughput
           : undefined,
-        manualThroughput: this.collection.offer().manualThroughput
-          ? this.collection.offer().manualThroughput
+        manualThroughput: this.collection.offer?.()?.manualThroughput
+          ? this.collection.offer?.()?.manualThroughput
           : undefined,
         throughputBuckets: this.state.throughputBuckets,
       });
@@ -1141,6 +1146,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       collection: this.collection,
       database: this.database,
       isFixedContainer: this.isFixedContainer,
+      isGlobalSecondaryIndex: this.isGlobalSecondaryIndex,
       onThroughputChange: this.onThroughputChange,
       throughput: this.state.throughput,
       throughputBaseline: this.state.throughputBaseline,
@@ -1206,6 +1212,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       isFullTextSearchEnabled: this.isFullTextSearchEnabled,
       shouldDiscardContainerPolicies: this.state.shouldDiscardContainerPolicies,
       resetShouldDiscardContainerPolicyChange: this.resetShouldDiscardContainerPolicies,
+      isGlobalSecondaryIndex: this.isGlobalSecondaryIndex,
     };
 
     const indexingPolicyComponentProps: IndexingPolicyComponentProps = {
@@ -1270,6 +1277,12 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       database: useDatabases.getState().findDatabaseWithId(this.collection.databaseId),
       collection: this.collection,
       explorer: this.props.settingsTab.getContainer(),
+      isReadOnly: isFabricNative(),
+    };
+
+    const globalSecondaryIndexComponentProps: GlobalSecondaryIndexComponentProps = {
+      collection: this.collection,
+      explorer: this.props.settingsTab.getContainer(),
     };
 
     const tabs: SettingsV2TabInfo[] = [];
@@ -1328,10 +1341,17 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       });
     }
 
-    if (this.throughputBucketsEnabled) {
+    if (this.throughputBucketsEnabled && !hasDatabaseSharedThroughput(this.collection) && this.offer) {
       tabs.push({
         tab: SettingsV2TabTypes.ThroughputBucketsTab,
         content: <ThroughputBucketsComponent {...throughputBucketsComponentProps} />,
+      });
+    }
+
+    if (this.isGlobalSecondaryIndex) {
+      tabs.push({
+        tab: SettingsV2TabTypes.GlobalSecondaryIndexTab,
+        content: <GlobalSecondaryIndexComponent {...globalSecondaryIndexComponentProps} />,
       });
     }
 

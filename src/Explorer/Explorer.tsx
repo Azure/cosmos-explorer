@@ -8,10 +8,11 @@ import { MessageTypes } from "Contracts/ExplorerContracts";
 import { useDataPlaneRbac } from "Explorer/Panes/SettingsPane/SettingsPane";
 import { getCopilotEnabled, isCopilotFeatureRegistered } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
 import { IGalleryItem } from "Juno/JunoClient";
-import { scheduleRefreshDatabaseResourceToken } from "Platform/Fabric/FabricUtil";
+import { isFabricMirrored, isFabricMirroredKey, scheduleRefreshFabricToken } from "Platform/Fabric/FabricUtil";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { acquireMsalTokenForAccount } from "Utils/AuthorizationUtils";
 import { allowedNotebookServerUrls, validateEndpoint } from "Utils/EndpointUtils";
+import { featureRegistered } from "Utils/FeatureRegistrationUtils";
 import { update } from "Utils/arm/generatedClients/cosmos/databaseAccounts";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import * as ko from "knockout";
@@ -43,7 +44,7 @@ import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../Utils/NotificationConsoleUtils";
 import { useSidePanel } from "../hooks/useSidePanel";
-import { useTabs } from "../hooks/useTabs";
+import { ReactTabKind, useTabs } from "../hooks/useTabs";
 import "./ComponentRegisterer";
 import { DialogProps, useDialog } from "./Controls/Dialog";
 import { GalleryTab as GalleryTabKind } from "./Controls/NotebookGallery/GalleryViewerComponent";
@@ -55,7 +56,7 @@ import type NotebookManager from "./Notebook/NotebookManager";
 import { NotebookPaneContent } from "./Notebook/NotebookManager";
 import { NotebookUtil } from "./Notebook/NotebookUtil";
 import { useNotebook } from "./Notebook/useNotebook";
-import { AddCollectionPanel } from "./Panes/AddCollectionPanel";
+import { AddCollectionPanel } from "./Panes/AddCollectionPanel/AddCollectionPanel";
 import { CassandraAddCollectionPane } from "./Panes/CassandraAddCollectionPane/CassandraAddCollectionPane";
 import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane/ExecuteSprocParamsPane";
 import { StringInputPane } from "./Panes/StringInputPane/StringInputPane";
@@ -187,6 +188,10 @@ export default class Explorer {
       useNotebook.getState().setNotebookBasePath(userContext.features.notebookBasePath);
     }
 
+    if (isFabricMirrored()) {
+      useTabs.getState().closeReactTab(ReactTabKind.Home);
+    }
+
     this.refreshExplorer();
   }
 
@@ -278,6 +283,69 @@ export default class Explorer {
     }
   }
 
+  public openInVsCode(): void {
+    TelemetryProcessor.traceStart(Action.OpenVSCode);
+    this.openVsCodeButtonClick();
+  }
+
+  private openVsCodeButtonClick(): void {
+    const activeTab = useTabs.getState().activeTab;
+    const resourceId = encodeURIComponent(userContext.databaseAccount.id);
+    const database = encodeURIComponent(activeTab?.collection?.databaseId);
+    const container = encodeURIComponent(activeTab?.collection?.id());
+    const baseUrl = `vscode://ms-azuretools.vscode-cosmosdb?resourceId=${resourceId}`;
+    const vscodeUrl = activeTab ? `${baseUrl}&database=${database}&container=${container}` : baseUrl;
+    const startTime = Date.now();
+    let vsCodeNotOpened = false;
+
+    setTimeout(() => {
+      const timeOutTime = Date.now() - startTime;
+      if (!vsCodeNotOpened && timeOutTime < 1050) {
+        vsCodeNotOpened = true;
+        useDialog.getState().openDialog(openVSCodeDialogProps);
+      }
+    }, 1000);
+
+    const link = document.createElement("a");
+    link.href = vscodeUrl;
+    link.rel = "noopener noreferrer";
+    document.body.appendChild(link);
+
+    try {
+      link.click();
+      document.body.removeChild(link);
+      TelemetryProcessor.traceStart(Action.OpenVSCode);
+    } catch (error) {
+      if (!vsCodeNotOpened) {
+        vsCodeNotOpened = true;
+        logConsoleError(`Failed to open VS Code: ${getErrorMessage(error)}`);
+      }
+    }
+
+    const openVSCodeDialogProps: DialogProps = {
+      linkProps: {
+        linkText: "Download Visual Studio Code",
+        linkUrl: "https://code.visualstudio.com/download",
+      },
+      isModal: true,
+      title: `Open your Azure Cosmos DB account in Visual Studio Code`,
+      subText: `Please ensure Visual Studio Code is installed on your device.
+      If you don't have it installed, please download it from the link below.`,
+      primaryButtonText: "Open in VS Code",
+      secondaryButtonText: "Cancel",
+
+      onPrimaryButtonClick: () => {
+        vsCodeNotOpened = false;
+        this.openVsCodeButtonClick();
+        useDialog.getState().closeDialog();
+      },
+      onSecondaryButtonClick: () => {
+        useDialog.getState().closeDialog();
+        TelemetryProcessor.traceCancel(Action.OpenVSCode);
+      },
+    };
+  }
+
   public async openCESCVAFeedbackBlade(): Promise<void> {
     sendMessage({ type: MessageTypes.OpenCESCVAFeedbackBlade });
     Logger.logInfo(
@@ -347,8 +415,8 @@ export default class Explorer {
   };
 
   public onRefreshResourcesClick = async (): Promise<void> => {
-    if (configContext.platform === Platform.Fabric) {
-      scheduleRefreshDatabaseResourceToken(true).then(() => this.refreshAllDatabases());
+    if (isFabricMirroredKey()) {
+      scheduleRefreshFabricToken(true).then(() => this.refreshAllDatabases());
       return;
     }
 
@@ -906,7 +974,9 @@ export default class Explorer {
   }
 
   public async openNotebookTerminal(kind: ViewModels.TerminalKind): Promise<void> {
-    if (useNotebook.getState().isPhoenixFeatures) {
+    if (userContext.features.enableCloudShell) {
+      this.connectToNotebookTerminal(kind);
+    } else if (useNotebook.getState().isPhoenixFeatures) {
       await this.allocateContainer(PoolIdType.DefaultPoolId);
       const notebookServerInfo = useNotebook.getState().notebookServerInfo;
       if (notebookServerInfo && notebookServerInfo.notebookServerEndpoint !== undefined) {
@@ -1125,6 +1195,11 @@ export default class Explorer {
 
     if (useNotebook.getState().isPhoenixNotebooks) {
       await this.initNotebooks(userContext.databaseAccount);
+    }
+
+    if (userContext.authType === AuthType.AAD && userContext.apiType === "SQL") {
+      const throughputBucketsEnabled = await featureRegistered(userContext.subscriptionId, "ThroughputBucketing");
+      updateUserContext({ throughputBucketsEnabled });
     }
 
     this.refreshSampleData();

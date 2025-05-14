@@ -257,6 +257,7 @@ export class Areas {
   public static ShareDialog: string = "Share Access Dialog";
   public static Notebook: string = "Notebook";
   public static Copilot: string = "Copilot";
+  public static CloudShell: string = "Cloud Shell";
 }
 
 export class HttpHeaders {
@@ -528,6 +529,13 @@ export class PriorityLevel {
 export class ariaLabelForLearnMoreLink {
   public static readonly AnalyticalStore = "Learn more about analytical store.";
   public static readonly AzureSynapseLink = "Learn more about Azure Synapse Link.";
+}
+
+export class GlobalSecondaryIndexLabels {
+  public static readonly NewGlobalSecondaryIndex: string = "New Global Secondary Index";
+}
+export class FeedbackLabels {
+  public static readonly provideFeedback: string = "Provide feedback";
 }
 
 export const QueryCopilotSampleDatabaseId = "CopilotSampleDB";

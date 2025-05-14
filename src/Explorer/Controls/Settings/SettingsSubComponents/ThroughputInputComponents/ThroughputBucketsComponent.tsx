@@ -76,7 +76,7 @@ export const ThroughputBucketsComponent: FC<ThroughputBucketsComponentProps> = (
               value={bucket.maxThroughputPercentage}
               onChange={(newValue) => handleBucketChange(bucket.id, newValue)}
               showValue={false}
-              label={`Group ${bucket.id}${bucket.id === 1 ? " (Data Explorer Query Bucket)" : ""}`}
+              label={`Bucket ${bucket.id}${bucket.id === 1 ? " (Data Explorer Query Bucket)" : ""}`}
               styles={{ root: { flex: 2, maxWidth: 400 } }}
               disabled={bucket.maxThroughputPercentage === 100}
             />

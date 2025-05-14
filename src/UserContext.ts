@@ -1,4 +1,4 @@
-import { FabricDatabaseConnectionInfo } from "Contracts/FabricMessagesContract";
+import { CosmosDbArtifactType, ResourceTokenInfo } from "Contracts/FabricMessagesContract";
 import { ParsedResourceTokenConnectionString } from "Platform/Hosted/Helpers/ResourceTokenUtils";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { traceOpen } from "Shared/Telemetry/TelemetryProcessor";
@@ -47,11 +47,21 @@ export interface VCoreMongoConnectionParams {
   connectionString: string;
 }
 
-interface FabricContext {
-  connectionId: string;
-  databaseConnectionInfo: FabricDatabaseConnectionInfo | undefined;
+export interface FabricArtifactInfo {
+  [CosmosDbArtifactType.MIRRORED_KEY]: {
+    connectionId: string;
+    resourceTokenInfo: ResourceTokenInfo | undefined;
+  };
+  [CosmosDbArtifactType.MIRRORED_AAD]: undefined;
+  [CosmosDbArtifactType.NATIVE]: undefined;
+}
+export interface FabricContext<T extends CosmosDbArtifactType> {
+  fabricClientRpcVersion: string;
   isReadOnly: boolean;
   isVisible: boolean;
+  databaseName: string;
+  artifactType: CosmosDbArtifactType;
+  artifactInfo: FabricArtifactInfo[T];
 }
 
 export type AdminFeedbackControlPolicy =
@@ -70,7 +80,7 @@ export type AdminFeedbackPolicySettings = {
 };
 
 export interface UserContext {
-  readonly fabricContext?: FabricContext;
+  readonly fabricContext?: FabricContext<CosmosDbArtifactType>;
   readonly authType?: AuthType;
   readonly masterKey?: string;
   readonly subscriptionId?: string;
@@ -101,10 +111,13 @@ export interface UserContext {
   readonly isReplica?: boolean;
   collectionCreationDefaults: CollectionCreationDefaults;
   sampleDataConnectionInfo?: ParsedResourceTokenConnectionString;
+  readonly selectedRegionalEndpoint?: string;
+  readonly writeEnabledInSelectedRegion?: boolean;
   readonly vcoreMongoConnectionParams?: VCoreMongoConnectionParams;
   readonly feedbackPolicies?: AdminFeedbackPolicySettings;
   readonly dataPlaneRbacEnabled?: boolean;
   readonly refreshCosmosClient?: boolean;
+  throughputBucketsEnabled?: boolean;
 }
 
 export type ApiType = "SQL" | "Mongo" | "Gremlin" | "Tables" | "Cassandra" | "Postgres" | "VCoreMongo";

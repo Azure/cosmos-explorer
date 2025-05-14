@@ -1,5 +1,6 @@
 import { CapabilityNames } from "Common/Constants";
 import { Platform, updateConfigContext } from "ConfigContext";
+import { CosmosDbArtifactType } from "Contracts/FabricMessagesContract";
 import { TreeNode } from "Explorer/Controls/TreeComponent/TreeNodeComponent";
 import Explorer from "Explorer/Explorer";
 import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
@@ -16,7 +17,7 @@ import {
 } from "Explorer/Tree/treeNodeUtil";
 import { useDatabases } from "Explorer/useDatabases";
 import { useSelectedNode } from "Explorer/useSelectedNode";
-import { updateUserContext } from "UserContext";
+import { FabricContext, updateUserContext, UserContext } from "UserContext";
 import PromiseSource from "Utils/PromiseSource";
 import { useSidePanel } from "hooks/useSidePanel";
 import { useTabs } from "hooks/useTabs";
@@ -81,6 +82,7 @@ jest.mock("Explorer/Tree/Trigger", () => {
 jest.mock("Common/DatabaseAccountUtility", () => {
   return {
     isPublicInternetAccessAllowed: () => true,
+    isGlobalSecondaryIndexEnabled: () => false,
   };
 });
 
@@ -133,6 +135,15 @@ const baseCollection = {
     kind: "hash",
     version: 2,
   },
+  materializedViews: ko.observable<DataModels.MaterializedView[]>([
+    { id: "view1", _rid: "rid1" },
+    { id: "view2", _rid: "rid2" },
+  ]),
+  materializedViewDefinition: ko.observable<DataModels.MaterializedViewDefinition>({
+    definition: "SELECT * FROM c WHERE c.id = 1",
+    sourceCollectionId: "source1",
+    sourceCollectionRid: "rid123",
+  }),
   storedProcedures: ko.observableArray([]),
   userDefinedFunctions: ko.observableArray([]),
   triggers: ko.observableArray([]),
@@ -360,9 +371,40 @@ describe("createDatabaseTreeNodes", () => {
     });
   });
 
-  it.each<[string, Platform, boolean, Partial<DataModels.DatabaseAccountExtendedProperties>]>([
-    ["the SQL API, on Fabric", Platform.Fabric, false, { capabilities: [], enableMultipleWriteLocations: true }],
-    ["the SQL API, on Portal", Platform.Portal, false, { capabilities: [], enableMultipleWriteLocations: true }],
+  it.each<[string, Platform, boolean, Partial<DataModels.DatabaseAccountExtendedProperties>, Partial<UserContext>]>([
+    [
+      "the SQL API, on Fabric read-only (mirrored)",
+      Platform.Fabric,
+      false,
+      { capabilities: [], enableMultipleWriteLocations: true },
+      {
+        fabricContext: {
+          isReadOnly: true,
+          artifactType: CosmosDbArtifactType.MIRRORED_KEY,
+        } as FabricContext<CosmosDbArtifactType>,
+      },
+    ],
+    [
+      "the SQL API, on Fabric non read-only (native)",
+      Platform.Fabric,
+      false,
+      { capabilities: [], enableMultipleWriteLocations: true },
+      {
+        fabricContext: {
+          isReadOnly: false,
+          artifactType: CosmosDbArtifactType.NATIVE,
+        } as FabricContext<CosmosDbArtifactType>,
+      },
+    ],
+    [
+      "the SQL API, on Portal",
+      Platform.Portal,
+      false,
+      { capabilities: [], enableMultipleWriteLocations: true },
+      {
+        fabricContext: undefined,
+      },
+    ],
     [
       "the Cassandra API, serverless, on Hosted",
       Platform.Hosted,
@@ -373,6 +415,7 @@ describe("createDatabaseTreeNodes", () => {
           { name: CapabilityNames.EnableServerless, description: "" },
         ],
       },
+      { fabricContext: undefined },
     ],
     [
       "the Mongo API, with Notebooks and Phoenix features, on Emulator",
@@ -381,26 +424,31 @@ describe("createDatabaseTreeNodes", () => {
       {
         capabilities: [{ name: CapabilityNames.EnableMongo, description: "" }],
       },
+      { fabricContext: undefined },
     ],
-  ])("generates the correct tree structure for %s", (_, platform, isNotebookEnabled, dbAccountProperties) => {
-    useNotebook.setState({ isPhoenixFeatures: isNotebookEnabled });
-    updateConfigContext({ platform });
-    updateUserContext({
-      databaseAccount: {
-        properties: {
-          enableMultipleWriteLocations: true,
-          ...dbAccountProperties,
-        },
-      } as unknown as DataModels.DatabaseAccount,
-    });
-    const nodes = createDatabaseTreeNodes(
-      explorer,
-      isNotebookEnabled,
-      useDatabases.getState().databases,
-      refreshActiveTab,
-    );
-    expect(nodes).toMatchSnapshot();
-  });
+  ])(
+    "generates the correct tree structure for %s",
+    (_, platform, isNotebookEnabled, dbAccountProperties, userContext) => {
+      useNotebook.setState({ isPhoenixFeatures: isNotebookEnabled });
+      updateConfigContext({ platform });
+      updateUserContext({
+        ...userContext,
+        databaseAccount: {
+          properties: {
+            enableMultipleWriteLocations: true,
+            ...dbAccountProperties,
+          },
+        } as unknown as DataModels.DatabaseAccount,
+      });
+      const nodes = createDatabaseTreeNodes(
+        explorer,
+        isNotebookEnabled,
+        useDatabases.getState().databases,
+        refreshActiveTab,
+      );
+      expect(nodes).toMatchSnapshot();
+    },
+  );
 
   // The above tests focused on the tree structure. The below tests focus on some core behaviors of the nodes.
   // They are not exhaustive, because exhaustive tests here require a lot of mocking and can become very brittle.
@@ -551,7 +599,18 @@ describe("createDatabaseTreeNodes", () => {
       });
 
       it.each([
-        ["in Fabric", () => updateConfigContext({ platform: Platform.Fabric })],
+        [
+          "in Fabric",
+          () => {
+            updateConfigContext({ platform: Platform.Fabric });
+            updateUserContext({
+              fabricContext: {
+                artifactType: CosmosDbArtifactType.MIRRORED_KEY,
+                isReadOnly: true,
+              } as FabricContext<CosmosDbArtifactType>,
+            });
+          },
+        ],
         [
           "for Cassandra API",
           () =>

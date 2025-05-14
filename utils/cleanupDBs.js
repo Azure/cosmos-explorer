@@ -20,6 +20,10 @@ async function main() {
   const client = new CosmosDBManagementClient(credentials, subscriptionId);
   const accounts = await client.databaseAccounts.list(resourceGroupName);
   for (const account of accounts) {
+    if (account.name.endsWith("-readonly")) {
+      console.log(`SKIPPED: ${account.name}`);
+      continue;
+    }
     if (account.kind === "MongoDB") {
       const mongoDatabases = await client.mongoDBResources.listMongoDBDatabases(resourceGroupName, account.name);
       for (const database of mongoDatabases) {

@@ -1,9 +1,10 @@
 import { ContainerResponse } from "@azure/cosmos";
 import { Queries } from "Common/Constants";
-import { Platform, configContext } from "ConfigContext";
+import { CosmosDbArtifactType } from "Contracts/FabricMessagesContract";
+import { isFabric, isFabricMirroredKey } from "Platform/Fabric/FabricUtil";
 import { AuthType } from "../../AuthType";
 import * as DataModels from "../../Contracts/DataModels";
-import { userContext } from "../../UserContext";
+import { FabricArtifactInfo, userContext } from "../../UserContext";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { listCassandraTables } from "../../Utils/arm/generatedClients/cosmos/cassandraResources";
 import { listGremlinGraphs } from "../../Utils/arm/generatedClients/cosmos/gremlinResources";
@@ -16,15 +17,13 @@ import { handleError } from "../ErrorHandlingUtils";
 export async function readCollections(databaseId: string): Promise<DataModels.Collection[]> {
   const clearMessage = logConsoleProgress(`Querying containers for database ${databaseId}`);
 
-  if (
-    configContext.platform === Platform.Fabric &&
-    userContext.fabricContext &&
-    userContext.fabricContext.databaseConnectionInfo.databaseId === databaseId
-  ) {
+  if (isFabricMirroredKey() && userContext.fabricContext?.databaseName === databaseId) {
     const collections: DataModels.Collection[] = [];
     const promises: Promise<ContainerResponse>[] = [];
 
-    for (const collectionResourceId in userContext.fabricContext.databaseConnectionInfo.resourceTokens) {
+    for (const collectionResourceId in (
+      userContext.fabricContext.artifactInfo as FabricArtifactInfo[CosmosDbArtifactType.MIRRORED_KEY]
+    ).resourceTokenInfo.resourceTokens) {
       // Dictionary key looks like this: dbs/SampleDB/colls/Container
       const resourceIdObj = collectionResourceId.split("/");
       const tokenDatabaseId = resourceIdObj[1];
@@ -56,7 +55,8 @@ export async function readCollections(databaseId: string): Promise<DataModels.Co
     if (
       userContext.authType === AuthType.AAD &&
       !userContext.features.enableSDKoperations &&
-      userContext.apiType !== "Tables"
+      userContext.apiType !== "Tables" &&
+      !isFabric()
     ) {
       return await readCollectionsWithARM(databaseId);
     }
@@ -126,5 +126,12 @@ async function readCollectionsWithARM(databaseId: string): Promise<DataModels.Co
       throw new Error(`Unsupported default experience type: ${apiType}`);
   }
 
-  return rpResponse?.value?.map((collection) => collection.properties?.resource as DataModels.Collection);
+  // TO DO: Remove when we get RP API Spec with materializedViews
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  return rpResponse?.value?.map((collection: any) => {
+    const collectionDataModel: DataModels.Collection = collection.properties?.resource as DataModels.Collection;
+    collectionDataModel.materializedViews = collection.properties?.resource?.materializedViews;
+    collectionDataModel.materializedViewDefinition = collection.properties?.resource?.materializedViewDefinition;
+    return collectionDataModel;
+  });
 }
