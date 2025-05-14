@@ -299,17 +299,9 @@ export default class Explorer {
 
     setTimeout(() => {
       const timeOutTime = Date.now() - startTime;
-      const handleFocusChange = () => {
-        if (useDialog.getState().dialogProps?.title === openVSCodeDialogProps.title) {
-          useDialog.getState().closeDialog();
-          document.removeEventListener("focus", handleFocusChange);
-        }
-      };
-
-      if (!vsCodeNotOpened && timeOutTime < 1050) {
+      if (!vsCodeNotOpened && timeOutTime < 1025) {
         vsCodeNotOpened = true;
         useDialog.getState().openDialog(openVSCodeDialogProps);
-        document.addEventListener("focus", handleFocusChange);
       }
     }, 1000);
 
@@ -342,7 +334,6 @@ export default class Explorer {
       secondaryButtonText: "Cancel",
 
       onPrimaryButtonClick: () => {
-        vsCodeNotOpened = false;
         this.openVsCodeButtonClick();
         useDialog.getState().closeDialog();
       },
