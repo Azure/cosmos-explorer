@@ -123,7 +123,7 @@ export class NotificationConsoleComponent extends React.Component<
                 <span className="numInfoItems">{numInfoItems}</span>
               </span>
               <span className="notificationConsoleHeaderIconWithData">
-                <img src={WarningIcon} alt="Info items" />
+                <img src={WarningIcon} alt="Warning items" />
                 <span className="numWarningItems">{numWarningItems}</span>
               </span>
             </span>
