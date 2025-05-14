@@ -16,7 +16,12 @@ import * as StorageUtility from "../../../Shared/StorageUtility";
 import { LocalStorageUtility, StorageKey } from "../../../Shared/StorageUtility";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
-import { logConsoleError, logConsoleInfo, logConsoleProgress, logConsoleWarning } from "../../../Utils/NotificationConsoleUtils";
+import {
+  logConsoleError,
+  logConsoleInfo,
+  logConsoleProgress,
+  logConsoleWarning,
+} from "../../../Utils/NotificationConsoleUtils";
 import { EditorReact } from "../../Controls/Editor/EditorReact";
 import * as InputTypeaheadComponent from "../../Controls/InputTypeahead/InputTypeaheadComponent";
 import * as TabComponent from "../../Controls/Tabs/TabComponent";
