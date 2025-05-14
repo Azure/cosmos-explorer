@@ -242,6 +242,19 @@ exports[`NotificationConsoleComponent renders the console 2`] = `
             1
           </span>
         </span>
+        <span
+          className="notificationConsoleHeaderIconWithData"
+        >
+          <img
+            alt="Warning items"
+            src={{}}
+          />
+          <span
+            className="numWarningItems"
+          >
+            0
+          </span>
+        </span>
       </span>
       <span
         className="consoleSplitter"
