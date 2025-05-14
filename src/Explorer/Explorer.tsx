@@ -12,6 +12,7 @@ import { isFabricMirrored, isFabricMirroredKey, scheduleRefreshFabricToken } fro
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { acquireMsalTokenForAccount } from "Utils/AuthorizationUtils";
 import { allowedNotebookServerUrls, validateEndpoint } from "Utils/EndpointUtils";
+import { featureRegistered } from "Utils/FeatureRegistrationUtils";
 import { update } from "Utils/arm/generatedClients/cosmos/databaseAccounts";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import * as ko from "knockout";
@@ -1194,6 +1195,11 @@ export default class Explorer {
 
     if (useNotebook.getState().isPhoenixNotebooks) {
       await this.initNotebooks(userContext.databaseAccount);
+    }
+
+    if (userContext.authType === AuthType.AAD && userContext.apiType === "SQL") {
+      const throughputBucketsEnabled = await featureRegistered(userContext.subscriptionId, "ThroughputBucketing");
+      updateUserContext({ throughputBucketsEnabled });
     }
 
     this.refreshSampleData();

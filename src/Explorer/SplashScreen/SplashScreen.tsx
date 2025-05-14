@@ -290,10 +290,10 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         <form className="connectExplorerFormContainer">
           <div className="splashScreenContainer">
             <div className="splashScreen">
-              <h1 className="title" role="heading" aria-label={title}>
+              <h2 className="title" role="heading" aria-label={title}>
                 {title}
                 <FeaturePanelLauncher />
-              </h1>
+              </h2>
               <div className="subtitle">{subtitle}</div>
               {this.getSplashScreenButtons()}
               {useCarousel.getState().showCoachMark && (
