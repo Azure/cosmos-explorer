@@ -282,6 +282,42 @@ export default class Explorer {
     }
   }
 
+  public openInVsCode(): void {
+    const activeTab = useTabs.getState().activeTab;
+    const resourceId = encodeURIComponent(userContext.databaseAccount.id);
+    const database = encodeURIComponent(activeTab?.collection?.databaseId);
+    const container = encodeURIComponent(activeTab?.collection?.id());
+    const baseUrl = `vscode://ms-azuretools.vscode-cosmosdb?resourceId=${resourceId}`;
+    const vscodeUrl = activeTab ? `${baseUrl}&database=${database}&container=${container}` : baseUrl;
+
+    const openVSCodeDialogProps: DialogProps = {
+      linkProps: {
+        linkText: "Download Visual Studio Code",
+        linkUrl: "https://code.visualstudio.com/download",
+      },
+      isModal: true,
+      title: `Open your Azure Cosmos DB account in Visual Studio Code`,
+      subText: `Please ensure Visual Studio Code is installed on your device.
+      If you don't have it installed, please download it from the link below.`,
+      primaryButtonText: "Open in VS Code",
+      secondaryButtonText: "Cancel",
+
+      onPrimaryButtonClick: () => {
+        try {
+          window.location.href = vscodeUrl;
+          TelemetryProcessor.traceStart(Action.OpenVSCode);
+        } catch (error) {
+          logConsoleError(`Failed to open VS Code: ${getErrorMessage(error)}`);
+        }
+      },
+      onSecondaryButtonClick: () => {
+        useDialog.getState().closeDialog();
+        TelemetryProcessor.traceCancel(Action.OpenVSCode);
+      },
+    };
+    useDialog.getState().openDialog(openVSCodeDialogProps);
+  }
+
   public async openCESCVAFeedbackBlade(): Promise<void> {
     sendMessage({ type: MessageTypes.OpenCESCVAFeedbackBlade });
     Logger.logInfo(
