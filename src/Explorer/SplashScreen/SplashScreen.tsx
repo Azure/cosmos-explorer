@@ -461,7 +461,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     if (userContext.apiType === "VCoreMongo") {
       icon = VisualStudioIcon;
       title = "Connect with VS Code";
-      description = "Prefer using VS Code? Find your connection strings here";
+      description = "Prefer using Visual Studio Code?";
       onClick = () => this.container.openInVsCode();
     }
 
