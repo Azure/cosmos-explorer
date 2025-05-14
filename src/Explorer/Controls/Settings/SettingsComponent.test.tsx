@@ -1,7 +1,6 @@
 import { AuthType } from "AuthType";
 import { shallow } from "enzyme";
 import ko from "knockout";
-import { Features } from "Platform/Hosted/extractFeatures";
 import React from "react";
 import { updateCollection } from "../../../Common/dataAccess/updateCollection";
 import { updateOffer } from "../../../Common/dataAccess/updateOffer";
@@ -253,7 +252,7 @@ describe("SettingsComponent", () => {
   it("should save throughput bucket changes when Save button is clicked", async () => {
     updateUserContext({
       apiType: "SQL",
-      features: { enableThroughputBuckets: true } as Features,
+      throughputBucketsEnabled: true,
       authType: AuthType.AAD,
     });
 
