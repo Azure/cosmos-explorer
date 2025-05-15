@@ -461,7 +461,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     if (userContext.apiType === "VCoreMongo") {
       icon = VisualStudioIcon;
       title = "Connect with VS Code";
-      description = "Prefer using Visual Studio Code?";
+      description = "Query and Manage your MongoDB cluster in Visual Studio Code";
       onClick = () => this.container.openInVsCode();
     }
 
