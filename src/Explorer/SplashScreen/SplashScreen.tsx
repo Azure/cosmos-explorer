@@ -28,6 +28,7 @@ import LinkIcon from "../../../images/Link_blue.svg";
 import PowerShellIcon from "../../../images/PowerShell.svg";
 import CopilotIcon from "../../../images/QueryCopilotNewLogo.svg";
 import QuickStartIcon from "../../../images/Quickstart_Lightning.svg";
+import VisualStudioIcon from "../../../images/VisualStudio.svg";
 import NotebookIcon from "../../../images/notebook/Notebook-resource.svg";
 import CollectionIcon from "../../../images/tree-collection.svg";
 import * as Constants from "../../Common/Constants";
@@ -458,10 +459,10 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     }
 
     if (userContext.apiType === "VCoreMongo") {
-      icon = ContainersIcon;
-      title = "Connect with Studio 3T";
-      description = "Prefer Studio 3T? Find your connection strings here";
-      onClick = () => useTabs.getState().openAndActivateReactTab(ReactTabKind.Connect);
+      icon = VisualStudioIcon;
+      title = "Connect with VS Code";
+      description = "Query and Manage your MongoDB cluster in Visual Studio Code";
+      onClick = () => this.container.openInVsCode();
     }
 
     return {
