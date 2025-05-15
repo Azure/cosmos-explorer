@@ -14,6 +14,7 @@ import OpenQueryFromDiskIcon from "../../../../images/OpenQueryFromDisk.svg";
 import OpenInTabIcon from "../../../../images/open-in-tab.svg";
 import SettingsIcon from "../../../../images/settings_15x15.svg";
 import SynapseIcon from "../../../../images/synapse-link.svg";
+import VSCodeIcon from "../../../../images/vscode.svg";
 import { AuthType } from "../../../AuthType";
 import * as Constants from "../../../Common/Constants";
 import { Platform, configContext } from "../../../ConfigContext";
@@ -59,6 +60,10 @@ export function createStaticCommandBarButtons(
     if (addSynapseLink) {
       addDivider();
       buttons.push(addSynapseLink);
+    }
+    if (userContext.apiType !== "Gremlin") {
+      const addVsCode = createOpenVsCodeDialogButton(container);
+      buttons.push(addVsCode);
     }
   }
 
@@ -264,6 +269,18 @@ function createOpenSynapseLinkDialogButton(container: Explorer): CommandButtonCo
     hasPopup: false,
     disabled:
       useSelectedNode.getState().isQueryCopilotCollectionSelected() || useNotebook.getState().isSynapseLinkUpdating,
+    ariaLabel: label,
+  };
+}
+
+function createOpenVsCodeDialogButton(container: Explorer): CommandButtonComponentProps {
+  const label = "Visual Studio Code";
+  return {
+    iconSrc: VSCodeIcon,
+    iconAlt: label,
+    onCommandClick: () => container.openInVsCode(),
+    commandButtonLabel: label,
+    hasPopup: false,
     ariaLabel: label,
   };
 }
@@ -501,5 +518,6 @@ export function createPostgreButtons(container: Explorer): CommandButtonComponen
 export function createVCoreMongoButtons(container: Explorer): CommandButtonComponentProps[] {
   const openVCoreMongoTerminalButton = createOpenTerminalButtonByKind(container, ViewModels.TerminalKind.VCoreMongo);
 
-  return [openVCoreMongoTerminalButton];
+  const addVsCode = createOpenVsCodeDialogButton(container);
+  return [openVCoreMongoTerminalButton, addVsCode];
 }
