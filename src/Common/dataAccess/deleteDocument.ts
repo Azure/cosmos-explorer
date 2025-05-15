@@ -42,6 +42,7 @@ export interface IBulkDeleteResult {
 export const deleteDocuments = async (
   collection: CollectionBase,
   documentIds: DocumentId[],
+  abortSignal: AbortSignal,
 ): Promise<IBulkDeleteResult[]> => {
   const clearMessage = logConsoleProgress(`Deleting ${documentIds.length} ${getEntityName(true)}`);
   try {
@@ -65,12 +66,16 @@ export const deleteDocuments = async (
         operationType: BulkOperationType.Delete,
       }));
 
-      const promise = v2Container.items.bulk(operations).then((bulkResults) => {
-        return bulkResults.map((bulkResult, index) => {
-          const documentId = documentIdsChunk[index];
-          return { ...bulkResult, documentId };
+      const promise = v2Container.items
+        .bulk(operations, undefined, {
+          abortSignal,
+        })
+        .then((bulkResults) => {
+          return bulkResults.map((bulkResult, index) => {
+            const documentId = documentIdsChunk[index];
+            return { ...bulkResult, documentId };
+          });
         });
-      });
       promiseArray.push(promise);
     }
 
