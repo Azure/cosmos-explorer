@@ -130,7 +130,7 @@ const ResultsTab: React.FC<ResultsViewProps> = ({ queryResults, isMongoDB, execu
               role="option"
               aria-selected={exportFormat === "json"}
             >
-              json
+              JSON
             </button>
             <button
               style={{
@@ -153,7 +153,7 @@ const ResultsTab: React.FC<ResultsViewProps> = ({ queryResults, isMongoDB, execu
               role="option"
               aria-selected={exportFormat === "csv"}
             >
-              csv
+              CSV
             </button>
           </div>
         )}
