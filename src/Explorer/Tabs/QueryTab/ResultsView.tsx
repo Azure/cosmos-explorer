@@ -32,6 +32,7 @@ enum ResultsTabs {
 
 const ResultsTab: React.FC<ResultsViewProps> = ({ queryResults, isMongoDB, executeQueryDocumentsPage }) => {
   const styles = useQueryTabStyles();
+  /* eslint-disable react/prop-types */
   const queryResultsString = queryResults
     ? isMongoDB
       ? MongoUtility.tojson(queryResults.documents, undefined, false)
@@ -45,6 +46,117 @@ const ResultsTab: React.FC<ResultsViewProps> = ({ queryResults, isMongoDB, execu
   const onFetchNextPageClick = async (): Promise<void> => {
     const { firstItemIndex, itemCount } = queryResults;
     await executeQueryDocumentsPage(firstItemIndex + itemCount - 1);
+  };
+
+  const ExportResults: React.FC = () => {
+    const [exportFormat] = useState<"CSV" | "JSON">("JSON");
+    const [showDropdown, setShowDropdown] = useState(false);
+    const handleExport = (format: "CSV" | "JSON") => {
+      if (format === "CSV") {
+        // Collect all unique headers from all documents
+        const allHeadersSet = new Set<string>();
+        queryResults.documents.forEach((doc) => {
+          Object.keys(doc).forEach((key) => allHeadersSet.add(key));
+        });
+        const allHeaders = Array.from(allHeadersSet);
+        const csvHeader = allHeaders.join(",");
+        // Map each document to a row using all headers, filling missing fields with empty string
+        const csvData = queryResults.documents
+          .map((doc) =>
+            allHeaders.map((header) => (doc[header] !== undefined ? JSON.stringify(doc[header]) : "")).join(","),
+          )
+          .join("\n");
+        const csvContent = `sep=,\n${csvHeader}\n${csvData}`;
+        const csvBlob = new Blob([csvContent], { type: "text/csv" });
+        const csvDownloadLink = document.createElement("a");
+        csvDownloadLink.href = URL.createObjectURL(csvBlob);
+        csvDownloadLink.download = "query-results.csv";
+        csvDownloadLink.click();
+        setTimeout(() => URL.revokeObjectURL(csvDownloadLink.href), 100);
+      } else if (format === "JSON") {
+        const blob = new Blob([queryResultsString], { type: "application/json" });
+        const downloadLink = document.createElement("a");
+        downloadLink.href = URL.createObjectURL(blob);
+        downloadLink.download = "query-results.json";
+        downloadLink.click();
+        setTimeout(() => URL.revokeObjectURL(downloadLink.href), 100);
+      }
+    };
+
+    return (
+      <div style={{ position: "relative", display: "inline-block" }}>
+        <Button
+          onClick={() => setShowDropdown((v) => !v)}
+          size="small"
+          appearance="transparent"
+          icon={<ArrowDownloadRegular />}
+          title="Download Query Results"
+          aria-haspopup="listbox"
+          aria-expanded={showDropdown}
+        />
+        {showDropdown && (
+          <div
+            style={{
+              position: "absolute",
+              right: 0,
+              zIndex: 10,
+              background: "white",
+              border: "1px solid #ccc",
+              borderRadius: 2,
+              minWidth: 60,
+              boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+              marginTop: 4,
+            }}
+            role="listbox"
+          >
+            <button
+              style={{
+                display: "block",
+                width: "100%",
+                padding: "8px 16px",
+                background: "none",
+                border: "none",
+                textAlign: "left",
+                cursor: "pointer",
+                transition: "background 0.2s",
+              }}
+              onMouseOver={(e) => (e.currentTarget.style.background = "#f3f3f3")}
+              onMouseOut={(e) => (e.currentTarget.style.background = "none")}
+              onClick={async () => {
+                await handleExport("JSON");
+                setShowDropdown(false);
+              }}
+              role="option"
+              aria-selected={exportFormat === "JSON"}
+            >
+              JSON
+            </button>
+            <button
+              style={{
+                display: "block",
+                width: "100%",
+                padding: "8px 16px",
+                background: "none",
+                border: "none",
+                textAlign: "left",
+                cursor: "pointer",
+                transition: "background 0.2s",
+              }}
+              onMouseOver={(e) => (e.currentTarget.style.background = "#f3f3f3")}
+              onMouseOut={(e) => (e.currentTarget.style.background = "none")}
+              onClick={async () => {
+                await handleExport("CSV");
+                setShowDropdown(false);
+              }}
+              role="option"
+              aria-selected={exportFormat === "CSV"}
+            >
+              CSV
+            </button>
+          </div>
+        )}
+      </div>
+    );
   };
 
   return (
@@ -67,6 +179,7 @@ const ResultsTab: React.FC<ResultsViewProps> = ({ queryResults, isMongoDB, execu
           aria-label="Copy"
           onClick={onClickCopyResults}
         />
+        <ExportResults />
       </div>
       <div className={styles.queryResultsViewer}>
         <EditorReact language={"json"} content={queryResultsString} isReadOnly={true} ariaLabel={"Query results"} />
