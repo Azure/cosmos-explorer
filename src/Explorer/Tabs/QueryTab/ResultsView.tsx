@@ -52,7 +52,6 @@ const ResultsTab: React.FC<ResultsViewProps> = ({ queryResults, isMongoDB, execu
     const [exportFormat] = useState<"CSV" | "JSON">("JSON");
     const [showDropdown, setShowDropdown] = useState(false);
     const handleExport = (format: "CSV" | "JSON") => {
-      console.log("Exporting results in format:", format);
       if (format === "CSV") {
         // Collect all unique headers from all documents
         const allHeadersSet = new Set<string>();
