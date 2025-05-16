@@ -50,7 +50,7 @@ const ResultsTab: React.FC<ResultsViewProps> = ({ queryResults, isMongoDB, execu
 
   const ExportResults: React.FC = () => {
     const [exportFormat, setExportFormat] = useState<"csv" | "json">("json");
-
+    const [showDropdown, setShowDropdown] = useState(false);
     const handleExport = (): void => {
       if (exportFormat === "csv") {
         // Collect all unique headers from all documents
@@ -84,23 +84,79 @@ const ResultsTab: React.FC<ResultsViewProps> = ({ queryResults, isMongoDB, execu
     };
 
     return (
-      <div>
-        <select
-          value={exportFormat}
-          onChange={(e) => setExportFormat(e.target.value as "csv" | "json")}
-          aria-label="Select download format"
-          title="Select download format"
-        >
-          <option value="json">json</option>
-          <option value="csv">csv</option>
-        </select>
+      <div style={{ position: "relative", display: "inline-block" }}>
         <Button
-          onClick={handleExport}
+          onClick={() => setShowDropdown((v) => !v)}
           size="small"
           appearance="transparent"
           icon={<ArrowDownloadRegular />}
           title="Download Query Results"
-        ></Button>
+          aria-haspopup="listbox"
+          aria-expanded={showDropdown}
+        />
+        {showDropdown && (
+          <div
+            style={{
+              position: "absolute",
+              right: 0,
+              zIndex: 10,
+              background: "white",
+              border: "1px solid #ccc",
+              borderRadius: 2,
+              minWidth: 60,
+              boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+              marginTop: 4,
+            }}
+            role="listbox"
+          >
+            <button
+              style={{
+                display: "block",
+                width: "100%",
+                padding: "8px 16px",
+                background: "none",
+                border: "none",
+                textAlign: "left",
+                cursor: "pointer",
+                transition: "background 0.2s",
+              }}
+              onMouseOver={(e) => (e.currentTarget.style.background = "#f3f3f3")}
+              onMouseOut={(e) => (e.currentTarget.style.background = "none")}
+              onClick={() => {
+                setExportFormat("json");
+                handleExport();
+                setShowDropdown(false);
+              }}
+              role="option"
+              aria-selected={exportFormat === "json"}
+            >
+              json
+            </button>
+            <button
+              style={{
+                display: "block",
+                width: "100%",
+                padding: "8px 16px",
+                background: "none",
+                border: "none",
+                textAlign: "left",
+                cursor: "pointer",
+                transition: "background 0.2s",
+              }}
+              onMouseOver={(e) => (e.currentTarget.style.background = "#f3f3f3")}
+              onMouseOut={(e) => (e.currentTarget.style.background = "none")}
+              onClick={() => {
+                setExportFormat("csv");
+                handleExport();
+                setShowDropdown(false);
+              }}
+              role="option"
+              aria-selected={exportFormat === "csv"}
+            >
+              csv
+            </button>
+          </div>
+        )}
       </div>
     );
   };
