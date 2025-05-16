@@ -49,10 +49,11 @@ const ResultsTab: React.FC<ResultsViewProps> = ({ queryResults, isMongoDB, execu
   };
 
   const ExportResults: React.FC = () => {
-    const [exportFormat, setExportFormat] = useState<"csv" | "json">("json");
+    const [exportFormat] = useState<"CSV" | "JSON">("JSON");
     const [showDropdown, setShowDropdown] = useState(false);
-    const handleExport = (): void => {
-      if (exportFormat === "csv") {
+    const handleExport = (format: "CSV" | "JSON") => {
+      console.log("Exporting results in format:", format);
+      if (format === "CSV") {
         // Collect all unique headers from all documents
         const allHeadersSet = new Set<string>();
         queryResults.documents.forEach((doc) => {
@@ -72,14 +73,14 @@ const ResultsTab: React.FC<ResultsViewProps> = ({ queryResults, isMongoDB, execu
         csvDownloadLink.href = URL.createObjectURL(csvBlob);
         csvDownloadLink.download = "query-results.csv";
         csvDownloadLink.click();
-        URL.revokeObjectURL(csvDownloadLink.href);
-      } else if (exportFormat === "json") {
+        setTimeout(() => URL.revokeObjectURL(csvDownloadLink.href), 100);
+      } else if (format === "JSON") {
         const blob = new Blob([queryResultsString], { type: "application/json" });
         const downloadLink = document.createElement("a");
         downloadLink.href = URL.createObjectURL(blob);
         downloadLink.download = "query-results.json";
         downloadLink.click();
-        URL.revokeObjectURL(downloadLink.href);
+        setTimeout(() => URL.revokeObjectURL(downloadLink.href), 100);
       }
     };
 
@@ -122,13 +123,12 @@ const ResultsTab: React.FC<ResultsViewProps> = ({ queryResults, isMongoDB, execu
               }}
               onMouseOver={(e) => (e.currentTarget.style.background = "#f3f3f3")}
               onMouseOut={(e) => (e.currentTarget.style.background = "none")}
-              onClick={() => {
-                setExportFormat("json");
-                handleExport();
+              onClick={async () => {
+                await handleExport("JSON");
                 setShowDropdown(false);
               }}
               role="option"
-              aria-selected={exportFormat === "json"}
+              aria-selected={exportFormat === "JSON"}
             >
               JSON
             </button>
@@ -145,13 +145,12 @@ const ResultsTab: React.FC<ResultsViewProps> = ({ queryResults, isMongoDB, execu
               }}
               onMouseOver={(e) => (e.currentTarget.style.background = "#f3f3f3")}
               onMouseOut={(e) => (e.currentTarget.style.background = "none")}
-              onClick={() => {
-                setExportFormat("csv");
-                handleExport();
+              onClick={async () => {
+                await handleExport("CSV");
                 setShowDropdown(false);
               }}
               role="option"
-              aria-selected={exportFormat === "csv"}
+              aria-selected={exportFormat === "CSV"}
             >
               CSV
             </button>
