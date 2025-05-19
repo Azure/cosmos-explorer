@@ -122,8 +122,8 @@ const ResultsTab: React.FC<ResultsViewProps> = ({ queryResults, isMongoDB, execu
               }}
               onMouseOver={(e) => (e.currentTarget.style.background = "#f3f3f3")}
               onMouseOut={(e) => (e.currentTarget.style.background = "none")}
-              onClick={async () => {
-                await handleExport("JSON");
+              onClick={() => {
+                handleExport("JSON");
                 setShowDropdown(false);
               }}
               role="option"
@@ -144,8 +144,8 @@ const ResultsTab: React.FC<ResultsViewProps> = ({ queryResults, isMongoDB, execu
               }}
               onMouseOver={(e) => (e.currentTarget.style.background = "#f3f3f3")}
               onMouseOut={(e) => (e.currentTarget.style.background = "none")}
-              onClick={async () => {
-                await handleExport("CSV");
+              onClick={() => {
+                handleExport("CSV");
                 setShowDropdown(false);
               }}
               role="option"
