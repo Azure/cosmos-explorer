@@ -24,6 +24,5 @@
     "source.organizeImports": "explicit"
   },
   "typescript.preferences.importModuleSpecifier": "non-relative",
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "sarif-viewer.connectToGithubCodeScanning": "off"
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
 }
