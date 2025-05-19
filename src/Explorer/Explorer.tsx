@@ -296,10 +296,10 @@ export default class Explorer {
     const detectVSCode = () => {
       return new Promise<boolean>((resolve) => {
         // Create hidden iframe to detect protocol handler
-        const iframe = document.createElement('iframe');
-        iframe.style.display = 'none';
+        const iframe = document.createElement("iframe");
+        iframe.style.display = "none";
         document.body.appendChild(iframe);
-        
+
         // Set timeout to handle case where protocol isn't supported
         const timeoutId = setTimeout(() => {
           // Clean up iframe
@@ -309,20 +309,24 @@ export default class Explorer {
           // Could not open VS Code within timeout period
           resolve(false);
         }, 1000);
-        
+
         // Try to navigate to VS Code protocol
         try {
           // Listen for blur event which might indicate app was launched
-          window.addEventListener('blur', function onBlur() {
-            clearTimeout(timeoutId);
-            window.removeEventListener('blur', onBlur);
-            if (document.body.contains(iframe)) {
-              document.body.removeChild(iframe);
-            }
-            // Window lost focus, likely because VS Code opened
-            resolve(true);
-          }, { once: true });
-          
+          window.addEventListener(
+            "blur",
+            function onBlur() {
+              clearTimeout(timeoutId);
+              window.removeEventListener("blur", onBlur);
+              if (document.body.contains(iframe)) {
+                document.body.removeChild(iframe);
+              }
+              // Window lost focus, likely because VS Code opened
+              resolve(true);
+            },
+            { once: true },
+          );
+
           // Navigate iframe to the VSCode URL
           iframe.src = vscodeUrl;
         } catch (error) {
@@ -334,7 +338,7 @@ export default class Explorer {
         }
       });
     };
-    
+
     // Try to open VS Code directly first
     detectVSCode().then((isVSCodeInstalled) => {
       if (isVSCodeInstalled) {
@@ -352,7 +356,7 @@ export default class Explorer {
         showVSCodeDialog();
       }
     });
-    
+
     // Helper function to show the VS Code dialog
     const showVSCodeDialog = () => {
       const openVSCodeDialogProps: DialogProps = {
