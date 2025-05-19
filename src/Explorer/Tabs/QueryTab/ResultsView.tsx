@@ -71,7 +71,7 @@ const ResultsTab: React.FC<ResultsViewProps> = ({ queryResults, isMongoDB, execu
       return `"${value.replace(/"/g, '""')}"`;
     };
 
-    const formatValueForCsv = (value: any): string => {
+    const formatValueForCsv = (value: string | object): string => {
       if (value === null || value === undefined) {
         return "";
       }
