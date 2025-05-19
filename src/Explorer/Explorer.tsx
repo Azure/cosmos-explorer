@@ -313,19 +313,16 @@ export default class Explorer {
         // Try to navigate to VS Code protocol
         try {
           // Listen for blur event which might indicate app was launched
-          window.addEventListener(
-            "blur",
-            function onBlur() {
-              clearTimeout(timeoutId);
-              window.removeEventListener("blur", onBlur);
-              if (document.body.contains(iframe)) {
-                document.body.removeChild(iframe);
-              }
-              // Window lost focus, likely because VS Code opened
-              resolve(true);
-            },
-            { once: true },
-          );
+          const onBlur = () => {
+            clearTimeout(timeoutId);
+            window.removeEventListener("blur", onBlur);
+            if (document.body.contains(iframe)) {
+              document.body.removeChild(iframe);
+            }
+            // Window lost focus, likely because VS Code opened
+            resolve(true);
+          };
+          window.addEventListener("blur", onBlur, { once: true });
 
           // Navigate iframe to the VSCode URL
           iframe.src = vscodeUrl;
