@@ -679,6 +679,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     collection: CollectionBase;
   }>(undefined);
   const [bulkDeleteMode, setBulkDeleteMode] = useState<"inProgress" | "completed" | "aborting" | "aborted">(undefined);
+  const [abortController, setAbortController] = useState<AbortController | undefined>(undefined);
 
   const setKeyboardActions = useKeyboardActionGroup(KeyboardActionGroup.ACTIVE_TAB);
 
@@ -706,13 +707,19 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
       return;
     }
 
-    if (
-      (bulkDeleteProcess.pendingIds.length === 0 && bulkDeleteProcess.throttledIds.length === 0) ||
-      bulkDeleteMode === "aborting"
-    ) {
-      // Successfully deleted all documents or operation was aborted
+    if (bulkDeleteProcess.pendingIds.length === 0 && bulkDeleteProcess.throttledIds.length === 0) {
+      // Successfully deleted all documents
       bulkDeleteOperation.onCompleted(bulkDeleteProcess.successfulIds);
-      setBulkDeleteMode(bulkDeleteMode === "aborting" ? "aborted" : "completed");
+      setBulkDeleteMode("completed");
+      return;
+    }
+
+    if (bulkDeleteMode === "aborting") {
+      // Operation was aborted
+      abortController?.abort();
+      bulkDeleteOperation.onCompleted(bulkDeleteProcess.successfulIds);
+      setBulkDeleteMode("aborted");
+      setAbortController(undefined);
       return;
     }
 
@@ -720,8 +727,10 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     const newPendingIds = bulkDeleteProcess.pendingIds.concat(bulkDeleteProcess.throttledIds);
     const timeout = bulkDeleteProcess.beforeExecuteMs || 0;
 
+    const ac = new AbortController();
+    setAbortController(ac);
     setTimeout(() => {
-      deleteNoSqlDocuments(bulkDeleteOperation.collection, [...newPendingIds])
+      deleteNoSqlDocuments(bulkDeleteOperation.collection, [...newPendingIds], ac.signal)
         .then((deleteResult) => {
           let retryAfterMilliseconds = 0;
           const newSuccessful: DocumentId[] = [];
