@@ -48,7 +48,11 @@ const classNames = mergeStyleSets({
   warning: [{ color: theme.semanticColors.warningIcon }, iconClass],
 });
 
-export const UploadItemsPane: FunctionComponent = () => {
+export type UploadItemsPaneProps = {
+  onUpload?: (data: UploadDetailsRecord[]) => void;
+};
+
+export const UploadItemsPane: FunctionComponent<UploadItemsPaneProps> = ({ onUpload }) => {
   const [files, setFiles] = useState<FileList>();
   const [uploadFileData, setUploadFileData] = useState<UploadDetailsRecord[]>([]);
   const [formError, setFormError] = useState<string>("");
@@ -71,6 +75,8 @@ export const UploadItemsPane: FunctionComponent = () => {
         (uploadDetails) => {
           setUploadFileData(uploadDetails.data);
           setFiles(undefined);
+          // Emit the upload details to the parent component
+          onUpload && onUpload(uploadDetails.data);
         },
         (error: Error) => {
           const errorMessage = getErrorMessage(error);
