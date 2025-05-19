@@ -411,6 +411,44 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
         />
       </Stack>
     </Stack>
+    <Stack>
+      <CollapsibleSectionComponent
+        isExpandedByDefault={false}
+        onExpand={[Function]}
+        title="Container Full Text Search Policy"
+      >
+        <Stack
+          id="collapsibleFullTextPolicySectionContent"
+          styles={
+            {
+              "root": {
+                "position": "relative",
+              },
+            }
+          }
+        >
+          <Stack
+            styles={
+              {
+                "root": {
+                  "paddingLeft": 40,
+                },
+              }
+            }
+          >
+            <FullTextPoliciesComponent
+              fullTextPolicy={
+                {
+                  "defaultLanguage": "en-US",
+                  "fullTextPaths": [],
+                }
+              }
+              onFullTextPathChange={[Function]}
+            />
+          </Stack>
+        </Stack>
+      </CollapsibleSectionComponent>
+    </Stack>
     <CollapsibleSectionComponent
       isExpandedByDefault={false}
       onExpand={[Function]}
