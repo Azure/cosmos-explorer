@@ -49,45 +49,100 @@ const ResultsTab: React.FC<ResultsViewProps> = ({ queryResults, isMongoDB, execu
   };
 
   const ExportResults: React.FC = () => {
-    const [exportFormat] = useState<"CSV" | "JSON">("JSON");
     const [showDropdown, setShowDropdown] = useState(false);
+    const dropdownRef = React.useRef<HTMLDivElement>(null);
+
+    React.useEffect(() => {
+      const handleClickOutside = (event: MouseEvent) => {
+        if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+          setShowDropdown(false);
+        }
+      };
+
+      if (showDropdown) {
+        document.addEventListener("mousedown", handleClickOutside);
+      }
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }, [showDropdown]);
+
     const escapeCsvValue = (value: string): string => {
       return `"${value.replace(/"/g, '""')}"`;
     };
-    const handleExport = (format: "CSV" | "JSON") => {
-      if (format === "CSV") {
+
+    const formatValueForCsv = (value: any): string => {
+      if (value === null || value === undefined) {
+        return "";
+      }
+      if (typeof value === "object") {
+        return escapeCsvValue(JSON.stringify(value));
+      }
+      return escapeCsvValue(String(value));
+    };
+
+    const exportToCsv = () => {
+      try {
         const allHeadersSet = new Set<string>();
         queryResults.documents.forEach((doc) => {
           Object.keys(doc).forEach((key) => allHeadersSet.add(key));
         });
+
         const allHeaders = Array.from(allHeadersSet);
         const csvHeader = allHeaders.map(escapeCsvValue).join(",");
         const csvData = queryResults.documents
           .map((doc) =>
-            allHeaders
-              .map((header) => (doc[header] !== undefined ? escapeCsvValue(String(doc[header])) : ""))
-              .join(","),
+            allHeaders.map((header) => (doc[header] !== undefined ? formatValueForCsv(doc[header]) : "")).join(","),
           )
           .join("\n");
+
         const csvContent = `sep=,\n${csvHeader}\n${csvData}`;
-        const csvBlob = new Blob([csvContent], { type: "text/csv" });
-        const csvDownloadLink = document.createElement("a");
-        csvDownloadLink.href = URL.createObjectURL(csvBlob);
-        csvDownloadLink.download = "query-results.csv";
-        csvDownloadLink.click();
-        setTimeout(() => URL.revokeObjectURL(csvDownloadLink.href), 100);
-      } else if (format === "JSON") {
-        const blob = new Blob([queryResultsString], { type: "application/json" });
-        const downloadLink = document.createElement("a");
-        downloadLink.href = URL.createObjectURL(blob);
-        downloadLink.download = "query-results.json";
-        downloadLink.click();
-        setTimeout(() => URL.revokeObjectURL(downloadLink.href), 100);
+        downloadFile(csvContent, "query-results.csv", "text/csv");
+      } catch (error) {
+        console.error("Failed to export CSV:", error);
+      }
+    };
+
+    const exportToJson = () => {
+      try {
+        downloadFile(queryResultsString, "query-results.json", "application/json");
+      } catch (error) {
+        console.error("Failed to export JSON:", error);
+      }
+    };
+
+    const downloadFile = (content: string, fileName: string, contentType: string) => {
+      const blob = new Blob([content], { type: contentType });
+      const url = URL.createObjectURL(blob);
+      const downloadLink = document.createElement("a");
+      downloadLink.href = url;
+      downloadLink.download = fileName;
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+      setTimeout(() => URL.revokeObjectURL(url), 100);
+    };
+
+    const handleExport = (format: "CSV" | "JSON") => {
+      setShowDropdown(false);
+      if (format === "CSV") {
+        exportToCsv();
+      } else {
+        exportToJson();
+      }
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent, format: "CSV" | "JSON") => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        handleExport(format);
+      } else if (e.key === "Escape") {
+        setShowDropdown(false);
       }
     };
 
     return (
-      <div style={{ position: "relative", display: "inline-block" }}>
+      <div style={{ position: "relative", display: "inline-block" }} ref={dropdownRef}>
         <Button
           onClick={() => setShowDropdown((v) => !v)}
           size="small"
@@ -111,6 +166,7 @@ const ResultsTab: React.FC<ResultsViewProps> = ({ queryResults, isMongoDB, execu
               marginTop: 4,
             }}
             role="listbox"
+            tabIndex={-1}
           >
             <button
               style={{
@@ -125,12 +181,10 @@ const ResultsTab: React.FC<ResultsViewProps> = ({ queryResults, isMongoDB, execu
               }}
               onMouseOver={(e) => (e.currentTarget.style.background = "#f3f3f3")}
               onMouseOut={(e) => (e.currentTarget.style.background = "none")}
-              onClick={() => {
-                handleExport("JSON");
-                setShowDropdown(false);
-              }}
+              onClick={() => handleExport("JSON")}
+              onKeyDown={(e) => handleKeyDown(e, "JSON")}
               role="option"
-              aria-selected={exportFormat === "JSON"}
+              tabIndex={0}
             >
               JSON
             </button>
@@ -147,12 +201,10 @@ const ResultsTab: React.FC<ResultsViewProps> = ({ queryResults, isMongoDB, execu
               }}
               onMouseOver={(e) => (e.currentTarget.style.background = "#f3f3f3")}
               onMouseOut={(e) => (e.currentTarget.style.background = "none")}
-              onClick={() => {
-                handleExport("CSV");
-                setShowDropdown(false);
-              }}
+              onClick={() => handleExport("CSV")}
+              onKeyDown={(e) => handleKeyDown(e, "CSV")}
               role="option"
-              aria-selected={exportFormat === "CSV"}
+              tabIndex={0}
             >
               CSV
             </button>
