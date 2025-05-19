@@ -199,6 +199,32 @@ exports[`SettingsComponent renders 1`] = `
         />
       </PivotItem>
       <PivotItem
+        headerText="Container Policies"
+        itemKey="ContainerVectorPolicyTab"
+        key="ContainerVectorPolicyTab"
+        style={
+          {
+            "marginTop": 20,
+          }
+        }
+      >
+        <ContainerPolicyComponent
+          fullTextPolicy={{}}
+          fullTextPolicyBaseline={{}}
+          isFullTextSearchEnabled={true}
+          isGlobalSecondaryIndex={true}
+          isVectorSearchEnabled={false}
+          onFullTextPolicyChange={[Function]}
+          onFullTextPolicyDirtyChange={[Function]}
+          onVectorEmbeddingPolicyChange={[Function]}
+          onVectorEmbeddingPolicyDirtyChange={[Function]}
+          resetShouldDiscardContainerPolicyChange={[Function]}
+          shouldDiscardContainerPolicies={false}
+          vectorEmbeddingPolicy={{}}
+          vectorEmbeddingPolicyBaseline={{}}
+        />
+      </PivotItem>
+      <PivotItem
         headerText="Indexing Policy"
         itemKey="IndexingPolicyTab"
         key="IndexingPolicyTab"
