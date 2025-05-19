@@ -51,19 +51,22 @@ const ResultsTab: React.FC<ResultsViewProps> = ({ queryResults, isMongoDB, execu
   const ExportResults: React.FC = () => {
     const [exportFormat] = useState<"CSV" | "JSON">("JSON");
     const [showDropdown, setShowDropdown] = useState(false);
+    const escapeCsvValue = (value: string): string => {
+      return `"${value.replace(/\"/g, '""')}"`;
+    };
     const handleExport = (format: "CSV" | "JSON") => {
       if (format === "CSV") {
-        // Collect all unique headers from all documents
         const allHeadersSet = new Set<string>();
         queryResults.documents.forEach((doc) => {
           Object.keys(doc).forEach((key) => allHeadersSet.add(key));
         });
         const allHeaders = Array.from(allHeadersSet);
-        const csvHeader = allHeaders.join(",");
-        // Map each document to a row using all headers, filling missing fields with empty string
+        const csvHeader = allHeaders.map(escapeCsvValue).join(",");
         const csvData = queryResults.documents
           .map((doc) =>
-            allHeaders.map((header) => (doc[header] !== undefined ? JSON.stringify(doc[header]) : "")).join(","),
+            allHeaders
+              .map((header) => (doc[header] !== undefined ? escapeCsvValue(String(doc[header])) : ""))
+              .join(","),
           )
           .join("\n");
         const csvContent = `sep=,\n${csvHeader}\n${csvData}`;
