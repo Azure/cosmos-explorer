@@ -71,6 +71,7 @@ import { ResourceTreeAdapter } from "./Tree/ResourceTreeAdapter";
 import StoredProcedure from "./Tree/StoredProcedure";
 import { useDatabases } from "./useDatabases";
 import { useSelectedNode } from "./useSelectedNode";
+import { UploadDetailsRecord } from "../Contracts/ViewModels";
 
 BindingHandlersRegisterer.registerBindingHandlers();
 
@@ -1115,8 +1116,8 @@ export default class Explorer {
     }
   }
 
-  public openUploadItemsPane(): void {
-    useSidePanel.getState().openSidePanel("Upload " + getUploadName(), <UploadItemsPane />);
+  public openUploadItemsPane(onUpload?: (data: UploadDetailsRecord[]) => void): void {
+    useSidePanel.getState().openSidePanel("Upload " + getUploadName(), <UploadItemsPane onUpload={onUpload} />);
   }
   public openExecuteSprocParamsPanel(storedProcedure: StoredProcedure): void {
     useSidePanel
@@ -1124,7 +1125,7 @@ export default class Explorer {
       .openSidePanel("Input parameters", <ExecuteSprocParamsPane storedProcedure={storedProcedure} />);
   }
 
-  public getDownloadModalConent(fileName: string): JSX.Element {
+  public getDownloadModalContent(fileName: string): JSX.Element {
     if (useNotebook.getState().isPhoenixNotebooks) {
       return (
         <>
