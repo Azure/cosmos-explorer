@@ -49,11 +49,7 @@ import { Action } from "Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "UserContext";
 import { getCollectionName } from "Utils/APITypeUtils";
-import {
-  isCapabilityEnabled,
-  isServerlessAccount,
-  isVectorSearchEnabled
-} from "Utils/CapabilityUtils";
+import { isCapabilityEnabled, isServerlessAccount, isVectorSearchEnabled } from "Utils/CapabilityUtils";
 import { getUpsellMessage } from "Utils/PricingUtils";
 import { ValidCosmosDbIdDescription, ValidCosmosDbIdInputPattern } from "Utils/ValidationUtils";
 import { CollapsibleSectionComponent } from "../../Controls/CollapsiblePanel/CollapsibleSectionComponent";
