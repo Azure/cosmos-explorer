@@ -52,7 +52,7 @@ const ResultsTab: React.FC<ResultsViewProps> = ({ queryResults, isMongoDB, execu
     const [exportFormat] = useState<"CSV" | "JSON">("JSON");
     const [showDropdown, setShowDropdown] = useState(false);
     const escapeCsvValue = (value: string): string => {
-      return `"${value.replace(/\"/g, '""')}"`;
+      return `"${value.replace(/"/g, '""')}"`;
     };
     const handleExport = (format: "CSV" | "JSON") => {
       if (format === "CSV") {
