@@ -31,6 +31,7 @@ import { readDatabases } from "../Common/dataAccess/readDatabases";
 import * as DataModels from "../Contracts/DataModels";
 import { ContainerConnectionInfo, IPhoenixServiceInfo, IProvisionData, IResponse } from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
+import { UploadDetailsRecord } from "../Contracts/ViewModels";
 import { GitHubOAuthService } from "../GitHub/GitHubOAuthService";
 import { PhoenixClient } from "../Phoenix/PhoenixClient";
 import * as ExplorerSettings from "../Shared/ExplorerSettings";
@@ -71,7 +72,6 @@ import { ResourceTreeAdapter } from "./Tree/ResourceTreeAdapter";
 import StoredProcedure from "./Tree/StoredProcedure";
 import { useDatabases } from "./useDatabases";
 import { useSelectedNode } from "./useSelectedNode";
-import { UploadDetailsRecord } from "../Contracts/ViewModels";
 
 BindingHandlersRegisterer.registerBindingHandlers();
 
@@ -292,32 +292,96 @@ export default class Explorer {
     const baseUrl = `vscode://ms-azuretools.vscode-cosmosdb?resourceId=${resourceId}`;
     const vscodeUrl = activeTab ? `${baseUrl}&database=${database}&container=${container}` : baseUrl;
 
-    const openVSCodeDialogProps: DialogProps = {
-      linkProps: {
-        linkText: "Download Visual Studio Code",
-        linkUrl: "https://code.visualstudio.com/download",
-      },
-      isModal: true,
-      title: `Open your Azure Cosmos DB account in Visual Studio Code`,
-      subText: `Please ensure Visual Studio Code is installed on your device.
-      If you don't have it installed, please download it from the link below.`,
-      primaryButtonText: "Open in VS Code",
-      secondaryButtonText: "Cancel",
-
-      onPrimaryButtonClick: () => {
+    // Detect if VS Code is installed
+    const detectVSCode = () => {
+      return new Promise<boolean>((resolve) => {
+        // Create hidden iframe to detect protocol handler
+        const iframe = document.createElement('iframe');
+        iframe.style.display = 'none';
+        document.body.appendChild(iframe);
+        
+        // Set timeout to handle case where protocol isn't supported
+        const timeoutId = setTimeout(() => {
+          // Clean up iframe
+          if (document.body.contains(iframe)) {
+            document.body.removeChild(iframe);
+          }
+          // Could not open VS Code within timeout period
+          resolve(false);
+        }, 1000);
+        
+        // Try to navigate to VS Code protocol
         try {
+          // Listen for blur event which might indicate app was launched
+          window.addEventListener('blur', function onBlur() {
+            clearTimeout(timeoutId);
+            window.removeEventListener('blur', onBlur);
+            if (document.body.contains(iframe)) {
+              document.body.removeChild(iframe);
+            }
+            // Window lost focus, likely because VS Code opened
+            resolve(true);
+          }, { once: true });
+          
+          // Navigate iframe to the VSCode URL
+          iframe.src = vscodeUrl;
+        } catch (error) {
+          clearTimeout(timeoutId);
+          if (document.body.contains(iframe)) {
+            document.body.removeChild(iframe);
+          }
+          resolve(false);
+        }
+      });
+    };
+    
+    // Try to open VS Code directly first
+    detectVSCode().then((isVSCodeInstalled) => {
+      if (isVSCodeInstalled) {
+        try {
+          // VS Code is likely installed, open URL directly
           window.location.href = vscodeUrl;
           TelemetryProcessor.traceStart(Action.OpenVSCode);
         } catch (error) {
           logConsoleError(`Failed to open VS Code: ${getErrorMessage(error)}`);
+          // If opening fails, show the dialog as fallback
+          showVSCodeDialog();
         }
-      },
-      onSecondaryButtonClick: () => {
-        useDialog.getState().closeDialog();
-        TelemetryProcessor.traceCancel(Action.OpenVSCode);
-      },
+      } else {
+        // VS Code not detected, show installation dialog
+        showVSCodeDialog();
+      }
+    });
+    
+    // Helper function to show the VS Code dialog
+    const showVSCodeDialog = () => {
+      const openVSCodeDialogProps: DialogProps = {
+        linkProps: {
+          linkText: "Download Visual Studio Code",
+          linkUrl: "https://code.visualstudio.com/download",
+        },
+        isModal: true,
+        title: `Open your Azure Cosmos DB account in Visual Studio Code`,
+        subText: `Please ensure Visual Studio Code is installed on your device.
+        If you don't have it installed, please download it from the link below.`,
+        primaryButtonText: "Open in VS Code",
+        secondaryButtonText: "Cancel",
+
+        onPrimaryButtonClick: () => {
+          try {
+            window.location.href = vscodeUrl;
+            TelemetryProcessor.traceStart(Action.OpenVSCode);
+          } catch (error) {
+            logConsoleError(`Failed to open VS Code: ${getErrorMessage(error)}`);
+          }
+        },
+        onSecondaryButtonClick: () => {
+          useDialog.getState().closeDialog();
+          TelemetryProcessor.traceCancel(Action.OpenVSCode);
+        },
+      };
+      useDialog.getState().openDialog(openVSCodeDialogProps);
     };
-    useDialog.getState().openDialog(openVSCodeDialogProps);
   }
 
   public async openCESCVAFeedbackBlade(): Promise<void> {
