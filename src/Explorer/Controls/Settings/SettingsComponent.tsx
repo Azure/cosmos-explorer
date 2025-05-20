@@ -13,7 +13,7 @@ import {
 } from "Explorer/Controls/Settings/SettingsSubComponents/ThroughputInputComponents/ThroughputBucketsComponent";
 import { useDatabases } from "Explorer/useDatabases";
 import { isFabricNative } from "Platform/Fabric/FabricUtil";
-import { isFullTextSearchEnabled, isVectorSearchEnabled } from "Utils/CapabilityUtils";
+import { isVectorSearchEnabled } from "Utils/CapabilityUtils";
 import { isRunningOnPublicCloud } from "Utils/CloudUtils";
 import * as React from "react";
 import DiscardIcon from "../../../../images/discard.svg";
@@ -188,7 +188,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.isGlobalSecondaryIndex =
         !!this.collection?.materializedViewDefinition() || !!this.collection?.materializedViews();
       this.isVectorSearchEnabled = isVectorSearchEnabled() && !hasDatabaseSharedThroughput(this.collection);
-      this.isFullTextSearchEnabled = isFullTextSearchEnabled() && !hasDatabaseSharedThroughput(this.collection);
+      this.isFullTextSearchEnabled = userContext.apiType === "SQL";
 
       this.changeFeedPolicyVisible = userContext.features.enableChangeFeedPolicy;
       this.throughputBucketsEnabled = userContext.throughputBucketsEnabled;
