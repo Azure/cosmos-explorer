@@ -300,17 +300,13 @@ export default class Explorer {
         iframe.style.display = "none";
         document.body.appendChild(iframe);
 
-        // Set timeout to handle case where protocol isn't supported
         const timeoutId = setTimeout(() => {
-          // Clean up iframe
           if (document.body.contains(iframe)) {
             document.body.removeChild(iframe);
           }
-          // Could not open VS Code within timeout period
           resolve(false);
         }, 1000);
 
-        // Try to navigate to VS Code protocol
         try {
           // Listen for blur event which might indicate app was launched
           const onBlur = () => {
@@ -323,9 +319,8 @@ export default class Explorer {
             resolve(true);
           };
           window.addEventListener("blur", onBlur, { once: true });
-
-          // Navigate iframe to the VSCode URL
-          iframe.src = vscodeUrl;
+          // Use a test URL that won't open a specific resource but will check if the extension is installed
+          iframe.src = "vscode://ms-azuretools.vscode-cosmosdb?test=1";
         } catch (error) {
           clearTimeout(timeoutId);
           if (document.body.contains(iframe)) {
@@ -336,25 +331,20 @@ export default class Explorer {
       });
     };
 
-    // Try to open VS Code directly first
     detectVSCode().then((isVSCodeInstalled) => {
       if (isVSCodeInstalled) {
         try {
-          // VS Code is likely installed, open URL directly
           window.location.href = vscodeUrl;
           TelemetryProcessor.traceStart(Action.OpenVSCode);
         } catch (error) {
           logConsoleError(`Failed to open VS Code: ${getErrorMessage(error)}`);
-          // If opening fails, show the dialog as fallback
           showVSCodeDialog();
         }
       } else {
-        // VS Code not detected, show installation dialog
         showVSCodeDialog();
       }
     });
 
-    // Helper function to show the VS Code dialog
     const showVSCodeDialog = () => {
       const openVSCodeDialogProps: DialogProps = {
         linkProps: {
