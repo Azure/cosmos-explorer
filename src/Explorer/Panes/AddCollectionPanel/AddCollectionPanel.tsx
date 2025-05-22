@@ -49,12 +49,7 @@ import { Action } from "Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "UserContext";
 import { getCollectionName } from "Utils/APITypeUtils";
-import {
-  isCapabilityEnabled,
-  isFullTextSearchEnabled,
-  isServerlessAccount,
-  isVectorSearchEnabled,
-} from "Utils/CapabilityUtils";
+import { isCapabilityEnabled, isServerlessAccount, isVectorSearchEnabled } from "Utils/CapabilityUtils";
 import { getUpsellMessage } from "Utils/PricingUtils";
 import { ValidCosmosDbIdDescription, ValidCosmosDbIdInputPattern } from "Utils/ValidationUtils";
 import { CollapsibleSectionComponent } from "../../Controls/CollapsiblePanel/CollapsibleSectionComponent";
@@ -110,6 +105,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
   private collectionThroughput: number;
   private isCollectionAutoscale: boolean;
   private isCostAcknowledged: boolean;
+  private showFullTextSearch: boolean;
 
   constructor(props: AddCollectionPanelProps) {
     super(props);
@@ -144,6 +140,8 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       fullTextIndexes: [],
       fullTextPolicyValidated: true,
     };
+
+    this.showFullTextSearch = userContext.apiType === "SQL";
   }
 
   componentDidMount(): void {
@@ -869,7 +867,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               </CollapsibleSectionComponent>
             </Stack>
           )}
-          {this.shouldShowFullTextSearchParameters() && (
+          {this.showFullTextSearch && (
             <Stack>
               <CollapsibleSectionComponent
                 title="Container Full Text Search Policy"
@@ -1160,10 +1158,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     return isVectorSearchEnabled() && (isServerlessAccount() || this.shouldShowCollectionThroughputInput());
   }
 
-  private shouldShowFullTextSearchParameters() {
-    return isFullTextSearchEnabled() && (isServerlessAccount() || this.shouldShowCollectionThroughputInput());
-  }
-
   private parseUniqueKeys(): DataModels.UniqueKeyPolicy {
     if (this.state.uniqueKeys?.length === 0) {
       return undefined;
@@ -1316,7 +1310,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       };
     }
 
-    if (this.shouldShowFullTextSearchParameters()) {
+    if (this.showFullTextSearch) {
       indexingPolicy.fullTextIndexes = this.state.fullTextIndexes;
     }
 

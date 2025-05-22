@@ -172,6 +172,17 @@ exports[`AddGlobalSecondaryIndexPanel render default panel 1`] = `
         }
         setEnableAnalyticalStore={[Function]}
       />
+      <FullTextSearchComponent
+        fullTextPolicy={
+          {
+            "defaultLanguage": "en-US",
+            "fullTextPaths": [],
+          }
+        }
+        setFullTextIndexes={[Function]}
+        setFullTextPolicy={[Function]}
+        setFullTextPolicyValidated={[Function]}
+      />
       <AdvancedComponent
         setSubPartitionKeys={[Function]}
         setUseHashV1={[Function]}

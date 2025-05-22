@@ -32,6 +32,7 @@ enum ResultsTabs {
 
 const ResultsTab: React.FC<ResultsViewProps> = ({ queryResults, isMongoDB, executeQueryDocumentsPage }) => {
   const styles = useQueryTabStyles();
+  /* eslint-disable react/prop-types */
   const queryResultsString = queryResults
     ? isMongoDB
       ? MongoUtility.tojson(queryResults.documents, undefined, false)
@@ -45,6 +46,172 @@ const ResultsTab: React.FC<ResultsViewProps> = ({ queryResults, isMongoDB, execu
   const onFetchNextPageClick = async (): Promise<void> => {
     const { firstItemIndex, itemCount } = queryResults;
     await executeQueryDocumentsPage(firstItemIndex + itemCount - 1);
+  };
+
+  const ExportResults: React.FC = () => {
+    const [showDropdown, setShowDropdown] = useState(false);
+    const dropdownRef = React.useRef<HTMLDivElement>(null);
+
+    React.useEffect(() => {
+      const handleClickOutside = (event: MouseEvent) => {
+        if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+          setShowDropdown(false);
+        }
+      };
+
+      if (showDropdown) {
+        document.addEventListener("mousedown", handleClickOutside);
+      }
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }, [showDropdown]);
+
+    const escapeCsvValue = (value: string): string => {
+      return `"${value.replace(/"/g, '""')}"`;
+    };
+
+    const formatValueForCsv = (value: string | object): string => {
+      if (value === null || value === undefined) {
+        return "";
+      }
+      if (typeof value === "object") {
+        return escapeCsvValue(JSON.stringify(value));
+      }
+      return escapeCsvValue(String(value));
+    };
+
+    const exportToCsv = () => {
+      try {
+        const allHeadersSet = new Set<string>();
+        queryResults.documents.forEach((doc) => {
+          Object.keys(doc).forEach((key) => allHeadersSet.add(key));
+        });
+
+        const allHeaders = Array.from(allHeadersSet);
+        const csvHeader = allHeaders.map(escapeCsvValue).join(",");
+        const csvData = queryResults.documents
+          .map((doc) =>
+            allHeaders.map((header) => (doc[header] !== undefined ? formatValueForCsv(doc[header]) : "")).join(","),
+          )
+          .join("\n");
+
+        const csvContent = `sep=,\n${csvHeader}\n${csvData}`;
+        downloadFile(csvContent, "query-results.csv", "text/csv");
+      } catch (error) {
+        console.error("Failed to export CSV:", error);
+      }
+    };
+
+    const exportToJson = () => {
+      try {
+        downloadFile(queryResultsString, "query-results.json", "application/json");
+      } catch (error) {
+        console.error("Failed to export JSON:", error);
+      }
+    };
+
+    const downloadFile = (content: string, fileName: string, contentType: string) => {
+      const blob = new Blob([content], { type: contentType });
+      const url = URL.createObjectURL(blob);
+      const downloadLink = document.createElement("a");
+      downloadLink.href = url;
+      downloadLink.download = fileName;
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+      setTimeout(() => URL.revokeObjectURL(url), 100);
+    };
+
+    const handleExport = (format: "CSV" | "JSON") => {
+      setShowDropdown(false);
+      if (format === "CSV") {
+        exportToCsv();
+      } else {
+        exportToJson();
+      }
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent, format: "CSV" | "JSON") => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        handleExport(format);
+      } else if (e.key === "Escape") {
+        setShowDropdown(false);
+      }
+    };
+
+    return (
+      <div style={{ position: "relative", display: "inline-block" }} ref={dropdownRef}>
+        <Button
+          onClick={() => setShowDropdown((v) => !v)}
+          size="small"
+          appearance="transparent"
+          icon={<ArrowDownloadRegular />}
+          title="Download Query Results"
+          aria-haspopup="listbox"
+          aria-expanded={showDropdown}
+        />
+        {showDropdown && (
+          <div
+            style={{
+              position: "absolute",
+              right: 0,
+              zIndex: 10,
+              background: "white",
+              border: "1px solid #ccc",
+              borderRadius: 2,
+              minWidth: 60,
+              boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+              marginTop: 4,
+            }}
+            role="listbox"
+            tabIndex={-1}
+          >
+            <button
+              style={{
+                display: "block",
+                width: "100%",
+                padding: "8px 16px",
+                background: "none",
+                border: "none",
+                textAlign: "left",
+                cursor: "pointer",
+                transition: "background 0.2s",
+              }}
+              onMouseOver={(e) => (e.currentTarget.style.background = "#f3f3f3")}
+              onMouseOut={(e) => (e.currentTarget.style.background = "none")}
+              onClick={() => handleExport("JSON")}
+              onKeyDown={(e) => handleKeyDown(e, "JSON")}
+              role="option"
+              tabIndex={0}
+            >
+              JSON
+            </button>
+            <button
+              style={{
+                display: "block",
+                width: "100%",
+                padding: "8px 16px",
+                background: "none",
+                border: "none",
+                textAlign: "left",
+                cursor: "pointer",
+                transition: "background 0.2s",
+              }}
+              onMouseOver={(e) => (e.currentTarget.style.background = "#f3f3f3")}
+              onMouseOut={(e) => (e.currentTarget.style.background = "none")}
+              onClick={() => handleExport("CSV")}
+              onKeyDown={(e) => handleKeyDown(e, "CSV")}
+              role="option"
+              tabIndex={0}
+            >
+              CSV
+            </button>
+          </div>
+        )}
+      </div>
+    );
   };
 
   return (
@@ -67,6 +234,7 @@ const ResultsTab: React.FC<ResultsViewProps> = ({ queryResults, isMongoDB, execu
           aria-label="Copy"
           onClick={onClickCopyResults}
         />
+        <ExportResults />
       </div>
       <div className={styles.queryResultsViewer}>
         <EditorReact language={"json"} content={queryResultsString} isReadOnly={true} ariaLabel={"Query results"} />
