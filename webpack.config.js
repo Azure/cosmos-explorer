@@ -78,11 +78,18 @@ const typescriptRule = {
   exclude: /node_modules/,
 };
 
+const javascriptRule = {
+  test: /\.m?js$/,
+  resolve: {
+    fullySpecified: false,
+  },
+};
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 /** @type {(_env: Record<string, string>, argv: Record<string, unknown>) => import("webpack").Configuration} */
 module.exports = function (_env = {}, argv = {}) {
   const mode = argv.mode || "development";
-  const rules = [fontRule, lessRule, imagesRule, cssRule, htmlRule, typescriptRule];
+  const rules = [fontRule, lessRule, imagesRule, cssRule, htmlRule, typescriptRule, javascriptRule];
   const envVars = {
     GIT_SHA: gitSha,
     PORT: process.env.PORT || "1234",

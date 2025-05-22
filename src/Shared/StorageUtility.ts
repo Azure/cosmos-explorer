@@ -21,6 +21,7 @@ export enum StorageKey {
   DatabaseAccountId,
   EncryptedKeyToken,
   IsCrossPartitionQueryEnabled,
+  QueryControlEnabled,
   MaxDegreeOfParellism,
   IsGraphAutoVizDisabled,
   TenantId,
