@@ -40,12 +40,12 @@ import { PanelInfoErrorComponent } from "Explorer/Panes/PanelInfoErrorComponent"
 import { PanelLoadingScreen } from "Explorer/Panes/PanelLoadingScreen";
 import { useDatabases } from "Explorer/useDatabases";
 import { useSidePanel } from "hooks/useSidePanel";
-import React, { useEffect, useState } from "react";
+import React, { MutableRefObject, useEffect, useRef, useState } from "react";
 import { CollectionCreation } from "Shared/Constants";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "UserContext";
-import { isFullTextSearchEnabled, isServerlessAccount, isVectorSearchEnabled } from "Utils/CapabilityUtils";
+import { isServerlessAccount, isVectorSearchEnabled } from "Utils/CapabilityUtils";
 import { ValidCosmosDbIdDescription, ValidCosmosDbIdInputPattern } from "Utils/ValidationUtils";
 
 export interface AddGlobalSecondaryIndexPanelProps {
@@ -74,6 +74,8 @@ export const AddGlobalSecondaryIndexPanel = (props: AddGlobalSecondaryIndexPanel
   const [errorMessage, setErrorMessage] = useState<string>();
   const [showErrorDetails, setShowErrorDetails] = useState<boolean>();
   const [isExecuting, setIsExecuting] = useState<boolean>();
+
+  const showFullTextSearch: MutableRefObject<boolean> = useRef<boolean>(userContext.apiType === "SQL");
 
   useEffect(() => {
     const sourceContainerOptions: IDropdownOption[] = [];
@@ -138,10 +140,6 @@ export const AddGlobalSecondaryIndexPanel = (props: AddGlobalSecondaryIndexPanel
 
   const showVectorSearchParameters = (): boolean => {
     return isVectorSearchEnabled() && (isServerlessAccount() || showCollectionThroughputInput());
-  };
-
-  const showFullTextSearchParameters = (): boolean => {
-    return isFullTextSearchEnabled() && (isServerlessAccount() || showCollectionThroughputInput());
   };
 
   const getAnalyticalStorageTtl = (): number => {
@@ -228,7 +226,7 @@ export const AddGlobalSecondaryIndexPanel = (props: AddGlobalSecondaryIndexPanel
       };
     }
 
-    if (showFullTextSearchParameters()) {
+    if (showFullTextSearch) {
       indexingPolicy.fullTextIndexes = fullTextIndexes;
     }
 
@@ -387,7 +385,7 @@ export const AddGlobalSecondaryIndexPanel = (props: AddGlobalSecondaryIndexPanel
               }}
             />
           )}
-          {showFullTextSearchParameters() && (
+          {showFullTextSearch && (
             <FullTextSearchComponent
               {...{ fullTextPolicy, setFullTextPolicy, setFullTextIndexes, setFullTextPolicyValidated }}
             />
