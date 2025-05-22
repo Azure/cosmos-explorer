@@ -292,87 +292,31 @@ export default class Explorer {
     const baseUrl = `vscode://ms-azuretools.vscode-cosmosdb?resourceId=${resourceId}`;
     const vscodeUrl = activeTab ? `${baseUrl}&database=${database}&container=${container}` : baseUrl;
 
-    // Detect if VS Code is installed
-    const detectVSCode = () => {
-      return new Promise<boolean>((resolve) => {
-        // Create hidden iframe to detect protocol handler
-        const iframe = document.createElement("iframe");
-        iframe.style.display = "none";
-        document.body.appendChild(iframe);
-
-        const timeoutId = setTimeout(() => {
-          if (document.body.contains(iframe)) {
-            document.body.removeChild(iframe);
-          }
-          resolve(false);
-        }, 1000);
-
-        try {
-          // Listen for blur event which might indicate app was launched
-          const onBlur = () => {
-            clearTimeout(timeoutId);
-            window.removeEventListener("blur", onBlur);
-            if (document.body.contains(iframe)) {
-              document.body.removeChild(iframe);
-            }
-            // Window lost focus, likely because VS Code opened
-            resolve(true);
-          };
-          window.addEventListener("blur", onBlur, { once: true });
-          // Use a test URL that won't open a specific resource but will check if the extension is installed
-          iframe.src = "vscode://ms-azuretools.vscode-cosmosdb?test=1";
-        } catch (error) {
-          clearTimeout(timeoutId);
-          if (document.body.contains(iframe)) {
-            document.body.removeChild(iframe);
-          }
-          resolve(false);
-        }
-      });
-    };
-
-    detectVSCode().then((isVSCodeInstalled) => {
-      if (isVSCodeInstalled) {
+    const openVSCodeDialogProps: DialogProps = {
+      linkProps: {
+        linkText: "Download Visual Studio Code",
+        linkUrl: "https://code.visualstudio.com/download",
+      },
+      isModal: true,
+      title: `Open your Azure Cosmos DB account in Visual Studio Code`,
+      subText: `Please ensure Visual Studio Code is installed on your device.
+      If you don't have it installed, please download it from the link below.`,
+      primaryButtonText: "Open in VS Code",
+      secondaryButtonText: "Cancel",
+      onPrimaryButtonClick: () => {
         try {
           window.location.href = vscodeUrl;
           TelemetryProcessor.traceStart(Action.OpenVSCode);
         } catch (error) {
           logConsoleError(`Failed to open VS Code: ${getErrorMessage(error)}`);
-          showVSCodeDialog();
         }
-      } else {
-        showVSCodeDialog();
+      },
+      onSecondaryButtonClick: () => {
+        useDialog.getState().closeDialog();
+        TelemetryProcessor.traceCancel(Action.OpenVSCode);
       }
-    });
-
-    const showVSCodeDialog = () => {
-      const openVSCodeDialogProps: DialogProps = {
-        linkProps: {
-          linkText: "Download Visual Studio Code",
-          linkUrl: "https://code.visualstudio.com/download",
-        },
-        isModal: true,
-        title: `Open your Azure Cosmos DB account in Visual Studio Code`,
-        subText: `Please ensure Visual Studio Code is installed on your device.
-        If you don't have it installed, please download it from the link below.`,
-        primaryButtonText: "Open in VS Code",
-        secondaryButtonText: "Cancel",
-
-        onPrimaryButtonClick: () => {
-          try {
-            window.location.href = vscodeUrl;
-            TelemetryProcessor.traceStart(Action.OpenVSCode);
-          } catch (error) {
-            logConsoleError(`Failed to open VS Code: ${getErrorMessage(error)}`);
-          }
-        },
-        onSecondaryButtonClick: () => {
-          useDialog.getState().closeDialog();
-          TelemetryProcessor.traceCancel(Action.OpenVSCode);
-        },
-      };
-      useDialog.getState().openDialog(openVSCodeDialogProps);
     };
+    useDialog.getState().openDialog(openVSCodeDialogProps);
   }
 
   public async openCESCVAFeedbackBlade(): Promise<void> {
