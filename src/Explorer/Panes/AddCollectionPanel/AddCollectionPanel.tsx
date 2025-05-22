@@ -264,7 +264,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
         <div className="panelMainContent">
           {!(isFabricNative() && this.props.databaseId !== undefined) && (
-            <Stack hidden={userContext.apiType === "Tables"} style={{ marginBottom: -3 }}>
+            <Stack hidden={userContext.apiType === "Tables"} style={{ marginBottom: -2 }}>
               <Stack horizontal>
                 <span className="mandatoryStar">*&nbsp;</span>
                 <Text className="panelTextBold" variant="small">
@@ -408,7 +408,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               )}
             </Stack>
           )}
-          <Separator className="panelSeparator" style={{ marginTop: -5, marginBottom: -5 }} />
+          <Separator className="panelSeparator" style={{ marginTop: -4, marginBottom: -4 }} />
 
           <Stack>
             <Stack horizontal style={{ marginTop: -5, marginBottom: 1 }}>
@@ -449,7 +449,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               }
             />
           </Stack>
-          <Separator className="panelSeparator" style={{ marginTop: -6, marginBottom: -6 }} />
+          <Separator className="panelSeparator" style={{ marginTop: -5, marginBottom: -5 }} />
           {this.shouldShowIndexingOptionsForFreeTierAccount() && (
             <Stack>
               <Stack horizontal style={{ marginTop: -4, marginBottom: -5 }}>
