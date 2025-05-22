@@ -303,6 +303,7 @@ export default class Explorer {
       If you don't have it installed, please download it from the link below.`,
       primaryButtonText: "Open in VS Code",
       secondaryButtonText: "Cancel",
+
       onPrimaryButtonClick: () => {
         try {
           window.location.href = vscodeUrl;
@@ -314,7 +315,7 @@ export default class Explorer {
       onSecondaryButtonClick: () => {
         useDialog.getState().closeDialog();
         TelemetryProcessor.traceCancel(Action.OpenVSCode);
-      }
+      },
     };
     useDialog.getState().openDialog(openVSCodeDialogProps);
   }
