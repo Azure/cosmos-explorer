@@ -411,7 +411,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
           <Separator className="panelSeparator" style={{ marginTop: -5, marginBottom: -5 }} />
 
           <Stack>
-            <Stack horizontal style={{ marginTop: -4, marginBottom: 1 }}>
+            <Stack horizontal style={{ marginTop: -5, marginBottom: 1 }}>
               <span className="mandatoryStar">*&nbsp;</span>
               <Text className="panelTextBold" variant="small">
                 {`${getCollectionName()} id`}
@@ -498,7 +498,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             (!this.state.isSharedThroughputChecked ||
               this.props.explorer.isFixedCollectionWithSharedThroughputSupported()) && (
               <Stack>
-                <Stack horizontal style={{ marginTop: -4, marginBottom: -4 }}>
+                <Stack horizontal style={{ marginTop: -5, marginBottom: -4 }}>
                   <span className="mandatoryStar">*&nbsp;</span>
                   <Text className="panelTextBold" variant="small">
                     Sharding
@@ -554,7 +554,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
           {this.state.isSharded && (
             <Stack>
-              <Stack horizontal style={{ marginTop: -4, marginBottom: -4 }}>
+              <Stack horizontal style={{ marginTop: -5, marginBottom: -4 }}>
                 <span className="mandatoryStar">*&nbsp;</span>
                 <Text className="panelTextBold" variant="small">
                   {getPartitionKeyName()}

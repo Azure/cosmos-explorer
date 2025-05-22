@@ -238,14 +238,19 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
                 </Text>
                 <InfoTooltip>The minimum RU/s your container will scale to</InfoTooltip>
               </Stack>
-              <TextField
-                readOnly
-                styles={{
-                  fieldGroup: { width: 120, height: 27, flexShrink: 0 },
-                  field: { fontSize: 12, backgroundColor: "transparent", border: "none" },
-                }}
-                value={Math.round(throughput / 10).toString()}
-              />
+              <Stack horizontal style={{ marginTop: 4, paddingLeft: 4 }}>
+                <Text
+                  style={{
+                    fontFamily: "Segoe UI",
+                    width: 50,
+                    border: "none",
+                    fontSize: 14,
+                    backgroundColor: "transparent",
+                    fontWeight: 400,
+                  }}
+                />
+                {Math.round(throughput / 10).toString()}
+              </Stack>
             </Stack>
           </Stack.Item>
 
@@ -253,7 +258,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
             <Stack
               horizontal
               verticalAlign="end"
-              style={{ width: 75, height: 27, paddingTop: 40, paddingLeft: 15, paddingRight: 14 }}
+              style={{ width: 75, height: 27, paddingTop: 42, paddingLeft: 17, paddingRight: 14 }}
             >
               <Text
                 style={{
@@ -279,8 +284,8 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
                 id="autoscaleRUValueField"
                 type="number"
                 styles={{
-                  fieldGroup: { width: 120, height: 27, flexShrink: 0 },
-                  field: { fontSize: 12 },
+                  fieldGroup: { width: 100, height: 27, flexShrink: 0 },
+                  field: { fontSize: 14, fontWeight: 400 },
                 }}
                 onChange={(event, newInput?: string) => onThroughputValueChange(newInput)}
                 step={AutoPilotUtils.autoPilotIncrementStep}

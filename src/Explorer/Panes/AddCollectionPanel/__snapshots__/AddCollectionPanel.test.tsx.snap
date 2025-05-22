@@ -159,7 +159,7 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
         style={
           {
             "marginBottom": 1,
-            "marginTop": -4,
+            "marginTop": -5,
           }
         }
       >
@@ -219,7 +219,7 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
         style={
           {
             "marginBottom": -4,
-            "marginTop": -4,
+            "marginTop": -5,
           }
         }
       >
