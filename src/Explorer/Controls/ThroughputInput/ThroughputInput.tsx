@@ -29,7 +29,6 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
   isDatabase,
   isSharded,
   isFreeTier,
-  showFreeTierExceedThroughputTooltip,
   isQuickstart,
   isGlobalSecondaryIndex,
   setThroughputValue,
@@ -148,7 +147,6 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
   };
 
   const getAutoScaleTooltip = (): string => {
-    const collectionName = getCollectionName().toLocaleLowerCase();
     return `Your container throughput will automatically scale up to the maximum value you select, from a minimum of 10% of that value.`;
   };
 
