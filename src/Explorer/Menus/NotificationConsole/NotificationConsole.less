@@ -173,8 +173,20 @@
                 .message {
                     flex-grow: 1;
                     white-space:pre-wrap;
+                    overflow-wrap: break-word;
+                    word-break: break-word;
                 }
             }
         }
     }
+
+  @media (max-width: 768px) {
+    .notificationConsoleContents {
+      overflow-y: auto;
+
+      .notificationConsoleData {
+        overflow: visible;
+      }
+    }
+  }
 }
