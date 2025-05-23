@@ -30,6 +30,21 @@
       margin: 0px auto;
       text-align: center;
     }
+    .splashStackContainer {
+      .splashStackRow {
+        display: flex;
+        gap: 0 16px;
+
+        @media (max-width: 768px) {
+          flex-direction: column;
+          gap: 16px 0;
+        }
+      }
+
+      @media (max-width: 768px) {
+        width: 85% !important;
+      }
+    }
 
     .mainButtonsContainer {
       .flex-display();

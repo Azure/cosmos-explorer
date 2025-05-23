@@ -126,8 +126,12 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
       useDatabases.getState().sampleDataResourceTokenCollection
     ) {
       return (
-        <Stack style={{ width: "66%", cursor: "pointer", margin: "40px auto" }} tokens={{ childrenGap: 16 }}>
-          <Stack horizontal tokens={{ childrenGap: 16 }}>
+        <Stack
+          className="splashStackContainer"
+          style={{ width: "66%", cursor: "pointer", margin: "40px auto" }}
+          tokens={{ childrenGap: 16 }}
+        >
+          <Stack className="splashStackRow" horizontal>
             <SplashScreenButton
               imgSrc={QuickStartIcon}
               title={"Launch quick start"}
@@ -147,7 +151,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
               }}
             />
           </Stack>
-          <Stack horizontal tokens={{ childrenGap: 16 }}>
+          <Stack className="splashStackRow" horizontal>
             {useQueryCopilot.getState().copilotEnabled && (
               <SplashScreenButton
                 imgSrc={CopilotIcon}
