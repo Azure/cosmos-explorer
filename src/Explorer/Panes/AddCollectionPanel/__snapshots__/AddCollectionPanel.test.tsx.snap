@@ -13,7 +13,7 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
       hidden={false}
       style={
         {
-          "marginBottom": -3,
+          "marginBottom": -2,
         }
       }
     >
@@ -148,8 +148,8 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
       className="panelSeparator"
       style={
         {
-          "marginBottom": -5,
-          "marginTop": -5,
+          "marginBottom": -4,
+          "marginTop": -4,
         }
       }
     />
@@ -208,8 +208,8 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
       className="panelSeparator"
       style={
         {
-          "marginBottom": -6,
-          "marginTop": -6,
+          "marginBottom": -5,
+          "marginTop": -5,
         }
       }
     />
