@@ -11,6 +11,7 @@ import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
 import * as PricingUtils from "../../../Utils/PricingUtils";
 import { CostEstimateText } from "./CostEstimateText/CostEstimateText";
 import "./ThroughputInput.less";
+import { isFabricNative } from "../../../Platform/Fabric/FabricUtil";
 
 export interface ThroughputInputProps {
   isDatabase: boolean;
@@ -43,7 +44,8 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
   if (
     isFreeTier ||
     isQuickstart ||
-    [Constants.WorkloadType.Learning, Constants.WorkloadType.DevelopmentTesting].includes(workloadType)
+    [Constants.WorkloadType.Learning, Constants.WorkloadType.DevelopmentTesting].includes(workloadType) ||
+    isFabricNative()
   ) {
     defaultThroughput = AutoPilotUtils.autoPilotThroughput1K;
   } else if (workloadType === Constants.WorkloadType.Production) {
