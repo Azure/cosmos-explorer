@@ -93,7 +93,9 @@ export const queryPagesUntilContentPresent = async (
     if (results.hasMoreResults && userContext.apiType === "SQL" && ruThresholdEnabled()) {
       const ruThreshold: number = getRUThreshold();
       if (netRequestCharge > ruThreshold) {
-        logConsoleWarning(`Warning: Query has exceeded the Request Unit threshold of ${ruThreshold} RUs.`);
+        logConsoleWarning(
+          `Warning: Query has exceeded the Request Unit threshold of ${ruThreshold} RUs. Query results show only those documents returned before the threshold was exceeded`,
+        );
         return results;
       }
     }
