@@ -128,7 +128,7 @@ export default class MongoShellTabComponent extends Component<
           apiEndpoint: apiEndpoint,
         },
       },
-      window.origin,
+      "https://localhost:443",
     );
   }
 

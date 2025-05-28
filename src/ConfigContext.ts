@@ -187,7 +187,8 @@ if (process.env.NODE_ENV === "development") {
     PROXY_PATH: "/proxy",
     EMULATOR_ENDPOINT: "https://localhost:8081",
     PORTAL_BACKEND_ENDPOINT: PortalBackendEndpoints.Mpac,
-    MONGO_PROXY_ENDPOINT: MongoProxyEndpoints.Mpac,
+    // MONGO_PROXY_ENDPOINT: "https://cosmos-db-portal-mongoproxy1-mpac-westus.azurewebsites.net",
+    MONGO_PROXY_ENDPOINT: "https://localhost:7238",
     CASSANDRA_PROXY_ENDPOINT: CassandraProxyEndpoints.Mpac,
   });
 }

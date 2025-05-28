@@ -7,5 +7,5 @@ export function getMongoShellUrl(): string {
   const mongoEndpoint = account?.properties?.mongoEndpoint || account?.properties?.documentEndpoint;
   const queryString = `resourceId=${resourceId}&accountName=${accountName}&mongoEndpoint=${mongoEndpoint}`;
 
-  return `/mongoshell/index.html?${queryString}`;
+  return `https://localhost:443/index.html?${queryString}`;
 }
