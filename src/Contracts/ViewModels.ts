@@ -46,6 +46,7 @@ export interface QueryResults extends QueryResultsMetadata {
   roundTrips?: number;
   headers?: any;
   queryMetrics?: QueryMetrics;
+  ruThresholdExceeded?: boolean;
 }
 
 export interface Button {

@@ -369,7 +369,7 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
     this.setState({
       isExecutionError: false,
     });
-
+    this.props.tabsBaseInstance.isExecutionWarning(false);
     const queryDocuments = async (firstItemIndex: number) =>
       await queryDocumentsPage(this.props.collection && this.props.collection.id(), this._iterator, firstItemIndex);
     this.props.tabsBaseInstance.isExecuting(true);
@@ -411,6 +411,9 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
         firstItemIndex,
         queryDocuments,
       );
+      if (queryResults.ruThresholdExceeded) {
+        this.props.tabsBaseInstance.isExecutionWarning(true);
+      }
       this.setState({ queryResults, errors: [] });
     } catch (error) {
       this.props.tabsBaseInstance.isExecutionError(true);

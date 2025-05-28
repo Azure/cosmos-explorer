@@ -96,6 +96,7 @@ export const queryPagesUntilContentPresent = async (
         logConsoleWarning(
           `Warning: Query has exceeded the Request Unit threshold of ${ruThreshold} RUs. Query results show only those documents returned before the threshold was exceeded`,
         );
+        results.ruThresholdExceeded = true;
         return results;
       }
     }
