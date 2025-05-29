@@ -180,6 +180,11 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
       ? LocalStorageUtility.getEntryNumber(StorageKey.MaxWaitTimeInSeconds)
       : Constants.Queries.DefaultMaxWaitTimeInSeconds,
   );
+  const [queryControlEnabled, setQueryControlEnabled] = useState<boolean>(
+    LocalStorageUtility.hasItem(StorageKey.QueryControlEnabled)
+      ? LocalStorageUtility.getEntryString(StorageKey.QueryControlEnabled) === "true"
+      : false,
+  );
   const [maxDegreeOfParallelism, setMaxDegreeOfParallelism] = useState<number>(
     LocalStorageUtility.hasItem(StorageKey.MaxDegreeOfParellism)
       ? LocalStorageUtility.getEntryNumber(StorageKey.MaxDegreeOfParellism)
@@ -204,6 +209,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
     !isEmulator;
   const shouldShowGraphAutoVizOption = userContext.apiType === "Gremlin" && !isEmulator;
   const shouldShowCrossPartitionOption = userContext.apiType !== "Gremlin" && !isEmulator;
+  const shouldShowEnhancedQueryControl = userContext.apiType === "SQL";
   const shouldShowParallelismOption = userContext.apiType !== "Gremlin" && !isEmulator;
   const showEnableEntraIdRbac =
     isDataplaneRbacSupported(userContext.apiType) &&
@@ -381,6 +387,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
     LocalStorageUtility.setEntryNumber(StorageKey.MaxWaitTimeInSeconds, MaxWaitTimeInSeconds);
     LocalStorageUtility.setEntryString(StorageKey.ContainerPaginationEnabled, containerPaginationEnabled.toString());
     LocalStorageUtility.setEntryString(StorageKey.IsCrossPartitionQueryEnabled, crossPartitionQueryEnabled.toString());
+    LocalStorageUtility.setEntryString(StorageKey.QueryControlEnabled, queryControlEnabled.toString());
     LocalStorageUtility.setEntryNumber(StorageKey.MaxDegreeOfParellism, maxDegreeOfParallelism);
     LocalStorageUtility.setEntryString(StorageKey.PriorityLevel, priorityLevel.toString());
     LocalStorageUtility.setEntryString(StorageKey.CopilotSampleDBEnabled, copilotSampleDBEnabled.toString());
@@ -410,6 +417,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
       `Updated items per page setting to ${LocalStorageUtility.getEntryNumber(StorageKey.ActualItemPerPage)}`,
     );
     logConsoleInfo(`${crossPartitionQueryEnabled ? "Enabled" : "Disabled"} cross-partition query feed option`);
+    logConsoleInfo(`${queryControlEnabled ? "Enabled" : "Disabled"} query control option`);
     logConsoleInfo(
       `Updated the max degree of parallelism query feed option to ${LocalStorageUtility.getEntryNumber(
         StorageKey.MaxDegreeOfParellism,
@@ -760,7 +768,6 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                     )}
                   </AccordionPanel>
                 </AccordionItem>
-
                 <AccordionItem value="5">
                   <AccordionHeader>
                     <div className={styles.header}>RU Limit</div>
@@ -938,6 +945,38 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                       checked={crossPartitionQueryEnabled}
                       onChange={() => setCrossPartitionQueryEnabled(!crossPartitionQueryEnabled)}
                       label="Enable cross-partition query"
+                    />
+                  </div>
+                </AccordionPanel>
+              </AccordionItem>
+            )}
+            {shouldShowEnhancedQueryControl && (
+              <AccordionItem value="10">
+                <AccordionHeader>
+                  <div className={styles.header}>Enhanced query control</div>
+                </AccordionHeader>
+                <AccordionPanel>
+                  <div className={styles.settingsSectionContainer}>
+                    <div className={styles.settingsSectionDescription}>
+                      Query up to the max degree of parallelism.
+                      <a
+                        href="https://learn.microsoft.com/en-us/azure/cosmos-db/nosql/performance-tips-query-sdk?tabs=v3&pivots=programming-language-nodejs#enhanced-query-control"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {" "}
+                        Learn more{" "}
+                      </a>
+                    </div>
+                    <Checkbox
+                      styles={{
+                        label: { padding: 0 },
+                      }}
+                      className="padding"
+                      ariaLabel="EnableQueryControl"
+                      checked={queryControlEnabled}
+                      onChange={() => setQueryControlEnabled(!queryControlEnabled)}
+                      label="Enable query control"
                     />
                   </div>
                 </AccordionPanel>

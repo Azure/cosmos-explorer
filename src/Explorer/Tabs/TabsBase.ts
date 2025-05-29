@@ -27,6 +27,7 @@ export default class TabsBase extends WaitsForTemplateViewModel {
   public tabTitle: ko.Observable<string>;
   public tabPath: ko.Observable<string>;
   public isExecutionError = ko.observable(false);
+  public isExecutionWarning = ko.observable(false);
   public isExecuting = ko.observable(false);
   protected _theme: string;
   public onLoadStartKey: number;

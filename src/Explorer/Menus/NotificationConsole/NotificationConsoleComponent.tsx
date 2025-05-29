@@ -14,6 +14,7 @@ import ErrorRedIcon from "../../../../images/error_red.svg";
 import infoBubbleIcon from "../../../../images/info-bubble-9x9.svg";
 import InfoIcon from "../../../../images/info_color.svg";
 import LoadingIcon from "../../../../images/loading.svg";
+import WarningIcon from "../../../../images/warning.svg";
 import { ClientDefaults, KeyCodes } from "../../../Common/Constants";
 import { userContext } from "../../../UserContext";
 import { useNotificationConsole } from "../../../hooks/useNotificationConsole";
@@ -91,6 +92,9 @@ export class NotificationConsoleComponent extends React.Component<
     const numInfoItems = this.state.allConsoleData.filter(
       (data: ConsoleData) => data.type === ConsoleDataType.Info,
     ).length;
+    const numWarningItems = this.state.allConsoleData.filter(
+      (data: ConsoleData) => data.type === ConsoleDataType.Warning,
+    ).length;
 
     return (
       <div className="notificationConsoleContainer">
@@ -117,6 +121,10 @@ export class NotificationConsoleComponent extends React.Component<
               <span className="notificationConsoleHeaderIconWithData">
                 <img src={infoBubbleIcon} alt="Info items" />
                 <span className="numInfoItems">{numInfoItems}</span>
+              </span>
+              <span className="notificationConsoleHeaderIconWithData">
+                <img src={WarningIcon} alt="Warning items" />
+                <span className="numWarningItems">{numWarningItems}</span>
               </span>
             </span>
             {userContext.features.pr && <PrPreview pr={userContext.features.pr} />}
@@ -198,6 +206,7 @@ export class NotificationConsoleComponent extends React.Component<
         {item.type === ConsoleDataType.Info && <img className="infoIcon" src={InfoIcon} alt="info" />}
         {item.type === ConsoleDataType.Error && <img className="errorIcon" src={ErrorRedIcon} alt="error" />}
         {item.type === ConsoleDataType.InProgress && <img className="loaderIcon" src={LoaderIcon} alt="in progress" />}
+        {item.type === ConsoleDataType.Warning && <img className="warningIcon" src={WarningIcon} alt="warning" />}
         <span className="date">{item.date}</span>
         <span className="message" role="alert" aria-live="assertive">
           {item.message}
