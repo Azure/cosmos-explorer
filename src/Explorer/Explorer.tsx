@@ -31,6 +31,7 @@ import { readDatabases } from "../Common/dataAccess/readDatabases";
 import * as DataModels from "../Contracts/DataModels";
 import { ContainerConnectionInfo, IPhoenixServiceInfo, IProvisionData, IResponse } from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
+import { UploadDetailsRecord } from "../Contracts/ViewModels";
 import { GitHubOAuthService } from "../GitHub/GitHubOAuthService";
 import { PhoenixClient } from "../Phoenix/PhoenixClient";
 import * as ExplorerSettings from "../Shared/ExplorerSettings";
@@ -71,7 +72,6 @@ import { ResourceTreeAdapter } from "./Tree/ResourceTreeAdapter";
 import StoredProcedure from "./Tree/StoredProcedure";
 import { useDatabases } from "./useDatabases";
 import { useSelectedNode } from "./useSelectedNode";
-import { UploadDetailsRecord } from "../Contracts/ViewModels";
 
 BindingHandlersRegisterer.registerBindingHandlers();
 

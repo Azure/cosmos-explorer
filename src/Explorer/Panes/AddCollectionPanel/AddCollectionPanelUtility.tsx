@@ -73,7 +73,7 @@ export function UniqueKeysHeader(): JSX.Element {
     "Unique keys provide developers with the ability to add a layer of data integrity to their database. By creating a unique key policy when a container is created, you ensure the uniqueness of one or more values per partition key.";
 
   return (
-    <Stack horizontal>
+    <Stack horizontal style={{ marginBottom: -2 }}>
       <Text className="panelTextBold" variant="small">
         Unique keys
       </Text>
@@ -96,6 +96,21 @@ export function shouldShowAnalyticalStoreOptions(): boolean {
     default:
       return false;
   }
+}
+
+export function AnalyticalStoreHeader(): JSX.Element {
+  const tooltipContent =
+    "Enable analytical store capability to perform near real-time analytics on your operational data, without impacting the performance of transactional workloads.";
+  return (
+    <Stack horizontal style={{ marginBottom: -2 }}>
+      <Text className="panelTextBold" variant="small">
+        Analytical Store
+      </Text>
+      <TooltipHost directionalHint={DirectionalHint.bottomLeftEdge} content={tooltipContent}>
+        <Icon iconName="Info" className="panelInfoIcon" tabIndex={0} ariaLabel={tooltipContent} />
+      </TooltipHost>
+    </Stack>
+  );
 }
 
 export function AnalyticalStorageContent(): JSX.Element {
