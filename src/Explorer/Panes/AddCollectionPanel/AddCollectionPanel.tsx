@@ -868,7 +868,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               </CollapsibleSectionComponent>
             </Stack>
           )}
-          {this.showFullTextSearch && (
+          {this.shouldShowFullTextSearchParameters() && (
             <Stack>
               <CollapsibleSectionComponent
                 title="Container Full Text Search Policy"
@@ -1157,6 +1157,10 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
   private shouldShowVectorSearchParameters() {
     return isVectorSearchEnabled() && (isServerlessAccount() || this.shouldShowCollectionThroughputInput());
+  }
+
+  private shouldShowFullTextSearchParameters() {
+    return !isFabricNative() && this.showFullTextSearch;
   }
 
   private parseUniqueKeys(): DataModels.UniqueKeyPolicy {
