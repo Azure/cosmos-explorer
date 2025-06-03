@@ -123,7 +123,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       isSharded: userContext.apiType !== "Tables",
       partitionKey: getPartitionKey(props.isQuickstart),
       subPartitionKeys: [],
-      enableDedicatedThroughput: false,
+      enableDedicatedThroughput: isFabricNative(), // Dedicated throughput is only enabled in Fabric Native by default
       createMongoWildCardIndex:
         isCapabilityEnabled("EnableMongo") && !isCapabilityEnabled("EnableMongo16MBDocumentSupport"),
       useHashV1: false,
@@ -708,7 +708,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             </Stack>
           )}
 
-          {this.shouldShowCollectionThroughputInput() && (
+          {this.shouldShowCollectionThroughputInput() && !isFabricNative() && (
             <ThroughputInput
               showFreeTierExceedThroughputTooltip={isFreeTierAccount() && !isFirstResourceCreated}
               isDatabase={false}
@@ -1130,7 +1130,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
   // }
 
   private shouldShowCollectionThroughputInput(): boolean {
-    if (isFabricNative() || isServerlessAccount()) {
+    if (isServerlessAccount()) {
       return false;
     }
 
