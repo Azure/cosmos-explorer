@@ -1,5 +1,6 @@
-import { Checkbox, DirectionalHint, Link, Stack, Text, TextField, TooltipHost } from "@fluentui/react";
+import { Checkbox, DirectionalHint, Link, Separator, Stack, Text, TextField, TooltipHost } from "@fluentui/react";
 import { getWorkloadType } from "Common/DatabaseAccountUtility";
+import { CostEstimateText } from "Explorer/Controls/ThroughputInput/CostEstimateText/CostEstimateText";
 import { useDatabases } from "Explorer/useDatabases";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import * as Constants from "../../../Common/Constants";
@@ -9,7 +10,6 @@ import { userContext } from "../../../UserContext";
 import { getCollectionName } from "../../../Utils/APITypeUtils";
 import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
 import * as PricingUtils from "../../../Utils/PricingUtils";
-import { CostEstimateText } from "./CostEstimateText/CostEstimateText";
 import "./ThroughputInput.less";
 import { isFabricNative } from "../../../Platform/Fabric/FabricUtil";
 
@@ -232,53 +232,92 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
           </div>
         </Stack>
       )}
+
       {isAutoscaleSelected && (
         <Stack className="throughputInputSpacing">
-          <Text variant="small" aria-label="capacity calculator of azure cosmos db">
-            Estimate your required RU/s with{" "}
-            <Link
-              className="underlinedLink outlineNone"
-              target="_blank"
-              href="https://cosmos.azure.com/capacitycalculator/"
-              aria-label="capacity calculator of azure cosmos db"
-            >
-              capacity calculator
-            </Link>
-            .
+          <Text style={{ marginTop: -2, fontSize: 12 }}>
+            Your container throughput will automatically scale up to the maximum value you select, from a minimum of 10%
+            of that value.
           </Text>
+          <Stack horizontal verticalAlign="end" tokens={{ childrenGap: 8 }}>
+            <Stack tokens={{ childrenGap: 4 }}>
+              <Stack horizontal verticalAlign="center" tokens={{ childrenGap: 4 }}>
+                <Text variant="small" style={{ lineHeight: "20px", fontWeight: 600 }}>
+                  Minimum RU/s
+                </Text>
+                <InfoTooltip>The minimum RU/s your container will scale to</InfoTooltip>
+              </Stack>
+              <Text
+                style={{
+                  fontFamily: "Segoe UI",
+                  width: 70,
+                  height: 27,
+                  border: "none",
+                  fontSize: 14,
+                  backgroundColor: "transparent",
+                  fontWeight: 400,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                {Math.round(throughput / 10).toString()}
+              </Text>
+            </Stack>
 
-          <Stack horizontal>
-            <Text variant="small" style={{ lineHeight: "20px", fontWeight: 600 }} aria-label="maxRUDescription">
-              {isDatabase ? "Database" : getCollectionName()} Max RU/s
+            <Text
+              style={{
+                fontFamily: "Segoe UI",
+                fontSize: 12,
+                fontWeight: 400,
+                paddingBottom: 6,
+              }}
+            >
+              x 10 =
             </Text>
-            <InfoTooltip>{getAutoScaleTooltip()}</InfoTooltip>
+
+            <Stack tokens={{ childrenGap: 4 }}>
+              <Stack horizontal verticalAlign="center" tokens={{ childrenGap: 4 }}>
+                <Text variant="small" style={{ lineHeight: "20px", fontWeight: 600 }}>
+                  Maximum RU/s
+                </Text>
+                <InfoTooltip>{getAutoScaleTooltip()}</InfoTooltip>
+              </Stack>
+              <TextField
+                id="autoscaleRUValueField"
+                type="number"
+                styles={{
+                  fieldGroup: { width: 100, height: 27, flexShrink: 0 },
+                  field: { fontSize: 14, fontWeight: 400 },
+                }}
+                onChange={(_event, newInput?: string) => onThroughputValueChange(newInput)}
+                step={AutoPilotUtils.autoPilotIncrementStep}
+                min={AutoPilotUtils.autoPilotThroughput1K}
+                max={isSharded ? Number.MAX_SAFE_INTEGER.toString() : "10000"}
+                value={throughput.toString()}
+                ariaLabel={`${isDatabase ? "Database" : getCollectionName()} max RU/s`}
+                required={true}
+                errorMessage={throughputError}
+              />
+            </Stack>
           </Stack>
 
-          <TextField
-            id="autoscaleRUValueField"
-            type="number"
-            styles={{
-              fieldGroup: { width: 300, height: 27 },
-              field: { fontSize: 12 },
-            }}
-            onChange={(event, newInput?: string) => onThroughputValueChange(newInput)}
-            step={AutoPilotUtils.autoPilotIncrementStep}
-            min={AutoPilotUtils.autoPilotThroughput1K}
-            max={isSharded ? Number.MAX_SAFE_INTEGER.toString() : "10000"}
-            value={throughput.toString()}
-            ariaLabel={`${isDatabase ? "Database" : getCollectionName()} max RU/s`}
-            required={true}
-            errorMessage={throughputError}
-          />
-
-          <Text variant="small">
-            Your {isDatabase ? "database" : getCollectionName().toLocaleLowerCase()} throughput will automatically scale
-            from{" "}
-            <b>
-              {AutoPilotUtils.getMinRUsBasedOnUserInput(throughput)} RU/s (10% of max RU/s) - {throughput} RU/s
-            </b>{" "}
-            based on usage.
-          </Text>
+          <CostEstimateText requestUnits={throughput} isAutoscale={isAutoscaleSelected} />
+          <Stack className="throughputInputSpacing">
+            <Text variant="small" aria-label="ruDescription">
+              Estimate your required RU/s with&nbsp;
+              <Link
+                className="underlinedLink"
+                target="_blank"
+                href="https://cosmos.azure.com/capacitycalculator/"
+                aria-label="Capacity calculator"
+              >
+                capacity calculator
+              </Link>
+              .
+            </Text>
+          </Stack>
+          <Separator className="panelSeparator" style={{ paddingTop: -8, paddingBottom: -8 }} />
         </Stack>
       )}
 
@@ -302,7 +341,6 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
             </Text>
             <InfoTooltip>{getAutoScaleTooltip()}</InfoTooltip>
           </Stack>
-
           <TooltipHost
             directionalHint={DirectionalHint.topLeftEdge}
             content={
@@ -327,10 +365,9 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
               errorMessage={throughputError}
             />
           </TooltipHost>
+          <CostEstimateText requestUnits={throughput} isAutoscale={isAutoscaleSelected} />
         </Stack>
       )}
-
-      <CostEstimateText requestUnits={throughput} isAutoscale={isAutoscaleSelected} />
 
       {throughput > SharedConstants.CollectionCreation.DefaultCollectionRUs100K && (
         <Stack horizontal verticalAlign="start">

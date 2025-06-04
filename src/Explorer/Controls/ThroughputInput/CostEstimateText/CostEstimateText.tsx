@@ -1,4 +1,4 @@
-import { Text } from "@fluentui/react";
+import { Stack, Text } from "@fluentui/react";
 import React, { FunctionComponent } from "react";
 import { InfoTooltip } from "../../../../Common/Tooltip/InfoTooltip";
 import * as SharedConstants from "../../../../Shared/Constants";
@@ -54,28 +54,32 @@ export const CostEstimateText: FunctionComponent<CostEstimateTextProps> = ({
 
   if (isAutoscale) {
     return (
-      <Text variant="small">
-        {estimatedMonthlyCost} ({currency}){iconWithEstimatedCostDisclaimer}:{" "}
-        <b>
-          {currencySign + calculateEstimateNumber(monthlyPrice / 10)} -{" "}
-          {currencySign + calculateEstimateNumber(monthlyPrice)}{" "}
-        </b>
-        ({numberOfRegions + (numberOfRegions === 1 ? " region" : " regions")}, {requestUnits / 10} - {requestUnits}{" "}
-        RU/s, {currencySign + pricePerRu}/RU)
-      </Text>
+      <Stack style={{ marginBottom: 6 }}>
+        <Text variant="small">
+          {estimatedMonthlyCost} ({currency}){iconWithEstimatedCostDisclaimer}:{" "}
+          <b>
+            {currencySign + calculateEstimateNumber(monthlyPrice / 10)} -{" "}
+            {currencySign + calculateEstimateNumber(monthlyPrice)}{" "}
+          </b>
+          ({numberOfRegions + (numberOfRegions === 1 ? " region" : " regions")}, {requestUnits / 10} - {requestUnits}{" "}
+          RU/s, {currencySign + pricePerRu}/RU)
+        </Text>
+      </Stack>
     );
   }
 
   return (
-    <Text variant="small">
-      Estimated cost ({currency}){iconWithEstimatedCostDisclaimer}:{" "}
-      <b>
-        {currencySign + calculateEstimateNumber(hourlyPrice)} hourly /{" "}
-        {currencySign + calculateEstimateNumber(dailyPrice)} daily /{" "}
-        {currencySign + calculateEstimateNumber(monthlyPrice)} monthly{" "}
-      </b>
-      ({numberOfRegions + (numberOfRegions === 1 ? " region" : " regions")}, {requestUnits}RU/s,{" "}
-      {currencySign + pricePerRu}/RU)
-    </Text>
+    <Stack style={{ marginBottom: 8 }}>
+      <Text variant="small">
+        Estimated cost ({currency}){iconWithEstimatedCostDisclaimer}:{" "}
+        <b>
+          {currencySign + calculateEstimateNumber(hourlyPrice)} hourly /{" "}
+          {currencySign + calculateEstimateNumber(dailyPrice)} daily /{" "}
+          {currencySign + calculateEstimateNumber(monthlyPrice)} monthly{" "}
+        </b>
+        ({numberOfRegions + (numberOfRegions === 1 ? " region" : " regions")}, {requestUnits}RU/s,{" "}
+        {currencySign + pricePerRu}/RU)
+      </Text>
+    </Stack>
   );
 };
