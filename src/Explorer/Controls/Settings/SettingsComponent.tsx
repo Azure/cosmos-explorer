@@ -1091,6 +1091,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         currentOffer: this.collection.offer(),
         autopilotThroughput: this.state.isAutoPilotSelected ? this.state.autoPilotThroughput : undefined,
         manualThroughput: this.state.isAutoPilotSelected ? undefined : this.state.throughput,
+        throughputBuckets: this.throughputBucketsEnabled ? this.state.throughputBuckets : undefined,
       };
       if (this.hasProvisioningTypeChanged()) {
         if (this.state.isAutoPilotSelected) {
