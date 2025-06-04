@@ -103,7 +103,7 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
       .forEach((tab) => tab.onCloseTabButtonClick()),
   closeTab: (tab: TabsBase): void => {
     let tabIndex: number;
-    const { activeTab, openedTabs } = get();
+    const { activeTab, openedTabs, openedReactTabs } = get();
     const updatedTabs = openedTabs.filter((openedTab, index) => {
       if (tab.tabId === openedTab.tabId) {
         tabIndex = index;
@@ -126,6 +126,10 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
     }
 
     set({ openedTabs: updatedTabs });
+
+    if (updatedTabs.length === 0 && openedReactTabs.length > 0) {
+      set({ activeTab: undefined, activeReactTab: openedReactTabs[openedReactTabs.length - 1] });
+    }
 
     get().persistTabsState();
   },
