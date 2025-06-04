@@ -11,10 +11,10 @@
     margin: 20px 0;
     overflow-x: hidden;
 
-    & > :not(.collapsibleSection) {
+    &> :not(.collapsibleSection) {
       margin-bottom: @DefaultSpace;
 
-      & > :not(:last-child) {
+      &> :not(:last-child) {
         margin-bottom: @DefaultSpace;
       }
     }
@@ -54,6 +54,14 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .panelMainContent {
+      padding: 0 24px;
+      margin: 0;
+      overflow-x: auto;
     }
   }
 }
@@ -113,70 +121,87 @@
 .deleteCollectionFeedback {
   margin-top: 12px;
 }
+
 .addRemoveIcon {
   margin-left: 4px !important;
 }
+
 .addRemoveIconLabel {
   margin-top: 28px;
   margin-left: 4px !important;
 }
+
 .addRemoveIcon [alt="editEntity"]:focus,
 .addRemoveIconLabel [alt="editEntity"]:focus {
   border: 1px dashed #605e5c;
 }
+
 .addNewParamStyle {
   margin-top: 5px;
   margin-left: 5px !important;
   cursor: pointer;
 }
 
-.panelGroupSpacing > :not(:last-child) {
+.panelGroupSpacing> :not(:last-child) {
   margin-bottom: @DefaultSpace;
 }
+
 .fileUpload {
   display: none !important;
 }
+
 .customFileUpload {
   padding: 25px 0px 0px 10px;
   cursor: pointer;
   display: flex;
 }
+
 .fileIcon {
   align-self: center;
 }
+
 .panelAddIconLabel {
   font-size: 20px;
   width: 20px;
   margin: 30px 0 0 10px;
   cursor: default;
 }
+
 .panelAddIcon {
   font-size: 20px;
   width: 20px;
   margin: 30px 0 0 10px;
   cursor: default;
 }
+
 .removeIcon {
   color: @InfoIconColor;
 }
+
 .backImageIcon {
   margin-top: 8px;
 }
+
 [alt="back"]:focus {
   border: 1px solid #605e5c;
 }
+
 .addEntityDatePicker {
   max-width: 145px;
 }
+
 .addEntityTextField {
   width: 237px;
 }
+
 .addButtonEntiy {
   width: 25%;
 }
+
 .column-select-view {
   margin: 20px 0px 0px 0px;
 }
+
 .panelSeparator::before {
   background-color: #edebe9;
 }
