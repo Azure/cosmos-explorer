@@ -69,6 +69,27 @@ exports[`SettingsComponent renders 1`] = `
               "partitionKeyProperties": [
                 "partitionKey",
               ],
+              "rawDataModel": {
+                "indexingPolicy": {
+                  "automatic": true,
+                  "compositeIndexes": [],
+                  "excludedPaths": [],
+                  "fullTextIndexes": [],
+                  "includedPaths": [],
+                  "indexingMode": "consistent",
+                  "spatialIndexes": [],
+                  "vectorIndexes": [],
+                },
+                "uniqueKeyPolicy": {
+                  "uniqueKeys": [
+                    {
+                      "paths": [
+                        "/id",
+                      ],
+                    },
+                  ],
+                },
+              },
               "readSettings": [Function],
               "uniqueKeyPolicy": {},
               "usageSizeInKB": [Function],
@@ -148,6 +169,27 @@ exports[`SettingsComponent renders 1`] = `
               "partitionKeyProperties": [
                 "partitionKey",
               ],
+              "rawDataModel": {
+                "indexingPolicy": {
+                  "automatic": true,
+                  "compositeIndexes": [],
+                  "excludedPaths": [],
+                  "fullTextIndexes": [],
+                  "includedPaths": [],
+                  "indexingMode": "consistent",
+                  "spatialIndexes": [],
+                  "vectorIndexes": [],
+                },
+                "uniqueKeyPolicy": {
+                  "uniqueKeys": [
+                    {
+                      "paths": [
+                        "/id",
+                      ],
+                    },
+                  ],
+                },
+              },
               "readSettings": [Function],
               "uniqueKeyPolicy": {},
               "usageSizeInKB": [Function],
@@ -187,17 +229,25 @@ exports[`SettingsComponent renders 1`] = `
           indexingPolicyContent={
             {
               "automatic": true,
+              "compositeIndexes": [],
               "excludedPaths": [],
+              "fullTextIndexes": [],
               "includedPaths": [],
               "indexingMode": "consistent",
+              "spatialIndexes": [],
+              "vectorIndexes": [],
             }
           }
           indexingPolicyContentBaseline={
             {
               "automatic": true,
+              "compositeIndexes": [],
               "excludedPaths": [],
+              "fullTextIndexes": [],
               "includedPaths": [],
               "indexingMode": "consistent",
+              "spatialIndexes": [],
+              "vectorIndexes": [],
             }
           }
           isVectorSearchEnabled={false}
@@ -267,6 +317,27 @@ exports[`SettingsComponent renders 1`] = `
               "partitionKeyProperties": [
                 "partitionKey",
               ],
+              "rawDataModel": {
+                "indexingPolicy": {
+                  "automatic": true,
+                  "compositeIndexes": [],
+                  "excludedPaths": [],
+                  "fullTextIndexes": [],
+                  "includedPaths": [],
+                  "indexingMode": "consistent",
+                  "spatialIndexes": [],
+                  "vectorIndexes": [],
+                },
+                "uniqueKeyPolicy": {
+                  "uniqueKeys": [
+                    {
+                      "paths": [
+                        "/id",
+                      ],
+                    },
+                  ],
+                },
+              },
               "readSettings": [Function],
               "uniqueKeyPolicy": {},
               "usageSizeInKB": [Function],
@@ -334,6 +405,121 @@ exports[`SettingsComponent renders 1`] = `
           onComputedPropertiesDirtyChange={[Function]}
           resetShouldDiscardComputedProperties={[Function]}
           shouldDiscardComputedProperties={false}
+        />
+      </PivotItem>
+      <PivotItem
+        headerText="Global Secondary Index (Preview)"
+        itemKey="GlobalSecondaryIndexTab"
+        key="GlobalSecondaryIndexTab"
+        style={
+          {
+            "marginTop": 20,
+          }
+        }
+      >
+        <GlobalSecondaryIndexComponent
+          collection={
+            {
+              "analyticalStorageTtl": [Function],
+              "changeFeedPolicy": [Function],
+              "computedProperties": [Function],
+              "conflictResolutionPolicy": [Function],
+              "container": Explorer {
+                "_isInitializingNotebooks": false,
+                "isFixedCollectionWithSharedThroughputSupported": [Function],
+                "isTabsContentExpanded": [Function],
+                "onRefreshDatabasesKeyPress": [Function],
+                "onRefreshResourcesClick": [Function],
+                "phoenixClient": PhoenixClient {
+                  "armResourceId": undefined,
+                  "retryOptions": {
+                    "maxTimeout": 5000,
+                    "minTimeout": 5000,
+                    "retries": 3,
+                  },
+                },
+                "provideFeedbackEmail": [Function],
+                "queriesClient": QueriesClient {
+                  "container": [Circular],
+                },
+                "refreshNotebookList": [Function],
+                "resourceTree": ResourceTreeAdapter {
+                  "container": [Circular],
+                  "copyNotebook": [Function],
+                  "parameters": [Function],
+                },
+              },
+              "databaseId": "test",
+              "defaultTtl": [Function],
+              "fullTextPolicy": [Function],
+              "geospatialConfig": [Function],
+              "getDatabase": [Function],
+              "id": [Function],
+              "indexingPolicy": [Function],
+              "materializedViewDefinition": [Function],
+              "materializedViews": [Function],
+              "offer": [Function],
+              "partitionKey": {
+                "kind": "hash",
+                "paths": [],
+                "version": 2,
+              },
+              "partitionKeyProperties": [
+                "partitionKey",
+              ],
+              "rawDataModel": {
+                "indexingPolicy": {
+                  "automatic": true,
+                  "compositeIndexes": [],
+                  "excludedPaths": [],
+                  "fullTextIndexes": [],
+                  "includedPaths": [],
+                  "indexingMode": "consistent",
+                  "spatialIndexes": [],
+                  "vectorIndexes": [],
+                },
+                "uniqueKeyPolicy": {
+                  "uniqueKeys": [
+                    {
+                      "paths": [
+                        "/id",
+                      ],
+                    },
+                  ],
+                },
+              },
+              "readSettings": [Function],
+              "usageSizeInKB": [Function],
+              "vectorEmbeddingPolicy": [Function],
+            }
+          }
+          explorer={
+            Explorer {
+              "_isInitializingNotebooks": false,
+              "isFixedCollectionWithSharedThroughputSupported": [Function],
+              "isTabsContentExpanded": [Function],
+              "onRefreshDatabasesKeyPress": [Function],
+              "onRefreshResourcesClick": [Function],
+              "phoenixClient": PhoenixClient {
+                "armResourceId": undefined,
+                "retryOptions": {
+                  "maxTimeout": 5000,
+                  "minTimeout": 5000,
+                  "retries": 3,
+                },
+              },
+              "provideFeedbackEmail": [Function],
+              "queriesClient": QueriesClient {
+                "container": [Circular],
+              },
+              "refreshNotebookList": [Function],
+              "resourceTree": ResourceTreeAdapter {
+                "container": [Circular],
+                "copyNotebook": [Function],
+                "parameters": [Function],
+              },
+            }
+          }
         />
       </PivotItem>
     </StyledPivot>
