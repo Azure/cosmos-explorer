@@ -7,6 +7,7 @@ export interface ArmEntity {
   type: string;
   kind: string;
   tags?: Tags;
+  resourceGroup?: string;
 }
 
 export interface DatabaseAccount extends ArmEntity {

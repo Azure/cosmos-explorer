@@ -16,7 +16,7 @@ Results of this file should be checked into the repo.
 */
 
 // CHANGE THESE VALUES TO GENERATE NEW CLIENTS
-const version = "2024-12-01-preview";
+const version = "2025-05-01-preview";
 /* The following are legal options for resourceName but you generally will only use cosmos:
 "cosmos" | "managedCassandra" | "mongorbac" | "notebook" | "privateEndpointConnection" | "privateLinkResources" |
 "rbac" | "restorable" | "services" | "dataTransferService"
