@@ -55,6 +55,8 @@ import { BrowseQueriesPane } from "../../Panes/BrowseQueriesPane/BrowseQueriesPa
 import { SaveQueryPane } from "../../Panes/SaveQueryPane/SaveQueryPane";
 import TabsBase from "../TabsBase";
 import "./QueryTabComponent.less";
+import { useQueryMetadataStore } from "./useQueryMetadataStore"; // adjust path if needed
+
 
 enum ToggleState {
   Result,
@@ -196,7 +198,10 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
       enabled: !!this.state.sqlQueryEditorContent && this.state.sqlQueryEditorContent.length > 0,
       visible: true,
     };
-
+      // const query=this.state.sqlQueryEditorContent;
+      // const db = this.props.collection.databaseId;
+      // const container = this.props.collection.id();
+      
     const isSaveQueryBtnEnabled = userContext.apiType === "SQL" || userContext.apiType === "Gremlin";
     this.saveQueryButton = {
       enabled: isSaveQueryBtnEnabled,
@@ -260,6 +265,16 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
   }
 
   public onExecuteQueryClick = async (): Promise<void> => {
+    // console.log("i am ",this.props.collection.databaseId);
+    //  console.log("I am query",this.state.sqlQueryEditorContent );
+    //  console.log("i am",this.props.collection.id()); 
+      const query1=this.state.sqlQueryEditorContent;
+      const db = this.props.collection.databaseId;
+      const container = this.props.collection.id();
+    useQueryMetadataStore.getState().setMetadata(query1, db, container);
+    console.log("i am ",query1);
+    console.log("I am db",db);
+    console.log("i am cnt",container); 
     this._iterator = undefined;
 
     setTimeout(async () => {
