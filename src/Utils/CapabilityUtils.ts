@@ -1,3 +1,4 @@
+import { isFabricNative } from "Platform/Fabric/FabricUtil";
 import * as Constants from "../Common/Constants";
 import { userContext } from "../UserContext";
 
@@ -18,5 +19,8 @@ export const isServerlessAccount = (): boolean => {
 };
 
 export const isVectorSearchEnabled = (): boolean => {
-  return userContext.apiType === "SQL" && isCapabilityEnabled(Constants.CapabilityNames.EnableNoSQLVectorSearch);
+  return (
+    userContext.apiType === "SQL" &&
+    (isCapabilityEnabled(Constants.CapabilityNames.EnableNoSQLVectorSearch) || isFabricNative())
+  );
 };
