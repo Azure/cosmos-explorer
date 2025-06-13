@@ -126,12 +126,5 @@ async function readCollectionsWithARM(databaseId: string): Promise<DataModels.Co
       throw new Error(`Unsupported default experience type: ${apiType}`);
   }
 
-  // TO DO: Remove when we get RP API Spec with materializedViews
-  /* eslint-disable @typescript-eslint/no-explicit-any */
-  return rpResponse?.value?.map((collection: any) => {
-    const collectionDataModel: DataModels.Collection = collection.properties?.resource as DataModels.Collection;
-    collectionDataModel.materializedViews = collection.properties?.resource?.materializedViews;
-    collectionDataModel.materializedViewDefinition = collection.properties?.resource?.materializedViewDefinition;
-    return collectionDataModel;
-  });
+  return rpResponse?.value?.map((collection) => collection.properties?.resource as DataModels.Collection);
 }
