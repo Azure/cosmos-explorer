@@ -23,6 +23,7 @@ export enum PaneKind {
   GlobalSettings,
   AdHocAccess,
   SwitchDirectory,
+  QuickStart,
 }
 
 /**
