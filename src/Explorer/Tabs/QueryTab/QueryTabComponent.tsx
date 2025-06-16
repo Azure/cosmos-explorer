@@ -265,16 +265,10 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
   }
 
   public onExecuteQueryClick = async (): Promise<void> => {
-    // console.log("i am ",this.props.collection.databaseId);
-    //  console.log("I am query",this.state.sqlQueryEditorContent );
-    //  console.log("i am",this.props.collection.id()); 
       const query1=this.state.sqlQueryEditorContent;
       const db = this.props.collection.databaseId;
       const container = this.props.collection.id();
     useQueryMetadataStore.getState().setMetadata(query1, db, container);
-    console.log("i am ",query1);
-    console.log("I am db",db);
-    console.log("i am cnt",container); 
     this._iterator = undefined;
 
     setTimeout(async () => {
