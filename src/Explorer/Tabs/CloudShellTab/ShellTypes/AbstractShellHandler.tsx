@@ -13,7 +13,7 @@ export const DISABLE_HISTORY = `set +o history`;
  * Command that displays an error message and exits the shell session.
  * Used when shell initialization or connection fails.
  */
-export const EXIT_COMMAND = ` printf "\\033[1;31mSession ended. Please close this tab and initiate a new shell session if needed.\\033[0m\\n" && exit`;
+export const EXIT_COMMAND = ` printf "\\033[1;31mSession ended. Please close this tab and initiate a new shell session if needed.\\033[0m\\n" && disown -a && exit`;
 
 /**
  * Abstract class that defines the interface for shell-specific handlers
@@ -57,7 +57,7 @@ export abstract class AbstractShellHandler {
       START_MARKER,
       DISABLE_HISTORY,
       ...setupCommands,
-      `{ ${connectionCommand}; } || true;${EXIT_COMMAND}`,
+      `{ ${connectionCommand}; } || true;${EXIT_COMMAND}`
     ];
 
     return allCommands.join("\n").concat("\n");
