@@ -58,7 +58,7 @@ export const startCloudShellTerminal = async (terminal: Terminal, shellType: Ter
     terminal.writeln(formatInfoMessage("2. Data Transfers:"));
     terminal.writeln(
       formatInfoMessage(
-        "   Data processed through this Cloud Shell service can be processed outside of your tenant's geographical region, compliance boundary or national cloud instance."
+        "   Data processed through this Cloud Shell service can be processed outside of your tenant's geographical region, compliance boundary or national cloud instance.",
       ),
     );
     terminal.writeln("");

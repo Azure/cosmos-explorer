@@ -57,7 +57,7 @@ export abstract class AbstractShellHandler {
       START_MARKER,
       DISABLE_HISTORY,
       ...setupCommands,
-      `{ ${connectionCommand}; } || true;${EXIT_COMMAND}`
+      `{ ${connectionCommand}; } || true;${EXIT_COMMAND}`,
     ];
 
     return allCommands.join("\n").concat("\n");
