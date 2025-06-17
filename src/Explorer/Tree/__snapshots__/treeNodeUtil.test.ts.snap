@@ -10,6 +10,11 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
             "contextMenu": [
               {
                 "iconSrc": {},
+                "label": "Open Cassandra Shell",
+                "onClick": [Function],
+              },
+              {
+                "iconSrc": {},
                 "label": "Delete Table",
                 "onClick": [Function],
                 "styleClass": "deleteCollectionMenuItem",
@@ -23,6 +28,11 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
         ],
         "className": "collectionNode",
         "contextMenu": [
+          {
+            "iconSrc": {},
+            "label": "Open Cassandra Shell",
+            "onClick": [Function],
+          },
           {
             "iconSrc": {},
             "label": "Delete Table",
@@ -47,6 +57,11 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
             "contextMenu": [
               {
                 "iconSrc": {},
+                "label": "Open Cassandra Shell",
+                "onClick": [Function],
+              },
+              {
+                "iconSrc": {},
                 "label": "Delete Table",
                 "onClick": [Function],
                 "styleClass": "deleteCollectionMenuItem",
@@ -65,6 +80,11 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
         ],
         "className": "collectionNode",
         "contextMenu": [
+          {
+            "iconSrc": {},
+            "label": "Open Cassandra Shell",
+            "onClick": [Function],
+          },
           {
             "iconSrc": {},
             "label": "Delete Table",
@@ -125,6 +145,11 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
             "contextMenu": [
               {
                 "iconSrc": {},
+                "label": "Open Cassandra Shell",
+                "onClick": [Function],
+              },
+              {
+                "iconSrc": {},
                 "label": "Delete Table",
                 "onClick": [Function],
                 "styleClass": "deleteCollectionMenuItem",
@@ -138,6 +163,11 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
         ],
         "className": "collectionNode",
         "contextMenu": [
+          {
+            "iconSrc": {},
+            "label": "Open Cassandra Shell",
+            "onClick": [Function],
+          },
           {
             "iconSrc": {},
             "label": "Delete Table",
@@ -187,6 +217,11 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
         "children": [
           {
             "contextMenu": [
+              {
+                "iconSrc": {},
+                "label": "Open Cassandra Shell",
+                "onClick": [Function],
+              },
               {
                 "iconSrc": {},
                 "label": "Delete Table",
@@ -257,6 +292,11 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
         ],
         "className": "collectionNode",
         "contextMenu": [
+          {
+            "iconSrc": {},
+            "label": "Open Cassandra Shell",
+            "onClick": [Function],
+          },
           {
             "iconSrc": {},
             "label": "Delete Table",
