@@ -323,7 +323,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
               },
               {
                 "iconSrc": {},
-                "label": "New Shell",
+                "label": "Open Mongo Shell",
                 "onClick": [Function],
               },
               {
@@ -354,7 +354,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
           },
           {
             "iconSrc": {},
-            "label": "New Shell",
+            "label": "Open Mongo Shell",
             "onClick": [Function],
           },
           {
@@ -386,7 +386,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
               },
               {
                 "iconSrc": {},
-                "label": "New Shell",
+                "label": "Open Mongo Shell",
                 "onClick": [Function],
               },
               {
@@ -422,7 +422,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
           },
           {
             "iconSrc": {},
-            "label": "New Shell",
+            "label": "Open Mongo Shell",
             "onClick": [Function],
           },
           {
@@ -490,7 +490,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
               },
               {
                 "iconSrc": {},
-                "label": "New Shell",
+                "label": "Open Mongo Shell",
                 "onClick": [Function],
               },
               {
@@ -521,7 +521,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
           },
           {
             "iconSrc": {},
-            "label": "New Shell",
+            "label": "Open Mongo Shell",
             "onClick": [Function],
           },
           {
@@ -580,7 +580,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
               },
               {
                 "iconSrc": {},
-                "label": "New Shell",
+                "label": "Open Mongo Shell",
                 "onClick": [Function],
               },
               {
@@ -666,7 +666,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
           },
           {
             "iconSrc": {},
-            "label": "New Shell",
+            "label": "Open Mongo Shell",
             "onClick": [Function],
           },
           {
