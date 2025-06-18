@@ -27,21 +27,21 @@ import { HttpHeaders } from "Common/Constants";
 import MongoUtility from "Common/MongoUtility";
 import { QueryMetrics } from "Contracts/DataModels";
 import { EditorReact } from "Explorer/Controls/Editor/EditorReact";
-import { IDocument } from "Explorer/Tabs/QueryTab/QueryTabComponent";
+import { IDocument, useQueryMetadataStore } from "Explorer/Tabs/QueryTab/QueryTabComponent";
 import { useQueryTabStyles } from "Explorer/Tabs/QueryTab/Styles";
-import { useQueryMetadataStore } from "Explorer/Tabs/QueryTab/useQueryMetadataStore";
 import React, { useCallback, useEffect, useState } from "react";
 import { userContext } from "UserContext";
 import { logConsoleProgress } from "Utils/NotificationConsoleUtils";
+import create from "zustand";
 import { client } from "../../../Common/CosmosClient";
 import { handleError } from "../../../Common/ErrorHandlingUtils";
+import * as DataModels from "../../../Contracts/DataModels";
 import { ResultsViewProps } from "./QueryResultSection";
 enum ResultsTabs {
   Results = "results",
   QueryStats = "queryStats",
   IndexAdvisor = "indexadv",
 }
-
 const ResultsTab: React.FC<ResultsViewProps> = ({ queryResults, isMongoDB, executeQueryDocumentsPage }) => {
   const styles = useQueryTabStyles();
   /* eslint-disable react/prop-types */
@@ -539,7 +539,11 @@ interface IIndexMetric {
   impact: string;
   section: "Included" | "Not Included" | "Header";
 }
-const IndexAdvisorTab: React.FC = () => {
+interface IndexAdvisorTabProps {
+  onPolicyUpdated: (newPolicy: DataModels.IndexingPolicy) => void;
+}
+// const IndexAdvisorTab: React.FC = () => {
+const IndexAdvisorTab: React.FC<IndexAdvisorTabProps> = ({ onPolicyUpdated }) => {
   const { userQuery, databaseId, containerId } = useQueryMetadataStore();
   const [loading, setLoading] = useState(true);
   const [indexMetrics, setIndexMetrics] = useState<any>(null);
@@ -663,6 +667,7 @@ const IndexAdvisorTab: React.FC = () => {
         .database(databaseId)
         .container(containerId)
         .read();
+      console.log("def1", containerDef.indexingPolicy);
 
       const newIncludedPaths = selectedIndexes
         .filter(index => !index.composite)
@@ -697,6 +702,15 @@ const IndexAdvisorTab: React.FC = () => {
           partitionKey: containerDef.partitionKey,
           indexingPolicy: updatedPolicy,
         });
+
+      console.log("Indexing policy successfully updated:", updatedPolicy);
+      const { resource: containerDef2 } = await client()
+        .database(databaseId)
+        .container(containerId)
+        .read();
+      onPolicyUpdated(containerDef2.indexingPolicy as DataModels.IndexingPolicy);
+      // externalSetIndexingPolicy(containerDef2.indexingPolicy as DataModels.IndexingPolicy);
+      console.log("def2", containerDef2.indexingPolicy);
 
       const newIncluded = [...included, ...notIncluded.filter(item =>
         selectedIndexes.find(s => s.index === item.index)
@@ -889,8 +903,8 @@ const IndexAdvisorTab: React.FC = () => {
                   fontWeight: "bold",
                 }}
               >
-                <div style={{ width: "18px", height: "18px" }}></div>
-                <div style={{ width: "24px" }}></div>
+                <div style={{ width: "18px", height: "18px" }}></div> {/* Checkbox column */}
+                <div style={{ width: "24px" }}></div> {/* Chevron column */}
                 <div>Index</div>
                 <div><span style={{ whiteSpace: "nowrap" }}>Estimated Impact</span></div>
               </div>
@@ -925,10 +939,15 @@ const IndexAdvisorTab: React.FC = () => {
 export const ResultsView: React.FC<ResultsViewProps> = ({ isMongoDB, queryResults, executeQueryDocumentsPage }) => {
   const styles = useQueryTabStyles();
   const [activeTab, setActiveTab] = useState<ResultsTabs>(ResultsTabs.Results);
+  const [indexingPolicy, setIndexingPolicy] = useState<DataModels.IndexingPolicy | null>(null);
+  const [baselinePolicy, setBaselinePolicy] = useState<DataModels.IndexingPolicy | null>(null);
+  const { containerId } = useQueryMetadataStore();
+  const { setIndexingPolicies } = useIndexingPolicyStore.getState();
 
   const onTabSelect = useCallback((event: SelectTabEvent, data: SelectTabData) => {
     setActiveTab(data.value as ResultsTabs);
   }, []);
+  // console.log("value", indexingPolicy);
 
   return (
     <div data-test="QueryTab/ResultsPane/ResultsView" className={styles.queryResultsTabPanel}>
@@ -964,8 +983,94 @@ export const ResultsView: React.FC<ResultsViewProps> = ({ isMongoDB, queryResult
           />
         )}
         {activeTab === ResultsTabs.QueryStats && <QueryStatsTab queryResults={queryResults} />}
-        {activeTab === ResultsTabs.IndexAdvisor && <IndexAdvisorTab />}
+        {activeTab === ResultsTabs.IndexAdvisor && <IndexAdvisorTab
+          onPolicyUpdated={(newPolicy) => {
+            // setIndexingPolicy(newPolicy);
+            // setBaselinePolicy(newPolicy);
+            const freshPolicy = JSON.parse(JSON.stringify(newPolicy));
+            setIndexingPolicy(freshPolicy);
+            setBaselinePolicy(freshPolicy);
+            setIndexingPolicies(freshPolicy, freshPolicy);
+            // setIndexingPolicies(containerId, freshPolicy, freshPolicy);
+          }
+          }
+        />}
+        {/* {indexingPolicy && baselinePolicy && (
+          <IndexingPolicyComponent
+            indexingPolicyContent={indexingPolicy}
+            indexingPolicyContentBaseline={baselinePolicy}
+            onIndexingPolicyContentChange={setIndexingPolicy}
+            resetShouldDiscardIndexingPolicy={() => { }}
+            shouldDiscardIndexingPolicy={false}
+            logIndexingPolicySuccessMessage={() => { }}
+            indexTransformationProgress={100}
+            refreshIndexTransformationProgress={async () => { }}
+            onIndexingPolicyDirtyChange={() => { }}
+          />
+        )} */}
       </div>
     </div>
   );
 };
+export interface IndexingPolicyStore {
+  indexingPolicy: DataModels.IndexingPolicy | null;
+  baselinePolicy: DataModels.IndexingPolicy | null;
+  setIndexingPolicies: (
+    indexingPolicy: DataModels.IndexingPolicy,
+    baselinePolicy: DataModels.IndexingPolicy
+  ) => void;
+  setIndexingPolicyOnly: (indexingPolicy: DataModels.IndexingPolicy) => void;
+  // policies: Record<string, DataModels.IndexingPolicy | null>;
+  // baselines: Record<string, DataModels.IndexingPolicy | null>;
+  // setIndexingPolicies: (
+  //   containerId: string,
+  //   indexingPolicy: DataModels.IndexingPolicy,
+  //   baselinePolicy: DataModels.IndexingPolicy
+  // ) => void;
+  // setIndexingPolicyOnly: (
+  //   containerId: string,
+  //   indexingPolicy: DataModels.IndexingPolicy
+  // ) => void;
+  // getIndexingPolicy: (containerId: string) => DataModels.IndexingPolicy | null;
+  // getBaselinePolicy: (containerId: string) => DataModels.IndexingPolicy | null;
+}
+
+export const useIndexingPolicyStore = create<IndexingPolicyStore>((set) => ({
+  indexingPolicy: null,
+  baselinePolicy: null,
+  setIndexingPolicies: (indexingPolicy, baselinePolicy) =>
+    set({ indexingPolicy, baselinePolicy }),
+  // setIndexingPolicyOnly: (indexingPolicy) =>
+  //   set((state) => ({ indexingPolicy })),
+  setIndexingPolicyOnly: (indexingPolicy) =>
+    set(() => ({ indexingPolicy: { ...indexingPolicy } })),
+}));
+// export const useIndexingPolicyStore = create<IndexingPolicyStore>((set, get) => ({
+//   policies: {},
+//   baselines: {},
+
+//   setIndexingPolicies: (containerId, indexingPolicy, baselinePolicy) =>
+//     set((state) => ({
+//       policies: {
+//         ...state.policies,
+//         [containerId]: { ...indexingPolicy },
+//       },
+//       baselines: {
+//         ...state.baselines,
+//         [containerId]: { ...baselinePolicy },
+//       },
+//     })),
+
+//   setIndexingPolicyOnly: (containerId, indexingPolicy) =>
+//     set((state) => ({
+//       policies: {
+//         ...state.policies,
+//         [containerId]: { ...indexingPolicy },
+//       },
+//     })),
+
+//   getIndexingPolicy: (containerId: string) => get().policies[containerId] ?? null,
+//   getBaselinePolicy: (containerId: string) => get().baselines[containerId] ?? null,
+// }));
+
+
