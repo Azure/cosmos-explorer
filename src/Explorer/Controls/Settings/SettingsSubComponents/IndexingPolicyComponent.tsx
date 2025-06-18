@@ -1,5 +1,4 @@
 import { MessageBar, MessageBarType, Stack } from "@fluentui/react";
-import { useIndexingPolicyStore } from "Explorer/Tabs/QueryTab/ResultsView";
 import * as monaco from "monaco-editor";
 import * as React from "react";
 import * as DataModels from "../../../../Contracts/DataModels";
@@ -9,7 +8,6 @@ import { isDirty, isIndexTransforming } from "../SettingsUtils";
 import { IndexingPolicyRefreshComponent } from "./IndexingPolicyRefresh/IndexingPolicyRefreshComponent";
 
 export interface IndexingPolicyComponentProps {
-  // containerId: string;
   shouldDiscardIndexingPolicy: boolean;
   resetShouldDiscardIndexingPolicy: () => void;
   indexingPolicyContent: DataModels.IndexingPolicy;
@@ -33,7 +31,7 @@ export class IndexingPolicyComponent extends React.Component<
   private shouldCheckComponentIsDirty = true;
   private indexingPolicyDiv = React.createRef<HTMLDivElement>();
   private indexingPolicyEditor: monaco.editor.IStandaloneCodeEditor;
-  private unsubscribeFromStore: () => void;
+
   constructor(props: IndexingPolicyComponentProps) {
     super(props);
     this.state = {
@@ -42,7 +40,6 @@ export class IndexingPolicyComponent extends React.Component<
   }
 
   componentDidUpdate(): void {
-    // const { indexingPolicy } = useIndexingPolicyStore.getState();
     if (this.props.shouldDiscardIndexingPolicy) {
       this.resetIndexingPolicyEditor();
       this.props.resetShouldDiscardIndexingPolicy();
@@ -51,13 +48,11 @@ export class IndexingPolicyComponent extends React.Component<
   }
 
   componentDidMount(): void {
-    // const { indexingPolicy, baselinePolicy } = useIndexingPolicyStore.getState();
     this.resetIndexingPolicyEditor();
     this.onComponentUpdate();
   }
 
   public resetIndexingPolicyEditor = (): void => {
-    // const { indexingPolicy, baselinePolicy } = useIndexingPolicyStore.getState();
     if (!this.indexingPolicyEditor) {
       this.createIndexingPolicyEditor();
     } else {
@@ -76,9 +71,6 @@ export class IndexingPolicyComponent extends React.Component<
       this.shouldCheckComponentIsDirty = true;
       return;
     }
-    // const isDirtyState = isDirty(storeIndexingPolicy, this.props.indexingPolicyContentBaseline);
-    // this.props.onIndexingPolicyDirtyChange(isDirtyState && this.state.indexingPolicyContentIsValid);
-    // this.shouldCheckComponentIsDirty = false;
     this.props.onIndexingPolicyDirtyChange(this.IsComponentDirty());
     this.shouldCheckComponentIsDirty = false;
   };
@@ -95,10 +87,6 @@ export class IndexingPolicyComponent extends React.Component<
   };
 
   private async createIndexingPolicyEditor(): Promise<void> {
-    const { indexingPolicy, baselinePolicy } = useIndexingPolicyStore.getState();
-    const policyToUse = this.props.indexingPolicyContent;
-
-    // const value: string = JSON.stringify(policyToUse, undefined, 4);
     const value: string = JSON.stringify(this.props.indexingPolicyContent, undefined, 4);
     const monaco = await loadMonaco();
     this.indexingPolicyEditor = monaco.editor.create(this.indexingPolicyDiv.current, {
@@ -112,20 +100,14 @@ export class IndexingPolicyComponent extends React.Component<
       indexingPolicyEditorModel.onDidChangeContent(this.onEditorContentChange.bind(this));
       this.props.logIndexingPolicySuccessMessage();
     }
-    console.log("compp", indexingPolicy);
-    console.log("Accessed policy from Zustand store:", useIndexingPolicyStore.getState().indexingPolicy);
-    console.log("actual indexing content", this.props.indexingPolicyContent);
-    console.log("baseline", this.props.indexingPolicyContentBaseline);
   }
 
   private onEditorContentChange = (): void => {
     const indexingPolicyEditorModel = this.indexingPolicyEditor.getModel();
     try {
       const newIndexingPolicyContent = JSON.parse(indexingPolicyEditorModel.getValue()) as DataModels.IndexingPolicy;
-      // useIndexingPolicyStore.getState().setIndexingPolicyOnly(newIndexingPolicyContent);
       this.props.onIndexingPolicyContentChange(newIndexingPolicyContent);
       this.setState({ indexingPolicyContentIsValid: true });
-      // console.log("editor", newIndexingPolicyContent);
     } catch (e) {
       this.setState({ indexingPolicyContentIsValid: false });
     }

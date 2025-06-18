@@ -542,7 +542,6 @@ interface IIndexMetric {
 interface IndexAdvisorTabProps {
   onPolicyUpdated: (newPolicy: DataModels.IndexingPolicy) => void;
 }
-// const IndexAdvisorTab: React.FC = () => {
 const IndexAdvisorTab: React.FC<IndexAdvisorTabProps> = ({ onPolicyUpdated }) => {
   const { userQuery, databaseId, containerId } = useQueryMetadataStore();
   const [loading, setLoading] = useState(true);
@@ -667,7 +666,7 @@ const IndexAdvisorTab: React.FC<IndexAdvisorTabProps> = ({ onPolicyUpdated }) =>
         .database(databaseId)
         .container(containerId)
         .read();
-      console.log("def1", containerDef.indexingPolicy);
+      // console.log("def1", containerDef.indexingPolicy);
 
       const newIncludedPaths = selectedIndexes
         .filter(index => !index.composite)
@@ -692,14 +691,9 @@ const IndexAdvisorTab: React.FC<IndexAdvisorTabProps> = ({ onPolicyUpdated }) =>
           ...(containerDef.indexingPolicy?.compositeIndexes || []),
           ...newCompositeIndexes,
         ],
-        spatialIndexes: [
-          ...(containerDef.indexingPolicy?.spatialIndexes || []),
-          // ...newSpatialIndexes, 
-        ],
-        vectorIndexes: [
-          ...(containerDef.indexingPolicy?.vectorIndexes || []),
-          // ...newVectorIndexes,
-        ],
+        automatic: containerDef.indexingPolicy?.automatic ?? true,
+        indexingMode: containerDef.indexingPolicy?.indexingMode ?? "consistent",
+        excludedPaths: containerDef.indexingPolicy?.excludedPaths ?? [],
       };
 
       await client()
@@ -710,15 +704,14 @@ const IndexAdvisorTab: React.FC<IndexAdvisorTabProps> = ({ onPolicyUpdated }) =>
           partitionKey: containerDef.partitionKey,
           indexingPolicy: updatedPolicy,
         });
-
-      console.log("Indexing policy successfully updated:", updatedPolicy);
+      useIndexingPolicyStore.getState().setIndexingPolicyOnly(updatedPolicy);
+      // console.log("Indexing policy successfully updated:", updatedPolicy);
       const { resource: containerDef2 } = await client()
         .database(databaseId)
         .container(containerId)
         .read();
       onPolicyUpdated(containerDef2.indexingPolicy as DataModels.IndexingPolicy);
-      // externalSetIndexingPolicy(containerDef2.indexingPolicy as DataModels.IndexingPolicy);
-      console.log("def2", containerDef2.indexingPolicy);
+      // console.log("def2", containerDef2.indexingPolicy);
 
       const newIncluded = [...included, ...notIncluded.filter(item =>
         selectedIndexes.find(s => s.index === item.index)
@@ -954,9 +947,6 @@ export const ResultsView: React.FC<ResultsViewProps> = ({ isMongoDB, queryResult
   const onTabSelect = useCallback((event: SelectTabEvent, data: SelectTabData) => {
     setActiveTab(data.value as ResultsTabs);
   }, []);
-  console.log("indeing", indexingPolicy);
-  console.log("baseline", baselinePolicy);
-
   return (
     <div data-test="QueryTab/ResultsPane/ResultsView" className={styles.queryResultsTabPanel}>
       <TabList selectedValue={activeTab} onTabSelect={onTabSelect}>
@@ -993,8 +983,6 @@ export const ResultsView: React.FC<ResultsViewProps> = ({ isMongoDB, queryResult
         {activeTab === ResultsTabs.QueryStats && <QueryStatsTab queryResults={queryResults} />}
         {activeTab === ResultsTabs.IndexAdvisor && <IndexAdvisorTab
           onPolicyUpdated={(newPolicy) => {
-            // setIndexingPolicy(newPolicy);
-            // setBaselinePolicy(newPolicy);
             const freshPolicy = JSON.parse(JSON.stringify(newPolicy));
             setIndexingPolicy(freshPolicy);
             setBaselinePolicy(freshPolicy);
@@ -1002,19 +990,6 @@ export const ResultsView: React.FC<ResultsViewProps> = ({ isMongoDB, queryResult
           }
           }
         />}
-        {/* {indexingPolicy && baselinePolicy && (
-          <IndexingPolicyComponent
-            indexingPolicyContent={indexingPolicy}
-            indexingPolicyContentBaseline={baselinePolicy}
-            onIndexingPolicyContentChange={setIndexingPolicy}
-            resetShouldDiscardIndexingPolicy={() => { }}
-            shouldDiscardIndexingPolicy={false}
-            logIndexingPolicySuccessMessage={() => { }}
-            indexTransformationProgress={100}
-            refreshIndexTransformationProgress={async () => { }}
-            onIndexingPolicyDirtyChange={() => { }}
-          />
-        )} */}
       </div>
     </div>
   );
@@ -1034,8 +1009,6 @@ export const useIndexingPolicyStore = create<IndexingPolicyStore>((set) => ({
   baselinePolicy: null,
   setIndexingPolicies: (indexingPolicy, baselinePolicy) =>
     set({ indexingPolicy, baselinePolicy }),
-  // setIndexingPolicyOnly: (indexingPolicy) =>
-  //   set((state) => ({ indexingPolicy })),
   setIndexingPolicyOnly: (indexingPolicy) =>
     set((state) => ({ indexingPolicy: { ...indexingPolicy } })),
 }));

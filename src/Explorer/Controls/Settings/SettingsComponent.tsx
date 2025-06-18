@@ -307,6 +307,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.unsubscribe = useIndexingPolicyStore.subscribe((state) => {
       this.refreshCollectionData();
     });
+    this.refreshCollectionData();
   }
   componentWillUnmount(): void {
     if (this.unsubscribe) this.unsubscribe();
@@ -938,12 +939,13 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     // Update the observable and state
     this.collection.rawDataModel = latestCollection;
     this.collection.indexingPolicy(latestCollection.indexingPolicy);
-    console.log("Fetched latest indexing policy:", latestCollection.indexingPolicy);
+    // console.log("Fetched latest indexing policy:", latestCollection.indexingPolicy);
     this.setState({
       indexingPolicyContent: latestCollection.indexingPolicy,
       indexingPolicyContentBaseline: latestCollection.indexingPolicy,
     });
   };
+
   private saveCollectionSettings = async (startKey: number): Promise<void> => {
     const newCollection: DataModels.Collection = { ...this.collection.rawDataModel };
     if (
@@ -1141,7 +1143,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       },
       startKey,
     );
-    // console.log("coll", newCollection.indexingPolicy);
   };
 
   public getMongoIndexTabContent = (
@@ -1175,7 +1176,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       onScaleDiscardableChange: this.onScaleDiscardableChange,
       throughputError: this.state.throughputError,
     };
-    // console.log("Rendering IndexingPolicyComponent with:", this.state.indexingPolicyContent); // <-- Add this
     if (!this.isCollectionSettingsTab) {
       return (
         <div className="settingsV2MainContainer">
