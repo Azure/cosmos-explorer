@@ -692,6 +692,14 @@ const IndexAdvisorTab: React.FC<IndexAdvisorTabProps> = ({ onPolicyUpdated }) =>
           ...(containerDef.indexingPolicy?.compositeIndexes || []),
           ...newCompositeIndexes,
         ],
+        spatialIndexes: [
+          ...(containerDef.indexingPolicy?.spatialIndexes || []),
+          // ...newSpatialIndexes, 
+        ],
+        vectorIndexes: [
+          ...(containerDef.indexingPolicy?.vectorIndexes || []),
+          // ...newVectorIndexes,
+        ],
       };
 
       await client()
@@ -941,13 +949,13 @@ export const ResultsView: React.FC<ResultsViewProps> = ({ isMongoDB, queryResult
   const [activeTab, setActiveTab] = useState<ResultsTabs>(ResultsTabs.Results);
   const [indexingPolicy, setIndexingPolicy] = useState<DataModels.IndexingPolicy | null>(null);
   const [baselinePolicy, setBaselinePolicy] = useState<DataModels.IndexingPolicy | null>(null);
-  const { containerId } = useQueryMetadataStore();
   const { setIndexingPolicies } = useIndexingPolicyStore.getState();
 
   const onTabSelect = useCallback((event: SelectTabEvent, data: SelectTabData) => {
     setActiveTab(data.value as ResultsTabs);
   }, []);
-  // console.log("value", indexingPolicy);
+  console.log("indeing", indexingPolicy);
+  console.log("baseline", baselinePolicy);
 
   return (
     <div data-test="QueryTab/ResultsPane/ResultsView" className={styles.queryResultsTabPanel}>
@@ -991,7 +999,6 @@ export const ResultsView: React.FC<ResultsViewProps> = ({ isMongoDB, queryResult
             setIndexingPolicy(freshPolicy);
             setBaselinePolicy(freshPolicy);
             setIndexingPolicies(freshPolicy, freshPolicy);
-            // setIndexingPolicies(containerId, freshPolicy, freshPolicy);
           }
           }
         />}
@@ -1020,19 +1027,6 @@ export interface IndexingPolicyStore {
     baselinePolicy: DataModels.IndexingPolicy
   ) => void;
   setIndexingPolicyOnly: (indexingPolicy: DataModels.IndexingPolicy) => void;
-  // policies: Record<string, DataModels.IndexingPolicy | null>;
-  // baselines: Record<string, DataModels.IndexingPolicy | null>;
-  // setIndexingPolicies: (
-  //   containerId: string,
-  //   indexingPolicy: DataModels.IndexingPolicy,
-  //   baselinePolicy: DataModels.IndexingPolicy
-  // ) => void;
-  // setIndexingPolicyOnly: (
-  //   containerId: string,
-  //   indexingPolicy: DataModels.IndexingPolicy
-  // ) => void;
-  // getIndexingPolicy: (containerId: string) => DataModels.IndexingPolicy | null;
-  // getBaselinePolicy: (containerId: string) => DataModels.IndexingPolicy | null;
 }
 
 export const useIndexingPolicyStore = create<IndexingPolicyStore>((set) => ({
@@ -1043,34 +1037,7 @@ export const useIndexingPolicyStore = create<IndexingPolicyStore>((set) => ({
   // setIndexingPolicyOnly: (indexingPolicy) =>
   //   set((state) => ({ indexingPolicy })),
   setIndexingPolicyOnly: (indexingPolicy) =>
-    set(() => ({ indexingPolicy: { ...indexingPolicy } })),
+    set((state) => ({ indexingPolicy: { ...indexingPolicy } })),
 }));
-// export const useIndexingPolicyStore = create<IndexingPolicyStore>((set, get) => ({
-//   policies: {},
-//   baselines: {},
-
-//   setIndexingPolicies: (containerId, indexingPolicy, baselinePolicy) =>
-//     set((state) => ({
-//       policies: {
-//         ...state.policies,
-//         [containerId]: { ...indexingPolicy },
-//       },
-//       baselines: {
-//         ...state.baselines,
-//         [containerId]: { ...baselinePolicy },
-//       },
-//     })),
-
-//   setIndexingPolicyOnly: (containerId, indexingPolicy) =>
-//     set((state) => ({
-//       policies: {
-//         ...state.policies,
-//         [containerId]: { ...indexingPolicy },
-//       },
-//     })),
-
-//   getIndexingPolicy: (containerId: string) => get().policies[containerId] ?? null,
-//   getBaselinePolicy: (containerId: string) => get().baselines[containerId] ?? null,
-// }));
 
 

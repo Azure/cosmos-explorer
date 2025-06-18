@@ -1,4 +1,5 @@
 import { IPivotItemProps, IPivotProps, Pivot, PivotItem } from "@fluentui/react";
+import { readCollection } from "Common/dataAccess/readCollection";
 import {
   ComputedPropertiesComponent,
   ComputedPropertiesComponentProps,
@@ -11,6 +12,7 @@ import {
   ThroughputBucketsComponent,
   ThroughputBucketsComponentProps,
 } from "Explorer/Controls/Settings/SettingsSubComponents/ThroughputInputComponents/ThroughputBucketsComponent";
+import { useIndexingPolicyStore } from "Explorer/Tabs/QueryTab/ResultsView";
 import { useDatabases } from "Explorer/useDatabases";
 import { isFabricNative } from "Platform/Fabric/FabricUtil";
 import { isVectorSearchEnabled } from "Utils/CapabilityUtils";
@@ -70,7 +72,6 @@ import {
   parseConflictResolutionMode,
   parseConflictResolutionProcedure,
 } from "./SettingsUtils";
-
 interface SettingsV2TabInfo {
   tab: SettingsV2TabTypes;
   content: JSX.Element;
@@ -173,7 +174,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   private totalThroughputUsed: number;
   private throughputBucketsEnabled: boolean;
   public mongoDBCollectionResource: MongoDBCollectionResource;
-
+  private unsubscribe: () => void;
   constructor(props: SettingsComponentProps) {
     super(props);
 
@@ -303,8 +304,13 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     if (this.props.settingsTab.isActive()) {
       useCommandBar.getState().setContextButtons(this.getTabsButtons());
     }
+    this.unsubscribe = useIndexingPolicyStore.subscribe((state) => {
+      this.refreshCollectionData();
+    });
   }
-
+  componentWillUnmount(): void {
+    if (this.unsubscribe) this.unsubscribe();
+  }
   componentDidUpdate(): void {
     if (this.props.settingsTab.isActive()) {
       useCommandBar.getState().setContextButtons(this.getTabsButtons());
@@ -777,7 +783,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         { name: "name_of_property", query: "query_to_compute_property" },
       ] as DataModels.ComputedProperties;
     }
-
     const throughputBuckets = this.offer?.throughputBuckets;
 
     return {
@@ -852,9 +857,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     const numberOfRegions = userContext.databaseAccount?.properties.locations?.length || 1;
     const throughputDelta = (newThroughput - this.offer.autoscaleMaxThroughput) * numberOfRegions;
     if (throughputCap && throughputCap !== -1 && throughputCap - this.totalThroughputUsed < throughputDelta) {
-      throughputError = `Your account is currently configured with a total throughput limit of ${throughputCap} RU/s. This update isn't possible because it would increase the total throughput to ${
-        this.totalThroughputUsed + throughputDelta
-      } RU/s. Change total throughput limit in cost management.`;
+      throughputError = `Your account is currently configured with a total throughput limit of ${throughputCap} RU/s. This update isn't possible because it would increase the total throughput to ${this.totalThroughputUsed + throughputDelta
+        } RU/s. Change total throughput limit in cost management.`;
     }
     this.setState({ autoPilotThroughput: newThroughput, throughputError });
   };
@@ -865,9 +869,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     const numberOfRegions = userContext.databaseAccount?.properties.locations?.length || 1;
     const throughputDelta = (newThroughput - this.offer.manualThroughput) * numberOfRegions;
     if (throughputCap && throughputCap !== -1 && throughputCap - this.totalThroughputUsed < throughputDelta) {
-      throughputError = `Your account is currently configured with a total throughput limit of ${throughputCap} RU/s. This update isn't possible because it would increase the total throughput to ${
-        this.totalThroughputUsed + throughputDelta
-      } RU/s. Change total throughput limit in cost management.`;
+      throughputError = `Your account is currently configured with a total throughput limit of ${throughputCap} RU/s. This update isn't possible because it would increase the total throughput to ${this.totalThroughputUsed + throughputDelta
+        } RU/s. Change total throughput limit in cost management.`;
     }
     this.setState({ throughput: newThroughput, throughputError });
   };
@@ -929,10 +932,20 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       startKey,
     );
   };
-
+  private refreshCollectionData = async (): Promise<void> => {
+    // Fetch the latest collection data from backend
+    const latestCollection = await readCollection(this.collection.databaseId, this.collection.id());
+    // Update the observable and state
+    this.collection.rawDataModel = latestCollection;
+    this.collection.indexingPolicy(latestCollection.indexingPolicy);
+    console.log("Fetched latest indexing policy:", latestCollection.indexingPolicy);
+    this.setState({
+      indexingPolicyContent: latestCollection.indexingPolicy,
+      indexingPolicyContentBaseline: latestCollection.indexingPolicy,
+    });
+  };
   private saveCollectionSettings = async (startKey: number): Promise<void> => {
     const newCollection: DataModels.Collection = { ...this.collection.rawDataModel };
-
     if (
       this.state.isSubSettingsSaveable ||
       this.state.isContainerPolicyDirty ||
@@ -966,8 +979,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       newCollection.changeFeedPolicy =
         this.changeFeedPolicyVisible && this.state.changeFeedPolicy === ChangeFeedPolicyState.On
           ? {
-              retentionDuration: Constants.BackendDefaults.maxChangeFeedRetentionDuration,
-            }
+            retentionDuration: Constants.BackendDefaults.maxChangeFeedRetentionDuration,
+          }
           : undefined;
 
       newCollection.analyticalStorageTtl = this.getAnalyticalStorageTtl();
@@ -1128,6 +1141,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       },
       startKey,
     );
+    // console.log("coll", newCollection.indexingPolicy);
   };
 
   public getMongoIndexTabContent = (
@@ -1161,7 +1175,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       onScaleDiscardableChange: this.onScaleDiscardableChange,
       throughputError: this.state.throughputError,
     };
-
+    // console.log("Rendering IndexingPolicyComponent with:", this.state.indexingPolicyContent); // <-- Add this
     if (!this.isCollectionSettingsTab) {
       return (
         <div className="settingsV2MainContainer">

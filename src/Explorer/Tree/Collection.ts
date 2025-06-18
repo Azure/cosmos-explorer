@@ -46,7 +46,6 @@ import DocumentId from "./DocumentId";
 import StoredProcedure from "./StoredProcedure";
 import Trigger from "./Trigger";
 import UserDefinedFunction from "./UserDefinedFunction";
-
 export default class Collection implements ViewModels.Collection {
   public nodeKind: string;
   public container: Explorer;
@@ -123,6 +122,55 @@ export default class Collection implements ViewModels.Collection {
     this.vectorEmbeddingPolicy = ko.observable(data.vectorEmbeddingPolicy);
     this.fullTextPolicy = ko.observable(data.fullTextPolicy);
     this.indexingPolicy = ko.observable(data.indexingPolicy);
+    // // console.log("Indexing policy changed data.indexngpolicy:", data.indexingPolicy);
+
+    // this.indexingPolicy(data.indexingPolicy);
+    // this.indexingPolicy.subscribe(async (newPolicy) => {
+    //   console.log("Indexing policy changed via KO:", newPolicy);
+
+    //   // Sync with Zustand (React side, if needed)
+    //   useIndexingPolicyStore.getState().setIndexingPolicyOnly(newPolicy);
+
+    //   // Prepare a new collection object based on raw data
+    //   const updatedCollection: DataModels.Collection = {
+    //     ...this.rawDataModel,
+    //     indexingPolicy: newPolicy,
+    //   };
+
+    //   try {
+    //     // Send update to backend
+    //     const updated = await updateCollection(
+    //       this.databaseId,
+    //       this.id(),
+    //       updatedCollection
+    //     );
+    //     console.log("updatedcollection", updatedCollection);
+    //     // Update the local view model with backend-confirmed values
+    //     this.rawDataModel = updated;
+    //     this.defaultTtl(updated.defaultTtl);
+    //     this.analyticalStorageTtl(updated.analyticalStorageTtl);
+    //     this.id(updated.id);
+    //     this.indexingPolicy(updated.indexingPolicy);
+    //     this.conflictResolutionPolicy(updated.conflictResolutionPolicy);
+    //     this.changeFeedPolicy(updated.changeFeedPolicy);
+    //     this.geospatialConfig(updated.geospatialConfig);
+    //     this.computedProperties(updated.computedProperties);
+    //     this.vectorEmbeddingPolicy(updated.vectorEmbeddingPolicy);
+    //     this.fullTextPolicy(updated.fullTextPolicy);
+
+    //     console.log("✅ Indexing policy update persisted and view model refreshed.");
+    //   } catch (error) {
+    //     console.error("❌ Failed to update indexing policy:", error);
+    //   }
+    // });
+
+    // this.indexingPolicy.subscribe((newPolicy) => {
+    //   console.log("Indexing policy changed via KO:", newPolicy);
+    //   //func to tigger
+    //   useIndexingPolicyStore.getState().setIndexingPolicyOnly(newPolicy);
+
+    // }); console.log(useIndexingPolicyStore.getState().indexingPolicy);
+
     this.usageSizeInKB = ko.observable();
     this.offer = ko.observable();
     this.conflictResolutionPolicy = ko.observable(data.conflictResolutionPolicy);
