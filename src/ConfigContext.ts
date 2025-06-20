@@ -137,6 +137,15 @@ export function updateConfigContext(newContext: Partial<ConfigContext>): void {
 
   if (
     !validateEndpoint(
+      newContext.PORTAL_BACKEND_ENDPOINT,
+      configContext.allowedBackendEndpoints || defaultAllowedBackendEndpoints,
+    )
+  ) {
+    delete newContext.PORTAL_BACKEND_ENDPOINT;
+  }
+
+  if (
+    !validateEndpoint(
       newContext.MONGO_PROXY_ENDPOINT,
       configContext.allowedMongoProxyEndpoints || defaultAllowedMongoProxyEndpoints,
     )
