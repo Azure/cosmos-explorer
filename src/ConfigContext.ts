@@ -50,7 +50,6 @@ export interface ConfigContext {
   GITHUB_CLIENT_ID: string;
   GITHUB_TEST_ENV_CLIENT_ID: string;
   GITHUB_CLIENT_SECRET?: string; // No need to inject secret for prod. Juno already knows it.
-  isTerminalEnabled: boolean;
   isPhoenixEnabled: boolean;
   hostedExplorerURL: string;
   armAPIVersion?: string;
@@ -97,7 +96,6 @@ let configContext: Readonly<ConfigContext> = {
   PORTAL_BACKEND_ENDPOINT: PortalBackendEndpoints.Prod,
   MONGO_PROXY_ENDPOINT: MongoProxyEndpoints.Prod,
   CASSANDRA_PROXY_ENDPOINT: CassandraProxyEndpoints.Prod,
-  isTerminalEnabled: false,
   isPhoenixEnabled: false,
 };
 
