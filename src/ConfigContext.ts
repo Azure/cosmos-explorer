@@ -2,7 +2,6 @@ import { CassandraProxyEndpoints, JunoEndpoints, MongoProxyEndpoints, PortalBack
 import {
   allowedArcadiaEndpoints,
   allowedEmulatorEndpoints,
-  allowedGraphEndpoints,
   allowedHostedExplorerEndpoints,
   allowedJunoOrigins,
   allowedMsalRedirectEndpoints,
@@ -10,6 +9,7 @@ import {
   defaultAllowedArmEndpoints,
   defaultAllowedBackendEndpoints,
   defaultAllowedCassandraProxyEndpoints,
+  defaultAllowedGraphEndpoints,
   defaultAllowedMongoProxyEndpoints,
   validateEndpoint,
 } from "Utils/EndpointUtils";
@@ -24,6 +24,7 @@ export enum Platform {
 export interface ConfigContext {
   platform: Platform;
   allowedAadEndpoints: ReadonlyArray<string>;
+  allowedGraphEndpoints: ReadonlyArray<string>;
   allowedArmEndpoints: ReadonlyArray<string>;
   allowedBackendEndpoints: ReadonlyArray<string>;
   allowedCassandraProxyEndpoints: ReadonlyArray<string>;
@@ -32,10 +33,8 @@ export interface ConfigContext {
   gitSha?: string;
   proxyPath?: string;
   AAD_ENDPOINT: string;
-  ARM_AUTH_AREA: string;
   ARM_ENDPOINT: string;
   EMULATOR_ENDPOINT?: string;
-  ARM_API_VERSION: string;
   GRAPH_ENDPOINT: string;
   GRAPH_API_VERSION: string;
   // This is the endpoint to get offering Ids to be used to fetch prices. Refer to this doc: https://learn.microsoft.com/en-us/rest/api/marketplacecatalog/dataplane/skus/list?view=rest-marketplacecatalog-dataplane-2023-05-01-preview&tabs=HTTP
@@ -63,6 +62,7 @@ export interface ConfigContext {
 let configContext: Readonly<ConfigContext> = {
   platform: Platform.Portal,
   allowedAadEndpoints: defaultAllowedAadEndpoints,
+  allowedGraphEndpoints: defaultAllowedGraphEndpoints,
   allowedArmEndpoints: defaultAllowedArmEndpoints,
   allowedBackendEndpoints: defaultAllowedBackendEndpoints,
   allowedCassandraProxyEndpoints: defaultAllowedCassandraProxyEndpoints,
@@ -85,9 +85,7 @@ let configContext: Readonly<ConfigContext> = {
   gitSha: process.env.GIT_SHA,
   hostedExplorerURL: "https://cosmos.azure.com/",
   AAD_ENDPOINT: "https://login.microsoftonline.com/",
-  ARM_AUTH_AREA: "https://management.azure.com/",
   ARM_ENDPOINT: "https://management.azure.com/",
-  ARM_API_VERSION: "2016-06-01",
   GRAPH_ENDPOINT: "https://graph.microsoft.com",
   GRAPH_API_VERSION: "1.6",
   CATALOG_ENDPOINT: "https://catalogapi.azure.com/",
@@ -129,7 +127,9 @@ export function updateConfigContext(newContext: Partial<ConfigContext>): void {
     delete newContext.EMULATOR_ENDPOINT;
   }
 
-  if (!validateEndpoint(newContext.GRAPH_ENDPOINT, allowedGraphEndpoints)) {
+  if (
+    !validateEndpoint(newContext.GRAPH_ENDPOINT, configContext.allowedGraphEndpoints || defaultAllowedGraphEndpoints)
+  ) {
     delete newContext.GRAPH_ENDPOINT;
   }
 

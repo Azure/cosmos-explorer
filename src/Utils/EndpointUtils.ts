@@ -51,6 +51,8 @@ export const defaultAllowedAadEndpoints: ReadonlyArray<string> = [
   "https://login.partner.microsoftonline.cn/",
 ];
 
+export const defaultAllowedGraphEndpoints: ReadonlyArray<string> = ["https://graph.microsoft.com"];
+
 export const defaultAllowedBackendEndpoints: ReadonlyArray<string> = [
   "https://localhost:12901",
   "https://localhost:1234",
@@ -73,8 +75,6 @@ export const defaultAllowedCassandraProxyEndpoints: ReadonlyArray<string> = [
 ];
 
 export const allowedEmulatorEndpoints: ReadonlyArray<string> = ["https://localhost:8081"];
-
-export const allowedGraphEndpoints: ReadonlyArray<string> = ["https://graph.microsoft.com"];
 
 export const allowedArcadiaEndpoints: ReadonlyArray<string> = ["https://workspaceartifacts.projectarcadia.net"];
 
