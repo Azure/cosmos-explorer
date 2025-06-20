@@ -1,4 +1,4 @@
-import { CassandraProxyEndpoints, JunoEndpoints, MongoProxyEndpoints, PortalBackendEndpoints } from "Common/Constants";
+import { CassandraProxyEndpoints, JunoEndpoints, MongoProxyEndpoints } from "Common/Constants";
 import * as Logger from "../Common/Logger";
 
 export function validateEndpoint(
@@ -56,20 +56,6 @@ export const defaultAllowedBackendEndpoints: ReadonlyArray<string> = [
   "https://localhost:1234",
 ];
 
-export const PortalBackendOutboundIPs: { [key: string]: string[] } = {
-  [PortalBackendEndpoints.Mpac]: ["13.91.105.215", "4.210.172.107"],
-  [PortalBackendEndpoints.Prod]: ["13.88.56.148", "40.91.218.243"],
-  [PortalBackendEndpoints.Fairfax]: ["52.247.163.6", "52.244.134.181"],
-  [PortalBackendEndpoints.Mooncake]: ["163.228.137.6", "143.64.170.142"],
-};
-
-export const MongoProxyOutboundIPs: { [key: string]: string[] } = {
-  [MongoProxyEndpoints.Mpac]: ["20.245.81.54", "40.118.23.126"],
-  [MongoProxyEndpoints.Prod]: ["40.80.152.199", "13.95.130.121"],
-  [MongoProxyEndpoints.Fairfax]: ["52.244.176.112", "52.247.148.42"],
-  [MongoProxyEndpoints.Mooncake]: ["52.131.240.99", "143.64.61.130"],
-};
-
 export const defaultAllowedMongoProxyEndpoints: ReadonlyArray<string> = [
   MongoProxyEndpoints.Development,
   MongoProxyEndpoints.Mpac,
@@ -86,16 +72,7 @@ export const defaultAllowedCassandraProxyEndpoints: ReadonlyArray<string> = [
   CassandraProxyEndpoints.Mooncake,
 ];
 
-export const CassandraProxyOutboundIPs: { [key: string]: string[] } = {
-  [CassandraProxyEndpoints.Mpac]: ["40.113.96.14", "104.42.11.145"],
-  [CassandraProxyEndpoints.Prod]: ["137.117.230.240", "168.61.72.237"],
-  [CassandraProxyEndpoints.Fairfax]: ["52.244.50.101", "52.227.165.24"],
-  [CassandraProxyEndpoints.Mooncake]: ["40.73.99.146", "143.64.62.47"],
-};
-
 export const allowedEmulatorEndpoints: ReadonlyArray<string> = ["https://localhost:8081"];
-
-export const allowedMongoBackendEndpoints: ReadonlyArray<string> = ["https://localhost:1234"];
 
 export const allowedGraphEndpoints: ReadonlyArray<string> = ["https://graph.microsoft.com"];
 

@@ -1,9 +1,8 @@
 import {
-  BackendApi,
   CassandraProxyEndpoints,
   JunoEndpoints,
   MongoProxyEndpoints,
-  PortalBackendEndpoints,
+  PortalBackendEndpoints
 } from "Common/Constants";
 import {
   allowedAadEndpoints,
@@ -50,10 +49,8 @@ export interface ConfigContext {
   ARCADIA_ENDPOINT: string;
   ARCADIA_LIVY_ENDPOINT_DNS_ZONE: string;
   PORTAL_BACKEND_ENDPOINT: string;
-  NEW_BACKEND_APIS?: BackendApi[];
   MONGO_PROXY_ENDPOINT: string;
   CASSANDRA_PROXY_ENDPOINT: string;
-  NEW_CASSANDRA_APIS?: string[];
   PROXY_PATH?: string;
   JUNO_ENDPOINT: string;
   GITHUB_CLIENT_ID: string;
@@ -109,7 +106,6 @@ let configContext: Readonly<ConfigContext> = {
   PORTAL_BACKEND_ENDPOINT: PortalBackendEndpoints.Prod,
   MONGO_PROXY_ENDPOINT: MongoProxyEndpoints.Prod,
   CASSANDRA_PROXY_ENDPOINT: CassandraProxyEndpoints.Prod,
-  NEW_CASSANDRA_APIS: ["postQuery", "createOrDelete", "getKeys", "getSchema"],
   isTerminalEnabled: false,
   isPhoenixEnabled: false,
   globallyEnabledCassandraAPIs: [],
