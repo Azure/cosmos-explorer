@@ -1,9 +1,4 @@
-import {
-  CassandraProxyEndpoints,
-  JunoEndpoints,
-  MongoProxyEndpoints,
-  PortalBackendEndpoints
-} from "Common/Constants";
+import { CassandraProxyEndpoints, JunoEndpoints, MongoProxyEndpoints, PortalBackendEndpoints } from "Common/Constants";
 import {
   allowedAadEndpoints,
   allowedArcadiaEndpoints,
@@ -61,8 +56,6 @@ export interface ConfigContext {
   hostedExplorerURL: string;
   armAPIVersion?: string;
   msalRedirectURI?: string;
-  globallyEnabledCassandraAPIs?: string[];
-  globallyEnabledMongoAPIs?: string[];
 }
 
 // Default configuration
@@ -108,8 +101,6 @@ let configContext: Readonly<ConfigContext> = {
   CASSANDRA_PROXY_ENDPOINT: CassandraProxyEndpoints.Prod,
   isTerminalEnabled: false,
   isPhoenixEnabled: false,
-  globallyEnabledCassandraAPIs: [],
-  globallyEnabledMongoAPIs: [],
 };
 
 export function resetConfigContext(): void {
