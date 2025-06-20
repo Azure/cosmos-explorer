@@ -45,7 +45,7 @@ export const defaultAllowedArmEndpoints: ReadonlyArray<string> = [
   "https://management.chinacloudapi.cn",
 ];
 
-export const allowedAadEndpoints: ReadonlyArray<string> = [
+export const defaultAllowedAadEndpoints: ReadonlyArray<string> = [
   "https://login.microsoftonline.com/",
   "https://login.microsoftonline.us/",
   "https://login.partner.microsoftonline.cn/",

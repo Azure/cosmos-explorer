@@ -1,12 +1,12 @@
 import { CassandraProxyEndpoints, JunoEndpoints, MongoProxyEndpoints, PortalBackendEndpoints } from "Common/Constants";
 import {
-  allowedAadEndpoints,
   allowedArcadiaEndpoints,
   allowedEmulatorEndpoints,
   allowedGraphEndpoints,
   allowedHostedExplorerEndpoints,
   allowedJunoOrigins,
   allowedMsalRedirectEndpoints,
+  defaultAllowedAadEndpoints,
   defaultAllowedArmEndpoints,
   defaultAllowedBackendEndpoints,
   defaultAllowedCassandraProxyEndpoints,
@@ -23,6 +23,7 @@ export enum Platform {
 
 export interface ConfigContext {
   platform: Platform;
+  allowedAadEndpoints: ReadonlyArray<string>;
   allowedArmEndpoints: ReadonlyArray<string>;
   allowedBackendEndpoints: ReadonlyArray<string>;
   allowedCassandraProxyEndpoints: ReadonlyArray<string>;
@@ -61,6 +62,7 @@ export interface ConfigContext {
 // Default configuration
 let configContext: Readonly<ConfigContext> = {
   platform: Platform.Portal,
+  allowedAadEndpoints: defaultAllowedAadEndpoints,
   allowedArmEndpoints: defaultAllowedArmEndpoints,
   allowedBackendEndpoints: defaultAllowedBackendEndpoints,
   allowedCassandraProxyEndpoints: defaultAllowedCassandraProxyEndpoints,
@@ -115,12 +117,12 @@ export function updateConfigContext(newContext: Partial<ConfigContext>): void {
     return;
   }
 
-  if (!validateEndpoint(newContext.ARM_ENDPOINT, configContext.allowedArmEndpoints || defaultAllowedArmEndpoints)) {
-    delete newContext.ARM_ENDPOINT;
+  if (!validateEndpoint(newContext.AAD_ENDPOINT, configContext.allowedAadEndpoints || defaultAllowedAadEndpoints)) {
+    delete newContext.AAD_ENDPOINT;
   }
 
-  if (!validateEndpoint(newContext.AAD_ENDPOINT, allowedAadEndpoints)) {
-    delete newContext.AAD_ENDPOINT;
+  if (!validateEndpoint(newContext.ARM_ENDPOINT, configContext.allowedArmEndpoints || defaultAllowedArmEndpoints)) {
+    delete newContext.ARM_ENDPOINT;
   }
 
   if (!validateEndpoint(newContext.EMULATOR_ENDPOINT, allowedEmulatorEndpoints)) {
