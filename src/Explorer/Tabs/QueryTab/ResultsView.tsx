@@ -569,6 +569,10 @@ const IndexAdvisorTab: React.FC<IndexAdvisorTabProps> = ({ onPolicyUpdated }) =>
           })
           .fetchAll();
         setIndexMetrics(sdkResponse.indexMetrics);
+        console.log("Index Metrics:", sdkResponse.indexMetrics);
+        // console.log("Query Results:", sdkResponse.resources);
+        console.log(typeof sdkResponse.indexMetrics);
+        console.log(typeof sdkResponse.resources)
       } catch (error) {
         handleError(error, "queryItemsWithIndexMetrics", `Error querying items from ${containerId}`);
       } finally {
