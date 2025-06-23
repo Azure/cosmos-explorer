@@ -1,4 +1,5 @@
 import { IPivotItemProps, IPivotProps, Pivot, PivotItem } from "@fluentui/react";
+import { readCollection } from "Common/dataAccess/readCollection";
 import {
   ComputedPropertiesComponent,
   ComputedPropertiesComponentProps,
@@ -934,23 +935,12 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     );
   };
   private refreshCollectionData = async (): Promise<void> => {
-    const storePolicy = useIndexingPolicyStore.getState().indexingPolicy;
-    if (!storePolicy) {
-      console.warn("No indexing policy found in store.");
-      return;
-    }
-    const indexingPolicy: DataModels.IndexingPolicy = {
-      ...storePolicy,
-      automatic: storePolicy.automatic ?? true,
-      indexingMode: storePolicy.indexingMode ?? "consistent",
-      includedPaths: storePolicy.includedPaths ?? [],
-      excludedPaths: storePolicy.excludedPaths ?? [],
-    };
-
-    this.collection.indexingPolicy(indexingPolicy);
+    const latestCollection = await readCollection(this.collection.databaseId, this.collection.id());
+    this.collection.rawDataModel = latestCollection;
+    this.collection.indexingPolicy(latestCollection.indexingPolicy);
     this.setState({
-      indexingPolicyContent: indexingPolicy,
-      indexingPolicyContentBaseline: indexingPolicy,
+      indexingPolicyContent: latestCollection.indexingPolicy,
+      indexingPolicyContentBaseline: latestCollection.indexingPolicy,
     });
   };
 
