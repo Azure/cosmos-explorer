@@ -49,7 +49,6 @@ export const useIndexAdvisorStyles = makeStyles({
   },
   indexAdvisorRowImpactHeader: {
     fontSize: 0,
-    // fontWeight: "normal",
   },
   indexAdvisorRowImpact: {
     fontWeight: "normal",

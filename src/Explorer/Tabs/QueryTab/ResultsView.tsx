@@ -571,8 +571,6 @@ export const IndexAdvisorTab: React.FC = () => {
           })
           .fetchAll();
         setIndexMetrics(sdkResponse.indexMetrics);
-        console.log(sdkResponse.indexMetrics);
-        console.log(typeof sdkResponse.indexMetrics);
       } catch (error) {
         handleError(error, "queryItemsWithIndexMetrics", `Error querying items from ${containerId}`);
       } finally {
@@ -585,122 +583,8 @@ export const IndexAdvisorTab: React.FC = () => {
     }
   }, [userQuery, databaseId, containerId]);
 
-  // useEffect(() => {
-  //   if (!indexMetrics) { return };
-
-  //   const included: IIndexMetric[] = [];
-  //   const notIncluded: IIndexMetric[] = [];
-  //   const lines = indexMetrics.split("\n").map((line: string) => line.trim()).filter(Boolean);
-  //   let currentSection = "";
-  //   for (let i = 0; i < lines.length; i++) {
-  //     const line = lines[i];
-  //     if (line.startsWith("Utilized Single Indexes") || line.startsWith("Utilized Composite Indexes")) {
-  //       currentSection = "included";
-  //     } else if (line.startsWith("Potential Single Indexes") || line.startsWith("Potential Composite Indexes")) {
-  //       currentSection = "notIncluded";
-  //     } else if (line.startsWith("Index Spec:")) {
-  //       const index = line.replace("Index Spec:", "").trim();
-  //       const impactLine = lines[i + 1];
-  //       const impact = impactLine?.includes("Index Impact Score:") ? impactLine.split(":")[1].trim() : "Unknown";
-
-  //       const isComposite = index.includes(",");
-  //       const indexObj: any = { index, impact };
-  //       if (isComposite) {
-  //         indexObj.composite = index.split(",").map((part: string) => {
-  //           const [path, order] = part.trim().split(/\s+/);
-  //           return {
-  //             path: path.trim(),
-  //             order: order?.toLowerCase() === "desc" ? "descending" : "ascending",
-  //           };
-  //         });
-  //       } else {
-  //         let path = "/unknown/*";
-  //         const pathRegex = /\/[^\/\s*?]+(?:\/[^\/\s*?]+)*(\/\*|\?)/;
-  //         const match = index.match(pathRegex);
-  //         if (match) {
-  //           path = match[0];
-  //         } else {
-  //           const simplePathRegex = /\/[^\/\s]+/;
-  //           const simpleMatch = index.match(simplePathRegex);
-  //           if (simpleMatch) {
-  //             path = simpleMatch[0] + "/*";
-  //           }
-  //         }
-  //         indexObj.path = path;
-  //       }
-
-  //       if (currentSection === "included") {
-  //         included.push(indexObj);
-  //       } else if (currentSection === "notIncluded") {
-  //         notIncluded.push(indexObj);
-  //       }
-  //     }
-  //   }
-  //   setIncludedIndexes(included);
-  //   setNotIncludedIndexes(notIncluded);
-  // }, [indexMetrics]);
-
   useEffect(() => {
-    if (!indexMetrics) return;
-
-    let metricsObj: any = indexMetrics;
-    if (typeof indexMetrics === "string" && indexMetrics.trim().startsWith("{")) {
-      try {
-        metricsObj = JSON.parse(indexMetrics);
-        console.log("Parsed index metrics as JSON:", metricsObj);
-      } catch {
-        metricsObj = null;
-      }
-    }
-
-    if (metricsObj && typeof metricsObj === "object" && metricsObj.UtilizedIndexes) {
-      const included: IIndexMetric[] = [];
-      const notIncluded: IIndexMetric[] = [];
-
-      metricsObj.UtilizedIndexes.SingleIndexes?.forEach((si: any) => {
-        included.push({
-          index: si.IndexSpec,
-          impact: "",
-          section: "Included",
-          path: si.IndexSpec,
-        });
-      });
-      metricsObj.UtilizedIndexes.CompositeIndexes?.forEach((ci: any) => {
-        included.push({
-          index: ci.IndexSpecs.join(", "),
-          impact: "",
-          section: "Included",
-          composite: ci.IndexSpecs.map((spec: string) => {
-            const [path, order] = spec.split(" ");
-            return { path, order: (order || "ASC").toLowerCase() === "desc" ? "descending" : "ascending" };
-          }),
-        });
-      });
-
-      metricsObj.PotentialIndexes.SingleIndexes?.forEach((si: any) => {
-        notIncluded.push({
-          index: si.IndexSpec,
-          impact: si.IndexImpactScore || "",
-          section: "Not Included",
-          path: si.IndexSpec,
-        });
-      });
-      metricsObj.PotentialIndexes.CompositeIndexes?.forEach((ci: any) => {
-        notIncluded.push({
-          index: ci.IndexSpecs.join(", "),
-          impact: ci.IndexImpactScore || "",
-          section: "Not Included",
-          composite: ci.IndexSpecs.map((spec: string) => {
-            const [path, order] = spec.split(" ");
-            return { path, order: (order || "ASC").toLowerCase() === "desc" ? "descending" : "ascending" };
-          }),
-        });
-      });
-
-      setIncludedIndexes(included);
-      setNotIncludedIndexes(notIncluded);
-      return;
-    }
+    if (!indexMetrics) { return };
 
     const included: IIndexMetric[] = [];
     const notIncluded: IIndexMetric[] = [];
@@ -753,6 +637,7 @@ export const IndexAdvisorTab: React.FC = () => {
     setIncludedIndexes(included);
     setNotIncludedIndexes(notIncluded);
   }, [indexMetrics]);
+
   useEffect(() => {
     const allSelected = notIncluded.length > 0 && notIncluded.every((item) => selectedIndexes.some((s) => s.index === item.index));
     setSelectAll(allSelected);
