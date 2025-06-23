@@ -54,7 +54,6 @@ export const defaultAllowedAadEndpoints: ReadonlyArray<string> = [
 export const defaultAllowedGraphEndpoints: ReadonlyArray<string> = ["https://graph.microsoft.com"];
 
 export const defaultAllowedBackendEndpoints: ReadonlyArray<string> = [
-  "https://localhost:12901",
   "https://localhost:1234",
   PortalBackendEndpoints.Development,
   PortalBackendEndpoints.Mpac,
