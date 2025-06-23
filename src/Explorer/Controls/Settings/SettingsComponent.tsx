@@ -1,5 +1,4 @@
 import { IPivotItemProps, IPivotProps, Pivot, PivotItem } from "@fluentui/react";
-import { readCollection } from "Common/dataAccess/readCollection";
 import {
   ComputedPropertiesComponent,
   ComputedPropertiesComponentProps,
@@ -304,9 +303,10 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     if (this.props.settingsTab.isActive()) {
       useCommandBar.getState().setContextButtons(this.getTabsButtons());
     }
-    this.unsubscribe = useIndexingPolicyStore.subscribe((state) => {
+    this.unsubscribe = useIndexingPolicyStore.subscribe((_,) => {
       this.refreshCollectionData();
-    });
+    },
+      (state) => state.indexingPolicy);
     this.refreshCollectionData();
   }
   componentWillUnmount(): void {
@@ -934,15 +934,23 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     );
   };
   private refreshCollectionData = async (): Promise<void> => {
-    // Fetch the latest collection data from backend
-    const latestCollection = await readCollection(this.collection.databaseId, this.collection.id());
-    // Update the observable and state
-    this.collection.rawDataModel = latestCollection;
-    this.collection.indexingPolicy(latestCollection.indexingPolicy);
-    // console.log("Fetched latest indexing policy:", latestCollection.indexingPolicy);
+    const storePolicy = useIndexingPolicyStore.getState().indexingPolicy;
+    if (!storePolicy) {
+      console.warn("No indexing policy found in store.");
+      return;
+    }
+    const indexingPolicy: DataModels.IndexingPolicy = {
+      ...storePolicy,
+      automatic: storePolicy.automatic ?? true,
+      indexingMode: storePolicy.indexingMode ?? "consistent",
+      includedPaths: storePolicy.includedPaths ?? [],
+      excludedPaths: storePolicy.excludedPaths ?? [],
+    };
+
+    this.collection.indexingPolicy(indexingPolicy);
     this.setState({
-      indexingPolicyContent: latestCollection.indexingPolicy,
-      indexingPolicyContentBaseline: latestCollection.indexingPolicy,
+      indexingPolicyContent: indexingPolicy,
+      indexingPolicyContentBaseline: indexingPolicy,
     });
   };
 
