@@ -1,4 +1,4 @@
-import { CassandraProxyEndpoints, JunoEndpoints, MongoProxyEndpoints } from "Common/Constants";
+import { CassandraProxyEndpoints, JunoEndpoints, MongoProxyEndpoints, PortalBackendEndpoints } from "Common/Constants";
 import * as Logger from "../Common/Logger";
 
 export function validateEndpoint(
@@ -56,6 +56,11 @@ export const defaultAllowedGraphEndpoints: ReadonlyArray<string> = ["https://gra
 export const defaultAllowedBackendEndpoints: ReadonlyArray<string> = [
   "https://localhost:12901",
   "https://localhost:1234",
+  PortalBackendEndpoints.Development,
+  PortalBackendEndpoints.Mpac,
+  PortalBackendEndpoints.Prod,
+  PortalBackendEndpoints.Fairfax,
+  PortalBackendEndpoints.Mooncake,
 ];
 
 export const defaultAllowedMongoProxyEndpoints: ReadonlyArray<string> = [
