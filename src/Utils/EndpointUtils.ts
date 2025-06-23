@@ -64,6 +64,7 @@ export const defaultAllowedBackendEndpoints: ReadonlyArray<string> = [
 ];
 
 export const defaultAllowedMongoProxyEndpoints: ReadonlyArray<string> = [
+  "https://localhost:1234",
   MongoProxyEndpoints.Development,
   MongoProxyEndpoints.Mpac,
   MongoProxyEndpoints.Prod,
