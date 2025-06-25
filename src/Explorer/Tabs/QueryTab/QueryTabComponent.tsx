@@ -55,9 +55,6 @@ import { BrowseQueriesPane } from "../../Panes/BrowseQueriesPane/BrowseQueriesPa
 import { SaveQueryPane } from "../../Panes/SaveQueryPane/SaveQueryPane";
 import TabsBase from "../TabsBase";
 import "./QueryTabComponent.less";
-// import { useQueryMetadataStore } from "./useQueryMetadataStore"; // adjust path if needed
-// QueryTabComponent.tsx
-
 import create from "zustand";
 
 export interface QueryMetadataStore {
