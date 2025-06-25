@@ -212,9 +212,6 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
       enabled: !!this.state.sqlQueryEditorContent && this.state.sqlQueryEditorContent.length > 0,
       visible: true,
     };
-      // const query=this.state.sqlQueryEditorContent;
-      // const db = this.props.collection.databaseId;
-      // const container = this.props.collection.id();
       
     const isSaveQueryBtnEnabled = userContext.apiType === "SQL" || userContext.apiType === "Gremlin";
     this.saveQueryButton = {
