@@ -36,7 +36,7 @@ import { logConsoleProgress } from "Utils/NotificationConsoleUtils";
 import create from "zustand";
 import { client } from "../../../Common/CosmosClient";
 import { handleError } from "../../../Common/ErrorHandlingUtils";
-import { useIndexAdvisorStyles } from "./indexadv";
+import { useIndexAdvisorStyles } from "./Indexadvisor";
 import { ResultsViewProps } from "./QueryResultSection";
 
 enum ResultsTabs {
@@ -555,6 +555,7 @@ export const IndexAdvisorTab: React.FC = () => {
   const [updateMessageShown, setUpdateMessageShown] = useState(false);
   const [included, setIncludedIndexes] = useState<IIndexMetric[]>([]);
   const [notIncluded, setNotIncludedIndexes] = useState<IIndexMetric[]>([]);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
     async function fetchIndexMetrics() {
@@ -659,6 +660,7 @@ export const IndexAdvisorTab: React.FC = () => {
   };
 
   const handleUpdatePolicy = async () => {
+    setIsUpdating(true);
     try {
       const containerRef = client().database(databaseId).container(containerId);
       const { resource: containerDef } = await containerRef.read();
@@ -699,7 +701,6 @@ export const IndexAdvisorTab: React.FC = () => {
         partitionKey: containerDef.partitionKey,
         indexingPolicy: updatedPolicy,
       });
-
       useIndexingPolicyStore.getState().setIndexingPolicyOnly(updatedPolicy);
       const selectedIndexSet = new Set(selectedIndexes.map(s => s.index));
       const updatedNotIncluded: typeof notIncluded = [];
@@ -720,6 +721,8 @@ export const IndexAdvisorTab: React.FC = () => {
       setUpdateMessageShown(true);
     } catch (err) {
       console.error("Failed to update indexing policy:", err);
+    } finally {
+      setIsUpdating(false);
     }
   };
   const renderImpactDots = (impact: string) => {
@@ -856,12 +859,17 @@ export const IndexAdvisorTab: React.FC = () => {
       </Table>
       {selectedIndexes.length > 0 && (
         <div className={style.indexAdvisorButtonBar}>
-          <button
-            onClick={handleUpdatePolicy}
-            className={style.indexAdvisorButton}
-          >
-            Update Indexing Policy with selected index(es)
-          </button>
+          {isUpdating ? (
+            <div className={style.indexAdvisorButtonSpinner}>
+              <Spinner size="tiny" /> </div>
+          ) : (
+            <button
+              onClick={handleUpdatePolicy}
+              className={style.indexAdvisorButton}
+            >
+              Update Indexing Policy with selected index(es)
+            </button>
+          )}
         </div>
       )}
     </div>
