@@ -90,12 +90,14 @@ export class ContainerSampleGenerator {
       }
       const { databaseAccount: account } = userContext;
       const databaseId = collection.databaseId;
+      const useRbac: boolean = userContext.features.enableAadDataPlane || userContext.dataPlaneRbacEnabled;
+
       const gremlinClient = new GremlinClient();
       gremlinClient.initialize({
         endpoint: `wss://${GraphTab.getGremlinEndpoint(account)}`,
         databaseId: databaseId,
         collectionId: collection.id(),
-        masterKey: userContext.masterKey || "",
+        password: useRbac ? userContext.aadToken : userContext.masterKey,
         maxResultSize: 100,
       });
 

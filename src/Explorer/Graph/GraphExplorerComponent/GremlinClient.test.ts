@@ -8,8 +8,8 @@ describe("Gremlin Client", () => {
     endpoint: null,
     collectionId: null,
     databaseId: null,
-    masterKey: null,
     maxResultSize: 10000,
+    password: null,
   };
 
   it("should use databaseId, collectionId and masterKey to authenticate", () => {
@@ -22,8 +22,8 @@ describe("Gremlin Client", () => {
       endpoint: null,
       collectionId,
       databaseId,
-      masterKey,
       maxResultSize: 0,
+      password: "",
     });
 
     // User must includes these values

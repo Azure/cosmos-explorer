@@ -473,15 +473,15 @@ export default class Collection implements ViewModels.Collection {
         tabTitle: title,
       });
 
+      const useRbac: boolean = userContext.features.enableAadDataPlane || userContext.dataPlaneRbacEnabled;
       graphTab = new GraphTab({
         account: userContext.databaseAccount,
         tabKind: ViewModels.CollectionTabKind.Graph,
         node: this,
         title: title,
         tabPath: "",
-
+        password: useRbac ? userContext.aadToken : userContext.masterKey,
         collection: this,
-        masterKey: userContext.masterKey || "",
         collectionPartitionKeyProperty: this.partitionKeyProperties?.[0],
         collectionId: this.id(),
         databaseId: this.databaseId,
@@ -730,6 +730,8 @@ export default class Collection implements ViewModels.Collection {
       tabTitle: title,
     });
 
+    const useRbac: boolean = userContext.features.enableAadDataPlane || userContext.dataPlaneRbacEnabled;
+
     const graphTab: GraphTab = new GraphTab({
       account: userContext.databaseAccount,
       tabKind: ViewModels.CollectionTabKind.Graph,
@@ -737,7 +739,7 @@ export default class Collection implements ViewModels.Collection {
       title: title,
       tabPath: "",
       collection: this,
-      masterKey: userContext.masterKey || "",
+      password: useRbac ? userContext.aadToken : userContext.masterKey,
       collectionPartitionKeyProperty: this.partitionKeyProperties?.[0],
       collectionId: this.id(),
       databaseId: this.databaseId,
