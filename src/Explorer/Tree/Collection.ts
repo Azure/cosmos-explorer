@@ -8,6 +8,7 @@ import {
 import { useNotebook } from "Explorer/Notebook/useNotebook";
 import { DocumentsTabV2 } from "Explorer/Tabs/DocumentsTabV2/DocumentsTabV2";
 import { isFabricMirrored } from "Platform/Fabric/FabricUtil";
+import { useDataplaneRbacAuthorization } from "Utils/AuthorizationUtils";
 import * as ko from "knockout";
 import * as _ from "underscore";
 import * as Constants from "../../Common/Constants";
@@ -473,14 +474,13 @@ export default class Collection implements ViewModels.Collection {
         tabTitle: title,
       });
 
-      const useRbac: boolean = userContext.features.enableAadDataPlane || userContext.dataPlaneRbacEnabled;
       graphTab = new GraphTab({
         account: userContext.databaseAccount,
         tabKind: ViewModels.CollectionTabKind.Graph,
         node: this,
         title: title,
         tabPath: "",
-        password: useRbac ? userContext.aadToken : userContext.masterKey,
+        password: useDataplaneRbacAuthorization(userContext) ? userContext.aadToken : userContext.masterKey,
         collection: this,
         collectionPartitionKeyProperty: this.partitionKeyProperties?.[0],
         collectionId: this.id(),
@@ -730,8 +730,6 @@ export default class Collection implements ViewModels.Collection {
       tabTitle: title,
     });
 
-    const useRbac: boolean = userContext.features.enableAadDataPlane || userContext.dataPlaneRbacEnabled;
-
     const graphTab: GraphTab = new GraphTab({
       account: userContext.databaseAccount,
       tabKind: ViewModels.CollectionTabKind.Graph,
@@ -739,7 +737,7 @@ export default class Collection implements ViewModels.Collection {
       title: title,
       tabPath: "",
       collection: this,
-      password: useRbac ? userContext.aadToken : userContext.masterKey,
+      password: useDataplaneRbacAuthorization(userContext) ? userContext.aadToken : userContext.masterKey,
       collectionPartitionKeyProperty: this.partitionKeyProperties?.[0],
       collectionId: this.id(),
       databaseId: this.databaseId,

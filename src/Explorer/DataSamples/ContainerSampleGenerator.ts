@@ -1,3 +1,4 @@
+import { useDataplaneRbacAuthorization } from "Utils/AuthorizationUtils";
 import { createCollection } from "../../Common/dataAccess/createCollection";
 import { createDocument } from "../../Common/dataAccess/createDocument";
 import { createDocument as createMongoDocument } from "../../Common/MongoProxyClient";
@@ -90,14 +91,13 @@ export class ContainerSampleGenerator {
       }
       const { databaseAccount: account } = userContext;
       const databaseId = collection.databaseId;
-      const useRbac: boolean = userContext.features.enableAadDataPlane || userContext.dataPlaneRbacEnabled;
 
       const gremlinClient = new GremlinClient();
       gremlinClient.initialize({
         endpoint: `wss://${GraphTab.getGremlinEndpoint(account)}`,
         databaseId: databaseId,
         collectionId: collection.id(),
-        password: useRbac ? userContext.aadToken : userContext.masterKey,
+        password: useDataplaneRbacAuthorization(userContext) ? userContext.aadToken : userContext.masterKey,
         maxResultSize: 100,
       });
 

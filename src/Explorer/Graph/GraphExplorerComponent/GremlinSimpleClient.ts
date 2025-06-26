@@ -267,7 +267,6 @@ export class GremlinSimpleClient {
   }
 
   public buildChallengeResponse(request: GremlinRequestMessage): GremlinRequestMessage {
-    console.log(`DEBUG: password=${this.params.password}`);
     var args = {
       SASL: Buffer.from(`\0${this.params.user}\0${this.params.password}`).toString("base64"),
     };
