@@ -1,6 +1,6 @@
 import { AuthType } from "../AuthType";
 import * as Constants from "../Common/Constants";
-import { updateUserContext } from "../UserContext";
+import { ApiType, updateUserContext, userContext } from "../UserContext";
 import * as AuthorizationUtils from "./AuthorizationUtils";
 jest.mock("../Explorer/Explorer");
 
@@ -54,4 +54,82 @@ describe("AuthorizationUtils", () => {
       ).toBeDefined();
     });
   });
+
+  describe("useDataplaneRbacAuthorization()", () => {
+    it("should return true if enableAadDataPlane feature flag is set", () => {
+      setAadDataPlane(true);
+      expect(AuthorizationUtils.useDataplaneRbacAuthorization(userContext)).toBe(true);
+    });
+
+    it("should return true if dataPlaneRbacEnabled is set to true and API supports RBAC", () => {
+      setAadDataPlane(false);
+      ["SQL", "Tables"].forEach((type) => {
+        updateUserContext({
+          dataPlaneRbacEnabled: true,
+          apiType: type as ApiType,
+        });
+        expect(AuthorizationUtils.useDataplaneRbacAuthorization(userContext)).toBe(true);
+      });
+    });
+
+    it("should return false if dataPlaneRbacEnabled is set to true and API does not support RBAC", () => {
+      setAadDataPlane(false);
+      ["Mongo", "Gremlin", "Cassandra", "Postgres", "VCoreMongo"].forEach((type) => {
+        updateUserContext({
+          dataPlaneRbacEnabled: true,
+          apiType: type as ApiType,
+        });
+        expect(AuthorizationUtils.useDataplaneRbacAuthorization(userContext)).toBe(false);
+      });
+    });
+
+    it("should return false if dataPlaneRbacEnabled is set to false", () => {
+      setAadDataPlane(false);
+      updateUserContext({
+        dataPlaneRbacEnabled: false,
+      });
+      expect(AuthorizationUtils.useDataplaneRbacAuthorization(userContext)).toBe(false);
+    });
+  });
 });
+
+function setAadDataPlane(enabled: boolean) {
+  updateUserContext({
+    features: {
+      enableAadDataPlane: enabled,
+      canExceedMaximumValue: false,
+      cosmosdb: false,
+      enableChangeFeedPolicy: false,
+      enableFixedCollectionWithSharedThroughput: false,
+      enableKOPanel: false,
+      enableNotebooks: false,
+      enableReactPane: false,
+      enableRightPanelV2: false,
+      enableSchema: false,
+      enableSDKoperations: false,
+      enableSpark: false,
+      enableTtl: false,
+      executeSproc: false,
+      enableResourceGraph: false,
+      enableKoResourceTree: false,
+      enableThroughputBuckets: false,
+      hostedDataExplorer: false,
+      sandboxNotebookOutputs: false,
+      showMinRUSurvey: false,
+      ttl90Days: false,
+      enableThroughputCap: false,
+      enableHierarchicalKeys: false,
+      enableCopilot: false,
+      disableCopilotPhoenixGateaway: false,
+      enableCopilotFullSchema: false,
+      copilotChatFixedMonacoEditorHeight: false,
+      enablePriorityBasedExecution: false,
+      disableConnectionStringLogin: false,
+      enableCloudShell: false,
+      autoscaleDefault: false,
+      partitionKeyDefault: false,
+      partitionKeyDefault2: false,
+      notebooksDownBanner: false,
+    },
+  });
+}
