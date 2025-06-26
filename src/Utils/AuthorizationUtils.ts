@@ -1,5 +1,6 @@
 import * as msal from "@azure/msal-browser";
 import { Action, ActionModifiers } from "Shared/Telemetry/TelemetryConstants";
+import { isDataplaneRbacSupported } from "Utils/APITypeUtils";
 import { AuthType } from "../AuthType";
 import * as Constants from "../Common/Constants";
 import * as Logger from "../Common/Logger";
@@ -7,7 +8,7 @@ import { configContext } from "../ConfigContext";
 import { DatabaseAccount } from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
 import { trace, traceFailure } from "../Shared/Telemetry/TelemetryProcessor";
-import { userContext } from "../UserContext";
+import { UserContext, userContext } from "../UserContext";
 
 export function getAuthorizationHeader(): ViewModels.AuthorizationTokenHeaderMetadata {
   if (userContext.authType === AuthType.EncryptedToken) {
@@ -178,4 +179,11 @@ export async function acquireTokenWithMsal(
       throw silentError;
     }
   }
+}
+
+export function useDataplaneRbacAuthorization(userContext: UserContext): boolean {
+  return (
+    userContext.features.enableAadDataPlane ||
+    (userContext.dataPlaneRbacEnabled && isDataplaneRbacSupported(userContext.apiType))
+  );
 }
