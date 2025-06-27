@@ -5,6 +5,47 @@ import * as AuthorizationUtils from "./AuthorizationUtils";
 jest.mock("../Explorer/Explorer");
 
 describe("AuthorizationUtils", () => {
+  const setAadDataPlane = (enabled: boolean) => {
+    updateUserContext({
+      features: {
+        enableAadDataPlane: enabled,
+        canExceedMaximumValue: false,
+        cosmosdb: false,
+        enableChangeFeedPolicy: false,
+        enableFixedCollectionWithSharedThroughput: false,
+        enableKOPanel: false,
+        enableNotebooks: false,
+        enableReactPane: false,
+        enableRightPanelV2: false,
+        enableSchema: false,
+        enableSDKoperations: false,
+        enableSpark: false,
+        enableTtl: false,
+        executeSproc: false,
+        enableResourceGraph: false,
+        enableKoResourceTree: false,
+        enableThroughputBuckets: false,
+        hostedDataExplorer: false,
+        sandboxNotebookOutputs: false,
+        showMinRUSurvey: false,
+        ttl90Days: false,
+        enableThroughputCap: false,
+        enableHierarchicalKeys: false,
+        enableCopilot: false,
+        disableCopilotPhoenixGateaway: false,
+        enableCopilotFullSchema: false,
+        copilotChatFixedMonacoEditorHeight: false,
+        enablePriorityBasedExecution: false,
+        disableConnectionStringLogin: false,
+        enableCloudShell: false,
+        autoscaleDefault: false,
+        partitionKeyDefault: false,
+        partitionKeyDefault2: false,
+        notebooksDownBanner: false,
+      },
+    });
+  };
+
   describe("getAuthorizationHeader()", () => {
     it("should return authorization header if authentication type is AAD", () => {
       updateUserContext({
@@ -92,44 +133,3 @@ describe("AuthorizationUtils", () => {
     });
   });
 });
-
-function setAadDataPlane(enabled: boolean) {
-  updateUserContext({
-    features: {
-      enableAadDataPlane: enabled,
-      canExceedMaximumValue: false,
-      cosmosdb: false,
-      enableChangeFeedPolicy: false,
-      enableFixedCollectionWithSharedThroughput: false,
-      enableKOPanel: false,
-      enableNotebooks: false,
-      enableReactPane: false,
-      enableRightPanelV2: false,
-      enableSchema: false,
-      enableSDKoperations: false,
-      enableSpark: false,
-      enableTtl: false,
-      executeSproc: false,
-      enableResourceGraph: false,
-      enableKoResourceTree: false,
-      enableThroughputBuckets: false,
-      hostedDataExplorer: false,
-      sandboxNotebookOutputs: false,
-      showMinRUSurvey: false,
-      ttl90Days: false,
-      enableThroughputCap: false,
-      enableHierarchicalKeys: false,
-      enableCopilot: false,
-      disableCopilotPhoenixGateaway: false,
-      enableCopilotFullSchema: false,
-      copilotChatFixedMonacoEditorHeight: false,
-      enablePriorityBasedExecution: false,
-      disableConnectionStringLogin: false,
-      enableCloudShell: false,
-      autoscaleDefault: false,
-      partitionKeyDefault: false,
-      partitionKeyDefault2: false,
-      notebooksDownBanner: false,
-    },
-  });
-}
