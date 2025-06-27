@@ -8,6 +8,7 @@ import {
 import { useNotebook } from "Explorer/Notebook/useNotebook";
 import { DocumentsTabV2 } from "Explorer/Tabs/DocumentsTabV2/DocumentsTabV2";
 import { isFabricMirrored } from "Platform/Fabric/FabricUtil";
+import { useDataplaneRbacAuthorization } from "Utils/AuthorizationUtils";
 import * as ko from "knockout";
 import * as _ from "underscore";
 import * as Constants from "../../Common/Constants";
@@ -479,9 +480,8 @@ export default class Collection implements ViewModels.Collection {
         node: this,
         title: title,
         tabPath: "",
-
+        password: useDataplaneRbacAuthorization(userContext) ? userContext.aadToken : userContext.masterKey || "",
         collection: this,
-        masterKey: userContext.masterKey || "",
         collectionPartitionKeyProperty: this.partitionKeyProperties?.[0],
         collectionId: this.id(),
         databaseId: this.databaseId,
@@ -737,7 +737,7 @@ export default class Collection implements ViewModels.Collection {
       title: title,
       tabPath: "",
       collection: this,
-      masterKey: userContext.masterKey || "",
+      password: useDataplaneRbacAuthorization(userContext) ? userContext.aadToken : userContext.masterKey || "",
       collectionPartitionKeyProperty: this.partitionKeyProperties?.[0],
       collectionId: this.id(),
       databaseId: this.databaseId,

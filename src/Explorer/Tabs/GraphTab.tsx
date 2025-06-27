@@ -45,7 +45,7 @@ export interface IGraphConfig {
 
 interface GraphTabOptions extends ViewModels.TabOptions {
   account: DatabaseAccount;
-  masterKey: string;
+  password: string;
   collectionId: string;
   databaseId: string;
   collectionPartitionKeyProperty: string;
@@ -107,7 +107,7 @@ export default class GraphTab extends TabsBase {
       graphBackendEndpoint: GraphTab.getGremlinEndpoint(options.account),
       databaseId: options.databaseId,
       collectionId: options.collectionId,
-      masterKey: options.masterKey,
+      password: options.password,
       onLoadStartKey: options.onLoadStartKey,
       onLoadStartKeyChange: (onLoadStartKey: number): void => {
         if (onLoadStartKey === undefined) {

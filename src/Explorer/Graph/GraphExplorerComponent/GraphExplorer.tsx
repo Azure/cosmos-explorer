@@ -59,7 +59,7 @@ export interface GraphExplorerProps {
   graphBackendEndpoint: string;
   databaseId: string;
   collectionId: string;
-  masterKey: string;
+  password: string;
 
   onLoadStartKey: number;
   onLoadStartKeyChange: (newKey: number) => void;
@@ -1300,7 +1300,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
       endpoint: `wss://${this.props.graphBackendEndpoint}`,
       databaseId: this.props.databaseId,
       collectionId: this.props.collectionId,
-      masterKey: this.props.masterKey,
+      password: this.props.password,
       maxResultSize: GraphExplorer.MAX_RESULT_SIZE,
     });
   }
