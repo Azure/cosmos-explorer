@@ -1,5 +1,8 @@
+import type { CompositePath, IndexingPolicy } from "@azure/cosmos";
+import { FontIcon } from "@fluentui/react";
 import {
   Button,
+  Checkbox,
   DataGrid,
   DataGridBody,
   DataGridCell,
@@ -8,28 +11,39 @@ import {
   DataGridRow,
   SelectTabData,
   SelectTabEvent,
+  Spinner,
   Tab,
   TabList,
+  Table,
+  TableBody,
+  TableCell,
   TableColumnDefinition,
-  createTableColumn,
+  TableHeader,
+  TableRow,
+  createTableColumn
 } from "@fluentui/react-components";
-import { ArrowDownloadRegular, CopyRegular } from "@fluentui/react-icons";
+import { ArrowDownloadRegular, ChevronDown20Regular, ChevronRight20Regular, CircleFilled, CopyRegular } from "@fluentui/react-icons";
+import copy from "clipboard-copy";
 import { HttpHeaders } from "Common/Constants";
 import MongoUtility from "Common/MongoUtility";
 import { QueryMetrics } from "Contracts/DataModels";
 import { EditorReact } from "Explorer/Controls/Editor/EditorReact";
-import { IDocument } from "Explorer/Tabs/QueryTab/QueryTabComponent";
+import { IDocument, useQueryMetadataStore } from "Explorer/Tabs/QueryTab/QueryTabComponent";
 import { useQueryTabStyles } from "Explorer/Tabs/QueryTab/Styles";
+import React, { useCallback, useEffect, useState } from "react";
 import { userContext } from "UserContext";
-import copy from "clipboard-copy";
-import React, { useCallback, useState } from "react";
+import { logConsoleProgress } from "Utils/NotificationConsoleUtils";
+import create from "zustand";
+import { client } from "../../../Common/CosmosClient";
+import { handleError } from "../../../Common/ErrorHandlingUtils";
+import { useIndexAdvisorStyles } from "./Indexadvisor";
 import { ResultsViewProps } from "./QueryResultSection";
 
 enum ResultsTabs {
   Results = "results",
   QueryStats = "queryStats",
+  IndexAdvisor = "indexadv",
 }
-
 const ResultsTab: React.FC<ResultsViewProps> = ({ queryResults, isMongoDB, executeQueryDocumentsPage }) => {
   const styles = useQueryTabStyles();
   /* eslint-disable react/prop-types */
@@ -380,9 +394,8 @@ const QueryStatsTab: React.FC<Pick<ResultsViewProps, "queryResults">> = ({ query
         },
         {
           metric: "User defined function execution time",
-          value: `${
-            aggregatedQueryMetrics.runtimeExecutionTimes?.userDefinedFunctionExecutionTime?.toString() || 0
-          } ms`,
+          value: `${aggregatedQueryMetrics.runtimeExecutionTimes?.userDefinedFunctionExecutionTime?.toString() || 0
+            } ms`,
           toolTip: "Total time spent executing user-defined functions",
         },
         {
@@ -523,6 +536,345 @@ const QueryStatsTab: React.FC<Pick<ResultsViewProps, "queryResults">> = ({ query
   );
 };
 
+interface IIndexMetric {
+  index: string;
+  impact: string;
+  section: "Included" | "Not Included" | "Header";
+  path?: string;
+  composite?: { path: string; order: string }[];
+}
+export const IndexAdvisorTab: React.FC = () => {
+  const style = useIndexAdvisorStyles();
+  const { userQuery, databaseId, containerId } = useQueryMetadataStore();
+  const [loading, setLoading] = useState(true);
+  const [indexMetrics, setIndexMetrics] = useState<string | null>(null);
+  const [showIncluded, setShowIncluded] = useState(true);
+  const [showNotIncluded, setShowNotIncluded] = useState(true);
+  const [selectedIndexes, setSelectedIndexes] = useState<IIndexMetric[]>([]);
+  const [selectAll, setSelectAll] = useState(false);
+  const [updateMessageShown, setUpdateMessageShown] = useState(false);
+  const [included, setIncludedIndexes] = useState<IIndexMetric[]>([]);
+  const [notIncluded, setNotIncludedIndexes] = useState<IIndexMetric[]>([]);
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  useEffect(() => {
+    async function fetchIndexMetrics() {
+      const clearMessage = logConsoleProgress(`Querying items with IndexMetrics in container ${containerId}`);
+      try {
+        const querySpec = {
+          query: userQuery || "SELECT TOP 10 c.id FROM c WHERE c.Item = 'value1234' ",
+        };
+        const sdkResponse = await client()
+          .database(databaseId)
+          .container(containerId)
+          .items.query(querySpec, {
+            populateIndexMetrics: true,
+          })
+          .fetchAll();
+        setIndexMetrics(sdkResponse.indexMetrics);
+      } catch (error) {
+        handleError(error, "queryItemsWithIndexMetrics", `Error querying items from ${containerId}`);
+      } finally {
+        clearMessage();
+        setLoading(false);
+      }
+    }
+    if (userQuery && databaseId && containerId) {
+      fetchIndexMetrics();
+    }
+  }, [userQuery, databaseId, containerId]);
+
+  useEffect(() => {
+    if (!indexMetrics) { return };
+
+    const included: IIndexMetric[] = [];
+    const notIncluded: IIndexMetric[] = [];
+    const lines = indexMetrics.split("\n").map((line: string) => line.trim()).filter(Boolean);
+    let currentSection = "";
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      if (line.startsWith("Utilized Single Indexes") || line.startsWith("Utilized Composite Indexes")) {
+        currentSection = "included";
+      } else if (line.startsWith("Potential Single Indexes") || line.startsWith("Potential Composite Indexes")) {
+        currentSection = "notIncluded";
+      } else if (line.startsWith("Index Spec:")) {
+        const index = line.replace("Index Spec:", "").trim();
+        const impactLine = lines[i + 1];
+        const impact = impactLine?.includes("Index Impact Score:") ? impactLine.split(":")[1].trim() : "Unknown";
+
+        const isComposite = index.includes(",");
+        const indexObj: any = { index, impact };
+        if (isComposite) {
+          indexObj.composite = index.split(",").map((part: string) => {
+            const [path, order] = part.trim().split(/\s+/);
+            return {
+              path: path.trim(),
+              order: order?.toLowerCase() === "desc" ? "descending" : "ascending",
+            };
+          });
+        } else {
+          let path = "/unknown/*";
+          const pathRegex = /\/[^\/\s*?]+(?:\/[^\/\s*?]+)*(\/\*|\?)/;
+          const match = index.match(pathRegex);
+          if (match) {
+            path = match[0];
+          } else {
+            const simplePathRegex = /\/[^\/\s]+/;
+            const simpleMatch = index.match(simplePathRegex);
+            if (simpleMatch) {
+              path = simpleMatch[0] + "/*";
+            }
+          }
+          indexObj.path = path;
+        }
+
+        if (currentSection === "included") {
+          included.push(indexObj);
+        } else if (currentSection === "notIncluded") {
+          notIncluded.push(indexObj);
+        }
+      }
+    }
+    setIncludedIndexes(included);
+    setNotIncludedIndexes(notIncluded);
+  }, [indexMetrics]);
+
+  useEffect(() => {
+    const allSelected = notIncluded.length > 0 && notIncluded.every((item) => selectedIndexes.some((s) => s.index === item.index));
+    setSelectAll(allSelected);
+  }, [selectedIndexes, notIncluded]);
+
+  const handleCheckboxChange = (indexObj: IIndexMetric, checked: boolean) => {
+    if (checked) {
+      setSelectedIndexes((prev) => [...prev, indexObj]);
+    } else {
+      setSelectedIndexes((prev) =>
+        prev.filter((item) => item.index !== indexObj.index)
+      );
+    }
+  };
+
+  const handleSelectAll = (checked: boolean) => {
+    setSelectAll(checked);
+    setSelectedIndexes(checked ? notIncluded : []);
+  };
+
+  const handleUpdatePolicy = async () => {
+    setIsUpdating(true);
+    try {
+      const containerRef = client().database(databaseId).container(containerId);
+      const { resource: containerDef } = await containerRef.read();
+
+      const newIncludedPaths = selectedIndexes
+        .filter(index => !index.composite)
+        .map(index => {
+          return {
+            path: index.path,
+          };
+        });
+
+      const newCompositeIndexes: CompositePath[][] = selectedIndexes
+        .filter(index => Array.isArray(index.composite))
+        .map(index =>
+          (index.composite as { path: string; order: string }[]).map(comp => ({
+            path: comp.path,
+            order: comp.order === "descending" ? "descending" : "ascending",
+          })) as CompositePath[]
+        );
+
+      const updatedPolicy: IndexingPolicy = {
+        ...containerDef.indexingPolicy,
+        includedPaths: [
+          ...(containerDef.indexingPolicy?.includedPaths || []),
+          ...newIncludedPaths,
+        ],
+        compositeIndexes: [
+          ...(containerDef.indexingPolicy?.compositeIndexes || []),
+          ...newCompositeIndexes,
+        ],
+        automatic: containerDef.indexingPolicy?.automatic ?? true,
+        indexingMode: containerDef.indexingPolicy?.indexingMode ?? "consistent",
+        excludedPaths: containerDef.indexingPolicy?.excludedPaths ?? [],
+      };
+      await containerRef.replace({
+        id: containerId,
+        partitionKey: containerDef.partitionKey,
+        indexingPolicy: updatedPolicy,
+      });
+      useIndexingPolicyStore.getState().setIndexingPolicyOnly(updatedPolicy);
+      const selectedIndexSet = new Set(selectedIndexes.map(s => s.index));
+      const updatedNotIncluded: typeof notIncluded = [];
+      const newlyIncluded: typeof included = [];
+      for (const item of notIncluded) {
+        if (selectedIndexSet.has(item.index)) {
+          newlyIncluded.push(item);
+        } else {
+          updatedNotIncluded.push(item);
+        }
+      }
+      const newIncluded = [...included, ...newlyIncluded];
+      const newNotIncluded = updatedNotIncluded;
+      setIncludedIndexes(newIncluded);
+      setNotIncludedIndexes(newNotIncluded);
+      setSelectedIndexes([]);
+      setSelectAll(false);
+      setUpdateMessageShown(true);
+    } catch (err) {
+      console.error("Failed to update indexing policy:", err);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+  const renderImpactDots = (impact: string) => {
+    let count = 0;
+    if (impact === "High") count = 3;
+    else if (impact === "Medium") count = 2;
+    else if (impact === "Low") count = 1;
+    return (
+      <div className={style.indexAdvisorImpactDots}>
+        {Array.from({ length: count }).map((_, i) => (
+          <CircleFilled
+            key={i}
+            className={style.indexAdvisorImpactDot}
+          />
+        ))}
+      </div>
+    );
+  };
+
+  const renderRow = (item: IIndexMetric, index: number) => {
+    const isHeader = item.section === "Header";
+    const isNotIncluded = item.section === "Not Included";
+
+    return (
+      <TableRow key={index}>
+        <TableCell colSpan={2}>
+          <div className={style.indexAdvisorGrid}>
+            {isNotIncluded ? (
+              <Checkbox
+                checked={selectedIndexes.some((selected) => selected.index === item.index)}
+                onChange={(_, data) => handleCheckboxChange(item, data.checked === true)} />
+            ) : isHeader && item.index === "Not Included in Current Policy" && notIncluded.length > 0 ? (
+              <Checkbox
+                checked={selectAll}
+                onChange={(_, data) => handleSelectAll(data.checked === true)} />
+            ) : (
+              <div className={style.indexAdvisorCheckboxSpacer}></div>
+            )}
+            {isHeader ? (
+              <span
+                style={{ cursor: "pointer" }}
+                onClick={() => {
+                  if (item.index === "Included in Current Policy") {
+                    setShowIncluded(!showIncluded);
+                  } else if (item.index === "Not Included in Current Policy") {
+                    setShowNotIncluded(!showNotIncluded);
+                  }
+                }}>
+                {item.index === "Included in Current Policy"
+                  ? showIncluded ? <ChevronDown20Regular /> : <ChevronRight20Regular />
+                  : showNotIncluded ? <ChevronDown20Regular /> : <ChevronRight20Regular />
+                }
+              </span>
+            ) : (
+              <div className={style.indexAdvisorChevronSpacer}></div>
+            )}
+            <div className={isHeader ? style.indexAdvisorRowBold : style.indexAdvisorRowNormal}>
+              {item.index}
+            </div>
+            <div className={isHeader ? style.indexAdvisorRowImpactHeader : style.indexAdvisorRowImpact}>
+              {!isHeader && item.impact}
+            </div>
+            <div>
+              {!isHeader && renderImpactDots(item.impact)}
+            </div>
+          </div>
+        </TableCell>
+      </TableRow>
+    );
+  };
+  const indexMetricItems = React.useMemo(() => {
+    const items: IIndexMetric[] = [];
+    items.push({ index: "Not Included in Current Policy", impact: "", section: "Header" });
+    if (showNotIncluded) {
+      notIncluded.forEach((item) =>
+        items.push({ ...item, section: "Not Included" })
+      );
+    }
+    items.push({ index: "Included in Current Policy", impact: "", section: "Header" });
+    if (showIncluded) {
+      included.forEach((item) =>
+        items.push({ ...item, section: "Included" })
+      );
+    }
+    return items;
+  }, [included, notIncluded, showIncluded, showNotIncluded]);
+
+  if (loading) {
+    return <div>
+      <Spinner
+        size="small"
+        style={{
+          '--spinner-size': '16px',
+          '--spinner-thickness': '2px',
+          '--spinner-color': '#0078D4',
+        } as React.CSSProperties} />
+    </div>;
+  }
+
+  return (
+    <div>
+      <div className={style.indexAdvisorMessage}>
+        {updateMessageShown ? (
+          <>
+            <span
+              className={style.indexAdvisorSuccessIcon}>
+              <FontIcon iconName="CheckMark" style={{ color: "white", fontSize: 12 }} />
+            </span>
+            <span>
+              Your indexing policy has been updated with the new included paths. You may review the changes in Scale & Settings.
+            </span>
+          </>
+        ) : (
+          "Here is an analysis on the indexes utilized for executing the query. Based on the analysis, Cosmos DB recommends adding the selected indexes to your indexing policy to optimize the performance of this particular query."
+        )}
+      </div>
+      <div className={style.indexAdvisorTitle}>Indexes analysis</div>
+      <Table className={style.indexAdvisorTable}>
+        <TableHeader>
+          <TableRow>
+            <TableCell colSpan={2}>
+              <div className={style.indexAdvisorGrid}>
+                <div className={style.indexAdvisorCheckboxSpacer}></div>
+                <div className={style.indexAdvisorChevronSpacer}></div>
+                <div>Index</div>
+                <div><span style={{ whiteSpace: "nowrap" }}>Estimated Impact</span></div>
+              </div>
+            </TableCell>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {indexMetricItems.map(renderRow)}
+        </TableBody>
+      </Table>
+      {selectedIndexes.length > 0 && (
+        <div className={style.indexAdvisorButtonBar}>
+          {isUpdating ? (
+            <div className={style.indexAdvisorButtonSpinner}>
+              <Spinner size="tiny" /> </div>
+          ) : (
+            <button
+              onClick={handleUpdatePolicy}
+              className={style.indexAdvisorButton}
+            >
+              Update Indexing Policy with selected index(es)
+            </button>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
 export const ResultsView: React.FC<ResultsViewProps> = ({ isMongoDB, queryResults, executeQueryDocumentsPage }) => {
   const styles = useQueryTabStyles();
   const [activeTab, setActiveTab] = useState<ResultsTabs>(ResultsTabs.Results);
@@ -530,7 +882,6 @@ export const ResultsView: React.FC<ResultsViewProps> = ({ isMongoDB, queryResult
   const onTabSelect = useCallback((event: SelectTabEvent, data: SelectTabData) => {
     setActiveTab(data.value as ResultsTabs);
   }, []);
-
   return (
     <div data-test="QueryTab/ResultsPane/ResultsView" className={styles.queryResultsTabPanel}>
       <TabList selectedValue={activeTab} onTabSelect={onTabSelect}>
@@ -548,6 +899,13 @@ export const ResultsView: React.FC<ResultsViewProps> = ({ isMongoDB, queryResult
         >
           Query Stats
         </Tab>
+        <Tab
+          data-test="QueryTab/ResultsPane/ResultsView/IndexAdvisorTab"
+          id={ResultsTabs.IndexAdvisor}
+          value={ResultsTabs.IndexAdvisor}
+        >
+          Index Advisor
+        </Tab>
       </TabList>
       <div className={styles.queryResultsTabContentContainer}>
         {activeTab === ResultsTabs.Results && (
@@ -558,7 +916,20 @@ export const ResultsView: React.FC<ResultsViewProps> = ({ isMongoDB, queryResult
           />
         )}
         {activeTab === ResultsTabs.QueryStats && <QueryStatsTab queryResults={queryResults} />}
+        {activeTab === ResultsTabs.IndexAdvisor && <IndexAdvisorTab />}
       </div>
     </div>
   );
 };
+export interface IndexingPolicyStore {
+  indexingPolicy: IndexingPolicy | null;
+  setIndexingPolicyOnly: (indexingPolicy: IndexingPolicy) => void;
+}
+
+export const useIndexingPolicyStore = create<IndexingPolicyStore>((set) => ({
+  indexingPolicy: null,
+  setIndexingPolicyOnly: (indexingPolicy) =>
+    set(() => ({ indexingPolicy: { ...indexingPolicy } })),
+}));
+
+
