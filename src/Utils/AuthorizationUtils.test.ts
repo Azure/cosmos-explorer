@@ -63,7 +63,7 @@ describe("AuthorizationUtils", () => {
 
     it("should return true if dataPlaneRbacEnabled is set to true and API supports RBAC", () => {
       setAadDataPlane(false);
-      ["SQL", "Tables"].forEach((type) => {
+      ["SQL", "Tables", "Gremlin"].forEach((type) => {
         updateUserContext({
           dataPlaneRbacEnabled: true,
           apiType: type as ApiType,
@@ -74,7 +74,7 @@ describe("AuthorizationUtils", () => {
 
     it("should return false if dataPlaneRbacEnabled is set to true and API does not support RBAC", () => {
       setAadDataPlane(false);
-      ["Mongo", "Gremlin", "Cassandra", "Postgres", "VCoreMongo"].forEach((type) => {
+      ["Mongo", "Cassandra", "Postgres", "VCoreMongo"].forEach((type) => {
         updateUserContext({
           dataPlaneRbacEnabled: true,
           apiType: type as ApiType,

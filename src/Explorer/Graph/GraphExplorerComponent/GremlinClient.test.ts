@@ -12,10 +12,10 @@ describe("Gremlin Client", () => {
     password: null,
   };
 
-  it("should use databaseId, collectionId and masterKey to authenticate", () => {
+  it("should use databaseId, collectionId and password to authenticate", () => {
     const collectionId = "collectionId";
     const databaseId = "databaseId";
-    const masterKey = "masterKey";
+    const testPassword = "password";
     const gremlinClient = new GremlinClient();
 
     gremlinClient.initialize({
@@ -23,13 +23,13 @@ describe("Gremlin Client", () => {
       collectionId,
       databaseId,
       maxResultSize: 0,
-      password: "",
+      password: testPassword,
     });
 
     // User must includes these values
     expect(gremlinClient.client.params.user.indexOf(collectionId)).not.toBe(-1);
     expect(gremlinClient.client.params.user.indexOf(databaseId)).not.toBe(-1);
-    expect(gremlinClient.client.params.password).toEqual(masterKey);
+    expect(gremlinClient.client.params.password).toEqual(testPassword);
   });
 
   it("should aggregate RU charges across multiple responses", (done) => {
