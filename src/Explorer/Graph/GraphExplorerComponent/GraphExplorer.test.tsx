@@ -163,7 +163,7 @@ describe("GraphExplorer", () => {
       graphBackendEndpoint: "graphBackendEndpoint",
       databaseId: "databaseId",
       collectionId: "collectionId",
-      password: "",
+      password: "password",
       onLoadStartKey: 0,
       onLoadStartKeyChange: (newKey: number): void => {},
       resourceId: "resourceId",

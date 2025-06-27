@@ -97,7 +97,7 @@ export class ContainerSampleGenerator {
         endpoint: `wss://${GraphTab.getGremlinEndpoint(account)}`,
         databaseId: databaseId,
         collectionId: collection.id(),
-        password: useDataplaneRbacAuthorization(userContext) ? userContext.aadToken : userContext.masterKey,
+        password: useDataplaneRbacAuthorization(userContext) ? userContext.aadToken : userContext.masterKey || "",
         maxResultSize: 100,
       });
 
