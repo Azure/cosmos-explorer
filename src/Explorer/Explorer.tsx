@@ -288,6 +288,7 @@ export default class Explorer {
     const { adminLogin: adminLoginuserName = "", connectionString = "" } = userContext.vcoreMongoConnectionParams;
     const updatedConnectionString = connectionString.replace(/<(user|username)>/i, adminLoginuserName);
     const encodedUpdatedConnectionString = encodeURIComponent(encodeURIComponent(updatedConnectionString));
+    console.log("encodedUpdatedConnectionString", encodedUpdatedConnectionString);
     const documentDbUrl = `vscode://ms-azuretools.vscode-documentdb?connectionString=${encodedUpdatedConnectionString}`;
     return documentDbUrl;
   }
