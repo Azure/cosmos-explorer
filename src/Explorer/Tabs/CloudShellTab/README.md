@@ -258,14 +258,7 @@ Key limitations:
 
 ### Data Residency
 
-Data residency requirements may not be fully satisfied when using CloudShell due to limited regional availability. CloudShell services are currently available in the following regions:
-
-| Geography | Regions |
-|-----------|---------|
-| Americas | East US, West US 2, South Central US, West Central US |
-| Europe | West Europe, North Europe |
-| Asia Pacific | Southeast Asia, Japan East, Australia East |
-| Middle East | UAE North |
+Data residency requirements may not be fully satisfied when using CloudShell due to limited regional availability. 
 
 **Note:** For up-to-date supported regions, refer to the region configuration in:
 `src/Explorer/CloudShell/Configuration/RegionConfig.ts`
