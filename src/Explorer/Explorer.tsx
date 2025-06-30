@@ -1150,7 +1150,6 @@ export default class Explorer {
         : await this.refreshAllDatabases(); // await: we rely on the databases to be loaded before restoring the tabs further in the flow
     }
     await useNotebook.getState().refreshNotebooksEnabledStateForAccount();
-
     // TODO: remove reference to isNotebookEnabled and isNotebooksEnabledForAccount
     const isNotebookEnabled =
       configContext.platform !== Platform.Fabric &&
