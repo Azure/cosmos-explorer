@@ -28,6 +28,7 @@ import { HttpHeaders } from "Common/Constants";
 import MongoUtility from "Common/MongoUtility";
 import { QueryMetrics } from "Contracts/DataModels";
 import { EditorReact } from "Explorer/Controls/Editor/EditorReact";
+import { parseIndexMetrics } from "Explorer/Tabs/QueryTab/IndexAdvisorUtils";
 import { IDocument, useQueryMetadataStore } from "Explorer/Tabs/QueryTab/QueryTabComponent";
 import { useQueryTabStyles } from "Explorer/Tabs/QueryTab/Styles";
 import React, { useCallback, useEffect, useState } from "react";
@@ -38,7 +39,6 @@ import { client } from "../../../Common/CosmosClient";
 import { handleError } from "../../../Common/ErrorHandlingUtils";
 import { useIndexAdvisorStyles } from "./Indexadvisor";
 import { ResultsViewProps } from "./QueryResultSection";
-
 enum ResultsTabs {
   Results = "results",
   QueryStats = "queryStats",
@@ -536,7 +536,7 @@ const QueryStatsTab: React.FC<Pick<ResultsViewProps, "queryResults">> = ({ query
   );
 };
 
-interface IIndexMetric {
+export interface IIndexMetric {
   index: string;
   impact: string;
   section: "Included" | "Not Included" | "Header";
@@ -556,7 +556,7 @@ export const IndexAdvisorTab: React.FC = () => {
   const [included, setIncludedIndexes] = useState<IIndexMetric[]>([]);
   const [notIncluded, setNotIncludedIndexes] = useState<IIndexMetric[]>([]);
   const [isUpdating, setIsUpdating] = useState(false);
-
+  const [justUpdatedPolicy, setJustUpdatedPolicy] = useState(false);
   useEffect(() => {
     async function fetchIndexMetrics() {
       const clearMessage = logConsoleProgress(`Querying items with IndexMetrics in container ${containerId}`);
@@ -587,56 +587,14 @@ export const IndexAdvisorTab: React.FC = () => {
   useEffect(() => {
     if (!indexMetrics) { return };
 
-    const included: IIndexMetric[] = [];
-    const notIncluded: IIndexMetric[] = [];
-    const lines = indexMetrics.split("\n").map((line: string) => line.trim()).filter(Boolean);
-    let currentSection = "";
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i];
-      if (line.startsWith("Utilized Single Indexes") || line.startsWith("Utilized Composite Indexes")) {
-        currentSection = "included";
-      } else if (line.startsWith("Potential Single Indexes") || line.startsWith("Potential Composite Indexes")) {
-        currentSection = "notIncluded";
-      } else if (line.startsWith("Index Spec:")) {
-        const index = line.replace("Index Spec:", "").trim();
-        const impactLine = lines[i + 1];
-        const impact = impactLine?.includes("Index Impact Score:") ? impactLine.split(":")[1].trim() : "Unknown";
-
-        const isComposite = index.includes(",");
-        const indexObj: any = { index, impact };
-        if (isComposite) {
-          indexObj.composite = index.split(",").map((part: string) => {
-            const [path, order] = part.trim().split(/\s+/);
-            return {
-              path: path.trim(),
-              order: order?.toLowerCase() === "desc" ? "descending" : "ascending",
-            };
-          });
-        } else {
-          let path = "/unknown/*";
-          const pathRegex = /\/[^\/\s*?]+(?:\/[^\/\s*?]+)*(\/\*|\?)/;
-          const match = index.match(pathRegex);
-          if (match) {
-            path = match[0];
-          } else {
-            const simplePathRegex = /\/[^\/\s]+/;
-            const simpleMatch = index.match(simplePathRegex);
-            if (simpleMatch) {
-              path = simpleMatch[0] + "/*";
-            }
-          }
-          indexObj.path = path;
-        }
-
-        if (currentSection === "included") {
-          included.push(indexObj);
-        } else if (currentSection === "notIncluded") {
-          notIncluded.push(indexObj);
-        }
-      }
-    }
+    const { included, notIncluded } = parseIndexMetrics(indexMetrics);
     setIncludedIndexes(included);
     setNotIncludedIndexes(notIncluded);
+    if (justUpdatedPolicy) {
+      setJustUpdatedPolicy(false);
+    } else {
+      setUpdateMessageShown(false);
+    }
   }, [indexMetrics]);
 
   useEffect(() => {
@@ -719,6 +677,7 @@ export const IndexAdvisorTab: React.FC = () => {
       setSelectedIndexes([]);
       setSelectAll(false);
       setUpdateMessageShown(true);
+      setJustUpdatedPolicy(true);
     } catch (err) {
       console.error("Failed to update indexing policy:", err);
     } finally {
