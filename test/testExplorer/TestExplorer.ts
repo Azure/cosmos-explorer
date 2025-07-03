@@ -89,7 +89,7 @@ const initTestExplorer = async (): Promise<void> => {
   iframe.setAttribute("data-test", "DataExplorerFrame");
   iframe.classList.add("iframe");
   iframe.title = "explorer";
-  iframe.src = iframeSrc;
+  iframe.src = iframeSrc; // CodeQL [SM03712] Not used in production, only for testing purposes
   document.body.appendChild(iframe);
 };
 

@@ -106,57 +106,26 @@ module.exports = function (_env = {}, argv = {}) {
     typescriptRule.use[0].options.compilerOptions = { target: "ES2018" };
   }
 
-  const plugins = [
-    new CleanWebpackPlugin(),
-    new webpack.ProvidePlugin({
-      process: "process/browser",
-      Buffer: ["buffer", "Buffer"],
-    }),
-    new CreateFileWebpack({
-      path: "./dist",
-      fileName: "version.txt",
-      content: `${gitSha.trim()} ${new Date().toUTCString()}`,
-    }),
-    // TODO Enable when @nteract once removed
-    // ./node_modules/@nteract/markdown/node_modules/@nteract/presentational-components/lib/index.js line 63 breaks this with physical file Icon.js referred to as icon.js
-    // new CaseSensitivePathsPlugin(),
-    new MiniCssExtractPlugin({
-      filename: "[name].[contenthash].css",
-    }),
-    new HtmlWebpackPlugin({
-      filename: "explorer.html",
-      template: "src/explorer.html",
-      chunks: ["main"],
-    }),
-    new HtmlWebpackPlugin({
-      filename: "terminal.html",
-      template: "src/Terminal/index.html",
-      chunks: ["terminal"],
-    }),
-    new HtmlWebpackPlugin({
-      filename: "quickstart.html",
-      template: "src/quickstart.html",
-      chunks: ["quickstart"],
-    }),
-    new HtmlWebpackPlugin({
-      filename: "index.html",
-      template: "src/index.html",
-      chunks: ["index"],
-    }),
+  const entry = {
+    main: "./src/Main.tsx",
+    index: "./src/Index.tsx",
+    quickstart: "./src/quickstart.ts",
+    hostedExplorer: "./src/HostedExplorer.tsx",
+    terminal: "./src/Terminal/index.ts",
+    cellOutputViewer: "./src/CellOutputViewer/CellOutputViewer.tsx",
+    notebookViewer: "./src/NotebookViewer/NotebookViewer.tsx",
+    galleryViewer: "./src/GalleryViewer/GalleryViewer.tsx",
+    selfServe: "./src/SelfServe/SelfServe.tsx",
+    connectToGitHub: "./src/GitHub/GitHubConnector.ts",
+    ...(mode !== "production" && { testExplorer: "./test/testExplorer/TestExplorer.ts" }),
+  };
+
+  const htmlWebpackPlugins = [
+    new HtmlWebpackPlugin({ filename: "index.html", template: "src/index.html", chunks: ["index"] }),
     new HtmlWebpackPlugin({
       filename: "hostedExplorer.html",
       template: "src/hostedExplorer.html",
       chunks: ["hostedExplorer"],
-    }),
-    new HtmlWebpackPlugin({
-      filename: "testExplorer.html",
-      template: "test/testExplorer/testExplorer.html",
-      chunks: ["testExplorer"],
-    }),
-    new HtmlWebpackPlugin({
-      filename: "Heatmap.html",
-      template: "src/Controls/Heatmap/Heatmap.html",
-      chunks: ["heatmap"],
     }),
     new HtmlWebpackPlugin({
       filename: "cellOutputViewer.html",
@@ -183,6 +152,35 @@ module.exports = function (_env = {}, argv = {}) {
       template: "src/SelfServe/selfServe.html",
       chunks: ["selfServe"],
     }),
+    ...(mode !== "production"
+      ? [
+          new HtmlWebpackPlugin({
+            filename: "testExplorer.html",
+            template: "test/testExplorer/testExplorer.html",
+            chunks: ["testExplorer"],
+          }),
+        ]
+      : []),
+  ];
+
+  const plugins = [
+    new CleanWebpackPlugin(),
+    new webpack.ProvidePlugin({
+      process: "process/browser",
+      Buffer: ["buffer", "Buffer"],
+    }),
+    new CreateFileWebpack({
+      path: "./dist",
+      fileName: "version.txt",
+      content: `${gitSha.trim()} ${new Date().toUTCString()}`,
+    }),
+    // TODO Enable when @nteract once removed
+    // ./node_modules/@nteract/markdown/node_modules/@nteract/presentational-components/lib/index.js line 63 breaks this with physical file Icon.js referred to as icon.js
+    // new CaseSensitivePathsPlugin(),
+    new MiniCssExtractPlugin({
+      filename: "[name].[contenthash].css",
+    }),
+    ...htmlWebpackPlugins,
     new InlineChunkHtmlPlugin(HtmlWebpackPlugin, [/cellOutputViewer/]),
     new HTMLInlineCSSWebpackPlugin({
       filter: (fileName) => fileName.includes("cellOutputViewer"),
@@ -205,20 +203,7 @@ module.exports = function (_env = {}, argv = {}) {
 
   return {
     mode: mode,
-    entry: {
-      main: "./src/Main.tsx",
-      index: "./src/Index.tsx",
-      quickstart: "./src/quickstart.ts",
-      hostedExplorer: "./src/HostedExplorer.tsx",
-      testExplorer: "./test/testExplorer/TestExplorer.ts",
-      heatmap: "./src/Controls/Heatmap/Heatmap.ts",
-      terminal: "./src/Terminal/index.ts",
-      cellOutputViewer: "./src/CellOutputViewer/CellOutputViewer.tsx",
-      notebookViewer: "./src/NotebookViewer/NotebookViewer.tsx",
-      galleryViewer: "./src/GalleryViewer/GalleryViewer.tsx",
-      selfServe: "./src/SelfServe/SelfServe.tsx",
-      connectToGitHub: "./src/GitHub/GitHubConnector.ts",
-    },
+    entry: entry,
     output: {
       chunkFilename: "[name].[chunkhash:6].js",
       filename: "[name].[chunkhash:6].js",
