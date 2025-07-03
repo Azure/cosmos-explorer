@@ -121,7 +121,26 @@ module.exports = function (_env = {}, argv = {}) {
   };
 
   const htmlWebpackPlugins = [
-    new HtmlWebpackPlugin({ filename: "index.html", template: "src/index.html", chunks: ["index"] }),
+    new HtmlWebpackPlugin({
+      filename: "explorer.html",
+      template: "src/explorer.html",
+      chunks: ["main"],
+    }),
+    new HtmlWebpackPlugin({
+      filename: "terminal.html",
+      template: "src/Terminal/index.html",
+      chunks: ["terminal"],
+    }),
+    new HtmlWebpackPlugin({
+      filename: "quickstart.html",
+      template: "src/quickstart.html",
+      chunks: ["quickstart"],
+    }),
+    new HtmlWebpackPlugin({
+      filename: "index.html",
+      template: "src/index.html",
+      chunks: ["index"],
+    }),
     new HtmlWebpackPlugin({
       filename: "hostedExplorer.html",
       template: "src/hostedExplorer.html",
