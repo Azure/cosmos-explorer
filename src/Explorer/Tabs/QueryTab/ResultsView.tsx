@@ -659,7 +659,7 @@ export const IndexAdvisorTab: React.FC = () => {
         partitionKey: containerDef.partitionKey,
         indexingPolicy: updatedPolicy,
       });
-      useIndexingPolicyStore.getState().setIndexingPolicyOnly(updatedPolicy);
+      useIndexingPolicyStore.getState().setIndexingPolicyFor(containerId, updatedPolicy);
       const selectedIndexSet = new Set(selectedIndexes.map(s => s.index));
       const updatedNotIncluded: typeof notIncluded = [];
       const newlyIncluded: typeof included = [];
@@ -881,14 +881,18 @@ export const ResultsView: React.FC<ResultsViewProps> = ({ isMongoDB, queryResult
   );
 };
 export interface IndexingPolicyStore {
-  indexingPolicy: IndexingPolicy | null;
-  setIndexingPolicyOnly: (indexingPolicy: IndexingPolicy) => void;
+  indexingPolicies: { [containerId: string]: IndexingPolicy };
+  setIndexingPolicyFor: (containerId: string, indexingPolicy: IndexingPolicy) => void;
 }
 
 export const useIndexingPolicyStore = create<IndexingPolicyStore>((set) => ({
-  indexingPolicy: null,
-  setIndexingPolicyOnly: (indexingPolicy) =>
-    set(() => ({ indexingPolicy: { ...indexingPolicy } })),
+  indexingPolicies: {},
+  setIndexingPolicyFor: (containerId, indexingPolicy) =>
+    set((state) => ({
+      indexingPolicies: {
+        ...state.indexingPolicies,
+        [containerId]: { ...indexingPolicy },
+      },
+    })),
 }));
-
 

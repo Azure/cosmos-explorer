@@ -1,5 +1,4 @@
 import { IPivotItemProps, IPivotProps, Pivot, PivotItem } from "@fluentui/react";
-import { readCollection } from "Common/dataAccess/readCollection";
 import {
   ComputedPropertiesComponent,
   ComputedPropertiesComponentProps,
@@ -307,7 +306,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.unsubscribe = useIndexingPolicyStore.subscribe((_,) => {
       this.refreshCollectionData();
     },
-      (state) => state.indexingPolicy);
+      (state) => state.indexingPolicies[this.collection.id()]
+    );
     this.refreshCollectionData();
   }
   componentWillUnmount(): void {
@@ -935,12 +935,25 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     );
   };
   private refreshCollectionData = async (): Promise<void> => {
-    const latestCollection = await readCollection(this.collection.databaseId, this.collection.id());
-    this.collection.rawDataModel = latestCollection;
-    this.collection.indexingPolicy(latestCollection.indexingPolicy);
+    const containerId = this.collection.id();
+    const latestIndexingPolicy = useIndexingPolicyStore.getState().indexingPolicies[containerId];
+    const rawPolicy = latestIndexingPolicy ?? this.collection.indexingPolicy();
+
+    const latestCollection: DataModels.IndexingPolicy = {
+      automatic: rawPolicy?.automatic ?? true,
+      indexingMode: rawPolicy?.indexingMode ?? "consistent",
+      includedPaths: rawPolicy?.includedPaths ?? [],
+      excludedPaths: rawPolicy?.excludedPaths ?? [],
+      compositeIndexes: rawPolicy?.compositeIndexes ?? [],
+      spatialIndexes: rawPolicy?.spatialIndexes ?? [],
+      vectorIndexes: rawPolicy?.vectorIndexes ?? [],
+      fullTextIndexes: rawPolicy?.fullTextIndexes ?? [],
+    };
+
+    this.collection.rawDataModel.indexingPolicy = latestCollection;
     this.setState({
-      indexingPolicyContent: latestCollection.indexingPolicy,
-      indexingPolicyContentBaseline: latestCollection.indexingPolicy,
+      indexingPolicyContent: latestCollection,
+      indexingPolicyContentBaseline: latestCollection,
     });
   };
 

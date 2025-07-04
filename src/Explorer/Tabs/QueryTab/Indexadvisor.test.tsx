@@ -200,12 +200,6 @@ test("calls handleError if fetchIndexMetrics throws2nd", async () => {
     expect(screen.queryByRole("status")).not.toBeInTheDocument();
 });
 
-test("renders IndexAdvisorTab when clicked from ResultsView", async () => {
-    render(<IndexAdvisorTab />);
-    await waitFor(() => expect(screen.getByText("Included in Current Policy")).toBeInTheDocument());
-    expect(screen.getByText("/foo/?")).toBeInTheDocument();
-});
-
 test("updates indexing policy after replace is triggered", async () => {
     render(<IndexAdvisorTab />);
     const barIndexText = await screen.findByText((content) =>
@@ -222,6 +216,12 @@ test("updates indexing policy after replace is triggered", async () => {
     expect(updatedPolicy.indexingPolicy.includedPaths).toEqual(
         expect.arrayContaining([{ path: "/*" }, { path: "/bar/?" }])
     );
+});
+
+test("renders IndexAdvisorTab when clicked from ResultsView", async () => {
+    render(<IndexAdvisorTab />);
+    await waitFor(() => expect(screen.getByText("Included in Current Policy")).toBeInTheDocument());
+    expect(screen.getByText("/foo/?")).toBeInTheDocument();
 });
 
 test("IndexingPolicyStore stores updated policy on componentDidMount", async () => {
