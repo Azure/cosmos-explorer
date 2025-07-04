@@ -1,5 +1,8 @@
+import { IndexingPolicy } from "@azure/cosmos";
+import { act } from "@testing-library/react";
 import { AuthType } from "AuthType";
 import { shallow } from "enzyme";
+import { useIndexingPolicyStore } from "Explorer/Tabs/QueryTab/ResultsView";
 import ko from "knockout";
 import React from "react";
 import { updateCollection } from "../../../Common/dataAccess/updateCollection";
@@ -285,5 +288,50 @@ describe("SettingsComponent", () => {
     });
 
     expect(wrapper.state("isThroughputBucketsSaveable")).toBe(false);
+  });
+});
+
+describe("SettingsComponent - indexing policy subscription", () => {
+  const baseProps: SettingsComponentProps = {
+    settingsTab: new CollectionSettingsTabV2({
+      collection: collection,
+      tabKind: ViewModels.CollectionTabKind.CollectionSettingsV2,
+      title: "Scale & Settings",
+      tabPath: "",
+      node: undefined,
+    }),
+  };
+
+  it("subscribes to the correct container's indexing policy and updates state on change", async () => {
+    const containerId = collection.id();
+    const mockIndexingPolicy: IndexingPolicy = {
+      automatic: false,
+      indexingMode: "lazy",
+      includedPaths: [{ path: "/foo/*" }],
+      excludedPaths: [{ path: "/bar/*" }],
+      compositeIndexes: [],
+      spatialIndexes: [],
+      vectorIndexes: [],
+      fullTextIndexes: [],
+    };
+
+    const wrapper = shallow(<SettingsComponent {...baseProps} />);
+    const instance = wrapper.instance() as SettingsComponent;
+
+    await act(async () => {
+      useIndexingPolicyStore.setState({
+        indexingPolicies: {
+          [containerId]: mockIndexingPolicy,
+        },
+      });
+    });
+
+    wrapper.update();
+
+    expect(wrapper.state("indexingPolicyContent")).toEqual(mockIndexingPolicy);
+    expect(wrapper.state("indexingPolicyContentBaseline")).toEqual(mockIndexingPolicy);
+    // Optionally, check the collection's rawDataModel (ignore TS error in test)
+    // @ts-expect-error
+    expect(instance.collection.rawDataModel.indexingPolicy).toEqual(mockIndexingPolicy);
   });
 });
