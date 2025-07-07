@@ -71,7 +71,6 @@ export const useQueryMetadataStore = create<QueryMetadataStore>((set) => ({
   setMetadata: (query1, db, container) => set({ userQuery: query1, databaseId: db, containerId: container }),
 }));
 
-
 enum ToggleState {
   Result,
   QueryMetrics,
@@ -376,9 +375,9 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
       this._iterator = this.props.isPreferredApiMongoDB
         ? queryIterator(this.props.collection.databaseId, this.props.viewModelcollection, query)
         : queryDocuments(this.props.collection.databaseId, this.props.collection.id(), query, {
-          enableCrossPartitionQuery: HeadersUtility.shouldEnableCrossPartitionKey(),
-          abortSignal: this.queryAbortController.signal,
-        } as unknown as FeedOptions);
+            enableCrossPartitionQuery: HeadersUtility.shouldEnableCrossPartitionKey(),
+            abortSignal: this.queryAbortController.signal,
+          } as unknown as FeedOptions);
     }
 
     await this._queryDocumentsPage(firstItemIndex);

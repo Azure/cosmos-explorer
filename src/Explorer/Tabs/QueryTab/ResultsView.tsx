@@ -20,9 +20,15 @@ import {
   TableColumnDefinition,
   TableHeader,
   TableRow,
-  createTableColumn
+  createTableColumn,
 } from "@fluentui/react-components";
-import { ArrowDownloadRegular, ChevronDown20Regular, ChevronRight20Regular, CircleFilled, CopyRegular } from "@fluentui/react-icons";
+import {
+  ArrowDownloadRegular,
+  ChevronDown20Regular,
+  ChevronRight20Regular,
+  CircleFilled,
+  CopyRegular,
+} from "@fluentui/react-icons";
 import copy from "clipboard-copy";
 import { HttpHeaders } from "Common/Constants";
 import MongoUtility from "Common/MongoUtility";
@@ -394,8 +400,9 @@ const QueryStatsTab: React.FC<Pick<ResultsViewProps, "queryResults">> = ({ query
         },
         {
           metric: "User defined function execution time",
-          value: `${aggregatedQueryMetrics.runtimeExecutionTimes?.userDefinedFunctionExecutionTime?.toString() || 0
-            } ms`,
+          value: `${
+            aggregatedQueryMetrics.runtimeExecutionTimes?.userDefinedFunctionExecutionTime?.toString() || 0
+          } ms`,
           toolTip: "Total time spent executing user-defined functions",
         },
         {
@@ -578,14 +585,16 @@ export const IndexAdvisorTab: React.FC = () => {
         clearMessage();
         setLoading(false);
       }
-    }
+    };
     if (userQuery && databaseId && containerId) {
       fetchIndexMetrics();
     }
   }, [userQuery, databaseId, containerId]);
 
   useEffect(() => {
-    if (!indexMetrics) { return }
+    if (!indexMetrics) {
+      return;
+    }
 
     const { included, notIncluded } = parseIndexMetrics(indexMetrics);
     setIncludedIndexes(included);
@@ -598,7 +607,8 @@ export const IndexAdvisorTab: React.FC = () => {
   }, [indexMetrics]);
 
   useEffect(() => {
-    const allSelected = notIncluded.length > 0 && notIncluded.every((item) => selectedIndexes.some((s) => s.index === item.index));
+    const allSelected =
+      notIncluded.length > 0 && notIncluded.every((item) => selectedIndexes.some((s) => s.index === item.index));
     setSelectAll(allSelected);
   }, [selectedIndexes, notIncluded]);
 
@@ -606,9 +616,7 @@ export const IndexAdvisorTab: React.FC = () => {
     if (checked) {
       setSelectedIndexes((prev) => [...prev, indexObj]);
     } else {
-      setSelectedIndexes((prev) =>
-        prev.filter((item) => item.index !== indexObj.index)
-      );
+      setSelectedIndexes((prev) => prev.filter((item) => item.index !== indexObj.index));
     }
   };
 
@@ -624,32 +632,27 @@ export const IndexAdvisorTab: React.FC = () => {
       const { resource: containerDef } = await containerRef.read();
 
       const newIncludedPaths = selectedIndexes
-        .filter(index => !index.composite)
-        .map(index => {
+        .filter((index) => !index.composite)
+        .map((index) => {
           return {
             path: index.path,
           };
         });
 
       const newCompositeIndexes: CompositePath[][] = selectedIndexes
-        .filter(index => Array.isArray(index.composite))
-        .map(index =>
-          (index.composite as { path: string; order: string }[]).map(comp => ({
-            path: comp.path,
-            order: comp.order === "descending" ? "descending" : "ascending",
-          })) as CompositePath[]
+        .filter((index) => Array.isArray(index.composite))
+        .map(
+          (index) =>
+            (index.composite as { path: string; order: string }[]).map((comp) => ({
+              path: comp.path,
+              order: comp.order === "descending" ? "descending" : "ascending",
+            })) as CompositePath[],
         );
 
       const updatedPolicy: IndexingPolicy = {
         ...containerDef.indexingPolicy,
-        includedPaths: [
-          ...(containerDef.indexingPolicy?.includedPaths || []),
-          ...newIncludedPaths,
-        ],
-        compositeIndexes: [
-          ...(containerDef.indexingPolicy?.compositeIndexes || []),
-          ...newCompositeIndexes,
-        ],
+        includedPaths: [...(containerDef.indexingPolicy?.includedPaths || []), ...newIncludedPaths],
+        compositeIndexes: [...(containerDef.indexingPolicy?.compositeIndexes || []), ...newCompositeIndexes],
         automatic: containerDef.indexingPolicy?.automatic ?? true,
         indexingMode: containerDef.indexingPolicy?.indexingMode ?? "consistent",
         excludedPaths: containerDef.indexingPolicy?.excludedPaths ?? [],
@@ -660,7 +663,7 @@ export const IndexAdvisorTab: React.FC = () => {
         indexingPolicy: updatedPolicy,
       });
       useIndexingPolicyStore.getState().setIndexingPolicyFor(containerId, updatedPolicy);
-      const selectedIndexSet = new Set(selectedIndexes.map(s => s.index));
+      const selectedIndexSet = new Set(selectedIndexes.map((s) => s.index));
       const updatedNotIncluded: typeof notIncluded = [];
       const newlyIncluded: typeof included = [];
       for (const item of notIncluded) {
@@ -686,16 +689,17 @@ export const IndexAdvisorTab: React.FC = () => {
   };
   const renderImpactDots = (impact: string) => {
     let count = 0;
-    if (impact === "High") { count = 3; }
-    else if (impact === "Medium") { count = 2; }
-    else if (impact === "Low") { count = 1; }
+    if (impact === "High") {
+      count = 3;
+    } else if (impact === "Medium") {
+      count = 2;
+    } else if (impact === "Low") {
+      count = 1;
+    }
     return (
       <div className={style.indexAdvisorImpactDots}>
         {Array.from({ length: count }).map((_, i) => (
-          <CircleFilled
-            key={i}
-            className={style.indexAdvisorImpactDot}
-          />
+          <CircleFilled key={i} className={style.indexAdvisorImpactDot} />
         ))}
       </div>
     );
@@ -712,11 +716,10 @@ export const IndexAdvisorTab: React.FC = () => {
             {isNotIncluded ? (
               <Checkbox
                 checked={selectedIndexes.some((selected) => selected.index === item.index)}
-                onChange={(_, data) => handleCheckboxChange(item, data.checked === true)} />
+                onChange={(_, data) => handleCheckboxChange(item, data.checked === true)}
+              />
             ) : isHeader && item.index === "Not Included in Current Policy" && notIncluded.length > 0 ? (
-              <Checkbox
-                checked={selectAll}
-                onChange={(_, data) => handleSelectAll(data.checked === true)} />
+              <Checkbox checked={selectAll} onChange={(_, data) => handleSelectAll(data.checked === true)} />
             ) : (
               <div className={style.indexAdvisorCheckboxSpacer}></div>
             )}
@@ -729,24 +732,28 @@ export const IndexAdvisorTab: React.FC = () => {
                   } else if (item.index === "Not Included in Current Policy") {
                     setShowNotIncluded(!showNotIncluded);
                   }
-                }}>
-                {item.index === "Included in Current Policy"
-                  ? showIncluded ? <ChevronDown20Regular /> : <ChevronRight20Regular />
-                  : showNotIncluded ? <ChevronDown20Regular /> : <ChevronRight20Regular />
-                }
+                }}
+              >
+                {item.index === "Included in Current Policy" ? (
+                  showIncluded ? (
+                    <ChevronDown20Regular />
+                  ) : (
+                    <ChevronRight20Regular />
+                  )
+                ) : showNotIncluded ? (
+                  <ChevronDown20Regular />
+                ) : (
+                  <ChevronRight20Regular />
+                )}
               </span>
             ) : (
               <div className={style.indexAdvisorChevronSpacer}></div>
             )}
-            <div className={isHeader ? style.indexAdvisorRowBold : style.indexAdvisorRowNormal}>
-              {item.index}
-            </div>
+            <div className={isHeader ? style.indexAdvisorRowBold : style.indexAdvisorRowNormal}>{item.index}</div>
             <div className={isHeader ? style.indexAdvisorRowImpactHeader : style.indexAdvisorRowImpact}>
               {!isHeader && item.impact}
             </div>
-            <div>
-              {!isHeader && renderImpactDots(item.impact)}
-            </div>
+            <div>{!isHeader && renderImpactDots(item.impact)}</div>
           </div>
         </TableCell>
       </TableRow>
@@ -756,29 +763,30 @@ export const IndexAdvisorTab: React.FC = () => {
     const items: IIndexMetric[] = [];
     items.push({ index: "Not Included in Current Policy", impact: "", section: "Header" });
     if (showNotIncluded) {
-      notIncluded.forEach((item) =>
-        items.push({ ...item, section: "Not Included" })
-      );
+      notIncluded.forEach((item) => items.push({ ...item, section: "Not Included" }));
     }
     items.push({ index: "Included in Current Policy", impact: "", section: "Header" });
     if (showIncluded) {
-      included.forEach((item) =>
-        items.push({ ...item, section: "Included" })
-      );
+      included.forEach((item) => items.push({ ...item, section: "Included" }));
     }
     return items;
   }, [included, notIncluded, showIncluded, showNotIncluded]);
 
   if (loading) {
-    return <div>
-      <Spinner
-        size="small"
-        style={{
-          '--spinner-size': '16px',
-          '--spinner-thickness': '2px',
-          '--spinner-color': '#0078D4',
-        } as React.CSSProperties} />
-    </div>;
+    return (
+      <div>
+        <Spinner
+          size="small"
+          style={
+            {
+              "--spinner-size": "16px",
+              "--spinner-thickness": "2px",
+              "--spinner-color": "#0078D4",
+            } as React.CSSProperties
+          }
+        />
+      </div>
+    );
   }
 
   return (
@@ -786,12 +794,12 @@ export const IndexAdvisorTab: React.FC = () => {
       <div className={style.indexAdvisorMessage}>
         {updateMessageShown ? (
           <>
-            <span
-              className={style.indexAdvisorSuccessIcon}>
+            <span className={style.indexAdvisorSuccessIcon}>
               <FontIcon iconName="CheckMark" style={{ color: "white", fontSize: 12 }} />
             </span>
             <span>
-              Your indexing policy has been updated with the new included paths. You may review the changes in Scale & Settings.
+              Your indexing policy has been updated with the new included paths. You may review the changes in Scale &
+              Settings.
             </span>
           </>
         ) : (
@@ -807,25 +815,23 @@ export const IndexAdvisorTab: React.FC = () => {
                 <div className={style.indexAdvisorCheckboxSpacer}></div>
                 <div className={style.indexAdvisorChevronSpacer}></div>
                 <div>Index</div>
-                <div><span style={{ whiteSpace: "nowrap" }}>Estimated Impact</span></div>
+                <div>
+                  <span style={{ whiteSpace: "nowrap" }}>Estimated Impact</span>
+                </div>
               </div>
             </TableCell>
           </TableRow>
         </TableHeader>
-        <TableBody>
-          {indexMetricItems.map(renderRow)}
-        </TableBody>
+        <TableBody>{indexMetricItems.map(renderRow)}</TableBody>
       </Table>
       {selectedIndexes.length > 0 && (
         <div className={style.indexAdvisorButtonBar}>
           {isUpdating ? (
             <div className={style.indexAdvisorButtonSpinner}>
-              <Spinner size="tiny" /> </div>
+              <Spinner size="tiny" />{" "}
+            </div>
           ) : (
-            <button
-              onClick={handleUpdatePolicy}
-              className={style.indexAdvisorButton}
-            >
+            <button onClick={handleUpdatePolicy} className={style.indexAdvisorButton}>
               Update Indexing Policy with selected index(es)
             </button>
           )}
@@ -895,4 +901,3 @@ export const useIndexingPolicyStore = create<IndexingPolicyStore>((set) => ({
       },
     })),
 }));
-

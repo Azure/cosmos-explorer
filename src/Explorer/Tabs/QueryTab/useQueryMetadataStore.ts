@@ -11,6 +11,5 @@ export const useQueryMetadataStore = create<QueryMetadataStore>((set) => ({
   userQuery: "",
   databaseId: "",
   containerId: "",
-  setMetadata: (query1, db, container) =>
-    set({ userQuery: query1, databaseId: db, containerId: container }),
+  setMetadata: (query1, db, container) => set({ userQuery: query1, databaseId: db, containerId: container }),
 }));
