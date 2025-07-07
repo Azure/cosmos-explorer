@@ -1,4 +1,15 @@
 import type { IIndexMetric } from "Explorer/Tabs/QueryTab/ResultsView";
+interface IndexObject {
+    index: string;
+    impact: string;
+    section: "Included" | "Not Included" | "Header";
+    composite?: {
+        path: string;
+        order: "ascending" | "descending";
+    }[];
+    path?: string;
+}
+
 export interface IndexMetricsJson {
     included?: IIndexMetric[];
     notIncluded?: IIndexMetric[];
@@ -32,7 +43,13 @@ export function parseIndexMetrics(indexMetrics: string | IndexMetricsJson): {
             const impact = impactLine?.includes("Index Impact Score:") ? impactLine.split(":")[1].trim() : "Unknown";
 
             const isComposite = index.includes(",");
-            const indexObj: any = { index, impact };
+
+            const sectionMap: Record<string, "Included" | "Not Included"> = {
+                included: "Included",
+                notIncluded: "Not Included",
+            };
+
+            const indexObj: IndexObject = { index, impact, section: sectionMap[currentSection] ?? "Header", };
             if (isComposite) {
                 indexObj.composite = index.split(",").map((part: string) => {
                     const [path, order] = part.trim().split(/\s+/);
