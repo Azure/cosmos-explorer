@@ -64,7 +64,7 @@ jest.mock("Common/CosmosClient", () => ({
     }),
   }),
 }));
-jest.mock("./Indexadvisor", () => ({
+jest.mock("./StylesAdvisor", () => ({
   useIndexAdvisorStyles: () => ({}),
 }));
 

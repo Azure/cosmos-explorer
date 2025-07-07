@@ -43,8 +43,8 @@ import { logConsoleProgress } from "Utils/NotificationConsoleUtils";
 import create from "zustand";
 import { client } from "../../../Common/CosmosClient";
 import { handleError } from "../../../Common/ErrorHandlingUtils";
-import { useIndexAdvisorStyles } from "./Indexadvisor";
 import { ResultsViewProps } from "./QueryResultSection";
+import { useIndexAdvisorStyles } from "./StylesAdvisor";
 enum ResultsTabs {
   Results = "results",
   QueryStats = "queryStats",
