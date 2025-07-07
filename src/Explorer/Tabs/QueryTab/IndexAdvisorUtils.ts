@@ -43,12 +43,12 @@ export function parseIndexMetrics(indexMetrics: string | IndexMetricsJson): {
                 });
             } else {
                 let path = "/unknown/*";
-                const pathRegex = /\/[^\/\s*?]+(?:\/[^\/\s*?]+)*(\/\*|\?)/;
+                const pathRegex = /\/[^/\s*?]+(?:\/[^/\s*?]+)*(\/\*|\?)/;
                 const match = index.match(pathRegex);
                 if (match) {
                     path = match[0];
                 } else {
-                    const simplePathRegex = /\/[^\/\s]+/;
+                    const simplePathRegex = /\/[^/\s]+/;
                     const simpleMatch = index.match(simplePathRegex);
                     if (simpleMatch) {
                         path = simpleMatch[0] + "/*";

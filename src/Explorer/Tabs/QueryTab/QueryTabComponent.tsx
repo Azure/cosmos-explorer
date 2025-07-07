@@ -28,6 +28,7 @@ import { TabsState, useTabs } from "hooks/useTabs";
 import React, { Fragment, createRef } from "react";
 import "react-splitter-layout/lib/index.css";
 import { format } from "react-string-format";
+import create from "zustand";
 import QueryCommandIcon from "../../../../images/CopilotCommand.svg";
 import LaunchCopilot from "../../../../images/CopilotTabIcon.svg";
 import DownloadQueryIcon from "../../../../images/DownloadQuery.svg";
@@ -55,7 +56,6 @@ import { BrowseQueriesPane } from "../../Panes/BrowseQueriesPane/BrowseQueriesPa
 import { SaveQueryPane } from "../../Panes/SaveQueryPane/SaveQueryPane";
 import TabsBase from "../TabsBase";
 import "./QueryTabComponent.less";
-import create from "zustand";
 
 export interface QueryMetadataStore {
   userQuery: string;
@@ -212,7 +212,7 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
       enabled: !!this.state.sqlQueryEditorContent && this.state.sqlQueryEditorContent.length > 0,
       visible: true,
     };
-      
+
     const isSaveQueryBtnEnabled = userContext.apiType === "SQL" || userContext.apiType === "Gremlin";
     this.saveQueryButton = {
       enabled: isSaveQueryBtnEnabled,
@@ -276,9 +276,9 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
   }
 
   public onExecuteQueryClick = async (): Promise<void> => {
-      const query1=this.state.sqlQueryEditorContent;
-      const db = this.props.collection.databaseId;
-      const container = this.props.collection.id();
+    const query1 = this.state.sqlQueryEditorContent;
+    const db = this.props.collection.databaseId;
+    const container = this.props.collection.id();
     useQueryMetadataStore.getState().setMetadata(query1, db, container);
     this._iterator = undefined;
 
@@ -376,9 +376,9 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
       this._iterator = this.props.isPreferredApiMongoDB
         ? queryIterator(this.props.collection.databaseId, this.props.viewModelcollection, query)
         : queryDocuments(this.props.collection.databaseId, this.props.collection.id(), query, {
-            enableCrossPartitionQuery: HeadersUtility.shouldEnableCrossPartitionKey(),
-            abortSignal: this.queryAbortController.signal,
-          } as unknown as FeedOptions);
+          enableCrossPartitionQuery: HeadersUtility.shouldEnableCrossPartitionKey(),
+          abortSignal: this.queryAbortController.signal,
+        } as unknown as FeedOptions);
     }
 
     await this._queryDocumentsPage(firstItemIndex);

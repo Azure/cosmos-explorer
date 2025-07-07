@@ -117,8 +117,6 @@ test("calls replace when update policy is confirmed", async () => {
 });
 
 test("calls replace when update button is clicked", async () => {
-    const cosmos = require("Common/CosmosClient");
-    const mockReplace = cosmos.client().database().container().replace;
     render(<IndexAdvisorTab />);
     await waitFor(() => expect(screen.getByText("/bar/?")).toBeInTheDocument());
     const checkboxes = screen.getAllByRole("checkbox");
@@ -140,7 +138,7 @@ test("selects all indexes when select-all is clicked", async () => {
     const checkboxes = screen.getAllByRole("checkbox");
 
     fireEvent.click(checkboxes[0]);
-    checkboxes.forEach((cb, i) => {
+    checkboxes.forEach((cb) => {
         expect(cb).toBeChecked();
     });
 });
@@ -174,7 +172,6 @@ test("calls handleError if fetchIndexMetrics throws", async () => {
 });
 
 test("calls handleError if fetchIndexMetrics throws2nd", async () => {
-    const cosmos = require("Common/CosmosClient");
     mockFetchAll.mockRejectedValueOnce(new Error("fail"));
 
     render(<IndexAdvisorTab />);

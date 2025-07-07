@@ -303,7 +303,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     if (this.props.settingsTab.isActive()) {
       useCommandBar.getState().setContextButtons(this.getTabsButtons());
     }
-    this.unsubscribe = useIndexingPolicyStore.subscribe((_,) => {
+    this.unsubscribe = useIndexingPolicyStore.subscribe(() => {
       this.refreshCollectionData();
     },
       (state) => state.indexingPolicies[this.collection.id()]
@@ -311,7 +311,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.refreshCollectionData();
   }
   componentWillUnmount(): void {
-    if (this.unsubscribe) this.unsubscribe();
+    if (this.unsubscribe) { this.unsubscribe(); }
   }
   componentDidUpdate(): void {
     if (this.props.settingsTab.isActive()) {

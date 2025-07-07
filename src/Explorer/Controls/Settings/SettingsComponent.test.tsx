@@ -331,7 +331,7 @@ describe("SettingsComponent - indexing policy subscription", () => {
     expect(wrapper.state("indexingPolicyContent")).toEqual(mockIndexingPolicy);
     expect(wrapper.state("indexingPolicyContentBaseline")).toEqual(mockIndexingPolicy);
     // Optionally, check the collection's rawDataModel (ignore TS error in test)
-    // @ts-expect-error
+    // @ts-expect-error: rawDataModel is intentionally accessed for test validation
     expect(instance.collection.rawDataModel.indexingPolicy).toEqual(mockIndexingPolicy);
   });
 });

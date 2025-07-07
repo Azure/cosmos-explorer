@@ -558,7 +558,7 @@ export const IndexAdvisorTab: React.FC = () => {
   const [isUpdating, setIsUpdating] = useState(false);
   const [justUpdatedPolicy, setJustUpdatedPolicy] = useState(false);
   useEffect(() => {
-    async function fetchIndexMetrics() {
+    const fetchIndexMetrics = async () => {
       const clearMessage = logConsoleProgress(`Querying items with IndexMetrics in container ${containerId}`);
       try {
         const querySpec = {
@@ -585,7 +585,7 @@ export const IndexAdvisorTab: React.FC = () => {
   }, [userQuery, databaseId, containerId]);
 
   useEffect(() => {
-    if (!indexMetrics) { return };
+    if (!indexMetrics) { return }
 
     const { included, notIncluded } = parseIndexMetrics(indexMetrics);
     setIncludedIndexes(included);
@@ -686,9 +686,9 @@ export const IndexAdvisorTab: React.FC = () => {
   };
   const renderImpactDots = (impact: string) => {
     let count = 0;
-    if (impact === "High") count = 3;
-    else if (impact === "Medium") count = 2;
-    else if (impact === "Low") count = 1;
+    if (impact === "High") { count = 3; }
+    else if (impact === "Medium") { count = 2; }
+    else if (impact === "Low") { count = 1; }
     return (
       <div className={style.indexAdvisorImpactDots}>
         {Array.from({ length: count }).map((_, i) => (
