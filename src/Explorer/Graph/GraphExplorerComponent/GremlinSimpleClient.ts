@@ -268,7 +268,7 @@ export class GremlinSimpleClient {
 
   public buildChallengeResponse(request: GremlinRequestMessage): GremlinRequestMessage {
     var args = {
-      SASL: Buffer.from(`\0${this.params.user}\0${this.params.password}`).toString("base64"),
+      SASL: GremlinSimpleClient.utf8ToB64("\0" + this.params.user + "\0" + this.params.password),
     };
     return {
       requestId: request.requestId,
@@ -276,6 +276,14 @@ export class GremlinSimpleClient {
       op: "authentication",
       args,
     };
+  }
+
+  public static utf8ToB64(utf8Str: string) {
+    return btoa(
+      encodeURIComponent(utf8Str).replace(/%([0-9A-F]{2})/g, function (match, p1) {
+        return String.fromCharCode(parseInt(p1, 16));
+      }),
+    );
   }
 
   /**
