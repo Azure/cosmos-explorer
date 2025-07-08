@@ -111,7 +111,7 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     copilotChatFixedMonacoEditorHeight: "true" === get("copilotchatfixedmonacoeditorheight"),
     enablePriorityBasedExecution: "true" === get("enableprioritybasedexecution"),
     disableConnectionStringLogin: "true" === get("disableconnectionstringlogin"),
-    enableCloudShell: "true" === get("enablecloudshell"),
+    enableCloudShell: true,
   };
 }
 
