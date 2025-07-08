@@ -1,4 +1,7 @@
+import { CircleFilled } from "@fluentui/react-icons";
 import type { IIndexMetric } from "Explorer/Tabs/QueryTab/ResultsView";
+import { useIndexAdvisorStyles } from "Explorer/Tabs/QueryTab/StylesAdvisor";
+import * as React from "react";
 interface IndexObject {
   index: string;
   impact: string;
@@ -86,3 +89,26 @@ export function parseIndexMetrics(indexMetrics: string | IndexMetricsJson): {
   }
   return { included, notIncluded };
 }
+
+export const renderImpactDots = (impact: string): JSX.Element => {
+  const style = useIndexAdvisorStyles();
+  let count = 0;
+
+  if (impact === "High") {
+    count = 3;
+  } else if (impact === "Medium") {
+    count = 2;
+  } else if (impact === "Low") {
+    count = 1;
+  }
+
+  return (
+    <div className={style.indexAdvisorImpactDots}>
+      {Array.from({ length: count }).map((_, i) => (
+        <CircleFilled key={i} className={style.indexAdvisorImpactDot} />
+      ))}
+    </div>
+  );
+};
+
+

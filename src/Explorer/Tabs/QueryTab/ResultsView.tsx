@@ -26,15 +26,14 @@ import {
   ArrowDownloadRegular,
   ChevronDown20Regular,
   ChevronRight20Regular,
-  CircleFilled,
-  CopyRegular,
+  CopyRegular
 } from "@fluentui/react-icons";
 import copy from "clipboard-copy";
 import { HttpHeaders } from "Common/Constants";
 import MongoUtility from "Common/MongoUtility";
 import { QueryMetrics } from "Contracts/DataModels";
 import { EditorReact } from "Explorer/Controls/Editor/EditorReact";
-import { parseIndexMetrics } from "Explorer/Tabs/QueryTab/IndexAdvisorUtils";
+import { parseIndexMetrics, renderImpactDots } from "Explorer/Tabs/QueryTab/IndexAdvisorUtils";
 import { IDocument, useQueryMetadataStore } from "Explorer/Tabs/QueryTab/QueryTabComponent";
 import { useQueryTabStyles } from "Explorer/Tabs/QueryTab/Styles";
 import React, { useCallback, useEffect, useState } from "react";
@@ -569,7 +568,7 @@ export const IndexAdvisorTab: React.FC = () => {
       const clearMessage = logConsoleProgress(`Querying items with IndexMetrics in container ${containerId}`);
       try {
         const querySpec = {
-          query: userQuery || "SELECT TOP 10 c.id FROM c WHERE c.Item = 'value1234' ",
+          query: userQuery,
         };
         const sdkResponse = await client()
           .database(databaseId)
@@ -686,23 +685,6 @@ export const IndexAdvisorTab: React.FC = () => {
     } finally {
       setIsUpdating(false);
     }
-  };
-  const renderImpactDots = (impact: string) => {
-    let count = 0;
-    if (impact === "High") {
-      count = 3;
-    } else if (impact === "Medium") {
-      count = 2;
-    } else if (impact === "Low") {
-      count = 1;
-    }
-    return (
-      <div className={style.indexAdvisorImpactDots}>
-        {Array.from({ length: count }).map((_, i) => (
-          <CircleFilled key={i} className={style.indexAdvisorImpactDot} />
-        ))}
-      </div>
-    );
   };
 
   const renderRow = (item: IIndexMetric, index: number) => {
