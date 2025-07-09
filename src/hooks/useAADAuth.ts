@@ -59,14 +59,20 @@ export function useAADAuth(config?: ConfigContext): ReturnType {
       return;
     }
 
-    const response = await msalInstance.loginPopup({
-      redirectUri: config.msalRedirectURI,
-      scopes: [],
-    });
-    setLoggedIn();
-    setAccount(response.account);
-    setTenantId(response.tenantId);
-    localStorage.setItem("cachedTenantId", response.tenantId);
+    try {
+      const response = await msalInstance.loginPopup({
+        redirectUri: config.msalRedirectURI,
+        scopes: [],
+      });
+      setLoggedIn();
+      setAccount(response.account);
+      setTenantId(response.tenantId);
+      localStorage.setItem("cachedTenantId", response.tenantId);
+    } catch (error) {
+      setAuthFailure({
+        failureMessage: `Login failed: ${JSON.stringify(error)}`,
+      });
+    }
   }, [msalInstance, config]);
 
   const logout = React.useCallback(() => {
@@ -83,14 +89,20 @@ export function useAADAuth(config?: ConfigContext): ReturnType {
       if (!msalInstance || !config) {
         return;
       }
-      const response = await msalInstance.loginPopup({
-        redirectUri: config.msalRedirectURI,
-        authority: `${config.AAD_ENDPOINT}${id}`,
-        scopes: [],
-      });
-      setTenantId(response.tenantId);
-      setAccount(response.account);
-      localStorage.setItem("cachedTenantId", response.tenantId);
+      try {
+        const response = await msalInstance.loginPopup({
+          redirectUri: config.msalRedirectURI,
+          authority: `${config.AAD_ENDPOINT}${id}`,
+          scopes: [],
+        });
+        setTenantId(response.tenantId);
+        setAccount(response.account);
+        localStorage.setItem("cachedTenantId", response.tenantId);
+      } catch (error) {
+        setAuthFailure({
+          failureMessage: `Tenant switch failed: ${JSON.stringify(error)}`,
+        });
+      }
     },
     [msalInstance, config],
   );
