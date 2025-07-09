@@ -59,15 +59,15 @@ export function useAADAuth(config?: ConfigContext): ReturnType {
     if (config && cachedAccount && cachedTenantId) {
       // Don't automatically set as logged in just because we have cached values
       // The user should explicitly log in, and then we'll have hasInteractiveLogin = true
-      console.log("Found cached account and tenant, but user needs to sign in");
+      // Note: Found cached account and tenant, but user needs to sign in
     }
-  }, [config, cachedAccount, cachedTenantId, setLoggedIn]);
+  }, [config, cachedAccount]);
 
   // Update login state when we have both account and tenant
   React.useEffect(() => {
     // Only consider user as logged in if they have completed interactive login
     // or if we successfully have both account/tenant AND tokens
-    if (Boolean(account && tenantId && (hasInteractiveLogin || (armToken && graphToken)))) {
+    if (account && tenantId && (hasInteractiveLogin || (armToken && graphToken))) {
       setLoggedIn();
     } else {
       setLoggedOut();
@@ -78,7 +78,9 @@ export function useAADAuth(config?: ConfigContext): ReturnType {
     msalInstance.setActiveAccount(account);
   }
   const login = React.useCallback(async () => {
-    if (!msalInstance || !config) return;
+    if (!msalInstance || !config) {
+      return;
+    }
 
     try {
       const response = await msalInstance.loginPopup({
@@ -99,7 +101,9 @@ export function useAADAuth(config?: ConfigContext): ReturnType {
   }, [msalInstance, config, setLoggedIn]);
 
   const logout = React.useCallback(() => {
-    if (!msalInstance) return;
+    if (!msalInstance) {
+      return;
+    }
 
     setLoggedOut();
     setHasInteractiveLogin(false);
@@ -110,7 +114,9 @@ export function useAADAuth(config?: ConfigContext): ReturnType {
 
   const switchTenant = React.useCallback(
     async (id) => {
-      if (!msalInstance || !config) return;
+      if (!msalInstance || !config) {
+        return;
+      }
 
       try {
         const response = await msalInstance.loginPopup({
@@ -129,7 +135,7 @@ export function useAADAuth(config?: ConfigContext): ReturnType {
         });
       }
     },
-    [account, tenantId, msalInstance, config],
+    [msalInstance, config],
   );
 
   const acquireTokens = React.useCallback(async () => {
@@ -146,11 +152,11 @@ export function useAADAuth(config?: ConfigContext): ReturnType {
       setArmToken(armToken);
       setAuthFailure(null);
     } catch (error) {
-      console.log("ARM token acquisition error:", error);
+      // ARM token acquisition error logged for debugging
 
       if (error instanceof msal.InteractionRequiredAuthError) {
         // This is expected when there are no cached tokens - don't show an error for this
-        console.log("Interactive login required for ARM token");
+        // Interactive login required for ARM token
       } else if (
         error instanceof msal.AuthError &&
         error.errorCode === msal.BrowserAuthErrorMessage.popUpWindowError.code
@@ -173,16 +179,16 @@ export function useAADAuth(config?: ConfigContext): ReturnType {
         // This happens when there are no cached tokens - this is normal for first-time users
         // Only show this as an error if we expected to have tokens (i.e., after interactive login)
         if (hasInteractiveLogin) {
-          console.error("No tokens found after interactive login:", error);
+          // No tokens found after interactive login
           setAuthFailure({
             failureMessage: `Authorization tokens were not found. Please try signing in again.`,
           });
         } else {
-          console.log("No cached tokens found, user needs to sign in");
+          // No cached tokens found, user needs to sign in
         }
       } else {
         const errorJson = JSON.stringify(error);
-        console.error("ARM token acquisition failed:", errorJson);
+        // ARM token acquisition failed with error
         setAuthFailure({
           failureMessage: `We were unable to establish authorization for this account, due to the following error: \n${errorJson}`,
         });
@@ -201,7 +207,7 @@ export function useAADAuth(config?: ConfigContext): ReturnType {
       // it's not critical if this fails.
       console.warn("Error acquiring graph token: " + error);
     }
-  }, [account, tenantId, msalInstance, config]);
+  }, [account, tenantId, msalInstance, config, hasInteractiveLogin]);
 
   React.useEffect(() => {
     // Only try to acquire tokens after an interactive login or if we have a cached account with tenant
@@ -215,17 +221,7 @@ export function useAADAuth(config?: ConfigContext): ReturnType {
     ) {
       acquireTokens();
     }
-  }, [
-    account,
-    tenantId,
-    acquireTokens,
-    authFailure,
-    msalInstance,
-    config,
-    hasInteractiveLogin,
-    cachedAccount,
-    cachedTenantId,
-  ]);
+  }, [account, tenantId, acquireTokens, authFailure, msalInstance, config, hasInteractiveLogin, cachedAccount]);
 
   return {
     account,
