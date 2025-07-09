@@ -55,7 +55,9 @@ export function useAADAuth(config?: ConfigContext): ReturnType {
   }, [msalInstance, account]);
 
   const login = React.useCallback(async () => {
-    if (!msalInstance || !config) return;
+    if (!msalInstance || !config) {
+      return;
+    }
 
     const response = await msalInstance.loginPopup({
       redirectUri: config.msalRedirectURI,
@@ -68,7 +70,9 @@ export function useAADAuth(config?: ConfigContext): ReturnType {
   }, [msalInstance, config]);
 
   const logout = React.useCallback(() => {
-    if (!msalInstance) return;
+    if (!msalInstance) {
+      return;
+    }
     setLoggedOut();
     localStorage.removeItem("cachedTenantId");
     msalInstance.logoutRedirect();
@@ -76,8 +80,9 @@ export function useAADAuth(config?: ConfigContext): ReturnType {
 
   const switchTenant = React.useCallback(
     async (id) => {
-      if (!msalInstance || !config) return;
-
+      if (!msalInstance || !config) {
+        return;
+      }
       const response = await msalInstance.loginPopup({
         redirectUri: config.msalRedirectURI,
         authority: `${config.AAD_ENDPOINT}${id}`,
@@ -94,7 +99,6 @@ export function useAADAuth(config?: ConfigContext): ReturnType {
     if (!(account && tenantId && msalInstance && config)) {
       return;
     }
-
     try {
       const armToken = await acquireTokenWithMsal(msalInstance, {
         authority: `${config.AAD_ENDPOINT}${tenantId}`,
