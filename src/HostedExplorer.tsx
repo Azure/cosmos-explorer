@@ -1,4 +1,4 @@
-import { initializeIcons, Spinner } from "@fluentui/react";
+import { initializeIcons } from "@fluentui/react";
 import { useBoolean } from "@fluentui/react-hooks";
 import { AadAuthorizationFailure } from "Platform/Hosted/Components/AadAuthorizationFailure";
 import * as React from "react";
@@ -33,7 +33,6 @@ const App: React.FunctionComponent = () => {
   // For showing/hiding panel
   const [isOpen, { setTrue: openPanel, setFalse: dismissPanel }] = useBoolean(false);
   const config = useConfig();
-
   const { isLoggedIn, armToken, graphToken, account, tenantId, logout, login, switchTenant, authFailure } =
     useAADAuth(config);
 
@@ -77,10 +76,6 @@ const App: React.FunctionComponent = () => {
       }
     }
   });
-
-  if (!config) {
-    return <Spinner label="Loading configuration..." />;
-  }
 
   const showExplorer =
     (config && isLoggedIn && databaseAccount) ||
