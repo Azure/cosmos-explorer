@@ -17,6 +17,8 @@ export const CustomThemeProvider: FC<ThemeProviderProps> = ({ children, theme })
   const isDarkMode = theme === "Dark";
   return <ThemeContext.Provider value={{ theme, isDarkMode }}>{children}</ThemeContext.Provider>;
 };
+export const isDarkMode  = true;
+export const monacoTheme = isDarkMode ? "vs-dark" : "vs";
 
 export const useTheme = () => {
   const { targetDocument } = useFluent();

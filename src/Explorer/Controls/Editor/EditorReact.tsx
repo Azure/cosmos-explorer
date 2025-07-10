@@ -1,4 +1,5 @@
 import { Spinner, SpinnerSize } from "@fluentui/react";
+import { monacoTheme } from "hooks/useTheme";
 import * as React from "react";
 import { loadMonaco, monaco } from "../../LazyMonaco";
 // import "./EditorReact.less";
@@ -211,7 +212,7 @@ export class EditorReact extends React.Component<EditorReactProps, EditorReactSt
       ariaLabel: this.props.ariaLabel,
       fontSize: this.props.fontSize || 12,
       automaticLayout: true,
-      theme: this.props.theme,
+      theme: monacoTheme,
       wordWrap: this.props.wordWrap || "off",
       lineNumbers: this.props.lineNumbers || "off",
       lineNumbersMinChars: this.props.lineNumbersMinChars,

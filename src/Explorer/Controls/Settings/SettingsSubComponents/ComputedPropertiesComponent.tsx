@@ -3,9 +3,9 @@ import * as DataModels from "Contracts/DataModels";
 import { titleAndInputStackProps, unsavedEditorWarningMessage } from "Explorer/Controls/Settings/SettingsRenderUtils";
 import { isDirty } from "Explorer/Controls/Settings/SettingsUtils";
 import { loadMonaco } from "Explorer/LazyMonaco";
+import { monacoTheme } from "hooks/useTheme";
 import * as monaco from "monaco-editor";
 import * as React from "react";
-
 export interface ComputedPropertiesComponentProps {
   computedPropertiesContent: DataModels.ComputedProperties;
   computedPropertiesContentBaseline: DataModels.ComputedProperties;
@@ -86,6 +86,7 @@ export class ComputedPropertiesComponent extends React.Component<
       value: value,
       language: "json",
       ariaLabel: "Computed properties",
+      theme:monacoTheme,
     });
     if (this.computedPropertiesEditor) {
       const computedPropertiesEditorModel = this.computedPropertiesEditor.getModel();
