@@ -433,9 +433,6 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
       );
     }
 
-    logConsoleInfo(
-      `Updated query setting to ${LocalStorageUtility.getEntryString(StorageKey.SetPartitionKeyUndefined)}`,
-    );
     refreshExplorer && (await explorer.refreshExplorer());
     closeSidePanel();
   };
