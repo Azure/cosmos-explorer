@@ -123,7 +123,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       isSharded: userContext.apiType !== "Tables",
       partitionKey: getPartitionKey(props.isQuickstart),
       subPartitionKeys: [],
-      enableDedicatedThroughput: false,
+      enableDedicatedThroughput: isFabricNative(), // Dedicated throughput is only enabled in Fabric Native by default
       createMongoWildCardIndex:
         isCapabilityEnabled("EnableMongo") && !isCapabilityEnabled("EnableMongo16MBDocumentSupport"),
       useHashV1: false,
@@ -406,9 +406,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   responsiveMode={999}
                 />
               )}
+              <Separator className="panelSeparator" style={{ marginTop: -4, marginBottom: -4 }} />
             </Stack>
           )}
-          <Separator className="panelSeparator" style={{ marginTop: -4, marginBottom: -4 }} />
 
           <Stack>
             <Stack horizontal style={{ marginTop: -5, marginBottom: 1 }}>
@@ -448,8 +448,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 this.setState({ collectionId: event.target.value })
               }
             />
+            <Separator className="panelSeparator" style={{ marginTop: -5, marginBottom: -5 }} />
           </Stack>
-          <Separator className="panelSeparator" style={{ marginTop: -5, marginBottom: -5 }} />
+
           {this.shouldShowIndexingOptionsForFreeTierAccount() && (
             <Stack>
               <Stack horizontal style={{ marginTop: -4, marginBottom: -5 }}>
@@ -644,7 +645,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                     </Stack>
                   );
                 })}
-              {!isFabricNative() && userContext.apiType === "SQL" && (
+              {userContext.apiType === "SQL" && (
                 <Stack className="panelGroupSpacing">
                   <DefaultButton
                     styles={{ root: { padding: 0, width: 200, height: 30 }, label: { fontSize: 12 } }}
@@ -708,7 +709,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             </Stack>
           )}
 
-          {this.shouldShowCollectionThroughputInput() && (
+          {this.shouldShowCollectionThroughputInput() && !isFabricNative() && (
             <ThroughputInput
               showFreeTierExceedThroughputTooltip={isFreeTierAccount() && !isFirstResourceCreated}
               isDatabase={false}
@@ -775,7 +776,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             </Stack>
           )}
 
-          <Separator className="panelSeparator" style={{ marginTop: -15, marginBottom: -4 }} />
+          {!isFabricNative() && userContext.apiType === "SQL" && (
+            <Separator className="panelSeparator" style={{ marginTop: -15, marginBottom: -4 }} />
+          )}
 
           {shouldShowAnalyticalStoreOptions() && (
             <Stack className="panelGroupSpacing" style={{ marginTop: -4 }}>
@@ -1131,7 +1134,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
   // }
 
   private shouldShowCollectionThroughputInput(): boolean {
-    if (isFabricNative() || isServerlessAccount()) {
+    if (isServerlessAccount()) {
       return false;
     }
 
