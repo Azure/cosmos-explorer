@@ -894,6 +894,7 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
 
   const authorizationToken = inputs.authorizationToken || "";
   const databaseAccount = inputs.databaseAccount;
+  const aadToken = inputs.aadToken || "";
 
   updateConfigContext({
     ARM_ENDPOINT: normalizeArmEndpoint(inputs.csmEndpoint || configContext.ARM_ENDPOINT),
@@ -906,6 +907,7 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
 
   updateUserContext({
     authorizationToken,
+    aadToken,
     databaseAccount,
     resourceGroup: inputs.resourceGroup,
     subscriptionId: inputs.subscriptionId,

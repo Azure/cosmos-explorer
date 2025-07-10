@@ -189,6 +189,12 @@ jobs:
             NOSQL_TESTACCOUNT_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql.documents.azure.com/.default" -o tsv --query accessToken)
             echo "::add-mask::$NOSQL_TESTACCOUNT_TOKEN"
             echo NOSQL_TESTACCOUNT_TOKEN=$NOSQL_TESTACCOUNT_TOKEN >> $GITHUB_ENV
+            TABLE_TESTACCOUNT_TOKEN=$(az account get-access-token --scope "https://github-e2etests-tables.documents.azure.com/.default" -o tsv --query accessToken)
+            echo "::add-mask::$TABLE_TESTACCOUNT_TOKEN"
+            echo TABLE_TESTACCOUNT_TOKEN=$TABLE_TESTACCOUNT_TOKEN >> $GITHUB_ENV
+            GREMLIN_TESTACCOUNT_TOKEN=$(az account get-access-token --scope "https://github-e2etests-gremlin.documents.azure.com/.default" -o tsv --query accessToken)
+            echo "::add-mask::$GREMLIN_TESTACCOUNT_TOKEN"
+            echo GREMLIN_TESTACCOUNT_TOKEN=$GREMLIN_TESTACCOUNT_TOKEN >> $GITHUB_ENV
       - name: Run test shard ${{ matrix['shardIndex'] }} of ${{ matrix['shardTotal']}}
         run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }} --workers=3
       - name: Upload blob report to GitHub Actions Artifacts

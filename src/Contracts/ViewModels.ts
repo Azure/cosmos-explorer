@@ -443,6 +443,7 @@ export interface DataExplorerInputsFrame {
     [key: string]: string;
   };
   feedbackPolicies?: any;
+  aadToken?: string;
 }
 
 export interface SelfServeFrameInputs {
