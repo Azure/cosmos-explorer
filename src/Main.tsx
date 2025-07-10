@@ -63,7 +63,7 @@ import { appThemeFabric } from "./Platform/Fabric/FabricTheme";
 import "./Shared/appInsights";
 import { useConfig } from "./hooks/useConfig";
 import { useKnockoutExplorer } from "./hooks/useKnockoutExplorer";
-
+import { isDarkMode } from "./hooks/useTheme";
 // Initialize icons before React is loaded
 initializeIcons(undefined, { disableWarnings: true });
 
@@ -153,7 +153,6 @@ const App = (): JSX.Element => {
 
 const Root: React.FC = () => {
   // Force dark theme
-  const isDarkMode = true;
   const currentTheme = isDarkMode ? webDarkTheme : webLightTheme;
   
   // Apply theme to body for Fluent UI v8 components
