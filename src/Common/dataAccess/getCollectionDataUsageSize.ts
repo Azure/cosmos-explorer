@@ -1,3 +1,4 @@
+import { isFabricNative } from "Platform/Fabric/FabricUtil";
 import { AuthType } from "../../AuthType";
 import { configContext } from "../../ConfigContext";
 import { userContext } from "../../UserContext";
@@ -41,7 +42,7 @@ interface MetricsResponse {
 }
 
 export const getCollectionUsageSizeInKB = async (databaseName: string, containerName: string): Promise<number> => {
-  if (userContext.authType !== AuthType.AAD) {
+  if (userContext.authType !== AuthType.AAD || isFabricNative()) {
     return undefined;
   }
 

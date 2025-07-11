@@ -252,7 +252,7 @@ export class PhoenixClient {
 
   private getPhoenixControlPlanePathPrefix(): string {
     if (!this.armResourceId) {
-      throw new Error("The Phoenix client was not initialized properly: missing ARM resourcce id");
+      throw new Error("The Phoenix client was not initialized properly: missing ARM resource id");
     }
 
     const toolsEndpoint =
