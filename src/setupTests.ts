@@ -47,3 +47,5 @@ require("jquery-ui-dist/jquery-ui");
   unobserve: jest.fn(),
   disconnect: jest.fn(),
 }));
+
+(<any>global).crypto.subtle = {};
