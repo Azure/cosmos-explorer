@@ -92,6 +92,12 @@ export async function getTestExplorerUrl(accountType: TestAccount, iframeSrc?: s
     params.set("enableaaddataplane", "true");
   }
 
+  const nosqlReadOnlyRbacToken = process.env.NOSQL_READONLY_TESTACCOUNT_TOKEN;
+  if (nosqlReadOnlyRbacToken) {
+    params.set("nosqlReadOnlyRbacToken", nosqlReadOnlyRbacToken);
+    params.set("enableaaddataplane", "true");
+  }
+
   const tableRbacToken = process.env.TABLE_TESTACCOUNT_TOKEN;
   if (tableRbacToken) {
     params.set("tableRbacToken", tableRbacToken);

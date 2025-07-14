@@ -3,6 +3,7 @@ import "../../less/hostedexplorer.less";
 import { DataExplorerInputsFrame } from "../../src/Contracts/ViewModels";
 import { updateUserContext } from "../../src/UserContext";
 import { get, listKeys } from "../../src/Utils/arm/generatedClients/cosmos/databaseAccounts";
+import { defaultAccounts, TestAccount } from "../fx";
 
 const urlSearchParams = new URLSearchParams(window.location.search);
 const resourceGroup = urlSearchParams.get("resourceGroup") || process.env.RESOURCE_GROUP || "";
@@ -13,6 +14,8 @@ const iframeSrc = urlSearchParams.get("iframeSrc") || "explorer.html?platform=Po
 const authToken = urlSearchParams.get("token");
 
 const nosqlRbacToken = urlSearchParams.get("nosqlRbacToken") || process.env.NOSQL_TESTACCOUNT_TOKEN || "";
+const nosqlReadOnlyRbacToken =
+  urlSearchParams.get("nosqlReadOnlyRbacToken") || process.env.NOSQL_READONLY_TESTACCOUNT_TOKEN || "";
 const tableRbacToken = urlSearchParams.get("tableRbacToken") || process.env.TABLE_TESTACCOUNT_TOKEN || "";
 const gremlinRbacToken = urlSearchParams.get("gremlinRbacToken") || process.env.GREMLIN_TESTACCOUNT_TOKEN || "";
 
@@ -28,7 +31,7 @@ const initTestExplorer = async (): Promise<void> => {
   let rbacToken = "";
   switch (testAccountType) {
     case "sql":
-      rbacToken = nosqlRbacToken;
+      rbacToken = accountName === defaultAccounts[TestAccount.SQLReadOnly] ? nosqlReadOnlyRbacToken : nosqlRbacToken;
       break;
     case "gremlin":
       rbacToken = gremlinRbacToken;
