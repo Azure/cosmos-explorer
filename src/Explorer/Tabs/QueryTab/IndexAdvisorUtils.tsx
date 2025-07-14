@@ -110,5 +110,3 @@ export const renderImpactDots = (impact: string): JSX.Element => {
     </div>
   );
 };
-
-

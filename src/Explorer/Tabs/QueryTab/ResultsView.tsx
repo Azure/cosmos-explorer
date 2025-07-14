@@ -22,12 +22,7 @@ import {
   TableRow,
   createTableColumn,
 } from "@fluentui/react-components";
-import {
-  ArrowDownloadRegular,
-  ChevronDown20Regular,
-  ChevronRight20Regular,
-  CopyRegular
-} from "@fluentui/react-icons";
+import { ArrowDownloadRegular, ChevronDown20Regular, ChevronRight20Regular, CopyRegular } from "@fluentui/react-icons";
 import copy from "clipboard-copy";
 import { HttpHeaders } from "Common/Constants";
 import MongoUtility from "Common/MongoUtility";
@@ -563,6 +558,8 @@ export const IndexAdvisorTab: React.FC = () => {
   const [notIncluded, setNotIncludedIndexes] = useState<IIndexMetric[]>([]);
   const [isUpdating, setIsUpdating] = useState(false);
   const [justUpdatedPolicy, setJustUpdatedPolicy] = useState(false);
+  const indexingMetricsDocLink = "https://learn.microsoft.com/azure/cosmos-db/nosql/index-metrics";
+
   useEffect(() => {
     const fetchIndexMetrics = async () => {
       const clearMessage = logConsoleProgress(`Querying items with IndexMetrics in container ${containerId}`);
@@ -785,7 +782,16 @@ export const IndexAdvisorTab: React.FC = () => {
             </span>
           </>
         ) : (
-          "Here is an analysis on the indexes utilized for executing the query. Based on the analysis, Cosmos DB recommends adding the selected indexes to your indexing policy to optimize the performance of this particular query."
+          <>
+            <span>
+              Index Advisor uses Indexing Metrics to suggest query paths that, when included in your indexing policy,
+              can improve the performance of this query by reducing RU costs and lowering latency.{" "}
+              <a href={indexingMetricsDocLink} target="_blank" rel="noopener noreferrer">
+                Learn more about Indexing Metrics
+              </a>
+              .{" "}
+            </span>
+          </>
         )}
       </div>
       <div className={style.indexAdvisorTitle}>Indexes analysis</div>
