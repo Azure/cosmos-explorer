@@ -5,13 +5,13 @@ import { useDatabases } from "Explorer/useDatabases";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import * as Constants from "../../../Common/Constants";
 import { InfoTooltip } from "../../../Common/Tooltip/InfoTooltip";
+import { isFabricNative } from "../../../Platform/Fabric/FabricUtil";
 import * as SharedConstants from "../../../Shared/Constants";
 import { userContext } from "../../../UserContext";
 import { getCollectionName } from "../../../Utils/APITypeUtils";
 import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
 import * as PricingUtils from "../../../Utils/PricingUtils";
 import "./ThroughputInput.less";
-import { isFabricNative } from "../../../Platform/Fabric/FabricUtil";
 
 export interface ThroughputInputProps {
   isDatabase: boolean;
@@ -41,11 +41,12 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
   let defaultThroughput: number;
   const workloadType: Constants.WorkloadType = getWorkloadType();
 
-  if (
+  if (isFabricNative()) {
+    defaultThroughput = AutoPilotUtils.autoPilotThroughput5K;
+  } else if (
     isFreeTier ||
     isQuickstart ||
-    [Constants.WorkloadType.Learning, Constants.WorkloadType.DevelopmentTesting].includes(workloadType) ||
-    isFabricNative()
+    [Constants.WorkloadType.Learning, Constants.WorkloadType.DevelopmentTesting].includes(workloadType)
   ) {
     defaultThroughput = AutoPilotUtils.autoPilotThroughput1K;
   } else if (workloadType === Constants.WorkloadType.Production) {
