@@ -3,7 +3,6 @@ import "../../less/hostedexplorer.less";
 import { DataExplorerInputsFrame } from "../../src/Contracts/ViewModels";
 import { updateUserContext } from "../../src/UserContext";
 import { get, listKeys } from "../../src/Utils/arm/generatedClients/cosmos/databaseAccounts";
-import { defaultAccounts, TestAccount } from "../fx";
 
 const urlSearchParams = new URLSearchParams(window.location.search);
 const resourceGroup = urlSearchParams.get("resourceGroup") || process.env.RESOURCE_GROUP || "";
@@ -19,6 +18,9 @@ const nosqlReadOnlyRbacToken =
 const tableRbacToken = urlSearchParams.get("tableRbacToken") || process.env.TABLE_TESTACCOUNT_TOKEN || "";
 const gremlinRbacToken = urlSearchParams.get("gremlinRbacToken") || process.env.GREMLIN_TESTACCOUNT_TOKEN || "";
 
+// Playwright has issues with the defaultAccounts export from fx.ts so hardcoding this here.
+const defaultNoSqlReadonlyAccountName = "github-e2etests-sql-readonly";
+
 const initTestExplorer = async (): Promise<void> => {
   updateUserContext({
     authorizationToken: `bearer ${authToken}`,
@@ -31,7 +33,7 @@ const initTestExplorer = async (): Promise<void> => {
   let rbacToken = "";
   switch (testAccountType) {
     case "sql":
-      rbacToken = accountName === defaultAccounts[TestAccount.SQLReadOnly] ? nosqlReadOnlyRbacToken : nosqlRbacToken;
+      rbacToken = accountName === defaultNoSqlReadonlyAccountName ? nosqlReadOnlyRbacToken : nosqlRbacToken;
       break;
     case "gremlin":
       rbacToken = gremlinRbacToken;

@@ -49,7 +49,7 @@ export const defaultAccounts: Record<TestAccount, string> = {
   [TestAccount.MongoReadonly]: "github-e2etests-mongo-readonly",
   [TestAccount.Mongo32]: "github-e2etests-mongo32",
   [TestAccount.SQL]: "github-e2etests-sql",
-  [TestAccount.SQLReadOnly]: "github-e2etests-sql-readonly",
+  [TestAccount.SQLReadOnly]: "github-e2etests-sql-readonly", // If you update this value, also update it in TestExplorer.ts
 };
 
 export const resourceGroupName = process.env.DE_TEST_RESOURCE_GROUP ?? "de-e2e-tests";
