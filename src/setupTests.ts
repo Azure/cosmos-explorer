@@ -47,3 +47,6 @@ require("jquery-ui-dist/jquery-ui");
   unobserve: jest.fn(),
   disconnect: jest.fn(),
 }));
+
+// The test environment Data Explorer uses does not have crypto.subtle implementation
+(<any>global).crypto.subtle = {};
