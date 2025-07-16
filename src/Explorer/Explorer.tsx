@@ -289,14 +289,31 @@ export default class Explorer {
     }
   }
 
-  public openInVsCode(): void {
+  private getDocumentDbUrl() {
+    const { adminLogin: adminLoginuserName = "", connectionString = "" } = userContext.vcoreMongoConnectionParams;
+    const updatedConnectionString = connectionString.replace(/<(user|username)>:<password>/i, adminLoginuserName);
+    const encodedUpdatedConnectionString = encodeURIComponent(encodeURIComponent(updatedConnectionString));
+    const documentDbUrl = `vscode://ms-azuretools.vscode-documentdb?connectionString=${encodedUpdatedConnectionString}`;
+    return documentDbUrl;
+  }
+
+  private getCosmosDbUrl() {
     const activeTab = useTabs.getState().activeTab;
     const resourceId = encodeURIComponent(userContext.databaseAccount.id);
     const database = encodeURIComponent(activeTab?.collection?.databaseId);
     const container = encodeURIComponent(activeTab?.collection?.id());
     const baseUrl = `vscode://ms-azuretools.vscode-cosmosdb?resourceId=${resourceId}`;
     const vscodeUrl = activeTab ? `${baseUrl}&database=${database}&container=${container}` : baseUrl;
+    return vscodeUrl;
+  }
 
+  private getVSCodeUrl(): string {
+    const isvCore = (userContext.apiType || userContext.databaseAccount.kind) === "VCoreMongo";
+    return isvCore ? this.getDocumentDbUrl() : this.getCosmosDbUrl();
+  }
+
+  public openInVsCode(): void {
+    const vscodeUrl = this.getVSCodeUrl();
     const openVSCodeDialogProps: DialogProps = {
       linkProps: {
         linkText: "Download Visual Studio Code",
