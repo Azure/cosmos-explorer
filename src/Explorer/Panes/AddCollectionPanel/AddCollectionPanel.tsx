@@ -52,6 +52,7 @@ import { getCollectionName } from "Utils/APITypeUtils";
 import { isCapabilityEnabled, isServerlessAccount, isVectorSearchEnabled } from "Utils/CapabilityUtils";
 import { getUpsellMessage } from "Utils/PricingUtils";
 import { ValidCosmosDbIdDescription, ValidCosmosDbIdInputPattern } from "Utils/ValidationUtils";
+import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
 import { CollapsibleSectionComponent } from "../../Controls/CollapsiblePanel/CollapsibleSectionComponent";
 import { ThroughputInput } from "../../Controls/ThroughputInput/ThroughputInput";
 import { ContainerSampleGenerator } from "../../DataSamples/ContainerSampleGenerator";
@@ -60,7 +61,6 @@ import { useDatabases } from "../../useDatabases";
 import { PanelFooterComponent } from "../PanelFooterComponent";
 import { PanelInfoErrorComponent } from "../PanelInfoErrorComponent";
 import { PanelLoadingScreen } from "../PanelLoadingScreen";
-import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
 
 export interface AddCollectionPanelProps {
   explorer: Explorer;
@@ -1355,8 +1355,8 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
     // Throughput
     if (isFabricNative()) {
-      // Fabric Native accounts are always autoscale and have a fixed throughput of 1K
-      autoPilotMaxThroughput = AutoPilotUtils.autoPilotThroughput1K;
+      // Fabric Native accounts are always autoscale and have a fixed throughput of 5K
+      autoPilotMaxThroughput = AutoPilotUtils.autoPilotThroughput5K;
       offerThroughput = undefined;
     } else if (databaseLevelThroughput) {
       if (this.state.createNewDatabase) {
