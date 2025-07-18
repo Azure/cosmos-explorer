@@ -619,7 +619,9 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
               }}
               disabled={this.overrideWithProvisionedThroughputSettings()}
               step={AutoPilotUtils.autoPilotIncrementStep}
-              value={this.overrideWithProvisionedThroughputSettings() ? "" : this.props.maxAutoPilotThroughput?.toString()}
+              value={
+                this.overrideWithProvisionedThroughputSettings() ? "" : this.props.maxAutoPilotThroughput?.toString()
+              }
               onChange={this.onAutoPilotThroughputChange}
               min={autoPilotThroughput1K}
               onGetErrorMessage={(value: string) => {
