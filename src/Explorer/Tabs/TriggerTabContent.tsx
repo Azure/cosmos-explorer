@@ -1,5 +1,6 @@
 import { TriggerDefinition } from "@azure/cosmos";
-import { Dropdown, IDropdownOption, Label, TextField } from "@fluentui/react";
+import { getTheme, IDropdownOption, IDropdownStyles, Label, TextField } from "@fluentui/react";
+import { Dropdown } from "@fluentui/react/lib/Dropdown";
 import { KeyboardAction } from "KeyboardShortcuts";
 import { ValidCosmosDbIdDescription, ValidCosmosDbIdInputPattern } from "Utils/ValidationUtils";
 import React, { Component } from "react";
@@ -17,11 +18,46 @@ import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandBu
 import { EditorReact } from "../Controls/Editor/EditorReact";
 import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
 import TriggerTab from "./TriggerTab";
-
 const triggerTypeOptions: IDropdownOption[] = [
   { key: "Pre", text: "Pre" },
   { key: "Post", text: "Post" },
 ];
+const theme = getTheme();
+const dropdownStyles: Partial<IDropdownStyles> = {
+  label: {
+    color: "var(--colorNeutralForeground1)",
+  },
+  dropdown: {
+    width: "100%",
+  },
+  title: {
+    backgroundColor: "var(--colorNeutralBackground1)",
+    color: "var(--colorNeutralForeground1)",
+  },
+  dropdownItem: {
+    backgroundColor: "var(--colorNeutralBackground1)",
+    color: "var(--colorNeutralForeground1)",
+  },
+  dropdownItems: {
+    backgroundColor: "var(--colorNeutralBackground1)",
+    color: "var(--colorNeutralForeground1)",
+  },
+  dropdownItemSelected: {
+    backgroundColor: "var(--colorBrandBackgroundSelected)",
+    color: "var(--colorNeutralForegroundOnBrand)",
+    selectors: {
+      "&:before": {
+        content: '""',
+        position: "absolute",
+        left: 0,
+        top: 0,
+        bottom: 0,
+        width: "4px",
+        background: "var(--colorBrandBackground)",
+      },
+    },
+  },
+};
 
 const triggerOperationOptions: IDropdownOption[] = [
   { key: "All", text: "All" },
@@ -304,6 +340,23 @@ export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentS
           value={triggerId}
           readOnly={!isIdEditable}
           onChange={this.handleTriggerIdChange}
+          styles={{
+            root: { width: "40%", marginTop: "10px" },
+            fieldGroup: {
+              backgroundColor: "var(--colorNeutralBackground1)",
+              border: "1px solid var(--colorNeutralStroke1)",
+            },
+            field: {
+              color: "var(--colorNeutralForeground1)",
+            },
+            subComponentStyles: {
+              label: {
+                root: {
+                  color: "var(--colorNeutralForeground1)",
+                },
+              },
+            },
+          }}
         />
         <Dropdown
           placeholder="Trigger Type"
@@ -312,6 +365,42 @@ export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentS
           selectedKey={triggerType}
           className="trigger-field"
           onChange={(event, selectedKey) => this.handleTriggerTypeOprationChange(event, selectedKey, "triggerType")}
+          styles={{
+            root: { width: "40%", marginTop: "10px" },
+            // dropdown: {
+            //   backgroundColor: "var(--colorNeutralBackground1)",
+            //   color: "var(--colorNeutralForeground1)",
+            //   border: "1px solid var(--colorNeutralStroke1)",
+            // },
+
+            // dropdown: {
+            //   backgroundColor: theme.palette.neutralLighterAlt, // dynamic background
+            //   borderColor: theme.palette.neutralSecondary,
+            // },
+            // title: {
+            //   backgroundColor: theme.palette.neutralLighterAlt,
+            //   color: theme.semanticColors.bodyText, // selected value color
+            // },
+
+            dropdown: {
+              backgroundColor: theme.semanticColors.bodyBackground,
+              borderColor: theme.semanticColors.bodyDivider,
+            },
+            title: {
+              backgroundColor: theme.semanticColors.bodyBackground,
+              color: theme.semanticColors.bodyText,
+            },
+            callout: {
+              backgroundColor: theme.semanticColors.bodyBackground,
+            },
+            subComponentStyles: {
+              label: {
+                root: {
+                  color: "var(--colorNeutralForeground1)",
+                },
+              },
+            },
+          }}
         />
         <Dropdown
           placeholder="Trigger Operation"
@@ -322,6 +411,26 @@ export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentS
           onChange={(event, selectedKey) =>
             this.handleTriggerTypeOprationChange(event, selectedKey, "triggerOperation")
           }
+          styles={dropdownStyles}
+
+          // styles={{
+          //   root: { width: "40%", marginTop: "10px" },
+          //   dropdown: {
+          //     backgroundColor: theme.palette.neutralLighterAlt, // dynamic background
+          //     borderColor: theme.palette.neutralSecondary,
+          //   },
+          //   title: {
+          //     backgroundColor: theme.palette.neutralLighterAlt,
+          //     color: theme.semanticColors.bodyText, // selected value color
+          //   },
+          //   subComponentStyles: {
+          //     label: {
+          //       root: {
+          //         color: "var(--colorNeutralForeground1)",
+          //       },
+          //     },
+          //   },
+          // }}
         />
         <Label className="trigger-field">Trigger Body</Label>
         <EditorReact

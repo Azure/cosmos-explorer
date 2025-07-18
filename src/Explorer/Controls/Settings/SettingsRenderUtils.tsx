@@ -63,7 +63,7 @@ export interface PriceBreakdown {
 
 export type editorType = "indexPolicy" | "computedProperties";
 
-export const infoAndToolTipTextStyle: ITextStyles = { root: { fontSize: 14, color: 'var(--colorNeutralForeground1)' } };
+export const infoAndToolTipTextStyle: ITextStyles = { root: { fontSize: 14, color: "var(--colorNeutralForeground1)" } };
 
 export const noLeftPaddingCheckBoxStyle: ICheckboxStyles = {
   label: {
@@ -166,7 +166,7 @@ export const separatorStyles: Partial<ISeparatorStyles> = {
 };
 
 export const messageBarStyles: Partial<IMessageBarStyles> = {
-  root: { marginTop: "5px", backgroundColor: 'var(--colorNeutralBackground1)' },
+  root: { marginTop: "5px", backgroundColor: "var(--colorNeutralBackground1)" },
   text: { fontSize: 14 },
 };
 
@@ -214,9 +214,11 @@ export const getEstimatedSpendingElement = (
   const ruRange: string = isAutoscale ? throughput / 10 + " RU/s - " : "";
   return (
     <Stack>
-      <Text style={{ fontWeight: 600, color: 'var(--colorNeutralForeground1)' }}>Cost estimate*</Text>
+      <Text style={{ fontWeight: 600, color: "var(--colorNeutralForeground1)" }}>Cost estimate*</Text>
       {costElement}
-      <Text style={{ fontWeight: 600, marginTop: 15,  color: 'var(--colorNeutralForeground1)' }}>How we calculate this</Text>
+      <Text style={{ fontWeight: 600, marginTop: 15, color: "var(--colorNeutralForeground1)" }}>
+        How we calculate this
+      </Text>
       <Stack id="throughputSpendElement" style={{ marginTop: 5 }}>
         <span>
           {numberOfRegions} region{numberOfRegions > 1 && <span>s</span>}
@@ -230,7 +232,7 @@ export const getEstimatedSpendingElement = (
           {priceBreakdown.pricePerRu}/RU
         </span>
       </Stack>
-      <Text style={{ marginTop: 15, color: 'var(--colorNeutralForeground1)' }}>
+      <Text style={{ marginTop: 15, color: "var(--colorNeutralForeground1)" }}>
         <em>*{estimatedCostDisclaimer}</em>
       </Text>
     </Stack>
@@ -272,7 +274,7 @@ export const updateThroughputDelayedApplyWarningMessage: JSX.Element = (
 
 export const getUpdateThroughputBeyondInstantLimitMessage = (instantMaximumThroughput: number): JSX.Element => {
   return (
-    <Text  id="updateThroughputDelayedApplyWarningMessage">
+    <Text id="updateThroughputDelayedApplyWarningMessage">
       Scaling up will take 4-6 hours as it exceeds what Azure Cosmos DB can instantly support currently based on your
       number of physical partitions. You can increase your throughput to {instantMaximumThroughput} instantly or proceed
       with this value and wait until the scale-up is completed.
@@ -290,7 +292,7 @@ export const getUpdateThroughputBeyondSupportLimitMessage = (
         Your request to increase throughput exceeds the pre-allocated capacity which may take longer than expected.
         There are three options you can choose from to proceed:
       </Text>
-      <ol style={{ fontSize: 14, color: 'var(--colorNeutralForeground1)', marginTop: "5px" }}>
+      <ol style={{ fontSize: 14, color: "var(--colorNeutralForeground1)", marginTop: "5px" }}>
         <li>You can instantly scale up to {instantMaximumThroughput} RU/s.</li>
         {instantMaximumThroughput < maximumThroughput && (
           <li>You can asynchronously scale up to any value under {maximumThroughput} RU/s in 4-6 hours.</li>
@@ -326,7 +328,7 @@ export const getUpdateThroughputBelowMinimumMessage = (minimum: number): JSX.Ele
 };
 
 export const saveThroughputWarningMessage: JSX.Element = (
-  <Text >
+  <Text>
     Your bill will be affected as you update your throughput settings. Please review the updated cost estimate below
     before saving your changes
   </Text>
@@ -507,17 +509,24 @@ export const getTextFieldStyles = (current: isDirtyTypes, baseline: isDirtyTypes
     height: 25,
     width: 300,
     borderColor: isDirty(current, baseline) ? StyleConstants.Dirty : "",
+    backgroundColor: "var(--colorNeutralBackground3)",
     selectors: {
       ":disabled": {
-        backgroundColor:'var(--colorNeutralBackground1)',
+        backgroundColor: "var(--colorNeutralBackground1)",
         borderColor: StyleConstants.BaseMediumHigh,
       },
+      "input:disabled": {
+        backgroundColor: "var(--colorNeutralBackground3)",
+      },
+    },
+    field: {
+      color: "var(--colorNeutralForeground1)",
     },
   },
   subComponentStyles: {
     label: {
       root: {
-        color: 'var(--colorNeutralForeground1)'
+        color: "var(--colorNeutralForeground1)",
       },
     },
   },
@@ -529,7 +538,8 @@ export const getChoiceGroupStyles = (
   isHorizontal?: boolean,
 ): Partial<IChoiceGroupStyles> => ({
   label: {
-    color: 'var(--colorNeutralForeground1)', },
+    color: "var(--colorNeutralForeground1)",
+  },
   flexContainer: [
     {
       selectors: {
@@ -544,7 +554,7 @@ export const getChoiceGroupStyles = (
           fontSize: 14,
           fontFamily: StyleConstants.DataExplorerFont,
           padding: "2px 5px",
-          color: 'var(--colorNeutralForeground1)'
+          color: "var(--colorNeutralForeground1)",
         },
       },
       display: isHorizontal ? "inline-flex" : "default",

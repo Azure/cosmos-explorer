@@ -17,13 +17,13 @@ export const CustomThemeProvider: FC<ThemeProviderProps> = ({ children, theme })
   const isDarkMode = theme === "Dark";
   return <ThemeContext.Provider value={{ theme, isDarkMode }}>{children}</ThemeContext.Provider>;
 };
-export const isDarkMode  = true;
+export const isDarkMode = true;
 export const monacoTheme = isDarkMode ? "vs-dark" : "vs";
 
 export const useTheme = () => {
   const { targetDocument } = useFluent();
   const context = React.useContext(ThemeContext);
-  
+
   const [isDarkMode, setIsDarkMode] = useState(() => {
     // First check if we're in a theme context
     if (context) {
@@ -60,6 +60,6 @@ export const useTheme = () => {
   }, [targetDocument, context]);
 
   return {
-    isDarkMode
+    isDarkMode,
   };
 };
