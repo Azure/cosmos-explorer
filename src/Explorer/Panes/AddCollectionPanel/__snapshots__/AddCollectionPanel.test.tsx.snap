@@ -93,7 +93,6 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
           aria-label="New database id, Type a new database id"
           aria-required={true}
           autoComplete="off"
-          autoFocus={true}
           className="panelTextField"
           id="newDatabaseId"
           name="newDatabaseId"
@@ -143,16 +142,16 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
           </StyledTooltipHostBase>
         </Stack>
       </Stack>
-    </Stack>
-    <Separator
-      className="panelSeparator"
-      style={
-        {
-          "marginBottom": -4,
-          "marginTop": -4,
+      <Separator
+        className="panelSeparator"
+        style={
+          {
+            "marginBottom": -4,
+            "marginTop": -4,
+          }
         }
-      }
-    />
+      />
+    </Stack>
     <Stack>
       <Stack
         horizontal={true}
@@ -203,16 +202,16 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
         type="text"
         value=""
       />
-    </Stack>
-    <Separator
-      className="panelSeparator"
-      style={
-        {
-          "marginBottom": -5,
-          "marginTop": -5,
+      <Separator
+        className="panelSeparator"
+        style={
+          {
+            "marginBottom": -5,
+            "marginTop": -5,
+          }
         }
-      }
-    />
+      />
+    </Stack>
     <Stack>
       <Stack
         horizontal={true}

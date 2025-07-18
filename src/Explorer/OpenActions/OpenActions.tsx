@@ -189,6 +189,11 @@ function openPane(action: ActionContracts.OpenPane, explorer: Explorer) {
   ) {
     explorer.onNewCollectionClicked();
   } else if (
+    action.paneKind === ActionContracts.PaneKind.QuickStart ||
+    action.paneKind === ActionContracts.PaneKind[ActionContracts.PaneKind.QuickStart]
+  ) {
+    explorer.onNewCollectionClicked({ isQuickstart: true });
+  } else if (
     action.paneKind === ActionContracts.PaneKind.CassandraAddCollection ||
     action.paneKind === ActionContracts.PaneKind[ActionContracts.PaneKind.CassandraAddCollection]
   ) {

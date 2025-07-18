@@ -64,7 +64,8 @@ import {
   getMsalInstance,
 } from "../Utils/AuthorizationUtils";
 import { isInvalidParentFrameOrigin, shouldProcessMessage } from "../Utils/MessageValidation";
-import { getReadOnlyKeys, listKeys } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
+import { get, getReadOnlyKeys, listKeys } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
+import * as Types from "../Utils/arm/generatedClients/cosmos/types";
 import { applyExplorerBindings } from "../applyExplorerBindings";
 
 // This hook will create a new instance of Explorer.ts and bind it to the DOM
@@ -346,6 +347,14 @@ async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
     }
   }
   try {
+    // TO DO - Remove once we have ARG API support for enableMaterializedViews property
+    const databaseAccount: Types.DatabaseAccountGetResults = await get(
+      subscriptionId,
+      account.resourceGroup,
+      account.name,
+    );
+    config.databaseAccount.properties.enableMaterializedViews = databaseAccount.properties?.enableMaterializedViews;
+
     updateUserContext({
       databaseAccount: config.databaseAccount,
     });

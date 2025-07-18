@@ -8,7 +8,12 @@ import { MessageTypes } from "Contracts/ExplorerContracts";
 import { useDataPlaneRbac } from "Explorer/Panes/SettingsPane/SettingsPane";
 import { getCopilotEnabled, isCopilotFeatureRegistered } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
 import { IGalleryItem } from "Juno/JunoClient";
-import { isFabricMirrored, isFabricMirroredKey, scheduleRefreshFabricToken } from "Platform/Fabric/FabricUtil";
+import {
+  isFabricMirrored,
+  isFabricMirroredKey,
+  isFabricNative,
+  scheduleRefreshFabricToken,
+} from "Platform/Fabric/FabricUtil";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { acquireMsalTokenForAccount } from "Utils/AuthorizationUtils";
 import { allowedNotebookServerUrls, validateEndpoint } from "Utils/EndpointUtils";
@@ -1149,7 +1154,10 @@ export default class Explorer {
         ? this.refreshDatabaseForResourceToken()
         : await this.refreshAllDatabases(); // await: we rely on the databases to be loaded before restoring the tabs further in the flow
     }
-    await useNotebook.getState().refreshNotebooksEnabledStateForAccount();
+
+    if (!isFabricNative()) {
+      await useNotebook.getState().refreshNotebooksEnabledStateForAccount();
+    }
 
     // TODO: remove reference to isNotebookEnabled and isNotebooksEnabledForAccount
     const isNotebookEnabled =
@@ -1171,7 +1179,7 @@ export default class Explorer {
       await this.initNotebooks(userContext.databaseAccount);
     }
 
-    if (userContext.authType === AuthType.AAD && userContext.apiType === "SQL") {
+    if (userContext.authType === AuthType.AAD && userContext.apiType === "SQL" && !isFabricNative()) {
       const throughputBucketsEnabled = await featureRegistered(userContext.subscriptionId, "ThroughputBucketing");
       updateUserContext({ throughputBucketsEnabled });
     }

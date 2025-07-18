@@ -52,6 +52,7 @@ import { getCollectionName } from "Utils/APITypeUtils";
 import { isCapabilityEnabled, isServerlessAccount, isVectorSearchEnabled } from "Utils/CapabilityUtils";
 import { getUpsellMessage } from "Utils/PricingUtils";
 import { ValidCosmosDbIdDescription, ValidCosmosDbIdInputPattern } from "Utils/ValidationUtils";
+import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
 import { CollapsibleSectionComponent } from "../../Controls/CollapsiblePanel/CollapsibleSectionComponent";
 import { ThroughputInput } from "../../Controls/ThroughputInput/ThroughputInput";
 import { ContainerSampleGenerator } from "../../DataSamples/ContainerSampleGenerator";
@@ -60,7 +61,6 @@ import { useDatabases } from "../../useDatabases";
 import { PanelFooterComponent } from "../PanelFooterComponent";
 import { PanelInfoErrorComponent } from "../PanelInfoErrorComponent";
 import { PanelLoadingScreen } from "../PanelLoadingScreen";
-import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
 
 export interface AddCollectionPanelProps {
   explorer: Explorer;
@@ -123,7 +123,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       isSharded: userContext.apiType !== "Tables",
       partitionKey: getPartitionKey(props.isQuickstart),
       subPartitionKeys: [],
-      enableDedicatedThroughput: false,
+      enableDedicatedThroughput: isFabricNative(), // Dedicated throughput is only enabled in Fabric Native by default
       createMongoWildCardIndex:
         isCapabilityEnabled("EnableMongo") && !isCapabilityEnabled("EnableMongo16MBDocumentSupport"),
       useHashV1: false,
@@ -336,7 +336,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                     size={40}
                     className="panelTextField"
                     aria-label="New database id, Type a new database id"
-                    autoFocus
                     tabIndex={0}
                     value={this.state.newDatabaseId}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
@@ -407,9 +406,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   responsiveMode={999}
                 />
               )}
+              <Separator className="panelSeparator" style={{ marginTop: -4, marginBottom: -4 }} />
             </Stack>
           )}
-          <Separator className="panelSeparator" style={{ marginTop: -4, marginBottom: -4 }} />
 
           <Stack>
             <Stack horizontal style={{ marginTop: -5, marginBottom: 1 }}>
@@ -449,8 +448,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 this.setState({ collectionId: event.target.value })
               }
             />
+            <Separator className="panelSeparator" style={{ marginTop: -5, marginBottom: -5 }} />
           </Stack>
-          <Separator className="panelSeparator" style={{ marginTop: -5, marginBottom: -5 }} />
+
           {this.shouldShowIndexingOptionsForFreeTierAccount() && (
             <Stack>
               <Stack horizontal style={{ marginTop: -4, marginBottom: -5 }}>
@@ -645,7 +645,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                     </Stack>
                   );
                 })}
-              {!isFabricNative() && userContext.apiType === "SQL" && (
+              {userContext.apiType === "SQL" && (
                 <Stack className="panelGroupSpacing">
                   <DefaultButton
                     styles={{ root: { padding: 0, width: 200, height: 30 }, label: { fontSize: 12 } }}
@@ -709,7 +709,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             </Stack>
           )}
 
-          {this.shouldShowCollectionThroughputInput() && (
+          {this.shouldShowCollectionThroughputInput() && !isFabricNative() && (
             <ThroughputInput
               showFreeTierExceedThroughputTooltip={isFreeTierAccount() && !isFirstResourceCreated}
               isDatabase={false}
@@ -742,7 +742,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                           : "Comma separated paths e.g. /firstName,/address/zipCode"
                       }
                       className="panelTextField"
-                      autoFocus
                       value={uniqueKey}
                       onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                         const uniqueKeys = this.state.uniqueKeys.map((uniqueKey: string, j: number) => {
@@ -777,7 +776,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             </Stack>
           )}
 
-          <Separator className="panelSeparator" style={{ marginTop: -15, marginBottom: -4 }} />
+          {!isFabricNative() && userContext.apiType === "SQL" && (
+            <Separator className="panelSeparator" style={{ marginTop: -15, marginBottom: -4 }} />
+          )}
 
           {shouldShowAnalyticalStoreOptions() && (
             <Stack className="panelGroupSpacing" style={{ marginTop: -4 }}>
@@ -1133,7 +1134,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
   // }
 
   private shouldShowCollectionThroughputInput(): boolean {
-    if (isFabricNative() || isServerlessAccount()) {
+    if (isServerlessAccount()) {
       return false;
     }
 
@@ -1354,8 +1355,8 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
     // Throughput
     if (isFabricNative()) {
-      // Fabric Native accounts are always autoscale and have a fixed throughput of 1K
-      autoPilotMaxThroughput = AutoPilotUtils.autoPilotThroughput1K;
+      // Fabric Native accounts are always autoscale and have a fixed throughput of 5K
+      autoPilotMaxThroughput = AutoPilotUtils.autoPilotThroughput5K;
       offerThroughput = undefined;
     } else if (databaseLevelThroughput) {
       if (this.state.createNewDatabase) {

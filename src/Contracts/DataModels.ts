@@ -7,6 +7,7 @@ export interface ArmEntity {
   type: string;
   kind: string;
   tags?: Tags;
+  resourceGroup?: string;
 }
 
 export interface DatabaseAccount extends ArmEntity {
@@ -388,7 +389,7 @@ export interface VectorEmbeddingPolicy {
 }
 
 export interface VectorEmbedding {
-  dataType: "float16" | "float32" | "uint8" | "int8";
+  dataType: "float32" | "uint8" | "int8";
   dimensions: number;
   distanceFunction: "euclidean" | "cosine" | "dotproduct";
   path: string;
