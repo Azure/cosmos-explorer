@@ -49,7 +49,7 @@ export const defaultAccounts: Record<TestAccount, string> = {
   [TestAccount.MongoReadonly]: "github-e2etests-mongo-readonly",
   [TestAccount.Mongo32]: "github-e2etests-mongo32",
   [TestAccount.SQL]: "github-e2etests-sql",
-  [TestAccount.SQLReadOnly]: "github-e2etests-sql-readonly",
+  [TestAccount.SQLReadOnly]: "github-e2etests-sql-readonly", // If you update this value, also update it in TestExplorer.ts
 };
 
 export const resourceGroupName = process.env.DE_TEST_RESOURCE_GROUP ?? "de-e2e-tests";
@@ -85,6 +85,30 @@ export async function getTestExplorerUrl(accountType: TestAccount, iframeSrc?: s
   // There seem to be occasional CORS issues with calling the copilot APIs (/api/tokens/sampledataconnection/v2, for example)
   // For now, since we don't test copilot, we can disable the copilot APIs by setting the feature flag to false.
   params.set("feature.enableCopilot", "false");
+
+  const nosqlRbacToken = process.env.NOSQL_TESTACCOUNT_TOKEN;
+  if (nosqlRbacToken) {
+    params.set("nosqlRbacToken", nosqlRbacToken);
+    params.set("enableaaddataplane", "true");
+  }
+
+  const nosqlReadOnlyRbacToken = process.env.NOSQL_READONLY_TESTACCOUNT_TOKEN;
+  if (nosqlReadOnlyRbacToken) {
+    params.set("nosqlReadOnlyRbacToken", nosqlReadOnlyRbacToken);
+    params.set("enableaaddataplane", "true");
+  }
+
+  const tableRbacToken = process.env.TABLE_TESTACCOUNT_TOKEN;
+  if (tableRbacToken) {
+    params.set("tableRbacToken", tableRbacToken);
+    params.set("enableaaddataplane", "true");
+  }
+
+  const gremlinRbacToken = process.env.GREMLIN_TESTACCOUNT_TOKEN;
+  if (gremlinRbacToken) {
+    params.set("gremlinRbacToken", gremlinRbacToken);
+    params.set("enableaaddataplane", "true");
+  }
 
   if (iframeSrc) {
     params.set("iframeSrc", iframeSrc);

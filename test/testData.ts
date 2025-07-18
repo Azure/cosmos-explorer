@@ -1,7 +1,7 @@
 import crypto from "crypto";
 
 import { CosmosDBManagementClient } from "@azure/arm-cosmosdb";
-import { BulkOperationType, Container, CosmosClient, Database, JSONObject } from "@azure/cosmos";
+import { BulkOperationType, Container, CosmosClient, CosmosClientOptions, Database, JSONObject } from "@azure/cosmos";
 import { AzureIdentityCredentialAdapter } from "@azure/ms-rest-js";
 
 import {
@@ -82,11 +82,24 @@ export async function createTestSQLContainer(includeTestData?: boolean) {
   const armClient = new CosmosDBManagementClient(adaptedCredentials, subscriptionId);
   const accountName = getAccountName(TestAccount.SQL);
   const account = await armClient.databaseAccounts.get(resourceGroupName, accountName);
-  const keys = await armClient.databaseAccounts.listKeys(resourceGroupName, accountName);
-  const client = new CosmosClient({
+
+  const clientOptions: CosmosClientOptions = {
     endpoint: account.documentEndpoint!,
-    key: keys.primaryMasterKey,
-  });
+  };
+
+  const nosqlAccountRbacToken = process.env.NOSQL_TESTACCOUNT_TOKEN;
+  if (nosqlAccountRbacToken) {
+    clientOptions.tokenProvider = async (): Promise<string> => {
+      const AUTH_PREFIX = `type=aad&ver=1.0&sig=`;
+      const authorizationToken = `${AUTH_PREFIX}${nosqlAccountRbacToken}`;
+      return authorizationToken;
+    };
+  } else {
+    const keys = await armClient.databaseAccounts.listKeys(resourceGroupName, accountName);
+    clientOptions.key = keys.primaryMasterKey;
+  }
+
+  const client = new CosmosClient(clientOptions);
   const { database } = await client.databases.createIfNotExists({ id: databaseId });
   try {
     const { container } = await database.containers.createIfNotExists({
