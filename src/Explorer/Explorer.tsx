@@ -289,6 +289,15 @@ export default class Explorer {
     }
   }
 
+  /**
+   * Generates a VS Code DocumentDB connection URL using the current user's MongoDB connection parameters.
+   * Double-encodes the updated connection string for safe usage in VS Code URLs.
+   *
+   * The DocumentDB VS Code extension requires double encoding for connection strings.
+   * See: https://microsoft.github.io/vscode-documentdb/manual/how-to-construct-url.html#double-encoding
+   *
+   * @returns {string} The encoded VS Code DocumentDB connection URL.
+   */
   private getDocumentDbUrl() {
     const { adminLogin: adminLoginuserName = "", connectionString = "" } = userContext.vcoreMongoConnectionParams;
     const updatedConnectionString = connectionString.replace(/<(user|username)>:<password>/i, adminLoginuserName);
