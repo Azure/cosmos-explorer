@@ -29,7 +29,7 @@ export class MongoShellHandler extends AbstractShellHandler {
       return "echo 'Database name not found.'";
     }
     return (
-      "mongosh --nodb --quiet --eval \"disableTelemetry()\" && " +
+      'mongosh --nodb --quiet --eval "disableTelemetry()" && ' +
       "mongosh mongodb://" +
       getHostFromUrl(this._endpoint) +
       ":10255?appName=" +

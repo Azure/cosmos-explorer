@@ -6,7 +6,7 @@ export class VCoreMongoShellHandler extends AbstractShellHandler {
   private _removeInfoText: string[] = [
     "For mongosh info see: https://www.mongodb.com/docs/mongodb-shell/",
     "disableTelemetry() command",
-    "https://www.mongodb.com/legal/privacy-policy"
+    "https://www.mongodb.com/legal/privacy-policy",
   ];
 
   constructor() {
@@ -35,17 +35,17 @@ export class VCoreMongoShellHandler extends AbstractShellHandler {
   }
 
   public getTerminalSuppressedData(): string[] {
-    return [
-      "Warning: Non-Genuine MongoDB Detected",
-      "Telemetry is now disabled."
-    ];
+    return ["Warning: Non-Genuine MongoDB Detected", "Telemetry is now disabled."];
   }
 
   updateTerminalData(data: string): string {
-    const updatedData = data.split("\n").map(line => {
-      const shouldRemove = this._removeInfoText.some(text => line.includes(text));
-      return shouldRemove ? "" : line;
-    }).join("\n");
+    const updatedData = data
+      .split("\n")
+      .map((line) => {
+        const shouldRemove = this._removeInfoText.some((text) => line.includes(text));
+        return shouldRemove ? "" : line;
+      })
+      .join("\n");
     return updatedData;
   }
 }
