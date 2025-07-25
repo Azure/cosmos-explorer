@@ -41,7 +41,7 @@ export class CassandraShellHandler extends AbstractShellHandler {
     return `cqlsh ${getHostFromUrl(this._endpoint)} 10350 -u ${dbName} -p ${this._key} --ssl`;
   }
 
-  public getTerminalSuppressedData(): string {
-    return "";
+  public getTerminalSuppressedData(): string[] {
+    return [""];
   }
 }

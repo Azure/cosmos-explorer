@@ -29,6 +29,7 @@ export class MongoShellHandler extends AbstractShellHandler {
       return "echo 'Database name not found.'";
     }
     return (
+      "mongosh --nodb --quiet --eval \"disableTelemetry()\" && " +
       "mongosh mongodb://" +
       getHostFromUrl(this._endpoint) +
       ":10255?appName=" +
@@ -41,7 +42,7 @@ export class MongoShellHandler extends AbstractShellHandler {
     );
   }
 
-  public getTerminalSuppressedData(): string {
-    return "Warning: Non-Genuine MongoDB Detected";
+  public getTerminalSuppressedData(): string[] {
+    return ["Warning: Non-Genuine MongoDB Detected"];
   }
 }

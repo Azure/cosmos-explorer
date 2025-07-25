@@ -31,7 +31,8 @@ export abstract class AbstractShellHandler {
   abstract getShellName(): string;
   abstract getSetUpCommands(): string[];
   abstract getConnectionCommand(): string;
-  abstract getTerminalSuppressedData(): string;
+  abstract getTerminalSuppressedData(): string[];
+  updateTerminalData?(data: string): string;
 
   /**
    * Constructs the complete initialization command sequence for the shell.
@@ -77,7 +78,7 @@ export abstract class AbstractShellHandler {
    * is not already present in the environment.
    */
   protected mongoShellSetupCommands(): string[] {
-    const PACKAGE_VERSION: string = "2.5.0";
+    const PACKAGE_VERSION: string = "2.5.5";
     return [
       "if ! command -v mongosh &> /dev/null; then echo '⚠️ mongosh not found. Installing...'; fi",
       `if ! command -v mongosh &> /dev/null; then curl -LO https://downloads.mongodb.com/compass/mongosh-${PACKAGE_VERSION}-linux-x64.tgz; fi`,
