@@ -161,6 +161,9 @@ test can be configured to use that instead, by acquiring access tokens and setti
 # NoSQL API
 $ENV:NOSQL_TESTACCOUNT_TOKEN=az account get-access-token --scope "https://<account name>.documents.azure.com/.default" -o tsv --query accessToken
 
+# NoSQL API (Readonly)
+$ENV:NOSQL_READONLY_TESTACCOUNT_TOKEN=az account get-access-token --scope "https://<account name>.documents.azure.com/.default" -o tsv --query accessToken
+
 # Tables API
 $ENV:TABLE_TESTACCOUNT_TOKEN=az account get-access-token --scope "https://<account name>.documents.azure.com/.default" -o tsv --query accessToken
 

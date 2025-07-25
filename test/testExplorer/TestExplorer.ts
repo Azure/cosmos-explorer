@@ -18,9 +18,6 @@ const nosqlReadOnlyRbacToken =
 const tableRbacToken = urlSearchParams.get("tableRbacToken") || process.env.TABLE_TESTACCOUNT_TOKEN || "";
 const gremlinRbacToken = urlSearchParams.get("gremlinRbacToken") || process.env.GREMLIN_TESTACCOUNT_TOKEN || "";
 
-// Playwright has issues with the defaultAccounts export from fx.ts so hardcoding this here.
-const defaultNoSqlReadonlyAccountName = "github-e2etests-sql-readonly";
-
 const initTestExplorer = async (): Promise<void> => {
   updateUserContext({
     authorizationToken: `bearer ${authToken}`,
@@ -33,7 +30,10 @@ const initTestExplorer = async (): Promise<void> => {
   let rbacToken = "";
   switch (testAccountType) {
     case "sql":
-      rbacToken = accountName === defaultNoSqlReadonlyAccountName ? nosqlReadOnlyRbacToken : nosqlRbacToken;
+      rbacToken = nosqlRbacToken;
+      break;
+    case "sql-readonly":
+      rbacToken = nosqlReadOnlyRbacToken;
       break;
     case "gremlin":
       rbacToken = gremlinRbacToken;
