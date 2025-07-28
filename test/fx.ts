@@ -86,6 +86,30 @@ export async function getTestExplorerUrl(accountType: TestAccount, iframeSrc?: s
   // For now, since we don't test copilot, we can disable the copilot APIs by setting the feature flag to false.
   params.set("feature.enableCopilot", "false");
 
+  const nosqlRbacToken = process.env.NOSQL_TESTACCOUNT_TOKEN;
+  if (nosqlRbacToken) {
+    params.set("nosqlRbacToken", nosqlRbacToken);
+    params.set("enableaaddataplane", "true");
+  }
+
+  const nosqlReadOnlyRbacToken = process.env.NOSQL_READONLY_TESTACCOUNT_TOKEN;
+  if (nosqlReadOnlyRbacToken) {
+    params.set("nosqlReadOnlyRbacToken", nosqlReadOnlyRbacToken);
+    params.set("enableaaddataplane", "true");
+  }
+
+  const tableRbacToken = process.env.TABLE_TESTACCOUNT_TOKEN;
+  if (tableRbacToken) {
+    params.set("tableRbacToken", tableRbacToken);
+    params.set("enableaaddataplane", "true");
+  }
+
+  const gremlinRbacToken = process.env.GREMLIN_TESTACCOUNT_TOKEN;
+  if (gremlinRbacToken) {
+    params.set("gremlinRbacToken", gremlinRbacToken);
+    params.set("enableaaddataplane", "true");
+  }
+
   if (iframeSrc) {
     params.set("iframeSrc", iframeSrc);
   }
