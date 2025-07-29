@@ -1,9 +1,9 @@
 import { userContext } from "../../../../UserContext";
-import { AbstractShellHandler } from "./AbstractShellHandler";
+import { AbstractShellHandler, DISABLE_TELEMETRY_COMMAND } from "./AbstractShellHandler";
 
 export class VCoreMongoShellHandler extends AbstractShellHandler {
   private _endpoint: string | undefined;
-  private _removeInfoText: string[] = [
+  private _textFilterRules: string[] = [
     "For mongosh info see: https://www.mongodb.com/docs/mongodb-shell/",
     "disableTelemetry() command",
     "https://www.mongodb.com/legal/privacy-policy",
@@ -31,21 +31,19 @@ export class VCoreMongoShellHandler extends AbstractShellHandler {
 
     const connectionUri = `mongodb+srv://${userName}:@${this._endpoint}/?authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000&appName=${this.APP_NAME}`;
 
-    return `mongosh --nodb --quiet --eval "disableTelemetry()" && mongosh "${connectionUri}"`;
+    return `${DISABLE_TELEMETRY_COMMAND} && mongosh "${connectionUri}"`;
   }
 
   public getTerminalSuppressedData(): string[] {
     return ["Warning: Non-Genuine MongoDB Detected", "Telemetry is now disabled."];
   }
 
-  updateTerminalData(data: string): string {
-    const updatedData = data
+  updateTerminalData(content: string): string {
+    const updatedContent = content
       .split("\n")
-      .map((line) => {
-        const shouldRemove = this._removeInfoText.some((text) => line.includes(text));
-        return shouldRemove ? "" : line;
-      })
+      .filter((line) => !this._textFilterRules.some((part) => line.includes(part)))
+      .filter((line, idx, arr) => (arr.length > 3 && idx <= arr.length - 3 ? !["", "\r"].includes(line) : true)) // Filter out empty lines and carriage returns, but keep the last 3 lines if they exist
       .join("\n");
-    return updatedData;
+    return updatedContent;
   }
 }

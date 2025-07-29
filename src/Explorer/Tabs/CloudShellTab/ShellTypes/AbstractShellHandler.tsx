@@ -16,6 +16,12 @@ export const DISABLE_HISTORY = `set +o history`;
 export const EXIT_COMMAND = ` printf "\\033[1;31mSession ended. Please close this tab and initiate a new shell session if needed.\\033[0m\\n" && disown -a && exit`;
 
 /**
+ * This command runs mongosh in no-database and quiet mode,
+ * and evaluates the `disableTelemetry()` function to turn off telemetry collection.
+ */
+export const DISABLE_TELEMETRY_COMMAND = `mongosh --nodb --quiet --eval "disableTelemetry()"`;
+
+/**
  * Abstract class that defines the interface for shell-specific handlers
  * in the CloudShell terminal implementation. Each supported shell type
  * (Mongo, PG, etc.) should extend this class and implement
@@ -86,7 +92,7 @@ export abstract class AbstractShellHandler {
       `if ! command -v mongosh &> /dev/null; then mkdir -p ~/mongosh/bin && mv mongosh-${PACKAGE_VERSION}-linux-x64/bin/mongosh ~/mongosh/bin/  && chmod +x ~/mongosh/bin/mongosh; fi`,
       `if ! command -v mongosh &> /dev/null; then rm -rf mongosh-${PACKAGE_VERSION}-linux-x64 mongosh-${PACKAGE_VERSION}-linux-x64.tgz; fi`,
       "if ! command -v mongosh &> /dev/null; then echo 'export PATH=$HOME/mongosh/bin:$PATH' >> ~/.bashrc; fi",
-      "source ~/.bashrc",
+      "if ! command -v mongosh &> /dev/null; then source ~/.bashrc; fi",
     ];
   }
 }

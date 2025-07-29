@@ -1,6 +1,6 @@
 import { userContext } from "../../../../UserContext";
 import { getHostFromUrl } from "../Utils/CommonUtils";
-import { AbstractShellHandler } from "./AbstractShellHandler";
+import { AbstractShellHandler, DISABLE_TELEMETRY_COMMAND } from "./AbstractShellHandler";
 
 export class MongoShellHandler extends AbstractShellHandler {
   private _key: string;
@@ -29,7 +29,8 @@ export class MongoShellHandler extends AbstractShellHandler {
       return "echo 'Database name not found.'";
     }
     return (
-      'mongosh --nodb --quiet --eval "disableTelemetry()" && ' +
+      DISABLE_TELEMETRY_COMMAND +
+      " && " +
       "mongosh mongodb://" +
       getHostFromUrl(this._endpoint) +
       ":10255?appName=" +
