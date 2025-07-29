@@ -29,7 +29,7 @@ import MongoUtility from "Common/MongoUtility";
 import { QueryMetrics } from "Contracts/DataModels";
 import { EditorReact } from "Explorer/Controls/Editor/EditorReact";
 import { parseIndexMetrics, renderImpactDots } from "Explorer/Tabs/QueryTab/IndexAdvisorUtils";
-import { IDocument, useQueryMetadataStore } from "Explorer/Tabs/QueryTab/QueryTabComponent";
+import { IDocument } from "Explorer/Tabs/QueryTab/QueryTabComponent";
 import { useQueryTabStyles } from "Explorer/Tabs/QueryTab/Styles";
 import React, { useCallback, useEffect, useState } from "react";
 import { userContext } from "UserContext";
@@ -394,9 +394,8 @@ const QueryStatsTab: React.FC<Pick<ResultsViewProps, "queryResults">> = ({ query
         },
         {
           metric: "User defined function execution time",
-          value: `${
-            aggregatedQueryMetrics.runtimeExecutionTimes?.userDefinedFunctionExecutionTime?.toString() || 0
-          } ms`,
+          value: `${aggregatedQueryMetrics.runtimeExecutionTimes?.userDefinedFunctionExecutionTime?.toString() || 0
+            } ms`,
           toolTip: "Total time spent executing user-defined functions",
         },
         {
@@ -544,9 +543,12 @@ export interface IIndexMetric {
   path?: string;
   composite?: { path: string; order: string }[];
 }
-export const IndexAdvisorTab: React.FC = () => {
+export const IndexAdvisorTab: React.FC<{
+  queryText?: string;
+  databaseId?: string;
+  containerId?: string;
+}> = ({ queryText, databaseId, containerId }) => {
   const style = useIndexAdvisorStyles();
-  const { userQuery, databaseId, containerId } = useQueryMetadataStore();
   const [loading, setLoading] = useState(true);
   const [indexMetrics, setIndexMetrics] = useState<string | null>(null);
   const [showIncluded, setShowIncluded] = useState(true);
@@ -562,10 +564,26 @@ export const IndexAdvisorTab: React.FC = () => {
 
   useEffect(() => {
     const fetchIndexMetrics = async () => {
+      // Reset all states when query parameters change
+      setLoading(true);
+      setIndexMetrics(null);
+      setIncludedIndexes([]);
+      setNotIncludedIndexes([]);
+      setSelectedIndexes([]);
+      setSelectAll(false);
+      setUpdateMessageShown(false);
+      setIsUpdating(false);
+      setJustUpdatedPolicy(false);
+
+      if (!queryText || !databaseId || !containerId) {
+        setLoading(false);
+        return;
+      }
+
       const clearMessage = logConsoleProgress(`Querying items with IndexMetrics in container ${containerId}`);
       try {
         const querySpec = {
-          query: userQuery,
+          query: queryText,
         };
         const sdkResponse = await client()
           .database(databaseId)
@@ -582,10 +600,9 @@ export const IndexAdvisorTab: React.FC = () => {
         setLoading(false);
       }
     };
-    if (userQuery && databaseId && containerId) {
-      fetchIndexMetrics();
-    }
-  }, [userQuery, databaseId, containerId]);
+
+    fetchIndexMetrics();
+  }, [queryText, databaseId, containerId]);
 
   useEffect(() => {
     if (!indexMetrics) {
@@ -828,13 +845,21 @@ export const IndexAdvisorTab: React.FC = () => {
     </div>
   );
 };
-export const ResultsView: React.FC<ResultsViewProps> = ({ isMongoDB, queryResults, executeQueryDocumentsPage }) => {
+export const ResultsView: React.FC<ResultsViewProps> = ({
+  isMongoDB,
+  queryResults,
+  executeQueryDocumentsPage,
+  queryText,
+  databaseId,
+  containerId
+}) => {
   const styles = useQueryTabStyles();
   const [activeTab, setActiveTab] = useState<ResultsTabs>(ResultsTabs.Results);
 
   const onTabSelect = useCallback((event: SelectTabEvent, data: SelectTabData) => {
     setActiveTab(data.value as ResultsTabs);
   }, []);
+
   return (
     <div data-test="QueryTab/ResultsPane/ResultsView" className={styles.queryResultsTabPanel}>
       <TabList selectedValue={activeTab} onTabSelect={onTabSelect}>
@@ -869,7 +894,13 @@ export const ResultsView: React.FC<ResultsViewProps> = ({ isMongoDB, queryResult
           />
         )}
         {activeTab === ResultsTabs.QueryStats && <QueryStatsTab queryResults={queryResults} />}
-        {activeTab === ResultsTabs.IndexAdvisor && <IndexAdvisorTab />}
+        {activeTab === ResultsTabs.IndexAdvisor && (
+          <IndexAdvisorTab
+            queryText={queryText}
+            databaseId={databaseId}
+            containerId={containerId}
+          />
+        )}
       </div>
     </div>
   );
