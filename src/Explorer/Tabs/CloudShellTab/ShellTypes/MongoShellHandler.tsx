@@ -1,6 +1,6 @@
 import { userContext } from "../../../../UserContext";
 import { getHostFromUrl } from "../Utils/CommonUtils";
-import { AbstractShellHandler } from "./AbstractShellHandler";
+import { AbstractShellHandler, DISABLE_TELEMETRY_COMMAND } from "./AbstractShellHandler";
 
 export class MongoShellHandler extends AbstractShellHandler {
   private _key: string;
@@ -29,6 +29,8 @@ export class MongoShellHandler extends AbstractShellHandler {
       return "echo 'Database name not found.'";
     }
     return (
+      DISABLE_TELEMETRY_COMMAND +
+      " && " +
       "mongosh mongodb://" +
       getHostFromUrl(this._endpoint) +
       ":10255?appName=" +
@@ -41,7 +43,7 @@ export class MongoShellHandler extends AbstractShellHandler {
     );
   }
 
-  public getTerminalSuppressedData(): string {
-    return "Warning: Non-Genuine MongoDB Detected";
+  public getTerminalSuppressedData(): string[] {
+    return ["Warning: Non-Genuine MongoDB Detected"];
   }
 }

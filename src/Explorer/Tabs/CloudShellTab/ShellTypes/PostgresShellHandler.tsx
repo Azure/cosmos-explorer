@@ -57,7 +57,7 @@ export class PostgresShellHandler extends AbstractShellHandler {
     return `psql -h "${this._endpoint}" -p 5432 -d "citus" -U "${loginName}" --set=sslmode=require --set=application_name=${this.APP_NAME}`;
   }
 
-  public getTerminalSuppressedData(): string {
-    return "";
+  public getTerminalSuppressedData(): string[] {
+    return [""];
   }
 }

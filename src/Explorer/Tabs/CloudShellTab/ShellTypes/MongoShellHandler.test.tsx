@@ -69,7 +69,7 @@ describe("MongoShellHandler", () => {
 
       expect(Array.isArray(commands)).toBe(true);
       expect(commands.length).toBe(7);
-      expect(commands[1]).toContain("mongosh-2.5.0-linux-x64.tgz");
+      expect(commands[1]).toContain("mongosh-2.5.5-linux-x64.tgz");
     });
   });
 
@@ -91,7 +91,7 @@ describe("MongoShellHandler", () => {
       const command = mongoShellHandler.getConnectionCommand();
 
       expect(command).toBe(
-        "mongosh mongodb://test-mongo.documents.azure.com:10255?appName=CosmosExplorerTerminal --username test-account --password test-key --tls --tlsAllowInvalidCertificates",
+        'mongosh --nodb --quiet --eval "disableTelemetry()" && mongosh mongodb://test-mongo.documents.azure.com:10255?appName=CosmosExplorerTerminal --username test-account --password test-key --tls --tlsAllowInvalidCertificates',
       );
       expect(CommonUtils.getHostFromUrl).toHaveBeenCalledWith("https://test-mongo.documents.azure.com:443/");
 
@@ -124,7 +124,7 @@ describe("MongoShellHandler", () => {
 
   describe("getTerminalSuppressedData", () => {
     it("should return the correct warning message", () => {
-      expect(mongoShellHandler.getTerminalSuppressedData()).toBe("Warning: Non-Genuine MongoDB Detected");
+      expect(mongoShellHandler.getTerminalSuppressedData()).toEqual(["Warning: Non-Genuine MongoDB Detected"]);
     });
   });
 });
