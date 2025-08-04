@@ -255,6 +255,7 @@ export class HttpHeaders {
   public static activityId: string = "x-ms-activity-id";
   public static apiType: string = "x-ms-cosmos-apitype";
   public static authorization: string = "authorization";
+  public static entraIdToken: string = "x-ms-entraid-token";
   public static collectionIndexTransformationProgress: string =
     "x-ms-documentdb-collection-index-transformation-progress";
   public static continuation: string = "x-ms-continuation";

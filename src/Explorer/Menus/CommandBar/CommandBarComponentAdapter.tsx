@@ -5,6 +5,7 @@
  */
 import { CommandBar as FluentCommandBar, ICommandBarItemProps } from "@fluentui/react";
 import { useNotebook } from "Explorer/Notebook/useNotebook";
+import { useDataPlaneRbac } from "Explorer/Panes/SettingsPane/SettingsPane";
 import { KeyboardActionGroup, useKeyboardActionGroup } from "KeyboardShortcuts";
 import { isFabric } from "Platform/Fabric/FabricUtil";
 import { userContext } from "UserContext";
@@ -30,7 +31,7 @@ export interface CommandBarStore {
 }
 
 export const useCommandBar: UseStore<CommandBarStore> = create((set) => ({
-  contextButtons: [],
+  contextButtons: [] as CommandButtonComponentProps[],
   setContextButtons: (contextButtons: CommandButtonComponentProps[]) => set((state) => ({ ...state, contextButtons })),
   isHidden: false,
   setIsHidden: (isHidden: boolean) => set((state) => ({ ...state, isHidden })),
@@ -42,6 +43,15 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
   const isHidden = useCommandBar((state) => state.isHidden);
   const backgroundColor = StyleConstants.BaseLight;
   const setKeyboardHandlers = useKeyboardActionGroup(KeyboardActionGroup.COMMAND_BAR);
+
+  // Subscribe to the store changes that affect button creation
+  const dataPlaneRbacEnabled = useDataPlaneRbac((state) => state.dataPlaneRbacEnabled);
+  const aadTokenUpdated = useDataPlaneRbac((state) => state.aadTokenUpdated);
+
+  // Memoize the expensive button creation
+  const staticButtons = React.useMemo(() => {
+    return CommandBarComponentButtonFactory.createStaticCommandBarButtons(container, selectedNodeState);
+  }, [container, selectedNodeState, dataPlaneRbacEnabled, aadTokenUpdated]);
 
   if (userContext.apiType === "Postgres" || userContext.apiType === "VCoreMongo") {
     const buttons =
@@ -62,7 +72,6 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
     );
   }
 
-  const staticButtons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(container, selectedNodeState);
   const contextButtons = (buttons || []).concat(
     CommandBarComponentButtonFactory.createContextCommandBarButtons(container, selectedNodeState),
   );
