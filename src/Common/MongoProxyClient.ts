@@ -7,6 +7,7 @@ import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { Collection } from "../Contracts/ViewModels";
 import DocumentId from "../Explorer/Tree/DocumentId";
 import { userContext } from "../UserContext";
+import { isDataplaneRbacEnabledForProxyApi } from "../Utils/AuthorizationUtils";
 import { logConsoleError } from "../Utils/NotificationConsoleUtils";
 import { ApiType, ContentType, HttpHeaders, HttpStatusCodes } from "./Constants";
 import { MinimalQueryIterator } from "./IteratorUtilities";
@@ -22,7 +23,19 @@ function authHeaders() {
   if (userContext.authType === AuthType.EncryptedToken) {
     return { [HttpHeaders.guestAccessToken]: userContext.accessToken };
   } else {
-    return { [HttpHeaders.authorization]: userContext.authorizationToken };
+    const headers: { [key: string]: string } = {
+      [HttpHeaders.authorization]: userContext.authorizationToken
+    };
+    if (isDataplaneRbacEnabledForProxyApi(userContext)) {
+      if (!userContext.aadToken) {
+        logConsoleError(
+          `AAD token does not exist. Please use the "Login for Entra ID" button in the Toolbar prior to performing Entra ID RBAC operations`,
+        );
+        return null;
+      }
+      headers[HttpHeaders.entraIdToken] = userContext.aadToken;
+    }
+    return headers;
   }
 }
 
