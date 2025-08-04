@@ -157,35 +157,148 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
           }
         }
       >
-        <StyledTextFieldBase
-          disabled={true}
-          id="autopilotInput"
-          key="auto pilot throughput input"
-          label="Maximum RU/s required by this resource"
-          min={1000}
-          onChange={[Function]}
-          onGetErrorMessage={[Function]}
-          required={true}
-          step={1000}
-          styles={
+        <Stack
+          horizontal={true}
+          tokens={
             {
-              "fieldGroup": {
-                "borderColor": "",
-                "height": 25,
-                "selectors": {
-                  ":disabled": {
-                    "backgroundColor": undefined,
-                    "borderColor": undefined,
-                  },
-                },
-                "width": 300,
-              },
+              "childrenGap": 8,
             }
           }
-          type="number"
-          validateOnLoad={false}
-          value=""
-        />
+          verticalAlign="end"
+        >
+          <Stack
+            tokens={
+              {
+                "childrenGap": 4,
+              }
+            }
+          >
+            <Stack
+              horizontal={true}
+              tokens={
+                {
+                  "childrenGap": 4,
+                }
+              }
+              verticalAlign="center"
+            >
+              <Text
+                style={
+                  {
+                    "fontWeight": 600,
+                    "lineHeight": "20px",
+                  }
+                }
+                variant="small"
+              >
+                Minimum RU/s
+              </Text>
+              <FontIcon
+                iconName="Info"
+                style={
+                  {
+                    "color": "#666",
+                    "fontSize": 12,
+                  }
+                }
+              />
+            </Stack>
+            <Text
+              style={
+                {
+                  "alignItems": "center",
+                  "backgroundColor": "transparent",
+                  "border": "none",
+                  "boxSizing": "border-box",
+                  "display": "flex",
+                  "fontFamily": "Segoe UI",
+                  "fontSize": 14,
+                  "fontWeight": 400,
+                  "height": 28,
+                  "justifyContent": "center",
+                  "width": 70,
+                }
+              }
+            >
+              400
+            </Text>
+          </Stack>
+          <Text
+            style={
+              {
+                "fontFamily": "Segoe UI",
+                "fontSize": 12,
+                "fontWeight": 400,
+                "paddingBottom": 6,
+              }
+            }
+          >
+            x 10 =
+          </Text>
+          <Stack
+            tokens={
+              {
+                "childrenGap": 4,
+              }
+            }
+          >
+            <Stack
+              horizontal={true}
+              tokens={
+                {
+                  "childrenGap": 4,
+                }
+              }
+              verticalAlign="center"
+            >
+              <Text
+                style={
+                  {
+                    "fontWeight": 600,
+                    "lineHeight": "20px",
+                  }
+                }
+                variant="small"
+              >
+                Maximum RU/s
+              </Text>
+              <FontIcon
+                iconName="Info"
+                style={
+                  {
+                    "color": "#666",
+                    "fontSize": 12,
+                  }
+                }
+              />
+            </Stack>
+            <StyledTextFieldBase
+              disabled={true}
+              id="autopilotInput"
+              key="auto pilot throughput input"
+              min={1000}
+              onChange={[Function]}
+              onGetErrorMessage={[Function]}
+              required={true}
+              step={1000}
+              styles={
+                {
+                  "field": {
+                    "fontSize": 14,
+                    "fontWeight": 400,
+                  },
+                  "fieldGroup": {
+                    "height": 28,
+                    "width": 100,
+                  },
+                }
+              }
+              type="number"
+              validateOnLoad={false}
+              value=""
+            />
+          </Stack>
+        </Stack>
         <Stack>
           <Stack>
             <Stack
