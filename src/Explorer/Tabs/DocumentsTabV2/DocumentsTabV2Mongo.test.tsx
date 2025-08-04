@@ -146,10 +146,16 @@ describe("Documents tab (Mongo API)", () => {
       updateConfigContext({ platform: Platform.Hosted });
 
       const props: IDocumentsTabComponentProps = createMockProps();
-
       wrapper = mount(<DocumentsTabComponent {...props} />);
-      wrapper = await waitForComponentToPaint(wrapper);
-    });
+
+      // Wait for all pending promises
+      await act(async () => {
+        await new Promise(resolve => setTimeout(resolve, 100));
+      });
+
+      // Wait for any async operations to complete
+      wrapper = await waitForComponentToPaint(wrapper, 100);
+    }, 10000);
 
     afterEach(() => {
       wrapper.unmount();

@@ -1,7 +1,6 @@
 import { KeyboardAction } from "KeyboardShortcuts";
 import { isDataplaneRbacSupported } from "Utils/APITypeUtils";
 import * as React from "react";
-import { useEffect, useState } from "react";
 import AddSqlQueryIcon from "../../../../images/AddSqlQuery_16x16.svg";
 import AddStoredProcedureIcon from "../../../../images/AddStoredProcedure.svg";
 import AddTriggerIcon from "../../../../images/AddTrigger.svg";
@@ -68,15 +67,7 @@ export function createStaticCommandBarButtons(
   }
 
   if (isDataplaneRbacSupported(userContext.apiType)) {
-    const [loginButtonProps, setLoginButtonProps] = useState<CommandButtonComponentProps | undefined>(undefined);
-    const dataPlaneRbacEnabled = useDataPlaneRbac((state) => state.dataPlaneRbacEnabled);
-    const aadTokenUpdated = useDataPlaneRbac((state) => state.aadTokenUpdated);
-
-    useEffect(() => {
-      const buttonProps = createLoginForEntraIDButton(container);
-      setLoginButtonProps(buttonProps);
-    }, [dataPlaneRbacEnabled, aadTokenUpdated, container]);
-
+    const loginButtonProps = createLoginForEntraIDButton(container);
     if (loginButtonProps) {
       addDivider();
       buttons.push(loginButtonProps);
