@@ -78,10 +78,7 @@ export async function acquireMsalTokenForAccount(
   if (isDataplaneRbacEnabledForProxyApi(userContext)) {
     hrefEndpoint = new URL("https://cosmos.azure.com/").href.replace(/\/+$/, "/.default");
   } else {
-    hrefEndpoint = new URL(userContext.databaseAccount.properties.documentEndpoint).href.replace(
-      /\/+$/,
-      "/.default",
-    );
+    hrefEndpoint = new URL(userContext.databaseAccount.properties.documentEndpoint).href.replace(/\/+$/, "/.default");
   }
   const msalInstance = await getMsalInstance();
   const knownAccounts = msalInstance.getAllAccounts();

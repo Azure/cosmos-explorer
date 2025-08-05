@@ -24,7 +24,7 @@ function authHeaders() {
     return { [HttpHeaders.guestAccessToken]: userContext.accessToken };
   } else {
     const headers: { [key: string]: string } = {
-      [HttpHeaders.authorization]: userContext.authorizationToken
+      [HttpHeaders.authorization]: userContext.authorizationToken,
     };
     if (isDataplaneRbacEnabledForProxyApi(userContext)) {
       if (!userContext.aadToken) {
