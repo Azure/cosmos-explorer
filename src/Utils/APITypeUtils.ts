@@ -91,7 +91,9 @@ export const getItemName = (): string => {
 };
 
 export const isDataplaneRbacSupported = (apiType: string): boolean => {
-  return apiType === "SQL" || apiType === "Tables" || apiType === "Gremlin" || apiType === "Mongo" || apiType === "Cassandra";
+  return (
+    apiType === "SQL" || apiType === "Tables" || apiType === "Gremlin" || apiType === "Mongo" || apiType === "Cassandra"
+  );
 };
 
 export const hasProxyServer = (apiType: string): boolean => {

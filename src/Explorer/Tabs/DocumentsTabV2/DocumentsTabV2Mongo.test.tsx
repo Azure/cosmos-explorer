@@ -150,7 +150,7 @@ describe("Documents tab (Mongo API)", () => {
 
       // Wait for all pending promises
       await act(async () => {
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise((resolve) => setTimeout(resolve, 100));
       });
 
       // Wait for any async operations to complete
