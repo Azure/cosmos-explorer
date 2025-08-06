@@ -1,19 +1,40 @@
-import { CosmosDBManagementClient } from "@azure/arm-cosmosdb";
-import { BulkOperationType, Container, CosmosClient, Database, JSONObject } from "@azure/cosmos";
 import crypto from "crypto";
+
+import { CosmosDBManagementClient } from "@azure/arm-cosmosdb";
+import { BulkOperationType, Container, CosmosClient, CosmosClientOptions, Database, JSONObject } from "@azure/cosmos";
+import { AzureIdentityCredentialAdapter } from "@azure/ms-rest-js";
+
 import {
-  TestAccount,
   generateUniqueName,
   getAccountName,
   getAzureCLICredentials,
   resourceGroupName,
   subscriptionId,
+  TestAccount,
 } from "./fx";
 
 export interface TestItem {
   id: string;
   partitionKey: string;
   randomData: string;
+}
+
+export interface DocumentTestCase {
+  name: string;
+  databaseId: string;
+  containerId: string;
+  documents: TestDocument[];
+}
+
+export interface TestDocument {
+  documentId: string;
+  partitionKeys?: PartitionKey[];
+  skipCreateDelete?: boolean;
+}
+
+export interface PartitionKey {
+  key: string;
+  value: string | null;
 }
 
 const partitionCount = 4;
@@ -56,15 +77,29 @@ export class TestContainerContext {
 export async function createTestSQLContainer(includeTestData?: boolean) {
   const databaseId = generateUniqueName("db");
   const containerId = "testcontainer"; // A unique container name isn't needed because the database is unique
-  const credentials = await getAzureCLICredentials();
-  const armClient = new CosmosDBManagementClient(credentials, subscriptionId);
+  const credentials = getAzureCLICredentials();
+  const adaptedCredentials = new AzureIdentityCredentialAdapter(credentials);
+  const armClient = new CosmosDBManagementClient(adaptedCredentials, subscriptionId);
   const accountName = getAccountName(TestAccount.SQL);
   const account = await armClient.databaseAccounts.get(resourceGroupName, accountName);
-  const keys = await armClient.databaseAccounts.listKeys(resourceGroupName, accountName);
-  const client = new CosmosClient({
+
+  const clientOptions: CosmosClientOptions = {
     endpoint: account.documentEndpoint!,
-    key: keys.primaryMasterKey,
-  });
+  };
+
+  const nosqlAccountRbacToken = process.env.NOSQL_TESTACCOUNT_TOKEN;
+  if (nosqlAccountRbacToken) {
+    clientOptions.tokenProvider = async (): Promise<string> => {
+      const AUTH_PREFIX = `type=aad&ver=1.0&sig=`;
+      const authorizationToken = `${AUTH_PREFIX}${nosqlAccountRbacToken}`;
+      return authorizationToken;
+    };
+  } else {
+    const keys = await armClient.databaseAccounts.listKeys(resourceGroupName, accountName);
+    clientOptions.key = keys.primaryMasterKey;
+  }
+
+  const client = new CosmosClient(clientOptions);
   const { database } = await client.databases.createIfNotExists({ id: databaseId });
   try {
     const { container } = await database.containers.createIfNotExists({
@@ -92,4 +127,47 @@ export async function createTestSQLContainer(includeTestData?: boolean) {
     await database.delete();
     throw e;
   }
+}
+
+export const setPartitionKeys = (partitionKeys: PartitionKey[]) => {
+  const result = {};
+
+  partitionKeys.forEach((partitionKey) => {
+    const { key: keyPath, value: keyValue } = partitionKey;
+    const cleanPath = keyPath.startsWith("/") ? keyPath.slice(1) : keyPath;
+    const keys = cleanPath.split("/");
+    let current = result;
+
+    keys.forEach((key, index) => {
+      if (index === keys.length - 1) {
+        current[key] = keyValue;
+      } else {
+        current[key] = current[key] || {};
+        current = current[key];
+      }
+    });
+  });
+
+  return result;
+};
+
+export const serializeMongoToJson = (text: string) => {
+  const normalized = text.replace(/ObjectId\("([0-9a-fA-F]{24})"\)/g, '"$1"');
+  return JSON.parse(normalized);
+};
+
+export async function retry<T>(fn: () => Promise<T>, retries = 3, delayMs = 1000): Promise<T> {
+  let lastError: unknown;
+  for (let i = 0; i < retries; i++) {
+    try {
+      return await fn();
+    } catch (error) {
+      lastError = error;
+      console.warn(`Retry ${i + 1}/${retries} failed: ${(error as Error).message}`);
+      if (i < retries - 1) {
+        await new Promise((res) => setTimeout(res, delayMs));
+      }
+    }
+  }
+  throw lastError;
 }

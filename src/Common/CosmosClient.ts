@@ -1,14 +1,15 @@
 import * as Cosmos from "@azure/cosmos";
 import { getAuthorizationTokenUsingResourceTokens } from "Common/getAuthorizationTokenUsingResourceTokens";
+import { CosmosDbArtifactType } from "Contracts/FabricMessagesContract";
 import { AuthorizationToken } from "Contracts/FabricMessageTypes";
-import { checkDatabaseResourceTokensValidity } from "Platform/Fabric/FabricUtil";
+import { checkDatabaseResourceTokensValidity, isFabricMirroredKey } from "Platform/Fabric/FabricUtil";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
-import { useNewPortalBackendEndpoint } from "Utils/EndpointUtils";
+import { useDataplaneRbacAuthorization } from "Utils/AuthorizationUtils";
 import { AuthType } from "../AuthType";
-import { BackendApi, PriorityLevel } from "../Common/Constants";
+import { PriorityLevel } from "../Common/Constants";
 import * as Logger from "../Common/Logger";
 import { Platform, configContext } from "../ConfigContext";
-import { userContext } from "../UserContext";
+import { FabricArtifactInfo, updateUserContext, userContext } from "../UserContext";
 import { logConsoleError } from "../Utils/NotificationConsoleUtils";
 import * as PriorityBasedExecutionUtils from "../Utils/PriorityBasedExecutionUtils";
 import { EmulatorMasterKey, HttpHeaders } from "./Constants";
@@ -19,8 +20,7 @@ const _global = typeof self === "undefined" ? window : self;
 export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
   const { verb, resourceId, resourceType, headers } = requestInfo;
 
-  const dataPlaneRBACOptionEnabled = userContext.dataPlaneRbacEnabled && userContext.apiType === "SQL";
-  if (userContext.features.enableAadDataPlane || dataPlaneRBACOptionEnabled) {
+  if (useDataplaneRbacAuthorization(userContext)) {
     Logger.logInfo(
       `AAD Data Plane Feature flag set to ${userContext.features.enableAadDataPlane} for account with disable local auth ${userContext.databaseAccount.properties.disableLocalAuth} `,
       "Explorer/tokenProvider",
@@ -42,7 +42,7 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
     return decodeURIComponent(headers.authorization);
   }
 
-  if (configContext.platform === Platform.Fabric) {
+  if (isFabricMirroredKey()) {
     switch (requestInfo.resourceType) {
       case Cosmos.ResourceType.conflicts:
       case Cosmos.ResourceType.container:
@@ -54,8 +54,13 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
         // User resource tokens
         // TODO userContext.fabricContext.databaseConnectionInfo can be undefined
         headers[HttpHeaders.msDate] = new Date().toUTCString();
-        const resourceTokens = userContext.fabricContext.databaseConnectionInfo.resourceTokens;
-        checkDatabaseResourceTokensValidity(userContext.fabricContext.databaseConnectionInfo.resourceTokensTimestamp);
+        const resourceTokens = (
+          userContext.fabricContext.artifactInfo as FabricArtifactInfo[CosmosDbArtifactType.MIRRORED_KEY]
+        ).resourceTokenInfo.resourceTokens;
+        checkDatabaseResourceTokensValidity(
+          (userContext.fabricContext.artifactInfo as FabricArtifactInfo[CosmosDbArtifactType.MIRRORED_KEY])
+            .resourceTokenInfo.resourceTokensTimestamp,
+        );
         return getAuthorizationTokenUsingResourceTokens(resourceTokens, requestInfo.path, requestInfo.resourceId);
 
       case Cosmos.ResourceType.none:
@@ -66,7 +71,9 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
         // For now, these operations aren't used, so fetching the authorization token is commented out.
         // This provider must return a real token to pass validation by the client, so we return the cached resource token
         // (which is a valid token, but won't work for these operations).
-        const resourceTokens2 = userContext.fabricContext.databaseConnectionInfo.resourceTokens;
+        const resourceTokens2 = (
+          userContext.fabricContext.artifactInfo as FabricArtifactInfo[CosmosDbArtifactType.MIRRORED_KEY]
+        ).resourceTokenInfo.resourceTokens;
         return getAuthorizationTokenUsingResourceTokens(resourceTokens2, requestInfo.path, requestInfo.resourceId);
 
       /* ************** TODO: Uncomment this code if we need to support these operations **************
@@ -117,7 +124,11 @@ export const endpoint = () => {
     const location = _global.parent ? _global.parent.location : _global.location;
     return configContext.EMULATOR_ENDPOINT || location.origin;
   }
-  return userContext.endpoint || userContext?.databaseAccount?.properties?.documentEndpoint;
+  return (
+    userContext.selectedRegionalEndpoint ||
+    userContext.endpoint ||
+    userContext?.databaseAccount?.properties?.documentEndpoint
+  );
 };
 
 export async function getTokenFromAuthService(
@@ -125,10 +136,6 @@ export async function getTokenFromAuthService(
   resourceType: string,
   resourceId?: string,
 ): Promise<AuthorizationToken> {
-  if (!useNewPortalBackendEndpoint(BackendApi.RuntimeProxy)) {
-    return getTokenFromAuthService_ToBeDeprecated(verb, resourceType, resourceId);
-  }
-
   try {
     const host: string = configContext.PORTAL_BACKEND_ENDPOINT;
     const response: Response = await _global.fetch(host + "/api/connectionstring/runtimeproxy/authorizationtokens", {
@@ -151,34 +158,6 @@ export async function getTokenFromAuthService(
   }
 }
 
-export async function getTokenFromAuthService_ToBeDeprecated(
-  verb: string,
-  resourceType: string,
-  resourceId?: string,
-): Promise<AuthorizationToken> {
-  try {
-    const host = configContext.BACKEND_ENDPOINT;
-    const response = await _global.fetch(host + "/api/guest/runtimeproxy/authorizationTokens", {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        "x-ms-encrypted-auth-token": userContext.accessToken,
-      },
-      body: JSON.stringify({
-        verb,
-        resourceType,
-        resourceId,
-      }),
-    });
-    //TODO I am not sure why we have to parse the JSON again here. fetch should do it for us when we call .json()
-    const result = JSON.parse(await response.json());
-    return result;
-  } catch (error) {
-    logConsoleError(`Failed to get authorization headers for ${resourceType}: ${getErrorMessage(error)}`);
-    return Promise.reject(error);
-  }
-}
-
 // The Capability is a bitmap, which cosmosdb backend decodes as per the below enum
 enum SDKSupportedCapabilities {
   None = 0,
@@ -189,13 +168,24 @@ let _client: Cosmos.CosmosClient;
 
 export function client(): Cosmos.CosmosClient {
   if (_client) {
-    if (!userContext.hasDataPlaneRbacSettingChanged) {
+    if (!userContext.refreshCosmosClient) {
       return _client;
     }
+    _client.dispose();
+    _client = null;
   }
+
+  if (userContext.refreshCosmosClient) {
+    updateUserContext({
+      refreshCosmosClient: false,
+    });
+  }
+
   let _defaultHeaders: Cosmos.CosmosHeaders = {};
+
   _defaultHeaders["x-ms-cosmos-sdk-supportedcapabilities"] =
     SDKSupportedCapabilities.None | SDKSupportedCapabilities.PartitionMerge;
+  _defaultHeaders["x-ms-cosmos-throughput-bucket"] = 1;
 
   if (
     userContext.authType === AuthType.ConnectionString ||
@@ -216,6 +206,7 @@ export function client(): Cosmos.CosmosClient {
     userAgentSuffix: "Azure Portal",
     defaultHeaders: _defaultHeaders,
     connectionPolicy: {
+      enableEndpointDiscovery: !userContext.selectedRegionalEndpoint,
       retryOptions: {
         maxRetryAttemptCount: LocalStorageUtility.getEntryNumber(StorageKey.RetryAttempts),
         fixedRetryIntervalInMilliseconds: LocalStorageUtility.getEntryNumber(StorageKey.RetryInterval),

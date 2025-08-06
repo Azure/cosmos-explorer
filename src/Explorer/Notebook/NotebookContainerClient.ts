@@ -2,7 +2,7 @@
  * Notebook container related stuff
  */
 import { useDialog } from "Explorer/Controls/Dialog";
-import promiseRetry, { AbortError } from "p-retry";
+import promiseRetry, { AbortError, Options } from "p-retry";
 import { PhoenixClient } from "Phoenix/PhoenixClient";
 import * as Constants from "../../Common/Constants";
 import { ConnectionStatusType, HttpHeaders, HttpStatusCodes, Notebook, PoolIdType } from "../../Common/Constants";
@@ -19,7 +19,7 @@ export class NotebookContainerClient {
   private clearReconnectionAttemptMessage? = () => {};
   private isResettingWorkspace: boolean;
   private phoenixClient: PhoenixClient;
-  private retryOptions: promiseRetry.Options;
+  private retryOptions: Options;
   private scheduleTimerId: NodeJS.Timeout;
 
   constructor(private onConnectionLost: () => void) {

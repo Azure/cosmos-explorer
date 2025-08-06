@@ -28,6 +28,7 @@ import LinkIcon from "../../../images/Link_blue.svg";
 import PowerShellIcon from "../../../images/PowerShell.svg";
 import CopilotIcon from "../../../images/QueryCopilotNewLogo.svg";
 import QuickStartIcon from "../../../images/Quickstart_Lightning.svg";
+import VisualStudioIcon from "../../../images/VisualStudio.svg";
 import NotebookIcon from "../../../images/notebook/Notebook-resource.svg";
 import CollectionIcon from "../../../images/tree-collection.svg";
 import * as Constants from "../../Common/Constants";
@@ -125,8 +126,12 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
       useDatabases.getState().sampleDataResourceTokenCollection
     ) {
       return (
-        <Stack style={{ width: "66%", cursor: "pointer", margin: "40px auto" }} tokens={{ childrenGap: 16 }}>
-          <Stack horizontal tokens={{ childrenGap: 16 }}>
+        <Stack
+          className="splashStackContainer"
+          style={{ width: "66%", cursor: "pointer", margin: "40px auto" }}
+          tokens={{ childrenGap: 16 }}
+        >
+          <Stack className="splashStackRow" horizontal>
             <SplashScreenButton
               imgSrc={QuickStartIcon}
               title={"Launch quick start"}
@@ -146,7 +151,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
               }}
             />
           </Stack>
-          <Stack horizontal tokens={{ childrenGap: 16 }}>
+          <Stack className="splashStackRow" horizontal>
             {useQueryCopilot.getState().copilotEnabled && (
               <SplashScreenButton
                 imgSrc={CopilotIcon}
@@ -290,10 +295,10 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         <form className="connectExplorerFormContainer">
           <div className="splashScreenContainer">
             <div className="splashScreen">
-              <h1 className="title" role="heading" aria-label={title}>
+              <h2 className="title" role="heading" aria-label={title}>
                 {title}
                 <FeaturePanelLauncher />
-              </h1>
+              </h2>
               <div className="subtitle">{subtitle}</div>
               {this.getSplashScreenButtons()}
               {useCarousel.getState().showCoachMark && (
@@ -458,10 +463,10 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     }
 
     if (userContext.apiType === "VCoreMongo") {
-      icon = ContainersIcon;
-      title = "Connect with Studio 3T";
-      description = "Prefer Studio 3T? Find your connection strings here";
-      onClick = () => useTabs.getState().openAndActivateReactTab(ReactTabKind.Connect);
+      icon = VisualStudioIcon;
+      title = "Connect with VS Code";
+      description = "Query and Manage your MongoDB cluster in Visual Studio Code";
+      onClick = () => this.container.openInVsCode();
     }
 
     return {
@@ -817,7 +822,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
 
   private vcoreMongoNextStepItems: { link: string; title: string; description: string }[] = [
     {
-      link: "https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/vcore/how-to-migrate-native-tools?tabs=export-import",
+      link: "https://learn.microsoft.com/azure/cosmos-db/mongodb/vcore/migration-options",
       title: "Migrate Data",
       description: "",
     },

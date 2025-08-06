@@ -193,6 +193,7 @@ export const InputDataList: FC<InputDataListProps> = ({
     <>
       <Input
         id="filterInput"
+        data-test={"DocumentsTab/FilterInput"}
         ref={inputRef}
         type="text"
         size="small"

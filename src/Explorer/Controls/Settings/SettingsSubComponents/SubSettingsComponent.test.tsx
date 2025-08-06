@@ -143,4 +143,39 @@ describe("SubSettingsComponent", () => {
     expect(subSettingsComponentInstance.getTtlValue(TtlType.On)).toEqual(TtlOn);
     expect(subSettingsComponentInstance.getTtlValue(TtlType.Off)).toEqual(TtlOff);
   });
+
+  it("uniqueKey is visible", () => {
+    updateUserContext({
+      databaseAccount: {
+        properties: {
+          capabilities: [{ name: "EnableSQL" }],
+        },
+      } as DatabaseAccount,
+    });
+    const subSettingsComponent = new SubSettingsComponent(baseProps);
+    expect(subSettingsComponent.getUniqueKeyVisible()).toEqual(true);
+  });
+
+  it("uniqueKey not visible due to no keys", () => {
+    const props = {
+      ...baseProps,
+      ...(baseProps.collection.rawDataModel.uniqueKeyPolicy.uniqueKeys = []),
+    };
+    const subSettingsComponent = new SubSettingsComponent(props);
+    expect(subSettingsComponent.getUniqueKeyVisible()).toEqual(false);
+  });
+
+  it("uniqueKey not visible for API", () => {
+    const newContainer = new Explorer();
+    updateUserContext({
+      databaseAccount: {
+        properties: {
+          capabilities: [{ name: "EnableMongo" }],
+        },
+      } as DatabaseAccount,
+    });
+    const props = { ...baseProps, container: newContainer };
+    const subSettingsComponent = new SubSettingsComponent(props);
+    expect(subSettingsComponent.getUniqueKeyVisible()).toEqual(false);
+  });
 });

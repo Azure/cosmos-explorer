@@ -23,3 +23,7 @@ export const logConsoleError = (msg: string): void => {
 export const logConsoleInfo = (msg: string): void => {
   log(ConsoleDataType.Info, msg);
 };
+
+export const logConsoleWarning = (msg: string): void => {
+  log(ConsoleDataType.Warning, msg);
+};

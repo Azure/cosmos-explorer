@@ -3,7 +3,7 @@
   Run "npm run generateARMClients" to regenerate
   Edting this file directly should be done with extreme caution as not to diverge from ARM REST specs
 
-  Generated from: https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/specification/cosmos-db/resource-manager/Microsoft.DocumentDB/preview/2024-02-15-preview/cosmos-db.json
+  Generated from: https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/specification/cosmos-db/resource-manager/Microsoft.DocumentDB/preview/2025-05-01-preview/cosmos-db.json
 */
 
 /* The List operation response, that contains the client encryption keys and their properties. */
@@ -553,6 +553,12 @@ export interface DatabaseAccountGetProperties {
   /* The object that represents all properties related to capacity enforcement on an account. */
   capacity?: Capacity;
 
+  /* Indicates the capacityMode of the Cosmos DB account. */
+  capacityMode?: CapacityMode;
+
+  /* The object that represents the migration state for the CapacityMode of the Cosmos DB account. */
+  capacityModeChangeTransitionState?: CapacityModeChangeTransitionState;
+
   /* Flag to indicate whether to enable MaterializedViews on the Cosmos DB account */
   enableMaterializedViews?: boolean;
   /* The object that represents the metadata for the Account Keys of the Cosmos DB account. */
@@ -574,6 +580,8 @@ export interface DatabaseAccountGetProperties {
 
   /* Flag to indicate enabling/disabling of Per-Region Per-partition autoscale Preview feature on the account */
   enablePerRegionPerPartitionAutoscale?: boolean;
+  /* Flag to indicate if All Versions and Deletes Change feed feature is enabled on the account */
+  enableAllVersionsAndDeletesChangeFeed?: boolean;
 }
 
 /* Properties to create and update Azure Cosmos DB database accounts. */
@@ -652,6 +660,9 @@ export interface DatabaseAccountCreateUpdateProperties {
   /* The object that represents all properties related to capacity enforcement on an account. */
   capacity?: Capacity;
 
+  /* Indicates the capacityMode of the Cosmos DB account. */
+  capacityMode?: CapacityMode;
+
   /* Flag to indicate whether to enable MaterializedViews on the Cosmos DB account */
   enableMaterializedViews?: boolean;
   /* This property is ignored during the update/create operation, as the metadata is read-only. The object represents the metadata for the Account Keys of the Cosmos DB account. */
@@ -673,6 +684,8 @@ export interface DatabaseAccountCreateUpdateProperties {
 
   /* Flag to indicate enabling/disabling of Per-Region Per-partition autoscale Preview feature on the account */
   enablePerRegionPerPartitionAutoscale?: boolean;
+  /* Flag to indicate if All Versions and Deletes Change feed feature is enabled on the account */
+  enableAllVersionsAndDeletesChangeFeed?: boolean;
 }
 
 /* Parameters to create and update Cosmos DB database accounts. */
@@ -754,6 +767,9 @@ export interface DatabaseAccountUpdateProperties {
   /* The object that represents all properties related to capacity enforcement on an account. */
   capacity?: Capacity;
 
+  /* Indicates the capacityMode of the Cosmos DB account. */
+  capacityMode?: CapacityMode;
+
   /* Flag to indicate whether to enable MaterializedViews on the Cosmos DB account */
   enableMaterializedViews?: boolean;
   /* This property is ignored during the update operation, as the metadata is read-only. The object represents the metadata for the Account Keys of the Cosmos DB account. */
@@ -775,6 +791,8 @@ export interface DatabaseAccountUpdateProperties {
 
   /* Flag to indicate enabling/disabling of Per-Region Per-partition autoscale Preview feature on the account */
   enablePerRegionPerPartitionAutoscale?: boolean;
+  /* Flag to indicate if All Versions and Deletes Change feed feature is enabled on the account */
+  enableAllVersionsAndDeletesChangeFeed?: boolean;
 }
 
 /* Parameters for patching Azure Cosmos DB database account properties. */
@@ -1087,6 +1105,8 @@ export interface ThroughputSettingsResource {
   readonly instantMaximumThroughput?: string;
   /* The maximum throughput value or the maximum maxThroughput value (for autoscale) that can be specified */
   readonly softAllowedMaximumThroughput?: string;
+  /* Array of Throughput Bucket limits to be applied to the Cosmos DB container */
+  throughputBuckets?: ThroughputBucketResource[];
 }
 
 /* Cosmos DB provisioned throughput settings object */
@@ -1112,6 +1132,14 @@ export interface ThroughputPolicyResource {
   isEnabled?: boolean;
   /* Represents the percentage by which throughput can increase every time throughput policy kicks in. */
   incrementPercent?: number;
+}
+
+/* Cosmos DB throughput bucket object */
+export interface ThroughputBucketResource {
+  /* Represents the throughput bucket id */
+  id: number;
+  /* Represents maximum percentage throughput that can be used by the bucket */
+  maxThroughputPercentage: number;
 }
 
 /* Cosmos DB options resource object */
@@ -1194,6 +1222,8 @@ export interface PhysicalPartitionThroughputInfoResource {
   id: string;
   /* Throughput of a physical partition */
   throughput?: number;
+  /* Target throughput of a physical partition */
+  targetThroughput?: number;
 }
 
 /* Cosmos DB client encryption key resource object. */
@@ -1235,10 +1265,6 @@ export interface SqlDatabaseResource {
 export interface SqlContainerResource {
   /* Name of the Cosmos DB SQL container */
   id: string;
-
-  vectorEmbeddingPolicy?: VectorEmbeddingPolicy;
-  fullTextPolicy?: FullTextPolicy;
-
   /* The configuration of the indexing policy. By default, the indexing is automatic for all document paths within the container */
   indexingPolicy?: IndexingPolicy;
 
@@ -1267,41 +1293,17 @@ export interface SqlContainerResource {
   /* The configuration for defining Materialized Views. This must be specified only for creating a Materialized View container. */
   materializedViewDefinition?: MaterializedViewDefinition;
 
+  /* Materialized Views defined on the container. */
+  materializedViews?: MaterializedViewDetails[];
+
   /* List of computed properties */
   computedProperties?: ComputedProperty[];
-}
 
-export interface VectorEmbeddingPolicy {
-  vectorEmbeddings: VectorEmbedding[];
-}
+  /* The vector embedding policy for the container. */
+  vectorEmbeddingPolicy?: VectorEmbeddingPolicy;
 
-export interface VectorEmbedding {
-  path?: string;
-  dataType?: string;
-  dimensions?: number;
-  distanceFunction?: string;
-}
-
-export interface FullTextPolicy {
-  /**
-   * The default language for the full text .
-   */
-  defaultLanguage: string;
-  /**
-   * The paths to be indexed for full text search.
-   */
-  fullTextPaths: FullTextPath[];
-}
-
-export interface FullTextPath {
-  /**
-   * The path to be indexed for full text search.
-   */
-  path: string;
-  /**
-   * The language for the full text path.
-   */
-  language: string;
+  /* The FullText policy for the container. */
+  fullTextPolicy?: FullTextPolicy;
 }
 
 /* Cosmos DB indexing policy */
@@ -1323,19 +1325,22 @@ export interface IndexingPolicy {
   /* List of spatial specifics */
   spatialIndexes?: SpatialSpec[];
 
+  /* List of paths to include in the vector indexing */
   vectorIndexes?: VectorIndex[];
-
-  fullTextIndexes?: FullTextIndex[];
 }
 
-export interface VectorIndex {
-  path?: string;
-  type?: string;
+/* Cosmos DB Vector Embedding Policy */
+export interface VectorEmbeddingPolicy {
+  /* List of vector embeddings */
+  vectorEmbeddings?: VectorEmbedding[];
 }
 
-export interface FullTextIndex {
-  /** The path in the JSON document to index. */
-  path: string;
+/* Cosmos DB FullText Policy */
+export interface FullTextPolicy {
+  /* The default language for a full text paths. */
+  defaultLanguage?: string;
+  /* List of FullText Paths */
+  fullTextPaths?: FullTextPath[];
 }
 
 /* undocumented */
@@ -1361,6 +1366,36 @@ export interface Indexes {
   precision?: number;
   /* Indicates the type of index. */
   kind?: "Hash" | "Range" | "Spatial";
+}
+
+/* undocumented */
+export interface VectorIndex {
+  /* The path to the vector field in the document. */
+  path: string;
+  /* The index type of the vector. Currently, flat, diskANN, and quantizedFlat are supported. */
+  type: "flat" | "diskANN" | "quantizedFlat";
+}
+
+/* Represents a vector embedding. A vector embedding is used to define a vector field in the documents. */
+export interface VectorEmbedding {
+  /* The path to the vector field in the document. */
+  path: string;
+  /* Indicates the data type of vector. */
+  dataType: "float32" | "uint8" | "int8";
+
+  /* The distance function to use for distance calculation in between vectors. */
+  distanceFunction: "euclidean" | "cosine" | "dotproduct";
+
+  /* The number of dimensions in the vector. */
+  dimensions: number;
+}
+
+/* Represents the full text path specification. */
+export interface FullTextPath {
+  /* The path to the full text field in the document. */
+  path: string;
+  /* The language of the full text field in the document. */
+  language?: string;
 }
 
 /* List of composite path */
@@ -1462,6 +1497,14 @@ export interface MaterializedViewDefinition {
   sourceCollectionId: string;
   /* The definition should be an SQL query which would be used to fetch data from the source container to populate into the Materialized View container. */
   definition: string;
+}
+
+/* MaterializedViewDetails, contains Id & _rid fields of materialized view. */
+export interface MaterializedViewDetails {
+  /* Id field of Materialized container. */
+  id?: string;
+  /* _rid field of Materialized container. */
+  _rid?: string;
 }
 
 /* Cosmos DB SQL storedProcedure resource object */
@@ -1686,6 +1729,28 @@ export interface Capability {
 export interface Capacity {
   /* The total throughput limit imposed on the account. A totalThroughputLimit of 2000 imposes a strict limit of max throughput that can be provisioned on that account to be 2000. A totalThroughputLimit of -1 indicates no limits on provisioning of throughput. */
   totalThroughputLimit?: number;
+}
+
+/* Indicates the capacity mode of the account. */
+export type CapacityMode = "None" | "Provisioned" | "Serverless";
+
+/* The transition state information related capacity mode change with update request. */
+export interface CapacityModeChangeTransitionState {
+  /* The transition status of capacity mode. */
+  capacityModeTransitionStatus?: "Invalid" | "Initialized" | "InProgress" | "Completed" | "Failed";
+
+  /* Indicates the current capacity mode of the account. */
+  currentCapacityMode?: "None" | "Provisioned" | "Serverless";
+
+  /* Indicates the previous capacity mode of the account before successful transition. */
+  previousCapacityMode?: "None" | "Provisioned" | "Serverless";
+
+  /* Begin time in UTC of the capacity mode change. */
+  readonly capacityModeTransitionBeginTimestamp?: string;
+  /* End time in UTC of the capacity mode change. */
+  readonly capacityModeTransitionEndTimestamp?: string;
+  /* End time in UTC of the last successful capacity mode change. */
+  readonly capacityModeLastSuccessfulTransitionEndTimestamp?: string;
 }
 
 /* Tags are a list of key-value pairs that describe the resource. These tags can be used in viewing and grouping this resource (across resource groups). A maximum of 15 tags can be provided for a resource. Each tag must have a key no greater than 128 characters and value no greater than 256 characters. For example, the default experience for a template type is set with "defaultExperience": "Cassandra". Current "defaultExperience" values also include "Table", "Graph", "DocumentDB", and "MongoDB". */
@@ -1953,8 +2018,8 @@ export type PublicNetworkAccess = "Enabled" | "Disabled" | "SecuredByPerimeter";
 
 /* undocumented */
 export interface ApiProperties {
-  /* Describes the ServerVersion of an a MongoDB account. */
-  serverVersion?: "3.2" | "3.6" | "4.0" | "4.2";
+  /* Describes the version of the MongoDB account. */
+  serverVersion?: "3.2" | "3.6" | "4.0" | "4.2" | "5.0" | "6.0" | "7.0";
 }
 
 /* Analytical storage specific properties. */

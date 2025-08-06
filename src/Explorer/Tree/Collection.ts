@@ -1,6 +1,14 @@
-import { Resource, StoredProcedureDefinition, TriggerDefinition, UserDefinedFunctionDefinition } from "@azure/cosmos";
+import {
+  JSONObject,
+  Resource,
+  StoredProcedureDefinition,
+  TriggerDefinition,
+  UserDefinedFunctionDefinition,
+} from "@azure/cosmos";
 import { useNotebook } from "Explorer/Notebook/useNotebook";
 import { DocumentsTabV2 } from "Explorer/Tabs/DocumentsTabV2/DocumentsTabV2";
+import { isFabricMirrored } from "Platform/Fabric/FabricUtil";
+import { useDataplaneRbacAuthorization } from "Utils/AuthorizationUtils";
 import * as ko from "knockout";
 import * as _ from "underscore";
 import * as Constants from "../../Common/Constants";
@@ -14,7 +22,7 @@ import { readTriggers } from "../../Common/dataAccess/readTriggers";
 import { readUserDefinedFunctions } from "../../Common/dataAccess/readUserDefinedFunctions";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
-import { UploadDetailsRecord } from "../../Contracts/ViewModels";
+import { BulkInsertResult, UploadDetailsRecord } from "../../Contracts/ViewModels";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
@@ -34,7 +42,6 @@ import QueryTablesTab from "../Tabs/QueryTablesTab";
 import { CollectionSettingsTabV2 } from "../Tabs/SettingsTabV2";
 import { useDatabases } from "../useDatabases";
 import { useSelectedNode } from "../useSelectedNode";
-import { Platform, configContext } from "./../../ConfigContext";
 import ConflictId from "./ConflictId";
 import DocumentId from "./DocumentId";
 import StoredProcedure from "./StoredProcedure";
@@ -58,6 +65,8 @@ export default class Collection implements ViewModels.Collection {
   public uniqueKeyPolicy: DataModels.UniqueKeyPolicy;
   public usageSizeInKB: ko.Observable<number>;
   public computedProperties: ko.Observable<DataModels.ComputedProperties>;
+  public materializedViews: ko.Observable<DataModels.MaterializedView[]>;
+  public materializedViewDefinition: ko.Observable<DataModels.MaterializedViewDefinition>;
 
   public offer: ko.Observable<DataModels.Offer>;
   public conflictResolutionPolicy: ko.Observable<DataModels.ConflictResolutionPolicy>;
@@ -124,6 +133,8 @@ export default class Collection implements ViewModels.Collection {
     this.requestSchema = data.requestSchema;
     this.geospatialConfig = ko.observable(data.geospatialConfig);
     this.computedProperties = ko.observable(data.computedProperties);
+    this.materializedViews = ko.observable(data.materializedViews);
+    this.materializedViewDefinition = ko.observable(data.materializedViewDefinition);
 
     this.partitionKeyPropertyHeaders = this.partitionKey?.paths;
     this.partitionKeyProperties = this.partitionKeyPropertyHeaders?.map((partitionKeyPropertyHeader, i) => {
@@ -210,7 +221,7 @@ export default class Collection implements ViewModels.Collection {
     });
 
     const showScriptsMenus: boolean =
-      configContext.platform != Platform.Fabric && (userContext.apiType === "SQL" || userContext.apiType === "Gremlin");
+      !isFabricMirrored() && (userContext.apiType === "SQL" || userContext.apiType === "Gremlin");
     this.showStoredProcedures = ko.observable<boolean>(showScriptsMenus);
     this.showTriggers = ko.observable<boolean>(showScriptsMenus);
     this.showUserDefinedFunctions = ko.observable<boolean>(showScriptsMenus);
@@ -469,9 +480,8 @@ export default class Collection implements ViewModels.Collection {
         node: this,
         title: title,
         tabPath: "",
-
+        password: useDataplaneRbacAuthorization(userContext) ? userContext.aadToken : userContext.masterKey || "",
         collection: this,
-        masterKey: userContext.masterKey || "",
         collectionPartitionKeyProperty: this.partitionKeyProperties?.[0],
         collectionId: this.id(),
         databaseId: this.databaseId,
@@ -630,7 +640,13 @@ export default class Collection implements ViewModels.Collection {
     }
   };
 
-  public onNewQueryClick(source: any, event: MouseEvent, queryText?: string) {
+  public onNewQueryClick(
+    source: any,
+    event: MouseEvent,
+    queryText?: string,
+    splitterDirection?: "horizontal" | "vertical",
+    queryViewSizePercent?: number,
+  ) {
     const collection: ViewModels.Collection = source.collection || source;
     const id = useTabs.getState().getTabs(ViewModels.CollectionTabKind.Query).length + 1;
     const title = "Query " + id;
@@ -653,13 +669,21 @@ export default class Collection implements ViewModels.Collection {
           queryText: queryText,
           partitionKey: collection.partitionKey,
           onLoadStartKey: startKey,
+          splitterDirection,
+          queryViewSizePercent,
         },
         { container: this.container },
       ),
     );
   }
 
-  public onNewMongoQueryClick(source: any, event: MouseEvent, queryText?: string) {
+  public onNewMongoQueryClick(
+    source: any,
+    event: MouseEvent,
+    queryText?: string,
+    splitterDirection?: "horizontal" | "vertical",
+    queryViewSizePercent?: number,
+  ) {
     const collection: ViewModels.Collection = source.collection || source;
     const id = useTabs.getState().getTabs(ViewModels.CollectionTabKind.Query).length + 1;
 
@@ -681,6 +705,9 @@ export default class Collection implements ViewModels.Collection {
         node: this,
         partitionKey: collection.partitionKey,
         onLoadStartKey: startKey,
+        queryText,
+        splitterDirection,
+        queryViewSizePercent,
       },
       {
         container: this.container,
@@ -710,7 +737,7 @@ export default class Collection implements ViewModels.Collection {
       title: title,
       tabPath: "",
       collection: this,
-      masterKey: userContext.masterKey || "",
+      password: useDataplaneRbacAuthorization(userContext) ? userContext.aadToken : userContext.masterKey || "",
       collectionPartitionKeyProperty: this.partitionKeyProperties?.[0],
       collectionId: this.id(),
       databaseId: this.databaseId,
@@ -1023,9 +1050,22 @@ export default class Collection implements ViewModels.Collection {
   }
 
   public async uploadFiles(files: FileList): Promise<{ data: UploadDetailsRecord[] }> {
-    const data = await Promise.all(Array.from(files).map((file) => this.uploadFile(file)));
-
-    return { data };
+    try {
+      TelemetryProcessor.trace(Action.UploadDocuments, ActionModifiers.Start, {
+        nbFiles: files.length,
+      });
+      const data = await Promise.all(Array.from(files).map((file) => this.uploadFile(file)));
+      TelemetryProcessor.trace(Action.UploadDocuments, ActionModifiers.Success, {
+        nbFiles: files.length,
+      });
+      return { data };
+    } catch (error) {
+      TelemetryProcessor.trace(Action.UploadDocuments, ActionModifiers.Failed, {
+        error: getErrorMessage(error),
+        errorStack: getErrorStack(error),
+      });
+      throw error;
+    }
   }
 
   private uploadFile(file: File): Promise<UploadDetailsRecord> {
@@ -1052,6 +1092,56 @@ export default class Collection implements ViewModels.Collection {
     });
   }
 
+  public async bulkInsertDocuments(documents: JSONObject[]): Promise<BulkInsertResult> {
+    const stats: BulkInsertResult = {
+      numSucceeded: 0,
+      numFailed: 0,
+      numThrottled: 0,
+      errors: [] as string[],
+      resources: [],
+    };
+
+    const chunkSize = 100; // 100 is the max # of bulk operations the SDK currently accepts
+    const chunkedContent = Array.from({ length: Math.ceil(documents.length / chunkSize) }, (_, index) =>
+      documents.slice(index * chunkSize, index * chunkSize + chunkSize),
+    );
+    for (const chunk of chunkedContent) {
+      let retryAttempts = 0;
+      let chunkComplete = false;
+      let documentsToAttempt = chunk;
+      while (retryAttempts < 10 && !chunkComplete) {
+        const responses = await bulkCreateDocument(this, documentsToAttempt);
+        const attemptedDocuments = [...documentsToAttempt];
+        documentsToAttempt = [];
+        responses.forEach((response, index) => {
+          if (response.statusCode === 201) {
+            stats.numSucceeded++;
+            stats.resources.push(response.resourceBody);
+          } else if (response.statusCode === 429) {
+            documentsToAttempt.push(attemptedDocuments[index]);
+          } else if (response.statusCode === 409) {
+            stats.numFailed++;
+            stats.errors.push(`Document with id ${attemptedDocuments[index].id} already exists.`);
+          } else {
+            stats.numFailed++;
+            stats.errors.push(JSON.stringify(response.resourceBody));
+          }
+        });
+        if (documentsToAttempt.length === 0) {
+          chunkComplete = true;
+          break;
+        }
+        logConsoleInfo(
+          `${documentsToAttempt.length} document creations were throttled. Waiting ${retryAttempts} seconds and retrying throttled documents`,
+        );
+        retryAttempts++;
+        await sleep(retryAttempts);
+      }
+    }
+
+    return stats;
+  }
+
   private async _createDocumentsFromFile(fileName: string, documentContent: string): Promise<UploadDetailsRecord> {
     const record: UploadDetailsRecord = {
       fileName: fileName,
@@ -1059,45 +1149,22 @@ export default class Collection implements ViewModels.Collection {
       numFailed: 0,
       numThrottled: 0,
       errors: [],
+      resources: [],
     };
 
     try {
       const parsedContent = JSON.parse(documentContent);
       if (Array.isArray(parsedContent)) {
-        const chunkSize = 100; // 100 is the max # of bulk operations the SDK currently accepts
-        const chunkedContent = Array.from({ length: Math.ceil(parsedContent.length / chunkSize) }, (_, index) =>
-          parsedContent.slice(index * chunkSize, index * chunkSize + chunkSize),
-        );
-        for (const chunk of chunkedContent) {
-          let retryAttempts = 0;
-          let chunkComplete = false;
-          let documentsToAttempt = chunk;
-          while (retryAttempts < 10 && !chunkComplete) {
-            const responses = await bulkCreateDocument(this, documentsToAttempt);
-            const attemptedDocuments = [...documentsToAttempt];
-            documentsToAttempt = [];
-            responses.forEach((response, index) => {
-              if (response.statusCode === 201) {
-                record.numSucceeded++;
-              } else if (response.statusCode === 429) {
-                documentsToAttempt.push(attemptedDocuments[index]);
-              } else {
-                record.numFailed++;
-              }
-            });
-            if (documentsToAttempt.length === 0) {
-              chunkComplete = true;
-              break;
-            }
-            logConsoleInfo(
-              `${documentsToAttempt.length} document creations were throttled. Waiting ${retryAttempts} seconds and retrying throttled documents`,
-            );
-            retryAttempts++;
-            await sleep(retryAttempts);
-          }
-        }
+        const { numSucceeded, numFailed, numThrottled, errors, resources } =
+          await this.bulkInsertDocuments(parsedContent);
+        record.numSucceeded = numSucceeded;
+        record.numFailed = numFailed;
+        record.numThrottled = numThrottled;
+        record.errors = errors;
+        record.resources = record.resources.concat(resources);
       } else {
-        await createDocument(this, parsedContent);
+        const resource = await createDocument(this, parsedContent);
+        record.resources.push(resource);
         record.numSucceeded++;
       }
 

@@ -5,11 +5,11 @@
 
 import * as sinon from "sinon";
 import {
+  GremlinRequestMessage,
+  GremlinResponseMessage,
   GremlinSimpleClient,
   GremlinSimpleClientParameters,
   Result,
-  GremlinRequestMessage,
-  GremlinResponseMessage,
 } from "./GremlinSimpleClient";
 
 describe("Gremlin Simple Client", () => {

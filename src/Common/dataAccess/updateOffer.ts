@@ -1,6 +1,7 @@
 import { OfferDefinition, RequestOptions } from "@azure/cosmos";
+import { isFabric } from "Platform/Fabric/FabricUtil";
 import { AuthType } from "../../AuthType";
-import { Offer, SDKOfferDefinition, UpdateOfferParams } from "../../Contracts/DataModels";
+import { Offer, SDKOfferDefinition, ThroughputBucket, UpdateOfferParams } from "../../Contracts/DataModels";
 import { userContext } from "../../UserContext";
 import {
   migrateCassandraKeyspaceToAutoscale,
@@ -56,7 +57,7 @@ export const updateOffer = async (params: UpdateOfferParams): Promise<Offer> => 
   const clearMessage = logConsoleProgress(`Updating offer for ${offerResourceText}`);
 
   try {
-    if (userContext.authType === AuthType.AAD && !userContext.features.enableSDKoperations) {
+    if (userContext.authType === AuthType.AAD && !userContext.features.enableSDKoperations && !isFabric()) {
       if (params.collectionId) {
         updatedOffer = await updateCollectionOfferWithARM(params);
       } else if (userContext.apiType === "Tables") {
@@ -357,6 +358,13 @@ const createUpdateOfferBody = (params: UpdateOfferParams): ThroughputSettingsUpd
     };
   } else {
     body.properties.resource.throughput = params.manualThroughput;
+  }
+
+  if (params.throughputBuckets) {
+    const throughputBuckets = params.throughputBuckets.filter(
+      (bucket: ThroughputBucket) => bucket.maxThroughputPercentage !== 100,
+    );
+    body.properties.resource.throughputBuckets = throughputBuckets;
   }
 
   return body;

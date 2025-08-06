@@ -97,6 +97,12 @@ export enum CapacityMode {
   Serverless = "Serverless",
 }
 
+export enum WorkloadType {
+  Learning = "Learning",
+  DevelopmentTesting = "Development/Testing",
+  Production = "Production",
+  None = "None",
+}
 // flight names returned from the portal are always lowercase
 export class Flights {
   public static readonly SettingsV2 = "settingsv2";
@@ -119,6 +125,7 @@ export class AfecFeatures {
 
 export class TagNames {
   public static defaultExperience: string = "defaultExperience";
+  public static WorkloadType: string = "hidden-workload-type";
 }
 
 export class MongoDBAccounts {
@@ -131,15 +138,6 @@ export enum MongoBackendEndpointType {
   remote,
 }
 
-export class BackendApi {
-  public static readonly GenerateToken: string = "GenerateToken";
-  public static readonly PortalSettings: string = "PortalSettings";
-  public static readonly AccountRestrictions: string = "AccountRestrictions";
-  public static readonly RuntimeProxy: string = "RuntimeProxy";
-  public static readonly DisallowedLocations: string = "DisallowedLocations";
-  public static readonly SampleData: string = "SampleData";
-}
-
 export class PortalBackendEndpoints {
   public static readonly Development: string = "https://localhost:7235";
   public static readonly Mpac: string = "https://cdb-ms-mpac-pbe.cosmos.azure.com";
@@ -149,7 +147,7 @@ export class PortalBackendEndpoints {
 }
 
 export class MongoProxyEndpoints {
-  public static readonly Local: string = "https://localhost:7238";
+  public static readonly Development: string = "https://localhost:7238";
   public static readonly Mpac: string = "https://cdb-ms-mpac-mp.cosmos.azure.com";
   public static readonly Prod: string = "https://cdb-ms-prod-mp.cosmos.azure.com";
   public static readonly Fairfax: string = "https://cdb-ff-prod-mp.cosmos.azure.us";
@@ -250,6 +248,7 @@ export class Areas {
   public static ShareDialog: string = "Share Access Dialog";
   public static Notebook: string = "Notebook";
   public static Copilot: string = "Copilot";
+  public static CloudShell: string = "Cloud Shell";
 }
 
 export class HttpHeaders {
@@ -516,6 +515,18 @@ export class PriorityLevel {
   public static readonly High = "high";
   public static readonly Low = "low";
   public static readonly Default = "low";
+}
+
+export class ariaLabelForLearnMoreLink {
+  public static readonly AnalyticalStore = "Learn more about analytical store.";
+  public static readonly AzureSynapseLink = "Learn more about Azure Synapse Link.";
+}
+
+export class GlobalSecondaryIndexLabels {
+  public static readonly NewGlobalSecondaryIndex: string = "New Global Secondary Index";
+}
+export class FeedbackLabels {
+  public static readonly provideFeedback: string = "Provide feedback";
 }
 
 export const QueryCopilotSampleDatabaseId = "CopilotSampleDB";

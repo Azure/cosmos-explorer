@@ -4,8 +4,8 @@ Cosmos Explorer Preview makes it possible to try a working version of any commit
 
 Initial support is for Hosted (Connection string only) or the Azure Portal. Examples:
 
-Connection string URLs: https://cosmos-explorer-preview.azurewebsites.net/commit/COMMIT_SHA/hostedExplorer.html
-Portal URLs: https://ms.portal.azure.com/?dataExplorerSource=https://cosmos-explorer-preview.azurewebsites.net/commit/COMMIT_SHA/explorer.html#home
+Connection string URLs: https://dataexplorer-preview.azurewebsites.net/commit/COMMIT_SHA/hostedExplorer.html
+Portal URLs: https://ms.portal.azure.com/?dataExplorerSource=https://dataexplorer-preview.azurewebsites.net/commit/COMMIT_SHA/explorer.html#home
 
 In both cases replace `COMMIT_SHA` with the commit you want to view. It must have already completed its build on GitHub Actions.
 

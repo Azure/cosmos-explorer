@@ -1,3 +1,6 @@
+import { TagNames, WorkloadType } from "Common/Constants";
+import { Tags } from "Contracts/DataModels";
+import { isFabric } from "Platform/Fabric/FabricUtil";
 import { userContext } from "../UserContext";
 
 function isVirtualNetworkFilterEnabled() {
@@ -14,4 +17,19 @@ function isPrivateEndpointConnectionsEnabled() {
 
 export function isPublicInternetAccessAllowed(): boolean {
   return !isVirtualNetworkFilterEnabled() && !isIpRulesEnabled() && !isPrivateEndpointConnectionsEnabled();
+}
+
+export function getWorkloadType(): WorkloadType {
+  const tags: Tags = userContext?.databaseAccount?.tags;
+  const workloadType: WorkloadType = tags && (tags[TagNames.WorkloadType] as WorkloadType);
+  if (!workloadType) {
+    return WorkloadType.None;
+  }
+  return workloadType;
+}
+
+export function isGlobalSecondaryIndexEnabled(): boolean {
+  return (
+    !isFabric() && userContext.apiType === "SQL" && userContext.databaseAccount?.properties?.enableMaterializedViews
+  );
 }

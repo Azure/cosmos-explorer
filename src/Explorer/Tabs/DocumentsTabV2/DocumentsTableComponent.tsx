@@ -42,9 +42,9 @@ import { TableColumnSelectionPane } from "Explorer/Panes/TableColumnSelectionPan
 import {
   ColumnSizesMap,
   ColumnSort,
-  deleteSubComponentState,
-  readSubComponentState,
-  saveSubComponentState,
+  deleteDocumentsTabSubComponentState,
+  readDocumentsTabSubComponentState,
+  saveDocumentsTabSubComponentState,
   SubComponentName,
 } from "Explorer/Tabs/DocumentsTabV2/DocumentsTabStateUtil";
 import { INITIAL_SELECTED_ROW_INDEX, useDocumentsTabStyles } from "Explorer/Tabs/DocumentsTabV2/DocumentsTabV2";
@@ -118,7 +118,11 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
   const sortedRowsRef = React.useRef(null);
 
   const [columnSizingOptions, setColumnSizingOptions] = React.useState<TableColumnSizingOptions>(() => {
-    const columnSizesMap: ColumnSizesMap = readSubComponentState(SubComponentName.ColumnSizes, collection, {});
+    const columnSizesMap: ColumnSizesMap = readDocumentsTabSubComponentState(
+      SubComponentName.ColumnSizes,
+      collection,
+      {},
+    );
     const columnSizesPx: TableColumnSizingOptions = {};
     selectedColumnIds.forEach((columnId) => {
       if (
@@ -142,7 +146,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
     sortDirection: "ascending" | "descending";
     sortColumn: TableColumnId | undefined;
   }>(() => {
-    const sort = readSubComponentState<ColumnSort>(SubComponentName.ColumnSort, collection, undefined);
+    const sort = readDocumentsTabSubComponentState<ColumnSort>(SubComponentName.ColumnSort, collection, undefined);
 
     if (!sort) {
       return {
@@ -174,7 +178,12 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
         return acc;
       }, {} as ColumnSizesMap);
 
-      saveSubComponentState<ColumnSizesMap>(SubComponentName.ColumnSizes, collection, persistentSizes, true);
+      saveDocumentsTabSubComponentState<ColumnSizesMap>(
+        SubComponentName.ColumnSizes,
+        collection,
+        persistentSizes,
+        true,
+      );
 
       return newSizingOptions;
     });
@@ -186,11 +195,14 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
     setColumnSort(event, columnId, direction);
 
     if (columnId === undefined || direction === undefined) {
-      deleteSubComponentState(SubComponentName.ColumnSort, collection);
+      deleteDocumentsTabSubComponentState(SubComponentName.ColumnSort, collection);
       return;
     }
 
-    saveSubComponentState<ColumnSort>(SubComponentName.ColumnSort, collection, { columnId, direction });
+    saveDocumentsTabSubComponentState<ColumnSort>(SubComponentName.ColumnSort, collection, {
+      columnId,
+      direction,
+    });
   };
 
   // Columns must be a static object and cannot change on re-renders otherwise React will complain about too many refreshes
@@ -221,7 +233,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
                     aria-label="Select column"
                     size="small"
                     icon={<MoreHorizontalRegular />}
-                    style={{ position: "absolute", right: 0, backgroundColor: tokens.colorNeutralBackground1 }}
+                    style={{ position: "absolute", right: 10, backgroundColor: tokens.colorNeutralBackground1 }}
                   />
                 </MenuTrigger>
                 <MenuPopover>

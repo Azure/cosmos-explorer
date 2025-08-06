@@ -14,10 +14,6 @@
       .flex-direction(@direction: row);
       padding: 4px 5px;
 
-      label {
-        padding: 0px;
-      }
-
       .valueCol {
         flex-grow: 1;
         padding-right: 5px;
@@ -63,6 +59,10 @@
     height: 100%;
   }
 
+  .customTrashIcon {
+    padding-top: 33px;
+  }
+
   .rightPaneTrashIconImg {
     vertical-align: top;
   }
@@ -93,5 +93,12 @@
     overflow-y: auto;
     overflow-x: hidden;
     white-space: nowrap;
+  }
+}
+
+@media (max-width: 768px) {
+  .newVertexComponent {
+    padding: 0;
+    width: 100%;
   }
 }

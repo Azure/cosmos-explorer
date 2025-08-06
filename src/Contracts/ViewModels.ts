@@ -1,4 +1,6 @@
 import {
+  ItemDefinition,
+  JSONObject,
   QueryMetrics,
   Resource,
   StoredProcedureDefinition,
@@ -29,7 +31,10 @@ export interface UploadDetailsRecord {
   numFailed: number;
   numThrottled: number;
   errors: string[];
+  resources?: ItemDefinition[];
 }
+
+export type BulkInsertResult = Omit<UploadDetailsRecord, "fileName">;
 
 export interface QueryResultsMetadata {
   hasMoreResults: boolean;
@@ -45,6 +50,7 @@ export interface QueryResults extends QueryResultsMetadata {
   roundTrips?: number;
   headers?: any;
   queryMetrics?: QueryMetrics;
+  ruThresholdExceeded?: boolean;
 }
 
 export interface Button {
@@ -115,7 +121,13 @@ export interface CollectionBase extends TreeNode {
   isSampleCollection?: boolean;
 
   onDocumentDBDocumentsClick(): void;
-  onNewQueryClick(source: any, event?: MouseEvent, queryText?: string): void;
+  onNewQueryClick(
+    source: any,
+    event?: MouseEvent,
+    queryText?: string,
+    splitterDirection?: "horizontal" | "vertical",
+    queryViewSizePercent?: number,
+  ): void;
   expandCollection(): void;
   collapseCollection(): void;
   getDatabase(): Database;
@@ -137,6 +149,8 @@ export interface Collection extends CollectionBase {
   geospatialConfig: ko.Observable<DataModels.GeospatialConfig>;
   documentIds: ko.ObservableArray<DocumentId>;
   computedProperties: ko.Observable<DataModels.ComputedProperties>;
+  materializedViews: ko.Observable<DataModels.MaterializedView[]>;
+  materializedViewDefinition: ko.Observable<DataModels.MaterializedViewDefinition>;
 
   cassandraKeys: CassandraTableKeys;
   cassandraSchema: CassandraTableKey[];
@@ -151,7 +165,13 @@ export interface Collection extends CollectionBase {
   onSettingsClick: () => Promise<void>;
 
   onNewGraphClick(): void;
-  onNewMongoQueryClick(source: any, event?: MouseEvent, queryText?: string): void;
+  onNewMongoQueryClick(
+    source: any,
+    event?: MouseEvent,
+    queryText?: string,
+    splitterDirection?: "horizontal" | "vertical",
+    queryViewSizePercent?: number,
+  ): void;
   onNewMongoShellClick(): void;
   onNewStoredProcedureClick(source: Collection, event?: MouseEvent): void;
   onNewUserDefinedFunctionClick(source: Collection, event?: MouseEvent): void;
@@ -192,6 +212,12 @@ export interface Collection extends CollectionBase {
   onDragOver(source: Collection, event: { originalEvent: DragEvent }): void;
   onDrop(source: Collection, event: { originalEvent: DragEvent }): void;
   uploadFiles(fileList: FileList): Promise<{ data: UploadDetailsRecord[] }>;
+  bulkInsertDocuments(documents: JSONObject[]): Promise<{
+    numSucceeded: number;
+    numFailed: number;
+    numThrottled: number;
+    errors: string[];
+  }>;
 }
 
 /**
@@ -311,6 +337,8 @@ export interface QueryTabOptions extends TabOptions {
   partitionKey?: DataModels.PartitionKey;
   queryText?: string;
   resourceTokenPartitionKey?: string;
+  splitterDirection?: "horizontal" | "vertical";
+  queryViewSizePercent?: number;
 }
 
 export interface ScriptTabOption extends TabOptions {
@@ -392,7 +420,6 @@ export interface DataExplorerInputsFrame {
   csmEndpoint?: string;
   dnsSuffix?: string;
   serverId?: string;
-  extensionEndpoint?: string;
   portalBackendEndpoint?: string;
   mongoProxyEndpoint?: string;
   cassandraProxyEndpoint?: string;
@@ -416,6 +443,7 @@ export interface DataExplorerInputsFrame {
     [key: string]: string;
   };
   feedbackPolicies?: any;
+  aadToken?: string;
 }
 
 export interface SelfServeFrameInputs {

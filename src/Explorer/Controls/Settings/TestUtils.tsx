@@ -17,7 +17,15 @@ export const collection = {
     includedPaths: [],
     excludedPaths: [],
   }),
-  uniqueKeyPolicy: {} as DataModels.UniqueKeyPolicy,
+  rawDataModel: {
+    uniqueKeyPolicy: {
+      uniqueKeys: [
+        {
+          paths: ["/id"],
+        },
+      ],
+    },
+  },
   usageSizeInKB: ko.observable(100),
   offer: ko.observable<DataModels.Offer>({
     autoscaleMaxThroughput: undefined,
@@ -48,6 +56,15 @@ export const collection = {
   ]),
   vectorEmbeddingPolicy: ko.observable<DataModels.VectorEmbeddingPolicy>({} as DataModels.VectorEmbeddingPolicy),
   fullTextPolicy: ko.observable<DataModels.FullTextPolicy>({} as DataModels.FullTextPolicy),
+  materializedViews: ko.observable<DataModels.MaterializedView[]>([
+    { id: "view1", _rid: "rid1" },
+    { id: "view2", _rid: "rid2" },
+  ]),
+  materializedViewDefinition: ko.observable<DataModels.MaterializedViewDefinition>({
+    definition: "SELECT * FROM c WHERE c.id = 1",
+    sourceCollectionId: "source1",
+    sourceCollectionRid: "rid123",
+  }),
   readSettings: () => {
     return;
   },

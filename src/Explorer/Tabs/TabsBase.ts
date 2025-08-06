@@ -1,3 +1,4 @@
+import { OpenTab } from "Contracts/ActionContracts";
 import { KeyboardActionGroup, clearKeyboardActionGroup } from "KeyboardShortcuts";
 import * as ko from "knockout";
 import * as Constants from "../../Common/Constants";
@@ -26,9 +27,12 @@ export default class TabsBase extends WaitsForTemplateViewModel {
   public tabTitle: ko.Observable<string>;
   public tabPath: ko.Observable<string>;
   public isExecutionError = ko.observable(false);
+  public isExecutionWarning = ko.observable(false);
   public isExecuting = ko.observable(false);
   protected _theme: string;
   public onLoadStartKey: number;
+
+  protected persistedState: OpenTab | undefined = undefined; // Used to store state of tab for persistence
 
   constructor(options: ViewModels.TabOptions) {
     super();
@@ -54,6 +58,10 @@ export default class TabsBase extends WaitsForTemplateViewModel {
       }),
     };
   }
+
+  // Called by useTabs to persist
+  public getPersistedState = (): OpenTab | null => this.persistedState;
+  public triggerPersistState: () => void = undefined;
 
   public onCloseTabButtonClick(): void {
     useTabs.getState().closeTab(this);

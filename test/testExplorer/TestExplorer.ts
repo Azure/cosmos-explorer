@@ -10,17 +10,45 @@ const subscriptionId = urlSearchParams.get("subscriptionId") || process.env.SUBS
 const accountName = urlSearchParams.get("accountName") || "portal-sql-runner-west-us";
 const selfServeType = urlSearchParams.get("selfServeType") || "example";
 const iframeSrc = urlSearchParams.get("iframeSrc") || "explorer.html?platform=Portal&disablePortalInitCache";
-const token = urlSearchParams.get("token");
+const authToken = urlSearchParams.get("token");
 
-console.log("Resource Group:", resourceGroup);
-console.log("Subcription: ", subscriptionId);
-console.log("Account Name: ", accountName);
+const nosqlRbacToken = urlSearchParams.get("nosqlRbacToken") || process.env.NOSQL_TESTACCOUNT_TOKEN || "";
+const nosqlReadOnlyRbacToken =
+  urlSearchParams.get("nosqlReadOnlyRbacToken") || process.env.NOSQL_READONLY_TESTACCOUNT_TOKEN || "";
+const tableRbacToken = urlSearchParams.get("tableRbacToken") || process.env.TABLE_TESTACCOUNT_TOKEN || "";
+const gremlinRbacToken = urlSearchParams.get("gremlinRbacToken") || process.env.GREMLIN_TESTACCOUNT_TOKEN || "";
 
 const initTestExplorer = async (): Promise<void> => {
   updateUserContext({
-    authorizationToken: `bearer ${token}`,
+    authorizationToken: `bearer ${authToken}`,
   });
+
   const databaseAccount = await get(subscriptionId, resourceGroup, accountName);
+  const tags = databaseAccount?.tags;
+  const testAccountType = tags && tags["DataExplorer:TestAccountType"];
+
+  let rbacToken = "";
+  switch (testAccountType) {
+    case "sql":
+      rbacToken = nosqlRbacToken;
+      break;
+    case "sql-readonly":
+      rbacToken = nosqlReadOnlyRbacToken;
+      break;
+    case "gremlin":
+      rbacToken = gremlinRbacToken;
+      break;
+    case "tables":
+      rbacToken = tableRbacToken;
+      break;
+  }
+
+  if (rbacToken.length > 0) {
+    updateUserContext({
+      dataPlaneRbacEnabled: true,
+    });
+  }
+
   const keys = await listKeys(subscriptionId, resourceGroup, accountName);
 
   // Disable the quickstart carousel.
@@ -33,13 +61,13 @@ const initTestExplorer = async (): Promise<void> => {
       databaseAccount: databaseAccount,
       subscriptionId,
       resourceGroup,
-      authorizationToken: `Bearer ${token}`,
+      authorizationToken: `Bearer ${authToken}`,
+      aadToken: rbacToken,
       features: {},
       hasWriteAccess: true,
       csmEndpoint: "https://management.azure.com",
       dnsSuffix: "documents.azure.com",
       serverId: "prod1",
-      extensionEndpoint: "/proxy",
       portalBackendEndpoint: "https://cdb-ms-mpac-pbe.cosmos.azure.com",
       mongoProxyEndpoint: "https://cdb-ms-mpac-mp.cosmos.azure.com",
       cassandraProxyEndpoint: "https://cdb-ms-mpac-cp.cosmos.azure.com",
@@ -90,7 +118,7 @@ const initTestExplorer = async (): Promise<void> => {
   iframe.setAttribute("data-test", "DataExplorerFrame");
   iframe.classList.add("iframe");
   iframe.title = "explorer";
-  iframe.src = iframeSrc;
+  iframe.src = iframeSrc; // CodeQL [SM03712] Not used in production, only for testing purposes
   document.body.appendChild(iframe);
 };
 

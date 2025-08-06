@@ -8,10 +8,16 @@ import { MessageTypes } from "Contracts/ExplorerContracts";
 import { useDataPlaneRbac } from "Explorer/Panes/SettingsPane/SettingsPane";
 import { getCopilotEnabled, isCopilotFeatureRegistered } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
 import { IGalleryItem } from "Juno/JunoClient";
-import { scheduleRefreshDatabaseResourceToken } from "Platform/Fabric/FabricUtil";
+import {
+  isFabricMirrored,
+  isFabricMirroredKey,
+  isFabricNative,
+  scheduleRefreshFabricToken,
+} from "Platform/Fabric/FabricUtil";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { acquireMsalTokenForAccount } from "Utils/AuthorizationUtils";
 import { allowedNotebookServerUrls, validateEndpoint } from "Utils/EndpointUtils";
+import { featureRegistered } from "Utils/FeatureRegistrationUtils";
 import { update } from "Utils/arm/generatedClients/cosmos/databaseAccounts";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import * as ko from "knockout";
@@ -30,12 +36,13 @@ import { readDatabases } from "../Common/dataAccess/readDatabases";
 import * as DataModels from "../Contracts/DataModels";
 import { ContainerConnectionInfo, IPhoenixServiceInfo, IProvisionData, IResponse } from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
+import { UploadDetailsRecord } from "../Contracts/ViewModels";
 import { GitHubOAuthService } from "../GitHub/GitHubOAuthService";
 import { PhoenixClient } from "../Phoenix/PhoenixClient";
 import * as ExplorerSettings from "../Shared/ExplorerSettings";
 import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
-import { isAccountNewerThanThresholdInMs, updateUserContext, userContext } from "../UserContext";
+import { updateUserContext, userContext } from "../UserContext";
 import { getCollectionName, getUploadName } from "../Utils/APITypeUtils";
 import { stringToBlob } from "../Utils/BlobUtils";
 import { isCapabilityEnabled } from "../Utils/CapabilityUtils";
@@ -43,7 +50,7 @@ import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../Utils/NotificationConsoleUtils";
 import { useSidePanel } from "../hooks/useSidePanel";
-import { useTabs } from "../hooks/useTabs";
+import { ReactTabKind, useTabs } from "../hooks/useTabs";
 import "./ComponentRegisterer";
 import { DialogProps, useDialog } from "./Controls/Dialog";
 import { GalleryTab as GalleryTabKind } from "./Controls/NotebookGallery/GalleryViewerComponent";
@@ -55,7 +62,7 @@ import type NotebookManager from "./Notebook/NotebookManager";
 import { NotebookPaneContent } from "./Notebook/NotebookManager";
 import { NotebookUtil } from "./Notebook/NotebookUtil";
 import { useNotebook } from "./Notebook/useNotebook";
-import { AddCollectionPanel } from "./Panes/AddCollectionPanel";
+import { AddCollectionPanel } from "./Panes/AddCollectionPanel/AddCollectionPanel";
 import { CassandraAddCollectionPane } from "./Panes/CassandraAddCollectionPane/CassandraAddCollectionPane";
 import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane/ExecuteSprocParamsPane";
 import { StringInputPane } from "./Panes/StringInputPane/StringInputPane";
@@ -187,6 +194,10 @@ export default class Explorer {
       useNotebook.getState().setNotebookBasePath(userContext.features.notebookBasePath);
     }
 
+    if (isFabricMirrored()) {
+      useTabs.getState().closeReactTab(ReactTabKind.Home);
+    }
+
     this.refreshExplorer();
   }
 
@@ -278,35 +289,66 @@ export default class Explorer {
     }
   }
 
-  public openNPSSurveyDialog(): void {
-    if (!Platform.Portal || !["Postgres", "SQL", "Mongo"].includes(userContext.apiType)) {
-      return;
-    }
+  /**
+   * Generates a VS Code DocumentDB connection URL using the current user's MongoDB connection parameters.
+   * Double-encodes the updated connection string for safe usage in VS Code URLs.
+   *
+   * The DocumentDB VS Code extension requires double encoding for connection strings.
+   * See: https://microsoft.github.io/vscode-documentdb/manual/how-to-construct-url.html#double-encoding
+   *
+   * @returns {string} The encoded VS Code DocumentDB connection URL.
+   */
+  private getDocumentDbUrl() {
+    const { adminLogin: adminLoginuserName = "", connectionString = "" } = userContext.vcoreMongoConnectionParams;
+    const updatedConnectionString = connectionString.replace(/<(user|username)>:<password>/i, adminLoginuserName);
+    const encodedUpdatedConnectionString = encodeURIComponent(encodeURIComponent(updatedConnectionString));
+    const documentDbUrl = `vscode://ms-azuretools.vscode-documentdb?connectionString=${encodedUpdatedConnectionString}`;
+    return documentDbUrl;
+  }
 
-    const ONE_DAY_IN_MS = 86400000;
-    const SEVEN_DAYS_IN_MS = 604800000;
+  private getCosmosDbUrl() {
+    const activeTab = useTabs.getState().activeTab;
+    const resourceId = encodeURIComponent(userContext.databaseAccount.id);
+    const database = encodeURIComponent(activeTab?.collection?.databaseId);
+    const container = encodeURIComponent(activeTab?.collection?.id());
+    const baseUrl = `vscode://ms-azuretools.vscode-cosmosdb?resourceId=${resourceId}`;
+    const vscodeUrl = activeTab ? `${baseUrl}&database=${database}&container=${container}` : baseUrl;
+    return vscodeUrl;
+  }
 
-    // Try Cosmos DB subscription - survey shown to 100% of users at day 1 in Data Explorer.
-    if (userContext.isTryCosmosDBSubscription) {
-      if (isAccountNewerThanThresholdInMs(userContext.databaseAccount?.systemData?.createdAt || "", ONE_DAY_IN_MS)) {
-        Logger.logInfo(
-          `Sending message to Portal to check if NPS Survey can be displayed in Try Cosmos DB ${userContext.apiType}`,
-          "Explorer/openNPSSurveyDialog",
-        );
-        sendMessage({ type: MessageTypes.DisplayNPSSurvey });
-      }
-    } else {
-      // Show survey when an existing account is older than 7 days
-      if (
-        !isAccountNewerThanThresholdInMs(userContext.databaseAccount?.systemData?.createdAt || "", SEVEN_DAYS_IN_MS)
-      ) {
-        Logger.logInfo(
-          `Sending message to Portal to check if NPS Survey can be displayed for existing ${userContext.apiType} account older than 7 days`,
-          "Explorer/openNPSSurveyDialog",
-        );
-        sendMessage({ type: MessageTypes.DisplayNPSSurvey });
-      }
-    }
+  private getVSCodeUrl(): string {
+    const isvCore = (userContext.apiType || userContext.databaseAccount.kind) === "VCoreMongo";
+    return isvCore ? this.getDocumentDbUrl() : this.getCosmosDbUrl();
+  }
+
+  public openInVsCode(): void {
+    const vscodeUrl = this.getVSCodeUrl();
+    const openVSCodeDialogProps: DialogProps = {
+      linkProps: {
+        linkText: "Download Visual Studio Code",
+        linkUrl: "https://code.visualstudio.com/download",
+      },
+      isModal: true,
+      title: `Open your Azure Cosmos DB account in Visual Studio Code`,
+      subText: `Please ensure Visual Studio Code is installed on your device.
+      If you don't have it installed, please download it from the link below.`,
+      primaryButtonText: "Open in VS Code",
+      secondaryButtonText: "Cancel",
+
+      onPrimaryButtonClick: () => {
+        try {
+          window.location.href = vscodeUrl;
+          TelemetryProcessor.traceStart(Action.OpenVSCode);
+        } catch (error) {
+          logConsoleError(`Failed to open VS Code: ${getErrorMessage(error)}`);
+        }
+      },
+      onSecondaryButtonClick: () => {
+        useDialog.getState().closeDialog();
+        TelemetryProcessor.traceCancel(Action.OpenVSCode);
+      },
+    };
+    useDialog.getState().openDialog(openVSCodeDialogProps);
   }
 
   public async openCESCVAFeedbackBlade(): Promise<void> {
@@ -378,8 +420,8 @@ export default class Explorer {
   };
 
   public onRefreshResourcesClick = async (): Promise<void> => {
-    if (configContext.platform === Platform.Fabric) {
-      scheduleRefreshDatabaseResourceToken(true).then(() => this.refreshAllDatabases());
+    if (isFabricMirroredKey()) {
+      scheduleRefreshFabricToken(true).then(() => this.refreshAllDatabases());
       return;
     }
 
@@ -937,7 +979,9 @@ export default class Explorer {
   }
 
   public async openNotebookTerminal(kind: ViewModels.TerminalKind): Promise<void> {
-    if (useNotebook.getState().isPhoenixFeatures) {
+    if (userContext.features.enableCloudShell) {
+      this.connectToNotebookTerminal(kind);
+    } else if (useNotebook.getState().isPhoenixFeatures) {
       await this.allocateContainer(PoolIdType.DefaultPoolId);
       const notebookServerInfo = useNotebook.getState().notebookServerInfo;
       if (notebookServerInfo && notebookServerInfo.notebookServerEndpoint !== undefined) {
@@ -1103,8 +1147,8 @@ export default class Explorer {
     }
   }
 
-  public openUploadItemsPane(): void {
-    useSidePanel.getState().openSidePanel("Upload " + getUploadName(), <UploadItemsPane />);
+  public openUploadItemsPane(onUpload?: (data: UploadDetailsRecord[]) => void): void {
+    useSidePanel.getState().openSidePanel("Upload " + getUploadName(), <UploadItemsPane onUpload={onUpload} />);
   }
   public openExecuteSprocParamsPanel(storedProcedure: StoredProcedure): void {
     useSidePanel
@@ -1112,7 +1156,7 @@ export default class Explorer {
       .openSidePanel("Input parameters", <ExecuteSprocParamsPane storedProcedure={storedProcedure} />);
   }
 
-  public getDownloadModalConent(fileName: string): JSX.Element {
+  public getDownloadModalContent(fileName: string): JSX.Element {
     if (useNotebook.getState().isPhoenixNotebooks) {
       return (
         <>
@@ -1134,9 +1178,12 @@ export default class Explorer {
     if (userContext.apiType !== "Postgres" && userContext.apiType !== "VCoreMongo") {
       userContext.authType === AuthType.ResourceToken
         ? this.refreshDatabaseForResourceToken()
-        : this.refreshAllDatabases();
+        : await this.refreshAllDatabases(); // await: we rely on the databases to be loaded before restoring the tabs further in the flow
     }
-    await useNotebook.getState().refreshNotebooksEnabledStateForAccount();
+
+    if (!isFabricNative()) {
+      await useNotebook.getState().refreshNotebooksEnabledStateForAccount();
+    }
 
     // TODO: remove reference to isNotebookEnabled and isNotebooksEnabledForAccount
     const isNotebookEnabled =
@@ -1158,7 +1205,12 @@ export default class Explorer {
       await this.initNotebooks(userContext.databaseAccount);
     }
 
-    await this.refreshSampleData();
+    if (userContext.authType === AuthType.AAD && userContext.apiType === "SQL" && !isFabricNative()) {
+      const throughputBucketsEnabled = await featureRegistered(userContext.subscriptionId, "ThroughputBucketing");
+      updateUserContext({ throughputBucketsEnabled });
+    }
+
+    this.refreshSampleData();
   }
 
   public async configureCopilot(): Promise<void> {
@@ -1183,26 +1235,27 @@ export default class Explorer {
       .setCopilotSampleDBEnabled(copilotEnabled && copilotUserDBEnabled && copilotSampleDBEnabled);
   }
 
-  public async refreshSampleData(): Promise<void> {
-    try {
-      if (!userContext.sampleDataConnectionInfo) {
-        return;
-      }
-      const collection: DataModels.Collection = await readSampleCollection();
-      if (!collection) {
-        return;
-      }
-
-      const databaseId = userContext.sampleDataConnectionInfo?.databaseId;
-      if (!databaseId) {
-        return;
-      }
-
-      const sampleDataResourceTokenCollection = new ResourceTokenCollection(this, databaseId, collection, true);
-      useDatabases.setState({ sampleDataResourceTokenCollection });
-    } catch (error) {
-      Logger.logError(getErrorMessage(error), "Explorer");
+  public refreshSampleData(): void {
+    if (!userContext.sampleDataConnectionInfo) {
       return;
     }
+
+    const databaseId = userContext.sampleDataConnectionInfo?.databaseId;
+    if (!databaseId) {
+      return;
+    }
+
+    readSampleCollection()
+      .then((collection: DataModels.Collection) => {
+        if (!collection) {
+          return;
+        }
+
+        const sampleDataResourceTokenCollection = new ResourceTokenCollection(this, databaseId, collection, true);
+        useDatabases.setState({ sampleDataResourceTokenCollection });
+      })
+      .catch((error) => {
+        Logger.logError(getErrorMessage(error), "Explorer/refreshSampleData");
+      });
   }
 }

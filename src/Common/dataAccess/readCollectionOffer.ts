@@ -1,3 +1,4 @@
+import { isFabric } from "Platform/Fabric/FabricUtil";
 import { AuthType } from "../../AuthType";
 import { Offer, ReadCollectionOfferParams } from "../../Contracts/DataModels";
 import { userContext } from "../../UserContext";
@@ -12,6 +13,11 @@ import { readOfferWithSDK } from "./readOfferWithSDK";
 
 export const readCollectionOffer = async (params: ReadCollectionOfferParams): Promise<Offer> => {
   const clearMessage = logConsoleProgress(`Querying offer for collection ${params.collectionId}`);
+
+  if (isFabric()) {
+    // Not exposing offers in Fabric
+    return undefined;
+  }
 
   try {
     if (
@@ -105,6 +111,8 @@ const readCollectionOfferWithARM = async (databaseId: string, collectionId: stri
         ? parseInt(resource.softAllowedMaximumThroughput)
         : resource.softAllowedMaximumThroughput;
 
+    const throughputBuckets = resource?.throughputBuckets;
+
     if (autoscaleSettings) {
       return {
         id: offerId,
@@ -114,6 +122,7 @@ const readCollectionOfferWithARM = async (databaseId: string, collectionId: stri
         offerReplacePending: resource.offerReplacePending === "true",
         instantMaximumThroughput,
         softAllowedMaximumThroughput,
+        throughputBuckets,
       };
     }
 
@@ -125,6 +134,7 @@ const readCollectionOfferWithARM = async (databaseId: string, collectionId: stri
       offerReplacePending: resource.offerReplacePending === "true",
       instantMaximumThroughput,
       softAllowedMaximumThroughput,
+      throughputBuckets,
     };
   }
 

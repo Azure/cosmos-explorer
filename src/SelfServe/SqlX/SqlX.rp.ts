@@ -197,6 +197,11 @@ export const getPriceMapAndCurrencyCode = async (map: OfferingIdMap): Promise<Pr
     const priceMap = new Map<string, Map<string, number>>();
     let billingCurrency;
     for (const region of map.keys()) {
+      // if no offering id is found for that region, skipping calling price API
+      const subMap = map.get(region);
+      if (!subMap || subMap.size === 0) {
+        continue;
+      }
       const regionPriceMap = new Map<string, number>();
       const regionShortName = await getRegionShortName(region);
       const requestBody: OfferingIdRequest = {
@@ -237,7 +242,7 @@ export const getPriceMapAndCurrencyCode = async (map: OfferingIdMap): Promise<Pr
   } catch (err) {
     const failureTelemetry = { err, selfServeClassName: SqlX.name };
     selfServeTraceFailure(failureTelemetry, getPriceMapAndCurrencyCodeTimestamp);
-    return { priceMap: undefined, billingCurrency: undefined };
+    return { priceMap: new Map<string, Map<string, number>>(), billingCurrency: undefined };
   }
 };
 
@@ -264,9 +269,12 @@ export const getOfferingIds = async (regions: Array<RegionItem>): Promise<Offeri
         host: configContext.CATALOG_ENDPOINT,
         path: getOfferingIdPathForRegion(),
         method: "GET",
-        apiVersion: "2023-05-01-preview",
+        apiVersion: configContext.CATALOG_API_VERSION,
         queryParams: {
-          filter: "armRegionName eq '" + regionShortName + "'",
+          filter:
+            "armRegionName eq '" +
+            regionShortName +
+            "' and productDisplayName eq 'Azure Cosmos DB Dedicated Gateway - General Purpose'",
         },
       });
 
@@ -283,6 +291,6 @@ export const getOfferingIds = async (regions: Array<RegionItem>): Promise<Offeri
   } catch (err) {
     const failureTelemetry = { err, selfServeClassName: SqlX.name };
     selfServeTraceFailure(failureTelemetry, getOfferingIdsCodeTimestamp);
-    return undefined;
+    return new Map<string, Map<string, string>>();
   }
 };

@@ -21,75 +21,52 @@ import { getNewDatabaseSharedThroughputDefault } from "Common/DatabaseUtility";
 import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
 import { configContext, Platform } from "ConfigContext";
 import * as DataModels from "Contracts/DataModels";
-import {
-  FullTextPoliciesComponent,
-  getFullTextLanguageOptions,
-} from "Explorer/Controls/FullTextSeach/FullTextPoliciesComponent";
+import { FullTextPoliciesComponent } from "Explorer/Controls/FullTextSeach/FullTextPoliciesComponent";
 import { VectorEmbeddingPoliciesComponent } from "Explorer/Controls/VectorSearch/VectorEmbeddingPoliciesComponent";
+import {
+  AllPropertiesIndexed,
+  AnalyticalStoreHeader,
+  ContainerVectorPolicyTooltipContent,
+  FullTextPolicyDefault,
+  getPartitionKey,
+  getPartitionKeyName,
+  getPartitionKeyPlaceHolder,
+  getPartitionKeyTooltipText,
+  isFreeTierAccount,
+  isSynapseLinkEnabled,
+  parseUniqueKeys,
+  scrollToSection,
+  SharedDatabaseDefault,
+  shouldShowAnalyticalStoreOptions,
+  UniqueKeysHeader,
+} from "Explorer/Panes/AddCollectionPanel/AddCollectionPanelUtility";
 import { useSidePanel } from "hooks/useSidePanel";
 import { useTeachingBubble } from "hooks/useTeachingBubble";
+import { isFabricNative } from "Platform/Fabric/FabricUtil";
 import React from "react";
 import { CollectionCreation } from "Shared/Constants";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "UserContext";
 import { getCollectionName } from "Utils/APITypeUtils";
-import {
-  isCapabilityEnabled,
-  isFullTextSearchEnabled,
-  isServerlessAccount,
-  isVectorSearchEnabled,
-} from "Utils/CapabilityUtils";
+import { isCapabilityEnabled, isServerlessAccount, isVectorSearchEnabled } from "Utils/CapabilityUtils";
 import { getUpsellMessage } from "Utils/PricingUtils";
-import { CollapsibleSectionComponent } from "../Controls/CollapsiblePanel/CollapsibleSectionComponent";
-import { ThroughputInput } from "../Controls/ThroughputInput/ThroughputInput";
-import "../Controls/ThroughputInput/ThroughputInput.less";
-import { ContainerSampleGenerator } from "../DataSamples/ContainerSampleGenerator";
-import Explorer from "../Explorer";
-import { useDatabases } from "../useDatabases";
-import { PanelFooterComponent } from "./PanelFooterComponent";
-import { PanelInfoErrorComponent } from "./PanelInfoErrorComponent";
-import { PanelLoadingScreen } from "./PanelLoadingScreen";
+import { ValidCosmosDbIdDescription, ValidCosmosDbIdInputPattern } from "Utils/ValidationUtils";
+import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
+import { CollapsibleSectionComponent } from "../../Controls/CollapsiblePanel/CollapsibleSectionComponent";
+import { ThroughputInput } from "../../Controls/ThroughputInput/ThroughputInput";
+import { ContainerSampleGenerator } from "../../DataSamples/ContainerSampleGenerator";
+import Explorer from "../../Explorer";
+import { useDatabases } from "../../useDatabases";
+import { PanelFooterComponent } from "../PanelFooterComponent";
+import { PanelInfoErrorComponent } from "../PanelInfoErrorComponent";
+import { PanelLoadingScreen } from "../PanelLoadingScreen";
 
 export interface AddCollectionPanelProps {
   explorer: Explorer;
   databaseId?: string;
   isQuickstart?: boolean;
 }
-
-const SharedDatabaseDefault: DataModels.IndexingPolicy = {
-  indexingMode: "consistent",
-  automatic: true,
-  includedPaths: [],
-  excludedPaths: [
-    {
-      path: "/*",
-    },
-  ],
-};
-
-export const AllPropertiesIndexed: DataModels.IndexingPolicy = {
-  indexingMode: "consistent",
-  automatic: true,
-  includedPaths: [
-    {
-      path: "/*",
-      indexes: [
-        {
-          kind: "Range",
-          dataType: "Number",
-          precision: -1,
-        },
-        {
-          kind: "Range",
-          dataType: "String",
-          precision: -1,
-        },
-      ],
-    },
-  ],
-  excludedPaths: [],
-};
 
 export const DefaultVectorEmbeddingPolicy: DataModels.VectorEmbeddingPolicy = {
   vectorEmbeddings: [],
@@ -129,6 +106,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
   private collectionThroughput: number;
   private isCollectionAutoscale: boolean;
   private isCostAcknowledged: boolean;
+  private showFullTextSearch: boolean;
 
   constructor(props: AddCollectionPanelProps) {
     super(props);
@@ -143,9 +121,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       collectionId: props.isQuickstart ? `Sample${getCollectionName()}` : "",
       enableIndexing: true,
       isSharded: userContext.apiType !== "Tables",
-      partitionKey: this.getPartitionKey(),
+      partitionKey: getPartitionKey(props.isQuickstart),
       subPartitionKeys: [],
-      enableDedicatedThroughput: false,
+      enableDedicatedThroughput: isFabricNative(), // Dedicated throughput is only enabled in Fabric Native by default
       createMongoWildCardIndex:
         isCapabilityEnabled("EnableMongo") && !isCapabilityEnabled("EnableMongo16MBDocumentSupport"),
       useHashV1: false,
@@ -159,10 +137,12 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       vectorEmbeddingPolicy: [],
       vectorIndexingPolicy: [],
       vectorPolicyValidated: true,
-      fullTextPolicy: { defaultLanguage: getFullTextLanguageOptions()[0].key as never, fullTextPaths: [] },
+      fullTextPolicy: FullTextPolicyDefault,
       fullTextIndexes: [],
       fullTextPolicyValidated: true,
     };
+
+    this.showFullTextSearch = userContext.apiType === "SQL";
   }
 
   componentDidMount(): void {
@@ -173,7 +153,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
   componentDidUpdate(_prevProps: AddCollectionPanelProps, prevState: AddCollectionPanelState): void {
     if (this.state.errorMessage && this.state.errorMessage !== prevState.errorMessage) {
-      this.scrollToSection("panelContainer");
+      scrollToSection("panelContainer");
     }
   }
 
@@ -190,7 +170,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
           />
         )}
 
-        {!this.state.errorMessage && this.isFreeTierAccount() && (
+        {!this.state.errorMessage && isFreeTierAccount() && (
           <PanelInfoErrorComponent
             message={getUpsellMessage(userContext.portalEnv, true, isFirstResourceCreated, true)}
             messageType="info"
@@ -284,153 +264,154 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
         )}
 
         <div className="panelMainContent">
-          <Stack hidden={userContext.apiType === "Tables"}>
-            <Stack horizontal>
-              <span className="mandatoryStar">*&nbsp;</span>
-              <Text className="panelTextBold" variant="small">
-                Database {userContext.apiType === "Mongo" ? "name" : "id"}
-              </Text>
-              <TooltipHost
-                directionalHint={DirectionalHint.bottomLeftEdge}
-                content={`A database is analogous to a namespace. It is the unit of management for a set of ${getCollectionName(
-                  true,
-                ).toLocaleLowerCase()}.`}
-              >
-                <Icon
-                  iconName="Info"
-                  className="panelInfoIcon"
-                  tabIndex={0}
-                  ariaLabel={`A database is analogous to a namespace. It is the unit of management for a set of ${getCollectionName(
+          {!(isFabricNative() && this.props.databaseId !== undefined) && (
+            <Stack hidden={userContext.apiType === "Tables"} style={{ marginBottom: -2 }}>
+              <Stack horizontal>
+                <span className="mandatoryStar">*&nbsp;</span>
+                <Text className="panelTextBold" variant="small">
+                  Database {userContext.apiType === "Mongo" ? "name" : "id"}
+                </Text>
+                <TooltipHost
+                  directionalHint={DirectionalHint.bottomLeftEdge}
+                  content={`A database is analogous to a namespace. It is the unit of management for a set of ${getCollectionName(
                     true,
                   ).toLocaleLowerCase()}.`}
-                />
-              </TooltipHost>
-            </Stack>
-
-            {configContext.platform !== Platform.Fabric && (
-              <Stack horizontal verticalAlign="center">
-                <div role="radiogroup">
-                  <input
-                    className="panelRadioBtn"
-                    checked={this.state.createNewDatabase}
-                    aria-label="Create new database"
-                    aria-checked={this.state.createNewDatabase}
-                    name="databaseType"
-                    type="radio"
-                    role="radio"
-                    id="databaseCreateNew"
+                >
+                  <Icon
+                    iconName="Info"
+                    className="panelInfoIcon"
                     tabIndex={0}
-                    onChange={this.onCreateNewDatabaseRadioBtnChange.bind(this)}
+                    ariaLabel={`A database is analogous to a namespace. It is the unit of management for a set of ${getCollectionName(
+                      true,
+                    ).toLocaleLowerCase()}.`}
                   />
-                  <span className="panelRadioBtnLabel">Create new</span>
-
-                  <input
-                    className="panelRadioBtn"
-                    checked={!this.state.createNewDatabase}
-                    aria-label="Use existing database"
-                    aria-checked={!this.state.createNewDatabase}
-                    name="databaseType"
-                    type="radio"
-                    role="radio"
-                    tabIndex={0}
-                    onChange={this.onUseExistingDatabaseRadioBtnChange.bind(this)}
-                  />
-                  <span className="panelRadioBtnLabel">Use existing</span>
-                </div>
+                </TooltipHost>
               </Stack>
-            )}
 
-            {this.state.createNewDatabase && (
-              <Stack className="panelGroupSpacing">
-                <input
-                  name="newDatabaseId"
-                  id="newDatabaseId"
-                  aria-required
-                  required
-                  type="text"
-                  autoComplete="off"
-                  pattern="[^/?#\\]*[^/?# \\]"
-                  title="May not end with space nor contain characters '\' '/' '#' '?'"
-                  placeholder="Type a new database id"
-                  size={40}
-                  className="panelTextField"
-                  aria-label="New database id, Type a new database id"
-                  autoFocus
-                  tabIndex={0}
-                  value={this.state.newDatabaseId}
-                  onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                    this.setState({ newDatabaseId: event.target.value })
-                  }
-                />
-
-                {!isServerlessAccount() && (
-                  <Stack horizontal>
-                    <Checkbox
-                      label={`Share throughput across ${getCollectionName(true).toLocaleLowerCase()}`}
-                      checked={this.state.isSharedThroughputChecked}
-                      styles={{
-                        text: { fontSize: 12 },
-                        checkbox: { width: 12, height: 12 },
-                        label: { padding: 0, alignItems: "center" },
-                      }}
-                      onChange={(ev: React.FormEvent<HTMLElement>, isChecked: boolean) =>
-                        this.setState({ isSharedThroughputChecked: isChecked })
-                      }
+              {configContext.platform !== Platform.Fabric && (
+                <Stack horizontal verticalAlign="center">
+                  <div role="radiogroup">
+                    <input
+                      className="panelRadioBtn"
+                      checked={this.state.createNewDatabase}
+                      aria-label="Create new database"
+                      aria-checked={this.state.createNewDatabase}
+                      name="databaseType"
+                      type="radio"
+                      role="radio"
+                      id="databaseCreateNew"
+                      tabIndex={0}
+                      onChange={this.onCreateNewDatabaseRadioBtnChange.bind(this)}
                     />
-                    <TooltipHost
-                      directionalHint={DirectionalHint.bottomLeftEdge}
-                      content={`Throughput configured at the database level will be shared across all ${getCollectionName(
-                        true,
-                      ).toLocaleLowerCase()} within the database.`}
-                    >
-                      <Icon
-                        iconName="Info"
-                        className="panelInfoIcon"
-                        tabIndex={0}
-                        ariaLabel={`Throughput configured at the database level will be shared across all ${getCollectionName(
+                    <span className="panelRadioBtnLabel">Create new</span>
+
+                    <input
+                      className="panelRadioBtn"
+                      checked={!this.state.createNewDatabase}
+                      aria-label="Use existing database"
+                      aria-checked={!this.state.createNewDatabase}
+                      name="databaseType"
+                      type="radio"
+                      role="radio"
+                      tabIndex={0}
+                      onChange={this.onUseExistingDatabaseRadioBtnChange.bind(this)}
+                    />
+                    <span className="panelRadioBtnLabel">Use existing</span>
+                  </div>
+                </Stack>
+              )}
+
+              {this.state.createNewDatabase && (
+                <Stack className="panelGroupSpacing">
+                  <input
+                    name="newDatabaseId"
+                    id="newDatabaseId"
+                    aria-required
+                    required
+                    type="text"
+                    autoComplete="off"
+                    pattern={ValidCosmosDbIdInputPattern.source}
+                    title={ValidCosmosDbIdDescription}
+                    placeholder="Type a new database id"
+                    size={40}
+                    className="panelTextField"
+                    aria-label="New database id, Type a new database id"
+                    tabIndex={0}
+                    value={this.state.newDatabaseId}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                      this.setState({ newDatabaseId: event.target.value })
+                    }
+                  />
+
+                  {!isServerlessAccount() && (
+                    <Stack horizontal>
+                      <Checkbox
+                        label={`Share throughput across ${getCollectionName(true).toLocaleLowerCase()}`}
+                        checked={this.state.isSharedThroughputChecked}
+                        styles={{
+                          text: { fontSize: 12 },
+                          checkbox: { width: 12, height: 12 },
+                          label: { padding: 0, alignItems: "center" },
+                        }}
+                        onChange={(ev: React.FormEvent<HTMLElement>, isChecked: boolean) =>
+                          this.setState({ isSharedThroughputChecked: isChecked })
+                        }
+                      />
+                      <TooltipHost
+                        directionalHint={DirectionalHint.bottomLeftEdge}
+                        content={`Throughput configured at the database level will be shared across all ${getCollectionName(
                           true,
                         ).toLocaleLowerCase()} within the database.`}
-                      />
-                    </TooltipHost>
-                  </Stack>
-                )}
+                      >
+                        <Icon
+                          iconName="Info"
+                          className="panelInfoIcon"
+                          tabIndex={0}
+                          ariaLabel={`Throughput configured at the database level will be shared across all ${getCollectionName(
+                            true,
+                          ).toLocaleLowerCase()} within the database.`}
+                        />
+                      </TooltipHost>
+                    </Stack>
+                  )}
 
-                {!isServerlessAccount() && this.state.isSharedThroughputChecked && (
-                  <ThroughputInput
-                    showFreeTierExceedThroughputTooltip={this.isFreeTierAccount() && !isFirstResourceCreated}
-                    isDatabase={true}
-                    isSharded={this.state.isSharded}
-                    isFreeTier={this.isFreeTierAccount()}
-                    isQuickstart={this.props.isQuickstart}
-                    setThroughputValue={(throughput: number) => (this.newDatabaseThroughput = throughput)}
-                    setIsAutoscale={(isAutoscale: boolean) => (this.isNewDatabaseAutoscale = isAutoscale)}
-                    setIsThroughputCapExceeded={(isThroughputCapExceeded: boolean) =>
-                      this.setState({ isThroughputCapExceeded })
-                    }
-                    onCostAcknowledgeChange={(isAcknowledge: boolean) => (this.isCostAcknowledged = isAcknowledge)}
-                  />
-                )}
-              </Stack>
-            )}
-            {!this.state.createNewDatabase && (
-              <Dropdown
-                ariaLabel="Choose an existing database"
-                styles={{ title: { height: 27, lineHeight: 27 }, dropdownItem: { fontSize: 12 } }}
-                style={{ width: 300, fontSize: 12 }}
-                placeholder="Choose an existing database"
-                options={this.getDatabaseOptions()}
-                onChange={(event: React.FormEvent<HTMLDivElement>, database: IDropdownOption) =>
-                  this.setState({ selectedDatabaseId: database.key as string })
-                }
-                defaultSelectedKey={this.props.databaseId}
-                responsiveMode={999}
-              />
-            )}
-            <Separator className="panelSeparator" />
-          </Stack>
+                  {!isServerlessAccount() && this.state.isSharedThroughputChecked && (
+                    <ThroughputInput
+                      showFreeTierExceedThroughputTooltip={isFreeTierAccount() && !isFirstResourceCreated}
+                      isDatabase={true}
+                      isSharded={this.state.isSharded}
+                      isFreeTier={isFreeTierAccount()}
+                      isQuickstart={this.props.isQuickstart}
+                      setThroughputValue={(throughput: number) => (this.newDatabaseThroughput = throughput)}
+                      setIsAutoscale={(isAutoscale: boolean) => (this.isNewDatabaseAutoscale = isAutoscale)}
+                      setIsThroughputCapExceeded={(isThroughputCapExceeded: boolean) =>
+                        this.setState({ isThroughputCapExceeded })
+                      }
+                      onCostAcknowledgeChange={(isAcknowledge: boolean) => (this.isCostAcknowledged = isAcknowledge)}
+                    />
+                  )}
+                </Stack>
+              )}
+              {!this.state.createNewDatabase && (
+                <Dropdown
+                  ariaLabel="Choose an existing database"
+                  styles={{ title: { height: 27, lineHeight: 27 }, dropdownItem: { fontSize: 12 } }}
+                  style={{ width: 300, fontSize: 12 }}
+                  placeholder="Choose an existing database"
+                  options={this.getDatabaseOptions()}
+                  onChange={(event: React.FormEvent<HTMLDivElement>, database: IDropdownOption) =>
+                    this.setState({ selectedDatabaseId: database.key as string })
+                  }
+                  defaultSelectedKey={this.props.databaseId}
+                  responsiveMode={999}
+                />
+              )}
+              <Separator className="panelSeparator" style={{ marginTop: -4, marginBottom: -4 }} />
+            </Stack>
+          )}
 
           <Stack>
-            <Stack horizontal>
+            <Stack horizontal style={{ marginTop: -5, marginBottom: 1 }}>
               <span className="mandatoryStar">*&nbsp;</span>
               <Text className="panelTextBold" variant="small">
                 {`${getCollectionName()} id`}
@@ -456,8 +437,8 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               aria-required
               required
               autoComplete="off"
-              pattern="[^/?#\\]*[^/?# \\]"
-              title="May not end with space nor contain characters '\' '/' '#' '?'"
+              pattern={ValidCosmosDbIdInputPattern.source}
+              title={ValidCosmosDbIdDescription}
               placeholder={`e.g., ${getCollectionName()}1`}
               size={40}
               className="panelTextField"
@@ -467,11 +448,12 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 this.setState({ collectionId: event.target.value })
               }
             />
+            <Separator className="panelSeparator" style={{ marginTop: -5, marginBottom: -5 }} />
           </Stack>
 
           {this.shouldShowIndexingOptionsForFreeTierAccount() && (
             <Stack>
-              <Stack horizontal>
+              <Stack horizontal style={{ marginTop: -4, marginBottom: -5 }}>
                 <span className="mandatoryStar">*&nbsp;</span>
                 <Text className="panelTextBold" variant="small">
                   Indexing
@@ -517,7 +499,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             (!this.state.isSharedThroughputChecked ||
               this.props.explorer.isFixedCollectionWithSharedThroughputSupported()) && (
               <Stack>
-                <Stack horizontal>
+                <Stack horizontal style={{ marginTop: -5, marginBottom: -4 }}>
                   <span className="mandatoryStar">*&nbsp;</span>
                   <Text className="panelTextBold" variant="small">
                     Sharding
@@ -573,20 +555,17 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
           {this.state.isSharded && (
             <Stack>
-              <Stack horizontal>
+              <Stack horizontal style={{ marginTop: -5, marginBottom: -4 }}>
                 <span className="mandatoryStar">*&nbsp;</span>
                 <Text className="panelTextBold" variant="small">
-                  {this.getPartitionKeyName()}
+                  {getPartitionKeyName()}
                 </Text>
-                <TooltipHost
-                  directionalHint={DirectionalHint.bottomLeftEdge}
-                  content={this.getPartitionKeyTooltipText()}
-                >
+                <TooltipHost directionalHint={DirectionalHint.bottomLeftEdge} content={getPartitionKeyTooltipText()}>
                   <Icon
                     iconName="Info"
                     className="panelInfoIcon"
                     tabIndex={0}
-                    ariaLabel={this.getPartitionKeyTooltipText()}
+                    ariaLabel={getPartitionKeyTooltipText()}
                   />
                 </TooltipHost>
               </Stack>
@@ -600,8 +579,8 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 required
                 size={40}
                 className="panelTextField"
-                placeholder={this.getPartitionKeyPlaceHolder()}
-                aria-label={this.getPartitionKeyName()}
+                placeholder={getPartitionKeyPlaceHolder()}
+                aria-label={getPartitionKeyName()}
                 pattern={userContext.apiType === "Gremlin" ? "^/[^/]*" : ".*"}
                 title={userContext.apiType === "Gremlin" ? "May not use composite partition key" : ""}
                 value={this.state.partitionKey}
@@ -620,7 +599,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               {userContext.apiType === "SQL" &&
                 this.state.subPartitionKeys.map((subPartitionKey: string, index: number) => {
                   return (
-                    <Stack style={{ marginBottom: 8 }} key={`uniqueKey${index}`} horizontal>
+                    <Stack style={{ marginBottom: 2, marginTop: -5 }} key={`uniqueKey${index}`} horizontal>
                       <div
                         style={{
                           width: "20px",
@@ -639,8 +618,8 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                         tabIndex={index > 0 ? 1 : 0}
                         className="panelTextField"
                         autoComplete="off"
-                        placeholder={this.getPartitionKeyPlaceHolder(index)}
-                        aria-label={this.getPartitionKeyName()}
+                        placeholder={getPartitionKeyPlaceHolder(index)}
+                        aria-label={getPartitionKeyName()}
                         pattern={".*"}
                         title={""}
                         value={subPartitionKey}
@@ -688,6 +667,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   )}
                 </Stack>
               )}
+              <Separator className="panelSeparator" style={{ marginTop: 2, marginBottom: -4 }} />
             </Stack>
           )}
 
@@ -729,12 +709,12 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             </Stack>
           )}
 
-          {this.shouldShowCollectionThroughputInput() && (
+          {this.shouldShowCollectionThroughputInput() && !isFabricNative() && (
             <ThroughputInput
-              showFreeTierExceedThroughputTooltip={this.isFreeTierAccount() && !isFirstResourceCreated}
+              showFreeTierExceedThroughputTooltip={isFreeTierAccount() && !isFirstResourceCreated}
               isDatabase={false}
               isSharded={this.state.isSharded}
-              isFreeTier={this.isFreeTierAccount()}
+              isFreeTier={isFreeTierAccount()}
               isQuickstart={this.props.isQuickstart}
               setThroughputValue={(throughput: number) => (this.collectionThroughput = throughput)}
               setIsAutoscale={(isAutoscale: boolean) => (this.isCollectionAutoscale = isAutoscale)}
@@ -747,29 +727,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             />
           )}
 
-          {userContext.apiType === "SQL" && (
-            <Stack>
-              <Stack horizontal>
-                <Text className="panelTextBold" variant="small">
-                  Unique keys
-                </Text>
-                <TooltipHost
-                  directionalHint={DirectionalHint.bottomLeftEdge}
-                  content={
-                    "Unique keys provide developers with the ability to add a layer of data integrity to their database. By creating a unique key policy when a container is created, you ensure the uniqueness of one or more values per partition key."
-                  }
-                >
-                  <Icon
-                    iconName="Info"
-                    className="panelInfoIcon"
-                    tabIndex={0}
-                    ariaLabel={
-                      "Unique keys provide developers with the ability to add a layer of data integrity to their database. By creating a unique key policy when a container is created, you ensure the uniqueness of one or more values per partition key."
-                    }
-                  />
-                </TooltipHost>
-              </Stack>
-
+          {!isFabricNative() && userContext.apiType === "SQL" && (
+            <Stack style={{ marginTop: -2, marginBottom: -4 }}>
+              {UniqueKeysHeader()}
               {this.state.uniqueKeys.map((uniqueKey: string, i: number): JSX.Element => {
                 return (
                   <Stack style={{ marginBottom: 8 }} key={`uniqueKey${i}`} horizontal>
@@ -782,7 +742,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                           : "Comma separated paths e.g. /firstName,/address/zipCode"
                       }
                       className="panelTextField"
-                      autoFocus
                       value={uniqueKey}
                       onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                         const uniqueKeys = this.state.uniqueKeys.map((uniqueKey: string, j: number) => {
@@ -817,31 +776,22 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             </Stack>
           )}
 
-          {this.shouldShowAnalyticalStoreOptions() && (
-            <Stack className="panelGroupSpacing">
-              <Stack horizontal>
-                <Text className="panelTextBold" variant="small">
-                  Analytical store
-                </Text>
-                <TooltipHost
-                  directionalHint={DirectionalHint.bottomLeftEdge}
-                  content={this.getAnalyticalStorageTooltipContent()}
-                >
-                  <Icon
-                    iconName="Info"
-                    className="panelInfoIcon"
-                    tabIndex={0}
-                    ariaLabel="Enable analytical store capability to perform near real-time analytics on your operational data, without impacting the performance of transactional workloads."
-                  />
-                </TooltipHost>
-              </Stack>
+          {!isFabricNative() && userContext.apiType === "SQL" && (
+            <Separator className="panelSeparator" style={{ marginTop: -15, marginBottom: -4 }} />
+          )}
+
+          {shouldShowAnalyticalStoreOptions() && (
+            <Stack className="panelGroupSpacing" style={{ marginTop: -4 }}>
+              <Text className="panelTextBold" variant="small">
+                {AnalyticalStoreHeader()}
+              </Text>
 
               <Stack horizontal verticalAlign="center">
                 <div role="radiogroup">
                   <input
                     className="panelRadioBtn"
                     checked={this.state.enableAnalyticalStore}
-                    disabled={!this.isSynapseLinkEnabled()}
+                    disabled={!isSynapseLinkEnabled()}
                     aria-label="Enable analytical store"
                     aria-checked={this.state.enableAnalyticalStore}
                     name="analyticalStore"
@@ -856,7 +806,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   <input
                     className="panelRadioBtn"
                     checked={!this.state.enableAnalyticalStore}
-                    disabled={!this.isSynapseLinkEnabled()}
+                    disabled={!isSynapseLinkEnabled()}
                     aria-label="Disable analytical store"
                     aria-checked={!this.state.enableAnalyticalStore}
                     name="analyticalStore"
@@ -870,14 +820,15 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 </div>
               </Stack>
 
-              {!this.isSynapseLinkEnabled() && (
+              {!isSynapseLinkEnabled() && (
                 <Stack className="panelGroupSpacing">
                   <Text variant="small">
                     Azure Synapse Link is required for creating an analytical store{" "}
-                    {getCollectionName().toLocaleLowerCase()}. Enable Synapse Link for this Cosmos DB account.{" "}
+                    {getCollectionName().toLocaleLowerCase()}. Enable Synapse Link for this Cosmos DB account. <br />
                     <Link
                       href="https://aka.ms/cosmosdb-synapselink"
                       target="_blank"
+                      aria-label={Constants.ariaLabelForLearnMoreLink.AzureSynapseLink}
                       className="capacitycalculator-link"
                     >
                       Learn more
@@ -899,9 +850,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 title="Container Vector Policy"
                 isExpandedByDefault={false}
                 onExpand={() => {
-                  this.scrollToSection("collapsibleVectorPolicySectionContent");
+                  scrollToSection("collapsibleVectorPolicySectionContent");
                 }}
-                tooltipContent={this.getContainerVectorPolicyTooltipContent()}
+                tooltipContent={ContainerVectorPolicyTooltipContent()}
               >
                 <Stack id="collapsibleVectorPolicySectionContent" styles={{ root: { position: "relative" } }}>
                   <Stack styles={{ root: { paddingLeft: 40 } }}>
@@ -927,7 +878,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 title="Container Full Text Search Policy"
                 isExpandedByDefault={false}
                 onExpand={() => {
-                  this.scrollToSection("collapsibleFullTextPolicySectionContent");
+                  scrollToSection("collapsibleFullTextPolicySectionContent");
                 }}
                 //TODO: uncomment when learn more text becomes available
                 // tooltipContent={this.getContainerFullTextPolicyTooltipContent()}
@@ -949,13 +900,13 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               </CollapsibleSectionComponent>
             </Stack>
           )}
-          {userContext.apiType !== "Tables" && (
+          {!isFabricNative() && userContext.apiType !== "Tables" && (
             <CollapsibleSectionComponent
               title="Advanced"
               isExpandedByDefault={false}
               onExpand={() => {
                 TelemetryProcessor.traceOpen(Action.ExpandAddCollectionPaneAdvancedSection);
-                this.scrollToSection("collapsibleAdvancedSectionContent");
+                scrollToSection("collapsibleAdvancedSectionContent");
               }}
             >
               <Stack className="panelGroupSpacing" id="collapsibleAdvancedSectionContent">
@@ -1065,31 +1016,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     }));
   }
 
-  private getPartitionKeyName(isLowerCase?: boolean): string {
-    const partitionKeyName = userContext.apiType === "Mongo" ? "Shard key" : "Partition key";
-
-    return isLowerCase ? partitionKeyName.toLocaleLowerCase() : partitionKeyName;
-  }
-
-  private getPartitionKeyPlaceHolder(index?: number): string {
-    switch (userContext.apiType) {
-      case "Mongo":
-        return "e.g., categoryId";
-      case "Gremlin":
-        return "e.g., /address";
-      case "SQL":
-        return `${
-          index === undefined
-            ? "Required - first partition key e.g., /TenantId"
-            : index === 0
-            ? "second partition key e.g., /UserId"
-            : "third partition key e.g., /SessionId"
-        }`;
-      default:
-        return "e.g., /address/zipCode";
-    }
-  }
-
   private onCreateNewDatabaseRadioBtnChange(event: React.ChangeEvent<HTMLInputElement>): void {
     if (event.target.checked && !this.state.createNewDatabase) {
       this.setState({
@@ -1177,46 +1103,10 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     return !!selectedDatabase?.offer();
   }
 
-  private isFreeTierAccount(): boolean {
-    return userContext.databaseAccount?.properties?.enableFreeTier;
-  }
-
   private getFreeTierIndexingText(): string {
     return this.state.enableIndexing
       ? "All properties in your documents will be indexed by default for flexible and efficient queries."
       : "Indexing will be turned off. Recommended if you don't need to run queries or only have key value operations.";
-  }
-
-  private getPartitionKeyTooltipText(): string {
-    if (userContext.apiType === "Mongo") {
-      return "The shard key (field) is used to split your data across many replica sets (shards) to achieve unlimited scalability. It’s critical to choose a field that will evenly distribute your data.";
-    }
-
-    let tooltipText = `The ${this.getPartitionKeyName(
-      true,
-    )} is used to automatically distribute data across partitions for scalability. Choose a property in your JSON document that has a wide range of values and evenly distributes request volume.`;
-
-    if (userContext.apiType === "SQL") {
-      tooltipText += " For small read-heavy workloads or write-heavy workloads of any size, id is often a good choice.";
-    }
-
-    return tooltipText;
-  }
-
-  private getPartitionKey(): string {
-    if (userContext.apiType !== "SQL" && userContext.apiType !== "Mongo") {
-      return "";
-    }
-    if (userContext.features.partitionKeyDefault) {
-      return userContext.apiType === "SQL" ? "/id" : "_id";
-    }
-    if (userContext.features.partitionKeyDefault2) {
-      return userContext.apiType === "SQL" ? "/pk" : "pk";
-    }
-    if (this.props.isQuickstart) {
-      return userContext.apiType === "SQL" ? "/categoryId" : "categoryId";
-    }
-    return "";
   }
 
   private getPartitionKeySubtext(): string {
@@ -1228,30 +1118,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       return subtext;
     }
     return "";
-  }
-
-  private getAnalyticalStorageTooltipContent(): JSX.Element {
-    return (
-      <Text variant="small">
-        Enable analytical store capability to perform near real-time analytics on your operational data, without
-        impacting the performance of transactional workloads.{" "}
-        <Link target="_blank" href="https://aka.ms/analytical-store-overview">
-          Learn more
-        </Link>
-      </Text>
-    );
-  }
-
-  private getContainerVectorPolicyTooltipContent(): JSX.Element {
-    return (
-      <Text variant="small">
-        Describe any properties in your data that contain vectors, so that they can be made available for similarity
-        queries.{" "}
-        <Link target="_blank" href="https://aka.ms/CosmosDBVectorSetup">
-          Learn more
-        </Link>
-      </Text>
-    );
   }
 
   //TODO: uncomment when learn more text becomes available
@@ -1284,7 +1150,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
   }
 
   private shouldShowIndexingOptionsForFreeTierAccount(): boolean {
-    if (!this.isFreeTierAccount()) {
+    if (!isFreeTierAccount()) {
       return false;
     }
 
@@ -1293,45 +1159,12 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       : this.isSelectedDatabaseSharedThroughput();
   }
 
-  private shouldShowAnalyticalStoreOptions(): boolean {
-    if (configContext.platform === Platform.Emulator) {
-      return false;
-    }
-
-    switch (userContext.apiType) {
-      case "SQL":
-      case "Mongo":
-        return true;
-      default:
-        return false;
-    }
-  }
-
-  private isSynapseLinkEnabled(): boolean {
-    if (!userContext.databaseAccount) {
-      return false;
-    }
-
-    const { properties } = userContext.databaseAccount;
-    if (!properties) {
-      return false;
-    }
-
-    if (properties.enableAnalyticalStorage) {
-      return true;
-    }
-
-    return properties.capabilities?.some(
-      (capability) => capability.name === Constants.CapabilityNames.EnableStorageAnalytics,
-    );
-  }
-
   private shouldShowVectorSearchParameters() {
     return isVectorSearchEnabled() && (isServerlessAccount() || this.shouldShowCollectionThroughputInput());
   }
 
   private shouldShowFullTextSearchParameters() {
-    return isFullTextSearchEnabled() && (isServerlessAccount() || this.shouldShowCollectionThroughputInput());
+    return !isFabricNative() && this.showFullTextSearch;
   }
 
   private parseUniqueKeys(): DataModels.UniqueKeyPolicy {
@@ -1406,11 +1239,11 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
   }
 
   private getAnalyticalStorageTtl(): number {
-    if (!this.isSynapseLinkEnabled()) {
+    if (!isSynapseLinkEnabled()) {
       return undefined;
     }
 
-    if (!this.shouldShowAnalyticalStoreOptions()) {
+    if (!shouldShowAnalyticalStoreOptions()) {
       return undefined;
     }
 
@@ -1422,10 +1255,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     }
 
     return Constants.AnalyticalStorageTtl.Disabled;
-  }
-
-  private scrollToSection(id: string): void {
-    document.getElementById(id)?.scrollIntoView();
   }
 
   private getSampleDBName(): string {
@@ -1462,7 +1291,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       partitionKeyString = "/'$pk'";
     }
 
-    const uniqueKeyPolicy: DataModels.UniqueKeyPolicy = this.parseUniqueKeys();
+    const uniqueKeyPolicy: DataModels.UniqueKeyPolicy = parseUniqueKeys(this.state.uniqueKeys);
     const partitionKeyVersion = this.state.useHashV1 ? undefined : 2;
     const partitionKey: DataModels.PartitionKey = partitionKeyString
       ? {
@@ -1490,7 +1319,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       };
     }
 
-    if (this.shouldShowFullTextSearchParameters()) {
+    if (this.showFullTextSearch) {
       indexingPolicy.fullTextIndexes = this.state.fullTextIndexes;
     }
 
@@ -1524,7 +1353,12 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     let offerThroughput: number;
     let autoPilotMaxThroughput: number;
 
-    if (databaseLevelThroughput) {
+    // Throughput
+    if (isFabricNative()) {
+      // Fabric Native accounts are always autoscale and have a fixed throughput of 5K
+      autoPilotMaxThroughput = AutoPilotUtils.autoPilotThroughput5K;
+      offerThroughput = undefined;
+    } else if (databaseLevelThroughput) {
       if (this.state.createNewDatabase) {
         if (this.isNewDatabaseAutoscale) {
           autoPilotMaxThroughput = this.newDatabaseThroughput;

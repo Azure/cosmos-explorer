@@ -2,9 +2,13 @@ import {
   DetailsList,
   DetailsListLayoutMode,
   DirectionalHint,
+  FontIcon,
   IColumn,
   SelectionMode,
   TooltipHost,
+  getTheme,
+  mergeStyles,
+  mergeStyleSets,
 } from "@fluentui/react";
 import { Upload } from "Common/Upload/Upload";
 import { UploadDetailsRecord } from "Contracts/ViewModels";
@@ -14,7 +18,41 @@ import { getErrorMessage } from "../../Tables/Utilities";
 import { useSelectedNode } from "../../useSelectedNode";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 
-export const UploadItemsPane: FunctionComponent = () => {
+const theme = getTheme();
+const iconClass = mergeStyles({
+  verticalAlign: "middle",
+  maxHeight: "16px",
+  maxWidth: "16px",
+});
+
+const classNames = mergeStyleSets({
+  fileIconHeaderIcon: {
+    padding: 0,
+    fontSize: "16px",
+  },
+  fileIconCell: {
+    textAlign: "center",
+    selectors: {
+      "&:before": {
+        content: ".",
+        display: "inline-block",
+        verticalAlign: "middle",
+        height: "100%",
+        width: "0px",
+        visibility: "hidden",
+      },
+    },
+  },
+  error: [{ color: theme.semanticColors.errorIcon }, iconClass],
+  accept: [{ color: theme.semanticColors.successIcon }, iconClass],
+  warning: [{ color: theme.semanticColors.warningIcon }, iconClass],
+});
+
+export type UploadItemsPaneProps = {
+  onUpload?: (data: UploadDetailsRecord[]) => void;
+};
+
+export const UploadItemsPane: FunctionComponent<UploadItemsPaneProps> = ({ onUpload }) => {
   const [files, setFiles] = useState<FileList>();
   const [uploadFileData, setUploadFileData] = useState<UploadDetailsRecord[]>([]);
   const [formError, setFormError] = useState<string>("");
@@ -37,6 +75,8 @@ export const UploadItemsPane: FunctionComponent = () => {
         (uploadDetails) => {
           setUploadFileData(uploadDetails.data);
           setFiles(undefined);
+          // Emit the upload details to the parent component
+          onUpload && onUpload(uploadDetails.data);
         },
         (error: Error) => {
           const errorMessage = getErrorMessage(error);
@@ -61,42 +101,92 @@ export const UploadItemsPane: FunctionComponent = () => {
 
   const columns: IColumn[] = [
     {
+      key: "icons",
+      name: "",
+      fieldName: "",
+      className: classNames.fileIconCell,
+      iconClassName: classNames.fileIconHeaderIcon,
+      isIconOnly: true,
+      minWidth: 16,
+      maxWidth: 16,
+      onRender: (item: UploadDetailsRecord, index: number, column: IColumn) => {
+        if (item.numFailed) {
+          const errorList = (
+            <ul
+              aria-label={"error list"}
+              style={{
+                margin: "5px 0",
+                paddingLeft: "20px",
+                listStyleType: "disc", // Explicitly set to use bullets (dots)
+              }}
+            >
+              {item.errors.map((error, i) => (
+                <li key={i} style={{ display: "list-item" }}>
+                  {error}
+                </li>
+              ))}
+            </ul>
+          );
+
+          return (
+            <TooltipHost
+              content={errorList}
+              id={`tooltip-${index}-${column.key}`}
+              directionalHint={DirectionalHint.bottomAutoEdge}
+            >
+              <FontIcon iconName="Error" className={classNames.error} aria-label="error" />
+            </TooltipHost>
+          );
+        } else if (item.numThrottled) {
+          return <FontIcon iconName="Warning" className={classNames.warning} aria-label="warning" />;
+        } else {
+          return <FontIcon iconName="Accept" className={classNames.accept} aria-label="accept" />;
+        }
+      },
+    },
+    {
       key: "fileName",
       name: "FILE NAME",
       fieldName: "fileName",
-      minWidth: 140,
+      minWidth: 120,
       maxWidth: 140,
+      onRender: (item: UploadDetailsRecord, index: number, column: IColumn) => {
+        const fieldContent = item.fileName;
+        return (
+          <TooltipHost
+            content={fieldContent}
+            id={`tooltip-${index}-${column.key}`}
+            directionalHint={DirectionalHint.bottomAutoEdge}
+          >
+            {fieldContent}
+          </TooltipHost>
+        );
+      },
     },
     {
       key: "status",
       name: "STATUS",
       fieldName: "numSucceeded",
-      minWidth: 140,
+      minWidth: 120,
       maxWidth: 140,
       isRowHeader: true,
       isResizable: true,
       data: "string",
       isPadded: true,
+      onRender: (item: UploadDetailsRecord, index: number, column: IColumn) => {
+        const fieldContent = `${item.numSucceeded} created, ${item.numThrottled} throttled, ${item.numFailed} errors`;
+        return (
+          <TooltipHost
+            content={fieldContent}
+            id={`tooltip-${index}-${column.key}`}
+            directionalHint={DirectionalHint.bottomAutoEdge}
+          >
+            {fieldContent}
+          </TooltipHost>
+        );
+      },
     },
   ];
-
-  const _renderItemColumn = (item: UploadDetailsRecord, index: number, column: IColumn) => {
-    let fieldContent: string;
-    const tooltipId = `tooltip-${index}-${column.key}`;
-
-    switch (column.key) {
-      case "status":
-        fieldContent = `${item.numSucceeded} created, ${item.numThrottled} throttled, ${item.numFailed} errors`;
-        break;
-      default:
-        fieldContent = item.fileName;
-    }
-    return (
-      <TooltipHost content={fieldContent} id={tooltipId} directionalHint={DirectionalHint.rightCenter}>
-        {fieldContent}
-      </TooltipHost>
-    );
-  };
 
   return (
     <RightPaneForm {...props}>
@@ -115,7 +205,6 @@ export const UploadItemsPane: FunctionComponent = () => {
             <DetailsList
               items={uploadFileData}
               columns={columns}
-              onRenderItemColumn={_renderItemColumn}
               selectionMode={SelectionMode.none}
               layoutMode={DetailsListLayoutMode.justified}
               isHeaderVisible={true}

@@ -10,6 +10,11 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
             "contextMenu": [
               {
                 "iconSrc": {},
+                "label": "Open Cassandra Shell",
+                "onClick": [Function],
+              },
+              {
+                "iconSrc": {},
                 "label": "Delete Table",
                 "onClick": [Function],
                 "styleClass": "deleteCollectionMenuItem",
@@ -25,12 +30,17 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
         "contextMenu": [
           {
             "iconSrc": {},
+            "label": "Open Cassandra Shell",
+            "onClick": [Function],
+          },
+          {
+            "iconSrc": {},
             "label": "Delete Table",
             "onClick": [Function],
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": <DocumentMultipleRegular
+        "iconSrc": <EyeRegular
           fontSize={16}
         />,
         "isExpanded": true,
@@ -45,6 +55,11 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
         "children": [
           {
             "contextMenu": [
+              {
+                "iconSrc": {},
+                "label": "Open Cassandra Shell",
+                "onClick": [Function],
+              },
               {
                 "iconSrc": {},
                 "label": "Delete Table",
@@ -67,12 +82,17 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
         "contextMenu": [
           {
             "iconSrc": {},
+            "label": "Open Cassandra Shell",
+            "onClick": [Function],
+          },
+          {
+            "iconSrc": {},
             "label": "Delete Table",
             "onClick": [Function],
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": <DocumentMultipleRegular
+        "iconSrc": <EyeRegular
           fontSize={16}
         />,
         "isExpanded": true,
@@ -125,6 +145,11 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
             "contextMenu": [
               {
                 "iconSrc": {},
+                "label": "Open Cassandra Shell",
+                "onClick": [Function],
+              },
+              {
+                "iconSrc": {},
                 "label": "Delete Table",
                 "onClick": [Function],
                 "styleClass": "deleteCollectionMenuItem",
@@ -140,12 +165,17 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
         "contextMenu": [
           {
             "iconSrc": {},
+            "label": "Open Cassandra Shell",
+            "onClick": [Function],
+          },
+          {
+            "iconSrc": {},
             "label": "Delete Table",
             "onClick": [Function],
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": <DocumentMultipleRegular
+        "iconSrc": <EyeRegular
           fontSize={16}
         />,
         "isExpanded": true,
@@ -187,6 +217,11 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
         "children": [
           {
             "contextMenu": [
+              {
+                "iconSrc": {},
+                "label": "Open Cassandra Shell",
+                "onClick": [Function],
+              },
               {
                 "iconSrc": {},
                 "label": "Delete Table",
@@ -259,12 +294,17 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
         "contextMenu": [
           {
             "iconSrc": {},
+            "label": "Open Cassandra Shell",
+            "onClick": [Function],
+          },
+          {
+            "iconSrc": {},
             "label": "Delete Table",
             "onClick": [Function],
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": <DocumentMultipleRegular
+        "iconSrc": <EyeRegular
           fontSize={16}
         />,
         "isExpanded": true,
@@ -323,7 +363,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
               },
               {
                 "iconSrc": {},
-                "label": "New Shell",
+                "label": "Open Mongo Shell",
                 "onClick": [Function],
               },
               {
@@ -336,11 +376,6 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
             "id": "",
             "isSelected": [Function],
             "label": "Documents",
-            "onClick": [Function],
-          },
-          {
-            "isSelected": [Function],
-            "label": "Schema (Preview)",
             "onClick": [Function],
           },
           {
@@ -359,7 +394,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
           },
           {
             "iconSrc": {},
-            "label": "New Shell",
+            "label": "Open Mongo Shell",
             "onClick": [Function],
           },
           {
@@ -369,7 +404,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": <DocumentMultipleRegular
+        "iconSrc": <EyeRegular
           fontSize={16}
         />,
         "isExpanded": true,
@@ -391,7 +426,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
               },
               {
                 "iconSrc": {},
-                "label": "New Shell",
+                "label": "Open Mongo Shell",
                 "onClick": [Function],
               },
               {
@@ -404,11 +439,6 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
             "id": "",
             "isSelected": [Function],
             "label": "Documents",
-            "onClick": [Function],
-          },
-          {
-            "isSelected": [Function],
-            "label": "Schema (Preview)",
             "onClick": [Function],
           },
           {
@@ -432,7 +462,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
           },
           {
             "iconSrc": {},
-            "label": "New Shell",
+            "label": "Open Mongo Shell",
             "onClick": [Function],
           },
           {
@@ -442,7 +472,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": <DocumentMultipleRegular
+        "iconSrc": <EyeRegular
           fontSize={16}
         />,
         "isExpanded": true,
@@ -500,7 +530,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
               },
               {
                 "iconSrc": {},
-                "label": "New Shell",
+                "label": "Open Mongo Shell",
                 "onClick": [Function],
               },
               {
@@ -513,11 +543,6 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
             "id": "sampleItems",
             "isSelected": [Function],
             "label": "Documents",
-            "onClick": [Function],
-          },
-          {
-            "isSelected": [Function],
-            "label": "Schema (Preview)",
             "onClick": [Function],
           },
           {
@@ -536,7 +561,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
           },
           {
             "iconSrc": {},
-            "label": "New Shell",
+            "label": "Open Mongo Shell",
             "onClick": [Function],
           },
           {
@@ -546,7 +571,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": <DocumentMultipleRegular
+        "iconSrc": <EyeRegular
           fontSize={16}
         />,
         "isExpanded": true,
@@ -595,7 +620,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
               },
               {
                 "iconSrc": {},
-                "label": "New Shell",
+                "label": "Open Mongo Shell",
                 "onClick": [Function],
               },
               {
@@ -608,11 +633,6 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
             "id": "",
             "isSelected": [Function],
             "label": "Documents",
-            "onClick": [Function],
-          },
-          {
-            "isSelected": [Function],
-            "label": "Schema (Preview)",
             "onClick": [Function],
           },
           {
@@ -686,7 +706,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
           },
           {
             "iconSrc": {},
-            "label": "New Shell",
+            "label": "Open Mongo Shell",
             "onClick": [Function],
           },
           {
@@ -696,7 +716,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": <DocumentMultipleRegular
+        "iconSrc": <EyeRegular
           fontSize={16}
         />,
         "isExpanded": true,
@@ -740,12 +760,38 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
 ]
 `;
 
-exports[`createDatabaseTreeNodes generates the correct tree structure for the SQL API, on Fabric 1`] = `
+exports[`createDatabaseTreeNodes generates the correct tree structure for the SQL API, on Fabric non read-only (native) 1`] = `
 [
   {
     "children": [
       {
-        "children": undefined,
+        "children": [
+          {
+            "contextMenu": [
+              {
+                "iconSrc": {},
+                "label": "New SQL Query",
+                "onClick": [Function],
+              },
+              {
+                "iconSrc": {},
+                "label": "Delete Container",
+                "onClick": [Function],
+                "styleClass": "deleteCollectionMenuItem",
+              },
+            ],
+            "id": "",
+            "isSelected": [Function],
+            "label": "Items",
+            "onClick": [Function],
+          },
+          {
+            "id": "",
+            "isSelected": [Function],
+            "label": "Settings",
+            "onClick": [Function],
+          },
+        ],
         "className": "collectionNode",
         "contextMenu": [
           {
@@ -753,8 +799,14 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "label": "New SQL Query",
             "onClick": [Function],
           },
+          {
+            "iconSrc": {},
+            "label": "Delete Container",
+            "onClick": [Function],
+            "styleClass": "deleteCollectionMenuItem",
+          },
         ],
-        "iconSrc": <DocumentMultipleRegular
+        "iconSrc": <EyeRegular
           fontSize={16}
         />,
         "isExpanded": true,
@@ -766,7 +818,38 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
         "onExpanded": [Function],
       },
       {
-        "children": undefined,
+        "children": [
+          {
+            "contextMenu": [
+              {
+                "iconSrc": {},
+                "label": "New SQL Query",
+                "onClick": [Function],
+              },
+              {
+                "iconSrc": {},
+                "label": "Delete Container",
+                "onClick": [Function],
+                "styleClass": "deleteCollectionMenuItem",
+              },
+            ],
+            "id": "",
+            "isSelected": [Function],
+            "label": "Items",
+            "onClick": [Function],
+          },
+          {
+            "id": "",
+            "isSelected": [Function],
+            "label": "Settings",
+            "onClick": [Function],
+          },
+          {
+            "isSelected": [Function],
+            "label": "Conflicts",
+            "onClick": [Function],
+          },
+        ],
         "className": "collectionNode",
         "contextMenu": [
           {
@@ -774,8 +857,14 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "label": "New SQL Query",
             "onClick": [Function],
           },
+          {
+            "iconSrc": {},
+            "label": "Delete Container",
+            "onClick": [Function],
+            "styleClass": "deleteCollectionMenuItem",
+          },
         ],
-        "iconSrc": <DocumentMultipleRegular
+        "iconSrc": <EyeRegular
           fontSize={16}
         />,
         "isExpanded": true,
@@ -794,12 +883,6 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
         "label": "New Container",
         "onClick": [Function],
       },
-      {
-        "iconSrc": {},
-        "label": "Delete Database",
-        "onClick": [Function],
-        "styleClass": "deleteDatabaseMenuItem",
-      },
     ],
     "iconSrc": <DatabaseRegular
       fontSize={16}
@@ -814,7 +897,33 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
   {
     "children": [
       {
-        "children": undefined,
+        "children": [
+          {
+            "contextMenu": [
+              {
+                "iconSrc": {},
+                "label": "New SQL Query",
+                "onClick": [Function],
+              },
+              {
+                "iconSrc": {},
+                "label": "Delete Container",
+                "onClick": [Function],
+                "styleClass": "deleteCollectionMenuItem",
+              },
+            ],
+            "id": "sampleItems",
+            "isSelected": [Function],
+            "label": "Items",
+            "onClick": [Function],
+          },
+          {
+            "id": "sampleSettings",
+            "isSelected": [Function],
+            "label": "Settings",
+            "onClick": [Function],
+          },
+        ],
         "className": "collectionNode",
         "contextMenu": [
           {
@@ -822,8 +931,14 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "label": "New SQL Query",
             "onClick": [Function],
           },
+          {
+            "iconSrc": {},
+            "label": "Delete Container",
+            "onClick": [Function],
+            "styleClass": "deleteCollectionMenuItem",
+          },
         ],
-        "iconSrc": <DocumentMultipleRegular
+        "iconSrc": <EyeRegular
           fontSize={16}
         />,
         "isExpanded": true,
@@ -842,12 +957,6 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
         "label": "New Container",
         "onClick": [Function],
       },
-      {
-        "iconSrc": {},
-        "label": "Delete Database",
-        "onClick": [Function],
-        "styleClass": "deleteDatabaseMenuItem",
-      },
     ],
     "iconSrc": <DatabaseRegular
       fontSize={16}
@@ -862,7 +971,88 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
   {
     "children": [
       {
-        "children": undefined,
+        "children": [
+          {
+            "contextMenu": [
+              {
+                "iconSrc": {},
+                "label": "New SQL Query",
+                "onClick": [Function],
+              },
+              {
+                "iconSrc": {},
+                "label": "Delete Container",
+                "onClick": [Function],
+                "styleClass": "deleteCollectionMenuItem",
+              },
+            ],
+            "id": "",
+            "isSelected": [Function],
+            "label": "Items",
+            "onClick": [Function],
+          },
+          {
+            "id": "",
+            "isSelected": [Function],
+            "label": "Settings",
+            "onClick": [Function],
+          },
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "label": "string",
+                      },
+                      {
+                        "label": "HasNulls: false",
+                      },
+                    ],
+                    "label": "street",
+                  },
+                  {
+                    "children": [
+                      {
+                        "label": "string",
+                      },
+                      {
+                        "label": "HasNulls: true",
+                      },
+                    ],
+                    "label": "line2",
+                  },
+                  {
+                    "children": [
+                      {
+                        "label": "number",
+                      },
+                      {
+                        "label": "HasNulls: false",
+                      },
+                    ],
+                    "label": "zip",
+                  },
+                ],
+                "label": "address",
+              },
+              {
+                "children": [
+                  {
+                    "label": "string",
+                  },
+                  {
+                    "label": "HasNulls: false",
+                  },
+                ],
+                "label": "orderId",
+              },
+            ],
+            "label": "Schema",
+            "onClick": [Function],
+          },
+        ],
         "className": "collectionNode",
         "contextMenu": [
           {
@@ -870,8 +1060,14 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "label": "New SQL Query",
             "onClick": [Function],
           },
+          {
+            "iconSrc": {},
+            "label": "Delete Container",
+            "onClick": [Function],
+            "styleClass": "deleteCollectionMenuItem",
+          },
         ],
-        "iconSrc": <DocumentMultipleRegular
+        "iconSrc": <EyeRegular
           fontSize={16}
         />,
         "isExpanded": true,
@@ -895,13 +1091,146 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
         "label": "New Container",
         "onClick": [Function],
       },
+    ],
+    "iconSrc": <DatabaseRegular
+      fontSize={16}
+    />,
+    "isExpanded": true,
+    "isSelected": [Function],
+    "label": "giganticDatabase",
+    "onCollapsed": [Function],
+    "onContextMenuOpen": [Function],
+    "onExpanded": [Function],
+  },
+]
+`;
+
+exports[`createDatabaseTreeNodes generates the correct tree structure for the SQL API, on Fabric read-only (mirrored) 1`] = `
+[
+  {
+    "children": [
       {
-        "iconSrc": {},
-        "label": "Delete Database",
+        "children": undefined,
+        "className": "collectionNode",
+        "contextMenu": [
+          {
+            "iconSrc": {},
+            "label": "New SQL Query",
+            "onClick": [Function],
+          },
+        ],
+        "iconSrc": <EyeRegular
+          fontSize={16}
+        />,
+        "isExpanded": true,
+        "isSelected": [Function],
+        "label": "standardCollection",
         "onClick": [Function],
-        "styleClass": "deleteDatabaseMenuItem",
+        "onCollapsed": [Function],
+        "onContextMenuOpen": [Function],
+        "onExpanded": [Function],
+      },
+      {
+        "children": undefined,
+        "className": "collectionNode",
+        "contextMenu": [
+          {
+            "iconSrc": {},
+            "label": "New SQL Query",
+            "onClick": [Function],
+          },
+        ],
+        "iconSrc": <EyeRegular
+          fontSize={16}
+        />,
+        "isExpanded": true,
+        "isSelected": [Function],
+        "label": "conflictsCollection",
+        "onClick": [Function],
+        "onCollapsed": [Function],
+        "onContextMenuOpen": [Function],
+        "onExpanded": [Function],
       },
     ],
+    "className": "databaseNode",
+    "contextMenu": undefined,
+    "iconSrc": <DatabaseRegular
+      fontSize={16}
+    />,
+    "isExpanded": true,
+    "isSelected": [Function],
+    "label": "standardDb",
+    "onCollapsed": [Function],
+    "onContextMenuOpen": [Function],
+    "onExpanded": [Function],
+  },
+  {
+    "children": [
+      {
+        "children": undefined,
+        "className": "collectionNode",
+        "contextMenu": [
+          {
+            "iconSrc": {},
+            "label": "New SQL Query",
+            "onClick": [Function],
+          },
+        ],
+        "iconSrc": <EyeRegular
+          fontSize={16}
+        />,
+        "isExpanded": true,
+        "isSelected": [Function],
+        "label": "sampleItemsCollection",
+        "onClick": [Function],
+        "onCollapsed": [Function],
+        "onContextMenuOpen": [Function],
+        "onExpanded": [Function],
+      },
+    ],
+    "className": "databaseNode",
+    "contextMenu": undefined,
+    "iconSrc": <DatabaseRegular
+      fontSize={16}
+    />,
+    "isExpanded": true,
+    "isSelected": [Function],
+    "label": "sharedDatabase",
+    "onCollapsed": [Function],
+    "onContextMenuOpen": [Function],
+    "onExpanded": [Function],
+  },
+  {
+    "children": [
+      {
+        "children": undefined,
+        "className": "collectionNode",
+        "contextMenu": [
+          {
+            "iconSrc": {},
+            "label": "New SQL Query",
+            "onClick": [Function],
+          },
+        ],
+        "iconSrc": <EyeRegular
+          fontSize={16}
+        />,
+        "isExpanded": true,
+        "isSelected": [Function],
+        "label": "schemaCollection",
+        "onClick": [Function],
+        "onCollapsed": [Function],
+        "onContextMenuOpen": [Function],
+        "onExpanded": [Function],
+      },
+      {
+        "className": "loadMoreNode",
+        "label": "load more",
+        "onClick": [Function],
+      },
+    ],
+    "className": "databaseNode",
+    "contextMenu": undefined,
     "iconSrc": <DatabaseRegular
       fontSize={16}
     />,
@@ -972,7 +1301,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
                   },
                 ],
                 "isSelected": [Function],
-                "label": "mockSproc3",
+                "label": "mockSproc4",
                 "onClick": [Function],
               },
             ],
@@ -990,7 +1319,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
                   },
                 ],
                 "isSelected": [Function],
-                "label": "mockUdf3",
+                "label": "mockUdf4",
                 "onClick": [Function],
               },
             ],
@@ -1008,7 +1337,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
                   },
                 ],
                 "isSelected": [Function],
-                "label": "mockTrigger3",
+                "label": "mockTrigger4",
                 "onClick": [Function],
               },
             ],
@@ -1045,7 +1374,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": <DocumentMultipleRegular
+        "iconSrc": <EyeRegular
           fontSize={16}
         />,
         "isExpanded": true,
@@ -1148,7 +1477,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": <DocumentMultipleRegular
+        "iconSrc": <EyeRegular
           fontSize={16}
         />,
         "isExpanded": true,
@@ -1282,7 +1611,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": <DocumentMultipleRegular
+        "iconSrc": <EyeRegular
           fontSize={16}
         />,
         "isExpanded": true,
@@ -1462,7 +1791,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": <DocumentMultipleRegular
+        "iconSrc": <EyeRegular
           fontSize={16}
         />,
         "isExpanded": true,
@@ -1636,7 +1965,7 @@ exports[`createDatabaseTreeNodes using NoSQL API on Hosted Platform creates expe
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": <DocumentMultipleRegular
+        "iconSrc": <EyeRegular
           fontSize={16}
         />,
         "isExpanded": true,
@@ -1734,7 +2063,7 @@ exports[`createDatabaseTreeNodes using NoSQL API on Hosted Platform creates expe
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": <DocumentMultipleRegular
+        "iconSrc": <EyeRegular
           fontSize={16}
         />,
         "isExpanded": true,
@@ -1868,7 +2197,7 @@ exports[`createDatabaseTreeNodes using NoSQL API on Hosted Platform creates expe
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": <DocumentMultipleRegular
+        "iconSrc": <EyeRegular
           fontSize={16}
         />,
         "isExpanded": true,
@@ -2048,7 +2377,7 @@ exports[`createDatabaseTreeNodes using NoSQL API on Hosted Platform creates expe
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": <DocumentMultipleRegular
+        "iconSrc": <EyeRegular
           fontSize={16}
         />,
         "isExpanded": true,

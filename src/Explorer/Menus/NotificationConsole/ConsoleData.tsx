@@ -13,4 +13,5 @@ export enum ConsoleDataType {
   Info = 0,
   Error = 1,
   InProgress = 2,
+  Warning = 3,
 }

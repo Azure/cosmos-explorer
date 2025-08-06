@@ -1,18 +1,23 @@
 import { clamp } from "@fluentui/react";
+import { OpenTab } from "Contracts/ActionContracts";
 import { useSelectedNode } from "Explorer/useSelectedNode";
+import { isFabricMirrored } from "Platform/Fabric/FabricUtil";
+import {
+  AppStateComponentNames,
+  OPEN_TABS_SUBCOMPONENT_NAME,
+  saveSubComponentState,
+} from "Shared/AppStatePersistenceUtility";
 import create, { UseStore } from "zustand";
 import * as ViewModels from "../Contracts/ViewModels";
 import { CollectionTabKind } from "../Contracts/ViewModels";
 import NotebookTabV2 from "../Explorer/Tabs/NotebookV2Tab";
 import TabsBase from "../Explorer/Tabs/TabsBase";
-import { Platform, configContext } from "./../ConfigContext";
 
 export interface TabsState {
   openedTabs: TabsBase[];
   openedReactTabs: ReactTabKind[];
   activeTab: TabsBase | undefined;
   activeReactTab: ReactTabKind | undefined;
-  networkSettingsWarning: string;
   queryCopilotTabInitialInput: string;
   isTabExecuting: boolean;
   isQueryErrorThrown: boolean;
@@ -27,7 +32,6 @@ export interface TabsState {
   closeAllNotebookTabs: (hardClose: boolean) => void;
   openAndActivateReactTab: (tabKind: ReactTabKind) => void;
   closeReactTab: (tabKind: ReactTabKind) => void;
-  setNetworkSettingsWarning: (warningMessage: string) => void;
   setQueryCopilotTabInitialInput: (input: string) => void;
   setIsTabExecuting: (state: boolean) => void;
   setIsQueryErrorThrown: (state: boolean) => void;
@@ -36,6 +40,8 @@ export interface TabsState {
   selectLeftTab: () => void;
   selectRightTab: () => void;
   closeActiveTab: () => void;
+  closeAllTabs: () => void;
+  persistTabsState: () => void;
 }
 
 export enum ReactTabKind {
@@ -45,23 +51,11 @@ export enum ReactTabKind {
   QueryCopilot,
 }
 
-// HACK: using this const when the configuration context is not initialized yet.
-// Since Fabric is always setting the url param, use that instead of the regular config.
-const isPlatformFabric = (() => {
-  const params = new URLSearchParams(window.location.search);
-  if (params.has("platform")) {
-    const platform = params.get("platform");
-    return platform === Platform.Fabric;
-  }
-  return false;
-})();
-
 export const useTabs: UseStore<TabsState> = create((set, get) => ({
-  openedTabs: [],
-  openedReactTabs: !isPlatformFabric ? [ReactTabKind.Home] : [],
-  activeTab: undefined,
-  activeReactTab: !isPlatformFabric ? ReactTabKind.Home : undefined,
-  networkSettingsWarning: "",
+  openedTabs: [] as TabsBase[],
+  openedReactTabs: [ReactTabKind.Home],
+  activeTab: undefined as TabsBase,
+  activeReactTab: ReactTabKind.Home,
   queryCopilotTabInitialInput: "",
   isTabExecuting: false,
   isQueryErrorThrown: false,
@@ -73,7 +67,9 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
   },
   activateNewTab: (tab: TabsBase): void => {
     set((state) => ({ openedTabs: [...state.openedTabs, tab], activeTab: tab, activeReactTab: undefined }));
+    tab.triggerPersistState = get().persistTabsState;
     tab.onActivate();
+    get().persistTabsState();
   },
   activateReactTab: (tabKind: ReactTabKind): void => {
     // Clear the selected node when switching to a react tab.
@@ -107,7 +103,7 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
       .forEach((tab) => tab.onCloseTabButtonClick()),
   closeTab: (tab: TabsBase): void => {
     let tabIndex: number;
-    const { activeTab, openedTabs } = get();
+    const { activeTab, openedTabs, openedReactTabs } = get();
     const updatedTabs = openedTabs.filter((openedTab, index) => {
       if (tab.tabId === openedTab.tabId) {
         tabIndex = index;
@@ -115,11 +111,11 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
       }
       return true;
     });
-    if (updatedTabs.length === 0 && configContext.platform !== Platform.Fabric) {
+    if (updatedTabs.length === 0 && !isFabricMirrored()) {
       set({ activeTab: undefined, activeReactTab: undefined });
     }
 
-    if (tab.tabId === activeTab.tabId && tabIndex !== -1) {
+    if (tab.tabId === activeTab?.tabId && tabIndex !== -1) {
       const tabToTheRight = updatedTabs[tabIndex];
       const lastOpenTab = updatedTabs[updatedTabs.length - 1];
       const newActiveTab = tabToTheRight ?? lastOpenTab;
@@ -130,6 +126,12 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
     }
 
     set({ openedTabs: updatedTabs });
+
+    if (updatedTabs.length === 0 && openedReactTabs.length > 0) {
+      set({ activeTab: undefined, activeReactTab: openedReactTabs[openedReactTabs.length - 1] });
+    }
+
+    get().persistTabsState();
   },
   closeAllNotebookTabs: (hardClose): void => {
     const isNotebook = (tabKind: CollectionTabKind): boolean => {
@@ -153,7 +155,7 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
         }
       });
 
-      if (get().openedTabs.length === 0 && configContext.platform !== Platform.Fabric) {
+      if (get().openedTabs.length === 0 && !isFabricMirrored()) {
         set({ activeTab: undefined, activeReactTab: undefined });
       }
     }
@@ -178,7 +180,6 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
 
     set({ openedReactTabs: updatedOpenedReactTabs });
   },
-  setNetworkSettingsWarning: (warningMessage: string) => set({ networkSettingsWarning: warningMessage }),
   setQueryCopilotTabInitialInput: (input: string) => set({ queryCopilotTabInitialInput: input }),
   setIsTabExecuting: (state: boolean) => {
     set({ isTabExecuting: state });
@@ -225,5 +226,19 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
     } else if (state.activeTab !== undefined) {
       state.closeTab(state.activeTab);
     }
+  },
+  closeAllTabs: () => {
+    set({ openedTabs: [], openedReactTabs: [], activeTab: undefined, activeReactTab: undefined });
+  },
+  persistTabsState: () => {
+    const state = get();
+    const openTabsStates = state.openedTabs.map((tab) => tab.getPersistedState());
+
+    saveSubComponentState<OpenTab[]>(
+      AppStateComponentNames.DataExplorerAction,
+      OPEN_TABS_SUBCOMPONENT_NAME,
+      undefined,
+      openTabsStates,
+    );
   },
 }));

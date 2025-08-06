@@ -89,3 +89,7 @@ export const getItemName = (): string => {
       return "Items";
   }
 };
+
+export const isDataplaneRbacSupported = (apiType: string): boolean => {
+  return apiType === "SQL" || apiType === "Tables" || apiType === "Gremlin";
+};

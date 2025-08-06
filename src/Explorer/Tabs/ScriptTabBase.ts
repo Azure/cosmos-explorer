@@ -1,5 +1,6 @@
 import * as ko from "knockout";
 import Q from "q";
+import { IsValidCosmosDbResourceId } from "Utils/ValidationUtils";
 import DiscardIcon from "../../../images/discard.svg";
 import SaveIcon from "../../../images/save-cosmos.svg";
 import * as Constants from "../../Common/Constants";
@@ -57,7 +58,7 @@ export default abstract class ScriptTabBase extends TabsBase implements ViewMode
     }
 
     this.id = editable.observable<string>();
-    this.id.validations([ScriptTabBase._isValidId]);
+    this.id.validations([IsValidCosmosDbResourceId]);
 
     this.editorContent = editable.observable<string>();
     this.editorContent.validations([ScriptTabBase._isNotEmpty]);
@@ -260,29 +261,6 @@ export default abstract class ScriptTabBase extends TabsBase implements ViewMode
       ]),
     ).subscribe(() => this.updateNavbarWithTabsButtons());
     this.updateNavbarWithTabsButtons();
-  }
-
-  private static _isValidId(id: string): boolean {
-    if (!id) {
-      return false;
-    }
-
-    const invalidStartCharacters = /^[/?#\\]/;
-    if (invalidStartCharacters.test(id)) {
-      return false;
-    }
-
-    const invalidMiddleCharacters = /^.+[/?#\\]/;
-    if (invalidMiddleCharacters.test(id)) {
-      return false;
-    }
-
-    const invalidEndCharacters = /.*[/?#\\ ]$/;
-    if (invalidEndCharacters.test(id)) {
-      return false;
-    }
-
-    return true;
   }
 
   private static _isNotEmpty(value: string): boolean {

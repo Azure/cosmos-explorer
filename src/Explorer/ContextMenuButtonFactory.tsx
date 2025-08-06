@@ -1,5 +1,13 @@
+import { GlobalSecondaryIndexLabels } from "Common/Constants";
+import { isGlobalSecondaryIndexEnabled } from "Common/DatabaseAccountUtility";
+import { configContext, Platform } from "ConfigContext";
 import { TreeNodeMenuItem } from "Explorer/Controls/TreeComponent/TreeNodeComponent";
+import {
+  AddGlobalSecondaryIndexPanel,
+  AddGlobalSecondaryIndexPanelProps,
+} from "Explorer/Panes/AddGlobalSecondaryIndexPanel/AddGlobalSecondaryIndexPanel";
 import { useDatabases } from "Explorer/useDatabases";
+import { isFabric, isFabricNative } from "Platform/Fabric/FabricUtil";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { traceOpen } from "Shared/Telemetry/TelemetryProcessor";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
@@ -19,7 +27,6 @@ import * as ViewModels from "../Contracts/ViewModels";
 import { userContext } from "../UserContext";
 import { getCollectionName, getDatabaseName } from "../Utils/APITypeUtils";
 import { useSidePanel } from "../hooks/useSidePanel";
-import { Platform, configContext } from "./../ConfigContext";
 import Explorer from "./Explorer";
 import { useNotebook } from "./Notebook/useNotebook";
 import { DeleteCollectionConfirmationPane } from "./Panes/DeleteCollectionConfirmationPane/DeleteCollectionConfirmationPane";
@@ -41,7 +48,7 @@ export interface DatabaseContextMenuButtonParams {
  * New resource tree (in ReactJS)
  */
 export const createDatabaseContextMenu = (container: Explorer, databaseId: string): TreeNodeMenuItem[] => {
-  if (configContext.platform === Platform.Fabric && userContext.fabricContext?.isReadOnly) {
+  if (isFabric() && userContext.fabricContext?.isReadOnly) {
     return undefined;
   }
 
@@ -53,7 +60,7 @@ export const createDatabaseContextMenu = (container: Explorer, databaseId: strin
     },
   ];
 
-  if (userContext.apiType !== "Tables" || userContext.features.enableSDKoperations) {
+  if (!isFabricNative() && (userContext.apiType !== "Tables" || userContext.features.enableSDKoperations)) {
     items.push({
       iconSrc: DeleteDatabaseIcon,
       onClick: (lastFocusedElement?: React.RefObject<HTMLElement>) => {
@@ -96,17 +103,23 @@ export const createCollectionContextMenuButton = (
       iconSrc: HostedTerminalIcon,
       onClick: () => {
         const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
-        if (useNotebook.getState().isShellEnabled) {
+        if (useNotebook.getState().isShellEnabled || userContext.features.enableCloudShell) {
           container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
         } else {
           selectedCollection && selectedCollection.onNewMongoShellClick();
         }
       },
-      label: useNotebook.getState().isShellEnabled ? "Open Mongo Shell" : "New Shell",
+      label:
+        useNotebook.getState().isShellEnabled || userContext.features.enableCloudShell
+          ? "Open Mongo Shell"
+          : "New Shell",
     });
   }
 
-  if (useNotebook.getState().isShellEnabled && userContext.apiType === "Cassandra") {
+  if (
+    (useNotebook.getState().isShellEnabled || userContext.features.enableCloudShell) &&
+    userContext.apiType === "Cassandra"
+  ) {
     items.push({
       iconSrc: HostedTerminalIcon,
       onClick: () => {
@@ -145,7 +158,7 @@ export const createCollectionContextMenuButton = (
     });
   }
 
-  if (configContext.platform !== Platform.Fabric) {
+  if (!isFabric() || (isFabric() && !userContext.fabricContext?.isReadOnly)) {
     items.push({
       iconSrc: DeleteCollectionIcon,
       onClick: (lastFocusedElement?: React.RefObject<HTMLElement>) => {
@@ -160,6 +173,24 @@ export const createCollectionContextMenuButton = (
       },
       label: `Delete ${getCollectionName()}`,
       styleClass: "deleteCollectionMenuItem",
+    });
+  }
+
+  if (isGlobalSecondaryIndexEnabled() && !selectedCollection.materializedViewDefinition()) {
+    items.push({
+      label: GlobalSecondaryIndexLabels.NewGlobalSecondaryIndex,
+      onClick: () => {
+        const addMaterializedViewPanelProps: AddGlobalSecondaryIndexPanelProps = {
+          explorer: container,
+          sourceContainer: selectedCollection,
+        };
+        useSidePanel
+          .getState()
+          .openSidePanel(
+            GlobalSecondaryIndexLabels.NewGlobalSecondaryIndex,
+            <AddGlobalSecondaryIndexPanel {...addMaterializedViewPanelProps} />,
+          );
+      },
     });
   }
 

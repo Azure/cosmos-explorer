@@ -1,18 +1,14 @@
-import { Spinner, SpinnerSize } from "@fluentui/react";
-import { MessageTypes } from "Contracts/ExplorerContracts";
-import { QuickstartFirewallNotification } from "Explorer/Quickstart/QuickstartFirewallNotification";
 import { checkFirewallRules } from "Explorer/Tabs/Shared/CheckFirewallRules";
+import { CloudShellTerminalComponentAdapter } from "Explorer/Tabs/ShellAdapters/CloudShellTerminalComponentAdapter";
 import * as ko from "knockout";
-import * as React from "react";
-import FirewallRuleScreenshot from "../../../images/firewallRule.png";
 import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { userContext } from "../../UserContext";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
-import { NotebookTerminalComponent } from "../Controls/Notebook/NotebookTerminalComponent";
 import Explorer from "../Explorer";
 import { useNotebook } from "../Notebook/useNotebook";
+import { NotebookTerminalComponentAdapter } from "./ShellAdapters/NotebookTerminalComponentAdapter";
 import TabsBase from "./TabsBase";
 
 export interface TerminalTabOptions extends ViewModels.TabOptions {
@@ -22,86 +18,52 @@ export interface TerminalTabOptions extends ViewModels.TabOptions {
   username?: string;
 }
 
-/**
- * Notebook terminal tab
- */
-class NotebookTerminalComponentAdapter implements ReactAdapter {
-  // parameters: true: show, false: hide
-  public parameters: ko.Computed<boolean>;
-  constructor(
-    private getNotebookServerInfo: () => DataModels.NotebookWorkspaceConnectionInfo,
-    private getDatabaseAccount: () => DataModels.DatabaseAccount,
-    private getTabId: () => string,
-    private getUsername: () => string,
-    private isAllPublicIPAddressesEnabled: ko.Observable<boolean>,
-    private kind: ViewModels.TerminalKind,
-  ) {}
-
-  public renderComponent(): JSX.Element {
-    if (!this.isAllPublicIPAddressesEnabled()) {
-      return (
-        <QuickstartFirewallNotification
-          messageType={MessageTypes.OpenPostgresNetworkingBlade}
-          screenshot={FirewallRuleScreenshot}
-          shellName={this.getShellNameForDisplay(this.kind)}
-        />
-      );
-    }
-
-    return this.parameters() ? (
-      <NotebookTerminalComponent
-        notebookServerInfo={this.getNotebookServerInfo()}
-        databaseAccount={this.getDatabaseAccount()}
-        tabId={this.getTabId()}
-        username={this.getUsername()}
-      />
-    ) : (
-      <Spinner styles={{ root: { marginTop: 10 } }} size={SpinnerSize.large}></Spinner>
-    );
-  }
-
-  private getShellNameForDisplay(terminalKind: ViewModels.TerminalKind): string {
-    switch (terminalKind) {
-      case ViewModels.TerminalKind.Postgres:
-        return "PostgreSQL";
-      case ViewModels.TerminalKind.Mongo:
-      case ViewModels.TerminalKind.VCoreMongo:
-        return "MongoDB";
-      default:
-        return "";
-    }
-  }
-}
-
 export default class TerminalTab extends TabsBase {
   public readonly html = '<div style="height: 100%" data-bind="react:notebookTerminalComponentAdapter"></div>  ';
   private container: Explorer;
-  private notebookTerminalComponentAdapter: NotebookTerminalComponentAdapter;
+  private notebookTerminalComponentAdapter: ReactAdapter;
   private isAllPublicIPAddressesEnabled: ko.Observable<boolean>;
 
   constructor(options: TerminalTabOptions) {
     super(options);
     this.container = options.container;
     this.isAllPublicIPAddressesEnabled = ko.observable(true);
-    this.notebookTerminalComponentAdapter = new NotebookTerminalComponentAdapter(
-      () => this.getNotebookServerInfo(options),
+
+    const commonArgs: [
+      () => DataModels.DatabaseAccount,
+      () => string,
+      () => string,
+      ko.Observable<boolean>,
+      ViewModels.TerminalKind,
+    ] = [
       () => userContext?.databaseAccount,
       () => this.tabId,
       () => this.getUsername(),
       this.isAllPublicIPAddressesEnabled,
       options.kind,
-    );
-    this.notebookTerminalComponentAdapter.parameters = ko.computed<boolean>(() => {
-      if (
-        this.isTemplateReady() &&
-        useNotebook.getState().isNotebookEnabled &&
-        useNotebook.getState().notebookServerInfo?.notebookServerEndpoint &&
-        this.isAllPublicIPAddressesEnabled()
-      ) {
-        return true;
-      }
-      return false;
-    });
+    ];
+
+    if (userContext.features.enableCloudShell) {
+      this.notebookTerminalComponentAdapter = new CloudShellTerminalComponentAdapter(...commonArgs);
+
+      this.notebookTerminalComponentAdapter.parameters = ko.computed<boolean>(() => {
+        return this.isTemplateReady() && this.isAllPublicIPAddressesEnabled();
+      });
+    } else {
+      this.notebookTerminalComponentAdapter = new NotebookTerminalComponentAdapter(
+        () => this.getNotebookServerInfo(options),
+        ...commonArgs,
+      );
+
+      this.notebookTerminalComponentAdapter.parameters = ko.computed<boolean>(() => {
+        return (
+          this.isTemplateReady() &&
+          useNotebook.getState().isNotebookEnabled &&
+          useNotebook.getState().notebookServerInfo?.notebookServerEndpoint &&
+          this.isAllPublicIPAddressesEnabled()
+        );
+      });
+    }
 
     if (options.kind === ViewModels.TerminalKind.Postgres) {
       checkFirewallRules(

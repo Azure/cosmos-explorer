@@ -29,10 +29,11 @@ export enum SelfServeType {
   // Unsupported self serve type passed as feature flag
   invalid = "invalid",
   // Add your self serve types here
-  example = "example",
-  sqlx = "sqlx",
-  graphapicompute = "graphapicompute",
-  materializedviewsbuilder = "materializedviewsbuilder",
+  // NOTE: text and casing of the enum's value must match the corresponding file in Localization\en\
+  example = "SelfServeExample",
+  sqlx = "SqlX",
+  graphapicompute = "GraphAPICompute",
+  materializedviewsbuilder = "MaterializedViewsBuilder",
 }
 
 /**
