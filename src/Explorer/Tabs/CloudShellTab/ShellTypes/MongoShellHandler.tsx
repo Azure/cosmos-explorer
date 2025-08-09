@@ -1,10 +1,11 @@
 import { userContext } from "../../../../UserContext";
-import { getHostFromUrl } from "../Utils/CommonUtils";
+import { filterAndCleanTerminalOutput, getHostFromUrl, getMongoShellRemoveInfoText } from "../Utils/CommonUtils";
 import { AbstractShellHandler, DISABLE_TELEMETRY_COMMAND } from "./AbstractShellHandler";
 
 export class MongoShellHandler extends AbstractShellHandler {
   private _key: string;
   private _endpoint: string | undefined;
+  private _removeInfoText: string[] = getMongoShellRemoveInfoText();
   constructor(private key: string) {
     super();
     this._key = key;
@@ -44,6 +45,10 @@ export class MongoShellHandler extends AbstractShellHandler {
   }
 
   public getTerminalSuppressedData(): string[] {
-    return ["Warning: Non-Genuine MongoDB Detected"];
+    return ["Warning: Non-Genuine MongoDB Detected", "Telemetry is now disabled."];
+  }
+
+  updateTerminalData(data: string): string {
+    return filterAndCleanTerminalOutput(data, this._removeInfoText);
   }
 }
