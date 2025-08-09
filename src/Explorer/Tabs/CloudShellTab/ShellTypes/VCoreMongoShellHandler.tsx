@@ -1,13 +1,10 @@
 import { userContext } from "../../../../UserContext";
+import { filterAndCleanTerminalOutput, getMongoShellRemoveInfoText } from "../Utils/CommonUtils";
 import { AbstractShellHandler, DISABLE_TELEMETRY_COMMAND } from "./AbstractShellHandler";
 
 export class VCoreMongoShellHandler extends AbstractShellHandler {
   private _endpoint: string | undefined;
-  private _textFilterRules: string[] = [
-    "For mongosh info see: https://www.mongodb.com/docs/mongodb-shell/",
-    "disableTelemetry() command",
-    "https://www.mongodb.com/legal/privacy-policy",
-  ];
+  private _removeInfoText: string[] = getMongoShellRemoveInfoText();
 
   constructor() {
     super();
@@ -38,12 +35,7 @@ export class VCoreMongoShellHandler extends AbstractShellHandler {
     return ["Warning: Non-Genuine MongoDB Detected", "Telemetry is now disabled."];
   }
 
-  updateTerminalData(content: string): string {
-    const updatedContent = content
-      .split("\n")
-      .filter((line) => !this._textFilterRules.some((part) => line.includes(part)))
-      .filter((line, idx, arr) => (arr.length > 3 && idx <= arr.length - 3 ? !["", "\r"].includes(line) : true)) // Filter out empty lines and carriage returns, but keep the last 3 lines if they exist
-      .join("\n");
-    return updatedContent;
+  updateTerminalData(data: string): string {
+    return filterAndCleanTerminalOutput(data, this._removeInfoText);
   }
 }
