@@ -4,8 +4,6 @@ playwright.config.ts
 src/**/__mocks__/**/*
 dist/
 Contracts/
-src/Api/Apis.ts
-src/AuthType.ts
 src/Bindings/BindingHandlersRegisterer.ts
 src/Bindings/ReactBindingHandler.ts
 src/Common/Constants.ts
@@ -37,7 +35,6 @@ src/Definitions/svg.d.ts
 src/Explorer/ComponentRegisterer.test.ts
 src/Explorer/ComponentRegisterer.ts
 src/Explorer/Controls/DiffEditor/DiffEditorComponent.ts
-
 src/Explorer/Controls/Editor/EditorComponent.ts
 src/Explorer/Controls/JsonEditor/JsonEditorComponent.ts
 src/Explorer/DataSamples/ContainerSampleGenerator.test.ts
@@ -113,12 +110,8 @@ src/ReactDevTools.ts
 src/Shared/Constants.ts
 src/Shared/DefaultExperienceUtility.test.ts
 src/Shared/DefaultExperienceUtility.ts
-src/Shared/appInsights.ts
-src/SparkClusterManager/ArcadiaResourceManager.ts
-src/SparkClusterManager/SparkClusterManager.ts
 src/Terminal/JupyterLabAppFactory.ts
 src/Terminal/NotebookAppContracts.d.ts
-src/applyExplorerBindings.ts
 src/global.d.ts
 src/setupTests.ts
 src/Explorer/Controls/InputTypeahead/InputTypeaheadComponent.tsx
@@ -128,8 +121,6 @@ src/Explorer/Controls/NotebookViewer/NotebookViewerComponent.tsx
 src/Explorer/Controls/TreeComponent/LegacyTreeComponent.tsx
 src/Explorer/Graph/GraphExplorerComponent/GraphExplorer.test.tsx
 src/Explorer/Graph/GraphExplorerComponent/NodePropertiesComponent.tsx
-src/Explorer/Graph/GraphExplorerComponent/ReadOnlyNodePropertiesComponent.test.tsx
-src/Explorer/Graph/GraphExplorerComponent/ReadOnlyNodePropertiesComponent.tsx
 src/Explorer/Menus/CommandBar/CommandBarUtil.tsx
 src/Explorer/Notebook/NotebookComponent/NotebookComponentAdapter.tsx
 src/Explorer/Notebook/NotebookComponent/VirtualCommandBarComponent.tsx
@@ -138,7 +129,6 @@ src/Explorer/Notebook/NotebookRenderer/NotebookRenderer.tsx
 src/Explorer/Notebook/NotebookRenderer/decorators/draggable/index.tsx
 src/Explorer/Notebook/NotebookRenderer/decorators/hijack-scroll/index.tsx
 src/Explorer/Notebook/NotebookRenderer/decorators/kbd-shortcuts/index.tsx
-src/Explorer/Notebook/temp/inputs/connected-editors/codemirror.tsx
 src/Explorer/Tree/ResourceTreeAdapter.tsx
 __mocks__/monaco-editor.ts
 src/Explorer/Tree/ResourceTree.tsx
