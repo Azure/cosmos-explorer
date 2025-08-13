@@ -22,6 +22,7 @@ import { formatErrorMessage, formatInfoMessage, formatWarningMessage } from "./U
 
 // Constants
 const DEFAULT_CLOUDSHELL_REGION = "westus";
+const DEFAULT_FAIRFAX_CLOUDSHELL_REGION = "usgovvirginia";
 const POLLING_INTERVAL_MS = 2000;
 const MAX_RETRY_COUNT = 10;
 const MAX_PING_COUNT = 120 * 60; // 120 minutes (60 seconds/minute)
@@ -153,7 +154,9 @@ export const ensureCloudShellProviderRegistered = async (): Promise<void> => {
  * Determines the appropriate CloudShell region
  */
 export const determineCloudShellRegion = (): string => {
-  return getNormalizedRegion(userContext.databaseAccount?.location, DEFAULT_CLOUDSHELL_REGION);
+  const defaultRegion =
+    userContext.portalEnv === "fairfax" ? DEFAULT_FAIRFAX_CLOUDSHELL_REGION : DEFAULT_CLOUDSHELL_REGION;
+  return getNormalizedRegion(userContext.databaseAccount?.location, defaultRegion);
 };
 
 /**
