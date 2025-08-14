@@ -1,3 +1,4 @@
+import { useDatabases } from "Explorer/useDatabases";
 import { isFabric, isFabricMirroredKey, isFabricNative } from "Platform/Fabric/FabricUtil";
 import { AuthType } from "../../AuthType";
 import { Offer, ReadDatabaseOfferParams } from "../../Contracts/DataModels";
@@ -43,30 +44,41 @@ const readDatabaseOfferWithARM = async (databaseId: string): Promise<Offer> => {
   const { subscriptionId, resourceGroup, apiType, databaseAccount } = userContext;
   const accountName = databaseAccount.name;
 
+  const isSelectedDatabaseSharedThroughput = (): boolean => {
+    const selectedDatabase = useDatabases
+        .getState()
+        .databases?.find((database) => database.id() === databaseId);
+    return !!selectedDatabase?.offer();
+  }
+
+  if (!isSelectedDatabaseSharedThroughput()) {
+    return undefined;
+  }
+
   let rpResponse;
   try {
-    switch (apiType) {
-      case "SQL":
-        rpResponse = await getSqlDatabaseThroughput(subscriptionId, resourceGroup, accountName, databaseId);
-        break;
-      case "Mongo":
-        rpResponse = await getMongoDBDatabaseThroughput(subscriptionId, resourceGroup, accountName, databaseId);
-        break;
-      case "Cassandra":
-        rpResponse = await getCassandraKeyspaceThroughput(subscriptionId, resourceGroup, accountName, databaseId);
-        break;
-      case "Gremlin":
-        rpResponse = await getGremlinDatabaseThroughput(subscriptionId, resourceGroup, accountName, databaseId);
-        break;
-      default:
-        throw new Error(`Unsupported default experience type: ${apiType}`);
-    }
-  } catch (error) {
-    if (error.code !== "NotFound") {
-      throw error;
-    }
-
-    return undefined;
+      switch (apiType) {
+        case "SQL":
+          rpResponse = await getSqlDatabaseThroughput(subscriptionId, resourceGroup, accountName, databaseId);
+          break;
+        case "Mongo":
+          rpResponse = await getMongoDBDatabaseThroughput(subscriptionId, resourceGroup, accountName, databaseId);
+          break;
+        case "Cassandra":
+          rpResponse = await getCassandraKeyspaceThroughput(subscriptionId, resourceGroup, accountName, databaseId);
+          break;
+        case "Gremlin":
+          rpResponse = await getGremlinDatabaseThroughput(subscriptionId, resourceGroup, accountName, databaseId);
+          break;
+        default:
+          throw new Error(`Unsupported default experience type: ${apiType}`);
+      }
+    } catch (error) {
+      if (error.code !== "NotFound") {
+        throw error;
+      }
+      
+      return undefined;
   }
 
   const resource = rpResponse?.properties?.resource;
