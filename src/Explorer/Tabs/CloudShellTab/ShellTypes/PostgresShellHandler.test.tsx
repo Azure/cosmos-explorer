@@ -58,7 +58,7 @@ describe("PostgresShellHandler", () => {
     });
 
     it("should return empty string for terminal suppressed data", () => {
-      expect(postgresShellHandler.getTerminalSuppressedData()).toBe("");
+      expect(postgresShellHandler.getTerminalSuppressedData()).toEqual([""]);
     });
   });
 });

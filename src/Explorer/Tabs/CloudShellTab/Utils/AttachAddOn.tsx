@@ -135,11 +135,17 @@ export class AttachAddon implements ITerminalAddon {
         }
 
         if (this._allowTerminalWrite) {
-          const suppressedData = this._shellHandler?.getTerminalSuppressedData();
-          const hasSuppressedData = suppressedData && suppressedData.length > 0;
+          const updatedData =
+            typeof this._shellHandler?.updateTerminalData === "function"
+              ? this._shellHandler.updateTerminalData(data)
+              : data;
 
-          if (!hasSuppressedData || !data.includes(suppressedData)) {
-            terminal.write(data);
+          const suppressedData = this._shellHandler?.getTerminalSuppressedData();
+
+          const shouldNotWrite = suppressedData.filter(Boolean).some((item) => updatedData.includes(item));
+
+          if (!shouldNotWrite) {
+            terminal.write(updatedData);
           }
         }
 

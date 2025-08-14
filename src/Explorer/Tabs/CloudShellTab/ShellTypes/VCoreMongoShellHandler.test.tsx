@@ -45,7 +45,7 @@ describe("VCoreMongoShellHandler", () => {
 
       expect(Array.isArray(commands)).toBe(true);
       expect(commands.length).toBe(7);
-      expect(commands[1]).toContain("mongosh-2.5.0-linux-x64.tgz");
+      expect(commands[1]).toContain("mongosh-2.5.5-linux-x64.tgz");
       expect(commands[0]).toContain("mongosh not found");
     });
 
@@ -57,7 +57,10 @@ describe("VCoreMongoShellHandler", () => {
     });
 
     it("should return the correct terminal suppressed data", () => {
-      expect(vcoreMongoShellHandler.getTerminalSuppressedData()).toBe("Warning: Non-Genuine MongoDB Detected");
+      expect(vcoreMongoShellHandler.getTerminalSuppressedData()).toEqual([
+        "Warning: Non-Genuine MongoDB Detected",
+        "Telemetry is now disabled.",
+      ]);
     });
   });
 });
