@@ -50,34 +50,3 @@ export const getShellNameForDisplay = (terminalKind: TerminalKind): string => {
       return "";
   }
 };
-
-/**
- * Get MongoDB shell information text that should be removed from terminal output
- */
-export const getMongoShellRemoveInfoText = (): string[] => {
-  return [
-    "For mongosh info see: https://www.mongodb.com/docs/mongodb-shell/",
-    "disableTelemetry() command",
-    "https://www.mongodb.com/legal/privacy-policy",
-  ];
-};
-
-export const filterAndCleanTerminalOutput = (data: string, removeInfoText: string[]): string => {
-  if (!data || removeInfoText.length === 0) {
-    return data;
-  }
-
-  const lines = data.split("\n");
-  const filteredLines: string[] = [];
-
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
-    const shouldRemove = removeInfoText.some((text) => line.includes(text));
-
-    if (!shouldRemove) {
-      filteredLines.push(line);
-    }
-  }
-
-  return filteredLines.join("\n").replace(/((\r\n)|\n|\r){2,}/g, "\r\n");
-};

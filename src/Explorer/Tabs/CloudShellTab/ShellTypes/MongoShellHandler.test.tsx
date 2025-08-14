@@ -33,7 +33,6 @@ jest.mock("../../../../UserContext", () => ({
 }));
 
 jest.mock("../Utils/CommonUtils", () => ({
-  ...jest.requireActual("../Utils/CommonUtils"),
   getHostFromUrl: jest.fn().mockReturnValue("test-mongo.documents.azure.com"),
 }));
 
@@ -125,10 +124,7 @@ describe("MongoShellHandler", () => {
 
   describe("getTerminalSuppressedData", () => {
     it("should return the correct warning message", () => {
-      expect(mongoShellHandler.getTerminalSuppressedData()).toEqual([
-        "Warning: Non-Genuine MongoDB Detected",
-        "Telemetry is now disabled.",
-      ]);
+      expect(mongoShellHandler.getTerminalSuppressedData()).toEqual(["Warning: Non-Genuine MongoDB Detected"]);
     });
   });
 });
