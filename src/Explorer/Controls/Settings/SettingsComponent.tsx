@@ -15,6 +15,7 @@ import { useDatabases } from "Explorer/useDatabases";
 import { isFabricNative } from "Platform/Fabric/FabricUtil";
 import { isVectorSearchEnabled } from "Utils/CapabilityUtils";
 import { isRunningOnPublicCloud } from "Utils/CloudUtils";
+import { isFeatureSupported, PlatformFeature } from "Utils/PlatformFeatureUtils";
 import * as React from "react";
 import DiscardIcon from "../../../../images/discard.svg";
 import SaveIcon from "../../../../images/save-cosmos.svg";
@@ -60,15 +61,15 @@ import {
   AddMongoIndexProps,
   ChangeFeedPolicyState,
   GeospatialConfigType,
-  MongoIndexTypes,
-  SettingsV2TabTypes,
-  TtlType,
   getMongoNotification,
   getTabTitle,
   hasDatabaseSharedThroughput,
   isDirty,
+  MongoIndexTypes,
   parseConflictResolutionMode,
   parseConflictResolutionProcedure,
+  SettingsV2TabTypes,
+  TtlType,
 } from "./SettingsUtils";
 
 interface SettingsV2TabInfo {
@@ -276,14 +277,14 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.saveSettingsButton = {
       isEnabled: this.isSaveSettingsButtonEnabled,
       isVisible: () => {
-        return true;
+        return isFeatureSupported(PlatformFeature.UpdateCollection);
       },
     };
 
     this.discardSettingsChangesButton = {
       isEnabled: this.isDiscardSettingsButtonEnabled,
       isVisible: () => {
-        return true;
+        return isFeatureSupported(PlatformFeature.UpdateCollection);
       },
     };
 

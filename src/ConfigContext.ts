@@ -19,6 +19,7 @@ export enum Platform {
   Hosted = "Hosted",
   Emulator = "Emulator",
   Fabric = "Fabric",
+  VNextEmulator = "VNextEmulator",
 }
 
 export interface ConfigContext {
@@ -225,6 +226,7 @@ export async function initializeConfiguration(): Promise<ConfigContext> {
         case Platform.Fabric:
         case Platform.Hosted:
         case Platform.Emulator:
+        case Platform.VNextEmulator:
           updateConfigContext({ platform });
       }
     }
