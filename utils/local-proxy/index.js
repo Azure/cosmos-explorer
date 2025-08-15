@@ -121,6 +121,7 @@ app.get("/_ready", (_, res) => {
 const appConf = {
   PROXY_PATH: "/proxy",
   EMULATOR_ENDPOINT: conf.EMULATOR_ENDPOINT,
+  platform: "VNextEmulator",
 };
 app.get("/config.json", (_, res) => {
   res.status(200).json(appConf).end();
