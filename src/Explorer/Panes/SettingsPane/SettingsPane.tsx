@@ -445,10 +445,6 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
       );
     }
 
-    logConsoleInfo(
-      `Updated query setting to ${LocalStorageUtility.getEntryString(StorageKey.SetPartitionKeyUndefined)}`,
-    );
-
     if (shouldShowMongoGuidRepresentationOption) {
       logConsoleInfo(`Updated Mongo Guid Representation to ${LocalStorageUtility.getEntryString(StorageKey.MongoGuidRepresentation)}`)
     }

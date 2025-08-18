@@ -8,6 +8,8 @@ const validCloudShellRegions = new Set([
   "centralindia",
   "southeastasia",
   "westcentralus",
+  "usgovvirginia",
+  "usgovarizona",
 ]);
 
 /**
