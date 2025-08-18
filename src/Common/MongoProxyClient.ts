@@ -141,8 +141,8 @@ export function readDocument(
         ? documentId.partitionKeyProperties?.[0]
         : "",
     clientSettings: {
-      guidRepresentation: getMongoGuidRepresentation()
-    }
+      guidRepresentation: getMongoGuidRepresentation(),
+    },
   };
 
   const endpoint = getEndpoint(configContext.MONGO_PROXY_ENDPOINT);
@@ -186,8 +186,8 @@ export function createDocument(
       collection && collection.partitionKey && !collection.partitionKey.systemKey ? partitionKeyProperty : "",
     documentContent: JSON.stringify(documentContent),
     clientSettings: {
-      guidRepresentation: getMongoGuidRepresentation()
-    }
+      guidRepresentation: getMongoGuidRepresentation(),
+    },
   };
 
   const endpoint = getEndpoint(configContext.MONGO_PROXY_ENDPOINT);
@@ -236,8 +236,8 @@ export function updateDocument(
         : "",
     documentContent,
     clientSettings: {
-      guidRepresentation: getMongoGuidRepresentation()
-    }
+      guidRepresentation: getMongoGuidRepresentation(),
+    },
   };
   const endpoint = getEndpoint(configContext.MONGO_PROXY_ENDPOINT);
 
@@ -285,8 +285,8 @@ export function deleteDocuments(
     resourceGroup: userContext.resourceGroup,
     databaseAccountName: databaseAccount.name,
     clientSettings: {
-      guidRepresentation: getMongoGuidRepresentation()
-    }
+      guidRepresentation: getMongoGuidRepresentation(),
+    },
   };
   const endpoint = getEndpoint(configContext.MONGO_PROXY_ENDPOINT);
 

@@ -34,7 +34,7 @@ export enum StorageKey {
   DocumentsTabPrefs,
   DefaultQueryResultsView,
   AppState,
-  MongoGuidRepresentation
+  MongoGuidRepresentation,
 }
 
 export const hasRUThresholdBeenConfigured = (): boolean => {
@@ -74,6 +74,6 @@ export const getMongoGuidRepresentation = (): MongoGuidRepresentation => {
   }
 
   return MongoGuidRepresentation.CSharpLegacy;
-}
+};
 
 export const DefaultRUThreshold = 5000;

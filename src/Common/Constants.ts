@@ -770,5 +770,5 @@ export enum MongoGuidRepresentation {
   Standard = "Standard",
   CSharpLegacy = "CSharpLegacy",
   JavaLegacy = "JavaLegacy",
-  PythonLegacy = "PythonLegacy"
+  PythonLegacy = "PythonLegacy",
 }

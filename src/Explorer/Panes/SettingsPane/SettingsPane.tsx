@@ -201,7 +201,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
 
   const [mongoGuidRepresentation, setMongoGuidRepresentation] = useState<Constants.MongoGuidRepresentation>(
     LocalStorageUtility.hasItem(StorageKey.MongoGuidRepresentation)
-      ? LocalStorageUtility.getEntryString(StorageKey.MongoGuidRepresentation) as Constants.MongoGuidRepresentation
+      ? (LocalStorageUtility.getEntryString(StorageKey.MongoGuidRepresentation) as Constants.MongoGuidRepresentation)
       : Constants.MongoGuidRepresentation.CSharpLegacy,
   );
 
@@ -446,7 +446,11 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
     }
 
     if (shouldShowMongoGuidRepresentationOption) {
-      logConsoleInfo(`Updated Mongo Guid Representation to ${LocalStorageUtility.getEntryString(StorageKey.MongoGuidRepresentation)}`)
+      logConsoleInfo(
+        `Updated Mongo Guid Representation to ${LocalStorageUtility.getEntryString(
+          StorageKey.MongoGuidRepresentation,
+        )}`,
+      );
     }
 
     refreshExplorer && (await explorer.refreshExplorer());
@@ -497,7 +501,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
     { key: Constants.MongoGuidRepresentation.CSharpLegacy, text: Constants.MongoGuidRepresentation.CSharpLegacy },
     { key: Constants.MongoGuidRepresentation.JavaLegacy, text: Constants.MongoGuidRepresentation.JavaLegacy },
     { key: Constants.MongoGuidRepresentation.PythonLegacy, text: Constants.MongoGuidRepresentation.PythonLegacy },
-    { key: Constants.MongoGuidRepresentation.Standard, text: Constants.MongoGuidRepresentation.Standard },  
+    { key: Constants.MongoGuidRepresentation.Standard, text: Constants.MongoGuidRepresentation.Standard },
   ];
 
   const handleOnPriorityLevelOptionChange = (
@@ -1117,11 +1121,11 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                 <AccordionHeader>
                   <div className={styles.header}>Guid Representation</div>
                 </AccordionHeader>
-                  <AccordionPanel>
+                <AccordionPanel>
                   <div className={styles.settingsSectionContainer}>
                     <div className={styles.settingsSectionDescription}>
-                      GuidRepresentation in MongoDB refers to how Globally Unique Identifiers (GUIDs) are serialized and deserialized when stored in BSON documents. 
-                      This will apply to all document operations.
+                      GuidRepresentation in MongoDB refers to how Globally Unique Identifiers (GUIDs) are serialized and
+                      deserialized when stored in BSON documents. This will apply to all document operations.
                     </div>
                     <Dropdown
                       aria-labelledby="mongoGuidRepresentation"
