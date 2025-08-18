@@ -199,6 +199,12 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
     LocalStorageUtility.getEntryString(StorageKey.CopilotSampleDBEnabled) === "true",
   );
 
+  const [mongoGuidRepresentation, setMongoGuidRepresentation] = useState<Constants.MongoGuidRepresentation>(
+    LocalStorageUtility.hasItem(StorageKey.MongoGuidRepresentation)
+      ? LocalStorageUtility.getEntryString(StorageKey.MongoGuidRepresentation) as Constants.MongoGuidRepresentation
+      : Constants.MongoGuidRepresentation.CSharpLegacy,
+  );
+
   const styles = useStyles();
 
   const explorerVersion = configContext.gitSha;
@@ -260,6 +266,8 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
     useQueryCopilot.getState().copilotEnabled &&
     useDatabases.getState().sampleDataResourceTokenCollection &&
     !isEmulator;
+
+  const shouldShowMongoGuidRepresentationOption = userContext.apiType === "Mongo";
 
   const handlerOnSubmit = async () => {
     setIsExecuting(true);
@@ -412,6 +420,10 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
       );
     }
 
+    if (shouldShowMongoGuidRepresentationOption) {
+      LocalStorageUtility.setEntryString(StorageKey.MongoGuidRepresentation, mongoGuidRepresentation);
+    }
+
     setIsExecuting(false);
     logConsoleInfo(
       `Updated items per page setting to ${LocalStorageUtility.getEntryNumber(StorageKey.ActualItemPerPage)}`,
@@ -436,6 +448,11 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
     logConsoleInfo(
       `Updated query setting to ${LocalStorageUtility.getEntryString(StorageKey.SetPartitionKeyUndefined)}`,
     );
+
+    if (shouldShowMongoGuidRepresentationOption) {
+      logConsoleInfo(`Updated Mongo Guid Representation to ${LocalStorageUtility.getEntryString(StorageKey.MongoGuidRepresentation)}`)
+    }
+
     refreshExplorer && (await explorer.refreshExplorer());
     closeSidePanel();
   };
@@ -478,6 +495,13 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
   const defaultQueryResultsViewOptionList: IChoiceGroupOption[] = [
     { key: SplitterDirection.Vertical, text: "Vertical" },
     { key: SplitterDirection.Horizontal, text: "Horizontal" },
+  ];
+
+  const mongoGuidRepresentationDropdownOptions: IDropdownOption[] = [
+    { key: Constants.MongoGuidRepresentation.CSharpLegacy, text: Constants.MongoGuidRepresentation.CSharpLegacy },
+    { key: Constants.MongoGuidRepresentation.JavaLegacy, text: Constants.MongoGuidRepresentation.JavaLegacy },
+    { key: Constants.MongoGuidRepresentation.PythonLegacy, text: Constants.MongoGuidRepresentation.PythonLegacy },
+    { key: Constants.MongoGuidRepresentation.Standard, text: Constants.MongoGuidRepresentation.Standard },  
   ];
 
   const handleOnPriorityLevelOptionChange = (
@@ -560,6 +584,13 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
     setCopilotSampleDBEnabled(checked);
     useQueryCopilot.getState().setCopilotSampleDBEnabled(checked);
     setRefreshExplorer(false);
+  };
+
+  const handleOnMongoGuidRepresentationOptionChange = (
+    ev: React.FormEvent<HTMLInputElement>,
+    option: IDropdownOption,
+  ): void => {
+    setMongoGuidRepresentation(option.key as Constants.MongoGuidRepresentation);
   };
 
   const choiceButtonStyles = {
@@ -1080,6 +1111,27 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                       checked={copilotSampleDBEnabled}
                       onChange={handleSampleDatabaseChange}
                       label="Enable sample database"
+                    />
+                  </div>
+                </AccordionPanel>
+              </AccordionItem>
+            )}
+            {shouldShowMongoGuidRepresentationOption && (
+              <AccordionItem value="14">
+                <AccordionHeader>
+                  <div className={styles.header}>Guid Representation</div>
+                </AccordionHeader>
+                  <AccordionPanel>
+                  <div className={styles.settingsSectionContainer}>
+                    <div className={styles.settingsSectionDescription}>
+                      GuidRepresentation in MongoDB refers to how Globally Unique Identifiers (GUIDs) are serialized and deserialized when stored in BSON documents. 
+                      This will apply to all document operations.
+                    </div>
+                    <Dropdown
+                      aria-labelledby="mongoGuidRepresentation"
+                      selectedKey={mongoGuidRepresentation}
+                      options={mongoGuidRepresentationDropdownOptions}
+                      onChange={handleOnMongoGuidRepresentationOptionChange}
                     />
                   </div>
                 </AccordionPanel>
