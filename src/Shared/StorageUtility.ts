@@ -68,7 +68,7 @@ export const getDefaultQueryResultsView = (): SplitterDirection => {
 };
 
 export const getMongoGuidRepresentation = (): MongoGuidRepresentation => {
-  const mongoGuidRepresentation: string = LocalStorageUtility.getEntryString(StorageKey.MongoGuidRepresentation);
+  const mongoGuidRepresentation: string | null = LocalStorageUtility.getEntryString(StorageKey.MongoGuidRepresentation);
   if (mongoGuidRepresentation) {
     return mongoGuidRepresentation as MongoGuidRepresentation;
   }
