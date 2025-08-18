@@ -765,3 +765,10 @@ export const ShortenedQueryCopilotSampleContainerSchema = {
 
   userPrompt: "find all products",
 };
+
+export enum MongoGuidRepresentation {
+  Standard = "Standard",
+  CSharpLegacy = "CSharpLegacy",
+  JavaLegacy = "JavaLegacy",
+  PythonLegacy = "PythonLegacy",
+}
