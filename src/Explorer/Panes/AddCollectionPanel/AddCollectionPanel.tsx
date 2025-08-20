@@ -50,6 +50,7 @@ import * as TelemetryProcessor from "Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "UserContext";
 import { getCollectionName } from "Utils/APITypeUtils";
 import { isCapabilityEnabled, isServerlessAccount, isVectorSearchEnabled } from "Utils/CapabilityUtils";
+import { isFeatureSupported, PlatformFeature } from "Utils/PlatformFeatureUtils";
 import { getUpsellMessage } from "Utils/PricingUtils";
 import { ValidCosmosDbIdDescription, ValidCosmosDbIdInputPattern } from "Utils/ValidationUtils";
 import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
@@ -1160,11 +1161,15 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
   }
 
   private shouldShowVectorSearchParameters() {
-    return isVectorSearchEnabled() && (isServerlessAccount() || this.shouldShowCollectionThroughputInput());
+    return (
+      isFeatureSupported(PlatformFeature.VectorSearch) &&
+      isVectorSearchEnabled() &&
+      (isServerlessAccount() || this.shouldShowCollectionThroughputInput())
+    );
   }
 
   private shouldShowFullTextSearchParameters() {
-    return !isFabricNative() && this.showFullTextSearch;
+    return isFeatureSupported(PlatformFeature.FullTextSearch) && !isFabricNative() && this.showFullTextSearch;
   }
 
   private parseUniqueKeys(): DataModels.UniqueKeyPolicy {

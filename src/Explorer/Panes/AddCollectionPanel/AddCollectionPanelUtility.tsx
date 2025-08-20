@@ -6,6 +6,7 @@ import { getFullTextLanguageOptions } from "Explorer/Controls/FullTextSeach/Full
 import { isFabricNative } from "Platform/Fabric/FabricUtil";
 import React from "react";
 import { userContext } from "UserContext";
+import { isFeatureSupported, PlatformFeature } from "Utils/PlatformFeatureUtils";
 
 export function getPartitionKeyTooltipText(): string {
   if (userContext.apiType === "Mongo") {
@@ -85,7 +86,11 @@ export function UniqueKeysHeader(): JSX.Element {
 }
 
 export function shouldShowAnalyticalStoreOptions(): boolean {
-  if (isFabricNative() || configContext.platform === Platform.Emulator) {
+  if (
+    !isFeatureSupported(PlatformFeature.AnalyticalStore) ||
+    isFabricNative() ||
+    configContext.platform === Platform.Emulator
+  ) {
     return false;
   }
 
