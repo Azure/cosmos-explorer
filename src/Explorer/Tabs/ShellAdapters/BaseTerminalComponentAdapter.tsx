@@ -22,10 +22,22 @@ export abstract class BaseTerminalComponentAdapter implements ReactAdapter {
     protected getUsername: () => string,
     protected isAllPublicIPAddressesEnabled: ko.Observable<boolean>,
     protected kind: ViewModels.TerminalKind,
-  ) {}
+    protected isCloudShellIPsConfigured?: ko.Observable<boolean>,
+  ) { }
 
   public renderComponent(): JSX.Element {
-    if (!this.isAllPublicIPAddressesEnabled()) {
+    const publicIPEnabled = this.isAllPublicIPAddressesEnabled();
+    const cloudShellConfigured = this.isCloudShellIPsConfigured ? this.isCloudShellIPsConfigured() : true;
+    let shouldShowScreenshot: boolean;
+
+    if (this.isCloudShellIPsConfigured) {
+      shouldShowScreenshot = !cloudShellConfigured;
+
+    } else {
+      shouldShowScreenshot = !publicIPEnabled;
+    }
+
+    if (shouldShowScreenshot) {
       return (
         <QuickstartFirewallNotification
           messageType={this.getMessageType()}

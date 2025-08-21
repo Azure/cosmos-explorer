@@ -1,4 +1,5 @@
 import { checkFirewallRules } from "Explorer/Tabs/Shared/CheckFirewallRules";
+import { checkCloudShellIPsConfigured } from "Explorer/Tabs/Shared/CloudShellIPChecker";
 import { CloudShellTerminalComponentAdapter } from "Explorer/Tabs/ShellAdapters/CloudShellTerminalComponentAdapter";
 import * as ko from "knockout";
 import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
@@ -23,11 +24,13 @@ export default class TerminalTab extends TabsBase {
   private container: Explorer;
   private notebookTerminalComponentAdapter: ReactAdapter;
   private isAllPublicIPAddressesEnabled: ko.Observable<boolean>;
+  private isCloudShellIPsConfigured: ko.Observable<boolean>;
 
   constructor(options: TerminalTabOptions) {
     super(options);
     this.container = options.container;
     this.isAllPublicIPAddressesEnabled = ko.observable(true);
+    this.isCloudShellIPsConfigured = ko.observable(true); // Start optimistic, will be updated
 
     const commonArgs: [
       () => DataModels.DatabaseAccount,
@@ -36,18 +39,33 @@ export default class TerminalTab extends TabsBase {
       ko.Observable<boolean>,
       ViewModels.TerminalKind,
     ] = [
-      () => userContext?.databaseAccount,
-      () => this.tabId,
-      () => this.getUsername(),
-      this.isAllPublicIPAddressesEnabled,
-      options.kind,
-    ];
+        () => userContext?.databaseAccount,
+        () => this.tabId,
+        () => this.getUsername(),
+        this.isAllPublicIPAddressesEnabled,
+        options.kind,
+      ];
 
     if (userContext.features.enableCloudShell) {
-      this.notebookTerminalComponentAdapter = new CloudShellTerminalComponentAdapter(...commonArgs);
+      this.notebookTerminalComponentAdapter = new CloudShellTerminalComponentAdapter(
+        () => userContext?.databaseAccount,
+        () => this.tabId,
+        () => this.getUsername(),
+        this.isAllPublicIPAddressesEnabled,
+        options.kind,
+        this.isCloudShellIPsConfigured,
+      );
 
       this.notebookTerminalComponentAdapter.parameters = ko.computed<boolean>(() => {
-        return this.isTemplateReady() && this.isAllPublicIPAddressesEnabled();
+        const cloudShellConfigured = this.isCloudShellIPsConfigured();
+        return this.isTemplateReady() && cloudShellConfigured;
+      });
+
+      checkCloudShellIPsConfigured("2023-03-01-preview").then(result => {
+        this.isCloudShellIPsConfigured(result);
+      }).catch(error => {
+        console.error(`CloudShell IP Check failed for ${ViewModels.TerminalKind[options.kind]} terminal:`, error);
+        this.isCloudShellIPsConfigured(false);
       });
     } else {
       this.notebookTerminalComponentAdapter = new NotebookTerminalComponentAdapter(
@@ -65,22 +83,25 @@ export default class TerminalTab extends TabsBase {
       });
     }
 
-    if (options.kind === ViewModels.TerminalKind.Postgres) {
-      checkFirewallRules(
-        "2022-11-08",
-        (rule) => rule.properties.startIpAddress === "0.0.0.0" && rule.properties.endIpAddress === "255.255.255.255",
-        this.isAllPublicIPAddressesEnabled,
-      );
-    }
+    // Only run legacy firewall checks for NON-CloudShell terminals cloudShell terminals use the CloudShell IP checker instead
+    if (!userContext.features.enableCloudShell) {
+      if (options.kind === ViewModels.TerminalKind.Postgres) {
+        checkFirewallRules(
+          "2022-11-08",
+          (rule) => rule.properties.startIpAddress === "0.0.0.0" && rule.properties.endIpAddress === "255.255.255.255",
+          this.isAllPublicIPAddressesEnabled,
+        );
+      }
 
-    if (options.kind === ViewModels.TerminalKind.VCoreMongo) {
-      checkFirewallRules(
-        "2023-03-01-preview",
-        (rule) =>
-          rule.name.startsWith("AllowAllAzureServicesAndResourcesWithinAzureIps") ||
-          (rule.properties.startIpAddress === "0.0.0.0" && rule.properties.endIpAddress === "255.255.255.255"),
-        this.isAllPublicIPAddressesEnabled,
-      );
+      if (options.kind === ViewModels.TerminalKind.VCoreMongo) {
+        checkFirewallRules(
+          "2023-03-01-preview",
+          (rule) =>
+            rule.name.startsWith("AllowAllAzureServicesAndResourcesWithinAzureIps") ||
+            (rule.properties.startIpAddress === "0.0.0.0" && rule.properties.endIpAddress === "255.255.255.255"),
+          this.isAllPublicIPAddressesEnabled,
+        );
+      }
     }
   }
 
