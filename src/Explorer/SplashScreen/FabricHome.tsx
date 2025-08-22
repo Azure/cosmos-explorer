@@ -1,8 +1,8 @@
 /**
  * Accordion top class
  */
-import { makeStyles, tokens } from "@fluentui/react-components";
-import { DocumentAddRegular, LinkMultipleRegular } from "@fluentui/react-icons";
+import { Link, makeStyles, tokens } from "@fluentui/react-components";
+import { DocumentAddRegular, LinkMultipleRegular, OpenRegular } from "@fluentui/react-icons";
 import { SampleDataImportDialog } from "Explorer/SplashScreen/SampleDataImportDialog";
 import { CosmosFluentProvider } from "Explorer/Theme/ThemeUtil";
 import { isFabricNative, isFabricNativeReadOnly } from "Platform/Fabric/FabricUtil";
@@ -185,12 +185,14 @@ export const FabricHomeScreen: React.FC<SplashScreenProps> = (props: SplashScree
           {title}
         </div>
         {getSplashScreenButtons()}
-        {/* <div className={styles.footer}>
-          Need help?{" "}
-          <Link href="https://aka.ms/cosmosdbfabricdocs" target="_blank">
-            Learn more <img src={LinkIcon} alt="Learn more" />
-          </Link>
-        </div> */}
+        {
+          <div className={styles.footer}>
+            Need help?{" "}
+            <Link href="https://learn.microsoft.com/fabric/database/cosmos-db/overview" target="_blank">
+              Learn more <OpenRegular />
+            </Link>
+          </div>
+        }
       </CosmosFluentProvider>
     </>
   );
