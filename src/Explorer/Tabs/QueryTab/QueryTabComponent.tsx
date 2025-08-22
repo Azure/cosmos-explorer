@@ -356,6 +356,7 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
       this._iterator = this.props.isPreferredApiMongoDB
         ? queryIterator(this.props.collection.databaseId, this.props.viewModelcollection, query)
         : queryDocuments(this.props.collection.databaseId, this.props.collection.id(), query, {
+            partitionKey: this.props.partitionKey,
             enableCrossPartitionQuery: HeadersUtility.shouldEnableCrossPartitionKey(),
             abortSignal: this.queryAbortController.signal,
           } as unknown as FeedOptions);
