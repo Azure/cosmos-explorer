@@ -62,6 +62,7 @@ import {
   acquireTokenWithMsal,
   getAuthorizationHeader,
   getMsalInstance,
+  isDataplaneRbacEnabledForProxyApi,
 } from "../Utils/AuthorizationUtils";
 import { isInvalidParentFrameOrigin, shouldProcessMessage } from "../Utils/MessageValidation";
 import { get, getReadOnlyKeys, listKeys } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
@@ -331,7 +332,12 @@ async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
   const resourceGroup = accountResourceId && accountResourceId.split("resourceGroups/")[1].split("/")[0];
   let aadToken;
   if (account.properties?.documentEndpoint) {
-    const hrefEndpoint = new URL(account.properties.documentEndpoint).href.replace(/\/$/, "/.default");
+    let hrefEndpoint = "";
+    if (isDataplaneRbacEnabledForProxyApi(userContext)) {
+      hrefEndpoint = new URL("https://cosmos.azure.com/").href.replace(/\/+$/, "/.default");
+    } else {
+      hrefEndpoint = new URL(account.properties.documentEndpoint).href.replace(/\/$/, "/.default");
+    }
     const msalInstance = await getMsalInstance();
     const cachedAccount = msalInstance.getAllAccounts()?.[0];
     msalInstance.setActiveAccount(cachedAccount);
