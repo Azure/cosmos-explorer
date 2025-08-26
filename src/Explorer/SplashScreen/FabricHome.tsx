@@ -119,7 +119,7 @@ const FabricHomeScreenButton: React.FC<FabricHomeScreenButtonProps & { className
 }) => {
   const styles = useStyles();
   return (
-    <div role="button" className={`${styles.buttonContainer} ${className}`} onClick={onClick}>
+    <div role="button" className={`${styles.buttonContainer} ${className}`} onClick={onClick} tabIndex={0}>
       <div className={styles.buttonUpperPart}>{icon}</div>
       <div aria-label={title} className={styles.buttonLowerPart}>
         <div>{title}</div>
@@ -147,7 +147,7 @@ export const FabricHomeScreen: React.FC<SplashScreenProps> = (props: SplashScree
       {
         title: "Sample data",
         description: "Automatically load sample data in your database",
-        icon: <img src={CosmosDbBlackIcon} />,
+        icon: <img src={CosmosDbBlackIcon} alt={"Azure Cosmos DB icon"} aria-hidden="true" />,
         onClick: () => setOpenSampleDataImportDialog(true),
       },
       {
@@ -181,7 +181,7 @@ export const FabricHomeScreen: React.FC<SplashScreenProps> = (props: SplashScree
           explorer={props.explorer}
           databaseName={userContext.fabricContext?.databaseName}
         />
-        <div className={styles.title} role="heading" aria-label={title}>
+        <div className={styles.title} role="heading" aria-label={title} aria-level={1}>
           {title}
         </div>
         {getSplashScreenButtons()}
