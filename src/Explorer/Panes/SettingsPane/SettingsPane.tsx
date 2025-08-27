@@ -1099,15 +1099,15 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                   <div className={styles.settingsSectionContainer}>
                     <div className={styles.settingsSectionDescription}>
                       This is a sample database and collection with synthetic product data you can use to explore using
-                      NoSQL queries and Query Advisor. This will appear as another database in the Data Explorer UI, and
-                      is created by, and maintained by Microsoft at no cost to you.
+                      NoSQL queries. This will appear as another database in the Data Explorer UI, and is created by,
+                      and maintained by Microsoft at no cost to you.
                     </div>
                     <Checkbox
                       styles={{
                         label: { padding: 0 },
                       }}
                       className="padding"
-                      ariaLabel="Enable sample db for Query Advisor"
+                      ariaLabel="Enable sample db for query exploration"
                       checked={copilotSampleDBEnabled}
                       onChange={handleSampleDatabaseChange}
                       label="Enable sample database"
