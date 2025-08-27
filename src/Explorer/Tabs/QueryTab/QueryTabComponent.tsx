@@ -9,7 +9,6 @@ import { useDialog } from "Explorer/Controls/Dialog";
 import { monaco } from "Explorer/LazyMonaco";
 import { QueryCopilotFeedbackModal } from "Explorer/QueryCopilot/Modal/QueryCopilotFeedbackModal";
 import { useCopilotStore } from "Explorer/QueryCopilot/QueryCopilotContext";
-import { QueryCopilotPromptbar } from "Explorer/QueryCopilot/QueryCopilotPromptbar";
 import { readCopilotToggleStatus, saveCopilotToggleStatus } from "Explorer/QueryCopilot/QueryCopilotUtilities";
 import { OnExecuteQueryClick, QueryDocumentsPerPage } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
 import { QueryCopilotSidebar } from "Explorer/QueryCopilot/V2/Sidebar/QueryCopilotSidebar";
@@ -28,6 +27,9 @@ import { TabsState, useTabs } from "hooks/useTabs";
 import React, { Fragment, createRef } from "react";
 import "react-splitter-layout/lib/index.css";
 import { format } from "react-string-format";
+//TODO: Uncomment next two lines when query copilot is reinstated in DE
+// import QueryCommandIcon from "../../../../images/CopilotCommand.svg";
+// import LaunchCopilot from "../../../../images/CopilotTabIcon.svg";
 import DownloadQueryIcon from "../../../../images/DownloadQuery.svg";
 import CancelQueryIcon from "../../../../images/Entity_cancel.svg";
 import ExecuteQueryIcon from "../../../../images/ExecuteQuery.svg";
@@ -725,6 +727,7 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
     return (
       <Fragment>
         <CosmosFluentProvider id={this.props.tabId} className={this.props.styles.queryTab} role="tabpanel">
+          {/*TODO: Uncomment this section when query copilot is reinstated in DE
           {this.props.copilotEnabled && this.state.currentTabActive && this.state.copilotActive && (
             <QueryCopilotPromptbar
               explorer={this.props.collection.container}
@@ -732,7 +735,7 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
               databaseId={this.props.collection.databaseId}
               containerId={this.props.collection.id()}
             ></QueryCopilotPromptbar>
-          )}
+          )} */}
           {/* Set 'key' to the value of vertical to force re-rendering when vertical changes, to work around https://github.com/johnwalley/allotment/issues/457 */}
           <Allotment
             key={vertical.toString()}
