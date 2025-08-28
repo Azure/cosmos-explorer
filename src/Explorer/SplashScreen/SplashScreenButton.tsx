@@ -7,6 +7,7 @@ interface SplashScreenButtonProps {
   title: string;
   description: string;
   onClick: () => void;
+  imgSize?: number;
 }
 
 export const SplashScreenButton: React.FC<SplashScreenButtonProps> = ({
@@ -14,6 +15,7 @@ export const SplashScreenButton: React.FC<SplashScreenButtonProps> = ({
   title,
   description,
   onClick,
+  imgSize,
 }: SplashScreenButtonProps): JSX.Element => {
   return (
     <Stack
@@ -39,7 +41,7 @@ export const SplashScreenButton: React.FC<SplashScreenButtonProps> = ({
       role="button"
     >
       <div>
-        <img src={imgSrc} alt={title} aria-hidden="true" />
+        <img src={imgSrc} alt={title} aria-hidden="true" {...(imgSize ? { height: imgSize, width: imgSize } : {})} />
       </div>
       <Stack style={{ marginLeft: 16 }}>
         <Text style={{ fontSize: 18, fontWeight: 600 }}>{title}</Text>
