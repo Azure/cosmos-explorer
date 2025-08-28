@@ -127,12 +127,6 @@ const useSidebarStyles = makeStyles({
       display: "flex",
     },
   },
-  treeContainer: {
-    flex: 1,
-    overflow: "auto",
-    backgroundColor: tokens.colorNeutralBackground1,
-    color: tokens.colorNeutralForeground1,
-  },
 });
 
 interface GlobalCommandsProps {
@@ -373,9 +367,7 @@ export const SidebarContainer: React.FC<SidebarProps> = ({ explorer }) => {
                     </div>
                     <div className={styles.expandedContent} style={!hasGlobalCommands ? { gridTemplateRows: "1fr" } : undefined}>
                       {hasGlobalCommands && <GlobalCommands explorer={explorer} />}
-                      <div className={styles.treeContainer}>
-                        <ResourceTree explorer={explorer} />
-                      </div>
+                      <ResourceTree explorer={explorer} />
                     </div>
                   </>
                 ) : (
