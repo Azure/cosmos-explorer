@@ -24,6 +24,7 @@ import { ReactTabKind, useTabs } from "hooks/useTabs";
 import * as React from "react";
 import ConnectIcon from "../../../images/Connect_color.svg";
 import ContainersIcon from "../../../images/Containers.svg";
+import CosmosDBIcon from "../../../images/CosmosDB-logo.svg";
 import LinkIcon from "../../../images/Link_blue.svg";
 import PowerShellIcon from "../../../images/PowerShell.svg";
 import CopilotIcon from "../../../images/QueryCopilotNewLogo.svg";
@@ -120,6 +121,57 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
   };
 
   private getSplashScreenButtons = (): JSX.Element => {
+    if (userContext.apiType === "SQL") {
+      return (
+        <Stack
+          className="splashStackContainer"
+          style={{ width: "66%", cursor: "pointer", margin: "40px auto" }}
+          tokens={{ childrenGap: 16 }}
+        >
+          <Stack className="splashStackRow" horizontal>
+            <SplashScreenButton
+              imgSrc={QuickStartIcon}
+              title={"Launch quick start"}
+              description={"Launch a quick start tutorial to get started with sample data"}
+              onClick={() => {
+                this.container.onNewCollectionClicked({ isQuickstart: true });
+                traceOpen(Action.LaunchQuickstart, { apiType: userContext.apiType });
+              }}
+            />
+            <SplashScreenButton
+              imgSrc={ContainersIcon}
+              title={`New ${getCollectionName()}`}
+              description={"Create a new container for storage and throughput"}
+              onClick={() => {
+                this.container.onNewCollectionClicked();
+                traceOpen(Action.NewContainerHomepage, { apiType: userContext.apiType });
+              }}
+            />
+          </Stack>
+          <Stack className="splashStackRow" horizontal>
+            <SplashScreenButton
+              imgSrc={CosmosDBIcon}
+              imgSize={35}
+              title={"Azure Cosmos DB Samples Gallery"}
+              description={
+                "Discover samples that showcase scalable, intelligent app patterns. Try one now to see how fast you can go from concept to code with Cosmos DB"
+              }
+              onClick={() => {
+                window.open("https://azurecosmosdb.github.io/gallery/?tags=example", "_blank");
+                traceOpen(Action.LearningResourcesClicked, { apiType: userContext.apiType });
+              }}
+            />
+            <SplashScreenButton
+              imgSrc={ConnectIcon}
+              title={"Connect"}
+              description={"Prefer using your own choice of tooling? Find the connection string you need to connect"}
+              onClick={() => useTabs.getState().openAndActivateReactTab(ReactTabKind.Connect)}
+            />
+          </Stack>
+        </Stack>
+      );
+    }
+
     const mainItems = this.createMainItems();
     return (
       <div className="mainButtonsContainer">

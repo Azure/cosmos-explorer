@@ -11,7 +11,6 @@ import { QueryCopilotResults } from "Explorer/QueryCopilot/Shared/QueryCopilotRe
 import { userContext } from "UserContext";
 import { QueryCopilotState, useQueryCopilot } from "hooks/useQueryCopilot";
 import { useSidePanel } from "hooks/useSidePanel";
-import { ReactTabKind, TabsState, useTabs } from "hooks/useTabs";
 import React, { useState } from "react";
 import SplitterLayout from "react-splitter-layout";
 import QueryCommandIcon from "../../../images/CopilotCommand.svg";
@@ -24,7 +23,8 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
   const [copilotActive, setCopilotActive] = useState<boolean>(() =>
     readCopilotToggleStatus(userContext.databaseAccount),
   );
-  const [tabActive, setTabActive] = useState<boolean>(true);
+  //TODO: Uncomment this useState when query copilot is reinstated in DE
+  // const [tabActive, setTabActive] = useState<boolean>(true);
 
   const getCommandbarButtons = (): CommandButtonComponentProps[] => {
     const executeQueryBtnLabel = selectedQuery ? "Execute Selection" : "Execute Query";
@@ -68,17 +68,18 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
     useCommandBar.getState().setContextButtons(getCommandbarButtons());
   }, [query, selectedQuery, copilotActive]);
 
-  React.useEffect(() => {
-    return () => {
-      useTabs.subscribe((state: TabsState) => {
-        if (state.activeReactTab === ReactTabKind.QueryCopilot) {
-          setTabActive(true);
-        } else {
-          setTabActive(false);
-        }
-      });
-    };
-  }, []);
+  //TODO: Uncomment this effect when query copilot is reinstated in DE
+  // React.useEffect(() => {
+  //   return () => {
+  //     useTabs.subscribe((state: TabsState) => {
+  //       if (state.activeReactTab === ReactTabKind.QueryCopilot) {
+  //         setTabActive(true);
+  //       } else {
+  //         setTabActive(false);
+  //       }
+  //     });
+  //   };
+  // }, []);
 
   const toggleCopilot = (toggle: boolean) => {
     setCopilotActive(toggle);
