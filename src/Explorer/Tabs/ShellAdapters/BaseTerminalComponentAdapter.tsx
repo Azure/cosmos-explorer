@@ -22,9 +22,19 @@ export abstract class BaseTerminalComponentAdapter implements ReactAdapter {
     protected getUsername: () => string,
     protected isAllPublicIPAddressesEnabled: ko.Observable<boolean>,
     protected kind: ViewModels.TerminalKind,
-  ) {}
+    protected isCloudShellIPsConfigured?: ko.Observable<boolean>,
+  ) { }
 
   public renderComponent(): JSX.Element {
+    if (this.kind === ViewModels.TerminalKind.VCoreMongo && this.isCloudShellIPsConfigured && !this.isCloudShellIPsConfigured()) {
+      return (
+        <QuickstartFirewallNotification
+          messageType={this.getMessageType()}
+          screenshot={VcoreFirewallRuleScreenshot}
+          shellName={getShellNameForDisplay(this.kind)}
+        />
+      );
+    }
     if (!this.isAllPublicIPAddressesEnabled()) {
       return (
         <QuickstartFirewallNotification

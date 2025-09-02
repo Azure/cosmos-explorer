@@ -8,6 +8,7 @@ import { userContext } from "../../UserContext";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../Explorer";
 import { useNotebook } from "../Notebook/useNotebook";
+import { checkCloudShellIPsConfigured } from "./Shared/CloudShellIPChecker";
 import { NotebookTerminalComponentAdapter } from "./ShellAdapters/NotebookTerminalComponentAdapter";
 import TabsBase from "./TabsBase";
 
@@ -23,11 +24,13 @@ export default class TerminalTab extends TabsBase {
   private container: Explorer;
   private notebookTerminalComponentAdapter: ReactAdapter;
   private isAllPublicIPAddressesEnabled: ko.Observable<boolean>;
+  private isCloudShellIPsConfigured: ko.Observable<boolean>;
 
   constructor(options: TerminalTabOptions) {
     super(options);
     this.container = options.container;
     this.isAllPublicIPAddressesEnabled = ko.observable(true);
+    this.isCloudShellIPsConfigured = ko.observable(true);
 
     const commonArgs: [
       () => DataModels.DatabaseAccount,
@@ -36,19 +39,37 @@ export default class TerminalTab extends TabsBase {
       ko.Observable<boolean>,
       ViewModels.TerminalKind,
     ] = [
-      () => userContext?.databaseAccount,
-      () => this.tabId,
-      () => this.getUsername(),
-      this.isAllPublicIPAddressesEnabled,
-      options.kind,
-    ];
+        () => userContext?.databaseAccount,
+        () => this.tabId,
+        () => this.getUsername(),
+        this.isAllPublicIPAddressesEnabled,
+        options.kind,
+      ];
 
     if (userContext.features.enableCloudShell) {
-      this.notebookTerminalComponentAdapter = new CloudShellTerminalComponentAdapter(...commonArgs);
+      this.notebookTerminalComponentAdapter = new CloudShellTerminalComponentAdapter(
+        () => userContext?.databaseAccount,
+        () => this.tabId,
+        () => this.getUsername(),
+        this.isAllPublicIPAddressesEnabled,
+        options.kind,
+        options.kind === ViewModels.TerminalKind.VCoreMongo ? this.isCloudShellIPsConfigured : undefined,
+      );
 
       this.notebookTerminalComponentAdapter.parameters = ko.computed<boolean>(() => {
+        if (options.kind === ViewModels.TerminalKind.VCoreMongo) {
+          const cloudShellConfigured = this.isCloudShellIPsConfigured();
+          return this.isTemplateReady() && cloudShellConfigured;
+        }
         return this.isTemplateReady() && this.isAllPublicIPAddressesEnabled();
       });
+
+      if (options.kind === ViewModels.TerminalKind.VCoreMongo) {
+        (async () => {
+          const result = await checkCloudShellIPsConfigured();
+          this.isCloudShellIPsConfigured(result);
+        })();
+      }
     } else {
       this.notebookTerminalComponentAdapter = new NotebookTerminalComponentAdapter(
         () => this.getNotebookServerInfo(options),
