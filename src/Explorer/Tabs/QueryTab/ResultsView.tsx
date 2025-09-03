@@ -28,7 +28,6 @@ import { HttpHeaders } from "Common/Constants";
 import MongoUtility from "Common/MongoUtility";
 import { QueryMetrics } from "Contracts/DataModels";
 import { EditorReact } from "Explorer/Controls/Editor/EditorReact";
-import { parseIndexMetrics, renderImpactDots } from "Explorer/Tabs/QueryTab/IndexAdvisorUtils";
 import { IDocument } from "Explorer/Tabs/QueryTab/QueryTabComponent";
 import { useQueryTabStyles } from "Explorer/Tabs/QueryTab/Styles";
 import React, { useCallback, useEffect, useState } from "react";
@@ -37,6 +36,7 @@ import { logConsoleProgress } from "Utils/NotificationConsoleUtils";
 import create from "zustand";
 import { client } from "../../../Common/CosmosClient";
 import { handleError } from "../../../Common/ErrorHandlingUtils";
+import { parseIndexMetrics, renderImpactDots, type IndexMetricsResponse } from "./IndexAdvisorUtils";
 import { ResultsViewProps } from "./QueryResultSection";
 import { useIndexAdvisorStyles } from "./StylesAdvisor";
 enum ResultsTabs {
@@ -550,7 +550,7 @@ export const IndexAdvisorTab: React.FC<{
 }> = ({ queryText, databaseId, containerId }) => {
   const style = useIndexAdvisorStyles();
   const [loading, setLoading] = useState(true);
-  const [indexMetrics, setIndexMetrics] = useState<string | null>(null);
+  const [indexMetrics, setIndexMetrics] = useState<IndexMetricsResponse | null>(null);
   const [showIncluded, setShowIncluded] = useState(true);
   const [showNotIncluded, setShowNotIncluded] = useState(true);
   const [selectedIndexes, setSelectedIndexes] = useState<IIndexMetric[]>([]);
@@ -592,7 +592,12 @@ export const IndexAdvisorTab: React.FC<{
             populateIndexMetrics: true,
           })
           .fetchAll();
-        setIndexMetrics(sdkResponse.indexMetrics);
+
+        const parsedIndexMetrics = typeof sdkResponse.indexMetrics === 'string'
+          ? JSON.parse(sdkResponse.indexMetrics)
+          : sdkResponse.indexMetrics;
+
+        setIndexMetrics(parsedIndexMetrics);
       } catch (error) {
         handleError(error, "queryItemsWithIndexMetrics", `Error querying items from ${containerId}`);
       } finally {
