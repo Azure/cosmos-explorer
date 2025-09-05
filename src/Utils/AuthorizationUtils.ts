@@ -185,7 +185,7 @@ export async function acquireTokenWithMsal(
 
 export function useDataplaneRbacAuthorization(userContext: UserContext): boolean {
   return (
-    userContext.features.enableAadDataPlane ||
+    userContext.features?.enableAadDataPlane ||
     (userContext.dataPlaneRbacEnabled && isDataplaneRbacSupported(userContext.apiType))
   );
 }
