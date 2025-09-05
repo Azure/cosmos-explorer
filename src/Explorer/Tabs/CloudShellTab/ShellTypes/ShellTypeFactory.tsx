@@ -1,6 +1,7 @@
 import { TerminalKind } from "../../../../Contracts/ViewModels";
 import { userContext } from "../../../../UserContext";
 import { listKeys } from "../../../../Utils/arm/generatedClients/cosmos/databaseAccounts";
+import { isDataplaneRbacEnabledForProxyApi } from "../../../../Utils/AuthorizationUtils";
 import { AbstractShellHandler } from "./AbstractShellHandler";
 import { CassandraShellHandler } from "./CassandraShellHandler";
 import { MongoShellHandler } from "./MongoShellHandler";
@@ -29,6 +30,9 @@ export async function getKey(): Promise<string> {
   const dbName = userContext.databaseAccount.name;
   if (!dbName) {
     return "";
+  }
+  if (isDataplaneRbacEnabledForProxyApi(userContext)) {
+    return userContext.aadToken || "";
   }
 
   const keys = await listKeys(userContext.subscriptionId, userContext.resourceGroup, dbName);

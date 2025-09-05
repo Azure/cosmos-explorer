@@ -45,7 +45,7 @@ describe("VCoreMongoShellHandler", () => {
 
       expect(Array.isArray(commands)).toBe(true);
       expect(commands.length).toBe(7);
-      expect(commands[1]).toContain("mongosh-2.5.5-linux-x64.tgz");
+      expect(commands[1]).toContain("mongosh-2.5.6-linux-x64.tgz");
       expect(commands[0]).toContain("mongosh not found");
     });
 

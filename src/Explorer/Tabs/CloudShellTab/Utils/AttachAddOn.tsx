@@ -92,6 +92,18 @@ export class AttachAddon implements ITerminalAddon {
    * @param {Terminal} terminal - The XTerm terminal instance
    */
   public addMessageListener(terminal: Terminal): void {
+    let messageBuffer = "";
+    let bufferTimeout: NodeJS.Timeout | null = null;
+    const BUFFER_TIMEOUT = 50; // ms - short timeout for prompt detection
+
+    const processBuffer = () => {
+      if (messageBuffer.length > 0) {
+        this.handleCompleteTerminalData(terminal, messageBuffer);
+        messageBuffer = "";
+      }
+      bufferTimeout = null;
+    };
+
     this._disposables.push(
       addSocketListener(this._socket, "message", (ev) => {
         let data: ArrayBuffer | string = ev.data;
@@ -103,57 +115,135 @@ export class AttachAddon implements ITerminalAddon {
           data = enc.decode(ev.data as ArrayBuffer);
         }
 
-        // for example of json object look in TerminalHelper in the socket.onMessage
-        if (data.includes(startStatusJson) && data.includes(endStatusJson)) {
-          // process as one line
-          const statusData = data.split(startStatusJson)[1].split(endStatusJson)[0];
-          data = data.replace(statusData, "");
-          data = data.replace(startStatusJson, "");
-          data = data.replace(endStatusJson, "");
-        } else if (data.includes(startStatusJson)) {
-          // check for start
-          const partialStatusData = data.split(startStatusJson)[1];
-          this._socketData += partialStatusData;
-          data = data.replace(partialStatusData, "");
-          data = data.replace(startStatusJson, "");
-        } else if (data.includes(endStatusJson)) {
-          // check for end and process the command
-          const partialStatusData = data.split(endStatusJson)[0];
-          this._socketData += partialStatusData;
-          data = data.replace(partialStatusData, "");
-          data = data.replace(endStatusJson, "");
-          this._socketData = "";
-        } else if (this._socketData.length > 0) {
-          // check if the line is all data then just concatenate
-          this._socketData += data;
-          data = "";
-        }
+        // Handle status messages
+        let processedStatusData = data;
 
-        if (this._allowTerminalWrite && data.includes(this._startMarker)) {
-          this._allowTerminalWrite = false;
-          terminal.write(`Preparing ${this._shellHandler.getShellName()} environment...\r\n`);
-        }
+        // Process status messages with delimiters
+        // eslint-disable-next-line no-constant-condition
+        while (true) {
+          const startIndex = processedStatusData.indexOf(startStatusJson);
+          if (startIndex === -1) { break; }
 
-        if (this._allowTerminalWrite) {
-          const updatedData =
-            typeof this._shellHandler?.updateTerminalData === "function"
-              ? this._shellHandler.updateTerminalData(data)
-              : data;
+          const afterStart = processedStatusData.substring(startIndex + startStatusJson.length);
+          const endIndex = afterStart.indexOf(endStatusJson);
 
-          const suppressedData = this._shellHandler?.getTerminalSuppressedData();
-
-          const shouldNotWrite = suppressedData.filter(Boolean).some((item) => updatedData.includes(item));
-
-          if (!shouldNotWrite) {
-            terminal.write(updatedData);
+          if (endIndex === -1) {
+            // Incomplete status message
+            this._socketData += processedStatusData.substring(startIndex);
+            processedStatusData = processedStatusData.substring(0, startIndex);
+            break;
           }
+
+          // Remove processed status message
+          processedStatusData = processedStatusData.substring(0, startIndex) +
+            afterStart.substring(endIndex + endStatusJson.length);
         }
 
-        if (data.includes(this._shellHandler.getConnectionCommand())) {
-          this._allowTerminalWrite = true;
+        // Add to message buffer
+        messageBuffer += processedStatusData;
+
+        // Clear existing timeout
+        if (bufferTimeout) {
+          clearTimeout(bufferTimeout);
+          bufferTimeout = null;
+        }
+
+        // Check if this looks like a complete message/command
+        const isComplete = this.isMessageComplete(messageBuffer, processedStatusData);
+
+        if (isComplete) {
+          // Message marked as complete, processing immediately
+          processBuffer();
+        } else {
+          // Set timeout to process buffer after delay
+          bufferTimeout = setTimeout(processBuffer, BUFFER_TIMEOUT);
         }
       }),
     );
+
+    // Clean up timeout on dispose
+    this._disposables.push({
+      dispose: () => {
+        if (bufferTimeout) {
+          clearTimeout(bufferTimeout);
+        }
+      }
+    });
+  }
+
+  private isMessageComplete(fullBuffer: string, currentChunk: string): boolean {
+    // Immediate completion indicators
+    const immediateCompletionPatterns = [
+      /\n$/,                                    // Ends with newline
+      /\r$/,                                    // Ends with carriage return
+      /\r\n$/,                                  // Ends with CRLF
+      /; \} \|\| true;$/,                      // Your command pattern
+      /disown -a && exit$/,                    // Exit commands
+      /printf.*?\\033\[0m\\n"$/,               // Your printf pattern
+    ];
+
+    // Check current chunk for immediate completion
+    for (const pattern of immediateCompletionPatterns) {
+      if (pattern.test(currentChunk)) {
+        return true;
+      }
+    }
+
+    // ANSI sequence detection - these might be complete prompts
+    const ansiPromptPatterns = [
+      /\[\d+G\[0J.*>\s*\[\d+G$/,              // Your specific pattern: [1G[0J...> [26G
+      /\[\d+;\d+H/,                           // Cursor position sequences
+      /\]\s*\[\d+G$/,                         // Ends with cursor positioning
+      />\s*\[\d+G$/,                          // Prompt followed by cursor position
+    ];
+
+    // Check if buffer ends with what looks like a complete prompt
+    for (const pattern of ansiPromptPatterns) {
+      if (pattern.test(fullBuffer)) {
+        return true;
+      }
+    }
+
+    // Check for MongoDB shell prompts specifically
+    const mongoPromptPatterns = [
+      /globaldb \[primary\] \w+>\s*\[\d+G$/,  // MongoDB replica set prompt
+      />\s*\[\d+G$/,                          // General prompt with cursor positioning
+      /\w+>\s*$/,                             // Simple shell prompt
+    ];
+
+    for (const pattern of mongoPromptPatterns) {
+      if (pattern.test(fullBuffer)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  private handleCompleteTerminalData(terminal: Terminal, data: string): void {
+
+    if (this._allowTerminalWrite && data.includes(this._startMarker)) {
+      this._allowTerminalWrite = false;
+      terminal.write(`Preparing ${this._shellHandler.getShellName()} environment...\r\n`);
+    }
+
+    if (this._allowTerminalWrite) {
+      const updatedData =
+        typeof this._shellHandler?.updateTerminalData === "function"
+          ? this._shellHandler.updateTerminalData(data)
+          : data;
+
+      const suppressedData = this._shellHandler?.getTerminalSuppressedData();
+      const shouldNotWrite = suppressedData.filter(Boolean).some((item) => updatedData.includes(item));
+
+      if (!shouldNotWrite) {
+        terminal.write(updatedData);
+      }
+    }
+
+    if (data.includes(this._shellHandler.getConnectionCommand())) {
+      this._allowTerminalWrite = true;
+    }
   }
 
   public dispose(): void {
