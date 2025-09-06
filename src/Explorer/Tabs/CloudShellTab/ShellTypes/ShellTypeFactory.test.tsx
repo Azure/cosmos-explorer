@@ -24,7 +24,7 @@ jest.mock("../../../../UserContext", () => ({
     subscriptionId: "testSubId",
     resourceGroup: "testResourceGroup",
     features: { enableAadDataPlane: false },
-    dataPlaneRbacEnabled: false
+    dataPlaneRbacEnabled: false,
   },
 }));
 
@@ -114,7 +114,6 @@ describe("ShellTypeHandlerFactory", () => {
     it("should return CassandraShellHandler with key for Cassandra terminal kind", async () => {
       const handler = await getHandler(TerminalKind.Cassandra);
       expect(handler).toBeInstanceOf(CassandraShellHandler);
-
     });
 
     it("should get key successfully when database name exists", async () => {
@@ -146,7 +145,9 @@ describe("ShellTypeHandlerFactory", () => {
       expect(handler.key).toBe("aadToken123");
     });
     it("should throw error for unsupported shell type", async () => {
-      await expect(getHandler("UnknownShell" as unknown as TerminalKind)).rejects.toThrow("Unsupported shell type: UnknownShell");
+      await expect(getHandler("UnknownShell" as unknown as TerminalKind)).rejects.toThrow(
+        "Unsupported shell type: UnknownShell",
+      );
     });
   });
 });

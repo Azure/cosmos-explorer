@@ -122,7 +122,9 @@ export class AttachAddon implements ITerminalAddon {
         // eslint-disable-next-line no-constant-condition
         while (true) {
           const startIndex = processedStatusData.indexOf(startStatusJson);
-          if (startIndex === -1) { break; }
+          if (startIndex === -1) {
+            break;
+          }
 
           const afterStart = processedStatusData.substring(startIndex + startStatusJson.length);
           const endIndex = afterStart.indexOf(endStatusJson);
@@ -135,8 +137,8 @@ export class AttachAddon implements ITerminalAddon {
           }
 
           // Remove processed status message
-          processedStatusData = processedStatusData.substring(0, startIndex) +
-            afterStart.substring(endIndex + endStatusJson.length);
+          processedStatusData =
+            processedStatusData.substring(0, startIndex) + afterStart.substring(endIndex + endStatusJson.length);
         }
 
         // Add to message buffer
@@ -167,19 +169,19 @@ export class AttachAddon implements ITerminalAddon {
         if (bufferTimeout) {
           clearTimeout(bufferTimeout);
         }
-      }
+      },
     });
   }
 
   private isMessageComplete(fullBuffer: string, currentChunk: string): boolean {
     // Immediate completion indicators
     const immediateCompletionPatterns = [
-      /\n$/,                                    // Ends with newline
-      /\r$/,                                    // Ends with carriage return
-      /\r\n$/,                                  // Ends with CRLF
-      /; \} \|\| true;$/,                      // Your command pattern
-      /disown -a && exit$/,                    // Exit commands
-      /printf.*?\\033\[0m\\n"$/,               // Your printf pattern
+      /\n$/, // Ends with newline
+      /\r$/, // Ends with carriage return
+      /\r\n$/, // Ends with CRLF
+      /; \} \|\| true;$/, // Your command pattern
+      /disown -a && exit$/, // Exit commands
+      /printf.*?\\033\[0m\\n"$/, // Your printf pattern
     ];
 
     // Check current chunk for immediate completion
@@ -191,10 +193,10 @@ export class AttachAddon implements ITerminalAddon {
 
     // ANSI sequence detection - these might be complete prompts
     const ansiPromptPatterns = [
-      /\[\d+G\[0J.*>\s*\[\d+G$/,              // Your specific pattern: [1G[0J...> [26G
-      /\[\d+;\d+H/,                           // Cursor position sequences
-      /\]\s*\[\d+G$/,                         // Ends with cursor positioning
-      />\s*\[\d+G$/,                          // Prompt followed by cursor position
+      /\[\d+G\[0J.*>\s*\[\d+G$/, // Your specific pattern: [1G[0J...> [26G
+      /\[\d+;\d+H/, // Cursor position sequences
+      /\]\s*\[\d+G$/, // Ends with cursor positioning
+      />\s*\[\d+G$/, // Prompt followed by cursor position
     ];
 
     // Check if buffer ends with what looks like a complete prompt
@@ -206,9 +208,9 @@ export class AttachAddon implements ITerminalAddon {
 
     // Check for MongoDB shell prompts specifically
     const mongoPromptPatterns = [
-      /globaldb \[primary\] \w+>\s*\[\d+G$/,  // MongoDB replica set prompt
-      />\s*\[\d+G$/,                          // General prompt with cursor positioning
-      /\w+>\s*$/,                             // Simple shell prompt
+      /globaldb \[primary\] \w+>\s*\[\d+G$/, // MongoDB replica set prompt
+      />\s*\[\d+G$/, // General prompt with cursor positioning
+      /\w+>\s*$/, // Simple shell prompt
     ];
 
     for (const pattern of mongoPromptPatterns) {
@@ -221,7 +223,6 @@ export class AttachAddon implements ITerminalAddon {
   }
 
   private handleCompleteTerminalData(terminal: Terminal, data: string): void {
-
     if (this._allowTerminalWrite && data.includes(this._startMarker)) {
       this._allowTerminalWrite = false;
       terminal.write(`Preparing ${this._shellHandler.getShellName()} environment...\r\n`);
