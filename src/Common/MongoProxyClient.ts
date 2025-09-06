@@ -27,12 +27,6 @@ function authHeaders() {
       [HttpHeaders.authorization]: userContext.authorizationToken,
     };
     if (isDataplaneRbacEnabledForProxyApi(userContext)) {
-      if (!userContext.aadToken) {
-        logConsoleError(
-          `AAD token does not exist. Please use the "Login for Entra ID" button in the Toolbar prior to performing Entra ID RBAC operations`,
-        );
-        return null;
-      }
       headers[HttpHeaders.entraIdToken] = userContext.aadToken;
     }
     return headers;
