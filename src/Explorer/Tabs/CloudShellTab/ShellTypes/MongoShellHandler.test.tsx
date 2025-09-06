@@ -160,10 +160,11 @@ describe("MongoShellHandler", () => {
       const mongoShellHandler = new MongoShellHandler(testKey);
 
       const command = mongoShellHandler.getConnectionCommand();
-      expect(command).toContain("mongosh 'mongodb://test-account:aad-key@test-account.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&authMechanism=PLAIN&retryWrites=false' --tls --tlsAllowInvalidCertificates");
+      expect(command).toContain(
+        "mongosh 'mongodb://test-account:aad-key@test-account.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&authMechanism=PLAIN&retryWrites=false' --tls --tlsAllowInvalidCertificates",
+      );
       expect(command.startsWith("mongosh --nodb")).toBeTruthy();
     });
-
   });
 
   describe("getTerminalSuppressedData", () => {

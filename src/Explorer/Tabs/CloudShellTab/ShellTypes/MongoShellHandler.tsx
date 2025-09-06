@@ -15,7 +15,9 @@ export class MongoShellHandler extends AbstractShellHandler {
   }
 
   private _getKeyConnectionCommand(dbName: string): string {
-    return `mongosh mongodb://${getHostFromUrl(this._endpoint)}:10255?appName=${this.APP_NAME} --username ${dbName} --password ${this._key} --tls --tlsAllowInvalidCertificates`;
+    return `mongosh mongodb://${getHostFromUrl(this._endpoint)}:10255?appName=${
+      this.APP_NAME
+    } --username ${dbName} --password ${this._key} --tls --tlsAllowInvalidCertificates`;
   }
 
   private _getAadConnectionCommand(dbName: string): string {
@@ -39,7 +41,9 @@ export class MongoShellHandler extends AbstractShellHandler {
     if (!dbName) {
       return "echo 'Database name not found.'";
     }
-    const connectionCommand = this._isEntraIdEnabled ? this._getAadConnectionCommand(dbName) : this._getKeyConnectionCommand(dbName);
+    const connectionCommand = this._isEntraIdEnabled
+      ? this._getAadConnectionCommand(dbName)
+      : this._getKeyConnectionCommand(dbName);
     const fullCommand = `${DISABLE_TELEMETRY_COMMAND}; ${connectionCommand}`;
     return fullCommand;
   }
