@@ -4,7 +4,6 @@ import { QuickstartFirewallNotification } from "Explorer/Quickstart/QuickstartFi
 import { getShellNameForDisplay } from "Explorer/Tabs/CloudShellTab/Utils/CommonUtils";
 import * as React from "react";
 import FirewallRuleScreenshot from "../../../../images/firewallRule.png";
-import VcoreFirewallRuleScreenshot from "../../../../images/vcoreMongoFirewallRule.png";
 import { ReactAdapter } from "../../../Bindings/ReactBindingHandler";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";
@@ -22,18 +21,18 @@ export abstract class BaseTerminalComponentAdapter implements ReactAdapter {
     protected getUsername: () => string,
     protected isAllPublicIPAddressesEnabled: ko.Observable<boolean>,
     protected kind: ViewModels.TerminalKind,
-  ) {}
+  ) { }
 
   public renderComponent(): JSX.Element {
+    if (this.kind === ViewModels.TerminalKind.Mongo || this.kind === ViewModels.TerminalKind.VCoreMongo) {
+      return this.renderTerminalComponent();
+    }
+
     if (!this.isAllPublicIPAddressesEnabled()) {
       return (
         <QuickstartFirewallNotification
           messageType={this.getMessageType()}
-          screenshot={
-            this.kind === ViewModels.TerminalKind.Mongo || this.kind === ViewModels.TerminalKind.VCoreMongo
-              ? VcoreFirewallRuleScreenshot
-              : FirewallRuleScreenshot
-          }
+          screenshot={FirewallRuleScreenshot}
           shellName={getShellNameForDisplay(this.kind)}
         />
       );
