@@ -1,4 +1,5 @@
 import * as msal from "@azure/msal-browser";
+import { getEnvironmentScopeEndpoint } from "Common/EnvironmentUtility";
 import { Action, ActionModifiers } from "Shared/Telemetry/TelemetryConstants";
 import { hasProxyServer, isDataplaneRbacSupported } from "Utils/APITypeUtils";
 import { AuthType } from "../AuthType";
@@ -76,7 +77,7 @@ export async function acquireMsalTokenForAccount(
   }
   let hrefEndpoint = "";
   if (isDataplaneRbacEnabledForProxyApi(userContext)) {
-    hrefEndpoint = new URL("https://cosmos.azure.com/").href.replace(/\/+$/, "/.default");
+    hrefEndpoint = getEnvironmentScopeEndpoint();
   } else {
     hrefEndpoint = new URL(userContext.databaseAccount.properties.documentEndpoint).href.replace(/\/+$/, "/.default");
   }

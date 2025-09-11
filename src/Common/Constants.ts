@@ -138,6 +138,14 @@ export enum MongoBackendEndpointType {
   remote,
 }
 
+export class AadScopeEndpoints {
+  public static readonly Development: string = "https://cosmos.azure.com";
+  public static readonly MPAC: string = "https://cosmos.azure.com";
+  public static readonly Prod: string = "https://cosmos.azure.com";
+  public static readonly Fairfax: string = "https://cosmos.azure.us";
+  public static readonly Mooncake: string = "https://cosmos.azure.cn";
+}
+
 export class PortalBackendEndpoints {
   public static readonly Development: string = "https://localhost:7235";
   public static readonly Mpac: string = "https://cdb-ms-mpac-pbe.cosmos.azure.com";
