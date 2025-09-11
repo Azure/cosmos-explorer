@@ -1,4 +1,5 @@
 import * as Constants from "Common/Constants";
+import { getEnvironmentScopeEndpoint } from "Common/EnvironmentUtility";
 import { createUri } from "Common/UrlUtility";
 import { DATA_EXPLORER_RPC_VERSION } from "Contracts/DataExplorerMessagesContract";
 import { FabricMessageTypes } from "Contracts/FabricMessageTypes";
@@ -334,7 +335,7 @@ async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
   if (account.properties?.documentEndpoint) {
     let hrefEndpoint = "";
     if (isDataplaneRbacEnabledForProxyApi(userContext)) {
-      hrefEndpoint = new URL("https://cosmos.azure.com/").href.replace(/\/+$/, "/.default");
+      hrefEndpoint = getEnvironmentScopeEndpoint();
     } else {
       hrefEndpoint = new URL(account.properties.documentEndpoint).href.replace(/\/$/, "/.default");
     }
