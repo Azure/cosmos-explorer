@@ -29,6 +29,9 @@ export enum PlatformFeature {
   ThroughputBucketing = "ThroughputBucketing",
   ComputedProperties = "ComputedProperties",
   AnalyticalStore = "AnalyticalStore",
+  UniqueKeys = "UniqueKeys",
+  ContainerThroughput = "ContainerThroughput",
+  AdvancedContainerSettings = "AdvancedContainerSettings",
 
   // CRUD Operations - Database
   CreateDatabase = "CreateDatabase",
