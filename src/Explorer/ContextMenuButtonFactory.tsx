@@ -1,5 +1,11 @@
+import { GlobalSecondaryIndexLabels } from "Common/Constants";
+import { isGlobalSecondaryIndexEnabled } from "Common/DatabaseAccountUtility";
 import { configContext, Platform } from "ConfigContext";
 import { TreeNodeMenuItem } from "Explorer/Controls/TreeComponent/TreeNodeComponent";
+import {
+  AddGlobalSecondaryIndexPanel,
+  AddGlobalSecondaryIndexPanelProps,
+} from "Explorer/Panes/AddGlobalSecondaryIndexPanel/AddGlobalSecondaryIndexPanel";
 import { useDatabases } from "Explorer/useDatabases";
 import { isFabric, isFabricNative } from "Platform/Fabric/FabricUtil";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
@@ -97,17 +103,23 @@ export const createCollectionContextMenuButton = (
       iconSrc: HostedTerminalIcon,
       onClick: () => {
         const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
-        if (useNotebook.getState().isShellEnabled) {
+        if (useNotebook.getState().isShellEnabled || userContext.features.enableCloudShell) {
           container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
         } else {
           selectedCollection && selectedCollection.onNewMongoShellClick();
         }
       },
-      label: useNotebook.getState().isShellEnabled ? "Open Mongo Shell" : "New Shell",
+      label:
+        useNotebook.getState().isShellEnabled || userContext.features.enableCloudShell
+          ? "Open Mongo Shell"
+          : "New Shell",
     });
   }
 
-  if (useNotebook.getState().isShellEnabled && userContext.apiType === "Cassandra") {
+  if (
+    (useNotebook.getState().isShellEnabled || userContext.features.enableCloudShell) &&
+    userContext.apiType === "Cassandra"
+  ) {
     items.push({
       iconSrc: HostedTerminalIcon,
       onClick: () => {
@@ -161,6 +173,24 @@ export const createCollectionContextMenuButton = (
       },
       label: `Delete ${getCollectionName()}`,
       styleClass: "deleteCollectionMenuItem",
+    });
+  }
+
+  if (isGlobalSecondaryIndexEnabled() && !selectedCollection.materializedViewDefinition()) {
+    items.push({
+      label: GlobalSecondaryIndexLabels.NewGlobalSecondaryIndex,
+      onClick: () => {
+        const addMaterializedViewPanelProps: AddGlobalSecondaryIndexPanelProps = {
+          explorer: container,
+          sourceContainer: selectedCollection,
+        };
+        useSidePanel
+          .getState()
+          .openSidePanel(
+            GlobalSecondaryIndexLabels.NewGlobalSecondaryIndex,
+            <AddGlobalSecondaryIndexPanel {...addMaterializedViewPanelProps} />,
+          );
+      },
     });
   }
 

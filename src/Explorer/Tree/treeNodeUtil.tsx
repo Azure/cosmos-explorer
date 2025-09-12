@@ -1,4 +1,4 @@
-import { DatabaseRegular, DocumentMultipleRegular, SettingsRegular } from "@fluentui/react-icons";
+import { DatabaseRegular, DocumentMultipleRegular, EyeRegular, SettingsRegular } from "@fluentui/react-icons";
 import { TreeNode } from "Explorer/Controls/TreeComponent/TreeNodeComponent";
 import { collectionWasOpened } from "Explorer/MostRecentActivity/MostRecentActivity";
 import TabsBase from "Explorer/Tabs/TabsBase";
@@ -6,12 +6,11 @@ import StoredProcedure from "Explorer/Tree/StoredProcedure";
 import Trigger from "Explorer/Tree/Trigger";
 import UserDefinedFunction from "Explorer/Tree/UserDefinedFunction";
 import { useDatabases } from "Explorer/useDatabases";
-import { isFabricMirrored } from "Platform/Fabric/FabricUtil";
+import { isFabric, isFabricMirrored, isFabricNative, isFabricNativeReadOnly } from "Platform/Fabric/FabricUtil";
 import { getItemName } from "Utils/APITypeUtils";
 import { isServerlessAccount } from "Utils/CapabilityUtils";
 import { useTabs } from "hooks/useTabs";
 import React from "react";
-import { isPublicInternetAccessAllowed } from "../../Common/DatabaseAccountUtility";
 import { Platform, configContext } from "../../ConfigContext";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
@@ -19,16 +18,16 @@ import { userContext } from "../../UserContext";
 import * as ResourceTreeContextMenuButtonFactory from "../ContextMenuButtonFactory";
 import Explorer from "../Explorer";
 import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
-import { useNotebook } from "../Notebook/useNotebook";
 import { useSelectedNode } from "../useSelectedNode";
 
 export const shouldShowScriptNodes = (): boolean => {
-  return !isFabricMirrored() && (userContext.apiType === "SQL" || userContext.apiType === "Gremlin");
+  return !isFabric() && (userContext.apiType === "SQL" || userContext.apiType === "Gremlin");
 };
 
 const TreeDatabaseIcon = <DatabaseRegular fontSize={16} />;
 const TreeSettingsIcon = <SettingsRegular fontSize={16} />;
 const TreeCollectionIcon = <DocumentMultipleRegular fontSize={16} />;
+const GlobalSecondaryIndexCollectionIcon = <EyeRegular fontSize={16} />; //check icon
 
 export const createSampleDataTreeNodes = (sampleDataResourceTokenCollection: ViewModels.CollectionBase): TreeNode[] => {
   const updatedSampleTree: TreeNode = {
@@ -219,7 +218,7 @@ export const buildCollectionNode = (
 ): TreeNode => {
   let children: TreeNode[];
   // Flat Tree for Fabric
-  if (configContext.platform !== Platform.Fabric) {
+  if (!isFabricMirrored()) {
     children = buildCollectionNodeChildren(database, collection, isNotebookEnabled, container, refreshActiveTab);
   }
 
@@ -228,7 +227,7 @@ export const buildCollectionNode = (
     children: children,
     className: "collectionNode",
     contextMenu: ResourceTreeContextMenuButtonFactory.createCollectionContextMenuButton(container, collection),
-    iconSrc: TreeCollectionIcon,
+    iconSrc: collection.materializedViewDefinition() ? GlobalSecondaryIndexCollectionIcon : TreeCollectionIcon,
     onClick: () => {
       useSelectedNode.getState().setSelectedNode(collection);
       collection.openTab();
@@ -293,23 +292,7 @@ const buildCollectionNodeChildren = (
     contextMenu: ResourceTreeContextMenuButtonFactory.createCollectionContextMenuButton(container, collection),
   });
 
-  if (
-    isNotebookEnabled &&
-    userContext.apiType === "Mongo" &&
-    isPublicInternetAccessAllowed() &&
-    useNotebook.getState().isPhoenixFeatures
-  ) {
-    children.push({
-      label: "Schema (Preview)",
-      onClick: collection.onSchemaAnalyzerClick.bind(collection),
-      isSelected: () =>
-        useSelectedNode
-          .getState()
-          .isDataNodeSelected(collection.databaseId, collection.id(), [ViewModels.CollectionTabKind.SchemaAnalyzer]),
-    });
-  }
-
-  if (userContext.apiType !== "Cassandra" || !isServerlessAccount()) {
+  if ((userContext.apiType !== "Cassandra" || !isServerlessAccount()) && !isFabricNativeReadOnly()) {
     let id = "";
     if (collection.isSampleCollection) {
       id = database.isDatabaseShared() ? "sampleSettings" : "sampleScaleSettings";
@@ -317,7 +300,7 @@ const buildCollectionNodeChildren = (
 
     children.push({
       id,
-      label: database.isDatabaseShared() || isServerlessAccount() ? "Settings" : "Scale & Settings",
+      label: database.isDatabaseShared() || isServerlessAccount() || isFabricNative() ? "Settings" : "Scale & Settings",
       onClick: collection.onSettingsClick.bind(collection),
       isSelected: () =>
         useSelectedNode

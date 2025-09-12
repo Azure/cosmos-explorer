@@ -8,6 +8,7 @@ interface SplashScreenButtonProps {
   title: string;
   description: string;
   onClick: () => void;
+  imgSize?: number;
 }
 
 const useStyles = makeStyles({
@@ -23,23 +24,23 @@ const useStyles = makeStyles({
     minHeight: "150px",
     cursor: "pointer",
     "&:hover": {
-      backgroundColor: "var(--colorNeutralBackground1Hover)"
-    }
+      backgroundColor: "var(--colorNeutralBackground1Hover)",
+    },
   },
   content: {
     marginLeft: "16px",
-    textAlign: "left"
+    textAlign: "left",
   },
   title: {
     fontSize: "18px",
     fontWeight: "600",
     color: "var(--colorNeutralForeground1)",
-    marginBottom: "8px"
+    marginBottom: "8px",
   },
   description: {
     fontSize: "13px",
-    color: "var(--colorNeutralForeground2)"
-  }
+    color: "var(--colorNeutralForeground2)",
+  },
 });
 
 export const SplashScreenButton: React.FC<SplashScreenButtonProps> = ({
@@ -47,9 +48,10 @@ export const SplashScreenButton: React.FC<SplashScreenButtonProps> = ({
   title,
   description,
   onClick,
+  imgSize,
 }: SplashScreenButtonProps): JSX.Element => {
   const styles = useStyles();
-  
+
   return (
     <Stack
       horizontal
@@ -65,7 +67,7 @@ export const SplashScreenButton: React.FC<SplashScreenButtonProps> = ({
       role="button"
     >
       <div>
-        <img src={imgSrc} alt={title} aria-hidden="true" />
+        <img src={imgSrc} alt={title} aria-hidden="true" {...(imgSize ? { height: imgSize, width: imgSize } : {})} />
       </div>
       <Stack className={styles.content}>
         <Text className={styles.title}>{title}</Text>

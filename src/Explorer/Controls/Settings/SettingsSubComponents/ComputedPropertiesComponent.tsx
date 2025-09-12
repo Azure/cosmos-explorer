@@ -86,7 +86,7 @@ export class ComputedPropertiesComponent extends React.Component<
       value: value,
       language: "json",
       ariaLabel: "Computed properties",
-      theme:monacoTheme,
+      theme: monacoTheme,
     });
     if (this.computedPropertiesEditor) {
       const computedPropertiesEditorModel = this.computedPropertiesEditor.getModel();

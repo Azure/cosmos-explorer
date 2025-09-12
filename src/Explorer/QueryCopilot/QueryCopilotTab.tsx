@@ -1,11 +1,9 @@
 /* eslint-disable no-console */
 import { Stack } from "@fluentui/react";
-import { QueryCopilotSampleContainerId, QueryCopilotSampleDatabaseId } from "Common/Constants";
 import { CommandButtonComponentProps } from "Explorer/Controls/CommandButton/CommandButtonComponent";
 import { EditorReact } from "Explorer/Controls/Editor/EditorReact";
 import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
 import { SaveQueryPane } from "Explorer/Panes/SaveQueryPane/SaveQueryPane";
-import { QueryCopilotPromptbar } from "Explorer/QueryCopilot/QueryCopilotPromptbar";
 import { readCopilotToggleStatus, saveCopilotToggleStatus } from "Explorer/QueryCopilot/QueryCopilotUtilities";
 import { OnExecuteQueryClick } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
 import { QueryCopilotProps } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfaces";
@@ -13,7 +11,6 @@ import { QueryCopilotResults } from "Explorer/QueryCopilot/Shared/QueryCopilotRe
 import { userContext } from "UserContext";
 import { QueryCopilotState, useQueryCopilot } from "hooks/useQueryCopilot";
 import { useSidePanel } from "hooks/useSidePanel";
-import { ReactTabKind, TabsState, useTabs } from "hooks/useTabs";
 import React, { useState } from "react";
 import SplitterLayout from "react-splitter-layout";
 import QueryCommandIcon from "../../../images/CopilotCommand.svg";
@@ -26,7 +23,8 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
   const [copilotActive, setCopilotActive] = useState<boolean>(() =>
     readCopilotToggleStatus(userContext.databaseAccount),
   );
-  const [tabActive, setTabActive] = useState<boolean>(true);
+  //TODO: Uncomment this useState when query copilot is reinstated in DE
+  // const [tabActive, setTabActive] = useState<boolean>(true);
 
   const getCommandbarButtons = (): CommandButtonComponentProps[] => {
     const executeQueryBtnLabel = selectedQuery ? "Execute Selection" : "Execute Query";
@@ -70,17 +68,18 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
     useCommandBar.getState().setContextButtons(getCommandbarButtons());
   }, [query, selectedQuery, copilotActive]);
 
-  React.useEffect(() => {
-    return () => {
-      useTabs.subscribe((state: TabsState) => {
-        if (state.activeReactTab === ReactTabKind.QueryCopilot) {
-          setTabActive(true);
-        } else {
-          setTabActive(false);
-        }
-      });
-    };
-  }, []);
+  //TODO: Uncomment this effect when query copilot is reinstated in DE
+  // React.useEffect(() => {
+  //   return () => {
+  //     useTabs.subscribe((state: TabsState) => {
+  //       if (state.activeReactTab === ReactTabKind.QueryCopilot) {
+  //         setTabActive(true);
+  //       } else {
+  //         setTabActive(false);
+  //       }
+  //     });
+  //   };
+  // }, []);
 
   const toggleCopilot = (toggle: boolean) => {
     setCopilotActive(toggle);
@@ -90,6 +89,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
   return (
     <Stack className="tab-pane" style={{ width: "100%" }}>
       <div style={isGeneratingQuery ? { height: "100%" } : { overflowY: "auto", height: "100%" }}>
+        {/*TODO: Uncomment this section when query copilot is reinstated in DE
         {tabActive && copilotActive && (
           <QueryCopilotPromptbar
             explorer={explorer}
@@ -97,7 +97,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
             databaseId={QueryCopilotSampleDatabaseId}
             containerId={QueryCopilotSampleContainerId}
           ></QueryCopilotPromptbar>
-        )}
+        )} */}
         <Stack className="tabPaneContentContainer">
           <SplitterLayout percentage={true} vertical={true} primaryIndex={0} primaryMinSize={30} secondaryMinSize={70}>
             <EditorReact

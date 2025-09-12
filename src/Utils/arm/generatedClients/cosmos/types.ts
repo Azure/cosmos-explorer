@@ -3,7 +3,7 @@
   Run "npm run generateARMClients" to regenerate
   Edting this file directly should be done with extreme caution as not to diverge from ARM REST specs
 
-  Generated from: https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/specification/cosmos-db/resource-manager/Microsoft.DocumentDB/preview/2024-12-01-preview/cosmos-db.json
+  Generated from: https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/specification/cosmos-db/resource-manager/Microsoft.DocumentDB/preview/2025-05-01-preview/cosmos-db.json
 */
 
 /* The List operation response, that contains the client encryption keys and their properties. */
@@ -580,6 +580,8 @@ export interface DatabaseAccountGetProperties {
 
   /* Flag to indicate enabling/disabling of Per-Region Per-partition autoscale Preview feature on the account */
   enablePerRegionPerPartitionAutoscale?: boolean;
+  /* Flag to indicate if All Versions and Deletes Change feed feature is enabled on the account */
+  enableAllVersionsAndDeletesChangeFeed?: boolean;
 }
 
 /* Properties to create and update Azure Cosmos DB database accounts. */
@@ -682,6 +684,8 @@ export interface DatabaseAccountCreateUpdateProperties {
 
   /* Flag to indicate enabling/disabling of Per-Region Per-partition autoscale Preview feature on the account */
   enablePerRegionPerPartitionAutoscale?: boolean;
+  /* Flag to indicate if All Versions and Deletes Change feed feature is enabled on the account */
+  enableAllVersionsAndDeletesChangeFeed?: boolean;
 }
 
 /* Parameters to create and update Cosmos DB database accounts. */
@@ -787,6 +791,8 @@ export interface DatabaseAccountUpdateProperties {
 
   /* Flag to indicate enabling/disabling of Per-Region Per-partition autoscale Preview feature on the account */
   enablePerRegionPerPartitionAutoscale?: boolean;
+  /* Flag to indicate if All Versions and Deletes Change feed feature is enabled on the account */
+  enableAllVersionsAndDeletesChangeFeed?: boolean;
 }
 
 /* Parameters for patching Azure Cosmos DB database account properties. */
@@ -1216,6 +1222,8 @@ export interface PhysicalPartitionThroughputInfoResource {
   id: string;
   /* Throughput of a physical partition */
   throughput?: number;
+  /* Target throughput of a physical partition */
+  targetThroughput?: number;
 }
 
 /* Cosmos DB client encryption key resource object. */
@@ -1285,12 +1293,16 @@ export interface SqlContainerResource {
   /* The configuration for defining Materialized Views. This must be specified only for creating a Materialized View container. */
   materializedViewDefinition?: MaterializedViewDefinition;
 
+  /* Materialized Views defined on the container. */
+  materializedViews?: MaterializedViewDetails[];
+
   /* List of computed properties */
   computedProperties?: ComputedProperty[];
 
   /* The vector embedding policy for the container. */
   vectorEmbeddingPolicy?: VectorEmbeddingPolicy;
 
+  /* The FullText policy for the container. */
   fullTextPolicy?: FullTextPolicy;
 }
 
@@ -1321,6 +1333,14 @@ export interface IndexingPolicy {
 export interface VectorEmbeddingPolicy {
   /* List of vector embeddings */
   vectorEmbeddings?: VectorEmbedding[];
+}
+
+/* Cosmos DB FullText Policy */
+export interface FullTextPolicy {
+  /* The default language for a full text paths. */
+  defaultLanguage?: string;
+  /* List of FullText Paths */
+  fullTextPaths?: FullTextPath[];
 }
 
 /* undocumented */
@@ -1361,7 +1381,7 @@ export interface VectorEmbedding {
   /* The path to the vector field in the document. */
   path: string;
   /* Indicates the data type of vector. */
-  dataType: "float16" | "float32" | "uint8" | "int8";
+  dataType: "float32" | "uint8" | "int8";
 
   /* The distance function to use for distance calculation in between vectors. */
   distanceFunction: "euclidean" | "cosine" | "dotproduct";
@@ -1370,26 +1390,12 @@ export interface VectorEmbedding {
   dimensions: number;
 }
 
-export interface FullTextPolicy {
-  /**
-   * The default language for the full text .
-   */
-  defaultLanguage: string;
-  /**
-   * The paths to be indexed for full text search.
-   */
-  fullTextPaths: FullTextPath[];
-}
-
+/* Represents the full text path specification. */
 export interface FullTextPath {
-  /**
-   * The path to be indexed for full text search.
-   */
+  /* The path to the full text field in the document. */
   path: string;
-  /**
-   * The language for the full text path.
-   */
-  language: string;
+  /* The language of the full text field in the document. */
+  language?: string;
 }
 
 /* List of composite path */
@@ -1491,6 +1497,14 @@ export interface MaterializedViewDefinition {
   sourceCollectionId: string;
   /* The definition should be an SQL query which would be used to fetch data from the source container to populate into the Materialized View container. */
   definition: string;
+}
+
+/* MaterializedViewDetails, contains Id & _rid fields of materialized view. */
+export interface MaterializedViewDetails {
+  /* Id field of Materialized container. */
+  id?: string;
+  /* _rid field of Materialized container. */
+  _rid?: string;
 }
 
 /* Cosmos DB SQL storedProcedure resource object */

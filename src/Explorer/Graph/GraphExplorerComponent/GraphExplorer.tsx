@@ -16,7 +16,12 @@ import * as StorageUtility from "../../../Shared/StorageUtility";
 import { LocalStorageUtility, StorageKey } from "../../../Shared/StorageUtility";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
-import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../../../Utils/NotificationConsoleUtils";
+import {
+  logConsoleError,
+  logConsoleInfo,
+  logConsoleProgress,
+  logConsoleWarning,
+} from "../../../Utils/NotificationConsoleUtils";
 import { EditorReact } from "../../Controls/Editor/EditorReact";
 import * as InputTypeaheadComponent from "../../Controls/InputTypeahead/InputTypeaheadComponent";
 import * as TabComponent from "../../Controls/Tabs/TabComponent";
@@ -54,7 +59,7 @@ export interface GraphExplorerProps {
   graphBackendEndpoint: string;
   databaseId: string;
   collectionId: string;
-  masterKey: string;
+  password: string;
 
   onLoadStartKey: number;
   onLoadStartKeyChange: (newKey: number) => void;
@@ -1083,6 +1088,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
   public static reportToConsole(type: ConsoleDataType.InProgress, msg: string, ...errorData: any[]): () => void;
   public static reportToConsole(type: ConsoleDataType.Info, msg: string, ...errorData: any[]): void;
   public static reportToConsole(type: ConsoleDataType.Error, msg: string, ...errorData: any[]): void;
+  public static reportToConsole(type: ConsoleDataType.Warning, msg: string, ...errorData: any[]): void;
   public static reportToConsole(type: ConsoleDataType, msg: string, ...errorData: any[]): void | (() => void) {
     let errorDataStr = "";
     if (errorData && errorData.length > 0) {
@@ -1099,6 +1105,8 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
         return logConsoleInfo(consoleMessage);
       case ConsoleDataType.InProgress:
         return logConsoleProgress(consoleMessage);
+      case ConsoleDataType.Warning:
+        return logConsoleWarning(consoleMessage);
     }
   }
 
@@ -1292,7 +1300,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
       endpoint: `wss://${this.props.graphBackendEndpoint}`,
       databaseId: this.props.databaseId,
       collectionId: this.props.collectionId,
-      masterKey: this.props.masterKey,
+      password: this.props.password,
       maxResultSize: GraphExplorer.MAX_RESULT_SIZE,
     });
   }

@@ -13,10 +13,10 @@
     margin: 20px 0;
     overflow-x: hidden;
 
-    & > :not(.collapsibleSection) {
+    &> :not(.collapsibleSection) {
       margin-bottom: @DefaultSpace;
 
-      & > :not(:last-child) {
+      &> :not(:last-child) {
         margin-bottom: @DefaultSpace;
       }
     }
@@ -114,6 +114,14 @@
       color: var(--colorNeutralForeground1, @BaseHigh);
     }
   }
+
+  @media (max-width: 768px) {
+    .panelMainContent {
+      padding: 0 24px;
+      margin: 0;
+      overflow-x: auto;
+    }
+  }
 }
 
 .panelHeader {
@@ -178,237 +186,89 @@
 .deleteCollectionFeedback {
   margin-top: 12px;
 }
+
 .addRemoveIcon {
   margin-left: 4px !important;
 }
+
 .addRemoveIconLabel {
   margin-top: 28px;
   margin-left: 4px !important;
 }
+
 .addRemoveIcon [alt="editEntity"]:focus,
 .addRemoveIconLabel [alt="editEntity"]:focus {
-  border: 1px dashed #605e5c;
+  border: 1px dashed var(--colorNeutralStroke1, #605e5c);
+  outline: none;
 }
+
 .addNewParamStyle {
   margin-top: 5px;
   margin-left: 5px !important;
   cursor: pointer;
 }
 
-.panelGroupSpacing > :not(:last-child) {
+.panelGroupSpacing> :not(:last-child) {
   margin-bottom: @DefaultSpace;
 }
+
 .fileUpload {
   display: none !important;
 }
+
 .customFileUpload {
   padding: 25px 0px 0px 10px;
   cursor: pointer;
   display: flex;
 }
+
 .fileIcon {
   align-self: center;
 }
+
 .panelAddIconLabel {
   font-size: 20px;
   width: 20px;
   margin: 30px 0 0 10px;
   cursor: default;
 }
+
 .panelAddIcon {
   font-size: 20px;
   width: 20px;
   margin: 30px 0 0 10px;
   cursor: default;
 }
+
 .removeIcon {
   color: @InfoIconColor;
 }
+
 .backImageIcon {
   margin-top: 8px;
 }
+
 [alt="back"]:focus {
-  border: 1px solid #605e5c;
+  border: 1px solid var(--colorCompoundBrandStroke1, @SelectionColor);
+  outline: none;
 }
+
 .addEntityDatePicker {
   max-width: 145px;
 }
+
 .addEntityTextField {
   width: 237px;
 }
+
 .addButtonEntiy {
   width: 25%;
 }
+
 .column-select-view {
   margin: 20px 0px 0px 0px;
 }
+
 .panelSeparator::before {
-  background-color: var(--colorNeutralStroke1, #edebe9);
-}
-
-// Override mandatory star color using theme variables
-.mandatoryStar {
-  color: var(--colorPaletteRedForeground1, #d13438) !important;
-}
-
-// Override Fluent UI Panel component to use theme variables consistently
-.ms-Panel {
-  background-color: var(--colorNeutralBackground1, @BaseLight);
-  color: var(--colorNeutralForeground1, @BaseHigh);
-
-  .ms-Panel-main {
-    background-color: var(--colorNeutralBackground1, @BaseLight);
-  }
-
-  .ms-Panel-contentInner {
-    background-color: var(--colorNeutralBackground1, @BaseLight);
-  }
-
-  .ms-Panel-header {
-    background-color: var(--colorNeutralBackground1, @BaseLight);
-    color: var(--colorNeutralForeground1, @BaseHigh);
-  }
-
-  .ms-Panel-headerText {
-    color: var(--colorNeutralForeground1, @BaseHigh);
-  }
-
-  .ms-Panel-closeButton {
-    color: var(--colorNeutralForeground1, @BaseHigh);
-
-    &:hover {
-      background-color: var(--colorNeutralBackground1Hover, @BaseLow);
-    }
-  }
-}
-
-// Dark theme overrides when body has isDarkMode class
-body.isDarkMode {
-  .panelFormWrapper {
-    background-color: var(--colorNeutralBackground1, #1e1e1e);
-    color: var(--colorNeutralForeground1, #ffffff);
-
-    .panelMainContent {
-      .panelInfoIcon {
-        color: var(--colorNeutralForeground1, #ffffff);
-      }
-
-      .panelTextBold {
-        color: var(--colorNeutralForeground1, #ffffff);
-      }
-
-      .panelTextField {
-        border: 1px solid var(--colorNeutralStroke1, #484848);
-        color: var(--colorNeutralForeground1, #ffffff);
-        background-color: var(--colorNeutralBackground2, #2d2d2d);
-
-        &::placeholder {
-          color: var(--colorNeutralForeground3, #a0a0a0);
-        }
-
-        &:focus {
-          border-color: var(--colorCompoundBrandStroke1, #4db6e8);
-        }
-      }
-
-      .panelRadioBtnLabel {
-        color: var(--colorNeutralForeground1, #ffffff);
-      }
-
-      // Dark theme Fluent UI component overrides
-      .ms-Dropdown {
-        .ms-Dropdown-title {
-          background-color: var(--colorNeutralBackground2, #2d2d2d);
-          border-color: var(--colorNeutralStroke1, #484848);
-          color: var(--colorNeutralForeground1, #ffffff);
-        }
-
-        .ms-Dropdown-caretDownWrapper {
-          color: var(--colorNeutralForeground1, #ffffff);
-        }
-      }
-
-      .ms-Checkbox {
-        .ms-Checkbox-label {
-          color: var(--colorNeutralForeground1, #ffffff);
-        }
-      }
-
-      .ms-TextField {
-        .ms-TextField-fieldGroup {
-          background-color: var(--colorNeutralBackground2, #2d2d2d);
-          border-color: var(--colorNeutralStroke1, #484848);
-        }
-
-        .ms-TextField-field {
-          background-color: var(--colorNeutralBackground2, #2d2d2d);
-          color: var(--colorNeutralForeground1, #ffffff);
-
-          &::placeholder {
-            color: var(--colorNeutralForeground3, #a0a0a0);
-          }
-        }
-      }
-
-      .ms-Text {
-        color: var(--colorNeutralForeground1, #ffffff);
-      }
-
-      span, label {
-        color: var(--colorNeutralForeground1, #ffffff);
-      }
-    }
-  }
-
-  .panelHeader {
-    color: var(--colorNeutralForeground1, #ffffff);
-  }
-
-  .panelInfoErrorContainer {
-    background-color: var(--colorNeutralBackground3, #404040);
-    color: var(--colorNeutralForeground1, #ffffff);
-
-    .panelWarningErrorDetailsLinkContainer {
-      .panelWarningErrorMessage {
-        color: var(--colorNeutralForeground1, #ffffff);
-      }
-    }
-  }
-
-  .panelFooter {
-    background-color: var(--colorNeutralBackground1, #1e1e1e);
-    color: var(--colorNeutralForeground1, #ffffff);
-    border-top: solid 1px var(--colorNeutralStroke1, #484848);
-  }
-
-  // Dark theme Panel component overrides
-  .ms-Panel {
-    background-color: var(--colorNeutralBackground1, #1e1e1e);
-    color: var(--colorNeutralForeground1, #ffffff);
-
-    .ms-Panel-main {
-      background-color: var(--colorNeutralBackground1, #1e1e1e);
-    }
-
-    .ms-Panel-contentInner {
-      background-color: var(--colorNeutralBackground1, #1e1e1e);
-    }
-
-    .ms-Panel-header {
-      background-color: var(--colorNeutralBackground1, #1e1e1e);
-      color: var(--colorNeutralForeground1, #ffffff);
-    }
-
-    .ms-Panel-headerText {
-      color: var(--colorNeutralForeground1, #ffffff);
-    }
-
-    .ms-Panel-closeButton {
-      color: var(--colorNeutralForeground1, #ffffff);
-
-      &:hover {
-        background-color: var(--colorNeutralBackground1Hover, #404040);
-      }
-    }
-  }
+  background-color: #edebe9;
 }

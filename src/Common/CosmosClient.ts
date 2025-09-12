@@ -4,12 +4,12 @@ import { CosmosDbArtifactType } from "Contracts/FabricMessagesContract";
 import { AuthorizationToken } from "Contracts/FabricMessageTypes";
 import { checkDatabaseResourceTokensValidity, isFabricMirroredKey } from "Platform/Fabric/FabricUtil";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
+import { useDataplaneRbacAuthorization } from "Utils/AuthorizationUtils";
 import { AuthType } from "../AuthType";
 import { PriorityLevel } from "../Common/Constants";
 import * as Logger from "../Common/Logger";
 import { Platform, configContext } from "../ConfigContext";
 import { FabricArtifactInfo, updateUserContext, userContext } from "../UserContext";
-import { isDataplaneRbacSupported } from "../Utils/APITypeUtils";
 import { logConsoleError } from "../Utils/NotificationConsoleUtils";
 import * as PriorityBasedExecutionUtils from "../Utils/PriorityBasedExecutionUtils";
 import { EmulatorMasterKey, HttpHeaders } from "./Constants";
@@ -20,8 +20,7 @@ const _global = typeof self === "undefined" ? window : self;
 export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
   const { verb, resourceId, resourceType, headers } = requestInfo;
 
-  const dataPlaneRBACOptionEnabled = userContext.dataPlaneRbacEnabled && isDataplaneRbacSupported(userContext.apiType);
-  if (userContext.features.enableAadDataPlane || dataPlaneRBACOptionEnabled) {
+  if (useDataplaneRbacAuthorization(userContext)) {
     Logger.logInfo(
       `AAD Data Plane Feature flag set to ${userContext.features.enableAadDataPlane} for account with disable local auth ${userContext.databaseAccount.properties.disableLocalAuth} `,
       "Explorer/tokenProvider",
@@ -125,7 +124,11 @@ export const endpoint = () => {
     const location = _global.parent ? _global.parent.location : _global.location;
     return configContext.EMULATOR_ENDPOINT || location.origin;
   }
-  return userContext.endpoint || userContext?.databaseAccount?.properties?.documentEndpoint;
+  return (
+    userContext.selectedRegionalEndpoint ||
+    userContext.endpoint ||
+    userContext?.databaseAccount?.properties?.documentEndpoint
+  );
 };
 
 export async function getTokenFromAuthService(
@@ -203,6 +206,7 @@ export function client(): Cosmos.CosmosClient {
     userAgentSuffix: "Azure Portal",
     defaultHeaders: _defaultHeaders,
     connectionPolicy: {
+      enableEndpointDiscovery: !userContext.selectedRegionalEndpoint,
       retryOptions: {
         maxRetryAttemptCount: LocalStorageUtility.getEntryNumber(StorageKey.RetryAttempts),
         fixedRetryIntervalInMilliseconds: LocalStorageUtility.getEntryNumber(StorageKey.RetryInterval),

@@ -14,6 +14,7 @@ import OpenQueryFromDiskIcon from "../../../../images/OpenQueryFromDisk.svg";
 import OpenInTabIcon from "../../../../images/open-in-tab.svg";
 import SettingsIcon from "../../../../images/settings_15x15.svg";
 import SynapseIcon from "../../../../images/synapse-link.svg";
+import VSCodeIcon from "../../../../images/vscode.svg";
 import { AuthType } from "../../../AuthType";
 import * as Constants from "../../../Common/Constants";
 import { Platform, configContext } from "../../../ConfigContext";
@@ -59,6 +60,10 @@ export function createStaticCommandBarButtons(
     if (addSynapseLink) {
       addDivider();
       buttons.push(addSynapseLink);
+    }
+    if (userContext.apiType !== "Gremlin") {
+      const addVsCode = createOpenVsCodeDialogButton(container);
+      buttons.push(addVsCode);
     }
   }
 
@@ -126,13 +131,14 @@ export function createContextCommandBarButtons(
   const buttons: CommandButtonComponentProps[] = [];
 
   if (!selectedNodeState.isDatabaseNodeOrNoneSelected() && userContext.apiType === "Mongo") {
-    const label = useNotebook.getState().isShellEnabled ? "Open Mongo Shell" : "New Shell";
+    const label =
+      useNotebook.getState().isShellEnabled || userContext.features.enableCloudShell ? "Open Mongo Shell" : "New Shell";
     const newMongoShellBtn: CommandButtonComponentProps = {
       iconSrc: HostedTerminalIcon,
       iconAlt: label,
       onCommandClick: () => {
         const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
-        if (useNotebook.getState().isShellEnabled) {
+        if (useNotebook.getState().isShellEnabled || userContext.features.enableCloudShell) {
           container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
         } else {
           selectedCollection && selectedCollection.onNewMongoShellClick();
@@ -146,7 +152,7 @@ export function createContextCommandBarButtons(
   }
 
   if (
-    useNotebook.getState().isShellEnabled &&
+    (useNotebook.getState().isShellEnabled || userContext.features.enableCloudShell) &&
     !selectedNodeState.isDatabaseNodeOrNoneSelected() &&
     userContext.apiType === "Cassandra"
   ) {
@@ -267,6 +273,18 @@ function createOpenSynapseLinkDialogButton(container: Explorer): CommandButtonCo
   };
 }
 
+function createOpenVsCodeDialogButton(container: Explorer): CommandButtonComponentProps {
+  const label = "Visual Studio Code";
+  return {
+    iconSrc: VSCodeIcon,
+    iconAlt: label,
+    onCommandClick: () => container.openInVsCode(),
+    commandButtonLabel: label,
+    hasPopup: false,
+    ariaLabel: label,
+  };
+}
+
 function createLoginForEntraIDButton(container: Explorer): CommandButtonComponentProps {
   if (configContext.platform !== Platform.Portal) {
     return undefined;
@@ -352,6 +370,22 @@ export function createScriptCommandButtons(selectedNodeState: SelectedNodeState)
       disabled:
         useSelectedNode.getState().isQueryCopilotCollectionSelected() ||
         selectedNodeState.isDatabaseNodeOrNoneSelected(),
+      styles: {
+        root: {
+          backgroundColor: "var(--colorNeutralBackground1)",
+          color: "var(--colorNeutralForeground1)",
+          selectors: {
+            ":hover": {
+              backgroundColor: "var(--colorNeutralBackground1Hover)",
+              color: "var(--colorNeutralForeground1Hover)",
+            },
+            ":active": {
+              backgroundColor: "var(--colorNeutralBackground1Pressed)",
+              color: "var(--colorNeutralForeground1Pressed)",
+            },
+          },
+        },
+      },
     };
     buttons.push(newStoredProcedureBtn);
   }
@@ -372,6 +406,22 @@ export function createScriptCommandButtons(selectedNodeState: SelectedNodeState)
       disabled:
         useSelectedNode.getState().isQueryCopilotCollectionSelected() ||
         selectedNodeState.isDatabaseNodeOrNoneSelected(),
+      styles: {
+        root: {
+          backgroundColor: "var(--colorNeutralBackground1)",
+          color: "var(--colorNeutralForeground1)",
+          selectors: {
+            ":hover": {
+              backgroundColor: "var(--colorNeutralBackground1Hover)",
+              color: "var(--colorNeutralForeground1Hover)",
+            },
+            ":active": {
+              backgroundColor: "var(--colorNeutralBackground1Pressed)",
+              color: "var(--colorNeutralForeground1Pressed)",
+            },
+          },
+        },
+      },
     };
     buttons.push(newUserDefinedFunctionBtn);
   }
@@ -392,6 +442,22 @@ export function createScriptCommandButtons(selectedNodeState: SelectedNodeState)
       disabled:
         useSelectedNode.getState().isQueryCopilotCollectionSelected() ||
         selectedNodeState.isDatabaseNodeOrNoneSelected(),
+      styles: {
+        root: {
+          backgroundColor: "var(--colorNeutralBackground1)",
+          color: "var(--colorNeutralForeground1)",
+          selectors: {
+            ":hover": {
+              backgroundColor: "var(--colorNeutralBackground1Hover)",
+              color: "var(--colorNeutralForeground1Hover)",
+            },
+            ":active": {
+              backgroundColor: "var(--colorNeutralBackground1Pressed)",
+              color: "var(--colorNeutralForeground1Pressed)",
+            },
+          },
+        },
+      },
     };
     buttons.push(newTriggerBtn);
   }
@@ -455,7 +521,7 @@ function createOpenTerminalButtonByKind(
     iconSrc: HostedTerminalIcon,
     iconAlt: label,
     onCommandClick: () => {
-      if (useNotebook.getState().isNotebookEnabled) {
+      if (useNotebook.getState().isNotebookEnabled || userContext.features.enableCloudShell) {
         container.openNotebookTerminal(terminalKind);
       }
     },
@@ -499,6 +565,6 @@ export function createPostgreButtons(container: Explorer): CommandButtonComponen
 
 export function createVCoreMongoButtons(container: Explorer): CommandButtonComponentProps[] {
   const openVCoreMongoTerminalButton = createOpenTerminalButtonByKind(container, ViewModels.TerminalKind.VCoreMongo);
-
-  return [openVCoreMongoTerminalButton];
+  const addVsCode = createOpenVsCodeDialogButton(container);
+  return [openVCoreMongoTerminalButton, addVsCode];
 }

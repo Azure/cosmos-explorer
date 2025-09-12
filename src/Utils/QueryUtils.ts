@@ -1,4 +1,7 @@
 import { PartitionKey, PartitionKeyDefinition } from "@azure/cosmos";
+import { getRUThreshold, ruThresholdEnabled } from "Shared/StorageUtility";
+import { userContext } from "UserContext";
+import { logConsoleWarning } from "Utils/NotificationConsoleUtils";
 import * as DataModels from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
 
@@ -47,6 +50,7 @@ export function buildDocumentsQueryPartitionProjections(
   for (const index in partitionKey.paths) {
     // TODO: Handle "/" in partition key definitions
     const projectedProperties: string[] = partitionKey.paths[index].split("/").slice(1);
+    const isSystemPartitionKey: boolean = partitionKey.systemKey || false;
     let projectedProperty = "";
 
     projectedProperties.forEach((property: string) => {
@@ -61,8 +65,13 @@ export function buildDocumentsQueryPartitionProjections(
         projectedProperty += `[${projection}]`;
       }
     });
-
-    projections.push(`${collectionAlias}${projectedProperty}`);
+    const fullAccess = `${collectionAlias}${projectedProperty}`;
+    if (!isSystemPartitionKey) {
+      const wrappedProjection = `IIF(IS_DEFINED(${fullAccess}), ${fullAccess}, {})`;
+      projections.push(wrappedProjection);
+    } else {
+      projections.push(fullAccess);
+    }
   }
 
   return projections.join(",");
@@ -80,6 +89,18 @@ export const queryPagesUntilContentPresent = async (
     results.roundTrips = roundTrips;
     results.requestCharge = Number(results.requestCharge) + netRequestCharge;
     netRequestCharge = Number(results.requestCharge);
+
+    if (results.hasMoreResults && userContext.apiType === "SQL" && ruThresholdEnabled()) {
+      const ruThreshold: number = getRUThreshold();
+      if (netRequestCharge > ruThreshold) {
+        logConsoleWarning(
+          `Warning: Query has exceeded the Request Unit threshold of ${ruThreshold} RUs. Query results show only those documents returned before the threshold was exceeded`,
+        );
+        results.ruThresholdExceeded = true;
+        return results;
+      }
+    }
+
     const resultsMetadata = {
       hasMoreResults: results.hasMoreResults,
       itemCount: results.itemCount,
@@ -130,6 +151,8 @@ export const extractPartitionKeyValues = (
 
     if (value !== undefined) {
       partitionKeyValues.push(value);
+    } else if (!partitionKeyDefinition.systemKey) {
+      partitionKeyValues.push({});
     }
   });
 

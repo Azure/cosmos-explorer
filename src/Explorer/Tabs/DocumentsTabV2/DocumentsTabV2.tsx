@@ -26,7 +26,6 @@ import { useDialog } from "Explorer/Controls/Dialog";
 import { EditorReact } from "Explorer/Controls/Editor/EditorReact";
 import { InputDataList, InputDatalistDropdownOptionSection } from "Explorer/Controls/InputDataList/InputDataList";
 import { ProgressModalDialog } from "Explorer/Controls/ProgressModalDialog";
-import Explorer from "Explorer/Explorer";
 import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
 import { querySampleDocuments, readSampleDocument } from "Explorer/QueryCopilot/QueryCopilotUtilities";
 import {
@@ -49,6 +48,7 @@ import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { userContext } from "UserContext";
 import { logConsoleError, logConsoleInfo } from "Utils/NotificationConsoleUtils";
 import { Allotment } from "allotment";
+import { useClientWriteEnabled } from "hooks/useClientWriteEnabled";
 import React, { KeyboardEventHandler, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { format } from "react-string-format";
 import DeleteDocumentIcon from "../../../../images/DeleteDocument.svg";
@@ -63,7 +63,7 @@ import * as Logger from "../../../Common/Logger";
 import * as MongoProxyClient from "../../../Common/MongoProxyClient";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";
-import { CollectionBase } from "../../../Contracts/ViewModels";
+import { CollectionBase, UploadDetailsRecord } from "../../../Contracts/ViewModels";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import * as QueryUtils from "../../../Utils/QueryUtils";
 import { defaultQueryFields, extractPartitionKeyValues } from "../../../Utils/QueryUtils";
@@ -142,6 +142,13 @@ export const useDocumentsTabStyles = makeStyles({
   },
   deleteProgressContent: {
     paddingTop: tokens.spacingVerticalL,
+  },
+  smallScreenContent: {
+    "@media (max-width: 420px)": {
+      flexWrap: "wrap",
+      minHeight: "max-content",
+      padding: "4px",
+    },
   },
 });
 
@@ -301,35 +308,17 @@ type UiKeyboardEvent = (e: KeyboardEvent | React.SyntheticEvent<Element, Event>)
 
 // Export to expose to unit tests
 export type ButtonsDependencies = {
-  _collection: ViewModels.CollectionBase;
   selectedRows: Set<TableRowId>;
   editorState: ViewModels.DocumentExplorerState;
   isPreferredApiMongoDB: boolean;
+  clientWriteEnabled: boolean;
   onNewDocumentClick: UiKeyboardEvent;
   onSaveNewDocumentClick: UiKeyboardEvent;
   onRevertNewDocumentClick: UiKeyboardEvent;
   onSaveExistingDocumentClick: UiKeyboardEvent;
   onRevertExistingDocumentClick: UiKeyboardEvent;
   onDeleteExistingDocumentsClick: UiKeyboardEvent;
-};
-
-const createUploadButton = (container: Explorer): CommandButtonComponentProps => {
-  const label = "Upload Item";
-  return {
-    id: UPLOAD_BUTTON_ID,
-    iconSrc: UploadIcon,
-    iconAlt: label,
-    onCommandClick: () => {
-      const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
-      selectedCollection && container.openUploadItemsPane();
-    },
-    commandButtonLabel: label,
-    ariaLabel: label,
-    hasPopup: true,
-    disabled:
-      useSelectedNode.getState().isDatabaseNodeOrNoneSelected() ||
-      useSelectedNode.getState().isQueryCopilotCollectionSelected(),
-  };
+  onUploadDocumentsClick: UiKeyboardEvent;
 };
 
 // Export to expose to unit tests
@@ -342,16 +331,17 @@ export const UPLOAD_BUTTON_ID = "uploadItemBtn";
 
 // Export to expose in unit tests
 export const getTabsButtons = ({
-  _collection,
   selectedRows,
   editorState,
   isPreferredApiMongoDB,
+  clientWriteEnabled,
   onNewDocumentClick,
   onSaveNewDocumentClick,
   onRevertNewDocumentClick,
   onSaveExistingDocumentClick,
   onRevertExistingDocumentClick,
   onDeleteExistingDocumentsClick,
+  onUploadDocumentsClick,
 }: ButtonsDependencies): CommandButtonComponentProps[] => {
   if (isFabric() && userContext.fabricContext?.isReadOnly) {
     // All the following buttons require write access
@@ -371,6 +361,7 @@ export const getTabsButtons = ({
       hasPopup: false,
       disabled:
         !getNewDocumentButtonState(editorState).enabled ||
+        !clientWriteEnabled ||
         useSelectedNode.getState().isQueryCopilotCollectionSelected(),
       id: NEW_DOCUMENT_BUTTON_ID,
     });
@@ -388,6 +379,7 @@ export const getTabsButtons = ({
       hasPopup: false,
       disabled:
         !getSaveNewDocumentButtonState(editorState).enabled ||
+        !clientWriteEnabled ||
         useSelectedNode.getState().isQueryCopilotCollectionSelected(),
       id: SAVE_BUTTON_ID,
     });
@@ -422,6 +414,7 @@ export const getTabsButtons = ({
       hasPopup: false,
       disabled:
         !getSaveExistingDocumentButtonState(editorState).enabled ||
+        !clientWriteEnabled ||
         useSelectedNode.getState().isQueryCopilotCollectionSelected(),
       id: UPDATE_BUTTON_ID,
     });
@@ -454,13 +447,26 @@ export const getTabsButtons = ({
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: false,
-      disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
+      disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected() || !clientWriteEnabled,
       id: DELETE_BUTTON_ID,
     });
   }
 
   if (!isPreferredApiMongoDB) {
-    buttons.push(createUploadButton(_collection.container));
+    const label = "Upload Item";
+    buttons.push({
+      id: UPLOAD_BUTTON_ID,
+      iconSrc: UploadIcon,
+      iconAlt: label,
+      onCommandClick: onUploadDocumentsClick,
+      commandButtonLabel: label,
+      ariaLabel: label,
+      hasPopup: true,
+      disabled:
+        useSelectedNode.getState().isDatabaseNodeOrNoneSelected() ||
+        !useClientWriteEnabled.getState().clientWriteEnabled ||
+        useSelectedNode.getState().isQueryCopilotCollectionSelected(),
+    });
   }
 
   return buttons;
@@ -628,6 +634,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   );
 
   // State
+  const clientWriteEnabled = useClientWriteEnabled((state) => state.clientWriteEnabled);
   const [tabStateData, setTabStateData] = useState<TabDivider>(() =>
     readDocumentsTabSubComponentState<TabDivider>(SubComponentName.MainTabDivider, _collection, {
       leftPaneWidthPercent: 35,
@@ -664,6 +671,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     collection: CollectionBase;
   }>(undefined);
   const [bulkDeleteMode, setBulkDeleteMode] = useState<"inProgress" | "completed" | "aborting" | "aborted">(undefined);
+  const [abortController, setAbortController] = useState<AbortController | undefined>(undefined);
 
   const setKeyboardActions = useKeyboardActionGroup(KeyboardActionGroup.ACTIVE_TAB);
 
@@ -691,13 +699,19 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
       return;
     }
 
-    if (
-      (bulkDeleteProcess.pendingIds.length === 0 && bulkDeleteProcess.throttledIds.length === 0) ||
-      bulkDeleteMode === "aborting"
-    ) {
-      // Successfully deleted all documents or operation was aborted
+    if (bulkDeleteProcess.pendingIds.length === 0 && bulkDeleteProcess.throttledIds.length === 0) {
+      // Successfully deleted all documents
       bulkDeleteOperation.onCompleted(bulkDeleteProcess.successfulIds);
-      setBulkDeleteMode(bulkDeleteMode === "aborting" ? "aborted" : "completed");
+      setBulkDeleteMode("completed");
+      return;
+    }
+
+    if (bulkDeleteMode === "aborting") {
+      // Operation was aborted
+      abortController?.abort();
+      bulkDeleteOperation.onCompleted(bulkDeleteProcess.successfulIds);
+      setBulkDeleteMode("aborted");
+      setAbortController(undefined);
       return;
     }
 
@@ -705,8 +719,10 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     const newPendingIds = bulkDeleteProcess.pendingIds.concat(bulkDeleteProcess.throttledIds);
     const timeout = bulkDeleteProcess.beforeExecuteMs || 0;
 
+    const ac = new AbortController();
+    setAbortController(ac);
     setTimeout(() => {
-      deleteNoSqlDocuments(bulkDeleteOperation.collection, [...newPendingIds])
+      deleteNoSqlDocuments(bulkDeleteOperation.collection, [...newPendingIds], ac.signal)
         .then((deleteResult) => {
           let retryAfterMilliseconds = 0;
           const newSuccessful: DocumentId[] = [];
@@ -721,7 +737,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
             } else if (result.statusCode >= 400) {
               newFailed.push(result.documentId);
               logConsoleError(
-                `Failed to delete document ${result.documentId.id} with status code ${result.statusCode}`,
+                `Failed to delete document ${result.documentId.id()} with status code ${result.statusCode}`,
               );
             }
           });
@@ -765,16 +781,17 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     [_collection, _partitionKey],
   );
   const partitionKeyPropertyHeaders: string[] = useMemo(
-    () => _collection?.partitionKeyPropertyHeaders || partitionKey?.paths,
-    [_collection?.partitionKeyPropertyHeaders, partitionKey?.paths],
-  );
-  let partitionKeyProperties = useMemo(
     () =>
-      partitionKeyPropertyHeaders?.map((partitionKeyPropertyHeader) =>
-        partitionKeyPropertyHeader.replace(/[/]+/g, ".").substring(1).replace(/[']+/g, ""),
-      ),
-    [partitionKeyPropertyHeaders],
+      isPreferredApiMongoDB && partitionKey?.systemKey
+        ? []
+        : _collection?.partitionKeyPropertyHeaders || partitionKey?.paths,
+    [_collection?.partitionKeyPropertyHeaders, partitionKey?.paths, partitionKey?.systemKey, isPreferredApiMongoDB],
   );
+  let partitionKeyProperties = useMemo(() => {
+    return partitionKeyPropertyHeaders?.map((partitionKeyPropertyHeader) =>
+      partitionKeyPropertyHeader.replace(/[/]+/g, ".").substring(1).replace(/[']+/g, ""),
+    );
+  }, [partitionKeyPropertyHeaders]);
 
   const getInitialColumnSelection = () => {
     const defaultColumnsIds = ["id"];
@@ -861,16 +878,17 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     }
 
     updateNavbarWithTabsButtons(isTabActive, {
-      _collection,
       selectedRows,
       editorState,
       isPreferredApiMongoDB,
+      clientWriteEnabled,
       onNewDocumentClick,
       onSaveNewDocumentClick,
       onRevertNewDocumentClick,
       onSaveExistingDocumentClick,
       onRevertExistingDocumentClick,
       onDeleteExistingDocumentsClick,
+      onUploadDocumentsClick,
     });
   }, []);
 
@@ -1037,6 +1055,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     );
 
     const selectedDocumentId = documentIds[clickedRowIndex as number];
+    const originalPartitionKeyValue = selectedDocumentId.partitionKeyValue;
     selectedDocumentId.partitionKeyValue = partitionKeyValueArray;
 
     onExecutionErrorChange(false);
@@ -1072,6 +1091,10 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
           setColumnDefinitionsFromDocument(documentContent);
         },
         (error) => {
+          // in case of any kind of failures of accidently changing partition key, restore the original
+          // so that when user navigates away from current document and comes back,
+          // it doesnt fail to load due to using the invalid partition keys
+          selectedDocumentId.partitionKeyValue = originalPartitionKeyValue;
           onExecutionErrorChange(true);
           const errorMessage = getErrorMessage(error);
           useDialog.getState().showOkModalDialog("Update document failed", errorMessage);
@@ -1271,32 +1294,71 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
       );
   }, [deleteDocuments, documentIds, isPreferredApiMongoDB, selectedRows]);
 
+  const onUploadDocumentsClick = useCallback((): void => {
+    if (!isPreferredApiMongoDB) {
+      const onSuccessUpload = (data: UploadDetailsRecord[]) => {
+        const addedIdsSet = new Set(
+          data
+            .reduce(
+              (result: ItemDefinition[], record) =>
+                result.concat(record.resources && record.resources.length ? record.resources : []),
+              [],
+            )
+            .map((document) => {
+              const partitionKeyValueArray: PartitionKey[] = extractPartitionKeyValues(
+                document,
+                partitionKey as PartitionKeyDefinition,
+              );
+              return newDocumentId(
+                document as ItemDefinition & Resource,
+                partitionKeyProperties,
+                partitionKeyValueArray as string[],
+              );
+            }),
+        );
+
+        const documents = new Set(documentIds);
+        addedIdsSet.forEach((item) => documents.add(item));
+        setDocumentIds(Array.from(documents));
+
+        setSelectedDocumentContent(undefined);
+        setClickedRowIndex(undefined);
+        setSelectedRows(new Set());
+        setEditorState(ViewModels.DocumentExplorerState.noDocumentSelected);
+      };
+
+      _collection.container.openUploadItemsPane(onSuccessUpload);
+    }
+  }, [_collection.container, documentIds, isPreferredApiMongoDB, newDocumentId, partitionKey, partitionKeyProperties]);
+
   // If editor state changes, update the nav
   useEffect(
     () =>
       updateNavbarWithTabsButtons(isTabActive, {
-        _collection,
         selectedRows,
         editorState,
         isPreferredApiMongoDB,
+        clientWriteEnabled,
         onNewDocumentClick,
         onSaveNewDocumentClick,
         onRevertNewDocumentClick,
         onSaveExistingDocumentClick,
-        onRevertExistingDocumentClick: onRevertExistingDocumentClick,
-        onDeleteExistingDocumentsClick: onDeleteExistingDocumentsClick,
+        onRevertExistingDocumentClick,
+        onDeleteExistingDocumentsClick,
+        onUploadDocumentsClick,
       }),
     [
-      _collection,
       selectedRows,
       editorState,
       isPreferredApiMongoDB,
+      clientWriteEnabled,
       onNewDocumentClick,
       onSaveNewDocumentClick,
       onRevertNewDocumentClick,
       onSaveExistingDocumentClick,
       onRevertExistingDocumentClick,
       onDeleteExistingDocumentsClick,
+      onUploadDocumentsClick,
       isTabActive,
     ],
   );
@@ -1709,7 +1771,8 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     renderObjectForEditor = (value: unknown): string => MongoUtility.tojson(value, null, false);
 
     const _hasShardKeySpecified = (document: unknown): boolean => {
-      return Boolean(extractPartitionKeyValues(document, _getPartitionKeyDefinition() as PartitionKeyDefinition));
+      const partitionKeyDefinition: PartitionKeyDefinition = _getPartitionKeyDefinition() as PartitionKeyDefinition;
+      return partitionKeyDefinition.systemKey || Boolean(extractPartitionKeyValues(document, partitionKeyDefinition));
     };
 
     const _getPartitionKeyDefinition = (): DataModels.PartitionKey => {
@@ -1733,7 +1796,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
       return partitionKey;
     };
 
-    partitionKeyProperties = partitionKeyProperties?.map((partitionKeyProperty, i) => {
+    partitionKeyProperties = partitionKeyProperties.map((partitionKeyProperty, i) => {
       if (partitionKeyProperty && ~partitionKeyProperty.indexOf(`"`)) {
         partitionKeyProperty = partitionKeyProperty.replace(/["]+/g, "");
       }
@@ -2083,8 +2146,8 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
   return (
     <CosmosFluentProvider className={styles.container}>
-      <div className="tab-pane active" role="tabpanel" style={{ display: "flex" }}>
-        <div className={styles.filterRow}>
+      <div data-test={"DocumentsTab"} className="tab-pane active" role="tabpanel" style={{ display: "flex" }}>
+        <div data-test={"DocumentsTab/Filter"} className={`${styles.filterRow} ${styles.smallScreenContent}`}>
           {!isPreferredApiMongoDB && <span> SELECT * FROM c </span>}
           <InputDataList
             dropdownOptions={getFilterChoices()}
@@ -2101,6 +2164,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
           />
           <Button
             appearance="primary"
+            data-test={"DocumentsTab/ApplyFilter"}
             size="small"
             onClick={() => {
               if (isExecuting) {
@@ -2126,7 +2190,11 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
           }}
         >
           <Allotment.Pane preferredSize={`${tabStateData.leftPaneWidthPercent}%`} minSize={55}>
-            <div style={{ height: "100%", width: "100%", overflow: "hidden" }} ref={tableContainerRef}>
+            <div
+              data-test={"DocumentsTab/DocumentsPane"}
+              style={{ height: "100%", width: "100%", overflow: "hidden" }}
+              ref={tableContainerRef}
+            >
               <div className={styles.tableContainer}>
                 <div
                   style={
@@ -2169,6 +2237,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
               {tableItems.length > 0 && (
                 <a
                   className={styles.loadMore}
+                  data-test={"DocumentsTab/LoadMore"}
                   role="button"
                   tabIndex={0}
                   onClick={() => loadNextPage(documentsIterator.iterator, false)}
@@ -2180,7 +2249,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
             </div>
           </Allotment.Pane>
           <Allotment.Pane minSize={30}>
-            <div style={{ height: "100%", width: "100%" }}>
+            <div data-test={"DocumentsTab/ResultsPane"} style={{ height: "100%", width: "100%" }}>
               {isTabActive && selectedDocumentContent && selectedRows.size <= 1 && (
                 <EditorReact
                   language={"json"}

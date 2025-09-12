@@ -106,6 +106,6 @@ describe("QueryTabComponent", () => {
         <QueryTabCopilotComponent {...propsMock} />
       </CopilotProvider>,
     );
-    expect(container.find(QueryCopilotPromptbar).exists()).toBe(true);
+    expect(container.find(QueryCopilotPromptbar).exists()).toBe(false);
   });
 });

@@ -29,16 +29,26 @@ export interface PartitionKeyComponentProps {
   database: ViewModels.Database;
   collection: ViewModels.Collection;
   explorer: Explorer;
+  isReadOnly?: boolean; // true: cannot change partition key
 }
 
-export const PartitionKeyComponent: React.FC<PartitionKeyComponentProps> = ({ database, collection, explorer }) => {
+export const PartitionKeyComponent: React.FC<PartitionKeyComponentProps> = ({
+  database,
+  collection,
+  explorer,
+  isReadOnly,
+}) => {
   const { dataTransferJobs } = useDataTransferJobs();
   const [portalDataTransferJob, setPortalDataTransferJob] = React.useState<DataTransferJobGetResults>(null);
 
   React.useEffect(() => {
+    if (isReadOnly) {
+      return;
+    }
+
     const loadDataTransferJobs = refreshDataTransferOperations;
     loadDataTransferJobs();
-  }, []);
+  }, [isReadOnly]);
 
   React.useEffect(() => {
     const currentJob = findPortalDataTransferJob();
@@ -56,14 +66,14 @@ export const PartitionKeyComponent: React.FC<PartitionKeyComponentProps> = ({ da
   const partitionKeyValue = getPartitionKeyValue();
 
   const textHeadingStyle = {
-    root: { fontWeight: FontWeights.semibold, fontSize: 16, color: 'var(--colorNeutralForeground1)' },
+    root: { fontWeight: FontWeights.semibold, fontSize: 16, color: "var(--colorNeutralForeground1)" },
   };
 
   const textSubHeadingStyle = {
-    root: { fontWeight: FontWeights.semibold , color: 'var(--colorNeutralForeground1)'  },
+    root: { fontWeight: FontWeights.semibold, color: "var(--colorNeutralForeground1)" },
   };
   const textSubHeadingStyle1 = {
-    root: {color: 'var(--colorNeutralForeground1)'  },
+    root: { color: "var(--colorNeutralForeground1)" },
   };
   const startPollingforUpdate = (currentJob: DataTransferJobGetResults) => {
     if (isCurrentJobInProgress(currentJob)) {
@@ -153,7 +163,7 @@ export const PartitionKeyComponent: React.FC<PartitionKeyComponentProps> = ({ da
   return (
     <Stack tokens={{ childrenGap: 20 }} styles={{ root: { maxWidth: 600 } }}>
       <Stack tokens={{ childrenGap: 10 }}>
-        <Text styles={textHeadingStyle}>Change {partitionKeyName.toLowerCase()}</Text>
+        {!isReadOnly && <Text styles={textHeadingStyle}>Change {partitionKeyName.toLowerCase()}</Text>}
         <Stack horizontal tokens={{ childrenGap: 20 }}>
           <Stack tokens={{ childrenGap: 5 }}>
             <Text styles={textSubHeadingStyle}>Current {partitionKeyName.toLowerCase()}</Text>
@@ -161,60 +171,67 @@ export const PartitionKeyComponent: React.FC<PartitionKeyComponentProps> = ({ da
           </Stack>
           <Stack tokens={{ childrenGap: 5 }}>
             <Text styles={textSubHeadingStyle1}>{partitionKeyValue}</Text>
-            <Text styles={textSubHeadingStyle1}>{isHierarchicalPartitionedContainer() ? "Hierarchical" : "Non-hierarchical"}</Text>
+            <Text styles={textSubHeadingStyle1}>
+              {isHierarchicalPartitionedContainer() ? "Hierarchical" : "Non-hierarchical"}
+            </Text>
           </Stack>
         </Stack>
       </Stack>
-      <MessageBar messageBarType={MessageBarType.warning}>
-        To safeguard the integrity of the data being copied to the new container, ensure that no updates are made to the
-        source container for the entire duration of the partition key change process.
-        <Link
-          href="https://learn.microsoft.com/azure/cosmos-db/container-copy#how-does-container-copy-work"
-          target="_blank"
-          underline
-        >
-          Learn more
-        </Link>
-      </MessageBar>
-      <Text styles={textSubHeadingStyle1}>
-        To change the partition key, a new destination container must be created or an existing destination container
-        selected. Data will then be copied to the destination container.
-      </Text>
-      {configContext.platform !== Platform.Emulator && (
-        <PrimaryButton
-          styles={{ root: { width: "fit-content" } }}
-          text="Change"
-          onClick={startPartitionkeyChangeWorkflow}
-          disabled={isCurrentJobInProgress(portalDataTransferJob)}
-        />
-      )}
-      {portalDataTransferJob && (
-        <Stack>
-          <Text styles={textHeadingStyle}>{partitionKeyName} change job</Text>
-          <Stack
-            horizontal
-            tokens={{ childrenGap: 20 }}
-            styles={{
-              root: {
-                alignItems: "center",
-              },
-            }}
-          >
-            <ProgressIndicator
-              label={portalDataTransferJob?.properties?.jobName}
-              description={getProgressDescription()}
-              percentComplete={getPercentageComplete()}
-              styles={{
-                root: {
-                  width: "85%",
-                },
-              }}
-            ></ProgressIndicator>
-            {isCurrentJobInProgress(portalDataTransferJob) && (
-              <DefaultButton text="Cancel" onClick={() => cancelRunningDataTransferJob(portalDataTransferJob)} />
-            )}
-          </Stack>
-        </Stack>
+
+      {!isReadOnly && (
+        <>
+          <MessageBar messageBarType={MessageBarType.warning}>
+            To safeguard the integrity of the data being copied to the new container, ensure that no updates are made to
+            the source container for the entire duration of the partition key change process.
+            <Link
+              href="https://learn.microsoft.com/azure/cosmos-db/container-copy#how-does-container-copy-work"
+              target="_blank"
+              underline
+            >
+              Learn more
+            </Link>
+          </MessageBar>
+          <Text>
+            To change the partition key, a new destination container must be created or an existing destination
+            container selected. Data will then be copied to the destination container.
+          </Text>
+          {configContext.platform !== Platform.Emulator && (
+            <PrimaryButton
+              styles={{ root: { width: "fit-content" } }}
+              text="Change"
+              onClick={startPartitionkeyChangeWorkflow}
+              disabled={isCurrentJobInProgress(portalDataTransferJob)}
+            />
+          )}
+          {portalDataTransferJob && (
+            <Stack>
+              <Text styles={textHeadingStyle}>{partitionKeyName} change job</Text>
+              <Stack
+                horizontal
+                tokens={{ childrenGap: 20 }}
+                styles={{
+                  root: {
+                    alignItems: "center",
+                  },
+                }}
+              >
+                <ProgressIndicator
+                  label={portalDataTransferJob?.properties?.jobName}
+                  description={getProgressDescription()}
+                  percentComplete={getPercentageComplete()}
+                  styles={{
+                    root: {
+                      width: "85%",
+                    },
+                  }}
+                ></ProgressIndicator>
+                {isCurrentJobInProgress(portalDataTransferJob) && (
+                  <DefaultButton text="Cancel" onClick={() => cancelRunningDataTransferJob(portalDataTransferJob)} />
+                )}
+              </Stack>
+            </Stack>
+          )}
+        </>
       )}
     </Stack>
   );

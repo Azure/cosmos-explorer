@@ -9,6 +9,7 @@ import {
   Stack,
   TextField,
 } from "@fluentui/react";
+import { InfoTooltip } from "Common/Tooltip/InfoTooltip";
 import { VectorEmbedding, VectorIndex } from "Contracts/DataModels";
 import { CollapsibleSectionComponent } from "Explorer/Controls/CollapsiblePanel/CollapsibleSectionComponent";
 import {
@@ -29,6 +30,7 @@ export interface IVectorEmbeddingPoliciesComponentProps {
   discardChanges?: boolean;
   onChangesDiscarded?: () => void;
   disabled?: boolean;
+  isGlobalSecondaryIndex?: boolean;
 }
 
 export interface VectorEmbeddingPolicyData {
@@ -39,8 +41,7 @@ export interface VectorEmbeddingPolicyData {
   indexType: VectorIndex["type"] | "none";
   pathError: string;
   dimensionsError: string;
-  diskANNShardKey?: string;
-  diskANNShardKeyError?: string;
+  vectorIndexShardKey?: string[];
   indexingSearchListSize?: number;
   indexingSearchListSizeError?: string;
   quantizationByteSize?: number;
@@ -87,6 +88,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
   discardChanges,
   onChangesDiscarded,
   disabled,
+  isGlobalSecondaryIndex,
 }): JSX.Element => {
   const onVectorEmbeddingPathError = (path: string, index?: number): string => {
     let error = "";
@@ -132,12 +134,6 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
     return error;
   };
 
-  //TODO: no restrictions yet due to this field being removed for now.
-  // Uncomment and replace with validation code when field is reinstated
-  // const onDiskANNShardKeyError = (shardKey: string): string => {
-  //   return "";
-  // };
-
   const initializeData = (vectorEmbeddings: VectorEmbedding[], vectorIndexes: VectorIndex[]) => {
     const mergedData: VectorEmbeddingPolicyData[] = [];
     vectorEmbeddings.forEach((embedding) => {
@@ -147,6 +143,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
         indexType: matchingIndex?.type || "none",
         indexingSearchListSize: matchingIndex?.indexingSearchListSize || undefined,
         quantizationByteSize: matchingIndex?.quantizationByteSize || undefined,
+        vectorIndexShardKey: matchingIndex?.vectorIndexShardKey || undefined,
         pathError: onVectorEmbeddingPathError(embedding.path),
         dimensionsError: onVectorEmbeddingDimensionError(embedding.dimensions, matchingIndex?.type || "none"),
       });
@@ -186,6 +183,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
             type: policy.indexType,
             indexingSearchListSize: policy.indexingSearchListSize,
             quantizationByteSize: policy.quantizationByteSize,
+            vectorIndexShardKey: policy.vectorIndexShardKey,
           }) as VectorIndex,
       );
     const validationPassed = vectorEmbeddingPolicyData.every(
@@ -247,20 +245,16 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
     setVectorEmbeddingPolicyData(vectorEmbeddings);
   };
 
-  // TODO: uncomment after Ignite
-  // DiskANNShardKey was removed for Ignite due to backend problems. Leaving this here as it will be reinstated immediately after Ignite
-  // const onDiskANNShardKeyChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
-  //   const value = event.target.value.trim();
-  //   const vectorEmbeddings = [...vectorEmbeddingPolicyData];
-  //   if (!vectorEmbeddings[index]?.diskANNShardKey && !value.startsWith("/")) {
-  //     vectorEmbeddings[index].diskANNShardKey = "/" + value;
-  //   } else {
-  //     vectorEmbeddings[index].diskANNShardKey = value;
-  //   }
-  //   const error = onDiskANNShardKeyError(value);
-  //   vectorEmbeddings[index].diskANNShardKeyError = error;
-  //   setVectorEmbeddingPolicyData(vectorEmbeddings);
-  // }
+  const onShardKeyChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value.trim();
+    const vectorEmbeddings = [...vectorEmbeddingPolicyData];
+    if (!vectorEmbeddings[index]?.vectorIndexShardKey?.[0] && !value.startsWith("/")) {
+      vectorEmbeddings[index].vectorIndexShardKey = ["/" + value];
+    } else {
+      vectorEmbeddings[index].vectorIndexShardKey = [value];
+    }
+    setVectorEmbeddingPolicyData(vectorEmbeddings);
+  };
 
   const onVectorEmbeddingPolicyChange = (
     index: number,
@@ -290,6 +284,11 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
   const onDelete = (index: number) => {
     const vectorEmbeddings = vectorEmbeddingPolicyData.filter((_uniqueKey, j) => index !== j);
     setVectorEmbeddingPolicyData(vectorEmbeddings);
+  };
+
+  const getQuantizationByteSizeTooltipContent = (): string => {
+    const containerName: string = isGlobalSecondaryIndex ? "global secondary index" : "container";
+    return `This is dynamically set by the ${containerName} if left blank, or it can be set to a fixed number`;
   };
 
   return (
@@ -402,6 +401,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
                         styles={labelStyles}
                       >
                         Quantization byte size
+                        <InfoTooltip>{getQuantizationByteSizeTooltipContent()}</InfoTooltip>
                       </Label>
                       <TextField
                         disabled={
@@ -431,26 +431,18 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
                         }
                       />
                     </Stack>
-                    {/*TODO: uncomment after Ignite */}
-                    {/* DiskANNShardKey was removed for Ignite due to backend problems. Leaving this here as it will be reinstated immediately after Ignite
-                    <Stack
-                      style={{ marginLeft: "10px" }}
-                    >
-                      <Label
-                        disabled={disabled || vectorEmbeddingPolicy.indexType !== "diskANN"}
-                        styles={labelStyles}
-                      >DiskANN shard key</Label>
+                    <Stack style={{ marginLeft: "10px" }}>
+                      <Label disabled={disabled || vectorEmbeddingPolicy.indexType !== "diskANN"} styles={labelStyles}>
+                        Vector index shard key
+                      </Label>
                       <TextField
                         disabled={disabled || vectorEmbeddingPolicy.indexType !== "diskANN"}
-                        id={`vector-policy-diskANNShardKey-${index + 1}`}
+                        id={`vector-policy-vectorIndexShardKey-${index + 1}`}
                         styles={textFieldStyles}
-                        value={String(vectorEmbeddingPolicy.diskANNShardKey || "")}
-                        onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                          onDiskANNShardKeyChange(index, event)
-                        }
+                        value={String(vectorEmbeddingPolicy.vectorIndexShardKey?.[0] ?? "")}
+                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => onShardKeyChange(index, event)}
                       />
                     </Stack>
-                    */}
                   </Stack>
                 )}
               </Stack>

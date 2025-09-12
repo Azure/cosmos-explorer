@@ -38,8 +38,8 @@ export const useCommandBar: UseStore<CommandBarStore> = create((set) => ({
 
 const useStyles = makeStyles({
   commandBarContainer: {
-    borderBottom: "1px solid var(--colorNeutralStroke1)"
-  }
+    borderBottom: "1px solid var(--colorNeutralStroke1)",
+  },
 });
 
 export const CommandBar: React.FC<Props> = ({ container }: Props) => {
@@ -62,10 +62,10 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
           ariaLabel="Use left and right arrow keys to navigate between commands"
           items={CommandBarUtil.convertButton(buttons, "var(--colorNeutralBackground1)")}
           styles={{
-            root: { 
+            root: {
               backgroundColor: "var(--colorNeutralBackground1)",
-              color: "var(--colorNeutralForeground1)"
-            }
+              color: "var(--colorNeutralForeground1)",
+            },
           }}
           overflowButtonProps={{ ariaLabel: "More commands" }}
         />
@@ -84,7 +84,10 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
     uiFabricStaticButtons.forEach((btn: ICommandBarItemProps) => (btn.iconOnly = true));
   }
 
-  const uiFabricTabsButtons: ICommandBarItemProps[] = CommandBarUtil.convertButton(contextButtons, "var(--colorNeutralBackground1)");
+  const uiFabricTabsButtons: ICommandBarItemProps[] = CommandBarUtil.convertButton(
+    contextButtons,
+    "var(--colorNeutralBackground1)",
+  );
 
   if (uiFabricTabsButtons.length > 0) {
     uiFabricStaticButtons.push(CommandBarUtil.createDivider("commandBarDivider"));
@@ -109,14 +112,14 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
         root: {
           backgroundColor: "var(--colorNeutralBackground1)",
           padding: "2px 8px 0px 8px",
-          color: "var(--colorNeutralForeground1)"
-        }
+          color: "var(--colorNeutralForeground1)",
+        },
       }
     : {
         root: {
           backgroundColor: "var(--colorNeutralBackground1)",
-          color: "var(--colorNeutralForeground1)"
-        }
+          color: "var(--colorNeutralForeground1)",
+        },
       };
 
   const allButtons = staticButtons.concat(contextButtons).concat(controlButtons);

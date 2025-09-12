@@ -25,10 +25,11 @@ import { ReactTabKind, useTabs } from "hooks/useTabs";
 import * as React from "react";
 import ConnectIcon from "../../../images/Connect_color.svg";
 import ContainersIcon from "../../../images/Containers.svg";
+import CosmosDBIcon from "../../../images/CosmosDB-logo.svg";
 import LinkIcon from "../../../images/Link_blue.svg";
 import PowerShellIcon from "../../../images/PowerShell.svg";
-import CopilotIcon from "../../../images/QueryCopilotNewLogo.svg";
 import QuickStartIcon from "../../../images/Quickstart_Lightning.svg";
+import VisualStudioIcon from "../../../images/VisualStudio.svg";
 import NotebookIcon from "../../../images/notebook/Notebook-resource.svg";
 import CollectionIcon from "../../../images/tree-collection.svg";
 import * as Constants from "../../Common/Constants";
@@ -64,7 +65,6 @@ const useStyles = makeStyles({
     minHeight: "100vh",
     backgroundColor: "var(--colorNeutralBackground1)",
     color: "var(--colorNeutralForeground1)",
-
   },
   splashScreen: {
     display: "flex",
@@ -78,12 +78,12 @@ const useStyles = makeStyles({
     fontSize: "48px",
     fontWeight: "500",
     margin: "16px auto",
-    color: "var(--colorNeutralForeground1)"
+    color: "var(--colorNeutralForeground1)",
   },
   subtitle: {
     fontSize: "18px",
     marginBottom: "40px",
-    color: "var(--colorNeutralForeground2)"
+    color: "var(--colorNeutralForeground2)",
   },
   cardContainer: {
     display: "grid",
@@ -107,8 +107,8 @@ const useStyles = makeStyles({
     cursor: "pointer",
     minHeight: "150px",
     "&:hover": {
-      backgroundColor: "var(--colorNeutralBackground1Hover)"
-    }
+      backgroundColor: "var(--colorNeutralBackground1Hover)",
+    },
   },
   cardContent: {
     display: "flex",
@@ -116,19 +116,19 @@ const useStyles = makeStyles({
     alignItems: "flex-start",
     marginLeft: "16px",
     textAlign: "left",
-    color: "var(--colorNeutralForeground1)"
+    color: "var(--colorNeutralForeground1)",
   },
   cardTitle: {
     fontSize: "18px",
     fontWeight: "600",
     color: "var(--colorNeutralForeground1)",
     textAlign: "left",
-    marginBottom: "8px"
+    marginBottom: "8px",
   },
   cardDescription: {
     fontSize: "13px",
     color: "var(--colorNeutralForeground2)",
-    textAlign: "left"
+    textAlign: "left",
   },
   moreStuffContainer: {
     display: "grid",
@@ -146,7 +146,7 @@ const useStyles = makeStyles({
     fontSize: "20px",
     fontWeight: "600",
     marginBottom: "16px",
-    color: "var(--colorNeutralForeground1)"
+    color: "var(--colorNeutralForeground1)",
   },
   listItem: {
     marginBottom: "26px",
@@ -155,13 +155,13 @@ const useStyles = makeStyles({
     fontSize: "14px",
     color: "var(--colorBrandForegroundLink)",
     "&:hover": {
-      color: "var(--colorBrandForegroundLink)"
-    }
+      color: "var(--colorBrandForegroundLink)",
+    },
   },
   listItemSubtitle: {
     fontSize: "13px",
-    color: "var(--colorNeutralForeground2)"
-  }
+    color: "var(--colorNeutralForeground2)",
+  },
 });
 
 export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
@@ -232,8 +232,12 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
       useDatabases.getState().sampleDataResourceTokenCollection
     ) {
       return (
-        <Stack style={{ width: "66%", cursor: "pointer", margin: "40px auto" }} tokens={{ childrenGap: 16 }}>
-          <Stack horizontal tokens={{ childrenGap: 16 }}>
+        <Stack
+          className="splashStackContainer"
+          style={{ width: "66%", cursor: "pointer", margin: "40px auto" }}
+          tokens={{ childrenGap: 16 }}
+        >
+          <Stack className="splashStackRow" horizontal>
             <SplashScreenButton
               imgSrc={QuickStartIcon}
               title={"Launch quick start"}
@@ -253,26 +257,19 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
               }}
             />
           </Stack>
-          <Stack horizontal tokens={{ childrenGap: 16 }}>
-            {useQueryCopilot.getState().copilotEnabled && (
-              <SplashScreenButton
-                imgSrc={CopilotIcon}
-                title={"Query faster with Query Advisor"}
-                description={
-                  "Query Advisor is your AI buddy that helps you write Azure Cosmos DB queries like a pro. Try it using our sample data set now!"
-                }
-                onClick={() => {
-                  const copilotVersion = userContext.features.copilotVersion;
-                  if (copilotVersion === "v1.0") {
-                    useTabs.getState().openAndActivateReactTab(ReactTabKind.QueryCopilot);
-                  } else if (copilotVersion === "v2.0") {
-                    const sampleCollection = useDatabases.getState().sampleDataResourceTokenCollection;
-                    sampleCollection.onNewQueryClick(sampleCollection, undefined);
-                  }
-                  traceOpen(Action.OpenQueryCopilotFromSplashScreen, { apiType: userContext.apiType });
-                }}
-              />
-            )}
+          <Stack className="splashStackRow" horizontal>
+            <SplashScreenButton
+              imgSrc={CosmosDBIcon}
+              imgSize={35}
+              title={"Azure Cosmos DB Samples Gallery"}
+              description={
+                "Discover samples that showcase scalable, intelligent app patterns. Try one now to see how fast you can go from concept to code with Cosmos DB"
+              }
+              onClick={() => {
+                window.open("https://azurecosmosdb.github.io/gallery/?tags=example", "_blank");
+                traceOpen(Action.LearningResourcesClicked, { apiType: userContext.apiType });
+              }}
+            />
             <SplashScreenButton
               imgSrc={ConnectIcon}
               title={"Connect"}
@@ -314,6 +311,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
               sample data, query.
             </TeachingBubble>
           )}
+        {/*TODO: convert below to use SplashScreenButton */}
         {mainItems.map((item) => (
           <Stack
             id={`mainButton-${item.id}`}
@@ -447,10 +445,10 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
     }
 
     if (userContext.apiType === "VCoreMongo") {
-      icon = ContainersIcon;
-      title = "Connect with Studio 3T";
-      description = "Prefer Studio 3T? Find your connection strings here";
-      onClick = () => useTabs.getState().openAndActivateReactTab(ReactTabKind.Connect);
+      icon = VisualStudioIcon;
+      title = "Connect with VS Code";
+      description = "Query and Manage your MongoDB cluster in Visual Studio Code";
+      onClick = () => container?.openInVsCode && container.openInVsCode();
     }
 
     return {
@@ -644,17 +642,22 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
             <li key={`${item.title}${item.description}${index}`} className={styles.listItem}>
               <Stack style={{ marginBottom: 26 }}>
                 <Stack horizontal>
-                  <svg 
-                    width="16" 
-                    height="16" 
-                    viewBox="0 0 20 20" 
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 20 20"
                     xmlns="http://www.w3.org/2000/svg"
                     style={{ marginRight: 8 }}
                     fill="currentColor"
                   >
                     <path d="M4 4c0-1.1.9-2 2-2h3.59c.4 0 .78.16 1.06.44l3.91 3.91c.28.28.44.67.44 1.06V14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V8h-3.5A1.5 1.5 0 0 1 9 6.5V3H6Zm4 .2v3.3c0 .28.22.5.5.5h3.3L10 3.2ZM17 9a1 1 0 0 0-1-1v6a3 3 0 0 1-3 3H6a1 1 0 0 0 1 1h6.06A3.94 3.94 0 0 0 17 14.06V9Z" />
                   </svg>
-                  <Link style={{ fontSize: 14 }} onClick={item.onClick} title={item.info} className={styles.listItemTitle}>
+                  <Link
+                    style={{ fontSize: 14 }}
+                    onClick={item.onClick}
+                    title={item.info}
+                    className={styles.listItemTitle}
+                  >
                     {item.title}
                   </Link>
                 </Stack>
@@ -663,7 +666,11 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
             </li>
           ))}
         </ul>
-        {recentItems.length > 0 && <Link onClick={() => clearMostRecent()} className={styles.listItemTitle}>Clear Recents</Link>}
+        {recentItems.length > 0 && (
+          <Link onClick={() => clearMostRecent()} className={styles.listItemTitle}>
+            Clear Recents
+          </Link>
+        )}
       </Stack>
     );
   };
@@ -817,7 +824,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
 
   const vcoreMongoNextStepItems: { link: string; title: string; description: string }[] = [
     {
-      link: "https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/vcore/how-to-migrate-native-tools?tabs=export-import",
+      link: "https://learn.microsoft.com/azure/cosmos-db/mongodb/vcore/migration-options",
       title: "Migrate Data",
       description: "",
     },
@@ -915,9 +922,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
         <h1 className={styles.title} role="heading" aria-label="Welcome to Azure Cosmos DB">
           Welcome to Azure Cosmos DB<span className="activePatch"></span>
         </h1>
-        <div className={styles.subtitle}>
-          Globally distributed, multi-model database service for any scale
-        </div>
+        <div className={styles.subtitle}>Globally distributed, multi-model database service for any scale</div>
         {getSplashScreenButtons()}
         {useCarousel.getState().showCoachMark && (
           <Coachmark
@@ -942,8 +947,8 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
               }}
               onDismiss={() => useCarousel.getState().setShowCoachMark(false)}
             >
-              You will be guided to create a sample container with sample data, then we will give you a tour of
-              data explorer. You can also cancel launching this tour and explore yourself
+              You will be guided to create a sample container with sample data, then we will give you a tour of data
+              explorer. You can also cancel launching this tour and explore yourself
             </TeachingBubbleContent>
           </Coachmark>
         )}

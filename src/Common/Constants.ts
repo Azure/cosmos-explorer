@@ -138,15 +138,6 @@ export enum MongoBackendEndpointType {
   remote,
 }
 
-export class BackendApi {
-  public static readonly GenerateToken: string = "GenerateToken";
-  public static readonly PortalSettings: string = "PortalSettings";
-  public static readonly AccountRestrictions: string = "AccountRestrictions";
-  public static readonly RuntimeProxy: string = "RuntimeProxy";
-  public static readonly DisallowedLocations: string = "DisallowedLocations";
-  public static readonly SampleData: string = "SampleData";
-}
-
 export class PortalBackendEndpoints {
   public static readonly Development: string = "https://localhost:7235";
   public static readonly Mpac: string = "https://cdb-ms-mpac-pbe.cosmos.azure.com";
@@ -257,6 +248,7 @@ export class Areas {
   public static ShareDialog: string = "Share Access Dialog";
   public static Notebook: string = "Notebook";
   public static Copilot: string = "Copilot";
+  public static CloudShell: string = "Cloud Shell";
 }
 
 export class HttpHeaders {
@@ -530,6 +522,9 @@ export class ariaLabelForLearnMoreLink {
   public static readonly AzureSynapseLink = "Learn more about Azure Synapse Link.";
 }
 
+export class GlobalSecondaryIndexLabels {
+  public static readonly NewGlobalSecondaryIndex: string = "New Global Secondary Index";
+}
 export class FeedbackLabels {
   public static readonly provideFeedback: string = "Provide feedback";
 }
@@ -770,3 +765,10 @@ export const ShortenedQueryCopilotSampleContainerSchema = {
 
   userPrompt: "find all products",
 };
+
+export enum MongoGuidRepresentation {
+  Standard = "Standard",
+  CSharpLegacy = "CSharpLegacy",
+  JavaLegacy = "JavaLegacy",
+  PythonLegacy = "PythonLegacy",
+}

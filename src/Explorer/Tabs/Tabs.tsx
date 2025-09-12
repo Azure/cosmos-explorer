@@ -17,6 +17,7 @@ import { useTeachingBubble } from "hooks/useTeachingBubble";
 import ko from "knockout";
 import React, { MutableRefObject, useEffect, useRef, useState } from "react";
 import errorQuery from "../../../images/error_no_outline.svg";
+import warningIconSvg from "../../../images/warning.svg";
 import { useObservable } from "../../hooks/useObservable";
 import { ReactTabKind, useTabs } from "../../hooks/useTabs";
 import TabsBase from "./TabsBase";
@@ -124,16 +125,19 @@ function TabNav({ tab, active, tabKind }: { tab?: Tab; active: boolean; tabKind?
           >
             <span className="statusIconContainer" style={{ width: tabKind === ReactTabKind.Home ? 0 : 18 }}>
               {useObservable(tab?.isExecutionError || ko.observable(false)) && <ErrorIcon tab={tab} active={active} />}
+              {useObservable(tab?.isExecutionWarning || ko.observable(false)) && (
+                <WarningIcon tab={tab} active={active} />
+              )}
               {isTabExecuting(tab, tabKind) && (
-                <Spinner 
-                  size={SpinnerSize.small} 
+                <Spinner
+                  size={SpinnerSize.small}
                   styles={{
                     circle: {
                       borderTopColor: "var(--colorNeutralForeground1)",
                       borderLeftColor: "var(--colorNeutralForeground1)",
                       borderBottomColor: "var(--colorNeutralForeground1)",
-                      borderRightColor: "var(--colorNeutralBackground1)"
-                    }
+                      borderRightColor: "var(--colorNeutralBackground1)",
+                    },
                   }}
                 />
               )}
@@ -205,6 +209,20 @@ const ErrorIcon = ({ tab, active }: { tab: Tab; active: boolean }) => (
     onKeyPress={({ nativeEvent: e }) => tab.onErrorDetailsKeyPress(undefined, e)}
   >
     <span className="errorIcon" />
+  </div>
+);
+
+const WarningIcon = ({ tab, active }: { tab: Tab; active: boolean }) => (
+  <div
+    id="warningStatusIcon"
+    role="button"
+    title="Click to view more details"
+    tabIndex={active ? 0 : undefined}
+    className={active ? "actionsEnabled warningIconContainer" : "warningIconContainer"}
+    onClick={({ nativeEvent: e }) => tab.onErrorDetailsClick(undefined, e)}
+    onKeyPress={({ nativeEvent: e }) => tab.onErrorDetailsKeyPress(undefined, e)}
+  >
+    <img src={warningIconSvg} alt="Warning Icon" style={{ height: 15, marginBottom: 5 }} />
   </div>
 );
 

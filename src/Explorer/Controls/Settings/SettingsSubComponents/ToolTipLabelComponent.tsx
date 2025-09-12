@@ -14,7 +14,9 @@ export class ToolTipLabelComponent extends React.Component<ToolTipLabelComponent
     return (
       <>
         <Stack horizontal verticalAlign="center" tokens={toolTipLabelStackTokens}>
-          {this.props.label && <Text style={{ fontWeight: 600 , color: 'var(--colorNeutralForeground1)'}}>{this.props.label}</Text>}
+          {this.props.label && (
+            <Text style={{ fontWeight: 600, color: "var(--colorNeutralForeground1)" }}>{this.props.label}</Text>
+          )}
           {this.props.toolTipElement && (
             <TooltipHost
               content={this.props.toolTipElement}

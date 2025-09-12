@@ -72,8 +72,8 @@ const useStyles = makeStyles({
     height: "100vh",
     width: "100vw",
     backgroundColor: "var(--colorNeutralBackground1)",
-    color: "var(--colorNeutralForeground1)"
-  }
+    color: "var(--colorNeutralForeground1)",
+  },
 });
 
 const App = (): JSX.Element => {
@@ -99,12 +99,12 @@ const App = (): JSX.Element => {
       <KeyboardShortcutRoot>
         <div
           className="flexContainer"
-          style={{ 
-            flex: 1, 
-            display: "flex", 
+          style={{
+            flex: 1,
+            display: "flex",
             flexDirection: "column",
             backgroundColor: "var(--colorNeutralBackground1)",
-            color: "var(--colorNeutralForeground1)"
+            color: "var(--colorNeutralForeground1)",
           }}
           aria-hidden="false"
           data-test="DataExplorerRoot"
@@ -112,12 +112,12 @@ const App = (): JSX.Element => {
           <div
             id="divExplorer"
             className="flexContainer hideOverflows"
-            style={{ 
-              flex: 1, 
-              display: "flex", 
+            style={{
+              flex: 1,
+              display: "flex",
               flexDirection: "column",
               backgroundColor: "var(--colorNeutralBackground1)",
-              color: "var(--colorNeutralForeground1)"
+              color: "var(--colorNeutralForeground1)",
             }}
           >
             <div id="freeTierTeachingBubble"> </div>
@@ -133,7 +133,7 @@ const App = (): JSX.Element => {
               id="explorerNotificationConsole"
               style={{
                 backgroundColor: "var(--colorNeutralBackground1)",
-                color: "var(--colorNeutralForeground1)"
+                color: "var(--colorNeutralForeground1)",
               }}
             >
               <NotificationConsole />
@@ -154,19 +154,19 @@ const App = (): JSX.Element => {
 const Root: React.FC = () => {
   // Force dark theme
   const currentTheme = isDarkMode ? webDarkTheme : webLightTheme;
-  
+
   // Apply theme to body for Fluent UI v8 components
   useEffect(() => {
     if (isDarkMode) {
       document.body.classList.add("isDarkMode");
       document.body.style.backgroundColor = "var(--colorNeutralBackground1)";
       document.body.style.color = "var(--colorNeutralForeground1)";
-      loadTheme(appThemeFabric);
+      // loadTheme(appThemeFabric);
     } else {
       document.body.classList.remove("isDarkMode");
       document.body.style.backgroundColor = "";
       document.body.style.color = "";
-      loadTheme(appThemeFabric);
+      // loadTheme(appThemeFabric);
     }
   }, [isDarkMode]);
 

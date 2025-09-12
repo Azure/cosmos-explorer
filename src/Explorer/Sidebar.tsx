@@ -8,23 +8,32 @@ import {
   MenuList,
   MenuPopover,
   MenuTrigger,
+  mergeClasses,
   shorthands,
-  SplitButton
+  SplitButton,
 } from "@fluentui/react-components";
 import { Add16Regular, ArrowSync12Regular, ChevronLeft12Regular, ChevronRight12Regular } from "@fluentui/react-icons";
+import { GlobalSecondaryIndexLabels } from "Common/Constants";
+import { isGlobalSecondaryIndexEnabled } from "Common/DatabaseAccountUtility";
 import { configContext, Platform } from "ConfigContext";
 import Explorer from "Explorer/Explorer";
 import { AddDatabasePanel } from "Explorer/Panes/AddDatabasePanel/AddDatabasePanel";
+import {
+  AddGlobalSecondaryIndexPanel,
+  AddGlobalSecondaryIndexPanelProps,
+} from "Explorer/Panes/AddGlobalSecondaryIndexPanel/AddGlobalSecondaryIndexPanel";
 import { Tabs } from "Explorer/Tabs/Tabs";
 import { CosmosFluentProvider, cosmosShorthands, tokens } from "Explorer/Theme/ThemeUtil";
 import { useDatabases } from "Explorer/useDatabases";
 import { KeyboardAction, KeyboardActionGroup, KeyboardActionHandler, useKeyboardActionGroup } from "KeyboardShortcuts";
-import { isFabric, isFabricMirrored, isFabricNative } from "Platform/Fabric/FabricUtil";
+import { isFabric, isFabricMirrored, isFabricNative, isFabricNativeReadOnly } from "Platform/Fabric/FabricUtil";
 import { userContext } from "UserContext";
 import { getCollectionName, getDatabaseName } from "Utils/APITypeUtils";
+import { conditionalClass } from "Utils/StyleUtils";
 import { Allotment, AllotmentHandle } from "allotment";
 import { useSidePanel } from "hooks/useSidePanel";
 import { useTheme } from "hooks/useTheme";
+import useZoomLevel from "hooks/useZoomLevel";
 import { debounce } from "lodash";
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { ResourceTree } from "./Tree/ResourceTree";
@@ -127,6 +136,23 @@ const useSidebarStyles = makeStyles({
       display: "flex",
     },
   },
+  accessibleContent: {
+    "@media (max-width: 420px)": {
+      overflow: "scroll",
+    },
+  },
+  minHeightResponsive: {
+    "@media (max-width: 420px)": {
+      minHeight: "400px",
+    },
+  },
+  accessibleContentZoom: {
+    overflow: "scroll",
+  },
+
+  minHeightZoom: {
+    minHeight: "400px",
+  },
 });
 
 interface GlobalCommandsProps {
@@ -188,6 +214,25 @@ const GlobalCommands: React.FC<GlobalCommandsProps> = ({ explorer }) => {
           useSidePanel.getState().openSidePanel("New " + getDatabaseName(), <AddDatabasePanel explorer={explorer} />);
         },
         keyboardAction: KeyboardAction.NEW_DATABASE,
+      });
+    }
+
+    if (isGlobalSecondaryIndexEnabled()) {
+      const addMaterializedViewPanelProps: AddGlobalSecondaryIndexPanelProps = {
+        explorer,
+      };
+
+      actions.push({
+        id: "new_materialized_view",
+        label: GlobalSecondaryIndexLabels.NewGlobalSecondaryIndex,
+        icon: <Add16Regular />,
+        onClick: () =>
+          useSidePanel
+            .getState()
+            .openSidePanel(
+              GlobalSecondaryIndexLabels.NewGlobalSecondaryIndex,
+              <AddGlobalSecondaryIndexPanel {...addMaterializedViewPanelProps} />,
+            ),
       });
     }
 
@@ -280,6 +325,7 @@ export const SidebarContainer: React.FC<SidebarProps> = ({ explorer }) => {
   const hasSidebar = userContext.apiType !== "Postgres" && userContext.apiType !== "VCoreMongo";
   const allotment = useRef<AllotmentHandle>(null);
   const { isDarkMode } = useTheme();
+  const isZoomed = useZoomLevel();
 
   const expand = useCallback(() => {
     if (!expanded) {
@@ -323,18 +369,31 @@ export const SidebarContainer: React.FC<SidebarProps> = ({ explorer }) => {
 
   const hasGlobalCommands = !(
     isFabricMirrored() ||
+    isFabricNativeReadOnly() ||
     userContext.apiType === "Postgres" ||
     userContext.apiType === "VCoreMongo"
   );
 
   return (
     <div className="sidebarContainer">
-      <Allotment ref={allotment} onChange={onChange} onDragEnd={onDragEnd} className="resourceTreeAndTabs">
+      <Allotment
+        ref={allotment}
+        onChange={onChange}
+        onDragEnd={onDragEnd}
+        className={`resourceTreeAndTabs ${styles.accessibleContent} ${conditionalClass(
+          isZoomed,
+          styles.accessibleContentZoom,
+        )}`}
+      >
         {/* Collections Tree - Start */}
         {hasSidebar && (
           // When collapsed, we force the pane to 24 pixels wide and make it non-resizable.
-          <Allotment.Pane minSize={24} preferredSize={250}>
-            <CosmosFluentProvider>
+          <Allotment.Pane
+            className={`${styles.minHeightResponsive} ${conditionalClass(isZoomed, styles.minHeightZoom)}`}
+            minSize={24}
+            preferredSize={250}
+          >
+            <CosmosFluentProvider className={mergeClasses(styles.sidebar)}>
               <div className={styles.sidebarContainer}>
                 {loading && (
                   // The Fluent UI progress bar has some issues in reduced-motion environments so we use a simple CSS animation here.
@@ -345,16 +404,18 @@ export const SidebarContainer: React.FC<SidebarProps> = ({ explorer }) => {
                   <>
                     <div className={styles.floatingControlsContainer}>
                       <div className={styles.floatingControls}>
-                        <button
-                          type="button"
-                          data-test="Sidebar/RefreshButton"
-                          className={styles.floatingControlButton}
-                          disabled={loading}
-                          title="Refresh"
-                          onClick={onRefreshClick}
-                        >
-                          <ArrowSync12Regular />
-                        </button>
+                        {!isFabricNative() && (
+                          <button
+                            type="button"
+                            data-test="Sidebar/RefreshButton"
+                            className={styles.floatingControlButton}
+                            disabled={loading}
+                            title="Refresh"
+                            onClick={onRefreshClick}
+                          >
+                            <ArrowSync12Regular />
+                          </button>
+                        )}
                         <button
                           type="button"
                           className={styles.floatingControlButton}
@@ -365,7 +426,10 @@ export const SidebarContainer: React.FC<SidebarProps> = ({ explorer }) => {
                         </button>
                       </div>
                     </div>
-                    <div className={styles.expandedContent} style={!hasGlobalCommands ? { gridTemplateRows: "1fr" } : undefined}>
+                    <div
+                      className={styles.expandedContent}
+                      style={!hasGlobalCommands ? { gridTemplateRows: "1fr" } : undefined}
+                    >
                       {hasGlobalCommands && <GlobalCommands explorer={explorer} />}
                       <ResourceTree explorer={explorer} />
                     </div>
@@ -384,7 +448,10 @@ export const SidebarContainer: React.FC<SidebarProps> = ({ explorer }) => {
             </CosmosFluentProvider>
           </Allotment.Pane>
         )}
-        <Allotment.Pane minSize={200}>
+        <Allotment.Pane
+          className={`${styles.minHeightResponsive} ${conditionalClass(isZoomed, styles.minHeightZoom)}`}
+          minSize={200}
+        >
           <Tabs explorer={explorer} />
         </Allotment.Pane>
       </Allotment>

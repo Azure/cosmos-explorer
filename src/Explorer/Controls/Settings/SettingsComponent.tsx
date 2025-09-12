@@ -1,18 +1,19 @@
-import { IPivotItemProps, IPivotProps, Pivot, PivotItem, Stack, getTheme } from "@fluentui/react";
+import { IPivotItemProps, IPivotProps, Pivot, PivotItem, Stack } from "@fluentui/react";
 import {
-  ComputedPropertiesComponent,
-  ComputedPropertiesComponentProps,
+    ComputedPropertiesComponent,
+    ComputedPropertiesComponentProps,
 } from "Explorer/Controls/Settings/SettingsSubComponents/ComputedPropertiesComponent";
 import {
-  ContainerPolicyComponent,
-  ContainerPolicyComponentProps,
+    ContainerPolicyComponent,
+    ContainerPolicyComponentProps,
 } from "Explorer/Controls/Settings/SettingsSubComponents/ContainerPolicyComponent";
 import {
-  ThroughputBucketsComponent,
-  ThroughputBucketsComponentProps,
+    ThroughputBucketsComponent,
+    ThroughputBucketsComponentProps,
 } from "Explorer/Controls/Settings/SettingsSubComponents/ThroughputInputComponents/ThroughputBucketsComponent";
 import { useDatabases } from "Explorer/useDatabases";
-import { isFullTextSearchEnabled, isVectorSearchEnabled } from "Utils/CapabilityUtils";
+import { isFabricNative } from "Platform/Fabric/FabricUtil";
+import { isVectorSearchEnabled } from "Utils/CapabilityUtils";
 import { isRunningOnPublicCloud } from "Utils/CloudUtils";
 import * as React from "react";
 import DiscardIcon from "../../../../images/discard.svg";
@@ -33,37 +34,41 @@ import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
 import { MongoDBCollectionResource, MongoIndex } from "../../../Utils/arm/generatedClients/cosmos/types";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import {
-  PartitionKeyComponent,
-  PartitionKeyComponentProps,
+    PartitionKeyComponent,
+    PartitionKeyComponentProps,
 } from "../../Controls/Settings/SettingsSubComponents/PartitionKeyComponent";
 import { useCommandBar } from "../../Menus/CommandBar/CommandBarComponentAdapter";
 import { SettingsTabV2 } from "../../Tabs/SettingsTabV2";
 import "./SettingsComponent.less";
 import { mongoIndexingPolicyAADError } from "./SettingsRenderUtils";
 import {
-  ConflictResolutionComponent,
-  ConflictResolutionComponentProps,
+    ConflictResolutionComponent,
+    ConflictResolutionComponentProps,
 } from "./SettingsSubComponents/ConflictResolutionComponent";
+import {
+    GlobalSecondaryIndexComponent,
+    GlobalSecondaryIndexComponentProps,
+} from "./SettingsSubComponents/GlobalSecondaryIndexComponent";
 import { IndexingPolicyComponent, IndexingPolicyComponentProps } from "./SettingsSubComponents/IndexingPolicyComponent";
 import {
-  MongoIndexingPolicyComponent,
-  MongoIndexingPolicyComponentProps,
+    MongoIndexingPolicyComponent,
+    MongoIndexingPolicyComponentProps,
 } from "./SettingsSubComponents/MongoIndexingPolicy/MongoIndexingPolicyComponent";
 import { ScaleComponent, ScaleComponentProps } from "./SettingsSubComponents/ScaleComponent";
 import { SubSettingsComponent, SubSettingsComponentProps } from "./SettingsSubComponents/SubSettingsComponent";
 import {
-  AddMongoIndexProps,
-  ChangeFeedPolicyState,
-  GeospatialConfigType,
-  MongoIndexTypes,
-  SettingsV2TabTypes,
-  TtlType,
-  getMongoNotification,
-  getTabTitle,
-  hasDatabaseSharedThroughput,
-  isDirty,
-  parseConflictResolutionMode,
-  parseConflictResolutionProcedure,
+    AddMongoIndexProps,
+    ChangeFeedPolicyState,
+    GeospatialConfigType,
+    MongoIndexTypes,
+    SettingsV2TabTypes,
+    TtlType,
+    getMongoNotification,
+    getTabTitle,
+    hasDatabaseSharedThroughput,
+    isDirty,
+    parseConflictResolutionMode,
+    parseConflictResolutionProcedure,
 } from "./SettingsUtils";
 
 interface SettingsV2TabInfo {
@@ -162,6 +167,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   private shouldShowComputedPropertiesEditor: boolean;
   private shouldShowIndexingPolicyEditor: boolean;
   private shouldShowPartitionKeyEditor: boolean;
+  private isGlobalSecondaryIndex: boolean;
   private isVectorSearchEnabled: boolean;
   private isFullTextSearchEnabled: boolean;
   private totalThroughputUsed: number;
@@ -179,14 +185,13 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.shouldShowComputedPropertiesEditor = userContext.apiType === "SQL";
       this.shouldShowIndexingPolicyEditor = userContext.apiType !== "Cassandra" && userContext.apiType !== "Mongo";
       this.shouldShowPartitionKeyEditor = userContext.apiType === "SQL" && isRunningOnPublicCloud();
+      this.isGlobalSecondaryIndex =
+        !!this.collection?.materializedViewDefinition() || !!this.collection?.materializedViews();
       this.isVectorSearchEnabled = isVectorSearchEnabled() && !hasDatabaseSharedThroughput(this.collection);
-      this.isFullTextSearchEnabled = isFullTextSearchEnabled() && !hasDatabaseSharedThroughput(this.collection);
+      this.isFullTextSearchEnabled = userContext.apiType === "SQL";
 
       this.changeFeedPolicyVisible = userContext.features.enableChangeFeedPolicy;
-      this.throughputBucketsEnabled =
-        userContext.apiType === "SQL" &&
-        userContext.features.enableThroughputBuckets &&
-        userContext.authType === AuthType.AAD;
+      this.throughputBucketsEnabled = userContext.throughputBucketsEnabled;
 
       // Mongo container with system partition key still treat as "Fixed"
       this.isFixedContainer =
@@ -1066,11 +1071,11 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         databaseId: this.collection.databaseId,
         collectionId: this.collection.id(),
         currentOffer: this.collection.offer(),
-        autopilotThroughput: this.collection.offer().autoscaleMaxThroughput
-          ? this.collection.offer().autoscaleMaxThroughput
+        autopilotThroughput: this.collection.offer?.()?.autoscaleMaxThroughput
+          ? this.collection.offer?.()?.autoscaleMaxThroughput
           : undefined,
-        manualThroughput: this.collection.offer().manualThroughput
-          ? this.collection.offer().manualThroughput
+        manualThroughput: this.collection.offer?.()?.manualThroughput
+          ? this.collection.offer?.()?.manualThroughput
           : undefined,
         throughputBuckets: this.state.throughputBuckets,
       });
@@ -1086,6 +1091,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         currentOffer: this.collection.offer(),
         autopilotThroughput: this.state.isAutoPilotSelected ? this.state.autoPilotThroughput : undefined,
         manualThroughput: this.state.isAutoPilotSelected ? undefined : this.state.throughput,
+        throughputBuckets: this.throughputBucketsEnabled ? this.state.throughputBuckets : undefined,
       };
       if (this.hasProvisioningTypeChanged()) {
         if (this.state.isAutoPilotSelected) {
@@ -1137,11 +1143,11 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   };
 
   public render(): JSX.Element {
-    const theme = getTheme();
     const scaleComponentProps: ScaleComponentProps = {
       collection: this.collection,
       database: this.database,
       isFixedContainer: this.isFixedContainer,
+      isGlobalSecondaryIndex: this.isGlobalSecondaryIndex,
       onThroughputChange: this.onThroughputChange,
       throughput: this.state.throughput,
       throughputBaseline: this.state.throughputBaseline,
@@ -1207,6 +1213,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       isFullTextSearchEnabled: this.isFullTextSearchEnabled,
       shouldDiscardContainerPolicies: this.state.shouldDiscardContainerPolicies,
       resetShouldDiscardContainerPolicyChange: this.resetShouldDiscardContainerPolicies,
+      isGlobalSecondaryIndex: this.isGlobalSecondaryIndex,
     };
 
     const indexingPolicyComponentProps: IndexingPolicyComponentProps = {
@@ -1271,6 +1278,12 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       database: useDatabases.getState().findDatabaseWithId(this.collection.databaseId),
       collection: this.collection,
       explorer: this.props.settingsTab.getContainer(),
+      isReadOnly: isFabricNative(),
+    };
+
+    const globalSecondaryIndexComponentProps: GlobalSecondaryIndexComponentProps = {
+      collection: this.collection,
+      explorer: this.props.settingsTab.getContainer(),
     };
 
     const tabs: SettingsV2TabInfo[] = [];
@@ -1329,10 +1342,17 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       });
     }
 
-    if (this.throughputBucketsEnabled) {
+    if (this.throughputBucketsEnabled && !hasDatabaseSharedThroughput(this.collection) && this.offer) {
       tabs.push({
         tab: SettingsV2TabTypes.ThroughputBucketsTab,
         content: <ThroughputBucketsComponent {...throughputBucketsComponentProps} />,
+      });
+    }
+
+    if (this.isGlobalSecondaryIndex) {
+      tabs.push({
+        tab: SettingsV2TabTypes.GlobalSecondaryIndexTab,
+        content: <GlobalSecondaryIndexComponent {...globalSecondaryIndexComponentProps} />,
       });
     }
 
@@ -1343,95 +1363,102 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
     const pivotStyles = {
       root: {
-        backgroundColor: 'var(--colorNeutralBackground1)',
-        color: 'var(--colorNeutralForeground1)',
+        backgroundColor: "var(--colorNeutralBackground1)",
+        color: "var(--colorNeutralForeground1)",
         selectors: {
-          '& .ms-Pivot-link': {
-            color: 'var(--colorNeutralForeground1)'
+          "& .ms-Pivot-link": {
+            color: "var(--colorNeutralForeground1)",
           },
-          '& .ms-Pivot-link.is-selected::before': {
-            backgroundColor: 'var(--colorCompoundBrandBackground)'
+          "& .ms-Pivot-link.is-selected::before": {
+            backgroundColor: "var(--colorCompoundBrandBackground)",
           },
-         
-        }
+        },
       },
       link: {
-        backgroundColor: 'var(--colorNeutralBackground1)',
-        color: 'var(--colorNeutralForeground1)',
+        backgroundColor: "var(--colorNeutralBackground1)",
+        color: "var(--colorNeutralForeground1)",
         selectors: {
-          '&:hover': {
-            backgroundColor: 'var(--colorNeutralBackground1)',
-            color: 'var(--colorNeutralForeground1)'
+          "&:hover": {
+            backgroundColor: "var(--colorNeutralBackground1)",
+            color: "var(--colorNeutralForeground1)",
           },
-          '&:active': {
-            backgroundColor: 'var(--colorNeutralBackground1)',
-            color: 'var(--colorNeutralForeground1)'
+          "&:active": {
+            backgroundColor: "var(--colorNeutralBackground1)",
+            color: "var(--colorNeutralForeground1)",
           },
           '&[aria-selected="true"]': {
-            backgroundColor: 'var(--colorNeutralBackground1)',
-            color: 'var(--colorNeutralForeground1)',
+            backgroundColor: "var(--colorNeutralBackground1)",
+            color: "var(--colorNeutralForeground1)",
             selectors: {
-              '&:hover': {
-                backgroundColor: 'var(--colorNeutralBackground1)',
-                color: 'var(--colorNeutralForeground1)'
+              "&:hover": {
+                backgroundColor: "var(--colorNeutralBackground1)",
+                color: "var(--colorNeutralForeground1)",
               },
-              '&:active': {
-                backgroundColor: 'var(--colorNeutralBackground1)',
-                color: 'var(--colorNeutralForeground1)'
-              }
-            }
-          }
-        }
+              "&:active": {
+                backgroundColor: "var(--colorNeutralBackground1)",
+                color: "var(--colorNeutralForeground1)",
+              },
+            },
+          },
+        },
       },
-   
+
       itemContainer: {
         // padding: '20px 24px',
-        backgroundColor: 'var(--colorNeutralBackground1)',
-        color: 'var(--colorNeutralForeground1)'
-      }
+        backgroundColor: "var(--colorNeutralBackground1)",
+        color: "var(--colorNeutralForeground1)",
+      },
     };
 
     const contentStyles = {
       root: {
-        backgroundColor: 'var(--colorNeutralBackground1)',
-        color: 'var(--colorNeutralForeground1)',
+        backgroundColor: "var(--colorNeutralBackground1)",
+        color: "var(--colorNeutralForeground1)",
         // padding: '20px 24px'
-      }
+      },
     };
-    
+
     return (
-      <div className="settingsV2MainContainer" style={{ 
-        backgroundColor: 'var(--colorNeutralBackground1)',
-        color: 'var(--colorNeutralForeground1)',
-        position: 'relative'
-      } as React.CSSProperties}>
+      <div
+        className="settingsV2MainContainer"
+        style={
+          {
+            backgroundColor: "var(--colorNeutralBackground1)",
+            color: "var(--colorNeutralForeground1)",
+            position: "relative",
+          } as React.CSSProperties
+        }
+      >
         {this.shouldShowKeyspaceSharedThroughputMessage() && (
           <div>This table shared throughput is configured at the keyspace</div>
         )}
 
-        <div className="settingsV2TabsContainer" style={{ 
-          backgroundColor: 'var(--colorNeutralBackground1)',
-          color: 'var(--colorNeutralForeground1)',
-          position: 'relative',
-          padding: '20px 24px'
-        } as React.CSSProperties}>
+        <div
+          className="settingsV2TabsContainer"
+          style={
+            {
+              backgroundColor: "var(--colorNeutralBackground1)",
+              color: "var(--colorNeutralForeground1)",
+              position: "relative",
+              padding: "20px 24px",
+            } as React.CSSProperties
+          }
+        >
           <Pivot {...pivotProps} styles={pivotStyles}>
             {tabs.map((tab) => {
               const pivotItemProps: IPivotItemProps = {
                 itemKey: SettingsV2TabTypes[tab.tab],
-                style: { 
+                style: {
                   marginTop: 20,
-                  backgroundColor: 'var(--colorNeutralBackground1)',
-                  color: 'var(--colorNeutralForeground1)'
+                  backgroundColor: "var(--colorNeutralBackground1)",
+                  color: "var(--colorNeutralForeground1)",
                 },
                 headerText: getTabTitle(tab.tab),
               };
 
               return (
                 <PivotItem key={pivotItemProps.itemKey} {...pivotItemProps}>
-                  <Stack styles={contentStyles}>
-                    {tab.content}
-                  </Stack>
+                  <Stack styles={contentStyles}>{tab.content}</Stack>
                 </PivotItem>
               );
             })}

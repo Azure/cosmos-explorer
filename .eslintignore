@@ -23,8 +23,6 @@ src/Common/MongoUtility.ts
 src/Common/NotificationsClientBase.ts
 src/Common/QueriesClient.ts
 src/Common/Splitter.ts
-src/Controls/Heatmap/Heatmap.test.ts
-src/Controls/Heatmap/Heatmap.ts
 src/Definitions/datatables.d.ts
 src/Definitions/gif.d.ts
 src/Definitions/globals.d.ts

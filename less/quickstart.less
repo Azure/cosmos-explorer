@@ -1,927 +1,923 @@
 @import "./Common/Constants";
 
 html {
-    font-family: wf_segoe-ui_normal, "Segoe UI", "Segoe WP", Tahoma, Arial, sans-serif;
-    padding: 0px;
-    margin: 0px;
-    overflow: hidden;
+  font-family: wf_segoe-ui_normal, "Segoe UI", "Segoe WP", Tahoma, Arial, sans-serif;
+  padding: 0px;
+  margin: 0px;
+  overflow: hidden;
 }
 
 body {
-    font-family: wf_segoe-ui_normal, "Segoe UI", "Segoe WP", Tahoma, Arial, sans-serif;
-    font-size: 12px;
+  font-family: wf_segoe-ui_normal, "Segoe UI", "Segoe WP", Tahoma, Arial, sans-serif;
+  font-size: 12px;
 }
 
 .fixedleftpane {
-    background: #2f2d2d;
-    height: 100vh;
-    width: 80px;
-    float: left;
+  background: #2f2d2d;
+  height: 100vh;
+  width: 80px;
+  float: left;
 }
 
 #divQuickStart,
 #divExplorer {
-    display: inline-block;
-    width: 100%;
-    white-space: nowrap;
+  display: inline-block;
+  width: 100%;
+  white-space: nowrap;
 }
 
 #imgiconwidth1 {
-    width: 72%;
+  width: 72%;
 }
 
 #Quickstart {
-    text-align: center;
-    width: 80px;
-    height: 60px;
-    margin: 0 auto;
-    padding-top: 5px;
-    position: relative;
+  text-align: center;
+  width: 80px;
+  height: 60px;
+  margin: 0 auto;
+  padding-top: 5px;
+  position: relative;
 }
 
 .collectionheading {
-    text-transform: uppercase;
-    font-size: 10px;
+  text-transform: uppercase;
+  font-size: 10px;
 }
 
 #Quickstart #imgiconwidth1 {
-    width: 24px;
-    height: 24px;
-    position: absolute;
-    right: 27px;
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  right: 27px;
 }
 
 .topSelected {
-    border-left: 4px solid @AccentMediumHigh;
-    background: #666666;
+  border-left: 4px solid @AccentMediumHigh;
+  background: #666666;
 }
 
 .topSelected:hover {
-    border-left: 4px solid @AccentMediumHigh;
-    background: #666666!important;
-    cursor: default!important;
+  border-left: 4px solid @AccentMediumHigh;
+  background: #666666 !important;
+  cursor: default !important;
 }
 
 #Quickstart:hover span.activemenu,
 #Quickstart:active span.activemenu {
-    color: #fff;
+  color: #fff;
 }
 
 #Explorer:hover span.menuExplorer,
 #Explorer:active span.menuExplorer {
-    color: #fff;
+  color: #fff;
 }
 
 menuQuickStart {
-    margin-left: 0;
-    padding-left: 0;
-    display: block;
-    right: 12px;
-    top: 30px;
-    position: absolute;
+  margin-left: 0;
+  padding-left: 0;
+  display: block;
+  right: 12px;
+  top: 30px;
+  position: absolute;
 }
 
 #Explorer {
-    text-align: center;
-    display: inline-block;
-    width: 80px;
-    height: 60px;
-    margin: 0 auto;
-    padding-top: 9px;
-    position: relative;
+  text-align: center;
+  display: inline-block;
+  width: 80px;
+  height: 60px;
+  margin: 0 auto;
+  padding-top: 9px;
+  position: relative;
 }
 
 #Explorer #imgiconwidth1,
 .feedbackstyle #imgiconwidth1,
 .settingstyle #imgiconwidth1 {
-    width: 24px;
-    height: 24px;
-    position: absolute;
-    right: 30px;
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  right: 30px;
 }
 
 #Explorer span.menuExplorer {
-    margin-left: 0;
-    padding-left: 0;
-    display: block;
-    right: 19px;
-    top: 33px;
-    position: absolute;
+  margin-left: 0;
+  padding-left: 0;
+  display: block;
+  right: 19px;
+  top: 33px;
+  position: absolute;
 }
 
 .feedbackstyle span.menuExplorer {
-    margin-left: 0;
-    padding-left: 0;
-    display: block;
-    right: 19px;
-    top: 33px;
-    position: absolute;
+  margin-left: 0;
+  padding-left: 0;
+  display: block;
+  right: 19px;
+  top: 33px;
+  position: absolute;
 }
 
 .settingstyle span.menuExplorer {
-    margin-left: 0;
-    padding-left: 0;
-    display: block;
-    right: 19px;
-    top: 33px;
-    position: absolute;
+  margin-left: 0;
+  padding-left: 0;
+  display: block;
+  right: 19px;
+  top: 33px;
+  position: absolute;
 }
 
 .content {
-    display: inline-block;
-    width: 100%;
-    transition: all .4s ease-in-out;
-    -ms-transition: all .4s ease-in-out;
-    -webkit-transition: all .4s ease-in-out;
-    -moz-transition: all .4s ease-in-out;
-    height: 100vh;
+  display: inline-block;
+  width: 100%;
+  transition: all 0.4s ease-in-out;
+  -ms-transition: all 0.4s ease-in-out;
+  -webkit-transition: all 0.4s ease-in-out;
+  -moz-transition: all 0.4s ease-in-out;
+  height: 100vh;
 }
 
 .mini {
-    width: 0%;
-    float: left;
-    transition: all .4s ease-in-out;
-    -webkit-transition: all .4s ease-in-out;
-    -moz-transition: all .4s ease-in-out;
-    height: 100vh;
-    background-color: white;
+  width: 0%;
+  float: left;
+  transition: all 0.4s ease-in-out;
+  -webkit-transition: all 0.4s ease-in-out;
+  -moz-transition: all 0.4s ease-in-out;
+  height: 100vh;
+  background-color: white;
 }
 
 #sidebar-wrapper {
-    z-index: 1000;
-    position: fixed;
-    left: 250px;
-    width: 0;
-    height: 100%;
-    margin-left: -250px;
-    overflow-y: auto;
-    background: white;
-    -webkit-transition: all 0.5s ease;
-    -moz-transition: all 0.5s ease;
-    -o-transition: all 0.5s ease;
-    transition: all 0.5s ease;
+  z-index: 1000;
+  position: fixed;
+  left: 250px;
+  width: 0;
+  height: 100%;
+  margin-left: -250px;
+  overflow-y: auto;
+  background: white;
+  -webkit-transition: all 0.5s ease;
+  -moz-transition: all 0.5s ease;
+  -o-transition: all 0.5s ease;
+  transition: all 0.5s ease;
 }
 
 .toggle-left {
-    width: 0%;
-    overflow: hidden;
+  width: 0%;
+  overflow: hidden;
 }
 
 .toggle-minicontent {
-    width: 100%;
+  width: 100%;
 }
 
 .toggle-maincontent {
-    width: 100%;
+  width: 100%;
 }
 
 .toggle-mini {
-    width: 50px;
+  width: 50px;
 }
 
 .toggle-main {
-    width: 100%;
+  width: 100%;
 }
 
 .activepartitionmode {
-    background-color: @AccentMediumHigh;
+  background-color: @AccentMediumHigh;
 }
 
 .paddingpartition {
-    color: white;
-    padding-left: 15px;
-    padding-top: 25px;
+  color: white;
+  padding-left: 15px;
+  padding-top: 25px;
 }
 
 .paddingspan2 {
-    padding-top: 20px;
-    color: #000;
-    padding-left: 15px;
+  padding-top: 20px;
+  color: #000;
+  padding-left: 15px;
 }
 
 .paddingspan4 {
-    padding-top: 20px;
-    padding-bottom: 20px;
-    color: white;
-    padding-left: 15px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  color: white;
+  padding-left: 15px;
 }
 
 .whitegroove {
-    width: 344px;
-    border: groove;
+  width: 344px;
+  border: groove;
 }
 
 .dropdownbtn {
-    color: white;
-    width: 340px;
-    background: #262626;
+  color: white;
+  width: 340px;
+  background: #262626;
 }
 
 .queryclr {
-    color: white;
-    background: #262626;
+  color: white;
+  background: #262626;
 }
 
 .pointer {
-    cursor: pointer;
+  cursor: pointer;
 }
 
-#tbodycontent>tr>td {
-    border-bottom: 1px solid #cccccc;
+#tbodycontent > tr > td {
+  border-bottom: 1px solid #cccccc;
 }
 
-#tbodycontent>tr:last-child>td {
-    border-bottom: 1px solid #ddd;
+#tbodycontent > tr:last-child > td {
+  border-bottom: 1px solid #ddd;
 }
 
 .gridRowSelected {
-    background-color: #DEF;
+  background-color: #def;
 }
 
 .gridRowSelected:hover {
-    background-color: #DEF!important;
-    cursor: initial;
+  background-color: #def !important;
+  cursor: initial;
 }
 
 .collectionNodeSelected {
-    background-color: #DEF;
+  background-color: #def;
 }
 
 .collectionNodeSelected:hover {
-    background-color: #DEF!important;
-    cursor: default!important;
+  background-color: #def !important;
+  cursor: default !important;
 }
 
 .databaseNodeSelected {
-    background-color: #DEF;
+  background-color: #def;
 }
 
 .databaseNodeSelected:hover {
-    background-color: #DEF!important;
-    cursor: default!important;
+  background-color: #def !important;
+  cursor: default !important;
 }
 
 .leftsidepanle-hr {
-    margin: 16px 0px;
-    border-top: 1px solid #eee;
-    margin-left: -17px;
-    width: 100%;
-    color: 1px solid #53575B;
+  margin: 16px 0px;
+  border-top: 1px solid #eee;
+  margin-left: -17px;
+  width: 100%;
+  color: 1px solid #53575b;
 }
 
 .partitioning-btn {
-    padding-bottom: 16px;
+  padding-bottom: 16px;
 }
 
 .btncreatecoll1 {
-    border: 1px solid @AccentMediumHigh;
-    background-color: @AccentMediumHigh;
-    color: #fff;
-    padding: 2px 30px;
-    cursor: pointer;
-    font-size: 12px;
+  border: 1px solid @AccentMediumHigh;
+  background-color: @AccentMediumHigh;
+  color: #fff;
+  padding: 2px 30px;
+  cursor: pointer;
+  font-size: 12px;
 }
 
 .btncreatecoll1:hover {
-    background: @AccentMediumHigh;
-    color: #fff;
-    border-color: @AccentMediumHigh;
-    cursor: pointer;
-    font-size: 12px;
+  background: @AccentMediumHigh;
+  color: #fff;
+  border-color: @AccentMediumHigh;
+  cursor: pointer;
+  font-size: 12px;
 }
 
 .btncreatecoll1:active {
-    border: 1px solid #0072c6;
-    background-color: #0072c6;
-    color: white;
-    padding: 2px 30px;
-    cursor: pointer;
-    font-size: 12px;
+  border: 1px solid #0072c6;
+  background-color: #0072c6;
+  color: white;
+  padding: 2px 30px;
+  cursor: pointer;
+  font-size: 12px;
 }
 
 .btncreatecoll1-off {
-    border: 1px solid #969696;
-    background-color: #000;
-    color: white;
-    padding: 2px 30px;
-    cursor: pointer;
-    font-size: 12px;
-    margin-left: -5px;
+  border: 1px solid #969696;
+  background-color: #000;
+  color: white;
+  padding: 2px 30px;
+  cursor: pointer;
+  font-size: 12px;
+  margin-left: -5px;
 }
 
 .leftpanel-okbut {
-    padding: 20px 0px 24px 30px;
+  padding: 20px 0px 24px 30px;
 }
 
 .btnpricepad {
-    margin-left: 24px;
+  margin-left: 24px;
 }
 
 .collid {
-    background: #fff;
-    width: calc(~"100% - 80px");
+  background: #fff;
+  width: calc(~"100% - 80px");
 }
 
 .textfontclr {
-    color: #000;
+  color: #000;
 }
 
 .collid-white {
-    width: 100%;
-    border: solid 1px #DDD;
+  width: 100%;
+  border: solid 1px #ddd;
 }
 
 .plusimg-but {
-    background-image: url(../images/plus_normal.svg);
-    background-repeat: no-repeat;
-    padding: 6px 16px;
-    position: static;
-    padding-top: 4px;
+  background-image: url(../images/plus_normal.svg);
+  background-repeat: no-repeat;
+  padding: 6px 16px;
+  position: static;
+  padding-top: 4px;
 }
 
 .plusimg-but:hover {
-    background-image: url(../images/plus_hover.svg);
-    background-repeat: no-repeat;
-    padding: 6px 16px;
-    position: static;
-    padding-top: 4px;
+  background-image: url(../images/plus_hover.svg);
+  background-repeat: no-repeat;
+  padding: 6px 16px;
+  position: static;
+  padding-top: 4px;
 }
 
 .plusimg-but:active {
-    background-image: url(../images/plus_pressed.svg);
-    background-repeat: no-repeat;
-    padding: 6px 16px;
-    position: static;
-    padding-top: 4px;
+  background-image: url(../images/plus_pressed.svg);
+  background-repeat: no-repeat;
+  padding: 6px 16px;
+  position: static;
+  padding-top: 4px;
 }
 
 .plusimg-but:disabled {
-    background-image: url(../images/plus_disabled.svg);
-    background-repeat: no-repeat;
-    padding: 6px 16px;
-    position: static;
-    padding-top: 4px;
+  background-image: url(../images/plus_disabled.svg);
+  background-repeat: no-repeat;
+  padding: 6px 16px;
+  position: static;
+  padding-top: 4px;
 }
 
 .minusimg-but {
-    background-image: url(../images/minus_normal.svg);
-    background-repeat: no-repeat;
-    padding: 6px 16px;
-    position: static;
-    padding-top: 4px;
+  background-image: url(../images/minus_normal.svg);
+  background-repeat: no-repeat;
+  padding: 6px 16px;
+  position: static;
+  padding-top: 4px;
 }
 
 .minusimg-but:hover {
-    background-image: url(../images/minus_hover.svg);
-    background-repeat: no-repeat;
-    padding: 6px 16px;
-    position: static;
-    padding-top: 4px;
+  background-image: url(../images/minus_hover.svg);
+  background-repeat: no-repeat;
+  padding: 6px 16px;
+  position: static;
+  padding-top: 4px;
 }
 
 .minusimg-but:active {
-    background-image: url(../images/minus_pressed.svg);
-    background-repeat: no-repeat;
-    padding: 6px 16px;
-    position: static;
-    padding-top: 4px;
+  background-image: url(../images/minus_pressed.svg);
+  background-repeat: no-repeat;
+  padding: 6px 16px;
+  position: static;
+  padding-top: 4px;
 }
 
 .minusimg-but:disabled {
-    background-image: url(../images/minus_disabled.svg);
-    background-repeat: no-repeat;
-    padding: 6px 16px;
-    position: static;
-    padding-top: 4px;
+  background-image: url(../images/minus_disabled.svg);
+  background-repeat: no-repeat;
+  padding: 6px 16px;
+  position: static;
+  padding-top: 4px;
 }
 
 .firstdivbg {
-    padding: @MediumSpace 0px @DefaultSpace (2 * @LargeSpace);
-    background-color: @BaseLight;
+  padding: @MediumSpace 0px @DefaultSpace (2 * @LargeSpace);
+  background-color: @BaseLight;
 }
 
 p {
-    margin: 0 0 4px;
-    color: #000;
+  margin: 0 0 4px;
+  color: #000;
 }
 
 .closeImg {
-    float: right;
-    margin: 0px 20px 0px 0px;
-    cursor: pointer;
-    padding: 6px 20px 20px 6px;
-    width: 20px;
-    height: 20px;
+  float: right;
+  margin: 0px 20px 0px 0px;
+  cursor: pointer;
+  padding: 6px 20px 20px 6px;
+  width: 20px;
+  height: 20px;
 }
 
 .seconddivpadding {
-    padding-top: 16px;
+  padding-top: 16px;
 }
 
 .seconddivbg {
-    height: 100vh;
-    padding-left: 32px;
-    padding-top: 16px;
+  height: 100vh;
+  padding-left: 32px;
+  padding-top: 16px;
 }
 
 .pkPadding {
-    padding-top: 12px;
+  padding-top: 12px;
 }
 
 .mandatoryStar {
-    color: #ff0707;
-    font-size: 14px;
-    font-weight: bold;
+  color: #ff0707;
+  font-size: 14px;
+  font-weight: bold;
 }
 
 .pricingtierimg {
-    padding-left: 20px;
-    padding-top: 10px;
-    padding-bottom: 20px;
+  padding-left: 20px;
+  padding-top: 10px;
+  padding-bottom: 20px;
 }
 
 .headerline {
-    color: @BaseDark;
-    font-size: 16px;
-    border-bottom: 1px solid @BaseMedium; 
+  color: @BaseDark;
+  font-size: 16px;
+  border-bottom: 1px solid @BaseMedium;
 }
 
 .partitionkeystyle {
-    font-size: 10px;
+  font-size: 10px;
 }
 
 .arrowprice {
-    margin-left: 230px;
+  margin-left: 230px;
 }
 
 .paddingspan {
-    padding: 20px;
-    color: white;
-    font-size: 14px;
+  padding: 20px;
+  color: white;
+  font-size: 14px;
 }
 
 input::-webkit-calendar-picker-indicator {
-    opacity: 100;
+  opacity: 100;
 }
 
 .paddingspan3 {
-    color: white;
-    font-size: 14px;
-    position: absolute;
-    width: 100%;
-    height: 100px;
-    bottom: 150px;
+  color: white;
+  font-size: 14px;
+  position: absolute;
+  width: 100%;
+  height: 100px;
+  bottom: 150px;
 }
 
 .paddingspan4 {
-    padding-top: 20px;
-    padding-left: 20px;
-    color: white;
-    font-size: 14px;
+  padding-top: 20px;
+  padding-left: 20px;
+  color: white;
+  font-size: 14px;
 }
 
 .closebtnn {
-    float: right;
-    padding: 0 10px;
-    cursor: pointer;
+  float: right;
+  padding: 0 10px;
+  cursor: pointer;
 }
 
 label {
-    white-space: nowrap;
-    font: 12px "Segoe UI";
+  white-space: nowrap;
+  font: 12px "Segoe UI";
 }
 
 .Introlines {
-    padding-top: 27px;
-    padding-left: 25px;
+  padding-top: 27px;
+  padding-left: 25px;
 }
 
 .Introline1 {
-    font-size: 16px;
+  font-size: 16px;
 }
 
 .Introline2 {
-    font-size: 14px;
-    padding-top: 10px;
+  font-size: 14px;
+  padding-top: 10px;
 }
 
 .datalist-arrow {
-    position: relative;
+  position: relative;
 }
 
 .datalist-arrow:hover:after {
-    background: #969696;
+  background: #969696;
 }
 
 .datalist-arrow:focus:after,
 .datalist-arrow:active:after {
-    background: #1EBBEE;
+  background: #1ebbee;
 }
 
 input::-webkit-calendar-picker-indicator::after {
-    content: '\276F';
-    right: 0;
-    top: -8%;
-    display: block;
-    width: 27px;
-    height: 25px;
-    line-height: 25px;
-    color: #fff;
-    text-align: center;
-    pointer-events: none;
-    transform: rotate(90deg);
+  content: "\276F";
+  right: 0;
+  top: -8%;
+  display: block;
+  width: 27px;
+  height: 25px;
+  line-height: 25px;
+  color: #fff;
+  text-align: center;
+  pointer-events: none;
+  transform: rotate(90deg);
 }
 
 .datalist-arrow:after:hover {
-    content: '\276F';
-    position: absolute;
-    right: 1px;
-    top: 6%;
-    transform: rotate(90deg);
-    display: block;
-    width: 27px;
-    height: 25px;
-    line-height: 25px;
-    color: #fff;
-    text-align: center;
-    pointer-events: none;
-    background-color: #1EBBEE;
+  content: "\276F";
+  position: absolute;
+  right: 1px;
+  top: 6%;
+  transform: rotate(90deg);
+  display: block;
+  width: 27px;
+  height: 25px;
+  line-height: 25px;
+  color: #fff;
+  text-align: center;
+  pointer-events: none;
+  background-color: #1ebbee;
 }
 
 .Introline3 {
-    padding-top: 10px;
-    font-size: 14px;
-    font-weight: 1000;
+  padding-top: 10px;
+  font-size: 14px;
+  font-weight: 1000;
 }
 
 .collectionCollapsed {
-    color: black;
-    font-weight: 400;
-    font-size: 14px;
-    position: relative;
-    display: block;
-    padding: 8px 15px;
-    cursor: pointer;
-    margin-right: 13px;
-    border: 1px solid #fff;
+  color: black;
+  font-weight: 400;
+  font-size: 14px;
+  position: relative;
+  display: block;
+  padding: 8px 15px;
+  cursor: pointer;
+  margin-right: 13px;
+  border: 1px solid #fff;
 }
 
 .collectionCollapsed:hover {
-    background: #EEEEEE;
+  background: #eeeeee;
 }
 
 .collectionCollapsed:active {
-    border: solid 1px @AccentMediumHigh;
+  border: solid 1px @AccentMediumHigh;
 }
 
 .collectionCollapsed:focus {
-    border: Solid 1px @AccentMediumHigh;
+  border: Solid 1px @AccentMediumHigh;
 }
 
 .arrowCollapsed {
-    cursor: pointer;
-    width: 16px;
-    height: 16px;
-    transform: rotate(-90deg) translateX(-100%);
-    -webkit-transform: rotate(-90deg) translateX(-100%);
-    -ms-transform: rotate(-90deg) translateX(-100%);
-    margin: -30px 3px 0px 2px;
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+  transform: rotate(-90deg) translateX(-100%);
+  -webkit-transform: rotate(-90deg) translateX(-100%);
+  -ms-transform: rotate(-90deg) translateX(-100%);
+  margin: -30px 3px 0px 2px;
 }
 
 .leftarrowCollapsed {
-    padding: 2px 4px 4px 5px;
-    border: solid 1px #FFF;
-    margin: 6px 4px 0px -11px;
+  padding: 2px 4px 4px 5px;
+  border: solid 1px #fff;
+  margin: 6px 4px 0px -11px;
 }
 
 .leftarrowCollapsed:hover {
-    background-color: #EEEEEE;
+  background-color: #eeeeee;
 }
 
 .leftarrowCollapsed:active {
-    border: solid 1px @AccentMediumHigh;
+  border: solid 1px @AccentMediumHigh;
 }
 
 .leftarrowCollapsed:focus {
-    border: Solid 1px @AccentMediumHigh;
+  border: Solid 1px @AccentMediumHigh;
 }
 
 .qslevel {
-    padding-top: 10px;
-    padding-left: 10px;
-    width: 60%;
-    min-width: 960px;
+  padding-top: 10px;
+  padding-left: 10px;
+  width: 60%;
+  min-width: 960px;
 }
 
 .nav-tabs-margin {
-    margin-top: 20px;
+  margin-top: 20px;
 }
 
 .numbersize {
-    font-size: 30px;
-    display: inline;
-    font-weight: 600;
+  font-size: 30px;
+  display: inline;
+  font-weight: 600;
 }
 
 .numbersizePadding {
-    padding-right: 5px;
+  padding-right: 5px;
 }
 
 .numberheading {
-    display: inline;
-    position: absolute;
-    padding-top: 10px;
-    font-size: 16px;
-    padding-left: 15px;
+  display: inline;
+  position: absolute;
+  padding-top: 10px;
+  font-size: 16px;
+  padding-left: 15px;
 }
 
-.numberheading>p {
-    padding-top: 10px;
-    font-size: 12px;
+.numberheading > p {
+  padding-top: 10px;
+  font-size: 12px;
 }
 
-.numberheading>ul {
-    padding-top: 10px;
-    padding-left: 0px;
-    list-style-type: none;
+.numberheading > ul {
+  padding-top: 10px;
+  padding-left: 0px;
+  list-style-type: none;
 }
 
 .numberheading ul li {
-    padding-bottom: 5px;
+  padding-bottom: 5px;
 }
 
-.numberheading>ul>li>a {
-    font-size: 12px;
-    color: #0058ad;
+.numberheading > ul > li > a {
+  font-size: 12px;
+  color: #0058ad;
 }
 
-.netApp {
-    padding-bottom: 80px;
-}
-
-.pythonApp {
-    padding-bottom: 45px;
+.sampleApp {
+  padding-bottom: 45px;
 }
 
 .step1 {
-    padding-bottom: 110px;
+  padding-bottom: 110px;
 }
 
-.step1>input {
-    font-size: 12px;
+.step1 > input {
+  font-size: 12px;
 }
 
 .btncreatecoll {
-    background: #0058ad;
-    color: #fff;
-    padding: 5px 20px;
-    cursor: pointer;
-    font-size: 12px;
-    border: 1px solid #0058ad;
+  background: #0058ad;
+  color: #fff;
+  padding: 5px 20px;
+  cursor: pointer;
+  font-size: 12px;
+  border: 1px solid #0058ad;
 }
 
 .btncreatecoll:hover {
-    background-color: #0074e0;
+  background-color: #0074e0;
 }
 
 .atags:focus {
-    color: @AccentMediumHigh;
+  color: @AccentMediumHigh;
 }
 
 .atags {
-    color: @AccentMediumHigh;
-    font-weight: 400;
-    cursor: pointer
+  color: @AccentMediumHigh;
+  font-weight: 400;
+  cursor: pointer;
 }
 
 .qsmenuicons {
-    width: 25px;
-    height: 25px;
-    margin-right: 5px;
+  width: 25px;
+  height: 25px;
+  margin-right: 5px;
 }
 
 .HeaderBg {
-    background-color: #202428;
-    height: 60px;
+  background-color: #202428;
+  height: 60px;
 }
 
 .title {
-    color: @AccentMediumHigh;
-    font-size: 20px;
-    padding-left: 10px;
+  color: @AccentMediumHigh;
+  font-size: 20px;
+  padding-left: 10px;
 }
 
 .items {
-    padding-left: 24px;
-    padding-top: 15px;
+  padding-left: 24px;
+  padding-top: 15px;
 }
 
 .divmenuquickstartpadding {
-    padding-left: 24px;
-    padding-bottom: 8px;
+  padding-left: 24px;
+  padding-bottom: 8px;
 }
 
 .menuQuickStart {
-    font-size: 12px;
-    color: white;
-    padding-left: 10px;
+  font-size: 12px;
+  color: white;
+  padding-left: 10px;
 }
 
 .menuExplorer {
-    font-size: 12px;
-    color: white;
-    padding-left: 20px;
+  font-size: 12px;
+  color: white;
+  padding-left: 20px;
 }
 
 .activemenu {
-    color: #fff;
+  color: #fff;
 }
 
 .rightarrowimg {
-    padding-left: 5px;
-    padding-bottom: 2px;
+  padding-left: 5px;
+  padding-bottom: 2px;
 }
 
 a:hover,
 a:visited,
 a:active,
 a:link {
-    text-decoration: none;
+  text-decoration: none;
 }
 
 .command {
-    padding: 8px;
+  padding: 8px;
 }
 
 .command:hover {
-    background-color: #E6E6E6;
-    cursor: pointer;
-    padding-bottom: 12px;
+  background-color: #e6e6e6;
+  cursor: pointer;
+  padding-bottom: 12px;
 }
 
 .command:active {
-    background-color: #CCCCCC;
-    border: solid 1px @AccentMediumHigh;
+  background-color: #cccccc;
+  border: solid 1px @AccentMediumHigh;
 }
 
 .command:focus {
-    padding: 7px 8px 11px 8px;
-    border: solid 1px @AccentMediumHigh;
-    outline: none;
+  padding: 7px 8px 11px 8px;
+  border: solid 1px @AccentMediumHigh;
+  outline: none;
 }
 
-.nav>li>a:focus {
-    background-color: white;
+.nav > li > a:focus {
+  background-color: white;
 }
 
 .commandIcon {
-    margin: 0 5px 0 0;
-    vertical-align: text-top;
-    width: 18px;
-    height: 18px;
+  margin: 0 5px 0 0;
+  vertical-align: text-top;
+  width: 18px;
+  height: 18px;
 }
 
 .iconpadclick {
-    background-color: #e6e6e6;
-    cursor: pointer;
-    border: 1px solid #1ebbee;
-    padding: 5px;
+  background-color: #e6e6e6;
+  cursor: pointer;
+  border: 1px solid #1ebbee;
+  padding: 5px;
 }
 
 .divimgleftarrow {
-    display: inline-block;
-    margin-top: 16px;
-    margin-right: 10px;
+  display: inline-block;
+  margin-top: 16px;
+  margin-right: 10px;
 }
 
 .divimgleftarrow:hover {
-    background-color: #e6e6e6;
-    cursor: pointer;
-    border: 1px solid #1ebbee;
+  background-color: #e6e6e6;
+  cursor: pointer;
+  border: 1px solid #1ebbee;
 }
 
 .adddeliconspan {
-    display: none;
-    float: right;
-    padding: 5px;
+  display: none;
+  float: right;
+  padding: 5px;
 }
 
 .spanparent:hover .adddeliconspan {
-    display: inline;
+  display: inline;
 }
 
 .spanchild:hover .adddeliconspan {
-    display: inline;
+  display: inline;
 }
 
 .collectiontitle {
-    font-size: 14px;
-    text-transform: uppercase;
+  font-size: 14px;
+  text-transform: uppercase;
 }
 
 .titlepadcol {
-    padding-left: 20px;
-    font-weight: 500;
-    height: 28px;
-    display: inline-block;
-    padding-top: 5px;
+  padding-left: 20px;
+  font-weight: 500;
+  height: 28px;
+  display: inline-block;
+  padding-top: 5px;
 }
 
 .btnmainslide {
-    height: 14px;
-    margin-top: 14px;
-    cursor: pointer;
+  height: 14px;
+  margin-top: 14px;
+  cursor: pointer;
 }
 
 .well {
-    padding: 19px 0px;
-    padding-top: 0px;
-    margin-bottom: 20px;
-    border: 0px;
-    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0);
-    background: white;
+  padding: 19px 0px;
+  padding-top: 0px;
+  margin-bottom: 20px;
+  border: 0px;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0);
+  background: white;
 }
 
 .splitter {
-    z-index: 1;
-    border-left: 5px solid white;
-    width: 8px;
-    border-right: 1px solid #cccccc;
-    float: left;
-    height: 100%;
-    position: absolute;
-    margin-left: 240px;
-    padding: 0px;
-    background-color: white;
+  z-index: 1;
+  border-left: 5px solid white;
+  width: 8px;
+  border-right: 1px solid #cccccc;
+  float: left;
+  height: 100%;
+  position: absolute;
+  margin-left: 240px;
+  padding: 0px;
+  background-color: white;
 }
 
 .testClass {
-    padding-left: 30px;
+  padding-left: 30px;
 }
 
 .level {
-    padding-left: 16px;
-    padding-top: 0px;
+  padding-left: 16px;
+  padding-top: 0px;
 }
 
 .imgiconwidth {
-    margin-right: 5px;
+  margin-right: 5px;
 }
 
 .id {
-    padding-left: 8px;
-    color: #000;
-    font-weight: bold;
-    margin-left: 6px;
+  padding-left: 8px;
+  color: #000;
+  font-weight: bold;
+  margin-left: 6px;
 }
 
 .documentsGridHeaderContainer {
-    padding-left: 5px;
-    padding-right: 15px;
-    width: 200px;
+  padding-left: 5px;
+  padding-right: 15px;
+  width: 200px;
 }
 
 .documentsGridHeader {
-    padding: 8px;
-    color: #000;
-    font-weight: bold;
+  padding: 8px;
+  color: #000;
+  font-weight: bold;
 }
 
 .fixedWidthHeader {
-    width: 82px;
+  width: 82px;
 }
 
 .tabdocuments {
-    padding: 4px 4px -1px 0px;
+  padding: 4px 4px -1px 0px;
 }
 
-#divcontent>.mongoDocumentEditor .monaco-editor.vs .redsquiggly {
-    display: none !important;
+#divcontent > .mongoDocumentEditor .monaco-editor.vs .redsquiggly {
+  display: none !important;
 }
 
 td a {
-    color: #393939;
+  color: #393939;
 }
 
 td a:hover {
-    color: #393939;
+  color: #393939;
 }
 
 .loadMore {
-    padding-left: 32%;
-    cursor: pointer;
+  padding-left: 32%;
+  cursor: pointer;
 }
 
 .table-fixed thead {
-    width: 97%;
-    padding-left: 18px;
+  width: 97%;
+  padding-left: 18px;
 }
 
 .table-fixed tbody {
-    height: 510px;
-    overflow-y: auto;
-    width: 100%;
-    overflow-x: hidden;
+  height: 510px;
+  overflow-y: auto;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 .table-fixed thead,
@@ -929,383 +925,383 @@ td a:hover {
 .table-fixed tr,
 .table-fixed td,
 .table-fixed th {
-    display: block;
+  display: block;
 }
 
 .table-fixed tbody td,
-.table-fixed thead>tr>th {
-    float: left;
-    border-bottom-width: 0;
+.table-fixed thead > tr > th {
+  float: left;
+  border-bottom-width: 0;
 }
 
 a:hover,
 a:visited,
 a:active,
 a:link {
-    text-decoration: none;
+  text-decoration: none;
 }
 
 .tabs {
-    position: relative;
-    clear: both;
-    margin: 15px 0 25px 0;
-    display: table;
-    width: 100%;
+  position: relative;
+  clear: both;
+  margin: 15px 0 25px 0;
+  display: table;
+  width: 100%;
 }
 
 .tab {
-    float: left;
+  float: left;
 }
 
 .tab label {
-    padding: 10px;
-    border: 1px solid #bbbbbb;
-    margin-left: -1px;
-    position: inherit;
-    left: 1px;
-    color: #393939;
+  padding: 10px;
+  border: 1px solid #bbbbbb;
+  margin-left: -1px;
+  position: inherit;
+  left: 1px;
+  color: #393939;
 }
 
-.tab [type=radio] {
-    display: none;
+.tab [type="radio"] {
+  display: none;
 }
 
 .tabcontent {
-    position: absolute;
-    top: 30px;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    padding: 15px 0px 20px 0;
+  position: absolute;
+  top: 30px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 15px 0px 20px 0;
 }
 
-.tab [type=radio]:checked~label {
-    border: 1px solid #0072c6;
-    background-color: @AccentMediumHigh;
-    color: white;
-    z-index: 2;
+.tab [type="radio"]:checked ~ label {
+  border: 1px solid #0072c6;
+  background-color: @AccentMediumHigh;
+  color: white;
+  z-index: 2;
 }
 
-.tab [type=radio]:checked~label:hover {
-    border: 1px solid @AccentMediumHigh;
-    background-color: @AccentMediumHigh;
-    color: white;
-    z-index: 2;
+.tab [type="radio"]:checked ~ label:hover {
+  border: 1px solid @AccentMediumHigh;
+  background-color: @AccentMediumHigh;
+  color: white;
+  z-index: 2;
 }
 
-.tab [type=radio]:checked~label:active {
-    border: 1px solid #0072c6;
-    background-color: #0072c6;
-    color: white;
-    z-index: 2;
+.tab [type="radio"]:checked ~ label:active {
+  border: 1px solid #0072c6;
+  background-color: #0072c6;
+  color: white;
+  z-index: 2;
 }
 
-.tab [type=radio]:checked~label~.tabcontent {
-    z-index: 1;
-    display: initial;
+.tab [type="radio"]:checked ~ label ~ .tabcontent {
+  z-index: 1;
+  display: initial;
 }
 
-.tab [type=radio]:not(:checked)~label:hover {
-    border: 1px solid #969696;
-    background-color: #969696;
-    color: white;
-    cursor: pointer;
+.tab [type="radio"]:not(:checked) ~ label:hover {
+  border: 1px solid #969696;
+  background-color: #969696;
+  color: white;
+  cursor: pointer;
 }
 
-.tab [type=radio]:not(:checked)~label~.tabcontent {
-    display: none;
+.tab [type="radio"]:not(:checked) ~ label ~ .tabcontent {
+  display: none;
 }
 
 ::-webkit-input-placeholder {
-    color: #969696;
+  color: #969696;
 }
 
 ::-moz-placeholder {
-    color: #969696;
+  color: #969696;
 }
 
 :-ms-input-placeholder {
-    color: #969696;
+  color: #969696;
 }
 
 :-moz-placeholder {
-    color: #969696;
+  color: #969696;
 }
 
 ::-ms-expand {
-    color: #969696;
+  color: #969696;
 }
 
 .form-errors {
-    color: white;
-    padding-left: 12px;
+  color: white;
+  padding-left: 12px;
 }
 
 .atagdetails {
-    padding-left: 55px!important;
+  padding-left: 55px !important;
 }
 
 .path {
-    color: lightgray;
-    font-style: italic;
-    padding-top: 12px;
-    padding-left: 20px;
+  color: lightgray;
+  font-style: italic;
+  padding-top: 12px;
+  padding-left: 20px;
 }
 
 .queryPath {
-    line-height: 16px;
-    padding-left: 33px;
-    padding-bottom: 12px;
+  line-height: 16px;
+  padding-left: 33px;
+  padding-bottom: 12px;
 }
 
 .filterDocCollapsed {
-    padding-left: 20px;
+  padding-left: 20px;
 }
 
 .filterDocCollapsed.active {
-    display: block;
+  display: block;
 }
 
 .filterDocExpanded {
-    padding-left: 20px;
+  padding-left: 20px;
 }
 
 .filterDocExpanded.active {
-    display: block;
+  display: block;
 }
 
 .filterbuttonpad {
-    padding-top: 10px;
+  padding-top: 10px;
 }
 
 .filterbtnstyle {
-    background: @AccentMediumHigh;
-    width: 90px;
-    height: 25px;
-    color: white;
-    border: none;
-    margin-left: 16px !important;
+  background: @AccentMediumHigh;
+  width: 90px;
+  height: 25px;
+  color: white;
+  border: none;
+  margin-left: 16px !important;
 }
 
 .filterbtnstyle:hover {
-    background: @AccentMediumHigh;
-    width: 90px;
-    height: 25px;
-    color: white;
-    border: none;
-    margin-left: 16px;
+  background: @AccentMediumHigh;
+  width: 90px;
+  height: 25px;
+  color: white;
+  border: none;
+  margin-left: 16px;
 }
 
 .filterbtnstyle:active {
-    background: #0072c6;
-    width: 90px;
-    height: 25px;
-    color: white;
-    border: none;
-    margin-left: 16px;
+  background: #0072c6;
+  width: 90px;
+  height: 25px;
+  color: white;
+  border: none;
+  margin-left: 16px;
 }
 
 .filterbtnstyle:focus {
-    background: #0072c6;
-    width: 90px;
-    height: 25px;
-    color: white;
-    border: none;
-    margin-left: 16px;
-    border: 1px solid #0072c6;
+  background: #0072c6;
+  width: 90px;
+  height: 25px;
+  color: white;
+  border: none;
+  margin-left: 16px;
+  border: 1px solid #0072c6;
 }
 
 .filterbtnstyle:not(:enabled) {
-    background: lightgray;
-    width: 90px;
-    height: 25px;
-    color: white;
-    border: none;
+  background: lightgray;
+  width: 90px;
+  height: 25px;
+  color: white;
+  border: none;
 }
 
 .hrline1 {
-    color: #d6d7d8;
-    margin-left: -20px;
+  color: #d6d7d8;
+  margin-left: -20px;
 }
 
 .filtdocheader {
-    font-size: 18px;
+  font-size: 18px;
 }
 
 .editFilter {
-    margin-left: 20px;
+  margin-left: 20px;
 }
 
 .filterdivs {
-    padding-top: 24px;
-    height: 45px;
-    margin-bottom: 20px;
+  padding-top: 24px;
+  height: 45px;
+  margin-bottom: 20px;
 }
 
 .filterclose {
-    padding: 0 10px;
-    cursor: pointer;
+  padding: 0 10px;
+  cursor: pointer;
 }
 
 .queryResultpreviousImg {
-    height: 14px;
-    width: 14px;
-    margin-right: 2px;
+  height: 14px;
+  width: 14px;
+  margin-right: 2px;
 }
 
 .queryResultnextImg {
-    height: 14px;
-    width: 14px;
-    margin-left: 2px;
+  height: 14px;
+  width: 14px;
+  margin-left: 2px;
 }
 
 .rowoverride {
-    margin-left: 7px;
-    margin-top: 20px;
+  margin-left: 7px;
+  margin-top: 20px;
 }
 
 .tab-content-override {
-    padding-left: 5px;
-    padding-top: 20px;
+  padding-left: 5px;
+  padding-top: 20px;
 }
 
 .paddingspan4 {
-    padding-top: 20px;
-    color: white;
-    padding-left: 25px;
-    padding-right: 25px;
+  padding-top: 20px;
+  color: white;
+  padding-left: 25px;
+  padding-right: 25px;
 }
 
 .colResizePointer {
-    cursor: col-resize;
+  cursor: col-resize;
 }
 
-.nav-tabs>li>a {
-    border-radius: 2px 2px 0 0;
-    padding: 8px 0px 4px 0px;
-    color: #393939;
-    width: 130px;
-    text-align: center;
-    margin-right: 0px;
-    position: relative;
+.nav-tabs > li > a {
+  border-radius: 2px 2px 0 0;
+  padding: 8px 0px 4px 0px;
+  color: #393939;
+  width: 130px;
+  text-align: center;
+  margin-right: 0px;
+  position: relative;
 }
 
-.nav-tabs>li.active>a,
-.nav-tabs>li.active>a:focus,
-.nav-tabs>li.active>a:hover {
-    border-bottom-color: #FFF;
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > a:focus,
+.nav-tabs > li.active > a:hover {
+  border-bottom-color: #fff;
 }
 
 .tabList {
-    float: left;
-    margin-bottom: -15px !important;
+  float: left;
+  margin-bottom: -15px !important;
 }
 
 .tab_Content {
-    width: 130px;
-    border-right: 1px solid #e0e0e0;
-    padding: 0px 22px 0px 17px;
-    margin-left: -1px;
+  width: 130px;
+  border-right: 1px solid #e0e0e0;
+  padding: 0px 22px 0px 17px;
+  margin-left: -1px;
 }
 
 .tab_Content:hover {
-    width: 130px;
-    border-right: 1px solid #e0e0e0;
-    padding: 0px 22px 0px 17px;
-    margin-left: -1px;
+  width: 130px;
+  border-right: 1px solid #e0e0e0;
+  padding: 0px 22px 0px 17px;
+  margin-left: -1px;
 }
 
 .tab_Content:active {
-    width: 130px;
-    border-right: 1px;
-    padding: 0px 22px 0px 17px;
-    margin-left: -1px;
+  width: 130px;
+  border-right: 1px;
+  padding: 0px 22px 0px 17px;
+  margin-left: -1px;
 }
 
 .tabtext-center {
-    max-width: 110px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    padding-left: 2px;
+  max-width: 110px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-left: 2px;
 }
 
 .tabIconSection {
-    width: 30px;
-    float: right;
-    top: -16px;
-    position: relative;
-    padding: 2px 12px 0 13px;
+  width: 30px;
+  float: right;
+  top: -16px;
+  position: relative;
+  padding: 2px 12px 0 13px;
 }
 
-.nav-tabs>li>a:active {
-    background-color: #e0e0e0;
-    border-color: @AccentMediumHigh;
+.nav-tabs > li > a:active {
+  background-color: #e0e0e0;
+  border-color: @AccentMediumHigh;
 }
 
-.nav-tabs>li>a:active .tab_Content {
-    border: transparent;
-    width: 130px;
+.nav-tabs > li > a:active .tab_Content {
+  border: transparent;
+  width: 130px;
 }
 
 .close-Icon {
-    background-image: url(../images/close-black.svg);
-    background-repeat: no-repeat;
-    padding: 0px 0px 0px 11px;
+  background-image: url(../images/close-black.svg);
+  background-repeat: no-repeat;
+  padding: 0px 0px 0px 11px;
 }
 
 .close-Icon:hover {
-    background-image: url(../images/close-black-hover.svg);
-    background-repeat: no-repeat;
-    padding: 0px 0px 0px 11px;
+  background-image: url(../images/close-black-hover.svg);
+  background-repeat: no-repeat;
+  padding: 0px 0px 0px 11px;
 }
 
 .clickableLink {
-    color: @AccentMediumHigh;
-    font-family: 'Segoe UI';
-    font-size: 12px;
-    cursor: pointer;
+  color: @AccentMediumHigh;
+  font-family: "Segoe UI";
+  font-size: 12px;
+  cursor: pointer;
 }
 
 .clickableLink:hover {
-    background-color: #e7f6fc;
+  background-color: #e7f6fc;
 }
 
 .clickableLink:active {
-    background-color: #e6f8fe;
+  background-color: #e6f8fe;
 }
 
 .clickableLink:focus {
-    outline: 1px dashed #000000;
-    outline-offset: 0px;
+  outline: 1px dashed #000000;
+  outline-offset: 0px;
 }
 
 .paneselect {
-    height: 23px;
+  height: 23px;
 }
 
 .headerWithoutPartitionKey {
-    width: 172px;
+  width: 172px;
 }
 
 .headerWithPartitionKey {
-    width: 86px;
+  width: 86px;
 }
 
-input.codeblock{
-    background-color: @BaseMediumLow;
-    color: #252525;
-    border: 1px solid @BaseMediumHigh;
-    box-sizing: border-box;
-    font-size: @mediumFontSize;
-    height: 23px;
-    outline: 0;
-    padding: 2px 8px 4px;
-    width: 60%;
-    min-width: 960px;
-    cursor: text;
+input.codeblock {
+  background-color: @BaseMediumLow;
+  color: #252525;
+  border: 1px solid @BaseMediumHigh;
+  box-sizing: border-box;
+  font-size: @mediumFontSize;
+  height: 23px;
+  outline: 0;
+  padding: 2px 8px 4px;
+  width: 60%;
+  min-width: 960px;
+  cursor: text;
 }
 
-#divQuickStartConnections{
-    padding-bottom: 10px; 
+#divQuickStartConnections {
+  padding-bottom: 10px;
 }

@@ -269,7 +269,7 @@ export const getOfferingIds = async (regions: Array<RegionItem>): Promise<Offeri
         host: configContext.CATALOG_ENDPOINT,
         path: getOfferingIdPathForRegion(),
         method: "GET",
-        apiVersion: "2023-05-01-preview",
+        apiVersion: configContext.CATALOG_API_VERSION,
         queryParams: {
           filter:
             "armRegionName eq '" +

@@ -111,10 +111,13 @@ export interface UserContext {
   readonly isReplica?: boolean;
   collectionCreationDefaults: CollectionCreationDefaults;
   sampleDataConnectionInfo?: ParsedResourceTokenConnectionString;
+  readonly selectedRegionalEndpoint?: string;
+  readonly writeEnabledInSelectedRegion?: boolean;
   readonly vcoreMongoConnectionParams?: VCoreMongoConnectionParams;
   readonly feedbackPolicies?: AdminFeedbackPolicySettings;
   readonly dataPlaneRbacEnabled?: boolean;
   readonly refreshCosmosClient?: boolean;
+  throughputBucketsEnabled?: boolean;
 }
 
 export type ApiType = "SQL" | "Mongo" | "Gremlin" | "Tables" | "Cassandra" | "Postgres" | "VCoreMongo";

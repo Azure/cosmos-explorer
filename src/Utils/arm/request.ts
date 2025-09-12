@@ -47,6 +47,7 @@ interface Options {
   body?: unknown;
   queryParams?: ARMQueryParams;
   contentType?: string;
+  customHeaders?: Record<string, string>;
 }
 
 export async function armRequestWithoutPolling<T>({
@@ -57,6 +58,7 @@ export async function armRequestWithoutPolling<T>({
   body: requestBody,
   queryParams,
   contentType,
+  customHeaders,
 }: Options): Promise<{ result: T; operationStatusUrl: string }> {
   const url = new URL(path, host);
   url.searchParams.append("api-version", configContext.armAPIVersion || apiVersion);
@@ -65,18 +67,22 @@ export async function armRequestWithoutPolling<T>({
     queryParams.metricNames && url.searchParams.append("metricnames", queryParams.metricNames);
   }
 
-  if (!userContext.authorizationToken) {
+  if (!userContext?.authorizationToken && !customHeaders?.["Authorization"]) {
     throw new Error("No authority token provided");
   }
 
+  const headers: Record<string, string> = {
+    Authorization: userContext.authorizationToken || customHeaders?.["Authorization"] || "",
+    [HttpHeaders.contentType]: contentType || "application/json",
+    ...(customHeaders || {}),
+  };
+
   const response = await window.fetch(url.href, {
     method,
-    headers: {
-      Authorization: userContext.authorizationToken,
-      [HttpHeaders.contentType]: contentType || "application/json",
-    },
+    headers,
     body: requestBody ? JSON.stringify(requestBody) : undefined,
   });
+
   if (!response.ok) {
     let error: ARMError;
     try {
@@ -109,6 +115,7 @@ export async function armRequest<T>({
   body: requestBody,
   queryParams,
   contentType,
+  customHeaders,
 }: Options): Promise<T> {
   const armRequestResult = await armRequestWithoutPolling<T>({
     host,
@@ -118,6 +125,7 @@ export async function armRequest<T>({
     body: requestBody,
     queryParams,
     contentType,
+    customHeaders,
   });
   const operationStatusUrl = armRequestResult.operationStatusUrl;
   if (operationStatusUrl) {

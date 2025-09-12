@@ -34,8 +34,9 @@ export const useTheme = () => {
   });
 
   useEffect(() => {
-    if (!targetDocument) return;
-
+    if (!targetDocument) {
+      return undefined;
+    }
     const checkTheme = () => {
       // First check if we're in a theme context
       if (context) {
@@ -51,7 +52,7 @@ export const useTheme = () => {
     checkTheme();
 
     // Create a MutationObserver to watch for class changes
-    const observer = new MutationObserver((mutations) => {
+    const observer = new MutationObserver(() => {
       checkTheme();
     });
     observer.observe(targetDocument.body, { attributes: true, attributeFilter: ["class"] });

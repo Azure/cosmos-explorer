@@ -12,6 +12,7 @@ exports[`Settings Pane should render Default properly 1`] = `
   >
     <Accordion
       className="customAccordion ___1uf6361_0000000 fz7g6wx"
+      collapsible={true}
     >
       <AccordionItem
         value="1"
@@ -107,7 +108,7 @@ exports[`Settings Pane should render Default properly 1`] = `
         </AccordionPanel>
       </AccordionItem>
       <AccordionItem
-        value="3"
+        value="4"
       >
         <AccordionHeader>
           <div
@@ -148,7 +149,7 @@ exports[`Settings Pane should render Default properly 1`] = `
         </AccordionPanel>
       </AccordionItem>
       <AccordionItem
-        value="4"
+        value="5"
       >
         <AccordionHeader>
           <div
@@ -219,7 +220,7 @@ exports[`Settings Pane should render Default properly 1`] = `
         </AccordionPanel>
       </AccordionItem>
       <AccordionItem
-        value="5"
+        value="6"
       >
         <AccordionHeader>
           <div
@@ -281,7 +282,7 @@ exports[`Settings Pane should render Default properly 1`] = `
         </AccordionPanel>
       </AccordionItem>
       <AccordionItem
-        value="6"
+        value="7"
       >
         <AccordionHeader>
           <div
@@ -423,7 +424,7 @@ exports[`Settings Pane should render Default properly 1`] = `
         </AccordionPanel>
       </AccordionItem>
       <AccordionItem
-        value="7"
+        value="8"
       >
         <AccordionHeader>
           <div
@@ -459,7 +460,7 @@ exports[`Settings Pane should render Default properly 1`] = `
         </AccordionPanel>
       </AccordionItem>
       <AccordionItem
-        value="8"
+        value="9"
       >
         <AccordionHeader>
           <div
@@ -495,7 +496,52 @@ exports[`Settings Pane should render Default properly 1`] = `
         </AccordionPanel>
       </AccordionItem>
       <AccordionItem
-        value="9"
+        value="10"
+      >
+        <AccordionHeader>
+          <div
+            className="___15c001r_0000000 fq02s40"
+          >
+            Enhanced query control
+          </div>
+        </AccordionHeader>
+        <AccordionPanel>
+          <div
+            className="___1dfa554_0000000 fo7qwa0"
+          >
+            <div
+              className="___10gar1i_0000000 f1fow5ox f1ugzwwg"
+            >
+              Query up to the max degree of parallelism.
+              <a
+                href="https://learn.microsoft.com/en-us/azure/cosmos-db/nosql/performance-tips-query-sdk?tabs=v3&pivots=programming-language-nodejs#enhanced-query-control"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                 
+                Learn more
+                 
+              </a>
+            </div>
+            <StyledCheckboxBase
+              ariaLabel="EnableQueryControl"
+              checked={false}
+              className="padding"
+              label="Enable query control"
+              onChange={[Function]}
+              styles={
+                {
+                  "label": {
+                    "padding": 0,
+                  },
+                }
+              }
+            />
+          </div>
+        </AccordionPanel>
+      </AccordionItem>
+      <AccordionItem
+        value="10"
       >
         <AccordionHeader>
           <div
@@ -573,9 +619,10 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
   >
     <Accordion
       className="customAccordion ___1uf6361_0000000 fz7g6wx"
+      collapsible={true}
     >
       <AccordionItem
-        value="6"
+        value="7"
       >
         <AccordionHeader>
           <div
@@ -717,7 +764,7 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
         </AccordionPanel>
       </AccordionItem>
       <AccordionItem
-        value="7"
+        value="8"
       >
         <AccordionHeader>
           <div
@@ -753,7 +800,7 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
         </AccordionPanel>
       </AccordionItem>
       <AccordionItem
-        value="11"
+        value="12"
       >
         <AccordionHeader>
           <div

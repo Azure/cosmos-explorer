@@ -17,12 +17,16 @@ import { useSelectedNode } from "Explorer/useSelectedNode";
 import { isFabricMirroredKey, scheduleRefreshFabricToken } from "Platform/Fabric/FabricUtil";
 import {
   AppStateComponentNames,
+  deleteState,
+  hasState,
+  loadState,
   OPEN_TABS_SUBCOMPONENT_NAME,
   readSubComponentState,
 } from "Shared/AppStatePersistenceUtility";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { isDataplaneRbacSupported } from "Utils/APITypeUtils";
 import { logConsoleError } from "Utils/NotificationConsoleUtils";
+import { useClientWriteEnabled } from "hooks/useClientWriteEnabled";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
 import { useEffect, useState } from "react";
@@ -60,7 +64,8 @@ import {
   getMsalInstance,
 } from "../Utils/AuthorizationUtils";
 import { isInvalidParentFrameOrigin, shouldProcessMessage } from "../Utils/MessageValidation";
-import { getReadOnlyKeys, listKeys } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
+import { get, getReadOnlyKeys, listKeys } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
+import * as Types from "../Utils/arm/generatedClients/cosmos/types";
 import { applyExplorerBindings } from "../applyExplorerBindings";
 
 // This hook will create a new instance of Explorer.ts and bind it to the DOM
@@ -211,6 +216,10 @@ async function configureFabric(): Promise<Explorer> {
             }
             break;
           }
+          case "refreshResourceTree": {
+            explorer.onRefreshResourcesClick();
+            break;
+          }
           default:
             console.error(`Unknown Fabric message type: ${JSON.stringify(data)}`);
             break;
@@ -338,6 +347,14 @@ async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
     }
   }
   try {
+    // TO DO - Remove once we have ARG API support for enableMaterializedViews property
+    const databaseAccount: Types.DatabaseAccountGetResults = await get(
+      subscriptionId,
+      account.resourceGroup,
+      account.name,
+    );
+    config.databaseAccount.properties.enableMaterializedViews = databaseAccount.properties?.enableMaterializedViews;
+
     updateUserContext({
       databaseAccount: config.databaseAccount,
     });
@@ -345,6 +362,9 @@ async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
       `Configuring Data Explorer for ${userContext.apiType} account ${account.name}`,
       "Explorer/configureHostedWithAAD",
     );
+    if (userContext.apiType === "SQL") {
+      checkAndUpdateSelectedRegionalEndpoint();
+    }
     if (!userContext.features.enableAadDataPlane) {
       Logger.logInfo(`AAD Feature flag is not enabled for account ${account.name}`, "Explorer/configureHostedWithAAD");
       if (isDataplaneRbacSupported(userContext.apiType)) {
@@ -706,6 +726,10 @@ async function configurePortal(): Promise<Explorer> {
 
           const { databaseAccount: account, subscriptionId, resourceGroup } = userContext;
 
+          if (userContext.apiType === "SQL") {
+            checkAndUpdateSelectedRegionalEndpoint();
+          }
+
           let dataPlaneRbacEnabled;
           if (isDataplaneRbacSupported(userContext.apiType)) {
             if (LocalStorageUtility.hasItem(StorageKey.DataPlaneRbacEnabled)) {
@@ -824,6 +848,41 @@ function updateAADEndpoints(portalEnv: PortalEnv) {
   }
 }
 
+function checkAndUpdateSelectedRegionalEndpoint() {
+  const accountName = userContext.databaseAccount?.name;
+  if (hasState({ componentName: AppStateComponentNames.SelectedRegionalEndpoint, globalAccountName: accountName })) {
+    const storedRegionalEndpoint = loadState({
+      componentName: AppStateComponentNames.SelectedRegionalEndpoint,
+      globalAccountName: accountName,
+    }) as string;
+    const validEndpoint = userContext.databaseAccount?.properties?.readLocations?.find(
+      (loc) => loc.documentEndpoint === storedRegionalEndpoint,
+    );
+    const validWriteEndpoint = userContext.databaseAccount?.properties?.writeLocations?.find(
+      (loc) => loc.documentEndpoint === storedRegionalEndpoint,
+    );
+    if (validEndpoint) {
+      updateUserContext({
+        selectedRegionalEndpoint: storedRegionalEndpoint,
+        writeEnabledInSelectedRegion: !!validWriteEndpoint,
+        refreshCosmosClient: true,
+      });
+      useClientWriteEnabled.setState({ clientWriteEnabled: !!validWriteEndpoint });
+    } else {
+      deleteState({ componentName: AppStateComponentNames.SelectedRegionalEndpoint, globalAccountName: accountName });
+      updateUserContext({
+        writeEnabledInSelectedRegion: true,
+      });
+      useClientWriteEnabled.setState({ clientWriteEnabled: true });
+    }
+  } else {
+    updateUserContext({
+      writeEnabledInSelectedRegion: true,
+    });
+    useClientWriteEnabled.setState({ clientWriteEnabled: true });
+  }
+}
+
 function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
   if (
     configContext.PORTAL_BACKEND_ENDPOINT &&
@@ -835,6 +894,7 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
 
   const authorizationToken = inputs.authorizationToken || "";
   const databaseAccount = inputs.databaseAccount;
+  const aadToken = inputs.aadToken || "";
 
   updateConfigContext({
     ARM_ENDPOINT: normalizeArmEndpoint(inputs.csmEndpoint || configContext.ARM_ENDPOINT),
@@ -847,6 +907,7 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
 
   updateUserContext({
     authorizationToken,
+    aadToken,
     databaseAccount,
     resourceGroup: inputs.resourceGroup,
     subscriptionId: inputs.subscriptionId,

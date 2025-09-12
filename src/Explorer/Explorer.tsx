@@ -8,10 +8,16 @@ import { MessageTypes } from "Contracts/ExplorerContracts";
 import { useDataPlaneRbac } from "Explorer/Panes/SettingsPane/SettingsPane";
 import { getCopilotEnabled, isCopilotFeatureRegistered } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
 import { IGalleryItem } from "Juno/JunoClient";
-import { isFabricMirrored, isFabricMirroredKey, scheduleRefreshFabricToken } from "Platform/Fabric/FabricUtil";
+import {
+  isFabricMirrored,
+  isFabricMirroredKey,
+  isFabricNative,
+  scheduleRefreshFabricToken,
+} from "Platform/Fabric/FabricUtil";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { acquireMsalTokenForAccount } from "Utils/AuthorizationUtils";
 import { allowedNotebookServerUrls, validateEndpoint } from "Utils/EndpointUtils";
+import { featureRegistered } from "Utils/FeatureRegistrationUtils";
 import { update } from "Utils/arm/generatedClients/cosmos/databaseAccounts";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import * as ko from "knockout";
@@ -30,6 +36,7 @@ import { readDatabases } from "../Common/dataAccess/readDatabases";
 import * as DataModels from "../Contracts/DataModels";
 import { ContainerConnectionInfo, IPhoenixServiceInfo, IProvisionData, IResponse } from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
+import { UploadDetailsRecord } from "../Contracts/ViewModels";
 import { GitHubOAuthService } from "../GitHub/GitHubOAuthService";
 import { PhoenixClient } from "../Phoenix/PhoenixClient";
 import * as ExplorerSettings from "../Shared/ExplorerSettings";
@@ -55,7 +62,7 @@ import type NotebookManager from "./Notebook/NotebookManager";
 import { NotebookPaneContent } from "./Notebook/NotebookManager";
 import { NotebookUtil } from "./Notebook/NotebookUtil";
 import { useNotebook } from "./Notebook/useNotebook";
-import { AddCollectionPanel } from "./Panes/AddCollectionPanel";
+import { AddCollectionPanel } from "./Panes/AddCollectionPanel/AddCollectionPanel";
 import { CassandraAddCollectionPane } from "./Panes/CassandraAddCollectionPane/CassandraAddCollectionPane";
 import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane/ExecuteSprocParamsPane";
 import { StringInputPane } from "./Panes/StringInputPane/StringInputPane";
@@ -280,6 +287,68 @@ export default class Explorer {
         }
       }
     }
+  }
+
+  /**
+   * Generates a VS Code DocumentDB connection URL using the current user's MongoDB connection parameters.
+   * Double-encodes the updated connection string for safe usage in VS Code URLs.
+   *
+   * The DocumentDB VS Code extension requires double encoding for connection strings.
+   * See: https://microsoft.github.io/vscode-documentdb/manual/how-to-construct-url.html#double-encoding
+   *
+   * @returns {string} The encoded VS Code DocumentDB connection URL.
+   */
+  private getDocumentDbUrl() {
+    const { adminLogin: adminLoginuserName = "", connectionString = "" } = userContext.vcoreMongoConnectionParams;
+    const updatedConnectionString = connectionString.replace(/<(user|username)>:<password>/i, adminLoginuserName);
+    const encodedUpdatedConnectionString = encodeURIComponent(encodeURIComponent(updatedConnectionString));
+    const documentDbUrl = `vscode://ms-azuretools.vscode-documentdb?connectionString=${encodedUpdatedConnectionString}`;
+    return documentDbUrl;
+  }
+
+  private getCosmosDbUrl() {
+    const activeTab = useTabs.getState().activeTab;
+    const resourceId = encodeURIComponent(userContext.databaseAccount.id);
+    const database = encodeURIComponent(activeTab?.collection?.databaseId);
+    const container = encodeURIComponent(activeTab?.collection?.id());
+    const baseUrl = `vscode://ms-azuretools.vscode-cosmosdb?resourceId=${resourceId}`;
+    const vscodeUrl = activeTab ? `${baseUrl}&database=${database}&container=${container}` : baseUrl;
+    return vscodeUrl;
+  }
+
+  private getVSCodeUrl(): string {
+    const isvCore = (userContext.apiType || userContext.databaseAccount.kind) === "VCoreMongo";
+    return isvCore ? this.getDocumentDbUrl() : this.getCosmosDbUrl();
+  }
+
+  public openInVsCode(): void {
+    const vscodeUrl = this.getVSCodeUrl();
+    const openVSCodeDialogProps: DialogProps = {
+      linkProps: {
+        linkText: "Download Visual Studio Code",
+        linkUrl: "https://code.visualstudio.com/download",
+      },
+      isModal: true,
+      title: `Open your Azure Cosmos DB account in Visual Studio Code`,
+      subText: `Please ensure Visual Studio Code is installed on your device.
+      If you don't have it installed, please download it from the link below.`,
+      primaryButtonText: "Open in VS Code",
+      secondaryButtonText: "Cancel",
+
+      onPrimaryButtonClick: () => {
+        try {
+          window.location.href = vscodeUrl;
+          TelemetryProcessor.traceStart(Action.OpenVSCode);
+        } catch (error) {
+          logConsoleError(`Failed to open VS Code: ${getErrorMessage(error)}`);
+        }
+      },
+      onSecondaryButtonClick: () => {
+        useDialog.getState().closeDialog();
+        TelemetryProcessor.traceCancel(Action.OpenVSCode);
+      },
+    };
+    useDialog.getState().openDialog(openVSCodeDialogProps);
   }
 
   public async openCESCVAFeedbackBlade(): Promise<void> {
@@ -910,7 +979,9 @@ export default class Explorer {
   }
 
   public async openNotebookTerminal(kind: ViewModels.TerminalKind): Promise<void> {
-    if (useNotebook.getState().isPhoenixFeatures) {
+    if (userContext.features.enableCloudShell) {
+      this.connectToNotebookTerminal(kind);
+    } else if (useNotebook.getState().isPhoenixFeatures) {
       await this.allocateContainer(PoolIdType.DefaultPoolId);
       const notebookServerInfo = useNotebook.getState().notebookServerInfo;
       if (notebookServerInfo && notebookServerInfo.notebookServerEndpoint !== undefined) {
@@ -1076,8 +1147,8 @@ export default class Explorer {
     }
   }
 
-  public openUploadItemsPane(): void {
-    useSidePanel.getState().openSidePanel("Upload " + getUploadName(), <UploadItemsPane />);
+  public openUploadItemsPane(onUpload?: (data: UploadDetailsRecord[]) => void): void {
+    useSidePanel.getState().openSidePanel("Upload " + getUploadName(), <UploadItemsPane onUpload={onUpload} />);
   }
   public openExecuteSprocParamsPanel(storedProcedure: StoredProcedure): void {
     useSidePanel
@@ -1085,7 +1156,7 @@ export default class Explorer {
       .openSidePanel("Input parameters", <ExecuteSprocParamsPane storedProcedure={storedProcedure} />);
   }
 
-  public getDownloadModalConent(fileName: string): JSX.Element {
+  public getDownloadModalContent(fileName: string): JSX.Element {
     if (useNotebook.getState().isPhoenixNotebooks) {
       return (
         <>
@@ -1109,7 +1180,10 @@ export default class Explorer {
         ? this.refreshDatabaseForResourceToken()
         : await this.refreshAllDatabases(); // await: we rely on the databases to be loaded before restoring the tabs further in the flow
     }
-    await useNotebook.getState().refreshNotebooksEnabledStateForAccount();
+
+    if (!isFabricNative()) {
+      await useNotebook.getState().refreshNotebooksEnabledStateForAccount();
+    }
 
     // TODO: remove reference to isNotebookEnabled and isNotebooksEnabledForAccount
     const isNotebookEnabled =
@@ -1129,6 +1203,11 @@ export default class Explorer {
 
     if (useNotebook.getState().isPhoenixNotebooks) {
       await this.initNotebooks(userContext.databaseAccount);
+    }
+
+    if (userContext.authType === AuthType.AAD && userContext.apiType === "SQL" && !isFabricNative()) {
+      const throughputBucketsEnabled = await featureRegistered(userContext.subscriptionId, "ThroughputBucketing");
+      updateUserContext({ throughputBucketsEnabled });
     }
 
     this.refreshSampleData();

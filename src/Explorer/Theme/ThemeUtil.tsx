@@ -11,7 +11,7 @@ import {
   shorthands,
   themeToTokensObject,
   webDarkTheme,
-  webLightTheme
+  webLightTheme,
 } from "@fluentui/react-components";
 import { Platform, configContext } from "ConfigContext";
 import React from "react";
@@ -119,11 +119,11 @@ const cosmosTheme = {
 };
 
 // Get the current theme tokens based on the root theme
-export const getThemeTokens = (isDarkMode: boolean) => 
-  themeToTokensObject({ 
-    ...(isDarkMode ? webDarkTheme : webLightTheme), 
-    ...cosmosTheme, 
-    ...sizeMappings[LayoutSize.Compact] 
+export const getThemeTokens = (isDarkMode: boolean) =>
+  themeToTokensObject({
+    ...(isDarkMode ? webDarkTheme : webLightTheme),
+    ...cosmosTheme,
+    ...sizeMappings[LayoutSize.Compact],
   });
 
 // Initialize with light theme, will be updated by the provider
@@ -140,9 +140,7 @@ export const cosmosShorthands = {
 export function getPlatformTheme(platform: Platform, isDarkMode: boolean = false): CosmosTheme {
   const createTheme = isDarkMode ? createDarkTheme : createLightTheme;
   const baseTheme =
-    platform === Platform.Fabric
-      ? createTheme(appThemeFabricTealBrandRamp)
-      : createTheme(appThemePortalBrandRamp);
+    platform === Platform.Fabric ? createTheme(appThemeFabricTealBrandRamp) : createTheme(appThemePortalBrandRamp);
 
   return {
     ...baseTheme,

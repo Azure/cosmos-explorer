@@ -11,6 +11,11 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
   >
     <Stack
       hidden={false}
+      style={
+        {
+          "marginBottom": -2,
+        }
+      }
     >
       <Stack
         horizontal={true}
@@ -88,7 +93,6 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
           aria-label="New database id, Type a new database id"
           aria-required={true}
           autoComplete="off"
-          autoFocus={true}
           className="panelTextField"
           id="newDatabaseId"
           name="newDatabaseId"
@@ -140,11 +144,23 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
       </Stack>
       <Separator
         className="panelSeparator"
+        style={
+          {
+            "marginBottom": -4,
+            "marginTop": -4,
+          }
+        }
       />
     </Stack>
     <Stack>
       <Stack
         horizontal={true}
+        style={
+          {
+            "marginBottom": 1,
+            "marginTop": -5,
+          }
+        }
       >
         <span
           className="mandatoryStar"
@@ -186,10 +202,25 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
         type="text"
         value=""
       />
+      <Separator
+        className="panelSeparator"
+        style={
+          {
+            "marginBottom": -5,
+            "marginTop": -5,
+          }
+        }
+      />
     </Stack>
     <Stack>
       <Stack
         horizontal={true}
+        style={
+          {
+            "marginBottom": -4,
+            "marginTop": -5,
+          }
+        }
       >
         <span
           className="mandatoryStar"
@@ -254,6 +285,15 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
           Add hierarchical partition key
         </CustomizedDefaultButton>
       </Stack>
+      <Separator
+        className="panelSeparator"
+        style={
+          {
+            "marginBottom": -4,
+            "marginTop": 2,
+          }
+        }
+      />
     </Stack>
     <ThroughputInput
       isDatabase={false}
@@ -263,9 +303,21 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
       setIsThroughputCapExceeded={[Function]}
       setThroughputValue={[Function]}
     />
-    <Stack>
+    <Stack
+      style={
+        {
+          "marginBottom": -4,
+          "marginTop": -2,
+        }
+      }
+    >
       <Stack
         horizontal={true}
+        style={
+          {
+            "marginBottom": -2,
+          }
+        }
       >
         <Text
           className="panelTextBold"
@@ -306,26 +358,53 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
         Add unique key
       </CustomizedActionButton>
     </Stack>
+    <Separator
+      className="panelSeparator"
+      style={
+        {
+          "marginBottom": -4,
+          "marginTop": -15,
+        }
+      }
+    />
     <Stack
       className="panelGroupSpacing"
+      style={
+        {
+          "marginTop": -4,
+        }
+      }
     >
       <Text
         className="panelTextBold"
         variant="small"
       >
-        <Text
-          variant="small"
+        <Stack
+          horizontal={true}
+          style={
+            {
+              "marginBottom": -2,
+            }
+          }
         >
-          Enable analytical store capability to perform near real-time analytics on your operational data, without impacting the performance of transactional workloads.
-           
-          <StyledLinkBase
-            aria-label="Learn more about analytical store."
-            href="https://aka.ms/analytical-store-overview"
-            target="_blank"
+          <Text
+            className="panelTextBold"
+            variant="small"
           >
-            Learn more
-          </StyledLinkBase>
-        </Text>
+            Analytical Store
+          </Text>
+          <StyledTooltipHostBase
+            content="Enable analytical store capability to perform near real-time analytics on your operational data, without impacting the performance of transactional workloads."
+            directionalHint={4}
+          >
+            <Icon
+              ariaLabel="Enable analytical store capability to perform near real-time analytics on your operational data, without impacting the performance of transactional workloads."
+              className="panelInfoIcon"
+              iconName="Info"
+              tabIndex={0}
+            />
+          </StyledTooltipHostBase>
+        </Stack>
       </Text>
       <Stack
         horizontal={true}
@@ -381,8 +460,8 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
           Azure Synapse Link is required for creating an analytical store
            
           container
-          . Enable Synapse Link for this Cosmos DB account.
-           
+          . Enable Synapse Link for this Cosmos DB account. 
+          <br />
           <StyledLinkBase
             aria-label="Learn more about Azure Synapse Link."
             className="capacitycalculator-link"
@@ -410,6 +489,44 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
           text="Enable"
         />
       </Stack>
+    </Stack>
+    <Stack>
+      <CollapsibleSectionComponent
+        isExpandedByDefault={false}
+        onExpand={[Function]}
+        title="Container Full Text Search Policy"
+      >
+        <Stack
+          id="collapsibleFullTextPolicySectionContent"
+          styles={
+            {
+              "root": {
+                "position": "relative",
+              },
+            }
+          }
+        >
+          <Stack
+            styles={
+              {
+                "root": {
+                  "paddingLeft": 40,
+                },
+              }
+            }
+          >
+            <FullTextPoliciesComponent
+              fullTextPolicy={
+                {
+                  "defaultLanguage": "en-US",
+                  "fullTextPaths": [],
+                }
+              }
+              onFullTextPathChange={[Function]}
+            />
+          </Stack>
+        </Stack>
+      </CollapsibleSectionComponent>
     </Stack>
     <CollapsibleSectionComponent
       isExpandedByDefault={false}

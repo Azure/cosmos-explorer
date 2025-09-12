@@ -1,10 +1,10 @@
 import {
-    Dropdown,
-    ICommandBarItemProps,
-    IComponentAsProps,
-    IconType,
-    IDropdownOption,
-    IDropdownStyles,
+  Dropdown,
+  ICommandBarItemProps,
+  IComponentAsProps,
+  IconType,
+  IDropdownOption,
+  IDropdownStyles,
 } from "@fluentui/react";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { KeyboardHandlerMap } from "KeyboardShortcuts";
@@ -91,24 +91,24 @@ export const convertButton = (btns: CommandButtonComponentProps[], backgroundCol
             selectors: {
               "&:hover": {
                 backgroundColor: "var(--colorNeutralBackground1Hover)",
-                color: "var(--colorNeutralForeground1)"
+                color: "var(--colorNeutralForeground1)",
               },
               "&:active": {
                 backgroundColor: "var(--colorNeutralBackground1Pressed)",
-                color: "var(--colorNeutralForeground1)"
-              }
-            }
+                color: "var(--colorNeutralForeground1)",
+              },
+            },
           },
           rootDisabled: {
             backgroundColor: "var(--colorNeutralBackground1)",
             pointerEvents: "auto",
-            color: "var(--colorNeutralForegroundDisabled)"
+            color: "var(--colorNeutralForegroundDisabled)",
           },
           splitButtonMenuButton: {
             backgroundColor: "var(--colorNeutralBackground1)",
             selectors: {
-              ":hover": { 
-                backgroundColor: "var(--colorNeutralBackground1Hover)"
+              ":hover": {
+                backgroundColor: "var(--colorNeutralBackground1Hover)",
               },
             },
             width: 16,
@@ -118,21 +118,21 @@ export const convertButton = (btns: CommandButtonComponentProps[], backgroundCol
               configContext.platform == Platform.Fabric
                 ? StyleConstants.DefaultFontSize
                 : StyleConstants.mediumFontSize,
-            color: "var(--colorNeutralForeground1)"
+            color: "var(--colorNeutralForeground1)",
           },
-          rootHovered: { 
+          rootHovered: {
             backgroundColor: "var(--colorNeutralBackground1Hover)",
-            color: "var(--colorNeutralForeground1)"
+            color: "var(--colorNeutralForeground1)",
           },
-          rootPressed: { 
+          rootPressed: {
             backgroundColor: "var(--colorNeutralBackground1Pressed)",
-            color: "var(--colorNeutralForeground1)"
+            color: "var(--colorNeutralForeground1)",
           },
           splitButtonMenuButtonExpanded: {
             backgroundColor: "var(--colorNeutralBackground1Pressed)",
             selectors: {
-              ":hover": { 
-                backgroundColor: "var(--colorNeutralBackground1Hover)"
+              ":hover": {
+                backgroundColor: "var(--colorNeutralBackground1Hover)",
               },
             },
           },
@@ -142,7 +142,7 @@ export const convertButton = (btns: CommandButtonComponentProps[], backgroundCol
           icon: {
             paddingLeft: 0,
             paddingRight: 0,
-            color: "var(--colorNeutralForeground1)"
+            color: "var(--colorNeutralForeground1)",
           },
           splitButtonContainer: {
             marginLeft: 5,
