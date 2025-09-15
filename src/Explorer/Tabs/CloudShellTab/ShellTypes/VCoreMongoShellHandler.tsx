@@ -1,10 +1,6 @@
 import { userContext } from "../../../../UserContext";
 import { filterAndCleanTerminalOutput, getMongoShellRemoveInfoText } from "../Utils/CommonUtils";
-import {
-  AbstractShellHandler,
-  DISABLE_TELEMETRY_COMMAND,
-  EXIT_COMMAND_MONGO
-} from "./AbstractShellHandler";
+import { AbstractShellHandler, DISABLE_TELEMETRY_COMMAND, EXIT_COMMAND_MONGO } from "./AbstractShellHandler";
 
 export class VCoreMongoShellHandler extends AbstractShellHandler {
   private _endpoint: string | undefined;

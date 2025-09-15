@@ -21,7 +21,7 @@ export abstract class BaseTerminalComponentAdapter implements ReactAdapter {
     protected getUsername: () => string,
     protected isAllPublicIPAddressesEnabled: ko.Observable<boolean>,
     protected kind: ViewModels.TerminalKind,
-  ) { }
+  ) {}
 
   public renderComponent(): JSX.Element {
     if (this.kind === ViewModels.TerminalKind.Mongo || this.kind === ViewModels.TerminalKind.VCoreMongo) {
