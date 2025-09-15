@@ -18,7 +18,7 @@ export const EXIT_COMMAND = ` printf "\\033[1;31mSession ended. Please close thi
  * Command that displays error message with MongoDB networking guidance and exits the shell session.
  * Used when MongoDB shell connection fails due to networking issues.
  */
-export const EXIT_COMMAND_MONGO = ` printf "\\033[1;31mSession ended. Please close this tab and initiate a new shell session if needed.\\033[0m\\n" && printf "\\033[1;36mPlease use the 'Add Azure Cloud Shell IPs' button in the Networking blade to allow CloudShell access, if not already configured.\\033[0m\\n" && disown -a && exit`;
+export const EXIT_COMMAND_MONGO = ` printf "\\033[1;31mSession ended. Please close this tab and initiate a new shell session if needed.\\033[0m\\n" && printf "\\033[1;36mPlease use the 'Add Azure Cloud Shell IPs' button in the Networking blade to allow Cloud Shell access, if not already configured.\\033[0m\\n" && disown -a && exit`;
 
 /**
  * This command runs mongosh in no-database and quiet mode,
