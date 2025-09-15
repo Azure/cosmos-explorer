@@ -7,8 +7,6 @@ const validCloudShellRegions = new Set([
   "westeurope",
   "centralindia",
   "southeastasia",
-  "centraluseuap",
-  "eastus2euap",
   "usgovvirginia",
   "usgovarizona",
 ]);
@@ -42,8 +40,7 @@ export const getNormalizedRegion = (region: string, defaultCloudshellRegion: str
   }
 
   const regionMap: Record<string, string> = {
-    eastus2: "eastus2euap",
-    centralus: "centraluseuap",
+    eastus2: "eastus",
   };
 
   const normalizedRegion = regionMap[region.toLowerCase()] || region;
