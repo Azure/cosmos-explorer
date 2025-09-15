@@ -207,6 +207,8 @@ export function client(): Cosmos.CosmosClient {
     defaultHeaders: _defaultHeaders,
     connectionPolicy: {
       enableEndpointDiscovery: !userContext.selectedRegionalEndpoint,
+      enablePartitionLevelFailover: true,
+      enablePartitionLevelCircuitBreaker: true,
       retryOptions: {
         maxRetryAttemptCount: LocalStorageUtility.getEntryNumber(StorageKey.RetryAttempts),
         fixedRetryIntervalInMilliseconds: LocalStorageUtility.getEntryNumber(StorageKey.RetryInterval),
