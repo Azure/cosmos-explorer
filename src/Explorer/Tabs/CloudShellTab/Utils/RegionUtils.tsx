@@ -7,7 +7,6 @@ const validCloudShellRegions = new Set([
   "westeurope",
   "centralindia",
   "southeastasia",
-  "westcentralus",
   "usgovvirginia",
   "usgovarizona",
 ]);
@@ -41,7 +40,6 @@ export const getNormalizedRegion = (region: string, defaultCloudshellRegion: str
   }
 
   const regionMap: Record<string, string> = {
-    centralus: "westcentralus",
     eastus2: "eastus",
   };
 

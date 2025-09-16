@@ -1,6 +1,6 @@
 import { userContext } from "../../../../UserContext";
 import { filterAndCleanTerminalOutput, getMongoShellRemoveInfoText } from "../Utils/CommonUtils";
-import { AbstractShellHandler, DISABLE_TELEMETRY_COMMAND } from "./AbstractShellHandler";
+import { AbstractShellHandler, DISABLE_TELEMETRY_COMMAND, EXIT_COMMAND_MONGO } from "./AbstractShellHandler";
 
 export class VCoreMongoShellHandler extends AbstractShellHandler {
   private _endpoint: string | undefined;
@@ -33,6 +33,13 @@ export class VCoreMongoShellHandler extends AbstractShellHandler {
 
   public getTerminalSuppressedData(): string[] {
     return ["Warning: Non-Genuine MongoDB Detected", "Telemetry is now disabled."];
+  }
+
+  /**
+   * Override getExitCommand to include MongoDB networking guidance
+   */
+  protected getExitCommand(): string {
+    return EXIT_COMMAND_MONGO;
   }
 
   updateTerminalData(data: string): string {

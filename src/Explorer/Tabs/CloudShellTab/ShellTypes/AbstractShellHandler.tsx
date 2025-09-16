@@ -14,6 +14,11 @@ export const DISABLE_HISTORY = `set +o history`;
  * Used when shell initialization or connection fails.
  */
 export const EXIT_COMMAND = ` printf "\\033[1;31mSession ended. Please close this tab and initiate a new shell session if needed.\\033[0m\\n" && disown -a && exit`;
+/**
+ * Command that displays error message with MongoDB networking guidance and exits the shell session.
+ * Used when MongoDB shell connection fails due to networking issues.
+ */
+export const EXIT_COMMAND_MONGO = ` printf "\\033[1;31mSession ended. Please close this tab and initiate a new shell session if needed.\\033[0m\\n" && printf "\\033[1;36mPlease use the 'Add Azure Cloud Shell IPs' button in the Networking blade to allow Cloud Shell access, if not already configured.\\033[0m\\n" && disown -a && exit`;
 
 /**
  * This command runs mongosh in no-database and quiet mode,
@@ -41,6 +46,14 @@ export abstract class AbstractShellHandler {
   updateTerminalData?(data: string): string;
 
   /**
+   * Gets the exit command to use when connection fails.
+   * Can be overridden by subclasses to provide custom exit commands.
+   */
+  protected getExitCommand(): string {
+    return EXIT_COMMAND;
+  }
+
+  /**
    * Constructs the complete initialization command sequence for the shell.
    *
    * This method:
@@ -64,7 +77,7 @@ export abstract class AbstractShellHandler {
       START_MARKER,
       DISABLE_HISTORY,
       ...setupCommands,
-      `{ ${connectionCommand}; } || true;${EXIT_COMMAND}`,
+      `{ ${connectionCommand}; } || true;${this.getExitCommand()}`,
     ];
 
     return allCommands.join("\n").concat("\n");
