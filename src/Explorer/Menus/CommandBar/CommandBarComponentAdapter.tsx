@@ -39,6 +39,28 @@ export const useCommandBar: UseStore<CommandBarStore> = create((set) => ({
 const useStyles = makeStyles({
   commandBarContainer: {
     borderBottom: "1px solid var(--colorNeutralStroke1)",
+    // backgroundColor: "var(--colorNeutralBackground1)",
+  },
+  toolbarButton: {
+    backgroundColor: "transparent",
+    "&:hover": {
+      backgroundColor: "var(--colorNeutralBackground2)",
+    },
+    "&:active": {
+      backgroundColor: "var(--colorNeutralBackground3)",
+    },
+  },
+  buttonIcon: {
+    width: "16px",
+    height: "16px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    "& img": {
+      width: "100%",
+      height: "100%",
+      objectFit: "contain",
+    },
   },
 });
 
@@ -47,7 +69,6 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
   const buttons = useCommandBar((state) => state.contextButtons);
   const isHidden = useCommandBar((state) => state.isHidden);
   const { targetDocument } = useFluent();
-  // const isDarkMode = targetDocument?.body.classList.contains("isDarkMode");
   const setKeyboardHandlers = useKeyboardActionGroup(KeyboardActionGroup.COMMAND_BAR);
   const styles = useStyles();
 
@@ -107,20 +128,38 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
     );
   }
 
-  const rootStyle = isFabric()
-    ? {
-        root: {
-          backgroundColor: "var(--colorNeutralBackground1)",
-          padding: "2px 8px 0px 8px",
+  const rootStyle = {
+    root: {
+      backgroundColor: "var(--colorNeutralBackground1)",
+      color: "var(--colorNeutralForeground1)",
+      padding: isFabric() ? "2px 8px 0px 8px" : undefined
+    },
+    button: {
+      backgroundColor: "var(--colorNeutralBackground1)",
+      color: "var(--colorNeutralForeground1)",
+      selectors: {
+        ":hover": {
+          backgroundColor: "var(--colorNeutralBackground2)",
           color: "var(--colorNeutralForeground1)",
         },
+        ":active": {
+          backgroundColor: "var(--colorNeutralBackground3)",
+          color: "var(--colorNeutralForeground1)",
+        }
       }
-    : {
-        root: {
-          backgroundColor: "var(--colorNeutralBackground1)",
-          color: "var(--colorNeutralForeground1)",
-        },
-      };
+    },
+    menuIcon: {
+      color: "var(--colorNeutralForeground1)",
+    },
+    item: {
+      backgroundColor: "var(--colorNeutralBackground1)",
+      color: "var(--colorNeutralForeground1)",
+    },
+    link: {
+      backgroundColor: "var(--colorNeutralBackground1)",
+      color: "var(--colorNeutralForeground1)",
+    }
+  };
 
   const allButtons = staticButtons.concat(contextButtons).concat(controlButtons);
   const keyboardHandlers = CommandBarUtil.createKeyboardHandlers(allButtons);

@@ -166,8 +166,19 @@ export const separatorStyles: Partial<ISeparatorStyles> = {
 };
 
 export const messageBarStyles: Partial<IMessageBarStyles> = {
-  root: { marginTop: "5px", backgroundColor: "var(--colorNeutralBackground1)" },
-  text: { fontSize: 14 },
+  root: { 
+    marginTop: "5px", 
+    backgroundColor: "var(--colorNeutralBackground1)",
+    selectors: {
+      '&.ms-MessageBar--severeWarning': {
+        backgroundColor: "var(--colorNeutralBackground4)",
+      },
+      '&.ms-MessageBar--warning': {
+        backgroundColor: "var(--colorNeutralBackground3)",
+      }
+    }
+  },
+  text: { fontSize: 14 }
 };
 
 export const throughputUnit = "RU/s";
@@ -509,20 +520,24 @@ export const getTextFieldStyles = (current: isDirtyTypes, baseline: isDirtyTypes
     height: 25,
     width: 300,
     borderColor: isDirty(current, baseline) ? StyleConstants.Dirty : "",
-    backgroundColor: "var(--colorNeutralBackground3)",
     selectors: {
       ":disabled": {
         backgroundColor: "var(--colorNeutralBackground1)",
         borderColor: StyleConstants.BaseMediumHigh,
       },
-      "input:disabled": {
-        backgroundColor: "var(--colorNeutralBackground3)",
+      "input": {
+        color: "var(--colorNeutralForeground1)",
+      },
+      "input#autopilotInput": {
+        backgroundColor: "var(--colorNeutralBackground4)",
+        color: "var(--colorNeutralForeground1)",
       },
     },
-    field: {
-      color: "var(--colorNeutralForeground1)",
-    },
   },
+  field: {
+    color: "var(--colorNeutralForeground1)",
+  },
+
   subComponentStyles: {
     label: {
       root: {
@@ -540,6 +555,25 @@ export const getChoiceGroupStyles = (
   label: {
     color: "var(--colorNeutralForeground1)",
   },
+  root: {
+    selectors: {
+      '.ms-ChoiceFieldLabel': {
+        color: "var(--colorNeutralForeground1) "
+      },
+      '.ms-ChoiceField-field:hover .ms-ChoiceFieldLabel': {
+        color: "var(--colorNeutralForeground1) "
+      },
+      '.ms-ChoiceField:hover .ms-ChoiceFieldLabel': {
+        color: "var(--colorNeutralForeground1) "
+      },
+      '.ms-ChoiceField:hover .ms-ChoiceField-innerField': {
+        color: "var(--colorNeutralForeground1) "
+      },
+      '.ms-ChoiceField-innerField': {
+        color: "var(--colorNeutralForeground1) "
+      }
+    }
+  },
   flexContainer: [
     {
       selectors: {
@@ -555,6 +589,15 @@ export const getChoiceGroupStyles = (
           fontFamily: StyleConstants.DataExplorerFont,
           padding: "2px 5px",
           color: "var(--colorNeutralForeground1)",
+        },
+        ".ms-ChoiceFieldLabel": {
+          color: "var(--colorNeutralForeground1)" 
+        },
+        ".ms-ChoiceFieldLabel:hover": {
+          color: "var(--colorNeutralForeground1)"
+        },
+        ".ms-ChoiceField-field:hover .ms-ChoiceFieldLabel": {
+          color: "var(--colorNeutralForeground1)"
         },
       },
       display: isHorizontal ? "inline-flex" : "default",
