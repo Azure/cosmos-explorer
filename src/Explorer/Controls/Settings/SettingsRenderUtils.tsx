@@ -121,7 +121,7 @@ export const mediumWidthStackStyles: IStackStyles = { root: { width: 600 } };
 
 export const shortWidthTextFieldStyles: Partial<ITextFieldStyles> = { root: { paddingLeft: 10, width: 210 } };
 
-export const shortWidthDropDownStyles: Partial<IDropdownStyles> = { dropdown: { paddingleft: 10, width: 202 } };
+export const shortWidthDropDownStyles: Partial<IDropdownStyles> = { dropdown: { paddingLeft: 10, width: 202 } };
 
 export const transparentDetailsRowStyles: Partial<IDetailsRowStyles> = {
   root: {
@@ -170,15 +170,15 @@ export const messageBarStyles: Partial<IMessageBarStyles> = {
     marginTop: "5px", 
     backgroundColor: "var(--colorNeutralBackground1)",
     selectors: {
-      '&.ms-MessageBar--severeWarning': {
+      "&.ms-MessageBar--severeWarning": {
         backgroundColor: "var(--colorNeutralBackground4)",
       },
-      '&.ms-MessageBar--warning': {
+      "&.ms-MessageBar--warning": {
         backgroundColor: "var(--colorNeutralBackground3)",
-      }
-    }
+      },
+    },
   },
-  text: { fontSize: 14 }
+  text: { fontSize: 14 },
 };
 
 export const throughputUnit = "RU/s";
@@ -557,22 +557,22 @@ export const getChoiceGroupStyles = (
   },
   root: {
     selectors: {
-      '.ms-ChoiceFieldLabel': {
-        color: "var(--colorNeutralForeground1) "
+      ".ms-ChoiceFieldLabel": {
+        color: "var(--colorNeutralForeground1)",
       },
-      '.ms-ChoiceField-field:hover .ms-ChoiceFieldLabel': {
-        color: "var(--colorNeutralForeground1) "
+      ".ms-ChoiceField-field:hover .ms-ChoiceFieldLabel": {
+        color: "var(--colorNeutralForeground1)",
       },
-      '.ms-ChoiceField:hover .ms-ChoiceFieldLabel': {
-        color: "var(--colorNeutralForeground1) "
+      ".ms-ChoiceField:hover .ms-ChoiceFieldLabel": {
+        color: "var(--colorNeutralForeground1)",
       },
-      '.ms-ChoiceField:hover .ms-ChoiceField-innerField': {
-        color: "var(--colorNeutralForeground1) "
+      ".ms-ChoiceField:hover .ms-ChoiceField-innerField": {
+        color: "var(--colorNeutralForeground1)",
       },
-      '.ms-ChoiceField-innerField': {
-        color: "var(--colorNeutralForeground1) "
-      }
-    }
+      ".ms-ChoiceField-innerField": {
+        color: "var(--colorNeutralForeground1)",
+      },
+    },
   },
   flexContainer: [
     {
@@ -591,13 +591,13 @@ export const getChoiceGroupStyles = (
           color: "var(--colorNeutralForeground1)",
         },
         ".ms-ChoiceFieldLabel": {
-          color: "var(--colorNeutralForeground1)" 
+          color: "var(--colorNeutralForeground1)",
         },
         ".ms-ChoiceFieldLabel:hover": {
-          color: "var(--colorNeutralForeground1)"
+          color: "var(--colorNeutralForeground1)",
         },
         ".ms-ChoiceField-field:hover .ms-ChoiceFieldLabel": {
-          color: "var(--colorNeutralForeground1)"
+          color: "var(--colorNeutralForeground1)",
         },
       },
       display: isHorizontal ? "inline-flex" : "default",

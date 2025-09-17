@@ -132,7 +132,7 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
     root: {
       backgroundColor: "var(--colorNeutralBackground1)",
       color: "var(--colorNeutralForeground1)",
-      padding: isFabric() ? "2px 8px 0px 8px" : undefined
+      padding: isFabric() ? "2px 8px 0px 8px" : undefined,
     },
     button: {
       backgroundColor: "var(--colorNeutralBackground1)",

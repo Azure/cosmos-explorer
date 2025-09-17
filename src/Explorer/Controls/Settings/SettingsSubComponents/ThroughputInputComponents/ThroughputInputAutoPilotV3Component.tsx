@@ -551,22 +551,22 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     root: { 
       marginTop: "5px",
       selectors: {
-        '&.ms-MessageBar--severeWarning': {
+        "&.ms-MessageBar--severeWarning": {
           backgroundColor: "var(--colorStatusDangerBackground1)",
-          border: "1px solid var(--colorStatusDangerBorder1)"
+          border: "1px solid var(--colorStatusDangerBorder1)",
         },
-        '&.ms-MessageBar--warning': {
+        "&.ms-MessageBar--warning": {
           backgroundColor: "var(--colorStatusWarningBackground1)",
-          border: "1px solid var(--colorStatusWarningBorder1)"
+          border: "1px solid var(--colorStatusWarningBorder1)",
         },
-        '.ms-MessageBar-icon': {
+        ".ms-MessageBar-icon": {
           color: "var(--colorNeutralForeground1)",
         },
-        '.ms-MessageBar-text': {
+        ".ms-MessageBar-text": {
           color: "var(--colorNeutralForeground1)",
-        }
-      }
-    }
+        },
+      },
+    },
   };
 
   private getThroughputWarningMessageBar = (): JSX.Element => {
@@ -655,13 +655,12 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
                   backgroundColor: "var(--colorNeutralBackground4)",
                 },
                 root: {
-                 
                   selectors: {
-                    'input': {
+                    "input": {
                       backgroundColor: "var(--colorNeutralBackground4)",
                       color: "var(--colorNeutralForeground1)",
-                    }
-                  }
+                    },
+                  },
                 }
               }}
               disabled={this.overrideWithProvisionedThroughputSettings()}
