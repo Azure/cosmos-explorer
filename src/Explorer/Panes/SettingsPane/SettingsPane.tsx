@@ -55,6 +55,9 @@ import create, { UseStore } from "zustand";
 import Explorer from "../../Explorer";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 
+// Not currently used, but keeping for future reference
+
+/*
 const spinButtonStyles: ISpinButtonStyles = {
   label: {
     fontSize: 12,
@@ -74,6 +77,7 @@ const spinButtonStyles: ISpinButtonStyles = {
   },
   arrowButtonsContainer: {},
 };
+*/
 
 export interface DataPlaneRbacState {
   dataPlaneRbacEnabled: boolean;
@@ -703,6 +707,8 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
     arrowButtonsContainer: {},
   };
 
+  // Commented out as it's not currently used
+  /*
   const checkboxStyles = {
     root: {
       selectors: {
@@ -729,40 +735,11 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
               borderColor: "var(--colorNeutralStroke1Hover)",
             },
           },
-        },
-      },
-    },
-    label: {
-      padding: 0,
-      color: "var(--colorNeutralForeground1)",
-      selectors: {
-        ".ms-Checkbox-text": {
-          color: "var(--colorNeutralForeground1)",
-        },
-        ":hover": {
-          color: "var(--colorNeutralForeground1)",
-        },
-      },
-    },
-    checkbox: {
-      backgroundColor: "var(--colorNeutralBackground1)",
-      borderColor: "var(--colorNeutralStroke1)",
-      selectors: {
-        ":hover": {
-          backgroundColor: "var(--colorNeutralBackground1Hover)",
-          borderColor: "var(--colorNeutralStroke1Hover)",
-        },
-      },
-    },
-    checkmark: {
-      color: "var(--colorNeutralForeground1)",
-      selectors: {
-        ":hover": {
-          color: "var(--colorNeutralForeground1)",
-        },
-      },
-    },
-  };
+        }
+      }
+    }
+  }
+  */
 
   return (
     <RightPaneForm {...genericPaneProps}>

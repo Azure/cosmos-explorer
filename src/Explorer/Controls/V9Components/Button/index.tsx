@@ -40,7 +40,7 @@ const useStyles = makeStyles({
 });
 
 export const Button = React.forwardRef<HTMLButtonElement, CustomButtonProps>(
-  ({ primary, className, ...props }, ref) => {
+  ({ primary, ...props }, ref) => {
     const baseStyles = useStyles();
     const buttonClassName = primary ? baseStyles.primary : baseStyles.button;
 
@@ -54,3 +54,6 @@ export const Button = React.forwardRef<HTMLButtonElement, CustomButtonProps>(
     );
   }
 );
+
+// Add display name
+Button.displayName = "Button";

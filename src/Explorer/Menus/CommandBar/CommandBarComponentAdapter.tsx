@@ -68,9 +68,17 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
   const selectedNodeState = useSelectedNode();
   const buttons = useCommandBar((state) => state.contextButtons);
   const isHidden = useCommandBar((state) => state.isHidden);
+  // targetDocument is used by referenced components
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { targetDocument } = useFluent();
   const setKeyboardHandlers = useKeyboardActionGroup(KeyboardActionGroup.COMMAND_BAR);
   const styles = useStyles();
+  
+  const { connectionInfo, isPhoenixNotebooks, isPhoenixFeatures } = useNotebook((state) => ({
+    connectionInfo: state.connectionInfo,
+    isPhoenixNotebooks: state.isPhoenixNotebooks,
+    isPhoenixFeatures: state.isPhoenixFeatures
+  }));
 
   if (userContext.apiType === "Postgres" || userContext.apiType === "VCoreMongo") {
     const buttons =
@@ -117,10 +125,9 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
   const uiFabricControlButtons = CommandBarUtil.convertButton(controlButtons, "var(--colorNeutralBackground1)");
   uiFabricControlButtons.forEach((btn: ICommandBarItemProps) => (btn.iconOnly = true));
 
-  const connectionInfo = useNotebook((state) => state.connectionInfo);
-
+  // Add connection status if needed (using the hook values we got at the top level)
   if (
-    (useNotebook.getState().isPhoenixNotebooks || useNotebook.getState().isPhoenixFeatures) &&
+    (isPhoenixNotebooks || isPhoenixFeatures) &&
     connectionInfo?.status !== ConnectionStatusType.Connect
   ) {
     uiFabricControlButtons.unshift(

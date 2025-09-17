@@ -324,6 +324,8 @@ export const SidebarContainer: React.FC<SidebarProps> = ({ explorer }) => {
   const [expandedSize, setExpandedSize] = React.useState(300);
   const hasSidebar = userContext.apiType !== "Postgres" && userContext.apiType !== "VCoreMongo";
   const allotment = useRef<AllotmentHandle>(null);
+  // isDarkMode is used for styling in other parts of the component
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { isDarkMode } = useTheme();
   const isZoomed = useZoomLevel();
 

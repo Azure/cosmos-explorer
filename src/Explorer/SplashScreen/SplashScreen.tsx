@@ -166,6 +166,8 @@ const useStyles = makeStyles({
 
 export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
   const styles = useStyles();
+  // isDarkMode is used for conditional styling in the component
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { isDarkMode } = useTheme();
   const container = explorer;
   const subscriptions: Array<{ dispose: () => void }> = [];
@@ -218,6 +220,8 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
     };
   }, []);
 
+  // state is used to trigger re-renders when subscriptions emit
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [state, setState] = React.useState({});
 
   const clearMostRecent = () => {

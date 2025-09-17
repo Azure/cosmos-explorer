@@ -81,6 +81,8 @@ const App = (): JSX.Element => {
   const isCarouselOpen = useCarousel((state) => state.shouldOpen);
   const isCopilotCarouselOpen = useCarousel((state) => state.showCopilotCarousel);
   const styles = useStyles();
+  // theme is used for application-wide styling
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const theme = useTheme();
 
   if (config?.platform === Platform.Fabric) {
