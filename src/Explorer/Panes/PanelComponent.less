@@ -4,9 +4,8 @@
   display: flex;
   flex-direction: column;
   min-height: 100%;
-  background-color: var(--colorNeutralBackground1, @BaseLight);
-  color: var(--colorNeutralForeground1, @BaseHigh);
-
+  color: var(--colorNeutralForeground2);
+  background-color: var(--colorNeutralBackground1);
   .panelMainContent {
     flex-grow: 1;
     padding: 0 34px;
@@ -27,19 +26,19 @@
       margin: auto 0 auto @SmallSpace;
       cursor: default;
       vertical-align: middle;
-      color: var(--colorNeutralForeground1, @BaseHigh);
+      color: var(--colorNeutralForeground1);
     }
 
     .panelTextBold {
       font-weight: 600;
       line-height: 20px;
-      color: var(--colorNeutralForeground1, @BaseHigh);
+      color: var(--colorNeutralForeground1);
     }
 
     .panelTextField {
       font-size: @mediumFontSize;
       border: 1px solid var(--colorNeutralStroke1, #605e5c);
-      color: var(--colorNeutralForeground1, @BaseHigh);
+      color: var(--colorNeutralForeground1);
       background-color: var(--colorNeutralBackground2, @BaseLight);
       padding: 4px 10px;
       width: @newCollectionPaneInputWidth;
@@ -270,5 +269,31 @@
 }
 
 .panelSeparator::before {
-  background-color: #edebe9;
+  background-color: var(--colorNeutralStroke1);
+}
+
+.dark-theme-panel {
+  &.ms-Panel {
+    .ms-Panel-main {
+      background-color: var(--colorNeutralBackground1);
+    }
+    
+    .ms-Panel-overlay {
+      background-color: var(--overlayBackground);
+    }
+    
+    .ms-Panel-content {
+      background-color: var(--colorNeutralBackground1);
+    }
+  }
+}
+
+:global {
+  .ms-Panel-root {
+    background-color: transparent;
+  }
+
+  .ms-Panel-overlay {
+    background-color: var(--overlayBackground);
+  }
 }

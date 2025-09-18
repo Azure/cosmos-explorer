@@ -64,6 +64,7 @@ import "./Shared/appInsights";
 import { useConfig } from "./hooks/useConfig";
 import { useKnockoutExplorer } from "./hooks/useKnockoutExplorer";
 import { isDarkMode } from "./hooks/useTheme";
+import "./less/ThemeSystem.less";
 // Initialize icons before React is loaded
 initializeIcons(undefined, { disableWarnings: true });
 
