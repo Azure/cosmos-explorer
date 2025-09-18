@@ -24,7 +24,7 @@ export const EXIT_COMMAND_MONGO = ` printf "\\033[1;31mSession ended. Please clo
  * This command runs mongosh in no-database and quiet mode,
  * and evaluates the `disableTelemetry()` function to turn off telemetry collection.
  */
-export const DISABLE_TELEMETRY_COMMAND = `mongosh --nodb --quiet --eval "disableTelemetry()"`;
+export const DISABLE_TELEMETRY_COMMAND = `mongosh --nodb --quiet --eval 'disableTelemetry()'`;
 
 /**
  * Abstract class that defines the interface for shell-specific handlers
@@ -97,7 +97,7 @@ export abstract class AbstractShellHandler {
    * is not already present in the environment.
    */
   protected mongoShellSetupCommands(): string[] {
-    const PACKAGE_VERSION: string = "2.5.5";
+    const PACKAGE_VERSION: string = "2.5.6";
     return [
       "if ! command -v mongosh &> /dev/null; then echo '⚠️ mongosh not found. Installing...'; fi",
       `if ! command -v mongosh &> /dev/null; then curl -LO https://downloads.mongodb.com/compass/mongosh-${PACKAGE_VERSION}-linux-x64.tgz; fi`,
