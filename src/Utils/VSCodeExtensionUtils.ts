@@ -16,7 +16,8 @@ export const COSMOSDB_VSCODE_EXTENSION_BASEURL = "vscode://ms-azuretools.vscode-
  */
 export const getVSCodeUrl = (): string => {
   const isvCore = (userContext.apiType || userContext.databaseAccount.kind) === "VCoreMongo";
-  const isMongo = userContext.apiType === "Mongo";
+  const isMongo =
+    userContext.apiType === "Mongo" && userContext.databaseAccount?.properties?.apiProperties?.serverVersion !== "3.2";
   return isvCore ? getDocumentDbUrl() : isMongo ? getMongoRUUrl() : getCosmosDbUrl();
 };
 
