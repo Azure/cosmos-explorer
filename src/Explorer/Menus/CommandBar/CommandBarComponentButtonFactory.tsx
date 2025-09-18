@@ -370,6 +370,22 @@ export function createScriptCommandButtons(selectedNodeState: SelectedNodeState)
       disabled:
         useSelectedNode.getState().isQueryCopilotCollectionSelected() ||
         selectedNodeState.isDatabaseNodeOrNoneSelected(),
+      styles: {
+        root: {
+          backgroundColor: "var(--colorNeutralBackground1)",
+          color: "var(--colorNeutralForeground1)",
+          selectors: {
+            ":hover": {
+              backgroundColor: "var(--colorNeutralBackground1Hover)",
+              color: "var(--colorNeutralForeground1Hover)",
+            },
+            ":active": {
+              backgroundColor: "var(--colorNeutralBackground1Pressed)",
+              color: "var(--colorNeutralForeground1Pressed)",
+            },
+          },
+        },
+      },
     };
     buttons.push(newStoredProcedureBtn);
   }
@@ -390,6 +406,22 @@ export function createScriptCommandButtons(selectedNodeState: SelectedNodeState)
       disabled:
         useSelectedNode.getState().isQueryCopilotCollectionSelected() ||
         selectedNodeState.isDatabaseNodeOrNoneSelected(),
+      styles: {
+        root: {
+          backgroundColor: "var(--colorNeutralBackground1)",
+          color: "var(--colorNeutralForeground1)",
+          selectors: {
+            ":hover": {
+              backgroundColor: "var(--colorNeutralBackground1Hover)",
+              color: "var(--colorNeutralForeground1Hover)",
+            },
+            ":active": {
+              backgroundColor: "var(--colorNeutralBackground1Pressed)",
+              color: "var(--colorNeutralForeground1Pressed)",
+            },
+          },
+        },
+      },
     };
     buttons.push(newUserDefinedFunctionBtn);
   }
@@ -410,6 +442,22 @@ export function createScriptCommandButtons(selectedNodeState: SelectedNodeState)
       disabled:
         useSelectedNode.getState().isQueryCopilotCollectionSelected() ||
         selectedNodeState.isDatabaseNodeOrNoneSelected(),
+      styles: {
+        root: {
+          backgroundColor: "var(--colorNeutralBackground1)",
+          color: "var(--colorNeutralForeground1)",
+          selectors: {
+            ":hover": {
+              backgroundColor: "var(--colorNeutralBackground1Hover)",
+              color: "var(--colorNeutralForeground1Hover)",
+            },
+            ":active": {
+              backgroundColor: "var(--colorNeutralBackground1Pressed)",
+              color: "var(--colorNeutralForeground1Pressed)",
+            },
+          },
+        },
+      },
     };
     buttons.push(newTriggerBtn);
   }

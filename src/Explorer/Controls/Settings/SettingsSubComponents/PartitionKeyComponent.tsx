@@ -66,13 +66,15 @@ export const PartitionKeyComponent: React.FC<PartitionKeyComponentProps> = ({
   const partitionKeyValue = getPartitionKeyValue();
 
   const textHeadingStyle = {
-    root: { fontWeight: FontWeights.semibold, fontSize: 16 },
+    root: { fontWeight: FontWeights.semibold, fontSize: 16, color: "var(--colorNeutralForeground1)" },
   };
 
   const textSubHeadingStyle = {
-    root: { fontWeight: FontWeights.semibold },
+    root: { fontWeight: FontWeights.semibold, color: "var(--colorNeutralForeground1)" },
   };
-
+  const textSubHeadingStyle1 = {
+    root: { color: "var(--colorNeutralForeground1)" },
+  };
   const startPollingforUpdate = (currentJob: DataTransferJobGetResults) => {
     if (isCurrentJobInProgress(currentJob)) {
       const jobName = currentJob?.properties?.jobName;
@@ -168,8 +170,10 @@ export const PartitionKeyComponent: React.FC<PartitionKeyComponentProps> = ({
             <Text styles={textSubHeadingStyle}>Partitioning</Text>
           </Stack>
           <Stack tokens={{ childrenGap: 5 }}>
-            <Text>{partitionKeyValue}</Text>
-            <Text>{isHierarchicalPartitionedContainer() ? "Hierarchical" : "Non-hierarchical"}</Text>
+            <Text styles={textSubHeadingStyle1}>{partitionKeyValue}</Text>
+            <Text styles={textSubHeadingStyle1}>
+              {isHierarchicalPartitionedContainer() ? "Hierarchical" : "Non-hierarchical"}
+            </Text>
           </Stack>
         </Stack>
       </Stack>

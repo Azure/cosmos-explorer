@@ -28,3 +28,16 @@
 .deleteQuery:focus::after {
   outline: none !important;
 }
+
+// Override Fluent UI TextField focus styles
+.throughputInputContainer {
+  :global {
+    .ms-TextField {
+      .ms-TextField-fieldGroup {
+        &:focus-within {
+          border-color: var(--colorCompoundBrandStroke1, @SelectionColor) !important;
+        }
+      }
+    }
+  }
+}

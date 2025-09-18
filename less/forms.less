@@ -1,211 +1,227 @@
 @import "./Common/Constants";
 
 .dirty {
-    border: 1px solid #9b4f96;
+  border: 1px solid #9b4f96;
 }
 
 .dirty:focus {
-    outline: 1px solid #9b4f96;
+  outline: 1px solid #9b4f96;
 }
 
 .tabForm {
-    padding: 12px 20px 20px 20px;
-    margin-left: 3px;
+  padding: 12px 20px 20px 20px;
+  margin-left: 3px;
 }
 
 .storedTabForm {
-    padding-top: @LargeSpace;
+  padding-top: @LargeSpace;
 }
 
 .scaleSettingScrollable {
-    overflow-y: auto;
-    overflow-x: hidden;
-    height:100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 100%;
 }
 
 .disableFocusDefaults[tabindex] {
-    &:focus {
-        outline: none;
-    }
+  &:focus {
+    outline: none;
+  }
 
-    &:active {
-        outline: none;
-    }
+  &:active {
+    outline: none;
+  }
 }
 
 .indexingPolicyEditor {
-    width: 100%;
-    height: calc(~"100vh - 400px");
+  width: 100%;
+  height: calc(~"100vh - 400px");
 }
 
 .scaleDivison {
-    padding: @MediumSpace 0px @DefaultSpace 0px;
+  padding: @MediumSpace 0px @DefaultSpace 0px;
 }
 
 .scaleSettingTitle {
-    font-size: 14px;
-    cursor: pointer;
+  font-size: 14px;
+  cursor: pointer;
 }
 
 .autoScaleThroughputTitle {
-    margin-bottom: @SmallSpace;
+  margin-bottom: @SmallSpace;
 }
 
 .autoScaleDescription {
-    margin-top: 6px;
-    margin-bottom: @SmallSpace;
+  margin-top: 6px;
+  margin-bottom: @SmallSpace;
 }
 
 .ssExpandCollapseIcon {
-    width: 10px;
-    height: 10px;
+  width: 10px;
+  height: 10px;
 }
 
 .ssCollapseIcon {
-    margin-bottom: 5px;
+  margin-bottom: 5px;
 }
 
 .ssTextAllignment {
-    padding-left: 19px;
+  padding-left: 19px;
 }
 
 .throughputStorageBlock {
-    border-top: 1px solid #bbb;
-    border-bottom: 1px solid #bbb;
-    background-color: #ccc;
-    padding-left: 10px;
-    width: 315px;
+  border-top: 1px solid #bbb;
+  border-bottom: 1px solid #bbb;
+  background-color: #ccc;
+  padding-left: 10px;
+  width: 315px;
 }
 
 .storageCapacityTitle {
-    padding: @LargeSpace 0px;
-
+  padding: @LargeSpace 0px;
 }
 .throughputStorageValue {
-    font-size: 12px;
+  font-size: 12px;
 }
 
-.estimatedCost, .largePartitionKeyEnabled {
-    padding: @SmallSpace 0px @LargeSpace;
+.estimatedCost,
+.largePartitionKeyEnabled {
+  padding: @SmallSpace 0px @LargeSpace;
 }
 
 .storagePadding {
-    padding-top: 6px;
-    padding-bottom: 14px;
+  padding-top: 6px;
+  padding-bottom: 14px;
 }
 
 .dirtyTextbox {
-    width: 176px;
-    margin-top: 7px;
-    padding-left: 5px;
+  width: 176px;
+  margin-top: 7px;
+  padding-left: 5px;
 }
 
 .formTitleFirst {
-    padding: @DefaultSpace (2 * @MediumSpace);
+  padding: @DefaultSpace (2 * @MediumSpace);
 }
 
 .formTitleTextbox {
-    padding: 0px 0px @DefaultSpace (2 * @MediumSpace);
+  padding: 0px 0px @DefaultSpace (2 * @MediumSpace);
 }
 
 .formTree {
-    border: 1px solid #969696;
-    color: #393939;
-    padding: 0px 12px 1px 8px;
+  border: 1px solid var(--colorNeutralStroke1);
+  color: var(--colorNeutralForeground1);
+  background-color: var(--colorNeutralBackground1);
+  padding: 0px 12px 1px 8px;
 }
 
 .formTree:hover {
-    border: 1px solid #969696;
-    background-color: #e6f8fe;
+  border: 1px solid var(--colorNeutralStroke1Hover);
+  background-color: var(--colorNeutralBackground1Hover);
+}
+
+.formTree::placeholder {
+  color: var(--colorNeutralForeground2);
+  opacity: 1;
 }
 
 .formTree:active {
-    border: 1px solid #1ebbee;
+  border: 1px solid var(--colorNeutralStroke1Pressed);
+  background-color: var(--colorNeutralBackground1Pressed);
 }
 
 .scaleForm {
-    padding-left: 8px;
-    color: @BaseDark;
-    border: 1px solid #969696;
-    min-width: @ScaleFormWidth;
+  padding-left: 8px;
+  color: @BaseDark;
+  border: 1px solid #969696;
+  min-width: @ScaleFormWidth;
 
-    &:hover {
-        background-color: #e6f8fe;
-    }    
+  &:hover {
+    background-color: #e6f8fe;
+  }
 }
 
 .formTitle {
-    margin-top: 16px;
-    margin-bottom: 4px; 
+  margin-top: 16px;
+  margin-bottom: 4px;
 }
 
-
 .spUdfTriggerHeader {
-    padding: @DefaultSpace 0px @SmallSpace (2 * @MediumSpace); 
+  padding: @DefaultSpace 0px @SmallSpace (2 * @MediumSpace);
 }
 
 .storedUdfTriggerEditor {
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
 }
 
 .unselectedRadio {
-    background-color: white;
-    border-color: #EEE!important;
-    color: black!important;
+  background-color: white;
+  border-color: #eee !important;
+  color: black !important;
 }
 
 .disabledRadio {
-    background-color: #A19F9D;
-    border-color: #EEE!important;
-    color: white!important;
+  background-color: #a19f9d;
+  border-color: #eee !important;
+  color: white !important;
 }
 
 .selectedRadio {
-    background-color: @AccentMediumHigh;
-    border-color: #EEE!important;
-    color: white!important;
-    cursor: pointer;
+  background-color: @AccentMediumHigh;
+  border-color: #eee !important;
+  color: white !important;
+  cursor: pointer;
 }
 
 .selectedRadio:hover {
-    background-color: @AccentMediumHigh;
-    border-color: #EEE!important;
-    color: white!important;
-    cursor: pointer;
+  background-color: @AccentMediumHigh;
+  border-color: #eee !important;
+  color: white !important;
+  cursor: pointer;
 }
 
 .selectedRadio:active {
-    background-color: #0072c6;
-    border-color: #EEE!important;
-    color: white!important;
-    cursor: pointer;
-    border: 1px solid #0072c6;
+  background-color: #0072c6;
+  border-color: #eee !important;
+  color: white !important;
+  cursor: pointer;
+  border: 1px solid #0072c6;
 }
 
 .selectedRadio.dirty {
-    background-color: #9b4f96;
+  background-color: #9b4f96;
 }
 
 .tabs {
-    margin: 0;
+  margin: 0;
 }
 
 .formReadOnly {
-    background-color: #ddd;
-    border: 1px solid #969696;
-    min-width: 184px;
-    padding-left: 8px;
+  background-color: #ddd;
+  border: 1px solid #969696;
+  min-width: 184px;
+  padding-left: 8px;
 }
 
 .migration:disabled {
-    background-color: #ccc;
+  background-color: #ccc;
 }
 
 .trigger-field {
-    width: 40%;
-    margin-top: 10px
+  width: 40%;
+  margin-top: 10px;
+  background-color: var(--colorNeutralBackground1);
+  color: var(--colorNeutralForeground1);
 }
+
+.trigger-field input::placeholder {
+  color: var(--colorNeutralForeground3);
+  opacity: 1;
+}
+
 .trigger-form {
-    padding: 10px 30px 10px 30px;
+  background-color: var(--colorNeutralBackground1);
+  color: var(--colorNeutralForeground1);
+  padding: 10px 30px;
 }

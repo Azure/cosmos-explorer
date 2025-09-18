@@ -24,6 +24,7 @@ import { Allotment } from "allotment";
 import { useClientWriteEnabled } from "hooks/useClientWriteEnabled";
 import { QueryCopilotState, useQueryCopilot } from "hooks/useQueryCopilot";
 import { TabsState, useTabs } from "hooks/useTabs";
+import { monacoTheme } from "hooks/useTheme";
 import React, { Fragment, createRef } from "react";
 import "react-splitter-layout/lib/index.css";
 import { format } from "react-string-format";
@@ -55,7 +56,6 @@ import { BrowseQueriesPane } from "../../Panes/BrowseQueriesPane/BrowseQueriesPa
 import { SaveQueryPane } from "../../Panes/SaveQueryPane/SaveQueryPane";
 import TabsBase from "../TabsBase";
 import "./QueryTabComponent.less";
-
 enum ToggleState {
   Result,
   QueryMetrics,
@@ -761,6 +761,7 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
                 wordWrap={"on"}
                 ariaLabel={"Editing Query"}
                 lineNumbers={"on"}
+                theme={monacoTheme}
                 onContentChanged={(newContent: string) => this.onChangeContent(newContent)}
                 onContentSelected={(selectedContent: string, selection: monaco.Selection) =>
                   this.onSelectedContent(selectedContent, selection)

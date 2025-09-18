@@ -1,15 +1,15 @@
-import { IPivotItemProps, IPivotProps, Pivot, PivotItem } from "@fluentui/react";
+import { IPivotItemProps, IPivotProps, Pivot, PivotItem, Stack } from "@fluentui/react";
 import {
-  ComputedPropertiesComponent,
-  ComputedPropertiesComponentProps,
+    ComputedPropertiesComponent,
+    ComputedPropertiesComponentProps,
 } from "Explorer/Controls/Settings/SettingsSubComponents/ComputedPropertiesComponent";
 import {
-  ContainerPolicyComponent,
-  ContainerPolicyComponentProps,
+    ContainerPolicyComponent,
+    ContainerPolicyComponentProps,
 } from "Explorer/Controls/Settings/SettingsSubComponents/ContainerPolicyComponent";
 import {
-  ThroughputBucketsComponent,
-  ThroughputBucketsComponentProps,
+    ThroughputBucketsComponent,
+    ThroughputBucketsComponentProps,
 } from "Explorer/Controls/Settings/SettingsSubComponents/ThroughputInputComponents/ThroughputBucketsComponent";
 import { useDatabases } from "Explorer/useDatabases";
 import { isFabricNative } from "Platform/Fabric/FabricUtil";
@@ -34,41 +34,41 @@ import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
 import { MongoDBCollectionResource, MongoIndex } from "../../../Utils/arm/generatedClients/cosmos/types";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import {
-  PartitionKeyComponent,
-  PartitionKeyComponentProps,
+    PartitionKeyComponent,
+    PartitionKeyComponentProps,
 } from "../../Controls/Settings/SettingsSubComponents/PartitionKeyComponent";
 import { useCommandBar } from "../../Menus/CommandBar/CommandBarComponentAdapter";
 import { SettingsTabV2 } from "../../Tabs/SettingsTabV2";
 import "./SettingsComponent.less";
 import { mongoIndexingPolicyAADError } from "./SettingsRenderUtils";
 import {
-  ConflictResolutionComponent,
-  ConflictResolutionComponentProps,
+    ConflictResolutionComponent,
+    ConflictResolutionComponentProps,
 } from "./SettingsSubComponents/ConflictResolutionComponent";
 import {
-  GlobalSecondaryIndexComponent,
-  GlobalSecondaryIndexComponentProps,
+    GlobalSecondaryIndexComponent,
+    GlobalSecondaryIndexComponentProps,
 } from "./SettingsSubComponents/GlobalSecondaryIndexComponent";
 import { IndexingPolicyComponent, IndexingPolicyComponentProps } from "./SettingsSubComponents/IndexingPolicyComponent";
 import {
-  MongoIndexingPolicyComponent,
-  MongoIndexingPolicyComponentProps,
+    MongoIndexingPolicyComponent,
+    MongoIndexingPolicyComponentProps,
 } from "./SettingsSubComponents/MongoIndexingPolicy/MongoIndexingPolicyComponent";
 import { ScaleComponent, ScaleComponentProps } from "./SettingsSubComponents/ScaleComponent";
 import { SubSettingsComponent, SubSettingsComponentProps } from "./SettingsSubComponents/SubSettingsComponent";
 import {
-  AddMongoIndexProps,
-  ChangeFeedPolicyState,
-  GeospatialConfigType,
-  MongoIndexTypes,
-  SettingsV2TabTypes,
-  TtlType,
-  getMongoNotification,
-  getTabTitle,
-  hasDatabaseSharedThroughput,
-  isDirty,
-  parseConflictResolutionMode,
-  parseConflictResolutionProcedure,
+    AddMongoIndexProps,
+    ChangeFeedPolicyState,
+    GeospatialConfigType,
+    MongoIndexTypes,
+    SettingsV2TabTypes,
+    TtlType,
+    getMongoNotification,
+    getTabTitle,
+    hasDatabaseSharedThroughput,
+    isDirty,
+    parseConflictResolutionMode,
+    parseConflictResolutionProcedure,
 } from "./SettingsUtils";
 
 interface SettingsV2TabInfo {
@@ -1361,28 +1361,108 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       selectedKey: SettingsV2TabTypes[this.state.selectedTab],
     };
 
-    const pivotItems = tabs.map((tab) => {
-      const pivotItemProps: IPivotItemProps = {
-        itemKey: SettingsV2TabTypes[tab.tab],
-        style: { marginTop: 20 },
-        headerText: getTabTitle(tab.tab),
-      };
+    const pivotStyles = {
+      root: {
+        backgroundColor: "var(--colorNeutralBackground1)",
+        color: "var(--colorNeutralForeground1)",
+        selectors: {
+          "& .ms-Pivot-link": {
+            color: "var(--colorNeutralForeground1)",
+          },
+          "& .ms-Pivot-link.is-selected::before": {
+            backgroundColor: "var(--colorCompoundBrandBackground)",
+          },
+        },
+      },
+      link: {
+        backgroundColor: "var(--colorNeutralBackground1)",
+        color: "var(--colorNeutralForeground1)",
+        selectors: {
+          "&:hover": {
+            backgroundColor: "var(--colorNeutralBackground1)",
+            color: "var(--colorNeutralForeground1)",
+          },
+          "&:active": {
+            backgroundColor: "var(--colorNeutralBackground1)",
+            color: "var(--colorNeutralForeground1)",
+          },
+          '&[aria-selected="true"]': {
+            backgroundColor: "var(--colorNeutralBackground1)",
+            color: "var(--colorNeutralForeground1)",
+            selectors: {
+              "&:hover": {
+                backgroundColor: "var(--colorNeutralBackground1)",
+                color: "var(--colorNeutralForeground1)",
+              },
+              "&:active": {
+                backgroundColor: "var(--colorNeutralBackground1)",
+                color: "var(--colorNeutralForeground1)",
+              },
+            },
+          },
+        },
+      },
 
-      return (
-        <PivotItem key={pivotItemProps.itemKey} {...pivotItemProps}>
-          {tab.content}
-        </PivotItem>
-      );
-    });
+      itemContainer: {
+        // padding: '20px 24px',
+        backgroundColor: "var(--colorNeutralBackground1)",
+        color: "var(--colorNeutralForeground1)",
+      },
+    };
+
+    const contentStyles = {
+      root: {
+        backgroundColor: "var(--colorNeutralBackground1)",
+        color: "var(--colorNeutralForeground1)",
+        // padding: '20px 24px'
+      },
+    };
 
     return (
-      <div className="settingsV2MainContainer">
+      <div
+        className="settingsV2MainContainer"
+        style={
+          {
+            backgroundColor: "var(--colorNeutralBackground1)",
+            color: "var(--colorNeutralForeground1)",
+            position: "relative",
+          } as React.CSSProperties
+        }
+      >
         {this.shouldShowKeyspaceSharedThroughputMessage() && (
           <div>This table shared throughput is configured at the keyspace</div>
         )}
 
-        <div className="settingsV2TabsContainer">
-          <Pivot {...pivotProps}>{pivotItems}</Pivot>
+        <div
+          className="settingsV2TabsContainer"
+          style={
+            {
+              backgroundColor: "var(--colorNeutralBackground1)",
+              color: "var(--colorNeutralForeground1)",
+              position: "relative",
+              padding: "20px 24px",
+            } as React.CSSProperties
+          }
+        >
+          <Pivot {...pivotProps} styles={pivotStyles}>
+            {tabs.map((tab) => {
+              const pivotItemProps: IPivotItemProps = {
+                itemKey: SettingsV2TabTypes[tab.tab],
+                style: {
+                  marginTop: 20,
+                  backgroundColor: "var(--colorNeutralBackground1)",
+                  color: "var(--colorNeutralForeground1)",
+                },
+                headerText: getTabTitle(tab.tab),
+              };
+
+              return (
+                <PivotItem key={pivotItemProps.itemKey} {...pivotItemProps}>
+                  <Stack styles={contentStyles}>{tab.content}</Stack>
+                </PivotItem>
+              );
+            })}
+          </Pivot>
         </div>
       </div>
     );

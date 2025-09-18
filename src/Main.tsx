@@ -2,14 +2,16 @@
 import "./ReactDevTools";
 
 // CSS Dependencies
-import { initializeIcons, loadTheme } from "@fluentui/react";
+import { initializeIcons, loadTheme, useTheme } from "@fluentui/react";
+import { FluentProvider, makeStyles, webDarkTheme, webLightTheme } from "@fluentui/react-components";
+import { Platform } from "ConfigContext";
 import { QuickstartCarousel } from "Explorer/Quickstart/QuickstartCarousel";
 import { MongoQuickstartTutorial } from "Explorer/Quickstart/Tutorials/MongoQuickstartTutorial";
 import { SQLQuickstartTutorial } from "Explorer/Quickstart/Tutorials/SQLQuickstartTutorial";
 import "allotment/dist/style.css";
 import "bootstrap/dist/css/bootstrap.css";
 import { useCarousel } from "hooks/useCarousel";
-import React from "react";
+import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
 import "../externals/jquery-ui.min.css";
 import "../externals/jquery-ui.min.js";
@@ -19,7 +21,7 @@ import "../externals/jquery.dataTables.min.css";
 import "../externals/jquery.typeahead.min.css";
 import "../externals/jquery.typeahead.min.js";
 // Image Dependencies
-import { Platform } from "ConfigContext";
+import { SidePanel } from "Explorer/Panes/PanelContainerComponent";
 import { QueryCopilotCarousel } from "Explorer/QueryCopilot/CopilotCarousel";
 import { SidebarContainer } from "Explorer/Sidebar";
 import { KeyboardShortcutRoot } from "KeyboardShortcuts";
@@ -46,6 +48,7 @@ import "./Explorer/Controls/ErrorDisplayComponent/ErrorDisplayComponent.less";
 import "./Explorer/Controls/JsonEditor/JsonEditorComponent.less";
 import "./Explorer/Controls/Notebook/NotebookTerminalComponent.less";
 import "./Explorer/Controls/TreeComponent/treeComponent.less";
+import { ErrorBoundary } from "./Explorer/ErrorBoundary";
 import "./Explorer/Graph/GraphExplorerComponent/graphExplorer.less";
 import "./Explorer/Menus/CommandBar/CommandBarComponent.less";
 import { CommandBar } from "./Explorer/Menus/CommandBar/CommandBarComponentAdapter";
@@ -54,21 +57,35 @@ import "./Explorer/Menus/CommandBar/MemoryTrackerComponent.less";
 import "./Explorer/Menus/NotificationConsole/NotificationConsole.less";
 import { NotificationConsole } from "./Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
 import "./Explorer/Panes/PanelComponent.less";
-import { SidePanel } from "./Explorer/Panes/PanelContainerComponent";
 import "./Explorer/SplashScreen/SplashScreen.less";
 import "./Libs/jquery";
 import { appThemeFabric } from "./Platform/Fabric/FabricTheme";
 import "./Shared/appInsights";
 import { useConfig } from "./hooks/useConfig";
 import { useKnockoutExplorer } from "./hooks/useKnockoutExplorer";
+import { isDarkMode } from "./hooks/useTheme";
+import "./less/ThemeSystem.less";
+// Initialize icons before React is loaded
+initializeIcons(undefined, { disableWarnings: true });
 
-initializeIcons();
+const useStyles = makeStyles({
+  root: {
+    height: "100vh",
+    width: "100vw",
+    backgroundColor: "var(--colorNeutralBackground1)",
+    color: "var(--colorNeutralForeground1)",
+  },
+});
 
-const App: React.FunctionComponent = () => {
+const App = (): JSX.Element => {
+  const config = useConfig();
   const isCarouselOpen = useCarousel((state) => state.shouldOpen);
   const isCopilotCarouselOpen = useCarousel((state) => state.showCopilotCarousel);
+  const styles = useStyles();
+  // theme is used for application-wide styling
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const theme = useTheme();
 
-  const config = useConfig();
   if (config?.platform === Platform.Fabric) {
     loadTheme(appThemeFabric);
     import("../less/documentDBFabric.less");
@@ -81,51 +98,111 @@ const App: React.FunctionComponent = () => {
   }
 
   return (
-    <KeyboardShortcutRoot>
-      <div className="flexContainer" aria-hidden="false" data-test="DataExplorerRoot">
-        <div id="divExplorer" className="flexContainer hideOverflows">
-          <div id="freeTierTeachingBubble"> </div>
-          {/* Main Command Bar - Start */}
-          <CommandBar container={explorer} />
-          {/* Collections Tree and Tabs - Begin */}
-          <SidebarContainer explorer={explorer} />
-          {/* Collections Tree and Tabs - End */}
+    <div id="Main" className={styles.root}>
+      <KeyboardShortcutRoot>
+        <div
+          className="flexContainer"
+          style={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            backgroundColor: "var(--colorNeutralBackground1)",
+            color: "var(--colorNeutralForeground1)",
+          }}
+          aria-hidden="false"
+          data-test="DataExplorerRoot"
+        >
           <div
-            className="dataExplorerErrorConsoleContainer"
-            role="contentinfo"
-            aria-label="Notification console"
-            id="explorerNotificationConsole"
+            id="divExplorer"
+            className="flexContainer hideOverflows"
+            style={{
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
+              backgroundColor: "var(--colorNeutralBackground1)",
+              color: "var(--colorNeutralForeground1)",
+            }}
           >
-            <NotificationConsole />
+            <div id="freeTierTeachingBubble"> </div>
+            {/* Main Command Bar - Start */}
+            <CommandBar container={explorer} />
+            {/* Collections Tree and Tabs - Begin */}
+            <SidebarContainer explorer={explorer} />
+            {/* Collections Tree and Tabs - End */}
+            <div
+              className="dataExplorerErrorConsoleContainer"
+              role="contentinfo"
+              aria-label="Notification console"
+              id="explorerNotificationConsole"
+              style={{
+                backgroundColor: "var(--colorNeutralBackground1)",
+                color: "var(--colorNeutralForeground1)",
+              }}
+            >
+              <NotificationConsole />
+            </div>
           </div>
+          <SidePanel />
+          <Dialog />
+          {<QuickstartCarousel isOpen={isCarouselOpen} />}
+          {<SQLQuickstartTutorial />}
+          {<MongoQuickstartTutorial />}
+          {<QueryCopilotCarousel isOpen={isCopilotCarouselOpen} explorer={explorer} />}
         </div>
-        <SidePanel />
-        <Dialog />
-        {<QuickstartCarousel isOpen={isCarouselOpen} />}
-        {<SQLQuickstartTutorial />}
-        {<MongoQuickstartTutorial />}
-        {<QueryCopilotCarousel isOpen={isCopilotCarouselOpen} explorer={explorer} />}
-      </div>
-    </KeyboardShortcutRoot>
+      </KeyboardShortcutRoot>
+    </div>
+  );
+};
+
+const Root: React.FC = () => {
+  // Force dark theme
+  const currentTheme = isDarkMode ? webDarkTheme : webLightTheme;
+
+  // Apply theme to body for Fluent UI v8 components
+  useEffect(() => {
+    if (isDarkMode) {
+      document.body.classList.add("isDarkMode");
+      document.body.style.backgroundColor = "var(--colorNeutralBackground1)";
+      document.body.style.color = "var(--colorNeutralForeground1)";
+      // loadTheme(appThemeFabric);
+    } else {
+      document.body.classList.remove("isDarkMode");
+      document.body.style.backgroundColor = "";
+      document.body.style.color = "";
+      // loadTheme(appThemeFabric);
+    }
+  }, [isDarkMode]);
+
+  return (
+    <ErrorBoundary>
+      <FluentProvider theme={currentTheme}>
+        <App />
+      </FluentProvider>
+    </ErrorBoundary>
   );
 };
 
 const mainElement = document.getElementById("Main");
-ReactDOM.render(<App />, mainElement);
+if (mainElement) {
+  ReactDOM.render(<Root />, mainElement);
+}
 
 function LoadingExplorer(): JSX.Element {
+  const styles = useStyles();
   return (
-    <div className="splashLoaderContainer">
-      <div className="splashLoaderContentContainer">
-        <p className="connectExplorerContent">
-          <img src={hdeConnectImage} alt="Azure Cosmos DB" />
-        </p>
-        <p className="splashLoaderTitle" id="explorerLoadingStatusTitle">
-          Welcome to Azure Cosmos DB
-        </p>
-        <p className="splashLoaderText" id="explorerLoadingStatusText" role="alert">
-          Connecting...
-        </p>
+    <div className={styles.root}>
+      <div className="splashLoaderContainer">
+        <div className="splashLoaderContentContainer">
+          <p className="connectExplorerContent">
+            <img src={hdeConnectImage} alt="Azure Cosmos DB" />
+          </p>
+          <p className="splashLoaderTitle" id="explorerLoadingStatusTitle">
+            Welcome to Azure Cosmos DB
+          </p>
+          <p className="splashLoaderText" id="explorerLoadingStatusText" role="alert">
+            Connecting...
+          </p>
+        </div>
       </div>
     </div>
   );
