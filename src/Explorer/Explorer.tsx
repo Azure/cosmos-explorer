@@ -18,6 +18,7 @@ import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { acquireMsalTokenForAccount } from "Utils/AuthorizationUtils";
 import { allowedNotebookServerUrls, validateEndpoint } from "Utils/EndpointUtils";
 import { featureRegistered } from "Utils/FeatureRegistrationUtils";
+import { getVSCodeUrl } from "Utils/VSCodeExtensionUtils";
 import { update } from "Utils/arm/generatedClients/cosmos/databaseAccounts";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import * as ko from "knockout";
@@ -289,40 +290,8 @@ export default class Explorer {
     }
   }
 
-  /**
-   * Generates a VS Code DocumentDB connection URL using the current user's MongoDB connection parameters.
-   * Double-encodes the updated connection string for safe usage in VS Code URLs.
-   *
-   * The DocumentDB VS Code extension requires double encoding for connection strings.
-   * See: https://microsoft.github.io/vscode-documentdb/manual/how-to-construct-url.html#double-encoding
-   *
-   * @returns {string} The encoded VS Code DocumentDB connection URL.
-   */
-  private getDocumentDbUrl() {
-    const { adminLogin: adminLoginuserName = "", connectionString = "" } = userContext.vcoreMongoConnectionParams;
-    const updatedConnectionString = connectionString.replace(/<(user|username)>:<password>/i, adminLoginuserName);
-    const encodedUpdatedConnectionString = encodeURIComponent(encodeURIComponent(updatedConnectionString));
-    const documentDbUrl = `vscode://ms-azuretools.vscode-documentdb?connectionString=${encodedUpdatedConnectionString}`;
-    return documentDbUrl;
-  }
-
-  private getCosmosDbUrl() {
-    const activeTab = useTabs.getState().activeTab;
-    const resourceId = encodeURIComponent(userContext.databaseAccount.id);
-    const database = encodeURIComponent(activeTab?.collection?.databaseId);
-    const container = encodeURIComponent(activeTab?.collection?.id());
-    const baseUrl = `vscode://ms-azuretools.vscode-cosmosdb?resourceId=${resourceId}`;
-    const vscodeUrl = activeTab ? `${baseUrl}&database=${database}&container=${container}` : baseUrl;
-    return vscodeUrl;
-  }
-
-  private getVSCodeUrl(): string {
-    const isvCore = (userContext.apiType || userContext.databaseAccount.kind) === "VCoreMongo";
-    return isvCore ? this.getDocumentDbUrl() : this.getCosmosDbUrl();
-  }
-
   public openInVsCode(): void {
-    const vscodeUrl = this.getVSCodeUrl();
+    const vscodeUrl = getVSCodeUrl();
     const openVSCodeDialogProps: DialogProps = {
       linkProps: {
         linkText: "Download Visual Studio Code",
