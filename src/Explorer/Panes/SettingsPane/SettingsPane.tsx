@@ -1248,8 +1248,12 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                   selectors: {
                     ":hover": {
                       backgroundColor: "var(--colorBrandBackgroundHover)",
-                      color: "var(--colorNeutralForegroundOnBrand)",
+                      color: "var(--colorNeutralForegroundOnBrand)"
                     },
+                    ":active": {
+                      backgroundColor: "var(--colorBrandBackgroundPressed)",
+                      color: "var(--colorNeutralForegroundOnBrand)"
+                    }
                   },
                 },
               }}

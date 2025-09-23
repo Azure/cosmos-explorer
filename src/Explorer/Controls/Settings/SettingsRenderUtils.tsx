@@ -525,17 +525,11 @@ export const getTextFieldStyles = (current: isDirtyTypes, baseline: isDirtyTypes
         backgroundColor: "var(--colorNeutralBackground1)",
         borderColor: StyleConstants.BaseMediumHigh,
       },
-      "input": {
-        color: "var(--colorNeutralForeground1)",
-      },
       "input#autopilotInput": {
         backgroundColor: "var(--colorNeutralBackground4)",
         color: "var(--colorNeutralForeground1)",
       },
     },
-  },
-  field: {
-    color: "var(--colorNeutralForeground1)",
   },
 
   subComponentStyles: {
