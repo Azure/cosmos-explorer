@@ -33,6 +33,7 @@ export interface FullTextPolicyData {
 const labelStyles = {
   root: {
     fontSize: 12,
+    color: "var(--colorNeutralForeground1)"
   },
 };
 
@@ -222,7 +223,31 @@ export const FullTextPoliciesComponent: React.FunctionComponent<FullTextPolicies
             </Stack>
           </CollapsibleSectionComponent>
         ))}
-      <DefaultButton id={`add-vector-policy`} styles={{ root: { maxWidth: 170, fontSize: 12 } }} onClick={onAdd}>
+      <DefaultButton 
+        id={`add-vector-policy`} 
+        styles={{ 
+          root: { 
+            maxWidth: 170, 
+            fontSize: 12,
+            color: "var(--colorNeutralForeground1)",
+            backgroundColor: "transparent",
+            borderColor: "var(--colorNeutralStroke1)"
+          },
+          rootHovered: {
+            color: "var(--colorNeutralForeground1)",
+            backgroundColor: "transparent",
+            borderColor: "var(--colorNeutralForeground1)"
+          },
+          rootPressed: {
+            color: "var(--colorNeutralForeground1)",
+            backgroundColor: "transparent",
+            borderColor: "var(--colorNeutralForeground1)"
+          },
+          rootDisabled: {
+            backgroundColor: "transparent"
+          }
+        }} 
+        onClick={onAdd}>
         Add full text path
       </DefaultButton>
     </Stack>

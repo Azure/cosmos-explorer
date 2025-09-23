@@ -191,7 +191,7 @@ export const PartitionKeyComponent: React.FC<PartitionKeyComponentProps> = ({
               Learn more
             </Link>
           </MessageBar>
-          <Text>
+          <Text styles={{ root: { color: "var(--colorNeutralForeground1)" } }}>
             To change the partition key, a new destination container must be created or an existing destination
             container selected. Data will then be copied to the destination container.
           </Text>

@@ -64,6 +64,7 @@ import "./Shared/appInsights";
 import { useConfig } from "./hooks/useConfig";
 import { useKnockoutExplorer } from "./hooks/useKnockoutExplorer";
 import { isDarkMode } from "./hooks/useTheme";
+import "./less/DarkModeMenus.less";
 import "./less/ThemeSystem.less";
 // Initialize icons before React is loaded
 initializeIcons(undefined, { disableWarnings: true });
@@ -124,11 +125,8 @@ const App = (): JSX.Element => {
             }}
           >
             <div id="freeTierTeachingBubble"> </div>
-            {/* Main Command Bar - Start */}
             <CommandBar container={explorer} />
-            {/* Collections Tree and Tabs - Begin */}
             <SidebarContainer explorer={explorer} />
-            {/* Collections Tree and Tabs - End */}
             <div
               className="dataExplorerErrorConsoleContainer"
               role="contentinfo"
@@ -155,21 +153,17 @@ const App = (): JSX.Element => {
 };
 
 const Root: React.FC = () => {
-  // Force dark theme
   const currentTheme = isDarkMode ? webDarkTheme : webLightTheme;
 
-  // Apply theme to body for Fluent UI v8 components
   useEffect(() => {
     if (isDarkMode) {
       document.body.classList.add("isDarkMode");
       document.body.style.backgroundColor = "var(--colorNeutralBackground1)";
       document.body.style.color = "var(--colorNeutralForeground1)";
-      // loadTheme(appThemeFabric);
     } else {
       document.body.classList.remove("isDarkMode");
       document.body.style.backgroundColor = "";
       document.body.style.color = "";
-      // loadTheme(appThemeFabric);
     }
   }, [isDarkMode]);
 

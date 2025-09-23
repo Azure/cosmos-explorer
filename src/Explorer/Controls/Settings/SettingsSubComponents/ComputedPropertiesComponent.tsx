@@ -116,7 +116,7 @@ export class ComputedPropertiesComponent extends React.Component<
             {unsavedEditorWarningMessage("computedProperties")}
           </MessageBar>
         )}
-        <Text style={{ marginLeft: "30px", marginBottom: "10px" }}>
+        <Text style={{ marginLeft: "30px", marginBottom: "10px", color: "var(--colorNeutralForeground1)" }}>
           <Link target="_blank" href="https://aka.ms/computed-properties-preview/">
             {"Learn more"} <FontIcon iconName="NavigateExternalInline" />
           </Link>

@@ -37,18 +37,18 @@
 
     .panelTextField {
       font-size: @mediumFontSize;
-      border: 1px solid var(--colorNeutralStroke1, #605e5c);
+      border: 1px solid var(--colorNeutralStroke1);
       color: var(--colorNeutralForeground1);
-      background-color: var(--colorNeutralBackground2, @BaseLight);
+      background-color: var(--colorNeutralBackground2);
       padding: 4px 10px;
       width: @newCollectionPaneInputWidth;
 
       &::placeholder {
-        color: var(--colorNeutralForeground3, @BaseMediumHigh);
+        color: var(--colorNeutralForeground3);
       }
 
       &:focus {
-        border-color: var(--colorCompoundBrandStroke1, @SelectionColor);
+        border-color: var(--colorCompoundBrandStroke1);
         outline: none;
       }
     }
@@ -60,7 +60,7 @@
     .panelRadioBtnLabel {
       font-size: @mediumFontSize;
       padding: 0 @LargeSpace 0 @SmallSpace;
-      color: var(--colorNeutralForeground1, @BaseHigh);
+      color: var(--colorNeutralForeground1);
     }
 
     .panelSectionSpinner {
@@ -70,47 +70,42 @@
       transform: translate(-50%, -50%);
     }
 
-    // Override Fluent UI component styles to use theme variables
     .ms-Dropdown {
       .ms-Dropdown-title {
-        background-color: var(--colorNeutralBackground2, @BaseLight);
-        border-color: var(--colorNeutralStroke1, #605e5c);
-        color: var(--colorNeutralForeground1, @BaseHigh);
+        background-color: var(--colorNeutralBackground2);
+        border-color: var(--colorNeutralStroke1);
+        color: var(--colorNeutralForeground1);
       }
 
       .ms-Dropdown-caretDownWrapper {
-        color: var(--colorNeutralForeground1, @BaseHigh);
+        color: var(--colorNeutralForeground1);
       }
     }
 
     .ms-Checkbox {
       .ms-Checkbox-label {
-        color: var(--colorNeutralForeground1, @BaseHigh);
+        color: var(--colorNeutralForeground1);
       }
     }
 
     .ms-TextField {
       .ms-TextField-fieldGroup {
-        background-color: var(--colorNeutralBackground2, @BaseLight);
-        border-color: var(--colorNeutralStroke1, #605e5c);
+        background-color: var(--colorNeutralBackground2);
+        border-color: var(--colorNeutralStroke1);
       }
 
       .ms-TextField-field {
-        background-color: var(--colorNeutralBackground2, @BaseLight);
-        color: var(--colorNeutralForeground1, @BaseHigh);
+        background-color: var(--colorNeutralBackground2);
+        color: var(--colorNeutralForeground1);
 
         &::placeholder {
-          color: var(--colorNeutralForeground3, @BaseMediumHigh);
+          color: var(--colorNeutralForeground3);
         }
       }
     }
 
     .ms-Text {
-      color: var(--colorNeutralForeground1, @BaseHigh);
-    }
-
-    span, label {
-      color: var(--colorNeutralForeground1, @BaseHigh);
+      color: var(--colorNeutralForeground1);
     }
   }
 
@@ -124,14 +119,14 @@
 }
 
 .panelHeader {
-  color: var(--colorNeutralForeground1, @BaseDark);
+  color: var(--colorNeutralForeground1);
   font-size: @largeFontSize;
   font-weight: 400;
 }
 
 .panelInfoErrorContainer {
-  background-color: var(--colorNeutralBackground3, @BaseLow);
-  color: var(--colorNeutralForeground1, @BaseHigh);
+  background-color: var(--colorNeutralBackground3);
+  color: var(--colorNeutralForeground1);
   padding: @DefaultSpace;
   display: inline-flex;
   margin: 20px 34px 0 34px;
@@ -143,15 +138,15 @@
   }
 
   .panelWarningIcon {
-    color: var(--colorPaletteYellowForeground1, @WarningIconColor);
+    color: var(--colorPaletteYellowForeground1);
   }
 
   .panelErrorIcon {
-    color: var(--colorPaletteRedForeground1, @ErrorIconColor);
+    color: var(--colorPaletteRedForeground1);
   }
 
   .panelLargeInfoIcon {
-    color: var(--colorBrandForeground1, @InfoIconColor);
+    color: var(--colorBrandForeground1);
   }
 
   .panelWarningErrorDetailsLinkContainer {
@@ -160,22 +155,22 @@
     padding-left: @MediumSpace;
 
     .paneErrorLink {
-      color: var(--colorBrandForeground1, @LinkColor);
+      color: var(--colorBrandForeground1);
       cursor: pointer;
       font-size: @mediumFontSize;
     }
 
     .panelWarningErrorMessage {
-      color: var(--colorNeutralForeground1, @BaseHigh);
+      color: var(--colorNeutralForeground1);
     }
   }
 }
 
 .panelFooter {
   padding: 16px 34px;
-  border-top: solid 1px var(--colorNeutralStroke1, #bbbbbb);
-  background-color: var(--colorNeutralBackground1, @BaseLight);
-  color: var(--colorNeutralForeground1, @BaseHigh);
+  border-top: solid 1px var(--colorNeutralStroke1);
+  background-color: var(--colorNeutralBackground1);
+  color: var(--colorNeutralForeground1);
 
   & button {
     height: 30px;
@@ -197,7 +192,7 @@
 
 .addRemoveIcon [alt="editEntity"]:focus,
 .addRemoveIconLabel [alt="editEntity"]:focus {
-  border: 1px dashed var(--colorNeutralStroke1, #605e5c);
+  border: 1px dashed var(--colorNeutralStroke1);
   outline: none;
 }
 
@@ -240,7 +235,7 @@
 }
 
 .removeIcon {
-  color: @InfoIconColor;
+  color: "var(--colorNeutralForeground1)";
 }
 
 .backImageIcon {
@@ -248,7 +243,7 @@
 }
 
 [alt="back"]:focus {
-  border: 1px solid var(--colorCompoundBrandStroke1, @SelectionColor);
+  border: 1px solid var(--colorCompoundBrandStroke1);
   outline: none;
 }
 
@@ -297,3 +292,4 @@
     background-color: var(--overlayBackground);
   }
 }
+
