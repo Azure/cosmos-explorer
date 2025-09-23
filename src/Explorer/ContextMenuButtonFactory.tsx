@@ -61,7 +61,7 @@ export const createDatabaseContextMenu = (container: Explorer, databaseId: strin
     },
   ];
 
-  if (isFabric() && !userContext.fabricContext?.isReadOnly) {
+  if (isFabricNative() && !userContext.fabricContext?.isReadOnly) {
     const features = extractFeatures();
     if (features?.enableRestoreContainer) {
       items.push({
