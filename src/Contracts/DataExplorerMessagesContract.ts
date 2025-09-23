@@ -22,6 +22,10 @@ export type DataExploreMessageV3 =
   | {
       type: FabricMessageTypes.OpenSettings;
       settingsId: string;
+    }
+  | {
+      type: FabricMessageTypes.RestoreContainer;
+      params: [];
     };
 export interface GetCosmosTokenMessageOptions {
   verb: "connect" | "delete" | "get" | "head" | "options" | "patch" | "post" | "put" | "trace";

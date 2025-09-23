@@ -101,6 +101,12 @@ const requestAndStoreAccessToken = async (): Promise<void> => {
   });
 };
 
+export const openRestoreContainerDialog = (): void => {
+  if (configContext.platform === Platform.Fabric) {
+    sendCachedDataMessage(FabricMessageTypes.RestoreContainer, []);
+  }
+};
+
 /**
  * Check token validity and schedule a refresh if necessary
  * @param tokenTimestamp
