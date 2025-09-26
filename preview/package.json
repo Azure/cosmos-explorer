@@ -11,9 +11,11 @@
   "keywords": [],
   "author": "Microsoft Corporation",
   "dependencies": {
-    "express": "^4.17.1",
+    "body-parser": "^1.20.3",
+    "express": "^4.21.2",
     "http-proxy-middleware": "^3.0.3",
     "node": "^20.19.5",
-    "node-fetch": "^2.6.1"
+    "node-fetch": "^2.6.1",
+    "path-to-regexp": "^0.1.12"
   }
 }
