@@ -35,11 +35,11 @@ export const AdvancedComponent = (props: AdvancedComponentProps): JSX.Element =>
             text: { fontSize: 12, color: "var(--colorNeutralForeground1)" },
             checkbox: { width: 12, height: 12 },
             label: { padding: 0, alignItems: "center", wordWrap: "break-word", whiteSpace: "break-spaces" },
-             root: {
-                    selectors: {
-                      ':hover .ms-Checkbox-text': { color: "var(--colorNeutralForeground1)" }
-                    }
-                  }
+            root: {
+              selectors: {
+                ":hover .ms-Checkbox-text": { color: "var(--colorNeutralForeground1)" },
+              },
+            },
           }}
           onChange={(ev: React.FormEvent<HTMLElement>, isChecked: boolean) => {
             useHashV1CheckboxOnChange(isChecked);

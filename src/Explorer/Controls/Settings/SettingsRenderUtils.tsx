@@ -166,8 +166,8 @@ export const separatorStyles: Partial<ISeparatorStyles> = {
 };
 
 export const messageBarStyles: Partial<IMessageBarStyles> = {
-  root: { 
-    marginTop: "5px", 
+  root: {
+    marginTop: "5px",
     backgroundColor: "var(--colorNeutralBackground1)",
     selectors: {
       "&.ms-MessageBar--severeWarning": {

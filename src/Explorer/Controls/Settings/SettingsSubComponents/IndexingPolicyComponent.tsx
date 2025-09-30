@@ -112,14 +112,13 @@ export class IndexingPolicyComponent extends React.Component<
             monaco.editor.setTheme(newTheme);
           }
         });
-        
+
         const indexingPolicyEditorModel = this.indexingPolicyEditor.getModel();
         indexingPolicyEditorModel.onDidChangeContent(this.onEditorContentChange.bind(this));
         this.props.logIndexingPolicySuccessMessage();
       }
     }
   }
-
 
   private onEditorContentChange = (): void => {
     const indexingPolicyEditorModel = this.indexingPolicyEditor.getModel();

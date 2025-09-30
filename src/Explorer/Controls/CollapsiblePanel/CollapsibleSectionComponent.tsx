@@ -80,7 +80,7 @@ export class CollapsibleSectionComponent extends React.Component<CollapsibleSect
                 iconProps={{ iconName: "Delete" }}
                 style={{ height: 27, marginRight: "20px" }}
                 styles={{
-                  rootHovered: { 
+                  rootHovered: {
                     backgroundColor: "transparent",
                   },
                   rootPressed: {

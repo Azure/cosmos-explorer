@@ -354,9 +354,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                           label: { padding: 0, alignItems: "center" },
                           root: {
                             selectors: {
-                              ':hover .ms-Checkbox-text': { color: "var(--colorNeutralForeground1)" }
-                            }
-                          }
+                              ":hover .ms-Checkbox-text": { color: "var(--colorNeutralForeground1)" },
+                            },
+                          },
                         }}
                         onChange={(ev: React.FormEvent<HTMLElement>, isChecked: boolean) =>
                           this.setState({ isSharedThroughputChecked: isChecked })

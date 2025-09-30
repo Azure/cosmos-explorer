@@ -13,9 +13,9 @@ export const ThemeToggleButton = (): CommandButtonComponentProps => {
     });
     return unsubscribe;
   }, []);
-  
+
   const tooltipText = darkMode ? "Switch to Light Theme" : "Switch to Dark Theme";
-  
+
   return {
     iconSrc: darkMode ? SunBlueIcon : MoonBlueIcon,
     iconAlt: "Theme Toggle",

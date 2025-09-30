@@ -156,14 +156,12 @@ const Root: React.FC = () => {
   // Use React state to track isDarkMode and subscribe to changes
   const [isDarkMode, setIsDarkMode] = React.useState(useThemeStore.getState().isDarkMode);
   const currentTheme = isDarkMode ? webDarkTheme : webLightTheme;
-  
+
   // Subscribe to theme changes
   React.useEffect(() => {
-    return useThemeStore.subscribe(
-      (state) => {
-        setIsDarkMode(state.isDarkMode);
-      }
-    );
+    return useThemeStore.subscribe((state) => {
+      setIsDarkMode(state.isDarkMode);
+    });
   }, []);
 
   useEffect(() => {

@@ -101,7 +101,7 @@ export class ComputedPropertiesComponent extends React.Component<
           monaco.editor.setTheme(newTheme);
         }
       });
-      
+
       const computedPropertiesEditorModel = this.computedPropertiesEditor.getModel();
       computedPropertiesEditorModel.onDidChangeContent(this.onEditorContentChange.bind(this));
       this.props.logComputedPropertiesSuccessMessage();

@@ -162,9 +162,9 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
       globalAccountName: userContext.databaseAccount?.name,
     })
       ? (loadState({
-        componentName: AppStateComponentNames.SelectedRegionalEndpoint,
-        globalAccountName: userContext.databaseAccount?.name,
-      }) as string)
+          componentName: AppStateComponentNames.SelectedRegionalEndpoint,
+          globalAccountName: userContext.databaseAccount?.name,
+        }) as string)
       : undefined,
   );
   const [retryAttempts, setRetryAttempts] = useState<number>(
@@ -1025,9 +1025,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                       onChange={() => setContainerPaginationEnabled(!containerPaginationEnabled)}
                       label="Enable container pagination"
                       onRenderLabel={() => (
-                        <span style={{ color: "var(--colorNeutralForeground1)" }}>
-                          Enable container pagination
-                        </span>
+                        <span style={{ color: "var(--colorNeutralForeground1)" }}>Enable container pagination</span>
                       )}
                     />
                   </div>
@@ -1054,9 +1052,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                       checked={crossPartitionQueryEnabled}
                       onChange={() => setCrossPartitionQueryEnabled(!crossPartitionQueryEnabled)}
                       onRenderLabel={() => (
-                        <span style={{ color: "var(--colorNeutralForeground1)" }}>
-                          Enable cross-partition query
-                        </span>
+                        <span style={{ color: "var(--colorNeutralForeground1)" }}>Enable cross-partition query</span>
                       )}
                     />
                   </div>
@@ -1090,9 +1086,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                       checked={queryControlEnabled}
                       onChange={() => setQueryControlEnabled(!queryControlEnabled)}
                       onRenderLabel={() => (
-                        <span style={{ color: "var(--colorNeutralForeground1)" }}>
-                          Enable query control
-                        </span>
+                        <span style={{ color: "var(--colorNeutralForeground1)" }}>Enable query control</span>
                       )}
                     />
                   </div>
@@ -1129,8 +1123,8 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                       label="Max degree of parallelism"
                       styles={{
                         label: {
-                          color: "var(--colorNeutralForeground1)"
-                        }
+                          color: "var(--colorNeutralForeground1)",
+                        },
                       }}
                     />
                   </div>
@@ -1202,9 +1196,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                       checked={copilotSampleDBEnabled}
                       onChange={handleSampleDatabaseChange}
                       onRenderLabel={() => (
-                        <span style={{ color: "var(--colorNeutralForeground1)" }}>
-                          Enable sample database
-                        </span>
+                        <span style={{ color: "var(--colorNeutralForeground1)" }}>Enable sample database</span>
                       )}
                     />
                   </div>
