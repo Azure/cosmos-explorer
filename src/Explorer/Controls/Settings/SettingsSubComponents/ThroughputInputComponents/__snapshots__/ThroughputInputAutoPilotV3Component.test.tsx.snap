@@ -419,7 +419,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
                     }
                   }
                 >
-                  10,00,000
+                  1,000,000
                 </span>
               </StackItem>
             </Stack>
@@ -986,7 +986,7 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
                     }
                   }
                 >
-                  10,00,000
+                  1,000,000
                 </span>
               </StackItem>
             </Stack>
@@ -1531,7 +1531,7 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
                     }
                   }
                 >
-                  10,00,000
+                  1,000,000
                 </span>
               </StackItem>
             </Stack>
