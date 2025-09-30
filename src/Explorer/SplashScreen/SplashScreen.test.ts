@@ -20,11 +20,7 @@ describe("SplashScreen", () => {
 
     // Mock the SplashScreen module to return our test functions
     const mockCreateDataSampleUtil = jest.fn(() => dataSampleUtil);
-    const mockCreateMainItems = jest.fn(() => [
-      { onClick: jest.fn() },
-      { onClick: jest.fn() },
-      { onClick: jest.fn() }
-    ]);
+    const mockCreateMainItems = jest.fn(() => [{ onClick: jest.fn() }, { onClick: jest.fn() }, { onClick: jest.fn() }]);
 
     // Since SplashScreen is a functional component, we need to test the logic differently
     // We'll test the utility functions directly rather than instantiating the component
