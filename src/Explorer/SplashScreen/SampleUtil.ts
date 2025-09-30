@@ -1,3 +1,4 @@
+import { JSONObject } from "@azure/cosmos";
 import { BackendDefaults } from "Common/Constants";
 import { createCollection } from "Common/dataAccess/createCollection";
 import Explorer from "Explorer/Explorer";
@@ -26,10 +27,17 @@ const hasContainer = (
 export const checkContainerExists = (databaseName: string, containerName: string) =>
   hasContainer(databaseName, containerName, useDatabases.getState().databases);
 
+export enum SampleDataFile {
+  COPILOT = "Copilot",
+  FABRIC_SAMPLE_DATA = "FabricSampleData",
+  FABRIC_SAMPLE_VECTOR_DATA = "FabricSampleVectorData",
+}
+
 export const createContainer = async (
   databaseName: string,
   containerName: string,
   explorer: Explorer,
+  sampleDataFile: SampleDataFile,
 ): Promise<ViewModels.Collection> => {
   const createRequest: DataModels.CreateCollectionParams = {
     createNewDatabase: false,
@@ -41,6 +49,44 @@ export const createContainer = async (
       kind: "Hash",
       version: BackendDefaults.partitionKeyVersion,
     },
+    vectorEmbeddingPolicy:
+      sampleDataFile === SampleDataFile.FABRIC_SAMPLE_VECTOR_DATA
+        ? {
+            vectorEmbeddings: [
+              {
+                path: "/descriptionVector",
+                dataType: "float32",
+                distanceFunction: "cosine",
+                dimensions: 512,
+              },
+            ],
+          }
+        : undefined,
+    indexingPolicy:
+      sampleDataFile === SampleDataFile.FABRIC_SAMPLE_VECTOR_DATA
+        ? {
+            automatic: true,
+            indexingMode: "consistent",
+            includedPaths: [
+              {
+                path: "/*",
+              },
+            ],
+            excludedPaths: [
+              {
+                path: '/"_etag"/?',
+              },
+            ],
+            fullTextIndexes: [],
+            vectorIndexes: [
+              {
+                path: "/descriptionVector",
+                type: "quantizedFlat",
+                quantizationByteSize: 64,
+              },
+            ],
+          }
+        : undefined,
   };
   await createCollection(createRequest);
   await explorer.refreshAllDatabases();
@@ -55,10 +101,35 @@ export const createContainer = async (
 
 const SAMPLE_DATA_PARTITION_KEY = "category"; // This pkey is specifically set for queryCopilotSampleData.json below
 
-export const importData = async (collection: ViewModels.Collection): Promise<void> => {
-  // TODO: keep same chunk as ContainerSampleGenerator
-  const dataFileContent = await import(
-    /* webpackChunkName: "queryCopilotSampleData" */ "../../../sampleData/queryCopilotSampleData.json"
-  );
-  await collection.bulkInsertDocuments(dataFileContent.data);
+export const importData = async (sampleDataFile: SampleDataFile, collection: ViewModels.Collection): Promise<void> => {
+  let documents: JSONObject[] = undefined;
+  switch (sampleDataFile) {
+    case SampleDataFile.COPILOT:
+      documents = (
+        await import(/* webpackChunkName: "queryCopilotSampleData" */ "../../../sampleData/queryCopilotSampleData.json")
+      ).data;
+      break;
+    case SampleDataFile.FABRIC_SAMPLE_DATA:
+      documents = (await import(/* webpackChunkName: "fabricSampleData" */ "../../../sampleData/fabricSampleData.json"))
+        .default;
+      break;
+    case SampleDataFile.FABRIC_SAMPLE_VECTOR_DATA:
+      documents = (
+        await import(
+          /* webpackChunkName: "fabricSampleDataVectors" */ "../../../sampleData/fabricSampleDataVectors.json"
+        )
+      ).default;
+      break;
+    default:
+      throw new Error(`Unknown sample data file: ${sampleDataFile}`);
+  }
+  if (!documents) {
+    throw new Error(`Failed to load sample data file: ${sampleDataFile}`);
+  }
+
+  // Time it
+  const start = performance.now();
+  await collection.bulkInsertDocuments(documents);
+  const end = performance.now();
+  console.log(`Imported ${documents.length} documents in ${(end - start).toFixed(2)} ms`);
 };

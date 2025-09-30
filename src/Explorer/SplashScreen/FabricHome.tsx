@@ -3,12 +3,15 @@
  */
 import { Link, makeStyles, tokens } from "@fluentui/react-components";
 import { DocumentAddRegular, LinkMultipleRegular, OpenRegular } from "@fluentui/react-icons";
-import { SampleDataImportDialog } from "Explorer/SplashScreen/SampleDataImportDialog";
+import { SampleDataConfiguration, SampleDataImportDialog } from "Explorer/SplashScreen/SampleDataImportDialog";
+import { SampleDataFile } from "Explorer/SplashScreen/SampleUtil";
 import { CosmosFluentProvider } from "Explorer/Theme/ThemeUtil";
 import { isFabricNative, isFabricNativeReadOnly } from "Platform/Fabric/FabricUtil";
 import * as React from "react";
 import { userContext } from "UserContext";
+import AzureOpenAiIcon from "../../../images/AzureOpenAi.svg";
 import CosmosDbBlackIcon from "../../../images/CosmosDB_black.svg";
+import GithubIcon from "../../../images/github-black-and-white.svg";
 import Explorer from "../Explorer";
 
 export interface SplashScreenProps {
@@ -26,11 +29,11 @@ const useStyles = makeStyles({
     fontWeight: "bold",
   },
   buttonsContainer: {
-    width: "584px",
+    width: "760px",
     margin: "auto",
     display: "grid",
     padding: "16px",
-    gridTemplateColumns: "repeat(3, 1fr)",
+    gridTemplateColumns: "repeat(4, 1fr)",
     gap: "10px",
     gridAutoRows: "minmax(184px, auto)",
   },
@@ -53,9 +56,27 @@ const useStyles = makeStyles({
     },
   },
   three: {
+    gridColumn: "4",
+    gridRow: "1",
+    "& img": {
+      width: "32px",
+      height: "32px",
+      margin: "auto",
+    },
+  },
+  four: {
     gridColumn: "3",
     gridRow: "2",
     "& svg": {
+      width: "32px",
+      height: "32px",
+      margin: "auto",
+    },
+  },
+  five: {
+    gridColumn: "4",
+    gridRow: "2",
+    "& img": {
       width: "32px",
       height: "32px",
       margin: "auto",
@@ -132,6 +153,8 @@ const FabricHomeScreenButton: React.FC<FabricHomeScreenButtonProps & { className
 export const FabricHomeScreen: React.FC<SplashScreenProps> = (props: SplashScreenProps) => {
   const styles = useStyles();
   const [openSampleDataImportDialog, setOpenSampleDataImportDialog] = React.useState(false);
+  const [selectedSampleDataConfiguration, setSelectedSampleDataConfiguration] =
+    React.useState<SampleDataConfiguration>(undefined);
 
   const getSplashScreenButtons = (): JSX.Element => {
     const buttons: FabricHomeScreenButtonProps[] = [
@@ -145,10 +168,30 @@ export const FabricHomeScreen: React.FC<SplashScreenProps> = (props: SplashScree
         },
       },
       {
-        title: "Sample data",
-        description: "Automatically load sample data in your database",
+        title: "Sample Data",
+        description: "Load sample data in your database",
         icon: <img src={CosmosDbBlackIcon} alt={"Azure Cosmos DB icon"} aria-hidden="true" />,
-        onClick: () => setOpenSampleDataImportDialog(true),
+        onClick: () => {
+          setSelectedSampleDataConfiguration({
+            databaseName: userContext.fabricContext?.databaseName,
+            newContainerName: "SampleData",
+            sampleDataFile: SampleDataFile.FABRIC_SAMPLE_DATA,
+          });
+          setOpenSampleDataImportDialog(true);
+        },
+      },
+      {
+        title: "Sample Vector Data",
+        description: "Load sample vector data in your database",
+        icon: <img src={AzureOpenAiIcon} alt={"Azure Open AI icon"} aria-hidden="true" />,
+        onClick: () => {
+          setSelectedSampleDataConfiguration({
+            databaseName: userContext.fabricContext?.databaseName,
+            newContainerName: "SampleVectorData",
+            sampleDataFile: SampleDataFile.FABRIC_SAMPLE_VECTOR_DATA,
+          });
+          setOpenSampleDataImportDialog(true);
+        },
       },
       {
         title: "App development",
@@ -156,17 +199,25 @@ export const FabricHomeScreen: React.FC<SplashScreenProps> = (props: SplashScree
         icon: <LinkMultipleRegular />,
         onClick: () => window.open("https://aka.ms/cosmosdbfabricsdk", "_blank"),
       },
+      {
+        title: "Sample Gallery",
+        description: "Get real-world end-to-end samples",
+        icon: <img src={GithubIcon} alt={"GitHub icon"} aria-hidden="true" />,
+        onClick: () => window.open("https://azurecosmosdb.github.io/gallery/?tags=example&tags=analytics", "_blank"),
+      },
     ];
 
     return isFabricNativeReadOnly() ? (
       <div className={styles.buttonsContainer}>
-        <FabricHomeScreenButton className={styles.single} {...buttons[2]} />
+        <FabricHomeScreenButton className={styles.single} {...buttons[3]} />
       </div>
     ) : (
       <div className={styles.buttonsContainer}>
         <FabricHomeScreenButton className={styles.one} {...buttons[0]} />
         <FabricHomeScreenButton className={styles.two} {...buttons[1]} />
         <FabricHomeScreenButton className={styles.three} {...buttons[2]} />
+        <FabricHomeScreenButton className={styles.four} {...buttons[3]} />
+        <FabricHomeScreenButton className={styles.five} {...buttons[4]} />
       </div>
     );
   };
@@ -179,7 +230,7 @@ export const FabricHomeScreen: React.FC<SplashScreenProps> = (props: SplashScree
           open={openSampleDataImportDialog}
           setOpen={setOpenSampleDataImportDialog}
           explorer={props.explorer}
-          databaseName={userContext.fabricContext?.databaseName}
+          sampleDataConfiguration={selectedSampleDataConfiguration}
         />
         <div className={styles.title} role="heading" aria-label={title} aria-level={1}>
           {title}
