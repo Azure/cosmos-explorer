@@ -3,6 +3,7 @@ import { BackendDefaults } from "Common/Constants";
 import { createCollection } from "Common/dataAccess/createCollection";
 import Explorer from "Explorer/Explorer";
 import { useDatabases } from "Explorer/useDatabases";
+import { DEFAULT_FABRIC_NATIVE_CONTAINER_THROUGHPUT, isFabricNative } from "Platform/Fabric/FabricUtil";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 
@@ -40,6 +41,7 @@ export const createContainer = async (
   sampleDataFile: SampleDataFile,
 ): Promise<ViewModels.Collection> => {
   const createRequest: DataModels.CreateCollectionParams = {
+    autoPilotMaxThroughput: isFabricNative() ? DEFAULT_FABRIC_NATIVE_CONTAINER_THROUGHPUT : undefined,
     createNewDatabase: false,
     collectionId: containerName,
     databaseId: databaseName,

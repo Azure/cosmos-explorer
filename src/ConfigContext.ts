@@ -77,7 +77,6 @@ let configContext: Readonly<ConfigContext> = {
     `^https:\\/\\/.*\\.fabric\\.microsoft\\.com$`,
     `^https:\\/\\/.*\\.powerbi\\.com$`,
     `^https:\\/\\/dataexplorer-preview\\.azurewebsites\\.net$`,
-    `^http:\\/\\/localhost:4302`,
   ], // Webpack injects this at build time
   gitSha: process.env.GIT_SHA,
   hostedExplorerURL: "https://cosmos.azure.com/",
