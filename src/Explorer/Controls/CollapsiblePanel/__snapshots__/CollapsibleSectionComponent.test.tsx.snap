@@ -20,7 +20,15 @@ exports[`CollapsibleSectionComponent renders 1`] = `
     <Icon
       iconName="ChevronDown"
     />
-    <StyledLabelBase>
+    <StyledLabelBase
+      styles={
+        {
+          "root": {
+            "color": "var(--colorNeutralForeground1)",
+          },
+        }
+      }
+    >
       Sample title
     </StyledLabelBase>
   </Stack>

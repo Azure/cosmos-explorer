@@ -78,7 +78,15 @@ exports[`AddDatabasePane Pane should render Default properly 1`] = `
                 "alignItems": "center",
                 "padding": 0,
               },
+              "root": {
+                "selectors": {
+                  ":hover .ms-Checkbox-text": {
+                    "color": "var(--colorNeutralForeground1)",
+                  },
+                },
+              },
               "text": {
+                "color": "var(--colorNeutralForeground1)",
                 "fontSize": 12,
               },
             }
