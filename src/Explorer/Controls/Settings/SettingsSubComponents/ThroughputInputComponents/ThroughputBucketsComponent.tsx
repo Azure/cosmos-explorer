@@ -65,7 +65,7 @@ export const ThroughputBucketsComponent: FC<ThroughputBucketsComponentProps> = (
 
   return (
     <Stack tokens={{ childrenGap: "m" }} styles={{ root: { width: "70%", maxWidth: 700 } }}>
-      <Label>Throughput Buckets</Label>
+      <Label styles={{ root: { color: "var(--colorNeutralForeground1)" } }}>Throughput Buckets</Label>
       <Stack>
         {throughputBuckets?.map((bucket) => (
           <Stack key={bucket.id} horizontal tokens={{ childrenGap: 8 }} verticalAlign="center">
@@ -77,7 +77,15 @@ export const ThroughputBucketsComponent: FC<ThroughputBucketsComponentProps> = (
               onChange={(newValue) => handleBucketChange(bucket.id, newValue)}
               showValue={false}
               label={`Bucket ${bucket.id}${bucket.id === 1 ? " (Data Explorer Query Bucket)" : ""}`}
-              styles={{ root: { flex: 2, maxWidth: 400 } }}
+              styles={{
+                root: { flex: 2, maxWidth: 400 },
+                titleLabel: {
+                  color:
+                    bucket.maxThroughputPercentage === 100
+                      ? "var(--colorNeutralForeground4)"
+                      : "var(--colorNeutralForeground1)",
+                },
+              }}
               disabled={bucket.maxThroughputPercentage === 100}
             />
             <TextField

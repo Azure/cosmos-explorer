@@ -14,6 +14,7 @@ exports[`ToolTipLabelComponent renders 1`] = `
     <Text
       style={
         {
+          "color": "var(--colorNeutralForeground1)",
           "fontWeight": 600,
         }
       }

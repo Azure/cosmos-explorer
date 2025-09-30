@@ -26,6 +26,7 @@ exports[`PartitionKeyComponent renders default component and matches snapshot 1`
       styles={
         {
           "root": {
+            "color": "var(--colorNeutralForeground1)",
             "fontSize": 16,
             "fontWeight": 600,
           },
@@ -54,6 +55,7 @@ exports[`PartitionKeyComponent renders default component and matches snapshot 1`
           styles={
             {
               "root": {
+                "color": "var(--colorNeutralForeground1)",
                 "fontWeight": 600,
               },
             }
@@ -66,6 +68,7 @@ exports[`PartitionKeyComponent renders default component and matches snapshot 1`
           styles={
             {
               "root": {
+                "color": "var(--colorNeutralForeground1)",
                 "fontWeight": 600,
               },
             }
@@ -81,8 +84,24 @@ exports[`PartitionKeyComponent renders default component and matches snapshot 1`
           }
         }
       >
-        <Text />
-        <Text>
+        <Text
+          styles={
+            {
+              "root": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+            }
+          }
+        />
+        <Text
+          styles={
+            {
+              "root": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+            }
+          }
+        >
           Non-hierarchical
         </Text>
       </Stack>
@@ -100,7 +119,15 @@ exports[`PartitionKeyComponent renders default component and matches snapshot 1`
       Learn more
     </StyledLinkBase>
   </StyledMessageBar>
-  <Text>
+  <Text
+    styles={
+      {
+        "root": {
+          "color": "var(--colorNeutralForeground1)",
+        },
+      }
+    }
+  >
     To change the partition key, a new destination container must be created or an existing destination container selected. Data will then be copied to the destination container.
   </Text>
   <CustomizedPrimaryButton
@@ -158,6 +185,7 @@ exports[`PartitionKeyComponent renders read-only component and matches snapshot 
           styles={
             {
               "root": {
+                "color": "var(--colorNeutralForeground1)",
                 "fontWeight": 600,
               },
             }
@@ -170,6 +198,7 @@ exports[`PartitionKeyComponent renders read-only component and matches snapshot 
           styles={
             {
               "root": {
+                "color": "var(--colorNeutralForeground1)",
                 "fontWeight": 600,
               },
             }
@@ -185,8 +214,24 @@ exports[`PartitionKeyComponent renders read-only component and matches snapshot 
           }
         }
       >
-        <Text />
-        <Text>
+        <Text
+          styles={
+            {
+              "root": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+            }
+          }
+        />
+        <Text
+          styles={
+            {
+              "root": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+            }
+          }
+        >
           Non-hierarchical
         </Text>
       </Stack>

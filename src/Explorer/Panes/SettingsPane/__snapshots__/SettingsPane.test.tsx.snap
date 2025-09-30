@@ -19,14 +19,14 @@ exports[`Settings Pane should render Default properly 1`] = `
       >
         <AccordionHeader>
           <div
-            className="___15c001r_0000000 fq02s40"
+            className="___j7dlp70_0000000 fq02s40 f19n0e5"
           >
             Page Options
           </div>
         </AccordionHeader>
         <AccordionPanel>
           <div
-            className="___1dfa554_0000000 fo7qwa0"
+            className="___1evh9ps_0000000 fo7qwa0 f19n0e5"
           >
             <div
               className="___10gar1i_0000000 f1fow5ox f1ugzwwg"
@@ -55,11 +55,37 @@ exports[`Settings Pane should render Default properly 1`] = `
                     {
                       "selectors": {
                         ".ms-ChoiceField": {
+                          "color": "inherit",
                           "marginTop": 0,
                         },
+                        ".ms-ChoiceField-field": {
+                          "color": "inherit",
+                        },
+                        ".ms-ChoiceField-field:hover": {
+                          "color": "inherit",
+                        },
+                        ".ms-ChoiceField-field:hover .ms-ChoiceField-labelWrapper": {
+                          "color": "inherit",
+                        },
+                        ".ms-ChoiceField-field:hover span": {
+                          "color": "inherit",
+                        },
+                        ".ms-ChoiceField-labelWrapper": {
+                          "color": "inherit",
+                        },
+                        ".ms-ChoiceField-labelWrapper:hover": {
+                          "color": "inherit",
+                        },
+                        ".ms-ChoiceField-wrapper": {
+                          "color": "inherit",
+                        },
                         ".ms-ChoiceField-wrapper label": {
+                          "color": "inherit",
                           "fontSize": 12,
                           "paddingTop": 0,
+                        },
+                        ".ms-ChoiceField-wrapper:hover": {
+                          "color": "inherit",
                         },
                         ".ms-ChoiceFieldGroup root-133": {
                           "clear": "both",
@@ -75,7 +101,7 @@ exports[`Settings Pane should render Default properly 1`] = `
             />
           </div>
           <div
-            className="tabs ___1dfa554_0000000 fo7qwa0"
+            className="tabs ___1evh9ps_0000000 fo7qwa0 f19n0e5"
           >
             <div
               className="tabcontent"
@@ -112,14 +138,14 @@ exports[`Settings Pane should render Default properly 1`] = `
       >
         <AccordionHeader>
           <div
-            className="___15c001r_0000000 fq02s40"
+            className="___j7dlp70_0000000 fq02s40 f19n0e5"
           >
             Query Timeout
           </div>
         </AccordionHeader>
         <AccordionPanel>
           <div
-            className="___1dfa554_0000000 fo7qwa0"
+            className="___1evh9ps_0000000 fo7qwa0 f19n0e5"
           >
             <div
               className="___10gar1i_0000000 f1fow5ox f1ugzwwg"
@@ -134,6 +160,7 @@ exports[`Settings Pane should render Default properly 1`] = `
                 {
                   "container": {},
                   "label": {
+                    "color": "inherit",
                     "display": "block",
                     "fontSize": 12,
                     "fontWeight": 400,
@@ -153,14 +180,14 @@ exports[`Settings Pane should render Default properly 1`] = `
       >
         <AccordionHeader>
           <div
-            className="___15c001r_0000000 fq02s40"
+            className="___j7dlp70_0000000 fq02s40 f19n0e5"
           >
             RU Limit
           </div>
         </AccordionHeader>
         <AccordionPanel>
           <div
-            className="___1dfa554_0000000 fo7qwa0"
+            className="___1evh9ps_0000000 fo7qwa0 f19n0e5"
           >
             <div
               className="___10gar1i_0000000 f1fow5ox f1ugzwwg"
@@ -175,6 +202,7 @@ exports[`Settings Pane should render Default properly 1`] = `
                 {
                   "container": {},
                   "label": {
+                    "color": "inherit",
                     "display": "block",
                     "fontSize": 12,
                     "fontWeight": 400,
@@ -188,7 +216,7 @@ exports[`Settings Pane should render Default properly 1`] = `
             />
           </div>
           <div
-            className="___1dfa554_0000000 fo7qwa0"
+            className="___1evh9ps_0000000 fo7qwa0 f19n0e5"
           >
             <StyledSpinButton
               decrementButtonAriaLabel="Decrease value by 1000"
@@ -203,12 +231,22 @@ exports[`Settings Pane should render Default properly 1`] = `
                 {
                   "arrowButtonsContainer": {},
                   "icon": {},
-                  "input": {},
+                  "input": {
+                    "color": "#000000",
+                    "selectors": {
+                      "::placeholder": {
+                        "color": "#000000",
+                      },
+                    },
+                  },
                   "label": {
+                    "color": "inherit",
                     "fontSize": 12,
                     "fontWeight": 400,
                   },
-                  "labelWrapper": {},
+                  "labelWrapper": {
+                    "color": "inherit",
+                  },
                   "root": {
                     "paddingBottom": 10,
                   },
@@ -224,14 +262,14 @@ exports[`Settings Pane should render Default properly 1`] = `
       >
         <AccordionHeader>
           <div
-            className="___15c001r_0000000 fq02s40"
+            className="___j7dlp70_0000000 fq02s40 f19n0e5"
           >
             Default Query Results View
           </div>
         </AccordionHeader>
         <AccordionPanel>
           <div
-            className="___1dfa554_0000000 fo7qwa0"
+            className="___1evh9ps_0000000 fo7qwa0 f19n0e5"
           >
             <div
               className="___10gar1i_0000000 f1fow5ox f1ugzwwg"
@@ -260,11 +298,37 @@ exports[`Settings Pane should render Default properly 1`] = `
                     {
                       "selectors": {
                         ".ms-ChoiceField": {
+                          "color": "inherit",
                           "marginTop": 0,
                         },
+                        ".ms-ChoiceField-field": {
+                          "color": "inherit",
+                        },
+                        ".ms-ChoiceField-field:hover": {
+                          "color": "inherit",
+                        },
+                        ".ms-ChoiceField-field:hover .ms-ChoiceField-labelWrapper": {
+                          "color": "inherit",
+                        },
+                        ".ms-ChoiceField-field:hover span": {
+                          "color": "inherit",
+                        },
+                        ".ms-ChoiceField-labelWrapper": {
+                          "color": "inherit",
+                        },
+                        ".ms-ChoiceField-labelWrapper:hover": {
+                          "color": "inherit",
+                        },
+                        ".ms-ChoiceField-wrapper": {
+                          "color": "inherit",
+                        },
                         ".ms-ChoiceField-wrapper label": {
+                          "color": "inherit",
                           "fontSize": 12,
                           "paddingTop": 0,
+                        },
+                        ".ms-ChoiceField-wrapper:hover": {
+                          "color": "inherit",
                         },
                         ".ms-ChoiceFieldGroup root-133": {
                           "clear": "both",
@@ -286,14 +350,14 @@ exports[`Settings Pane should render Default properly 1`] = `
       >
         <AccordionHeader>
           <div
-            className="___15c001r_0000000 fq02s40"
+            className="___j7dlp70_0000000 fq02s40 f19n0e5"
           >
             Retry Settings
           </div>
         </AccordionHeader>
         <AccordionPanel>
           <div
-            className="___1dfa554_0000000 fo7qwa0"
+            className="___1evh9ps_0000000 fo7qwa0 f19n0e5"
           >
             <div
               className="___10gar1i_0000000 f1fow5ox f1ugzwwg"
@@ -326,12 +390,22 @@ exports[`Settings Pane should render Default properly 1`] = `
                 {
                   "arrowButtonsContainer": {},
                   "icon": {},
-                  "input": {},
+                  "input": {
+                    "color": "#000000",
+                    "selectors": {
+                      "::placeholder": {
+                        "color": "#000000",
+                      },
+                    },
+                  },
                   "label": {
+                    "color": "inherit",
                     "fontSize": 12,
                     "fontWeight": 400,
                   },
-                  "labelWrapper": {},
+                  "labelWrapper": {
+                    "color": "inherit",
+                  },
                   "root": {
                     "paddingBottom": 10,
                   },
@@ -366,12 +440,22 @@ exports[`Settings Pane should render Default properly 1`] = `
                 {
                   "arrowButtonsContainer": {},
                   "icon": {},
-                  "input": {},
+                  "input": {
+                    "color": "#000000",
+                    "selectors": {
+                      "::placeholder": {
+                        "color": "#000000",
+                      },
+                    },
+                  },
                   "label": {
+                    "color": "inherit",
                     "fontSize": 12,
                     "fontWeight": 400,
                   },
-                  "labelWrapper": {},
+                  "labelWrapper": {
+                    "color": "inherit",
+                  },
                   "root": {
                     "paddingBottom": 10,
                   },
@@ -406,12 +490,22 @@ exports[`Settings Pane should render Default properly 1`] = `
                 {
                   "arrowButtonsContainer": {},
                   "icon": {},
-                  "input": {},
+                  "input": {
+                    "color": "#000000",
+                    "selectors": {
+                      "::placeholder": {
+                        "color": "#000000",
+                      },
+                    },
+                  },
                   "label": {
+                    "color": "inherit",
                     "fontSize": 12,
                     "fontWeight": 400,
                   },
-                  "labelWrapper": {},
+                  "labelWrapper": {
+                    "color": "inherit",
+                  },
                   "root": {
                     "paddingBottom": 10,
                   },
@@ -428,14 +522,14 @@ exports[`Settings Pane should render Default properly 1`] = `
       >
         <AccordionHeader>
           <div
-            className="___15c001r_0000000 fq02s40"
+            className="___j7dlp70_0000000 fq02s40 f19n0e5"
           >
             Enable container pagination
           </div>
         </AccordionHeader>
         <AccordionPanel>
           <div
-            className="___1dfa554_0000000 fo7qwa0"
+            className="___1evh9ps_0000000 fo7qwa0 f19n0e5"
           >
             <div
               className="___10gar1i_0000000 f1fow5ox f1ugzwwg"
@@ -448,6 +542,7 @@ exports[`Settings Pane should render Default properly 1`] = `
               className="padding"
               label="Enable container pagination"
               onChange={[Function]}
+              onRenderLabel={[Function]}
               styles={
                 {
                   "label": {
@@ -464,14 +559,14 @@ exports[`Settings Pane should render Default properly 1`] = `
       >
         <AccordionHeader>
           <div
-            className="___15c001r_0000000 fq02s40"
+            className="___j7dlp70_0000000 fq02s40 f19n0e5"
           >
             Enable cross-partition query
           </div>
         </AccordionHeader>
         <AccordionPanel>
           <div
-            className="___1dfa554_0000000 fo7qwa0"
+            className="___1evh9ps_0000000 fo7qwa0 f19n0e5"
           >
             <div
               className="___10gar1i_0000000 f1fow5ox f1ugzwwg"
@@ -482,8 +577,8 @@ exports[`Settings Pane should render Default properly 1`] = `
               ariaLabel="Enable cross partition query"
               checked={false}
               className="padding"
-              label="Enable cross-partition query"
               onChange={[Function]}
+              onRenderLabel={[Function]}
               styles={
                 {
                   "label": {
@@ -500,14 +595,14 @@ exports[`Settings Pane should render Default properly 1`] = `
       >
         <AccordionHeader>
           <div
-            className="___15c001r_0000000 fq02s40"
+            className="___j7dlp70_0000000 fq02s40 f19n0e5"
           >
             Enhanced query control
           </div>
         </AccordionHeader>
         <AccordionPanel>
           <div
-            className="___1dfa554_0000000 fo7qwa0"
+            className="___1evh9ps_0000000 fo7qwa0 f19n0e5"
           >
             <div
               className="___10gar1i_0000000 f1fow5ox f1ugzwwg"
@@ -527,8 +622,8 @@ exports[`Settings Pane should render Default properly 1`] = `
               ariaLabel="EnableQueryControl"
               checked={false}
               className="padding"
-              label="Enable query control"
               onChange={[Function]}
+              onRenderLabel={[Function]}
               styles={
                 {
                   "label": {
@@ -545,14 +640,14 @@ exports[`Settings Pane should render Default properly 1`] = `
       >
         <AccordionHeader>
           <div
-            className="___15c001r_0000000 fq02s40"
+            className="___j7dlp70_0000000 fq02s40 f19n0e5"
           >
             Max degree of parallelism
           </div>
         </AccordionHeader>
         <AccordionPanel>
           <div
-            className="___1dfa554_0000000 fo7qwa0"
+            className="___1evh9ps_0000000 fo7qwa0 f19n0e5"
           >
             <div
               className="___10gar1i_0000000 f1fow5ox f1ugzwwg"
@@ -570,6 +665,13 @@ exports[`Settings Pane should render Default properly 1`] = `
               onValidate={[Function]}
               role="textbox"
               step={1}
+              styles={
+                {
+                  "label": {
+                    "color": "var(--colorNeutralForeground1)",
+                  },
+                }
+              }
               value="6"
             />
           </div>
@@ -584,6 +686,24 @@ exports[`Settings Pane should render Default properly 1`] = `
       >
         <CustomizedDefaultButton
           onClick={[Function]}
+          styles={
+            {
+              "root": {
+                "backgroundColor": "var(--colorBrandBackground)",
+                "color": "var(--colorNeutralForegroundOnBrand)",
+                "selectors": {
+                  ":active": {
+                    "backgroundColor": "var(--colorBrandBackgroundPressed)",
+                    "color": "var(--colorNeutralForegroundOnBrand)",
+                  },
+                  ":hover": {
+                    "backgroundColor": "var(--colorBrandBackgroundHover)",
+                    "color": "var(--colorNeutralForegroundOnBrand)",
+                  },
+                },
+              },
+            }
+          }
         >
           Clear History
         </CustomizedDefaultButton>
@@ -593,7 +713,7 @@ exports[`Settings Pane should render Default properly 1`] = `
       className="settingsSection"
     >
       <div
-        className="settingsSectionPart"
+        className="settingsSectionPart ___1evh9ps_0000000 fo7qwa0 f19n0e5"
       >
         <div
           className="settingsSectionLabel"
@@ -626,14 +746,14 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
       >
         <AccordionHeader>
           <div
-            className="___15c001r_0000000 fq02s40"
+            className="___j7dlp70_0000000 fq02s40 f19n0e5"
           >
             Retry Settings
           </div>
         </AccordionHeader>
         <AccordionPanel>
           <div
-            className="___1dfa554_0000000 fo7qwa0"
+            className="___1evh9ps_0000000 fo7qwa0 f19n0e5"
           >
             <div
               className="___10gar1i_0000000 f1fow5ox f1ugzwwg"
@@ -666,12 +786,22 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
                 {
                   "arrowButtonsContainer": {},
                   "icon": {},
-                  "input": {},
+                  "input": {
+                    "color": "#000000",
+                    "selectors": {
+                      "::placeholder": {
+                        "color": "#000000",
+                      },
+                    },
+                  },
                   "label": {
+                    "color": "inherit",
                     "fontSize": 12,
                     "fontWeight": 400,
                   },
-                  "labelWrapper": {},
+                  "labelWrapper": {
+                    "color": "inherit",
+                  },
                   "root": {
                     "paddingBottom": 10,
                   },
@@ -706,12 +836,22 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
                 {
                   "arrowButtonsContainer": {},
                   "icon": {},
-                  "input": {},
+                  "input": {
+                    "color": "#000000",
+                    "selectors": {
+                      "::placeholder": {
+                        "color": "#000000",
+                      },
+                    },
+                  },
                   "label": {
+                    "color": "inherit",
                     "fontSize": 12,
                     "fontWeight": 400,
                   },
-                  "labelWrapper": {},
+                  "labelWrapper": {
+                    "color": "inherit",
+                  },
                   "root": {
                     "paddingBottom": 10,
                   },
@@ -746,12 +886,22 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
                 {
                   "arrowButtonsContainer": {},
                   "icon": {},
-                  "input": {},
+                  "input": {
+                    "color": "#000000",
+                    "selectors": {
+                      "::placeholder": {
+                        "color": "#000000",
+                      },
+                    },
+                  },
                   "label": {
+                    "color": "inherit",
                     "fontSize": 12,
                     "fontWeight": 400,
                   },
-                  "labelWrapper": {},
+                  "labelWrapper": {
+                    "color": "inherit",
+                  },
                   "root": {
                     "paddingBottom": 10,
                   },
@@ -768,14 +918,14 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
       >
         <AccordionHeader>
           <div
-            className="___15c001r_0000000 fq02s40"
+            className="___j7dlp70_0000000 fq02s40 f19n0e5"
           >
             Enable container pagination
           </div>
         </AccordionHeader>
         <AccordionPanel>
           <div
-            className="___1dfa554_0000000 fo7qwa0"
+            className="___1evh9ps_0000000 fo7qwa0 f19n0e5"
           >
             <div
               className="___10gar1i_0000000 f1fow5ox f1ugzwwg"
@@ -788,6 +938,7 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
               className="padding"
               label="Enable container pagination"
               onChange={[Function]}
+              onRenderLabel={[Function]}
               styles={
                 {
                   "label": {
@@ -804,14 +955,14 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
       >
         <AccordionHeader>
           <div
-            className="___15c001r_0000000 fq02s40"
+            className="___j7dlp70_0000000 fq02s40 f19n0e5"
           >
             Display Gremlin query results as: 
           </div>
         </AccordionHeader>
         <AccordionPanel>
           <div
-            className="___1dfa554_0000000 fo7qwa0"
+            className="___1evh9ps_0000000 fo7qwa0 f19n0e5"
           >
             <div
               className="___10gar1i_0000000 f1fow5ox f1ugzwwg"
@@ -847,6 +998,24 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
       >
         <CustomizedDefaultButton
           onClick={[Function]}
+          styles={
+            {
+              "root": {
+                "backgroundColor": "var(--colorBrandBackground)",
+                "color": "var(--colorNeutralForegroundOnBrand)",
+                "selectors": {
+                  ":active": {
+                    "backgroundColor": "var(--colorBrandBackgroundPressed)",
+                    "color": "var(--colorNeutralForegroundOnBrand)",
+                  },
+                  ":hover": {
+                    "backgroundColor": "var(--colorBrandBackgroundHover)",
+                    "color": "var(--colorNeutralForegroundOnBrand)",
+                  },
+                },
+              },
+            }
+          }
         >
           Clear History
         </CustomizedDefaultButton>
@@ -856,7 +1025,7 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
       className="settingsSection"
     >
       <div
-        className="settingsSectionPart"
+        className="settingsSectionPart ___1evh9ps_0000000 fo7qwa0 f19n0e5"
       >
         <div
           className="settingsSectionLabel"

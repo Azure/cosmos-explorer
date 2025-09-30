@@ -1,0 +1,57 @@
+
+body.isDarkMode {
+  .ms-Callout.ms-ContextualMenu-Callout {
+    --bodyBackgroundColor: var(--colorNeutralBackground1);
+    --bodyTextColor: var(--colorNeutralForeground1);
+    
+    .ms-Callout-main {
+      background-color: var(--colorNeutralBackground1);
+    }
+  }
+  
+  .ms-ContextualMenu-container,
+  .ms-ContextualMenu-list,
+  .ms-ContextualMenu-list.is-open {
+    background-color: var(--colorNeutralBackground1);
+  }
+  
+  .ms-ContextualMenu-item {
+    background-color: var(--colorNeutralBackground1);
+  }
+  
+  .ms-ContextualMenu-link {
+    color: var(--colorNeutralForeground1);
+    background-color: var(--colorNeutralBackground1);
+    
+    &:hover, &:focus {
+      background-color: var(--colorNeutralBackground3);
+    }
+  }
+  
+  .ms-ContextualMenu-itemText {
+    color: var(--colorNeutralForeground1);
+  }
+  
+  .ms-ContextualMenu-icon {
+    color: var(--colorNeutralForeground1);
+  }
+}
+
+body.isDarkMode {
+  .fui-MenuPopover {
+    background-color: var(--colorNeutralBackground1);
+  }
+  
+  .fui-MenuList {
+    background-color: var(--colorNeutralBackground1);
+  }
+  
+  .fui-MenuItem {
+    color: var(--colorNeutralForeground1);
+    background-color: var(--colorNeutralBackground1);
+    
+    &:hover, &:focus {
+      background-color: var(--colorNeutralBackground3);
+    }
+  }
+}

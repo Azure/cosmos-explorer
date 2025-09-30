@@ -30,11 +30,11 @@
         flex-shrink:0;
 
         &:hover {
-                background-color:@NotificationHigh;
+                background-color: @NotificationHigh;
         }
 
         &:active {
-                background-color:@NotificationHigh;
+                background-color: @NotificationHigh;
         }
         
         &:focus {
@@ -186,6 +186,46 @@
 
       .notificationConsoleData {
         overflow: visible;
+      }
+    }
+  }
+}
+
+// Dark theme specific overrides
+body.isDarkMode {
+  .notificationConsoleContainer {
+    .notificationConsoleHeader {
+      background-color: var(--colorNeutralBackground2);
+      color: var(--colorNeutralForeground1);
+      
+      &:hover {
+        background-color: var(--colorNeutralBackground3);
+        color: var(--colorNeutralForeground1);
+      }
+
+      &:active {
+        background-color: var(--colorNeutralBackground4);
+        color: var(--colorNeutralForeground1);
+      }
+    }
+
+    .notificationConsoleContents {
+      background-color: var(--colorNeutralBackground1);
+      color: var(--colorNeutralForeground1);
+
+      .clearNotificationsButton {
+        border: @ButtonBorderWidth solid var(--colorNeutralStroke1);
+
+        &:hover {
+          background-color: var(--colorNeutralBackground3);
+          color: var(--colorNeutralForeground1);
+        }
+
+        &:active {
+          border: @ButtonBorderWidth dashed var(--colorBrandForeground1);
+          background-color: var(--colorBrandBackground);
+          color: var(--colorNeutralForegroundOnBrand);
+        }
       }
     }
   }

@@ -58,7 +58,7 @@ export class CollapsibleSectionComponent extends React.Component<CollapsibleSect
           aria-expanded={this.state.isExpanded}
         >
           <Icon iconName={this.state.isExpanded ? "ChevronDown" : "ChevronRight"} />
-          <Label>{this.props.title}</Label>
+          <Label styles={{ root: { color: "var(--colorNeutralForeground1)" } }}>{this.props.title}</Label>
           {this.props.tooltipContent && (
             <TooltipHost
               directionalHint={DirectionalHint.bottomLeftEdge}
@@ -79,6 +79,14 @@ export class CollapsibleSectionComponent extends React.Component<CollapsibleSect
                 id={`delete-${this.props.title.split(" ").join("-")}`}
                 iconProps={{ iconName: "Delete" }}
                 style={{ height: 27, marginRight: "20px" }}
+                styles={{
+                  rootHovered: {
+                    backgroundColor: "transparent",
+                  },
+                  rootPressed: {
+                    backgroundColor: "transparent",
+                  },
+                }}
                 onClick={(event) => {
                   event.stopPropagation();
                   this.props.onDelete();

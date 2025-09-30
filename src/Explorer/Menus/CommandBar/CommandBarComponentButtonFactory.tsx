@@ -1,3 +1,4 @@
+import { OpenFullScreen } from "Explorer/OpenFullScreen";
 import { KeyboardAction } from "KeyboardShortcuts";
 import { isDataplaneRbacSupported } from "Utils/APITypeUtils";
 import * as React from "react";
@@ -24,12 +25,12 @@ import { useSidePanel } from "../../../hooks/useSidePanel";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../../Explorer";
 import { useNotebook } from "../../Notebook/useNotebook";
-import { OpenFullScreen } from "../../OpenFullScreen";
 import { BrowseQueriesPane } from "../../Panes/BrowseQueriesPane/BrowseQueriesPane";
 import { LoadQueryPane } from "../../Panes/LoadQueryPane/LoadQueryPane";
 import { SettingsPane, useDataPlaneRbac } from "../../Panes/SettingsPane/SettingsPane";
 import { useDatabases } from "../../useDatabases";
 import { SelectedNodeState, useSelectedNode } from "../../useSelectedNode";
+import { ThemeToggleButton } from "./ThemeToggleButton";
 
 let counter = 0;
 
@@ -166,6 +167,7 @@ export function createContextCommandBarButtons(
 
 export function createControlCommandBarButtons(container: Explorer): CommandButtonComponentProps[] {
   const buttons: CommandButtonComponentProps[] = [
+    ThemeToggleButton(),
     {
       iconSrc: SettingsIcon,
       iconAlt: "Settings",
@@ -361,6 +363,22 @@ export function createScriptCommandButtons(selectedNodeState: SelectedNodeState)
       disabled:
         useSelectedNode.getState().isQueryCopilotCollectionSelected() ||
         selectedNodeState.isDatabaseNodeOrNoneSelected(),
+      styles: {
+        root: {
+          backgroundColor: "var(--colorNeutralBackground1)",
+          color: "var(--colorNeutralForeground1)",
+          selectors: {
+            ":hover": {
+              backgroundColor: "var(--colorNeutralBackground1Hover)",
+              color: "var(--colorNeutralForeground1Hover)",
+            },
+            ":active": {
+              backgroundColor: "var(--colorNeutralBackground1Pressed)",
+              color: "var(--colorNeutralForeground1Pressed)",
+            },
+          },
+        },
+      },
     };
     buttons.push(newStoredProcedureBtn);
   }
@@ -381,6 +399,22 @@ export function createScriptCommandButtons(selectedNodeState: SelectedNodeState)
       disabled:
         useSelectedNode.getState().isQueryCopilotCollectionSelected() ||
         selectedNodeState.isDatabaseNodeOrNoneSelected(),
+      styles: {
+        root: {
+          backgroundColor: "var(--colorNeutralBackground1)",
+          color: "var(--colorNeutralForeground1)",
+          selectors: {
+            ":hover": {
+              backgroundColor: "var(--colorNeutralBackground1Hover)",
+              color: "var(--colorNeutralForeground1Hover)",
+            },
+            ":active": {
+              backgroundColor: "var(--colorNeutralBackground1Pressed)",
+              color: "var(--colorNeutralForeground1Pressed)",
+            },
+          },
+        },
+      },
     };
     buttons.push(newUserDefinedFunctionBtn);
   }
@@ -401,6 +435,22 @@ export function createScriptCommandButtons(selectedNodeState: SelectedNodeState)
       disabled:
         useSelectedNode.getState().isQueryCopilotCollectionSelected() ||
         selectedNodeState.isDatabaseNodeOrNoneSelected(),
+      styles: {
+        root: {
+          backgroundColor: "var(--colorNeutralBackground1)",
+          color: "var(--colorNeutralForeground1)",
+          selectors: {
+            ":hover": {
+              backgroundColor: "var(--colorNeutralBackground1Hover)",
+              color: "var(--colorNeutralForeground1Hover)",
+            },
+            ":active": {
+              backgroundColor: "var(--colorNeutralBackground1Pressed)",
+              color: "var(--colorNeutralForeground1Pressed)",
+            },
+          },
+        },
+      },
     };
     buttons.push(newTriggerBtn);
   }
