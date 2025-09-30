@@ -1,8 +1,4 @@
-import {
-  Button as FluentButton,
-  makeStyles,
-  tokens,
-} from "@fluentui/react-components";
+import { Button as FluentButton, makeStyles, tokens } from "@fluentui/react-components";
 import * as React from "react";
 
 export type CustomButtonProps = {
@@ -39,21 +35,13 @@ const useStyles = makeStyles({
   },
 });
 
-export const Button = React.forwardRef<HTMLButtonElement, CustomButtonProps>(
-  ({ primary, ...props }, ref) => {
-    const baseStyles = useStyles();
-    const buttonClassName = primary ? baseStyles.primary : baseStyles.button;
+export const Button = React.forwardRef<HTMLButtonElement, CustomButtonProps>(({ primary, ...props }, ref) => {
+  const baseStyles = useStyles();
+  const buttonClassName = primary ? baseStyles.primary : baseStyles.button;
 
-    return (
-      <FluentButton
-        {...props}
-        ref={ref}
-        appearance={primary ? "primary" : "secondary"}
-        className={buttonClassName}
-      />
-    );
-  }
-);
+  return (
+    <FluentButton {...props} ref={ref} appearance={primary ? "primary" : "secondary"} className={buttonClassName} />
+  );
+});
 
-// Add display name
 Button.displayName = "Button";

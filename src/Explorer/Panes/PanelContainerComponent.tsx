@@ -66,44 +66,43 @@ export class PanelContainerComponent extends React.Component<PanelContainerProps
         onRenderNavigationContent={this.props.onRenderNavigationContent}
         isFooterAtBottom={true}
         styles={{
-          navigation: { 
+          navigation: {
             borderBottom: "1px solid var(--colorNeutralStroke1)",
             backgroundColor: "var(--colorNeutralBackground1)",
-            color: "var(--colorNeutralForeground1)"
+            color: "var(--colorNeutralForeground1)",
           },
-          content: { 
+          content: {
             padding: 0,
             backgroundColor: "var(--colorNeutralBackground1)",
-            color: "var(--colorNeutralForeground1)"
+            color: "var(--colorNeutralForeground1)",
           },
-          header: { 
+          header: {
             padding: "0 0 8px 34px",
             backgroundColor: "var(--colorNeutralBackground1)",
-            color: "var(--colorNeutralForeground1)"
+            color: "var(--colorNeutralForeground1)",
           },
-          commands: { 
-            marginTop: 8, 
+          commands: {
+            marginTop: 8,
             paddingTop: 0,
-            backgroundColor: "var(--colorNeutralBackground1)"
+            backgroundColor: "var(--colorNeutralBackground1)",
           },
-          root: {
-          },
+          root: {},
           overlay: {
-            backgroundColor: "var(--overlayBackground)"
+            backgroundColor: "var(--overlayBackground)",
           },
           main: {
-            backgroundColor: "var(--colorNeutralBackground1)"
+            backgroundColor: "var(--colorNeutralBackground1)",
           },
           scrollableContent: {
-            backgroundColor: "var(--colorNeutralBackground1)"
+            backgroundColor: "var(--colorNeutralBackground1)",
           },
           footerInner: {
             backgroundColor: "var(--colorNeutralBackground1)",
-            color: "var(--colorNeutralForeground1)"
+            color: "var(--colorNeutralForeground1)",
           },
           closeButton: {
-            color: "var(--colorNeutralForeground1)"
-          }
+            color: "var(--colorNeutralForeground1)",
+          },
         }}
         style={{ height: this.state.height }}
       >

@@ -77,13 +77,14 @@ export const ThroughputBucketsComponent: FC<ThroughputBucketsComponentProps> = (
               onChange={(newValue) => handleBucketChange(bucket.id, newValue)}
               showValue={false}
               label={`Bucket ${bucket.id}${bucket.id === 1 ? " (Data Explorer Query Bucket)" : ""}`}
-              styles={{ 
+              styles={{
                 root: { flex: 2, maxWidth: 400 },
-                titleLabel: { 
-                  color: bucket.maxThroughputPercentage === 100 ? 
-                    "var(--colorNeutralForeground4)" : 
-                    "var(--colorNeutralForeground1)" 
-                }
+                titleLabel: {
+                  color:
+                    bucket.maxThroughputPercentage === 100
+                      ? "var(--colorNeutralForeground4)"
+                      : "var(--colorNeutralForeground1)",
+                },
               }}
               disabled={bucket.maxThroughputPercentage === 100}
             />

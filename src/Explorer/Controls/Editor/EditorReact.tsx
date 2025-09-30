@@ -1,5 +1,5 @@
 import { Spinner, SpinnerSize } from "@fluentui/react";
-import { monacoTheme } from "hooks/useTheme";
+import { useThemeStore } from "hooks/useTheme";
 import * as React from "react";
 import { loadMonaco, monaco } from "../../LazyMonaco";
 // import "./EditorReact.less";
@@ -67,6 +67,7 @@ export class EditorReact extends React.Component<EditorReactProps, EditorReactSt
   private rootNode: HTMLElement;
   public editor: monaco.editor.IStandaloneCodeEditor;
   private selectionListener: monaco.IDisposable;
+  private themeUnsubscribe: () => void;
   monacoApi: {
     default: typeof monaco;
     Emitter: typeof monaco.Emitter;
@@ -94,6 +95,13 @@ export class EditorReact extends React.Component<EditorReactProps, EditorReactSt
 
   public componentDidMount(): void {
     this.createEditor(this.configureEditor.bind(this));
+
+    this.themeUnsubscribe = useThemeStore.subscribe((state) => {
+      if (this.editor) {
+        const newTheme = state.isDarkMode ? "vs-dark" : "vs";
+        this.monacoApi?.editor.setTheme(newTheme);
+      }
+    });
 
     setTimeout(() => {
       const suggestionWidget = this.editor?.getDomNode()?.querySelector(".suggest-widget") as HTMLElement;
@@ -129,6 +137,7 @@ export class EditorReact extends React.Component<EditorReactProps, EditorReactSt
 
   public componentWillUnmount(): void {
     this.selectionListener && this.selectionListener.dispose();
+    this.themeUnsubscribe && this.themeUnsubscribe();
   }
 
   public render(): JSX.Element {
@@ -212,7 +221,7 @@ export class EditorReact extends React.Component<EditorReactProps, EditorReactSt
       ariaLabel: this.props.ariaLabel,
       fontSize: this.props.fontSize || 12,
       automaticLayout: true,
-      theme: monacoTheme,
+      theme: useThemeStore.getState().isDarkMode ? "vs-dark" : "vs",
       wordWrap: this.props.wordWrap || "off",
       lineNumbers: this.props.lineNumbers || "off",
       lineNumbersMinChars: this.props.lineNumbersMinChars,

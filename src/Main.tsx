@@ -63,7 +63,7 @@ import { appThemeFabric } from "./Platform/Fabric/FabricTheme";
 import "./Shared/appInsights";
 import { useConfig } from "./hooks/useConfig";
 import { useKnockoutExplorer } from "./hooks/useKnockoutExplorer";
-import { isDarkMode } from "./hooks/useTheme";
+import { useThemeStore } from "./hooks/useTheme";
 import "./less/DarkModeMenus.less";
 import "./less/ThemeSystem.less";
 // Initialize icons before React is loaded
@@ -153,7 +153,18 @@ const App = (): JSX.Element => {
 };
 
 const Root: React.FC = () => {
+  // Use React state to track isDarkMode and subscribe to changes
+  const [isDarkMode, setIsDarkMode] = React.useState(useThemeStore.getState().isDarkMode);
   const currentTheme = isDarkMode ? webDarkTheme : webLightTheme;
+  
+  // Subscribe to theme changes
+  React.useEffect(() => {
+    return useThemeStore.subscribe(
+      (state) => {
+        setIsDarkMode(state.isDarkMode);
+      }
+    );
+  }, []);
 
   useEffect(() => {
     if (isDarkMode) {

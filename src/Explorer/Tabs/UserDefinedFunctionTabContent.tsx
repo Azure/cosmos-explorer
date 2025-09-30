@@ -3,7 +3,7 @@ import { Label, TextField } from "@fluentui/react";
 import { FluentProvider, webDarkTheme, webLightTheme } from "@fluentui/react-components";
 import { KeyboardAction } from "KeyboardShortcuts";
 import { ValidCosmosDbIdDescription, ValidCosmosDbIdInputPattern } from "Utils/ValidationUtils";
-import { isDarkMode } from "hooks/useTheme";
+import { useThemeStore } from "hooks/useTheme";
 import React, { Component } from "react";
 import DiscardIcon from "../../../images/discard.svg";
 import SaveIcon from "../../../images/save-cosmos.svg";
@@ -259,7 +259,7 @@ export default class UserDefinedFunctionTabContent extends Component<
 
   render(): JSX.Element {
     const { udfId, udfBody, isUdfIdEditable } = this.state;
-    const currentTheme = isDarkMode ? webDarkTheme : webLightTheme;
+    const currentTheme = useThemeStore.getState().isDarkMode ? webDarkTheme : webLightTheme;
     return (
       <div className="tab-pane flexContainer trigger-form" role="tabpanel">
         <FluentProvider theme={currentTheme}>

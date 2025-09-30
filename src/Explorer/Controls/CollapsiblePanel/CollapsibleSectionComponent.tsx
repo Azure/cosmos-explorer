@@ -85,7 +85,7 @@ export class CollapsibleSectionComponent extends React.Component<CollapsibleSect
                   },
                   rootPressed: {
                     backgroundColor: "transparent",
-                  }
+                  },
                 }}
                 onClick={(event) => {
                   event.stopPropagation();

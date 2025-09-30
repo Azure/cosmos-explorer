@@ -73,11 +73,11 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
   const { targetDocument } = useFluent();
   const setKeyboardHandlers = useKeyboardActionGroup(KeyboardActionGroup.COMMAND_BAR);
   const styles = useStyles();
-  
+
   const { connectionInfo, isPhoenixNotebooks, isPhoenixFeatures } = useNotebook((state) => ({
     connectionInfo: state.connectionInfo,
     isPhoenixNotebooks: state.isPhoenixNotebooks,
-    isPhoenixFeatures: state.isPhoenixFeatures
+    isPhoenixFeatures: state.isPhoenixFeatures,
   }));
 
   if (userContext.apiType === "Postgres" || userContext.apiType === "VCoreMongo") {
@@ -126,10 +126,7 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
   uiFabricControlButtons.forEach((btn: ICommandBarItemProps) => (btn.iconOnly = true));
 
   // Add connection status if needed (using the hook values we got at the top level)
-  if (
-    (isPhoenixNotebooks || isPhoenixFeatures) &&
-    connectionInfo?.status !== ConnectionStatusType.Connect
-  ) {
+  if ((isPhoenixNotebooks || isPhoenixFeatures) && connectionInfo?.status !== ConnectionStatusType.Connect) {
     uiFabricControlButtons.unshift(
       CommandBarUtil.createConnectionStatus(container, PoolIdType.DefaultPoolId, "connectionStatus"),
     );
@@ -152,8 +149,8 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
         ":active": {
           backgroundColor: "var(--colorNeutralBackground3)",
           color: "var(--colorNeutralForeground1)",
-        }
-      }
+        },
+      },
     },
     menuIcon: {
       color: "var(--colorNeutralForeground1)",
@@ -165,7 +162,7 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
     link: {
       backgroundColor: "var(--colorNeutralBackground1)",
       color: "var(--colorNeutralForeground1)",
-    }
+    },
   };
 
   const allButtons = staticButtons.concat(contextButtons).concat(controlButtons);

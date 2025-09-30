@@ -102,51 +102,51 @@ export const ContainerPolicyComponent: React.FC<ContainerPolicyComponentProps> =
 
   return (
     <div>
-      <Pivot 
-        onLinkClick={onPivotChange} 
+      <Pivot
+        onLinkClick={onPivotChange}
         selectedKey={ContainerPolicyTabTypes[selectedTab]}
         styles={{
-          root: { 
-            color: "var(--colorNeutralForeground1)"
+          root: {
+            color: "var(--colorNeutralForeground1)",
           },
-          link: { 
+          link: {
             color: "var(--colorNeutralForeground1)",
             backgroundColor: "transparent",
             selectors: {
-              ':hover': {
-                 color: "var(--colorNeutralForeground1)",
-                backgroundColor: "transparent"
+              ":hover": {
+                color: "var(--colorNeutralForeground1)",
+                backgroundColor: "transparent",
               },
-              ':active': {
-                 color: "var(--colorNeutralForeground1)",
-                backgroundColor: "transparent"
-              }
-            }
+              ":active": {
+                color: "var(--colorNeutralForeground1)",
+                backgroundColor: "transparent",
+              },
+            },
           },
-          linkIsSelected: { 
+          linkIsSelected: {
             color: "var(--colorNeutralForeground1)",
             backgroundColor: "transparent",
             selectors: {
-              ':before': {
-                 color: "var(--colorNeutralForeground1)",
-                backgroundColor: "var(--colorBrandForeground1)"
-              },
-              ':hover': {
+              ":before": {
                 color: "var(--colorNeutralForeground1)",
-                backgroundColor: "transparent"
+                backgroundColor: "var(--colorBrandForeground1)",
               },
-              ':active': {
+              ":hover": {
                 color: "var(--colorNeutralForeground1)",
-                backgroundColor: "transparent"
-              }
-            }
+                backgroundColor: "transparent",
+              },
+              ":active": {
+                color: "var(--colorNeutralForeground1)",
+                backgroundColor: "transparent",
+              },
+            },
           },
           linkContent: {
-            color: "inherit"
+            color: "inherit",
           },
           text: {
-            color: "inherit"
-          }
+            color: "inherit",
+          },
         }}
       >
         {isVectorSearchEnabled && (
@@ -190,26 +190,26 @@ export const ContainerPolicyComponent: React.FC<ContainerPolicyComponentProps> =
               ) : (
                 <DefaultButton
                   id={"create-full-text-policy"}
-                  styles={{ 
-                    root: { 
+                  styles={{
+                    root: {
                       fontSize: 12,
                       color: "var(--colorNeutralForeground1)",
                       backgroundColor: "transparent",
-                      borderColor: "var(--colorNeutralForeground1)"
+                      borderColor: "var(--colorNeutralForeground1)",
                     },
                     rootHovered: {
                       color: "var(--colorNeutralForeground1)",
                       backgroundColor: "transparent",
-                      borderColor: "var(--colorNeutralForeground1)"
+                      borderColor: "var(--colorNeutralForeground1)",
                     },
                     rootPressed: {
                       color: "var(--colorNeutralForeground1)",
                       backgroundColor: "transparent",
-                      borderColor: "var(--colorNeutralForeground1)"
+                      borderColor: "var(--colorNeutralForeground1)",
                     },
                     rootDisabled: {
-                      backgroundColor: "transparent"
-                    }
+                      backgroundColor: "transparent",
+                    },
                   }}
                   onClick={() => {
                     checkAndSendFullTextPolicyToSettings({

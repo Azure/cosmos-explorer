@@ -15,7 +15,7 @@ const useStyles = makeStyles({
   },
 });
 
-export const DataExplorer: React.FC<DataExplorerProps> = ({ dataExplorer }) => {
+export const DataExplorer: React.FC<DataExplorerProps> = () => {
   const styles = useStyles();
 
   return (

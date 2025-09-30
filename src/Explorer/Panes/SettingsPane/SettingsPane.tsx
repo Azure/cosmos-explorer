@@ -54,31 +54,6 @@ import React, { FunctionComponent, useState } from "react";
 import create, { UseStore } from "zustand";
 import Explorer from "../../Explorer";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
-
-// Not currently used, but keeping for future reference
-
-/*
-const spinButtonStyles: ISpinButtonStyles = {
-  label: {
-    fontSize: 12,
-    fontWeight: 400,
-    color: "inherit",
-  },
-  root: {
-    paddingBottom: 10,
-  },
-  labelWrapper: {
-    color: "inherit",
-  },
-  icon: {},
-  spinButtonWrapper: {},
-  input: {
-    color: "inherit",
-  },
-  arrowButtonsContainer: {},
-};
-*/
-
 export interface DataPlaneRbacState {
   dataPlaneRbacEnabled: boolean;
   aadTokenUpdated: boolean;
@@ -187,9 +162,9 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
       globalAccountName: userContext.databaseAccount?.name,
     })
       ? (loadState({
-          componentName: AppStateComponentNames.SelectedRegionalEndpoint,
-          globalAccountName: userContext.databaseAccount?.name,
-        }) as string)
+        componentName: AppStateComponentNames.SelectedRegionalEndpoint,
+        globalAccountName: userContext.databaseAccount?.name,
+      }) as string)
       : undefined,
   );
   const [retryAttempts, setRetryAttempts] = useState<number>(
@@ -1049,6 +1024,11 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                       checked={containerPaginationEnabled}
                       onChange={() => setContainerPaginationEnabled(!containerPaginationEnabled)}
                       label="Enable container pagination"
+                      onRenderLabel={() => (
+                        <span style={{ color: "var(--colorNeutralForeground1)" }}>
+                          Enable container pagination
+                        </span>
+                      )}
                     />
                   </div>
                 </AccordionPanel>
@@ -1073,7 +1053,11 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                       ariaLabel="Enable cross partition query"
                       checked={crossPartitionQueryEnabled}
                       onChange={() => setCrossPartitionQueryEnabled(!crossPartitionQueryEnabled)}
-                      label="Enable cross-partition query"
+                      onRenderLabel={() => (
+                        <span style={{ color: "var(--colorNeutralForeground1)" }}>
+                          Enable cross-partition query
+                        </span>
+                      )}
                     />
                   </div>
                 </AccordionPanel>
@@ -1105,7 +1089,11 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                       ariaLabel="EnableQueryControl"
                       checked={queryControlEnabled}
                       onChange={() => setQueryControlEnabled(!queryControlEnabled)}
-                      label="Enable query control"
+                      onRenderLabel={() => (
+                        <span style={{ color: "var(--colorNeutralForeground1)" }}>
+                          Enable query control
+                        </span>
+                      )}
                     />
                   </div>
                 </AccordionPanel>
@@ -1139,6 +1127,11 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                       onValidate={(newValue) => setMaxDegreeOfParallelism(parseInt(newValue) || maxDegreeOfParallelism)}
                       ariaLabel="Max degree of parallelism"
                       label="Max degree of parallelism"
+                      styles={{
+                        label: {
+                          color: "var(--colorNeutralForeground1)"
+                        }
+                      }}
                     />
                   </div>
                 </AccordionPanel>
@@ -1208,7 +1201,11 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                       ariaLabel="Enable sample db for query exploration"
                       checked={copilotSampleDBEnabled}
                       onChange={handleSampleDatabaseChange}
-                      label="Enable sample database"
+                      onRenderLabel={() => (
+                        <span style={{ color: "var(--colorNeutralForeground1)" }}>
+                          Enable sample database
+                        </span>
+                      )}
                     />
                   </div>
                 </AccordionPanel>
@@ -1248,12 +1245,12 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                   selectors: {
                     ":hover": {
                       backgroundColor: "var(--colorBrandBackgroundHover)",
-                      color: "var(--colorNeutralForegroundOnBrand)"
+                      color: "var(--colorNeutralForegroundOnBrand)",
                     },
                     ":active": {
                       backgroundColor: "var(--colorBrandBackgroundPressed)",
-                      color: "var(--colorNeutralForegroundOnBrand)"
-                    }
+                      color: "var(--colorNeutralForegroundOnBrand)",
+                    },
                   },
                 },
               }}

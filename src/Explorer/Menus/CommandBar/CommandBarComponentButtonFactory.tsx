@@ -1,3 +1,4 @@
+import { OpenFullScreen } from "Explorer/OpenFullScreen";
 import { KeyboardAction } from "KeyboardShortcuts";
 import { isDataplaneRbacSupported } from "Utils/APITypeUtils";
 import * as React from "react";
@@ -25,12 +26,12 @@ import { useSidePanel } from "../../../hooks/useSidePanel";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../../Explorer";
 import { useNotebook } from "../../Notebook/useNotebook";
-import { OpenFullScreen } from "../../OpenFullScreen";
 import { BrowseQueriesPane } from "../../Panes/BrowseQueriesPane/BrowseQueriesPane";
 import { LoadQueryPane } from "../../Panes/LoadQueryPane/LoadQueryPane";
 import { SettingsPane, useDataPlaneRbac } from "../../Panes/SettingsPane/SettingsPane";
 import { useDatabases } from "../../useDatabases";
 import { SelectedNodeState, useSelectedNode } from "../../useSelectedNode";
+import { ThemeToggleButton } from "./ThemeToggleButton";
 
 let counter = 0;
 
@@ -175,6 +176,7 @@ export function createContextCommandBarButtons(
 
 export function createControlCommandBarButtons(container: Explorer): CommandButtonComponentProps[] {
   const buttons: CommandButtonComponentProps[] = [
+    ThemeToggleButton(),
     {
       iconSrc: SettingsIcon,
       iconAlt: "Settings",

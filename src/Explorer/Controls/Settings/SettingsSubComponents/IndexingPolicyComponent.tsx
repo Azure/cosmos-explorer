@@ -1,5 +1,5 @@
 import { MessageBar, MessageBarType, Stack } from "@fluentui/react";
-import { monacoTheme } from "hooks/useTheme";
+import { useThemeStore } from "hooks/useTheme";
 import * as monaco from "monaco-editor";
 import * as React from "react";
 import * as DataModels from "../../../../Contracts/DataModels";
@@ -31,6 +31,7 @@ export class IndexingPolicyComponent extends React.Component<
   private shouldCheckComponentIsDirty = true;
   private indexingPolicyDiv = React.createRef<HTMLDivElement>();
   private indexingPolicyEditor: monaco.editor.IStandaloneCodeEditor;
+  private themeUnsubscribe: () => void;
 
   constructor(props: IndexingPolicyComponentProps) {
     super(props);
@@ -50,6 +51,10 @@ export class IndexingPolicyComponent extends React.Component<
   componentDidMount(): void {
     this.resetIndexingPolicyEditor();
     this.onComponentUpdate();
+  }
+
+  componentWillUnmount(): void {
+    this.themeUnsubscribe && this.themeUnsubscribe();
   }
 
   public resetIndexingPolicyEditor = (): void => {
@@ -98,59 +103,22 @@ export class IndexingPolicyComponent extends React.Component<
         language: "json",
         readOnly: isIndexTransforming(this.props.indexTransformationProgress),
         ariaLabel: "Indexing Policy",
-        theme: monacoTheme,
+        theme: useThemeStore.getState().isDarkMode ? "vs-dark" : "vs",
       });
       if (this.indexingPolicyEditor) {
+        this.themeUnsubscribe = useThemeStore.subscribe((state) => {
+          if (this.indexingPolicyEditor) {
+            const newTheme = state.isDarkMode ? "vs-dark" : "vs";
+            monaco.editor.setTheme(newTheme);
+          }
+        });
+        
         const indexingPolicyEditorModel = this.indexingPolicyEditor.getModel();
         indexingPolicyEditorModel.onDidChangeContent(this.onEditorContentChange.bind(this));
         this.props.logIndexingPolicySuccessMessage();
       }
     }
   }
-  //   private async createIndexingPolicyEditor(): Promise<void> {
-  //   const isDarkMode = true;
-  //   const monacoThemeName = "fluent-theme";
-
-  //   if (!this.indexingPolicyDiv.current) return;
-
-  //   const value: string = JSON.stringify(this.props.indexingPolicyContent, undefined, 4);
-  //   const monaco = await loadMonaco();
-
-  //   // Safely get Fluent UI theme colors
-  //   const bodyStyles = getComputedStyle(document.body);
-  //   const backgroundColor = bodyStyles.getPropertyValue("--colorNeutralBackground1").trim() || "#1b1a19";
-  //   const foregroundColor = bodyStyles.getPropertyValue("--colorNeutralForeground1").trim() || "#ffffff";
-
-  //   // Define Monaco theme using Fluent UI colors
-  //   monaco.editor.defineTheme(monacoThemeName, {
-  //     base: isDarkMode ? "vs-dark" : "vs",
-  //     inherit: true,
-  //     rules: [],
-  //     colors: {
-  //       "editor.background": backgroundColor,
-  //       "editor.foreground": foregroundColor,
-  //       "editorCursor.foreground": "#ffcc00",
-  //       "editorLineNumber.foreground": "#aaaaaa",
-  //       "editor.selectionBackground": "#666666",
-  //       "editor.lineHighlightBackground": "#333333"
-  //     }
-  //   });
-
-  //   // Create the editor with the custom theme
-  //   this.indexingPolicyEditor = monaco.editor.create(this.indexingPolicyDiv.current, {
-  //     value,
-  //     language: "json",
-  //     readOnly: isIndexTransforming(this.props.indexTransformationProgress),
-  //     ariaLabel: "Indexing Policy",
-  //     theme: monacoThemeName
-  //   });
-
-  //   if (this.indexingPolicyEditor) {
-  //     const indexingPolicyEditorModel = this.indexingPolicyEditor.getModel();
-  //     indexingPolicyEditorModel?.onDidChangeContent(this.onEditorContentChange.bind(this));
-  //     this.props.logIndexingPolicySuccessMessage();
-  //   }
-  // }
 
 
   private onEditorContentChange = (): void => {

@@ -41,7 +41,7 @@ import {
   noLeftPaddingCheckBoxStyle,
   relaxedSpacingStackProps,
   saveThroughputWarningMessage,
-  titleAndInputStackProps
+  titleAndInputStackProps,
 } from "../../SettingsRenderUtils";
 import { IsComponentDirtyResult, getSanitizedInputValue, isDirty } from "../../SettingsUtils";
 import { ToolTipLabelComponent } from "../ToolTipLabelComponent";
@@ -548,7 +548,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
   };
 
   private darkThemeMessageBarStyles: Partial<IMessageBarStyles> = {
-    root: { 
+    root: {
       marginTop: "5px",
       selectors: {
         "&.ms-MessageBar--severeWarning": {
@@ -574,7 +574,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
       this.currentThroughputValue() > this.props.softAllowedMaximumThroughput ||
       this.currentThroughputValue() < this.props.minimum;
     return (
-      <MessageBar 
+      <MessageBar
         messageBarType={isSevereWarning ? MessageBarType.severeWarning : MessageBarType.warning}
         styles={this.darkThemeMessageBarStyles}
       >
@@ -590,7 +590,10 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
           {/* Column 1: Minimum RU/s */}
           <Stack tokens={{ childrenGap: 4 }}>
             <Stack horizontal verticalAlign="center" tokens={{ childrenGap: 4 }}>
-              <Text variant="small" style={{ lineHeight: "20px", fontWeight: 600, color: "var(--colorNeutralForeground1)" }}>
+              <Text
+                variant="small"
+                style={{ lineHeight: "20px", fontWeight: 600, color: "var(--colorNeutralForeground1)" }}
+              >
                 Minimum RU/s
               </Text>
               <FontIcon iconName="Info" style={{ fontSize: 12, color: "var(--colorNeutralForeground2)" }} />
@@ -631,7 +634,10 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
           {/* Column 3: Maximum RU/s */}
           <Stack tokens={{ childrenGap: 4 }}>
             <Stack horizontal verticalAlign="center" tokens={{ childrenGap: 4 }}>
-              <Text variant="small" style={{ lineHeight: "20px", fontWeight: 600, color: "var(--colorNeutralForeground1)" }}>
+              <Text
+                variant="small"
+                style={{ lineHeight: "20px", fontWeight: 600, color: "var(--colorNeutralForeground1)" }}
+              >
                 Maximum RU/s
               </Text>
               <FontIcon iconName="Info" style={{ fontSize: 12, color: "var(--colorNeutralForeground2)" }} />
@@ -643,25 +649,25 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
               key="auto pilot throughput input"
               styles={{
                 ...getTextFieldStyles(this.props.maxAutoPilotThroughput, this.props.maxAutoPilotThroughputBaseline),
-                fieldGroup: { 
-                  width: 100, 
+                fieldGroup: {
+                  width: 100,
                   height: 28,
-                  backgroundColor: "var(--colorNeutralBackground4)", 
+                  backgroundColor: "var(--colorNeutralBackground4)",
                 },
-                field: { 
-                  fontSize: 14, 
+                field: {
+                  fontSize: 14,
                   fontWeight: 400,
-                  color: "var(--colorNeutralForeground1)", 
+                  color: "var(--colorNeutralForeground1)",
                   backgroundColor: "var(--colorNeutralBackground4)",
                 },
                 root: {
                   selectors: {
-                    "input": {
+                    input: {
                       backgroundColor: "var(--colorNeutralBackground4)",
                       color: "var(--colorNeutralForeground1)",
                     },
                   },
-                }
+                },
               }}
               disabled={this.overrideWithProvisionedThroughputSettings()}
               step={AutoPilotUtils.autoPilotIncrementStep}

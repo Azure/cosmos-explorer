@@ -54,7 +54,7 @@ export const CostEstimateText: FunctionComponent<CostEstimateTextProps> = ({
 
   if (isAutoscale) {
     return (
-      <Stack style={{ marginBottom: 6 , color: "var(--colorNeutralForeground1)" }}>
+      <Stack style={{ marginBottom: 6, color: "var(--colorNeutralForeground1)" }}>
         <Text variant="small" style={{ color: "var(--colorNeutralForeground1)" }}>
           {estimatedMonthlyCost} ({currency}){iconWithEstimatedCostDisclaimer}:{" "}
           <b>

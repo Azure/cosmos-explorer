@@ -653,26 +653,26 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               {userContext.apiType === "SQL" && (
                 <Stack className="panelGroupSpacing">
                   <DefaultButton
-                    styles={{ 
-                      root: { 
-                        padding: 0, 
-                        width: 200, 
+                    styles={{
+                      root: {
+                        padding: 0,
+                        width: 200,
                         height: 30,
-                        backgroundColor: 'var(--colorNeutralBackground2)',
-                        color: 'var(--colorNeutralForeground1)',
-                        borderColor: 'var(--colorNeutralStroke1)'
+                        backgroundColor: "var(--colorNeutralBackground2)",
+                        color: "var(--colorNeutralForeground1)",
+                        borderColor: "var(--colorNeutralStroke1)",
                       },
                       rootHovered: {
-                        backgroundColor: 'var(--colorNeutralBackground3)',
-                        color: 'var(--colorNeutralForeground1)',
+                        backgroundColor: "var(--colorNeutralBackground3)",
+                        color: "var(--colorNeutralForeground1)",
                       },
                       rootPressed: {
-                        backgroundColor: 'var(--colorBrandBackgroundPressed)',
-                        color: 'var(--colorNeutralForegroundOnBrand)',
+                        backgroundColor: "var(--colorBrandBackgroundPressed)",
+                        color: "var(--colorNeutralForegroundOnBrand)",
                       },
-                      label: { 
-                        fontSize: 12 
-                      } 
+                      label: {
+                        fontSize: 12,
+                      },
                     }}
                     hidden={this.state.useHashV1}
                     disabled={this.state.subPartitionKeys.length >= Constants.BackendDefaults.maxNumMultiHashPartition}
@@ -707,9 +707,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   label: { padding: 0, alignItems: "center" },
                   root: {
                     selectors: {
-                      ':hover .ms-Checkbox-text': { color: "var(--colorNeutralForeground1)" }
-                    }
-                  }
+                      ":hover .ms-Checkbox-text": { color: "var(--colorNeutralForeground1)" },
+                    },
+                  },
                 }}
                 onChange={(ev: React.FormEvent<HTMLElement>, isChecked: boolean) =>
                   this.setState({ enableDedicatedThroughput: isChecked })
@@ -798,7 +798,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
               <ActionButton
                 iconProps={{ iconName: "Add" }}
-                styles={{ root: { padding: 0 }, label: { fontSize: 12 , color: "var(--colorNeutralForeground1)"}}}
+                styles={{ root: { padding: 0 }, label: { fontSize: 12, color: "var(--colorNeutralForeground1)" } }}
                 onClick={() => this.setState({ uniqueKeys: [...this.state.uniqueKeys, ""] })}
               >
                 Add unique key
@@ -969,9 +969,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                         label: { padding: 0, alignItems: "center" },
                         root: {
                           selectors: {
-                            ':hover .ms-Checkbox-text': { color: "var(--colorNeutralForeground1)" }
-                          }
-                        }
+                            ":hover .ms-Checkbox-text": { color: "var(--colorNeutralForeground1)" },
+                          },
+                        },
                       }}
                       onChange={(ev: React.FormEvent<HTMLElement>, isChecked: boolean) =>
                         this.setState({ createMongoWildCardIndex: isChecked })
@@ -991,9 +991,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                         label: { padding: 0, alignItems: "center", wordWrap: "break-word", whiteSpace: "break-spaces" },
                         root: {
                           selectors: {
-                            ':hover .ms-Checkbox-text': { color: "var(--colorNeutralForeground1)" }
-                          }
-                        }
+                            ":hover .ms-Checkbox-text": { color: "var(--colorNeutralForeground1)" },
+                          },
+                        },
                       }}
                       onChange={(ev: React.FormEvent<HTMLElement>, isChecked: boolean) =>
                         this.setState({ useHashV1: isChecked, subPartitionKeys: [] })

@@ -3,7 +3,7 @@ import * as DataModels from "Contracts/DataModels";
 import { titleAndInputStackProps, unsavedEditorWarningMessage } from "Explorer/Controls/Settings/SettingsRenderUtils";
 import { isDirty } from "Explorer/Controls/Settings/SettingsUtils";
 import { loadMonaco } from "Explorer/LazyMonaco";
-import { monacoTheme } from "hooks/useTheme";
+import { useThemeStore } from "hooks/useTheme";
 import * as monaco from "monaco-editor";
 import * as React from "react";
 export interface ComputedPropertiesComponentProps {
@@ -27,6 +27,7 @@ export class ComputedPropertiesComponent extends React.Component<
   private shouldCheckComponentIsDirty = true;
   private computedPropertiesDiv = React.createRef<HTMLDivElement>();
   private computedPropertiesEditor: monaco.editor.IStandaloneCodeEditor;
+  private themeUnsubscribe: () => void;
 
   constructor(props: ComputedPropertiesComponentProps) {
     super(props);
@@ -46,6 +47,10 @@ export class ComputedPropertiesComponent extends React.Component<
   componentDidMount(): void {
     this.resetComputedPropertiesEditor();
     this.onComponentUpdate();
+  }
+
+  componentWillUnmount(): void {
+    this.themeUnsubscribe && this.themeUnsubscribe();
   }
 
   public resetComputedPropertiesEditor = (): void => {
@@ -86,9 +91,17 @@ export class ComputedPropertiesComponent extends React.Component<
       value: value,
       language: "json",
       ariaLabel: "Computed properties",
-      theme: monacoTheme,
+      theme: useThemeStore.getState().isDarkMode ? "vs-dark" : "vs",
     });
     if (this.computedPropertiesEditor) {
+      // Subscribe to theme changes
+      this.themeUnsubscribe = useThemeStore.subscribe((state) => {
+        if (this.computedPropertiesEditor) {
+          const newTheme = state.isDarkMode ? "vs-dark" : "vs";
+          monaco.editor.setTheme(newTheme);
+        }
+      });
+      
       const computedPropertiesEditorModel = this.computedPropertiesEditor.getModel();
       computedPropertiesEditorModel.onDidChangeContent(this.onEditorContentChange.bind(this));
       this.props.logComputedPropertiesSuccessMessage();

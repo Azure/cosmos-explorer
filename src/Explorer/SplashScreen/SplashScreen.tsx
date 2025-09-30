@@ -35,7 +35,6 @@ import CollectionIcon from "../../../images/tree-collection.svg";
 import * as Constants from "../../Common/Constants";
 import { userContext } from "../../UserContext";
 import { getCollectionName } from "../../Utils/APITypeUtils";
-import { useTheme } from "../../hooks/useTheme";
 import Explorer from "../Explorer";
 import * as MostRecentActivity from "../MostRecentActivity/MostRecentActivity";
 import { useNotebook } from "../Notebook/useNotebook";
@@ -61,18 +60,15 @@ const useStyles = makeStyles({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    // justifyContent: "center",
     minHeight: "100vh",
     backgroundColor: "var(--colorNeutralBackground1)",
     color: "var(--colorNeutralForeground1)",
   },
   splashScreen: {
     display: "flex",
-    // overflow: "scroll",
     flexDirection: "column",
     alignItems: "center",
     textAlign: "left",
-    // ...shorthands.padding("40px")
   },
   title: {
     fontSize: "48px",
@@ -140,7 +136,6 @@ const useStyles = makeStyles({
   moreStuffColumn: {
     display: "flex",
     flexDirection: "column",
-    // justifyContent:"space-between"
   },
   columnTitle: {
     fontSize: "20px",
@@ -166,9 +161,6 @@ const useStyles = makeStyles({
 
 export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
   const styles = useStyles();
-  // isDarkMode is used for conditional styling in the component
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { isDarkMode } = useTheme();
   const container = explorer;
   const subscriptions: Array<{ dispose: () => void }> = [];
 

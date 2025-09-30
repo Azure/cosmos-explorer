@@ -179,18 +179,18 @@ export const Dialog: FC = () => {
       title,
       subText,
       styles: {
-        title: { 
-          fontSize: DIALOG_TITLE_FONT_SIZE, 
+        title: {
+          fontSize: DIALOG_TITLE_FONT_SIZE,
           fontWeight: DIALOG_TITLE_FONT_WEIGHT,
         },
-        subText: { 
+        subText: {
           fontSize: DIALOG_SUBTEXT_FONT_SIZE,
-          color: 'var(--colorNeutralForeground2)'
+          color: "var(--colorNeutralForeground2)",
         },
         content: {
-          backgroundColor: 'var(--colorNeutralBackground1)',
-          color: 'var(--colorNeutralForeground1)'
-        }
+          backgroundColor: "var(--colorNeutralBackground1)",
+          color: "var(--colorNeutralForeground1)",
+        },
       },
       showCloseButton: showCloseButton || false,
       onDismiss,
@@ -200,12 +200,12 @@ export const Dialog: FC = () => {
     maxWidth: DIALOG_MAX_WIDTH,
     styles: {
       main: {
-        backgroundColor: 'var(--colorNeutralBackground1)',
+        backgroundColor: "var(--colorNeutralBackground1)",
         selectors: {
-          '.ms-Dialog-title': { color: 'var(--colorNeutralForeground1)' },
-        }
-      }
-    }
+          ".ms-Dialog-title": { color: "var(--colorNeutralForeground1)" },
+        },
+      },
+    },
   };
 
   const primaryButtonProps: IButtonProps = {
