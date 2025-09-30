@@ -499,13 +499,13 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     <Stack>
       <Stack horizontal>
         <Stack.Item style={{ width: "34%" }}>
-          <span>{this.props.minimum.toLocaleString('en-US')}</span>
+          <span>{this.props.minimum.toLocaleString("en-US")}</span>
         </Stack.Item>
         <Stack.Item style={{ width: "66%" }}>
           <span style={{ float: "left", transform: "translateX(-50%)" }}>
-            {this.props.instantMaximumThroughput.toLocaleString('en-US')}
+            {this.props.instantMaximumThroughput.toLocaleString("en-US")}
           </span>
-          <span style={{ float: "right" }}>{this.props.softAllowedMaximumThroughput.toLocaleString('en-US')}</span>
+          <span style={{ float: "right" }}>{this.props.softAllowedMaximumThroughput.toLocaleString("en-US")}</span>
         </Stack.Item>
       </Stack>
       <ProgressIndicator
