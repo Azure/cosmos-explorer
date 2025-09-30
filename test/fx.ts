@@ -110,6 +110,30 @@ export async function getTestExplorerUrl(accountType: TestAccount, iframeSrc?: s
     params.set("enableaaddataplane", "true");
   }
 
+  const cassandraRbacToken = process.env.CASSANDRA_TESTACCOUNT_TOKEN;
+  if (cassandraRbacToken) {
+    params.set("cassandraRbacToken", cassandraRbacToken);
+    params.set("enableaaddataplane", "true");
+  }
+
+  const mongoRbacToken = process.env.MONGO_TESTACCOUNT_TOKEN;
+  if (mongoRbacToken) {
+    params.set("mongoRbacToken", mongoRbacToken);
+    params.set("enableaaddataplane", "true");
+  }
+
+  const mongo32RbacToken = process.env.MONGO32_TESTACCOUNT_TOKEN;
+  if (mongo32RbacToken) {
+    params.set("mongo32RbacToken", mongo32RbacToken);
+    params.set("enableaaddataplane", "true");
+  }
+
+  const mongoReadOnlyRbacToken = process.env.MONGO_READONLY_TESTACCOUNT_TOKEN;
+  if (mongoReadOnlyRbacToken) {
+    params.set("mongoReadOnlyRbacToken", mongoReadOnlyRbacToken);
+    params.set("enableaaddataplane", "true");
+  }
+
   if (iframeSrc) {
     params.set("iframeSrc", iframeSrc);
   }

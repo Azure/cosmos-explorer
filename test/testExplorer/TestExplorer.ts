@@ -18,6 +18,13 @@ const nosqlReadOnlyRbacToken =
 const tableRbacToken = urlSearchParams.get("tableRbacToken") || process.env.TABLE_TESTACCOUNT_TOKEN || "";
 const gremlinRbacToken = urlSearchParams.get("gremlinRbacToken") || process.env.GREMLIN_TESTACCOUNT_TOKEN || "";
 
+const cassandraRbacToken = urlSearchParams.get("cassandraRbacToken") || process.env.CASSANDRA_TESTACCOUNT_TOKEN || "";
+
+const mongoRbacToken = urlSearchParams.get("mongoRbacToken") || process.env.MONGO_TESTACCOUNT_TOKEN || "";
+const mongo32RbacToken = urlSearchParams.get("mongo32RbacToken") || process.env.MONGO32_TESTACCOUNT_TOKEN || "";
+const mongoReadOnlyRbacToken =
+  urlSearchParams.get("mongoReadOnlyRbacToken") || process.env.MONGO_READONLY_TESTACCOUNT_TOKEN || "";
+
 const initTestExplorer = async (): Promise<void> => {
   updateUserContext({
     authorizationToken: `bearer ${authToken}`,
@@ -40,6 +47,18 @@ const initTestExplorer = async (): Promise<void> => {
       break;
     case "tables":
       rbacToken = tableRbacToken;
+      break;
+    case "cassandra":
+      rbacToken = cassandraRbacToken;
+      break;
+    case "mongo":
+      rbacToken = mongoRbacToken;
+      break;
+    case "mongo32":
+      rbacToken = mongo32RbacToken;
+      break;
+    case "mongo-readonly":
+      rbacToken = mongoReadOnlyRbacToken;
       break;
   }
 
