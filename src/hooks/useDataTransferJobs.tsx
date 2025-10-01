@@ -1,6 +1,6 @@
 import { getDataTransferJobs } from "Common/dataAccess/dataTransfers";
 import { DataTransferJobGetResults } from "Utils/arm/generatedClients/dataTransferService/types";
-import create, { UseStore } from "zustand";
+import { create } from "zustand";
 
 export interface DataTransferJobsState {
   dataTransferJobs: DataTransferJobGetResults[];
@@ -9,9 +9,7 @@ export interface DataTransferJobsState {
   setPollingDataTransferJobs: (pollingDataTransferJobs: Set<string>) => void;
 }
 
-type DataTransferJobStore = UseStore<DataTransferJobsState>;
-
-export const useDataTransferJobs: DataTransferJobStore = create((set) => ({
+export const useDataTransferJobs = create<DataTransferJobsState>((set) => ({
   dataTransferJobs: [],
   pollingDataTransferJobs: new Set<string>(),
   setDataTransferJobs: (dataTransferJobs: DataTransferJobGetResults[]) => set({ dataTransferJobs }),

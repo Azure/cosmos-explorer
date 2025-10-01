@@ -1,12 +1,14 @@
 import { MinimalQueryIterator } from "Common/IteratorUtilities";
 import QueryError from "Common/QueryError";
+import * as DataModels from "Contracts/DataModels";
 import { QueryResults } from "Contracts/ViewModels";
 import { CopilotMessage } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfaces";
 import { guid } from "Explorer/Tables/Utilities";
 import { QueryCopilotState } from "hooks/useQueryCopilot";
 
 import React, { createContext, useContext, useState } from "react";
-import create from "zustand";
+import { create } from "zustand";
+
 const context = createContext(null);
 const useCopilotStore = (): Partial<QueryCopilotState> => useContext(context);
 
@@ -24,12 +26,12 @@ const CopilotProvider = ({ children }: { children: React.ReactNode }): JSX.Eleme
       isGeneratingQuery: false,
       isGeneratingExplanation: false,
       isExecuting: false,
-      dislikeQuery: undefined,
+      dislikeQuery: undefined as boolean,
       showCallout: false,
       showSamplePrompts: false,
-      queryIterator: undefined,
-      queryResults: undefined,
-      errors: [],
+      queryIterator: undefined as MinimalQueryIterator,
+      queryResults: undefined as QueryResults,
+      errors: [] as QueryError[],
       isSamplePromptsOpen: false,
       showPromptTeachingBubble: true,
       showDeletePopup: false,
@@ -41,7 +43,7 @@ const CopilotProvider = ({ children }: { children: React.ReactNode }): JSX.Eleme
       wasCopilotUsed: false,
       showWelcomeSidebar: true,
       showCopilotSidebar: false,
-      chatMessages: [],
+      chatMessages: [] as CopilotMessage[],
       shouldIncludeInMessages: true,
       showExplanationBubble: false,
       isAllocatingContainer: false,
@@ -86,7 +88,7 @@ const CopilotProvider = ({ children }: { children: React.ReactNode }): JSX.Eleme
       },
 
       resetQueryCopilotStates: () => {
-        set((state) => ({
+        set((state: QueryCopilotState) => ({
           ...state,
           generatedQuery: "",
           likeQuery: false,
@@ -99,11 +101,11 @@ const CopilotProvider = ({ children }: { children: React.ReactNode }): JSX.Eleme
           isGeneratingQuery: false,
           isGeneratingExplanation: false,
           isExecuting: false,
-          dislikeQuery: undefined,
+          dislikeQuery: undefined as boolean,
           showCallout: false,
           showSamplePrompts: false,
-          queryIterator: undefined,
-          queryResults: undefined,
+          queryIterator: undefined as MinimalQueryIterator,
+          queryResults: undefined as QueryResults,
           errorMessage: "",
           isSamplePromptsOpen: false,
           showPromptTeachingBubble: true,
@@ -115,19 +117,19 @@ const CopilotProvider = ({ children }: { children: React.ReactNode }): JSX.Eleme
           generatedQueryComments: "",
           wasCopilotUsed: false,
           showCopilotSidebar: false,
-          chatMessages: [],
+          chatMessages: [] as CopilotMessage[],
           shouldIncludeInMessages: true,
           showExplanationBubble: false,
           notebookServerInfo: {
             notebookServerEndpoint: undefined,
             authToken: undefined,
             forwardingId: undefined,
-          },
+          } as DataModels.NotebookWorkspaceConnectionInfo,
           containerStatus: {
             status: undefined,
             durationLeftInMinutes: undefined,
             phoenixServerInfo: undefined,
-          },
+          } as DataModels.ContainerInfo,
           isAllocatingContainer: false,
         }));
       },
@@ -137,3 +139,4 @@ const CopilotProvider = ({ children }: { children: React.ReactNode }): JSX.Eleme
 };
 
 export { CopilotProvider, useCopilotStore };
+

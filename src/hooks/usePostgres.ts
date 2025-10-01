@@ -1,4 +1,5 @@
-import create, { UseStore } from "zustand";
+import { create } from "zustand";
+import { subscribeWithSelector } from "zustand/middleware";
 
 interface TeachingBubbleState {
   showPostgreTeachingBubble: boolean;
@@ -7,9 +8,13 @@ interface TeachingBubbleState {
   setShowResetPasswordBubble: (showResetPasswordBubble: boolean) => void;
 }
 
-export const usePostgres: UseStore<TeachingBubbleState> = create((set) => ({
-  showPostgreTeachingBubble: false,
-  showResetPasswordBubble: false,
-  setShowPostgreTeachingBubble: (showPostgreTeachingBubble: boolean) => set({ showPostgreTeachingBubble }),
-  setShowResetPasswordBubble: (showResetPasswordBubble: boolean) => set({ showResetPasswordBubble }),
-}));
+export const usePostgres = create<TeachingBubbleState>()(
+  subscribeWithSelector(
+    (set) => ({
+      showPostgreTeachingBubble: false,
+      showResetPasswordBubble: false,
+      setShowPostgreTeachingBubble: (showPostgreTeachingBubble: boolean) => set({ showPostgreTeachingBubble }),
+      setShowResetPasswordBubble: (showResetPasswordBubble: boolean) => set({ showResetPasswordBubble }),
+    })
+  )
+);

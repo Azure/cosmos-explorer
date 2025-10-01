@@ -16,7 +16,7 @@ import {
   TextField,
 } from "@fluentui/react";
 import React, { FC, useEffect } from "react";
-import create, { UseStore } from "zustand";
+import { create } from "zustand";
 
 export interface DialogState {
   visible: boolean;
@@ -38,7 +38,7 @@ export interface DialogState {
   showOkModalDialog: (title: string, subText: string, linkProps?: LinkProps) => void;
 }
 
-export const useDialog: UseStore<DialogState> = create((set, get) => ({
+export const useDialog = create<DialogState>((set, get) => ({
   visible: false,
   openDialog: (props: DialogProps) => set(() => ({ visible: true, dialogProps: props })),
   closeDialog: () =>

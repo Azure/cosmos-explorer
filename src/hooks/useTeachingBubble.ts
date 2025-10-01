@@ -1,5 +1,5 @@
 import { Collection } from "Contracts/ViewModels";
-import create, { UseStore } from "zustand";
+import { create } from "zustand";
 
 interface TeachingBubbleState {
   step: number;
@@ -12,7 +12,7 @@ interface TeachingBubbleState {
   setSampleCollection: (sampleCollection: Collection) => void;
 }
 
-export const useTeachingBubble: UseStore<TeachingBubbleState> = create((set) => ({
+export const useTeachingBubble = create<TeachingBubbleState>((set) => ({
   step: 1,
   isSampleDBExpanded: false,
   isDocumentsTabOpened: false,

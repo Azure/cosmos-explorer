@@ -1,7 +1,7 @@
 import { FitAddon } from "@xterm/addon-fit";
 import { Terminal } from "@xterm/xterm";
+import "@xterm/xterm/css/xterm.css";
 import React, { useEffect, useRef } from "react";
-import "xterm/css/xterm.css";
 import { DatabaseAccount } from "../../../Contracts/DataModels";
 import { TerminalKind } from "../../../Contracts/ViewModels";
 import { startCloudShellTerminal } from "./CloudShellTerminalCore";

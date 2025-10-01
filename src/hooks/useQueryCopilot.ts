@@ -4,7 +4,8 @@ import { QueryResults } from "Contracts/ViewModels";
 import { CopilotMessage, CopilotSchemaAllocationInfo } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfaces";
 import { guid } from "Explorer/Tables/Utilities";
 import { useTabs } from "hooks/useTabs";
-import create, { UseStore } from "zustand";
+import { create } from "zustand";
+import { subscribeWithSelector } from "zustand/middleware";
 import * as DataModels from "../Contracts/DataModels";
 import { ContainerInfo } from "../Contracts/DataModels";
 
@@ -96,120 +97,12 @@ export interface QueryCopilotState {
   resetQueryCopilotStates: () => void;
 }
 
-type QueryCopilotStore = UseStore<Partial<QueryCopilotState>>;
-
-export const useQueryCopilot: QueryCopilotStore = create((set) => ({
-  copilotEnabled: false,
-  copilotUserDBEnabled: false,
-  copilotSampleDBEnabled: false,
-  generatedQuery: "",
-  likeQuery: false,
-  userPrompt: "",
-  showFeedbackModal: false,
-  hideFeedbackModalForLikedQueries: false,
-  correlationId: "",
-  query: "SELECT * FROM c",
-  selectedQuery: "",
-  isGeneratingQuery: null,
-  isGeneratingExplanation: false,
-  isExecuting: false,
-  dislikeQuery: undefined,
-  showCallout: false,
-  showSamplePrompts: false,
-  queryIterator: undefined,
-  queryResults: undefined,
-  errors: [],
-  isSamplePromptsOpen: false,
-  showDeletePopup: false,
-  showFeedbackBar: false,
-  showCopyPopup: false,
-  showErrorMessageBar: false,
-  showInvalidQueryMessageBar: false,
-  generatedQueryComments: "",
-  wasCopilotUsed: false,
-  showWelcomeSidebar: true,
-  showCopilotSidebar: false,
-  chatMessages: [],
-  shouldIncludeInMessages: true,
-  showExplanationBubble: false,
-  notebookServerInfo: {
-    notebookServerEndpoint: undefined,
-    authToken: undefined,
-    forwardingId: undefined,
-  },
-  containerStatus: {
-    status: undefined,
-    durationLeftInMinutes: undefined,
-    phoenixServerInfo: undefined,
-  },
-  schemaAllocationInfo: {
-    databaseId: undefined,
-    containerId: undefined,
-  },
-  isAllocatingContainer: false,
-  copilotEnabledforExecution: false,
-
-  setCopilotEnabled: (copilotEnabled: boolean) => set({ copilotEnabled }),
-  setCopilotUserDBEnabled: (copilotUserDBEnabled: boolean) => set({ copilotUserDBEnabled }),
-  setCopilotSampleDBEnabled: (copilotSampleDBEnabled: boolean) => set({ copilotSampleDBEnabled }),
-  openFeedbackModal: (generatedQuery: string, likeQuery: boolean, userPrompt: string) =>
-    set({ generatedQuery, likeQuery, userPrompt, showFeedbackModal: true }),
-  closeFeedbackModal: () => set({ showFeedbackModal: false }),
-  setHideFeedbackModalForLikedQueries: (hideFeedbackModalForLikedQueries: boolean) =>
-    set({ hideFeedbackModalForLikedQueries }),
-  refreshCorrelationId: () => set({ correlationId: guid() }),
-  setUserPrompt: (userPrompt: string) => set({ userPrompt }),
-  setQuery: (query: string) => set({ query }),
-  setGeneratedQuery: (generatedQuery: string) => set({ generatedQuery }),
-  setSelectedQuery: (selectedQuery: string) => set({ selectedQuery }),
-  setIsGeneratingQuery: (isGeneratingQuery: boolean) => set({ isGeneratingQuery }),
-  setIsGeneratingExplanation: (isGeneratingExplanation: boolean) => set({ isGeneratingExplanation }),
-  setIsExecuting: (isExecuting: boolean) => set({ isExecuting }),
-  setLikeQuery: (likeQuery: boolean) => set({ likeQuery }),
-  setDislikeQuery: (dislikeQuery: boolean | undefined) => set({ dislikeQuery }),
-  setShowCallout: (showCallout: boolean) => set({ showCallout }),
-  setShowSamplePrompts: (showSamplePrompts: boolean) => set({ showSamplePrompts }),
-  setQueryIterator: (queryIterator: MinimalQueryIterator | undefined) => set({ queryIterator }),
-  setQueryResults: (queryResults: QueryResults | undefined) => set({ queryResults }),
-  setErrors: (errors: QueryError[]) => set({ errors }),
-  setIsSamplePromptsOpen: (isSamplePromptsOpen: boolean) => set({ isSamplePromptsOpen }),
-  setShowDeletePopup: (showDeletePopup: boolean) => set({ showDeletePopup }),
-  setShowFeedbackBar: (showFeedbackBar: boolean) => set({ showFeedbackBar }),
-  setshowCopyPopup: (showCopyPopup: boolean) => set({ showCopyPopup }),
-  setShowErrorMessageBar: (showErrorMessageBar: boolean) => set({ showErrorMessageBar }),
-  setShowInvalidQueryMessageBar: (showInvalidQueryMessageBar: boolean) => set({ showInvalidQueryMessageBar }),
-  setGeneratedQueryComments: (generatedQueryComments: string) => set({ generatedQueryComments }),
-  setWasCopilotUsed: (wasCopilotUsed: boolean) => set({ wasCopilotUsed }),
-  setShowWelcomeSidebar: (showWelcomeSidebar: boolean) => set({ showWelcomeSidebar }),
-  setShowCopilotSidebar: (showCopilotSidebar: boolean) => set({ showCopilotSidebar }),
-  setChatMessages: (chatMessages: CopilotMessage[]) => set({ chatMessages }),
-  setShouldIncludeInMessages: (shouldIncludeInMessages: boolean) => set({ shouldIncludeInMessages }),
-  setShowExplanationBubble: (showExplanationBubble: boolean) => set({ showExplanationBubble }),
-  setNotebookServerInfo: (notebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo) =>
-    set({ notebookServerInfo }),
-  setContainerStatus: (containerStatus: ContainerInfo) => set({ containerStatus }),
-  setIsAllocatingContainer: (isAllocatingContainer: boolean) => set({ isAllocatingContainer }),
-  setSchemaAllocationInfo: (schemaAllocationInfo: CopilotSchemaAllocationInfo) => set({ schemaAllocationInfo }),
-  setCopilotEnabledforExecution: (copilotEnabledforExecution: boolean) => set({ copilotEnabledforExecution }),
-
-  resetContainerConnection: (): void => {
-    useTabs.getState().closeAllNotebookTabs(true);
-    useQueryCopilot.getState().setNotebookServerInfo(undefined);
-    useQueryCopilot.getState().setIsAllocatingContainer(false);
-    useQueryCopilot.getState().setContainerStatus({
-      status: undefined,
-      durationLeftInMinutes: undefined,
-      phoenixServerInfo: undefined,
-    });
-    useQueryCopilot.getState().setSchemaAllocationInfo({
-      databaseId: undefined,
-      containerId: undefined,
-    });
-  },
-
-  resetQueryCopilotStates: () => {
-    set((state) => ({
-      ...state,
+export const useQueryCopilot = create<Partial<QueryCopilotState>>()(
+  subscribeWithSelector(
+    (set) => ({
+      copilotEnabled: false,
+      copilotUserDBEnabled: false,
+      copilotSampleDBEnabled: false,
       generatedQuery: "",
       likeQuery: false,
       userPrompt: "",
@@ -218,15 +111,15 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
       correlationId: "",
       query: "SELECT * FROM c",
       selectedQuery: "",
-      isGeneratingQuery: false,
+      isGeneratingQuery: null as boolean,
       isGeneratingExplanation: false,
       isExecuting: false,
-      dislikeQuery: undefined,
+      dislikeQuery: undefined as (boolean | undefined),
       showCallout: false,
       showSamplePrompts: false,
-      queryIterator: undefined,
-      queryResults: undefined,
-      errors: [],
+      queryIterator: undefined as MinimalQueryIterator | undefined,
+      queryResults: undefined as QueryResults | undefined,
+      errors: [] as QueryError[],
       isSamplePromptsOpen: false,
       showDeletePopup: false,
       showFeedbackBar: false,
@@ -235,25 +128,135 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
       showInvalidQueryMessageBar: false,
       generatedQueryComments: "",
       wasCopilotUsed: false,
+      showWelcomeSidebar: true,
       showCopilotSidebar: false,
-      chatMessages: [],
+      chatMessages: [] as CopilotMessage[],
       shouldIncludeInMessages: true,
       showExplanationBubble: false,
       notebookServerInfo: {
         notebookServerEndpoint: undefined,
         authToken: undefined,
         forwardingId: undefined,
-      },
+      } as DataModels.NotebookWorkspaceConnectionInfo,
       containerStatus: {
         status: undefined,
         durationLeftInMinutes: undefined,
         phoenixServerInfo: undefined,
-      },
+      } as ContainerInfo,
       schemaAllocationInfo: {
         databaseId: undefined,
         containerId: undefined,
-      },
+      } as CopilotSchemaAllocationInfo,
       isAllocatingContainer: false,
-    }));
-  },
-}));
+      copilotEnabledforExecution: false,
+
+      setCopilotEnabled: (copilotEnabled: boolean) => set({ copilotEnabled }),
+      setCopilotUserDBEnabled: (copilotUserDBEnabled: boolean) => set({ copilotUserDBEnabled }),
+      setCopilotSampleDBEnabled: (copilotSampleDBEnabled: boolean) => set({ copilotSampleDBEnabled }),
+      openFeedbackModal: (generatedQuery: string, likeQuery: boolean, userPrompt: string) =>
+        set({ generatedQuery, likeQuery, userPrompt, showFeedbackModal: true }),
+      closeFeedbackModal: () => set({ showFeedbackModal: false }),
+      setHideFeedbackModalForLikedQueries: (hideFeedbackModalForLikedQueries: boolean) =>
+        set({ hideFeedbackModalForLikedQueries }),
+      refreshCorrelationId: () => set({ correlationId: guid() }),
+      setUserPrompt: (userPrompt: string) => set({ userPrompt }),
+      setQuery: (query: string) => set({ query }),
+      setGeneratedQuery: (generatedQuery: string) => set({ generatedQuery }),
+      setSelectedQuery: (selectedQuery: string) => set({ selectedQuery }),
+      setIsGeneratingQuery: (isGeneratingQuery: boolean) => set({ isGeneratingQuery }),
+      setIsGeneratingExplanation: (isGeneratingExplanation: boolean) => set({ isGeneratingExplanation }),
+      setIsExecuting: (isExecuting: boolean) => set({ isExecuting }),
+      setLikeQuery: (likeQuery: boolean) => set({ likeQuery }),
+      setDislikeQuery: (dislikeQuery: boolean | undefined) => set({ dislikeQuery }),
+      setShowCallout: (showCallout: boolean) => set({ showCallout }),
+      setShowSamplePrompts: (showSamplePrompts: boolean) => set({ showSamplePrompts }),
+      setQueryIterator: (queryIterator: MinimalQueryIterator | undefined) => set({ queryIterator }),
+      setQueryResults: (queryResults: QueryResults | undefined) => set({ queryResults }),
+      setErrors: (errors: QueryError[]) => set({ errors }),
+      setIsSamplePromptsOpen: (isSamplePromptsOpen: boolean) => set({ isSamplePromptsOpen }),
+      setShowDeletePopup: (showDeletePopup: boolean) => set({ showDeletePopup }),
+      setShowFeedbackBar: (showFeedbackBar: boolean) => set({ showFeedbackBar }),
+      setshowCopyPopup: (showCopyPopup: boolean) => set({ showCopyPopup }),
+      setShowErrorMessageBar: (showErrorMessageBar: boolean) => set({ showErrorMessageBar }),
+      setShowInvalidQueryMessageBar: (showInvalidQueryMessageBar: boolean) => set({ showInvalidQueryMessageBar }),
+      setGeneratedQueryComments: (generatedQueryComments: string) => set({ generatedQueryComments }),
+      setWasCopilotUsed: (wasCopilotUsed: boolean) => set({ wasCopilotUsed }),
+      setShowWelcomeSidebar: (showWelcomeSidebar: boolean) => set({ showWelcomeSidebar }),
+      setShowCopilotSidebar: (showCopilotSidebar: boolean) => set({ showCopilotSidebar }),
+      setChatMessages: (chatMessages: CopilotMessage[]) => set({ chatMessages }),
+      setShouldIncludeInMessages: (shouldIncludeInMessages: boolean) => set({ shouldIncludeInMessages }),
+      setShowExplanationBubble: (showExplanationBubble: boolean) => set({ showExplanationBubble }),
+      setNotebookServerInfo: (notebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo) =>
+        set({ notebookServerInfo }),
+      setContainerStatus: (containerStatus: ContainerInfo) => set({ containerStatus }),
+      setIsAllocatingContainer: (isAllocatingContainer: boolean) => set({ isAllocatingContainer }),
+      setSchemaAllocationInfo: (schemaAllocationInfo: CopilotSchemaAllocationInfo) => set({ schemaAllocationInfo }),
+      setCopilotEnabledforExecution: (copilotEnabledforExecution: boolean) => set({ copilotEnabledforExecution }),
+
+      resetContainerConnection: (): void => {
+        useTabs.getState().closeAllNotebookTabs(true);
+        useQueryCopilot.getState().setNotebookServerInfo(undefined);
+        useQueryCopilot.getState().setIsAllocatingContainer(false);
+        useQueryCopilot.getState().setContainerStatus({
+          status: undefined,
+          durationLeftInMinutes: undefined,
+          phoenixServerInfo: undefined,
+        });
+        useQueryCopilot.getState().setSchemaAllocationInfo({
+          databaseId: undefined,
+          containerId: undefined,
+        });
+      },
+
+      resetQueryCopilotStates: () => {
+        set((state) => ({
+          ...state,
+          generatedQuery: "",
+          likeQuery: false,
+          userPrompt: "",
+          showFeedbackModal: false,
+          hideFeedbackModalForLikedQueries: false,
+          correlationId: "",
+          query: "SELECT * FROM c",
+          selectedQuery: "",
+          isGeneratingQuery: false,
+          isGeneratingExplanation: false,
+          isExecuting: false,
+          dislikeQuery: undefined,
+          showCallout: false,
+          showSamplePrompts: false,
+          queryIterator: undefined,
+          queryResults: undefined,
+          errors: [],
+          isSamplePromptsOpen: false,
+          showDeletePopup: false,
+          showFeedbackBar: false,
+          showCopyPopup: false,
+          showErrorMessageBar: false,
+          showInvalidQueryMessageBar: false,
+          generatedQueryComments: "",
+          wasCopilotUsed: false,
+          showCopilotSidebar: false,
+          chatMessages: [],
+          shouldIncludeInMessages: true,
+          showExplanationBubble: false,
+          notebookServerInfo: {
+            notebookServerEndpoint: undefined,
+            authToken: undefined,
+            forwardingId: undefined,
+          },
+          containerStatus: {
+            status: undefined,
+            durationLeftInMinutes: undefined,
+            phoenixServerInfo: undefined,
+          },
+          schemaAllocationInfo: {
+            databaseId: undefined,
+            containerId: undefined,
+          },
+          isAllocatingContainer: false,
+        }));
+      },
+    })
+  )
+);

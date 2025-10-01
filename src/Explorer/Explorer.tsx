@@ -23,7 +23,7 @@ import { useQueryCopilot } from "hooks/useQueryCopilot";
 import * as ko from "knockout";
 import React from "react";
 import _ from "underscore";
-import shallow from "zustand/shallow";
+import { shallow } from "zustand/shallow";
 import { AuthType } from "../AuthType";
 import { BindingHandlersRegisterer } from "../Bindings/BindingHandlersRegisterer";
 import * as Constants from "../Common/Constants";
@@ -112,8 +112,8 @@ export default class Explorer {
 
     this.phoenixClient = new PhoenixClient(userContext?.databaseAccount?.id);
     useNotebook.subscribe(
-      () => this.refreshCommandBarButtons(),
       (state) => state.isNotebooksEnabledForAccount,
+      () => this.refreshCommandBarButtons(),
     );
 
     this.queriesClient = new QueriesClient(this);
@@ -136,13 +136,13 @@ export default class Explorer {
     });
 
     useTabs.subscribe(
+      (state) => state.openedTabs,
       (openedTabs: TabsBase[]) => {
         if (openedTabs.length === 0) {
           useSelectedNode.getState().setSelectedNode(undefined);
           useCommandBar.getState().setContextButtons([]);
         }
-      },
-      (state) => state.openedTabs,
+      }
     );
 
     this.isTabsContentExpanded = ko.observable(false);
@@ -170,9 +170,9 @@ export default class Explorer {
     );
 
     useNotebook.subscribe(
-      async () => this.initiateAndRefreshNotebookList(),
       (state) => [state.isNotebookEnabled, state.isRefreshed],
-      shallow,
+      async () => this.initiateAndRefreshNotebookList(),
+      { equalityFn: shallow },
     );
 
     this.resourceTree = new ResourceTreeAdapter(this);

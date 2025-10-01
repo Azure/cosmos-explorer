@@ -6,9 +6,9 @@ index e5dc283..1930c2b 100644
  
  /// <reference types="jquery" />
  
--import DataTables, {Api} from 'datatables.net';
-+import DataTables, { Api } from 'datatables.net';
- 
+-import DataTables, {Api, ColumnSelector} from 'datatables.net';
++import DataTables, { Api, ColumnSelector } from 'datatables.net';
+
  export default DataTables;
  
 @@ -40,6 +40,8 @@ declare module 'datatables.net' {
@@ -17,6 +17,6 @@ index e5dc283..1930c2b 100644
  			 */
 +      // Ignore this error: error TS7013: Construct signature, which lacks return-type annotation, implicitly has an 'any' return type.
 +      // @ts-ignore
- 			new (dt: Api<any>, settings: boolean | ConfigColReorder);
+ 			new (dt: Api<any>, settings: boolean | ConfigColReorder): DataTablesStatic['ColReorder'];
  
  			/**

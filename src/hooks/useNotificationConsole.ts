@@ -1,4 +1,4 @@
-import create, { UseStore } from "zustand";
+import { create } from "zustand";
 import { ConsoleData } from "../Explorer/Menus/NotificationConsole/ConsoleData";
 
 export interface NotificationConsoleState {
@@ -15,7 +15,7 @@ export interface NotificationConsoleState {
   setConsoleAnimationFinished: (consoleAnimationFinished: boolean) => void;
 }
 
-export const useNotificationConsole: UseStore<NotificationConsoleState> = create((set) => ({
+export const useNotificationConsole = create<NotificationConsoleState>((set) => ({
   isExpanded: false,
   consoleData: undefined,
   inProgressConsoleDataIdToBeDeleted: "",

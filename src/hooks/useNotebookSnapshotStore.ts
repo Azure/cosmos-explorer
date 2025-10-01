@@ -1,4 +1,4 @@
-import create, { UseStore } from "zustand";
+import { create } from "zustand";
 
 export interface NotebookSnapshotHooks {
   snapshot?: string;
@@ -7,7 +7,7 @@ export interface NotebookSnapshotHooks {
   setError: (error: string) => void;
 }
 
-export const useNotebookSnapshotStore: UseStore<NotebookSnapshotHooks> = create((set) => ({
+export const useNotebookSnapshotStore = create<NotebookSnapshotHooks>((set) => ({
   snapshot: undefined,
   error: undefined,
   setSnapshot: (imageSrc: string) => set((state) => ({ ...state, snapshot: imageSrc })),

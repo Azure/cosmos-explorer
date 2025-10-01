@@ -10,7 +10,7 @@ import { KeyboardActionGroup, useKeyboardActionGroup } from "KeyboardShortcuts";
 import { isFabric } from "Platform/Fabric/FabricUtil";
 import { userContext } from "UserContext";
 import * as React from "react";
-import create, { UseStore } from "zustand";
+import { create } from "zustand";
 import { ConnectionStatusType, PoolIdType } from "../../../Common/Constants";
 import { StyleConstants } from "../../../Common/StyleConstants";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
@@ -30,7 +30,7 @@ export interface CommandBarStore {
   setIsHidden: (isHidden: boolean) => void;
 }
 
-export const useCommandBar: UseStore<CommandBarStore> = create((set) => ({
+export const useCommandBar = create<CommandBarStore>((set) => ({
   contextButtons: [] as CommandButtonComponentProps[],
   setContextButtons: (contextButtons: CommandButtonComponentProps[]) => set((state) => ({ ...state, contextButtons })),
   isHidden: false,

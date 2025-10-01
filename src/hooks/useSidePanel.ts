@@ -1,4 +1,4 @@
-import create, { UseStore } from "zustand";
+import { create } from "zustand";
 
 export interface SidePanelState {
   isOpen: boolean;
@@ -9,7 +9,7 @@ export interface SidePanelState {
   closeSidePanel: () => void;
   getRef?: React.RefObject<HTMLElement>; // Optional ref for focusing the last element.
 }
-export const useSidePanel: UseStore<SidePanelState> = create((set) => ({
+export const useSidePanel = create<SidePanelState>((set) => ({
   isOpen: false,
   panelWidth: "440px",
   openSidePanel: (headerText, panelContent, panelWidth = "440px") =>

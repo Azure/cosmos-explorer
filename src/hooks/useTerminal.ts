@@ -1,5 +1,5 @@
 import postRobot from "post-robot";
-import create, { UseStore } from "zustand";
+import { create } from "zustand";
 
 interface TerminalState {
   terminalWindow: Window;
@@ -7,7 +7,7 @@ interface TerminalState {
   sendMessage: (message: string) => void;
 }
 
-export const useTerminal: UseStore<TerminalState> = create((set, get) => ({
+export const useTerminal = create<TerminalState>((set, get) => ({
   terminalWindow: undefined,
   setTerminal: (terminalWindow: Window) => {
     set({ terminalWindow });

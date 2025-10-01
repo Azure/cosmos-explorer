@@ -1,6 +1,6 @@
 import { ConnectionStatusType, QueryCopilotSampleContainerId, QueryCopilotSampleDatabaseId } from "Common/Constants";
 import { useNotebook } from "Explorer/Notebook/useNotebook";
-import create, { UseStore } from "zustand";
+import { create } from "zustand";
 import * as ViewModels from "../Contracts/ViewModels";
 import { useTabs } from "../hooks/useTabs";
 export interface SelectedNodeState {
@@ -17,7 +17,7 @@ export interface SelectedNodeState {
   isQueryCopilotCollectionSelected: () => boolean;
 }
 
-export const useSelectedNode: UseStore<SelectedNodeState> = create((set, get) => ({
+export const useSelectedNode = create<SelectedNodeState>((set, get) => ({
   selectedNode: undefined,
   setSelectedNode: (node: ViewModels.TreeNode) => set({ selectedNode: node }),
   isDatabaseNodeOrNoneSelected: (): boolean => {

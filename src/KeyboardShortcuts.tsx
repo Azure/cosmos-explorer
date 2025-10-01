@@ -1,7 +1,7 @@
 import * as React from "react";
 import { PropsWithChildren, useEffect } from "react";
 import { KeyBindingMap, tinykeys } from "tinykeys";
-import create, { UseStore } from "zustand";
+import { create } from "zustand";
 
 /**
  * Represents a keyboard shortcut handler.
@@ -126,7 +126,7 @@ export const clearKeyboardActionGroup = (group: KeyboardActionGroup) => {
   useKeyboardActionHandlers.getState().setHandlers(group, {});
 };
 
-const useKeyboardActionHandlers: UseStore<KeyboardShortcutState> = create((set, get) => ({
+const useKeyboardActionHandlers = create<KeyboardShortcutState>((set, get) => ({
   allHandlers: {},
   groups: {},
   setHandlers: (group: KeyboardActionGroup, handlers: KeyboardHandlerMap) => {

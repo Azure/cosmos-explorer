@@ -14,7 +14,6 @@ import PublishIcon from "../../../images/notebook/publish_content.svg";
 import RefreshIcon from "../../../images/refresh-cosmos.svg";
 import CollectionIcon from "../../../images/tree-collection.svg";
 import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
-import { isPublicInternetAccessAllowed } from "../../Common/DatabaseAccountUtility";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { IPinnedRepo } from "../../Juno/JunoClient";
@@ -58,12 +57,12 @@ export class ResourceTreeAdapter implements ReactAdapter {
 
     useSelectedNode.subscribe(() => this.triggerRender());
     useTabs.subscribe(
-      () => this.triggerRender(),
       (state) => state.activeTab,
+      () => this.triggerRender(),
     );
     useNotebook.subscribe(
-      () => this.triggerRender(),
       (state) => state.isNotebookEnabled,
+      () => this.triggerRender(),
     );
 
     useDatabases.subscribe(() => this.triggerRender());

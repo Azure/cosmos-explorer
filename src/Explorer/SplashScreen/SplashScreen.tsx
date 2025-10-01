@@ -77,39 +77,39 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     this.subscriptions.push(
       {
         dispose: useNotebook.subscribe(
-          () => this.setState({}),
           (state) => state.isNotebookEnabled,
+          () => this.setState({}),
         ),
       },
       { dispose: useSelectedNode.subscribe(() => this.setState({})) },
       {
         dispose: useCarousel.subscribe(
-          () => this.setState({}),
           (state) => state.showCoachMark,
+          () => this.setState({}),
         ),
       },
       {
         dispose: usePostgres.subscribe(
-          () => this.setState({}),
           (state) => state.showPostgreTeachingBubble,
+          () => this.setState({}),
         ),
       },
       {
         dispose: usePostgres.subscribe(
-          () => this.setState({}),
           (state) => state.showResetPasswordBubble,
+          () => this.setState({}),
         ),
       },
       {
         dispose: useDatabases.subscribe(
-          () => this.setState({}),
           (state) => state.sampleDataResourceTokenCollection,
+          () => this.setState({}),
         ),
       },
       {
         dispose: useQueryCopilot.subscribe(
-          () => this.setState({}),
           (state) => state.copilotEnabled,
+          () => this.setState({}),
         ),
       },
     );

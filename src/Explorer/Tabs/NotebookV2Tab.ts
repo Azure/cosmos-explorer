@@ -44,8 +44,8 @@ export default class NotebookTabV2 extends NotebookTabBase {
     this.container = options.container;
     this.notebookPath = ko.observable(options.notebookContentItem.path);
     useNotebook.subscribe(
-      () => logConsoleInfo("New notebook server info received."),
       (state) => state.notebookServerInfo,
+      () => logConsoleInfo("New notebook server info received."),
     );
     this.notebookComponentAdapter = new NotebookComponentAdapter({
       contentItem: options.notebookContentItem,
@@ -165,7 +165,7 @@ export default class NotebookTabV2 extends NotebookTabBase {
       {
         iconSrc: null,
         iconAlt: kernelLabel,
-        onCommandClick: () => {},
+        onCommandClick: () => { },
         commandButtonLabel: null,
         hasPopup: false,
         disabled: availableKernels.length < 1,
@@ -276,7 +276,7 @@ export default class NotebookTabV2 extends NotebookTabBase {
       {
         iconSrc: null,
         iconAlt: null,
-        onCommandClick: () => {},
+        onCommandClick: () => { },
         commandButtonLabel: null,
         ariaLabel: cellTypeLabel,
         hasPopup: false,

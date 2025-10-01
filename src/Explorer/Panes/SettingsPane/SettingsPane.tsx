@@ -51,7 +51,7 @@ import { useClientWriteEnabled } from "hooks/useClientWriteEnabled";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { useSidePanel } from "hooks/useSidePanel";
 import React, { FunctionComponent, useState } from "react";
-import create, { UseStore } from "zustand";
+import { create } from "zustand";
 import Explorer from "../../Explorer";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 
@@ -64,8 +64,6 @@ export interface DataPlaneRbacState {
   setDataPlaneRbacEnabled: (dataPlaneRbacEnabled: boolean) => void;
   setAadDataPlaneUpdated: (aadTokenUpdated: boolean) => void;
 }
-
-type DataPlaneRbacStore = UseStore<Partial<DataPlaneRbacState>>;
 
 const useStyles = makeStyles({
   bulletList: {
@@ -100,7 +98,7 @@ const useStyles = makeStyles({
   },
 });
 
-export const useDataPlaneRbac: DataPlaneRbacStore = create(() => ({
+export const useDataPlaneRbac = create<Partial<DataPlaneRbacState>>(() => ({
   dataPlaneRbacEnabled: false,
 }));
 

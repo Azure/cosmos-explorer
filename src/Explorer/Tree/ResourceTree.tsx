@@ -16,7 +16,6 @@ import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
 import * as React from "react";
 import { useEffect, useMemo } from "react";
-import shallow from "zustand/shallow";
 import Explorer from "../Explorer";
 import { useNotebook } from "../Notebook/useNotebook";
 
@@ -38,13 +37,8 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ explorer }: Resource
   const [openItems, setOpenItems] = React.useState<TreeItemValue[]>([]);
   const treeStyles = useTreeStyles();
 
-  const { isNotebookEnabled } = useNotebook(
-    (state) => ({
-      isNotebookEnabled: state.isNotebookEnabled,
-    }),
-    shallow,
-  );
-
+  const isNotebookEnabled = useNotebook((state) => state.isNotebookEnabled)
+  
   // We intentionally avoid using a state selector here because we want to re-render the tree if the active tab changes.
   const { refreshActiveTab } = useTabs();
 
