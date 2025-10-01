@@ -4,8 +4,10 @@ import { createCollection } from "Common/dataAccess/createCollection";
 import Explorer from "Explorer/Explorer";
 import { useDatabases } from "Explorer/useDatabases";
 import { DEFAULT_FABRIC_NATIVE_CONTAINER_THROUGHPUT, isFabricNative } from "Platform/Fabric/FabricUtil";
+import { Action, ActionModifiers } from "Shared/Telemetry/TelemetryConstants";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 
 /**
  * Public for unit tests
@@ -133,5 +135,8 @@ export const importData = async (sampleDataFile: SampleDataFile, collection: Vie
   const start = performance.now();
   await collection.bulkInsertDocuments(documents);
   const end = performance.now();
-  console.log(`Imported ${documents.length} documents in ${(end - start).toFixed(2)} ms`);
+  TelemetryProcessor.trace(Action.ImportSampleData, ActionModifiers.Success, {
+    documentsCount: documents.length,
+    durationMs: end - start,
+  });
 };
