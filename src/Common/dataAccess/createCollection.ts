@@ -1,4 +1,6 @@
 import { ContainerRequest, ContainerResponse, DatabaseRequest, DatabaseResponse, RequestOptions } from "@azure/cosmos";
+import { sendMessage } from "Common/MessageHandler";
+import { FabricMessageTypes } from "Contracts/FabricMessageTypes";
 import { isFabricNative } from "Platform/Fabric/FabricUtil";
 import { AuthType } from "../../AuthType";
 import * as DataModels from "../../Contracts/DataModels";
@@ -43,6 +45,14 @@ export const createCollection = async (params: DataModels.CreateCollectionParams
     }
 
     logConsoleInfo(`Successfully created container ${params.collectionId}`);
+
+    if (isFabricNative()) {
+      sendMessage({
+        type: FabricMessageTypes.ContainerUpdated,
+        params: { updateType: "created" },
+      });
+    }
+
     return collection;
   } catch (error) {
     handleError(error, "CreateCollection", `Error while creating container ${params.collectionId}`);

@@ -1,3 +1,5 @@
+import { sendMessage } from "Common/MessageHandler";
+import { FabricMessageTypes } from "Contracts/FabricMessageTypes";
 import { isFabric } from "Platform/Fabric/FabricUtil";
 import { AuthType } from "../../AuthType";
 import { userContext } from "../../UserContext";
@@ -19,6 +21,11 @@ export async function deleteCollection(databaseId: string, collectionId: string)
       await client().database(databaseId).container(collectionId).delete();
     }
     logConsoleInfo(`Successfully deleted container ${collectionId}`);
+
+    sendMessage({
+      type: FabricMessageTypes.ContainerUpdated,
+      params: { updateType: "deleted" },
+    });
   } catch (error) {
     handleError(error, "DeleteCollection", `Error while deleting container ${collectionId}`);
     throw error;

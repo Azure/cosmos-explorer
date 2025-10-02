@@ -1,4 +1,5 @@
 import { FabricMessageTypes } from "./FabricMessageTypes";
+import { MessageTypes } from "./MessageTypes";
 
 // This is the current version of these messages
 export const DATA_EXPLORER_RPC_VERSION = "3";
@@ -20,8 +21,31 @@ export type DataExploreMessageV3 =
       id: string;
     }
   | {
+      type: FabricMessageTypes.GetAccessToken;
+      id: string;
+    }
+  | {
+      type: MessageTypes.TelemetryInfo;
+      data: {
+        action: string;
+        actionModifier: string;
+        data: unknown;
+        timestamp: number;
+      };
+    }
+  | {
       type: FabricMessageTypes.OpenSettings;
-      settingsId: string;
+      params: [{ settingsId?: "About" | "Connection" }];
+    }
+  | {
+      type: FabricMessageTypes.RestoreContainer;
+      params: [];
+    }
+  | {
+      type: FabricMessageTypes.ContainerUpdated;
+      params: {
+        updateType: "created" | "deleted" | "settings";
+      };
     };
 export interface GetCosmosTokenMessageOptions {
   verb: "connect" | "delete" | "get" | "head" | "options" | "patch" | "post" | "put" | "trace";
