@@ -138,5 +138,6 @@ export const importData = async (sampleDataFile: SampleDataFile, collection: Vie
   TelemetryProcessor.trace(Action.ImportSampleData, ActionModifiers.Success, {
     documentsCount: documents.length,
     durationMs: end - start,
+    sampleDataFile,
   });
 };
