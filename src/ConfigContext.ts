@@ -110,11 +110,30 @@ export function updateConfigContext(newContext: Partial<ConfigContext>): void {
     return;
   }
 
-  if (!validateEndpoint(newContext.AAD_ENDPOINT, configContext.allowedAadEndpoints || defaultAllowedAadEndpoints)) {
+  if (newContext.allowedAadEndpoints) {
+    Object.assign(configContext, { allowedAadEndpoints: newContext.allowedAadEndpoints });
+  }
+  if (newContext.allowedArmEndpoints) {
+    Object.assign(configContext, { allowedArmEndpoints: newContext.allowedArmEndpoints });
+  }
+  if (newContext.allowedGraphEndpoints) {
+    Object.assign(configContext, { allowedGraphEndpoints: newContext.allowedGraphEndpoints });
+  }
+  if (newContext.allowedBackendEndpoints) {
+    Object.assign(configContext, { allowedBackendEndpoints: newContext.allowedBackendEndpoints });
+  }
+  if (newContext.allowedMongoProxyEndpoints) {
+    Object.assign(configContext, { allowedMongoProxyEndpoints: newContext.allowedMongoProxyEndpoints });
+  }
+  if (newContext.allowedCassandraProxyEndpoints) {
+    Object.assign(configContext, { allowedCassandraProxyEndpoints: newContext.allowedCassandraProxyEndpoints });
+  }
+
+  if (!validateEndpoint(newContext.AAD_ENDPOINT, configContext.allowedAadEndpoints)) {
     delete newContext.AAD_ENDPOINT;
   }
 
-  if (!validateEndpoint(newContext.ARM_ENDPOINT, configContext.allowedArmEndpoints || defaultAllowedArmEndpoints)) {
+  if (!validateEndpoint(newContext.ARM_ENDPOINT, configContext.allowedArmEndpoints)) {
     delete newContext.ARM_ENDPOINT;
   }
 
@@ -122,9 +141,7 @@ export function updateConfigContext(newContext: Partial<ConfigContext>): void {
     delete newContext.EMULATOR_ENDPOINT;
   }
 
-  if (
-    !validateEndpoint(newContext.GRAPH_ENDPOINT, configContext.allowedGraphEndpoints || defaultAllowedGraphEndpoints)
-  ) {
+  if (!validateEndpoint(newContext.GRAPH_ENDPOINT, configContext.allowedGraphEndpoints)) {
     delete newContext.GRAPH_ENDPOINT;
   }
 
@@ -132,30 +149,15 @@ export function updateConfigContext(newContext: Partial<ConfigContext>): void {
     delete newContext.ARCADIA_ENDPOINT;
   }
 
-  if (
-    !validateEndpoint(
-      newContext.PORTAL_BACKEND_ENDPOINT,
-      configContext.allowedBackendEndpoints || defaultAllowedBackendEndpoints,
-    )
-  ) {
+  if (!validateEndpoint(newContext.PORTAL_BACKEND_ENDPOINT, configContext.allowedBackendEndpoints)) {
     delete newContext.PORTAL_BACKEND_ENDPOINT;
   }
 
-  if (
-    !validateEndpoint(
-      newContext.MONGO_PROXY_ENDPOINT,
-      configContext.allowedMongoProxyEndpoints || defaultAllowedMongoProxyEndpoints,
-    )
-  ) {
+  if (!validateEndpoint(newContext.MONGO_PROXY_ENDPOINT, configContext.allowedMongoProxyEndpoints)) {
     delete newContext.MONGO_PROXY_ENDPOINT;
   }
 
-  if (
-    !validateEndpoint(
-      newContext.CASSANDRA_PROXY_ENDPOINT,
-      configContext.allowedCassandraProxyEndpoints || defaultAllowedCassandraProxyEndpoints,
-    )
-  ) {
+  if (!validateEndpoint(newContext.CASSANDRA_PROXY_ENDPOINT, configContext.allowedCassandraProxyEndpoints)) {
     delete newContext.CASSANDRA_PROXY_ENDPOINT;
   }
 
