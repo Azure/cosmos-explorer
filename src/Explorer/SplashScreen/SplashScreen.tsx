@@ -273,7 +273,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         subtitle = "Get started with our sample datasets, documentation, and additional tools.";
         break;
       case "VCoreMongo":
-        title = "Welcome to Azure Cosmos DB for MongoDB (vCore)";
+        title = "Welcome to Azure DocumentDB (with MongoDB compatibility)";
         subtitle = "Get started with our sample datasets, documentation, and additional tools.";
         break;
       default:
@@ -456,7 +456,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     if (userContext.apiType === "VCoreMongo") {
       icon = VisualStudioIcon;
       title = "Connect with VS Code";
-      description = "Query and Manage your MongoDB cluster in Visual Studio Code";
+      description = "Query and Manage your MongoDB and DocumentDB clusters in Visual Studio Code";
       onClick = () => this.container.openInVsCode();
     }
 
