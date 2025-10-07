@@ -1,6 +1,6 @@
 import * as React from "react";
-import MoonBlueIcon from "../../../../images/moon-blue.svg";
-import SunBlueIcon from "../../../../images/sun-blue.svg";
+import MoonIcon from "../../../../images/MoonIcon.svg";
+import SunIcon from "../../../../images/SunIcon.svg";
 import { useThemeStore } from "../../../hooks/useTheme";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 
@@ -17,7 +17,7 @@ export const ThemeToggleButton = (): CommandButtonComponentProps => {
   const tooltipText = darkMode ? "Switch to Light Theme" : "Switch to Dark Theme";
 
   return {
-    iconSrc: darkMode ? SunBlueIcon : MoonBlueIcon,
+    iconSrc: darkMode ? SunIcon : MoonIcon,
     iconAlt: "Theme Toggle",
     onCommandClick: useThemeStore.getState().toggleTheme,
     commandButtonLabel: undefined,
