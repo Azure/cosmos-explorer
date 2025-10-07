@@ -73,8 +73,8 @@ export const VcoreMongoQuickstartGuide: React.FC = (): JSX.Element => {
                   <br />
                   <br />
                   <br />
-                  Note: If you navigate out of the Quick start blade &#40;MongoDB Shell&#41;, the session will be
-                  closed and all ongoing commands might be interrupted.
+                  Note: If you navigate out of the Quick start blade &#40;MongoDB Shell&#41;, the session will be closed
+                  and all ongoing commands might be interrupted.
                 </Text>
               </Stack>
             </PivotItem>
