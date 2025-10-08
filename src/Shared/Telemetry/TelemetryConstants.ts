@@ -150,6 +150,7 @@ export enum Action {
   CloudShellUserConsent,
   CloudShellTerminalSession,
   OpenVSCode,
+  ImportSampleData,
 }
 
 export const ActionModifiers = {

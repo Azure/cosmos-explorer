@@ -42,7 +42,7 @@ import {
 } from "Explorer/Panes/AddCollectionPanel/AddCollectionPanelUtility";
 import { useSidePanel } from "hooks/useSidePanel";
 import { useTeachingBubble } from "hooks/useTeachingBubble";
-import { isFabricNative } from "Platform/Fabric/FabricUtil";
+import { DEFAULT_FABRIC_NATIVE_CONTAINER_THROUGHPUT, isFabricNative } from "Platform/Fabric/FabricUtil";
 import React from "react";
 import { CollectionCreation } from "Shared/Constants";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
@@ -52,7 +52,6 @@ import { getCollectionName } from "Utils/APITypeUtils";
 import { isCapabilityEnabled, isServerlessAccount, isVectorSearchEnabled } from "Utils/CapabilityUtils";
 import { getUpsellMessage } from "Utils/PricingUtils";
 import { ValidCosmosDbIdDescription, ValidCosmosDbIdInputPattern } from "Utils/ValidationUtils";
-import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
 import { CollapsibleSectionComponent } from "../../Controls/CollapsiblePanel/CollapsibleSectionComponent";
 import { ThroughputInput } from "../../Controls/ThroughputInput/ThroughputInput";
 import { ContainerSampleGenerator } from "../../DataSamples/ContainerSampleGenerator";
@@ -1395,8 +1394,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
     // Throughput
     if (isFabricNative()) {
-      // Fabric Native accounts are always autoscale and have a fixed throughput of 5K
-      autoPilotMaxThroughput = AutoPilotUtils.autoPilotThroughput5K;
+      autoPilotMaxThroughput = DEFAULT_FABRIC_NATIVE_CONTAINER_THROUGHPUT;
       offerThroughput = undefined;
     } else if (databaseLevelThroughput) {
       if (this.state.createNewDatabase) {
