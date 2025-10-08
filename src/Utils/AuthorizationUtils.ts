@@ -1,6 +1,7 @@
 import * as msal from "@azure/msal-browser";
+import { getEnvironmentScopeEndpoint } from "Common/EnvironmentUtility";
 import { Action, ActionModifiers } from "Shared/Telemetry/TelemetryConstants";
-import { isDataplaneRbacSupported } from "Utils/APITypeUtils";
+import { hasProxyServer, isDataplaneRbacSupported } from "Utils/APITypeUtils";
 import { AuthType } from "../AuthType";
 import * as Constants from "../Common/Constants";
 import * as Logger from "../Common/Logger";
@@ -74,10 +75,12 @@ export async function acquireMsalTokenForAccount(
   if (userContext.databaseAccount.properties?.documentEndpoint === undefined) {
     throw new Error("Database account has no document endpoint defined");
   }
-  const hrefEndpoint = new URL(userContext.databaseAccount.properties.documentEndpoint).href.replace(
-    /\/+$/,
-    "/.default",
-  );
+  let hrefEndpoint = "";
+  if (isDataplaneRbacEnabledForProxyApi(userContext)) {
+    hrefEndpoint = getEnvironmentScopeEndpoint();
+  } else {
+    hrefEndpoint = new URL(userContext.databaseAccount.properties.documentEndpoint).href.replace(/\/+$/, "/.default");
+  }
   const msalInstance = await getMsalInstance();
   const knownAccounts = msalInstance.getAllAccounts();
   // If user_hint is provided, we will try to use it to find the account.
@@ -183,7 +186,11 @@ export async function acquireTokenWithMsal(
 
 export function useDataplaneRbacAuthorization(userContext: UserContext): boolean {
   return (
-    userContext.features.enableAadDataPlane ||
+    userContext.features?.enableAadDataPlane ||
     (userContext.dataPlaneRbacEnabled && isDataplaneRbacSupported(userContext.apiType))
   );
+}
+
+export function isDataplaneRbacEnabledForProxyApi(userContext: UserContext): boolean {
+  return useDataplaneRbacAuthorization(userContext) && hasProxyServer(userContext.apiType);
 }

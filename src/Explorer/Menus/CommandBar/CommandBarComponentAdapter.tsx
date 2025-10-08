@@ -6,6 +6,7 @@
 import { CommandBar as FluentCommandBar, ICommandBarItemProps } from "@fluentui/react";
 import { makeStyles, useFluent } from "@fluentui/react-components";
 import { useNotebook } from "Explorer/Notebook/useNotebook";
+import { useDataPlaneRbac } from "Explorer/Panes/SettingsPane/SettingsPane";
 import { KeyboardActionGroup, useKeyboardActionGroup } from "KeyboardShortcuts";
 import { isFabric } from "Platform/Fabric/FabricUtil";
 import { userContext } from "UserContext";
@@ -80,6 +81,15 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
     isPhoenixFeatures: state.isPhoenixFeatures,
   }));
 
+  // Subscribe to the store changes that affect button creation
+  const dataPlaneRbacEnabled = useDataPlaneRbac((state) => state.dataPlaneRbacEnabled);
+  const aadTokenUpdated = useDataPlaneRbac((state) => state.aadTokenUpdated);
+
+  // Memoize the expensive button creation
+  const staticButtons = React.useMemo(() => {
+    return CommandBarComponentButtonFactory.createStaticCommandBarButtons(container, selectedNodeState);
+  }, [container, selectedNodeState, dataPlaneRbacEnabled, aadTokenUpdated]);
+
   if (userContext.apiType === "Postgres" || userContext.apiType === "VCoreMongo") {
     const buttons =
       userContext.apiType === "Postgres"
@@ -102,7 +112,6 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
     );
   }
 
-  const staticButtons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(container, selectedNodeState);
   const contextButtons = (buttons || []).concat(
     CommandBarComponentButtonFactory.createContextCommandBarButtons(container, selectedNodeState),
   );
