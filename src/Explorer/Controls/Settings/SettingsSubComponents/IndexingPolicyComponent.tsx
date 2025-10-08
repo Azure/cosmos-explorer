@@ -1,4 +1,5 @@
 import { MessageBar, MessageBarType, Stack } from "@fluentui/react";
+import { useThemeStore } from "hooks/useTheme";
 import * as monaco from "monaco-editor";
 import * as React from "react";
 import * as DataModels from "../../../../Contracts/DataModels";
@@ -6,7 +7,6 @@ import { loadMonaco } from "../../../LazyMonaco";
 import { titleAndInputStackProps, unsavedEditorWarningMessage } from "../SettingsRenderUtils";
 import { isDirty, isIndexTransforming } from "../SettingsUtils";
 import { IndexingPolicyRefreshComponent } from "./IndexingPolicyRefresh/IndexingPolicyRefreshComponent";
-
 export interface IndexingPolicyComponentProps {
   shouldDiscardIndexingPolicy: boolean;
   resetShouldDiscardIndexingPolicy: () => void;
@@ -31,6 +31,7 @@ export class IndexingPolicyComponent extends React.Component<
   private shouldCheckComponentIsDirty = true;
   private indexingPolicyDiv = React.createRef<HTMLDivElement>();
   private indexingPolicyEditor: monaco.editor.IStandaloneCodeEditor;
+  private themeUnsubscribe: () => void;
 
   constructor(props: IndexingPolicyComponentProps) {
     super(props);
@@ -50,6 +51,10 @@ export class IndexingPolicyComponent extends React.Component<
   componentDidMount(): void {
     this.resetIndexingPolicyEditor();
     this.onComponentUpdate();
+  }
+
+  componentWillUnmount(): void {
+    this.themeUnsubscribe && this.themeUnsubscribe();
   }
 
   public resetIndexingPolicyEditor = (): void => {
@@ -87,18 +92,31 @@ export class IndexingPolicyComponent extends React.Component<
   };
 
   private async createIndexingPolicyEditor(): Promise<void> {
+    if (!this.indexingPolicyDiv.current) {
+      return;
+    }
     const value: string = JSON.stringify(this.props.indexingPolicyContent, undefined, 4);
     const monaco = await loadMonaco();
-    this.indexingPolicyEditor = monaco.editor.create(this.indexingPolicyDiv.current, {
-      value: value,
-      language: "json",
-      readOnly: isIndexTransforming(this.props.indexTransformationProgress),
-      ariaLabel: "Indexing Policy",
-    });
-    if (this.indexingPolicyEditor) {
-      const indexingPolicyEditorModel = this.indexingPolicyEditor.getModel();
-      indexingPolicyEditorModel.onDidChangeContent(this.onEditorContentChange.bind(this));
-      this.props.logIndexingPolicySuccessMessage();
+    if (this.indexingPolicyDiv.current) {
+      this.indexingPolicyEditor = monaco.editor.create(this.indexingPolicyDiv.current, {
+        value: value,
+        language: "json",
+        readOnly: isIndexTransforming(this.props.indexTransformationProgress),
+        ariaLabel: "Indexing Policy",
+        theme: useThemeStore.getState().isDarkMode ? "vs-dark" : "vs",
+      });
+      if (this.indexingPolicyEditor) {
+        this.themeUnsubscribe = useThemeStore.subscribe((state) => {
+          if (this.indexingPolicyEditor) {
+            const newTheme = state.isDarkMode ? "vs-dark" : "vs";
+            monaco.editor.setTheme(newTheme);
+          }
+        });
+
+        const indexingPolicyEditorModel = this.indexingPolicyEditor.getModel();
+        indexingPolicyEditorModel.onDidChangeContent(this.onEditorContentChange.bind(this));
+        this.props.logIndexingPolicySuccessMessage();
+      }
     }
   }
 

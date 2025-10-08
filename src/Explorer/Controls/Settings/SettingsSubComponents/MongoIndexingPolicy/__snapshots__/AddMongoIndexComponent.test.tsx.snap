@@ -50,7 +50,7 @@ exports[`AddMongoIndexComponent renders 1`] = `
       styles={
         {
           "dropdown": {
-            "paddingleft": 10,
+            "paddingLeft": 10,
             "width": 202,
           },
         }

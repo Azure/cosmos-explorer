@@ -10,9 +10,13 @@
   font-size: @mediumFontSize;
   padding: 0 @LargeSpace 0 @SmallSpace;
 }
+// .throughputInputSpacing{
+//   color: "var(--colorNeutralForeground1)";
+// }
 
 .throughputInputSpacing > :not(:last-child) {
   margin-bottom: @DefaultSpace;
+  color: "var(--colorNeutralForeground1)";
 }
 
 .capacitycalculator-link:focus {
@@ -27,4 +31,17 @@
 .copyQuery:focus::after,
 .deleteQuery:focus::after {
   outline: none !important;
+}
+
+// Override Fluent UI TextField focus styles
+.throughputInputContainer {
+  :global {
+    .ms-TextField {
+      .ms-TextField-fieldGroup {
+        &:focus-within {
+          border-color: var(--colorCompoundBrandStroke1, @SelectionColor);
+        }
+      }
+    }
+  }
 }

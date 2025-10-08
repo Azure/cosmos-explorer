@@ -37,12 +37,40 @@ a:focus {
 }
 
 .tabsManagerContainer {
-  background-color: #ffffff;
+  background-color: var(--colorNeutralBackground1);
+  color: var(--colorNeutralForeground1);
 }
 
 .nav-tabs-margin {
   padding-top: 5px;
-  background-color: #ffffff;
+  background-color: var(--colorNeutralBackground1);
+  color: var(--colorNeutralForeground1);
+}
+
+.nav-tabs {
+  border-bottom: 1px solid var(--colorNeutralStroke1);
+  color: var(--colorNeutralForeground1);
+}
+
+.nav-tabs > li > .tabNavContentContainer > .tab_Content:hover {
+  border-bottom: 2px solid var(--colorNeutralStroke1);
+  background-color: var(--colorNeutralBackground1Hover);
+}
+
+.nav-tabs > li.active > .tabNavContentContainer > .tab_Content,
+.nav-tabs > li.active > .tabNavContentContainer > .tab_Content:hover {
+  border-bottom: 2px solid var(--colorCompoundBrandBackground);
+  background-color: var(--colorNeutralBackground1Selected);
+}
+
+.nav-tabs > li.active > .tabNavContentContainer > .tab_Content > .contentWrapper > .tabNavText {
+  border-bottom: 0px none transparent;
+  color: var(--colorNeutralForeground1);
+}
+
+.tabPanesContainer {
+  background-color: var(--colorNeutralBackground1);
+  color: var(--colorNeutralForeground1);
 }
 
 .commandBarContainer {
@@ -67,24 +95,12 @@ a:focus {
   }
 }
 
-.nav-tabs > li > .tabNavContentContainer > .tab_Content:hover {
-  border-bottom: 2px solid #e0e0e0;
-}
-
-.nav-tabs > li.active > .tabNavContentContainer > .tab_Content,
-.nav-tabs > li.active > .tabNavContentContainer > .tab_Content:hover {
-  border-bottom: 2px solid @FabricAccentMedium;
-}
-
-.nav-tabs > li.active > .tabNavContentContainer > .tab_Content > .contentWrapper > .tabNavText {
-  border-bottom: 0px none transparent;
-}
-
 .tabNavContentContainer {
   padding: @SmallSpace 0px @SmallSpace 0px;
+  color: var(--colorNeutralForeground1);
 
   &:hover {
-    background-color: transparent;
+    background-color: var(--colorNeutralBackground1Hover);
     border-color: transparent;
   }
 
@@ -93,6 +109,7 @@ a:focus {
     margin: 0px @SmallSpace 0px @SmallSpace;
     width: calc(@TabsWidth - (@SmallSpace * 2));
     padding-bottom: @SmallSpace;
+    color: var(--colorNeutralForeground1);
 
     .contentWrapper {
       .statusIconContainer {
@@ -103,17 +120,18 @@ a:focus {
     .tabIconSection {
       .cancelButton {
         padding: 0px 0px 0px @SmallSpace;
+        color: var(--colorNeutralForeground1);
 
         &:hover {
-          background-color: transparent;
+          background-color: var(--colorNeutralBackground1Hover);
         }
 
         &:focus {
-          background-color: transparent;
+          background-color: var(--colorNeutralBackground1Pressed);
         }
 
         &:active {
-          background-color: transparent;
+          background-color: var(--colorNeutralBackground1Pressed);
         }
       }
     }

@@ -6,6 +6,7 @@ exports[`SettingsUtils functions render 1`] = `
     <Text
       style={
         {
+          "color": "var(--colorNeutralForeground1)",
           "fontWeight": 600,
         }
       }
@@ -15,6 +16,7 @@ exports[`SettingsUtils functions render 1`] = `
     <Text
       style={
         {
+          "color": "var(--colorNeutralForeground1)",
           "fontWeight": 600,
           "marginTop": 15,
         }
@@ -50,6 +52,7 @@ exports[`SettingsUtils functions render 1`] = `
     <Text
       style={
         {
+          "color": "var(--colorNeutralForeground1)",
           "marginTop": 15,
         }
       }
@@ -65,7 +68,7 @@ exports[`SettingsUtils functions render 1`] = `
     styles={
       {
         "root": {
-          "color": "windowtext",
+          "color": "var(--colorNeutralForeground1)",
           "fontSize": 14,
         },
       }
@@ -83,7 +86,7 @@ exports[`SettingsUtils functions render 1`] = `
     styles={
       {
         "root": {
-          "color": "windowtext",
+          "color": "var(--colorNeutralForeground1)",
           "fontSize": 14,
         },
       }
@@ -104,7 +107,7 @@ exports[`SettingsUtils functions render 1`] = `
     styles={
       {
         "root": {
-          "color": "windowtext",
+          "color": "var(--colorNeutralForeground1)",
           "fontSize": 14,
         },
       }
@@ -116,7 +119,7 @@ exports[`SettingsUtils functions render 1`] = `
     styles={
       {
         "root": {
-          "color": "windowtext",
+          "color": "var(--colorNeutralForeground1)",
           "fontSize": 14,
         },
       }
@@ -136,7 +139,7 @@ exports[`SettingsUtils functions render 1`] = `
     styles={
       {
         "root": {
-          "color": "windowtext",
+          "color": "var(--colorNeutralForeground1)",
           "fontSize": 14,
         },
       }
@@ -152,7 +155,7 @@ exports[`SettingsUtils functions render 1`] = `
     styles={
       {
         "root": {
-          "color": "windowtext",
+          "color": "var(--colorNeutralForeground1)",
           "fontSize": 14,
         },
       }
@@ -167,7 +170,7 @@ exports[`SettingsUtils functions render 1`] = `
     styles={
       {
         "root": {
-          "color": "windowtext",
+          "color": "var(--colorNeutralForeground1)",
           "fontSize": 14,
         },
       }
@@ -181,7 +184,7 @@ exports[`SettingsUtils functions render 1`] = `
     styles={
       {
         "root": {
-          "color": "windowtext",
+          "color": "var(--colorNeutralForeground1)",
           "fontSize": 14,
         },
       }
@@ -193,7 +196,7 @@ exports[`SettingsUtils functions render 1`] = `
     styles={
       {
         "root": {
-          "color": "windowtext",
+          "color": "var(--colorNeutralForeground1)",
           "fontSize": 14,
         },
       }
@@ -213,7 +216,7 @@ exports[`SettingsUtils functions render 1`] = `
     styles={
       {
         "root": {
-          "color": "windowtext",
+          "color": "var(--colorNeutralForeground1)",
           "fontSize": 14,
         },
       }
@@ -256,7 +259,7 @@ exports[`SettingsUtils functions render 1`] = `
       styles={
         {
           "root": {
-            "color": "windowtext",
+            "color": "var(--colorNeutralForeground1)",
             "fontSize": 14,
           },
         }
@@ -272,7 +275,7 @@ exports[`SettingsUtils functions render 1`] = `
     styles={
       {
         "root": {
-          "color": "windowtext",
+          "color": "var(--colorNeutralForeground1)",
           "fontSize": 14,
         },
       }
@@ -289,7 +292,7 @@ exports[`SettingsUtils functions render 1`] = `
     styles={
       {
         "root": {
-          "color": "windowtext",
+          "color": "var(--colorNeutralForeground1)",
           "fontSize": 14,
         },
       }

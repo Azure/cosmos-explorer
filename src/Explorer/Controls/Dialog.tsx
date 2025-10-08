@@ -179,8 +179,18 @@ export const Dialog: FC = () => {
       title,
       subText,
       styles: {
-        title: { fontSize: DIALOG_TITLE_FONT_SIZE, fontWeight: DIALOG_TITLE_FONT_WEIGHT },
-        subText: { fontSize: DIALOG_SUBTEXT_FONT_SIZE },
+        title: {
+          fontSize: DIALOG_TITLE_FONT_SIZE,
+          fontWeight: DIALOG_TITLE_FONT_WEIGHT,
+        },
+        subText: {
+          fontSize: DIALOG_SUBTEXT_FONT_SIZE,
+          color: "var(--colorNeutralForeground2)",
+        },
+        content: {
+          backgroundColor: "var(--colorNeutralBackground1)",
+          color: "var(--colorNeutralForeground1)",
+        },
       },
       showCloseButton: showCloseButton || false,
       onDismiss,
@@ -188,18 +198,60 @@ export const Dialog: FC = () => {
     modalProps: { isBlocking: isModal, isDarkOverlay: false },
     minWidth: DIALOG_MIN_WIDTH,
     maxWidth: DIALOG_MAX_WIDTH,
+    styles: {
+      main: {
+        backgroundColor: "var(--colorNeutralBackground1)",
+        selectors: {
+          ".ms-Dialog-title": { color: "var(--colorNeutralForeground1)" },
+        },
+      },
+    },
   };
 
   const primaryButtonProps: IButtonProps = {
     text: primaryButtonText,
     disabled: primaryButtonDisabled || false,
     onClick: onPrimaryButtonClick,
+    styles: {
+      root: {
+        backgroundColor: "var(--colorBrandBackground)",
+        color: "var(--colorNeutralForegroundOnBrand)",
+        selectors: {
+          ":hover": {
+            backgroundColor: "var(--colorBrandBackgroundHover)",
+            color: "var(--colorNeutralForegroundOnBrand)",
+          },
+          ":active": {
+            backgroundColor: "var(--colorBrandBackgroundPressed)",
+            color: "var(--colorNeutralForegroundOnBrand)",
+          },
+        },
+      },
+    },
   };
   const secondaryButtonProps: IButtonProps =
     secondaryButtonText && onSecondaryButtonClick
       ? {
           text: secondaryButtonText,
           onClick: onSecondaryButtonClick,
+          styles: {
+            root: {
+              backgroundColor: "var(--colorNeutralBackground2)",
+              color: "var(--colorNeutralForeground1)",
+              borderColor: "var(--colorNeutralStroke1)",
+              selectors: {
+                ":hover": {
+                  backgroundColor: "var(--colorNeutralBackground3)",
+                  color: "var(--colorNeutralForeground1)",
+                },
+                ":active": {
+                  backgroundColor: "var(--colorNeutralBackground3)",
+                  color: "var(--colorNeutralForeground1)",
+                  borderColor: "var(--colorCompoundBrandStroke1)",
+                },
+              },
+            },
+          },
         }
       : undefined;
   return visible ? (

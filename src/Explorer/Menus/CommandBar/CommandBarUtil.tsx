@@ -53,7 +53,7 @@ export const convertButton = (btns: CommandButtonComponentProps[], backgroundCol
       const result: ICommandBarItemProps = {
         iconProps: {
           style: {
-            width: StyleConstants.CommandBarIconWidth, // 16
+            width: StyleConstants.CommandBarIconWidth,
             alignSelf: btn.iconName ? "baseline" : undefined,
             filter: getFilter(btn.disabled),
           },
@@ -79,7 +79,7 @@ export const convertButton = (btns: CommandButtonComponentProps[], backgroundCol
         "data-test": `CommandBar/Button:${label}`,
         buttonStyles: {
           root: {
-            backgroundColor: backgroundColor,
+            backgroundColor: "var(--colorNeutralBackground1)",
             height: buttonHeightPx,
             paddingRight: 0,
             paddingLeft: 0,
@@ -87,15 +87,29 @@ export const convertButton = (btns: CommandButtonComponentProps[], backgroundCol
             minWidth: 24,
             marginLeft: isSplit ? 0 : 5,
             marginRight: isSplit ? 0 : 5,
+            color: "var(--colorNeutralForeground1)",
+            selectors: {
+              "&:hover": {
+                backgroundColor: "var(--colorNeutralBackground1Hover)",
+                color: "var(--colorNeutralForeground1)",
+              },
+              "&:active": {
+                backgroundColor: "var(--colorNeutralBackground1Pressed)",
+                color: "var(--colorNeutralForeground1)",
+              },
+            },
           },
           rootDisabled: {
-            backgroundColor: backgroundColor,
+            backgroundColor: "var(--colorNeutralBackground1)",
             pointerEvents: "auto",
+            color: "var(--colorNeutralForegroundDisabled)",
           },
           splitButtonMenuButton: {
-            backgroundColor: backgroundColor,
+            backgroundColor: "var(--colorNeutralBackground1)",
             selectors: {
-              ":hover": { backgroundColor: hoverColor },
+              ":hover": {
+                backgroundColor: "var(--colorNeutralBackground1Hover)",
+              },
             },
             width: 16,
           },
@@ -104,13 +118,22 @@ export const convertButton = (btns: CommandButtonComponentProps[], backgroundCol
               configContext.platform == Platform.Fabric
                 ? StyleConstants.DefaultFontSize
                 : StyleConstants.mediumFontSize,
+            color: "var(--colorNeutralForeground1)",
           },
-          rootHovered: { backgroundColor: hoverColor },
-          rootPressed: { backgroundColor: hoverColor },
+          rootHovered: {
+            backgroundColor: "var(--colorNeutralBackground1Hover)",
+            color: "var(--colorNeutralForeground1)",
+          },
+          rootPressed: {
+            backgroundColor: "var(--colorNeutralBackground1Pressed)",
+            color: "var(--colorNeutralForeground1)",
+          },
           splitButtonMenuButtonExpanded: {
-            backgroundColor: StyleConstants.AccentExtra,
+            backgroundColor: "var(--colorNeutralBackground1Pressed)",
             selectors: {
-              ":hover": { backgroundColor: hoverColor },
+              ":hover": {
+                backgroundColor: "var(--colorNeutralBackground1Hover)",
+              },
             },
           },
           splitButtonDivider: {
@@ -119,6 +142,7 @@ export const convertButton = (btns: CommandButtonComponentProps[], backgroundCol
           icon: {
             paddingLeft: 0,
             paddingRight: 0,
+            color: "var(--colorNeutralForeground1)",
           },
           splitButtonContainer: {
             marginLeft: 5,

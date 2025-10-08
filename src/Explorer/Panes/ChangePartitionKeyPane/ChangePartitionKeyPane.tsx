@@ -135,7 +135,7 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
   return (
     <RightPaneForm formError={formError} isExecuting={isExecuting} onSubmit={submit} submitButtonText="OK">
       <Stack tokens={{ childrenGap: 10 }} className="panelMainContent">
-        <Text variant="small">
+        <Text variant="small" style={{ color: "var(--colorNeutralForeground1)" }}>
           When changing a container’s partition key, you will need to create a destination container with the correct
           partition key. You may also select an existing destination container.&nbsp;
           <Link
@@ -346,7 +346,7 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
                   Add hierarchical partition key
                 </DefaultButton>
                 {subPartitionKeys.length > 0 && (
-                  <Text variant="small">
+                  <Text variant="small" style={{ color: "var(--colorNeutralForeground1)" }}>
                     <Icon iconName="InfoSolid" className="removeIcon" tabIndex={0} /> This feature allows you to
                     partition your data with up to three levels of keys for better data distribution. Requires .NET V3,
                     Java V4 SDK, or preview JavaScript V3 SDK.{" "}
