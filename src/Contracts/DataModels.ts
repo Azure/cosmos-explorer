@@ -101,6 +101,24 @@ export interface Subscription {
   authorizationSource?: string;
 }
 
+export interface DatabaseModel extends ArmEntity {
+  properties: DatabaseGetProperties;
+}
+
+export interface DatabaseGetProperties {
+  resource: DatabaseResource & ExtendedResourceProperties;
+}
+export interface DatabaseResource {
+  id: string;
+}
+
+export interface ExtendedResourceProperties {
+  readonly _rid?: string;
+  readonly _self?: string;
+  readonly _ts?: number;
+  readonly _etag?: string;
+}
+
 export interface SubscriptionPolicies {
   locationPlacementId: string;
   quotaId: string;
@@ -180,7 +198,7 @@ export interface Database extends Resource {
   collections?: Collection[];
 }
 
-export interface DocumentId extends Resource {}
+export interface DocumentId extends Resource { }
 
 export interface ConflictId extends Resource {
   resourceId?: string;
