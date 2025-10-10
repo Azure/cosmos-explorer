@@ -1,0 +1,49 @@
+@import "../../../less/Common/Constants.less";
+
+#containerCopyWrapper {
+    .centerContent {
+        justify-content: center;
+        align-items: center;
+    }
+    .notFoundContainer {
+        .noCopyJobsMessage {
+            font-weight: 600;
+            margin: 0 auto;
+            color: @FocusColor;
+        }
+        button.createCopyJobButton {
+            color: @LinkColor;
+        }
+    }
+}
+.createCopyJobScreensContainer {
+    height: 100%;
+    padding: 1em 1.5em;
+    .bold {
+        font-weight: 600;
+    }
+    label.field-label {
+        padding: 0;
+    }
+    .flex-row {
+        display: flex;
+        flex-direction: row;
+        label.field-label {
+            font-weight: 600;
+        }
+        .flex-fixed-width {
+            flex: 0 0 auto;
+            width: 150px;
+        }
+        .flex-grow-col {
+            flex: 1 1 auto;
+        }
+    }
+    .databaseContainerSection {
+        label.subHeading {
+            font: inherit;
+            padding: unset;
+            font-weight: 600;
+        }
+    }
+}
