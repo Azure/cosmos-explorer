@@ -143,10 +143,15 @@ describe("SettingsUtils", () => {
       });
 
       it("handles array type policies", () => {
-        const arrayPolicy = ["path1", "path2"];
-        expect(isDirty(arrayPolicy, arrayPolicy)).toBeFalsy();
-        expect(isDirty(arrayPolicy, [...arrayPolicy, "path3"])).toBeTruthy();
-        expect(isDirty(arrayPolicy, ["path1"])).toBeTruthy();
+        const computedProperties: DataModels.ComputedProperties = [
+          { name: "prop1", query: "SELECT * FROM c" },
+          { name: "prop2", query: "SELECT * FROM c" }
+        ];
+        const otherProperties: DataModels.ComputedProperties = [
+          { name: "prop1", query: "SELECT * FROM c" }
+        ];
+        expect(isDirty(computedProperties, computedProperties)).toBeFalsy();
+        expect(isDirty(computedProperties, otherProperties)).toBeTruthy();
       });
     });
 

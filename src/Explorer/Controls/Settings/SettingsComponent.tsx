@@ -2,16 +2,16 @@ import { IPivotItemProps, IPivotProps, Pivot, PivotItem } from "@fluentui/react"
 import { sendMessage } from "Common/MessageHandler";
 import { FabricMessageTypes } from "Contracts/FabricMessageTypes";
 import {
-    ComputedPropertiesComponent,
-    ComputedPropertiesComponentProps,
+  ComputedPropertiesComponent,
+  ComputedPropertiesComponentProps,
 } from "Explorer/Controls/Settings/SettingsSubComponents/ComputedPropertiesComponent";
 import {
-    ContainerPolicyComponent,
-    ContainerPolicyComponentProps,
+  ContainerPolicyComponent,
+  ContainerPolicyComponentProps,
 } from "Explorer/Controls/Settings/SettingsSubComponents/ContainerPolicyComponent";
 import {
-    ThroughputBucketsComponent,
-    ThroughputBucketsComponentProps,
+  ThroughputBucketsComponent,
+  ThroughputBucketsComponentProps,
 } from "Explorer/Controls/Settings/SettingsSubComponents/ThroughputInputComponents/ThroughputBucketsComponent";
 import { useDatabases } from "Explorer/useDatabases";
 import { isFabricNative } from "Platform/Fabric/FabricUtil";
@@ -36,42 +36,42 @@ import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
 import { MongoDBCollectionResource, MongoIndex } from "../../../Utils/arm/generatedClients/cosmos/types";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import {
-    PartitionKeyComponent,
-    PartitionKeyComponentProps,
+  PartitionKeyComponent,
+  PartitionKeyComponentProps,
 } from "../../Controls/Settings/SettingsSubComponents/PartitionKeyComponent";
 import { useCommandBar } from "../../Menus/CommandBar/CommandBarComponentAdapter";
 import { SettingsTabV2 } from "../../Tabs/SettingsTabV2";
 import "./SettingsComponent.less";
 import { mongoIndexingPolicyAADError } from "./SettingsRenderUtils";
 import {
-    ConflictResolutionComponent,
-    ConflictResolutionComponentProps,
+  ConflictResolutionComponent,
+  ConflictResolutionComponentProps,
 } from "./SettingsSubComponents/ConflictResolutionComponent";
 import { DataMaskingComponent, DataMaskingComponentProps } from "./SettingsSubComponents/DataMaskingComponent";
 import {
-    GlobalSecondaryIndexComponent,
-    GlobalSecondaryIndexComponentProps,
+  GlobalSecondaryIndexComponent,
+  GlobalSecondaryIndexComponentProps,
 } from "./SettingsSubComponents/GlobalSecondaryIndexComponent";
 import { IndexingPolicyComponent, IndexingPolicyComponentProps } from "./SettingsSubComponents/IndexingPolicyComponent";
 import {
-    MongoIndexingPolicyComponent,
-    MongoIndexingPolicyComponentProps,
+  MongoIndexingPolicyComponent,
+  MongoIndexingPolicyComponentProps,
 } from "./SettingsSubComponents/MongoIndexingPolicy/MongoIndexingPolicyComponent";
 import { ScaleComponent, ScaleComponentProps } from "./SettingsSubComponents/ScaleComponent";
 import { SubSettingsComponent, SubSettingsComponentProps } from "./SettingsSubComponents/SubSettingsComponent";
 import {
-    AddMongoIndexProps,
-    ChangeFeedPolicyState,
-    GeospatialConfigType,
-    MongoIndexTypes,
-    SettingsV2TabTypes,
-    TtlType,
-    getMongoNotification,
-    getTabTitle,
-    hasDatabaseSharedThroughput,
-    isDirty,
-    parseConflictResolutionMode,
-    parseConflictResolutionProcedure,
+  AddMongoIndexProps,
+  ChangeFeedPolicyState,
+  GeospatialConfigType,
+  MongoIndexTypes,
+  SettingsV2TabTypes,
+  TtlType,
+  getMongoNotification,
+  getTabTitle,
+  hasDatabaseSharedThroughput,
+  isDirty,
+  parseConflictResolutionMode,
+  parseConflictResolutionProcedure,
 } from "./SettingsUtils";
 
 interface SettingsV2TabInfo {

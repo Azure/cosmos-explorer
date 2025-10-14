@@ -32,7 +32,7 @@ describe("Collection", () => {
         properties: {
           enablePartitionKey: true,
           partitionKeyDefinitionVersion: 2,
-          capabilities: [],
+          capabilities: [] as string[],
           databaseAccountEndpoint: "test.documents.azure.com",
         },
       }),
