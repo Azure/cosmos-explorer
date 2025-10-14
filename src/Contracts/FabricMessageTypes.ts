@@ -8,6 +8,7 @@ export enum FabricMessageTypes {
   Ready = "Ready",
   OpenSettings = "OpenSettings",
   RestoreContainer = "RestoreContainer",
+  ContainerUpdated = "ContainerUpdated",
 }
 
 export interface AuthorizationToken {
