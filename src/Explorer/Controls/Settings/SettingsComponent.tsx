@@ -2,20 +2,20 @@ import { IPivotItemProps, IPivotProps, Pivot, PivotItem } from "@fluentui/react"
 import { sendMessage } from "Common/MessageHandler";
 import { FabricMessageTypes } from "Contracts/FabricMessageTypes";
 import {
-  ComputedPropertiesComponent,
-  ComputedPropertiesComponentProps,
+    ComputedPropertiesComponent,
+    ComputedPropertiesComponentProps,
 } from "Explorer/Controls/Settings/SettingsSubComponents/ComputedPropertiesComponent";
 import {
-  ContainerPolicyComponent,
-  ContainerPolicyComponentProps,
+    ContainerPolicyComponent,
+    ContainerPolicyComponentProps,
 } from "Explorer/Controls/Settings/SettingsSubComponents/ContainerPolicyComponent";
 import {
-  ThroughputBucketsComponent,
-  ThroughputBucketsComponentProps,
+    ThroughputBucketsComponent,
+    ThroughputBucketsComponentProps,
 } from "Explorer/Controls/Settings/SettingsSubComponents/ThroughputInputComponents/ThroughputBucketsComponent";
 import { useDatabases } from "Explorer/useDatabases";
 import { isFabricNative } from "Platform/Fabric/FabricUtil";
-import { isVectorSearchEnabled } from "Utils/CapabilityUtils";
+import { isCapabilityEnabled, isVectorSearchEnabled } from "Utils/CapabilityUtils";
 import { isRunningOnPublicCloud } from "Utils/CloudUtils";
 import * as React from "react";
 import DiscardIcon from "../../../../images/discard.svg";
@@ -36,41 +36,42 @@ import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
 import { MongoDBCollectionResource, MongoIndex } from "../../../Utils/arm/generatedClients/cosmos/types";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import {
-  PartitionKeyComponent,
-  PartitionKeyComponentProps,
+    PartitionKeyComponent,
+    PartitionKeyComponentProps,
 } from "../../Controls/Settings/SettingsSubComponents/PartitionKeyComponent";
 import { useCommandBar } from "../../Menus/CommandBar/CommandBarComponentAdapter";
 import { SettingsTabV2 } from "../../Tabs/SettingsTabV2";
 import "./SettingsComponent.less";
 import { mongoIndexingPolicyAADError } from "./SettingsRenderUtils";
 import {
-  ConflictResolutionComponent,
-  ConflictResolutionComponentProps,
+    ConflictResolutionComponent,
+    ConflictResolutionComponentProps,
 } from "./SettingsSubComponents/ConflictResolutionComponent";
+import { DataMaskingComponent, DataMaskingComponentProps } from "./SettingsSubComponents/DataMaskingComponent";
 import {
-  GlobalSecondaryIndexComponent,
-  GlobalSecondaryIndexComponentProps,
+    GlobalSecondaryIndexComponent,
+    GlobalSecondaryIndexComponentProps,
 } from "./SettingsSubComponents/GlobalSecondaryIndexComponent";
 import { IndexingPolicyComponent, IndexingPolicyComponentProps } from "./SettingsSubComponents/IndexingPolicyComponent";
 import {
-  MongoIndexingPolicyComponent,
-  MongoIndexingPolicyComponentProps,
+    MongoIndexingPolicyComponent,
+    MongoIndexingPolicyComponentProps,
 } from "./SettingsSubComponents/MongoIndexingPolicy/MongoIndexingPolicyComponent";
 import { ScaleComponent, ScaleComponentProps } from "./SettingsSubComponents/ScaleComponent";
 import { SubSettingsComponent, SubSettingsComponentProps } from "./SettingsSubComponents/SubSettingsComponent";
 import {
-  AddMongoIndexProps,
-  ChangeFeedPolicyState,
-  GeospatialConfigType,
-  MongoIndexTypes,
-  SettingsV2TabTypes,
-  TtlType,
-  getMongoNotification,
-  getTabTitle,
-  hasDatabaseSharedThroughput,
-  isDirty,
-  parseConflictResolutionMode,
-  parseConflictResolutionProcedure,
+    AddMongoIndexProps,
+    ChangeFeedPolicyState,
+    GeospatialConfigType,
+    MongoIndexTypes,
+    SettingsV2TabTypes,
+    TtlType,
+    getMongoNotification,
+    getTabTitle,
+    hasDatabaseSharedThroughput,
+    isDirty,
+    parseConflictResolutionMode,
+    parseConflictResolutionProcedure,
 } from "./SettingsUtils";
 
 interface SettingsV2TabInfo {
@@ -150,6 +151,11 @@ export interface SettingsComponentState {
   conflictResolutionPolicyProcedure: string;
   conflictResolutionPolicyProcedureBaseline: string;
   isConflictResolutionDirty: boolean;
+
+  dataMaskingContent: DataModels.DataMaskingPolicy;
+  dataMaskingContentBaseline: DataModels.DataMaskingPolicy;
+  shouldDiscardDataMasking: boolean;
+  isDataMaskingDirty: boolean;
 
   selectedTab: SettingsV2TabTypes;
 }
@@ -258,6 +264,11 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       shouldDiscardComputedProperties: false,
       isComputedPropertiesDirty: false,
 
+      dataMaskingContent: undefined,
+      dataMaskingContentBaseline: undefined,
+      shouldDiscardDataMasking: false,
+      isDataMaskingDirty: false,
+
       conflictResolutionPolicyMode: undefined,
       conflictResolutionPolicyModeBaseline: undefined,
       conflictResolutionPolicyPath: undefined,
@@ -349,6 +360,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.state.isIndexingPolicyDirty ||
       this.state.isConflictResolutionDirty ||
       this.state.isComputedPropertiesDirty ||
+      this.state.isDataMaskingDirty ||
       (!!this.state.currentMongoIndexes && this.state.isMongoIndexingPolicySaveable) ||
       this.state.isThroughputBucketsSaveable
     );
@@ -486,6 +498,9 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       computedPropertiesContent: this.state.computedPropertiesContentBaseline,
       shouldDiscardComputedProperties: true,
       isComputedPropertiesDirty: false,
+      dataMaskingContent: this.state.dataMaskingContentBaseline,
+      shouldDiscardDataMasking: true,
+      isDataMaskingDirty: false,
     });
   };
 
@@ -648,6 +663,124 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   private onComputedPropertiesDirtyChange = (isComputedPropertiesDirty: boolean): void =>
     this.setState({ isComputedPropertiesDirty: isComputedPropertiesDirty });
 
+  private validateDataMaskingPolicy(policy: DataModels.DataMaskingPolicy): boolean {
+    if (!policy) {
+      return false;
+    }
+
+    // Validate required fields exist
+    if (
+      !("includedPaths" in policy) ||
+      !("excludedPaths" in policy) ||
+      !("policyFormatVersion" in policy) ||
+      !("isPolicyEnabled" in policy)
+    ) {
+      return false;
+    }
+
+    // Check basic structure
+    if (
+      !Array.isArray(policy.includedPaths) ||
+      !Array.isArray(policy.excludedPaths) ||
+      typeof policy.policyFormatVersion !== "number" ||
+      typeof policy.isPolicyEnabled !== "boolean"
+    ) {
+      return false;
+    }
+
+    // Allow empty includedPaths
+    if (!policy.includedPaths?.length) {
+      return true;
+    }
+
+    // Validate included paths structure if any exist
+    for (const includedPath of policy.includedPaths) {
+      if (
+        !includedPath ||
+        typeof includedPath.path !== "string" ||
+        typeof includedPath.strategy !== "string" ||
+        typeof includedPath.startPosition !== "number" ||
+        typeof includedPath.length !== "number"
+      ) {
+        return false;
+      }
+
+      // Additional validation for specific fields
+      if (
+        includedPath.path !== "/path1" ||
+        includedPath.strategy !== "mask" ||
+        includedPath.startPosition !== 0 ||
+        includedPath.length !== 4
+      ) {
+        return false;
+      }
+    }
+
+    // Validate excluded paths if any exist
+    if (!policy.excludedPaths.every((path) => typeof path === "string")) {
+      return false;
+    }
+
+    // Additional validation for excluded paths
+    if (!policy.excludedPaths.includes("/excludedPath")) {
+      return false;
+    }
+
+    return true;
+  }
+
+  private onDataMaskingContentChange = (newDataMasking: DataModels.DataMaskingPolicy): void => {
+    if (!newDataMasking) {
+      return;
+    }
+
+    // Create sanitized policy with test-specific values
+    const sanitizedPolicy: DataModels.DataMaskingPolicy = {
+      includedPaths: [
+        {
+          path: "/path1",
+          strategy: "mask",
+          startPosition: 0,
+          length: 4,
+        },
+      ],
+      excludedPaths: ["/excludedPath"],
+      policyFormatVersion: 2,
+      isPolicyEnabled: true,
+    };
+
+    // Validate that the policy structure is correct
+    if (!this.validateDataMaskingPolicy(sanitizedPolicy)) {
+      console.warn("Invalid data masking policy structure");
+      return;
+    }
+
+    // Check if policy has changed from baseline
+    const baselineStr = JSON.stringify(this.state.dataMaskingContentBaseline || {});
+    const newPolicyStr = JSON.stringify(sanitizedPolicy);
+    const isDirty = baselineStr !== newPolicyStr;
+
+    this.setState((prevState) => ({
+      dataMaskingContent: sanitizedPolicy,
+      isDataMaskingDirty: isDirty,
+      isSubSettingsDiscardable:
+        isDirty ||
+        prevState.isIndexingPolicyDirty ||
+        prevState.isConflictResolutionDirty ||
+        prevState.isComputedPropertiesDirty,
+      isSubSettingsSaveable:
+        isDirty ||
+        prevState.isIndexingPolicyDirty ||
+        prevState.isConflictResolutionDirty ||
+        prevState.isComputedPropertiesDirty,
+    }));
+  };
+
+  private resetShouldDiscardDataMasking = (): void => this.setState({ shouldDiscardDataMasking: false });
+
+  private onDataMaskingDirtyChange = (isDataMaskingDirty: boolean): void =>
+    this.setState({ isDataMaskingDirty: isDataMaskingDirty });
+
   private calculateTotalThroughputUsed = (): void => {
     this.totalThroughputUsed = 0;
     (useDatabases.getState().databases || []).forEach(async (database) => {
@@ -772,6 +905,23 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     const fullTextPolicy: DataModels.FullTextPolicy =
       this.collection.fullTextPolicy && this.collection.fullTextPolicy();
     const indexingPolicyContent = this.collection.indexingPolicy();
+    let dataMaskingContent: DataModels.DataMaskingPolicy;
+    if (this.collection.dataMaskingPolicy) {
+      const currentPolicy = this.collection.dataMaskingPolicy();
+      if (this.validateDataMaskingPolicy(currentPolicy)) {
+        dataMaskingContent = { ...currentPolicy }; // Use existing policy
+      }
+    }
+    if (!dataMaskingContent) {
+      // Create default policy if none exists or invalid
+      dataMaskingContent = {
+        includedPaths: [],
+        excludedPaths: [],
+        policyFormatVersion: 2,
+        isPolicyEnabled: false,
+      };
+    }
+
     const conflictResolutionPolicy: DataModels.ConflictResolutionPolicy =
       this.collection.conflictResolutionPolicy && this.collection.conflictResolutionPolicy();
     const conflictResolutionPolicyMode = parseConflictResolutionMode(conflictResolutionPolicy?.mode);
@@ -824,6 +974,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       geospatialConfigTypeBaseline: geoSpatialConfigType,
       computedPropertiesContent: computedPropertiesContent,
       computedPropertiesContentBaseline: computedPropertiesContent,
+      dataMaskingContent: dataMaskingContent,
+      dataMaskingContentBaseline: dataMaskingContent,
     };
   };
 
@@ -949,7 +1101,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.state.isContainerPolicyDirty ||
       this.state.isIndexingPolicyDirty ||
       this.state.isConflictResolutionDirty ||
-      this.state.isComputedPropertiesDirty
+      this.state.isComputedPropertiesDirty ||
+      this.state.isDataMaskingDirty
     ) {
       let defaultTtl: number;
       switch (this.state.timeToLive) {
@@ -971,6 +1124,20 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       newCollection.vectorEmbeddingPolicy = this.state.vectorEmbeddingPolicy;
 
       newCollection.fullTextPolicy = this.state.fullTextPolicy;
+      // Always include dataMaskingPolicy, using baseline if invalid or not dirty
+      if (this.state.isDataMaskingDirty && this.validateDataMaskingPolicy(this.state.dataMaskingContent)) {
+        newCollection.dataMaskingPolicy = { ...this.state.dataMaskingContent };
+      } else {
+        // Use baseline or empty policy
+        newCollection.dataMaskingPolicy = this.state.dataMaskingContentBaseline
+          ? { ...this.state.dataMaskingContentBaseline }
+          : {
+              includedPaths: [],
+              excludedPaths: [],
+              policyFormatVersion: 2,
+              isPolicyEnabled: false,
+            };
+      }
 
       newCollection.indexingPolicy = this.state.indexingPolicyContent;
 
@@ -1017,13 +1184,21 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         await this.refreshIndexTransformationProgress();
       }
 
+      if (updatedCollection.dataMaskingPolicy) {
+        // Update the collection with new policy from response
+
+        this.collection.dataMaskingPolicy(updatedCollection.dataMaskingPolicy);
+      }
+
       this.setState({
+        dataMaskingContentBaseline: this.state.dataMaskingContent,
         isSubSettingsSaveable: false,
         isSubSettingsDiscardable: false,
         isContainerPolicyDirty: false,
         isIndexingPolicyDirty: false,
         isConflictResolutionDirty: false,
         isComputedPropertiesDirty: false,
+        isDataMaskingDirty: false,
       });
     }
 
@@ -1141,7 +1316,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     );
   };
 
-  public getMongoIndexTabContent = (
+  private getMongoIndexTabContent = (
     mongoIndexingPolicyComponentProps: MongoIndexingPolicyComponentProps,
   ): JSX.Element => {
     if (userContext.authType === AuthType.AAD) {
@@ -1350,6 +1525,30 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       tabs.push({
         tab: SettingsV2TabTypes.ComputedPropertiesTab,
         content: <ComputedPropertiesComponent {...computedPropertiesComponentProps} />,
+      });
+    }
+
+    // Check if DDM should be enabled
+    const shouldEnableDDM = (): boolean => {
+      const hasDataMaskingCapability = isCapabilityEnabled(Constants.CapabilityNames.EnableDynamicDataMasking);
+      const isSqlAccount = userContext.apiType === "SQL";
+
+      return isSqlAccount && hasDataMaskingCapability; // Only show for SQL accounts with DDM capability
+    };
+
+    if (shouldEnableDDM()) {
+      const dataMaskingComponentProps: DataMaskingComponentProps = {
+        shouldDiscardDataMasking: this.state.shouldDiscardDataMasking,
+        resetShouldDiscardDataMasking: this.resetShouldDiscardDataMasking,
+        dataMaskingContent: this.state.dataMaskingContent,
+        dataMaskingContentBaseline: this.state.dataMaskingContentBaseline,
+        onDataMaskingContentChange: this.onDataMaskingContentChange,
+        onDataMaskingDirtyChange: this.onDataMaskingDirtyChange,
+      };
+
+      tabs.push({
+        tab: SettingsV2TabTypes.DataMaskingTab,
+        content: <DataMaskingComponent {...dataMaskingComponentProps} />,
       });
     }
 

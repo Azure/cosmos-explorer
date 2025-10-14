@@ -90,6 +90,8 @@ export class CapabilityNames {
   public static readonly EnableServerless: string = "EnableServerless";
   public static readonly EnableNoSQLVectorSearch: string = "EnableNoSQLVectorSearch";
   public static readonly EnableNoSQLFullTextSearch: string = "EnableNoSQLFullTextSearch";
+  public static readonly EnableDataMasking: string = "EnableDataMasking";
+  public static readonly EnableDynamicDataMasking: string = "EnableDynamicDataMasking";
 }
 
 export enum CapacityMode {

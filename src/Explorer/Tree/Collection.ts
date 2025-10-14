@@ -67,6 +67,7 @@ export default class Collection implements ViewModels.Collection {
   public computedProperties: ko.Observable<DataModels.ComputedProperties>;
   public materializedViews: ko.Observable<DataModels.MaterializedView[]>;
   public materializedViewDefinition: ko.Observable<DataModels.MaterializedViewDefinition>;
+  public dataMaskingPolicy: ko.Observable<DataModels.DataMaskingPolicy>;
 
   public offer: ko.Observable<DataModels.Offer>;
   public conflictResolutionPolicy: ko.Observable<DataModels.ConflictResolutionPolicy>;
@@ -136,8 +137,17 @@ export default class Collection implements ViewModels.Collection {
     this.materializedViews = ko.observable(data.materializedViews);
     this.materializedViewDefinition = ko.observable(data.materializedViewDefinition);
 
-    this.partitionKeyPropertyHeaders = this.partitionKey?.paths;
-    this.partitionKeyProperties = this.partitionKeyPropertyHeaders?.map((partitionKeyPropertyHeader, i) => {
+    // Initialize dataMaskingPolicy with default values if not present
+    const defaultDataMaskingPolicy: DataModels.DataMaskingPolicy = {
+      includedPaths: Array<{ path: string; strategy: string; startPosition: number; length: number }>(),
+      excludedPaths: Array<string>(),
+      policyFormatVersion: 2,
+      isPolicyEnabled: false,
+    };
+    this.dataMaskingPolicy = ko.observable(data.dataMaskingPolicy || defaultDataMaskingPolicy);
+
+    this.partitionKeyPropertyHeaders = this.partitionKey?.paths || [];
+    this.partitionKeyProperties = this.partitionKeyPropertyHeaders.map((partitionKeyPropertyHeader, i) => {
       // TODO fix this to only replace non-excaped single quotes
       let partitionKeyProperty = partitionKeyPropertyHeader.replace(/[/]+/g, ".").substring(1).replace(/[']+/g, "");
 

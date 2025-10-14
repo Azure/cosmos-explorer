@@ -163,6 +163,7 @@ export interface Collection extends Resource {
   geospatialConfig?: GeospatialConfig;
   vectorEmbeddingPolicy?: VectorEmbeddingPolicy;
   fullTextPolicy?: FullTextPolicy;
+  dataMaskingPolicy?: DataMaskingPolicy;
   schema?: ISchema;
   requestSchema?: () => void;
   computedProperties?: ComputedProperties;
@@ -226,6 +227,18 @@ export interface ComputedProperty {
 }
 
 export type ComputedProperties = ComputedProperty[];
+
+export interface DataMaskingPolicy {
+  includedPaths: Array<{
+    path: string;
+    strategy: string;
+    startPosition: number;
+    length: number;
+  }>;
+  excludedPaths: string[];
+  policyFormatVersion: number;
+  isPolicyEnabled: boolean;
+}
 
 export interface MaterializedView {
   id: string;
