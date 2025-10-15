@@ -2,10 +2,17 @@ import { DatabaseModel } from "Contracts/DataModels";
 import useSWR from "swr";
 import { getCollectionEndpoint, getDatabaseEndpoint } from "../Common/DatabaseAccountUtility";
 import { configContext } from "../ConfigContext";
-import { FetchDataContainersListParams } from "../Explorer/ContainerCopy/Types";
 import { ApiType } from "../UserContext";
 
 const apiVersion = "2023-09-15";
+export interface FetchDataContainersListParams {
+    armToken: string;
+    subscriptionId: string;
+    resourceGroupName: string;
+    databaseName: string;
+    accountName: string;
+    apiType?: ApiType;
+}
 
 const buildReadDataContainersListUrl = (params: FetchDataContainersListParams): string => {
     const { subscriptionId, resourceGroupName, accountName, databaseName, apiType } = params;
