@@ -39,4 +39,48 @@ export default {
     sourceContainerLabel: "Source container",
     targetDatabaseLabel: "Destination database",
     targetContainerLabel: "Destination container",
+
+    // Assign Permissions Screen
+    assignPermissions: {
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+    },
+    toggleBtn: {
+        onText: "On",
+        offText: "Off"
+    },
+    addManagedIdentity: {
+        title: "System assigned managed identity enabled",
+        description: "Enable a system assigned managed identity for the destination account to allow the copy job to access it.",
+        toggleLabel: "System assigned managed identity",
+        managedIdentityTooltip: "A system assigned managed identity is restricted to one per resource and is tied to the lifecycle of this resource. You can grant permissions to the managed identity by using Azure role-based access control (Azure RBAC). The managed identity is authenticated with Microsoft Entra ID, so you don't have to store any credentials in code.",
+        userAssignedIdentityTooltip: "You can select an existing user assigned identity or create a new one.",
+        userAssignedIdentityLabel: "You may also select a user assigned managed identity.",
+        createUserAssignedIdentityLink: "Create User Assigned Managed Identity",
+        enablementTitle: "Enable system assigned managed identity",
+        enablementDescription: (identityName: string) => identityName ? `'${identityName}' will be registered with Microsoft Entra ID. Once it is registered, '${identityName}' can be granted permissions to access resources protected by Microsoft Entra ID. Do you want to enable the system assigned managed identity for '${identityName}'?` : "",
+    },
+    defaultManagedIdentity: {
+        title: "System assigned managed identity enabled as default",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        tooltip: "A system assigned managed identity is restricted to one per resource and is tied to the lifecycle of this resource. You can grant permissions to the managed identity by using Azure role-based access control (Azure RBAC). The managed identity is authenticated with Microsoft Entra ID, so you don't have to store any credentials in code.",
+        popoverTitle: "System assigned managed identity set as default",
+        popoverDescription: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.",
+    },
+    readPermissionAssigned: {
+        title: "Read permission assigned to default identity",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        tooltip: "A system assigned managed identity is restricted to one per resource and is tied to the lifecycle of this resource. You can grant permissions to the managed identity by using Azure role-based access control (Azure RBAC). The managed identity is authenticated with Microsoft Entra ID, so you don't have to store any credentials in code.",
+        popoverTitle: "Read permission assigned to default identity",
+        popoverDescription: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.",
+    },
+    pointInTimeRestore: {
+        title: "Point In Time Restore enabled",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        buttonText: "Enable Point In Time Restore",
+    },
+    onlineCopyEnabled: {
+        title: "Online copy enabled",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        buttonText: "Enable Online Copy",
+    }
 }

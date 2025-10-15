@@ -46,4 +46,27 @@
             font-weight: 600;
         }
     }
+
+    .accordionHeader {
+        button {
+            display: flex;
+            align-items: center;
+            .accordionHeaderText {
+                margin-left: 5px;
+                font-weight: 600;
+            }
+            .statusIcon {
+                margin-left: auto;
+            }
+        }
+    }
+
+    .foreground {
+        z-index: 10;
+        background-color: white;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        // transform: translate(0%, -5%);
+        position: absolute;
+    }
 }
