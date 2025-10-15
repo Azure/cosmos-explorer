@@ -13,80 +13,85 @@ interface IndexObject {
   path?: string;
 }
 
-export interface IndexMetricsJson {
-  included?: IIndexMetric[];
-  notIncluded?: IIndexMetric[];
+// SDK response format
+export interface IndexMetricsResponse {
+  UtilizedIndexes?: {
+    SingleIndexes?: Array<{ IndexSpec: string; IndexImpactScore?: string }>;
+    CompositeIndexes?: Array<{ IndexSpecs: string[]; IndexImpactScore?: string }>;
+  };
+  PotentialIndexes?: {
+    SingleIndexes?: Array<{ IndexSpec: string; IndexImpactScore?: string }>;
+    CompositeIndexes?: Array<{ IndexSpecs: string[]; IndexImpactScore?: string }>;
+  };
 }
-export function parseIndexMetrics(indexMetrics: string | IndexMetricsJson): {
+
+export function parseIndexMetrics(indexMetrics: IndexMetricsResponse): {
   included: IIndexMetric[];
   notIncluded: IIndexMetric[];
 } {
-  // If already JSON, just extract arrays
-  if (typeof indexMetrics === "object" && indexMetrics !== null) {
-    return {
-      included: Array.isArray(indexMetrics.included) ? indexMetrics.included : [],
-      notIncluded: Array.isArray(indexMetrics.notIncluded) ? indexMetrics.notIncluded : [],
-    };
-  }
-
-  // Otherwise, parse as string (current SDK)
   const included: IIndexMetric[] = [];
   const notIncluded: IIndexMetric[] = [];
-  const lines = (indexMetrics as string)
-    .split("\n")
-    .map((line) => line.trim())
-    .filter(Boolean);
-  let currentSection = "";
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
-    if (line.startsWith("Utilized Single Indexes") || line.startsWith("Utilized Composite Indexes")) {
-      currentSection = "included";
-    } else if (line.startsWith("Potential Single Indexes") || line.startsWith("Potential Composite Indexes")) {
-      currentSection = "notIncluded";
-    } else if (line.startsWith("Index Spec:")) {
-      const index = line.replace("Index Spec:", "").trim();
-      const impactLine = lines[i + 1];
-      const impact = impactLine?.includes("Index Impact Score:") ? impactLine.split(":")[1].trim() : "Unknown";
 
-      const isComposite = index.includes(",");
+  // Process UtilizedIndexes (Included)
+  if (indexMetrics.UtilizedIndexes) {
+    // Single indexes
+    indexMetrics.UtilizedIndexes.SingleIndexes?.forEach((index) => {
+      included.push({
+        index: index.IndexSpec,
+        impact: index.IndexImpactScore || "Utilized",
+        section: "Included",
+        path: index.IndexSpec,
+      });
+    });
 
-      const sectionMap: Record<string, "Included" | "Not Included"> = {
-        included: "Included",
-        notIncluded: "Not Included",
-      };
-
-      const indexObj: IndexObject = { index, impact, section: sectionMap[currentSection] ?? "Header" };
-      if (isComposite) {
-        indexObj.composite = index.split(",").map((part: string) => {
-          const [path, order] = part.trim().split(/\s+/);
+    // Composite indexes
+    indexMetrics.UtilizedIndexes.CompositeIndexes?.forEach((index) => {
+      const compositeSpec = index.IndexSpecs.join(", ");
+      included.push({
+        index: compositeSpec,
+        impact: index.IndexImpactScore || "Utilized",
+        section: "Included",
+        composite: index.IndexSpecs.map((spec) => {
+          const [path, order] = spec.trim().split(/\s+/);
           return {
             path: path.trim(),
             order: order?.toLowerCase() === "desc" ? "descending" : "ascending",
           };
-        });
-      } else {
-        let path = "/unknown/*";
-        const pathRegex = /\/[^/\s*?]+(?:\/[^/\s*?]+)*(\/\*|\?)/;
-        const match = index.match(pathRegex);
-        if (match) {
-          path = match[0];
-        } else {
-          const simplePathRegex = /\/[^/\s]+/;
-          const simpleMatch = index.match(simplePathRegex);
-          if (simpleMatch) {
-            path = simpleMatch[0] + "/*";
-          }
-        }
-        indexObj.path = path;
-      }
-
-      if (currentSection === "included") {
-        included.push(indexObj);
-      } else if (currentSection === "notIncluded") {
-        notIncluded.push(indexObj);
-      }
-    }
+        }),
+      });
+    });
   }
+
+  // Process PotentialIndexes (Not Included)
+  if (indexMetrics.PotentialIndexes) {
+    // Single indexes
+    indexMetrics.PotentialIndexes.SingleIndexes?.forEach((index) => {
+      notIncluded.push({
+        index: index.IndexSpec,
+        impact: index.IndexImpactScore || "Unknown",
+        section: "Not Included",
+        path: index.IndexSpec,
+      });
+    });
+
+    // Composite indexes
+    indexMetrics.PotentialIndexes.CompositeIndexes?.forEach((index) => {
+      const compositeSpec = index.IndexSpecs.join(", ");
+      notIncluded.push({
+        index: compositeSpec,
+        impact: index.IndexImpactScore || "Unknown",
+        section: "Not Included",
+        composite: index.IndexSpecs.map((spec) => {
+          const [path, order] = spec.trim().split(/\s+/);
+          return {
+            path: path.trim(),
+            order: order?.toLowerCase() === "desc" ? "descending" : "ascending",
+          };
+        }),
+      });
+    });
+  }
+
   return { included, notIncluded };
 }
 

@@ -375,9 +375,9 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
       this._iterator = this.props.isPreferredApiMongoDB
         ? queryIterator(this.props.collection.databaseId, this.props.viewModelcollection, query)
         : queryDocuments(this.props.collection.databaseId, this.props.collection.id(), query, {
-            enableCrossPartitionQuery: HeadersUtility.shouldEnableCrossPartitionKey(),
-            abortSignal: this.queryAbortController.signal,
-          } as unknown as FeedOptions);
+          enableCrossPartitionQuery: HeadersUtility.shouldEnableCrossPartitionKey(),
+          abortSignal: this.queryAbortController.signal,
+        } as unknown as FeedOptions);
     }
 
     await this._queryDocumentsPage(firstItemIndex);
@@ -798,6 +798,8 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
                       this.props.copilotStore,
                     )
                   }
+                  databaseId={this.props.collection.databaseId}
+                  containerId={this.props.collection.id()}
                 />
               ) : (
                 <QueryResultSection
@@ -809,6 +811,8 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
                   executeQueryDocumentsPage={(firstItemIndex: number) =>
                     this._executeQueryDocumentsPage(firstItemIndex)
                   }
+                  databaseId={this.props.collection.databaseId}
+                  containerId={this.props.collection.id()}
                 />
               )}
             </Allotment.Pane>
