@@ -27,18 +27,6 @@ export type DropdownOptionType = {
 	data: any
 };
 
-export type FetchDatabasesListParams = {
-	armToken: string;
-	subscriptionId: string;
-	resourceGroupName: string;
-	accountName: string;
-	apiType?: ApiType;
-};
-
-export interface FetchDataContainersListParams extends FetchDatabasesListParams {
-	databaseName: string;
-}
-
 export type DatabaseParams = [
 	string,
 	string | undefined,
@@ -91,6 +79,7 @@ export interface CopyJobFlowType {
 }
 
 export interface CopyJobContextProviderType {
+	principalId: string;
 	armToken: string;
 	flow: CopyJobFlowType;
 	setFlow: React.Dispatch<React.SetStateAction<CopyJobFlowType>>;

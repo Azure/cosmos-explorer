@@ -10,13 +10,32 @@ export interface ArmEntity {
   resourceGroup?: string;
 }
 
+export interface DatabaseAccountUserAssignedIdentity {
+  [key: string]: {
+    principalId: string;
+    clientId: string;
+  }
+}
+
+export interface DatabaseAccountIdentity {
+  type: string;
+  principalId?: string;
+  tenantId?: string;
+  userAssignedIdentities?: DatabaseAccountUserAssignedIdentity;
+}
+
 export interface DatabaseAccount extends ArmEntity {
   properties: DatabaseAccountExtendedProperties;
   systemData?: DatabaseAccountSystemData;
+  identity?: DatabaseAccountIdentity | null;
 }
 
 export interface DatabaseAccountSystemData {
   createdAt: string;
+}
+
+export interface DatabaseAccountBackupPolicy {
+  type: string;
 }
 
 export interface DatabaseAccountExtendedProperties {
@@ -29,6 +48,8 @@ export interface DatabaseAccountExtendedProperties {
   capabilities?: Capability[];
   enableMultipleWriteLocations?: boolean;
   mongoEndpoint?: string;
+  backupPolicy?: DatabaseAccountBackupPolicy;
+  defaultIdentity?: string;
   readLocations?: DatabaseAccountResponseLocation[];
   writeLocations?: DatabaseAccountResponseLocation[];
   enableFreeTier?: boolean;

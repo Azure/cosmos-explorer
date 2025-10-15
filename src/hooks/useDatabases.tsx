@@ -2,10 +2,17 @@ import { DatabaseModel } from "Contracts/DataModels";
 import useSWR from "swr";
 import { getDatabaseEndpoint } from "../Common/DatabaseAccountUtility";
 import { configContext } from "../ConfigContext";
-import { FetchDatabasesListParams } from "../Explorer/ContainerCopy/Types";
 import { ApiType } from "../UserContext";
 
 const apiVersion = "2023-09-15";
+export interface FetchDatabasesListParams {
+    armToken: string;
+    subscriptionId: string;
+    resourceGroupName: string;
+    accountName: string;
+    apiType?: ApiType;
+}
+
 const buildReadDatabasesListUrl = (params: FetchDatabasesListParams): string => {
     const { subscriptionId, resourceGroupName, accountName, apiType } = params;
     const databaseEndpoint = getDatabaseEndpoint(apiType);

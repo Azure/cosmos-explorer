@@ -38,7 +38,9 @@ const getInitialCopyJobState = (): CopyJobContextState => {
 
 const CopyJobContextProvider: React.FC<CopyJobContextProviderProps> = (props) => {
     const config = useConfig();
-    const { isLoggedIn, armToken } = useAADAuth(config);
+    const { isLoggedIn, armToken, account } = useAADAuth(config);
+    const principalId = account?.localAccountId ?? "";
+
     const [copyJobState, setCopyJobState] = React.useState<CopyJobContextState>(getInitialCopyJobState());
     const [flow, setFlow] = React.useState<CopyJobFlowType | null>(null);
 
@@ -52,7 +54,7 @@ const CopyJobContextProvider: React.FC<CopyJobContextProviderProps> = (props) =>
     }
 
     return (
-        <CopyJobContext.Provider value={{ armToken, copyJobState, setCopyJobState, flow, setFlow, resetCopyJobState }}>
+        <CopyJobContext.Provider value={{ principalId, armToken, copyJobState, setCopyJobState, flow, setFlow, resetCopyJobState }}>
             {props.children}
         </CopyJobContext.Provider>
     );
