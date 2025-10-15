@@ -29,8 +29,12 @@ import MongoUtility from "Common/MongoUtility";
 import { QueryMetrics } from "Contracts/DataModels";
 import { QueryResults } from "Contracts/ViewModels";
 import { EditorReact } from "Explorer/Controls/Editor/EditorReact";
-import { parseIndexMetrics, renderImpactDots, type IndexMetricsResponse } from "Explorer/Tabs/QueryTab/IndexAdvisorUtils";
-import { IDocument, useQueryMetadataStore } from "Explorer/Tabs/QueryTab/QueryTabComponent";
+import {
+  parseIndexMetrics,
+  renderImpactDots,
+  type IndexMetricsResponse,
+} from "Explorer/Tabs/QueryTab/IndexAdvisorUtils";
+import { IDocument } from "Explorer/Tabs/QueryTab/QueryTabComponent";
 import { useQueryTabStyles } from "Explorer/Tabs/QueryTab/Styles";
 import React, { useCallback, useEffect, useState } from "react";
 import { userContext } from "UserContext";
@@ -38,6 +42,7 @@ import { logConsoleProgress } from "Utils/NotificationConsoleUtils";
 import create from "zustand";
 import { client } from "../../../Common/CosmosClient";
 import { handleError } from "../../../Common/ErrorHandlingUtils";
+import { sampleDataClient } from "../../../Common/SampleDataClient";
 import { ResultsViewProps } from "./QueryResultSection";
 import { useIndexAdvisorStyles } from "./StylesAdvisor";
 enum ResultsTabs {
@@ -544,9 +549,14 @@ export interface IIndexMetric {
   path?: string;
   composite?: { path: string; order: string }[];
 }
-export const IndexAdvisorTab: React.FC<{ queryResults?: QueryResults }> = ({ queryResults }) => {
+export const IndexAdvisorTab: React.FC<{
+  queryResults?: QueryResults;
+  queryEditorContent?: string;
+  databaseId?: string;
+  containerId?: string;
+}> = ({ queryResults, queryEditorContent, databaseId, containerId }) => {
   const style = useIndexAdvisorStyles();
-  const { userQuery, databaseId, containerId } = useQueryMetadataStore();
+
   const [loading, setLoading] = useState(false);
   const [indexMetrics, setIndexMetrics] = useState<IndexMetricsResponse | null>(null);
   const [showIncluded, setShowIncluded] = useState(true);
@@ -561,20 +571,21 @@ export const IndexAdvisorTab: React.FC<{ queryResults?: QueryResults }> = ({ que
   const indexingMetricsDocLink = "https://learn.microsoft.com/azure/cosmos-db/nosql/index-metrics";
 
   const fetchIndexMetrics = async () => {
-    if (!userQuery || !databaseId || !containerId) {
+    if (!queryEditorContent || !databaseId || !containerId) {
       return;
     }
 
     setLoading(true);
     const clearMessage = logConsoleProgress(`Querying items with IndexMetrics in container ${containerId}`);
     try {
-      const containerRef = client().database(databaseId).container(containerId);
-      const { resource: containerDef } = await containerRef.read();
-
       const querySpec = {
-        query: userQuery,
+        query: queryEditorContent,
       };
-      const sdkResponse = await client()
+
+      // Use sampleDataClient for CopilotSampleDB, regular client for other databases
+      const cosmosClient = databaseId === "CopilotSampleDB" ? sampleDataClient() : client();
+
+      const sdkResponse = await cosmosClient
         .database(databaseId)
         .container(containerId)
         .items.query(querySpec, {
@@ -582,9 +593,8 @@ export const IndexAdvisorTab: React.FC<{ queryResults?: QueryResults }> = ({ que
         })
         .fetchAll();
 
-      const parsedMetrics = typeof sdkResponse.indexMetrics === 'string'
-        ? JSON.parse(sdkResponse.indexMetrics)
-        : sdkResponse.indexMetrics;
+      const parsedMetrics =
+        typeof sdkResponse.indexMetrics === "string" ? JSON.parse(sdkResponse.indexMetrics) : sdkResponse.indexMetrics;
 
       setIndexMetrics(parsedMetrics);
     } catch (error) {
@@ -597,7 +607,7 @@ export const IndexAdvisorTab: React.FC<{ queryResults?: QueryResults }> = ({ que
 
   // Fetch index metrics when query results change (i.e., when Execute Query is clicked)
   useEffect(() => {
-    if (userQuery && databaseId && containerId && queryResults) {
+    if (queryEditorContent && databaseId && containerId && queryResults) {
       fetchIndexMetrics();
     }
   }, [queryResults]);
@@ -843,7 +853,14 @@ export const IndexAdvisorTab: React.FC<{ queryResults?: QueryResults }> = ({ que
     </div>
   );
 };
-export const ResultsView: React.FC<ResultsViewProps> = ({ isMongoDB, queryResults, executeQueryDocumentsPage }) => {
+export const ResultsView: React.FC<ResultsViewProps> = ({
+  isMongoDB,
+  queryResults,
+  executeQueryDocumentsPage,
+  queryEditorContent,
+  databaseId,
+  containerId,
+}) => {
   const styles = useQueryTabStyles();
   const [activeTab, setActiveTab] = useState<ResultsTabs>(ResultsTabs.Results);
 
@@ -884,7 +901,14 @@ export const ResultsView: React.FC<ResultsViewProps> = ({ isMongoDB, queryResult
           />
         )}
         {activeTab === ResultsTabs.QueryStats && <QueryStatsTab queryResults={queryResults} />}
-        {activeTab === ResultsTabs.IndexAdvisor && <IndexAdvisorTab queryResults={queryResults} />}
+        {activeTab === ResultsTabs.IndexAdvisor && (
+          <IndexAdvisorTab
+            queryResults={queryResults}
+            queryEditorContent={queryEditorContent}
+            databaseId={databaseId}
+            containerId={containerId}
+          />
+        )}
       </div>
     </div>
   );

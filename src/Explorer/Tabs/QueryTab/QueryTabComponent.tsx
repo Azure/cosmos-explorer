@@ -375,9 +375,9 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
       this._iterator = this.props.isPreferredApiMongoDB
         ? queryIterator(this.props.collection.databaseId, this.props.viewModelcollection, query)
         : queryDocuments(this.props.collection.databaseId, this.props.collection.id(), query, {
-          enableCrossPartitionQuery: HeadersUtility.shouldEnableCrossPartitionKey(),
-          abortSignal: this.queryAbortController.signal,
-        } as unknown as FeedOptions);
+            enableCrossPartitionQuery: HeadersUtility.shouldEnableCrossPartitionKey(),
+            abortSignal: this.queryAbortController.signal,
+          } as unknown as FeedOptions);
     }
 
     await this._queryDocumentsPage(firstItemIndex);
@@ -794,6 +794,8 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
                   errors={this.props.copilotStore?.errors}
                   isExecuting={this.props.copilotStore?.isExecuting}
                   queryResults={this.props.copilotStore?.queryResults}
+                  databaseId={this.props.collection.databaseId}
+                  containerId={this.props.collection.id()}
                   executeQueryDocumentsPage={(firstItemIndex: number) =>
                     QueryDocumentsPerPage(
                       firstItemIndex,
@@ -809,6 +811,8 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
                   errors={this.state.errors}
                   isExecuting={this.state.isExecuting}
                   queryResults={this.state.queryResults}
+                  databaseId={this.props.collection.databaseId}
+                  containerId={this.props.collection.id()}
                   executeQueryDocumentsPage={(firstItemIndex: number) =>
                     this._executeQueryDocumentsPage(firstItemIndex)
                   }

@@ -9,17 +9,27 @@ const mockRead = jest.fn();
 const mockLogConsoleProgress = jest.fn();
 const mockHandleError = jest.fn();
 
-const indexMetricsString = `
-Utilized Single Indexes
-Index Spec: /foo/?
-Index Impact Score: High
-Potential Single Indexes
-Index Spec: /bar/?
-Index Impact Score: Medium
-Utilized Composite Indexes
-Index Spec: /baz/? DESC, /qux/? ASC
-Index Impact Score: Low
-`;
+const indexMetricsResponse = {
+  UtilizedIndexes: {
+    SingleIndexes: [{ IndexSpec: "/foo/?", IndexImpactScore: "High" }],
+    CompositeIndexes: [{ IndexSpecs: ["/baz/? DESC", "/qux/? ASC"], IndexImpactScore: "Low" }],
+  },
+  PotentialIndexes: {
+    SingleIndexes: [{ IndexSpec: "/bar/?", IndexImpactScore: "Medium" }],
+    CompositeIndexes: [] as Array<{ IndexSpecs: string[]; IndexImpactScore?: string }>,
+  },
+};
+
+const mockQueryResults = {
+  documents: [] as unknown[],
+  hasMoreResults: false,
+  itemCount: 0,
+  firstItemIndex: 0,
+  lastItemIndex: 0,
+  requestCharge: 0,
+  activityId: "test-activity-id",
+};
+
 mockRead.mockResolvedValue({
   resource: {
     indexingPolicy: {
@@ -42,20 +52,13 @@ mockReplace.mockResolvedValue({
   },
 });
 
-jest.mock("./QueryTabComponent", () => ({
-  useQueryMetadataStore: () => ({
-    userQuery: "SELECT * FROM c",
-    databaseId: "db1",
-    containerId: "col1",
-  }),
-}));
 jest.mock("Common/CosmosClient", () => ({
   client: () => ({
     database: () => ({
       container: () => ({
         items: {
           query: () => ({
-            fetchAll: mockFetchAll.mockResolvedValueOnce({ indexMetrics: indexMetricsString }),
+            fetchAll: mockFetchAll.mockResolvedValue({ indexMetrics: indexMetricsResponse }),
           }),
         },
         read: mockRead,
@@ -71,7 +74,7 @@ jest.mock("./StylesAdvisor", () => ({
 jest.mock("../../../Utils/NotificationConsoleUtils", () => ({
   logConsoleProgress: (...args: unknown[]) => {
     mockLogConsoleProgress(...args);
-    return () => {};
+    return () => { };
   },
 }));
 
@@ -82,18 +85,32 @@ jest.mock("../../../Common/ErrorHandlingUtils", () => {
 });
 
 test("logs progress message when fetching index metrics", async () => {
-  render(<IndexAdvisorTab />);
+  render(
+    <IndexAdvisorTab
+      queryResults={mockQueryResults}
+      queryEditorContent="SELECT * FROM c"
+      databaseId="db1"
+      containerId="col1"
+    />,
+  );
   await waitFor(() => expect(mockLogConsoleProgress).toHaveBeenCalledWith(expect.stringContaining("IndexMetrics")));
 });
 test("renders both Included and Not Included sections after loading", async () => {
-  render(<IndexAdvisorTab />);
+  render(
+    <IndexAdvisorTab
+      queryResults={mockQueryResults}
+      queryEditorContent="SELECT * FROM c"
+      databaseId="db1"
+      containerId="col1"
+    />,
+  );
   await waitFor(() => expect(screen.getByText("Included in Current Policy")).toBeInTheDocument());
   expect(screen.getByText("Not Included in Current Policy")).toBeInTheDocument();
   expect(screen.getByText("/foo/?")).toBeInTheDocument();
   expect(screen.getByText("/bar/?")).toBeInTheDocument();
 });
 test("shows update button only when an index is selected", async () => {
-  render(<IndexAdvisorTab />);
+  render(<IndexAdvisorTab queryEditorContent="SELECT * FROM c" databaseId="db1" containerId="col1" />);
   await waitFor(() => expect(screen.getByText("/bar/?")).toBeInTheDocument());
   const checkboxes = screen.getAllByRole("checkbox");
   expect(checkboxes.length).toBeGreaterThan(1);
@@ -104,7 +121,7 @@ test("shows update button only when an index is selected", async () => {
   expect(screen.queryByText(/Update Indexing Policy/)).not.toBeInTheDocument();
 });
 test("calls replace when update policy is confirmed", async () => {
-  render(<IndexAdvisorTab />);
+  render(<IndexAdvisorTab queryEditorContent="SELECT * FROM c" databaseId="db1" containerId="col1" />);
   await waitFor(() => expect(screen.getByText("/bar/?")).toBeInTheDocument());
   const checkboxes = screen.getAllByRole("checkbox");
   fireEvent.click(checkboxes[1]);
@@ -114,7 +131,7 @@ test("calls replace when update policy is confirmed", async () => {
 });
 
 test("calls replace when update button is clicked", async () => {
-  render(<IndexAdvisorTab />);
+  render(<IndexAdvisorTab queryEditorContent="SELECT * FROM c" databaseId="db1" containerId="col1" />);
   await waitFor(() => expect(screen.getByText("/bar/?")).toBeInTheDocument());
   const checkboxes = screen.getAllByRole("checkbox");
   fireEvent.click(checkboxes[1]); // Select /bar/?
@@ -123,14 +140,14 @@ test("calls replace when update button is clicked", async () => {
 });
 
 test("fetches indexing policy via read", async () => {
-  render(<IndexAdvisorTab />);
+  render(<IndexAdvisorTab queryEditorContent="SELECT * FROM c" databaseId="db1" containerId="col1" />);
   await waitFor(() => {
     expect(mockRead).toHaveBeenCalled();
   });
 });
 
 test("selects all indexes when select-all is clicked", async () => {
-  render(<IndexAdvisorTab />);
+  render(<IndexAdvisorTab queryEditorContent="SELECT * FROM c" databaseId="db1" containerId="col1" />);
   await waitFor(() => expect(screen.getByText("/bar/?")).toBeInTheDocument());
   const checkboxes = screen.getAllByRole("checkbox");
 
@@ -141,22 +158,22 @@ test("selects all indexes when select-all is clicked", async () => {
 });
 
 test("shows spinner while loading and hides after fetchIndexMetrics resolves", async () => {
-  render(<IndexAdvisorTab />);
+  render(<IndexAdvisorTab queryEditorContent="SELECT * FROM c" databaseId="db1" containerId="col1" />);
   expect(screen.getByRole("progressbar")).toBeInTheDocument();
   await waitFor(() => expect(screen.queryByRole("progressbar")).not.toBeInTheDocument());
 });
 
 test("calls fetchAll with correct query and options", async () => {
-  render(<IndexAdvisorTab />);
+  render(<IndexAdvisorTab queryEditorContent="SELECT * FROM c" databaseId="db1" containerId="col1" />);
   await waitFor(() => expect(mockFetchAll).toHaveBeenCalled());
 });
 test("renders IndexAdvisorTab when clicked from ResultsView", async () => {
-  render(<IndexAdvisorTab />);
+  render(<IndexAdvisorTab queryEditorContent="SELECT * FROM c" databaseId="db1" containerId="col1" />);
   await waitFor(() => expect(screen.getByText("Included in Current Policy")).toBeInTheDocument());
   expect(screen.getByText("/foo/?")).toBeInTheDocument();
 });
 test("renders index metrics from SDK response", async () => {
-  render(<IndexAdvisorTab />);
+  render(<IndexAdvisorTab queryEditorContent="SELECT * FROM c" databaseId="db1" containerId="col1" />);
   await waitFor(() => expect(screen.getByText("/foo/?")).toBeInTheDocument());
   expect(screen.getByText("/bar/?")).toBeInTheDocument();
   expect(screen.getByText("/baz/? DESC, /qux/? ASC")).toBeInTheDocument();
@@ -164,20 +181,20 @@ test("renders index metrics from SDK response", async () => {
 
 test("calls handleError if fetchIndexMetrics throws", async () => {
   mockFetchAll.mockRejectedValueOnce(new Error("fail"));
-  render(<IndexAdvisorTab />);
+  render(<IndexAdvisorTab queryEditorContent="SELECT * FROM c" databaseId="db1" containerId="col1" />);
   await waitFor(() => expect(mockHandleError).toHaveBeenCalled());
 });
 
 test("calls handleError if fetchIndexMetrics throws2nd", async () => {
   mockFetchAll.mockRejectedValueOnce(new Error("fail"));
 
-  render(<IndexAdvisorTab />);
+  render(<IndexAdvisorTab queryEditorContent="SELECT * FROM c" databaseId="db1" containerId="col1" />);
   await waitFor(() => expect(mockHandleError).toHaveBeenCalled());
   expect(screen.queryByRole("status")).not.toBeInTheDocument();
 });
 
 test("IndexingPolicyStore stores updated policy on componentDidMount", async () => {
-  render(<IndexAdvisorTab />);
+  render(<IndexAdvisorTab queryEditorContent="SELECT * FROM c" databaseId="db1" containerId="col1" />);
   await waitFor(() => expect(mockRead).toHaveBeenCalled());
 
   const readResult = await mockRead.mock.results[0].value;
@@ -190,7 +207,7 @@ test("IndexingPolicyStore stores updated policy on componentDidMount", async () 
 });
 
 test("refreshCollectionData updates observable and re-renders", async () => {
-  render(<IndexAdvisorTab />);
+  render(<IndexAdvisorTab queryEditorContent="SELECT * FROM c" databaseId="db1" containerId="col1" />);
   await waitFor(() => expect(screen.getByText("/bar/?")).toBeInTheDocument());
 
   const checkboxes = screen.getAllByRole("checkbox");
