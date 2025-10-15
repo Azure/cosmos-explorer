@@ -1,5 +1,6 @@
 import React from "react";
 import { DatabaseAccount, Subscription } from "../../../../../../Contracts/DataModels";
+import { CopyJobMigrationType } from "../../../../Enums";
 import { CopyJobContextProviderType, CopyJobContextState, DropdownOptionType } from "../../../../Types";
 
 export function useDropdownOptions(
@@ -67,7 +68,7 @@ export function useEventHandlers(setCopyJobState: setCopyJobStateType) {
         (_ev?: React.FormEvent<HTMLElement>, checked?: boolean) => {
             setCopyJobState((prevState: CopyJobContextState) => ({
                 ...prevState,
-                migrationType: checked ? "offline" : "online",
+                migrationType: checked ? CopyJobMigrationType.Offline : CopyJobMigrationType.Online,
             }));
         },
         [setCopyJobState]
