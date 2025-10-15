@@ -5,6 +5,7 @@ import { useDatabaseAccounts } from "../../../../../hooks/useDatabaseAccounts";
 import { useSubscriptions } from "../../../../../hooks/useSubscriptions";
 import ContainerCopyMessages from "../../../ContainerCopyMessages";
 import { useCopyJobContext } from "../../../Context/CopyJobContext";
+import { CopyJobMigrationType } from "../../../Enums";
 import { AccountDropdown } from "./Components/AccountDropdown";
 import { MigrationTypeCheckbox } from "./Components/MigrationTypeCheckbox";
 import { SubscriptionDropdown } from "./Components/SubscriptionDropdown";
@@ -18,12 +19,13 @@ const SelectAccount = React.memo(
         const selectedSubscriptionId = copyJobState?.source?.subscription?.subscriptionId;
 
         const subscriptions: Subscription[] = useSubscriptions(armToken);
-        const accounts: DatabaseAccount[] = useDatabaseAccounts(selectedSubscriptionId, armToken);
+        const allAccounts: DatabaseAccount[] = useDatabaseAccounts(selectedSubscriptionId, armToken);
+        const sqlApiOnlyAccounts: DatabaseAccount[] = allAccounts?.filter(account => account.type === "SQL" || account.kind === "GlobalDocumentDB");
 
-        const { subscriptionOptions, accountOptions } = useDropdownOptions(subscriptions, accounts);
+        const { subscriptionOptions, accountOptions } = useDropdownOptions(subscriptions, sqlApiOnlyAccounts);
         const { handleSelectSourceAccount, handleMigrationTypeChange } = useEventHandlers(setCopyJobState);
 
-        const migrationTypeChecked = copyJobState?.migrationType === "offline";
+        const migrationTypeChecked = copyJobState?.migrationType === CopyJobMigrationType.Offline;
 
         return (
             <Stack className="selectAccountContainer" tokens={{ childrenGap: 15 }}>

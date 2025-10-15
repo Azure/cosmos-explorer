@@ -2,6 +2,7 @@ import { DatabaseAccount, Subscription } from "Contracts/DataModels";
 import React from "react";
 import { ApiType } from "UserContext";
 import Explorer from "../../Explorer";
+import { CopyJobMigrationType } from "../Enums";
 
 export interface ContainerCopyProps {
 	container: Explorer;
@@ -68,7 +69,7 @@ export interface DatabaseContainerSectionProps {
 
 export interface CopyJobContextState {
 	jobName: string;
-	migrationType: "online" | "offline";
+	migrationType: CopyJobMigrationType;
 	// source details
 	source: {
 		subscription: Subscription;

@@ -1,5 +1,6 @@
 import React from "react";
 import { CopyJobContextState } from "../../Types";
+import AssignPermissions from "../Screens/AssignPermissions";
 import PreviewCopyJob from "../Screens/PreviewCopyJob";
 import SelectAccount from "../Screens/SelectAccount";
 import SelectSourceAndTargetContainers from "../Screens/SelectSourceAndTargetContainers";
@@ -8,6 +9,7 @@ const SCREEN_KEYS = {
     SelectAccount: "SelectAccount",
     SelectSourceAndTargetContainers: "SelectSourceAndTargetContainers",
     PreviewCopyJob: "PreviewCopyJob",
+    AssignPermissions: "AssignPermissions",
 };
 
 type Validation = {
@@ -29,7 +31,7 @@ function useCreateCopyJobScreensList() {
                 component: <SelectAccount />,
                 validations: [
                     {
-                        validate: (state) => !!state?.source?.subscription && !!state?.source?.account,
+                        validate: (state: CopyJobContextState) => !!state?.source?.subscription && !!state?.source?.account,
                         message: "Please select a subscription and account to proceed",
                     },
                 ],
@@ -39,7 +41,7 @@ function useCreateCopyJobScreensList() {
                 component: <SelectSourceAndTargetContainers />,
                 validations: [
                     {
-                        validate: (state) => (
+                        validate: (state: CopyJobContextState) => (
                             !!state?.source?.databaseId && !!state?.source?.containerId && !!state?.target?.databaseId && !!state?.target?.containerId
                         ),
                         message: "Please select source and target containers to proceed",
@@ -49,6 +51,16 @@ function useCreateCopyJobScreensList() {
             {
                 key: SCREEN_KEYS.PreviewCopyJob,
                 component: <PreviewCopyJob />,
+                validations: [
+                    {
+                        validate: (state: CopyJobContextState) => !!state?.jobName,
+                        message: "Please enter a job name to proceed",
+                    },
+                ],
+            },
+            {
+                key: SCREEN_KEYS.AssignPermissions,
+                component: <AssignPermissions />,
                 validations: [],
             },
         ],
