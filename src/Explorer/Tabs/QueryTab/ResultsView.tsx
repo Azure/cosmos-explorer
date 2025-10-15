@@ -27,8 +27,9 @@ import copy from "clipboard-copy";
 import { HttpHeaders } from "Common/Constants";
 import MongoUtility from "Common/MongoUtility";
 import { QueryMetrics } from "Contracts/DataModels";
+import { QueryResults } from "Contracts/ViewModels";
 import { EditorReact } from "Explorer/Controls/Editor/EditorReact";
-import { parseIndexMetrics, renderImpactDots } from "Explorer/Tabs/QueryTab/IndexAdvisorUtils";
+import { parseIndexMetrics, renderImpactDots, type IndexMetricsResponse } from "Explorer/Tabs/QueryTab/IndexAdvisorUtils";
 import { IDocument, useQueryMetadataStore } from "Explorer/Tabs/QueryTab/QueryTabComponent";
 import { useQueryTabStyles } from "Explorer/Tabs/QueryTab/Styles";
 import React, { useCallback, useEffect, useState } from "react";
@@ -394,9 +395,8 @@ const QueryStatsTab: React.FC<Pick<ResultsViewProps, "queryResults">> = ({ query
         },
         {
           metric: "User defined function execution time",
-          value: `${
-            aggregatedQueryMetrics.runtimeExecutionTimes?.userDefinedFunctionExecutionTime?.toString() || 0
-          } ms`,
+          value: `${aggregatedQueryMetrics.runtimeExecutionTimes?.userDefinedFunctionExecutionTime?.toString() || 0
+            } ms`,
           toolTip: "Total time spent executing user-defined functions",
         },
         {
@@ -544,11 +544,11 @@ export interface IIndexMetric {
   path?: string;
   composite?: { path: string; order: string }[];
 }
-export const IndexAdvisorTab: React.FC = () => {
+export const IndexAdvisorTab: React.FC<{ queryResults?: QueryResults }> = ({ queryResults }) => {
   const style = useIndexAdvisorStyles();
   const { userQuery, databaseId, containerId } = useQueryMetadataStore();
-  const [loading, setLoading] = useState(true);
-  const [indexMetrics, setIndexMetrics] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [indexMetrics, setIndexMetrics] = useState<IndexMetricsResponse | null>(null);
   const [showIncluded, setShowIncluded] = useState(true);
   const [showNotIncluded, setShowNotIncluded] = useState(true);
   const [selectedIndexes, setSelectedIndexes] = useState<IIndexMetric[]>([]);
@@ -560,32 +560,47 @@ export const IndexAdvisorTab: React.FC = () => {
   const [justUpdatedPolicy, setJustUpdatedPolicy] = useState(false);
   const indexingMetricsDocLink = "https://learn.microsoft.com/azure/cosmos-db/nosql/index-metrics";
 
+  const fetchIndexMetrics = async () => {
+    if (!userQuery || !databaseId || !containerId) {
+      return;
+    }
+
+    setLoading(true);
+    const clearMessage = logConsoleProgress(`Querying items with IndexMetrics in container ${containerId}`);
+    try {
+      const containerRef = client().database(databaseId).container(containerId);
+      const { resource: containerDef } = await containerRef.read();
+
+      const querySpec = {
+        query: userQuery,
+      };
+      const sdkResponse = await client()
+        .database(databaseId)
+        .container(containerId)
+        .items.query(querySpec, {
+          populateIndexMetrics: true,
+        })
+        .fetchAll();
+
+      const parsedMetrics = typeof sdkResponse.indexMetrics === 'string'
+        ? JSON.parse(sdkResponse.indexMetrics)
+        : sdkResponse.indexMetrics;
+
+      setIndexMetrics(parsedMetrics);
+    } catch (error) {
+      handleError(error, "queryItemsWithIndexMetrics", `Error querying items from ${containerId}`);
+    } finally {
+      clearMessage();
+      setLoading(false);
+    }
+  };
+
+  // Fetch index metrics when query results change (i.e., when Execute Query is clicked)
   useEffect(() => {
-    const fetchIndexMetrics = async () => {
-      const clearMessage = logConsoleProgress(`Querying items with IndexMetrics in container ${containerId}`);
-      try {
-        const querySpec = {
-          query: userQuery,
-        };
-        const sdkResponse = await client()
-          .database(databaseId)
-          .container(containerId)
-          .items.query(querySpec, {
-            populateIndexMetrics: true,
-          })
-          .fetchAll();
-        setIndexMetrics(sdkResponse.indexMetrics);
-      } catch (error) {
-        handleError(error, "queryItemsWithIndexMetrics", `Error querying items from ${containerId}`);
-      } finally {
-        clearMessage();
-        setLoading(false);
-      }
-    };
-    if (userQuery && databaseId && containerId) {
+    if (userQuery && databaseId && containerId && queryResults) {
       fetchIndexMetrics();
     }
-  }, [userQuery, databaseId, containerId]);
+  }, [queryResults]);
 
   useEffect(() => {
     if (!indexMetrics) {
@@ -869,7 +884,7 @@ export const ResultsView: React.FC<ResultsViewProps> = ({ isMongoDB, queryResult
           />
         )}
         {activeTab === ResultsTabs.QueryStats && <QueryStatsTab queryResults={queryResults} />}
-        {activeTab === ResultsTabs.IndexAdvisor && <IndexAdvisorTab />}
+        {activeTab === ResultsTabs.IndexAdvisor && <IndexAdvisorTab queryResults={queryResults} />}
       </div>
     </div>
   );
