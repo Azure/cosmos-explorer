@@ -86,6 +86,73 @@ export async function getTestExplorerUrl(accountType: TestAccount, iframeSrc?: s
   // For now, since we don't test copilot, we can disable the copilot APIs by setting the feature flag to false.
   params.set("feature.enableCopilot", "false");
 
+  const nosqlRbacToken = process.env.NOSQL_TESTACCOUNT_TOKEN;
+  const nosqlReadOnlyRbacToken = process.env.NOSQL_READONLY_TESTACCOUNT_TOKEN;
+  const tableRbacToken = process.env.TABLE_TESTACCOUNT_TOKEN;
+  const gremlinRbacToken = process.env.GREMLIN_TESTACCOUNT_TOKEN;
+  const cassandraRbacToken = process.env.CASSANDRA_TESTACCOUNT_TOKEN;
+  const mongoRbacToken = process.env.MONGO_TESTACCOUNT_TOKEN;
+  const mongo32RbacToken = process.env.MONGO32_TESTACCOUNT_TOKEN;
+  const mongoReadOnlyRbacToken = process.env.MONGO_READONLY_TESTACCOUNT_TOKEN;
+
+  switch (accountType) {
+    case TestAccount.SQL:
+      if (nosqlRbacToken) {
+        params.set("nosqlRbacToken", nosqlRbacToken);
+        params.set("enableaaddataplane", "true");
+      }
+      break;
+
+    case TestAccount.SQLReadOnly:
+      if (nosqlReadOnlyRbacToken) {
+        params.set("nosqlReadOnlyRbacToken", nosqlReadOnlyRbacToken);
+        params.set("enableaaddataplane", "true");
+      }
+      break;
+
+    case TestAccount.Tables:
+      if (tableRbacToken) {
+        params.set("tableRbacToken", tableRbacToken);
+        params.set("enableaaddataplane", "true");
+      }
+      break;
+
+    case TestAccount.Gremlin:
+      if (gremlinRbacToken) {
+        params.set("gremlinRbacToken", gremlinRbacToken);
+        params.set("enableaaddataplane", "true");
+      }
+      break;
+
+    case TestAccount.Cassandra:
+      if (cassandraRbacToken) {
+        params.set("cassandraRbacToken", cassandraRbacToken);
+        params.set("enableaaddataplane", "true");
+      }
+      break;
+
+    case TestAccount.Mongo:
+      if (mongoRbacToken) {
+        params.set("mongoRbacToken", mongoRbacToken);
+        params.set("enableaaddataplane", "true");
+      }
+      break;
+
+    case TestAccount.Mongo32:
+      if (mongo32RbacToken) {
+        params.set("mongo32RbacToken", mongo32RbacToken);
+        params.set("enableaaddataplane", "true");
+      }
+      break;
+
+    case TestAccount.MongoReadonly:
+      if (mongoReadOnlyRbacToken) {
+        params.set("mongoReadOnlyRbacToken", mongoReadOnlyRbacToken);
+        params.set("enableaaddataplane", "true");
+      }
+      break;
+  }
+
   if (iframeSrc) {
     params.set("iframeSrc", iframeSrc);
   }

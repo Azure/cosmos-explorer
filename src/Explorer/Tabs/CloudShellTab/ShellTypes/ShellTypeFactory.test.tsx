@@ -7,12 +7,24 @@ import { PostgresShellHandler } from "./PostgresShellHandler";
 import { getHandler, getKey } from "./ShellTypeFactory";
 import { VCoreMongoShellHandler } from "./VCoreMongoShellHandler";
 
+interface UserContextType {
+  databaseAccount: { name: string };
+  subscriptionId: string;
+  resourceGroup: string;
+  features: { enableAadDataPlane: boolean };
+  dataPlaneRbacEnabled: boolean;
+  aadToken?: string;
+  apiType?: string;
+}
+
 // Mock dependencies
 jest.mock("../../../../UserContext", () => ({
   userContext: {
     databaseAccount: { name: "testDbName" },
     subscriptionId: "testSubId",
     resourceGroup: "testResourceGroup",
+    features: { enableAadDataPlane: false },
+    dataPlaneRbacEnabled: false,
   },
 }));
 
@@ -108,6 +120,34 @@ describe("ShellTypeHandlerFactory", () => {
       const key = await getKey();
       expect(key).toBe(mockKey);
       expect(listKeys).toHaveBeenCalledWith("testSubId", "testResourceGroup", "testDbName");
+    });
+
+    it("should return MongoShellHandler with primaryMasterKey for TerminalKind.Mongo when RBAC is disabled", async () => {
+      (listKeys as jest.Mock).mockResolvedValue({ primaryMasterKey: "primaryKey123" });
+      (userContext as UserContextType).features.enableAadDataPlane = false;
+      (userContext as UserContextType).dataPlaneRbacEnabled = false;
+      const handler = await getHandler(TerminalKind.Mongo);
+      expect(handler).toBeInstanceOf(MongoShellHandler);
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      expect(handler.key).toBe("primaryKey123");
+    });
+
+    it("should return MongoShellHandler with aadToken for TerminalKind.Mongo when RBAC is enabled", async () => {
+      (userContext as UserContextType).aadToken = "aadToken123";
+      (userContext as UserContextType).features.enableAadDataPlane = true;
+      (userContext as UserContextType).dataPlaneRbacEnabled = true;
+      (userContext as UserContextType).apiType = "Mongo";
+      const handler = await getHandler(TerminalKind.Mongo);
+      expect(handler).toBeInstanceOf(MongoShellHandler);
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      expect(handler.key).toBe("aadToken123");
+    });
+    it("should throw error for unsupported shell type", async () => {
+      await expect(getHandler("UnknownShell" as unknown as TerminalKind)).rejects.toThrow(
+        "Unsupported shell type: UnknownShell",
+      );
     });
   });
 });

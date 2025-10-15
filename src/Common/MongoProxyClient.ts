@@ -1,4 +1,5 @@
 import { Constants as CosmosSDKConstants } from "@azure/cosmos";
+import { getMongoGuidRepresentation } from "Shared/StorageUtility";
 import { AuthType } from "../AuthType";
 import { configContext } from "../ConfigContext";
 import * as DataModels from "../Contracts/DataModels";
@@ -6,6 +7,7 @@ import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { Collection } from "../Contracts/ViewModels";
 import DocumentId from "../Explorer/Tree/DocumentId";
 import { userContext } from "../UserContext";
+import { isDataplaneRbacEnabledForProxyApi } from "../Utils/AuthorizationUtils";
 import { logConsoleError } from "../Utils/NotificationConsoleUtils";
 import { ApiType, ContentType, HttpHeaders, HttpStatusCodes } from "./Constants";
 import { MinimalQueryIterator } from "./IteratorUtilities";
@@ -21,7 +23,13 @@ function authHeaders() {
   if (userContext.authType === AuthType.EncryptedToken) {
     return { [HttpHeaders.guestAccessToken]: userContext.accessToken };
   } else {
-    return { [HttpHeaders.authorization]: userContext.authorizationToken };
+    const headers: { [key: string]: string } = {
+      [HttpHeaders.authorization]: userContext.authorizationToken,
+    };
+    if (isDataplaneRbacEnabledForProxyApi(userContext)) {
+      headers[HttpHeaders.entraIdToken] = userContext.aadToken;
+    }
+    return headers;
   }
 }
 
@@ -139,6 +147,9 @@ export function readDocument(
       documentId && documentId.partitionKey && !documentId.partitionKey.systemKey
         ? documentId.partitionKeyProperties?.[0]
         : "",
+    clientSettings: {
+      guidRepresentation: getMongoGuidRepresentation(),
+    },
   };
 
   const endpoint = getEndpoint(configContext.MONGO_PROXY_ENDPOINT);
@@ -181,6 +192,9 @@ export function createDocument(
     partitionKey:
       collection && collection.partitionKey && !collection.partitionKey.systemKey ? partitionKeyProperty : "",
     documentContent: JSON.stringify(documentContent),
+    clientSettings: {
+      guidRepresentation: getMongoGuidRepresentation(),
+    },
   };
 
   const endpoint = getEndpoint(configContext.MONGO_PROXY_ENDPOINT);
@@ -228,6 +242,9 @@ export function updateDocument(
         ? documentId.partitionKeyProperties?.[0]
         : "",
     documentContent,
+    clientSettings: {
+      guidRepresentation: getMongoGuidRepresentation(),
+    },
   };
   const endpoint = getEndpoint(configContext.MONGO_PROXY_ENDPOINT);
 
@@ -274,6 +291,9 @@ export function deleteDocuments(
     subscriptionID: userContext.subscriptionId,
     resourceGroup: userContext.resourceGroup,
     databaseAccountName: databaseAccount.name,
+    clientSettings: {
+      guidRepresentation: getMongoGuidRepresentation(),
+    },
   };
   const endpoint = getEndpoint(configContext.MONGO_PROXY_ENDPOINT);
 

@@ -138,13 +138,12 @@ export enum MongoBackendEndpointType {
   remote,
 }
 
-export class BackendApi {
-  public static readonly GenerateToken: string = "GenerateToken";
-  public static readonly PortalSettings: string = "PortalSettings";
-  public static readonly AccountRestrictions: string = "AccountRestrictions";
-  public static readonly RuntimeProxy: string = "RuntimeProxy";
-  public static readonly DisallowedLocations: string = "DisallowedLocations";
-  public static readonly SampleData: string = "SampleData";
+export class AadScopeEndpoints {
+  public static readonly Development: string = "https://cosmos.azure.com";
+  public static readonly MPAC: string = "https://cosmos.azure.com";
+  public static readonly Prod: string = "https://cosmos.azure.com";
+  public static readonly Fairfax: string = "https://cosmos.azure.us";
+  public static readonly Mooncake: string = "https://cosmos.azure.cn";
 }
 
 export class PortalBackendEndpoints {
@@ -264,6 +263,7 @@ export class HttpHeaders {
   public static activityId: string = "x-ms-activity-id";
   public static apiType: string = "x-ms-cosmos-apitype";
   public static authorization: string = "authorization";
+  public static entraIdToken: string = "x-ms-entraid-token";
   public static collectionIndexTransformationProgress: string =
     "x-ms-documentdb-collection-index-transformation-progress";
   public static continuation: string = "x-ms-continuation";
@@ -774,3 +774,10 @@ export const ShortenedQueryCopilotSampleContainerSchema = {
 
   userPrompt: "find all products",
 };
+
+export enum MongoGuidRepresentation {
+  Standard = "Standard",
+  CSharpLegacy = "CSharpLegacy",
+  JavaLegacy = "JavaLegacy",
+  PythonLegacy = "PythonLegacy",
+}

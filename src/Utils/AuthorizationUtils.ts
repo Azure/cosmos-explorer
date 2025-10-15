@@ -1,5 +1,7 @@
 import * as msal from "@azure/msal-browser";
+import { getEnvironmentScopeEndpoint } from "Common/EnvironmentUtility";
 import { Action, ActionModifiers } from "Shared/Telemetry/TelemetryConstants";
+import { hasProxyServer, isDataplaneRbacSupported } from "Utils/APITypeUtils";
 import { AuthType } from "../AuthType";
 import * as Constants from "../Common/Constants";
 import * as Logger from "../Common/Logger";
@@ -7,7 +9,7 @@ import { configContext } from "../ConfigContext";
 import { DatabaseAccount } from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
 import { trace, traceFailure } from "../Shared/Telemetry/TelemetryProcessor";
-import { userContext } from "../UserContext";
+import { UserContext, userContext } from "../UserContext";
 
 export function getAuthorizationHeader(): ViewModels.AuthorizationTokenHeaderMetadata {
   if (userContext.authType === AuthType.EncryptedToken) {
@@ -73,10 +75,12 @@ export async function acquireMsalTokenForAccount(
   if (userContext.databaseAccount.properties?.documentEndpoint === undefined) {
     throw new Error("Database account has no document endpoint defined");
   }
-  const hrefEndpoint = new URL(userContext.databaseAccount.properties.documentEndpoint).href.replace(
-    /\/+$/,
-    "/.default",
-  );
+  let hrefEndpoint = "";
+  if (isDataplaneRbacEnabledForProxyApi(userContext)) {
+    hrefEndpoint = getEnvironmentScopeEndpoint();
+  } else {
+    hrefEndpoint = new URL(userContext.databaseAccount.properties.documentEndpoint).href.replace(/\/+$/, "/.default");
+  }
   const msalInstance = await getMsalInstance();
   const knownAccounts = msalInstance.getAllAccounts();
   // If user_hint is provided, we will try to use it to find the account.
@@ -178,4 +182,15 @@ export async function acquireTokenWithMsal(
       throw silentError;
     }
   }
+}
+
+export function useDataplaneRbacAuthorization(userContext: UserContext): boolean {
+  return (
+    userContext.features?.enableAadDataPlane ||
+    (userContext.dataPlaneRbacEnabled && isDataplaneRbacSupported(userContext.apiType))
+  );
+}
+
+export function isDataplaneRbacEnabledForProxyApi(userContext: UserContext): boolean {
+  return useDataplaneRbacAuthorization(userContext) && hasProxyServer(userContext.apiType);
 }

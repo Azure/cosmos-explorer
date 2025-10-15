@@ -1,4 +1,4 @@
-import { AbstractShellHandler, DISABLE_HISTORY, START_MARKER, EXIT_COMMAND } from "./AbstractShellHandler";
+import { AbstractShellHandler, DISABLE_HISTORY, EXIT_COMMAND, START_MARKER } from "./AbstractShellHandler";
 
 // Mock implementation for testing
 class MockShellHandler extends AbstractShellHandler {
@@ -18,8 +18,8 @@ class MockShellHandler extends AbstractShellHandler {
     return "mock-endpoint";
   }
 
-  getTerminalSuppressedData(): string {
-    return "suppressed-data";
+  getTerminalSuppressedData(): string[] {
+    return ["suppressed-data"];
   }
 }
 
@@ -90,7 +90,7 @@ describe("AbstractShellHandler", () => {
     });
 
     it("should return the terminal suppressed data", () => {
-      expect(shellHandler.getTerminalSuppressedData()).toBe("suppressed-data");
+      expect(shellHandler.getTerminalSuppressedData()).toEqual(["suppressed-data"]);
     });
   });
 });

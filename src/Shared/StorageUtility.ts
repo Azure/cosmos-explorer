@@ -1,3 +1,4 @@
+import { MongoGuidRepresentation } from "Common/Constants";
 import { SplitterDirection } from "Common/Splitter";
 import * as LocalStorageUtility from "./LocalStorageUtility";
 import * as SessionStorageUtility from "./SessionStorageUtility";
@@ -33,6 +34,7 @@ export enum StorageKey {
   DocumentsTabPrefs,
   DefaultQueryResultsView,
   AppState,
+  MongoGuidRepresentation,
 }
 
 export const hasRUThresholdBeenConfigured = (): boolean => {
@@ -63,6 +65,15 @@ export const getDefaultQueryResultsView = (): SplitterDirection => {
     return SplitterDirection.Vertical;
   }
   return SplitterDirection.Horizontal;
+};
+
+export const getMongoGuidRepresentation = (): MongoGuidRepresentation => {
+  const mongoGuidRepresentation: string | null = LocalStorageUtility.getEntryString(StorageKey.MongoGuidRepresentation);
+  if (mongoGuidRepresentation) {
+    return mongoGuidRepresentation as MongoGuidRepresentation;
+  }
+
+  return MongoGuidRepresentation.CSharpLegacy;
 };
 
 export const DefaultRUThreshold = 5000;

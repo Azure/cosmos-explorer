@@ -22,6 +22,7 @@ import { formatErrorMessage, formatInfoMessage, formatWarningMessage } from "./U
 
 // Constants
 const DEFAULT_CLOUDSHELL_REGION = "westus";
+const DEFAULT_FAIRFAX_CLOUDSHELL_REGION = "usgovvirginia";
 const POLLING_INTERVAL_MS = 2000;
 const MAX_RETRY_COUNT = 10;
 const MAX_PING_COUNT = 120 * 60; // 120 minutes (60 seconds/minute)
@@ -44,32 +45,26 @@ export const startCloudShellTerminal = async (terminal: Terminal, shellType: Ter
 
     resolvedRegion = determineCloudShellRegion();
 
-    resolvedRegion = determineCloudShellRegion();
-
     terminal.writeln(formatWarningMessage("⚠️  IMPORTANT: Azure Cloud Shell Region Notice ⚠️"));
     terminal.writeln(
       formatInfoMessage(
         "The Cloud Shell environment will operate in a region that may differ from your database's region.",
       ),
     );
-    terminal.writeln(formatInfoMessage("This has two potential implications:"));
+    terminal.writeln(formatInfoMessage("By using this feature, you acknowledge and agree to the following"));
     terminal.writeln(formatInfoMessage("1. Performance Impact:"));
     terminal.writeln(
       formatInfoMessage("   Commands may experience higher latency due to geographic distance between regions."),
     );
-    terminal.writeln(formatInfoMessage("2. Data Compliance Considerations:"));
+    terminal.writeln(formatInfoMessage("2. Data Transfers:"));
     terminal.writeln(
       formatInfoMessage(
-        "   Data processed through this shell could temporarily reside in a different geographic region,",
+        "   Data processed through this Cloud Shell service can be processed outside of your tenant's geographical region, compliance boundary or national cloud instance.",
       ),
     );
-    terminal.writeln(
-      formatInfoMessage("   which may affect compliance with data residency requirements or regulations specific"),
-    );
-    terminal.writeln(formatInfoMessage("   to your organization."));
     terminal.writeln("");
 
-    terminal.writeln("\x1b[94mFor more information on Azure Cosmos DB data governance and compliance, please visit:");
+    terminal.writeln("\x1b[94mFor more information on Azure Cosmos DB data residency, please visit:");
     terminal.writeln("\x1b[94mhttps://learn.microsoft.com/en-us/azure/cosmos-db/data-residency\x1b[0m");
 
     // Ask for user consent for region
@@ -159,7 +154,9 @@ export const ensureCloudShellProviderRegistered = async (): Promise<void> => {
  * Determines the appropriate CloudShell region
  */
 export const determineCloudShellRegion = (): string => {
-  return getNormalizedRegion(userContext.databaseAccount?.location, DEFAULT_CLOUDSHELL_REGION);
+  const defaultRegion =
+    userContext.portalEnv === "fairfax" ? DEFAULT_FAIRFAX_CLOUDSHELL_REGION : DEFAULT_CLOUDSHELL_REGION;
+  return getNormalizedRegion(userContext.databaseAccount?.location, defaultRegion);
 };
 
 /**

@@ -4,6 +4,10 @@ import { FabricMessageTypes } from "Contracts/FabricMessageTypes";
 import { CosmosDbArtifactType, ResourceTokenInfo } from "Contracts/FabricMessagesContract";
 import { FabricArtifactInfo, updateUserContext, userContext } from "UserContext";
 import { logConsoleError } from "Utils/NotificationConsoleUtils";
+import * as AutoPilotUtils from "../../Utils/AutoPilotUtils";
+
+// Fabric Native accounts are always autoscale and have a fixed throughput of 5K
+export const DEFAULT_FABRIC_NATIVE_CONTAINER_THROUGHPUT = AutoPilotUtils.autoPilotThroughput5K;
 
 const TOKEN_VALIDITY_MS = (3600 - 600) * 1000; // 1 hour minus 10 minutes to be safe
 const DEBOUNCE_DELAY_MS = 1000 * 20; // 20 second

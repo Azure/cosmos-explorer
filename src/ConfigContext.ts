@@ -1,21 +1,15 @@
+import { CassandraProxyEndpoints, JunoEndpoints, MongoProxyEndpoints, PortalBackendEndpoints } from "Common/Constants";
 import {
-  BackendApi,
-  CassandraProxyEndpoints,
-  JunoEndpoints,
-  MongoProxyEndpoints,
-  PortalBackendEndpoints,
-} from "Common/Constants";
-import {
-  allowedAadEndpoints,
   allowedArcadiaEndpoints,
   allowedEmulatorEndpoints,
-  allowedGraphEndpoints,
   allowedHostedExplorerEndpoints,
   allowedJunoOrigins,
   allowedMsalRedirectEndpoints,
+  defaultAllowedAadEndpoints,
   defaultAllowedArmEndpoints,
   defaultAllowedBackendEndpoints,
   defaultAllowedCassandraProxyEndpoints,
+  defaultAllowedGraphEndpoints,
   defaultAllowedMongoProxyEndpoints,
   validateEndpoint,
 } from "Utils/EndpointUtils";
@@ -29,6 +23,8 @@ export enum Platform {
 
 export interface ConfigContext {
   platform: Platform;
+  allowedAadEndpoints: ReadonlyArray<string>;
+  allowedGraphEndpoints: ReadonlyArray<string>;
   allowedArmEndpoints: ReadonlyArray<string>;
   allowedBackendEndpoints: ReadonlyArray<string>;
   allowedCassandraProxyEndpoints: ReadonlyArray<string>;
@@ -37,10 +33,8 @@ export interface ConfigContext {
   gitSha?: string;
   proxyPath?: string;
   AAD_ENDPOINT: string;
-  ARM_AUTH_AREA: string;
   ARM_ENDPOINT: string;
   EMULATOR_ENDPOINT?: string;
-  ARM_API_VERSION: string;
   GRAPH_ENDPOINT: string;
   GRAPH_API_VERSION: string;
   // This is the endpoint to get offering Ids to be used to fetch prices. Refer to this doc: https://learn.microsoft.com/en-us/rest/api/marketplacecatalog/dataplane/skus/list?view=rest-marketplacecatalog-dataplane-2023-05-01-preview&tabs=HTTP
@@ -50,27 +44,24 @@ export interface ConfigContext {
   ARCADIA_ENDPOINT: string;
   ARCADIA_LIVY_ENDPOINT_DNS_ZONE: string;
   PORTAL_BACKEND_ENDPOINT: string;
-  NEW_BACKEND_APIS?: BackendApi[];
   MONGO_PROXY_ENDPOINT: string;
   CASSANDRA_PROXY_ENDPOINT: string;
-  NEW_CASSANDRA_APIS?: string[];
   PROXY_PATH?: string;
   JUNO_ENDPOINT: string;
   GITHUB_CLIENT_ID: string;
   GITHUB_TEST_ENV_CLIENT_ID: string;
   GITHUB_CLIENT_SECRET?: string; // No need to inject secret for prod. Juno already knows it.
-  isTerminalEnabled: boolean;
   isPhoenixEnabled: boolean;
   hostedExplorerURL: string;
   armAPIVersion?: string;
   msalRedirectURI?: string;
-  globallyEnabledCassandraAPIs?: string[];
-  globallyEnabledMongoAPIs?: string[];
 }
 
 // Default configuration
 let configContext: Readonly<ConfigContext> = {
   platform: Platform.Portal,
+  allowedAadEndpoints: defaultAllowedAadEndpoints,
+  allowedGraphEndpoints: defaultAllowedGraphEndpoints,
   allowedArmEndpoints: defaultAllowedArmEndpoints,
   allowedBackendEndpoints: defaultAllowedBackendEndpoints,
   allowedCassandraProxyEndpoints: defaultAllowedCassandraProxyEndpoints,
@@ -85,17 +76,12 @@ let configContext: Readonly<ConfigContext> = {
     `^https:\\/\\/cosmos-db-dataexplorer-germanycentral\\.azurewebsites\\.de$`,
     `^https:\\/\\/.*\\.fabric\\.microsoft\\.com$`,
     `^https:\\/\\/.*\\.powerbi\\.com$`,
-    `^https:\\/\\/.*\\.analysis-df\\.net$`,
-    `^https:\\/\\/.*\\.analysis-df\\.windows\\.net$`,
-    `^https:\\/\\/.*\\.azure-test\\.net$`,
     `^https:\\/\\/dataexplorer-preview\\.azurewebsites\\.net$`,
   ], // Webpack injects this at build time
   gitSha: process.env.GIT_SHA,
   hostedExplorerURL: "https://cosmos.azure.com/",
   AAD_ENDPOINT: "https://login.microsoftonline.com/",
-  ARM_AUTH_AREA: "https://management.azure.com/",
   ARM_ENDPOINT: "https://management.azure.com/",
-  ARM_API_VERSION: "2016-06-01",
   GRAPH_ENDPOINT: "https://graph.microsoft.com",
   GRAPH_API_VERSION: "1.6",
   CATALOG_ENDPOINT: "https://catalogapi.azure.com/",
@@ -109,11 +95,7 @@ let configContext: Readonly<ConfigContext> = {
   PORTAL_BACKEND_ENDPOINT: PortalBackendEndpoints.Prod,
   MONGO_PROXY_ENDPOINT: MongoProxyEndpoints.Prod,
   CASSANDRA_PROXY_ENDPOINT: CassandraProxyEndpoints.Prod,
-  NEW_CASSANDRA_APIS: ["postQuery", "createOrDelete", "getKeys", "getSchema"],
-  isTerminalEnabled: false,
   isPhoenixEnabled: false,
-  globallyEnabledCassandraAPIs: [],
-  globallyEnabledMongoAPIs: [],
 };
 
 export function resetConfigContext(): void {
@@ -128,19 +110,38 @@ export function updateConfigContext(newContext: Partial<ConfigContext>): void {
     return;
   }
 
-  if (!validateEndpoint(newContext.ARM_ENDPOINT, configContext.allowedArmEndpoints || defaultAllowedArmEndpoints)) {
-    delete newContext.ARM_ENDPOINT;
+  if (newContext.allowedAadEndpoints) {
+    Object.assign(configContext, { allowedAadEndpoints: newContext.allowedAadEndpoints });
+  }
+  if (newContext.allowedArmEndpoints) {
+    Object.assign(configContext, { allowedArmEndpoints: newContext.allowedArmEndpoints });
+  }
+  if (newContext.allowedGraphEndpoints) {
+    Object.assign(configContext, { allowedGraphEndpoints: newContext.allowedGraphEndpoints });
+  }
+  if (newContext.allowedBackendEndpoints) {
+    Object.assign(configContext, { allowedBackendEndpoints: newContext.allowedBackendEndpoints });
+  }
+  if (newContext.allowedMongoProxyEndpoints) {
+    Object.assign(configContext, { allowedMongoProxyEndpoints: newContext.allowedMongoProxyEndpoints });
+  }
+  if (newContext.allowedCassandraProxyEndpoints) {
+    Object.assign(configContext, { allowedCassandraProxyEndpoints: newContext.allowedCassandraProxyEndpoints });
   }
 
-  if (!validateEndpoint(newContext.AAD_ENDPOINT, allowedAadEndpoints)) {
+  if (!validateEndpoint(newContext.AAD_ENDPOINT, configContext.allowedAadEndpoints)) {
     delete newContext.AAD_ENDPOINT;
+  }
+
+  if (!validateEndpoint(newContext.ARM_ENDPOINT, configContext.allowedArmEndpoints)) {
+    delete newContext.ARM_ENDPOINT;
   }
 
   if (!validateEndpoint(newContext.EMULATOR_ENDPOINT, allowedEmulatorEndpoints)) {
     delete newContext.EMULATOR_ENDPOINT;
   }
 
-  if (!validateEndpoint(newContext.GRAPH_ENDPOINT, allowedGraphEndpoints)) {
+  if (!validateEndpoint(newContext.GRAPH_ENDPOINT, configContext.allowedGraphEndpoints)) {
     delete newContext.GRAPH_ENDPOINT;
   }
 
@@ -148,21 +149,15 @@ export function updateConfigContext(newContext: Partial<ConfigContext>): void {
     delete newContext.ARCADIA_ENDPOINT;
   }
 
-  if (
-    !validateEndpoint(
-      newContext.MONGO_PROXY_ENDPOINT,
-      configContext.allowedMongoProxyEndpoints || defaultAllowedMongoProxyEndpoints,
-    )
-  ) {
+  if (!validateEndpoint(newContext.PORTAL_BACKEND_ENDPOINT, configContext.allowedBackendEndpoints)) {
+    delete newContext.PORTAL_BACKEND_ENDPOINT;
+  }
+
+  if (!validateEndpoint(newContext.MONGO_PROXY_ENDPOINT, configContext.allowedMongoProxyEndpoints)) {
     delete newContext.MONGO_PROXY_ENDPOINT;
   }
 
-  if (
-    !validateEndpoint(
-      newContext.CASSANDRA_PROXY_ENDPOINT,
-      configContext.allowedCassandraProxyEndpoints || defaultAllowedCassandraProxyEndpoints,
-    )
-  ) {
+  if (!validateEndpoint(newContext.CASSANDRA_PROXY_ENDPOINT, configContext.allowedCassandraProxyEndpoints)) {
     delete newContext.CASSANDRA_PROXY_ENDPOINT;
   }
 

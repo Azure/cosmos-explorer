@@ -65,7 +65,6 @@ describe("MongoProxyClient", () => {
       });
       updateConfigContext({
         MONGO_PROXY_ENDPOINT: MongoProxyEndpoints.Prod,
-        globallyEnabledMongoAPIs: [],
       });
       window.fetch = jest.fn().mockImplementation(fetchMock);
     });
@@ -84,7 +83,6 @@ describe("MongoProxyClient", () => {
     it("builds the correct proxy URL in development", () => {
       updateConfigContext({
         MONGO_PROXY_ENDPOINT: "https://localhost:1234",
-        globallyEnabledMongoAPIs: [],
       });
       queryDocuments(databaseId, collection, true, "{}");
       expect(window.fetch).toHaveBeenCalledWith(
@@ -101,7 +99,6 @@ describe("MongoProxyClient", () => {
       });
       updateConfigContext({
         MONGO_PROXY_ENDPOINT: MongoProxyEndpoints.Prod,
-        globallyEnabledMongoAPIs: [],
       });
       window.fetch = jest.fn().mockImplementation(fetchMock);
     });
@@ -120,7 +117,6 @@ describe("MongoProxyClient", () => {
     it("builds the correct proxy URL in development", () => {
       updateConfigContext({
         MONGO_PROXY_ENDPOINT: "https://localhost:1234",
-        globallyEnabledMongoAPIs: [],
       });
       readDocument(databaseId, collection, documentId);
       expect(window.fetch).toHaveBeenCalledWith(
@@ -137,7 +133,6 @@ describe("MongoProxyClient", () => {
       });
       updateConfigContext({
         MONGO_PROXY_ENDPOINT: MongoProxyEndpoints.Prod,
-        globallyEnabledMongoAPIs: [],
       });
       window.fetch = jest.fn().mockImplementation(fetchMock);
     });
@@ -156,7 +151,6 @@ describe("MongoProxyClient", () => {
     it("builds the correct proxy URL in development", () => {
       updateConfigContext({
         MONGO_PROXY_ENDPOINT: "https://localhost:1234",
-        globallyEnabledMongoAPIs: [],
       });
       readDocument(databaseId, collection, documentId);
       expect(window.fetch).toHaveBeenCalledWith(
@@ -173,7 +167,6 @@ describe("MongoProxyClient", () => {
       });
       updateConfigContext({
         MONGO_PROXY_ENDPOINT: MongoProxyEndpoints.Prod,
-        globallyEnabledMongoAPIs: [],
       });
       window.fetch = jest.fn().mockImplementation(fetchMock);
     });
@@ -197,7 +190,6 @@ describe("MongoProxyClient", () => {
       });
       updateConfigContext({
         MONGO_PROXY_ENDPOINT: MongoProxyEndpoints.Prod,
-        globallyEnabledMongoAPIs: [],
       });
       window.fetch = jest.fn().mockImplementation(fetchMock);
     });
@@ -216,7 +208,6 @@ describe("MongoProxyClient", () => {
     it("builds the correct proxy URL in development", () => {
       updateConfigContext({
         MONGO_PROXY_ENDPOINT: "https://localhost:1234",
-        globallyEnabledMongoAPIs: [],
       });
       deleteDocuments(databaseId, collection, [documentId]);
       expect(window.fetch).toHaveBeenCalledWith(
@@ -233,7 +224,6 @@ describe("MongoProxyClient", () => {
       });
       updateConfigContext({
         MONGO_PROXY_ENDPOINT: MongoProxyEndpoints.Prod,
-        globallyEnabledMongoAPIs: [],
       });
     });
 

@@ -1,12 +1,9 @@
 import * as msal from "@azure/msal-browser";
 import { useBoolean } from "@fluentui/react-hooks";
 import * as React from "react";
-import { configContext } from "../ConfigContext";
+import { ConfigContext } from "../ConfigContext";
 import { acquireTokenWithMsal, getMsalInstance } from "../Utils/AuthorizationUtils";
 
-const msalInstance = await getMsalInstance();
-
-const cachedAccount = msalInstance.getAllAccounts()?.[0];
 const cachedTenantId = localStorage.getItem("cachedTenantId");
 
 interface ReturnType {
@@ -27,57 +24,97 @@ export interface AadAuthFailure {
   failureLinkAction?: () => void;
 }
 
-export function useAADAuth(): ReturnType {
-  const [isLoggedIn, { setTrue: setLoggedIn, setFalse: setLoggedOut }] = useBoolean(
-    Boolean(cachedAccount && cachedTenantId) || false,
-  );
-  const [account, setAccount] = React.useState<msal.AccountInfo>(cachedAccount);
+export function useAADAuth(config?: ConfigContext): ReturnType {
+  const [msalInstance, setMsalInstance] = React.useState<msal.PublicClientApplication | null>(null);
+  const [isLoggedIn, { setTrue: setLoggedIn, setFalse: setLoggedOut }] = useBoolean(false);
+  const [account, setAccount] = React.useState<msal.AccountInfo>(null);
   const [tenantId, setTenantId] = React.useState<string>(cachedTenantId);
   const [graphToken, setGraphToken] = React.useState<string>();
   const [armToken, setArmToken] = React.useState<string>();
   const [authFailure, setAuthFailure] = React.useState<AadAuthFailure>(undefined);
 
-  msalInstance.setActiveAccount(account);
-  const login = React.useCallback(async () => {
-    const response = await msalInstance.loginPopup({
-      redirectUri: configContext.msalRedirectURI,
-      scopes: [],
-    });
-    setLoggedIn();
-    setAccount(response.account);
-    setTenantId(response.tenantId);
-    localStorage.setItem("cachedTenantId", response.tenantId);
-  }, []);
-
-  const logout = React.useCallback(() => {
-    setLoggedOut();
-    localStorage.removeItem("cachedTenantId");
-    msalInstance.logoutRedirect();
-  }, []);
-
-  const switchTenant = React.useCallback(
-    async (id) => {
-      const response = await msalInstance.loginPopup({
-        redirectUri: configContext.msalRedirectURI,
-        authority: `${configContext.AAD_ENDPOINT}${id}`,
-        scopes: [],
+  // Initialize MSAL instance when config is available
+  React.useEffect(() => {
+    if (config && !msalInstance) {
+      getMsalInstance().then((instance) => {
+        setMsalInstance(instance);
+        const cachedAccount = instance.getAllAccounts()?.[0];
+        if (cachedAccount && cachedTenantId) {
+          setAccount(cachedAccount);
+          setLoggedIn();
+          instance.setActiveAccount(cachedAccount);
+        }
       });
-      setTenantId(response.tenantId);
-      setAccount(response.account);
-      localStorage.setItem("cachedTenantId", response.tenantId);
-    },
-    [account, tenantId],
-  );
+    }
+  }, [config, msalInstance]);
 
-  const acquireTokens = React.useCallback(async () => {
-    if (!(account && tenantId)) {
+  React.useEffect(() => {
+    if (msalInstance && account) {
+      msalInstance.setActiveAccount(account);
+    }
+  }, [msalInstance, account]);
+
+  const login = React.useCallback(async () => {
+    if (!msalInstance || !config) {
       return;
     }
 
     try {
+      const response = await msalInstance.loginPopup({
+        redirectUri: config.msalRedirectURI,
+        scopes: [],
+      });
+      setLoggedIn();
+      setAccount(response.account);
+      setTenantId(response.tenantId);
+      localStorage.setItem("cachedTenantId", response.tenantId);
+    } catch (error) {
+      setAuthFailure({
+        failureMessage: `Login failed: ${JSON.stringify(error)}`,
+      });
+    }
+  }, [msalInstance, config]);
+
+  const logout = React.useCallback(() => {
+    if (!msalInstance) {
+      return;
+    }
+    setLoggedOut();
+    localStorage.removeItem("cachedTenantId");
+    msalInstance.logoutRedirect();
+  }, [msalInstance]);
+
+  const switchTenant = React.useCallback(
+    async (id) => {
+      if (!msalInstance || !config) {
+        return;
+      }
+      try {
+        const response = await msalInstance.loginPopup({
+          redirectUri: config.msalRedirectURI,
+          authority: `${config.AAD_ENDPOINT}${id}`,
+          scopes: [],
+        });
+        setTenantId(response.tenantId);
+        setAccount(response.account);
+        localStorage.setItem("cachedTenantId", response.tenantId);
+      } catch (error) {
+        setAuthFailure({
+          failureMessage: `Tenant switch failed: ${JSON.stringify(error)}`,
+        });
+      }
+    },
+    [msalInstance, config],
+  );
+
+  const acquireTokens = React.useCallback(async () => {
+    if (!(account && tenantId && msalInstance && config)) {
+      return;
+    }
+    try {
       const armToken = await acquireTokenWithMsal(msalInstance, {
-        authority: `${configContext.AAD_ENDPOINT}${tenantId}`,
-        scopes: [`${configContext.ARM_ENDPOINT}/.default`],
+        authority: `${config.AAD_ENDPOINT}${tenantId}`,
+        scopes: [`${config.ARM_ENDPOINT}/.default`],
       });
 
       setArmToken(armToken);
@@ -105,8 +142,8 @@ export function useAADAuth(): ReturnType {
 
     try {
       const graphToken = await acquireTokenWithMsal(msalInstance, {
-        authority: `${configContext.AAD_ENDPOINT}${tenantId}`,
-        scopes: [`${configContext.GRAPH_ENDPOINT}/.default`],
+        authority: `${config.AAD_ENDPOINT}${tenantId}`,
+        scopes: [`${config.GRAPH_ENDPOINT}/.default`],
       });
 
       setGraphToken(graphToken);
@@ -115,7 +152,7 @@ export function useAADAuth(): ReturnType {
       // it's not critical if this fails.
       console.warn("Error acquiring graph token: " + error);
     }
-  }, [account, tenantId]);
+  }, [account, tenantId, msalInstance, config]);
 
   React.useEffect(() => {
     if (account && tenantId && !authFailure) {

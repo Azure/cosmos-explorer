@@ -18,6 +18,12 @@ interface DatabaseAccount {
 
 interface UserContextType {
   databaseAccount: DatabaseAccount;
+  features: {
+    enableAadDataPlane: boolean;
+  };
+  apiType: string;
+  dataPlaneRbacEnabled: boolean;
+  aadToken?: string;
 }
 
 // Mock dependencies
@@ -29,10 +35,13 @@ jest.mock("../../../../UserContext", () => ({
         mongoEndpoint: "https://test-mongo.documents.azure.com:443/",
       },
     },
+    features: { enableAadDataPlane: false },
+    apiType: "Mongo",
   },
 }));
 
 jest.mock("../Utils/CommonUtils", () => ({
+  ...jest.requireActual("../Utils/CommonUtils"),
   getHostFromUrl: jest.fn().mockReturnValue("test-mongo.documents.azure.com"),
 }));
 
@@ -69,7 +78,7 @@ describe("MongoShellHandler", () => {
 
       expect(Array.isArray(commands)).toBe(true);
       expect(commands.length).toBe(7);
-      expect(commands[1]).toContain("mongosh-2.5.0-linux-x64.tgz");
+      expect(commands[1]).toContain("mongosh-2.5.6-linux-x64.tgz");
     });
   });
 
@@ -87,11 +96,12 @@ describe("MongoShellHandler", () => {
         kind: "test-kind",
         properties: { mongoEndpoint: "https://test-mongo.documents.azure.com:443/" },
       };
+      (userContext as UserContextType).dataPlaneRbacEnabled = false;
 
       const command = mongoShellHandler.getConnectionCommand();
 
       expect(command).toBe(
-        "mongosh mongodb://test-mongo.documents.azure.com:10255?appName=CosmosExplorerTerminal --username test-account --password test-key --tls --tlsAllowInvalidCertificates",
+        "mongosh --nodb --quiet --eval 'disableTelemetry()'; mongosh mongodb://test-mongo.documents.azure.com:10255?appName=CosmosExplorerTerminal --username test-account --password test-key --tls --tlsAllowInvalidCertificates",
       );
       expect(CommonUtils.getHostFromUrl).toHaveBeenCalledWith("https://test-mongo.documents.azure.com:443/");
 
@@ -114,17 +124,55 @@ describe("MongoShellHandler", () => {
       };
 
       const command = mongoShellHandler.getConnectionCommand();
-
       expect(command).toBe("echo 'Database name not found.'");
 
       // Restore original
       (userContext as UserContextType).databaseAccount = originalDatabaseAccount;
     });
+
+    it("should return echo if endpoint is missing", () => {
+      const testKey = "test-key";
+      (userContext as UserContextType).databaseAccount = {
+        id: "test-id",
+        name: "", // Empty name to simulate missing name
+        location: "test-location",
+        type: "test-type",
+        kind: "test-kind",
+        properties: { mongoEndpoint: "" },
+      };
+      const mongoShellHandler = new MongoShellHandler(testKey);
+      const command = mongoShellHandler.getConnectionCommand();
+      expect(command).toBe("echo 'MongoDB endpoint not found.'");
+    });
+
+    it("should use _getAadConnectionCommand when _isEntraIdEnabled is true", () => {
+      const testKey = "aad-key";
+      (userContext as UserContextType).databaseAccount = {
+        id: "test-id",
+        name: "test-account",
+        location: "test-location",
+        type: "test-type",
+        kind: "test-kind",
+        properties: { mongoEndpoint: "https://test-mongo.documents.azure.com:443/" },
+      };
+      (userContext as UserContextType).dataPlaneRbacEnabled = true;
+
+      const mongoShellHandler = new MongoShellHandler(testKey);
+
+      const command = mongoShellHandler.getConnectionCommand();
+      expect(command).toContain(
+        "mongosh 'mongodb://test-account:aad-key@test-account.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&authMechanism=PLAIN&retryWrites=false' --tls --tlsAllowInvalidCertificates",
+      );
+      expect(command.startsWith("mongosh --nodb")).toBeTruthy();
+    });
   });
 
   describe("getTerminalSuppressedData", () => {
     it("should return the correct warning message", () => {
-      expect(mongoShellHandler.getTerminalSuppressedData()).toBe("Warning: Non-Genuine MongoDB Detected");
+      expect(mongoShellHandler.getTerminalSuppressedData()).toEqual([
+        "Warning: Non-Genuine MongoDB Detected",
+        "Telemetry is now disabled.",
+      ]);
     });
   });
 });

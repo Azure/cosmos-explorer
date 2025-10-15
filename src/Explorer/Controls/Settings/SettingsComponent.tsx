@@ -1,4 +1,6 @@
 import { IPivotItemProps, IPivotProps, Pivot, PivotItem } from "@fluentui/react";
+import { sendMessage } from "Common/MessageHandler";
+import { FabricMessageTypes } from "Contracts/FabricMessageTypes";
 import {
   ComputedPropertiesComponent,
   ComputedPropertiesComponentProps,
@@ -442,6 +444,15 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       );
     } finally {
       this.props.settingsTab.isExecuting(false);
+
+      // Send message to Fabric no matter success or failure.
+      // In case of failure, saveCollectionSettings might have partially succeeded and Fabric needs to refresh
+      if (isFabricNative() && this.isCollectionSettingsTab) {
+        sendMessage({
+          type: FabricMessageTypes.ContainerUpdated,
+          params: { updateType: "settings" },
+        });
+      }
     }
   };
 

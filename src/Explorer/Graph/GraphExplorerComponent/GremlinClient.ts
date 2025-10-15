@@ -11,8 +11,8 @@ export interface GremlinClientParameters {
   endpoint: string;
   databaseId: string;
   collectionId: string;
-  masterKey: string;
   maxResultSize: number;
+  password: string;
 }
 
 export interface GremlinRequestResult {
@@ -43,7 +43,7 @@ export class GremlinClient {
     this.client = new GremlinSimpleClient({
       endpoint: params.endpoint,
       user: `/dbs/${params.databaseId}/colls/${params.collectionId}`,
-      password: params.masterKey,
+      password: params.password,
       successCallback: (result: Result) => {
         this.storePendingResult(result);
         this.flushResult(result.requestId);

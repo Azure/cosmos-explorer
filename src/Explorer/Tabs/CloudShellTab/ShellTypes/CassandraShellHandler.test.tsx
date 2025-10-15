@@ -94,7 +94,7 @@ describe("CassandraShellHandler", () => {
     });
 
     test("should return the correct terminal suppressed data", () => {
-      expect(handler.getTerminalSuppressedData()).toBe("");
+      expect(handler.getTerminalSuppressedData()).toEqual([""]);
     });
 
     test("should include the correct package version in setup commands", () => {

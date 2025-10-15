@@ -9,7 +9,6 @@ import { useDialog } from "Explorer/Controls/Dialog";
 import { monaco } from "Explorer/LazyMonaco";
 import { QueryCopilotFeedbackModal } from "Explorer/QueryCopilot/Modal/QueryCopilotFeedbackModal";
 import { useCopilotStore } from "Explorer/QueryCopilot/QueryCopilotContext";
-import { QueryCopilotPromptbar } from "Explorer/QueryCopilot/QueryCopilotPromptbar";
 import { readCopilotToggleStatus, saveCopilotToggleStatus } from "Explorer/QueryCopilot/QueryCopilotUtilities";
 import { OnExecuteQueryClick, QueryDocumentsPerPage } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
 import { QueryCopilotSidebar } from "Explorer/QueryCopilot/V2/Sidebar/QueryCopilotSidebar";
@@ -29,8 +28,9 @@ import React, { Fragment, createRef } from "react";
 import "react-splitter-layout/lib/index.css";
 import { format } from "react-string-format";
 import create from "zustand";
-import QueryCommandIcon from "../../../../images/CopilotCommand.svg";
-import LaunchCopilot from "../../../../images/CopilotTabIcon.svg";
+//TODO: Uncomment next two lines when query copilot is reinstated in DE
+// import QueryCommandIcon from "../../../../images/CopilotCommand.svg";
+// import LaunchCopilot from "../../../../images/CopilotTabIcon.svg";
 import DownloadQueryIcon from "../../../../images/DownloadQuery.svg";
 import CancelQueryIcon from "../../../../images/Entity_cancel.svg";
 import ExecuteQueryIcon from "../../../../images/ExecuteQuery.svg";
@@ -375,9 +375,9 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
       this._iterator = this.props.isPreferredApiMongoDB
         ? queryIterator(this.props.collection.databaseId, this.props.viewModelcollection, query)
         : queryDocuments(this.props.collection.databaseId, this.props.collection.id(), query, {
-            enableCrossPartitionQuery: HeadersUtility.shouldEnableCrossPartitionKey(),
-            abortSignal: this.queryAbortController.signal,
-          } as unknown as FeedOptions);
+          enableCrossPartitionQuery: HeadersUtility.shouldEnableCrossPartitionKey(),
+          abortSignal: this.queryAbortController.signal,
+        } as unknown as FeedOptions);
     }
 
     await this._queryDocumentsPage(firstItemIndex);
@@ -513,53 +513,55 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
       });
     }
 
-    if (this.launchCopilotButton.visible && this.isCopilotTabActive) {
-      const mainButtonLabel = "Launch Copilot";
-      const chatPaneLabel = "Open Copilot in chat pane (ALT+C)";
-      const copilotSettingLabel = "Copilot settings";
+    //TODO: Uncomment next section when query copilot is reinstated in DE
+    // if (this.launchCopilotButton.visible && this.isCopilotTabActive) {
+    //   const mainButtonLabel = "Launch Copilot";
+    //   const chatPaneLabel = "Open Copilot in chat pane (ALT+C)";
+    //   const copilotSettingLabel = "Copilot settings";
 
-      const openCopilotChatButton: CommandButtonComponentProps = {
-        iconAlt: chatPaneLabel,
-        onCommandClick: this.launchQueryCopilotChat,
-        commandButtonLabel: chatPaneLabel,
-        ariaLabel: chatPaneLabel,
-        hasPopup: false,
-      };
+    //   const openCopilotChatButton: CommandButtonComponentProps = {
+    //     iconAlt: chatPaneLabel,
+    //     onCommandClick: this.launchQueryCopilotChat,
+    //     commandButtonLabel: chatPaneLabel,
+    //     ariaLabel: chatPaneLabel,
+    //     hasPopup: false,
+    //   };
 
-      const copilotSettingsButton: CommandButtonComponentProps = {
-        iconAlt: copilotSettingLabel,
-        onCommandClick: () => undefined,
-        commandButtonLabel: copilotSettingLabel,
-        ariaLabel: copilotSettingLabel,
-        hasPopup: false,
-      };
+    //   const copilotSettingsButton: CommandButtonComponentProps = {
+    //     iconAlt: copilotSettingLabel,
+    //     onCommandClick: () => undefined,
+    //     commandButtonLabel: copilotSettingLabel,
+    //     ariaLabel: copilotSettingLabel,
+    //     hasPopup: false,
+    //   };
 
-      const launchCopilotButton: CommandButtonComponentProps = {
-        iconSrc: LaunchCopilot,
-        iconAlt: mainButtonLabel,
-        onCommandClick: this.launchQueryCopilotChat,
-        commandButtonLabel: mainButtonLabel,
-        ariaLabel: mainButtonLabel,
-        hasPopup: false,
-        children: [openCopilotChatButton, copilotSettingsButton],
-      };
-      buttons.push(launchCopilotButton);
-    }
+    //   const launchCopilotButton: CommandButtonComponentProps = {
+    //     iconSrc: LaunchCopilot,
+    //     iconAlt: mainButtonLabel,
+    //     onCommandClick: this.launchQueryCopilotChat,
+    //     commandButtonLabel: mainButtonLabel,
+    //     ariaLabel: mainButtonLabel,
+    //     hasPopup: false,
+    //     children: [openCopilotChatButton, copilotSettingsButton],
+    //   };
+    //   buttons.push(launchCopilotButton);
+    // }
 
-    if (this.props.copilotEnabled) {
-      const toggleCopilotButton: CommandButtonComponentProps = {
-        iconSrc: QueryCommandIcon,
-        iconAlt: "Query Advisor",
-        keyboardAction: KeyboardAction.TOGGLE_COPILOT,
-        onCommandClick: () => {
-          this._toggleCopilot(!this.state.copilotActive);
-        },
-        commandButtonLabel: this.state.copilotActive ? "Disable Query Advisor" : "Enable Query Advisor",
-        ariaLabel: this.state.copilotActive ? "Disable Query Advisor" : "Enable Query Advisor",
-        hasPopup: false,
-      };
-      buttons.push(toggleCopilotButton);
-    }
+    //TODO: Uncomment next section when query copilot is reinstated in DE
+    // if (this.props.copilotEnabled) {
+    //   const toggleCopilotButton: CommandButtonComponentProps = {
+    //     iconSrc: QueryCommandIcon,
+    //     iconAlt: "Query Advisor",
+    //     keyboardAction: KeyboardAction.TOGGLE_COPILOT,
+    //     onCommandClick: () => {
+    //       this._toggleCopilot(!this.state.copilotActive);
+    //     },
+    //     commandButtonLabel: this.state.copilotActive ? "Disable Query Advisor" : "Enable Query Advisor",
+    //     ariaLabel: this.state.copilotActive ? "Disable Query Advisor" : "Enable Query Advisor",
+    //     hasPopup: false,
+    //   };
+    //   buttons.push(toggleCopilotButton);
+    // }
 
     if (!this.props.isPreferredApiMongoDB && this.state.isExecuting) {
       const label = "Cancel query";
@@ -744,6 +746,7 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
     return (
       <Fragment>
         <CosmosFluentProvider id={this.props.tabId} className={this.props.styles.queryTab} role="tabpanel">
+          {/*TODO: Uncomment this section when query copilot is reinstated in DE
           {this.props.copilotEnabled && this.state.currentTabActive && this.state.copilotActive && (
             <QueryCopilotPromptbar
               explorer={this.props.collection.container}
@@ -751,7 +754,7 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
               databaseId={this.props.collection.databaseId}
               containerId={this.props.collection.id()}
             ></QueryCopilotPromptbar>
-          )}
+          )} */}
           {/* Set 'key' to the value of vertical to force re-rendering when vertical changes, to work around https://github.com/johnwalley/allotment/issues/457 */}
           <Allotment
             key={vertical.toString()}

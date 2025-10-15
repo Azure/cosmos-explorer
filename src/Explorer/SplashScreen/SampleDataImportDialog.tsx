@@ -11,11 +11,9 @@ import {
   tokens,
 } from "@fluentui/react-components";
 import Explorer from "Explorer/Explorer";
-import { checkContainerExists, createContainer, importData } from "Explorer/SplashScreen/SampleUtil";
+import { checkContainerExists, createContainer, importData, SampleDataFile } from "Explorer/SplashScreen/SampleUtil";
 import React, { useEffect, useState } from "react";
 import * as ViewModels from "../../Contracts/ViewModels";
-
-const SAMPLE_DATA_CONTAINER_NAME = "SampleData";
 
 const useStyles = makeStyles({
   dialogContent: {
@@ -23,6 +21,12 @@ const useStyles = makeStyles({
     marginBottom: tokens.spacingVerticalL,
   },
 });
+
+export interface SampleDataConfiguration {
+  databaseName: string;
+  newContainerName: string;
+  sampleDataFile: SampleDataFile;
+}
 
 /**
  * This dialog:
@@ -35,11 +39,11 @@ export const SampleDataImportDialog: React.FC<{
   open: boolean;
   setOpen: (open: boolean) => void;
   explorer: Explorer;
-  databaseName: string;
+  sampleDataConfiguration: SampleDataConfiguration | undefined;
 }> = (props) => {
   const [status, setStatus] = useState<"idle" | "creating" | "importing" | "completed" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const containerName = SAMPLE_DATA_CONTAINER_NAME;
+  const containerName = props.sampleDataConfiguration?.newContainerName;
   const [collection, setCollection] = useState<ViewModels.Collection>(undefined);
   const styles = useStyles();
 
@@ -53,7 +57,7 @@ export const SampleDataImportDialog: React.FC<{
 
   const handleStartImport = async (): Promise<void> => {
     setStatus("creating");
-    const databaseName = props.databaseName;
+    const databaseName = props.sampleDataConfiguration.databaseName;
     if (checkContainerExists(databaseName, containerName)) {
       const msg = `The container "${containerName}" in database "${databaseName}" already exists. Please delete it and retry.`;
       setStatus("error");
@@ -63,7 +67,12 @@ export const SampleDataImportDialog: React.FC<{
 
     let collection;
     try {
-      collection = await createContainer(databaseName, containerName, props.explorer);
+      collection = await createContainer(
+        databaseName,
+        containerName,
+        props.explorer,
+        props.sampleDataConfiguration.sampleDataFile,
+      );
     } catch (error) {
       setStatus("error");
       setErrorMessage(`Failed to create container: ${error instanceof Error ? error.message : String(error)}`);
@@ -72,7 +81,7 @@ export const SampleDataImportDialog: React.FC<{
 
     try {
       setStatus("importing");
-      await importData(collection);
+      await importData(props.sampleDataConfiguration.sampleDataFile, collection);
       setCollection(collection);
       setStatus("completed");
     } catch (error) {
