@@ -27,6 +27,7 @@ import { TabsState, useTabs } from "hooks/useTabs";
 import React, { Fragment, createRef } from "react";
 import "react-splitter-layout/lib/index.css";
 import { format } from "react-string-format";
+import create from "zustand";
 //TODO: Uncomment next two lines when query copilot is reinstated in DE
 // import QueryCommandIcon from "../../../../images/CopilotCommand.svg";
 // import LaunchCopilot from "../../../../images/CopilotTabIcon.svg";
@@ -55,6 +56,20 @@ import { BrowseQueriesPane } from "../../Panes/BrowseQueriesPane/BrowseQueriesPa
 import { SaveQueryPane } from "../../Panes/SaveQueryPane/SaveQueryPane";
 import TabsBase from "../TabsBase";
 import "./QueryTabComponent.less";
+
+export interface QueryMetadataStore {
+  userQuery: string;
+  databaseId: string;
+  containerId: string;
+  setMetadata: (query1: string, db: string, container: string) => void;
+}
+
+export const useQueryMetadataStore = create<QueryMetadataStore>((set) => ({
+  userQuery: "",
+  databaseId: "",
+  containerId: "",
+  setMetadata: (query1, db, container) => set({ userQuery: query1, databaseId: db, containerId: container }),
+}));
 
 enum ToggleState {
   Result,
@@ -260,6 +275,10 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
   }
 
   public onExecuteQueryClick = async (): Promise<void> => {
+    const query1 = this.state.sqlQueryEditorContent;
+    const db = this.props.collection.databaseId;
+    const container = this.props.collection.id();
+    useQueryMetadataStore.getState().setMetadata(query1, db, container);
     this._iterator = undefined;
 
     setTimeout(async () => {
@@ -775,6 +794,8 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
                   errors={this.props.copilotStore?.errors}
                   isExecuting={this.props.copilotStore?.isExecuting}
                   queryResults={this.props.copilotStore?.queryResults}
+                  databaseId={this.props.collection.databaseId}
+                  containerId={this.props.collection.id()}
                   executeQueryDocumentsPage={(firstItemIndex: number) =>
                     QueryDocumentsPerPage(
                       firstItemIndex,
@@ -790,6 +811,8 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
                   errors={this.state.errors}
                   isExecuting={this.state.isExecuting}
                   queryResults={this.state.queryResults}
+                  databaseId={this.props.collection.databaseId}
+                  containerId={this.props.collection.id()}
                   executeQueryDocumentsPage={(firstItemIndex: number) =>
                     this._executeQueryDocumentsPage(firstItemIndex)
                   }
