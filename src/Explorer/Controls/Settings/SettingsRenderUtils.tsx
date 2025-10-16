@@ -61,7 +61,7 @@ export interface PriceBreakdown {
   currencySign: string;
 }
 
-export type editorType = "indexPolicy" | "computedProperties";
+export type editorType = "indexPolicy" | "computedProperties" | "dataMasking";
 
 export const infoAndToolTipTextStyle: ITextStyles = { root: { fontSize: 14, color: "windowtext" } };
 
@@ -170,6 +170,14 @@ export const messageBarStyles: Partial<IMessageBarStyles> = {
   text: { fontSize: 14 },
 };
 
+export const unsavedEditorMessageBarStyles: Partial<IMessageBarStyles> = {
+  root: {
+    marginTop: "5px",
+    padding: "8px 12px",
+  },
+  text: { fontSize: 14 },
+};
+
 export const throughputUnit = "RU/s";
 
 export function onRenderRow(props: IDetailsRowProps): JSX.Element {
@@ -259,7 +267,12 @@ export const ttlWarning: JSX.Element = (
 export const unsavedEditorWarningMessage = (editor: editorType): JSX.Element => (
   <Text styles={infoAndToolTipTextStyle}>
     You have not saved the latest changes made to your{" "}
-    {editor === "indexPolicy" ? "indexing policy" : "computed properties"}. Please click save to confirm the changes.
+    {editor === "indexPolicy"
+      ? "indexing policy"
+      : editor === "dataMasking"
+      ? "data masking policy"
+      : "computed properties"}
+    . Please click save to confirm the changes.
   </Text>
 );
 
