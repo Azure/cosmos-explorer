@@ -400,8 +400,9 @@ const QueryStatsTab: React.FC<Pick<ResultsViewProps, "queryResults">> = ({ query
         },
         {
           metric: "User defined function execution time",
-          value: `${aggregatedQueryMetrics.runtimeExecutionTimes?.userDefinedFunctionExecutionTime?.toString() || 0
-            } ms`,
+          value: `${
+            aggregatedQueryMetrics.runtimeExecutionTimes?.userDefinedFunctionExecutionTime?.toString() || 0
+          } ms`,
           toolTip: "Total time spent executing user-defined functions",
         },
         {
