@@ -76,7 +76,7 @@ jest.mock("./StylesAdvisor", () => ({
 jest.mock("../../../Utils/NotificationConsoleUtils", () => ({
   logConsoleProgress: (...args: unknown[]) => {
     mockLogConsoleProgress(...args);
-    return () => { };
+    return () => {};
   },
 }));
 
