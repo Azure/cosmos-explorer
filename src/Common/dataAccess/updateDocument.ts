@@ -29,7 +29,7 @@ export const updateDocument = async (
     const ignorePartitionKeyOnDocumentUpdateFlag = LocalStorageUtility.getEntryBoolean(
       StorageKey.IgnorePartitionKeyOnDocumentUpdate,
     );
-    const partitionKey = ignorePartitionKeyOnDocumentUpdateFlag ? null : getPartitionKeyValue(documentId);
+    const partitionKey = ignorePartitionKeyOnDocumentUpdateFlag ? undefined : getPartitionKeyValue(documentId);
 
     const response = await client()
       .database(collection.databaseId)
