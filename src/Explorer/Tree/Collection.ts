@@ -148,24 +148,25 @@ export default class Collection implements ViewModels.Collection {
     observablePolicy.subscribe(() => {});
     this.dataMaskingPolicy = observablePolicy;
     this.partitionKeyPropertyHeaders = this.partitionKey?.paths || [];
-    this.partitionKeyProperties = this.partitionKeyPropertyHeaders?.map((partitionKeyPropertyHeader, i) => {
-      // TODO fix this to only replace non-excaped single quotes
-      let partitionKeyProperty = partitionKeyPropertyHeader.replace(/[/]+/g, ".").substring(1).replace(/[']+/g, "");
+    this.partitionKeyProperties =
+      this.partitionKeyPropertyHeaders?.map((partitionKeyPropertyHeader, i) => {
+        // TODO fix this to only replace non-excaped single quotes
+        let partitionKeyProperty = partitionKeyPropertyHeader.replace(/[/]+/g, ".").substring(1).replace(/[']+/g, "");
 
-      if (userContext.apiType === "Mongo" && partitionKeyProperty) {
-        if (~partitionKeyProperty.indexOf(`"`)) {
-          partitionKeyProperty = partitionKeyProperty.replace(/["]+/g, "");
+        if (userContext.apiType === "Mongo" && partitionKeyProperty) {
+          if (~partitionKeyProperty.indexOf(`"`)) {
+            partitionKeyProperty = partitionKeyProperty.replace(/["]+/g, "");
+          }
+          // TODO #10738269 : Add this logic in a derived class for Mongo
+          if (partitionKeyProperty.indexOf("$v") > -1) {
+            // From $v.shard.$v.key.$v > shard.key
+            partitionKeyProperty = partitionKeyProperty.replace(/.\$v/g, "").replace(/\$v./g, "");
+            this.partitionKeyPropertyHeaders[i] = "/" + partitionKeyProperty;
+          }
         }
-        // TODO #10738269 : Add this logic in a derived class for Mongo
-        if (partitionKeyProperty.indexOf("$v") > -1) {
-          // From $v.shard.$v.key.$v > shard.key
-          partitionKeyProperty = partitionKeyProperty.replace(/.\$v/g, "").replace(/\$v./g, "");
-          this.partitionKeyPropertyHeaders[i] = "/" + partitionKeyProperty;
-        }
-      }
 
-      return partitionKeyProperty;
-    }) || [];
+        return partitionKeyProperty;
+      }) || [];
 
     this.documentIds = ko.observableArray<DocumentId>([]);
     this.isCollectionExpanded = ko.observable<boolean>(false);

@@ -124,7 +124,7 @@ describe("DataMaskingComponent", () => {
 
   it("resets content when shouldDiscardDataMasking is true", async () => {
     const baselinePolicy = { ...samplePolicy, isPolicyEnabled: true };
-    
+
     const wrapper = mount(
       <DataMaskingComponent
         {...mockProps}
