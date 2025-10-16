@@ -144,10 +144,11 @@ export default class Collection implements ViewModels.Collection {
       policyFormatVersion: 2,
       isPolicyEnabled: false,
     };
-    this.dataMaskingPolicy = ko.observable(data.dataMaskingPolicy || defaultDataMaskingPolicy);
-
+    const observablePolicy = ko.observable(data.dataMaskingPolicy || defaultDataMaskingPolicy);
+    observablePolicy.subscribe(() => {});
+    this.dataMaskingPolicy = observablePolicy;
     this.partitionKeyPropertyHeaders = this.partitionKey?.paths || [];
-    this.partitionKeyProperties = this.partitionKeyPropertyHeaders.map((partitionKeyPropertyHeader, i) => {
+    this.partitionKeyProperties = this.partitionKeyPropertyHeaders?.map((partitionKeyPropertyHeader, i) => {
       // TODO fix this to only replace non-excaped single quotes
       let partitionKeyProperty = partitionKeyPropertyHeader.replace(/[/]+/g, ".").substring(1).replace(/[']+/g, "");
 
@@ -164,7 +165,7 @@ export default class Collection implements ViewModels.Collection {
       }
 
       return partitionKeyProperty;
-    });
+    }) || [];
 
     this.documentIds = ko.observableArray<DocumentId>([]);
     this.isCollectionExpanded = ko.observable<boolean>(false);
@@ -173,7 +174,6 @@ export default class Collection implements ViewModels.Collection {
 
     this.documentsFocused = ko.observable<boolean>();
     this.documentsFocused.subscribe((focus) => {
-      console.log("Focus set on Documents: " + focus);
       this.focusedSubnodeKind(ViewModels.CollectionTabKind.Documents);
     });
 

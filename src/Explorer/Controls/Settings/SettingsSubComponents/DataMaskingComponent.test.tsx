@@ -2,23 +2,30 @@ import { MessageBar, MessageBarType } from "@fluentui/react";
 import { mount } from "enzyme";
 import React from "react";
 import * as DataModels from "../../../../Contracts/DataModels";
-import { EditorReact } from "../../../Controls/Editor/EditorReact";
 import { DataMaskingComponent } from "./DataMaskingComponent";
 
-// Mock EditorReact
-jest.mock("../../../Controls/Editor/EditorReact", () => ({
-  EditorReact: jest.fn().mockImplementation(() => ({
-    editor: {
-      setValue: jest.fn(),
-      onDidChangeModelContent: jest.fn(),
-      onDidFocusEditorWidget: jest.fn(),
-      updateOptions: jest.fn(),
-      focus: jest.fn(),
-      getValue: jest.fn(),
-      layout: jest.fn(),
-    },
-    render: (): JSX.Element => <div data-testid="mock-editor" />,
-  })),
+const mockGetValue = jest.fn();
+const mockSetValue = jest.fn();
+const mockOnDidChangeContent = jest.fn();
+const mockGetModel = jest.fn(() => ({
+  getValue: mockGetValue,
+  setValue: mockSetValue,
+  onDidChangeContent: mockOnDidChangeContent,
+}));
+
+const mockEditor = {
+  getModel: mockGetModel,
+  dispose: jest.fn(),
+};
+
+jest.mock("../../../LazyMonaco", () => ({
+  loadMonaco: jest.fn(() =>
+    Promise.resolve({
+      editor: {
+        create: jest.fn(() => mockEditor),
+      },
+    }),
+  ),
 }));
 
 jest.mock("../../../../Utils/CapabilityUtils", () => ({
@@ -49,16 +56,24 @@ describe("DataMaskingComponent", () => {
     isPolicyEnabled: false,
   };
 
+  let changeContentCallback: () => void;
+
   beforeEach(() => {
     jest.clearAllMocks();
+    mockGetValue.mockReturnValue(JSON.stringify(samplePolicy));
+    mockOnDidChangeContent.mockImplementation((callback) => {
+      changeContentCallback = callback;
+    });
   });
 
-  it("renders without crashing", () => {
+  it("renders without crashing", async () => {
     const wrapper = mount(<DataMaskingComponent {...mockProps} />);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    wrapper.update();
     expect(wrapper.exists()).toBeTruthy();
   });
 
-  it("displays warning message when content is dirty", () => {
+  it("displays warning message when content is dirty", async () => {
     const wrapper = mount(
       <DataMaskingComponent
         {...mockProps}
@@ -67,60 +82,71 @@ describe("DataMaskingComponent", () => {
       />,
     );
 
-    // Initial content change should trigger dirty state
-    const editorInstance = wrapper.find(EditorReact);
-    expect(editorInstance.exists()).toBeTruthy();
-
-    // Simulate content change
-    editorInstance.prop("onContentChanged")(JSON.stringify(samplePolicy));
+    await new Promise((resolve) => setTimeout(resolve, 0));
     wrapper.update();
 
-    // Warning message should be visible
+    // Verify editor div is rendered
+    const editorDiv = wrapper.find(".settingsV2Editor");
+    expect(editorDiv.exists()).toBeTruthy();
+
+    // Warning message should be visible when content is dirty
     const messageBar = wrapper.find(MessageBar);
     expect(messageBar.exists()).toBeTruthy();
     expect(messageBar.prop("messageBarType")).toBe(MessageBarType.warning);
   });
 
-  it("updates content and dirty state on valid JSON input", () => {
+  it("updates content and dirty state on valid JSON input", async () => {
     const wrapper = mount(<DataMaskingComponent {...mockProps} />);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    wrapper.update();
 
-    // Simulate valid JSON input
+    // Simulate valid JSON input by setting mock return value and triggering callback
     const validJson = JSON.stringify(samplePolicy);
-    wrapper.find(EditorReact).prop("onContentChanged")(validJson);
+    mockGetValue.mockReturnValue(validJson);
+    changeContentCallback();
 
     expect(mockProps.onDataMaskingContentChange).toHaveBeenCalledWith(samplePolicy);
     expect(mockProps.onDataMaskingDirtyChange).toHaveBeenCalledWith(true);
   });
 
-  it("doesn't update content on invalid JSON input", () => {
+  it("doesn't update content on invalid JSON input", async () => {
     const wrapper = mount(<DataMaskingComponent {...mockProps} />);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    wrapper.update();
 
     // Simulate invalid JSON input
     const invalidJson = "{invalid:json}";
-    wrapper.find(EditorReact).prop("onContentChanged")(invalidJson);
+    mockGetValue.mockReturnValue(invalidJson);
+    changeContentCallback();
 
     expect(mockProps.onDataMaskingContentChange).not.toHaveBeenCalled();
-    expect(mockProps.onDataMaskingDirtyChange).not.toHaveBeenCalled();
   });
 
-  it("resets content when shouldDiscardDataMasking is true", () => {
+  it("resets content when shouldDiscardDataMasking is true", async () => {
     const baselinePolicy = { ...samplePolicy, isPolicyEnabled: true };
-    mount(
+    
+    const wrapper = mount(
       <DataMaskingComponent
         {...mockProps}
         dataMaskingContent={samplePolicy}
         dataMaskingContentBaseline={baselinePolicy}
-        shouldDiscardDataMasking={true}
       />,
     );
 
-    // Check that baseline content is set
-    expect(mockProps.onDataMaskingContentChange).toHaveBeenCalledWith(baselinePolicy);
-    expect(mockProps.onDataMaskingDirtyChange).toHaveBeenCalledWith(false);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    wrapper.update();
+
+    // Now update props to trigger shouldDiscardDataMasking
+    wrapper.setProps({ shouldDiscardDataMasking: true });
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    wrapper.update();
+
+    // Check that reset was triggered
     expect(mockProps.resetShouldDiscardDataMasking).toHaveBeenCalled();
+    expect(mockSetValue).toHaveBeenCalledWith(JSON.stringify(samplePolicy, undefined, 4));
   });
 
-  it("recalculates dirty state when baseline changes", () => {
+  it("recalculates dirty state when baseline changes", async () => {
     const wrapper = mount(
       <DataMaskingComponent
         {...mockProps}
@@ -129,6 +155,9 @@ describe("DataMaskingComponent", () => {
       />,
     );
 
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    wrapper.update();
+
     // Update baseline to trigger componentDidUpdate
     const newBaseline = { ...samplePolicy, isPolicyEnabled: true };
     wrapper.setProps({ dataMaskingContentBaseline: newBaseline });
@@ -136,8 +165,10 @@ describe("DataMaskingComponent", () => {
     expect(mockProps.onDataMaskingDirtyChange).toHaveBeenCalledWith(true);
   });
 
-  it("validates required fields in policy", () => {
+  it("validates required fields in policy", async () => {
     const wrapper = mount(<DataMaskingComponent {...mockProps} />);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    wrapper.update();
 
     // Test with missing required fields
     const invalidPolicy: Record<string, unknown> = {
@@ -147,13 +178,13 @@ describe("DataMaskingComponent", () => {
       isPolicyEnabled: "not a boolean",
     };
 
-    wrapper.find(EditorReact).prop("onContentChanged")(JSON.stringify(invalidPolicy));
+    mockGetValue.mockReturnValue(JSON.stringify(invalidPolicy));
+    changeContentCallback();
 
     expect(mockProps.onDataMaskingContentChange).not.toHaveBeenCalled();
-    expect(mockProps.onDataMaskingDirtyChange).not.toHaveBeenCalled();
   });
 
-  it("maintains dirty state after multiple content changes", () => {
+  it("maintains dirty state after multiple content changes", async () => {
     const wrapper = mount(
       <DataMaskingComponent
         {...mockProps}
@@ -162,13 +193,18 @@ describe("DataMaskingComponent", () => {
       />,
     );
 
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    wrapper.update();
+
     // First change
     const modifiedPolicy1 = { ...samplePolicy, isPolicyEnabled: true };
-    wrapper.find(EditorReact).prop("onContentChanged")(JSON.stringify(modifiedPolicy1));
+    mockGetValue.mockReturnValue(JSON.stringify(modifiedPolicy1));
+    changeContentCallback();
     expect(mockProps.onDataMaskingDirtyChange).toHaveBeenCalledWith(true);
 
     // Second change back to baseline
-    wrapper.find(EditorReact).prop("onContentChanged")(JSON.stringify(samplePolicy));
+    mockGetValue.mockReturnValue(JSON.stringify(samplePolicy));
+    changeContentCallback();
     expect(mockProps.onDataMaskingDirtyChange).toHaveBeenCalledWith(false);
   });
 });

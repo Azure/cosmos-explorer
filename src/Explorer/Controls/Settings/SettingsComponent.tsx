@@ -345,7 +345,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   };
 
   public isSaveSettingsButtonEnabled = (): boolean => {
-    if (this.isOfferReplacePending()) {
+    if (this.isOfferReplacePending() || this.props.settingsTab.isExecuting()) {
       return false;
     }
 
@@ -367,6 +367,9 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   };
 
   public isDiscardSettingsButtonEnabled = (): boolean => {
+    if (this.props.settingsTab.isExecuting()) {
+      return false;
+    }
     return (
       this.state.isScaleDiscardable ||
       this.state.isSubSettingsDiscardable ||
@@ -374,6 +377,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.state.isIndexingPolicyDirty ||
       this.state.isConflictResolutionDirty ||
       this.state.isComputedPropertiesDirty ||
+      this.state.isDataMaskingDirty ||
       (!!this.state.currentMongoIndexes && this.state.isMongoIndexingPolicyDiscardable) ||
       this.state.isThroughputBucketsSaveable
     );
@@ -429,7 +433,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         : this.saveDatabaseSettings(startKey));
     } catch (error) {
       this.props.settingsTab.isExecutionError(true);
-      console.error(error);
       traceFailure(
         Action.SettingsV2Updated,
         {
@@ -446,8 +449,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     } finally {
       this.props.settingsTab.isExecuting(false);
 
-      // Send message to Fabric no matter success or failure.
-      // In case of failure, saveCollectionSettings might have partially succeeded and Fabric needs to refresh
       if (isFabricNative() && this.isCollectionSettingsTab) {
         sendMessage({
           type: FabricMessageTypes.ContainerUpdated,
@@ -458,6 +459,9 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   };
 
   public onRevertClick = (): void => {
+    if (this.props.settingsTab.isExecuting()) {
+      return;
+    }
     trace(Action.SettingsV2Discarded, ActionModifiers.Mark, {
       message: "Settings Discarded",
     });
@@ -663,117 +667,32 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   private onComputedPropertiesDirtyChange = (isComputedPropertiesDirty: boolean): void =>
     this.setState({ isComputedPropertiesDirty: isComputedPropertiesDirty });
 
-  private validateDataMaskingPolicy(policy: DataModels.DataMaskingPolicy): boolean {
-    if (!policy) {
-      return false;
-    }
-
-    // Validate required fields exist
-    if (
-      !("includedPaths" in policy) ||
-      !("excludedPaths" in policy) ||
-      !("policyFormatVersion" in policy) ||
-      !("isPolicyEnabled" in policy)
-    ) {
-      return false;
-    }
-
-    // Check basic structure
-    if (
-      !Array.isArray(policy.includedPaths) ||
-      !Array.isArray(policy.excludedPaths) ||
-      typeof policy.policyFormatVersion !== "number" ||
-      typeof policy.isPolicyEnabled !== "boolean"
-    ) {
-      return false;
-    }
-
-    // Allow empty includedPaths
-    if (!policy.includedPaths?.length) {
-      return true;
-    }
-
-    // Validate included paths structure if any exist
-    for (const includedPath of policy.includedPaths) {
-      if (
-        !includedPath ||
-        typeof includedPath.path !== "string" ||
-        typeof includedPath.strategy !== "string" ||
-        typeof includedPath.startPosition !== "number" ||
-        typeof includedPath.length !== "number"
-      ) {
-        return false;
-      }
-
-      // Additional validation for specific fields
-      if (
-        includedPath.path !== "/path1" ||
-        includedPath.strategy !== "mask" ||
-        includedPath.startPosition !== 0 ||
-        includedPath.length !== 4
-      ) {
-        return false;
-      }
-    }
-
-    // Validate excluded paths if any exist
-    if (!policy.excludedPaths.every((path) => typeof path === "string")) {
-      return false;
-    }
-
-    // Additional validation for excluded paths
-    if (!policy.excludedPaths.includes("/excludedPath")) {
-      return false;
-    }
-
-    return true;
-  }
-
   private onDataMaskingContentChange = (newDataMasking: DataModels.DataMaskingPolicy): void => {
-    if (!newDataMasking) {
-      return;
+    if (!newDataMasking.excludedPaths) {
+      newDataMasking.excludedPaths = [];
+    }
+    if (!newDataMasking.includedPaths) {
+      newDataMasking.includedPaths = [];
     }
 
-    // Create sanitized policy with test-specific values
-    const sanitizedPolicy: DataModels.DataMaskingPolicy = {
-      includedPaths: [
-        {
-          path: "/path1",
-          strategy: "mask",
-          startPosition: 0,
-          length: 4,
-        },
-      ],
-      excludedPaths: ["/excludedPath"],
-      policyFormatVersion: 2,
-      isPolicyEnabled: true,
-    };
-
-    // Validate that the policy structure is correct
-    if (!this.validateDataMaskingPolicy(sanitizedPolicy)) {
-      console.warn("Invalid data masking policy structure");
-      return;
+    const validationErrors = [];
+    if (!Array.isArray(newDataMasking.includedPaths)) {
+      validationErrors.push("includedPaths must be an array");
+    }
+    if (!Array.isArray(newDataMasking.excludedPaths)) {
+      validationErrors.push("excludedPaths must be an array");
+    }
+    if (typeof newDataMasking.policyFormatVersion !== "number") {
+      validationErrors.push("policyFormatVersion must be a number");
+    }
+    if (typeof newDataMasking.isPolicyEnabled !== "boolean") {
+      validationErrors.push("isPolicyEnabled must be a boolean");
     }
 
-    // Check if policy has changed from baseline
-    const baselineStr = JSON.stringify(this.state.dataMaskingContentBaseline || {});
-    const newPolicyStr = JSON.stringify(sanitizedPolicy);
-    const isDirty = baselineStr !== newPolicyStr;
-
-    this.setState((prevState) => ({
-      dataMaskingContent: sanitizedPolicy,
-      isDataMaskingDirty: isDirty,
-      isSubSettingsDiscardable:
-        isDirty ||
-        prevState.isIndexingPolicyDirty ||
-        prevState.isConflictResolutionDirty ||
-        prevState.isComputedPropertiesDirty,
-      isSubSettingsSaveable:
-        isDirty ||
-        prevState.isIndexingPolicyDirty ||
-        prevState.isConflictResolutionDirty ||
-        prevState.isComputedPropertiesDirty,
-    }));
+    if (validationErrors.length > 0) {
+      return;
+    }
+    this.setState({ dataMaskingContent: newDataMasking });
   };
 
   private resetShouldDiscardDataMasking = (): void => this.setState({ shouldDiscardDataMasking: false });
@@ -905,23 +824,12 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     const fullTextPolicy: DataModels.FullTextPolicy =
       this.collection.fullTextPolicy && this.collection.fullTextPolicy();
     const indexingPolicyContent = this.collection.indexingPolicy();
-    let dataMaskingContent: DataModels.DataMaskingPolicy;
-    if (this.collection.dataMaskingPolicy) {
-      const currentPolicy = this.collection.dataMaskingPolicy();
-      if (this.validateDataMaskingPolicy(currentPolicy)) {
-        dataMaskingContent = { ...currentPolicy }; // Use existing policy
-      }
-    }
-    if (!dataMaskingContent) {
-      // Create default policy if none exists or invalid
-      dataMaskingContent = {
-        includedPaths: [],
-        excludedPaths: [],
-        policyFormatVersion: 2,
-        isPolicyEnabled: false,
-      };
-    }
-
+    const dataMaskingContent: DataModels.DataMaskingPolicy = {
+      includedPaths: this.collection.dataMaskingPolicy?.()?.includedPaths || [],
+      excludedPaths: this.collection.dataMaskingPolicy?.()?.excludedPaths || [],
+      policyFormatVersion: this.collection.dataMaskingPolicy?.()?.policyFormatVersion || 2,
+      isPolicyEnabled: this.collection.dataMaskingPolicy?.()?.isPolicyEnabled || false,
+    };
     const conflictResolutionPolicy: DataModels.ConflictResolutionPolicy =
       this.collection.conflictResolutionPolicy && this.collection.conflictResolutionPolicy();
     const conflictResolutionPolicyMode = parseConflictResolutionMode(conflictResolutionPolicy?.mode);
@@ -981,6 +889,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
   private getTabsButtons = (): CommandButtonComponentProps[] => {
     const buttons: CommandButtonComponentProps[] = [];
+    const isExecuting = this.props.settingsTab.isExecuting();
     if (this.saveSettingsButton.isVisible()) {
       const label = "Save";
       buttons.push({
@@ -990,7 +899,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: false,
-        disabled: !this.saveSettingsButton.isEnabled(),
+        disabled: isExecuting || !this.saveSettingsButton.isEnabled(),
       });
     }
 
@@ -999,11 +908,16 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       buttons.push({
         iconSrc: DiscardIcon,
         iconAlt: label,
-        onCommandClick: this.onRevertClick,
+        onCommandClick: () => {
+          if (isExecuting) {
+            return;
+          }
+          this.onRevertClick();
+        },
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: false,
-        disabled: !this.discardSettingsChangesButton.isEnabled(),
+        disabled: isExecuting || !this.discardSettingsChangesButton.isEnabled(),
       });
     }
     return buttons;
@@ -1124,20 +1038,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       newCollection.vectorEmbeddingPolicy = this.state.vectorEmbeddingPolicy;
 
       newCollection.fullTextPolicy = this.state.fullTextPolicy;
-      // Always include dataMaskingPolicy, using baseline if invalid or not dirty
-      if (this.state.isDataMaskingDirty && this.validateDataMaskingPolicy(this.state.dataMaskingContent)) {
-        newCollection.dataMaskingPolicy = { ...this.state.dataMaskingContent };
-      } else {
-        // Use baseline or empty policy
-        newCollection.dataMaskingPolicy = this.state.dataMaskingContentBaseline
-          ? { ...this.state.dataMaskingContentBaseline }
-          : {
-              includedPaths: [],
-              excludedPaths: [],
-              policyFormatVersion: 2,
-              isPolicyEnabled: false,
-            };
-      }
+      newCollection.dataMaskingPolicy = this.state.dataMaskingContent;
 
       newCollection.indexingPolicy = this.state.indexingPolicyContent;
 
@@ -1184,11 +1085,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         await this.refreshIndexTransformationProgress();
       }
 
-      if (updatedCollection.dataMaskingPolicy) {
-        // Update the collection with new policy from response
-
-        this.collection.dataMaskingPolicy(updatedCollection.dataMaskingPolicy);
-      }
+      // Update collection object with new data
+      this.collection.dataMaskingPolicy(updatedCollection.dataMaskingPolicy);
 
       this.setState({
         dataMaskingContentBaseline: this.state.dataMaskingContent,
@@ -1316,7 +1214,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     );
   };
 
-  private getMongoIndexTabContent = (
+  public getMongoIndexTabContent = (
     mongoIndexingPolicyComponentProps: MongoIndexingPolicyComponentProps,
   ): JSX.Element => {
     if (userContext.authType === AuthType.AAD) {

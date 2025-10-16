@@ -1,9 +1,10 @@
-import { getTheme, MessageBar, MessageBarType, Stack } from "@fluentui/react";
+import { MessageBar, MessageBarType, Stack } from "@fluentui/react";
+import * as monaco from "monaco-editor";
 import * as React from "react";
 import * as Constants from "../../../../Common/Constants";
 import * as DataModels from "../../../../Contracts/DataModels";
 import { isCapabilityEnabled } from "../../../../Utils/CapabilityUtils";
-import { EditorReact } from "../../../Controls/Editor/EditorReact";
+import { loadMonaco } from "../../../LazyMonaco";
 import { titleAndInputStackProps, unsavedEditorWarningMessage } from "../SettingsRenderUtils";
 import { isDirty as isContentDirty } from "../SettingsUtils";
 
@@ -18,6 +19,7 @@ export interface DataMaskingComponentProps {
 
 interface DataMaskingComponentState {
   isDirty: boolean;
+  dataMaskingContentIsValid: boolean;
 }
 
 const emptyDataMaskingPolicy: DataModels.DataMaskingPolicy = {
@@ -35,122 +37,130 @@ const emptyDataMaskingPolicy: DataModels.DataMaskingPolicy = {
 };
 
 export class DataMaskingComponent extends React.Component<DataMaskingComponentProps, DataMaskingComponentState> {
-  private editorRef: React.RefObject<EditorReact>;
+  private dataMaskingDiv = React.createRef<HTMLDivElement>();
+  private dataMaskingEditor: monaco.editor.IStandaloneCodeEditor;
+  private shouldCheckComponentIsDirty = true;
 
   constructor(props: DataMaskingComponentProps) {
     super(props);
     this.state = {
       isDirty: false,
+      dataMaskingContentIsValid: true,
     };
-    this.editorRef = React.createRef();
-
-    if (props.shouldDiscardDataMasking) {
-      const baselinePolicy = props.dataMaskingContentBaseline || emptyDataMaskingPolicy;
-      props.onDataMaskingContentChange({ ...baselinePolicy });
-      props.onDataMaskingDirtyChange(false);
-      props.resetShouldDiscardDataMasking();
-    }
   }
 
-  private onBeforeChange = () => {
-    this.props.resetShouldDiscardDataMasking();
-  };
-
-  private onContentChange = (content: string): void => {
-    try {
-      const parsedContent = JSON.parse(content);
-
-      if (!Array.isArray(parsedContent.includedPaths)) {
-        return;
-      }
-      if (typeof parsedContent.policyFormatVersion !== "number") {
-        return;
-      }
-      if (typeof parsedContent.isPolicyEnabled !== "boolean") {
-        return;
-      }
-
-      this.props.onDataMaskingContentChange(parsedContent);
-      const dirty = JSON.stringify(parsedContent) !== JSON.stringify(this.props.dataMaskingContentBaseline);
-      this.props.onDataMaskingDirtyChange(dirty);
-
-      this.setState({ isDirty: dirty });
-    } catch (error) {
-      // Ignore errors as they just mean invalid JSON that shouldn't be processed
-    }
-  };
-
-  public componentDidUpdate(prevProps: DataMaskingComponentProps): void {
-    if (this.props.shouldDiscardDataMasking && this.editorRef.current?.editor) {
-      const baselinePolicy = this.props.dataMaskingContentBaseline || emptyDataMaskingPolicy;
-      // First update the content through props
-      this.props.onDataMaskingContentChange({ ...baselinePolicy });
-
-      // Then update the editor value
-      const baselineContent = JSON.stringify(baselinePolicy, undefined, 2);
-      this.editorRef.current.editor.setValue(baselineContent);
-
-      this.setState({ isDirty: false });
-      this.props.onDataMaskingDirtyChange(false);
+  public componentDidUpdate(): void {
+    if (this.props.shouldDiscardDataMasking) {
+      this.resetDataMaskingEditor();
       this.props.resetShouldDiscardDataMasking();
     }
+    this.onComponentUpdate();
+  }
 
-    if (prevProps.dataMaskingContentBaseline !== this.props.dataMaskingContentBaseline) {
-      const dirty = isContentDirty(this.props.dataMaskingContent, this.props.dataMaskingContentBaseline);
-      if (dirty !== this.state.isDirty) {
-        this.setState({ isDirty: dirty });
-        this.props.onDataMaskingDirtyChange(dirty);
+  componentDidMount(): void {
+    this.resetDataMaskingEditor();
+    this.onComponentUpdate();
+  }
+
+  private onComponentUpdate = (): void => {
+    if (!this.shouldCheckComponentIsDirty) {
+      this.shouldCheckComponentIsDirty = true;
+      return;
+    }
+    this.props.onDataMaskingDirtyChange(this.IsComponentDirty());
+    this.shouldCheckComponentIsDirty = false;
+  };
+
+  public IsComponentDirty = (): boolean => {
+    if (
+      isContentDirty(this.props.dataMaskingContent, this.props.dataMaskingContentBaseline) &&
+      this.state.dataMaskingContentIsValid
+    ) {
+      return true;
+    }
+    return false;
+  };
+
+  private resetDataMaskingEditor = (): void => {
+    if (!this.dataMaskingEditor) {
+      this.createDataMaskingEditor();
+    } else {
+      const dataMaskingEditorModel = this.dataMaskingEditor.getModel();
+      const value: string = JSON.stringify(this.props.dataMaskingContent || emptyDataMaskingPolicy, undefined, 4);
+      dataMaskingEditorModel.setValue(value);
+    }
+    this.onComponentUpdate();
+  };
+
+  private async createDataMaskingEditor(): Promise<void> {
+    const value: string = JSON.stringify(this.props.dataMaskingContent || emptyDataMaskingPolicy, undefined, 4);
+    const monaco = await loadMonaco();
+    this.dataMaskingEditor = monaco.editor.create(this.dataMaskingDiv.current, {
+      value: value,
+      language: "json",
+      automaticLayout: true,
+      ariaLabel: "Data Masking Policy",
+      fontSize: 13,
+      minimap: { enabled: false },
+      wordWrap: "off",
+      scrollBeyondLastLine: false,
+      lineNumbers: "on",
+    });
+    if (this.dataMaskingEditor) {
+      const dataMaskingEditorModel = this.dataMaskingEditor.getModel();
+      dataMaskingEditorModel.onDidChangeContent(this.onEditorContentChange.bind(this));
+    }
+  }
+
+  private onEditorContentChange = (): void => {
+    const dataMaskingEditorModel = this.dataMaskingEditor.getModel();
+    try {
+      const newContent = JSON.parse(dataMaskingEditorModel.getValue()) as DataModels.DataMaskingPolicy;
+
+      if (!Array.isArray(newContent.includedPaths)) {
+        this.setState({ dataMaskingContentIsValid: false });
+        return;
       }
-    }
-  }
+      if (typeof newContent.policyFormatVersion !== "number") {
+        this.setState({ dataMaskingContentIsValid: false });
+        return;
+      }
+      if (typeof newContent.isPolicyEnabled !== "boolean") {
+        this.setState({ dataMaskingContentIsValid: false });
+        return;
+      }
 
-  private getEditorContent(): string {
-    if (this.props.dataMaskingContent) {
-      return JSON.stringify(this.props.dataMaskingContent, undefined, 2);
+      this.props.onDataMaskingContentChange(newContent);
+      const isDirty = isContentDirty(newContent, this.props.dataMaskingContentBaseline);
+      this.setState(
+        {
+          dataMaskingContentIsValid: true,
+          isDirty,
+        },
+        () => {
+          this.props.onDataMaskingDirtyChange(isDirty);
+        },
+      );
+    } catch (e) {
+      this.setState({
+        dataMaskingContentIsValid: false,
+        isDirty: false,
+      });
     }
-
-    return `// Data Masking Policy Template
-{
-  // Paths to apply data masking - required
-  "includedPaths": [
-    {
-      "path": "/sensitiveField",      // JSON path to the field to mask
-      "strategy": "Default",          // Masking strategy: Default, Hash, etc.
-      "startPosition": 0,             // Starting position for partial masking
-      "length": -1                    // Length to mask (-1 for entire field)
-    }
-  ],
-  // Paths to exclude from masking - optional
-  "excludedPaths": [],
-  // Version of the policy format - required
-  "policyFormatVersion": 2,
-  // Enable/disable the entire policy
-  "isPolicyEnabled": false
-}`;
-  }
+  };
 
   public render(): JSX.Element {
     if (!isCapabilityEnabled(Constants.CapabilityNames.EnableDynamicDataMasking)) {
       return null;
     }
 
-    const theme = getTheme();
+    const isDirty = this.IsComponentDirty();
     return (
       <Stack {...titleAndInputStackProps}>
-        {this.state.isDirty && (
+        {isDirty && (
           <MessageBar messageBarType={MessageBarType.warning}>{unsavedEditorWarningMessage("dataMasking")}</MessageBar>
         )}
-        <EditorReact
-          ariaLabel="Data Masking Policy Editor"
-          content={this.getEditorContent()}
-          isReadOnly={false}
-          language="json"
-          onContentChanged={this.onContentChange}
-          theme={theme?.isInverted ? "cosmos-dark" : "cosmos-light"}
-          lineNumbers="on"
-          monacoContainerStyles={{ height: "500px" }}
-          ref={this.editorRef}
-        />
+        <div className="settingsV2Editor" tabIndex={0} ref={this.dataMaskingDiv}></div>
       </Stack>
     );
   }
