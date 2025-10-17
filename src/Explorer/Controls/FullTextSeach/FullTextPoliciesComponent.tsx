@@ -12,6 +12,7 @@ import {
 import { FullTextIndex, FullTextPath, FullTextPolicy } from "Contracts/DataModels";
 import { CollapsibleSectionComponent } from "Explorer/Controls/CollapsiblePanel/CollapsibleSectionComponent";
 import * as React from "react";
+import { isFullTextSearchPreviewFeaturesEnabled } from "Utils/CapabilityUtils";
 
 export interface FullTextPoliciesComponentProps {
   fullTextPolicy: FullTextPolicy;
@@ -233,24 +234,29 @@ export const FullTextPoliciesComponent: React.FunctionComponent<FullTextPolicies
 };
 
 export const getFullTextLanguageOptions = (englishOnly?: boolean): IDropdownOption[] => {
+  const multiLanguageSupportEnabled: boolean = isFullTextSearchPreviewFeaturesEnabled() && !englishOnly;
   const fullTextLanguageOptions: IDropdownOption[] = [
     {
       key: "en-US",
       text: "English (US)",
     },
-    {
-      key: "fr-FR",
-      text: "French",
-    },
-    {
-      key: "de-DE",
-      text: "German",
-    },
-    {
-      key: "es-ES",
-      text: "Spanish",
-    },
+    ...(multiLanguageSupportEnabled
+      ? [
+          {
+            key: "fr-FR",
+            text: "French",
+          },
+          {
+            key: "de-DE",
+            text: "German",
+          },
+          {
+            key: "es-ES",
+            text: "Spanish",
+          },
+        ]
+      : []),
   ];
 
-  return englishOnly ? [fullTextLanguageOptions[0]] : fullTextLanguageOptions;
+  return fullTextLanguageOptions;
 };
