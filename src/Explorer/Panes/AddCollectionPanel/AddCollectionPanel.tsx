@@ -893,6 +893,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                       ) => {
                         this.setState({ fullTextPolicy, fullTextIndexes, fullTextPolicyValidated });
                       }}
+                      englishOnly={true}
                     />
                   </Stack>
                 </Stack>

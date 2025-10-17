@@ -24,3 +24,10 @@ export const isVectorSearchEnabled = (): boolean => {
     (isCapabilityEnabled(Constants.CapabilityNames.EnableNoSQLVectorSearch) || isFabricNative())
   );
 };
+
+export const isFullTextSearchPreviewFeaturesEnabled = (): boolean => {
+  return (
+    userContext.apiType === "SQL" &&
+    isCapabilityEnabled(Constants.CapabilityNames.EnableNoSQLFullTextSearchPreviewFeatures)
+  );
+};
