@@ -72,6 +72,16 @@ exports[`SettingsComponent renders 1`] = `
                 "partitionKey",
               ],
               "rawDataModel": {
+                "indexingPolicy": {
+                  "automatic": true,
+                  "compositeIndexes": [],
+                  "excludedPaths": [],
+                  "fullTextIndexes": [],
+                  "includedPaths": [],
+                  "indexingMode": "consistent",
+                  "spatialIndexes": [],
+                  "vectorIndexes": [],
+                },
                 "uniqueKeyPolicy": {
                   "uniqueKeys": [
                     {
@@ -164,6 +174,16 @@ exports[`SettingsComponent renders 1`] = `
                 "partitionKey",
               ],
               "rawDataModel": {
+                "indexingPolicy": {
+                  "automatic": true,
+                  "compositeIndexes": [],
+                  "excludedPaths": [],
+                  "fullTextIndexes": [],
+                  "includedPaths": [],
+                  "indexingMode": "consistent",
+                  "spatialIndexes": [],
+                  "vectorIndexes": [],
+                },
                 "uniqueKeyPolicy": {
                   "uniqueKeys": [
                     {
@@ -238,17 +258,25 @@ exports[`SettingsComponent renders 1`] = `
           indexingPolicyContent={
             {
               "automatic": true,
+              "compositeIndexes": [],
               "excludedPaths": [],
+              "fullTextIndexes": [],
               "includedPaths": [],
               "indexingMode": "consistent",
+              "spatialIndexes": [],
+              "vectorIndexes": [],
             }
           }
           indexingPolicyContentBaseline={
             {
               "automatic": true,
+              "compositeIndexes": [],
               "excludedPaths": [],
+              "fullTextIndexes": [],
               "includedPaths": [],
               "indexingMode": "consistent",
+              "spatialIndexes": [],
+              "vectorIndexes": [],
             }
           }
           isVectorSearchEnabled={false}
@@ -321,6 +349,16 @@ exports[`SettingsComponent renders 1`] = `
                 "partitionKey",
               ],
               "rawDataModel": {
+                "indexingPolicy": {
+                  "automatic": true,
+                  "compositeIndexes": [],
+                  "excludedPaths": [],
+                  "fullTextIndexes": [],
+                  "includedPaths": [],
+                  "indexingMode": "consistent",
+                  "spatialIndexes": [],
+                  "vectorIndexes": [],
+                },
                 "uniqueKeyPolicy": {
                   "uniqueKeys": [
                     {
@@ -461,6 +499,16 @@ exports[`SettingsComponent renders 1`] = `
                 "partitionKey",
               ],
               "rawDataModel": {
+                "indexingPolicy": {
+                  "automatic": true,
+                  "compositeIndexes": [],
+                  "excludedPaths": [],
+                  "fullTextIndexes": [],
+                  "includedPaths": [],
+                  "indexingMode": "consistent",
+                  "spatialIndexes": [],
+                  "vectorIndexes": [],
+                },
                 "uniqueKeyPolicy": {
                   "uniqueKeys": [
                     {
