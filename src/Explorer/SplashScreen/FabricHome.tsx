@@ -182,7 +182,7 @@ export const FabricHomeScreen: React.FC<SplashScreenProps> = (props: SplashScree
       },
       {
         title: "Sample Vector Data",
-        description: "Load sample vector data in your database",
+        description: "Load sample vector data with text-embedding-ada-002",
         icon: <img src={AzureOpenAiIcon} alt={"Azure Open AI icon"} aria-hidden="true" />,
         onClick: () => {
           setSelectedSampleDataConfiguration({
@@ -203,7 +203,7 @@ export const FabricHomeScreen: React.FC<SplashScreenProps> = (props: SplashScree
         title: "Sample Gallery",
         description: "Get real-world end-to-end samples",
         icon: <img src={GithubIcon} alt={"GitHub icon"} aria-hidden="true" />,
-        onClick: () => window.open("https://azurecosmosdb.github.io/gallery/?tags=example&tags=analytics", "_blank"),
+        onClick: () => window.open("https://aka.ms/CosmosFabricSamplesGallery", "_blank"),
       },
     ];
 

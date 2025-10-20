@@ -58,10 +58,10 @@ export const createContainer = async (
         ? {
             vectorEmbeddings: [
               {
-                path: "/descriptionVector",
+                path: "/vectors",
                 dataType: "float32",
                 distanceFunction: "cosine",
-                dimensions: 512,
+                dimensions: 1536,
               },
             ],
           }
@@ -84,7 +84,7 @@ export const createContainer = async (
             fullTextIndexes: [],
             vectorIndexes: [
               {
-                path: "/descriptionVector",
+                path: "/vectors",
                 type: "quantizedFlat",
                 quantizationByteSize: 64,
               },
