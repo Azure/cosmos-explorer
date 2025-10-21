@@ -1,5 +1,6 @@
 import { Item, RequestOptions } from "@azure/cosmos";
 import { HttpHeaders } from "Common/Constants";
+import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { CollectionBase } from "../../Contracts/ViewModels";
 import DocumentId from "../../Explorer/Tree/DocumentId";
 import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
@@ -23,10 +24,17 @@ export const updateDocument = async (
             [HttpHeaders.partitionKey]: documentId.partitionKeyValue,
           }
         : {};
+
+    // If user has chosen to ignore partition key on update, pass null instead of actual partition key value
+    const ignorePartitionKeyOnDocumentUpdateFlag = LocalStorageUtility.getEntryBoolean(
+      StorageKey.IgnorePartitionKeyOnDocumentUpdate,
+    );
+    const partitionKey = ignorePartitionKeyOnDocumentUpdateFlag ? undefined : getPartitionKeyValue(documentId);
+
     const response = await client()
       .database(collection.databaseId)
       .container(collection.id())
-      .item(documentId.id(), getPartitionKeyValue(documentId))
+      .item(documentId.id(), partitionKey)
       .replace(newDocument, options);
 
     logConsoleInfo(`Successfully updated ${entityName} ${documentId.id()}`);

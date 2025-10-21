@@ -35,6 +35,7 @@ export enum StorageKey {
   DefaultQueryResultsView,
   AppState,
   MongoGuidRepresentation,
+  IgnorePartitionKeyOnDocumentUpdate,
 }
 
 export const hasRUThresholdBeenConfigured = (): boolean => {

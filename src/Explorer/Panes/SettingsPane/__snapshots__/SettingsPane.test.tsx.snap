@@ -575,6 +575,37 @@ exports[`Settings Pane should render Default properly 1`] = `
           </div>
         </AccordionPanel>
       </AccordionItem>
+      <AccordionItem
+        value="15"
+      >
+        <AccordionHeader>
+          <div
+            className="___15c001r_0000000 fq02s40"
+          >
+            Advanced Settings
+          </div>
+        </AccordionHeader>
+        <AccordionPanel>
+          <div
+            className="___1dfa554_0000000 fo7qwa0"
+          >
+            <StyledCheckboxBase
+              ariaLabel="Ignore partition key on document update"
+              checked={false}
+              className="padding"
+              label="Ignore partition key on document update"
+              onChange={[Function]}
+              styles={
+                {
+                  "label": {
+                    "padding": 0,
+                  },
+                }
+              }
+            />
+          </div>
+        </AccordionPanel>
+      </AccordionItem>
     </Accordion>
     <div
       className="settingsSection"
@@ -834,6 +865,37 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
                 ]
               }
               selectedKey="false"
+            />
+          </div>
+        </AccordionPanel>
+      </AccordionItem>
+      <AccordionItem
+        value="15"
+      >
+        <AccordionHeader>
+          <div
+            className="___15c001r_0000000 fq02s40"
+          >
+            Advanced Settings
+          </div>
+        </AccordionHeader>
+        <AccordionPanel>
+          <div
+            className="___1dfa554_0000000 fo7qwa0"
+          >
+            <StyledCheckboxBase
+              ariaLabel="Ignore partition key on document update"
+              checked={false}
+              className="padding"
+              label="Ignore partition key on document update"
+              onChange={[Function]}
+              styles={
+                {
+                  "label": {
+                    "padding": 0,
+                  },
+                }
+              }
             />
           </div>
         </AccordionPanel>
