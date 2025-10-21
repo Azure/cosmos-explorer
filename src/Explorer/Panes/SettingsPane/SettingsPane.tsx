@@ -13,6 +13,7 @@ import {
   IToggleStyles,
   Position,
   SpinButton,
+  Stack,
   Toggle,
 } from "@fluentui/react";
 import { Accordion, AccordionHeader, AccordionItem, AccordionPanel, makeStyles } from "@fluentui/react-components";
@@ -1163,14 +1164,20 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
               </AccordionHeader>
               <AccordionPanel>
                 <div className={styles.settingsSectionContainer}>
-                  <Checkbox
-                    styles={{ label: { padding: 0 } }}
-                    className="padding"
-                    ariaLabel="Ignore partition key on document update"
-                    checked={ignorePartitionKeyOnDocumentUpdate}
-                    onChange={handleOnIgnorePartitionKeyOnDocumentUpdateChange}
-                    label="Ignore partition key on document update"
-                  />
+                  <Stack horizontal verticalAlign="center" tokens={{ childrenGap: 4 }}>
+                    <Checkbox
+                      styles={{ label: { padding: 0 } }}
+                      className="padding"
+                      ariaLabel="Ignore partition key on document update"
+                      checked={ignorePartitionKeyOnDocumentUpdate}
+                      onChange={handleOnIgnorePartitionKeyOnDocumentUpdateChange}
+                      label="Ignore partition key on document update"
+                    />
+                    <InfoTooltip className={styles.headerIcon}>
+                      If checked, the partition key value will not be used to locate the document during update
+                      operations. Only use this if document updates are failing due to an abnormal partition key.
+                    </InfoTooltip>
+                  </Stack>
                 </div>
               </AccordionPanel>
             </AccordionItem>
