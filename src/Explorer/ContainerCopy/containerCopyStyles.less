@@ -60,13 +60,18 @@
             }
         }
     }
-
+    .popover-container {
+        button[disabled] {
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+    }
     .foreground {
         z-index: 10;
         background-color: white;
         padding: 20px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        // transform: translate(0%, -5%);
+        transform: translate(0%, -9%);
         position: absolute;
     }
 }
