@@ -1,18 +1,44 @@
 import { PrimaryButton, Stack } from "@fluentui/react";
-import React from "react";
+import React, { useCallback, useState } from "react";
+import { fetchDatabaseAccount } from "Utils/arm/databaseAccountUtils";
 import ContainerCopyMessages from "../../../ContainerCopyMessages";
 import { useCopyJobContext } from "../../../Context/CopyJobContext";
 import { buildResourceLink } from "../../../CopyJobUtils";
+import { PermissionSectionConfig } from "./hooks/usePermissionsSection";
 import useWindowOpenMonitor from "./hooks/useWindowOpenMonitor";
 
-const PointInTimeRestore: React.FC = () => {
-    const { copyJobState: { source } = {} } = useCopyJobContext();
+type AddManagedIdentityProps = Partial<PermissionSectionConfig>;
+const PointInTimeRestore: React.FC<AddManagedIdentityProps> = () => {
+    const [loading, setLoading] = useState<boolean>(false);
+    const { copyJobState: { source } = {}, setCopyJobState } = useCopyJobContext();
     const sourceAccountLink = buildResourceLink(source?.account);
     const pitrUrl = `${sourceAccountLink}/backupRestore`;
 
-    const onWindowClosed = () => {
-        console.log('Point-in-time restore window closed');
-    };
+    const onWindowClosed = useCallback(async () => {
+        try {
+            setLoading(true);
+            const account = await fetchDatabaseAccount(
+                source?.subscription?.subscriptionId,
+                source?.account?.resourceGroup,
+                source?.account?.name
+            );
+            /* account.properties = {
+                backupPolicy: {
+                    type: "Continuous"
+                }
+            } */
+            if (account) {
+                setCopyJobState((prevState) => ({
+                    ...prevState,
+                    source: { ...prevState.source, account: account }
+                }));
+            }
+        } catch (error) {
+            console.error("Error fetching database account after PITR window closed:", error);
+        } finally {
+            setLoading(false);
+        }
+    }, [])
     const openWindowAndMonitor = useWindowOpenMonitor(pitrUrl, onWindowClosed);
 
     return (
@@ -21,7 +47,9 @@ const PointInTimeRestore: React.FC = () => {
                 {ContainerCopyMessages.pointInTimeRestore.description}
             </div>
             <PrimaryButton
-                text={ContainerCopyMessages.pointInTimeRestore.buttonText}
+                text={loading ? "" : ContainerCopyMessages.pointInTimeRestore.buttonText}
+                {...(loading ? { iconProps: { iconName: "SyncStatusSolid" } } : {})}
+                disabled={loading}
                 onClick={openWindowAndMonitor}
             />
         </Stack>

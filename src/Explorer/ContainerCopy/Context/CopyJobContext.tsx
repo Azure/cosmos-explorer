@@ -2,6 +2,7 @@ import React from "react";
 import { userContext } from "UserContext";
 import { useAADAuth } from "../../../hooks/useAADAuth";
 import { useConfig } from "../../../hooks/useConfig";
+import { CopyJobMigrationType } from "../Enums";
 import { CopyJobContextProviderType, CopyJobContextState, CopyJobFlowType } from "../Types";
 
 export const CopyJobContext = React.createContext<CopyJobContextProviderType>(null);
@@ -20,7 +21,7 @@ interface CopyJobContextProviderProps {
 const getInitialCopyJobState = (): CopyJobContextState => {
     return {
         jobName: "",
-        migrationType: "offline",
+        migrationType: CopyJobMigrationType.Offline,
         source: {
             subscription: null,
             account: null,
@@ -33,6 +34,7 @@ const getInitialCopyJobState = (): CopyJobContextState => {
             databaseId: "",
             containerId: "",
         },
+        sourceReadAccessFromTarget: false
     }
 }
 
