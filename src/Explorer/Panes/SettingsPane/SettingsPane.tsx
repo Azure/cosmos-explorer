@@ -1174,9 +1174,8 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                       label="Ignore partition key on document update"
                     />
                     <InfoTooltip className={styles.headerIcon}>
-                      Use this option only after a failed document update reporting Entity with the specified id does
-                      not exist in the system. If checked, the partition key value will not be used to locate the
-                      document.
+                      If checked, the partition key value will not be used to locate the document during update
+                      operations. Only use this if document updates are failing due to an abnormal partition key.
                     </InfoTooltip>
                   </Stack>
                 </div>
