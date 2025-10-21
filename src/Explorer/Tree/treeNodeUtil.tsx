@@ -21,7 +21,12 @@ import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
 import { useSelectedNode } from "../useSelectedNode";
 
 export const shouldShowScriptNodes = (): boolean => {
-  return !isFabric() && configContext.platform !== Platform.Emulator && (userContext.apiType === "SQL" || userContext.apiType === "Gremlin");
+  return (
+    !isFabric() &&
+    configContext.platform !== Platform.Emulator &&
+    configContext.platform !== Platform.VNextEmulator &&
+    (userContext.apiType === "SQL" || userContext.apiType === "Gremlin")
+  );
 };
 
 const TreeDatabaseIcon = <DatabaseRegular fontSize={16} />;

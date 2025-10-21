@@ -53,6 +53,7 @@ export function createStaticCommandBarButtons(
   };
 
   if (
+    isFeatureSupported(PlatformFeature.SynapseLink) &&
     configContext.platform !== Platform.Fabric &&
     userContext.apiType !== "Tables" &&
     userContext.apiType !== "Cassandra"
