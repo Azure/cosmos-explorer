@@ -3,9 +3,11 @@ import React from "react";
 import ContainerCopyMessages from "../../../ContainerCopyMessages";
 import { useCopyJobContext } from "../../../Context/CopyJobContext";
 import { buildResourceLink } from "../../../CopyJobUtils";
+import { PermissionSectionConfig } from "./hooks/usePermissionsSection";
 import useWindowOpenMonitor from "./hooks/useWindowOpenMonitor";
 
-const OnlineCopyEnabled: React.FC = () => {
+type AddManagedIdentityProps = Partial<PermissionSectionConfig>;
+const OnlineCopyEnabled: React.FC<AddManagedIdentityProps> = () => {
     const { copyJobState: { source } = {} } = useCopyJobContext();
     const sourceAccountLink = buildResourceLink(source?.account);
     const onlineCopyUrl = `${sourceAccountLink}/Features`;

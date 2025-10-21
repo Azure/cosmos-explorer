@@ -1,6 +1,9 @@
-import { useRoleAssignments } from "hooks/useRoleAssignments";
-import { RoleDefinitionType, useRoleDefinitions } from "hooks/useRoleDefinition";
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
+    fetchRoleAssignments,
+    fetchRoleDefinitions,
+    RoleDefinitionType
+} from "../../../../../../Utils/arm/RbacUtils";
 import ContainerCopyMessages from "../../../../ContainerCopyMessages";
 import {
     BackupPolicyType,
@@ -9,6 +12,7 @@ import {
     IdentityType
 } from "../../../../Enums";
 import { CopyJobContextState } from "../../../../Types";
+import { useCopyJobPrerequisitesCache } from "../../../Utils/useCopyJobPrerequisitesCache";
 import AddManagedIdentity from "../AddManagedIdentity";
 import AddReadPermissionToDefaultIdentity from "../AddReadPermissionToDefaultIdentity";
 import DefaultManagedIdentity from "../DefaultManagedIdentity";
@@ -18,13 +22,14 @@ import PointInTimeRestore from "../PointInTimeRestore";
 export interface PermissionSectionConfig {
     id: string;
     title: string;
-    Component: React.FC;
-    disabled?: boolean;
+    Component: React.ComponentType
+    disabled: boolean;
     completed?: boolean;
+    validate?: (state: CopyJobContextState, armToken?: string) => boolean | Promise<boolean>;
 }
 
 // Section IDs for maintainability
-const SECTION_IDS = {
+export const SECTION_IDS = {
     addManagedIdentity: "addManagedIdentity",
     defaultManagedIdentity: "defaultManagedIdentity",
     readPermissionAssigned: "readPermissionAssigned",
@@ -37,16 +42,46 @@ const PERMISSION_SECTIONS_CONFIG: PermissionSectionConfig[] = [
         id: SECTION_IDS.addManagedIdentity,
         title: ContainerCopyMessages.addManagedIdentity.title,
         Component: AddManagedIdentity,
+        disabled: true,
+        validate: (state: CopyJobContextState) => {
+            const targetAccountIdentityType = (state?.target?.account?.identity?.type ?? "").toLowerCase();
+            return (
+                targetAccountIdentityType === IdentityType.SystemAssigned ||
+                targetAccountIdentityType === IdentityType.UserAssigned
+            );
+        }
     },
     {
         id: SECTION_IDS.defaultManagedIdentity,
         title: ContainerCopyMessages.defaultManagedIdentity.title,
         Component: DefaultManagedIdentity,
+        disabled: true,
+        validate: (state: CopyJobContextState) => {
+            const targetAccountDefaultIdentity = (state?.target?.account?.properties?.defaultIdentity ?? "").toLowerCase();
+            return targetAccountDefaultIdentity === DefaultIdentityType.SystemAssignedIdentity;
+        }
     },
     {
         id: SECTION_IDS.readPermissionAssigned,
         title: ContainerCopyMessages.readPermissionAssigned.title,
         Component: AddReadPermissionToDefaultIdentity,
+        disabled: true,
+        validate: async (state: CopyJobContextState, armToken?: string) => {
+            const principalId = state?.target?.account?.identity?.principalId;
+            const rolesAssigned = await fetchRoleAssignments(
+                armToken,
+                state.source?.subscription?.subscriptionId,
+                state.source?.account?.resourceGroup,
+                state.source?.account?.name,
+                principalId
+            );
+
+            const roleDefinitions = await fetchRoleDefinitions(
+                armToken,
+                rolesAssigned ?? []
+            );
+            return checkTargetHasReaderRoleOnSource(roleDefinitions ?? []);
+        }
     }
 ];
 
@@ -55,11 +90,20 @@ const PERMISSION_SECTIONS_FOR_ONLINE_JOBS: PermissionSectionConfig[] = [
         id: SECTION_IDS.pointInTimeRestore,
         title: ContainerCopyMessages.pointInTimeRestore.title,
         Component: PointInTimeRestore,
+        disabled: true,
+        validate: (state: CopyJobContextState) => {
+            const sourceAccountBackupPolicy = state?.source?.account?.properties?.backupPolicy?.type ?? "";
+            return sourceAccountBackupPolicy === BackupPolicyType.Continuous;
+        }
     },
     {
         id: SECTION_IDS.onlineCopyEnabled,
         title: ContainerCopyMessages.onlineCopyEnabled.title,
         Component: OnlineCopyEnabled,
+        disabled: true,
+        validate: (_state: CopyJobContextState) => {
+            return false;
+        }
     }
 ];
 
@@ -67,7 +111,7 @@ const PERMISSION_SECTIONS_FOR_ONLINE_JOBS: PermissionSectionConfig[] = [
 /**
  * Checks if the user has the Reader role based on role definitions.
  */
-export function checkUserHasReaderRole(roleDefinitions: RoleDefinitionType[]): boolean {
+export function checkTargetHasReaderRoleOnSource(roleDefinitions: RoleDefinitionType[]): boolean {
     return roleDefinitions?.some(
         role =>
             role.name === "00000000-0000-0000-0000-000000000001" ||
@@ -86,105 +130,76 @@ export function checkUserHasReaderRole(roleDefinitions: RoleDefinitionType[]): b
 const usePermissionSections = (
     state: CopyJobContextState,
     armToken: string,
-    principalId: string
 ): PermissionSectionConfig[] => {
-    const { source, target } = state;
+    const { validationCache, setValidationCache } = useCopyJobPrerequisitesCache();
+    const [permissionSections, setPermissionSections] = useState<PermissionSectionConfig[] | null>(null);
+    const isValidatingRef = useRef(false);
 
-    // Memoize identity types and backup policy
-    const targetAccountIdentityType = useMemo(
-        () => (target?.account?.identity?.type ?? "").toLowerCase(),
-        [target?.account?.identity?.type]
-    );
-    const targetAccountDefaultIdentityType = useMemo(
-        () => (target?.account?.properties?.defaultIdentity ?? "").toLowerCase(),
-        [target?.account?.properties?.defaultIdentity]
-    );
-    const sourceAccountBackupPolicy = useMemo(
-        () => source?.account?.properties?.backupPolicy?.type ?? "",
-        [source?.account?.properties?.backupPolicy?.type]
-    );
+    const sectionToValidate = useMemo(() => {
+        const baseSections = [...PERMISSION_SECTIONS_CONFIG];
+        if (state.migrationType === CopyJobMigrationType.Online) {
+            return [...baseSections, ...PERMISSION_SECTIONS_FOR_ONLINE_JOBS];
+        }
+        return baseSections;
+    }, [state.migrationType]);
 
-    // Fetch role assignments and definitions
-    const roleAssigned = useRoleAssignments(
-        armToken,
-        source?.subscription?.subscriptionId,
-        source?.account?.resourceGroup,
-        source?.account?.name,
-        principalId
-    );
+    const memoizedValidationCache = useMemo(() => {
+        if (state.migrationType === CopyJobMigrationType.Offline) {
+            validationCache.delete(SECTION_IDS.pointInTimeRestore);
+            validationCache.delete(SECTION_IDS.onlineCopyEnabled);
+        }
+        return validationCache;
+    }, [state.migrationType]);
 
-    const roleDefinitions = useRoleDefinitions(
-        armToken,
-        roleAssigned ?? []
-    );
+    useEffect(() => {
+        const validateSections = async () => {
+            if (isValidatingRef.current) return;
 
-    const hasReaderRole = useMemo(
-        () => checkUserHasReaderRole(roleDefinitions ?? []),
-        [roleDefinitions]
-    );
+            isValidatingRef.current = true;
+            const result: PermissionSectionConfig[] = [];
+            const newValidationCache = new Map(memoizedValidationCache);
 
-    // Decouple section state logic for testability
-    const getBaseSections = useMemo(() => {
-        return PERMISSION_SECTIONS_CONFIG.map(section => {
-            if (
-                section.id === SECTION_IDS.addManagedIdentity &&
-                (targetAccountIdentityType === IdentityType.SystemAssigned ||
-                    targetAccountIdentityType === IdentityType.UserAssigned)
-            ) {
-                return {
-                    ...section,
-                    disabled: true,
-                    completed: true
-                };
+            for (let i = 0; i < sectionToValidate.length; i++) {
+                const section = sectionToValidate[i];
+
+                // Check if this section was already validated and passed
+                if (newValidationCache.has(section.id) && newValidationCache.get(section.id) === true) {
+                    result.push({ ...section, completed: true });
+                    continue;
+                }
+                // We've reached the first non-cached section - validate it
+                if (section.validate) {
+                    const isValid = await section.validate(state, armToken);
+                    newValidationCache.set(section.id, isValid);
+                    result.push({ ...section, completed: isValid });
+                    // Stop validation if current section failed
+                    if (!isValid) {
+                        for (let j = i + 1; j < sectionToValidate.length; j++) {
+                            result.push({ ...sectionToValidate[j], completed: false });
+                        }
+                        break;
+                    }
+                }
+                else {
+                    // Section has no validate method
+                    newValidationCache.set(section.id, false);
+                    result.push({ ...section, completed: false });
+                }
             }
-            if (
-                section.id === SECTION_IDS.defaultManagedIdentity &&
-                targetAccountDefaultIdentityType === DefaultIdentityType.SystemAssignedIdentity
-            ) {
-                return {
-                    ...section,
-                    disabled: true,
-                    completed: true
-                };
-            }
-            if (
-                section.id === SECTION_IDS.readPermissionAssigned &&
-                hasReaderRole
-            ) {
-                return {
-                    ...section,
-                    disabled: true,
-                    completed: true
-                };
-            }
-            return section;
-        });
-    }, [targetAccountIdentityType, targetAccountDefaultIdentityType, hasReaderRole]);
 
-    const getOnlineSections = useMemo(() => {
-        if (state.migrationType !== CopyJobMigrationType.Online) return [];
-        return PERMISSION_SECTIONS_FOR_ONLINE_JOBS.map(section => {
-            if (
-                section.id === SECTION_IDS.pointInTimeRestore &&
-                sourceAccountBackupPolicy === BackupPolicyType.Continuous
-            ) {
-                return {
-                    ...section,
-                    disabled: true,
-                    completed: true
-                };
-            }
-            return section;
-        });
-    }, [state.migrationType, sourceAccountBackupPolicy]);
+            setValidationCache(newValidationCache);
+            setPermissionSections(result);
+            isValidatingRef.current = false;
+        }
 
-    // Combine and memoize final sections
-    const permissionSections = useMemo(
-        () => [...getBaseSections, ...getOnlineSections],
-        [getBaseSections, getOnlineSections]
-    );
+        validateSections();
 
-    return permissionSections;
+        return () => {
+            isValidatingRef.current = false;
+        }
+    }, [state, armToken, sectionToValidate]);
+
+    return permissionSections ?? [];
 };
 
 export default usePermissionSections;

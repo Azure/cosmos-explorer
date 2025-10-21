@@ -13,7 +13,7 @@ const SCREEN_KEYS = {
 };
 
 type Validation = {
-    validate: (state: CopyJobContextState) => boolean;
+    validate: (state: CopyJobContextState | Map<string, boolean>) => boolean;
     message: string;
 };
 
@@ -61,7 +61,18 @@ function useCreateCopyJobScreensList() {
             {
                 key: SCREEN_KEYS.AssignPermissions,
                 component: <AssignPermissions />,
-                validations: [],
+                validations: [
+                    {
+                        validate: (cache: Map<string, boolean>) => {
+                            const cacheValuesIterator = Array.from(cache.values());
+                            if (cacheValuesIterator.length === 0) return false;
+
+                            const allValid = cacheValuesIterator.every((isValid: boolean) => isValid);
+                            return allValid;
+                        },
+                        message: "Please ensure all previous steps are valid to proceed",
+                    }
+                ],
             },
         ],
         []
