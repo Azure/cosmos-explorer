@@ -13,6 +13,7 @@ import {
   IToggleStyles,
   Position,
   SpinButton,
+  Stack,
   Toggle,
 } from "@fluentui/react";
 import { Accordion, AccordionHeader, AccordionItem, AccordionPanel, makeStyles } from "@fluentui/react-components";
@@ -1163,14 +1164,21 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
               </AccordionHeader>
               <AccordionPanel>
                 <div className={styles.settingsSectionContainer}>
-                  <Checkbox
-                    styles={{ label: { padding: 0 } }}
-                    className="padding"
-                    ariaLabel="Ignore partition key on document update"
-                    checked={ignorePartitionKeyOnDocumentUpdate}
-                    onChange={handleOnIgnorePartitionKeyOnDocumentUpdateChange}
-                    label="Ignore partition key on document update"
-                  />
+                  <Stack horizontal verticalAlign="center" tokens={{ childrenGap: 4 }}>
+                    <Checkbox
+                      styles={{ label: { padding: 0 } }}
+                      className="padding"
+                      ariaLabel="Ignore partition key on document update"
+                      checked={ignorePartitionKeyOnDocumentUpdate}
+                      onChange={handleOnIgnorePartitionKeyOnDocumentUpdateChange}
+                      label="Ignore partition key on document update"
+                    />
+                    <InfoTooltip className={styles.headerIcon}>
+                      Use this option only after a failed document update reporting Entity with the specified id does
+                      not exist in the system. If checked, the partition key value will not be used to locate the
+                      document.
+                    </InfoTooltip>
+                  </Stack>
                 </div>
               </AccordionPanel>
             </AccordionItem>
