@@ -2,6 +2,7 @@
     {
         "id": "77be013f-4036-4311-9b5a-dab0c3d022be",
         "docType": "product",
+        "productId": "77be013f-4036-4311-9b5a-dab0c3d022be",
         "name": "Acer SwiftEdge Pro 16X (2023 Edition)",
         "description": "Acer SwiftEdge Pro 16X 2023 features a 16-inch 4K OLED display, AMD Ryzen 9, 32GB RAM, 1TB SSD, and Radeon Graphics. With ultra-thin design, all-day battery, WiFi 6E, and Windows 11, it delivers top-tier performance for work and creativity effortlessly.",
         "categoryName": "Computers, Laptops",
@@ -43,6 +44,7 @@
     {
         "id": "d4df3f4e-5a90-41e4-b19d-847faed6cd17",
         "docType": "product",
+        "productId": "d4df3f4e-5a90-41e4-b19d-847faed6cd17",
         "name": "AeroTech VortexBook Pro 16X",
         "description": "AeroTech VortexBook Pro 16X features a 16-inch 4K UHD display, Intel Core i9-13900H CPU, NVIDIA RTX 4080 GPU, 32GB DDR5 RAM, and 1TB SSD. Sleek design, backlit keyboard, and up to 12-hour battery life.",
         "categoryName": "Computers, Laptops",
@@ -114,6 +116,7 @@
     {
         "id": "e8b100f0-166d-43d5-a3f2-16c9022bcd66",
         "docType": "product",
+        "productId": "e8b100f0-166d-43d5-a3f2-16c9022bcd66",
         "name": "NovaTech EdgeBook X15 Pro",
         "description": "NovaTech EdgeBook X15 Pro blends performance and style with its sleek aluminum design. Featuring a 15.6\" FHD display, Intel Core i7, 16GB RAM, 512GB SSD, and NVIDIA GTX 3050, it\u2019s perfect for work or play. Stay powered with all-day battery life.",
         "categoryName": "Computers, Laptops",
@@ -195,6 +198,7 @@
     {
         "id": "89d99b98-bedb-419c-ab4c-58c95f0f0204",
         "docType": "product",
+        "productId": "89d99b98-bedb-419c-ab4c-58c95f0f0204",
         "name": "FusionCore X15 Pro Laptop",
         "description": "FusionCore X15 Pro Laptop boasts a sensational 15.6-inch 4K display, Intel i9 13th Gen processor, 32GB RAM, 1TB SSD, NVIDIA RTX 4080, and 12-hour battery. Slim, powerful, and built for creators and gamers, it redefines performance and portability.",
         "categoryName": "Computers, Laptops",
@@ -280,6 +284,7 @@
     {
         "id": "aeea5a17-e1ec-40d7-85de-a4150e7593ff",
         "docType": "product",
+        "productId": "aeea5a17-e1ec-40d7-85de-a4150e7593ff",
         "name": "NeuroTech ProBook X15 Elite",
         "description": "NeuroTech ProBook X15 Elite: Power meets precision. Intel Core i7, 16GB RAM, 512GB SSD, 15.6\" FHD display, NVIDIA GTX graphics. Lightweight, 10-hour battery, sleek design. Perfect for multitasking, gaming, and professionals.",
         "categoryName": "Computers, Laptops",
@@ -325,6 +330,7 @@
     {
         "id": "1b122882-1690-4319-b315-b89bf491b3aa",
         "docType": "product",
+        "productId": "1b122882-1690-4319-b315-b89bf491b3aa",
         "name": "QuantumByte Pro X15 Ultra",
         "description": "QuantumByte Pro X15 Ultra has a 15.6-inch 4K OLED display, Intel i9 processor, NVIDIA RTX 4080, 32GB RAM, 2TB SSD, and all-day battery. Sleek design, fast performance, and immersive visuals make it perfect for work and play. Create without limits today!",
         "categoryName": "Computers, Laptops",
@@ -360,6 +366,7 @@
     {
         "id": "fde5f416-2f06-4707-ac69-c61102a99de8",
         "docType": "product",
+        "productId": "fde5f416-2f06-4707-ac69-c61102a99de8",
         "name": "Pulse Horizon X14 Pro",
         "description": "Pulse Horizon X14 Pro delivers cutting-edge performance with its Intel Core i7, 16GB RAM, 1TB SSD, and NVIDIA GeForce RTX 3060. Featuring a 14-inch QHD display, Wi-Fi 6, and sleek design, it is perfect for productivity and gaming.",
         "categoryName": "Computers, Laptops",
@@ -415,6 +422,7 @@
     {
         "id": "fe5ed875-2618-4b11-8592-de0cb4cae699",
         "docType": "product",
+        "productId": "fe5ed875-2618-4b11-8592-de0cb4cae699",
         "name": "ZenCore ProBook X15 CarbonEdge",
         "description": "ZenCore ProBook X15 CarbonEdge: Ultra-light 15-inch laptop with Intel i7, 16GB RAM, 512GB SSD, and NVIDIA GeForce RTX 3050. Sleek carbon-fiber design, Wi-Fi 6, and 12-hour battery life. Perfect for productivity and gaming. Work or play in style and power.",
         "categoryName": "Computers, Laptops",
@@ -476,6 +484,7 @@
     {
         "id": "3e87ec28-dd47-442e-8bfd-4dd8dac448a8",
         "docType": "product",
+        "productId": "3e87ec28-dd47-442e-8bfd-4dd8dac448a8",
         "name": "TitanEdge Pro 16X",
         "description": "TitanEdge Pro 16X: Powered by Intel Core i9, 16GB RAM, 1TB SSD, NVIDIA GeForce RTX 4070 GPU, 16-inch 4K display. Ultra-slim aluminum design with advanced cooling, Thunderbolt 4 ports, and up to 12-hour battery life. Built for performance and style.",
         "categoryName": "Computers, Laptops",
@@ -541,6 +550,7 @@
     {
         "id": "1c17e510-66fd-4056-b472-d2b8ba556802",
         "docType": "product",
+        "productId": "1c17e510-66fd-4056-b472-d2b8ba556802",
         "name": "VertexPro X15 Ultra Lite",
         "description": "VertexPro X15 Ultra Lite delivers power in an ultra-slim design. Featuring a 15.6-inch FHD display, Intel Core i7, 16GB RAM, 512GB SSD, and NVIDIA GTX 3050, it balances portability and performance.",
         "categoryName": "Computers, Laptops",
@@ -582,6 +592,7 @@
     {
         "id": "b1d077e1-8a23-4762-8e18-8d41b8d00b2f",
         "docType": "product",
+        "productId": "b1d077e1-8a23-4762-8e18-8d41b8d00b2f",
         "name": "Vertex CoreStation Pro X900",
         "description": "Vertex CoreStation Pro X900 delivers power and precision with an Intel i9 processor, 32GB RAM, 1TB SSD, and NVIDIA RTX 4080 GPU. Perfect for gaming and productivity, it features Wi-Fi 6, USB-C, and sleek RGB design.",
         "categoryName": "Computers, Desktops",
@@ -633,6 +644,7 @@
     {
         "id": "d9884a1b-5ebe-4579-8450-ba43a385de14",
         "docType": "product",
+        "productId": "d9884a1b-5ebe-4579-8450-ba43a385de14",
         "name": "PulseTech VisionStation X7 Pro",
         "description": "PulseTech VisionStation X7 Pro is a powerhouse desktop featuring Intel Core i9, 32GB RAM, 1TB SSD, NVIDIA RTX 4080, and Windows 11 Pro. Perfect for creators and gamers, it delivers unmatched speed, performance, and stunning visuals.",
         "categoryName": "Computers, Desktops",
@@ -702,6 +714,7 @@
     {
         "id": "66d5e9e0-f89f-4764-902c-0aa30831983b",
         "docType": "product",
+        "productId": "66d5e9e0-f89f-4764-902c-0aa30831983b",
         "name": "AeroCraft VeloCore X7",
         "description": "AeroCraft VeloCore X7 Desktop delivers power and precision with an Intel i9 processor, 32GB RAM, 1TB SSD, and NVIDIA RTX 4080 graphics. Designed for gaming and multitasking, it features a sleek chassis and advanced cooling for peak performance every time.",
         "categoryName": "Computers, Desktops",
@@ -753,6 +766,7 @@
     {
         "id": "c4799b56-5bd6-4919-b4f1-c96fb61c1d35",
         "docType": "product",
+        "productId": "c4799b56-5bd6-4919-b4f1-c96fb61c1d35",
         "name": "TechStation Pro X920",
         "description": "TechStation Pro X920 features an Intel i9 processor, 32GB RAM, 1TB SSD, NVIDIA RTX 3080, and Windows 11 Pro. Perfect for gaming or high-performance tasks, its sleek design and advanced cooling ensure peak efficiency. Power meets precision for any need.",
         "categoryName": "Computers, Desktops",
@@ -798,6 +812,7 @@
     {
         "id": "1692982f-e71f-4710-9166-719ac03e938f",
         "docType": "product",
+        "productId": "1692982f-e71f-4710-9166-719ac03e938f",
         "name": "Vertex ProStation 750X",
         "description": "Vertex ProStation 750X packs power with an Intel Core i9 processor, 32GB RAM, 1TB SSD, and NVIDIA RTX 4070 graphics. Perfect for gamers and creators, it features advanced cooling, Wi-Fi 6, and a sleek design. Experience performance without compromise!",
         "categoryName": "Computers, Desktops",
@@ -837,6 +852,7 @@
     {
         "id": "5a0ee904-48ef-490f-81f8-156a371095d7",
         "docType": "product",
+        "productId": "5a0ee904-48ef-490f-81f8-156a371095d7",
         "name": "TechVision Apex Pro 7500X",
         "description": "TechVision Apex Pro 7500X Desktop delivers power with Intel Core i9-13900K, 32GB DDR5 RAM, 2TB SSD storage, and NVIDIA RTX 4080 graphics. With Windows 11 Pro & sleek design, it\u2019s perfect for gaming & productivity. Elevate your performance today!",
         "categoryName": "Computers, Desktops",
@@ -898,6 +914,7 @@
     {
         "id": "5fc836a0-b5c4-4079-bbba-5c568eccfeed",
         "docType": "product",
+        "productId": "5fc836a0-b5c4-4079-bbba-5c568eccfeed",
         "name": "EvoCore Vesta 8600XT",
         "description": "EvoCore Vesta 8600XT desktop delivers elite performance with a Ryzen 7 CPU, 16GB RAM, and NVIDIA RTX 4060 GPU. Boasting 1TB SSD storage, WiFi 6, and sleek RGB lighting, it's built for gaming, design, and multitasking. Power meets style for all your needs.",
         "categoryName": "Computers, Desktops",
@@ -973,6 +990,7 @@
     {
         "id": "05bca58f-257c-4129-8373-1b0951cb8104",
         "docType": "product",
+        "productId": "05bca58f-257c-4129-8373-1b0951cb8104",
         "name": "ProTech EliteStation 9000X",
         "description": "ProTech EliteStation 9000X delivers peak performance with Intel Core i9, 32GB RAM, 1TB SSD, and NVIDIA RTX 4090. Designed for gamers and creators, it boasts immersive graphics and ultra-fast processing.",
         "categoryName": "Computers, Desktops",
@@ -1046,6 +1064,7 @@
     {
         "id": "636e7b8d-721f-40ed-9fee-7504c16407d6",
         "docType": "product",
+        "productId": "636e7b8d-721f-40ed-9fee-7504c16407d6",
         "name": "ProLogic Vortex ProStation GX-750",
         "description": "ProLogic Vortex ProStation GX-750 delivers elite performance with a 12-core Intel i9 CPU, NVIDIA RTX 4070 GPU, 32GB DDR5 RAM, and 2TB SSD. Perfect for gaming and productivity, its sleek design and robust cooling ensure reliability in every task.",
         "categoryName": "Computers, Desktops",
@@ -1115,6 +1134,7 @@
     {
         "id": "56839899-d066-4fe1-8992-2a70bbdaab4a",
         "docType": "product",
+        "productId": "56839899-d066-4fe1-8992-2a70bbdaab4a",
         "name": "AeroCore VisionPro 9800X",
         "description": "AeroCore VisionPro 9800X desktop combines power and versatility with an Intel Core i9-13900K processor, NVIDIA RTX 4080 GPU, 32GB DDR5 RAM, and 2TB SSD. Perfect for creators and gamers, it delivers peak performance and efficiency for every task.",
         "categoryName": "Computers, Desktops",
@@ -1176,6 +1196,7 @@
     {
         "id": "0e126166-409b-4c83-9ef5-7ba4b6b5d0c8",
         "docType": "product",
+        "productId": "0e126166-409b-4c83-9ef5-7ba4b6b5d0c8",
         "name": "PrismX Hypernova GX750",
         "description": "PrismX Hypernova GX750, the ultimate gaming powerhouse, boasts an Intel i9-13900KF, NVIDIA RTX 4090, 32GB DDR5 RAM, and 2TB SSD. With RGB lighting, advanced cooling, and premium build quality, it delivers next-level performance for hardcore gamers.",
         "categoryName": "Computers, Gaming PCs",
@@ -1231,6 +1252,7 @@
     {
         "id": "b7754fd8-a141-43e1-96d3-2ab7aa4fbe24",
         "docType": "product",
+        "productId": "b7754fd8-a141-43e1-96d3-2ab7aa4fbe24",
         "name": "HyperForge GTX750 Phantom Edition",
         "description": "HyperForge GTX750 Phantom Edition delivers seamless 1080p gaming with an Intel i5 processor, GTX 750 4GB GPU, 16GB RAM, and 512GB SSD. Sleek RGB design, quiet cooling, and VR-ready capabilities ensure high performance for gamers. Power up your play today!",
         "categoryName": "Computers, Gaming PCs",
@@ -1320,6 +1342,7 @@
     {
         "id": "7322cb3a-7442-48a4-88ed-62220c31fed2",
         "docType": "product",
+        "productId": "7322cb3a-7442-48a4-88ed-62220c31fed2",
         "name": "HyperCore X7 Quantum Gaming Rig",
         "description": "HyperCore X7 Quantum Gaming Rig features an Intel i9 13900KF processor, NVIDIA RTX 4090 GPU, 32GB DDR5 RAM, 2TB PCIe Gen4 SSD, liquid cooling, and RGB chassis. Experience unmatched performance for AAA gaming and content creation. Play at your best today!",
         "categoryName": "Computers, Gaming PCs",
@@ -1371,6 +1394,7 @@
     {
         "id": "25783d03-5268-43bf-af8a-f021daa5c3d4",
         "docType": "product",
+        "productId": "25783d03-5268-43bf-af8a-f021daa5c3d4",
         "name": "Predator Vortex GX7000",
         "description": "Unleash your gaming potential with Predator Vortex GX7000. Equipped with an Intel Core i9, NVIDIA RTX 4090, 32GB RAM, and 2TB SSD, it delivers blazing-fast performance and vivid graphics. Liquid cooling keeps it running seamlessly.",
         "categoryName": "Computers, Gaming PCs",
@@ -1452,6 +1476,7 @@
     {
         "id": "cbb472ca-1cc4-44b6-8442-5305942f50a0",
         "docType": "product",
+        "productId": "cbb472ca-1cc4-44b6-8442-5305942f50a0",
         "name": "Vertex UltraForge GX9000 Gaming Desktop",
         "description": "Vertex UltraForge GX9000 Gaming Desktop: Experience unparalleled performance with the Intel i9-13900K, NVIDIA RTX 4090, 32GB DDR5 RAM, and 2TB NVMe SSD. RGB lighting, liquid cooling, and WiFi 6 ensure top-tier gaming. Elevate gameplay today.",
         "categoryName": "Computers, Gaming PCs",
@@ -1483,6 +1508,7 @@
     {
         "id": "b4d585e9-859c-4ba1-8998-f698d5dd33df",
         "docType": "product",
+        "productId": "b4d585e9-859c-4ba1-8998-f698d5dd33df",
         "name": "ZephyrX Pro GX750 Gaming Desktop",
         "description": "ZephyrX Pro GX750 Gaming Desktop packs an Intel Core i9 CPU, NVIDIA RTX 4070 GPU, 32GB RAM, and 1TB SSD, delivering ultra-smooth gameplay and lightning-fast performance. With RGB lighting and sleek design, it\u2019s built for gamers who crave power and style.",
         "categoryName": "Computers, Gaming PCs",
@@ -1534,6 +1560,7 @@
     {
         "id": "323f5dc8-1852-469b-b98f-8dabead457cf",
         "docType": "product",
+        "productId": "323f5dc8-1852-469b-b98f-8dabead457cf",
         "name": "HyperGamer X750 Elite RTX Edition",
         "description": "HyperGamer X750 Elite RTX Edition offers blazing performance with its Intel i7 processor, NVIDIA RTX 4070 GPU, 16GB RAM, and 1TB SSD. Designed for pro gamers, it delivers stunning visuals and ultra-fast speeds. Elevate your gaming experience now!",
         "categoryName": "Computers, Gaming PCs",
@@ -1575,6 +1602,7 @@
     {
         "id": "4cbe5a17-7627-48e8-bb1c-519c945f60a8",
         "docType": "product",
+        "productId": "4cbe5a17-7627-48e8-bb1c-519c945f60a8",
         "name": "AeroCore GX500 Pro Gaming PC",
         "description": "AeroCore GX500 Pro Gaming PC delivers elite gaming with an Intel Core i7-12700KF, NVIDIA RTX 4070, 16GB RAM, 1TB NVMe SSD, & RGB lighting. Designed for peak performance, it runs AAA titles smoothly and elevates your gaming experience. Play like a pro.",
         "categoryName": "Computers, Gaming PCs",
@@ -1624,6 +1652,7 @@
     {
         "id": "a5d1be8f-ef18-4840-adf6-d30ef75d3e88",
         "docType": "product",
+        "productId": "a5d1be8f-ef18-4840-adf6-d30ef75d3e88",
         "name": "VoltStream Enigma GX-550",
         "description": "VoltStream Enigma GX-550 is a powerhouse gaming PC with an Intel i7-13700K, NVIDIA RTX 4070, 16GB DDR5 RAM, and 1TB NVMe SSD. Sleek RGB design with liquid cooling ensures peak performance and style.",
         "categoryName": "Computers, Gaming PCs",
@@ -1695,6 +1724,7 @@
     {
         "id": "ad11e14c-67cd-43e7-9645-dbd4c0616214",
         "docType": "product",
+        "productId": "ad11e14c-67cd-43e7-9645-dbd4c0616214",
         "name": "Vertex Chronos G17 Elite RTX",
         "description": "Vertex Chronos G17 Elite RTX is a powerhouse gaming laptop featuring a 17.3\" QHD 240Hz display, Intel i9-13980HX, NVIDIA RTX 4080, 32GB DDR5 RAM, and 2TB SSD. Enjoy ultra-smooth performance and immersive visuals built for pro gamers and creators alike.",
         "categoryName": "Computers, Gaming PCs",
@@ -1776,6 +1806,7 @@
     {
         "id": "2a5301b0-4af3-4a48-936e-019cdaf5a5cb",
         "docType": "product",
+        "productId": "2a5301b0-4af3-4a48-936e-019cdaf5a5cb",
         "name": "Vertex ProStation X900",
         "description": "Vertex ProStation X900 delivers unparalleled performance with an Intel Xeon W-2400 CPU, 128GB DDR5 RAM, NVIDIA RTX 6000 GPU, and 2TB NVMe SSD. Perfect for 3D rendering, AI, and simulations. Built for creators and innovators who demand the best.",
         "categoryName": "Computers, Workstations",
@@ -1859,6 +1890,7 @@
     {
         "id": "b83256d6-1927-4525-b3e2-76097940f508",
         "docType": "product",
+        "productId": "b83256d6-1927-4525-b3e2-76097940f508",
         "name": "OmniCore Pro X95 Workstation",
         "description": "OmniCore Pro X95 Workstation offers unmatched power with Intel Xeon W-3400 CPU, 64GB DDR5 RAM, and NVIDIA RTX A5000 GPU. Perfect for 3D rendering, AI workloads, and advanced computing. Enjoy 2TB SSD storage and versatile I/O ports.",
         "categoryName": "Computers, Workstations",
@@ -1940,6 +1972,7 @@
     {
         "id": "4e630824-aa0d-4009-88ee-dc56deae95d6",
         "docType": "product",
+        "productId": "4e630824-aa0d-4009-88ee-dc56deae95d6",
         "name": "AeroQuantum X7 Pro Workstation",
         "description": "AeroQuantum X7 Pro Workstation, powered by Intel Xeon, 64GB RAM, 4TB SSD, NVIDIA RTX A5000 GPU, offers exceptional speed for 3D modeling and AI tasks.",
         "categoryName": "Computers, Workstations",
@@ -2015,6 +2048,7 @@
     {
         "id": "6b5a0043-631f-42b8-8f13-814cb75035ec",
         "docType": "product",
+        "productId": "6b5a0043-631f-42b8-8f13-814cb75035ec",
         "name": "ProCore X3 Elite Workstation",
         "description": "ProCore X3 Elite Workstation is powered by an Intel Xeon W processor, 64GB DDR5 RAM, and an NVIDIA RTX A6000 GPU. With 2TB NVMe SSD storage and Thunderbolt 4, it excels in 3D rendering and AI workflows. This premium workstation is built for professionals.",
         "categoryName": "Computers, Workstations",
@@ -2086,6 +2120,7 @@
     {
         "id": "459a191a-21d1-42f5-8b3e-bc3f4d63bb66",
         "docType": "product",
+        "productId": "459a191a-21d1-42f5-8b3e-bc3f4d63bb66",
         "name": "VertexPro Ultima X900 Workstation",
         "description": "VertexPro Ultima X900 Workstation delivers elite performance with Intel Xeon processors, 64GB RAM, NVIDIA RTX 4000 GPU, and 2TB SSD. Designed for creators and professionals, it ensures unmatched speed, reliability, and precision for demanding workloads.",
         "categoryName": "Computers, Workstations",
@@ -2127,6 +2162,7 @@
     {
         "id": "93d8905b-23c1-45a5-941e-23660e48c79f",
         "docType": "product",
+        "productId": "93d8905b-23c1-45a5-941e-23660e48c79f",
         "name": "HyperCore Pro X900",
         "description": "HyperCore Pro X900 is a powerhouse workstation with an Intel i9-13900K CPU, NVIDIA RTX 4090, 64GB DDR5 RAM, and 2TB NVMe SSD. Designed for creators and engineers, it delivers unmatched speed and graphics performance. Power your workflows effortlessly.",
         "categoryName": "Computers, Workstations",
@@ -2182,6 +2218,7 @@
     {
         "id": "197161c8-4383-484e-9b17-80369d694e68",
         "docType": "product",
+        "productId": "197161c8-4383-484e-9b17-80369d694e68",
         "name": "Elevon Pro X9 Workstation",
         "description": "Elevon Pro X9 Workstation: Power your creativity with a 12-core AMD Ryzen 9 CPU, 64GB RAM, NVIDIA RTX 4080 GPU, and 2TB PCIe SSD. Built for intense workloads, 4K editing, and 3D rendering. Engineered for unmatched performance to fuel your productivity.",
         "categoryName": "Computers, Workstations",
@@ -2233,6 +2270,7 @@
     {
         "id": "07b3d470-bc7b-4d83-9bdd-79d2b506e96d",
         "docType": "product",
+        "productId": "07b3d470-bc7b-4d83-9bdd-79d2b506e96d",
         "name": "AeroLogic ProStation X7",
         "description": "AeroLogic ProStation X7 is a powerhouse workstation featuring Intel Xeon 24-core processor, 64GB RAM, NVIDIA RTX 6000 GPU, 2TB SSD, and robust cooling. Perfect for 3D rendering, AI, and intense workflows.",
         "categoryName": "Computers, Workstations",
@@ -2312,6 +2350,7 @@
     {
         "id": "2308d755-e9fb-4ea5-9f35-49000e0c844e",
         "docType": "product",
+        "productId": "2308d755-e9fb-4ea5-9f35-49000e0c844e",
         "name": "QuantumPro X9 Elite Workstation",
         "description": "QuantumPro X9 Elite Workstation delivers ultimate performance for professionals. Powered by Intel Xeon, 128GB RAM, NVIDIA RTX 6000 GPU, 4TB SSD. Perfect for 3D rendering, AI, and simulations. Built for innovation and reliability.",
         "categoryName": "Computers, Workstations",
@@ -2353,6 +2392,7 @@
     {
         "id": "8056b334-6ac3-4c76-aa65-5620c2b0da02",
         "docType": "product",
+        "productId": "8056b334-6ac3-4c76-aa65-5620c2b0da02",
         "name": "QuantumTech ApexStation X9 Pro",
         "description": "QuantumTech ApexStation X9 Pro blends power and precision, featuring a 12-core Intel i9 processor, NVIDIA RTX 4080 GPU, 64GB RAM, and 2TB SSD. Designed for creators and professionals, it offers unmatched speed and reliability. Empower productivity today.",
         "categoryName": "Computers, Workstations",
@@ -2428,6 +2468,7 @@
     {
         "id": "b67fd88f-9a46-4c6b-8495-fe5b5f1cd93b",
         "docType": "product",
+        "productId": "b67fd88f-9a46-4c6b-8495-fe5b5f1cd93b",
         "name": "NovaTech Apex 5G Ultra",
         "description": "NovaTech Apex 5G Ultra is a powerhouse with a 6.7-inch AMOLED display, Snapdragon 8 Gen 2 processor, 12GB RAM, and 256GB storage. It features a 108MP triple camera, 5000mAh battery, and blazing 5G speeds. Sleek design meets cutting-edge performance.",
         "categoryName": "Devices, Smartphones",
@@ -2509,6 +2550,7 @@
     {
         "id": "b5066cf4-8358-4d22-9456-69b91b35fb42",
         "docType": "product",
+        "productId": "b5066cf4-8358-4d22-9456-69b91b35fb42",
         "name": "Axonix ProMax 7 Ultra 5G",
         "description": "Axonix ProMax 7 Ultra 5G features a 6.9-inch AMOLED 120Hz display, Snapdragon 8 Gen 2 chip, 512GB storage, 16GB RAM, triple 200MP cameras, and a 5000mAh fast-charging battery. A sleek powerhouse designed for speed, performance, and seamless connectivity.",
         "categoryName": "Devices, Smartphones",
@@ -2540,6 +2582,7 @@
     {
         "id": "f9619b13-30a7-4ad4-ae00-9817576fba81",
         "docType": "product",
+        "productId": "f9619b13-30a7-4ad4-ae00-9817576fba81",
         "name": "InfinityCore Apex 12 Pro 5G",
         "description": "InfinityCore Apex 12 Pro 5G features a 6.7\" AMOLED display, Snapdragon 8 Gen 2 processor, 12GB RAM, 256GB storage, and a 108MP quad camera. With a 5000mAh battery, 5G support, and sleek design, it delivers ultimate performance and style for any task.",
         "categoryName": "Devices, Smartphones",
@@ -2615,6 +2658,7 @@
     {
         "id": "b357efb7-9f45-43e9-930f-34563b8be8e8",
         "docType": "product",
+        "productId": "b357efb7-9f45-43e9-930f-34563b8be8e8",
         "name": "NeoPhonix One Pro 5G",
         "description": "NeoPhonix One Pro 5G redefines speed and style with its Snapdragon 8 Gen 2 chip, 6.7-inch AMOLED display, triple 50MP cameras, and 5000mAh battery. Powered by Android 13, it delivers ultra-fast connectivity and superior performance.",
         "categoryName": "Devices, Smartphones",
@@ -2670,6 +2714,7 @@
     {
         "id": "a40bf133-7d42-4fed-b67c-2ca724437491",
         "docType": "product",
+        "productId": "a40bf133-7d42-4fed-b67c-2ca724437491",
         "name": "NeuraLink Pro X5",
         "description": "NeuraLink Pro X5 offers a 6.7-inch AMOLED display, Snapdragon 8 Gen 2 chip, 12GB RAM, 256GB storage, 108MP camera, 5000mAh battery, 65W fast charging, and 5G.",
         "categoryName": "Devices, Smartphones",
@@ -2743,6 +2788,7 @@
     {
         "id": "584d6c2a-e680-4d75-9604-5538197c75cf",
         "docType": "product",
+        "productId": "584d6c2a-e680-4d75-9604-5538197c75cf",
         "name": "AuraEdge X5 Pro 5G",
         "description": "AuraEdge X5 Pro 5G: Stunning design meets power. Featuring a 6.8\" AMOLED display, Snapdragon 8 Gen 2 chip, 12GB RAM, 256GB storage, quad-camera system, and 5000mAh battery. Ultra-fast 5G speeds and all-day battery life for seamless performance.",
         "categoryName": "Devices, Smartphones",
@@ -2808,6 +2854,7 @@
     {
         "id": "b3f8cea4-8258-44d9-8e49-f983e167f60c",
         "docType": "product",
+        "productId": "b3f8cea4-8258-44d9-8e49-f983e167f60c",
         "name": "Nebula X5 Pro",
         "description": "Nebula X5 Pro redefines smartphones with its 6.7-inch AMOLED 120Hz display, Snapdragon 8 Gen 2 processor, 12GB RAM, 256GB storage, and a 50MP triple camera system. Featuring 5G, fast charging, and sleek design, it's built for performance and style.",
         "categoryName": "Devices, Smartphones",
@@ -2879,6 +2926,7 @@
     {
         "id": "b8930efe-dce1-45f3-9fa1-0cb55efad3a2",
         "docType": "product",
+        "productId": "b8930efe-dce1-45f3-9fa1-0cb55efad3a2",
         "name": "NeoCore Infinity Pro X7",
         "description": "NeoCore Infinity Pro X7: 6.8\" AMOLED display, Snapdragon 8 Gen 2 processor, 12GB RAM, 512GB storage, triple 108MP camera, 5000mAh fast-charging battery, 5G-ready. Sleek design and top-tier performance for your everyday needs.",
         "categoryName": "Devices, Smartphones",
@@ -2964,6 +3012,7 @@
     {
         "id": "f067209e-c9ab-475e-809c-5208a62c239b",
         "docType": "product",
+        "productId": "f067209e-c9ab-475e-809c-5208a62c239b",
         "name": "Nebula X7 Pro 5G",
         "description": "Nebula X7 Pro 5G: Sleek 6.7\" AMOLED 120Hz display, powerful Snapdragon 8 Gen 2 chip, 12GB RAM, 512GB storage. 108MP triple camera system, 5000mAh fast-charge battery, IP68 water resistance, 5G connectivity. Perfect for power and performance on the go!",
         "categoryName": "Devices, Smartphones",
@@ -3015,6 +3064,7 @@
     {
         "id": "58044da8-398d-45f3-bcc8-3fcaeae38514",
         "docType": "product",
+        "productId": "58044da8-398d-45f3-bcc8-3fcaeae38514",
         "name": "Vertex Pro X5 Dual 5G",
         "description": "Meet the Vertex Pro X5 Dual 5G. Featuring a 6.7-inch AMOLED display, dual 64MP cameras, Snapdragon 8 Gen 2, 12GB RAM, 256GB storage, and a 5000mAh battery.",
         "categoryName": "Devices, Smartphones",
@@ -3096,6 +3146,7 @@
     {
         "id": "cb919d62-80e4-4234-9403-b1f272e0c020",
         "docType": "product",
+        "productId": "cb919d62-80e4-4234-9403-b1f272e0c020",
         "name": "FusionTab Pro X7",
         "description": "FusionTab Pro X7: Sleek 11\" 2K display, octa-core processor, 8GB RAM, 256GB storage, LTE connectivity, and all-day battery life. Perfect for work, play, and streaming with fast performance and vibrant visuals. Experience the pinnacle of tablet innovation.",
         "categoryName": "Devices, Tablets",
@@ -3165,6 +3216,7 @@
     {
         "id": "359f80b5-5613-4548-97af-7c37a30ea197",
         "docType": "product",
+        "productId": "359f80b5-5613-4548-97af-7c37a30ea197",
         "name": "NeoTab Pro X11",
         "description": "NeoTab Pro X11 tablet features an 11-inch 2K display, blazing-fast octa-core processor, 8GB RAM, 128GB storage, and a 7500mAh battery. With dual cameras and USB-C, it's perfect for work or play.",
         "categoryName": "Devices, Tablets",
@@ -3220,6 +3272,7 @@
     {
         "id": "fb704dd5-3473-464a-8c74-2ad5a3da1fcd",
         "docType": "product",
+        "productId": "fb704dd5-3473-464a-8c74-2ad5a3da1fcd",
         "name": "TechSphere Tab X9 Pro",
         "description": "TechSphere Tab X9 Pro: Sleek 11.2\" 2K display, Octa-core processor, 8GB RAM, 256GB storage, 12MP rear camera, 8MP front camera. Features Wi-Fi 6, all-day battery, and Dolby Atmos sound. Lightweight yet powerful, perfect for work and play.",
         "categoryName": "Devices, Tablets",
@@ -3281,6 +3334,7 @@
     {
         "id": "af870d81-8933-4fdb-a53b-0c34ed4cd939",
         "docType": "product",
+        "productId": "af870d81-8933-4fdb-a53b-0c34ed4cd939",
         "name": "Zenovate EdgeTab X12 Pro",
         "description": "Zenovate EdgeTab X12 Pro features a 12.6-inch AMOLED display, 256GB storage, 8GB RAM, octa-core processor, and 10-hour battery life. Slim design, Dolby Atmos speakers, and stylus support make it perfect for work and play.",
         "categoryName": "Devices, Tablets",
@@ -3366,6 +3420,7 @@
     {
         "id": "ec9275f4-e827-42b2-9ec2-15b2047b501c",
         "docType": "product",
+        "productId": "ec9275f4-e827-42b2-9ec2-15b2047b501c",
         "name": "AuroraTab Pro 11X",
         "description": "AuroraTab Pro 11X features a stunning 11-inch Liquid Retina display, blazing-fast octa-core processor, 256GB storage, 12MP rear and 8MP front cameras, and a 10-hour battery life. Sleek, lightweight, and perfect for work or play.",
         "categoryName": "Devices, Tablets",
@@ -3417,6 +3472,7 @@
     {
         "id": "e719949b-bdce-4eb0-a4f4-90d693a0b10f",
         "docType": "product",
+        "productId": "e719949b-bdce-4eb0-a4f4-90d693a0b10f",
         "name": "NebulaPad X9 Pro",
         "description": "NebulaPad X9 Pro delivers power and precision with its 11-inch 2K display, 8-core processor, 8GB RAM, 256GB storage, and 12MP camera. Slim, lightweight, and boasting 10-hour battery life, it's perfect for work, play, and creativity.",
         "categoryName": "Devices, Tablets",
@@ -3476,6 +3532,7 @@
     {
         "id": "4fc41fd0-c9c3-4433-be1f-ebe4d75e54da",
         "docType": "product",
+        "productId": "4fc41fd0-c9c3-4433-be1f-ebe4d75e54da",
         "name": "ZenithTab Pro X12",
         "description": "ZenithTab Pro X12 features a brilliant 12.9-inch 4K OLED display, 256GB storage, 8GB RAM, and a powerful octa-core processor. With its sleek design, fast charging, and all-day battery, it is perfect for work, gaming, and entertainment.",
         "categoryName": "Devices, Tablets",
@@ -3559,6 +3616,7 @@
     {
         "id": "7da63ca2-3b20-463b-9ff1-3eeb04d6598a",
         "docType": "product",
+        "productId": "7da63ca2-3b20-463b-9ff1-3eeb04d6598a",
         "name": "HaloTab X7 Pro",
         "description": "HaloTab X7 Pro features a stunning 11-inch 2K display, 8GB RAM, 512GB storage, and a powerful Snapdragon 870 processor. Boasts fast WiFi 6, quad speakers, and 10 hours battery. Perfect for work, play, and entertainment. Sleek, powerful, and ready to go!",
         "categoryName": "Devices, Tablets",
@@ -3644,6 +3702,7 @@
     {
         "id": "6ed32587-920c-483d-8a0b-dbbd8d770a23",
         "docType": "product",
+        "productId": "6ed32587-920c-483d-8a0b-dbbd8d770a23",
         "name": "VisionTab Pro X12",
         "description": "VisionTab Pro X12 delivers stunning clarity on a 12-inch 2K display. Features an octa-core processor, 8GB RAM, 256GB storage, and all-day battery life. Includes a 13MP rear camera and facial recognition.",
         "categoryName": "Devices, Tablets",
@@ -3715,6 +3774,7 @@
     {
         "id": "f786eb9e-de01-45f0-a74b-5994513e1529",
         "docType": "product",
+        "productId": "f786eb9e-de01-45f0-a74b-5994513e1529",
         "name": "TechVerse TabPro X12",
         "description": "TechVerse TabPro X12, a sleek 12-inch tablet with a stunning 2560x1600 resolution, powered by an octa-core processor, 8GB RAM, 256GB storage, and 10-hour battery life. Includes stylus support, fast charging, and dual cameras.",
         "categoryName": "Devices, Tablets",
@@ -3786,6 +3846,7 @@
     {
         "id": "9a835ec7-6879-40f9-9cb0-6235f97c21e4",
         "docType": "product",
+        "productId": "9a835ec7-6879-40f9-9cb0-6235f97c21e4",
         "name": "PulseWear XR Pro",
         "description": "PulseWear XR Pro blends style & innovation with a vivid AMOLED display, 14-day battery life, sleep tracking, GPS, and voice assistant. Water-resistant up to 50m, it supports fitness tracking & notifications for seamless daily use.",
         "categoryName": "Devices, Smartwatches",
@@ -3865,6 +3926,7 @@
     {
         "id": "04b209b7-ecea-4a6f-a0eb-19d34654c3d2",
         "docType": "product",
+        "productId": "04b209b7-ecea-4a6f-a0eb-19d34654c3d2",
         "name": "PulseWear Pro 7",
         "description": "PulseWear Pro 7: Stay connected with this sleek smartwatch featuring a 1.4\" AMOLED display, 24/7 heart rate monitoring, GPS, water resistance up to 50m, and 10-day battery life.",
         "categoryName": "Devices, Smartwatches",
@@ -3904,6 +3966,7 @@
     {
         "id": "d1f3f289-0781-4358-865d-995f13689348",
         "docType": "product",
+        "productId": "d1f3f289-0781-4358-865d-995f13689348",
         "name": "PulseEdge ChronoPro X5",
         "description": "PulseEdge ChronoPro X5 combines style and tech with a 1.4-inch AMOLED display, 10-day battery life, GPS, SpO2 monitoring, and 24/7 heart rate tracking. Water-resistant and packed with fitness modes, it keeps you connected and healthy.",
         "categoryName": "Devices, Smartwatches",
@@ -3993,6 +4056,7 @@
     {
         "id": "73c0f45a-72d6-4aba-954d-ffc9d67b860c",
         "docType": "product",
+        "productId": "73c0f45a-72d6-4aba-954d-ffc9d67b860c",
         "name": "HaloSync Pro X7 Smartwatch",
         "description": "HaloSync Pro X7 Smartwatch combines style and function with a 1.8-inch AMOLED display, 14-day battery life, heart rate and SpO2 monitoring, GPS, and 5ATM water resistance. Manage calls, texts, and apps effortlessly. Perfect for fitness and productivity.",
         "categoryName": "Devices, Smartwatches",
@@ -4038,6 +4102,7 @@
     {
         "id": "f5fe58cb-dd87-4a56-a092-aa6a038997b3",
         "docType": "product",
+        "productId": "f5fe58cb-dd87-4a56-a092-aa6a038997b3",
         "name": "PulseSync Pro X7 Smartwatch",
         "description": "PulseSync Pro X7 Smartwatch blends style and tech with a crisp AMOLED display, heart rate tracking, GPS, and 10-day battery life. Water-resistant and packed with fitness modes, it keeps you connected with notifications and music control.",
         "categoryName": "Devices, Smartwatches",
@@ -4107,6 +4172,7 @@
     {
         "id": "eb08ac9d-3c7f-4506-860a-9dab699f56a1",
         "docType": "product",
+        "productId": "eb08ac9d-3c7f-4506-860a-9dab699f56a1",
         "name": "PulseTrack Pro X7",
         "description": "Stay active and connected with the PulseTrack Pro X7 smartwatch. Features include GPS, heart rate monitor, SpO2 tracking, 1.6\" AMOLED display, 10-day battery life, and waterproof design. Sync with iOS and Android for ultimate fitness and productivity.",
         "categoryName": "Devices, Smartwatches",
@@ -4180,6 +4246,7 @@
     {
         "id": "dcc6f221-257d-4152-a6f3-187812186f10",
         "docType": "product",
+        "productId": "dcc6f221-257d-4152-a6f3-187812186f10",
         "name": "PulseSync Pro S7",
         "description": "PulseSync Pro S7 smartwatch pairs style with precision. Features a 1.4\" AMOLED display, GPS, heart rate monitoring, blood oxygen tracking, 7-day battery life, and water resistance. Perfect for fitness and productivity, it keeps you connected effortlessly.",
         "categoryName": "Devices, Smartwatches",
@@ -4231,6 +4298,7 @@
     {
         "id": "63048d10-3689-42d2-9745-d1bdbe56402c",
         "docType": "product",
+        "productId": "63048d10-3689-42d2-9745-d1bdbe56402c",
         "name": "PulseTrack Pro 7X",
         "description": "PulseTrack Pro 7X smartwatch features a 1.6-inch AMOLED display, heart rate tracking, sleep monitoring, GPS, and 7-day battery life. It supports Bluetooth 5.2, water resistance up to 50m, and fitness apps.",
         "categoryName": "Devices, Smartwatches",
@@ -4312,6 +4380,7 @@
     {
         "id": "074d2d7a-933e-4641-8969-e2d3775e60d6",
         "docType": "product",
+        "productId": "074d2d7a-933e-4641-8969-e2d3775e60d6",
         "name": "PulseSync Orion X7",
         "description": "PulseSync Orion X7 smartwatch boasts a stunning AMOLED display, GPS, heart rate tracking, 14-day battery life, and robust water resistance. Stay connected with calls, notifications, and fitness insights. Stylish and powerful for every adventure.",
         "categoryName": "Devices, Smartwatches",
@@ -4397,6 +4466,7 @@
     {
         "id": "c3ae6644-381e-4495-be18-d3d2cd94c1c6",
         "docType": "product",
+        "productId": "c3ae6644-381e-4495-be18-d3d2cd94c1c6",
         "name": "Apex Chrono S3 Smartwatch",
         "description": "Apex Chrono S3 Smartwatch blends style and function with AMOLED display, heart rate monitor, GPS, 7-day battery, fitness tracking, water resistance, and seamless phone sync. Stay connected, active, and in control with this sleek wearable companion.",
         "categoryName": "Devices, Smartwatches",
@@ -4462,6 +4532,7 @@
     {
         "id": "736b0dcf-bef2-4f2f-b8b4-70d30ab1b294",
         "docType": "product",
+        "productId": "736b0dcf-bef2-4f2f-b8b4-70d30ab1b294",
         "name": "Kindle Aura GX7",
         "description": "Kindle Aura GX7 blends sleek design with a 7.8-inch HD glare-free display, adjustable warm light, 32GB storage, and weeks-long battery life. Perfect for book lovers, it supports Wi-Fi and Audible integration for audiobooks.",
         "categoryName": "Devices, E-readers",
@@ -4541,6 +4612,7 @@
     {
         "id": "bedd6df7-8f8e-4189-b52f-447c52b0827f",
         "docType": "product",
+        "productId": "bedd6df7-8f8e-4189-b52f-447c52b0827f",
         "name": "PageVue Atlas X7",
         "description": "Experience reading reimagined with the PageVue Atlas X7. Featuring a 7-inch glare-free HD E-Ink display, 32GB storage, Wi-Fi, and weeks-long battery life, it\u2019s perfect for avid readers. Lightweight design makes it ideal for travel. Read anywhere, anytime!",
         "categoryName": "Devices, E-readers",
@@ -4586,6 +4658,7 @@
     {
         "id": "2bc32d8d-207b-4273-9b94-b50ebec2e55f",
         "docType": "product",
+        "productId": "2bc32d8d-207b-4273-9b94-b50ebec2e55f",
         "name": "Kindle Lumina Edge X7",
         "description": "Kindle Lumina Edge X7 delivers crisp 7-inch HD e-ink display, 32GB storage, weeks of battery life, adjustable warm light, and Bluetooth support for audiobooks. Lightweight and water-resistant for reading anywhere, it\u2019s your perfect reading companion.",
         "categoryName": "Devices, E-readers",
@@ -4683,6 +4756,7 @@
     {
         "id": "e78373cf-f102-4c5a-9ab6-49fd4b406a03",
         "docType": "product",
+        "productId": "e78373cf-f102-4c5a-9ab6-49fd4b406a03",
         "name": "AuraLume X7 ePaper Pro",
         "description": "AuraLume X7 ePaper Pro boasts a 7.8 HD e-ink display, adjustable warm/cool lighting, 32GB storage, and weeks-long battery life. Its lightweight, ergonomic design ensures comfortable reading anywhere.",
         "categoryName": "Devices, E-readers",
@@ -4718,6 +4792,7 @@
     {
         "id": "0641c5cc-2186-43b7-a0c2-cca0e9bd20f2",
         "docType": "product",
+        "productId": "0641c5cc-2186-43b7-a0c2-cca0e9bd20f2",
         "name": "Lumeo Reader X7",
         "description": "Lumeo Reader X7, 7-inch HD glare-free display, 32GB storage, weeks-long battery life, adjustable warm/cool front light, lightweight build, Wi-Fi, and Bluetooth for sync. Seamlessly read day or night with exceptional comfort and clarity.",
         "categoryName": "Devices, E-readers",
@@ -4793,6 +4868,7 @@
     {
         "id": "c11760d3-72ce-42aa-b0f6-723ab64f5468",
         "docType": "product",
+        "productId": "c11760d3-72ce-42aa-b0f6-723ab64f5468",
         "name": "LumiReader X7 Pro",
         "description": "LumiReader X7 Pro features a 7-inch glare-free HD e-ink touchscreen, 32GB storage for 10000+ books, and 10-week battery life. With Wi-Fi, Bluetooth, and adjustable warm lighting, it\u2019s perfect for immersive reading anytime.",
         "categoryName": "Devices, E-readers",
@@ -4832,6 +4908,7 @@
     {
         "id": "7fded53a-5bbe-4caf-9766-e2eabbfcbee1",
         "docType": "product",
+        "productId": "7fded53a-5bbe-4caf-9766-e2eabbfcbee1",
         "name": "Luminex Nova E8",
         "description": "Luminex Nova E8 boasts an 8-inch HD touchscreen, adaptive front light, 32GB storage, and weeks-long battery life. Supports EPUB, PDF, and more formats. Compact, lightweight, and ideal for seamless reading on the go. Perfect for avid readers everywhere.",
         "categoryName": "Devices, E-readers",
@@ -4875,6 +4952,7 @@
     {
         "id": "09ccd1ef-9b03-4f30-a48c-d3e8547426da",
         "docType": "product",
+        "productId": "09ccd1ef-9b03-4f30-a48c-d3e8547426da",
         "name": "Kindle Nexus Pro 11",
         "description": "Kindle Nexus Pro 11, the ultimate e-reader with a stunning 11\" HD display, anti-glare tech, 32GB storage, & Wi-Fi. Enjoy weeks of battery life & customizable reading settings. Lightweight & durable.",
         "categoryName": "Devices, E-readers",
@@ -4906,6 +4984,7 @@
     {
         "id": "7165d1c3-b087-4962-91d2-9fc3396b170c",
         "docType": "product",
+        "productId": "7165d1c3-b087-4962-91d2-9fc3396b170c",
         "name": "LumiRead Pro X7",
         "description": "LumiRead Pro X7 offers a 7-inch E Ink display, 32GB storage, adjustable warm and cool backlight, Wi-Fi, and Bluetooth. Enjoy weeks of battery life and seamless cloud sync for your digital library. Dive into your favorite books anytime, anywhere!",
         "categoryName": "Devices, E-readers",
@@ -4945,6 +5024,7 @@
     {
         "id": "0a3d5b62-c39e-4d2b-a75e-ddb18eb8d7b6",
         "docType": "product",
+        "productId": "0a3d5b62-c39e-4d2b-a75e-ddb18eb8d7b6",
         "name": "Lexora Edge Reader Pro 7",
         "description": "Lexora Edge Reader Pro 7 features a 7-inch HD glare-free display, 32GB storage, Wi-Fi, and Bluetooth. Enjoy weeks of battery life, adjustable warm light, and water resistance. Perfect for avid readers.",
         "categoryName": "Devices, E-readers",
@@ -4976,6 +5056,7 @@
     {
         "id": "64240516-b1b1-4308-9a3a-aa9cab02eb89",
         "docType": "product",
+        "productId": "64240516-b1b1-4308-9a3a-aa9cab02eb89",
         "name": "SonicPulse Elite Pro 900",
         "description": "SonicPulse Elite Pro 900 headphones deliver studio-grade sound with 50mm drivers, active noise cancellation, Bluetooth 5.3, and 40-hour battery life.",
         "categoryName": "Accessories, Premium Headphones",
@@ -5057,6 +5138,7 @@
     {
         "id": "991c54ae-c032-4c02-a799-2d1768380b05",
         "docType": "product",
+        "productId": "991c54ae-c032-4c02-a799-2d1768380b05",
         "name": "Auralis ProPulse X7 Wireless ANC Headphones",
         "description": "Auralis ProPulse X7 Wireless ANC Headphones offer immersive sound with 40mm drivers, adaptive noise cancellation, Bluetooth 5.3, and 30-hour battery life. With plush ear cushions and foldable design, enjoy premium comfort and portability.",
         "categoryName": "Accessories, Premium Headphones",
@@ -5138,6 +5220,7 @@
     {
         "id": "7adfc1a9-d9d4-472d-bc82-56bbd32f7b13",
         "docType": "product",
+        "productId": "7adfc1a9-d9d4-472d-bc82-56bbd32f7b13",
         "name": "Pulse Audio Pro-X900 Wireless ANC Headphones",
         "description": "Experience immersive sound with Pulse Audio Pro-X900 Wireless ANC Headphones. Features advanced active noise cancellation, 40mm drivers, 30-hour battery life, Bluetooth 5.3, and ergonomic design. Ideal for work, travel, and music enjoyment.",
         "categoryName": "Accessories, Premium Headphones",
@@ -5209,6 +5292,7 @@
     {
         "id": "68cef976-a37f-4560-82c4-7b1cdfd168b8",
         "docType": "product",
+        "productId": "68cef976-a37f-4560-82c4-7b1cdfd168b8",
         "name": "SonicVue Pro XM50 Wireless Headphones",
         "description": "Elevate your audio with SonicVue Pro XM50 Wireless Headphones. Featuring 40mm drivers, ANC, Bluetooth 5.2, 30-hour battery life, and plush ear cups for comfort. Immerse in premium sound with a sleek, lightweight design.",
         "categoryName": "Accessories, Premium Headphones",
@@ -5274,6 +5358,7 @@
     {
         "id": "6264d898-9fcc-4e33-83ba-6f8107fab61f",
         "docType": "product",
+        "productId": "6264d898-9fcc-4e33-83ba-6f8107fab61f",
         "name": "EchoSound Pro-X900 Wireless Headphones",
         "description": "EchoSound Pro-X900 Wireless Headphones deliver immersive 360\u00b0 audio, active noise cancellation, 40-hour battery life, and fast USB-C charging. With plush ear cushions and Bluetooth 5.3, enjoy premium sound and all-day comfort. Perfect for music lovers.",
         "categoryName": "Accessories, Premium Headphones",
@@ -5333,6 +5418,7 @@
     {
         "id": "26fbe046-ba31-45c1-b8e4-0875d0e7a497",
         "docType": "product",
+        "productId": "26fbe046-ba31-45c1-b8e4-0875d0e7a497",
         "name": "Aurios Zenith 950X Noise-Canceling Headphones",
         "description": "Aurios Zenith 950X noise-canceling headphones deliver immersive sound with 40mm drivers, Adaptive ANC, Bluetooth 5.3, and 30-hour battery life. Sleek, foldable design with touch controls ensures premium comfort and convenience.",
         "categoryName": "Accessories, Premium Headphones",
@@ -5382,6 +5468,7 @@
     {
         "id": "d3abc569-b410-4643-86c6-264352047e0e",
         "docType": "product",
+        "productId": "d3abc569-b410-4643-86c6-264352047e0e",
         "name": "AeroSound Pro X950 Wireless Headphones",
         "description": "AeroSound Pro X950 Wireless Headphones deliver immersive audio with 40mm drivers, active noise cancellation, 30-hour battery life, and premium comfort. Bluetooth 5.3 ensures ultra-fast pairing and stable connectivity. Experience sound at its finest.",
         "categoryName": "Accessories, Premium Headphones",
@@ -5433,6 +5520,7 @@
     {
         "id": "49eac527-f389-425b-8a92-ad0bb059cddf",
         "docType": "product",
+        "productId": "49eac527-f389-425b-8a92-ad0bb059cddf",
         "name": "Resonova Elite360 Wireless ANC Headphones",
         "description": "Resonova Elite360 Wireless ANC Headphones deliver crystal-clear audio with advanced noise cancellation, 40-hour battery life, Bluetooth 5.3, and premium comfort. Enjoy effortless controls, fast charging, and immersive sound. Perfect for work or leisure.",
         "categoryName": "Accessories, Premium Headphones",
@@ -5516,6 +5604,7 @@
     {
         "id": "ae449848-3f15-4147-8eee-fe76cfcc6bb4",
         "docType": "product",
+        "productId": "ae449848-3f15-4147-8eee-fe76cfcc6bb4",
         "name": "EchoSphere Pro ANC-X900 Premium Headphones",
         "description": "EchoSphere Pro ANC-X900 Premium Headphones deliver immersive sound with advanced 40mm drivers and Adaptive Hybrid Active Noise Cancellation. Bluetooth 5.3 ensures seamless connectivity.",
         "categoryName": "Accessories, Premium Headphones",
@@ -5595,6 +5684,7 @@
     {
         "id": "e847e069-d0f9-4fec-b42a-d37cd5b2f536",
         "docType": "product",
+        "productId": "e847e069-d0f9-4fec-b42a-d37cd5b2f536",
         "name": "EchoSphere Pro ANC-X900",
         "description": "EchoSphere Pro ANC-X900: Premium over-ear headphones with adaptive ANC, 40mm drivers, Hi-Res audio, and Bluetooth 5.3. Up to 45-hour battery life, fast USB-C charging, and 5-microphone setup for crystal-clear calls.",
         "categoryName": "Accessories, Premium Headphones",
@@ -5664,6 +5754,7 @@
     {
         "id": "8535aa25-6544-4ba1-a910-74b60e7bfba0",
         "docType": "product",
+        "productId": "8535aa25-6544-4ba1-a910-74b60e7bfba0",
         "name": "AuraLux\u2122 VX Pro Leather Case",
         "description": "AuraLux VX Pro Leather Case blends elegance with durability, featuring premium vegan leather, shock-absorbing padding, precision fit for devices up to 15 inches, and magnetic closure. Add a touch of luxury to your device protection today!",
         "categoryName": "Accessories, Luxury Cases",
@@ -5733,6 +5824,7 @@
     {
         "id": "74ffbb57-b449-475e-bc01-c93ae1780637",
         "docType": "product",
+        "productId": "74ffbb57-b449-475e-bc01-c93ae1780637",
         "name": "AuroraShield Luxe Series X1",
         "description": "AuroraShield Luxe Series X1 blends elegance and protection. Crafted from premium vegan leather, it features shock-absorbent layers, RFID-blocking tech, and fits most smartphones. Slim yet durable, it's perfect for modern lifestyles.",
         "categoryName": "Accessories, Luxury Cases",
@@ -5818,6 +5910,7 @@
     {
         "id": "19cd7db2-1600-4810-866e-8955de7b7e43",
         "docType": "product",
+        "productId": "19cd7db2-1600-4810-866e-8955de7b7e43",
         "name": "PrismEdge LuxeCase Pro-X5",
         "description": "PrismEdge LuxeCase Pro-X5 delivers premium protection in a sleek design. Crafted with aerospace-grade aluminum and vegan leather, it offers 360-degree shockproof durability, magnetic clasp, wireless charging compatibility, and precise cutouts.",
         "categoryName": "Accessories, Luxury Cases",
@@ -5849,6 +5942,7 @@
     {
         "id": "967b7938-031a-4884-abaa-9f1cc67c5f54",
         "docType": "product",
+        "productId": "967b7938-031a-4884-abaa-9f1cc67c5f54",
         "name": "LuminaVault Pro X1",
         "description": "LuminaVault Pro X1 combines elegance and protection in a premium luxury case. Crafted with aerospace-grade aluminum, anti-scratch coating, and RFID-blocking tech, it fits most devices up to 12\". Sleek, durable, and secure for your travel needs.",
         "categoryName": "Accessories, Luxury Cases",
@@ -5920,6 +6014,7 @@
     {
         "id": "2449dd76-9e54-445a-b5da-23dda7f1c3a0",
         "docType": "product",
+        "productId": "2449dd76-9e54-445a-b5da-23dda7f1c3a0",
         "name": "ZyraLux Prime Series X7 Case",
         "description": "ZyraLux Prime Series X7 Case blends luxury and durability. Crafted from premium aluminum with a sleek, matte finish, it boasts scratch resistance, impact protection, and soft microfiber lining. Ideal for smartphones up to 6.8\".",
         "categoryName": "Accessories, Luxury Cases",
@@ -5981,6 +6076,7 @@
     {
         "id": "583d528d-4efa-499e-b841-e00a23eed9b5",
         "docType": "product",
+        "productId": "583d528d-4efa-499e-b841-e00a23eed9b5",
         "name": "AurumShield ProCase LX700",
         "description": "AurumShield ProCase LX700 blends elegance and durability. Crafted from premium vegan leather, it features RFID blocking, shockproof tech, and precision fit for laptops up to 15\". Includes magnetic closure and accessory pockets.",
         "categoryName": "Accessories, Luxury Cases",
@@ -6032,6 +6128,7 @@
     {
         "id": "1aec0dc4-bb18-40df-a461-1b248a688e2f",
         "docType": "product",
+        "productId": "1aec0dc4-bb18-40df-a461-1b248a688e2f",
         "name": "AuroraShield LuxeCase Pro X15",
         "description": "AuroraShield LuxeCase Pro X15 blends precision and elegance to protect your device. Made from shockproof aerospace-grade aluminum, it boasts premium leather, wireless charging support, and water resistance. Elevate style and security effortlessly.",
         "categoryName": "Accessories, Luxury Cases",
@@ -6117,6 +6214,7 @@
     {
         "id": "32028564-98ee-4142-b905-b1a4ea4fd6d0",
         "docType": "product",
+        "productId": "32028564-98ee-4142-b905-b1a4ea4fd6d0",
         "name": "AstroCase LuxeShield X7",
         "description": "AstroCase LuxeShield X7 combines style and durability with premium vegan leather, shock-absorbent edges, and precision cutouts. Wireless charging compatible with 10ft drop protection. Elevate your device\u2019s look and safety with this luxury case.",
         "categoryName": "Accessories, Luxury Cases",
@@ -6196,6 +6294,7 @@
     {
         "id": "c6db6450-600d-4674-a3b4-fbfda3bc4ef9",
         "docType": "product",
+        "productId": "c6db6450-600d-4674-a3b4-fbfda3bc4ef9",
         "name": "AuroraShield LX-Pro360 Luxe Case",
         "description": "AuroraShield LX-Pro360 Luxe Case offers 360\u00b0 protection with premium vegan leather, shock-absorbent corners, wireless charging compatibility, and a magnetic closure.",
         "categoryName": "Accessories, Luxury Cases",
@@ -6231,6 +6330,7 @@
     {
         "id": "0f1c5efa-d4b9-420e-bbf2-b074e8fe94e5",
         "docType": "product",
+        "productId": "0f1c5efa-d4b9-420e-bbf2-b074e8fe94e5",
         "name": "AuroraShield Luxe Series VX11",
         "description": "AuroraShield Luxe Series VX11 offers premium smartphone protection with vegan leather, shock-resistant edges, and wireless charging compatibility. Slim yet durable, it ensures elegance and functionality. Perfect blend of style and defense for your device.",
         "categoryName": "Accessories, Luxury Cases",
@@ -6270,6 +6370,7 @@
     {
         "id": "6e82a87d-6a90-4756-bb8a-1dc8a4138491",
         "docType": "product",
+        "productId": "6e82a87d-6a90-4756-bb8a-1dc8a4138491",
         "name": "VoltEdge ProCharge 65W-X",
         "description": "VoltEdge ProCharge 65W-X delivers lightning-fast charging with USB-C PD and QC compatibility. Compact, travel-friendly design and built-in safety tech ensure reliable power for laptops, tablets, and phones. Perfect for professionals on the go!",
         "categoryName": "Accessories, High-end Chargers",
@@ -6305,6 +6406,7 @@
     {
         "id": "68512357-f21b-4a2e-ae07-26d588e051cd",
         "docType": "product",
+        "productId": "68512357-f21b-4a2e-ae07-26d588e051cd",
         "name": "VoltEdge HyperCharge X200 Pro",
         "description": "VoltEdge HyperCharge X200 Pro: Ultra-fast charging with 100W power, dual USB-C PD ports, smart voltage optimization, and multi-device support. Compact build, premium materials, and safety-certified for reliable performance wherever you go.",
         "categoryName": "Accessories, High-end Chargers",
@@ -6374,6 +6476,7 @@
     {
         "id": "2dc116e1-ca1b-4e78-9436-26332ef2ebcf",
         "docType": "product",
+        "productId": "2dc116e1-ca1b-4e78-9436-26332ef2ebcf",
         "name": "VoltEdge HyperCharge X200",
         "description": "VoltEdge HyperCharge X200 is a premium fast charger with 65W power delivery, dual USB-C ports, and smart voltage optimization. Ultra-compact, travel-ready design with surge protection ensures safe and efficient charging for all your devices.",
         "categoryName": "Accessories, High-end Chargers",
@@ -6449,6 +6552,7 @@
     {
         "id": "75b1dafd-82d9-4a79-9f22-3b35400eaf57",
         "docType": "product",
+        "productId": "75b1dafd-82d9-4a79-9f22-3b35400eaf57",
         "name": "VoltEdge ProCharge 65X",
         "description": "VoltEdge ProCharge 65X is a sleek 65W high-speed charger with dual USB-C ports and Power Delivery 3.0 for rapid device charging. Built with durable aluminum casing, it features overheat protection and universal compatibility.",
         "categoryName": "Accessories, High-end Chargers",
@@ -6534,6 +6638,7 @@
     {
         "id": "5d81221f-79ad-4aec-983e-78fd4bc2c2d3",
         "docType": "product",
+        "productId": "5d81221f-79ad-4aec-983e-78fd4bc2c2d3",
         "name": "PulseCharge Pro X120",
         "description": "PulseCharge Pro X120 is a premium GaN fast charger delivering up to 120W, featuring dual USB-C and USB-A ports, smart power distribution, sleek aluminum design, and universal device compatibility. Ideal for laptops, phones, and tablets.",
         "categoryName": "Accessories, High-end Chargers",
@@ -6593,6 +6698,7 @@
     {
         "id": "7fb481c9-5dc1-4adc-8d2a-e0481ca804d2",
         "docType": "product",
+        "productId": "7fb481c9-5dc1-4adc-8d2a-e0481ca804d2",
         "name": "VoltEdge ProCharge X950",
         "description": "VoltEdge ProCharge X950: A premium fast charger with 100W output, USB-C PD, dual USB-A ports, GaN tech for efficiency, and multi-device support. Compact, sleek design ensures portability. Safe for laptops, phones, and tablets. Power your day with ease!",
         "categoryName": "Accessories, High-end Chargers",
@@ -6682,6 +6788,7 @@
     {
         "id": "496d7fd2-91a7-49a3-bb49-fcc8d0050a14",
         "docType": "product",
+        "productId": "496d7fd2-91a7-49a3-bb49-fcc8d0050a14",
         "name": "VoltEdge ProCharge X65",
         "description": "VoltEdge ProCharge X65 delivers ultra-fast 65W charging for laptops, tablets, and phones. Features dual USB-C PD ports, GaN technology, compact design, and smart overheat protection. Travel-friendly and built to power your day efficiently.",
         "categoryName": "Accessories, High-end Chargers",
@@ -6725,6 +6832,7 @@
     {
         "id": "18d5e264-1ef3-40ef-b9e7-26139dec9d60",
         "docType": "product",
+        "productId": "18d5e264-1ef3-40ef-b9e7-26139dec9d60",
         "name": "PowerForge Pro 65W GaN-X Charger",
         "description": "PowerForge Pro 65W GaN-X Charger delivers ultra-fast charging with Gallium Nitride tech for devices like laptops and phones. Compact, durable, with dual USB-C ports and intelligent power distribution. Perfect for travel and everyday use!",
         "categoryName": "Accessories, High-end Chargers",
@@ -6778,6 +6886,7 @@
     {
         "id": "486951fe-3e46-4003-961f-0edefd60972a",
         "docType": "product",
+        "productId": "486951fe-3e46-4003-961f-0edefd60972a",
         "name": "PulseCharge Pro X950",
         "description": "PulseCharge Pro X950 is a premium 65W USB-C fast charger with GaN technology for rapid, efficient charging. Compact design, dual ports, universal compatibility, and built-in safety features make it perfect for modern devices. Stay powered anywhere.",
         "categoryName": "Accessories, High-end Chargers",
@@ -6843,6 +6952,7 @@
     {
         "id": "4ba85082-bfa4-41d6-92d4-63b80f5ae9ba",
         "docType": "product",
+        "productId": "4ba85082-bfa4-41d6-92d4-63b80f5ae9ba",
         "name": "VoltEdge ProCharge X70",
         "description": "VoltEdge ProCharge X70 delivers 70W rapid charging with dual USB-C PD ports and smart power allocation. Sleek, portable, and compatible with phones, tablets, and laptops. Safety features include overcharge and short circuit protection. Power up securely.",
         "categoryName": "Accessories, High-end Chargers",
@@ -6898,6 +7008,7 @@
     {
         "id": "4fef9ecf-5049-49a1-9e40-be59fa6374a2",
         "docType": "product",
+        "productId": "4fef9ecf-5049-49a1-9e40-be59fa6374a2",
         "name": "Elevate ProStand X5",
         "description": "Elevate ProStand X5: Premium aluminum stand with adjustable height and 360\u00b0 rotation. Supports devices up to 15\". Anti-slip padding ensures stability. Sleek design ideal for desks and counters. Optimize viewing angles effortlessly every time.",
         "categoryName": "Accessories, Designer Stands",
@@ -6951,6 +7062,7 @@
     {
         "id": "200fe2b1-eb70-4fff-8660-be7f719fdb64",
         "docType": "product",
+        "productId": "200fe2b1-eb70-4fff-8660-be7f719fdb64",
         "name": "Elevate ProStand XS45",
         "description": "Elevate ProStand XS45 is a sleek aluminum stand, supporting laptops up to 15 inches. With adjustable height, anti-slip pads, and cable management features, it ensures ergonomic comfort and a tidy workspace.",
         "categoryName": "Accessories, Designer Stands",
@@ -7036,6 +7148,7 @@
     {
         "id": "9173595c-2b5c-4885-900c-bc29e315ad1f",
         "docType": "product",
+        "productId": "9173595c-2b5c-4885-900c-bc29e315ad1f",
         "name": "Elevate ProStand X2",
         "description": "Elevate ProStand X2 offers premium aluminum build, adjustable height up to 10 inches, 360-degree rotation, and anti-slip pads. Compatible with laptops up to 17 inches, it enhances ergonomics and cooling. A sleek, reliable stand for professionals!",
         "categoryName": "Accessories, Designer Stands",
@@ -7117,6 +7230,7 @@
     {
         "id": "1c7f2560-e5a1-434a-825f-8b956ef41ab8",
         "docType": "product",
+        "productId": "1c7f2560-e5a1-434a-825f-8b956ef41ab8",
         "name": "Elevate ProStand DS-700",
         "description": "Elevate ProStand DS-700: Sleek aluminum stand for laptops and tablets with ergonomic height adjustment, 360-degree rotation, and anti-slip pads. Supports devices up to 17 inches, max load 22 lbs. Perfect for workspaces and presentations.",
         "categoryName": "Accessories, Designer Stands",
@@ -7202,6 +7316,7 @@
     {
         "id": "caaae802-e643-4d23-bea2-ec56b3c98f5f",
         "docType": "product",
+        "productId": "caaae802-e643-4d23-bea2-ec56b3c98f5f",
         "name": "Elevation Pro Stand XS900 by Axio",
         "description": "Elevation Pro Stand XS900 by Axio features ergonomic design, durable aluminum alloy, 360-degree rotation, adjustable height 5 to 15 inches, and anti-slip padding for laptops and tablets up to 17 inches. Sleek, portable, and built for modern workspaces.",
         "categoryName": "Accessories, Designer Stands",
@@ -7243,6 +7358,7 @@
     {
         "id": "eb23d902-7817-49f1-9b80-314bdeba4334",
         "docType": "product",
+        "productId": "eb23d902-7817-49f1-9b80-314bdeba4334",
         "name": "ElevatePro by NexPoint X3",
         "description": "ElevatePro by NexPoint X3 blends style and strength. Crafted from anodized aluminum, it supports laptops up to 17 inches and adjusts to 6 ergonomic viewing angles. Anti-slip pads ensure stability, while cable management keeps desks tidy.",
         "categoryName": "Accessories, Designer Stands",
@@ -7274,6 +7390,7 @@
     {
         "id": "e264549e-1bac-41a3-a52d-19ae0acc61ac",
         "docType": "product",
+        "productId": "e264549e-1bac-41a3-a52d-19ae0acc61ac",
         "name": "EvoArc Elevate Pro XS400",
         "description": "EvoArc Elevate Pro XS400: Sleek aluminum stand with adjustable height, 360\u00b0 rotation, anti-slip base, and cable management. Supports laptops up to 17 inches. Ergonomic, durable, and perfect for professional setups. Elevate productivity effortlessly.",
         "categoryName": "Accessories, Designer Stands",
@@ -7305,6 +7422,7 @@
     {
         "id": "3473cb0a-d330-4d15-94a1-b7d7cca28304",
         "docType": "product",
+        "productId": "3473cb0a-d330-4d15-94a1-b7d7cca28304",
         "name": "Elevate ProStand X5 by ArcEdge Designs",
         "description": "Elevate ProStand X5 by ArcEdge Designs blends style with function, offering durable aluminum build, adjustable viewing angles, anti-slip base, and cable management. Perfect for laptops or tablets up to 15\".",
         "categoryName": "Accessories, Designer Stands",
@@ -7356,6 +7474,7 @@
     {
         "id": "acfc3900-5f38-41f5-89e1-3512922829ac",
         "docType": "product",
+        "productId": "acfc3900-5f38-41f5-89e1-3512922829ac",
         "name": "Elevia ProStand X7",
         "description": "The Elevia ProStand X7 blends sleek design with premium functionality, supporting monitors up to 32 inches. Adjustable height, cable management, and anti-slip base ensure ergonomic comfort and a clutter-free setup.",
         "categoryName": "Accessories, Designer Stands",
@@ -7407,6 +7526,7 @@
     {
         "id": "dba39ca4-f94a-4b60-93f7-e54ea697bfff",
         "docType": "product",
+        "productId": "dba39ca4-f94a-4b60-93f7-e54ea697bfff",
         "name": "Elevate ProStand X500",
         "description": "Elevate ProStand X500 blends elegance and durability to support laptops up to 17\". Crafted from aluminum, it offers adjustable angles, anti-slip pads, and cable management. Perfect for ergonomic setups, it enhances comfort and productivity all day long.",
         "categoryName": "Accessories, Designer Stands",
@@ -7458,6 +7578,7 @@
     {
         "id": "6ee01ecd-231f-43f6-8ddd-73e20f6d1522",
         "docType": "product",
+        "productId": "6ee01ecd-231f-43f6-8ddd-73e20f6d1522",
         "name": "HyperType Pro K7 Mechanical Keyboard",
         "description": "HyperType Pro K7 Mechanical Keyboard boasts tactile switches, RGB lighting, customizable macros, anti-ghosting, and USB-C connectivity. Durable aluminum frame ensures lasting performance. Elevate your productivity and gaming with precision and style!",
         "categoryName": "Peripherals, Keyboards",
@@ -7539,6 +7660,7 @@
     {
         "id": "5672ac6d-ac94-4846-ac9f-aa212d88e76f",
         "docType": "product",
+        "productId": "5672ac6d-ac94-4846-ac9f-aa212d88e76f",
         "name": "HyperKey Pro MK-750 RGB",
         "description": "HyperKey Pro MK-750 RGB is a mechanical gaming keyboard with customizable RGB lighting, Cherry MX switches, anti-ghosting, and a detachable wrist rest. It offers precision, durability, and style for gamers and enthusiasts alike. Elevate your setup today.",
         "categoryName": "Peripherals, Keyboards",
@@ -7588,6 +7710,7 @@
     {
         "id": "2763210b-50f6-4e9c-933e-ccd6271930d0",
         "docType": "product",
+        "productId": "2763210b-50f6-4e9c-933e-ccd6271930d0",
         "name": "ProKey Ultra 75 Wireless Mechanical Keyboard",
         "description": "ProKey Ultra 75 Wireless Mechanical Keyboard offers compact 75 layout, hot-swappable keys, RGB lighting, durable aluminum frame, Bluetooth & USB-C. With tactile switches and long battery life, elevate productivity and gaming effortlessly.",
         "categoryName": "Peripherals, Keyboards",
@@ -7641,6 +7764,7 @@
     {
         "id": "f46e2256-0919-4f10-b031-4297883bf27d",
         "docType": "product",
+        "productId": "f46e2256-0919-4f10-b031-4297883bf27d",
         "name": "AxisTech ProKey 750X",
         "description": "AxisTech ProKey 750X is a ergonomic mechanical keyboard with tactile switches, RGB lighting, USB-C, and programmable keys. Durable aluminum frame, anti-ghosting tech, and adjustable tilt ensure seamless performance for gamers or professionals alike.",
         "categoryName": "Peripherals, Keyboards",
@@ -7704,6 +7828,7 @@
     {
         "id": "0cb21c1e-ab88-471b-861e-f7ca0b3adfb3",
         "docType": "product",
+        "productId": "0cb21c1e-ab88-471b-861e-f7ca0b3adfb3",
         "name": "AstroShift X90 Mechanical Keyboard",
         "description": "AstroShift X90 Mechanical Keyboard features tactile Cherry MX switches, customizable RGB backlighting, durable aluminum frame, and anti-ghosting with N-key rollover. Perfect for gaming or work, it delivers precision and comfort every keystroke.",
         "categoryName": "Peripherals, Keyboards",
@@ -7765,6 +7890,7 @@
     {
         "id": "c9e3a6ce-432f-4968-8dac-7344028060f0",
         "docType": "product",
+        "productId": "c9e3a6ce-432f-4968-8dac-7344028060f0",
         "name": "HyperKey Pro X77 Mechanical Keyboard",
         "description": "HyperKey Pro X77 Mechanical Keyboard blends precision and style with durable aluminum frame, RGB backlighting, hot-swappable switches, anti-ghosting, and USB-C connectivity. Perfect for gamers and professionals seeking performance and customization.",
         "categoryName": "Peripherals, Keyboards",
@@ -7846,6 +7972,7 @@
     {
         "id": "a74e7af9-7e13-40cd-90df-7b5e172a8acc",
         "docType": "product",
+        "productId": "a74e7af9-7e13-40cd-90df-7b5e172a8acc",
         "name": "HyperType Pro K100 RGB Mechanical Keyboard",
         "description": "HyperType Pro K100 RGB Mechanical Keyboard features responsive switches, customizable RGB lighting, anti-ghosting, and macro keys for peak performance. Built for gamers and professionals, its durable aluminum frame ensures reliability.",
         "categoryName": "Peripherals, Keyboards",
@@ -7881,6 +8008,7 @@
     {
         "id": "38be4011-2c9f-4b11-9bd1-0d1d9aeabac4",
         "docType": "product",
+        "productId": "38be4011-2c9f-4b11-9bd1-0d1d9aeabac4",
         "name": "AstroKey Pro X10 Mechanical Keyboard",
         "description": "AstroKey Pro X10 Mechanical Keyboard features tactile switches, customizable RGB lighting, 104 keys with anti-ghosting, durable aluminum frame, and USB-C connectivity.",
         "categoryName": "Peripherals, Keyboards",
@@ -7936,6 +8064,7 @@
     {
         "id": "7e440a94-bee7-4957-82a9-9a6d5b7013bc",
         "docType": "product",
+        "productId": "7e440a94-bee7-4957-82a9-9a6d5b7013bc",
         "name": "HyperKey Nexus Pro 85",
         "description": "HyperKey Nexus Pro 85 merges sleek design with performance. Featuring tactile switches, RGB lighting, programmable macros, and dual USB-C connectivity, it redefines precision and comfort for gamers and professionals. Type smarter, faster, better.",
         "categoryName": "Peripherals, Keyboards",
@@ -8001,6 +8130,7 @@
     {
         "id": "ee15c578-2c61-44a5-987b-62cd976cfe4b",
         "docType": "product",
+        "productId": "ee15c578-2c61-44a5-987b-62cd976cfe4b",
         "name": "LexiKey Pro MK750",
         "description": "LexiKey Pro MK750: Mechanical RGB keyboard with anti-ghosting, Cherry MX switches, 16.8M customizable colors, durable aluminum frame, USB Type-C, and ergonomic wrist rest. Perfect for gamers and professionals seeking precision and comfort.",
         "categoryName": "Peripherals, Keyboards",
@@ -8076,6 +8206,7 @@
     {
         "id": "116a4c8a-af2e-4cd7-b68b-9bd9eb0efaf0",
         "docType": "product",
+        "productId": "116a4c8a-af2e-4cd7-b68b-9bd9eb0efaf0",
         "name": "NeoGlide Pro MX7 Gaming Mouse",
         "description": "NeoGlide Pro MX7 Gaming Mouse offers precision with a 20,000 DPI optical sensor, ultra-fast 1ms response, customizable RGB lighting, 8 programmable buttons, ergonomic design, and durable switches.",
         "categoryName": "Peripherals, Mice",
@@ -8107,6 +8238,7 @@
     {
         "id": "91a40caa-b18e-4bb6-b3cf-c4119c85700e",
         "docType": "product",
+        "productId": "91a40caa-b18e-4bb6-b3cf-c4119c85700e",
         "name": "SwiftPoint Edge Pro MX750",
         "description": "SwiftPoint Edge Pro MX750 is a precision wireless mouse with 16000 DPI, 6 programmable buttons, ergonomic design, RGB lighting, and ultra-fast response time. Perfect for gaming and productivity, it delivers seamless performance and ultimate comfort.",
         "categoryName": "Peripherals, Mice",
@@ -8138,6 +8270,7 @@
     {
         "id": "a4efb05f-1910-40f3-8229-ee5ab8f8914f",
         "docType": "product",
+        "productId": "a4efb05f-1910-40f3-8229-ee5ab8f8914f",
         "name": "SwiftPoint X7 Precision Pro Mouse",
         "description": "SwiftPoint X7 Precision Pro Mouse: Designed for gamers and creatives, featuring 16,000 DPI, ultra-responsive buttons, RGB lighting, ergonomic grip, and wireless capability. Enjoy pinpoint accuracy and comfort for extended use.",
         "categoryName": "Peripherals, Mice",
@@ -8199,6 +8332,7 @@
     {
         "id": "9321bcef-ae14-4b62-8533-26a1385a5e3a",
         "docType": "product",
+        "productId": "9321bcef-ae14-4b62-8533-26a1385a5e3a",
         "name": "SwiftTrack Pro X7 Wireless Mouse",
         "description": "SwiftTrack Pro X7 Wireless Mouse delivers precision with its 16000 DPI sensor, ergonomic design, and ultra-fast 1ms response. Connect via Bluetooth or USB dongle for seamless control. Includes RGB lighting and 70-hour battery life.",
         "categoryName": "Peripherals, Mice",
@@ -8234,6 +8368,7 @@
     {
         "id": "a07da5aa-15c5-475d-80ca-6aa559aceff8",
         "docType": "product",
+        "productId": "a07da5aa-15c5-475d-80ca-6aa559aceff8",
         "name": "SwiftTrack Pro X950 Wireless Gaming Mouse",
         "description": "SwiftTrack Pro X950 Wireless Gaming Mouse features ultra-precise 20K DPI sensor, ergonomic design, RGB lighting, 2.4GHz wireless connectivity, 8 programmable buttons, and 70-hour battery life. Upgrade your gameplay with unmatched performance and comfort.",
         "categoryName": "Peripherals, Mice",
@@ -8319,6 +8454,7 @@
     {
         "id": "d83fe5eb-32ae-4e0c-ba82-e628f4669f51",
         "docType": "product",
+        "productId": "d83fe5eb-32ae-4e0c-ba82-e628f4669f51",
         "name": "SwiftTrack Pro X7 Wireless Gaming Mouse",
         "description": "SwiftTrack Pro X7 Wireless Gaming Mouse offers ultra-precise 16,000 DPI, a sleek ergonomic design, RGB lighting, 2.4GHz low-latency connection, 8 programmable buttons, and up to 70-hour battery life. Elevate your gaming performance to the next level.",
         "categoryName": "Peripherals, Mice",
@@ -8374,6 +8510,7 @@
     {
         "id": "1e74d40e-25ce-4d0e-8b9c-8b4891e73691",
         "docType": "product",
+        "productId": "1e74d40e-25ce-4d0e-8b9c-8b4891e73691",
         "name": "AeroTrack GX Pro 1500",
         "description": "AeroTrack GX Pro 1500: Precision redefined. Features a 15000 DPI sensor, customizable RGB lighting, 8 programmable buttons, and ergonomic design for all-day comfort. Ideal for gaming and productivity. Elevate your control with unparalleled performance.",
         "categoryName": "Peripherals, Mice",
@@ -8405,6 +8542,7 @@
     {
         "id": "65df6a86-72d3-4231-a8bf-1045d73bbd14",
         "docType": "product",
+        "productId": "65df6a86-72d3-4231-a8bf-1045d73bbd14",
         "name": "SwiftTrack Pro X900 Wireless Gaming Mouse",
         "description": "SwiftTrack Pro X900 Wireless Gaming Mouse offers ultra-precise 20000 DPI, ergonomic design, customizable RGB lighting, and 2.4GHz wireless connectivity. With 6 programmable buttons and rapid response time, it\u2019s built for competitive gamers.",
         "categoryName": "Peripherals, Mice",
@@ -8488,6 +8626,7 @@
     {
         "id": "e543914b-1cb6-4176-a76c-0d3c9a03d5c6",
         "docType": "product",
+        "productId": "e543914b-1cb6-4176-a76c-0d3c9a03d5c6",
         "name": "TrackEdge Pro X950 Wireless Gaming Mouse",
         "description": "TrackEdge Pro X950 Gaming Mouse offers 20K DPI, ultra-fast wireless tech, RGB lighting, 8 programmable buttons, and ergonomic design for marathon gaming.",
         "categoryName": "Peripherals, Mice",
@@ -8567,6 +8706,7 @@
     {
         "id": "02f38c60-3697-4974-9be6-5b6b872ed238",
         "docType": "product",
+        "productId": "02f38c60-3697-4974-9be6-5b6b872ed238",
         "name": "HyperGlide Precision XM-750",
         "description": "HyperGlide Precision XM-750 Gaming Mouse offers advanced 16,000 DPI, RGB lighting, customizable buttons, and ultra-responsive optical sensor. Ergonomic design ensures comfort for extended use.",
         "categoryName": "Peripherals, Mice",
@@ -8650,6 +8790,7 @@
     {
         "id": "9471d503-e163-4460-b6f6-cd50c4cbc031",
         "docType": "product",
+        "productId": "9471d503-e163-4460-b6f6-cd50c4cbc031",
         "name": "VisionEdge ProView X32 UltraClear",
         "description": "VisionEdge ProView X32 UltraClear features a 32-inch 4K UHD display with HDR10, 144Hz refresh rate, and 1ms response time. With IPS technology and 99 percent sRGB, it delivers vibrant, sharp visuals.",
         "categoryName": "Peripherals, Monitors",
@@ -8713,6 +8854,7 @@
     {
         "id": "34ad1a5f-03c7-4222-95ef-e85562b862ae",
         "docType": "product",
+        "productId": "34ad1a5f-03c7-4222-95ef-e85562b862ae",
         "name": "VividView Pro X27 Ultra HDR",
         "description": "VividView Pro X27 Ultra HDR delivers stunning 4K Ultra HD, HDR 1000, and a 144Hz refresh rate for lifelike visuals and smooth motion. Featuring IPS panel, 1ms response time, and 99 percent DCI P3 color gamut, it\u2019s perfect for gaming or creative work.",
         "categoryName": "Peripherals, Monitors",
@@ -8774,6 +8916,7 @@
     {
         "id": "7d1732fa-cc83-42b4-a23f-39dccc8d7d3a",
         "docType": "product",
+        "productId": "7d1732fa-cc83-42b4-a23f-39dccc8d7d3a",
         "name": "VisionaryView Pro X27 UltraHD Monitor",
         "description": "VisionaryView Pro X27 UltraHD Monitor delivers stunning 4K resolution, 144Hz refresh rate, 1ms response time, HDR400, and ultra-thin bezels. With USB-C, HDMI, and DisplayPort, it's a powerhouse for vibrant visuals and fluid gameplay.",
         "categoryName": "Peripherals, Monitors",
@@ -8809,6 +8952,7 @@
     {
         "id": "59f21059-e9d4-4921-9414-0a55919be100",
         "docType": "product",
+        "productId": "59f21059-e9d4-4921-9414-0a55919be100",
         "name": "PixelView Pro X27Q",
         "description": "PixelView Pro X27Q: Experience 27-inch QHD resolution with 2560x1440 clarity, 165Hz refresh rate, 1ms response time, and vibrant IPS panel. HDR10 support and ergonomic design deliver ultimate gaming and workspace versatility. Perfect for every setup.",
         "categoryName": "Peripherals, Monitors",
@@ -8850,6 +8994,7 @@
     {
         "id": "8ec7857b-bf4f-4a62-ae43-d108d3e3da18",
         "docType": "product",
+        "productId": "8ec7857b-bf4f-4a62-ae43-d108d3e3da18",
         "name": "VisionEdge ProDisplay X32Q UltraFlex",
         "description": "VisionEdge ProDisplay X32Q UltraFlex: This 32-inch QHD monitor features a 2560x1440 resolution, 165Hz refresh rate, and UltraFlex stand for optimal viewing angles.",
         "categoryName": "Peripherals, Monitors",
@@ -8929,6 +9074,7 @@
     {
         "id": "04cc51d5-1725-40d7-8411-11e5f5960493",
         "docType": "product",
+        "productId": "04cc51d5-1725-40d7-8411-11e5f5960493",
         "name": "CrystalView Pro 27Q Ultra HDR",
         "description": "CrystalView Pro 27Q Ultra HDR offers a stunning 27-inch QHD display, 144Hz refresh rate, and 1ms response for vivid clarity and ultra-smooth gaming. Features HDR10, AMD FreeSync Premium, and 99% sRGB for lifelike visuals.",
         "categoryName": "Peripherals, Monitors",
@@ -8984,6 +9130,7 @@
     {
         "id": "8a58ebb1-1294-4833-a5f8-9a37a652aad3",
         "docType": "product",
+        "productId": "8a58ebb1-1294-4833-a5f8-9a37a652aad3",
         "name": "VisionTech UltraView Pro X27Q",
         "description": "VisionTech UltraView Pro X27Q features a stunning 27 inch QHD display with 2560x1440 resolution, 165Hz refresh rate, 1ms response time, and HDR400 support for crisp visuals. Ports include HDMI, DP, and USB-C. Perfect for gaming or productivity.",
         "categoryName": "Peripherals, Monitors",
@@ -9067,6 +9214,7 @@
     {
         "id": "c11b7e61-89d2-4373-8a23-1ccf6ae545b0",
         "docType": "product",
+        "productId": "c11b7e61-89d2-4373-8a23-1ccf6ae545b0",
         "name": "VisionEdge Pro X34U HDR Monitor",
         "description": "VisionEdge Pro X34U HDR Monitor delivers stunning 3440x1440 resolution, 144Hz refresh rate, and 1ms response time.",
         "categoryName": "Peripherals, Monitors",
@@ -9108,6 +9256,7 @@
     {
         "id": "8fcc2d7e-12f8-43c6-909e-258e9196d1b5",
         "docType": "product",
+        "productId": "8fcc2d7e-12f8-43c6-909e-258e9196d1b5",
         "name": "VisionTech QuantumView X27 Pro",
         "description": "Experience stunning visuals with the VisionTech QuantumView X27 Pro! A 27-inch 4K UHD display, 144Hz refresh rate, 1ms response time, HDR10, and ultra-slim bezels deliver unparalleled clarity for gaming and work. Elevate your viewing experience today!",
         "categoryName": "Peripherals, Monitors",
@@ -9163,6 +9312,7 @@
     {
         "id": "d2f26735-0ff2-4e7e-bab2-b384a01d471c",
         "docType": "product",
+        "productId": "d2f26735-0ff2-4e7e-bab2-b384a01d471c",
         "name": "AuroraView Pro X27Q",
         "description": "AuroraView Pro X27Q Monitor features a 27-inch QHD 2560x1440 IPS display, 144Hz refresh rate, 1ms response time, HDR10 support, and AMD FreeSync. Its ultra-slim bezel and ergonomic stand ensure a seamless viewing experience.",
         "categoryName": "Peripherals, Monitors",
@@ -9208,6 +9358,7 @@
     {
         "id": "031bf0cb-909e-4843-a9e5-70f1b3a241b8",
         "docType": "product",
+        "productId": "031bf0cb-909e-4843-a9e5-70f1b3a241b8",
         "name": "VisionPro 4K UltraCam XT-200",
         "description": "Capture every detail with the VisionPro 4K UltraCam XT-200. Features 4K UHD resolution, HDR support, dual noise-canceling mics, 90\u00b0 field of view, and AI-enhanced autofocus for streaming, video calls, or recording. Elevate your visuals effortlessly today!",
         "categoryName": "Peripherals, Webcams",
@@ -9279,6 +9430,7 @@
     {
         "id": "248530f7-3d92-44ea-a313-6bee627212b0",
         "docType": "product",
+        "productId": "248530f7-3d92-44ea-a313-6bee627212b0",
         "name": "VisionLink ProCam X720",
         "description": "VisionLink ProCam X720 delivers stunning 4K UHD resolution, 60fps, auto-focus, low-light correction, dual microphones, and USB-C connectivity. Perfect for streaming and video calls. Compact design ensures easy setup. Elevate your visuals effortlessly.",
         "categoryName": "Peripherals, Webcams",
@@ -9322,6 +9474,7 @@
     {
         "id": "0263fadc-2597-4176-9d4d-6b69b5722222",
         "docType": "product",
+        "productId": "0263fadc-2597-4176-9d4d-6b69b5722222",
         "name": "VisionPro StreamCam X200",
         "description": "VisionPro StreamCam X200 delivers 1080p HD streaming at 60fps with autofocus and low-light correction. Features dual noise-canceling mics, USB-C connectivity, and a 360-degree swivel base. Perfect for creators and professionals seeking crisp, fluid video!",
         "categoryName": "Peripherals, Webcams",
@@ -9373,6 +9526,7 @@
     {
         "id": "027f818b-1d35-421d-8750-aa90bad42f27",
         "docType": "product",
+        "productId": "027f818b-1d35-421d-8750-aa90bad42f27",
         "name": "VisionStream Pro 4K-Webcam X500",
         "description": "Capture ultra-clear video with the VisionStream Pro 4K-Webcam X500.",
         "categoryName": "Peripherals, Webcams",
@@ -9404,6 +9558,7 @@
     {
         "id": "7737f3ee-4115-4728-82a0-499125e86132",
         "docType": "product",
+        "productId": "7737f3ee-4115-4728-82a0-499125e86132",
         "name": "VisionMax ProCam 4K W8",
         "description": "VisionMax ProCam 4K W8 offers crystal-clear 4K UHD video at 60fps, advanced HDR, AI autofocus, dual noise-cancelling mics, and a 90-degree wide-angle lens for ultimate clarity. Perfect for streaming, video calls, or recording.",
         "categoryName": "Peripherals, Webcams",
@@ -9469,6 +9624,7 @@
     {
         "id": "ec09d986-a98c-4122-9168-88129d768b7c",
         "docType": "product",
+        "productId": "ec09d986-a98c-4122-9168-88129d768b7c",
         "name": "PixelStream ProCam X200",
         "description": "PixelStream ProCam X200 delivers 4K UHD clarity with a wide-angle lens, dual noise-canceling mics, and AI auto-framing. It features low-light adjustment, 60fps streaming, and USB-C connectivity for video calls and streaming. Upgrade your visuals today!",
         "categoryName": "Peripherals, Webcams",
@@ -9558,6 +9714,7 @@
     {
         "id": "6ba56431-364e-4482-86fd-0d4cd73ab675",
         "docType": "product",
+        "productId": "6ba56431-364e-4482-86fd-0d4cd73ab675",
         "name": "VisionPro MaxCam 4K Ultra AI",
         "description": "VisionPro MaxCam 4K Ultra AI: Stream and record in stunning 4K UHD with AI auto-framing, face tracking, and HDR. Dual noise-canceling mics ensure crystal-clear audio. Features USB-C connectivity and wide 120\u00b0 FOV. Elevate your video calls effortlessly.",
         "categoryName": "Peripherals, Webcams",
@@ -9643,6 +9800,7 @@
     {
         "id": "ce51a53d-b122-4436-a184-e322822e2cfe",
         "docType": "product",
+        "productId": "ce51a53d-b122-4436-a184-e322822e2cfe",
         "name": "OptiView ProCam X500",
         "description": "OptiView ProCam X500 delivers 4K Ultra HD clarity, 120\u00b0 wide-angle lens, AI auto-framing, dual noise-canceling mics, and low-light correction. Ideal for streaming and video calls, it ensures crystal-clear visuals and sound.",
         "categoryName": "Peripherals, Webcams",
@@ -9698,6 +9856,7 @@
     {
         "id": "1f5eb896-2650-47c8-a60f-60d4d3e29828",
         "docType": "product",
+        "productId": "1f5eb896-2650-47c8-a60f-60d4d3e29828",
         "name": "VisionPro X5 StreamCam",
         "description": "VisionPro X5 StreamCam offers 4K Ultra HD video, dual noise-canceling mics, and auto light correction for pro streaming. With 60fps, wide-angle lens, and plug-and-play USB connectivity, it\u2019s perfect for creators.",
         "categoryName": "Peripherals, Webcams",
@@ -9783,6 +9942,7 @@
     {
         "id": "b2b4eefe-ca88-49f5-8161-67f902d0954c",
         "docType": "product",
+        "productId": "b2b4eefe-ca88-49f5-8161-67f902d0954c",
         "name": "VisionPro StreamCam X900",
         "description": "VisionPro StreamCam X900 delivers crystal-clear 1080p HD at 60fps, dual mics for crisp audio, and AI-enhanced autofocus. Perfect for streaming and video calls, it offers USB-C connectivity and a sleek design.",
         "categoryName": "Peripherals, Webcams",
@@ -9864,6 +10024,7 @@
     {
         "id": "bf398cf2-bae9-4f16-ad73-b9f32e8cd60c",
         "docType": "product",
+        "productId": "bf398cf2-bae9-4f16-ad73-b9f32e8cd60c",
         "name": "EchoWave Pro 360 BT-X",
         "description": "EchoWave Pro 360 BT-X delivers immersive 360-degree sound with dual subwoofers and crisp highs. Featuring Bluetooth 5.3, 20-hour battery life, and IP67 waterproof rating, it's perfect for any setting.",
         "categoryName": "Peripherals, Speakers",
@@ -9895,6 +10056,7 @@
     {
         "id": "a994c6c8-c13c-4463-8951-078279612efb",
         "docType": "product",
+        "productId": "a994c6c8-c13c-4463-8951-078279612efb",
         "name": "EchoWave SonicPro 360X",
         "description": "EchoWave SonicPro 360X delivers immersive 360\u00b0 sound with a 50W driver, Bluetooth 5.2, dual bass radiators, and 12hr playtime. Sleek, splash-proof design with voice assistant integration makes it perfect for any setting.",
         "categoryName": "Peripherals, Speakers",
@@ -9968,6 +10130,7 @@
     {
         "id": "66757532-1b64-430d-a913-03c7a4c84b78",
         "docType": "product",
+        "productId": "66757532-1b64-430d-a913-03c7a4c84b78",
         "name": "EchoWave Pro 360X",
         "description": "EchoWave Pro 360X delivers immersive 360-degree sound with dual subwoofers and 50W output. Bluetooth 5.2, 10-hour battery life, and touch controls make it perfect for any setup. USB-C charging adds convenience. Experience premium sound clarity today.",
         "categoryName": "Peripherals, Speakers",
@@ -10031,6 +10194,7 @@
     {
         "id": "6521ad3f-681b-4ec0-b151-4d88443a024d",
         "docType": "product",
+        "productId": "6521ad3f-681b-4ec0-b151-4d88443a024d",
         "name": "Aurora SonicPulse 360EX",
         "description": "Aurora SonicPulse 360EX delivers immersive 360-degree sound with dual bass radiators, Bluetooth 5.2, 20-hour battery, and IPX7 waterproofing. Featuring LED pulse lights synced to music, it's perfect for parties or relaxation.",
         "categoryName": "Peripherals, Speakers",
@@ -10112,6 +10276,7 @@
     {
         "id": "1d5917fa-9982-4787-b077-a39cbef2893f",
         "docType": "product",
+        "productId": "1d5917fa-9982-4787-b077-a39cbef2893f",
         "name": "Audionix PulseWave 300",
         "description": "Audionix PulseWave 300 delivers 360-degree immersive sound with dual 15W drivers and deep bass. Bluetooth 5.2, 20-hour battery life, and splash-proof design make it perfect for any occasion. Compact yet powerful, it redefines portable audio performance!",
         "categoryName": "Peripherals, Speakers",
@@ -10191,6 +10356,7 @@
     {
         "id": "83bcead3-e6d0-48bf-bf2b-d752b1456e88",
         "docType": "product",
+        "productId": "83bcead3-e6d0-48bf-bf2b-d752b1456e88",
         "name": "EchoSound Pro 360 BT",
         "description": "EchoSound Pro 360 BT delivers rich 360-degree sound backed by dual subwoofers, Bluetooth 5.3, 24-hour playback, & USB-C fast charging. Compact yet powerful, it pairs seamlessly with devices for immersive audio. Perfect for home or on-the-go entertainment.",
         "categoryName": "Peripherals, Speakers",
@@ -10226,6 +10392,7 @@
     {
         "id": "e07961b8-1b1a-41ee-a9fa-240f6d60a7c4",
         "docType": "product",
+        "productId": "e07961b8-1b1a-41ee-a9fa-240f6d60a7c4",
         "name": "EchoWave Pro X7 Wireless Speaker System",
         "description": "EchoWave Pro X7 Wireless Speaker System delivers immersive 360-degree sound, Bluetooth 5.3 connectivity, 20-hour battery life, and dynamic bass technology. Compact, sleek design with IPX7 waterproof rating. Perfect for any setting or adventure.",
         "categoryName": "Peripherals, Speakers",
@@ -10261,6 +10428,7 @@
     {
         "id": "8862fc8d-7855-4b96-9b9b-79c0ce82da3d",
         "docType": "product",
+        "productId": "8862fc8d-7855-4b96-9b9b-79c0ce82da3d",
         "name": "EchoSphere S7 SoundGrid Speaker System",
         "description": "EchoSphere S7 SoundGrid Speaker System delivers immersive surround sound with 7.1 channel audio. Features Bluetooth 5.2, 60W power output, and SmartSync tech for seamless multi-room play. Compact design fits any space. Perfect sound, every time.",
         "categoryName": "Peripherals, Speakers",
@@ -10310,6 +10478,7 @@
     {
         "id": "5488aaea-abd1-4610-a073-ced3dc1c2421",
         "docType": "product",
+        "productId": "5488aaea-abd1-4610-a073-ced3dc1c2421",
         "name": "Sonique EchoWave 360XS",
         "description": "Sonique EchoWave 360XS offers 360-degree immersive sound, 40W stereo drivers, Bluetooth 5.3, IPX6 water resistance, and 12-hour battery life. With deep bass and crisp highs, it's perfect for music lovers. Compact design with vibrant LED lights.",
         "categoryName": "Peripherals, Speakers",
@@ -10355,6 +10524,7 @@
     {
         "id": "cebdf7af-b67b-46ce-af0c-caf03aef2775",
         "docType": "product",
+        "productId": "cebdf7af-b67b-46ce-af0c-caf03aef2775",
         "name": "SoundSphere Pro X700 Wireless Speaker System",
         "description": "Immerse in rich, 360\u00b0 sound with SoundSphere Pro X700. Features dual 40W drivers, Bluetooth 5.3, 20-hr battery, & splash resistance. Sleek design with multi-device pairing ensures seamless audio.",
         "categoryName": "Peripherals, Speakers",
@@ -10426,6 +10596,7 @@
     {
         "id": "adeb53a3-de11-4af5-8657-ea76c189d6c4",
         "docType": "product",
+        "productId": "adeb53a3-de11-4af5-8657-ea76c189d6c4",
         "name": "EchoWave Pro VX-300 Microphone",
         "description": "EchoWave Pro VX-300 Microphone: Crystal-clear audio with a cardioid pickup pattern, studio-grade condenser capsule, 20Hz-20kHz response, and USB-C connectivity. Ideal for streamers and podcasters, it includes adjustable gain control.",
         "categoryName": "Peripherals, Microphones",
@@ -10461,6 +10632,7 @@
     {
         "id": "64a29797-5f69-4a9f-9b0d-20539385b46e",
         "docType": "product",
+        "productId": "64a29797-5f69-4a9f-9b0d-20539385b46e",
         "name": "VoiceSphere Pro VX200",
         "description": "VoiceSphere Pro VX200: Studio-quality condenser microphone. Features 24-bit/192kHz audio clarity, cardioid pickup, adjustable gain, and zero-latency monitoring. USB-C connectivity ensures effortless setup. Elevate your recordings with crystal-clear sound.",
         "categoryName": "Peripherals, Microphones",
@@ -10544,6 +10716,7 @@
     {
         "id": "4775c430-1470-4018-90a2-6f4a546212f1",
         "docType": "product",
+        "productId": "4775c430-1470-4018-90a2-6f4a546212f1",
         "name": "EchoStream Pro X7 USB Microphone",
         "description": "EchoStream Pro X7 USB Microphone delivers crystal-clear audio for streaming, gaming, and podcasts. Features cardioid pickup, 24-bit/96kHz recording, zero-latency monitoring, gain control, and RGB lighting.",
         "categoryName": "Peripherals, Microphones",
@@ -10587,6 +10760,7 @@
     {
         "id": "592d4608-3d57-4366-ba26-3a0fb6a0d1e1",
         "docType": "product",
+        "productId": "592d4608-3d57-4366-ba26-3a0fb6a0d1e1",
         "name": "SoundWave Pro X100 Microphone",
         "description": "SoundWave Pro X100 Microphone delivers studio-grade sound with a 20Hz-20kHz frequency range, cardioid pickup pattern, and USB-C connectivity.",
         "categoryName": "Peripherals, Microphones",
@@ -10668,6 +10842,7 @@
     {
         "id": "21d0792f-6208-4f4b-af3c-9b5565763dac",
         "docType": "product",
+        "productId": "21d0792f-6208-4f4b-af3c-9b5565763dac",
         "name": "EchoWave Pro X500 Microphone",
         "description": "EchoWave Pro X500 Microphone offers studio-grade audio with a cardioid condenser, 24-bit/192kHz resolution, and zero-latency monitoring. Sleek design, USB plug-and-play, and noise isolation ensure crystal-clear sound for professionals.",
         "categoryName": "Peripherals, Microphones",
@@ -10703,6 +10878,7 @@
     {
         "id": "17bd225d-e22f-412e-b7c6-f8f42e9895ef",
         "docType": "product",
+        "productId": "17bd225d-e22f-412e-b7c6-f8f42e9895ef",
         "name": "SonoWave Pro X3 Studio Microphone",
         "description": "SonoWave Pro X3 Studio Microphone delivers crystal-clear audio with a 24-bit/96kHz recording format, cardioid pickup pattern, and built-in noise filter. Ideal for podcasts, music, and streaming. USB-C connectivity ensures plug-and-play ease for any setup.",
         "categoryName": "Peripherals, Microphones",
@@ -10792,6 +10968,7 @@
     {
         "id": "eff720f5-f2f6-444b-8afc-ced10a6863b0",
         "docType": "product",
+        "productId": "eff720f5-f2f6-444b-8afc-ced10a6863b0",
         "name": "SonicWave Pro VX100 Microphone",
         "description": "SonicWave Pro VX100 Microphone delivers studio-quality sound with a cardioid pickup pattern, 24-bit/192kHz resolution, and noise-canceling tech. USB-C connectivity ensures seamless setup. Perfect for recording, streaming, and podcasts.",
         "categoryName": "Peripherals, Microphones",
@@ -10875,6 +11052,7 @@
     {
         "id": "75060a13-595d-41f9-a431-8541a24022a8",
         "docType": "product",
+        "productId": "75060a13-595d-41f9-a431-8541a24022a8",
         "name": "AudioCore ProMic X7",
         "description": "AudioCore ProMic X7: Studio-grade USB condenser mic with 24-bit/96kHz resolution, cardioid pattern for crisp vocals, adjustable gain, and zero-latency monitoring. Perfect for podcasts, streaming, or music production. Superior sound quality made simple.",
         "categoryName": "Peripherals, Microphones",
@@ -10946,6 +11124,7 @@
     {
         "id": "11a3b9b2-5062-40e6-99f3-abffdad16bb1",
         "docType": "product",
+        "productId": "11a3b9b2-5062-40e6-99f3-abffdad16bb1",
         "name": "EchoMaster Pro VX-500",
         "description": "EchoMaster Pro VX-500 USB Microphone delivers crystal-clear audio with a cardioid polar pattern, adjustable gain control, RGB lighting, and a sturdy tripod stand. Perfect for streaming, podcasting, and gaming. Elevate your sound with professional quality.",
         "categoryName": "Peripherals, Microphones",
@@ -11007,6 +11186,7 @@
     {
         "id": "dc0d8278-a800-4012-9b4a-d8df7ed6c5fb",
         "docType": "product",
+        "productId": "dc0d8278-a800-4012-9b4a-d8df7ed6c5fb",
         "name": "EchoWave Pro 360 MX7",
         "description": "EchoWave Pro 360 MX7 is a premium condenser microphone with 360-degree audio pickup, 24-bit/96kHz resolution, noise cancellation, and RGB lighting. Ideal for podcasts, streaming, and studio recording. Perfectly tuned for crystal-clear sound reproduction.",
         "categoryName": "Peripherals, Microphones",
