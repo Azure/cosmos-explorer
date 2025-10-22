@@ -10,6 +10,7 @@ import { useDatabases } from "Explorer/useDatabases";
 import { isFabric, isFabricNative } from "Platform/Fabric/FabricUtil";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { traceOpen } from "Shared/Telemetry/TelemetryProcessor";
+import { areAdvancedScriptsSupported } from "Utils/PlatformFeatureUtils";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
 import React from "react";
 import AddCollectionIcon from "../../images/AddCollection.svg";
@@ -130,6 +131,7 @@ export const createCollectionContextMenuButton = (
   }
 
   if (
+    areAdvancedScriptsSupported(configContext.platform) &&
     configContext.platform !== Platform.Fabric &&
     (userContext.apiType === "SQL" || userContext.apiType === "Gremlin")
   ) {
