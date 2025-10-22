@@ -286,7 +286,7 @@ describe("SettingsUtils", () => {
       expect(getTabTitle(SettingsV2TabTypes.ComputedPropertiesTab)).toBe("Computed Properties");
       expect(getTabTitle(SettingsV2TabTypes.ContainerVectorPolicyTab)).toBe("Container Policies");
       expect(getTabTitle(SettingsV2TabTypes.ThroughputBucketsTab)).toBe("Throughput Buckets");
-      expect(getTabTitle(SettingsV2TabTypes.DataMaskingTab)).toBe("Data Masking (Preview)");
+      expect(getTabTitle(SettingsV2TabTypes.DataMaskingTab)).toBe("Masking Policy (preview)");
     });
 
     it("handles partition key tab title based on fabric native", () => {

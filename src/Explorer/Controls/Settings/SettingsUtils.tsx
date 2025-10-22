@@ -178,7 +178,7 @@ export const getTabTitle = (tab: SettingsV2TabTypes): string => {
     case SettingsV2TabTypes.GlobalSecondaryIndexTab:
       return "Global Secondary Index (Preview)";
     case SettingsV2TabTypes.DataMaskingTab:
-      return "Data Masking (Preview)";
+      return "Masking Policy (preview)";
     default:
       throw new Error(`Unknown tab ${tab}`);
   }
