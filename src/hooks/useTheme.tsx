@@ -1,3 +1,5 @@
+import { sendMessage } from "Common/MessageHandler";
+import { MessageTypes } from "Contracts/MessageTypes";
 import create from "zustand";
 
 export interface ThemeStore {
@@ -19,6 +21,14 @@ export const useThemeStore = create<ThemeStore>((set) => ({
       } else {
         document.body.classList.remove("isDarkMode");
       }
+      sendMessage({
+        type: MessageTypes.UpdateTheme,
+        params: {
+          theme: {
+            mode: newThemeMode,
+          },
+        },
+      });
 
       return {
         isDarkMode: newIsDarkMode,
