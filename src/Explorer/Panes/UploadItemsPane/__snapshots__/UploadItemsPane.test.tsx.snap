@@ -3,6 +3,7 @@
 exports[`Upload Items Pane should render Default properly 1`] = `
 <RightPaneForm
   formError=""
+  isSubmitButtonDisabled={true}
   onSubmit={[Function]}
   submitButtonText="Upload"
 >
@@ -11,6 +12,7 @@ exports[`Upload Items Pane should render Default properly 1`] = `
   >
     <Upload
       accept="application/json"
+      key="1"
       label="Select JSON Files"
       multiple={true}
       onUpload={[Function]}
