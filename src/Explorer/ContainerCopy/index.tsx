@@ -1,17 +1,21 @@
-import React, { Suspense } from 'react';
+import { MonitorCopyJobsRefState } from 'Explorer/ContainerCopy/MonitorCopyJobs/MonitorCopyJobRefState';
+import React, { useEffect } from 'react';
 import CopyJobCommandBar from './CommandBar/CopyJobCommandBar';
-import { ContainerCopyProps } from './Types';
 import './containerCopyStyles.less';
-
-const MonitorCopyJobs = React.lazy(() => import('./MonitorCopyJobs/MonitorCopyJobs'));
+import MonitorCopyJobs, { MonitorCopyJobsRef } from './MonitorCopyJobs/MonitorCopyJobs';
+import { ContainerCopyProps } from './Types';
 
 const ContainerCopyPanel: React.FC<ContainerCopyProps> = ({ container }) => {
+    const monitorCopyJobsRef = React.useRef<MonitorCopyJobsRef>();
+    useEffect(() => {
+        if (monitorCopyJobsRef.current) {
+            MonitorCopyJobsRefState.getState().setRef(monitorCopyJobsRef.current);
+        }
+    }, [monitorCopyJobsRef.current]);
     return (
         <div id="containerCopyWrapper" className="flexContainer hideOverflows">
             <CopyJobCommandBar container={container} />
-            <Suspense fallback={<div>Loading...</div>}>
-                <MonitorCopyJobs />
-            </Suspense>
+            <MonitorCopyJobs ref={monitorCopyJobsRef} />
         </div>
     );
 };

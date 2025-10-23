@@ -15,6 +15,7 @@ import {
 } from "../CopyJobUtils";
 import CreateCopyJobScreensProvider from "../CreateCopyJob/Screens/CreateCopyJobScreensProvider";
 import { CopyJobStatusType } from "../Enums";
+import { MonitorCopyJobsRefState } from "../MonitorCopyJobs/MonitorCopyJobRefState";
 import { CopyJobContextState, CopyJobError, CopyJobType, DataTransferJobType } from "../Types";
 
 export const openCreateCopyJobPanel = () => {
@@ -27,7 +28,14 @@ export const openCreateCopyJobPanel = () => {
     );
 }
 
+let copyJobsAbortController: AbortController | null = null;
+
 export const getCopyJobs = async (): Promise<CopyJobType[]> => {
+    // Abort previous request if still in-flight
+    if (copyJobsAbortController) {
+        copyJobsAbortController.abort();
+    }
+    copyJobsAbortController = new AbortController();
     try {
         const path = buildDataTransferJobPath({
             subscriptionId: userContext.subscriptionId,
@@ -36,13 +44,18 @@ export const getCopyJobs = async (): Promise<CopyJobType[]> => {
         });
 
         const response: { value: DataTransferJobType[] } = await armRequest({
-            host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion: COPY_JOB_API_VERSION
+            host: configContext.ARM_ENDPOINT,
+            path,
+            method: "GET",
+            apiVersion: COPY_JOB_API_VERSION,
+            signal: copyJobsAbortController.signal
         });
 
         const jobs = response.value || [];
         if (!Array.isArray(jobs)) {
             throw new Error("Invalid migration job status response: Expected an array of jobs.");
         }
+        copyJobsAbortController = null;
 
         /* added a lower bound to "0" and upper bound to "100" */
         const calculateCompletionPercentage = (processed: number, total: number): number => {
@@ -91,7 +104,7 @@ export const getCopyJobs = async (): Promise<CopyJobType[]> => {
     }
 }
 
-export const submitCreateCopyJob = async (state: CopyJobContextState) => {
+export const submitCreateCopyJob = async (state: CopyJobContextState, onSuccess: () => void) => {
     try {
         const { source, target, migrationType, jobName } = state;
         const path = buildDataTransferJobPath({
@@ -117,10 +130,12 @@ export const submitCreateCopyJob = async (state: CopyJobContextState) => {
             }
         };
 
-        const response: { value: DataTransferJobType } = await armRequest({
+        const response: DataTransferJobType = await armRequest({
             host: configContext.ARM_ENDPOINT, path, method: "PUT", body, apiVersion: COPY_JOB_API_VERSION
         });
-        return response.value;
+        MonitorCopyJobsRefState.getState().ref?.refreshJobList();
+        onSuccess();
+        return response;
     } catch (error) {
         console.error("Error submitting create copy job:", error);
         throw error;
@@ -137,10 +152,10 @@ export const updateCopyJobStatus = async (job: CopyJobType, action: string): Pro
             action: action
         });
 
-        const response: { value: DataTransferJobType } = await armRequest({
+        const response: DataTransferJobType = await armRequest({
             host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion: COPY_JOB_API_VERSION
         });
-        return response.value;
+        return response;
     } catch (error) {
         const errorMessage = JSON.stringify((error as CopyJobError).message || error.content || error);
 

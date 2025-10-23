@@ -6,9 +6,11 @@ import { CommandButtonComponentProps } from "../../Controls/CommandButton/Comman
 import Explorer from "../../Explorer";
 import * as Actions from "../Actions/CopyJobActions";
 import ContainerCopyMessages from "../ContainerCopyMessages";
+import { MonitorCopyJobsRefState } from "../MonitorCopyJobs/MonitorCopyJobRefState";
 import { CopyJobCommandBarBtnType } from "../Types";
 
 function getCopyJobBtns(): CopyJobCommandBarBtnType[] {
+    const monitorCopyJobsRef = MonitorCopyJobsRefState(state => state.ref);
     const buttons: CopyJobCommandBarBtnType[] = [
         {
             key: "createCopyJob",
@@ -22,7 +24,7 @@ function getCopyJobBtns(): CopyJobCommandBarBtnType[] {
             iconSrc: RefreshIcon,
             label: ContainerCopyMessages.refreshButtonLabel,
             ariaLabel: ContainerCopyMessages.refreshButtonAriaLabel,
-            onClick: () => { },
+            onClick: () => monitorCopyJobsRef?.refreshJobList(),
         },
     ];
     if (configContext.platform === Platform.Portal) {
