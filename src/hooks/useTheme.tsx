@@ -40,8 +40,10 @@ export const useThemeStore = create<ThemeStore>((set) => ({
 // Portal theme communication
 if (typeof window !== "undefined") {
   window.addEventListener("message", (event) => {
-    // Only process portal messages
+    // Only process messages FROM the parent (Portal), not messages we send TO the parent
+    // Messages we send have a data property, messages from Portal have data.data structure
     if (
+      event.source !== window &&
       event.data &&
       typeof event.data === "object" &&
       event.data.signature === "pcIframe" &&

@@ -11,7 +11,7 @@ import { SQLQuickstartTutorial } from "Explorer/Quickstart/Tutorials/SQLQuicksta
 import "allotment/dist/style.css";
 import "bootstrap/dist/css/bootstrap.css";
 import { useCarousel } from "hooks/useCarousel";
-import React, { useEffect } from "react";
+import React from "react";
 import ReactDOM from "react-dom";
 import "../externals/jquery-ui.min.css";
 import "../externals/jquery-ui.min.js";
@@ -87,11 +87,15 @@ const App = (): JSX.Element => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const theme = useTheme();
 
-  if (config?.platform === Platform.Fabric) {
-    loadTheme(appThemeFabric);
-    import("../less/documentDBFabric.less");
-  }
-  StyleConstants.updateStyles();
+  // Load Fabric theme and styles only once when platform is Fabric
+  React.useEffect(() => {
+    if (config?.platform === Platform.Fabric) {
+      loadTheme(appThemeFabric);
+      import("../less/documentDBFabric.less");
+    }
+    StyleConstants.updateStyles();
+  }, [config?.platform]);
+
   const explorer = useKnockoutExplorer(config?.platform);
 
   if (!explorer) {
@@ -163,18 +167,6 @@ const Root: React.FC = () => {
       setIsDarkMode(state.isDarkMode);
     });
   }, []);
-
-  useEffect(() => {
-    if (isDarkMode) {
-      document.body.classList.add("isDarkMode");
-      document.body.style.backgroundColor = "var(--colorNeutralBackground1)";
-      document.body.style.color = "var(--colorNeutralForeground1)";
-    } else {
-      document.body.classList.remove("isDarkMode");
-      document.body.style.backgroundColor = "";
-      document.body.style.color = "";
-    }
-  }, [isDarkMode]);
 
   return (
     <ErrorBoundary>
