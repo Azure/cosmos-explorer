@@ -34,7 +34,7 @@ function navigationReducer(state: NavigationState, action: Action): NavigationSt
 }
 
 export function useCopyJobNavigation() {
-    const { copyJobState } = useCopyJobContext();
+    const { copyJobState, resetCopyJobState } = useCopyJobContext();
     const screens = useCreateCopyJobScreensList();
     const { validationCache: cache } = useCopyJobPrerequisitesCache();
     const [state, dispatch] = useReducer(navigationReducer, { screenHistory: [SCREEN_KEYS.SelectAccount] });
@@ -58,6 +58,12 @@ export function useCopyJobNavigation() {
 
     const isPreviousDisabled = state.screenHistory.length <= 1;
 
+    const handleCancel = useCallback(() => {
+        dispatch({ type: "RESET" });
+        resetCopyJobState();
+        useSidePanel.getState().closeSidePanel();
+    }, []);
+
     const handlePrimary = useCallback(() => {
         const transitions = {
             [SCREEN_KEYS.SelectAccount]: SCREEN_KEYS.AssignPermissions,
@@ -69,17 +75,12 @@ export function useCopyJobNavigation() {
         if (nextScreen) {
             dispatch({ type: "NEXT", nextScreen });
         } else if (currentScreenKey === SCREEN_KEYS.PreviewCopyJob) {
-            submitCreateCopyJob(copyJobState);
+            submitCreateCopyJob(copyJobState, handleCancel);
         }
     }, [currentScreenKey, copyJobState]);
 
     const handlePrevious = useCallback(() => {
         dispatch({ type: "PREVIOUS" });
-    }, []);
-
-    const handleCancel = useCallback(() => {
-        dispatch({ type: "RESET" });
-        useSidePanel.getState().closeSidePanel();
     }, []);
 
     return {

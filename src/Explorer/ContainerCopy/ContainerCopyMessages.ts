@@ -110,7 +110,8 @@ export default {
             Completed: "Completed",
             Failed: "Failed",
             Faulted: "Failed",
-            Skipped: "Canceled",
+            Skipped: "Cancelled",
+            Cancelled: "Cancelled",
         }
     }
 }
