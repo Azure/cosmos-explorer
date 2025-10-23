@@ -53,7 +53,11 @@ function useCreateCopyJobScreensList() {
                 component: <PreviewCopyJob />,
                 validations: [
                     {
-                        validate: (state: CopyJobContextState) => !!state?.jobName,
+                        validate: (state: CopyJobContextState) => !!(
+                            typeof state?.jobName === "string"
+                            && state?.jobName
+                            && /^[a-zA-Z0-9-.]+$/.test(state?.jobName)
+                        ),
                         message: "Please enter a job name to proceed",
                     },
                 ],
