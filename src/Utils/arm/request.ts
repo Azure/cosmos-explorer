@@ -48,6 +48,7 @@ interface Options {
   queryParams?: ARMQueryParams;
   contentType?: string;
   customHeaders?: Record<string, string>;
+  signal?: AbortSignal;
 }
 
 export async function armRequestWithoutPolling<T>({
@@ -59,6 +60,7 @@ export async function armRequestWithoutPolling<T>({
   queryParams,
   contentType,
   customHeaders,
+  signal,
 }: Options): Promise<{ result: T; operationStatusUrl: string }> {
   const url = new URL(path, host);
   url.searchParams.append("api-version", configContext.armAPIVersion || apiVersion);
@@ -81,6 +83,7 @@ export async function armRequestWithoutPolling<T>({
     method,
     headers,
     body: requestBody ? JSON.stringify(requestBody) : undefined,
+    signal
   });
 
   if (!response.ok) {
@@ -116,6 +119,7 @@ export async function armRequest<T>({
   queryParams,
   contentType,
   customHeaders,
+  signal
 }: Options): Promise<T> {
   const armRequestResult = await armRequestWithoutPolling<T>({
     host,
@@ -126,6 +130,7 @@ export async function armRequest<T>({
     queryParams,
     contentType,
     customHeaders,
+    signal
   });
   const operationStatusUrl = armRequestResult.operationStatusUrl;
   if (operationStatusUrl) {
