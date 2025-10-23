@@ -2,7 +2,7 @@ import { DatabaseAccount, Subscription } from "Contracts/DataModels";
 import React from "react";
 import { ApiType } from "UserContext";
 import Explorer from "../../Explorer";
-import { CopyJobMigrationType } from "../Enums";
+import { CopyJobMigrationType, CopyJobStatusType } from "../Enums";
 
 export interface ContainerCopyProps {
 	container: Explorer;
@@ -58,7 +58,7 @@ export interface DatabaseContainerSectionProps {
 export interface CopyJobContextState {
 	jobName: string;
 	migrationType: CopyJobMigrationType;
-	sourceReadAccessFromTarget: boolean;
+	sourceReadAccessFromTarget?: boolean;
 	// source details
 	source: {
 		subscription: Subscription;
@@ -88,3 +88,53 @@ export interface CopyJobContextProviderType {
 	setCopyJobState: React.Dispatch<React.SetStateAction<CopyJobContextState>>;
 	resetCopyJobState: () => void;
 }
+
+export type CopyJobType = {
+	ID: string;
+	Mode: string;
+	Name: string;
+	Status: CopyJobStatusType;
+	CompletionPercentage: number;
+	Duration: string;
+	LastUpdatedTime: string;
+	timestamp: number;
+	Error?: CopyJobErrorType
+}
+
+export interface CopyJobErrorType {
+	message: string;
+	code: string;
+}
+
+export interface CopyJobError {
+	message: string;
+	navigateToStep?: number;
+}
+
+export type DataTransferJobType = {
+	id: string;
+	type: string;
+	properties: {
+		jobName: string;
+		status: string;
+		lastUpdatedUtcTime: string;
+		processedCount: number;
+		totalCount: number;
+		mode: string;
+		duration: string;
+		source: {
+			databaseName: string;
+			collectionName: string;
+			component: string;
+		};
+		destination: {
+			databaseName: string;
+			collectionName: string;
+			component: string;
+		};
+		error: {
+			message: string;
+			code: string;
+		};
+	};
+};

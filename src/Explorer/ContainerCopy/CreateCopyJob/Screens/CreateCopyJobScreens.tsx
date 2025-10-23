@@ -1,11 +1,9 @@
 import { Stack } from "@fluentui/react";
 import React from "react";
-import { useCopyJobContext } from "../../Context/CopyJobContext";
 import { useCopyJobNavigation } from "../Utils/useCopyJobNavigation";
 import NavigationControls from "./Components/NavigationControls";
 
 const CreateCopyJobScreens: React.FC = () => {
-    const { copyJobState } = useCopyJobContext();
     const {
         currentScreen,
         isPrimaryDisabled,
@@ -14,7 +12,7 @@ const CreateCopyJobScreens: React.FC = () => {
         handlePrevious,
         handleCancel,
         primaryBtnText
-    } = useCopyJobNavigation(copyJobState);
+    } = useCopyJobNavigation();
 
     return (
         <Stack verticalAlign="space-between" className="createCopyJobScreensContainer">

@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useReducer } from "react";
 import { useSidePanel } from "../../../../hooks/useSidePanel";
 import { submitCreateCopyJob } from "../../Actions/CopyJobActions";
-import { CopyJobContextState } from "../../Types";
+import { useCopyJobContext } from "../../Context/CopyJobContext";
 import { useCopyJobPrerequisitesCache } from "./useCopyJobPrerequisitesCache";
 import { SCREEN_KEYS, useCreateCopyJobScreensList } from "./useCreateCopyJobScreensList";
 
@@ -33,7 +33,8 @@ function navigationReducer(state: NavigationState, action: Action): NavigationSt
     }
 }
 
-export function useCopyJobNavigation(copyJobState: CopyJobContextState) {
+export function useCopyJobNavigation() {
+    const { copyJobState } = useCopyJobContext();
     const screens = useCreateCopyJobScreensList();
     const { validationCache: cache } = useCopyJobPrerequisitesCache();
     const [state, dispatch] = useReducer(navigationReducer, { screenHistory: [SCREEN_KEYS.SelectAccount] });
