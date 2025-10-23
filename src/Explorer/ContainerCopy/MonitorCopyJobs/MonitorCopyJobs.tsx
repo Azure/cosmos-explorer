@@ -1,6 +1,6 @@
 import { MessageBar, MessageBarType, Stack } from '@fluentui/react';
 import ShimmerTree, { IndentLevel } from 'Common/ShimmerTree';
-import React, { useEffect } from 'react';
+import React, { forwardRef, useEffect, useImperativeHandle } from 'react';
 import { getCopyJobs, updateCopyJobStatus } from '../Actions/CopyJobActions';
 import { convertToCamelCase } from '../CopyJobUtils';
 import { CopyJobStatusType } from '../Enums';
@@ -12,7 +12,11 @@ const FETCH_INTERVAL_MS = 30 * 1000; // Interval time in milliseconds (30 second
 
 interface MonitorCopyJobsProps { }
 
-const MonitorCopyJobs: React.FC<MonitorCopyJobsProps> = () => {
+export interface MonitorCopyJobsRef {
+    refreshJobList: () => void;
+}
+
+const MonitorCopyJobs = forwardRef<MonitorCopyJobsRef, MonitorCopyJobsProps>((_props, ref) => {
     const [loading, setLoading] = React.useState(true); // Start with loading as true
     const [error, setError] = React.useState<string | null>(null);
     const [jobs, setJobs] = React.useState<CopyJobType[]>([]);
@@ -48,11 +52,20 @@ const MonitorCopyJobs: React.FC<MonitorCopyJobsProps> = () => {
 
     useEffect(() => {
         fetchJobs();
-
         const intervalId = setInterval(fetchJobs, FETCH_INTERVAL_MS);
 
         return () => clearInterval(intervalId);
     }, [fetchJobs]);
+
+    useImperativeHandle(ref, () => ({
+        refreshJobList: () => {
+            if (isUpdatingRef.current) {
+                setError("Please wait for the current update to complete before refreshing.");
+                return;
+            }
+            fetchJobs();
+        }
+    }));
 
     const handleActionClick = React.useCallback(async (job: CopyJobType, action: string) => {
         try {
@@ -64,7 +77,7 @@ const MonitorCopyJobs: React.FC<MonitorCopyJobsProps> = () => {
                         prevJob.Name === updatedCopyJob.properties.jobName
                             ? {
                                 ...prevJob,
-                                MigrationStatus: convertToCamelCase(updatedCopyJob.properties.status) as CopyJobStatusType
+                                Status: convertToCamelCase(updatedCopyJob.properties.status) as CopyJobStatusType
                             } : prevJob
                     )
                 );
@@ -97,6 +110,6 @@ const MonitorCopyJobs: React.FC<MonitorCopyJobsProps> = () => {
             {memoizedJobsList}
         </Stack>
     );
-}
+});
 
 export default MonitorCopyJobs;
