@@ -82,5 +82,35 @@ export default {
         title: "Online copy enabled",
         description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
         buttonText: "Enable Online Copy",
+    },
+    MonitorJobs: {
+        Columns: {
+            lastUpdatedTime: "Date & time",
+            name: "Job name",
+            status: "Status",
+            completionPercentage: "Completion %",
+            duration: "Duration",
+            error: "Error message",
+            mode: "Mode",
+            actions: "Actions",
+        },
+        Actions: {
+            pause: "Pause",
+            resume: "Resume",
+            stop: "Stop",
+            cutover: "Cutover",
+            viewDetails: "View Details",
+        },
+        Status: {
+            Pending: "Pending",
+            InProgress: "In Progress",
+            Running: "In Progress",
+            Partitioning: "In Progress",
+            Paused: "Paused",
+            Completed: "Completed",
+            Failed: "Failed",
+            Faulted: "Failed",
+            Skipped: "Canceled",
+        }
     }
 }
