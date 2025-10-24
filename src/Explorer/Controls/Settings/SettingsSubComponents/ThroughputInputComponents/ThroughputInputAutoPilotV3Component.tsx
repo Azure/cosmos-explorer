@@ -101,6 +101,12 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     { key: "false", text: "Manual" },
   ];
 
+  // Style constants for theme-aware colors and layout
+  private static readonly TEXT_COLOR_PRIMARY = "var(--colorNeutralForeground1)";
+  private static readonly TEXT_COLOR_SECONDARY = "var(--colorNeutralForeground2)";
+  private static readonly TEXT_WIDTH_50 = "50%";
+  private static readonly TEXT_WIDTH_33 = "33%";
+
   componentDidMount(): void {
     this.onComponentUpdate();
   }
@@ -236,12 +242,24 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
       );
       return (
         <div>
-          <Text style={{ fontWeight: 600, color: "var(--colorNeutralForeground1)" }}>Updated cost per month</Text>
+          <Text style={{ fontWeight: 600, color: ThroughputInputAutoPilotV3Component.TEXT_COLOR_PRIMARY }}>
+            Updated cost per month
+          </Text>
           <Stack horizontal style={{ marginTop: 5, marginBottom: 10 }}>
-            <Text style={{ width: "50%", color: "var(--colorNeutralForeground1)" }}>
+            <Text
+              style={{
+                width: ThroughputInputAutoPilotV3Component.TEXT_WIDTH_50,
+                color: ThroughputInputAutoPilotV3Component.TEXT_COLOR_PRIMARY,
+              }}
+            >
               {newPrices.currencySign} {calculateEstimateNumber(newPrices.monthlyPrice / 10)} min
             </Text>
-            <Text style={{ width: "50%", color: "var(--colorNeutralForeground1)" }}>
+            <Text
+              style={{
+                width: ThroughputInputAutoPilotV3Component.TEXT_WIDTH_50,
+                color: ThroughputInputAutoPilotV3Component.TEXT_COLOR_PRIMARY,
+              }}
+            >
               {newPrices.currencySign} {calculateEstimateNumber(newPrices.monthlyPrice)} max
             </Text>
           </Stack>
@@ -254,12 +272,24 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
       return (
         <Stack {...checkBoxAndInputStackProps} style={{ marginTop: 15 }}>
           {newThroughput && newThroughputCostElement()}
-          <Text style={{ fontWeight: 600, color: "var(--colorNeutralForeground1)" }}>Current cost per month</Text>
-          <Stack horizontal style={{ marginTop: 5, color: "var(--colorNeutralForeground1)" }}>
-            <Text style={{ width: "50%", color: "var(--colorNeutralForeground1)" }}>
+          <Text style={{ fontWeight: 600, color: ThroughputInputAutoPilotV3Component.TEXT_COLOR_PRIMARY }}>
+            Current cost per month
+          </Text>
+          <Stack horizontal style={{ marginTop: 5, color: ThroughputInputAutoPilotV3Component.TEXT_COLOR_PRIMARY }}>
+            <Text
+              style={{
+                width: ThroughputInputAutoPilotV3Component.TEXT_WIDTH_50,
+                color: ThroughputInputAutoPilotV3Component.TEXT_COLOR_PRIMARY,
+              }}
+            >
               {prices.currencySign} {calculateEstimateNumber(prices.monthlyPrice / 10)} min
             </Text>
-            <Text style={{ width: "50%", color: "var(--colorNeutralForeground1)" }}>
+            <Text
+              style={{
+                width: ThroughputInputAutoPilotV3Component.TEXT_WIDTH_50,
+                color: ThroughputInputAutoPilotV3Component.TEXT_COLOR_PRIMARY,
+              }}
+            >
               {prices.currencySign} {calculateEstimateNumber(prices.monthlyPrice)} max
             </Text>
           </Stack>
@@ -270,7 +300,10 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     return getEstimatedSpendingElement(costElement(), newThroughput ?? throughput, numberOfRegions, prices, true);
   };
   settingsAndScaleStyle = {
-    root: { width: "33%", color: "var(--colorNeutralForeground1)" },
+    root: {
+      width: ThroughputInputAutoPilotV3Component.TEXT_WIDTH_33,
+      color: ThroughputInputAutoPilotV3Component.TEXT_COLOR_PRIMARY,
+    },
   };
   private getEstimatedManualSpendElement = (
     throughput: number,
@@ -291,7 +324,9 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
       );
       return (
         <div>
-          <Text style={{ fontWeight: 600, color: "var(--colorNeutralForeground1)" }}>Updated cost per month</Text>
+          <Text style={{ fontWeight: 600, color: ThroughputInputAutoPilotV3Component.TEXT_COLOR_PRIMARY }}>
+            Updated cost per month
+          </Text>
           <Stack horizontal style={{ marginTop: 5, marginBottom: 10 }}>
             <Text style={this.settingsAndScaleStyle.root}>
               {newPrices.currencySign} {calculateEstimateNumber(newPrices.hourlyPrice)}/hr
@@ -312,7 +347,9 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
       return (
         <Stack {...checkBoxAndInputStackProps} style={{ marginTop: 15 }}>
           {newThroughput && newThroughputCostElement()}
-          <Text style={{ fontWeight: 600, color: "var(--colorNeutralForeground1)" }}>Current cost per month</Text>
+          <Text style={{ fontWeight: 600, color: ThroughputInputAutoPilotV3Component.TEXT_COLOR_PRIMARY }}>
+            Current cost per month
+          </Text>
           <Stack horizontal style={{ marginTop: 5 }}>
             <Text style={this.settingsAndScaleStyle.root}>
               {prices.currencySign} {calculateEstimateNumber(prices.hourlyPrice)}/hr
