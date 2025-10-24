@@ -93,6 +93,48 @@ exports[`SettingsComponent renders 1`] = `
                 "backgroundColor": "var(--colorNeutralBackground1)",
                 "color": "var(--colorNeutralForeground1)",
               },
+              "databaseId": "test",
+              "defaultTtl": [Function],
+              "fullTextPolicy": [Function],
+              "geospatialConfig": [Function],
+              "getDatabase": [Function],
+              "id": [Function],
+              "indexingPolicy": [Function],
+              "materializedViewDefinition": [Function],
+              "materializedViews": [Function],
+              "offer": [Function],
+              "partitionKey": {
+                "kind": "hash",
+                "paths": [],
+                "version": 2,
+              },
+              "partitionKeyProperties": [
+                "partitionKey",
+              ],
+              "rawDataModel": {
+                "indexingPolicy": {
+                  "automatic": true,
+                  "compositeIndexes": [],
+                  "excludedPaths": [],
+                  "fullTextIndexes": [],
+                  "includedPaths": [],
+                  "indexingMode": "consistent",
+                  "spatialIndexes": [],
+                  "vectorIndexes": [],
+                },
+                "uniqueKeyPolicy": {
+                  "uniqueKeys": [
+                    {
+                      "paths": [
+                        "/id",
+                      ],
+                    },
+                  ],
+                },
+              },
+              "readSettings": [Function],
+              "usageSizeInKB": [Function],
+              "vectorEmbeddingPolicy": [Function],
             }
           }
         >
@@ -195,6 +237,48 @@ exports[`SettingsComponent renders 1`] = `
                 "backgroundColor": "var(--colorNeutralBackground1)",
                 "color": "var(--colorNeutralForeground1)",
               },
+              "databaseId": "test",
+              "defaultTtl": [Function],
+              "fullTextPolicy": [Function],
+              "geospatialConfig": [Function],
+              "getDatabase": [Function],
+              "id": [Function],
+              "indexingPolicy": [Function],
+              "materializedViewDefinition": [Function],
+              "materializedViews": [Function],
+              "offer": [Function],
+              "partitionKey": {
+                "kind": "hash",
+                "paths": [],
+                "version": 2,
+              },
+              "partitionKeyProperties": [
+                "partitionKey",
+              ],
+              "rawDataModel": {
+                "indexingPolicy": {
+                  "automatic": true,
+                  "compositeIndexes": [],
+                  "excludedPaths": [],
+                  "fullTextIndexes": [],
+                  "includedPaths": [],
+                  "indexingMode": "consistent",
+                  "spatialIndexes": [],
+                  "vectorIndexes": [],
+                },
+                "uniqueKeyPolicy": {
+                  "uniqueKeys": [
+                    {
+                      "paths": [
+                        "/id",
+                      ],
+                    },
+                  ],
+                },
+              },
+              "readSettings": [Function],
+              "usageSizeInKB": [Function],
+              "vectorEmbeddingPolicy": [Function],
             }
           }
         >
@@ -341,21 +425,26 @@ exports[`SettingsComponent renders 1`] = `
         <Stack
           styles={
             {
-              "root": {
-                "backgroundColor": "var(--colorNeutralBackground1)",
-                "color": "var(--colorNeutralForeground1)",
-              },
+              "automatic": true,
+              "compositeIndexes": [],
+              "excludedPaths": [],
+              "fullTextIndexes": [],
+              "includedPaths": [],
+              "indexingMode": "consistent",
+              "spatialIndexes": [],
+              "vectorIndexes": [],
             }
           }
-        >
-          <IndexingPolicyComponent
-            indexingPolicyContent={
-              {
-                "automatic": true,
-                "excludedPaths": [],
-                "includedPaths": [],
-                "indexingMode": "consistent",
-              }
+          indexingPolicyContentBaseline={
+            {
+              "automatic": true,
+              "compositeIndexes": [],
+              "excludedPaths": [],
+              "fullTextIndexes": [],
+              "includedPaths": [],
+              "indexingMode": "consistent",
+              "spatialIndexes": [],
+              "vectorIndexes": [],
             }
             indexingPolicyContentBaseline={
               {
@@ -488,7 +577,49 @@ exports[`SettingsComponent renders 1`] = `
                   "copyNotebook": [Function],
                   "parameters": [Function],
                 },
-              }
+              },
+              "databaseId": "test",
+              "defaultTtl": [Function],
+              "fullTextPolicy": [Function],
+              "geospatialConfig": [Function],
+              "getDatabase": [Function],
+              "id": [Function],
+              "indexingPolicy": [Function],
+              "materializedViewDefinition": [Function],
+              "materializedViews": [Function],
+              "offer": [Function],
+              "partitionKey": {
+                "kind": "hash",
+                "paths": [],
+                "version": 2,
+              },
+              "partitionKeyProperties": [
+                "partitionKey",
+              ],
+              "rawDataModel": {
+                "indexingPolicy": {
+                  "automatic": true,
+                  "compositeIndexes": [],
+                  "excludedPaths": [],
+                  "fullTextIndexes": [],
+                  "includedPaths": [],
+                  "indexingMode": "consistent",
+                  "spatialIndexes": [],
+                  "vectorIndexes": [],
+                },
+                "uniqueKeyPolicy": {
+                  "uniqueKeys": [
+                    {
+                      "paths": [
+                        "/id",
+                      ],
+                    },
+                  ],
+                },
+              },
+              "readSettings": [Function],
+              "usageSizeInKB": [Function],
+              "vectorEmbeddingPolicy": [Function],
             }
             isReadOnly={false}
           />
@@ -654,7 +785,49 @@ exports[`SettingsComponent renders 1`] = `
                   "copyNotebook": [Function],
                   "parameters": [Function],
                 },
-              }
+              },
+              "databaseId": "test",
+              "defaultTtl": [Function],
+              "fullTextPolicy": [Function],
+              "geospatialConfig": [Function],
+              "getDatabase": [Function],
+              "id": [Function],
+              "indexingPolicy": [Function],
+              "materializedViewDefinition": [Function],
+              "materializedViews": [Function],
+              "offer": [Function],
+              "partitionKey": {
+                "kind": "hash",
+                "paths": [],
+                "version": 2,
+              },
+              "partitionKeyProperties": [
+                "partitionKey",
+              ],
+              "rawDataModel": {
+                "indexingPolicy": {
+                  "automatic": true,
+                  "compositeIndexes": [],
+                  "excludedPaths": [],
+                  "fullTextIndexes": [],
+                  "includedPaths": [],
+                  "indexingMode": "consistent",
+                  "spatialIndexes": [],
+                  "vectorIndexes": [],
+                },
+                "uniqueKeyPolicy": {
+                  "uniqueKeys": [
+                    {
+                      "paths": [
+                        "/id",
+                      ],
+                    },
+                  ],
+                },
+              },
+              "readSettings": [Function],
+              "usageSizeInKB": [Function],
+              "vectorEmbeddingPolicy": [Function],
             }
           />
         </Stack>
