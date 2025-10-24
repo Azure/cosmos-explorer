@@ -40,10 +40,30 @@ const labelStyles = {
 const textFieldStyles: IStyleFunctionOrObject<ITextFieldStyleProps, ITextFieldStyles> = {
   fieldGroup: {
     height: 27,
+    backgroundColor: "var(--colorNeutralBackground2)",
+    borderColor: "var(--colorNeutralStroke1)",
   },
   field: {
     fontSize: 12,
     padding: "0 8px",
+    color: "var(--colorNeutralForeground1)",
+    backgroundColor: "var(--colorNeutralBackground2)",
+  },
+  root: {
+    selectors: {
+      input: {
+        backgroundColor: "var(--colorNeutralBackground2)",
+        color: "var(--colorNeutralForeground1)",
+      },
+      "input:hover": {
+        backgroundColor: "var(--colorNeutralBackground2)",
+        borderColor: "var(--colorNeutralStroke1)",
+      },
+      "input:focus": {
+        backgroundColor: "var(--colorNeutralBackground2)",
+        borderColor: "var(--colorBrandBackground)",
+      },
+    },
   },
 };
 

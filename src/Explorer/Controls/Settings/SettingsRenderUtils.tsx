@@ -459,9 +459,13 @@ export const changeFeedPolicyToolTip: JSX.Element = (
 );
 
 export const mongoIndexingPolicyDisclaimer: JSX.Element = (
-  <Text>
+  <Text style={{ color: "var(--colorNeutralForeground1)" }}>
     For queries that filter on multiple properties, create multiple single field indexes instead of a compound index.
-    <Link href="https://docs.microsoft.com/azure/cosmos-db/mongodb-indexing#index-types" target="_blank">
+    <Link
+      href="https://docs.microsoft.com/azure/cosmos-db/mongodb-indexing#index-types"
+      target="_blank"
+      style={{ color: "var(--colorBrandForeground1)" }}
+    >
       {` Compound indexes `}
     </Link>
     are only used for sorting query results. If you need to add a compound index, you can create one using the Mongo
@@ -470,7 +474,7 @@ export const mongoIndexingPolicyDisclaimer: JSX.Element = (
 );
 
 export const mongoCompoundIndexNotSupportedMessage: JSX.Element = (
-  <Text>
+  <Text style={{ color: "var(--colorNeutralForeground1)" }}>
     Collections with compound indexes are not yet supported in the indexing editor. To modify indexing policy for this
     collection, use the Mongo Shell.
   </Text>
