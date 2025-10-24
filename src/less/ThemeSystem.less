@@ -78,4 +78,57 @@ body.isDarkMode {
       }
     }
   }
+
+  // Checkbox styling for better visibility in dark theme
+  .ms-Checkbox {
+    .ms-Checkbox-checkbox {
+      border-color: var(--colorNeutralStroke1);
+      background-color: var(--colorNeutralBackground2);
+    }
+
+    &:hover .ms-Checkbox-checkbox {
+      border-color: var(--colorNeutralForeground2);
+    }
+
+    .ms-Checkbox-label {
+      color: var(--colorNeutralForeground1);
+    }
+
+    .ms-Checkbox-text {
+      color: var(--colorNeutralForeground1);
+    }
+
+    &.is-checked {
+      .ms-Checkbox-checkbox {
+        background-color: var(--colorBrandBackground);
+        border-color: var(--colorBrandBackground);
+      }
+
+      &:hover .ms-Checkbox-checkbox {
+        background-color: var(--colorBrandBackgroundHover);
+        border-color: var(--colorBrandBackgroundHover);
+      }
+    }
+  }
+}
+
+// Additional dark mode specific adjustments
+body.isDarkMode {
+  .ms-Checkbox {
+    .ms-Checkbox-checkbox {
+      border-width: 1px;
+      border-color: var(--colorNeutralForeground3);
+      background-color: var(--colorNeutralBackground2);
+    }
+
+    &:hover .ms-Checkbox-checkbox {
+      border-color: var(--colorNeutralForeground2);
+      background-color: var(--colorNeutralBackground3);
+    }
+
+    &.is-checked .ms-Checkbox-checkbox {
+      background-color: var(--colorBrandBackground);
+      border-color: var(--colorBrandBackground);
+    }
+  }
 }

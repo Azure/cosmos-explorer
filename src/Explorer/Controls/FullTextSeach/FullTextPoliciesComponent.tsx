@@ -52,13 +52,53 @@ const dropdownStyles = {
     height: 27,
     lineHeight: "24px",
     fontSize: 12,
+    backgroundColor: "var(--colorNeutralBackground2)",
+    color: "var(--colorNeutralForeground1)",
+    borderColor: "var(--colorNeutralStroke1)",
   },
   dropdown: {
     height: 27,
     lineHeight: "24px",
+    backgroundColor: "var(--colorNeutralBackground2)",
+    borderColor: "var(--colorNeutralStroke1)",
+  },
+  caretDown: {
+    color: "var(--colorNeutralForeground1)",
+  },
+  callout: {
+    backgroundColor: "var(--colorNeutralBackground2)",
+    border: "1px solid var(--colorNeutralStroke1)",
+  },
+  dropdownItems: {
+    backgroundColor: "var(--colorNeutralBackground2)",
   },
   dropdownItem: {
     fontSize: 12,
+    backgroundColor: "transparent",
+    color: "var(--colorNeutralForeground1)",
+    selectors: {
+      "&:hover": {
+        backgroundColor: "rgba(255, 255, 255, 0.1)",
+        color: "var(--colorNeutralForeground1)",
+      },
+      "&:focus": {
+        backgroundColor: "rgba(255, 255, 255, 0.1)",
+        color: "var(--colorNeutralForeground1)",
+      },
+    },
+  },
+  dropdownItemSelected: {
+    backgroundColor: "rgba(255, 255, 255, 0.08)",
+    color: "var(--colorNeutralForeground1)",
+    selectors: {
+      "&:hover": {
+        backgroundColor: "rgba(255, 255, 255, 0.1)",
+        color: "var(--colorNeutralForeground1)",
+      },
+    },
+  },
+  dropdownOptionText: {
+    color: "var(--colorNeutralForeground1)",
   },
 };
 

@@ -1749,7 +1749,6 @@ input::-webkit-calendar-picker-indicator {
 .contextual-pane .panelMainContent {
   padding-left: 34px;
   padding-right: 34px;
-  // color: @BaseDark;
   margin: (2 * @MediumSpace) 0px;
 }
 
@@ -1772,9 +1771,9 @@ input::-webkit-calendar-picker-indicator {
 
 .paddingspan4 {
   padding-top: 20px;
+  padding-left: 20px;
   color: white;
-  padding-left: 25px;
-  padding-right: 25px;
+  font-size: 14px;
 }
 
 .closebtnn {
@@ -1923,7 +1922,6 @@ input::-webkit-calendar-picker-indicator::after {
     align-items: flex-end;
     height: 100%;
     margin-bottom: -0.5px;
-    // border-bottom: 1px solid var(--colorNeutralStroke1);
 
     li {
       margin-bottom: 0px;
@@ -1949,20 +1947,9 @@ input::-webkit-calendar-picker-indicator::after {
 .nav.nav-tabs.qslevel > li > a:hover {
   border: none;
   border-radius: 0;
-  background-color: var(--colorNeutralBackground1Selected) !important;
+  background-color: var(--colorNeutralBackground1Selected);
   border-color: transparent;
   color: var(--colorNeutralForeground1);
-}
-
-.nav-tabs > li > .tabNavContentContainer > .tab_Content:hover {
-  background-color: var(--colorNeutralBackground1Hover);
-  // border-bottom: 2px solid var(--colorNeutralStroke1);
-}
-
-.nav-tabs > li.active > .tabNavContentContainer > .tab_Content,
-.nav-tabs > li.active > .tabNavContentContainer > .tab_Content:hover {
-  background-color: var(--colorNeutralBackground1Selected);
-  // border-bottom: 2px solid var(--colorCompoundBrandBackground);
 }
 
 .numbersize {
@@ -2396,7 +2383,7 @@ a:link {
   height: 100%;
   display: flex;
   flex-direction: column;
-  min-width: 0;
+  min-width: 0; // This prevents it to grow past the parent's width if its content is too wide
   background-color: var(--colorNeutralBackground1);
   color: var(--colorNeutralForeground1);
 }
@@ -2683,7 +2670,6 @@ a:link {
   cursor: default;
   background-color: var(--colorNeutralBackground1Selected);
   border-color: var(--colorNeutralStroke1);
-  // border-bottom-color: var(--colorCompoundBrandBackground);
   border-style: solid;
   border-width: 1px;
   height: @ActiveTabHeight;
@@ -2691,7 +2677,6 @@ a:link {
 }
 
 .nav-tabs > li.active > .tabNavContentContainer > .tab_Content > .contentWrapper > .tabNavText {
-  font-weight: bolder;
   border-bottom: 2px solid var(--colorCompoundBrandBackground);
 }
 
@@ -2732,6 +2717,59 @@ a:link {
       .flex-display();
       width: @ContentWrapper;
 
+      .statusIconContainer {
+        width: @StatusIconContainerSize;
+        height: @StatusIconContainerSize;
+        margin-left: @SmallSpace;
+        display: inline-flex;
+
+        .errorIconContainer {
+          width: @ErrorIconContainer;
+          height: @ErrorIconContainer;
+          margin-top: 1px;
+
+          .errorIcon {
+            width: @ErrorIconWidth;
+            height: @LoadingErrorIconSize;
+            background-image: url(../images/error_no_outline.svg);
+            background-repeat: no-repeat;
+            background-position: center;
+            display: block;
+            margin: 1px 0px 0px 6px;
+          }
+        }
+
+        .errorIconContainer.actionsEnabled {
+          &:hover {
+            .hover();
+          }
+
+          &:focus {
+            .focus();
+          }
+
+          &:active {
+            .active();
+          }
+        }
+
+        .errorIconContainer[tabindex]:active {
+          outline: none;
+        }
+
+        .loadingIcon {
+          width: @LoadingErrorIconSize;
+          height: @LoadingErrorIconSize;
+          margin-top: 1px;
+        }
+
+        .warningIconContainer {
+          width: @ErrorIconContainer;
+          height: @ErrorIconContainer;
+          margin-top: 1px;
+        }
+      }
+
       .tabNavText {
         margin-left: @SmallSpace;
         margin-right: 2px;
@@ -2740,12 +2778,14 @@ a:link {
         overflow: hidden;
         white-space: nowrap;
         flex-grow: 1;
+        font-size: 12px;
       }
     }
 
     .tabIconSection {
       width: 29px;
       position: relative;
+      padding-top: 2px;
 
       .cancelButton {
         padding: 0px @SmallSpace 0px @SmallSpace;

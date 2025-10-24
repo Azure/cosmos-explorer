@@ -1,5 +1,5 @@
 import { TriggerDefinition } from "@azure/cosmos";
-import { getTheme, IDropdownOption, IDropdownStyles, Label, TextField } from "@fluentui/react";
+import { IDropdownOption, IDropdownStyles, Label, TextField } from "@fluentui/react";
 import { Dropdown } from "@fluentui/react/lib/Dropdown";
 import { KeyboardAction } from "KeyboardShortcuts";
 import { ValidCosmosDbIdDescription, ValidCosmosDbIdInputPattern } from "Utils/ValidationUtils";
@@ -22,40 +22,91 @@ const triggerTypeOptions: IDropdownOption[] = [
   { key: "Pre", text: "Pre" },
   { key: "Post", text: "Post" },
 ];
-const theme = getTheme();
+
 const dropdownStyles: Partial<IDropdownStyles> = {
+  root: {
+    width: "40%",
+    marginTop: "10px",
+  },
   label: {
     color: "var(--colorNeutralForeground1)",
   },
   dropdown: {
-    width: "100%",
+    backgroundColor: "var(--colorNeutralBackground2)",
+    borderColor: "var(--colorNeutralStroke1)",
   },
   title: {
-    backgroundColor: "var(--colorNeutralBackground1)",
+    backgroundColor: "var(--colorNeutralBackground2)",
+    color: "var(--colorNeutralForeground1)",
+    borderColor: "var(--colorNeutralStroke1)",
+  },
+  caretDown: {
     color: "var(--colorNeutralForeground1)",
   },
-  dropdownItem: {
-    backgroundColor: "var(--colorNeutralBackground1)",
-    color: "var(--colorNeutralForeground1)",
+  callout: {
+    backgroundColor: "var(--colorNeutralBackground2)",
+    border: "1px solid var(--colorNeutralStroke1)",
   },
   dropdownItems: {
-    backgroundColor: "var(--colorNeutralBackground1)",
-    color: "var(--colorNeutralForeground1)",
+    backgroundColor: "var(--colorNeutralBackground2)",
   },
-  dropdownItemSelected: {
-    backgroundColor: "var(--colorBrandBackgroundSelected)",
-    color: "var(--colorNeutralForegroundOnBrand)",
+  dropdownItem: {
+    backgroundColor: "transparent",
+    color: "var(--colorNeutralForeground1)",
+    minHeight: "36px",
+    lineHeight: "36px",
     selectors: {
-      "&:before": {
-        content: '""',
-        position: "absolute",
-        left: 0,
-        top: 0,
-        bottom: 0,
-        width: "4px",
-        background: "var(--colorBrandBackground)",
+      "&:hover": {
+        backgroundColor: "rgba(255, 255, 255, 0.1)",
+        color: "var(--colorNeutralForeground1)",
+      },
+      "&:hover .ms-Dropdown-optionText": {
+        color: "var(--colorNeutralForeground1)",
+      },
+      "&:focus": {
+        backgroundColor: "rgba(255, 255, 255, 0.1)",
+        color: "var(--colorNeutralForeground1)",
+      },
+      "&:active": {
+        backgroundColor: "rgba(255, 255, 255, 0.15)",
+        color: "var(--colorNeutralForeground1)",
+      },
+      "& .ms-Dropdown-optionText": {
+        color: "var(--colorNeutralForeground1)",
       },
     },
+  },
+  dropdownItemSelected: {
+    backgroundColor: "rgba(255, 255, 255, 0.08)",
+    color: "var(--colorNeutralForeground1)",
+    minHeight: "36px",
+    lineHeight: "36px",
+    selectors: {
+      "&:hover": {
+        backgroundColor: "rgba(255, 255, 255, 0.1)",
+        color: "var(--colorNeutralForeground1)",
+      },
+      "&:hover .ms-Dropdown-optionText": {
+        color: "var(--colorNeutralForeground1)",
+      },
+      "&:focus": {
+        backgroundColor: "rgba(255, 255, 255, 0.1)",
+        color: "var(--colorNeutralForeground1)",
+      },
+      "&:active": {
+        backgroundColor: "rgba(255, 255, 255, 0.15)",
+        color: "var(--colorNeutralForeground1)",
+      },
+      "& .ms-Dropdown-optionText": {
+        color: "var(--colorNeutralForeground1)",
+      },
+    },
+  },
+  dropdownOptionText: {
+    color: "var(--colorNeutralForeground1)",
+  },
+  dropdownItemHeader: {
+    color: "var(--colorNeutralForeground1)",
   },
 };
 
@@ -365,42 +416,7 @@ export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentS
           selectedKey={triggerType}
           className="trigger-field"
           onChange={(event, selectedKey) => this.handleTriggerTypeOprationChange(event, selectedKey, "triggerType")}
-          styles={{
-            root: { width: "40%", marginTop: "10px" },
-            // dropdown: {
-            //   backgroundColor: "var(--colorNeutralBackground1)",
-            //   color: "var(--colorNeutralForeground1)",
-            //   border: "1px solid var(--colorNeutralStroke1)",
-            // },
-
-            // dropdown: {
-            //   backgroundColor: theme.palette.neutralLighterAlt, // dynamic background
-            //   borderColor: theme.palette.neutralSecondary,
-            // },
-            // title: {
-            //   backgroundColor: theme.palette.neutralLighterAlt,
-            //   color: theme.semanticColors.bodyText, // selected value color
-            // },
-
-            dropdown: {
-              backgroundColor: theme.semanticColors.bodyBackground,
-              borderColor: theme.semanticColors.bodyDivider,
-            },
-            title: {
-              backgroundColor: theme.semanticColors.bodyBackground,
-              color: theme.semanticColors.bodyText,
-            },
-            callout: {
-              backgroundColor: theme.semanticColors.bodyBackground,
-            },
-            subComponentStyles: {
-              label: {
-                root: {
-                  color: "var(--colorNeutralForeground1)",
-                },
-              },
-            },
-          }}
+          styles={dropdownStyles}
         />
         <Dropdown
           placeholder="Trigger Operation"
@@ -412,25 +428,6 @@ export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentS
             this.handleTriggerTypeOprationChange(event, selectedKey, "triggerOperation")
           }
           styles={dropdownStyles}
-
-          // styles={{
-          //   root: { width: "40%", marginTop: "10px" },
-          //   dropdown: {
-          //     backgroundColor: theme.palette.neutralLighterAlt, // dynamic background
-          //     borderColor: theme.palette.neutralSecondary,
-          //   },
-          //   title: {
-          //     backgroundColor: theme.palette.neutralLighterAlt,
-          //     color: theme.semanticColors.bodyText, // selected value color
-          //   },
-          //   subComponentStyles: {
-          //     label: {
-          //       root: {
-          //         color: "var(--colorNeutralForeground1)",
-          //       },
-          //     },
-          //   },
-          // }}
         />
         <Label className="trigger-field">Trigger Body</Label>
         <EditorReact

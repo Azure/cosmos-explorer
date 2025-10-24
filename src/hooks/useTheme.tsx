@@ -1,6 +1,11 @@
 import { sendMessage } from "Common/MessageHandler";
 import { MessageTypes } from "Contracts/MessageTypes";
+import { shouldProcessMessage } from "Utils/MessageValidation";
 import create from "zustand";
+
+// Theme mode constants matching Portal's theme values
+export const THEME_MODE_LIGHT = 0;
+export const THEME_MODE_DARK = 1;
 
 export interface ThemeStore {
   isDarkMode: boolean;
@@ -10,11 +15,11 @@ export interface ThemeStore {
 
 export const useThemeStore = create<ThemeStore>((set) => ({
   isDarkMode: false,
-  themeMode: 0,
+  themeMode: THEME_MODE_LIGHT,
   toggleTheme: () =>
     set((state) => {
       const newIsDarkMode = !state.isDarkMode;
-      const newThemeMode = newIsDarkMode ? 1 : 0;
+      const newThemeMode = newIsDarkMode ? THEME_MODE_DARK : THEME_MODE_LIGHT;
 
       if (newIsDarkMode) {
         document.body.classList.add("isDarkMode");
@@ -40,31 +45,27 @@ export const useThemeStore = create<ThemeStore>((set) => ({
 // Portal theme communication
 if (typeof window !== "undefined") {
   window.addEventListener("message", (event) => {
-    // Only process messages FROM the parent (Portal), not messages we send TO the parent
-    // Messages we send have a data property, messages from Portal have data.data structure
     if (
-      event.source !== window &&
-      event.data &&
-      typeof event.data === "object" &&
-      event.data.signature === "pcIframe" &&
-      event.data.data &&
-      event.data.data.type === "UpdateTheme" &&
-      event.data.data.theme &&
-      event.data.data.theme.mode !== undefined
+      !shouldProcessMessage(event) ||
+      event.data.data.type !== MessageTypes.UpdateTheme ||
+      !event.data.data.theme ||
+      event.data.data.theme.mode === undefined
     ) {
-      const themeMode = event.data.data.theme.mode;
-      const isDark = themeMode === 1;
+      return;
+    }
 
-      useThemeStore.setState({
-        isDarkMode: isDark,
-        themeMode: themeMode,
-      });
+    const themeMode = event.data.data.theme.mode;
+    const isDark = themeMode === THEME_MODE_DARK;
 
-      if (isDark) {
-        document.body.classList.add("isDarkMode");
-      } else {
-        document.body.classList.remove("isDarkMode");
-      }
+    useThemeStore.setState({
+      isDarkMode: isDark,
+      themeMode: themeMode,
+    });
+
+    if (isDark) {
+      document.body.classList.add("isDarkMode");
+    } else {
+      document.body.classList.remove("isDarkMode");
     }
   });
 }

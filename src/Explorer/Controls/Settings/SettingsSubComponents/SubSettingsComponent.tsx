@@ -7,7 +7,6 @@ import {
   Stack,
   Text,
   TextField,
-  getTheme,
   mergeStyleSets,
 } from "@fluentui/react";
 import * as React from "react";
@@ -35,8 +34,6 @@ import {
   isDirty,
 } from "../SettingsUtils";
 import { ToolTipLabelComponent } from "./ToolTipLabelComponent";
-
-const theme = getTheme();
 
 const classNames = mergeStyleSets({
   hintText: {
@@ -210,18 +207,24 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
           },
           text: {
             fontSize: 14,
-            color: theme.semanticColors.bodyText,
+            color: "var(--colorNeutralForeground1)",
           },
           icon: {
-            color: theme.semanticColors.bodyText,
+            color: "var(--colorNeutralForeground1)",
           },
         }}
       >
-        To enable time-to-live (TTL) for your collection/documents,
-        <Link href="https://docs.microsoft.com/en-us/azure/cosmos-db/mongodb-time-to-live" target="_blank">
-          create a TTL index
-        </Link>
-        .
+        <Text style={{ color: "var(--colorNeutralForeground1)" }}>
+          To enable time-to-live (TTL) for your collection/documents,{" "}
+          <Link
+            href="https://docs.microsoft.com/en-us/azure/cosmos-db/mongodb-time-to-live"
+            target="_blank"
+            style={{ color: "var(--colorBrandForeground1)" }}
+          >
+            create a TTL index
+          </Link>
+          .
+        </Text>
       </MessageBar>
     ) : (
       <Stack {...titleAndInputStackProps}>

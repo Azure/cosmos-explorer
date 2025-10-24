@@ -1253,7 +1253,29 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                 <div className={styles.settingsSectionContainer}>
                   <Stack horizontal verticalAlign="center" tokens={{ childrenGap: 4 }}>
                     <Checkbox
-                      styles={{ label: { padding: 0 } }}
+                      styles={{
+                        root: {
+                          selectors: {
+                            ":hover .ms-Checkbox-text": {
+                              color: "var(--colorNeutralForeground1)",
+                            },
+                            ":hover .ms-Checkbox-label": {
+                              color: "var(--colorNeutralForeground1)",
+                            },
+                          },
+                        },
+                        label: {
+                          padding: 0,
+                          color: "var(--colorNeutralForeground1)",
+                        },
+                        text: {
+                          color: "var(--colorNeutralForeground1)",
+                        },
+                        checkbox: {
+                          borderColor: "var(--colorNeutralForeground3)",
+                          backgroundColor: "var(--colorNeutralBackground2)",
+                        },
+                      }}
                       className="padding"
                       ariaLabel="Ignore partition key on document update"
                       checked={ignorePartitionKeyOnDocumentUpdate}

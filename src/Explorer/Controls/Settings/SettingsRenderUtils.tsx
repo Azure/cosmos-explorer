@@ -519,11 +519,21 @@ export const getTextFieldStyles = (current: isDirtyTypes, baseline: isDirtyTypes
   fieldGroup: {
     height: 25,
     width: 300,
-    borderColor: isDirty(current, baseline) ? StyleConstants.Dirty : "",
+    backgroundColor: "var(--colorNeutralBackground2)",
+    borderColor: isDirty(current, baseline) ? StyleConstants.Dirty : "var(--colorNeutralStroke1)",
     selectors: {
       ":disabled": {
-        backgroundColor: "var(--colorNeutralBackground1)",
-        borderColor: StyleConstants.BaseMediumHigh,
+        backgroundColor: "var(--colorNeutralBackground2)",
+        borderColor: "var(--colorNeutralStroke1)",
+        color: "var(--colorNeutralForeground2)",
+      },
+      input: {
+        backgroundColor: "var(--colorNeutralBackground2)",
+        color: "var(--colorNeutralForeground1)",
+      },
+      "input:disabled": {
+        backgroundColor: "var(--colorNeutralBackground2)",
+        color: "var(--colorNeutralForeground2)",
       },
       "input#autopilotInput": {
         backgroundColor: "var(--colorNeutralBackground4)",
@@ -531,7 +541,16 @@ export const getTextFieldStyles = (current: isDirtyTypes, baseline: isDirtyTypes
       },
     },
   },
-
+  field: {
+    backgroundColor: "var(--colorNeutralBackground2)",
+    color: "var(--colorNeutralForeground1)",
+    selectors: {
+      ":disabled": {
+        backgroundColor: "var(--colorNeutralBackground2)",
+        color: "var(--colorNeutralForeground2)",
+      },
+    },
+  },
   subComponentStyles: {
     label: {
       root: {
