@@ -36,7 +36,7 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
     return authorizationToken;
   }
 
-  if (configContext.platform === Platform.Emulator) {
+  if (configContext.platform === Platform.Emulator || configContext.platform === Platform.VNextEmulator) {
     // TODO This SDK method mutates the headers object. Find a better one or fix the SDK.
     await Cosmos.setAuthorizationTokenHeaderUsingMasterKey(verb, resourceId, resourceType, headers, EmulatorMasterKey);
     return decodeURIComponent(headers.authorization);
@@ -119,7 +119,7 @@ export const requestPlugin: Cosmos.Plugin<any> = async (requestContext, diagnost
 };
 
 export const endpoint = () => {
-  if (configContext.platform === Platform.Emulator) {
+  if (configContext.platform === Platform.Emulator || configContext.platform === Platform.VNextEmulator) {
     // In worker scope, _global(self).parent does not exist
     const location = _global.parent ? _global.parent.location : _global.location;
     return configContext.EMULATOR_ENDPOINT || location.origin;

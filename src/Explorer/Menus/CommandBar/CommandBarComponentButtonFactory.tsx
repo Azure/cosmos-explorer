@@ -1,5 +1,6 @@
 import { KeyboardAction } from "KeyboardShortcuts";
 import { isDataplaneRbacSupported } from "Utils/APITypeUtils";
+import { areAdvancedScriptsSupported, isFeatureSupported, PlatformFeature } from "Utils/PlatformFeatureUtils";
 import * as React from "react";
 import AddSqlQueryIcon from "../../../../images/AddSqlQuery_16x16.svg";
 import AddStoredProcedureIcon from "../../../../images/AddStoredProcedure.svg";
@@ -16,7 +17,7 @@ import SynapseIcon from "../../../../images/synapse-link.svg";
 import VSCodeIcon from "../../../../images/vscode.svg";
 import { AuthType } from "../../../AuthType";
 import * as Constants from "../../../Common/Constants";
-import { Platform, configContext } from "../../../ConfigContext";
+import { configContext, Platform } from "../../../ConfigContext";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { userContext } from "../../../UserContext";
 import { isRunningOnNationalCloud } from "../../../Utils/CloudUtils";
@@ -51,6 +52,7 @@ export function createStaticCommandBarButtons(
   };
 
   if (
+    isFeatureSupported(PlatformFeature.SynapseLink) &&
     configContext.platform !== Platform.Fabric &&
     userContext.apiType !== "Tables" &&
     userContext.apiType !== "Cassandra"
@@ -62,7 +64,9 @@ export function createStaticCommandBarButtons(
     }
     if (userContext.apiType !== "Gremlin") {
       const addVsCode = createOpenVsCodeDialogButton(container);
-      buttons.push(addVsCode);
+      if (addVsCode) {
+        buttons.push(addVsCode);
+      }
     }
   }
 
@@ -233,11 +237,17 @@ export function createDivider(): CommandButtonComponentProps {
 
 function areScriptsSupported(): boolean {
   return (
-    configContext.platform !== Platform.Fabric && (userContext.apiType === "SQL" || userContext.apiType === "Gremlin")
+    areAdvancedScriptsSupported() &&
+    configContext.platform !== Platform.Fabric &&
+    (userContext.apiType === "SQL" || userContext.apiType === "Gremlin")
   );
 }
 
 function createOpenSynapseLinkDialogButton(container: Explorer): CommandButtonComponentProps {
+  if (!isFeatureSupported(PlatformFeature.SynapseLink)) {
+    return undefined;
+  }
+
   if (configContext.platform === Platform.Emulator) {
     return undefined;
   }
@@ -265,6 +275,10 @@ function createOpenSynapseLinkDialogButton(container: Explorer): CommandButtonCo
 }
 
 function createOpenVsCodeDialogButton(container: Explorer): CommandButtonComponentProps {
+  if (!isFeatureSupported(PlatformFeature.VSCodeIntegration)) {
+    return undefined;
+  }
+
   const label = "Visual Studio Code";
   return {
     iconSrc: VSCodeIcon,
