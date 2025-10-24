@@ -106,6 +106,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
   private static readonly TEXT_COLOR_SECONDARY = "var(--colorNeutralForeground2)";
   private static readonly TEXT_WIDTH_50 = "50%";
   private static readonly TEXT_WIDTH_33 = "33%";
+  private static readonly LOCALE_EN_US = "en-US";
 
   componentDidMount(): void {
     this.onComponentUpdate();
@@ -536,13 +537,15 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     <Stack>
       <Stack horizontal>
         <Stack.Item style={{ width: "34%" }}>
-          <span>{this.props.minimum.toLocaleString("en-US")}</span>
+          <span>{this.props.minimum.toLocaleString(ThroughputInputAutoPilotV3Component.LOCALE_EN_US)}</span>
         </Stack.Item>
         <Stack.Item style={{ width: "66%" }}>
           <span style={{ float: "left", transform: "translateX(-50%)" }}>
-            {this.props.instantMaximumThroughput.toLocaleString("en-US")}
+            {this.props.instantMaximumThroughput.toLocaleString(ThroughputInputAutoPilotV3Component.LOCALE_EN_US)}
           </span>
-          <span style={{ float: "right" }}>{this.props.softAllowedMaximumThroughput.toLocaleString("en-US")}</span>
+          <span style={{ float: "right" }}>
+            {this.props.softAllowedMaximumThroughput.toLocaleString(ThroughputInputAutoPilotV3Component.LOCALE_EN_US)}
+          </span>
         </Stack.Item>
       </Stack>
       <ProgressIndicator
