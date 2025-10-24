@@ -119,15 +119,89 @@ export const addMongoIndexSubElementsTokens: IStackTokens = {
 
 export const mediumWidthStackStyles: IStackStyles = { root: { width: 600 } };
 
-export const shortWidthTextFieldStyles: Partial<ITextFieldStyles> = { root: { paddingLeft: 10, width: 210 } };
+export const shortWidthTextFieldStyles: Partial<ITextFieldStyles> = {
+  root: { paddingLeft: 10, width: 210 },
+  fieldGroup: {
+    backgroundColor: "var(--colorNeutralBackground2)",
+    borderColor: "var(--colorNeutralStroke1)",
+  },
+  field: {
+    color: "var(--colorNeutralForeground1)",
+    backgroundColor: "var(--colorNeutralBackground2)",
+  },
+};
 
-export const shortWidthDropDownStyles: Partial<IDropdownStyles> = { dropdown: { paddingLeft: 10, width: 202 } };
+export const shortWidthDropDownStyles: Partial<IDropdownStyles> = {
+  dropdown: { paddingLeft: 10, width: 202 },
+  title: {
+    backgroundColor: "var(--colorNeutralBackground2)",
+    color: "var(--colorNeutralForeground1)",
+    borderColor: "var(--colorNeutralStroke1)",
+  },
+  caretDown: {
+    color: "var(--colorNeutralForeground1)",
+  },
+  callout: {
+    backgroundColor: "var(--colorNeutralBackground2)",
+    border: "1px solid var(--colorNeutralStroke1)",
+  },
+  dropdownItems: {
+    backgroundColor: "var(--colorNeutralBackground2)",
+  },
+  dropdownItem: {
+    backgroundColor: "transparent",
+    color: "var(--colorNeutralForeground1)",
+    selectors: {
+      "&:hover": {
+        backgroundColor: "rgba(255, 255, 255, 0.1)",
+        color: "var(--colorNeutralForeground1)",
+      },
+      "&:focus": {
+        backgroundColor: "rgba(255, 255, 255, 0.1)",
+        color: "var(--colorNeutralForeground1)",
+      },
+    },
+  },
+  dropdownItemSelected: {
+    backgroundColor: "rgba(255, 255, 255, 0.08)",
+    color: "var(--colorNeutralForeground1)",
+    selectors: {
+      "&:hover": {
+        backgroundColor: "rgba(255, 255, 255, 0.1)",
+        color: "var(--colorNeutralForeground1)",
+      },
+    },
+  },
+  dropdownOptionText: {
+    color: "var(--colorNeutralForeground1)",
+  },
+};
 
 export const transparentDetailsRowStyles: Partial<IDetailsRowStyles> = {
   root: {
+    backgroundColor: "var(--colorNeutralBackground1)",
+    color: "var(--colorNeutralForeground1)",
     selectors: {
       ":hover": {
-        background: "transparent",
+        backgroundColor: "var(--colorNeutralBackground1Hover)",
+        color: "var(--colorNeutralForeground1)",
+      },
+      ":hover .ms-DetailsRow-cell": {
+        backgroundColor: "var(--colorNeutralBackground1Hover)",
+        color: "var(--colorNeutralForeground1)",
+      },
+      "&.ms-DetailsRow": {
+        backgroundColor: "var(--colorNeutralBackground1)",
+      },
+    },
+  },
+  cell: {
+    backgroundColor: "var(--colorNeutralBackground1)",
+    color: "var(--colorNeutralForeground1)",
+    selectors: {
+      ":hover": {
+        backgroundColor: "var(--colorNeutralBackground1Hover)",
+        color: "var(--colorNeutralForeground1)",
       },
     },
   },
@@ -135,9 +209,11 @@ export const transparentDetailsRowStyles: Partial<IDetailsRowStyles> = {
 
 export const transparentDetailsHeaderStyle: Partial<IDetailsColumnStyles> = {
   root: {
+    color: "var(--colorNeutralForeground1)",
     selectors: {
       ":hover": {
-        background: "transparent",
+        background: "var(--colorNeutralBackground1Hover)",
+        color: "var(--colorNeutralForeground1)",
       },
     },
   },
@@ -148,6 +224,28 @@ export const customDetailsListStyles: Partial<IDetailsListStyles> = {
     selectors: {
       ".ms-FocusZone": {
         paddingTop: 0,
+      },
+      ".ms-DetailsHeader": {
+        backgroundColor: "var(--colorNeutralBackground1)",
+      },
+      ".ms-DetailsHeader-cell": {
+        color: "var(--colorNeutralForeground1)",
+        backgroundColor: "var(--colorNeutralBackground1)",
+        selectors: {
+          ":hover": {
+            backgroundColor: "var(--colorNeutralBackground1Hover)",
+            color: "var(--colorNeutralForeground1)",
+          },
+        },
+      },
+      ".ms-DetailsHeader-cellTitle": {
+        color: "var(--colorNeutralForeground1)",
+      },
+      ".ms-DetailsRow": {
+        color: "var(--colorNeutralForeground1)",
+      },
+      ".ms-DetailsRow-cell": {
+        color: "var(--colorNeutralForeground1)",
       },
     },
   },

@@ -1,4 +1,4 @@
-import { FontIcon, Link, MessageBar, MessageBarType, Stack, Text } from "@fluentui/react";
+import { FontIcon, IMessageBarStyles, Link, MessageBar, MessageBarType, Stack, Text } from "@fluentui/react";
 import * as DataModels from "Contracts/DataModels";
 import { titleAndInputStackProps, unsavedEditorWarningMessage } from "Explorer/Controls/Settings/SettingsRenderUtils";
 import { isDirty } from "Explorer/Controls/Settings/SettingsUtils";
@@ -28,6 +28,23 @@ export class ComputedPropertiesComponent extends React.Component<
   private computedPropertiesDiv = React.createRef<HTMLDivElement>();
   private computedPropertiesEditor: monaco.editor.IStandaloneCodeEditor;
   private themeUnsubscribe: () => void;
+
+  private darkThemeMessageBarStyles: Partial<IMessageBarStyles> = {
+    root: {
+      selectors: {
+        "&.ms-MessageBar--warning": {
+          backgroundColor: "var(--colorStatusWarningBackground1)",
+          border: "1px solid var(--colorStatusWarningBorder1)",
+        },
+        ".ms-MessageBar-icon": {
+          color: "var(--colorNeutralForeground1)",
+        },
+        ".ms-MessageBar-text": {
+          color: "var(--colorNeutralForeground1)",
+        },
+      },
+    },
+  };
 
   constructor(props: ComputedPropertiesComponentProps) {
     super(props);
@@ -125,7 +142,11 @@ export class ComputedPropertiesComponent extends React.Component<
     return (
       <Stack {...titleAndInputStackProps}>
         {isDirty(this.props.computedPropertiesContent, this.props.computedPropertiesContentBaseline) && (
-          <MessageBar messageBarType={MessageBarType.warning}>
+          <MessageBar
+            messageBarType={MessageBarType.warning}
+            messageBarIconProps={{ iconName: "WarningSolid", className: "messageBarWarningIcon" }}
+            styles={this.darkThemeMessageBarStyles}
+          >
             {unsavedEditorWarningMessage("computedProperties")}
           </MessageBar>
         )}

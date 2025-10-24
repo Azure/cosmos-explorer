@@ -62,7 +62,7 @@ export class PanelContainerComponent extends React.Component<PanelContainerProps
         closeButtonAriaLabel={`Close ${this.props.headerText}`}
         customWidth={this.props.panelWidth ? this.props.panelWidth : "440px"}
         headerClassName="panelHeader"
-        className="dark-theme-panel"
+        className="themed-panel"
         onRenderNavigationContent={this.props.onRenderNavigationContent}
         isFooterAtBottom={true}
         styles={{

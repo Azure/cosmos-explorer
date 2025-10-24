@@ -1,6 +1,7 @@
 import {
   DefaultButton,
   FontWeights,
+  IMessageBarStyles,
   Link,
   MessageBar,
   MessageBarType,
@@ -31,6 +32,23 @@ export interface PartitionKeyComponentProps {
   explorer: Explorer;
   isReadOnly?: boolean; // true: cannot change partition key
 }
+
+const darkThemeMessageBarStyles: Partial<IMessageBarStyles> = {
+  root: {
+    selectors: {
+      "&.ms-MessageBar--warning": {
+        backgroundColor: "var(--colorStatusWarningBackground1)",
+        border: "1px solid var(--colorStatusWarningBorder1)",
+      },
+      ".ms-MessageBar-icon": {
+        color: "var(--colorNeutralForeground1)",
+      },
+      ".ms-MessageBar-text": {
+        color: "var(--colorNeutralForeground1)",
+      },
+    },
+  },
+};
 
 export const PartitionKeyComponent: React.FC<PartitionKeyComponentProps> = ({
   database,
@@ -180,13 +198,18 @@ export const PartitionKeyComponent: React.FC<PartitionKeyComponentProps> = ({
 
       {!isReadOnly && (
         <>
-          <MessageBar messageBarType={MessageBarType.warning}>
+          <MessageBar
+            messageBarType={MessageBarType.warning}
+            messageBarIconProps={{ iconName: "WarningSolid", className: "messageBarWarningIcon" }}
+            styles={darkThemeMessageBarStyles}
+          >
             To safeguard the integrity of the data being copied to the new container, ensure that no updates are made to
             the source container for the entire duration of the partition key change process.
             <Link
               href="https://learn.microsoft.com/azure/cosmos-db/container-copy#how-does-container-copy-work"
               target="_blank"
               underline
+              style={{ color: "var(--colorBrandForeground1)" }}
             >
               Learn more
             </Link>

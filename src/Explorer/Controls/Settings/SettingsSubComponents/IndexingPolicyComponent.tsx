@@ -1,4 +1,4 @@
-import { MessageBar, MessageBarType, Stack } from "@fluentui/react";
+import { IMessageBarStyles, MessageBar, MessageBarType, Stack } from "@fluentui/react";
 import { useThemeStore } from "hooks/useTheme";
 import * as monaco from "monaco-editor";
 import * as React from "react";
@@ -32,6 +32,23 @@ export class IndexingPolicyComponent extends React.Component<
   private indexingPolicyDiv = React.createRef<HTMLDivElement>();
   private indexingPolicyEditor: monaco.editor.IStandaloneCodeEditor;
   private themeUnsubscribe: () => void;
+
+  private darkThemeMessageBarStyles: Partial<IMessageBarStyles> = {
+    root: {
+      selectors: {
+        "&.ms-MessageBar--warning": {
+          backgroundColor: "var(--colorStatusWarningBackground1)",
+          border: "1px solid var(--colorStatusWarningBorder1)",
+        },
+        ".ms-MessageBar-icon": {
+          color: "var(--colorNeutralForeground1)",
+        },
+        ".ms-MessageBar-text": {
+          color: "var(--colorNeutralForeground1)",
+        },
+      },
+    },
+  };
 
   constructor(props: IndexingPolicyComponentProps) {
     super(props);
@@ -139,7 +156,13 @@ export class IndexingPolicyComponent extends React.Component<
           refreshIndexTransformationProgress={this.props.refreshIndexTransformationProgress}
         />
         {isDirty(this.props.indexingPolicyContent, this.props.indexingPolicyContentBaseline) && (
-          <MessageBar messageBarType={MessageBarType.warning}>{unsavedEditorWarningMessage("indexPolicy")}</MessageBar>
+          <MessageBar
+            messageBarType={MessageBarType.warning}
+            messageBarIconProps={{ iconName: "WarningSolid", className: "messageBarWarningIcon" }}
+            styles={this.darkThemeMessageBarStyles}
+          >
+            {unsavedEditorWarningMessage("indexPolicy")}
+          </MessageBar>
         )}
         <div className="settingsV2Editor" tabIndex={0} ref={this.indexingPolicyDiv}></div>
       </Stack>
