@@ -99,7 +99,7 @@ const useSidebarStyles = makeStyles({
     alignItems: "center",
     justifyItems: "center",
     width: "100%",
-    containerType: "size",
+    containerType: "size", // Use this container for "@container" queries below this.
     padding: tokens.spacingHorizontalS,
     ...cosmosShorthands.borderBottom(),
     backgroundColor: tokens.colorNeutralBackground1,
