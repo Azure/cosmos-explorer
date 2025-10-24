@@ -13,6 +13,7 @@ import {
   IToggleStyles,
   Position,
   SpinButton,
+  Stack,
   Toggle,
 } from "@fluentui/react";
 import { Accordion, AccordionHeader, AccordionItem, AccordionPanel, makeStyles } from "@fluentui/react-components";
@@ -203,6 +204,9 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
     LocalStorageUtility.hasItem(StorageKey.MongoGuidRepresentation)
       ? (LocalStorageUtility.getEntryString(StorageKey.MongoGuidRepresentation) as Constants.MongoGuidRepresentation)
       : Constants.MongoGuidRepresentation.CSharpLegacy,
+  );
+  const [ignorePartitionKeyOnDocumentUpdate, setIgnorePartitionKeyOnDocumentUpdate] = useState<boolean>(
+    LocalStorageUtility.getEntryBoolean(StorageKey.IgnorePartitionKeyOnDocumentUpdate),
   );
 
   const styles = useStyles();
@@ -424,6 +428,12 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
       LocalStorageUtility.setEntryString(StorageKey.MongoGuidRepresentation, mongoGuidRepresentation);
     }
 
+    // Advanced settings
+    LocalStorageUtility.setEntryBoolean(
+      StorageKey.IgnorePartitionKeyOnDocumentUpdate,
+      ignorePartitionKeyOnDocumentUpdate,
+    );
+
     setIsExecuting(false);
     logConsoleInfo(
       `Updated items per page setting to ${LocalStorageUtility.getEntryNumber(StorageKey.ActualItemPerPage)}`,
@@ -452,6 +462,10 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
         )}`,
       );
     }
+
+    logConsoleInfo(
+      `${ignorePartitionKeyOnDocumentUpdate ? "Enabled" : "Disabled"} ignoring partition key on document update`,
+    );
 
     refreshExplorer && (await explorer.refreshExplorer());
     closeSidePanel();
@@ -591,6 +605,13 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
     option: IDropdownOption,
   ): void => {
     setMongoGuidRepresentation(option.key as Constants.MongoGuidRepresentation);
+  };
+
+  const handleOnIgnorePartitionKeyOnDocumentUpdateChange = (
+    ev: React.MouseEvent<HTMLElement>,
+    checked?: boolean,
+  ): void => {
+    setIgnorePartitionKeyOnDocumentUpdate(!!checked);
   };
 
   const choiceButtonStyles = {
@@ -1137,6 +1158,29 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                 </AccordionPanel>
               </AccordionItem>
             )}
+            <AccordionItem value="15">
+              <AccordionHeader>
+                <div className={styles.header}>Advanced Settings</div>
+              </AccordionHeader>
+              <AccordionPanel>
+                <div className={styles.settingsSectionContainer}>
+                  <Stack horizontal verticalAlign="center" tokens={{ childrenGap: 4 }}>
+                    <Checkbox
+                      styles={{ label: { padding: 0 } }}
+                      className="padding"
+                      ariaLabel="Ignore partition key on document update"
+                      checked={ignorePartitionKeyOnDocumentUpdate}
+                      onChange={handleOnIgnorePartitionKeyOnDocumentUpdateChange}
+                      label="Ignore partition key on document update"
+                    />
+                    <InfoTooltip className={styles.headerIcon}>
+                      If checked, the partition key value will not be used to locate the document during update
+                      operations. Only use this if document updates are failing due to an abnormal partition key.
+                    </InfoTooltip>
+                  </Stack>
+                </div>
+              </AccordionPanel>
+            </AccordionItem>
           </Accordion>
         )}
 
