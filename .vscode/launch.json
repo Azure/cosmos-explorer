@@ -5,6 +5,37 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "command": "npm start",
+      "name": "Run Host (npm start)",
+      "request": "launch",
+      "type": "node-terminal",
+      "presentation": {
+        "hidden": true
+      }
+    },
+    {
+      "type": "chrome",
+      "name": "Debug in Portal (Chrome)",
+      "request": "launch",
+      "smartStep": true,
+      "url": "https://ms.portal.azure.com/?dataExplorerSource=https%3A%2F%2Flocalhost%3A1234%2Fexplorer.html",
+      "presentation": {
+        "group": "debug"
+        //"order": 5
+      }
+    },
+    {
+      "type": "chrome",
+      "name": "Debug Standalone (Chrome)",
+      "request": "launch",
+      "smartStep": true,
+      "url": "https://localhost:1234/hostedExplorer.html",
+      "presentation": {
+        "group": "debug"
+        //"order": 5
+      }
+    },
+    {
       "name": "Debug Jest Tests",
       "type": "node",
       "request": "launch",
@@ -17,7 +48,11 @@
       ],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
-      "port": 9229
+      "port": 9229,
+      "presentation": {
+        "group": "tests"
+        //"order": 5
+      }
     },
     {
       "name": "Debug Jest Current Test",
@@ -28,7 +63,7 @@
         "${workspaceRoot}/node_modules/jest/bin/jest.js",
         "${fileBasenameNoExtension}",
         "--coverage",
-        "false",
+        "false"
         // "--watch",
         // // --no-cache only used to make --watch work. Otherwise jest ignores the breakpoints.
         // // https://github.com/facebook/jest/issues/6683
@@ -36,7 +71,31 @@
       ],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
-      "port": 9229
+      "port": 9229,
+      "presentation": {
+        "group": "tests"
+        //"order": 5
+      }
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Run Host and Debug in Portal (Chrome)",
+      "configurations": ["Run Host (npm start)", "Debug in Portal (Chrome)"],
+      "stopAll": true,
+      "presentation": {
+        "group": "debug",
+        "order": 0
+      }
+    },
+    {
+      "name": "Run Host and Debug Standalone (Chrome)",
+      "configurations": ["Run Host (npm start)", "Debug Standalone (Chrome)"],
+      "stopAll": true,
+      "presentation": {
+        "group": "debug",
+        "order": 1
+      }
     }
   ]
 }
