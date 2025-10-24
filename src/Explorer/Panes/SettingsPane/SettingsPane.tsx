@@ -703,40 +703,6 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
     arrowButtonsContainer: {},
   };
 
-  // Commented out as it's not currently used
-  /*
-  const checkboxStyles = {
-    root: {
-      selectors: {
-        ".ms-Checkbox-label": {
-          color: "var(--colorNeutralForeground1)",
-        },
-        ".ms-Checkbox-text": {
-          color: "var(--colorNeutralForeground1)",
-        },
-        ":hover .ms-Checkbox-label": {
-          color: "var(--colorNeutralForeground1)",
-        },
-        ":hover .ms-Checkbox-text": {
-          color: "var(--colorNeutralForeground1)",
-        },
-        ".is-checked": {
-          selectors: {
-            ".ms-Checkbox-checkbox": {
-              backgroundColor: "var(--colorNeutralBackground1)",
-              borderColor: "var(--colorNeutralStroke1)",
-            },
-            "&:hover .ms-Checkbox-checkbox": {
-              backgroundColor: "var(--colorNeutralBackground1Hover)",
-              borderColor: "var(--colorNeutralStroke1Hover)",
-            },
-          },
-        }
-      }
-    }
-  }
-  */
-
   return (
     <RightPaneForm {...genericPaneProps}>
       <div className={`paneMainContent ${styles.container}`}>

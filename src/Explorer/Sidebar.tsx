@@ -105,6 +105,7 @@ const useSidebarStyles = makeStyles({
     backgroundColor: tokens.colorNeutralBackground1,
   },
   loadingProgressBar: {
+    // Float above the content
     position: "absolute",
     width: "100%",
     height: "2px",
