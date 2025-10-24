@@ -40,6 +40,7 @@ describe("DataMaskingComponent", () => {
     dataMaskingContentBaseline: undefined as DataModels.DataMaskingPolicy,
     onDataMaskingContentChange: jest.fn(),
     onDataMaskingDirtyChange: jest.fn(),
+    validationErrors: [] as string[],
   };
 
   const samplePolicy: DataModels.DataMaskingPolicy = {
@@ -181,7 +182,8 @@ describe("DataMaskingComponent", () => {
     mockGetValue.mockReturnValue(JSON.stringify(invalidPolicy));
     changeContentCallback();
 
-    expect(mockProps.onDataMaskingContentChange).not.toHaveBeenCalled();
+    // Parent callback should be called even with invalid data (parent will validate)
+    expect(mockProps.onDataMaskingContentChange).toHaveBeenCalledWith(invalidPolicy);
   });
 
   it("maintains dirty state after multiple content changes", async () => {

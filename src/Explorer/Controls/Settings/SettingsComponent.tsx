@@ -156,6 +156,7 @@ export interface SettingsComponentState {
   dataMaskingContentBaseline: DataModels.DataMaskingPolicy;
   shouldDiscardDataMasking: boolean;
   isDataMaskingDirty: boolean;
+  dataMaskingValidationErrors: string[];
 
   selectedTab: SettingsV2TabTypes;
 }
@@ -268,6 +269,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       dataMaskingContentBaseline: undefined,
       shouldDiscardDataMasking: false,
       isDataMaskingDirty: false,
+      dataMaskingValidationErrors: [],
 
       conflictResolutionPolicyMode: undefined,
       conflictResolutionPolicyModeBaseline: undefined,
@@ -361,6 +363,10 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     }
 
     if (this.state.throughputError) {
+      return false;
+    }
+
+    if (this.state.dataMaskingValidationErrors.length > 0) {
       return false;
     }
 
@@ -516,6 +522,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       dataMaskingContent: this.state.dataMaskingContentBaseline,
       shouldDiscardDataMasking: true,
       isDataMaskingDirty: false,
+      dataMaskingValidationErrors: [],
     });
   };
 
@@ -700,10 +707,10 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       validationErrors.push("isPolicyEnabled must be a boolean");
     }
 
-    if (validationErrors.length > 0) {
-      return;
-    }
-    this.setState({ dataMaskingContent: newDataMasking });
+    this.setState({
+      dataMaskingContent: newDataMasking,
+      dataMaskingValidationErrors: validationErrors,
+    });
   };
 
   private resetShouldDiscardDataMasking = (): void => this.setState({ shouldDiscardDataMasking: false });
@@ -1472,6 +1479,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         dataMaskingContentBaseline: this.state.dataMaskingContentBaseline,
         onDataMaskingContentChange: this.onDataMaskingContentChange,
         onDataMaskingDirtyChange: this.onDataMaskingDirtyChange,
+        validationErrors: this.state.dataMaskingValidationErrors,
       };
 
       tabs.push({

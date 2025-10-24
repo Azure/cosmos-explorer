@@ -350,13 +350,14 @@ describe("SettingsComponent", () => {
     // Use type assertion since we're deliberately testing with invalid data
     settingsComponentInstance["onDataMaskingContentChange"](invalidPolicy as unknown as DataModels.DataMaskingPolicy);
 
-    // State should not change with invalid data
-    expect(wrapper.state("dataMaskingContent")).not.toEqual({
+    // State should update with the content but also set validation errors
+    expect(wrapper.state("dataMaskingContent")).toEqual({
       includedPaths: "invalid",
       excludedPaths: [],
       policyFormatVersion: 2,
       isPolicyEnabled: false,
     });
+    expect(wrapper.state("dataMaskingValidationErrors")).toEqual(["includedPaths must be an array"]);
 
     // Test with valid data
     const validPolicy = {
@@ -375,8 +376,9 @@ describe("SettingsComponent", () => {
 
     settingsComponentInstance["onDataMaskingContentChange"](validPolicy);
 
-    // State should update with valid data
+    // State should update with valid data and no validation errors
     expect(wrapper.state("dataMaskingContent")).toEqual(validPolicy);
+    expect(wrapper.state("dataMaskingValidationErrors")).toEqual([]);
   });
 
   it("should handle data masking discard correctly", () => {
@@ -425,6 +427,33 @@ describe("SettingsComponent", () => {
     expect(wrapper.state("dataMaskingContent")).toEqual(baselinePolicy);
     expect(wrapper.state("isDataMaskingDirty")).toBe(false);
     expect(wrapper.state("shouldDiscardDataMasking")).toBe(true);
+  });
+
+  it("should disable save button when data masking has validation errors", () => {
+    const wrapper = shallow(<SettingsComponent {...baseProps} />);
+    const settingsComponentInstance = wrapper.instance() as SettingsComponent;
+
+    // Initially, save button should be disabled
+    expect(settingsComponentInstance.isSaveSettingsButtonEnabled()).toBe(false);
+
+    // Make data masking dirty with valid data
+    wrapper.setState({
+      isDataMaskingDirty: true,
+      dataMaskingValidationErrors: [],
+    });
+    expect(settingsComponentInstance.isSaveSettingsButtonEnabled()).toBe(true);
+
+    // Add validation errors - save should be disabled
+    wrapper.setState({
+      dataMaskingValidationErrors: ["includedPaths must be an array"],
+    });
+    expect(settingsComponentInstance.isSaveSettingsButtonEnabled()).toBe(false);
+
+    // Clear validation errors - save should be enabled again
+    wrapper.setState({
+      dataMaskingValidationErrors: [],
+    });
+    expect(settingsComponentInstance.isSaveSettingsButtonEnabled()).toBe(true);
   });
 });
 

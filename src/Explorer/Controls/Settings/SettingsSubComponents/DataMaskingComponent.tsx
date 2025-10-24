@@ -15,6 +15,7 @@ export interface DataMaskingComponentProps {
   dataMaskingContentBaseline: DataModels.DataMaskingPolicy;
   onDataMaskingContentChange: (dataMasking: DataModels.DataMaskingPolicy) => void;
   onDataMaskingDirtyChange: (isDirty: boolean) => void;
+  validationErrors: string[];
 }
 
 interface DataMaskingComponentState {
@@ -117,24 +118,13 @@ export class DataMaskingComponent extends React.Component<DataMaskingComponentPr
     try {
       const newContent = JSON.parse(dataMaskingEditorModel.getValue()) as DataModels.DataMaskingPolicy;
 
-      if (!Array.isArray(newContent.includedPaths)) {
-        this.setState({ dataMaskingContentIsValid: false });
-        return;
-      }
-      if (typeof newContent.policyFormatVersion !== "number") {
-        this.setState({ dataMaskingContentIsValid: false });
-        return;
-      }
-      if (typeof newContent.isPolicyEnabled !== "boolean") {
-        this.setState({ dataMaskingContentIsValid: false });
-        return;
-      }
-
+      // Always call parent's validation - it will handle validation and store errors
       this.props.onDataMaskingContentChange(newContent);
+
       const isDirty = isContentDirty(newContent, this.props.dataMaskingContentBaseline);
       this.setState(
         {
-          dataMaskingContentIsValid: true,
+          dataMaskingContentIsValid: this.props.validationErrors.length === 0,
           isDirty,
         },
         () => {
@@ -142,6 +132,7 @@ export class DataMaskingComponent extends React.Component<DataMaskingComponentPr
         },
       );
     } catch (e) {
+      // Invalid JSON - mark as invalid without propagating
       this.setState({
         dataMaskingContentIsValid: false,
         isDirty: false,
@@ -159,6 +150,11 @@ export class DataMaskingComponent extends React.Component<DataMaskingComponentPr
       <Stack {...titleAndInputStackProps}>
         {isDirty && (
           <MessageBar messageBarType={MessageBarType.warning}>{unsavedEditorWarningMessage("dataMasking")}</MessageBar>
+        )}
+        {this.props.validationErrors.length > 0 && (
+          <MessageBar messageBarType={MessageBarType.error}>
+            Validation failed: {this.props.validationErrors.join(", ")}
+          </MessageBar>
         )}
         <div className="settingsV2Editor" tabIndex={0} ref={this.dataMaskingDiv}></div>
       </Stack>
