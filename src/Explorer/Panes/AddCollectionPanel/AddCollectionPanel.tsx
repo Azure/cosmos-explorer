@@ -893,6 +893,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                       ) => {
                         this.setState({ fullTextPolicy, fullTextIndexes, fullTextPolicyValidated });
                       }}
+                      // Remove when multi language support on container create issue is fixed
                       englishOnly={true}
                     />
                   </Stack>
