@@ -1,4 +1,4 @@
-import { Link } from "@fluentui/react-components";
+import { Link, tokens } from "@fluentui/react-components";
 import QueryError from "Common/QueryError";
 import { IndeterminateProgressBar } from "Explorer/Controls/IndeterminateProgressBar";
 import { MessageBanner } from "Explorer/Controls/MessageBanner";
@@ -39,7 +39,7 @@ const ExecuteQueryCallToAction: React.FC = () => {
             aria-hidden="true"
           />
         </p>
-        <p>Execute a query to see the results</p>
+        <p style={{ color: tokens.colorNeutralForeground1 }}>Execute a query to see the results</p>
       </div>
     </div>
   );

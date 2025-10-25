@@ -4,16 +4,19 @@ import {
   FluentProvider,
   FluentProviderSlots,
   Theme,
+  createDarkTheme,
   createLightTheme,
   makeStyles,
   mergeClasses,
   shorthands,
   themeToTokensObject,
+  webDarkTheme,
   webLightTheme,
 } from "@fluentui/react-components";
 import { Platform, configContext } from "ConfigContext";
 import React from "react";
 import { appThemeFabricTealBrandRamp } from "../../Platform/Fabric/FabricTheme";
+import { useTheme } from "../../hooks/useTheme";
 
 export const LayoutConstants = {
   rowHeight: 32,
@@ -47,6 +50,7 @@ export const CosmosFluentProvider: React.FC<CosmosFluentProviderProps> = ({ chil
   // As we convert components to Fluent UI 9, if we end up with nested FluentProviders, the inner FluentProvider will be a no-op.
   const { isInFluentProvider } = React.useContext(FluentProviderContext);
   const styles = useDefaultRootStyles();
+  const { isDarkMode } = useTheme();
 
   if (isInFluentProvider) {
     // We're already in a fluent context, don't create another.
@@ -61,7 +65,7 @@ export const CosmosFluentProvider: React.FC<CosmosFluentProviderProps> = ({ chil
   return (
     <FluentProviderContext.Provider value={{ isInFluentProvider: true }}>
       <FluentProvider
-        theme={getPlatformTheme(configContext.platform)}
+        theme={getPlatformTheme(configContext.platform, isDarkMode)}
         className={mergeClasses(styles.fluentProvider, className)}
         {...props}
       >
@@ -114,7 +118,16 @@ const cosmosTheme = {
   sidebarInitialWidth: "300px",
 };
 
-export const tokens = themeToTokensObject({ ...webLightTheme, ...cosmosTheme, ...sizeMappings[LayoutSize.Compact] });
+// Get the current theme tokens based on the root theme
+export const getThemeTokens = (isDarkMode: boolean) =>
+  themeToTokensObject({
+    ...(isDarkMode ? webDarkTheme : webLightTheme),
+    ...cosmosTheme,
+    ...sizeMappings[LayoutSize.Compact],
+  });
+
+// Initialize with light theme, will be updated by the provider
+export const tokens = getThemeTokens(false);
 
 export const cosmosShorthands = {
   border: () => shorthands.border("1px", "solid", tokens.colorNeutralStroke2),
@@ -124,11 +137,10 @@ export const cosmosShorthands = {
   borderLeft: () => shorthands.borderLeft("1px", "solid", tokens.colorNeutralStroke2),
 };
 
-export function getPlatformTheme(platform: Platform): CosmosTheme {
+export function getPlatformTheme(platform: Platform, isDarkMode: boolean = false): CosmosTheme {
+  const createTheme = isDarkMode ? createDarkTheme : createLightTheme;
   const baseTheme =
-    platform === Platform.Fabric
-      ? createLightTheme(appThemeFabricTealBrandRamp)
-      : createLightTheme(appThemePortalBrandRamp);
+    platform === Platform.Fabric ? createTheme(appThemeFabricTealBrandRamp) : createTheme(appThemePortalBrandRamp);
 
   return {
     ...baseTheme,
