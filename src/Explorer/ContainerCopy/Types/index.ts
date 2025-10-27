@@ -28,14 +28,12 @@ export type DropdownOptionType = {
 };
 
 export type DatabaseParams = [
-	string,
 	string | undefined,
 	string | undefined,
 	string | undefined,
 	ApiType
 ];
 export type DataContainerParams = [
-	string,
 	string | undefined,
 	string | undefined,
 	string | undefined,
@@ -80,8 +78,6 @@ export interface CopyJobFlowType {
 }
 
 export interface CopyJobContextProviderType {
-	principalId: string;
-	armToken: string;
 	flow: CopyJobFlowType;
 	setFlow: React.Dispatch<React.SetStateAction<CopyJobFlowType>>;
 	copyJobState: CopyJobContextState | null;

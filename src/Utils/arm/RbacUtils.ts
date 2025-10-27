@@ -1,8 +1,8 @@
 import { configContext } from "ConfigContext";
 import { armRequest } from "Utils/arm/request";
+import { getCopyJobAuthorizationHeader } from "../CopyJobAuthUtils";
 
 export type FetchAccountDetailsParams = {
-    armToken: string;
     subscriptionId: string;
     resourceGroupName: string;
     accountName: string;
@@ -43,13 +43,6 @@ const getArmBaseUrl = (): string => {
     return base.endsWith("/") ? base.slice(0, -1) : base;
 };
 
-const createAuthHeaders = (armToken: string): Headers => {
-    const headers = new Headers();
-    headers.append("Authorization", `Bearer ${armToken}`);
-    headers.append("Content-Type", "application/json");
-    return headers;
-};
-
 const buildArmUrl = (path: string): string =>
     `${getArmBaseUrl()}${path}?api-version=${apiVersion}`;
 
@@ -64,7 +57,6 @@ const handleResponse = async (response: Response, context: string) => {
 };
 
 export const fetchRoleAssignments = async (
-    armToken: string,
     subscriptionId: string,
     resourceGroupName: string,
     accountName: string,
@@ -74,7 +66,7 @@ export const fetchRoleAssignments = async (
         `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlRoleAssignments`
     );
 
-    const response = await fetch(uri, { method: "GET", headers: createAuthHeaders(armToken) });
+    const response = await fetch(uri, { method: "GET", headers: getCopyJobAuthorizationHeader() });
     const data = await handleResponse(response, "role assignments");
 
     return (data.value || []).filter(
@@ -84,13 +76,12 @@ export const fetchRoleAssignments = async (
 };
 
 export const fetchRoleDefinitions = async (
-    armToken: string,
     roleAssignments: RoleAssignmentType[]
 ): Promise<RoleDefinitionType[]> => {
     const roleDefinitionIds = roleAssignments.map(assignment => assignment.properties.roleDefinitionId);
     const uniqueRoleDefinitionIds = Array.from(new Set(roleDefinitionIds));
 
-    const headers = createAuthHeaders(armToken);
+    const headers = getCopyJobAuthorizationHeader();
     const roleDefinitionUris = uniqueRoleDefinitionIds.map((id) => buildArmUrl(id));
 
     const promises = roleDefinitionUris.map((url) => fetch(url, { method: "GET", headers }));

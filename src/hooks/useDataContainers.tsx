@@ -3,10 +3,10 @@ import useSWR from "swr";
 import { getCollectionEndpoint, getDatabaseEndpoint } from "../Common/DatabaseAccountUtility";
 import { configContext } from "../ConfigContext";
 import { ApiType } from "../UserContext";
+import { getCopyJobAuthorizationHeader } from "../Utils/CopyJobAuthUtils";
 
 const apiVersion = "2023-09-15";
 export interface FetchDataContainersListParams {
-    armToken: string;
     subscriptionId: string;
     resourceGroupName: string;
     databaseName: string;
@@ -27,7 +27,6 @@ const buildReadDataContainersListUrl = (params: FetchDataContainersListParams): 
 }
 
 const fetchDataContainersList = async (
-    armToken: string,
     subscriptionId: string,
     resourceGroupName: string,
     accountName: string,
@@ -35,17 +34,13 @@ const fetchDataContainersList = async (
     apiType: ApiType
 ): Promise<DatabaseModel[]> => {
     const uri = buildReadDataContainersListUrl({
-        armToken,
         subscriptionId,
         resourceGroupName,
         accountName,
         databaseName,
         apiType
     });
-    const headers = new Headers();
-    const bearer = `Bearer ${armToken}`;
-    headers.append("Authorization", bearer);
-    headers.append("Content-Type", "application/json");
+    const headers = getCopyJobAuthorizationHeader();
 
     const response = await fetch(uri, {
         method: "GET",
@@ -61,7 +56,6 @@ const fetchDataContainersList = async (
 };
 
 export function useDataContainers(
-    armToken: string,
     subscriptionId: string,
     resourceGroupName: string,
     accountName: string,
@@ -70,13 +64,12 @@ export function useDataContainers(
 ): DatabaseModel[] | undefined {
     const { data } = useSWR(
         () => (
-            armToken && subscriptionId && resourceGroupName && accountName && databaseName && apiType ? [
+            subscriptionId && resourceGroupName && accountName && databaseName && apiType ? [
                 "fetchContainersLinkedToDatabases",
-                armToken, subscriptionId, resourceGroupName, accountName, databaseName, apiType
+                subscriptionId, resourceGroupName, accountName, databaseName, apiType
             ] : undefined
         ),
-        (_, armToken, subscriptionId, resourceGroupName, accountName, databaseName, apiType) => fetchDataContainersList(
-            armToken,
+        (_, subscriptionId, resourceGroupName, accountName, databaseName, apiType) => fetchDataContainersList(
             subscriptionId,
             resourceGroupName,
             accountName,

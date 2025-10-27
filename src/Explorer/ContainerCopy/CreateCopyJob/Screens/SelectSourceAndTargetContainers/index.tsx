@@ -11,7 +11,7 @@ import { useMemoizedSourceAndTargetData } from "./memoizedData";
 interface SelectSourceAndTargetContainersProps { }
 
 const SelectSourceAndTargetContainers = (_props: SelectSourceAndTargetContainersProps) => {
-    const { armToken, copyJobState, setCopyJobState } = useCopyJobContext();
+    const { copyJobState, setCopyJobState } = useCopyJobContext();
     const {
         source,
         target,
@@ -19,7 +19,7 @@ const SelectSourceAndTargetContainers = (_props: SelectSourceAndTargetContainers
         sourceContainerParams,
         targetDbParams,
         targetContainerParams
-    } = useMemoizedSourceAndTargetData(copyJobState, armToken);
+    } = useMemoizedSourceAndTargetData(copyJobState);
 
     // Custom hooks
     const sourceDatabases = useDatabases(...sourceDbParams) || [];

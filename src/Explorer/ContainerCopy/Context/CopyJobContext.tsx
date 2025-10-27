@@ -1,7 +1,5 @@
 import React from "react";
 import { userContext } from "UserContext";
-import { useAADAuth } from "../../../hooks/useAADAuth";
-import { useConfig } from "../../../hooks/useConfig";
 import { CopyJobMigrationType } from "../Enums";
 import { CopyJobContextProviderType, CopyJobContextState, CopyJobFlowType } from "../Types";
 
@@ -39,24 +37,15 @@ const getInitialCopyJobState = (): CopyJobContextState => {
 }
 
 const CopyJobContextProvider: React.FC<CopyJobContextProviderProps> = (props) => {
-    const config = useConfig();
-    const { isLoggedIn, armToken, account } = useAADAuth(config);
-    const principalId = account?.localAccountId ?? "";
-
     const [copyJobState, setCopyJobState] = React.useState<CopyJobContextState>(getInitialCopyJobState());
     const [flow, setFlow] = React.useState<CopyJobFlowType | null>(null);
-
-    if (!isLoggedIn || !armToken) {
-        // Add a shimmer or loader here
-        return null;
-    }
 
     const resetCopyJobState = () => {
         setCopyJobState(getInitialCopyJobState());
     }
 
     return (
-        <CopyJobContext.Provider value={{ principalId, armToken, copyJobState, setCopyJobState, flow, setFlow, resetCopyJobState }}>
+        <CopyJobContext.Provider value={{ copyJobState, setCopyJobState, flow, setFlow, resetCopyJobState }}>
             {props.children}
         </CopyJobContext.Provider>
     );
