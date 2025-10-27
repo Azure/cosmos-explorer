@@ -36,6 +36,14 @@ export interface DatabaseAccountSystemData {
 
 export interface DatabaseAccountBackupPolicy {
   type: string;
+  /* periodicModeProperties?: {
+    backupIntervalInMinutes: number;
+    backupRetentionIntervalInHours: number;
+    backupStorageRedundancy: string;
+  };
+  continuousModeProperties?: {
+    tier: string;
+  }; */
 }
 
 export interface DatabaseAccountExtendedProperties {

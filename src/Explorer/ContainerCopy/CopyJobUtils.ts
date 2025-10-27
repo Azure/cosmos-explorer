@@ -79,3 +79,12 @@ export function extractErrorMessage(error: CopyJobErrorType): CopyJobErrorType {
     }
 }
 
+export function getAccountDetailsFromResourceId(accountId: string | undefined) {
+    if (!accountId) {
+        return null;
+    }
+    const pattern = new RegExp('/subscriptions/([^/]+)/resourceGroups/([^/]+)/providers/Microsoft\\.DocumentDB/databaseAccounts/([^/]+)', 'i');
+    const matches = accountId.match(pattern);
+    const [_, subscriptionId, resourceGroup, accountName] = matches || [];
+    return { subscriptionId, resourceGroup, accountName };
+}

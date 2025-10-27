@@ -39,18 +39,14 @@ const PermissionSection: React.FC<PermissionSectionConfig> = ({
 );
 
 const AssignPermissions = () => {
-    const { armToken, copyJobState } = useCopyJobContext();
-    const permissionSections = usePermissionSections(copyJobState, armToken);
+    const { copyJobState } = useCopyJobContext();
+    const permissionSections = usePermissionSections(copyJobState);
     const [openItems, setOpenItems] = React.useState<string[]>([]);
 
     const indentLevels = React.useMemo<IndentLevel[]>(
         () => Array(copyJobState.migrationType === CopyJobMigrationType.Online ? 5 : 3).fill({ level: 0, width: "100%" }),
         []
     );
-
-    /* const onMoveToNextSection: AccordionToggleEventHandler<string> = useCallback((_event, data) => {
-        setOpenItems(data.openItems);
-    }, []); */
 
     useEffect(() => {
         const firstIncompleteSection = permissionSections.find(section => !section.completed);

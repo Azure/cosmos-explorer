@@ -3,10 +3,10 @@ import useSWR from "swr";
 import { getDatabaseEndpoint } from "../Common/DatabaseAccountUtility";
 import { configContext } from "../ConfigContext";
 import { ApiType } from "../UserContext";
+import { getCopyJobAuthorizationHeader } from "../Utils/CopyJobAuthUtils";
 
 const apiVersion = "2023-09-15";
 export interface FetchDatabasesListParams {
-    armToken: string;
     subscriptionId: string;
     resourceGroupName: string;
     accountName: string;
@@ -24,12 +24,9 @@ const buildReadDatabasesListUrl = (params: FetchDatabasesListParams): string => 
     return `${armEndpoint}/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/${databaseEndpoint}?api-version=${apiVersion}`;
 }
 
-const fetchDatabasesList = async (armToken: string, subscriptionId: string, resourceGroupName: string, accountName: string, apiType: ApiType): Promise<DatabaseModel[]> => {
-    const uri = buildReadDatabasesListUrl({ armToken, subscriptionId, resourceGroupName, accountName, apiType });
-    const headers = new Headers();
-    const bearer = `Bearer ${armToken}`;
-    headers.append("Authorization", bearer);
-    headers.append("Content-Type", "application/json");
+const fetchDatabasesList = async (subscriptionId: string, resourceGroupName: string, accountName: string, apiType: ApiType): Promise<DatabaseModel[]> => {
+    const uri = buildReadDatabasesListUrl({ subscriptionId, resourceGroupName, accountName, apiType });
+    const headers = getCopyJobAuthorizationHeader();
 
     const response = await fetch(uri, {
         method: "GET",
@@ -45,7 +42,6 @@ const fetchDatabasesList = async (armToken: string, subscriptionId: string, reso
 };
 
 export function useDatabases(
-    armToken: string,
     subscriptionId: string,
     resourceGroupName: string,
     accountName: string,
@@ -53,13 +49,12 @@ export function useDatabases(
 ): DatabaseModel[] | undefined {
     const { data } = useSWR(
         () => (
-            armToken && subscriptionId && resourceGroupName && accountName && apiType ? [
+            subscriptionId && resourceGroupName && accountName && apiType ? [
                 "fetchDatabasesLinkedToResource",
-                armToken, subscriptionId, resourceGroupName, accountName, apiType
+                subscriptionId, resourceGroupName, accountName, apiType
             ] : undefined
         ),
-        (_, armToken, subscriptionId, resourceGroupName, accountName, apiType) => fetchDatabasesList(
-            armToken,
+        (_, subscriptionId, resourceGroupName, accountName, apiType) => fetchDatabasesList(
             subscriptionId,
             resourceGroupName,
             accountName,

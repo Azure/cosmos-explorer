@@ -25,7 +25,7 @@ export interface PermissionSectionConfig {
     Component: React.ComponentType
     disabled: boolean;
     completed?: boolean;
-    validate?: (state: CopyJobContextState, armToken?: string) => boolean | Promise<boolean>;
+    validate?: (state: CopyJobContextState) => boolean | Promise<boolean>;
 }
 
 // Section IDs for maintainability
@@ -66,10 +66,9 @@ const PERMISSION_SECTIONS_CONFIG: PermissionSectionConfig[] = [
         title: ContainerCopyMessages.readPermissionAssigned.title,
         Component: AddReadPermissionToDefaultIdentity,
         disabled: true,
-        validate: async (state: CopyJobContextState, armToken?: string) => {
+        validate: async (state: CopyJobContextState) => {
             const principalId = state?.target?.account?.identity?.principalId;
             const rolesAssigned = await fetchRoleAssignments(
-                armToken,
                 state.source?.subscription?.subscriptionId,
                 state.source?.account?.resourceGroup,
                 state.source?.account?.name,
@@ -77,7 +76,6 @@ const PERMISSION_SECTIONS_CONFIG: PermissionSectionConfig[] = [
             );
 
             const roleDefinitions = await fetchRoleDefinitions(
-                armToken,
                 rolesAssigned ?? []
             );
             return checkTargetHasReaderRoleOnSource(roleDefinitions ?? []);
@@ -127,10 +125,7 @@ export function checkTargetHasReaderRoleOnSource(roleDefinitions: RoleDefinition
  * Returns the permission sections configuration for the Assign Permissions screen.
  * Memoizes derived values for performance and decouples logic for testability.
  */
-const usePermissionSections = (
-    state: CopyJobContextState,
-    armToken: string,
-): PermissionSectionConfig[] => {
+const usePermissionSections = (state: CopyJobContextState): PermissionSectionConfig[] => {
     const { validationCache, setValidationCache } = useCopyJobPrerequisitesCache();
     const [permissionSections, setPermissionSections] = useState<PermissionSectionConfig[] | null>(null);
     const isValidatingRef = useRef(false);
@@ -169,7 +164,7 @@ const usePermissionSections = (
                 }
                 // We've reached the first non-cached section - validate it
                 if (section.validate) {
-                    const isValid = await section.validate(state, armToken);
+                    const isValid = await section.validate(state);
                     newValidationCache.set(section.id, isValid);
                     result.push({ ...section, completed: isValid });
                     // Stop validation if current section failed
@@ -197,7 +192,7 @@ const usePermissionSections = (
         return () => {
             isValidatingRef.current = false;
         }
-    }, [state, armToken, sectionToValidate]);
+    }, [state, sectionToValidate]);
 
     return permissionSections ?? [];
 };

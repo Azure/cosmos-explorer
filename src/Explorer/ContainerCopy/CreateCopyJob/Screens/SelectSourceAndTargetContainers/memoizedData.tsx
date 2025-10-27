@@ -1,57 +1,64 @@
 import React from "react";
+import { getAccountDetailsFromResourceId } from "../../../CopyJobUtils";
 import { CopyJobContextState, DatabaseParams, DataContainerParams } from "../../../Types";
 
-export function useMemoizedSourceAndTargetData(copyJobState: CopyJobContextState, armToken: string) {
+export function useMemoizedSourceAndTargetData(copyJobState: CopyJobContextState) {
     const { source, target } = copyJobState ?? {};
     const selectedSourceAccount = source?.account;
     const selectedTargetAccount = target?.account;
+    const {
+        subscriptionId: sourceSubscriptionId,
+        resourceGroup: sourceResourceGroup,
+        accountName: sourceAccountName
+    } = getAccountDetailsFromResourceId(selectedSourceAccount?.id);
+    const {
+        subscriptionId: targetSubscriptionId,
+        resourceGroup: targetResourceGroup,
+        accountName: targetAccountName
+    } = getAccountDetailsFromResourceId(selectedTargetAccount?.id);
 
     const sourceDbParams = React.useMemo(
         () =>
             [
-                armToken,
-                source?.subscription?.subscriptionId,
-                selectedSourceAccount?.resourceGroup,
-                selectedSourceAccount?.name,
+                sourceSubscriptionId,
+                sourceResourceGroup,
+                sourceAccountName,
                 'SQL',
             ] as DatabaseParams,
-        [armToken, source?.subscription?.subscriptionId, selectedSourceAccount]
+        [sourceSubscriptionId, sourceResourceGroup, sourceAccountName]
     );
 
     const sourceContainerParams = React.useMemo(
         () =>
             [
-                armToken,
-                source?.subscription?.subscriptionId,
-                selectedSourceAccount?.resourceGroup,
-                selectedSourceAccount?.name,
+                sourceSubscriptionId,
+                sourceResourceGroup,
+                sourceAccountName,
                 source?.databaseId,
                 'SQL',
             ] as DataContainerParams,
-        [armToken, source?.subscription?.subscriptionId, selectedSourceAccount, source?.databaseId]
+        [sourceSubscriptionId, sourceResourceGroup, sourceAccountName, source?.databaseId]
     );
 
     const targetDbParams = React.useMemo(
         () => [
-            armToken,
-            target?.subscriptionId,
-            selectedTargetAccount?.resourceGroup,
-            selectedTargetAccount?.name,
+            targetSubscriptionId,
+            targetResourceGroup,
+            targetAccountName,
             'SQL',
         ] as DatabaseParams,
-        [armToken, target?.subscriptionId, selectedTargetAccount]
+        [targetSubscriptionId, targetResourceGroup, targetAccountName]
     );
 
     const targetContainerParams = React.useMemo(
         () => [
-            armToken,
-            target?.subscriptionId,
-            selectedTargetAccount?.resourceGroup,
-            selectedTargetAccount?.name,
+            targetSubscriptionId,
+            targetResourceGroup,
+            targetAccountName,
             target?.databaseId,
             'SQL',
         ] as DataContainerParams,
-        [armToken, target?.subscriptionId, selectedTargetAccount, target?.databaseId]
+        [targetSubscriptionId, targetResourceGroup, targetAccountName, target?.databaseId]
     );
 
     return { source, target, sourceDbParams, sourceContainerParams, targetDbParams, targetContainerParams };
