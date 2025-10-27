@@ -67,6 +67,7 @@ export default class Collection implements ViewModels.Collection {
   public computedProperties: ko.Observable<DataModels.ComputedProperties>;
   public materializedViews: ko.Observable<DataModels.MaterializedView[]>;
   public materializedViewDefinition: ko.Observable<DataModels.MaterializedViewDefinition>;
+  public dataMaskingPolicy: ko.Observable<DataModels.DataMaskingPolicy>;
 
   public offer: ko.Observable<DataModels.Offer>;
   public conflictResolutionPolicy: ko.Observable<DataModels.ConflictResolutionPolicy>;
@@ -136,25 +137,36 @@ export default class Collection implements ViewModels.Collection {
     this.materializedViews = ko.observable(data.materializedViews);
     this.materializedViewDefinition = ko.observable(data.materializedViewDefinition);
 
-    this.partitionKeyPropertyHeaders = this.partitionKey?.paths;
-    this.partitionKeyProperties = this.partitionKeyPropertyHeaders?.map((partitionKeyPropertyHeader, i) => {
-      // TODO fix this to only replace non-excaped single quotes
-      let partitionKeyProperty = partitionKeyPropertyHeader.replace(/[/]+/g, ".").substring(1).replace(/[']+/g, "");
+    // Initialize dataMaskingPolicy with default values if not present
+    const defaultDataMaskingPolicy: DataModels.DataMaskingPolicy = {
+      includedPaths: Array<{ path: string; strategy: string; startPosition: number; length: number }>(),
+      excludedPaths: Array<string>(),
+      policyFormatVersion: 2,
+      isPolicyEnabled: false,
+    };
+    const observablePolicy = ko.observable(data.dataMaskingPolicy || defaultDataMaskingPolicy);
+    observablePolicy.subscribe(() => {});
+    this.dataMaskingPolicy = observablePolicy;
+    this.partitionKeyPropertyHeaders = this.partitionKey?.paths || [];
+    this.partitionKeyProperties =
+      this.partitionKeyPropertyHeaders?.map((partitionKeyPropertyHeader, i) => {
+        // TODO fix this to only replace non-excaped single quotes
+        let partitionKeyProperty = partitionKeyPropertyHeader.replace(/[/]+/g, ".").substring(1).replace(/[']+/g, "");
 
-      if (userContext.apiType === "Mongo" && partitionKeyProperty) {
-        if (~partitionKeyProperty.indexOf(`"`)) {
-          partitionKeyProperty = partitionKeyProperty.replace(/["]+/g, "");
+        if (userContext.apiType === "Mongo" && partitionKeyProperty) {
+          if (~partitionKeyProperty.indexOf(`"`)) {
+            partitionKeyProperty = partitionKeyProperty.replace(/["]+/g, "");
+          }
+          // TODO #10738269 : Add this logic in a derived class for Mongo
+          if (partitionKeyProperty.indexOf("$v") > -1) {
+            // From $v.shard.$v.key.$v > shard.key
+            partitionKeyProperty = partitionKeyProperty.replace(/.\$v/g, "").replace(/\$v./g, "");
+            this.partitionKeyPropertyHeaders[i] = "/" + partitionKeyProperty;
+          }
         }
-        // TODO #10738269 : Add this logic in a derived class for Mongo
-        if (partitionKeyProperty.indexOf("$v") > -1) {
-          // From $v.shard.$v.key.$v > shard.key
-          partitionKeyProperty = partitionKeyProperty.replace(/.\$v/g, "").replace(/\$v./g, "");
-          this.partitionKeyPropertyHeaders[i] = "/" + partitionKeyProperty;
-        }
-      }
 
-      return partitionKeyProperty;
-    });
+        return partitionKeyProperty;
+      }) || [];
 
     this.documentIds = ko.observableArray<DocumentId>([]);
     this.isCollectionExpanded = ko.observable<boolean>(false);
@@ -163,7 +175,6 @@ export default class Collection implements ViewModels.Collection {
 
     this.documentsFocused = ko.observable<boolean>();
     this.documentsFocused.subscribe((focus) => {
-      console.log("Focus set on Documents: " + focus);
       this.focusedSubnodeKind(ViewModels.CollectionTabKind.Documents);
     });
 
