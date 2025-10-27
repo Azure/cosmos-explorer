@@ -15,11 +15,11 @@ interface SelectAccountProps { }
 
 const SelectAccount = React.memo(
     (_props: SelectAccountProps) => {
-        const { armToken, copyJobState, setCopyJobState } = useCopyJobContext();
+        const { copyJobState, setCopyJobState } = useCopyJobContext();
         const selectedSubscriptionId = copyJobState?.source?.subscription?.subscriptionId;
 
-        const subscriptions: Subscription[] = useSubscriptions(armToken);
-        const allAccounts: DatabaseAccount[] = useDatabaseAccounts(selectedSubscriptionId, armToken);
+        const subscriptions: Subscription[] = useSubscriptions();
+        const allAccounts: DatabaseAccount[] = useDatabaseAccounts(selectedSubscriptionId);
         const sqlApiOnlyAccounts: DatabaseAccount[] = allAccounts?.filter(account => account.type === "SQL" || account.kind === "GlobalDocumentDB");
 
         const { subscriptionOptions, accountOptions } = useDropdownOptions(subscriptions, sqlApiOnlyAccounts);
