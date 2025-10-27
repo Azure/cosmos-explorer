@@ -92,6 +92,7 @@ export class CapabilityNames {
   public static readonly EnableNoSQLFullTextSearch: string = "EnableNoSQLFullTextSearch";
   public static readonly EnableDataMasking: string = "EnableDataMasking";
   public static readonly EnableDynamicDataMasking: string = "EnableDynamicDataMasking";
+  public static readonly EnableNoSQLFullTextSearchPreviewFeatures: string = "EnableNoSQLFullTextSearchPreviewFeatures";
 }
 
 export enum CapacityMode {
