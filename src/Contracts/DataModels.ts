@@ -236,7 +236,6 @@ export interface DataMaskingPolicy {
     length: number;
   }>;
   excludedPaths: string[];
-  policyFormatVersion: number;
   isPolicyEnabled: boolean;
 }
 
