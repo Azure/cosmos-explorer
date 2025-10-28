@@ -1,22 +1,28 @@
-import { configContext } from "ConfigContext";
 import React from "react";
 import { userContext } from "UserContext";
 import { useSidePanel } from "../../../hooks/useSidePanel";
-import { armRequest } from "../../../Utils/arm/request";
+import {
+    cancel,
+    complete,
+    create,
+    listByDatabaseAccount,
+    pause,
+    resume
+} from "../../../Utils/arm/generatedClients/dataTransferService/dataTransferJobs";
+import { CreateJobRequest, DataTransferJobGetResults } from "../../../Utils/arm/generatedClients/dataTransferService/types";
 import ContainerCopyMessages from "../ContainerCopyMessages";
 import {
-    buildDataTransferJobPath,
     convertTime,
     convertToCamelCase,
-    COPY_JOB_API_VERSION,
     COSMOS_SQL_COMPONENT,
     extractErrorMessage,
-    formatUTCDateTime
+    formatUTCDateTime,
+    getAccountDetailsFromResourceId
 } from "../CopyJobUtils";
 import CreateCopyJobScreensProvider from "../CreateCopyJob/Screens/CreateCopyJobScreensProvider";
-import { CopyJobStatusType } from "../Enums";
+import { CopyJobActions, CopyJobStatusType } from "../Enums";
 import { MonitorCopyJobsRefState } from "../MonitorCopyJobs/MonitorCopyJobRefState";
-import { CopyJobContextState, CopyJobError, CopyJobType, DataTransferJobType } from "../Types";
+import { CopyJobContextState, CopyJobError, CopyJobErrorType, CopyJobType } from "../Types";
 
 export const openCreateCopyJobPanel = () => {
     const sidePanelState = useSidePanel.getState()
@@ -37,19 +43,13 @@ export const getCopyJobs = async (): Promise<CopyJobType[]> => {
     }
     copyJobsAbortController = new AbortController();
     try {
-        const path = buildDataTransferJobPath({
-            subscriptionId: userContext.subscriptionId,
-            resourceGroup: userContext.databaseAccount?.resourceGroup || "",
-            accountName: userContext.databaseAccount?.name || ""
-        });
-
-        const response: { value: DataTransferJobType[] } = await armRequest({
-            host: configContext.ARM_ENDPOINT,
-            path,
-            method: "GET",
-            apiVersion: COPY_JOB_API_VERSION,
-            signal: copyJobsAbortController.signal
-        });
+        const { subscriptionId, resourceGroup, accountName } = getAccountDetailsFromResourceId(userContext.databaseAccount?.id || "");
+        const response = await listByDatabaseAccount(
+            subscriptionId,
+            resourceGroup,
+            accountName,
+            copyJobsAbortController.signal
+        );
 
         const jobs = response.value || [];
         if (!Array.isArray(jobs)) {
@@ -74,14 +74,14 @@ export const getCopyJobs = async (): Promise<CopyJobType[]> => {
         };
 
         const formattedJobs: CopyJobType[] = jobs
-            .filter((job: DataTransferJobType) =>
+            .filter((job: DataTransferJobGetResults) =>
                 job.properties?.source?.component === COSMOS_SQL_COMPONENT &&
                 job.properties?.destination?.component === COSMOS_SQL_COMPONENT
             )
-            .sort((current: DataTransferJobType, next: DataTransferJobType) =>
+            .sort((current: DataTransferJobGetResults, next: DataTransferJobGetResults) =>
                 new Date(next.properties.lastUpdatedUtcTime).getTime() - new Date(current.properties.lastUpdatedUtcTime).getTime()
             )
-            .map((job: DataTransferJobType, index: number) => {
+            .map((job: DataTransferJobGetResults, index: number) => {
                 const dateTimeObj = formatUTCDateTime(job.properties.lastUpdatedUtcTime);
 
                 return {
@@ -93,7 +93,7 @@ export const getCopyJobs = async (): Promise<CopyJobType[]> => {
                     Duration: convertTime(job.properties.duration),
                     LastUpdatedTime: dateTimeObj.formattedDateTime,
                     timestamp: dateTimeObj.timestamp,
-                    Error: job.properties.error ? extractErrorMessage(job.properties.error) : null,
+                    Error: job.properties.error ? extractErrorMessage(job.properties.error as unknown as CopyJobErrorType) : null,
                 } as CopyJobType;
             });
         return formattedJobs;
@@ -107,32 +107,31 @@ export const getCopyJobs = async (): Promise<CopyJobType[]> => {
 export const submitCreateCopyJob = async (state: CopyJobContextState, onSuccess: () => void) => {
     try {
         const { source, target, migrationType, jobName } = state;
-        const path = buildDataTransferJobPath({
-            subscriptionId: userContext.subscriptionId,
-            resourceGroup: userContext.databaseAccount?.resourceGroup || "",
-            accountName: userContext.databaseAccount?.name || "",
-            jobName
-        });
+        const { subscriptionId, resourceGroup, accountName } = getAccountDetailsFromResourceId(userContext.databaseAccount?.id || "");
         const body = {
-            "properties": {
-                "source": {
-                    "component": "CosmosDBSql",
-                    "remoteAccountName": source?.account?.name,
-                    "databaseName": source?.databaseId,
-                    "containerName": source?.containerId
+            properties: {
+                source: {
+                    component: "CosmosDBSql",
+                    remoteAccountName: source?.account?.name,
+                    databaseName: source?.databaseId,
+                    containerName: source?.containerId
                 },
-                "destination": {
-                    "component": "CosmosDBSql",
-                    "databaseName": target?.databaseId,
-                    "containerName": target?.containerId
+                destination: {
+                    component: "CosmosDBSql",
+                    databaseName: target?.databaseId,
+                    containerName: target?.containerId
                 },
-                "mode": migrationType
+                mode: migrationType
             }
-        };
+        } as unknown as CreateJobRequest;
 
-        const response: DataTransferJobType = await armRequest({
-            host: configContext.ARM_ENDPOINT, path, method: "PUT", body, apiVersion: COPY_JOB_API_VERSION
-        });
+        const response = await create(
+            subscriptionId,
+            resourceGroup,
+            accountName,
+            jobName,
+            body,
+        );
         MonitorCopyJobsRefState.getState().ref?.refreshJobList();
         onSuccess();
         return response;
@@ -142,19 +141,29 @@ export const submitCreateCopyJob = async (state: CopyJobContextState, onSuccess:
     }
 }
 
-export const updateCopyJobStatus = async (job: CopyJobType, action: string): Promise<DataTransferJobType> => {
+export const updateCopyJobStatus = async (job: CopyJobType, action: string): Promise<DataTransferJobGetResults> => {
     try {
-        const path = buildDataTransferJobPath({
-            subscriptionId: userContext.subscriptionId,
-            resourceGroup: userContext.databaseAccount?.resourceGroup || "",
-            accountName: userContext.databaseAccount?.name || "",
-            jobName: job.Name,
-            action: action
-        });
 
-        const response: DataTransferJobType = await armRequest({
-            host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion: COPY_JOB_API_VERSION
-        });
+        let updateFn = null;
+        switch (action.toLowerCase()) {
+            case CopyJobActions.pause:
+                updateFn = pause;
+                break;
+            case CopyJobActions.resume:
+                updateFn = resume;
+                break;
+            case CopyJobActions.cancel:
+                updateFn = cancel;
+                break;
+            case CopyJobActions.complete:
+                updateFn = complete;
+                break;
+            default:
+                throw new Error(`Unsupported action: ${action}`);
+        }
+        const { subscriptionId, resourceGroup, accountName } = getAccountDetailsFromResourceId(userContext.databaseAccount?.id || "");
+        const response = await updateFn?.(subscriptionId, resourceGroup, accountName, job.Name);
+
         return response;
     } catch (error) {
         const errorMessage = JSON.stringify((error as CopyJobError).message || error.content || error);

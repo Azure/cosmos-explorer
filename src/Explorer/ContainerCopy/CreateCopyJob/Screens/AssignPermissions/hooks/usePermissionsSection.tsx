@@ -5,6 +5,7 @@ import {
     RoleDefinitionType
 } from "../../../../../../Utils/arm/RbacUtils";
 import ContainerCopyMessages from "../../../../ContainerCopyMessages";
+import { getAccountDetailsFromResourceId } from "../../../../CopyJobUtils";
 import {
     BackupPolicyType,
     CopyJobMigrationType,
@@ -68,10 +69,17 @@ const PERMISSION_SECTIONS_CONFIG: PermissionSectionConfig[] = [
         disabled: true,
         validate: async (state: CopyJobContextState) => {
             const principalId = state?.target?.account?.identity?.principalId;
+            const selectedSourceAccount = state?.source?.account;
+            const {
+                subscriptionId: sourceSubscriptionId,
+                resourceGroup: sourceResourceGroup,
+                accountName: sourceAccountName
+            } = getAccountDetailsFromResourceId(selectedSourceAccount?.id);
+
             const rolesAssigned = await fetchRoleAssignments(
-                state.source?.subscription?.subscriptionId,
-                state.source?.account?.resourceGroup,
-                state.source?.account?.name,
+                sourceSubscriptionId,
+                sourceResourceGroup,
+                sourceAccountName,
                 principalId
             );
 

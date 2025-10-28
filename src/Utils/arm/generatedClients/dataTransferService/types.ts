@@ -3,99 +3,112 @@
   Run "npm run generateARMClients" to regenerate
   Edting this file directly should be done with extreme caution as not to diverge from ARM REST specs
 
-  Generated from: https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/specification/cosmos-db/resource-manager/Microsoft.DocumentDB/preview/2023-11-15-preview/dataTransferService.json
+  Generated from: https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/specification/cosmos-db/resource-manager/Microsoft.DocumentDB/DocumentDB/preview/2025-05-01-preview/dataTransferService.json
 */
 
 /* Base class for all DataTransfer source/sink */
 export interface DataTransferDataSourceSink {
-  /* undocumented */
-  component: "CosmosDBCassandra" | "CosmosDBMongo" | "CosmosDBSql" | "AzureBlobStorage";
+    /* undocumented */
+    component: "CosmosDBCassandra" | "CosmosDBMongo" | "CosmosDBMongoVCore" | "CosmosDBSql" | "AzureBlobStorage";
 }
 
 /* A base CosmosDB data source/sink */
 export type BaseCosmosDataTransferDataSourceSink = DataTransferDataSourceSink & {
-  /* undocumented */
-  remoteAccountName?: string;
+    /* undocumented */
+    remoteAccountName?: string;
 };
 
 /* A CosmosDB Cassandra API data source/sink */
 export type CosmosCassandraDataTransferDataSourceSink = BaseCosmosDataTransferDataSourceSink & {
-  /* undocumented */
-  keyspaceName: string;
-  /* undocumented */
-  tableName: string;
+    /* undocumented */
+    keyspaceName: string;
+    /* undocumented */
+    tableName: string;
 };
 
 /* A CosmosDB Mongo API data source/sink */
 export type CosmosMongoDataTransferDataSourceSink = BaseCosmosDataTransferDataSourceSink & {
-  /* undocumented */
-  databaseName: string;
-  /* undocumented */
-  collectionName: string;
+    /* undocumented */
+    databaseName: string;
+    /* undocumented */
+    collectionName: string;
 };
+
+/* A CosmosDB Mongo vCore API data source/sink */
+export type CosmosMongoVCoreDataTransferDataSourceSink = DataTransferDataSourceSink & {
+    /* undocumented */
+    databaseName: string;
+    /* undocumented */
+    collectionName: string;
+    /* undocumented */
+    hostName?: string;
+    /* undocumented */
+    connectionStringKeyVaultUri?: string;
+};
+
 
 /* A CosmosDB No Sql API data source/sink */
 export type CosmosSqlDataTransferDataSourceSink = BaseCosmosDataTransferDataSourceSink & {
-  /* undocumented */
-  databaseName: string;
-  /* undocumented */
-  containerName: string;
+    /* undocumented */
+    databaseName: string;
+    /* undocumented */
+    containerName: string;
 };
 
 /* An Azure Blob Storage data source/sink */
 export type AzureBlobDataTransferDataSourceSink = DataTransferDataSourceSink & {
-  /* undocumented */
-  containerName: string;
-  /* undocumented */
-  endpointUrl?: string;
+    /* undocumented */
+    containerName: string;
+    /* undocumented */
+    endpointUrl?: string;
 };
 
 /* The properties of a DataTransfer Job */
 export interface DataTransferJobProperties {
-  /* Job Name */
-  readonly jobName?: string;
-  /* Source DataStore details */
-  source: DataTransferDataSourceSink;
+    /* Job Name */
+    readonly jobName?: string;
+    /* Source DataStore details */
+    source: DataTransferDataSourceSink;
 
-  /* Destination DataStore details */
-  destination: DataTransferDataSourceSink;
+    /* Destination DataStore details */
+    destination: DataTransferDataSourceSink;
 
-  /* Job Status */
-  readonly status?: string;
-  /* Processed Count. */
-  readonly processedCount?: number;
-  /* Total Count. */
-  readonly totalCount?: number;
-  /* Last Updated Time (ISO-8601 format). */
-  readonly lastUpdatedUtcTime?: string;
-  /* Worker count */
-  workerCount?: number;
-  /* Error response for Faulted job */
-  readonly error?: unknown;
+    /* Job Status */
+    readonly status?: string;
+    /* Processed Count. */
+    readonly processedCount?: number
+    /* Total Count. */
+    readonly totalCount?: number;
+    /* Last Updated Time (ISO-8601 format). */
+    readonly lastUpdatedUtcTime?: string;
+    /* Worker count */
+    workerCount?: number;
+    /* Error response for Faulted job */
+    readonly error?: unknown;
 
-  /* Total Duration of Job */
-  readonly duration?: string;
-  /* Mode of job execution */
-  mode?: "Offline" | "Online";
+    /* Total Duration of Job */
+    readonly duration?: string
+    /* Mode of job execution */
+    mode?: "Offline" | "Online";
 }
 
 /* Parameters to create Data Transfer Job */
 export type CreateJobRequest = unknown & {
-  /* Data Transfer Create Job Properties */
-  properties: DataTransferJobProperties;
+    /* Data Transfer Create Job Properties */
+    properties: DataTransferJobProperties;
 };
 
 /* A Cosmos DB Data Transfer Job */
 export type DataTransferJobGetResults = unknown & {
-  /* undocumented */
-  properties?: DataTransferJobProperties;
+    /* undocumented */
+    properties?: DataTransferJobProperties;
 };
 
 /* The List operation response, that contains the Data Transfer jobs and their properties. */
 export interface DataTransferJobFeedResults {
-  /* List of Data Transfer jobs and their properties. */
-  readonly value?: DataTransferJobGetResults[];
+    /* List of Data Transfer jobs and their properties. */
+    readonly value?: DataTransferJobGetResults[];
 
-  /* URL to get the next set of Data Transfer job list results if there are any. */
-  readonly nextLink?: string;
+    /* URL to get the next set of Data Transfer job list results if there are any. */
+    readonly nextLink?: string;
 }
