@@ -33,7 +33,6 @@ const emptyDataMaskingPolicy: DataModels.DataMaskingPolicy = {
     },
   ],
   excludedPaths: [],
-  policyFormatVersion: 2,
   isPolicyEnabled: false,
 };
 

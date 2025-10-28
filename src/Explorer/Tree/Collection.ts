@@ -141,7 +141,6 @@ export default class Collection implements ViewModels.Collection {
     const defaultDataMaskingPolicy: DataModels.DataMaskingPolicy = {
       includedPaths: Array<{ path: string; strategy: string; startPosition: number; length: number }>(),
       excludedPaths: Array<string>(),
-      policyFormatVersion: 2,
       isPolicyEnabled: false,
     };
     const observablePolicy = ko.observable(data.dataMaskingPolicy || defaultDataMaskingPolicy);

@@ -842,7 +842,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     const dataMaskingContent: DataModels.DataMaskingPolicy = {
       includedPaths: this.collection.dataMaskingPolicy?.()?.includedPaths || [],
       excludedPaths: this.collection.dataMaskingPolicy?.()?.excludedPaths || [],
-      policyFormatVersion: this.collection.dataMaskingPolicy?.()?.policyFormatVersion || 2,
       isPolicyEnabled: this.collection.dataMaskingPolicy?.()?.isPolicyEnabled || false,
     };
     const conflictResolutionPolicy: DataModels.ConflictResolutionPolicy =

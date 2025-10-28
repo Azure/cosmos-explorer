@@ -30,7 +30,6 @@ jest.mock("../../../Common/dataAccess/updateCollection", () => ({
     dataMaskingPolicy: {
       includedPaths: [],
       excludedPaths: ["/excludedPath"],
-      policyFormatVersion: 2,
       isPolicyEnabled: true,
     },
     indexes: [],
@@ -308,13 +307,11 @@ describe("SettingsComponent", () => {
       dataMaskingContent: {
         includedPaths: [],
         excludedPaths: ["/excludedPath"],
-        policyFormatVersion: 2,
         isPolicyEnabled: true,
       },
       dataMaskingContentBaseline: {
         includedPaths: [],
         excludedPaths: [],
-        policyFormatVersion: 2,
         isPolicyEnabled: false,
       },
       isDataMaskingDirty: true,
@@ -329,7 +326,6 @@ describe("SettingsComponent", () => {
     expect(wrapper.state("dataMaskingContentBaseline")).toEqual({
       includedPaths: [],
       excludedPaths: ["/excludedPath"],
-      policyFormatVersion: 2,
       isPolicyEnabled: true,
     });
   });
@@ -344,7 +340,6 @@ describe("SettingsComponent", () => {
     const invalidPolicy: InvalidPolicy = {
       includedPaths: "invalid",
       excludedPaths: [],
-      policyFormatVersion: 2,
       isPolicyEnabled: false,
     };
     // Use type assertion since we're deliberately testing with invalid data
@@ -354,7 +349,6 @@ describe("SettingsComponent", () => {
     expect(wrapper.state("dataMaskingContent")).toEqual({
       includedPaths: "invalid",
       excludedPaths: [],
-      policyFormatVersion: 2,
       isPolicyEnabled: false,
     });
     expect(wrapper.state("dataMaskingValidationErrors")).toEqual(["includedPaths must be an array"]);
@@ -370,7 +364,6 @@ describe("SettingsComponent", () => {
         },
       ],
       excludedPaths: ["/excludedPath"],
-      policyFormatVersion: 2,
       isPolicyEnabled: true,
     };
 
@@ -395,7 +388,6 @@ describe("SettingsComponent", () => {
         },
       ],
       excludedPaths: ["/excludedPath1"],
-      policyFormatVersion: 2,
       isPolicyEnabled: false,
     };
 
@@ -409,7 +401,6 @@ describe("SettingsComponent", () => {
         },
       ],
       excludedPaths: ["/excludedPath2"],
-      policyFormatVersion: 2,
       isPolicyEnabled: true,
     };
 
