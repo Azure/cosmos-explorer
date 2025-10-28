@@ -700,9 +700,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     if (!Array.isArray(newDataMasking.excludedPaths)) {
       validationErrors.push("excludedPaths must be an array");
     }
-    if (typeof newDataMasking.policyFormatVersion !== "number") {
-      validationErrors.push("policyFormatVersion must be a number");
-    }
     if (typeof newDataMasking.isPolicyEnabled !== "boolean") {
       validationErrors.push("isPolicyEnabled must be a boolean");
     }
