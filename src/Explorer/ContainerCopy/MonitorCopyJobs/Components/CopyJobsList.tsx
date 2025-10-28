@@ -1,102 +1,103 @@
+/*  eslint-disable @typescript-eslint/no-explicit-any */
 import {
-    ConstrainMode,
-    DetailsListLayoutMode,
-    DetailsRow,
-    IColumn,
-    ScrollablePane,
-    ScrollbarVisibility,
-    ShimmeredDetailsList,
-    Stack,
-    Sticky,
-    StickyPositionType
+  ConstrainMode,
+  DetailsListLayoutMode,
+  DetailsRow,
+  IColumn,
+  ScrollablePane,
+  ScrollbarVisibility,
+  ShimmeredDetailsList,
+  Stack,
+  Sticky,
+  StickyPositionType,
 } from "@fluentui/react";
 import React, { useEffect } from "react";
 import { CopyJobType } from "../../Types";
 import { getColumns } from "./CopyJobColumns";
 
 interface CopyJobsListProps {
-    jobs: CopyJobType[];
-    handleActionClick: (job: CopyJobType, action: string) => void,
-    pageSize?: number
+  jobs: CopyJobType[];
+  handleActionClick: (job: CopyJobType, action: string) => void;
+  pageSize?: number;
 }
 
 const styles = {
-    container: { height: 'calc(100vh - 15em)' } as React.CSSProperties,
-    stackItem: { position: "relative", marginBottom: "20px" } as React.CSSProperties,
+  container: { height: "calc(100vh - 15em)" } as React.CSSProperties,
+  stackItem: { position: "relative", marginBottom: "20px" } as React.CSSProperties,
 };
 
 const PAGE_SIZE = 100; // Number of items per page
 
 const CopyJobsList: React.FC<CopyJobsListProps> = ({ jobs, handleActionClick, pageSize = PAGE_SIZE }) => {
-    const [startIndex, setStartIndex] = React.useState(0);
-    const [sortedJobs, setSortedJobs] = React.useState(jobs);
-    const [sortedColumnKey, setSortedColumnKey] = React.useState<string | undefined>(undefined);
-    const [isSortedDescending, setIsSortedDescending] = React.useState<boolean>(false);
+  const [startIndex] = React.useState(0);
+  const [sortedJobs, setSortedJobs] = React.useState<CopyJobType[]>(jobs);
+  const [sortedColumnKey, setSortedColumnKey] = React.useState<string | undefined>(undefined);
+  const [isSortedDescending, setIsSortedDescending] = React.useState<boolean>(false);
 
-    useEffect(() => {
-        setSortedJobs(jobs);
-    }, [jobs]);
+  useEffect(() => {
+    setSortedJobs(jobs);
+  }, [jobs]);
 
-    const handleSort = (columnKey: string) => {
-        const isDescending = sortedColumnKey === columnKey ? !isSortedDescending : false;
-        const sorted = [...sortedJobs].sort((current: any, next: any) => {
-            if (current[columnKey] < next[columnKey]) return isDescending ? 1 : -1;
-            if (current[columnKey] > next[columnKey]) return isDescending ? -1 : 1;
-            return 0;
-        });
-        setSortedJobs(sorted);
-        setSortedColumnKey(columnKey);
-        setIsSortedDescending(isDescending);
-    }
+  const handleSort = (columnKey: string) => {
+    const isDescending = sortedColumnKey === columnKey ? !isSortedDescending : false;
+    const sorted = [...sortedJobs].sort((current: any, next: any) => {
+      if (current[columnKey] < next[columnKey]) {
+        return isDescending ? 1 : -1;
+      }
+      if (current[columnKey] > next[columnKey]) {
+        return isDescending ? -1 : 1;
+      }
+      return 0;
+    });
+    setSortedJobs(sorted);
+    setSortedColumnKey(columnKey);
+    setIsSortedDescending(isDescending);
+  };
 
-    const columns: IColumn[] = React.useMemo(
-        () => getColumns(handleSort, handleActionClick, sortedColumnKey, isSortedDescending),
-        [handleSort, handleActionClick, sortedColumnKey, isSortedDescending]
-    );
+  const columns: IColumn[] = React.useMemo(
+    () => getColumns(handleSort, handleActionClick, sortedColumnKey, isSortedDescending),
+    [handleSort, handleActionClick, sortedColumnKey, isSortedDescending],
+  );
 
-    const _handleRowClick = React.useCallback((job: CopyJobType) => {
-        console.log("Row clicked:", job);
-    }, []);
+  const _handleRowClick = React.useCallback((job: CopyJobType) => {
+    // eslint-disable-next-line no-console
+    console.log("Row clicked:", job);
+  }, []);
 
-    const _onRenderRow = React.useCallback((props: any) => {
-        return (
-            <div onClick={_handleRowClick.bind(null, props.item)}>
-                <DetailsRow {...props} styles={{ root: { cursor: "pointer" } }} />
-            </div>
-        );
-    }, []);
-
-    // const totalCount = jobs.length;
-
+  const _onRenderRow = React.useCallback((props: any) => {
     return (
-        <div style={styles.container}>
-            <Stack verticalFill={true}>
-                <Stack.Item
-                    verticalFill={true}
-                    grow={1}
-                    shrink={1}
-                    style={styles.stackItem}
-                >
-                    <ScrollablePane scrollbarVisibility={ScrollbarVisibility.auto}>
-                        <ShimmeredDetailsList
-                            onRenderRow={_onRenderRow}
-                            checkboxVisibility={2}
-                            columns={columns}
-                            items={sortedJobs.slice(startIndex, startIndex + pageSize)}
-                            enableShimmer={false}
-                            constrainMode={ConstrainMode.unconstrained}
-                            layoutMode={DetailsListLayoutMode.justified}
-                            onRenderDetailsHeader={(props, defaultRender) => (
-                                <Sticky stickyPosition={StickyPositionType.Header} isScrollSynced>
-                                    {defaultRender({ ...props })}
-                                </Sticky>
-                            )}
-                        />
-                    </ScrollablePane>
-                </Stack.Item>
-            </Stack>
-        </div>
+      <div onClick={_handleRowClick.bind(null, props.item)}>
+        <DetailsRow {...props} styles={{ root: { cursor: "pointer" } }} />
+      </div>
     );
-}
+  }, []);
+
+  // const totalCount = jobs.length;
+
+  return (
+    <div style={styles.container}>
+      <Stack verticalFill={true}>
+        <Stack.Item verticalFill={true} grow={1} shrink={1} style={styles.stackItem}>
+          <ScrollablePane scrollbarVisibility={ScrollbarVisibility.auto}>
+            <ShimmeredDetailsList
+              onRenderRow={_onRenderRow}
+              checkboxVisibility={2}
+              columns={columns}
+              items={sortedJobs.slice(startIndex, startIndex + pageSize)}
+              enableShimmer={false}
+              constrainMode={ConstrainMode.unconstrained}
+              layoutMode={DetailsListLayoutMode.justified}
+              onRenderDetailsHeader={(props, defaultRender) => (
+                <Sticky stickyPosition={StickyPositionType.Header} isScrollSynced>
+                  {defaultRender({ ...props })}
+                </Sticky>
+              )}
+            />
+          </ScrollablePane>
+        </Stack.Item>
+      </Stack>
+    </div>
+  );
+};
 
 export default CopyJobsList;

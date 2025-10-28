@@ -83,7 +83,7 @@ export async function armRequestWithoutPolling<T>({
     method,
     headers,
     body: requestBody ? JSON.stringify(requestBody) : undefined,
-    signal
+    signal,
   });
 
   if (!response.ok) {
@@ -119,7 +119,7 @@ export async function armRequest<T>({
   queryParams,
   contentType,
   customHeaders,
-  signal
+  signal,
 }: Options): Promise<T> {
   const armRequestResult = await armRequestWithoutPolling<T>({
     host,
@@ -130,7 +130,7 @@ export async function armRequest<T>({
     queryParams,
     contentType,
     customHeaders,
-    signal
+    signal,
   });
   const operationStatusUrl = armRequestResult.operationStatusUrl;
   if (operationStatusUrl) {
