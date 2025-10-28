@@ -175,7 +175,7 @@ describe("DataMaskingComponent", () => {
     const invalidPolicy: Record<string, unknown> = {
       includedPaths: "not an array",
       excludedPaths: [] as string[],
-      policyFormatVersion: "not a number",
+      policyFormatVersion: 2,
       isPolicyEnabled: "not a boolean",
     };
 
