@@ -3,63 +3,41 @@ import { getAccountDetailsFromResourceId } from "../../../CopyJobUtils";
 import { CopyJobContextState, DatabaseParams, DataContainerParams } from "../../../Types";
 
 export function useMemoizedSourceAndTargetData(copyJobState: CopyJobContextState) {
-    const { source, target } = copyJobState ?? {};
-    const selectedSourceAccount = source?.account;
-    const selectedTargetAccount = target?.account;
-    const {
-        subscriptionId: sourceSubscriptionId,
-        resourceGroup: sourceResourceGroup,
-        accountName: sourceAccountName
-    } = getAccountDetailsFromResourceId(selectedSourceAccount?.id);
-    const {
-        subscriptionId: targetSubscriptionId,
-        resourceGroup: targetResourceGroup,
-        accountName: targetAccountName
-    } = getAccountDetailsFromResourceId(selectedTargetAccount?.id);
+  const { source, target } = copyJobState ?? {};
+  const selectedSourceAccount = source?.account;
+  const selectedTargetAccount = target?.account;
+  const {
+    subscriptionId: sourceSubscriptionId,
+    resourceGroup: sourceResourceGroup,
+    accountName: sourceAccountName,
+  } = getAccountDetailsFromResourceId(selectedSourceAccount?.id);
+  const {
+    subscriptionId: targetSubscriptionId,
+    resourceGroup: targetResourceGroup,
+    accountName: targetAccountName,
+  } = getAccountDetailsFromResourceId(selectedTargetAccount?.id);
 
-    const sourceDbParams = React.useMemo(
-        () =>
-            [
-                sourceSubscriptionId,
-                sourceResourceGroup,
-                sourceAccountName,
-                'SQL',
-            ] as DatabaseParams,
-        [sourceSubscriptionId, sourceResourceGroup, sourceAccountName]
-    );
+  const sourceDbParams = React.useMemo(
+    () => [sourceSubscriptionId, sourceResourceGroup, sourceAccountName, "SQL"] as DatabaseParams,
+    [sourceSubscriptionId, sourceResourceGroup, sourceAccountName],
+  );
 
-    const sourceContainerParams = React.useMemo(
-        () =>
-            [
-                sourceSubscriptionId,
-                sourceResourceGroup,
-                sourceAccountName,
-                source?.databaseId,
-                'SQL',
-            ] as DataContainerParams,
-        [sourceSubscriptionId, sourceResourceGroup, sourceAccountName, source?.databaseId]
-    );
+  const sourceContainerParams = React.useMemo(
+    () =>
+      [sourceSubscriptionId, sourceResourceGroup, sourceAccountName, source?.databaseId, "SQL"] as DataContainerParams,
+    [sourceSubscriptionId, sourceResourceGroup, sourceAccountName, source?.databaseId],
+  );
 
-    const targetDbParams = React.useMemo(
-        () => [
-            targetSubscriptionId,
-            targetResourceGroup,
-            targetAccountName,
-            'SQL',
-        ] as DatabaseParams,
-        [targetSubscriptionId, targetResourceGroup, targetAccountName]
-    );
+  const targetDbParams = React.useMemo(
+    () => [targetSubscriptionId, targetResourceGroup, targetAccountName, "SQL"] as DatabaseParams,
+    [targetSubscriptionId, targetResourceGroup, targetAccountName],
+  );
 
-    const targetContainerParams = React.useMemo(
-        () => [
-            targetSubscriptionId,
-            targetResourceGroup,
-            targetAccountName,
-            target?.databaseId,
-            'SQL',
-        ] as DataContainerParams,
-        [targetSubscriptionId, targetResourceGroup, targetAccountName, target?.databaseId]
-    );
+  const targetContainerParams = React.useMemo(
+    () =>
+      [targetSubscriptionId, targetResourceGroup, targetAccountName, target?.databaseId, "SQL"] as DataContainerParams,
+    [targetSubscriptionId, targetResourceGroup, targetAccountName, target?.databaseId],
+  );
 
-    return { source, target, sourceDbParams, sourceContainerParams, targetDbParams, targetContainerParams };
+  return { source, target, sourceDbParams, sourceContainerParams, targetDbParams, targetContainerParams };
 }

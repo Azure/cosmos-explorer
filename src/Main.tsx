@@ -78,24 +78,22 @@ const App: React.FunctionComponent = () => {
   }
   StyleConstants.updateStyles();
   const explorer = useKnockoutExplorer(config?.platform);
-  console.log("Using config: ", config);
+  // console.log("Using config: ", config);
 
   if (!explorer) {
     return <LoadingExplorer />;
   }
-  console.log("Using explorer: ", explorer);
-  console.log("Using userContext: ", userContext);
+  // console.log("Using explorer: ", explorer);
+  // console.log("Using userContext: ", userContext);
 
   return (
     <KeyboardShortcutRoot>
       <div className="flexContainer" aria-hidden="false" data-test="DataExplorerRoot">
-        {
-          userContext.features.enableContainerCopy && userContext.apiType === "SQL" ? (
-            <ContainerCopyPanel container={explorer} />
-          ) : (
-            <DivExplorer explorer={explorer} />
-          )
-        }
+        {userContext.features.enableContainerCopy && userContext.apiType === "SQL" ? (
+          <ContainerCopyPanel container={explorer} />
+        ) : (
+          <DivExplorer explorer={explorer} />
+        )}
 
         <SidePanel />
         <Dialog />
