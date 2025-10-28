@@ -3,6 +3,7 @@ import React, { useCallback } from "react";
 import { assignRole } from "../../../../../Utils/arm/RbacUtils";
 import ContainerCopyMessages from "../../../ContainerCopyMessages";
 import { useCopyJobContext } from "../../../Context/CopyJobContext";
+import { getAccountDetailsFromResourceId } from "../../../CopyJobUtils";
 import InfoTooltip from "../Components/InfoTooltip";
 import PopoverMessage from "../Components/PopoverContainer";
 import { PermissionSectionConfig } from "./hooks/usePermissionsSection";
@@ -19,12 +20,19 @@ const AddReadPermissionToDefaultIdentity: React.FC<AddManagedIdentityProps> = ()
 
     const handleAddReadPermission = useCallback(async () => {
         const { source, target } = copyJobState;
+        const selectedSourceAccount = source?.account;
         try {
+            const {
+                subscriptionId: sourceSubscriptionId,
+                resourceGroup: sourceResourceGroup,
+                accountName: sourceAccountName
+            } = getAccountDetailsFromResourceId(selectedSourceAccount?.id);
+
             setLoading(true);
             const assignedRole = await assignRole(
-                source?.subscription?.subscriptionId,
-                source?.account?.resourceGroup,
-                source?.account?.name,
+                sourceSubscriptionId,
+                sourceResourceGroup,
+                sourceAccountName,
                 target?.account?.identity?.principalId!,
             );
             if (assignedRole) {

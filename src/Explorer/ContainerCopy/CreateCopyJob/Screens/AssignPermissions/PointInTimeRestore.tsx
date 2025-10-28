@@ -3,7 +3,7 @@ import React, { useCallback, useState } from "react";
 import { fetchDatabaseAccount } from "Utils/arm/databaseAccountUtils";
 import ContainerCopyMessages from "../../../ContainerCopyMessages";
 import { useCopyJobContext } from "../../../Context/CopyJobContext";
-import { buildResourceLink } from "../../../CopyJobUtils";
+import { buildResourceLink, getAccountDetailsFromResourceId } from "../../../CopyJobUtils";
 import { PermissionSectionConfig } from "./hooks/usePermissionsSection";
 import useWindowOpenMonitor from "./hooks/useWindowOpenMonitor";
 
@@ -16,17 +16,19 @@ const PointInTimeRestore: React.FC<AddManagedIdentityProps> = () => {
 
     const onWindowClosed = useCallback(async () => {
         try {
+            const selectedSourceAccount = source?.account;
+            const {
+                subscriptionId: sourceSubscriptionId,
+                resourceGroup: sourceResourceGroup,
+                accountName: sourceAccountName
+            } = getAccountDetailsFromResourceId(selectedSourceAccount?.id);
+
             setLoading(true);
             const account = await fetchDatabaseAccount(
-                source?.subscription?.subscriptionId,
-                source?.account?.resourceGroup,
-                source?.account?.name
+                sourceSubscriptionId,
+                sourceResourceGroup,
+                sourceAccountName
             );
-            /* account.properties = {
-                backupPolicy: {
-                    type: "Continuous"
-                }
-            } */
             if (account) {
                 setCopyJobState((prevState) => ({
                     ...prevState,
