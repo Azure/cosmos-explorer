@@ -83,7 +83,7 @@ export async function listByDatabaseAccount(
   subscriptionId: string,
   resourceGroupName: string,
   accountName: string,
-  signal?: AbortSignal
+  signal?: AbortSignal,
 ): Promise<Types.DataTransferJobFeedResults> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/dataTransferJobs`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion, signal });

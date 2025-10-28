@@ -14,7 +14,7 @@ export interface DatabaseAccountUserAssignedIdentity {
   [key: string]: {
     principalId: string;
     clientId: string;
-  }
+  };
 }
 
 export interface DatabaseAccountIdentity {
@@ -227,7 +227,7 @@ export interface Database extends Resource {
   collections?: Collection[];
 }
 
-export interface DocumentId extends Resource { }
+export interface DocumentId extends Resource {}
 
 export interface ConflictId extends Resource {
   resourceId?: string;

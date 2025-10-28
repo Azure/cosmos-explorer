@@ -8,24 +8,24 @@ import { getCommandBarButtons } from "./Utils";
 
 const backgroundColor = StyleConstants.BaseLight;
 const rootStyle = {
-    root: {
-        backgroundColor: backgroundColor,
-    },
+  root: {
+    backgroundColor: backgroundColor,
+  },
 };
 
 const CopyJobCommandBar: React.FC<ContainerCopyProps> = ({ container }) => {
-    const commandBarItems: CommandButtonComponentProps[] = getCommandBarButtons(container);
-    const controlButtons: ICommandBarItemProps[] = CommandBarUtil.convertButton(commandBarItems, backgroundColor);
+  const commandBarItems: CommandButtonComponentProps[] = getCommandBarButtons(container);
+  const controlButtons: ICommandBarItemProps[] = CommandBarUtil.convertButton(commandBarItems, backgroundColor);
 
-    return (
-        <div className="commandBarContainer">
-            <FluentCommandBar
-                ariaLabel="Use left and right arrow keys to navigate between commands"
-                styles={rootStyle}
-                items={controlButtons}
-            />
-        </div>
-    );
-}
+  return (
+    <div className="commandBarContainer">
+      <FluentCommandBar
+        ariaLabel="Use left and right arrow keys to navigate between commands"
+        styles={rootStyle}
+        items={controlButtons}
+      />
+    </div>
+  );
+};
 
 export default CopyJobCommandBar;

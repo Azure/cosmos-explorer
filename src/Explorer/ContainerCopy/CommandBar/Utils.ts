@@ -10,49 +10,49 @@ import { MonitorCopyJobsRefState } from "../MonitorCopyJobs/MonitorCopyJobRefSta
 import { CopyJobCommandBarBtnType } from "../Types";
 
 function getCopyJobBtns(): CopyJobCommandBarBtnType[] {
-    const monitorCopyJobsRef = MonitorCopyJobsRefState(state => state.ref);
-    const buttons: CopyJobCommandBarBtnType[] = [
-        {
-            key: "createCopyJob",
-            iconSrc: AddIcon,
-            label: ContainerCopyMessages.createCopyJobButtonLabel,
-            ariaLabel: ContainerCopyMessages.createCopyJobButtonAriaLabel,
-            onClick: Actions.openCreateCopyJobPanel,
-        },
-        {
-            key: "refresh",
-            iconSrc: RefreshIcon,
-            label: ContainerCopyMessages.refreshButtonLabel,
-            ariaLabel: ContainerCopyMessages.refreshButtonAriaLabel,
-            onClick: () => monitorCopyJobsRef?.refreshJobList(),
-        },
-    ];
-    if (configContext.platform === Platform.Portal) {
-        buttons.push({
-            key: "feedback",
-            iconSrc: FeedbackIcon,
-            label: ContainerCopyMessages.feedbackButtonLabel,
-            ariaLabel: ContainerCopyMessages.feedbackButtonAriaLabel,
-            onClick: () => { },
-        });
-    }
-    return buttons;
+  const monitorCopyJobsRef = MonitorCopyJobsRefState((state) => state.ref);
+  const buttons: CopyJobCommandBarBtnType[] = [
+    {
+      key: "createCopyJob",
+      iconSrc: AddIcon,
+      label: ContainerCopyMessages.createCopyJobButtonLabel,
+      ariaLabel: ContainerCopyMessages.createCopyJobButtonAriaLabel,
+      onClick: Actions.openCreateCopyJobPanel,
+    },
+    {
+      key: "refresh",
+      iconSrc: RefreshIcon,
+      label: ContainerCopyMessages.refreshButtonLabel,
+      ariaLabel: ContainerCopyMessages.refreshButtonAriaLabel,
+      onClick: () => monitorCopyJobsRef?.refreshJobList(),
+    },
+  ];
+  if (configContext.platform === Platform.Portal) {
+    buttons.push({
+      key: "feedback",
+      iconSrc: FeedbackIcon,
+      label: ContainerCopyMessages.feedbackButtonLabel,
+      ariaLabel: ContainerCopyMessages.feedbackButtonAriaLabel,
+      onClick: () => {},
+    });
+  }
+  return buttons;
 }
 
 function btnMapper(config: CopyJobCommandBarBtnType): CommandButtonComponentProps {
-    return {
-        iconSrc: config.iconSrc,
-        iconAlt: config.label,
-        onCommandClick: config.onClick,
-        commandButtonLabel: undefined as string | undefined,
-        ariaLabel: config.ariaLabel,
-        tooltipText: config.label,
-        hasPopup: false,
-        disabled: config.disabled ?? false,
-    };
+  return {
+    iconSrc: config.iconSrc,
+    iconAlt: config.label,
+    onCommandClick: config.onClick,
+    commandButtonLabel: undefined as string | undefined,
+    ariaLabel: config.ariaLabel,
+    tooltipText: config.label,
+    hasPopup: false,
+    disabled: config.disabled ?? false,
+  };
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function getCommandBarButtons(_container: Explorer): CommandButtonComponentProps[] {
-    return getCopyJobBtns().map(btnMapper);
+  return getCopyJobBtns().map(btnMapper);
 }
-

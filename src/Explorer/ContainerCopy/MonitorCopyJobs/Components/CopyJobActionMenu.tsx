@@ -5,79 +5,72 @@ import { CopyJobActions, CopyJobMigrationType, CopyJobStatusType } from "../../E
 import { CopyJobType } from "../../Types";
 
 interface CopyJobActionMenuProps {
-    job: CopyJobType;
-    handleClick: (job: CopyJobType, action: string) => void;
+  job: CopyJobType;
+  handleClick: (job: CopyJobType, action: string) => void;
 }
 
 const CopyJobActionMenu: React.FC<CopyJobActionMenuProps> = ({ job, handleClick }) => {
-    if ([
-        CopyJobStatusType.Completed,
-        CopyJobStatusType.Cancelled
-    ].includes(job.Status)) return null;
+  if ([CopyJobStatusType.Completed, CopyJobStatusType.Cancelled].includes(job.Status)) {
+    return null;
+  }
 
-    const getMenuItems = (): IContextualMenuProps["items"] => {
-        const baseItems = [
-            {
-                key: CopyJobActions.pause,
-                text: ContainerCopyMessages.MonitorJobs.Actions.pause,
-                onClick: () => handleClick(job, CopyJobActions.pause)
-            },
-            {
-                key: CopyJobActions.cancel,
-                text: ContainerCopyMessages.MonitorJobs.Actions.cancel,
-                onClick: () => handleClick(job, CopyJobActions.cancel)
-            },
-            {
-                key: CopyJobActions.resume,
-                text: ContainerCopyMessages.MonitorJobs.Actions.resume,
-                onClick: () => handleClick(job, CopyJobActions.resume)
-            }
-        ];
+  const getMenuItems = (): IContextualMenuProps["items"] => {
+    const baseItems = [
+      {
+        key: CopyJobActions.pause,
+        text: ContainerCopyMessages.MonitorJobs.Actions.pause,
+        onClick: () => handleClick(job, CopyJobActions.pause),
+      },
+      {
+        key: CopyJobActions.cancel,
+        text: ContainerCopyMessages.MonitorJobs.Actions.cancel,
+        onClick: () => handleClick(job, CopyJobActions.cancel),
+      },
+      {
+        key: CopyJobActions.resume,
+        text: ContainerCopyMessages.MonitorJobs.Actions.resume,
+        onClick: () => handleClick(job, CopyJobActions.resume),
+      },
+    ];
 
-        if (CopyJobStatusType.Paused === job.Status) {
-            return baseItems.filter(item => item.key !== CopyJobActions.pause);
-        }
+    if (CopyJobStatusType.Paused === job.Status) {
+      return baseItems.filter((item) => item.key !== CopyJobActions.pause);
+    }
 
-        if (CopyJobStatusType.Pending === job.Status) {
-            return baseItems.filter(item => item.key !== CopyJobActions.resume);
-        }
+    if (CopyJobStatusType.Pending === job.Status) {
+      return baseItems.filter((item) => item.key !== CopyJobActions.resume);
+    }
 
-        if ([
-            CopyJobStatusType.InProgress,
-            CopyJobStatusType.Running,
-            CopyJobStatusType.Partitioning
-        ].includes(job.Status)) {
-            const filteredItems = baseItems.filter(item => item.key !== CopyJobActions.resume);
-            if (job.Mode === CopyJobMigrationType.Online) {
-                filteredItems.push({
-                    key: CopyJobActions.complete,
-                    text: ContainerCopyMessages.MonitorJobs.Actions.complete,
-                    onClick: () => handleClick(job, CopyJobActions.complete)
-                });
-            }
-            return filteredItems;
-        }
+    if (
+      [CopyJobStatusType.InProgress, CopyJobStatusType.Running, CopyJobStatusType.Partitioning].includes(job.Status)
+    ) {
+      const filteredItems = baseItems.filter((item) => item.key !== CopyJobActions.resume);
+      if (job.Mode === CopyJobMigrationType.Online) {
+        filteredItems.push({
+          key: CopyJobActions.complete,
+          text: ContainerCopyMessages.MonitorJobs.Actions.complete,
+          onClick: () => handleClick(job, CopyJobActions.complete),
+        });
+      }
+      return filteredItems;
+    }
 
-        if ([
-            CopyJobStatusType.Failed,
-            CopyJobStatusType.Faulted,
-            CopyJobStatusType.Skipped,
-        ].includes(job.Status)) {
-            return baseItems.filter(item => item.key === CopyJobActions.resume);
-        }
+    if ([CopyJobStatusType.Failed, CopyJobStatusType.Faulted, CopyJobStatusType.Skipped].includes(job.Status)) {
+      return baseItems.filter((item) => item.key === CopyJobActions.resume);
+    }
 
-        return baseItems;
-    };
+    return baseItems;
+  };
 
-    return (
-        <IconButton
-            role="button"
-            iconProps={{ iconName: "more" }}
-            menuProps={{ items: getMenuItems() }}
-            ariaLabel={ContainerCopyMessages.MonitorJobs.Columns.actions}
-            title={ContainerCopyMessages.MonitorJobs.Columns.actions}
-        />
-    );
+  return (
+    <IconButton
+      role="button"
+      iconProps={{ iconName: "more" }}
+      menuProps={{ items: getMenuItems() }}
+      ariaLabel={ContainerCopyMessages.MonitorJobs.Columns.actions}
+      title={ContainerCopyMessages.MonitorJobs.Columns.actions}
+    />
+  );
 };
 
 export default CopyJobActionMenu;

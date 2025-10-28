@@ -4,75 +4,75 @@ import { CopyJobMigrationType } from "../../../../Enums";
 import { CopyJobContextProviderType, CopyJobContextState, DropdownOptionType } from "../../../../Types";
 
 export function useDropdownOptions(
-    subscriptions: Subscription[],
-    accounts: DatabaseAccount[]
+  subscriptions: Subscription[],
+  accounts: DatabaseAccount[],
 ): {
-    subscriptionOptions: DropdownOptionType[],
-    accountOptions: DropdownOptionType[]
+  subscriptionOptions: DropdownOptionType[];
+  accountOptions: DropdownOptionType[];
 } {
-    const subscriptionOptions = React.useMemo(
-        () =>
-            subscriptions?.map((sub) => ({
-                key: sub.subscriptionId,
-                text: sub.displayName,
-                data: sub,
-            })) || [],
-        [subscriptions]
-    );
+  const subscriptionOptions = React.useMemo(
+    () =>
+      subscriptions?.map((sub) => ({
+        key: sub.subscriptionId,
+        text: sub.displayName,
+        data: sub,
+      })) || [],
+    [subscriptions],
+  );
 
-    const accountOptions = React.useMemo(
-        () =>
-            accounts?.map((account) => ({
-                key: account.id,
-                text: account.name,
-                data: account,
-            })) || [],
-        [accounts]
-    );
+  const accountOptions = React.useMemo(
+    () =>
+      accounts?.map((account) => ({
+        key: account.id,
+        text: account.name,
+        data: account,
+      })) || [],
+    [accounts],
+  );
 
-    return { subscriptionOptions, accountOptions };
+  return { subscriptionOptions, accountOptions };
 }
 
 type setCopyJobStateType = CopyJobContextProviderType["setCopyJobState"];
 
 export function useEventHandlers(setCopyJobState: setCopyJobStateType) {
-    const handleSelectSourceAccount = React.useCallback(
-        (type: "subscription" | "account", data: Subscription & DatabaseAccount | undefined) => {
-            setCopyJobState((prevState: CopyJobContextState) => {
-                if (type === "subscription") {
-                    return {
-                        ...prevState,
-                        source: {
-                            ...prevState.source,
-                            subscription: data || null,
-                            account: null, // reset on subscription change
-                        },
-                    };
-                }
-                if (type === "account") {
-                    return {
-                        ...prevState,
-                        source: {
-                            ...prevState.source,
-                            account: data || null,
-                        },
-                    };
-                }
-                return prevState;
-            });
-        },
-        [setCopyJobState]
-    );
+  const handleSelectSourceAccount = React.useCallback(
+    (type: "subscription" | "account", data: (Subscription & DatabaseAccount) | undefined) => {
+      setCopyJobState((prevState: CopyJobContextState) => {
+        if (type === "subscription") {
+          return {
+            ...prevState,
+            source: {
+              ...prevState.source,
+              subscription: data || null,
+              account: null, // reset on subscription change
+            },
+          };
+        }
+        if (type === "account") {
+          return {
+            ...prevState,
+            source: {
+              ...prevState.source,
+              account: data || null,
+            },
+          };
+        }
+        return prevState;
+      });
+    },
+    [setCopyJobState],
+  );
 
-    const handleMigrationTypeChange = React.useCallback(
-        (_ev?: React.FormEvent<HTMLElement>, checked?: boolean) => {
-            setCopyJobState((prevState: CopyJobContextState) => ({
-                ...prevState,
-                migrationType: checked ? CopyJobMigrationType.Offline : CopyJobMigrationType.Online,
-            }));
-        },
-        [setCopyJobState]
-    );
+  const handleMigrationTypeChange = React.useCallback(
+    (_ev?: React.FormEvent<HTMLElement>, checked?: boolean) => {
+      setCopyJobState((prevState: CopyJobContextState) => ({
+        ...prevState,
+        migrationType: checked ? CopyJobMigrationType.Offline : CopyJobMigrationType.Online,
+      }));
+    },
+    [setCopyJobState],
+  );
 
-    return { handleSelectSourceAccount, handleMigrationTypeChange };
+  return { handleSelectSourceAccount, handleMigrationTypeChange };
 }

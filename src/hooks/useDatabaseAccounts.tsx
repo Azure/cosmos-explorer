@@ -11,7 +11,10 @@ interface AccountListResult {
   value: DatabaseAccount[];
 }
 
-export async function fetchDatabaseAccounts(subscriptionId: string, accessToken: string = ""): Promise<DatabaseAccount[]> {
+export async function fetchDatabaseAccounts(
+  subscriptionId: string,
+  accessToken: string = "",
+): Promise<DatabaseAccount[]> {
   if (!accessToken && !userContext.authorizationToken) {
     return [];
   }
@@ -61,15 +64,15 @@ export async function fetchDatabaseAccountsFromGraph(
       subscriptions: [subscriptionId],
       ...(skipToken
         ? {
-          options: {
-            $skipToken: skipToken,
-          } as QueryRequestOptions,
-        }
+            options: {
+              $skipToken: skipToken,
+            } as QueryRequestOptions,
+          }
         : {
-          options: {
-            $top: 150,
-          } as QueryRequestOptions,
-        }),
+            options: {
+              $top: 150,
+            } as QueryRequestOptions,
+          }),
     };
 
     const response = await fetch(managementResourceGraphAPIURL, {
