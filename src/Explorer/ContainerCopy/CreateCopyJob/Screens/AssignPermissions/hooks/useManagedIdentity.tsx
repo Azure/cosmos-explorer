@@ -1,6 +1,7 @@
 import { DatabaseAccount } from "Contracts/DataModels";
 import { useCallback, useState } from "react";
 import { useCopyJobContext } from "../../../../Context/CopyJobContext";
+import { getAccountDetailsFromResourceId } from "../../../../CopyJobUtils";
 
 interface UseManagedIdentityUpdaterParams {
     updateIdentityFn: (
@@ -24,11 +25,17 @@ const useManagedIdentity = (
     const handleAddSystemIdentity = useCallback(async (): Promise<void> => {
         try {
             setLoading(true);
-            const { target } = copyJobState;
+            const selectedTargetAccount = copyJobState?.target?.account;
+            const {
+                subscriptionId: targetSubscriptionId,
+                resourceGroup: targetResourceGroup,
+                accountName: targetAccountName
+            } = getAccountDetailsFromResourceId(selectedTargetAccount?.id);
+
             const updatedAccount = await updateIdentityFn(
-                target.subscriptionId,
-                target.account?.resourceGroup,
-                target.account?.name
+                targetSubscriptionId,
+                targetResourceGroup,
+                targetAccountName
             );
             if (updatedAccount) {
                 setCopyJobState((prevState) => ({

@@ -34,7 +34,7 @@ export enum CopyJobStatusType {
 
 export enum CopyJobActions {
     pause = "pause",
-    stop = "cancel",
     resume = "resume",
-    cutover = "complete"
+    cancel = "cancel",
+    complete = "complete",
 }

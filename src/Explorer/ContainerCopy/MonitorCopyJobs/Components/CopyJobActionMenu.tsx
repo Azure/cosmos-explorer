@@ -23,9 +23,9 @@ const CopyJobActionMenu: React.FC<CopyJobActionMenuProps> = ({ job, handleClick 
                 onClick: () => handleClick(job, CopyJobActions.pause)
             },
             {
-                key: CopyJobActions.stop,
-                text: ContainerCopyMessages.MonitorJobs.Actions.stop,
-                onClick: () => handleClick(job, CopyJobActions.stop)
+                key: CopyJobActions.cancel,
+                text: ContainerCopyMessages.MonitorJobs.Actions.cancel,
+                onClick: () => handleClick(job, CopyJobActions.cancel)
             },
             {
                 key: CopyJobActions.resume,
@@ -50,9 +50,9 @@ const CopyJobActionMenu: React.FC<CopyJobActionMenuProps> = ({ job, handleClick 
             const filteredItems = baseItems.filter(item => item.key !== CopyJobActions.resume);
             if (job.Mode === CopyJobMigrationType.Online) {
                 filteredItems.push({
-                    key: CopyJobActions.cutover,
-                    text: ContainerCopyMessages.MonitorJobs.Actions.cutover,
-                    onClick: () => handleClick(job, CopyJobActions.cutover)
+                    key: CopyJobActions.complete,
+                    text: ContainerCopyMessages.MonitorJobs.Actions.complete,
+                    onClick: () => handleClick(job, CopyJobActions.complete)
                 });
             }
             return filteredItems;

@@ -97,8 +97,8 @@ export default {
         Actions: {
             pause: "Pause",
             resume: "Resume",
-            stop: "Stop",
-            cutover: "Cutover",
+            cancel: "Cancel",
+            complete: "Complete",
             viewDetails: "View Details",
         },
         Status: {
