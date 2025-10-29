@@ -33,7 +33,7 @@ const emptyDataMaskingPolicy: DataModels.DataMaskingPolicy = {
     },
   ],
   excludedPaths: [],
-  isPolicyEnabled: false,
+  isPolicyEnabled: true,
 };
 
 export class DataMaskingComponent extends React.Component<DataMaskingComponentProps, DataMaskingComponentState> {

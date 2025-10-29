@@ -842,7 +842,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     const dataMaskingContent: DataModels.DataMaskingPolicy = {
       includedPaths: this.collection.dataMaskingPolicy?.()?.includedPaths || [],
       excludedPaths: this.collection.dataMaskingPolicy?.()?.excludedPaths || [],
-      isPolicyEnabled: this.collection.dataMaskingPolicy?.()?.isPolicyEnabled || false,
+      isPolicyEnabled: this.collection.dataMaskingPolicy?.()?.isPolicyEnabled ?? true,
     };
     const conflictResolutionPolicy: DataModels.ConflictResolutionPolicy =
       this.collection.conflictResolutionPolicy && this.collection.conflictResolutionPolicy();
@@ -1073,8 +1073,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
       newCollection.fullTextPolicy = this.state.fullTextPolicy;
 
-      // Only send data masking policy if DDM capability is enabled for the account
-      if (isCapabilityEnabled(Constants.CapabilityNames.EnableDynamicDataMasking)) {
+      // Only send data masking policy if it was modified (dirty)
+      if (this.state.isDataMaskingDirty && isCapabilityEnabled(Constants.CapabilityNames.EnableDynamicDataMasking)) {
         newCollection.dataMaskingPolicy = this.state.dataMaskingContent;
       }
 

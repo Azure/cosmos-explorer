@@ -329,7 +329,6 @@ describe("SettingsComponent", () => {
     expect(wrapper.state("dataMaskingContentBaseline")).toEqual({
       includedPaths: [],
       excludedPaths: ["/excludedPath"],
-      policyFormatVersion: 2,
       isPolicyEnabled: true,
     });
   });
