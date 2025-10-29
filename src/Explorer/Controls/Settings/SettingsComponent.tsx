@@ -1072,8 +1072,9 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       newCollection.vectorEmbeddingPolicy = this.state.vectorEmbeddingPolicy;
 
       newCollection.fullTextPolicy = this.state.fullTextPolicy;
-      // Only send data masking policy if it's enabled
-      if (this.state.dataMaskingContent?.isPolicyEnabled) {
+
+      // Only send data masking policy if DDM capability is enabled for the account
+      if (isCapabilityEnabled(Constants.CapabilityNames.EnableDynamicDataMasking)) {
         newCollection.dataMaskingPolicy = this.state.dataMaskingContent;
       }
 
