@@ -1,6 +1,7 @@
 import { DatabaseAccount, Subscription } from "Contracts/DataModels";
 import React from "react";
 import { ApiType } from "UserContext";
+import { CosmosSqlDataTransferDataSourceSink } from "../../../Utils/arm/generatedClients/dataTransferService/types";
 import Explorer from "../../Explorer";
 import { CopyJobMigrationType, CopyJobStatusType } from "../Enums";
 
@@ -91,6 +92,8 @@ export type CopyJobType = {
   LastUpdatedTime: string;
   timestamp: number;
   Error?: CopyJobErrorType;
+  Source: CosmosSqlDataTransferDataSourceSink;
+  Destination: CosmosSqlDataTransferDataSourceSink;
 };
 
 export interface CopyJobErrorType {
