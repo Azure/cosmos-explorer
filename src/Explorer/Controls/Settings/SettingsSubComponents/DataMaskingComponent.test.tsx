@@ -53,7 +53,6 @@ describe("DataMaskingComponent", () => {
       },
     ],
     excludedPaths: [],
-    policyFormatVersion: 2,
     isPolicyEnabled: false,
   };
 

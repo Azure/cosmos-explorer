@@ -344,7 +344,6 @@ describe("SettingsComponent", () => {
     const invalidPolicy: InvalidPolicy = {
       includedPaths: "invalid",
       excludedPaths: [],
-      policyFormatVersion: 2,
       isPolicyEnabled: false,
     };
     // Use type assertion since we're deliberately testing with invalid data
@@ -354,7 +353,6 @@ describe("SettingsComponent", () => {
     expect(wrapper.state("dataMaskingContent")).toEqual({
       includedPaths: "invalid",
       excludedPaths: [],
-      policyFormatVersion: 2,
       isPolicyEnabled: false,
     });
     expect(wrapper.state("dataMaskingValidationErrors")).toEqual(["includedPaths must be an array"]);

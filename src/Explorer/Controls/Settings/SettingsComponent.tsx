@@ -700,9 +700,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     if (!Array.isArray(newDataMasking.excludedPaths)) {
       validationErrors.push("excludedPaths must be an array");
     }
-    if (typeof newDataMasking.policyFormatVersion !== "number") {
-      validationErrors.push("policyFormatVersion must be a number");
-    }
     if (typeof newDataMasking.isPolicyEnabled !== "boolean") {
       validationErrors.push("isPolicyEnabled must be a boolean");
     }
@@ -845,7 +842,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     const dataMaskingContent: DataModels.DataMaskingPolicy = {
       includedPaths: this.collection.dataMaskingPolicy?.()?.includedPaths || [],
       excludedPaths: this.collection.dataMaskingPolicy?.()?.excludedPaths || [],
-      policyFormatVersion: this.collection.dataMaskingPolicy?.()?.policyFormatVersion || 2,
       isPolicyEnabled: this.collection.dataMaskingPolicy?.()?.isPolicyEnabled || false,
     };
     const conflictResolutionPolicy: DataModels.ConflictResolutionPolicy =
@@ -1076,7 +1072,10 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       newCollection.vectorEmbeddingPolicy = this.state.vectorEmbeddingPolicy;
 
       newCollection.fullTextPolicy = this.state.fullTextPolicy;
-      newCollection.dataMaskingPolicy = this.state.dataMaskingContent;
+      // Only send data masking policy if it's enabled
+      if (this.state.dataMaskingContent?.isPolicyEnabled) {
+        newCollection.dataMaskingPolicy = this.state.dataMaskingContent;
+      }
 
       newCollection.indexingPolicy = this.state.indexingPolicyContent;
 
