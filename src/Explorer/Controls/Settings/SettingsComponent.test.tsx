@@ -307,13 +307,11 @@ describe("SettingsComponent", () => {
       dataMaskingContent: {
         includedPaths: [],
         excludedPaths: ["/excludedPath"],
-
         isPolicyEnabled: true,
       },
       dataMaskingContentBaseline: {
         includedPaths: [],
         excludedPaths: [],
-
         isPolicyEnabled: false,
       },
       isDataMaskingDirty: true,
