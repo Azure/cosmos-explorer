@@ -959,12 +959,13 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
   if (inputs.features) {
     Object.assign(userContext.features, extractFeatures(new URLSearchParams(inputs.features)));
   }
-  // somehow we need to make enableContainerCopy true for platform: portal & apiType: SQL
-  // Ideally we need to pass this as a feature flag from portal or in a query param
-  // Then we will fetch the value from query param and set this to true
-  // For now setting it to true unconditionally
-  if (userContext.apiType === "SQL") {
-    Object.assign(userContext.features, { enableContainerCopy: true });
+
+  if (
+    configContext.platform === Platform.Portal &&
+    inputs.containerCopyEnabled &&
+    userContext.apiType === "SQL"
+  ) {
+    Object.assign(userContext.features, { enableContainerCopy: inputs.containerCopyEnabled });
   }
 
   if (inputs.flights) {
