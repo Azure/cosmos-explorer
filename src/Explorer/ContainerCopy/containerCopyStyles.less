@@ -1,85 +1,134 @@
 @import "../../../less/Common/Constants.less";
 
 #containerCopyWrapper {
-    .centerContent {
-        justify-content: center;
-        align-items: center;
+  .centerContent {
+    justify-content: center;
+    align-items: center;
+  }
+  .notFoundContainer {
+    .noCopyJobsMessage {
+      font-weight: 600;
+      margin: 0 auto;
+      color: @FocusColor;
     }
-    .notFoundContainer {
-        .noCopyJobsMessage {
-            font-weight: 600;
-            margin: 0 auto;
-            color: @FocusColor;
-        }
-        button.createCopyJobButton {
-            color: @LinkColor;
-        }
+    button.createCopyJobButton {
+      color: @LinkColor;
     }
+  }
 }
 .createCopyJobScreensContainer {
-    height: 100%;
-    padding: 1em 1.5em;
-    label {
-        padding: 0;
+  height: 100%;
+  padding: 1em 1.5em;
+  .bold {
+    font-weight: 600;
+  }
+  label {
+    padding: 0;
+  }
+  .flex-row {
+    display: flex;
+    flex-direction: row;
+    label.field-label {
+      font-weight: 600;
     }
-    .flex-row {
-        display: flex;
-        flex-direction: row;
-        label.field-label {
-            font-weight: 600;
-        }
-        .flex-fixed-width {
-            flex: 0 0 auto;
-            width: 150px;
-        }
-        .flex-grow-col {
-            flex: 1 1 auto;
-        }
+    .flex-fixed-width {
+      flex: 0 0 auto;
+      width: 150px;
     }
-    .databaseContainerSection {
-        label.subHeading {
-            font: inherit;
-            padding: unset;
-            font-weight: 600;
-        }
+    .flex-grow-col {
+      flex: 1 1 auto;
     }
+  }
+  .databaseContainerSection {
+    label.subHeading {
+      font: inherit;
+      padding: unset;
+      font-weight: 600;
+    }
+  }
 
-    .accordionHeader {
-        button {
-            display: flex;
-            align-items: center;
-            .accordionHeaderText {
-                margin-left: 5px;
-                font-weight: 600;
-            }
-            .statusIcon {
-                margin-left: auto;
-            }
-        }
+  .accordionHeader {
+    button {
+      display: flex;
+      align-items: center;
+      .accordionHeaderText {
+        margin-left: 5px;
+        font-weight: 600;
+      }
+      .statusIcon {
+        margin-left: auto;
+      }
     }
-    .popover-container {
-        button[disabled] {
-            cursor: not-allowed;
-            opacity: 0.8;
-        }
+  }
+  .popover-container {
+    button[disabled] {
+      cursor: not-allowed;
+      opacity: 0.8;
     }
-    .foreground {
-        z-index: 10;
-        background-color: white;
-        padding: 20px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        transform: translate(0%, -9%);
-        position: absolute;
-    }
+  }
+  .foreground {
+    z-index: 10;
+    background-color: white;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transform: translate(0%, -9%);
+    position: absolute;
+  }
 }
 
 .monitorCopyJobs {
-    padding: 0 2.5rem;
-}
+  padding: 0;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
 
-.copyJobDetailsContainer {
-    padding: 1em 0 0 2.5em;
-}
-.bold {
-    font-weight: 600;
+  .ms-DetailsList {
+    width: 100%;
+
+    .ms-DetailsHeader {
+      .ms-DetailsHeader-cell {
+        padding: @DefaultSpace 20px;
+        font-weight: 600;
+        font-size: @DefaultFontSize;
+        color: @BaseHigh;
+        background-color: @BaseLow;
+        border-bottom: @ButtonBorderWidth solid @BaseMedium;
+
+        &:hover {
+          background-color: @BaseMediumLow;
+        }
+      }
+    }
+
+    .ms-DetailsRow {
+      border-bottom: @ButtonBorderWidth solid @BaseMedium;
+
+      &:hover {
+        background-color: @BaseMediumLow;
+      }
+
+      .ms-DetailsRow-cell {
+        padding: @MediumSpace 20px;
+        font-size: @DefaultFontSize;
+        color: @BaseHigh;
+        min-height: 48px;
+        display: flex;
+        align-items: center;
+
+        .jobNameLink {
+          color: @LinkColor;
+          text-decoration: underline;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+
+  button[role="button"] {
+    &.ms-Button--icon {
+      i.ms-Icon {
+        font-size: @LargeSpace;
+      }
+    }
+  }
 }
