@@ -19,16 +19,19 @@ const CopyJobActionMenu: React.FC<CopyJobActionMenuProps> = ({ job, handleClick 
       {
         key: CopyJobActions.pause,
         text: ContainerCopyMessages.MonitorJobs.Actions.pause,
+        iconProps: { iconName: "Pause" },
         onClick: () => handleClick(job, CopyJobActions.pause),
       },
       {
         key: CopyJobActions.cancel,
         text: ContainerCopyMessages.MonitorJobs.Actions.cancel,
+        iconProps: { iconName: "Cancel" },
         onClick: () => handleClick(job, CopyJobActions.cancel),
       },
       {
         key: CopyJobActions.resume,
         text: ContainerCopyMessages.MonitorJobs.Actions.resume,
+        iconProps: { iconName: "Play" },
         onClick: () => handleClick(job, CopyJobActions.resume),
       },
     ];
@@ -49,6 +52,7 @@ const CopyJobActionMenu: React.FC<CopyJobActionMenuProps> = ({ job, handleClick 
         filteredItems.push({
           key: CopyJobActions.complete,
           text: ContainerCopyMessages.MonitorJobs.Actions.complete,
+          iconProps: { iconName: "CheckMark" },
           onClick: () => handleClick(job, CopyJobActions.complete),
         });
       }
@@ -65,8 +69,9 @@ const CopyJobActionMenu: React.FC<CopyJobActionMenuProps> = ({ job, handleClick 
   return (
     <IconButton
       role="button"
-      iconProps={{ iconName: "more" }}
+      iconProps={{ iconName: "More", styles: { root: { fontSize: "20px", fontWeight: "bold" } } }}
       menuProps={{ items: getMenuItems() }}
+      menuIconProps={{ iconName: "" }}
       ariaLabel={ContainerCopyMessages.MonitorJobs.Columns.actions}
       title={ContainerCopyMessages.MonitorJobs.Columns.actions}
     />
