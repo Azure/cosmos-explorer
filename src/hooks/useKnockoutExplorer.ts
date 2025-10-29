@@ -960,11 +960,7 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
     Object.assign(userContext.features, extractFeatures(new URLSearchParams(inputs.features)));
   }
 
-  if (
-    configContext.platform === Platform.Portal &&
-    inputs.containerCopyEnabled &&
-    userContext.apiType === "SQL"
-  ) {
+  if (configContext.platform === Platform.Portal && inputs.containerCopyEnabled && userContext.apiType === "SQL") {
     Object.assign(userContext.features, { enableContainerCopy: inputs.containerCopyEnabled });
   }
 

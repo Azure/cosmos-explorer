@@ -12,6 +12,7 @@ import {
   StickyPositionType,
 } from "@fluentui/react";
 import React, { useEffect } from "react";
+import { openCopyJobDetailsPanel } from "../../Actions/CopyJobActions";
 import { CopyJobType } from "../../Types";
 import { getColumns } from "./CopyJobColumns";
 
@@ -60,8 +61,7 @@ const CopyJobsList: React.FC<CopyJobsListProps> = ({ jobs, handleActionClick, pa
   );
 
   const _handleRowClick = React.useCallback((job: CopyJobType) => {
-    // eslint-disable-next-line no-console
-    console.log("Row clicked:", job);
+    openCopyJobDetailsPanel(job);
   }, []);
 
   const _onRenderRow = React.useCallback((props: any) => {

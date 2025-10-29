@@ -24,6 +24,7 @@ import {
 } from "../CopyJobUtils";
 import CreateCopyJobScreensProvider from "../CreateCopyJob/Screens/CreateCopyJobScreensProvider";
 import { CopyJobActions, CopyJobStatusType } from "../Enums";
+import CopyJobDetails from "../MonitorCopyJobs/Components/CopyJobDetails";
 import { MonitorCopyJobsRefState } from "../MonitorCopyJobs/MonitorCopyJobRefState";
 import { CopyJobContextState, CopyJobError, CopyJobErrorType, CopyJobType } from "../Types";
 
@@ -33,6 +34,16 @@ export const openCreateCopyJobPanel = () => {
   sidePanelState.openSidePanel(
     ContainerCopyMessages.createCopyJobPanelTitle,
     <CreateCopyJobScreensProvider />,
+    "650px",
+  );
+};
+
+export const openCopyJobDetailsPanel = (job: CopyJobType) => {
+  const sidePanelState = useSidePanel.getState();
+  sidePanelState.setPanelHasConsole(false);
+  sidePanelState.openSidePanel(
+    ContainerCopyMessages.copyJobDetailsPanelTitle(job.Name, job.Status),
+    <CopyJobDetails job={job} />,
     "650px",
   );
 };
@@ -96,6 +107,8 @@ export const getCopyJobs = async (): Promise<CopyJobType[]> => {
           ID: (index + 1).toString(),
           Mode: job.properties.mode,
           Name: job.properties.jobName,
+          Source: job.properties.source,
+          Destination: job.properties.destination,
           Status: convertToCamelCase(job.properties.status) as CopyJobType["Status"],
           CompletionPercentage: calculateCompletionPercentage(job.properties.processedCount, job.properties.totalCount),
           Duration: convertTime(job.properties.duration),

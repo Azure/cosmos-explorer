@@ -11,6 +11,11 @@ export default {
   noCopyJobsTitle: "No copy jobs to show",
   createCopyJobButtonText: "Create a container copy job",
 
+  // Copy Job Details
+  copyJobDetailsPanelTitle: (jobName: string, jobStatus: string) => `Copy Job Details - ${jobName} (${jobStatus})`,
+  errorTitle: "Error Details",
+  selectedContainers: "Selected Containers",
+
   // Create Copy Job Panel
   createCopyJobPanelTitle: "Copy container",
 
