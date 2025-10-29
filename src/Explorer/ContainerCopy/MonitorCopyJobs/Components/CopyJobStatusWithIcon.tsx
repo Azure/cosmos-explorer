@@ -1,38 +1,39 @@
-import { FontIcon, mergeStyles, mergeStyleSets, Stack, Text } from "@fluentui/react";
+import { FontIcon, getTheme, mergeStyles, mergeStyleSets, Stack, Text } from "@fluentui/react";
 import React from "react";
 import ContainerCopyMessages from "../../ContainerCopyMessages";
 import { CopyJobStatusType } from "../../Enums";
 
-// Styles
+const theme = getTheme();
+
 const iconClass = mergeStyles({
-  fontSize: "1em",
-  marginRight: "0.3em",
-});
-const classNames = mergeStyleSets({
-  [CopyJobStatusType.Pending]: [{ color: "#fe7f2d" }, iconClass],
-  [CopyJobStatusType.InProgress]: [{ color: "#ee9b00" }, iconClass],
-  [CopyJobStatusType.Running]: [{ color: "#ee9b00" }, iconClass],
-  [CopyJobStatusType.Partitioning]: [{ color: "#ee9b00" }, iconClass],
-  [CopyJobStatusType.Paused]: [{ color: "#bb3e03" }, iconClass],
-  [CopyJobStatusType.Skipped]: [{ color: "#00bbf9" }, iconClass],
-  [CopyJobStatusType.Cancelled]: [{ color: "#00bbf9" }, iconClass],
-  [CopyJobStatusType.Failed]: [{ color: "#d90429" }, iconClass],
-  [CopyJobStatusType.Faulted]: [{ color: "#d90429" }, iconClass],
-  [CopyJobStatusType.Completed]: [{ color: "#386641" }, iconClass],
-  unknown: [{ color: "#000814" }, iconClass],
+  fontSize: "16px",
+  marginRight: "8px",
 });
 
-// Icon Mapping
+const classNames = mergeStyleSets({
+  [CopyJobStatusType.Pending]: [{ color: theme.semanticColors.bodySubtext }, iconClass],
+  [CopyJobStatusType.InProgress]: [{ color: theme.palette.themePrimary }, iconClass],
+  [CopyJobStatusType.Running]: [{ color: theme.palette.themePrimary }, iconClass],
+  [CopyJobStatusType.Partitioning]: [{ color: theme.palette.themePrimary }, iconClass],
+  [CopyJobStatusType.Paused]: [{ color: theme.palette.themePrimary }, iconClass],
+  [CopyJobStatusType.Skipped]: [{ color: theme.semanticColors.bodySubtext }, iconClass],
+  [CopyJobStatusType.Cancelled]: [{ color: theme.semanticColors.bodySubtext }, iconClass],
+  [CopyJobStatusType.Failed]: [{ color: theme.semanticColors.errorIcon }, iconClass],
+  [CopyJobStatusType.Faulted]: [{ color: theme.semanticColors.errorIcon }, iconClass],
+  [CopyJobStatusType.Completed]: [{ color: theme.semanticColors.successIcon }, iconClass],
+  unknown: [{ color: theme.semanticColors.bodySubtext }, iconClass],
+});
+
 const iconMap: Record<CopyJobStatusType, string> = {
-  [CopyJobStatusType.Pending]: "MSNVideosSolid",
-  [CopyJobStatusType.InProgress]: "SyncStatusSolid",
-  [CopyJobStatusType.Running]: "SyncStatusSolid",
-  [CopyJobStatusType.Partitioning]: "SyncStatusSolid",
-  [CopyJobStatusType.Paused]: "CirclePauseSolid",
-  [CopyJobStatusType.Skipped]: "Blocked2Solid",
-  [CopyJobStatusType.Cancelled]: "Blocked2Solid",
-  [CopyJobStatusType.Failed]: "AlertSolid",
-  [CopyJobStatusType.Faulted]: "AlertSolid",
+  [CopyJobStatusType.Pending]: "StatusCircleRing",
+  [CopyJobStatusType.InProgress]: "ProgressRingDots",
+  [CopyJobStatusType.Running]: "ProgressRingDots",
+  [CopyJobStatusType.Partitioning]: "ProgressRingDots",
+  [CopyJobStatusType.Paused]: "CirclePause",
+  [CopyJobStatusType.Skipped]: "StatusCircleBlock2",
+  [CopyJobStatusType.Cancelled]: "StatusErrorFull",
+  [CopyJobStatusType.Failed]: "StatusErrorFull",
+  [CopyJobStatusType.Faulted]: "StatusErrorFull",
   [CopyJobStatusType.Completed]: "CompletedSolid",
 };
 
