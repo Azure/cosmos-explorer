@@ -30,7 +30,6 @@ jest.mock("../../../Common/dataAccess/updateCollection", () => ({
     dataMaskingPolicy: {
       includedPaths: [],
       excludedPaths: ["/excludedPath"],
-      policyFormatVersion: 2,
       isPolicyEnabled: true,
     },
     indexes: [],
@@ -308,13 +307,13 @@ describe("SettingsComponent", () => {
       dataMaskingContent: {
         includedPaths: [],
         excludedPaths: ["/excludedPath"],
-        policyFormatVersion: 2,
+
         isPolicyEnabled: true,
       },
       dataMaskingContentBaseline: {
         includedPaths: [],
         excludedPaths: [],
-        policyFormatVersion: 2,
+
         isPolicyEnabled: false,
       },
       isDataMaskingDirty: true,
@@ -367,7 +366,6 @@ describe("SettingsComponent", () => {
         },
       ],
       excludedPaths: ["/excludedPath"],
-      policyFormatVersion: 2,
       isPolicyEnabled: true,
     };
 
@@ -392,7 +390,6 @@ describe("SettingsComponent", () => {
         },
       ],
       excludedPaths: ["/excludedPath1"],
-      policyFormatVersion: 2,
       isPolicyEnabled: false,
     };
 
@@ -406,7 +403,6 @@ describe("SettingsComponent", () => {
         },
       ],
       excludedPaths: ["/excludedPath2"],
-      policyFormatVersion: 2,
       isPolicyEnabled: true,
     };
 
