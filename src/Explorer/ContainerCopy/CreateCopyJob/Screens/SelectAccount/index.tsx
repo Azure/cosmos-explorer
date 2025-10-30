@@ -1,6 +1,7 @@
 /* eslint-disable react/display-name */
 import { Stack } from "@fluentui/react";
 import React from "react";
+import { apiType } from "UserContext";
 import { DatabaseAccount, Subscription } from "../../../../../Contracts/DataModels";
 import { useDatabaseAccounts } from "../../../../../hooks/useDatabaseAccounts";
 import { useSubscriptions } from "../../../../../hooks/useSubscriptions";
@@ -18,9 +19,7 @@ const SelectAccount = React.memo(() => {
 
   const subscriptions: Subscription[] = useSubscriptions();
   const allAccounts: DatabaseAccount[] = useDatabaseAccounts(selectedSubscriptionId);
-  const sqlApiOnlyAccounts: DatabaseAccount[] = allAccounts?.filter(
-    (account) => account.type === "SQL" || account.kind === "GlobalDocumentDB",
-  );
+  const sqlApiOnlyAccounts: DatabaseAccount[] = allAccounts?.filter((account) => apiType(account) === "SQL");
 
   const { subscriptionOptions, accountOptions } = useDropdownOptions(subscriptions, sqlApiOnlyAccounts);
   const { handleSelectSourceAccount, handleMigrationTypeChange } = useEventHandlers(setCopyJobState);
