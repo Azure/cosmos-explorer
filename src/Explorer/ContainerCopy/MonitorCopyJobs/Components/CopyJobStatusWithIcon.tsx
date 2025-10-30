@@ -25,6 +25,7 @@ const classNames = mergeStyleSets({
 });
 
 const iconMap: Partial<Record<CopyJobStatusType, string>> = {
+  [CopyJobStatusType.Pending]: "Clock",
   [CopyJobStatusType.Paused]: "CirclePause",
   [CopyJobStatusType.Skipped]: "StatusCircleBlock2",
   [CopyJobStatusType.Cancelled]: "StatusErrorFull",
@@ -37,7 +38,6 @@ const CopyJobStatusWithIcon: React.FC<{ status: CopyJobStatusType }> = ({ status
   const statusText = ContainerCopyMessages.MonitorJobs.Status[status] || "Unknown";
 
   const isSpinnerStatus = [
-    CopyJobStatusType.Pending,
     CopyJobStatusType.Running,
     CopyJobStatusType.InProgress,
     CopyJobStatusType.Partitioning,
