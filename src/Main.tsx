@@ -78,13 +78,10 @@ const App: React.FunctionComponent = () => {
   }
   StyleConstants.updateStyles();
   const explorer = useKnockoutExplorer(config?.platform);
-  // console.log("Using config: ", config);
 
   if (!explorer) {
     return <LoadingExplorer />;
   }
-  // console.log("Using explorer: ", explorer);
-  // console.log("Using userContext: ", userContext);
 
   return (
     <KeyboardShortcutRoot>

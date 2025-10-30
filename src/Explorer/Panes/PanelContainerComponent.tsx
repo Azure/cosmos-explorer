@@ -8,7 +8,7 @@ export interface PanelContainerProps {
   panelContent?: JSX.Element;
   isConsoleExpanded: boolean;
   isOpen: boolean;
-  hasConsole?: boolean;
+  hasConsole: boolean;
   isConsoleAnimationFinished?: boolean;
   panelWidth?: string;
   onRenderNavigationContent?: IRenderFunction<IPanelProps>;
