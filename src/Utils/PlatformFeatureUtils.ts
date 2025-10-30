@@ -66,6 +66,7 @@ const FEATURE_MATRIX: ReadonlyMap<Platform, ReadonlySet<PlatformFeature>> = new 
     Platform.VNextEmulator,
     new Set<PlatformFeature>([
       PlatformFeature.Queries,
+      PlatformFeature.UniqueKeys,
 
       PlatformFeature.CreateDatabase,
       PlatformFeature.ReadDatabase,
