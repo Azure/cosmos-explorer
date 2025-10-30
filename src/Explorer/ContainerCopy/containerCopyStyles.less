@@ -19,9 +19,7 @@
 .createCopyJobScreensContainer {
   height: 100%;
   padding: 1em 1.5em;
-  .bold {
-    font-weight: 600;
-  }
+  
   label {
     padding: 0;
   }
@@ -131,4 +129,23 @@
       }
     }
   }
+}
+
+.copyJobDetailsContainer {
+  padding: 1em 0 0 2em;
+
+  .ms-DetailsList {
+    width: 100%;
+    .ms-DetailsHeader-cellTitle, .ms-DetailsRow-cell {
+      padding-left: 0;
+    }
+    .ms-DetailsRow-cell {
+      font-size: @DefaultFontSize;
+      color: @BaseHigh;
+    }
+  }
+}
+
+.bold {
+  font-weight: 600;
 }

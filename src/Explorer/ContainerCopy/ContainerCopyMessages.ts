@@ -12,7 +12,7 @@ export default {
   createCopyJobButtonText: "Create a container copy job",
 
   // Copy Job Details
-  copyJobDetailsPanelTitle: (jobName: string, jobStatus: string) => `Copy Job Details - ${jobName} (${jobStatus})`,
+  copyJobDetailsPanelTitle: (jobName: string) => jobName || "Job Details",
   errorTitle: "Error Details",
   selectedContainers: "Selected Containers",
 
