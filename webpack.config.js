@@ -122,6 +122,23 @@ module.exports = function (_env = {}, argv = {}) {
     ...(mode !== "production" && { testExplorer: "./test/testExplorer/TestExplorer.ts" }),
   };
 
+  // Derive emulator endpoint components from EMULATOR_ENDPOINT (fallback to localhost defaults)
+  const rawEndpoint = process.env.EMULATOR_ENDPOINT || (ishttps ? "https://localhost:8081/" : "http://localhost:8081/");
+  let endpointProtocol = ishttps ? "https" : "http";
+  let endpointHost = "localhost";
+  let endpointPort = "8081";
+  try {
+    const u = new URL(rawEndpoint);
+    endpointProtocol = u.protocol.replace(":", "");
+    endpointHost = u.hostname;
+    endpointPort = u.port || (endpointProtocol === "https" ? "443" : "80");
+  } catch (e) {
+    // Ignore parse errors and keep defaults
+  }
+  const endpointUri = `${endpointProtocol}://${endpointHost}:${endpointPort}`;
+  const primaryKeyConst = "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==";
+  const primaryConnString = `AccountEndpoint=${endpointUri}/;AccountKey=${primaryKeyConst}`;
+
   const htmlWebpackPlugins = [
     new HtmlWebpackPlugin({
       filename: "explorer.html",
@@ -134,17 +151,16 @@ module.exports = function (_env = {}, argv = {}) {
       chunks: ["terminal"],
     }),
     //todo - dynamically include apis
-    ishttps
-      ? new HtmlWebpackPlugin({
-          filename: "quickstart.html",
-          template: "src/quickstart-sql-only.html",
-          chunks: ["quickstart"],
-        })
-      : new HtmlWebpackPlugin({
-          filename: "quickstart.html",
-          template: "src/quickstart-sql-only-http.html",
-          chunks: ["quickstart"],
-        }),
+    new HtmlWebpackPlugin({
+      filename: "quickstart.html",
+      template: "src/quickstart-sql.template.ejs",
+      chunks: ["quickstart"],
+      templateParameters: {
+        endpointUri,
+        primaryKey: primaryKeyConst,
+        primaryConnString,
+      },
+    }),
     new HtmlWebpackPlugin({
       filename: "index.html",
       template: "src/index.html",
@@ -220,6 +236,7 @@ module.exports = function (_env = {}, argv = {}) {
         { from: "DataExplorer.proj" },
         { from: "web.config" },
         { from: "quickstart/*.zip" },
+        { from: "images", to: "images" },
       ],
     }),
     new EnvironmentPlugin(envVars),
