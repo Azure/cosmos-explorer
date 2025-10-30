@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { CapabilityNames } from "../../../../../../Common/Constants";
 import { fetchRoleAssignments, fetchRoleDefinitions, RoleDefinitionType } from "../../../../../../Utils/arm/RbacUtils";
 import ContainerCopyMessages from "../../../../ContainerCopyMessages";
 import { getAccountDetailsFromResourceId } from "../../../../CopyJobUtils";
@@ -96,9 +97,12 @@ const PERMISSION_SECTIONS_FOR_ONLINE_JOBS: PermissionSectionConfig[] = [
     title: ContainerCopyMessages.onlineCopyEnabled.title,
     Component: OnlineCopyEnabled,
     disabled: true,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    validate: (_state: CopyJobContextState) => {
-      return false;
+    validate: (state: CopyJobContextState) => {
+      const accountCapabilities = state?.source?.account?.properties?.capabilities ?? [];
+      const onlineCopyCapability = accountCapabilities.find(
+        (capability) => capability.name === CapabilityNames.EnableOnlineCopyFeature,
+      );
+      return !!onlineCopyCapability;
     },
   },
 ];
