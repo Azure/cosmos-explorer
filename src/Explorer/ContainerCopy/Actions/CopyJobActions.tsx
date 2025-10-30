@@ -42,7 +42,7 @@ export const openCopyJobDetailsPanel = (job: CopyJobType) => {
   const sidePanelState = useSidePanel.getState();
   sidePanelState.setPanelHasConsole(false);
   sidePanelState.openSidePanel(
-    ContainerCopyMessages.copyJobDetailsPanelTitle(job.Name, job.Status),
+    ContainerCopyMessages.copyJobDetailsPanelTitle(job.Name),
     <CopyJobDetails job={job} />,
     "650px",
   );
