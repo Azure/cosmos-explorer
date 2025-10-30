@@ -50,6 +50,7 @@ import * as TelemetryProcessor from "Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "UserContext";
 import { getCollectionName } from "Utils/APITypeUtils";
 import { isCapabilityEnabled, isServerlessAccount, isVectorSearchEnabled } from "Utils/CapabilityUtils";
+import { isFeatureSupported, PlatformFeature } from "Utils/PlatformFeatureUtils";
 import { getUpsellMessage } from "Utils/PricingUtils";
 import { ValidCosmosDbIdDescription, ValidCosmosDbIdInputPattern } from "Utils/ValidationUtils";
 import { CollapsibleSectionComponent } from "../../Controls/CollapsiblePanel/CollapsibleSectionComponent";
@@ -726,7 +727,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             />
           )}
 
-          {!isFabricNative() && userContext.apiType === "SQL" && (
+          {isFeatureSupported(PlatformFeature.UniqueKeys) && !isFabricNative() && userContext.apiType === "SQL" && (
             <Stack style={{ marginTop: -2, marginBottom: -4 }}>
               {UniqueKeysHeader()}
               {this.state.uniqueKeys.map((uniqueKey: string, i: number): JSX.Element => {
@@ -901,78 +902,86 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               </CollapsibleSectionComponent>
             </Stack>
           )}
-          {!isFabricNative() && userContext.apiType !== "Tables" && (
-            <CollapsibleSectionComponent
-              title="Advanced"
-              isExpandedByDefault={false}
-              onExpand={() => {
-                TelemetryProcessor.traceOpen(Action.ExpandAddCollectionPaneAdvancedSection);
-                scrollToSection("collapsibleAdvancedSectionContent");
-              }}
-            >
-              <Stack className="panelGroupSpacing" id="collapsibleAdvancedSectionContent">
-                {isCapabilityEnabled("EnableMongo") && !isCapabilityEnabled("EnableMongo16MBDocumentSupport") && (
-                  <Stack className="panelGroupSpacing">
-                    <Stack horizontal>
-                      <span className="mandatoryStar">*&nbsp;</span>
-                      <Text className="panelTextBold" variant="small">
-                        Indexing
-                      </Text>
-                      <TooltipHost
-                        directionalHint={DirectionalHint.bottomLeftEdge}
-                        content="The _id field is indexed by default. Creating a wildcard index for all fields will optimize queries and is recommended for development."
-                      >
-                        <Icon
-                          iconName="Info"
-                          className="panelInfoIcon"
-                          tabIndex={0}
-                          ariaLabel="The _id field is indexed by default. Creating a wildcard index for all fields will optimize queries and is recommended for development."
-                        />
-                      </TooltipHost>
+          {isFeatureSupported(PlatformFeature.AdvancedContainerSettings) &&
+            !isFabricNative() &&
+            userContext.apiType !== "Tables" && (
+              <CollapsibleSectionComponent
+                title="Advanced"
+                isExpandedByDefault={false}
+                onExpand={() => {
+                  TelemetryProcessor.traceOpen(Action.ExpandAddCollectionPaneAdvancedSection);
+                  scrollToSection("collapsibleAdvancedSectionContent");
+                }}
+              >
+                <Stack className="panelGroupSpacing" id="collapsibleAdvancedSectionContent">
+                  {isCapabilityEnabled("EnableMongo") && !isCapabilityEnabled("EnableMongo16MBDocumentSupport") && (
+                    <Stack className="panelGroupSpacing">
+                      <Stack horizontal>
+                        <span className="mandatoryStar">*&nbsp;</span>
+                        <Text className="panelTextBold" variant="small">
+                          Indexing
+                        </Text>
+                        <TooltipHost
+                          directionalHint={DirectionalHint.bottomLeftEdge}
+                          content="The _id field is indexed by default. Creating a wildcard index for all fields will optimize queries and is recommended for development."
+                        >
+                          <Icon
+                            iconName="Info"
+                            className="panelInfoIcon"
+                            tabIndex={0}
+                            ariaLabel="The _id field is indexed by default. Creating a wildcard index for all fields will optimize queries and is recommended for development."
+                          />
+                        </TooltipHost>
+                      </Stack>
+
+                      <Checkbox
+                        label="Create a Wildcard Index on all fields"
+                        checked={this.state.createMongoWildCardIndex}
+                        styles={{
+                          text: { fontSize: 12 },
+                          checkbox: { width: 12, height: 12 },
+                          label: { padding: 0, alignItems: "center" },
+                        }}
+                        onChange={(ev: React.FormEvent<HTMLElement>, isChecked: boolean) =>
+                          this.setState({ createMongoWildCardIndex: isChecked })
+                        }
+                      />
                     </Stack>
+                  )}
 
-                    <Checkbox
-                      label="Create a Wildcard Index on all fields"
-                      checked={this.state.createMongoWildCardIndex}
-                      styles={{
-                        text: { fontSize: 12 },
-                        checkbox: { width: 12, height: 12 },
-                        label: { padding: 0, alignItems: "center" },
-                      }}
-                      onChange={(ev: React.FormEvent<HTMLElement>, isChecked: boolean) =>
-                        this.setState({ createMongoWildCardIndex: isChecked })
-                      }
-                    />
-                  </Stack>
-                )}
-
-                {userContext.apiType === "SQL" && (
-                  <Stack className="panelGroupSpacing">
-                    <Checkbox
-                      label="My application uses an older Cosmos .NET or Java SDK version (.NET V1 or Java V2)"
-                      checked={this.state.useHashV1}
-                      styles={{
-                        text: { fontSize: 12 },
-                        checkbox: { width: 12, height: 12 },
-                        label: { padding: 0, alignItems: "center", wordWrap: "break-word", whiteSpace: "break-spaces" },
-                      }}
-                      onChange={(ev: React.FormEvent<HTMLElement>, isChecked: boolean) =>
-                        this.setState({ useHashV1: isChecked, subPartitionKeys: [] })
-                      }
-                    />
-                    <Text variant="small">
-                      <Icon iconName="InfoSolid" className="removeIcon" /> To ensure compatibility with older SDKs, the
-                      created container will use a legacy partitioning scheme that supports partition key values of size
-                      only up to 101 bytes. If this is enabled, you will not be able to use hierarchical partition keys.{" "}
-                      <Link href="https://aka.ms/cosmos-large-pk" target="_blank">
-                        Learn more
-                      </Link>
-                    </Text>
-                  </Stack>
-                )}
-              </Stack>
-            </CollapsibleSectionComponent>
-          )}
+                  {userContext.apiType === "SQL" && (
+                    <Stack className="panelGroupSpacing">
+                      <Checkbox
+                        label="My application uses an older Cosmos .NET or Java SDK version (.NET V1 or Java V2)"
+                        checked={this.state.useHashV1}
+                        styles={{
+                          text: { fontSize: 12 },
+                          checkbox: { width: 12, height: 12 },
+                          label: {
+                            padding: 0,
+                            alignItems: "center",
+                            wordWrap: "break-word",
+                            whiteSpace: "break-spaces",
+                          },
+                        }}
+                        onChange={(ev: React.FormEvent<HTMLElement>, isChecked: boolean) =>
+                          this.setState({ useHashV1: isChecked, subPartitionKeys: [] })
+                        }
+                      />
+                      <Text variant="small">
+                        <Icon iconName="InfoSolid" className="removeIcon" /> To ensure compatibility with older SDKs,
+                        the created container will use a legacy partitioning scheme that supports partition key values
+                        of size only up to 101 bytes. If this is enabled, you will not be able to use hierarchical
+                        partition keys.{" "}
+                        <Link href="https://aka.ms/cosmos-large-pk" target="_blank">
+                          Learn more
+                        </Link>
+                      </Text>
+                    </Stack>
+                  )}
+                </Stack>
+              </CollapsibleSectionComponent>
+            )}
         </div>
 
         <PanelFooterComponent buttonLabel="OK" isButtonDisabled={this.state.isThroughputCapExceeded} />
@@ -1135,6 +1144,10 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
   // }
 
   private shouldShowCollectionThroughputInput(): boolean {
+    if (!isFeatureSupported(PlatformFeature.ContainerThroughput)) {
+      return false;
+    }
+
     if (isServerlessAccount()) {
       return false;
     }
@@ -1161,11 +1174,15 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
   }
 
   private shouldShowVectorSearchParameters() {
-    return isVectorSearchEnabled() && (isServerlessAccount() || this.shouldShowCollectionThroughputInput());
+    return (
+      isFeatureSupported(PlatformFeature.VectorSearch) &&
+      isVectorSearchEnabled() &&
+      (isServerlessAccount() || this.shouldShowCollectionThroughputInput())
+    );
   }
 
   private shouldShowFullTextSearchParameters() {
-    return !isFabricNative() && this.showFullTextSearch;
+    return isFeatureSupported(PlatformFeature.FullTextSearch) && !isFabricNative() && this.showFullTextSearch;
   }
 
   private parseUniqueKeys(): DataModels.UniqueKeyPolicy {

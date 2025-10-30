@@ -88,7 +88,7 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
         let explorer: Explorer;
         if (platform === Platform.Hosted) {
           explorer = await configureHosted();
-        } else if (platform === Platform.Emulator) {
+        } else if (platform === Platform.Emulator || platform === Platform.VNextEmulator) {
           explorer = configureEmulator();
         } else if (platform === Platform.Portal) {
           explorer = await configurePortal();

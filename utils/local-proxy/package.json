@@ -1,0 +1,17 @@
+{
+  "name": "local-proxy",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node main.js",
+    "pack": "cd ../.. && npm run build:proxy && cd utils/local-proxy"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "express": "^4.21.1",
+    "http-proxy-middleware": "^3.0.3"
+  }
+}

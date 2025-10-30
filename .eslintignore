@@ -144,3 +144,5 @@ __mocks__/monaco-editor.ts
 src/Explorer/Tree/ResourceTree.tsx
 src/Utils/EndpointUtils.ts
 src/Utils/PriorityBasedExecutionUtils.ts
+
+utils/local-proxy/**
