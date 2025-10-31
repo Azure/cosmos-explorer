@@ -2,15 +2,16 @@ import { IconButton, IContextualMenuProps } from "@fluentui/react";
 import React from "react";
 import ContainerCopyMessages from "../../ContainerCopyMessages";
 import { CopyJobActions, CopyJobMigrationType, CopyJobStatusType } from "../../Enums";
-import { CopyJobType } from "../../Types";
+import { CopyJobType, HandleJobActionClickType } from "../../Types";
 
 interface CopyJobActionMenuProps {
   job: CopyJobType;
-  handleClick: (job: CopyJobType, action: string) => void;
-  updatingJobAction: { jobName: string; action: string } | null;
+  handleClick: HandleJobActionClickType;
 }
 
-const CopyJobActionMenu: React.FC<CopyJobActionMenuProps> = ({ job, handleClick, updatingJobAction }) => {
+const CopyJobActionMenu: React.FC<CopyJobActionMenuProps> = ({ job, handleClick }) => {
+  // Track which job and action is being updated
+  const [updatingJobAction, setUpdatingJobAction] = React.useState<{ jobName: string; action: string } | null>(null);
   if ([CopyJobStatusType.Completed, CopyJobStatusType.Cancelled].includes(job.Status)) {
     return null;
   }
@@ -24,21 +25,21 @@ const CopyJobActionMenu: React.FC<CopyJobActionMenuProps> = ({ job, handleClick,
         key: CopyJobActions.pause,
         text: ContainerCopyMessages.MonitorJobs.Actions.pause,
         iconProps: { iconName: "Pause" },
-        onClick: () => handleClick(job, CopyJobActions.pause),
+        onClick: () => handleClick(job, CopyJobActions.pause, setUpdatingJobAction),
         disabled: isThisJobUpdating && updatingAction === CopyJobActions.pause,
       },
       {
         key: CopyJobActions.cancel,
         text: ContainerCopyMessages.MonitorJobs.Actions.cancel,
         iconProps: { iconName: "Cancel" },
-        onClick: () => handleClick(job, CopyJobActions.cancel),
+        onClick: () => handleClick(job, CopyJobActions.cancel, setUpdatingJobAction),
         disabled: isThisJobUpdating && updatingAction === CopyJobActions.cancel,
       },
       {
         key: CopyJobActions.resume,
         text: ContainerCopyMessages.MonitorJobs.Actions.resume,
         iconProps: { iconName: "Play" },
-        onClick: () => handleClick(job, CopyJobActions.resume),
+        onClick: () => handleClick(job, CopyJobActions.resume, setUpdatingJobAction),
         disabled: isThisJobUpdating && updatingAction === CopyJobActions.resume,
       },
     ];
@@ -60,7 +61,7 @@ const CopyJobActionMenu: React.FC<CopyJobActionMenuProps> = ({ job, handleClick,
           key: CopyJobActions.complete,
           text: ContainerCopyMessages.MonitorJobs.Actions.complete,
           iconProps: { iconName: "CheckMark" },
-          onClick: () => handleClick(job, CopyJobActions.complete),
+          onClick: () => handleClick(job, CopyJobActions.complete, setUpdatingJobAction),
           disabled: isThisJobUpdating && updatingAction === CopyJobActions.complete,
         });
       }
