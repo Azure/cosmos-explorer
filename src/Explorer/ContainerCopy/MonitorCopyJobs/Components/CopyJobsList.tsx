@@ -30,12 +30,7 @@ const styles = {
 
 const PAGE_SIZE = 10; // Number of items per page
 
-const CopyJobsList: React.FC<CopyJobsListProps> = ({
-  jobs,
-  handleActionClick,
-  updatingJobAction,
-  pageSize = PAGE_SIZE,
-}) => {
+const CopyJobsList: React.FC<CopyJobsListProps> = ({ jobs, handleActionClick, pageSize = PAGE_SIZE }) => {
   const [startIndex, setStartIndex] = React.useState(0);
   const [sortedJobs, setSortedJobs] = React.useState<CopyJobType[]>(jobs);
   const [sortedColumnKey, setSortedColumnKey] = React.useState<string | undefined>(undefined);
@@ -64,8 +59,8 @@ const CopyJobsList: React.FC<CopyJobsListProps> = ({
   };
 
   const columns: IColumn[] = React.useMemo(
-    () => getColumns(handleSort, handleActionClick, updatingJobAction, sortedColumnKey, isSortedDescending),
-    [handleSort, handleActionClick, updatingJobAction, sortedColumnKey, isSortedDescending],
+    () => getColumns(handleSort, handleActionClick, sortedColumnKey, isSortedDescending),
+    [handleSort, handleActionClick, sortedColumnKey, isSortedDescending],
   );
 
   const _handleRowClick = React.useCallback((job: CopyJobType) => {
@@ -108,7 +103,7 @@ const CopyJobsList: React.FC<CopyJobsListProps> = ({
               startIndex={startIndex}
               totalCount={sortedJobs.length}
               pageSize={pageSize}
-              onLoadPage={(startIdx, _pageSize) => {
+              onLoadPage={(startIdx /* pageSize */) => {
                 setStartIndex(startIdx);
               }}
               showFirstLast={true}
