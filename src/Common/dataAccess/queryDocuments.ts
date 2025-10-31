@@ -25,7 +25,9 @@ export const getCommonQueryOptions = (options: FeedOptions): FeedOptions => {
     options.maxItemCount ||
     (storedItemPerPageSetting !== undefined && storedItemPerPageSetting) ||
     Queries.itemsPerPage;
-  options.enableQueryControl = LocalStorageUtility.getEntryBoolean(StorageKey.QueryControlEnabled);
-  options.maxDegreeOfParallelism = LocalStorageUtility.getEntryNumber(StorageKey.MaxDegreeOfParellism);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (options as any).enableQueryControl = LocalStorageUtility.getEntryBoolean(StorageKey.QueryControlEnabled);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (options as any).maxDegreeOfParallelism = LocalStorageUtility.getEntryNumber(StorageKey.MaxDegreeOfParellism);
   return options;
 };

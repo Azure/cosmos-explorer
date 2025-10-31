@@ -66,7 +66,11 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
     }
   },
   activateNewTab: (tab: TabsBase): void => {
-    set((state) => ({ openedTabs: [...state.openedTabs, tab], activeTab: tab, activeReactTab: undefined }));
+    set((state) => ({
+      openedTabs: [...state.openedTabs, tab],
+      activeTab: tab,
+      activeReactTab: undefined as ReactTabKind | undefined,
+    }));
     tab.triggerPersistState = get().persistTabsState;
     tab.onActivate();
     get().persistTabsState();
@@ -115,7 +119,7 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
       set({ activeTab: undefined, activeReactTab: undefined });
     }
 
-    if (tab.tabId === activeTab?.tabId && tabIndex !== -1) {
+    if (activeTab && tab.tabId === activeTab.tabId && tabIndex !== -1) {
       const tabToTheRight = updatedTabs[tabIndex];
       const lastOpenTab = updatedTabs[updatedTabs.length - 1];
       const newActiveTab = tabToTheRight ?? lastOpenTab;

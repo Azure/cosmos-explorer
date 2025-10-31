@@ -102,11 +102,57 @@ export const ContainerPolicyComponent: React.FC<ContainerPolicyComponentProps> =
 
   return (
     <div>
-      <Pivot onLinkClick={onPivotChange} selectedKey={ContainerPolicyTabTypes[selectedTab]}>
+      <Pivot
+        onLinkClick={onPivotChange}
+        selectedKey={ContainerPolicyTabTypes[selectedTab]}
+        styles={{
+          root: {
+            color: "var(--colorNeutralForeground1)",
+          },
+          link: {
+            color: "var(--colorNeutralForeground1)",
+            backgroundColor: "transparent",
+            selectors: {
+              ":hover": {
+                color: "var(--colorNeutralForeground1)",
+                backgroundColor: "transparent",
+              },
+              ":active": {
+                color: "var(--colorNeutralForeground1)",
+                backgroundColor: "transparent",
+              },
+            },
+          },
+          linkIsSelected: {
+            color: "var(--colorNeutralForeground1)",
+            backgroundColor: "transparent",
+            selectors: {
+              ":before": {
+                color: "var(--colorNeutralForeground1)",
+                backgroundColor: "var(--colorBrandForeground1)",
+              },
+              ":hover": {
+                color: "var(--colorNeutralForeground1)",
+                backgroundColor: "transparent",
+              },
+              ":active": {
+                color: "var(--colorNeutralForeground1)",
+                backgroundColor: "transparent",
+              },
+            },
+          },
+          linkContent: {
+            color: "inherit",
+          },
+          text: {
+            color: "inherit",
+          },
+        }}
+      >
         {isVectorSearchEnabled && (
           <PivotItem
             itemKey={ContainerPolicyTabTypes[ContainerPolicyTabTypes.VectorPolicyTab]}
-            style={{ marginTop: 20 }}
+            style={{ marginTop: 20, color: "var(--colorNeutralForeground1)" }}
             headerText="Vector Policy"
           >
             <Stack {...titleAndInputStackProps} styles={{ root: { position: "relative", maxWidth: "400px" } }}>
@@ -128,7 +174,7 @@ export const ContainerPolicyComponent: React.FC<ContainerPolicyComponentProps> =
         {isFullTextSearchEnabled && (
           <PivotItem
             itemKey={ContainerPolicyTabTypes[ContainerPolicyTabTypes.FullTextPolicyTab]}
-            style={{ marginTop: 20 }}
+            style={{ marginTop: 20, color: "var(--colorNeutralForeground1)" }}
             headerText="Full Text Policy"
           >
             <Stack {...titleAndInputStackProps} styles={{ root: { position: "relative", maxWidth: "400px" } }}>
@@ -144,7 +190,27 @@ export const ContainerPolicyComponent: React.FC<ContainerPolicyComponentProps> =
               ) : (
                 <DefaultButton
                   id={"create-full-text-policy"}
-                  styles={{ root: { fontSize: 12 } }}
+                  styles={{
+                    root: {
+                      fontSize: 12,
+                      color: "var(--colorNeutralForeground1)",
+                      backgroundColor: "transparent",
+                      borderColor: "var(--colorNeutralForeground1)",
+                    },
+                    rootHovered: {
+                      color: "var(--colorNeutralForeground1)",
+                      backgroundColor: "transparent",
+                      borderColor: "var(--colorNeutralForeground1)",
+                    },
+                    rootPressed: {
+                      color: "var(--colorNeutralForeground1)",
+                      backgroundColor: "transparent",
+                      borderColor: "var(--colorNeutralForeground1)",
+                    },
+                    rootDisabled: {
+                      backgroundColor: "transparent",
+                    },
+                  }}
                   onClick={() => {
                     checkAndSendFullTextPolicyToSettings({
                       defaultLanguage: getFullTextLanguageOptions()[0].key as never,

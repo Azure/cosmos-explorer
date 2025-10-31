@@ -24,7 +24,6 @@ import {
 } from "Explorer/Panes/AddGlobalSecondaryIndexPanel/AddGlobalSecondaryIndexPanel";
 import { Tabs } from "Explorer/Tabs/Tabs";
 import { CosmosFluentProvider, cosmosShorthands, tokens } from "Explorer/Theme/ThemeUtil";
-import { ResourceTree } from "Explorer/Tree/ResourceTree";
 import { useDatabases } from "Explorer/useDatabases";
 import { KeyboardAction, KeyboardActionGroup, KeyboardActionHandler, useKeyboardActionGroup } from "KeyboardShortcuts";
 import { isFabric, isFabricMirrored, isFabricNative, isFabricNativeReadOnly } from "Platform/Fabric/FabricUtil";
@@ -33,9 +32,11 @@ import { getCollectionName, getDatabaseName } from "Utils/APITypeUtils";
 import { conditionalClass } from "Utils/StyleUtils";
 import { Allotment, AllotmentHandle } from "allotment";
 import { useSidePanel } from "hooks/useSidePanel";
+import { useTheme } from "hooks/useTheme";
 import useZoomLevel from "hooks/useZoomLevel";
 import { debounce } from "lodash";
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { ResourceTree } from "./Tree/ResourceTree";
 
 const useSidebarStyles = makeStyles({
   sidebar: {
@@ -43,27 +44,55 @@ const useSidebarStyles = makeStyles({
   },
   sidebarContainer: {
     height: "100%",
+    width: "100%",
+    borderRight: `1px solid ${tokens.colorNeutralStroke1}`,
+    transition: "all 0.2s ease-in-out",
+    display: "flex",
+    flexDirection: "column",
     backgroundColor: tokens.colorNeutralBackground1,
+    position: "relative",
   },
   expandedContent: {
     display: "grid",
     height: "100%",
+    width: "100%",
     gridTemplateRows: `calc(${tokens.layoutRowHeight} * 2) 1fr`,
   },
   floatingControlsContainer: {
-    position: "relative",
+    position: "absolute",
+    top: 0,
+    right: 0,
     zIndex: 1000,
-    width: "100%",
+    width: "auto",
+    padding: tokens.spacingHorizontalS,
   },
   floatingControls: {
     display: "flex",
     flexDirection: "row",
-    position: "absolute",
-    right: 0,
+    gap: tokens.spacingHorizontalXS,
   },
   floatingControlButton: {
     ...shorthands.border("none"),
     backgroundColor: "transparent",
+    color: tokens.colorNeutralForeground1,
+    cursor: "pointer",
+    padding: tokens.spacingHorizontalXS,
+    borderRadius: tokens.borderRadiusMedium,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    ":hover": {
+      backgroundColor: tokens.colorNeutralBackground1Hover,
+      color: tokens.colorNeutralForeground1,
+    },
+    ":active": {
+      backgroundColor: tokens.colorNeutralBackground1Pressed,
+      color: tokens.colorNeutralForeground1,
+    },
+    ":disabled": {
+      color: tokens.colorNeutralForegroundDisabled,
+      cursor: "not-allowed",
+    },
   },
   globalCommandsContainer: {
     display: "grid",
@@ -71,7 +100,9 @@ const useSidebarStyles = makeStyles({
     justifyItems: "center",
     width: "100%",
     containerType: "size", // Use this container for "@container" queries below this.
+    padding: tokens.spacingHorizontalS,
     ...cosmosShorthands.borderBottom(),
+    backgroundColor: tokens.colorNeutralBackground1,
   },
   loadingProgressBar: {
     // Float above the content
@@ -84,7 +115,7 @@ const useSidebarStyles = makeStyles({
     animationDuration: "3s",
     animationName: {
       "0%": {
-        opacity: ".2", // matches indeterminate bar width
+        opacity: ".2",
       },
       "50%": {
         opacity: "1",
@@ -294,6 +325,9 @@ export const SidebarContainer: React.FC<SidebarProps> = ({ explorer }) => {
   const [expandedSize, setExpandedSize] = React.useState(300);
   const hasSidebar = userContext.apiType !== "Postgres" && userContext.apiType !== "VCoreMongo";
   const allotment = useRef<AllotmentHandle>(null);
+  // isDarkMode is used for styling in other parts of the component
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { isDarkMode } = useTheme();
   const isZoomed = useZoomLevel();
 
   const expand = useCallback(() => {
