@@ -1,6 +1,7 @@
 import { HttpHeaders } from "Common/Constants";
 import { QueryRequestOptions, QueryResponse } from "Contracts/AzureResourceGraph";
 import useSWR from "swr";
+import { userContext } from "UserContext";
 import { configContext } from "../ConfigContext";
 import { DatabaseAccount } from "../Contracts/DataModels";
 /* eslint-disable  @typescript-eslint/no-explicit-any */
@@ -10,9 +11,15 @@ interface AccountListResult {
   value: DatabaseAccount[];
 }
 
-export async function fetchDatabaseAccounts(subscriptionId: string, accessToken: string): Promise<DatabaseAccount[]> {
+export async function fetchDatabaseAccounts(
+  subscriptionId: string,
+  accessToken: string = "",
+): Promise<DatabaseAccount[]> {
+  if (!accessToken && !userContext.authorizationToken) {
+    return [];
+  }
   const headers = new Headers();
-  const bearer = `Bearer ${accessToken}`;
+  const bearer = accessToken ? `Bearer ${accessToken}` : userContext.authorizationToken;
 
   headers.append("Authorization", bearer);
 
@@ -35,10 +42,13 @@ export async function fetchDatabaseAccounts(subscriptionId: string, accessToken:
 
 export async function fetchDatabaseAccountsFromGraph(
   subscriptionId: string,
-  accessToken: string,
+  accessToken: string = "",
 ): Promise<DatabaseAccount[]> {
+  if (!accessToken && !userContext.authorizationToken) {
+    return [];
+  }
   const headers = new Headers();
-  const bearer = `Bearer ${accessToken}`;
+  const bearer = accessToken ? `Bearer ${accessToken}` : userContext.authorizationToken;
 
   headers.append("Authorization", bearer);
   headers.append(HttpHeaders.contentType, "application/json");
@@ -85,9 +95,9 @@ export async function fetchDatabaseAccountsFromGraph(
   return databaseAccounts.sort((a, b) => a.name.localeCompare(b.name));
 }
 
-export function useDatabaseAccounts(subscriptionId: string, armToken: string): DatabaseAccount[] | undefined {
+export function useDatabaseAccounts(subscriptionId: string, armToken: string = ""): DatabaseAccount[] | undefined {
   const { data } = useSWR(
-    () => (armToken && subscriptionId ? ["databaseAccounts", subscriptionId, armToken] : undefined),
+    () => (subscriptionId ? ["databaseAccounts", subscriptionId, armToken] : undefined),
     (_, subscriptionId, armToken) => fetchDatabaseAccountsFromGraph(subscriptionId, armToken),
   );
   return data;
