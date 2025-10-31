@@ -1,14 +1,13 @@
 import { IColumn } from "@fluentui/react";
 import React from "react";
 import ContainerCopyMessages from "../../ContainerCopyMessages";
-import { CopyJobType } from "../../Types";
+import { CopyJobType, HandleJobActionClickType } from "../../Types";
 import CopyJobActionMenu from "./CopyJobActionMenu";
 import CopyJobStatusWithIcon from "./CopyJobStatusWithIcon";
 
 export const getColumns = (
   handleSort: (columnKey: string) => void,
-  handleActionClick: (job: CopyJobType, action: string) => void,
-  updatingJobAction: { jobName: string; action: string } | null,
+  handleActionClick: HandleJobActionClickType,
   sortedColumnKey: string | undefined,
   isSortedDescending: boolean,
 ): IColumn[] => [
@@ -76,8 +75,6 @@ export const getColumns = (
     minWidth: 80,
     maxWidth: 200,
     isResizable: true,
-    onRender: (job: CopyJobType) => (
-      <CopyJobActionMenu job={job} handleClick={handleActionClick} updatingJobAction={updatingJobAction} />
-    ),
+    onRender: (job: CopyJobType) => <CopyJobActionMenu job={job} handleClick={handleActionClick} />,
   },
 ];

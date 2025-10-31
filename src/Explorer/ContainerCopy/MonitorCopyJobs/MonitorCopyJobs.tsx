@@ -6,7 +6,7 @@ import { getCopyJobs, updateCopyJobStatus } from "../Actions/CopyJobActions";
 import { convertToCamelCase } from "../CopyJobUtils";
 import { CopyJobStatusType } from "../Enums";
 import CopyJobsNotFound from "../MonitorCopyJobs/Components/CopyJobs.NotFound";
-import { CopyJobType } from "../Types";
+import { CopyJobType, JobActionUpdatorType } from "../Types";
 import CopyJobsList from "./Components/CopyJobsList";
 
 const FETCH_INTERVAL_MS = 30 * 1000; // Interval time in milliseconds (30 seconds)
@@ -21,7 +21,6 @@ const MonitorCopyJobs = forwardRef<MonitorCopyJobsRef, MonitorCopyJobsProps>((_p
   const [loading, setLoading] = React.useState(true); // Start with loading as true
   const [error, setError] = React.useState<string | null>(null);
   const [jobs, setJobs] = React.useState<CopyJobType[]>([]);
-  const [updatingJobAction, setUpdatingJobAction] = React.useState<{ jobName: string; action: string } | null>(null); // Track which job and action is being updated
   const isUpdatingRef = React.useRef(false); // Use ref to track updating state
   const isFirstFetchRef = React.useRef(true); // Use ref to track the first fetch
 
@@ -70,40 +69,43 @@ const MonitorCopyJobs = forwardRef<MonitorCopyJobsRef, MonitorCopyJobsProps>((_p
     },
   }));
 
-  const handleActionClick = React.useCallback(async (job: CopyJobType, action: string) => {
-    try {
-      isUpdatingRef.current = true; // Mark as updating
-      setUpdatingJobAction({ jobName: job.Name, action }); // Set the specific job and action being updated
-      const updatedCopyJob = await updateCopyJobStatus(job, action);
-      if (updatedCopyJob) {
-        setJobs((prevJobs) =>
-          prevJobs.map((prevJob) =>
-            prevJob.Name === updatedCopyJob.properties.jobName
-              ? {
-                  ...prevJob,
-                  Status: convertToCamelCase(updatedCopyJob.properties.status) as CopyJobStatusType,
-                }
-              : prevJob,
-          ),
-        );
+  const handleActionClick = React.useCallback(
+    async (job: CopyJobType, action: string, setUpdatingJobAction: JobActionUpdatorType) => {
+      try {
+        isUpdatingRef.current = true; // Mark as updating
+        setUpdatingJobAction({ jobName: job.Name, action }); // Set the specific job and action being updated
+        const updatedCopyJob = await updateCopyJobStatus(job, action);
+        if (updatedCopyJob) {
+          setJobs((prevJobs) =>
+            prevJobs.map((prevJob) =>
+              prevJob.Name === updatedCopyJob.properties.jobName
+                ? {
+                    ...prevJob,
+                    Status: convertToCamelCase(updatedCopyJob.properties.status) as CopyJobStatusType,
+                  }
+                : prevJob,
+            ),
+          );
+        }
+      } catch (error) {
+        setError(error.message || "Failed to update copy job status. Please try again later.");
+      } finally {
+        isUpdatingRef.current = false; // Mark as not updating
+        setUpdatingJobAction(null); // Clear the updating job action
       }
-    } catch (error) {
-      setError(error.message || "Failed to update copy job status. Please try again later.");
-    } finally {
-      isUpdatingRef.current = false; // Mark as not updating
-      setUpdatingJobAction(null); // Clear the updating job action
-    }
-  }, []);
+    },
+    [],
+  );
 
   const memoizedJobsList = React.useMemo(() => {
     if (loading) {
       return null;
     }
     if (jobs.length > 0) {
-      return <CopyJobsList jobs={jobs} handleActionClick={handleActionClick} updatingJobAction={updatingJobAction} />;
+      return <CopyJobsList jobs={jobs} handleActionClick={handleActionClick} />;
     }
     return <CopyJobsNotFound />;
-  }, [jobs, loading, handleActionClick, updatingJobAction]);
+  }, [jobs, loading, handleActionClick]);
 
   return (
     <Stack className="monitorCopyJobs flexContainer">

@@ -13,13 +13,12 @@ import {
 } from "@fluentui/react";
 import React, { useEffect } from "react";
 import { openCopyJobDetailsPanel } from "../../Actions/CopyJobActions";
-import { CopyJobType } from "../../Types";
+import { CopyJobType, HandleJobActionClickType } from "../../Types";
 import { getColumns } from "./CopyJobColumns";
 
 interface CopyJobsListProps {
   jobs: CopyJobType[];
-  handleActionClick: (job: CopyJobType, action: string) => void;
-  updatingJobAction: { jobName: string; action: string } | null;
+  handleActionClick: HandleJobActionClickType;
   pageSize?: number;
 }
 

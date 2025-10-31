@@ -133,3 +133,11 @@ export type DataTransferJobType = {
     };
   };
 };
+
+export type JobActionUpdatorType = React.Dispatch<React.SetStateAction<{ jobName: string; action: string } | null>>;
+
+export type HandleJobActionClickType = (
+  job: CopyJobType,
+  action: string,
+  setUpdatingJobAction: JobActionUpdatorType,
+) => void;
