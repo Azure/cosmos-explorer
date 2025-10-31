@@ -12,6 +12,7 @@ import {
   StickyPositionType,
 } from "@fluentui/react";
 import React, { useEffect } from "react";
+import Pager from "../../../../Common/Pager";
 import { openCopyJobDetailsPanel } from "../../Actions/CopyJobActions";
 import { CopyJobType, HandleJobActionClickType } from "../../Types";
 import { getColumns } from "./CopyJobColumns";
@@ -23,11 +24,11 @@ interface CopyJobsListProps {
 }
 
 const styles = {
-  container: { height: "calc(100vh - 15em)" } as React.CSSProperties,
+  container: { height: "calc(100vh - 25em)" } as React.CSSProperties,
   stackItem: { position: "relative", marginBottom: "20px" } as React.CSSProperties,
 };
 
-const PAGE_SIZE = 100; // Number of items per page
+const PAGE_SIZE = 10; // Number of items per page
 
 const CopyJobsList: React.FC<CopyJobsListProps> = ({
   jobs,
@@ -35,13 +36,14 @@ const CopyJobsList: React.FC<CopyJobsListProps> = ({
   updatingJobAction,
   pageSize = PAGE_SIZE,
 }) => {
-  const [startIndex] = React.useState(0);
+  const [startIndex, setStartIndex] = React.useState(0);
   const [sortedJobs, setSortedJobs] = React.useState<CopyJobType[]>(jobs);
   const [sortedColumnKey, setSortedColumnKey] = React.useState<string | undefined>(undefined);
   const [isSortedDescending, setIsSortedDescending] = React.useState<boolean>(false);
 
   useEffect(() => {
     setSortedJobs(jobs);
+    setStartIndex(0);
   }, [jobs]);
 
   const handleSort = (columnKey: string) => {
@@ -58,6 +60,7 @@ const CopyJobsList: React.FC<CopyJobsListProps> = ({
     setSortedJobs(sorted);
     setSortedColumnKey(columnKey);
     setIsSortedDescending(isDescending);
+    setStartIndex(0);
   };
 
   const columns: IColumn[] = React.useMemo(
@@ -76,8 +79,6 @@ const CopyJobsList: React.FC<CopyJobsListProps> = ({
       </div>
     );
   }, []);
-
-  // const totalCount = jobs.length;
 
   return (
     <div style={styles.container}>
@@ -100,6 +101,21 @@ const CopyJobsList: React.FC<CopyJobsListProps> = ({
             />
           </ScrollablePane>
         </Stack.Item>
+        {sortedJobs.length > pageSize && (
+          <Stack.Item>
+            <Pager
+              disabled={false}
+              startIndex={startIndex}
+              totalCount={sortedJobs.length}
+              pageSize={pageSize}
+              onLoadPage={(startIdx, _pageSize) => {
+                setStartIndex(startIdx);
+              }}
+              showFirstLast={true}
+              showItemCount={true}
+            />
+          </Stack.Item>
+        )}
       </Stack>
     </div>
   );
