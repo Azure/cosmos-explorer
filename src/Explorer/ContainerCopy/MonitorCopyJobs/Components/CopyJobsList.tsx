@@ -30,7 +30,12 @@ const styles = {
 
 const PAGE_SIZE = 100; // Number of items per page
 
-const CopyJobsList: React.FC<CopyJobsListProps> = ({ jobs, handleActionClick, updatingJobAction, pageSize = PAGE_SIZE }) => {
+const CopyJobsList: React.FC<CopyJobsListProps> = ({
+  jobs,
+  handleActionClick,
+  updatingJobAction,
+  pageSize = PAGE_SIZE,
+}) => {
   const [startIndex] = React.useState(0);
   const [sortedJobs, setSortedJobs] = React.useState<CopyJobType[]>(jobs);
   const [sortedColumnKey, setSortedColumnKey] = React.useState<string | undefined>(undefined);
