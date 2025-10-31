@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useReducer } from "react";
+import { useCallback, useMemo, useReducer, useState } from "react";
 import { useSidePanel } from "../../../../hooks/useSidePanel";
 import { submitCreateCopyJob } from "../../Actions/CopyJobActions";
 import { useCopyJobContext } from "../../Context/CopyJobContext";
@@ -31,6 +31,8 @@ function navigationReducer(state: NavigationState, action: Action): NavigationSt
 }
 
 export function useCopyJobNavigation() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const { copyJobState, resetCopyJobState } = useCopyJobContext();
   const screens = useCreateCopyJobScreensList();
   const { validationCache: cache } = useCopyJobPrerequisitesCache();
@@ -40,9 +42,13 @@ export function useCopyJobNavigation() {
   const currentScreen = screens.find((screen) => screen.key === currentScreenKey);
 
   const isPrimaryDisabled = useMemo(() => {
+    if (isLoading) {
+      return true;
+    }
     const context = currentScreenKey === SCREEN_KEYS.AssignPermissions ? cache : copyJobState;
     return !currentScreen?.validations.every((v) => v.validate(context));
-  }, [currentScreen.key, copyJobState, cache]);
+  }, [currentScreen.key, copyJobState, cache, isLoading]);
+
   const primaryBtnText = useMemo(() => {
     if (currentScreenKey === SCREEN_KEYS.PreviewCopyJob) {
       return "Copy";
@@ -69,7 +75,20 @@ export function useCopyJobNavigation() {
     if (nextScreen) {
       dispatch({ type: "NEXT", nextScreen });
     } else if (currentScreenKey === SCREEN_KEYS.PreviewCopyJob) {
-      submitCreateCopyJob(copyJobState, handleCancel);
+      (async () => {
+        try {
+          setIsLoading(true);
+          await submitCreateCopyJob(copyJobState, handleCancel);
+        } catch (error: unknown) {
+          if (error instanceof Error) {
+            setError(error.message || "Failed to create copy job. Please try again later.");
+          } else {
+            setError("Failed to create copy job. Please try again later.");
+          }
+        } finally {
+          setIsLoading(false);
+        }
+      })();
     }
   }, [currentScreenKey, copyJobState]);
 
@@ -85,5 +104,7 @@ export function useCopyJobNavigation() {
     handlePrevious,
     handleCancel,
     primaryBtnText,
+    error,
+    setError,
   };
 }
