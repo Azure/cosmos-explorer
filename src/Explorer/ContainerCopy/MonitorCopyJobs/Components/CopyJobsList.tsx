@@ -19,6 +19,7 @@ import { getColumns } from "./CopyJobColumns";
 interface CopyJobsListProps {
   jobs: CopyJobType[];
   handleActionClick: (job: CopyJobType, action: string) => void;
+  updatingJobAction: { jobName: string; action: string } | null;
   pageSize?: number;
 }
 
@@ -29,7 +30,7 @@ const styles = {
 
 const PAGE_SIZE = 100; // Number of items per page
 
-const CopyJobsList: React.FC<CopyJobsListProps> = ({ jobs, handleActionClick, pageSize = PAGE_SIZE }) => {
+const CopyJobsList: React.FC<CopyJobsListProps> = ({ jobs, handleActionClick, updatingJobAction, pageSize = PAGE_SIZE }) => {
   const [startIndex] = React.useState(0);
   const [sortedJobs, setSortedJobs] = React.useState<CopyJobType[]>(jobs);
   const [sortedColumnKey, setSortedColumnKey] = React.useState<string | undefined>(undefined);
@@ -56,8 +57,8 @@ const CopyJobsList: React.FC<CopyJobsListProps> = ({ jobs, handleActionClick, pa
   };
 
   const columns: IColumn[] = React.useMemo(
-    () => getColumns(handleSort, handleActionClick, sortedColumnKey, isSortedDescending),
-    [handleSort, handleActionClick, sortedColumnKey, isSortedDescending],
+    () => getColumns(handleSort, handleActionClick, updatingJobAction, sortedColumnKey, isSortedDescending),
+    [handleSort, handleActionClick, updatingJobAction, sortedColumnKey, isSortedDescending],
   );
 
   const _handleRowClick = React.useCallback((job: CopyJobType) => {
