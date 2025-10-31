@@ -11,7 +11,7 @@ import CopyJobsList from "./Components/CopyJobsList";
 
 const FETCH_INTERVAL_MS = 30 * 1000; // Interval time in milliseconds (30 seconds)
 
-interface MonitorCopyJobsProps { }
+interface MonitorCopyJobsProps {}
 
 export interface MonitorCopyJobsRef {
   refreshJobList: () => void;
@@ -80,9 +80,9 @@ const MonitorCopyJobs = forwardRef<MonitorCopyJobsRef, MonitorCopyJobsProps>((_p
           prevJobs.map((prevJob) =>
             prevJob.Name === updatedCopyJob.properties.jobName
               ? {
-                ...prevJob,
-                Status: convertToCamelCase(updatedCopyJob.properties.status) as CopyJobStatusType,
-              }
+                  ...prevJob,
+                  Status: convertToCamelCase(updatedCopyJob.properties.status) as CopyJobStatusType,
+                }
               : prevJob,
           ),
         );
