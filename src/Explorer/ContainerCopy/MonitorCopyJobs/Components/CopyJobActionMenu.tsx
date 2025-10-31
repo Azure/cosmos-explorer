@@ -7,32 +7,39 @@ import { CopyJobType } from "../../Types";
 interface CopyJobActionMenuProps {
   job: CopyJobType;
   handleClick: (job: CopyJobType, action: string) => void;
+  updatingJobAction: { jobName: string; action: string } | null;
 }
 
-const CopyJobActionMenu: React.FC<CopyJobActionMenuProps> = ({ job, handleClick }) => {
+const CopyJobActionMenu: React.FC<CopyJobActionMenuProps> = ({ job, handleClick, updatingJobAction }) => {
   if ([CopyJobStatusType.Completed, CopyJobStatusType.Cancelled].includes(job.Status)) {
     return null;
   }
 
   const getMenuItems = (): IContextualMenuProps["items"] => {
+    const isThisJobUpdating = updatingJobAction?.jobName === job.Name;
+    const updatingAction = updatingJobAction?.action;
+
     const baseItems = [
       {
         key: CopyJobActions.pause,
         text: ContainerCopyMessages.MonitorJobs.Actions.pause,
         iconProps: { iconName: "Pause" },
         onClick: () => handleClick(job, CopyJobActions.pause),
+        disabled: isThisJobUpdating && updatingAction === CopyJobActions.pause,
       },
       {
         key: CopyJobActions.cancel,
         text: ContainerCopyMessages.MonitorJobs.Actions.cancel,
         iconProps: { iconName: "Cancel" },
         onClick: () => handleClick(job, CopyJobActions.cancel),
+        disabled: isThisJobUpdating && updatingAction === CopyJobActions.cancel,
       },
       {
         key: CopyJobActions.resume,
         text: ContainerCopyMessages.MonitorJobs.Actions.resume,
         iconProps: { iconName: "Play" },
         onClick: () => handleClick(job, CopyJobActions.resume),
+        disabled: isThisJobUpdating && updatingAction === CopyJobActions.resume,
       },
     ];
 
@@ -54,6 +61,7 @@ const CopyJobActionMenu: React.FC<CopyJobActionMenuProps> = ({ job, handleClick 
           text: ContainerCopyMessages.MonitorJobs.Actions.complete,
           iconProps: { iconName: "CheckMark" },
           onClick: () => handleClick(job, CopyJobActions.complete),
+          disabled: isThisJobUpdating && updatingAction === CopyJobActions.complete,
         });
       }
       return filteredItems;
