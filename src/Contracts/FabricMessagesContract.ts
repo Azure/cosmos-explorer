@@ -84,9 +84,11 @@ export type FabricMessageV3 =
     }
   | {
       type: "refreshResourceTree";
+    }
+  | {
+      type: "shortcutCreated";
       message: {
-        id: string;
-        error: string | undefined;
+        shortcutId: string;
       };
     };
 

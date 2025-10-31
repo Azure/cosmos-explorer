@@ -7,6 +7,7 @@ export enum FabricMessageTypes {
   GetAccessToken = "GetAccessToken",
   Ready = "Ready",
   OpenSettings = "OpenSettings",
+  NewShortcut = "NewShortcut",
 }
 
 export interface AuthorizationToken {

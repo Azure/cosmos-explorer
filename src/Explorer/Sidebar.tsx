@@ -15,7 +15,9 @@ import {
 import { Add16Regular, ArrowSync12Regular, ChevronLeft12Regular, ChevronRight12Regular } from "@fluentui/react-icons";
 import { GlobalSecondaryIndexLabels } from "Common/Constants";
 import { isGlobalSecondaryIndexEnabled } from "Common/DatabaseAccountUtility";
+import { sendMessage } from "Common/MessageHandler";
 import { configContext, Platform } from "ConfigContext";
+import { FabricMessageTypes } from "Contracts/FabricMessageTypes";
 import Explorer from "Explorer/Explorer";
 import { AddDatabasePanel } from "Explorer/Panes/AddDatabasePanel/AddDatabasePanel";
 import {
@@ -170,6 +172,19 @@ const GlobalCommands: React.FC<GlobalCommandsProps> = ({ explorer }) => {
         keyboardAction: KeyboardAction.NEW_COLLECTION,
       },
     ];
+
+    if (isFabricNative()) {
+      actions.push({
+        id: "new_fabric_shortcut",
+        label: "New Shortcut",
+        icon: <Add16Regular />,
+        onClick: () => {
+          // explorer.onNewFabricShortcutClicked({ shortcutId: "blah" });
+          // TODO: add telemetry
+          sendMessage({ type: FabricMessageTypes.NewShortcut, });
+        },
+      });
+    }
 
     if (configContext.platform !== Platform.Fabric && userContext.apiType !== "Tables") {
       actions.push({

@@ -220,6 +220,10 @@ async function configureFabric(): Promise<Explorer> {
             explorer.onRefreshResourcesClick();
             break;
           }
+          case "shortcutCreated": {
+            explorer.onNewFabricShortcutClicked({ shortcutId: data.message.shortcutId });
+            break;
+          }
           default:
             console.error(`Unknown Fabric message type: ${JSON.stringify(data)}`);
             break;

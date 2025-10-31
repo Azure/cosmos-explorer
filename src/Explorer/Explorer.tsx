@@ -5,6 +5,7 @@ import { Environment, getEnvironment } from "Common/EnvironmentUtility";
 import { sendMessage } from "Common/MessageHandler";
 import { Platform, configContext } from "ConfigContext";
 import { MessageTypes } from "Contracts/ExplorerContracts";
+import { AddFabricShortcutPanel } from "Explorer/Panes/AddCollectionPanel/AddFabricShortcutPanel";
 import { useDataPlaneRbac } from "Explorer/Panes/SettingsPane/SettingsPane";
 import { getCopilotEnabled, isCopilotFeatureRegistered } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
 import { IGalleryItem } from "Juno/JunoClient";
@@ -1110,6 +1111,14 @@ export default class Explorer {
         .getState()
         .openSidePanel("New " + getCollectionName(), <AddCollectionPanel explorer={this} {...options} />);
     }
+  }
+
+  public async onNewFabricShortcutClicked(param: {
+    shortcutId: string;
+  }): Promise<void> {
+    useSidePanel
+      .getState()
+      .openSidePanel("Configure Shortcut", <AddFabricShortcutPanel explorer={this} shortcutId={param.shortcutId} />);
   }
 
   private refreshCommandBarButtons(): void {
