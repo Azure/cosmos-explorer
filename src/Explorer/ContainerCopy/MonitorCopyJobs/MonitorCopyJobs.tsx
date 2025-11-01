@@ -4,12 +4,12 @@ import ShimmerTree, { IndentLevel } from "Common/ShimmerTree";
 import React, { forwardRef, useEffect, useImperativeHandle } from "react";
 import { getCopyJobs, updateCopyJobStatus } from "../Actions/CopyJobActions";
 import { convertToCamelCase } from "../CopyJobUtils";
-import { CopyJobStatusType } from "../Enums";
+import { CopyJobStatusType } from "../Enums/CopyJobEnums";
 import CopyJobsNotFound from "../MonitorCopyJobs/Components/CopyJobs.NotFound";
-import { CopyJobType, JobActionUpdatorType } from "../Types";
+import { CopyJobType, JobActionUpdatorType } from "../Types/CopyJobTypes";
 import CopyJobsList from "./Components/CopyJobsList";
 
-const FETCH_INTERVAL_MS = 30 * 1000; // Interval time in milliseconds (30 seconds)
+const FETCH_INTERVAL_MS = 30 * 1000;
 
 interface MonitorCopyJobsProps {}
 
@@ -18,27 +18,26 @@ export interface MonitorCopyJobsRef {
 }
 
 const MonitorCopyJobs = forwardRef<MonitorCopyJobsRef, MonitorCopyJobsProps>((_props, ref) => {
-  const [loading, setLoading] = React.useState(true); // Start with loading as true
+  const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
   const [jobs, setJobs] = React.useState<CopyJobType[]>([]);
-  const isUpdatingRef = React.useRef(false); // Use ref to track updating state
-  const isFirstFetchRef = React.useRef(true); // Use ref to track the first fetch
+  const isUpdatingRef = React.useRef(false);
+  const isFirstFetchRef = React.useRef(true);
 
   const indentLevels = React.useMemo<IndentLevel[]>(() => Array(7).fill({ level: 0, width: "100%" }), []);
 
   const fetchJobs = React.useCallback(async () => {
     if (isUpdatingRef.current) {
       return;
-    } // Skip if an update is in progress
+    }
     try {
       if (isFirstFetchRef.current) {
         setLoading(true);
-      } // Show loading spinner only for the first fetch
+      }
       setError(null);
 
       const response = await getCopyJobs();
       setJobs((prevJobs) => {
-        // Only update jobs if they are different
         const isSame = JSON.stringify(prevJobs) === JSON.stringify(response);
         return isSame ? prevJobs : response;
       });
@@ -46,8 +45,8 @@ const MonitorCopyJobs = forwardRef<MonitorCopyJobsRef, MonitorCopyJobsProps>((_p
       setError(error.message || "Failed to load copy jobs. Please try again later.");
     } finally {
       if (isFirstFetchRef.current) {
-        setLoading(false); // Hide loading spinner after the first fetch
-        isFirstFetchRef.current = false; // Mark the first fetch as complete
+        setLoading(false);
+        isFirstFetchRef.current = false;
       }
     }
   }, []);
@@ -72,8 +71,8 @@ const MonitorCopyJobs = forwardRef<MonitorCopyJobsRef, MonitorCopyJobsProps>((_p
   const handleActionClick = React.useCallback(
     async (job: CopyJobType, action: string, setUpdatingJobAction: JobActionUpdatorType) => {
       try {
-        isUpdatingRef.current = true; // Mark as updating
-        setUpdatingJobAction({ jobName: job.Name, action }); // Set the specific job and action being updated
+        isUpdatingRef.current = true;
+        setUpdatingJobAction({ jobName: job.Name, action });
         const updatedCopyJob = await updateCopyJobStatus(job, action);
         if (updatedCopyJob) {
           setJobs((prevJobs) =>
@@ -90,8 +89,8 @@ const MonitorCopyJobs = forwardRef<MonitorCopyJobsRef, MonitorCopyJobsProps>((_p
       } catch (error) {
         setError(error.message || "Failed to update copy job status. Please try again later.");
       } finally {
-        isUpdatingRef.current = false; // Mark as not updating
-        setUpdatingJobAction(null); // Clear the updating job action
+        isUpdatingRef.current = false;
+        setUpdatingJobAction(null);
       }
     },
     [],

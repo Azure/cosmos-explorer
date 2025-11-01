@@ -1,5 +1,5 @@
 import React from "react";
-import { CopyJobContextState, DropdownOptionType } from "../../../../Types";
+import { CopyJobContextState, DropdownOptionType } from "../../../../Types/CopyJobTypes";
 
 export function dropDownChangeHandler(setCopyJobState: React.Dispatch<React.SetStateAction<CopyJobContextState>>) {
   return (type: "sourceDatabase" | "sourceContainer" | "targetDatabase" | "targetContainer") =>

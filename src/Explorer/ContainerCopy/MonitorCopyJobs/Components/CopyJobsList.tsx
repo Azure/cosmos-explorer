@@ -14,7 +14,7 @@ import {
 import React, { useEffect } from "react";
 import Pager from "../../../../Common/Pager";
 import { openCopyJobDetailsPanel } from "../../Actions/CopyJobActions";
-import { CopyJobType, HandleJobActionClickType } from "../../Types";
+import { CopyJobType, HandleJobActionClickType } from "../../Types/CopyJobTypes";
 import { getColumns } from "./CopyJobColumns";
 
 interface CopyJobsListProps {
@@ -28,7 +28,7 @@ const styles = {
   stackItem: { position: "relative", marginBottom: "20px" } as React.CSSProperties,
 };
 
-const PAGE_SIZE = 10; // Number of items per page
+const PAGE_SIZE = 10;
 
 const CopyJobsList: React.FC<CopyJobsListProps> = ({ jobs, handleActionClick, pageSize = PAGE_SIZE }) => {
   const [startIndex, setStartIndex] = React.useState(0);

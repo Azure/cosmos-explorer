@@ -1,7 +1,7 @@
 import { Dropdown, Stack } from "@fluentui/react";
 import React from "react";
 import ContainerCopyMessages from "../../../../ContainerCopyMessages";
-import { DatabaseContainerSectionProps } from "../../../../Types";
+import { DatabaseContainerSectionProps } from "../../../../Types/CopyJobTypes";
 import FieldRow from "../../Components/FieldRow";
 
 export const DatabaseContainerSection = ({

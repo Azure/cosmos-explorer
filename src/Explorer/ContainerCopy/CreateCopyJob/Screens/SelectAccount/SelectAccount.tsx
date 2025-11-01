@@ -7,7 +7,7 @@ import { useDatabaseAccounts } from "../../../../../hooks/useDatabaseAccounts";
 import { useSubscriptions } from "../../../../../hooks/useSubscriptions";
 import ContainerCopyMessages from "../../../ContainerCopyMessages";
 import { useCopyJobContext } from "../../../Context/CopyJobContext";
-import { CopyJobMigrationType } from "../../../Enums";
+import { CopyJobMigrationType } from "../../../Enums/CopyJobEnums";
 import { AccountDropdown } from "./Components/AccountDropdown";
 import { MigrationTypeCheckbox } from "./Components/MigrationTypeCheckbox";
 import { SubscriptionDropdown } from "./Components/SubscriptionDropdown";

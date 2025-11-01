@@ -20,7 +20,7 @@ import "../externals/jquery.typeahead.min.css";
 import "../externals/jquery.typeahead.min.js";
 // Image Dependencies
 import { Platform } from "ConfigContext";
-import ContainerCopyPanel from "Explorer/ContainerCopy";
+import ContainerCopyPanel from "Explorer/ContainerCopy/ContainerCopyPanel";
 import Explorer from "Explorer/Explorer";
 import { QueryCopilotCarousel } from "Explorer/QueryCopilot/CopilotCarousel";
 import { SidebarContainer } from "Explorer/Sidebar";

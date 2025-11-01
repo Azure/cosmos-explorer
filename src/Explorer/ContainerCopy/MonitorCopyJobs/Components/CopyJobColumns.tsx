@@ -1,7 +1,7 @@
 import { IColumn } from "@fluentui/react";
 import React from "react";
 import ContainerCopyMessages from "../../ContainerCopyMessages";
-import { CopyJobType, HandleJobActionClickType } from "../../Types";
+import { CopyJobType, HandleJobActionClickType } from "../../Types/CopyJobTypes";
 import CopyJobActionMenu from "./CopyJobActionMenu";
 import CopyJobStatusWithIcon from "./CopyJobStatusWithIcon";
 

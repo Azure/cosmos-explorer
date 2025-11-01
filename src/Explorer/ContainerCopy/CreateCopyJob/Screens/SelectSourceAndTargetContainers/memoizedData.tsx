@@ -1,6 +1,6 @@
 import React from "react";
 import { getAccountDetailsFromResourceId } from "../../../CopyJobUtils";
-import { CopyJobContextState, DatabaseParams, DataContainerParams } from "../../../Types";
+import { CopyJobContextState, DatabaseParams, DataContainerParams } from "../../../Types/CopyJobTypes";
 
 export function useMemoizedSourceAndTargetData(copyJobState: CopyJobContextState) {
   const { source, target } = copyJobState ?? {};

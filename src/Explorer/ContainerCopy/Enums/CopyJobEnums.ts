@@ -3,15 +3,14 @@ export enum CopyJobMigrationType {
   Online = "online",
 }
 
-// all checks will happen
 export enum IdentityType {
-  SystemAssigned = "systemassigned", // "SystemAssigned"
-  UserAssigned = "userassigned", // "UserAssigned"
-  None = "none", // "None"
+  SystemAssigned = "systemassigned",
+  UserAssigned = "userassigned",
+  None = "none",
 }
 
 export enum DefaultIdentityType {
-  SystemAssignedIdentity = "systemassignedidentity", // "SystemAssignedIdentity"
+  SystemAssignedIdentity = "systemassignedidentity",
 }
 
 export enum BackupPolicyType {

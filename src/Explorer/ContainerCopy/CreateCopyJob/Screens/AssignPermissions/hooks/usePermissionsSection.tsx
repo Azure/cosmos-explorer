@@ -3,8 +3,13 @@ import { CapabilityNames } from "../../../../../../Common/Constants";
 import { fetchRoleAssignments, fetchRoleDefinitions, RoleDefinitionType } from "../../../../../../Utils/arm/RbacUtils";
 import ContainerCopyMessages from "../../../../ContainerCopyMessages";
 import { getAccountDetailsFromResourceId } from "../../../../CopyJobUtils";
-import { BackupPolicyType, CopyJobMigrationType, DefaultIdentityType, IdentityType } from "../../../../Enums";
-import { CopyJobContextState } from "../../../../Types";
+import {
+  BackupPolicyType,
+  CopyJobMigrationType,
+  DefaultIdentityType,
+  IdentityType,
+} from "../../../../Enums/CopyJobEnums";
+import { CopyJobContextState } from "../../../../Types/CopyJobTypes";
 import { useCopyJobPrerequisitesCache } from "../../../Utils/useCopyJobPrerequisitesCache";
 import AddManagedIdentity from "../AddManagedIdentity";
 import AddReadPermissionToDefaultIdentity from "../AddReadPermissionToDefaultIdentity";
@@ -21,7 +26,6 @@ export interface PermissionSectionConfig {
   validate?: (state: CopyJobContextState) => boolean | Promise<boolean>;
 }
 
-// Section IDs for maintainability
 export const SECTION_IDS = {
   addManagedIdentity: "addManagedIdentity",
   defaultManagedIdentity: "defaultManagedIdentity",
@@ -160,17 +164,15 @@ const usePermissionSections = (state: CopyJobContextState): PermissionSectionCon
       for (let i = 0; i < sectionToValidate.length; i++) {
         const section = sectionToValidate[i];
 
-        // Check if this section was already validated and passed
         if (newValidationCache.has(section.id) && newValidationCache.get(section.id) === true) {
           result.push({ ...section, completed: true });
           continue;
         }
-        // We've reached the first non-cached section - validate it
         if (section.validate) {
           const isValid = await section.validate(state);
           newValidationCache.set(section.id, isValid);
           result.push({ ...section, completed: isValid });
-          // Stop validation if current section failed
+
           if (!isValid) {
             for (let j = i + 1; j < sectionToValidate.length; j++) {
               result.push({ ...sectionToValidate[j], completed: false });
@@ -178,7 +180,6 @@ const usePermissionSections = (state: CopyJobContextState): PermissionSectionCon
             break;
           }
         } else {
-          // Section has no validate method
           newValidationCache.set(section.id, false);
           result.push({ ...section, completed: false });
         }

@@ -3,7 +3,7 @@ import React from "react";
 import { ApiType } from "UserContext";
 import { CosmosSqlDataTransferDataSourceSink } from "../../../Utils/arm/generatedClients/dataTransferService/types";
 import Explorer from "../../Explorer";
-import { CopyJobMigrationType, CopyJobStatusType } from "../Enums";
+import { CopyJobMigrationType, CopyJobStatusType } from "../Enums/CopyJobEnums";
 
 export interface ContainerCopyProps {
   container: Explorer;
@@ -54,14 +54,12 @@ export interface CopyJobContextState {
   jobName: string;
   migrationType: CopyJobMigrationType;
   sourceReadAccessFromTarget?: boolean;
-  // source details
   source: {
     subscription: Subscription;
     account: DatabaseAccount;
     databaseId: string;
     containerId: string;
   };
-  // target details
   target: {
     subscriptionId: string;
     account: DatabaseAccount;

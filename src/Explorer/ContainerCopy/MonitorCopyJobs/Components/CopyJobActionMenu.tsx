@@ -1,8 +1,8 @@
 import { IconButton, IContextualMenuProps } from "@fluentui/react";
 import React from "react";
 import ContainerCopyMessages from "../../ContainerCopyMessages";
-import { CopyJobActions, CopyJobMigrationType, CopyJobStatusType } from "../../Enums";
-import { CopyJobType, HandleJobActionClickType } from "../../Types";
+import { CopyJobActions, CopyJobMigrationType, CopyJobStatusType } from "../../Enums/CopyJobEnums";
+import { CopyJobType, HandleJobActionClickType } from "../../Types/CopyJobTypes";
 
 interface CopyJobActionMenuProps {
   job: CopyJobType;
@@ -10,7 +10,6 @@ interface CopyJobActionMenuProps {
 }
 
 const CopyJobActionMenu: React.FC<CopyJobActionMenuProps> = ({ job, handleClick }) => {
-  // Track which job and action is being updated
   const [updatingJobAction, setUpdatingJobAction] = React.useState<{ jobName: string; action: string } | null>(null);
   if ([CopyJobStatusType.Completed, CopyJobStatusType.Cancelled].includes(job.Status)) {
     return null;
