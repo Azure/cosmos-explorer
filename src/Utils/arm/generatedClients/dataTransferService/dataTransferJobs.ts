@@ -3,13 +3,13 @@
   Run "npm run generateARMClients" to regenerate
   Edting this file directly should be done with extreme caution as not to diverge from ARM REST specs
 
-  Generated from: https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/specification/cosmos-db/resource-manager/Microsoft.DocumentDB/preview/2023-11-15-preview/dataTransferService.json
+  Generated from: https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/specification/cosmos-db/resource-manager/Microsoft.DocumentDB/DocumentDB/preview/2025-05-01-preview/dataTransferService.json
 */
 
 import { configContext } from "../../../../ConfigContext";
 import { armRequest } from "../../request";
 import * as Types from "./types";
-const apiVersion = "2023-11-15-preview";
+const apiVersion = "2025-05-01-preview";
 
 /* Creates a Data Transfer Job. */
 export async function create(
@@ -67,12 +67,24 @@ export async function cancel(
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion });
 }
 
+/* Completes a Data Transfer Online Job. */
+export async function complete(
+  subscriptionId: string,
+  resourceGroupName: string,
+  accountName: string,
+  jobName: string,
+): Promise<Types.DataTransferJobGetResults> {
+  const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/dataTransferJobs/${jobName}/complete`;
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion });
+}
+
 /* Get a list of Data Transfer jobs. */
 export async function listByDatabaseAccount(
   subscriptionId: string,
   resourceGroupName: string,
   accountName: string,
+  signal?: AbortSignal,
 ): Promise<Types.DataTransferJobFeedResults> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/dataTransferJobs`;
-  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion, signal });
 }
