@@ -21,9 +21,9 @@ const version = "2025-05-01-preview";
 "cosmos" | "managedCassandra" | "mongorbac" | "notebook" | "privateEndpointConnection" | "privateLinkResources" |
 "rbac" | "restorable" | "services" | "dataTransferService"
 */
-const githubResourceName = "dataTransferService";
-const deResourceName = "dataTransferService";
-const schemaURL = `https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/specification/cosmos-db/resource-manager/Microsoft.DocumentDB/DocumentDB/preview/${version}/${githubResourceName}.json`;
+const githubResourceName = "cosmos-db";
+const deResourceName = "cosmos";
+const schemaURL = `https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/specification/cosmos-db/resource-manager/Microsoft.DocumentDB/preview/${version}/${githubResourceName}.json`;
 const outputDir = path.join(__dirname, `../../src/Utils/arm/generatedClients/${deResourceName}`);
 
 // Array of strings to use for eventual output

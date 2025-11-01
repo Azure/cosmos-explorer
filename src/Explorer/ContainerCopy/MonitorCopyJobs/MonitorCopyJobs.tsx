@@ -1,6 +1,6 @@
 /* eslint-disable react/display-name */
 import { MessageBar, MessageBarType, Stack } from "@fluentui/react";
-import ShimmerTree, { IndentLevel } from "Common/ShimmerTree";
+import ShimmerTree, { IndentLevel } from "Common/ShimmerTree/ShimmerTree";
 import React, { forwardRef, useEffect, useImperativeHandle } from "react";
 import { getCopyJobs, updateCopyJobStatus } from "../Actions/CopyJobActions";
 import { convertToCamelCase } from "../CopyJobUtils";
