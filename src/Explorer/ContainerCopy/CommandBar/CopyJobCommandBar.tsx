@@ -3,7 +3,7 @@ import React from "react";
 import { StyleConstants } from "../../../Common/StyleConstants";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import * as CommandBarUtil from "../../Menus/CommandBar/CommandBarUtil";
-import { ContainerCopyProps } from "../Types";
+import { ContainerCopyProps } from "../Types/CopyJobTypes";
 import { getCommandBarButtons } from "./Utils";
 
 const backgroundColor = StyleConstants.BaseLight;

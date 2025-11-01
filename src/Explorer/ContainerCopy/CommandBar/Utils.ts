@@ -7,7 +7,7 @@ import Explorer from "../../Explorer";
 import * as Actions from "../Actions/CopyJobActions";
 import ContainerCopyMessages from "../ContainerCopyMessages";
 import { MonitorCopyJobsRefState } from "../MonitorCopyJobs/MonitorCopyJobRefState";
-import { CopyJobCommandBarBtnType } from "../Types";
+import { CopyJobCommandBarBtnType } from "../Types/CopyJobTypes";
 
 function getCopyJobBtns(): CopyJobCommandBarBtnType[] {
   const monitorCopyJobsRef = MonitorCopyJobsRefState((state) => state.ref);

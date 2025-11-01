@@ -1,7 +1,7 @@
 import React from "react";
 import { userContext } from "UserContext";
-import { CopyJobMigrationType } from "../Enums";
-import { CopyJobContextProviderType, CopyJobContextState, CopyJobFlowType } from "../Types";
+import { CopyJobMigrationType } from "../Enums/CopyJobEnums";
+import { CopyJobContextProviderType, CopyJobContextState, CopyJobFlowType } from "../Types/CopyJobTypes";
 
 export const CopyJobContext = React.createContext<CopyJobContextProviderType>(null);
 export const useCopyJobContext = (): CopyJobContextProviderType => {

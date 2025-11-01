@@ -14,13 +14,11 @@ const SelectSourceAndTargetContainers = () => {
   const { source, target, sourceDbParams, sourceContainerParams, targetDbParams, targetContainerParams } =
     useMemoizedSourceAndTargetData(copyJobState);
 
-  // Custom hooks
   const sourceDatabases = useDatabases(...sourceDbParams) || [];
   const sourceContainers = useDataContainers(...sourceContainerParams) || [];
   const targetDatabases = useDatabases(...targetDbParams) || [];
   const targetContainers = useDataContainers(...targetContainerParams) || [];
 
-  // Memoize option objects for dropdowns
   const sourceDatabaseOptions = React.useMemo(
     () => sourceDatabases.map((db: DatabaseModel) => ({ key: db.name, text: db.name, data: db })),
     [sourceDatabases],

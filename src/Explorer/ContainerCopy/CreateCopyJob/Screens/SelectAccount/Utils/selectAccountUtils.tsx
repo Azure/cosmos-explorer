@@ -1,7 +1,7 @@
 import React from "react";
 import { DatabaseAccount, Subscription } from "../../../../../../Contracts/DataModels";
-import { CopyJobMigrationType } from "../../../../Enums";
-import { CopyJobContextProviderType, CopyJobContextState, DropdownOptionType } from "../../../../Types";
+import { CopyJobMigrationType } from "../../../../Enums/CopyJobEnums";
+import { CopyJobContextProviderType, CopyJobContextState, DropdownOptionType } from "../../../../Types/CopyJobTypes";
 
 export function useDropdownOptions(
   subscriptions: Subscription[],
@@ -45,7 +45,7 @@ export function useEventHandlers(setCopyJobState: setCopyJobStateType) {
             source: {
               ...prevState.source,
               subscription: data || null,
-              account: null, // reset on subscription change
+              account: null,
             },
           };
         }

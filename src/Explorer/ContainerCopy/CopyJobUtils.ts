@@ -1,5 +1,5 @@
 import { DatabaseAccount } from "Contracts/DataModels";
-import { CopyJobErrorType } from "./Types";
+import { CopyJobErrorType } from "./Types/CopyJobTypes";
 
 const azurePortalMpacEndpoint = "https://ms.portal.azure.com/";
 
@@ -49,7 +49,7 @@ export function convertTime(timeStr: string): string | null {
   const timeParts = timeStr.split(":").map(Number);
 
   if (timeParts.length !== 3 || timeParts.some(isNaN)) {
-    return null; // Return null for invalid format
+    return null;
   }
   const formatPart = (value: number, unit: string) => {
     if (unit === "seconds") {
@@ -67,7 +67,7 @@ export function convertTime(timeStr: string): string | null {
     .filter(Boolean)
     .join(", ");
 
-  return formattedTimeParts || "0 seconds"; // Return "0 seconds" if all parts are zero
+  return formattedTimeParts || "0 seconds";
 }
 
 export function formatUTCDateTime(utcStr: string): { formattedDateTime: string; timestamp: number } | null {

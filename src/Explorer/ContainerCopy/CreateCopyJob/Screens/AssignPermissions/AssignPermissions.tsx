@@ -6,7 +6,7 @@ import WarningIcon from "../../../../../../images/warning.svg";
 import ShimmerTree, { IndentLevel } from "../../../../../Common/ShimmerTree";
 import ContainerCopyMessages from "../../../ContainerCopyMessages";
 import { useCopyJobContext } from "../../../Context/CopyJobContext";
-import { CopyJobMigrationType } from "../../../Enums";
+import { CopyJobMigrationType } from "../../../Enums/CopyJobEnums";
 import usePermissionSections, { PermissionSectionConfig } from "./hooks/usePermissionsSection";
 
 const PermissionSection: React.FC<PermissionSectionConfig> = ({ id, title, Component, completed, disabled }) => (

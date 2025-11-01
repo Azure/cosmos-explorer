@@ -1,9 +1,9 @@
 import React from "react";
-import { CopyJobContextState } from "../../Types";
-import AssignPermissions from "../Screens/AssignPermissions";
-import PreviewCopyJob from "../Screens/PreviewCopyJob";
-import SelectAccount from "../Screens/SelectAccount";
-import SelectSourceAndTargetContainers from "../Screens/SelectSourceAndTargetContainers";
+import { CopyJobContextState } from "../../Types/CopyJobTypes";
+import AssignPermissions from "../Screens/AssignPermissions/AssignPermissions";
+import PreviewCopyJob from "../Screens/PreviewCopyJob/PreviewCopyJob";
+import SelectAccount from "../Screens/SelectAccount/SelectAccount";
+import SelectSourceAndTargetContainers from "../Screens/SelectSourceAndTargetContainers/SelectSourceAndTargetContainers";
 
 const SCREEN_KEYS = {
   SelectAccount: "SelectAccount",

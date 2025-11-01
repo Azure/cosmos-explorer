@@ -1,7 +1,7 @@
 import { FontIcon, getTheme, mergeStyles, mergeStyleSets, Spinner, SpinnerSize, Stack, Text } from "@fluentui/react";
 import React from "react";
 import ContainerCopyMessages from "../../ContainerCopyMessages";
-import { CopyJobStatusType } from "../../Enums";
+import { CopyJobStatusType } from "../../Enums/CopyJobEnums";
 
 const theme = getTheme();
 

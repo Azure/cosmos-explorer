@@ -3,7 +3,7 @@
 import { Dropdown } from "@fluentui/react";
 import React from "react";
 import ContainerCopyMessages from "../../../../ContainerCopyMessages";
-import { DropdownOptionType } from "../../../../Types";
+import { DropdownOptionType } from "../../../../Types/CopyJobTypes";
 import FieldRow from "../../Components/FieldRow";
 
 interface AccountDropdownProps {

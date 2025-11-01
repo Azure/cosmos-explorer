@@ -1,8 +1,8 @@
 import { DetailsList, DetailsListLayoutMode, IColumn, Stack, Text } from "@fluentui/react";
 import React, { memo } from "react";
 import ContainerCopyMessages from "../../ContainerCopyMessages";
-import { CopyJobStatusType } from "../../Enums";
-import { CopyJobType } from "../../Types";
+import { CopyJobStatusType } from "../../Enums/CopyJobEnums";
+import { CopyJobType } from "../../Types/CopyJobTypes";
 import CopyJobStatusWithIcon from "./CopyJobStatusWithIcon";
 
 interface CopyJobDetailsProps {

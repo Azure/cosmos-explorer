@@ -23,10 +23,10 @@ import {
   getAccountDetailsFromResourceId,
 } from "../CopyJobUtils";
 import CreateCopyJobScreensProvider from "../CreateCopyJob/Screens/CreateCopyJobScreensProvider";
-import { CopyJobActions, CopyJobStatusType } from "../Enums";
+import { CopyJobActions, CopyJobStatusType } from "../Enums/CopyJobEnums";
 import CopyJobDetails from "../MonitorCopyJobs/Components/CopyJobDetails";
 import { MonitorCopyJobsRefState } from "../MonitorCopyJobs/MonitorCopyJobRefState";
-import { CopyJobContextState, CopyJobError, CopyJobErrorType, CopyJobType } from "../Types";
+import { CopyJobContextState, CopyJobError, CopyJobErrorType, CopyJobType } from "../Types/CopyJobTypes";
 
 export const openCreateCopyJobPanel = () => {
   const sidePanelState = useSidePanel.getState();
@@ -51,7 +51,6 @@ export const openCopyJobDetailsPanel = (job: CopyJobType) => {
 let copyJobsAbortController: AbortController | null = null;
 
 export const getCopyJobs = async (): Promise<CopyJobType[]> => {
-  // Abort previous request if still in-flight
   if (copyJobsAbortController) {
     copyJobsAbortController.abort();
   }

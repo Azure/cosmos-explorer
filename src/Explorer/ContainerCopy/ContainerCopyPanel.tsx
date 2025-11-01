@@ -1,9 +1,9 @@
-import { MonitorCopyJobsRefState } from "Explorer/ContainerCopy/MonitorCopyJobs/MonitorCopyJobRefState";
 import React, { useEffect } from "react";
 import CopyJobCommandBar from "./CommandBar/CopyJobCommandBar";
 import "./containerCopyStyles.less";
+import { MonitorCopyJobsRefState } from "./MonitorCopyJobs/MonitorCopyJobRefState";
 import MonitorCopyJobs, { MonitorCopyJobsRef } from "./MonitorCopyJobs/MonitorCopyJobs";
-import { ContainerCopyProps } from "./Types";
+import { ContainerCopyProps } from "./Types/CopyJobTypes";
 
 const ContainerCopyPanel: React.FC<ContainerCopyProps> = ({ container }) => {
   const monitorCopyJobsRef = React.useRef<MonitorCopyJobsRef>();
