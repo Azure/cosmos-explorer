@@ -17,7 +17,7 @@ export default {
   selectedContainers: "Selected Containers",
 
   // Create Copy Job Panel
-  createCopyJobPanelTitle: "Copy container",
+  createCopyJobPanelTitle: "Create copy job",
 
   // Select Account Screen
   selectAccountDescription: "Please select a source account from which to copy.",
@@ -49,16 +49,18 @@ export default {
   // Assign Permissions Screen
   assignPermissions: {
     description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      "To copy data from the source to the destination container, ensure that the managed identity of the destination account has read access to the source account by completing the following steps.",
   },
   toggleBtn: {
     onText: "On",
     offText: "Off",
   },
   addManagedIdentity: {
-    title: "System assigned managed identity enabled",
+    title: "System-assigned managed identity enabled.",
     description:
-      "Enable a system assigned managed identity for the destination account to allow the copy job to access it.",
+      "A system-assigned managed identity is restricted to one per resource and is tied to the lifecycle of this resource. Once enabled, you can grant permissions to the managed identity by using Azure role-based access control (Azure RBAC). The managed identity is authenticated with Microsoft Entra ID, so you don’t have to store any credentials in code.",
+    descriptionHrefText: "Learn more about Managed identities.",
+    descriptionHref: "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
     toggleLabel: "System assigned managed identity",
     managedIdentityTooltip:
       "A system assigned managed identity is restricted to one per resource and is tied to the lifecycle of this resource. You can grant permissions to the managed identity by using Azure role-based access control (Azure RBAC). The managed identity is authenticated with Microsoft Entra ID, so you don't have to store any credentials in code.",
@@ -68,28 +70,28 @@ export default {
     enablementTitle: "Enable system assigned managed identity",
     enablementDescription: (identityName: string) =>
       identityName
-        ? `'${identityName}' will be registered with Microsoft Entra ID. Once it is registered, '${identityName}' can be granted permissions to access resources protected by Microsoft Entra ID. Do you want to enable the system assigned managed identity for '${identityName}'?`
+        ? `Enable system-assigned managed identity on the ${identityName}. To confirm, click the "Yes" button. `
         : "",
   },
   defaultManagedIdentity: {
-    title: "System assigned managed identity enabled as default",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    title: "System-assigned managed identity set as default.",
+    description: (identityName: string) =>
+      `Set the system-assigned managed identity as default for "${identityName}" by switching it on.`,
     tooltip:
       "A system assigned managed identity is restricted to one per resource and is tied to the lifecycle of this resource. You can grant permissions to the managed identity by using Azure role-based access control (Azure RBAC). The managed identity is authenticated with Microsoft Entra ID, so you don't have to store any credentials in code.",
     popoverTitle: "System assigned managed identity set as default",
-    popoverDescription:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.",
+    popoverDescription: (identityName: string) =>
+      `Assign the system-assigned managed identity as the default for "${identityName}". To confirm, click the "Yes" button. `,
   },
   readPermissionAssigned: {
-    title: "Read permission assigned to default identity",
+    title: "Read permissions assigned to the default identity.",
     description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "To allow data copy from source to the destination container, provide read access of the source account to the default identity of the destination account.",
     tooltip:
       "A system assigned managed identity is restricted to one per resource and is tied to the lifecycle of this resource. You can grant permissions to the managed identity by using Azure role-based access control (Azure RBAC). The managed identity is authenticated with Microsoft Entra ID, so you don't have to store any credentials in code.",
-    popoverTitle: "Read permission assigned to default identity",
+    popoverTitle: "Read permissions assigned to default identity.",
     popoverDescription:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.",
+      "Assign read permissions of the source account to the default identity of the destination account. To confirm click the “Yes” button. ",
   },
   pointInTimeRestore: {
     title: "Point In Time Restore enabled",

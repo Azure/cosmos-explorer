@@ -4,12 +4,10 @@ import { assignRole } from "../../../../../Utils/arm/RbacUtils";
 import ContainerCopyMessages from "../../../ContainerCopyMessages";
 import { useCopyJobContext } from "../../../Context/CopyJobContext";
 import { getAccountDetailsFromResourceId } from "../../../CopyJobUtils";
-import InfoTooltip from "../Components/InfoTooltip";
 import PopoverMessage from "../Components/PopoverContainer";
 import { PermissionSectionConfig } from "./hooks/usePermissionsSection";
 import useToggle from "./hooks/useToggle";
 
-const TooltipContent = ContainerCopyMessages.readPermissionAssigned.tooltip;
 type AddManagedIdentityProps = Partial<PermissionSectionConfig>;
 
 const AddReadPermissionToDefaultIdentity: React.FC<AddManagedIdentityProps> = () => {
@@ -49,10 +47,7 @@ const AddReadPermissionToDefaultIdentity: React.FC<AddManagedIdentityProps> = ()
 
   return (
     <Stack className="defaultManagedIdentityContainer" tokens={{ childrenGap: 15, padding: "0 0 0 20px" }}>
-      <div className="toggle-label">
-        {ContainerCopyMessages.readPermissionAssigned.description} &nbsp;
-        <InfoTooltip content={TooltipContent} />
-      </div>
+      <div className="toggle-label">{ContainerCopyMessages.readPermissionAssigned.description} &nbsp;</div>
       <Toggle
         checked={readPermissionAssigned}
         onText={ContainerCopyMessages.toggleBtn.onText}

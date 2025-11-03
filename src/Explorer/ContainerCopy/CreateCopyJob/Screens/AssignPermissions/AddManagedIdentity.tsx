@@ -10,7 +10,6 @@ import useManagedIdentity from "./hooks/useManagedIdentity";
 import { PermissionSectionConfig } from "./hooks/usePermissionsSection";
 import useToggle from "./hooks/useToggle";
 
-const managedIdentityTooltip = ContainerCopyMessages.addManagedIdentity.managedIdentityTooltip;
 const userAssignedTooltip = ContainerCopyMessages.addManagedIdentity.userAssignedIdentityTooltip;
 
 const textStyle = { display: "flex", alignItems: "center" };
@@ -30,13 +29,13 @@ const AddManagedIdentity: React.FC<AddManagedIdentityProps> = () => {
 
   return (
     <Stack className="addManagedIdentityContainer" tokens={{ childrenGap: 15, padding: "0 0 0 20px" }}>
+      <Text>
+        {ContainerCopyMessages.addManagedIdentity.description}&ensp;
+        <Link href={ContainerCopyMessages.addManagedIdentity.descriptionHref} target="_blank" rel="noopener noreferrer">
+          {ContainerCopyMessages.addManagedIdentity.descriptionHrefText}
+        </Link>
+      </Text>
       <Toggle
-        label={
-          <Text className="toggle-label" style={textStyle}>
-            {ContainerCopyMessages.addManagedIdentity.toggleLabel}&nbsp;
-            <InfoTooltip content={managedIdentityTooltip} />
-          </Text>
-        }
         checked={systemAssigned}
         onText={ContainerCopyMessages.toggleBtn.onText}
         offText={ContainerCopyMessages.toggleBtn.offText}
