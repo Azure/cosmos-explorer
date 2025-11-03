@@ -1,4 +1,5 @@
 import { configContext } from "ConfigContext";
+import { buildArmUrl } from "Utils/arm/armUtils";
 import { armRequest } from "Utils/arm/request";
 import { getCopyJobAuthorizationHeader } from "../CopyJobAuthUtils";
 
@@ -38,13 +39,6 @@ export type RoleDefinitionType = {
 
 const apiVersion = "2025-04-15";
 
-const getArmBaseUrl = (): string => {
-  const base = configContext.ARM_ENDPOINT;
-  return base.endsWith("/") ? base.slice(0, -1) : base;
-};
-
-const buildArmUrl = (path: string): string => `${getArmBaseUrl()}${path}?api-version=${apiVersion}`;
-
 const handleResponse = async (response: Response, context: string) => {
   if (!response.ok) {
     const body = await response.text().catch(() => "");
@@ -61,6 +55,7 @@ export const fetchRoleAssignments = async (
 ): Promise<RoleAssignmentType[]> => {
   const uri = buildArmUrl(
     `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlRoleAssignments`,
+    apiVersion,
   );
 
   const response = await fetch(uri, { method: "GET", headers: getCopyJobAuthorizationHeader() });
@@ -76,7 +71,7 @@ export const fetchRoleDefinitions = async (roleAssignments: RoleAssignmentType[]
   const uniqueRoleDefinitionIds = Array.from(new Set(roleDefinitionIds));
 
   const headers = getCopyJobAuthorizationHeader();
-  const roleDefinitionUris = uniqueRoleDefinitionIds.map((id) => buildArmUrl(id));
+  const roleDefinitionUris = uniqueRoleDefinitionIds.map((id) => buildArmUrl(id, apiVersion));
 
   const promises = roleDefinitionUris.map((url) => fetch(url, { method: "GET", headers }));
   const responses = await Promise.all(promises);
