@@ -1,6 +1,6 @@
 import { DatabaseAccount } from "Contracts/DataModels";
 import { userContext } from "UserContext";
-import { configContext } from "../../ConfigContext";
+import { buildArmUrl } from "Utils/arm/armUtils";
 
 const apiVersion = "2025-04-15";
 export type FetchAccountDetailsParams = {
@@ -12,11 +12,10 @@ export type FetchAccountDetailsParams = {
 const buildUrl = (params: FetchAccountDetailsParams): string => {
   const { subscriptionId, resourceGroupName, accountName } = params;
 
-  let armEndpoint = configContext.ARM_ENDPOINT;
-  if (armEndpoint.endsWith("/")) {
-    armEndpoint = armEndpoint.slice(0, -1);
-  }
-  return `${armEndpoint}/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}?api-version=${apiVersion}`;
+  return buildArmUrl(
+    `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}`,
+    apiVersion,
+  );
 };
 
 export async function fetchDatabaseAccount(subscriptionId: string, resourceGroupName: string, accountName: string) {
