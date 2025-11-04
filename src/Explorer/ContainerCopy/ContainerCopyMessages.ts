@@ -68,20 +68,20 @@ export default {
     userAssignedIdentityLabel: "You may also select a user assigned managed identity.",
     createUserAssignedIdentityLink: "Create User Assigned Managed Identity",
     enablementTitle: "Enable system assigned managed identity",
-    enablementDescription: (identityName: string) =>
-      identityName
-        ? `Enable system-assigned managed identity on the ${identityName}. To confirm, click the "Yes" button. `
+    enablementDescription: (accountName: string) =>
+      accountName
+        ? `Enable system-assigned managed identity on the ${accountName}. To confirm, click the "Yes" button. `
         : "",
   },
   defaultManagedIdentity: {
     title: "System-assigned managed identity set as default.",
-    description: (identityName: string) =>
-      `Set the system-assigned managed identity as default for "${identityName}" by switching it on.`,
+    description: (accountName: string) =>
+      `Set the system-assigned managed identity as default for "${accountName}" by switching it on.`,
     tooltip:
       "A system assigned managed identity is restricted to one per resource and is tied to the lifecycle of this resource. You can grant permissions to the managed identity by using Azure role-based access control (Azure RBAC). The managed identity is authenticated with Microsoft Entra ID, so you don't have to store any credentials in code.",
     popoverTitle: "System assigned managed identity set as default",
-    popoverDescription: (identityName: string) =>
-      `Assign the system-assigned managed identity as the default for "${identityName}". To confirm, click the "Yes" button. `,
+    popoverDescription: (accountName: string) =>
+      `Assign the system-assigned managed identity as the default for "${accountName}". To confirm, click the "Yes" button. `,
   },
   readPermissionAssigned: {
     title: "Read permissions assigned to the default identity.",
@@ -101,8 +101,9 @@ export default {
   },
   onlineCopyEnabled: {
     title: "Online copy enabled",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    description: (accountName: string) => `Use Azure CLI to enable Online copy on "${accountName}".`,
+    hrefText: "Learn more about online copy jobs",
+    href: "https://learn.microsoft.com/en-us/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#enable-online-copy",
     buttonText: "Enable Online Copy",
   },
   MonitorJobs: {
