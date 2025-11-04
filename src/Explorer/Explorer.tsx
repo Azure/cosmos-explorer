@@ -1016,7 +1016,7 @@ export default class Explorer {
         break;
 
       case ViewModels.TerminalKind.VCoreMongo:
-        title = "VCoreMongo Shell";
+        title = "Mongo Shell";
         break;
 
       default:
