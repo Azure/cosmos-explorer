@@ -20,9 +20,12 @@ import "../externals/jquery.typeahead.min.css";
 import "../externals/jquery.typeahead.min.js";
 // Image Dependencies
 import { Platform } from "ConfigContext";
+import ContainerCopyPanel from "Explorer/ContainerCopy/ContainerCopyPanel";
+import Explorer from "Explorer/Explorer";
 import { QueryCopilotCarousel } from "Explorer/QueryCopilot/CopilotCarousel";
 import { SidebarContainer } from "Explorer/Sidebar";
 import { KeyboardShortcutRoot } from "KeyboardShortcuts";
+import { userContext } from "UserContext";
 import "allotment/dist/style.css";
 import "../images/CosmosDB_rgb_ui_lighttheme.ico";
 import hdeConnectImage from "../images/HdeConnectCosmosDB.svg";
@@ -83,22 +86,12 @@ const App: React.FunctionComponent = () => {
   return (
     <KeyboardShortcutRoot>
       <div className="flexContainer" aria-hidden="false" data-test="DataExplorerRoot">
-        <div id="divExplorer" className="flexContainer hideOverflows">
-          <div id="freeTierTeachingBubble"> </div>
-          {/* Main Command Bar - Start */}
-          <CommandBar container={explorer} />
-          {/* Collections Tree and Tabs - Begin */}
-          <SidebarContainer explorer={explorer} />
-          {/* Collections Tree and Tabs - End */}
-          <div
-            className="dataExplorerErrorConsoleContainer"
-            role="contentinfo"
-            aria-label="Notification console"
-            id="explorerNotificationConsole"
-          >
-            <NotificationConsole />
-          </div>
-        </div>
+        {userContext.features.enableContainerCopy && userContext.apiType === "SQL" ? (
+          <ContainerCopyPanel container={explorer} />
+        ) : (
+          <DivExplorer explorer={explorer} />
+        )}
+
         <SidePanel />
         <Dialog />
         {<QuickstartCarousel isOpen={isCarouselOpen} />}
@@ -112,6 +105,27 @@ const App: React.FunctionComponent = () => {
 
 const mainElement = document.getElementById("Main");
 ReactDOM.render(<App />, mainElement);
+
+function DivExplorer({ explorer }: { explorer: Explorer }): JSX.Element {
+  return (
+    <div id="divExplorer" className="flexContainer hideOverflows">
+      <div id="freeTierTeachingBubble"> </div>
+      {/* Main Command Bar - Start */}
+      <CommandBar container={explorer} />
+      {/* Collections Tree and Tabs - Begin */}
+      <SidebarContainer explorer={explorer} />
+      {/* Collections Tree and Tabs - End */}
+      <div
+        className="dataExplorerErrorConsoleContainer"
+        role="contentinfo"
+        aria-label="Notification console"
+        id="explorerNotificationConsole"
+      >
+        <NotificationConsole />
+      </div>
+    </div>
+  );
+}
 
 function LoadingExplorer(): JSX.Element {
   return (

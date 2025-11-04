@@ -8,6 +8,7 @@ describe("AuthorizationUtils", () => {
   const setAadDataPlane = (enabled: boolean) => {
     updateUserContext({
       features: {
+        enableContainerCopy: false,
         enableAadDataPlane: enabled,
         canExceedMaximumValue: false,
         cosmosdb: false,

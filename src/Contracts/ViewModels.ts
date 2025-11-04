@@ -445,6 +445,7 @@ export interface DataExplorerInputsFrame {
   };
   feedbackPolicies?: any;
   aadToken?: string;
+  containerCopyEnabled?: boolean;
 }
 
 export interface SelfServeFrameInputs {
