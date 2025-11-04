@@ -2,7 +2,7 @@ import { Image, ITooltipHostStyles, TooltipHost } from "@fluentui/react";
 import React from "react";
 import InfoIcon from "../../../../../../images/Info.svg";
 
-const InfoTooltip: React.FC<{ content?: string }> = ({ content }) => {
+const InfoTooltip: React.FC<{ content?: string | JSX.Element }> = ({ content }) => {
   if (!content) {
     return null;
   }

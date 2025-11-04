@@ -62,8 +62,11 @@ export default {
     descriptionHrefText: "Learn more about Managed identities.",
     descriptionHref: "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
     toggleLabel: "System assigned managed identity",
-    managedIdentityTooltip:
-      "A system assigned managed identity is restricted to one per resource and is tied to the lifecycle of this resource. You can grant permissions to the managed identity by using Azure role-based access control (Azure RBAC). The managed identity is authenticated with Microsoft Entra ID, so you don't have to store any credentials in code.",
+    tooltip: {
+      content: "Learn more about",
+      hrefText: "Managed Identities.",
+      href: "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
+    },
     userAssignedIdentityTooltip: "You can select an existing user assigned identity or create a new one.",
     userAssignedIdentityLabel: "You may also select a user assigned managed identity.",
     createUserAssignedIdentityLink: "Create User Assigned Managed Identity",
@@ -77,8 +80,11 @@ export default {
     title: "System-assigned managed identity set as default.",
     description: (accountName: string) =>
       `Set the system-assigned managed identity as default for "${accountName}" by switching it on.`,
-    tooltip:
-      "A system assigned managed identity is restricted to one per resource and is tied to the lifecycle of this resource. You can grant permissions to the managed identity by using Azure role-based access control (Azure RBAC). The managed identity is authenticated with Microsoft Entra ID, so you don't have to store any credentials in code.",
+    tooltip: {
+      content: "Learn more about",
+      hrefText: "Default Managed Identities.",
+      href: "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
+    },
     popoverTitle: "System assigned managed identity set as default",
     popoverDescription: (accountName: string) =>
       `Assign the system-assigned managed identity as the default for "${accountName}". To confirm, click the "Yes" button. `,
@@ -87,16 +93,24 @@ export default {
     title: "Read permissions assigned to the default identity.",
     description:
       "To allow data copy from source to the destination container, provide read access of the source account to the default identity of the destination account.",
-    tooltip:
-      "A system assigned managed identity is restricted to one per resource and is tied to the lifecycle of this resource. You can grant permissions to the managed identity by using Azure role-based access control (Azure RBAC). The managed identity is authenticated with Microsoft Entra ID, so you don't have to store any credentials in code.",
+    tooltip: {
+      content: "Learn more about",
+      hrefText: "Read permissions.",
+      href: "https://learn.microsoft.com/azure/cosmos-db/nosql/how-to-connect-role-based-access-control",
+    },
     popoverTitle: "Read permissions assigned to default identity.",
     popoverDescription:
       "Assign read permissions of the source account to the default identity of the destination account. To confirm click the “Yes” button. ",
   },
   pointInTimeRestore: {
     title: "Point In Time Restore enabled",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    description: (accessName: string) =>
+      `To facilitate online container copy jobs, please update your "${accessName}" backup policy from periodic to continuous backup. Enabling continuous backup is required for this functionality.`,
+    tooltip: {
+      content: "Learn more about",
+      hrefText: "Continuous Backup",
+      href: "https://learn.microsoft.com/en-us/azure/cosmos-db/continuous-backup-restore-introduction",
+    },
     buttonText: "Enable Point In Time Restore",
   },
   onlineCopyEnabled: {

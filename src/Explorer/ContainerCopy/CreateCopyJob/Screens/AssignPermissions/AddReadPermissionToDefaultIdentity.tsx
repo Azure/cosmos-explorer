@@ -1,16 +1,25 @@
-import { Stack, Toggle } from "@fluentui/react";
+import { Link, Stack, Text, Toggle } from "@fluentui/react";
 import React, { useCallback } from "react";
 import { assignRole } from "../../../../../Utils/arm/RbacUtils";
 import ContainerCopyMessages from "../../../ContainerCopyMessages";
 import { useCopyJobContext } from "../../../Context/CopyJobContext";
 import { getAccountDetailsFromResourceId } from "../../../CopyJobUtils";
+import InfoTooltip from "../Components/InfoTooltip";
 import PopoverMessage from "../Components/PopoverContainer";
 import { PermissionSectionConfig } from "./hooks/usePermissionsSection";
 import useToggle from "./hooks/useToggle";
 
-type AddManagedIdentityProps = Partial<PermissionSectionConfig>;
+const TooltipContent = (
+  <Text>
+    {ContainerCopyMessages.readPermissionAssigned.tooltip.content} &nbsp;
+    <Link href={ContainerCopyMessages.readPermissionAssigned.tooltip.href} target="_blank" rel="noopener noreferrer">
+      {ContainerCopyMessages.readPermissionAssigned.tooltip.hrefText}
+    </Link>
+  </Text>
+);
+type AddReadPermissionToDefaultIdentityProps = Partial<PermissionSectionConfig>;
 
-const AddReadPermissionToDefaultIdentity: React.FC<AddManagedIdentityProps> = () => {
+const AddReadPermissionToDefaultIdentity: React.FC<AddReadPermissionToDefaultIdentityProps> = () => {
   const [loading, setLoading] = React.useState(false);
   const { copyJobState, setCopyJobState } = useCopyJobContext();
   const [readPermissionAssigned, onToggle] = useToggle(false);
@@ -47,7 +56,10 @@ const AddReadPermissionToDefaultIdentity: React.FC<AddManagedIdentityProps> = ()
 
   return (
     <Stack className="defaultManagedIdentityContainer" tokens={{ childrenGap: 15, padding: "0 0 0 20px" }}>
-      <div className="toggle-label">{ContainerCopyMessages.readPermissionAssigned.description} &nbsp;</div>
+      <Text className="toggle-label">
+        {ContainerCopyMessages.readPermissionAssigned.description}&ensp;
+        <InfoTooltip content={TooltipContent} />
+      </Text>
       <Toggle
         checked={readPermissionAssigned}
         onText={ContainerCopyMessages.toggleBtn.onText}

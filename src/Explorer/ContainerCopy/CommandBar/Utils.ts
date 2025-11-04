@@ -54,7 +54,6 @@ function btnMapper(config: CopyJobCommandBarBtnType): CommandButtonComponentProp
   };
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function getCommandBarButtons(_container: Explorer): CommandButtonComponentProps[] {
-  return getCopyJobBtns(_container).map(btnMapper);
+export function getCommandBarButtons(container: Explorer): CommandButtonComponentProps[] {
+  return getCopyJobBtns(container).map(btnMapper);
 }

@@ -139,3 +139,5 @@ export type HandleJobActionClickType = (
   action: string,
   setUpdatingJobAction: JobActionUpdatorType,
 ) => void;
+
+export type AccountValidatorFn = (prev: DatabaseAccount, next: DatabaseAccount) => boolean;

@@ -56,7 +56,7 @@ export const getCopyJobs = async (): Promise<CopyJobType[]> => {
       copyJobsAbortController.abort();
     }
     copyJobsAbortController = new AbortController();
-  
+
     const { subscriptionId, resourceGroup, accountName } = getAccountDetailsFromResourceId(
       userContext.databaseAccount?.id || "",
     );
@@ -120,8 +120,11 @@ export const getCopyJobs = async (): Promise<CopyJobType[]> => {
     return formattedJobs;
   } catch (error) {
     const errorContent = JSON.stringify(error.content || error.message || error);
-    if(errorContent.includes('signal is aborted without reason')) {
-      throw { message: "Please wait for the current fetch request to complete. The previous copy job fetch request was aborted." };
+    if (errorContent.includes("signal is aborted without reason")) {
+      throw {
+        message:
+          "Please wait for the current fetch request to complete. The previous copy job fetch request was aborted.",
+      };
     } else {
       throw error;
     }
