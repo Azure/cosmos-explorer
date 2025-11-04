@@ -117,6 +117,7 @@ export function useCopyJobNavigation() {
       return;
     }
 
+    setError(null);
     const transitions = {
       [SCREEN_KEYS.SelectAccount]: shouldNotShowPermissionScreen()
         ? SCREEN_KEYS.SelectSourceAndTargetContainers
