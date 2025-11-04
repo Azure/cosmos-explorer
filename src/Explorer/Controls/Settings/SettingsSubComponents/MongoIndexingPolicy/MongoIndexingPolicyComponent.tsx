@@ -3,6 +3,7 @@ import {
   DetailsListLayoutMode,
   IColumn,
   IconButton,
+  IMessageBarStyles,
   MessageBar,
   MessageBarType,
   SelectionMode,
@@ -30,12 +31,12 @@ import {
 } from "../../SettingsRenderUtils";
 import {
   AddMongoIndexProps,
-  MongoIndexIdField,
-  MongoIndexTypes,
-  MongoNotificationType,
   getMongoIndexType,
   getMongoIndexTypeText,
   isIndexTransforming,
+  MongoIndexIdField,
+  MongoIndexTypes,
+  MongoNotificationType,
 } from "../../SettingsUtils";
 import { IndexingPolicyRefreshComponent } from "../IndexingPolicyRefresh/IndexingPolicyRefreshComponent";
 import { AddMongoIndexComponent } from "./AddMongoIndexComponent";
@@ -63,6 +64,24 @@ interface MongoIndexDisplayProps {
 export class MongoIndexingPolicyComponent extends React.Component<MongoIndexingPolicyComponentProps> {
   private shouldCheckComponentIsDirty = true;
   private addMongoIndexComponentRefs: React.RefObject<AddMongoIndexComponent>[] = [];
+
+  private darkThemeMessageBarStyles: Partial<IMessageBarStyles> = {
+    root: {
+      selectors: {
+        "&.ms-MessageBar--warning": {
+          backgroundColor: "var(--colorStatusWarningBackground1)",
+          border: "1px solid var(--colorStatusWarningBorder1)",
+        },
+        ".ms-MessageBar-icon": {
+          color: "var(--colorNeutralForeground1)",
+        },
+        ".ms-MessageBar-text": {
+          color: "var(--colorNeutralForeground1)",
+        },
+      },
+    },
+  };
+
   private initialIndexesColumns: IColumn[] = [
     { key: "definition", name: "Definition", fieldName: "definition", minWidth: 100, maxWidth: 200, isResizable: true },
     { key: "type", name: "Type", fieldName: "type", minWidth: 100, maxWidth: 200, isResizable: true },
@@ -171,8 +190,8 @@ export class MongoIndexingPolicyComponent extends React.Component<MongoIndexingP
     let mongoIndexDisplayProps: MongoIndexDisplayProps;
     if (type) {
       mongoIndexDisplayProps = {
-        definition: <Text>{definition}</Text>,
-        type: <Text>{getMongoIndexTypeText(type)}</Text>,
+        definition: <Text style={{ color: "var(--colorNeutralForeground1)" }}>{definition}</Text>,
+        type: <Text style={{ color: "var(--colorNeutralForeground1)" }}>{getMongoIndexTypeText(type)}</Text>,
         actionButton: definition === MongoIndexIdField ? <></> : this.getActionButton(arrayPosition, isCurrentIndex),
       };
     }
@@ -306,7 +325,15 @@ export class MongoIndexingPolicyComponent extends React.Component<MongoIndexingP
           indexTransformationProgress={this.props.indexTransformationProgress}
           refreshIndexTransformationProgress={this.props.refreshIndexTransformationProgress}
         />
-        {warningMessage && <MessageBar messageBarType={MessageBarType.warning}>{warningMessage}</MessageBar>}
+        {warningMessage && (
+          <MessageBar
+            messageBarType={MessageBarType.warning}
+            messageBarIconProps={{ iconName: "WarningSolid", className: "messageBarWarningIcon" }}
+            styles={this.darkThemeMessageBarStyles}
+          >
+            {warningMessage}
+          </MessageBar>
+        )}
       </>
     );
   };
