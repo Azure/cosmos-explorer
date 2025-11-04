@@ -15,8 +15,8 @@ const sectionCss = {
 };
 
 const commonProps = {
-  minWidth: 150,
-  maxWidth: 190,
+  minWidth: 100,
+  maxWidth: 130,
   styles: {
     root: {
       whiteSpace: "normal",
@@ -29,9 +29,21 @@ const commonProps = {
 const getCopyJobDetailsListColumns = (): IColumn[] => {
   return [
     {
+      key: "sourcedbcol",
+      name: ContainerCopyMessages.sourceDatabaseLabel,
+      fieldName: "sourceDatabaseName",
+      ...commonProps,
+    },
+    {
       key: "sourcecol",
       name: ContainerCopyMessages.sourceContainerLabel,
       fieldName: "sourceContainerName",
+      ...commonProps,
+    },
+    {
+      key: "targetdbcol",
+      name: ContainerCopyMessages.targetDatabaseLabel,
+      fieldName: "targetDatabaseName",
       ...commonProps,
     },
     {
@@ -54,7 +66,9 @@ const CopyJobDetails: React.FC<CopyJobDetailsProps> = ({ job }) => {
   const selectedContainers = [
     {
       sourceContainerName: job?.Source?.containerName || "N/A",
+      sourceDatabaseName: job?.Source?.databaseName || "N/A",
       targetContainerName: job?.Destination?.containerName || "N/A",
+      targetDatabaseName: job?.Destination?.databaseName || "N/A",
       jobStatus: job?.Status || "",
     },
   ];
