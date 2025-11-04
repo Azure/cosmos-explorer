@@ -131,17 +131,20 @@ export function checkTargetHasReaderRoleOnSource(roleDefinitions: RoleDefinition
  * Memoizes derived values for performance and decouples logic for testability.
  */
 const usePermissionSections = (state: CopyJobContextState): PermissionSectionConfig[] => {
+  const sourceAccountId = state?.source?.account?.id || "";
+  const targetAccountId = state?.target?.account?.id || "";
+
   const { validationCache, setValidationCache } = useCopyJobPrerequisitesCache();
   const [permissionSections, setPermissionSections] = useState<PermissionSectionConfig[] | null>(null);
   const isValidatingRef = useRef(false);
 
   const sectionToValidate = useMemo(() => {
-    const baseSections = [...PERMISSION_SECTIONS_CONFIG];
+    const baseSections = sourceAccountId === targetAccountId ? [] : [...PERMISSION_SECTIONS_CONFIG];
     if (state.migrationType === CopyJobMigrationType.Online) {
       return [...baseSections, ...PERMISSION_SECTIONS_FOR_ONLINE_JOBS];
     }
     return baseSections;
-  }, [state.migrationType]);
+  }, [sourceAccountId, targetAccountId, state.migrationType]);
 
   const memoizedValidationCache = useMemo(() => {
     if (state.migrationType === CopyJobMigrationType.Offline) {
