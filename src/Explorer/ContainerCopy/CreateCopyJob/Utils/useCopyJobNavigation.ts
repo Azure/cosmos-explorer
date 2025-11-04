@@ -2,6 +2,7 @@ import { useCallback, useMemo, useReducer, useState } from "react";
 import { useSidePanel } from "../../../../hooks/useSidePanel";
 import { submitCreateCopyJob } from "../../Actions/CopyJobActions";
 import { useCopyJobContext } from "../../Context/CopyJobContext";
+import { CopyJobMigrationType } from "../../Enums/CopyJobEnums";
 import { useCopyJobPrerequisitesCache } from "./useCopyJobPrerequisitesCache";
 import { SCREEN_KEYS, useCreateCopyJobScreensList } from "./useCreateCopyJobScreensList";
 
@@ -64,9 +65,62 @@ export function useCopyJobNavigation() {
     useSidePanel.getState().closeSidePanel();
   }, []);
 
+  const getContainerIdentifiers = (container: typeof copyJobState.source | typeof copyJobState.target) => ({
+    accountId: container?.account?.id || "",
+    databaseId: container?.databaseId || "",
+    containerId: container?.containerId || "",
+  });
+
+  const isSameAccount = (
+    sourceIds: ReturnType<typeof getContainerIdentifiers>,
+    targetIds: ReturnType<typeof getContainerIdentifiers>,
+  ) => sourceIds.accountId === targetIds.accountId;
+
+  const areContainersIdentical = () => {
+    const { source, target } = copyJobState;
+    const sourceIds = getContainerIdentifiers(source);
+    const targetIds = getContainerIdentifiers(target);
+
+    return (
+      isSameAccount(sourceIds, targetIds) &&
+      sourceIds.databaseId === targetIds.databaseId &&
+      sourceIds.containerId === targetIds.containerId
+    );
+  };
+
+  const shouldNotShowPermissionScreen = () => {
+    const { source, target, migrationType } = copyJobState;
+    return (
+      migrationType === CopyJobMigrationType.Offline &&
+      isSameAccount(getContainerIdentifiers(source), getContainerIdentifiers(target))
+    );
+  };
+
+  const handleCopyJobSubmission = async () => {
+    try {
+      setIsLoading(true);
+      await submitCreateCopyJob(copyJobState, handleCancel);
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message || "Failed to create copy job. Please try again later."
+          : "Failed to create copy job. Please try again later.";
+      setError(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handlePrimary = useCallback(() => {
+    if (currentScreenKey === SCREEN_KEYS.SelectSourceAndTargetContainers && areContainersIdentical()) {
+      setError("Source and destination containers cannot be the same. Please select different containers to proceed.");
+      return;
+    }
+
     const transitions = {
-      [SCREEN_KEYS.SelectAccount]: SCREEN_KEYS.AssignPermissions,
+      [SCREEN_KEYS.SelectAccount]: shouldNotShowPermissionScreen()
+        ? SCREEN_KEYS.SelectSourceAndTargetContainers
+        : SCREEN_KEYS.AssignPermissions,
       [SCREEN_KEYS.AssignPermissions]: SCREEN_KEYS.SelectSourceAndTargetContainers,
       [SCREEN_KEYS.SelectSourceAndTargetContainers]: SCREEN_KEYS.PreviewCopyJob,
     };
@@ -75,22 +129,9 @@ export function useCopyJobNavigation() {
     if (nextScreen) {
       dispatch({ type: "NEXT", nextScreen });
     } else if (currentScreenKey === SCREEN_KEYS.PreviewCopyJob) {
-      (async () => {
-        try {
-          setIsLoading(true);
-          await submitCreateCopyJob(copyJobState, handleCancel);
-        } catch (error: unknown) {
-          if (error instanceof Error) {
-            setError(error.message || "Failed to create copy job. Please try again later.");
-          } else {
-            setError("Failed to create copy job. Please try again later.");
-          }
-        } finally {
-          setIsLoading(false);
-        }
-      })();
+      handleCopyJobSubmission();
     }
-  }, [currentScreenKey, copyJobState]);
+  }, [currentScreenKey, copyJobState, areContainersIdentical, handleCopyJobSubmission]);
 
   const handlePrevious = useCallback(() => {
     dispatch({ type: "PREVIOUS" });
