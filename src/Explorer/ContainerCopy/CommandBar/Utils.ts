@@ -9,7 +9,7 @@ import ContainerCopyMessages from "../ContainerCopyMessages";
 import { MonitorCopyJobsRefState } from "../MonitorCopyJobs/MonitorCopyJobRefState";
 import { CopyJobCommandBarBtnType } from "../Types/CopyJobTypes";
 
-function getCopyJobBtns(): CopyJobCommandBarBtnType[] {
+function getCopyJobBtns(container: Explorer): CopyJobCommandBarBtnType[] {
   const monitorCopyJobsRef = MonitorCopyJobsRefState((state) => state.ref);
   const buttons: CopyJobCommandBarBtnType[] = [
     {
@@ -33,7 +33,9 @@ function getCopyJobBtns(): CopyJobCommandBarBtnType[] {
       iconSrc: FeedbackIcon,
       label: ContainerCopyMessages.feedbackButtonLabel,
       ariaLabel: ContainerCopyMessages.feedbackButtonAriaLabel,
-      onClick: () => {},
+      onClick: () => {
+        container.openContainerCopyFeedbackBlade();
+      },
     });
   }
   return buttons;
@@ -54,5 +56,5 @@ function btnMapper(config: CopyJobCommandBarBtnType): CommandButtonComponentProp
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function getCommandBarButtons(_container: Explorer): CommandButtonComponentProps[] {
-  return getCopyJobBtns().map(btnMapper);
+  return getCopyJobBtns(_container).map(btnMapper);
 }

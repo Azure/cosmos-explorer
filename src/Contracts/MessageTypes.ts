@@ -49,4 +49,5 @@ export enum MessageTypes {
   Ready, // unused. Can be removed if the portal uses the same list of enums.
   OpenCESCVAFeedbackBlade,
   ActivateTab,
+  OpenContainerCopyFeedbackBlade,
 }
