@@ -176,7 +176,7 @@ function updateUserContext(newContext: Partial<UserContext>): void {
   Object.assign(userContext, newContext);
 }
 
-function apiType(account: DatabaseAccount | undefined): ApiType {
+export function apiType(account: DatabaseAccount | undefined): ApiType {
   if (!account) {
     return "SQL";
   }

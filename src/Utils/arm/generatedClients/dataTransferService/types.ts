@@ -3,13 +3,13 @@
   Run "npm run generateARMClients" to regenerate
   Edting this file directly should be done with extreme caution as not to diverge from ARM REST specs
 
-  Generated from: https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/specification/cosmos-db/resource-manager/Microsoft.DocumentDB/preview/2023-11-15-preview/dataTransferService.json
+  Generated from: https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/specification/cosmos-db/resource-manager/Microsoft.DocumentDB/DocumentDB/preview/2025-05-01-preview/dataTransferService.json
 */
 
 /* Base class for all DataTransfer source/sink */
 export interface DataTransferDataSourceSink {
   /* undocumented */
-  component: "CosmosDBCassandra" | "CosmosDBMongo" | "CosmosDBSql" | "AzureBlobStorage";
+  component: "CosmosDBCassandra" | "CosmosDBMongo" | "CosmosDBMongoVCore" | "CosmosDBSql" | "AzureBlobStorage";
 }
 
 /* A base CosmosDB data source/sink */
@@ -32,6 +32,18 @@ export type CosmosMongoDataTransferDataSourceSink = BaseCosmosDataTransferDataSo
   databaseName: string;
   /* undocumented */
   collectionName: string;
+};
+
+/* A CosmosDB Mongo vCore API data source/sink */
+export type CosmosMongoVCoreDataTransferDataSourceSink = DataTransferDataSourceSink & {
+  /* undocumented */
+  databaseName: string;
+  /* undocumented */
+  collectionName: string;
+  /* undocumented */
+  hostName?: string;
+  /* undocumented */
+  connectionStringKeyVaultUri?: string;
 };
 
 /* A CosmosDB No Sql API data source/sink */
