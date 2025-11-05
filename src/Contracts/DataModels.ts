@@ -389,7 +389,7 @@ export interface VectorEmbeddingPolicy {
 }
 
 export interface VectorEmbedding {
-  dataType: "float32" | "uint8" | "int8";
+  dataType: "float32" | "float16" | "uint8" | "int8";
   dimensions: number;
   distanceFunction: "euclidean" | "cosine" | "dotproduct";
   path: string;

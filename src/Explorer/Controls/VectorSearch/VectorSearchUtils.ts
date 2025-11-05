@@ -1,6 +1,6 @@
 import { IDropdownOption } from "@fluentui/react";
 
-const dataTypes = ["float32", "uint8", "int8"];
+const dataTypes = ["float32", "float16", "uint8", "int8"];
 const distanceFunctions = ["euclidean", "cosine", "dotproduct"];
 const indexTypes = ["none", "flat", "diskANN", "quantizedFlat"];
 
