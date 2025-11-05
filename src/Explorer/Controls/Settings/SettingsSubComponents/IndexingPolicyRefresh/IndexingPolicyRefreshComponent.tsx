@@ -1,10 +1,10 @@
-import { MessageBar, MessageBarType } from "@fluentui/react";
 import * as React from "react";
-import { handleError } from "../../../../../Common/ErrorHandlingUtils";
+import { MessageBar, MessageBarType } from "@fluentui/react";
 import {
   mongoIndexTransformationRefreshingMessage,
   renderMongoIndexTransformationRefreshMessage,
 } from "../../SettingsRenderUtils";
+import { handleError } from "../../../../../Common/ErrorHandlingUtils";
 import { isIndexTransforming } from "../../SettingsUtils";
 
 export interface IndexingPolicyRefreshComponentProps {
