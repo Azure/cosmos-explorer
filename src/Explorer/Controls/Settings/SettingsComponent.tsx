@@ -13,7 +13,6 @@ import {
   ThroughputBucketsComponent,
   ThroughputBucketsComponentProps,
 } from "Explorer/Controls/Settings/SettingsSubComponents/ThroughputInputComponents/ThroughputBucketsComponent";
-import { useIndexingPolicyStore } from "Explorer/Tabs/QueryTab/ResultsView";
 import { useDatabases } from "Explorer/useDatabases";
 import { isFabricNative } from "Platform/Fabric/FabricUtil";
 import { isCapabilityEnabled, isVectorSearchEnabled } from "Utils/CapabilityUtils";
@@ -74,6 +73,7 @@ import {
   parseConflictResolutionMode,
   parseConflictResolutionProcedure,
 } from "./SettingsUtils";
+
 interface SettingsV2TabInfo {
   tab: SettingsV2TabTypes;
   content: JSX.Element;
@@ -182,7 +182,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   private totalThroughputUsed: number;
   private throughputBucketsEnabled: boolean;
   public mongoDBCollectionResource: MongoDBCollectionResource;
-  private unsubscribe: () => void;
+
   constructor(props: SettingsComponentProps) {
     super(props);
 
@@ -318,19 +318,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     if (this.props.settingsTab.isActive()) {
       useCommandBar.getState().setContextButtons(this.getTabsButtons());
     }
-    this.unsubscribe = useIndexingPolicyStore.subscribe(
-      () => {
-        this.refreshCollectionData();
-      },
-      (state) => state.indexingPolicies[this.collection.id()],
-    );
-    this.refreshCollectionData();
   }
-  componentWillUnmount(): void {
-    if (this.unsubscribe) {
-      this.unsubscribe();
-    }
-  }
+
   componentDidUpdate(): void {
     if (this.props.settingsTab.isActive()) {
       useCommandBar.getState().setContextButtons(this.getTabsButtons());
@@ -860,6 +849,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         { name: "name_of_property", query: "query_to_compute_property" },
       ] as DataModels.ComputedProperties;
     }
+
     const throughputBuckets = this.offer?.throughputBuckets;
 
     return {
@@ -1019,31 +1009,10 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       startKey,
     );
   };
-  private refreshCollectionData = async (): Promise<void> => {
-    const containerId = this.collection.id();
-    const latestIndexingPolicy = useIndexingPolicyStore.getState().indexingPolicies[containerId];
-    const rawPolicy = latestIndexingPolicy ?? this.collection.indexingPolicy();
-
-    const latestCollection: DataModels.IndexingPolicy = {
-      automatic: rawPolicy?.automatic ?? true,
-      indexingMode: rawPolicy?.indexingMode ?? "consistent",
-      includedPaths: rawPolicy?.includedPaths ?? [],
-      excludedPaths: rawPolicy?.excludedPaths ?? [],
-      compositeIndexes: rawPolicy?.compositeIndexes ?? [],
-      spatialIndexes: rawPolicy?.spatialIndexes ?? [],
-      vectorIndexes: rawPolicy?.vectorIndexes ?? [],
-      fullTextIndexes: rawPolicy?.fullTextIndexes ?? [],
-    };
-
-    this.collection.rawDataModel.indexingPolicy = latestCollection;
-    this.setState({
-      indexingPolicyContent: latestCollection,
-      indexingPolicyContentBaseline: latestCollection,
-    });
-  };
 
   private saveCollectionSettings = async (startKey: number): Promise<void> => {
     const newCollection: DataModels.Collection = { ...this.collection.rawDataModel };
+
     if (
       this.state.isSubSettingsSaveable ||
       this.state.isContainerPolicyDirty ||
@@ -1283,6 +1252,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       onScaleDiscardableChange: this.onScaleDiscardableChange,
       throughputError: this.state.throughputError,
     };
+
     if (!this.isCollectionSettingsTab) {
       return (
         <div className="settingsV2MainContainer">

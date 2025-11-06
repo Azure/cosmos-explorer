@@ -1,8 +1,5 @@
-import { IndexingPolicy } from "@azure/cosmos";
-import { act } from "@testing-library/react";
 import { AuthType } from "AuthType";
 import { shallow } from "enzyme";
-import { useIndexingPolicyStore } from "Explorer/Tabs/QueryTab/ResultsView";
 import ko from "knockout";
 import React from "react";
 import { updateCollection } from "../../../Common/dataAccess/updateCollection";
@@ -445,49 +442,5 @@ describe("SettingsComponent", () => {
       dataMaskingValidationErrors: [],
     });
     expect(settingsComponentInstance.isSaveSettingsButtonEnabled()).toBe(true);
-  });
-});
-
-describe("SettingsComponent - indexing policy subscription", () => {
-  const baseProps: SettingsComponentProps = {
-    settingsTab: new CollectionSettingsTabV2({
-      collection: collection,
-      tabKind: ViewModels.CollectionTabKind.CollectionSettingsV2,
-      title: "Scale & Settings",
-      tabPath: "",
-      node: undefined,
-    }),
-  };
-
-  it("subscribes to the correct container's indexing policy and updates state on change", async () => {
-    const containerId = collection.id();
-    const mockIndexingPolicy: IndexingPolicy = {
-      automatic: false,
-      indexingMode: "lazy",
-      includedPaths: [{ path: "/foo/*" }],
-      excludedPaths: [{ path: "/bar/*" }],
-      compositeIndexes: [],
-      spatialIndexes: [],
-      vectorIndexes: [],
-      fullTextIndexes: [],
-    };
-
-    const wrapper = shallow(<SettingsComponent {...baseProps} />);
-    const instance = wrapper.instance() as SettingsComponent;
-
-    await act(async () => {
-      useIndexingPolicyStore.setState({
-        indexingPolicies: {
-          [containerId]: mockIndexingPolicy,
-        },
-      });
-    });
-
-    wrapper.update();
-
-    expect(wrapper.state("indexingPolicyContent")).toEqual(mockIndexingPolicy);
-    expect(wrapper.state("indexingPolicyContentBaseline")).toEqual(mockIndexingPolicy);
-    // @ts-expect-error: rawDataModel is intentionally accessed for test validation
-    expect(instance.collection.rawDataModel.indexingPolicy).toEqual(mockIndexingPolicy);
   });
 });
