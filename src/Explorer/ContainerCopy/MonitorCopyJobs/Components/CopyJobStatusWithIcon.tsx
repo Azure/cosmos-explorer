@@ -34,7 +34,7 @@ const iconMap: Partial<Record<CopyJobStatusType, string>> = {
   [CopyJobStatusType.Completed]: "CompletedSolid",
 };
 
-const CopyJobStatusWithIcon: React.FC<{ status: CopyJobStatusType }> = ({ status }) => {
+const CopyJobStatusWithIcon: React.FC<{ status: CopyJobStatusType }> = React.memo(({ status }) => {
   const statusText = ContainerCopyMessages.MonitorJobs.Status[status] || "Unknown";
 
   const isSpinnerStatus = [
@@ -57,6 +57,6 @@ const CopyJobStatusWithIcon: React.FC<{ status: CopyJobStatusType }> = ({ status
       <Text>{statusText}</Text>
     </Stack>
   );
-};
+});
 
 export default CopyJobStatusWithIcon;

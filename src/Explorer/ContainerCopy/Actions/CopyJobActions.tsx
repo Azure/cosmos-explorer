@@ -73,7 +73,6 @@ export const getCopyJobs = async (): Promise<CopyJobType[]> => {
     }
     copyJobsAbortController = null;
 
-    /* added a lower bound to "0" and upper bound to "100" */
     const calculateCompletionPercentage = (processed: number, total: number): number => {
       if (
         typeof processed !== "number" ||

@@ -26,5 +26,5 @@ export const AccountDropdown: React.FC<AccountDropdownProps> = React.memo(
         onChange={onChange}
       />
     </FieldRow>
-  ),
+  ), (prev, next) => prev.options.length === next.options.length
 );

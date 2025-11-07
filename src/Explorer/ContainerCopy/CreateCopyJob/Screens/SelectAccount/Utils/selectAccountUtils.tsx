@@ -10,25 +10,17 @@ export function useDropdownOptions(
   subscriptionOptions: DropdownOptionType[];
   accountOptions: DropdownOptionType[];
 } {
-  const subscriptionOptions = React.useMemo(
-    () =>
-      subscriptions?.map((sub) => ({
-        key: sub.subscriptionId,
-        text: sub.displayName,
-        data: sub,
-      })) || [],
-    [subscriptions],
-  );
+  const subscriptionOptions = subscriptions?.map((sub) => ({
+    key: sub.subscriptionId,
+    text: sub.displayName,
+    data: sub,
+  })) || [];
 
-  const accountOptions = React.useMemo(
-    () =>
-      accounts?.map((account) => ({
-        key: account.id,
-        text: account.name,
-        data: account,
-      })) || [],
-    [accounts],
-  );
+  const accountOptions = accounts?.map((account) => ({
+    key: account.id,
+    text: account.name,
+    data: account,
+  })) || [];
 
   return { subscriptionOptions, accountOptions };
 }
@@ -36,8 +28,7 @@ export function useDropdownOptions(
 type setCopyJobStateType = CopyJobContextProviderType["setCopyJobState"];
 
 export function useEventHandlers(setCopyJobState: setCopyJobStateType) {
-  const handleSelectSourceAccount = React.useCallback(
-    (type: "subscription" | "account", data: (Subscription & DatabaseAccount) | undefined) => {
+  const handleSelectSourceAccount = (type: "subscription" | "account", data: (Subscription & DatabaseAccount) | undefined) => {
       setCopyJobState((prevState: CopyJobContextState) => {
         if (type === "subscription") {
           return {
@@ -60,9 +51,7 @@ export function useEventHandlers(setCopyJobState: setCopyJobStateType) {
         }
         return prevState;
       });
-    },
-    [setCopyJobState],
-  );
+    };
 
   const handleMigrationTypeChange = React.useCallback(
     (_ev?: React.FormEvent<HTMLElement>, checked?: boolean) => {
@@ -71,7 +60,7 @@ export function useEventHandlers(setCopyJobState: setCopyJobStateType) {
         migrationType: checked ? CopyJobMigrationType.Offline : CopyJobMigrationType.Online,
       }));
     },
-    [setCopyJobState],
+    [],
   );
 
   return { handleSelectSourceAccount, handleMigrationTypeChange };
