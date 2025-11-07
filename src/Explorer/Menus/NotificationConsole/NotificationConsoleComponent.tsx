@@ -16,7 +16,6 @@ import InfoIcon from "../../../../images/info_color.svg";
 import LoadingIcon from "../../../../images/loading.svg";
 import WarningIcon from "../../../../images/warning.svg";
 import { ClientDefaults, KeyCodes } from "../../../Common/Constants";
-import { userContext } from "../../../UserContext";
 import { useNotificationConsole } from "../../../hooks/useNotificationConsole";
 import { ConsoleData, ConsoleDataType } from "./ConsoleData";
 
@@ -127,7 +126,6 @@ export class NotificationConsoleComponent extends React.Component<
                 <span className="numWarningItems">{numWarningItems}</span>
               </span>
             </span>
-            {userContext.features.pr && <PrPreview pr={userContext.features.pr} />}
             <span className="consoleSplitter" />
             <span className="headerStatus">
               <span className="headerStatusEllipsis" aria-live="assertive" aria-atomic="true">
@@ -292,21 +290,6 @@ export class NotificationConsoleComponent extends React.Component<
     );
   };
 }
-
-const PrPreview = (props: { pr: string }) => {
-  const url = new URL(props.pr);
-  const [, ref] = url.hash.split("#");
-  url.hash = "";
-
-  return (
-    <>
-      <span className="consoleSplitter" />
-      <a target="_blank" rel="noreferrer" href={url.href} style={{ marginRight: "1em", fontWeight: "bold" }}>
-        {ref}
-      </a>
-    </>
-  );
-};
 
 export const NotificationConsole: React.FC = () => {
   const setIsExpanded = useNotificationConsole((state) => state.setIsExpanded);
