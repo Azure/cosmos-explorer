@@ -47,7 +47,7 @@ const useManagedIdentity = (
     } finally {
       setLoading(false);
     }
-  }, [copyJobState, updateIdentityFn, setCopyJobState]);
+  }, [updateIdentityFn]);
 
   return { loading, handleAddSystemIdentity };
 };
