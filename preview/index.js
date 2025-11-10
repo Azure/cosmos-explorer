@@ -7,7 +7,6 @@ const backendEndpoint = "https://cdb-ms-mpac-pbe.cosmos.azure.com";
 const previewSiteEndpoint = "https://dataexplorer-preview.azurewebsites.net";
 const previewStorageWebsiteEndpoint = "https://dataexplorerpreview.z5.web.core.windows.net/";
 const githubApiUrl = "https://api.github.com/repos/Azure/cosmos-explorer";
-const githubPullRequestUrl = "https://github.com/Azure/cosmos-explorer/pull";
 const azurePortalMpacEndpoint = "https://ms.portal.azure.com/";
 
 const api = createProxyMiddleware({
@@ -57,11 +56,7 @@ app.get("/pull/:pr(\\d+)", (req, res) => {
 
   fetch(`${githubApiUrl}/pulls/${pr}`)
     .then((response) => response.json())
-    .then(({ head: { ref, sha } }) => {
-      const prUrl = new URL(`${githubPullRequestUrl}/${pr}`);
-      prUrl.hash = ref;
-      search.set("feature.pr", prUrl.href);
-
+    .then(({ head: { sha } }) => {
       const explorer = new URL(`${previewSiteEndpoint}/commit/${sha}/explorer.html`);
       explorer.search = search.toString();
 

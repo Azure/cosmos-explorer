@@ -25,7 +25,6 @@ export type Features = {
   readonly notebookServerUrl?: string;
   readonly sandboxNotebookOutputs: boolean;
   readonly selfServeType?: string;
-  readonly pr?: string;
   readonly showMinRUSurvey: boolean;
   readonly ttl90Days: boolean;
   readonly mongoProxyEndpoint?: string;
@@ -96,7 +95,6 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     notebookServerUrl: get("notebookserverurl"),
     sandboxNotebookOutputs: "true" === get("sandboxnotebookoutputs", "true"),
     selfServeType: get("selfservetype"),
-    pr: get("pr"),
     showMinRUSurvey: "true" === get("showminrusurvey"),
     ttl90Days: "true" === get("ttl90days"),
     autoscaleDefault: "true" === get("autoscaledefault"),
