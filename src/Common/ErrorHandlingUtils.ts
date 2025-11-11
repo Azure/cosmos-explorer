@@ -23,7 +23,10 @@ export const handleError = (error: string | ARMError | Error, area: string, cons
 };
 
 export const getErrorMessage = (error: string | Error = ""): string => {
-  const errorMessage = typeof error === "string" ? error : error.message;
+  let errorMessage = typeof error === "string" ? error : error.message;
+  if (!errorMessage) {
+    errorMessage = JSON.stringify(error);
+  }
   return replaceKnownError(errorMessage);
 };
 
