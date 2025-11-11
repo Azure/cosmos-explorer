@@ -1,4 +1,5 @@
 import { PartitionKey, PartitionKeyDefinition } from "@azure/cosmos";
+import { configContext, Platform } from "ConfigContext";
 import { getRUThreshold, ruThresholdEnabled } from "Shared/StorageUtility";
 import { userContext } from "UserContext";
 import { logConsoleWarning } from "Utils/NotificationConsoleUtils";
@@ -66,7 +67,11 @@ export function buildDocumentsQueryPartitionProjections(
       }
     });
     const fullAccess = `${collectionAlias}${projectedProperty}`;
-    if (!isSystemPartitionKey) {
+    if (
+      !isSystemPartitionKey &&
+      configContext.platform !== Platform.Emulator &&
+      configContext.platform !== Platform.VNextEmulator
+    ) {
       const wrappedProjection = `IIF(IS_DEFINED(${fullAccess}), ${fullAccess}, {})`;
       projections.push(wrappedProjection);
     } else {
