@@ -19,7 +19,7 @@ import "../externals/jquery.dataTables.min.css";
 import "../externals/jquery.typeahead.min.css";
 import "../externals/jquery.typeahead.min.js";
 // Image Dependencies
-import { Platform } from "ConfigContext";
+import { configContext, Platform } from "ConfigContext";
 import ContainerCopyPanel from "Explorer/ContainerCopy/ContainerCopyPanel";
 import Explorer from "Explorer/Explorer";
 import { QueryCopilotCarousel } from "Explorer/QueryCopilot/CopilotCarousel";
@@ -60,6 +60,8 @@ import "./Explorer/Panes/PanelComponent.less";
 import { SidePanel } from "./Explorer/Panes/PanelContainerComponent";
 import "./Explorer/SplashScreen/SplashScreen.less";
 import "./Libs/jquery";
+import HealthMetricScenario from "./Metrics/HealthMetrics";
+import useHealthMetrics from "./Metrics/useHealthMetrics";
 import { appThemeFabric } from "./Platform/Fabric/FabricTheme";
 import "./Shared/appInsights";
 import { useConfig } from "./hooks/useConfig";
@@ -78,6 +80,28 @@ const App: React.FunctionComponent = () => {
   }
   StyleConstants.updateStyles();
   const explorer = useKnockoutExplorer(config?.platform);
+
+  // Emit an unhealthy health metric if the Explorer fails to load within a threshold.
+  // We only report once per session to avoid noise.
+  const { markUnhealthy } = useHealthMetrics();
+  const reportedUnhealthyRef = React.useRef<boolean>(false);
+  React.useEffect(() => {
+    // If Explorer hasn't initialized yet, start a timeout to flag unhealthy load.
+    if (!explorer) {
+      const api = userContext.apiType;
+      const timeoutId = window.setTimeout(() => {
+        if (!reportedUnhealthyRef.current) {
+          reportedUnhealthyRef.current = true;
+          markUnhealthy(HealthMetricScenario.ApplicationLoad, configContext.platform, api);
+        }
+      }, 10000);
+
+      return () => window.clearTimeout(timeoutId);
+    }
+
+    // If Explorer eventually loads, ensure we don't report unhealthy.
+    return undefined;
+  }, [explorer, markUnhealthy]);
 
   if (!explorer) {
     return <LoadingExplorer />;
@@ -107,6 +131,11 @@ const mainElement = document.getElementById("Main");
 ReactDOM.render(<App />, mainElement);
 
 function DivExplorer({ explorer }: { explorer: Explorer }): JSX.Element {
+  const { markHealthy } = useHealthMetrics();
+  React.useEffect(() => {
+    const api = userContext.apiType;
+    markHealthy(HealthMetricScenario.ApplicationLoad, configContext.platform, api);
+  }, [markHealthy]);
   return (
     <div id="divExplorer" className="flexContainer hideOverflows">
       <div id="freeTierTeachingBubble"> </div>
