@@ -1,3 +1,4 @@
+import Explorer from "Explorer/Explorer";
 import React from "react";
 import { userContext } from "UserContext";
 import { CopyJobMigrationType } from "../Enums/CopyJobEnums";
@@ -14,6 +15,7 @@ export const useCopyJobContext = (): CopyJobContextProviderType => {
 
 interface CopyJobContextProviderProps {
   children: React.ReactNode;
+  explorer: Explorer;
 }
 
 const getInitialCopyJobState = (): CopyJobContextState => {
@@ -53,6 +55,7 @@ const CopyJobContextProvider: React.FC<CopyJobContextProviderProps> = (props) =>
     flow,
     setFlow,
     resetCopyJobState,
+    explorer: props.explorer
   };
 
   return <CopyJobContext.Provider value={contextValue}>{props.children}</CopyJobContext.Provider>;

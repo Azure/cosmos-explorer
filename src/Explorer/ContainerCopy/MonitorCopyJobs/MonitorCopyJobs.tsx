@@ -1,6 +1,7 @@
 /* eslint-disable react/display-name */
 import { MessageBar, MessageBarType, Stack } from "@fluentui/react";
 import ShimmerTree, { IndentLevel } from "Common/ShimmerTree/ShimmerTree";
+import Explorer from "Explorer/Explorer";
 import React, { forwardRef, useEffect, useImperativeHandle } from "react";
 import { getCopyJobs, updateCopyJobStatus } from "../Actions/CopyJobActions";
 import { convertToCamelCase, isEqual } from "../CopyJobUtils";
@@ -12,13 +13,15 @@ import CopyJobsList from "./Components/CopyJobsList";
 const FETCH_INTERVAL_MS = 30 * 1000;
 const SHIMMER_INDENT_LEVELS: IndentLevel[] = Array(7).fill({ level: 0, width: "100%" });
 
-interface MonitorCopyJobsProps {}
+interface MonitorCopyJobsProps {
+  explorer: Explorer;
+}
 
 export interface MonitorCopyJobsRef {
   refreshJobList: () => void;
 }
 
-const MonitorCopyJobs = forwardRef<MonitorCopyJobsRef, MonitorCopyJobsProps>((_props, ref) => {
+const MonitorCopyJobs = forwardRef<MonitorCopyJobsRef, MonitorCopyJobsProps>(({ explorer }, ref) => {
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
   const [jobs, setJobs] = React.useState<CopyJobType[]>([]);
@@ -101,7 +104,7 @@ const MonitorCopyJobs = forwardRef<MonitorCopyJobsRef, MonitorCopyJobsProps>((_p
     if (jobs.length > 0) {
       return <CopyJobsList jobs={jobs} handleActionClick={handleActionClick} />;
     }
-    return <CopyJobsNotFound />;
+    return <CopyJobsNotFound explorer={explorer} />;
   };
 
   return (

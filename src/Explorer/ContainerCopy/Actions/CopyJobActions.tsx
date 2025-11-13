@@ -1,3 +1,4 @@
+import Explorer from "Explorer/Explorer";
 import React from "react";
 import { userContext } from "UserContext";
 import { logError } from "../../../Common/Logger";
@@ -29,12 +30,12 @@ import CopyJobDetails from "../MonitorCopyJobs/Components/CopyJobDetails";
 import { MonitorCopyJobsRefState } from "../MonitorCopyJobs/MonitorCopyJobRefState";
 import { CopyJobContextState, CopyJobError, CopyJobErrorType, CopyJobType } from "../Types/CopyJobTypes";
 
-export const openCreateCopyJobPanel = () => {
+export const openCreateCopyJobPanel = (explorer: Explorer) => {
   const sidePanelState = useSidePanel.getState();
   sidePanelState.setPanelHasConsole(false);
   sidePanelState.openSidePanel(
     ContainerCopyMessages.createCopyJobPanelTitle,
-    <CreateCopyJobScreensProvider />,
+    <CreateCopyJobScreensProvider explorer={explorer} />,
     "650px",
   );
 };
