@@ -44,8 +44,8 @@ export const getDatabaseEndpoint = (apiType: ApiType): string => {
       return "gremlinDatabases";
     case "Tables":
       return "tables";
-    default:
     case "SQL":
+    default:
       return "sqlDatabases";
   }
 };
@@ -58,8 +58,8 @@ export const getCollectionEndpoint = (apiType: ApiType): string => {
       return "tables";
     case "Gremlin":
       return "graphs";
-    default:
     case "SQL":
+    default:
       return "containers";
   }
 };

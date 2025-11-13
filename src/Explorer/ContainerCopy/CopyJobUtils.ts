@@ -1,5 +1,5 @@
 import { DatabaseAccount } from "Contracts/DataModels";
-import { CopyJobErrorType } from "./Types/CopyJobTypes";
+import { CopyJobErrorType, CopyJobType } from "./Types/CopyJobTypes";
 
 const azurePortalMpacEndpoint = "https://ms.portal.azure.com/";
 
@@ -113,4 +113,17 @@ export function getAccountDetailsFromResourceId(accountId: string | undefined) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_, subscriptionId, resourceGroup, accountName] = matches || [];
   return { subscriptionId, resourceGroup, accountName };
+}
+
+export function isEqual(prevJobs: CopyJobType[], newJobs: CopyJobType[]): boolean {
+  if (prevJobs.length !== newJobs.length) {
+    return false;
+  }
+  return prevJobs.every((prevJob: CopyJobType) => {
+    const newJob = newJobs.find((job) => job.Name === prevJob.Name);
+    if (!newJob) {
+      return false;
+    }
+    return prevJob.Status === newJob.Status;
+  });
 }

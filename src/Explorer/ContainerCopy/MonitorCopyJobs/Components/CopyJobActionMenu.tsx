@@ -67,7 +67,7 @@ const CopyJobActionMenu: React.FC<CopyJobActionMenuProps> = ({ job, handleClick 
       return filteredItems;
     }
 
-    if ([CopyJobStatusType.Failed, CopyJobStatusType.Faulted, CopyJobStatusType.Skipped].includes(job.Status)) {
+    if ([CopyJobStatusType.Skipped].includes(job.Status)) {
       return baseItems.filter((item) => item.key === CopyJobActions.resume);
     }
 
