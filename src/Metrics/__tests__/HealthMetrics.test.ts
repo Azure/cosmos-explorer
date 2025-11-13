@@ -2,6 +2,9 @@ import { configContext, Platform } from "../../ConfigContext";
 import { getAuthorizationHeader } from "../../Utils/AuthorizationUtils";
 import HealthMetricScenario, { reportHealthy, reportUnhealthy } from "../HealthMetrics";
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { Response } = require("node-fetch");
+
 jest.mock("../../Utils/AuthorizationUtils", () => ({
   getAuthorizationHeader: jest.fn().mockReturnValue({ header: "authorization", token: "Bearer test-token" }),
 }));
@@ -24,7 +27,7 @@ describe("HealthMetrics", () => {
     expect(global.fetch).toHaveBeenCalledTimes(1);
     const callArgs = (global.fetch as jest.Mock).mock.calls[0];
     expect(callArgs[1].headers.authorization).toBe("Bearer test-token");
-    const body = JSON.parse(callArgs[1].body);
+    const body = JSON.parse(callArgs[1].body as string);
     expect(body.browserProfile).toBeUndefined();
     expect(getAuthorizationHeader).toHaveBeenCalled();
   });
@@ -47,12 +50,13 @@ describe("HealthMetrics", () => {
     expect(global.fetch).toHaveBeenCalledTimes(2);
   });
 
-  test("skips when backend endpoint missing", async () => {
+  test("throws when backend endpoint missing", async () => {
     const original = configContext.PORTAL_BACKEND_ENDPOINT;
     (configContext as { PORTAL_BACKEND_ENDPOINT: string }).PORTAL_BACKEND_ENDPOINT = ""; // simulate missing
     global.fetch = jest.fn();
-    const result = await reportHealthy(HealthMetricScenario.ApplicationLoad, Platform.Portal, "SQL");
-    expect(result).toBeUndefined();
+    await expect(reportHealthy(HealthMetricScenario.ApplicationLoad, Platform.Portal, "SQL")).rejects.toThrow(
+      "baseUri is null or empty",
+    );
     expect(global.fetch).not.toHaveBeenCalled();
     (configContext as { PORTAL_BACKEND_ENDPOINT: string }).PORTAL_BACKEND_ENDPOINT = original; // restore
   });

@@ -1,28 +1,32 @@
 /**
- * Higher-Order Component (HOC) that injects health metrics data and APIs into
- * legacy (class-based) React components.
+ * Higher-Order Component (HOC) that injects health metrics state and API surface
+ * into legacy (class-based) React components that cannot directly consume hooks.
  *
- * This provides the same functionality as the `useHealthMetrics` hook, but in
- * a wrapper form compatible with components that cannot use hooks directly.
+ * Rationale / Why this is needed:
+ * - We are gradually migrating older class components toward function components + hooks.
+ * - The `useHealthMetrics` hook centralizes health status, refresh, and scenario reporting logic.
+ * - Class components cannot call hooks; rewriting them all at once would be high-risk and noisy.
+ * - This lightweight adapter lets those components opt in to the shared health metrics contract
+ *   immediately without a full refactor, reducing duplicated polling / ad‑hoc fetch logic.
+ * - It also documents the explicit injected prop shape (`HealthMetricsInjectedProps`) to ease
+ *   future conversion: remove the HOC wrapper and replace `this.props.*` with hook calls.
  *
- * Usage:
+ * Guidance:
+ * - Prefer the hook (`useHealthMetrics`) in any new function component.
+ * - Limit usage of this HOC to transitional / legacy areas; treat it as a migration aid.
+ * - When refactoring a wrapped class component to a function component, delete the wrapper and
+ *   call `useHealthMetrics()` directly.
+ *
+ * Usage example:
  * ```tsx
  * class MyDashboard extends React.Component<HealthMetricsInjectedProps> {
  *   render() {
  *     const { healthStatus, refreshHealth } = this.props;
- *     ...
+ *     return <div>{healthStatus}</div>;
  *   }
  * }
- *
  * export default withHealthMetrics(MyDashboard);
  * ```
- *
- * Why this exists:
- * - Hooks like `useHealthMetrics()` cannot be used in class components.
- * - This HOC bridges the gap by allowing older parts of the codebase to
- *   consume the same health metrics context without refactoring to function components.
- *
- * Prefer using the hook (`useHealthMetrics`) directly in new function components.
  */
 import React from "react";
 import useHealthMetrics, { UseHealthMetricsApi } from "./useHealthMetrics";
