@@ -14,9 +14,9 @@ const SelectSourceAndTargetContainers = () => {
   const { source, target, sourceDbParams, sourceContainerParams, targetDbParams, targetContainerParams } =
     useSourceAndTargetData(copyJobState);
 
-    if(!source) {
-      return null;
-    }
+  if (!source) {
+    return null;
+  }
 
   const sourceDatabases = useDatabases(...sourceDbParams);
   const sourceContainers = useDataContainers(...sourceContainerParams);

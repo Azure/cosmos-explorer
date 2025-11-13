@@ -11,17 +11,19 @@ export function useDropdownOptions(
   subscriptionOptions: DropdownOptionType[];
   accountOptions: DropdownOptionType[];
 } {
-  const subscriptionOptions = subscriptions?.map((sub) => ({
-    key: sub.subscriptionId,
-    text: sub.displayName,
-    data: sub,
-  })) || [];
+  const subscriptionOptions =
+    subscriptions?.map((sub) => ({
+      key: sub.subscriptionId,
+      text: sub.displayName,
+      data: sub,
+    })) || [];
 
-  const accountOptions = accounts?.map((account) => ({
-    key: account.id,
-    text: account.name,
-    data: account,
-  })) || [];
+  const accountOptions =
+    accounts?.map((account) => ({
+      key: account.id,
+      text: account.name,
+      data: account,
+    })) || [];
 
   return { subscriptionOptions, accountOptions };
 }

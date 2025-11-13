@@ -106,7 +106,9 @@ const MonitorCopyJobs = forwardRef<MonitorCopyJobsRef, MonitorCopyJobsProps>((_p
 
   return (
     <Stack className="monitorCopyJobs flexContainer">
-      {loading && <ShimmerTree indentLevels={SHIMMER_INDENT_LEVELS} style={{ width: "100%", padding: "1rem 2.5rem" }} />}
+      {loading && (
+        <ShimmerTree indentLevels={SHIMMER_INDENT_LEVELS} style={{ width: "100%", padding: "1rem 2.5rem" }} />
+      )}
       {error && (
         <MessageBar messageBarType={MessageBarType.error} isMultiline={false} onDismiss={() => setError(null)}>
           {error}
