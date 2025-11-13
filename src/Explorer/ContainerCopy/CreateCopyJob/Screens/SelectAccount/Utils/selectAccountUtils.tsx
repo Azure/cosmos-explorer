@@ -10,17 +10,19 @@ export function useDropdownOptions(
   subscriptionOptions: DropdownOptionType[];
   accountOptions: DropdownOptionType[];
 } {
-  const subscriptionOptions = subscriptions?.map((sub) => ({
-    key: sub.subscriptionId,
-    text: sub.displayName,
-    data: sub,
-  })) || [];
+  const subscriptionOptions =
+    subscriptions?.map((sub) => ({
+      key: sub.subscriptionId,
+      text: sub.displayName,
+      data: sub,
+    })) || [];
 
-  const accountOptions = accounts?.map((account) => ({
-    key: account.id,
-    text: account.name,
-    data: account,
-  })) || [];
+  const accountOptions =
+    accounts?.map((account) => ({
+      key: account.id,
+      text: account.name,
+      data: account,
+    })) || [];
 
   return { subscriptionOptions, accountOptions };
 }
@@ -28,40 +30,40 @@ export function useDropdownOptions(
 type setCopyJobStateType = CopyJobContextProviderType["setCopyJobState"];
 
 export function useEventHandlers(setCopyJobState: setCopyJobStateType) {
-  const handleSelectSourceAccount = (type: "subscription" | "account", data: (Subscription & DatabaseAccount) | undefined) => {
-      setCopyJobState((prevState: CopyJobContextState) => {
-        if (type === "subscription") {
-          return {
-            ...prevState,
-            source: {
-              ...prevState.source,
-              subscription: data || null,
-              account: null,
-            },
-          };
-        }
-        if (type === "account") {
-          return {
-            ...prevState,
-            source: {
-              ...prevState.source,
-              account: data || null,
-            },
-          };
-        }
-        return prevState;
-      });
-    };
+  const handleSelectSourceAccount = (
+    type: "subscription" | "account",
+    data: (Subscription & DatabaseAccount) | undefined,
+  ) => {
+    setCopyJobState((prevState: CopyJobContextState) => {
+      if (type === "subscription") {
+        return {
+          ...prevState,
+          source: {
+            ...prevState.source,
+            subscription: data || null,
+            account: null,
+          },
+        };
+      }
+      if (type === "account") {
+        return {
+          ...prevState,
+          source: {
+            ...prevState.source,
+            account: data || null,
+          },
+        };
+      }
+      return prevState;
+    });
+  };
 
-  const handleMigrationTypeChange = React.useCallback(
-    (_ev?: React.FormEvent<HTMLElement>, checked?: boolean) => {
-      setCopyJobState((prevState: CopyJobContextState) => ({
-        ...prevState,
-        migrationType: checked ? CopyJobMigrationType.Offline : CopyJobMigrationType.Online,
-      }));
-    },
-    [],
-  );
+  const handleMigrationTypeChange = React.useCallback((_ev?: React.FormEvent<HTMLElement>, checked?: boolean) => {
+    setCopyJobState((prevState: CopyJobContextState) => ({
+      ...prevState,
+      migrationType: checked ? CopyJobMigrationType.Offline : CopyJobMigrationType.Online,
+    }));
+  }, []);
 
   return { handleSelectSourceAccount, handleMigrationTypeChange };
 }

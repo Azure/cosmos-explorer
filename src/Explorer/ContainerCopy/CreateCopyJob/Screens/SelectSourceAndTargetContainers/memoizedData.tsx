@@ -17,9 +17,21 @@ export function useSourceAndTargetData(copyJobState: CopyJobContextState) {
   } = getAccountDetailsFromResourceId(selectedTargetAccount?.id);
 
   const sourceDbParams = [sourceSubscriptionId, sourceResourceGroup, sourceAccountName, "SQL"] as DatabaseParams;
-  const sourceContainerParams = [sourceSubscriptionId, sourceResourceGroup, sourceAccountName, source?.databaseId, "SQL"] as DataContainerParams;
+  const sourceContainerParams = [
+    sourceSubscriptionId,
+    sourceResourceGroup,
+    sourceAccountName,
+    source?.databaseId,
+    "SQL",
+  ] as DataContainerParams;
   const targetDbParams = [targetSubscriptionId, targetResourceGroup, targetAccountName, "SQL"] as DatabaseParams;
-  const targetContainerParams = [targetSubscriptionId, targetResourceGroup, targetAccountName, target?.databaseId, "SQL"] as DataContainerParams;
+  const targetContainerParams = [
+    targetSubscriptionId,
+    targetResourceGroup,
+    targetAccountName,
+    target?.databaseId,
+    "SQL",
+  ] as DataContainerParams;
 
   return { source, target, sourceDbParams, sourceContainerParams, targetDbParams, targetContainerParams };
 }

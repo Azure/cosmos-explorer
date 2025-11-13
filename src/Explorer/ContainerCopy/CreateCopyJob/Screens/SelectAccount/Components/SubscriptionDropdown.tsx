@@ -24,5 +24,6 @@ export const SubscriptionDropdown: React.FC<SubscriptionDropdownProps> = React.m
         onChange={onChange}
       />
     </FieldRow>
-  ), (prev, next) => prev.options.length === next.options.length
+  ),
+  (prev, next) => prev.options.length === next.options.length,
 );
