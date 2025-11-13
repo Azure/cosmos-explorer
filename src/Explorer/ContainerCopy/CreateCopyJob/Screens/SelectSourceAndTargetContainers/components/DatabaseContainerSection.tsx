@@ -1,4 +1,4 @@
-import { Dropdown, Stack } from "@fluentui/react";
+import { ActionButton, Dropdown, Stack } from "@fluentui/react";
 import React from "react";
 import ContainerCopyMessages from "../../../../ContainerCopyMessages";
 import { DatabaseContainerSectionProps } from "../../../../Types/CopyJobTypes";
@@ -14,6 +14,7 @@ export const DatabaseContainerSection = ({
   selectedContainer,
   containerDisabled,
   containerOnChange,
+  handleOnDemandCreateContainer,
 }: DatabaseContainerSectionProps) => (
   <Stack tokens={{ childrenGap: 15 }} className="databaseContainerSection">
     <label className="subHeading">{heading}</label>
@@ -29,15 +30,22 @@ export const DatabaseContainerSection = ({
       />
     </FieldRow>
     <FieldRow label={ContainerCopyMessages.containerDropdownLabel}>
-      <Dropdown
-        placeholder={ContainerCopyMessages.containerDropdownPlaceholder}
-        ariaLabel={ContainerCopyMessages.containerDropdownLabel}
-        options={containerOptions}
-        required
-        disabled={!!containerDisabled}
-        selectedKey={selectedContainer}
-        onChange={containerOnChange}
-      />
+      <Stack>
+        <Dropdown
+          placeholder={ContainerCopyMessages.containerDropdownPlaceholder}
+          ariaLabel={ContainerCopyMessages.containerDropdownLabel}
+          options={containerOptions}
+          required
+          disabled={!!containerDisabled}
+          selectedKey={selectedContainer}
+          onChange={containerOnChange}
+        />
+        {handleOnDemandCreateContainer && (
+          <ActionButton className="create-container-link-btn" onClick={() => handleOnDemandCreateContainer()}>
+            {ContainerCopyMessages.createContainerButtonLabel}
+          </ActionButton>
+        )}
+      </Stack>
     </FieldRow>
   </Stack>
 );

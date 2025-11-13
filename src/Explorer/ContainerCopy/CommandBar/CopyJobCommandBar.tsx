@@ -13,8 +13,8 @@ const rootStyle = {
   },
 };
 
-const CopyJobCommandBar: React.FC<ContainerCopyProps> = ({ container }) => {
-  const commandBarItems: CommandButtonComponentProps[] = getCommandBarButtons(container);
+const CopyJobCommandBar: React.FC<ContainerCopyProps> = ({ explorer }) => {
+  const commandBarItems: CommandButtonComponentProps[] = getCommandBarButtons(explorer);
   const controlButtons: ICommandBarItemProps[] = CommandBarUtil.convertButton(commandBarItems, backgroundColor);
 
   return (
