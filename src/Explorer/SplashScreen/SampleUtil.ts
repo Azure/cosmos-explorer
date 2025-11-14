@@ -36,6 +36,56 @@ export enum SampleDataFile {
   FABRIC_SAMPLE_VECTOR_DATA = "FabricSampleVectorData",
 }
 
+const containerSettings: {
+  [key in SampleDataFile]: {
+    partitionKeyString: string;
+    vectorEmbeddingPolicy?: DataModels.VectorEmbeddingPolicy;
+    indexingPolicy?: DataModels.IndexingPolicy;
+  };
+} = {
+  [SampleDataFile.COPILOT]: {
+    partitionKeyString: "category",
+  },
+  [SampleDataFile.FABRIC_SAMPLE_DATA]: {
+    partitionKeyString: "categoryName",
+  },
+  [SampleDataFile.FABRIC_SAMPLE_VECTOR_DATA]: {
+    partitionKeyString: "categoryName",
+    vectorEmbeddingPolicy: {
+      vectorEmbeddings: [
+        {
+          path: "/vectors",
+          dataType: "float32",
+          distanceFunction: "cosine",
+          dimensions: 1536,
+        },
+      ],
+    },
+    indexingPolicy: {
+      automatic: true,
+      indexingMode: "consistent",
+      includedPaths: [
+        {
+          path: "/*",
+        },
+      ],
+      excludedPaths: [
+        {
+          path: '/"_etag"/?',
+        },
+      ],
+      fullTextIndexes: [],
+      vectorIndexes: [
+        {
+          path: "/vectors",
+          type: "quantizedFlat",
+          quantizationByteSize: 64,
+        },
+      ],
+    },
+  },
+};
+
 export const createContainer = async (
   databaseName: string,
   containerName: string,
@@ -49,48 +99,12 @@ export const createContainer = async (
     databaseId: databaseName,
     databaseLevelThroughput: false,
     partitionKey: {
-      paths: [`/${SAMPLE_DATA_PARTITION_KEY}`],
+      paths: [`/${containerSettings[sampleDataFile].partitionKeyString}`],
       kind: "Hash",
       version: BackendDefaults.partitionKeyVersion,
     },
-    vectorEmbeddingPolicy:
-      sampleDataFile === SampleDataFile.FABRIC_SAMPLE_VECTOR_DATA
-        ? {
-            vectorEmbeddings: [
-              {
-                path: "/descriptionVector",
-                dataType: "float32",
-                distanceFunction: "cosine",
-                dimensions: 512,
-              },
-            ],
-          }
-        : undefined,
-    indexingPolicy:
-      sampleDataFile === SampleDataFile.FABRIC_SAMPLE_VECTOR_DATA
-        ? {
-            automatic: true,
-            indexingMode: "consistent",
-            includedPaths: [
-              {
-                path: "/*",
-              },
-            ],
-            excludedPaths: [
-              {
-                path: '/"_etag"/?',
-              },
-            ],
-            fullTextIndexes: [],
-            vectorIndexes: [
-              {
-                path: "/descriptionVector",
-                type: "quantizedFlat",
-                quantizationByteSize: 64,
-              },
-            ],
-          }
-        : undefined,
+    vectorEmbeddingPolicy: containerSettings[sampleDataFile].vectorEmbeddingPolicy,
+    indexingPolicy: containerSettings[sampleDataFile].indexingPolicy,
   };
   await createCollection(createRequest);
   await explorer.refreshAllDatabases();
@@ -102,8 +116,6 @@ export const createContainer = async (
   const newCollection = database.findCollectionWithId(containerName);
   return newCollection;
 };
-
-const SAMPLE_DATA_PARTITION_KEY = "category"; // This pkey is specifically set for queryCopilotSampleData.json below
 
 export const importData = async (sampleDataFile: SampleDataFile, collection: ViewModels.Collection): Promise<void> => {
   let documents: JSONObject[] = undefined;

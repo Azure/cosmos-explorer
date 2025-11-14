@@ -359,6 +359,14 @@ export default class Explorer {
     );
   }
 
+  public async openContainerCopyFeedbackBlade(): Promise<void> {
+    sendMessage({ type: MessageTypes.OpenContainerCopyFeedbackBlade });
+    Logger.logInfo(
+      `Container Copy Feedback logging current date when survey is shown ${Date.now().toString()}`,
+      "Explorer/openContainerCopyFeedbackBlade",
+    );
+  }
+
   public async refreshDatabaseForResourceToken(): Promise<void> {
     const databaseId = userContext.parsedResourceToken?.databaseId;
     const collectionId = userContext.parsedResourceToken?.collectionId;
@@ -1016,7 +1024,7 @@ export default class Explorer {
         break;
 
       case ViewModels.TerminalKind.VCoreMongo:
-        title = "VCoreMongo Shell";
+        title = "Mongo Shell";
         break;
 
       default:

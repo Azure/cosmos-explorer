@@ -39,6 +39,45 @@ exports[`PaneContainerComponent test should be resize if notification console is
 </StyledPanelBase>
 `;
 
+exports[`PaneContainerComponent test should not render console with panel 1`] = `
+<StyledPanelBase
+  closeButtonAriaLabel="Close test"
+  customWidth="440px"
+  data-test="Panel:test"
+  headerClassName="panelHeader"
+  headerText="test"
+  isFooterAtBottom={true}
+  isLightDismiss={true}
+  isOpen={true}
+  onDismiss={[Function]}
+  style={
+    {
+      "height": "768px",
+    }
+  }
+  styles={
+    {
+      "commands": {
+        "marginTop": 8,
+        "paddingTop": 0,
+      },
+      "content": {
+        "padding": 0,
+      },
+      "header": {
+        "padding": "0 0 8px 34px",
+      },
+      "navigation": {
+        "borderBottom": "1px solid #cccccc",
+      },
+    }
+  }
+  type={7}
+>
+  <div />
+</StyledPanelBase>
+`;
+
 exports[`PaneContainerComponent test should render nothing if content is undefined 1`] = `<Fragment />`;
 
 exports[`PaneContainerComponent test should render with panel content and header 1`] = `

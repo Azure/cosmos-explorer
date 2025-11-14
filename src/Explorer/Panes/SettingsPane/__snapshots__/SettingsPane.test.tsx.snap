@@ -589,20 +589,35 @@ exports[`Settings Pane should render Default properly 1`] = `
           <div
             className="___1dfa554_0000000 fo7qwa0"
           >
-            <StyledCheckboxBase
-              ariaLabel="Ignore partition key on document update"
-              checked={false}
-              className="padding"
-              label="Ignore partition key on document update"
-              onChange={[Function]}
-              styles={
+            <Stack
+              horizontal={true}
+              tokens={
                 {
-                  "label": {
-                    "padding": 0,
-                  },
+                  "childrenGap": 4,
                 }
               }
-            />
+              verticalAlign="center"
+            >
+              <StyledCheckboxBase
+                ariaLabel="Ignore partition key on document update"
+                checked={false}
+                className="padding"
+                label="Ignore partition key on document update"
+                onChange={[Function]}
+                styles={
+                  {
+                    "label": {
+                      "padding": 0,
+                    },
+                  }
+                }
+              />
+              <InfoTooltip
+                className="___vtc5hy0_0000000 f10ra9hq f1k6fduh"
+              >
+                If checked, the partition key value will not be used to locate the document during update operations. Only use this if document updates are failing due to an abnormal partition key.
+              </InfoTooltip>
+            </Stack>
           </div>
         </AccordionPanel>
       </AccordionItem>
@@ -883,20 +898,35 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
           <div
             className="___1dfa554_0000000 fo7qwa0"
           >
-            <StyledCheckboxBase
-              ariaLabel="Ignore partition key on document update"
-              checked={false}
-              className="padding"
-              label="Ignore partition key on document update"
-              onChange={[Function]}
-              styles={
+            <Stack
+              horizontal={true}
+              tokens={
                 {
-                  "label": {
-                    "padding": 0,
-                  },
+                  "childrenGap": 4,
                 }
               }
-            />
+              verticalAlign="center"
+            >
+              <StyledCheckboxBase
+                ariaLabel="Ignore partition key on document update"
+                checked={false}
+                className="padding"
+                label="Ignore partition key on document update"
+                onChange={[Function]}
+                styles={
+                  {
+                    "label": {
+                      "padding": 0,
+                    },
+                  }
+                }
+              />
+              <InfoTooltip
+                className="___vtc5hy0_0000000 f10ra9hq f1k6fduh"
+              >
+                If checked, the partition key value will not be used to locate the document during update operations. Only use this if document updates are failing due to an abnormal partition key.
+              </InfoTooltip>
+            </Stack>
           </div>
         </AccordionPanel>
       </AccordionItem>

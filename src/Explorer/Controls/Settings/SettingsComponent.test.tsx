@@ -24,6 +24,11 @@ jest.mock("../../../Common/dataAccess/updateCollection", () => ({
     changeFeedPolicy: undefined,
     analyticalStorageTtl: undefined,
     geospatialConfig: undefined,
+    dataMaskingPolicy: {
+      includedPaths: [],
+      excludedPaths: ["/excludedPath"],
+      isPolicyEnabled: true,
+    },
     indexes: [],
   }),
 }));
@@ -92,7 +97,6 @@ describe("SettingsComponent", () => {
     const settingsComponentInstance = wrapper.instance() as SettingsComponent;
     expect(settingsComponentInstance.hasProvisioningTypeChanged()).toEqual(false);
     wrapper.setState({
-      userCanChangeProvisioningTypes: true,
       isAutoPilotSelected: true,
       wasAutopilotOriginallySet: false,
       autoPilotThroughput: 1000,
@@ -285,5 +289,158 @@ describe("SettingsComponent", () => {
     });
 
     expect(wrapper.state("isThroughputBucketsSaveable")).toBe(false);
+  });
+
+  it("should handle data masking policy updates correctly", async () => {
+    updateUserContext({
+      apiType: "SQL",
+      authType: AuthType.AAD,
+    });
+
+    const wrapper = shallow(<SettingsComponent {...baseProps} />);
+    const settingsComponentInstance = wrapper.instance() as SettingsComponent;
+
+    wrapper.setState({
+      dataMaskingContent: {
+        includedPaths: [],
+        excludedPaths: ["/excludedPath"],
+        isPolicyEnabled: true,
+      },
+      dataMaskingContentBaseline: {
+        includedPaths: [],
+        excludedPaths: [],
+        isPolicyEnabled: false,
+      },
+      isDataMaskingDirty: true,
+    });
+
+    await settingsComponentInstance.onSaveClick();
+
+    // The test needs to match what onDataMaskingContentChange returns
+    expect(updateCollection).toHaveBeenCalled();
+
+    expect(wrapper.state("isDataMaskingDirty")).toBe(false);
+    expect(wrapper.state("dataMaskingContentBaseline")).toEqual({
+      includedPaths: [],
+      excludedPaths: ["/excludedPath"],
+      isPolicyEnabled: true,
+    });
+  });
+
+  it("should validate data masking policy content", () => {
+    const wrapper = shallow(<SettingsComponent {...baseProps} />);
+    const settingsComponentInstance = wrapper.instance() as SettingsComponent;
+
+    // Test with invalid data structure
+    // Use invalid data type for testing validation
+    type InvalidPolicy = Omit<DataModels.DataMaskingPolicy, "includedPaths"> & { includedPaths: string };
+    const invalidPolicy: InvalidPolicy = {
+      includedPaths: "invalid",
+      excludedPaths: [],
+      isPolicyEnabled: false,
+    };
+    // Use type assertion since we're deliberately testing with invalid data
+    settingsComponentInstance["onDataMaskingContentChange"](invalidPolicy as unknown as DataModels.DataMaskingPolicy);
+
+    // State should update with the content but also set validation errors
+    expect(wrapper.state("dataMaskingContent")).toEqual({
+      includedPaths: "invalid",
+      excludedPaths: [],
+      isPolicyEnabled: false,
+    });
+    expect(wrapper.state("dataMaskingValidationErrors")).toEqual(["includedPaths must be an array"]);
+
+    // Test with valid data
+    const validPolicy = {
+      includedPaths: [
+        {
+          path: "/path1",
+          strategy: "mask",
+          startPosition: 0,
+          length: 4,
+        },
+      ],
+      excludedPaths: ["/excludedPath"],
+      isPolicyEnabled: true,
+    };
+
+    settingsComponentInstance["onDataMaskingContentChange"](validPolicy);
+
+    // State should update with valid data and no validation errors
+    expect(wrapper.state("dataMaskingContent")).toEqual(validPolicy);
+    expect(wrapper.state("dataMaskingValidationErrors")).toEqual([]);
+  });
+
+  it("should handle data masking discard correctly", () => {
+    const wrapper = shallow(<SettingsComponent {...baseProps} />);
+    const settingsComponentInstance = wrapper.instance() as SettingsComponent;
+
+    const baselinePolicy = {
+      includedPaths: [
+        {
+          path: "/basePath",
+          strategy: "mask",
+          startPosition: 0,
+          length: 4,
+        },
+      ],
+      excludedPaths: ["/excludedPath1"],
+      isPolicyEnabled: false,
+    };
+
+    const modifiedPolicy = {
+      includedPaths: [
+        {
+          path: "/newPath",
+          strategy: "mask",
+          startPosition: 1,
+          length: 5,
+        },
+      ],
+      excludedPaths: ["/excludedPath2"],
+      isPolicyEnabled: true,
+    };
+
+    // Set initial state
+    wrapper.setState({
+      dataMaskingContent: modifiedPolicy,
+      dataMaskingContentBaseline: baselinePolicy,
+      isDataMaskingDirty: true,
+    });
+
+    // Call revert
+    settingsComponentInstance.onRevertClick();
+
+    // Verify state is reset
+    expect(wrapper.state("dataMaskingContent")).toEqual(baselinePolicy);
+    expect(wrapper.state("isDataMaskingDirty")).toBe(false);
+    expect(wrapper.state("shouldDiscardDataMasking")).toBe(true);
+  });
+
+  it("should disable save button when data masking has validation errors", () => {
+    const wrapper = shallow(<SettingsComponent {...baseProps} />);
+    const settingsComponentInstance = wrapper.instance() as SettingsComponent;
+
+    // Initially, save button should be disabled
+    expect(settingsComponentInstance.isSaveSettingsButtonEnabled()).toBe(false);
+
+    // Make data masking dirty with valid data
+    wrapper.setState({
+      isDataMaskingDirty: true,
+      dataMaskingValidationErrors: [],
+    });
+    expect(settingsComponentInstance.isSaveSettingsButtonEnabled()).toBe(true);
+
+    // Add validation errors - save should be disabled
+    wrapper.setState({
+      dataMaskingValidationErrors: ["includedPaths must be an array"],
+    });
+    expect(settingsComponentInstance.isSaveSettingsButtonEnabled()).toBe(false);
+
+    // Clear validation errors - save should be enabled again
+    wrapper.setState({
+      dataMaskingValidationErrors: [],
+    });
+    expect(settingsComponentInstance.isSaveSettingsButtonEnabled()).toBe(true);
   });
 });

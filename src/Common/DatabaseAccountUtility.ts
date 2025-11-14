@@ -1,7 +1,7 @@
 import { TagNames, WorkloadType } from "Common/Constants";
 import { Tags } from "Contracts/DataModels";
 import { isFabric } from "Platform/Fabric/FabricUtil";
-import { userContext } from "../UserContext";
+import { ApiType, userContext } from "../UserContext";
 
 function isVirtualNetworkFilterEnabled() {
   return userContext.databaseAccount?.properties?.isVirtualNetworkFilterEnabled;
@@ -33,3 +33,33 @@ export function isGlobalSecondaryIndexEnabled(): boolean {
     !isFabric() && userContext.apiType === "SQL" && userContext.databaseAccount?.properties?.enableMaterializedViews
   );
 }
+
+export const getDatabaseEndpoint = (apiType: ApiType): string => {
+  switch (apiType) {
+    case "Mongo":
+      return "mongodbDatabases";
+    case "Cassandra":
+      return "cassandraKeyspaces";
+    case "Gremlin":
+      return "gremlinDatabases";
+    case "Tables":
+      return "tables";
+    default:
+    case "SQL":
+      return "sqlDatabases";
+  }
+};
+
+export const getCollectionEndpoint = (apiType: ApiType): string => {
+  switch (apiType) {
+    case "Mongo":
+      return "collections";
+    case "Cassandra":
+      return "tables";
+    case "Gremlin":
+      return "graphs";
+    default:
+    case "SQL":
+      return "containers";
+  }
+};
