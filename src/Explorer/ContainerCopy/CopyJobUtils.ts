@@ -106,7 +106,7 @@ export function getAccountDetailsFromResourceId(accountId: string | undefined) {
     return null;
   }
   const pattern = new RegExp(
-    "/subscriptions/([^/]+)/resourceGroups/([^/]+)/providers/Microsoft\\.DocumentDB/databaseAccounts/([^/]+)",
+    "/subscriptions/([^/]+)/resourceGroups/([^/]+)/providers/Microsoft\\.DocumentDB?/databaseAccounts/([^/]+)",
     "i",
   );
   const matches = accountId.match(pattern);
