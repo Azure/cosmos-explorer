@@ -78,10 +78,12 @@ export function useCopyJobNavigation() {
   ) => {
     const sourceAccountDetails = getAccountDetailsFromResourceId(sourceIds.accountId);
     const targetAccountDetails = getAccountDetailsFromResourceId(targetIds.accountId);
-    return sourceAccountDetails?.subscriptionId === targetAccountDetails?.subscriptionId &&
-           sourceAccountDetails?.resourceGroup === targetAccountDetails?.resourceGroup &&
-           sourceAccountDetails?.accountName === targetAccountDetails?.accountName;
-  }
+    return (
+      sourceAccountDetails?.subscriptionId === targetAccountDetails?.subscriptionId &&
+      sourceAccountDetails?.resourceGroup === targetAccountDetails?.resourceGroup &&
+      sourceAccountDetails?.accountName === targetAccountDetails?.accountName
+    );
+  };
 
   const areContainersIdentical = () => {
     const { source, target } = copyJobState;
@@ -97,7 +99,6 @@ export function useCopyJobNavigation() {
 
   const shouldNotShowPermissionScreen = () => {
     const { source, target, migrationType } = copyJobState;
-    console.log(source, target, migrationType);
     return (
       migrationType === CopyJobMigrationType.Offline &&
       isSameAccount(getContainerIdentifiers(source), getContainerIdentifiers(target))
