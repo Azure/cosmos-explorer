@@ -2,6 +2,7 @@ import React from "react";
 import { DatabaseAccount, Subscription } from "../../../../../../Contracts/DataModels";
 import { CopyJobMigrationType } from "../../../../Enums/CopyJobEnums";
 import { CopyJobContextProviderType, CopyJobContextState, DropdownOptionType } from "../../../../Types/CopyJobTypes";
+import { useCopyJobPrerequisitesCache } from "../../../Utils/useCopyJobPrerequisitesCache";
 
 export function useDropdownOptions(
   subscriptions: Subscription[],
@@ -36,6 +37,7 @@ export function useDropdownOptions(
 type setCopyJobStateType = CopyJobContextProviderType["setCopyJobState"];
 
 export function useEventHandlers(setCopyJobState: setCopyJobStateType) {
+  const { setValidationCache } = useCopyJobPrerequisitesCache();
   const handleSelectSourceAccount = React.useCallback(
     (type: "subscription" | "account", data: (Subscription & DatabaseAccount) | undefined) => {
       setCopyJobState((prevState: CopyJobContextState) => {
@@ -60,8 +62,9 @@ export function useEventHandlers(setCopyJobState: setCopyJobStateType) {
         }
         return prevState;
       });
+      setValidationCache(new Map<string, boolean>());
     },
-    [setCopyJobState],
+    [setCopyJobState, setValidationCache],
   );
 
   const handleMigrationTypeChange = React.useCallback(
@@ -70,8 +73,9 @@ export function useEventHandlers(setCopyJobState: setCopyJobStateType) {
         ...prevState,
         migrationType: checked ? CopyJobMigrationType.Offline : CopyJobMigrationType.Online,
       }));
+      setValidationCache(new Map<string, boolean>());
     },
-    [setCopyJobState],
+    [setCopyJobState, setValidationCache],
   );
 
   return { handleSelectSourceAccount, handleMigrationTypeChange };
