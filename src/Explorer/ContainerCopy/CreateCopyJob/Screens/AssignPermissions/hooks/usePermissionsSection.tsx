@@ -139,7 +139,14 @@ const usePermissionSections = (state: CopyJobContextState): PermissionSectionCon
   const isValidatingRef = useRef(false);
 
   const sectionToValidate = useMemo(() => {
-    const baseSections = sourceAccountId === targetAccountId ? [] : [...PERMISSION_SECTIONS_CONFIG];
+    const sourceAccountDetails = getAccountDetailsFromResourceId(sourceAccountId);
+    const targetAccountDetails = getAccountDetailsFromResourceId(targetAccountId);
+    const isSameAccount =
+      sourceAccountDetails?.subscriptionId === targetAccountDetails?.subscriptionId &&
+      sourceAccountDetails?.resourceGroup === targetAccountDetails?.resourceGroup &&
+      sourceAccountDetails?.accountName === targetAccountDetails?.accountName;
+
+    const baseSections = isSameAccount ? [] : [...PERMISSION_SECTIONS_CONFIG];
     if (state.migrationType === CopyJobMigrationType.Online) {
       return [...baseSections, ...PERMISSION_SECTIONS_FOR_ONLINE_JOBS];
     }
