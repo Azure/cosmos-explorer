@@ -144,3 +144,27 @@ export function isEqual(prevJobs: CopyJobType[], newJobs: CopyJobType[]): boolea
     return prevJob.Status === newJob.Status;
   });
 }
+
+const truncateLength = 5;
+const truncateName = (name: string, length: number = truncateLength): string => {
+  return name.length <= length ? name : name.slice(0, length);
+};
+
+export function getDefaultJobName(
+  selectedDatabaseAndContainers: {
+    sourceDatabaseName?: string;
+    sourceContainerName?: string;
+    targetDatabaseName?: string;
+    targetContainerName?: string;
+  }[],
+): string {
+  if (selectedDatabaseAndContainers.length === 1) {
+    const { sourceDatabaseName, sourceContainerName, targetDatabaseName, targetContainerName } =
+      selectedDatabaseAndContainers[0];
+    const timestamp = new Date().getTime().toString();
+    const sourcePart = `${truncateName(sourceDatabaseName)}.${truncateName(sourceContainerName)}`;
+    const targetPart = `${truncateName(targetDatabaseName)}.${truncateName(targetContainerName)}`;
+    return `${sourcePart}_${targetPart}_${timestamp}`;
+  }
+  return "";
+}

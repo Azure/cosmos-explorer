@@ -66,7 +66,7 @@ function useCreateCopyJobScreensList(goBack: () => void): Screen[] {
         validations: [
           {
             validate: (state: CopyJobContextState) =>
-              !!(typeof state?.jobName === "string" && state?.jobName && /^[a-zA-Z0-9-.]+$/.test(state?.jobName)),
+              !!(typeof state?.jobName === "string" && state?.jobName && /^[a-zA-Z0-9-._]+$/.test(state?.jobName)),
             message: "Please enter a job name to proceed",
           },
         ],
