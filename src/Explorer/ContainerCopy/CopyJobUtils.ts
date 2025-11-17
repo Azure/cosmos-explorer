@@ -1,5 +1,5 @@
 import { DatabaseAccount } from "Contracts/DataModels";
-import { CopyJobErrorType, CopyJobType } from "./Types/CopyJobTypes";
+import { CopyJobContextState, CopyJobErrorType, CopyJobType } from "./Types/CopyJobTypes";
 
 const azurePortalMpacEndpoint = "https://ms.portal.azure.com/";
 
@@ -113,6 +113,14 @@ export function getAccountDetailsFromResourceId(accountId: string | undefined) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_, subscriptionId, resourceGroup, accountName] = matches || [];
   return { subscriptionId, resourceGroup, accountName };
+}
+
+export function getContainerIdentifiers(container: CopyJobContextState["source"] | CopyJobContextState["target"]) {
+  return {
+    accountId: container?.account?.id || "",
+    databaseId: container?.databaseId || "",
+    containerId: container?.containerId || "",
+  };
 }
 
 export function isIntraAccountCopy(sourceAccountId: string | undefined, targetAccountId: string | undefined): boolean {
