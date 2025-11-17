@@ -1,8 +1,9 @@
 import { Link, PrimaryButton, Stack } from "@fluentui/react";
-import { CapabilityNames } from "Common/Constants";
 import { DatabaseAccount } from "Contracts/DataModels";
 import React from "react";
 import { fetchDatabaseAccount } from "Utils/arm/databaseAccountUtils";
+import { CapabilityNames } from "../../../../../Common/Constants";
+import LoadingOverlay from "../../../../../Common/LoadingOverlay";
 import { logError } from "../../../../../Common/Logger";
 import { update as updateDatabaseAccount } from "../../../../../Utils/arm/generatedClients/cosmos/databaseAccounts";
 import ContainerCopyMessages from "../../../ContainerCopyMessages";
@@ -119,6 +120,7 @@ const OnlineCopyEnabled: React.FC = () => {
 
   return (
     <Stack className="onlineCopyContainer" tokens={{ childrenGap: 15, padding: "0 0 0 20px" }}>
+      <LoadingOverlay isLoading={loading} label={ContainerCopyMessages.popoverOverlaySpinnerLabel} />
       <Stack.Item className="info-message">
         {ContainerCopyMessages.onlineCopyEnabled.description(source?.account?.name || "")}&ensp;
         <Link href={ContainerCopyMessages.onlineCopyEnabled.href} target="_blank" rel="noopener noreferrer">

@@ -2,6 +2,7 @@ import { Link, PrimaryButton, Stack, Text } from "@fluentui/react";
 import { DatabaseAccount } from "Contracts/DataModels";
 import React, { useEffect, useRef, useState } from "react";
 import { fetchDatabaseAccount } from "Utils/arm/databaseAccountUtils";
+import LoadingOverlay from "../../../../../Common/LoadingOverlay";
 import { logError } from "../../../../../Common/Logger";
 import ContainerCopyMessages from "../../../ContainerCopyMessages";
 import { useCopyJobContext } from "../../../Context/CopyJobContext";
@@ -108,6 +109,7 @@ const PointInTimeRestore: React.FC = () => {
 
   return (
     <Stack className="pointInTimeRestoreContainer" tokens={{ childrenGap: 15, padding: "0 0 0 20px" }}>
+      <LoadingOverlay isLoading={loading} label={ContainerCopyMessages.popoverOverlaySpinnerLabel} />
       <Stack.Item className="toggle-label">
         {ContainerCopyMessages.pointInTimeRestore.description(source.account?.name ?? "")}
         {tooltipContent && (
