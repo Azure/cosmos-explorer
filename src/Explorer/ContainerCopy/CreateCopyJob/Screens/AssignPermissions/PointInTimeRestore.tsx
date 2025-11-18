@@ -84,9 +84,10 @@ const PointInTimeRestore: React.FC = () => {
     setShowRefreshButton(true);
   };
 
-  const handleRefresh = () => {
+  const handleRefresh = async () => {
     setLoading(true);
-    handleFetchAccount();
+    await handleFetchAccount();
+    setLoading(false);
   };
 
   const openWindowAndMonitor = () => {
