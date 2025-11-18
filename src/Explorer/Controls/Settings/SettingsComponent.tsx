@@ -13,10 +13,9 @@ import {
   ThroughputBucketsComponent,
   ThroughputBucketsComponentProps,
 } from "Explorer/Controls/Settings/SettingsSubComponents/ThroughputInputComponents/ThroughputBucketsComponent";
-import { useIndexingPolicyStore } from "Explorer/Tabs/QueryTab/ResultsView";
 import { useDatabases } from "Explorer/useDatabases";
 import { isFabricNative } from "Platform/Fabric/FabricUtil";
-import { isVectorSearchEnabled } from "Utils/CapabilityUtils";
+import { isCapabilityEnabled, isVectorSearchEnabled } from "Utils/CapabilityUtils";
 import { isRunningOnPublicCloud } from "Utils/CloudUtils";
 import * as React from "react";
 import DiscardIcon from "../../../../images/discard.svg";
@@ -48,6 +47,7 @@ import {
   ConflictResolutionComponent,
   ConflictResolutionComponentProps,
 } from "./SettingsSubComponents/ConflictResolutionComponent";
+import { DataMaskingComponent, DataMaskingComponentProps } from "./SettingsSubComponents/DataMaskingComponent";
 import {
   GlobalSecondaryIndexComponent,
   GlobalSecondaryIndexComponentProps,
@@ -73,6 +73,7 @@ import {
   parseConflictResolutionMode,
   parseConflictResolutionProcedure,
 } from "./SettingsUtils";
+
 interface SettingsV2TabInfo {
   tab: SettingsV2TabTypes;
   content: JSX.Element;
@@ -151,6 +152,12 @@ export interface SettingsComponentState {
   conflictResolutionPolicyProcedureBaseline: string;
   isConflictResolutionDirty: boolean;
 
+  dataMaskingContent: DataModels.DataMaskingPolicy;
+  dataMaskingContentBaseline: DataModels.DataMaskingPolicy;
+  shouldDiscardDataMasking: boolean;
+  isDataMaskingDirty: boolean;
+  dataMaskingValidationErrors: string[];
+
   selectedTab: SettingsV2TabTypes;
 }
 
@@ -175,7 +182,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   private totalThroughputUsed: number;
   private throughputBucketsEnabled: boolean;
   public mongoDBCollectionResource: MongoDBCollectionResource;
-  private unsubscribe: () => void;
+
   constructor(props: SettingsComponentProps) {
     super(props);
 
@@ -258,6 +265,12 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       shouldDiscardComputedProperties: false,
       isComputedPropertiesDirty: false,
 
+      dataMaskingContent: undefined,
+      dataMaskingContentBaseline: undefined,
+      shouldDiscardDataMasking: false,
+      isDataMaskingDirty: false,
+      dataMaskingValidationErrors: [],
+
       conflictResolutionPolicyMode: undefined,
       conflictResolutionPolicyModeBaseline: undefined,
       conflictResolutionPolicyPath: undefined,
@@ -305,19 +318,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     if (this.props.settingsTab.isActive()) {
       useCommandBar.getState().setContextButtons(this.getTabsButtons());
     }
-    this.unsubscribe = useIndexingPolicyStore.subscribe(
-      () => {
-        this.refreshCollectionData();
-      },
-      (state) => state.indexingPolicies[this.collection.id()],
-    );
-    this.refreshCollectionData();
   }
-  componentWillUnmount(): void {
-    if (this.unsubscribe) {
-      this.unsubscribe();
-    }
-  }
+
   componentDidUpdate(): void {
     if (this.props.settingsTab.isActive()) {
       useCommandBar.getState().setContextButtons(this.getTabsButtons());
@@ -345,11 +347,15 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   };
 
   public isSaveSettingsButtonEnabled = (): boolean => {
-    if (this.isOfferReplacePending()) {
+    if (this.isOfferReplacePending() || this.props.settingsTab.isExecuting()) {
       return false;
     }
 
     if (this.state.throughputError) {
+      return false;
+    }
+
+    if (this.state.dataMaskingValidationErrors.length > 0) {
       return false;
     }
 
@@ -360,12 +366,16 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.state.isIndexingPolicyDirty ||
       this.state.isConflictResolutionDirty ||
       this.state.isComputedPropertiesDirty ||
+      this.state.isDataMaskingDirty ||
       (!!this.state.currentMongoIndexes && this.state.isMongoIndexingPolicySaveable) ||
       this.state.isThroughputBucketsSaveable
     );
   };
 
   public isDiscardSettingsButtonEnabled = (): boolean => {
+    if (this.props.settingsTab.isExecuting()) {
+      return false;
+    }
     return (
       this.state.isScaleDiscardable ||
       this.state.isSubSettingsDiscardable ||
@@ -373,6 +383,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.state.isIndexingPolicyDirty ||
       this.state.isConflictResolutionDirty ||
       this.state.isComputedPropertiesDirty ||
+      this.state.isDataMaskingDirty ||
       (!!this.state.currentMongoIndexes && this.state.isMongoIndexingPolicyDiscardable) ||
       this.state.isThroughputBucketsSaveable
     );
@@ -428,7 +439,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         : this.saveDatabaseSettings(startKey));
     } catch (error) {
       this.props.settingsTab.isExecutionError(true);
-      console.error(error);
       traceFailure(
         Action.SettingsV2Updated,
         {
@@ -445,8 +455,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     } finally {
       this.props.settingsTab.isExecuting(false);
 
-      // Send message to Fabric no matter success or failure.
-      // In case of failure, saveCollectionSettings might have partially succeeded and Fabric needs to refresh
       if (isFabricNative() && this.isCollectionSettingsTab) {
         sendMessage({
           type: FabricMessageTypes.ContainerUpdated,
@@ -457,6 +465,9 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   };
 
   public onRevertClick = (): void => {
+    if (this.props.settingsTab.isExecuting()) {
+      return;
+    }
     trace(Action.SettingsV2Discarded, ActionModifiers.Mark, {
       message: "Settings Discarded",
     });
@@ -497,6 +508,10 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       computedPropertiesContent: this.state.computedPropertiesContentBaseline,
       shouldDiscardComputedProperties: true,
       isComputedPropertiesDirty: false,
+      dataMaskingContent: this.state.dataMaskingContentBaseline,
+      shouldDiscardDataMasking: true,
+      isDataMaskingDirty: false,
+      dataMaskingValidationErrors: [],
     });
   };
 
@@ -659,6 +674,36 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   private onComputedPropertiesDirtyChange = (isComputedPropertiesDirty: boolean): void =>
     this.setState({ isComputedPropertiesDirty: isComputedPropertiesDirty });
 
+  private onDataMaskingContentChange = (newDataMasking: DataModels.DataMaskingPolicy): void => {
+    if (!newDataMasking.excludedPaths) {
+      newDataMasking.excludedPaths = [];
+    }
+    if (!newDataMasking.includedPaths) {
+      newDataMasking.includedPaths = [];
+    }
+
+    const validationErrors = [];
+    if (!Array.isArray(newDataMasking.includedPaths)) {
+      validationErrors.push("includedPaths must be an array");
+    }
+    if (!Array.isArray(newDataMasking.excludedPaths)) {
+      validationErrors.push("excludedPaths must be an array");
+    }
+    if (typeof newDataMasking.isPolicyEnabled !== "boolean") {
+      validationErrors.push("isPolicyEnabled must be a boolean");
+    }
+
+    this.setState({
+      dataMaskingContent: newDataMasking,
+      dataMaskingValidationErrors: validationErrors,
+    });
+  };
+
+  private resetShouldDiscardDataMasking = (): void => this.setState({ shouldDiscardDataMasking: false });
+
+  private onDataMaskingDirtyChange = (isDataMaskingDirty: boolean): void =>
+    this.setState({ isDataMaskingDirty: isDataMaskingDirty });
+
   private calculateTotalThroughputUsed = (): void => {
     this.totalThroughputUsed = 0;
     (useDatabases.getState().databases || []).forEach(async (database) => {
@@ -783,6 +828,11 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     const fullTextPolicy: DataModels.FullTextPolicy =
       this.collection.fullTextPolicy && this.collection.fullTextPolicy();
     const indexingPolicyContent = this.collection.indexingPolicy();
+    const dataMaskingContent: DataModels.DataMaskingPolicy = {
+      includedPaths: this.collection.dataMaskingPolicy?.()?.includedPaths || [],
+      excludedPaths: this.collection.dataMaskingPolicy?.()?.excludedPaths || [],
+      isPolicyEnabled: this.collection.dataMaskingPolicy?.()?.isPolicyEnabled ?? true,
+    };
     const conflictResolutionPolicy: DataModels.ConflictResolutionPolicy =
       this.collection.conflictResolutionPolicy && this.collection.conflictResolutionPolicy();
     const conflictResolutionPolicyMode = parseConflictResolutionMode(conflictResolutionPolicy?.mode);
@@ -799,6 +849,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         { name: "name_of_property", query: "query_to_compute_property" },
       ] as DataModels.ComputedProperties;
     }
+
     const throughputBuckets = this.offer?.throughputBuckets;
 
     return {
@@ -834,11 +885,14 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       geospatialConfigTypeBaseline: geoSpatialConfigType,
       computedPropertiesContent: computedPropertiesContent,
       computedPropertiesContentBaseline: computedPropertiesContent,
+      dataMaskingContent: dataMaskingContent,
+      dataMaskingContentBaseline: dataMaskingContent,
     };
   };
 
   private getTabsButtons = (): CommandButtonComponentProps[] => {
     const buttons: CommandButtonComponentProps[] = [];
+    const isExecuting = this.props.settingsTab.isExecuting();
     if (this.saveSettingsButton.isVisible()) {
       const label = "Save";
       buttons.push({
@@ -848,7 +902,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: false,
-        disabled: !this.saveSettingsButton.isEnabled(),
+        disabled: isExecuting || !this.saveSettingsButton.isEnabled(),
       });
     }
 
@@ -857,11 +911,16 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       buttons.push({
         iconSrc: DiscardIcon,
         iconAlt: label,
-        onCommandClick: this.onRevertClick,
+        onCommandClick: () => {
+          if (isExecuting) {
+            return;
+          }
+          this.onRevertClick();
+        },
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: false,
-        disabled: !this.discardSettingsChangesButton.isEnabled(),
+        disabled: isExecuting || !this.discardSettingsChangesButton.isEnabled(),
       });
     }
     return buttons;
@@ -950,37 +1009,17 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       startKey,
     );
   };
-  private refreshCollectionData = async (): Promise<void> => {
-    const containerId = this.collection.id();
-    const latestIndexingPolicy = useIndexingPolicyStore.getState().indexingPolicies[containerId];
-    const rawPolicy = latestIndexingPolicy ?? this.collection.indexingPolicy();
-
-    const latestCollection: DataModels.IndexingPolicy = {
-      automatic: rawPolicy?.automatic ?? true,
-      indexingMode: rawPolicy?.indexingMode ?? "consistent",
-      includedPaths: rawPolicy?.includedPaths ?? [],
-      excludedPaths: rawPolicy?.excludedPaths ?? [],
-      compositeIndexes: rawPolicy?.compositeIndexes ?? [],
-      spatialIndexes: rawPolicy?.spatialIndexes ?? [],
-      vectorIndexes: rawPolicy?.vectorIndexes ?? [],
-      fullTextIndexes: rawPolicy?.fullTextIndexes ?? [],
-    };
-
-    this.collection.rawDataModel.indexingPolicy = latestCollection;
-    this.setState({
-      indexingPolicyContent: latestCollection,
-      indexingPolicyContentBaseline: latestCollection,
-    });
-  };
 
   private saveCollectionSettings = async (startKey: number): Promise<void> => {
     const newCollection: DataModels.Collection = { ...this.collection.rawDataModel };
+
     if (
       this.state.isSubSettingsSaveable ||
       this.state.isContainerPolicyDirty ||
       this.state.isIndexingPolicyDirty ||
       this.state.isConflictResolutionDirty ||
-      this.state.isComputedPropertiesDirty
+      this.state.isComputedPropertiesDirty ||
+      this.state.isDataMaskingDirty
     ) {
       let defaultTtl: number;
       switch (this.state.timeToLive) {
@@ -1002,6 +1041,11 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       newCollection.vectorEmbeddingPolicy = this.state.vectorEmbeddingPolicy;
 
       newCollection.fullTextPolicy = this.state.fullTextPolicy;
+
+      // Only send data masking policy if it was modified (dirty)
+      if (this.state.isDataMaskingDirty && isCapabilityEnabled(Constants.CapabilityNames.EnableDynamicDataMasking)) {
+        newCollection.dataMaskingPolicy = this.state.dataMaskingContent;
+      }
 
       newCollection.indexingPolicy = this.state.indexingPolicyContent;
 
@@ -1048,13 +1092,18 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         await this.refreshIndexTransformationProgress();
       }
 
+      // Update collection object with new data
+      this.collection.dataMaskingPolicy(updatedCollection.dataMaskingPolicy);
+
       this.setState({
+        dataMaskingContentBaseline: this.state.dataMaskingContent,
         isSubSettingsSaveable: false,
         isSubSettingsDiscardable: false,
         isContainerPolicyDirty: false,
         isIndexingPolicyDirty: false,
         isConflictResolutionDirty: false,
         isComputedPropertiesDirty: false,
+        isDataMaskingDirty: false,
       });
     }
 
@@ -1203,6 +1252,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       onScaleDiscardableChange: this.onScaleDiscardableChange,
       throughputError: this.state.throughputError,
     };
+
     if (!this.isCollectionSettingsTab) {
       return (
         <div className="settingsV2MainContainer">
@@ -1380,6 +1430,31 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       tabs.push({
         tab: SettingsV2TabTypes.ComputedPropertiesTab,
         content: <ComputedPropertiesComponent {...computedPropertiesComponentProps} />,
+      });
+    }
+
+    // Check if DDM should be enabled
+    const shouldEnableDDM = (): boolean => {
+      const hasDataMaskingCapability = isCapabilityEnabled(Constants.CapabilityNames.EnableDynamicDataMasking);
+      const isSqlAccount = userContext.apiType === "SQL";
+
+      return isSqlAccount && hasDataMaskingCapability; // Only show for SQL accounts with DDM capability
+    };
+
+    if (shouldEnableDDM()) {
+      const dataMaskingComponentProps: DataMaskingComponentProps = {
+        shouldDiscardDataMasking: this.state.shouldDiscardDataMasking,
+        resetShouldDiscardDataMasking: this.resetShouldDiscardDataMasking,
+        dataMaskingContent: this.state.dataMaskingContent,
+        dataMaskingContentBaseline: this.state.dataMaskingContentBaseline,
+        onDataMaskingContentChange: this.onDataMaskingContentChange,
+        onDataMaskingDirtyChange: this.onDataMaskingDirtyChange,
+        validationErrors: this.state.dataMaskingValidationErrors,
+      };
+
+      tabs.push({
+        tab: SettingsV2TabTypes.DataMaskingTab,
+        content: <DataMaskingComponent {...dataMaskingComponentProps} />,
       });
     }
 

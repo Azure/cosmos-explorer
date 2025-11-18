@@ -46,7 +46,7 @@ export const VcoreMongoQuickstartGuide: React.FC = (): JSX.Element => {
     <Stack style={{ paddingTop: 8, height: "100%", width: "100%" }}>
       <Stack style={{ flexGrow: 1, padding: "0 20px", overflow: "auto" }}>
         <Text variant="xxLarge">Quick start guide</Text>
-        <Text variant="small">Getting started in Cosmos DB Mongo DB (vCore)</Text>
+        <Text variant="small">Getting started in Azure DocumentDB (with MongoDB compatibility)</Text>
         {currentStep < 5 && (
           <Pivot
             style={{ marginTop: 10, width: "100%" }}
@@ -68,13 +68,13 @@ export const VcoreMongoQuickstartGuide: React.FC = (): JSX.Element => {
                   This tutorial guides you to create and query distributed tables using a sample dataset.
                   <br />
                   <br />
-                  To start, input the admin password you used during the cluster creation process into the MongoDB vCore
+                  To start, input the admin password you used during the cluster creation process into the Document DB
                   terminal.
                   <br />
                   <br />
                   <br />
-                  Note: If you navigate out of the Quick start blade &#40;MongoDB vCore Shell&#41;, the session will be
-                  closed and all ongoing commands might be interrupted.
+                  Note: If you navigate out of the Quick start blade &#40;MongoDB Shell&#41;, the session will be closed
+                  and all ongoing commands might be interrupted.
                 </Text>
               </Stack>
             </PivotItem>
@@ -295,7 +295,7 @@ export const VcoreMongoQuickstartGuide: React.FC = (): JSX.Element => {
                   <br />
                   <br />
                   Modernize your data seamlessly from an existing MongoDB cluster, whether it&apos;s on-premises or
-                  hosted in the cloud, to Azure Cosmos DB for MongoDB vCore.&nbsp;
+                  hosted in the cloud, to Azure DocumentDB.&nbsp;
                   <Link
                     target="_blank"
                     href="https://learn.microsoft.com/azure/cosmos-db/mongodb/vcore/migration-options"

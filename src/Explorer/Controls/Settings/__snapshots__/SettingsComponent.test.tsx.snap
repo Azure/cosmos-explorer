@@ -93,6 +93,7 @@ exports[`SettingsComponent renders 1`] = `
                 "backgroundColor": "var(--colorNeutralBackground1)",
                 "color": "var(--colorNeutralForeground1)",
               },
+              "dataMaskingPolicy": [Function],
               "databaseId": "test",
               "defaultTtl": [Function],
               "fullTextPolicy": [Function],
@@ -112,16 +113,6 @@ exports[`SettingsComponent renders 1`] = `
                 "partitionKey",
               ],
               "rawDataModel": {
-                "indexingPolicy": {
-                  "automatic": true,
-                  "compositeIndexes": [],
-                  "excludedPaths": [],
-                  "fullTextIndexes": [],
-                  "includedPaths": [],
-                  "indexingMode": "consistent",
-                  "spatialIndexes": [],
-                  "vectorIndexes": [],
-                },
                 "uniqueKeyPolicy": {
                   "uniqueKeys": [
                     {
@@ -237,6 +228,7 @@ exports[`SettingsComponent renders 1`] = `
                 "backgroundColor": "var(--colorNeutralBackground1)",
                 "color": "var(--colorNeutralForeground1)",
               },
+              "dataMaskingPolicy": [Function],
               "databaseId": "test",
               "defaultTtl": [Function],
               "fullTextPolicy": [Function],
@@ -256,16 +248,6 @@ exports[`SettingsComponent renders 1`] = `
                 "partitionKey",
               ],
               "rawDataModel": {
-                "indexingPolicy": {
-                  "automatic": true,
-                  "compositeIndexes": [],
-                  "excludedPaths": [],
-                  "fullTextIndexes": [],
-                  "includedPaths": [],
-                  "indexingMode": "consistent",
-                  "spatialIndexes": [],
-                  "vectorIndexes": [],
-                },
                 "uniqueKeyPolicy": {
                   "uniqueKeys": [
                     {
@@ -426,25 +408,17 @@ exports[`SettingsComponent renders 1`] = `
           styles={
             {
               "automatic": true,
-              "compositeIndexes": [],
               "excludedPaths": [],
-              "fullTextIndexes": [],
               "includedPaths": [],
               "indexingMode": "consistent",
-              "spatialIndexes": [],
-              "vectorIndexes": [],
             }
           }
           indexingPolicyContentBaseline={
             {
               "automatic": true,
-              "compositeIndexes": [],
               "excludedPaths": [],
-              "fullTextIndexes": [],
               "includedPaths": [],
               "indexingMode": "consistent",
-              "spatialIndexes": [],
-              "vectorIndexes": [],
             }
             indexingPolicyContentBaseline={
               {
@@ -578,6 +552,7 @@ exports[`SettingsComponent renders 1`] = `
                   "parameters": [Function],
                 },
               },
+              "dataMaskingPolicy": [Function],
               "databaseId": "test",
               "defaultTtl": [Function],
               "fullTextPolicy": [Function],
@@ -597,16 +572,6 @@ exports[`SettingsComponent renders 1`] = `
                 "partitionKey",
               ],
               "rawDataModel": {
-                "indexingPolicy": {
-                  "automatic": true,
-                  "compositeIndexes": [],
-                  "excludedPaths": [],
-                  "fullTextIndexes": [],
-                  "includedPaths": [],
-                  "indexingMode": "consistent",
-                  "spatialIndexes": [],
-                  "vectorIndexes": [],
-                },
                 "uniqueKeyPolicy": {
                   "uniqueKeys": [
                     {
@@ -786,6 +751,7 @@ exports[`SettingsComponent renders 1`] = `
                   "parameters": [Function],
                 },
               },
+              "dataMaskingPolicy": [Function],
               "databaseId": "test",
               "defaultTtl": [Function],
               "fullTextPolicy": [Function],
@@ -805,16 +771,6 @@ exports[`SettingsComponent renders 1`] = `
                 "partitionKey",
               ],
               "rawDataModel": {
-                "indexingPolicy": {
-                  "automatic": true,
-                  "compositeIndexes": [],
-                  "excludedPaths": [],
-                  "fullTextIndexes": [],
-                  "includedPaths": [],
-                  "indexingMode": "consistent",
-                  "spatialIndexes": [],
-                  "vectorIndexes": [],
-                },
                 "uniqueKeyPolicy": {
                   "uniqueKeys": [
                     {

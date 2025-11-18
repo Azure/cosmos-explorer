@@ -10,13 +10,40 @@ export interface ArmEntity {
   resourceGroup?: string;
 }
 
+export interface DatabaseAccountUserAssignedIdentity {
+  [key: string]: {
+    principalId: string;
+    clientId: string;
+  };
+}
+
+export interface DatabaseAccountIdentity {
+  type: string;
+  principalId?: string;
+  tenantId?: string;
+  userAssignedIdentities?: DatabaseAccountUserAssignedIdentity;
+}
+
 export interface DatabaseAccount extends ArmEntity {
   properties: DatabaseAccountExtendedProperties;
   systemData?: DatabaseAccountSystemData;
+  identity?: DatabaseAccountIdentity | null;
 }
 
 export interface DatabaseAccountSystemData {
   createdAt: string;
+}
+
+export interface DatabaseAccountBackupPolicy {
+  type: string;
+  /* periodicModeProperties?: {
+    backupIntervalInMinutes: number;
+    backupRetentionIntervalInHours: number;
+    backupStorageRedundancy: string;
+  };
+  continuousModeProperties?: {
+    tier: string;
+  }; */
 }
 
 export interface DatabaseAccountExtendedProperties {
@@ -29,6 +56,8 @@ export interface DatabaseAccountExtendedProperties {
   capabilities?: Capability[];
   enableMultipleWriteLocations?: boolean;
   mongoEndpoint?: string;
+  backupPolicy?: DatabaseAccountBackupPolicy;
+  defaultIdentity?: string;
   readLocations?: DatabaseAccountResponseLocation[];
   writeLocations?: DatabaseAccountResponseLocation[];
   enableFreeTier?: boolean;
@@ -101,6 +130,24 @@ export interface Subscription {
   authorizationSource?: string;
 }
 
+export interface DatabaseModel extends ArmEntity {
+  properties: DatabaseGetProperties;
+}
+
+export interface DatabaseGetProperties {
+  resource: DatabaseResource & ExtendedResourceProperties;
+}
+export interface DatabaseResource {
+  id: string;
+}
+
+export interface ExtendedResourceProperties {
+  readonly _rid?: string;
+  readonly _self?: string;
+  readonly _ts?: number;
+  readonly _etag?: string;
+}
+
 export interface SubscriptionPolicies {
   locationPlacementId: string;
   quotaId: string;
@@ -163,6 +210,7 @@ export interface Collection extends Resource {
   geospatialConfig?: GeospatialConfig;
   vectorEmbeddingPolicy?: VectorEmbeddingPolicy;
   fullTextPolicy?: FullTextPolicy;
+  dataMaskingPolicy?: DataMaskingPolicy;
   schema?: ISchema;
   requestSchema?: () => void;
   computedProperties?: ComputedProperties;
@@ -226,6 +274,17 @@ export interface ComputedProperty {
 }
 
 export type ComputedProperties = ComputedProperty[];
+
+export interface DataMaskingPolicy {
+  includedPaths: Array<{
+    path: string;
+    strategy: string;
+    startPosition: number;
+    length: number;
+  }>;
+  excludedPaths: string[];
+  isPolicyEnabled: boolean;
+}
 
 export interface MaterializedView {
   id: string;

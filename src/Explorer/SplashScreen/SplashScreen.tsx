@@ -443,7 +443,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
     if (userContext.apiType === "VCoreMongo") {
       icon = VisualStudioIcon;
       title = "Connect with VS Code";
-      description = "Query and Manage your MongoDB cluster in Visual Studio Code";
+      description = "Query and Manage your MongoDB and DocumentDB clusters in Visual Studio Code";
       onClick = () => container?.openInVsCode && container.openInVsCode();
     }
 

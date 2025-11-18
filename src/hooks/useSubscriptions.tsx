@@ -1,6 +1,7 @@
 import { HttpHeaders } from "Common/Constants";
 import { QueryRequestOptions, QueryResponse } from "Contracts/AzureResourceGraph";
 import useSWR from "swr";
+import { userContext } from "UserContext";
 import { configContext } from "../ConfigContext";
 import { Subscription } from "../Contracts/DataModels";
 /* eslint-disable  @typescript-eslint/no-explicit-any */
@@ -10,9 +11,12 @@ interface SubscriptionListResult {
   value: Subscription[];
 }
 
-export async function fetchSubscriptions(accessToken: string): Promise<Subscription[]> {
+export async function fetchSubscriptions(accessToken: string = ""): Promise<Subscription[]> {
+  if (!accessToken && !userContext.authorizationToken) {
+    return [];
+  }
   const headers = new Headers();
-  const bearer = `Bearer ${accessToken}`;
+  const bearer = accessToken ? `Bearer ${accessToken}` : userContext.authorizationToken;
 
   headers.append("Authorization", bearer);
 
@@ -35,9 +39,12 @@ export async function fetchSubscriptions(accessToken: string): Promise<Subscript
   return subscriptions.sort((a, b) => a.displayName.localeCompare(b.displayName));
 }
 
-export async function fetchSubscriptionsFromGraph(accessToken: string): Promise<Subscription[]> {
+export async function fetchSubscriptionsFromGraph(accessToken: string = ""): Promise<Subscription[]> {
+  if (!accessToken && !userContext.authorizationToken) {
+    return [];
+  }
   const headers = new Headers();
-  const bearer = `Bearer ${accessToken}`;
+  const bearer = accessToken ? `Bearer ${accessToken}` : userContext.authorizationToken;
 
   headers.append("Authorization", bearer);
   headers.append(HttpHeaders.contentType, "application/json");
@@ -85,9 +92,9 @@ export async function fetchSubscriptionsFromGraph(accessToken: string): Promise<
   return subscriptions.sort((a, b) => a.displayName.localeCompare(b.displayName));
 }
 
-export function useSubscriptions(armToken: string): Subscription[] | undefined {
+export function useSubscriptions(armToken: string = ""): Subscription[] | undefined {
   const { data } = useSWR(
-    () => (armToken ? ["subscriptions", armToken] : undefined),
+    () => ["subscriptions", armToken],
     (_, armToken) => fetchSubscriptionsFromGraph(armToken),
   );
   return data;

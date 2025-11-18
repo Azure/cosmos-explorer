@@ -8,6 +8,7 @@ export interface PanelContainerProps {
   panelContent?: JSX.Element;
   isConsoleExpanded: boolean;
   isOpen: boolean;
+  hasConsole: boolean;
   isConsoleAnimationFinished?: boolean;
   panelWidth?: string;
   onRenderNavigationContent?: IRenderFunction<IPanelProps>;
@@ -120,6 +121,9 @@ export class PanelContainerComponent extends React.Component<PanelContainerProps
   };
 
   private getPanelHeight = (): string => {
+    if (!this.props.hasConsole) {
+      return window.innerHeight + "px";
+    }
     const notificationConsole = document.getElementById("explorerNotificationConsole");
     if (notificationConsole) {
       return window.innerHeight - notificationConsole.clientHeight + "px";
@@ -136,9 +140,10 @@ export class PanelContainerComponent extends React.Component<PanelContainerProps
 export const SidePanel: React.FC = () => {
   const isConsoleExpanded = useNotificationConsole((state) => state.isExpanded);
   const isConsoleAnimationFinished = useNotificationConsole((state) => state.consoleAnimationFinished);
-  const { isOpen, panelContent, panelWidth, headerText } = useSidePanel((state) => {
+  const { isOpen, hasConsole, panelContent, panelWidth, headerText } = useSidePanel((state) => {
     return {
       isOpen: state.isOpen,
+      hasConsole: state.hasConsole,
       panelContent: state.panelContent,
       headerText: state.headerText,
       panelWidth: state.panelWidth,
@@ -148,6 +153,7 @@ export const SidePanel: React.FC = () => {
   // This component only exists so we can use hooks and pass them down to a non-functional component
   return (
     <PanelContainerComponent
+      hasConsole={hasConsole}
       isOpen={isOpen}
       panelContent={panelContent}
       headerText={headerText}

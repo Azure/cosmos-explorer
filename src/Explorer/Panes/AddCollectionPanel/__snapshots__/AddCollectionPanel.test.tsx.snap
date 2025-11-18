@@ -536,6 +536,7 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
             }
           >
             <FullTextPoliciesComponent
+              englishOnly={true}
               fullTextPolicy={
                 {
                   "defaultLanguage": "en-US",
