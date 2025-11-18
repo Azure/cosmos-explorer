@@ -147,7 +147,16 @@ export const SaveQueryPane: FunctionComponent<SaveQueryPaneProps> = ({
       <div className="panelFormWrapper" style={{ flexGrow: 1 }}>
         <div className="panelMainContent">
           {!isSaveQueryEnabled() ? (
-            <Text variant="small">{setupSaveQueriesText}</Text>
+            <Text
+              variant="small"
+              styles={{
+                root: {
+                  color: "var(--colorNeutralForeground1)",
+                },
+              }}
+            >
+              {setupSaveQueriesText}
+            </Text>
           ) : (
             <TextField
               id="saveQueryInput"

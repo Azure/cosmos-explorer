@@ -63,13 +63,47 @@ export class PanelContainerComponent extends React.Component<PanelContainerProps
         closeButtonAriaLabel={`Close ${this.props.headerText}`}
         customWidth={this.props.panelWidth ? this.props.panelWidth : "440px"}
         headerClassName="panelHeader"
+        className="themed-panel"
         onRenderNavigationContent={this.props.onRenderNavigationContent}
         isFooterAtBottom={true}
         styles={{
-          navigation: { borderBottom: "1px solid #cccccc" },
-          content: { padding: 0 },
-          header: { padding: "0 0 8px 34px" },
-          commands: { marginTop: 8, paddingTop: 0 },
+          navigation: {
+            borderBottom: "1px solid var(--colorNeutralStroke1)",
+            backgroundColor: "var(--colorNeutralBackground1)",
+            color: "var(--colorNeutralForeground1)",
+          },
+          content: {
+            padding: 0,
+            backgroundColor: "var(--colorNeutralBackground1)",
+            color: "var(--colorNeutralForeground1)",
+          },
+          header: {
+            padding: "0 0 8px 34px",
+            backgroundColor: "var(--colorNeutralBackground1)",
+            color: "var(--colorNeutralForeground1)",
+          },
+          commands: {
+            marginTop: 8,
+            paddingTop: 0,
+            backgroundColor: "var(--colorNeutralBackground1)",
+          },
+          root: {},
+          overlay: {
+            backgroundColor: "var(--overlayBackground)",
+          },
+          main: {
+            backgroundColor: "var(--colorNeutralBackground1)",
+          },
+          scrollableContent: {
+            backgroundColor: "var(--colorNeutralBackground1)",
+          },
+          footerInner: {
+            backgroundColor: "var(--colorNeutralBackground1)",
+            color: "var(--colorNeutralForeground1)",
+          },
+          closeButton: {
+            color: "var(--colorNeutralForeground1)",
+          },
         }}
         style={{ height: this.state.height }}
       >

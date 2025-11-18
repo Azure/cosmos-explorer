@@ -10,6 +10,7 @@ const actionButtonBackground = "--cosmos-Tree--actionButtonBackground" as const;
 export const useTreeStyles = makeStyles({
   treeContainer: {
     height: "100%",
+    maxHeight: "calc(100vh - 100px)", // Use viewport-relative height
     ...shorthands.overflow("auto"),
   },
   tree: {

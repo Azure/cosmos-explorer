@@ -123,7 +123,15 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
                   "alignItems": "center",
                   "padding": 0,
                 },
+                "root": {
+                  "selectors": {
+                    ":hover .ms-Checkbox-text": {
+                      "color": "var(--colorNeutralForeground1)",
+                    },
+                  },
+                },
                 "text": {
+                  "color": "var(--colorNeutralForeground1)",
                   "fontSize": 12,
                 },
               }
@@ -275,9 +283,20 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
                 "fontSize": 12,
               },
               "root": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "borderColor": "var(--colorNeutralStroke1)",
+                "color": "var(--colorNeutralForeground1)",
                 "height": 30,
                 "padding": 0,
                 "width": 200,
+              },
+              "rootHovered": {
+                "backgroundColor": "var(--colorNeutralBackground3)",
+                "color": "var(--colorNeutralForeground1)",
+              },
+              "rootPressed": {
+                "backgroundColor": "var(--colorBrandBackgroundPressed)",
+                "color": "var(--colorNeutralForegroundOnBrand)",
               },
             }
           }
@@ -347,6 +366,7 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
         styles={
           {
             "label": {
+              "color": "var(--colorNeutralForeground1)",
               "fontSize": 12,
             },
             "root": {
@@ -557,13 +577,26 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
                   "whiteSpace": "break-spaces",
                   "wordWrap": "break-word",
                 },
+                "root": {
+                  "selectors": {
+                    ":hover .ms-Checkbox-text": {
+                      "color": "var(--colorNeutralForeground1)",
+                    },
+                  },
+                },
                 "text": {
+                  "color": "var(--colorNeutralForeground1)",
                   "fontSize": 12,
                 },
               }
             }
           />
           <Text
+            style={
+              {
+                "color": "var(--colorNeutralForeground1)",
+              }
+            }
             variant="small"
           >
             <Icon

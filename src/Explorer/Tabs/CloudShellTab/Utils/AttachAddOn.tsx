@@ -1,4 +1,4 @@
-import { IDisposable, ITerminalAddon, Terminal } from "@xterm/xterm";
+import { IDisposable, ITerminalAddon, Terminal } from "xterm";
 import { AbstractShellHandler } from "../ShellTypes/AbstractShellHandler";
 import { formatErrorMessage } from "./TerminalLogFormats";
 

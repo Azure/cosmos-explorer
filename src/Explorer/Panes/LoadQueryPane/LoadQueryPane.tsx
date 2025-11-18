@@ -94,7 +94,14 @@ export const LoadQueryPane: FunctionComponent = (): JSX.Element => {
               value={selectedFileName}
               autoFocus
               readOnly
-              styles={{ fieldGroup: { width: 300 } }}
+              styles={{
+                fieldGroup: { width: 300, color: "var(--colorNeutralForeground1)" },
+                subComponentStyles: {
+                  label: {
+                    root: { color: "var(--colorNeutralForeground1)" },
+                  },
+                },
+              }}
             />
             <label htmlFor="importQueryInputId" className="customFileUpload">
               <Image {...imageProps} src={folderIcon} alt="upload files" />

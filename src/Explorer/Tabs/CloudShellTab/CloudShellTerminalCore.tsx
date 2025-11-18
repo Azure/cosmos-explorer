@@ -1,4 +1,4 @@
-import { Terminal } from "@xterm/xterm";
+import { Terminal } from "xterm";
 import { Areas } from "../../../Common/Constants";
 import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
 import { TerminalKind } from "../../../Contracts/ViewModels";
