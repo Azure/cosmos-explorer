@@ -39,16 +39,23 @@ const getInitialCopyJobState = (): CopyJobContextState => {
 const CopyJobContextProvider: React.FC<CopyJobContextProviderProps> = (props) => {
   const [copyJobState, setCopyJobState] = React.useState<CopyJobContextState>(getInitialCopyJobState());
   const [flow, setFlow] = React.useState<CopyJobFlowType | null>(null);
+  const [contextError, setContextError] = React.useState<string | null>(null);
 
   const resetCopyJobState = () => {
     setCopyJobState(getInitialCopyJobState());
   };
 
-  return (
-    <CopyJobContext.Provider value={{ copyJobState, setCopyJobState, flow, setFlow, resetCopyJobState }}>
-      {props.children}
-    </CopyJobContext.Provider>
-  );
+  const contextValue: CopyJobContextProviderType = {
+    contextError,
+    setContextError,
+    copyJobState,
+    setCopyJobState,
+    flow,
+    setFlow,
+    resetCopyJobState,
+  };
+
+  return <CopyJobContext.Provider value={contextValue}>{props.children}</CopyJobContext.Provider>;
 };
 
 export default CopyJobContextProvider;

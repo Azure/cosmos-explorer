@@ -34,8 +34,7 @@ function navigationReducer(state: NavigationState, action: Action): NavigationSt
 
 export function useCopyJobNavigation() {
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const { copyJobState, resetCopyJobState } = useCopyJobContext();
+  const { copyJobState, resetCopyJobState, setContextError } = useCopyJobContext();
   const screens = useCreateCopyJobScreensList();
   const { validationCache: cache } = useCopyJobPrerequisitesCache();
   const [state, dispatch] = useReducer(navigationReducer, { screenHistory: [SCREEN_KEYS.SelectAccount] });
@@ -102,7 +101,7 @@ export function useCopyJobNavigation() {
         error instanceof Error
           ? error.message || "Failed to create copy job. Please try again later."
           : "Failed to create copy job. Please try again later.";
-      setError(errorMessage);
+      setContextError(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -110,11 +109,13 @@ export function useCopyJobNavigation() {
 
   const handlePrimary = useCallback(() => {
     if (currentScreenKey === SCREEN_KEYS.SelectSourceAndTargetContainers && areContainersIdentical()) {
-      setError("Source and destination containers cannot be the same. Please select different containers to proceed.");
+      setContextError(
+        "Source and destination containers cannot be the same. Please select different containers to proceed.",
+      );
       return;
     }
 
-    setError(null);
+    setContextError(null);
     const transitions = {
       [SCREEN_KEYS.SelectAccount]: shouldNotShowPermissionScreen()
         ? SCREEN_KEYS.SelectSourceAndTargetContainers
@@ -143,7 +144,5 @@ export function useCopyJobNavigation() {
     handlePrevious,
     handleCancel,
     primaryBtnText,
-    error,
-    setError,
   };
 }

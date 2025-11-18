@@ -1,5 +1,6 @@
 import { MessageBar, MessageBarType, Stack } from "@fluentui/react";
 import React from "react";
+import { useCopyJobContext } from "../../Context/CopyJobContext";
 import { useCopyJobNavigation } from "../Utils/useCopyJobNavigation";
 import NavigationControls from "./Components/NavigationControls";
 
@@ -12,24 +13,23 @@ const CreateCopyJobScreens: React.FC = () => {
     handlePrevious,
     handleCancel,
     primaryBtnText,
-    error,
-    setError,
   } = useCopyJobNavigation();
+  const { contextError, setContextError } = useCopyJobContext();
 
   return (
     <Stack verticalAlign="space-between" className="createCopyJobScreensContainer">
       <Stack.Item className="createCopyJobScreensContent">
-        {error && (
+        {contextError && (
           <MessageBar
             className="createCopyJobErrorMessageBar"
             messageBarType={MessageBarType.blocked}
             isMultiline={false}
-            onDismiss={() => setError(null)}
+            onDismiss={() => setContextError(null)}
             dismissButtonAriaLabel="Close"
             truncated={true}
             overflowButtonAriaLabel="See more"
           >
-            {error}
+            {contextError}
           </MessageBar>
         )}
         {currentScreen?.component}

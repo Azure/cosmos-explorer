@@ -21,7 +21,7 @@ const OnlineCopyEnabled: React.FC = () => {
   const [showRefreshButton, setShowRefreshButton] = React.useState(false);
   const intervalRef = React.useRef<NodeJS.Timeout | null>(null);
   const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
-  const { copyJobState: { source } = {}, setCopyJobState } = useCopyJobContext();
+  const { setContextError, copyJobState: { source } = {}, setCopyJobState } = useCopyJobContext();
   const selectedSourceAccount = source?.account;
   const sourceAccountCapabilities = selectedSourceAccount?.properties?.capabilities ?? [];
 
@@ -64,28 +64,34 @@ const OnlineCopyEnabled: React.FC = () => {
     setLoading(true);
     setShowRefreshButton(false);
 
-    await updateDatabaseAccount(sourceSubscriptionId, sourceResourceGroup, sourceAccountName, {
-      properties: {
-        enableAllVersionsAndDeletesChangeFeed: true,
-      },
-    });
+    try {
+      await updateDatabaseAccount(sourceSubscriptionId, sourceResourceGroup, sourceAccountName, {
+        properties: {
+          enableAllVersionsAndDeletesChangeFeed: true,
+        },
+      });
 
-    await updateDatabaseAccount(sourceSubscriptionId, sourceResourceGroup, sourceAccountName, {
-      properties: {
-        capabilities: [...sourceAccountCapabilities, { name: CapabilityNames.EnableOnlineCopyFeature }],
-      },
-    });
+      await updateDatabaseAccount(sourceSubscriptionId, sourceResourceGroup, sourceAccountName, {
+        properties: {
+          capabilities: [...sourceAccountCapabilities, { name: CapabilityNames.EnableOnlineCopyFeature }],
+        },
+      });
 
-    intervalRef.current = setInterval(() => {
-      handleFetchAccount();
-    }, 30 * 1000);
+      intervalRef.current = setInterval(() => {
+        handleFetchAccount();
+      }, 30 * 1000);
 
-    timeoutRef.current = setTimeout(
-      () => {
-        clearIntervalAndShowRefresh();
-      },
-      15 * 60 * 1000,
-    );
+      timeoutRef.current = setTimeout(
+        () => {
+          clearIntervalAndShowRefresh();
+        },
+        15 * 60 * 1000,
+      );
+    } catch (error) {
+      console.error("Error enabling online copy feature on source account:", error);
+      setContextError(error.message || "Failed to enable online copy feature. Please try again later.");
+      setLoading(false);
+    }
   };
 
   React.useEffect(() => {

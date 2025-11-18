@@ -21,7 +21,7 @@ type AddReadPermissionToDefaultIdentityProps = Partial<PermissionSectionConfig>;
 
 const AddReadPermissionToDefaultIdentity: React.FC<AddReadPermissionToDefaultIdentityProps> = () => {
   const [loading, setLoading] = React.useState(false);
-  const { copyJobState, setCopyJobState } = useCopyJobContext();
+  const { copyJobState, setCopyJobState, setContextError } = useCopyJobContext();
   const [readPermissionAssigned, onToggle] = useToggle(false);
 
   const handleAddReadPermission = useCallback(async () => {
@@ -49,10 +49,11 @@ const AddReadPermissionToDefaultIdentity: React.FC<AddReadPermissionToDefaultIde
       }
     } catch (error) {
       console.error("Error assigning read permission to default identity:", error);
+      setContextError(error.message || "Error assigning read permission to default identity. Please try again later.");
     } finally {
       setLoading(false);
     }
-  }, [copyJobState, setCopyJobState]);
+  }, [copyJobState, setCopyJobState, setContextError]);
 
   return (
     <Stack className="defaultManagedIdentityContainer" tokens={{ childrenGap: 15, padding: "0 0 0 20px" }}>

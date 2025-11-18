@@ -19,7 +19,7 @@ interface UseManagedIdentityUpdaterReturn {
 const useManagedIdentity = (
   updateIdentityFn: UseManagedIdentityUpdaterParams["updateIdentityFn"],
 ): UseManagedIdentityUpdaterReturn => {
-  const { copyJobState, setCopyJobState } = useCopyJobContext();
+  const { copyJobState, setCopyJobState, setContextError } = useCopyJobContext();
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleAddSystemIdentity = useCallback(async (): Promise<void> => {
@@ -41,6 +41,7 @@ const useManagedIdentity = (
       }
     } catch (error) {
       console.error("Error enabling system-assigned managed identity:", error);
+      setContextError(error.message || "Error enabling system-assigned managed identity. Please try again later.");
     } finally {
       setLoading(false);
     }
