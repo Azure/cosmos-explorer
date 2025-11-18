@@ -27,6 +27,23 @@ const dropdownStyles: Partial<IDropdownStyles> = {
   root: {
     width: "40%",
     marginTop: "10px",
+    selectors: {
+      "&:hover .ms-Dropdown-title": {
+        color: "var(--colorNeutralForeground1)",
+        backgroundColor: "var(--colorNeutralBackground2)",
+        borderColor: "var(--colorNeutralStroke1)",
+      },
+      "&:hover span.ms-Dropdown-title": {
+        color: "var(--colorNeutralForeground1)",
+      },
+      "&:focus .ms-Dropdown-title": {
+        color: "var(--colorNeutralForeground1)",
+        backgroundColor: "var(--colorNeutralBackground2)",
+      },
+      "&:focus span.ms-Dropdown-title": {
+        color: "var(--colorNeutralForeground1)",
+      },
+    },
   },
   label: {
     color: "var(--colorNeutralForeground1)",
@@ -39,6 +56,25 @@ const dropdownStyles: Partial<IDropdownStyles> = {
     backgroundColor: "var(--colorNeutralBackground2)",
     color: "var(--colorNeutralForeground1)",
     borderColor: "var(--colorNeutralStroke1)",
+    selectors: {
+      "&:hover": {
+        backgroundColor: "var(--colorNeutralBackground2)",
+        color: "var(--colorNeutralForeground1)",
+      },
+      "&:focus": {
+        backgroundColor: "var(--colorNeutralBackground2)",
+        color: "var(--colorNeutralForeground1)",
+      },
+      "&:hover .ms-Dropdown-titleText": {
+        color: "var(--colorNeutralForeground1)",
+      },
+      "&:focus .ms-Dropdown-titleText": {
+        color: "var(--colorNeutralForeground1)",
+      },
+      "& .ms-Dropdown-titleText": {
+        color: "var(--colorNeutralForeground1)",
+      },
+    },
   },
   caretDown: {
     color: "var(--colorNeutralForeground1)",
