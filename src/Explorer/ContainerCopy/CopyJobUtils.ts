@@ -114,3 +114,13 @@ export function getAccountDetailsFromResourceId(accountId: string | undefined) {
   const [_, subscriptionId, resourceGroup, accountName] = matches || [];
   return { subscriptionId, resourceGroup, accountName };
 }
+
+export function isIntraAccountCopy(sourceAccountId: string | undefined, targetAccountId: string | undefined): boolean {
+  const sourceAccountDetails = getAccountDetailsFromResourceId(sourceAccountId);
+  const targetAccountDetails = getAccountDetailsFromResourceId(targetAccountId);
+  return (
+    sourceAccountDetails?.subscriptionId === targetAccountDetails?.subscriptionId &&
+    sourceAccountDetails?.resourceGroup === targetAccountDetails?.resourceGroup &&
+    sourceAccountDetails?.accountName === targetAccountDetails?.accountName
+  );
+}

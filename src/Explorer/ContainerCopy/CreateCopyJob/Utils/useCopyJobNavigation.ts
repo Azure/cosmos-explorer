@@ -2,7 +2,7 @@ import { useCallback, useMemo, useReducer, useState } from "react";
 import { useSidePanel } from "../../../../hooks/useSidePanel";
 import { submitCreateCopyJob } from "../../Actions/CopyJobActions";
 import { useCopyJobContext } from "../../Context/CopyJobContext";
-import { getAccountDetailsFromResourceId } from "../../CopyJobUtils";
+import { isIntraAccountCopy } from "../../CopyJobUtils";
 import { CopyJobMigrationType } from "../../Enums/CopyJobEnums";
 import { useCopyJobPrerequisitesCache } from "./useCopyJobPrerequisitesCache";
 import { SCREEN_KEYS, useCreateCopyJobScreensList } from "./useCreateCopyJobScreensList";
@@ -72,26 +72,13 @@ export function useCopyJobNavigation() {
     containerId: container?.containerId || "",
   });
 
-  const isSameAccount = (
-    sourceIds: ReturnType<typeof getContainerIdentifiers>,
-    targetIds: ReturnType<typeof getContainerIdentifiers>,
-  ) => {
-    const sourceAccountDetails = getAccountDetailsFromResourceId(sourceIds.accountId);
-    const targetAccountDetails = getAccountDetailsFromResourceId(targetIds.accountId);
-    return (
-      sourceAccountDetails?.subscriptionId === targetAccountDetails?.subscriptionId &&
-      sourceAccountDetails?.resourceGroup === targetAccountDetails?.resourceGroup &&
-      sourceAccountDetails?.accountName === targetAccountDetails?.accountName
-    );
-  };
-
   const areContainersIdentical = () => {
     const { source, target } = copyJobState;
     const sourceIds = getContainerIdentifiers(source);
     const targetIds = getContainerIdentifiers(target);
 
     return (
-      isSameAccount(sourceIds, targetIds) &&
+      isIntraAccountCopy(sourceIds.accountId, targetIds.accountId) &&
       sourceIds.databaseId === targetIds.databaseId &&
       sourceIds.containerId === targetIds.containerId
     );
@@ -99,9 +86,10 @@ export function useCopyJobNavigation() {
 
   const shouldNotShowPermissionScreen = () => {
     const { source, target, migrationType } = copyJobState;
+    const sourceIds = getContainerIdentifiers(source);
+    const targetIds = getContainerIdentifiers(target);
     return (
-      migrationType === CopyJobMigrationType.Offline &&
-      isSameAccount(getContainerIdentifiers(source), getContainerIdentifiers(target))
+      migrationType === CopyJobMigrationType.Offline && isIntraAccountCopy(sourceIds.accountId, targetIds.accountId)
     );
   };
 
