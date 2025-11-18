@@ -129,7 +129,7 @@ export default {
   },
   onlineCopyEnabled: {
     title: "Online copy enabled",
-    description: (accountName: string) => `Enable Online copy on "${accountName}".`,
+    description: (accountName: string) => `"To enable the online copy feature on your ${accountName} account, proceed with the action below.`,
     hrefText: "Learn more about online copy jobs",
     href: "https://learn.microsoft.com/en-us/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#enable-online-copy",
     buttonText: "Enable Online Copy",
