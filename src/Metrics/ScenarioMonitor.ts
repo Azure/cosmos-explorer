@@ -206,6 +206,7 @@ class ScenarioMonitor {
     const finalSnapshot = snapshot || this.buildSnapshot(ctx, { final: false, timedOut });
 
     // Emit enriched telemetry with performance data
+    // TODO: Call portal backend metrics endpoint
     trackEvent(
       { name: "MetricScenarioComplete" },
       {
@@ -226,7 +227,7 @@ class ScenarioMonitor {
       },
     );
 
-    // Call existing health metric endpoints
+    // Call portal backend health metrics endpoint
     if (healthy && !timedOut) {
       reportHealthy(ctx.scenario, platform, api);
     } else {
