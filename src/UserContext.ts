@@ -118,6 +118,7 @@ export interface UserContext {
   readonly dataPlaneRbacEnabled?: boolean;
   readonly refreshCosmosClient?: boolean;
   throughputBucketsEnabled?: boolean;
+  readonly sessionId?: string;
 }
 
 export type ApiType = "SQL" | "Mongo" | "Gremlin" | "Tables" | "Cassandra" | "Postgres" | "VCoreMongo";
