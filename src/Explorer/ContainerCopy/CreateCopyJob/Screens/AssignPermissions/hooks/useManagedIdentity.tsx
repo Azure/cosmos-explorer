@@ -1,5 +1,6 @@
 import { DatabaseAccount } from "Contracts/DataModels";
 import { useCallback, useState } from "react";
+import { logError } from "../../../../../../Common/Logger";
 import { useCopyJobContext } from "../../../../Context/CopyJobContext";
 import { getAccountDetailsFromResourceId } from "../../../../CopyJobUtils";
 
@@ -19,7 +20,7 @@ interface UseManagedIdentityUpdaterReturn {
 const useManagedIdentity = (
   updateIdentityFn: UseManagedIdentityUpdaterParams["updateIdentityFn"],
 ): UseManagedIdentityUpdaterReturn => {
-  const { copyJobState, setCopyJobState } = useCopyJobContext();
+  const { copyJobState, setCopyJobState, setContextError } = useCopyJobContext();
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleAddSystemIdentity = useCallback(async (): Promise<void> => {
@@ -40,7 +41,9 @@ const useManagedIdentity = (
         }));
       }
     } catch (error) {
-      console.error("Error enabling system-assigned managed identity:", error);
+      const errorMessage = error.message || "Error enabling system-assigned managed identity. Please try again later.";
+      logError(errorMessage, "CopyJob/useManagedIdentity.handleAddSystemIdentity");
+      setContextError(errorMessage);
     } finally {
       setLoading(false);
     }

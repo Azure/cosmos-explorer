@@ -93,7 +93,7 @@ export class CapabilityNames {
   public static readonly EnableDataMasking: string = "EnableDataMasking";
   public static readonly EnableDynamicDataMasking: string = "EnableDynamicDataMasking";
   public static readonly EnableNoSQLFullTextSearchPreviewFeatures: string = "EnableNoSQLFullTextSearchPreviewFeatures";
-  public static readonly EnableOnlineCopyFeature: string = "EnableOnlineCopyFeature";
+  public static readonly EnableOnlineCopyFeature: string = "EnableOnlineContainerCopy";
 }
 
 export enum CapacityMode {
