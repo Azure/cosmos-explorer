@@ -19,7 +19,7 @@ import "../externals/jquery.dataTables.min.css";
 import "../externals/jquery.typeahead.min.css";
 import "../externals/jquery.typeahead.min.js";
 // Image Dependencies
-import { configContext, Platform } from "ConfigContext";
+import { Platform } from "ConfigContext"; // configContext no longer needed directly (ScenarioMonitor handles platform)
 import ContainerCopyPanel from "Explorer/ContainerCopy/ContainerCopyPanel";
 import Explorer from "Explorer/Explorer";
 import { QueryCopilotCarousel } from "Explorer/QueryCopilot/CopilotCarousel";
@@ -60,8 +60,10 @@ import "./Explorer/Panes/PanelComponent.less";
 import { SidePanel } from "./Explorer/Panes/PanelContainerComponent";
 import "./Explorer/SplashScreen/SplashScreen.less";
 import "./Libs/jquery";
-import HealthMetricScenario from "./Metrics/HealthMetrics";
-import useHealthMetrics from "./Metrics/useHealthMetrics";
+import MetricScenario from "./Metrics/MetricEvents";
+import { MetricScenarioProvider, useMetricScenario } from "./Metrics/MetricScenarioProvider";
+import { ApplicationMetricPhase } from "./Metrics/ScenarioConfig";
+import { useInteractive } from "./Metrics/useMetricPhases";
 import { appThemeFabric } from "./Platform/Fabric/FabricTheme";
 import "./Shared/appInsights";
 import { useConfig } from "./hooks/useConfig";
@@ -81,27 +83,17 @@ const App: React.FunctionComponent = () => {
   StyleConstants.updateStyles();
   const explorer = useKnockoutExplorer(config?.platform);
 
-  // Emit an unhealthy health metric if the Explorer fails to load within a threshold.
-  // We only report once per session to avoid noise.
-  const { markUnhealthy } = useHealthMetrics();
-  const reportedUnhealthyRef = React.useRef<boolean>(false);
+  // Scenario-based health tracking: start ApplicationLoad and complete phases.
+  const { startScenario, completePhase } = useMetricScenario();
   React.useEffect(() => {
-    // If Explorer hasn't initialized yet, start a timeout to flag unhealthy load.
-    if (!explorer) {
-      const api = userContext.apiType;
-      const timeoutId = window.setTimeout(() => {
-        if (!reportedUnhealthyRef.current) {
-          reportedUnhealthyRef.current = true;
-          markUnhealthy(HealthMetricScenario.ApplicationLoad, configContext.platform, api);
-        }
-      }, 10000);
+    startScenario(MetricScenario.ApplicationLoad);
+  }, [startScenario]);
 
-      return () => window.clearTimeout(timeoutId);
+  React.useEffect(() => {
+    if (explorer) {
+      completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.ExplorerInitialized);
     }
-
-    // If Explorer eventually loads, ensure we don't report unhealthy.
-    return undefined;
-  }, [explorer, markUnhealthy]);
+  }, [explorer, completePhase]);
 
   if (!explorer) {
     return <LoadingExplorer />;
@@ -128,14 +120,16 @@ const App: React.FunctionComponent = () => {
 };
 
 const mainElement = document.getElementById("Main");
-ReactDOM.render(<App />, mainElement);
+ReactDOM.render(
+  <MetricScenarioProvider>
+    <App />
+  </MetricScenarioProvider>,
+  mainElement,
+);
 
 function DivExplorer({ explorer }: { explorer: Explorer }): JSX.Element {
-  const { markHealthy } = useHealthMetrics();
-  React.useEffect(() => {
-    const api = userContext.apiType;
-    markHealthy(HealthMetricScenario.ApplicationLoad, configContext.platform, api);
-  }, [markHealthy]);
+  useInteractive(MetricScenario.ApplicationLoad);
+
   return (
     <div id="divExplorer" className="flexContainer hideOverflows">
       <div id="freeTierTeachingBubble"> </div>

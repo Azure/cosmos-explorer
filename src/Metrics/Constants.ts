@@ -1,13 +1,15 @@
 import { ApiType } from "Common/Constants";
 import { Platform } from "ConfigContext";
 
-export enum HealthMetricScenario {
+// Metric scenarios represent lifecycle checkpoints we measure.
+export enum MetricScenario {
   ApplicationLoad = "ApplicationLoad",
 }
 
-export interface HealthMetricEvent {
+// Generic metric emission event describing scenario outcome.
+export interface MetricEvent {
   readonly platform: Platform;
   readonly api: ApiType;
-  readonly scenario: HealthMetricScenario;
+  readonly scenario: MetricScenario;
   readonly healthy: boolean;
 }
