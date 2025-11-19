@@ -1,5 +1,6 @@
 import { Link, Stack, Text, Toggle } from "@fluentui/react";
 import React, { useCallback } from "react";
+import { logError } from "../../../../../Common/Logger";
 import { assignRole } from "../../../../../Utils/arm/RbacUtils";
 import ContainerCopyMessages from "../../../ContainerCopyMessages";
 import { useCopyJobContext } from "../../../Context/CopyJobContext";
@@ -48,8 +49,10 @@ const AddReadPermissionToDefaultIdentity: React.FC<AddReadPermissionToDefaultIde
         }));
       }
     } catch (error) {
-      console.error("Error assigning read permission to default identity:", error);
-      setContextError(error.message || "Error assigning read permission to default identity. Please try again later.");
+      const errorMessage =
+        error.message || "Error assigning read permission to default identity. Please try again later.";
+      logError(errorMessage, "CopyJob/AddReadPermissionToDefaultIdentity.handleAddReadPermission");
+      setContextError(errorMessage);
     } finally {
       setLoading(false);
     }

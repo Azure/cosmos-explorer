@@ -1,5 +1,6 @@
 import { DatabaseAccount } from "Contracts/DataModels";
 import { useCallback, useState } from "react";
+import { logError } from "../../../../../../Common/Logger";
 import { useCopyJobContext } from "../../../../Context/CopyJobContext";
 import { getAccountDetailsFromResourceId } from "../../../../CopyJobUtils";
 
@@ -40,8 +41,9 @@ const useManagedIdentity = (
         }));
       }
     } catch (error) {
-      console.error("Error enabling system-assigned managed identity:", error);
-      setContextError(error.message || "Error enabling system-assigned managed identity. Please try again later.");
+      const errorMessage = error.message || "Error enabling system-assigned managed identity. Please try again later.";
+      logError(errorMessage, "CopyJob/useManagedIdentity.handleAddSystemIdentity");
+      setContextError(errorMessage);
     } finally {
       setLoading(false);
     }

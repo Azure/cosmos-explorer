@@ -50,7 +50,7 @@ export default {
   assignPermissions: {
     crossAccountDescription:
       "To copy data from the source to the destination container, ensure that the managed identity of the destination account has read access to the source account by completing the following steps.",
-    intraAccountOnlieDescription: (accountName: string) =>
+    intraAccountOnlineDescription: (accountName: string) =>
       `Follow the steps below to enable online copy on your "${accountName}" account.`,
   },
   toggleBtn: {

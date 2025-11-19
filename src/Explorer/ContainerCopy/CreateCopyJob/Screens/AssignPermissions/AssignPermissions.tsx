@@ -54,7 +54,7 @@ const AssignPermissions = () => {
     <Stack className="assignPermissionsContainer" tokens={{ childrenGap: 15 }}>
       <span>
         {isSameAccount && copyJobState.migrationType === CopyJobMigrationType.Online
-          ? ContainerCopyMessages.assignPermissions.intraAccountOnlieDescription(
+          ? ContainerCopyMessages.assignPermissions.intraAccountOnlineDescription(
               copyJobState?.source?.account?.name || "",
             )
           : ContainerCopyMessages.assignPermissions.crossAccountDescription}

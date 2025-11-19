@@ -3,6 +3,7 @@ import { CapabilityNames } from "Common/Constants";
 import { DatabaseAccount } from "Contracts/DataModels";
 import React from "react";
 import { fetchDatabaseAccount } from "Utils/arm/databaseAccountUtils";
+import { logError } from "../../../../../Common/Logger";
 import { update as updateDatabaseAccount } from "../../../../../Utils/arm/generatedClients/cosmos/databaseAccounts";
 import ContainerCopyMessages from "../../../ContainerCopyMessages";
 import { useCopyJobContext } from "../../../Context/CopyJobContext";
@@ -42,16 +43,24 @@ const OnlineCopyEnabled: React.FC = () => {
         setLoading(false);
       }
     } catch (error) {
-      console.error("Error fetching source account after enabling online copy:", error);
-      setLoading(false);
+      const errorMessage =
+        error.message || "Error fetching source account after enabling online copy. Please try again later.";
+      logError(errorMessage, "CopyJob/OnlineCopyEnabled.handleFetchAccount");
+      setContextError(errorMessage);
+      clearAccountFetchInterval();
     }
   };
 
-  const clearIntervalAndShowRefresh = () => {
+  const clearAccountFetchInterval = () => {
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
+    setLoading(false);
+  };
+
+  const clearIntervalAndShowRefresh = () => {
+    clearAccountFetchInterval();
     setShowRefreshButton(true);
   };
 
@@ -85,11 +94,12 @@ const OnlineCopyEnabled: React.FC = () => {
         () => {
           clearIntervalAndShowRefresh();
         },
-        15 * 60 * 1000,
+        10 * 60 * 1000,
       );
     } catch (error) {
-      console.error("Error enabling online copy feature on source account:", error);
-      setContextError(error.message || "Failed to enable online copy feature. Please try again later.");
+      const errorMessage = error.message || "Failed to enable online copy feature. Please try again later.";
+      logError(errorMessage, "CopyJob/OnlineCopyEnabled.handleOnlineCopyEnable");
+      setContextError(errorMessage);
       setLoading(false);
     }
   };
