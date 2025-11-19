@@ -73,6 +73,8 @@ export interface CopyJobFlowType {
 }
 
 export interface CopyJobContextProviderType {
+  contextError: string | null;
+  setContextError: React.Dispatch<React.SetStateAction<string | null>>;
   flow: CopyJobFlowType;
   setFlow: React.Dispatch<React.SetStateAction<CopyJobFlowType>>;
   copyJobState: CopyJobContextState | null;
