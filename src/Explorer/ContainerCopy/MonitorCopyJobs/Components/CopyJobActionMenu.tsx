@@ -11,7 +11,14 @@ interface CopyJobActionMenuProps {
 
 const CopyJobActionMenu: React.FC<CopyJobActionMenuProps> = ({ job, handleClick }) => {
   const [updatingJobAction, setUpdatingJobAction] = React.useState<{ jobName: string; action: string } | null>(null);
-  if ([CopyJobStatusType.Completed, CopyJobStatusType.Cancelled].includes(job.Status)) {
+  if (
+    [
+      CopyJobStatusType.Completed,
+      CopyJobStatusType.Cancelled,
+      CopyJobStatusType.Failed,
+      CopyJobStatusType.Faulted,
+    ].includes(job.Status)
+  ) {
     return null;
   }
 
@@ -55,7 +62,7 @@ const CopyJobActionMenu: React.FC<CopyJobActionMenuProps> = ({ job, handleClick 
       [CopyJobStatusType.InProgress, CopyJobStatusType.Running, CopyJobStatusType.Partitioning].includes(job.Status)
     ) {
       const filteredItems = baseItems.filter((item) => item.key !== CopyJobActions.resume);
-      if (job.Mode === CopyJobMigrationType.Online) {
+      if ((job.Mode ?? "").toLowerCase() === CopyJobMigrationType.Online) {
         filteredItems.push({
           key: CopyJobActions.complete,
           text: ContainerCopyMessages.MonitorJobs.Actions.complete,
@@ -67,7 +74,7 @@ const CopyJobActionMenu: React.FC<CopyJobActionMenuProps> = ({ job, handleClick 
       return filteredItems;
     }
 
-    if ([CopyJobStatusType.Failed, CopyJobStatusType.Faulted, CopyJobStatusType.Skipped].includes(job.Status)) {
+    if ([CopyJobStatusType.Skipped].includes(job.Status)) {
       return baseItems.filter((item) => item.key === CopyJobActions.resume);
     }
 
