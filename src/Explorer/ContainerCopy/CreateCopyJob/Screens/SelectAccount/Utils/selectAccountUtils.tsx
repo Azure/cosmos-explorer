@@ -32,42 +32,42 @@ type setCopyJobStateType = CopyJobContextProviderType["setCopyJobState"];
 
 export function useEventHandlers(setCopyJobState: setCopyJobStateType) {
   const { setValidationCache } = useCopyJobPrerequisitesCache();
-  const handleSelectSourceAccount = (type: "subscription" | "account", data: (Subscription & DatabaseAccount) | undefined) => {
-      setCopyJobState((prevState: CopyJobContextState) => {
-        if (type === "subscription") {
-          return {
-            ...prevState,
-            source: {
-              ...prevState.source,
-              subscription: data || null,
-              account: null,
-            },
-          };
-        }
-        if (type === "account") {
-          return {
-            ...prevState,
-            source: {
-              ...prevState.source,
-              account: data || null,
-            },
-          };
-        }
-        return prevState;
-      });
-      setValidationCache(new Map<string, boolean>());
-    };
+  const handleSelectSourceAccount = (
+    type: "subscription" | "account",
+    data: (Subscription & DatabaseAccount) | undefined,
+  ) => {
+    setCopyJobState((prevState: CopyJobContextState) => {
+      if (type === "subscription") {
+        return {
+          ...prevState,
+          source: {
+            ...prevState.source,
+            subscription: data || null,
+            account: null,
+          },
+        };
+      }
+      if (type === "account") {
+        return {
+          ...prevState,
+          source: {
+            ...prevState.source,
+            account: data || null,
+          },
+        };
+      }
+      return prevState;
+    });
+    setValidationCache(new Map<string, boolean>());
+  };
 
-  const handleMigrationTypeChange = React.useCallback(
-    (_ev?: React.FormEvent<HTMLElement>, checked?: boolean) => {
-      setCopyJobState((prevState: CopyJobContextState) => ({
-        ...prevState,
-        migrationType: checked ? CopyJobMigrationType.Offline : CopyJobMigrationType.Online,
-      }));
-      setValidationCache(new Map<string, boolean>());
-    },
-    [],
-  );
+  const handleMigrationTypeChange = React.useCallback((_ev?: React.FormEvent<HTMLElement>, checked?: boolean) => {
+    setCopyJobState((prevState: CopyJobContextState) => ({
+      ...prevState,
+      migrationType: checked ? CopyJobMigrationType.Offline : CopyJobMigrationType.Online,
+    }));
+    setValidationCache(new Map<string, boolean>());
+  }, []);
 
   return { handleSelectSourceAccount, handleMigrationTypeChange };
 }

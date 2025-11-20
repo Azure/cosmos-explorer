@@ -58,7 +58,7 @@ const CopyJobContextProvider: React.FC<CopyJobContextProviderProps> = (props) =>
     flow,
     setFlow,
     resetCopyJobState,
-    explorer: props.explorer
+    explorer: props.explorer,
   };
 
   return <CopyJobContext.Provider value={contextValue}>{props.children}</CopyJobContext.Provider>;
