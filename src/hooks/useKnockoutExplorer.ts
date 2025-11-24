@@ -932,7 +932,7 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
     collectionCreationDefaults: inputs.defaultCollectionThroughput,
     isTryCosmosDBSubscription: inputs.isTryCosmosDBSubscription,
     feedbackPolicies: inputs.feedbackPolicies,
-    sessionId: inputs.sessionId,
+    ...(inputs.sessionId && { sessionId: inputs.sessionId }), // Remove conditional once Portal sends sessionId
   });
 
   if (inputs.isPostgresAccount) {
