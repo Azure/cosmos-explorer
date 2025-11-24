@@ -31,6 +31,7 @@ import { useClientWriteEnabled } from "hooks/useClientWriteEnabled";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
 import { useEffect, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 import { AuthType } from "../AuthType";
 import { AccountKind, Flights } from "../Common/Constants";
 import { normalizeArmEndpoint } from "../Common/EnvironmentUtility";
@@ -85,6 +86,10 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
           userContext.features.phoenixNotebooks = true;
           userContext.features.phoenixFeatures = true;
         }
+        // Default sessionId - will be overwritten if provided by host
+        updateUserContext({
+          sessionId: uuidv4(),
+        });
         let explorer: Explorer;
         if (platform === Platform.Hosted) {
           explorer = await configureHosted();
@@ -927,6 +932,7 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
     collectionCreationDefaults: inputs.defaultCollectionThroughput,
     isTryCosmosDBSubscription: inputs.isTryCosmosDBSubscription,
     feedbackPolicies: inputs.feedbackPolicies,
+    sessionId: inputs.sessionId,
   });
 
   if (inputs.isPostgresAccount) {

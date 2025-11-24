@@ -286,7 +286,7 @@ export class CassandraAPIDataClient extends TableDataClient {
           query,
           paginationToken,
         }),
-        beforeSend: this.setAuthorizationHeader as any,
+        beforeSend: this.setCommonHeaders as any,
         cache: false,
       });
       shouldNotify &&
@@ -440,7 +440,7 @@ export class CassandraAPIDataClient extends TableDataClient {
         keyspaceId: collection.databaseId,
         tableId: collection.id(),
       }),
-      beforeSend: this.setAuthorizationHeader as any,
+      beforeSend: this.setCommonHeaders as any,
       cache: false,
     })
       .then(
@@ -482,7 +482,7 @@ export class CassandraAPIDataClient extends TableDataClient {
         keyspaceId: collection.databaseId,
         tableId: collection.id(),
       }),
-      beforeSend: this.setAuthorizationHeader as any,
+      beforeSend: this.setCommonHeaders as any,
       cache: false,
     })
       .then(
@@ -518,7 +518,7 @@ export class CassandraAPIDataClient extends TableDataClient {
         resourceId: resourceId,
         query: query,
       }),
-      beforeSend: this.setAuthorizationHeader as any,
+      beforeSend: this.setCommonHeaders as any,
       cache: false,
     }).then(
       (data: any) => {
@@ -547,7 +547,7 @@ export class CassandraAPIDataClient extends TableDataClient {
     return cassandraEndpoint;
   }
 
-  private setAuthorizationHeader: (xhr: XMLHttpRequest) => boolean = (xhr: XMLHttpRequest): boolean => {
+  private setCommonHeaders: (xhr: XMLHttpRequest) => boolean = (xhr: XMLHttpRequest): boolean => {
     const authorizationHeaderMetadata: ViewModels.AuthorizationTokenHeaderMetadata = getAuthorizationHeader();
     xhr.setRequestHeader(authorizationHeaderMetadata.header, authorizationHeaderMetadata.token);
 
@@ -555,6 +555,7 @@ export class CassandraAPIDataClient extends TableDataClient {
       xhr.setRequestHeader(Constants.HttpHeaders.entraIdToken, userContext.aadToken);
     }
 
+    xhr.setRequestHeader(Constants.HttpHeaders.sessionId, userContext.sessionId);
     return true;
   };
 
