@@ -649,6 +649,20 @@ exports[`Settings Pane should render Default properly 1`] = `
         <div />
       </div>
     </div>
+    <div
+      className="settingsSection"
+    >
+      <div
+        className="settingsSectionPart"
+      >
+        <div
+          className="settingsSectionLabel"
+        >
+          Session ID
+        </div>
+        <div />
+      </div>
+    </div>
   </div>
 </RightPaneForm>
 `;
@@ -954,6 +968,20 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
           className="settingsSectionLabel"
         >
           Explorer Version
+        </div>
+        <div />
+      </div>
+    </div>
+    <div
+      className="settingsSection"
+    >
+      <div
+        className="settingsSectionPart"
+      >
+        <div
+          className="settingsSectionLabel"
+        >
+          Session ID
         </div>
         <div />
       </div>

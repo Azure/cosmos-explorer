@@ -111,7 +111,7 @@
     "tinykeys": "2.1.0",
     "underscore": "1.12.1",
     "utility-types": "3.10.0",
-    "uuid": "13.0.0",
+    "uuid": "9.0.0",
     "zustand": "3.5.0"
   },
   "devDependencies": {
