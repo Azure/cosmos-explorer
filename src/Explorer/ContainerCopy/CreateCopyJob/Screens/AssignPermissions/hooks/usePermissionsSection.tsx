@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { CapabilityNames } from "../../../../../../Common/Constants";
 import { fetchRoleAssignments, fetchRoleDefinitions, RoleDefinitionType } from "../../../../../../Utils/arm/RbacUtils";
 import ContainerCopyMessages from "../../../../ContainerCopyMessages";
-import { getAccountDetailsFromResourceId } from "../../../../CopyJobUtils";
+import { getAccountDetailsFromResourceId, isIntraAccountCopy } from "../../../../CopyJobUtils";
 import {
   BackupPolicyType,
   CopyJobMigrationType,
@@ -139,7 +139,9 @@ const usePermissionSections = (state: CopyJobContextState): PermissionSectionCon
   const isValidatingRef = useRef(false);
 
   const sectionToValidate = useMemo(() => {
-    const baseSections = sourceAccountId === targetAccountId ? [] : [...PERMISSION_SECTIONS_CONFIG];
+    const isSameAccount = isIntraAccountCopy(sourceAccountId, targetAccountId);
+
+    const baseSections = isSameAccount ? [] : [...PERMISSION_SECTIONS_CONFIG];
     if (state.migrationType === CopyJobMigrationType.Online) {
       return [...baseSections, ...PERMISSION_SECTIONS_FOR_ONLINE_JOBS];
     }

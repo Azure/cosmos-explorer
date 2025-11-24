@@ -6,6 +6,7 @@ import WarningIcon from "../../../../../../images/warning.svg";
 import ShimmerTree, { IndentLevel } from "../../../../../Common/ShimmerTree/ShimmerTree";
 import ContainerCopyMessages from "../../../ContainerCopyMessages";
 import { useCopyJobContext } from "../../../Context/CopyJobContext";
+import { isIntraAccountCopy } from "../../../CopyJobUtils";
 import { CopyJobMigrationType } from "../../../Enums/CopyJobEnums";
 import usePermissionSections, { PermissionSectionConfig } from "./hooks/usePermissionsSection";
 
@@ -39,6 +40,8 @@ const AssignPermissions = () => {
     [],
   );
 
+  const isSameAccount = isIntraAccountCopy(copyJobState?.source?.account?.id, copyJobState?.target?.account?.id);
+
   useEffect(() => {
     const firstIncompleteSection = permissionSections.find((section) => !section.completed);
     const nextOpenItems = firstIncompleteSection ? [firstIncompleteSection.id] : [];
@@ -49,7 +52,13 @@ const AssignPermissions = () => {
 
   return (
     <Stack className="assignPermissionsContainer" tokens={{ childrenGap: 15 }}>
-      <span>{ContainerCopyMessages.assignPermissions.description}</span>
+      <span>
+        {isSameAccount && copyJobState.migrationType === CopyJobMigrationType.Online
+          ? ContainerCopyMessages.assignPermissions.intraAccountOnlineDescription(
+              copyJobState?.source?.account?.name || "",
+            )
+          : ContainerCopyMessages.assignPermissions.crossAccountDescription}
+      </span>
       {permissionSections?.length === 0 ? (
         <ShimmerTree indentLevels={indentLevels} style={{ width: "100%" }} />
       ) : (

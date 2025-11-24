@@ -106,11 +106,21 @@ export function getAccountDetailsFromResourceId(accountId: string | undefined) {
     return null;
   }
   const pattern = new RegExp(
-    "/subscriptions/([^/]+)/resourceGroups/([^/]+)/providers/Microsoft\\.DocumentDB/databaseAccounts/([^/]+)",
+    "/subscriptions/([^/]+)/resourceGroups/([^/]+)/providers/Microsoft\\.DocumentDB?/databaseAccounts/([^/]+)",
     "i",
   );
   const matches = accountId.match(pattern);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_, subscriptionId, resourceGroup, accountName] = matches || [];
   return { subscriptionId, resourceGroup, accountName };
+}
+
+export function isIntraAccountCopy(sourceAccountId: string | undefined, targetAccountId: string | undefined): boolean {
+  const sourceAccountDetails = getAccountDetailsFromResourceId(sourceAccountId);
+  const targetAccountDetails = getAccountDetailsFromResourceId(targetAccountId);
+  return (
+    sourceAccountDetails?.subscriptionId === targetAccountDetails?.subscriptionId &&
+    sourceAccountDetails?.resourceGroup === targetAccountDetails?.resourceGroup &&
+    sourceAccountDetails?.accountName === targetAccountDetails?.accountName
+  );
 }
