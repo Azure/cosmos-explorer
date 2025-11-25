@@ -73,6 +73,12 @@ export interface DatabaseAccountExtendedProperties {
   publicNetworkAccess?: string;
   enablePriorityBasedExecution?: boolean;
   vcoreMongoEndpoint?: string;
+  apiProperties?: ApiProperties;
+}
+
+export interface ApiProperties {
+  /* Describes the version of the MongoDB account. */
+  serverVersion?: "3.2" | "3.6" | "4.0" | "4.2" | "5.0" | "6.0" | "7.0";
 }
 
 export interface DatabaseAccountResponseLocation {
