@@ -4,6 +4,7 @@ import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { traceOpen } from "Shared/Telemetry/TelemetryProcessor";
 import { useCarousel } from "hooks/useCarousel";
 import { usePostgres } from "hooks/usePostgres";
+import { v4 as uuidv4 } from "uuid";
 import { AuthType } from "./AuthType";
 import { DatabaseAccount } from "./Contracts/DataModels";
 import { SubscriptionType } from "./Contracts/SubscriptionType";
@@ -118,7 +119,7 @@ export interface UserContext {
   readonly dataPlaneRbacEnabled?: boolean;
   readonly refreshCosmosClient?: boolean;
   throughputBucketsEnabled?: boolean;
-  readonly sessionId?: string;
+  readonly sessionId: string;
 }
 
 export type ApiType = "SQL" | "Mongo" | "Gremlin" | "Tables" | "Cassandra" | "Postgres" | "VCoreMongo";
@@ -136,6 +137,7 @@ const userContext: UserContext = {
   features,
   subscriptionType: CollectionCreation.DefaultSubscriptionType,
   collectionCreationDefaults: CollectionCreationDefaults,
+  sessionId: uuidv4(), // Default sessionId - will be overwritten if provided by host
 };
 
 export function isAccountNewerThanThresholdInMs(createdAt: string, threshold: number) {
