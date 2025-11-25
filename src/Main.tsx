@@ -19,7 +19,7 @@ import "../externals/jquery.dataTables.min.css";
 import "../externals/jquery.typeahead.min.css";
 import "../externals/jquery.typeahead.min.js";
 // Image Dependencies
-import { Platform } from "ConfigContext";
+import { Platform } from "ConfigContext"; // configContext no longer needed directly (ScenarioMonitor handles platform)
 import ContainerCopyPanel from "Explorer/ContainerCopy/ContainerCopyPanel";
 import Explorer from "Explorer/Explorer";
 import { QueryCopilotCarousel } from "Explorer/QueryCopilot/CopilotCarousel";
@@ -60,6 +60,10 @@ import "./Explorer/Panes/PanelComponent.less";
 import { SidePanel } from "./Explorer/Panes/PanelContainerComponent";
 import "./Explorer/SplashScreen/SplashScreen.less";
 import "./Libs/jquery";
+import MetricScenario from "./Metrics/MetricEvents";
+import { MetricScenarioProvider, useMetricScenario } from "./Metrics/MetricScenarioProvider";
+import { ApplicationMetricPhase } from "./Metrics/ScenarioConfig";
+import { useInteractive } from "./Metrics/useMetricPhases";
 import { appThemeFabric } from "./Platform/Fabric/FabricTheme";
 import "./Shared/appInsights";
 import { useConfig } from "./hooks/useConfig";
@@ -78,6 +82,18 @@ const App: React.FunctionComponent = () => {
   }
   StyleConstants.updateStyles();
   const explorer = useKnockoutExplorer(config?.platform);
+
+  // Scenario-based health tracking: start ApplicationLoad and complete phases.
+  const { startScenario, completePhase } = useMetricScenario();
+  React.useEffect(() => {
+    startScenario(MetricScenario.ApplicationLoad);
+  }, [startScenario]);
+
+  React.useEffect(() => {
+    if (explorer) {
+      completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.ExplorerInitialized);
+    }
+  }, [explorer, completePhase]);
 
   if (!explorer) {
     return <LoadingExplorer />;
@@ -104,9 +120,16 @@ const App: React.FunctionComponent = () => {
 };
 
 const mainElement = document.getElementById("Main");
-ReactDOM.render(<App />, mainElement);
+ReactDOM.render(
+  <MetricScenarioProvider>
+    <App />
+  </MetricScenarioProvider>,
+  mainElement,
+);
 
 function DivExplorer({ explorer }: { explorer: Explorer }): JSX.Element {
+  useInteractive(MetricScenario.ApplicationLoad);
+
   return (
     <div id="divExplorer" className="flexContainer hideOverflows">
       <div id="freeTierTeachingBubble"> </div>
