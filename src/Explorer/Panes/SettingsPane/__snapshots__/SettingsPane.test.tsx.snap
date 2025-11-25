@@ -660,7 +660,9 @@ exports[`Settings Pane should render Default properly 1`] = `
         >
           Session ID
         </div>
-        <div />
+        <div>
+          1234-5678
+        </div>
       </div>
     </div>
   </div>
@@ -983,7 +985,9 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
         >
           Session ID
         </div>
-        <div />
+        <div>
+          1234-5678
+        </div>
       </div>
     </div>
   </div>
