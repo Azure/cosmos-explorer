@@ -45,7 +45,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
 
   constructor(props: ScaleComponentProps) {
     super(props);
-    this.isEmulator = configContext.platform === Platform.Emulator;
+    this.isEmulator = configContext.platform === Platform.Emulator || configContext.platform === Platform.VNextEmulator;
     this.offer = this.props.database?.offer() || this.props.collection?.offer();
     this.databaseId = this.props.database?.id() || this.props.collection.databaseId;
     this.collectionId = this.props.collection?.id();

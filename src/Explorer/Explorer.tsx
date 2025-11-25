@@ -3,7 +3,7 @@ import { Link } from "@fluentui/react/lib/Link";
 import { isPublicInternetAccessAllowed } from "Common/DatabaseAccountUtility";
 import { Environment, getEnvironment } from "Common/EnvironmentUtility";
 import { sendMessage } from "Common/MessageHandler";
-import { Platform, configContext } from "ConfigContext";
+import { configContext, Platform } from "ConfigContext";
 import { MessageTypes } from "Contracts/ExplorerContracts";
 import { useDataPlaneRbac } from "Explorer/Panes/SettingsPane/SettingsPane";
 import { getCopilotEnabled, isCopilotFeatureRegistered } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
@@ -18,6 +18,7 @@ import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { acquireMsalTokenForAccount } from "Utils/AuthorizationUtils";
 import { allowedNotebookServerUrls, validateEndpoint } from "Utils/EndpointUtils";
 import { featureRegistered } from "Utils/FeatureRegistrationUtils";
+import { isFeatureSupported, PlatformFeature } from "Utils/PlatformFeatureUtils";
 import { update } from "Utils/arm/generatedClients/cosmos/databaseAccounts";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import * as ko from "knockout";
@@ -1195,6 +1196,7 @@ export default class Explorer {
 
     // TODO: remove reference to isNotebookEnabled and isNotebooksEnabledForAccount
     const isNotebookEnabled =
+      isFeatureSupported(PlatformFeature.Notebooks) &&
       configContext.platform !== Platform.Fabric &&
       (userContext.features.notebooksDownBanner ||
         useNotebook.getState().isPhoenixNotebooks ||
@@ -1202,7 +1204,11 @@ export default class Explorer {
     useNotebook.getState().setIsNotebookEnabled(isNotebookEnabled);
     useNotebook
       .getState()
-      .setIsShellEnabled(useNotebook.getState().isPhoenixFeatures && isPublicInternetAccessAllowed());
+      .setIsShellEnabled(
+        isFeatureSupported(PlatformFeature.CloudShell) &&
+          useNotebook.getState().isPhoenixFeatures &&
+          isPublicInternetAccessAllowed(),
+      );
 
     TelemetryProcessor.trace(Action.NotebookEnabled, ActionModifiers.Mark, {
       isNotebookEnabled,
@@ -1223,6 +1229,7 @@ export default class Explorer {
 
   public async configureCopilot(): Promise<void> {
     if (
+      !isFeatureSupported(PlatformFeature.Copilot) ||
       userContext.apiType !== "SQL" ||
       !userContext.subscriptionId ||
       ![Environment.Development, Environment.Mpac, Environment.Prod].includes(getEnvironment())

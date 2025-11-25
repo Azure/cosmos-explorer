@@ -19,6 +19,7 @@ export enum Platform {
   Hosted = "Hosted",
   Emulator = "Emulator",
   Fabric = "Fabric",
+  VNextEmulator = "VNextEmulator",
 }
 
 export interface ConfigContext {
@@ -217,7 +218,7 @@ export async function initializeConfiguration(): Promise<ConfigContext> {
       const AAD_ENDPOINT = params.get("aadEndpoint") || "";
       updateConfigContext({ AAD_ENDPOINT });
     }
-    if (params.has("platform")) {
+    if (params.has("platform") && configContext.platform !== Platform.VNextEmulator) {
       const platform = params.get("platform");
       switch (platform) {
         default:

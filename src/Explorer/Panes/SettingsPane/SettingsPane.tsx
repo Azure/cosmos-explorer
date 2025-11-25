@@ -212,7 +212,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
   const styles = useStyles();
 
   const explorerVersion = configContext.gitSha;
-  const isEmulator = configContext.platform === Platform.Emulator;
+  const isEmulator = configContext.platform === Platform.Emulator || configContext.platform === Platform.VNextEmulator;
   const shouldShowQueryPageOptions = userContext.apiType === "SQL";
   const showRetrySettings =
     (userContext.apiType === "SQL" || userContext.apiType === "Tables" || userContext.apiType === "Gremlin") &&
