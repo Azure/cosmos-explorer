@@ -53,7 +53,6 @@ const AddReadPermissionToDefaultIdentity: React.FC<AddReadPermissionToDefaultIde
         error.message || "Error assigning read permission to default identity. Please try again later.";
       logError(errorMessage, "CopyJob/AddReadPermissionToDefaultIdentity.handleAddReadPermission");
       setContextError(errorMessage);
-    } finally {
       setLoading(false);
     }
   };

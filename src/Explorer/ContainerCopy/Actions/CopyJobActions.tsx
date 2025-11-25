@@ -23,6 +23,7 @@ import {
   extractErrorMessage,
   formatUTCDateTime,
   getAccountDetailsFromResourceId,
+  isIntraAccountCopy,
 } from "../CopyJobUtils";
 import CreateCopyJobScreensProvider from "../CreateCopyJob/Screens/CreateCopyJobScreensProvider";
 import { CopyJobActions, CopyJobStatusType } from "../Enums/CopyJobEnums";
@@ -138,11 +139,12 @@ export const submitCreateCopyJob = async (state: CopyJobContextState, onSuccess:
     const { subscriptionId, resourceGroup, accountName } = getAccountDetailsFromResourceId(
       userContext.databaseAccount?.id || "",
     );
+    const isSameAccount = isIntraAccountCopy(source?.account?.id, target?.account?.id);
     const body = {
       properties: {
         source: {
           component: "CosmosDBSql",
-          remoteAccountName: source?.account?.name,
+          ...(isSameAccount ? {} : { accountName: source?.account?.name }),
           databaseName: source?.databaseId,
           containerName: source?.containerId,
         },

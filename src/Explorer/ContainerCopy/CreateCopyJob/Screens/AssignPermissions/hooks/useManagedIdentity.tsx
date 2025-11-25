@@ -44,7 +44,6 @@ const useManagedIdentity = (
       const errorMessage = error.message || "Error enabling system-assigned managed identity. Please try again later.";
       logError(errorMessage, "CopyJob/useManagedIdentity.handleAddSystemIdentity");
       setContextError(errorMessage);
-    } finally {
       setLoading(false);
     }
   }, [updateIdentityFn]);

@@ -73,6 +73,7 @@ export interface DatabaseAccountExtendedProperties {
   publicNetworkAccess?: string;
   enablePriorityBasedExecution?: boolean;
   vcoreMongoEndpoint?: string;
+  enableAllVersionsAndDeletesChangeFeed?: boolean;
 }
 
 export interface DatabaseAccountResponseLocation {
