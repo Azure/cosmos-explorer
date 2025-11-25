@@ -11,25 +11,19 @@ export function useDropdownOptions(
   subscriptionOptions: DropdownOptionType[];
   accountOptions: DropdownOptionType[];
 } {
-  const subscriptionOptions = React.useMemo(
-    () =>
-      subscriptions?.map((sub) => ({
-        key: sub.subscriptionId,
-        text: sub.displayName,
-        data: sub,
-      })) || [],
-    [subscriptions],
-  );
+  const subscriptionOptions =
+    subscriptions?.map((sub) => ({
+      key: sub.subscriptionId,
+      text: sub.displayName,
+      data: sub,
+    })) || [];
 
-  const accountOptions = React.useMemo(
-    () =>
-      accounts?.map((account) => ({
-        key: account.id,
-        text: account.name,
-        data: account,
-      })) || [],
-    [accounts],
-  );
+  const accountOptions =
+    accounts?.map((account) => ({
+      key: account.id,
+      text: account.name,
+      data: account,
+    })) || [];
 
   return { subscriptionOptions, accountOptions };
 }
@@ -38,45 +32,42 @@ type setCopyJobStateType = CopyJobContextProviderType["setCopyJobState"];
 
 export function useEventHandlers(setCopyJobState: setCopyJobStateType) {
   const { setValidationCache } = useCopyJobPrerequisitesCache();
-  const handleSelectSourceAccount = React.useCallback(
-    (type: "subscription" | "account", data: (Subscription & DatabaseAccount) | undefined) => {
-      setCopyJobState((prevState: CopyJobContextState) => {
-        if (type === "subscription") {
-          return {
-            ...prevState,
-            source: {
-              ...prevState.source,
-              subscription: data || null,
-              account: null,
-            },
-          };
-        }
-        if (type === "account") {
-          return {
-            ...prevState,
-            source: {
-              ...prevState.source,
-              account: data || null,
-            },
-          };
-        }
-        return prevState;
-      });
-      setValidationCache(new Map<string, boolean>());
-    },
-    [setCopyJobState, setValidationCache],
-  );
+  const handleSelectSourceAccount = (
+    type: "subscription" | "account",
+    data: (Subscription & DatabaseAccount) | undefined,
+  ) => {
+    setCopyJobState((prevState: CopyJobContextState) => {
+      if (type === "subscription") {
+        return {
+          ...prevState,
+          source: {
+            ...prevState.source,
+            subscription: data || null,
+            account: null,
+          },
+        };
+      }
+      if (type === "account") {
+        return {
+          ...prevState,
+          source: {
+            ...prevState.source,
+            account: data || null,
+          },
+        };
+      }
+      return prevState;
+    });
+    setValidationCache(new Map<string, boolean>());
+  };
 
-  const handleMigrationTypeChange = React.useCallback(
-    (_ev?: React.FormEvent<HTMLElement>, checked?: boolean) => {
-      setCopyJobState((prevState: CopyJobContextState) => ({
-        ...prevState,
-        migrationType: checked ? CopyJobMigrationType.Offline : CopyJobMigrationType.Online,
-      }));
-      setValidationCache(new Map<string, boolean>());
-    },
-    [setCopyJobState, setValidationCache],
-  );
+  const handleMigrationTypeChange = React.useCallback((_ev?: React.FormEvent<HTMLElement>, checked?: boolean) => {
+    setCopyJobState((prevState: CopyJobContextState) => ({
+      ...prevState,
+      migrationType: checked ? CopyJobMigrationType.Offline : CopyJobMigrationType.Online,
+    }));
+    setValidationCache(new Map<string, boolean>());
+  }, []);
 
   return { handleSelectSourceAccount, handleMigrationTypeChange };
 }

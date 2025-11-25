@@ -5,7 +5,7 @@ import { MonitorCopyJobsRefState } from "./MonitorCopyJobs/MonitorCopyJobRefStat
 import MonitorCopyJobs, { MonitorCopyJobsRef } from "./MonitorCopyJobs/MonitorCopyJobs";
 import { ContainerCopyProps } from "./Types/CopyJobTypes";
 
-const ContainerCopyPanel: React.FC<ContainerCopyProps> = ({ container }) => {
+const ContainerCopyPanel: React.FC<ContainerCopyProps> = ({ explorer }) => {
   const monitorCopyJobsRef = React.useRef<MonitorCopyJobsRef>();
   useEffect(() => {
     if (monitorCopyJobsRef.current) {
@@ -14,8 +14,8 @@ const ContainerCopyPanel: React.FC<ContainerCopyProps> = ({ container }) => {
   }, [monitorCopyJobsRef.current]);
   return (
     <div id="containerCopyWrapper" className="flexContainer hideOverflows">
-      <CopyJobCommandBar container={container} />
-      <MonitorCopyJobs ref={monitorCopyJobsRef} />
+      <CopyJobCommandBar explorer={explorer} />
+      <MonitorCopyJobs ref={monitorCopyJobsRef} explorer={explorer} />
     </div>
   );
 };

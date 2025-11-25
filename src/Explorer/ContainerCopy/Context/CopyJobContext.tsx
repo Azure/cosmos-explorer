@@ -1,3 +1,5 @@
+import { Subscription } from "Contracts/DataModels";
+import Explorer from "Explorer/Explorer";
 import React from "react";
 import { userContext } from "UserContext";
 import { CopyJobMigrationType } from "../Enums/CopyJobEnums";
@@ -14,6 +16,7 @@ export const useCopyJobContext = (): CopyJobContextProviderType => {
 
 interface CopyJobContextProviderProps {
   children: React.ReactNode;
+  explorer: Explorer;
 }
 
 const getInitialCopyJobState = (): CopyJobContextState => {
@@ -21,8 +24,10 @@ const getInitialCopyJobState = (): CopyJobContextState => {
     jobName: "",
     migrationType: CopyJobMigrationType.Offline,
     source: {
-      subscription: null,
-      account: null,
+      subscription: {
+        subscriptionId: userContext.subscriptionId || "",
+      } as Subscription,
+      account: userContext.databaseAccount || null,
       databaseId: "",
       containerId: "",
     },
@@ -53,6 +58,7 @@ const CopyJobContextProvider: React.FC<CopyJobContextProviderProps> = (props) =>
     flow,
     setFlow,
     resetCopyJobState,
+    explorer: props.explorer,
   };
 
   return <CopyJobContext.Provider value={contextValue}>{props.children}</CopyJobContext.Provider>;

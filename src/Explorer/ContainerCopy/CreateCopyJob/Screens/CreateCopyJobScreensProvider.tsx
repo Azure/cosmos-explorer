@@ -1,10 +1,11 @@
+import Explorer from "Explorer/Explorer";
 import React from "react";
 import CopyJobContextProvider from "../../Context/CopyJobContext";
 import CreateCopyJobScreens from "./CreateCopyJobScreens";
 
-const CreateCopyJobScreensProvider = () => {
+const CreateCopyJobScreensProvider = ({ explorer }: { explorer: Explorer }) => {
   return (
-    <CopyJobContextProvider>
+    <CopyJobContextProvider explorer={explorer}>
       <CreateCopyJobScreens />
     </CopyJobContextProvider>
   );

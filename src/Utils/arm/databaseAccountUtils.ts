@@ -2,7 +2,7 @@ import { DatabaseAccount } from "Contracts/DataModels";
 import { userContext } from "UserContext";
 import { buildArmUrl } from "Utils/arm/armUtils";
 
-const apiVersion = "2025-04-15";
+const apiVersion = "2025-05-01-preview";
 export type FetchAccountDetailsParams = {
   subscriptionId: string;
   resourceGroupName: string;

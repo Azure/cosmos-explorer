@@ -13,6 +13,7 @@ const CreateCopyJobScreens: React.FC = () => {
     handlePrevious,
     handleCancel,
     primaryBtnText,
+    showAddCollectionPanel,
   } = useCopyJobNavigation();
   const { contextError, setContextError } = useCopyJobContext();
 
@@ -32,7 +33,7 @@ const CreateCopyJobScreens: React.FC = () => {
             {contextError}
           </MessageBar>
         )}
-        {currentScreen?.component}
+        {React.cloneElement(currentScreen?.component as React.ReactElement, { showAddCollectionPanel })}
       </Stack.Item>
       <Stack.Item className="createCopyJobScreensFooter">
         <NavigationControls

@@ -1,8 +1,9 @@
 import { DetailsList, DetailsListLayoutMode, Stack, Text, TextField } from "@fluentui/react";
-import FieldRow from "Explorer/ContainerCopy/CreateCopyJob/Screens/Components/FieldRow";
-import React from "react";
+import React, { useEffect } from "react";
 import ContainerCopyMessages from "../../../ContainerCopyMessages";
 import { useCopyJobContext } from "../../../Context/CopyJobContext";
+import { getDefaultJobName } from "../../../CopyJobUtils";
+import FieldRow from "../Components/FieldRow";
 import { getPreviewCopyJobDetailsListColumns } from "./Utils/PreviewCopyJobUtils";
 
 const PreviewCopyJob: React.FC = () => {
@@ -16,6 +17,11 @@ const PreviewCopyJob: React.FC = () => {
       targetContainerName: copyJobState.target?.containerId,
     },
   ];
+
+  useEffect(() => {
+    onJobNameChange(undefined, getDefaultJobName(selectedDatabaseAndContainers));
+  }, []);
+
   const jobName = copyJobState.jobName;
 
   const onJobNameChange = (_ev?: React.FormEvent, newValue?: string) => {

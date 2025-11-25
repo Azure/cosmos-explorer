@@ -25,4 +25,5 @@ export const SubscriptionDropdown: React.FC<SubscriptionDropdownProps> = React.m
       />
     </FieldRow>
   ),
+  (prev, next) => prev.options.length === next.options.length && prev.selectedKey === next.selectedKey,
 );
