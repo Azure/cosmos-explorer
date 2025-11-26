@@ -1,4 +1,5 @@
 import Explorer from "Explorer/Explorer";
+import { Subscription } from "Contracts/DataModels";
 import React from "react";
 import { userContext } from "UserContext";
 import { CopyJobMigrationType } from "../Enums/CopyJobEnums";
@@ -23,8 +24,10 @@ const getInitialCopyJobState = (): CopyJobContextState => {
     jobName: "",
     migrationType: CopyJobMigrationType.Offline,
     source: {
-      subscription: null,
-      account: null,
+      subscription: {
+        subscriptionId: userContext.subscriptionId || "",
+      } as Subscription,
+      account: userContext.databaseAccount || null,
       databaseId: "",
       containerId: "",
     },

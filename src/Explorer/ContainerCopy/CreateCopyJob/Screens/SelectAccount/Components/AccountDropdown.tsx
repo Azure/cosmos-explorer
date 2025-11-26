@@ -27,4 +27,5 @@ export const AccountDropdown: React.FC<AccountDropdownProps> = React.memo(
       />
     </FieldRow>
   ),
+  (prev, next) => prev.options.length === next.options.length && prev.selectedKey === next.selectedKey,
 );
