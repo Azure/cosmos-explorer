@@ -297,6 +297,7 @@ export class HttpHeaders {
   public static migrateOfferToManualThroughput: string = "x-ms-cosmos-migrate-offer-to-manual-throughput";
   public static migrateOfferToAutopilot: string = "x-ms-cosmos-migrate-offer-to-autopilot";
   public static xAPIKey: string = "X-API-Key";
+  public static sessionId: string = "x-ms-client-session-id";
 }
 
 export class ContentType {
