@@ -35,10 +35,14 @@ function navigationReducer(state: NavigationState, action: Action): NavigationSt
 export function useCopyJobNavigation() {
   const [isLoading, setIsLoading] = useState(false);
   const { copyJobState, resetCopyJobState, setContextError } = useCopyJobContext();
-  const screens = useCreateCopyJobScreensList();
   const { validationCache: cache } = useCopyJobPrerequisitesCache();
   const [state, dispatch] = useReducer(navigationReducer, { screenHistory: [SCREEN_KEYS.SelectAccount] });
 
+  const handlePrevious = useCallback(() => {
+    dispatch({ type: "PREVIOUS" });
+  }, [dispatch]);
+
+  const screens = useCreateCopyJobScreensList(handlePrevious);
   const currentScreenKey = state.screenHistory[state.screenHistory.length - 1];
   const currentScreen = screens.find((screen) => screen.key === currentScreenKey);
 
@@ -51,7 +55,9 @@ export function useCopyJobNavigation() {
   }, [currentScreen.key, copyJobState, cache, isLoading]);
 
   const primaryBtnText = useMemo(() => {
-    if (currentScreenKey === SCREEN_KEYS.PreviewCopyJob) {
+    if (currentScreenKey === SCREEN_KEYS.CreateCollection) {
+      return "Create";
+    } else if (currentScreenKey === SCREEN_KEYS.PreviewCopyJob) {
       return "Copy";
     }
     return "Next";
@@ -107,7 +113,26 @@ export function useCopyJobNavigation() {
     }
   };
 
+  const handleAddCollectionPanelSubmit = () => {
+    const form = document.getElementById("panelContainer") as HTMLFormElement;
+    if (form) {
+      const submitEvent = new Event("submit", {
+        bubbles: true,
+        cancelable: true,
+      });
+      form.dispatchEvent(submitEvent);
+    }
+  };
+
+  const showAddCollectionPanel = useCallback(() => {
+    dispatch({ type: "NEXT", nextScreen: SCREEN_KEYS.CreateCollection });
+  }, [dispatch]);
+
   const handlePrimary = useCallback(() => {
+    if (currentScreenKey === SCREEN_KEYS.CreateCollection) {
+      handleAddCollectionPanelSubmit();
+      return;
+    }
     if (currentScreenKey === SCREEN_KEYS.SelectSourceAndTargetContainers && areContainersIdentical()) {
       setContextError(
         "Source and destination containers cannot be the same. Please select different containers to proceed.",
@@ -132,10 +157,6 @@ export function useCopyJobNavigation() {
     }
   }, [currentScreenKey, copyJobState, areContainersIdentical, handleCopyJobSubmission]);
 
-  const handlePrevious = useCallback(() => {
-    dispatch({ type: "PREVIOUS" });
-  }, []);
-
   return {
     currentScreen,
     isPrimaryDisabled,
@@ -143,6 +164,7 @@ export function useCopyJobNavigation() {
     handlePrimary,
     handlePrevious,
     handleCancel,
+    showAddCollectionPanel,
     primaryBtnText,
   };
 }

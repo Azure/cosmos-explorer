@@ -1,6 +1,7 @@
 /* eslint-disable react/display-name */
 import { MessageBar, MessageBarType, Stack } from "@fluentui/react";
 import ShimmerTree, { IndentLevel } from "Common/ShimmerTree/ShimmerTree";
+import Explorer from "Explorer/Explorer";
 import React, { forwardRef, useEffect, useImperativeHandle } from "react";
 import { getCopyJobs, updateCopyJobStatus } from "../Actions/CopyJobActions";
 import { convertToCamelCase } from "../CopyJobUtils";
@@ -11,13 +12,15 @@ import CopyJobsList from "./Components/CopyJobsList";
 
 const FETCH_INTERVAL_MS = 30 * 1000;
 
-interface MonitorCopyJobsProps {}
+interface MonitorCopyJobsProps {
+  explorer: Explorer;
+}
 
 export interface MonitorCopyJobsRef {
   refreshJobList: () => void;
 }
 
-const MonitorCopyJobs = forwardRef<MonitorCopyJobsRef, MonitorCopyJobsProps>((_props, ref) => {
+const MonitorCopyJobs = forwardRef<MonitorCopyJobsRef, MonitorCopyJobsProps>(({ explorer }, ref) => {
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
   const [jobs, setJobs] = React.useState<CopyJobType[]>([]);
@@ -96,15 +99,15 @@ const MonitorCopyJobs = forwardRef<MonitorCopyJobsRef, MonitorCopyJobsProps>((_p
     [],
   );
 
-  const memoizedJobsList = React.useMemo(() => {
+  const renderJobsList = () => {
     if (loading) {
       return null;
     }
     if (jobs.length > 0) {
       return <CopyJobsList jobs={jobs} handleActionClick={handleActionClick} />;
     }
-    return <CopyJobsNotFound />;
-  }, [jobs, loading, handleActionClick]);
+    return <CopyJobsNotFound explorer={explorer} />;
+  };
 
   return (
     <Stack className="monitorCopyJobs flexContainer">
@@ -114,7 +117,7 @@ const MonitorCopyJobs = forwardRef<MonitorCopyJobsRef, MonitorCopyJobsProps>((_p
           {error}
         </MessageBar>
       )}
-      {memoizedJobsList}
+      {renderJobsList()}
     </Stack>
   );
 });

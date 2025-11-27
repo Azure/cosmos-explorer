@@ -36,6 +36,9 @@ export default {
   databaseDropdownPlaceholder: "Select a database",
   containerDropdownLabel: "Container",
   containerDropdownPlaceholder: "Select a container",
+  createNewContainerSubHeading: "Select the properties for your container.",
+  createContainerButtonLabel: "Create a new container",
+  createContainerHeading: "Create new container",
 
   // Preview and Create Screen
   jobNameLabel: "Job name",

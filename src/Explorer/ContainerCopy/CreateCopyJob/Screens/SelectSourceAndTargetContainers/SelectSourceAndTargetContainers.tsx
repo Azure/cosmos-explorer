@@ -9,7 +9,11 @@ import { DatabaseContainerSection } from "./components/DatabaseContainerSection"
 import { dropDownChangeHandler } from "./Events/DropDownChangeHandler";
 import { useMemoizedSourceAndTargetData } from "./memoizedData";
 
-const SelectSourceAndTargetContainers = () => {
+type SelectSourceAndTargetContainers = {
+  showAddCollectionPanel?: () => void;
+};
+
+const SelectSourceAndTargetContainers = ({ showAddCollectionPanel }: SelectSourceAndTargetContainers) => {
   const { copyJobState, setCopyJobState } = useCopyJobContext();
   const { source, target, sourceDbParams, sourceContainerParams, targetDbParams, targetContainerParams } =
     useMemoizedSourceAndTargetData(copyJobState);
@@ -62,6 +66,7 @@ const SelectSourceAndTargetContainers = () => {
         selectedContainer={target?.containerId}
         containerDisabled={!target?.databaseId}
         containerOnChange={onDropdownChange("targetContainer")}
+        handleOnDemandCreateContainer={showAddCollectionPanel}
       />
     </Stack>
   );

@@ -1,11 +1,14 @@
 import React from "react";
+import { useCopyJobContext } from "../../Context/CopyJobContext";
 import { CopyJobContextState } from "../../Types/CopyJobTypes";
 import AssignPermissions from "../Screens/AssignPermissions/AssignPermissions";
+import AddCollectionPanelWrapper from "../Screens/CreateContainer/AddCollectionPanelWrapper";
 import PreviewCopyJob from "../Screens/PreviewCopyJob/PreviewCopyJob";
 import SelectAccount from "../Screens/SelectAccount/SelectAccount";
 import SelectSourceAndTargetContainers from "../Screens/SelectSourceAndTargetContainers/SelectSourceAndTargetContainers";
 
 const SCREEN_KEYS = {
+  CreateCollection: "CreateCollection",
   SelectAccount: "SelectAccount",
   SelectSourceAndTargetContainers: "SelectSourceAndTargetContainers",
   PreviewCopyJob: "PreviewCopyJob",
@@ -23,7 +26,9 @@ type Screen = {
   validations: Validation[];
 };
 
-function useCreateCopyJobScreensList() {
+function useCreateCopyJobScreensList(goBack: () => void): Screen[] {
+  const { explorer } = useCopyJobContext();
+
   return React.useMemo<Screen[]>(
     () => [
       {
@@ -49,6 +54,11 @@ function useCreateCopyJobScreensList() {
             message: "Please select source and target containers to proceed",
           },
         ],
+      },
+      {
+        key: SCREEN_KEYS.CreateCollection,
+        component: <AddCollectionPanelWrapper explorer={explorer} goBack={goBack} />,
+        validations: [],
       },
       {
         key: SCREEN_KEYS.PreviewCopyJob,
@@ -80,7 +90,7 @@ function useCreateCopyJobScreensList() {
         ],
       },
     ],
-    [],
+    [explorer],
   );
 }
 
