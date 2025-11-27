@@ -43,6 +43,7 @@ describe("AuthorizationUtils", () => {
         partitionKeyDefault: false,
         partitionKeyDefault2: false,
         notebooksDownBanner: false,
+        enableRestoreContainer: false,
       },
     });
   };
