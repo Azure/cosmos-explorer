@@ -31,7 +31,7 @@ const PermissionSection: React.FC<PermissionSectionConfig> = ({ id, title, Compo
   </AccordionItem>
 );
 
-const PermissionGroup: React.FC<PermissionGroupConfig> = ({ id, title, description, sections }) => {
+const PermissionGroup: React.FC<PermissionGroupConfig> = ({ title, description, sections }) => {
   const [openItems, setOpenItems] = React.useState<string[]>([]);
 
   useEffect(() => {
@@ -100,7 +100,6 @@ const AssignPermissions = () => {
 
   return (
     <Stack className="assignPermissionsContainer" tokens={{ childrenGap: 20 }}>
-      {/* <Text variant="medium">{ContainerCopyMessages.assignPermissions.crossAccountDescription}</Text> */}
       <Text variant="medium">
         {isSameAccount && copyJobState.migrationType === CopyJobMigrationType.Online
           ? ContainerCopyMessages.assignPermissions.intraAccountOnlineDescription(
