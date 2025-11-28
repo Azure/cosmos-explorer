@@ -6,7 +6,6 @@ import {
   conflictResolutionCustomToolTip,
   conflictResolutionLwwTooltip,
   getChoiceGroupStyles,
-  getTextFieldStyles,
   subComponentStackProps,
 } from "../SettingsRenderUtils";
 import { isDirty } from "../SettingsUtils";
@@ -106,10 +105,46 @@ export class ConflictResolutionComponent extends React.Component<ConflictResolut
       id="conflictResolutionLwwTextField"
       label={"Conflict Resolver Property"}
       onRenderLabel={this.onRenderLwwComponentTextField}
-      styles={getTextFieldStyles(
-        this.props.conflictResolutionPolicyPath,
-        this.props.conflictResolutionPolicyPathBaseline,
-      )}
+      styles={{
+        fieldGroup: {
+          height: 25,
+          width: 300,
+          backgroundColor: "var(--colorNeutralBackground2)",
+          borderColor: "var(--colorNeutralStroke1)",
+          selectors: {
+            ":disabled": {
+              backgroundColor: "var(--colorNeutralBackground2)",
+              borderColor: "var(--colorNeutralStroke1)",
+              color: "var(--colorNeutralForeground2)",
+            },
+            input: {
+              backgroundColor: "var(--colorNeutralBackground2)",
+              color: "var(--colorNeutralForeground1)",
+            },
+            "input:disabled": {
+              backgroundColor: "var(--colorNeutralBackground2)",
+              color: "var(--colorNeutralForeground2)",
+            },
+          },
+        },
+        field: {
+          backgroundColor: "var(--colorNeutralBackground2)",
+          color: "var(--colorNeutralForeground1)",
+          selectors: {
+            ":disabled": {
+              backgroundColor: "var(--colorNeutralBackground2)",
+              color: "var(--colorNeutralForeground2)",
+            },
+          },
+        },
+        subComponentStyles: {
+          label: {
+            root: {
+              color: "var(--colorNeutralForeground1)",
+            },
+          },
+        },
+      }}
       value={this.props.conflictResolutionPolicyPath}
       onChange={this.onConflictResolutionPolicyPathChange}
     />
@@ -119,19 +154,57 @@ export class ConflictResolutionComponent extends React.Component<ConflictResolut
     <ToolTipLabelComponent label={props.label} toolTipElement={conflictResolutionCustomToolTip} />
   );
 
-  private getConflictResolutionCustomComponent = (): JSX.Element => (
-    <TextField
-      id="conflictResolutionCustomTextField"
-      label="Stored procedure"
-      onRenderLabel={this.onRenderCustomComponentTextField}
-      styles={getTextFieldStyles(
-        this.props.conflictResolutionPolicyProcedure,
-        this.props.conflictResolutionPolicyProcedureBaseline,
-      )}
-      value={this.props.conflictResolutionPolicyProcedure}
-      onChange={this.onConflictResolutionPolicyProcedureChange}
-    />
-  );
+  private getConflictResolutionCustomComponent = (): JSX.Element => {
+    return (
+      <TextField
+        id="conflictResolutionCustomTextField"
+        label="Stored procedure"
+        onRenderLabel={this.onRenderCustomComponentTextField}
+        styles={{
+          fieldGroup: {
+            height: 25,
+            width: 300,
+            backgroundColor: "var(--colorNeutralBackground2)",
+            borderColor: "var(--colorNeutralStroke1)",
+            selectors: {
+              ":disabled": {
+                backgroundColor: "var(--colorNeutralBackground2)",
+                borderColor: "var(--colorNeutralStroke1)",
+                color: "var(--colorNeutralForeground2)",
+              },
+              input: {
+                backgroundColor: "var(--colorNeutralBackground2)",
+                color: "var(--colorNeutralForeground1)",
+              },
+              "input:disabled": {
+                backgroundColor: "var(--colorNeutralBackground2)",
+                color: "var(--colorNeutralForeground2)",
+              },
+            },
+          },
+          field: {
+            backgroundColor: "var(--colorNeutralBackground2)",
+            color: "var(--colorNeutralForeground1)",
+            selectors: {
+              ":disabled": {
+                backgroundColor: "var(--colorNeutralBackground2)",
+                color: "var(--colorNeutralForeground2)",
+              },
+            },
+          },
+          subComponentStyles: {
+            label: {
+              root: {
+                color: "var(--colorNeutralForeground1)",
+              },
+            },
+          },
+        }}
+        value={this.props.conflictResolutionPolicyProcedure}
+        onChange={this.onConflictResolutionPolicyProcedureChange}
+      />
+    );
+  };
 
   public render(): JSX.Element {
     return (

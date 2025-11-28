@@ -1,7 +1,9 @@
 import { UserDefinedFunctionDefinition } from "@azure/cosmos";
 import { Label, TextField } from "@fluentui/react";
+import { FluentProvider, webDarkTheme, webLightTheme } from "@fluentui/react-components";
 import { KeyboardAction } from "KeyboardShortcuts";
 import { ValidCosmosDbIdDescription, ValidCosmosDbIdInputPattern } from "Utils/ValidationUtils";
+import { useThemeStore } from "hooks/useTheme";
 import React, { Component } from "react";
 import DiscardIcon from "../../../images/discard.svg";
 import SaveIcon from "../../../images/save-cosmos.svg";
@@ -16,7 +18,6 @@ import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandBu
 import { EditorReact } from "../Controls/Editor/EditorReact";
 import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
 import UserDefinedFunctionTab from "./UserDefinedFunctionTab";
-
 interface IUserDefinedFunctionTabContentState {
   udfId: string;
   udfBody: string;
@@ -258,23 +259,46 @@ export default class UserDefinedFunctionTabContent extends Component<
 
   render(): JSX.Element {
     const { udfId, udfBody, isUdfIdEditable } = this.state;
+    const currentTheme = useThemeStore.getState().isDarkMode ? webDarkTheme : webLightTheme;
     return (
       <div className="tab-pane flexContainer trigger-form" role="tabpanel">
-        <TextField
-          className="trigger-field"
-          label="User Defined Function Id"
-          id="entityTimeId"
-          autoFocus
-          required
-          readOnly={!isUdfIdEditable}
-          type="text"
-          pattern={ValidCosmosDbIdInputPattern.source}
-          title={ValidCosmosDbIdDescription}
-          placeholder="Enter the new user defined function id"
-          size={40}
-          value={udfId}
-          onChange={this.handleUdfIdChange}
-        />
+        <FluentProvider theme={currentTheme}>
+          <TextField
+            className="trigger-field"
+            label="User Defined Function Id"
+            id="entityTimeId"
+            autoFocus
+            required
+            readOnly={!isUdfIdEditable}
+            type="text"
+            pattern={ValidCosmosDbIdInputPattern.source}
+            title={ValidCosmosDbIdDescription}
+            placeholder="Enter the new user defined function id"
+            size={40}
+            value={udfId}
+            onChange={this.handleUdfIdChange}
+            styles={{
+              root: {
+                width: "40%",
+                marginTop: "10px",
+              },
+              fieldGroup: {
+                backgroundColor: "var(--colorNeutralBackground1)",
+                border: "1px solid var(--colorNeutralStroke1)",
+              },
+              field: {
+                color: "var(--colorNeutralForeground2)",
+              },
+              subComponentStyles: {
+                label: {
+                  root: {
+                    color: "var(--colorNeutralForeground1)",
+                  },
+                },
+              },
+            }}
+          />{" "}
+        </FluentProvider>
         <Label className="trigger-field">User Defined Function Body</Label>
         <EditorReact
           language={"javascript"}

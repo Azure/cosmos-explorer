@@ -1,5 +1,6 @@
 import { TriggerDefinition } from "@azure/cosmos";
-import { Dropdown, IDropdownOption, Label, TextField } from "@fluentui/react";
+import { IDropdownOption, IDropdownStyles, Label, TextField } from "@fluentui/react";
+import { Dropdown } from "@fluentui/react/lib/Dropdown";
 import { KeyboardAction } from "KeyboardShortcuts";
 import { ValidCosmosDbIdDescription, ValidCosmosDbIdInputPattern } from "Utils/ValidationUtils";
 import React, { Component } from "react";
@@ -17,11 +18,133 @@ import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandBu
 import { EditorReact } from "../Controls/Editor/EditorReact";
 import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
 import TriggerTab from "./TriggerTab";
-
 const triggerTypeOptions: IDropdownOption[] = [
   { key: "Pre", text: "Pre" },
   { key: "Post", text: "Post" },
 ];
+
+const dropdownStyles: Partial<IDropdownStyles> = {
+  root: {
+    width: "40%",
+    marginTop: "10px",
+    selectors: {
+      "&:hover .ms-Dropdown-title": {
+        color: "var(--colorNeutralForeground1)",
+        backgroundColor: "var(--colorNeutralBackground2)",
+        borderColor: "var(--colorNeutralStroke1)",
+      },
+      "&:hover span.ms-Dropdown-title": {
+        color: "var(--colorNeutralForeground1)",
+      },
+      "&:focus .ms-Dropdown-title": {
+        color: "var(--colorNeutralForeground1)",
+        backgroundColor: "var(--colorNeutralBackground2)",
+      },
+      "&:focus span.ms-Dropdown-title": {
+        color: "var(--colorNeutralForeground1)",
+      },
+    },
+  },
+  label: {
+    color: "var(--colorNeutralForeground1)",
+  },
+  dropdown: {
+    backgroundColor: "var(--colorNeutralBackground2)",
+    borderColor: "var(--colorNeutralStroke1)",
+  },
+  title: {
+    backgroundColor: "var(--colorNeutralBackground2)",
+    color: "var(--colorNeutralForeground1)",
+    borderColor: "var(--colorNeutralStroke1)",
+    selectors: {
+      "&:hover": {
+        backgroundColor: "var(--colorNeutralBackground2)",
+        color: "var(--colorNeutralForeground1)",
+      },
+      "&:focus": {
+        backgroundColor: "var(--colorNeutralBackground2)",
+        color: "var(--colorNeutralForeground1)",
+      },
+      "&:hover .ms-Dropdown-titleText": {
+        color: "var(--colorNeutralForeground1)",
+      },
+      "&:focus .ms-Dropdown-titleText": {
+        color: "var(--colorNeutralForeground1)",
+      },
+      "& .ms-Dropdown-titleText": {
+        color: "var(--colorNeutralForeground1)",
+      },
+    },
+  },
+  caretDown: {
+    color: "var(--colorNeutralForeground1)",
+  },
+  callout: {
+    backgroundColor: "var(--colorNeutralBackground2)",
+    border: "1px solid var(--colorNeutralStroke1)",
+  },
+  dropdownItems: {
+    backgroundColor: "var(--colorNeutralBackground2)",
+  },
+  dropdownItem: {
+    backgroundColor: "transparent",
+    color: "var(--colorNeutralForeground1)",
+    minHeight: "36px",
+    lineHeight: "36px",
+    selectors: {
+      "&:hover": {
+        backgroundColor: "rgba(255, 255, 255, 0.1)",
+        color: "var(--colorNeutralForeground1)",
+      },
+      "&:hover .ms-Dropdown-optionText": {
+        color: "var(--colorNeutralForeground1)",
+      },
+      "&:focus": {
+        backgroundColor: "rgba(255, 255, 255, 0.1)",
+        color: "var(--colorNeutralForeground1)",
+      },
+      "&:active": {
+        backgroundColor: "rgba(255, 255, 255, 0.15)",
+        color: "var(--colorNeutralForeground1)",
+      },
+      "& .ms-Dropdown-optionText": {
+        color: "var(--colorNeutralForeground1)",
+      },
+    },
+  },
+  dropdownItemSelected: {
+    backgroundColor: "rgba(255, 255, 255, 0.08)",
+    color: "var(--colorNeutralForeground1)",
+    minHeight: "36px",
+    lineHeight: "36px",
+    selectors: {
+      "&:hover": {
+        backgroundColor: "rgba(255, 255, 255, 0.1)",
+        color: "var(--colorNeutralForeground1)",
+      },
+      "&:hover .ms-Dropdown-optionText": {
+        color: "var(--colorNeutralForeground1)",
+      },
+      "&:focus": {
+        backgroundColor: "rgba(255, 255, 255, 0.1)",
+        color: "var(--colorNeutralForeground1)",
+      },
+      "&:active": {
+        backgroundColor: "rgba(255, 255, 255, 0.15)",
+        color: "var(--colorNeutralForeground1)",
+      },
+      "& .ms-Dropdown-optionText": {
+        color: "var(--colorNeutralForeground1)",
+      },
+    },
+  },
+  dropdownOptionText: {
+    color: "var(--colorNeutralForeground1)",
+  },
+  dropdownItemHeader: {
+    color: "var(--colorNeutralForeground1)",
+  },
+};
 
 const triggerOperationOptions: IDropdownOption[] = [
   { key: "All", text: "All" },
@@ -304,6 +427,23 @@ export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentS
           value={triggerId}
           readOnly={!isIdEditable}
           onChange={this.handleTriggerIdChange}
+          styles={{
+            root: { width: "40%", marginTop: "10px" },
+            fieldGroup: {
+              backgroundColor: "var(--colorNeutralBackground1)",
+              border: "1px solid var(--colorNeutralStroke1)",
+            },
+            field: {
+              color: "var(--colorNeutralForeground1)",
+            },
+            subComponentStyles: {
+              label: {
+                root: {
+                  color: "var(--colorNeutralForeground1)",
+                },
+              },
+            },
+          }}
         />
         <Dropdown
           placeholder="Trigger Type"
@@ -312,6 +452,7 @@ export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentS
           selectedKey={triggerType}
           className="trigger-field"
           onChange={(event, selectedKey) => this.handleTriggerTypeOprationChange(event, selectedKey, "triggerType")}
+          styles={dropdownStyles}
         />
         <Dropdown
           placeholder="Trigger Operation"
@@ -322,6 +463,7 @@ export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentS
           onChange={(event, selectedKey) =>
             this.handleTriggerTypeOprationChange(event, selectedKey, "triggerOperation")
           }
+          styles={dropdownStyles}
         />
         <Label className="trigger-field">Trigger Body</Label>
         <EditorReact

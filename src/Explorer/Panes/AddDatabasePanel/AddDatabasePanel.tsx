@@ -224,9 +224,14 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
               <Checkbox
                 title="Provision shared throughput"
                 styles={{
-                  text: { fontSize: 12 },
+                  text: { fontSize: 12, color: "var(--colorNeutralForeground1)" },
                   checkbox: { width: 12, height: 12 },
                   label: { padding: 0, alignItems: "center" },
+                  root: {
+                    selectors: {
+                      ":hover .ms-Checkbox-text": { color: "var(--colorNeutralForeground1)" },
+                    },
+                  },
                 }}
                 label="Provision throughput"
                 checked={databaseCreateNewShared}

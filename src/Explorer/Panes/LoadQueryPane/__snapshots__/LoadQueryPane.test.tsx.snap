@@ -24,7 +24,15 @@ exports[`Load Query Pane should render Default properly 1`] = `
           styles={
             {
               "fieldGroup": {
+                "color": "var(--colorNeutralForeground1)",
                 "width": 300,
+              },
+              "subComponentStyles": {
+                "label": {
+                  "root": {
+                    "color": "var(--colorNeutralForeground1)",
+                  },
+                },
               },
             }
           }

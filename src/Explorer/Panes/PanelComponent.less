@@ -4,7 +4,8 @@
   display: flex;
   flex-direction: column;
   min-height: 100%;
-
+  color: var(--colorNeutralForeground2);
+  background-color: var(--colorNeutralBackground1);
   .panelMainContent {
     flex-grow: 1;
     padding: 0 34px;
@@ -25,19 +26,31 @@
       margin: auto 0 auto @SmallSpace;
       cursor: default;
       vertical-align: middle;
+      color: var(--colorNeutralForeground1);
     }
 
     .panelTextBold {
       font-weight: 600;
       line-height: 20px;
+      color: var(--colorNeutralForeground1);
     }
 
     .panelTextField {
       font-size: @mediumFontSize;
-      border: 1px solid #605e5c;
-      color: #000;
+      border: 1px solid var(--colorNeutralStroke1);
+      color: var(--colorNeutralForeground1);
+      background-color: var(--colorNeutralBackground2);
       padding: 4px 10px;
       width: @newCollectionPaneInputWidth;
+
+      &::placeholder {
+        color: var(--colorNeutralForeground3);
+      }
+
+      &:focus {
+        border-color: var(--colorCompoundBrandStroke1);
+        outline: none;
+      }
     }
 
     .panelRadioBtn {
@@ -47,6 +60,7 @@
     .panelRadioBtnLabel {
       font-size: @mediumFontSize;
       padding: 0 @LargeSpace 0 @SmallSpace;
+      color: var(--colorNeutralForeground1);
     }
 
     .panelSectionSpinner {
@@ -54,6 +68,44 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
+    }
+
+    .ms-Dropdown {
+      .ms-Dropdown-title {
+        background-color: var(--colorNeutralBackground2);
+        border-color: var(--colorNeutralStroke1);
+        color: var(--colorNeutralForeground1);
+      }
+
+      .ms-Dropdown-caretDownWrapper {
+        color: var(--colorNeutralForeground1);
+      }
+    }
+
+    .ms-Checkbox {
+      .ms-Checkbox-label {
+        color: var(--colorNeutralForeground1);
+      }
+    }
+
+    .ms-TextField {
+      .ms-TextField-fieldGroup {
+        background-color: var(--colorNeutralBackground2);
+        border-color: var(--colorNeutralStroke1);
+      }
+
+      .ms-TextField-field {
+        background-color: var(--colorNeutralBackground2);
+        color: var(--colorNeutralForeground1);
+
+        &::placeholder {
+          color: var(--colorNeutralForeground3);
+        }
+      }
+    }
+
+    .ms-Text {
+      color: var(--colorNeutralForeground1);
     }
   }
 
@@ -67,13 +119,14 @@
 }
 
 .panelHeader {
-  color: @BaseDark;
+  color: var(--colorNeutralForeground1);
   font-size: @largeFontSize;
   font-weight: 400;
 }
 
 .panelInfoErrorContainer {
-  background-color: @BaseLow;
+  background-color: var(--colorNeutralBackground3);
+  color: var(--colorNeutralForeground1);
   padding: @DefaultSpace;
   display: inline-flex;
   margin: 20px 34px 0 34px;
@@ -85,15 +138,15 @@
   }
 
   .panelWarningIcon {
-    color: @WarningIconColor;
+    color: var(--colorPaletteYellowForeground1);
   }
 
   .panelErrorIcon {
-    color: @ErrorIconColor;
+    color: var(--colorPaletteRedForeground1);
   }
 
   .panelLargeInfoIcon {
-    color: @InfoIconColor;
+    color: var(--colorBrandForeground1);
   }
 
   .panelWarningErrorDetailsLinkContainer {
@@ -102,16 +155,22 @@
     padding-left: @MediumSpace;
 
     .paneErrorLink {
-      color: @LinkColor;
+      color: var(--colorBrandForeground1);
       cursor: pointer;
       font-size: @mediumFontSize;
+    }
+
+    .panelWarningErrorMessage {
+      color: var(--colorNeutralForeground1);
     }
   }
 }
 
 .panelFooter {
   padding: 16px 34px;
-  border-top: solid 1px #bbbbbb;
+  border-top: solid 1px var(--colorNeutralStroke1);
+  background-color: var(--colorNeutralBackground1);
+  color: var(--colorNeutralForeground1);
 
   & button {
     height: 30px;
@@ -133,7 +192,8 @@
 
 .addRemoveIcon [alt="editEntity"]:focus,
 .addRemoveIconLabel [alt="editEntity"]:focus {
-  border: 1px dashed #605e5c;
+  border: 1px dashed var(--colorNeutralStroke1);
+  outline: none;
 }
 
 .addNewParamStyle {
@@ -175,7 +235,7 @@
 }
 
 .removeIcon {
-  color: @InfoIconColor;
+  color: "var(--colorNeutralForeground1)";
 }
 
 .backImageIcon {
@@ -183,7 +243,8 @@
 }
 
 [alt="back"]:focus {
-  border: 1px solid #605e5c;
+  border: 1px solid var(--colorCompoundBrandStroke1);
+  outline: none;
 }
 
 .addEntityDatePicker {
@@ -203,5 +264,32 @@
 }
 
 .panelSeparator::before {
-  background-color: #edebe9;
+  background-color: var(--colorNeutralStroke1);
 }
+
+.themed-panel {
+  &.ms-Panel {
+    .ms-Panel-main {
+      background-color: var(--colorNeutralBackground1);
+    }
+    
+    .ms-Panel-overlay {
+      background-color: var(--overlayBackground);
+    }
+    
+    .ms-Panel-content {
+      background-color: var(--colorNeutralBackground1);
+    }
+  }
+}
+
+:global {
+  .ms-Panel-root {
+    background-color: transparent;
+  }
+
+  .ms-Panel-overlay {
+    background-color: var(--overlayBackground);
+  }
+}
+

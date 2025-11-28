@@ -8,7 +8,7 @@ exports[`IndexingPolicyRefreshComponent renders 1`] = `
     styles={
       {
         "root": {
-          "color": "windowtext",
+          "color": "var(--colorNeutralForeground1)",
           "fontSize": 14,
         },
       }
