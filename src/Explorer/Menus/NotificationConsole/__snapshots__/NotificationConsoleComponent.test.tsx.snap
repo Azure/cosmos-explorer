@@ -151,6 +151,84 @@ exports[`NotificationConsoleComponent renders the console 1`] = `
             ]
           }
           selectedKey="All"
+          styles={
+            {
+              "callout": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "border": "1px solid var(--colorNeutralStroke1)",
+              },
+              "caretDown": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              "dropdown": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "borderColor": "var(--colorNeutralStroke1)",
+                "color": "var(--colorNeutralForeground1)",
+              },
+              "dropdownItem": {
+                "backgroundColor": "transparent",
+                "color": "var(--colorNeutralForeground1)",
+                "selectors": {
+                  "&:focus": {
+                    "backgroundColor": "var(--colorNeutralBackground4)",
+                    "color": "var(--colorNeutralForeground1)",
+                  },
+                  "&:hover": {
+                    "backgroundColor": "var(--colorNeutralBackground4)",
+                    "color": "var(--colorNeutralForeground1)",
+                  },
+                  ".ms-Dropdown-optionText": {
+                    "color": "var(--colorNeutralForeground1)",
+                  },
+                },
+              },
+              "dropdownItemSelected": {
+                "backgroundColor": "var(--colorBrandBackground)",
+                "color": "var(--colorNeutralForegroundOnBrand)",
+                "selectors": {
+                  ".ms-Dropdown-optionText": {
+                    "color": "var(--colorNeutralForegroundOnBrand)",
+                  },
+                },
+              },
+              "dropdownItems": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+              },
+              "dropdownOptionText": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              "label": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              "root": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              "title": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "borderColor": "var(--colorNeutralStroke1)",
+                "color": "var(--colorNeutralForeground1)",
+                "fontSize": "14px",
+                "selectors": {
+                  "&:after": {
+                    "borderColor": "var(--colorNeutralStroke1)",
+                  },
+                  "&:focus": {
+                    "backgroundColor": "var(--colorNeutralBackground2)",
+                    "borderColor": "var(--colorBrandStroke1)",
+                    "color": "var(--colorNeutralForeground1)",
+                  },
+                  "&:hover": {
+                    "backgroundColor": "var(--colorNeutralBackground3)",
+                    "borderColor": "var(--colorNeutralStroke1)",
+                    "color": "var(--colorNeutralForeground1)",
+                  },
+                  "span": {
+                    "color": "var(--colorNeutralForeground1)",
+                  },
+                },
+              },
+            }
+          }
         />
         <span
           className="consoleSplitter"
@@ -336,6 +414,84 @@ exports[`NotificationConsoleComponent renders the console 2`] = `
             ]
           }
           selectedKey="All"
+          styles={
+            {
+              "callout": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "border": "1px solid var(--colorNeutralStroke1)",
+              },
+              "caretDown": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              "dropdown": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "borderColor": "var(--colorNeutralStroke1)",
+                "color": "var(--colorNeutralForeground1)",
+              },
+              "dropdownItem": {
+                "backgroundColor": "transparent",
+                "color": "var(--colorNeutralForeground1)",
+                "selectors": {
+                  "&:focus": {
+                    "backgroundColor": "var(--colorNeutralBackground4)",
+                    "color": "var(--colorNeutralForeground1)",
+                  },
+                  "&:hover": {
+                    "backgroundColor": "var(--colorNeutralBackground4)",
+                    "color": "var(--colorNeutralForeground1)",
+                  },
+                  ".ms-Dropdown-optionText": {
+                    "color": "var(--colorNeutralForeground1)",
+                  },
+                },
+              },
+              "dropdownItemSelected": {
+                "backgroundColor": "var(--colorBrandBackground)",
+                "color": "var(--colorNeutralForegroundOnBrand)",
+                "selectors": {
+                  ".ms-Dropdown-optionText": {
+                    "color": "var(--colorNeutralForegroundOnBrand)",
+                  },
+                },
+              },
+              "dropdownItems": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+              },
+              "dropdownOptionText": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              "label": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              "root": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              "title": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "borderColor": "var(--colorNeutralStroke1)",
+                "color": "var(--colorNeutralForeground1)",
+                "fontSize": "14px",
+                "selectors": {
+                  "&:after": {
+                    "borderColor": "var(--colorNeutralStroke1)",
+                  },
+                  "&:focus": {
+                    "backgroundColor": "var(--colorNeutralBackground2)",
+                    "borderColor": "var(--colorBrandStroke1)",
+                    "color": "var(--colorNeutralForeground1)",
+                  },
+                  "&:hover": {
+                    "backgroundColor": "var(--colorNeutralBackground3)",
+                    "borderColor": "var(--colorNeutralStroke1)",
+                    "color": "var(--colorNeutralForeground1)",
+                  },
+                  "span": {
+                    "color": "var(--colorNeutralForeground1)",
+                  },
+                },
+              },
+            }
+          }
         />
         <span
           className="consoleSplitter"

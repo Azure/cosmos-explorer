@@ -108,11 +108,40 @@ exports[`PartitionKeyComponent renders default component and matches snapshot 1`
     </Stack>
   </Stack>
   <StyledMessageBar
+    messageBarIconProps={
+      {
+        "className": "messageBarWarningIcon",
+        "iconName": "WarningSolid",
+      }
+    }
     messageBarType={5}
+    styles={
+      {
+        "root": {
+          "selectors": {
+            "&.ms-MessageBar--warning": {
+              "backgroundColor": "var(--colorStatusWarningBackground1)",
+              "border": "1px solid var(--colorStatusWarningBorder1)",
+            },
+            ".ms-MessageBar-icon": {
+              "color": "var(--colorNeutralForeground1)",
+            },
+            ".ms-MessageBar-text": {
+              "color": "var(--colorNeutralForeground1)",
+            },
+          },
+        },
+      }
+    }
   >
     To safeguard the integrity of the data being copied to the new container, ensure that no updates are made to the source container for the entire duration of the partition key change process.
     <StyledLinkBase
       href="https://learn.microsoft.com/azure/cosmos-db/container-copy#how-does-container-copy-work"
+      style={
+        {
+          "color": "var(--colorBrandForeground1)",
+        }
+      }
       target="_blank"
       underline={true}
     >

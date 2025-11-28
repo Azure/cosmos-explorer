@@ -102,17 +102,37 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
       required={true}
       styles={
         {
+          "field": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "color": "var(--colorNeutralForeground1)",
+            "selectors": {
+              ":disabled": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground2)",
+              },
+            },
+          },
           "fieldGroup": {
-            "borderColor": "",
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "borderColor": "var(--colorNeutralStroke1)",
             "height": 25,
             "selectors": {
               ":disabled": {
-                "backgroundColor": "var(--colorNeutralBackground1)",
-                "borderColor": undefined,
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "borderColor": "var(--colorNeutralStroke1)",
+                "color": "var(--colorNeutralForeground2)",
+              },
+              "input": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground1)",
               },
               "input#autopilotInput": {
                 "backgroundColor": "var(--colorNeutralBackground4)",
                 "color": "var(--colorNeutralForeground1)",
+              },
+              "input:disabled": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground2)",
               },
             },
             "width": 300,
@@ -123,6 +143,11 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
                 "color": "var(--colorNeutralForeground1)",
               },
             },
+          },
+          "suffix": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "border": "1px solid var(--colorNeutralStroke1)",
+            "color": "var(--colorNeutralForeground1)",
           },
         }
       }
@@ -309,37 +334,73 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
       }
     }
   >
-    <StyledTextFieldBase
-      defaultValue="/partitionKey"
-      disabled={true}
-      label="Partition key"
+    <StyledTooltipHostBase
+      content="This partition key is used to distribute data across multiple partitions for scalability. The value "/partitionKey" determines how documents are partitioned."
       styles={
         {
-          "fieldGroup": {
-            "borderColor": "",
-            "height": 25,
-            "selectors": {
-              ":disabled": {
-                "backgroundColor": "var(--colorNeutralBackground1)",
-                "borderColor": undefined,
-              },
-              "input#autopilotInput": {
-                "backgroundColor": "var(--colorNeutralBackground4)",
-                "color": "var(--colorNeutralForeground1)",
-              },
-            },
-            "width": 300,
-          },
-          "subComponentStyles": {
-            "label": {
-              "root": {
-                "color": "var(--colorNeutralForeground1)",
-              },
-            },
+          "root": {
+            "display": "block",
           },
         }
       }
-    />
+    >
+      <StyledTextFieldBase
+        defaultValue="/partitionKey"
+        disabled={true}
+        label="Partition key"
+        styles={
+          {
+            "field": {
+              "backgroundColor": "var(--colorNeutralBackground2)",
+              "color": "var(--colorNeutralForeground1)",
+              "selectors": {
+                ":disabled": {
+                  "backgroundColor": "var(--colorNeutralBackground2)",
+                  "color": "var(--colorNeutralForeground2)",
+                },
+              },
+            },
+            "fieldGroup": {
+              "backgroundColor": "var(--colorNeutralBackground2)",
+              "borderColor": "var(--colorNeutralStroke1)",
+              "height": 25,
+              "selectors": {
+                ":disabled": {
+                  "backgroundColor": "var(--colorNeutralBackground2)",
+                  "borderColor": "var(--colorNeutralStroke1)",
+                  "color": "var(--colorNeutralForeground2)",
+                },
+                "input": {
+                  "backgroundColor": "var(--colorNeutralBackground2)",
+                  "color": "var(--colorNeutralForeground1)",
+                },
+                "input#autopilotInput": {
+                  "backgroundColor": "var(--colorNeutralBackground4)",
+                  "color": "var(--colorNeutralForeground1)",
+                },
+                "input:disabled": {
+                  "backgroundColor": "var(--colorNeutralBackground2)",
+                  "color": "var(--colorNeutralForeground2)",
+                },
+              },
+              "width": 300,
+            },
+            "subComponentStyles": {
+              "label": {
+                "root": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
+              },
+            },
+            "suffix": {
+              "backgroundColor": "var(--colorNeutralBackground2)",
+              "border": "1px solid var(--colorNeutralStroke1)",
+              "color": "var(--colorNeutralForeground1)",
+            },
+          }
+        }
+      />
+    </StyledTooltipHostBase>
     <Text
       className="hintText-115"
     >
@@ -366,17 +427,37 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
       label="Unique keys"
       styles={
         {
+          "field": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "color": "var(--colorNeutralForeground1)",
+            "selectors": {
+              ":disabled": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground2)",
+              },
+            },
+          },
           "fieldGroup": {
-            "borderColor": "",
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "borderColor": "var(--colorNeutralStroke1)",
             "height": 25,
             "selectors": {
               ":disabled": {
-                "backgroundColor": "var(--colorNeutralBackground1)",
-                "borderColor": undefined,
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "borderColor": "var(--colorNeutralStroke1)",
+                "color": "var(--colorNeutralForeground2)",
+              },
+              "input": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground1)",
               },
               "input#autopilotInput": {
                 "backgroundColor": "var(--colorNeutralBackground4)",
                 "color": "var(--colorNeutralForeground1)",
+              },
+              "input:disabled": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground2)",
               },
             },
             "width": 300,
@@ -387,6 +468,11 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
                 "color": "var(--colorNeutralForeground1)",
               },
             },
+          },
+          "suffix": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "border": "1px solid var(--colorNeutralStroke1)",
+            "color": "var(--colorNeutralForeground1)",
           },
         }
       }
@@ -497,17 +583,37 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
       required={true}
       styles={
         {
+          "field": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "color": "var(--colorNeutralForeground1)",
+            "selectors": {
+              ":disabled": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground2)",
+              },
+            },
+          },
           "fieldGroup": {
-            "borderColor": "",
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "borderColor": "var(--colorNeutralStroke1)",
             "height": 25,
             "selectors": {
               ":disabled": {
-                "backgroundColor": "var(--colorNeutralBackground1)",
-                "borderColor": undefined,
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "borderColor": "var(--colorNeutralStroke1)",
+                "color": "var(--colorNeutralForeground2)",
+              },
+              "input": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground1)",
               },
               "input#autopilotInput": {
                 "backgroundColor": "var(--colorNeutralBackground4)",
                 "color": "var(--colorNeutralForeground1)",
+              },
+              "input:disabled": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground2)",
               },
             },
             "width": 300,
@@ -518,6 +624,11 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
                 "color": "var(--colorNeutralForeground1)",
               },
             },
+          },
+          "suffix": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "border": "1px solid var(--colorNeutralStroke1)",
+            "color": "var(--colorNeutralForeground1)",
           },
         }
       }
@@ -791,37 +902,73 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
       }
     }
   >
-    <StyledTextFieldBase
-      defaultValue="/partitionKey"
-      disabled={true}
-      label="Partition key"
+    <StyledTooltipHostBase
+      content="This partition key is used to distribute data across multiple partitions for scalability. The value "/partitionKey" determines how documents are partitioned."
       styles={
         {
-          "fieldGroup": {
-            "borderColor": "",
-            "height": 25,
-            "selectors": {
-              ":disabled": {
-                "backgroundColor": "var(--colorNeutralBackground1)",
-                "borderColor": undefined,
-              },
-              "input#autopilotInput": {
-                "backgroundColor": "var(--colorNeutralBackground4)",
-                "color": "var(--colorNeutralForeground1)",
-              },
-            },
-            "width": 300,
-          },
-          "subComponentStyles": {
-            "label": {
-              "root": {
-                "color": "var(--colorNeutralForeground1)",
-              },
-            },
+          "root": {
+            "display": "block",
           },
         }
       }
-    />
+    >
+      <StyledTextFieldBase
+        defaultValue="/partitionKey"
+        disabled={true}
+        label="Partition key"
+        styles={
+          {
+            "field": {
+              "backgroundColor": "var(--colorNeutralBackground2)",
+              "color": "var(--colorNeutralForeground1)",
+              "selectors": {
+                ":disabled": {
+                  "backgroundColor": "var(--colorNeutralBackground2)",
+                  "color": "var(--colorNeutralForeground2)",
+                },
+              },
+            },
+            "fieldGroup": {
+              "backgroundColor": "var(--colorNeutralBackground2)",
+              "borderColor": "var(--colorNeutralStroke1)",
+              "height": 25,
+              "selectors": {
+                ":disabled": {
+                  "backgroundColor": "var(--colorNeutralBackground2)",
+                  "borderColor": "var(--colorNeutralStroke1)",
+                  "color": "var(--colorNeutralForeground2)",
+                },
+                "input": {
+                  "backgroundColor": "var(--colorNeutralBackground2)",
+                  "color": "var(--colorNeutralForeground1)",
+                },
+                "input#autopilotInput": {
+                  "backgroundColor": "var(--colorNeutralBackground4)",
+                  "color": "var(--colorNeutralForeground1)",
+                },
+                "input:disabled": {
+                  "backgroundColor": "var(--colorNeutralBackground2)",
+                  "color": "var(--colorNeutralForeground2)",
+                },
+              },
+              "width": 300,
+            },
+            "subComponentStyles": {
+              "label": {
+                "root": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
+              },
+            },
+            "suffix": {
+              "backgroundColor": "var(--colorNeutralBackground2)",
+              "border": "1px solid var(--colorNeutralStroke1)",
+              "color": "var(--colorNeutralForeground1)",
+            },
+          }
+        }
+      />
+    </StyledTooltipHostBase>
     <Text
       className="hintText-115"
     >
@@ -848,17 +995,37 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
       label="Unique keys"
       styles={
         {
+          "field": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "color": "var(--colorNeutralForeground1)",
+            "selectors": {
+              ":disabled": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground2)",
+              },
+            },
+          },
           "fieldGroup": {
-            "borderColor": "",
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "borderColor": "var(--colorNeutralStroke1)",
             "height": 25,
             "selectors": {
               ":disabled": {
-                "backgroundColor": "var(--colorNeutralBackground1)",
-                "borderColor": undefined,
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "borderColor": "var(--colorNeutralStroke1)",
+                "color": "var(--colorNeutralForeground2)",
+              },
+              "input": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground1)",
               },
               "input#autopilotInput": {
                 "backgroundColor": "var(--colorNeutralBackground4)",
                 "color": "var(--colorNeutralForeground1)",
+              },
+              "input:disabled": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground2)",
               },
             },
             "width": 300,
@@ -869,6 +1036,11 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
                 "color": "var(--colorNeutralForeground1)",
               },
             },
+          },
+          "suffix": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "border": "1px solid var(--colorNeutralStroke1)",
+            "color": "var(--colorNeutralForeground1)",
           },
         }
       }
@@ -979,17 +1151,37 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
       required={true}
       styles={
         {
+          "field": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "color": "var(--colorNeutralForeground1)",
+            "selectors": {
+              ":disabled": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground2)",
+              },
+            },
+          },
           "fieldGroup": {
-            "borderColor": "",
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "borderColor": "var(--colorNeutralStroke1)",
             "height": 25,
             "selectors": {
               ":disabled": {
-                "backgroundColor": "var(--colorNeutralBackground1)",
-                "borderColor": undefined,
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "borderColor": "var(--colorNeutralStroke1)",
+                "color": "var(--colorNeutralForeground2)",
+              },
+              "input": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground1)",
               },
               "input#autopilotInput": {
                 "backgroundColor": "var(--colorNeutralBackground4)",
                 "color": "var(--colorNeutralForeground1)",
+              },
+              "input:disabled": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground2)",
               },
             },
             "width": 300,
@@ -1000,6 +1192,11 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
                 "color": "var(--colorNeutralForeground1)",
               },
             },
+          },
+          "suffix": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "border": "1px solid var(--colorNeutralStroke1)",
+            "color": "var(--colorNeutralForeground1)",
           },
         }
       }
@@ -1176,17 +1373,37 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
       required={true}
       styles={
         {
+          "field": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "color": "var(--colorNeutralForeground1)",
+            "selectors": {
+              ":disabled": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground2)",
+              },
+            },
+          },
           "fieldGroup": {
-            "borderColor": "",
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "borderColor": "var(--colorNeutralStroke1)",
             "height": 25,
             "selectors": {
               ":disabled": {
-                "backgroundColor": "var(--colorNeutralBackground1)",
-                "borderColor": undefined,
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "borderColor": "var(--colorNeutralStroke1)",
+                "color": "var(--colorNeutralForeground2)",
+              },
+              "input": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground1)",
               },
               "input#autopilotInput": {
                 "backgroundColor": "var(--colorNeutralBackground4)",
                 "color": "var(--colorNeutralForeground1)",
+              },
+              "input:disabled": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground2)",
               },
             },
             "width": 300,
@@ -1197,6 +1414,11 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
                 "color": "var(--colorNeutralForeground1)",
               },
             },
+          },
+          "suffix": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "border": "1px solid var(--colorNeutralStroke1)",
+            "color": "var(--colorNeutralForeground1)",
           },
         }
       }
@@ -1212,37 +1434,73 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
       }
     }
   >
-    <StyledTextFieldBase
-      defaultValue="/partitionKey"
-      disabled={true}
-      label="Partition key"
+    <StyledTooltipHostBase
+      content="This partition key is used to distribute data across multiple partitions for scalability. The value "/partitionKey" determines how documents are partitioned."
       styles={
         {
-          "fieldGroup": {
-            "borderColor": "",
-            "height": 25,
-            "selectors": {
-              ":disabled": {
-                "backgroundColor": "var(--colorNeutralBackground1)",
-                "borderColor": undefined,
-              },
-              "input#autopilotInput": {
-                "backgroundColor": "var(--colorNeutralBackground4)",
-                "color": "var(--colorNeutralForeground1)",
-              },
-            },
-            "width": 300,
-          },
-          "subComponentStyles": {
-            "label": {
-              "root": {
-                "color": "var(--colorNeutralForeground1)",
-              },
-            },
+          "root": {
+            "display": "block",
           },
         }
       }
-    />
+    >
+      <StyledTextFieldBase
+        defaultValue="/partitionKey"
+        disabled={true}
+        label="Partition key"
+        styles={
+          {
+            "field": {
+              "backgroundColor": "var(--colorNeutralBackground2)",
+              "color": "var(--colorNeutralForeground1)",
+              "selectors": {
+                ":disabled": {
+                  "backgroundColor": "var(--colorNeutralBackground2)",
+                  "color": "var(--colorNeutralForeground2)",
+                },
+              },
+            },
+            "fieldGroup": {
+              "backgroundColor": "var(--colorNeutralBackground2)",
+              "borderColor": "var(--colorNeutralStroke1)",
+              "height": 25,
+              "selectors": {
+                ":disabled": {
+                  "backgroundColor": "var(--colorNeutralBackground2)",
+                  "borderColor": "var(--colorNeutralStroke1)",
+                  "color": "var(--colorNeutralForeground2)",
+                },
+                "input": {
+                  "backgroundColor": "var(--colorNeutralBackground2)",
+                  "color": "var(--colorNeutralForeground1)",
+                },
+                "input#autopilotInput": {
+                  "backgroundColor": "var(--colorNeutralBackground4)",
+                  "color": "var(--colorNeutralForeground1)",
+                },
+                "input:disabled": {
+                  "backgroundColor": "var(--colorNeutralBackground2)",
+                  "color": "var(--colorNeutralForeground2)",
+                },
+              },
+              "width": 300,
+            },
+            "subComponentStyles": {
+              "label": {
+                "root": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
+              },
+            },
+            "suffix": {
+              "backgroundColor": "var(--colorNeutralBackground2)",
+              "border": "1px solid var(--colorNeutralStroke1)",
+              "color": "var(--colorNeutralForeground1)",
+            },
+          }
+        }
+      />
+    </StyledTooltipHostBase>
     <Text
       className="hintText-115"
     >
@@ -1269,17 +1527,37 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
       label="Unique keys"
       styles={
         {
+          "field": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "color": "var(--colorNeutralForeground1)",
+            "selectors": {
+              ":disabled": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground2)",
+              },
+            },
+          },
           "fieldGroup": {
-            "borderColor": "",
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "borderColor": "var(--colorNeutralStroke1)",
             "height": 25,
             "selectors": {
               ":disabled": {
-                "backgroundColor": "var(--colorNeutralBackground1)",
-                "borderColor": undefined,
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "borderColor": "var(--colorNeutralStroke1)",
+                "color": "var(--colorNeutralForeground2)",
+              },
+              "input": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground1)",
               },
               "input#autopilotInput": {
                 "backgroundColor": "var(--colorNeutralBackground4)",
                 "color": "var(--colorNeutralForeground1)",
+              },
+              "input:disabled": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground2)",
               },
             },
             "width": 300,
@@ -1290,6 +1568,11 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
                 "color": "var(--colorNeutralForeground1)",
               },
             },
+          },
+          "suffix": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "border": "1px solid var(--colorNeutralStroke1)",
+            "color": "var(--colorNeutralForeground1)",
           },
         }
       }
@@ -1400,17 +1683,37 @@ exports[`SubSettingsComponent renders 1`] = `
       required={true}
       styles={
         {
+          "field": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "color": "var(--colorNeutralForeground1)",
+            "selectors": {
+              ":disabled": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground2)",
+              },
+            },
+          },
           "fieldGroup": {
-            "borderColor": "",
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "borderColor": "var(--colorNeutralStroke1)",
             "height": 25,
             "selectors": {
               ":disabled": {
-                "backgroundColor": "var(--colorNeutralBackground1)",
-                "borderColor": undefined,
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "borderColor": "var(--colorNeutralStroke1)",
+                "color": "var(--colorNeutralForeground2)",
+              },
+              "input": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground1)",
               },
               "input#autopilotInput": {
                 "backgroundColor": "var(--colorNeutralBackground4)",
                 "color": "var(--colorNeutralForeground1)",
+              },
+              "input:disabled": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground2)",
               },
             },
             "width": 300,
@@ -1421,6 +1724,11 @@ exports[`SubSettingsComponent renders 1`] = `
                 "color": "var(--colorNeutralForeground1)",
               },
             },
+          },
+          "suffix": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "border": "1px solid var(--colorNeutralStroke1)",
+            "color": "var(--colorNeutralForeground1)",
           },
         }
       }
@@ -1597,17 +1905,37 @@ exports[`SubSettingsComponent renders 1`] = `
       required={true}
       styles={
         {
+          "field": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "color": "var(--colorNeutralForeground1)",
+            "selectors": {
+              ":disabled": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground2)",
+              },
+            },
+          },
           "fieldGroup": {
-            "borderColor": "",
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "borderColor": "var(--colorNeutralStroke1)",
             "height": 25,
             "selectors": {
               ":disabled": {
-                "backgroundColor": "var(--colorNeutralBackground1)",
-                "borderColor": undefined,
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "borderColor": "var(--colorNeutralStroke1)",
+                "color": "var(--colorNeutralForeground2)",
+              },
+              "input": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground1)",
               },
               "input#autopilotInput": {
                 "backgroundColor": "var(--colorNeutralBackground4)",
                 "color": "var(--colorNeutralForeground1)",
+              },
+              "input:disabled": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground2)",
               },
             },
             "width": 300,
@@ -1618,6 +1946,11 @@ exports[`SubSettingsComponent renders 1`] = `
                 "color": "var(--colorNeutralForeground1)",
               },
             },
+          },
+          "suffix": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "border": "1px solid var(--colorNeutralStroke1)",
+            "color": "var(--colorNeutralForeground1)",
           },
         }
       }
@@ -1730,37 +2063,73 @@ exports[`SubSettingsComponent renders 1`] = `
       }
     }
   >
-    <StyledTextFieldBase
-      defaultValue="/partitionKey"
-      disabled={true}
-      label="Partition key"
+    <StyledTooltipHostBase
+      content="This partition key is used to distribute data across multiple partitions for scalability. The value "/partitionKey" determines how documents are partitioned."
       styles={
         {
-          "fieldGroup": {
-            "borderColor": "",
-            "height": 25,
-            "selectors": {
-              ":disabled": {
-                "backgroundColor": "var(--colorNeutralBackground1)",
-                "borderColor": undefined,
-              },
-              "input#autopilotInput": {
-                "backgroundColor": "var(--colorNeutralBackground4)",
-                "color": "var(--colorNeutralForeground1)",
-              },
-            },
-            "width": 300,
-          },
-          "subComponentStyles": {
-            "label": {
-              "root": {
-                "color": "var(--colorNeutralForeground1)",
-              },
-            },
+          "root": {
+            "display": "block",
           },
         }
       }
-    />
+    >
+      <StyledTextFieldBase
+        defaultValue="/partitionKey"
+        disabled={true}
+        label="Partition key"
+        styles={
+          {
+            "field": {
+              "backgroundColor": "var(--colorNeutralBackground2)",
+              "color": "var(--colorNeutralForeground1)",
+              "selectors": {
+                ":disabled": {
+                  "backgroundColor": "var(--colorNeutralBackground2)",
+                  "color": "var(--colorNeutralForeground2)",
+                },
+              },
+            },
+            "fieldGroup": {
+              "backgroundColor": "var(--colorNeutralBackground2)",
+              "borderColor": "var(--colorNeutralStroke1)",
+              "height": 25,
+              "selectors": {
+                ":disabled": {
+                  "backgroundColor": "var(--colorNeutralBackground2)",
+                  "borderColor": "var(--colorNeutralStroke1)",
+                  "color": "var(--colorNeutralForeground2)",
+                },
+                "input": {
+                  "backgroundColor": "var(--colorNeutralBackground2)",
+                  "color": "var(--colorNeutralForeground1)",
+                },
+                "input#autopilotInput": {
+                  "backgroundColor": "var(--colorNeutralBackground4)",
+                  "color": "var(--colorNeutralForeground1)",
+                },
+                "input:disabled": {
+                  "backgroundColor": "var(--colorNeutralBackground2)",
+                  "color": "var(--colorNeutralForeground2)",
+                },
+              },
+              "width": 300,
+            },
+            "subComponentStyles": {
+              "label": {
+                "root": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
+              },
+            },
+            "suffix": {
+              "backgroundColor": "var(--colorNeutralBackground2)",
+              "border": "1px solid var(--colorNeutralStroke1)",
+              "color": "var(--colorNeutralForeground1)",
+            },
+          }
+        }
+      />
+    </StyledTooltipHostBase>
     <Text
       className="hintText-115"
     >
@@ -1787,17 +2156,37 @@ exports[`SubSettingsComponent renders 1`] = `
       label="Unique keys"
       styles={
         {
+          "field": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "color": "var(--colorNeutralForeground1)",
+            "selectors": {
+              ":disabled": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground2)",
+              },
+            },
+          },
           "fieldGroup": {
-            "borderColor": "",
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "borderColor": "var(--colorNeutralStroke1)",
             "height": 25,
             "selectors": {
               ":disabled": {
-                "backgroundColor": "var(--colorNeutralBackground1)",
-                "borderColor": undefined,
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "borderColor": "var(--colorNeutralStroke1)",
+                "color": "var(--colorNeutralForeground2)",
+              },
+              "input": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground1)",
               },
               "input#autopilotInput": {
                 "backgroundColor": "var(--colorNeutralBackground4)",
                 "color": "var(--colorNeutralForeground1)",
+              },
+              "input:disabled": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground2)",
               },
             },
             "width": 300,
@@ -1808,6 +2197,11 @@ exports[`SubSettingsComponent renders 1`] = `
                 "color": "var(--colorNeutralForeground1)",
               },
             },
+          },
+          "suffix": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "border": "1px solid var(--colorNeutralStroke1)",
+            "color": "var(--colorNeutralForeground1)",
           },
         }
       }
@@ -2078,17 +2472,37 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
       required={true}
       styles={
         {
+          "field": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "color": "var(--colorNeutralForeground1)",
+            "selectors": {
+              ":disabled": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground2)",
+              },
+            },
+          },
           "fieldGroup": {
-            "borderColor": "",
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "borderColor": "var(--colorNeutralStroke1)",
             "height": 25,
             "selectors": {
               ":disabled": {
-                "backgroundColor": "var(--colorNeutralBackground1)",
-                "borderColor": undefined,
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "borderColor": "var(--colorNeutralStroke1)",
+                "color": "var(--colorNeutralForeground2)",
+              },
+              "input": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground1)",
               },
               "input#autopilotInput": {
                 "backgroundColor": "var(--colorNeutralBackground4)",
                 "color": "var(--colorNeutralForeground1)",
+              },
+              "input:disabled": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground2)",
               },
             },
             "width": 300,
@@ -2099,6 +2513,11 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
                 "color": "var(--colorNeutralForeground1)",
               },
             },
+          },
+          "suffix": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "border": "1px solid var(--colorNeutralStroke1)",
+            "color": "var(--colorNeutralForeground1)",
           },
         }
       }
@@ -2211,37 +2630,73 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
       }
     }
   >
-    <StyledTextFieldBase
-      defaultValue="/partitionKey"
-      disabled={true}
-      label="Partition key"
+    <StyledTooltipHostBase
+      content="This partition key is used to distribute data across multiple partitions for scalability. The value "/partitionKey" determines how documents are partitioned."
       styles={
         {
-          "fieldGroup": {
-            "borderColor": "",
-            "height": 25,
-            "selectors": {
-              ":disabled": {
-                "backgroundColor": "var(--colorNeutralBackground1)",
-                "borderColor": undefined,
-              },
-              "input#autopilotInput": {
-                "backgroundColor": "var(--colorNeutralBackground4)",
-                "color": "var(--colorNeutralForeground1)",
-              },
-            },
-            "width": 300,
-          },
-          "subComponentStyles": {
-            "label": {
-              "root": {
-                "color": "var(--colorNeutralForeground1)",
-              },
-            },
+          "root": {
+            "display": "block",
           },
         }
       }
-    />
+    >
+      <StyledTextFieldBase
+        defaultValue="/partitionKey"
+        disabled={true}
+        label="Partition key"
+        styles={
+          {
+            "field": {
+              "backgroundColor": "var(--colorNeutralBackground2)",
+              "color": "var(--colorNeutralForeground1)",
+              "selectors": {
+                ":disabled": {
+                  "backgroundColor": "var(--colorNeutralBackground2)",
+                  "color": "var(--colorNeutralForeground2)",
+                },
+              },
+            },
+            "fieldGroup": {
+              "backgroundColor": "var(--colorNeutralBackground2)",
+              "borderColor": "var(--colorNeutralStroke1)",
+              "height": 25,
+              "selectors": {
+                ":disabled": {
+                  "backgroundColor": "var(--colorNeutralBackground2)",
+                  "borderColor": "var(--colorNeutralStroke1)",
+                  "color": "var(--colorNeutralForeground2)",
+                },
+                "input": {
+                  "backgroundColor": "var(--colorNeutralBackground2)",
+                  "color": "var(--colorNeutralForeground1)",
+                },
+                "input#autopilotInput": {
+                  "backgroundColor": "var(--colorNeutralBackground4)",
+                  "color": "var(--colorNeutralForeground1)",
+                },
+                "input:disabled": {
+                  "backgroundColor": "var(--colorNeutralBackground2)",
+                  "color": "var(--colorNeutralForeground2)",
+                },
+              },
+              "width": 300,
+            },
+            "subComponentStyles": {
+              "label": {
+                "root": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
+              },
+            },
+            "suffix": {
+              "backgroundColor": "var(--colorNeutralBackground2)",
+              "border": "1px solid var(--colorNeutralStroke1)",
+              "color": "var(--colorNeutralForeground1)",
+            },
+          }
+        }
+      />
+    </StyledTooltipHostBase>
     <Text
       className="hintText-115"
     >
@@ -2268,17 +2723,37 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
       label="Unique keys"
       styles={
         {
+          "field": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "color": "var(--colorNeutralForeground1)",
+            "selectors": {
+              ":disabled": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground2)",
+              },
+            },
+          },
           "fieldGroup": {
-            "borderColor": "",
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "borderColor": "var(--colorNeutralStroke1)",
             "height": 25,
             "selectors": {
               ":disabled": {
-                "backgroundColor": "var(--colorNeutralBackground1)",
-                "borderColor": undefined,
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "borderColor": "var(--colorNeutralStroke1)",
+                "color": "var(--colorNeutralForeground2)",
+              },
+              "input": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground1)",
               },
               "input#autopilotInput": {
                 "backgroundColor": "var(--colorNeutralBackground4)",
                 "color": "var(--colorNeutralForeground1)",
+              },
+              "input:disabled": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground2)",
               },
             },
             "width": 300,
@@ -2289,6 +2764,11 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
                 "color": "var(--colorNeutralForeground1)",
               },
             },
+          },
+          "suffix": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "border": "1px solid var(--colorNeutralStroke1)",
+            "color": "var(--colorNeutralForeground1)",
           },
         }
       }

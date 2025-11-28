@@ -682,25 +682,37 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
     label: {
       fontSize: 12,
       fontWeight: 400,
-      color: "inherit",
+      color: "var(--colorNeutralForeground1)",
     },
     root: {
       paddingBottom: 10,
     },
     labelWrapper: {
-      color: "inherit",
+      color: "var(--colorNeutralForeground1)",
     },
-    icon: {},
-    spinButtonWrapper: {},
+    icon: {
+      color: "var(--colorNeutralForeground1)",
+    },
+    spinButtonWrapper: {
+      backgroundColor: "var(--colorNeutralBackground3)",
+      borderColor: "var(--colorNeutralStroke1)",
+    },
     input: {
-      color: "#000000",
+      color: "var(--colorNeutralForeground1)",
+      backgroundColor: "var(--colorNeutralBackground3)",
       selectors: {
         "::placeholder": {
-          color: "#000000",
+          color: "var(--colorNeutralForeground2)",
+        },
+        "&:focus": {
+          backgroundColor: "var(--colorNeutralBackground3)",
+          borderColor: "var(--colorBrandStroke1)",
         },
       },
     },
-    arrowButtonsContainer: {},
+    arrowButtonsContainer: {
+      backgroundColor: "var(--colorNeutralBackground3)",
+    },
   };
 
   return (
@@ -750,6 +762,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                           className="textfontclr"
                           incrementButtonAriaLabel="Increase value by 1"
                           decrementButtonAriaLabel="Decrease value by 1"
+                          styles={spinButtonStyles}
                         />
                       </div>
                     )}
@@ -811,7 +824,37 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                       }
                       onChange={handleOnSelectedRegionOptionChange}
                       options={regionOptions}
-                      styles={{ root: { marginBottom: "10px" } }}
+                      styles={{
+                        root: { marginBottom: "10px" },
+                        dropdown: {
+                          backgroundColor: "var(--colorNeutralBackground3)",
+                          color: "var(--colorNeutralForeground1)",
+                          borderColor: "var(--colorNeutralStroke1)",
+                        },
+                        title: {
+                          backgroundColor: "var(--colorNeutralBackground3)",
+                          color: "var(--colorNeutralForeground1)",
+                          borderColor: "var(--colorNeutralStroke1)",
+                        },
+                        dropdownItem: {
+                          backgroundColor: "var(--colorNeutralBackground3)",
+                          color: "var(--colorNeutralForeground1)",
+                          selectors: {
+                            "&:hover": {
+                              backgroundColor: "var(--colorNeutralBackground4)",
+                              color: "var(--colorNeutralForeground1)",
+                            },
+                          },
+                        },
+                        dropdownItemSelected: {
+                          backgroundColor: "var(--colorBrandBackground)",
+                          color: "var(--colorNeutralForegroundOnBrand)",
+                        },
+                        callout: {
+                          backgroundColor: "var(--colorNeutralBackground3)",
+                          borderColor: "var(--colorNeutralStroke1)",
+                        },
+                      }}
                     />
                   </div>
                 </AccordionPanel>
@@ -1108,11 +1151,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                       onValidate={(newValue) => setMaxDegreeOfParallelism(parseInt(newValue) || maxDegreeOfParallelism)}
                       ariaLabel="Max degree of parallelism"
                       label="Max degree of parallelism"
-                      styles={{
-                        label: {
-                          color: "var(--colorNeutralForeground1)",
-                        },
-                      }}
+                      styles={spinButtonStyles}
                     />
                   </div>
                 </AccordionPanel>

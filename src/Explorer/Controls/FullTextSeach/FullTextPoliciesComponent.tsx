@@ -98,6 +98,7 @@ const dropdownStyles: Partial<IDropdownStyles> = {
   dropdown: {
     backgroundColor: "var(--colorNeutralBackground2)",
     borderColor: "var(--colorNeutralStroke1)",
+    color: "var(--colorNeutralForeground1)",
   },
   title: {
     backgroundColor: "var(--colorNeutralBackground2)",
@@ -121,7 +122,13 @@ const dropdownStyles: Partial<IDropdownStyles> = {
       "& .ms-Dropdown-titleText": {
         color: "var(--colorNeutralForeground1)",
       },
+      "&.ms-Dropdown-title--hasPlaceholder": {
+        color: "var(--colorNeutralForeground2)",
+      },
     },
+  },
+  errorMessage: {
+    color: "var(--colorNeutralForeground1)",
   },
   caretDown: {
     color: "var(--colorNeutralForeground1)",

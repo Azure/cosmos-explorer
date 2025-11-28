@@ -1,5 +1,5 @@
 import { IMessageBarStyles, MessageBar, MessageBarType, Stack } from "@fluentui/react";
-import { useThemeStore } from "hooks/useTheme";
+import { monacoTheme, useThemeStore } from "hooks/useTheme";
 import * as monaco from "monaco-editor";
 import * as React from "react";
 import * as DataModels from "../../../../Contracts/DataModels";
@@ -120,13 +120,12 @@ export class IndexingPolicyComponent extends React.Component<
         language: "json",
         readOnly: isIndexTransforming(this.props.indexTransformationProgress),
         ariaLabel: "Indexing Policy",
-        theme: useThemeStore.getState().isDarkMode ? "vs-dark" : "vs",
+        theme: monacoTheme(),
       });
       if (this.indexingPolicyEditor) {
-        this.themeUnsubscribe = useThemeStore.subscribe((state) => {
+        this.themeUnsubscribe = useThemeStore.subscribe(() => {
           if (this.indexingPolicyEditor) {
-            const newTheme = state.isDarkMode ? "vs-dark" : "vs";
-            monaco.editor.setTheme(newTheme);
+            monaco.editor.setTheme(monacoTheme());
           }
         });
 

@@ -599,6 +599,10 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
           backgroundColor: "var(--colorStatusWarningBackground1)",
           border: "1px solid var(--colorStatusWarningBorder1)",
         },
+        "&.ms-MessageBar--info": {
+          backgroundColor: "var(--colorNeutralBackground3)",
+          border: "1px solid var(--colorNeutralStroke1)",
+        },
         ".ms-MessageBar-icon": {
           color: "var(--colorNeutralForeground1)",
         },

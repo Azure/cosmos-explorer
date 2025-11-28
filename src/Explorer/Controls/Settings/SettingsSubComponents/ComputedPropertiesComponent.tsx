@@ -3,7 +3,7 @@ import * as DataModels from "Contracts/DataModels";
 import { titleAndInputStackProps, unsavedEditorWarningMessage } from "Explorer/Controls/Settings/SettingsRenderUtils";
 import { isDirty } from "Explorer/Controls/Settings/SettingsUtils";
 import { loadMonaco } from "Explorer/LazyMonaco";
-import { useThemeStore } from "hooks/useTheme";
+import { monacoTheme, useThemeStore } from "hooks/useTheme";
 import * as monaco from "monaco-editor";
 import * as React from "react";
 export interface ComputedPropertiesComponentProps {
@@ -108,14 +108,13 @@ export class ComputedPropertiesComponent extends React.Component<
       value: value,
       language: "json",
       ariaLabel: "Computed properties",
-      theme: useThemeStore.getState().isDarkMode ? "vs-dark" : "vs",
+      theme: monacoTheme(),
     });
     if (this.computedPropertiesEditor) {
       // Subscribe to theme changes
-      this.themeUnsubscribe = useThemeStore.subscribe((state) => {
+      this.themeUnsubscribe = useThemeStore.subscribe(() => {
         if (this.computedPropertiesEditor) {
-          const newTheme = state.isDarkMode ? "vs-dark" : "vs";
-          monaco.editor.setTheme(newTheme);
+          monaco.editor.setTheme(monacoTheme());
         }
       });
 

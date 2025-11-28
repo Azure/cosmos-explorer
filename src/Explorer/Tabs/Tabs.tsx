@@ -1,4 +1,4 @@
-import { Spinner, SpinnerSize } from "@fluentui/react";
+import { Spinner, SpinnerSize, TooltipHost } from "@fluentui/react";
 import { CollectionTabKind } from "Contracts/ViewModels";
 import Explorer from "Explorer/Explorer";
 import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
@@ -99,59 +99,59 @@ function TabNav({ tab, active, tabKind }: { tab?: Tab; active: boolean; tabKind?
     >
       <span className="tabNavContentContainer">
         <div className="tab_Content">
-          <span
-            className="contentWrapper"
-            onClick={() => {
-              if (tab) {
-                tab.onTabClick();
-              } else if (tabKind !== undefined) {
-                useTabs.getState().activateReactTab(tabKind);
-              }
-            }}
-            onKeyPress={({ nativeEvent: e }) => {
-              if (tab) {
-                tab.onKeyPressActivate(undefined, e);
-              } else if (tabKind !== undefined) {
-                onKeyPressReactTab(e, tabKind);
-              }
-            }}
-            title={useObservable(tab?.tabPath || ko.observable(""))}
-            aria-selected={active}
-            aria-expanded={active}
-            aria-controls={tabId}
-            tabIndex={0}
-            role="tab"
-            ref={focusTab}
-          >
-            <span className="statusIconContainer" style={{ width: tabKind === ReactTabKind.Home ? 0 : 18 }}>
-              {useObservable(tab?.isExecutionError || ko.observable(false)) && <ErrorIcon tab={tab} active={active} />}
-              {useObservable(tab?.isExecutionWarning || ko.observable(false)) && (
-                <WarningIcon tab={tab} active={active} />
-              )}
-              {isTabExecuting(tab, tabKind) && (
-                <Spinner
-                  size={SpinnerSize.small}
-                  styles={{
-                    circle: {
-                      borderTopColor: "var(--colorNeutralForeground1)",
-                      borderLeftColor: "var(--colorNeutralForeground1)",
-                      borderBottomColor: "var(--colorNeutralForeground1)",
-                      borderRightColor: "var(--colorNeutralBackground1)",
-                    },
-                  }}
-                />
-              )}
-              {isQueryErrorThrown(tab, tabKind) && (
-                <img
-                  src={errorQuery}
-                  title="Error"
-                  alt="Error"
-                  style={{ marginTop: 4, marginLeft: 4, width: 10, height: 11 }}
-                />
-              )}
+          <TooltipHost content={useObservable(tab?.tabPath || ko.observable(""))}>
+            <span
+              className="contentWrapper"
+              onClick={() => {
+                if (tab) {
+                  tab.onTabClick();
+                } else if (tabKind !== undefined) {
+                  useTabs.getState().activateReactTab(tabKind);
+                }
+              }}
+              onKeyPress={({ nativeEvent: e }) => {
+                if (tab) {
+                  tab.onKeyPressActivate(undefined, e);
+                } else if (tabKind !== undefined) {
+                  onKeyPressReactTab(e, tabKind);
+                }
+              }}
+              aria-selected={active}
+              aria-expanded={active}
+              aria-controls={tabId}
+              tabIndex={0}
+              role="tab"
+              ref={focusTab}
+            >
+              <span className="statusIconContainer" style={{ width: tabKind === ReactTabKind.Home ? 0 : 18 }}>
+                {useObservable(tab?.isExecutionError || ko.observable(false)) && (
+                  <ErrorIcon tab={tab} active={active} />
+                )}
+                {useObservable(tab?.isExecutionWarning || ko.observable(false)) && (
+                  <WarningIcon tab={tab} active={active} />
+                )}
+                {isTabExecuting(tab, tabKind) && (
+                  <Spinner
+                    size={SpinnerSize.small}
+                    styles={{
+                      circle: {
+                        borderTopColor: "var(--colorNeutralForeground1)",
+                        borderLeftColor: "var(--colorNeutralForeground1)",
+                        borderBottomColor: "var(--colorNeutralForeground1)",
+                        borderRightColor: "var(--colorNeutralBackground1)",
+                      },
+                    }}
+                  />
+                )}
+                {isQueryErrorThrown(tab, tabKind) && (
+                  <TooltipHost content="Error">
+                    <img src={errorQuery} alt="Error" style={{ marginTop: 4, marginLeft: 4, width: 10, height: 11 }} />
+                  </TooltipHost>
+                )}
+              </span>
+              <span className="tabNavText">{tabTitle}</span>
             </span>
-            <span className="tabNavText">{tabTitle}</span>
-          </span>
+          </TooltipHost>
           <span className="tabIconSection">
             <CloseButton tab={tab} active={active} hovering={hovering} tabKind={tabKind} ariaLabel={tabTitle} />
           </span>
@@ -181,49 +181,60 @@ const CloseButton = ({
   tabKind?: ReactTabKind;
   ariaLabel: string;
 }) => (
-  <span
-    style={{ display: hovering || active ? undefined : "none" }}
-    title="Close"
-    role="button"
-    aria-label={ariaLabel}
-    className="cancelButton"
-    onClick={(event: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
-      event.stopPropagation();
-      tab ? tab.onCloseTabButtonClick() : useTabs.getState().closeReactTab(tabKind);
+  <TooltipHost
+    content="Close"
+    styles={{
+      root: {
+        display: hovering || active ? undefined : "none",
+      },
     }}
-    tabIndex={active ? 0 : undefined}
-    onKeyPress={({ nativeEvent: e }) => (tab ? tab.onKeyPressClose(undefined, e) : onKeyPressReactTabClose(e, tabKind))}
   >
-    <span className="tabIcon close-Icon" />
-  </span>
+    <span
+      role="button"
+      aria-label={ariaLabel}
+      className="cancelButton"
+      onClick={(event: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
+        event.stopPropagation();
+        tab ? tab.onCloseTabButtonClick() : useTabs.getState().closeReactTab(tabKind);
+      }}
+      tabIndex={active ? 0 : undefined}
+      onKeyPress={({ nativeEvent: e }) =>
+        tab ? tab.onKeyPressClose(undefined, e) : onKeyPressReactTabClose(e, tabKind)
+      }
+    >
+      <span className="tabIcon close-Icon" />
+    </span>
+  </TooltipHost>
 );
 
 const ErrorIcon = ({ tab, active }: { tab: Tab; active: boolean }) => (
-  <div
-    id="errorStatusIcon"
-    role="button"
-    title="Click to view more details"
-    tabIndex={active ? 0 : undefined}
-    className={active ? "actionsEnabled errorIconContainer" : "errorIconContainer"}
-    onClick={({ nativeEvent: e }) => tab.onErrorDetailsClick(undefined, e)}
-    onKeyPress={({ nativeEvent: e }) => tab.onErrorDetailsKeyPress(undefined, e)}
-  >
-    <span className="errorIcon" />
-  </div>
+  <TooltipHost content="Click to view more details">
+    <div
+      id="errorStatusIcon"
+      role="button"
+      tabIndex={active ? 0 : undefined}
+      className={active ? "actionsEnabled errorIconContainer" : "errorIconContainer"}
+      onClick={({ nativeEvent: e }) => tab.onErrorDetailsClick(undefined, e)}
+      onKeyPress={({ nativeEvent: e }) => tab.onErrorDetailsKeyPress(undefined, e)}
+    >
+      <span className="errorIcon" />
+    </div>
+  </TooltipHost>
 );
 
 const WarningIcon = ({ tab, active }: { tab: Tab; active: boolean }) => (
-  <div
-    id="warningStatusIcon"
-    role="button"
-    title="Click to view more details"
-    tabIndex={active ? 0 : undefined}
-    className={active ? "actionsEnabled warningIconContainer" : "warningIconContainer"}
-    onClick={({ nativeEvent: e }) => tab.onErrorDetailsClick(undefined, e)}
-    onKeyPress={({ nativeEvent: e }) => tab.onErrorDetailsKeyPress(undefined, e)}
-  >
-    <img src={warningIconSvg} alt="Warning Icon" style={{ height: 15, marginBottom: 5 }} />
-  </div>
+  <TooltipHost content="Click to view more details">
+    <div
+      id="warningStatusIcon"
+      role="button"
+      tabIndex={active ? 0 : undefined}
+      className={active ? "actionsEnabled warningIconContainer" : "warningIconContainer"}
+      onClick={({ nativeEvent: e }) => tab.onErrorDetailsClick(undefined, e)}
+      onKeyPress={({ nativeEvent: e }) => tab.onErrorDetailsKeyPress(undefined, e)}
+    >
+      <img src={warningIconSvg} alt="Warning Icon" style={{ height: 15, marginBottom: 5 }} />
+    </div>
+  </TooltipHost>
 );
 
 function TabPane({ tab, active }: { tab: Tab; active: boolean }) {

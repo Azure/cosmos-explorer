@@ -22,6 +22,14 @@ exports[`AddMongoIndexComponent renders 1`] = `
       onChange={[Function]}
       styles={
         {
+          "field": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "color": "var(--colorNeutralForeground1)",
+          },
+          "fieldGroup": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "borderColor": "var(--colorNeutralStroke1)",
+          },
           "root": {
             "paddingLeft": 10,
             "width": 210,
@@ -49,9 +57,51 @@ exports[`AddMongoIndexComponent renders 1`] = `
       selectedKey="Single"
       styles={
         {
+          "callout": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "border": "1px solid var(--colorNeutralStroke1)",
+          },
+          "caretDown": {
+            "color": "var(--colorNeutralForeground1)",
+          },
           "dropdown": {
             "paddingLeft": 10,
             "width": 202,
+          },
+          "dropdownItem": {
+            "backgroundColor": "transparent",
+            "color": "var(--colorNeutralForeground1)",
+            "selectors": {
+              "&:focus": {
+                "backgroundColor": "rgba(255, 255, 255, 0.1)",
+                "color": "var(--colorNeutralForeground1)",
+              },
+              "&:hover": {
+                "backgroundColor": "rgba(255, 255, 255, 0.1)",
+                "color": "var(--colorNeutralForeground1)",
+              },
+            },
+          },
+          "dropdownItemSelected": {
+            "backgroundColor": "rgba(255, 255, 255, 0.08)",
+            "color": "var(--colorNeutralForeground1)",
+            "selectors": {
+              "&:hover": {
+                "backgroundColor": "rgba(255, 255, 255, 0.1)",
+                "color": "var(--colorNeutralForeground1)",
+              },
+            },
+          },
+          "dropdownItems": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+          },
+          "dropdownOptionText": {
+            "color": "var(--colorNeutralForeground1)",
+          },
+          "title": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "borderColor": "var(--colorNeutralStroke1)",
+            "color": "var(--colorNeutralForeground1)",
           },
         }
       }

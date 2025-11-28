@@ -247,6 +247,13 @@ export const customDetailsListStyles: Partial<IDetailsListStyles> = {
       ".ms-DetailsRow-cell": {
         color: "var(--colorNeutralForeground1)",
       },
+      // Tooltip styling for cells
+      ".ms-TooltipHost": {
+        color: "var(--colorNeutralForeground1)",
+      },
+      ".ms-DetailsRow-cell .ms-TooltipHost": {
+        color: "var(--colorNeutralForeground1)",
+      },
     },
   },
 };
@@ -672,6 +679,11 @@ export const getTextFieldStyles = (current: isDirtyTypes, baseline: isDirtyTypes
         color: "var(--colorNeutralForeground1)",
       },
     },
+  },
+  suffix: {
+    backgroundColor: "var(--colorNeutralBackground2)",
+    color: "var(--colorNeutralForeground1)",
+    border: "1px solid var(--colorNeutralStroke1)",
   },
 });
 

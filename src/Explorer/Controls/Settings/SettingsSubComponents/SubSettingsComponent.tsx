@@ -7,6 +7,7 @@ import {
   Stack,
   Text,
   TextField,
+  TooltipHost,
   mergeStyleSets,
 } from "@fluentui/react";
 import * as React from "react";
@@ -351,12 +352,23 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
   private getPartitionKeyComponent = (): JSX.Element => (
     <Stack {...titleAndInputStackProps}>
       {this.getPartitionKeyVisible() && (
-        <TextField
-          label={this.partitionKeyName}
-          disabled
-          styles={getTextFieldStyles(undefined, undefined)}
-          defaultValue={this.partitionKeyValue}
-        />
+        <TooltipHost
+          content={`This ${this.partitionKeyName.toLowerCase()} is used to distribute data across multiple partitions for scalability. The value "${
+            this.partitionKeyValue
+          }" determines how documents are partitioned.`}
+          styles={{
+            root: {
+              display: "block",
+            },
+          }}
+        >
+          <TextField
+            label={this.partitionKeyName}
+            disabled
+            styles={getTextFieldStyles(undefined, undefined)}
+            defaultValue={this.partitionKeyValue}
+          />
+        </TooltipHost>
       )}
 
       {userContext.apiType === "SQL" && this.isLargePartitionKeyEnabled() && (

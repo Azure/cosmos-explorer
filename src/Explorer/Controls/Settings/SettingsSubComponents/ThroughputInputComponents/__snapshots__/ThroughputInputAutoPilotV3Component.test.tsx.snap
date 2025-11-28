@@ -21,6 +21,10 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
         "root": {
           "marginTop": "5px",
           "selectors": {
+            "&.ms-MessageBar--info": {
+              "backgroundColor": "var(--colorNeutralBackground3)",
+              "border": "1px solid var(--colorNeutralStroke1)",
+            },
             "&.ms-MessageBar--severeWarning": {
               "backgroundColor": "var(--colorStatusDangerBackground1)",
               "border": "1px solid var(--colorStatusDangerBorder1)",
@@ -78,6 +82,10 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
           "root": {
             "marginTop": "5px",
             "selectors": {
+              "&.ms-MessageBar--info": {
+                "backgroundColor": "var(--colorNeutralBackground3)",
+                "border": "1px solid var(--colorNeutralStroke1)",
+              },
               "&.ms-MessageBar--severeWarning": {
                 "backgroundColor": "var(--colorStatusDangerBackground1)",
                 "border": "1px solid var(--colorStatusDangerBorder1)",
@@ -371,6 +379,11 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
                       },
                     },
                   },
+                  "suffix": {
+                    "backgroundColor": "var(--colorNeutralBackground2)",
+                    "border": "1px solid var(--colorNeutralStroke1)",
+                    "color": "var(--colorNeutralForeground1)",
+                  },
                 }
               }
               type="number"
@@ -504,6 +517,10 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
                 "root": {
                   "marginTop": "5px",
                   "selectors": {
+                    "&.ms-MessageBar--info": {
+                      "backgroundColor": "var(--colorNeutralBackground3)",
+                      "border": "1px solid var(--colorNeutralStroke1)",
+                    },
                     "&.ms-MessageBar--severeWarning": {
                       "backgroundColor": "var(--colorStatusDangerBackground1)",
                       "border": "1px solid var(--colorStatusDangerBorder1)",
@@ -919,17 +936,37 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
           step={100}
           styles={
             {
+              "field": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground1)",
+                "selectors": {
+                  ":disabled": {
+                    "backgroundColor": "var(--colorNeutralBackground2)",
+                    "color": "var(--colorNeutralForeground2)",
+                  },
+                },
+              },
               "fieldGroup": {
-                "borderColor": "",
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "borderColor": "var(--colorNeutralStroke1)",
                 "height": 25,
                 "selectors": {
                   ":disabled": {
-                    "backgroundColor": "var(--colorNeutralBackground1)",
-                    "borderColor": undefined,
+                    "backgroundColor": "var(--colorNeutralBackground2)",
+                    "borderColor": "var(--colorNeutralStroke1)",
+                    "color": "var(--colorNeutralForeground2)",
+                  },
+                  "input": {
+                    "backgroundColor": "var(--colorNeutralBackground2)",
+                    "color": "var(--colorNeutralForeground1)",
                   },
                   "input#autopilotInput": {
                     "backgroundColor": "var(--colorNeutralBackground4)",
                     "color": "var(--colorNeutralForeground1)",
+                  },
+                  "input:disabled": {
+                    "backgroundColor": "var(--colorNeutralBackground2)",
+                    "color": "var(--colorNeutralForeground2)",
                   },
                 },
                 "width": 300,
@@ -940,6 +977,11 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
                     "color": "var(--colorNeutralForeground1)",
                   },
                 },
+              },
+              "suffix": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "border": "1px solid var(--colorNeutralStroke1)",
+                "color": "var(--colorNeutralForeground1)",
               },
             }
           }
@@ -1071,6 +1113,10 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
                 "root": {
                   "marginTop": "5px",
                   "selectors": {
+                    "&.ms-MessageBar--info": {
+                      "backgroundColor": "var(--colorNeutralBackground3)",
+                      "border": "1px solid var(--colorNeutralStroke1)",
+                    },
                     "&.ms-MessageBar--severeWarning": {
                       "backgroundColor": "var(--colorStatusDangerBackground1)",
                       "border": "1px solid var(--colorStatusDangerBorder1)",
@@ -1464,17 +1510,37 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
           step={100}
           styles={
             {
+              "field": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground1)",
+                "selectors": {
+                  ":disabled": {
+                    "backgroundColor": "var(--colorNeutralBackground2)",
+                    "color": "var(--colorNeutralForeground2)",
+                  },
+                },
+              },
               "fieldGroup": {
-                "borderColor": "",
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "borderColor": "var(--colorNeutralStroke1)",
                 "height": 25,
                 "selectors": {
                   ":disabled": {
-                    "backgroundColor": "var(--colorNeutralBackground1)",
-                    "borderColor": undefined,
+                    "backgroundColor": "var(--colorNeutralBackground2)",
+                    "borderColor": "var(--colorNeutralStroke1)",
+                    "color": "var(--colorNeutralForeground2)",
+                  },
+                  "input": {
+                    "backgroundColor": "var(--colorNeutralBackground2)",
+                    "color": "var(--colorNeutralForeground1)",
                   },
                   "input#autopilotInput": {
                     "backgroundColor": "var(--colorNeutralBackground4)",
                     "color": "var(--colorNeutralForeground1)",
+                  },
+                  "input:disabled": {
+                    "backgroundColor": "var(--colorNeutralBackground2)",
+                    "color": "var(--colorNeutralForeground2)",
                   },
                 },
                 "width": 300,
@@ -1485,6 +1551,11 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
                     "color": "var(--colorNeutralForeground1)",
                   },
                 },
+              },
+              "suffix": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "border": "1px solid var(--colorNeutralStroke1)",
+                "color": "var(--colorNeutralForeground1)",
               },
             }
           }
@@ -1616,6 +1687,10 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
                 "root": {
                   "marginTop": "5px",
                   "selectors": {
+                    "&.ms-MessageBar--info": {
+                      "backgroundColor": "var(--colorNeutralBackground3)",
+                      "border": "1px solid var(--colorNeutralStroke1)",
+                    },
                     "&.ms-MessageBar--severeWarning": {
                       "backgroundColor": "var(--colorStatusDangerBackground1)",
                       "border": "1px solid var(--colorStatusDangerBorder1)",

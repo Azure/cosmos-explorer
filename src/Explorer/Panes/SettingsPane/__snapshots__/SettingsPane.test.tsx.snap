@@ -127,6 +127,44 @@ exports[`Settings Pane should render Default properly 1`] = `
                 onIncrement={[Function]}
                 onValidate={[Function]}
                 step={1}
+                styles={
+                  {
+                    "arrowButtonsContainer": {
+                      "backgroundColor": "var(--colorNeutralBackground3)",
+                    },
+                    "icon": {
+                      "color": "var(--colorNeutralForeground1)",
+                    },
+                    "input": {
+                      "backgroundColor": "var(--colorNeutralBackground3)",
+                      "color": "var(--colorNeutralForeground1)",
+                      "selectors": {
+                        "&:focus": {
+                          "backgroundColor": "var(--colorNeutralBackground3)",
+                          "borderColor": "var(--colorBrandStroke1)",
+                        },
+                        "::placeholder": {
+                          "color": "var(--colorNeutralForeground2)",
+                        },
+                      },
+                    },
+                    "label": {
+                      "color": "var(--colorNeutralForeground1)",
+                      "fontSize": 12,
+                      "fontWeight": 400,
+                    },
+                    "labelWrapper": {
+                      "color": "var(--colorNeutralForeground1)",
+                    },
+                    "root": {
+                      "paddingBottom": 10,
+                    },
+                    "spinButtonWrapper": {
+                      "backgroundColor": "var(--colorNeutralBackground3)",
+                      "borderColor": "var(--colorNeutralStroke1)",
+                    },
+                  }
+                }
                 value="0"
               />
             </div>
@@ -229,28 +267,40 @@ exports[`Settings Pane should render Default properly 1`] = `
               step={1000}
               styles={
                 {
-                  "arrowButtonsContainer": {},
-                  "icon": {},
+                  "arrowButtonsContainer": {
+                    "backgroundColor": "var(--colorNeutralBackground3)",
+                  },
+                  "icon": {
+                    "color": "var(--colorNeutralForeground1)",
+                  },
                   "input": {
-                    "color": "#000000",
+                    "backgroundColor": "var(--colorNeutralBackground3)",
+                    "color": "var(--colorNeutralForeground1)",
                     "selectors": {
+                      "&:focus": {
+                        "backgroundColor": "var(--colorNeutralBackground3)",
+                        "borderColor": "var(--colorBrandStroke1)",
+                      },
                       "::placeholder": {
-                        "color": "#000000",
+                        "color": "var(--colorNeutralForeground2)",
                       },
                     },
                   },
                   "label": {
-                    "color": "inherit",
+                    "color": "var(--colorNeutralForeground1)",
                     "fontSize": 12,
                     "fontWeight": 400,
                   },
                   "labelWrapper": {
-                    "color": "inherit",
+                    "color": "var(--colorNeutralForeground1)",
                   },
                   "root": {
                     "paddingBottom": 10,
                   },
-                  "spinButtonWrapper": {},
+                  "spinButtonWrapper": {
+                    "backgroundColor": "var(--colorNeutralBackground3)",
+                    "borderColor": "var(--colorNeutralStroke1)",
+                  },
                 }
               }
             />
@@ -388,28 +438,40 @@ exports[`Settings Pane should render Default properly 1`] = `
               step={1}
               styles={
                 {
-                  "arrowButtonsContainer": {},
-                  "icon": {},
+                  "arrowButtonsContainer": {
+                    "backgroundColor": "var(--colorNeutralBackground3)",
+                  },
+                  "icon": {
+                    "color": "var(--colorNeutralForeground1)",
+                  },
                   "input": {
-                    "color": "#000000",
+                    "backgroundColor": "var(--colorNeutralBackground3)",
+                    "color": "var(--colorNeutralForeground1)",
                     "selectors": {
+                      "&:focus": {
+                        "backgroundColor": "var(--colorNeutralBackground3)",
+                        "borderColor": "var(--colorBrandStroke1)",
+                      },
                       "::placeholder": {
-                        "color": "#000000",
+                        "color": "var(--colorNeutralForeground2)",
                       },
                     },
                   },
                   "label": {
-                    "color": "inherit",
+                    "color": "var(--colorNeutralForeground1)",
                     "fontSize": 12,
                     "fontWeight": 400,
                   },
                   "labelWrapper": {
-                    "color": "inherit",
+                    "color": "var(--colorNeutralForeground1)",
                   },
                   "root": {
                     "paddingBottom": 10,
                   },
-                  "spinButtonWrapper": {},
+                  "spinButtonWrapper": {
+                    "backgroundColor": "var(--colorNeutralBackground3)",
+                    "borderColor": "var(--colorNeutralStroke1)",
+                  },
                 }
               }
               value="9"
@@ -438,28 +500,40 @@ exports[`Settings Pane should render Default properly 1`] = `
               step={1000}
               styles={
                 {
-                  "arrowButtonsContainer": {},
-                  "icon": {},
+                  "arrowButtonsContainer": {
+                    "backgroundColor": "var(--colorNeutralBackground3)",
+                  },
+                  "icon": {
+                    "color": "var(--colorNeutralForeground1)",
+                  },
                   "input": {
-                    "color": "#000000",
+                    "backgroundColor": "var(--colorNeutralBackground3)",
+                    "color": "var(--colorNeutralForeground1)",
                     "selectors": {
+                      "&:focus": {
+                        "backgroundColor": "var(--colorNeutralBackground3)",
+                        "borderColor": "var(--colorBrandStroke1)",
+                      },
                       "::placeholder": {
-                        "color": "#000000",
+                        "color": "var(--colorNeutralForeground2)",
                       },
                     },
                   },
                   "label": {
-                    "color": "inherit",
+                    "color": "var(--colorNeutralForeground1)",
                     "fontSize": 12,
                     "fontWeight": 400,
                   },
                   "labelWrapper": {
-                    "color": "inherit",
+                    "color": "var(--colorNeutralForeground1)",
                   },
                   "root": {
                     "paddingBottom": 10,
                   },
-                  "spinButtonWrapper": {},
+                  "spinButtonWrapper": {
+                    "backgroundColor": "var(--colorNeutralBackground3)",
+                    "borderColor": "var(--colorNeutralStroke1)",
+                  },
                 }
               }
               value="0"
@@ -488,28 +562,40 @@ exports[`Settings Pane should render Default properly 1`] = `
               step={1}
               styles={
                 {
-                  "arrowButtonsContainer": {},
-                  "icon": {},
+                  "arrowButtonsContainer": {
+                    "backgroundColor": "var(--colorNeutralBackground3)",
+                  },
+                  "icon": {
+                    "color": "var(--colorNeutralForeground1)",
+                  },
                   "input": {
-                    "color": "#000000",
+                    "backgroundColor": "var(--colorNeutralBackground3)",
+                    "color": "var(--colorNeutralForeground1)",
                     "selectors": {
+                      "&:focus": {
+                        "backgroundColor": "var(--colorNeutralBackground3)",
+                        "borderColor": "var(--colorBrandStroke1)",
+                      },
                       "::placeholder": {
-                        "color": "#000000",
+                        "color": "var(--colorNeutralForeground2)",
                       },
                     },
                   },
                   "label": {
-                    "color": "inherit",
+                    "color": "var(--colorNeutralForeground1)",
                     "fontSize": 12,
                     "fontWeight": 400,
                   },
                   "labelWrapper": {
-                    "color": "inherit",
+                    "color": "var(--colorNeutralForeground1)",
                   },
                   "root": {
                     "paddingBottom": 10,
                   },
-                  "spinButtonWrapper": {},
+                  "spinButtonWrapper": {
+                    "backgroundColor": "var(--colorNeutralBackground3)",
+                    "borderColor": "var(--colorNeutralStroke1)",
+                  },
                 }
               }
               value="30"
@@ -667,8 +753,39 @@ exports[`Settings Pane should render Default properly 1`] = `
               step={1}
               styles={
                 {
+                  "arrowButtonsContainer": {
+                    "backgroundColor": "var(--colorNeutralBackground3)",
+                  },
+                  "icon": {
+                    "color": "var(--colorNeutralForeground1)",
+                  },
+                  "input": {
+                    "backgroundColor": "var(--colorNeutralBackground3)",
+                    "color": "var(--colorNeutralForeground1)",
+                    "selectors": {
+                      "&:focus": {
+                        "backgroundColor": "var(--colorNeutralBackground3)",
+                        "borderColor": "var(--colorBrandStroke1)",
+                      },
+                      "::placeholder": {
+                        "color": "var(--colorNeutralForeground2)",
+                      },
+                    },
+                  },
                   "label": {
                     "color": "var(--colorNeutralForeground1)",
+                    "fontSize": 12,
+                    "fontWeight": 400,
+                  },
+                  "labelWrapper": {
+                    "color": "var(--colorNeutralForeground1)",
+                  },
+                  "root": {
+                    "paddingBottom": 10,
+                  },
+                  "spinButtonWrapper": {
+                    "backgroundColor": "var(--colorNeutralBackground3)",
+                    "borderColor": "var(--colorNeutralStroke1)",
                   },
                 }
               }
@@ -682,14 +799,14 @@ exports[`Settings Pane should render Default properly 1`] = `
       >
         <AccordionHeader>
           <div
-            className="___15c001r_0000000 fq02s40"
+            className="___j7dlp70_0000000 fq02s40 f19n0e5"
           >
             Advanced Settings
           </div>
         </AccordionHeader>
         <AccordionPanel>
           <div
-            className="___1dfa554_0000000 fo7qwa0"
+            className="___1evh9ps_0000000 fo7qwa0 f19n0e5"
           >
             <Stack
               horizontal={true}
@@ -708,8 +825,26 @@ exports[`Settings Pane should render Default properly 1`] = `
                 onChange={[Function]}
                 styles={
                   {
+                    "checkbox": {
+                      "backgroundColor": "var(--colorNeutralBackground2)",
+                      "borderColor": "var(--colorNeutralForeground3)",
+                    },
                     "label": {
+                      "color": "var(--colorNeutralForeground1)",
                       "padding": 0,
+                    },
+                    "root": {
+                      "selectors": {
+                        ":hover .ms-Checkbox-label": {
+                          "color": "var(--colorNeutralForeground1)",
+                        },
+                        ":hover .ms-Checkbox-text": {
+                          "color": "var(--colorNeutralForeground1)",
+                        },
+                      },
+                    },
+                    "text": {
+                      "color": "var(--colorNeutralForeground1)",
                     },
                   }
                 }
@@ -830,28 +965,40 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
               step={1}
               styles={
                 {
-                  "arrowButtonsContainer": {},
-                  "icon": {},
+                  "arrowButtonsContainer": {
+                    "backgroundColor": "var(--colorNeutralBackground3)",
+                  },
+                  "icon": {
+                    "color": "var(--colorNeutralForeground1)",
+                  },
                   "input": {
-                    "color": "#000000",
+                    "backgroundColor": "var(--colorNeutralBackground3)",
+                    "color": "var(--colorNeutralForeground1)",
                     "selectors": {
+                      "&:focus": {
+                        "backgroundColor": "var(--colorNeutralBackground3)",
+                        "borderColor": "var(--colorBrandStroke1)",
+                      },
                       "::placeholder": {
-                        "color": "#000000",
+                        "color": "var(--colorNeutralForeground2)",
                       },
                     },
                   },
                   "label": {
-                    "color": "inherit",
+                    "color": "var(--colorNeutralForeground1)",
                     "fontSize": 12,
                     "fontWeight": 400,
                   },
                   "labelWrapper": {
-                    "color": "inherit",
+                    "color": "var(--colorNeutralForeground1)",
                   },
                   "root": {
                     "paddingBottom": 10,
                   },
-                  "spinButtonWrapper": {},
+                  "spinButtonWrapper": {
+                    "backgroundColor": "var(--colorNeutralBackground3)",
+                    "borderColor": "var(--colorNeutralStroke1)",
+                  },
                 }
               }
               value="9"
@@ -880,28 +1027,40 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
               step={1000}
               styles={
                 {
-                  "arrowButtonsContainer": {},
-                  "icon": {},
+                  "arrowButtonsContainer": {
+                    "backgroundColor": "var(--colorNeutralBackground3)",
+                  },
+                  "icon": {
+                    "color": "var(--colorNeutralForeground1)",
+                  },
                   "input": {
-                    "color": "#000000",
+                    "backgroundColor": "var(--colorNeutralBackground3)",
+                    "color": "var(--colorNeutralForeground1)",
                     "selectors": {
+                      "&:focus": {
+                        "backgroundColor": "var(--colorNeutralBackground3)",
+                        "borderColor": "var(--colorBrandStroke1)",
+                      },
                       "::placeholder": {
-                        "color": "#000000",
+                        "color": "var(--colorNeutralForeground2)",
                       },
                     },
                   },
                   "label": {
-                    "color": "inherit",
+                    "color": "var(--colorNeutralForeground1)",
                     "fontSize": 12,
                     "fontWeight": 400,
                   },
                   "labelWrapper": {
-                    "color": "inherit",
+                    "color": "var(--colorNeutralForeground1)",
                   },
                   "root": {
                     "paddingBottom": 10,
                   },
-                  "spinButtonWrapper": {},
+                  "spinButtonWrapper": {
+                    "backgroundColor": "var(--colorNeutralBackground3)",
+                    "borderColor": "var(--colorNeutralStroke1)",
+                  },
                 }
               }
               value="0"
@@ -930,28 +1089,40 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
               step={1}
               styles={
                 {
-                  "arrowButtonsContainer": {},
-                  "icon": {},
+                  "arrowButtonsContainer": {
+                    "backgroundColor": "var(--colorNeutralBackground3)",
+                  },
+                  "icon": {
+                    "color": "var(--colorNeutralForeground1)",
+                  },
                   "input": {
-                    "color": "#000000",
+                    "backgroundColor": "var(--colorNeutralBackground3)",
+                    "color": "var(--colorNeutralForeground1)",
                     "selectors": {
+                      "&:focus": {
+                        "backgroundColor": "var(--colorNeutralBackground3)",
+                        "borderColor": "var(--colorBrandStroke1)",
+                      },
                       "::placeholder": {
-                        "color": "#000000",
+                        "color": "var(--colorNeutralForeground2)",
                       },
                     },
                   },
                   "label": {
-                    "color": "inherit",
+                    "color": "var(--colorNeutralForeground1)",
                     "fontSize": 12,
                     "fontWeight": 400,
                   },
                   "labelWrapper": {
-                    "color": "inherit",
+                    "color": "var(--colorNeutralForeground1)",
                   },
                   "root": {
                     "paddingBottom": 10,
                   },
-                  "spinButtonWrapper": {},
+                  "spinButtonWrapper": {
+                    "backgroundColor": "var(--colorNeutralBackground3)",
+                    "borderColor": "var(--colorNeutralStroke1)",
+                  },
                 }
               }
               value="30"
@@ -1040,14 +1211,14 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
       >
         <AccordionHeader>
           <div
-            className="___15c001r_0000000 fq02s40"
+            className="___j7dlp70_0000000 fq02s40 f19n0e5"
           >
             Advanced Settings
           </div>
         </AccordionHeader>
         <AccordionPanel>
           <div
-            className="___1dfa554_0000000 fo7qwa0"
+            className="___1evh9ps_0000000 fo7qwa0 f19n0e5"
           >
             <Stack
               horizontal={true}
@@ -1066,8 +1237,26 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
                 onChange={[Function]}
                 styles={
                   {
+                    "checkbox": {
+                      "backgroundColor": "var(--colorNeutralBackground2)",
+                      "borderColor": "var(--colorNeutralForeground3)",
+                    },
                     "label": {
+                      "color": "var(--colorNeutralForeground1)",
                       "padding": 0,
+                    },
+                    "root": {
+                      "selectors": {
+                        ":hover .ms-Checkbox-label": {
+                          "color": "var(--colorNeutralForeground1)",
+                        },
+                        ":hover .ms-Checkbox-text": {
+                          "color": "var(--colorNeutralForeground1)",
+                        },
+                      },
+                    },
+                    "text": {
+                      "color": "var(--colorNeutralForeground1)",
                     },
                   }
                 }

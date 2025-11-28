@@ -88,17 +88,33 @@ exports[`ConflictResolutionComponent Path text field displayed 1`] = `
     onRenderLabel={[Function]}
     styles={
       {
+        "field": {
+          "backgroundColor": "var(--colorNeutralBackground2)",
+          "color": "var(--colorNeutralForeground1)",
+          "selectors": {
+            ":disabled": {
+              "backgroundColor": "var(--colorNeutralBackground2)",
+              "color": "var(--colorNeutralForeground2)",
+            },
+          },
+        },
         "fieldGroup": {
-          "borderColor": "",
+          "backgroundColor": "var(--colorNeutralBackground2)",
+          "borderColor": "var(--colorNeutralStroke1)",
           "height": 25,
           "selectors": {
             ":disabled": {
-              "backgroundColor": "var(--colorNeutralBackground1)",
-              "borderColor": undefined,
+              "backgroundColor": "var(--colorNeutralBackground2)",
+              "borderColor": "var(--colorNeutralStroke1)",
+              "color": "var(--colorNeutralForeground2)",
             },
-            "input#autopilotInput": {
-              "backgroundColor": "var(--colorNeutralBackground4)",
+            "input": {
+              "backgroundColor": "var(--colorNeutralBackground2)",
               "color": "var(--colorNeutralForeground1)",
+            },
+            "input:disabled": {
+              "backgroundColor": "var(--colorNeutralBackground2)",
+              "color": "var(--colorNeutralForeground2)",
             },
           },
           "width": 300,
@@ -205,17 +221,33 @@ exports[`ConflictResolutionComponent Sproc text field displayed 1`] = `
     onRenderLabel={[Function]}
     styles={
       {
+        "field": {
+          "backgroundColor": "var(--colorNeutralBackground2)",
+          "color": "var(--colorNeutralForeground1)",
+          "selectors": {
+            ":disabled": {
+              "backgroundColor": "var(--colorNeutralBackground2)",
+              "color": "var(--colorNeutralForeground2)",
+            },
+          },
+        },
         "fieldGroup": {
-          "borderColor": "",
+          "backgroundColor": "var(--colorNeutralBackground2)",
+          "borderColor": "var(--colorNeutralStroke1)",
           "height": 25,
           "selectors": {
             ":disabled": {
-              "backgroundColor": "var(--colorNeutralBackground1)",
-              "borderColor": undefined,
+              "backgroundColor": "var(--colorNeutralBackground2)",
+              "borderColor": "var(--colorNeutralStroke1)",
+              "color": "var(--colorNeutralForeground2)",
             },
-            "input#autopilotInput": {
-              "backgroundColor": "var(--colorNeutralBackground4)",
+            "input": {
+              "backgroundColor": "var(--colorNeutralBackground2)",
               "color": "var(--colorNeutralForeground1)",
+            },
+            "input:disabled": {
+              "backgroundColor": "var(--colorNeutralBackground2)",
+              "color": "var(--colorNeutralForeground2)",
             },
           },
           "width": 300,

@@ -66,6 +66,7 @@ exports[`PaneContainerComponent test should be resize if notification console is
 
 exports[`PaneContainerComponent test should not render console with panel 1`] = `
 <StyledPanelBase
+  className="themed-panel"
   closeButtonAriaLabel="Close test"
   customWidth="440px"
   data-test="Panel:test"
@@ -82,18 +83,42 @@ exports[`PaneContainerComponent test should not render console with panel 1`] = 
   }
   styles={
     {
+      "closeButton": {
+        "color": "var(--colorNeutralForeground1)",
+      },
       "commands": {
+        "backgroundColor": "var(--colorNeutralBackground1)",
         "marginTop": 8,
         "paddingTop": 0,
       },
       "content": {
+        "backgroundColor": "var(--colorNeutralBackground1)",
+        "color": "var(--colorNeutralForeground1)",
         "padding": 0,
       },
+      "footerInner": {
+        "backgroundColor": "var(--colorNeutralBackground1)",
+        "color": "var(--colorNeutralForeground1)",
+      },
       "header": {
+        "backgroundColor": "var(--colorNeutralBackground1)",
+        "color": "var(--colorNeutralForeground1)",
         "padding": "0 0 8px 34px",
       },
+      "main": {
+        "backgroundColor": "var(--colorNeutralBackground1)",
+      },
       "navigation": {
-        "borderBottom": "1px solid #cccccc",
+        "backgroundColor": "var(--colorNeutralBackground1)",
+        "borderBottom": "1px solid var(--colorNeutralStroke1)",
+        "color": "var(--colorNeutralForeground1)",
+      },
+      "overlay": {
+        "backgroundColor": "var(--overlayBackground)",
+      },
+      "root": {},
+      "scrollableContent": {
+        "backgroundColor": "var(--colorNeutralBackground1)",
       },
     }
   }

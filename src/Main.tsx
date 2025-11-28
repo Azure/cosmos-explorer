@@ -21,7 +21,6 @@ import "../externals/jquery.dataTables.min.css";
 import "../externals/jquery.typeahead.min.css";
 import "../externals/jquery.typeahead.min.js";
 // Image Dependencies
-import Explorer from "Explorer/Explorer";
 import { SidePanel } from "Explorer/Panes/PanelContainerComponent";
 import { QueryCopilotCarousel } from "Explorer/QueryCopilot/CopilotCarousel";
 import { SidebarContainer } from "Explorer/Sidebar";
@@ -181,27 +180,6 @@ const Root: React.FC = () => {
 const mainElement = document.getElementById("Main");
 if (mainElement) {
   ReactDOM.render(<Root />, mainElement);
-}
-
-function DivExplorer({ explorer }: { explorer: Explorer }): JSX.Element {
-  return (
-    <div id="divExplorer" className="flexContainer hideOverflows">
-      <div id="freeTierTeachingBubble"> </div>
-      {/* Main Command Bar - Start */}
-      <CommandBar container={explorer} />
-      {/* Collections Tree and Tabs - Begin */}
-      <SidebarContainer explorer={explorer} />
-      {/* Collections Tree and Tabs - End */}
-      <div
-        className="dataExplorerErrorConsoleContainer"
-        role="contentinfo"
-        aria-label="Notification console"
-        id="explorerNotificationConsole"
-      >
-        <NotificationConsole />
-      </div>
-    </div>
-  );
 }
 
 function LoadingExplorer(): JSX.Element {
