@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-import { DataExplorer, TestAccount, generateUniqueName } from "../fx";
+import { DataExplorer, TEST_AUTOSCALE_THROUGHPUT_RU, TestAccount, generateUniqueName } from "../fx";
 
 (
   [
@@ -21,6 +21,7 @@ import { DataExplorer, TestAccount, generateUniqueName } from "../fx";
         await panel.getByPlaceholder("Type a new database id").fill(databaseId);
         await panel.getByRole("textbox", { name: "Collection id, Example Collection1" }).fill(collectionId);
         await panel.getByRole("textbox", { name: "Shard key" }).fill("pk");
+        await panel.getByTestId("autoscaleRUInput").fill(TEST_AUTOSCALE_THROUGHPUT_RU.toString());
         await okButton.click();
       },
       { closeTimeout: 5 * 60 * 1000 },
