@@ -6,6 +6,7 @@ import { initializeIcons, loadTheme, useTheme } from "@fluentui/react";
 import { FluentProvider, makeStyles, webDarkTheme, webLightTheme } from "@fluentui/react-components";
 import { Platform } from "ConfigContext";
 import ContainerCopyPanel from "Explorer/ContainerCopy/ContainerCopyPanel";
+import Explorer from "Explorer/Explorer";
 import { QuickstartCarousel } from "Explorer/Quickstart/QuickstartCarousel";
 import { MongoQuickstartTutorial } from "Explorer/Quickstart/Tutorials/MongoQuickstartTutorial";
 import { SQLQuickstartTutorial } from "Explorer/Quickstart/Tutorials/SQLQuickstartTutorial";
@@ -82,8 +83,6 @@ const useStyles = makeStyles({
 
 const App = (): JSX.Element => {
   const config = useConfig();
-  const isCarouselOpen = useCarousel((state) => state.shouldOpen);
-  const isCopilotCarouselOpen = useCarousel((state) => state.showCopilotCarousel);
   const styles = useStyles();
   // theme is used for application-wide styling
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -119,7 +118,7 @@ const App = (): JSX.Element => {
   );
 };
 
-const DivExplorer: React.FC<{ explorer: any }> = ({ explorer }) => {
+const DivExplorer: React.FC<{ explorer: Explorer }> = ({ explorer }) => {
   const isCarouselOpen = useCarousel((state) => state.shouldOpen);
   const isCopilotCarouselOpen = useCarousel((state) => state.showCopilotCarousel);
 
