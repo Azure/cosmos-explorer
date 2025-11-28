@@ -17,6 +17,7 @@ const defaultHeaders = {
   [HttpHeaders.apiType]: ApiType.MongoDB.toString(),
   [CosmosSDKConstants.HttpHeaders.MaxEntityCount]: "100",
   [CosmosSDKConstants.HttpHeaders.Version]: "2017-11-15",
+  [HttpHeaders.sessionId]: userContext.sessionId,
 };
 
 function authHeaders() {

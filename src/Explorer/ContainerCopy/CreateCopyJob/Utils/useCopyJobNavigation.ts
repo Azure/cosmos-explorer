@@ -2,6 +2,7 @@ import { useCallback, useMemo, useReducer, useState } from "react";
 import { useSidePanel } from "../../../../hooks/useSidePanel";
 import { submitCreateCopyJob } from "../../Actions/CopyJobActions";
 import { useCopyJobContext } from "../../Context/CopyJobContext";
+import { isIntraAccountCopy } from "../../CopyJobUtils";
 import { CopyJobMigrationType } from "../../Enums/CopyJobEnums";
 import { useCopyJobPrerequisitesCache } from "./useCopyJobPrerequisitesCache";
 import { SCREEN_KEYS, useCreateCopyJobScreensList } from "./useCreateCopyJobScreensList";
@@ -33,12 +34,15 @@ function navigationReducer(state: NavigationState, action: Action): NavigationSt
 
 export function useCopyJobNavigation() {
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const { copyJobState, resetCopyJobState } = useCopyJobContext();
-  const screens = useCreateCopyJobScreensList();
+  const { copyJobState, resetCopyJobState, setContextError } = useCopyJobContext();
   const { validationCache: cache } = useCopyJobPrerequisitesCache();
   const [state, dispatch] = useReducer(navigationReducer, { screenHistory: [SCREEN_KEYS.SelectAccount] });
 
+  const handlePrevious = useCallback(() => {
+    dispatch({ type: "PREVIOUS" });
+  }, [dispatch]);
+
+  const screens = useCreateCopyJobScreensList(handlePrevious);
   const currentScreenKey = state.screenHistory[state.screenHistory.length - 1];
   const currentScreen = screens.find((screen) => screen.key === currentScreenKey);
 
@@ -51,7 +55,9 @@ export function useCopyJobNavigation() {
   }, [currentScreen.key, copyJobState, cache, isLoading]);
 
   const primaryBtnText = useMemo(() => {
-    if (currentScreenKey === SCREEN_KEYS.PreviewCopyJob) {
+    if (currentScreenKey === SCREEN_KEYS.CreateCollection) {
+      return "Create";
+    } else if (currentScreenKey === SCREEN_KEYS.PreviewCopyJob) {
       return "Copy";
     }
     return "Next";
@@ -71,18 +77,13 @@ export function useCopyJobNavigation() {
     containerId: container?.containerId || "",
   });
 
-  const isSameAccount = (
-    sourceIds: ReturnType<typeof getContainerIdentifiers>,
-    targetIds: ReturnType<typeof getContainerIdentifiers>,
-  ) => sourceIds.accountId === targetIds.accountId;
-
   const areContainersIdentical = () => {
     const { source, target } = copyJobState;
     const sourceIds = getContainerIdentifiers(source);
     const targetIds = getContainerIdentifiers(target);
 
     return (
-      isSameAccount(sourceIds, targetIds) &&
+      isIntraAccountCopy(sourceIds.accountId, targetIds.accountId) &&
       sourceIds.databaseId === targetIds.databaseId &&
       sourceIds.containerId === targetIds.containerId
     );
@@ -90,9 +91,10 @@ export function useCopyJobNavigation() {
 
   const shouldNotShowPermissionScreen = () => {
     const { source, target, migrationType } = copyJobState;
+    const sourceIds = getContainerIdentifiers(source);
+    const targetIds = getContainerIdentifiers(target);
     return (
-      migrationType === CopyJobMigrationType.Offline &&
-      isSameAccount(getContainerIdentifiers(source), getContainerIdentifiers(target))
+      migrationType === CopyJobMigrationType.Offline && isIntraAccountCopy(sourceIds.accountId, targetIds.accountId)
     );
   };
 
@@ -105,19 +107,40 @@ export function useCopyJobNavigation() {
         error instanceof Error
           ? error.message || "Failed to create copy job. Please try again later."
           : "Failed to create copy job. Please try again later.";
-      setError(errorMessage);
+      setContextError(errorMessage);
     } finally {
       setIsLoading(false);
     }
   };
 
+  const handleAddCollectionPanelSubmit = () => {
+    const form = document.getElementById("panelContainer") as HTMLFormElement;
+    if (form) {
+      const submitEvent = new Event("submit", {
+        bubbles: true,
+        cancelable: true,
+      });
+      form.dispatchEvent(submitEvent);
+    }
+  };
+
+  const showAddCollectionPanel = useCallback(() => {
+    dispatch({ type: "NEXT", nextScreen: SCREEN_KEYS.CreateCollection });
+  }, [dispatch]);
+
   const handlePrimary = useCallback(() => {
+    if (currentScreenKey === SCREEN_KEYS.CreateCollection) {
+      handleAddCollectionPanelSubmit();
+      return;
+    }
     if (currentScreenKey === SCREEN_KEYS.SelectSourceAndTargetContainers && areContainersIdentical()) {
-      setError("Source and destination containers cannot be the same. Please select different containers to proceed.");
+      setContextError(
+        "Source and destination containers cannot be the same. Please select different containers to proceed.",
+      );
       return;
     }
 
-    setError(null);
+    setContextError(null);
     const transitions = {
       [SCREEN_KEYS.SelectAccount]: shouldNotShowPermissionScreen()
         ? SCREEN_KEYS.SelectSourceAndTargetContainers
@@ -134,10 +157,6 @@ export function useCopyJobNavigation() {
     }
   }, [currentScreenKey, copyJobState, areContainersIdentical, handleCopyJobSubmission]);
 
-  const handlePrevious = useCallback(() => {
-    dispatch({ type: "PREVIOUS" });
-  }, []);
-
   return {
     currentScreen,
     isPrimaryDisabled,
@@ -145,8 +164,7 @@ export function useCopyJobNavigation() {
     handlePrimary,
     handlePrevious,
     handleCancel,
+    showAddCollectionPanel,
     primaryBtnText,
-    error,
-    setError,
   };
 }

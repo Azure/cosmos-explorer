@@ -1,7 +1,10 @@
 import { Link, PrimaryButton, Stack } from "@fluentui/react";
+import { CapabilityNames } from "Common/Constants";
 import { DatabaseAccount } from "Contracts/DataModels";
 import React from "react";
 import { fetchDatabaseAccount } from "Utils/arm/databaseAccountUtils";
+import { logError } from "../../../../../Common/Logger";
+import { update as updateDatabaseAccount } from "../../../../../Utils/arm/generatedClients/cosmos/databaseAccounts";
 import ContainerCopyMessages from "../../../ContainerCopyMessages";
 import { useCopyJobContext } from "../../../Context/CopyJobContext";
 import { getAccountDetailsFromResourceId } from "../../../CopyJobUtils";
@@ -19,8 +22,10 @@ const OnlineCopyEnabled: React.FC = () => {
   const [showRefreshButton, setShowRefreshButton] = React.useState(false);
   const intervalRef = React.useRef<NodeJS.Timeout | null>(null);
   const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
-  const { copyJobState: { source } = {}, setCopyJobState } = useCopyJobContext();
+  const { setContextError, copyJobState: { source } = {}, setCopyJobState } = useCopyJobContext();
   const selectedSourceAccount = source?.account;
+  const sourceAccountCapabilities = selectedSourceAccount?.properties?.capabilities ?? [];
+
   const {
     subscriptionId: sourceSubscriptionId,
     resourceGroup: sourceResourceGroup,
@@ -38,16 +43,24 @@ const OnlineCopyEnabled: React.FC = () => {
         setLoading(false);
       }
     } catch (error) {
-      console.error("Error fetching source account after enabling online copy:", error);
-      setLoading(false);
+      const errorMessage =
+        error.message || "Error fetching source account after enabling online copy. Please try again later.";
+      logError(errorMessage, "CopyJob/OnlineCopyEnabled.handleFetchAccount");
+      setContextError(errorMessage);
+      clearAccountFetchInterval();
     }
   };
 
-  const clearIntervalAndShowRefresh = () => {
+  const clearAccountFetchInterval = () => {
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
+    setLoading(false);
+  };
+
+  const clearIntervalAndShowRefresh = () => {
+    clearAccountFetchInterval();
     setShowRefreshButton(true);
   };
 
@@ -56,18 +69,42 @@ const OnlineCopyEnabled: React.FC = () => {
     handleFetchAccount();
   };
 
+  const handleOnlineCopyEnable = async () => {
+    setLoading(true);
+    setShowRefreshButton(false);
+
+    try {
+      await updateDatabaseAccount(sourceSubscriptionId, sourceResourceGroup, sourceAccountName, {
+        properties: {
+          enableAllVersionsAndDeletesChangeFeed: true,
+        },
+      });
+
+      await updateDatabaseAccount(sourceSubscriptionId, sourceResourceGroup, sourceAccountName, {
+        properties: {
+          capabilities: [...sourceAccountCapabilities, { name: CapabilityNames.EnableOnlineCopyFeature }],
+        },
+      });
+
+      intervalRef.current = setInterval(() => {
+        handleFetchAccount();
+      }, 30 * 1000);
+
+      timeoutRef.current = setTimeout(
+        () => {
+          clearIntervalAndShowRefresh();
+        },
+        10 * 60 * 1000,
+      );
+    } catch (error) {
+      const errorMessage = error.message || "Failed to enable online copy feature. Please try again later.";
+      logError(errorMessage, "CopyJob/OnlineCopyEnabled.handleOnlineCopyEnable");
+      setContextError(errorMessage);
+      setLoading(false);
+    }
+  };
+
   React.useEffect(() => {
-    intervalRef.current = setInterval(() => {
-      handleFetchAccount();
-    }, 30 * 1000);
-
-    timeoutRef.current = setTimeout(
-      () => {
-        clearIntervalAndShowRefresh();
-      },
-      15 * 60 * 1000,
-    );
-
     return () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
@@ -89,32 +126,7 @@ const OnlineCopyEnabled: React.FC = () => {
         </Link>
       </Stack.Item>
       <Stack.Item>
-        <pre style={{ backgroundColor: "#f5f5f5", padding: "10px", borderRadius: "4px", overflow: "auto" }}>
-          <code>
-            {`# Set shell variables
-$resourceGroupName = <azure_resource_group>
-$accountName = <azure_cosmos_db_account_name>
-$EnableOnlineContainerCopy = "EnableOnlineContainerCopy"
-
-# List down existing capabilities of your account
-$cosmosdb = az cosmosdb show --resource-group $resourceGroupName --name $accountName
-
-$capabilities = (($cosmosdb | ConvertFrom-Json).capabilities)
-
-# Append EnableOnlineContainerCopy capability in the list of capabilities
-$capabilitiesToAdd = @()
-foreach ($item in $capabilities) {
-  $capabilitiesToAdd += $item.name
-}
-$capabilitiesToAdd += $EnableOnlineContainerCopy
-
-# Update Cosmos DB account
-az cosmosdb update --capabilities $capabilitiesToAdd -n $accountName -g $resourceGroupName`}
-          </code>
-        </pre>
-      </Stack.Item>
-      {showRefreshButton && (
-        <Stack.Item>
+        {showRefreshButton ? (
           <PrimaryButton
             className="fullWidth"
             text={ContainerCopyMessages.refreshButtonLabel}
@@ -122,8 +134,16 @@ az cosmosdb update --capabilities $capabilitiesToAdd -n $accountName -g $resourc
             onClick={handleRefresh}
             disabled={loading}
           />
-        </Stack.Item>
-      )}
+        ) : (
+          <PrimaryButton
+            className="fullWidth"
+            text={loading ? "" : ContainerCopyMessages.onlineCopyEnabled.buttonText}
+            {...(loading ? { iconProps: { iconName: "SyncStatusSolid" } } : {})}
+            disabled={loading}
+            onClick={handleOnlineCopyEnable}
+          />
+        )}
+      </Stack.Item>
     </Stack>
   );
 };

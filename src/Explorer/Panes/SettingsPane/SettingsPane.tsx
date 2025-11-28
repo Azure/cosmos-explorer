@@ -214,6 +214,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
   const styles = useStyles();
 
   const explorerVersion = configContext.gitSha;
+  const sessionId: string = userContext.sessionId;
   const isEmulator = configContext.platform === Platform.Emulator;
   const shouldShowQueryPageOptions = userContext.apiType === "SQL";
   const showRetrySettings =
@@ -1355,6 +1356,12 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
           <div className={`settingsSectionPart ${styles.settingsSectionContainer}`}>
             <div className="settingsSectionLabel">Explorer Version</div>
             <div>{explorerVersion}</div>
+          </div>
+        </div>
+        <div className="settingsSection">
+          <div className="settingsSectionPart">
+            <div className="settingsSectionLabel">Session ID</div>
+            <div>{sessionId}</div>
           </div>
         </div>
       </div>

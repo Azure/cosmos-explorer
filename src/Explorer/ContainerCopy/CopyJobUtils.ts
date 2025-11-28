@@ -1,5 +1,5 @@
 import { DatabaseAccount } from "Contracts/DataModels";
-import { CopyJobErrorType } from "./Types/CopyJobTypes";
+import { CopyJobErrorType, CopyJobType } from "./Types/CopyJobTypes";
 
 const azurePortalMpacEndpoint = "https://ms.portal.azure.com/";
 
@@ -106,11 +106,58 @@ export function getAccountDetailsFromResourceId(accountId: string | undefined) {
     return null;
   }
   const pattern = new RegExp(
-    "/subscriptions/([^/]+)/resourceGroups/([^/]+)/providers/Microsoft\\.DocumentDB/databaseAccounts/([^/]+)",
+    "/subscriptions/([^/]+)/resourceGroups/([^/]+)/providers/Microsoft\\.DocumentDB?/databaseAccounts/([^/]+)",
     "i",
   );
   const matches = accountId.match(pattern);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_, subscriptionId, resourceGroup, accountName] = matches || [];
   return { subscriptionId, resourceGroup, accountName };
+}
+
+export function isIntraAccountCopy(sourceAccountId: string | undefined, targetAccountId: string | undefined): boolean {
+  const sourceAccountDetails = getAccountDetailsFromResourceId(sourceAccountId);
+  const targetAccountDetails = getAccountDetailsFromResourceId(targetAccountId);
+  return (
+    sourceAccountDetails?.subscriptionId === targetAccountDetails?.subscriptionId &&
+    sourceAccountDetails?.resourceGroup === targetAccountDetails?.resourceGroup &&
+    sourceAccountDetails?.accountName === targetAccountDetails?.accountName
+  );
+}
+
+export function isEqual(prevJobs: CopyJobType[], newJobs: CopyJobType[]): boolean {
+  if (prevJobs.length !== newJobs.length) {
+    return false;
+  }
+  return prevJobs.every((prevJob: CopyJobType) => {
+    const newJob = newJobs.find((job) => job.Name === prevJob.Name);
+    if (!newJob) {
+      return false;
+    }
+    return prevJob.Status === newJob.Status;
+  });
+}
+
+const truncateLength = 5;
+const truncateName = (name: string, length: number = truncateLength): string => {
+  return name.length <= length ? name : name.slice(0, length);
+};
+
+export function getDefaultJobName(
+  selectedDatabaseAndContainers: {
+    sourceDatabaseName?: string;
+    sourceContainerName?: string;
+    targetDatabaseName?: string;
+    targetContainerName?: string;
+  }[],
+): string {
+  if (selectedDatabaseAndContainers.length === 1) {
+    const { sourceDatabaseName, sourceContainerName, targetDatabaseName, targetContainerName } =
+      selectedDatabaseAndContainers[0];
+    const timestamp = new Date().getTime().toString();
+    const sourcePart = `${truncateName(sourceDatabaseName)}.${truncateName(sourceContainerName)}`;
+    const targetPart = `${truncateName(targetDatabaseName)}.${truncateName(targetContainerName)}`;
+    return `${sourcePart}_${targetPart}_${timestamp}`;
+  }
+  return "";
 }

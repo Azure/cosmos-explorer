@@ -36,6 +36,9 @@ export default {
   databaseDropdownPlaceholder: "Select a database",
   containerDropdownLabel: "Container",
   containerDropdownPlaceholder: "Select a container",
+  createNewContainerSubHeading: "Select the properties for your container.",
+  createContainerButtonLabel: "Create a new container",
+  createContainerHeading: "Create new container",
 
   // Preview and Create Screen
   jobNameLabel: "Job name",
@@ -48,8 +51,10 @@ export default {
 
   // Assign Permissions Screen
   assignPermissions: {
-    description:
+    crossAccountDescription:
       "To copy data from the source to the destination container, ensure that the managed identity of the destination account has read access to the source account by completing the following steps.",
+    intraAccountOnlineDescription: (accountName: string) =>
+      `Follow the steps below to enable online copy on your "${accountName}" account.`,
   },
   toggleBtn: {
     onText: "On",
@@ -115,7 +120,7 @@ export default {
   },
   onlineCopyEnabled: {
     title: "Online copy enabled",
-    description: (accountName: string) => `Use Azure CLI to enable Online copy on "${accountName}".`,
+    description: (accountName: string) => `Enable Online copy on "${accountName}".`,
     hrefText: "Learn more about online copy jobs",
     href: "https://learn.microsoft.com/en-us/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#enable-online-copy",
     buttonText: "Enable Online Copy",

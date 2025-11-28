@@ -5,9 +5,11 @@ import "./ReactDevTools";
 import { initializeIcons, loadTheme, useTheme } from "@fluentui/react";
 import { FluentProvider, makeStyles, webDarkTheme, webLightTheme } from "@fluentui/react-components";
 import { Platform } from "ConfigContext";
+import ContainerCopyPanel from "Explorer/ContainerCopy/ContainerCopyPanel";
 import { QuickstartCarousel } from "Explorer/Quickstart/QuickstartCarousel";
 import { MongoQuickstartTutorial } from "Explorer/Quickstart/Tutorials/MongoQuickstartTutorial";
 import { SQLQuickstartTutorial } from "Explorer/Quickstart/Tutorials/SQLQuickstartTutorial";
+import { userContext } from "UserContext";
 import "allotment/dist/style.css";
 import "bootstrap/dist/css/bootstrap.css";
 import { useCarousel } from "hooks/useCarousel";
@@ -105,53 +107,68 @@ const App = (): JSX.Element => {
   return (
     <div id="Main" className={styles.root}>
       <KeyboardShortcutRoot>
+        <div className="flexContainer" aria-hidden="false" data-test="DataExplorerRoot">
+          {userContext.features.enableContainerCopy && userContext.apiType === "SQL" ? (
+            <ContainerCopyPanel explorer={explorer} />
+          ) : (
+            <DivExplorer explorer={explorer} />
+          )}
+        </div>
+      </KeyboardShortcutRoot>
+    </div>
+  );
+};
+
+const DivExplorer: React.FC<{ explorer: any }> = ({ explorer }) => {
+  const isCarouselOpen = useCarousel((state) => state.shouldOpen);
+  const isCopilotCarouselOpen = useCarousel((state) => state.showCopilotCarousel);
+
+  return (
+    <div
+      className="flexContainer"
+      style={{
+        flex: 1,
+        display: "flex",
+        flexDirection: "column",
+        backgroundColor: "var(--colorNeutralBackground1)",
+        color: "var(--colorNeutralForeground1)",
+      }}
+      aria-hidden="false"
+      data-test="DataExplorerRoot"
+    >
+      <div
+        id="divExplorer"
+        className="flexContainer hideOverflows"
+        style={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          backgroundColor: "var(--colorNeutralBackground1)",
+          color: "var(--colorNeutralForeground1)",
+        }}
+      >
+        <div id="freeTierTeachingBubble"> </div>
+        <CommandBar container={explorer} />
+        <SidebarContainer explorer={explorer} />
         <div
-          className="flexContainer"
+          className="dataExplorerErrorConsoleContainer"
+          role="contentinfo"
+          aria-label="Notification console"
+          id="explorerNotificationConsole"
           style={{
-            flex: 1,
-            display: "flex",
-            flexDirection: "column",
             backgroundColor: "var(--colorNeutralBackground1)",
             color: "var(--colorNeutralForeground1)",
           }}
-          aria-hidden="false"
-          data-test="DataExplorerRoot"
         >
-          <div
-            id="divExplorer"
-            className="flexContainer hideOverflows"
-            style={{
-              flex: 1,
-              display: "flex",
-              flexDirection: "column",
-              backgroundColor: "var(--colorNeutralBackground1)",
-              color: "var(--colorNeutralForeground1)",
-            }}
-          >
-            <div id="freeTierTeachingBubble"> </div>
-            <CommandBar container={explorer} />
-            <SidebarContainer explorer={explorer} />
-            <div
-              className="dataExplorerErrorConsoleContainer"
-              role="contentinfo"
-              aria-label="Notification console"
-              id="explorerNotificationConsole"
-              style={{
-                backgroundColor: "var(--colorNeutralBackground1)",
-                color: "var(--colorNeutralForeground1)",
-              }}
-            >
-              <NotificationConsole />
-            </div>
-          </div>
-          <SidePanel />
-          <Dialog />
-          {<QuickstartCarousel isOpen={isCarouselOpen} />}
-          {<SQLQuickstartTutorial />}
-          {<MongoQuickstartTutorial />}
-          {<QueryCopilotCarousel isOpen={isCopilotCarouselOpen} explorer={explorer} />}
+          <NotificationConsole />
         </div>
-      </KeyboardShortcutRoot>
+      </div>
+      <SidePanel />
+      <Dialog />
+      {<QuickstartCarousel isOpen={isCarouselOpen} />}
+      {<SQLQuickstartTutorial />}
+      {<MongoQuickstartTutorial />}
+      {<QueryCopilotCarousel isOpen={isCopilotCarouselOpen} explorer={explorer} />}
     </div>
   );
 };

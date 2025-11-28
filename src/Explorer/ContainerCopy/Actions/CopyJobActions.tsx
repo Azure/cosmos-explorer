@@ -1,5 +1,7 @@
+import Explorer from "Explorer/Explorer";
 import React from "react";
 import { userContext } from "UserContext";
+import { logError } from "../../../Common/Logger";
 import { useSidePanel } from "../../../hooks/useSidePanel";
 import {
   cancel,
@@ -28,12 +30,12 @@ import CopyJobDetails from "../MonitorCopyJobs/Components/CopyJobDetails";
 import { MonitorCopyJobsRefState } from "../MonitorCopyJobs/MonitorCopyJobRefState";
 import { CopyJobContextState, CopyJobError, CopyJobErrorType, CopyJobType } from "../Types/CopyJobTypes";
 
-export const openCreateCopyJobPanel = () => {
+export const openCreateCopyJobPanel = (explorer: Explorer) => {
   const sidePanelState = useSidePanel.getState();
   sidePanelState.setPanelHasConsole(false);
   sidePanelState.openSidePanel(
     ContainerCopyMessages.createCopyJobPanelTitle,
-    <CreateCopyJobScreensProvider />,
+    <CreateCopyJobScreensProvider explorer={explorer} />,
     "650px",
   );
 };
@@ -159,7 +161,8 @@ export const submitCreateCopyJob = async (state: CopyJobContextState, onSuccess:
     onSuccess();
     return response;
   } catch (error) {
-    console.error("Error submitting create copy job:", error);
+    const errorMessage = error.message || "Error submitting create copy job. Please try again later.";
+    logError(errorMessage, "CopyJob/CopyJobActions.submitCreateCopyJob");
     throw error;
   }
 };
@@ -198,8 +201,7 @@ export const updateCopyJobStatus = async (job: CopyJobType, action: string): Pro
       pattern,
       `'${ContainerCopyMessages.MonitorJobs.Status.InProgress}'`,
     );
-
-    console.error(`Error updating copy job status: ${normalizedErrorMessage}`);
+    logError(`Error updating copy job status: ${normalizedErrorMessage}`, "CopyJob/CopyJobActions.updateCopyJobStatus");
     throw error;
   }
 };

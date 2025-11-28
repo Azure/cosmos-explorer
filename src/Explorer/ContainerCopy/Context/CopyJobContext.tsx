@@ -1,3 +1,5 @@
+import Explorer from "Explorer/Explorer";
+import { Subscription } from "Contracts/DataModels";
 import React from "react";
 import { userContext } from "UserContext";
 import { CopyJobMigrationType } from "../Enums/CopyJobEnums";
@@ -14,6 +16,7 @@ export const useCopyJobContext = (): CopyJobContextProviderType => {
 
 interface CopyJobContextProviderProps {
   children: React.ReactNode;
+  explorer: Explorer;
 }
 
 const getInitialCopyJobState = (): CopyJobContextState => {
@@ -21,8 +24,10 @@ const getInitialCopyJobState = (): CopyJobContextState => {
     jobName: "",
     migrationType: CopyJobMigrationType.Offline,
     source: {
-      subscription: null,
-      account: null,
+      subscription: {
+        subscriptionId: userContext.subscriptionId || "",
+      } as Subscription,
+      account: userContext.databaseAccount || null,
       databaseId: "",
       containerId: "",
     },
@@ -39,16 +44,24 @@ const getInitialCopyJobState = (): CopyJobContextState => {
 const CopyJobContextProvider: React.FC<CopyJobContextProviderProps> = (props) => {
   const [copyJobState, setCopyJobState] = React.useState<CopyJobContextState>(getInitialCopyJobState());
   const [flow, setFlow] = React.useState<CopyJobFlowType | null>(null);
+  const [contextError, setContextError] = React.useState<string | null>(null);
 
   const resetCopyJobState = () => {
     setCopyJobState(getInitialCopyJobState());
   };
 
-  return (
-    <CopyJobContext.Provider value={{ copyJobState, setCopyJobState, flow, setFlow, resetCopyJobState }}>
-      {props.children}
-    </CopyJobContext.Provider>
-  );
+  const contextValue: CopyJobContextProviderType = {
+    contextError,
+    setContextError,
+    copyJobState,
+    setCopyJobState,
+    flow,
+    setFlow,
+    resetCopyJobState,
+    explorer: props.explorer,
+  };
+
+  return <CopyJobContext.Provider value={contextValue}>{props.children}</CopyJobContext.Provider>;
 };
 
 export default CopyJobContextProvider;

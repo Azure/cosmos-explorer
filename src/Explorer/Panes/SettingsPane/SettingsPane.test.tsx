@@ -5,6 +5,12 @@ import { updateUserContext } from "../../../UserContext";
 import { SettingsPane } from "./SettingsPane";
 
 describe("Settings Pane", () => {
+  beforeEach(() => {
+    updateUserContext({
+      sessionId: "1234-5678",
+    });
+  });
+
   it("should render Default properly", () => {
     const wrapper = shallow(<SettingsPane explorer={null} />);
     expect(wrapper).toMatchSnapshot();
