@@ -286,7 +286,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
               </Stack>
               <TextField
                 id="autoscaleRUValueField"
-                data-testid="autoscaleRUInput"
+                data-test="autoscaleRUInput"
                 type="number"
                 styles={{
                   fieldGroup: { width: 100, height: 27, flexShrink: 0 },
