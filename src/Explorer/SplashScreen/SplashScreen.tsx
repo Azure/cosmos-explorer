@@ -635,11 +635,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
             <li key={`${item.title}${item.description}${index}`} className={styles.listItem}>
               <Stack style={{ marginBottom: 26 }}>
                 <Stack horizontal>
-                  <Image
-                    src={DocumentIcon}
-                    alt=""
-                    style={{ marginRight: 8, width: 16, height: 16 }}
-                  />
+                  <Image src={DocumentIcon} alt="" style={{ marginRight: 8, width: 16, height: 16 }} />
                   <Link
                     style={{ fontSize: 14 }}
                     onClick={item.onClick}
