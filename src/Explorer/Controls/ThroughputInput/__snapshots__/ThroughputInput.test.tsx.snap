@@ -2144,6 +2144,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                 </Stack>
                 <StyledTextFieldBase
                   ariaLabel="Container max RU/s"
+                  data-test="autoscaleRUInput"
                   errorMessage=""
                   id="autoscaleRUValueField"
                   key=".0:$.$.1"
@@ -2170,6 +2171,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                 >
                   <TextFieldBase
                     ariaLabel="Container max RU/s"
+                    data-test="autoscaleRUInput"
                     deferredValidationTime={200}
                     errorMessage=""
                     id="autoscaleRUValueField"
@@ -2470,6 +2472,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                             aria-invalid={false}
                             aria-label="Container max RU/s"
                             className="ms-TextField-field field-124"
+                            data-test="autoscaleRUInput"
                             id="autoscaleRUValueField"
                             max="9007199254740991"
                             min={1000}
