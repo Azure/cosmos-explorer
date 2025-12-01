@@ -42,7 +42,6 @@ import "../less/infobox.less";
 import "../less/menus.less";
 import "../less/messagebox.less";
 import "../less/resourceTree.less";
-import "../less/tree.less";
 import * as StyleConstants from "./Common/StyleConstants";
 import "./Explorer/Controls/Accordion/AccordionComponent.less";
 import "./Explorer/Controls/CollapsiblePanel/CollapsiblePanelComponent.less";
