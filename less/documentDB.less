@@ -2676,12 +2676,8 @@ a:link {
   width: @ActiveTabWidth;
 }
 
-.nav-tabs > li.active > .tabNavContentContainer > .tab_Content > .contentWrapper > .tabNavText {
+.nav-tabs > li.active .contentWrapper {
   border-bottom: 2px solid var(--colorCompoundBrandBackground);
-}
-
-.nav-tabs > li.active:focus > .tabNavContentContainer {
-  .focus();
 }
 
 .tabNavContentContainer {
@@ -2735,7 +2731,7 @@ a:link {
             background-repeat: no-repeat;
             background-position: center;
             display: block;
-            margin: 1px 0px 0px 6px;
+            margin: 4px 0px 0px 6px;
           }
         }
 
@@ -2783,16 +2779,14 @@ a:link {
     }
 
     .tabIconSection {
-      width: 29px;
       position: relative;
-      padding-top: 2px;
 
       .cancelButton {
         padding: 0px @SmallSpace 0px @SmallSpace;
         color: var(--colorNeutralForeground1);
         width: 16px;
         height: 16px;
-        display: inline-flex;
+        display: flex;
         align-items: center;
         justify-content: center;
         cursor: pointer;

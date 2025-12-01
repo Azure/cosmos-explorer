@@ -222,11 +222,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
   };
 
   const getSplashScreenButtons = (): JSX.Element => {
-    if (
-      userContext.apiType === "SQL" &&
-      useQueryCopilot.getState().copilotEnabled &&
-      useDatabases.getState().sampleDataResourceTokenCollection
-    ) {
+    if (userContext.apiType === "SQL") {
       return (
         <Stack
           className="splashStackContainer"

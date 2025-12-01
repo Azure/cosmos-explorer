@@ -209,11 +209,9 @@ body.isDarkMode {
   // Tab styling for dark theme
   .nav-tabs {
     .tabList {
-      background-color: var(--colorNeutralBackground2);
       border-color: var(--colorNeutralStroke1);
       
       &.active {
-        background-color: var(--colorNeutralBackground1);
         border-bottom-color: var(--colorBrandBackground);
       }
       
@@ -351,18 +349,15 @@ body.isDarkMode {
   .ms-Button {
     background-color: var(--colorNeutralBackground1);
     color: var(--colorNeutralForeground1);
-    border-color: var(--colorNeutralStroke1);
     
     &:hover {
       background-color: var(--colorNeutralBackground3);
       color: var(--colorNeutralForeground1);
-      border-color: var(--colorNeutralStroke1);
     }
     
     &:focus {
       background-color: var(--colorNeutralBackground1);
       color: var(--colorNeutralForeground1);
-      border-color: var(--colorBrandStroke1);
     }
     
     &.ms-Button--default {
@@ -384,6 +379,7 @@ body.isDarkMode {
       &:hover {
         background-color: var(--colorBrandBackgroundHover);
         color: var(--colorNeutralForegroundOnBrand);
+        border-color: var(--colorBrandStroke1);
       }
     }
     
@@ -444,7 +440,6 @@ body.isDarkMode {
     &:not(.ms-Button):not(.ms-IconButton) {
       background-color: var(--colorNeutralBackground1);
       color: var(--colorNeutralForeground1);
-      border-color: var(--colorNeutralStroke1);
       
       &:hover {
         background-color: var(--colorNeutralBackground3);
