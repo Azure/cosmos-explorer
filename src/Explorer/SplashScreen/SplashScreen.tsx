@@ -26,6 +26,7 @@ import * as React from "react";
 import ConnectIcon from "../../../images/Connect_color.svg";
 import ContainersIcon from "../../../images/Containers.svg";
 import CosmosDBIcon from "../../../images/CosmosDB-logo.svg";
+import DocumentIcon from "../../../images/DocumentIcon.svg";
 import LinkIcon from "../../../images/Link_blue.svg";
 import PowerShellIcon from "../../../images/PowerShell.svg";
 import QuickStartIcon from "../../../images/Quickstart_Lightning.svg";
@@ -634,16 +635,11 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
             <li key={`${item.title}${item.description}${index}`} className={styles.listItem}>
               <Stack style={{ marginBottom: 26 }}>
                 <Stack horizontal>
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg"
-                    style={{ marginRight: 8 }}
-                    fill="currentColor"
-                  >
-                    <path d="M4 4c0-1.1.9-2 2-2h3.59c.4 0 .78.16 1.06.44l3.91 3.91c.28.28.44.67.44 1.06V14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V8h-3.5A1.5 1.5 0 0 1 9 6.5V3H6Zm4 .2v3.3c0 .28.22.5.5.5h3.3L10 3.2ZM17 9a1 1 0 0 0-1-1v6a3 3 0 0 1-3 3H6a1 1 0 0 0 1 1h6.06A3.94 3.94 0 0 0 17 14.06V9Z" />
-                  </svg>
+                  <Image
+                    src={DocumentIcon}
+                    alt=""
+                    style={{ marginRight: 8, width: 16, height: 16 }}
+                  />
                   <Link
                     style={{ fontSize: 14 }}
                     onClick={item.onClick}
