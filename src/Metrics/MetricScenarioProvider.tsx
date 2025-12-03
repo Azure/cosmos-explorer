@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from "react";
+import React, { useContext } from "react";
 import MetricScenario from "./MetricEvents";
 import { MetricPhase } from "./ScenarioConfig";
 import { scenarioMonitor } from "./ScenarioMonitor";
@@ -12,14 +12,12 @@ interface MetricScenarioContextValue {
 const MetricScenarioContext = React.createContext<MetricScenarioContextValue | undefined>(undefined);
 
 export const MetricScenarioProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const startScenario = useCallback((s: MetricScenario) => scenarioMonitor.start(s), []);
-  const startPhase = useCallback((s: MetricScenario, p: MetricPhase) => scenarioMonitor.startPhase(s, p), []);
-  const completePhase = useCallback((s: MetricScenario, p: MetricPhase) => scenarioMonitor.completePhase(s, p), []);
-  return (
-    <MetricScenarioContext.Provider value={{ startScenario, startPhase, completePhase }}>
-      {children}
-    </MetricScenarioContext.Provider>
-  );
+  const value: MetricScenarioContextValue = {
+    startScenario: (s: MetricScenario) => scenarioMonitor.start(s),
+    startPhase: (s: MetricScenario, p: MetricPhase) => scenarioMonitor.startPhase(s, p),
+    completePhase: (s: MetricScenario, p: MetricPhase) => scenarioMonitor.completePhase(s, p),
+  };
+  return <MetricScenarioContext.Provider value={value}>{children}</MetricScenarioContext.Provider>;
 };
 
 export function useMetricScenario(): MetricScenarioContextValue {

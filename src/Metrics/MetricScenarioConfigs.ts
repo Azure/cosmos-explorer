@@ -6,4 +6,12 @@ export const scenarioConfigs: Record<MetricScenario, ScenarioConfig> = {
     requiredPhases: [ApplicationMetricPhase.ExplorerInitialized, CommonMetricPhase.Interactive],
     timeoutMs: 10000,
   },
+  [MetricScenario.DatabaseLoad]: {
+    requiredPhases: [
+      ApplicationMetricPhase.DatabasesFetched,
+      ApplicationMetricPhase.DatabaseTreeRendered,
+      CommonMetricPhase.Interactive,
+    ],
+    timeoutMs: 10000,
+  },
 };

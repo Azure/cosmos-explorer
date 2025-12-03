@@ -19,7 +19,7 @@ import "../externals/jquery.dataTables.min.css";
 import "../externals/jquery.typeahead.min.css";
 import "../externals/jquery.typeahead.min.js";
 // Image Dependencies
-import { Platform } from "ConfigContext"; // configContext no longer needed directly (ScenarioMonitor handles platform)
+import { Platform } from "ConfigContext";
 import ContainerCopyPanel from "Explorer/ContainerCopy/ContainerCopyPanel";
 import Explorer from "Explorer/Explorer";
 import { QueryCopilotCarousel } from "Explorer/QueryCopilot/CopilotCarousel";
@@ -87,13 +87,15 @@ const App: React.FunctionComponent = () => {
   const { startScenario, completePhase } = useMetricScenario();
   React.useEffect(() => {
     startScenario(MetricScenario.ApplicationLoad);
-  }, [startScenario]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   React.useEffect(() => {
     if (explorer) {
       completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.ExplorerInitialized);
     }
-  }, [explorer, completePhase]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [explorer]);
 
   if (!explorer) {
     return <LoadingExplorer />;

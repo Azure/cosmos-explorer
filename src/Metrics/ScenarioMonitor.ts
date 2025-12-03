@@ -89,33 +89,19 @@ class ScenarioMonitor {
 
   startPhase(scenario: MetricScenario, phase: MetricPhase) {
     const ctx = this.contexts.get(scenario);
-    if (!ctx || ctx.emitted) {
-      return;
-    }
-    if (!ctx.config.requiredPhases.includes(phase)) {
+    if (!ctx || ctx.emitted || !ctx.config.requiredPhases.includes(phase) || ctx.phases.has(phase)) {
       return;
     }
 
-    // Only start if not already started
-    if (!ctx.phases.has(phase)) {
-      const startMarkName = `scenario_${scenario}_${phase}_start`;
-      performance.mark(startMarkName);
-      ctx.phases.set(phase, { startMarkName });
-    }
+    const startMarkName = `scenario_${scenario}_${phase}_start`;
+    performance.mark(startMarkName);
+    ctx.phases.set(phase, { startMarkName });
   }
 
   completePhase(scenario: MetricScenario, phase: MetricPhase) {
     const ctx = this.contexts.get(scenario);
-    if (!ctx || ctx.emitted) {
-      return;
-    }
-    if (!ctx.config.requiredPhases.includes(phase)) {
-      return;
-    }
-
-    // Mark the phase as completed
-    const phaseCtx = ctx.phases.get(phase);
-    if (!phaseCtx) {
+    const phaseCtx = ctx?.phases.get(phase);
+    if (!ctx || ctx.emitted || !ctx.config.requiredPhases.includes(phase) || !phaseCtx) {
       return;
     }
 

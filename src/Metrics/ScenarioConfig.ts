@@ -8,6 +8,8 @@ export enum CommonMetricPhase {
 // Application-specific phases
 export enum ApplicationMetricPhase {
   ExplorerInitialized = "ExplorerInitialized",
+  DatabasesFetched = "DatabasesFetched",
+  DatabaseTreeRendered = "DatabaseTreeRendered",
 }
 
 // Combined type for all metric phases
