@@ -24,6 +24,7 @@ import { Allotment } from "allotment";
 import { useClientWriteEnabled } from "hooks/useClientWriteEnabled";
 import { QueryCopilotState, useQueryCopilot } from "hooks/useQueryCopilot";
 import { TabsState, useTabs } from "hooks/useTabs";
+import { useMonacoTheme } from "hooks/useTheme";
 import React, { Fragment, createRef } from "react";
 import "react-splitter-layout/lib/index.css";
 import { format } from "react-string-format";
@@ -126,6 +127,7 @@ interface IQueryTabStates {
 
 export const QueryTabCopilotComponent = (props: IQueryTabComponentProps): any => {
   const styles = useQueryTabStyles();
+  const monacoTheme = useMonacoTheme();
   const copilotStore = useCopilotStore();
 
   const isSampleCopilotActive = useSelectedNode.getState().isQueryCopilotCollectionSelected();
@@ -137,16 +139,18 @@ export const QueryTabCopilotComponent = (props: IQueryTabComponentProps): any =>
     isSampleCopilotActive: isSampleCopilotActive,
     copilotStore: copilotStore,
   };
-  return <QueryTabComponentImpl styles={styles} {...queryTabProps} />;
+  return <QueryTabComponentImpl styles={styles} monacoTheme={monacoTheme} {...queryTabProps} />;
 };
 
 export const QueryTabComponent = (props: IQueryTabComponentProps): any => {
   const styles = useQueryTabStyles();
-  return <QueryTabComponentImpl styles={styles} {...{ ...props }} />;
+  const monacoTheme = useMonacoTheme();
+  return <QueryTabComponentImpl styles={styles} monacoTheme={monacoTheme} {...{ ...props }} />;
 };
 
 type QueryTabComponentImplProps = IQueryTabComponentProps & {
   styles: QueryTabStyles;
+  monacoTheme: string;
 };
 
 // Inner (legacy) class component. We only use this component via one of the two functional components above (since we need to use the `useQueryTabStyles` hook).
@@ -761,6 +765,7 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
                 wordWrap={"on"}
                 ariaLabel={"Editing Query"}
                 lineNumbers={"on"}
+                theme={this.props.monacoTheme}
                 onContentChanged={(newContent: string) => this.onChangeContent(newContent)}
                 onContentSelected={(selectedContent: string, selection: monaco.Selection) =>
                   this.onSelectedContent(selectedContent, selection)

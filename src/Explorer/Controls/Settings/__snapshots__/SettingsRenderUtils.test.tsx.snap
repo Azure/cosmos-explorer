@@ -6,6 +6,7 @@ exports[`SettingsUtils functions render 1`] = `
     <Text
       style={
         {
+          "color": "var(--colorNeutralForeground1)",
           "fontWeight": 600,
         }
       }
@@ -15,6 +16,7 @@ exports[`SettingsUtils functions render 1`] = `
     <Text
       style={
         {
+          "color": "var(--colorNeutralForeground1)",
           "fontWeight": 600,
           "marginTop": 15,
         }
@@ -50,6 +52,7 @@ exports[`SettingsUtils functions render 1`] = `
     <Text
       style={
         {
+          "color": "var(--colorNeutralForeground1)",
           "marginTop": 15,
         }
       }
@@ -65,7 +68,7 @@ exports[`SettingsUtils functions render 1`] = `
     styles={
       {
         "root": {
-          "color": "windowtext",
+          "color": "var(--colorNeutralForeground1)",
           "fontSize": 14,
         },
       }
@@ -83,7 +86,7 @@ exports[`SettingsUtils functions render 1`] = `
     styles={
       {
         "root": {
-          "color": "windowtext",
+          "color": "var(--colorNeutralForeground1)",
           "fontSize": 14,
         },
       }
@@ -104,7 +107,7 @@ exports[`SettingsUtils functions render 1`] = `
     styles={
       {
         "root": {
-          "color": "windowtext",
+          "color": "var(--colorNeutralForeground1)",
           "fontSize": 14,
         },
       }
@@ -116,7 +119,7 @@ exports[`SettingsUtils functions render 1`] = `
     styles={
       {
         "root": {
-          "color": "windowtext",
+          "color": "var(--colorNeutralForeground1)",
           "fontSize": 14,
         },
       }
@@ -136,7 +139,7 @@ exports[`SettingsUtils functions render 1`] = `
     styles={
       {
         "root": {
-          "color": "windowtext",
+          "color": "var(--colorNeutralForeground1)",
           "fontSize": 14,
         },
       }
@@ -152,7 +155,7 @@ exports[`SettingsUtils functions render 1`] = `
     styles={
       {
         "root": {
-          "color": "windowtext",
+          "color": "var(--colorNeutralForeground1)",
           "fontSize": 14,
         },
       }
@@ -167,7 +170,7 @@ exports[`SettingsUtils functions render 1`] = `
     styles={
       {
         "root": {
-          "color": "windowtext",
+          "color": "var(--colorNeutralForeground1)",
           "fontSize": 14,
         },
       }
@@ -181,7 +184,7 @@ exports[`SettingsUtils functions render 1`] = `
     styles={
       {
         "root": {
-          "color": "windowtext",
+          "color": "var(--colorNeutralForeground1)",
           "fontSize": 14,
         },
       }
@@ -193,7 +196,7 @@ exports[`SettingsUtils functions render 1`] = `
     styles={
       {
         "root": {
-          "color": "windowtext",
+          "color": "var(--colorNeutralForeground1)",
           "fontSize": 14,
         },
       }
@@ -213,7 +216,7 @@ exports[`SettingsUtils functions render 1`] = `
     styles={
       {
         "root": {
-          "color": "windowtext",
+          "color": "var(--colorNeutralForeground1)",
           "fontSize": 14,
         },
       }
@@ -221,10 +224,21 @@ exports[`SettingsUtils functions render 1`] = `
   >
     Enable change feed log retention policy to retain last 10 minutes of history for items in the container by default. To support this, the request unit (RU) charge for this container will be multiplied by a factor of two for writes. Reads are unaffected.
   </Text>
-  <Text>
+  <Text
+    style={
+      {
+        "color": "var(--colorNeutralForeground1)",
+      }
+    }
+  >
     For queries that filter on multiple properties, create multiple single field indexes instead of a compound index.
     <StyledLinkBase
       href="https://docs.microsoft.com/azure/cosmos-db/mongodb-indexing#index-types"
+      style={
+        {
+          "color": "var(--colorBrandForeground1)",
+        }
+      }
       target="_blank"
     >
        Compound indexes 
@@ -256,7 +270,7 @@ exports[`SettingsUtils functions render 1`] = `
       styles={
         {
           "root": {
-            "color": "windowtext",
+            "color": "var(--colorNeutralForeground1)",
             "fontSize": 14,
           },
         }
@@ -272,7 +286,7 @@ exports[`SettingsUtils functions render 1`] = `
     styles={
       {
         "root": {
-          "color": "windowtext",
+          "color": "var(--colorNeutralForeground1)",
           "fontSize": 14,
         },
       }
@@ -289,7 +303,7 @@ exports[`SettingsUtils functions render 1`] = `
     styles={
       {
         "root": {
-          "color": "windowtext",
+          "color": "var(--colorNeutralForeground1)",
           "fontSize": 14,
         },
       }

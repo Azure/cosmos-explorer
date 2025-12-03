@@ -50,4 +50,5 @@ export enum MessageTypes {
   OpenCESCVAFeedbackBlade,
   ActivateTab,
   OpenContainerCopyFeedbackBlade,
+  UpdateTheme,
 }

@@ -32,15 +32,20 @@ export const AdvancedComponent = (props: AdvancedComponentProps): JSX.Element =>
           label="My application uses an older Cosmos .NET or Java SDK version (.NET V1 or Java V2)"
           checked={useHashV1}
           styles={{
-            text: { fontSize: 12 },
+            text: { fontSize: 12, color: "var(--colorNeutralForeground1)" },
             checkbox: { width: 12, height: 12 },
             label: { padding: 0, alignItems: "center", wordWrap: "break-word", whiteSpace: "break-spaces" },
+            root: {
+              selectors: {
+                ":hover .ms-Checkbox-text": { color: "var(--colorNeutralForeground1)" },
+              },
+            },
           }}
           onChange={(ev: React.FormEvent<HTMLElement>, isChecked: boolean) => {
             useHashV1CheckboxOnChange(isChecked);
           }}
         />
-        <Text variant="small">
+        <Text variant="small" style={{ color: "var(--colorNeutralForeground1)" }}>
           <Icon iconName="InfoSolid" className="removeIcon" /> To ensure compatibility with older SDKs, the created
           container will use a legacy partitioning scheme that supports partition key values of size only up to 101
           bytes. If this is enabled, you will not be able to use hierarchical partition keys.{" "}

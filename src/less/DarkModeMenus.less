@@ -1,0 +1,497 @@
+
+body.isDarkMode {
+  .ms-Callout.ms-ContextualMenu-Callout {
+    --bodyBackgroundColor: var(--colorNeutralBackground1);
+    --bodyTextColor: var(--colorNeutralForeground1);
+    
+    .ms-Callout-main {
+      background-color: var(--colorNeutralBackground1);
+    }
+  }
+  
+  .ms-ContextualMenu-container,
+  .ms-ContextualMenu-list,
+  .ms-ContextualMenu-list.is-open {
+    background-color: var(--colorNeutralBackground1);
+  }
+  
+  .ms-ContextualMenu-item {
+    background-color: var(--colorNeutralBackground1);
+  }
+  
+  .ms-ContextualMenu-link {
+    color: var(--colorNeutralForeground1);
+    background-color: var(--colorNeutralBackground1);
+    
+    &:hover, &:focus {
+      background-color: var(--colorNeutralBackground3);
+    }
+  }
+  
+  .ms-ContextualMenu-itemText {
+    color: var(--colorNeutralForeground1);
+  }
+  
+  .ms-ContextualMenu-icon {
+    color: var(--colorNeutralForeground1);
+  }
+}
+
+body.isDarkMode {
+  .fui-MenuPopover {
+    background-color: var(--colorNeutralBackground1);
+  }
+  
+  .fui-MenuList {
+    background-color: var(--colorNeutralBackground1);
+  }
+  
+  .fui-MenuItem {
+    color: var(--colorNeutralForeground1);
+    background-color: var(--colorNeutralBackground1);
+    
+    &:hover, &:focus {
+      background-color: var(--colorNeutralBackground3);
+    }
+  }
+
+  // Global Dropdown styling - less intrusive
+  .ms-Dropdown {
+    .ms-Dropdown-title {
+      background-color: var(--colorNeutralBackground2);
+      color: var(--colorNeutralForeground1);
+      border: 1px solid var(--colorNeutralStroke1);
+    }
+    
+    .ms-Dropdown-caretDown {
+      color: var(--colorNeutralForeground1);
+    }
+  }
+  
+  // Dropdown callout styling
+  .ms-Callout.ms-Dropdown-callout {
+    background-color: var(--colorNeutralBackground2);
+    border: 1px solid var(--colorNeutralStroke1);
+    
+    .ms-Dropdown-items {
+      background-color: var(--colorNeutralBackground2);
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    
+    .ms-Dropdown-item {
+      background-color: transparent;
+      color: var(--colorNeutralForeground1);
+      min-height: 32px;
+      padding: 8px 12px;
+      
+      &:hover {
+        background-color: var(--colorNeutralBackground4);
+        color: var(--colorNeutralForeground1);
+      }
+      
+      &.is-selected {
+        background-color: var(--colorBrandBackground);
+        color: var(--colorNeutralForegroundOnBrand);
+      }
+    }
+    
+    .ms-Dropdown-optionText {
+      color: var(--colorNeutralForeground1);
+    }
+  }
+}
+
+// Global tooltip override - highest specificity
+body.isDarkMode {
+  // TooltipHost specific styling
+  .ms-TooltipHost {
+    .ms-Callout {
+      background-color: var(--colorNeutralBackground3);
+      border: 1px solid var(--colorNeutralStroke1);
+    }
+    
+    .ms-Callout-main {
+      background-color: var(--colorNeutralBackground3);
+      color: var(--colorNeutralForeground1);
+      border: none;
+    }
+    
+    .ms-Tooltip-content {
+      background-color: var(--colorNeutralBackground3);
+      color: var(--colorNeutralForeground1);
+    }
+  }
+
+  .ms-Callout,
+  .ms-Tooltip,
+  [role="tooltip"],
+  div[class*="tooltip"],
+  
+
+  .ms-Callout-main {
+    color: var(--colorNeutralForeground1);
+    border: 1px solid var(--colorNeutralStroke1);
+  }
+
+  .ms-Tooltip-content {
+    background-color: var(--colorNeutralBackground3);
+    color: var(--colorNeutralForeground1);
+  }
+
+  .ms-TooltipHost {
+    .ms-Callout-main {
+      background-color: var(--colorNeutralBackground3);
+      color: var(--colorNeutralForeground1);
+    }
+  }
+
+  .ms-Callout-container,
+  .ms-Tooltip-container {
+    background-color: transparent;
+    
+    .ms-Callout-main {
+      border: 1px solid var(--colorNeutralStroke1);
+      color: var(--colorNeutralForeground1);
+    }
+  }
+
+  .ms-Layer {
+    background-color: transparent;
+    
+    .ms-Callout,
+    .ms-Tooltip,
+    [role="tooltip"] {
+      background-color: var(--colorNeutralBackground3);
+      color: var(--colorNeutralForeground1);
+      
+      .ms-Callout-main {
+        border: none;
+        color: var(--colorNeutralForeground1);
+      }
+    }
+  }
+
+  .ms-Callout-beak,
+  .ms-Tooltip-beak {
+    background-color: var(--colorNeutralBackground3);
+    border-color: var(--colorNeutralStroke1);
+  }
+  
+  .ms-Callout-container,
+  .ms-Callout-calloutMain,
+  .ms-Tooltip-subText,
+  div[data-portal-element],
+  [data-portal-node] > div,
+  .ms-Layer > div {
+    border-color: var(--colorNeutralStroke1);
+  }
+  
+  .ms-Fabric {
+    [role="tooltip"],
+    .ms-Tooltip {
+      * {
+        background-color: var(--colorNeutralBackground3);
+        color: var(--colorNeutralForeground1);
+        border-color: var(--colorNeutralStroke1);
+      }
+    }
+  }
+  
+  [style*="background-color: rgb(255, 255, 255)"],
+  [style*="background-color: white"],
+  [style*="background: white"],
+  [style*="background: rgb(255, 255, 255)"] {
+    background-color: var(--colorNeutralBackground3);
+    border-color: var(--colorNeutralStroke1);
+  }
+
+  // Tab styling for dark theme
+  .nav-tabs {
+    .tabList {
+      border-color: var(--colorNeutralStroke1);
+      
+      &.active {
+        border-bottom-color: var(--colorBrandBackground);
+      }
+      
+      &:hover {
+        background-color: var(--colorNeutralBackground3);
+      }
+    }
+  }
+
+  .tabNavText {
+    color: var(--colorNeutralForeground1);
+  }
+
+  .cancelButton {
+    color: var(--colorNeutralForeground1);
+    
+    &:hover {
+      background-color: var(--colorNeutralBackground4);
+    }
+    
+    .close-Icon {
+      color: var(--colorNeutralForeground1);
+    }
+  }
+
+  .tabIcon {
+    color: var(--colorNeutralForeground1);
+  }
+
+  // DetailsList dark theme styling
+  .ms-DetailsList {
+    .ms-DetailsHeader {
+      background-color: var(--colorNeutralBackground2);
+      
+      .ms-DetailsHeader-cell {
+        background-color: var(--colorNeutralBackground2);
+        color: var(--colorNeutralForeground1);
+        border-color: var(--colorNeutralStroke1);
+      }
+      
+      .ms-DetailsHeader-cellTitle {
+        color: var(--colorNeutralForeground1);
+      }
+    }
+    
+    .ms-DetailsRow {
+      background-color: var(--colorNeutralBackground1);
+      color: var(--colorNeutralForeground1);
+      border-color: var(--colorNeutralStroke1);
+      
+      &:hover {
+        background-color: var(--colorNeutralBackground3);
+        color: var(--colorNeutralForeground1);
+      }
+      
+      .ms-DetailsRow-cell {
+        background-color: inherit;
+        color: var(--colorNeutralForeground1);
+      }
+    }
+  }
+
+  .ms-MessageBar {
+    color: var(--colorNeutralForeground1);
+    background-color: var(--colorNeutralBackground3);
+    border: 1px solid var(--colorNeutralStroke1);
+    
+    &.ms-MessageBar--info {
+      background-color: var(--colorNeutralBackground3);
+      border-color: var(--colorNeutralStroke1);
+    }
+    
+    &.ms-MessageBar--warning {
+      background-color: var(--colorStatusWarningBackground1);
+      border-color: var(--colorStatusWarningBorder1);
+    }
+    
+    &.ms-MessageBar--severeWarning {
+      background-color: var(--colorStatusDangerBackground1);
+      border-color: var(--colorStatusDangerBorder1);
+    }
+    
+    &.ms-MessageBar--error {
+      background-color: var(--colorStatusDangerBackground1);
+      border-color: var(--colorStatusDangerBorder1);
+    }
+    
+    &.ms-MessageBar--success {
+      background-color: var(--colorStatusSuccessBackground1);
+      border-color: var(--colorStatusSuccessBorder1);
+    }
+    
+    .ms-MessageBar-content,
+    .ms-MessageBar-innerText,
+    .ms-MessageBar-icon,
+    .ms-MessageBar-text {
+      color: var(--colorNeutralForeground1);
+      background-color: transparent;
+    }
+    
+    .ms-MessageBar-innerTextPadding {
+      background-color: transparent;
+    }
+    
+    // High specificity override for any nested elements
+    * {
+      color: var(--colorNeutralForeground1);
+    }
+    
+    // Ensure links maintain proper colors
+    .ms-Link {
+      color: var(--colorBrandForeground1);
+    }
+  }
+
+  body.isDarkMode .ms-MessageBar {
+    background-color: var(--colorStatusWarningBackground1);
+    border: 1px solid var(--colorStatusWarningBorder1);
+    
+    &.ms-MessageBar--info {
+      background-color: var(--colorNeutralBackground3);
+      border: 1px solid var(--colorNeutralStroke1);
+    }
+  }
+
+  // Additional MessageBar container styling
+  .ms-MessageBar-content {
+    background-color: transparent;
+    
+    .ms-Link {
+      color: var(--colorBrandForeground1);
+    }
+  }
+
+  .ms-Button {
+    background-color: var(--colorNeutralBackground1);
+    color: var(--colorNeutralForeground1);
+    
+    &:hover {
+      background-color: var(--colorNeutralBackground3);
+      color: var(--colorNeutralForeground1);
+    }
+    
+    &:focus {
+      background-color: var(--colorNeutralBackground1);
+      color: var(--colorNeutralForeground1);
+    }
+    
+    &.ms-Button--default {
+      background-color: var(--colorNeutralBackground1);
+      color: var(--colorNeutralForeground1);
+      border-color: var(--colorNeutralStroke1);
+      
+      &:hover {
+        background-color: var(--colorNeutralBackground3);
+        color: var(--colorNeutralForeground1);
+      }
+    }
+    
+    &.ms-Button--primary {
+      background-color: var(--colorBrandBackground);
+      color: var(--colorNeutralForegroundOnBrand);
+      border-color: var(--colorBrandStroke1);
+      
+      &:hover {
+        background-color: var(--colorBrandBackgroundHover);
+        color: var(--colorNeutralForegroundOnBrand);
+        border-color: var(--colorBrandStroke1);
+      }
+    }
+    
+    .ms-Button-label {
+      color: inherit;
+    }
+    
+    .ms-Button-icon {
+      color: inherit;
+    }
+  }
+
+  .ms-Dialog {
+    .ms-Dialog-actions {
+      .ms-Button {
+        background-color: var(--colorNeutralBackground1);
+        color: var(--colorNeutralForeground1);
+        border-color: var(--colorNeutralStroke1);
+        
+        &:hover {
+          background-color: var(--colorNeutralBackground3);
+          color: var(--colorNeutralForeground1);
+        }
+        
+        &.ms-Button--primary {
+          background-color: var(--colorBrandBackground);
+          color: var(--colorNeutralForegroundOnBrand);
+          
+          &:hover {
+            background-color: var(--colorBrandBackgroundHover);
+            color: var(--colorNeutralForegroundOnBrand);
+          }
+        }
+      }
+    }
+  }
+
+  .ms-IconButton {
+    background-color: transparent;
+    color: var(--colorNeutralForeground1);
+    
+    &:hover {
+      background-color: var(--colorNeutralBackground4);
+      color: var(--colorNeutralForeground1);
+    }
+    
+    &:focus {
+      background-color: var(--colorNeutralBackground3);
+      color: var(--colorNeutralForeground1);
+    }
+    
+    .ms-Icon {
+      color: var(--colorNeutralForeground1);
+    }
+  }
+
+  button {
+    &:not(.ms-Button):not(.ms-IconButton) {
+      background-color: var(--colorNeutralBackground1);
+      color: var(--colorNeutralForeground1);
+      
+      &:hover {
+        background-color: var(--colorNeutralBackground3);
+        color: var(--colorNeutralForeground1);
+      }
+      
+      &:focus {
+        border-color: var(--colorBrandStroke1);
+      }
+    }
+  }
+
+  // Close icons and cancel buttons
+  .close-Icon,
+  .cancelButton,
+  [class*="close"],
+  [class*="cancel"] {
+    color: var(--colorNeutralForeground1);
+    background-color: transparent;
+    
+    &:hover {
+      background-color: var(--colorNeutralBackground4);
+      color: var(--colorNeutralForeground1);
+    }
+  }
+
+  // FluentUI Pivot component dark theme styling
+  .ms-Pivot {
+    background-color: var(--colorNeutralBackground1);
+    
+    .ms-Pivot-link {
+      color: var(--colorNeutralForeground1);
+      background-color: transparent;
+      
+      &:hover {
+        background-color: var(--colorNeutralBackground1Hover);
+        color: var(--colorNeutralForeground1);
+      }
+      
+      &.is-selected {
+        background-color: transparent;
+        color: var(--colorNeutralForeground1);
+        
+        &::before {
+          background-color: var(--colorCompoundBrandBackground);
+        }
+      }
+      
+      &:focus {
+        background-color: transparent;
+        color: var(--colorNeutralForeground1);
+      }
+    }
+  }
+}
