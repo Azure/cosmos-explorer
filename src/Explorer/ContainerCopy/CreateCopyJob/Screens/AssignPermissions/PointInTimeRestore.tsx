@@ -2,6 +2,8 @@ import { Link, PrimaryButton, Stack, Text } from "@fluentui/react";
 import { DatabaseAccount } from "Contracts/DataModels";
 import React, { useEffect, useRef, useState } from "react";
 import { fetchDatabaseAccount } from "Utils/arm/databaseAccountUtils";
+import LoadingOverlay from "../../../../../Common/LoadingOverlay";
+import { logError } from "../../../../../Common/Logger";
 import ContainerCopyMessages from "../../../ContainerCopyMessages";
 import { useCopyJobContext } from "../../../Context/CopyJobContext";
 import { buildResourceLink, getAccountDetailsFromResourceId } from "../../../CopyJobUtils";
@@ -63,23 +65,30 @@ const PointInTimeRestore: React.FC = () => {
         setLoading(false);
       }
     } catch (error) {
-      console.error("Error fetching source account after Point-in-Time Restore:", error);
-      setLoading(false);
+      const errorMessage =
+        error.message || "Error fetching source account after Point-in-Time Restore. Please try again later.";
+      logError(errorMessage, "CopyJob/PointInTimeRestore.handleFetchAccount");
+      clearAccountFetchInterval();
     }
   };
 
-  const clearIntervalAndShowRefresh = () => {
+  const clearAccountFetchInterval = () => {
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
     setLoading(false);
+  };
+
+  const clearIntervalAndShowRefresh = () => {
+    clearAccountFetchInterval();
     setShowRefreshButton(true);
   };
 
-  const handleRefresh = () => {
+  const handleRefresh = async () => {
     setLoading(true);
-    handleFetchAccount();
+    await handleFetchAccount();
+    setLoading(false);
   };
 
   const openWindowAndMonitor = () => {
@@ -95,12 +104,13 @@ const PointInTimeRestore: React.FC = () => {
       () => {
         clearIntervalAndShowRefresh();
       },
-      15 * 60 * 1000,
+      10 * 60 * 1000,
     );
   };
 
   return (
     <Stack className="pointInTimeRestoreContainer" tokens={{ childrenGap: 15, padding: "0 0 0 20px" }}>
+      <LoadingOverlay isLoading={loading} label={ContainerCopyMessages.popoverOverlaySpinnerLabel} />
       <Stack.Item className="toggle-label">
         {ContainerCopyMessages.pointInTimeRestore.description(source.account?.name ?? "")}
         {tooltipContent && (

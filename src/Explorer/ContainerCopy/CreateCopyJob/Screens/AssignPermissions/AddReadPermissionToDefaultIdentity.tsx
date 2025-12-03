@@ -1,5 +1,6 @@
 import { Link, Stack, Text, Toggle } from "@fluentui/react";
 import React, { useCallback } from "react";
+import { logError } from "../../../../../Common/Logger";
 import { assignRole } from "../../../../../Utils/arm/RbacUtils";
 import ContainerCopyMessages from "../../../ContainerCopyMessages";
 import { useCopyJobContext } from "../../../Context/CopyJobContext";
@@ -21,7 +22,7 @@ type AddReadPermissionToDefaultIdentityProps = Partial<PermissionSectionConfig>;
 
 const AddReadPermissionToDefaultIdentity: React.FC<AddReadPermissionToDefaultIdentityProps> = () => {
   const [loading, setLoading] = React.useState(false);
-  const { copyJobState, setCopyJobState } = useCopyJobContext();
+  const { copyJobState, setCopyJobState, setContextError } = useCopyJobContext();
   const [readPermissionAssigned, onToggle] = useToggle(false);
 
   const handleAddReadPermission = useCallback(async () => {
@@ -48,11 +49,14 @@ const AddReadPermissionToDefaultIdentity: React.FC<AddReadPermissionToDefaultIde
         }));
       }
     } catch (error) {
-      console.error("Error assigning read permission to default identity:", error);
+      const errorMessage =
+        error.message || "Error assigning read permission to default identity. Please try again later.";
+      logError(errorMessage, "CopyJob/AddReadPermissionToDefaultIdentity.handleAddReadPermission");
+      setContextError(errorMessage);
     } finally {
       setLoading(false);
     }
-  }, [copyJobState, setCopyJobState]);
+  }, [copyJobState, setCopyJobState, setContextError]);
 
   return (
     <Stack className="defaultManagedIdentityContainer" tokens={{ childrenGap: 15, padding: "0 0 0 20px" }}>

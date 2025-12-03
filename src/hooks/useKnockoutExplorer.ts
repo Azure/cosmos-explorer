@@ -85,6 +85,7 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
           userContext.features.phoenixNotebooks = true;
           userContext.features.phoenixFeatures = true;
         }
+
         let explorer: Explorer;
         if (platform === Platform.Hosted) {
           explorer = await configureHosted();
@@ -927,6 +928,7 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
     collectionCreationDefaults: inputs.defaultCollectionThroughput,
     isTryCosmosDBSubscription: inputs.isTryCosmosDBSubscription,
     feedbackPolicies: inputs.feedbackPolicies,
+    ...(inputs.sessionId && { sessionId: inputs.sessionId }), // Remove conditional once Portal sends sessionId
   });
 
   if (inputs.isPostgresAccount) {

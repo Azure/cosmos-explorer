@@ -1,11 +1,14 @@
 import React from "react";
+import { useCopyJobContext } from "../../Context/CopyJobContext";
 import { CopyJobContextState } from "../../Types/CopyJobTypes";
 import AssignPermissions from "../Screens/AssignPermissions/AssignPermissions";
+import AddCollectionPanelWrapper from "../Screens/CreateContainer/AddCollectionPanelWrapper";
 import PreviewCopyJob from "../Screens/PreviewCopyJob/PreviewCopyJob";
 import SelectAccount from "../Screens/SelectAccount/SelectAccount";
 import SelectSourceAndTargetContainers from "../Screens/SelectSourceAndTargetContainers/SelectSourceAndTargetContainers";
 
 const SCREEN_KEYS = {
+  CreateCollection: "CreateCollection",
   SelectAccount: "SelectAccount",
   SelectSourceAndTargetContainers: "SelectSourceAndTargetContainers",
   PreviewCopyJob: "PreviewCopyJob",
@@ -23,7 +26,9 @@ type Screen = {
   validations: Validation[];
 };
 
-function useCreateCopyJobScreensList() {
+function useCreateCopyJobScreensList(goBack: () => void): Screen[] {
+  const { explorer } = useCopyJobContext();
+
   return React.useMemo<Screen[]>(
     () => [
       {
@@ -51,12 +56,17 @@ function useCreateCopyJobScreensList() {
         ],
       },
       {
+        key: SCREEN_KEYS.CreateCollection,
+        component: <AddCollectionPanelWrapper explorer={explorer} goBack={goBack} />,
+        validations: [],
+      },
+      {
         key: SCREEN_KEYS.PreviewCopyJob,
         component: <PreviewCopyJob />,
         validations: [
           {
             validate: (state: CopyJobContextState) =>
-              !!(typeof state?.jobName === "string" && state?.jobName && /^[a-zA-Z0-9-.]+$/.test(state?.jobName)),
+              !!(typeof state?.jobName === "string" && state?.jobName && /^[a-zA-Z0-9-._]+$/.test(state?.jobName)),
             message: "Please enter a job name to proceed",
           },
         ],
@@ -80,7 +90,7 @@ function useCreateCopyJobScreensList() {
         ],
       },
     ],
-    [],
+    [explorer],
   );
 }
 
