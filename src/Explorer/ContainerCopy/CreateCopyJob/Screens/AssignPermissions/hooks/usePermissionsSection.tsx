@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { CapabilityNames } from "../../../../../../Common/Constants";
 import { fetchRoleAssignments, fetchRoleDefinitions, RoleDefinitionType } from "../../../../../../Utils/arm/RbacUtils";
 import ContainerCopyMessages from "../../../../ContainerCopyMessages";
-import { getAccountDetailsFromResourceId, isIntraAccountCopy } from "../../../../CopyJobUtils";
+import { getAccountDetailsFromResourceId, getContainerIdentifiers, isIntraAccountCopy } from "../../../../CopyJobUtils";
 import {
   BackupPolicyType,
   CopyJobMigrationType,
@@ -24,6 +24,13 @@ export interface PermissionSectionConfig {
   disabled: boolean;
   completed?: boolean;
   validate?: (state: CopyJobContextState) => boolean | Promise<boolean>;
+}
+
+export interface PermissionGroupConfig {
+  id: string;
+  title: string;
+  description: string;
+  sections: PermissionSectionConfig[];
 }
 
 export const SECTION_IDS = {
@@ -127,26 +134,81 @@ export function checkTargetHasReaderRoleOnSource(roleDefinitions: RoleDefinition
 }
 
 /**
- * Returns the permission sections configuration for the Assign Permissions screen.
- * Memoizes derived values for performance and decouples logic for testability.
+ * Validates sections within a group sequentially.
  */
-const usePermissionSections = (state: CopyJobContextState): PermissionSectionConfig[] => {
-  const sourceAccountId = state?.source?.account?.id || "";
-  const targetAccountId = state?.target?.account?.id || "";
+const validateSectionsInGroup = async (
+  sections: PermissionSectionConfig[],
+  state: CopyJobContextState,
+  validationCache: Map<string, boolean>,
+): Promise<PermissionSectionConfig[]> => {
+  const result: PermissionSectionConfig[] = [];
+
+  for (let i = 0; i < sections.length; i++) {
+    const section = sections[i];
+
+    if (validationCache.has(section.id) && validationCache.get(section.id) === true) {
+      result.push({ ...section, completed: true });
+      continue;
+    }
+
+    if (section.validate) {
+      const isValid = await section.validate(state);
+      validationCache.set(section.id, isValid);
+      result.push({ ...section, completed: isValid });
+
+      if (!isValid) {
+        // Mark remaining sections in this group as incomplete
+        for (let j = i + 1; j < sections.length; j++) {
+          result.push({ ...sections[j], completed: false });
+        }
+        break;
+      }
+    } else {
+      validationCache.set(section.id, false);
+      result.push({ ...section, completed: false });
+    }
+  }
+
+  return result;
+};
+
+/**
+ * Returns the permission groups configuration for the Assign Permissions screen.
+ * Groups validate independently but sections within each group validate sequentially.
+ */
+const usePermissionSections = (state: CopyJobContextState): PermissionGroupConfig[] => {
+  const sourceAccount = getContainerIdentifiers(state.source);
+  const targetAccount = getContainerIdentifiers(state.target);
 
   const { validationCache, setValidationCache } = useCopyJobPrerequisitesCache();
-  const [permissionSections, setPermissionSections] = useState<PermissionSectionConfig[] | null>(null);
+  const [permissionGroups, setPermissionGroups] = useState<PermissionGroupConfig[] | null>(null);
   const isValidatingRef = useRef(false);
 
-  const sectionToValidate = useMemo(() => {
-    const isSameAccount = isIntraAccountCopy(sourceAccountId, targetAccountId);
+  const groupsToValidate = useMemo(() => {
+    const isSameAccount = isIntraAccountCopy(sourceAccount.accountId, targetAccount.accountId);
+    const commonSections = isSameAccount ? [] : [...PERMISSION_SECTIONS_CONFIG];
+    const groups: PermissionGroupConfig[] = [];
 
-    const baseSections = isSameAccount ? [] : [...PERMISSION_SECTIONS_CONFIG];
-    if (state.migrationType === CopyJobMigrationType.Online) {
-      return [...baseSections, ...PERMISSION_SECTIONS_FOR_ONLINE_JOBS];
+    if (commonSections.length > 0) {
+      groups.push({
+        id: "commonConfigs",
+        title: ContainerCopyMessages.assignPermissions.commonConfiguration.title,
+        description: ContainerCopyMessages.assignPermissions.commonConfiguration.description,
+        sections: commonSections,
+      });
     }
-    return baseSections;
-  }, [sourceAccountId, targetAccountId, state.migrationType]);
+
+    if (state.migrationType === CopyJobMigrationType.Online) {
+      groups.push({
+        id: "onlineConfigs",
+        title: ContainerCopyMessages.assignPermissions.onlineConfiguration.title,
+        description: ContainerCopyMessages.assignPermissions.onlineConfiguration.description,
+        sections: [...PERMISSION_SECTIONS_FOR_ONLINE_JOBS],
+      });
+    }
+
+    return groups;
+  }, [sourceAccount.accountId, targetAccount.accountId, state.migrationType]);
 
   const memoizedValidationCache = useMemo(() => {
     if (state.migrationType === CopyJobMigrationType.Offline) {
@@ -157,52 +219,39 @@ const usePermissionSections = (state: CopyJobContextState): PermissionSectionCon
   }, [state.migrationType]);
 
   useEffect(() => {
-    const validateSections = async () => {
+    const validateGroups = async () => {
       if (isValidatingRef.current) {
         return;
       }
 
       isValidatingRef.current = true;
-      const result: PermissionSectionConfig[] = [];
       const newValidationCache = new Map(memoizedValidationCache);
 
-      for (let i = 0; i < sectionToValidate.length; i++) {
-        const section = sectionToValidate[i];
+      // Validate all groups independently (in parallel)
+      const validatedGroups = await Promise.all(
+        groupsToValidate.map(async (group) => {
+          const validatedSections = await validateSectionsInGroup(group.sections, state, newValidationCache);
 
-        if (newValidationCache.has(section.id) && newValidationCache.get(section.id) === true) {
-          result.push({ ...section, completed: true });
-          continue;
-        }
-        if (section.validate) {
-          const isValid = await section.validate(state);
-          newValidationCache.set(section.id, isValid);
-          result.push({ ...section, completed: isValid });
-
-          if (!isValid) {
-            for (let j = i + 1; j < sectionToValidate.length; j++) {
-              result.push({ ...sectionToValidate[j], completed: false });
-            }
-            break;
-          }
-        } else {
-          newValidationCache.set(section.id, false);
-          result.push({ ...section, completed: false });
-        }
-      }
+          return {
+            ...group,
+            sections: validatedSections,
+          };
+        }),
+      );
 
       setValidationCache(newValidationCache);
-      setPermissionSections(result);
+      setPermissionGroups(validatedGroups);
       isValidatingRef.current = false;
     };
 
-    validateSections();
+    validateGroups();
 
     return () => {
       isValidatingRef.current = false;
     };
-  }, [state, sectionToValidate]);
+  }, [state, groupsToValidate]);
 
-  return permissionSections ?? [];
+  return permissionGroups ?? [];
 };
 
 export default usePermissionSections;

@@ -8,7 +8,8 @@ import ContainerCopyMessages from "../../../ContainerCopyMessages";
 import { useCopyJobContext } from "../../../Context/CopyJobContext";
 import { isIntraAccountCopy } from "../../../CopyJobUtils";
 import { CopyJobMigrationType } from "../../../Enums/CopyJobEnums";
-import usePermissionSections, { PermissionSectionConfig } from "./hooks/usePermissionsSection";
+import { useCopyJobPrerequisitesCache } from "../../Utils/useCopyJobPrerequisitesCache";
+import usePermissionSections, { PermissionGroupConfig, PermissionSectionConfig } from "./hooks/usePermissionsSection";
 
 const PermissionSection: React.FC<PermissionSectionConfig> = ({ id, title, Component, completed, disabled }) => (
   <AccordionItem key={id} value={id} disabled={disabled}>
@@ -30,43 +31,91 @@ const PermissionSection: React.FC<PermissionSectionConfig> = ({ id, title, Compo
   </AccordionItem>
 );
 
-const AssignPermissions = () => {
-  const { copyJobState } = useCopyJobContext();
-  const permissionSections = usePermissionSections(copyJobState);
+const PermissionGroup: React.FC<PermissionGroupConfig> = ({ title, description, sections }) => {
   const [openItems, setOpenItems] = React.useState<string[]>([]);
+
+  useEffect(() => {
+    const firstIncompleteSection = sections.find((section) => !section.completed);
+    const nextOpenItems = firstIncompleteSection ? [firstIncompleteSection.id] : [];
+    if (JSON.stringify(openItems) !== JSON.stringify(nextOpenItems)) {
+      setOpenItems(nextOpenItems);
+    }
+  }, [sections]);
+
+  return (
+    <Stack
+      tokens={{ childrenGap: 15 }}
+      styles={{
+        root: {
+          background: "#fafafa",
+          border: "1px solid #e1e1e1",
+          borderRadius: 8,
+          padding: 16,
+          boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+        },
+      }}
+    >
+      <Stack tokens={{ childrenGap: 5 }}>
+        <Text variant="medium" style={{ fontWeight: 600 }}>
+          {title}
+        </Text>
+        {description && (
+          <Text variant="small" styles={{ root: { color: "#605E5C" } }}>
+            {description}
+          </Text>
+        )}
+      </Stack>
+
+      <Accordion className="permissionsAccordion" collapsible openItems={openItems}>
+        {sections.map((section) => (
+          <PermissionSection key={section.id} {...section} />
+        ))}
+      </Accordion>
+    </Stack>
+  );
+};
+
+const AssignPermissions = () => {
+  const { setValidationCache } = useCopyJobPrerequisitesCache();
+  const { copyJobState } = useCopyJobContext();
+  const permissionGroups = usePermissionSections(copyJobState);
+
+  const totalSectionsCount = React.useMemo(
+    () => permissionGroups.reduce((total, group) => total + group.sections.length, 0),
+    [permissionGroups],
+  );
 
   const indentLevels = React.useMemo<IndentLevel[]>(
     () => Array(copyJobState.migrationType === CopyJobMigrationType.Online ? 5 : 3).fill({ level: 0, width: "100%" }),
-    [],
+    [copyJobState.migrationType],
   );
 
   const isSameAccount = isIntraAccountCopy(copyJobState?.source?.account?.id, copyJobState?.target?.account?.id);
 
   useEffect(() => {
-    const firstIncompleteSection = permissionSections.find((section) => !section.completed);
-    const nextOpenItems = firstIncompleteSection ? [firstIncompleteSection.id] : [];
-    if (JSON.stringify(openItems) !== JSON.stringify(nextOpenItems)) {
-      setOpenItems(nextOpenItems);
-    }
-  }, [permissionSections]);
+    return () => {
+      setValidationCache(new Map<string, boolean>());
+    };
+  }, []);
 
   return (
-    <Stack className="assignPermissionsContainer" tokens={{ childrenGap: 15 }}>
-      <span>
+    <Stack className="assignPermissionsContainer" tokens={{ childrenGap: 20 }}>
+      <Text variant="medium">
         {isSameAccount && copyJobState.migrationType === CopyJobMigrationType.Online
           ? ContainerCopyMessages.assignPermissions.intraAccountOnlineDescription(
               copyJobState?.source?.account?.name || "",
             )
           : ContainerCopyMessages.assignPermissions.crossAccountDescription}
-      </span>
-      {permissionSections?.length === 0 ? (
+      </Text>
+
+      {totalSectionsCount === 0 ? (
         <ShimmerTree indentLevels={indentLevels} style={{ width: "100%" }} />
       ) : (
-        <Accordion className="permissionsAccordion" collapsible openItems={openItems}>
-          {permissionSections.map((section) => (
-            <PermissionSection key={section.id} {...section} />
+        <Stack tokens={{ childrenGap: 25 }}>
+          {permissionGroups.map((group) => (
+            <PermissionGroup key={group.id} {...group} />
           ))}
-        </Accordion>
+        </Stack>
       )}
     </Stack>
   );
