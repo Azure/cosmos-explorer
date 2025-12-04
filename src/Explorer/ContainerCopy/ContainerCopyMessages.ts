@@ -55,11 +55,20 @@ export default {
       "To copy data from the source to the destination container, ensure that the managed identity of the destination account has read access to the source account by completing the following steps.",
     intraAccountOnlineDescription: (accountName: string) =>
       `Follow the steps below to enable online copy on your "${accountName}" account.`,
+    commonConfiguration: {
+      title: "Common configuration",
+      description: "Basic permissions required for copy operations",
+    },
+    onlineConfiguration: {
+      title: "Online copy configuration",
+      description: "Additional permissions required for online copy operations",
+    },
   },
   toggleBtn: {
     onText: "On",
     offText: "Off",
   },
+  popoverOverlaySpinnerLabel: "Please wait while we process your request...",
   addManagedIdentity: {
     title: "System-assigned managed identity enabled.",
     description:

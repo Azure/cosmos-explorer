@@ -2,7 +2,7 @@ import { useCallback, useMemo, useReducer, useState } from "react";
 import { useSidePanel } from "../../../../hooks/useSidePanel";
 import { submitCreateCopyJob } from "../../Actions/CopyJobActions";
 import { useCopyJobContext } from "../../Context/CopyJobContext";
-import { isIntraAccountCopy } from "../../CopyJobUtils";
+import { getContainerIdentifiers, isIntraAccountCopy } from "../../CopyJobUtils";
 import { CopyJobMigrationType } from "../../Enums/CopyJobEnums";
 import { useCopyJobPrerequisitesCache } from "./useCopyJobPrerequisitesCache";
 import { SCREEN_KEYS, useCreateCopyJobScreensList } from "./useCreateCopyJobScreensList";
@@ -70,12 +70,6 @@ export function useCopyJobNavigation() {
     resetCopyJobState();
     useSidePanel.getState().closeSidePanel();
   }, []);
-
-  const getContainerIdentifiers = (container: typeof copyJobState.source | typeof copyJobState.target) => ({
-    accountId: container?.account?.id || "",
-    databaseId: container?.databaseId || "",
-    containerId: container?.containerId || "",
-  });
 
   const areContainersIdentical = () => {
     const { source, target } = copyJobState;
