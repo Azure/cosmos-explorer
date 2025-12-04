@@ -653,7 +653,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
           }
           onChange={this.onThroughputChange}
           min={this.props.minimum}
-          onGetErrorMessage={(_) => {
+          onGetErrorMessage={() => {
             return <span data-test="manual-throughput-input-error">{this.props.throughputError}</span>;
           }}
           data-test="manual-throughput-input"

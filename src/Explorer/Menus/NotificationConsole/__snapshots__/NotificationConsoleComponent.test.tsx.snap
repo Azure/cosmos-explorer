@@ -78,6 +78,7 @@ exports[`NotificationConsoleComponent renders the console 1`] = `
       />
       <span
         className="headerStatus"
+        data-test="notification-console/header-status"
       >
         <span
           aria-atomic="true"
@@ -261,6 +262,7 @@ exports[`NotificationConsoleComponent renders the console 2`] = `
       />
       <span
         className="headerStatus"
+        data-test="notification-console/header-status"
       >
         <span
           aria-atomic="true"

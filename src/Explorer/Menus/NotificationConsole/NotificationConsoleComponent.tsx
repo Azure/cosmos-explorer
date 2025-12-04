@@ -208,7 +208,6 @@ export class NotificationConsoleComponent extends React.Component<
         <span className="date">{item.date}</span>
         <span className="message" role="alert" aria-live="assertive">
           {item.message}
-          {console.log(item.message)}
         </span>
       </div>
     ));
