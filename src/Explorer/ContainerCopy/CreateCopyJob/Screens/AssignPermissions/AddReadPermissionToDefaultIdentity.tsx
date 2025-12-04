@@ -1,5 +1,5 @@
 import { Link, Stack, Text, Toggle } from "@fluentui/react";
-import React, { useCallback } from "react";
+import React from "react";
 import { logError } from "../../../../../Common/Logger";
 import { assignRole } from "../../../../../Utils/arm/RbacUtils";
 import ContainerCopyMessages from "../../../ContainerCopyMessages";
@@ -25,7 +25,7 @@ const AddReadPermissionToDefaultIdentity: React.FC<AddReadPermissionToDefaultIde
   const { copyJobState, setCopyJobState, setContextError } = useCopyJobContext();
   const [readPermissionAssigned, onToggle] = useToggle(false);
 
-  const handleAddReadPermission = useCallback(async () => {
+  const handleAddReadPermission = async () => {
     const { source, target } = copyJobState;
     const selectedSourceAccount = source?.account;
     try {
@@ -56,7 +56,7 @@ const AddReadPermissionToDefaultIdentity: React.FC<AddReadPermissionToDefaultIde
     } finally {
       setLoading(false);
     }
-  }, [copyJobState, setCopyJobState, setContextError]);
+  };
 
   return (
     <Stack className="defaultManagedIdentityContainer" tokens={{ childrenGap: 15, padding: "0 0 0 20px" }}>

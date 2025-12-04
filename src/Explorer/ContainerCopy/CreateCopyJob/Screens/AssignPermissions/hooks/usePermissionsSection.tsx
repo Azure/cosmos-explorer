@@ -186,15 +186,20 @@ const usePermissionSections = (state: CopyJobContextState): PermissionGroupConfi
 
   const groupsToValidate = useMemo(() => {
     const isSameAccount = isIntraAccountCopy(sourceAccount.accountId, targetAccount.accountId);
-    const commonSections = isSameAccount ? [] : [...PERMISSION_SECTIONS_CONFIG];
+    const crossAccountSections = isSameAccount ? [] : [...PERMISSION_SECTIONS_CONFIG];
     const groups: PermissionGroupConfig[] = [];
+    const sourceAccountName = state.source?.account?.name || "";
+    const targetAccountName = state.target?.account?.name || "";
 
-    if (commonSections.length > 0) {
+    if (crossAccountSections.length > 0) {
       groups.push({
-        id: "commonConfigs",
-        title: ContainerCopyMessages.assignPermissions.commonConfiguration.title,
-        description: ContainerCopyMessages.assignPermissions.commonConfiguration.description,
-        sections: commonSections,
+        id: "crossAccountConfigs",
+        title: ContainerCopyMessages.assignPermissions.crossAccountConfiguration.title,
+        description: ContainerCopyMessages.assignPermissions.crossAccountConfiguration.description(
+          sourceAccountName,
+          targetAccountName,
+        ),
+        sections: crossAccountSections,
       });
     }
 
@@ -202,7 +207,7 @@ const usePermissionSections = (state: CopyJobContextState): PermissionGroupConfi
       groups.push({
         id: "onlineConfigs",
         title: ContainerCopyMessages.assignPermissions.onlineConfiguration.title,
-        description: ContainerCopyMessages.assignPermissions.onlineConfiguration.description,
+        description: ContainerCopyMessages.assignPermissions.onlineConfiguration.description(sourceAccountName),
         sections: [...PERMISSION_SECTIONS_FOR_ONLINE_JOBS],
       });
     }

@@ -55,13 +55,15 @@ export default {
       "To copy data from the source to the destination container, ensure that the managed identity of the destination account has read access to the source account by completing the following steps.",
     intraAccountOnlineDescription: (accountName: string) =>
       `Follow the steps below to enable online copy on your "${accountName}" account.`,
-    commonConfiguration: {
-      title: "Common configuration",
-      description: "Basic permissions required for copy operations",
+    crossAccountConfiguration: {
+      title: "Cross-account container copy",
+      description: (sourceAccount: string, destinationAccount: string) =>
+        `Please follow the instruction below to grant requisite permissions to copy data from "${sourceAccount}" to "${destinationAccount}".`,
     },
     onlineConfiguration: {
-      title: "Online copy configuration",
-      description: "Additional permissions required for online copy operations",
+      title: "Online container copy",
+      description: (accountName: string) =>
+        `Please follow the instructions below to enable online copy on your "${accountName}" account.`,
     },
   },
   toggleBtn: {
@@ -129,10 +131,17 @@ export default {
   },
   onlineCopyEnabled: {
     title: "Online copy enabled",
-    description: (accountName: string) => `Enable Online copy on "${accountName}".`,
+    description: (accountName: string) =>
+      `Enable online container copy by clicking the button below on your "${accountName}" account.`,
     hrefText: "Learn more about online copy jobs",
     href: "https://learn.microsoft.com/en-us/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#enable-online-copy",
     buttonText: "Enable Online Copy",
+    validateAllVersionsAndDeletesChangeFeedSpinnerLabel:
+      "Validating All versions and deletes change feed mode (preview)...",
+    enablingAllVersionsAndDeletesChangeFeedSpinnerLabel:
+      "Enabling All versions and deletes change feed mode (preview)...",
+    enablingOnlineCopySpinnerLabel: (accountName: string) =>
+      `Enabling online copy on your "${accountName}" account ...`,
   },
   MonitorJobs: {
     Columns: {
