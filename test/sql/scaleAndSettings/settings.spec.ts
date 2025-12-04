@@ -58,7 +58,7 @@ test.describe("Settings under Scale & Settings", () => {
       timeout: ONE_MINUTE_MS,
     });
 
-    // set it to Off
+    // Set it to Off
     const ttlOffRadioButton = explorer.frame.getByRole("radio", { name: "ttl-off-option" });
     await ttlOffRadioButton.click();
 
