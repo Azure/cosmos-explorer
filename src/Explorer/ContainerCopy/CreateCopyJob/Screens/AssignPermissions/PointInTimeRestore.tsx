@@ -31,7 +31,11 @@ const PointInTimeRestore: React.FC = () => {
   const [showRefreshButton, setShowRefreshButton] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const { copyJobState: { source } = {}, setCopyJobState } = useCopyJobContext();
+  const { copyJobState: { source } = {}, setCopyJobState, setContextError } = useCopyJobContext();
+  if (!source?.account?.id) {
+    setContextError("Invalid source account. Please select a valid source account for Point-in-Time Restore.");
+    return null;
+  }
   const sourceAccountLink = buildResourceLink(source?.account);
   const featureUrl = `${sourceAccountLink}/backupRestore`;
   const selectedSourceAccount = source?.account;
@@ -39,7 +43,7 @@ const PointInTimeRestore: React.FC = () => {
     subscriptionId: sourceSubscriptionId,
     resourceGroup: sourceResourceGroup,
     accountName: sourceAccountName,
-  } = getAccountDetailsFromResourceId(selectedSourceAccount?.id);
+  } = getAccountDetailsFromResourceId(selectedSourceAccount?.id) || {};
 
   useEffect(() => {
     return () => {

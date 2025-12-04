@@ -32,7 +32,7 @@ const OnlineCopyEnabled: React.FC = () => {
     subscriptionId: sourceSubscriptionId,
     resourceGroup: sourceResourceGroup,
     accountName: sourceAccountName,
-  } = getAccountDetailsFromResourceId(selectedSourceAccount?.id);
+  } = getAccountDetailsFromResourceId(selectedSourceAccount?.id) || {};
 
   const handleFetchAccount = async () => {
     try {

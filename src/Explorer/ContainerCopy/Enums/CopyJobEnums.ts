@@ -11,6 +11,7 @@ export enum IdentityType {
 
 export enum DefaultIdentityType {
   SystemAssignedIdentity = "systemassignedidentity",
+  FirstPartyIdentity = "FirstPartyIdentity",
 }
 
 export enum BackupPolicyType {
