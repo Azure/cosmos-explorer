@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-import { DataExplorer, Editor, QueryTab, TestAccount } from "../fx";
+import { CommandBarButton, DataExplorer, Editor, QueryTab, TestAccount } from "../fx";
 import { TestContainerContext, TestItem, createTestSQLContainer } from "../testData";
 
 let context: TestContainerContext = null!;
@@ -37,7 +37,7 @@ test.afterAll("Delete Test Database", async () => {
 test("Query results", async () => {
   // Run the query and verify the results
   await queryEditor.locator.click();
-  const executeQueryButton = explorer.commandBarButton("Execute Query");
+  const executeQueryButton = explorer.commandBarButton(CommandBarButton.ExecuteQuery);
   await executeQueryButton.click();
   await expect(queryTab.resultsEditor.locator).toBeAttached({ timeout: 60 * 1000 });
 
@@ -59,7 +59,7 @@ test("Query results", async () => {
 test("Query stats", async () => {
   // Run the query and verify the results
   await queryEditor.locator.click();
-  const executeQueryButton = explorer.commandBarButton("Execute Query");
+  const executeQueryButton = explorer.commandBarButton(CommandBarButton.ExecuteQuery);
   await executeQueryButton.click();
   await expect(queryTab.resultsEditor.locator).toBeAttached({ timeout: 60 * 1000 });
 
@@ -77,7 +77,7 @@ test("Query errors", async () => {
   await queryEditor.setText("SELECT\n  glarb(c.id),\n  blarg(c.id)\nFROM c");
 
   // Run the query and verify the results
-  const executeQueryButton = explorer.commandBarButton("Execute Query");
+  const executeQueryButton = explorer.commandBarButton(CommandBarButton.ExecuteQuery);
   await executeQueryButton.click();
 
   await expect(queryTab.errorList).toBeAttached({ timeout: 60 * 1000 });

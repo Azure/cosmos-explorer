@@ -127,7 +127,7 @@ export class NotificationConsoleComponent extends React.Component<
               </span>
             </span>
             <span className="consoleSplitter" />
-            <span className="headerStatus">
+            <span className="headerStatus" data-test="notification-console/header-status">
               <span className="headerStatusEllipsis" aria-live="assertive" aria-atomic="true">
                 {this.state.headerStatus}
               </span>
@@ -208,6 +208,7 @@ export class NotificationConsoleComponent extends React.Component<
         <span className="date">{item.date}</span>
         <span className="message" role="alert" aria-live="assertive">
           {item.message}
+          {console.log(item.message)}
         </span>
       </div>
     ));

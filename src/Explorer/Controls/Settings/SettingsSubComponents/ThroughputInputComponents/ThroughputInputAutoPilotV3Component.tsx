@@ -503,7 +503,9 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
           <span style={{ float: "left", transform: "translateX(-50%)" }}>
             {this.props.instantMaximumThroughput.toLocaleString()}
           </span>
-          <span style={{ float: "right" }}>{this.props.softAllowedMaximumThroughput.toLocaleString()}</span>
+          <span style={{ float: "right" }} data-test="soft-allowed-maximum-throughput">
+            {this.props.softAllowedMaximumThroughput.toLocaleString()}
+          </span>
         </Stack.Item>
       </Stack>
       <ProgressIndicator
@@ -626,11 +628,12 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
               min={autoPilotThroughput1K}
               onGetErrorMessage={(value: string) => {
                 const sanitizedValue = getSanitizedInputValue(value);
-                return sanitizedValue % 1000
-                  ? "Throughput value must be in increments of 1000"
-                  : this.props.throughputError;
+                const errorMessage: string =
+                  sanitizedValue % 1000 ? "Throughput value must be in increments of 1000" : this.props.throughputError;
+                return <span data-test="autopilot-throughput-input-error">{errorMessage}</span>;
               }}
               validateOnLoad={false}
+              data-test="autopilot-throughput-input"
             />
           </Stack>
         </Stack>
@@ -650,7 +653,10 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
           }
           onChange={this.onThroughputChange}
           min={this.props.minimum}
-          errorMessage={this.props.throughputError}
+          onGetErrorMessage={(_) => {
+            return <span data-test="manual-throughput-input-error">{this.props.throughputError}</span>;
+          }}
+          data-test="manual-throughput-input"
         />
       )}
     </>
