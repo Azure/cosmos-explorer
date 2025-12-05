@@ -25,4 +25,4 @@ const CopyJobsNotFound: React.FC<CopyJobsNotFoundProps> = ({ explorer }) => {
   );
 };
 
-export default CopyJobsNotFound;
+export default React.memo(CopyJobsNotFound);

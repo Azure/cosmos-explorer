@@ -1,9 +1,11 @@
 /*  eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable react/prop-types */
 import {
   ConstrainMode,
   DetailsListLayoutMode,
   DetailsRow,
   IColumn,
+  IDetailsRowProps,
   ScrollablePane,
   ScrollbarVisibility,
   ShimmeredDetailsList,
@@ -58,22 +60,19 @@ const CopyJobsList: React.FC<CopyJobsListProps> = ({ jobs, handleActionClick, pa
     setStartIndex(0);
   };
 
-  const columns: IColumn[] = React.useMemo(
-    () => getColumns(handleSort, handleActionClick, sortedColumnKey, isSortedDescending),
-    [handleSort, handleActionClick, sortedColumnKey, isSortedDescending],
-  );
+  const columns: IColumn[] = getColumns(handleSort, handleActionClick, sortedColumnKey, isSortedDescending);
 
-  const _handleRowClick = React.useCallback((job: CopyJobType) => {
+  const _handleRowClick = (job: CopyJobType) => {
     openCopyJobDetailsPanel(job);
-  }, []);
+  };
 
-  const _onRenderRow = React.useCallback((props: any) => {
+  const _onRenderRow = (props: IDetailsRowProps) => {
     return (
       <div onClick={_handleRowClick.bind(null, props.item)}>
         <DetailsRow {...props} styles={{ root: { cursor: "pointer" } }} />
       </div>
     );
-  }, []);
+  };
 
   return (
     <div style={styles.container}>
