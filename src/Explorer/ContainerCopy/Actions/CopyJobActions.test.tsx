@@ -17,7 +17,6 @@ import {
   updateCopyJobStatus,
 } from "./CopyJobActions";
 
-// Mock dependencies
 jest.mock("UserContext", () => ({
   userContext: {
     databaseAccount: {
@@ -411,11 +410,9 @@ describe("CopyJobActions", () => {
 
       (dataTransferService.listByDatabaseAccount as jest.Mock).mockResolvedValue({ value: [] });
 
-      // First call
       getCopyJobs();
       expect(mockAbortController.abort).not.toHaveBeenCalled();
 
-      // Second call should abort the first
       getCopyJobs();
       expect(mockAbortController.abort).toHaveBeenCalledTimes(1);
     });
@@ -512,9 +509,8 @@ describe("CopyJobActions", () => {
         }),
       );
 
-      // Verify accountName is not included for intra-account copy
       const callArgs = (dataTransferService.create as jest.Mock).mock.calls[0][4];
-      expect(callArgs.properties.source.accountName).toBeUndefined();
+      expect(callArgs.properties.source.remoteAccountName).toBeUndefined();
 
       expect(mockRefreshJobList).toHaveBeenCalled();
       expect(mockOnSuccess).toHaveBeenCalled();
@@ -544,7 +540,7 @@ describe("CopyJobActions", () => {
       await submitCreateCopyJob(mockState, mockOnSuccess);
 
       const callArgs = (dataTransferService.create as jest.Mock).mock.calls[0][4];
-      expect(callArgs.properties.source.accountName).toBe("source-account");
+      expect(callArgs.properties.source.remoteAccountName).toBe("source-account");
       expect(mockOnSuccess).toHaveBeenCalled();
     });
 

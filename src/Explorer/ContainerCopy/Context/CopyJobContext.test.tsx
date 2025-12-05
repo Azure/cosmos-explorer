@@ -5,7 +5,6 @@ import Explorer from "../../Explorer";
 import { CopyJobMigrationType } from "../Enums/CopyJobEnums";
 import CopyJobContextProvider, { CopyJobContext, useCopyJobContext } from "./CopyJobContext";
 
-// Mock UserContext
 jest.mock("UserContext", () => ({
   userContext: {
     subscriptionId: "test-subscription-id",
@@ -289,7 +288,6 @@ describe("CopyJobContext", () => {
         </CopyJobContextProvider>,
       );
 
-      // First update the state
       const updateButton = screen.getByText("Update");
       act(() => {
         updateButton.click();
@@ -299,7 +297,6 @@ describe("CopyJobContext", () => {
       expect(contextValue.copyJobState.migrationType).toBe(CopyJobMigrationType.Online);
       expect(contextValue.copyJobState.source.databaseId).toBe("test-db");
 
-      // Then reset it
       const resetButton = screen.getByText("Reset");
       act(() => {
         resetButton.click();
@@ -432,7 +429,6 @@ describe("CopyJobContext", () => {
     });
 
     it("should throw error when used outside provider", () => {
-      // Suppress console.error for this test
       const originalError = console.error;
       console.error = jest.fn();
 
@@ -516,7 +512,6 @@ describe("CopyJobContext", () => {
         </CopyJobContextProvider>,
       );
 
-      // Modify state
       act(() => {
         screen.getByText("Modify").click();
       });
@@ -524,7 +519,6 @@ describe("CopyJobContext", () => {
       expect(contextValue.copyJobState.jobName).toBe("modified");
       expect(contextValue.copyJobState.source.databaseId).toBe("modified-db");
 
-      // Reset state
       act(() => {
         screen.getByText("Reset").click();
       });
@@ -568,15 +562,12 @@ describe("CopyJobContext", () => {
         </CopyJobContextProvider>,
       );
 
-      // Both components should see the same initial state
       expect(contextValue1.copyJobState).toEqual(contextValue2.copyJobState);
 
-      // Update state from first component
       act(() => {
         screen.getByText("Update From Component 1").click();
       });
 
-      // Both components should see the same updated state
       expect(contextValue1.copyJobState.jobName).toBe("shared-job");
       expect(contextValue2.copyJobState.jobName).toBe("shared-job");
     });

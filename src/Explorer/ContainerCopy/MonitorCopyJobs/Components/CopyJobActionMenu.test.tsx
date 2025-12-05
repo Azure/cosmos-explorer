@@ -5,7 +5,6 @@ import { CopyJobActions, CopyJobMigrationType, CopyJobStatusType } from "../../E
 import { CopyJobType, HandleJobActionClickType } from "../../Types/CopyJobTypes";
 import CopyJobActionMenu from "./CopyJobActionMenu";
 
-// Mock the ContainerCopyMessages module
 jest.mock("../../ContainerCopyMessages", () => ({
   __esModule: true,
   default: {
@@ -24,7 +23,6 @@ jest.mock("../../ContainerCopyMessages", () => ({
 }));
 
 describe("CopyJobActionMenu", () => {
-  // Mock job data for different scenarios
   const createMockJob = (overrides: Partial<CopyJobType> = {}): CopyJobType =>
     ({
       ID: "test-job-id",
@@ -241,7 +239,7 @@ describe("CopyJobActionMenu", () => {
     it("should handle case-insensitive online mode detection", () => {
       const job = createMockJob({
         Status: CopyJobStatusType.InProgress,
-        Mode: "ONLINE", // uppercase
+        Mode: "ONLINE",
       });
 
       render(<CopyJobActionMenu job={job} handleClick={mockHandleClick} />);
@@ -315,7 +313,6 @@ describe("CopyJobActionMenu", () => {
   });
 
   describe("Disabled States During Updates", () => {
-    // Create a custom component wrapper to test internal state
     const TestComponentWrapper: React.FC<{
       job: CopyJobType;
       initialUpdatingState?: { jobName: string; action: string } | null;
@@ -323,7 +320,6 @@ describe("CopyJobActionMenu", () => {
       const [updatingJobAction, setUpdatingJobAction] = React.useState(initialUpdatingState);
 
       const testHandleClick: HandleJobActionClickType = (job, action, setUpdatingJobActionCallback) => {
-        // Simulate the actual behavior
         setUpdatingJobActionCallback({ jobName: job.Name, action });
         setUpdatingJobAction({ jobName: job.Name, action });
       };
@@ -340,15 +336,8 @@ describe("CopyJobActionMenu", () => {
       fireEvent.click(actionButton);
 
       const pauseButton = screen.getByText("Pause");
-
-      // Click pause to trigger the updating state
       fireEvent.click(pauseButton);
-
-      // Open menu again to check disabled state
       fireEvent.click(actionButton);
-
-      // The pause button should now be disabled (though we can't directly test the disabled property
-      // in this case due to FluentUI's implementation, we verify the behavior through the handler)
       const pauseButtonAfterClick = screen.getByText("Pause");
       expect(pauseButtonAfterClick).toBeInTheDocument();
     });
@@ -358,39 +347,29 @@ describe("CopyJobActionMenu", () => {
       const job2 = createMockJob({ Name: "Job2", Status: CopyJobStatusType.InProgress });
 
       const { rerender } = render(<TestComponentWrapper job={job1} />);
-
-      // Click pause on job1
       let actionButton = screen.getByRole("button", { name: "Actions" });
       fireEvent.click(actionButton);
       fireEvent.click(screen.getByText("Pause"));
-
-      // Switch to job2 - its actions should not be disabled
       rerender(<TestComponentWrapper job={job2} />);
 
       actionButton = screen.getByRole("button", { name: "Actions" });
       fireEvent.click(actionButton);
 
-      // Job2's pause action should be available
       expect(screen.getByText("Pause")).toBeInTheDocument();
       expect(screen.getByText("Cancel")).toBeInTheDocument();
     });
 
     it("should properly handle multiple action types being disabled for the same job", () => {
       const job = createMockJob({ Status: CopyJobStatusType.InProgress });
-
       render(<TestComponentWrapper job={job} />);
-
       const actionButton = screen.getByRole("button", { name: "Actions" });
 
-      // Test pause
       fireEvent.click(actionButton);
       fireEvent.click(screen.getByText("Pause"));
 
-      // Test cancel
       fireEvent.click(actionButton);
       fireEvent.click(screen.getByText("Cancel"));
 
-      // Both actions should still be present
       fireEvent.click(actionButton);
       expect(screen.getByText("Pause")).toBeInTheDocument();
       expect(screen.getByText("Cancel")).toBeInTheDocument();
@@ -410,7 +389,6 @@ describe("CopyJobActionMenu", () => {
       const completeButton = screen.getByText("Complete");
       fireEvent.click(completeButton);
 
-      // Menu should still show complete option
       fireEvent.click(actionButton);
       expect(screen.getByText("Complete")).toBeInTheDocument();
     });
@@ -478,28 +456,22 @@ describe("CopyJobActionMenu", () => {
   describe("Icon and Accessibility", () => {
     it("should have correct icon and accessibility attributes", () => {
       const job = createMockJob({ Status: CopyJobStatusType.InProgress });
-
       render(<CopyJobActionMenu job={job} handleClick={mockHandleClick} />);
-
       const actionButton = screen.getByRole("button", { name: "Actions" });
 
       expect(actionButton).toHaveAttribute("aria-label", "Actions");
       expect(actionButton).toHaveAttribute("title", "Actions");
 
-      // Check if the More icon is present (by looking for the FluentUI IconButton structure)
       const moreIcon = actionButton.querySelector('[data-icon-name="More"]');
       expect(moreIcon || actionButton).toBeInTheDocument();
     });
 
     it("should have correct menu item icons", () => {
       const job = createMockJob({ Status: CopyJobStatusType.InProgress });
-
       render(<CopyJobActionMenu job={job} handleClick={mockHandleClick} />);
-
       const actionButton = screen.getByRole("button", { name: "Actions" });
       fireEvent.click(actionButton);
 
-      // The icons are handled by FluentUI, so we just verify the menu items exist
       expect(screen.getByText("Pause")).toBeInTheDocument();
       expect(screen.getByText("Cancel")).toBeInTheDocument();
     });
@@ -508,10 +480,7 @@ describe("CopyJobActionMenu", () => {
   describe("Component State Management", () => {
     it("should manage updating job action state correctly", () => {
       const job = createMockJob({ Status: CopyJobStatusType.InProgress });
-
-      // Mock the handleClick to simulate the state update behavior
       const mockHandleClickWithState: HandleJobActionClickType = jest.fn((job, action, setUpdatingJobAction) => {
-        // Simulate what the actual handler would do
         setUpdatingJobAction({ jobName: job.Name, action });
       });
 
@@ -533,23 +502,17 @@ describe("CopyJobActionMenu", () => {
 
       const actionButton = screen.getByRole("button", { name: "Actions" });
       fireEvent.click(actionButton);
-
       const pauseButton = screen.getByText("Pause");
-
-      // Click multiple times rapidly - FluentUI typically handles this by closing the menu after first click
       fireEvent.click(pauseButton);
-
-      // Re-open menu and click again
+      
       fireEvent.click(actionButton);
       const pauseButton2 = screen.getByText("Pause");
       fireEvent.click(pauseButton2);
 
-      // Re-open menu and click a third time
       fireEvent.click(actionButton);
       const pauseButton3 = screen.getByText("Pause");
       fireEvent.click(pauseButton3);
 
-      // Should be called 3 times (once per menu interaction)
       expect(mockHandleClick).toHaveBeenCalledTimes(3);
     });
   });
@@ -591,21 +554,16 @@ describe("CopyJobActionMenu", () => {
 
     it("should maintain consistent behavior across re-renders", () => {
       const job = createMockJob({ Status: CopyJobStatusType.InProgress });
-
       const { rerender } = render(<CopyJobActionMenu job={job} handleClick={mockHandleClick} />);
 
-      // Initial render - verify button exists
       let actionButton = screen.getByRole("button", { name: "Actions" });
       expect(actionButton).toBeInTheDocument();
 
-      // Re-render with same props
       rerender(<CopyJobActionMenu job={job} handleClick={mockHandleClick} />);
 
-      // Verify button still exists and can be clicked
       actionButton = screen.getByRole("button", { name: "Actions" });
       expect(actionButton).toBeInTheDocument();
 
-      // Test that menu functionality is preserved
       fireEvent.click(actionButton);
       expect(screen.getByText("Pause")).toBeInTheDocument();
       expect(screen.getByText("Cancel")).toBeInTheDocument();
@@ -617,18 +575,14 @@ describe("CopyJobActionMenu", () => {
 
       const { rerender } = render(<CopyJobActionMenu job={job1} handleClick={mockHandleClick} />);
 
-      // Check initial state (InProgress job) - verify button exists
       let actionButton = screen.getByRole("button", { name: "Actions" });
       expect(actionButton).toBeInTheDocument();
 
-      // Change to paused job
       rerender(<CopyJobActionMenu job={job2} handleClick={mockHandleClick} />);
 
-      // Verify the component handles the status change properly
       actionButton = screen.getByRole("button", { name: "Actions" });
       fireEvent.click(actionButton);
 
-      // For paused jobs, should have Resume and Cancel, but not Pause
       expect(screen.getByText("Resume")).toBeInTheDocument();
       expect(screen.getByText("Cancel")).toBeInTheDocument();
       expect(screen.queryByText("Pause")).not.toBeInTheDocument();
@@ -638,15 +592,11 @@ describe("CopyJobActionMenu", () => {
   describe("Performance and Memory", () => {
     it("should not create memory leaks with multiple renders", () => {
       const job = createMockJob({ Status: CopyJobStatusType.InProgress });
-
       const { unmount } = render(<CopyJobActionMenu job={job} handleClick={mockHandleClick} />);
-
-      // Component should unmount cleanly
       expect(() => unmount()).not.toThrow();
     });
 
     it("should handle null/undefined props gracefully", () => {
-      // This test ensures the component is robust against unexpected prop values
       const incompleteJob = {
         ...createMockJob({ Status: CopyJobStatusType.InProgress }),
         Name: undefined as any,

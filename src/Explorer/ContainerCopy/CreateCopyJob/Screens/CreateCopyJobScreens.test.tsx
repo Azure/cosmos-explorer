@@ -131,8 +131,6 @@ describe("CreateCopyJobScreens", () => {
       render(<CreateCopyJobScreens />);
       const messageBar = screen.getByRole("region");
       expect(messageBar).toBeInTheDocument();
-
-      // Check for MessageBar by class since the text might be in a nested structure
       expect(messageBar).toHaveClass("createCopyJobErrorMessageBar");
     });
 
@@ -281,7 +279,6 @@ describe("CreateCopyJobScreens", () => {
       expect(content).toBeInTheDocument();
       expect(footer).toBeInTheDocument();
 
-      // Check that content comes before footer in DOM order
       const contentIndex = Array.from(container.querySelectorAll("*")).indexOf(content!);
       const footerIndex = Array.from(container.querySelectorAll("*")).indexOf(footer!);
       expect(contentIndex).toBeLessThan(footerIndex);
@@ -295,8 +292,6 @@ describe("CreateCopyJobScreens", () => {
           currentScreen: null,
         }),
       );
-
-      // This should throw because React.cloneElement requires a valid element
       expect(() => render(<CreateCopyJobScreens />)).toThrow();
     });
 
@@ -306,8 +301,6 @@ describe("CreateCopyJobScreens", () => {
           currentScreen: { key: "test", component: null },
         }),
       );
-
-      // This should throw because React.cloneElement requires a valid element
       expect(() => render(<CreateCopyJobScreens />)).toThrow();
     });
 
@@ -347,10 +340,8 @@ describe("CreateCopyJobScreens", () => {
       const mockSetContextError = jest.fn();
       const { rerender } = render(<CreateCopyJobScreens />);
 
-      // Initial state - no error
       expect(screen.queryByRole("region")).not.toBeInTheDocument();
 
-      // Add error
       (useCopyJobContext as jest.Mock).mockReturnValue(
         createMockContext({
           contextError: "First error",
@@ -360,7 +351,6 @@ describe("CreateCopyJobScreens", () => {
       rerender(<CreateCopyJobScreens />);
       expect(screen.getByRole("region")).toBeInTheDocument();
 
-      // Change error
       (useCopyJobContext as jest.Mock).mockReturnValue(
         createMockContext({
           contextError: "Second error",
@@ -370,7 +360,6 @@ describe("CreateCopyJobScreens", () => {
       rerender(<CreateCopyJobScreens />);
       expect(screen.getByRole("region")).toBeInTheDocument();
 
-      // Clear error
       (useCopyJobContext as jest.Mock).mockReturnValue(
         createMockContext({
           contextError: null,
@@ -410,7 +399,6 @@ describe("CreateCopyJobScreens", () => {
       const messageRegion = screen.getByRole("region");
       expect(messageRegion).toBeInTheDocument();
 
-      // Also check for alert role which is nested inside
       const alert = screen.getByRole("alert");
       expect(alert).toBeInTheDocument();
     });
@@ -431,7 +419,6 @@ describe("CreateCopyJobScreens", () => {
 
       render(<CreateCopyJobScreens />);
 
-      // Check both hooks are used - check for region (MessageBar) and button text
       expect(screen.getByRole("region")).toBeInTheDocument();
       expect(screen.getByText("Integration Test")).toBeInTheDocument();
     });

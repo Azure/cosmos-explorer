@@ -47,7 +47,6 @@ jest.mock("../Screens/SelectSourceAndTargetContainers/SelectSourceAndTargetConta
   };
 });
 
-// Test component that uses the hook
 const TestHookComponent: React.FC<{ goBack: () => void }> = ({ goBack }) => {
   const screens = useCreateCopyJobScreensList(goBack);
 
@@ -87,15 +86,12 @@ describe("useCreateCopyJobScreensList", () => {
       renderWithContext(<TestHookComponent goBack={mockGoBack} />);
 
       expect(screen.getByTestId("test-hook-component")).toBeInTheDocument();
-
-      // Verify all expected screen keys are present
       expect(screen.getByTestId("screen-key-0")).toHaveTextContent(SCREEN_KEYS.SelectAccount);
       expect(screen.getByTestId("screen-key-1")).toHaveTextContent(SCREEN_KEYS.SelectSourceAndTargetContainers);
       expect(screen.getByTestId("screen-key-2")).toHaveTextContent(SCREEN_KEYS.CreateCollection);
       expect(screen.getByTestId("screen-key-3")).toHaveTextContent(SCREEN_KEYS.PreviewCopyJob);
       expect(screen.getByTestId("screen-key-4")).toHaveTextContent(SCREEN_KEYS.AssignPermissions);
 
-      // Verify components are rendered
       expect(screen.getByTestId("select-account")).toBeInTheDocument();
       expect(screen.getByTestId("select-source-target")).toBeInTheDocument();
       expect(screen.getByTestId("add-collection-panel")).toBeInTheDocument();
@@ -112,10 +108,7 @@ describe("useCreateCopyJobScreensList", () => {
 
     it("should memoize results based on explorer dependency", () => {
       const { rerender } = renderWithContext(<TestHookComponent goBack={mockGoBack} />);
-
       const initialScreens = screen.getAllByTestId(/screen-key-\d+/).map((el) => el.textContent);
-
-      // Re-render with same explorer - should use memoized result
       rerender(
         <CopyJobContextProvider explorer={mockExplorer}>
           <TestHookComponent goBack={mockGoBack} />
@@ -153,8 +146,6 @@ describe("useCreateCopyJobScreensList", () => {
             containerId: "",
           },
         };
-
-        // Create a test component that exposes validation functions
         const ValidationTestComponent = () => {
           const screens = useCreateCopyJobScreensList(mockGoBack);
           const selectAccountScreen = screens.find((s) => s.key === SCREEN_KEYS.SelectAccount);
@@ -451,15 +442,11 @@ describe("useCreateCopyJobScreensList", () => {
   describe("Component props", () => {
     it("should pass explorer to AddCollectionPanelWrapper", () => {
       renderWithContext(<TestHookComponent goBack={mockGoBack} />);
-
-      // The component should receive the explorer prop
       expect(screen.getByTestId("add-collection-panel")).toBeInTheDocument();
     });
 
     it("should pass goBack function to AddCollectionPanelWrapper", () => {
       renderWithContext(<TestHookComponent goBack={mockGoBack} />);
-
-      // Verify the component is rendered (actual prop passing would require more complex testing setup)
       expect(screen.getByTestId("add-collection-panel")).toBeInTheDocument();
     });
   });

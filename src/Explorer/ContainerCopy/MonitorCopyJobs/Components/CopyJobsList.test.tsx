@@ -5,12 +5,10 @@ import { CopyJobStatusType } from "../../Enums/CopyJobEnums";
 import { CopyJobType, HandleJobActionClickType } from "../../Types/CopyJobTypes";
 import CopyJobsList from "./CopyJobsList";
 
-// Mock the openCopyJobDetailsPanel action
 jest.mock("../../Actions/CopyJobActions", () => ({
   openCopyJobDetailsPanel: jest.fn(),
 }));
 
-// Mock the getColumns function
 jest.mock("./CopyJobColumns", () => ({
   getColumns: jest.fn(() => [
     {
@@ -133,14 +131,12 @@ describe("CopyJobsList", () => {
     it("renders empty list when no jobs provided", () => {
       render(<CopyJobsList jobs={[]} handleActionClick={mockHandleActionClick} />);
 
-      // Should render the ShimmeredDetailsList but with no items
       expect(screen.queryByText("Test Job 1")).not.toBeInTheDocument();
     });
 
     it("renders jobs list with provided jobs", () => {
       render(<CopyJobsList jobs={mockJobs} handleActionClick={mockHandleActionClick} />);
 
-      // Should render job names
       expect(screen.getByText("Test Job 1")).toBeInTheDocument();
       expect(screen.getByText("Test Job 2")).toBeInTheDocument();
       expect(screen.getByText("Test Job 3")).toBeInTheDocument();
@@ -181,7 +177,6 @@ describe("CopyJobsList", () => {
 
       render(<CopyJobsList jobs={manyJobs} handleActionClick={mockHandleActionClick} pageSize={10} />);
 
-      // Should show pager controls
       expect(screen.getByLabelText("Go to first page")).toBeInTheDocument();
       expect(screen.getByLabelText("Go to previous page")).toBeInTheDocument();
       expect(screen.getByLabelText("Go to next page")).toBeInTheDocument();
@@ -191,7 +186,6 @@ describe("CopyJobsList", () => {
     it("does not show pager when jobs are within page size", () => {
       render(<CopyJobsList jobs={mockJobs} handleActionClick={mockHandleActionClick} pageSize={10} />);
 
-      // Should not show pager controls
       expect(screen.queryByLabelText("Go to first page")).not.toBeInTheDocument();
       expect(screen.queryByLabelText("Go to previous page")).not.toBeInTheDocument();
       expect(screen.queryByLabelText("Go to next page")).not.toBeInTheDocument();
@@ -207,7 +201,6 @@ describe("CopyJobsList", () => {
 
       render(<CopyJobsList jobs={manyJobs} handleActionClick={mockHandleActionClick} pageSize={10} />);
 
-      // Should show items count
       expect(screen.getByText("Showing 1 - 10 of 25 items")).toBeInTheDocument();
       expect(screen.getByText("Page 1 of 3")).toBeInTheDocument();
     });
@@ -221,16 +214,13 @@ describe("CopyJobsList", () => {
 
       render(<CopyJobsList jobs={manyJobs} handleActionClick={mockHandleActionClick} pageSize={10} />);
 
-      // Initially shows first 10 jobs
       expect(screen.getByText("Test Job 1")).toBeInTheDocument();
       expect(screen.getByText("Test Job 10")).toBeInTheDocument();
       expect(screen.queryByText("Test Job 11")).not.toBeInTheDocument();
 
-      // Click next page
       fireEvent.click(screen.getByLabelText("Go to next page"));
 
       await waitFor(() => {
-        // Should now show jobs 11-15
         expect(screen.queryByText("Test Job 1")).not.toBeInTheDocument();
         expect(screen.getByText("Test Job 11")).toBeInTheDocument();
         expect(screen.getByText("Test Job 15")).toBeInTheDocument();
@@ -246,7 +236,6 @@ describe("CopyJobsList", () => {
 
       render(<CopyJobsList jobs={manyJobs} handleActionClick={mockHandleActionClick} pageSize={5} />);
 
-      // Should show pager since 8 > 5
       expect(screen.getByLabelText("Go to next page")).toBeInTheDocument();
       expect(screen.getByText("Showing 1 - 5 of 8 items")).toBeInTheDocument();
     });
@@ -262,7 +251,6 @@ describe("CopyJobsList", () => {
 
       render(<CopyJobsList jobs={unsortedJobs} handleActionClick={mockHandleActionClick} />);
 
-      // Initially shows jobs in original order
       const rows = screen.getAllByText(/Job$/);
       expect(rows[0]).toHaveTextContent("Z Job");
       expect(rows[1]).toHaveTextContent("A Job");
@@ -273,12 +261,11 @@ describe("CopyJobsList", () => {
       const manyJobs: CopyJobType[] = Array.from({ length: 15 }, (_, i) => ({
         ...mockJobs[0],
         ID: `job-${i + 1}`,
-        Name: `Job ${String.fromCharCode(90 - i)}`, // Z, Y, X, etc.
+        Name: `Job ${String.fromCharCode(90 - i)}`,
       }));
 
       render(<CopyJobsList jobs={manyJobs} handleActionClick={mockHandleActionClick} pageSize={10} />);
 
-      // Go to second page first
       fireEvent.click(screen.getByLabelText("Go to next page"));
 
       await waitFor(() => {
@@ -292,7 +279,6 @@ describe("CopyJobsList", () => {
       expect(screen.getByText("Test Job 1")).toBeInTheDocument();
       expect(screen.queryByText("Test Job 2")).not.toBeInTheDocument();
 
-      // Update with new jobs
       rerender(<CopyJobsList jobs={mockJobs} handleActionClick={mockHandleActionClick} />);
 
       expect(screen.getByText("Test Job 1")).toBeInTheDocument();
@@ -311,18 +297,15 @@ describe("CopyJobsList", () => {
         <CopyJobsList jobs={manyJobs} handleActionClick={mockHandleActionClick} pageSize={10} />,
       );
 
-      // Navigate to second page
       fireEvent.click(screen.getByLabelText("Go to next page"));
 
       await waitFor(() => {
         expect(screen.getByText("Showing 11 - 15 of 15 items")).toBeInTheDocument();
       });
 
-      // Change jobs - should reset to first page
       const newJobs = [mockJobs[0], mockJobs[1]];
       rerender(<CopyJobsList jobs={newJobs} handleActionClick={mockHandleActionClick} pageSize={10} />);
 
-      // Should be back on page 1
       expect(screen.queryByLabelText("Go to next page")).not.toBeInTheDocument();
     });
   });
@@ -333,14 +316,12 @@ describe("CopyJobsList", () => {
 
       render(<CopyJobsList jobs={mockJobs} handleActionClick={mockHandleActionClick} />);
 
-      // Click on the first job row - we need to find the row element
       const jobNameElement = screen.getByText("Test Job 1");
       const rowElement = jobNameElement.closest('[role="row"]') || jobNameElement.closest("div");
 
       if (rowElement) {
         fireEvent.click(rowElement);
       } else {
-        // Fallback: click the job name element itself
         fireEvent.click(jobNameElement);
       }
 
@@ -352,11 +333,9 @@ describe("CopyJobsList", () => {
     it("applies cursor pointer style to rows", () => {
       render(<CopyJobsList jobs={mockJobs} handleActionClick={mockHandleActionClick} />);
 
-      // Verify that rows have pointer cursor (this is set via inline styles)
       const jobNameElement = screen.getByText("Test Job 1");
       const rowElement = jobNameElement.closest("div");
 
-      // The component uses DetailsRow with cursor: pointer style
       expect(rowElement).toBeInTheDocument();
     });
   });
@@ -371,7 +350,6 @@ describe("CopyJobsList", () => {
 
       render(<CopyJobsList jobs={manyJobs} handleActionClick={mockHandleActionClick} />);
 
-      // Default page size is 10, so should show pager
       expect(screen.getByLabelText("Go to next page")).toBeInTheDocument();
       expect(screen.getByText("Showing 1 - 10 of 12 items")).toBeInTheDocument();
     });
@@ -394,7 +372,6 @@ describe("CopyJobsList", () => {
     it("renders with proper ARIA attributes", () => {
       render(<CopyJobsList jobs={mockJobs} handleActionClick={mockHandleActionClick} />);
 
-      // The DetailsList should have proper accessibility attributes
       const detailsList = screen.getByRole("grid");
       expect(detailsList).toBeInTheDocument();
     });
@@ -408,7 +385,6 @@ describe("CopyJobsList", () => {
 
       render(<CopyJobsList jobs={manyJobs} handleActionClick={mockHandleActionClick} pageSize={10} />);
 
-      // All pager buttons should have proper aria-labels
       expect(screen.getByLabelText("Go to first page")).toBeInTheDocument();
       expect(screen.getByLabelText("Go to previous page")).toBeInTheDocument();
       expect(screen.getByLabelText("Go to next page")).toBeInTheDocument();
@@ -444,7 +420,6 @@ describe("CopyJobsList", () => {
           databaseName: "targetDb",
           containerName: "targetContainer",
         },
-        // Error is optional and missing
       };
 
       expect(() => {
@@ -465,7 +440,6 @@ describe("CopyJobsList", () => {
         render(<CopyJobsList jobs={largeJobsList} handleActionClick={mockHandleActionClick} />);
       }).not.toThrow();
 
-      // Should still show pagination
       expect(screen.getByText("Showing 1 - 10 of 1000 items")).toBeInTheDocument();
     });
   });

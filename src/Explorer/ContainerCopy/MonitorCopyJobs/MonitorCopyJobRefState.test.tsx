@@ -60,7 +60,6 @@ describe("MonitorCopyJobsRefState", () => {
     const state = MonitorCopyJobsRefState.getState();
     expect(state.ref).toBeNull();
 
-    // This should not throw an error due to optional chaining
     expect(() => {
       state.ref?.refreshJobList();
     }).not.toThrow();
@@ -71,13 +70,11 @@ describe("MonitorCopyJobsRefState", () => {
       refreshJobList: jest.fn(),
     };
 
-    // Set initial ref
     MonitorCopyJobsRefState.setState({ ref: mockRef });
     const state1 = MonitorCopyJobsRefState.getState();
     expect(state1.ref).toBe(mockRef);
     expect(state1.setRef).toBeDefined();
 
-    // Update only the ref, setRef should still exist
     const newMockRef: MonitorCopyJobsRef = {
       refreshJobList: jest.fn(),
     };

@@ -165,29 +165,21 @@ describe("DatabaseContainerSection", () => {
   describe("User Interactions", () => {
     it("calls databaseOnChange when database dropdown selection changes", () => {
       render(<DatabaseContainerSection {...defaultProps} />);
-
       const databaseDropdown = screen.getByRole("combobox", {
         name: ContainerCopyMessages.databaseDropdownLabel,
       });
 
-      // Simulate clicking on the dropdown to open it
       fireEvent.click(databaseDropdown);
-
-      // FluentUI dropdown interactions are complex, so we'll test the prop was passed correctly
       expect(databaseDropdown).toHaveAttribute("aria-label", ContainerCopyMessages.databaseDropdownLabel);
     });
 
     it("calls containerOnChange when container dropdown selection changes", () => {
       render(<DatabaseContainerSection {...defaultProps} />);
-
       const containerDropdown = screen.getByRole("combobox", {
         name: ContainerCopyMessages.containerDropdownLabel,
       });
 
-      // Simulate clicking on the dropdown to open it
       fireEvent.click(containerDropdown);
-
-      // FluentUI dropdown interactions are complex, so we'll test the prop was passed correctly
       expect(containerDropdown).toHaveAttribute("aria-label", ContainerCopyMessages.containerDropdownLabel);
     });
 
@@ -285,7 +277,6 @@ describe("DatabaseContainerSection", () => {
     it("maintains proper label associations", () => {
       render(<DatabaseContainerSection {...defaultProps} />);
 
-      // Check that labels are properly associated with form elements
       expect(screen.getByText(`${ContainerCopyMessages.databaseDropdownLabel}:`)).toBeInTheDocument();
       expect(screen.getByText(`${ContainerCopyMessages.containerDropdownLabel}:`)).toBeInTheDocument();
     });
@@ -362,7 +353,7 @@ describe("DatabaseContainerSection", () => {
       expect(mainStack).toBeInTheDocument();
 
       const fieldRows = container.querySelectorAll(".flex-row");
-      expect(fieldRows.length).toBe(2); // One for database, one for container
+      expect(fieldRows.length).toBe(2);
     });
 
     it("renders create button in correct position when provided", () => {

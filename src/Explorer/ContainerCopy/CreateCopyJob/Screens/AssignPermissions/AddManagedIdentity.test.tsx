@@ -106,7 +106,6 @@ describe("AddManagedIdentity", () => {
     it("renders with toggle on and popover visible", () => {
       const { container } = renderWithContext();
 
-      // Toggle the system assigned identity switch
       const toggle = screen.getByRole("switch");
       fireEvent.click(toggle);
 
@@ -120,7 +119,6 @@ describe("AddManagedIdentity", () => {
 
       const { container } = renderWithContext();
 
-      // Toggle on and trigger the action
       const toggle = screen.getByRole("switch");
       fireEvent.click(toggle);
 
@@ -184,8 +182,8 @@ describe("AddManagedIdentity", () => {
       renderWithContext();
 
       const toggle = screen.getByRole("switch");
-      fireEvent.click(toggle); // Turn on
-      fireEvent.click(toggle); // Turn off
+      fireEvent.click(toggle);
+      fireEvent.click(toggle);
 
       expect(screen.queryByText(ContainerCopyMessages.addManagedIdentity.enablementTitle)).not.toBeInTheDocument();
     });
@@ -195,7 +193,7 @@ describe("AddManagedIdentity", () => {
     beforeEach(() => {
       renderWithContext();
       const toggle = screen.getByRole("switch");
-      fireEvent.click(toggle); // Enable popover
+      fireEvent.click(toggle);
     });
 
     it("displays correct enablement description with account name", () => {
@@ -224,7 +222,6 @@ describe("AddManagedIdentity", () => {
 
       expect(screen.queryByText(ContainerCopyMessages.addManagedIdentity.enablementTitle)).not.toBeInTheDocument();
 
-      // Toggle should also be turned off
       const toggle = screen.getByRole("switch");
       expect(toggle).not.toBeChecked();
     });

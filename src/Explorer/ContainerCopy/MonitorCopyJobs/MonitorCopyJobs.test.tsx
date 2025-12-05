@@ -8,7 +8,6 @@ import { CopyJobStatusType } from "../Enums/CopyJobEnums";
 import { CopyJobType } from "../Types/CopyJobTypes";
 import MonitorCopyJobs from "./MonitorCopyJobs";
 
-// Mock the child components
 jest.mock("Common/ShimmerTree/ShimmerTree", () => {
   return function MockShimmerTree() {
     return <div data-testid="shimmer-tree">Loading...</div>;
@@ -27,7 +26,6 @@ jest.mock("./Components/CopyJobs.NotFound", () => {
   };
 });
 
-// Mock the actions
 jest.mock("../Actions/CopyJobActions", () => ({
   getCopyJobs: jest.fn(),
   updateCopyJobStatus: jest.fn(),
@@ -152,7 +150,6 @@ describe("MonitorCopyJobs", () => {
     it("displays job list when jobs are loaded", async () => {
       render(<MonitorCopyJobs explorer={mockExplorer} />);
 
-      // Wait for the loading state to complete and jobs to be rendered
       await waitFor(
         () => {
           expect(screen.getByTestId("copy-jobs-list")).toBeInTheDocument();
@@ -179,24 +176,18 @@ describe("MonitorCopyJobs", () => {
 
     it("passes correct jobs to CopyJobsList component", async () => {
       render(<MonitorCopyJobs explorer={mockExplorer} />);
-
       await waitFor(() => {
         expect(screen.getByTestId("copy-jobs-list")).toBeInTheDocument();
       });
-
-      // The mock component displays the job count
       expect(screen.getByText("Jobs: 2")).toBeInTheDocument();
     });
 
     it("updates job status when action is triggered", async () => {
       const ref = React.createRef<any>();
       render(<MonitorCopyJobs explorer={mockExplorer} ref={ref} />);
-
       await waitFor(() => {
         expect(screen.getByTestId("copy-jobs-list")).toBeInTheDocument();
       });
-
-      // The actual update logic is tested through the component's internal callback
       expect(mockJobs[0].Status).toBe(CopyJobStatusType.InProgress);
     });
   });
@@ -222,7 +213,6 @@ describe("MonitorCopyJobs", () => {
         expect(screen.getByText(/Failed to load copy jobs/)).toBeInTheDocument();
       });
 
-      // Find and click the dismiss button
       const dismissButton = container.querySelector('[aria-label="Close"]');
       if (dismissButton) {
         dismissButton.dispatchEvent(new MouseEvent("click", { bubbles: true }));
@@ -253,13 +243,11 @@ describe("MonitorCopyJobs", () => {
         expect(screen.getByTestId("copy-jobs-list")).toBeInTheDocument();
       });
 
-      // Simulate action click through the handleActionClick callback
       const mockHandleActionClick = jest.fn(async (job, action, setUpdatingJobAction) => {
         try {
           setUpdatingJobAction({ jobName: job.Name, action });
           await mockUpdateCopyJobStatus(job, action);
         } catch (error: any) {
-          // Error will be handled in the component
         }
       });
 
@@ -271,12 +259,10 @@ describe("MonitorCopyJobs", () => {
     it.skip("polls for jobs at regular intervals", async () => {
       render(<MonitorCopyJobs explorer={mockExplorer} />);
 
-      // Wait for initial fetch
       await waitFor(() => {
         expect(mockGetCopyJobs).toHaveBeenCalledTimes(1);
       });
 
-      // Fast-forward 30 seconds
       act(() => {
         jest.advanceTimersByTime(30000);
       });
@@ -285,7 +271,6 @@ describe("MonitorCopyJobs", () => {
         expect(mockGetCopyJobs).toHaveBeenCalledTimes(2);
       });
 
-      // Fast-forward another 30 seconds
       act(() => {
         jest.advanceTimersByTime(30000);
       });
@@ -304,12 +289,10 @@ describe("MonitorCopyJobs", () => {
 
       unmount();
 
-      // Fast-forward time after unmount
       act(() => {
         jest.advanceTimersByTime(60000);
       });
 
-      // Should not call getCopyJobs again after unmount
       expect(mockGetCopyJobs).toHaveBeenCalledTimes(1);
     });
 
@@ -321,7 +304,6 @@ describe("MonitorCopyJobs", () => {
         expect(mockGetCopyJobs).toHaveBeenCalledTimes(1);
       });
 
-      // Call refresh via ref
       act(() => {
         ref.current?.refreshJobList();
       });
@@ -339,7 +321,6 @@ describe("MonitorCopyJobs", () => {
         expect(screen.getByTestId("copy-jobs-list")).toBeInTheDocument();
       });
 
-      // Mock a long-running update
       mockUpdateCopyJobStatus.mockImplementation(
         () =>
           new Promise((resolve) =>
@@ -377,11 +358,8 @@ describe("MonitorCopyJobs", () => {
           ),
       );
 
-      // Trigger an action (this would normally come from the component)
-      // For this test, we'll just verify the ref functionality
       const initialCallCount = mockGetCopyJobs.mock.calls.length;
 
-      // This test verifies the ref functionality exists
       expect(ref.current).toHaveProperty("refreshJobList");
       expect(typeof ref.current.refreshJobList).toBe("function");
     });
@@ -404,7 +382,6 @@ describe("MonitorCopyJobs", () => {
       render(<MonitorCopyJobs explorer={mockExplorer} />);
 
       await waitFor(() => {
-        // Should handle null and show not found
         expect(screen.getByTestId("copy-jobs-not-found")).toBeInTheDocument();
       });
     });
@@ -415,7 +392,6 @@ describe("MonitorCopyJobs", () => {
       const newExplorer = {} as Explorer;
       rerender(<MonitorCopyJobs explorer={newExplorer} />);
 
-      // Component should re-render without errors
       expect(document.querySelector(".monitorCopyJobs")).toBeInTheDocument();
     });
   });

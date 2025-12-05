@@ -9,11 +9,9 @@ import ContainerCopyMessages from "../../../ContainerCopyMessages";
 import { useCopyJobContext } from "../../../Context/CopyJobContext";
 import AddCollectionPanelWrapper from "./AddCollectionPanelWrapper";
 
-// Mock the hooks
 jest.mock("hooks/useSidePanel");
 jest.mock("../../../Context/CopyJobContext");
 
-// Mock the AddCollectionPanel component
 jest.mock("../../../../Panes/AddCollectionPanel/AddCollectionPanel", () => ({
   AddCollectionPanel: ({
     explorer,
@@ -37,7 +35,6 @@ jest.mock("../../../../Panes/AddCollectionPanel/AddCollectionPanel", () => ({
   ),
 }));
 
-// Mock produce from immer
 jest.mock("immer", () => ({
   produce: jest.fn((updater) => (state: any) => {
     const draft = { ...state };
@@ -96,11 +93,8 @@ describe("AddCollectionPanelWrapper", () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    // Mock useSidePanel with getState method
     mockUseSidePanel.mockReturnValue(mockSidePanelState);
     mockUseSidePanel.getState = jest.fn().mockReturnValue(mockSidePanelState);
-
-    // Mock useCopyJobContext
     mockUseCopyJobContext.mockReturnValue(mockCopyJobContextValue);
   });
 
@@ -251,27 +245,16 @@ describe("AddCollectionPanelWrapper", () => {
   describe("Component Lifecycle", () => {
     it("should properly cleanup on unmount", () => {
       const { unmount } = render(<AddCollectionPanelWrapper />);
-
-      // Verify initial setup
       expect(mockSetHeaderText).toHaveBeenCalledWith(ContainerCopyMessages.createContainerHeading);
-
-      // Clear previous calls
       mockSetHeaderText.mockClear();
-
-      // Unmount component
       unmount();
-
-      // Verify cleanup
       expect(mockSetHeaderText).toHaveBeenCalledWith(ContainerCopyMessages.createCopyJobPanelTitle);
     });
 
     it("should re-render correctly when props change", () => {
       const { rerender } = render(<AddCollectionPanelWrapper />);
-
       expect(screen.getByTestId("explorer-prop")).toHaveTextContent("no-explorer");
-
       rerender(<AddCollectionPanelWrapper explorer={mockExplorer} />);
-
       expect(screen.getByTestId("explorer-prop")).toHaveTextContent("explorer-present");
     });
   });

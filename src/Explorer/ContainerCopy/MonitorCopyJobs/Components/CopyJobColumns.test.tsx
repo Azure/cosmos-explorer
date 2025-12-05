@@ -7,7 +7,6 @@ import { CopyJobStatusType } from "../../Enums/CopyJobEnums";
 import { CopyJobType, HandleJobActionClickType } from "../../Types/CopyJobTypes";
 import { getColumns } from "./CopyJobColumns";
 
-// Mock the child components
 jest.mock("./CopyJobActionMenu", () => {
   return function MockCopyJobActionMenu({ job }: { job: CopyJobType }) {
     return <div data-testid={`action-menu-${job.Name}`}>Action Menu</div>;
@@ -58,7 +57,6 @@ describe("CopyJobColumns", () => {
       expect(Array.isArray(columns)).toBe(true);
       expect(columns.length).toBe(6);
 
-      // Verify each column has required properties
       columns.forEach((column: IColumn) => {
         expect(column).toHaveProperty("key");
         expect(column).toHaveProperty("name");
@@ -91,7 +89,6 @@ describe("CopyJobColumns", () => {
     it("should configure sortable columns correctly when no sort is applied", () => {
       const columns = getColumns(mockHandleSort, mockHandleActionClick, undefined, false);
 
-      // All sortable columns should have isSorted: false
       expect(columns[0].isSorted).toBe(false); // LastUpdatedTime
       expect(columns[1].isSorted).toBe(false); // Name
       expect(columns[2].isSorted).toBe(false); // Mode
@@ -105,7 +102,6 @@ describe("CopyJobColumns", () => {
       expect(columns[1].isSorted).toBe(true);
       expect(columns[1].isSortedDescending).toBe(true);
 
-      // Other columns should not be sorted
       expect(columns[0].isSorted).toBe(false);
       expect(columns[2].isSorted).toBe(false);
       expect(columns[3].isSorted).toBe(false);
@@ -125,19 +121,15 @@ describe("CopyJobColumns", () => {
       (columns[0] as OnColumnClickType).onColumnClick?.();
       expect(mockHandleSort).toHaveBeenCalledWith("timestamp");
 
-      // Test Name column click
       (columns[1] as OnColumnClickType).onColumnClick();
       expect(mockHandleSort).toHaveBeenCalledWith("Name");
 
-      // Test Mode column click
       (columns[2] as OnColumnClickType).onColumnClick();
       expect(mockHandleSort).toHaveBeenCalledWith("Mode");
 
-      // Test CompletionPercentage column click
       (columns[3] as OnColumnClickType).onColumnClick();
       expect(mockHandleSort).toHaveBeenCalledWith("CompletionPercentage");
 
-      // Test Status column click
       (columns[4] as OnColumnClickType).onColumnClick();
       expect(mockHandleSort).toHaveBeenCalledWith("Status");
 
@@ -301,14 +293,10 @@ describe("CopyJobColumns", () => {
       });
 
       it("should pass correct props to CopyJobActionMenu", () => {
-        // This test verifies the component receives the right props structure
-        // The mocked component will receive job and handleClick props
         const actionsColumn = columns.find((col) => col.key === "Actions");
         const rendered = actionsColumn?.onRender?.(mockJob);
 
         expect(rendered).toBeDefined();
-        // Since we mocked the component, we can't test the exact props,
-        // but we can verify the render function returns a valid React element
         expect(React.isValidElement(rendered)).toBe(true);
       });
     });
@@ -351,7 +339,6 @@ describe("CopyJobColumns", () => {
       expect(completionColumn?.isSorted).toBe(true);
       expect(completionColumn?.isSortedDescending).toBe(false);
 
-      // Other columns should not be sorted
       const nameColumn = columns.find((col) => col.key === "Name");
       expect(nameColumn?.isSorted).toBe(false);
     });
@@ -369,7 +356,6 @@ describe("CopyJobColumns", () => {
     it("should handle undefined sortedColumnKey", () => {
       const columns = getColumns(mockHandleSort, mockHandleActionClick, undefined, false);
 
-      // Check only sortable columns (Actions column doesn't have isSorted property)
       const sortableColumns = columns.filter((col) => col.key !== "Actions");
       sortableColumns.forEach((column) => {
         expect(column.isSorted).toBe(false);
@@ -379,13 +365,11 @@ describe("CopyJobColumns", () => {
     it("should handle null job object in render functions gracefully", () => {
       const columns = getColumns(mockHandleSort, mockHandleActionClick, undefined, false);
 
-      // Test Name column with null job - this should throw as the implementation doesn't handle null
       const nameColumn = columns.find((col) => col.key === "Name");
       expect(() => {
         nameColumn?.onRender?.(null as any);
       }).toThrow();
 
-      // Test CompletionPercentage column with null job - this should also throw
       const completionColumn = columns.find((col) => col.key === "CompletionPercentage");
       expect(() => {
         completionColumn?.onRender?.(null as any);
@@ -395,7 +379,6 @@ describe("CopyJobColumns", () => {
     it("should handle job object with missing properties", () => {
       const incompleteJob = {
         Name: "Incomplete Job",
-        // Missing other properties
       } as CopyJobType;
 
       const columns = getColumns(mockHandleSort, mockHandleActionClick, undefined, false);
@@ -411,7 +394,6 @@ describe("CopyJobColumns", () => {
     it("should handle unknown sortedColumnKey", () => {
       const columns = getColumns(mockHandleSort, mockHandleActionClick, "UnknownColumn", false);
 
-      // Check only sortable columns (Actions column doesn't have isSorted property)
       const sortableColumns = columns.filter((col) => col.key !== "Actions");
       sortableColumns.forEach((column) => {
         expect(column.isSorted).toBe(false);
@@ -430,7 +412,6 @@ describe("CopyJobColumns", () => {
     it("should maintain column structure for screen readers", () => {
       const columns = getColumns(mockHandleSort, mockHandleActionClick, undefined, false);
 
-      // Verify that all columns except Actions have meaningful names
       const columnsWithNames = columns.filter((col) => col.key !== "Actions");
       columnsWithNames.forEach((column) => {
         expect(column.name).toBeTruthy();
@@ -445,8 +426,6 @@ describe("CopyJobColumns", () => {
       const columns1 = getColumns(mockHandleSort, mockHandleActionClick, undefined, false);
       const columns2 = getColumns(mockHandleSort, mockHandleActionClick, undefined, false);
 
-      // While the functions might not be the same reference due to arrow functions,
-      // they should behave identically
       (columns1[0] as OnColumnClickType).onColumnClick?.();
       (columns2[0] as OnColumnClickType).onColumnClick?.();
 
@@ -459,7 +438,6 @@ describe("CopyJobColumns", () => {
       const columns = getColumns(mockHandleSort, mockHandleActionClick, undefined, false);
       const actionsColumn = columns.find((col) => col.key === "Actions");
 
-      // The render function should create the component with handleActionClick prop
       const rendered = actionsColumn?.onRender?.(mockJob);
       expect(React.isValidElement(rendered)).toBe(true);
     });

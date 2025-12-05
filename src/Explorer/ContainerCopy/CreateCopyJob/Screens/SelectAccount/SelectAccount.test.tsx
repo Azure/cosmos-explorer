@@ -9,7 +9,6 @@ import { CopyJobMigrationType } from "../../../Enums/CopyJobEnums";
 import { CopyJobContextProviderType, CopyJobContextState } from "../../../Types/CopyJobTypes";
 import SelectAccount from "./SelectAccount";
 
-// Mock the dependencies
 jest.mock("UserContext", () => ({
   apiType: jest.fn(),
 }));
@@ -74,17 +73,14 @@ jest.mock("../../../ContainerCopyMessages", () => ({
   selectAccountDescription: "Select your source account and subscription",
 }));
 
-// Mock imports
 const mockUseDatabaseAccounts = useDatabaseAccounts as jest.MockedFunction<typeof useDatabaseAccounts>;
 const mockUseSubscriptions = useSubscriptions as jest.MockedFunction<typeof useSubscriptions>;
 const mockApiType = apiType as jest.MockedFunction<typeof apiType>;
 
-// Import mocked utilities
 const { useDropdownOptions, useEventHandlers } = require("./Utils/selectAccountUtils");
 const mockUseDropdownOptions = useDropdownOptions as jest.MockedFunction<typeof useDropdownOptions>;
 const mockUseEventHandlers = useEventHandlers as jest.MockedFunction<typeof useEventHandlers>;
 
-// Mock data
 const mockSubscriptions = [
   {
     subscriptionId: "sub-1",
@@ -458,11 +454,8 @@ describe("SelectAccount Component", () => {
       mockApiType.mockImplementation((account) => (account.kind === "GlobalDocumentDB" ? "SQL" : "Mongo"));
 
       render(<SelectAccount />);
-
-      // Should call apiType for each account
       expect(mockApiType).toHaveBeenCalledTimes(2);
 
-      // Should pass only SQL accounts to useDropdownOptions
       const sqlOnlyAccounts = mixedAccounts.filter((account) => apiType(account) === "SQL");
       expect(mockUseDropdownOptions).toHaveBeenCalledWith(mockSubscriptions, sqlOnlyAccounts);
     });

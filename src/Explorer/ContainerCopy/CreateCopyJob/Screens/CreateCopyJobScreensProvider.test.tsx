@@ -3,7 +3,6 @@ import Explorer from "Explorer/Explorer";
 import React from "react";
 import CreateCopyJobScreensProvider from "./CreateCopyJobScreensProvider";
 
-// Mock the CopyJobContextProvider
 jest.mock("../../Context/CopyJobContext", () => ({
   __esModule: true,
   default: ({ children, explorer }: { children: React.ReactNode; explorer: Explorer }) => (
@@ -13,13 +12,11 @@ jest.mock("../../Context/CopyJobContext", () => ({
   ),
 }));
 
-// Mock the CreateCopyJobScreens component
 jest.mock("./CreateCopyJobScreens", () => ({
   __esModule: true,
   default: () => <div data-testid="create-copy-job-screens">CreateCopyJobScreens</div>,
 }));
 
-// Mock Explorer class
 const mockExplorer = {
   databaseAccount: {
     id: "test-account",
@@ -73,12 +70,10 @@ describe("CreateCopyJobScreensProvider", () => {
   });
 
   it("should match snapshot for edge cases", () => {
-    // Edge case: empty explorer object
     const emptyExplorer = {} as Explorer;
     const wrapperEmpty = shallow(<CreateCopyJobScreensProvider explorer={emptyExplorer} />);
     expect(wrapperEmpty).toMatchSnapshot("empty-explorer");
 
-    // Edge case: explorer with only partial properties
     const partialExplorer = {
       databaseAccount: { id: "partial-account" },
     } as unknown as Explorer;
@@ -88,7 +83,6 @@ describe("CreateCopyJobScreensProvider", () => {
 
   describe("Error Boundaries and Edge Cases", () => {
     it("should handle React rendering errors gracefully", () => {
-      // Test with various edge case inputs
       const edgeCases = [null, undefined, {}, { invalidProperty: "test" }];
 
       edgeCases.forEach((explorerCase) => {

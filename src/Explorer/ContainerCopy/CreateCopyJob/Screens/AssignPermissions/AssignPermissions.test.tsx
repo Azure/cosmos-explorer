@@ -7,7 +7,6 @@ import { CopyJobMigrationType } from "../../../Enums/CopyJobEnums";
 import { CopyJobContextProviderType, CopyJobContextState } from "../../../Types/CopyJobTypes";
 import AssignPermissions from "./AssignPermissions";
 
-// Mock the hooks and utilities
 jest.mock("../../Utils/useCopyJobPrerequisitesCache", () => ({
   useCopyJobPrerequisitesCache: () => ({
     validationCache: new Map<string, boolean>(),
@@ -34,7 +33,6 @@ jest.mock("../../../../../Common/ShimmerTree/ShimmerTree", () => {
   };
 });
 
-// Mock the permission components
 jest.mock("./AddManagedIdentity", () => {
   return function MockAddManagedIdentity() {
     return <div data-testid="add-managed-identity">Add Managed Identity Component</div>;
@@ -326,7 +324,6 @@ describe("AssignPermissions Component", () => {
       expect(getByText("Incomplete Section")).toBeInTheDocument();
       expect(getByText("Disabled Section")).toBeInTheDocument();
 
-      // Check for status icons
       const images = getAllByRole("img");
       expect(images.length).toBeGreaterThan(0);
 
@@ -339,7 +336,7 @@ describe("AssignPermissions Component", () => {
       const copyJobState = createMockCopyJobState({
         source: {
           subscription: { subscriptionId: "source-sub" } as any,
-          account: { id: "source-account" } as any, // Missing name
+          account: { id: "source-account" } as any,
           databaseId: "source-db",
           containerId: "source-container",
         },

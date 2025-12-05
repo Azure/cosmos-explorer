@@ -16,7 +16,6 @@ const mockGetAccountDetailsFromResourceId = getAccountDetailsFromResourceId as j
   typeof getAccountDetailsFromResourceId
 >;
 
-// Test component to use the hook
 interface TestComponentProps {
   copyJobState: CopyJobContextState | null;
   onResult?: (result: any) => void;
@@ -86,7 +85,6 @@ describe("useSourceAndTargetData", () => {
   };
 
   beforeEach(() => {
-    // Setup default mock return values
     mockGetAccountDetailsFromResourceId.mockImplementation((accountId) => {
       if (accountId === mockSourceAccount.id) {
         return {

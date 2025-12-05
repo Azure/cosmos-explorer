@@ -6,16 +6,13 @@ import ContainerCopyMessages from "../../../ContainerCopyMessages";
 import { CopyJobContext } from "../../../Context/CopyJobContext";
 import DefaultManagedIdentity from "./DefaultManagedIdentity";
 
-// Mock the custom hooks
 jest.mock("./hooks/useManagedIdentity");
 jest.mock("./hooks/useToggle");
 
-// Mock the utility function
 jest.mock("../../../../../Utils/arm/identityUtils", () => ({
   updateDefaultIdentity: jest.fn(),
 }));
 
-// Mock the InfoTooltip and PopoverMessage components
 jest.mock("../Components/InfoTooltip", () => {
   return function MockInfoTooltip({ content }: { content: React.ReactNode }) {
     return <div data-testid="info-tooltip">{content}</div>;
@@ -55,13 +52,11 @@ jest.mock("../Components/PopoverContainer", () => {
   };
 });
 
-// Import the actual hooks after mocking
 import { DatabaseAccount } from "Contracts/DataModels";
 import { CopyJobContextProviderType } from "Explorer/ContainerCopy/Types/CopyJobTypes";
 import useManagedIdentity from "./hooks/useManagedIdentity";
 import useToggle from "./hooks/useToggle";
 
-// Mock the hooks with proper TypeScript types
 const mockUseManagedIdentity = useManagedIdentity as jest.MockedFunction<typeof useManagedIdentity>;
 const mockUseToggle = useToggle as jest.MockedFunction<typeof useToggle>;
 
@@ -90,7 +85,6 @@ describe("DefaultManagedIdentity", () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    // Setup default mock implementations
     mockUseManagedIdentity.mockReturnValue({
       loading: false,
       handleAddSystemIdentity: mockHandleAddSystemIdentity,
@@ -330,10 +324,7 @@ describe("DefaultManagedIdentity", () => {
     it("should render all required FluentUI components", () => {
       renderComponent();
 
-      // Stack should be rendered (container)
       expect(screen.getByRole("switch")).toBeInTheDocument();
-
-      // Link should be rendered in tooltip
       expect(screen.getByRole("link")).toBeInTheDocument();
     });
   });
@@ -342,11 +333,9 @@ describe("DefaultManagedIdentity", () => {
     it("should display correct toggle button text", () => {
       renderComponent();
 
-      // FluentUI Toggle component should have the correct text content
       const onText = screen.queryByText(ContainerCopyMessages.toggleBtn.onText);
       const offText = screen.queryByText(ContainerCopyMessages.toggleBtn.offText);
 
-      // At least one should be present depending on toggle state
       expect(onText || offText).toBeTruthy();
     });
 

@@ -1,13 +1,12 @@
 import "@testing-library/jest-dom";
-import { render, fireEvent, waitFor } from "@testing-library/react";
-import React from "react";
+import { fireEvent, render, waitFor } from "@testing-library/react";
 import { Subscription } from "Contracts/DataModels";
+import React from "react";
 import { CopyJobContext } from "../../../Context/CopyJobContext";
-import { CopyJobContextProviderType, CopyJobContextState } from "../../../Types/CopyJobTypes";
 import { CopyJobMigrationType } from "../../../Enums/CopyJobEnums";
+import { CopyJobContextProviderType, CopyJobContextState } from "../../../Types/CopyJobTypes";
 import PreviewCopyJob from "./PreviewCopyJob";
 
-// Mock the PreviewCopyJobUtils module
 jest.mock("./Utils/PreviewCopyJobUtils", () => ({
   getPreviewCopyJobDetailsListColumns: () => [
     {
@@ -41,7 +40,6 @@ jest.mock("./Utils/PreviewCopyJobUtils", () => ({
   ],
 }));
 
-// Mock the CopyJobUtils module
 jest.mock("../../../CopyJobUtils", () => ({
   getDefaultJobName: jest.fn((selectedDatabaseAndContainers) => {
     if (selectedDatabaseAndContainers.length === 1) {

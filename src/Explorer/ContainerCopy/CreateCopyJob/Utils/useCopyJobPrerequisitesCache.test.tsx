@@ -41,7 +41,6 @@ describe("useCopyJobPrerequisitesCache", () => {
   };
 
   afterEach(() => {
-    // Reset the store state after each test to ensure isolation
     if (hookResult) {
       act(() => {
         hookResult.setValidationCache(new Map<string, boolean>());
@@ -84,7 +83,6 @@ describe("useCopyJobPrerequisitesCache", () => {
   it("should replace the entire validation cache when setValidationCache is called", () => {
     render(<TestComponent />);
 
-    // Set initial cache
     const initialCache = new Map<string, boolean>();
     initialCache.set("initial-key", true);
 
@@ -95,7 +93,6 @@ describe("useCopyJobPrerequisitesCache", () => {
     expect(hookResult.validationCache.get("initial-key")).toBe(true);
     expect(screen.getByTestId("cache-size")).toHaveTextContent("1");
 
-    // Replace with new cache
     const newCache = new Map<string, boolean>();
     newCache.set("new-key", false);
 
@@ -112,7 +109,6 @@ describe("useCopyJobPrerequisitesCache", () => {
   it("should handle empty Map updates", () => {
     render(<TestComponent />);
 
-    // Set some initial data
     const initialCache = new Map<string, boolean>();
     initialCache.set("test-key", true);
 
@@ -123,7 +119,6 @@ describe("useCopyJobPrerequisitesCache", () => {
     expect(hookResult.validationCache.size).toBe(1);
     expect(screen.getByTestId("cache-size")).toHaveTextContent("1");
 
-    // Clear with empty map using the clear button
     act(() => {
       screen.getByTestId("clear-cache-button").click();
     });
@@ -160,7 +155,6 @@ describe("useCopyJobPrerequisitesCache", () => {
       firstHookResult.setValidationCache(testCache);
     });
 
-    // Both instances should see the same state
     expect(secondHookResult.validationCache.get("shared-key")).toBe(true);
     expect(secondHookResult.validationCache.size).toBe(1);
     expect(firstHookResult.validationCache.get("shared-key")).toBe(true);
@@ -265,8 +259,8 @@ describe("useCopyJobPrerequisitesCache", () => {
 
       const handleEdgeCaseUpdate = () => {
         const edgeCaseCache = new Map<string, boolean>();
-        edgeCaseCache.set("", true); // empty string
-        edgeCaseCache.set(" ", false); // space
+        edgeCaseCache.set("", true);
+        edgeCaseCache.set(" ", false);
         edgeCaseCache.set("special-chars!@#$%^&*()", true);
         edgeCaseCache.set("very-long-key-".repeat(10), false);
         edgeCaseCache.set("unicode-key-🔑", true);
@@ -307,7 +301,6 @@ describe("useCopyJobPrerequisitesCache", () => {
       };
 
       const handleSecondUpdate = () => {
-        // Setting the same cache reference should work without errors
         hookResult.setValidationCache(testCache);
       };
 
@@ -325,21 +318,15 @@ describe("useCopyJobPrerequisitesCache", () => {
     };
 
     render(<SameReferenceTestComponent />);
-
-    // Set initial cache
     act(() => {
       screen.getByTestId("first-update").click();
     });
-
     expect(hookResult.validationCache.get("test-key")).toBe(true);
     expect(screen.getByTestId("cache-content")).toHaveTextContent("true");
 
-    // Set the same cache reference again - should not cause errors
     act(() => {
       screen.getByTestId("second-update").click();
     });
-
-    // Verify the cache is still intact and reference is maintained
     expect(hookResult.validationCache).toBe(testCache);
     expect(hookResult.validationCache.get("test-key")).toBe(true);
     expect(screen.getByTestId("cache-content")).toHaveTextContent("true");

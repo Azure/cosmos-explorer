@@ -11,7 +11,6 @@ import ContainerCopyMessages from "../../../ContainerCopyMessages";
 import { CopyJobContext } from "../../../Context/CopyJobContext";
 import OnlineCopyEnabled from "./OnlineCopyEnabled";
 
-// Mock the external dependencies
 jest.mock("Utils/arm/databaseAccountUtils", () => ({
   fetchDatabaseAccount: jest.fn(),
 }));
@@ -24,14 +23,12 @@ jest.mock("../../../../../Common/Logger", () => ({
   logError: jest.fn(),
 }));
 
-// Mock LoadingOverlay component
 jest.mock("../../../../../Common/LoadingOverlay", () => {
   return function MockLoadingOverlay({ isLoading, label }: { isLoading: boolean; label: string }) {
     return isLoading ? <div data-testid="loading-overlay">{label}</div> : null;
   };
 });
 
-// Type the mocked functions
 const mockFetchDatabaseAccount = fetchDatabaseAccount as jest.MockedFunction<typeof fetchDatabaseAccount>;
 const mockUpdateDatabaseAccount = updateDatabaseAccount as jest.MockedFunction<typeof updateDatabaseAccount>;
 const mockLogError = logError as jest.MockedFunction<typeof logError>;
@@ -180,7 +177,6 @@ describe("OnlineCopyEnabled", () => {
         expect(mockFetchDatabaseAccount).toHaveBeenCalledWith("test-sub-id", "test-rg", "test-account");
       });
 
-      // Should enable change feed
       await waitFor(() => {
         expect(mockUpdateDatabaseAccount).toHaveBeenCalledWith("test-sub-id", "test-rg", "test-account", {
           properties: {
@@ -189,7 +185,6 @@ describe("OnlineCopyEnabled", () => {
         });
       });
 
-      // Should enable online copy capability
       await waitFor(() => {
         expect(mockUpdateDatabaseAccount).toHaveBeenCalledWith("test-sub-id", "test-rg", "test-account", {
           properties: {
@@ -232,7 +227,6 @@ describe("OnlineCopyEnabled", () => {
         fireEvent.click(enableButton);
       });
 
-      // Should only call update once (for online copy capability, not for change feed)
       await waitFor(() => {
         expect(mockUpdateDatabaseAccount).toHaveBeenCalledTimes(1);
         expect(mockUpdateDatabaseAccount).toHaveBeenCalledWith("test-sub-id", "test-rg", "test-account", {
@@ -360,7 +354,6 @@ describe("OnlineCopyEnabled", () => {
         fireEvent.click(enableButton);
       });
 
-      // Simulate interval execution
       await act(async () => {
         jest.advanceTimersByTime(30000);
       });
@@ -369,7 +362,6 @@ describe("OnlineCopyEnabled", () => {
         expect(mockSetCopyJobState).toHaveBeenCalledWith(expect.any(Function));
       });
 
-      // Verify the state update function
       const stateUpdateFunction = mockSetCopyJobState.mock.calls[0][0];
       const newState = stateUpdateFunction({
         source: { account: mockSourceAccount },
@@ -392,19 +384,17 @@ describe("OnlineCopyEnabled", () => {
         fireEvent.click(enableButton);
       });
 
-      // Simulate interval execution
       await act(async () => {
         jest.advanceTimersByTime(30000);
       });
 
-      // Should not update state since capabilities haven't changed
       expect(mockSetCopyJobState).not.toHaveBeenCalled();
     });
   });
 
   describe("Button States and Interactions", () => {
     it("should disable button during loading", async () => {
-      mockFetchDatabaseAccount.mockImplementation(() => new Promise(() => {})); // Never resolves
+      mockFetchDatabaseAccount.mockImplementation(() => new Promise(() => {}));
 
       renderComponent();
 
@@ -416,13 +406,12 @@ describe("OnlineCopyEnabled", () => {
         fireEvent.click(enableButton);
       });
 
-      // Button should be disabled during loading
       const loadingButton = screen.getByRole("button");
       expect(loadingButton).toBeDisabled();
     });
 
     it("should show sync icon during loading", async () => {
-      mockFetchDatabaseAccount.mockImplementation(() => new Promise(() => {})); // Never resolves
+      mockFetchDatabaseAccount.mockImplementation(() => new Promise(() => {}));
 
       renderComponent();
 
@@ -444,7 +433,6 @@ describe("OnlineCopyEnabled", () => {
 
       renderComponent();
 
-      // Start flow and trigger timeout
       const enableButton = screen.getByRole("button", {
         name: ContainerCopyMessages.onlineCopyEnabled.buttonText,
       });
@@ -457,7 +445,6 @@ describe("OnlineCopyEnabled", () => {
         jest.advanceTimersByTime(10 * 60 * 1000);
       });
 
-      // Set up refresh to never resolve
       mockFetchDatabaseAccount.mockImplementation(() => new Promise(() => {}));
 
       const refreshButton = screen.getByRole("button", {

@@ -8,7 +8,6 @@ import CopyJobContextProvider, { useCopyJobContext } from "../../../../Context/C
 import { getAccountDetailsFromResourceId } from "../../../../CopyJobUtils";
 import useManagedIdentity from "./useManagedIdentity";
 
-// Mock dependencies
 jest.mock("../../../../CopyJobUtils");
 jest.mock("../../../../../../Common/Logger");
 
@@ -17,7 +16,6 @@ const mockGetAccountDetailsFromResourceId = getAccountDetailsFromResourceId as j
 >;
 const mockLogError = logError as jest.MockedFunction<typeof logError>;
 
-// Mock database account for testing
 const mockDatabaseAccount: DatabaseAccount = {
   id: "/subscriptions/test-sub/resourceGroups/test-rg/providers/Microsoft.DocumentDB/databaseAccounts/test-account",
   name: "test-account",
@@ -29,7 +27,6 @@ const mockDatabaseAccount: DatabaseAccount = {
   },
 } as DatabaseAccount;
 
-// Test component that uses the hook
 interface TestComponentProps {
   updateIdentityFn: (
     subscriptionId: string,

@@ -5,7 +5,6 @@ import { CopyJobMigrationType } from "../../Enums/CopyJobEnums";
 import { CopyJobContextState } from "../../Types/CopyJobTypes";
 import { useCopyJobNavigation } from "./useCopyJobNavigation";
 
-// Mock all dependencies
 jest.mock("../../../../hooks/useSidePanel", () => ({
   useSidePanel: {
     getState: jest.fn(() => ({
@@ -42,7 +41,6 @@ jest.mock("../../CopyJobUtils", () => ({
   isIntraAccountCopy: jest.fn(),
 }));
 
-// Import mocked modules
 import { useSidePanel } from "../../../../hooks/useSidePanel";
 import { submitCreateCopyJob } from "../../Actions/CopyJobActions";
 import { useCopyJobContext } from "../../Context/CopyJobContext";
@@ -50,7 +48,6 @@ import { getContainerIdentifiers, isIntraAccountCopy } from "../../CopyJobUtils"
 import { useCopyJobPrerequisitesCache } from "./useCopyJobPrerequisitesCache";
 import { SCREEN_KEYS, useCreateCopyJobScreensList } from "./useCreateCopyJobScreensList";
 
-// Test wrapper component
 const TestComponent: React.FC<{
   onHookResult?: (result: ReturnType<typeof useCopyJobNavigation>) => void;
 }> = ({ onHookResult }) => {
@@ -85,7 +82,6 @@ const TestComponent: React.FC<{
 };
 
 describe("useCopyJobNavigation", () => {
-  // Test data factories
   const createMockCopyJobState = (overrides?: Partial<CopyJobContextState>): CopyJobContextState => ({
     jobName: "test-job",
     migrationType: CopyJobMigrationType.Offline,
@@ -110,7 +106,6 @@ describe("useCopyJobNavigation", () => {
     validations,
   });
 
-  // Shared mocks
   const mockResetCopyJobState = jest.fn();
   const mockSetContextError = jest.fn();
   const mockCloseSidePanel = jest.fn();
@@ -120,7 +115,6 @@ describe("useCopyJobNavigation", () => {
     ["validation2", true],
   ]);
 
-  // Helper functions
   const setupMocks = (screensList: any[] = [], isIntraAccount = false) => {
     (useCopyJobContext as jest.Mock).mockReturnValue({
       copyJobState: mockCopyJobState,
@@ -199,20 +193,16 @@ describe("useCopyJobNavigation", () => {
 
       render(<TestComponent />);
 
-      // Initial screen
       expectScreen(SCREEN_KEYS.SelectAccount);
       clickPrimaryButton();
 
-      // Container selection screen
       expectScreen(SCREEN_KEYS.SelectSourceAndTargetContainers);
       expectPrimaryButtonText("Next");
 
-      // Navigate to Create Collection
       fireEvent.click(screen.getByTestId("add-collection-btn"));
       expectScreen(SCREEN_KEYS.CreateCollection);
       expectPrimaryButtonText("Create");
 
-      // Go back
       clickPreviousButton();
       expectScreen(SCREEN_KEYS.SelectSourceAndTargetContainers);
       expectPrimaryButtonText("Next");
@@ -260,7 +250,6 @@ describe("useCopyJobNavigation", () => {
       navigateToScreen(SCREEN_KEYS.SelectSourceAndTargetContainers, 1);
       clickPrimaryButton();
 
-      // Should stay on same screen
       expectScreen(SCREEN_KEYS.SelectSourceAndTargetContainers);
       expect(mockSetContextError).toHaveBeenCalledWith(
         "Source and destination containers cannot be the same. Please select different containers to proceed.",
@@ -321,12 +310,10 @@ describe("useCopyJobNavigation", () => {
 
       setupToPreviewScreen();
 
-      // Should be disabled during loading
       await waitFor(() => {
         expectPrimaryDisabled(true);
       });
 
-      // Resolve the promise
       resolveSubmission!();
 
       await waitFor(() => {

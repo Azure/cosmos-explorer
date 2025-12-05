@@ -6,14 +6,12 @@ import { CopyJobMigrationType } from "../../../../Enums/CopyJobEnums";
 import { CopyJobContextState } from "../../../../Types/CopyJobTypes";
 import { useDropdownOptions, useEventHandlers } from "./selectAccountUtils";
 
-// Mock the useCopyJobPrerequisitesCache hook
 jest.mock("../../../Utils/useCopyJobPrerequisitesCache", () => ({
   useCopyJobPrerequisitesCache: jest.fn(() => ({
     setValidationCache: jest.fn(),
   })),
 }));
 
-// Mock data for testing
 const mockSubscriptions: Subscription[] = [
   {
     subscriptionId: "sub-1",
@@ -89,7 +87,6 @@ const mockAccounts: DatabaseAccount[] = [
   },
 ];
 
-// Test component wrapper for useDropdownOptions hook
 const DropdownOptionsTestComponent: React.FC<{
   subscriptions: Subscription[];
   accounts: DatabaseAccount[];
@@ -111,7 +108,6 @@ const DropdownOptionsTestComponent: React.FC<{
   );
 };
 
-// Test component wrapper for useEventHandlers hook
 const EventHandlersTestComponent: React.FC<{
   setCopyJobState: jest.Mock;
   onResult?: (result: any) => void;
@@ -263,7 +259,6 @@ describe("selectAccountUtils", () => {
       mockSetCopyJobState = jest.fn();
       mockSetValidationCache = jest.fn();
 
-      // Reset the mock implementation
       const { useCopyJobPrerequisitesCache } = require("../../../Utils/useCopyJobPrerequisitesCache");
       useCopyJobPrerequisitesCache.mockReturnValue({
         setValidationCache: mockSetValidationCache,
@@ -291,7 +286,6 @@ describe("selectAccountUtils", () => {
       expect(mockSetCopyJobState).toHaveBeenCalledWith(expect.any(Function));
       expect(mockSetValidationCache).toHaveBeenCalledWith(new Map<string, boolean>());
 
-      // Test the state updater function
       const stateUpdater = mockSetCopyJobState.mock.calls[0][0];
       const mockPrevState: CopyJobContextState = {
         source: {
@@ -328,7 +322,6 @@ describe("selectAccountUtils", () => {
       expect(mockSetCopyJobState).toHaveBeenCalledWith(expect.any(Function));
       expect(mockSetValidationCache).toHaveBeenCalledWith(new Map<string, boolean>());
 
-      // Test the state updater function
       const stateUpdater = mockSetCopyJobState.mock.calls[0][0];
       const mockPrevState: CopyJobContextState = {
         source: {
@@ -364,7 +357,6 @@ describe("selectAccountUtils", () => {
 
       expect(mockSetCopyJobState).toHaveBeenCalledWith(expect.any(Function));
 
-      // Test the state updater function
       const stateUpdater = mockSetCopyJobState.mock.calls[0][0];
       const mockPrevState: CopyJobContextState = {
         source: {
@@ -400,7 +392,6 @@ describe("selectAccountUtils", () => {
 
       expect(mockSetCopyJobState).toHaveBeenCalledWith(expect.any(Function));
 
-      // Test the state updater function
       const stateUpdater = mockSetCopyJobState.mock.calls[0][0];
       const mockPrevState: CopyJobContextState = {
         source: {
@@ -428,7 +419,6 @@ describe("selectAccountUtils", () => {
       expect(mockSetCopyJobState).toHaveBeenCalledWith(expect.any(Function));
       expect(mockSetValidationCache).toHaveBeenCalledWith(new Map<string, boolean>());
 
-      // Test the state updater function
       const stateUpdater = mockSetCopyJobState.mock.calls[0][0];
       const mockPrevState: CopyJobContextState = {
         source: {
@@ -464,7 +454,6 @@ describe("selectAccountUtils", () => {
 
       expect(mockSetCopyJobState).toHaveBeenCalledWith(expect.any(Function));
 
-      // Test the state updater function
       const stateUpdater = mockSetCopyJobState.mock.calls[0][0];
       const mockPrevState: CopyJobContextState = {
         source: {

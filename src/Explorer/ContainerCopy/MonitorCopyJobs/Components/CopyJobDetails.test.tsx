@@ -5,14 +5,12 @@ import { CopyJobStatusType } from "../../Enums/CopyJobEnums";
 import { CopyJobType } from "../../Types/CopyJobTypes";
 import CopyJobDetails from "./CopyJobDetails";
 
-// Mock the child components
 jest.mock("./CopyJobStatusWithIcon", () => {
   return function MockCopyJobStatusWithIcon({ status }: { status: CopyJobStatusType }) {
     return <span data-testid="copy-job-status-icon">{status}</span>;
   };
 });
 
-// Mock ContainerCopyMessages
 jest.mock("../../ContainerCopyMessages", () => ({
   errorTitle: "Error Details",
   sourceDatabaseLabel: "Source Database",
@@ -99,15 +97,12 @@ describe("CopyJobDetails", () => {
     it("renders all required job information fields", () => {
       render(<CopyJobDetails job={mockBasicJob} />);
 
-      // Check for last updated time
       expect(screen.getByText("Date & time")).toBeInTheDocument();
       expect(screen.getByText("2024-01-01T10:00:00Z")).toBeInTheDocument();
 
-      // Check for source account
       expect(screen.getByText("Source Account")).toBeInTheDocument();
       expect(screen.getByText("sourceAccount")).toBeInTheDocument();
 
-      // Check for mode
       expect(screen.getByText("Mode")).toBeInTheDocument();
       expect(screen.getByText("Offline")).toBeInTheDocument();
     });
@@ -115,15 +110,12 @@ describe("CopyJobDetails", () => {
     it("renders the DetailsList with correct job data", () => {
       render(<CopyJobDetails job={mockBasicJob} />);
 
-      // Check for source database and container
       expect(screen.getByText("sourceDb")).toBeInTheDocument();
       expect(screen.getByText("sourceContainer")).toBeInTheDocument();
 
-      // Check for target database and container
       expect(screen.getByText("targetDb")).toBeInTheDocument();
       expect(screen.getByText("targetContainer")).toBeInTheDocument();
 
-      // Check for status icon component
       expect(screen.getByTestId("copy-job-status-icon")).toBeInTheDocument();
       expect(screen.getByTestId("copy-job-status-icon")).toHaveTextContent("InProgress");
     });
@@ -226,17 +218,12 @@ describe("CopyJobDetails", () => {
     it("does not re-render when other props change but ID and Error stay same", () => {
       const jobWithSameIdAndError = {
         ...mockBasicJob,
-        Mode: "Online", // Different mode
-        CompletionPercentage: 75, // Different percentage
+        Mode: "Online",
+        CompletionPercentage: 75,
       };
 
       const { rerender } = render(<CopyJobDetails job={mockBasicJob} />);
-
-      // The memo comparison should prevent re-render for non-ID/Error changes
-      // This is more about ensuring the memo logic is correct
       rerender(<CopyJobDetails job={jobWithSameIdAndError} />);
-
-      // Component should still be rendered
       expect(screen.getByTestId("copy-job-details")).toBeInTheDocument();
     });
   });
@@ -244,8 +231,6 @@ describe("CopyJobDetails", () => {
   describe("Data Transformation", () => {
     it("correctly transforms job data for DetailsList items", () => {
       render(<CopyJobDetails job={mockBasicJob} />);
-
-      // Verify that the transformed data appears in the DetailsList
       expect(screen.getByText("sourceContainer")).toBeInTheDocument();
       expect(screen.getByText("sourceDb")).toBeInTheDocument();
       expect(screen.getByText("targetContainer")).toBeInTheDocument();
@@ -283,20 +268,16 @@ describe("CopyJobDetails", () => {
   describe("DetailsList Configuration", () => {
     it("configures DetailsList with correct layout mode", () => {
       render(<CopyJobDetails job={mockBasicJob} />);
-
-      // The DetailsList should be rendered (we can verify by checking for its content)
       expect(screen.getByText("sourceContainer")).toBeInTheDocument();
     });
 
     it("renders all expected column data", () => {
       render(<CopyJobDetails job={mockBasicJob} />);
-
-      // Verify all column data is present based on the column configuration
-      expect(screen.getByText("sourceDb")).toBeInTheDocument(); // Source Database
-      expect(screen.getByText("sourceContainer")).toBeInTheDocument(); // Source Container
-      expect(screen.getByText("targetDb")).toBeInTheDocument(); // Target Database
-      expect(screen.getByText("targetContainer")).toBeInTheDocument(); // Target Container
-      expect(screen.getByTestId("copy-job-status-icon")).toBeInTheDocument(); // Status
+      expect(screen.getByText("sourceDb")).toBeInTheDocument();
+      expect(screen.getByText("sourceContainer")).toBeInTheDocument();
+      expect(screen.getByText("targetDb")).toBeInTheDocument();
+      expect(screen.getByText("targetContainer")).toBeInTheDocument();
+      expect(screen.getByTestId("copy-job-status-icon")).toBeInTheDocument();
     });
   });
 
@@ -312,11 +293,9 @@ describe("CopyJobDetails", () => {
     it("renders semantic HTML structure", () => {
       render(<CopyJobDetails job={mockBasicJob} />);
 
-      // Verify Stack components are rendered (they should create proper div structure)
       const container = screen.getByTestId("copy-job-details");
       expect(container).toBeInTheDocument();
 
-      // Verify nested stack structure
       const nestedStack = screen.getByTestId("selectedcollection-stack");
       expect(nestedStack).toBeInTheDocument();
     });
@@ -372,7 +351,6 @@ describe("CopyJobDetails", () => {
       render(<CopyJobDetails job={minimalJob} />);
 
       expect(screen.getByTestId("copy-job-details")).toBeInTheDocument();
-      // Should display N/A for undefined values
       expect(screen.getAllByText("N/A")).toHaveLength(4);
     });
 

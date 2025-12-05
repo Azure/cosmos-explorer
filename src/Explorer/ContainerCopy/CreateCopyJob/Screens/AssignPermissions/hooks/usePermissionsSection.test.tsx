@@ -17,7 +17,6 @@ import usePermissionSections, {
   SECTION_IDS,
 } from "./usePermissionsSection";
 
-// Mock dependencies
 jest.mock("../../../../../../Utils/arm/RbacUtils");
 jest.mock("../../../Utils/useCopyJobPrerequisitesCache");
 jest.mock("../../../../CopyJobUtils", () => ({
@@ -519,7 +518,6 @@ describe("usePermissionsSection", () => {
         expect(screen.getByTestId("groups-count")).toHaveTextContent("1");
       });
 
-      // The cache should be updated to remove online-specific sections
       expect(mockSetValidationCache).toHaveBeenCalled();
     });
   });
@@ -532,7 +530,7 @@ describe("usePermissionsSection", () => {
             id: "target-account-id",
             name: "target-account",
             identity: {
-              type: IdentityType.None, // This will fail the first validation
+              type: IdentityType.None,
               principalId: "principal-123",
             },
             properties: {
@@ -557,9 +555,9 @@ describe("usePermissionsSection", () => {
       });
 
       const crossAccountGroup = capturedResult.find((g) => g.id === "crossAccountConfigs");
-      expect(crossAccountGroup?.sections[0].completed).toBe(false); // addManagedIdentity
-      expect(crossAccountGroup?.sections[1].completed).toBe(false); // defaultManagedIdentity (marked as incomplete)
-      expect(crossAccountGroup?.sections[2].completed).toBe(false); // readPermissionAssigned (marked as incomplete)
+      expect(crossAccountGroup?.sections[0].completed).toBe(false);
+      expect(crossAccountGroup?.sections[1].completed).toBe(false);
+      expect(crossAccountGroup?.sections[2].completed).toBe(false);
     });
   });
 });
@@ -615,7 +613,7 @@ describe("checkTargetHasReaderRoleOnSource", () => {
         name: "Insufficient Role",
         permissions: [
           {
-            dataActions: ["Microsoft.DocumentDB/databaseAccounts/readMetadata"], // Missing the second required action
+            dataActions: ["Microsoft.DocumentDB/databaseAccounts/readMetadata"],
           },
         ],
         assignableScopes: [],
@@ -671,7 +669,7 @@ describe("checkTargetHasReaderRoleOnSource", () => {
       },
       {
         id: "role-2",
-        name: "00000000-0000-0000-0000-000000000001", // Built-in Reader role ID
+        name: "00000000-0000-0000-0000-000000000001",
         permissions: [],
         assignableScopes: [],
         resourceGroup: "",

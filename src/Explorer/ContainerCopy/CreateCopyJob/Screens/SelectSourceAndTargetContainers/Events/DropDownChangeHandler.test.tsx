@@ -4,7 +4,6 @@ import { CopyJobMigrationType } from "../../../../Enums/CopyJobEnums";
 import { CopyJobContextState, DropdownOptionType } from "../../../../Types/CopyJobTypes";
 import { dropDownChangeHandler } from "./DropDownChangeHandler";
 
-// Mock initial state for testing
 const createMockInitialState = (): CopyJobContextState => ({
   jobName: "test-job",
   migrationType: CopyJobMigrationType.Offline,
@@ -83,7 +82,6 @@ const createMockInitialState = (): CopyJobContextState => ({
   },
 });
 
-// Test component to test the handler function
 interface TestComponentProps {
   initialState: CopyJobContextState;
   onStateChange: (state: CopyJobContextState) => void;
@@ -173,7 +171,6 @@ describe("dropDownChangeHandler", () => {
 
       expect(capturedState.source.databaseId).toBe("new-source-db");
       expect(capturedState.source.containerId).toBeUndefined();
-      // Ensure other properties remain unchanged
       expect(capturedState.source.subscription).toEqual(initialState.source.subscription);
       expect(capturedState.source.account).toEqual(initialState.source.account);
       expect(capturedState.target).toEqual(initialState.target);
@@ -220,7 +217,6 @@ describe("dropDownChangeHandler", () => {
 
       expect(capturedState.target.databaseId).toBe("new-target-db");
       expect(capturedState.target.containerId).toBeUndefined();
-      // Ensure other properties remain unchanged
       expect(capturedState.target.subscriptionId).toBe(initialState.target.subscriptionId);
       expect(capturedState.target.account).toEqual(initialState.target.account);
       expect(capturedState.source).toEqual(initialState.source);

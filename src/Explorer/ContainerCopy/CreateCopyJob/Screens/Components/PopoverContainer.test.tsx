@@ -135,7 +135,6 @@ describe("PopoverMessage Component", () => {
       const yesButton = screen.getByText("Yes");
       const noButton = screen.getByText("No");
 
-      // Rapid clicks
       fireEvent.click(yesButton);
       fireEvent.click(yesButton);
       fireEvent.click(noButton);

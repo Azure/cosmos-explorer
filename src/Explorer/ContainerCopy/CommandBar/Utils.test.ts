@@ -4,7 +4,6 @@ import * as Actions from "../Actions/CopyJobActions";
 import { MonitorCopyJobsRefState } from "../MonitorCopyJobs/MonitorCopyJobRefState";
 import { getCommandBarButtons } from "./Utils";
 
-// Mock dependencies
 jest.mock("../../../ConfigContext", () => ({
   configContext: {
     platform: "Portal",
@@ -105,7 +104,6 @@ describe("CommandBar Utils", () => {
         },
       }));
 
-      // Re-import with new mock
       const { getCommandBarButtons: getCommandBarButtonsEmulator } = require("./Utils");
       const buttons = getCommandBarButtonsEmulator(mockExplorer);
 
@@ -154,7 +152,6 @@ describe("CommandBar Utils", () => {
     });
 
     it("should handle null MonitorCopyJobsRefState ref gracefully", () => {
-      // Mock null ref
       (MonitorCopyJobsRefState as unknown as jest.Mock).mockImplementationOnce((selector) => {
         const state: { ref: null } = { ref: null };
         return selector(state);
@@ -163,7 +160,6 @@ describe("CommandBar Utils", () => {
       const buttons = getCommandBarButtons(mockExplorer);
       const refreshButton = buttons[1];
 
-      // Should not throw error when ref is null
       expect(() => refreshButton.onCommandClick({} as React.SyntheticEvent)).not.toThrow();
     });
 
@@ -219,7 +215,6 @@ describe("CommandBar Utils", () => {
     it("should execute click handlers without errors", () => {
       const buttons = getCommandBarButtons(mockExplorer);
 
-      // Execute all click handlers
       buttons.forEach((button) => {
         expect(() => button.onCommandClick({} as React.SyntheticEvent)).not.toThrow();
       });
@@ -228,15 +223,12 @@ describe("CommandBar Utils", () => {
     it("should call correct action for each button", () => {
       const buttons = getCommandBarButtons(mockExplorer);
 
-      // Click create button
       buttons[0].onCommandClick({} as React.SyntheticEvent);
       expect(Actions.openCreateCopyJobPanel).toHaveBeenCalledWith(mockExplorer);
 
-      // Click refresh button
       buttons[1].onCommandClick({} as React.SyntheticEvent);
       expect(mockRefreshJobList).toHaveBeenCalled();
 
-      // Click feedback button
       buttons[2].onCommandClick({} as React.SyntheticEvent);
       expect(mockOpenContainerCopyFeedbackBlade).toHaveBeenCalled();
     });

@@ -19,13 +19,11 @@ describe("CopyJobsNotFound", () => {
   it("should render the component with correct elements", () => {
     const { container, getByText } = render(<CopyJobsNotFound explorer={mockExplorer} />);
 
-    // Check if the image is rendered with correct alt text
     const image = container.querySelector(".notFoundContainer .ms-Image");
     expect(image).toBeInTheDocument();
     expect(image).toHaveAttribute("style", "width: 100px; height: 100px;");
     expect(getByText(ContainerCopyMessages.noCopyJobsTitle)).toBeInTheDocument();
 
-    // Check if the create button is rendered with correct text
     const button = screen.getByRole("button", {
       name: ContainerCopyMessages.createCopyJobButtonText,
     });
@@ -63,18 +61,13 @@ describe("CopyJobsNotFound", () => {
       name: ContainerCopyMessages.createCopyJobButtonText,
     });
 
-    // ActionButton should be rendered
     expect(button).toBeInTheDocument();
     expect(button.textContent).toBe(ContainerCopyMessages.createCopyJobButtonText);
   });
 
   it("should use memo to prevent unnecessary re-renders", () => {
     const { rerender } = render(<CopyJobsNotFound explorer={mockExplorer} />);
-
-    // Re-render with the same props
     rerender(<CopyJobsNotFound explorer={mockExplorer} />);
-
-    // Component should still be in the document
     expect(screen.getByRole("heading", { level: 4 })).toBeInTheDocument();
   });
 });

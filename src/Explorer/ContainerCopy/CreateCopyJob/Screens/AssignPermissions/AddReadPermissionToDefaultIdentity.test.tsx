@@ -60,7 +60,6 @@ jest.mock("./hooks/useToggle", () => {
   return jest.fn();
 });
 
-// Import mocked modules
 import { Subscription } from "Contracts/DataModels";
 import { CopyJobMigrationType } from "Explorer/ContainerCopy/Enums/CopyJobEnums";
 import { logError } from "../../../../../Common/Logger";
@@ -350,7 +349,6 @@ describe("AddReadPermissionToDefaultIdentity Component", () => {
         accountName: "source-account",
       });
 
-      // Mock a delayed response
       mockAssignRole.mockImplementation(
         () => new Promise((resolve) => setTimeout(() => resolve({ id: "role-id" } as RoleAssignmentType), 100)),
       );
@@ -360,7 +358,6 @@ describe("AddReadPermissionToDefaultIdentity Component", () => {
 
       fireEvent.click(primaryButton);
 
-      // Check loading state
       await waitFor(() => {
         expect(screen.getByTestId("popover-message")).toHaveAttribute("data-loading", "true");
       });
@@ -383,7 +380,6 @@ describe("AddReadPermissionToDefaultIdentity Component", () => {
         expect(mockAssignRole).toHaveBeenCalled();
       });
 
-      // Should not update copyJobState when assignRole returns null
       expect(mockContextValue.setCopyJobState).not.toHaveBeenCalled();
     });
   });
@@ -489,7 +485,6 @@ describe("AddReadPermissionToDefaultIdentity Component", () => {
         expect(setCopyJobStateMock).toHaveBeenCalledWith(expect.any(Function));
       });
 
-      // Test the function passed to setCopyJobState
       const setCopyJobStateCall = setCopyJobStateMock.mock.calls[0][0];
       const updatedState = setCopyJobStateCall(mockContextValue.copyJobState);
 
