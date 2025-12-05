@@ -142,7 +142,7 @@ const FabricHomeScreenButton: React.FC<FabricHomeScreenButtonProps & { className
   return (
     <div role="button" className={`${styles.buttonContainer} ${className}`} onClick={onClick} tabIndex={0}>
       <div className={styles.buttonUpperPart}>{icon}</div>
-      <div aria-label={title} className={styles.buttonLowerPart}>
+      <div aria-label={`${title} ${description}`} className={styles.buttonLowerPart}>
         <div>{title}</div>
         <div>{description}</div>
       </div>
