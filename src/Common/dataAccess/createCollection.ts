@@ -95,9 +95,6 @@ const createSqlContainer = async (params: DataModels.CreateCollectionParams): Pr
   const resource: ARMTypes.SqlContainerResource = {
     id: params.collectionId,
   };
-  if (params.analyticalStorageTtl) {
-    resource.analyticalStorageTtl = params.analyticalStorageTtl;
-  }
   if (params.indexingPolicy) {
     resource.indexingPolicy = params.indexingPolicy;
   }
@@ -138,9 +135,6 @@ const createMongoCollection = async (params: DataModels.CreateCollectionParams):
   const resource: ARMTypes.MongoDBCollectionResource = {
     id: params.collectionId,
   };
-  if (params.analyticalStorageTtl) {
-    resource.analyticalStorageTtl = params.analyticalStorageTtl;
-  }
   if (params.partitionKey) {
     const partitionKeyPath: string = params.partitionKey.paths[0];
     resource.shardKey = { [partitionKeyPath]: "Hash" };
@@ -179,9 +173,6 @@ const createCassandraTable = async (params: DataModels.CreateCollectionParams): 
   const resource: ARMTypes.CassandraTableResource = {
     id: params.collectionId,
   };
-  if (params.analyticalStorageTtl) {
-    resource.analyticalStorageTtl = params.analyticalStorageTtl;
-  }
 
   const rpPayload: ARMTypes.CassandraTableCreateUpdateParameters = {
     properties: {
@@ -282,7 +273,6 @@ const createCollectionWithSDK = async (params: DataModels.CreateCollectionParams
     partitionKey: params.partitionKey || undefined,
     indexingPolicy: params.indexingPolicy || undefined,
     uniqueKeyPolicy: params.uniqueKeyPolicy || undefined,
-    analyticalStorageTtl: params.analyticalStorageTtl,
     vectorEmbeddingPolicy: params.vectorEmbeddingPolicy,
     fullTextPolicy: params.fullTextPolicy,
   } as ContainerRequest; // TODO: remove cast when https://github.com/Azure/azure-cosmos-js/issues/423 is fixed
