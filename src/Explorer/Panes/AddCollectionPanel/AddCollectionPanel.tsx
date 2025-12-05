@@ -25,7 +25,6 @@ import { FullTextPoliciesComponent } from "Explorer/Controls/FullTextSeach/FullT
 import { VectorEmbeddingPoliciesComponent } from "Explorer/Controls/VectorSearch/VectorEmbeddingPoliciesComponent";
 import {
   AllPropertiesIndexed,
-  AnalyticalStoreHeader,
   ContainerVectorPolicyTooltipContent,
   FullTextPolicyDefault,
   getPartitionKey,
@@ -33,11 +32,9 @@ import {
   getPartitionKeyPlaceHolder,
   getPartitionKeyTooltipText,
   isFreeTierAccount,
-  isSynapseLinkEnabled,
   parseUniqueKeys,
   scrollToSection,
   SharedDatabaseDefault,
-  shouldShowAnalyticalStoreOptions,
   UniqueKeysHeader,
 } from "Explorer/Panes/AddCollectionPanel/AddCollectionPanelUtility";
 import { useSidePanel } from "hooks/useSidePanel";
@@ -86,7 +83,6 @@ export interface AddCollectionPanelState {
   enableDedicatedThroughput: boolean;
   createMongoWildCardIndex: boolean;
   useHashV1: boolean;
-  enableAnalyticalStore: boolean;
   uniqueKeys: string[];
   errorMessage: string;
   showErrorDetails: boolean;
@@ -128,7 +124,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       createMongoWildCardIndex:
         isCapabilityEnabled("EnableMongo") && !isCapabilityEnabled("EnableMongo16MBDocumentSupport"),
       useHashV1: false,
-      enableAnalyticalStore: false,
       uniqueKeys: [],
       errorMessage: "",
       showErrorDetails: false,
@@ -781,70 +776,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             <Separator className="panelSeparator" style={{ marginTop: -15, marginBottom: -4 }} />
           )}
 
-          {shouldShowAnalyticalStoreOptions() && (
-            <Stack className="panelGroupSpacing" style={{ marginTop: -4 }}>
-              <Text className="panelTextBold" variant="small">
-                {AnalyticalStoreHeader()}
-              </Text>
-
-              <Stack horizontal verticalAlign="center">
-                <div role="radiogroup">
-                  <input
-                    className="panelRadioBtn"
-                    checked={this.state.enableAnalyticalStore}
-                    disabled={!isSynapseLinkEnabled()}
-                    aria-label="Enable analytical store"
-                    aria-checked={this.state.enableAnalyticalStore}
-                    name="analyticalStore"
-                    type="radio"
-                    role="radio"
-                    id="enableAnalyticalStoreBtn"
-                    tabIndex={0}
-                    onChange={this.onEnableAnalyticalStoreRadioBtnChange.bind(this)}
-                  />
-                  <span className="panelRadioBtnLabel">On</span>
-
-                  <input
-                    className="panelRadioBtn"
-                    checked={!this.state.enableAnalyticalStore}
-                    disabled={!isSynapseLinkEnabled()}
-                    aria-label="Disable analytical store"
-                    aria-checked={!this.state.enableAnalyticalStore}
-                    name="analyticalStore"
-                    type="radio"
-                    role="radio"
-                    id="disableAnalyticalStoreBtn"
-                    tabIndex={0}
-                    onChange={this.onDisableAnalyticalStoreRadioBtnChange.bind(this)}
-                  />
-                  <span className="panelRadioBtnLabel">Off</span>
-                </div>
-              </Stack>
-
-              {!isSynapseLinkEnabled() && (
-                <Stack className="panelGroupSpacing">
-                  <Text variant="small">
-                    Azure Synapse Link is required for creating an analytical store{" "}
-                    {getCollectionName().toLocaleLowerCase()}. Enable Synapse Link for this Cosmos DB account. <br />
-                    <Link
-                      href="https://aka.ms/cosmosdb-synapselink"
-                      target="_blank"
-                      aria-label={Constants.ariaLabelForLearnMoreLink.AzureSynapseLink}
-                      className="capacitycalculator-link"
-                    >
-                      Learn more
-                    </Link>
-                  </Text>
-                  <DefaultButton
-                    text="Enable"
-                    onClick={() => this.props.explorer.openEnableSynapseLinkDialog()}
-                    style={{ height: 27, width: 80 }}
-                    styles={{ label: { fontSize: 12 } }}
-                  />
-                </Stack>
-              )}
-            </Stack>
-          )}
           {this.shouldShowVectorSearchParameters() && (
             <Stack>
               <CollapsibleSectionComponent
@@ -1053,22 +984,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     }
   }
 
-  private onEnableAnalyticalStoreRadioBtnChange(event: React.ChangeEvent<HTMLInputElement>): void {
-    if (event.target.checked && !this.state.enableAnalyticalStore) {
-      this.setState({
-        enableAnalyticalStore: true,
-      });
-    }
-  }
-
-  private onDisableAnalyticalStoreRadioBtnChange(event: React.ChangeEvent<HTMLInputElement>): void {
-    if (event.target.checked && this.state.enableAnalyticalStore) {
-      this.setState({
-        enableAnalyticalStore: false,
-      });
-    }
-  }
-
   private onTurnOnIndexing(event: React.ChangeEvent<HTMLInputElement>): void {
     if (event.target.checked && !this.state.enableIndexing) {
       this.setState({
@@ -1243,25 +1158,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     return true;
   }
 
-  private getAnalyticalStorageTtl(): number {
-    if (!isSynapseLinkEnabled()) {
-      return undefined;
-    }
-
-    if (!shouldShowAnalyticalStoreOptions()) {
-      return undefined;
-    }
-
-    if (this.state.enableAnalyticalStore) {
-      // TODO: always default to 90 days once the backend hotfix is deployed
-      return userContext.features.ttl90Days
-        ? Constants.AnalyticalStorageTtl.Days90
-        : Constants.AnalyticalStorageTtl.Infinite;
-    }
-
-    return Constants.AnalyticalStorageTtl.Disabled;
-  }
-
   private getSampleDBName(): string {
     const existingSampleDBs = useDatabases
       .getState()
@@ -1385,7 +1281,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       databaseLevelThroughput,
       offerThroughput,
       autoPilotMaxThroughput,
-      analyticalStorageTtl: this.getAnalyticalStorageTtl(),
       indexingPolicy,
       partitionKey,
       uniqueKeyPolicy,

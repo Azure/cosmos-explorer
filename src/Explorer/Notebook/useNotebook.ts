@@ -25,7 +25,6 @@ interface NotebookState {
   isNotebooksEnabledForAccount: boolean;
   notebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo;
   sparkClusterConnectionInfo: DataModels.SparkClusterConnectionInfo;
-  isSynapseLinkUpdating: boolean;
   memoryUsageInfo: DataModels.MemoryUsageInfo;
   isShellEnabled: boolean;
   notebookBasePath: string;
@@ -44,7 +43,6 @@ interface NotebookState {
   setIsNotebooksEnabledForAccount: (isNotebooksEnabledForAccount: boolean) => void;
   setNotebookServerInfo: (notebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo) => void;
   setSparkClusterConnectionInfo: (sparkClusterConnectionInfo: DataModels.SparkClusterConnectionInfo) => void;
-  setIsSynapseLinkUpdating: (isSynapseLinkUpdating: boolean) => void;
   setMemoryUsageInfo: (memoryUsageInfo: DataModels.MemoryUsageInfo) => void;
   setIsShellEnabled: (isShellEnabled: boolean) => void;
   setNotebookBasePath: (notebookBasePath: string) => void;
@@ -79,7 +77,6 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
     password: undefined,
     endpoints: [],
   },
-  isSynapseLinkUpdating: false,
   memoryUsageInfo: undefined,
   isShellEnabled: false,
   notebookBasePath: Constants.Notebook.defaultBasePath,
@@ -106,7 +103,6 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
     set({ notebookServerInfo }),
   setSparkClusterConnectionInfo: (sparkClusterConnectionInfo: DataModels.SparkClusterConnectionInfo) =>
     set({ sparkClusterConnectionInfo }),
-  setIsSynapseLinkUpdating: (isSynapseLinkUpdating: boolean) => set({ isSynapseLinkUpdating }),
   setMemoryUsageInfo: (memoryUsageInfo: DataModels.MemoryUsageInfo) => set({ memoryUsageInfo }),
   setIsShellEnabled: (isShellEnabled: boolean) => set({ isShellEnabled }),
   setNotebookBasePath: (notebookBasePath: string) => set({ notebookBasePath }),

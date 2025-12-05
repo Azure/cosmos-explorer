@@ -1,9 +1,6 @@
 import { DirectionalHint, Icon, Link, Stack, Text, TooltipHost } from "@fluentui/react";
-import * as Constants from "Common/Constants";
-import { configContext, Platform } from "ConfigContext";
 import * as DataModels from "Contracts/DataModels";
 import { getFullTextLanguageOptions } from "Explorer/Controls/FullTextSeach/FullTextPoliciesComponent";
-import { isFabricNative } from "Platform/Fabric/FabricUtil";
 import React from "react";
 import { userContext } from "UserContext";
 
@@ -81,70 +78,6 @@ export function UniqueKeysHeader(): JSX.Element {
         <Icon iconName="Info" className="panelInfoIcon" tabIndex={0} ariaLabel={tooltipContent} />
       </TooltipHost>
     </Stack>
-  );
-}
-
-export function shouldShowAnalyticalStoreOptions(): boolean {
-  if (isFabricNative() || configContext.platform === Platform.Emulator) {
-    return false;
-  }
-
-  switch (userContext.apiType) {
-    case "SQL":
-    case "Mongo":
-      return true;
-    default:
-      return false;
-  }
-}
-
-export function AnalyticalStoreHeader(): JSX.Element {
-  const tooltipContent =
-    "Enable analytical store capability to perform near real-time analytics on your operational data, without impacting the performance of transactional workloads.";
-  return (
-    <Stack horizontal style={{ marginBottom: -2 }}>
-      <Text className="panelTextBold" variant="small">
-        Analytical Store
-      </Text>
-      <TooltipHost directionalHint={DirectionalHint.bottomLeftEdge} content={tooltipContent}>
-        <Icon iconName="Info" className="panelInfoIcon" tabIndex={0} ariaLabel={tooltipContent} />
-      </TooltipHost>
-    </Stack>
-  );
-}
-
-export function AnalyticalStorageContent(): JSX.Element {
-  return (
-    <Text variant="small">
-      Enable analytical store capability to perform near real-time analytics on your operational data, without impacting
-      the performance of transactional workloads.{" "}
-      <Link
-        aria-label={Constants.ariaLabelForLearnMoreLink.AnalyticalStore}
-        target="_blank"
-        href="https://aka.ms/analytical-store-overview"
-      >
-        Learn more
-      </Link>
-    </Text>
-  );
-}
-
-export function isSynapseLinkEnabled(): boolean {
-  if (!userContext.databaseAccount) {
-    return false;
-  }
-
-  const { properties } = userContext.databaseAccount;
-  if (!properties) {
-    return false;
-  }
-
-  if (properties.enableAnalyticalStorage) {
-    return true;
-  }
-
-  return properties.capabilities?.some(
-    (capability) => capability.name === Constants.CapabilityNames.EnableStorageAnalytics,
   );
 }
 

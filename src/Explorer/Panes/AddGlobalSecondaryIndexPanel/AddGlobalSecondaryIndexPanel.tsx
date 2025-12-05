@@ -21,16 +21,13 @@ import {
   AllPropertiesIndexed,
   FullTextPolicyDefault,
   getPartitionKey,
-  isSynapseLinkEnabled,
   scrollToSection,
-  shouldShowAnalyticalStoreOptions,
 } from "Explorer/Panes/AddCollectionPanel/AddCollectionPanelUtility";
 import {
   chooseSourceContainerStyle,
   chooseSourceContainerStyles,
 } from "Explorer/Panes/AddGlobalSecondaryIndexPanel/AddGlobalSecondaryIndexPanelStyles";
 import { AdvancedComponent } from "Explorer/Panes/AddGlobalSecondaryIndexPanel/Components/AdvancedComponent";
-import { AnalyticalStoreComponent } from "Explorer/Panes/AddGlobalSecondaryIndexPanel/Components/AnalyticalStoreComponent";
 import { FullTextSearchComponent } from "Explorer/Panes/AddGlobalSecondaryIndexPanel/Components/FullTextSearchComponent";
 import { PartitionKeyComponent } from "Explorer/Panes/AddGlobalSecondaryIndexPanel/Components/PartitionKeyComponent";
 import { ThroughputComponent } from "Explorer/Panes/AddGlobalSecondaryIndexPanel/Components/ThroughputComponent";
@@ -64,7 +61,6 @@ export const AddGlobalSecondaryIndexPanel = (props: AddGlobalSecondaryIndexPanel
   const [useHashV1, setUseHashV1] = useState<boolean>();
   const [enableDedicatedThroughput, setEnabledDedicatedThroughput] = useState<boolean>();
   const [isThroughputCapExceeded, setIsThroughputCapExceeded] = useState<boolean>();
-  const [enableAnalyticalStore, setEnableAnalyticalStore] = useState<boolean>();
   const [vectorEmbeddingPolicy, setVectorEmbeddingPolicy] = useState<VectorEmbedding[]>([]);
   const [vectorIndexingPolicy, setVectorIndexingPolicy] = useState<VectorIndex[]>([]);
   const [vectorPolicyValidated, setVectorPolicyValidated] = useState<boolean>(true);
@@ -140,25 +136,6 @@ export const AddGlobalSecondaryIndexPanel = (props: AddGlobalSecondaryIndexPanel
 
   const showVectorSearchParameters = (): boolean => {
     return isVectorSearchEnabled() && (isServerlessAccount() || showCollectionThroughputInput());
-  };
-
-  const getAnalyticalStorageTtl = (): number => {
-    if (!isSynapseLinkEnabled()) {
-      return undefined;
-    }
-
-    if (!shouldShowAnalyticalStoreOptions()) {
-      return undefined;
-    }
-
-    if (enableAnalyticalStore) {
-      // TODO: always default to 90 days once the backend hotfix is deployed
-      return userContext.features.ttl90Days
-        ? Constants.AnalyticalStorageTtl.Days90
-        : Constants.AnalyticalStorageTtl.Infinite;
-    }
-
-    return Constants.AnalyticalStorageTtl.Disabled;
   };
 
   const validateInputs = (): boolean => {
@@ -257,7 +234,6 @@ export const AddGlobalSecondaryIndexPanel = (props: AddGlobalSecondaryIndexPanel
       ...(!databaseLevelThroughput && {
         autoPilotMaxThroughput: globalSecondaryIndexThroughput,
       }),
-      analyticalStorageTtl: getAnalyticalStorageTtl(),
       indexingPolicy: indexingPolicy,
       partitionKey: partitionKeyPaths,
       vectorEmbeddingPolicy: vectorEmbeddingPolicyFinal,
@@ -369,9 +345,7 @@ export const AddGlobalSecondaryIndexPanel = (props: AddGlobalSecondaryIndexPanel
               isCostAknowledgedOnChange,
             }}
           />
-          {shouldShowAnalyticalStoreOptions() && (
-            <AnalyticalStoreComponent {...{ explorer, enableAnalyticalStore, setEnableAnalyticalStore }} />
-          )}
+
           {showVectorSearchParameters() && (
             <VectorSearchComponent
               {...{
