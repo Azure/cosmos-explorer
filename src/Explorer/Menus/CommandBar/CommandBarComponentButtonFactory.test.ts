@@ -29,14 +29,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
       });
     });
 
-    it("Button should be visible", () => {
-      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
-      const enableAzureSynapseLinkBtn = buttons.find(
-        (button) => button.commandButtonLabel === enableAzureSynapseLinkBtnLabel,
-      );
-      expect(enableAzureSynapseLinkBtn).toBeDefined();
-    });
-
     // TODO: Now that Tables API supports dataplane RBAC, calling createStaticCommandBarButtons will enable the
     //       Entra ID Login button, which causes this test to fail due to "Invalid hook call.". This seems to be
     //       unsupported in jest and needs to be tested with react-hooks-testing-library.

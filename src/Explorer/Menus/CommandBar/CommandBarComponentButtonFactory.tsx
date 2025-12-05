@@ -12,10 +12,8 @@ import HostedTerminalIcon from "../../../../images/Hosted-Terminal.svg";
 import OpenQueryFromDiskIcon from "../../../../images/OpenQueryFromDisk.svg";
 import OpenInTabIcon from "../../../../images/open-in-tab.svg";
 import SettingsIcon from "../../../../images/settings_15x15.svg";
-import SynapseIcon from "../../../../images/synapse-link.svg";
 import VSCodeIcon from "../../../../images/vscode.svg";
 import { AuthType } from "../../../AuthType";
-import * as Constants from "../../../Common/Constants";
 import { Platform, configContext } from "../../../ConfigContext";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { userContext } from "../../../UserContext";
@@ -55,11 +53,6 @@ export function createStaticCommandBarButtons(
     userContext.apiType !== "Tables" &&
     userContext.apiType !== "Cassandra"
   ) {
-    const addSynapseLink = createOpenSynapseLinkDialogButton(container);
-    if (addSynapseLink) {
-      addDivider();
-      buttons.push(addSynapseLink);
-    }
     if (userContext.apiType !== "Gremlin") {
       const addVsCode = createOpenVsCodeDialogButton(container);
       buttons.push(addVsCode);
@@ -235,33 +228,6 @@ function areScriptsSupported(): boolean {
   return (
     configContext.platform !== Platform.Fabric && (userContext.apiType === "SQL" || userContext.apiType === "Gremlin")
   );
-}
-
-function createOpenSynapseLinkDialogButton(container: Explorer): CommandButtonComponentProps {
-  if (configContext.platform === Platform.Emulator) {
-    return undefined;
-  }
-
-  if (userContext?.databaseAccount?.properties?.enableAnalyticalStorage) {
-    return undefined;
-  }
-
-  const capabilities = userContext?.databaseAccount?.properties?.capabilities || [];
-  if (capabilities.some((capability) => capability.name === Constants.CapabilityNames.EnableStorageAnalytics)) {
-    return undefined;
-  }
-
-  const label = "Enable Azure Synapse Link";
-  return {
-    iconSrc: SynapseIcon,
-    iconAlt: label,
-    onCommandClick: () => container.openEnableSynapseLinkDialog(),
-    commandButtonLabel: label,
-    hasPopup: false,
-    disabled:
-      useSelectedNode.getState().isQueryCopilotCollectionSelected() || useNotebook.getState().isSynapseLinkUpdating,
-    ariaLabel: label,
-  };
 }
 
 function createOpenVsCodeDialogButton(container: Explorer): CommandButtonComponentProps {

@@ -416,7 +416,6 @@ export interface CreateCollectionParamsBase {
   databaseId: string;
   databaseLevelThroughput: boolean;
   offerThroughput?: number;
-  analyticalStorageTtl?: number;
   autoPilotMaxThroughput?: number;
   indexingPolicy?: IndexingPolicy;
   partitionKey?: PartitionKey;
