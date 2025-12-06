@@ -57,7 +57,6 @@ const mockUseSourceAndTargetData = useSourceAndTargetData as jest.MockedFunction
 describe("SelectSourceAndTargetContainers", () => {
   let mockExplorer: Explorer;
   let mockShowAddCollectionPanel: jest.Mock;
-  let mockSetCopyJobState: jest.Mock;
   let mockOnDropdownChange: jest.Mock;
 
   const mockDatabases: DatabaseModel[] = [
@@ -106,7 +105,6 @@ describe("SelectSourceAndTargetContainers", () => {
   beforeEach(() => {
     mockExplorer = {} as Explorer;
     mockShowAddCollectionPanel = jest.fn();
-    mockSetCopyJobState = jest.fn();
     mockOnDropdownChange = jest.fn();
 
     mockUseDatabases.mockReturnValue(mockDatabases);
@@ -451,8 +449,6 @@ describe("SelectSourceAndTargetContainers", () => {
   describe("Performance", () => {
     it("should not cause unnecessary re-renders when props don't change", () => {
       const { rerender } = renderWithContext(<SelectSourceAndTargetContainers />);
-
-      const initialCallCount = mockUseSourceAndTargetData.mock.calls.length;
 
       rerender(
         <CopyJobContextProvider explorer={mockExplorer}>

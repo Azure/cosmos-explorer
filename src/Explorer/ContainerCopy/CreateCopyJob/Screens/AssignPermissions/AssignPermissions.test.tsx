@@ -24,43 +24,55 @@ jest.mock("./hooks/usePermissionsSection", () => ({
 }));
 
 jest.mock("../../../../../Common/ShimmerTree/ShimmerTree", () => {
-  return function MockShimmerTree(props: any) {
+  const MockShimmerTree = (props: any) => {
     return (
       <div data-testid="shimmer-tree" {...props}>
         Loading...
       </div>
     );
   };
+  MockShimmerTree.displayName = "MockShimmerTree";
+  return MockShimmerTree;
 });
 
 jest.mock("./AddManagedIdentity", () => {
-  return function MockAddManagedIdentity() {
+  const MockAddManagedIdentity = () => {
     return <div data-testid="add-managed-identity">Add Managed Identity Component</div>;
   };
+  MockAddManagedIdentity.displayName = "MockAddManagedIdentity";
+  return MockAddManagedIdentity;
 });
 
 jest.mock("./AddReadPermissionToDefaultIdentity", () => {
-  return function MockAddReadPermissionToDefaultIdentity() {
+  const MockAddReadPermissionToDefaultIdentity = () => {
     return <div data-testid="add-read-permission">Add Read Permission Component</div>;
   };
+  MockAddReadPermissionToDefaultIdentity.displayName = "MockAddReadPermissionToDefaultIdentity";
+  return MockAddReadPermissionToDefaultIdentity;
 });
 
 jest.mock("./DefaultManagedIdentity", () => {
-  return function MockDefaultManagedIdentity() {
+  const MockDefaultManagedIdentity = () => {
     return <div data-testid="default-managed-identity">Default Managed Identity Component</div>;
   };
+  MockDefaultManagedIdentity.displayName = "MockDefaultManagedIdentity";
+  return MockDefaultManagedIdentity;
 });
 
 jest.mock("./OnlineCopyEnabled", () => {
-  return function MockOnlineCopyEnabled() {
+  const MockOnlineCopyEnabled = () => {
     return <div data-testid="online-copy-enabled">Online Copy Enabled Component</div>;
   };
+  MockOnlineCopyEnabled.displayName = "MockOnlineCopyEnabled";
+  return MockOnlineCopyEnabled;
 });
 
 jest.mock("./PointInTimeRestore", () => {
-  return function MockPointInTimeRestore() {
+  const MockPointInTimeRestore = () => {
     return <div data-testid="point-in-time-restore">Point In Time Restore Component</div>;
   };
+  MockPointInTimeRestore.displayName = "MockPointInTimeRestore";
+  return MockPointInTimeRestore;
 });
 
 jest.mock("../../../../../../images/successfulPopup.svg", () => "checkmark-icon");
@@ -145,8 +157,8 @@ describe("AssignPermissions Component", () => {
       expect(getByText(ContainerCopyMessages.assignPermissions.crossAccountDescription)).toBeInTheDocument();
     });
 
-    it("should display intra account description for same accounts with online migration", () => {
-      const { isIntraAccountCopy } = require("../../../CopyJobUtils");
+    it("should display intra account description for same accounts with online migration", async () => {
+      const { isIntraAccountCopy } = await import("../../../CopyJobUtils");
       (isIntraAccountCopy as jest.Mock).mockReturnValue(true);
 
       const copyJobState = createMockCopyJobState({
@@ -165,7 +177,7 @@ describe("AssignPermissions Component", () => {
         },
       });
 
-      const { getByText, debug } = renderWithContext(copyJobState);
+      const { getByText } = renderWithContext(copyJobState);
       expect(
         getByText(ContainerCopyMessages.assignPermissions.intraAccountOnlineDescription("Same Account")),
       ).toBeInTheDocument();
@@ -173,8 +185,8 @@ describe("AssignPermissions Component", () => {
   });
 
   describe("Permission Groups", () => {
-    it("should render permission groups when available", () => {
-      const mockUsePermissionSections = require("./hooks/usePermissionsSection").default;
+    it("should render permission groups when available", async () => {
+      const mockUsePermissionSections = (await import("./hooks/usePermissionsSection")).default as jest.Mock;
       mockUsePermissionSections.mockReturnValue([
         {
           id: "crossAccountConfigs",
@@ -205,8 +217,8 @@ describe("AssignPermissions Component", () => {
       expect(container).toMatchSnapshot();
     });
 
-    it("should render online migration specific groups", () => {
-      const mockUsePermissionSections = require("./hooks/usePermissionsSection").default;
+    it("should render online migration specific groups", async () => {
+      const mockUsePermissionSections = (await import("./hooks/usePermissionsSection")).default as jest.Mock;
       mockUsePermissionSections.mockReturnValue([
         {
           id: "onlineConfigs",
@@ -239,8 +251,8 @@ describe("AssignPermissions Component", () => {
       expect(container).toMatchSnapshot();
     });
 
-    it("should render multiple permission groups", () => {
-      const mockUsePermissionSections = require("./hooks/usePermissionsSection").default;
+    it("should render multiple permission groups", async () => {
+      const mockUsePermissionSections = (await import("./hooks/usePermissionsSection")).default as jest.Mock;
       mockUsePermissionSections.mockReturnValue([
         {
           id: "crossAccountConfigs",
@@ -284,8 +296,8 @@ describe("AssignPermissions Component", () => {
   });
 
   describe("Accordion Behavior", () => {
-    it("should render accordion sections with proper status icons", () => {
-      const mockUsePermissionSections = require("./hooks/usePermissionsSection").default;
+    it("should render accordion sections with proper status icons", async () => {
+      const mockUsePermissionSections = (await import("./hooks/usePermissionsSection")).default as jest.Mock;
       mockUsePermissionSections.mockReturnValue([
         {
           id: "testGroup",

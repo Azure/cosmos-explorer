@@ -1,6 +1,7 @@
 import "@testing-library/jest-dom";
 import { render, screen, waitFor } from "@testing-library/react";
 import React from "react";
+import { noop } from "underscore";
 import { CapabilityNames } from "../../../../../../Common/Constants";
 import * as RbacUtils from "../../../../../../Utils/arm/RbacUtils";
 import {
@@ -20,7 +21,7 @@ import usePermissionSections, {
 jest.mock("../../../../../../Utils/arm/RbacUtils");
 jest.mock("../../../Utils/useCopyJobPrerequisitesCache");
 jest.mock("../../../../CopyJobUtils", () => ({
-  getAccountDetailsFromResourceId: jest.fn((resourceId: string) => ({
+  getAccountDetailsFromResourceId: jest.fn(() => ({
     subscriptionId: "sub-123",
     resourceGroup: "rg-test",
     accountName: "account-test",
@@ -32,33 +33,43 @@ jest.mock("../../../../CopyJobUtils", () => ({
 }));
 
 jest.mock("../AddManagedIdentity", () => {
-  return function MockAddManagedIdentity() {
+  const MockAddManagedIdentity = () => {
     return <div data-testid="add-managed-identity">AddManagedIdentity</div>;
   };
+  MockAddManagedIdentity.displayName = "MockAddManagedIdentity";
+  return MockAddManagedIdentity;
 });
 
 jest.mock("../AddReadPermissionToDefaultIdentity", () => {
-  return function MockAddReadPermissionToDefaultIdentity() {
+  const MockAddReadPermissionToDefaultIdentity = () => {
     return <div data-testid="add-read-permission">AddReadPermissionToDefaultIdentity</div>;
   };
+  MockAddReadPermissionToDefaultIdentity.displayName = "MockAddReadPermissionToDefaultIdentity";
+  return MockAddReadPermissionToDefaultIdentity;
 });
 
 jest.mock("../DefaultManagedIdentity", () => {
-  return function MockDefaultManagedIdentity() {
+  const MockDefaultManagedIdentity = () => {
     return <div data-testid="default-managed-identity">DefaultManagedIdentity</div>;
   };
+  MockDefaultManagedIdentity.displayName = "MockDefaultManagedIdentity";
+  return MockDefaultManagedIdentity;
 });
 
 jest.mock("../OnlineCopyEnabled", () => {
-  return function MockOnlineCopyEnabled() {
+  const MockOnlineCopyEnabled = () => {
     return <div data-testid="online-copy-enabled">OnlineCopyEnabled</div>;
   };
+  MockOnlineCopyEnabled.displayName = "MockOnlineCopyEnabled";
+  return MockOnlineCopyEnabled;
 });
 
 jest.mock("../PointInTimeRestore", () => {
-  return function MockPointInTimeRestore() {
+  const MockPointInTimeRestore = () => {
     return <div data-testid="point-in-time-restore">PointInTimeRestore</div>;
   };
+  MockPointInTimeRestore.displayName = "MockPointInTimeRestore";
+  return MockPointInTimeRestore;
 });
 
 const mockedRbacUtils = RbacUtils as jest.Mocked<typeof RbacUtils>;
@@ -393,9 +404,7 @@ describe("usePermissionsSection", () => {
         },
       });
 
-      let capturedResult: PermissionGroupConfig[] = [];
-
-      render(<TestWrapper state={state} onResult={(result) => (capturedResult = result)} />);
+      render(<TestWrapper state={state} onResult={noop} />);
 
       await waitFor(() => {
         expect(screen.getByTestId(`section-${SECTION_IDS.readPermissionAssigned}-completed`)).toHaveTextContent("true");
@@ -492,10 +501,7 @@ describe("usePermissionsSection", () => {
       mockValidationCache.set(SECTION_IDS.defaultManagedIdentity, true);
 
       const state = createMockState();
-
-      let capturedResult: PermissionGroupConfig[] = [];
-
-      render(<TestWrapper state={state} onResult={(result) => (capturedResult = result)} />);
+      render(<TestWrapper state={state} onResult={noop} />);
 
       await waitFor(() => {
         expect(screen.getByTestId(`section-${SECTION_IDS.addManagedIdentity}-completed`)).toHaveTextContent("true");

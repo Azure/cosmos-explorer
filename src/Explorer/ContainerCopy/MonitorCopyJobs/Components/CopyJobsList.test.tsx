@@ -312,7 +312,7 @@ describe("CopyJobsList", () => {
 
   describe("Row Interactions", () => {
     it("calls openCopyJobDetailsPanel when row is clicked", async () => {
-      const { openCopyJobDetailsPanel } = require("../../Actions/CopyJobActions");
+      const { openCopyJobDetailsPanel } = await import("../../Actions/CopyJobActions");
 
       render(<CopyJobsList jobs={mockJobs} handleActionClick={mockHandleActionClick} />);
 
@@ -354,8 +354,8 @@ describe("CopyJobsList", () => {
       expect(screen.getByText("Showing 1 - 10 of 12 items")).toBeInTheDocument();
     });
 
-    it("passes correct props to getColumns function", () => {
-      const { getColumns } = require("./CopyJobColumns");
+    it("passes correct props to getColumns function", async () => {
+      const { getColumns } = await import("./CopyJobColumns");
 
       render(<CopyJobsList jobs={mockJobs} handleActionClick={mockHandleActionClick} />);
 

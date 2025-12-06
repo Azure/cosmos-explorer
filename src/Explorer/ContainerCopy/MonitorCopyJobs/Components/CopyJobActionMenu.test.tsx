@@ -317,7 +317,8 @@ describe("CopyJobActionMenu", () => {
       job: CopyJobType;
       initialUpdatingState?: { jobName: string; action: string } | null;
     }> = ({ job, initialUpdatingState = null }) => {
-      const [updatingJobAction, setUpdatingJobAction] = React.useState(initialUpdatingState);
+      const stateUpdater = React.useState(initialUpdatingState);
+      const setUpdatingJobAction = stateUpdater[1];
 
       const testHandleClick: HandleJobActionClickType = (job, action, setUpdatingJobActionCallback) => {
         setUpdatingJobActionCallback({ jobName: job.Name, action });
@@ -504,7 +505,7 @@ describe("CopyJobActionMenu", () => {
       fireEvent.click(actionButton);
       const pauseButton = screen.getByText("Pause");
       fireEvent.click(pauseButton);
-      
+
       fireEvent.click(actionButton);
       const pauseButton2 = screen.getByText("Pause");
       fireEvent.click(pauseButton2);

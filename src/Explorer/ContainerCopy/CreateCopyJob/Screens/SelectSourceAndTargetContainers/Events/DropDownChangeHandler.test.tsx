@@ -142,12 +142,10 @@ const TestComponent: React.FC<TestComponentProps> = ({ initialState, onStateChan
 };
 
 describe("dropDownChangeHandler", () => {
-  let mockSetCopyJobState: jest.Mock;
   let capturedState: CopyJobContextState;
   let initialState: CopyJobContextState;
 
   beforeEach(() => {
-    mockSetCopyJobState = jest.fn();
     initialState = createMockInitialState();
     capturedState = initialState;
   });
@@ -257,7 +255,7 @@ describe("dropDownChangeHandler", () => {
 
   describe("edge cases and error scenarios", () => {
     it("should handle empty string keys", () => {
-      const { getByTestId } = renderTestComponent();
+      renderTestComponent();
 
       const handler = dropDownChangeHandler((updater) => {
         const newState = typeof updater === "function" ? updater(capturedState) : updater;
@@ -275,7 +273,7 @@ describe("dropDownChangeHandler", () => {
     });
 
     it("should handle special characters in keys", () => {
-      const { getByTestId } = renderTestComponent();
+      renderTestComponent();
 
       const handler = dropDownChangeHandler((updater) => {
         const newState = typeof updater === "function" ? updater(capturedState) : updater;
@@ -297,7 +295,7 @@ describe("dropDownChangeHandler", () => {
     });
 
     it("should handle numeric keys", () => {
-      const { getByTestId } = renderTestComponent();
+      renderTestComponent();
 
       const handler = dropDownChangeHandler((updater) => {
         const newState = typeof updater === "function" ? updater(capturedState) : updater;

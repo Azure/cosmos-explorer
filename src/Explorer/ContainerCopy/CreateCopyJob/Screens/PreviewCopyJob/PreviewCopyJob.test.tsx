@@ -277,17 +277,6 @@ describe("PreviewCopyJob", () => {
   });
 
   it("should render component with cross-subscription setup", () => {
-    const targetSubscription: Subscription = {
-      subscriptionId: "target-subscription-id",
-      displayName: "Target Subscription",
-      state: "Enabled",
-      subscriptionPolicies: {
-        locationPlacementId: "target",
-        quotaId: "target",
-      },
-      authorizationSource: "target",
-    };
-
     const targetAccount = {
       ...mockDatabaseAccount,
       id: "/subscriptions/target-subscription-id/resourceGroups/target-rg/providers/Microsoft.DocumentDB/databaseAccounts/target-account",

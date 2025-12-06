@@ -19,13 +19,15 @@ jest.mock("../../../CopyJobUtils", () => ({
 }));
 
 jest.mock("../Components/InfoTooltip", () => {
-  return function MockInfoTooltip({ content }: { content: React.ReactNode }) {
+  const MockInfoTooltip = ({ content }: { content: React.ReactNode }) => {
     return <div data-testid="info-tooltip">{content}</div>;
   };
+  MockInfoTooltip.displayName = "MockInfoTooltip";
+  return MockInfoTooltip;
 });
 
 jest.mock("../Components/PopoverContainer", () => {
-  return function MockPopoverMessage({
+  const MockPopoverContainer = ({
     isLoading,
     visible,
     title,
@@ -39,8 +41,10 @@ jest.mock("../Components/PopoverContainer", () => {
     onCancel: () => void;
     onPrimary: () => void;
     children: React.ReactNode;
-  }) {
-    if (!visible) return null;
+  }) => {
+    if (!visible) {
+      return null;
+    }
     return (
       <div data-testid="popover-message" data-loading={isLoading}>
         <div data-testid="popover-title">{title}</div>
@@ -54,6 +58,8 @@ jest.mock("../Components/PopoverContainer", () => {
       </div>
     );
   };
+  MockPopoverContainer.displayName = "MockPopoverContainer";
+  return MockPopoverContainer;
 });
 
 jest.mock("./hooks/useToggle", () => {

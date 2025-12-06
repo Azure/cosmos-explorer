@@ -24,9 +24,11 @@ jest.mock("../../../../../Common/Logger", () => ({
 }));
 
 jest.mock("../../../../../Common/LoadingOverlay", () => {
-  return function MockLoadingOverlay({ isLoading, label }: { isLoading: boolean; label: string }) {
+  const MockLoadingOverlay = ({ isLoading, label }: { isLoading: boolean; label: string }) => {
     return isLoading ? <div data-testid="loading-overlay">{label}</div> : null;
   };
+  MockLoadingOverlay.displayName = "MockLoadingOverlay";
+  return MockLoadingOverlay;
 });
 
 const mockFetchDatabaseAccount = fetchDatabaseAccount as jest.MockedFunction<typeof fetchDatabaseAccount>;

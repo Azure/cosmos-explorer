@@ -6,19 +6,23 @@ import ContainerCopyPanel from "./ContainerCopyPanel";
 import { MonitorCopyJobsRefState } from "./MonitorCopyJobs/MonitorCopyJobRefState";
 
 jest.mock("./CommandBar/CopyJobCommandBar", () => {
-  return function MockCopyJobCommandBar() {
+  const MockCopyJobCommandBar = () => {
     return <div data-testid="copy-job-command-bar">CopyJobCommandBar</div>;
   };
+  MockCopyJobCommandBar.displayName = "CopyJobCommandBar";
+  return MockCopyJobCommandBar;
 });
 
 jest.mock("./MonitorCopyJobs/MonitorCopyJobs", () => {
-  const React = require("react");
-  return React.forwardRef(function MockMonitorCopyJobs(_props: any, ref: any) {
+  const React = jest.requireActual("react");
+  const MockMonitorCopyJobs = React.forwardRef((_props: any, ref: any) => {
     React.useImperativeHandle(ref, () => ({
       refreshJobList: jest.fn(),
     }));
     return <div data-testid="monitor-copy-jobs">MonitorCopyJobs</div>;
   });
+  MockMonitorCopyJobs.displayName = "MonitorCopyJobs";
+  return MockMonitorCopyJobs;
 });
 
 jest.mock("./MonitorCopyJobs/MonitorCopyJobRefState", () => ({
@@ -71,7 +75,7 @@ describe("ContainerCopyPanel", () => {
   });
 
   it("passes explorer prop to child components", () => {
-    const { container } = render(<ContainerCopyPanel explorer={mockExplorer} />);
+    render(<ContainerCopyPanel explorer={mockExplorer} />);
 
     expect(screen.getByTestId("copy-job-command-bar")).toBeInTheDocument();
     expect(screen.getByTestId("monitor-copy-jobs")).toBeInTheDocument();

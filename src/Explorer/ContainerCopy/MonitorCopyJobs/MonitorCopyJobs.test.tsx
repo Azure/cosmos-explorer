@@ -9,21 +9,27 @@ import { CopyJobType } from "../Types/CopyJobTypes";
 import MonitorCopyJobs from "./MonitorCopyJobs";
 
 jest.mock("Common/ShimmerTree/ShimmerTree", () => {
-  return function MockShimmerTree() {
+  const MockShimmerTree = () => {
     return <div data-testid="shimmer-tree">Loading...</div>;
   };
+  MockShimmerTree.displayName = "MockShimmerTree";
+  return MockShimmerTree;
 });
 
 jest.mock("./Components/CopyJobsList", () => {
-  return function MockCopyJobsList({ jobs }: any) {
+  const MockCopyJobsList = ({ jobs }: any) => {
     return <div data-testid="copy-jobs-list">Jobs: {jobs.length}</div>;
   };
+  MockCopyJobsList.displayName = "MockCopyJobsList";
+  return MockCopyJobsList;
 });
 
 jest.mock("./Components/CopyJobs.NotFound", () => {
-  return function MockCopyJobsNotFound() {
+  const MockCopyJobsNotFound = () => {
     return <div data-testid="copy-jobs-not-found">No jobs found</div>;
   };
+  MockCopyJobsNotFound.displayName = "MockCopyJobsNotFound";
+  return MockCopyJobsNotFound;
 });
 
 jest.mock("../Actions/CopyJobActions", () => ({
@@ -244,14 +250,11 @@ describe("MonitorCopyJobs", () => {
       });
 
       const mockHandleActionClick = jest.fn(async (job, action, setUpdatingJobAction) => {
-        try {
-          setUpdatingJobAction({ jobName: job.Name, action });
-          await mockUpdateCopyJobStatus(job, action);
-        } catch (error: any) {
-        }
+        setUpdatingJobAction({ jobName: job.Name, action });
+        await mockUpdateCopyJobStatus(job, action);
       });
 
-      await mockHandleActionClick(mockJobs[0], "pause", jest.fn());
+      await expect(mockHandleActionClick(mockJobs[0], "pause", jest.fn())).rejects.toThrow("Update failed");
     });
   });
 
@@ -357,8 +360,6 @@ describe("MonitorCopyJobs", () => {
             ),
           ),
       );
-
-      const initialCallCount = mockGetCopyJobs.mock.calls.length;
 
       expect(ref.current).toHaveProperty("refreshJobList");
       expect(typeof ref.current.refreshJobList).toBe("function");

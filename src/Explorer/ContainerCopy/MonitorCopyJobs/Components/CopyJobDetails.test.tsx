@@ -6,9 +6,11 @@ import { CopyJobType } from "../../Types/CopyJobTypes";
 import CopyJobDetails from "./CopyJobDetails";
 
 jest.mock("./CopyJobStatusWithIcon", () => {
-  return function MockCopyJobStatusWithIcon({ status }: { status: CopyJobStatusType }) {
+  const MockCopyJobStatusWithIcon = ({ status }: { status: CopyJobStatusType }) => {
     return <span data-testid="copy-job-status-icon">{status}</span>;
   };
+  MockCopyJobStatusWithIcon.displayName = "MockCopyJobStatusWithIcon";
+  return MockCopyJobStatusWithIcon;
 });
 
 jest.mock("../../ContainerCopyMessages", () => ({

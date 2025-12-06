@@ -14,13 +14,15 @@ jest.mock("../../../../../Utils/arm/identityUtils", () => ({
 }));
 
 jest.mock("../Components/InfoTooltip", () => {
-  return function MockInfoTooltip({ content }: { content: React.ReactNode }) {
+  const MockInfoTooltip = ({ content }: { content: React.ReactNode }) => {
     return <div data-testid="info-tooltip">{content}</div>;
   };
+  MockInfoTooltip.displayName = "MockInfoTooltip";
+  return MockInfoTooltip;
 });
 
 jest.mock("../Components/PopoverContainer", () => {
-  return function MockPopoverMessage({
+  const MockPopoverContainer = ({
     children,
     isLoading,
     visible,
@@ -34,8 +36,10 @@ jest.mock("../Components/PopoverContainer", () => {
     title: string;
     onCancel: () => void;
     onPrimary: () => void;
-  }) {
-    if (!visible) return null;
+  }) => {
+    if (!visible) {
+      return null;
+    }
     return (
       <div data-testid="popover-message">
         <div data-testid="popover-title">{title}</div>
@@ -50,6 +54,8 @@ jest.mock("../Components/PopoverContainer", () => {
       </div>
     );
   };
+  MockPopoverContainer.displayName = "MockPopoverContainer";
+  return MockPopoverContainer;
 });
 
 import { DatabaseAccount } from "Contracts/DataModels";

@@ -77,7 +77,7 @@ const mockUseDatabaseAccounts = useDatabaseAccounts as jest.MockedFunction<typeo
 const mockUseSubscriptions = useSubscriptions as jest.MockedFunction<typeof useSubscriptions>;
 const mockApiType = apiType as jest.MockedFunction<typeof apiType>;
 
-const { useDropdownOptions, useEventHandlers } = require("./Utils/selectAccountUtils");
+import { useDropdownOptions, useEventHandlers } from "./Utils/selectAccountUtils";
 const mockUseDropdownOptions = useDropdownOptions as jest.MockedFunction<typeof useDropdownOptions>;
 const mockUseEventHandlers = useEventHandlers as jest.MockedFunction<typeof useEventHandlers>;
 

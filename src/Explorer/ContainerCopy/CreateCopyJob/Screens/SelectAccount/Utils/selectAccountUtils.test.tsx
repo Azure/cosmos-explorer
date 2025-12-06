@@ -1,6 +1,7 @@
 import "@testing-library/jest-dom";
 import { fireEvent, render } from "@testing-library/react";
 import React from "react";
+import { noop } from "underscore";
 import { DatabaseAccount, Subscription } from "../../../../../../Contracts/DataModels";
 import { CopyJobMigrationType } from "../../../../Enums/CopyJobEnums";
 import { CopyJobContextState } from "../../../../Types/CopyJobTypes";
@@ -255,12 +256,12 @@ describe("selectAccountUtils", () => {
     let mockSetCopyJobState: jest.Mock;
     let mockSetValidationCache: jest.Mock;
 
-    beforeEach(() => {
+    beforeEach(async () => {
       mockSetCopyJobState = jest.fn();
       mockSetValidationCache = jest.fn();
 
-      const { useCopyJobPrerequisitesCache } = require("../../../Utils/useCopyJobPrerequisitesCache");
-      useCopyJobPrerequisitesCache.mockReturnValue({
+      const { useCopyJobPrerequisitesCache } = await import("../../../Utils/useCopyJobPrerequisitesCache");
+      (useCopyJobPrerequisitesCache as unknown as jest.Mock).mockReturnValue({
         setValidationCache: mockSetValidationCache,
       });
     });
@@ -270,15 +271,8 @@ describe("selectAccountUtils", () => {
     });
 
     it("should handle subscription selection correctly", () => {
-      let capturedHandlers: any;
-
       const { getByTestId } = render(
-        <EventHandlersTestComponent
-          setCopyJobState={mockSetCopyJobState}
-          onResult={(result) => {
-            capturedHandlers = result;
-          }}
-        />,
+        <EventHandlersTestComponent setCopyJobState={mockSetCopyJobState} onResult={noop} />,
       );
 
       fireEvent.click(getByTestId("select-subscription-button"));
@@ -306,15 +300,8 @@ describe("selectAccountUtils", () => {
     });
 
     it("should handle account selection correctly", () => {
-      let capturedHandlers: any;
-
       const { getByTestId } = render(
-        <EventHandlersTestComponent
-          setCopyJobState={mockSetCopyJobState}
-          onResult={(result) => {
-            capturedHandlers = result;
-          }}
-        />,
+        <EventHandlersTestComponent setCopyJobState={mockSetCopyJobState} onResult={noop} />,
       );
 
       fireEvent.click(getByTestId("select-account-button"));

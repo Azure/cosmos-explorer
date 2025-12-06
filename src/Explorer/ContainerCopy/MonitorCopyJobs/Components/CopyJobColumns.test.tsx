@@ -8,15 +8,19 @@ import { CopyJobType, HandleJobActionClickType } from "../../Types/CopyJobTypes"
 import { getColumns } from "./CopyJobColumns";
 
 jest.mock("./CopyJobActionMenu", () => {
-  return function MockCopyJobActionMenu({ job }: { job: CopyJobType }) {
+  const MockCopyJobActionMenu = ({ job }: { job: CopyJobType }) => {
     return <div data-testid={`action-menu-${job.Name}`}>Action Menu</div>;
   };
+  MockCopyJobActionMenu.displayName = "MockCopyJobActionMenu";
+  return MockCopyJobActionMenu;
 });
 
 jest.mock("./CopyJobStatusWithIcon", () => {
-  return function MockCopyJobStatusWithIcon({ status }: { status: CopyJobStatusType }) {
+  const MockCopyJobStatusWithIcon = ({ status }: { status: CopyJobStatusType }) => {
     return <div data-testid={`status-icon-${status}`}>Status: {status}</div>;
   };
+  MockCopyJobStatusWithIcon.displayName = "MockCopyJobStatusWithIcon";
+  return MockCopyJobStatusWithIcon;
 });
 
 describe("CopyJobColumns", () => {

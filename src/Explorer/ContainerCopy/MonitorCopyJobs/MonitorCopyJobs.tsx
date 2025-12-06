@@ -119,4 +119,6 @@ const MonitorCopyJobs = forwardRef<MonitorCopyJobsRef, MonitorCopyJobsProps>(({ 
   );
 });
 
+MonitorCopyJobs.displayName = "MonitorCopyJobs";
+
 export default MonitorCopyJobs;

@@ -24,7 +24,7 @@ jest.mock("@fluentui/react", () => ({
       themePrimary: "#0078d4",
     },
   }),
-  mergeStyles: (styles: any) => "mocked-styles",
+  mergeStyles: () => "mocked-styles",
   mergeStyleSets: (styleSet: any) => {
     const result: any = {};
     Object.keys(styleSet).forEach((key) => {

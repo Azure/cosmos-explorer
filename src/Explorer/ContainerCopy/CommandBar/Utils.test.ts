@@ -91,7 +91,7 @@ describe("CommandBar Utils", () => {
       expect(feedbackButton.disabled).toBe(false);
     });
 
-    it("should not include feedback button when platform is not Portal", () => {
+    it("should not include feedback button when platform is not Portal", async () => {
       jest.resetModules();
       jest.doMock("../../../ConfigContext", () => ({
         configContext: {
@@ -104,7 +104,7 @@ describe("CommandBar Utils", () => {
         },
       }));
 
-      const { getCommandBarButtons: getCommandBarButtonsEmulator } = require("./Utils");
+      const { getCommandBarButtons: getCommandBarButtonsEmulator } = await import("./Utils");
       const buttons = getCommandBarButtonsEmulator(mockExplorer);
 
       expect(buttons.length).toBe(2);

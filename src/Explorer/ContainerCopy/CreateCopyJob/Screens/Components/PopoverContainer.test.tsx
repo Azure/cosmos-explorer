@@ -5,9 +5,11 @@ import ContainerCopyMessages from "../../../ContainerCopyMessages";
 import PopoverMessage from "./PopoverContainer";
 
 jest.mock("../../../../../Common/LoadingOverlay", () => {
-  return function MockLoadingOverlay({ isLoading, label }: { isLoading: boolean; label: string }) {
+  const MockLoadingOverlay = ({ isLoading, label }: { isLoading: boolean; label: string }) => {
     return isLoading ? <div data-testid="loading-overlay" aria-label={label} /> : null;
   };
+  MockLoadingOverlay.displayName = "MockLoadingOverlay";
+  return MockLoadingOverlay;
 });
 
 describe("PopoverMessage Component", () => {
@@ -51,7 +53,7 @@ describe("PopoverMessage Component", () => {
           <p>Second paragraph</p>
         </div>
       );
-      const { container } = render(<PopoverMessage {...defaultProps} children={customChildren} />);
+      const { container } = render(<PopoverMessage {...defaultProps}>{customChildren}</PopoverMessage>);
       expect(container).toMatchSnapshot();
     });
   });
@@ -85,7 +87,7 @@ describe("PopoverMessage Component", () => {
   describe("Children Content", () => {
     it("should render children content", () => {
       const customChildren = <span>Custom child content</span>;
-      render(<PopoverMessage {...defaultProps} children={customChildren} />);
+      render(<PopoverMessage {...defaultProps}>{customChildren}</PopoverMessage>);
       expect(screen.getByText("Custom child content")).toBeInTheDocument();
     });
 
@@ -99,7 +101,7 @@ describe("PopoverMessage Component", () => {
           </ul>
         </div>
       );
-      render(<PopoverMessage {...defaultProps} children={complexChildren} />);
+      render(<PopoverMessage {...defaultProps}>{complexChildren}</PopoverMessage>);
       expect(screen.getByText("Heading")).toBeInTheDocument();
       expect(screen.getByText("Item 1")).toBeInTheDocument();
       expect(screen.getByText("Item 2")).toBeInTheDocument();

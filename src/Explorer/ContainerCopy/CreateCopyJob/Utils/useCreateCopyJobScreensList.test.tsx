@@ -2,7 +2,7 @@ import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
 import React from "react";
 import Explorer from "../../../Explorer";
-import CopyJobContextProvider from "../../Context/CopyJobContext";
+import CopyJobContextProvider, { useCopyJobContext } from "../../Context/CopyJobContext";
 import { CopyJobMigrationType } from "../../Enums/CopyJobEnums";
 import { CopyJobContextState } from "../../Types/CopyJobTypes";
 import { SCREEN_KEYS, useCreateCopyJobScreensList } from "./useCreateCopyJobScreensList";
@@ -18,33 +18,43 @@ jest.mock("../../Context/CopyJobContext", () => {
 });
 
 jest.mock("../Screens/AssignPermissions/AssignPermissions", () => {
-  return function MockAssignPermissions() {
+  const MockAssignPermissions = () => {
     return <div data-testid="assign-permissions">AssignPermissions</div>;
   };
+  MockAssignPermissions.displayName = "MockAssignPermissions";
+  return MockAssignPermissions;
 });
 
 jest.mock("../Screens/CreateContainer/AddCollectionPanelWrapper", () => {
-  return function MockAddCollectionPanelWrapper() {
+  const MockAddCollectionPanelWrapper = () => {
     return <div data-testid="add-collection-panel">AddCollectionPanelWrapper</div>;
   };
+  MockAddCollectionPanelWrapper.displayName = "MockAddCollectionPanelWrapper";
+  return MockAddCollectionPanelWrapper;
 });
 
 jest.mock("../Screens/PreviewCopyJob/PreviewCopyJob", () => {
-  return function MockPreviewCopyJob() {
+  const MockPreviewCopyJob = () => {
     return <div data-testid="preview-copy-job">PreviewCopyJob</div>;
   };
+  MockPreviewCopyJob.displayName = "MockPreviewCopyJob";
+  return MockPreviewCopyJob;
 });
 
 jest.mock("../Screens/SelectAccount/SelectAccount", () => {
-  return function MockSelectAccount() {
+  const MockSelectAccount = () => {
     return <div data-testid="select-account">SelectAccount</div>;
   };
+  MockSelectAccount.displayName = "MockSelectAccount";
+  return MockSelectAccount;
 });
 
 jest.mock("../Screens/SelectSourceAndTargetContainers/SelectSourceAndTargetContainers", () => {
-  return function MockSelectSourceAndTargetContainers() {
+  const MockSelectSourceAndTargetContainers = () => {
     return <div data-testid="select-source-target">SelectSourceAndTargetContainers</div>;
   };
+  MockSelectSourceAndTargetContainers.displayName = "MockSelectSourceAndTargetContainers";
+  return MockSelectSourceAndTargetContainers;
 });
 
 const TestHookComponent: React.FC<{ goBack: () => void }> = ({ goBack }) => {
@@ -68,11 +78,9 @@ const TestHookComponent: React.FC<{ goBack: () => void }> = ({ goBack }) => {
 describe("useCreateCopyJobScreensList", () => {
   const mockExplorer = {} as Explorer;
   const mockGoBack = jest.fn();
-  const { useCopyJobContext } = require("../../Context/CopyJobContext");
-
   beforeEach(() => {
     jest.clearAllMocks();
-    useCopyJobContext.mockReturnValue({
+    (useCopyJobContext as jest.Mock).mockReturnValue({
       explorer: mockExplorer,
     });
   });
@@ -455,7 +463,7 @@ describe("useCreateCopyJobScreensList", () => {
     it("should handle context provider error gracefully", () => {
       const consoleError = jest.spyOn(console, "error").mockImplementation(() => {});
 
-      useCopyJobContext.mockImplementation(() => {
+      (useCopyJobContext as jest.Mock).mockImplementation(() => {
         throw new Error("Context not found");
       });
 
