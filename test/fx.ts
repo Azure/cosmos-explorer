@@ -1,6 +1,7 @@
 import { DefaultAzureCredential } from "@azure/identity";
 import { Frame, Locator, Page, expect } from "@playwright/test";
 import crypto from "crypto";
+import { TestContainerContext } from "./testData";
 
 const RETRY_COUNT = 3;
 
@@ -55,6 +56,9 @@ export const defaultAccounts: Record<TestAccount, string> = {
 export const resourceGroupName = process.env.DE_TEST_RESOURCE_GROUP ?? "de-e2e-tests";
 export const subscriptionId = process.env.DE_TEST_SUBSCRIPTION_ID ?? "69e02f2d-f059-4409-9eac-97e8a276ae2c";
 export const TEST_AUTOSCALE_THROUGHPUT_RU = 1000;
+export const TEST_AUTOSCALE_MAX_THROUGHPUT_RU_2K = 2000;
+export const TEST_MANUAL_THROUGHPUT_RU_2K = 2000;
+export const ONE_MINUTE_MS: number = 60 * 1000;
 
 function tryGetStandardName(accountType: TestAccount) {
   if (process.env.DE_TEST_ACCOUNT_PREFIX) {
@@ -319,6 +323,11 @@ type PanelOpenOptions = {
   closeTimeout?: number;
 };
 
+export enum CommandBarButton {
+  Save = "Save",
+  ExecuteQuery = "Execute Query",
+}
+
 /** Helper class that provides locator methods for DataExplorer components, on top of a Frame */
 export class DataExplorer {
   constructor(public frame: Frame) {}
@@ -348,8 +357,8 @@ export class DataExplorer {
   }
 
   /** Select the command bar button with the specified label */
-  commandBarButton(label: string): Locator {
-    return this.frame.getByTestId(`CommandBar/Button:${label}`).and(this.frame.locator("css=button"));
+  commandBarButton(commandBarButton: CommandBarButton): Locator {
+    return this.frame.getByTestId(`CommandBar/Button:${commandBarButton}`).and(this.frame.locator("css=button"));
   }
 
   dialogButton(label: string): Locator {
@@ -443,6 +452,22 @@ export class DataExplorer {
     const okButton = panel.getByTestId("Panel/OkButton");
     await action(panel, okButton);
     await panel.waitFor({ state: "detached", timeout: options.closeTimeout });
+  }
+
+  /** Opens the Scale & Settings panel for the specified container */
+  async openScaleAndSettings(context: TestContainerContext): Promise<void> {
+    const containerNode = await this.waitForContainerNode(context.database.id, context.container.id);
+    await containerNode.expand();
+
+    const scaleAndSettingsButton = this.frame.getByTestId(
+      `TreeNode:${context.database.id}/${context.container.id}/Scale & Settings`,
+    );
+    await scaleAndSettingsButton.click();
+  }
+
+  /** Gets the console message element */
+  getConsoleMessage(): Locator {
+    return this.frame.getByTestId("notification-console/header-status");
   }
 
   /** Waits for the Data Explorer app to load */
