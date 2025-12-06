@@ -1,0 +1,60 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`InfoTooltip Component Rendering should render tooltip with image when content is provided 1`] = `
+<div>
+  <div
+    class="ms-TooltipHost root-105"
+    role="none"
+  >
+    <div
+      class="ms-Image root-109"
+      style="width: 14px; height: 14px;"
+    >
+      <img
+        alt="Information"
+        class="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-110"
+        src="[object Object]"
+      />
+    </div>
+    <div
+      hidden=""
+      id="tooltip0"
+      style="position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0px; border: 0px; overflow: hidden; white-space: nowrap;"
+    >
+      Test tooltip content
+    </div>
+  </div>
+</div>
+`;
+
+exports[`InfoTooltip Component Rendering should render with JSX element content 1`] = `
+<div>
+  <div
+    class="ms-TooltipHost root-105"
+    role="none"
+  >
+    <div
+      class="ms-Image root-109"
+      style="width: 14px; height: 14px;"
+    >
+      <img
+        alt="Information"
+        class="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-110"
+        src="[object Object]"
+      />
+    </div>
+    <div
+      hidden=""
+      id="tooltip1"
+      style="position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0px; border: 0px; overflow: hidden; white-space: nowrap;"
+    >
+      <div>
+        <strong>
+          Important:
+        </strong>
+         This is a JSX tooltip
+      </div>
+    </div>
+  </div>
+</div>
+`;

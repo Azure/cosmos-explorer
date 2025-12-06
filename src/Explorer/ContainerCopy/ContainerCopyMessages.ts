@@ -89,7 +89,7 @@ export default {
     enablementTitle: "Enable system assigned managed identity",
     enablementDescription: (accountName: string) =>
       accountName
-        ? `Enable system-assigned managed identity on the ${accountName}. To confirm, click the "Yes" button. `
+        ? `Enable system-assigned managed identity on the ${accountName}. To confirm, click the "Yes" button.`
         : "",
   },
   defaultManagedIdentity: {
@@ -116,7 +116,7 @@ export default {
     },
     popoverTitle: "Read permissions assigned to default identity.",
     popoverDescription:
-      "Assign read permissions of the source account to the default identity of the destination account. To confirm click the “Yes” button. ",
+      "Assign read permissions of the source account to the default identity of the destination account. To confirm click the “Yes” button.",
   },
   pointInTimeRestore: {
     title: "Point In Time Restore enabled",

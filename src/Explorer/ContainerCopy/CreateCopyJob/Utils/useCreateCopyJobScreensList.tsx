@@ -8,11 +8,11 @@ import SelectAccount from "../Screens/SelectAccount/SelectAccount";
 import SelectSourceAndTargetContainers from "../Screens/SelectSourceAndTargetContainers/SelectSourceAndTargetContainers";
 
 const SCREEN_KEYS = {
-  CreateCollection: "CreateCollection",
   SelectAccount: "SelectAccount",
-  SelectSourceAndTargetContainers: "SelectSourceAndTargetContainers",
-  PreviewCopyJob: "PreviewCopyJob",
   AssignPermissions: "AssignPermissions",
+  SelectSourceAndTargetContainers: "SelectSourceAndTargetContainers",
+  CreateCollection: "CreateCollection",
+  PreviewCopyJob: "PreviewCopyJob",
 };
 
 type Validation = {

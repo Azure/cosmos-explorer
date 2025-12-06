@@ -32,7 +32,7 @@ const OnlineCopyEnabled: React.FC = () => {
     subscriptionId: sourceSubscriptionId,
     resourceGroup: sourceResourceGroup,
     accountName: sourceAccountName,
-  } = getAccountDetailsFromResourceId(selectedSourceAccount?.id);
+  } = getAccountDetailsFromResourceId(selectedSourceAccount?.id) || {};
 
   const handleFetchAccount = async () => {
     try {
@@ -91,12 +91,6 @@ const OnlineCopyEnabled: React.FC = () => {
         });
       }
       setLoaderMessage(ContainerCopyMessages.onlineCopyEnabled.enablingOnlineCopySpinnerLabel(sourceAccountName));
-      await updateDatabaseAccount(sourceSubscriptionId, sourceResourceGroup, sourceAccountName, {
-        properties: {
-          enableAllVersionsAndDeletesChangeFeed: true,
-        },
-      });
-
       await updateDatabaseAccount(sourceSubscriptionId, sourceResourceGroup, sourceAccountName, {
         properties: {
           capabilities: [...sourceAccountCapabilities, { name: CapabilityNames.EnableOnlineCopyFeature }],

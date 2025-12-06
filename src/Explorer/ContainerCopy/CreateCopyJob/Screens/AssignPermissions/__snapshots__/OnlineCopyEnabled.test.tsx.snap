@@ -1,0 +1,193 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`OnlineCopyEnabled Edge Cases should handle account with existing online copy capability 1`] = `
+<div>
+  <div
+    class="ms-Stack onlineCopyContainer css-109"
+  >
+    <div
+      class="ms-StackItem info-message css-110"
+    >
+      Enable online container copy by clicking the button below on your "test-account" account.
+       
+      <a
+        class="ms-Link root-111"
+        href="https://learn.microsoft.com/en-us/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#enable-online-copy"
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        Learn more about online copy jobs
+      </a>
+    </div>
+    <div
+      class="ms-StackItem css-110"
+    >
+      <button
+        class="ms-Button ms-Button--primary fullWidth root-112"
+        data-is-focusable="true"
+        type="button"
+      >
+        <span
+          class="ms-Button-flexContainer flexContainer-113"
+          data-automationid="splitbuttonprimary"
+        >
+          <span
+            class="ms-Button-textContainer textContainer-114"
+          >
+            <span
+              class="ms-Button-label label-116"
+              id="id__54"
+            >
+              Enable Online Copy
+            </span>
+          </span>
+        </span>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`OnlineCopyEnabled Edge Cases should handle missing account name gracefully 1`] = `
+<div>
+  <div
+    class="ms-Stack onlineCopyContainer css-109"
+  >
+    <div
+      class="ms-StackItem info-message css-110"
+    >
+      Enable online container copy by clicking the button below on your "" account.
+       
+      <a
+        class="ms-Link root-111"
+        href="https://learn.microsoft.com/en-us/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#enable-online-copy"
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        Learn more about online copy jobs
+      </a>
+    </div>
+    <div
+      class="ms-StackItem css-110"
+    >
+      <button
+        class="ms-Button ms-Button--primary fullWidth root-112"
+        data-is-focusable="true"
+        type="button"
+      >
+        <span
+          class="ms-Button-flexContainer flexContainer-113"
+          data-automationid="splitbuttonprimary"
+        >
+          <span
+            class="ms-Button-textContainer textContainer-114"
+          >
+            <span
+              class="ms-Button-label label-116"
+              id="id__48"
+            >
+              Enable Online Copy
+            </span>
+          </span>
+        </span>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`OnlineCopyEnabled Edge Cases should handle null account 1`] = `
+<div>
+  <div
+    class="ms-Stack onlineCopyContainer css-109"
+  >
+    <div
+      class="ms-StackItem info-message css-110"
+    >
+      Enable online container copy by clicking the button below on your "" account.
+       
+      <a
+        class="ms-Link root-111"
+        href="https://learn.microsoft.com/en-us/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#enable-online-copy"
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        Learn more about online copy jobs
+      </a>
+    </div>
+    <div
+      class="ms-StackItem css-110"
+    >
+      <button
+        class="ms-Button ms-Button--primary fullWidth root-112"
+        data-is-focusable="true"
+        type="button"
+      >
+        <span
+          class="ms-Button-flexContainer flexContainer-113"
+          data-automationid="splitbuttonprimary"
+        >
+          <span
+            class="ms-Button-textContainer textContainer-114"
+          >
+            <span
+              class="ms-Button-label label-116"
+              id="id__51"
+            >
+              Enable Online Copy
+            </span>
+          </span>
+        </span>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`OnlineCopyEnabled Rendering should render correctly with initial state 1`] = `
+<div>
+  <div
+    class="ms-Stack onlineCopyContainer css-109"
+  >
+    <div
+      class="ms-StackItem info-message css-110"
+    >
+      Enable online container copy by clicking the button below on your "test-account" account.
+       
+      <a
+        class="ms-Link root-111"
+        href="https://learn.microsoft.com/en-us/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#enable-online-copy"
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        Learn more about online copy jobs
+      </a>
+    </div>
+    <div
+      class="ms-StackItem css-110"
+    >
+      <button
+        class="ms-Button ms-Button--primary fullWidth root-112"
+        data-is-focusable="true"
+        type="button"
+      >
+        <span
+          class="ms-Button-flexContainer flexContainer-113"
+          data-automationid="splitbuttonprimary"
+        >
+          <span
+            class="ms-Button-textContainer textContainer-114"
+          >
+            <span
+              class="ms-Button-label label-116"
+              id="id__0"
+            >
+              Enable Online Copy
+            </span>
+          </span>
+        </span>
+      </button>
+    </div>
+  </div>
+</div>
+`;

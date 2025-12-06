@@ -1,0 +1,145 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FieldRow Snapshot Testing matches snapshot with complex children 1`] = `
+<div
+  class="ms-Stack flex-row css-109"
+>
+  <div
+    class="ms-StackItem flex-fixed-width css-110"
+  >
+    <label
+      class="field-label advanced-label"
+    >
+      Advanced Settings
+      : 
+    </label>
+  </div>
+  <div
+    class="ms-StackItem flex-grow-col css-110"
+  >
+    <div>
+      <input
+        id="enable-feature"
+        type="checkbox"
+      />
+      <label
+        for="enable-feature"
+      >
+        Enable advanced feature
+      </label>
+      <button
+        type="button"
+      >
+        Configure
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`FieldRow Snapshot Testing matches snapshot with custom className 1`] = `
+<div
+  class="ms-Stack flex-row css-109"
+>
+  <div
+    class="ms-StackItem flex-fixed-width css-110"
+  >
+    <label
+      class="field-label custom-style"
+    >
+      Container Name
+      : 
+    </label>
+  </div>
+  <div
+    class="ms-StackItem flex-grow-col css-110"
+  >
+    <select>
+      <option>
+        Option 1
+      </option>
+      <option>
+        Option 2
+      </option>
+    </select>
+  </div>
+</div>
+`;
+
+exports[`FieldRow Snapshot Testing matches snapshot with empty label 1`] = `
+<div
+  class="ms-Stack flex-row css-109"
+>
+  
+  <div
+    class="ms-StackItem flex-grow-col css-110"
+  >
+    <button
+      type="submit"
+    >
+      Submit Form
+    </button>
+  </div>
+</div>
+`;
+
+exports[`FieldRow Snapshot Testing matches snapshot with label only 1`] = `
+<div
+  class="ms-Stack flex-row css-109"
+>
+  <div
+    class="ms-StackItem flex-fixed-width css-110"
+  >
+    <label
+      class="field-label "
+    >
+      Database Name
+      : 
+    </label>
+  </div>
+  <div
+    class="ms-StackItem flex-grow-col css-110"
+  >
+    <input
+      placeholder="Enter database name"
+      type="text"
+    />
+  </div>
+</div>
+`;
+
+exports[`FieldRow Snapshot Testing matches snapshot with minimal props 1`] = `
+<div
+  class="ms-Stack flex-row css-109"
+>
+  
+  <div
+    class="ms-StackItem flex-grow-col css-110"
+  >
+    <input
+      placeholder="Simple input"
+      type="text"
+    />
+  </div>
+</div>
+`;
+
+exports[`FieldRow Snapshot Testing matches snapshot with no label 1`] = `
+<div
+  class="ms-Stack flex-row css-109"
+>
+  
+  <div
+    class="ms-StackItem flex-grow-col css-110"
+  >
+    <div>
+      <h4>
+        Section Title
+      </h4>
+      <p>
+        Section description goes here
+      </p>
+    </div>
+  </div>
+</div>
+`;

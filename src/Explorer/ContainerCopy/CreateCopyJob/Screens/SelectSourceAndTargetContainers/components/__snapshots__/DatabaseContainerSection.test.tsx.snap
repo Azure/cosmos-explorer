@@ -1,0 +1,518 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DatabaseContainerSection Snapshot Testing matches snapshot with all props including create container handler 1`] = `
+<div
+  class="ms-Stack databaseContainerSection css-109"
+>
+  <label
+    class="subHeading"
+  >
+    Target Container
+  </label>
+  <div
+    class="ms-Stack flex-row css-110"
+  >
+    <div
+      class="ms-StackItem flex-fixed-width css-111"
+    >
+      <label
+        class="field-label "
+      >
+        Database
+        : 
+      </label>
+    </div>
+    <div
+      class="ms-StackItem flex-grow-col css-111"
+    >
+      <div
+        class="ms-Dropdown-container"
+      >
+        <div
+          aria-disabled="false"
+          aria-expanded="false"
+          aria-haspopup="listbox"
+          aria-label="Database"
+          aria-required="true"
+          class="ms-Dropdown is-required dropdown-112"
+          data-is-focusable="true"
+          data-ktp-target="true"
+          id="Dropdown98"
+          role="combobox"
+          tabindex="0"
+        >
+          <span
+            aria-invalid="false"
+            class="ms-Dropdown-title title-134"
+            id="Dropdown98-option"
+          >
+            Database 2
+          </span>
+          <span
+            class="ms-Dropdown-caretDownWrapper caretDownWrapper-114"
+          >
+            <i
+              aria-hidden="true"
+              class="ms-Dropdown-caretDown caretDown-132"
+              data-icon-name="ChevronDown"
+            >
+              
+            </i>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="ms-Stack flex-row css-110"
+  >
+    <div
+      class="ms-StackItem flex-fixed-width css-111"
+    >
+      <label
+        class="field-label "
+      >
+        Container
+        : 
+      </label>
+    </div>
+    <div
+      class="ms-StackItem flex-grow-col css-111"
+    >
+      <div
+        class="ms-Stack css-133"
+      >
+        <div
+          class="ms-Dropdown-container"
+        >
+          <div
+            aria-disabled="false"
+            aria-expanded="false"
+            aria-haspopup="listbox"
+            aria-label="Container"
+            aria-required="true"
+            class="ms-Dropdown is-required dropdown-112"
+            data-is-focusable="true"
+            data-ktp-target="true"
+            id="Dropdown99"
+            role="combobox"
+            tabindex="0"
+          >
+            <span
+              aria-invalid="false"
+              class="ms-Dropdown-title title-134"
+              id="Dropdown99-option"
+            >
+              Container 2
+            </span>
+            <span
+              class="ms-Dropdown-caretDownWrapper caretDownWrapper-114"
+            >
+              <i
+                aria-hidden="true"
+                class="ms-Dropdown-caretDown caretDown-132"
+                data-icon-name="ChevronDown"
+              >
+                
+              </i>
+            </span>
+          </div>
+        </div>
+        <button
+          class="ms-Button ms-Button--action ms-Button--command create-container-link-btn root-135"
+          data-is-focusable="true"
+          type="button"
+        >
+          <span
+            class="ms-Button-flexContainer flexContainer-136"
+            data-automationid="splitbuttonprimary"
+          >
+            <span
+              class="ms-Button-textContainer textContainer-137"
+            >
+              <span
+                class="ms-Button-label label-139"
+                id="id__100"
+              >
+                Create a new container
+              </span>
+            </span>
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`DatabaseContainerSection Snapshot Testing matches snapshot with disabled states 1`] = `
+<div
+  class="ms-Stack databaseContainerSection css-109"
+>
+  <label
+    class="subHeading"
+  >
+    Disabled Section
+  </label>
+  <div
+    class="ms-Stack flex-row css-110"
+  >
+    <div
+      class="ms-StackItem flex-fixed-width css-111"
+    >
+      <label
+        class="field-label "
+      >
+        Database
+        : 
+      </label>
+    </div>
+    <div
+      class="ms-StackItem flex-grow-col css-111"
+    >
+      <div
+        class="ms-Dropdown-container"
+      >
+        <div
+          aria-disabled="true"
+          aria-expanded="false"
+          aria-haspopup="listbox"
+          aria-label="Database"
+          aria-required="true"
+          class="ms-Dropdown is-disabled is-required dropdown-143"
+          data-is-focusable="false"
+          data-ktp-target="true"
+          id="Dropdown103"
+          role="combobox"
+          tabindex="-1"
+        >
+          <span
+            aria-invalid="false"
+            class="ms-Dropdown-title title-148"
+            id="Dropdown103-option"
+          >
+            Database 1
+          </span>
+          <span
+            class="ms-Dropdown-caretDownWrapper caretDownWrapper-145"
+          >
+            <i
+              aria-hidden="true"
+              class="ms-Dropdown-caretDown caretDown-147"
+              data-icon-name="ChevronDown"
+            >
+              
+            </i>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="ms-Stack flex-row css-110"
+  >
+    <div
+      class="ms-StackItem flex-fixed-width css-111"
+    >
+      <label
+        class="field-label "
+      >
+        Container
+        : 
+      </label>
+    </div>
+    <div
+      class="ms-StackItem flex-grow-col css-111"
+    >
+      <div
+        class="ms-Stack css-133"
+      >
+        <div
+          class="ms-Dropdown-container"
+        >
+          <div
+            aria-disabled="true"
+            aria-expanded="false"
+            aria-haspopup="listbox"
+            aria-label="Container"
+            aria-required="true"
+            class="ms-Dropdown is-disabled is-required dropdown-143"
+            data-is-focusable="false"
+            data-ktp-target="true"
+            id="Dropdown104"
+            role="combobox"
+            tabindex="-1"
+          >
+            <span
+              aria-invalid="false"
+              class="ms-Dropdown-title title-148"
+              id="Dropdown104-option"
+            >
+              Container 1
+            </span>
+            <span
+              class="ms-Dropdown-caretDownWrapper caretDownWrapper-145"
+            >
+              <i
+                aria-hidden="true"
+                class="ms-Dropdown-caretDown caretDown-147"
+                data-icon-name="ChevronDown"
+              >
+                
+              </i>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`DatabaseContainerSection Snapshot Testing matches snapshot with empty options 1`] = `
+<div
+  class="ms-Stack databaseContainerSection css-109"
+>
+  <label
+    class="subHeading"
+  >
+    Empty Options
+  </label>
+  <div
+    class="ms-Stack flex-row css-110"
+  >
+    <div
+      class="ms-StackItem flex-fixed-width css-111"
+    >
+      <label
+        class="field-label "
+      >
+        Database
+        : 
+      </label>
+    </div>
+    <div
+      class="ms-StackItem flex-grow-col css-111"
+    >
+      <div
+        class="ms-Dropdown-container"
+      >
+        <div
+          aria-disabled="false"
+          aria-expanded="false"
+          aria-haspopup="listbox"
+          aria-label="Database"
+          aria-required="true"
+          class="ms-Dropdown is-required dropdown-112"
+          data-is-focusable="true"
+          data-ktp-target="true"
+          id="Dropdown105"
+          role="combobox"
+          tabindex="0"
+        >
+          <span
+            aria-invalid="false"
+            class="ms-Dropdown-title ms-Dropdown-titleIsPlaceHolder title-113"
+            id="Dropdown105-option"
+          >
+            Select a database
+          </span>
+          <span
+            class="ms-Dropdown-caretDownWrapper caretDownWrapper-114"
+          >
+            <i
+              aria-hidden="true"
+              class="ms-Dropdown-caretDown caretDown-132"
+              data-icon-name="ChevronDown"
+            >
+              
+            </i>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="ms-Stack flex-row css-110"
+  >
+    <div
+      class="ms-StackItem flex-fixed-width css-111"
+    >
+      <label
+        class="field-label "
+      >
+        Container
+        : 
+      </label>
+    </div>
+    <div
+      class="ms-StackItem flex-grow-col css-111"
+    >
+      <div
+        class="ms-Stack css-133"
+      >
+        <div
+          class="ms-Dropdown-container"
+        >
+          <div
+            aria-disabled="false"
+            aria-expanded="false"
+            aria-haspopup="listbox"
+            aria-label="Container"
+            aria-required="true"
+            class="ms-Dropdown is-required dropdown-112"
+            data-is-focusable="true"
+            data-ktp-target="true"
+            id="Dropdown106"
+            role="combobox"
+            tabindex="0"
+          >
+            <span
+              aria-invalid="false"
+              class="ms-Dropdown-title ms-Dropdown-titleIsPlaceHolder title-113"
+              id="Dropdown106-option"
+            >
+              Select a container
+            </span>
+            <span
+              class="ms-Dropdown-caretDownWrapper caretDownWrapper-114"
+            >
+              <i
+                aria-hidden="true"
+                class="ms-Dropdown-caretDown caretDown-132"
+                data-icon-name="ChevronDown"
+              >
+                
+              </i>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`DatabaseContainerSection Snapshot Testing matches snapshot with minimal props 1`] = `
+<div
+  class="ms-Stack databaseContainerSection css-109"
+>
+  <label
+    class="subHeading"
+  >
+    Source Container
+  </label>
+  <div
+    class="ms-Stack flex-row css-110"
+  >
+    <div
+      class="ms-StackItem flex-fixed-width css-111"
+    >
+      <label
+        class="field-label "
+      >
+        Database
+        : 
+      </label>
+    </div>
+    <div
+      class="ms-StackItem flex-grow-col css-111"
+    >
+      <div
+        class="ms-Dropdown-container"
+      >
+        <div
+          aria-disabled="false"
+          aria-expanded="false"
+          aria-haspopup="listbox"
+          aria-label="Database"
+          aria-required="true"
+          class="ms-Dropdown is-required dropdown-112"
+          data-is-focusable="true"
+          data-ktp-target="true"
+          id="Dropdown96"
+          role="combobox"
+          tabindex="0"
+        >
+          <span
+            aria-invalid="false"
+            class="ms-Dropdown-title title-134"
+            id="Dropdown96-option"
+          >
+            Database 1
+          </span>
+          <span
+            class="ms-Dropdown-caretDownWrapper caretDownWrapper-114"
+          >
+            <i
+              aria-hidden="true"
+              class="ms-Dropdown-caretDown caretDown-132"
+              data-icon-name="ChevronDown"
+            >
+              
+            </i>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="ms-Stack flex-row css-110"
+  >
+    <div
+      class="ms-StackItem flex-fixed-width css-111"
+    >
+      <label
+        class="field-label "
+      >
+        Container
+        : 
+      </label>
+    </div>
+    <div
+      class="ms-StackItem flex-grow-col css-111"
+    >
+      <div
+        class="ms-Stack css-133"
+      >
+        <div
+          class="ms-Dropdown-container"
+        >
+          <div
+            aria-disabled="false"
+            aria-expanded="false"
+            aria-haspopup="listbox"
+            aria-label="Container"
+            aria-required="true"
+            class="ms-Dropdown is-required dropdown-112"
+            data-is-focusable="true"
+            data-ktp-target="true"
+            id="Dropdown97"
+            role="combobox"
+            tabindex="0"
+          >
+            <span
+              aria-invalid="false"
+              class="ms-Dropdown-title title-134"
+              id="Dropdown97-option"
+            >
+              Container 1
+            </span>
+            <span
+              class="ms-Dropdown-caretDownWrapper caretDownWrapper-114"
+            >
+              <i
+                aria-hidden="true"
+                class="ms-Dropdown-caretDown caretDown-132"
+                data-icon-name="ChevronDown"
+              >
+                
+              </i>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

@@ -32,6 +32,12 @@ module.exports = {
       extends: ["plugin:jest/recommended"],
       plugins: ["jest"],
     },
+    {
+      files: ["src/Explorer/ContainerCopy/**/*.{test,spec}.{ts,tsx}"],
+      rules: {
+        "@typescript-eslint/no-explicit-any": "off",
+      },
+    },
   ],
   rules: {
     "no-console": ["error", { allow: ["error", "warn", "dir"] }],

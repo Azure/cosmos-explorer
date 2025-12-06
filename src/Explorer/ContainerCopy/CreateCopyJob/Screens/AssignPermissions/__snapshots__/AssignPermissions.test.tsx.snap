@@ -1,0 +1,1301 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AssignPermissions Component Accordion Behavior should render accordion sections with proper status icons 1`] = `
+<div>
+  <div
+    class="ms-Stack assignPermissionsContainer css-109"
+  >
+    <span
+      class="css-110"
+    >
+      To copy data from the source to the destination container, ensure that the managed identity of the destination account has read access to the source account by completing the following steps.
+    </span>
+    <div
+      class="ms-Stack css-111"
+    >
+      <div
+        class="ms-Stack css-112"
+      >
+        <div
+          class="ms-Stack css-113"
+        >
+          <span
+            class="css-110"
+            style="font-weight: 600;"
+          >
+            Test Group
+          </span>
+          <span
+            class="css-114"
+          >
+            Test Description
+          </span>
+        </div>
+        <div
+          class="fui-Accordion permissionsAccordion"
+        >
+          <div
+            class="fui-AccordionItem"
+          >
+            <div
+              class="fui-AccordionHeader accordionHeader ___kex8dp0_1udlp87 f19n0e5 f1c21dwh f1s184ao ft85np5"
+            >
+              <button
+                aria-expanded="false"
+                class="fui-AccordionHeader__button ___ecb1fz0_z658t20 f1ewtqcl f1u2r49w f1ym3bx4 fk6fouc fkhj508 f1i3iumi f1gl81tg f1rmphuq f37px4s fgusgyc f10pi13n fly5x3f fre7gi1 f1358rze fqdk4by f1rvrf73 f5pgtk9 f22iagw f122n59 f1k6fduh figsok6 ftqa4ok f2hkw1w f8hki3x f1d2448m f1bjia2o ffh67wi f226i61 f13kzufm flujwa2 fsx75g8 f15bsgw9 f14e48fq f18yb2kv fd6o370 ffwy5si f3znvyf f57olzd f4stah7 f480a47 fs1por5"
+                type="button"
+              >
+                <span
+                  aria-hidden="true"
+                  class="fui-AccordionHeader__expandIcon ___7oynyr0_1pz5o7c f1l02sjl f22iagw f122n59 f106mvju f1pp30po f1vdfbxk"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="___12fm75w_v8ls9a0 f1w7gpdv fez10in fg4l7m0"
+                    fill="currentColor"
+                    height="1em"
+                    style="transform: rotate(0deg);"
+                    viewBox="0 0 20 20"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M7.65 4.15c.2-.2.5-.2.7 0l5.49 5.46c.21.22.21.57 0 .78l-5.49 5.46a.5.5 0 0 1-.7-.7L12.8 10 7.65 4.85a.5.5 0 0 1 0-.7Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </span>
+                <span
+                  class="accordionHeaderText css-110"
+                >
+                  Completed Section
+                </span>
+                <div
+                  class="ms-Image statusIcon root-115"
+                  style="width: 20px; height: 20px;"
+                >
+                  <img
+                    alt="Checkmark icon"
+                    class="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-116"
+                    src="checkmark-icon"
+                  />
+                </div>
+              </button>
+            </div>
+          </div>
+          <div
+            class="fui-AccordionItem"
+          >
+            <div
+              class="fui-AccordionHeader accordionHeader ___kex8dp0_1udlp87 f19n0e5 f1c21dwh f1s184ao ft85np5"
+            >
+              <button
+                aria-expanded="true"
+                class="fui-AccordionHeader__button ___ecb1fz0_z658t20 f1ewtqcl f1u2r49w f1ym3bx4 fk6fouc fkhj508 f1i3iumi f1gl81tg f1rmphuq f37px4s fgusgyc f10pi13n fly5x3f fre7gi1 f1358rze fqdk4by f1rvrf73 f5pgtk9 f22iagw f122n59 f1k6fduh figsok6 ftqa4ok f2hkw1w f8hki3x f1d2448m f1bjia2o ffh67wi f226i61 f13kzufm flujwa2 fsx75g8 f15bsgw9 f14e48fq f18yb2kv fd6o370 ffwy5si f3znvyf f57olzd f4stah7 f480a47 fs1por5"
+                type="button"
+              >
+                <span
+                  aria-hidden="true"
+                  class="fui-AccordionHeader__expandIcon ___7oynyr0_1pz5o7c f1l02sjl f22iagw f122n59 f106mvju f1pp30po f1vdfbxk"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="___12fm75w_v8ls9a0 f1w7gpdv fez10in fg4l7m0"
+                    fill="currentColor"
+                    height="1em"
+                    style="transform: rotate(90deg);"
+                    viewBox="0 0 20 20"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M7.65 4.15c.2-.2.5-.2.7 0l5.49 5.46c.21.22.21.57 0 .78l-5.49 5.46a.5.5 0 0 1-.7-.7L12.8 10 7.65 4.85a.5.5 0 0 1 0-.7Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </span>
+                <span
+                  class="accordionHeaderText css-110"
+                >
+                  Incomplete Section
+                </span>
+                <div
+                  class="ms-Image statusIcon root-115"
+                  style="width: 24px; height: 24px;"
+                >
+                  <img
+                    alt="Warning icon"
+                    class="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-116"
+                    src="warning-icon"
+                  />
+                </div>
+              </button>
+            </div>
+            <div
+              aria-disabled="false"
+              class="fui-AccordionPanel accordionPanel ___1rufncu_1hx1scr f1axvtxu"
+            >
+              <div>
+                Incomplete Component
+              </div>
+            </div>
+          </div>
+          <div
+            class="fui-AccordionItem"
+          >
+            <div
+              class="fui-AccordionHeader accordionHeader ___lyghz50_53x5ri0 f1s2aq7o f1c21dwh f1s184ao ft85np5 fwrgwhw"
+            >
+              <button
+                aria-expanded="false"
+                class="fui-AccordionHeader__button ___1941mf5_juryvh0 f1ewtqcl f1u2r49w f1ym3bx4 fk6fouc fkhj508 f1i3iumi f1gl81tg f1rmphuq f37px4s fgusgyc f10pi13n fly5x3f fre7gi1 f1358rze fqdk4by f1rvrf73 f5pgtk9 f22iagw f122n59 fdrzuqr figsok6 ftqa4ok f2hkw1w f8hki3x f1d2448m f1bjia2o ffh67wi f226i61 f13kzufm flujwa2 fsx75g8 f15bsgw9 f14e48fq f18yb2kv fd6o370 ffwy5si f3znvyf f57olzd f4stah7 f480a47 fs1por5"
+                disabled=""
+                type="button"
+              >
+                <span
+                  aria-hidden="true"
+                  class="fui-AccordionHeader__expandIcon ___7oynyr0_1pz5o7c f1l02sjl f22iagw f122n59 f106mvju f1pp30po f1vdfbxk"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="___12fm75w_v8ls9a0 f1w7gpdv fez10in fg4l7m0"
+                    fill="currentColor"
+                    height="1em"
+                    style="transform: rotate(0deg);"
+                    viewBox="0 0 20 20"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M7.65 4.15c.2-.2.5-.2.7 0l5.49 5.46c.21.22.21.57 0 .78l-5.49 5.46a.5.5 0 0 1-.7-.7L12.8 10 7.65 4.85a.5.5 0 0 1 0-.7Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </span>
+                <span
+                  class="accordionHeaderText css-110"
+                >
+                  Disabled Section
+                </span>
+                <div
+                  class="ms-Image statusIcon root-115"
+                  style="width: 24px; height: 24px;"
+                >
+                  <img
+                    alt="Warning icon"
+                    class="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-116"
+                    src="warning-icon"
+                  />
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`AssignPermissions Component Edge Cases should calculate correct indent levels for offline migration 1`] = `
+<div>
+  <div
+    class="ms-Stack assignPermissionsContainer css-109"
+  >
+    <span
+      class="css-110"
+    >
+      To copy data from the source to the destination container, ensure that the managed identity of the destination account has read access to the source account by completing the following steps.
+    </span>
+    <div
+      class="ms-Stack css-111"
+    >
+      <div
+        class="ms-Stack css-112"
+      >
+        <div
+          class="ms-Stack css-113"
+        >
+          <span
+            class="css-110"
+            style="font-weight: 600;"
+          >
+            Test Group
+          </span>
+          <span
+            class="css-114"
+          >
+            Test Description
+          </span>
+        </div>
+        <div
+          class="fui-Accordion permissionsAccordion"
+        >
+          <div
+            class="fui-AccordionItem"
+          >
+            <div
+              class="fui-AccordionHeader accordionHeader ___kex8dp0_1udlp87 f19n0e5 f1c21dwh f1s184ao ft85np5"
+            >
+              <button
+                aria-expanded="false"
+                class="fui-AccordionHeader__button ___ecb1fz0_z658t20 f1ewtqcl f1u2r49w f1ym3bx4 fk6fouc fkhj508 f1i3iumi f1gl81tg f1rmphuq f37px4s fgusgyc f10pi13n fly5x3f fre7gi1 f1358rze fqdk4by f1rvrf73 f5pgtk9 f22iagw f122n59 f1k6fduh figsok6 ftqa4ok f2hkw1w f8hki3x f1d2448m f1bjia2o ffh67wi f226i61 f13kzufm flujwa2 fsx75g8 f15bsgw9 f14e48fq f18yb2kv fd6o370 ffwy5si f3znvyf f57olzd f4stah7 f480a47 fs1por5"
+                type="button"
+              >
+                <span
+                  aria-hidden="true"
+                  class="fui-AccordionHeader__expandIcon ___7oynyr0_1pz5o7c f1l02sjl f22iagw f122n59 f106mvju f1pp30po f1vdfbxk"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="___12fm75w_v8ls9a0 f1w7gpdv fez10in fg4l7m0"
+                    fill="currentColor"
+                    height="1em"
+                    style="transform: rotate(0deg);"
+                    viewBox="0 0 20 20"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M7.65 4.15c.2-.2.5-.2.7 0l5.49 5.46c.21.22.21.57 0 .78l-5.49 5.46a.5.5 0 0 1-.7-.7L12.8 10 7.65 4.85a.5.5 0 0 1 0-.7Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </span>
+                <span
+                  class="accordionHeaderText css-110"
+                >
+                  Completed Section
+                </span>
+                <div
+                  class="ms-Image statusIcon root-115"
+                  style="width: 20px; height: 20px;"
+                >
+                  <img
+                    alt="Checkmark icon"
+                    class="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-116"
+                    src="checkmark-icon"
+                  />
+                </div>
+              </button>
+            </div>
+          </div>
+          <div
+            class="fui-AccordionItem"
+          >
+            <div
+              class="fui-AccordionHeader accordionHeader ___kex8dp0_1udlp87 f19n0e5 f1c21dwh f1s184ao ft85np5"
+            >
+              <button
+                aria-expanded="true"
+                class="fui-AccordionHeader__button ___ecb1fz0_z658t20 f1ewtqcl f1u2r49w f1ym3bx4 fk6fouc fkhj508 f1i3iumi f1gl81tg f1rmphuq f37px4s fgusgyc f10pi13n fly5x3f fre7gi1 f1358rze fqdk4by f1rvrf73 f5pgtk9 f22iagw f122n59 f1k6fduh figsok6 ftqa4ok f2hkw1w f8hki3x f1d2448m f1bjia2o ffh67wi f226i61 f13kzufm flujwa2 fsx75g8 f15bsgw9 f14e48fq f18yb2kv fd6o370 ffwy5si f3znvyf f57olzd f4stah7 f480a47 fs1por5"
+                type="button"
+              >
+                <span
+                  aria-hidden="true"
+                  class="fui-AccordionHeader__expandIcon ___7oynyr0_1pz5o7c f1l02sjl f22iagw f122n59 f106mvju f1pp30po f1vdfbxk"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="___12fm75w_v8ls9a0 f1w7gpdv fez10in fg4l7m0"
+                    fill="currentColor"
+                    height="1em"
+                    style="transform: rotate(90deg);"
+                    viewBox="0 0 20 20"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M7.65 4.15c.2-.2.5-.2.7 0l5.49 5.46c.21.22.21.57 0 .78l-5.49 5.46a.5.5 0 0 1-.7-.7L12.8 10 7.65 4.85a.5.5 0 0 1 0-.7Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </span>
+                <span
+                  class="accordionHeaderText css-110"
+                >
+                  Incomplete Section
+                </span>
+                <div
+                  class="ms-Image statusIcon root-115"
+                  style="width: 24px; height: 24px;"
+                >
+                  <img
+                    alt="Warning icon"
+                    class="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-116"
+                    src="warning-icon"
+                  />
+                </div>
+              </button>
+            </div>
+            <div
+              aria-disabled="false"
+              class="fui-AccordionPanel accordionPanel ___1rufncu_1hx1scr f1axvtxu"
+            >
+              <div>
+                Incomplete Component
+              </div>
+            </div>
+          </div>
+          <div
+            class="fui-AccordionItem"
+          >
+            <div
+              class="fui-AccordionHeader accordionHeader ___lyghz50_53x5ri0 f1s2aq7o f1c21dwh f1s184ao ft85np5 fwrgwhw"
+            >
+              <button
+                aria-expanded="false"
+                class="fui-AccordionHeader__button ___1941mf5_juryvh0 f1ewtqcl f1u2r49w f1ym3bx4 fk6fouc fkhj508 f1i3iumi f1gl81tg f1rmphuq f37px4s fgusgyc f10pi13n fly5x3f fre7gi1 f1358rze fqdk4by f1rvrf73 f5pgtk9 f22iagw f122n59 fdrzuqr figsok6 ftqa4ok f2hkw1w f8hki3x f1d2448m f1bjia2o ffh67wi f226i61 f13kzufm flujwa2 fsx75g8 f15bsgw9 f14e48fq f18yb2kv fd6o370 ffwy5si f3znvyf f57olzd f4stah7 f480a47 fs1por5"
+                disabled=""
+                type="button"
+              >
+                <span
+                  aria-hidden="true"
+                  class="fui-AccordionHeader__expandIcon ___7oynyr0_1pz5o7c f1l02sjl f22iagw f122n59 f106mvju f1pp30po f1vdfbxk"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="___12fm75w_v8ls9a0 f1w7gpdv fez10in fg4l7m0"
+                    fill="currentColor"
+                    height="1em"
+                    style="transform: rotate(0deg);"
+                    viewBox="0 0 20 20"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M7.65 4.15c.2-.2.5-.2.7 0l5.49 5.46c.21.22.21.57 0 .78l-5.49 5.46a.5.5 0 0 1-.7-.7L12.8 10 7.65 4.85a.5.5 0 0 1 0-.7Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </span>
+                <span
+                  class="accordionHeaderText css-110"
+                >
+                  Disabled Section
+                </span>
+                <div
+                  class="ms-Image statusIcon root-115"
+                  style="width: 24px; height: 24px;"
+                >
+                  <img
+                    alt="Warning icon"
+                    class="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-116"
+                    src="warning-icon"
+                  />
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`AssignPermissions Component Edge Cases should calculate correct indent levels for online migration 1`] = `
+<div>
+  <div
+    class="ms-Stack assignPermissionsContainer css-109"
+  >
+    <span
+      class="css-110"
+    >
+      Follow the steps below to enable online copy on your "Source Account" account.
+    </span>
+    <div
+      class="ms-Stack css-111"
+    >
+      <div
+        class="ms-Stack css-112"
+      >
+        <div
+          class="ms-Stack css-113"
+        >
+          <span
+            class="css-110"
+            style="font-weight: 600;"
+          >
+            Test Group
+          </span>
+          <span
+            class="css-114"
+          >
+            Test Description
+          </span>
+        </div>
+        <div
+          class="fui-Accordion permissionsAccordion"
+        >
+          <div
+            class="fui-AccordionItem"
+          >
+            <div
+              class="fui-AccordionHeader accordionHeader ___kex8dp0_1udlp87 f19n0e5 f1c21dwh f1s184ao ft85np5"
+            >
+              <button
+                aria-expanded="false"
+                class="fui-AccordionHeader__button ___ecb1fz0_z658t20 f1ewtqcl f1u2r49w f1ym3bx4 fk6fouc fkhj508 f1i3iumi f1gl81tg f1rmphuq f37px4s fgusgyc f10pi13n fly5x3f fre7gi1 f1358rze fqdk4by f1rvrf73 f5pgtk9 f22iagw f122n59 f1k6fduh figsok6 ftqa4ok f2hkw1w f8hki3x f1d2448m f1bjia2o ffh67wi f226i61 f13kzufm flujwa2 fsx75g8 f15bsgw9 f14e48fq f18yb2kv fd6o370 ffwy5si f3znvyf f57olzd f4stah7 f480a47 fs1por5"
+                type="button"
+              >
+                <span
+                  aria-hidden="true"
+                  class="fui-AccordionHeader__expandIcon ___7oynyr0_1pz5o7c f1l02sjl f22iagw f122n59 f106mvju f1pp30po f1vdfbxk"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="___12fm75w_v8ls9a0 f1w7gpdv fez10in fg4l7m0"
+                    fill="currentColor"
+                    height="1em"
+                    style="transform: rotate(0deg);"
+                    viewBox="0 0 20 20"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M7.65 4.15c.2-.2.5-.2.7 0l5.49 5.46c.21.22.21.57 0 .78l-5.49 5.46a.5.5 0 0 1-.7-.7L12.8 10 7.65 4.85a.5.5 0 0 1 0-.7Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </span>
+                <span
+                  class="accordionHeaderText css-110"
+                >
+                  Completed Section
+                </span>
+                <div
+                  class="ms-Image statusIcon root-115"
+                  style="width: 20px; height: 20px;"
+                >
+                  <img
+                    alt="Checkmark icon"
+                    class="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-116"
+                    src="checkmark-icon"
+                  />
+                </div>
+              </button>
+            </div>
+          </div>
+          <div
+            class="fui-AccordionItem"
+          >
+            <div
+              class="fui-AccordionHeader accordionHeader ___kex8dp0_1udlp87 f19n0e5 f1c21dwh f1s184ao ft85np5"
+            >
+              <button
+                aria-expanded="true"
+                class="fui-AccordionHeader__button ___ecb1fz0_z658t20 f1ewtqcl f1u2r49w f1ym3bx4 fk6fouc fkhj508 f1i3iumi f1gl81tg f1rmphuq f37px4s fgusgyc f10pi13n fly5x3f fre7gi1 f1358rze fqdk4by f1rvrf73 f5pgtk9 f22iagw f122n59 f1k6fduh figsok6 ftqa4ok f2hkw1w f8hki3x f1d2448m f1bjia2o ffh67wi f226i61 f13kzufm flujwa2 fsx75g8 f15bsgw9 f14e48fq f18yb2kv fd6o370 ffwy5si f3znvyf f57olzd f4stah7 f480a47 fs1por5"
+                type="button"
+              >
+                <span
+                  aria-hidden="true"
+                  class="fui-AccordionHeader__expandIcon ___7oynyr0_1pz5o7c f1l02sjl f22iagw f122n59 f106mvju f1pp30po f1vdfbxk"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="___12fm75w_v8ls9a0 f1w7gpdv fez10in fg4l7m0"
+                    fill="currentColor"
+                    height="1em"
+                    style="transform: rotate(90deg);"
+                    viewBox="0 0 20 20"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M7.65 4.15c.2-.2.5-.2.7 0l5.49 5.46c.21.22.21.57 0 .78l-5.49 5.46a.5.5 0 0 1-.7-.7L12.8 10 7.65 4.85a.5.5 0 0 1 0-.7Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </span>
+                <span
+                  class="accordionHeaderText css-110"
+                >
+                  Incomplete Section
+                </span>
+                <div
+                  class="ms-Image statusIcon root-115"
+                  style="width: 24px; height: 24px;"
+                >
+                  <img
+                    alt="Warning icon"
+                    class="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-116"
+                    src="warning-icon"
+                  />
+                </div>
+              </button>
+            </div>
+            <div
+              aria-disabled="false"
+              class="fui-AccordionPanel accordionPanel ___1rufncu_1hx1scr f1axvtxu"
+            >
+              <div>
+                Incomplete Component
+              </div>
+            </div>
+          </div>
+          <div
+            class="fui-AccordionItem"
+          >
+            <div
+              class="fui-AccordionHeader accordionHeader ___lyghz50_53x5ri0 f1s2aq7o f1c21dwh f1s184ao ft85np5 fwrgwhw"
+            >
+              <button
+                aria-expanded="false"
+                class="fui-AccordionHeader__button ___1941mf5_juryvh0 f1ewtqcl f1u2r49w f1ym3bx4 fk6fouc fkhj508 f1i3iumi f1gl81tg f1rmphuq f37px4s fgusgyc f10pi13n fly5x3f fre7gi1 f1358rze fqdk4by f1rvrf73 f5pgtk9 f22iagw f122n59 fdrzuqr figsok6 ftqa4ok f2hkw1w f8hki3x f1d2448m f1bjia2o ffh67wi f226i61 f13kzufm flujwa2 fsx75g8 f15bsgw9 f14e48fq f18yb2kv fd6o370 ffwy5si f3znvyf f57olzd f4stah7 f480a47 fs1por5"
+                disabled=""
+                type="button"
+              >
+                <span
+                  aria-hidden="true"
+                  class="fui-AccordionHeader__expandIcon ___7oynyr0_1pz5o7c f1l02sjl f22iagw f122n59 f106mvju f1pp30po f1vdfbxk"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="___12fm75w_v8ls9a0 f1w7gpdv fez10in fg4l7m0"
+                    fill="currentColor"
+                    height="1em"
+                    style="transform: rotate(0deg);"
+                    viewBox="0 0 20 20"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M7.65 4.15c.2-.2.5-.2.7 0l5.49 5.46c.21.22.21.57 0 .78l-5.49 5.46a.5.5 0 0 1-.7-.7L12.8 10 7.65 4.85a.5.5 0 0 1 0-.7Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </span>
+                <span
+                  class="accordionHeaderText css-110"
+                >
+                  Disabled Section
+                </span>
+                <div
+                  class="ms-Image statusIcon root-115"
+                  style="width: 24px; height: 24px;"
+                >
+                  <img
+                    alt="Warning icon"
+                    class="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-116"
+                    src="warning-icon"
+                  />
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`AssignPermissions Component Edge Cases should handle missing account names 1`] = `
+<div>
+  <div
+    class="ms-Stack assignPermissionsContainer css-109"
+  >
+    <span
+      class="css-110"
+    >
+      To copy data from the source to the destination container, ensure that the managed identity of the destination account has read access to the source account by completing the following steps.
+    </span>
+    <div
+      class="ms-Stack css-111"
+    >
+      <div
+        class="ms-Stack css-112"
+      >
+        <div
+          class="ms-Stack css-113"
+        >
+          <span
+            class="css-110"
+            style="font-weight: 600;"
+          >
+            Test Group
+          </span>
+          <span
+            class="css-114"
+          >
+            Test Description
+          </span>
+        </div>
+        <div
+          class="fui-Accordion permissionsAccordion"
+        >
+          <div
+            class="fui-AccordionItem"
+          >
+            <div
+              class="fui-AccordionHeader accordionHeader ___kex8dp0_1udlp87 f19n0e5 f1c21dwh f1s184ao ft85np5"
+            >
+              <button
+                aria-expanded="false"
+                class="fui-AccordionHeader__button ___ecb1fz0_z658t20 f1ewtqcl f1u2r49w f1ym3bx4 fk6fouc fkhj508 f1i3iumi f1gl81tg f1rmphuq f37px4s fgusgyc f10pi13n fly5x3f fre7gi1 f1358rze fqdk4by f1rvrf73 f5pgtk9 f22iagw f122n59 f1k6fduh figsok6 ftqa4ok f2hkw1w f8hki3x f1d2448m f1bjia2o ffh67wi f226i61 f13kzufm flujwa2 fsx75g8 f15bsgw9 f14e48fq f18yb2kv fd6o370 ffwy5si f3znvyf f57olzd f4stah7 f480a47 fs1por5"
+                type="button"
+              >
+                <span
+                  aria-hidden="true"
+                  class="fui-AccordionHeader__expandIcon ___7oynyr0_1pz5o7c f1l02sjl f22iagw f122n59 f106mvju f1pp30po f1vdfbxk"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="___12fm75w_v8ls9a0 f1w7gpdv fez10in fg4l7m0"
+                    fill="currentColor"
+                    height="1em"
+                    style="transform: rotate(0deg);"
+                    viewBox="0 0 20 20"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M7.65 4.15c.2-.2.5-.2.7 0l5.49 5.46c.21.22.21.57 0 .78l-5.49 5.46a.5.5 0 0 1-.7-.7L12.8 10 7.65 4.85a.5.5 0 0 1 0-.7Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </span>
+                <span
+                  class="accordionHeaderText css-110"
+                >
+                  Completed Section
+                </span>
+                <div
+                  class="ms-Image statusIcon root-115"
+                  style="width: 20px; height: 20px;"
+                >
+                  <img
+                    alt="Checkmark icon"
+                    class="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-116"
+                    src="checkmark-icon"
+                  />
+                </div>
+              </button>
+            </div>
+          </div>
+          <div
+            class="fui-AccordionItem"
+          >
+            <div
+              class="fui-AccordionHeader accordionHeader ___kex8dp0_1udlp87 f19n0e5 f1c21dwh f1s184ao ft85np5"
+            >
+              <button
+                aria-expanded="true"
+                class="fui-AccordionHeader__button ___ecb1fz0_z658t20 f1ewtqcl f1u2r49w f1ym3bx4 fk6fouc fkhj508 f1i3iumi f1gl81tg f1rmphuq f37px4s fgusgyc f10pi13n fly5x3f fre7gi1 f1358rze fqdk4by f1rvrf73 f5pgtk9 f22iagw f122n59 f1k6fduh figsok6 ftqa4ok f2hkw1w f8hki3x f1d2448m f1bjia2o ffh67wi f226i61 f13kzufm flujwa2 fsx75g8 f15bsgw9 f14e48fq f18yb2kv fd6o370 ffwy5si f3znvyf f57olzd f4stah7 f480a47 fs1por5"
+                type="button"
+              >
+                <span
+                  aria-hidden="true"
+                  class="fui-AccordionHeader__expandIcon ___7oynyr0_1pz5o7c f1l02sjl f22iagw f122n59 f106mvju f1pp30po f1vdfbxk"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="___12fm75w_v8ls9a0 f1w7gpdv fez10in fg4l7m0"
+                    fill="currentColor"
+                    height="1em"
+                    style="transform: rotate(90deg);"
+                    viewBox="0 0 20 20"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M7.65 4.15c.2-.2.5-.2.7 0l5.49 5.46c.21.22.21.57 0 .78l-5.49 5.46a.5.5 0 0 1-.7-.7L12.8 10 7.65 4.85a.5.5 0 0 1 0-.7Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </span>
+                <span
+                  class="accordionHeaderText css-110"
+                >
+                  Incomplete Section
+                </span>
+                <div
+                  class="ms-Image statusIcon root-115"
+                  style="width: 24px; height: 24px;"
+                >
+                  <img
+                    alt="Warning icon"
+                    class="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-116"
+                    src="warning-icon"
+                  />
+                </div>
+              </button>
+            </div>
+            <div
+              aria-disabled="false"
+              class="fui-AccordionPanel accordionPanel ___1rufncu_1hx1scr f1axvtxu"
+            >
+              <div>
+                Incomplete Component
+              </div>
+            </div>
+          </div>
+          <div
+            class="fui-AccordionItem"
+          >
+            <div
+              class="fui-AccordionHeader accordionHeader ___lyghz50_53x5ri0 f1s2aq7o f1c21dwh f1s184ao ft85np5 fwrgwhw"
+            >
+              <button
+                aria-expanded="false"
+                class="fui-AccordionHeader__button ___1941mf5_juryvh0 f1ewtqcl f1u2r49w f1ym3bx4 fk6fouc fkhj508 f1i3iumi f1gl81tg f1rmphuq f37px4s fgusgyc f10pi13n fly5x3f fre7gi1 f1358rze fqdk4by f1rvrf73 f5pgtk9 f22iagw f122n59 fdrzuqr figsok6 ftqa4ok f2hkw1w f8hki3x f1d2448m f1bjia2o ffh67wi f226i61 f13kzufm flujwa2 fsx75g8 f15bsgw9 f14e48fq f18yb2kv fd6o370 ffwy5si f3znvyf f57olzd f4stah7 f480a47 fs1por5"
+                disabled=""
+                type="button"
+              >
+                <span
+                  aria-hidden="true"
+                  class="fui-AccordionHeader__expandIcon ___7oynyr0_1pz5o7c f1l02sjl f22iagw f122n59 f106mvju f1pp30po f1vdfbxk"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="___12fm75w_v8ls9a0 f1w7gpdv fez10in fg4l7m0"
+                    fill="currentColor"
+                    height="1em"
+                    style="transform: rotate(0deg);"
+                    viewBox="0 0 20 20"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M7.65 4.15c.2-.2.5-.2.7 0l5.49 5.46c.21.22.21.57 0 .78l-5.49 5.46a.5.5 0 0 1-.7-.7L12.8 10 7.65 4.85a.5.5 0 0 1 0-.7Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </span>
+                <span
+                  class="accordionHeaderText css-110"
+                >
+                  Disabled Section
+                </span>
+                <div
+                  class="ms-Image statusIcon root-115"
+                  style="width: 24px; height: 24px;"
+                >
+                  <img
+                    alt="Warning icon"
+                    class="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-116"
+                    src="warning-icon"
+                  />
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`AssignPermissions Component Permission Groups should render multiple permission groups 1`] = `
+<div>
+  <div
+    class="ms-Stack assignPermissionsContainer css-109"
+  >
+    <span
+      class="css-110"
+    >
+      Follow the steps below to enable online copy on your "Source Account" account.
+    </span>
+    <div
+      class="ms-Stack css-111"
+    >
+      <div
+        class="ms-Stack css-112"
+      >
+        <div
+          class="ms-Stack css-113"
+        >
+          <span
+            class="css-110"
+            style="font-weight: 600;"
+          >
+            Cross Account Configuration
+          </span>
+          <span
+            class="css-114"
+          >
+            Configure permissions for cross-account copy
+          </span>
+        </div>
+        <div
+          class="fui-Accordion permissionsAccordion"
+        >
+          <div
+            class="fui-AccordionItem"
+          >
+            <div
+              class="fui-AccordionHeader accordionHeader ___kex8dp0_1udlp87 f19n0e5 f1c21dwh f1s184ao ft85np5"
+            >
+              <button
+                aria-expanded="false"
+                class="fui-AccordionHeader__button ___ecb1fz0_z658t20 f1ewtqcl f1u2r49w f1ym3bx4 fk6fouc fkhj508 f1i3iumi f1gl81tg f1rmphuq f37px4s fgusgyc f10pi13n fly5x3f fre7gi1 f1358rze fqdk4by f1rvrf73 f5pgtk9 f22iagw f122n59 f1k6fduh figsok6 ftqa4ok f2hkw1w f8hki3x f1d2448m f1bjia2o ffh67wi f226i61 f13kzufm flujwa2 fsx75g8 f15bsgw9 f14e48fq f18yb2kv fd6o370 ffwy5si f3znvyf f57olzd f4stah7 f480a47 fs1por5"
+                type="button"
+              >
+                <span
+                  aria-hidden="true"
+                  class="fui-AccordionHeader__expandIcon ___7oynyr0_1pz5o7c f1l02sjl f22iagw f122n59 f106mvju f1pp30po f1vdfbxk"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="___12fm75w_v8ls9a0 f1w7gpdv fez10in fg4l7m0"
+                    fill="currentColor"
+                    height="1em"
+                    style="transform: rotate(0deg);"
+                    viewBox="0 0 20 20"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M7.65 4.15c.2-.2.5-.2.7 0l5.49 5.46c.21.22.21.57 0 .78l-5.49 5.46a.5.5 0 0 1-.7-.7L12.8 10 7.65 4.85a.5.5 0 0 1 0-.7Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </span>
+                <span
+                  class="accordionHeaderText css-110"
+                >
+                  Add Managed Identity
+                </span>
+                <div
+                  class="ms-Image statusIcon root-115"
+                  style="width: 20px; height: 20px;"
+                >
+                  <img
+                    alt="Checkmark icon"
+                    class="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-116"
+                    src="checkmark-icon"
+                  />
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ms-Stack css-112"
+      >
+        <div
+          class="ms-Stack css-113"
+        >
+          <span
+            class="css-110"
+            style="font-weight: 600;"
+          >
+            Online Configuration
+          </span>
+          <span
+            class="css-114"
+          >
+            Configure settings for online migration
+          </span>
+        </div>
+        <div
+          class="fui-Accordion permissionsAccordion"
+        >
+          <div
+            class="fui-AccordionItem"
+          >
+            <div
+              class="fui-AccordionHeader accordionHeader ___kex8dp0_1udlp87 f19n0e5 f1c21dwh f1s184ao ft85np5"
+            >
+              <button
+                aria-expanded="true"
+                class="fui-AccordionHeader__button ___ecb1fz0_z658t20 f1ewtqcl f1u2r49w f1ym3bx4 fk6fouc fkhj508 f1i3iumi f1gl81tg f1rmphuq f37px4s fgusgyc f10pi13n fly5x3f fre7gi1 f1358rze fqdk4by f1rvrf73 f5pgtk9 f22iagw f122n59 f1k6fduh figsok6 ftqa4ok f2hkw1w f8hki3x f1d2448m f1bjia2o ffh67wi f226i61 f13kzufm flujwa2 fsx75g8 f15bsgw9 f14e48fq f18yb2kv fd6o370 ffwy5si f3znvyf f57olzd f4stah7 f480a47 fs1por5"
+                type="button"
+              >
+                <span
+                  aria-hidden="true"
+                  class="fui-AccordionHeader__expandIcon ___7oynyr0_1pz5o7c f1l02sjl f22iagw f122n59 f106mvju f1pp30po f1vdfbxk"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="___12fm75w_v8ls9a0 f1w7gpdv fez10in fg4l7m0"
+                    fill="currentColor"
+                    height="1em"
+                    style="transform: rotate(90deg);"
+                    viewBox="0 0 20 20"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M7.65 4.15c.2-.2.5-.2.7 0l5.49 5.46c.21.22.21.57 0 .78l-5.49 5.46a.5.5 0 0 1-.7-.7L12.8 10 7.65 4.85a.5.5 0 0 1 0-.7Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </span>
+                <span
+                  class="accordionHeaderText css-110"
+                >
+                  Online Copy Enabled
+                </span>
+                <div
+                  class="ms-Image statusIcon root-115"
+                  style="width: 24px; height: 24px;"
+                >
+                  <img
+                    alt="Warning icon"
+                    class="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-116"
+                    src="warning-icon"
+                  />
+                </div>
+              </button>
+            </div>
+            <div
+              aria-disabled="false"
+              class="fui-AccordionPanel accordionPanel ___1rufncu_1hx1scr f1axvtxu"
+            >
+              <div
+                data-testid="online-copy-enabled"
+              >
+                Online Copy Enabled Component
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`AssignPermissions Component Permission Groups should render online migration specific groups 1`] = `
+<div>
+  <div
+    class="ms-Stack assignPermissionsContainer css-109"
+  >
+    <span
+      class="css-110"
+    >
+      Follow the steps below to enable online copy on your "Source Account" account.
+    </span>
+    <div
+      class="ms-Stack css-111"
+    >
+      <div
+        class="ms-Stack css-112"
+      >
+        <div
+          class="ms-Stack css-113"
+        >
+          <span
+            class="css-110"
+            style="font-weight: 600;"
+          >
+            Online Configuration
+          </span>
+          <span
+            class="css-114"
+          >
+            Configure settings for online migration
+          </span>
+        </div>
+        <div
+          class="fui-Accordion permissionsAccordion"
+        >
+          <div
+            class="fui-AccordionItem"
+          >
+            <div
+              class="fui-AccordionHeader accordionHeader ___kex8dp0_1udlp87 f19n0e5 f1c21dwh f1s184ao ft85np5"
+            >
+              <button
+                aria-expanded="false"
+                class="fui-AccordionHeader__button ___ecb1fz0_z658t20 f1ewtqcl f1u2r49w f1ym3bx4 fk6fouc fkhj508 f1i3iumi f1gl81tg f1rmphuq f37px4s fgusgyc f10pi13n fly5x3f fre7gi1 f1358rze fqdk4by f1rvrf73 f5pgtk9 f22iagw f122n59 f1k6fduh figsok6 ftqa4ok f2hkw1w f8hki3x f1d2448m f1bjia2o ffh67wi f226i61 f13kzufm flujwa2 fsx75g8 f15bsgw9 f14e48fq f18yb2kv fd6o370 ffwy5si f3znvyf f57olzd f4stah7 f480a47 fs1por5"
+                type="button"
+              >
+                <span
+                  aria-hidden="true"
+                  class="fui-AccordionHeader__expandIcon ___7oynyr0_1pz5o7c f1l02sjl f22iagw f122n59 f106mvju f1pp30po f1vdfbxk"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="___12fm75w_v8ls9a0 f1w7gpdv fez10in fg4l7m0"
+                    fill="currentColor"
+                    height="1em"
+                    style="transform: rotate(0deg);"
+                    viewBox="0 0 20 20"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M7.65 4.15c.2-.2.5-.2.7 0l5.49 5.46c.21.22.21.57 0 .78l-5.49 5.46a.5.5 0 0 1-.7-.7L12.8 10 7.65 4.85a.5.5 0 0 1 0-.7Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </span>
+                <span
+                  class="accordionHeaderText css-110"
+                >
+                  Point In Time Restore
+                </span>
+                <div
+                  class="ms-Image statusIcon root-115"
+                  style="width: 20px; height: 20px;"
+                >
+                  <img
+                    alt="Checkmark icon"
+                    class="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-116"
+                    src="checkmark-icon"
+                  />
+                </div>
+              </button>
+            </div>
+          </div>
+          <div
+            class="fui-AccordionItem"
+          >
+            <div
+              class="fui-AccordionHeader accordionHeader ___kex8dp0_1udlp87 f19n0e5 f1c21dwh f1s184ao ft85np5"
+            >
+              <button
+                aria-expanded="true"
+                class="fui-AccordionHeader__button ___ecb1fz0_z658t20 f1ewtqcl f1u2r49w f1ym3bx4 fk6fouc fkhj508 f1i3iumi f1gl81tg f1rmphuq f37px4s fgusgyc f10pi13n fly5x3f fre7gi1 f1358rze fqdk4by f1rvrf73 f5pgtk9 f22iagw f122n59 f1k6fduh figsok6 ftqa4ok f2hkw1w f8hki3x f1d2448m f1bjia2o ffh67wi f226i61 f13kzufm flujwa2 fsx75g8 f15bsgw9 f14e48fq f18yb2kv fd6o370 ffwy5si f3znvyf f57olzd f4stah7 f480a47 fs1por5"
+                type="button"
+              >
+                <span
+                  aria-hidden="true"
+                  class="fui-AccordionHeader__expandIcon ___7oynyr0_1pz5o7c f1l02sjl f22iagw f122n59 f106mvju f1pp30po f1vdfbxk"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="___12fm75w_v8ls9a0 f1w7gpdv fez10in fg4l7m0"
+                    fill="currentColor"
+                    height="1em"
+                    style="transform: rotate(90deg);"
+                    viewBox="0 0 20 20"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M7.65 4.15c.2-.2.5-.2.7 0l5.49 5.46c.21.22.21.57 0 .78l-5.49 5.46a.5.5 0 0 1-.7-.7L12.8 10 7.65 4.85a.5.5 0 0 1 0-.7Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </span>
+                <span
+                  class="accordionHeaderText css-110"
+                >
+                  Online Copy Enabled
+                </span>
+                <div
+                  class="ms-Image statusIcon root-115"
+                  style="width: 24px; height: 24px;"
+                >
+                  <img
+                    alt="Warning icon"
+                    class="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-116"
+                    src="warning-icon"
+                  />
+                </div>
+              </button>
+            </div>
+            <div
+              aria-disabled="false"
+              class="fui-AccordionPanel accordionPanel ___1rufncu_1hx1scr f1axvtxu"
+            >
+              <div
+                data-testid="online-copy-enabled"
+              >
+                Online Copy Enabled Component
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`AssignPermissions Component Permission Groups should render permission groups when available 1`] = `
+<div>
+  <div
+    class="ms-Stack assignPermissionsContainer css-109"
+  >
+    <span
+      class="css-110"
+    >
+      To copy data from the source to the destination container, ensure that the managed identity of the destination account has read access to the source account by completing the following steps.
+    </span>
+    <div
+      class="ms-Stack css-111"
+    >
+      <div
+        class="ms-Stack css-112"
+      >
+        <div
+          class="ms-Stack css-113"
+        >
+          <span
+            class="css-110"
+            style="font-weight: 600;"
+          >
+            Cross Account Configuration
+          </span>
+          <span
+            class="css-114"
+          >
+            Configure permissions for cross-account copy
+          </span>
+        </div>
+        <div
+          class="fui-Accordion permissionsAccordion"
+        >
+          <div
+            class="fui-AccordionItem"
+          >
+            <div
+              class="fui-AccordionHeader accordionHeader ___kex8dp0_1udlp87 f19n0e5 f1c21dwh f1s184ao ft85np5"
+            >
+              <button
+                aria-expanded="false"
+                class="fui-AccordionHeader__button ___ecb1fz0_z658t20 f1ewtqcl f1u2r49w f1ym3bx4 fk6fouc fkhj508 f1i3iumi f1gl81tg f1rmphuq f37px4s fgusgyc f10pi13n fly5x3f fre7gi1 f1358rze fqdk4by f1rvrf73 f5pgtk9 f22iagw f122n59 f1k6fduh figsok6 ftqa4ok f2hkw1w f8hki3x f1d2448m f1bjia2o ffh67wi f226i61 f13kzufm flujwa2 fsx75g8 f15bsgw9 f14e48fq f18yb2kv fd6o370 ffwy5si f3znvyf f57olzd f4stah7 f480a47 fs1por5"
+                type="button"
+              >
+                <span
+                  aria-hidden="true"
+                  class="fui-AccordionHeader__expandIcon ___7oynyr0_1pz5o7c f1l02sjl f22iagw f122n59 f106mvju f1pp30po f1vdfbxk"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="___12fm75w_v8ls9a0 f1w7gpdv fez10in fg4l7m0"
+                    fill="currentColor"
+                    height="1em"
+                    style="transform: rotate(0deg);"
+                    viewBox="0 0 20 20"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M7.65 4.15c.2-.2.5-.2.7 0l5.49 5.46c.21.22.21.57 0 .78l-5.49 5.46a.5.5 0 0 1-.7-.7L12.8 10 7.65 4.85a.5.5 0 0 1 0-.7Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </span>
+                <span
+                  class="accordionHeaderText css-110"
+                >
+                  Add Managed Identity
+                </span>
+                <div
+                  class="ms-Image statusIcon root-115"
+                  style="width: 20px; height: 20px;"
+                >
+                  <img
+                    alt="Checkmark icon"
+                    class="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-116"
+                    src="checkmark-icon"
+                  />
+                </div>
+              </button>
+            </div>
+          </div>
+          <div
+            class="fui-AccordionItem"
+          >
+            <div
+              class="fui-AccordionHeader accordionHeader ___kex8dp0_1udlp87 f19n0e5 f1c21dwh f1s184ao ft85np5"
+            >
+              <button
+                aria-expanded="true"
+                class="fui-AccordionHeader__button ___ecb1fz0_z658t20 f1ewtqcl f1u2r49w f1ym3bx4 fk6fouc fkhj508 f1i3iumi f1gl81tg f1rmphuq f37px4s fgusgyc f10pi13n fly5x3f fre7gi1 f1358rze fqdk4by f1rvrf73 f5pgtk9 f22iagw f122n59 f1k6fduh figsok6 ftqa4ok f2hkw1w f8hki3x f1d2448m f1bjia2o ffh67wi f226i61 f13kzufm flujwa2 fsx75g8 f15bsgw9 f14e48fq f18yb2kv fd6o370 ffwy5si f3znvyf f57olzd f4stah7 f480a47 fs1por5"
+                type="button"
+              >
+                <span
+                  aria-hidden="true"
+                  class="fui-AccordionHeader__expandIcon ___7oynyr0_1pz5o7c f1l02sjl f22iagw f122n59 f106mvju f1pp30po f1vdfbxk"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="___12fm75w_v8ls9a0 f1w7gpdv fez10in fg4l7m0"
+                    fill="currentColor"
+                    height="1em"
+                    style="transform: rotate(90deg);"
+                    viewBox="0 0 20 20"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M7.65 4.15c.2-.2.5-.2.7 0l5.49 5.46c.21.22.21.57 0 .78l-5.49 5.46a.5.5 0 0 1-.7-.7L12.8 10 7.65 4.85a.5.5 0 0 1 0-.7Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </span>
+                <span
+                  class="accordionHeaderText css-110"
+                >
+                  Read Permission Assigned
+                </span>
+                <div
+                  class="ms-Image statusIcon root-115"
+                  style="width: 24px; height: 24px;"
+                >
+                  <img
+                    alt="Warning icon"
+                    class="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-116"
+                    src="warning-icon"
+                  />
+                </div>
+              </button>
+            </div>
+            <div
+              aria-disabled="false"
+              class="fui-AccordionPanel accordionPanel ___1rufncu_1hx1scr f1axvtxu"
+            >
+              <div
+                data-testid="add-read-permission"
+              >
+                Add Read Permission Component
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`AssignPermissions Component Rendering should render without crashing with offline migration 1`] = `
+<div>
+  <div
+    class="ms-Stack assignPermissionsContainer css-109"
+  >
+    <span
+      class="css-110"
+    >
+      To copy data from the source to the destination container, ensure that the managed identity of the destination account has read access to the source account by completing the following steps.
+    </span>
+    <div
+      data-testid="shimmer-tree"
+      indentlevels="[object Object],[object Object],[object Object]"
+      style="width: 100%;"
+    >
+      Loading...
+    </div>
+  </div>
+</div>
+`;
+
+exports[`AssignPermissions Component Rendering should render without crashing with online migration 1`] = `
+<div>
+  <div
+    class="ms-Stack assignPermissionsContainer css-109"
+  >
+    <span
+      class="css-110"
+    >
+      To copy data from the source to the destination container, ensure that the managed identity of the destination account has read access to the source account by completing the following steps.
+    </span>
+    <div
+      data-testid="shimmer-tree"
+      indentlevels="[object Object],[object Object],[object Object],[object Object],[object Object]"
+      style="width: 100%;"
+    >
+      Loading...
+    </div>
+  </div>
+</div>
+`;

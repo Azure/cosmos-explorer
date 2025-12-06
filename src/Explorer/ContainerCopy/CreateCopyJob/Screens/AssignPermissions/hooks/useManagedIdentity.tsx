@@ -31,7 +31,7 @@ const useManagedIdentity = (
         subscriptionId: targetSubscriptionId,
         resourceGroup: targetResourceGroup,
         accountName: targetAccountName,
-      } = getAccountDetailsFromResourceId(selectedTargetAccount?.id);
+      } = getAccountDetailsFromResourceId(selectedTargetAccount?.id) || {};
 
       const updatedAccount = await updateIdentityFn(targetSubscriptionId, targetResourceGroup, targetAccountName);
       if (updatedAccount) {

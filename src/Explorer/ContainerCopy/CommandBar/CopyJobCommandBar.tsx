@@ -28,4 +28,6 @@ const CopyJobCommandBar: React.FC<ContainerCopyProps> = ({ explorer }) => {
   );
 };
 
+CopyJobCommandBar.displayName = "CopyJobCommandBar";
+
 export default CopyJobCommandBar;

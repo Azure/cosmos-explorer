@@ -1,0 +1,62 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PreviewCopyJobUtils should return correctly formatted columns for preview copy job details list 1`] = `
+[
+  {
+    "fieldName": "sourceDatabaseName",
+    "key": "sourcedbname",
+    "maxWidth": 140,
+    "minWidth": 130,
+    "name": "Source database",
+    "styles": {
+      "root": {
+        "lineHeight": "1.2",
+        "whiteSpace": "normal",
+        "wordBreak": "break-word",
+      },
+    },
+  },
+  {
+    "fieldName": "sourceContainerName",
+    "key": "sourcecolname",
+    "maxWidth": 140,
+    "minWidth": 130,
+    "name": "Source container",
+    "styles": {
+      "root": {
+        "lineHeight": "1.2",
+        "whiteSpace": "normal",
+        "wordBreak": "break-word",
+      },
+    },
+  },
+  {
+    "fieldName": "targetDatabaseName",
+    "key": "targetdbname",
+    "maxWidth": 140,
+    "minWidth": 130,
+    "name": "Destination database",
+    "styles": {
+      "root": {
+        "lineHeight": "1.2",
+        "whiteSpace": "normal",
+        "wordBreak": "break-word",
+      },
+    },
+  },
+  {
+    "fieldName": "targetContainerName",
+    "key": "targetcolname",
+    "maxWidth": 140,
+    "minWidth": 130,
+    "name": "Destination container",
+    "styles": {
+      "root": {
+        "lineHeight": "1.2",
+        "whiteSpace": "normal",
+        "wordBreak": "break-word",
+      },
+    },
+  },
+]
+`;

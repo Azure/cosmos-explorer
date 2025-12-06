@@ -1,0 +1,73 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`LoadingOverlay should handle long labels properly 1`] = `
+<div
+  class="ms-Overlay root-109"
+>
+  <div
+    class="ms-Spinner root-111"
+  >
+    <div
+      class="ms-Spinner-circle ms-Spinner--large circle-112"
+    />
+    <div
+      class="ms-Spinner-label label-113"
+    >
+      This is a very long loading message that might span multiple lines and should still render correctly in the loading overlay component
+    </div>
+  </div>
+</div>
+`;
+
+exports[`LoadingOverlay should render loading overlay when isLoading is true 1`] = `
+<div
+  class="ms-Overlay root-109"
+>
+  <div
+    class="ms-Spinner root-111"
+  >
+    <div
+      class="ms-Spinner-circle ms-Spinner--large circle-112"
+    />
+    <div
+      class="ms-Spinner-label label-113"
+    >
+      Loading...
+    </div>
+  </div>
+</div>
+`;
+
+exports[`LoadingOverlay should render loading overlay with custom label 1`] = `
+<div
+  class="ms-Overlay root-109"
+>
+  <div
+    class="ms-Spinner root-111"
+  >
+    <div
+      class="ms-Spinner-circle ms-Spinner--large circle-112"
+    />
+    <div
+      class="ms-Spinner-label label-113"
+    >
+      Processing your request...
+    </div>
+  </div>
+</div>
+`;
+
+exports[`LoadingOverlay should render loading overlay with empty label 1`] = `
+<div
+  class="ms-Overlay root-109"
+>
+  <div
+    class="ms-Spinner root-111"
+  >
+    <div
+      class="ms-Spinner-circle ms-Spinner--large circle-112"
+    />
+    
+  </div>
+</div>
+`;
