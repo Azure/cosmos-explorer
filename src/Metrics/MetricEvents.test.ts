@@ -1,12 +1,12 @@
-import { configContext, Platform } from "../../ConfigContext";
-import { getAuthorizationHeader } from "../../Utils/AuthorizationUtils";
-import { fetchWithTimeout } from "../../Utils/FetchWithTimeout";
-import MetricScenario, { reportHealthy, reportUnhealthy } from "../MetricEvents";
+import { configContext, Platform } from "../ConfigContext";
+import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
+import { fetchWithTimeout } from "../Utils/FetchWithTimeout";
+import MetricScenario, { reportHealthy, reportUnhealthy } from "./MetricEvents";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { Response } = require("node-fetch");
 
-jest.mock("../../Utils/AuthorizationUtils", () => ({
+jest.mock("../Utils/AuthorizationUtils", () => ({
   getAuthorizationHeader: jest.fn().mockReturnValue({ header: "authorization", token: "Bearer test-token" }),
 }));
 
