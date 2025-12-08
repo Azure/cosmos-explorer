@@ -115,7 +115,7 @@ test.describe("Autoscale and Manual throughput", () => {
   };
 
   const switchManualToAutoscaleThroughput = async (): Promise<void> => {
-    const autoscaleRadioButton = explorer.frame.getByText("Autoscale");
+    const autoscaleRadioButton = explorer.frame.getByText("Autoscale", { exact: true });
     await autoscaleRadioButton.click();
     await expect(explorer.commandBarButton(CommandBarButton.Save)).toBeEnabled();
     await explorer.commandBarButton(CommandBarButton.Save).click();
