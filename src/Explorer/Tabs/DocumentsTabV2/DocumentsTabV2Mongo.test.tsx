@@ -19,6 +19,15 @@ import { act } from "react-dom/test-utils";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import Explorer from "../../Explorer";
 
+jest.mock("rx-jupyter", () => ({
+  sessions: {
+    create: jest.fn(),
+  },
+  contents: {
+    JupyterContentProvider: jest.fn().mockImplementation(() => ({})),
+  },
+}));
+
 jest.requireActual("Explorer/Controls/Editor/EditorReact");
 
 const PROPERTY_VALUE = "__SOME_PROPERTY_VALUE__";
