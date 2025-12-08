@@ -324,6 +324,8 @@ describe("SettingsComponent - indexing policy subscription", () => {
           [containerId]: mockIndexingPolicy,
         },
       });
+      // Wait for the async refreshCollectionData to complete
+      await new Promise((resolve) => setTimeout(resolve, 0));
     });
 
     wrapper.update();

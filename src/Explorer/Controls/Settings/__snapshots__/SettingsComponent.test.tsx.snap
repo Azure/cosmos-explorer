@@ -258,25 +258,17 @@ exports[`SettingsComponent renders 1`] = `
           indexingPolicyContent={
             {
               "automatic": true,
-              "compositeIndexes": [],
               "excludedPaths": [],
-              "fullTextIndexes": [],
               "includedPaths": [],
               "indexingMode": "consistent",
-              "spatialIndexes": [],
-              "vectorIndexes": [],
             }
           }
           indexingPolicyContentBaseline={
             {
               "automatic": true,
-              "compositeIndexes": [],
               "excludedPaths": [],
-              "fullTextIndexes": [],
               "includedPaths": [],
               "indexingMode": "consistent",
-              "spatialIndexes": [],
-              "vectorIndexes": [],
             }
           }
           isVectorSearchEnabled={false}
