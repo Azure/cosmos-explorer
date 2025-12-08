@@ -60,7 +60,7 @@ test.describe("Autoscale and Manual throughput", () => {
     const softAllowedMaxThroughput = Number(softAllowedMaxThroughputString.replace(/,/g, ""));
 
     // Try to set autoscale max throughput above allowed limit
-    await getThroughputInput("autopilot").fill((softAllowedMaxThroughput + 1000).toString());
+    await getThroughputInput("autopilot").fill((softAllowedMaxThroughput * 10).toString());
     await expect(explorer.commandBarButton(CommandBarButton.Save)).toBeDisabled();
     await expect(getThroughputInputErrorMessage("autopilot")).toContainText(
       "This update isn't possible because it would increase the total throughput",
@@ -98,7 +98,7 @@ test.describe("Autoscale and Manual throughput", () => {
     const softAllowedMaxThroughput = Number(softAllowedMaxThroughputString.replace(/,/g, ""));
 
     // Try to set manual throughput above allowed limit
-    await getThroughputInput("manual").fill((softAllowedMaxThroughput + 1000).toString());
+    await getThroughputInput("manual").fill((softAllowedMaxThroughput * 10).toString());
     await expect(explorer.commandBarButton(CommandBarButton.Save)).toBeDisabled();
     await expect(getThroughputInputErrorMessage("manual")).toContainText(
       "This update isn't possible because it would increase the total throughput",
