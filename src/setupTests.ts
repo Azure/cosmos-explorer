@@ -50,3 +50,14 @@ require("jquery-ui-dist/jquery-ui");
 
 // The test environment Data Explorer uses does not have crypto.subtle implementation
 (<any>global).crypto.subtle = {};
+
+// Mock Performance API for scenario monitoring
+(<any>global).performance = {
+  mark: jest.fn(),
+  measure: jest.fn(),
+  clearMarks: jest.fn(),
+  clearMeasures: jest.fn(),
+  getEntriesByName: jest.fn().mockReturnValue([]),
+  getEntriesByType: jest.fn().mockReturnValue([]),
+  ...(<any>global).performance,
+};
