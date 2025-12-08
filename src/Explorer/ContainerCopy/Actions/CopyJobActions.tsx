@@ -23,6 +23,7 @@ import {
   extractErrorMessage,
   formatUTCDateTime,
   getAccountDetailsFromResourceId,
+  isIntraAccountCopy,
 } from "../CopyJobUtils";
 import CreateCopyJobScreensProvider from "../CreateCopyJob/Screens/CreateCopyJobScreensProvider";
 import { CopyJobActions, CopyJobStatusType } from "../Enums/CopyJobEnums";
@@ -75,7 +76,6 @@ export const getCopyJobs = async (): Promise<CopyJobType[]> => {
     }
     copyJobsAbortController = null;
 
-    /* added a lower bound to "0" and upper bound to "100" */
     const calculateCompletionPercentage = (processed: number, total: number): number => {
       if (
         typeof processed !== "number" ||
@@ -139,11 +139,12 @@ export const submitCreateCopyJob = async (state: CopyJobContextState, onSuccess:
     const { subscriptionId, resourceGroup, accountName } = getAccountDetailsFromResourceId(
       userContext.databaseAccount?.id || "",
     );
+    const isSameAccount = isIntraAccountCopy(source?.account?.id, target?.account?.id);
     const body = {
       properties: {
         source: {
           component: "CosmosDBSql",
-          remoteAccountName: source?.account?.name,
+          ...(isSameAccount ? {} : { remoteAccountName: source?.account?.name }),
           databaseName: source?.databaseId,
           containerName: source?.containerId,
         },
