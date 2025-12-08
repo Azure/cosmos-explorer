@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-import { DataExplorer, TestAccount, generateUniqueName } from "../fx";
+import { DataExplorer, TEST_AUTOSCALE_THROUGHPUT_RU, TestAccount, generateUniqueName } from "../fx";
 
 test("Cassandra keyspace and table CRUD", async ({ page }) => {
   const keyspaceId = generateUniqueName("db");
@@ -14,6 +14,7 @@ test("Cassandra keyspace and table CRUD", async ({ page }) => {
     async (panel, okButton) => {
       await panel.getByPlaceholder("Type a new keyspace id").fill(keyspaceId);
       await panel.getByPlaceholder("Enter table Id").fill(tableId);
+      await panel.getByTestId("autoscaleRUInput").fill(TEST_AUTOSCALE_THROUGHPUT_RU.toString());
       await okButton.click();
     },
     { closeTimeout: 5 * 60 * 1000 },

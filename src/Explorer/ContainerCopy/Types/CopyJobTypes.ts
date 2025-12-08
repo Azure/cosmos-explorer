@@ -6,7 +6,7 @@ import Explorer from "../../Explorer";
 import { CopyJobMigrationType, CopyJobStatusType } from "../Enums/CopyJobEnums";
 
 export interface ContainerCopyProps {
-  container: Explorer;
+  explorer: Explorer;
 }
 
 export type CopyJobCommandBarBtnType = {
@@ -48,6 +48,7 @@ export interface DatabaseContainerSectionProps {
   selectedContainer: string;
   containerDisabled?: boolean;
   containerOnChange: (ev: React.FormEvent<HTMLDivElement>, option: DropdownOptionType) => void;
+  handleOnDemandCreateContainer?: () => void;
 }
 
 export interface CopyJobContextState {
@@ -73,11 +74,14 @@ export interface CopyJobFlowType {
 }
 
 export interface CopyJobContextProviderType {
+  contextError: string | null;
+  setContextError: React.Dispatch<React.SetStateAction<string | null>>;
   flow: CopyJobFlowType;
   setFlow: React.Dispatch<React.SetStateAction<CopyJobFlowType>>;
   copyJobState: CopyJobContextState | null;
   setCopyJobState: React.Dispatch<React.SetStateAction<CopyJobContextState>>;
   resetCopyJobState: () => void;
+  explorer?: Explorer;
 }
 
 export type CopyJobType = {

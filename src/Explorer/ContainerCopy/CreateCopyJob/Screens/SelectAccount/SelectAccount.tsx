@@ -16,6 +16,7 @@ import { useDropdownOptions, useEventHandlers } from "./Utils/selectAccountUtils
 const SelectAccount = React.memo(() => {
   const { copyJobState, setCopyJobState } = useCopyJobContext();
   const selectedSubscriptionId = copyJobState?.source?.subscription?.subscriptionId;
+  const selectedSourceAccountId = copyJobState?.source?.account?.id;
 
   const subscriptions: Subscription[] = useSubscriptions();
   const allAccounts: DatabaseAccount[] = useDatabaseAccounts(selectedSubscriptionId);
@@ -38,7 +39,7 @@ const SelectAccount = React.memo(() => {
 
       <AccountDropdown
         options={accountOptions}
-        selectedKey={copyJobState?.source?.account?.id}
+        selectedKey={selectedSourceAccountId}
         disabled={!selectedSubscriptionId}
         onChange={(_ev, option) => handleSelectSourceAccount("account", option?.data)}
       />

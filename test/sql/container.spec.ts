@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-import { DataExplorer, TestAccount, generateUniqueName } from "../fx";
+import { DataExplorer, TEST_AUTOSCALE_THROUGHPUT_RU, TestAccount, generateUniqueName } from "../fx";
 
 test("SQL database and container CRUD", async ({ page }) => {
   const databaseId = generateUniqueName("db");
@@ -15,6 +15,7 @@ test("SQL database and container CRUD", async ({ page }) => {
       await panel.getByPlaceholder("Type a new database id").fill(databaseId);
       await panel.getByRole("textbox", { name: "Container id, Example Container1" }).fill(containerId);
       await panel.getByRole("textbox", { name: "Partition key" }).fill("/pk");
+      await panel.getByTestId("autoscaleRUInput").fill(TEST_AUTOSCALE_THROUGHPUT_RU.toString());
       await okButton.click();
     },
     { closeTimeout: 5 * 60 * 1000 },

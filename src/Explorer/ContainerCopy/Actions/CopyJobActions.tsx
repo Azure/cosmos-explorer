@@ -1,5 +1,7 @@
+import Explorer from "Explorer/Explorer";
 import React from "react";
 import { userContext } from "UserContext";
+import { logError } from "../../../Common/Logger";
 import { useSidePanel } from "../../../hooks/useSidePanel";
 import {
   cancel,
@@ -21,6 +23,7 @@ import {
   extractErrorMessage,
   formatUTCDateTime,
   getAccountDetailsFromResourceId,
+  isIntraAccountCopy,
 } from "../CopyJobUtils";
 import CreateCopyJobScreensProvider from "../CreateCopyJob/Screens/CreateCopyJobScreensProvider";
 import { CopyJobActions, CopyJobStatusType } from "../Enums/CopyJobEnums";
@@ -28,12 +31,12 @@ import CopyJobDetails from "../MonitorCopyJobs/Components/CopyJobDetails";
 import { MonitorCopyJobsRefState } from "../MonitorCopyJobs/MonitorCopyJobRefState";
 import { CopyJobContextState, CopyJobError, CopyJobErrorType, CopyJobType } from "../Types/CopyJobTypes";
 
-export const openCreateCopyJobPanel = () => {
+export const openCreateCopyJobPanel = (explorer: Explorer) => {
   const sidePanelState = useSidePanel.getState();
   sidePanelState.setPanelHasConsole(false);
   sidePanelState.openSidePanel(
     ContainerCopyMessages.createCopyJobPanelTitle,
-    <CreateCopyJobScreensProvider />,
+    <CreateCopyJobScreensProvider explorer={explorer} />,
     "650px",
   );
 };
@@ -73,7 +76,6 @@ export const getCopyJobs = async (): Promise<CopyJobType[]> => {
     }
     copyJobsAbortController = null;
 
-    /* added a lower bound to "0" and upper bound to "100" */
     const calculateCompletionPercentage = (processed: number, total: number): number => {
       if (
         typeof processed !== "number" ||
@@ -137,11 +139,12 @@ export const submitCreateCopyJob = async (state: CopyJobContextState, onSuccess:
     const { subscriptionId, resourceGroup, accountName } = getAccountDetailsFromResourceId(
       userContext.databaseAccount?.id || "",
     );
+    const isSameAccount = isIntraAccountCopy(source?.account?.id, target?.account?.id);
     const body = {
       properties: {
         source: {
           component: "CosmosDBSql",
-          remoteAccountName: source?.account?.name,
+          ...(isSameAccount ? {} : { remoteAccountName: source?.account?.name }),
           databaseName: source?.databaseId,
           containerName: source?.containerId,
         },
@@ -159,7 +162,8 @@ export const submitCreateCopyJob = async (state: CopyJobContextState, onSuccess:
     onSuccess();
     return response;
   } catch (error) {
-    console.error("Error submitting create copy job:", error);
+    const errorMessage = error.message || "Error submitting create copy job. Please try again later.";
+    logError(errorMessage, "CopyJob/CopyJobActions.submitCreateCopyJob");
     throw error;
   }
 };
@@ -198,8 +202,7 @@ export const updateCopyJobStatus = async (job: CopyJobType, action: string): Pro
       pattern,
       `'${ContainerCopyMessages.MonitorJobs.Status.InProgress}'`,
     );
-
-    console.error(`Error updating copy job status: ${normalizedErrorMessage}`);
+    logError(`Error updating copy job status: ${normalizedErrorMessage}`, "CopyJob/CopyJobActions.updateCopyJobStatus");
     throw error;
   }
 };

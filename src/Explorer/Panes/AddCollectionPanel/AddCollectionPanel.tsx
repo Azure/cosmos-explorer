@@ -65,6 +65,8 @@ export interface AddCollectionPanelProps {
   explorer: Explorer;
   databaseId?: string;
   isQuickstart?: boolean;
+  isCopyJobFlow?: boolean;
+  onSubmitSuccess?: (collectionData: { databaseId: string; collectionId: string }) => void;
 }
 
 export const DefaultVectorEmbeddingPolicy: DataModels.VectorEmbeddingPolicy = {
@@ -975,7 +977,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
           )}
         </div>
 
-        <PanelFooterComponent buttonLabel="OK" isButtonDisabled={this.state.isThroughputCapExceeded} />
+        {!this.props.isCopyJobFlow && (
+          <PanelFooterComponent buttonLabel="OK" isButtonDisabled={this.state.isThroughputCapExceeded} />
+        )}
 
         {this.state.isExecuting && (
           <div>
@@ -1415,8 +1419,13 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
         }
       }
       this.setState({ isExecuting: false });
-      TelemetryProcessor.traceSuccess(Action.CreateCollection, telemetryData, startKey);
-      useSidePanel.getState().closeSidePanel();
+
+      if (this.props.isCopyJobFlow && this.props.onSubmitSuccess) {
+        this.props.onSubmitSuccess({ databaseId, collectionId });
+      } else {
+        TelemetryProcessor.traceSuccess(Action.CreateCollection, telemetryData, startKey);
+        useSidePanel.getState().closeSidePanel();
+      }
     } catch (error) {
       const errorMessage: string = getErrorMessage(error);
       this.setState({ isExecuting: false, errorMessage, showErrorDetails: true });

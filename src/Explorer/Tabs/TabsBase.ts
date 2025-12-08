@@ -1,5 +1,6 @@
 import { OpenTab } from "Contracts/ActionContracts";
 import { KeyboardActionGroup, clearKeyboardActionGroup } from "KeyboardShortcuts";
+import { substringUtf } from "Utils/StringUtils";
 import * as ko from "knockout";
 import * as Constants from "../../Common/Constants";
 import * as ThemeUtility from "../../Common/ThemeUtility";
@@ -154,13 +155,13 @@ export default class TabsBase extends WaitsForTemplateViewModel {
     const db = this.database?.id();
     if (coll) {
       if (coll.length > 8) {
-        return coll.slice(0, 5) + "…" + options.title;
+        return substringUtf(coll, 0, 5) + "…" + options.title;
       } else {
         return coll + "." + options.title;
       }
     } else if (db) {
       if (db.length > 8) {
-        return db.slice(0, 5) + "…" + options.title;
+        return substringUtf(db, 0, 5) + "…" + options.title;
       } else {
         return db + "." + options.title;
       }
