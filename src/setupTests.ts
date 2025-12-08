@@ -52,12 +52,15 @@ require("jquery-ui-dist/jquery-ui");
 (<any>global).crypto.subtle = {};
 
 // Mock Performance API for scenario monitoring
-(<any>global).performance = {
+const performanceMock = {
   mark: jest.fn(),
   measure: jest.fn(),
   clearMarks: jest.fn(),
   clearMeasures: jest.fn(),
   getEntriesByName: jest.fn().mockReturnValue([]),
   getEntriesByType: jest.fn().mockReturnValue([]),
+  now: jest.fn().mockReturnValue(Date.now()),
   ...(<any>global).performance,
 };
+(<any>global).performance = performanceMock;
+(<any>window).performance = performanceMock;
