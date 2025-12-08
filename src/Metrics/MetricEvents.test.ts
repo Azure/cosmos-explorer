@@ -10,7 +10,7 @@ jest.mock("../Utils/AuthorizationUtils", () => ({
   getAuthorizationHeader: jest.fn().mockReturnValue({ header: "authorization", token: "Bearer test-token" }),
 }));
 
-jest.mock("../../Utils/FetchWithTimeout", () => ({
+jest.mock("../Utils/FetchWithTimeout", () => ({
   fetchWithTimeout: jest.fn(),
 }));
 

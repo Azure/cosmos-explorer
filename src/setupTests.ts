@@ -53,14 +53,36 @@ require("jquery-ui-dist/jquery-ui");
 
 // Mock Performance API for scenario monitoring
 const performanceMock = {
+  ...(typeof performance !== "undefined" ? performance : {}),
   mark: jest.fn(),
   measure: jest.fn(),
   clearMarks: jest.fn(),
   clearMeasures: jest.fn(),
   getEntriesByName: jest.fn().mockReturnValue([]),
   getEntriesByType: jest.fn().mockReturnValue([]),
-  now: jest.fn().mockReturnValue(Date.now()),
-  ...(<any>global).performance,
+  now: jest.fn(() => Date.now()),
+  timeOrigin: Date.now(),
 };
-(<any>global).performance = performanceMock;
-(<any>window).performance = performanceMock;
+
+// Assign to both global and window
+Object.defineProperty(global, "performance", {
+  writable: true,
+  configurable: true,
+  value: performanceMock,
+});
+
+Object.defineProperty(window, "performance", {
+  writable: true,
+  configurable: true,
+  value: performanceMock,
+});
+
+// Mock fetch API - minimal mock to prevent errors
+(<any>global).fetch = jest.fn(() =>
+  Promise.resolve({
+    ok: true,
+    status: 200,
+    json: () => Promise.resolve({}),
+    text: () => Promise.resolve(""),
+  }),
+);
