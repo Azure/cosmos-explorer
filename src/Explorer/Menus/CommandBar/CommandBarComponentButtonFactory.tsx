@@ -1,3 +1,4 @@
+import { Environment, getEnvironment } from "Common/EnvironmentUtility";
 import { KeyboardAction } from "KeyboardShortcuts";
 import { isDataplaneRbacSupported } from "Utils/APITypeUtils";
 import * as React from "react";
@@ -238,6 +239,10 @@ function areScriptsSupported(): boolean {
 }
 
 function createOpenSynapseLinkDialogButton(container: Explorer): CommandButtonComponentProps {
+  if ([Environment.Prod, Environment.Mpac].includes(getEnvironment())) {
+    return undefined;
+  }
+  
   if (configContext.platform === Platform.Emulator) {
     return undefined;
   }

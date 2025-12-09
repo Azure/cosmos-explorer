@@ -18,6 +18,7 @@ import {
 import * as Constants from "Common/Constants";
 import { createCollection } from "Common/dataAccess/createCollection";
 import { getNewDatabaseSharedThroughputDefault } from "Common/DatabaseUtility";
+import { getEnvironment } from "Common/EnvironmentUtility";
 import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
 import { configContext, Platform } from "ConfigContext";
 import * as DataModels from "Contracts/DataModels";
@@ -160,7 +161,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
   render(): JSX.Element {
     const isFirstResourceCreated = useDatabases.getState().isFirstResourceCreated();
-
+    console.log(getEnvironment())
     return (
       <form className="panelFormWrapper" onSubmit={this.submit.bind(this)} id="panelContainer">
         {this.state.errorMessage && (

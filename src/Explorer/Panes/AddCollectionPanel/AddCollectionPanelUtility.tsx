@@ -1,5 +1,6 @@
 import { DirectionalHint, Icon, Link, Stack, Text, TooltipHost } from "@fluentui/react";
 import * as Constants from "Common/Constants";
+import { Environment, getEnvironment } from "Common/EnvironmentUtility";
 import { configContext, Platform } from "ConfigContext";
 import * as DataModels from "Contracts/DataModels";
 import { getFullTextLanguageOptions } from "Explorer/Controls/FullTextSeach/FullTextPoliciesComponent";
@@ -85,7 +86,10 @@ export function UniqueKeysHeader(): JSX.Element {
 }
 
 export function shouldShowAnalyticalStoreOptions(): boolean {
-  if (isFabricNative() || configContext.platform === Platform.Emulator) {
+  if (
+    [Environment.Mpac, Environment.Prod].includes(getEnvironment()) ||
+    isFabricNative() || 
+    configContext.platform === Platform.Emulator) {
     return false;
   }
 
