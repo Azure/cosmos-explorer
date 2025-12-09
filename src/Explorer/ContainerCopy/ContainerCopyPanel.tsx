@@ -20,4 +20,6 @@ const ContainerCopyPanel: React.FC<ContainerCopyProps> = ({ explorer }) => {
   );
 };
 
+ContainerCopyPanel.displayName = "ContainerCopyPanel";
+
 export default ContainerCopyPanel;

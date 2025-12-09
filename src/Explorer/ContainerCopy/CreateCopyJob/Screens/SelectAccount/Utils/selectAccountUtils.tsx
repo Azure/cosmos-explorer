@@ -18,9 +18,16 @@ export function useDropdownOptions(
       data: sub,
     })) || [];
 
+  const normalizeAccountId = (id: string) => {
+    if (!id) {
+      return id;
+    }
+    return id.replace(/\/Microsoft\.DocumentDb\//i, "/Microsoft.DocumentDB/");
+  };
+
   const accountOptions =
     accounts?.map((account) => ({
-      key: account.id,
+      key: normalizeAccountId(account.id),
       text: account.name,
       data: account,
     })) || [];
