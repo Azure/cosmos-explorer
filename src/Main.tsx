@@ -60,6 +60,10 @@ import "./Explorer/Panes/PanelComponent.less";
 import { SidePanel } from "./Explorer/Panes/PanelContainerComponent";
 import "./Explorer/SplashScreen/SplashScreen.less";
 import "./Libs/jquery";
+import MetricScenario from "./Metrics/MetricEvents";
+import { MetricScenarioProvider, useMetricScenario } from "./Metrics/MetricScenarioProvider";
+import { ApplicationMetricPhase } from "./Metrics/ScenarioConfig";
+import { useInteractive } from "./Metrics/useMetricPhases";
 import { appThemeFabric } from "./Platform/Fabric/FabricTheme";
 import "./Shared/appInsights";
 import { useConfig } from "./hooks/useConfig";
@@ -78,6 +82,20 @@ const App: React.FunctionComponent = () => {
   }
   StyleConstants.updateStyles();
   const explorer = useKnockoutExplorer(config?.platform);
+
+  // Scenario-based health tracking: start ApplicationLoad and complete phases.
+  const { startScenario, completePhase } = useMetricScenario();
+  React.useEffect(() => {
+    startScenario(MetricScenario.ApplicationLoad);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  React.useEffect(() => {
+    if (explorer) {
+      completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.ExplorerInitialized);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [explorer]);
 
   if (!explorer) {
     return <LoadingExplorer />;
@@ -104,9 +122,16 @@ const App: React.FunctionComponent = () => {
 };
 
 const mainElement = document.getElementById("Main");
-ReactDOM.render(<App />, mainElement);
+ReactDOM.render(
+  <MetricScenarioProvider>
+    <App />
+  </MetricScenarioProvider>,
+  mainElement,
+);
 
 function DivExplorer({ explorer }: { explorer: Explorer }): JSX.Element {
+  useInteractive(MetricScenario.ApplicationLoad);
+
   return (
     <div id="divExplorer" className="flexContainer hideOverflows">
       <div id="freeTierTeachingBubble"> </div>
