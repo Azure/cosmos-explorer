@@ -3,13 +3,13 @@ import QueryError from "Common/QueryError";
 import { IndeterminateProgressBar } from "Explorer/Controls/IndeterminateProgressBar";
 import { MessageBanner } from "Explorer/Controls/MessageBanner";
 import { useQueryTabStyles } from "Explorer/Tabs/QueryTab/Styles";
+import useZoomLevel from "hooks/useZoomLevel";
 import React from "react";
+import { conditionalClass } from "Utils/StyleUtils";
 import RunQuery from "../../../../images/RunQuery.png";
 import { QueryResults } from "../../../Contracts/ViewModels";
 import { ErrorList } from "./ErrorList";
 import { ResultsView } from "./ResultsView";
-import useZoomLevel from "hooks/useZoomLevel";
-import { conditionalClass } from "Utils/StyleUtils";
 
 export interface ResultsViewProps {
   isMongoDB: boolean;
@@ -27,7 +27,7 @@ const ExecuteQueryCallToAction: React.FC = () => {
   const styles = useQueryTabStyles();
   const isZoomed = useZoomLevel();
   return (
-    <div data-test="QueryTab/ResultsPane/ExecuteCTA" className={styles.executeCallToAction}>
+    <div data-testid="QueryTab/ResultsPane/ExecuteCTA" className={styles.executeCallToAction}>
       <div>
         <p>
           <img
@@ -54,7 +54,7 @@ export const QueryResultSection: React.FC<QueryResultProps> = ({
   const maybeSubQuery = queryEditorContent && /.*\(.*SELECT.*\)/i.test(queryEditorContent);
 
   return (
-    <div data-test="QueryTab/ResultsPane" className={styles.queryResultsPanel}>
+    <div data-testid="QueryTab/ResultsPane" className={styles.queryResultsPanel}>
       {isExecuting && <IndeterminateProgressBar />}
       <MessageBanner
         messageId="QueryEditor.EmptyMongoQuery"

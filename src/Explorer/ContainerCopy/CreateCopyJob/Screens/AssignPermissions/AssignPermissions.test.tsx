@@ -26,7 +26,7 @@ jest.mock("./hooks/usePermissionsSection", () => ({
 jest.mock("../../../../../Common/ShimmerTree/ShimmerTree", () => {
   const MockShimmerTree = (props: any) => {
     return (
-      <div data-test="shimmer-tree" {...props}>
+      <div data-testid="shimmer-tree" {...props}>
         Loading...
       </div>
     );
@@ -37,7 +37,7 @@ jest.mock("../../../../../Common/ShimmerTree/ShimmerTree", () => {
 
 jest.mock("./AddManagedIdentity", () => {
   const MockAddManagedIdentity = () => {
-    return <div data-test="add-managed-identity">Add Managed Identity Component</div>;
+    return <div data-testid="add-managed-identity">Add Managed Identity Component</div>;
   };
   MockAddManagedIdentity.displayName = "MockAddManagedIdentity";
   return MockAddManagedIdentity;
@@ -45,7 +45,7 @@ jest.mock("./AddManagedIdentity", () => {
 
 jest.mock("./AddReadPermissionToDefaultIdentity", () => {
   const MockAddReadPermissionToDefaultIdentity = () => {
-    return <div data-test="add-read-permission">Add Read Permission Component</div>;
+    return <div data-testid="add-read-permission">Add Read Permission Component</div>;
   };
   MockAddReadPermissionToDefaultIdentity.displayName = "MockAddReadPermissionToDefaultIdentity";
   return MockAddReadPermissionToDefaultIdentity;
@@ -53,7 +53,7 @@ jest.mock("./AddReadPermissionToDefaultIdentity", () => {
 
 jest.mock("./DefaultManagedIdentity", () => {
   const MockDefaultManagedIdentity = () => {
-    return <div data-test="default-managed-identity">Default Managed Identity Component</div>;
+    return <div data-testid="default-managed-identity">Default Managed Identity Component</div>;
   };
   MockDefaultManagedIdentity.displayName = "MockDefaultManagedIdentity";
   return MockDefaultManagedIdentity;
@@ -61,7 +61,8 @@ jest.mock("./DefaultManagedIdentity", () => {
 
 jest.mock("./OnlineCopyEnabled", () => {
   const MockOnlineCopyEnabled = () => {
-    return <div data-test="online-copy-enabled">Online Copy Enabled Component</div>;
+    return <div data-testid="online-copy-enabled">Online Copy Enabled Component</div>;
+    return <div data-testid="online-copy-enabled">Online Copy Enabled Component</div>;
   };
   MockOnlineCopyEnabled.displayName = "MockOnlineCopyEnabled";
   return MockOnlineCopyEnabled;
@@ -69,7 +70,8 @@ jest.mock("./OnlineCopyEnabled", () => {
 
 jest.mock("./PointInTimeRestore", () => {
   const MockPointInTimeRestore = () => {
-    return <div data-test="point-in-time-restore">Point In Time Restore Component</div>;
+    return <div data-testid="point-in-time-restore">Point In Time Restore Component</div>;
+    return <div data-testid="point-in-time-restore">Point In Time Restore Component</div>;
   };
   MockPointInTimeRestore.displayName = "MockPointInTimeRestore";
   return MockPointInTimeRestore;
@@ -196,14 +198,16 @@ describe("AssignPermissions Component", () => {
             {
               id: "addManagedIdentity",
               title: "Add Managed Identity",
-              Component: () => <div data-test="add-managed-identity">Add Managed Identity Component</div>,
+              Component: () => <div data-testid="add-managed-identity">Add Managed Identity Component</div>,
+              Component: () => <div data-testid="add-managed-identity">Add Managed Identity Component</div>,
               disabled: false,
               completed: true,
             },
             {
               id: "readPermissionAssigned",
               title: "Read Permission Assigned",
-              Component: () => <div data-test="add-read-permission">Add Read Permission Component</div>,
+              Component: () => <div data-testid="add-read-permission">Add Read Permission Component</div>,
+              Component: () => <div data-testid="add-read-permission">Add Read Permission Component</div>,
               disabled: false,
               completed: false,
             },
@@ -228,14 +232,18 @@ describe("AssignPermissions Component", () => {
             {
               id: "pointInTimeRestore",
               title: "Point In Time Restore",
-              Component: () => <div data-test="point-in-time-restore">Point In Time Restore Component</div>,
+              Component: () => <div data-testid="point-in-time-restore">Point In Time Restore Component</div>,
+              Component: () => <div data-testid="point-in-time-restore">Point In Time Restore Component</div>,
               disabled: false,
               completed: true,
             },
             {
               id: "onlineCopyEnabled",
               title: "Online Copy Enabled",
-              Component: () => <div data-test="online-copy-enabled">Online Copy Enabled Component</div>,
+              Component: () => <div data-testid="online-copy-enabled">Online Copy Enabled Component</div>,
+              Component: () => <div data-testid="online-copy-enabled">Online Copy Enabled Component</div>,
+              Component: () => <div data-testid="add-managed-identity">Add Managed Identity Component</div>,
+              Component: () => <div data-testid="online-copy-enabled">Online Copy Enabled Component</div>,
               disabled: false,
               completed: false,
             },
@@ -262,7 +270,7 @@ describe("AssignPermissions Component", () => {
             {
               id: "addManagedIdentity",
               title: "Add Managed Identity",
-              Component: () => <div data-test="add-managed-identity">Add Managed Identity Component</div>,
+              Component: () => <div data-testid="add-managed-identity">Add Managed Identity Component</div>,
               disabled: false,
               completed: true,
             },
@@ -276,7 +284,7 @@ describe("AssignPermissions Component", () => {
             {
               id: "onlineCopyEnabled",
               title: "Online Copy Enabled",
-              Component: () => <div data-test="online-copy-enabled">Online Copy Enabled Component</div>,
+              Component: () => <div data-testid="online-copy-enabled">Online Copy Enabled Component</div>,
               disabled: false,
               completed: false,
             },

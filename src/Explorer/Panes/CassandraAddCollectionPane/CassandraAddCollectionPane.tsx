@@ -199,7 +199,7 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
           {keyspaceCreateNew && (
             <Stack className="panelGroupSpacing">
               <TextField
-                data-test="AddCollectionPanel/DatabaseId"
+                data-testid="AddCollectionPanel/DatabaseId"
                 aria-required="true"
                 required={true}
                 autoComplete="off"
@@ -216,7 +216,7 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
 
               {!isServerlessAccount() && (
                 <Stack horizontal>
-                  <div data-test="AddCollectionPanel/SharedThroughputCheckbox">
+                  <div data-testid="AddCollectionPanel/SharedThroughputCheckbox">
                     <Checkbox
                       label="Provision shared throughput"
                       checked={isKeyspaceShared}
@@ -292,7 +292,7 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
               {`CREATE TABLE ${keyspaceCreateNew ? newKeyspaceId : existingKeyspaceId}.`}
             </Text>
             <TextField
-              data-test="AddCollectionPanel/CollectionId"
+              data-testid="AddCollectionPanel/CollectionId"
               underlined
               styles={getTextFieldStyles({ fontSize: 12, width: 150 })}
               aria-required="true"

@@ -15,7 +15,7 @@ jest.mock("../../../../../Utils/arm/identityUtils", () => ({
 
 jest.mock("../Components/InfoTooltip", () => {
   const MockInfoTooltip = ({ content }: { content: React.ReactNode }) => {
-    return <div data-test="info-tooltip">{content}</div>;
+    return <div data-testid="info-tooltip">{content}</div>;
   };
   MockInfoTooltip.displayName = "MockInfoTooltip";
   return MockInfoTooltip;
@@ -41,14 +41,14 @@ jest.mock("../Components/PopoverContainer", () => {
       return null;
     }
     return (
-      <div data-test="popover-message">
-        <div data-test="popover-title">{title}</div>
-        <div data-test="popover-content">{children}</div>
-        <div data-test="popover-loading">{isLoading ? "Loading" : "Not Loading"}</div>
-        <button data-test="popover-cancel" onClick={onCancel}>
+      <div data-testid="popover-message">
+        <div data-testid="popover-title">{title}</div>
+        <div data-testid="popover-content">{children}</div>
+        <div data-testid="popover-loading">{isLoading ? "Loading" : "Not Loading"}</div>
+        <button data-testid="popover-cancel" onClick={onCancel}>
           Cancel
         </button>
-        <button data-test="popover-primary" onClick={onPrimary}>
+        <button data-testid="popover-primary" onClick={onPrimary}>
           Primary
         </button>
       </div>

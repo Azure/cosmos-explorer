@@ -7,14 +7,14 @@ const TestToggleComponent: React.FC<{ initialState?: boolean }> = ({ initialStat
 
   return (
     <div>
-      <span data-test="toggle-state">{state ? "true" : "false"}</span>
-      <button data-test="toggle-button" onClick={() => onToggle(null, !state)}>
+      <span data-testid="toggle-state">{state ? "true" : "false"}</span>
+      <button data-testid="toggle-button" onClick={() => onToggle(null, !state)}>
         Toggle
       </button>
-      <button data-test="set-true-button" onClick={() => onToggle(null, true)}>
+      <button data-testid="set-true-button" onClick={() => onToggle(null, true)}>
         Set True
       </button>
-      <button data-test="set-false-button" onClick={() => onToggle(null, false)}>
+      <button data-testid="set-false-button" onClick={() => onToggle(null, false)}>
         Set False
       </button>
     </div>
@@ -57,8 +57,8 @@ describe("useToggle hook", () => {
 
       return (
         <div>
-          <span data-test="toggle-state">{state ? "true" : "false"}</span>
-          <button data-test="undefined-button" onClick={() => onToggle(null, undefined)}>
+          <span data-testid="toggle-state">{state ? "true" : "false"}</span>
+          <button data-testid="undefined-button" onClick={() => onToggle(null, undefined)}>
             Set Undefined
           </button>
         </div>

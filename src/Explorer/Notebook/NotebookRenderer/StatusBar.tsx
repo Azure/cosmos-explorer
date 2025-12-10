@@ -56,16 +56,16 @@ export class StatusBar extends React.Component<Props> {
 
     return (
       <BarContainer>
-        <Bar data-test="notebookStatusBar">
+        <Bar data-testid="notebookStatusBar">
           <RightStatus>
             {this.props.lastSaved ? (
-              <p data-test="saveStatus"> Last saved {distanceInWordsToNow(this.props.lastSaved)} </p>
+              <p data-testid="saveStatus"> Last saved {distanceInWordsToNow(this.props.lastSaved)} </p>
             ) : (
               <p> Not saved yet </p>
             )}
           </RightStatus>
           <LeftStatus>
-            <p data-test="kernelStatus">
+            <p data-testid="kernelStatus">
               {name} | {this.props.kernelStatus}
             </p>
           </LeftStatus>

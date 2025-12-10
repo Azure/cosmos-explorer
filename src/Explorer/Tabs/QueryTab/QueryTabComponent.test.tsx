@@ -64,7 +64,7 @@ describe("QueryTabComponent", () => {
 
     const { container } = render(<QueryTabComponent {...propsMock} />);
 
-    const launchCopilotButton = container.querySelector('[data-test="QueryTab/ResultsPane/ExecuteCTA"]');
+    const launchCopilotButton = container.querySelector('[data-testid="QueryTab/ResultsPane/ExecuteCTA"]');
     fireEvent.keyDown(launchCopilotButton, { key: "c", altKey: true });
 
     expect(mockStore.setShowCopilotSidebar).toHaveBeenCalledWith(true);

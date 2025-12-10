@@ -32,7 +32,7 @@ describe("CopyJobContext", () => {
     it("should render children correctly", () => {
       render(
         <CopyJobContextProvider explorer={mockExplorer}>
-          <div data-test="test-child">Test Child</div>
+          <div data-testid="test-child">Test Child</div>
         </CopyJobContextProvider>,
       );
 
@@ -552,7 +552,7 @@ describe("CopyJobContext", () => {
       const TestComponent2 = (): JSX.Element => {
         const context = useCopyJobContext();
         contextValue2 = context;
-        return <div data-test="component-2">Component 2</div>;
+        return <div data-testid="component-2">Component 2</div>;
       };
 
       render(

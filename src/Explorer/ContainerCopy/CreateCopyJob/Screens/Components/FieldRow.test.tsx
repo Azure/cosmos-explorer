@@ -24,8 +24,8 @@ describe("FieldRow", () => {
     it("renders children content correctly", () => {
       render(
         <FieldRow label={testLabel}>
-          <input type="text" data-test="test-input" />
-          <button data-test="test-button">Click me</button>
+          <input type="text" data-testid="test-input" />
+          <button data-testid="test-button">Click me</button>
         </FieldRow>,
       );
 
@@ -123,7 +123,7 @@ describe("FieldRow", () => {
     it("positions children in grow container with center alignment", () => {
       const { container } = render(
         <FieldRow label={testLabel}>
-          <div data-test="child-content">{mockChildContent}</div>
+          <div data-testid="child-content">{mockChildContent}</div>
         </FieldRow>,
       );
 
@@ -135,7 +135,7 @@ describe("FieldRow", () => {
     it("maintains layout when no label is provided", () => {
       const { container } = render(
         <FieldRow>
-          <div data-test="child-content">{mockChildContent}</div>
+          <div data-testid="child-content">{mockChildContent}</div>
         </FieldRow>,
       );
 

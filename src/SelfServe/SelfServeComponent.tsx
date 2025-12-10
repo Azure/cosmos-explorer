@@ -463,7 +463,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
       );
     }
     return (
-      <div style={{ overflowX: "auto" }} data-test="DataExplorerRoot">
+      <div style={{ overflowX: "auto" }} data-testid="DataExplorerRoot">
         <Stack tokens={containerStackTokens}>
           <Stack.Item>
             <CommandBar styles={commandBarStyles} items={this.getCommandBarItems()} />

@@ -242,10 +242,10 @@ const GlobalCommands: React.FC<GlobalCommandsProps> = ({ explorer }) => {
   }
 
   return (
-    <div className={styles.globalCommandsContainer} data-test="GlobalCommands">
+    <div className={styles.globalCommandsContainer} data-testid="GlobalCommands">
       {actions.length === 1 ? (
         <Button
-          data-test={`GlobalCommands/Button:${primaryAction.label}`}
+          data-testid={`GlobalCommands/Button:${primaryAction.label}`}
           icon={primaryAction.icon}
           onClick={onPrimaryActionClick}
           ref={primaryFocusableRef}
@@ -258,7 +258,7 @@ const GlobalCommands: React.FC<GlobalCommandsProps> = ({ explorer }) => {
             {(triggerProps: MenuButtonProps) => (
               <div ref={setGlobalCommandButton}>
                 <SplitButton
-                  data-test={`GlobalCommands/Button:${primaryAction.label}`}
+                  data-testid={`GlobalCommands/Button:${primaryAction.label}`}
                   menuButton={{ ...triggerProps, "aria-label": "More commands" }}
                   primaryActionButton={{
                     onClick: onPrimaryActionClick,
@@ -385,7 +385,7 @@ export const SidebarContainer: React.FC<SidebarProps> = ({ explorer }) => {
                         {!isFabricNative() && (
                           <button
                             type="button"
-                            data-test="Sidebar/RefreshButton"
+                            data-testid="Sidebar/RefreshButton"
                             className={styles.floatingControlButton}
                             disabled={loading}
                             title="Refresh"

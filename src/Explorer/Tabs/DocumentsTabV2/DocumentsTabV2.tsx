@@ -2146,8 +2146,8 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
   return (
     <CosmosFluentProvider className={styles.container}>
-      <div data-test={"DocumentsTab"} className="tab-pane active" role="tabpanel" style={{ display: "flex" }}>
-        <div data-test={"DocumentsTab/Filter"} className={`${styles.filterRow} ${styles.smallScreenContent}`}>
+      <div data-testid={"DocumentsTab"} className="tab-pane active" role="tabpanel" style={{ display: "flex" }}>
+        <div data-testid={"DocumentsTab/Filter"} className={`${styles.filterRow} ${styles.smallScreenContent}`}>
           {!isPreferredApiMongoDB && <span> SELECT * FROM c </span>}
           <InputDataList
             dropdownOptions={getFilterChoices()}
@@ -2164,7 +2164,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
           />
           <Button
             appearance="primary"
-            data-test={"DocumentsTab/ApplyFilter"}
+            data-testid={"DocumentsTab/ApplyFilter"}
             size="small"
             onClick={() => {
               if (isExecuting) {
@@ -2191,7 +2191,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
         >
           <Allotment.Pane preferredSize={`${tabStateData.leftPaneWidthPercent}%`} minSize={55}>
             <div
-              data-test={"DocumentsTab/DocumentsPane"}
+              data-testid={"DocumentsTab/DocumentsPane"}
               style={{ height: "100%", width: "100%", overflow: "hidden" }}
               ref={tableContainerRef}
             >
@@ -2237,7 +2237,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
               {tableItems.length > 0 && (
                 <a
                   className={styles.loadMore}
-                  data-test={"DocumentsTab/LoadMore"}
+                  data-testid={"DocumentsTab/LoadMore"}
                   role="button"
                   tabIndex={0}
                   onClick={() => loadNextPage(documentsIterator.iterator, false)}
@@ -2249,7 +2249,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
             </div>
           </Allotment.Pane>
           <Allotment.Pane minSize={30}>
-            <div data-test={"DocumentsTab/ResultsPane"} style={{ height: "100%", width: "100%" }}>
+            <div data-testid={"DocumentsTab/ResultsPane"} style={{ height: "100%", width: "100%" }}>
               {isTabActive && selectedDocumentContent && selectedRows.size <= 1 && (
                 <EditorReact
                   language={"json"}
