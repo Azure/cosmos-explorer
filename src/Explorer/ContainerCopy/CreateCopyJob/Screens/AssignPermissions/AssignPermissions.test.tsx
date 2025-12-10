@@ -62,7 +62,6 @@ jest.mock("./DefaultManagedIdentity", () => {
 jest.mock("./OnlineCopyEnabled", () => {
   const MockOnlineCopyEnabled = () => {
     return <div data-testid="online-copy-enabled">Online Copy Enabled Component</div>;
-    return <div data-testid="online-copy-enabled">Online Copy Enabled Component</div>;
   };
   MockOnlineCopyEnabled.displayName = "MockOnlineCopyEnabled";
   return MockOnlineCopyEnabled;
@@ -70,7 +69,6 @@ jest.mock("./OnlineCopyEnabled", () => {
 
 jest.mock("./PointInTimeRestore", () => {
   const MockPointInTimeRestore = () => {
-    return <div data-testid="point-in-time-restore">Point In Time Restore Component</div>;
     return <div data-testid="point-in-time-restore">Point In Time Restore Component</div>;
   };
   MockPointInTimeRestore.displayName = "MockPointInTimeRestore";
@@ -199,14 +197,12 @@ describe("AssignPermissions Component", () => {
               id: "addManagedIdentity",
               title: "Add Managed Identity",
               Component: () => <div data-testid="add-managed-identity">Add Managed Identity Component</div>,
-              Component: () => <div data-testid="add-managed-identity">Add Managed Identity Component</div>,
               disabled: false,
               completed: true,
             },
             {
               id: "readPermissionAssigned",
               title: "Read Permission Assigned",
-              Component: () => <div data-testid="add-read-permission">Add Read Permission Component</div>,
               Component: () => <div data-testid="add-read-permission">Add Read Permission Component</div>,
               disabled: false,
               completed: false,
@@ -233,16 +229,12 @@ describe("AssignPermissions Component", () => {
               id: "pointInTimeRestore",
               title: "Point In Time Restore",
               Component: () => <div data-testid="point-in-time-restore">Point In Time Restore Component</div>,
-              Component: () => <div data-testid="point-in-time-restore">Point In Time Restore Component</div>,
               disabled: false,
               completed: true,
             },
             {
               id: "onlineCopyEnabled",
               title: "Online Copy Enabled",
-              Component: () => <div data-testid="online-copy-enabled">Online Copy Enabled Component</div>,
-              Component: () => <div data-testid="online-copy-enabled">Online Copy Enabled Component</div>,
-              Component: () => <div data-testid="add-managed-identity">Add Managed Identity Component</div>,
               Component: () => <div data-testid="online-copy-enabled">Online Copy Enabled Component</div>,
               disabled: false,
               completed: false,

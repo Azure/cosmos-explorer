@@ -26,7 +26,6 @@ jest.mock("../../../../../Common/Logger", () => ({
 jest.mock("../../../../../Common/LoadingOverlay", () => {
   const MockLoadingOverlay = ({ isLoading, label }: { isLoading: boolean; label: string }) => {
     return isLoading ? <div data-testid="loading-overlay">{label}</div> : null;
-    return isLoading ? <div data-testid="loading-overlay">{label}</div> : null;
   };
   MockLoadingOverlay.displayName = "MockLoadingOverlay";
   return MockLoadingOverlay;
