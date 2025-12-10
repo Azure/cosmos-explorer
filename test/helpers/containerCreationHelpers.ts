@@ -42,7 +42,7 @@ export const MONGO_CONFIG: ApiConfig = {
   partitionKeyLabel: "Shard key",
   partitionKeyPlaceholder: "pk",
   confirmDeleteLabel: "Confirm by typing the collection id",
-  supportsUniqueKeys: true,
+  supportsUniqueKeys: false,
 };
 
 export const MONGO32_CONFIG: ApiConfig = {
