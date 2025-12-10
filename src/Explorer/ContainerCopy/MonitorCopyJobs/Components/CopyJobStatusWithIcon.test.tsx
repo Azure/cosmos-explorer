@@ -52,7 +52,7 @@ describe("CopyJobStatusWithIcon", () => {
 
       const spinner = container.querySelector('[class*="ms-Spinner"]');
       expect(spinner).toBeInTheDocument();
-      expect(container).toHaveTextContent("In Progress");
+      expect(container).toHaveTextContent("Running");
       expect(container.firstChild).toMatchSnapshot();
     });
   });
@@ -83,18 +83,18 @@ describe("CopyJobStatusWithIcon", () => {
     it("provides meaningful text content for screen readers", () => {
       const { container } = render(<CopyJobStatusWithIcon status={CopyJobStatusType.InProgress} />);
 
-      expect(container).toHaveTextContent("In Progress");
+      expect(container).toHaveTextContent("Running");
     });
   });
 
   describe("Icon and Status Mapping", () => {
     it("renders correct status text based on mapping", () => {
       const statusMappings = [
-        { status: CopyJobStatusType.Pending, expectedText: "Pending" },
+        { status: CopyJobStatusType.Pending, expectedText: "Queued" },
         { status: CopyJobStatusType.Paused, expectedText: "Paused" },
         { status: CopyJobStatusType.Failed, expectedText: "Failed" },
         { status: CopyJobStatusType.Completed, expectedText: "Completed" },
-        { status: CopyJobStatusType.Running, expectedText: "In Progress" },
+        { status: CopyJobStatusType.Running, expectedText: "Running" },
       ];
 
       statusMappings.forEach(({ status, expectedText }) => {

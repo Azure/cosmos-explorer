@@ -433,7 +433,7 @@ describe("CopyJobActions", () => {
       (dataTransferService.listByDatabaseAccount as jest.Mock).mockRejectedValue(abortError);
 
       await expect(getCopyJobs()).rejects.toMatchObject({
-        message: expect.stringContaining("Please wait for the current fetch request to complete"),
+        message: expect.stringContaining("Previous copy job request was cancelled."),
       });
     });
 
