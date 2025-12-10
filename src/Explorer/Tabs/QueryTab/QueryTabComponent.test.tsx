@@ -52,8 +52,9 @@ describe("QueryTabComponent", () => {
         copilotVersion: "v3.0",
       },
     });
+
     const propsMock: Readonly<IQueryTabComponentProps> = {
-      collection: { databaseId: "CopilotSampleDB" },
+      collection: { databaseId: "CopilotSampleDB", id: () => "CopilotContainer" },
       onTabAccessor: () => jest.fn(),
       isExecutionError: false,
       tabId: "mockTabId",
