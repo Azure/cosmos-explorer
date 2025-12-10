@@ -124,8 +124,7 @@ export const getCopyJobs = async (): Promise<CopyJobType[]> => {
     const errorContent = JSON.stringify(error.content || error.message || error);
     if (errorContent.includes("signal is aborted without reason")) {
       throw {
-        message:
-          "Please wait for the current fetch request to complete. The previous copy job fetch request was aborted.",
+        message: "Previous copy job request was cancelled.",
       };
     } else {
       throw error;

@@ -1,52 +1,37 @@
-/* eslint-disable react/display-name */
-import { Stack } from "@fluentui/react";
+import { Stack, Text } from "@fluentui/react";
 import React from "react";
-import { apiType } from "UserContext";
-import { DatabaseAccount, Subscription } from "../../../../../Contracts/DataModels";
-import { useDatabaseAccounts } from "../../../../../hooks/useDatabaseAccounts";
-import { useSubscriptions } from "../../../../../hooks/useSubscriptions";
 import ContainerCopyMessages from "../../../ContainerCopyMessages";
 import { useCopyJobContext } from "../../../Context/CopyJobContext";
 import { CopyJobMigrationType } from "../../../Enums/CopyJobEnums";
 import { AccountDropdown } from "./Components/AccountDropdown";
 import { MigrationTypeCheckbox } from "./Components/MigrationTypeCheckbox";
 import { SubscriptionDropdown } from "./Components/SubscriptionDropdown";
-import { useDropdownOptions, useEventHandlers } from "./Utils/selectAccountUtils";
 
 const SelectAccount = React.memo(() => {
   const { copyJobState, setCopyJobState } = useCopyJobContext();
-  const selectedSubscriptionId = copyJobState?.source?.subscription?.subscriptionId;
-  const selectedSourceAccountId = copyJobState?.source?.account?.id;
 
-  const subscriptions: Subscription[] = useSubscriptions();
-  const allAccounts: DatabaseAccount[] = useDatabaseAccounts(selectedSubscriptionId);
-  const sqlApiOnlyAccounts: DatabaseAccount[] = allAccounts?.filter((account) => apiType(account) === "SQL");
-
-  const { subscriptionOptions, accountOptions } = useDropdownOptions(subscriptions, sqlApiOnlyAccounts);
-  const { handleSelectSourceAccount, handleMigrationTypeChange } = useEventHandlers(setCopyJobState);
+  const handleMigrationTypeChange = (_ev?: React.FormEvent<HTMLElement>, checked?: boolean) => {
+    setCopyJobState((prevState) => ({
+      ...prevState,
+      migrationType: checked ? CopyJobMigrationType.Offline : CopyJobMigrationType.Online,
+    }));
+  };
 
   const migrationTypeChecked = copyJobState?.migrationType === CopyJobMigrationType.Offline;
 
   return (
-    <Stack className="selectAccountContainer" tokens={{ childrenGap: 15 }}>
-      <span>{ContainerCopyMessages.selectAccountDescription}</span>
+    <Stack data-test="Panel:SelectAccountContainer" className="selectAccountContainer" tokens={{ childrenGap: 15 }}>
+      <Text>{ContainerCopyMessages.selectAccountDescription}</Text>
 
-      <SubscriptionDropdown
-        options={subscriptionOptions}
-        selectedKey={selectedSubscriptionId}
-        onChange={(_ev, option) => handleSelectSourceAccount("subscription", option?.data)}
-      />
+      <SubscriptionDropdown />
 
-      <AccountDropdown
-        options={accountOptions}
-        selectedKey={selectedSourceAccountId}
-        disabled={!selectedSubscriptionId}
-        onChange={(_ev, option) => handleSelectSourceAccount("account", option?.data)}
-      />
+      <AccountDropdown />
 
       <MigrationTypeCheckbox checked={migrationTypeChecked} onChange={handleMigrationTypeChange} />
     </Stack>
   );
 });
+
+SelectAccount.displayName = "SelectAccount";
 
 export default SelectAccount;

@@ -15,7 +15,7 @@ exports[`CopyJobStatusWithIcon Spinner Status Types renders InProgress with spin
   <span
     class="css-112"
   >
-    In Progress
+    Running
   </span>
 </div>
 `;
@@ -35,7 +35,7 @@ exports[`CopyJobStatusWithIcon Spinner Status Types renders Partitioning with sp
   <span
     class="css-112"
   >
-    In Progress
+    Running
   </span>
 </div>
 `;
@@ -55,7 +55,7 @@ exports[`CopyJobStatusWithIcon Spinner Status Types renders Running with spinner
   <span
     class="css-112"
   >
-    In Progress
+    Running
   </span>
 </div>
 `;
@@ -181,7 +181,7 @@ exports[`CopyJobStatusWithIcon Static Icon Status Types - Snapshot Tests renders
   <span
     class="css-112"
   >
-    Pending
+    Queued
   </span>
 </div>
 `;

@@ -59,15 +59,8 @@ describe("CopyJobContext", () => {
         jobName: "",
         migrationType: CopyJobMigrationType.Offline,
         source: {
-          subscription: {
-            subscriptionId: "test-subscription-id",
-          },
-          account: {
-            id: "/subscriptions/test-sub/resourceGroups/test-rg/providers/Microsoft.DocumentDB/databaseAccounts/test-account",
-            name: "test-account",
-            location: "East US",
-            kind: "GlobalDocumentDB",
-          },
+          subscription: null,
+          account: null,
           databaseId: "",
           containerId: "",
         },
@@ -605,8 +598,8 @@ describe("CopyJobContext", () => {
         </CopyJobContextProvider>,
       );
 
-      expect(contextValue.copyJobState.source.subscription.subscriptionId).toBe("test-subscription-id");
-      expect(contextValue.copyJobState.source.account.name).toBe("test-account");
+      expect(contextValue.copyJobState.source?.subscription?.subscriptionId).toBeUndefined();
+      expect(contextValue.copyJobState.source?.account?.name).toBeUndefined();
     });
 
     it("should initialize target with userContext values", () => {
