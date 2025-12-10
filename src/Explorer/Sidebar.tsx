@@ -244,7 +244,12 @@ const GlobalCommands: React.FC<GlobalCommandsProps> = ({ explorer }) => {
   return (
     <div className={styles.globalCommandsContainer} data-test="GlobalCommands">
       {actions.length === 1 ? (
-        <Button icon={primaryAction.icon} onClick={onPrimaryActionClick} ref={primaryFocusableRef}>
+        <Button
+          data-test={`GlobalCommands/Button:${primaryAction.label}`}
+          icon={primaryAction.icon}
+          onClick={onPrimaryActionClick}
+          ref={primaryFocusableRef}
+        >
           {primaryAction.label}
         </Button>
       ) : (
@@ -253,8 +258,12 @@ const GlobalCommands: React.FC<GlobalCommandsProps> = ({ explorer }) => {
             {(triggerProps: MenuButtonProps) => (
               <div ref={setGlobalCommandButton}>
                 <SplitButton
+                  data-test={`GlobalCommands/Button:${primaryAction.label}`}
                   menuButton={{ ...triggerProps, "aria-label": "More commands" }}
-                  primaryActionButton={{ onClick: onPrimaryActionClick, ref: primaryFocusableRef }}
+                  primaryActionButton={{
+                    onClick: onPrimaryActionClick,
+                    ref: primaryFocusableRef,
+                  }}
                   className={styles.globalCommandsSplitButton}
                   icon={primaryAction.icon}
                 >

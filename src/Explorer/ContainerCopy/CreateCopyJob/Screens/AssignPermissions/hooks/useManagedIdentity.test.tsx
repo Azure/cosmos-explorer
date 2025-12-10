@@ -52,11 +52,11 @@ const TestComponent: React.FC<TestComponentProps> = ({ updateIdentityFn, onError
 
   return (
     <div>
-      <button onClick={handleClick} disabled={loading} data-testid="add-identity-button">
+      <button onClick={handleClick} disabled={loading} data-test="add-identity-button">
         {loading ? "Loading..." : "Add System Identity"}
       </button>
-      <div data-testid="loading-status">{loading ? "true" : "false"}</div>
-      {contextError && <div data-testid="error-message">{contextError}</div>}
+      <div data-test="loading-status">{loading ? "true" : "false"}</div>
+      {contextError && <div data-test="error-message">{contextError}</div>}
     </div>
   );
 };

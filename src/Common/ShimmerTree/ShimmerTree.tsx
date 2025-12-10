@@ -23,7 +23,7 @@ const ShimmerTree = ({ indentLevels, style = {} }: ShimmerTreeProps) => {
   );
 
   return (
-    <Stack tokens={{ childrenGap: 8 }} style={{ width: "50%", ...style }} data-testid="shimmer-stack">
+    <Stack tokens={{ childrenGap: 8 }} style={{ width: "50%", ...style }} data-test="shimmer-stack">
       {indentLevels.map((indentLevel: IndentLevel) => renderShimmers(indentLevel))}
     </Stack>
   );

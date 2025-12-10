@@ -209,6 +209,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
               checked={isAutoscaleSelected}
               type="radio"
               role="radio"
+              data-test="ThroughputInput/ThroughputMode:Autoscale"
               tabIndex={0}
               onChange={(e) => handleOnChangeMode(e, "Autoscale")}
             />
@@ -224,6 +225,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
               type="radio"
               aria-required={true}
               role="radio"
+              data-test="ThroughputInput/ThroughputMode:Manual"
               tabIndex={0}
               onChange={(e) => handleOnChangeMode(e, "Manual")}
             />
@@ -286,7 +288,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
               </Stack>
               <TextField
                 id="autoscaleRUValueField"
-                data-test="autoscaleRUInput"
+                data-test="ThroughputInput/AutoscaleRUInput"
                 type="number"
                 styles={{
                   fieldGroup: { width: 100, height: 27, flexShrink: 0 },
@@ -352,6 +354,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
             }
           >
             <TextField
+              data-test="ThroughputInput/ManualThroughputInput"
               type="number"
               styles={{
                 fieldGroup: { width: 300, height: 27 },

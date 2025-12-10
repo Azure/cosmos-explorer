@@ -34,7 +34,7 @@ jest.mock("../../../../CopyJobUtils", () => ({
 
 jest.mock("../AddManagedIdentity", () => {
   const MockAddManagedIdentity = () => {
-    return <div data-testid="add-managed-identity">AddManagedIdentity</div>;
+    return <div data-test="add-managed-identity">AddManagedIdentity</div>;
   };
   MockAddManagedIdentity.displayName = "MockAddManagedIdentity";
   return MockAddManagedIdentity;
@@ -42,7 +42,7 @@ jest.mock("../AddManagedIdentity", () => {
 
 jest.mock("../AddReadPermissionToDefaultIdentity", () => {
   const MockAddReadPermissionToDefaultIdentity = () => {
-    return <div data-testid="add-read-permission">AddReadPermissionToDefaultIdentity</div>;
+    return <div data-test="add-read-permission">AddReadPermissionToDefaultIdentity</div>;
   };
   MockAddReadPermissionToDefaultIdentity.displayName = "MockAddReadPermissionToDefaultIdentity";
   return MockAddReadPermissionToDefaultIdentity;
@@ -50,7 +50,7 @@ jest.mock("../AddReadPermissionToDefaultIdentity", () => {
 
 jest.mock("../DefaultManagedIdentity", () => {
   const MockDefaultManagedIdentity = () => {
-    return <div data-testid="default-managed-identity">DefaultManagedIdentity</div>;
+    return <div data-test="default-managed-identity">DefaultManagedIdentity</div>;
   };
   MockDefaultManagedIdentity.displayName = "MockDefaultManagedIdentity";
   return MockDefaultManagedIdentity;
@@ -58,7 +58,7 @@ jest.mock("../DefaultManagedIdentity", () => {
 
 jest.mock("../OnlineCopyEnabled", () => {
   const MockOnlineCopyEnabled = () => {
-    return <div data-testid="online-copy-enabled">OnlineCopyEnabled</div>;
+    return <div data-test="online-copy-enabled">OnlineCopyEnabled</div>;
   };
   MockOnlineCopyEnabled.displayName = "MockOnlineCopyEnabled";
   return MockOnlineCopyEnabled;
@@ -66,7 +66,7 @@ jest.mock("../OnlineCopyEnabled", () => {
 
 jest.mock("../PointInTimeRestore", () => {
   const MockPointInTimeRestore = () => {
-    return <div data-testid="point-in-time-restore">PointInTimeRestore</div>;
+    return <div data-test="point-in-time-restore">PointInTimeRestore</div>;
   };
   MockPointInTimeRestore.displayName = "MockPointInTimeRestore";
   return MockPointInTimeRestore;
@@ -92,18 +92,18 @@ const TestWrapper: React.FC<TestWrapperProps> = ({ state, onResult }) => {
   }, [result, onResult]);
 
   return (
-    <div data-testid="test-wrapper">
-      <div data-testid="groups-count">{result.length}</div>
+    <div data-test="test-wrapper">
+      <div data-test="groups-count">{result.length}</div>
       {result.map((group) => (
-        <div key={group.id} data-testid={`group-${group.id}`}>
+        <div key={group.id} data-test={`group-${group.id}`}>
           <h3>{group.title}</h3>
           <p>{group.description}</p>
           {group.sections.map((section) => (
-            <div key={section.id} data-testid={`section-${section.id}`}>
-              <span data-testid={`section-${section.id}-completed`}>
+            <div key={section.id} data-test={`section-${section.id}`}>
+              <span data-test={`section-${section.id}-completed`}>
                 {section.completed?.toString() || "undefined"}
               </span>
-              <span data-testid={`section-${section.id}-disabled`}>{section.disabled.toString()}</span>
+              <span data-test={`section-${section.id}-disabled`}>{section.disabled.toString()}</span>
             </div>
           ))}
         </div>

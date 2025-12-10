@@ -20,7 +20,7 @@ jest.mock("../../../CopyJobUtils", () => ({
 
 jest.mock("../Components/InfoTooltip", () => {
   const MockInfoTooltip = ({ content }: { content: React.ReactNode }) => {
-    return <div data-testid="info-tooltip">{content}</div>;
+    return <div data-test="info-tooltip">{content}</div>;
   };
   MockInfoTooltip.displayName = "MockInfoTooltip";
   return MockInfoTooltip;
@@ -46,13 +46,13 @@ jest.mock("../Components/PopoverContainer", () => {
       return null;
     }
     return (
-      <div data-testid="popover-message" data-loading={isLoading}>
-        <div data-testid="popover-title">{title}</div>
-        <div data-testid="popover-content">{children}</div>
-        <button onClick={onCancel} data-testid="popover-cancel">
+      <div data-test="popover-message" data-loading={isLoading}>
+        <div data-test="popover-title">{title}</div>
+        <div data-test="popover-content">{children}</div>
+        <button onClick={onCancel} data-test="popover-cancel">
           Cancel
         </button>
-        <button onClick={onPrimary} data-testid="popover-primary">
+        <button onClick={onPrimary} data-test="popover-primary">
           Primary
         </button>
       </div>

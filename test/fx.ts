@@ -344,7 +344,7 @@ export class DataExplorer {
    * There's only a single "primary" button, but we still require you to pass the label to confirm you're selecting the right button.
    */
   globalCommandButton(label: string): Locator {
-    return this.frame.getByTestId("GlobalCommands").getByText(label);
+    return this.frame.getByTestId(`GlobalCommands/Button:${label}`);
   }
 
   /** Select the command bar button with the specified label */

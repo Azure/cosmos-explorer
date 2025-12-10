@@ -301,6 +301,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                       type="radio"
                       role="radio"
                       id="databaseCreateNew"
+                      data-test="AddCollectionPanel/DatabaseRadio:CreateNew"
                       tabIndex={0}
                       onChange={this.onCreateNewDatabaseRadioBtnChange.bind(this)}
                     />
@@ -314,6 +315,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                       name="databaseType"
                       type="radio"
                       role="radio"
+                      data-test="AddCollectionPanel/DatabaseRadio:UseExisting"
                       tabIndex={0}
                       onChange={this.onUseExistingDatabaseRadioBtnChange.bind(this)}
                     />
@@ -337,6 +339,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                     size={40}
                     className="panelTextField"
                     aria-label="New database id, Type a new database id"
+                    data-test="AddCollectionPanel/DatabaseId"
                     tabIndex={0}
                     value={this.state.newDatabaseId}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
@@ -346,18 +349,20 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
                   {!isServerlessAccount() && (
                     <Stack horizontal>
-                      <Checkbox
-                        label={`Share throughput across ${getCollectionName(true).toLocaleLowerCase()}`}
-                        checked={this.state.isSharedThroughputChecked}
-                        styles={{
-                          text: { fontSize: 12 },
-                          checkbox: { width: 12, height: 12 },
-                          label: { padding: 0, alignItems: "center" },
-                        }}
-                        onChange={(ev: React.FormEvent<HTMLElement>, isChecked: boolean) =>
-                          this.setState({ isSharedThroughputChecked: isChecked })
-                        }
-                      />
+                      <div data-test="AddCollectionPanel/SharedThroughputCheckbox">
+                        <Checkbox
+                          label={`Share throughput across ${getCollectionName(true).toLocaleLowerCase()}`}
+                          checked={this.state.isSharedThroughputChecked}
+                          styles={{
+                            text: { fontSize: 12 },
+                            checkbox: { width: 12, height: 12 },
+                            label: { padding: 0, alignItems: "center" },
+                          }}
+                          onChange={(ev: React.FormEvent<HTMLElement>, isChecked: boolean) =>
+                            this.setState({ isSharedThroughputChecked: isChecked })
+                          }
+                        />
+                      </div>
                       <TooltipHost
                         directionalHint={DirectionalHint.bottomLeftEdge}
                         content={`Throughput configured at the database level will be shared across all ${getCollectionName(
@@ -396,6 +401,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               {!this.state.createNewDatabase && (
                 <Dropdown
                   ariaLabel="Choose an existing database"
+                  data-test="AddCollectionPanel/ExistingDatabaseDropdown"
                   styles={{ title: { height: 27, lineHeight: 27 }, dropdownItem: { fontSize: 12 } }}
                   style={{ width: 300, fontSize: 12 }}
                   placeholder="Choose an existing database"
@@ -443,6 +449,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               placeholder={`e.g., ${getCollectionName()}1`}
               size={40}
               className="panelTextField"
+              data-test="AddCollectionPanel/CollectionId"
               aria-label={`${getCollectionName()} id, Example ${getCollectionName()}1`}
               value={this.state.collectionId}
               onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
@@ -576,6 +583,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               <input
                 type="text"
                 id="addCollection-partitionKeyValue"
+                data-test="AddCollectionPanel/PartitionKey"
                 aria-required
                 required
                 size={40}
@@ -612,6 +620,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                       <input
                         type="text"
                         id="addCollection-partitionKeyValue"
+                        data-test="AddCollectionPanel/PartitionKey"
                         key={`addCollection-partitionKeyValue_${index}`}
                         aria-required
                         required
@@ -729,7 +738,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
           )}
 
           {!isFabricNative() && userContext.apiType === "SQL" && (
-            <Stack style={{ marginTop: -2, marginBottom: -4 }}>
+            <Stack style={{ marginTop: -2, marginBottom: -4 }} data-test="AddCollectionPanel/UniqueKeysSection">
               {UniqueKeysHeader()}
               {this.state.uniqueKeys.map((uniqueKey: string, i: number): JSX.Element => {
                 return (
@@ -743,6 +752,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                           : "Comma separated paths e.g. /firstName,/address/zipCode"
                       }
                       className="panelTextField"
+                      data-test="AddCollectionPanel/UniqueKey"
                       value={uniqueKey}
                       onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                         const uniqueKeys = this.state.uniqueKeys.map((uniqueKey: string, j: number) => {
@@ -769,6 +779,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
               <ActionButton
                 iconProps={{ iconName: "Add" }}
+                data-test="AddCollectionPanel/AddUniqueKeyButton"
                 styles={{ root: { padding: 0 }, label: { fontSize: 12 } }}
                 onClick={() => this.setState({ uniqueKeys: [...this.state.uniqueKeys, ""] })}
               >
