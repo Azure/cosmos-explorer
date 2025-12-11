@@ -1,219 +1,409 @@
 import "@testing-library/jest-dom";
-import { render } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import React from "react";
-import { DropdownOptionType } from "../../../../Types/CopyJobTypes";
+import { configContext, Platform } from "../../../../../../ConfigContext";
+import { DatabaseAccount } from "../../../../../../Contracts/DataModels";
+import * as useDatabaseAccountsHook from "../../../../../../hooks/useDatabaseAccounts";
+import { apiType, userContext } from "../../../../../../UserContext";
+import ContainerCopyMessages from "../../../../ContainerCopyMessages";
+import { CopyJobContext } from "../../../../Context/CopyJobContext";
+import { CopyJobMigrationType } from "../../../../Enums/CopyJobEnums";
+import { CopyJobContextProviderType, CopyJobContextState } from "../../../../Types/CopyJobTypes";
 import { AccountDropdown } from "./AccountDropdown";
 
-describe("AccountDropdown", () => {
-  const mockOnChange = jest.fn();
+jest.mock("../../../../../../hooks/useDatabaseAccounts");
+jest.mock("../../../../../../UserContext", () => ({
+  userContext: {
+    databaseAccount: null as DatabaseAccount | null,
+  },
+  apiType: jest.fn(),
+}));
+jest.mock("../../../../../../ConfigContext", () => ({
+  configContext: {
+    platform: "Portal",
+  },
+  Platform: {
+    Portal: "Portal",
+    Hosted: "Hosted",
+  },
+}));
 
-  const mockAccountOptions: DropdownOptionType[] = [
-    {
-      key: "account-1",
-      text: "Development Account",
-      data: {
-        id: "account-1",
-        name: "Development Account",
-        location: "East US",
-        resourceGroup: "dev-rg",
-        kind: "GlobalDocumentDB",
-        properties: {
-          documentEndpoint: "https://dev-account.documents.azure.com:443/",
-          provisioningState: "Succeeded",
-          consistencyPolicy: {
-            defaultConsistencyLevel: "Session",
-          },
-        },
+const mockUseDatabaseAccounts = useDatabaseAccountsHook.useDatabaseAccounts as jest.MockedFunction<
+  typeof useDatabaseAccountsHook.useDatabaseAccounts
+>;
+
+describe("AccountDropdown", () => {
+  const mockSetCopyJobState = jest.fn();
+  const mockCopyJobState = {
+    jobName: "",
+    migrationType: CopyJobMigrationType.Offline,
+    source: {
+      subscription: {
+        subscriptionId: "test-subscription-id",
+        displayName: "Test Subscription",
       },
+      account: null,
+      databaseId: "",
+      containerId: "",
     },
-    {
-      key: "account-2",
-      text: "Production Account",
-      data: {
-        id: "account-2",
-        name: "Production Account",
-        location: "West US 2",
-        resourceGroup: "prod-rg",
-        kind: "GlobalDocumentDB",
-        properties: {
-          documentEndpoint: "https://prod-account.documents.azure.com:443/",
-          provisioningState: "Succeeded",
-          consistencyPolicy: {
-            defaultConsistencyLevel: "Strong",
-          },
-        },
-      },
+    target: {
+      subscriptionId: "",
+      account: null,
+      databaseId: "",
+      containerId: "",
     },
-    {
-      key: "account-3",
-      text: "Testing Account",
-      data: {
-        id: "account-3",
-        name: "Testing Account",
-        location: "Central US",
-        resourceGroup: "test-rg",
-        kind: "GlobalDocumentDB",
-        properties: {
-          documentEndpoint: "https://test-account.documents.azure.com:443/",
-          provisioningState: "Succeeded",
-          consistencyPolicy: {
-            defaultConsistencyLevel: "Eventual",
-          },
-        },
-      },
+    sourceReadAccessFromTarget: false,
+  } as CopyJobContextState;
+
+  const mockCopyJobContextValue = {
+    copyJobState: mockCopyJobState,
+    setCopyJobState: mockSetCopyJobState,
+    flow: null,
+    setFlow: jest.fn(),
+    contextError: null,
+    setContextError: jest.fn(),
+    resetCopyJobState: jest.fn(),
+  } as CopyJobContextProviderType;
+
+  const mockDatabaseAccount1: DatabaseAccount = {
+    id: "/subscriptions/test-sub/resourceGroups/test-rg/providers/Microsoft.DocumentDb/databaseAccounts/account1",
+    name: "test-account-1",
+    kind: "GlobalDocumentDB",
+    location: "East US",
+    type: "Microsoft.DocumentDB/databaseAccounts",
+    tags: {},
+    properties: {
+      documentEndpoint: "https://account1.documents.azure.com:443/",
+      capabilities: [],
+      enableMultipleWriteLocations: false,
     },
-  ];
+  };
+
+  const mockDatabaseAccount2: DatabaseAccount = {
+    id: "/subscriptions/test-sub/resourceGroups/test-rg/providers/Microsoft.DocumentDb/databaseAccounts/account2",
+    name: "test-account-2",
+    kind: "GlobalDocumentDB",
+    location: "West US",
+    type: "Microsoft.DocumentDB/databaseAccounts",
+    tags: {},
+    properties: {
+      documentEndpoint: "https://account2.documents.azure.com:443/",
+      capabilities: [],
+      enableMultipleWriteLocations: false,
+    },
+  };
+
+  const mockNonSqlAccount: DatabaseAccount = {
+    id: "/subscriptions/test-sub/resourceGroups/test-rg/providers/Microsoft.DocumentDb/databaseAccounts/mongo-account",
+    name: "mongo-account",
+    kind: "MongoDB",
+    location: "Central US",
+    type: "Microsoft.DocumentDB/databaseAccounts",
+    tags: {},
+    properties: {
+      documentEndpoint: "https://mongo-account.documents.azure.com:443/",
+      capabilities: [],
+      enableMultipleWriteLocations: false,
+    },
+  };
+
+  const renderWithContext = (contextValue = mockCopyJobContextValue) => {
+    return render(
+      <CopyJobContext.Provider value={contextValue}>
+        <AccountDropdown />
+      </CopyJobContext.Provider>,
+    );
+  };
 
   beforeEach(() => {
     jest.clearAllMocks();
+    (apiType as jest.MockedFunction<any>).mockImplementation((account: DatabaseAccount) => {
+      return account.kind === "MongoDB" ? "MongoDB" : "SQL";
+    });
   });
 
-  describe("Snapshot Testing", () => {
-    it("matches snapshot with all account options", () => {
-      const { container } = render(
-        <AccountDropdown options={mockAccountOptions} disabled={false} onChange={mockOnChange} />,
+  describe("Rendering", () => {
+    it("should render dropdown with correct label and placeholder", () => {
+      mockUseDatabaseAccounts.mockReturnValue([]);
+
+      renderWithContext();
+
+      expect(
+        screen.getByText(`${ContainerCopyMessages.sourceAccountDropdownLabel}:`, { exact: true }),
+      ).toBeInTheDocument();
+      expect(screen.getByRole("combobox")).toHaveAttribute(
+        "aria-label",
+        ContainerCopyMessages.sourceAccountDropdownLabel,
       );
-
-      expect(container.firstChild).toMatchSnapshot();
     });
 
-    it("matches snapshot with selected account", () => {
-      const { container } = render(
-        <AccountDropdown
-          options={mockAccountOptions}
-          selectedKey="account-2"
-          disabled={false}
-          onChange={mockOnChange}
-        />,
-      );
+    it("should render disabled dropdown when no subscription is selected", () => {
+      mockUseDatabaseAccounts.mockReturnValue([]);
+      const contextWithoutSubscription = {
+        ...mockCopyJobContextValue,
+        copyJobState: {
+          ...mockCopyJobState,
+          source: {
+            ...mockCopyJobState.source,
+            subscription: null,
+          },
+        } as CopyJobContextState,
+      };
 
-      expect(container.firstChild).toMatchSnapshot();
+      renderWithContext(contextWithoutSubscription);
+
+      const dropdown = screen.getByRole("combobox");
+      expect(dropdown).toHaveAttribute("aria-disabled", "true");
     });
 
-    it("matches snapshot with disabled dropdown", () => {
-      const { container } = render(
-        <AccountDropdown
-          options={mockAccountOptions}
-          selectedKey="account-1"
-          disabled={true}
-          onChange={mockOnChange}
-        />,
-      );
+    it("should render disabled dropdown when no accounts are available", () => {
+      mockUseDatabaseAccounts.mockReturnValue([]);
 
-      expect(container.firstChild).toMatchSnapshot();
+      renderWithContext();
+
+      const dropdown = screen.getByRole("combobox");
+      expect(dropdown).toHaveAttribute("aria-disabled", "true");
     });
 
-    it("matches snapshot with empty options", () => {
-      const { container } = render(<AccountDropdown options={[]} disabled={false} onChange={mockOnChange} />);
+    it("should render enabled dropdown when accounts are available", () => {
+      mockUseDatabaseAccounts.mockReturnValue([mockDatabaseAccount1, mockDatabaseAccount2]);
 
-      expect(container.firstChild).toMatchSnapshot();
+      renderWithContext();
+
+      const dropdown = screen.getByRole("combobox");
+      expect(dropdown).toHaveAttribute("aria-disabled", "false");
+    });
+  });
+
+  describe("Account filtering", () => {
+    it("should filter accounts to only show SQL API accounts", () => {
+      const allAccounts = [mockDatabaseAccount1, mockDatabaseAccount2, mockNonSqlAccount];
+      mockUseDatabaseAccounts.mockReturnValue(allAccounts);
+
+      renderWithContext();
+
+      expect(mockUseDatabaseAccounts).toHaveBeenCalledWith("test-subscription-id");
+
+      expect(apiType as jest.MockedFunction<any>).toHaveBeenCalledWith(mockDatabaseAccount1);
+      expect(apiType as jest.MockedFunction<any>).toHaveBeenCalledWith(mockDatabaseAccount2);
+      expect(apiType as jest.MockedFunction<any>).toHaveBeenCalledWith(mockNonSqlAccount);
+    });
+  });
+
+  describe("Account selection", () => {
+    it("should auto-select the first SQL account when no account is currently selected", async () => {
+      mockUseDatabaseAccounts.mockReturnValue([mockDatabaseAccount1, mockDatabaseAccount2]);
+
+      renderWithContext();
+
+      await waitFor(() => {
+        expect(mockSetCopyJobState).toHaveBeenCalledWith(expect.any(Function));
+      });
+
+      const stateUpdateFunction = mockSetCopyJobState.mock.calls[0][0];
+      const newState = stateUpdateFunction(mockCopyJobState);
+      expect(newState.source.account).toBe(mockDatabaseAccount1);
     });
 
-    it("matches snapshot with single option", () => {
-      const { container } = render(
-        <AccountDropdown
-          options={[mockAccountOptions[0]]}
-          selectedKey="account-1"
-          disabled={false}
-          onChange={mockOnChange}
-        />,
-      );
+    it("should auto-select predefined account from userContext if available", async () => {
+      const userContextAccount = {
+        ...mockDatabaseAccount2,
+        id: "/subscriptions/test-sub/resourceGroups/test-rg/providers/Microsoft.DocumentDb/databaseAccounts/account2",
+      };
 
-      expect(container.firstChild).toMatchSnapshot();
+      (userContext as any).databaseAccount = userContextAccount;
+
+      mockUseDatabaseAccounts.mockReturnValue([mockDatabaseAccount1, mockDatabaseAccount2]);
+
+      renderWithContext();
+
+      await waitFor(() => {
+        expect(mockSetCopyJobState).toHaveBeenCalledWith(expect.any(Function));
+      });
+
+      const stateUpdateFunction = mockSetCopyJobState.mock.calls[0][0];
+      const newState = stateUpdateFunction(mockCopyJobState);
+      expect(newState.source.account).toBe(mockDatabaseAccount2);
     });
 
-    it("matches snapshot with special characters in options", () => {
-      const specialOptions = [
-        {
-          key: "special",
-          text: 'Account with & <special> "characters"',
-          data: {
-            id: "special",
-            name: 'Account with & <special> "characters"',
-            location: "East US",
+    it("should keep current account if it exists in the filtered list", async () => {
+      const contextWithSelectedAccount = {
+        ...mockCopyJobContextValue,
+        copyJobState: {
+          ...mockCopyJobState,
+          source: {
+            ...mockCopyJobState.source,
+            account: mockDatabaseAccount1,
           },
         },
-      ];
+      };
 
-      const { container } = render(
-        <AccountDropdown options={specialOptions} disabled={false} onChange={mockOnChange} />,
-      );
+      mockUseDatabaseAccounts.mockReturnValue([mockDatabaseAccount1, mockDatabaseAccount2]);
 
-      expect(container.firstChild).toMatchSnapshot();
+      renderWithContext(contextWithSelectedAccount);
+
+      await waitFor(() => {
+        expect(mockSetCopyJobState).toHaveBeenCalledWith(expect.any(Function));
+      });
+
+      const stateUpdateFunction = mockSetCopyJobState.mock.calls[0][0];
+      const newState = stateUpdateFunction(contextWithSelectedAccount.copyJobState);
+      expect(newState).toBe(contextWithSelectedAccount.copyJobState);
     });
 
-    it("matches snapshot with long account name", () => {
-      const longNameOption = [
-        {
-          key: "long",
-          text: "This is an extremely long account name that tests how the component handles text overflow and layout constraints in the dropdown",
-          data: {
-            id: "long",
-            name: "This is an extremely long account name that tests how the component handles text overflow and layout constraints in the dropdown",
-            location: "North Central US",
+    it("should handle account change when user selects different account", async () => {
+      mockUseDatabaseAccounts.mockReturnValue([mockDatabaseAccount1, mockDatabaseAccount2]);
+
+      renderWithContext();
+
+      const dropdown = screen.getByRole("combobox");
+      fireEvent.click(dropdown);
+
+      await waitFor(() => {
+        const option = screen.getByText("test-account-2");
+        fireEvent.click(option);
+      });
+
+      expect(mockSetCopyJobState).toHaveBeenCalledWith(expect.any(Function));
+    });
+  });
+
+  describe("ID normalization", () => {
+    it("should normalize account ID for Portal platform", () => {
+      const portalAccount = {
+        ...mockDatabaseAccount1,
+        id: "/subscriptions/test-sub/resourceGroups/test-rg/providers/Microsoft.DocumentDb/databaseAccounts/account1",
+      };
+
+      (configContext as any).platform = Platform.Portal;
+      mockUseDatabaseAccounts.mockReturnValue([portalAccount]);
+
+      const contextWithSelectedAccount = {
+        ...mockCopyJobContextValue,
+        copyJobState: {
+          ...mockCopyJobState,
+          source: {
+            ...mockCopyJobState.source,
+            account: portalAccount,
           },
         },
-      ];
+      };
 
-      const { container } = render(
-        <AccountDropdown options={longNameOption} selectedKey="long" disabled={false} onChange={mockOnChange} />,
-      );
+      renderWithContext(contextWithSelectedAccount);
 
-      expect(container.firstChild).toMatchSnapshot();
+      const dropdown = screen.getByRole("combobox");
+      expect(dropdown).toMatchSnapshot();
     });
 
-    it("matches snapshot with disabled state and no selection", () => {
-      const { container } = render(
-        <AccountDropdown options={mockAccountOptions} disabled={true} onChange={mockOnChange} />,
-      );
+    it("should normalize account ID for Hosted platform", () => {
+      const hostedAccount = {
+        ...mockDatabaseAccount1,
+        id: "/subscriptions/test-sub/resourceGroups/test-rg/providers/Microsoft.DocumentDB/databaseAccounts/account1",
+      };
 
-      expect(container.firstChild).toMatchSnapshot();
+      (configContext as any).platform = Platform.Hosted;
+      mockUseDatabaseAccounts.mockReturnValue([hostedAccount]);
+
+      const contextWithSelectedAccount = {
+        ...mockCopyJobContextValue,
+        copyJobState: {
+          ...mockCopyJobState,
+          source: {
+            ...mockCopyJobState.source,
+            account: hostedAccount,
+          },
+        },
+      };
+
+      renderWithContext(contextWithSelectedAccount);
+
+      const dropdown = screen.getByRole("combobox");
+      expect(dropdown).toBeInTheDocument();
+    });
+  });
+
+  describe("Edge cases", () => {
+    it("should handle empty account list gracefully", () => {
+      mockUseDatabaseAccounts.mockReturnValue([]);
+
+      renderWithContext();
+
+      const dropdown = screen.getByRole("combobox");
+      expect(dropdown).toHaveAttribute("aria-disabled", "true");
     });
 
-    it("matches snapshot with multiple account types", () => {
-      const mixedAccountOptions = [
-        {
-          key: "sql-account",
-          text: "SQL API Account",
-          data: {
-            id: "sql-account",
-            name: "SQL API Account",
-            kind: "GlobalDocumentDB",
-            location: "East US",
-          },
-        },
-        {
-          key: "mongo-account",
-          text: "MongoDB Account",
-          data: {
-            id: "mongo-account",
-            name: "MongoDB Account",
-            kind: "MongoDB",
-            location: "West US",
-          },
-        },
-        {
-          key: "cassandra-account",
-          text: "Cassandra Account",
-          data: {
-            id: "cassandra-account",
-            name: "Cassandra Account",
-            kind: "Cassandra",
-            location: "Central US",
-          },
-        },
-      ];
+    it("should handle null account list gracefully", () => {
+      mockUseDatabaseAccounts.mockReturnValue(null as any);
 
-      const { container } = render(
-        <AccountDropdown
-          options={mixedAccountOptions}
-          selectedKey="mongo-account"
-          disabled={false}
-          onChange={mockOnChange}
-        />,
-      );
+      renderWithContext();
 
-      expect(container.firstChild).toMatchSnapshot();
+      const dropdown = screen.getByRole("combobox");
+      expect(dropdown).toHaveAttribute("aria-disabled", "true");
+    });
+
+    it("should handle undefined subscription ID", () => {
+      const contextWithoutSubscription = {
+        ...mockCopyJobContextValue,
+        copyJobState: {
+          ...mockCopyJobState,
+          source: {
+            ...mockCopyJobState.source,
+            subscription: null,
+          },
+        } as CopyJobContextState,
+      };
+
+      mockUseDatabaseAccounts.mockReturnValue([]);
+
+      renderWithContext(contextWithoutSubscription);
+
+      expect(mockUseDatabaseAccounts).toHaveBeenCalledWith(undefined);
+    });
+
+    it("should not update state if account is already selected and the same", async () => {
+      const selectedAccount = mockDatabaseAccount1;
+      const contextWithSelectedAccount = {
+        ...mockCopyJobContextValue,
+        copyJobState: {
+          ...mockCopyJobState,
+          source: {
+            ...mockCopyJobState.source,
+            account: selectedAccount,
+          },
+        },
+      };
+
+      mockUseDatabaseAccounts.mockReturnValue([mockDatabaseAccount1, mockDatabaseAccount2]);
+
+      renderWithContext(contextWithSelectedAccount);
+
+      await waitFor(() => {
+        expect(mockSetCopyJobState).toHaveBeenCalledWith(expect.any(Function));
+      });
+
+      const stateUpdateFunction = mockSetCopyJobState.mock.calls[0][0];
+      const newState = stateUpdateFunction(contextWithSelectedAccount.copyJobState);
+      expect(newState).toBe(contextWithSelectedAccount.copyJobState);
+    });
+  });
+
+  describe("Accessibility", () => {
+    it("should have proper aria-label", () => {
+      mockUseDatabaseAccounts.mockReturnValue([mockDatabaseAccount1]);
+
+      renderWithContext();
+
+      const dropdown = screen.getByRole("combobox");
+      expect(dropdown).toHaveAttribute("aria-label", ContainerCopyMessages.sourceAccountDropdownLabel);
+    });
+
+    it("should have required attribute", () => {
+      mockUseDatabaseAccounts.mockReturnValue([mockDatabaseAccount1]);
+
+      renderWithContext();
+
+      const dropdown = screen.getByRole("combobox");
+      expect(dropdown).toHaveAttribute("aria-required", "true");
     });
   });
 });
