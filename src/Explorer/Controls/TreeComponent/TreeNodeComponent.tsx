@@ -139,7 +139,7 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
 
   const contextMenuItems = (node.contextMenu ?? []).map((menuItem) => (
     <MenuItem
-      data-test={`TreeNode/ContextMenuItem:${menuItem.label}`}
+      data-testid={`TreeNode/ContextMenuItem:${menuItem.label}`}
       disabled={menuItem.isDisabled}
       key={menuItem.label}
       onClick={() => menuItem.onClick(contextMenuRef)}
@@ -160,14 +160,14 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
   const expandIcon = isLoading ? (
     <Spinner size="extra-tiny" />
   ) : !isBranch ? undefined : openItems.includes(treeNodeId) ? (
-    <ChevronDown20Regular data-test="TreeNode/CollapseIcon" />
+    <ChevronDown20Regular data-testid="TreeNode/CollapseIcon" />
   ) : (
-    <ChevronRight20Regular data-text="TreeNode/ExpandIcon" />
+    <ChevronRight20Regular data-testid="TreeNode/ExpandIcon" />
   );
 
   const treeItem = (
     <TreeItem
-      data-test={`TreeNodeContainer:${treeNodeId}`}
+      data-testid={`TreeNodeContainer:${treeNodeId}`}
       value={treeNodeId}
       itemType={isBranch ? "branch" : "leaf"}
       onOpenChange={onOpenChange}
@@ -179,7 +179,7 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
           shouldShowAsSelected && treeStyles.selectedItem,
           node.className && treeStyles[node.className],
         )}
-        data-test={`TreeNode:${treeNodeId}`}
+        data-testid={`TreeNode:${treeNodeId}`}
         actions={
           contextMenuItems.length > 0 && {
             className: treeStyles.actionsButtonContainer,
@@ -189,13 +189,13 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
                   <Button
                     aria-label="More options"
                     className={mergeClasses(treeStyles.actionsButton, shouldShowAsSelected && treeStyles.selectedItem)}
-                    data-test="TreeNode/ContextMenuTrigger"
+                    data-testid="TreeNode/ContextMenuTrigger"
                     appearance="subtle"
                     ref={contextMenuRef}
                     icon={<MoreHorizontal20Regular />}
                   />
                 </MenuTrigger>
-                <MenuPopover data-test={`TreeNode/ContextMenu:${treeNodeId}`}>
+                <MenuPopover data-testid={`TreeNode/ContextMenu:${treeNodeId}`}>
                   <MenuList>{contextMenuItems}</MenuList>
                 </MenuPopover>
               </Menu>
@@ -208,7 +208,7 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
         <span className={treeStyles.nodeLabel}>{node.label}</span>
       </TreeItemLayout>
       {!node.isLoading && node.children?.length > 0 && (
-        <Tree data-test={`Tree:${treeNodeId}`} className={treeStyles.tree}>
+        <Tree data-testid={`Tree:${treeNodeId}`} className={treeStyles.tree}>
           {getSortedChildren(node).map((childNode: TreeNode) => (
             <TreeNodeComponent
               openItems={openItems}

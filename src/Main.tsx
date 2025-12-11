@@ -103,7 +103,7 @@ const App: React.FunctionComponent = () => {
 
   return (
     <KeyboardShortcutRoot>
-      <div className="flexContainer" aria-hidden="false" data-test="DataExplorerRoot">
+      <div className="flexContainer" aria-hidden="false" data-testid="DataExplorerRoot">
         {userContext.features.enableContainerCopy && userContext.apiType === "SQL" ? (
           <ContainerCopyPanel explorer={explorer} />
         ) : (

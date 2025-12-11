@@ -56,6 +56,7 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
             aria-label="Create new database"
             checked={true}
             className="panelRadioBtn"
+            data-testid="AddCollectionPanel/DatabaseRadio:CreateNew"
             id="databaseCreateNew"
             name="databaseType"
             onChange={[Function]}
@@ -73,6 +74,7 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
             aria-label="Use existing database"
             checked={false}
             className="panelRadioBtn"
+            data-testid="AddCollectionPanel/DatabaseRadio:UseExisting"
             name="databaseType"
             onChange={[Function]}
             role="radio"
@@ -94,6 +96,7 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
           aria-required={true}
           autoComplete="off"
           className="panelTextField"
+          data-testid="AddCollectionPanel/DatabaseId"
           id="newDatabaseId"
           name="newDatabaseId"
           onChange={[Function]}
@@ -109,26 +112,30 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
         <Stack
           horizontal={true}
         >
-          <StyledCheckboxBase
-            checked={false}
-            label="Share throughput across containers"
-            onChange={[Function]}
-            styles={
-              {
-                "checkbox": {
-                  "height": 12,
-                  "width": 12,
-                },
-                "label": {
-                  "alignItems": "center",
-                  "padding": 0,
-                },
-                "text": {
-                  "fontSize": 12,
-                },
+          <div
+            data-testid="AddCollectionPanel/SharedThroughputCheckbox"
+          >
+            <StyledCheckboxBase
+              checked={false}
+              label="Share throughput across containers"
+              onChange={[Function]}
+              styles={
+                {
+                  "checkbox": {
+                    "height": 12,
+                    "width": 12,
+                  },
+                  "label": {
+                    "alignItems": "center",
+                    "padding": 0,
+                  },
+                  "text": {
+                    "fontSize": 12,
+                  },
+                }
               }
-            }
-          />
+            />
+          </div>
           <StyledTooltipHostBase
             content="Throughput configured at the database level will be shared across all containers within the database."
             directionalHint={4}
@@ -191,6 +198,7 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
         aria-required={true}
         autoComplete="off"
         className="panelTextField"
+        data-testid="AddCollectionPanel/CollectionId"
         id="collectionId"
         name="collectionId"
         onChange={[Function]}
@@ -252,6 +260,7 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
         aria-label="Partition key"
         aria-required={true}
         className="panelTextField"
+        data-testid="AddCollectionPanel/PartitionKey"
         id="addCollection-partitionKeyValue"
         onChange={[Function]}
         pattern=".*"
@@ -304,6 +313,7 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
       setThroughputValue={[Function]}
     />
     <Stack
+      data-testid="AddCollectionPanel/UniqueKeysSection"
       style={
         {
           "marginBottom": -4,
@@ -338,6 +348,7 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
         </StyledTooltipHostBase>
       </Stack>
       <CustomizedActionButton
+        data-testid="AddCollectionPanel/AddUniqueKeyButton"
         iconProps={
           {
             "iconName": "Add",

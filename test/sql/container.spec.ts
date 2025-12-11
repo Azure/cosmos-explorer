@@ -1,51 +1,110 @@
 import { expect, test } from "@playwright/test";
 
 import { DataExplorer, TEST_AUTOSCALE_THROUGHPUT_RU, TestAccount, generateUniqueName } from "../fx";
+import {
+  SQL_CONFIG,
+  deleteContainer,
+  deleteDatabase,
+  openAndFillCreateContainerPanel,
+} from "../helpers/containerCreationHelpers";
 
-test("SQL database and container CRUD", async ({ page }) => {
+test("SQL: Database and container CRUD", async ({ page }) => {
   const databaseId = generateUniqueName("db");
-  const containerId = "testcontainer"; // A unique container name isn't needed because the database is unique
+  const containerId = generateUniqueName("container");
 
   const explorer = await DataExplorer.open(page, TestAccount.SQL);
 
-  await explorer.globalCommandButton("New Container").click();
-  await explorer.whilePanelOpen(
-    "New Container",
-    async (panel, okButton) => {
-      await panel.getByPlaceholder("Type a new database id").fill(databaseId);
-      await panel.getByRole("textbox", { name: "Container id, Example Container1" }).fill(containerId);
-      await panel.getByRole("textbox", { name: "Partition key" }).fill("/pk");
-      await panel.getByTestId("autoscaleRUInput").fill(TEST_AUTOSCALE_THROUGHPUT_RU.toString());
-      await okButton.click();
-    },
-    { closeTimeout: 5 * 60 * 1000 },
-  );
+  // Create
+  await openAndFillCreateContainerPanel(explorer, SQL_CONFIG, {
+    databaseId,
+    containerId,
+    partitionKey: "/pk",
+    isAutoscale: true,
+    throughputValue: TEST_AUTOSCALE_THROUGHPUT_RU,
+  });
+
+  const databaseNode = await explorer.waitForNode(databaseId);
+  const containerNode = await explorer.waitForContainerNode(databaseId, containerId);
+  await expect(containerNode.element).toBeAttached();
+
+  // Delete container
+  await deleteContainer(explorer, databaseId, containerId, "Delete Container");
+  await expect(containerNode.element).not.toBeAttached();
+
+  // Delete database
+  await deleteDatabase(explorer, databaseId);
+  await expect(databaseNode.element).not.toBeAttached();
+});
+
+test("SQL: New database shared throughput", async ({ page }) => {
+  const databaseId = generateUniqueName("db");
+  const containerId = generateUniqueName("container");
+
+  const explorer = await DataExplorer.open(page, TestAccount.SQL);
+
+  await openAndFillCreateContainerPanel(explorer, SQL_CONFIG, {
+    databaseId,
+    containerId,
+    partitionKey: "/pk",
+    useSharedThroughput: true,
+  });
 
   const databaseNode = await explorer.waitForNode(databaseId);
   const containerNode = await explorer.waitForContainerNode(databaseId, containerId);
 
-  await containerNode.openContextMenu();
-  await containerNode.contextMenuItem("Delete Container").click();
-  await explorer.whilePanelOpen(
-    "Delete Container",
-    async (panel, okButton) => {
-      await panel.getByRole("textbox", { name: "Confirm by typing the container id" }).fill(containerId);
-      await okButton.click();
-    },
-    { closeTimeout: 5 * 60 * 1000 },
-  );
-  await expect(containerNode.element).not.toBeAttached();
+  await expect(containerNode.element).toBeAttached();
 
-  await databaseNode.openContextMenu();
-  await databaseNode.contextMenuItem("Delete Database").click();
-  await explorer.whilePanelOpen(
-    "Delete Database",
-    async (panel, okButton) => {
-      await panel.getByRole("textbox", { name: "Confirm by typing the database id" }).fill(databaseId);
-      await okButton.click();
-    },
-    { closeTimeout: 5 * 60 * 1000 },
-  );
+  // Cleanup
+  await deleteDatabase(explorer, databaseId);
+  await expect(databaseNode.element).not.toBeAttached();
+});
 
+test("SQL: Unique keys", async ({ page }) => {
+  const databaseId = generateUniqueName("db");
+  const containerId = generateUniqueName("container");
+
+  const explorer = await DataExplorer.open(page, TestAccount.SQL);
+
+  await openAndFillCreateContainerPanel(explorer, SQL_CONFIG, {
+    databaseId,
+    containerId,
+    partitionKey: "/pk",
+    isAutoscale: true,
+    throughputValue: TEST_AUTOSCALE_THROUGHPUT_RU,
+    uniqueKey: "/email,/username",
+  });
+
+  const databaseNode = await explorer.waitForNode(databaseId);
+  const containerNode = await explorer.waitForContainerNode(databaseId, containerId);
+
+  await expect(containerNode.element).toBeAttached();
+
+  // Cleanup
+  await deleteDatabase(explorer, databaseId);
+  await expect(databaseNode.element).not.toBeAttached();
+});
+
+test("SQL: Manual throughput", async ({ page }) => {
+  const databaseId = generateUniqueName("db");
+  const containerId = generateUniqueName("container");
+  const manualThroughput = 400;
+
+  const explorer = await DataExplorer.open(page, TestAccount.SQL);
+
+  await openAndFillCreateContainerPanel(explorer, SQL_CONFIG, {
+    databaseId,
+    containerId,
+    partitionKey: "/pk",
+    isAutoscale: false,
+    throughputValue: manualThroughput,
+  });
+
+  const databaseNode = await explorer.waitForNode(databaseId);
+  const containerNode = await explorer.waitForContainerNode(databaseId, containerId);
+
+  await expect(containerNode.element).toBeAttached();
+
+  // Cleanup
+  await deleteDatabase(explorer, databaseId);
   await expect(databaseNode.element).not.toBeAttached();
 });

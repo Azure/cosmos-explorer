@@ -214,9 +214,9 @@ export const Dialog: FC = () => {
       {contentHtml}
       {progressIndicatorProps && <ProgressIndicator {...progressIndicatorProps} />}
       <DialogFooter>
-        <PrimaryButton {...primaryButtonProps} data-test={`DialogButton:${primaryButtonText}`} />
+        <PrimaryButton {...primaryButtonProps} data-testid={`DialogButton:${primaryButtonText}`} />
         {secondaryButtonProps && (
-          <DefaultButton {...secondaryButtonProps} data-test={`DialogButton:${secondaryButtonText}`} />
+          <DefaultButton {...secondaryButtonProps} data-testid={`DialogButton:${secondaryButtonText}`} />
         )}
       </DialogFooter>
     </FluentDialog>

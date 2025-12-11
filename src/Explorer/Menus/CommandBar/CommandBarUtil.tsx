@@ -76,7 +76,7 @@ export const convertButton = (btns: CommandButtonComponentProps[], backgroundCol
         name: label,
         disabled: btn.disabled,
         ariaLabel: btn.ariaLabel,
-        "data-test": `CommandBar/Button:${label}`,
+        "data-testid": `CommandBar/Button:${label}`,
         buttonStyles: {
           root: {
             backgroundColor: backgroundColor,

@@ -133,7 +133,7 @@ export class NotificationConsoleComponent extends React.Component<
               </span>
             </span>
           </div>
-          <div className="expandCollapseButton" data-test="NotificationConsole/ExpandCollapseButton">
+          <div className="expandCollapseButton" data-testid="NotificationConsole/ExpandCollapseButton">
             <img
               src={this.props.isConsoleExpanded ? ChevronDownIcon : ChevronUpIcon}
               alt={this.props.isConsoleExpanded ? "Collapse icon" : "Expand icon"}
@@ -145,7 +145,7 @@ export class NotificationConsoleComponent extends React.Component<
           height={this.props.isConsoleExpanded ? "auto" : 0}
           onAnimationEnd={this.onConsoleWasExpanded}
         >
-          <div data-test="NotificationConsole/Contents" className="notificationConsoleContents">
+          <div data-testid="NotificationConsole/Contents" className="notificationConsoleContents">
             <div className="notificationConsoleControls">
               <Dropdown
                 label="Filter:"

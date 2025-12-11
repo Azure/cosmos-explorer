@@ -4,7 +4,7 @@ exports[`PaneContainerComponent test should be resize if notification console is
 <StyledPanelBase
   closeButtonAriaLabel="Close test"
   customWidth="440px"
-  data-test="Panel:test"
+  data-testid="Panel:test"
   headerClassName="panelHeader"
   headerText="test"
   isFooterAtBottom={true}
@@ -43,7 +43,7 @@ exports[`PaneContainerComponent test should not render console with panel 1`] = 
 <StyledPanelBase
   closeButtonAriaLabel="Close test"
   customWidth="440px"
-  data-test="Panel:test"
+  data-testid="Panel:test"
   headerClassName="panelHeader"
   headerText="test"
   isFooterAtBottom={true}
@@ -84,7 +84,7 @@ exports[`PaneContainerComponent test should render with panel content and header
 <StyledPanelBase
   closeButtonAriaLabel="Close test"
   customWidth="440px"
-  data-test="Panel:test"
+  data-testid="Panel:test"
   headerClassName="panelHeader"
   headerText="test"
   isFooterAtBottom={true}

@@ -16,7 +16,7 @@ export const PanelFooterComponent: React.FunctionComponent<PanelFooterProps> = (
     <PrimaryButton
       type="submit"
       id="sidePanelOkButton"
-      data-test="Panel/OkButton"
+      data-testid="Panel/OkButton"
       text={buttonLabel}
       ariaLabel={buttonLabel}
       disabled={!!isButtonDisabled}

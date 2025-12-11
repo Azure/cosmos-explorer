@@ -237,14 +237,14 @@ function TabPane({ tab, active }: { tab: Tab; active: boolean }) {
   if (tab) {
     if ("render" in tab) {
       return (
-        <div data-test={`Tab:${tab.tabId}`} {...attrs}>
+        <div data-testid={`Tab:${tab.tabId}`} {...attrs}>
           {tab.render()}
         </div>
       );
     }
   }
 
-  return <div data-test={`Tab:${tab.tabId}`} {...attrs} ref={ref} data-bind="html:html" />;
+  return <div data-testid={`Tab:${tab.tabId}`} {...attrs} ref={ref} data-bind="html:html" />;
 }
 
 const onKeyPressReactTab = (e: KeyboardEvent, tabKind: ReactTabKind): void => {

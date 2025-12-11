@@ -746,7 +746,7 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
             }}
           >
             <Allotment.Pane
-              data-test="QueryTab/EditorPane"
+              data-testid="QueryTab/EditorPane"
               preferredSize={
                 this.state.queryViewSizePercent !== undefined ? `${this.state.queryViewSizePercent}%` : undefined
               }
@@ -813,7 +813,7 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
   render(): JSX.Element {
     const shouldScaleElements = this.state.showCopilotSidebar && this.isCopilotTabActive;
     return (
-      <div data-test="QueryTab" style={{ display: "flex", flexDirection: "row", height: "100%" }}>
+      <div data-testid="QueryTab" style={{ display: "flex", flexDirection: "row", height: "100%" }}>
         <div style={{ width: shouldScaleElements ? "70%" : "100%", height: "100%" }}>
           {this.getEditorAndQueryResult()}
         </div>
