@@ -49,6 +49,7 @@ export interface DatabaseContainerSectionProps {
   containerDisabled?: boolean;
   containerOnChange: (ev: React.FormEvent<HTMLDivElement>, option: DropdownOptionType) => void;
   handleOnDemandCreateContainer?: () => void;
+  sectionType: "source" | "target";
 }
 
 export interface CopyJobContextState {
@@ -56,14 +57,14 @@ export interface CopyJobContextState {
   migrationType: CopyJobMigrationType;
   sourceReadAccessFromTarget?: boolean;
   source: {
-    subscription: Subscription;
-    account: DatabaseAccount;
+    subscription: Subscription | null;
+    account: DatabaseAccount | null;
     databaseId: string;
     containerId: string;
   };
   target: {
     subscriptionId: string;
-    account: DatabaseAccount;
+    account: DatabaseAccount | null;
     databaseId: string;
     containerId: string;
   };

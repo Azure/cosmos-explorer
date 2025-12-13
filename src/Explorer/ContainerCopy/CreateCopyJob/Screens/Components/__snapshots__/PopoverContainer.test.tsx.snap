@@ -4,6 +4,7 @@ exports[`PopoverMessage Component Edge Cases should handle empty string title 1`
 <div>
   <div
     class="ms-Stack popover-container foreground css-109"
+    data-test="popover-container"
     style="max-width: 450px;"
   >
     <span
@@ -71,6 +72,7 @@ exports[`PopoverMessage Component Edge Cases should handle null children 1`] = `
 <div>
   <div
     class="ms-Stack popover-container foreground css-109"
+    data-test="popover-container"
     style="max-width: 450px;"
   >
     <span
@@ -133,6 +135,7 @@ exports[`PopoverMessage Component Edge Cases should handle undefined children 1`
 <div>
   <div
     class="ms-Stack popover-container foreground css-109"
+    data-test="popover-container"
     style="max-width: 450px;"
   >
     <span
@@ -195,6 +198,7 @@ exports[`PopoverMessage Component Edge Cases should handle very long title 1`] =
 <div>
   <div
     class="ms-Stack popover-container foreground css-109"
+    data-test="popover-container"
     style="max-width: 450px;"
   >
     <span
@@ -266,6 +270,7 @@ exports[`PopoverMessage Component Rendering should render correctly when visible
 <div>
   <div
     class="ms-Stack popover-container foreground css-109"
+    data-test="popover-container"
     style="max-width: 450px;"
   >
     <span
@@ -335,6 +340,7 @@ exports[`PopoverMessage Component Rendering should render correctly with differe
 <div>
   <div
     class="ms-Stack popover-container foreground css-109"
+    data-test="popover-container"
     style="max-width: 450px;"
   >
     <span
@@ -409,6 +415,7 @@ exports[`PopoverMessage Component Rendering should render correctly with differe
 <div>
   <div
     class="ms-Stack popover-container foreground css-109"
+    data-test="popover-container"
     style="max-width: 450px;"
   >
     <span
@@ -478,6 +485,7 @@ exports[`PopoverMessage Component Rendering should render correctly with loading
 <div>
   <div
     class="ms-Stack popover-container foreground loading css-109"
+    data-test="popover-container"
     style="max-width: 450px;"
   >
     <div
