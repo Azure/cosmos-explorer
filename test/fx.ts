@@ -11,7 +11,7 @@ export interface TestNameOptions {
   prefixed?: boolean;
 }
 
-export function generateUniqueName(baseName, options?: TestNameOptions): string {
+export function generateUniqueName(baseName: string, options?: TestNameOptions): string {
   const length = options?.length ?? 1;
   const timestamp = options?.timestampped === undefined ? true : options.timestampped;
   const prefixed = options?.prefixed === undefined ? true : options.prefixed;
@@ -40,6 +40,7 @@ export enum TestAccount {
   Mongo32 = "Mongo32",
   SQL = "SQL",
   SQLReadOnly = "SQLReadOnly",
+  SQLContainerCopyOnly = "SQLContainerCopyOnly",
 }
 
 export const defaultAccounts: Record<TestAccount, string> = {
@@ -51,6 +52,7 @@ export const defaultAccounts: Record<TestAccount, string> = {
   [TestAccount.Mongo32]: "github-e2etests-mongo32",
   [TestAccount.SQL]: "github-e2etests-sql",
   [TestAccount.SQLReadOnly]: "github-e2etests-sql-readonly",
+  [TestAccount.SQLContainerCopyOnly]: "github-e2etests-sql-containercopyonly",
 };
 
 export const resourceGroupName = process.env.DE_TEST_RESOURCE_GROUP ?? "de-e2e-tests";
@@ -77,7 +79,14 @@ export function getAccountName(accountType: TestAccount) {
   );
 }
 
-export async function getTestExplorerUrl(accountType: TestAccount, iframeSrc?: string): Promise<string> {
+type TestExplorerUrlOptions = {
+  iframeSrc?: string;
+  enablecontainercopy?: boolean;
+};
+
+export async function getTestExplorerUrl(accountType: TestAccount, options?: TestExplorerUrlOptions): Promise<string> {
+  const { iframeSrc, enablecontainercopy } = options ?? {};
+
   // We can't retrieve AZ CLI credentials from the browser so we get them here.
   const token = await getAzureCLICredentialsToken();
   const accountName = getAccountName(accountType);
@@ -93,6 +102,7 @@ export async function getTestExplorerUrl(accountType: TestAccount, iframeSrc?: s
 
   const nosqlRbacToken = process.env.NOSQL_TESTACCOUNT_TOKEN;
   const nosqlReadOnlyRbacToken = process.env.NOSQL_READONLY_TESTACCOUNT_TOKEN;
+  const nosqlContainerCopyRbacToken = process.env.NOSQL_CONTAINERCOPY_TESTACCOUNT_TOKEN;
   const tableRbacToken = process.env.TABLE_TESTACCOUNT_TOKEN;
   const gremlinRbacToken = process.env.GREMLIN_TESTACCOUNT_TOKEN;
   const cassandraRbacToken = process.env.CASSANDRA_TESTACCOUNT_TOKEN;
@@ -105,6 +115,16 @@ export async function getTestExplorerUrl(accountType: TestAccount, iframeSrc?: s
       if (nosqlRbacToken) {
         params.set("nosqlRbacToken", nosqlRbacToken);
         params.set("enableaaddataplane", "true");
+      }
+      break;
+
+    case TestAccount.SQLContainerCopyOnly:
+      if (nosqlContainerCopyRbacToken) {
+        params.set("nosqlRbacToken", nosqlContainerCopyRbacToken);
+        params.set("enableaaddataplane", "true");
+      }
+      if (enablecontainercopy) {
+        params.set("enablecontainercopy", "true");
       }
       break;
 
@@ -490,8 +510,100 @@ export class DataExplorer {
 
   /** Opens the Data Explorer app using the specified test account (and optionally, the provided IFRAME src url). */
   static async open(page: Page, testAccount: TestAccount, iframeSrc?: string): Promise<DataExplorer> {
-    const url = await getTestExplorerUrl(testAccount, iframeSrc);
+    const url = await getTestExplorerUrl(testAccount, { iframeSrc });
     await page.goto(url);
     return DataExplorer.waitForExplorer(page);
+  }
+}
+
+export class ContainerCopy {
+  constructor(
+    public frame: Frame,
+    public wrapper: Locator,
+  ) {}
+
+  static async waitForContainerCopy(page: Page): Promise<ContainerCopy> {
+    const explorerFrame = await DataExplorer.waitForExplorer(page);
+    const containerCopyWrapper = explorerFrame.frame.locator("div#containerCopyWrapper");
+    return new ContainerCopy(explorerFrame.frame, containerCopyWrapper);
+  }
+
+  static async open(page: Page, testAccount: TestAccount, iframeSrc?: string): Promise<ContainerCopy> {
+    const url = await getTestExplorerUrl(testAccount, { iframeSrc, enablecontainercopy: true });
+    await page.goto(url);
+    return ContainerCopy.waitForContainerCopy(page);
+  }
+  static async waitForApiResponse(
+    page: Page,
+    urlPattern: string,
+    method?: string,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    payloadValidator?: (payload: any) => boolean,
+  ) {
+    return page.waitForResponse(async (response) => {
+      const request = response.request();
+
+      if (!request.url().includes(urlPattern)) {
+        return false;
+      }
+
+      if (method && request.method() !== method) {
+        return false;
+      }
+
+      if (payloadValidator && (request.method() === "POST" || request.method() === "PUT")) {
+        const postData = request.postData();
+        if (postData) {
+          try {
+            const payload = JSON.parse(postData);
+            return payloadValidator(payload);
+          } catch {
+            return false;
+          }
+        }
+      }
+      return true;
+    });
+  }
+  static async interceptAndInspectApiRequest(
+    page: Page,
+    urlPattern: string,
+    method: string = "POST",
+    error: Error,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    errorValidator: (url?: string, payload?: any) => boolean,
+  ): Promise<void> {
+    await page.route(
+      (url) => url.pathname.includes(urlPattern),
+      async (route, request) => {
+        if (request.method() !== method) {
+          await route.continue();
+          return;
+        }
+        const postData = request.postData();
+        if (postData) {
+          try {
+            const payload = JSON.parse(postData);
+            if (errorValidator && errorValidator(request.url(), payload)) {
+              await route.fulfill({
+                status: 409,
+                contentType: "application/json",
+                body: JSON.stringify({
+                  code: "Conflict",
+                  message: error.message,
+                }),
+              });
+              return;
+            }
+          } catch (err) {
+            if (err instanceof Error && err.message.includes("not allowed")) {
+              throw err;
+            }
+          }
+        }
+
+        await route.continue();
+      },
+    );
   }
 }
