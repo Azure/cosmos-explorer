@@ -83,6 +83,7 @@ const CopyJobActionMenu: React.FC<CopyJobActionMenuProps> = ({ job, handleClick 
 
   return (
     <IconButton
+      data-test={`CopyJobActionMenu/Button:${job.Name}`}
       role="button"
       iconProps={{ iconName: "More", styles: { root: { fontSize: "20px", fontWeight: "bold" } } }}
       menuProps={{ items: getMenuItems() }}
