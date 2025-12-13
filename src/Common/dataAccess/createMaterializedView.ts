@@ -23,9 +23,6 @@ export const createGlobalSecondaryIndex = async (params: CreateGlobalSecondaryIn
   if (params.materializedViewDefinition) {
     resource.materializedViewDefinition = params.materializedViewDefinition;
   }
-  if (params.analyticalStorageTtl) {
-    resource.analyticalStorageTtl = params.analyticalStorageTtl;
-  }
   if (params.indexingPolicy) {
     resource.indexingPolicy = params.indexingPolicy;
   }

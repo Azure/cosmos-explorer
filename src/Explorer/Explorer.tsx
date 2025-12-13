@@ -18,7 +18,6 @@ import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { acquireMsalTokenForAccount } from "Utils/AuthorizationUtils";
 import { allowedNotebookServerUrls, validateEndpoint } from "Utils/EndpointUtils";
 import { featureRegistered } from "Utils/FeatureRegistrationUtils";
-import { update } from "Utils/arm/generatedClients/cosmos/databaseAccounts";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import * as ko from "knockout";
 import React from "react";
@@ -51,7 +50,7 @@ import { stringToBlob } from "../Utils/BlobUtils";
 import { isCapabilityEnabled } from "../Utils/CapabilityUtils";
 import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
-import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../Utils/NotificationConsoleUtils";
+import { logConsoleError, logConsoleInfo } from "../Utils/NotificationConsoleUtils";
 import { useSidePanel } from "../hooks/useSidePanel";
 import { ReactTabKind, useTabs } from "../hooks/useTabs";
 import "./ComponentRegisterer";
@@ -219,56 +218,6 @@ export default class Explorer {
 
     this.refreshCommandBarButtons();
     this.refreshNotebookList();
-  }
-
-  public openEnableSynapseLinkDialog(): void {
-    const addSynapseLinkDialogProps: DialogProps = {
-      linkProps: {
-        linkText: "Learn more",
-        linkUrl: "https://aka.ms/cosmosdb-synapselink",
-      },
-      isModal: true,
-      title: `Enable Azure Synapse Link on your Cosmos DB account`,
-      subText: `Enable Azure Synapse Link to perform near real time analytical analytics on this account, without impacting the performance of your transactional workloads.
-      Azure Synapse Link brings together Cosmos Db Analytical Store and Synapse Analytics`,
-      primaryButtonText: "Enable Azure Synapse Link",
-      secondaryButtonText: "Cancel",
-
-      onPrimaryButtonClick: async () => {
-        const startTime = TelemetryProcessor.traceStart(Action.EnableAzureSynapseLink);
-        const clearInProgressMessage = logConsoleProgress(
-          "Enabling Azure Synapse Link for this account. This may take a few minutes before you can enable analytical store for this account.",
-        );
-        useNotebook.getState().setIsSynapseLinkUpdating(true);
-        useDialog.getState().closeDialog();
-
-        try {
-          await update(userContext.subscriptionId, userContext.resourceGroup, userContext.databaseAccount.name, {
-            properties: {
-              enableAnalyticalStorage: true,
-            },
-          });
-
-          clearInProgressMessage();
-          logConsoleInfo("Enabled Azure Synapse Link for this account");
-          TelemetryProcessor.traceSuccess(Action.EnableAzureSynapseLink, {}, startTime);
-          userContext.databaseAccount.properties.enableAnalyticalStorage = true;
-        } catch (error) {
-          clearInProgressMessage();
-          logConsoleError(`Enabling Azure Synapse Link for this account failed. ${getErrorMessage(error)}`);
-          TelemetryProcessor.traceFailure(Action.EnableAzureSynapseLink, {}, startTime);
-        } finally {
-          useNotebook.getState().setIsSynapseLinkUpdating(false);
-        }
-      },
-
-      onSecondaryButtonClick: () => {
-        useDialog.getState().closeDialog();
-        TelemetryProcessor.traceCancel(Action.EnableAzureSynapseLink);
-      },
-    };
-    useDialog.getState().openDialog(addSynapseLinkDialogProps);
-    TelemetryProcessor.traceStart(Action.EnableAzureSynapseLink);
   }
 
   public async openLoginForEntraIDPopUp(): Promise<void> {

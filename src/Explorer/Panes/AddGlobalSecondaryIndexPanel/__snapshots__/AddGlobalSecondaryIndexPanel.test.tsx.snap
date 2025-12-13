@@ -142,36 +142,6 @@ exports[`AddGlobalSecondaryIndexPanel render default panel 1`] = `
         setIsThroughputCapExceeded={[Function]}
         showCollectionThroughputInput={[Function]}
       />
-      <AnalyticalStoreComponent
-        explorer={
-          Explorer {
-            "_isInitializingNotebooks": false,
-            "isFixedCollectionWithSharedThroughputSupported": [Function],
-            "isTabsContentExpanded": [Function],
-            "onRefreshDatabasesKeyPress": [Function],
-            "onRefreshResourcesClick": [Function],
-            "phoenixClient": PhoenixClient {
-              "armResourceId": undefined,
-              "retryOptions": {
-                "maxTimeout": 5000,
-                "minTimeout": 5000,
-                "retries": 3,
-              },
-            },
-            "provideFeedbackEmail": [Function],
-            "queriesClient": QueriesClient {
-              "container": [Circular],
-            },
-            "refreshNotebookList": [Function],
-            "resourceTree": ResourceTreeAdapter {
-              "container": [Circular],
-              "copyNotebook": [Function],
-              "parameters": [Function],
-            },
-          }
-        }
-        setEnableAnalyticalStore={[Function]}
-      />
       <FullTextSearchComponent
         fullTextPolicy={
           {
