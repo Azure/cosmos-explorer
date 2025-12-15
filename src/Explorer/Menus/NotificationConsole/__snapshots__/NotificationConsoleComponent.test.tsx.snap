@@ -89,7 +89,7 @@ exports[`NotificationConsoleComponent renders the console 1`] = `
     </div>
     <div
       className="expandCollapseButton"
-      data-test="NotificationConsole/ExpandCollapseButton"
+      data-testid="NotificationConsole/ExpandCollapseButton"
     >
       <img
         alt="Expand icon"
@@ -123,7 +123,7 @@ exports[`NotificationConsoleComponent renders the console 1`] = `
   >
     <div
       className="notificationConsoleContents"
-      data-test="NotificationConsole/Contents"
+      data-testid="NotificationConsole/Contents"
     >
       <div
         className="notificationConsoleControls"
@@ -275,7 +275,7 @@ exports[`NotificationConsoleComponent renders the console 2`] = `
     </div>
     <div
       className="expandCollapseButton"
-      data-test="NotificationConsole/ExpandCollapseButton"
+      data-testid="NotificationConsole/ExpandCollapseButton"
     >
       <img
         alt="Expand icon"
@@ -309,7 +309,7 @@ exports[`NotificationConsoleComponent renders the console 2`] = `
   >
     <div
       className="notificationConsoleContents"
-      data-test="NotificationConsole/Contents"
+      data-testid="NotificationConsole/Contents"
     >
       <div
         className="notificationConsoleControls"

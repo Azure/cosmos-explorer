@@ -21,7 +21,7 @@ exports[`Right Pane Form should render Default properly 1`] = `
       >
         <CustomizedPrimaryButton
           ariaLabel="Load"
-          data-test="Panel/OkButton"
+          data-testid="Panel/OkButton"
           disabled={false}
           id="sidePanelOkButton"
           text="Load"
@@ -32,7 +32,7 @@ exports[`Right Pane Form should render Default properly 1`] = `
           >
             <PrimaryButton
               ariaLabel="Load"
-              data-test="Panel/OkButton"
+              data-testid="Panel/OkButton"
               disabled={false}
               id="sidePanelOkButton"
               styles={
@@ -323,7 +323,7 @@ exports[`Right Pane Form should render Default properly 1`] = `
             >
               <CustomizedDefaultButton
                 ariaLabel="Load"
-                data-test="Panel/OkButton"
+                data-testid="Panel/OkButton"
                 disabled={false}
                 id="sidePanelOkButton"
                 onRenderDescription={[Function]}
@@ -619,7 +619,7 @@ exports[`Right Pane Form should render Default properly 1`] = `
                 >
                   <DefaultButton
                     ariaLabel="Load"
-                    data-test="Panel/OkButton"
+                    data-testid="Panel/OkButton"
                     disabled={false}
                     id="sidePanelOkButton"
                     onRenderDescription={[Function]}
@@ -913,7 +913,7 @@ exports[`Right Pane Form should render Default properly 1`] = `
                     <BaseButton
                       ariaLabel="Load"
                       baseClassName="ms-Button"
-                      data-test="Panel/OkButton"
+                      data-testid="Panel/OkButton"
                       disabled={false}
                       id="sidePanelOkButton"
                       onRenderDescription={[Function]}
@@ -1799,7 +1799,7 @@ exports[`Right Pane Form should render Default properly 1`] = `
                         aria-label="Load"
                         className="ms-Button ms-Button--primary root-109"
                         data-is-focusable={true}
-                        data-test="Panel/OkButton"
+                        data-testid="Panel/OkButton"
                         id="sidePanelOkButton"
                         onClick={[Function]}
                         onKeyDown={[Function]}

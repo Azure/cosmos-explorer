@@ -1,58 +1,118 @@
 import { expect, test } from "@playwright/test";
 
 import { DataExplorer, TEST_AUTOSCALE_THROUGHPUT_RU, TestAccount, generateUniqueName } from "../fx";
+import {
+  MONGO32_CONFIG,
+  MONGO_CONFIG,
+  deleteContainer,
+  deleteDatabase,
+  openAndFillCreateContainerPanel,
+} from "../helpers/containerCreationHelpers";
 
 (
   [
-    ["latest API version", TestAccount.Mongo],
-    ["3.2 API", TestAccount.Mongo32],
-  ] as [string, TestAccount][]
-).forEach(([apiVersionDescription, accountType]) => {
-  test(`Mongo CRUD using ${apiVersionDescription}`, async ({ page }) => {
+    ["latest API version", MONGO_CONFIG],
+    ["3.2 API", MONGO32_CONFIG],
+  ] as [string, typeof MONGO_CONFIG][]
+).forEach(([apiVersionDescription, config]) => {
+  test(`Mongo: Database and collection CRUD using ${apiVersionDescription}`, async ({ page }) => {
     const databaseId = generateUniqueName("db");
-    const collectionId = "testcollection"; // A unique collection name isn't needed because the database is unique
+    const collectionId = generateUniqueName("collection");
 
-    const explorer = await DataExplorer.open(page, accountType);
+    const explorer = await DataExplorer.open(page, config.account);
 
-    await explorer.globalCommandButton("New Collection").click();
-    await explorer.whilePanelOpen(
-      "New Collection",
-      async (panel, okButton) => {
-        await panel.getByPlaceholder("Type a new database id").fill(databaseId);
-        await panel.getByRole("textbox", { name: "Collection id, Example Collection1" }).fill(collectionId);
-        await panel.getByRole("textbox", { name: "Shard key" }).fill("pk");
-        await panel.getByTestId("autoscaleRUInput").fill(TEST_AUTOSCALE_THROUGHPUT_RU.toString());
-        await okButton.click();
-      },
-      { closeTimeout: 5 * 60 * 1000 },
-    );
+    // Create
+    await openAndFillCreateContainerPanel(explorer, config, {
+      databaseId,
+      containerId: collectionId,
+      partitionKey: "pk",
+      isAutoscale: true,
+      throughputValue: TEST_AUTOSCALE_THROUGHPUT_RU,
+    });
 
     const databaseNode = await explorer.waitForNode(databaseId);
     const collectionNode = await explorer.waitForContainerNode(databaseId, collectionId);
+    await expect(collectionNode.element).toBeAttached();
 
-    await collectionNode.openContextMenu();
-    await collectionNode.contextMenuItem("Delete Collection").click();
-    await explorer.whilePanelOpen(
-      "Delete Collection",
-      async (panel, okButton) => {
-        await panel.getByRole("textbox", { name: "Confirm by typing the collection id" }).fill(collectionId);
-        await okButton.click();
-      },
-      { closeTimeout: 5 * 60 * 1000 },
-    );
+    // Delete collection
+    await deleteContainer(explorer, databaseId, collectionId, "Delete Collection");
     await expect(collectionNode.element).not.toBeAttached();
 
-    await databaseNode.openContextMenu();
-    await databaseNode.contextMenuItem("Delete Database").click();
-    await explorer.whilePanelOpen(
-      "Delete Database",
-      async (panel, okButton) => {
-        await panel.getByRole("textbox", { name: "Confirm by typing the Database id" }).fill(databaseId);
-        await okButton.click();
-      },
-      { closeTimeout: 5 * 60 * 1000 },
-    );
-
+    // Delete database
+    await deleteDatabase(explorer, databaseId);
     await expect(databaseNode.element).not.toBeAttached();
   });
+});
+
+test("Mongo: New database shared throughput", async ({ page }) => {
+  const databaseId = generateUniqueName("db");
+  const collectionId = generateUniqueName("collection");
+
+  const explorer = await DataExplorer.open(page, TestAccount.Mongo);
+
+  await openAndFillCreateContainerPanel(explorer, MONGO_CONFIG, {
+    databaseId,
+    containerId: collectionId,
+    partitionKey: "pk",
+    useSharedThroughput: true,
+  });
+
+  const databaseNode = await explorer.waitForNode(databaseId);
+  const collectionNode = await explorer.waitForContainerNode(databaseId, collectionId);
+
+  await expect(collectionNode.element).toBeAttached();
+
+  // Cleanup
+  await deleteDatabase(explorer, databaseId);
+  await expect(databaseNode.element).not.toBeAttached();
+});
+
+test("Mongo: Unique keys", async ({ page }) => {
+  const databaseId = generateUniqueName("db");
+  const collectionId = generateUniqueName("collection");
+
+  const explorer = await DataExplorer.open(page, TestAccount.Mongo);
+
+  await openAndFillCreateContainerPanel(explorer, MONGO_CONFIG, {
+    databaseId,
+    containerId: collectionId,
+    partitionKey: "pk",
+    isAutoscale: true,
+    throughputValue: TEST_AUTOSCALE_THROUGHPUT_RU,
+    uniqueKey: "email",
+  });
+
+  const databaseNode = await explorer.waitForNode(databaseId);
+  const collectionNode = await explorer.waitForContainerNode(databaseId, collectionId);
+
+  await expect(collectionNode.element).toBeAttached();
+
+  // Cleanup
+  await deleteDatabase(explorer, databaseId);
+  await expect(databaseNode.element).not.toBeAttached();
+});
+
+test("Mongo: Manual throughput", async ({ page }) => {
+  const databaseId = generateUniqueName("db");
+  const collectionId = generateUniqueName("collection");
+  const manualThroughput = 400;
+
+  const explorer = await DataExplorer.open(page, TestAccount.Mongo);
+
+  await openAndFillCreateContainerPanel(explorer, MONGO_CONFIG, {
+    databaseId,
+    containerId: collectionId,
+    partitionKey: "pk",
+    isAutoscale: false,
+    throughputValue: manualThroughput,
+  });
+
+  const databaseNode = await explorer.waitForNode(databaseId);
+  const collectionNode = await explorer.waitForContainerNode(databaseId, collectionId);
+
+  await expect(collectionNode.element).toBeAttached();
+
+  // Cleanup
+  await deleteDatabase(explorer, databaseId);
+  await expect(databaseNode.element).not.toBeAttached();
 });

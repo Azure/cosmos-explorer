@@ -1,35 +1,116 @@
 import { expect, test } from "@playwright/test";
 
 import { DataExplorer, TEST_AUTOSCALE_THROUGHPUT_RU, TestAccount, generateUniqueName } from "../fx";
+import { TABLES_CONFIG, deleteContainer, openAndFillCreateContainerPanel } from "../helpers/containerCreationHelpers";
 
-test("Tables CRUD", async ({ page }) => {
-  const tableId = generateUniqueName("table"); // A unique table name IS needed because the database is shared when using Table Storage.
+test("Tables: CRUD", async ({ page }) => {
+  const tableId = generateUniqueName("table");
 
   const explorer = await DataExplorer.open(page, TestAccount.Tables);
 
-  await explorer.globalCommandButton("New Table").click();
-  await explorer.whilePanelOpen(
-    "New Table",
-    async (panel, okButton) => {
-      await panel.getByRole("textbox", { name: "Table id, Example Table1" }).fill(tableId);
-      await panel.getByTestId("autoscaleRUInput").fill(TEST_AUTOSCALE_THROUGHPUT_RU.toString());
-      await okButton.click();
-    },
-    { closeTimeout: 5 * 60 * 1000 },
-  );
+  // Create
+  await openAndFillCreateContainerPanel(explorer, TABLES_CONFIG, {
+    databaseId: "TablesDB",
+    containerId: tableId,
+    isAutoscale: true,
+    throughputValue: TEST_AUTOSCALE_THROUGHPUT_RU,
+  });
 
   const tableNode = await explorer.waitForContainerNode("TablesDB", tableId);
+  await expect(tableNode.element).toBeAttached();
 
-  await tableNode.openContextMenu();
-  await tableNode.contextMenuItem("Delete Table").click();
-  await explorer.whilePanelOpen(
-    "Delete Table",
-    async (panel, okButton) => {
-      await panel.getByRole("textbox", { name: "Confirm by typing the table id" }).fill(tableId);
-      await okButton.click();
-    },
-    { closeTimeout: 5 * 60 * 1000 },
-  );
+  // Delete table
+  await deleteContainer(explorer, "TablesDB", tableId, "Delete Table");
+  await expect(tableNode.element).not.toBeAttached();
+});
 
+test("Tables: New database shared throughput", async ({ page }) => {
+  const tableId = generateUniqueName("table");
+
+  const explorer = await DataExplorer.open(page, TestAccount.Tables);
+
+  await openAndFillCreateContainerPanel(explorer, TABLES_CONFIG, {
+    databaseId: "TablesDB",
+    containerId: tableId,
+    useSharedThroughput: true,
+  });
+
+  const tableNode = await explorer.waitForContainerNode("TablesDB", tableId);
+  await expect(tableNode.element).toBeAttached();
+
+  // Cleanup
+  await deleteContainer(explorer, "TablesDB", tableId, "Delete Table");
+  await expect(tableNode.element).not.toBeAttached();
+});
+
+test("Tables: Manual throughput", async ({ page }) => {
+  const tableId = generateUniqueName("table");
+  const manualThroughput = 400;
+
+  const explorer = await DataExplorer.open(page, TestAccount.Tables);
+
+  await openAndFillCreateContainerPanel(explorer, TABLES_CONFIG, {
+    databaseId: "TablesDB",
+    containerId: tableId,
+    isAutoscale: false,
+    throughputValue: manualThroughput,
+  });
+
+  const tableNode = await explorer.waitForContainerNode("TablesDB", tableId);
+  await expect(tableNode.element).toBeAttached();
+
+  // Cleanup
+  await deleteContainer(explorer, "TablesDB", tableId, "Delete Table");
+  await expect(tableNode.element).not.toBeAttached();
+});
+
+test("Tables: Multiple tables in TablesDB", async ({ page }) => {
+  const table1Id = generateUniqueName("table");
+  const table2Id = generateUniqueName("table");
+
+  const explorer = await DataExplorer.open(page, TestAccount.Tables);
+
+  // Create first table
+  await openAndFillCreateContainerPanel(explorer, TABLES_CONFIG, {
+    databaseId: "TablesDB",
+    containerId: table1Id,
+    isAutoscale: true,
+    throughputValue: TEST_AUTOSCALE_THROUGHPUT_RU,
+  });
+
+  await explorer.waitForContainerNode("TablesDB", table1Id);
+
+  // Create second table
+  await openAndFillCreateContainerPanel(explorer, TABLES_CONFIG, {
+    databaseId: "TablesDB",
+    containerId: table2Id,
+    isAutoscale: true,
+    throughputValue: TEST_AUTOSCALE_THROUGHPUT_RU,
+  });
+
+  await explorer.waitForContainerNode("TablesDB", table2Id);
+
+  // Cleanup
+  await deleteContainer(explorer, "TablesDB", table1Id, "Delete Table");
+  await deleteContainer(explorer, "TablesDB", table2Id, "Delete Table");
+});
+
+test("Tables: No partition key support", async ({ page }) => {
+  const tableId = generateUniqueName("table");
+
+  const explorer = await DataExplorer.open(page, TestAccount.Tables);
+
+  await openAndFillCreateContainerPanel(explorer, TABLES_CONFIG, {
+    databaseId: "TablesDB",
+    containerId: tableId,
+    isAutoscale: true,
+    throughputValue: TEST_AUTOSCALE_THROUGHPUT_RU,
+  });
+
+  const tableNode = await explorer.waitForContainerNode("TablesDB", tableId);
+  await expect(tableNode.element).toBeAttached();
+
+  // Cleanup
+  await deleteContainer(explorer, "TablesDB", tableId, "Delete Table");
   await expect(tableNode.element).not.toBeAttached();
 });

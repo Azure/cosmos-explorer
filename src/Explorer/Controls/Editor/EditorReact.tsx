@@ -137,7 +137,7 @@ export class EditorReact extends React.Component<EditorReactProps, EditorReactSt
           <Spinner size={SpinnerSize.large} className={this.props.spinnerClassName || "spinner"} />
         )}
         <div
-          data-test="EditorReact/Host/Unloaded"
+          data-testid="EditorReact/Host/Unloaded"
           className={this.props.className || "jsonEditor"}
           style={this.props.monacoContainerStyles}
           ref={(elt: HTMLElement) => this.setRef(elt)}
@@ -148,7 +148,7 @@ export class EditorReact extends React.Component<EditorReactProps, EditorReactSt
 
   protected configureEditor(editor: monaco.editor.IStandaloneCodeEditor) {
     this.editor = editor;
-    this.rootNode.dataset["test"] = "EditorReact/Host/Loaded";
+    this.rootNode.dataset["testid"] = "EditorReact/Host/Loaded";
 
     // In development, we want to be able to access the editor instance from the console
     if (process.env.NODE_ENV === "development") {

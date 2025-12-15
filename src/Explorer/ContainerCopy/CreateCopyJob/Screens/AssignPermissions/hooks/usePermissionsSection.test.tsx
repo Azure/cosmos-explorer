@@ -76,12 +76,10 @@ const mockedRbacUtils = RbacUtils as jest.Mocked<typeof RbacUtils>;
 const mockedCopyJobPrerequisitesCache = CopyJobPrerequisitesCacheModule as jest.Mocked<
   typeof CopyJobPrerequisitesCacheModule
 >;
-
 interface TestWrapperProps {
   state: CopyJobContextState;
   onResult?: (result: PermissionGroupConfig[]) => void;
 }
-
 const TestWrapper: React.FC<TestWrapperProps> = ({ state, onResult }) => {
   const result = usePermissionSections(state);
 

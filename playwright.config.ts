@@ -14,7 +14,7 @@ export default defineConfig({
     trace: "off",
     video: "off",
     screenshot: "on",
-    testIdAttribute: "data-test",
+    testIdAttribute: "data-testid",
     contextOptions: {
       ignoreHTTPSErrors: true,
     },

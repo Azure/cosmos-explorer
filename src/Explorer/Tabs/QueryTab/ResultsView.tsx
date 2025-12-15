@@ -489,7 +489,7 @@ const QueryStatsTab: React.FC<Pick<ResultsViewProps, "queryResults">> = ({ query
   return (
     <div className={styles.metricsGridContainer}>
       <DataGrid
-        data-test="QueryTab/ResultsPane/ResultsView/QueryStatsList"
+        data-testid="QueryTab/ResultsPane/ResultsView/QueryStatsList"
         className={styles.queryStatsGrid}
         items={generateQueryStatsItems()}
         columns={columns}
@@ -504,9 +504,9 @@ const QueryStatsTab: React.FC<Pick<ResultsViewProps, "queryResults">> = ({ query
         </DataGridHeader>
         <DataGridBody<IDocument>>
           {({ item, rowId }) => (
-            <DataGridRow<IDocument> key={rowId} data-test={`Row:${rowId}`}>
+            <DataGridRow<IDocument> key={rowId} data-testid={`Row:${rowId}`}>
               {({ columnId, renderCell }) => (
-                <DataGridCell data-test={`Row:${rowId}/Column:${columnId}`}>{renderCell(item)}</DataGridCell>
+                <DataGridCell data-testid={`Row:${rowId}/Column:${columnId}`}>{renderCell(item)}</DataGridCell>
               )}
             </DataGridRow>
           )}
@@ -532,17 +532,17 @@ export const ResultsView: React.FC<ResultsViewProps> = ({ isMongoDB, queryResult
   }, []);
 
   return (
-    <div data-test="QueryTab/ResultsPane/ResultsView" className={styles.queryResultsTabPanel}>
+    <div data-testid="QueryTab/ResultsPane/ResultsView" className={styles.queryResultsTabPanel}>
       <TabList selectedValue={activeTab} onTabSelect={onTabSelect}>
         <Tab
-          data-test="QueryTab/ResultsPane/ResultsView/ResultsTab"
+          data-testid="QueryTab/ResultsPane/ResultsView/ResultsTab"
           id={ResultsTabs.Results}
           value={ResultsTabs.Results}
         >
           Results
         </Tab>
         <Tab
-          data-test="QueryTab/ResultsPane/ResultsView/QueryStatsTab"
+          data-testid="QueryTab/ResultsPane/ResultsView/QueryStatsTab"
           id={ResultsTabs.QueryStats}
           value={ResultsTabs.QueryStats}
         >

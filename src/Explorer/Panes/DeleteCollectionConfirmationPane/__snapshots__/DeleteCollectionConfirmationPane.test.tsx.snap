@@ -42,6 +42,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
             <StyledTextFieldBase
               ariaLabel="Confirm by typing the container id"
               autoFocus={true}
+              data-testid="DeleteCollectionConfirmationPane/ConfirmInput"
               id="confirmCollectionId"
               onChange={[Function]}
               required={true}
@@ -57,6 +58,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
               <TextFieldBase
                 ariaLabel="Confirm by typing the container id"
                 autoFocus={true}
+                data-testid="DeleteCollectionConfirmationPane/ConfirmInput"
                 deferredValidationTime={200}
                 id="confirmCollectionId"
                 onChange={[Function]}
@@ -353,6 +355,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                         aria-label="Confirm by typing the container id"
                         autoFocus={true}
                         className="ms-TextField-field field-113"
+                        data-testid="DeleteCollectionConfirmationPane/ConfirmInput"
                         id="confirmCollectionId"
                         onBlur={[Function]}
                         onChange={[Function]}
@@ -379,7 +382,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
         >
           <CustomizedPrimaryButton
             ariaLabel="OK"
-            data-test="Panel/OkButton"
+            data-testid="Panel/OkButton"
             disabled={false}
             id="sidePanelOkButton"
             text="OK"
@@ -390,7 +393,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
             >
               <PrimaryButton
                 ariaLabel="OK"
-                data-test="Panel/OkButton"
+                data-testid="Panel/OkButton"
                 disabled={false}
                 id="sidePanelOkButton"
                 styles={
@@ -681,7 +684,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
               >
                 <CustomizedDefaultButton
                   ariaLabel="OK"
-                  data-test="Panel/OkButton"
+                  data-testid="Panel/OkButton"
                   disabled={false}
                   id="sidePanelOkButton"
                   onRenderDescription={[Function]}
@@ -977,7 +980,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                   >
                     <DefaultButton
                       ariaLabel="OK"
-                      data-test="Panel/OkButton"
+                      data-testid="Panel/OkButton"
                       disabled={false}
                       id="sidePanelOkButton"
                       onRenderDescription={[Function]}
@@ -1271,7 +1274,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                       <BaseButton
                         ariaLabel="OK"
                         baseClassName="ms-Button"
-                        data-test="Panel/OkButton"
+                        data-testid="Panel/OkButton"
                         disabled={false}
                         id="sidePanelOkButton"
                         onRenderDescription={[Function]}
@@ -2157,7 +2160,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                           aria-label="OK"
                           className="ms-Button ms-Button--primary root-122"
                           data-is-focusable={true}
-                          data-test="Panel/OkButton"
+                          data-testid="Panel/OkButton"
                           id="sidePanelOkButton"
                           onClick={[Function]}
                           onKeyDown={[Function]}

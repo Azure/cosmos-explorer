@@ -199,6 +199,7 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
           {keyspaceCreateNew && (
             <Stack className="panelGroupSpacing">
               <TextField
+                data-testid="AddCollectionPanel/DatabaseId"
                 aria-required="true"
                 required={true}
                 autoComplete="off"
@@ -215,16 +216,20 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
 
               {!isServerlessAccount() && (
                 <Stack horizontal>
-                  <Checkbox
-                    label="Provision shared throughput"
-                    checked={isKeyspaceShared}
-                    styles={{
-                      text: { fontSize: 12 },
-                      checkbox: { width: 12, height: 12 },
-                      label: { padding: 0, alignItems: "center" },
-                    }}
-                    onChange={(ev: React.FormEvent<HTMLElement>, isChecked: boolean) => setIsKeyspaceShared(isChecked)}
-                  />
+                  <div data-testid="AddCollectionPanel/SharedThroughputCheckbox">
+                    <Checkbox
+                      label="Provision shared throughput"
+                      checked={isKeyspaceShared}
+                      styles={{
+                        text: { fontSize: 12 },
+                        checkbox: { width: 12, height: 12 },
+                        label: { padding: 0, alignItems: "center" },
+                      }}
+                      onChange={(ev: React.FormEvent<HTMLElement>, isChecked: boolean) =>
+                        setIsKeyspaceShared(isChecked)
+                      }
+                    />
+                  </div>
                   <InfoTooltip>
                     Provisioned throughput at the keyspace level will be shared across unlimited number of tables within
                     the keyspace
@@ -287,6 +292,7 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
               {`CREATE TABLE ${keyspaceCreateNew ? newKeyspaceId : existingKeyspaceId}.`}
             </Text>
             <TextField
+              data-testid="AddCollectionPanel/CollectionId"
               underlined
               styles={getTextFieldStyles({ fontSize: 12, width: 150 })}
               aria-required="true"
