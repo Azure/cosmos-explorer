@@ -44,7 +44,9 @@ const MonitorCopyJobs = forwardRef<MonitorCopyJobsRef, MonitorCopyJobsProps>(({ 
         return isEqual(prevJobs, normalizedResponse) ? prevJobs : normalizedResponse;
       });
     } catch (error) {
-      setError(error.message || "Failed to load copy jobs. Please try again later.");
+      if (error.message !== "Previous copy job request was cancelled.") {
+        setError(error.message || "Failed to load copy jobs. Please try again later.");
+      }
     } finally {
       if (isFirstFetchRef.current) {
         setLoading(false);
