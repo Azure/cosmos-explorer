@@ -1342,6 +1342,69 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
 </TreeNodeComponent>
 `;
 
+exports[`TreeNodeComponent renders a loading spinner if the node is loading: loaded 1`] = `
+<TreeItem
+  className=""
+  data-test="TreeNodeContainer:root"
+  itemType="leaf"
+  onOpenChange={[Function]}
+  value="root"
+>
+  <TreeItemLayout
+    actions={false}
+    className="___z7owk70_14ep1pe fkhj508 fbv8p0b f1f09k3d fg706s2 frpde29 f1n8cmsf f1ktbui8 f1do9gdl"
+    data-test="TreeNode:root"
+    iconBefore={
+      <img
+        alt=""
+        className="___i3nbrx0_0000000 f1do9gdl fbv8p0b"
+        src="rootIcon"
+      />
+    }
+  >
+    <span
+      className="___1h29e9h_0000000 fz5stix"
+    >
+      rootLabel
+    </span>
+  </TreeItemLayout>
+</TreeItem>
+`;
+
+exports[`TreeNodeComponent renders a loading spinner if the node is loading: loading 1`] = `
+<TreeItem
+  className=""
+  data-test="TreeNodeContainer:root"
+  itemType="leaf"
+  onOpenChange={[Function]}
+  value="root"
+>
+  <TreeItemLayout
+    actions={false}
+    className="___z7owk70_14ep1pe fkhj508 fbv8p0b f1f09k3d fg706s2 frpde29 f1n8cmsf f1ktbui8 f1do9gdl"
+    data-test="TreeNode:root"
+    expandIcon={
+      <Spinner
+        size="extra-tiny"
+      />
+    }
+    iconBefore={
+      <img
+        alt=""
+        className="___i3nbrx0_0000000 f1do9gdl fbv8p0b"
+        src="rootIcon"
+      />
+    }
+  >
+    <span
+      className="___1h29e9h_0000000 fz5stix"
+    >
+      rootLabel
+    </span>
+  </TreeItemLayout>
+</TreeItem>
+`;
+
 exports[`TreeNodeComponent renders a node as expandable if it has empty, but defined, children array 1`] = `
 <TreeItem
   className=""
