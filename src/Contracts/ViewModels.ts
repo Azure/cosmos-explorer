@@ -447,6 +447,9 @@ export interface DataExplorerInputsFrame {
   aadToken?: string;
   containerCopyEnabled?: boolean;
   sessionId?: string;
+  theme?: {
+    mode: number;
+  };
 }
 
 export interface SelfServeFrameInputs {
@@ -483,3 +486,4 @@ export interface DropdownOption<T> {
 
 // Remove the duplicate Explorer interface and export the type
 export type { Explorer };
+

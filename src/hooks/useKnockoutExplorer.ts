@@ -69,6 +69,7 @@ import { isInvalidParentFrameOrigin, shouldProcessMessage } from "../Utils/Messa
 import { get, getReadOnlyKeys, listKeys } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
 import * as Types from "../Utils/arm/generatedClients/cosmos/types";
 import { applyExplorerBindings } from "../applyExplorerBindings";
+import { THEME_MODE_DARK, useThemeStore } from "./useTheme";
 
 // This hook will create a new instance of Explorer.ts and bind it to the DOM
 // This hook has a LOT of magic, but ideally we can delete it once we have removed KO and switched entirely to React
@@ -990,6 +991,21 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
     }
     if (inputs.flights.indexOf(Flights.PublicGallery) !== -1) {
       userContext.features.publicGallery = true;
+    }
+  }
+
+  // Handle initial theme from portal
+  if (inputs.theme && inputs.theme.mode !== undefined) {
+    const isDark = inputs.theme.mode === THEME_MODE_DARK;
+    useThemeStore.setState({
+      isDarkMode: isDark,
+      themeMode: inputs.theme.mode,
+    });
+    
+    if (isDark) {
+      document.body.classList.add("isDarkMode");
+    } else {
+      document.body.classList.remove("isDarkMode");
     }
   }
 }
