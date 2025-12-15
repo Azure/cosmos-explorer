@@ -56,14 +56,14 @@ export interface CopyJobContextState {
   migrationType: CopyJobMigrationType;
   sourceReadAccessFromTarget?: boolean;
   source: {
-    subscription: Subscription;
-    account: DatabaseAccount;
+    subscription: Subscription | null;
+    account: DatabaseAccount | null;
     databaseId: string;
     containerId: string;
   };
   target: {
     subscriptionId: string;
-    account: DatabaseAccount;
+    account: DatabaseAccount | null;
     databaseId: string;
     containerId: string;
   };

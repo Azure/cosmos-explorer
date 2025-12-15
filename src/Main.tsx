@@ -61,6 +61,10 @@ import { NotificationConsole } from "./Explorer/Menus/NotificationConsole/Notifi
 import "./Explorer/Panes/PanelComponent.less";
 import "./Explorer/SplashScreen/SplashScreen.less";
 import "./Libs/jquery";
+import MetricScenario from "./Metrics/MetricEvents";
+import { MetricScenarioProvider, useMetricScenario } from "./Metrics/MetricScenarioProvider";
+import { ApplicationMetricPhase } from "./Metrics/ScenarioConfig";
+import { useInteractive } from "./Metrics/useMetricPhases";
 import { appThemeFabric } from "./Platform/Fabric/FabricTheme";
 import "./Shared/appInsights";
 import { useConfig } from "./hooks/useConfig";
@@ -98,6 +102,20 @@ const App = (): JSX.Element => {
 
   const explorer = useKnockoutExplorer(config?.platform);
 
+  // Scenario-based health tracking: start ApplicationLoad and complete phases.
+  const { startScenario, completePhase } = useMetricScenario();
+  React.useEffect(() => {
+    startScenario(MetricScenario.ApplicationLoad);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  React.useEffect(() => {
+    if (explorer) {
+      completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.ExplorerInitialized);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [explorer]);
+
   if (!explorer) {
     return <LoadingExplorer />;
   }
@@ -120,6 +138,7 @@ const App = (): JSX.Element => {
 const DivExplorer: React.FC<{ explorer: Explorer }> = ({ explorer }) => {
   const isCarouselOpen = useCarousel((state) => state.shouldOpen);
   const isCopilotCarouselOpen = useCarousel((state) => state.showCopilotCarousel);
+  useInteractive(MetricScenario.ApplicationLoad);
 
   return (
     <div
@@ -194,7 +213,12 @@ const Root: React.FC = () => {
 
 const mainElement = document.getElementById("Main");
 if (mainElement) {
-  ReactDOM.render(<Root />, mainElement);
+  ReactDOM.render(
+    <MetricScenarioProvider>
+      <Root />
+    </MetricScenarioProvider>,
+    mainElement,
+  );
 }
 
 function LoadingExplorer(): JSX.Element {

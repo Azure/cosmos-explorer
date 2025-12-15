@@ -36,14 +36,6 @@ export interface DatabaseAccountSystemData {
 
 export interface DatabaseAccountBackupPolicy {
   type: string;
-  /* periodicModeProperties?: {
-    backupIntervalInMinutes: number;
-    backupRetentionIntervalInHours: number;
-    backupStorageRedundancy: string;
-  };
-  continuousModeProperties?: {
-    tier: string;
-  }; */
 }
 
 export interface DatabaseAccountExtendedProperties {
@@ -73,6 +65,7 @@ export interface DatabaseAccountExtendedProperties {
   publicNetworkAccess?: string;
   enablePriorityBasedExecution?: boolean;
   vcoreMongoEndpoint?: string;
+  enableAllVersionsAndDeletesChangeFeed?: boolean;
 }
 
 export interface DatabaseAccountResponseLocation {

@@ -1570,6 +1570,9 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
                   color: "var(--colorNeutralForeground1)",
                 },
                 headerText: getTabTitle(tab.tab),
+                headerButtonProps: {
+                  "data-test": `settings-tab-header/${SettingsV2TabTypes[tab.tab]}`,
+                },
               };
 
               return (

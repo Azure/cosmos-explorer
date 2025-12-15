@@ -4,13 +4,14 @@ import ShimmerTree, { IndentLevel } from "Common/ShimmerTree/ShimmerTree";
 import Explorer from "Explorer/Explorer";
 import React, { forwardRef, useEffect, useImperativeHandle } from "react";
 import { getCopyJobs, updateCopyJobStatus } from "../Actions/CopyJobActions";
-import { convertToCamelCase } from "../CopyJobUtils";
+import { convertToCamelCase, isEqual } from "../CopyJobUtils";
 import { CopyJobStatusType } from "../Enums/CopyJobEnums";
 import CopyJobsNotFound from "../MonitorCopyJobs/Components/CopyJobs.NotFound";
 import { CopyJobType, JobActionUpdatorType } from "../Types/CopyJobTypes";
 import CopyJobsList from "./Components/CopyJobsList";
 
 const FETCH_INTERVAL_MS = 30 * 1000;
+const SHIMMER_INDENT_LEVELS: IndentLevel[] = Array(7).fill({ level: 0, width: "100%" });
 
 interface MonitorCopyJobsProps {
   explorer: Explorer;
@@ -27,8 +28,6 @@ const MonitorCopyJobs = forwardRef<MonitorCopyJobsRef, MonitorCopyJobsProps>(({ 
   const isUpdatingRef = React.useRef(false);
   const isFirstFetchRef = React.useRef(true);
 
-  const indentLevels = React.useMemo<IndentLevel[]>(() => Array(7).fill({ level: 0, width: "100%" }), []);
-
   const fetchJobs = React.useCallback(async () => {
     if (isUpdatingRef.current) {
       return;
@@ -40,12 +39,14 @@ const MonitorCopyJobs = forwardRef<MonitorCopyJobsRef, MonitorCopyJobsProps>(({ 
       setError(null);
 
       const response = await getCopyJobs();
+      const normalizedResponse = response || [];
       setJobs((prevJobs) => {
-        const isSame = JSON.stringify(prevJobs) === JSON.stringify(response);
-        return isSame ? prevJobs : response;
+        return isEqual(prevJobs, normalizedResponse) ? prevJobs : normalizedResponse;
       });
     } catch (error) {
-      setError(error.message || "Failed to load copy jobs. Please try again later.");
+      if (error.message !== "Previous copy job request was cancelled.") {
+        setError(error.message || "Failed to load copy jobs. Please try again later.");
+      }
     } finally {
       if (isFirstFetchRef.current) {
         setLoading(false);
@@ -99,27 +100,27 @@ const MonitorCopyJobs = forwardRef<MonitorCopyJobsRef, MonitorCopyJobsProps>(({ 
     [],
   );
 
-  const renderJobsList = () => {
-    if (loading) {
-      return null;
-    }
-    if (jobs.length > 0) {
-      return <CopyJobsList jobs={jobs} handleActionClick={handleActionClick} />;
-    }
-    return <CopyJobsNotFound explorer={explorer} />;
-  };
-
   return (
     <Stack className="monitorCopyJobs flexContainer">
-      {loading && <ShimmerTree indentLevels={indentLevels} style={{ width: "100%", padding: "1rem 2.5rem" }} />}
+      {loading && (
+        <ShimmerTree indentLevels={SHIMMER_INDENT_LEVELS} style={{ width: "100%", padding: "1rem 2.5rem" }} />
+      )}
       {error && (
-        <MessageBar messageBarType={MessageBarType.error} isMultiline={false} onDismiss={() => setError(null)}>
+        <MessageBar
+          messageBarType={MessageBarType.error}
+          isMultiline={false}
+          onDismiss={() => setError(null)}
+          dismissButtonAriaLabel="Close"
+        >
           {error}
         </MessageBar>
       )}
-      {renderJobsList()}
+      {!loading && jobs.length > 0 && <CopyJobsList jobs={jobs} handleActionClick={handleActionClick} />}
+      {!loading && jobs.length === 0 && <CopyJobsNotFound explorer={explorer} />}
     </Stack>
   );
 });
+
+MonitorCopyJobs.displayName = "MonitorCopyJobs";
 
 export default MonitorCopyJobs;

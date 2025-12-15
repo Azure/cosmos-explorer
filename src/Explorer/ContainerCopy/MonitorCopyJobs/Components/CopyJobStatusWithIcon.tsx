@@ -1,4 +1,5 @@
 import { FontIcon, getTheme, mergeStyles, mergeStyleSets, Spinner, SpinnerSize, Stack, Text } from "@fluentui/react";
+import PropTypes from "prop-types";
 import React from "react";
 import ContainerCopyMessages from "../../ContainerCopyMessages";
 import { CopyJobStatusType } from "../../Enums/CopyJobEnums";
@@ -34,7 +35,11 @@ const iconMap: Partial<Record<CopyJobStatusType, string>> = {
   [CopyJobStatusType.Completed]: "CompletedSolid",
 };
 
-const CopyJobStatusWithIcon: React.FC<{ status: CopyJobStatusType }> = ({ status }) => {
+export interface CopyJobStatusWithIconProps {
+  status: CopyJobStatusType;
+}
+
+const CopyJobStatusWithIcon: React.FC<CopyJobStatusWithIconProps> = React.memo(({ status }) => {
   const statusText = ContainerCopyMessages.MonitorJobs.Status[status] || "Unknown";
 
   const isSpinnerStatus = [
@@ -57,6 +62,11 @@ const CopyJobStatusWithIcon: React.FC<{ status: CopyJobStatusType }> = ({ status
       <Text>{statusText}</Text>
     </Stack>
   );
+});
+
+CopyJobStatusWithIcon.displayName = "CopyJobStatusWithIcon";
+CopyJobStatusWithIcon.propTypes = {
+  status: PropTypes.oneOf(Object.values(CopyJobStatusType)).isRequired,
 };
 
 export default CopyJobStatusWithIcon;

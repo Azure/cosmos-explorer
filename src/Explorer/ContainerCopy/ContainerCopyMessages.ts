@@ -55,11 +55,22 @@ export default {
       "To copy data from the source to the destination container, ensure that the managed identity of the destination account has read access to the source account by completing the following steps.",
     intraAccountOnlineDescription: (accountName: string) =>
       `Follow the steps below to enable online copy on your "${accountName}" account.`,
+    crossAccountConfiguration: {
+      title: "Cross-account container copy",
+      description: (sourceAccount: string, destinationAccount: string) =>
+        `Please follow the instruction below to grant requisite permissions to copy data from "${sourceAccount}" to "${destinationAccount}".`,
+    },
+    onlineConfiguration: {
+      title: "Online container copy",
+      description: (accountName: string) =>
+        `Please follow the instructions below to enable online copy on your "${accountName}" account.`,
+    },
   },
   toggleBtn: {
     onText: "On",
     offText: "Off",
   },
+  popoverOverlaySpinnerLabel: "Please wait while we process your request...",
   addManagedIdentity: {
     title: "System-assigned managed identity enabled.",
     description:
@@ -78,7 +89,7 @@ export default {
     enablementTitle: "Enable system assigned managed identity",
     enablementDescription: (accountName: string) =>
       accountName
-        ? `Enable system-assigned managed identity on the ${accountName}. To confirm, click the "Yes" button. `
+        ? `Enable system-assigned managed identity on the ${accountName}. To confirm, click the "Yes" button.`
         : "",
   },
   defaultManagedIdentity: {
@@ -105,7 +116,7 @@ export default {
     },
     popoverTitle: "Read permissions assigned to default identity.",
     popoverDescription:
-      "Assign read permissions of the source account to the default identity of the destination account. To confirm click the “Yes” button. ",
+      "Assign read permissions of the source account to the default identity of the destination account. To confirm click the “Yes” button.",
   },
   pointInTimeRestore: {
     title: "Point In Time Restore enabled",
@@ -120,10 +131,17 @@ export default {
   },
   onlineCopyEnabled: {
     title: "Online copy enabled",
-    description: (accountName: string) => `Enable Online copy on "${accountName}".`,
+    description: (accountName: string) =>
+      `Enable online container copy by clicking the button below on your "${accountName}" account.`,
     hrefText: "Learn more about online copy jobs",
     href: "https://learn.microsoft.com/en-us/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#enable-online-copy",
     buttonText: "Enable Online Copy",
+    validateAllVersionsAndDeletesChangeFeedSpinnerLabel:
+      "Validating All versions and deletes change feed mode (preview)...",
+    enablingAllVersionsAndDeletesChangeFeedSpinnerLabel:
+      "Enabling All versions and deletes change feed mode (preview)...",
+    enablingOnlineCopySpinnerLabel: (accountName: string) =>
+      `Enabling online copy on your "${accountName}" account ...`,
   },
   MonitorJobs: {
     Columns: {
@@ -144,10 +162,10 @@ export default {
       viewDetails: "View Details",
     },
     Status: {
-      Pending: "Pending",
-      InProgress: "In Progress",
-      Running: "In Progress",
-      Partitioning: "In Progress",
+      Pending: "Queued",
+      InProgress: "Running",
+      Running: "Running",
+      Partitioning: "Running",
       Paused: "Paused",
       Completed: "Completed",
       Failed: "Failed",

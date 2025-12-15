@@ -31,7 +31,7 @@ const useManagedIdentity = (
         subscriptionId: targetSubscriptionId,
         resourceGroup: targetResourceGroup,
         accountName: targetAccountName,
-      } = getAccountDetailsFromResourceId(selectedTargetAccount?.id);
+      } = getAccountDetailsFromResourceId(selectedTargetAccount?.id) || {};
 
       const updatedAccount = await updateIdentityFn(targetSubscriptionId, targetResourceGroup, targetAccountName);
       if (updatedAccount) {
@@ -44,10 +44,9 @@ const useManagedIdentity = (
       const errorMessage = error.message || "Error enabling system-assigned managed identity. Please try again later.";
       logError(errorMessage, "CopyJob/useManagedIdentity.handleAddSystemIdentity");
       setContextError(errorMessage);
-    } finally {
       setLoading(false);
     }
-  }, [copyJobState, updateIdentityFn, setCopyJobState]);
+  }, [copyJobState?.target?.account?.id, updateIdentityFn, setCopyJobState]);
 
   return { loading, handleAddSystemIdentity };
 };

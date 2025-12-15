@@ -1,5 +1,5 @@
 import { DatabaseAccount } from "Contracts/DataModels";
-import { CopyJobErrorType, CopyJobType } from "./Types/CopyJobTypes";
+import { CopyJobContextState, CopyJobErrorType, CopyJobType } from "./Types/CopyJobTypes";
 
 const azurePortalMpacEndpoint = "https://ms.portal.azure.com/";
 
@@ -115,6 +115,14 @@ export function getAccountDetailsFromResourceId(accountId: string | undefined) {
   return { subscriptionId, resourceGroup, accountName };
 }
 
+export function getContainerIdentifiers(container: CopyJobContextState["source"] | CopyJobContextState["target"]) {
+  return {
+    accountId: container?.account?.id || "",
+    databaseId: container?.databaseId || "",
+    containerId: container?.containerId || "",
+  };
+}
+
 export function isIntraAccountCopy(sourceAccountId: string | undefined, targetAccountId: string | undefined): boolean {
   const sourceAccountDetails = getAccountDetailsFromResourceId(sourceAccountId);
   const targetAccountDetails = getAccountDetailsFromResourceId(targetAccountId);
@@ -139,7 +147,7 @@ export function isEqual(prevJobs: CopyJobType[], newJobs: CopyJobType[]): boolea
 }
 
 const truncateLength = 5;
-const truncateName = (name: string, length: number = truncateLength): string => {
+export const truncateName = (name: string, length: number = truncateLength): string => {
   return name.length <= length ? name : name.slice(0, length);
 };
 

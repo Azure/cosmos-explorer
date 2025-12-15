@@ -1,0 +1,34 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SelectAccount Component Rendering should render correctly with snapshot 1`] = `
+<div
+  class="ms-Stack selectAccountContainer css-109"
+  data-test="Panel:SelectAccountContainer"
+>
+  <span
+    class="css-110"
+  >
+    Please select a source account from which to copy.
+  </span>
+  <div
+    data-testid="subscription-dropdown"
+  >
+    Subscription Dropdown
+  </div>
+  <div
+    data-testid="account-dropdown"
+  >
+    Account Dropdown
+  </div>
+  <div
+    data-testid="migration-type-checkbox"
+  >
+    <input
+      aria-label="Migration Type Checkbox"
+      data-testid="migration-checkbox-input"
+      type="checkbox"
+    />
+    Copy container in offline mode
+  </div>
+</div>
+`;

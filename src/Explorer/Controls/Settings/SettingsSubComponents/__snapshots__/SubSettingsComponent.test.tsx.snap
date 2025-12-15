@@ -22,14 +22,17 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
       options={
         [
           {
+            "ariaLabel": "ttl-off-option",
             "key": "off",
             "text": "Off",
           },
           {
+            "ariaLabel": "ttl-on-no-default-option",
             "key": "on-nodefault",
             "text": "On (no default)",
           },
           {
+            "ariaLabel": "ttl-on-option",
             "key": "on",
             "text": "On",
           },
@@ -95,6 +98,7 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
     />
     <StyledTextFieldBase
       ariaLabel="Time to live in seconds"
+      data-test="ttl-input"
       id="timeToLiveSeconds"
       max={2147483647}
       min={1}
@@ -503,14 +507,17 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
       options={
         [
           {
+            "ariaLabel": "ttl-off-option",
             "key": "off",
             "text": "Off",
           },
           {
+            "ariaLabel": "ttl-on-no-default-option",
             "key": "on-nodefault",
             "text": "On (no default)",
           },
           {
+            "ariaLabel": "ttl-on-option",
             "key": "on",
             "text": "On",
           },
@@ -576,6 +583,7 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
     />
     <StyledTextFieldBase
       ariaLabel="Time to live in seconds"
+      data-test="ttl-input"
       id="timeToLiveSeconds"
       max={2147483647}
       min={1}
@@ -1071,14 +1079,17 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
       options={
         [
           {
+            "ariaLabel": "ttl-off-option",
             "key": "off",
             "text": "Off",
           },
           {
+            "ariaLabel": "ttl-on-no-default-option",
             "key": "on-nodefault",
             "text": "On (no default)",
           },
           {
+            "ariaLabel": "ttl-on-option",
             "key": "on",
             "text": "On",
           },
@@ -1144,6 +1155,7 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
     />
     <StyledTextFieldBase
       ariaLabel="Time to live in seconds"
+      data-test="ttl-input"
       id="timeToLiveSeconds"
       max={2147483647}
       min={1}
@@ -1603,14 +1615,17 @@ exports[`SubSettingsComponent renders 1`] = `
       options={
         [
           {
+            "ariaLabel": "ttl-off-option",
             "key": "off",
             "text": "Off",
           },
           {
+            "ariaLabel": "ttl-on-no-default-option",
             "key": "on-nodefault",
             "text": "On (no default)",
           },
           {
+            "ariaLabel": "ttl-on-option",
             "key": "on",
             "text": "On",
           },
@@ -1676,6 +1691,7 @@ exports[`SubSettingsComponent renders 1`] = `
     />
     <StyledTextFieldBase
       ariaLabel="Time to live in seconds"
+      data-test="ttl-input"
       id="timeToLiveSeconds"
       max={2147483647}
       min={1}
@@ -2232,14 +2248,17 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
       options={
         [
           {
+            "ariaLabel": "ttl-off-option",
             "key": "off",
             "text": "Off",
           },
           {
+            "ariaLabel": "ttl-on-no-default-option",
             "key": "on-nodefault",
             "text": "On (no default)",
           },
           {
+            "ariaLabel": "ttl-on-option",
             "key": "on",
             "text": "On",
           },

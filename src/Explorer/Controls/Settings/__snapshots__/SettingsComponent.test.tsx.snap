@@ -75,6 +75,11 @@ exports[`SettingsComponent renders 1`] = `
       }
     >
       <PivotItem
+        headerButtonProps={
+          {
+            "data-test": "settings-tab-header/ScaleTab",
+          }
+        }
         headerText="Scale"
         itemKey="ScaleTab"
         key="ScaleTab"
@@ -178,6 +183,11 @@ exports[`SettingsComponent renders 1`] = `
         </Stack>
       </PivotItem>
       <PivotItem
+        headerButtonProps={
+          {
+            "data-test": "settings-tab-header/SubSettingsTab",
+          }
+        }
         headerText="Settings"
         itemKey="SubSettingsTab"
         key="SubSettingsTab"
@@ -290,6 +300,11 @@ exports[`SettingsComponent renders 1`] = `
         </Stack>
       </PivotItem>
       <PivotItem
+        headerButtonProps={
+          {
+            "data-test": "settings-tab-header/ContainerVectorPolicyTab",
+          }
+        }
         headerText="Container Policies"
         itemKey="ContainerVectorPolicyTab"
         key="ContainerVectorPolicyTab"
@@ -329,6 +344,11 @@ exports[`SettingsComponent renders 1`] = `
         </Stack>
       </PivotItem>
       <PivotItem
+        headerButtonProps={
+          {
+            "data-test": "settings-tab-header/IndexingPolicyTab",
+          }
+        }
         headerText="Indexing Policy"
         itemKey="IndexingPolicyTab"
         key="IndexingPolicyTab"
@@ -378,6 +398,11 @@ exports[`SettingsComponent renders 1`] = `
         </Stack>
       </PivotItem>
       <PivotItem
+        headerButtonProps={
+          {
+            "data-test": "settings-tab-header/PartitionKeyTab",
+          }
+        }
         headerText="Partition Keys (preview)"
         itemKey="PartitionKeyTab"
         key="PartitionKeyTab"
@@ -498,6 +523,11 @@ exports[`SettingsComponent renders 1`] = `
         </Stack>
       </PivotItem>
       <PivotItem
+        headerButtonProps={
+          {
+            "data-test": "settings-tab-header/ComputedPropertiesTab",
+          }
+        }
         headerText="Computed Properties"
         itemKey="ComputedPropertiesTab"
         key="ComputedPropertiesTab"
@@ -545,6 +575,11 @@ exports[`SettingsComponent renders 1`] = `
         </Stack>
       </PivotItem>
       <PivotItem
+        headerButtonProps={
+          {
+            "data-test": "settings-tab-header/GlobalSecondaryIndexTab",
+          }
+        }
         headerText="Global Secondary Index (Preview)"
         itemKey="GlobalSecondaryIndexTab"
         key="GlobalSecondaryIndexTab"

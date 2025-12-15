@@ -1001,7 +1001,7 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
       isDarkMode: isDark,
       themeMode: inputs.theme.mode,
     });
-    
+
     if (isDark) {
       document.body.classList.add("isDarkMode");
     } else {

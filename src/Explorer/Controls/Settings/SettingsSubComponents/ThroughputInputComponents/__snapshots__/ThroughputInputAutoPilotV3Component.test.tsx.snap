@@ -343,6 +343,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
               />
             </Stack>
             <StyledTextFieldBase
+              data-test="autopilot-throughput-input"
               disabled={true}
               id="autopilotInput"
               key="auto pilot throughput input"
@@ -433,6 +434,16 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
                   }
                 >
                   1,000,000
+                </span>
+                <span
+                  data-test="soft-allowed-maximum-throughput"
+                  style={
+                    {
+                      "float": "right",
+                    }
+                  }
+                >
+                  10,00,000
                 </span>
               </StackItem>
             </Stack>
@@ -927,11 +938,13 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
         }
       >
         <StyledTextFieldBase
+          data-test="manual-throughput-input"
           disabled={false}
           id="throughputInput"
           key="provisioned throughput input"
           min={10000}
           onChange={[Function]}
+          onGetErrorMessage={[Function]}
           required={true}
           step={100}
           styles={
@@ -1029,6 +1042,16 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
                   }
                 >
                   1,000,000
+                </span>
+                <span
+                  data-test="soft-allowed-maximum-throughput"
+                  style={
+                    {
+                      "float": "right",
+                    }
+                  }
+                >
+                  10,00,000
                 </span>
               </StackItem>
             </Stack>
@@ -1501,11 +1524,13 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
         }
       >
         <StyledTextFieldBase
+          data-test="manual-throughput-input"
           disabled={false}
           id="throughputInput"
           key="provisioned throughput input"
           min={10000}
           onChange={[Function]}
+          onGetErrorMessage={[Function]}
           required={true}
           step={100}
           styles={
@@ -1603,6 +1628,16 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
                   }
                 >
                   1,000,000
+                </span>
+                <span
+                  data-test="soft-allowed-maximum-throughput"
+                  style={
+                    {
+                      "float": "right",
+                    }
+                  }
+                >
+                  10,00,000
                 </span>
               </StackItem>
             </Stack>

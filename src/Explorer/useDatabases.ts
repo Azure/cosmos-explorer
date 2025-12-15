@@ -9,6 +9,7 @@ interface DatabasesState {
   databases: ViewModels.Database[];
   resourceTokenCollection: ViewModels.CollectionBase;
   sampleDataResourceTokenCollection: ViewModels.CollectionBase;
+  databasesFetchedSuccessfully: boolean; // Track if last database fetch was successful
   updateDatabase: (database: ViewModels.Database) => void;
   addDatabases: (databases: ViewModels.Database[]) => void;
   deleteDatabase: (database: ViewModels.Database) => void;
@@ -30,6 +31,7 @@ export const useDatabases: UseStore<DatabasesState> = create((set, get) => ({
   databases: [],
   resourceTokenCollection: undefined,
   sampleDataResourceTokenCollection: undefined,
+  databasesFetchedSuccessfully: false,
   updateDatabase: (updatedDatabase: ViewModels.Database) =>
     set((state) => {
       const updatedDatabases = state.databases.map((database: ViewModels.Database) => {

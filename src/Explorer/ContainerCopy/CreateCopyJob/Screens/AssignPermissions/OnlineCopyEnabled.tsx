@@ -1,8 +1,9 @@
 import { Link, PrimaryButton, Stack } from "@fluentui/react";
-import { CapabilityNames } from "Common/Constants";
 import { DatabaseAccount } from "Contracts/DataModels";
 import React from "react";
 import { fetchDatabaseAccount } from "Utils/arm/databaseAccountUtils";
+import { CapabilityNames } from "../../../../../Common/Constants";
+import LoadingOverlay from "../../../../../Common/LoadingOverlay";
 import { logError } from "../../../../../Common/Logger";
 import { update as updateDatabaseAccount } from "../../../../../Utils/arm/generatedClients/cosmos/databaseAccounts";
 import ContainerCopyMessages from "../../../ContainerCopyMessages";
@@ -19,6 +20,7 @@ const validatorFn: AccountValidatorFn = (prev: DatabaseAccount, next: DatabaseAc
 
 const OnlineCopyEnabled: React.FC = () => {
   const [loading, setLoading] = React.useState(false);
+  const [loaderMessage, setLoaderMessage] = React.useState("");
   const [showRefreshButton, setShowRefreshButton] = React.useState(false);
   const intervalRef = React.useRef<NodeJS.Timeout | null>(null);
   const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
@@ -30,7 +32,7 @@ const OnlineCopyEnabled: React.FC = () => {
     subscriptionId: sourceSubscriptionId,
     resourceGroup: sourceResourceGroup,
     accountName: sourceAccountName,
-  } = getAccountDetailsFromResourceId(selectedSourceAccount?.id);
+  } = getAccountDetailsFromResourceId(selectedSourceAccount?.id) || {};
 
   const handleFetchAccount = async () => {
     try {
@@ -74,12 +76,21 @@ const OnlineCopyEnabled: React.FC = () => {
     setShowRefreshButton(false);
 
     try {
-      await updateDatabaseAccount(sourceSubscriptionId, sourceResourceGroup, sourceAccountName, {
-        properties: {
-          enableAllVersionsAndDeletesChangeFeed: true,
-        },
-      });
-
+      setLoaderMessage(ContainerCopyMessages.onlineCopyEnabled.validateAllVersionsAndDeletesChangeFeedSpinnerLabel);
+      const sourAccountBeforeUpdate = await fetchDatabaseAccount(
+        sourceSubscriptionId,
+        sourceResourceGroup,
+        sourceAccountName,
+      );
+      if (!sourAccountBeforeUpdate?.properties.enableAllVersionsAndDeletesChangeFeed) {
+        setLoaderMessage(ContainerCopyMessages.onlineCopyEnabled.enablingAllVersionsAndDeletesChangeFeedSpinnerLabel);
+        await updateDatabaseAccount(sourceSubscriptionId, sourceResourceGroup, sourceAccountName, {
+          properties: {
+            enableAllVersionsAndDeletesChangeFeed: true,
+          },
+        });
+      }
+      setLoaderMessage(ContainerCopyMessages.onlineCopyEnabled.enablingOnlineCopySpinnerLabel(sourceAccountName));
       await updateDatabaseAccount(sourceSubscriptionId, sourceResourceGroup, sourceAccountName, {
         properties: {
           capabilities: [...sourceAccountCapabilities, { name: CapabilityNames.EnableOnlineCopyFeature }],
@@ -119,6 +130,7 @@ const OnlineCopyEnabled: React.FC = () => {
 
   return (
     <Stack className="onlineCopyContainer" tokens={{ childrenGap: 15, padding: "0 0 0 20px" }}>
+      <LoadingOverlay isLoading={loading} label={loaderMessage} />
       <Stack.Item className="info-message">
         {ContainerCopyMessages.onlineCopyEnabled.description(source?.account?.name || "")}&ensp;
         <Link href={ContainerCopyMessages.onlineCopyEnabled.href} target="_blank" rel="noopener noreferrer">

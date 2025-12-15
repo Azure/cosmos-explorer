@@ -143,9 +143,9 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
   };
 
   private ttlChoiceGroupOptions: IChoiceGroupOption[] = [
-    { key: TtlType.Off, text: "Off" },
-    { key: TtlType.OnNoDefault, text: "On (no default)" },
-    { key: TtlType.On, text: "On" },
+    { key: TtlType.Off, text: "Off", ariaLabel: "ttl-off-option" },
+    { key: TtlType.OnNoDefault, text: "On (no default)", ariaLabel: "ttl-on-no-default-option" },
+    { key: TtlType.On, text: "On", ariaLabel: "ttl-on-option" },
   ];
 
   public getTtlValue = (value: string): TtlType => {
@@ -257,6 +257,7 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
             onChange={this.onTimeToLiveSecondsChange}
             suffix="second(s)"
             ariaLabel={`Time to live in seconds`}
+            data-test="ttl-input"
           />
         )}
       </Stack>
