@@ -123,7 +123,7 @@ const App = (): JSX.Element => {
   return (
     <div id="Main" className={styles.root}>
       <KeyboardShortcutRoot>
-        <div className="flexContainer" aria-hidden="false" data-test="DataExplorerRoot">
+        <div className="flexContainer" aria-hidden="false">
           {userContext.features.enableContainerCopy && userContext.apiType === "SQL" ? (
             <ContainerCopyPanel explorer={explorer} />
           ) : (
