@@ -50,10 +50,33 @@ export const Upload: FunctionComponent<UploadProps> = ({
   const title = label + " to upload";
   return (
     <div>
-      <span className="renewUploadItemsHeader">{label}</span>
+      <span className="renewUploadItemsHeader" style={{ color: "var(--colorNeutralForeground1)" }}>
+        {label}
+      </span>
       {tooltip && <InfoTooltip>{tooltip}</InfoTooltip>}
       <Stack horizontal>
-        <TextField styles={{ fieldGroup: { width: 300 } }} readOnly value={selectedFilesTitle.toString()} />
+        <TextField
+          styles={{
+            fieldGroup: {
+              width: 300,
+              backgroundColor: "var(--colorNeutralBackground3)",
+              borderColor: "var(--colorNeutralStroke1)",
+            },
+            field: {
+              backgroundColor: "var(--colorNeutralBackground3)",
+              color: "var(--colorNeutralForeground1)",
+            },
+            subComponentStyles: {
+              label: {
+                root: {
+                  color: "var(--colorNeutralForeground1)",
+                },
+              },
+            },
+          }}
+          readOnly
+          value={selectedFilesTitle.toString()}
+        />
         <input
           type="file"
           id="importFileInput"

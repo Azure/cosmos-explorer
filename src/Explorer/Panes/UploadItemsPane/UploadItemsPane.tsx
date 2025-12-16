@@ -3,12 +3,13 @@ import {
   DetailsListLayoutMode,
   DirectionalHint,
   FontIcon,
-  IColumn,
-  SelectionMode,
-  TooltipHost,
   getTheme,
+  IColumn,
+  IDetailsListStyles,
   mergeStyles,
   mergeStyleSets,
+  SelectionMode,
+  TooltipHost,
 } from "@fluentui/react";
 import { Upload } from "Common/Upload/Upload";
 import { UploadDetailsRecord } from "Contracts/ViewModels";
@@ -205,13 +206,26 @@ export const UploadItemsPane: FunctionComponent<UploadItemsPaneProps> = ({ onUpl
         />
         {uploadFileData?.length > 0 && (
           <div className="fileUploadSummaryContainer">
-            <b>File upload status</b>
+            <b style={{ color: "var(--colorNeutralForeground1)" }}>File upload status</b>
             <DetailsList
               items={uploadFileData}
               columns={columns}
               selectionMode={SelectionMode.none}
               layoutMode={DetailsListLayoutMode.justified}
               isHeaderVisible={true}
+              styles={
+                {
+                  root: {
+                    backgroundColor: "var(--colorNeutralBackground1)",
+                  },
+                  headerWrapper: {
+                    backgroundColor: "var(--colorNeutralBackground2)",
+                  },
+                  contentWrapper: {
+                    backgroundColor: "var(--colorNeutralBackground1)",
+                  },
+                } as IDetailsListStyles
+              }
             />
           </div>
         )}

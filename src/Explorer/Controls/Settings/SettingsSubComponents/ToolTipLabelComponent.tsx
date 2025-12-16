@@ -1,5 +1,5 @@
+import { DirectionalHint, IIconStyles, Icon, Stack, Text, TooltipHost } from "@fluentui/react";
 import * as React from "react";
-import { Stack, Text, IIconStyles, Icon, TooltipHost, DirectionalHint } from "@fluentui/react";
 import { toolTipLabelStackTokens } from "../SettingsRenderUtils";
 
 export interface ToolTipLabelComponentProps {
@@ -14,7 +14,9 @@ export class ToolTipLabelComponent extends React.Component<ToolTipLabelComponent
     return (
       <>
         <Stack horizontal verticalAlign="center" tokens={toolTipLabelStackTokens}>
-          {this.props.label && <Text style={{ fontWeight: 600 }}>{this.props.label}</Text>}
+          {this.props.label && (
+            <Text style={{ fontWeight: 600, color: "var(--colorNeutralForeground1)" }}>{this.props.label}</Text>
+          )}
           {this.props.toolTipElement && (
             <TooltipHost
               content={this.props.toolTipElement}

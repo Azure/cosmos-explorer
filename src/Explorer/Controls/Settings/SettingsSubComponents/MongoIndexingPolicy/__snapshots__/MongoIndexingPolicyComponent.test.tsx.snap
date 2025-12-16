@@ -1,7 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`MongoIndexingPolicyComponent error shown for collection with compound indexes 1`] = `
-<Text>
+<Text
+  style={
+    {
+      "color": "var(--colorNeutralForeground1)",
+    }
+  }
+>
   Collections with compound indexes are not yet supported in the indexing editor. To modify indexing policy for this collection, use the Mongo Shell.
 </Text>
 `;
@@ -17,10 +23,21 @@ exports[`MongoIndexingPolicyComponent renders 1`] = `
   <IndexingPolicyRefreshComponent
     refreshIndexTransformationProgress={[Function]}
   />
-  <Text>
+  <Text
+    style={
+      {
+        "color": "var(--colorNeutralForeground1)",
+      }
+    }
+  >
     For queries that filter on multiple properties, create multiple single field indexes instead of a compound index.
     <StyledLinkBase
       href="https://docs.microsoft.com/azure/cosmos-db/mongodb-indexing#index-types"
+      style={
+        {
+          "color": "var(--colorBrandForeground1)",
+        }
+      }
       target="_blank"
     >
        Compound indexes 
@@ -83,8 +100,36 @@ exports[`MongoIndexingPolicyComponent renders 1`] = `
           {
             "root": {
               "selectors": {
+                ".ms-DetailsHeader": {
+                  "backgroundColor": "var(--colorNeutralBackground1)",
+                },
+                ".ms-DetailsHeader-cell": {
+                  "backgroundColor": "var(--colorNeutralBackground1)",
+                  "color": "var(--colorNeutralForeground1)",
+                  "selectors": {
+                    ":hover": {
+                      "backgroundColor": "var(--colorNeutralBackground1Hover)",
+                      "color": "var(--colorNeutralForeground1)",
+                    },
+                  },
+                },
+                ".ms-DetailsHeader-cellTitle": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
+                ".ms-DetailsRow": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
+                ".ms-DetailsRow-cell": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
+                ".ms-DetailsRow-cell .ms-TooltipHost": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
                 ".ms-FocusZone": {
                   "paddingTop": 0,
+                },
+                ".ms-TooltipHost": {
+                  "color": "var(--colorNeutralForeground1)",
                 },
               },
             },

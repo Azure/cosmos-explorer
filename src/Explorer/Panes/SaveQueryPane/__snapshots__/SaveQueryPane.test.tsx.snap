@@ -20,6 +20,13 @@ exports[`Save Query Pane should render Default properly 1`] = `
       className="panelMainContent"
     >
       <Text
+        styles={
+          {
+            "root": {
+              "color": "var(--colorNeutralForeground1)",
+            },
+          }
+        }
         variant="small"
       >
         For compliance reasons, we save queries in a container in your Azure Cosmos account, in a separate database called “___Cosmos”. To proceed, we need to create a container in your account, estimated additional cost is $0.77 daily.

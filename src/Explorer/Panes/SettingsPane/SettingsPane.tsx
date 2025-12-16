@@ -55,7 +55,6 @@ import React, { FunctionComponent, useState } from "react";
 import create, { UseStore } from "zustand";
 import Explorer from "../../Explorer";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
-
 export interface DataPlaneRbacState {
   dataPlaneRbacEnabled: boolean;
   aadTokenUpdated: boolean;
@@ -72,6 +71,7 @@ const useStyles = makeStyles({
   bulletList: {
     listStyleType: "disc",
     paddingLeft: "20px",
+    color: "var(--colorNeutralForeground1)",
   },
   container: {
     display: "flex",
@@ -83,6 +83,7 @@ const useStyles = makeStyles({
   },
   header: {
     marginRight: "5px",
+    color: "var(--colorNeutralForeground1)",
   },
   headerIcon: {
     paddingTop: "4px",
@@ -90,6 +91,7 @@ const useStyles = makeStyles({
   },
   settingsSectionContainer: {
     paddingLeft: "15px",
+    color: "var(--colorNeutralForeground1)",
   },
   settingsSectionDescription: {
     paddingBottom: "10px",
@@ -628,9 +630,35 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
           ".ms-ChoiceField-wrapper label": {
             fontSize: 12,
             paddingTop: 0,
+            color: "inherit",
           },
           ".ms-ChoiceField": {
             marginTop: 0,
+            color: "inherit",
+          },
+          ".ms-ChoiceField-field": {
+            color: "inherit",
+          },
+          ".ms-ChoiceField-field:hover": {
+            color: "inherit",
+          },
+          ".ms-ChoiceField-field:hover .ms-ChoiceField-labelWrapper": {
+            color: "inherit",
+          },
+          ".ms-ChoiceField-field:hover span": {
+            color: "inherit",
+          },
+          ".ms-ChoiceField-wrapper": {
+            color: "inherit",
+          },
+          ".ms-ChoiceField-wrapper:hover": {
+            color: "inherit",
+          },
+          ".ms-ChoiceField-labelWrapper": {
+            color: "inherit",
+          },
+          ".ms-ChoiceField-labelWrapper:hover": {
+            color: "inherit",
           },
         },
       },
@@ -642,6 +670,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
       fontSize: 12,
       fontWeight: 400,
       display: "block",
+      color: "inherit",
     },
     root: {},
     container: {},
@@ -654,15 +683,37 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
     label: {
       fontSize: 12,
       fontWeight: 400,
+      color: "var(--colorNeutralForeground1)",
     },
     root: {
       paddingBottom: 10,
     },
-    labelWrapper: {},
-    icon: {},
-    spinButtonWrapper: {},
-    input: {},
-    arrowButtonsContainer: {},
+    labelWrapper: {
+      color: "var(--colorNeutralForeground1)",
+    },
+    icon: {
+      color: "var(--colorNeutralForeground1)",
+    },
+    spinButtonWrapper: {
+      backgroundColor: "var(--colorNeutralBackground3)",
+      borderColor: "var(--colorNeutralStroke1)",
+    },
+    input: {
+      color: "var(--colorNeutralForeground1)",
+      backgroundColor: "var(--colorNeutralBackground3)",
+      selectors: {
+        "::placeholder": {
+          color: "var(--colorNeutralForeground2)",
+        },
+        "&:focus": {
+          backgroundColor: "var(--colorNeutralBackground3)",
+          borderColor: "var(--colorBrandStroke1)",
+        },
+      },
+    },
+    arrowButtonsContainer: {
+      backgroundColor: "var(--colorNeutralBackground3)",
+    },
   };
 
   return (
@@ -712,6 +763,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                           className="textfontclr"
                           incrementButtonAriaLabel="Increase value by 1"
                           decrementButtonAriaLabel="Decrease value by 1"
+                          styles={spinButtonStyles}
                         />
                       </div>
                     )}
@@ -773,7 +825,37 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                       }
                       onChange={handleOnSelectedRegionOptionChange}
                       options={regionOptions}
-                      styles={{ root: { marginBottom: "10px" } }}
+                      styles={{
+                        root: { marginBottom: "10px" },
+                        dropdown: {
+                          backgroundColor: "var(--colorNeutralBackground3)",
+                          color: "var(--colorNeutralForeground1)",
+                          borderColor: "var(--colorNeutralStroke1)",
+                        },
+                        title: {
+                          backgroundColor: "var(--colorNeutralBackground3)",
+                          color: "var(--colorNeutralForeground1)",
+                          borderColor: "var(--colorNeutralStroke1)",
+                        },
+                        dropdownItem: {
+                          backgroundColor: "var(--colorNeutralBackground3)",
+                          color: "var(--colorNeutralForeground1)",
+                          selectors: {
+                            "&:hover": {
+                              backgroundColor: "var(--colorNeutralBackground4)",
+                              color: "var(--colorNeutralForeground1)",
+                            },
+                          },
+                        },
+                        dropdownItemSelected: {
+                          backgroundColor: "var(--colorBrandBackground)",
+                          color: "var(--colorNeutralForegroundOnBrand)",
+                        },
+                        callout: {
+                          backgroundColor: "var(--colorNeutralBackground3)",
+                          borderColor: "var(--colorNeutralStroke1)",
+                        },
+                      }}
                     />
                   </div>
                 </AccordionPanel>
@@ -973,6 +1055,9 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                       checked={containerPaginationEnabled}
                       onChange={() => setContainerPaginationEnabled(!containerPaginationEnabled)}
                       label="Enable container pagination"
+                      onRenderLabel={() => (
+                        <span style={{ color: "var(--colorNeutralForeground1)" }}>Enable container pagination</span>
+                      )}
                     />
                   </div>
                 </AccordionPanel>
@@ -997,7 +1082,9 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                       ariaLabel="Enable cross partition query"
                       checked={crossPartitionQueryEnabled}
                       onChange={() => setCrossPartitionQueryEnabled(!crossPartitionQueryEnabled)}
-                      label="Enable cross-partition query"
+                      onRenderLabel={() => (
+                        <span style={{ color: "var(--colorNeutralForeground1)" }}>Enable cross-partition query</span>
+                      )}
                     />
                   </div>
                 </AccordionPanel>
@@ -1029,7 +1116,9 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                       ariaLabel="EnableQueryControl"
                       checked={queryControlEnabled}
                       onChange={() => setQueryControlEnabled(!queryControlEnabled)}
-                      label="Enable query control"
+                      onRenderLabel={() => (
+                        <span style={{ color: "var(--colorNeutralForeground1)" }}>Enable query control</span>
+                      )}
                     />
                   </div>
                 </AccordionPanel>
@@ -1063,6 +1152,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                       onValidate={(newValue) => setMaxDegreeOfParallelism(parseInt(newValue) || maxDegreeOfParallelism)}
                       ariaLabel="Max degree of parallelism"
                       label="Max degree of parallelism"
+                      styles={spinButtonStyles}
                     />
                   </div>
                 </AccordionPanel>
@@ -1132,7 +1222,9 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                       ariaLabel="Enable sample db for query exploration"
                       checked={copilotSampleDBEnabled}
                       onChange={handleSampleDatabaseChange}
-                      label="Enable sample database"
+                      onRenderLabel={() => (
+                        <span style={{ color: "var(--colorNeutralForeground1)" }}>Enable sample database</span>
+                      )}
                     />
                   </div>
                 </AccordionPanel>
@@ -1167,7 +1259,29 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                 <div className={styles.settingsSectionContainer}>
                   <Stack horizontal verticalAlign="center" tokens={{ childrenGap: 4 }}>
                     <Checkbox
-                      styles={{ label: { padding: 0 } }}
+                      styles={{
+                        root: {
+                          selectors: {
+                            ":hover .ms-Checkbox-text": {
+                              color: "var(--colorNeutralForeground1)",
+                            },
+                            ":hover .ms-Checkbox-label": {
+                              color: "var(--colorNeutralForeground1)",
+                            },
+                          },
+                        },
+                        label: {
+                          padding: 0,
+                          color: "var(--colorNeutralForeground1)",
+                        },
+                        text: {
+                          color: "var(--colorNeutralForeground1)",
+                        },
+                        checkbox: {
+                          borderColor: "var(--colorNeutralForeground3)",
+                          backgroundColor: "var(--colorNeutralBackground2)",
+                        },
+                      }}
                       className="padding"
                       ariaLabel="Ignore partition key on document update"
                       checked={ignorePartitionKeyOnDocumentUpdate}
@@ -1188,6 +1302,22 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
         <div className="settingsSection">
           <div className="settingsSectionPart">
             <DefaultButton
+              styles={{
+                root: {
+                  backgroundColor: "var(--colorBrandBackground)",
+                  color: "var(--colorNeutralForegroundOnBrand)",
+                  selectors: {
+                    ":hover": {
+                      backgroundColor: "var(--colorBrandBackgroundHover)",
+                      color: "var(--colorNeutralForegroundOnBrand)",
+                    },
+                    ":active": {
+                      backgroundColor: "var(--colorBrandBackgroundPressed)",
+                      color: "var(--colorNeutralForegroundOnBrand)",
+                    },
+                  },
+                },
+              }}
               onClick={() => {
                 useDialog.getState().showOkCancelModalDialog(
                   "Clear History",
@@ -1223,7 +1353,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
           </div>
         </div>
         <div className="settingsSection">
-          <div className="settingsSectionPart">
+          <div className={`settingsSectionPart ${styles.settingsSectionContainer}`}>
             <div className="settingsSectionLabel">Explorer Version</div>
             <div>{explorerVersion}</div>
           </div>

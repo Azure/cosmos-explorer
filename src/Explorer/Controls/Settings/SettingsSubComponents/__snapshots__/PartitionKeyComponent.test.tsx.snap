@@ -26,6 +26,7 @@ exports[`PartitionKeyComponent renders default component and matches snapshot 1`
       styles={
         {
           "root": {
+            "color": "var(--colorNeutralForeground1)",
             "fontSize": 16,
             "fontWeight": 600,
           },
@@ -54,6 +55,7 @@ exports[`PartitionKeyComponent renders default component and matches snapshot 1`
           styles={
             {
               "root": {
+                "color": "var(--colorNeutralForeground1)",
                 "fontWeight": 600,
               },
             }
@@ -66,6 +68,7 @@ exports[`PartitionKeyComponent renders default component and matches snapshot 1`
           styles={
             {
               "root": {
+                "color": "var(--colorNeutralForeground1)",
                 "fontWeight": 600,
               },
             }
@@ -81,26 +84,79 @@ exports[`PartitionKeyComponent renders default component and matches snapshot 1`
           }
         }
       >
-        <Text />
-        <Text>
+        <Text
+          styles={
+            {
+              "root": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+            }
+          }
+        />
+        <Text
+          styles={
+            {
+              "root": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+            }
+          }
+        >
           Non-hierarchical
         </Text>
       </Stack>
     </Stack>
   </Stack>
   <StyledMessageBar
+    messageBarIconProps={
+      {
+        "className": "messageBarWarningIcon",
+        "iconName": "WarningSolid",
+      }
+    }
     messageBarType={5}
+    styles={
+      {
+        "root": {
+          "selectors": {
+            "&.ms-MessageBar--warning": {
+              "backgroundColor": "var(--colorStatusWarningBackground1)",
+              "border": "1px solid var(--colorStatusWarningBorder1)",
+            },
+            ".ms-MessageBar-icon": {
+              "color": "var(--colorNeutralForeground1)",
+            },
+            ".ms-MessageBar-text": {
+              "color": "var(--colorNeutralForeground1)",
+            },
+          },
+        },
+      }
+    }
   >
     To safeguard the integrity of the data being copied to the new container, ensure that no updates are made to the source container for the entire duration of the partition key change process.
     <StyledLinkBase
       href="https://learn.microsoft.com/azure/cosmos-db/container-copy#how-does-container-copy-work"
+      style={
+        {
+          "color": "var(--colorBrandForeground1)",
+        }
+      }
       target="_blank"
       underline={true}
     >
       Learn more
     </StyledLinkBase>
   </StyledMessageBar>
-  <Text>
+  <Text
+    styles={
+      {
+        "root": {
+          "color": "var(--colorNeutralForeground1)",
+        },
+      }
+    }
+  >
     To change the partition key, a new destination container must be created or an existing destination container selected. Data will then be copied to the destination container.
   </Text>
   <CustomizedPrimaryButton
@@ -158,6 +214,7 @@ exports[`PartitionKeyComponent renders read-only component and matches snapshot 
           styles={
             {
               "root": {
+                "color": "var(--colorNeutralForeground1)",
                 "fontWeight": 600,
               },
             }
@@ -170,6 +227,7 @@ exports[`PartitionKeyComponent renders read-only component and matches snapshot 
           styles={
             {
               "root": {
+                "color": "var(--colorNeutralForeground1)",
                 "fontWeight": 600,
               },
             }
@@ -185,8 +243,24 @@ exports[`PartitionKeyComponent renders read-only component and matches snapshot 
           }
         }
       >
-        <Text />
-        <Text>
+        <Text
+          styles={
+            {
+              "root": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+            }
+          }
+        />
+        <Text
+          styles={
+            {
+              "root": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+            }
+          }
+        >
           Non-hierarchical
         </Text>
       </Stack>
