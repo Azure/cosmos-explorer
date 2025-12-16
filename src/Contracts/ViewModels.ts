@@ -7,7 +7,7 @@ import {
   TriggerDefinition,
   UserDefinedFunctionDefinition,
 } from "@azure/cosmos";
-import Explorer from "../Explorer/Explorer";
+import type Explorer from "../Explorer/Explorer";
 import { ConsoleData } from "../Explorer/Menus/NotificationConsole/ConsoleData";
 import { CassandraTableKey, CassandraTableKeys } from "../Explorer/Tables/TableDataClient";
 import ConflictId from "../Explorer/Tree/ConflictId";
@@ -140,6 +140,7 @@ export interface Collection extends CollectionBase {
   requestSchema?: () => void;
   vectorEmbeddingPolicy: ko.Observable<DataModels.VectorEmbeddingPolicy>;
   fullTextPolicy: ko.Observable<DataModels.FullTextPolicy>;
+  dataMaskingPolicy: ko.Observable<DataModels.DataMaskingPolicy>;
   indexingPolicy: ko.Observable<DataModels.IndexingPolicy>;
   uniqueKeyPolicy: DataModels.UniqueKeyPolicy;
   usageSizeInKB: ko.Observable<number>;
@@ -444,6 +445,11 @@ export interface DataExplorerInputsFrame {
   };
   feedbackPolicies?: any;
   aadToken?: string;
+  containerCopyEnabled?: boolean;
+  sessionId?: string;
+  theme?: {
+    mode: number;
+  };
 }
 
 export interface SelfServeFrameInputs {
@@ -477,3 +483,6 @@ export interface DropdownOption<T> {
   value: T;
   disable?: boolean;
 }
+
+// Remove the duplicate Explorer interface and export the type
+export type { Explorer };

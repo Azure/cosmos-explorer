@@ -16,7 +16,6 @@ import InfoIcon from "../../../../images/info_color.svg";
 import LoadingIcon from "../../../../images/loading.svg";
 import WarningIcon from "../../../../images/warning.svg";
 import { ClientDefaults, KeyCodes } from "../../../Common/Constants";
-import { userContext } from "../../../UserContext";
 import { useNotificationConsole } from "../../../hooks/useNotificationConsole";
 import { ConsoleData, ConsoleDataType } from "./ConsoleData";
 
@@ -127,9 +126,8 @@ export class NotificationConsoleComponent extends React.Component<
                 <span className="numWarningItems">{numWarningItems}</span>
               </span>
             </span>
-            {userContext.features.pr && <PrPreview pr={userContext.features.pr} />}
             <span className="consoleSplitter" />
-            <span className="headerStatus">
+            <span className="headerStatus" data-test="notification-console/header-status">
               <span className="headerStatusEllipsis" aria-live="assertive" aria-atomic="true">
                 {this.state.headerStatus}
               </span>
@@ -154,6 +152,82 @@ export class NotificationConsoleComponent extends React.Component<
                 selectedKey={this.state.selectedFilter}
                 options={NotificationConsoleComponent.FilterOptions}
                 onChange={this.onFilterSelected.bind(this)}
+                styles={{
+                  root: {
+                    color: "var(--colorNeutralForeground1)",
+                  },
+                  label: {
+                    color: "var(--colorNeutralForeground1)",
+                  },
+                  dropdown: {
+                    backgroundColor: "var(--colorNeutralBackground2)",
+                    borderColor: "var(--colorNeutralStroke1)",
+                    color: "var(--colorNeutralForeground1)",
+                  },
+                  title: {
+                    backgroundColor: "var(--colorNeutralBackground2)",
+                    color: "var(--colorNeutralForeground1)",
+                    borderColor: "var(--colorNeutralStroke1)",
+                    fontSize: "14px",
+                    selectors: {
+                      "&:hover": {
+                        backgroundColor: "var(--colorNeutralBackground3)",
+                        color: "var(--colorNeutralForeground1)",
+                        borderColor: "var(--colorNeutralStroke1)",
+                      },
+                      "&:focus": {
+                        backgroundColor: "var(--colorNeutralBackground2)",
+                        color: "var(--colorNeutralForeground1)",
+                        borderColor: "var(--colorBrandStroke1)",
+                      },
+                      "&:after": {
+                        borderColor: "var(--colorNeutralStroke1)",
+                      },
+                      span: {
+                        color: "var(--colorNeutralForeground1)",
+                      },
+                    },
+                  },
+                  caretDown: {
+                    color: "var(--colorNeutralForeground1)",
+                  },
+                  callout: {
+                    backgroundColor: "var(--colorNeutralBackground2)",
+                    border: "1px solid var(--colorNeutralStroke1)",
+                  },
+                  dropdownItems: {
+                    backgroundColor: "var(--colorNeutralBackground2)",
+                  },
+                  dropdownItem: {
+                    backgroundColor: "transparent",
+                    color: "var(--colorNeutralForeground1)",
+                    selectors: {
+                      "&:hover": {
+                        backgroundColor: "var(--colorNeutralBackground4)",
+                        color: "var(--colorNeutralForeground1)",
+                      },
+                      "&:focus": {
+                        backgroundColor: "var(--colorNeutralBackground4)",
+                        color: "var(--colorNeutralForeground1)",
+                      },
+                      ".ms-Dropdown-optionText": {
+                        color: "var(--colorNeutralForeground1)",
+                      },
+                    },
+                  },
+                  dropdownItemSelected: {
+                    backgroundColor: "var(--colorBrandBackground)",
+                    color: "var(--colorNeutralForegroundOnBrand)",
+                    selectors: {
+                      ".ms-Dropdown-optionText": {
+                        color: "var(--colorNeutralForegroundOnBrand)",
+                      },
+                    },
+                  },
+                  dropdownOptionText: {
+                    color: "var(--colorNeutralForeground1)",
+                  },
+                }}
               />
               <span className="consoleSplitter" />
               <span
@@ -292,21 +366,6 @@ export class NotificationConsoleComponent extends React.Component<
     );
   };
 }
-
-const PrPreview = (props: { pr: string }) => {
-  const url = new URL(props.pr);
-  const [, ref] = url.hash.split("#");
-  url.hash = "";
-
-  return (
-    <>
-      <span className="consoleSplitter" />
-      <a target="_blank" rel="noreferrer" href={url.href} style={{ marginRight: "1em", fontWeight: "bold" }}>
-        {ref}
-      </a>
-    </>
-  );
-};
 
 export const NotificationConsole: React.FC = () => {
   const setIsExpanded = useNotificationConsole((state) => state.setIsExpanded);

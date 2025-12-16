@@ -5,7 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "@azure/arm-cosmosdb": "9.1.0",
-    "@azure/cosmos": "4.5.0",
+    "@azure/cosmos": "4.7.0",
     "@azure/cosmos-language-service": "0.0.5",
     "@azure/identity": "4.5.0",
     "@azure/msal-browser": "2.14.2",
@@ -46,8 +46,8 @@
     "@types/mkdirp": "1.0.1",
     "@types/node-fetch": "2.5.7",
     "@xmldom/xmldom": "0.7.13",
-    "@xterm/xterm": "5.5.0",
     "@xterm/addon-fit": "0.10.0",
+    "@xterm/xterm": "5.5.0",
     "allotment": "1.20.2",
     "applicationinsights": "1.8.0",
     "bootstrap": "3.4.1",
@@ -111,6 +111,8 @@
     "tinykeys": "2.1.0",
     "underscore": "1.12.1",
     "utility-types": "3.10.0",
+    "web-vitals": "4.2.4",
+    "uuid": "9.0.0",
     "zustand": "3.5.0"
   },
   "devDependencies": {

@@ -12,12 +12,12 @@ import { handleError } from "../ErrorHandlingUtils";
 import { readOfferWithSDK } from "./readOfferWithSDK";
 
 export const readCollectionOffer = async (params: ReadCollectionOfferParams): Promise<Offer> => {
-  const clearMessage = logConsoleProgress(`Querying offer for collection ${params.collectionId}`);
-
   if (isFabric()) {
     // Not exposing offers in Fabric
     return undefined;
   }
+
+  const clearMessage = logConsoleProgress(`Querying offer for collection ${params.collectionId}`);
 
   try {
     if (

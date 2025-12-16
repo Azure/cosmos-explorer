@@ -6,6 +6,15 @@ import { updateUserContext, userContext } from "../../UserContext";
 import Explorer from "../Explorer";
 import Database from "./Database";
 
+jest.mock("rx-jupyter", () => ({
+  sessions: {
+    create: jest.fn(),
+  },
+  contents: {
+    JupyterContentProvider: jest.fn().mockImplementation(() => ({})),
+  },
+}));
+
 const createMockContainer = (): Explorer => {
   const mockContainer = new Explorer();
   return mockContainer;

@@ -1,0 +1,333 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PointInTimeRestore Edge Cases should handle missing account ID gracefully 1`] = `<div />`;
+
+exports[`PointInTimeRestore Edge Cases should handle missing source account gracefully 1`] = `<div />`;
+
+exports[`PointInTimeRestore Initial Render should render correctly with default props 1`] = `
+<div>
+  <div
+    class="ms-Stack pointInTimeRestoreContainer css-109"
+  >
+    <div
+      class="ms-StackItem toggle-label css-110"
+    >
+      To facilitate online container copy jobs, please update your "test-account" backup policy from periodic to continuous backup. Enabling continuous backup is required for this functionality.
+       
+      <div
+        class="ms-TooltipHost root-105"
+        role="none"
+      >
+        <div
+          class="ms-Image root-111"
+          style="width: 14px; height: 14px;"
+        >
+          <img
+            alt="Information"
+            class="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-112"
+            src="[object Object]"
+          />
+        </div>
+        <div
+          hidden=""
+          id="tooltip0"
+          style="position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0px; border: 0px; overflow: hidden; white-space: nowrap;"
+        >
+          <span
+            class="css-113"
+          >
+            Learn more about
+              
+            <a
+              class="ms-Link root-114"
+              href="https://learn.microsoft.com/en-us/azure/cosmos-db/continuous-backup-restore-introduction"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Continuous Backup
+            </a>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div
+      class="ms-StackItem css-110"
+    >
+      <button
+        class="ms-Button ms-Button--primary fullWidth root-115"
+        data-is-focusable="true"
+        type="button"
+      >
+        <span
+          class="ms-Button-flexContainer flexContainer-116"
+          data-automationid="splitbuttonprimary"
+        >
+          <span
+            class="ms-Button-textContainer textContainer-117"
+          >
+            <span
+              class="ms-Button-label label-119"
+              id="id__1"
+            >
+              Enable Point In Time Restore
+            </span>
+          </span>
+        </span>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`PointInTimeRestore Initial Render should render with empty account name gracefully 1`] = `
+<div>
+  <div
+    class="ms-Stack pointInTimeRestoreContainer css-109"
+  >
+    <div
+      class="ms-StackItem toggle-label css-110"
+    >
+      To facilitate online container copy jobs, please update your "" backup policy from periodic to continuous backup. Enabling continuous backup is required for this functionality.
+       
+      <div
+        class="ms-TooltipHost root-105"
+        role="none"
+      >
+        <div
+          class="ms-Image root-111"
+          style="width: 14px; height: 14px;"
+        >
+          <img
+            alt="Information"
+            class="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-112"
+            src="[object Object]"
+          />
+        </div>
+        <div
+          hidden=""
+          id="tooltip12"
+          style="position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0px; border: 0px; overflow: hidden; white-space: nowrap;"
+        >
+          <span
+            class="css-113"
+          >
+            Learn more about
+              
+            <a
+              class="ms-Link root-114"
+              href="https://learn.microsoft.com/en-us/azure/cosmos-db/continuous-backup-restore-introduction"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Continuous Backup
+            </a>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div
+      class="ms-StackItem css-110"
+    >
+      <button
+        class="ms-Button ms-Button--primary fullWidth root-115"
+        data-is-focusable="true"
+        type="button"
+      >
+        <span
+          class="ms-Button-flexContainer flexContainer-116"
+          data-automationid="splitbuttonprimary"
+        >
+          <span
+            class="ms-Button-textContainer textContainer-117"
+          >
+            <span
+              class="ms-Button-label label-119"
+              id="id__13"
+            >
+              Enable Point In Time Restore
+            </span>
+          </span>
+        </span>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`PointInTimeRestore Snapshots should match snapshot in loading state 1`] = `
+<div>
+  <div
+    class="ms-Stack pointInTimeRestoreContainer css-109"
+  >
+    <div
+      class="ms-Overlay root-123"
+    >
+      <div
+        class="ms-Spinner root-125"
+      >
+        <div
+          class="ms-Spinner-circle ms-Spinner--large circle-126"
+        />
+        <div
+          class="ms-Spinner-label label-127"
+        >
+          Please wait while we process your request...
+        </div>
+      </div>
+    </div>
+    <div
+      class="ms-StackItem toggle-label css-110"
+    >
+      To facilitate online container copy jobs, please update your "test-account" backup policy from periodic to continuous backup. Enabling continuous backup is required for this functionality.
+       
+      <div
+        class="ms-TooltipHost root-105"
+        role="none"
+      >
+        <div
+          class="ms-Image root-111"
+          style="width: 14px; height: 14px;"
+        >
+          <img
+            alt="Information"
+            class="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-112"
+            src="[object Object]"
+          />
+        </div>
+        <div
+          hidden=""
+          id="tooltip44"
+          style="position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0px; border: 0px; overflow: hidden; white-space: nowrap;"
+        >
+          <span
+            class="css-113"
+          >
+            Learn more about
+              
+            <a
+              class="ms-Link root-114"
+              href="https://learn.microsoft.com/en-us/azure/cosmos-db/continuous-backup-restore-introduction"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Continuous Backup
+            </a>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div
+      class="ms-StackItem css-110"
+    >
+      <button
+        aria-disabled="true"
+        class="ms-Button ms-Button--primary is-disabled fullWidth root-128"
+        data-is-focusable="false"
+        disabled=""
+        type="button"
+      >
+        <span
+          class="ms-Button-flexContainer flexContainer-116"
+          data-automationid="splitbuttonprimary"
+        >
+          <i
+            aria-hidden="true"
+            class="ms-Icon root-105 css-132 ms-Button-icon icon-129"
+            data-icon-name="SyncStatusSolid"
+            style="font-family: "FabricMDL2Icons-16";"
+          >
+            
+          </i>
+          <span
+            class="ms-Button-label label-119"
+            id="id__45"
+          />
+        </span>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`PointInTimeRestore Snapshots should match snapshot with refresh button 1`] = `
+<div>
+  <div
+    class="ms-Stack pointInTimeRestoreContainer css-109"
+  >
+    <div
+      class="ms-StackItem toggle-label css-110"
+    >
+      To facilitate online container copy jobs, please update your "test-account" backup policy from periodic to continuous backup. Enabling continuous backup is required for this functionality.
+       
+      <div
+        class="ms-TooltipHost root-105"
+        role="none"
+      >
+        <div
+          class="ms-Image root-111"
+          style="width: 14px; height: 14px;"
+        >
+          <img
+            alt="Information"
+            class="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-112"
+            src="[object Object]"
+          />
+        </div>
+        <div
+          hidden=""
+          id="tooltip48"
+          style="position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0px; border: 0px; overflow: hidden; white-space: nowrap;"
+        >
+          <span
+            class="css-113"
+          >
+            Learn more about
+              
+            <a
+              class="ms-Link root-114"
+              href="https://learn.microsoft.com/en-us/azure/cosmos-db/continuous-backup-restore-introduction"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Continuous Backup
+            </a>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div
+      class="ms-StackItem css-110"
+    >
+      <button
+        class="ms-Button ms-Button--primary fullWidth root-115"
+        data-is-focusable="true"
+        type="button"
+      >
+        <span
+          class="ms-Button-flexContainer flexContainer-116"
+          data-automationid="splitbuttonprimary"
+        >
+          <i
+            aria-hidden="true"
+            class="ms-Icon root-105 css-134 ms-Button-icon icon-118"
+            data-icon-name="Refresh"
+            style="font-family: "FabricMDL2Icons-0";"
+          >
+            
+          </i>
+          <span
+            class="ms-Button-textContainer textContainer-117"
+          >
+            <span
+              class="ms-Button-label label-119"
+              id="id__49"
+            >
+              Refresh
+            </span>
+          </span>
+        </span>
+      </button>
+    </div>
+  </div>
+</div>
+`;

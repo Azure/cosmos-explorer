@@ -16,17 +16,35 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
       }
     }
     role="alert"
-  >
-    <Text
-      styles={
-        {
-          "root": {
-            "color": "windowtext",
-            "fontSize": 14,
+    styles={
+      {
+        "root": {
+          "marginTop": "5px",
+          "selectors": {
+            "&.ms-MessageBar--info": {
+              "backgroundColor": "var(--colorNeutralBackground3)",
+              "border": "1px solid var(--colorNeutralStroke1)",
+            },
+            "&.ms-MessageBar--severeWarning": {
+              "backgroundColor": "var(--colorStatusDangerBackground1)",
+              "border": "1px solid var(--colorStatusDangerBorder1)",
+            },
+            "&.ms-MessageBar--warning": {
+              "backgroundColor": "var(--colorStatusWarningBackground1)",
+              "border": "1px solid var(--colorStatusWarningBorder1)",
+            },
+            ".ms-MessageBar-icon": {
+              "color": "var(--colorNeutralForeground1)",
+            },
+            ".ms-MessageBar-text": {
+              "color": "var(--colorNeutralForeground1)",
+            },
           },
-        }
+        },
       }
-    >
+    }
+  >
+    <Text>
       Your bill will be affected as you update your throughput settings. Please review the updated cost estimate below before saving your changes
     </Text>
   </StyledMessageBar>
@@ -41,7 +59,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
             styles={
               {
                 "root": {
-                  "color": "windowtext",
+                  "color": "var(--colorNeutralForeground1)",
                   "fontSize": 14,
                 },
               }
@@ -62,11 +80,27 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
       styles={
         {
           "root": {
-            "backgroundColor": "white",
             "marginTop": "5px",
-          },
-          "text": {
-            "fontSize": 14,
+            "selectors": {
+              "&.ms-MessageBar--info": {
+                "backgroundColor": "var(--colorNeutralBackground3)",
+                "border": "1px solid var(--colorNeutralStroke1)",
+              },
+              "&.ms-MessageBar--severeWarning": {
+                "backgroundColor": "var(--colorStatusDangerBackground1)",
+                "border": "1px solid var(--colorStatusDangerBorder1)",
+              },
+              "&.ms-MessageBar--warning": {
+                "backgroundColor": "var(--colorStatusWarningBackground1)",
+                "border": "1px solid var(--colorStatusWarningBorder1)",
+              },
+              ".ms-MessageBar-icon": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-MessageBar-text": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+            },
           },
         }
       }
@@ -76,7 +110,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
         styles={
           {
             "root": {
-              "color": "windowtext",
+              "color": "var(--colorNeutralForeground1)",
               "fontSize": 14,
             },
           }
@@ -121,15 +155,47 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
                 ".ms-ChoiceField-field.is-checked::before": {
                   "borderColor": undefined,
                 },
+                ".ms-ChoiceField-field:hover .ms-ChoiceFieldLabel": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
                 ".ms-ChoiceField-wrapper label": {
+                  "color": "var(--colorNeutralForeground1)",
                   "fontFamily": undefined,
                   "fontSize": 14,
                   "padding": "2px 5px",
                   "whiteSpace": "nowrap",
                 },
+                ".ms-ChoiceFieldLabel": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
+                ".ms-ChoiceFieldLabel:hover": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
               },
             },
           ],
+          "label": {
+            "color": "var(--colorNeutralForeground1)",
+          },
+          "root": {
+            "selectors": {
+              ".ms-ChoiceField-field:hover .ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceField-innerField": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceField:hover .ms-ChoiceField-innerField": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceField:hover .ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+            },
+          },
         }
       }
     />
@@ -185,6 +251,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
               <Text
                 style={
                   {
+                    "color": "var(--colorNeutralForeground1)",
                     "fontWeight": 600,
                     "lineHeight": "20px",
                   }
@@ -197,7 +264,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
                 iconName="Info"
                 style={
                   {
-                    "color": "#666",
+                    "color": "var(--colorNeutralForeground2)",
                     "fontSize": 12,
                   }
                 }
@@ -210,6 +277,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
                   "backgroundColor": "transparent",
                   "border": "none",
                   "boxSizing": "border-box",
+                  "color": "var(--colorNeutralForeground1)",
                   "display": "flex",
                   "fontFamily": "Segoe UI",
                   "fontSize": 14,
@@ -226,6 +294,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
           <Text
             style={
               {
+                "color": "var(--colorNeutralForeground1)",
                 "fontFamily": "Segoe UI",
                 "fontSize": 12,
                 "fontWeight": 400,
@@ -254,6 +323,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
               <Text
                 style={
                   {
+                    "color": "var(--colorNeutralForeground1)",
                     "fontWeight": 600,
                     "lineHeight": "20px",
                   }
@@ -266,13 +336,14 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
                 iconName="Info"
                 style={
                   {
-                    "color": "#666",
+                    "color": "var(--colorNeutralForeground2)",
                     "fontSize": 12,
                   }
                 }
               />
             </Stack>
             <StyledTextFieldBase
+              data-test="autopilot-throughput-input"
               disabled={true}
               id="autopilotInput"
               key="auto pilot throughput input"
@@ -284,12 +355,35 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
               styles={
                 {
                   "field": {
+                    "backgroundColor": "var(--colorNeutralBackground4)",
+                    "color": "var(--colorNeutralForeground1)",
                     "fontSize": 14,
                     "fontWeight": 400,
                   },
                   "fieldGroup": {
+                    "backgroundColor": "var(--colorNeutralBackground4)",
                     "height": 28,
                     "width": 100,
+                  },
+                  "root": {
+                    "selectors": {
+                      "input": {
+                        "backgroundColor": "var(--colorNeutralBackground4)",
+                        "color": "var(--colorNeutralForeground1)",
+                      },
+                    },
+                  },
+                  "subComponentStyles": {
+                    "label": {
+                      "root": {
+                        "color": "var(--colorNeutralForeground1)",
+                      },
+                    },
+                  },
+                  "suffix": {
+                    "backgroundColor": "var(--colorNeutralBackground2)",
+                    "border": "1px solid var(--colorNeutralStroke1)",
+                    "color": "var(--colorNeutralForeground1)",
                   },
                 }
               }
@@ -341,6 +435,16 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
                 >
                   1,000,000
                 </span>
+                <span
+                  data-test="soft-allowed-maximum-throughput"
+                  style={
+                    {
+                      "float": "right",
+                    }
+                  }
+                >
+                  1,000,000
+                </span>
               </StackItem>
             </Stack>
             <StyledProgressIndicatorBase
@@ -350,7 +454,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
                 {
                   "progressBar": [
                     {
-                      "backgroundColor": "rgb(251, 217, 203)",
+                      "backgroundColor": "var(--colorStatusDangerBackground1)",
                     },
                   ],
                 }
@@ -374,7 +478,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
                         {
                           "selectors": {
                             "::before": {
-                              "backgroundColor": "rgb(200, 200, 200)",
+                              "backgroundColor": "var(--colorNeutralStroke2)",
                               "height": "3px",
                               "marginTop": "-1px",
                             },
@@ -402,7 +506,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
                         {
                           "selectors": {
                             "::before": {
-                              "backgroundColor": "rgb(200, 200, 200)",
+                              "backgroundColor": "var(--colorNeutralStroke2)",
                               "height": "3px",
                               "marginTop": "-1px",
                             },
@@ -419,12 +523,39 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
           </Stack>
           <StyledMessageBar
             messageBarType={3}
+            styles={
+              {
+                "root": {
+                  "marginTop": "5px",
+                  "selectors": {
+                    "&.ms-MessageBar--info": {
+                      "backgroundColor": "var(--colorNeutralBackground3)",
+                      "border": "1px solid var(--colorNeutralStroke1)",
+                    },
+                    "&.ms-MessageBar--severeWarning": {
+                      "backgroundColor": "var(--colorStatusDangerBackground1)",
+                      "border": "1px solid var(--colorStatusDangerBorder1)",
+                    },
+                    "&.ms-MessageBar--warning": {
+                      "backgroundColor": "var(--colorStatusWarningBackground1)",
+                      "border": "1px solid var(--colorStatusWarningBorder1)",
+                    },
+                    ".ms-MessageBar-icon": {
+                      "color": "var(--colorNeutralForeground1)",
+                    },
+                    ".ms-MessageBar-text": {
+                      "color": "var(--colorNeutralForeground1)",
+                    },
+                  },
+                },
+              }
+            }
           >
             <Text
               styles={
                 {
                   "root": {
-                    "color": "windowtext",
+                    "color": "var(--colorNeutralForeground1)",
                     "fontSize": 14,
                   },
                 }
@@ -445,6 +576,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
         <Text
           style={
             {
+              "color": "var(--colorNeutralForeground1)",
               "marginTop": "40px",
             }
           }
@@ -476,10 +608,22 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
               }
             }
           >
-            <StyledLabelBase>
+            <StyledLabelBase
+              style={
+                {
+                  "color": "var(--colorNeutralForeground1)",
+                }
+              }
+            >
               Storage capacity
             </StyledLabelBase>
-            <Text>
+            <Text
+              style={
+                {
+                  "color": "var(--colorNeutralForeground1)",
+                }
+              }
+            >
               Unlimited
             </Text>
           </Stack>
@@ -498,6 +642,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
         <Text
           style={
             {
+              "color": "var(--colorNeutralForeground1)",
               "fontWeight": 600,
             }
           }
@@ -520,6 +665,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
             <Text
               style={
                 {
+                  "color": "var(--colorNeutralForeground1)",
                   "fontWeight": 600,
                 }
               }
@@ -538,6 +684,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
               <Text
                 style={
                   {
+                    "color": "var(--colorNeutralForeground1)",
                     "width": "50%",
                   }
                 }
@@ -550,6 +697,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
               <Text
                 style={
                   {
+                    "color": "var(--colorNeutralForeground1)",
                     "width": "50%",
                   }
                 }
@@ -564,6 +712,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
           <Text
             style={
               {
+                "color": "var(--colorNeutralForeground1)",
                 "fontWeight": 600,
               }
             }
@@ -574,6 +723,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
             horizontal={true}
             style={
               {
+                "color": "var(--colorNeutralForeground1)",
                 "marginTop": 5,
               }
             }
@@ -581,6 +731,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
             <Text
               style={
                 {
+                  "color": "var(--colorNeutralForeground1)",
                   "width": "50%",
                 }
               }
@@ -593,6 +744,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
             <Text
               style={
                 {
+                  "color": "var(--colorNeutralForeground1)",
                   "width": "50%",
                 }
               }
@@ -607,6 +759,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
         <Text
           style={
             {
+              "color": "var(--colorNeutralForeground1)",
               "fontWeight": 600,
               "marginTop": 15,
             }
@@ -640,6 +793,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
         <Text
           style={
             {
+              "color": "var(--colorNeutralForeground1)",
               "marginTop": 15,
             }
           }
@@ -674,7 +828,7 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
             styles={
               {
                 "root": {
-                  "color": "windowtext",
+                  "color": "var(--colorNeutralForeground1)",
                   "fontSize": 14,
                 },
               }
@@ -715,15 +869,47 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
                 ".ms-ChoiceField-field.is-checked::before": {
                   "borderColor": "",
                 },
+                ".ms-ChoiceField-field:hover .ms-ChoiceFieldLabel": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
                 ".ms-ChoiceField-wrapper label": {
+                  "color": "var(--colorNeutralForeground1)",
                   "fontFamily": undefined,
                   "fontSize": 14,
                   "padding": "2px 5px",
                   "whiteSpace": "nowrap",
                 },
+                ".ms-ChoiceFieldLabel": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
+                ".ms-ChoiceFieldLabel:hover": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
               },
             },
           ],
+          "label": {
+            "color": "var(--colorNeutralForeground1)",
+          },
+          "root": {
+            "selectors": {
+              ".ms-ChoiceField-field:hover .ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceField-innerField": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceField:hover .ms-ChoiceField-innerField": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceField:hover .ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+            },
+          },
         }
       }
     />
@@ -752,25 +938,63 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
         }
       >
         <StyledTextFieldBase
+          data-test="manual-throughput-input"
           disabled={false}
           id="throughputInput"
           key="provisioned throughput input"
           min={10000}
           onChange={[Function]}
+          onGetErrorMessage={[Function]}
           required={true}
           step={100}
           styles={
             {
+              "field": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground1)",
+                "selectors": {
+                  ":disabled": {
+                    "backgroundColor": "var(--colorNeutralBackground2)",
+                    "color": "var(--colorNeutralForeground2)",
+                  },
+                },
+              },
               "fieldGroup": {
-                "borderColor": "",
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "borderColor": "var(--colorNeutralStroke1)",
                 "height": 25,
                 "selectors": {
                   ":disabled": {
-                    "backgroundColor": undefined,
-                    "borderColor": undefined,
+                    "backgroundColor": "var(--colorNeutralBackground2)",
+                    "borderColor": "var(--colorNeutralStroke1)",
+                    "color": "var(--colorNeutralForeground2)",
+                  },
+                  "input": {
+                    "backgroundColor": "var(--colorNeutralBackground2)",
+                    "color": "var(--colorNeutralForeground1)",
+                  },
+                  "input#autopilotInput": {
+                    "backgroundColor": "var(--colorNeutralBackground4)",
+                    "color": "var(--colorNeutralForeground1)",
+                  },
+                  "input:disabled": {
+                    "backgroundColor": "var(--colorNeutralBackground2)",
+                    "color": "var(--colorNeutralForeground2)",
                   },
                 },
                 "width": 300,
+              },
+              "subComponentStyles": {
+                "label": {
+                  "root": {
+                    "color": "var(--colorNeutralForeground1)",
+                  },
+                },
+              },
+              "suffix": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "border": "1px solid var(--colorNeutralStroke1)",
+                "color": "var(--colorNeutralForeground1)",
               },
             }
           }
@@ -819,6 +1043,16 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
                 >
                   1,000,000
                 </span>
+                <span
+                  data-test="soft-allowed-maximum-throughput"
+                  style={
+                    {
+                      "float": "right",
+                    }
+                  }
+                >
+                  1,000,000
+                </span>
               </StackItem>
             </Stack>
             <StyledProgressIndicatorBase
@@ -828,7 +1062,7 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
                 {
                   "progressBar": [
                     {
-                      "backgroundColor": "rgb(251, 217, 203)",
+                      "backgroundColor": "var(--colorStatusDangerBackground1)",
                     },
                   ],
                 }
@@ -852,7 +1086,7 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
                         {
                           "selectors": {
                             "::before": {
-                              "backgroundColor": "rgb(200, 200, 200)",
+                              "backgroundColor": "var(--colorNeutralStroke2)",
                               "height": "3px",
                               "marginTop": "-1px",
                             },
@@ -880,7 +1114,7 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
                         {
                           "selectors": {
                             "::before": {
-                              "backgroundColor": "rgb(200, 200, 200)",
+                              "backgroundColor": "var(--colorNeutralStroke2)",
                               "height": "3px",
                               "marginTop": "-1px",
                             },
@@ -897,12 +1131,39 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
           </Stack>
           <StyledMessageBar
             messageBarType={3}
+            styles={
+              {
+                "root": {
+                  "marginTop": "5px",
+                  "selectors": {
+                    "&.ms-MessageBar--info": {
+                      "backgroundColor": "var(--colorNeutralBackground3)",
+                      "border": "1px solid var(--colorNeutralStroke1)",
+                    },
+                    "&.ms-MessageBar--severeWarning": {
+                      "backgroundColor": "var(--colorStatusDangerBackground1)",
+                      "border": "1px solid var(--colorStatusDangerBorder1)",
+                    },
+                    "&.ms-MessageBar--warning": {
+                      "backgroundColor": "var(--colorStatusWarningBackground1)",
+                      "border": "1px solid var(--colorStatusWarningBorder1)",
+                    },
+                    ".ms-MessageBar-icon": {
+                      "color": "var(--colorNeutralForeground1)",
+                    },
+                    ".ms-MessageBar-text": {
+                      "color": "var(--colorNeutralForeground1)",
+                    },
+                  },
+                },
+              }
+            }
           >
             <Text
               styles={
                 {
                   "root": {
-                    "color": "windowtext",
+                    "color": "var(--colorNeutralForeground1)",
                     "fontSize": 14,
                   },
                 }
@@ -920,7 +1181,13 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
             </Text>
           </StyledMessageBar>
         </Stack>
-        <Text>
+        <Text
+          style={
+            {
+              "color": "var(--colorNeutralForeground1)",
+            }
+          }
+        >
           Estimate your required RU/s with
           <StyledLinkBase
             href="https://cosmos.azure.com/capacitycalculator/"
@@ -964,10 +1231,22 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
               }
             }
           >
-            <StyledLabelBase>
+            <StyledLabelBase
+              style={
+                {
+                  "color": "var(--colorNeutralForeground1)",
+                }
+              }
+            >
               Storage capacity
             </StyledLabelBase>
-            <Text>
+            <Text
+              style={
+                {
+                  "color": "var(--colorNeutralForeground1)",
+                }
+              }
+            >
               Unlimited
             </Text>
           </Stack>
@@ -986,6 +1265,7 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
         <Text
           style={
             {
+              "color": "var(--colorNeutralForeground1)",
               "fontWeight": 600,
             }
           }
@@ -1007,6 +1287,7 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
           <Text
             style={
               {
+                "color": "var(--colorNeutralForeground1)",
                 "fontWeight": 600,
               }
             }
@@ -1024,6 +1305,7 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
             <Text
               style={
                 {
+                  "color": "var(--colorNeutralForeground1)",
                   "width": "33%",
                 }
               }
@@ -1036,6 +1318,7 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
             <Text
               style={
                 {
+                  "color": "var(--colorNeutralForeground1)",
                   "width": "33%",
                 }
               }
@@ -1048,6 +1331,7 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
             <Text
               style={
                 {
+                  "color": "var(--colorNeutralForeground1)",
                   "width": "33%",
                 }
               }
@@ -1062,6 +1346,7 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
         <Text
           style={
             {
+              "color": "var(--colorNeutralForeground1)",
               "fontWeight": 600,
               "marginTop": 15,
             }
@@ -1094,6 +1379,7 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
         <Text
           style={
             {
+              "color": "var(--colorNeutralForeground1)",
               "marginTop": 15,
             }
           }
@@ -1128,7 +1414,7 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
             styles={
               {
                 "root": {
-                  "color": "windowtext",
+                  "color": "var(--colorNeutralForeground1)",
                   "fontSize": 14,
                 },
               }
@@ -1169,15 +1455,47 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
                 ".ms-ChoiceField-field.is-checked::before": {
                   "borderColor": "",
                 },
+                ".ms-ChoiceField-field:hover .ms-ChoiceFieldLabel": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
                 ".ms-ChoiceField-wrapper label": {
+                  "color": "var(--colorNeutralForeground1)",
                   "fontFamily": undefined,
                   "fontSize": 14,
                   "padding": "2px 5px",
                   "whiteSpace": "nowrap",
                 },
+                ".ms-ChoiceFieldLabel": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
+                ".ms-ChoiceFieldLabel:hover": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
               },
             },
           ],
+          "label": {
+            "color": "var(--colorNeutralForeground1)",
+          },
+          "root": {
+            "selectors": {
+              ".ms-ChoiceField-field:hover .ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceField-innerField": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceField:hover .ms-ChoiceField-innerField": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceField:hover .ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+            },
+          },
         }
       }
     />
@@ -1206,25 +1524,63 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
         }
       >
         <StyledTextFieldBase
+          data-test="manual-throughput-input"
           disabled={false}
           id="throughputInput"
           key="provisioned throughput input"
           min={10000}
           onChange={[Function]}
+          onGetErrorMessage={[Function]}
           required={true}
           step={100}
           styles={
             {
+              "field": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground1)",
+                "selectors": {
+                  ":disabled": {
+                    "backgroundColor": "var(--colorNeutralBackground2)",
+                    "color": "var(--colorNeutralForeground2)",
+                  },
+                },
+              },
               "fieldGroup": {
-                "borderColor": "",
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "borderColor": "var(--colorNeutralStroke1)",
                 "height": 25,
                 "selectors": {
                   ":disabled": {
-                    "backgroundColor": undefined,
-                    "borderColor": undefined,
+                    "backgroundColor": "var(--colorNeutralBackground2)",
+                    "borderColor": "var(--colorNeutralStroke1)",
+                    "color": "var(--colorNeutralForeground2)",
+                  },
+                  "input": {
+                    "backgroundColor": "var(--colorNeutralBackground2)",
+                    "color": "var(--colorNeutralForeground1)",
+                  },
+                  "input#autopilotInput": {
+                    "backgroundColor": "var(--colorNeutralBackground4)",
+                    "color": "var(--colorNeutralForeground1)",
+                  },
+                  "input:disabled": {
+                    "backgroundColor": "var(--colorNeutralBackground2)",
+                    "color": "var(--colorNeutralForeground2)",
                   },
                 },
                 "width": 300,
+              },
+              "subComponentStyles": {
+                "label": {
+                  "root": {
+                    "color": "var(--colorNeutralForeground1)",
+                  },
+                },
+              },
+              "suffix": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "border": "1px solid var(--colorNeutralStroke1)",
+                "color": "var(--colorNeutralForeground1)",
               },
             }
           }
@@ -1273,6 +1629,16 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
                 >
                   1,000,000
                 </span>
+                <span
+                  data-test="soft-allowed-maximum-throughput"
+                  style={
+                    {
+                      "float": "right",
+                    }
+                  }
+                >
+                  1,000,000
+                </span>
               </StackItem>
             </Stack>
             <StyledProgressIndicatorBase
@@ -1282,7 +1648,7 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
                 {
                   "progressBar": [
                     {
-                      "backgroundColor": "rgb(251, 217, 203)",
+                      "backgroundColor": "var(--colorStatusDangerBackground1)",
                     },
                   ],
                 }
@@ -1306,7 +1672,7 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
                         {
                           "selectors": {
                             "::before": {
-                              "backgroundColor": "rgb(200, 200, 200)",
+                              "backgroundColor": "var(--colorNeutralStroke2)",
                               "height": "3px",
                               "marginTop": "-1px",
                             },
@@ -1334,7 +1700,7 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
                         {
                           "selectors": {
                             "::before": {
-                              "backgroundColor": "rgb(200, 200, 200)",
+                              "backgroundColor": "var(--colorNeutralStroke2)",
                               "height": "3px",
                               "marginTop": "-1px",
                             },
@@ -1351,12 +1717,39 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
           </Stack>
           <StyledMessageBar
             messageBarType={3}
+            styles={
+              {
+                "root": {
+                  "marginTop": "5px",
+                  "selectors": {
+                    "&.ms-MessageBar--info": {
+                      "backgroundColor": "var(--colorNeutralBackground3)",
+                      "border": "1px solid var(--colorNeutralStroke1)",
+                    },
+                    "&.ms-MessageBar--severeWarning": {
+                      "backgroundColor": "var(--colorStatusDangerBackground1)",
+                      "border": "1px solid var(--colorStatusDangerBorder1)",
+                    },
+                    "&.ms-MessageBar--warning": {
+                      "backgroundColor": "var(--colorStatusWarningBackground1)",
+                      "border": "1px solid var(--colorStatusWarningBorder1)",
+                    },
+                    ".ms-MessageBar-icon": {
+                      "color": "var(--colorNeutralForeground1)",
+                    },
+                    ".ms-MessageBar-text": {
+                      "color": "var(--colorNeutralForeground1)",
+                    },
+                  },
+                },
+              }
+            }
           >
             <Text
               styles={
                 {
                   "root": {
-                    "color": "windowtext",
+                    "color": "var(--colorNeutralForeground1)",
                     "fontSize": 14,
                   },
                 }
@@ -1374,7 +1767,13 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
             </Text>
           </StyledMessageBar>
         </Stack>
-        <Text>
+        <Text
+          style={
+            {
+              "color": "var(--colorNeutralForeground1)",
+            }
+          }
+        >
           Estimate your required RU/s with
           <StyledLinkBase
             href="https://cosmos.azure.com/capacitycalculator/"
@@ -1401,10 +1800,22 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
               }
             }
           >
-            <StyledLabelBase>
+            <StyledLabelBase
+              style={
+                {
+                  "color": "var(--colorNeutralForeground1)",
+                }
+              }
+            >
               Storage capacity
             </StyledLabelBase>
-            <Text>
+            <Text
+              style={
+                {
+                  "color": "var(--colorNeutralForeground1)",
+                }
+              }
+            >
               Unlimited
             </Text>
           </Stack>
@@ -1423,6 +1834,7 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
         <Text
           style={
             {
+              "color": "var(--colorNeutralForeground1)",
               "fontWeight": 600,
             }
           }
@@ -1444,6 +1856,7 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
           <Text
             style={
               {
+                "color": "var(--colorNeutralForeground1)",
                 "fontWeight": 600,
               }
             }
@@ -1461,6 +1874,7 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
             <Text
               style={
                 {
+                  "color": "var(--colorNeutralForeground1)",
                   "width": "33%",
                 }
               }
@@ -1473,6 +1887,7 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
             <Text
               style={
                 {
+                  "color": "var(--colorNeutralForeground1)",
                   "width": "33%",
                 }
               }
@@ -1485,6 +1900,7 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
             <Text
               style={
                 {
+                  "color": "var(--colorNeutralForeground1)",
                   "width": "33%",
                 }
               }
@@ -1499,6 +1915,7 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
         <Text
           style={
             {
+              "color": "var(--colorNeutralForeground1)",
               "fontWeight": 600,
               "marginTop": 15,
             }
@@ -1531,6 +1948,7 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
         <Text
           style={
             {
+              "color": "var(--colorNeutralForeground1)",
               "marginTop": 15,
             }
           }

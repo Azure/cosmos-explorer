@@ -65,6 +65,11 @@ export const collection = {
     sourceCollectionId: "source1",
     sourceCollectionRid: "rid123",
   }),
+  dataMaskingPolicy: ko.observable<DataModels.DataMaskingPolicy>({
+    includedPaths: [],
+    excludedPaths: ["/excludedPath"],
+    isPolicyEnabled: true,
+  }),
   readSettings: () => {
     return;
   },

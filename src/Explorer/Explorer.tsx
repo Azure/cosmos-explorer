@@ -38,6 +38,9 @@ import { ContainerConnectionInfo, IPhoenixServiceInfo, IProvisionData, IResponse
 import * as ViewModels from "../Contracts/ViewModels";
 import { UploadDetailsRecord } from "../Contracts/ViewModels";
 import { GitHubOAuthService } from "../GitHub/GitHubOAuthService";
+import MetricScenario from "../Metrics/MetricEvents";
+import { ApplicationMetricPhase } from "../Metrics/ScenarioConfig";
+import { scenarioMonitor } from "../Metrics/ScenarioMonitor";
 import { PhoenixClient } from "../Phoenix/PhoenixClient";
 import * as ExplorerSettings from "../Shared/ExplorerSettings";
 import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
@@ -359,6 +362,14 @@ export default class Explorer {
     );
   }
 
+  public async openContainerCopyFeedbackBlade(): Promise<void> {
+    sendMessage({ type: MessageTypes.OpenContainerCopyFeedbackBlade });
+    Logger.logInfo(
+      `Container Copy Feedback logging current date when survey is shown ${Date.now().toString()}`,
+      "Explorer/openContainerCopyFeedbackBlade",
+    );
+  }
+
   public async refreshDatabaseForResourceToken(): Promise<void> {
     const databaseId = userContext.parsedResourceToken?.databaseId;
     const collectionId = userContext.parsedResourceToken?.collectionId;
@@ -394,7 +405,9 @@ export default class Explorer {
       updatedDatabases = [...updatedDatabases, ...deltaDatabases.toAdd].sort((db1, db2) =>
         db1.id().localeCompare(db2.id()),
       );
-      useDatabases.setState({ databases: updatedDatabases });
+      useDatabases.setState({ databases: updatedDatabases, databasesFetchedSuccessfully: true });
+      scenarioMonitor.completePhase(MetricScenario.DatabaseLoad, ApplicationMetricPhase.DatabasesFetched);
+
       await this.refreshAndExpandNewDatabases(deltaDatabases.toAdd, updatedDatabases);
     } catch (error) {
       const errorMessage = getErrorMessage(error);
@@ -408,6 +421,8 @@ export default class Explorer {
         startKey,
       );
       logConsoleError(`Error while refreshing databases: ${errorMessage}`);
+      useDatabases.setState({ databasesFetchedSuccessfully: false });
+      scenarioMonitor.failPhase(MetricScenario.DatabaseLoad, ApplicationMetricPhase.DatabasesFetched);
     }
   }
 
@@ -1016,7 +1031,7 @@ export default class Explorer {
         break;
 
       case ViewModels.TerminalKind.VCoreMongo:
-        title = "VCoreMongo Shell";
+        title = "Mongo Shell";
         break;
 
       default:
@@ -1175,6 +1190,11 @@ export default class Explorer {
   }
 
   public async refreshExplorer(): Promise<void> {
+    // Start DatabaseLoad scenario before fetching databases
+    if (userContext.apiType !== "Postgres" && userContext.apiType !== "VCoreMongo") {
+      scenarioMonitor.start(MetricScenario.DatabaseLoad);
+    }
+
     if (userContext.apiType !== "Postgres" && userContext.apiType !== "VCoreMongo") {
       userContext.authType === AuthType.ResourceToken
         ? this.refreshDatabaseForResourceToken()

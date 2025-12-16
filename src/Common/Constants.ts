@@ -90,6 +90,10 @@ export class CapabilityNames {
   public static readonly EnableServerless: string = "EnableServerless";
   public static readonly EnableNoSQLVectorSearch: string = "EnableNoSQLVectorSearch";
   public static readonly EnableNoSQLFullTextSearch: string = "EnableNoSQLFullTextSearch";
+  public static readonly EnableDataMasking: string = "EnableDataMasking";
+  public static readonly EnableDynamicDataMasking: string = "EnableDynamicDataMasking";
+  public static readonly EnableNoSQLFullTextSearchPreviewFeatures: string = "EnableNoSQLFullTextSearchPreviewFeatures";
+  public static readonly EnableOnlineCopyFeature: string = "EnableOnlineContainerCopy";
 }
 
 export enum CapacityMode {
@@ -293,6 +297,7 @@ export class HttpHeaders {
   public static migrateOfferToManualThroughput: string = "x-ms-cosmos-migrate-offer-to-manual-throughput";
   public static migrateOfferToAutopilot: string = "x-ms-cosmos-migrate-offer-to-autopilot";
   public static xAPIKey: string = "X-API-Key";
+  public static sessionId: string = "x-ms-client-session-id";
 }
 
 export class ContentType {

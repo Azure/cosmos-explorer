@@ -2,6 +2,7 @@ import {
   DefaultButton,
   Dropdown,
   IDropdownOption,
+  IDropdownStyles,
   IStyleFunctionOrObject,
   ITextFieldStyleProps,
   ITextFieldStyles,
@@ -12,6 +13,7 @@ import {
 import { FullTextIndex, FullTextPath, FullTextPolicy } from "Contracts/DataModels";
 import { CollapsibleSectionComponent } from "Explorer/Controls/CollapsiblePanel/CollapsibleSectionComponent";
 import * as React from "react";
+import { isFullTextSearchPreviewFeaturesEnabled } from "Utils/CapabilityUtils";
 
 export interface FullTextPoliciesComponentProps {
   fullTextPolicy: FullTextPolicy;
@@ -22,6 +24,7 @@ export interface FullTextPoliciesComponentProps {
   ) => void;
   discardChanges?: boolean;
   onChangesDiscarded?: () => void;
+  englishOnly?: boolean;
 }
 
 export interface FullTextPolicyData {
@@ -33,31 +36,167 @@ export interface FullTextPolicyData {
 const labelStyles = {
   root: {
     fontSize: 12,
+    color: "var(--colorNeutralForeground1)",
   },
 };
 
 const textFieldStyles: IStyleFunctionOrObject<ITextFieldStyleProps, ITextFieldStyles> = {
   fieldGroup: {
     height: 27,
+    backgroundColor: "var(--colorNeutralBackground2)",
+    borderColor: "var(--colorNeutralStroke1)",
   },
   field: {
     fontSize: 12,
     padding: "0 8px",
+    color: "var(--colorNeutralForeground1)",
+    backgroundColor: "var(--colorNeutralBackground2)",
+  },
+  root: {
+    selectors: {
+      input: {
+        backgroundColor: "var(--colorNeutralBackground2)",
+        color: "var(--colorNeutralForeground1)",
+      },
+      "input:hover": {
+        backgroundColor: "var(--colorNeutralBackground2)",
+        borderColor: "var(--colorNeutralStroke1)",
+      },
+      "input:focus": {
+        backgroundColor: "var(--colorNeutralBackground2)",
+        borderColor: "var(--colorBrandBackground)",
+      },
+    },
   },
 };
 
-const dropdownStyles = {
-  title: {
-    height: 27,
-    lineHeight: "24px",
-    fontSize: 12,
+const dropdownStyles: Partial<IDropdownStyles> = {
+  root: {
+    width: "40%",
+    marginTop: "10px",
+    selectors: {
+      "&:hover .ms-Dropdown-title": {
+        color: "var(--colorNeutralForeground1)",
+        backgroundColor: "var(--colorNeutralBackground2)",
+        borderColor: "var(--colorNeutralStroke1)",
+      },
+      "&:hover span.ms-Dropdown-title": {
+        color: "var(--colorNeutralForeground1)",
+      },
+      "&:focus .ms-Dropdown-title": {
+        color: "var(--colorNeutralForeground1)",
+        backgroundColor: "var(--colorNeutralBackground2)",
+      },
+      "&:focus span.ms-Dropdown-title": {
+        color: "var(--colorNeutralForeground1)",
+      },
+    },
+  },
+  label: {
+    color: "var(--colorNeutralForeground1)",
   },
   dropdown: {
-    height: 27,
-    lineHeight: "24px",
+    backgroundColor: "var(--colorNeutralBackground2)",
+    borderColor: "var(--colorNeutralStroke1)",
+    color: "var(--colorNeutralForeground1)",
+  },
+  title: {
+    backgroundColor: "var(--colorNeutralBackground2)",
+    color: "var(--colorNeutralForeground1)",
+    borderColor: "var(--colorNeutralStroke1)",
+    selectors: {
+      "&:hover": {
+        backgroundColor: "var(--colorNeutralBackground2)",
+        color: "var(--colorNeutralForeground1)",
+      },
+      "&:focus": {
+        backgroundColor: "var(--colorNeutralBackground2)",
+        color: "var(--colorNeutralForeground1)",
+      },
+      "&:hover .ms-Dropdown-titleText": {
+        color: "var(--colorNeutralForeground1)",
+      },
+      "&:focus .ms-Dropdown-titleText": {
+        color: "var(--colorNeutralForeground1)",
+      },
+      "& .ms-Dropdown-titleText": {
+        color: "var(--colorNeutralForeground1)",
+      },
+      "&.ms-Dropdown-title--hasPlaceholder": {
+        color: "var(--colorNeutralForeground2)",
+      },
+    },
+  },
+  errorMessage: {
+    color: "var(--colorNeutralForeground1)",
+  },
+  caretDown: {
+    color: "var(--colorNeutralForeground1)",
+  },
+  callout: {
+    backgroundColor: "var(--colorNeutralBackground2)",
+    border: "1px solid var(--colorNeutralStroke1)",
+  },
+  dropdownItems: {
+    backgroundColor: "var(--colorNeutralBackground2)",
   },
   dropdownItem: {
-    fontSize: 12,
+    backgroundColor: "transparent",
+    color: "var(--colorNeutralForeground1)",
+    minHeight: "36px",
+    lineHeight: "36px",
+    selectors: {
+      "&:hover": {
+        backgroundColor: "rgba(255, 255, 255, 0.1)",
+        color: "var(--colorNeutralForeground1)",
+      },
+      "&:hover .ms-Dropdown-optionText": {
+        color: "var(--colorNeutralForeground1)",
+      },
+      "&:focus": {
+        backgroundColor: "rgba(255, 255, 255, 0.1)",
+        color: "var(--colorNeutralForeground1)",
+      },
+      "&:active": {
+        backgroundColor: "rgba(255, 255, 255, 0.15)",
+        color: "var(--colorNeutralForeground1)",
+      },
+      "& .ms-Dropdown-optionText": {
+        color: "var(--colorNeutralForeground1)",
+      },
+    },
+  },
+  dropdownItemSelected: {
+    backgroundColor: "rgba(255, 255, 255, 0.08)",
+    color: "var(--colorNeutralForeground1)",
+    minHeight: "36px",
+    lineHeight: "36px",
+    selectors: {
+      "&:hover": {
+        backgroundColor: "rgba(255, 255, 255, 0.1)",
+        color: "var(--colorNeutralForeground1)",
+      },
+      "&:hover .ms-Dropdown-optionText": {
+        color: "var(--colorNeutralForeground1)",
+      },
+      "&:focus": {
+        backgroundColor: "rgba(255, 255, 255, 0.1)",
+        color: "var(--colorNeutralForeground1)",
+      },
+      "&:active": {
+        backgroundColor: "rgba(255, 255, 255, 0.15)",
+        color: "var(--colorNeutralForeground1)",
+      },
+      "& .ms-Dropdown-optionText": {
+        color: "var(--colorNeutralForeground1)",
+      },
+    },
+  },
+  dropdownOptionText: {
+    color: "var(--colorNeutralForeground1)",
+  },
+  dropdownItemHeader: {
+    color: "var(--colorNeutralForeground1)",
   },
 };
 
@@ -66,6 +205,7 @@ export const FullTextPoliciesComponent: React.FunctionComponent<FullTextPolicies
   onFullTextPathChange,
   discardChanges,
   onChangesDiscarded,
+  englishOnly,
 }): JSX.Element => {
   const getFullTextPathError = (path: string, index?: number): string => {
     let error = "";
@@ -87,6 +227,7 @@ export const FullTextPoliciesComponent: React.FunctionComponent<FullTextPolicies
     if (!fullTextPolicy) {
       fullTextPolicy = { defaultLanguage: getFullTextLanguageOptions()[0].key as never, fullTextPaths: [] };
     }
+
     return fullTextPolicy.fullTextPaths.map((fullTextPath: FullTextPath) => ({
       ...fullTextPath,
       pathError: getFullTextPathError(fullTextPath.path),
@@ -166,7 +307,7 @@ export const FullTextPoliciesComponent: React.FunctionComponent<FullTextPolicies
         <Dropdown
           required={true}
           styles={dropdownStyles}
-          options={getFullTextLanguageOptions()}
+          options={getFullTextLanguageOptions(englishOnly)}
           selectedKey={defaultLanguage}
           onChange={(_event: React.FormEvent<HTMLDivElement>, option: IDropdownOption) =>
             setDefaultLanguage(option.key as never)
@@ -211,7 +352,7 @@ export const FullTextPoliciesComponent: React.FunctionComponent<FullTextPolicies
                   <Dropdown
                     required={true}
                     styles={dropdownStyles}
-                    options={getFullTextLanguageOptions()}
+                    options={getFullTextLanguageOptions(englishOnly)}
                     selectedKey={fullTextPolicy.language}
                     onChange={(_event: React.FormEvent<HTMLDivElement>, option: IDropdownOption) =>
                       onFullTextPathPolicyChange(index, option)
@@ -222,18 +363,62 @@ export const FullTextPoliciesComponent: React.FunctionComponent<FullTextPolicies
             </Stack>
           </CollapsibleSectionComponent>
         ))}
-      <DefaultButton id={`add-vector-policy`} styles={{ root: { maxWidth: 170, fontSize: 12 } }} onClick={onAdd}>
+      <DefaultButton
+        id={`add-vector-policy`}
+        styles={{
+          root: {
+            maxWidth: 170,
+            fontSize: 12,
+            color: "var(--colorNeutralForeground1)",
+            backgroundColor: "transparent",
+            borderColor: "var(--colorNeutralStroke1)",
+          },
+          rootHovered: {
+            color: "var(--colorNeutralForeground1)",
+            backgroundColor: "transparent",
+            borderColor: "var(--colorNeutralForeground1)",
+          },
+          rootPressed: {
+            color: "var(--colorNeutralForeground1)",
+            backgroundColor: "transparent",
+            borderColor: "var(--colorNeutralForeground1)",
+          },
+          rootDisabled: {
+            backgroundColor: "transparent",
+          },
+        }}
+        onClick={onAdd}
+      >
         Add full text path
       </DefaultButton>
     </Stack>
   );
 };
 
-export const getFullTextLanguageOptions = (): IDropdownOption[] => {
-  return [
+export const getFullTextLanguageOptions = (englishOnly?: boolean): IDropdownOption[] => {
+  const multiLanguageSupportEnabled: boolean = isFullTextSearchPreviewFeaturesEnabled() && !englishOnly;
+  const fullTextLanguageOptions: IDropdownOption[] = [
     {
       key: "en-US",
       text: "English (US)",
     },
+    ...(multiLanguageSupportEnabled
+      ? [
+          {
+            key: "fr-FR",
+            text: "French",
+          },
+          {
+            key: "de-DE",
+            text: "German",
+          },
+          {
+            key: "es-ES",
+            text: "Spanish",
+          },
+        ]
+      : []),
   ];
+
+  return fullTextLanguageOptions;
 };

@@ -13,7 +13,8 @@ export type isDirtyTypes =
   | DataModels.ComputedProperties
   | DataModels.VectorEmbedding[]
   | DataModels.FullTextPolicy
-  | DataModels.ThroughputBucket[];
+  | DataModels.ThroughputBucket[]
+  | DataModels.DataMaskingPolicy;
 export const TtlOff = "off";
 export const TtlOn = "on";
 export const TtlOnNoDefault = "on-nodefault";
@@ -59,6 +60,7 @@ export enum SettingsV2TabTypes {
   ContainerVectorPolicyTab,
   ThroughputBucketsTab,
   GlobalSecondaryIndexTab,
+  DataMaskingTab,
 }
 
 export enum ContainerPolicyTabTypes {
@@ -175,6 +177,8 @@ export const getTabTitle = (tab: SettingsV2TabTypes): string => {
       return "Throughput Buckets";
     case SettingsV2TabTypes.GlobalSecondaryIndexTab:
       return "Global Secondary Index (Preview)";
+    case SettingsV2TabTypes.DataMaskingTab:
+      return "Masking Policy (preview)";
     default:
       throw new Error(`Unknown tab ${tab}`);
   }

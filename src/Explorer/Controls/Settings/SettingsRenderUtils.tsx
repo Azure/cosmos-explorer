@@ -61,9 +61,9 @@ export interface PriceBreakdown {
   currencySign: string;
 }
 
-export type editorType = "indexPolicy" | "computedProperties";
+export type editorType = "indexPolicy" | "computedProperties" | "dataMasking";
 
-export const infoAndToolTipTextStyle: ITextStyles = { root: { fontSize: 14, color: "windowtext" } };
+export const infoAndToolTipTextStyle: ITextStyles = { root: { fontSize: 14, color: "var(--colorNeutralForeground1)" } };
 
 export const noLeftPaddingCheckBoxStyle: ICheckboxStyles = {
   label: {
@@ -119,15 +119,89 @@ export const addMongoIndexSubElementsTokens: IStackTokens = {
 
 export const mediumWidthStackStyles: IStackStyles = { root: { width: 600 } };
 
-export const shortWidthTextFieldStyles: Partial<ITextFieldStyles> = { root: { paddingLeft: 10, width: 210 } };
+export const shortWidthTextFieldStyles: Partial<ITextFieldStyles> = {
+  root: { paddingLeft: 10, width: 210 },
+  fieldGroup: {
+    backgroundColor: "var(--colorNeutralBackground2)",
+    borderColor: "var(--colorNeutralStroke1)",
+  },
+  field: {
+    color: "var(--colorNeutralForeground1)",
+    backgroundColor: "var(--colorNeutralBackground2)",
+  },
+};
 
-export const shortWidthDropDownStyles: Partial<IDropdownStyles> = { dropdown: { paddingleft: 10, width: 202 } };
+export const shortWidthDropDownStyles: Partial<IDropdownStyles> = {
+  dropdown: { paddingLeft: 10, width: 202 },
+  title: {
+    backgroundColor: "var(--colorNeutralBackground2)",
+    color: "var(--colorNeutralForeground1)",
+    borderColor: "var(--colorNeutralStroke1)",
+  },
+  caretDown: {
+    color: "var(--colorNeutralForeground1)",
+  },
+  callout: {
+    backgroundColor: "var(--colorNeutralBackground2)",
+    border: "1px solid var(--colorNeutralStroke1)",
+  },
+  dropdownItems: {
+    backgroundColor: "var(--colorNeutralBackground2)",
+  },
+  dropdownItem: {
+    backgroundColor: "transparent",
+    color: "var(--colorNeutralForeground1)",
+    selectors: {
+      "&:hover": {
+        backgroundColor: "rgba(255, 255, 255, 0.1)",
+        color: "var(--colorNeutralForeground1)",
+      },
+      "&:focus": {
+        backgroundColor: "rgba(255, 255, 255, 0.1)",
+        color: "var(--colorNeutralForeground1)",
+      },
+    },
+  },
+  dropdownItemSelected: {
+    backgroundColor: "rgba(255, 255, 255, 0.08)",
+    color: "var(--colorNeutralForeground1)",
+    selectors: {
+      "&:hover": {
+        backgroundColor: "rgba(255, 255, 255, 0.1)",
+        color: "var(--colorNeutralForeground1)",
+      },
+    },
+  },
+  dropdownOptionText: {
+    color: "var(--colorNeutralForeground1)",
+  },
+};
 
 export const transparentDetailsRowStyles: Partial<IDetailsRowStyles> = {
   root: {
+    backgroundColor: "var(--colorNeutralBackground1)",
+    color: "var(--colorNeutralForeground1)",
     selectors: {
       ":hover": {
-        background: "transparent",
+        backgroundColor: "var(--colorNeutralBackground1Hover)",
+        color: "var(--colorNeutralForeground1)",
+      },
+      ":hover .ms-DetailsRow-cell": {
+        backgroundColor: "var(--colorNeutralBackground1Hover)",
+        color: "var(--colorNeutralForeground1)",
+      },
+      "&.ms-DetailsRow": {
+        backgroundColor: "var(--colorNeutralBackground1)",
+      },
+    },
+  },
+  cell: {
+    backgroundColor: "var(--colorNeutralBackground1)",
+    color: "var(--colorNeutralForeground1)",
+    selectors: {
+      ":hover": {
+        backgroundColor: "var(--colorNeutralBackground1Hover)",
+        color: "var(--colorNeutralForeground1)",
       },
     },
   },
@@ -135,9 +209,11 @@ export const transparentDetailsRowStyles: Partial<IDetailsRowStyles> = {
 
 export const transparentDetailsHeaderStyle: Partial<IDetailsColumnStyles> = {
   root: {
+    color: "var(--colorNeutralForeground1)",
     selectors: {
       ":hover": {
-        background: "transparent",
+        background: "var(--colorNeutralBackground1Hover)",
+        color: "var(--colorNeutralForeground1)",
       },
     },
   },
@@ -148,6 +224,35 @@ export const customDetailsListStyles: Partial<IDetailsListStyles> = {
     selectors: {
       ".ms-FocusZone": {
         paddingTop: 0,
+      },
+      ".ms-DetailsHeader": {
+        backgroundColor: "var(--colorNeutralBackground1)",
+      },
+      ".ms-DetailsHeader-cell": {
+        color: "var(--colorNeutralForeground1)",
+        backgroundColor: "var(--colorNeutralBackground1)",
+        selectors: {
+          ":hover": {
+            backgroundColor: "var(--colorNeutralBackground1Hover)",
+            color: "var(--colorNeutralForeground1)",
+          },
+        },
+      },
+      ".ms-DetailsHeader-cellTitle": {
+        color: "var(--colorNeutralForeground1)",
+      },
+      ".ms-DetailsRow": {
+        color: "var(--colorNeutralForeground1)",
+      },
+      ".ms-DetailsRow-cell": {
+        color: "var(--colorNeutralForeground1)",
+      },
+      // Tooltip styling for cells
+      ".ms-TooltipHost": {
+        color: "var(--colorNeutralForeground1)",
+      },
+      ".ms-DetailsRow-cell .ms-TooltipHost": {
+        color: "var(--colorNeutralForeground1)",
       },
     },
   },
@@ -166,7 +271,26 @@ export const separatorStyles: Partial<ISeparatorStyles> = {
 };
 
 export const messageBarStyles: Partial<IMessageBarStyles> = {
-  root: { marginTop: "5px", backgroundColor: "white" },
+  root: {
+    marginTop: "5px",
+    backgroundColor: "var(--colorNeutralBackground1)",
+    selectors: {
+      "&.ms-MessageBar--severeWarning": {
+        backgroundColor: "var(--colorNeutralBackground4)",
+      },
+      "&.ms-MessageBar--warning": {
+        backgroundColor: "var(--colorNeutralBackground3)",
+      },
+    },
+  },
+  text: { fontSize: 14 },
+};
+
+export const unsavedEditorMessageBarStyles: Partial<IMessageBarStyles> = {
+  root: {
+    marginTop: "5px",
+    padding: "8px 12px",
+  },
   text: { fontSize: 14 },
 };
 
@@ -214,9 +338,11 @@ export const getEstimatedSpendingElement = (
   const ruRange: string = isAutoscale ? throughput / 10 + " RU/s - " : "";
   return (
     <Stack>
-      <Text style={{ fontWeight: 600 }}>Cost estimate*</Text>
+      <Text style={{ fontWeight: 600, color: "var(--colorNeutralForeground1)" }}>Cost estimate*</Text>
       {costElement}
-      <Text style={{ fontWeight: 600, marginTop: 15 }}>How we calculate this</Text>
+      <Text style={{ fontWeight: 600, marginTop: 15, color: "var(--colorNeutralForeground1)" }}>
+        How we calculate this
+      </Text>
       <Stack id="throughputSpendElement" style={{ marginTop: 5 }}>
         <span>
           {numberOfRegions} region{numberOfRegions > 1 && <span>s</span>}
@@ -230,7 +356,7 @@ export const getEstimatedSpendingElement = (
           {priceBreakdown.pricePerRu}/RU
         </span>
       </Stack>
-      <Text style={{ marginTop: 15 }}>
+      <Text style={{ marginTop: 15, color: "var(--colorNeutralForeground1)" }}>
         <em>*{estimatedCostDisclaimer}</em>
       </Text>
     </Stack>
@@ -259,7 +385,12 @@ export const ttlWarning: JSX.Element = (
 export const unsavedEditorWarningMessage = (editor: editorType): JSX.Element => (
   <Text styles={infoAndToolTipTextStyle}>
     You have not saved the latest changes made to your{" "}
-    {editor === "indexPolicy" ? "indexing policy" : "computed properties"}. Please click save to confirm the changes.
+    {editor === "indexPolicy"
+      ? "indexing policy"
+      : editor === "dataMasking"
+      ? "data masking policy"
+      : "computed properties"}
+    . Please click save to confirm the changes.
   </Text>
 );
 
@@ -272,7 +403,7 @@ export const updateThroughputDelayedApplyWarningMessage: JSX.Element = (
 
 export const getUpdateThroughputBeyondInstantLimitMessage = (instantMaximumThroughput: number): JSX.Element => {
   return (
-    <Text styles={infoAndToolTipTextStyle} id="updateThroughputDelayedApplyWarningMessage">
+    <Text id="updateThroughputDelayedApplyWarningMessage">
       Scaling up will take 4-6 hours as it exceeds what Azure Cosmos DB can instantly support currently based on your
       number of physical partitions. You can increase your throughput to {instantMaximumThroughput} instantly or proceed
       with this value and wait until the scale-up is completed.
@@ -290,7 +421,7 @@ export const getUpdateThroughputBeyondSupportLimitMessage = (
         Your request to increase throughput exceeds the pre-allocated capacity which may take longer than expected.
         There are three options you can choose from to proceed:
       </Text>
-      <ol style={{ fontSize: 14, color: "windowtext", marginTop: "5px" }}>
+      <ol style={{ fontSize: 14, color: "var(--colorNeutralForeground1)", marginTop: "5px" }}>
         <li>You can instantly scale up to {instantMaximumThroughput} RU/s.</li>
         {instantMaximumThroughput < maximumThroughput && (
           <li>You can asynchronously scale up to any value under {maximumThroughput} RU/s in 4-6 hours.</li>
@@ -326,7 +457,7 @@ export const getUpdateThroughputBelowMinimumMessage = (minimum: number): JSX.Ele
 };
 
 export const saveThroughputWarningMessage: JSX.Element = (
-  <Text styles={infoAndToolTipTextStyle}>
+  <Text>
     Your bill will be affected as you update your throughput settings. Please review the updated cost estimate below
     before saving your changes
   </Text>
@@ -446,9 +577,13 @@ export const changeFeedPolicyToolTip: JSX.Element = (
 );
 
 export const mongoIndexingPolicyDisclaimer: JSX.Element = (
-  <Text>
+  <Text style={{ color: "var(--colorNeutralForeground1)" }}>
     For queries that filter on multiple properties, create multiple single field indexes instead of a compound index.
-    <Link href="https://docs.microsoft.com/azure/cosmos-db/mongodb-indexing#index-types" target="_blank">
+    <Link
+      href="https://docs.microsoft.com/azure/cosmos-db/mongodb-indexing#index-types"
+      target="_blank"
+      style={{ color: "var(--colorBrandForeground1)" }}
+    >
       {` Compound indexes `}
     </Link>
     are only used for sorting query results. If you need to add a compound index, you can create one using the Mongo
@@ -457,7 +592,7 @@ export const mongoIndexingPolicyDisclaimer: JSX.Element = (
 );
 
 export const mongoCompoundIndexNotSupportedMessage: JSX.Element = (
-  <Text>
+  <Text style={{ color: "var(--colorNeutralForeground1)" }}>
     Collections with compound indexes are not yet supported in the indexing editor. To modify indexing policy for this
     collection, use the Mongo Shell.
   </Text>
@@ -506,13 +641,49 @@ export const getTextFieldStyles = (current: isDirtyTypes, baseline: isDirtyTypes
   fieldGroup: {
     height: 25,
     width: 300,
-    borderColor: isDirty(current, baseline) ? StyleConstants.Dirty : "",
+    backgroundColor: "var(--colorNeutralBackground2)",
+    borderColor: isDirty(current, baseline) ? StyleConstants.Dirty : "var(--colorNeutralStroke1)",
     selectors: {
       ":disabled": {
-        backgroundColor: StyleConstants.BaseMedium,
-        borderColor: StyleConstants.BaseMediumHigh,
+        backgroundColor: "var(--colorNeutralBackground2)",
+        borderColor: "var(--colorNeutralStroke1)",
+        color: "var(--colorNeutralForeground2)",
+      },
+      input: {
+        backgroundColor: "var(--colorNeutralBackground2)",
+        color: "var(--colorNeutralForeground1)",
+      },
+      "input:disabled": {
+        backgroundColor: "var(--colorNeutralBackground2)",
+        color: "var(--colorNeutralForeground2)",
+      },
+      "input#autopilotInput": {
+        backgroundColor: "var(--colorNeutralBackground4)",
+        color: "var(--colorNeutralForeground1)",
       },
     },
+  },
+  field: {
+    backgroundColor: "var(--colorNeutralBackground2)",
+    color: "var(--colorNeutralForeground1)",
+    selectors: {
+      ":disabled": {
+        backgroundColor: "var(--colorNeutralBackground2)",
+        color: "var(--colorNeutralForeground2)",
+      },
+    },
+  },
+  subComponentStyles: {
+    label: {
+      root: {
+        color: "var(--colorNeutralForeground1)",
+      },
+    },
+  },
+  suffix: {
+    backgroundColor: "var(--colorNeutralBackground2)",
+    color: "var(--colorNeutralForeground1)",
+    border: "1px solid var(--colorNeutralStroke1)",
   },
 });
 
@@ -521,6 +692,28 @@ export const getChoiceGroupStyles = (
   baseline: isDirtyTypes,
   isHorizontal?: boolean,
 ): Partial<IChoiceGroupStyles> => ({
+  label: {
+    color: "var(--colorNeutralForeground1)",
+  },
+  root: {
+    selectors: {
+      ".ms-ChoiceFieldLabel": {
+        color: "var(--colorNeutralForeground1)",
+      },
+      ".ms-ChoiceField-field:hover .ms-ChoiceFieldLabel": {
+        color: "var(--colorNeutralForeground1)",
+      },
+      ".ms-ChoiceField:hover .ms-ChoiceFieldLabel": {
+        color: "var(--colorNeutralForeground1)",
+      },
+      ".ms-ChoiceField:hover .ms-ChoiceField-innerField": {
+        color: "var(--colorNeutralForeground1)",
+      },
+      ".ms-ChoiceField-innerField": {
+        color: "var(--colorNeutralForeground1)",
+      },
+    },
+  },
   flexContainer: [
     {
       selectors: {
@@ -535,6 +728,16 @@ export const getChoiceGroupStyles = (
           fontSize: 14,
           fontFamily: StyleConstants.DataExplorerFont,
           padding: "2px 5px",
+          color: "var(--colorNeutralForeground1)",
+        },
+        ".ms-ChoiceFieldLabel": {
+          color: "var(--colorNeutralForeground1)",
+        },
+        ".ms-ChoiceFieldLabel:hover": {
+          color: "var(--colorNeutralForeground1)",
+        },
+        ".ms-ChoiceField-field:hover .ms-ChoiceFieldLabel": {
+          color: "var(--colorNeutralForeground1)",
         },
       },
       display: isHorizontal ? "inline-flex" : "default",

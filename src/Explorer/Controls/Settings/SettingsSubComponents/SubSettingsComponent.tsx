@@ -1,4 +1,15 @@
-import { ChoiceGroup, IChoiceGroupOption, Label, Link, MessageBar, Stack, Text, TextField } from "@fluentui/react";
+import {
+  ChoiceGroup,
+  IChoiceGroupOption,
+  Label,
+  Link,
+  MessageBar,
+  Stack,
+  Text,
+  TextField,
+  TooltipHost,
+  mergeStyleSets,
+} from "@fluentui/react";
 import * as React from "react";
 import * as ViewModels from "../../../../Contracts/ViewModels";
 import { userContext } from "../../../../UserContext";
@@ -25,6 +36,11 @@ import {
 } from "../SettingsUtils";
 import { ToolTipLabelComponent } from "./ToolTipLabelComponent";
 
+const classNames = mergeStyleSets({
+  hintText: {
+    color: "var(--colorNeutralForeground1)", // theme-aware
+  },
+});
 export interface SubSettingsComponentProps {
   collection: ViewModels.Collection;
   timeToLive: TtlType;
@@ -127,9 +143,9 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
   };
 
   private ttlChoiceGroupOptions: IChoiceGroupOption[] = [
-    { key: TtlType.Off, text: "Off" },
-    { key: TtlType.OnNoDefault, text: "On (no default)" },
-    { key: TtlType.On, text: "On" },
+    { key: TtlType.Off, text: "Off", ariaLabel: "ttl-off-option" },
+    { key: TtlType.OnNoDefault, text: "On (no default)", ariaLabel: "ttl-on-no-default-option" },
+    { key: TtlType.On, text: "On", ariaLabel: "ttl-on-option" },
   ];
 
   public getTtlValue = (value: string): TtlType => {
@@ -185,13 +201,31 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
     userContext.apiType === "Mongo" ? (
       <MessageBar
         messageBarIconProps={{ iconName: "InfoSolid", className: "messageBarInfoIcon" }}
-        styles={{ text: { fontSize: 14 } }}
+        styles={{
+          root: {
+            backgroundColor: "var(--colorNeutralBackground1)",
+            color: "var(--colorNeutralForeground1)",
+          },
+          text: {
+            fontSize: 14,
+            color: "var(--colorNeutralForeground1)",
+          },
+          icon: {
+            color: "var(--colorNeutralForeground1)",
+          },
+        }}
       >
-        To enable time-to-live (TTL) for your collection/documents,
-        <Link href="https://docs.microsoft.com/en-us/azure/cosmos-db/mongodb-time-to-live" target="_blank">
-          create a TTL index
-        </Link>
-        .
+        <Text style={{ color: "var(--colorNeutralForeground1)" }}>
+          To enable time-to-live (TTL) for your collection/documents,{" "}
+          <Link
+            href="https://docs.microsoft.com/en-us/azure/cosmos-db/mongodb-time-to-live"
+            target="_blank"
+            style={{ color: "var(--colorBrandForeground1)" }}
+          >
+            create a TTL index
+          </Link>
+          .
+        </Text>
       </MessageBar>
     ) : (
       <Stack {...titleAndInputStackProps}>
@@ -223,6 +257,7 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
             onChange={this.onTimeToLiveSecondsChange}
             suffix="second(s)"
             ariaLabel={`Time to live in seconds`}
+            data-test="ttl-input"
           />
         )}
       </Stack>
@@ -318,23 +353,34 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
   private getPartitionKeyComponent = (): JSX.Element => (
     <Stack {...titleAndInputStackProps}>
       {this.getPartitionKeyVisible() && (
-        <TextField
-          label={this.partitionKeyName}
-          disabled
-          styles={getTextFieldStyles(undefined, undefined)}
-          defaultValue={this.partitionKeyValue}
-        />
+        <TooltipHost
+          content={`This ${this.partitionKeyName.toLowerCase()} is used to distribute data across multiple partitions for scalability. The value "${
+            this.partitionKeyValue
+          }" determines how documents are partitioned.`}
+          styles={{
+            root: {
+              display: "block",
+            },
+          }}
+        >
+          <TextField
+            label={this.partitionKeyName}
+            disabled
+            styles={getTextFieldStyles(undefined, undefined)}
+            defaultValue={this.partitionKeyValue}
+          />
+        </TooltipHost>
       )}
 
       {userContext.apiType === "SQL" && this.isLargePartitionKeyEnabled() && (
-        <Text>Large {this.partitionKeyName.toLowerCase()} has been enabled.</Text>
+        <Text className={classNames.hintText}>Large {this.partitionKeyName.toLowerCase()} has been enabled.</Text>
       )}
 
       {userContext.apiType === "SQL" &&
         (this.isHierarchicalPartitionedContainer() ? (
-          <Text>Hierarchically partitioned container.</Text>
+          <Text className={classNames.hintText}>Hierarchically partitioned container.</Text>
         ) : (
-          <Text>Non-hierarchically partitioned container.</Text>
+          <Text className={classNames.hintText}>Non-hierarchically partitioned container.</Text>
         ))}
     </Stack>
   );

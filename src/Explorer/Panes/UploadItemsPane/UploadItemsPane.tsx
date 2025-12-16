@@ -3,17 +3,18 @@ import {
   DetailsListLayoutMode,
   DirectionalHint,
   FontIcon,
-  IColumn,
-  SelectionMode,
-  TooltipHost,
   getTheme,
+  IColumn,
+  IDetailsListStyles,
   mergeStyles,
   mergeStyleSets,
+  SelectionMode,
+  TooltipHost,
 } from "@fluentui/react";
 import { Upload } from "Common/Upload/Upload";
 import { UploadDetailsRecord } from "Contracts/ViewModels";
 import { logConsoleError } from "Utils/NotificationConsoleUtils";
-import React, { ChangeEvent, FunctionComponent, useState } from "react";
+import React, { ChangeEvent, FunctionComponent, useReducer, useState } from "react";
 import { getErrorMessage } from "../../Tables/Utilities";
 import { useSelectedNode } from "../../useSelectedNode";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
@@ -57,6 +58,7 @@ export const UploadItemsPane: FunctionComponent<UploadItemsPaneProps> = ({ onUpl
   const [uploadFileData, setUploadFileData] = useState<UploadDetailsRecord[]>([]);
   const [formError, setFormError] = useState<string>("");
   const [isExecuting, setIsExecuting] = useState<boolean>();
+  const [reducer, setReducer] = useReducer((x) => x + 1, 1);
 
   const onSubmit = () => {
     setFormError("");
@@ -75,6 +77,7 @@ export const UploadItemsPane: FunctionComponent<UploadItemsPaneProps> = ({ onUpl
         (uploadDetails) => {
           setUploadFileData(uploadDetails.data);
           setFiles(undefined);
+          setReducer(); // Trigger a re-render to update the UI with new upload details
           // Emit the upload details to the parent component
           onUpload && onUpload(uploadDetails.data);
         },
@@ -95,6 +98,7 @@ export const UploadItemsPane: FunctionComponent<UploadItemsPaneProps> = ({ onUpl
   const props: RightPaneFormProps = {
     formError,
     isExecuting: isExecuting,
+    isSubmitButtonDisabled: !files || files.length === 0,
     submitButtonText: "Upload",
     onSubmit,
   };
@@ -192,6 +196,7 @@ export const UploadItemsPane: FunctionComponent<UploadItemsPaneProps> = ({ onUpl
     <RightPaneForm {...props}>
       <div className="paneMainContent">
         <Upload
+          key={reducer} // Force re-render on state change
           label="Select JSON Files"
           onUpload={updateSelectedFiles}
           accept="application/json"
@@ -201,13 +206,26 @@ export const UploadItemsPane: FunctionComponent<UploadItemsPaneProps> = ({ onUpl
         />
         {uploadFileData?.length > 0 && (
           <div className="fileUploadSummaryContainer">
-            <b>File upload status</b>
+            <b style={{ color: "var(--colorNeutralForeground1)" }}>File upload status</b>
             <DetailsList
               items={uploadFileData}
               columns={columns}
               selectionMode={SelectionMode.none}
               layoutMode={DetailsListLayoutMode.justified}
               isHeaderVisible={true}
+              styles={
+                {
+                  root: {
+                    backgroundColor: "var(--colorNeutralBackground1)",
+                  },
+                  headerWrapper: {
+                    backgroundColor: "var(--colorNeutralBackground2)",
+                  },
+                  contentWrapper: {
+                    backgroundColor: "var(--colorNeutralBackground1)",
+                  },
+                } as IDetailsListStyles
+              }
             />
           </div>
         )}
