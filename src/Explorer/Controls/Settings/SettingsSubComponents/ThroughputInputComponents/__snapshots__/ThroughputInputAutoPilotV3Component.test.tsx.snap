@@ -427,7 +427,6 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
                   5,000
                 </span>
                 <span
-                  data-test="soft-allowed-maximum-throughput"
                   style={
                     {
                       "float": "right",
@@ -1036,7 +1035,6 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
                   5,000
                 </span>
                 <span
-                  data-test="soft-allowed-maximum-throughput"
                   style={
                     {
                       "float": "right",
@@ -1623,7 +1621,6 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
                   5,000
                 </span>
                 <span
-                  data-test="soft-allowed-maximum-throughput"
                   style={
                     {
                       "float": "right",
