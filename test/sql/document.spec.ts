@@ -121,9 +121,8 @@ test.describe.serial("Upload Item", () => {
     await containerMenuNode.element.click();
   });
 
-  test.afterEach("Delete Test Database and Upload Document Temp Directory", async () => {
+  test.afterEach("Delete Test Database and uploadDocument.json", async () => {
     if (existsSync(uploadDocumentFilePath)) {
-      // Delete the temp directory after test
       unlinkSync(uploadDocumentFilePath);
     }
     await context?.dispose();
