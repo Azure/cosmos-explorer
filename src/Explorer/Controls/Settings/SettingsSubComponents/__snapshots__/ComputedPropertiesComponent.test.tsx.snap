@@ -11,6 +11,7 @@ exports[`ComputedPropertiesComponent renders 1`] = `
   <Text
     style={
       {
+        "color": "var(--colorNeutralForeground1)",
         "marginBottom": "10px",
         "marginLeft": "30px",
       }

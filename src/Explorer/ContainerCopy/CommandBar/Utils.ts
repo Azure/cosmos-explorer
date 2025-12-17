@@ -17,7 +17,7 @@ function getCopyJobBtns(explorer: Explorer): CopyJobCommandBarBtnType[] {
       iconSrc: AddIcon,
       label: ContainerCopyMessages.createCopyJobButtonLabel,
       ariaLabel: ContainerCopyMessages.createCopyJobButtonAriaLabel,
-      onClick: Actions.openCreateCopyJobPanel.bind(null, explorer),
+      onClick: () => Actions.openCreateCopyJobPanel(explorer),
     },
     {
       key: "refresh",

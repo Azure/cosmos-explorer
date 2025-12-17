@@ -17,6 +17,7 @@ import { ReactTabKind, useTabs } from "hooks/useTabs";
 import * as React from "react";
 import { useEffect, useMemo } from "react";
 import shallow from "zustand/shallow";
+import { useDatabaseLoadScenario } from "../../Metrics/useMetricPhases";
 import Explorer from "../Explorer";
 import { useNotebook } from "../Notebook/useNotebook";
 
@@ -53,6 +54,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ explorer }: Resource
     resourceTokenCollection: state.resourceTokenCollection,
     sampleDataResourceTokenCollection: state.sampleDataResourceTokenCollection,
   }));
+  const databasesFetchedSuccessfully = useDatabases((state) => state.databasesFetchedSuccessfully);
   const { isCopilotEnabled, isCopilotSampleDBEnabled } = useQueryCopilot((state) => ({
     isCopilotEnabled: state.copilotEnabled,
     isCopilotSampleDBEnabled: state.copilotSampleDBEnabled,
@@ -113,6 +115,9 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ explorer }: Resource
       return [...headerNodes, ...databaseTreeNodes];
     }
   }, [databaseTreeNodes, sampleDataNodes]);
+
+  // Track complete DatabaseLoad scenario (start, tree rendered, interactive)
+  useDatabaseLoadScenario(databaseTreeNodes, databasesFetchedSuccessfully);
 
   useEffect(() => {
     // Compute open items based on node.isExpanded

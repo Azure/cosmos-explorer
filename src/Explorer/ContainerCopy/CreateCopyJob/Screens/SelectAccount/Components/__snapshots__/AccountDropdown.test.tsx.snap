@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AccountDropdown ID normalization should normalize account ID for Portal platform 1`] = `
+<div
+  aria-disabled="false"
+  aria-expanded="false"
+  aria-haspopup="listbox"
+  aria-label="Account"
+  aria-required="true"
+  class="ms-Dropdown is-required dropdown-132"
+  data-is-focusable="true"
+  data-ktp-target="true"
+  data-test="account-dropdown"
+  id="Dropdown21"
+  role="combobox"
+  tabindex="0"
+>
+  <span
+    aria-invalid="false"
+    class="ms-Dropdown-title title-137"
+    id="Dropdown21-option"
+  >
+    test-account-1
+  </span>
+  <span
+    class="ms-Dropdown-caretDownWrapper caretDownWrapper-134"
+  >
+    <i
+      aria-hidden="true"
+      class="ms-Dropdown-caretDown caretDown-136"
+      data-icon-name="ChevronDown"
+    >
+      
+    </i>
+  </span>
+</div>
+`;

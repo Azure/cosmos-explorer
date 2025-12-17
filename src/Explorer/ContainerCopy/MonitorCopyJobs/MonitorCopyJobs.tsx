@@ -39,11 +39,14 @@ const MonitorCopyJobs = forwardRef<MonitorCopyJobsRef, MonitorCopyJobsProps>(({ 
       setError(null);
 
       const response = await getCopyJobs();
+      const normalizedResponse = response || [];
       setJobs((prevJobs) => {
-        return isEqual(prevJobs, response) ? prevJobs : response;
+        return isEqual(prevJobs, normalizedResponse) ? prevJobs : normalizedResponse;
       });
     } catch (error) {
-      setError(error.message || "Failed to load copy jobs. Please try again later.");
+      if (error.message !== "Previous copy job request was cancelled.") {
+        setError(error.message || "Failed to load copy jobs. Please try again later.");
+      }
     } finally {
       if (isFirstFetchRef.current) {
         setLoading(false);
@@ -97,29 +100,27 @@ const MonitorCopyJobs = forwardRef<MonitorCopyJobsRef, MonitorCopyJobsProps>(({ 
     [],
   );
 
-  const renderJobsList = () => {
-    if (loading) {
-      return null;
-    }
-    if (jobs.length > 0) {
-      return <CopyJobsList jobs={jobs} handleActionClick={handleActionClick} />;
-    }
-    return <CopyJobsNotFound explorer={explorer} />;
-  };
-
   return (
     <Stack className="monitorCopyJobs flexContainer">
       {loading && (
         <ShimmerTree indentLevels={SHIMMER_INDENT_LEVELS} style={{ width: "100%", padding: "1rem 2.5rem" }} />
       )}
       {error && (
-        <MessageBar messageBarType={MessageBarType.error} isMultiline={false} onDismiss={() => setError(null)}>
+        <MessageBar
+          messageBarType={MessageBarType.error}
+          isMultiline={false}
+          onDismiss={() => setError(null)}
+          dismissButtonAriaLabel="Close"
+        >
           {error}
         </MessageBar>
       )}
-      {renderJobsList()}
+      {!loading && jobs.length > 0 && <CopyJobsList jobs={jobs} handleActionClick={handleActionClick} />}
+      {!loading && jobs.length === 0 && <CopyJobsNotFound explorer={explorer} />}
     </Stack>
   );
 });
+
+MonitorCopyJobs.displayName = "MonitorCopyJobs";
 
 export default MonitorCopyJobs;

@@ -7,6 +7,7 @@ html {
 body {
   font-family: @FabricFont;
   background-color: #f5f5f5;
+  --colorCompoundBrandBackground: @FabricAccentMedium;
 }
 
 a {
@@ -41,7 +42,7 @@ a:focus {
 }
 
 .nav-tabs-margin {
-  padding-top: 5px;
+  padding-top: 0px;
   background-color: #ffffff;
 }
 
@@ -68,16 +69,19 @@ a:focus {
 }
 
 .nav-tabs > li > .tabNavContentContainer > .tab_Content:hover {
-  border-bottom: 2px solid #e0e0e0;
+  border-bottom: none;
 }
 
 .nav-tabs > li.active > .tabNavContentContainer > .tab_Content,
 .nav-tabs > li.active > .tabNavContentContainer > .tab_Content:hover {
-  border-bottom: 2px solid @FabricAccentMedium;
+  border-bottom: none;
 }
 
 .nav-tabs > li.active > .tabNavContentContainer > .tab_Content > .contentWrapper > .tabNavText {
   border-bottom: 0px none transparent;
+}
+.nav-tabs > li.active .contentWrapper .tabNavText  {
+  border-bottom: 2px solid @FabricAccentMedium;
 }
 
 .tabNavContentContainer {

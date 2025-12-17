@@ -117,7 +117,7 @@ export const PartitionKeyComponent = (props: PartitionKeyComponentProps): JSX.El
           Add hierarchical partition key
         </DefaultButton>
         {subPartitionKeys.length > 0 && (
-          <Text variant="small">
+          <Text variant="small" style={{ color: "var(--colorNeutralForeground1)" }}>
             <Icon iconName="InfoSolid" className="removeIcon" tabIndex={0} /> This feature allows you to partition your
             data with up to three levels of keys for better data distribution. Requires .NET V3, Java V4 SDK, or preview
             JavaScript V3 SDK.{" "}

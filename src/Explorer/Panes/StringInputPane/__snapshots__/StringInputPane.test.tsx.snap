@@ -356,7 +356,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
             value=""
           >
             <div
-              className="ms-TextField is-required root-116"
+              className="ms-TextField is-required root-117"
             >
               <div
                 className="ms-TextField-wrapper"
@@ -647,7 +647,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                     }
                   >
                     <label
-                      className="ms-Label root-127"
+                      className="ms-Label root-128"
                       htmlFor="TextField0"
                       id="TextFieldLabel2"
                     >
@@ -656,13 +656,13 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                   </LabelBase>
                 </StyledLabelBase>
                 <div
-                  className="ms-TextField-fieldGroup fieldGroup-117"
+                  className="ms-TextField-fieldGroup fieldGroup-118"
                 >
                   <input
                     aria-invalid={false}
                     aria-labelledby="TextFieldLabel2"
                     autoFocus={true}
-                    className="ms-TextField-field field-118"
+                    className="ms-TextField-field field-119"
                     id="TextField0"
                     name="collectionIdConfirmation"
                     onBlur={[Function]}
@@ -2464,7 +2464,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                       >
                         <button
                           aria-label="Create"
-                          className="ms-Button ms-Button--primary root-128"
+                          className="ms-Button ms-Button--primary root-129"
                           data-is-focusable={true}
                           data-test="Panel/OkButton"
                           id="sidePanelOkButton"
@@ -2477,14 +2477,14 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                           type="submit"
                         >
                           <span
-                            className="ms-Button-flexContainer flexContainer-129"
+                            className="ms-Button-flexContainer flexContainer-130"
                             data-automationid="splitbuttonprimary"
                           >
                             <span
-                              className="ms-Button-textContainer textContainer-130"
+                              className="ms-Button-textContainer textContainer-131"
                             >
                               <span
-                                className="ms-Button-label label-132"
+                                className="ms-Button-label label-133"
                                 id="id__5"
                                 key="id__5"
                               >

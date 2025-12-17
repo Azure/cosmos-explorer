@@ -9,12 +9,12 @@ export function useSourceAndTargetData(copyJobState: CopyJobContextState) {
     subscriptionId: sourceSubscriptionId,
     resourceGroup: sourceResourceGroup,
     accountName: sourceAccountName,
-  } = getAccountDetailsFromResourceId(selectedSourceAccount?.id);
+  } = getAccountDetailsFromResourceId(selectedSourceAccount?.id) || {};
   const {
     subscriptionId: targetSubscriptionId,
     resourceGroup: targetResourceGroup,
     accountName: targetAccountName,
-  } = getAccountDetailsFromResourceId(selectedTargetAccount?.id);
+  } = getAccountDetailsFromResourceId(selectedTargetAccount?.id) || {};
 
   const sourceDbParams = [sourceSubscriptionId, sourceResourceGroup, sourceAccountName, "SQL"] as DatabaseParams;
   const sourceContainerParams = [

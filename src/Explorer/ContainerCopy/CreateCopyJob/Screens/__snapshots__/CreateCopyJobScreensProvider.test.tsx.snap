@@ -1,0 +1,89 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CreateCopyJobScreensProvider should match snapshot for default render: default-render 1`] = `
+<default
+  explorer={
+    {
+      "databaseAccount": {
+        "id": "test-account",
+        "kind": "GlobalDocumentDB",
+        "location": "East US",
+        "name": "test-account-name",
+        "properties": {
+          "cassandraEndpoint": "https://test-account.cassandra.cosmosdb.azure.com:443/",
+          "documentEndpoint": "https://test-account.documents.azure.com:443/",
+          "gremlinEndpoint": "https://test-account.gremlin.cosmosdb.azure.com:443/",
+          "tableEndpoint": "https://test-account.table.cosmosdb.azure.com:443/",
+        },
+        "type": "DocumentDB",
+      },
+      "resourceGroup": "test-resource-group",
+      "subscriptionId": "test-subscription-id",
+    }
+  }
+>
+  <default />
+</default>
+`;
+
+exports[`CreateCopyJobScreensProvider should match snapshot for edge cases: empty-explorer 1`] = `
+<default
+  explorer={{}}
+>
+  <default />
+</default>
+`;
+
+exports[`CreateCopyJobScreensProvider should match snapshot for edge cases: partial-explorer 1`] = `
+<default
+  explorer={
+    {
+      "databaseAccount": {
+        "id": "partial-account",
+      },
+    }
+  }
+>
+  <default />
+</default>
+`;
+
+exports[`CreateCopyJobScreensProvider should render with explorer prop 1`] = `
+<default
+  explorer={
+    {
+      "databaseAccount": {
+        "id": "test-account",
+        "kind": "GlobalDocumentDB",
+        "location": "East US",
+        "name": "test-account-name",
+        "properties": {
+          "cassandraEndpoint": "https://test-account.cassandra.cosmosdb.azure.com:443/",
+          "documentEndpoint": "https://test-account.documents.azure.com:443/",
+          "gremlinEndpoint": "https://test-account.gremlin.cosmosdb.azure.com:443/",
+          "tableEndpoint": "https://test-account.table.cosmosdb.azure.com:443/",
+        },
+        "type": "DocumentDB",
+      },
+      "resourceGroup": "test-resource-group",
+      "subscriptionId": "test-subscription-id",
+    }
+  }
+>
+  <default />
+</default>
+`;
+
+exports[`CreateCopyJobScreensProvider should render with null explorer 1`] = `
+<default
+  explorer={null}
+>
+  <default />
+</default>
+`;
+
+exports[`CreateCopyJobScreensProvider should render with undefined explorer 1`] = `
+<default>
+  <default />
+</default>
+`;

@@ -3,13 +3,76 @@
 exports[`SettingsComponent renders 1`] = `
 <div
   className="settingsV2MainContainer"
+  style={
+    {
+      "backgroundColor": "var(--colorNeutralBackground1)",
+      "color": "var(--colorNeutralForeground1)",
+      "position": "relative",
+    }
+  }
 >
   <div
     className="settingsV2TabsContainer"
+    style={
+      {
+        "backgroundColor": "var(--colorNeutralBackground1)",
+        "color": "var(--colorNeutralForeground1)",
+        "padding": "20px 24px",
+        "position": "relative",
+      }
+    }
   >
     <StyledPivot
       onLinkClick={[Function]}
       selectedKey="ScaleTab"
+      styles={
+        {
+          "itemContainer": {
+            "backgroundColor": "var(--colorNeutralBackground1)",
+            "color": "var(--colorNeutralForeground1)",
+          },
+          "link": {
+            "backgroundColor": "var(--colorNeutralBackground1)",
+            "color": "var(--colorNeutralForeground1)",
+            "selectors": {
+              "&:active": {
+                "backgroundColor": "var(--colorNeutralBackground1)",
+                "color": "var(--colorNeutralForeground1)",
+              },
+              "&:hover": {
+                "backgroundColor": "var(--colorNeutralBackground1)",
+                "color": "var(--colorNeutralForeground1)",
+              },
+              "&[aria-selected="true"]": {
+                "backgroundColor": "var(--colorNeutralBackground1)",
+                "color": "var(--colorNeutralForeground1)",
+                "selectors": {
+                  "&:active": {
+                    "backgroundColor": "var(--colorNeutralBackground1)",
+                    "color": "var(--colorNeutralForeground1)",
+                  },
+                  "&:hover": {
+                    "backgroundColor": "var(--colorNeutralBackground1)",
+                    "color": "var(--colorNeutralForeground1)",
+                  },
+                },
+              },
+            },
+          },
+          "root": {
+            "backgroundColor": "var(--colorNeutralBackground1)",
+            "color": "var(--colorNeutralForeground1)",
+            "selectors": {
+              "& .ms-Pivot-link": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              "& .ms-Pivot-link.is-selected::before": {
+                "backgroundColor": "var(--colorCompoundBrandBackground)",
+              },
+            },
+          },
+        }
+      }
     >
       <PivotItem
         headerButtonProps={
@@ -22,89 +85,102 @@ exports[`SettingsComponent renders 1`] = `
         key="ScaleTab"
         style={
           {
+            "backgroundColor": "var(--colorNeutralBackground1)",
+            "color": "var(--colorNeutralForeground1)",
             "marginTop": 20,
           }
         }
       >
-        <ScaleComponent
-          collection={
+        <Stack
+          styles={
             {
-              "analyticalStorageTtl": [Function],
-              "changeFeedPolicy": [Function],
-              "computedProperties": [Function],
-              "conflictResolutionPolicy": [Function],
-              "container": Explorer {
-                "_isInitializingNotebooks": false,
-                "isFixedCollectionWithSharedThroughputSupported": [Function],
-                "isTabsContentExpanded": [Function],
-                "onRefreshDatabasesKeyPress": [Function],
-                "onRefreshResourcesClick": [Function],
-                "phoenixClient": PhoenixClient {
-                  "armResourceId": undefined,
-                  "retryOptions": {
-                    "maxTimeout": 5000,
-                    "minTimeout": 5000,
-                    "retries": 3,
-                  },
-                },
-                "provideFeedbackEmail": [Function],
-                "queriesClient": QueriesClient {
-                  "container": [Circular],
-                },
-                "refreshNotebookList": [Function],
-                "resourceTree": ResourceTreeAdapter {
-                  "container": [Circular],
-                  "copyNotebook": [Function],
-                  "parameters": [Function],
-                },
+              "root": {
+                "backgroundColor": "var(--colorNeutralBackground1)",
+                "color": "var(--colorNeutralForeground1)",
               },
-              "dataMaskingPolicy": [Function],
-              "databaseId": "test",
-              "defaultTtl": [Function],
-              "fullTextPolicy": [Function],
-              "geospatialConfig": [Function],
-              "getDatabase": [Function],
-              "id": [Function],
-              "indexingPolicy": [Function],
-              "materializedViewDefinition": [Function],
-              "materializedViews": [Function],
-              "offer": [Function],
-              "partitionKey": {
-                "kind": "hash",
-                "paths": [],
-                "version": 2,
-              },
-              "partitionKeyProperties": [
-                "partitionKey",
-              ],
-              "rawDataModel": {
-                "uniqueKeyPolicy": {
-                  "uniqueKeys": [
-                    {
-                      "paths": [
-                        "/id",
-                      ],
-                    },
-                  ],
-                },
-              },
-              "readSettings": [Function],
-              "usageSizeInKB": [Function],
-              "vectorEmbeddingPolicy": [Function],
             }
           }
-          isAutoPilotSelected={false}
-          isFixedContainer={false}
-          isGlobalSecondaryIndex={true}
-          onAutoPilotSelected={[Function]}
-          onMaxAutoPilotThroughputChange={[Function]}
-          onScaleDiscardableChange={[Function]}
-          onScaleSaveableChange={[Function]}
-          onThroughputChange={[Function]}
-          throughput={10000}
-          throughputBaseline={10000}
-          wasAutopilotOriginallySet={false}
-        />
+        >
+          <ScaleComponent
+            collection={
+              {
+                "analyticalStorageTtl": [Function],
+                "changeFeedPolicy": [Function],
+                "computedProperties": [Function],
+                "conflictResolutionPolicy": [Function],
+                "container": Explorer {
+                  "_isInitializingNotebooks": false,
+                  "isFixedCollectionWithSharedThroughputSupported": [Function],
+                  "isTabsContentExpanded": [Function],
+                  "onRefreshDatabasesKeyPress": [Function],
+                  "onRefreshResourcesClick": [Function],
+                  "phoenixClient": PhoenixClient {
+                    "armResourceId": undefined,
+                    "retryOptions": {
+                      "maxTimeout": 5000,
+                      "minTimeout": 5000,
+                      "retries": 3,
+                    },
+                  },
+                  "provideFeedbackEmail": [Function],
+                  "queriesClient": QueriesClient {
+                    "container": [Circular],
+                  },
+                  "refreshNotebookList": [Function],
+                  "resourceTree": ResourceTreeAdapter {
+                    "container": [Circular],
+                    "copyNotebook": [Function],
+                    "parameters": [Function],
+                  },
+                },
+                "dataMaskingPolicy": [Function],
+                "databaseId": "test",
+                "defaultTtl": [Function],
+                "fullTextPolicy": [Function],
+                "geospatialConfig": [Function],
+                "getDatabase": [Function],
+                "id": [Function],
+                "indexingPolicy": [Function],
+                "materializedViewDefinition": [Function],
+                "materializedViews": [Function],
+                "offer": [Function],
+                "partitionKey": {
+                  "kind": "hash",
+                  "paths": [],
+                  "version": 2,
+                },
+                "partitionKeyProperties": [
+                  "partitionKey",
+                ],
+                "rawDataModel": {
+                  "uniqueKeyPolicy": {
+                    "uniqueKeys": [
+                      {
+                        "paths": [
+                          "/id",
+                        ],
+                      },
+                    ],
+                  },
+                },
+                "readSettings": [Function],
+                "usageSizeInKB": [Function],
+                "vectorEmbeddingPolicy": [Function],
+              }
+            }
+            isAutoPilotSelected={false}
+            isFixedContainer={false}
+            isGlobalSecondaryIndex={true}
+            onAutoPilotSelected={[Function]}
+            onMaxAutoPilotThroughputChange={[Function]}
+            onScaleDiscardableChange={[Function]}
+            onScaleSaveableChange={[Function]}
+            onThroughputChange={[Function]}
+            throughput={10000}
+            throughputBaseline={10000}
+            wasAutopilotOriginallySet={false}
+          />
+        </Stack>
       </PivotItem>
       <PivotItem
         headerButtonProps={
@@ -117,98 +193,111 @@ exports[`SettingsComponent renders 1`] = `
         key="SubSettingsTab"
         style={
           {
+            "backgroundColor": "var(--colorNeutralBackground1)",
+            "color": "var(--colorNeutralForeground1)",
             "marginTop": 20,
           }
         }
       >
-        <SubSettingsComponent
-          changeFeedPolicy="Off"
-          changeFeedPolicyBaseline="Off"
-          changeFeedPolicyVisible={false}
-          collection={
+        <Stack
+          styles={
             {
-              "analyticalStorageTtl": [Function],
-              "changeFeedPolicy": [Function],
-              "computedProperties": [Function],
-              "conflictResolutionPolicy": [Function],
-              "container": Explorer {
-                "_isInitializingNotebooks": false,
-                "isFixedCollectionWithSharedThroughputSupported": [Function],
-                "isTabsContentExpanded": [Function],
-                "onRefreshDatabasesKeyPress": [Function],
-                "onRefreshResourcesClick": [Function],
-                "phoenixClient": PhoenixClient {
-                  "armResourceId": undefined,
-                  "retryOptions": {
-                    "maxTimeout": 5000,
-                    "minTimeout": 5000,
-                    "retries": 3,
-                  },
-                },
-                "provideFeedbackEmail": [Function],
-                "queriesClient": QueriesClient {
-                  "container": [Circular],
-                },
-                "refreshNotebookList": [Function],
-                "resourceTree": ResourceTreeAdapter {
-                  "container": [Circular],
-                  "copyNotebook": [Function],
-                  "parameters": [Function],
-                },
+              "root": {
+                "backgroundColor": "var(--colorNeutralBackground1)",
+                "color": "var(--colorNeutralForeground1)",
               },
-              "dataMaskingPolicy": [Function],
-              "databaseId": "test",
-              "defaultTtl": [Function],
-              "fullTextPolicy": [Function],
-              "geospatialConfig": [Function],
-              "getDatabase": [Function],
-              "id": [Function],
-              "indexingPolicy": [Function],
-              "materializedViewDefinition": [Function],
-              "materializedViews": [Function],
-              "offer": [Function],
-              "partitionKey": {
-                "kind": "hash",
-                "paths": [],
-                "version": 2,
-              },
-              "partitionKeyProperties": [
-                "partitionKey",
-              ],
-              "rawDataModel": {
-                "uniqueKeyPolicy": {
-                  "uniqueKeys": [
-                    {
-                      "paths": [
-                        "/id",
-                      ],
-                    },
-                  ],
-                },
-              },
-              "readSettings": [Function],
-              "usageSizeInKB": [Function],
-              "vectorEmbeddingPolicy": [Function],
             }
           }
-          displayedTtlSeconds="5"
-          geospatialConfigType="Geometry"
-          geospatialConfigTypeBaseline="Geometry"
-          isAnalyticalStorageEnabled={false}
-          onAnalyticalStorageTtlSecondsChange={[Function]}
-          onAnalyticalStorageTtlSelectionChange={[Function]}
-          onChangeFeedPolicyChange={[Function]}
-          onDisplayedTtlSecondsChange={[Function]}
-          onGeoSpatialConfigTypeChange={[Function]}
-          onSubSettingsDiscardableChange={[Function]}
-          onSubSettingsSaveableChange={[Function]}
-          onTimeToLiveSecondsChange={[Function]}
-          onTtlChange={[Function]}
-          timeToLive="on"
-          timeToLiveBaseline="on"
-          timeToLiveSeconds={5}
-          timeToLiveSecondsBaseline={5}
-        />
+        >
+          <SubSettingsComponent
+            changeFeedPolicy="Off"
+            changeFeedPolicyBaseline="Off"
+            changeFeedPolicyVisible={false}
+            collection={
+              {
+                "analyticalStorageTtl": [Function],
+                "changeFeedPolicy": [Function],
+                "computedProperties": [Function],
+                "conflictResolutionPolicy": [Function],
+                "container": Explorer {
+                  "_isInitializingNotebooks": false,
+                  "isFixedCollectionWithSharedThroughputSupported": [Function],
+                  "isTabsContentExpanded": [Function],
+                  "onRefreshDatabasesKeyPress": [Function],
+                  "onRefreshResourcesClick": [Function],
+                  "phoenixClient": PhoenixClient {
+                    "armResourceId": undefined,
+                    "retryOptions": {
+                      "maxTimeout": 5000,
+                      "minTimeout": 5000,
+                      "retries": 3,
+                    },
+                  },
+                  "provideFeedbackEmail": [Function],
+                  "queriesClient": QueriesClient {
+                    "container": [Circular],
+                  },
+                  "refreshNotebookList": [Function],
+                  "resourceTree": ResourceTreeAdapter {
+                    "container": [Circular],
+                    "copyNotebook": [Function],
+                    "parameters": [Function],
+                  },
+                },
+                "dataMaskingPolicy": [Function],
+                "databaseId": "test",
+                "defaultTtl": [Function],
+                "fullTextPolicy": [Function],
+                "geospatialConfig": [Function],
+                "getDatabase": [Function],
+                "id": [Function],
+                "indexingPolicy": [Function],
+                "materializedViewDefinition": [Function],
+                "materializedViews": [Function],
+                "offer": [Function],
+                "partitionKey": {
+                  "kind": "hash",
+                  "paths": [],
+                  "version": 2,
+                },
+                "partitionKeyProperties": [
+                  "partitionKey",
+                ],
+                "rawDataModel": {
+                  "uniqueKeyPolicy": {
+                    "uniqueKeys": [
+                      {
+                        "paths": [
+                          "/id",
+                        ],
+                      },
+                    ],
+                  },
+                },
+                "readSettings": [Function],
+                "usageSizeInKB": [Function],
+                "vectorEmbeddingPolicy": [Function],
+              }
+            }
+            displayedTtlSeconds="5"
+            geospatialConfigType="Geometry"
+            geospatialConfigTypeBaseline="Geometry"
+            isAnalyticalStorageEnabled={false}
+            onAnalyticalStorageTtlSecondsChange={[Function]}
+            onAnalyticalStorageTtlSelectionChange={[Function]}
+            onChangeFeedPolicyChange={[Function]}
+            onDisplayedTtlSecondsChange={[Function]}
+            onGeoSpatialConfigTypeChange={[Function]}
+            onSubSettingsDiscardableChange={[Function]}
+            onSubSettingsSaveableChange={[Function]}
+            onTimeToLiveSecondsChange={[Function]}
+            onTtlChange={[Function]}
+            timeToLive="on"
+            timeToLiveBaseline="on"
+            timeToLiveSeconds={5}
+            timeToLiveSecondsBaseline={5}
+          />
+        </Stack>
       </PivotItem>
       <PivotItem
         headerButtonProps={
@@ -221,25 +310,38 @@ exports[`SettingsComponent renders 1`] = `
         key="ContainerVectorPolicyTab"
         style={
           {
+            "backgroundColor": "var(--colorNeutralBackground1)",
+            "color": "var(--colorNeutralForeground1)",
             "marginTop": 20,
           }
         }
       >
-        <ContainerPolicyComponent
-          fullTextPolicy={{}}
-          fullTextPolicyBaseline={{}}
-          isFullTextSearchEnabled={true}
-          isGlobalSecondaryIndex={true}
-          isVectorSearchEnabled={false}
-          onFullTextPolicyChange={[Function]}
-          onFullTextPolicyDirtyChange={[Function]}
-          onVectorEmbeddingPolicyChange={[Function]}
-          onVectorEmbeddingPolicyDirtyChange={[Function]}
-          resetShouldDiscardContainerPolicyChange={[Function]}
-          shouldDiscardContainerPolicies={false}
-          vectorEmbeddingPolicy={{}}
-          vectorEmbeddingPolicyBaseline={{}}
-        />
+        <Stack
+          styles={
+            {
+              "root": {
+                "backgroundColor": "var(--colorNeutralBackground1)",
+                "color": "var(--colorNeutralForeground1)",
+              },
+            }
+          }
+        >
+          <ContainerPolicyComponent
+            fullTextPolicy={{}}
+            fullTextPolicyBaseline={{}}
+            isFullTextSearchEnabled={true}
+            isGlobalSecondaryIndex={true}
+            isVectorSearchEnabled={false}
+            onFullTextPolicyChange={[Function]}
+            onFullTextPolicyDirtyChange={[Function]}
+            onVectorEmbeddingPolicyChange={[Function]}
+            onVectorEmbeddingPolicyDirtyChange={[Function]}
+            resetShouldDiscardContainerPolicyChange={[Function]}
+            shouldDiscardContainerPolicies={false}
+            vectorEmbeddingPolicy={{}}
+            vectorEmbeddingPolicyBaseline={{}}
+          />
+        </Stack>
       </PivotItem>
       <PivotItem
         headerButtonProps={
@@ -252,35 +354,48 @@ exports[`SettingsComponent renders 1`] = `
         key="IndexingPolicyTab"
         style={
           {
+            "backgroundColor": "var(--colorNeutralBackground1)",
+            "color": "var(--colorNeutralForeground1)",
             "marginTop": 20,
           }
         }
       >
-        <IndexingPolicyComponent
-          indexingPolicyContent={
+        <Stack
+          styles={
             {
-              "automatic": true,
-              "excludedPaths": [],
-              "includedPaths": [],
-              "indexingMode": "consistent",
+              "root": {
+                "backgroundColor": "var(--colorNeutralBackground1)",
+                "color": "var(--colorNeutralForeground1)",
+              },
             }
           }
-          indexingPolicyContentBaseline={
-            {
-              "automatic": true,
-              "excludedPaths": [],
-              "includedPaths": [],
-              "indexingMode": "consistent",
+        >
+          <IndexingPolicyComponent
+            indexingPolicyContent={
+              {
+                "automatic": true,
+                "excludedPaths": [],
+                "includedPaths": [],
+                "indexingMode": "consistent",
+              }
             }
-          }
-          isVectorSearchEnabled={false}
-          logIndexingPolicySuccessMessage={[Function]}
-          onIndexingPolicyContentChange={[Function]}
-          onIndexingPolicyDirtyChange={[Function]}
-          refreshIndexTransformationProgress={[Function]}
-          resetShouldDiscardIndexingPolicy={[Function]}
-          shouldDiscardIndexingPolicy={false}
-        />
+            indexingPolicyContentBaseline={
+              {
+                "automatic": true,
+                "excludedPaths": [],
+                "includedPaths": [],
+                "indexingMode": "consistent",
+              }
+            }
+            isVectorSearchEnabled={false}
+            logIndexingPolicySuccessMessage={[Function]}
+            onIndexingPolicyContentChange={[Function]}
+            onIndexingPolicyDirtyChange={[Function]}
+            refreshIndexTransformationProgress={[Function]}
+            resetShouldDiscardIndexingPolicy={[Function]}
+            shouldDiscardIndexingPolicy={false}
+          />
+        </Stack>
       </PivotItem>
       <PivotItem
         headerButtonProps={
@@ -293,18 +408,91 @@ exports[`SettingsComponent renders 1`] = `
         key="PartitionKeyTab"
         style={
           {
+            "backgroundColor": "var(--colorNeutralBackground1)",
+            "color": "var(--colorNeutralForeground1)",
             "marginTop": 20,
           }
         }
       >
-        <PartitionKeyComponent
-          collection={
+        <Stack
+          styles={
             {
-              "analyticalStorageTtl": [Function],
-              "changeFeedPolicy": [Function],
-              "computedProperties": [Function],
-              "conflictResolutionPolicy": [Function],
-              "container": Explorer {
+              "root": {
+                "backgroundColor": "var(--colorNeutralBackground1)",
+                "color": "var(--colorNeutralForeground1)",
+              },
+            }
+          }
+        >
+          <PartitionKeyComponent
+            collection={
+              {
+                "analyticalStorageTtl": [Function],
+                "changeFeedPolicy": [Function],
+                "computedProperties": [Function],
+                "conflictResolutionPolicy": [Function],
+                "container": Explorer {
+                  "_isInitializingNotebooks": false,
+                  "isFixedCollectionWithSharedThroughputSupported": [Function],
+                  "isTabsContentExpanded": [Function],
+                  "onRefreshDatabasesKeyPress": [Function],
+                  "onRefreshResourcesClick": [Function],
+                  "phoenixClient": PhoenixClient {
+                    "armResourceId": undefined,
+                    "retryOptions": {
+                      "maxTimeout": 5000,
+                      "minTimeout": 5000,
+                      "retries": 3,
+                    },
+                  },
+                  "provideFeedbackEmail": [Function],
+                  "queriesClient": QueriesClient {
+                    "container": [Circular],
+                  },
+                  "refreshNotebookList": [Function],
+                  "resourceTree": ResourceTreeAdapter {
+                    "container": [Circular],
+                    "copyNotebook": [Function],
+                    "parameters": [Function],
+                  },
+                },
+                "dataMaskingPolicy": [Function],
+                "databaseId": "test",
+                "defaultTtl": [Function],
+                "fullTextPolicy": [Function],
+                "geospatialConfig": [Function],
+                "getDatabase": [Function],
+                "id": [Function],
+                "indexingPolicy": [Function],
+                "materializedViewDefinition": [Function],
+                "materializedViews": [Function],
+                "offer": [Function],
+                "partitionKey": {
+                  "kind": "hash",
+                  "paths": [],
+                  "version": 2,
+                },
+                "partitionKeyProperties": [
+                  "partitionKey",
+                ],
+                "rawDataModel": {
+                  "uniqueKeyPolicy": {
+                    "uniqueKeys": [
+                      {
+                        "paths": [
+                          "/id",
+                        ],
+                      },
+                    ],
+                  },
+                },
+                "readSettings": [Function],
+                "usageSizeInKB": [Function],
+                "vectorEmbeddingPolicy": [Function],
+              }
+            }
+            explorer={
+              Explorer {
                 "_isInitializingNotebooks": false,
                 "isFixedCollectionWithSharedThroughputSupported": [Function],
                 "isTabsContentExpanded": [Function],
@@ -328,71 +516,11 @@ exports[`SettingsComponent renders 1`] = `
                   "copyNotebook": [Function],
                   "parameters": [Function],
                 },
-              },
-              "dataMaskingPolicy": [Function],
-              "databaseId": "test",
-              "defaultTtl": [Function],
-              "fullTextPolicy": [Function],
-              "geospatialConfig": [Function],
-              "getDatabase": [Function],
-              "id": [Function],
-              "indexingPolicy": [Function],
-              "materializedViewDefinition": [Function],
-              "materializedViews": [Function],
-              "offer": [Function],
-              "partitionKey": {
-                "kind": "hash",
-                "paths": [],
-                "version": 2,
-              },
-              "partitionKeyProperties": [
-                "partitionKey",
-              ],
-              "rawDataModel": {
-                "uniqueKeyPolicy": {
-                  "uniqueKeys": [
-                    {
-                      "paths": [
-                        "/id",
-                      ],
-                    },
-                  ],
-                },
-              },
-              "readSettings": [Function],
-              "usageSizeInKB": [Function],
-              "vectorEmbeddingPolicy": [Function],
+              }
             }
-          }
-          explorer={
-            Explorer {
-              "_isInitializingNotebooks": false,
-              "isFixedCollectionWithSharedThroughputSupported": [Function],
-              "isTabsContentExpanded": [Function],
-              "onRefreshDatabasesKeyPress": [Function],
-              "onRefreshResourcesClick": [Function],
-              "phoenixClient": PhoenixClient {
-                "armResourceId": undefined,
-                "retryOptions": {
-                  "maxTimeout": 5000,
-                  "minTimeout": 5000,
-                  "retries": 3,
-                },
-              },
-              "provideFeedbackEmail": [Function],
-              "queriesClient": QueriesClient {
-                "container": [Circular],
-              },
-              "refreshNotebookList": [Function],
-              "resourceTree": ResourceTreeAdapter {
-                "container": [Circular],
-                "copyNotebook": [Function],
-                "parameters": [Function],
-              },
-            }
-          }
-          isReadOnly={false}
-        />
+            isReadOnly={false}
+          />
+        </Stack>
       </PivotItem>
       <PivotItem
         headerButtonProps={
@@ -405,33 +533,46 @@ exports[`SettingsComponent renders 1`] = `
         key="ComputedPropertiesTab"
         style={
           {
+            "backgroundColor": "var(--colorNeutralBackground1)",
+            "color": "var(--colorNeutralForeground1)",
             "marginTop": 20,
           }
         }
       >
-        <ComputedPropertiesComponent
-          computedPropertiesContent={
-            [
-              {
-                "name": "queryName",
-                "query": "query",
+        <Stack
+          styles={
+            {
+              "root": {
+                "backgroundColor": "var(--colorNeutralBackground1)",
+                "color": "var(--colorNeutralForeground1)",
               },
-            ]
+            }
           }
-          computedPropertiesContentBaseline={
-            [
-              {
-                "name": "queryName",
-                "query": "query",
-              },
-            ]
-          }
-          logComputedPropertiesSuccessMessage={[Function]}
-          onComputedPropertiesContentChange={[Function]}
-          onComputedPropertiesDirtyChange={[Function]}
-          resetShouldDiscardComputedProperties={[Function]}
-          shouldDiscardComputedProperties={false}
-        />
+        >
+          <ComputedPropertiesComponent
+            computedPropertiesContent={
+              [
+                {
+                  "name": "queryName",
+                  "query": "query",
+                },
+              ]
+            }
+            computedPropertiesContentBaseline={
+              [
+                {
+                  "name": "queryName",
+                  "query": "query",
+                },
+              ]
+            }
+            logComputedPropertiesSuccessMessage={[Function]}
+            onComputedPropertiesContentChange={[Function]}
+            onComputedPropertiesDirtyChange={[Function]}
+            resetShouldDiscardComputedProperties={[Function]}
+            shouldDiscardComputedProperties={false}
+          />
+        </Stack>
       </PivotItem>
       <PivotItem
         headerButtonProps={
@@ -444,18 +585,91 @@ exports[`SettingsComponent renders 1`] = `
         key="GlobalSecondaryIndexTab"
         style={
           {
+            "backgroundColor": "var(--colorNeutralBackground1)",
+            "color": "var(--colorNeutralForeground1)",
             "marginTop": 20,
           }
         }
       >
-        <GlobalSecondaryIndexComponent
-          collection={
+        <Stack
+          styles={
             {
-              "analyticalStorageTtl": [Function],
-              "changeFeedPolicy": [Function],
-              "computedProperties": [Function],
-              "conflictResolutionPolicy": [Function],
-              "container": Explorer {
+              "root": {
+                "backgroundColor": "var(--colorNeutralBackground1)",
+                "color": "var(--colorNeutralForeground1)",
+              },
+            }
+          }
+        >
+          <GlobalSecondaryIndexComponent
+            collection={
+              {
+                "analyticalStorageTtl": [Function],
+                "changeFeedPolicy": [Function],
+                "computedProperties": [Function],
+                "conflictResolutionPolicy": [Function],
+                "container": Explorer {
+                  "_isInitializingNotebooks": false,
+                  "isFixedCollectionWithSharedThroughputSupported": [Function],
+                  "isTabsContentExpanded": [Function],
+                  "onRefreshDatabasesKeyPress": [Function],
+                  "onRefreshResourcesClick": [Function],
+                  "phoenixClient": PhoenixClient {
+                    "armResourceId": undefined,
+                    "retryOptions": {
+                      "maxTimeout": 5000,
+                      "minTimeout": 5000,
+                      "retries": 3,
+                    },
+                  },
+                  "provideFeedbackEmail": [Function],
+                  "queriesClient": QueriesClient {
+                    "container": [Circular],
+                  },
+                  "refreshNotebookList": [Function],
+                  "resourceTree": ResourceTreeAdapter {
+                    "container": [Circular],
+                    "copyNotebook": [Function],
+                    "parameters": [Function],
+                  },
+                },
+                "dataMaskingPolicy": [Function],
+                "databaseId": "test",
+                "defaultTtl": [Function],
+                "fullTextPolicy": [Function],
+                "geospatialConfig": [Function],
+                "getDatabase": [Function],
+                "id": [Function],
+                "indexingPolicy": [Function],
+                "materializedViewDefinition": [Function],
+                "materializedViews": [Function],
+                "offer": [Function],
+                "partitionKey": {
+                  "kind": "hash",
+                  "paths": [],
+                  "version": 2,
+                },
+                "partitionKeyProperties": [
+                  "partitionKey",
+                ],
+                "rawDataModel": {
+                  "uniqueKeyPolicy": {
+                    "uniqueKeys": [
+                      {
+                        "paths": [
+                          "/id",
+                        ],
+                      },
+                    ],
+                  },
+                },
+                "readSettings": [Function],
+                "usageSizeInKB": [Function],
+                "vectorEmbeddingPolicy": [Function],
+              }
+            }
+            explorer={
+              Explorer {
                 "_isInitializingNotebooks": false,
                 "isFixedCollectionWithSharedThroughputSupported": [Function],
                 "isTabsContentExpanded": [Function],
@@ -479,70 +693,10 @@ exports[`SettingsComponent renders 1`] = `
                   "copyNotebook": [Function],
                   "parameters": [Function],
                 },
-              },
-              "dataMaskingPolicy": [Function],
-              "databaseId": "test",
-              "defaultTtl": [Function],
-              "fullTextPolicy": [Function],
-              "geospatialConfig": [Function],
-              "getDatabase": [Function],
-              "id": [Function],
-              "indexingPolicy": [Function],
-              "materializedViewDefinition": [Function],
-              "materializedViews": [Function],
-              "offer": [Function],
-              "partitionKey": {
-                "kind": "hash",
-                "paths": [],
-                "version": 2,
-              },
-              "partitionKeyProperties": [
-                "partitionKey",
-              ],
-              "rawDataModel": {
-                "uniqueKeyPolicy": {
-                  "uniqueKeys": [
-                    {
-                      "paths": [
-                        "/id",
-                      ],
-                    },
-                  ],
-                },
-              },
-              "readSettings": [Function],
-              "usageSizeInKB": [Function],
-              "vectorEmbeddingPolicy": [Function],
+              }
             }
-          }
-          explorer={
-            Explorer {
-              "_isInitializingNotebooks": false,
-              "isFixedCollectionWithSharedThroughputSupported": [Function],
-              "isTabsContentExpanded": [Function],
-              "onRefreshDatabasesKeyPress": [Function],
-              "onRefreshResourcesClick": [Function],
-              "phoenixClient": PhoenixClient {
-                "armResourceId": undefined,
-                "retryOptions": {
-                  "maxTimeout": 5000,
-                  "minTimeout": 5000,
-                  "retries": 3,
-                },
-              },
-              "provideFeedbackEmail": [Function],
-              "queriesClient": QueriesClient {
-                "container": [Circular],
-              },
-              "refreshNotebookList": [Function],
-              "resourceTree": ResourceTreeAdapter {
-                "container": [Circular],
-                "copyNotebook": [Function],
-                "parameters": [Function],
-              },
-            }
-          }
-        />
+          />
+        </Stack>
       </PivotItem>
     </StyledPivot>
   </div>

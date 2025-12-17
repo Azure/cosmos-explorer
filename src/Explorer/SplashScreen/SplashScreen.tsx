@@ -11,6 +11,7 @@ import {
   TeachingBubbleContent,
   Text,
 } from "@fluentui/react";
+import { makeStyles, shorthands } from "@fluentui/react-components";
 import { sendMessage } from "Common/MessageHandler";
 import { MessageTypes } from "Contracts/ExplorerContracts";
 import { TerminalKind } from "Contracts/ViewModels";
@@ -25,9 +26,9 @@ import * as React from "react";
 import ConnectIcon from "../../../images/Connect_color.svg";
 import ContainersIcon from "../../../images/Containers.svg";
 import CosmosDBIcon from "../../../images/CosmosDB-logo.svg";
+import DocumentIcon from "../../../images/DocumentIcon.svg";
 import LinkIcon from "../../../images/Link_blue.svg";
 import PowerShellIcon from "../../../images/PowerShell.svg";
-import CopilotIcon from "../../../images/QueryCopilotNewLogo.svg";
 import QuickStartIcon from "../../../images/Quickstart_Lightning.svg";
 import VisualStudioIcon from "../../../images/VisualStudio.svg";
 import NotebookIcon from "../../../images/notebook/Notebook-resource.svg";
@@ -35,8 +36,6 @@ import CollectionIcon from "../../../images/tree-collection.svg";
 import * as Constants from "../../Common/Constants";
 import { userContext } from "../../UserContext";
 import { getCollectionName } from "../../Utils/APITypeUtils";
-import { FeaturePanelLauncher } from "../Controls/FeaturePanel/FeaturePanelLauncher";
-import { DataSamplesUtil } from "../DataSamples/DataSamplesUtil";
 import Explorer from "../Explorer";
 import * as MostRecentActivity from "../MostRecentActivity/MostRecentActivity";
 import { useNotebook } from "../Notebook/useNotebook";
@@ -57,75 +56,177 @@ export interface SplashScreenProps {
   explorer: Explorer;
 }
 
-export class SplashScreen extends React.Component<SplashScreenProps> {
-  private readonly container: Explorer;
-  private subscriptions: Array<{ dispose: () => void }>;
+const useStyles = makeStyles({
+  splashScreenContainer: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    height: "100%",
+    overflowY: "auto",
+    backgroundColor: "var(--colorNeutralBackground1)",
+    color: "var(--colorNeutralForeground1)",
+  },
+  splashScreen: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    textAlign: "left",
+  },
+  title: {
+    fontSize: "48px",
+    fontWeight: "400",
+    margin: "16px auto",
+    color: "var(--colorNeutralForeground1)",
+  },
+  subtitle: {
+    fontSize: "18px",
+    color: "var(--colorNeutralForeground2)",
+  },
+  cardContainer: {
+    display: "grid",
+    gridTemplateColumns: "repeat(2, 1fr)",
+    gap: "16px",
+    width: "60%",
+    margin: "0 auto",
+    backgroundColor: "var(--colorNeutralBackground1)",
+    color: "var(--colorNeutralForeground1)",
+  },
+  card: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "left",
+    ...shorthands.padding("32px", "16px"),
+    backgroundColor: "var(--colorNeutralBackground1)",
+    color: "var(--colorNeutralForeground1)",
+    border: "1px solid var(--colorNeutralStroke1)",
+    borderRadius: "4px",
+    boxShadow: "rgba(0, 0, 0, 0.25) 0px 4px 4px",
+    cursor: "pointer",
+    minHeight: "150px",
+    "&:hover": {
+      backgroundColor: "var(--colorNeutralBackground1Hover)",
+    },
+  },
+  cardContent: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-start",
+    marginLeft: "16px",
+    textAlign: "left",
+    color: "var(--colorNeutralForeground1)",
+  },
+  cardTitle: {
+    fontSize: "18px",
+    fontWeight: "600",
+    color: "var(--colorNeutralForeground1)",
+    textAlign: "left",
+    marginBottom: "8px",
+  },
+  cardDescription: {
+    fontSize: "13px",
+    color: "var(--colorNeutralForeground2)",
+    textAlign: "left",
+  },
+  moreStuffContainer: {
+    display: "flex",
+    justifyContent: "space-between",
+    gap: "32px",
+    width: "90%",
+  },
+  moreStuffColumn: {
+    display: "flex",
+    flexDirection: "column",
+  },
+  columnTitle: {
+    fontSize: "20px",
+    fontWeight: "600",
+    marginBottom: "16px",
+    color: "var(--colorNeutralForeground1)",
+  },
+  listItem: {
+    marginBottom: "26px",
+  },
+  listItemTitle: {
+    fontSize: "14px",
+    color: "var(--colorBrandForegroundLink)",
+    "&:hover": {
+      color: "var(--colorBrandForegroundLink)",
+    },
+  },
+  listItemSubtitle: {
+    fontSize: "13px",
+    color: "var(--colorNeutralForeground2)",
+  },
+});
 
-  constructor(props: SplashScreenProps) {
-    super(props);
-    this.container = props.explorer;
-    this.subscriptions = [];
-  }
+export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
+  const styles = useStyles();
+  const container = explorer;
+  const subscriptions: Array<{ dispose: () => void }> = [];
 
-  public componentWillUnmount(): void {
-    while (this.subscriptions.length) {
-      this.subscriptions.pop().dispose();
-    }
-  }
-
-  public componentDidMount(): void {
-    this.subscriptions.push(
+  React.useEffect(() => {
+    subscriptions.push(
       {
         dispose: useNotebook.subscribe(
-          () => this.setState({}),
+          () => setState({}),
           (state) => state.isNotebookEnabled,
         ),
       },
-      { dispose: useSelectedNode.subscribe(() => this.setState({})) },
+      { dispose: useSelectedNode.subscribe(() => setState({})) },
       {
         dispose: useCarousel.subscribe(
-          () => this.setState({}),
+          () => setState({}),
           (state) => state.showCoachMark,
         ),
       },
       {
         dispose: usePostgres.subscribe(
-          () => this.setState({}),
+          () => setState({}),
           (state) => state.showPostgreTeachingBubble,
         ),
       },
       {
         dispose: usePostgres.subscribe(
-          () => this.setState({}),
+          () => setState({}),
           (state) => state.showResetPasswordBubble,
         ),
       },
       {
         dispose: useDatabases.subscribe(
-          () => this.setState({}),
+          () => setState({}),
           (state) => state.sampleDataResourceTokenCollection,
         ),
       },
       {
         dispose: useQueryCopilot.subscribe(
-          () => this.setState({}),
+          () => setState({}),
           (state) => state.copilotEnabled,
         ),
       },
     );
-  }
 
-  private clearMostRecent = (): void => {
+    return () => {
+      while (subscriptions.length) {
+        subscriptions.pop().dispose();
+      }
+    };
+  }, []);
+
+  // state is used to trigger re-renders when subscriptions emit
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [state, setState] = React.useState({});
+
+  const clearMostRecent = () => {
     MostRecentActivity.clear(userContext.databaseAccount?.name);
-    this.setState({});
+    setState({});
   };
 
-  private getSplashScreenButtons = (): JSX.Element => {
+  const getSplashScreenButtons = (): JSX.Element => {
     if (userContext.apiType === "SQL") {
       return (
         <Stack
           className="splashStackContainer"
-          style={{ width: "66%", cursor: "pointer", margin: "40px auto" }}
+          style={{ width: "60%", cursor: "pointer", margin: "40px auto" }}
           tokens={{ childrenGap: 16 }}
         >
           <Stack className="splashStackRow" horizontal>
@@ -134,7 +235,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
               title={"Launch quick start"}
               description={"Launch a quick start tutorial to get started with sample data"}
               onClick={() => {
-                this.container.onNewCollectionClicked({ isQuickstart: true });
+                container.onNewCollectionClicked({ isQuickstart: true });
                 traceOpen(Action.LaunchQuickstart, { apiType: userContext.apiType });
               }}
             />
@@ -143,7 +244,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
               title={`New ${getCollectionName()}`}
               description={"Create a new container for storage and throughput"}
               onClick={() => {
-                this.container.onNewCollectionClicked();
+                container.onNewCollectionClicked();
                 traceOpen(Action.NewContainerHomepage, { apiType: userContext.apiType });
               }}
             />
@@ -172,7 +273,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
       );
     }
 
-    const mainItems = this.createMainItems();
+    const mainItems = createMainItems();
     return (
       <div className="mainButtonsContainer">
         {userContext.apiType === "Postgres" &&
@@ -210,7 +311,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
             className="mainButton focusable"
             key={`${item.title}`}
             onClick={item.onClick}
-            onKeyPress={(event: React.KeyboardEvent) => this.onSplashScreenItemKeyPress(event, item.onClick)}
+            onKeyPress={(event: React.KeyboardEvent) => onSplashScreenItemKeyPress(event, item.onClick)}
             tabIndex={0}
             role="button"
           >
@@ -263,125 +364,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     );
   };
 
-  public render(): JSX.Element {
-    let title: string;
-    let subtitle: string;
-
-    switch (userContext.apiType) {
-      case "Postgres":
-        title = "Welcome to Azure Cosmos DB for PostgreSQL";
-        subtitle = "Get started with our sample datasets, documentation, and additional tools.";
-        break;
-      case "VCoreMongo":
-        title = "Welcome to Azure DocumentDB (with MongoDB compatibility)";
-        subtitle = "Get started with our sample datasets, documentation, and additional tools.";
-        break;
-      default:
-        title = "Welcome to Azure Cosmos DB";
-        subtitle = "Globally distributed, multi-model database service for any scale";
-    }
-
-    return (
-      <div className="connectExplorerContainer">
-        <form className="connectExplorerFormContainer">
-          <div className="splashScreenContainer">
-            <div className="splashScreen">
-              <h2 className="title" role="heading" aria-label={title}>
-                {title}
-                <FeaturePanelLauncher />
-              </h2>
-              <div className="subtitle">{subtitle}</div>
-              {this.getSplashScreenButtons()}
-              {useCarousel.getState().showCoachMark && (
-                <Coachmark
-                  target="#quickstartDescription"
-                  positioningContainerProps={{ directionalHint: DirectionalHint.rightTopEdge }}
-                  persistentBeak
-                >
-                  <TeachingBubbleContent
-                    headline={`Start with sample ${getCollectionName().toLocaleLowerCase()}`}
-                    hasCloseButton
-                    closeButtonAriaLabel="Close"
-                    primaryButtonProps={{
-                      text: "Get started",
-                      onClick: () => {
-                        useCarousel.getState().setShowCoachMark(false);
-                        this.container.onNewCollectionClicked({ isQuickstart: true });
-                      },
-                    }}
-                    secondaryButtonProps={{
-                      text: "Cancel",
-                      onClick: () => useCarousel.getState().setShowCoachMark(false),
-                    }}
-                    onDismiss={() => useCarousel.getState().setShowCoachMark(false)}
-                  >
-                    You will be guided to create a sample container with sample data, then we will give you a tour of
-                    data explorer. You can also cancel launching this tour and explore yourself
-                  </TeachingBubbleContent>
-                </Coachmark>
-              )}
-              {userContext.apiType === "Postgres" || userContext.apiType === "VCoreMongo" ? (
-                <Stack horizontal style={{ margin: "0 auto", width: "84%" }} tokens={{ childrenGap: 16 }}>
-                  <Stack style={{ width: "33%" }}>
-                    <Text
-                      variant="large"
-                      style={{
-                        marginBottom: 16,
-                        fontFamily: '"Segoe UI Semibold", "Segoe UI", "Segoe WP", Tahoma, Arial, sans-serif',
-                      }}
-                    >
-                      Next steps
-                    </Text>
-                    {this.getNextStepItems()}
-                  </Stack>
-                  <Stack style={{ width: "33%" }}>
-                    <Text
-                      variant="large"
-                      style={{
-                        marginBottom: 16,
-                        fontFamily: '"Segoe UI Semibold", "Segoe UI", "Segoe WP", Tahoma, Arial, sans-serif',
-                      }}
-                    >
-                      Tips & learn more
-                    </Text>
-                    {this.getTipsAndLearnMoreItems()}
-                  </Stack>
-                  <Stack style={{ width: "33%" }}></Stack>
-                </Stack>
-              ) : (
-                <div className="moreStuffContainer">
-                  <div className="moreStuffColumn commonTasks">
-                    <h2 className="title">Recents</h2>
-                    {this.getRecentItems()}
-                  </div>
-                  <div className="moreStuffColumn">
-                    <h2 className="title">Top 3 things you need to know</h2>
-                    {this.top3Items()}
-                  </div>
-                  <div className="moreStuffColumn tipsContainer">
-                    <h2 className="title">Learning Resources</h2>
-                    {this.getLearningResourceItems()}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </form>
-      </div>
-    );
-  }
-
-  /**
-   * This exists to enable unit testing
-   */
-  public createDataSampleUtil(): DataSamplesUtil {
-    return new DataSamplesUtil(this.container);
-  }
-
-  /**
-   * public for testing purposes
-   */
-  public createMainItems(): SplashScreenItem[] {
+  const createMainItems = (): SplashScreenItem[] => {
     const heroes: SplashScreenItem[] = [];
 
     if (
@@ -399,7 +382,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
           if (userContext.apiType === "Postgres" || userContext.apiType === "VCoreMongo") {
             useTabs.getState().openAndActivateReactTab(ReactTabKind.Quickstart);
           } else {
-            this.container.onNewCollectionClicked({ isQuickstart: true });
+            container.onNewCollectionClicked({ isQuickstart: true });
           }
           traceOpen(Action.LaunchQuickstart, { apiType: userContext.apiType });
         },
@@ -407,18 +390,18 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
       heroes.push(launchQuickstartBtn);
     }
 
-    heroes.push(this.getShellCard());
-    heroes.push(this.getThirdCard());
+    heroes.push(getShellCard());
+    heroes.push(getThirdCard());
     return heroes;
-  }
+  };
 
-  private getShellCard() {
+  const getShellCard = (): SplashScreenItem => {
     if (userContext.apiType === "Postgres") {
       return {
         iconSrc: PowerShellIcon,
         title: "PostgreSQL Shell",
-        description: "Create table and interact with data using PostgreSQL’s shell interface",
-        onClick: () => this.container.openNotebookTerminal(TerminalKind.Postgres),
+        description: "Create table and interact with data using PostgreSQL's shell interface",
+        onClick: () => container.openNotebookTerminal(TerminalKind.Postgres),
       };
     }
 
@@ -427,7 +410,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         iconSrc: PowerShellIcon,
         title: "Mongo Shell",
         description: "Create a collection and interact with data using MongoDB's shell interface",
-        onClick: () => this.container.openNotebookTerminal(TerminalKind.VCoreMongo),
+        onClick: () => container.openNotebookTerminal(TerminalKind.VCoreMongo),
       };
     }
 
@@ -436,13 +419,13 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
       title: `New ${getCollectionName()}`,
       description: "Create a new container for storage and throughput",
       onClick: () => {
-        this.container.onNewCollectionClicked();
+        container.onNewCollectionClicked();
         traceOpen(Action.NewContainerHomepage, { apiType: userContext.apiType });
       },
     };
-  }
+  };
 
-  private getThirdCard() {
+  const getThirdCard = (): SplashScreenItem => {
     let icon = ConnectIcon;
     let title = "Connect";
     let description = "Prefer using your own choice of tooling? Find the connection string you need to connect";
@@ -457,7 +440,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
       icon = VisualStudioIcon;
       title = "Connect with VS Code";
       description = "Query and Manage your MongoDB and DocumentDB clusters in Visual Studio Code";
-      onClick = () => this.container.openInVsCode();
+      onClick = () => container?.openInVsCode && container.openInVsCode();
     }
 
     return {
@@ -466,62 +449,34 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
       description: description,
       onClick: onClick,
     };
-  }
-
-  //TODO: Re-enable lint rule when query copilot is reinstated in DE
-  /* eslint-disable-next-line no-unused-vars */
-  private getQueryCopilotCard = (): JSX.Element => {
-    return (
-      <>
-        {useQueryCopilot.getState().copilotEnabled && (
-          <SplashScreenButton
-            imgSrc={CopilotIcon}
-            title={"Query faster with Query Advisor"}
-            description={
-              "Query Advisor is your AI buddy that helps you write Azure Cosmos DB queries like a pro. Try it using our sample data set now!"
-            }
-            onClick={() => {
-              const copilotVersion = userContext.features.copilotVersion;
-              if (copilotVersion === "v1.0") {
-                useTabs.getState().openAndActivateReactTab(ReactTabKind.QueryCopilot);
-              } else if (copilotVersion === "v2.0") {
-                const sampleCollection = useDatabases.getState().sampleDataResourceTokenCollection;
-                sampleCollection.onNewQueryClick(sampleCollection, undefined);
-              }
-              traceOpen(Action.OpenQueryCopilotFromSplashScreen, { apiType: userContext.apiType });
-            }}
-          />
-        )}
-      </>
-    );
   };
 
-  private decorateOpenCollectionActivity({ databaseId, collectionId }: MostRecentActivity.OpenCollectionItem) {
+  const decorateOpenCollectionActivity = (activity: MostRecentActivity.OpenCollectionItem): SplashScreenItem => {
     return {
       iconSrc: CollectionIcon,
-      title: collectionId,
+      title: activity.collectionId,
       description: getCollectionName(),
       onClick: () => {
-        const collection = useDatabases.getState().findCollection(databaseId, collectionId);
+        const collection = useDatabases.getState().findCollection(activity.databaseId, activity.collectionId);
         collection?.openTab();
       },
     };
-  }
+  };
 
-  private decorateOpenNotebookActivity({ name, path }: MostRecentActivity.OpenNotebookItem) {
+  const decorateOpenNotebookActivity = (activity: MostRecentActivity.OpenNotebookItem): SplashScreenItem => {
     return {
-      info: path,
+      info: activity.path,
       iconSrc: NotebookIcon,
-      title: name,
+      title: activity.name,
       description: "Notebook",
       onClick: () => {
-        const notebookItem = this.container.createNotebookContentItemFile(name, path);
-        notebookItem && this.container.openNotebook(notebookItem);
+        const notebookItem = container.createNotebookContentItemFile(activity.name, activity.path);
+        notebookItem && container.openNotebook(notebookItem);
       },
     };
-  }
+  };
 
-  private createRecentItems(): SplashScreenItem[] {
+  const createRecentItems = (): SplashScreenItem[] => {
     return MostRecentActivity.getItems(userContext.databaseAccount?.name).map((activity) => {
       switch (activity.type) {
         default: {
@@ -529,22 +484,22 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
           throw new Error(`Unknown activity: ${unknownActivity}`);
         }
         case MostRecentActivity.Type.OpenNotebook:
-          return this.decorateOpenNotebookActivity(activity);
+          return decorateOpenNotebookActivity(activity);
 
         case MostRecentActivity.Type.OpenCollection:
-          return this.decorateOpenCollectionActivity(activity);
+          return decorateOpenCollectionActivity(activity);
       }
     });
-  }
+  };
 
-  private onSplashScreenItemKeyPress(event: React.KeyboardEvent, callback: () => void) {
+  const onSplashScreenItemKeyPress = (event: React.KeyboardEvent, callback: () => void) => {
     if (event.charCode === Constants.KeyCodes.Space || event.charCode === Constants.KeyCodes.Enter) {
       callback();
       event.stopPropagation();
     }
-  }
+  };
 
-  private top3Items(): JSX.Element {
+  const top3Items = (): JSX.Element => {
     let items: { link: string; title: string; description: string }[];
     switch (userContext.apiType) {
       case "SQL":
@@ -656,44 +611,54 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
                 href={item.link}
                 target="_blank"
                 style={{ marginRight: 5 }}
+                className={styles.listItemTitle}
               >
                 {item.title}
               </Link>
               <Image src={LinkIcon} alt={item.title} />
             </Stack>
-            <Text>{item.description}</Text>
+            <Text className={styles.listItemSubtitle}>{item.description}</Text>
           </Stack>
         ))}
       </Stack>
     );
-  }
+  };
 
-  private getRecentItems(): JSX.Element {
-    const recentItems = this.createRecentItems()?.filter((item) => item.description !== "Notebook");
+  const getRecentItems = (): JSX.Element => {
+    const recentItems = createRecentItems()?.filter((item) => item.description !== "Notebook");
 
     return (
       <Stack>
         <ul>
           {recentItems.map((item, index) => (
-            <li key={`${item.title}${item.description}${index}`}>
+            <li key={`${item.title}${item.description}${index}`} className={styles.listItem}>
               <Stack style={{ marginBottom: 26 }}>
                 <Stack horizontal>
-                  <Image style={{ marginRight: 8 }} src={item.iconSrc} alt={item.title} />
-                  <Link style={{ fontSize: 14 }} onClick={item.onClick} title={item.info}>
+                  <Image src={DocumentIcon} alt="" style={{ marginRight: 8, width: 16, height: 16 }} />
+                  <Link
+                    style={{ fontSize: 14 }}
+                    onClick={item.onClick}
+                    title={item.info}
+                    className={styles.listItemTitle}
+                  >
                     {item.title}
                   </Link>
                 </Stack>
-                <Text style={{ color: "#605E5C" }}>{item.description}</Text>
+                <Text className={styles.listItemSubtitle}>{item.description}</Text>
               </Stack>
             </li>
           ))}
         </ul>
-        {recentItems.length > 0 && <Link onClick={() => this.clearMostRecent()}>Clear Recents</Link>}
+        {recentItems.length > 0 && (
+          <Link onClick={() => clearMostRecent()} className={styles.listItemTitle}>
+            Clear Recents
+          </Link>
+        )}
       </Stack>
     );
-  }
+  };
 
-  private getLearningResourceItems(): JSX.Element {
+  const getLearningResourceItems = (): JSX.Element => {
     interface item {
       link: string;
       title: string;
@@ -809,19 +774,20 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
                 href={item.link}
                 target="_blank"
                 style={{ marginRight: 5 }}
+                className={styles.listItemTitle}
               >
                 {item.title}
               </Link>
               <Image src={LinkIcon} alt={item.title} />
             </Stack>
-            <Text>{item.description}</Text>
+            <Text className={styles.listItemSubtitle}>{item.description}</Text>
           </Stack>
         ))}
       </Stack>
     );
-  }
+  };
 
-  private postgresNextStepItems: { link: string; title: string; description: string }[] = [
+  const postgresNextStepItems: { link: string; title: string; description: string }[] = [
     {
       link: "https://go.microsoft.com/fwlink/?linkid=2208312",
       title: "Data Modeling",
@@ -839,7 +805,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     },
   ];
 
-  private vcoreMongoNextStepItems: { link: string; title: string; description: string }[] = [
+  const vcoreMongoNextStepItems: { link: string; title: string; description: string }[] = [
     {
       link: "https://learn.microsoft.com/azure/cosmos-db/mongodb/vcore/migration-options",
       title: "Migrate Data",
@@ -857,27 +823,27 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     },
   ];
 
-  private getNextStepItems(): JSX.Element {
-    const items = userContext.apiType === "Postgres" ? this.postgresNextStepItems : this.vcoreMongoNextStepItems;
+  const getNextStepItems = (): JSX.Element => {
+    const items = userContext.apiType === "Postgres" ? postgresNextStepItems : vcoreMongoNextStepItems;
 
     return (
       <Stack style={{ minWidth: 124, maxWidth: 296 }}>
         {items.map((item, i) => (
           <Stack key={`nextStep${i}`} style={{ marginBottom: 26 }}>
             <Stack horizontal verticalAlign="center" style={{ fontSize: 14 }}>
-              <Link href={item.link} target="_blank" style={{ marginRight: 5 }}>
+              <Link href={item.link} target="_blank" style={{ marginRight: 5 }} className={styles.listItemTitle}>
                 {item.title}
               </Link>
               <Image src={LinkIcon} />
             </Stack>
-            <Text>{item.description}</Text>
+            <Text className={styles.listItemSubtitle}>{item.description}</Text>
           </Stack>
         ))}
       </Stack>
     );
-  }
+  };
 
-  private postgresLearnMoreItems: { link: string; title: string; description: string }[] = [
+  const postgresLearnMoreItems: { link: string; title: string; description: string }[] = [
     {
       link: "https://go.microsoft.com/fwlink/?linkid=2207226",
       title: "Performance Tuning",
@@ -895,7 +861,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     },
   ];
 
-  private vcoreMongoLearnMoreItems: { link: string; title: string; description: string }[] = [
+  const vcoreMongoLearnMoreItems: { link: string; title: string; description: string }[] = [
     {
       link: "https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/vcore/vector-search",
       title: "Vector Search",
@@ -913,23 +879,107 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     },
   ];
 
-  private getTipsAndLearnMoreItems(): JSX.Element {
-    const items = userContext.apiType === "Postgres" ? this.postgresLearnMoreItems : this.vcoreMongoLearnMoreItems;
+  const getTipsAndLearnMoreItems = (): JSX.Element => {
+    const items = userContext.apiType === "Postgres" ? postgresLearnMoreItems : vcoreMongoLearnMoreItems;
 
     return (
       <Stack style={{ minWidth: 124, maxWidth: 296 }}>
         {items.map((item, i) => (
           <Stack key={`tips${i}`} style={{ marginBottom: 26 }}>
             <Stack horizontal verticalAlign="center" style={{ fontSize: 14 }}>
-              <Link href={item.link} target="_blank" style={{ marginRight: 5 }}>
+              <Link href={item.link} target="_blank" style={{ marginRight: 5 }} className={styles.listItemTitle}>
                 {item.title}
               </Link>
               <Image src={LinkIcon} />
             </Stack>
-            <Text>{item.description}</Text>
+            <Text className={styles.listItemSubtitle}>{item.description}</Text>
           </Stack>
         ))}
       </Stack>
     );
-  }
-}
+  };
+
+  return (
+    <div className={styles.splashScreenContainer}>
+      <div className={styles.splashScreen}>
+        <h2 className={styles.title} role="heading" aria-label="Welcome to Azure Cosmos DB">
+          Welcome to Azure Cosmos DB<span className="activePatch"></span>
+        </h2>
+        <div className={styles.subtitle}>Globally distributed, multi-model database service for any scale</div>
+        {getSplashScreenButtons()}
+        {useCarousel.getState().showCoachMark && (
+          <Coachmark
+            target="#quickstartDescription"
+            positioningContainerProps={{ directionalHint: DirectionalHint.rightTopEdge }}
+            persistentBeak
+          >
+            <TeachingBubbleContent
+              headline={`Start with sample ${getCollectionName().toLocaleLowerCase()}`}
+              hasCloseButton
+              closeButtonAriaLabel="Close"
+              primaryButtonProps={{
+                text: "Get started",
+                onClick: () => {
+                  useCarousel.getState().setShowCoachMark(false);
+                  container.onNewCollectionClicked({ isQuickstart: true });
+                },
+              }}
+              secondaryButtonProps={{
+                text: "Cancel",
+                onClick: () => useCarousel.getState().setShowCoachMark(false),
+              }}
+              onDismiss={() => useCarousel.getState().setShowCoachMark(false)}
+            >
+              You will be guided to create a sample container with sample data, then we will give you a tour of data
+              explorer. You can also cancel launching this tour and explore yourself
+            </TeachingBubbleContent>
+          </Coachmark>
+        )}
+        {userContext.apiType === "Postgres" || userContext.apiType === "VCoreMongo" ? (
+          <Stack horizontal style={{ margin: "0 auto", width: "84%" }} tokens={{ childrenGap: 16 }}>
+            <Stack style={{ width: "33%" }}>
+              <Text
+                variant="large"
+                style={{
+                  marginBottom: 16,
+                  fontFamily: '"Segoe UI Semibold", "Segoe UI", "Segoe WP", Tahoma, Arial, sans-serif',
+                }}
+              >
+                Next steps
+              </Text>
+              {getNextStepItems()}
+            </Stack>
+            <Stack style={{ width: "33%" }}>
+              <Text
+                variant="large"
+                style={{
+                  marginBottom: 16,
+                  fontFamily: '"Segoe UI Semibold", "Segoe UI", "Segoe WP", Tahoma, Arial, sans-serif',
+                }}
+              >
+                Tips & learn more
+              </Text>
+              {getTipsAndLearnMoreItems()}
+            </Stack>
+            <Stack style={{ width: "33%" }}></Stack>
+          </Stack>
+        ) : (
+          <div className={styles.moreStuffContainer}>
+            <div className={styles.moreStuffColumn}>
+              <h2 className={styles.columnTitle}>Recents</h2>
+              {getRecentItems()}
+            </div>
+            <div className={styles.moreStuffColumn}>
+              <h2 className={styles.columnTitle}>Top 3 things you need to know</h2>
+              {top3Items()}
+            </div>
+            <div className={styles.moreStuffColumn}>
+              <h2 className={styles.columnTitle}>Learning Resources</h2>
+              {getLearningResourceItems()}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};

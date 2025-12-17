@@ -70,12 +70,22 @@ export const ConnectTab: React.FC = (): JSX.Element => {
 
   const textfieldStyles: Partial<ITextFieldStyles> = {
     root: { width: "100%" },
-    field: { backgroundColor: "rgb(230, 230, 230)" },
-    fieldGroup: { borderColor: "rgb(138, 136, 134)" },
+    field: {
+      backgroundColor: "var(--colorNeutralBackground3)",
+      color: "var(--colorNeutralForeground1)",
+    },
+    fieldGroup: { borderColor: "var(--colorNeutralStroke1)" },
     suffix: {
-      backgroundColor: "rgb(230, 230, 230)",
+      backgroundColor: "var(--colorNeutralBackground3)",
       margin: 0,
       padding: 0,
+    },
+    subComponentStyles: {
+      label: {
+        root: {
+          color: "var(--colorNeutralForeground1)",
+        },
+      },
     },
   };
 
@@ -86,18 +96,64 @@ export const ConnectTab: React.FC = (): JSX.Element => {
       styles={{
         root: {
           height: "100%",
-          backgroundColor: "rgb(230, 230, 230)",
+          backgroundColor: "var(--colorNeutralBackground3)",
           border: "none",
+          color: "var(--colorNeutralForeground1)",
         },
         rootHovered: {
-          backgroundColor: "rgb(220, 220, 220)",
+          backgroundColor: "var(--colorNeutralBackground4)",
         },
         rootPressed: {
-          backgroundColor: "rgb(210, 210, 210)",
+          backgroundColor: "var(--colorNeutralBackground5)",
+        },
+        icon: {
+          color: "var(--colorNeutralForeground1)",
         },
       }}
     />
   );
+
+  const themeAwareIconButtonStyles = {
+    root: {
+      color: "var(--colorNeutralForeground1)",
+    },
+    rootHovered: {
+      backgroundColor: "var(--colorNeutralBackground3)",
+    },
+    icon: {
+      color: "var(--colorNeutralForeground1)",
+    },
+  };
+
+  const pivotStyles = {
+    root: {
+      color: "var(--colorNeutralForeground1)",
+    },
+    link: {
+      color: "var(--colorNeutralForeground1)",
+      backgroundColor: "transparent",
+      selectors: {
+        "&:hover": {
+          color: "var(--colorNeutralForeground1)",
+          backgroundColor: "var(--colorNeutralBackground3)",
+        },
+        "&:active": {
+          color: "var(--colorNeutralForeground1)",
+        },
+      },
+    },
+    linkIsSelected: {
+      color: "var(--colorNeutralForeground1)",
+      selectors: {
+        "&::before": {
+          backgroundColor: "var(--colorBrandBackground)",
+        },
+      },
+    },
+    text: {
+      color: "var(--colorNeutralForeground1)",
+    },
+  };
 
   return (
     <div style={{ width: "100%", padding: 16 }}>
@@ -113,7 +169,7 @@ export const ConnectTab: React.FC = (): JSX.Element => {
         <div style={{ width: 32 }}></div>
       </Stack>
 
-      <Pivot>
+      <Pivot styles={pivotStyles}>
         {userContext.hasWriteAccess && (
           <PivotItem headerText="Read-write Keys">
             <Stack style={{ margin: 10, overflow: "auto", maxHeight: "calc(100vh - 300px)" }}>
@@ -131,6 +187,7 @@ export const ConnectTab: React.FC = (): JSX.Element => {
                 <IconButton
                   iconProps={{ iconName: showPrimaryMasterKey ? "Hide3" : "View" }}
                   onClick={() => setShowPrimaryMasterKey(!showPrimaryMasterKey)}
+                  styles={themeAwareIconButtonStyles}
                 />
               </Stack>
               <Stack horizontal verticalAlign="end" style={{ marginBottom: 8 }}>
@@ -147,6 +204,7 @@ export const ConnectTab: React.FC = (): JSX.Element => {
                 <IconButton
                   iconProps={{ iconName: showSecondaryMasterKey ? "Hide3" : "View" }}
                   onClick={() => setShowSecondaryMasterKey(!showSecondaryMasterKey)}
+                  styles={themeAwareIconButtonStyles}
                 />
               </Stack>
               <Stack horizontal verticalAlign="end" style={{ marginBottom: 8 }}>
@@ -163,6 +221,7 @@ export const ConnectTab: React.FC = (): JSX.Element => {
                 <IconButton
                   iconProps={{ iconName: showPrimaryConnectionStr ? "Hide3" : "View" }}
                   onClick={() => setShowPrimaryConnectionStr(!showPrimaryConnectionStr)}
+                  styles={themeAwareIconButtonStyles}
                 />
               </Stack>
               <Stack horizontal verticalAlign="end" style={{ marginBottom: 8 }}>
@@ -179,6 +238,7 @@ export const ConnectTab: React.FC = (): JSX.Element => {
                 <IconButton
                   iconProps={{ iconName: showSecondaryConnectionStr ? "Hide3" : "View" }}
                   onClick={() => setShowSecondaryConnectionStr(!showSecondaryConnectionStr)}
+                  styles={themeAwareIconButtonStyles}
                 />
               </Stack>
             </Stack>
@@ -200,6 +260,7 @@ export const ConnectTab: React.FC = (): JSX.Element => {
               <IconButton
                 iconProps={{ iconName: showPrimaryReadonlyMasterKey ? "Hide3" : "View" }}
                 onClick={() => setShowPrimaryReadonlyMasterKey(!showPrimaryReadonlyMasterKey)}
+                styles={themeAwareIconButtonStyles}
               />
             </Stack>
             <Stack horizontal verticalAlign="end" style={{ marginBottom: 8 }}>
@@ -216,6 +277,7 @@ export const ConnectTab: React.FC = (): JSX.Element => {
               <IconButton
                 iconProps={{ iconName: showSecondaryReadonlyMasterKey ? "Hide3" : "View" }}
                 onClick={() => setShowSecondaryReadonlyMasterKey(!showSecondaryReadonlyMasterKey)}
+                styles={themeAwareIconButtonStyles}
               />
             </Stack>
             <Stack horizontal verticalAlign="end" style={{ marginBottom: 8 }}>
@@ -232,6 +294,7 @@ export const ConnectTab: React.FC = (): JSX.Element => {
               <IconButton
                 iconProps={{ iconName: showPrimaryReadonlyConnectionStr ? "Hide3" : "View" }}
                 onClick={() => setShowPrimaryReadonlyConnectionStr(!showPrimaryReadonlyConnectionStr)}
+                styles={themeAwareIconButtonStyles}
               />
             </Stack>
             <Stack horizontal verticalAlign="end" style={{ marginBottom: 8 }}>
@@ -248,6 +311,7 @@ export const ConnectTab: React.FC = (): JSX.Element => {
               <IconButton
                 iconProps={{ iconName: showSecondaryReadonlyConnectionStr ? "Hide3" : "View" }}
                 onClick={() => setShowSecondaryReadonlyConnectionStr(!showSecondaryReadonlyConnectionStr)}
+                styles={themeAwareIconButtonStyles}
               />
             </Stack>
           </Stack>
@@ -255,10 +319,23 @@ export const ConnectTab: React.FC = (): JSX.Element => {
       </Pivot>
 
       <Stack style={{ margin: 10 }}>
-        <Text style={{ fontWeight: 600, marginBottom: 8 }}>Download sample app</Text>
-        <Text style={{ marginBottom: 8 }}>
-          Don’t have an app ready? No worries, download one of our sample app with a platform of your choice. Connection
-          string is already included in the app.
+        <Text
+          style={{
+            fontWeight: 600,
+            marginBottom: 8,
+            color: "var(--colorNeutralForeground1)",
+          }}
+        >
+          Download sample app
+        </Text>
+        <Text
+          style={{
+            marginBottom: 8,
+            color: "var(--colorNeutralForeground2)",
+          }}
+        >
+          Don&apos;t have an app ready? No worries, download one of our sample app with a platform of your choice.
+          Connection string is already included in the app.
         </Text>
         <PrimaryButton
           style={{ width: 185 }}
