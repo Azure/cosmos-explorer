@@ -121,7 +121,12 @@ export class ComputedPropertiesComponent extends React.Component<
           </Link>
           &#160; about how to define computed properties and how to use them.
         </Text>
-        <div className="settingsV2Editor" tabIndex={0} ref={this.computedPropertiesDiv}></div>
+        <div
+          className="settingsV2Editor"
+          tabIndex={0}
+          ref={this.computedPropertiesDiv}
+          data-test="computed-properties-editor"
+        ></div>
       </Stack>
     );
   }

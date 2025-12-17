@@ -3,12 +3,12 @@ import {
   DetailsListLayoutMode,
   DirectionalHint,
   FontIcon,
-  IColumn,
-  SelectionMode,
-  TooltipHost,
   getTheme,
+  IColumn,
   mergeStyles,
   mergeStyleSets,
+  SelectionMode,
+  TooltipHost,
 } from "@fluentui/react";
 import { Upload } from "Common/Upload/Upload";
 import { UploadDetailsRecord } from "Contracts/ViewModels";
@@ -204,7 +204,7 @@ export const UploadItemsPane: FunctionComponent<UploadItemsPaneProps> = ({ onUpl
           tooltip="Select one or more JSON files to upload. Each file can contain a single JSON document or an array of JSON documents. The combined size of all files in an individual upload operation must be less than 2 MB. You can perform multiple upload operations for larger data sets."
         />
         {uploadFileData?.length > 0 && (
-          <div className="fileUploadSummaryContainer">
+          <div className="fileUploadSummaryContainer" data-test="file-upload-status">
             <b>File upload status</b>
             <DetailsList
               items={uploadFileData}

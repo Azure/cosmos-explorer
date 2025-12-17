@@ -15,7 +15,7 @@ test.describe("Settings under Scale & Settings", () => {
     const containerNode = await explorer.waitForContainerNode(context.database.id, context.container.id);
     await containerNode.expand();
 
-    // Click Scale & Settings and open Scale tab
+    // Click Scale & Settings and open Settings tab
     await explorer.openScaleAndSettings(context);
     const settingsTab = explorer.frame.getByTestId("settings-tab-header/SubSettingsTab");
     await settingsTab.click();
@@ -25,46 +25,86 @@ test.describe("Settings under Scale & Settings", () => {
     await context?.dispose();
   });
 
-  test("Update TTL to On (no default)", async () => {
-    const ttlOnNoDefaultRadioButton = explorer.frame.getByRole("radio", { name: "ttl-on-no-default-option" });
-    await ttlOnNoDefaultRadioButton.click();
+  test.describe("Set TTL", () => {
+    test("Update TTL to On (no default)", async () => {
+      const ttlOnNoDefaultRadioButton = explorer.frame.getByRole("radio", { name: "ttl-on-no-default-option" });
+      await ttlOnNoDefaultRadioButton.click();
 
-    await explorer.commandBarButton(CommandBarButton.Save).click();
-    await expect(explorer.getConsoleMessage()).toContainText(`Successfully updated container ${context.container.id}`, {
-      timeout: ONE_MINUTE_MS,
+      await explorer.commandBarButton(CommandBarButton.Save).click();
+      await expect(explorer.getConsoleMessage()).toContainText(
+        `Successfully updated container ${context.container.id}`,
+        {
+          timeout: ONE_MINUTE_MS,
+        },
+      );
+    });
+
+    test("Update TTL to On (with user entry)", async () => {
+      const ttlOnRadioButton = explorer.frame.getByRole("radio", { name: "ttl-on-option" });
+      await ttlOnRadioButton.click();
+
+      // Enter TTL seconds
+      const ttlInput = explorer.frame.getByTestId("ttl-input");
+      await ttlInput.fill("30000");
+
+      await explorer.commandBarButton(CommandBarButton.Save).click();
+      await expect(explorer.getConsoleMessage()).toContainText(
+        `Successfully updated container ${context.container.id}`,
+        {
+          timeout: ONE_MINUTE_MS,
+        },
+      );
+    });
+
+    test("Update TTL to Off", async () => {
+      // By default TTL is set to off so we need to first set it to On
+      const ttlOnNoDefaultRadioButton = explorer.frame.getByRole("radio", { name: "ttl-on-no-default-option" });
+      await ttlOnNoDefaultRadioButton.click();
+      await explorer.commandBarButton(CommandBarButton.Save).click();
+      await expect(explorer.getConsoleMessage()).toContainText(
+        `Successfully updated container ${context.container.id}`,
+        {
+          timeout: ONE_MINUTE_MS,
+        },
+      );
+
+      // Set it to Off
+      const ttlOffRadioButton = explorer.frame.getByRole("radio", { name: "ttl-off-option" });
+      await ttlOffRadioButton.click();
+
+      await explorer.commandBarButton(CommandBarButton.Save).click();
+      await expect(explorer.getConsoleMessage()).toContainText(
+        `Successfully updated container ${context.container.id}`,
+        {
+          timeout: ONE_MINUTE_MS,
+        },
+      );
     });
   });
 
-  test("Update TTL to On (with user entry)", async () => {
-    const ttlOnRadioButton = explorer.frame.getByRole("radio", { name: "ttl-on-option" });
-    await ttlOnRadioButton.click();
+  test.describe("Set Geospatial Config", () => {
+    test("Set Geospatial Config to Geometry then Geography", async () => {
+      const geometryRadioButton = explorer.frame.getByRole("radio", { name: "geometry-option" });
+      await geometryRadioButton.click();
 
-    // Enter TTL seconds
-    const ttlInput = explorer.frame.getByTestId("ttl-input");
-    await ttlInput.fill("30000");
+      await explorer.commandBarButton(CommandBarButton.Save).click();
+      await expect(explorer.getConsoleMessage()).toContainText(
+        `Successfully updated container ${context.container.id}`,
+        {
+          timeout: ONE_MINUTE_MS,
+        },
+      );
 
-    await explorer.commandBarButton(CommandBarButton.Save).click();
-    await expect(explorer.getConsoleMessage()).toContainText(`Successfully updated container ${context.container.id}`, {
-      timeout: ONE_MINUTE_MS,
-    });
-  });
+      const geographyRadioButton = explorer.frame.getByRole("radio", { name: "geography-option" });
+      await geographyRadioButton.click();
 
-  test("Update TTL to Off", async () => {
-    // By default TTL is set to off so we need to first set it to On
-    const ttlOnNoDefaultRadioButton = explorer.frame.getByRole("radio", { name: "ttl-on-no-default-option" });
-    await ttlOnNoDefaultRadioButton.click();
-    await explorer.commandBarButton(CommandBarButton.Save).click();
-    await expect(explorer.getConsoleMessage()).toContainText(`Successfully updated container ${context.container.id}`, {
-      timeout: ONE_MINUTE_MS,
-    });
-
-    // Set it to Off
-    const ttlOffRadioButton = explorer.frame.getByRole("radio", { name: "ttl-off-option" });
-    await ttlOffRadioButton.click();
-
-    await explorer.commandBarButton(CommandBarButton.Save).click();
-    await expect(explorer.getConsoleMessage()).toContainText(`Successfully updated container ${context.container.id}`, {
-      timeout: ONE_MINUTE_MS,
+      await explorer.commandBarButton(CommandBarButton.Save).click();
+      await expect(explorer.getConsoleMessage()).toContainText(
+        `Successfully updated container ${context.container.id}`,
+        {
+          timeout: ONE_MINUTE_MS,
+        },
+      );
     });
   });
 });

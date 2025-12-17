@@ -37,25 +37,33 @@ export interface PartitionKey {
   value: string | null;
 }
 
-const partitionCount = 4;
+export const partitionCount = 4;
 
 // If we increase this number, we need to split bulk creates into multiple batches.
 // Bulk operations are limited to 100 items per partition.
-const itemsPerPartition = 100;
+export const itemsPerPartition = 100;
 
 function createTestItems(): TestItem[] {
   const items: TestItem[] = [];
   for (let i = 0; i < partitionCount; i++) {
     for (let j = 0; j < itemsPerPartition; j++) {
-      const id = crypto.randomBytes(32).toString("base64");
+      const id = createSafeRandomString(32);
       items.push({
         id,
         partitionKey: `partition_${i}`,
-        randomData: crypto.randomBytes(32).toString("base64"),
+        randomData: createSafeRandomString(32),
       });
     }
   }
   return items;
+}
+
+// Document IDs cannot contain '/', '\', or '#'
+function createSafeRandomString(byteLength: number): string {
+  return crypto
+    .randomBytes(byteLength)
+    .toString("base64")
+    .replace(/[\/\\#]/g, "_");
 }
 
 export const TestData: TestItem[] = createTestItems();
