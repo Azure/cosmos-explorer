@@ -60,10 +60,7 @@ function createTestItems(): TestItem[] {
 
 // Document IDs cannot contain '/', '\', or '#'
 function createSafeRandomString(byteLength: number): string {
-  return crypto
-    .randomBytes(byteLength)
-    .toString("base64")
-    .replace(/[\\#]/g, "_");
+  return crypto.randomBytes(byteLength).toString("base64").replace(/[\\#]/g, "_");
 }
 
 export const TestData: TestItem[] = createTestItems();
