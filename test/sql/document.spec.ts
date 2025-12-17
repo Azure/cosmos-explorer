@@ -128,7 +128,7 @@ test.describe.serial("Upload Item", () => {
     await context?.dispose();
   });
 
-  test("upload document", async ({}, testInfo) => {
+  test("upload document", async () => {
     // Create file to upload
     const TestDataJsonString: string = JSON.stringify(TestData, null, 2);
     writeFileSync(uploadDocumentFilePath, TestDataJsonString);
@@ -150,7 +150,7 @@ test.describe.serial("Upload Item", () => {
     });
   });
 
-  test("upload same document twice", async ({}, testInfo) => {
+  test("upload same document twice", async () => {
     // Create file to upload
     const TestDataJsonString: string = JSON.stringify(TestData, null, 2);
     writeFileSync(uploadDocumentFilePath, TestDataJsonString);
@@ -186,7 +186,7 @@ test.describe.serial("Upload Item", () => {
     );
   });
 
-  test("upload invalid json", async ({}, testInfo) => {
+  test("upload invalid json", async () => {
     // Create file to upload
     let TestDataJsonString: string = JSON.stringify(TestData, null, 2);
     // Remove the first '[' so that it becomes invalid json

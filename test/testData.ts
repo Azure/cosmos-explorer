@@ -63,7 +63,7 @@ function createSafeRandomString(byteLength: number): string {
   return crypto
     .randomBytes(byteLength)
     .toString("base64")
-    .replace(/[\/\\#]/g, "_");
+    .replace(/[\\#]/g, "_");
 }
 
 export const TestData: TestItem[] = createTestItems();
