@@ -8,7 +8,7 @@ let explorer: DataExplorer = null!;
 let documentsTab: DocumentsTab = null!;
 
 for (const { name, databaseId, containerId, documents } of documentTestCases) {
-  test.describe(`Test SQL Documents with ${name}`, () => {
+  test.describe.serial(`Test SQL Documents with ${name}`, () => {
     // test.skip(true, "Temporarily disabling all tests in this spec file");
     test.beforeEach("Open documents tab", async ({ page }) => {
       explorer = await DataExplorer.open(page, TestAccount.SQLReadOnly);
@@ -28,7 +28,7 @@ for (const { name, databaseId, containerId, documents } of documentTestCases) {
 
     for (const document of documents) {
       const { documentId: docId, partitionKeys, skipCreateDelete } = document;
-      test.describe(`Document ID: ${docId}`, () => {
+      test.describe.serial(`Document ID: ${docId}`, () => {
         test(`should load and view document ${docId}`, async () => {
           const span = documentsTab.documentsListPane.getByText(docId, { exact: true }).nth(0);
           await span.waitFor();

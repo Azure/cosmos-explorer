@@ -9,7 +9,7 @@ let explorer: DataExplorer = null!;
 let documentsTab: DocumentsTab = null!;
 
 for (const { name, databaseId, containerId, documents } of documentTestCases) {
-  test.describe(`Test MongoRU Documents with ${name}`, () => {
+  test.describe.serial(`Test MongoRU Documents with ${name}`, () => {
     // test.skip(true, "Temporarily disabling all tests in this spec file");
     test.beforeEach("Open documents tab", async ({ page }) => {
       await setupCORSBypass(page);
@@ -33,7 +33,7 @@ for (const { name, databaseId, containerId, documents } of documentTestCases) {
 
     for (const document of documents) {
       const { documentId: docId, partitionKeys } = document;
-      test.describe(`Document ID: ${docId}`, () => {
+      test.describe.serial(`Document ID: ${docId}`, () => {
         test(`should load and view document ${docId}`, async () => {
           const span = documentsTab.documentsListPane.getByText(docId, { exact: true }).nth(0);
           await span.waitFor();

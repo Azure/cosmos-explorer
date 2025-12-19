@@ -9,7 +9,7 @@ import {
 } from "../../fx";
 import { createTestSQLContainer, TestContainerContext } from "../../testData";
 
-test.describe("Autoscale and Manual throughput", () => {
+test.describe.serial("Autoscale and Manual throughput", () => {
   let context: TestContainerContext = null!;
   let explorer: DataExplorer = null!;
 
