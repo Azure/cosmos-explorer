@@ -1,0 +1,75 @@
+import { expect, test } from "@playwright/test";
+import { CommandBarButton, DataExplorer, ONE_MINUTE_MS, TestAccount } from "../../fx";
+import { createTestSQLContainer, TestContainerContext } from "../../testData";
+
+test.describe("Stored Procedures", () => {
+  let context: TestContainerContext = null!;
+  let explorer: DataExplorer = null!;
+
+  test.beforeAll("Create Test Database", async () => {
+    context = await createTestSQLContainer(true);
+  });
+
+  test.beforeEach("Open container", async ({ page }) => {
+    explorer = await DataExplorer.open(page, TestAccount.SQL);
+  });
+
+  test.afterAll("Delete Test Database", async () => {
+    await context?.dispose();
+  });
+
+  test("Add, execute, and delete stored procedure", async () => {
+    // Open container context menu and click New Stored Procedure
+    const containerNode = await explorer.waitForContainerNode(context.database.id, context.container.id);
+    await containerNode.openContextMenu();
+    await containerNode.contextMenuItem("New Stored Procedure").click();
+
+    // Type stored procedure id and use stock procedure
+    const storedProcedureIdTextBox = explorer.frame.getByLabel("Stored procedure id");
+    await storedProcedureIdTextBox.isVisible();
+    const storedProcedureName = "stored-procedure-1";
+    await storedProcedureIdTextBox.fill(storedProcedureName);
+
+    const saveButton = explorer.commandBarButton(CommandBarButton.Save);
+    await expect(saveButton).toBeEnabled();
+    await saveButton.click();
+
+    await expect(explorer.getConsoleMessage()).toContainText(
+      `Sucessfully created stored procedure ${storedProcedureName}`,
+      {
+        timeout: ONE_MINUTE_MS,
+      },
+    );
+
+    // Execute stored procedure
+    const executeButton = explorer.commandBarButton(CommandBarButton.Execute);
+    await executeButton.click();
+    const executeSidePanelButton = explorer.frame.getByTestId("Panel/OkButton");
+    await executeSidePanelButton.click();
+
+    const executeStoredProcedureResult = explorer.frame.getByLabel("Execute stored procedure result");
+    await expect(executeStoredProcedureResult).toBeVisible();
+
+    // Delete stored procedure
+    await containerNode.expand();
+    const storedProceduresNode = await explorer.waitForNode(
+      `${context.database.id}/${context.container.id}/Stored Procedures`,
+    );
+    await storedProceduresNode.expand();
+    const storedProcedureNode = await explorer.waitForNode(
+      `${context.database.id}/${context.container.id}/Stored Procedures/${storedProcedureName}`,
+    );
+
+    await storedProcedureNode.openContextMenu();
+    await storedProcedureNode.contextMenuItem("Delete Stored Procedure").click();
+    const deleteStoredProcedureButton = explorer.frame.getByTestId("DialogButton:Delete");
+    await deleteStoredProcedureButton.click();
+
+    await expect(explorer.getConsoleMessage()).toContainText(
+      `Successfully deleted stored procedure ${storedProcedureName}`,
+      {
+        timeout: ONE_MINUTE_MS,
+      },
+    );
+  });
+});

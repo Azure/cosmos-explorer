@@ -1,6 +1,7 @@
 import { Resource, StoredProcedureDefinition } from "@azure/cosmos";
 import { Pivot, PivotItem } from "@fluentui/react";
 import { KeyboardAction } from "KeyboardShortcuts";
+import { logConsoleInfo } from "Utils/NotificationConsoleUtils";
 import { ValidCosmosDbIdDescription, ValidCosmosDbIdInputPattern } from "Utils/ValidationUtils";
 import React from "react";
 import ExecuteQueryIcon from "../../../../images/ExecuteQuery.svg";
@@ -435,7 +436,7 @@ export default class StoredProcedureTabComponent extends React.Component<
             });
             useCommandBar.getState().setContextButtons(this.getTabsButtons());
           }, 100);
-
+          logConsoleInfo(`Sucessfully created stored procedure ${createdResource.id}`);
           return createdResource;
         },
         (createError) => {

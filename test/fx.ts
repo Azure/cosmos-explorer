@@ -325,6 +325,7 @@ type PanelOpenOptions = {
 
 export enum CommandBarButton {
   Save = "Save",
+  Execute = "Execute",
   ExecuteQuery = "Execute Query",
   UploadItem = "Upload Item",
 }
