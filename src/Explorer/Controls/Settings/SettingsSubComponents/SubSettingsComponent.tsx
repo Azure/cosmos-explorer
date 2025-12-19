@@ -302,8 +302,8 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
   );
 
   private geoSpatialConfigTypeChoiceGroupOptions: IChoiceGroupOption[] = [
-    { key: GeospatialConfigType.Geography, text: "Geography" },
-    { key: GeospatialConfigType.Geometry, text: "Geometry" },
+    { key: GeospatialConfigType.Geography, text: "Geography", ariaLabel: "geography-option" },
+    { key: GeospatialConfigType.Geometry, text: "Geometry", ariaLabel: "geometry-option" },
   ];
 
   private getGeoSpatialComponent = (): JSX.Element => (

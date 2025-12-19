@@ -1,7 +1,17 @@
 import { expect, test } from "@playwright/test";
 
-import { DataExplorer, DocumentsTab, TestAccount } from "../fx";
-import { retry, setPartitionKeys } from "../testData";
+import { existsSync, unlinkSync, writeFileSync } from "fs";
+import path from "path";
+import { CommandBarButton, DataExplorer, DocumentsTab, ONE_MINUTE_MS, TestAccount } from "../fx";
+import {
+  createTestSQLContainer,
+  itemsPerPartition,
+  partitionCount,
+  retry,
+  setPartitionKeys,
+  TestContainerContext,
+  TestData,
+} from "../testData";
 import { documentTestCases } from "./testCases";
 
 let explorer: DataExplorer = null!;
@@ -95,3 +105,108 @@ for (const { name, databaseId, containerId, documents } of documentTestCases) {
     }
   });
 }
+
+test.describe.serial("Upload Item", () => {
+  let context: TestContainerContext = null!;
+  const uploadDocumentFilePath: string = path.join(__dirname, "uploadDocument.json");
+
+  test.beforeEach("Create Test Database and Open documents tab", async ({ page }) => {
+    context = await createTestSQLContainer();
+    explorer = await DataExplorer.open(page, TestAccount.SQL);
+
+    const containerNode = await explorer.waitForContainerNode(context.database.id, context.container.id);
+    await containerNode.expand();
+
+    const containerMenuNode = await explorer.waitForContainerItemsNode(context.database.id, context.container.id);
+    await containerMenuNode.element.click();
+  });
+
+  test.afterEach("Delete Test Database and uploadDocument.json", async () => {
+    if (existsSync(uploadDocumentFilePath)) {
+      unlinkSync(uploadDocumentFilePath);
+    }
+    await context?.dispose();
+  });
+
+  test("upload document", async () => {
+    // Create file to upload
+    const TestDataJsonString: string = JSON.stringify(TestData, null, 2);
+    writeFileSync(uploadDocumentFilePath, TestDataJsonString);
+
+    const uploadItemCommandBar = explorer.commandBarButton(CommandBarButton.UploadItem);
+    await uploadItemCommandBar.click();
+
+    // Select file to upload
+    await explorer.frame.setInputFiles("#importFileInput", uploadDocumentFilePath);
+
+    const uploadButton = explorer.frame.getByTestId("Panel/OkButton");
+    await uploadButton.click();
+
+    // Verify upload success message
+    const fileUploadStatusExpected: string = `${partitionCount * itemsPerPartition} created, 0 throttled, 0 errors`;
+    const fileUploadStatus = explorer.frame.getByTestId("file-upload-status");
+    await expect(fileUploadStatus).toContainText(fileUploadStatusExpected, {
+      timeout: ONE_MINUTE_MS,
+    });
+  });
+
+  test("upload same document twice", async () => {
+    // Create file to upload
+    const TestDataJsonString: string = JSON.stringify(TestData, null, 2);
+    writeFileSync(uploadDocumentFilePath, TestDataJsonString);
+
+    const uploadItemCommandBar = explorer.commandBarButton(CommandBarButton.UploadItem);
+    await uploadItemCommandBar.click();
+
+    // Select file to upload
+    await explorer.frame.setInputFiles("#importFileInput", uploadDocumentFilePath);
+
+    const uploadButton = explorer.frame.getByTestId("Panel/OkButton");
+    await uploadButton.click();
+
+    // Verify upload success message
+    const fileUploadStatusExpected: string = `${partitionCount * itemsPerPartition} created, 0 throttled, 0 errors`;
+    const fileUploadStatus = explorer.frame.getByTestId("file-upload-status");
+    await expect(fileUploadStatus).toContainText(fileUploadStatusExpected, {
+      timeout: ONE_MINUTE_MS,
+    });
+
+    // Select file to upload again
+    await explorer.frame.setInputFiles("#importFileInput", uploadDocumentFilePath);
+    await uploadButton.click();
+
+    // Verify upload failure message
+    const errorIcon = explorer.frame.getByRole("img", { name: "error" });
+    await expect(errorIcon).toBeVisible({ timeout: ONE_MINUTE_MS });
+    await expect(fileUploadStatus).toContainText(
+      `0 created, 0 throttled, ${partitionCount * itemsPerPartition} errors`,
+      {
+        timeout: ONE_MINUTE_MS,
+      },
+    );
+  });
+
+  test("upload invalid json", async () => {
+    // Create file to upload
+    let TestDataJsonString: string = JSON.stringify(TestData, null, 2);
+    // Remove the first '[' so that it becomes invalid json
+    TestDataJsonString = TestDataJsonString.substring(1);
+    writeFileSync(uploadDocumentFilePath, TestDataJsonString);
+
+    const uploadItemCommandBar = explorer.commandBarButton(CommandBarButton.UploadItem);
+    await uploadItemCommandBar.click();
+
+    // Select file to upload
+    await explorer.frame.setInputFiles("#importFileInput", uploadDocumentFilePath);
+
+    const uploadButton = explorer.frame.getByTestId("Panel/OkButton");
+    await uploadButton.click();
+
+    // Verify upload failure message
+    const fileUploadStatusExpected: string = "Unexpected non-whitespace character after JSON";
+    const fileUploadErrorList = explorer.frame.getByLabel("error list");
+    await expect(fileUploadErrorList).toContainText(fileUploadStatusExpected, {
+      timeout: ONE_MINUTE_MS,
+    });
+  });
+});

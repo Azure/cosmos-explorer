@@ -167,10 +167,12 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
     options={
       [
         {
+          "ariaLabel": "geography-option",
           "key": "Geography",
           "text": "Geography",
         },
         {
+          "ariaLabel": "geometry-option",
           "key": "Geometry",
           "text": "Geometry",
         },
@@ -652,10 +654,12 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
     options={
       [
         {
+          "ariaLabel": "geography-option",
           "key": "Geography",
           "text": "Geography",
         },
         {
+          "ariaLabel": "geometry-option",
           "key": "Geometry",
           "text": "Geometry",
         },
@@ -1224,10 +1228,12 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
     options={
       [
         {
+          "ariaLabel": "geography-option",
           "key": "Geography",
           "text": "Geography",
         },
         {
+          "ariaLabel": "geometry-option",
           "key": "Geometry",
           "text": "Geometry",
         },
@@ -1760,10 +1766,12 @@ exports[`SubSettingsComponent renders 1`] = `
     options={
       [
         {
+          "ariaLabel": "geography-option",
           "key": "Geography",
           "text": "Geography",
         },
         {
+          "ariaLabel": "geometry-option",
           "key": "Geometry",
           "text": "Geometry",
         },
@@ -2330,10 +2338,12 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
     options={
       [
         {
+          "ariaLabel": "geography-option",
           "key": "Geography",
           "text": "Geography",
         },
         {
+          "ariaLabel": "geometry-option",
           "key": "Geometry",
           "text": "Geometry",
         },
