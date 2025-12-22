@@ -7,7 +7,6 @@ import {
   Icon,
   IconButton,
   IDropdownOption,
-  IRenderFunction,
   Link,
   ProgressIndicator,
   Separator,

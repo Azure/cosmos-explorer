@@ -219,7 +219,7 @@ test.describe("Database with Shared Throughput", () => {
       explorer = await DataExplorer.open(page, TestAccount.SQL);
     });
 
-    test("Create database with shared autoscale throughput and verify in UI", async () => {
+    test("Create database with shared autoscale throughput and verify Scale node in UI", async () => {
       test.setTimeout(120000); // 2 minutes timeout
 
       // Create database with shared autoscale throughput (max 1000 RU/s)
