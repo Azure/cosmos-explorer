@@ -5,6 +5,20 @@ import { CopyJobActions, CopyJobMigrationType, CopyJobStatusType } from "../../E
 import { CopyJobType, HandleJobActionClickType } from "../../Types/CopyJobTypes";
 import CopyJobActionMenu from "./CopyJobActionMenu";
 
+const mockShowOkCancelModalDialog = jest.fn();
+const mockCloseDialog = jest.fn();
+const mockOpenDialog = jest.fn();
+
+jest.mock("../../../Controls/Dialog", () => ({
+  useDialog: {
+    getState: () => ({
+      showOkCancelModalDialog: mockShowOkCancelModalDialog,
+      closeDialog: mockCloseDialog,
+      openDialog: mockOpenDialog,
+    }),
+  },
+}));
+
 jest.mock("../../ContainerCopyMessages", () => ({
   __esModule: true,
   default: {
@@ -17,6 +31,11 @@ jest.mock("../../ContainerCopyMessages", () => ({
         resume: "Resume",
         cancel: "Cancel",
         complete: "Complete",
+      },
+      dialog: {
+        heading: "Confirm Action",
+        confirmButtonText: "OK",
+        cancelButtonText: "Cancel",
       },
     },
   },
@@ -50,6 +69,9 @@ describe("CopyJobActionMenu", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockShowOkCancelModalDialog.mockClear();
+    mockCloseDialog.mockClear();
+    mockOpenDialog.mockClear();
   });
 
   describe("Component Rendering", () => {
@@ -266,7 +288,29 @@ describe("CopyJobActionMenu", () => {
       expect(mockHandleClick).toHaveBeenCalledWith(job, CopyJobActions.pause, expect.any(Function));
     });
 
-    it("should call handleClick when cancel action is clicked", () => {
+    it("should show confirmation dialog when cancel action is clicked", () => {
+      const job = createMockJob({ Name: "Test Job", Status: CopyJobStatusType.InProgress });
+
+      render(<CopyJobActionMenu job={job} handleClick={mockHandleClick} />);
+
+      const actionButton = screen.getByRole("button", { name: "Actions" });
+      fireEvent.click(actionButton);
+
+      const cancelButton = screen.getByText("Cancel");
+      fireEvent.click(cancelButton);
+
+      expect(mockShowOkCancelModalDialog).toHaveBeenCalledWith(
+        "Confirm Action",
+        null,
+        "OK",
+        expect.any(Function),
+        "Cancel",
+        null,
+        expect.any(Object), // dialogBody content
+      );
+    });
+
+    it("should call handleClick when dialog is confirmed for cancel action", () => {
       const job = createMockJob({ Status: CopyJobStatusType.InProgress });
 
       render(<CopyJobActionMenu job={job} handleClick={mockHandleClick} />);
@@ -276,6 +320,9 @@ describe("CopyJobActionMenu", () => {
 
       const cancelButton = screen.getByText("Cancel");
       fireEvent.click(cancelButton);
+
+      const [, , , onOkCallback] = mockShowOkCancelModalDialog.mock.calls[0];
+      onOkCallback();
 
       expect(mockHandleClick).toHaveBeenCalledWith(job, CopyJobActions.cancel, expect.any(Function));
     });
@@ -294,7 +341,33 @@ describe("CopyJobActionMenu", () => {
       expect(mockHandleClick).toHaveBeenCalledWith(job, CopyJobActions.resume, expect.any(Function));
     });
 
-    it("should call handleClick when complete action is clicked", () => {
+    it("should show confirmation dialog when complete action is clicked", () => {
+      const job = createMockJob({
+        Name: "Test Online Job",
+        Status: CopyJobStatusType.InProgress,
+        Mode: CopyJobMigrationType.Online,
+      });
+
+      render(<CopyJobActionMenu job={job} handleClick={mockHandleClick} />);
+
+      const actionButton = screen.getByRole("button", { name: "Actions" });
+      fireEvent.click(actionButton);
+
+      const completeButton = screen.getByText("Complete");
+      fireEvent.click(completeButton);
+
+      expect(mockShowOkCancelModalDialog).toHaveBeenCalledWith(
+        "Confirm Action",
+        null,
+        "OK",
+        expect.any(Function),
+        "Cancel",
+        null,
+        expect.any(Object), // dialogBody content
+      );
+    });
+
+    it("should call handleClick when dialog is confirmed for complete action", () => {
       const job = createMockJob({
         Status: CopyJobStatusType.InProgress,
         Mode: CopyJobMigrationType.Online,
@@ -308,7 +381,84 @@ describe("CopyJobActionMenu", () => {
       const completeButton = screen.getByText("Complete");
       fireEvent.click(completeButton);
 
+      const [, , , onOkCallback] = mockShowOkCancelModalDialog.mock.calls[0];
+      onOkCallback();
+
       expect(mockHandleClick).toHaveBeenCalledWith(job, CopyJobActions.complete, expect.any(Function));
+    });
+  });
+
+  describe("Dialog Body Content", () => {
+    it("should pass correct dialog body content for cancel action", () => {
+      const job = createMockJob({ Name: "MyTestJob", Status: CopyJobStatusType.InProgress });
+
+      render(<CopyJobActionMenu job={job} handleClick={mockHandleClick} />);
+
+      const actionButton = screen.getByRole("button", { name: "Actions" });
+      fireEvent.click(actionButton);
+
+      const cancelButton = screen.getByText("Cancel");
+      fireEvent.click(cancelButton);
+
+      expect(mockShowOkCancelModalDialog).toHaveBeenCalledWith(
+        "Confirm Action",
+        null,
+        "OK",
+        expect.any(Function),
+        "Cancel",
+        null,
+        expect.objectContaining({
+          props: expect.objectContaining({
+            tokens: expect.any(Object),
+            children: expect.any(Array),
+          }),
+        }),
+      );
+    });
+
+    it("should pass correct dialog body content for complete action", () => {
+      const job = createMockJob({
+        Name: "OnlineTestJob",
+        Status: CopyJobStatusType.InProgress,
+        Mode: CopyJobMigrationType.Online,
+      });
+
+      render(<CopyJobActionMenu job={job} handleClick={mockHandleClick} />);
+
+      const actionButton = screen.getByRole("button", { name: "Actions" });
+      fireEvent.click(actionButton);
+
+      const completeButton = screen.getByText("Complete");
+      fireEvent.click(completeButton);
+
+      expect(mockShowOkCancelModalDialog).toHaveBeenCalledWith(
+        "Confirm Action",
+        null,
+        "OK",
+        expect.any(Function),
+        "Cancel",
+        null,
+        expect.objectContaining({
+          props: expect.objectContaining({
+            tokens: expect.any(Object),
+            children: expect.any(Array),
+          }),
+        }),
+      );
+    });
+
+    it("should not show dialog body for actions without confirmation", () => {
+      const job = createMockJob({ Status: CopyJobStatusType.InProgress });
+
+      render(<CopyJobActionMenu job={job} handleClick={mockHandleClick} />);
+
+      const actionButton = screen.getByRole("button", { name: "Actions" });
+      fireEvent.click(actionButton);
+
+      const pauseButton = screen.getByText("Pause");
+      fireEvent.click(pauseButton);
+
+      expect(mockShowOkCancelModalDialog).not.toHaveBeenCalled();
     });
   });
 
@@ -339,8 +489,13 @@ describe("CopyJobActionMenu", () => {
       const pauseButton = screen.getByText("Pause");
       fireEvent.click(pauseButton);
       fireEvent.click(actionButton);
-      const pauseButtonAfterClick = screen.getByText("Pause");
+
+      const pauseButtonAfterClick = screen.getByText("Pause").closest("button");
       expect(pauseButtonAfterClick).toBeInTheDocument();
+      expect(pauseButtonAfterClick).toHaveAttribute("aria-disabled", "true");
+
+      const cancelButtonAfterClick = screen.getByText("Cancel").closest("button");
+      expect(cancelButtonAfterClick).toHaveAttribute("aria-disabled", "true");
     });
 
     it("should not disable actions for different jobs when one is updating", () => {
@@ -356,22 +511,6 @@ describe("CopyJobActionMenu", () => {
       actionButton = screen.getByRole("button", { name: "Actions" });
       fireEvent.click(actionButton);
 
-      expect(screen.getByText("Pause")).toBeInTheDocument();
-      expect(screen.getByText("Cancel")).toBeInTheDocument();
-    });
-
-    it("should properly handle multiple action types being disabled for the same job", () => {
-      const job = createMockJob({ Status: CopyJobStatusType.InProgress });
-      render(<TestComponentWrapper job={job} />);
-      const actionButton = screen.getByRole("button", { name: "Actions" });
-
-      fireEvent.click(actionButton);
-      fireEvent.click(screen.getByText("Pause"));
-
-      fireEvent.click(actionButton);
-      fireEvent.click(screen.getByText("Cancel"));
-
-      fireEvent.click(actionButton);
       expect(screen.getByText("Pause")).toBeInTheDocument();
       expect(screen.getByText("Cancel")).toBeInTheDocument();
     });
@@ -462,6 +601,7 @@ describe("CopyJobActionMenu", () => {
 
       expect(actionButton).toHaveAttribute("aria-label", "Actions");
       expect(actionButton).toHaveAttribute("title", "Actions");
+      expect(actionButton).toHaveAttribute("role", "button");
 
       const moreIcon = actionButton.querySelector('[data-icon-name="More"]');
       expect(moreIcon || actionButton).toBeInTheDocument();
@@ -606,6 +746,131 @@ describe("CopyJobActionMenu", () => {
       expect(() => {
         render(<CopyJobActionMenu job={incompleteJob} handleClick={mockHandleClick} />);
       }).not.toThrow();
+    });
+  });
+
+  describe("Complete Coverage Tests", () => {
+    it("should handle all possible dialog scenarios", () => {
+      const dialogTests = [
+        { action: CopyJobActions.cancel, status: CopyJobStatusType.InProgress, shouldShowDialog: true },
+        {
+          action: CopyJobActions.complete,
+          status: CopyJobStatusType.InProgress,
+          mode: CopyJobMigrationType.Online,
+          shouldShowDialog: true,
+        },
+        { action: CopyJobActions.pause, status: CopyJobStatusType.InProgress, shouldShowDialog: false },
+        { action: CopyJobActions.resume, status: CopyJobStatusType.Paused, shouldShowDialog: false },
+      ];
+
+      dialogTests.forEach(({ action, status, mode = CopyJobMigrationType.Offline, shouldShowDialog }, index) => {
+        jest.clearAllMocks();
+
+        const job = createMockJob({ Status: status, Mode: mode, Name: `DialogTestJob${index}` });
+        const { unmount } = render(<CopyJobActionMenu job={job} handleClick={mockHandleClick} />);
+
+        const actionButton = screen.getByRole("button", { name: "Actions" });
+        fireEvent.click(actionButton);
+
+        const actionText = action.charAt(0).toUpperCase() + action.slice(1);
+        if (screen.queryByText(actionText)) {
+          fireEvent.click(screen.getByText(actionText));
+
+          if (shouldShowDialog) {
+            expect(mockShowOkCancelModalDialog).toHaveBeenCalled();
+          } else {
+            expect(mockShowOkCancelModalDialog).not.toHaveBeenCalled();
+            expect(mockHandleClick).toHaveBeenCalled();
+          }
+        }
+
+        unmount();
+      });
+    });
+
+    it("should verify component handles state updates correctly", () => {
+      const job = createMockJob({ Status: CopyJobStatusType.InProgress });
+      const stateUpdater = jest.fn();
+
+      const testHandleClick: HandleJobActionClickType = (job, action, setUpdatingJobAction) => {
+        setUpdatingJobAction({ jobName: job.Name, action });
+        stateUpdater(job.Name, action);
+      };
+
+      render(<CopyJobActionMenu job={job} handleClick={testHandleClick} />);
+
+      const actionButton = screen.getByRole("button", { name: "Actions" });
+      fireEvent.click(actionButton);
+
+      const pauseButton = screen.getByText("Pause");
+      fireEvent.click(pauseButton);
+
+      expect(stateUpdater).toHaveBeenCalledWith(job.Name, CopyJobActions.pause);
+    });
+  });
+
+  describe("Full Integration Coverage", () => {
+    it("should test complete workflow for cancel action with dialog", () => {
+      const job = createMockJob({ Name: "Integration Test Job", Status: CopyJobStatusType.InProgress });
+      render(<CopyJobActionMenu job={job} handleClick={mockHandleClick} />);
+
+      const actionButton = screen.getByRole("button", { name: "Actions" });
+      expect(actionButton).toHaveAttribute("data-test", "CopyJobActionMenu/Button:Integration Test Job");
+      fireEvent.click(actionButton);
+
+      const cancelButton = screen.getByText("Cancel");
+      fireEvent.click(cancelButton);
+
+      expect(mockShowOkCancelModalDialog).toHaveBeenCalledWith(
+        "Confirm Action", // title
+        null, // subText
+        "OK", // okLabel
+        expect.any(Function), // onOk
+        "Cancel", // cancelLabel
+        null, // onCancel
+        expect.any(Object), // contentHtml (dialogBody)
+      );
+
+      const onOkCallback = mockShowOkCancelModalDialog.mock.calls[0][3];
+      onOkCallback();
+
+      expect(mockHandleClick).toHaveBeenCalledWith(job, CopyJobActions.cancel, expect.any(Function));
+    });
+
+    it("should test complete workflow for complete action with dialog", () => {
+      const job = createMockJob({
+        Name: "Online Integration Job",
+        Status: CopyJobStatusType.Running,
+        Mode: CopyJobMigrationType.Online,
+      });
+
+      render(<CopyJobActionMenu job={job} handleClick={mockHandleClick} />);
+
+      const actionButton = screen.getByRole("button", { name: "Actions" });
+      fireEvent.click(actionButton);
+
+      const completeButton = screen.getByText("Complete");
+      fireEvent.click(completeButton);
+
+      expect(mockShowOkCancelModalDialog).toHaveBeenCalled();
+
+      const dialogContent = mockShowOkCancelModalDialog.mock.calls[0][6];
+      expect(dialogContent).toBeTruthy();
+
+      const onOkCallback = mockShowOkCancelModalDialog.mock.calls[0][3];
+      onOkCallback();
+
+      expect(mockHandleClick).toHaveBeenCalledWith(job, CopyJobActions.complete, expect.any(Function));
+    });
+
+    it("should maintain proper component lifecycle", () => {
+      const job = createMockJob({ Status: CopyJobStatusType.InProgress });
+      const { rerender, unmount } = render(<CopyJobActionMenu job={job} handleClick={mockHandleClick} />);
+
+      rerender(<CopyJobActionMenu job={job} handleClick={mockHandleClick} />);
+      expect(screen.getByRole("button", { name: "Actions" })).toBeInTheDocument();
+
+      expect(() => unmount()).not.toThrow();
     });
   });
 });

@@ -25,7 +25,22 @@ export default {
   subscriptionDropdownPlaceholder: "Select a subscription",
   sourceAccountDropdownLabel: "Account",
   sourceAccountDropdownPlaceholder: "Select an account",
-  migrationTypeCheckboxLabel: "Copy container in offline mode",
+  migrationTypeOptions: {
+    offline: {
+      title: "Offline mode",
+      description:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      learnMoreText: "Learn more",
+      learnMoreHref: "https://learn.microsoft.com/en-us/azure/cosmos-db/container-copy?tabs=offline-copy",
+    },
+    online: {
+      title: "Online mode",
+      description:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      learnMoreText: "Learn more",
+      learnMoreHref: "https://learn.microsoft.com/en-us/azure/cosmos-db/container-copy?tabs=offline-copy",
+    },
+  },
 
   // Select Source and Target Containers Screen
   selectSourceAndTargetContainersDescription:
@@ -172,6 +187,11 @@ export default {
       Faulted: "Failed",
       Skipped: "Cancelled",
       Cancelled: "Cancelled",
+    },
+    dialog: {
+      heading: "Confirm Action",
+      confirmButtonText: "OK",
+      cancelButtonText: "Cancel",
     },
   },
 };

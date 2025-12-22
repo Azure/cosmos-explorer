@@ -1,0 +1,98 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MigrationType Component Rendering should render migration type component with radio buttons 1`] = `
+<div>
+  <div
+    class="ms-Stack migrationTypeContainer css-109"
+    data-testid="migration-type"
+  >
+    <div
+      class="ms-StackItem css-110"
+    >
+      <div
+        class="ms-ChoiceFieldGroup root-111"
+      >
+        <div
+          aria-labelledby="migrationTypeChoiceGroup"
+          role="radiogroup"
+        >
+          <div
+            class="ms-ChoiceFieldGroup-flexContainer flexContainer-112"
+          >
+            <div
+              class="ms-ChoiceField root-113"
+            >
+              <div
+                class="ms-ChoiceField-wrapper"
+              >
+                <input
+                  class="ms-ChoiceField-input input-114"
+                  id="ChoiceGroup0-offline"
+                  name="ChoiceGroup0"
+                  type="radio"
+                />
+                <label
+                  class="ms-ChoiceField-field field-115"
+                  for="ChoiceGroup0-offline"
+                >
+                  <span
+                    class="ms-ChoiceFieldLabel"
+                    id="ChoiceGroupLabel1-offline"
+                  >
+                    Offline mode
+                  </span>
+                </label>
+              </div>
+            </div>
+            <div
+              class="ms-ChoiceField root-113"
+            >
+              <div
+                class="ms-ChoiceField-wrapper"
+              >
+                <input
+                  checked=""
+                  class="ms-ChoiceField-input input-114"
+                  id="ChoiceGroup0-online"
+                  name="ChoiceGroup0"
+                  type="radio"
+                />
+                <label
+                  class="ms-ChoiceField-field is-checked field-120"
+                  for="ChoiceGroup0-online"
+                >
+                  <span
+                    class="ms-ChoiceFieldLabel"
+                    id="ChoiceGroupLabel1-online"
+                  >
+                    Online mode
+                  </span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="ms-StackItem css-123"
+    >
+      <span
+        class="migrationTypeDescription css-124"
+        data-testid="migration-type-description-online"
+      >
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+         
+        <a
+          class="ms-Link root-125"
+          href="https://learn.microsoft.com/en-us/azure/cosmos-db/container-copy?tabs=offline-copy"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          Learn more
+        </a>
+      </span>
+    </div>
+  </div>
+</div>
+`;

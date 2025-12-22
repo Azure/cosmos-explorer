@@ -9,6 +9,7 @@ export interface PanelContainerProps {
   isConsoleExpanded: boolean;
   isOpen: boolean;
   hasConsole: boolean;
+  isLightDismiss: boolean;
   isConsoleAnimationFinished?: boolean;
   panelWidth?: string;
   onRenderNavigationContent?: IRenderFunction<IPanelProps>;
@@ -58,7 +59,7 @@ export class PanelContainerComponent extends React.Component<PanelContainerProps
         headerText={this.props.headerText}
         isOpen={this.props.isOpen}
         onDismiss={this.onDissmiss}
-        isLightDismiss
+        isLightDismiss={this.props.isLightDismiss}
         type={PanelType.custom}
         closeButtonAriaLabel={`Close ${this.props.headerText}`}
         customWidth={this.props.panelWidth ? this.props.panelWidth : "440px"}
@@ -140,10 +141,11 @@ export class PanelContainerComponent extends React.Component<PanelContainerProps
 export const SidePanel: React.FC = () => {
   const isConsoleExpanded = useNotificationConsole((state) => state.isExpanded);
   const isConsoleAnimationFinished = useNotificationConsole((state) => state.consoleAnimationFinished);
-  const { isOpen, hasConsole, panelContent, panelWidth, headerText } = useSidePanel((state) => {
+  const { isOpen, hasConsole, isLightDismiss, panelContent, panelWidth, headerText } = useSidePanel((state) => {
     return {
       isOpen: state.isOpen,
       hasConsole: state.hasConsole,
+      isLightDismiss: state.isLightDismiss,
       panelContent: state.panelContent,
       headerText: state.headerText,
       panelWidth: state.panelWidth,
@@ -154,6 +156,7 @@ export const SidePanel: React.FC = () => {
   return (
     <PanelContainerComponent
       hasConsole={hasConsole}
+      isLightDismiss={isLightDismiss}
       isOpen={isOpen}
       panelContent={panelContent}
       headerText={headerText}

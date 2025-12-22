@@ -41,8 +41,10 @@ describe("CopyJobActions", () => {
       const mockExplorer = {} as Explorer;
       const mockSetPanelHasConsole = jest.fn();
       const mockOpenSidePanel = jest.fn();
+      const mockSetLightDismiss = jest.fn();
 
       (useSidePanel.getState as jest.Mock).mockReturnValue({
+        setLightDismiss: mockSetLightDismiss,
         setPanelHasConsole: mockSetPanelHasConsole,
         openSidePanel: mockOpenSidePanel,
       });
@@ -50,6 +52,7 @@ describe("CopyJobActions", () => {
       openCreateCopyJobPanel(mockExplorer);
 
       expect(mockSetPanelHasConsole).toHaveBeenCalledWith(false);
+      expect(mockSetLightDismiss).toHaveBeenCalledWith(false);
       expect(mockOpenSidePanel).toHaveBeenCalledWith(expect.any(String), expect.any(Object), "650px");
     });
 
@@ -59,6 +62,7 @@ describe("CopyJobActions", () => {
 
       (useSidePanel.getState as jest.Mock).mockReturnValue({
         setPanelHasConsole: jest.fn(),
+        setLightDismiss: jest.fn(),
         openSidePanel: mockOpenSidePanel,
       });
 
@@ -94,9 +98,11 @@ describe("CopyJobActions", () => {
       };
 
       const mockSetPanelHasConsole = jest.fn();
+      const mockSetLightDismiss = jest.fn();
       const mockOpenSidePanel = jest.fn();
 
       (useSidePanel.getState as jest.Mock).mockReturnValue({
+        setLightDismiss: mockSetLightDismiss,
         setPanelHasConsole: mockSetPanelHasConsole,
         openSidePanel: mockOpenSidePanel,
       });
@@ -104,6 +110,7 @@ describe("CopyJobActions", () => {
       openCopyJobDetailsPanel(mockJob);
 
       expect(mockSetPanelHasConsole).toHaveBeenCalledWith(false);
+      expect(mockSetLightDismiss).toHaveBeenCalledWith(true);
       expect(mockOpenSidePanel).toHaveBeenCalledWith(expect.stringContaining("test-job"), expect.any(Object), "650px");
     });
 
@@ -133,6 +140,7 @@ describe("CopyJobActions", () => {
 
       (useSidePanel.getState as jest.Mock).mockReturnValue({
         setPanelHasConsole: jest.fn(),
+        setLightDismiss: jest.fn(),
         openSidePanel: mockOpenSidePanel,
       });
 
