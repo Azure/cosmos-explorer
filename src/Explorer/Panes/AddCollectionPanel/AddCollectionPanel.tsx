@@ -410,6 +410,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   }
                   defaultSelectedKey={this.props.databaseId}
                   responsiveMode={999}
+                  onRenderOption={this.onRenderDatabaseOption}
                 />
               )}
               <Separator className="panelSeparator" style={{ marginTop: -4, marginBottom: -4 }} />
@@ -1473,4 +1474,19 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       TelemetryProcessor.traceFailure(Action.CreateCollection, failureTelemetryData, startKey);
     }
   }
+
+  private onRenderDatabaseOption = (
+    option?: IDropdownOption,
+    defaultRender?: (props?: IDropdownOption) => JSX.Element,
+  ): JSX.Element | null => {
+    if (!option) {
+      return null;
+    }
+
+    return (
+      <div data-testid={`database-option-${option.key}`}>
+        {defaultRender ? defaultRender(option) : <span>{option.text}</span>}
+      </div>
+    );
+  };
 }
