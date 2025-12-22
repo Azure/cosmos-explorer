@@ -7,6 +7,7 @@ import {
   Icon,
   IconButton,
   IDropdownOption,
+  IRenderFunction,
   Link,
   ProgressIndicator,
   Separator,
@@ -410,6 +411,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   }
                   defaultSelectedKey={this.props.databaseId}
                   responsiveMode={999}
+                  onRenderOption={this.onRenderDatabaseOption}
                 />
               )}
               <Separator className="panelSeparator" style={{ marginTop: -4, marginBottom: -4 }} />
@@ -720,8 +722,8 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 directionalHint={DirectionalHint.bottomLeftEdge}
                 content={`You can optionally provision dedicated throughput for a ${getCollectionName().toLocaleLowerCase()} within a database that has throughput
                   provisioned. This dedicated throughput amount will not be shared with other ${getCollectionName(
-                    true,
-                  ).toLocaleLowerCase()} in the database and
+                  true,
+                ).toLocaleLowerCase()} in the database and
                   does not count towards the throughput you provisioned for the database. This throughput amount will be
                   billed in addition to the throughput amount you provisioned at the database level.`}
               >
@@ -731,8 +733,8 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   tabIndex={0}
                   ariaLabel={`You can optionally provision dedicated throughput for a ${getCollectionName().toLocaleLowerCase()} within a database that has throughput
                 provisioned. This dedicated throughput amount will not be shared with other ${getCollectionName(
-                  true,
-                ).toLocaleLowerCase()} in the database and
+                    true,
+                  ).toLocaleLowerCase()} in the database and
                 does not count towards the throughput you provisioned for the database. This throughput amount will be
                 billed in addition to the throughput amount you provisioned at the database level.`}
                 />
@@ -911,8 +913,8 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 onExpand={() => {
                   scrollToSection("collapsibleFullTextPolicySectionContent");
                 }}
-                //TODO: uncomment when learn more text becomes available
-                // tooltipContent={this.getContainerFullTextPolicyTooltipContent()}
+              //TODO: uncomment when learn more text becomes available
+              // tooltipContent={this.getContainerFullTextPolicyTooltipContent()}
               >
                 <Stack id="collapsibleFullTextPolicySectionContent" styles={{ root: { position: "relative" } }}>
                   <Stack styles={{ root: { paddingLeft: 40 } }}>
@@ -1340,15 +1342,15 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     const partitionKeyVersion = this.state.useHashV1 ? undefined : 2;
     const partitionKey: DataModels.PartitionKey = partitionKeyString
       ? {
-          paths: [
-            partitionKeyString,
-            ...(userContext.apiType === "SQL" && this.state.subPartitionKeys.length > 0
-              ? this.state.subPartitionKeys
-              : []),
-          ],
-          kind: userContext.apiType === "SQL" && this.state.subPartitionKeys.length > 0 ? "MultiHash" : "Hash",
-          version: partitionKeyVersion,
-        }
+        paths: [
+          partitionKeyString,
+          ...(userContext.apiType === "SQL" && this.state.subPartitionKeys.length > 0
+            ? this.state.subPartitionKeys
+            : []),
+        ],
+        kind: userContext.apiType === "SQL" && this.state.subPartitionKeys.length > 0 ? "MultiHash" : "Hash",
+        version: partitionKeyVersion,
+      }
       : undefined;
 
     const indexingPolicy: DataModels.IndexingPolicy = this.state.enableIndexing
@@ -1473,4 +1475,19 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       TelemetryProcessor.traceFailure(Action.CreateCollection, failureTelemetryData, startKey);
     }
   }
+
+  private onRenderDatabaseOption = (
+    option?: IDropdownOption,
+    defaultRender?: (props?: IDropdownOption) => JSX.Element,
+  ): JSX.Element | null => {
+    if (!option) {
+      return null;
+    }
+
+    return (
+      <div data-testid={`database-option-${option.key}`}>
+        {defaultRender ? defaultRender(option) : <span>{option.text}</span>}
+      </div>
+    );
+  };
 }

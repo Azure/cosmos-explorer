@@ -74,6 +74,60 @@ export class TestContainerContext {
   }
 }
 
+export class TestDatabaseContext {
+  constructor(
+    public armClient: CosmosDBManagementClient,
+    public client: CosmosClient,
+    public database: Database,
+  ) {}
+
+  async dispose() {
+    await this.database.delete();
+  }
+}
+
+export interface CreateTestDBOptions {
+  throughput?: number;
+  maxThroughput?: number; // For autoscale
+}
+
+export async function createTestDB(options?: CreateTestDBOptions): Promise<TestDatabaseContext> {
+  const databaseId = generateUniqueName("db");
+  const credentials = getAzureCLICredentials();
+  const adaptedCredentials = new AzureIdentityCredentialAdapter(credentials);
+  const armClient = new CosmosDBManagementClient(adaptedCredentials, subscriptionId);
+  const accountName = getAccountName(TestAccount.SQL);
+  const account = await armClient.databaseAccounts.get(resourceGroupName, accountName);
+
+  const clientOptions: CosmosClientOptions = {
+    endpoint: account.documentEndpoint!,
+  };
+
+  const nosqlAccountRbacToken = process.env.NOSQL_TESTACCOUNT_TOKEN;
+  if (nosqlAccountRbacToken) {
+    clientOptions.tokenProvider = async (): Promise<string> => {
+      const AUTH_PREFIX = `type=aad&ver=1.0&sig=`;
+      const authorizationToken = `${AUTH_PREFIX}${nosqlAccountRbacToken}`;
+      return authorizationToken;
+    };
+  } else {
+    const keys = await armClient.databaseAccounts.listKeys(resourceGroupName, accountName);
+    clientOptions.key = keys.primaryMasterKey;
+  }
+
+  const client = new CosmosClient(clientOptions);
+  
+  // Create database with provisioned throughput (shared throughput)
+  // This checks the "Provision database throughput" option
+  const { database } = await client.databases.create({
+    id: databaseId,
+    throughput: options?.throughput, // Manual throughput (e.g., 400)
+    maxThroughput: options?.maxThroughput, // Autoscale max throughput (e.g., 1000)
+  });
+
+  return new TestDatabaseContext(armClient, client, database);
+}
+
 export async function createTestSQLContainer(includeTestData?: boolean) {
   const databaseId = generateUniqueName("db");
   const containerId = "testcontainer"; // A unique container name isn't needed because the database is unique
