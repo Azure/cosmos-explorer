@@ -34,6 +34,7 @@ import { CopyJobContextState, CopyJobError, CopyJobErrorType, CopyJobType } from
 export const openCreateCopyJobPanel = (explorer: Explorer) => {
   const sidePanelState = useSidePanel.getState();
   sidePanelState.setPanelHasConsole(false);
+  sidePanelState.setLightDismiss(false);
   sidePanelState.openSidePanel(
     ContainerCopyMessages.createCopyJobPanelTitle,
     <CreateCopyJobScreensProvider explorer={explorer} />,
@@ -44,6 +45,7 @@ export const openCreateCopyJobPanel = (explorer: Explorer) => {
 export const openCopyJobDetailsPanel = (job: CopyJobType) => {
   const sidePanelState = useSidePanel.getState();
   sidePanelState.setPanelHasConsole(false);
+  sidePanelState.setLightDismiss(true);
   sidePanelState.openSidePanel(
     ContainerCopyMessages.copyJobDetailsPanelTitle(job.Name),
     <CopyJobDetails job={job} />,

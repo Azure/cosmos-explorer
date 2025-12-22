@@ -10,7 +10,7 @@ import CopyJobsNotFound from "../MonitorCopyJobs/Components/CopyJobs.NotFound";
 import { CopyJobType, JobActionUpdatorType } from "../Types/CopyJobTypes";
 import CopyJobsList from "./Components/CopyJobsList";
 
-const FETCH_INTERVAL_MS = 30 * 1000;
+const FETCH_INTERVAL_MS = 60 * 1000;
 const SHIMMER_INDENT_LEVELS: IndentLevel[] = Array(7).fill({ level: 0, width: "100%" });
 
 interface MonitorCopyJobsProps {

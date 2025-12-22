@@ -8,6 +8,7 @@ describe("PaneContainerComponent test", () => {
       headerText: "test",
       panelContent: <div></div>,
       isOpen: true,
+      isLightDismiss: true,
       hasConsole: false,
       isConsoleExpanded: false,
     };
@@ -20,6 +21,7 @@ describe("PaneContainerComponent test", () => {
       headerText: "test",
       panelContent: <div></div>,
       isOpen: true,
+      isLightDismiss: true,
       hasConsole: true,
       isConsoleExpanded: false,
     };
@@ -32,6 +34,7 @@ describe("PaneContainerComponent test", () => {
       headerText: "test",
       panelContent: undefined,
       isOpen: true,
+      isLightDismiss: true,
       hasConsole: true,
       isConsoleExpanded: false,
     };
@@ -44,6 +47,7 @@ describe("PaneContainerComponent test", () => {
       headerText: "test",
       panelContent: <div></div>,
       isOpen: true,
+      isLightDismiss: true,
       hasConsole: true,
       isConsoleExpanded: true,
     };
