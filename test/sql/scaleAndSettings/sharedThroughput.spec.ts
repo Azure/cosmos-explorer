@@ -114,7 +114,7 @@ test.describe("Database with Shared Throughput", () => {
     test("Add container to shared database without dedicated throughput", async () => {
       // Create database with shared manual throughput
       dbContext = await createTestDB({ throughput: 400 });
-      
+
       // Wait for the database to appear in the tree
       await explorer.waitForNode(dbContext.database.id);
 

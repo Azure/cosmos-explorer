@@ -116,7 +116,7 @@ export async function createTestDB(options?: CreateTestDBOptions): Promise<TestD
   }
 
   const client = new CosmosClient(clientOptions);
-  
+
   // Create database with provisioned throughput (shared throughput)
   // This checks the "Provision database throughput" option
   const { database } = await client.databases.create({
