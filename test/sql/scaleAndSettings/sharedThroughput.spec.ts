@@ -119,7 +119,7 @@ test.describe("Database with Shared Throughput", () => {
       await explorer.waitForNode(dbContext.database.id);
 
       // Add a container to the shared database via UI
-      await explorer.globalCommandButton("New Container").click();
+      await explorer.frame.getByRole("button", { name: "New Container" }).click();
 
       await explorer.whilePanelOpen(
         "New Container",
