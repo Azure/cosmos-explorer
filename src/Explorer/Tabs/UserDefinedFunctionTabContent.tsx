@@ -2,6 +2,7 @@ import { UserDefinedFunctionDefinition } from "@azure/cosmos";
 import { Label, TextField } from "@fluentui/react";
 import { FluentProvider, webDarkTheme, webLightTheme } from "@fluentui/react-components";
 import { KeyboardAction } from "KeyboardShortcuts";
+import { logConsoleInfo } from "Utils/NotificationConsoleUtils";
 import { ValidCosmosDbIdDescription, ValidCosmosDbIdInputPattern } from "Utils/ValidationUtils";
 import { useThemeStore } from "hooks/useTheme";
 import React, { Component } from "react";
@@ -170,6 +171,7 @@ export default class UserDefinedFunctionTabContent extends Component<
           startKey,
         );
         this.props.editorState(ViewModels.ScriptEditorState.existingNoEdits);
+        logConsoleInfo(`Sucessfully created user defined function ${createdResource.id}`);
       }
     } catch (createError) {
       this.props.isExecutionError(true);
