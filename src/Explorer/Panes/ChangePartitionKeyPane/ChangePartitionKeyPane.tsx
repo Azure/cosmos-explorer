@@ -208,7 +208,7 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
           </div>
         </Stack>
         {createNewContainer ? (
-          <Stack>
+          <Stack data-test="create-new-container-form">
             <MessageBar>All configurations except for unique keys will be copied from the source container</MessageBar>
             <Stack className="panelGroupSpacing">
               <Stack horizontal>
@@ -230,6 +230,7 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
                 </TooltipHost>
               </Stack>
               <input
+                data-test="new-container-id-input"
                 name="collectionId"
                 id="collectionId"
                 type="text"
@@ -271,6 +272,7 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
 
               <input
                 type="text"
+                data-test="new-container-partition-key-input"
                 id="addCollection-partitionKeyValue"
                 aria-required
                 required
@@ -304,6 +306,7 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
                       type="text"
                       id="addCollection-partitionKeyValue"
                       key={`addCollection-partitionKeyValue_${index}`}
+                      data-test={`new-container-sub-partition-key-input-${index}`}
                       aria-required
                       required
                       size={40}
@@ -327,6 +330,8 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
                       }}
                     />
                     <IconButton
+                      data-test={`remove-sub-partition-key-button-${index}`}
+                      ariaLabel="Remove hierarchical partition key"
                       iconProps={{ iconName: "Delete" }}
                       style={{ height: 27 }}
                       onClick={() => {
@@ -339,6 +344,7 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
               })}
               <Stack className="panelGroupSpacing">
                 <DefaultButton
+                  data-test="add-sub-partition-key-button"
                   styles={{ root: { padding: 0, width: 200, height: 30 }, label: { fontSize: 12 } }}
                   disabled={subPartitionKeys.length >= Constants.BackendDefaults.maxNumMultiHashPartition}
                   onClick={() => setSubPartitionKeys([...subPartitionKeys, ""])}
@@ -346,7 +352,11 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
                   Add hierarchical partition key
                 </DefaultButton>
                 {subPartitionKeys.length > 0 && (
-                  <Text variant="small" style={{ color: "var(--colorNeutralForeground1)" }}>
+                  <Text
+                    data-test="hierarchical-partitioning-info-text"
+                    variant="small"
+                    style={{ color: "var(--colorNeutralForeground1)" }}
+                  >
                     <Icon iconName="InfoSolid" className="removeIcon" tabIndex={0} /> This feature allows you to
                     partition your data with up to three levels of keys for better data distribution. Requires .NET V3,
                     Java V4 SDK, or preview JavaScript V3 SDK.{" "}
@@ -359,7 +369,7 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
             </Stack>
           </Stack>
         ) : (
-          <Stack>
+          <Stack data-test="use-existing-container-form">
             <Stack horizontal>
               <span className="mandatoryStar">*&nbsp;</span>
               <Text className="panelTextBold" variant="small">
@@ -390,6 +400,7 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
               }}
               defaultSelectedKey={targetCollectionId}
               responsiveMode={999}
+              ariaLabel="Existing Containers"
             />
           </Stack>
         )}

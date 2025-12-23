@@ -187,7 +187,7 @@ export const PartitionKeyComponent: React.FC<PartitionKeyComponentProps> = ({
             <Text styles={textSubHeadingStyle}>Current {partitionKeyName.toLowerCase()}</Text>
             <Text styles={textSubHeadingStyle}>Partitioning</Text>
           </Stack>
-          <Stack tokens={{ childrenGap: 5 }}>
+          <Stack tokens={{ childrenGap: 5 }} data-test="partition-key-values">
             <Text styles={textSubHeadingStyle1}>{partitionKeyValue}</Text>
             <Text styles={textSubHeadingStyle1}>
               {isHierarchicalPartitionedContainer() ? "Hierarchical" : "Non-hierarchical"}
@@ -199,6 +199,7 @@ export const PartitionKeyComponent: React.FC<PartitionKeyComponentProps> = ({
       {!isReadOnly && (
         <>
           <MessageBar
+            data-test="partition-key-warning"
             messageBarType={MessageBarType.warning}
             messageBarIconProps={{ iconName: "WarningSolid", className: "messageBarWarningIcon" }}
             styles={darkThemeMessageBarStyles}
@@ -220,6 +221,7 @@ export const PartitionKeyComponent: React.FC<PartitionKeyComponentProps> = ({
           </Text>
           {configContext.platform !== Platform.Emulator && (
             <PrimaryButton
+              data-test="change-partition-key-button"
               styles={{ root: { width: "fit-content" } }}
               text="Change"
               onClick={startPartitionkeyChangeWorkflow}

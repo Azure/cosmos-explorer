@@ -9,7 +9,7 @@ let queryTab: QueryTab = null!;
 let queryEditor: Editor = null!;
 
 test.beforeAll("Create Test Database", async () => {
-  context = await createTestSQLContainer(true);
+  context = await createTestSQLContainer({ includeTestData: true });
 });
 
 test.beforeEach("Open new query tab", async ({ page }) => {
