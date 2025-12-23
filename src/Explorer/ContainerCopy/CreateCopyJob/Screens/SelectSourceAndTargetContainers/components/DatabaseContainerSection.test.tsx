@@ -32,6 +32,7 @@ describe("DatabaseContainerSection", () => {
     selectedContainer: "container1",
     containerDisabled: false,
     containerOnChange: mockContainerOnChange,
+    sectionType: "source",
   };
 
   beforeEach(() => {
@@ -292,6 +293,7 @@ describe("DatabaseContainerSection", () => {
         containerOptions: mockContainerOptions,
         selectedContainer: "container1",
         containerOnChange: mockContainerOnChange,
+        sectionType: "source",
       };
 
       render(<DatabaseContainerSection {...minimalProps} />);
@@ -393,6 +395,7 @@ describe("DatabaseContainerSection", () => {
         containerOptions: [{ key: "c1", text: "Container 1", data: { id: "c1" } }],
         selectedContainer: "c1",
         containerOnChange: jest.fn(),
+        sectionType: "source",
       };
 
       const { container } = render(<DatabaseContainerSection {...minimalProps} />);
@@ -411,6 +414,7 @@ describe("DatabaseContainerSection", () => {
         containerDisabled: false,
         containerOnChange: jest.fn(),
         handleOnDemandCreateContainer: jest.fn(),
+        sectionType: "target",
       };
 
       const { container } = render(<DatabaseContainerSection {...fullProps} />);
@@ -428,6 +432,7 @@ describe("DatabaseContainerSection", () => {
         selectedContainer: "container1",
         containerDisabled: true,
         containerOnChange: jest.fn(),
+        sectionType: "target",
       };
 
       const { container } = render(<DatabaseContainerSection {...disabledProps} />);
@@ -443,6 +448,7 @@ describe("DatabaseContainerSection", () => {
         containerOptions: [],
         selectedContainer: "",
         containerOnChange: jest.fn(),
+        sectionType: "target",
       };
 
       const { container } = render(<DatabaseContainerSection {...emptyOptionsProps} />);

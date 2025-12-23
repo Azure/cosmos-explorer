@@ -10,7 +10,7 @@ interface MigrationTypeCheckboxProps {
 }
 
 export const MigrationTypeCheckbox: React.FC<MigrationTypeCheckboxProps> = React.memo(({ checked, onChange }) => (
-  <Stack horizontal horizontalAlign="space-between" className="migrationTypeRow">
+  <Stack horizontal horizontalAlign="space-between" className="migrationTypeRow" data-test="migration-type-checkbox">
     <Checkbox label={ContainerCopyMessages.migrationTypeCheckboxLabel} checked={checked} onChange={onChange} />
   </Stack>
 ));
