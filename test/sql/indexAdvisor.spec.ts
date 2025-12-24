@@ -1,144 +1,29 @@
 import { expect, test, type Page } from "@playwright/test";
 
 import { DataExplorer, TestAccount } from "../fx";
+import { createTestSQLContainer, TestContainerContext } from "../testData";
 
-// Using existing database and container from environment variables
-// Set these in your test environment or they'll use defaults
-const DATABASE_ID = process.env.INDEX_ADVISOR_TEST_DATABASE || "t_db05_1765364190570";
-const CONTAINER_ID = process.env.INDEX_ADVISOR_TEST_CONTAINER || "testcontainer";
+// Test container context for setup and cleanup
+let testContainer: TestContainerContext;
+let DATABASE_ID: string;
+let CONTAINER_ID: string;
 
-// Mock SDK response structure based on IndexMetricsResponse interface
-const mockIndexMetricsWithSingleUtilized = {
-  UtilizedIndexes: {
-    SingleIndexes: [
-      { IndexSpec: "/_partitionKey/?", IndexImpactScore: "High" },
-      { IndexSpec: "/name/?", IndexImpactScore: "Medium" },
-    ],
-  },
-  PotentialIndexes: {},
-};
+// Set up test database and container with data before all tests
+test.beforeAll(async () => {
+  testContainer = await createTestSQLContainer(true);
+  DATABASE_ID = testContainer.database.id;
+  CONTAINER_ID = testContainer.container.id;
+});
 
-const mockIndexMetricsWithCompositeUtilized = {
-  UtilizedIndexes: {
-    CompositeIndexes: [
-      {
-        IndexSpecs: ["/category asc", "/price desc"],
-        IndexImpactScore: "High",
-      },
-    ],
-  },
-  PotentialIndexes: {},
-};
-
-const mockIndexMetricsWithSinglePotential = {
-  UtilizedIndexes: {},
-  PotentialIndexes: {
-    SingleIndexes: [
-      { IndexSpec: "/email/?", IndexImpactScore: "High" },
-      { IndexSpec: "/status/?", IndexImpactScore: "Medium" },
-      { IndexSpec: "/createdDate/?", IndexImpactScore: "Low" },
-    ],
-  },
-};
-
-const mockIndexMetricsWithCompositePotential = {
-  UtilizedIndexes: {},
-  PotentialIndexes: {
-    CompositeIndexes: [
-      {
-        IndexSpecs: ["/userId asc", "/timestamp desc"],
-        IndexImpactScore: "High",
-      },
-      {
-        IndexSpecs: ["/country asc", "/city asc", "/zipCode asc"],
-        IndexImpactScore: "Medium",
-      },
-    ],
-  },
-};
-
-const mockIndexMetricsComplete = {
-  UtilizedIndexes: {
-    SingleIndexes: [
-      { IndexSpec: "/_partitionKey/?", IndexImpactScore: "High" },
-      { IndexSpec: "/name/?", IndexImpactScore: "Medium" },
-    ],
-    CompositeIndexes: [
-      {
-        IndexSpecs: ["/category asc", "/price desc"],
-        IndexImpactScore: "High",
-      },
-    ],
-  },
-  PotentialIndexes: {
-    SingleIndexes: [
-      { IndexSpec: "/email/?", IndexImpactScore: "High" },
-      { IndexSpec: "/status/?", IndexImpactScore: "Medium" },
-      { IndexSpec: "/createdDate/?", IndexImpactScore: "Low" },
-    ],
-    CompositeIndexes: [
-      {
-        IndexSpecs: ["/userId asc", "/timestamp desc"],
-        IndexImpactScore: "High",
-      },
-      {
-        IndexSpecs: ["/country asc", "/city asc", "/zipCode asc"],
-        IndexImpactScore: "Medium",
-      },
-    ],
-  },
-};
-
-// Helper function to intercept SDK calls and inject mock response
-async function interceptIndexMetrics(
-  page: Page,
-  mockResponse: any,
-): Promise<void> {
-  await page.route("**/dbs/*/colls/*/docs", async (route) => {
-    const request = route.request();
-
-    // Check if this is a query request with populateIndexMetrics
-    if (request.method() === "POST") {
-      const postData = request.postData();
-
-      if (postData) {
-        try {
-          const body = JSON.parse(postData);
-
-          // If this is a query request, we'll intercept it
-          if (body.query) {
-            // Fetch the actual response
-            const response = await route.fetch();
-            const responseBody = await response.json();
-
-            // Add our mock indexMetrics to the response
-            const modifiedResponse = {
-              ...responseBody,
-              indexMetrics: mockResponse ? JSON.stringify(mockResponse) : undefined,
-            };
-
-            await route.fulfill({
-              status: response.status(),
-              headers: response.headers(),
-              body: JSON.stringify(modifiedResponse),
-            });
-            return;
-          }
-        } catch (e) {
-          // If parsing fails, continue with normal route
-        }
-      }
-    }
-
-    await route.continue();
-  });
-}
+// Clean up test database after all tests
+test.afterAll(async () => {
+  if (testContainer) {
+    await testContainer.dispose();
+  }
+});
 
 // Helper function to set up query tab and navigate to Index Advisor
-async function setupIndexAdvisorTab(page: Page, mockResponse?: any) {
-  if (mockResponse !== undefined) {
-    await interceptIndexMetrics(page, mockResponse);
-  }
+async function setupIndexAdvisorTab(page: Page, customQuery?: string) {
 
   const explorer = await DataExplorer.open(page, TestAccount.SQL);
   const databaseNode = await explorer.waitForNode(DATABASE_ID);
@@ -154,6 +39,14 @@ async function setupIndexAdvisorTab(page: Page, mockResponse?: any) {
   await queryTab.editor().locator.waitFor({ timeout: 30 * 1000 });
   await queryTab.editor().locator.click();
 
+  if (customQuery) {
+    // Clear the default query and type the custom query
+    await page.keyboard.press("Control+A");
+    await page.waitForTimeout(100);
+    await page.keyboard.type(customQuery);
+    await page.waitForTimeout(500);
+  }
+
   const executeQueryButton = explorer.commandBarButton("Execute Query");
   await executeQueryButton.click();
   await expect(queryTab.resultsEditor.locator).toBeAttached({ timeout: 60 * 1000 });
@@ -166,12 +59,12 @@ async function setupIndexAdvisorTab(page: Page, mockResponse?: any) {
 }
 
 test("Index Advisor tab loads without errors", async ({ page }) => {
-  const { indexAdvisorTab } = await setupIndexAdvisorTab(page, mockIndexMetricsComplete);
+  const { indexAdvisorTab } = await setupIndexAdvisorTab(page);
   await expect(indexAdvisorTab).toHaveAttribute("aria-selected", "true");
 });
 
 test("Verify UI sections are collapsible", async ({ page }) => {
-  const { explorer } = await setupIndexAdvisorTab(page, mockIndexMetricsComplete);
+  const { explorer } = await setupIndexAdvisorTab(page);
 
   // Verify both section headers exist
   const includedHeader = explorer.frame.getByText("Included in Current Policy", { exact: true });
@@ -194,10 +87,7 @@ test("Verify UI sections are collapsible", async ({ page }) => {
 });
 
 test("Verify SDK response structure - Case 1: Empty response", async ({ page }) => {
-  const { explorer } = await setupIndexAdvisorTab(page, {
-    UtilizedIndexes: {},
-    PotentialIndexes: {},
-  });
+  const { explorer } = await setupIndexAdvisorTab(page);
 
   // Verify both section headers still exist even with no data
   await expect(explorer.frame.getByText("Included in Current Policy", { exact: true })).toBeVisible();
@@ -211,4 +101,48 @@ test("Verify SDK response structure - Case 1: Empty response", async ({ page }) 
   // Verify "Update Indexing Policy" button is NOT visible when there are no potential indexes
   const updateButton = explorer.frame.getByRole("button", { name: /Update Indexing Policy/i });
   await expect(updateButton).not.toBeVisible();
+});
+
+test("Verify index suggestions and apply potential index", async ({ page }) => {
+  const customQuery = 'SELECT * FROM c WHERE c.partitionKey = "partition_1" ORDER BY c.randomData';
+  const { explorer } = await setupIndexAdvisorTab(page, customQuery);
+
+  // Wait for Index Advisor to process the query
+  await page.waitForTimeout(2000);
+
+  // Verify "Not Included in Current Policy" section has suggestions
+  const notIncludedHeader = explorer.frame.getByText("Not Included in Current Policy", { exact: true });
+  await expect(notIncludedHeader).toBeVisible();
+
+  // Find the checkbox for the suggested composite index
+  // The composite index should be /partitionKey ASC, /randomData ASC
+  const checkboxes = explorer.frame.locator('input[type="checkbox"]');
+  const checkboxCount = await checkboxes.count();
+  
+  // Should have at least one checkbox for the potential index
+  expect(checkboxCount).toBeGreaterThan(0);
+
+  // Select the first checkbox (the high-impact composite index)
+  await checkboxes.first().check();
+  await page.waitForTimeout(500);
+
+  // Verify "Update Indexing Policy" button becomes visible
+  const updateButton = explorer.frame.getByRole("button", { name: /Update Indexing Policy/i });
+  await expect(updateButton).toBeVisible();
+
+  // Click the "Update Indexing Policy" button
+  await updateButton.click();
+  await page.waitForTimeout(1000);
+
+  // Verify success message appears
+  const successMessage = explorer.frame.getByText(/Your indexing policy has been updated with the new included paths/i);
+  await expect(successMessage).toBeVisible();
+
+  // Verify the message mentions reviewing changes in Scale & Settings
+  const reviewMessage = explorer.frame.getByText(/You may review the changes in Scale & Settings/i);
+  await expect(reviewMessage).toBeVisible();
+
+  // Verify the checkmark icon is shown
+  const checkmarkIcon = explorer.frame.locator('[data-icon-name="CheckMark"]');
+  await expect(checkmarkIcon).toBeVisible();
 });
