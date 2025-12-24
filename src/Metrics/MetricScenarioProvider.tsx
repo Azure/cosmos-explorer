@@ -3,7 +3,7 @@ import MetricScenario from "./MetricEvents";
 import { MetricPhase } from "./ScenarioConfig";
 import { scenarioMonitor } from "./ScenarioMonitor";
 
-interface MetricScenarioContextValue {
+export interface MetricScenarioContextValue {
   startScenario: (scenario: MetricScenario) => void;
   startPhase: (scenario: MetricScenario, phase: MetricPhase) => void;
   completePhase: (scenario: MetricScenario, phase: MetricPhase) => void;
