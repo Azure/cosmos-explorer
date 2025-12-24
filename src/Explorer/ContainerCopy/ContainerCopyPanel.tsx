@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { SidePanel } from "../../Explorer/Panes/PanelContainerComponent";
 import CopyJobCommandBar from "./CommandBar/CopyJobCommandBar";
 import "./containerCopyStyles.less";
 import { MonitorCopyJobsRefState } from "./MonitorCopyJobs/MonitorCopyJobRefState";
@@ -16,6 +17,7 @@ const ContainerCopyPanel: React.FC<ContainerCopyProps> = ({ explorer }) => {
     <div id="containerCopyWrapper" className="flexContainer hideOverflows">
       <CopyJobCommandBar explorer={explorer} />
       <MonitorCopyJobs ref={monitorCopyJobsRef} explorer={explorer} />
+      <SidePanel />
     </div>
   );
 };
