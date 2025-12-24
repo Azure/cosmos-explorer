@@ -125,7 +125,10 @@ const App = (): JSX.Element => {
       <KeyboardShortcutRoot>
         <div className="flexContainer" aria-hidden="false">
           {userContext.features.enableContainerCopy && userContext.apiType === "SQL" ? (
-            <ContainerCopyPanel explorer={explorer} />
+            <>
+              <ContainerCopyPanel explorer={explorer} />
+              <SidePanel />
+            </>
           ) : (
             <DivExplorer explorer={explorer} />
           )}
