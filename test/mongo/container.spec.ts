@@ -14,7 +14,8 @@ import { DataExplorer, TEST_AUTOSCALE_THROUGHPUT_RU, TestAccount, generateUnique
 
     const explorer = await DataExplorer.open(page, accountType);
 
-    await explorer.globalCommandButton("New Collection").click();
+    const newCollectionButton = await explorer.globalCommandButton("New Collection");
+    await newCollectionButton.click();
     await explorer.whilePanelOpen(
       "New Collection",
       async (panel, okButton) => {
