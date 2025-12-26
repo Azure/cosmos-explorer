@@ -2,6 +2,7 @@
  * @module SelfServe/SelfServeTypes
  */
 
+import { SelfServeType } from "SelfServe/SelfServeUtils";
 import { TelemetryData } from "../Shared/Telemetry/TelemetryProcessor";
 
 interface BaseInput {
@@ -120,9 +121,11 @@ export abstract class SelfServeBaseClass {
    */
   public abstract onRefresh: () => Promise<RefreshResult>;
 
+  public abstract getSelfServeType: () => SelfServeType;
+  public test: string = "hello";
   /**@internal */
   public toSelfServeDescriptor(): SelfServeDescriptor {
-    const className = this.constructor.name;
+    const className: string = this.getSelfServeType();
     const selfServeDescriptor = Reflect.getMetadata(className, this) as SelfServeDescriptor;
 
     if (!this.initialize) {
