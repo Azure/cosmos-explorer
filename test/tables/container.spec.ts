@@ -7,7 +7,7 @@ test("Tables CRUD", async ({ page }) => {
 
   const explorer = await DataExplorer.open(page, TestAccount.Tables);
 
-  const newTableButton = await explorer.globalCommandButton("New Table");
+  const newTableButton = explorer.frame.getByTestId("GlobalCommands").getByRole("button", { name: "New Table" });
   await newTableButton.click();
   await explorer.whilePanelOpen(
     "New Table",
