@@ -7,7 +7,7 @@ test.describe("Settings under Scale & Settings", () => {
   let explorer: DataExplorer = null!;
 
   test.beforeAll("Create Test Database", async () => {
-    context = await createTestSQLContainer(true);
+    context = await createTestSQLContainer();
   });
 
   test.beforeEach("Open Settings tab under Scale & Settings", async ({ page }) => {
