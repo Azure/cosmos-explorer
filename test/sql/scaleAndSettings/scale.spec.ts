@@ -14,7 +14,7 @@ test.describe("Autoscale and Manual throughput", () => {
   let explorer: DataExplorer = null!;
 
   test.beforeEach("Create Test Database & Open container settings", async ({ page }) => {
-    context = await createTestSQLContainer(true);
+    context = await createTestSQLContainer();
     explorer = await DataExplorer.open(page, TestAccount.SQL);
 
     // Click Scale & Settings and open Scale tab
