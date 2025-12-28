@@ -500,7 +500,7 @@ export class DataExplorer {
   }
 
   /** Waits for the Data Explorer app to load */
-  static async waitForExplorer(page: Page) {
+  static async waitForExplorer(page: Page, options?: TestExplorerUrlOptions): Promise<DataExplorer> {
     const iframeElement = await page.getByTestId("DataExplorerFrame").elementHandle();
     if (iframeElement === null) {
       throw new Error("Explorer iframe not found");
@@ -512,7 +512,9 @@ export class DataExplorer {
       throw new Error("Explorer frame not found");
     }
 
-    await explorerFrame?.getByTestId("DataExplorerRoot").waitFor();
+    if (!options?.enablecontainercopy) {
+      await explorerFrame?.getByTestId("DataExplorerRoot").waitFor();
+    }
 
     return new DataExplorer(explorerFrame);
   }
@@ -532,7 +534,7 @@ export class ContainerCopy {
   ) {}
 
   static async waitForContainerCopy(page: Page): Promise<ContainerCopy> {
-    const explorerFrame = await DataExplorer.waitForExplorer(page);
+    const explorerFrame = await DataExplorer.waitForExplorer(page, { enablecontainercopy: true });
     const containerCopyWrapper = explorerFrame.frame.locator("div#containerCopyWrapper");
     return new ContainerCopy(explorerFrame.frame, containerCopyWrapper);
   }
