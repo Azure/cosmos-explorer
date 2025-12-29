@@ -14,7 +14,7 @@ test.describe("Autoscale and Manual throughput", () => {
   let explorer: DataExplorer = null!;
 
   test.beforeAll("Create Test Database", async () => {
-    context = await createTestSQLContainer(true);
+    context = await createTestSQLContainer({ includeTestData: true });
   });
 
   test.beforeEach("Open container settings", async ({ page }) => {
