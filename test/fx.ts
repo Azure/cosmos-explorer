@@ -470,6 +470,15 @@ export class DataExplorer {
     return this.frame.getByTestId("notification-console/header-status");
   }
 
+  async getDropdownItemByName(name: string, ariaLabel?: string): Promise<Locator> {
+    const dropdownItemsWrapper = this.frame.locator("div.ms-Dropdown-items");
+    if (ariaLabel) {
+      expect(await dropdownItemsWrapper.getAttribute("aria-label")).toEqual(ariaLabel);
+    }
+    const containerDropdownItems = dropdownItemsWrapper.locator("button.ms-Dropdown-item[role='option']");
+    return containerDropdownItems.filter({ hasText: name });
+  }
+
   /** Waits for the Data Explorer app to load */
   static async waitForExplorer(page: Page) {
     const iframeElement = await page.getByTestId("DataExplorerFrame").elementHandle();
