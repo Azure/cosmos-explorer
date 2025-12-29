@@ -233,7 +233,6 @@ describe("CommandBar Utils", () => {
       buttons[1].onCommandClick({} as React.SyntheticEvent);
       expect(mockRefreshJobList).toHaveBeenCalled();
 
-
       buttons[3].onCommandClick({} as React.SyntheticEvent);
       expect(mockOpenContainerCopyFeedbackBlade).toHaveBeenCalled();
     });
