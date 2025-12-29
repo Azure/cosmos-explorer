@@ -24,7 +24,7 @@ test.describe("Change Partition Key", () => {
   });
 
   test.afterAll("Delete Test Database", async () => {
-    await context?.dispose();
+    await context?.dispose(explorer);
   });
 
   test("Change partition key path", async () => {
