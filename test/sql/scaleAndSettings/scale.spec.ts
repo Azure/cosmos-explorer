@@ -42,9 +42,12 @@ test.describe("Autoscale and Manual throughput", () => {
     await expect(explorer.commandBarButton(CommandBarButton.Save)).toBeEnabled();
     await explorer.commandBarButton(CommandBarButton.Save).click();
 
-    await expect(explorer.getConsoleMessage()).toContainText(`Successfully updated offer for collection ${containerId}`, {
-      timeout: ONE_MINUTE_MS,
-    });
+    await expect(explorer.getConsoleMessage()).toContainText(
+      `Successfully updated offer for collection ${containerId}`,
+      {
+        timeout: ONE_MINUTE_MS,
+      },
+    );
   };
 
   test("Update autoscale max throughput", async ({ page }) => {
