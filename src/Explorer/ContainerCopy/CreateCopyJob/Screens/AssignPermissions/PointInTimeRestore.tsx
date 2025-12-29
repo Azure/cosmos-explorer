@@ -13,7 +13,12 @@ import InfoTooltip from "../Components/InfoTooltip";
 const tooltipContent = (
   <Text>
     {ContainerCopyMessages.pointInTimeRestore.tooltip.content} &nbsp;
-    <Link href={ContainerCopyMessages.pointInTimeRestore.tooltip.href} target="_blank" rel="noopener noreferrer">
+    <Link
+      style={{ color: "var(--colorBrandForeground1)" }}
+      href={ContainerCopyMessages.pointInTimeRestore.tooltip.href}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
       {ContainerCopyMessages.pointInTimeRestore.tooltip.hrefText}
     </Link>
   </Text>

@@ -1,7 +1,10 @@
 import AddIcon from "../../../../images/Add.svg";
 import FeedbackIcon from "../../../../images/Feedback-Command.svg";
+import MoonIcon from "../../../../images/MoonIcon.svg";
 import RefreshIcon from "../../../../images/refresh-cosmos.svg";
+import SunIcon from "../../../../images/SunIcon.svg";
 import { configContext, Platform } from "../../../ConfigContext";
+import { useThemeStore } from "../../../hooks/useTheme";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../../Explorer";
 import * as Actions from "../Actions/CopyJobActions";
@@ -11,6 +14,7 @@ import { CopyJobCommandBarBtnType } from "../Types/CopyJobTypes";
 
 function getCopyJobBtns(explorer: Explorer): CopyJobCommandBarBtnType[] {
   const monitorCopyJobsRef = MonitorCopyJobsRefState((state) => state.ref);
+  const isDarkMode = useThemeStore.getState().isDarkMode;
   const buttons: CopyJobCommandBarBtnType[] = [
     {
       key: "createCopyJob",
@@ -26,7 +30,15 @@ function getCopyJobBtns(explorer: Explorer): CopyJobCommandBarBtnType[] {
       ariaLabel: ContainerCopyMessages.refreshButtonAriaLabel,
       onClick: () => monitorCopyJobsRef?.refreshJobList(),
     },
+    {
+      key: "themeToggle",
+      iconSrc: isDarkMode ? SunIcon : MoonIcon,
+      label: isDarkMode ? "Light Theme" : "Dark Theme",
+      ariaLabel: isDarkMode ? "Switch to Light Theme" : "Switch to Dark Theme",
+      onClick: () => useThemeStore.getState().toggleTheme(),
+    },
   ];
+
   if (configContext.platform === Platform.Portal) {
     buttons.push({
       key: "feedback",
