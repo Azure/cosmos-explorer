@@ -4,6 +4,7 @@ exports[`AssignPermissions Component Accordion Behavior should render accordion 
 <div>
   <div
     class="ms-Stack assignPermissionsContainer css-109"
+    data-test="Panel:AssignPermissionsContainer"
   >
     <span
       class="css-110"
@@ -15,6 +16,7 @@ exports[`AssignPermissions Component Accordion Behavior should render accordion 
     >
       <div
         class="ms-Stack css-112"
+        data-test="permission-group-container-testGroup"
       >
         <div
           class="ms-Stack css-113"
@@ -36,6 +38,7 @@ exports[`AssignPermissions Component Accordion Behavior should render accordion 
         >
           <div
             class="fui-AccordionItem"
+            data-test="accordion-item"
           >
             <div
               class="fui-AccordionHeader accordionHeader ___kex8dp0_1udlp87 f19n0e5 f1c21dwh f1s184ao ft85np5"
@@ -85,6 +88,7 @@ exports[`AssignPermissions Component Accordion Behavior should render accordion 
           </div>
           <div
             class="fui-AccordionItem"
+            data-test="accordion-item"
           >
             <div
               class="fui-AccordionHeader accordionHeader ___kex8dp0_1udlp87 f19n0e5 f1c21dwh f1s184ao ft85np5"
@@ -134,6 +138,7 @@ exports[`AssignPermissions Component Accordion Behavior should render accordion 
             <div
               aria-disabled="false"
               class="fui-AccordionPanel accordionPanel ___1rufncu_1hx1scr f1axvtxu"
+              data-test="accordion-panel"
             >
               <div>
                 Incomplete Component
@@ -142,6 +147,7 @@ exports[`AssignPermissions Component Accordion Behavior should render accordion 
           </div>
           <div
             class="fui-AccordionItem"
+            data-test="accordion-item"
           >
             <div
               class="fui-AccordionHeader accordionHeader ___lyghz50_53x5ri0 f1s2aq7o f1c21dwh f1s184ao ft85np5 fwrgwhw"
@@ -201,6 +207,7 @@ exports[`AssignPermissions Component Edge Cases should calculate correct indent 
 <div>
   <div
     class="ms-Stack assignPermissionsContainer css-109"
+    data-test="Panel:AssignPermissionsContainer"
   >
     <span
       class="css-110"
@@ -212,6 +219,7 @@ exports[`AssignPermissions Component Edge Cases should calculate correct indent 
     >
       <div
         class="ms-Stack css-112"
+        data-test="permission-group-container-testGroup"
       >
         <div
           class="ms-Stack css-113"
@@ -233,6 +241,7 @@ exports[`AssignPermissions Component Edge Cases should calculate correct indent 
         >
           <div
             class="fui-AccordionItem"
+            data-test="accordion-item"
           >
             <div
               class="fui-AccordionHeader accordionHeader ___kex8dp0_1udlp87 f19n0e5 f1c21dwh f1s184ao ft85np5"
@@ -282,6 +291,7 @@ exports[`AssignPermissions Component Edge Cases should calculate correct indent 
           </div>
           <div
             class="fui-AccordionItem"
+            data-test="accordion-item"
           >
             <div
               class="fui-AccordionHeader accordionHeader ___kex8dp0_1udlp87 f19n0e5 f1c21dwh f1s184ao ft85np5"
@@ -331,6 +341,7 @@ exports[`AssignPermissions Component Edge Cases should calculate correct indent 
             <div
               aria-disabled="false"
               class="fui-AccordionPanel accordionPanel ___1rufncu_1hx1scr f1axvtxu"
+              data-test="accordion-panel"
             >
               <div>
                 Incomplete Component
@@ -339,6 +350,7 @@ exports[`AssignPermissions Component Edge Cases should calculate correct indent 
           </div>
           <div
             class="fui-AccordionItem"
+            data-test="accordion-item"
           >
             <div
               class="fui-AccordionHeader accordionHeader ___lyghz50_53x5ri0 f1s2aq7o f1c21dwh f1s184ao ft85np5 fwrgwhw"
@@ -398,6 +410,7 @@ exports[`AssignPermissions Component Edge Cases should calculate correct indent 
 <div>
   <div
     class="ms-Stack assignPermissionsContainer css-109"
+    data-test="Panel:AssignPermissionsContainer"
   >
     <span
       class="css-110"
@@ -409,6 +422,7 @@ exports[`AssignPermissions Component Edge Cases should calculate correct indent 
     >
       <div
         class="ms-Stack css-112"
+        data-test="permission-group-container-testGroup"
       >
         <div
           class="ms-Stack css-113"
@@ -430,6 +444,7 @@ exports[`AssignPermissions Component Edge Cases should calculate correct indent 
         >
           <div
             class="fui-AccordionItem"
+            data-test="accordion-item"
           >
             <div
               class="fui-AccordionHeader accordionHeader ___kex8dp0_1udlp87 f19n0e5 f1c21dwh f1s184ao ft85np5"
@@ -479,6 +494,7 @@ exports[`AssignPermissions Component Edge Cases should calculate correct indent 
           </div>
           <div
             class="fui-AccordionItem"
+            data-test="accordion-item"
           >
             <div
               class="fui-AccordionHeader accordionHeader ___kex8dp0_1udlp87 f19n0e5 f1c21dwh f1s184ao ft85np5"
@@ -528,6 +544,7 @@ exports[`AssignPermissions Component Edge Cases should calculate correct indent 
             <div
               aria-disabled="false"
               class="fui-AccordionPanel accordionPanel ___1rufncu_1hx1scr f1axvtxu"
+              data-test="accordion-panel"
             >
               <div>
                 Incomplete Component
@@ -536,6 +553,7 @@ exports[`AssignPermissions Component Edge Cases should calculate correct indent 
           </div>
           <div
             class="fui-AccordionItem"
+            data-test="accordion-item"
           >
             <div
               class="fui-AccordionHeader accordionHeader ___lyghz50_53x5ri0 f1s2aq7o f1c21dwh f1s184ao ft85np5 fwrgwhw"
@@ -595,6 +613,7 @@ exports[`AssignPermissions Component Edge Cases should handle missing account na
 <div>
   <div
     class="ms-Stack assignPermissionsContainer css-109"
+    data-test="Panel:AssignPermissionsContainer"
   >
     <span
       class="css-110"
@@ -606,6 +625,7 @@ exports[`AssignPermissions Component Edge Cases should handle missing account na
     >
       <div
         class="ms-Stack css-112"
+        data-test="permission-group-container-testGroup"
       >
         <div
           class="ms-Stack css-113"
@@ -627,6 +647,7 @@ exports[`AssignPermissions Component Edge Cases should handle missing account na
         >
           <div
             class="fui-AccordionItem"
+            data-test="accordion-item"
           >
             <div
               class="fui-AccordionHeader accordionHeader ___kex8dp0_1udlp87 f19n0e5 f1c21dwh f1s184ao ft85np5"
@@ -676,6 +697,7 @@ exports[`AssignPermissions Component Edge Cases should handle missing account na
           </div>
           <div
             class="fui-AccordionItem"
+            data-test="accordion-item"
           >
             <div
               class="fui-AccordionHeader accordionHeader ___kex8dp0_1udlp87 f19n0e5 f1c21dwh f1s184ao ft85np5"
@@ -725,6 +747,7 @@ exports[`AssignPermissions Component Edge Cases should handle missing account na
             <div
               aria-disabled="false"
               class="fui-AccordionPanel accordionPanel ___1rufncu_1hx1scr f1axvtxu"
+              data-test="accordion-panel"
             >
               <div>
                 Incomplete Component
@@ -733,6 +756,7 @@ exports[`AssignPermissions Component Edge Cases should handle missing account na
           </div>
           <div
             class="fui-AccordionItem"
+            data-test="accordion-item"
           >
             <div
               class="fui-AccordionHeader accordionHeader ___lyghz50_53x5ri0 f1s2aq7o f1c21dwh f1s184ao ft85np5 fwrgwhw"
@@ -792,6 +816,7 @@ exports[`AssignPermissions Component Permission Groups should render multiple pe
 <div>
   <div
     class="ms-Stack assignPermissionsContainer css-109"
+    data-test="Panel:AssignPermissionsContainer"
   >
     <span
       class="css-110"
@@ -803,6 +828,7 @@ exports[`AssignPermissions Component Permission Groups should render multiple pe
     >
       <div
         class="ms-Stack css-112"
+        data-test="permission-group-container-crossAccountConfigs"
       >
         <div
           class="ms-Stack css-113"
@@ -824,6 +850,7 @@ exports[`AssignPermissions Component Permission Groups should render multiple pe
         >
           <div
             class="fui-AccordionItem"
+            data-test="accordion-item"
           >
             <div
               class="fui-AccordionHeader accordionHeader ___kex8dp0_1udlp87 f19n0e5 f1c21dwh f1s184ao ft85np5"
@@ -875,6 +902,7 @@ exports[`AssignPermissions Component Permission Groups should render multiple pe
       </div>
       <div
         class="ms-Stack css-112"
+        data-test="permission-group-container-onlineConfigs"
       >
         <div
           class="ms-Stack css-113"
@@ -896,6 +924,7 @@ exports[`AssignPermissions Component Permission Groups should render multiple pe
         >
           <div
             class="fui-AccordionItem"
+            data-test="accordion-item"
           >
             <div
               class="fui-AccordionHeader accordionHeader ___kex8dp0_1udlp87 f19n0e5 f1c21dwh f1s184ao ft85np5"
@@ -945,6 +974,7 @@ exports[`AssignPermissions Component Permission Groups should render multiple pe
             <div
               aria-disabled="false"
               class="fui-AccordionPanel accordionPanel ___1rufncu_1hx1scr f1axvtxu"
+              data-test="accordion-panel"
             >
               <div
                 data-testid="online-copy-enabled"
@@ -964,6 +994,7 @@ exports[`AssignPermissions Component Permission Groups should render online migr
 <div>
   <div
     class="ms-Stack assignPermissionsContainer css-109"
+    data-test="Panel:AssignPermissionsContainer"
   >
     <span
       class="css-110"
@@ -975,6 +1006,7 @@ exports[`AssignPermissions Component Permission Groups should render online migr
     >
       <div
         class="ms-Stack css-112"
+        data-test="permission-group-container-onlineConfigs"
       >
         <div
           class="ms-Stack css-113"
@@ -996,6 +1028,7 @@ exports[`AssignPermissions Component Permission Groups should render online migr
         >
           <div
             class="fui-AccordionItem"
+            data-test="accordion-item"
           >
             <div
               class="fui-AccordionHeader accordionHeader ___kex8dp0_1udlp87 f19n0e5 f1c21dwh f1s184ao ft85np5"
@@ -1045,6 +1078,7 @@ exports[`AssignPermissions Component Permission Groups should render online migr
           </div>
           <div
             class="fui-AccordionItem"
+            data-test="accordion-item"
           >
             <div
               class="fui-AccordionHeader accordionHeader ___kex8dp0_1udlp87 f19n0e5 f1c21dwh f1s184ao ft85np5"
@@ -1094,6 +1128,7 @@ exports[`AssignPermissions Component Permission Groups should render online migr
             <div
               aria-disabled="false"
               class="fui-AccordionPanel accordionPanel ___1rufncu_1hx1scr f1axvtxu"
+              data-test="accordion-panel"
             >
               <div
                 data-testid="online-copy-enabled"
@@ -1113,6 +1148,7 @@ exports[`AssignPermissions Component Permission Groups should render permission 
 <div>
   <div
     class="ms-Stack assignPermissionsContainer css-109"
+    data-test="Panel:AssignPermissionsContainer"
   >
     <span
       class="css-110"
@@ -1124,6 +1160,7 @@ exports[`AssignPermissions Component Permission Groups should render permission 
     >
       <div
         class="ms-Stack css-112"
+        data-test="permission-group-container-crossAccountConfigs"
       >
         <div
           class="ms-Stack css-113"
@@ -1145,6 +1182,7 @@ exports[`AssignPermissions Component Permission Groups should render permission 
         >
           <div
             class="fui-AccordionItem"
+            data-test="accordion-item"
           >
             <div
               class="fui-AccordionHeader accordionHeader ___kex8dp0_1udlp87 f19n0e5 f1c21dwh f1s184ao ft85np5"
@@ -1194,6 +1232,7 @@ exports[`AssignPermissions Component Permission Groups should render permission 
           </div>
           <div
             class="fui-AccordionItem"
+            data-test="accordion-item"
           >
             <div
               class="fui-AccordionHeader accordionHeader ___kex8dp0_1udlp87 f19n0e5 f1c21dwh f1s184ao ft85np5"
@@ -1243,6 +1282,7 @@ exports[`AssignPermissions Component Permission Groups should render permission 
             <div
               aria-disabled="false"
               class="fui-AccordionPanel accordionPanel ___1rufncu_1hx1scr f1axvtxu"
+              data-test="accordion-panel"
             >
               <div
                 data-testid="add-read-permission"
@@ -1262,6 +1302,7 @@ exports[`AssignPermissions Component Rendering should render without crashing wi
 <div>
   <div
     class="ms-Stack assignPermissionsContainer css-109"
+    data-test="Panel:AssignPermissionsContainer"
   >
     <span
       class="css-110"
@@ -1283,6 +1324,7 @@ exports[`AssignPermissions Component Rendering should render without crashing wi
 <div>
   <div
     class="ms-Stack assignPermissionsContainer css-109"
+    data-test="Panel:AssignPermissionsContainer"
   >
     <span
       class="css-110"

@@ -49,6 +49,7 @@ export interface DatabaseContainerSectionProps {
   containerDisabled?: boolean;
   containerOnChange: (ev: React.FormEvent<HTMLDivElement>, option: DropdownOptionType) => void;
   handleOnDemandCreateContainer?: () => void;
+  sectionType: "source" | "target";
 }
 
 export interface CopyJobContextState {
