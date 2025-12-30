@@ -7,7 +7,7 @@ import {
   AddGlobalSecondaryIndexPanelProps,
 } from "Explorer/Panes/AddGlobalSecondaryIndexPanel/AddGlobalSecondaryIndexPanel";
 import { useDatabases } from "Explorer/useDatabases";
-import { isFabric, isFabricNative } from "Platform/Fabric/FabricUtil";
+import { isFabric, isFabricNative, openRestoreContainerDialog } from "Platform/Fabric/FabricUtil";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { traceOpen } from "Shared/Telemetry/TelemetryProcessor";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
@@ -35,6 +35,7 @@ import StoredProcedure from "./Tree/StoredProcedure";
 import Trigger from "./Tree/Trigger";
 import UserDefinedFunction from "./Tree/UserDefinedFunction";
 import { useSelectedNode } from "./useSelectedNode";
+import { extractFeatures } from "../Platform/Hosted/extractFeatures";
 
 export interface CollectionContextMenuButtonParams {
   databaseId: string;
@@ -59,6 +60,17 @@ export const createDatabaseContextMenu = (container: Explorer, databaseId: strin
       label: `New ${getCollectionName()}`,
     },
   ];
+
+  if (isFabricNative() && !userContext.fabricContext?.isReadOnly) {
+    const features = extractFeatures();
+    if (features?.enableRestoreContainer) {
+      items.push({
+        iconSrc: AddCollectionIcon,
+        onClick: () => openRestoreContainerDialog(),
+        label: `Restore ${getCollectionName()}`,
+      });
+    }
+  }
 
   if (!isFabricNative() && (userContext.apiType !== "Tables" || userContext.features.enableSDKoperations)) {
     items.push({
