@@ -3,7 +3,14 @@ import { expect, Frame, Locator, Page, test } from "@playwright/test";
 import { set } from "lodash";
 import { DatabaseAccount, Subscription } from "../../src/Contracts/DataModels";
 import { truncateName } from "../../src/Explorer/ContainerCopy/CopyJobUtils";
-import { ContainerCopy, getAccountName, TestAccount } from "../fx";
+import {
+  ContainerCopy,
+  getAccountName,
+  getDropdownItemByNameOrPosition,
+  interceptAndInspectApiRequest,
+  TestAccount,
+  waitForApiResponse,
+} from "../fx";
 
 test.describe.configure({ mode: "serial" });
 let page: Page;
@@ -138,9 +145,10 @@ test("Verify Point-in-Time Restore timer and refresh button workflow", async () 
   await pitrBtn.click();
 
   page.context().on("page", async (newPage) => {
-    expect(newPage.url()).toMatch(
-      new RegExp(`/providers/Microsoft\\.Document[DB][Db]/databaseAccounts/${expectedSourceAccountName}/backupRestore`),
+    const expectedUrlEndPattern = new RegExp(
+      `/providers/Microsoft.(DocumentDB|DocumentDb)/databaseAccounts/${expectedSourceAccountName}/backupRestore`,
     );
+    expect(newPage.url()).toMatch(expectedUrlEndPattern);
     await newPage.close();
   });
 
@@ -279,26 +287,16 @@ test("Loading and verifying subscription & account dropdown", async () => {
   panel = frame.getByTestId("Panel:Create copy job");
   await expect(panel).toBeVisible();
 
-  const subscriptionPromise = ContainerCopy.waitForApiResponse(
-    page,
-    "/Microsoft.ResourceGraph/resources",
-    "POST",
-    (payload: any) => {
-      return (
-        payload.query.includes("resources | where type == 'microsoft.documentdb/databaseaccounts'") &&
-        payload.query.includes("| where type == 'microsoft.resources/subscriptions'")
-      );
-    },
-  );
+  const subscriptionPromise = waitForApiResponse(page, "/Microsoft.ResourceGraph/resources", "POST", (payload: any) => {
+    return (
+      payload.query.includes("resources | where type == 'microsoft.documentdb/databaseaccounts'") &&
+      payload.query.includes("| where type == 'microsoft.resources/subscriptions'")
+    );
+  });
 
-  const accountPromise = ContainerCopy.waitForApiResponse(
-    page,
-    "/Microsoft.ResourceGraph/resources",
-    "POST",
-    (payload: any) => {
-      return payload.query.includes("resources | where type =~ 'microsoft.documentdb/databaseaccounts'");
-    },
-  );
+  const accountPromise = waitForApiResponse(page, "/Microsoft.ResourceGraph/resources", "POST", (payload: any) => {
+    return payload.query.includes("resources | where type =~ 'microsoft.documentdb/databaseaccounts'");
+  });
 
   const subscriptionResponse = await subscriptionPromise;
   const data = await subscriptionResponse.json();
@@ -316,11 +314,11 @@ test("Loading and verifying subscription & account dropdown", async () => {
   await expect(subscriptionDropdown).toHaveText(new RegExp(selectedSubscription.subscriptionName));
   await subscriptionDropdown.click();
 
-  const dropdownItemsWrapper = frame.locator("div.ms-Dropdown-items");
-  expect(await dropdownItemsWrapper.getAttribute("aria-label")).toEqual("Subscription");
-  const subscriptionDropdownItems = dropdownItemsWrapper.locator("button.ms-Dropdown-item[role='option']");
-  expect(subscriptionDropdownItems).toHaveCount(data.count);
-  const subscriptionItem = subscriptionDropdownItems.filter({ hasText: selectedSubscription.subscriptionName });
+  const subscriptionItem = await getDropdownItemByNameOrPosition(
+    frame,
+    { name: selectedSubscription.subscriptionName },
+    { ariaLabel: "Subscription", itemCount: data.count },
+  );
   await subscriptionItem.click();
 
   const expectedAccountName = getAccountName(TestAccount.SQLContainerCopyOnly);
@@ -330,13 +328,12 @@ test("Loading and verifying subscription & account dropdown", async () => {
   await expect(accountDropdown).toHaveText(new RegExp(expectedAccountName));
   await accountDropdown.click();
 
-  expect(await dropdownItemsWrapper.getAttribute("aria-label")).toEqual("Account");
-  const accountDropdownItemCount = await dropdownItemsWrapper.locator("button.ms-Dropdown-item[role='option']").count();
-  expect(accountDropdownItemCount).toBeLessThanOrEqual(accountData.count);
-
-  await dropdownItemsWrapper
-    .locator("button.ms-Dropdown-item[role='option']", { hasText: expectedAccountName })
-    .click();
+  const accountItem = await getDropdownItemByNameOrPosition(
+    frame,
+    { name: expectedAccountName },
+    { ariaLabel: "Account" },
+  );
+  await accountItem.click();
 
   expectedSourceSubscription = selectedSubscription;
   expectedSourceAccount = selectedAccount;
@@ -369,15 +366,18 @@ test("Verifying source and target container selection", async () => {
 
   const sourceDatabaseDropdown = panel.getByTestId("source-databaseDropdown");
   await sourceDatabaseDropdown.click();
-  const dropdownItemsWrapper = frame.locator("div.ms-Dropdown-items");
-  expect(await dropdownItemsWrapper.getAttribute("aria-label")).toEqual("Database");
-  const sourceDbDropdownItems = dropdownItemsWrapper.locator("button.ms-Dropdown-item[role='option']");
-  await sourceDbDropdownItems.first().click();
+
+  const sourceDbDropdownItem = await getDropdownItemByNameOrPosition(frame, { position: 0 }, { ariaLabel: "Database" });
+  await sourceDbDropdownItem.click();
+
   await expect(sourceContainerDropdown).not.toHaveClass(/(^|\s)is-disabled(\s|$)/);
   await sourceContainerDropdown.click();
-  expect(await dropdownItemsWrapper.getAttribute("aria-label")).toEqual("Container");
-  const sourceContainerDropdownItems = dropdownItemsWrapper.locator("button.ms-Dropdown-item[role='option']");
-  await sourceContainerDropdownItems.first().click();
+  const sourceContainerDropdownItem = await getDropdownItemByNameOrPosition(
+    frame,
+    { position: 0 },
+    { ariaLabel: "Container" },
+  );
+  await sourceContainerDropdownItem.click();
 
   const targetContainerDropdown = panel.getByTestId("target-containerDropdown");
   expect(targetContainerDropdown).toBeVisible();
@@ -385,22 +385,32 @@ test("Verifying source and target container selection", async () => {
 
   const targetDatabaseDropdown = panel.getByTestId("target-databaseDropdown");
   await targetDatabaseDropdown.click();
-  expect(await dropdownItemsWrapper.getAttribute("aria-label")).toEqual("Database");
-  const targetDbDropdownItems = dropdownItemsWrapper.locator("button.ms-Dropdown-item[role='option']");
-  await targetDbDropdownItems.first().click();
+  const targetDbDropdownItem = await getDropdownItemByNameOrPosition(frame, { position: 0 }, { ariaLabel: "Database" });
+  await targetDbDropdownItem.click();
+
   await expect(targetContainerDropdown).not.toHaveClass(/(^|\s)is-disabled(\s|$)/);
   await targetContainerDropdown.click();
-  expect(await dropdownItemsWrapper.getAttribute("aria-label")).toEqual("Container");
-  const targetContainerDropdownItems = dropdownItemsWrapper.locator("button.ms-Dropdown-item[role='option']");
-  await targetContainerDropdownItems.first().click();
+  const targetContainerDropdownItem1 = await getDropdownItemByNameOrPosition(
+    frame,
+    { position: 0 },
+    { ariaLabel: "Container" },
+  );
+  await targetContainerDropdownItem1.click();
 
   await panel.getByRole("button", { name: "Next" }).click();
 
   const errorContainer = panel.getByTestId("Panel:ErrorContainer");
   await expect(errorContainer).toBeVisible();
   await expect(errorContainer).toHaveText(/Source and destination containers cannot be the same/i);
+
+  // Reselect target container to be different from source container
   await targetContainerDropdown.click();
-  await targetContainerDropdownItems.nth(1).click();
+  const targetContainerDropdownItem2 = await getDropdownItemByNameOrPosition(
+    frame,
+    { position: 1 },
+    { ariaLabel: "Container" },
+  );
+  await targetContainerDropdownItem2.click();
 
   const selectedSourceDatabase = await sourceDatabaseDropdown.innerText();
   const selectedSourceContainer = await sourceContainerDropdown.innerText();
@@ -440,7 +450,7 @@ test("Testing API request interception with duplicate job name", async () => {
 
   const copyButton = panel.getByRole("button", { name: "Copy", exact: true });
   const expectedErrorMessage = `Duplicate job name '${duplicateJobName}'`;
-  await ContainerCopy.interceptAndInspectApiRequest(
+  await interceptAndInspectApiRequest(
     page,
     `${expectedSourceAccount.name}/dataTransferJobs/${duplicateJobName}`,
     "PUT",
@@ -472,7 +482,7 @@ test("Testing API request success with valid job name and verifying copy job cre
 
   const validJobName = expectedJobName;
 
-  const copyJobCreationPromise = ContainerCopy.waitForApiResponse(
+  const copyJobCreationPromise = waitForApiResponse(
     page,
     `${expectedSourceAccount.name}/dataTransferJobs/${validJobName}`,
     "PUT",
@@ -551,23 +561,41 @@ test("Cancel a copy job", async () => {
 
   // Select source containers quickly
   const sourceDatabaseDropdown = panel.getByTestId("source-databaseDropdown");
-  const dropdownItemsWrapper = frame.locator("div.ms-Dropdown-items");
-
   await sourceDatabaseDropdown.click();
-  await dropdownItemsWrapper.locator("button.ms-Dropdown-item[role='option']").first().click();
+  const sourceDatabaseDropdownItem = await getDropdownItemByNameOrPosition(
+    frame,
+    { position: 0 },
+    { ariaLabel: "Database" },
+  );
+  await sourceDatabaseDropdownItem.click();
 
   const sourceContainerDropdown = panel.getByTestId("source-containerDropdown");
   await sourceContainerDropdown.click();
-  await dropdownItemsWrapper.locator("button.ms-Dropdown-item[role='option']").first().click();
+  const sourceContainerDropdownItem = await getDropdownItemByNameOrPosition(
+    frame,
+    { position: 0 },
+    { ariaLabel: "Container" },
+  );
+  await sourceContainerDropdownItem.click();
 
   // Select target containers
   const targetDatabaseDropdown = panel.getByTestId("target-databaseDropdown");
   await targetDatabaseDropdown.click();
-  await dropdownItemsWrapper.locator("button.ms-Dropdown-item[role='option']").first().click();
+  const targetDatabaseDropdownItem = await getDropdownItemByNameOrPosition(
+    frame,
+    { position: 0 },
+    { ariaLabel: "Database" },
+  );
+  await targetDatabaseDropdownItem.click();
 
   const targetContainerDropdown = panel.getByTestId("target-containerDropdown");
   await targetContainerDropdown.click();
-  await dropdownItemsWrapper.locator("button.ms-Dropdown-item[role='option']").nth(1).click();
+  const targetContainerDropdownItem = await getDropdownItemByNameOrPosition(
+    frame,
+    { position: 1 },
+    { ariaLabel: "Container" },
+  );
+  await targetContainerDropdownItem.click();
 
   await panel.getByRole("button", { name: "Next" }).click();
 

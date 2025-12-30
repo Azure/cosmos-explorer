@@ -185,6 +185,39 @@ export async function getTestExplorerUrl(accountType: TestAccount, options?: Tes
   return `https://localhost:1234/testExplorer.html?${params.toString()}`;
 }
 
+type DropdownItemExpectations = {
+  ariaLabel?: string;
+  itemCount?: number;
+};
+
+type DropdownItemMatcher = {
+  name?: string;
+  position?: number;
+};
+
+export async function getDropdownItemByNameOrPosition(
+  frame: Frame,
+  matcher?: DropdownItemMatcher,
+  expectedOptions?: DropdownItemExpectations,
+): Promise<Locator> {
+  const dropdownItemsWrapper = frame.locator("div.ms-Dropdown-items");
+  if (expectedOptions?.ariaLabel) {
+    expect(await dropdownItemsWrapper.getAttribute("aria-label")).toEqual(expectedOptions.ariaLabel);
+  }
+  if (expectedOptions?.itemCount) {
+    const items = dropdownItemsWrapper.locator("button.ms-Dropdown-item[role='option']");
+    await expect(items).toHaveCount(expectedOptions.itemCount);
+  }
+  const containerDropdownItems = dropdownItemsWrapper.locator("button.ms-Dropdown-item[role='option']");
+  if (matcher?.name) {
+    return containerDropdownItems.filter({ hasText: matcher.name });
+  } else if (matcher?.position !== undefined) {
+    return containerDropdownItems.nth(matcher.position);
+  }
+  // Return first item if no matcher is provided
+  return containerDropdownItems.first();
+}
+
 /** Helper class that provides locator methods for TreeNode elements, on top of a Locator */
 class TreeNode {
   constructor(
@@ -490,15 +523,6 @@ export class DataExplorer {
     return this.frame.getByTestId("notification-console/header-status");
   }
 
-  async getDropdownItemByName(name: string, ariaLabel?: string): Promise<Locator> {
-    const dropdownItemsWrapper = this.frame.locator("div.ms-Dropdown-items");
-    if (ariaLabel) {
-      expect(await dropdownItemsWrapper.getAttribute("aria-label")).toEqual(ariaLabel);
-    }
-    const containerDropdownItems = dropdownItemsWrapper.locator("button.ms-Dropdown-item[role='option']");
-    return containerDropdownItems.filter({ hasText: name });
-  }
-
   /** Waits for the Data Explorer app to load */
   static async waitForExplorer(page: Page, options?: TestExplorerUrlOptions): Promise<DataExplorer> {
     const iframeElement = await page.getByTestId("DataExplorerFrame").elementHandle();
@@ -527,6 +551,80 @@ export class DataExplorer {
   }
 }
 
+export async function waitForApiResponse(
+  page: Page,
+  urlPattern: string,
+  method?: string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  payloadValidator?: (payload: any) => boolean,
+) {
+  return page.waitForResponse(async (response) => {
+    const request = response.request();
+
+    if (!request.url().includes(urlPattern)) {
+      return false;
+    }
+
+    if (method && request.method() !== method) {
+      return false;
+    }
+
+    if (payloadValidator && (request.method() === "POST" || request.method() === "PUT")) {
+      const postData = request.postData();
+      if (postData) {
+        try {
+          const payload = JSON.parse(postData);
+          return payloadValidator(payload);
+        } catch {
+          return false;
+        }
+      }
+    }
+    return true;
+  });
+}
+export async function interceptAndInspectApiRequest(
+  page: Page,
+  urlPattern: string,
+  method: string = "POST",
+  error: Error,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  errorValidator: (url?: string, payload?: any) => boolean,
+): Promise<void> {
+  await page.route(
+    (url) => url.pathname.includes(urlPattern),
+    async (route, request) => {
+      if (request.method() !== method) {
+        await route.continue();
+        return;
+      }
+      const postData = request.postData();
+      if (postData) {
+        try {
+          const payload = JSON.parse(postData);
+          if (errorValidator && errorValidator(request.url(), payload)) {
+            await route.fulfill({
+              status: 409,
+              contentType: "application/json",
+              body: JSON.stringify({
+                code: "Conflict",
+                message: error.message,
+              }),
+            });
+            return;
+          }
+        } catch (err) {
+          if (err instanceof Error && err.message.includes("not allowed")) {
+            throw err;
+          }
+        }
+      }
+
+      await route.continue();
+    },
+  );
+}
+
 export class ContainerCopy {
   constructor(
     public frame: Frame,
@@ -543,78 +641,5 @@ export class ContainerCopy {
     const url = await getTestExplorerUrl(testAccount, { iframeSrc, enablecontainercopy: true });
     await page.goto(url);
     return ContainerCopy.waitForContainerCopy(page);
-  }
-  static async waitForApiResponse(
-    page: Page,
-    urlPattern: string,
-    method?: string,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    payloadValidator?: (payload: any) => boolean,
-  ) {
-    return page.waitForResponse(async (response) => {
-      const request = response.request();
-
-      if (!request.url().includes(urlPattern)) {
-        return false;
-      }
-
-      if (method && request.method() !== method) {
-        return false;
-      }
-
-      if (payloadValidator && (request.method() === "POST" || request.method() === "PUT")) {
-        const postData = request.postData();
-        if (postData) {
-          try {
-            const payload = JSON.parse(postData);
-            return payloadValidator(payload);
-          } catch {
-            return false;
-          }
-        }
-      }
-      return true;
-    });
-  }
-  static async interceptAndInspectApiRequest(
-    page: Page,
-    urlPattern: string,
-    method: string = "POST",
-    error: Error,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    errorValidator: (url?: string, payload?: any) => boolean,
-  ): Promise<void> {
-    await page.route(
-      (url) => url.pathname.includes(urlPattern),
-      async (route, request) => {
-        if (request.method() !== method) {
-          await route.continue();
-          return;
-        }
-        const postData = request.postData();
-        if (postData) {
-          try {
-            const payload = JSON.parse(postData);
-            if (errorValidator && errorValidator(request.url(), payload)) {
-              await route.fulfill({
-                status: 409,
-                contentType: "application/json",
-                body: JSON.stringify({
-                  code: "Conflict",
-                  message: error.message,
-                }),
-              });
-              return;
-            }
-          } catch (err) {
-            if (err instanceof Error && err.message.includes("not allowed")) {
-              throw err;
-            }
-          }
-        }
-
-        await route.continue();
-      },
-    );
   }
 }

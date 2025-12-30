@@ -9,7 +9,7 @@ import ContainerCopyMessages from "../../../../ContainerCopyMessages";
 import { CopyJobContext } from "../../../../Context/CopyJobContext";
 import { CopyJobMigrationType } from "../../../../Enums/CopyJobEnums";
 import { CopyJobContextProviderType, CopyJobContextState } from "../../../../Types/CopyJobTypes";
-import { AccountDropdown } from "./AccountDropdown";
+import { AccountDropdown, normalizeAccountId } from "./AccountDropdown";
 
 jest.mock("../../../../../../hooks/useDatabaseAccounts");
 jest.mock("../../../../../../UserContext", () => ({
@@ -202,13 +202,16 @@ describe("AccountDropdown", () => {
 
       const stateUpdateFunction = mockSetCopyJobState.mock.calls[0][0];
       const newState = stateUpdateFunction(mockCopyJobState);
-      expect(newState.source.account).toBe(mockDatabaseAccount1);
+      expect(newState.source.account).toEqual({
+        ...mockDatabaseAccount1,
+        id: normalizeAccountId(mockDatabaseAccount1.id),
+      });
     });
 
     it("should auto-select predefined account from userContext if available", async () => {
       const userContextAccount = {
         ...mockDatabaseAccount2,
-        id: "/subscriptions/test-sub/resourceGroups/test-rg/providers/Microsoft.DocumentDb/databaseAccounts/account2",
+        id: "/subscriptions/test-sub/resourceGroups/test-rg/providers/Microsoft.DocumentDB/databaseAccounts/account2",
       };
 
       (userContext as any).databaseAccount = userContextAccount;
@@ -223,7 +226,10 @@ describe("AccountDropdown", () => {
 
       const stateUpdateFunction = mockSetCopyJobState.mock.calls[0][0];
       const newState = stateUpdateFunction(mockCopyJobState);
-      expect(newState.source.account).toBe(mockDatabaseAccount2);
+      expect(newState.source.account).toEqual({
+        ...mockDatabaseAccount2,
+        id: normalizeAccountId(mockDatabaseAccount2.id),
+      });
     });
 
     it("should keep current account if it exists in the filtered list", async () => {
@@ -248,7 +254,16 @@ describe("AccountDropdown", () => {
 
       const stateUpdateFunction = mockSetCopyJobState.mock.calls[0][0];
       const newState = stateUpdateFunction(contextWithSelectedAccount.copyJobState);
-      expect(newState).toBe(contextWithSelectedAccount.copyJobState);
+      expect(newState).toEqual({
+        ...contextWithSelectedAccount.copyJobState,
+        source: {
+          ...contextWithSelectedAccount.copyJobState.source,
+          account: {
+            ...mockDatabaseAccount1,
+            id: normalizeAccountId(mockDatabaseAccount1.id),
+          },
+        },
+      });
     });
 
     it("should handle account change when user selects different account", async () => {
@@ -272,7 +287,7 @@ describe("AccountDropdown", () => {
     it("should normalize account ID for Portal platform", () => {
       const portalAccount = {
         ...mockDatabaseAccount1,
-        id: "/subscriptions/test-sub/resourceGroups/test-rg/providers/Microsoft.DocumentDb/databaseAccounts/account1",
+        id: "/subscriptions/test-sub/resourceGroups/test-rg/providers/Microsoft.DocumentDB/databaseAccounts/account1",
       };
 
       (configContext as any).platform = Platform.Portal;
