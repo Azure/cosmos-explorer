@@ -1,5 +1,5 @@
 import { expect, Page, test } from "@playwright/test";
-import { DataExplorer, ONE_MINUTE_MS, TestAccount } from "../../fx";
+import { DataExplorer, TestAccount } from "../../fx";
 import { createTestSQLContainer, TestContainerContext } from "../../testData";
 
 test.describe("Change Partition Key", () => {
@@ -62,7 +62,7 @@ test.describe("Change Partition Key", () => {
     await changePkPanel.getByTestId("Panel/OkButton").click();
 
     await pageInstance.waitForLoadState("networkidle");
-    await expect(changePkPanel).not.toBeVisible({ timeout: 5 * ONE_MINUTE_MS });
+    await expect(changePkPanel).not.toBeVisible({ timeout: 60 * 1000 });
 
     // Verify partition key change job
     const jobText = explorer.frame.getByText(/Partition key change job/);

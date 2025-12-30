@@ -13,8 +13,11 @@ test.describe("Autoscale and Manual throughput", () => {
   let context: TestContainerContext = null!;
   let explorer: DataExplorer = null!;
 
-  test.beforeEach("Create Test Database & Open container settings", async ({ page }) => {
+  test.beforeAll("Create Test Database", async () => {
     context = await createTestSQLContainer();
+  });
+
+  test.beforeEach("Open container settings", async ({ page }) => {
     explorer = await DataExplorer.open(page, TestAccount.SQL);
 
     // Click Scale & Settings and open Scale tab
@@ -23,7 +26,7 @@ test.describe("Autoscale and Manual throughput", () => {
     await scaleTab.click();
   });
 
-  test.afterEach("Delete Test Database", async () => {
+  test.afterAll("Delete Test Database", async () => {
     await context?.dispose();
   });
 

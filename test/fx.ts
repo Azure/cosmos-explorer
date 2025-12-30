@@ -460,12 +460,12 @@ export class DataExplorer {
     const containerNode = await this.waitForContainerNode(context.database.id, context.container.id);
     await containerNode.expand();
 
-    // // refresh tree to remove deleted database
-    // const refreshButton = this.frame.getByTestId("Sidebar/RefreshButton");
-    // await refreshButton.click();
-    // await expect(this.getConsoleMessage()).toContainText("Successfully refreshed databases", {
-    //   timeout: ONE_MINUTE_MS,
-    // });
+    // refresh tree to remove deleted database
+    const refreshButton = this.frame.getByTestId("Sidebar/RefreshButton");
+    await refreshButton.click();
+    await expect(this.getConsoleMessage()).toContainText("Successfully refreshed databases", {
+      timeout: ONE_MINUTE_MS,
+    });
 
     const scaleAndSettingsButton = this.frame.getByTestId(
       `TreeNode:${context.database.id}/${context.container.id}/Scale & Settings`,

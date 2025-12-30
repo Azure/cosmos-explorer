@@ -598,18 +598,10 @@ export default class Collection implements ViewModels.Collection {
   public onSettingsClick = async (): Promise<void> => {
     useSelectedNode.getState().setSelectedNode(this);
     const throughputCap = userContext.databaseAccount?.properties.capacity?.totalThroughputLimit;
-    await this.container.onRefreshResourcesClick();
+    // // Refresh all databases in case they were deleted outside of user session
+    // await this.container.onRefreshResourcesClick();
+
     throughputCap && throughputCap !== -1 ? await useDatabases.getState().loadAllOffers() : await this.loadOffer();
-    // if (throughputCap && throughputCap !== -1) {
-    //   try {
-    //     await useDatabases.getState().loadAllOffers();
-    //   } catch {
-    //     console.log("Fail quietly");
-    //     return;
-    //   }
-    // } else {
-    //   await this.loadOffer();
-    // }
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.Settings);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "Settings node",
