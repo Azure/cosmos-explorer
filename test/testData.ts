@@ -10,7 +10,7 @@ import {
   getAzureCLICredentials,
   resourceGroupName,
   subscriptionId,
-  TestAccount
+  TestAccount,
 } from "./fx";
 
 export interface TestItem {
