@@ -133,6 +133,7 @@ const CopyJobActionMenu: React.FC<CopyJobActionMenuProps> = ({ job, handleClick 
       menuIconProps={{ iconName: "", className: "hidden" }}
       ariaLabel={ContainerCopyMessages.MonitorJobs.Columns.actions}
       title={ContainerCopyMessages.MonitorJobs.Columns.actions}
+      data-test={`CopyJobActionMenu/Button:${job.Name}`}
     />
   );
 };
