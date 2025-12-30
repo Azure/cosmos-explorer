@@ -5,13 +5,12 @@ import { BulkOperationType, Container, CosmosClient, CosmosClientOptions, Databa
 import { AzureIdentityCredentialAdapter } from "@azure/ms-rest-js";
 
 import {
-  DataExplorer,
   generateUniqueName,
   getAccountName,
   getAzureCLICredentials,
   resourceGroupName,
   subscriptionId,
-  TestAccount,
+  TestAccount
 } from "./fx";
 
 export interface TestItem {
@@ -70,14 +69,8 @@ export class TestContainerContext {
     public testData: Map<string, TestItem>,
   ) {}
 
-  async dispose(explorer: DataExplorer) {
+  async dispose() {
     await this.database.delete();
-
-    // refresh tree to remove deleted database
-    if (explorer) {
-      const refreshButton = explorer.frame.getByTestId("Sidebar/RefreshButton");
-      await refreshButton.click();
-    }
   }
 }
 

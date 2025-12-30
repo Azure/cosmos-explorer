@@ -457,6 +457,10 @@ export class DataExplorer {
 
   /** Opens the Scale & Settings panel for the specified container */
   async openScaleAndSettings(context: TestContainerContext): Promise<void> {
+    // refresh tree to remove deleted database
+    const refreshButton = this.frame.getByTestId("Sidebar/RefreshButton");
+    await refreshButton.click();
+
     const containerNode = await this.waitForContainerNode(context.database.id, context.container.id);
     await containerNode.expand();
 

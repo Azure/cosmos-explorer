@@ -24,7 +24,7 @@ test.describe("Autoscale and Manual throughput", () => {
   });
 
   test.afterEach("Delete Test Database", async () => {
-    await context?.dispose(explorer);
+    await context?.dispose();
   });
 
   test("Update autoscale max throughput", async () => {
