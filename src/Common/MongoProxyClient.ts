@@ -38,7 +38,7 @@ export function queryIterator(databaseId: string, collection: Collection, query:
   let continuationToken: string;
   return {
     fetchNext: () => {
-      return queryDocuments(databaseId, collection, false, query).then((response) => {
+      return queryDocuments(databaseId, collection, false, query, continuationToken).then((response) => {
         continuationToken = response.continuationToken;
         const headers: { [key: string]: string | number } = {};
         response.headers.forEach((value, key) => {
