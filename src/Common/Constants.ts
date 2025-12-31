@@ -160,7 +160,7 @@ export class PortalBackendEndpoints {
 
 export class MongoProxyEndpoints {
   public static readonly Development: string = "https://localhost:7238";
-  public static readonly Mpac: string = "https://localhost:7238";
+  public static readonly Mpac: string = "https://cdb-ms-mpac-mp.cosmos.azure.com";
   public static readonly Prod: string = "https://cdb-ms-prod-mp.cosmos.azure.com";
   public static readonly Fairfax: string = "https://cdb-ff-prod-mp.cosmos.azure.us";
   public static readonly Mooncake: string = "https://cdb-mc-prod-mp.cosmos.azure.cn";
