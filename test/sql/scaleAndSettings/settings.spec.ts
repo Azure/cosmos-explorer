@@ -6,8 +6,11 @@ test.describe("Settings under Scale & Settings", () => {
   let context: TestContainerContext = null!;
   let explorer: DataExplorer = null!;
 
-  test.beforeEach("Create Test Database & Open container settings", async ({ page }) => {
+  test.beforeAll("Create Test Database", async () => {
     context = await createTestSQLContainer();
+  });
+
+  test.beforeEach("Open container settings", async ({ page }) => {
     explorer = await DataExplorer.open(page, TestAccount.SQL);
 
     // Click Scale & Settings and open Scale tab
@@ -16,9 +19,9 @@ test.describe("Settings under Scale & Settings", () => {
     await settingsTab.click();
   });
 
-  test.afterEach("Delete Test Database", async () => {
-    await context?.dispose();
-  });
+  // test.afterEach("Delete Test Database", async () => {
+  //   await context?.dispose();
+  // });
 
   test("Update TTL to On (no default)", async () => {
     const ttlOnNoDefaultRadioButton = explorer.frame.getByRole("radio", { name: "ttl-on-no-default-option" });
