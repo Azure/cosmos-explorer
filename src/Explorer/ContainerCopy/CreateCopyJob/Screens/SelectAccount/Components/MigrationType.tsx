@@ -37,7 +37,7 @@ export const MigrationType: React.FC<MigrationTypeProps> = React.memo(() => {
   const selectedKeyContent = ContainerCopyMessages.migrationTypeOptions[selectedKeyLowercase];
 
   return (
-    <Stack data-testid="migration-type" className="migrationTypeContainer">
+    <Stack data-test="migration-type" className="migrationTypeContainer">
       <Stack.Item>
         <ChoiceGroup
           selectedKey={selectedKey}
