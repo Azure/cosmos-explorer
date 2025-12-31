@@ -22,6 +22,7 @@ const CreateCopyJobScreens: React.FC = () => {
       <Stack.Item className="createCopyJobScreensContent">
         {contextError && (
           <MessageBar
+            data-test="Panel:ErrorContainer"
             className="createCopyJobErrorMessageBar"
             messageBarType={MessageBarType.blocked}
             isMultiline={false}

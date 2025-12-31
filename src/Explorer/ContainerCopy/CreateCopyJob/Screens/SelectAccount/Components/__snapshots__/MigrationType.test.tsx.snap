@@ -1,0 +1,109 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MigrationType Component Rendering should render migration type component with radio buttons 1`] = `
+<div>
+  <div
+    class="ms-Stack migrationTypeContainer css-109"
+    data-test="migration-type"
+  >
+    <div
+      class="ms-StackItem css-110"
+    >
+      <div
+        class="ms-ChoiceFieldGroup root-111"
+      >
+        <div
+          aria-labelledby="migrationTypeChoiceGroup"
+          role="radiogroup"
+        >
+          <div
+            class="ms-ChoiceFieldGroup-flexContainer flexContainer-112"
+          >
+            <div
+              class="ms-ChoiceField root-113"
+            >
+              <div
+                class="ms-ChoiceField-wrapper"
+              >
+                <input
+                  class="ms-ChoiceField-input input-114"
+                  id="ChoiceGroup0-offline"
+                  name="ChoiceGroup0"
+                  type="radio"
+                />
+                <label
+                  class="ms-ChoiceField-field field-115"
+                  for="ChoiceGroup0-offline"
+                >
+                  <span
+                    class="ms-ChoiceFieldLabel"
+                    id="ChoiceGroupLabel1-offline"
+                  >
+                    Offline mode
+                  </span>
+                </label>
+              </div>
+            </div>
+            <div
+              class="ms-ChoiceField root-113"
+            >
+              <div
+                class="ms-ChoiceField-wrapper"
+              >
+                <input
+                  checked=""
+                  class="ms-ChoiceField-input input-114"
+                  id="ChoiceGroup0-online"
+                  name="ChoiceGroup0"
+                  type="radio"
+                />
+                <label
+                  class="ms-ChoiceField-field is-checked field-120"
+                  for="ChoiceGroup0-online"
+                >
+                  <span
+                    class="ms-ChoiceFieldLabel"
+                    id="ChoiceGroupLabel1-online"
+                  >
+                    Online mode
+                  </span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="ms-StackItem css-123"
+    >
+      <span
+        class="migrationTypeDescription css-124"
+        data-testid="migration-type-description-online"
+      >
+        <div
+          class="markdown-body "
+        >
+          <p>
+            Online container copy jobs let you copy data from a source container to a destination Cosmos DB NoSQL API container using the 
+            <a
+              href="https://learn.microsoft.com/azure/cosmos-db/change-feed-modes?tabs=all-versions-and-deletes#all-versions-and-deletes-change-feed-mode-preview"
+              target="_blank"
+            >
+              All Versions and Delete
+            </a>
+             change feed. This allows updates to continue on the source while data is copied. A brief downtime is required at the end to safely switch over client applications to the destination container. Learn more about 
+            <a
+              href="https://learn.microsoft.com/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#getting-started"
+              target="_blank"
+            >
+              online copy jobs
+            </a>
+            .
+          </p>
+        </div>
+      </span>
+    </div>
+  </div>
+</div>
+`;
