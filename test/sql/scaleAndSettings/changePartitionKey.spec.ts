@@ -1,5 +1,5 @@
 import { expect, Page, test } from "@playwright/test";
-import { DataExplorer, TestAccount } from "../../fx";
+import { DataExplorer, getDropdownItemByNameOrPosition, TestAccount } from "../../fx";
 import { createTestSQLContainer, TestContainerContext } from "../../testData";
 
 test.describe("Change Partition Key", () => {
@@ -81,7 +81,11 @@ test.describe("Change Partition Key", () => {
     await changePkPanel.getByLabel("Use existing container").check();
     await changePkPanel.getByText("Choose an existing container").click();
 
-    const containerDropdownItem = await explorer.getDropdownItemByName(newContainerId, "Existing Containers");
+    const containerDropdownItem = await getDropdownItemByNameOrPosition(
+      explorer.frame,
+      { name: newContainerId },
+      { ariaLabel: "Existing Containers" },
+    );
     await containerDropdownItem.click();
 
     await changePkPanel.getByTestId("Panel/OkButton").click();

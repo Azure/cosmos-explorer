@@ -67,6 +67,7 @@ exports[`AddManagedIdentity Snapshot Tests renders initial state correctly 1`] =
         class="ms-Toggle-background pill-117"
         data-is-focusable="true"
         data-ktp-target="true"
+        data-test="btn-toggle"
         id="Toggle1"
         role="switch"
         type="button"
@@ -154,6 +155,7 @@ exports[`AddManagedIdentity Snapshot Tests renders loading state 1`] = `
         class="ms-Toggle-background pill-121"
         data-is-focusable="true"
         data-ktp-target="true"
+        data-test="btn-toggle"
         id="Toggle11"
         role="switch"
         type="button"
@@ -173,10 +175,12 @@ exports[`AddManagedIdentity Snapshot Tests renders loading state 1`] = `
   </div>
   <div
     class="ms-Stack popover-container foreground loading css-123"
+    data-test="popover-container"
     style="max-width: 450px;"
   >
     <div
       class="ms-Overlay root-135"
+      data-test="loading-overlay"
     >
       <div
         class="ms-Spinner root-137"
@@ -323,6 +327,7 @@ exports[`AddManagedIdentity Snapshot Tests renders with toggle on and popover vi
         class="ms-Toggle-background pill-121"
         data-is-focusable="true"
         data-ktp-target="true"
+        data-test="btn-toggle"
         id="Toggle3"
         role="switch"
         type="button"
@@ -342,6 +347,7 @@ exports[`AddManagedIdentity Snapshot Tests renders with toggle on and popover vi
   </div>
   <div
     class="ms-Stack popover-container foreground css-123"
+    data-test="popover-container"
     style="max-width: 450px;"
   >
     <span

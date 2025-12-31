@@ -35,6 +35,7 @@ const AddManagedIdentity: React.FC<AddManagedIdentityProps> = () => {
         <InfoTooltip content={managedIdentityTooltip} />
       </Text>
       <Toggle
+        data-test="btn-toggle"
         checked={systemAssigned}
         onText={ContainerCopyMessages.toggleBtn.onText}
         offText={ContainerCopyMessages.toggleBtn.offText}
