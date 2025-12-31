@@ -30,9 +30,12 @@ test.describe("Settings under Scale & Settings", () => {
     await ttlOnNoDefaultRadioButton.click();
 
     await explorer.commandBarButton(CommandBarButton.Save).click();
-    await expect(explorer.getConsoleMessage()).toContainText(`Successfully updated container ${context.container.id}`, {
-      timeout: ONE_MINUTE_MS,
-    });
+    await expect(explorer.getConsoleHeaderStatus()).toContainText(
+      `Successfully updated container ${context.container.id}`,
+      {
+        timeout: ONE_MINUTE_MS,
+      },
+    );
   });
 
   test("Update TTL to On (with user entry)", async () => {
@@ -44,9 +47,12 @@ test.describe("Settings under Scale & Settings", () => {
     await ttlInput.fill("30000");
 
     await explorer.commandBarButton(CommandBarButton.Save).click();
-    await expect(explorer.getConsoleMessage()).toContainText(`Successfully updated container ${context.container.id}`, {
-      timeout: ONE_MINUTE_MS,
-    });
+    await expect(explorer.getConsoleHeaderStatus()).toContainText(
+      `Successfully updated container ${context.container.id}`,
+      {
+        timeout: ONE_MINUTE_MS,
+      },
+    );
   });
 
   test("Update TTL to Off", async () => {
@@ -54,17 +60,23 @@ test.describe("Settings under Scale & Settings", () => {
     const ttlOnNoDefaultRadioButton = explorer.frame.getByRole("radio", { name: "ttl-on-no-default-option" });
     await ttlOnNoDefaultRadioButton.click();
     await explorer.commandBarButton(CommandBarButton.Save).click();
-    await expect(explorer.getConsoleMessage()).toContainText(`Successfully updated container ${context.container.id}`, {
-      timeout: ONE_MINUTE_MS,
-    });
+    await expect(explorer.getConsoleHeaderStatus()).toContainText(
+      `Successfully updated container ${context.container.id}`,
+      {
+        timeout: ONE_MINUTE_MS,
+      },
+    );
 
     // Set it to Off
     const ttlOffRadioButton = explorer.frame.getByRole("radio", { name: "ttl-off-option" });
     await ttlOffRadioButton.click();
 
     await explorer.commandBarButton(CommandBarButton.Save).click();
-    await expect(explorer.getConsoleMessage()).toContainText(`Successfully updated container ${context.container.id}`, {
-      timeout: ONE_MINUTE_MS,
-    });
+    await expect(explorer.getConsoleHeaderStatus()).toContainText(
+      `Successfully updated container ${context.container.id}`,
+      {
+        timeout: ONE_MINUTE_MS,
+      },
+    );
   });
 });

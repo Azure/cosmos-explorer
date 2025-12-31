@@ -461,9 +461,10 @@ export class DataExplorer {
     await containerNode.expand();
 
     // refresh tree to remove deleted database
+    const consoleMessages = await this.getConsoleMessages();
     const refreshButton = this.frame.getByTestId("Sidebar/RefreshButton");
     await refreshButton.click();
-    await expect(this.getConsoleMessage()).toContainText("Successfully refreshed databases", {
+    await expect(consoleMessages).toContainText("Successfully refreshed databases", {
       timeout: ONE_MINUTE_MS,
     });
 
@@ -474,8 +475,14 @@ export class DataExplorer {
   }
 
   /** Gets the console message element */
-  getConsoleMessage(): Locator {
+  getConsoleHeaderStatus(): Locator {
     return this.frame.getByTestId("notification-console/header-status");
+  }
+
+  async getConsoleMessages(): Promise<Locator> {
+    const expandCollapseConsoleLogsButton = this.frame.getByTestId("NotificationConsole/ExpandCollapseButton");
+    await expandCollapseConsoleLogsButton.click();
+    return this.frame.getByTestId("NotificationConsole/Contents");
   }
 
   async getDropdownItemByName(name: string, ariaLabel?: string): Promise<Locator> {

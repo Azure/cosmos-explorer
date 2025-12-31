@@ -41,7 +41,7 @@ test.describe("Autoscale and Manual throughput", () => {
     await explorer.commandBarButton(CommandBarButton.Save).click();
 
     // Read console message
-    await expect(explorer.getConsoleMessage()).toContainText(
+    await expect(explorer.getConsoleHeaderStatus()).toContainText(
       `Successfully updated offer for collection ${context.container.id}`,
       {
         timeout: 2 * ONE_MINUTE_MS,
@@ -82,7 +82,7 @@ test.describe("Autoscale and Manual throughput", () => {
   test("Update manual throughput", async () => {
     await getThroughputInput("manual").fill(TEST_MANUAL_THROUGHPUT_RU_2K.toString());
     await explorer.commandBarButton(CommandBarButton.Save).click();
-    await expect(explorer.getConsoleMessage()).toContainText(
+    await expect(explorer.getConsoleHeaderStatus()).toContainText(
       `Successfully updated offer for collection ${context.container.id}`,
       {
         timeout: 2 * ONE_MINUTE_MS,
@@ -119,7 +119,7 @@ test.describe("Autoscale and Manual throughput", () => {
     await autoscaleRadioButton.click();
     await expect(explorer.commandBarButton(CommandBarButton.Save)).toBeEnabled();
     await explorer.commandBarButton(CommandBarButton.Save).click();
-    await expect(explorer.getConsoleMessage()).toContainText(
+    await expect(explorer.getConsoleHeaderStatus()).toContainText(
       `Successfully updated offer for collection ${context.container.id}`,
       {
         timeout: ONE_MINUTE_MS,

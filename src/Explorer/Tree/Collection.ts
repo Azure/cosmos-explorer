@@ -599,7 +599,7 @@ export default class Collection implements ViewModels.Collection {
     useSelectedNode.getState().setSelectedNode(this);
     const throughputCap = userContext.databaseAccount?.properties.capacity?.totalThroughputLimit;
     // // Refresh all databases in case they were deleted outside of user session
-    // await this.container.onRefreshResourcesClick();
+    await this.container.onRefreshResourcesClick();
 
     throughputCap && throughputCap !== -1 ? await useDatabases.getState().loadAllOffers() : await this.loadOffer();
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.Settings);
