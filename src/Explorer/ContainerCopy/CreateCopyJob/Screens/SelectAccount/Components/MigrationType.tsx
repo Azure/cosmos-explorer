@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/display-name */
-import { ChoiceGroup, IChoiceGroupOption, Link, Stack, Text } from "@fluentui/react";
+import { ChoiceGroup, IChoiceGroupOption, Stack, Text } from "@fluentui/react";
+import MarkdownRender from "@nteract/markdown";
 import { useCopyJobContext } from "Explorer/ContainerCopy/Context/CopyJobContext";
 import React from "react";
 import ContainerCopyMessages from "../../../../ContainerCopyMessages";
@@ -53,10 +54,7 @@ export const MigrationType: React.FC<MigrationTypeProps> = React.memo(() => {
             className="migrationTypeDescription"
             data-testid={`migration-type-description-${selectedKeyLowercase}`}
           >
-            {selectedKeyContent.description}{" "}
-            <Link href={selectedKeyContent.learnMoreHref} target="_blank" rel="noopener noreferrer">
-              {selectedKeyContent.learnMoreText}
-            </Link>
+            <MarkdownRender source={selectedKeyContent.description} linkTarget="_blank" />
           </Text>
         </Stack.Item>
       )}

@@ -29,16 +29,12 @@ export default {
     offline: {
       title: "Offline mode",
       description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-      learnMoreText: "Learn more",
-      learnMoreHref: "https://learn.microsoft.com/en-us/azure/cosmos-db/container-copy?tabs=offline-copy",
+        "Offline container copy jobs let you copy data from a source container to a destination Cosmos DB container for supported APIs. To ensure data integrity between the source and destination, we recommend stopping updates on the source container before creating the copy job. Learn more about [offline copy jobs](https://learn.microsoft.com/azure/cosmos-db/how-to-container-copy?tabs=offline-copy&pivots=api-nosql).",
     },
     online: {
       title: "Online mode",
       description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-      learnMoreText: "Learn more",
-      learnMoreHref: "https://learn.microsoft.com/en-us/azure/cosmos-db/container-copy?tabs=offline-copy",
+        "Online container copy jobs let you copy data from a source container to a destination Cosmos DB NoSQL API container using the [All Versions and Delete](https://learn.microsoft.com/azure/cosmos-db/change-feed-modes?tabs=all-versions-and-deletes#all-versions-and-deletes-change-feed-mode-preview) change feed. This allows updates to continue on the source while data is copied. A brief downtime is required at the end to safely switch over client applications to the destination container. Learn more about [online copy jobs](https://learn.microsoft.com/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#getting-started).",
     },
   },
 
@@ -189,8 +185,8 @@ export default {
       Cancelled: "Cancelled",
     },
     dialog: {
-      heading: "Confirm Action",
-      confirmButtonText: "OK",
+      heading: "",
+      confirmButtonText: "Confirm",
       cancelButtonText: "Cancel",
     },
   },

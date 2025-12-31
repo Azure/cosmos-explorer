@@ -14,26 +14,19 @@ const dialogBody = {
   [CopyJobActions.cancel]: (jobName: string) => (
     <Stack tokens={{ childrenGap: 10 }}>
       <Stack.Item>
-        You are about to cancel <b>{jobName}</b>:
+        You are about to cancel <b>{jobName}</b> copy job.
       </Stack.Item>
-      <Stack.Item>
-        Cancelling this job will stop it immediately. Any running or pending steps will not be completed.
-      </Stack.Item>
-      <Stack.Item>
-        <b>This action cannot be undone. Do you want to continue?</b>
-      </Stack.Item>
+      <Stack.Item>Cancelling will stop the job immediately.</Stack.Item>
     </Stack>
   ),
   [CopyJobActions.complete]: (jobName: string) => (
     <Stack tokens={{ childrenGap: 10 }}>
       <Stack.Item>
-        You are about to complete <b>{jobName}</b>:
+        You are about to complete <b>{jobName}</b> copy job.
       </Stack.Item>
       <Stack.Item>
-        Completing this job will stop the continuous data synchronization between the source and destination containers.
-      </Stack.Item>
-      <Stack.Item>
-        <b>This action cannot be undone. Do you want to continue?</b>
+        Once completed, continuous data copy will stop after any pending documents are processed. To maintain data
+        integrity, we recommend stopping updates to the source container before completing the job.
       </Stack.Item>
     </Stack>
   ),

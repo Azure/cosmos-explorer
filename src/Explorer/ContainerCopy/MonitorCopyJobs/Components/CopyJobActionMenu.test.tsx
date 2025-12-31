@@ -35,7 +35,7 @@ jest.mock("../../ContainerCopyMessages", () => ({
       },
       dialog: {
         heading: "Confirm Action",
-        confirmButtonText: "OK",
+        confirmButtonText: "Confirm",
         cancelButtonText: "Cancel",
       },
     },
@@ -303,7 +303,7 @@ describe("CopyJobActionMenu", () => {
       expect(mockShowOkCancelModalDialog).toHaveBeenCalledWith(
         "Confirm Action",
         null,
-        "OK",
+        "Confirm",
         expect.any(Function),
         "Cancel",
         null,
@@ -360,7 +360,7 @@ describe("CopyJobActionMenu", () => {
       expect(mockShowOkCancelModalDialog).toHaveBeenCalledWith(
         "Confirm Action",
         null,
-        "OK",
+        "Confirm",
         expect.any(Function),
         "Cancel",
         null,
@@ -404,7 +404,7 @@ describe("CopyJobActionMenu", () => {
       expect(mockShowOkCancelModalDialog).toHaveBeenCalledWith(
         "Confirm Action",
         null,
-        "OK",
+        "Confirm",
         expect.any(Function),
         "Cancel",
         null,
@@ -435,7 +435,7 @@ describe("CopyJobActionMenu", () => {
       expect(mockShowOkCancelModalDialog).toHaveBeenCalledWith(
         "Confirm Action",
         null,
-        "OK",
+        "Confirm",
         expect.any(Function),
         "Cancel",
         null,
@@ -825,7 +825,7 @@ describe("CopyJobActionMenu", () => {
       expect(mockShowOkCancelModalDialog).toHaveBeenCalledWith(
         "Confirm Action", // title
         null, // subText
-        "OK", // okLabel
+        "Confirm", // confirmLabel
         expect.any(Function), // onOk
         "Cancel", // cancelLabel
         null, // onCancel
