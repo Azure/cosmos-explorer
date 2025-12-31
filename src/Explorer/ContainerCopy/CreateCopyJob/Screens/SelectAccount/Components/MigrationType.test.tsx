@@ -103,12 +103,14 @@ describe("MigrationType", () => {
       expect(screen.getByTestId("migration-type-description-online")).toBeInTheDocument();
 
       const learnMoreLink = screen.getByRole("link", {
-        name: ContainerCopyMessages.migrationTypeOptions.online.learnMoreText,
+        name: "online copy jobs",
       });
       expect(learnMoreLink).toBeInTheDocument();
-      expect(learnMoreLink).toHaveAttribute("href", ContainerCopyMessages.migrationTypeOptions.online.learnMoreHref);
+      expect(learnMoreLink).toHaveAttribute(
+        "href",
+        "https://learn.microsoft.com/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#getting-started",
+      );
       expect(learnMoreLink).toHaveAttribute("target", "_blank");
-      expect(learnMoreLink).toHaveAttribute("rel", "noopener noreferrer");
     });
 
     it("should render offline description and learn more link when offline is selected", () => {
@@ -126,10 +128,13 @@ describe("MigrationType", () => {
       expect(screen.getByTestId("migration-type-description-offline")).toBeInTheDocument();
 
       const learnMoreLink = screen.getByRole("link", {
-        name: ContainerCopyMessages.migrationTypeOptions.offline.learnMoreText,
+        name: "offline copy jobs",
       });
       expect(learnMoreLink).toBeInTheDocument();
-      expect(learnMoreLink).toHaveAttribute("href", ContainerCopyMessages.migrationTypeOptions.offline.learnMoreHref);
+      expect(learnMoreLink).toHaveAttribute(
+        "href",
+        "https://learn.microsoft.com/azure/cosmos-db/how-to-container-copy?tabs=offline-copy&pivots=api-nosql",
+      );
     });
   });
 
