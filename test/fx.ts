@@ -461,12 +461,13 @@ export class DataExplorer {
     await containerNode.expand();
 
     // refresh tree to remove deleted database
-    const consoleMessages = await this.getConsoleMessages();
+    const consoleMessages = await this.getNotificationConsoleMessages();
     const refreshButton = this.frame.getByTestId("Sidebar/RefreshButton");
     await refreshButton.click();
     await expect(consoleMessages).toContainText("Successfully refreshed databases", {
       timeout: ONE_MINUTE_MS,
     });
+    await this.collapseNotificationConsole();
 
     const scaleAndSettingsButton = this.frame.getByTestId(
       `TreeNode:${context.database.id}/${context.container.id}/Scale & Settings`,
@@ -479,9 +480,28 @@ export class DataExplorer {
     return this.frame.getByTestId("notification-console/header-status");
   }
 
-  async getConsoleMessages(): Promise<Locator> {
-    const expandCollapseConsoleLogsButton = this.frame.getByTestId("NotificationConsole/ExpandCollapseButton");
-    await expandCollapseConsoleLogsButton.click();
+  async expandNotificationConsole(): Promise<void> {
+    await this.setNotificationConsoleExpanded(true);
+  }
+
+  async collapseNotificationConsole(): Promise<void> {
+    await this.setNotificationConsoleExpanded(false);
+  }
+
+  async setNotificationConsoleExpanded(expanded: boolean): Promise<void> {
+    const notificationConsoleToggleButton = this.frame.getByTestId("NotificationConsole/ExpandCollapseButton");
+    const alt = await notificationConsoleToggleButton.locator("img").getAttribute("alt");
+
+    // When expanded, the icon says "Collapse icon"
+    if (expanded && alt === "Expand icon") {
+      await notificationConsoleToggleButton.click();
+    } else if (!expanded && alt === "Collapse icon") {
+      await notificationConsoleToggleButton.click();
+    }
+  }
+
+  async getNotificationConsoleMessages(): Promise<Locator> {
+    await this.setNotificationConsoleExpanded(true);
     return this.frame.getByTestId("NotificationConsole/Contents");
   }
 
