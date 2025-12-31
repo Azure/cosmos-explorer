@@ -50,7 +50,7 @@ test("Opening the Create Copy Job panel", async () => {
   await expect(panel.getByRole("heading", { name: "Create copy job" })).toBeVisible();
 });
 
-test("select different account dropdown", async () => {
+test("select different account dropdown and choose online copy radio button", async () => {
   const accountDropdown = panel.getByTestId("account-dropdown");
   await accountDropdown.click();
 
@@ -75,8 +75,9 @@ test("select different account dropdown", async () => {
     throw new Error("No dropdown items available after filtering");
   }
 
-  const fluentUiCheckboxContainer = panel.getByTestId("migration-type-checkbox").locator("div.ms-Checkbox");
-  await fluentUiCheckboxContainer.click();
+  const migrationTypeContainer = panel.getByTestId("migration-type");
+  const onlineCopyRadioButton = migrationTypeContainer.getByRole("radio", { name: /Online mode/i });
+  await onlineCopyRadioButton.click();
 
   await panel.getByRole("button", { name: "Next" }).click();
 });
@@ -339,22 +340,28 @@ test("Loading and verifying subscription & account dropdown", async () => {
   expectedSourceAccount = selectedAccount;
 });
 
-test("Verifying online or offline checkbox", async () => {
+test("Verifying online or offline content", async () => {
   /**
-   * This test verifies the functionality of the migration type checkbox that toggles between
+   * This test verifies the functionality of the migration type radio that toggles between
    * online and offline container copy modes. It ensures that:
    * 1. When online mode is selected, the user is directed to a permissions screen
    * 2. When offline mode is selected, the user bypasses the permissions screen
    * 3. The UI correctly reflects the selected migration type throughout the workflow
    */
-  const fluentUiCheckboxContainer = panel.getByTestId("migration-type-checkbox").locator("div.ms-Checkbox");
-  await fluentUiCheckboxContainer.click();
+  const migrationTypeContainer = panel.getByTestId("migration-type");
+  const onlineCopyRadioButton = migrationTypeContainer.getByRole("radio", { name: /Online mode/i });
+  await onlineCopyRadioButton.click();
+
   await panel.getByRole("button", { name: "Next" }).click();
+
   await expect(panel.getByTestId("Panel:AssignPermissionsContainer")).toBeVisible();
   await expect(panel.getByText("Online container copy", { exact: true })).toBeVisible();
   await panel.getByRole("button", { name: "Previous" }).click();
-  await fluentUiCheckboxContainer.click();
+
+  const offlineCopyRadioButton = migrationTypeContainer.getByRole("radio", { name: /Offline mode/i });
+  await offlineCopyRadioButton.click();
   await panel.getByRole("button", { name: "Next" }).click();
+
   await expect(panel.getByTestId("Panel:SelectSourceAndTargetContainers")).toBeVisible();
   await expect(panel.getByTestId("Panel:AssignPermissionsContainer")).not.toBeVisible();
 });
@@ -636,6 +643,19 @@ test("Cancel a copy job", async () => {
           const cancelAction = frame.locator(".ms-ContextualMenu-list button:has-text('Cancel')");
           if (await cancelAction.isVisible({ timeout: 1000 })) {
             await cancelAction.click();
+            await expect(frame.locator(".ms-Dialog-main")).toBeVisible({ timeout: 1000 });
+            await expect(frame.locator(".ms-Dialog-main")).toContainText(cancelJobName);
+
+            // Click cancel button on dialog to close it first
+            const cancelDialogButton = frame.locator(".ms-Dialog-main").getByTestId("DialogButton:Cancel");
+            await expect(cancelDialogButton).toBeVisible();
+            await cancelDialogButton.click();
+
+            // Click confirm button
+            await actionMenuButton.click({ timeout: 1000 });
+            await cancelAction.click();
+            const confirmDialogButton = frame.locator(".ms-Dialog-main").getByTestId("DialogButton:Confirm");
+            await confirmDialogButton.click();
 
             // Verify cancellation
             await expect(statusCell).toContainText(/cancelled|canceled|failed/i, { timeout: 5000 });

@@ -49,7 +49,7 @@ describe("MigrationType", () => {
     it("should render migration type component with radio buttons", () => {
       const { container } = render(<MigrationType />);
 
-      expect(screen.getByTestId("migration-type")).toBeInTheDocument();
+      expect(container.querySelector("[data-test='migration-type']")).toBeInTheDocument();
       expect(screen.getByRole("radiogroup")).toBeInTheDocument();
 
       const offlineRadio = screen.getByRole("radio", {
@@ -99,7 +99,6 @@ describe("MigrationType", () => {
     it("should render online description and learn more link when online is selected", () => {
       render(<MigrationType />);
 
-      expect(screen.getByText(ContainerCopyMessages.migrationTypeOptions.online.description)).toBeInTheDocument();
       expect(screen.getByTestId("migration-type-description-online")).toBeInTheDocument();
 
       const learnMoreLink = screen.getByRole("link", {
@@ -124,7 +123,6 @@ describe("MigrationType", () => {
 
       render(<MigrationType />);
 
-      expect(screen.getByText(ContainerCopyMessages.migrationTypeOptions.offline.description)).toBeInTheDocument();
       expect(screen.getByTestId("migration-type-description-offline")).toBeInTheDocument();
 
       const learnMoreLink = screen.getByRole("link", {
@@ -218,9 +216,9 @@ describe("MigrationType", () => {
         },
       });
 
-      render(<MigrationType />);
+      const { container } = render(<MigrationType />);
 
-      expect(screen.getByTestId("migration-type")).toBeInTheDocument();
+      expect(container.querySelector("[data-test='migration-type']")).toBeInTheDocument();
       expect(
         screen.getByRole("radio", { name: ContainerCopyMessages.migrationTypeOptions.offline.title }),
       ).toBeInTheDocument();
@@ -235,9 +233,9 @@ describe("MigrationType", () => {
         copyJobState: null,
       });
 
-      render(<MigrationType />);
+      const { container } = render(<MigrationType />);
 
-      expect(screen.getByTestId("migration-type")).toBeInTheDocument();
+      expect(container.querySelector("[data-test='migration-type']")).toBeInTheDocument();
     });
   });
 });
