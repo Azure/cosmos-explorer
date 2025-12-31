@@ -54,7 +54,6 @@ export const AccountDropdown: React.FC<AccountDropdownProps> = () => {
       const currentAccountId = copyJobState?.source?.account?.id;
       const predefinedAccountId = normalizeAccountId(userContext.databaseAccount?.id);
       const selectedAccountId = currentAccountId || predefinedAccountId;
-
       const targetAccount: DatabaseAccount | null =
         sqlApiOnlyAccounts.find((account) => account.id === selectedAccountId) || null;
       updateCopyJobState(targetAccount || sqlApiOnlyAccounts[0]);
