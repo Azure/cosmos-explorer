@@ -6,14 +6,9 @@ test.describe("Settings under Scale & Settings", () => {
   let context: TestContainerContext = null!;
   let explorer: DataExplorer = null!;
 
-  test.beforeAll("Create Test Database", async () => {
+  test.beforeEach("Create Test Database & Open container settings", async ({ page }) => {
     context = await createTestSQLContainer();
-  });
-
-  test.beforeEach("Open Settings tab under Scale & Settings", async ({ page }) => {
     explorer = await DataExplorer.open(page, TestAccount.SQL);
-    const containerNode = await explorer.waitForContainerNode(context.database.id, context.container.id);
-    await containerNode.expand();
 
     // Click Scale & Settings and open Scale tab
     await explorer.openScaleAndSettings(context);
@@ -21,7 +16,7 @@ test.describe("Settings under Scale & Settings", () => {
     await settingsTab.click();
   });
 
-  test.afterAll("Delete Test Database", async () => {
+  test.afterEach("Delete Test Database", async () => {
     await context?.dispose();
   });
 
