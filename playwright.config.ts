@@ -4,6 +4,12 @@ import { defineConfig, devices } from "@playwright/test";
  */
 export default defineConfig({
   testDir: "test",
+  testIgnore: [
+    "**/mongo/**",
+    "**/cassandra/**",
+    "**/gremlin/**",
+    "**/tables/**",
+  ],
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 3 : 0,

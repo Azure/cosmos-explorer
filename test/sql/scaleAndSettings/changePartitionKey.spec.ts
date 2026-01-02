@@ -20,6 +20,8 @@ test.describe("Change Partition Key", () => {
     // Click Scale & Settings and open Partition Key tab
     await explorer.openScaleAndSettings(context);
     const PartitionKeyTab = explorer.frame.getByTestId("settings-tab-header/PartitionKeyTab");
+    
+    await expect(PartitionKeyTab).toBeVisible();
     await PartitionKeyTab.click();
   });
 
