@@ -85,12 +85,7 @@ async function main() {
       // }
 
       const sqlDatabasesToDelete = sqlDatabases.map(async (database) => {
-        const timestamp = Number(database.resource._ts) * 1000;
-        if (timestamp && timestamp < thirtyMinutesAgo) {
-          await deleteWithRetry(client, database, account.name);
-        } else {
-          console.log(`SKIPPED: ${account.name} | ${database.name} | Age: ${friendlyTime(Date.now() - timestamp)}`);
-        }
+        await deleteWithRetry(client, database, account.name);
       });
 
       await Promise.all(sqlDatabasesToDelete);
