@@ -31,9 +31,6 @@ export const SwitchAccount: FunctionComponent<Props> = ({
       }}
       defaultSelectedKey={selectedAccount?.name}
       placeholder={accounts && accounts.length === 0 ? "No Accounts Found" : "Select an Account"}
-      styles={{
-        callout: "accountSwitchAccountDropdownMenu",
-      }}
     />
   );
 };

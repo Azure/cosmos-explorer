@@ -1,5 +1,6 @@
 import { initializeIcons } from "@fluentui/react";
 import { useBoolean } from "@fluentui/react-hooks";
+import { MessageTypes } from "Contracts/MessageTypes";
 import { AadAuthorizationFailure } from "Platform/Hosted/Components/AadAuthorizationFailure";
 import * as React from "react";
 import { render } from "react-dom";
@@ -21,8 +22,32 @@ import "./Shared/appInsights";
 import { useAADAuth } from "./hooks/useAADAuth";
 import { useConfig } from "./hooks/useConfig";
 import { useTokenMetadata } from "./hooks/usePortalAccessToken";
+import { THEME_MODE_DARK, useThemeStore } from "./hooks/useTheme";
 
 initializeIcons();
+
+if (typeof window !== "undefined") {
+  window.addEventListener("message", (event) => {
+    const messageData = event.data?.data || event.data;
+    const messageType = messageData?.type;
+
+    if (messageType === MessageTypes.UpdateTheme) {
+      const themeData = messageData?.params?.theme || messageData?.theme;
+      if (themeData && themeData.mode !== undefined) {
+        const isDark = themeData.mode === THEME_MODE_DARK;
+        useThemeStore.setState({
+          isDarkMode: isDark,
+          themeMode: themeData.mode,
+        });
+        if (isDark) {
+          document.body.classList.add("isDarkMode");
+        } else {
+          document.body.classList.remove("isDarkMode");
+        }
+      }
+    }
+  });
+}
 
 const App: React.FunctionComponent = () => {
   // For handling encrypted portal tokens sent via query paramter

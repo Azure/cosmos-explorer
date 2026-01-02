@@ -17,6 +17,38 @@
     position: fixed;
     top: -200px;
 }
+body.isDarkMode .ms-Layer {
+    .ms-Callout-main {
+        background-color: @BaseHigh !important;
+    }
+
+    .ms-Callout-beak {
+        background-color: @BaseHigh !important;
+    }
+
+    .ms-ContextualMenu {
+        background-color: @BaseHigh !important;
+    }
+
+    .ms-Dropdown-items {
+        background-color: @BaseHigh !important;
+    }
+
+    .ms-Dropdown-item {
+        background-color: @BaseHigh !important;
+        color: @BaseLight !important;
+
+        &:hover {
+            background-color: @BaseMediumHigh !important;
+            color: @BaseLight !important;
+        }
+
+        &.is-selected {
+            background-color: @BaseMediumHigh !important;
+            color: @BaseLight !important;
+        }
+    }
+}
 
 html {
     font-family: wf_segoe-ui_normal, "Segoe UI", "Segoe WP", Tahoma, Arial, sans-serif;
@@ -126,6 +158,65 @@ body {
 
         .ms-ContextualMenu-item {
             margin-bottom: @LargeSpace;
+        }
+    }
+
+    &.isDarkMode .accountSwitchContextualMenu {
+        background-color: @BaseHigh;
+
+        .ms-Callout-main {
+            background-color: @BaseHigh;
+        }
+
+        .ms-ContextualMenu-item {
+            background-color: @BaseHigh;
+        }
+
+        .ms-Dropdown {
+            .ms-Dropdown-title {
+                background-color: @BaseDark;
+                color: @BaseLight;
+                border-color: @BaseMediumHigh;
+            }
+
+            .ms-Dropdown-caretDownWrapper {
+                color: @BaseLight;
+            }
+
+            &:hover .ms-Dropdown-title {
+                background-color: @BaseHigh;
+                color: @BaseLight;
+                border-color: @BaseMedium;
+            }
+        }
+
+        .ms-Label {
+            color: @BaseLight;
+        }
+    }
+
+    &.isDarkMode .ms-Dropdown-callout {
+        .ms-Callout-main {
+            background-color: @BaseHigh;
+        }
+
+        .ms-Dropdown-items {
+            background-color: @BaseHigh;
+        }
+
+        .ms-Dropdown-item {
+            background-color: @BaseHigh;
+            color: @BaseLight;
+
+            &:hover {
+                background-color: @BaseMediumHigh;
+                color: @BaseLight;
+            }
+
+            &.is-selected {
+                background-color: @BaseMediumHigh;
+                color: @BaseLight;
+            }
         }
     }
 
