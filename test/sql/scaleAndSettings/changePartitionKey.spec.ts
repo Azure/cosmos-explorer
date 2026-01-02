@@ -6,7 +6,7 @@ test.describe("Change Partition Key", () => {
   let pageInstance: Page;
   let context: TestContainerContext = null!;
   let explorer: DataExplorer = null!;
-  const newPartitionKeyPath = "/newPartitionKey";
+  const newPartitionKeyPath = "newPartitionKey";
   const newContainerId = "testcontainer_1";
 
   test.beforeAll("Create Test Database", async () => {
@@ -59,7 +59,7 @@ test.describe("Change Partition Key", () => {
     await expect(changePkPanel.getByTestId("new-container-sub-partition-key-input-0")).toBeVisible();
     await expect(changePkPanel.getByTestId("remove-sub-partition-key-button-0")).toBeVisible();
     await expect(changePkPanel.getByTestId("hierarchical-partitioning-info-text")).toBeVisible();
-    changePkPanel.getByTestId("new-container-sub-partition-key-input-0").fill("/customerId");
+    changePkPanel.getByTestId("new-container-sub-partition-key-input-0").fill("customerId");
 
     await changePkPanel.getByTestId("Panel/OkButton").click();
 
