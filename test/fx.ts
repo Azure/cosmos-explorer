@@ -59,6 +59,7 @@ export const TEST_AUTOSCALE_THROUGHPUT_RU = 1000;
 export const TEST_AUTOSCALE_MAX_THROUGHPUT_RU_2K = 2000;
 export const TEST_MANUAL_THROUGHPUT_RU_2K = 2000;
 export const ONE_MINUTE_MS: number = 60 * 1000;
+export const ONE_SECOND_MS: number = 1000;
 
 function tryGetStandardName(accountType: TestAccount) {
   if (process.env.DE_TEST_ACCOUNT_PREFIX) {
@@ -473,6 +474,30 @@ export class DataExplorer {
       `TreeNode:${context.database.id}/${context.container.id}/Scale & Settings`,
     );
     await scaleAndSettingsButton.click();
+
+    // // Wait for the Scale & Settings tab to open
+    // const scaleAndSettingsTab = this.frame.getByRole("tab", { name: `${context.container.id}.Scale & Settings` });
+    // await scaleAndSettingsTab.waitFor({
+    //   timeout: ONE_MINUTE_MS,
+    // });
+    // Dismiss overlay if it appears
+    const overlay = this.frame.locator("#webpack-dev-server-client-overlay").first();
+
+    for (let attempt = 0; attempt < 5; attempt++) {
+      await scaleAndSettingsButton.click();
+
+      try {
+        // Give it up to 30s to show up
+        await overlay.waitFor({ state: "visible", timeout: 15 * ONE_SECOND_MS });
+
+        // Overlay appeared => dismiss and retry
+        await overlay.contentFrame().getByLabel("Dismiss").click();
+        continue;
+      } catch {
+        // Overlay did not appear within 30s => success
+        break;
+      }
+    }
   }
 
   /** Gets the console message element */
