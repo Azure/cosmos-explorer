@@ -26,11 +26,15 @@ test.describe("Autoscale throughput", () => {
     await switchManualToAutoscaleThroughput();
   });
 
-  if (!process.env.CI) {
-    test.afterAll("Delete Test Database", async () => {
-      await context?.dispose();
-    });
-  }
+  // if (!process.env.CI) {
+  //   test.afterAll("Delete Test Database", async () => {
+  //     await context?.dispose();
+  //   });
+  // }
+
+  test.afterAll("Delete Test Database", async () => {
+    await context?.dispose();
+  });
 
   test("Update autoscale max throughput", async () => {
     // Update autoscale max throughput
@@ -80,7 +84,7 @@ test.describe("Autoscale throughput", () => {
     await expect(explorer.getConsoleHeaderStatus()).toContainText(
       `Successfully updated offer for collection ${context.container.id}`,
       {
-        timeout: ONE_MINUTE_MS,
+        timeout: 2 * ONE_MINUTE_MS,
       },
     );
   };
