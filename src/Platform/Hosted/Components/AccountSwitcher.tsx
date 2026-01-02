@@ -1,7 +1,7 @@
 // TODO: Renable this rule for the file or turn it off everywhere
 /* eslint-disable react/display-name */
 
-import { DefaultButton, IButtonStyles, IContextualMenuItem } from "@fluentui/react";
+import { DefaultButton, IButtonStyles, IContextualMenuItem, IContextualMenuProps } from "@fluentui/react";
 import * as React from "react";
 import { FunctionComponent, useEffect, useState } from "react";
 import { StyleConstants } from "../../../Common/StyleConstants";
@@ -92,14 +92,16 @@ export const AccountSwitcher: FunctionComponent<Props> = ({ armToken, setDatabas
     },
   ];
 
+  const menuProps: IContextualMenuProps = {
+    directionalHintFixed: true,
+    className: "accountSwitchContextualMenu",
+    items,
+  };
+
   return (
     <DefaultButton
       text={buttonText}
-      menuProps={{
-        directionalHintFixed: true,
-        className: "accountSwitchContextualMenu",
-        items,
-      }}
+      menuProps={menuProps}
       styles={buttonStyles}
       className="accountSwitchButton"
       id="accountSwitchButton"

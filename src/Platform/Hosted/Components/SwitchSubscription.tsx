@@ -30,9 +30,6 @@ export const SwitchSubscription: FunctionComponent<Props> = ({
       }}
       defaultSelectedKey={selectedSubscription?.subscriptionId}
       placeholder={subscriptions && subscriptions.length === 0 ? "No Subscriptions Found" : "Select a Subscription"}
-      styles={{
-        callout: "accountSwitchSubscriptionDropdownMenu",
-      }}
     />
   );
 };
