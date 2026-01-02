@@ -41,7 +41,11 @@ export const DatabaseContainerSection = ({
           onChange={containerOnChange}
         />
         {handleOnDemandCreateContainer && (
-          <ActionButton className="create-container-link-btn" onClick={() => handleOnDemandCreateContainer()}>
+          <ActionButton
+            className="create-container-link-btn"
+            style={{ color: "var(--colorBrandForeground1)" }}
+            onClick={() => handleOnDemandCreateContainer()}
+          >
             {ContainerCopyMessages.createContainerButtonLabel}
           </ActionButton>
         )}

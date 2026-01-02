@@ -31,6 +31,7 @@ const iconButtonStyles = {
     outline: "none",
   },
 };
+const textStyle: React.CSSProperties = { color: "var(--colorNeutralForeground1)" };
 
 const Pager: React.FC<PagerProps> = ({
   startIndex,
@@ -59,7 +60,7 @@ const Pager: React.FC<PagerProps> = ({
   return (
     <div className={className || "pager-container"}>
       {showItemCount && (
-        <Text>
+        <Text style={textStyle}>
           Showing {startIndex + 1} - {endIndex} of {totalCount} items
         </Text>
       )}
@@ -82,7 +83,7 @@ const Pager: React.FC<PagerProps> = ({
           disabled={disabled || currentPage === 1}
           styles={iconButtonStyles}
         />
-        <Text>
+        <Text style={textStyle}>
           Page {currentPage} of {totalPages}
         </Text>
         <IconButton

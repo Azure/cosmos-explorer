@@ -7,11 +7,11 @@ exports[`PopoverMessage Component Edge Cases should handle empty string title 1`
     style="max-width: 450px;"
   >
     <span
-      class="css-110"
+      class="themeText css-110"
       style="font-weight: 600;"
     />
     <span
-      class="css-111"
+      class="themeText css-111"
     >
       <div>
         Test content
@@ -74,7 +74,7 @@ exports[`PopoverMessage Component Edge Cases should handle null children 1`] = `
     style="max-width: 450px;"
   >
     <span
-      class="css-110"
+      class="themeText css-110"
       style="font-weight: 600;"
     >
       Test Title
@@ -136,7 +136,7 @@ exports[`PopoverMessage Component Edge Cases should handle undefined children 1`
     style="max-width: 450px;"
   >
     <span
-      class="css-110"
+      class="themeText css-110"
       style="font-weight: 600;"
     >
       Test Title
@@ -198,13 +198,13 @@ exports[`PopoverMessage Component Edge Cases should handle very long title 1`] =
     style="max-width: 450px;"
   >
     <span
-      class="css-110"
+      class="themeText css-110"
       style="font-weight: 600;"
     >
       This is a very long title that might cause layout issues or text wrapping in the popover component
     </span>
     <span
-      class="css-111"
+      class="themeText css-111"
     >
       <div>
         Test content
@@ -269,13 +269,13 @@ exports[`PopoverMessage Component Rendering should render correctly when visible
     style="max-width: 450px;"
   >
     <span
-      class="css-110"
+      class="themeText css-110"
       style="font-weight: 600;"
     >
       Test Title
     </span>
     <span
-      class="css-111"
+      class="themeText css-111"
     >
       <div>
         Test content
@@ -338,13 +338,13 @@ exports[`PopoverMessage Component Rendering should render correctly with differe
     style="max-width: 450px;"
   >
     <span
-      class="css-110"
+      class="themeText css-110"
       style="font-weight: 600;"
     >
       Test Title
     </span>
     <span
-      class="css-111"
+      class="themeText css-111"
     >
       <div>
         <p>
@@ -412,13 +412,13 @@ exports[`PopoverMessage Component Rendering should render correctly with differe
     style="max-width: 450px;"
   >
     <span
-      class="css-110"
+      class="themeText css-110"
       style="font-weight: 600;"
     >
       Custom Title
     </span>
     <span
-      class="css-111"
+      class="themeText css-111"
     >
       <div>
         Test content
@@ -485,13 +485,13 @@ exports[`PopoverMessage Component Rendering should render correctly with loading
       data-testid="loading-overlay"
     />
     <span
-      class="css-110"
+      class="themeText css-110"
       style="font-weight: 600;"
     >
       Test Title
     </span>
     <span
-      class="css-111"
+      class="themeText css-111"
     >
       <div>
         Test content

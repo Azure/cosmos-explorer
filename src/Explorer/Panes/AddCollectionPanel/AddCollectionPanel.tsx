@@ -853,7 +853,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
               {!isSynapseLinkEnabled() && (
                 <Stack className="panelGroupSpacing">
-                  <Text variant="small">
+                  <Text variant="small" style={{ color: "var(--colorNeutralForeground1)" }}>
                     Azure Synapse Link is required for creating an analytical store{" "}
                     {getCollectionName().toLocaleLowerCase()}. Enable Synapse Link for this Cosmos DB account. <br />
                     <Link

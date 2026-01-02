@@ -47,8 +47,8 @@ const PermissionGroup: React.FC<PermissionGroupConfig> = ({ title, description, 
       tokens={{ childrenGap: 15 }}
       styles={{
         root: {
-          background: "#fafafa",
-          border: "1px solid #e1e1e1",
+          background: "var(--colorNeutralBackground2)",
+          border: "1px solid var(--colorNeutralStroke1)",
           borderRadius: 8,
           padding: 16,
           boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
@@ -56,11 +56,11 @@ const PermissionGroup: React.FC<PermissionGroupConfig> = ({ title, description, 
       }}
     >
       <Stack tokens={{ childrenGap: 5 }}>
-        <Text variant="medium" style={{ fontWeight: 600 }}>
+        <Text variant="medium" style={{ fontWeight: 600, color: "var(--colorNeutralForeground1)" }}>
           {title}
         </Text>
         {description && (
-          <Text variant="small" styles={{ root: { color: "#605E5C" } }}>
+          <Text variant="small" styles={{ root: { color: "var(--colorNeutralForeground2)" } }}>
             {description}
           </Text>
         )}
@@ -100,7 +100,7 @@ const AssignPermissions = () => {
 
   return (
     <Stack className="assignPermissionsContainer" tokens={{ childrenGap: 20 }}>
-      <Text variant="medium">
+      <Text variant="medium" style={{ color: "var(--colorNeutralForeground1)" }}>
         {isSameAccount && copyJobState.migrationType === CopyJobMigrationType.Online
           ? ContainerCopyMessages.assignPermissions.intraAccountOnlineDescription(
               copyJobState?.source?.account?.name || "",
