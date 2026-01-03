@@ -437,13 +437,14 @@ export default class Explorer {
   public onRefreshResourcesClick = async (): Promise<void> => {
     if (isFabricMirroredKey()) {
       scheduleRefreshFabricToken(true).then(() => this.refreshAllDatabases());
-      return;
+    } else {
+      await (userContext.authType === AuthType.ResourceToken
+        ? this.refreshDatabaseForResourceToken()
+        : this.refreshAllDatabases());
+      await this.refreshNotebookList();
     }
 
-    await (userContext.authType === AuthType.ResourceToken
-      ? this.refreshDatabaseForResourceToken()
-      : this.refreshAllDatabases());
-    await this.refreshNotebookList();
+    logConsoleInfo("Successfully refreshed databases");
   };
 
   // Facade

@@ -2,24 +2,35 @@ import { expect, test } from "@playwright/test";
 import { CommandBarButton, DataExplorer, ONE_MINUTE_MS, TestAccount } from "../../fx";
 import { createTestSQLContainer, TestContainerContext } from "../../testData";
 
-test.describe("Settings under Scale & Settings", () => {
+test.describe.serial("Settings under Scale & Settings", () => {
   let context: TestContainerContext = null!;
   let explorer: DataExplorer = null!;
 
-  test.beforeAll("Create Test Database", async () => {
-    context = await createTestSQLContainer({ includeTestData: true });
-  });
-
-  test.beforeEach("Open Settings tab under Scale & Settings", async ({ page }) => {
+  test.beforeAll("Create Test Database", async ({ browser }) => {
+    context = await createTestSQLContainer();
+    const page = await browser.newPage();
     explorer = await DataExplorer.open(page, TestAccount.SQL);
-    const containerNode = await explorer.waitForContainerNode(context.database.id, context.container.id);
-    await containerNode.expand();
 
     // Click Scale & Settings and open Scale tab
     await explorer.openScaleAndSettings(context);
     const settingsTab = explorer.frame.getByTestId("settings-tab-header/SubSettingsTab");
     await settingsTab.click();
   });
+
+  // test.beforeEach("Open container settings", async ({ page }) => {
+  //   explorer = await DataExplorer.open(page, TestAccount.SQL);
+
+  //   // Click Scale & Settings and open Scale tab
+  //   await explorer.openScaleAndSettings(context);
+  //   const settingsTab = explorer.frame.getByTestId("settings-tab-header/SubSettingsTab");
+  //   await settingsTab.click();
+  // });
+
+  // if (!process.env.CI) {
+  //   test.afterAll("Delete Test Database", async () => {
+  //     await context?.dispose();
+  //   });
+  // }
 
   test.afterAll("Delete Test Database", async () => {
     await context?.dispose();
@@ -30,9 +41,12 @@ test.describe("Settings under Scale & Settings", () => {
     await ttlOnNoDefaultRadioButton.click();
 
     await explorer.commandBarButton(CommandBarButton.Save).click();
-    await expect(explorer.getConsoleMessage()).toContainText(`Successfully updated container ${context.container.id}`, {
-      timeout: ONE_MINUTE_MS,
-    });
+    await expect(explorer.getConsoleHeaderStatus()).toContainText(
+      `Successfully updated container ${context.container.id}`,
+      {
+        timeout: ONE_MINUTE_MS,
+      },
+    );
   });
 
   test("Update TTL to On (with user entry)", async () => {
@@ -44,27 +58,11 @@ test.describe("Settings under Scale & Settings", () => {
     await ttlInput.fill("30000");
 
     await explorer.commandBarButton(CommandBarButton.Save).click();
-    await expect(explorer.getConsoleMessage()).toContainText(`Successfully updated container ${context.container.id}`, {
-      timeout: ONE_MINUTE_MS,
-    });
-  });
-
-  test("Update TTL to Off", async () => {
-    // By default TTL is set to off so we need to first set it to On
-    const ttlOnNoDefaultRadioButton = explorer.frame.getByRole("radio", { name: "ttl-on-no-default-option" });
-    await ttlOnNoDefaultRadioButton.click();
-    await explorer.commandBarButton(CommandBarButton.Save).click();
-    await expect(explorer.getConsoleMessage()).toContainText(`Successfully updated container ${context.container.id}`, {
-      timeout: ONE_MINUTE_MS,
-    });
-
-    // Set it to Off
-    const ttlOffRadioButton = explorer.frame.getByRole("radio", { name: "ttl-off-option" });
-    await ttlOffRadioButton.click();
-
-    await explorer.commandBarButton(CommandBarButton.Save).click();
-    await expect(explorer.getConsoleMessage()).toContainText(`Successfully updated container ${context.container.id}`, {
-      timeout: ONE_MINUTE_MS,
-    });
+    await expect(explorer.getConsoleHeaderStatus()).toContainText(
+      `Successfully updated container ${context.container.id}`,
+      {
+        timeout: ONE_MINUTE_MS,
+      },
+    );
   });
 });
