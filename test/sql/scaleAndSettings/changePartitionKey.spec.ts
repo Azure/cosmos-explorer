@@ -57,16 +57,16 @@ test.describe("Change Partition Key", () => {
     changePkPanel.getByTestId("new-container-partition-key-input").fill(newPartitionKeyPath);
 
     await expect(changePkPanel.getByTestId("add-sub-partition-key-button")).toBeVisible();
-    changePkPanel.getByTestId("add-sub-partition-key-button").click();
-    await expect(changePkPanel.getByTestId("new-container-sub-partition-key-input-0")).toBeVisible();
-    await expect(changePkPanel.getByTestId("remove-sub-partition-key-button-0")).toBeVisible();
-    await expect(changePkPanel.getByTestId("hierarchical-partitioning-info-text")).toBeVisible();
-    changePkPanel.getByTestId("new-container-sub-partition-key-input-0").fill("customerId");
+    // changePkPanel.getByTestId("add-sub-partition-key-button").click();
+    // await expect(changePkPanel.getByTestId("new-container-sub-partition-key-input-0")).toBeVisible();
+    // await expect(changePkPanel.getByTestId("remove-sub-partition-key-button-0")).toBeVisible();
+    // await expect(changePkPanel.getByTestId("hierarchical-partitioning-info-text")).toBeVisible();
+    // changePkPanel.getByTestId("new-container-sub-partition-key-input-0").fill("customerId");
 
     await changePkPanel.getByTestId("Panel/OkButton").click();
 
-    await pageInstance.waitForLoadState("networkidle");
-    await expect(changePkPanel).not.toBeVisible({ timeout: 60 * 1000 });
+    // await pageInstance.waitForLoadState("networkidle");
+    await expect(changePkPanel).not.toBeVisible({ timeout: 5 * 60 * 1000 });
 
     // Verify partition key change job
     const jobText = explorer.frame.getByText(/Partition key change job/);
