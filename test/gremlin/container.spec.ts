@@ -9,7 +9,8 @@ test("Gremlin graph CRUD", async ({ page }) => {
   const explorer = await DataExplorer.open(page, TestAccount.Gremlin);
 
   // Create new database and graph
-  await explorer.globalCommandButton("New Graph").click();
+  const newGraphButton = await explorer.globalCommandButton("New Graph");
+  await newGraphButton.click();
   await explorer.whilePanelOpen(
     "New Graph",
     async (panel, okButton) => {

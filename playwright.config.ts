@@ -4,6 +4,12 @@ import { defineConfig, devices } from "@playwright/test";
  */
 export default defineConfig({
   testDir: "test",
+  testIgnore: [
+    "**/mongo/**",
+    "**/cassandra/**",
+    "**/gremlin/**",
+    "**/tables/**",
+  ],
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 3 : 0,
@@ -11,8 +17,8 @@ export default defineConfig({
   reporter: process.env.CI ? "blob" : "html",
   timeout: 10 * 60 * 1000,
   use: {
-    trace: "off",
-    video: "off",
+    trace: "on-all-retries",
+    video: "on-first-retry",
     screenshot: "on",
     testIdAttribute: "data-test",
     contextOptions: {

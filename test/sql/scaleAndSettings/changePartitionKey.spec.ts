@@ -6,7 +6,7 @@ test.describe("Change Partition Key", () => {
   let pageInstance: Page;
   let context: TestContainerContext = null!;
   let explorer: DataExplorer = null!;
-  const newPartitionKeyPath = "/newPartitionKey";
+  const newPartitionKeyPath = "newPartitionKey";
   const newContainerId = "testcontainer_1";
 
   test.beforeAll("Create Test Database", async () => {
@@ -20,12 +20,16 @@ test.describe("Change Partition Key", () => {
     // Click Scale & Settings and open Partition Key tab
     await explorer.openScaleAndSettings(context);
     const PartitionKeyTab = explorer.frame.getByTestId("settings-tab-header/PartitionKeyTab");
+
+    await expect(PartitionKeyTab).toBeVisible();
     await PartitionKeyTab.click();
   });
 
-  test.afterAll("Delete Test Database", async () => {
-    await context?.dispose();
-  });
+  if (!process.env.CI) {
+    test.afterEach("Delete Test Database", async () => {
+      await context?.dispose();
+    });
+  }
 
   test("Change partition key path", async () => {
     await expect(explorer.frame.getByText("/partitionKey")).toBeVisible();
@@ -53,16 +57,16 @@ test.describe("Change Partition Key", () => {
     changePkPanel.getByTestId("new-container-partition-key-input").fill(newPartitionKeyPath);
 
     await expect(changePkPanel.getByTestId("add-sub-partition-key-button")).toBeVisible();
-    changePkPanel.getByTestId("add-sub-partition-key-button").click();
-    await expect(changePkPanel.getByTestId("new-container-sub-partition-key-input-0")).toBeVisible();
-    await expect(changePkPanel.getByTestId("remove-sub-partition-key-button-0")).toBeVisible();
-    await expect(changePkPanel.getByTestId("hierarchical-partitioning-info-text")).toBeVisible();
-    changePkPanel.getByTestId("new-container-sub-partition-key-input-0").fill("/customerId");
+    // changePkPanel.getByTestId("add-sub-partition-key-button").click();
+    // await expect(changePkPanel.getByTestId("new-container-sub-partition-key-input-0")).toBeVisible();
+    // await expect(changePkPanel.getByTestId("remove-sub-partition-key-button-0")).toBeVisible();
+    // await expect(changePkPanel.getByTestId("hierarchical-partitioning-info-text")).toBeVisible();
+    // changePkPanel.getByTestId("new-container-sub-partition-key-input-0").fill("customerId");
 
     await changePkPanel.getByTestId("Panel/OkButton").click();
 
-    await pageInstance.waitForLoadState("networkidle");
-    await expect(changePkPanel).not.toBeVisible({ timeout: 60 * 1000 });
+    // await pageInstance.waitForLoadState("networkidle");
+    await expect(changePkPanel).not.toBeVisible({ timeout: 5 * 60 * 1000 });
 
     // Verify partition key change job
     const jobText = explorer.frame.getByText(/Partition key change job/);

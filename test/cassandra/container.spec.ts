@@ -8,7 +8,8 @@ test("Cassandra keyspace and table CRUD", async ({ page }) => {
 
   const explorer = await DataExplorer.open(page, TestAccount.Cassandra);
 
-  await explorer.globalCommandButton("New Table").click();
+  const newTableButton = await explorer.globalCommandButton("New Table");
+  await newTableButton.click();
   await explorer.whilePanelOpen(
     "Add Table",
     async (panel, okButton) => {

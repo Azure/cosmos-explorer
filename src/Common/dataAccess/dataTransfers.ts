@@ -42,16 +42,22 @@ export const getDataTransferJobs = async (
   );
   dataTransferJobs = [...dataTransferJobs, ...(dataTransferFeeds?.value || [])];
   while (dataTransferFeeds?.nextLink) {
-    const nextResponse = await window.fetch(dataTransferFeeds.nextLink, {
-      headers: {
-        Authorization: userContext.authorizationToken,
-      },
-    });
-    if (nextResponse.ok) {
-      dataTransferFeeds = await nextResponse.json();
-      dataTransferJobs = [...dataTransferJobs, ...(dataTransferFeeds?.value || [])];
-    } else {
-      break;
+    try {
+      const nextResponse = await window.fetch(dataTransferFeeds.nextLink, {
+        headers: {
+          Authorization: userContext.authorizationToken,
+        },
+      });
+      if (nextResponse.ok) {
+        dataTransferFeeds = await nextResponse.json();
+        dataTransferJobs = [...dataTransferJobs, ...(dataTransferFeeds?.value || [])];
+      } else {
+        break;
+      }
+    } catch (error) {
+      // Handle network errors gracefully (e.g., in test environment)
+      console.warn("Failed to fetch next page of data transfer jobs:", error);
+      throw new Error(error.message || JSON.stringify(error));
     }
   }
   return dataTransferJobs;
