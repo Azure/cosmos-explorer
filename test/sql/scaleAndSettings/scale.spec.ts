@@ -13,7 +13,7 @@ test.describe("Autoscale throughput", () => {
   let context: TestContainerContext = null!;
   let explorer: DataExplorer = null!;
 
-  test.beforeAll("Create Test Database", async ({ browser }) => {
+  test.beforeAll("Create Test Database & Open Scale tab", async ({ browser }) => {
     context = await createTestSQLContainer();
     const page = await browser.newPage();
     explorer = await DataExplorer.open(page, TestAccount.SQL);
@@ -26,11 +26,9 @@ test.describe("Autoscale throughput", () => {
     await switchManualToAutoscaleThroughput();
   });
 
-  if (!process.env.CI) {
-    test.afterAll("Delete Test Database", async () => {
-      await context?.dispose();
-    });
-  }
+  test.afterAll("Delete Test Database", async () => {
+    await context?.dispose();
+  });
 
   test("Update autoscale max throughput", async () => {
     // Update autoscale max throughput
@@ -90,7 +88,7 @@ test.describe("Manual throughput", () => {
   let context: TestContainerContext = null!;
   let explorer: DataExplorer = null!;
 
-  test.beforeAll("Create Test Database & Open container settings", async ({ browser }) => {
+  test.beforeAll("Create Test Database & Open scale tab", async ({ browser }) => {
     context = await createTestSQLContainer();
     const page = await browser.newPage();
     explorer = await DataExplorer.open(page, TestAccount.SQL);
@@ -101,15 +99,9 @@ test.describe("Manual throughput", () => {
     await scaleTab.click();
   });
 
-  // test.beforeEach("Open container settings", async ({ page }) => {
-
-  // });
-
-  if (!process.env.CI) {
-    test.afterAll("Delete Test Database", async () => {
-      await context?.dispose();
-    });
-  }
+  test.afterAll("Delete Test Database", async () => {
+    await context?.dispose();
+  });
 
   test("Update manual throughput", async () => {
     await getThroughputInput(explorer, "manual").fill(TEST_MANUAL_THROUGHPUT_RU_2K.toString());

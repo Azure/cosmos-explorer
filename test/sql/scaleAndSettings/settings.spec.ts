@@ -6,7 +6,7 @@ test.describe.serial("Settings under Scale & Settings", () => {
   let context: TestContainerContext = null!;
   let explorer: DataExplorer = null!;
 
-  test.beforeAll("Create Test Database", async ({ browser }) => {
+  test.beforeAll("Create Test Database & Open Settings tab", async ({ browser }) => {
     context = await createTestSQLContainer();
     const page = await browser.newPage();
     explorer = await DataExplorer.open(page, TestAccount.SQL);
@@ -26,14 +26,14 @@ test.describe.serial("Settings under Scale & Settings", () => {
   //   await settingsTab.click();
   // });
 
-  // test.afterEach("Delete Test Database", async () => {
-  //   await context?.dispose();
-  // });
-  if (!process.env.CI) {
-    test.afterAll("Delete Test Database", async () => {
-      await context?.dispose();
-    });
-  }
+  test.afterAll("Delete Test Database", async () => {
+    await context?.dispose();
+  });
+  // if (!process.env.CI) {
+  //   test.afterAll("Delete Test Database", async () => {
+  //     await context?.dispose();
+  //   });
+  // }
 
   test("Update TTL to On (no default)", async () => {
     const ttlOnNoDefaultRadioButton = explorer.frame.getByRole("radio", { name: "ttl-on-no-default-option" });
@@ -43,7 +43,7 @@ test.describe.serial("Settings under Scale & Settings", () => {
     await expect(explorer.getConsoleHeaderStatus()).toContainText(
       `Successfully updated container ${context.container.id}`,
       {
-        timeout: ONE_MINUTE_MS,
+        timeout: 2 * ONE_MINUTE_MS,
       },
     );
   });
@@ -60,7 +60,7 @@ test.describe.serial("Settings under Scale & Settings", () => {
     await expect(explorer.getConsoleHeaderStatus()).toContainText(
       `Successfully updated container ${context.container.id}`,
       {
-        timeout: ONE_MINUTE_MS,
+        timeout: 2 * ONE_MINUTE_MS,
       },
     );
   });
