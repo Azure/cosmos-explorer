@@ -102,9 +102,12 @@ test.describe("Manual throughput", () => {
     await scaleTab.click();
   });
 
-  test.afterAll("Delete Test Database", async () => {
-    await context?.dispose();
-  });
+  if (!process.env.CI) { 
+    test.afterAll("Delete Test Database", async () => {
+      await context?.dispose();
+    });
+  }
+
 
   test("Update manual throughput", async () => {
     await getThroughputInput(explorer, "manual").fill(TEST_MANUAL_THROUGHPUT_RU_2K.toString());
