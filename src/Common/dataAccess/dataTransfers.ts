@@ -1,3 +1,4 @@
+import { configContext } from "ConfigContext";
 import { ApiType, userContext } from "UserContext";
 import * as NotificationConsoleUtils from "Utils/NotificationConsoleUtils";
 import {
@@ -14,6 +15,7 @@ import {
   DataTransferJobFeedResults,
   DataTransferJobGetResults,
 } from "Utils/arm/generatedClients/dataTransferService/types";
+import { armRequest } from "Utils/arm/request";
 import { addToPolling, removeFromPolling, updateDataTransferJob, useDataTransferJobs } from "hooks/useDataTransferJobs";
 import promiseRetry, { AbortError, FailedAttemptError } from "p-retry";
 
@@ -42,17 +44,15 @@ export const getDataTransferJobs = async (
   );
   dataTransferJobs = [...dataTransferJobs, ...(dataTransferFeeds?.value || [])];
   while (dataTransferFeeds?.nextLink) {
-    const nextResponse = await window.fetch(dataTransferFeeds.nextLink, {
-      headers: {
-        Authorization: userContext.authorizationToken,
-      },
+    const parsedUrl = new URL(dataTransferFeeds.nextLink);
+    const nextUrlPath = parsedUrl.pathname + parsedUrl.search;
+    dataTransferFeeds = await armRequest({
+      host: configContext.ARM_ENDPOINT,
+      path: nextUrlPath,
+      method: "GET",
+      apiVersion: "2025-05-01-preview",
     });
-    if (nextResponse.ok) {
-      dataTransferFeeds = await nextResponse.json();
-      dataTransferJobs = [...dataTransferJobs, ...(dataTransferFeeds?.value || [])];
-    } else {
-      break;
-    }
+    dataTransferJobs.push(...(dataTransferFeeds?.value || []));
   }
   return dataTransferJobs;
 };
