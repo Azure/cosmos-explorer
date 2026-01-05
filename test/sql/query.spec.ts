@@ -30,9 +30,11 @@ test.beforeEach("Open new query tab", async ({ page }) => {
   await explorer.frame.getByTestId("NotificationConsole/Contents").waitFor();
 });
 
-test.afterAll("Delete Test Database", async () => {
+if (!process.env.CI) {
+  test.afterAll("Delete Test Database", async () => {
   await context?.dispose();
 });
+}
 
 test("Query results", async () => {
   // Run the query and verify the results

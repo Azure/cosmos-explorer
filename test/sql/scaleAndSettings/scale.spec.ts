@@ -26,9 +26,12 @@ test.describe("Autoscale throughput", () => {
     await switchManualToAutoscaleThroughput();
   });
 
-  test.afterAll("Delete Test Database", async () => {
-    await context?.dispose();
-  });
+  if (!process.env.CI) {
+    test.afterAll("Delete Test Database", async () => {
+      await context?.dispose();
+    });
+  }
+
 
   test("Update autoscale max throughput", async () => {
     // Update autoscale max throughput

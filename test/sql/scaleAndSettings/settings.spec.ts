@@ -26,9 +26,11 @@ test.describe("Settings under Scale & Settings", () => {
   //   await settingsTab.click();
   // });
 
-  test.afterAll("Delete Test Database", async () => {
-    await context?.dispose();
-  });
+  if (!process.env.CI) {
+    test.afterAll("Delete Test Database", async () => {
+      await context?.dispose();
+    });
+  }
   // if (!process.env.CI) {
   //   test.afterAll("Delete Test Database", async () => {
   //     await context?.dispose();
