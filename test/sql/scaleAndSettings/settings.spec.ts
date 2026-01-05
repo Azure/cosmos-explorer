@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 import { CommandBarButton, DataExplorer, ONE_MINUTE_MS, TestAccount } from "../../fx";
 import { createTestSQLContainer, TestContainerContext } from "../../testData";
 
-test.describe.serial("Settings under Scale & Settings", () => {
+test.describe("Settings under Scale & Settings", () => {
   let context: TestContainerContext = null!;
   let explorer: DataExplorer = null!;
 

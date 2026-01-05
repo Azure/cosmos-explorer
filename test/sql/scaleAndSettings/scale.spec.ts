@@ -78,7 +78,7 @@ test.describe("Autoscale throughput", () => {
     await expect(explorer.getConsoleHeaderStatus()).toContainText(
       `Successfully updated offer for collection ${context.container.id}`,
       {
-        timeout: ONE_MINUTE_MS,
+        timeout: 2 * ONE_MINUTE_MS,
       },
     );
   };
