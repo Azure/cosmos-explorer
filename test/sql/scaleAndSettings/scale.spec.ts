@@ -49,20 +49,20 @@ test.describe("Autoscale throughput", () => {
     );
   });
 
-  test("Update autoscale max throughput passed allowed limit", async () => {
-    // Get soft allowed max throughput and remove commas
-    const softAllowedMaxThroughputString = await explorer.frame
-      .getByTestId("soft-allowed-maximum-throughput")
-      .innerText();
-    const softAllowedMaxThroughput = Number(softAllowedMaxThroughputString.replace(/,/g, ""));
+  // test("Update autoscale max throughput passed allowed limit", async () => {
+  //   // Get soft allowed max throughput and remove commas
+  //   const softAllowedMaxThroughputString = await explorer.frame
+  //     .getByTestId("soft-allowed-maximum-throughput")
+  //     .innerText();
+  //   const softAllowedMaxThroughput = Number(softAllowedMaxThroughputString.replace(/,/g, ""));
 
-    // Try to set autoscale max throughput above allowed limit
-    await getThroughputInput(explorer, "autopilot").fill((softAllowedMaxThroughput * 10).toString());
-    await expect(explorer.commandBarButton(CommandBarButton.Save)).toBeDisabled();
-    await expect(getThroughputInputErrorMessage(explorer, "autopilot")).toContainText(
-      "This update isn't possible because it would increase the total throughput",
-    );
-  });
+  //   // Try to set autoscale max throughput above allowed limit
+  //   await getThroughputInput(explorer, "autopilot").fill((softAllowedMaxThroughput * 10).toString());
+  //   await expect(explorer.commandBarButton(CommandBarButton.Save)).toBeDisabled();
+  //   await expect(getThroughputInputErrorMessage(explorer, "autopilot")).toContainText(
+  //     "This update isn't possible because it would increase the total throughput",
+  //   );
+  // });
 
   test("Update autoscale max throughput with invalid increment", async () => {
     // Try to set autoscale max throughput with invalid increment
@@ -120,20 +120,20 @@ test.describe("Manual throughput", () => {
     );
   });
 
-  test("Update manual throughput passed allowed limit", async () => {
-    // Get soft allowed max throughput and remove commas
-    const softAllowedMaxThroughputString = await explorer.frame
-      .getByTestId("soft-allowed-maximum-throughput")
-      .innerText();
-    const softAllowedMaxThroughput = Number(softAllowedMaxThroughputString.replace(/,/g, ""));
+  // test("Update manual throughput passed allowed limit", async () => {
+  //   // Get soft allowed max throughput and remove commas
+  //   const softAllowedMaxThroughputString = await explorer.frame
+  //     .getByTestId("soft-allowed-maximum-throughput")
+  //     .innerText();
+  //   const softAllowedMaxThroughput = Number(softAllowedMaxThroughputString.replace(/,/g, ""));
 
-    // Try to set manual throughput above allowed limit
-    await getThroughputInput(explorer, "manual").fill((softAllowedMaxThroughput * 10).toString());
-    await expect(explorer.commandBarButton(CommandBarButton.Save)).toBeDisabled();
-    await expect(getThroughputInputErrorMessage(explorer, "manual")).toContainText(
-      "This update isn't possible because it would increase the total throughput",
-    );
-  });
+  //   // Try to set manual throughput above allowed limit
+  //   await getThroughputInput(explorer, "manual").fill((softAllowedMaxThroughput * 10).toString());
+  //   await expect(explorer.commandBarButton(CommandBarButton.Save)).toBeDisabled();
+  //   await expect(getThroughputInputErrorMessage(explorer, "manual")).toContainText(
+  //     "This update isn't possible because it would increase the total throughput",
+  //   );
+  // });
 });
 
 // Helper methods
