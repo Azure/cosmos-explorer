@@ -32,8 +32,8 @@ test.beforeEach("Open new query tab", async ({ page }) => {
 
 if (!process.env.CI) {
   test.afterAll("Delete Test Database", async () => {
-  await context?.dispose();
-});
+    await context?.dispose();
+  });
 }
 
 test("Query results", async () => {

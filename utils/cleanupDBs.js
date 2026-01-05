@@ -74,20 +74,9 @@ async function main() {
       }
     } else if (account.kind === "GlobalDocumentDB") {
       const sqlDatabases = await client.sqlResources.listSqlDatabases(resourceGroupName, account.name);
-      // for (const database of sqlDatabases) {
-      //   const timestamp = Number(database.resource._ts) * 1000;
-      //   if (timestamp && timestamp < thirtyMinutesAgo) {
-      //     await client.sqlResources.deleteSqlDatabase(resourceGroupName, account.name, database.name);
-      //     console.log(`DELETED: ${account.name} | ${database.name} | Age: ${friendlyTime(Date.now() - timestamp)}`);
-      //   } else {
-      //     console.log(`SKIPPED: ${account.name} | ${database.name} | Age: ${friendlyTime(Date.now() - timestamp)}`);
-      //   }
-      // }
-
       const sqlDatabasesToDelete = sqlDatabases.map(async (database) => {
         await deleteWithRetry(client, database, account.name);
       });
-
       await Promise.all(sqlDatabasesToDelete);
     }
   }

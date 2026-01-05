@@ -32,7 +32,6 @@ test.describe("Autoscale throughput", () => {
     });
   }
 
-
   test("Update autoscale max throughput", async () => {
     // Update autoscale max throughput
     await getThroughputInput(explorer, "autopilot").fill(TEST_AUTOSCALE_MAX_THROUGHPUT_RU_2K.toString());
@@ -101,12 +100,11 @@ test.describe("Manual throughput", () => {
     await scaleTab.click();
   });
 
-  if (!process.env.CI) { 
+  if (!process.env.CI) {
     test.afterAll("Delete Test Database", async () => {
       await context?.dispose();
     });
   }
-
 
   test("Update manual throughput", async () => {
     await getThroughputInput(explorer, "manual").fill(TEST_MANUAL_THROUGHPUT_RU_2K.toString());
