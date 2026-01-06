@@ -192,6 +192,9 @@ jobs:
             NOSQL_READONLY_TESTACCOUNT_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql-readonly.documents.azure.com/.default" -o tsv --query accessToken)
             echo "::add-mask::$NOSQL_READONLY_TESTACCOUNT_TOKEN"
             echo NOSQL_READONLY_TESTACCOUNT_TOKEN=$NOSQL_READONLY_TESTACCOUNT_TOKEN >> $GITHUB_ENV
+            NOSQL_CONTAINERCOPY_TESTACCOUNT_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql-containercopyonly.documents.azure.com/.default" -o tsv --query accessToken)
+            echo "::add-mask::$NOSQL_CONTAINERCOPY_TESTACCOUNT_TOKEN"
+            echo NOSQL_CONTAINERCOPY_TESTACCOUNT_TOKEN=$NOSQL_CONTAINERCOPY_TESTACCOUNT_TOKEN >> $GITHUB_ENV
             TABLE_TESTACCOUNT_TOKEN=$(az account get-access-token --scope "https://github-e2etests-tables.documents.azure.com/.default" -o tsv --query accessToken)
             echo "::add-mask::$TABLE_TESTACCOUNT_TOKEN"
             echo TABLE_TESTACCOUNT_TOKEN=$TABLE_TESTACCOUNT_TOKEN >> $GITHUB_ENV
