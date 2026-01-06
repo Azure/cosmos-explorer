@@ -3,6 +3,7 @@
 exports[`LoadingOverlay should handle long labels properly 1`] = `
 <div
   class="ms-Overlay root-109"
+  data-test="loading-overlay"
 >
   <div
     class="ms-Spinner root-111"
@@ -22,6 +23,7 @@ exports[`LoadingOverlay should handle long labels properly 1`] = `
 exports[`LoadingOverlay should render loading overlay when isLoading is true 1`] = `
 <div
   class="ms-Overlay root-109"
+  data-test="loading-overlay"
 >
   <div
     class="ms-Spinner root-111"
@@ -41,6 +43,7 @@ exports[`LoadingOverlay should render loading overlay when isLoading is true 1`]
 exports[`LoadingOverlay should render loading overlay with custom label 1`] = `
 <div
   class="ms-Overlay root-109"
+  data-test="loading-overlay"
 >
   <div
     class="ms-Spinner root-111"
@@ -60,6 +63,7 @@ exports[`LoadingOverlay should render loading overlay with custom label 1`] = `
 exports[`LoadingOverlay should render loading overlay with empty label 1`] = `
 <div
   class="ms-Overlay root-109"
+  data-test="loading-overlay"
 >
   <div
     class="ms-Spinner root-111"

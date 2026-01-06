@@ -80,6 +80,7 @@ const CopyJobsList: React.FC<CopyJobsListProps> = ({ jobs, handleActionClick, pa
         <Stack.Item verticalFill={true} grow={1} shrink={1} style={styles.stackItem}>
           <ScrollablePane scrollbarVisibility={ScrollbarVisibility.auto}>
             <ShimmeredDetailsList
+              className="CopyJobListContainer"
               onRenderRow={_onRenderRow}
               checkboxVisibility={2}
               columns={columns}

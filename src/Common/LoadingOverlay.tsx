@@ -13,6 +13,7 @@ const LoadingOverlay: React.FC<LoadingOverlayProps> = ({ isLoading, label }) => 
 
   return (
     <Overlay
+      data-test="loading-overlay"
       styles={{
         root: {
           backgroundColor: "rgba(255,255,255,0.9)",
