@@ -47,12 +47,12 @@ exports[`PreviewCopyJob should handle special characters in database and contain
     class="ms-Stack css-124"
   >
     <span
-      class="bold css-125"
+      class="bold themeText css-125"
     >
       Source subscription
     </span>
     <span
-      class="css-125"
+      class="themeText css-125"
       data-test="source-subscription-name"
     >
       Test Subscription
@@ -62,12 +62,12 @@ exports[`PreviewCopyJob should handle special characters in database and contain
     class="ms-Stack css-124"
   >
     <span
-      class="bold css-125"
+      class="bold themeText css-125"
     >
       Source account
     </span>
     <span
-      class="css-125"
+      class="themeText css-125"
       data-test="source-account-name"
     >
       test-account
@@ -369,12 +369,12 @@ exports[`PreviewCopyJob should render component with cross-subscription setup 1`
     class="ms-Stack css-124"
   >
     <span
-      class="bold css-125"
+      class="bold themeText css-125"
     >
       Source subscription
     </span>
     <span
-      class="css-125"
+      class="themeText css-125"
       data-test="source-subscription-name"
     >
       Test Subscription
@@ -384,12 +384,12 @@ exports[`PreviewCopyJob should render component with cross-subscription setup 1`
     class="ms-Stack css-124"
   >
     <span
-      class="bold css-125"
+      class="bold themeText css-125"
     >
       Source account
     </span>
     <span
-      class="css-125"
+      class="themeText css-125"
       data-test="source-account-name"
     >
       test-account
@@ -691,12 +691,12 @@ exports[`PreviewCopyJob should render with default state and empty job name 1`] 
     class="ms-Stack css-124"
   >
     <span
-      class="bold css-125"
+      class="bold themeText css-125"
     >
       Source subscription
     </span>
     <span
-      class="css-125"
+      class="themeText css-125"
       data-test="source-subscription-name"
     >
       Test Subscription
@@ -706,12 +706,12 @@ exports[`PreviewCopyJob should render with default state and empty job name 1`] 
     class="ms-Stack css-124"
   >
     <span
-      class="bold css-125"
+      class="bold themeText css-125"
     >
       Source account
     </span>
     <span
-      class="css-125"
+      class="themeText css-125"
       data-test="source-account-name"
     >
       test-account
@@ -1013,12 +1013,12 @@ exports[`PreviewCopyJob should render with long subscription and account names 1
     class="ms-Stack css-124"
   >
     <span
-      class="bold css-125"
+      class="bold themeText css-125"
     >
       Source subscription
     </span>
     <span
-      class="css-125"
+      class="themeText css-125"
       data-test="source-subscription-name"
     >
       This is a very long subscription name that might cause display issues if not handled properly
@@ -1028,12 +1028,12 @@ exports[`PreviewCopyJob should render with long subscription and account names 1
     class="ms-Stack css-124"
   >
     <span
-      class="bold css-125"
+      class="bold themeText css-125"
     >
       Source account
     </span>
     <span
-      class="css-125"
+      class="themeText css-125"
       data-test="source-account-name"
     >
       this-is-a-very-long-database-account-name-that-might-cause-display-issues
@@ -1335,12 +1335,12 @@ exports[`PreviewCopyJob should render with missing source account information 1`
     class="ms-Stack css-124"
   >
     <span
-      class="bold css-125"
+      class="bold themeText css-125"
     >
       Source subscription
     </span>
     <span
-      class="css-125"
+      class="themeText css-125"
       data-test="source-subscription-name"
     >
       Test Subscription
@@ -1350,7 +1350,7 @@ exports[`PreviewCopyJob should render with missing source account information 1`
     class="ms-Stack css-124"
   >
     <span
-      class="bold css-125"
+      class="bold themeText css-125"
     >
       Source account
     </span>
@@ -1651,7 +1651,7 @@ exports[`PreviewCopyJob should render with missing source subscription informati
     class="ms-Stack css-124"
   >
     <span
-      class="bold css-125"
+      class="bold themeText css-125"
     >
       Source subscription
     </span>
@@ -1660,12 +1660,12 @@ exports[`PreviewCopyJob should render with missing source subscription informati
     class="ms-Stack css-124"
   >
     <span
-      class="bold css-125"
+      class="bold themeText css-125"
     >
       Source account
     </span>
     <span
-      class="css-125"
+      class="themeText css-125"
       data-test="source-account-name"
     >
       test-account
@@ -1967,12 +1967,12 @@ exports[`PreviewCopyJob should render with online migration type 1`] = `
     class="ms-Stack css-124"
   >
     <span
-      class="bold css-125"
+      class="bold themeText css-125"
     >
       Source subscription
     </span>
     <span
-      class="css-125"
+      class="themeText css-125"
       data-test="source-subscription-name"
     >
       Test Subscription
@@ -1982,12 +1982,12 @@ exports[`PreviewCopyJob should render with online migration type 1`] = `
     class="ms-Stack css-124"
   >
     <span
-      class="bold css-125"
+      class="bold themeText css-125"
     >
       Source account
     </span>
     <span
-      class="css-125"
+      class="themeText css-125"
       data-test="source-account-name"
     >
       test-account
@@ -2289,12 +2289,12 @@ exports[`PreviewCopyJob should render with pre-filled job name 1`] = `
     class="ms-Stack css-124"
   >
     <span
-      class="bold css-125"
+      class="bold themeText css-125"
     >
       Source subscription
     </span>
     <span
-      class="css-125"
+      class="themeText css-125"
       data-test="source-subscription-name"
     >
       Test Subscription
@@ -2304,12 +2304,12 @@ exports[`PreviewCopyJob should render with pre-filled job name 1`] = `
     class="ms-Stack css-124"
   >
     <span
-      class="bold css-125"
+      class="bold themeText css-125"
     >
       Source account
     </span>
     <span
-      class="css-125"
+      class="themeText css-125"
       data-test="source-account-name"
     >
       test-account
@@ -2611,12 +2611,12 @@ exports[`PreviewCopyJob should render with undefined database and container name
     class="ms-Stack css-124"
   >
     <span
-      class="bold css-125"
+      class="bold themeText css-125"
     >
       Source subscription
     </span>
     <span
-      class="css-125"
+      class="themeText css-125"
       data-test="source-subscription-name"
     >
       Test Subscription
@@ -2626,12 +2626,12 @@ exports[`PreviewCopyJob should render with undefined database and container name
     class="ms-Stack css-124"
   >
     <span
-      class="bold css-125"
+      class="bold themeText css-125"
     >
       Source account
     </span>
     <span
-      class="css-125"
+      class="themeText css-125"
       data-test="source-account-name"
     >
       test-account
