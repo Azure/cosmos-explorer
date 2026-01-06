@@ -23,10 +23,10 @@ const PopoverContainer: React.FC<PopoverContainerProps> = React.memo(
         style={{ maxWidth: 450 }}
       >
         <LoadingOverlay isLoading={isLoading} label={ContainerCopyMessages.popoverOverlaySpinnerLabel} />
-        <Text variant="mediumPlus" style={{ fontWeight: 600 }}>
+        <Text variant="mediumPlus" className="themeText" style={{ fontWeight: 600 }}>
           {title}
         </Text>
-        <Text>{children}</Text>
+        <Text className="themeText">{children}</Text>
         <Stack horizontal tokens={{ childrenGap: 20 }}>
           <PrimaryButton text={"Yes"} onClick={onPrimary} disabled={isLoading} />
           <DefaultButton text="No" onClick={onCancel} disabled={isLoading} />

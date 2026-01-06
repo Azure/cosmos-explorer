@@ -82,9 +82,9 @@ describe("CommandBar Utils", () => {
     it("should include feedback button when platform is Portal", () => {
       const buttons = getCommandBarButtons(mockExplorer);
 
-      expect(buttons.length).toBe(3);
+      expect(buttons.length).toBe(4);
 
-      const feedbackButton = buttons[2];
+      const feedbackButton = buttons[3];
       expect(feedbackButton).toBeDefined();
       expect(feedbackButton.ariaLabel).toBe("Provide feedback on copy jobs");
       expect(feedbackButton.tooltipText).toBe("Feedback");
@@ -107,7 +107,7 @@ describe("CommandBar Utils", () => {
       const { getCommandBarButtons: getCommandBarButtonsEmulator } = await import("./Utils");
       const buttons = getCommandBarButtonsEmulator(mockExplorer);
 
-      expect(buttons.length).toBe(2);
+      expect(buttons.length).toBe(3);
     });
 
     it("should call openCreateCopyJobPanel when create button is clicked", () => {
@@ -131,7 +131,7 @@ describe("CommandBar Utils", () => {
 
     it("should call openContainerCopyFeedbackBlade when feedback button is clicked", () => {
       const buttons = getCommandBarButtons(mockExplorer);
-      const feedbackButton = buttons[2];
+      const feedbackButton = buttons[3];
 
       feedbackButton.onCommandClick({} as React.SyntheticEvent);
 
@@ -148,7 +148,10 @@ describe("CommandBar Utils", () => {
       expect(buttons[1].iconAlt).toBe("Refresh");
 
       expect(buttons[2].iconSrc).toBeDefined();
-      expect(buttons[2].iconAlt).toBe("Feedback");
+      expect(buttons[2].iconAlt).toBe("Dark Theme");
+
+      expect(buttons[3].iconSrc).toBeDefined();
+      expect(buttons[3].iconAlt).toBe("Feedback");
     });
 
     it("should handle null MonitorCopyJobsRefState ref gracefully", () => {
@@ -202,12 +205,13 @@ describe("CommandBar Utils", () => {
       });
     });
 
-    it("should maintain button order: create, refresh, feedback", () => {
+    it("should maintain button order: create, refresh, themeToggle, feedback", () => {
       const buttons = getCommandBarButtons(mockExplorer);
 
       expect(buttons[0].tooltipText).toBe("Create Copy Job");
       expect(buttons[1].tooltipText).toBe("Refresh");
-      expect(buttons[2].tooltipText).toBe("Feedback");
+      expect(buttons[2].tooltipText).toBe("Dark Theme");
+      expect(buttons[3].tooltipText).toBe("Feedback");
     });
   });
 
@@ -229,7 +233,7 @@ describe("CommandBar Utils", () => {
       buttons[1].onCommandClick({} as React.SyntheticEvent);
       expect(mockRefreshJobList).toHaveBeenCalled();
 
-      buttons[2].onCommandClick({} as React.SyntheticEvent);
+      buttons[3].onCommandClick({} as React.SyntheticEvent);
       expect(mockOpenContainerCopyFeedbackBlade).toHaveBeenCalled();
     });
   });
