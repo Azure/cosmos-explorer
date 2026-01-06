@@ -90,10 +90,14 @@ async function deleteWithRetry(client, database, accountName) {
 
   while (attempt < maxRetries) {
     try {
-      await client.sqlResources.deleteSqlDatabase(resourceGroupName, accountName, database.name);
       const timestamp = Number(database.resource._ts) * 1000;
-      console.log(`DELETED: ${accountName} | ${database.name} | Age: ${friendlyTime(Date.now() - timestamp)}`);
-      return; // Successfully deleted, exit the function
+      if (timestamp && timestamp < thirtyMinutesAgo) {
+        await client.sqlResources.deleteSqlDatabase(resourceGroupName, accountName, database.name);
+        console.log(`DELETED: ${accountName} | ${database.name} | Age: ${friendlyTime(Date.now() - timestamp)}`);
+      } else {
+        console.log(`SKIPPED: ${accountName} | ${database.name} | Age: ${friendlyTime(Date.now() - timestamp)}`);
+      }
+      return;
     } catch (error) {
       if (error.statusCode === 429) {
         // Throttling error (HTTP 429), apply exponential backoff
