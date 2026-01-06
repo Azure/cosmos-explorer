@@ -254,6 +254,8 @@ jobs:
 
   cleanupaccounts:
     name: "Cleanup Test Database Accounts"
+    if: ${{ !cancelled() }}
+    needs: [playwright-tests]
     runs-on: ubuntu-latest
     env:
       AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
