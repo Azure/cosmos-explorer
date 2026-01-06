@@ -65,6 +65,7 @@ const AddReadPermissionToDefaultIdentity: React.FC<AddReadPermissionToDefaultIde
         <InfoTooltip content={TooltipContent} />
       </Text>
       <Toggle
+        data-test="btn-toggle"
         checked={readPermissionAssigned}
         onText={ContainerCopyMessages.toggleBtn.onText}
         offText={ContainerCopyMessages.toggleBtn.offText}

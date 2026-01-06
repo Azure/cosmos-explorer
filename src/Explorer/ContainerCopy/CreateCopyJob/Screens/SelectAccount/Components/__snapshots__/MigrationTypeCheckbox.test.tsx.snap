@@ -3,6 +3,7 @@
 exports[`MigrationTypeCheckbox Component Rendering should render in checked state 1`] = `
 <div
   class="ms-Stack migrationTypeRow css-109"
+  data-test="migration-type-checkbox"
 >
   <div
     class="ms-Checkbox is-checked is-enabled root-119"
@@ -43,6 +44,7 @@ exports[`MigrationTypeCheckbox Component Rendering should render in checked stat
 exports[`MigrationTypeCheckbox Component Rendering should render with default props (unchecked state) 1`] = `
 <div
   class="ms-Stack migrationTypeRow css-109"
+  data-test="migration-type-checkbox"
 >
   <div
     class="ms-Checkbox is-enabled root-110"
