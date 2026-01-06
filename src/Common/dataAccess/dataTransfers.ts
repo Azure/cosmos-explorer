@@ -19,6 +19,8 @@ import { armRequest } from "Utils/arm/request";
 import { addToPolling, removeFromPolling, updateDataTransferJob, useDataTransferJobs } from "hooks/useDataTransferJobs";
 import promiseRetry, { AbortError, FailedAttemptError } from "p-retry";
 
+export const DATA_TRANSFER_JOB_API_VERSION = "2025-05-01-preview";
+
 export interface DataTransferParams {
   jobName: string;
   apiType: ApiType;
@@ -35,22 +37,32 @@ export const getDataTransferJobs = async (
   subscriptionId: string,
   resourceGroup: string,
   accountName: string,
+  signal?: AbortSignal,
 ): Promise<DataTransferJobGetResults[]> => {
   let dataTransferJobs: DataTransferJobGetResults[] = [];
   let dataTransferFeeds: DataTransferJobFeedResults = await listByDatabaseAccount(
     subscriptionId,
     resourceGroup,
     accountName,
+    signal,
   );
   dataTransferJobs = [...dataTransferJobs, ...(dataTransferFeeds?.value || [])];
   while (dataTransferFeeds?.nextLink) {
+    /**
+     * The `nextLink` URL returned by the Cosmos DB SQL API pointed to an incorrect endpoint, causing timeouts.
+     * (i.e: https://cdbmgmtprodby.documents.azure.com:450/subscriptions/{subId}/resourceGroups/{rg}/providers/Microsoft.DocumentDB/databaseAccounts/{account}/sql/dataTransferJobs?$top=100&$skiptoken=...)
+     * We manipulate the URL by parsing it to extract the path and query parameters,
+     * then construct the correct URL for the Azure Resource Manager (ARM) API.
+     * This ensures that the request is made to the correct base URL (`configContext.ARM_ENDPOINT`),
+     * which is required for ARM operations.
+     */
     const parsedUrl = new URL(dataTransferFeeds.nextLink);
     const nextUrlPath = parsedUrl.pathname + parsedUrl.search;
     dataTransferFeeds = await armRequest({
       host: configContext.ARM_ENDPOINT,
       path: nextUrlPath,
       method: "GET",
-      apiVersion: "2025-05-01-preview",
+      apiVersion: DATA_TRANSFER_JOB_API_VERSION,
     });
     dataTransferJobs.push(...(dataTransferFeeds?.value || []));
   }
