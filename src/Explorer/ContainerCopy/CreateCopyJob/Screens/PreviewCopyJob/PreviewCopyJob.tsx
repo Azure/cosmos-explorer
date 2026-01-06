@@ -31,17 +31,17 @@ const PreviewCopyJob: React.FC = () => {
     }));
   };
   return (
-    <Stack tokens={{ childrenGap: 20 }} className="previewCopyJobContainer">
+    <Stack tokens={{ childrenGap: 20 }} className="previewCopyJobContainer" data-test="Panel:PreviewCopyJob">
       <FieldRow label={ContainerCopyMessages.jobNameLabel}>
-        <TextField value={jobName} onChange={onJobNameChange} />
+        <TextField data-test="job-name-textfield" value={jobName} onChange={onJobNameChange} />
       </FieldRow>
       <Stack>
         <Text className="bold">{ContainerCopyMessages.sourceSubscriptionLabel}</Text>
-        <Text>{copyJobState.source?.subscription?.displayName}</Text>
+        <Text data-test="source-subscription-name">{copyJobState.source?.subscription?.displayName}</Text>
       </Stack>
       <Stack>
         <Text className="bold">{ContainerCopyMessages.sourceAccountLabel}</Text>
-        <Text>{copyJobState.source?.account?.name}</Text>
+        <Text data-test="source-account-name">{copyJobState.source?.account?.name}</Text>
       </Stack>
       <Stack>
         <DetailsList

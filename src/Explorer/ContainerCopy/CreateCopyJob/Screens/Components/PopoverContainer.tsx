@@ -17,6 +17,7 @@ const PopoverContainer: React.FC<PopoverContainerProps> = React.memo(
   ({ isLoading = false, title, children, onPrimary, onCancel }) => {
     return (
       <Stack
+        data-test="popover-container"
         className={`popover-container foreground ${isLoading ? "loading" : ""}`}
         tokens={{ childrenGap: 20 }}
         style={{ maxWidth: 450 }}
