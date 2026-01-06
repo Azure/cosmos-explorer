@@ -1,4 +1,4 @@
-import { expect, Locator, test } from "@playwright/test";
+import { Browser, expect, Locator, Page, test } from "@playwright/test";
 import {
   CommandBarButton,
   DataExplorer,
@@ -9,133 +9,116 @@ import {
 } from "../../fx";
 import { createTestSQLContainer, TestContainerContext } from "../../testData";
 
+interface SetupResult {
+  context: TestContainerContext;
+  page: Page;
+  explorer: DataExplorer;
+}
+
 test.describe("Autoscale throughput", () => {
-  let context: TestContainerContext = null!;
-  let explorer: DataExplorer = null!;
+  let setup: SetupResult;
 
-  test.beforeAll("Create Test Database & Open Scale tab", async ({ browser }) => {
-    context = await createTestSQLContainer();
-    const page = await browser.newPage();
-    explorer = await DataExplorer.open(page, TestAccount.SQL);
+  test.beforeAll(async ({ browser }) => {
+    setup = await openScaleTab(browser);
 
-    // Click Scale & Settings and open Scale tab
-    await explorer.openScaleAndSettings(context);
-    const scaleTab = explorer.frame.getByTestId("settings-tab-header/ScaleTab");
-    await scaleTab.click();
-
-    await switchManualToAutoscaleThroughput();
+    // Switch manual -> autoscale once for this suite
+    const autoscaleRadioButton = setup.explorer.frame.getByText("Autoscale", { exact: true });
+    await autoscaleRadioButton.click();
+    await expect(setup.explorer.commandBarButton(CommandBarButton.Save)).toBeEnabled();
+    await setup.explorer.commandBarButton(CommandBarButton.Save).click();
+    await expect(setup.explorer.getConsoleHeaderStatus()).toContainText(
+      `Successfully updated offer for collection ${setup.context.container.id}`,
+      { timeout: 2 * ONE_MINUTE_MS },
+    );
   });
 
-  if (!process.env.CI) {
-    test.afterAll("Delete Test Database", async () => {
-      await context?.dispose();
-    });
-  }
+  test.afterAll(async () => {
+    await cleanup(setup);
+  });
 
   test("Update autoscale max throughput", async () => {
-    // Update autoscale max throughput
-    await getThroughputInput(explorer, "autopilot").fill(TEST_AUTOSCALE_MAX_THROUGHPUT_RU_2K.toString());
+    await getThroughputInput(setup.explorer, "autopilot").fill(TEST_AUTOSCALE_MAX_THROUGHPUT_RU_2K.toString());
+    await setup.explorer.commandBarButton(CommandBarButton.Save).click();
 
-    // Save
-    await explorer.commandBarButton(CommandBarButton.Save).click();
-
-    // Read console message
-    await expect(explorer.getConsoleHeaderStatus()).toContainText(
-      `Successfully updated offer for collection ${context.container.id}`,
-      {
-        timeout: 2 * ONE_MINUTE_MS,
-      },
+    await expect(setup.explorer.getConsoleHeaderStatus()).toContainText(
+      `Successfully updated offer for collection ${setup.context.container.id}`,
+      { timeout: 2 * ONE_MINUTE_MS },
     );
   });
 
   test("Update autoscale max throughput passed allowed limit", async () => {
-    // Get soft allowed max throughput and remove commas
-    const softAllowedMaxThroughputString = await explorer.frame
+    const softAllowedMaxThroughputString = await setup.explorer.frame
       .getByTestId("soft-allowed-maximum-throughput")
       .innerText();
     const softAllowedMaxThroughput = Number(softAllowedMaxThroughputString.replace(/,/g, ""));
 
-    // Try to set autoscale max throughput above allowed limit
-    await getThroughputInput(explorer, "autopilot").fill((softAllowedMaxThroughput * 10).toString());
-    await expect(explorer.commandBarButton(CommandBarButton.Save)).toBeDisabled();
-    const warning = explorer.frame.locator("#updateThroughputDelayedApplyWarningMessage");
-    await expect(warning).toBeVisible();
+    await getThroughputInput(setup.explorer, "autopilot").fill((softAllowedMaxThroughput * 10).toString());
+    await expect(setup.explorer.commandBarButton(CommandBarButton.Save)).toBeDisabled();
+    await expect(delayedApplyWarning(setup.explorer)).toBeVisible();
   });
 
   test("Update autoscale max throughput with invalid increment", async () => {
-    // Try to set autoscale max throughput with invalid increment
-    await getThroughputInput(explorer, "autopilot").fill("1100");
-    await expect(explorer.commandBarButton(CommandBarButton.Save)).toBeDisabled();
-    await expect(getThroughputInputErrorMessage(explorer, "autopilot")).toContainText(
+    await getThroughputInput(setup.explorer, "autopilot").fill("1100");
+    await expect(setup.explorer.commandBarButton(CommandBarButton.Save)).toBeDisabled();
+    await expect(getThroughputInputErrorMessage(setup.explorer, "autopilot")).toContainText(
       "Throughput value must be in increments of 1000",
     );
   });
-
-  const switchManualToAutoscaleThroughput = async (): Promise<void> => {
-    const autoscaleRadioButton = explorer.frame.getByText("Autoscale", { exact: true });
-    await autoscaleRadioButton.click();
-    await expect(explorer.commandBarButton(CommandBarButton.Save)).toBeEnabled();
-    await explorer.commandBarButton(CommandBarButton.Save).click();
-    await expect(explorer.getConsoleHeaderStatus()).toContainText(
-      `Successfully updated offer for collection ${context.container.id}`,
-      {
-        timeout: 2 * ONE_MINUTE_MS,
-      },
-    );
-  };
 });
 
 test.describe("Manual throughput", () => {
-  let context: TestContainerContext = null!;
-  let explorer: DataExplorer = null!;
+  let setup: SetupResult;
 
-  test.beforeAll("Create Test Database & Open scale tab", async ({ browser }) => {
-    context = await createTestSQLContainer();
-    const page = await browser.newPage();
-    explorer = await DataExplorer.open(page, TestAccount.SQL);
-
-    // Click Scale & Settings and open Scale tab
-    await explorer.openScaleAndSettings(context);
-    const scaleTab = explorer.frame.getByTestId("settings-tab-header/ScaleTab");
-    await scaleTab.click();
+  test.beforeAll(async ({ browser }) => {
+    setup = await openScaleTab(browser);
   });
 
-  if (!process.env.CI) {
-    test.afterAll("Delete Test Database", async () => {
-      await context?.dispose();
-    });
-  }
+  test.afterAll(async () => {
+    await cleanup(setup);
+  });
 
   test("Update manual throughput", async () => {
-    await getThroughputInput(explorer, "manual").fill(TEST_MANUAL_THROUGHPUT_RU_2K.toString());
-    await explorer.commandBarButton(CommandBarButton.Save).click();
-    await expect(explorer.getConsoleHeaderStatus()).toContainText(
-      `Successfully updated offer for collection ${context.container.id}`,
-      {
-        timeout: 2 * ONE_MINUTE_MS,
-      },
+    await getThroughputInput(setup.explorer, "manual").fill(TEST_MANUAL_THROUGHPUT_RU_2K.toString());
+    await setup.explorer.commandBarButton(CommandBarButton.Save).click();
+    await expect(setup.explorer.getConsoleHeaderStatus()).toContainText(
+      `Successfully updated offer for collection ${setup.context.container.id}`,
+      { timeout: 2 * ONE_MINUTE_MS },
     );
   });
 
   test("Update manual throughput passed allowed limit", async () => {
-    // Get soft allowed max throughput and remove commas
-    const softAllowedMaxThroughputString = await explorer.frame
+    const softAllowedMaxThroughputString = await setup.explorer.frame
       .getByTestId("soft-allowed-maximum-throughput")
       .innerText();
     const softAllowedMaxThroughput = Number(softAllowedMaxThroughputString.replace(/,/g, ""));
 
-    // Try to set manual throughput above allowed limit
-    await getThroughputInput(explorer, "manual").fill((softAllowedMaxThroughput * 10).toString());
-    const warning = explorer.frame.locator("#updateThroughputDelayedApplyWarningMessage");
-    await expect(warning).toBeVisible();
+    await getThroughputInput(setup.explorer, "manual").fill((softAllowedMaxThroughput * 10).toString());
+    await expect(delayedApplyWarning(setup.explorer)).toBeVisible();
   });
 });
 
-// Helper methods
-const getThroughputInput = (explorer: DataExplorer, type: "manual" | "autopilot"): Locator => {
-  return explorer.frame.getByTestId(`${type}-throughput-input`);
-};
+const delayedApplyWarning = (explorer: DataExplorer): Locator =>
+  explorer.frame.locator("#updateThroughputDelayedApplyWarningMessage");
 
-const getThroughputInputErrorMessage = (explorer: DataExplorer, type: "manual" | "autopilot"): Locator => {
-  return explorer.frame.getByTestId(`${type}-throughput-input-error`);
-};
+const getThroughputInput = (explorer: DataExplorer, type: "manual" | "autopilot"): Locator =>
+  explorer.frame.getByTestId(`${type}-throughput-input`);
+
+const getThroughputInputErrorMessage = (explorer: DataExplorer, type: "manual" | "autopilot"): Locator =>
+  explorer.frame.getByTestId(`${type}-throughput-input-error`);
+
+async function openScaleTab(browser: Browser): Promise<SetupResult> {
+  const context = await createTestSQLContainer();
+  const page = await browser.newPage();
+  const explorer = await DataExplorer.open(page, TestAccount.SQL);
+
+  await explorer.openScaleAndSettings(context);
+  await explorer.frame.getByTestId("settings-tab-header/ScaleTab").click();
+
+  return { context, page, explorer };
+}
+
+async function cleanup({ context }: Partial<SetupResult>) {
+  if (!process.env.CI) {
+    await context?.dispose();
+  }
+}

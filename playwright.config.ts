@@ -11,8 +11,8 @@ export default defineConfig({
   reporter: process.env.CI ? "blob" : "html",
   timeout: 10 * 60 * 1000,
   use: {
-    trace: "on-all-retries",
-    video: "on-first-retry",
+    trace: "off",
+    video: "off",
     screenshot: "on",
     testIdAttribute: "data-test",
     contextOptions: {

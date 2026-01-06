@@ -12,6 +12,11 @@ permissions:
   id-token: write
   contents: read
 jobs:
+  cleanupaccounts:
+    name: "Cleanup Test Database Accounts"
+    needs: [playwright-tests]
+    if: ${{ !cancelled() }}
+    uses: ./.github/workflows/cleanup-base.yml
   codemetrics:
     runs-on: ubuntu-latest
     name: "Log Code Metrics"
@@ -251,3 +256,9 @@ jobs:
           name: html-report--attempt-${{ github.run_attempt }}
           path: playwright-report
           retention-days: 14
+
+  cleanupaccounts:
+    name: "Cleanup Test Database Accounts"
+    needs: [playwright-tests]
+    if: ${{ !cancelled() }}
+    uses: ./.github/workflows/cleanup-base.yml

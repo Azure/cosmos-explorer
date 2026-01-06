@@ -17,25 +17,12 @@ test.describe("Settings under Scale & Settings", () => {
     await settingsTab.click();
   });
 
-  // test.beforeEach("Open container settings", async ({ page }) => {
-  //   explorer = await DataExplorer.open(page, TestAccount.SQL);
-
-  //   // Click Scale & Settings and open Scale tab
-  //   await explorer.openScaleAndSettings(context);
-  //   const settingsTab = explorer.frame.getByTestId("settings-tab-header/SubSettingsTab");
-  //   await settingsTab.click();
-  // });
-
+  // Delete database only if not running in CI
   if (!process.env.CI) {
     test.afterAll("Delete Test Database", async () => {
       await context?.dispose();
     });
   }
-  // if (!process.env.CI) {
-  //   test.afterAll("Delete Test Database", async () => {
-  //     await context?.dispose();
-  //   });
-  // }
 
   test("Update TTL to On (no default)", async () => {
     const ttlOnNoDefaultRadioButton = explorer.frame.getByRole("radio", { name: "ttl-on-no-default-option" });

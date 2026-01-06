@@ -30,6 +30,7 @@ test.beforeEach("Open new query tab", async ({ page }) => {
   await explorer.frame.getByTestId("NotificationConsole/Contents").waitFor();
 });
 
+// Delete database only if not running in CI
 if (!process.env.CI) {
   test.afterAll("Delete Test Database", async () => {
     await context?.dispose();

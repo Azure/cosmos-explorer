@@ -17,23 +17,5 @@ permissions:
 jobs:
   # This workflow contains a single job called "build"
   cleanupaccounts:
-    name: "Cleanup Test Database Accounts"
-    runs-on: ubuntu-latest
-    env:
-      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: "Az CLI login"
-        uses: azure/login@v1
-        with:
-          client-id: ${{ secrets.E2E_TESTS_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
-      - name: Use Node.js 18.x
-        uses: actions/setup-node@v1
-        with:
-          node-version: 18.x
-      - run: npm ci
-      - run: node utils/cleanupDBs.js
+      name: "Cleanup Test Database Accounts"
+      uses: ./.github/workflows/cleanup-base.yml
