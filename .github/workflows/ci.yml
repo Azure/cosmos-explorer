@@ -164,8 +164,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shardIndex: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
-        shardTotal: [20]
+        shardIndex: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+        shardTotal: [16]
     steps:
       - uses: actions/checkout@v4
       - name: Use Node.js 18.x
@@ -198,18 +198,18 @@ jobs:
             GREMLIN_TESTACCOUNT_TOKEN=$(az account get-access-token --scope "https://github-e2etests-gremlin.documents.azure.com/.default" -o tsv --query accessToken)
             echo "::add-mask::$GREMLIN_TESTACCOUNT_TOKEN"
             echo GREMLIN_TESTACCOUNT_TOKEN=$GREMLIN_TESTACCOUNT_TOKEN >> $GITHUB_ENV
-            # CASSANDRA_TESTACCOUNT_TOKEN=$(az account get-access-token --scope "https://github-e2etests-cassandra.documents.azure.com/.default" -o tsv --query accessToken)
-            # echo "::add-mask::$CASSANDRA_TESTACCOUNT_TOKEN"
-            # echo CASSANDRA_TESTACCOUNT_TOKEN=$CASSANDRA_TESTACCOUNT_TOKEN >> $GITHUB_ENV
-            # MONGO_TESTACCOUNT_TOKEN=$(az account get-access-token --scope "https://github-e2etests-mongo.documents.azure.com/.default" -o tsv --query accessToken)
-            # echo "::add-mask::$MONGO_TESTACCOUNT_TOKEN"
-            # echo MONGO_TESTACCOUNT_TOKEN=$MONGO_TESTACCOUNT_TOKEN >> $GITHUB_ENV
-            # MONGO32_TESTACCOUNT_TOKEN=$(az account get-access-token --scope "https://github-e2etests-mongo32.documents.azure.com/.default" -o tsv --query accessToken)
-            # echo "::add-mask::$MONGO32_TESTACCOUNT_TOKEN"
-            # echo MONGO32_TESTACCOUNT_TOKEN=$MONGO32_TESTACCOUNT_TOKEN >> $GITHUB_ENV
-            # MONGO_READONLY_TESTACCOUNT_TOKEN=$(az account get-access-token --scope "https://github-e2etests-mongo-readonly.documents.azure.com/.default" -o tsv --query accessToken)
-            # echo "::add-mask::$MONGO_READONLY_TESTACCOUNT_TOKEN"
-            # echo MONGO_READONLY_TESTACCOUNT_TOKEN=$MONGO_READONLY_TESTACCOUNT_TOKEN >> $GITHUB_ENV
+            CASSANDRA_TESTACCOUNT_TOKEN=$(az account get-access-token --scope "https://github-e2etests-cassandra.documents.azure.com/.default" -o tsv --query accessToken)
+            echo "::add-mask::$CASSANDRA_TESTACCOUNT_TOKEN"
+            echo CASSANDRA_TESTACCOUNT_TOKEN=$CASSANDRA_TESTACCOUNT_TOKEN >> $GITHUB_ENV
+            MONGO_TESTACCOUNT_TOKEN=$(az account get-access-token --scope "https://github-e2etests-mongo.documents.azure.com/.default" -o tsv --query accessToken)
+            echo "::add-mask::$MONGO_TESTACCOUNT_TOKEN"
+            echo MONGO_TESTACCOUNT_TOKEN=$MONGO_TESTACCOUNT_TOKEN >> $GITHUB_ENV
+            MONGO32_TESTACCOUNT_TOKEN=$(az account get-access-token --scope "https://github-e2etests-mongo32.documents.azure.com/.default" -o tsv --query accessToken)
+            echo "::add-mask::$MONGO32_TESTACCOUNT_TOKEN"
+            echo MONGO32_TESTACCOUNT_TOKEN=$MONGO32_TESTACCOUNT_TOKEN >> $GITHUB_ENV
+            MONGO_READONLY_TESTACCOUNT_TOKEN=$(az account get-access-token --scope "https://github-e2etests-mongo-readonly.documents.azure.com/.default" -o tsv --query accessToken)
+            echo "::add-mask::$MONGO_READONLY_TESTACCOUNT_TOKEN"
+            echo MONGO_READONLY_TESTACCOUNT_TOKEN=$MONGO_READONLY_TESTACCOUNT_TOKEN >> $GITHUB_ENV
       - name: Run test shard ${{ matrix['shardIndex'] }} of ${{ matrix['shardTotal']}}
         run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }} --workers=3
       - name: Upload blob report to GitHub Actions Artifacts
@@ -251,27 +251,3 @@ jobs:
           name: html-report--attempt-${{ github.run_attempt }}
           path: playwright-report
           retention-days: 14
-
-  cleanupaccounts:
-    name: "Cleanup Test Database Accounts"
-    if: ${{ !cancelled() }}
-    needs: [playwright-tests]
-    runs-on: ubuntu-latest
-    env:
-      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: "Az CLI login"
-        uses: azure/login@v1
-        with:
-          client-id: ${{ secrets.E2E_TESTS_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
-      - name: Use Node.js 18.x
-        uses: actions/setup-node@v1
-        with:
-          node-version: 18.x
-      - run: npm ci
-      - run: node utils/cleanupDBs.js
