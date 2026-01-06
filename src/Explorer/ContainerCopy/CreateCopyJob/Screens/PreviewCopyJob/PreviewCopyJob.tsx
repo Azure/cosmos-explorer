@@ -37,11 +37,15 @@ const PreviewCopyJob: React.FC = () => {
       </FieldRow>
       <Stack>
         <Text className="bold themeText">{ContainerCopyMessages.sourceSubscriptionLabel}</Text>
-        <Text data-test="source-subscription-name" className="themeText">{copyJobState.source?.subscription?.displayName}</Text>
+        <Text data-test="source-subscription-name" className="themeText">
+          {copyJobState.source?.subscription?.displayName}
+        </Text>
       </Stack>
       <Stack>
         <Text className="bold themeText">{ContainerCopyMessages.sourceAccountLabel}</Text>
-        <Text data-test="source-account-name" className="themeText">{copyJobState.source?.account?.name}</Text>
+        <Text data-test="source-account-name" className="themeText">
+          {copyJobState.source?.account?.name}
+        </Text>
       </Stack>
       <Stack>
         <DetailsList
