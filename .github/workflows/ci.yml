@@ -12,11 +12,6 @@ permissions:
   id-token: write
   contents: read
 jobs:
-  cleanupaccounts:
-    name: "Cleanup Test Database Accounts"
-    needs: [playwright-tests]
-    if: ${{ !cancelled() }}
-    uses: ./.github/workflows/cleanup-base.yml
   codemetrics:
     runs-on: ubuntu-latest
     name: "Log Code Metrics"
@@ -259,6 +254,22 @@ jobs:
 
   cleanupaccounts:
     name: "Cleanup Test Database Accounts"
-    needs: [playwright-tests]
-    if: ${{ !cancelled() }}
-    uses: ./.github/workflows/cleanup-base.yml
+    runs-on: ubuntu-latest
+    env:
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: "Az CLI login"
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.E2E_TESTS_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 18.x
+      - run: npm ci
+      - run: node utils/cleanupDBs.js
