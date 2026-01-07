@@ -12,9 +12,8 @@ import ContainerCopyMessages from "../ContainerCopyMessages";
 import { MonitorCopyJobsRefState } from "../MonitorCopyJobs/MonitorCopyJobRefState";
 import { CopyJobCommandBarBtnType } from "../Types/CopyJobTypes";
 
-function getCopyJobBtns(explorer: Explorer): CopyJobCommandBarBtnType[] {
+function getCopyJobBtns(explorer: Explorer, isDarkMode: boolean): CopyJobCommandBarBtnType[] {
   const monitorCopyJobsRef = MonitorCopyJobsRefState((state) => state.ref);
-  const isDarkMode = useThemeStore.getState().isDarkMode;
   const buttons: CopyJobCommandBarBtnType[] = [
     {
       key: "createCopyJob",
@@ -66,6 +65,6 @@ function btnMapper(config: CopyJobCommandBarBtnType): CommandButtonComponentProp
   };
 }
 
-export function getCommandBarButtons(explorer: Explorer): CommandButtonComponentProps[] {
-  return getCopyJobBtns(explorer).map(btnMapper);
+export function getCommandBarButtons(explorer: Explorer, isDarkMode: boolean): CommandButtonComponentProps[] {
+  return getCopyJobBtns(explorer, isDarkMode).map(btnMapper);
 }

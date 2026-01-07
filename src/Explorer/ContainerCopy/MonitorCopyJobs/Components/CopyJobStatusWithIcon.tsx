@@ -23,7 +23,7 @@ const iconMap: Partial<Record<CopyJobStatusType, string>> = {
 const statusIconColors: Partial<Record<CopyJobStatusType, string>> = {
   [CopyJobStatusType.Failed]: "var(--colorPaletteRedForeground1)",
   [CopyJobStatusType.Faulted]: "var(--colorPaletteRedForeground1)",
-  [CopyJobStatusType.Completed]: "#107c10", // Green color for success
+  [CopyJobStatusType.Completed]: "var(--colorSuccessGreen)",
   [CopyJobStatusType.InProgress]: "var(--colorBrandForeground1)",
   [CopyJobStatusType.Running]: "var(--colorBrandForeground1)",
   [CopyJobStatusType.Partitioning]: "var(--colorBrandForeground1)",

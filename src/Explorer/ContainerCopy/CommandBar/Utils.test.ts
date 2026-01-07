@@ -50,7 +50,7 @@ describe("CommandBar Utils", () => {
 
   describe("getCommandBarButtons", () => {
     it("should return an array of command button props", () => {
-      const buttons = getCommandBarButtons(mockExplorer);
+      const buttons = getCommandBarButtons(mockExplorer, false);
 
       expect(buttons).toBeDefined();
       expect(Array.isArray(buttons)).toBe(true);
@@ -58,7 +58,7 @@ describe("CommandBar Utils", () => {
     });
 
     it("should include create copy job button", () => {
-      const buttons = getCommandBarButtons(mockExplorer);
+      const buttons = getCommandBarButtons(mockExplorer, false);
       const createButton = buttons[0];
 
       expect(createButton).toBeDefined();
@@ -70,7 +70,7 @@ describe("CommandBar Utils", () => {
     });
 
     it("should include refresh button", () => {
-      const buttons = getCommandBarButtons(mockExplorer);
+      const buttons = getCommandBarButtons(mockExplorer, false);
       const refreshButton = buttons[1];
 
       expect(refreshButton).toBeDefined();
@@ -80,7 +80,7 @@ describe("CommandBar Utils", () => {
     });
 
     it("should include feedback button when platform is Portal", () => {
-      const buttons = getCommandBarButtons(mockExplorer);
+      const buttons = getCommandBarButtons(mockExplorer, false);
 
       expect(buttons.length).toBe(4);
 
@@ -111,7 +111,7 @@ describe("CommandBar Utils", () => {
     });
 
     it("should call openCreateCopyJobPanel when create button is clicked", () => {
-      const buttons = getCommandBarButtons(mockExplorer);
+      const buttons = getCommandBarButtons(mockExplorer, false);
       const createButton = buttons[0];
 
       createButton.onCommandClick({} as React.SyntheticEvent);
@@ -121,7 +121,7 @@ describe("CommandBar Utils", () => {
     });
 
     it("should call refreshJobList when refresh button is clicked", () => {
-      const buttons = getCommandBarButtons(mockExplorer);
+      const buttons = getCommandBarButtons(mockExplorer, false);
       const refreshButton = buttons[1];
 
       refreshButton.onCommandClick({} as React.SyntheticEvent);
@@ -130,7 +130,7 @@ describe("CommandBar Utils", () => {
     });
 
     it("should call openContainerCopyFeedbackBlade when feedback button is clicked", () => {
-      const buttons = getCommandBarButtons(mockExplorer);
+      const buttons = getCommandBarButtons(mockExplorer, false);
       const feedbackButton = buttons[3];
 
       feedbackButton.onCommandClick({} as React.SyntheticEvent);
@@ -139,7 +139,7 @@ describe("CommandBar Utils", () => {
     });
 
     it("should return buttons with correct icon sources", () => {
-      const buttons = getCommandBarButtons(mockExplorer);
+      const buttons = getCommandBarButtons(mockExplorer, false);
 
       expect(buttons[0].iconSrc).toBeDefined();
       expect(buttons[0].iconAlt).toBe("Create Copy Job");
@@ -160,14 +160,14 @@ describe("CommandBar Utils", () => {
         return selector(state);
       });
 
-      const buttons = getCommandBarButtons(mockExplorer);
+      const buttons = getCommandBarButtons(mockExplorer, false);
       const refreshButton = buttons[1];
 
       expect(() => refreshButton.onCommandClick({} as React.SyntheticEvent)).not.toThrow();
     });
 
     it("should set hasPopup to false for all buttons", () => {
-      const buttons = getCommandBarButtons(mockExplorer);
+      const buttons = getCommandBarButtons(mockExplorer, false);
 
       buttons.forEach((button) => {
         expect(button.hasPopup).toBe(false);
@@ -175,7 +175,7 @@ describe("CommandBar Utils", () => {
     });
 
     it("should set commandButtonLabel to undefined for all buttons", () => {
-      const buttons = getCommandBarButtons(mockExplorer);
+      const buttons = getCommandBarButtons(mockExplorer, false);
 
       buttons.forEach((button) => {
         expect(button.commandButtonLabel).toBeUndefined();
@@ -183,7 +183,7 @@ describe("CommandBar Utils", () => {
     });
 
     it("should respect disabled state when provided", () => {
-      const buttons = getCommandBarButtons(mockExplorer);
+      const buttons = getCommandBarButtons(mockExplorer, false);
 
       buttons.forEach((button) => {
         expect(button.disabled).toBe(false);
@@ -191,7 +191,7 @@ describe("CommandBar Utils", () => {
     });
 
     it("should return CommandButtonComponentProps with all required properties", () => {
-      const buttons = getCommandBarButtons(mockExplorer);
+      const buttons = getCommandBarButtons(mockExplorer, false);
 
       buttons.forEach((button: CommandButtonComponentProps) => {
         expect(button).toHaveProperty("iconSrc");
@@ -206,7 +206,7 @@ describe("CommandBar Utils", () => {
     });
 
     it("should maintain button order: create, refresh, themeToggle, feedback", () => {
-      const buttons = getCommandBarButtons(mockExplorer);
+      const buttons = getCommandBarButtons(mockExplorer, false);
 
       expect(buttons[0].tooltipText).toBe("Create Copy Job");
       expect(buttons[1].tooltipText).toBe("Refresh");
@@ -217,7 +217,7 @@ describe("CommandBar Utils", () => {
 
   describe("Button click handlers", () => {
     it("should execute click handlers without errors", () => {
-      const buttons = getCommandBarButtons(mockExplorer);
+      const buttons = getCommandBarButtons(mockExplorer, false);
 
       buttons.forEach((button) => {
         expect(() => button.onCommandClick({} as React.SyntheticEvent)).not.toThrow();
@@ -225,7 +225,7 @@ describe("CommandBar Utils", () => {
     });
 
     it("should call correct action for each button", () => {
-      const buttons = getCommandBarButtons(mockExplorer);
+      const buttons = getCommandBarButtons(mockExplorer, false);
 
       buttons[0].onCommandClick({} as React.SyntheticEvent);
       expect(Actions.openCreateCopyJobPanel).toHaveBeenCalledWith(mockExplorer);
@@ -240,7 +240,7 @@ describe("CommandBar Utils", () => {
 
   describe("Accessibility", () => {
     it("should have aria labels for all buttons", () => {
-      const buttons = getCommandBarButtons(mockExplorer);
+      const buttons = getCommandBarButtons(mockExplorer, false);
 
       buttons.forEach((button) => {
         expect(button.ariaLabel).toBeDefined();
@@ -250,7 +250,7 @@ describe("CommandBar Utils", () => {
     });
 
     it("should have tooltip text for all buttons", () => {
-      const buttons = getCommandBarButtons(mockExplorer);
+      const buttons = getCommandBarButtons(mockExplorer, false);
 
       buttons.forEach((button) => {
         expect(button.tooltipText).toBeDefined();
@@ -260,7 +260,7 @@ describe("CommandBar Utils", () => {
     });
 
     it("should have icon alt text for all buttons", () => {
-      const buttons = getCommandBarButtons(mockExplorer);
+      const buttons = getCommandBarButtons(mockExplorer, false);
 
       buttons.forEach((button) => {
         expect(button.iconAlt).toBeDefined();

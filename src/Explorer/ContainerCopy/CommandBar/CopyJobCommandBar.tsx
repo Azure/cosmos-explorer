@@ -18,7 +18,7 @@ const CopyJobCommandBar: React.FC<ContainerCopyProps> = ({ explorer }) => {
     },
   };
 
-  const commandBarItems: CommandButtonComponentProps[] = getCommandBarButtons(explorer);
+  const commandBarItems: CommandButtonComponentProps[] = getCommandBarButtons(explorer, isDarkMode);
   const controlButtons: ICommandBarItemProps[] = CommandBarUtil.convertButton(commandBarItems, backgroundColor);
 
   return (
