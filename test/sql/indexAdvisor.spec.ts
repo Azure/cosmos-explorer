@@ -24,7 +24,6 @@ test.afterAll(async () => {
 
 // Helper function to set up query tab and navigate to Index Advisor
 async function setupIndexAdvisorTab(page: Page, customQuery?: string) {
-
   const explorer = await DataExplorer.open(page, TestAccount.SQL);
   const databaseNode = await explorer.waitForNode(DATABASE_ID);
   await databaseNode.expand();
@@ -69,7 +68,7 @@ test("Verify UI sections are collapsible", async ({ page }) => {
   // Verify both section headers exist
   const includedHeader = explorer.frame.getByText("Included in Current Policy", { exact: true });
   const notIncludedHeader = explorer.frame.getByText("Not Included in Current Policy", { exact: true });
-  
+
   await expect(includedHeader).toBeVisible();
   await expect(notIncludedHeader).toBeVisible();
 
@@ -118,7 +117,7 @@ test("Verify index suggestions and apply potential index", async ({ page }) => {
   // The composite index should be /partitionKey ASC, /randomData ASC
   const checkboxes = explorer.frame.locator('input[type="checkbox"]');
   const checkboxCount = await checkboxes.count();
-  
+
   // Should have at least one checkbox for the potential index
   expect(checkboxCount).toBeGreaterThan(0);
 
