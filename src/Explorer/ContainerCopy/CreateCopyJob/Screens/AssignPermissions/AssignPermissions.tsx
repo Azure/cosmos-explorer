@@ -12,7 +12,7 @@ import { useCopyJobPrerequisitesCache } from "../../Utils/useCopyJobPrerequisite
 import usePermissionSections, { PermissionGroupConfig, PermissionSectionConfig } from "./hooks/usePermissionsSection";
 
 const PermissionSection: React.FC<PermissionSectionConfig> = ({ id, title, Component, completed, disabled }) => (
-  <AccordionItem key={id} value={id} disabled={disabled}>
+  <AccordionItem key={id} value={id} disabled={disabled} data-test="accordion-item">
     <AccordionHeader className="accordionHeader">
       <Text className="accordionHeaderText" variant="medium">
         {title}
@@ -25,13 +25,13 @@ const PermissionSection: React.FC<PermissionSectionConfig> = ({ id, title, Compo
         height={completed ? 20 : 24}
       />
     </AccordionHeader>
-    <AccordionPanel aria-disabled={disabled} className="accordionPanel">
+    <AccordionPanel aria-disabled={disabled} className="accordionPanel" data-test="accordion-panel">
       <Component />
     </AccordionPanel>
   </AccordionItem>
 );
 
-const PermissionGroup: React.FC<PermissionGroupConfig> = ({ title, description, sections }) => {
+const PermissionGroup: React.FC<PermissionGroupConfig> = ({ id, title, description, sections }) => {
   const [openItems, setOpenItems] = React.useState<string[]>([]);
 
   useEffect(() => {
@@ -44,6 +44,7 @@ const PermissionGroup: React.FC<PermissionGroupConfig> = ({ title, description, 
 
   return (
     <Stack
+      data-test={`permission-group-container-${id}`}
       tokens={{ childrenGap: 15 }}
       styles={{
         root: {
@@ -99,7 +100,11 @@ const AssignPermissions = () => {
   }, []);
 
   return (
-    <Stack className="assignPermissionsContainer" tokens={{ childrenGap: 20 }}>
+    <Stack
+      data-test="Panel:AssignPermissionsContainer"
+      className="assignPermissionsContainer"
+      tokens={{ childrenGap: 20 }}
+    >
       <Text variant="medium">
         {isSameAccount && copyJobState.migrationType === CopyJobMigrationType.Online
           ? ContainerCopyMessages.assignPermissions.intraAccountOnlineDescription(

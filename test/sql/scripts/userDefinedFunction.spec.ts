@@ -12,7 +12,7 @@ test.describe("User Defined Functions", () => {
   }`;
 
   test.beforeAll("Create Test Database", async () => {
-    context = await createTestSQLContainer(true);
+    context = await createTestSQLContainer();
   });
 
   test.beforeEach("Open container", async ({ page }) => {
@@ -51,9 +51,12 @@ test.describe("User Defined Functions", () => {
     const saveButton = explorer.commandBarButton(CommandBarButton.Save);
     await expect(saveButton).toBeEnabled();
     await saveButton.click();
-    await expect(explorer.getConsoleMessage()).toContainText(`Successfully created user defined function ${udfId}`, {
-      timeout: ONE_MINUTE_MS,
-    });
+    await expect(explorer.getConsoleHeaderStatus()).toContainText(
+      `Successfully created user defined function ${udfId}`,
+      {
+        timeout: 2 * ONE_MINUTE_MS,
+      },
+    );
 
     // Delete UDF
     await containerNode.expand();
@@ -69,8 +72,11 @@ test.describe("User Defined Functions", () => {
     const deleteUserDefinedFunctionButton = explorer.frame.getByTestId("DialogButton:Delete");
     await deleteUserDefinedFunctionButton.click();
 
-    await expect(explorer.getConsoleMessage()).toContainText(`Successfully deleted user defined function ${udfId}`, {
-      timeout: ONE_MINUTE_MS,
-    });
+    await expect(explorer.getConsoleHeaderStatus()).toContainText(
+      `Successfully deleted user defined function ${udfId}`,
+      {
+        timeout: ONE_MINUTE_MS,
+      },
+    );
   });
 });

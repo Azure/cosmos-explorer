@@ -19,9 +19,21 @@ const NavigationControls: React.FC<NavigationControlsProps> = ({
   isPreviousDisabled,
 }) => (
   <Stack horizontal tokens={{ childrenGap: 20 }}>
-    <PrimaryButton text={primaryBtnText} onClick={onPrimary} allowDisabledFocus disabled={isPrimaryDisabled} />
-    <DefaultButton text="Previous" onClick={onPrevious} allowDisabledFocus disabled={isPreviousDisabled} />
-    <DefaultButton text="Cancel" onClick={onCancel} />
+    <PrimaryButton
+      data-test="copy-job-primary"
+      text={primaryBtnText}
+      onClick={onPrimary}
+      allowDisabledFocus
+      disabled={isPrimaryDisabled}
+    />
+    <DefaultButton
+      data-test="copy-job-previous"
+      text="Previous"
+      onClick={onPrevious}
+      allowDisabledFocus
+      disabled={isPreviousDisabled}
+    />
+    <DefaultButton data-test="copy-job-cancel" text="Cancel" onClick={onCancel} />
   </Stack>
 );
 

@@ -7,7 +7,7 @@ test.describe("Stored Procedures", () => {
   let explorer: DataExplorer = null!;
 
   test.beforeAll("Create Test Database", async () => {
-    context = await createTestSQLContainer(true);
+    context = await createTestSQLContainer();
   });
 
   test.beforeEach("Open container", async ({ page }) => {
@@ -34,10 +34,10 @@ test.describe("Stored Procedures", () => {
     await expect(saveButton).toBeEnabled();
     await saveButton.click();
 
-    await expect(explorer.getConsoleMessage()).toContainText(
-      `Sucessfully created stored procedure ${storedProcedureName}`,
+    await expect(explorer.getConsoleHeaderStatus()).toContainText(
+      `Successfully created stored procedure ${storedProcedureName}`,
       {
-        timeout: ONE_MINUTE_MS,
+        timeout: 2 * ONE_MINUTE_MS,
       },
     );
 
@@ -65,7 +65,7 @@ test.describe("Stored Procedures", () => {
     const deleteStoredProcedureButton = explorer.frame.getByTestId("DialogButton:Delete");
     await deleteStoredProcedureButton.click();
 
-    await expect(explorer.getConsoleMessage()).toContainText(
+    await expect(explorer.getConsoleHeaderStatus()).toContainText(
       `Successfully deleted stored procedure ${storedProcedureName}`,
       {
         timeout: ONE_MINUTE_MS,

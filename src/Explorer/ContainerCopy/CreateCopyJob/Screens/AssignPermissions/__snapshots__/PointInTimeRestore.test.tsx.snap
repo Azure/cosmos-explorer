@@ -56,6 +56,7 @@ exports[`PointInTimeRestore Initial Render should render correctly with default 
       <button
         class="ms-Button ms-Button--primary fullWidth root-115"
         data-is-focusable="true"
+        data-test="pointInTimeRestore:PrimaryBtn"
         type="button"
       >
         <span
@@ -131,6 +132,7 @@ exports[`PointInTimeRestore Initial Render should render with empty account name
       <button
         class="ms-Button ms-Button--primary fullWidth root-115"
         data-is-focusable="true"
+        data-test="pointInTimeRestore:PrimaryBtn"
         type="button"
       >
         <span
@@ -161,6 +163,7 @@ exports[`PointInTimeRestore Snapshots should match snapshot in loading state 1`]
   >
     <div
       class="ms-Overlay root-123"
+      data-test="loading-overlay"
     >
       <div
         class="ms-Spinner root-125"
@@ -223,6 +226,7 @@ exports[`PointInTimeRestore Snapshots should match snapshot in loading state 1`]
         aria-disabled="true"
         class="ms-Button ms-Button--primary is-disabled fullWidth root-128"
         data-is-focusable="false"
+        data-test="pointInTimeRestore:PrimaryBtn"
         disabled=""
         type="button"
       >
@@ -301,6 +305,7 @@ exports[`PointInTimeRestore Snapshots should match snapshot with refresh button 
       <button
         class="ms-Button ms-Button--primary fullWidth root-115"
         data-is-focusable="true"
+        data-test="pointInTimeRestore:RefreshBtn"
         type="button"
       >
         <span

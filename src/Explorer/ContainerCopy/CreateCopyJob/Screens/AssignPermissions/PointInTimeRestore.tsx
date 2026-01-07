@@ -127,6 +127,7 @@ const PointInTimeRestore: React.FC = () => {
       <Stack.Item>
         {showRefreshButton ? (
           <PrimaryButton
+            data-test="pointInTimeRestore:RefreshBtn"
             className="fullWidth"
             text={ContainerCopyMessages.refreshButtonLabel}
             iconProps={{ iconName: "Refresh" }}
@@ -134,6 +135,7 @@ const PointInTimeRestore: React.FC = () => {
           />
         ) : (
           <PrimaryButton
+            data-test="pointInTimeRestore:PrimaryBtn"
             className="fullWidth"
             text={loading ? "" : ContainerCopyMessages.pointInTimeRestore.buttonText}
             {...(loading ? { iconProps: { iconName: "SyncStatusSolid" } } : {})}

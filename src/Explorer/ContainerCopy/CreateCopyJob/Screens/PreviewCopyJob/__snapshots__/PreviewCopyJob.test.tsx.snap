@@ -3,6 +3,7 @@
 exports[`PreviewCopyJob should handle special characters in database and container names 1`] = `
 <div
   class="ms-Stack previewCopyJobContainer css-109"
+  data-test="Panel:PreviewCopyJob"
 >
   <div
     class="ms-Stack flex-row css-110"
@@ -32,6 +33,7 @@ exports[`PreviewCopyJob should handle special characters in database and contain
             <input
               aria-invalid="false"
               class="ms-TextField-field field-115"
+              data-test="job-name-textfield"
               id="TextField84"
               type="text"
               value="job-with@special#chars_123"
@@ -51,6 +53,7 @@ exports[`PreviewCopyJob should handle special characters in database and contain
     </span>
     <span
       class="css-125"
+      data-test="source-subscription-name"
     >
       Test Subscription
     </span>
@@ -65,6 +68,7 @@ exports[`PreviewCopyJob should handle special characters in database and contain
     </span>
     <span
       class="css-125"
+      data-test="source-account-name"
     >
       test-account
     </span>
@@ -321,6 +325,7 @@ exports[`PreviewCopyJob should handle special characters in database and contain
 exports[`PreviewCopyJob should render component with cross-subscription setup 1`] = `
 <div
   class="ms-Stack previewCopyJobContainer css-109"
+  data-test="Panel:PreviewCopyJob"
 >
   <div
     class="ms-Stack flex-row css-110"
@@ -350,6 +355,7 @@ exports[`PreviewCopyJob should render component with cross-subscription setup 1`
             <input
               aria-invalid="false"
               class="ms-TextField-field field-115"
+              data-test="job-name-textfield"
               id="TextField96"
               type="text"
               value=""
@@ -369,6 +375,7 @@ exports[`PreviewCopyJob should render component with cross-subscription setup 1`
     </span>
     <span
       class="css-125"
+      data-test="source-subscription-name"
     >
       Test Subscription
     </span>
@@ -383,6 +390,7 @@ exports[`PreviewCopyJob should render component with cross-subscription setup 1`
     </span>
     <span
       class="css-125"
+      data-test="source-account-name"
     >
       test-account
     </span>
@@ -639,6 +647,7 @@ exports[`PreviewCopyJob should render component with cross-subscription setup 1`
 exports[`PreviewCopyJob should render with default state and empty job name 1`] = `
 <div
   class="ms-Stack previewCopyJobContainer css-109"
+  data-test="Panel:PreviewCopyJob"
 >
   <div
     class="ms-Stack flex-row css-110"
@@ -668,6 +677,7 @@ exports[`PreviewCopyJob should render with default state and empty job name 1`] 
             <input
               aria-invalid="false"
               class="ms-TextField-field field-115"
+              data-test="job-name-textfield"
               id="TextField0"
               type="text"
               value=""
@@ -687,6 +697,7 @@ exports[`PreviewCopyJob should render with default state and empty job name 1`] 
     </span>
     <span
       class="css-125"
+      data-test="source-subscription-name"
     >
       Test Subscription
     </span>
@@ -701,6 +712,7 @@ exports[`PreviewCopyJob should render with default state and empty job name 1`] 
     </span>
     <span
       class="css-125"
+      data-test="source-account-name"
     >
       test-account
     </span>
@@ -957,6 +969,7 @@ exports[`PreviewCopyJob should render with default state and empty job name 1`] 
 exports[`PreviewCopyJob should render with long subscription and account names 1`] = `
 <div
   class="ms-Stack previewCopyJobContainer css-109"
+  data-test="Panel:PreviewCopyJob"
 >
   <div
     class="ms-Stack flex-row css-110"
@@ -986,6 +999,7 @@ exports[`PreviewCopyJob should render with long subscription and account names 1
             <input
               aria-invalid="false"
               class="ms-TextField-field field-115"
+              data-test="job-name-textfield"
               id="TextField60"
               type="text"
               value=""
@@ -1005,6 +1019,7 @@ exports[`PreviewCopyJob should render with long subscription and account names 1
     </span>
     <span
       class="css-125"
+      data-test="source-subscription-name"
     >
       This is a very long subscription name that might cause display issues if not handled properly
     </span>
@@ -1019,6 +1034,7 @@ exports[`PreviewCopyJob should render with long subscription and account names 1
     </span>
     <span
       class="css-125"
+      data-test="source-account-name"
     >
       this-is-a-very-long-database-account-name-that-might-cause-display-issues
     </span>
@@ -1275,6 +1291,7 @@ exports[`PreviewCopyJob should render with long subscription and account names 1
 exports[`PreviewCopyJob should render with missing source account information 1`] = `
 <div
   class="ms-Stack previewCopyJobContainer css-109"
+  data-test="Panel:PreviewCopyJob"
 >
   <div
     class="ms-Stack flex-row css-110"
@@ -1304,6 +1321,7 @@ exports[`PreviewCopyJob should render with missing source account information 1`
             <input
               aria-invalid="false"
               class="ms-TextField-field field-115"
+              data-test="job-name-textfield"
               id="TextField36"
               type="text"
               value=""
@@ -1323,6 +1341,7 @@ exports[`PreviewCopyJob should render with missing source account information 1`
     </span>
     <span
       class="css-125"
+      data-test="source-subscription-name"
     >
       Test Subscription
     </span>
@@ -1588,6 +1607,7 @@ exports[`PreviewCopyJob should render with missing source account information 1`
 exports[`PreviewCopyJob should render with missing source subscription information 1`] = `
 <div
   class="ms-Stack previewCopyJobContainer css-109"
+  data-test="Panel:PreviewCopyJob"
 >
   <div
     class="ms-Stack flex-row css-110"
@@ -1617,6 +1637,7 @@ exports[`PreviewCopyJob should render with missing source subscription informati
             <input
               aria-invalid="false"
               class="ms-TextField-field field-115"
+              data-test="job-name-textfield"
               id="TextField24"
               type="text"
               value=""
@@ -1645,6 +1666,7 @@ exports[`PreviewCopyJob should render with missing source subscription informati
     </span>
     <span
       class="css-125"
+      data-test="source-account-name"
     >
       test-account
     </span>
@@ -1901,6 +1923,7 @@ exports[`PreviewCopyJob should render with missing source subscription informati
 exports[`PreviewCopyJob should render with online migration type 1`] = `
 <div
   class="ms-Stack previewCopyJobContainer css-109"
+  data-test="Panel:PreviewCopyJob"
 >
   <div
     class="ms-Stack flex-row css-110"
@@ -1930,6 +1953,7 @@ exports[`PreviewCopyJob should render with online migration type 1`] = `
             <input
               aria-invalid="false"
               class="ms-TextField-field field-115"
+              data-test="job-name-textfield"
               id="TextField72"
               type="text"
               value="online-migration-job"
@@ -1949,6 +1973,7 @@ exports[`PreviewCopyJob should render with online migration type 1`] = `
     </span>
     <span
       class="css-125"
+      data-test="source-subscription-name"
     >
       Test Subscription
     </span>
@@ -1963,6 +1988,7 @@ exports[`PreviewCopyJob should render with online migration type 1`] = `
     </span>
     <span
       class="css-125"
+      data-test="source-account-name"
     >
       test-account
     </span>
@@ -2219,6 +2245,7 @@ exports[`PreviewCopyJob should render with online migration type 1`] = `
 exports[`PreviewCopyJob should render with pre-filled job name 1`] = `
 <div
   class="ms-Stack previewCopyJobContainer css-109"
+  data-test="Panel:PreviewCopyJob"
 >
   <div
     class="ms-Stack flex-row css-110"
@@ -2248,6 +2275,7 @@ exports[`PreviewCopyJob should render with pre-filled job name 1`] = `
             <input
               aria-invalid="false"
               class="ms-TextField-field field-115"
+              data-test="job-name-textfield"
               id="TextField12"
               type="text"
               value="custom-job-name-123"
@@ -2267,6 +2295,7 @@ exports[`PreviewCopyJob should render with pre-filled job name 1`] = `
     </span>
     <span
       class="css-125"
+      data-test="source-subscription-name"
     >
       Test Subscription
     </span>
@@ -2281,6 +2310,7 @@ exports[`PreviewCopyJob should render with pre-filled job name 1`] = `
     </span>
     <span
       class="css-125"
+      data-test="source-account-name"
     >
       test-account
     </span>
@@ -2537,6 +2567,7 @@ exports[`PreviewCopyJob should render with pre-filled job name 1`] = `
 exports[`PreviewCopyJob should render with undefined database and container names 1`] = `
 <div
   class="ms-Stack previewCopyJobContainer css-109"
+  data-test="Panel:PreviewCopyJob"
 >
   <div
     class="ms-Stack flex-row css-110"
@@ -2566,6 +2597,7 @@ exports[`PreviewCopyJob should render with undefined database and container name
             <input
               aria-invalid="false"
               class="ms-TextField-field field-115"
+              data-test="job-name-textfield"
               id="TextField48"
               type="text"
               value=""
@@ -2585,6 +2617,7 @@ exports[`PreviewCopyJob should render with undefined database and container name
     </span>
     <span
       class="css-125"
+      data-test="source-subscription-name"
     >
       Test Subscription
     </span>
@@ -2599,6 +2632,7 @@ exports[`PreviewCopyJob should render with undefined database and container name
     </span>
     <span
       class="css-125"
+      data-test="source-account-name"
     >
       test-account
     </span>

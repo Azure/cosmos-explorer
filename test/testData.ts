@@ -82,8 +82,18 @@ export class TestContainerContext {
   }
 }
 
-export async function createTestSQLContainer(includeTestData?: boolean) {
-  const databaseId = generateUniqueName("db");
+type createTestSqlContainerConfig = {
+  includeTestData?: boolean;
+  partitionKey?: string;
+  databaseName?: string;
+};
+
+export async function createTestSQLContainer({
+  includeTestData = false,
+  partitionKey = "/partitionKey",
+  databaseName = "",
+}: createTestSqlContainerConfig = {}) {
+  const databaseId = databaseName ? databaseName : generateUniqueName("db");
   const containerId = "testcontainer"; // A unique container name isn't needed because the database is unique
   const credentials = getAzureCLICredentials();
   const adaptedCredentials = new AzureIdentityCredentialAdapter(credentials);
@@ -112,7 +122,7 @@ export async function createTestSQLContainer(includeTestData?: boolean) {
   try {
     const { container } = await database.containers.createIfNotExists({
       id: containerId,
-      partitionKey: "/partitionKey",
+      partitionKey,
     });
     if (includeTestData) {
       const batchCount = TestData.length / 100;

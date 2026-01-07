@@ -19,7 +19,7 @@ test.describe("Triggers", () => {
         request.setBody(itemToCreate);
     }`;
   test.beforeAll("Create Test Database", async () => {
-    context = await createTestSQLContainer(true);
+    context = await createTestSQLContainer();
   });
 
   test.beforeEach("Open container", async ({ page }) => {
@@ -57,8 +57,24 @@ test.describe("Triggers", () => {
     // Save changes
     const saveButton = explorer.commandBarButton(CommandBarButton.Save);
     await saveButton.click();
-    await expect(explorer.getConsoleMessage()).toContainText(`Successfully created trigger ${triggerId}`, {
+    await expect(explorer.getConsoleHeaderStatus()).toContainText(`Successfully created trigger ${triggerId}`, {
       timeout: 2 * ONE_MINUTE_MS,
+    });
+
+    // Delete Trigger
+    await containerNode.expand();
+    const triggersNode = await explorer.waitForNode(`${context.database.id}/${context.container.id}/Triggers`);
+    await triggersNode.expand();
+    const triggerNode = await explorer.waitForNode(
+      `${context.database.id}/${context.container.id}/Triggers/${triggerId}`,
+    );
+
+    await triggerNode.openContextMenu();
+    await triggerNode.contextMenuItem("Delete Trigger").click();
+    const deleteTriggerButton = explorer.frame.getByTestId("DialogButton:Delete");
+    await deleteTriggerButton.click();
+    await expect(explorer.getConsoleHeaderStatus()).toContainText(`Successfully deleted trigger ${triggerId}`, {
+      timeout: ONE_MINUTE_MS,
     });
   });
 });

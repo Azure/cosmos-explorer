@@ -74,17 +74,50 @@ async function main() {
       }
     } else if (account.kind === "GlobalDocumentDB") {
       const sqlDatabases = await client.sqlResources.listSqlDatabases(resourceGroupName, account.name);
-      for (const database of sqlDatabases) {
-        const timestamp = Number(database.resource._ts) * 1000;
-        if (timestamp && timestamp < thirtyMinutesAgo) {
-          await client.sqlResources.deleteSqlDatabase(resourceGroupName, account.name, database.name);
-          console.log(`DELETED: ${account.name} | ${database.name} | Age: ${friendlyTime(Date.now() - timestamp)}`);
-        } else {
-          console.log(`SKIPPED: ${account.name} | ${database.name} | Age: ${friendlyTime(Date.now() - timestamp)}`);
-        }
+      const sqlDatabasesToDelete = sqlDatabases.map(async (database) => {
+        await deleteWithRetry(client, database, account.name);
+      });
+      await Promise.all(sqlDatabasesToDelete);
+    }
+  }
+}
+
+// Retry logic for handling throttling
+async function deleteWithRetry(client, database, accountName) {
+  const maxRetries = 5;
+  let attempt = 0;
+  let backoffTime = 1000; // Start with 1 second
+
+  while (attempt < maxRetries) {
+    try {
+      const timestamp = Number(database.resource._ts) * 1000;
+      if (timestamp && timestamp < thirtyMinutesAgo) {
+        await client.sqlResources.deleteSqlDatabase(resourceGroupName, accountName, database.name);
+        console.log(`DELETED: ${accountName} | ${database.name} | Age: ${friendlyTime(Date.now() - timestamp)}`);
+      } else {
+        console.log(`SKIPPED: ${accountName} | ${database.name} | Age: ${friendlyTime(Date.now() - timestamp)}`);
+      }
+      return;
+    } catch (error) {
+      if (error.statusCode === 429) {
+        // Throttling error (HTTP 429), apply exponential backoff
+        console.log(`Throttling detected, retrying ${database.name}... (Attempt ${attempt + 1})`);
+        await delay(backoffTime);
+        attempt++;
+        backoffTime *= 2; // Exponential backoff
+      } else {
+        // For other errors, log and break
+        console.error(`Error deleting ${database.name}:`, error);
+        break;
       }
     }
   }
+  console.log(`Failed to delete ${database.name} after ${maxRetries} attempts.`);
+}
+
+// Helper function to delay the retry attempts
+function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 main()

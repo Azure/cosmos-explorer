@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, Page, test } from "@playwright/test";
 import * as DataModels from "../../../src/Contracts/DataModels";
 import { CommandBarButton, DataExplorer, ONE_MINUTE_MS, TestAccount } from "../../fx";
 import { createTestSQLContainer, TestContainerContext } from "../../testData";
@@ -8,7 +8,7 @@ test.describe("Computed Properties", () => {
   let explorer: DataExplorer = null!;
 
   test.beforeAll("Create Test Database", async () => {
-    context = await createTestSQLContainer(true);
+    context = await createTestSQLContainer();
   });
 
   test.beforeEach("Open Settings tab under Scale & Settings", async ({ page }) => {
@@ -43,9 +43,12 @@ test.describe("Computed Properties", () => {
     const saveButton = explorer.commandBarButton(CommandBarButton.Save);
     await expect(saveButton).toBeEnabled();
     await saveButton.click();
-    await expect(explorer.getConsoleMessage()).toContainText(`Successfully updated container ${context.container.id}`, {
-      timeout: ONE_MINUTE_MS,
-    });
+    await expect(explorer.getConsoleHeaderStatus()).toContainText(
+      `Successfully updated container ${context.container.id}`,
+      {
+        timeout: ONE_MINUTE_MS,
+      },
+    );
   });
 
   test("Add computed property with invalid query", async ({ page }) => {
@@ -65,9 +68,12 @@ test.describe("Computed Properties", () => {
     const saveButton = explorer.commandBarButton(CommandBarButton.Save);
     await expect(saveButton).toBeEnabled();
     await saveButton.click();
-    await expect(explorer.getConsoleMessage()).toContainText(`Failed to update container ${context.container.id}`, {
-      timeout: ONE_MINUTE_MS,
-    });
+    await expect(explorer.getConsoleHeaderStatus()).toContainText(
+      `Failed to update container ${context.container.id}`,
+      {
+        timeout: ONE_MINUTE_MS,
+      },
+    );
   });
 
   test("Add computed property with invalid json", async ({ page }) => {
@@ -88,7 +94,7 @@ test.describe("Computed Properties", () => {
     await expect(saveButton).toBeDisabled();
   });
 
-  const clearComputedPropertiesTextBoxContent = async ({ page }): Promise<void> => {
+  const clearComputedPropertiesTextBoxContent = async ({ page }: { page: Page }): Promise<void> => {
     // Get computed properties text box
     const computedPropertiesTextBox = explorer.frame.getByRole("textbox", { name: "Computed properties" });
     await computedPropertiesTextBox.waitFor();
