@@ -1,6 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 
-import { DataExplorer, TestAccount } from "../fx";
+import { CommandBarButton, DataExplorer, TestAccount } from "../fx";
 import { createTestSQLContainer, TestContainerContext } from "../testData";
 
 // Test container context for setup and cleanup
@@ -35,18 +35,16 @@ async function setupIndexAdvisorTab(page: Page, customQuery?: string) {
   await page.waitForTimeout(2000);
 
   const queryTab = explorer.queryTab("tab0");
-  await queryTab.editor().locator.waitFor({ timeout: 30 * 1000 });
-  await queryTab.editor().locator.click();
+  const queryEditor = queryTab.editor();
+  await queryEditor.locator.waitFor({ timeout: 30 * 1000 });
+  await queryTab.executeCTA.waitFor();
 
   if (customQuery) {
-    // Clear the default query and type the custom query
-    await page.keyboard.press("Control+A");
-    await page.waitForTimeout(100);
-    await page.keyboard.type(customQuery);
-    await page.waitForTimeout(500);
+    await queryEditor.locator.click();
+    await queryEditor.setText(customQuery);
   }
 
-  const executeQueryButton = explorer.commandBarButton("Execute Query");
+  const executeQueryButton = explorer.commandBarButton(CommandBarButton.ExecuteQuery);
   await executeQueryButton.click();
   await expect(queryTab.resultsEditor.locator).toBeAttached({ timeout: 60 * 1000 });
 
