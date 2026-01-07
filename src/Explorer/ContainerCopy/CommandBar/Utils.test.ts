@@ -105,7 +105,7 @@ describe("CommandBar Utils", () => {
       }));
 
       const { getCommandBarButtons: getCommandBarButtonsEmulator } = await import("./Utils");
-      const buttons = getCommandBarButtonsEmulator(mockExplorer);
+      const buttons = getCommandBarButtonsEmulator(mockExplorer, false);
 
       expect(buttons.length).toBe(3);
     });
