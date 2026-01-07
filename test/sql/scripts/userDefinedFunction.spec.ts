@@ -5,11 +5,11 @@ import { createTestSQLContainer, TestContainerContext } from "../../testData";
 test.describe("User Defined Functions", () => {
   let context: TestContainerContext = null!;
   let explorer: DataExplorer = null!;
-  const udfBody = `function extractDocumentId(doc) {
+  const udfBody: string = `function extractDocumentId(doc) {
     return {
-        id: doc.id
+      id: doc.id
     };
-   }`;
+  }`;
 
   test.beforeAll("Create Test Database", async () => {
     context = await createTestSQLContainer(true);
@@ -19,9 +19,11 @@ test.describe("User Defined Functions", () => {
     explorer = await DataExplorer.open(page, TestAccount.SQL);
   });
 
-  test.afterAll("Delete Test Database", async () => {
-    await context?.dispose();
-  });
+  if (!process.env.CI) {
+    test.afterAll("Delete Test Database", async () => {
+      await context?.dispose();
+    });
+  }
 
   test("Add, execute, and delete user defined function", async ({ page }) => {
     // Open container context menu and click New UDF
@@ -31,8 +33,8 @@ test.describe("User Defined Functions", () => {
 
     // Assign UDF id
     const udfIdTextBox = explorer.frame.getByLabel("User Defined Function Id");
-    const udfName: string = "extractDocumentId";
-    await udfIdTextBox.fill(udfName);
+    const udfId: string = "extractDocumentId";
+    await udfIdTextBox.fill(udfId);
 
     // Create UDF body that extracts the document id from a document
     const udfBodyTextArea = explorer.frame.getByTestId("EditorReact/Host/Loaded");
@@ -49,7 +51,7 @@ test.describe("User Defined Functions", () => {
     const saveButton = explorer.commandBarButton(CommandBarButton.Save);
     await expect(saveButton).toBeEnabled();
     await saveButton.click();
-    await expect(explorer.getConsoleMessage()).toContainText(`Sucessfully created user defined function ${udfName}`, {
+    await expect(explorer.getConsoleMessage()).toContainText(`Successfully created user defined function ${udfId}`, {
       timeout: ONE_MINUTE_MS,
     });
 
@@ -60,14 +62,14 @@ test.describe("User Defined Functions", () => {
     );
     await udfsNode.expand();
     const udfNode = await explorer.waitForNode(
-      `${context.database.id}/${context.container.id}/User Defined Functions/${udfName}`,
+      `${context.database.id}/${context.container.id}/User Defined Functions/${udfId}`,
     );
     await udfNode.openContextMenu();
     await udfNode.contextMenuItem("Delete User Defined Function").click();
     const deleteUserDefinedFunctionButton = explorer.frame.getByTestId("DialogButton:Delete");
     await deleteUserDefinedFunctionButton.click();
 
-    await expect(explorer.getConsoleMessage()).toContainText(`Successfully deleted user defined function ${udfName}`, {
+    await expect(explorer.getConsoleMessage()).toContainText(`Successfully deleted user defined function ${udfId}`, {
       timeout: ONE_MINUTE_MS,
     });
   });
