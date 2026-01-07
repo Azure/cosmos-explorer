@@ -352,8 +352,9 @@ export class DataExplorer {
    *
    * There's only a single "primary" button, but we still require you to pass the label to confirm you're selecting the right button.
    */
-  globalCommandButton(label: string): Locator {
-    return this.frame.getByTestId("GlobalCommands").getByText(label);
+  async globalCommandButton(label: string): Promise<Locator> {
+    await this.frame.getByTestId("GlobalCommands").click();
+    return this.frame.getByRole("menuitem", { name: label });
   }
 
   /** Select the command bar button with the specified label */
@@ -459,6 +460,15 @@ export class DataExplorer {
     const containerNode = await this.waitForContainerNode(context.database.id, context.container.id);
     await containerNode.expand();
 
+    // refresh tree to remove deleted database
+    const consoleMessages = await this.getNotificationConsoleMessages();
+    const refreshButton = this.frame.getByTestId("Sidebar/RefreshButton");
+    await refreshButton.click();
+    await expect(consoleMessages).toContainText("Successfully refreshed databases", {
+      timeout: ONE_MINUTE_MS,
+    });
+    await this.collapseNotificationConsole();
+
     const scaleAndSettingsButton = this.frame.getByTestId(
       `TreeNode:${context.database.id}/${context.container.id}/Scale & Settings`,
     );
@@ -466,8 +476,33 @@ export class DataExplorer {
   }
 
   /** Gets the console message element */
-  getConsoleMessage(): Locator {
+  getConsoleHeaderStatus(): Locator {
     return this.frame.getByTestId("notification-console/header-status");
+  }
+
+  async expandNotificationConsole(): Promise<void> {
+    await this.setNotificationConsoleExpanded(true);
+  }
+
+  async collapseNotificationConsole(): Promise<void> {
+    await this.setNotificationConsoleExpanded(false);
+  }
+
+  async setNotificationConsoleExpanded(expanded: boolean): Promise<void> {
+    const notificationConsoleToggleButton = this.frame.getByTestId("NotificationConsole/ExpandCollapseButton");
+    const alt = await notificationConsoleToggleButton.locator("img").getAttribute("alt");
+
+    // When expanded, the icon says "Collapse icon"
+    if (expanded && alt === "Expand icon") {
+      await notificationConsoleToggleButton.click();
+    } else if (!expanded && alt === "Collapse icon") {
+      await notificationConsoleToggleButton.click();
+    }
+  }
+
+  async getNotificationConsoleMessages(): Promise<Locator> {
+    await this.setNotificationConsoleExpanded(true);
+    return this.frame.getByTestId("NotificationConsole/Contents");
   }
 
   async getDropdownItemByName(name: string, ariaLabel?: string): Promise<Locator> {
