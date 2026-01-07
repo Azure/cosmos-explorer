@@ -18,7 +18,7 @@ test.describe("Stored Procedures", () => {
     await context?.dispose();
   });
 
-  test("Add, execute, and delete stored procedure", async ({}, testInfo) => {
+  test("Add, execute, and delete stored procedure", async (_, testInfo) => {
     // Open container context menu and click New Stored Procedure
     const containerNode = await explorer.waitForContainerNode(context.database.id, context.container.id);
     await containerNode.openContextMenu();
