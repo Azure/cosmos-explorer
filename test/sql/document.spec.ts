@@ -110,7 +110,8 @@ test.describe.serial("Upload Item", () => {
   let context: TestContainerContext = null!;
   const uploadDocumentFilePath: string = path.join(__dirname, "uploadDocument.json");
 
-  test.beforeEach("Create Test Database and Open documents tab", async ({ page }) => {
+  test.beforeAll("Create Test database and open documents tab", async ({ browser }) => {
+    const page = await browser.newPage();
     context = await createTestSQLContainer();
     explorer = await DataExplorer.open(page, TestAccount.SQL);
 
@@ -119,38 +120,27 @@ test.describe.serial("Upload Item", () => {
 
     const containerMenuNode = await explorer.waitForContainerItemsNode(context.database.id, context.container.id);
     await containerMenuNode.element.click();
+    // We need to click twice in order to remove a tooltip
+    await containerMenuNode.element.click();
   });
 
-  test.afterEach("Delete Test Database and uploadDocument.json", async () => {
+  test.afterAll("Delete Test Database and uploadDocument.json", async () => {
     if (existsSync(uploadDocumentFilePath)) {
       unlinkSync(uploadDocumentFilePath);
     }
-    await context?.dispose();
+    if (!process.env.CI) {
+      await context?.dispose();
+    }
+  });
+
+  test.afterEach("Close Upload Items panel if still open", async () => {
+    const closeUploadItemsPanelButton = explorer.frame.getByLabel("Close Upload Items");
+    if (await closeUploadItemsPanelButton.isVisible()) {
+      await closeUploadItemsPanelButton.click();
+    }
   });
 
   test("upload document", async () => {
-    // Create file to upload
-    const TestDataJsonString: string = JSON.stringify(TestData, null, 2);
-    writeFileSync(uploadDocumentFilePath, TestDataJsonString);
-
-    const uploadItemCommandBar = explorer.commandBarButton(CommandBarButton.UploadItem);
-    await uploadItemCommandBar.click();
-
-    // Select file to upload
-    await explorer.frame.setInputFiles("#importFileInput", uploadDocumentFilePath);
-
-    const uploadButton = explorer.frame.getByTestId("Panel/OkButton");
-    await uploadButton.click();
-
-    // Verify upload success message
-    const fileUploadStatusExpected: string = `${partitionCount * itemsPerPartition} created, 0 throttled, 0 errors`;
-    const fileUploadStatus = explorer.frame.getByTestId("file-upload-status");
-    await expect(fileUploadStatus).toContainText(fileUploadStatusExpected, {
-      timeout: ONE_MINUTE_MS,
-    });
-  });
-
-  test("upload same document twice", async () => {
     // Create file to upload
     const TestDataJsonString: string = JSON.stringify(TestData, null, 2);
     writeFileSync(uploadDocumentFilePath, TestDataJsonString);
