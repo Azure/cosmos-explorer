@@ -96,14 +96,13 @@ test.describe("Computed Properties", () => {
 
   const clearComputedPropertiesTextBoxContent = async ({ page }: { page: Page }): Promise<void> => {
     // Get computed properties text box
-    const computedPropertiesTextBox = explorer.frame.getByRole("textbox", { name: "Computed properties" });
-    await computedPropertiesTextBox.waitFor();
+    await explorer.frame.waitForSelector(".monaco-scrollable-element", { state: "visible" });
     const computedPropertiesEditor = explorer.frame.getByTestId("computed-properties-editor");
     await computedPropertiesEditor.click();
 
-    // Clear existing content
-    const isMac: boolean = process.platform === "darwin";
-    await page.keyboard.press(isMac ? "Meta+A" : "Control+A");
-    await page.keyboard.press("Backspace");
+    // Clear existing content (Ctrl+A + Backspace does not work with webkit)
+    for (let i = 0; i < 100; i++) {
+      await page.keyboard.press("Backspace");
+    }
   };
 });

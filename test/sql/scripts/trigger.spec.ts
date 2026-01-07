@@ -32,7 +32,7 @@ test.describe("Triggers", () => {
     });
   }
 
-  test("Add and delete trigger", async ({ page }) => {
+  test("Add and delete trigger", async ({ page }, testInfo) => {
     // Open container context menu and click New Trigger
     const containerNode = await explorer.waitForContainerNode(context.database.id, context.container.id);
     await containerNode.openContextMenu();
@@ -40,7 +40,7 @@ test.describe("Triggers", () => {
 
     // Assign Trigger id
     const triggerIdTextBox = explorer.frame.getByLabel("Trigger Id");
-    const triggerId: string = "validateItemTimestamp";
+    const triggerId: string = `validateItemTimestamp-${testInfo.testId}`;
     await triggerIdTextBox.fill(triggerId);
 
     // Create Trigger body that validates item timestamp

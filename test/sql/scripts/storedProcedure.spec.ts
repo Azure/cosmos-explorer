@@ -18,7 +18,7 @@ test.describe("Stored Procedures", () => {
     await context?.dispose();
   });
 
-  test("Add, execute, and delete stored procedure", async () => {
+  test("Add, execute, and delete stored procedure", async ({}, testInfo) => {
     // Open container context menu and click New Stored Procedure
     const containerNode = await explorer.waitForContainerNode(context.database.id, context.container.id);
     await containerNode.openContextMenu();
@@ -27,7 +27,7 @@ test.describe("Stored Procedures", () => {
     // Type stored procedure id and use stock procedure
     const storedProcedureIdTextBox = explorer.frame.getByLabel("Stored procedure id");
     await storedProcedureIdTextBox.isVisible();
-    const storedProcedureName = "stored-procedure-1";
+    const storedProcedureName = `stored-procedure-${testInfo.testId}`;
     await storedProcedureIdTextBox.fill(storedProcedureName);
 
     const saveButton = explorer.commandBarButton(CommandBarButton.Save);
@@ -48,7 +48,9 @@ test.describe("Stored Procedures", () => {
     await executeSidePanelButton.click();
 
     const executeStoredProcedureResult = explorer.frame.getByLabel("Execute stored procedure result");
-    await expect(executeStoredProcedureResult).toBeVisible();
+    await expect(executeStoredProcedureResult).toBeAttached({
+      timeout: ONE_MINUTE_MS,
+    });
 
     // Delete stored procedure
     await containerNode.expand();

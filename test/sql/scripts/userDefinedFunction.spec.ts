@@ -25,7 +25,7 @@ test.describe("User Defined Functions", () => {
     });
   }
 
-  test("Add, execute, and delete user defined function", async ({ page }) => {
+  test("Add, execute, and delete user defined function", async ({ page }, testInfo) => {
     // Open container context menu and click New UDF
     const containerNode = await explorer.waitForContainerNode(context.database.id, context.container.id);
     await containerNode.openContextMenu();
@@ -33,7 +33,7 @@ test.describe("User Defined Functions", () => {
 
     // Assign UDF id
     const udfIdTextBox = explorer.frame.getByLabel("User Defined Function Id");
-    const udfId: string = "extractDocumentId";
+    const udfId: string = `extractDocumentId-${testInfo.testId}`;
     await udfIdTextBox.fill(udfId);
 
     // Create UDF body that extracts the document id from a document

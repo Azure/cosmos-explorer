@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test";
 
-import { existsSync, unlinkSync, writeFileSync } from "fs";
+import { existsSync, mkdtempSync, rmdirSync, unlinkSync, writeFileSync } from "fs";
+import { tmpdir } from "os";
 import path from "path";
 import { CommandBarButton, DataExplorer, DocumentsTab, ONE_MINUTE_MS, TestAccount } from "../fx";
 import {
@@ -108,9 +109,13 @@ for (const { name, databaseId, containerId, documents } of documentTestCases) {
 
 test.describe.serial("Upload Item", () => {
   let context: TestContainerContext = null!;
-  const uploadDocumentFilePath: string = path.join(__dirname, "uploadDocument.json");
+  let uploadDocumentDirPath: string = null!;
+  let uploadDocumentFilePath: string = null!;
 
   test.beforeAll("Create Test database and open documents tab", async ({ browser }) => {
+    uploadDocumentDirPath = mkdtempSync(path.join(tmpdir(), "upload-document-"));
+    uploadDocumentFilePath = path.join(uploadDocumentDirPath, "uploadDocument.json");
+
     const page = await browser.newPage();
     context = await createTestSQLContainer();
     explorer = await DataExplorer.open(page, TestAccount.SQL);
@@ -124,9 +129,12 @@ test.describe.serial("Upload Item", () => {
     await containerMenuNode.element.click();
   });
 
-  test.afterAll("Delete Test Database and uploadDocument.json", async () => {
+  test.afterAll("Delete Test Database and uploadDocument temp folder", async () => {
     if (existsSync(uploadDocumentFilePath)) {
       unlinkSync(uploadDocumentFilePath);
+    }
+    if (existsSync(uploadDocumentDirPath)) {
+      rmdirSync(uploadDocumentDirPath);
     }
     if (!process.env.CI) {
       await context?.dispose();
@@ -193,9 +201,9 @@ test.describe.serial("Upload Item", () => {
     await uploadButton.click();
 
     // Verify upload failure message
-    const fileUploadStatusExpected: string = "Unexpected non-whitespace character after JSON";
     const fileUploadErrorList = explorer.frame.getByLabel("error list");
-    await expect(fileUploadErrorList).toContainText(fileUploadStatusExpected, {
+    // The parsing error will show up differently in different browsers so just check for the word "JSON"
+    await expect(fileUploadErrorList).toContainText("JSON", {
       timeout: ONE_MINUTE_MS,
     });
   });
