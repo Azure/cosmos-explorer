@@ -83,12 +83,12 @@
 //     await changePkPanel.getByLabel("Use existing container").check();
 //     await changePkPanel.getByText("Choose an existing container").click();
 
-    // const containerDropdownItem = await getDropdownItemByNameOrPosition(
-    //   explorer.frame,
-    //   { name: newContainerId },
-    //   { ariaLabel: "Existing Containers" },
-    // );
-    // await containerDropdownItem.click();
+// const containerDropdownItem = await getDropdownItemByNameOrPosition(
+//   explorer.frame,
+//   { name: newContainerId },
+//   { ariaLabel: "Existing Containers" },
+// );
+// await containerDropdownItem.click();
 
 //     await changePkPanel.getByTestId("Panel/OkButton").click();
 //     await explorer.frame.getByRole("button", { name: "Cancel" }).click();

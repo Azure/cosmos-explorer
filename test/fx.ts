@@ -602,30 +602,46 @@ export async function waitForApiResponse(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   payloadValidator?: (payload: any) => boolean,
 ) {
-  return page.waitForResponse(async (response) => {
-    const request = response.request();
-
-    if (!request.url().includes(urlPattern)) {
-      return false;
+  try {
+    // Check if page is still valid before waiting
+    if (page.isClosed()) {
+      throw new Error(`Page is closed, cannot wait for API response: ${urlPattern}`);
     }
 
-    if (method && request.method() !== method) {
-      return false;
-    }
+    return page.waitForResponse(
+      async (response) => {
+        const request = response.request();
 
-    if (payloadValidator && (request.method() === "POST" || request.method() === "PUT")) {
-      const postData = request.postData();
-      if (postData) {
-        try {
-          const payload = JSON.parse(postData);
-          return payloadValidator(payload);
-        } catch {
+        if (!request.url().includes(urlPattern)) {
           return false;
         }
-      }
+
+        if (method && request.method() !== method) {
+          return false;
+        }
+
+        if (payloadValidator && (request.method() === "POST" || request.method() === "PUT")) {
+          const postData = request.postData();
+          if (postData) {
+            try {
+              const payload = JSON.parse(postData);
+              return payloadValidator(payload);
+            } catch {
+              return false;
+            }
+          }
+        }
+        return true;
+      },
+      { timeout: 60 * 1000 },
+    );
+  } catch (error) {
+    if (error instanceof Error && error.message.includes("Target page, context or browser has been closed")) {
+      console.warn("Page was closed while waiting for API response:", urlPattern);
+      throw new Error(`Page closed while waiting for API response: ${urlPattern}`);
     }
-    return true;
-  });
+    throw error;
+  }
 }
 export async function interceptAndInspectApiRequest(
   page: Page,
