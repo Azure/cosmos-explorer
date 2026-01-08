@@ -1,6 +1,6 @@
-import { Dropdown } from "@fluentui/react";
 import * as React from "react";
 import { FunctionComponent } from "react";
+import { SearchableDropdown } from "../../../Common/SearchableDropdown";
 import { Subscription } from "../../../Contracts/DataModels";
 
 interface Props {
@@ -15,24 +15,16 @@ export const SwitchSubscription: FunctionComponent<Props> = ({
   selectedSubscription,
 }: Props) => {
   return (
-    <Dropdown
+    <SearchableDropdown<Subscription>
       label="Subscription"
+      items={subscriptions}
+      selectedItem={selectedSubscription}
+      onSelect={(sub) => setSelectedSubscriptionId(sub.subscriptionId)}
+      getKey={(sub) => sub.subscriptionId}
+      getDisplayText={(sub) => sub.displayName}
+      placeholder="Select a Subscription"
+      filterPlaceholder="Filter subscriptions"
       className="accountSwitchSubscriptionDropdown"
-      options={subscriptions?.map((sub) => {
-        return {
-          key: sub.subscriptionId,
-          text: sub.displayName,
-          data: sub,
-        };
-      })}
-      onChange={(_, option) => {
-        setSelectedSubscriptionId(String(option?.key));
-      }}
-      defaultSelectedKey={selectedSubscription?.subscriptionId}
-      placeholder={subscriptions && subscriptions.length === 0 ? "No Subscriptions Found" : "Select a Subscription"}
-      styles={{
-        callout: "accountSwitchSubscriptionDropdownMenu",
-      }}
     />
   );
 };
