@@ -47,8 +47,12 @@ const SelectSourceAndTargetContainers = ({ showAddCollectionPanel }: SelectSourc
   const onDropdownChange = dropDownChangeHandler(setCopyJobState);
 
   return (
-    <Stack className="selectSourceAndTargetContainers" tokens={{ childrenGap: 25 }}>
-      <span>{ContainerCopyMessages.selectSourceAndTargetContainersDescription}</span>
+    <Stack
+      data-test="Panel:SelectSourceAndTargetContainers"
+      className="selectSourceAndTargetContainers"
+      tokens={{ childrenGap: 25 }}
+    >
+      <span className="themeText">{ContainerCopyMessages.selectSourceAndTargetContainersDescription}</span>
       <DatabaseContainerSection
         heading={ContainerCopyMessages.sourceContainerSubHeading}
         databaseOptions={sourceDatabaseOptions}
@@ -59,6 +63,7 @@ const SelectSourceAndTargetContainers = ({ showAddCollectionPanel }: SelectSourc
         selectedContainer={source?.containerId}
         containerDisabled={!source?.databaseId}
         containerOnChange={onDropdownChange("sourceContainer")}
+        sectionType="source"
       />
       <DatabaseContainerSection
         heading={ContainerCopyMessages.targetContainerSubHeading}
@@ -71,6 +76,7 @@ const SelectSourceAndTargetContainers = ({ showAddCollectionPanel }: SelectSourc
         containerDisabled={!target?.databaseId}
         containerOnChange={onDropdownChange("targetContainer")}
         handleOnDemandCreateContainer={showAddCollectionPanel}
+        sectionType="target"
       />
     </Stack>
   );

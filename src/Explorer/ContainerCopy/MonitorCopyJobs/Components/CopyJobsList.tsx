@@ -15,6 +15,8 @@ import {
 } from "@fluentui/react";
 import React, { useEffect } from "react";
 import Pager from "../../../../Common/Pager";
+import { useThemeStore } from "../../../../hooks/useTheme";
+import { getThemeTokens } from "../../../Theme/ThemeUtil";
 import { openCopyJobDetailsPanel } from "../../Actions/CopyJobActions";
 import { CopyJobType, HandleJobActionClickType } from "../../Types/CopyJobTypes";
 import { getColumns } from "./CopyJobColumns";
@@ -26,13 +28,15 @@ interface CopyJobsListProps {
 }
 
 const styles = {
-  container: { height: "calc(100vh - 25em)" } as React.CSSProperties,
+  container: { height: "100%" } as React.CSSProperties,
   stackItem: { position: "relative", marginBottom: "20px" } as React.CSSProperties,
 };
 
 const PAGE_SIZE = 10;
 
 const CopyJobsList: React.FC<CopyJobsListProps> = ({ jobs, handleActionClick, pageSize = PAGE_SIZE }) => {
+  const isDarkMode = useThemeStore((state) => state.isDarkMode);
+  const themeTokens = getThemeTokens(isDarkMode);
   const [startIndex, setStartIndex] = React.useState(0);
   const [sortedJobs, setSortedJobs] = React.useState<CopyJobType[]>(jobs);
   const [sortedColumnKey, setSortedColumnKey] = React.useState<string | undefined>(undefined);
@@ -80,6 +84,7 @@ const CopyJobsList: React.FC<CopyJobsListProps> = ({ jobs, handleActionClick, pa
         <Stack.Item verticalFill={true} grow={1} shrink={1} style={styles.stackItem}>
           <ScrollablePane scrollbarVisibility={ScrollbarVisibility.auto}>
             <ShimmeredDetailsList
+              className="CopyJobListContainer"
               onRenderRow={_onRenderRow}
               checkboxVisibility={2}
               columns={columns}
@@ -87,11 +92,28 @@ const CopyJobsList: React.FC<CopyJobsListProps> = ({ jobs, handleActionClick, pa
               enableShimmer={false}
               constrainMode={ConstrainMode.unconstrained}
               layoutMode={DetailsListLayoutMode.justified}
-              onRenderDetailsHeader={(props, defaultRender) => (
-                <Sticky stickyPosition={StickyPositionType.Header} isScrollSynced>
-                  {defaultRender({ ...props })}
-                </Sticky>
-              )}
+              onRenderDetailsHeader={(props, defaultRender) => {
+                const bgColor = themeTokens.colorNeutralBackground3;
+                const textColor = themeTokens.colorNeutralForeground1;
+                return (
+                  <Sticky stickyPosition={StickyPositionType.Header} isScrollSynced stickyBackgroundColor={bgColor}>
+                    <div style={{ backgroundColor: bgColor }}>
+                      {defaultRender({
+                        ...props,
+                        styles: {
+                          root: {
+                            backgroundColor: bgColor,
+                            selectors: {
+                              ".ms-DetailsHeader-cellTitle": { color: textColor },
+                              ".ms-DetailsHeader-cellName": { color: textColor },
+                            },
+                          },
+                        },
+                      })}
+                    </div>
+                  </Sticky>
+                );
+              }}
             />
           </ScrollablePane>
         </Stack.Item>
