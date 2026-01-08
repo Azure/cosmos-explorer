@@ -48,7 +48,7 @@ test.describe("Test Mongo Pagination", () => {
     // Get initial results
     const resultText = await queryTab.resultsEditor.text();
 
-    if (!resultText || resultText.trim() === '' || resultText.trim() === '[]') {
+    if (!resultText || resultText.trim() === "" || resultText.trim() === "[]") {
       throw new Error("Query returned no results - the collection appears to be empty");
     }
 
@@ -80,7 +80,9 @@ test.describe("Test Mongo Pagination", () => {
       }
 
       const beforeClickText = await queryTab.resultsEditor.text();
-      const beforeClickHash = Buffer.from(beforeClickText || "").toString('base64').substring(0, 50);
+      const beforeClickHash = Buffer.from(beforeClickText || "")
+        .toString("base64")
+        .substring(0, 50);
 
       await loadMoreButton.click();
 
@@ -90,7 +92,9 @@ test.describe("Test Mongo Pagination", () => {
         await page.waitForTimeout(2000);
 
         const currentEditorText = await queryTab.resultsEditor.text();
-        const currentHash = Buffer.from(currentEditorText || "").toString('base64').substring(0, 50);
+        const currentHash = Buffer.from(currentEditorText || "")
+          .toString("base64")
+          .substring(0, 50);
 
         if (currentHash !== beforeClickHash) {
           editorContentChanged = true;
@@ -109,7 +113,7 @@ test.describe("Test Mongo Pagination", () => {
     }
 
     // Final verification
-    const finalIndicator = queryTab.resultsView.locator('text=/\\d+ - \\d+/');
+    const finalIndicator = queryTab.resultsView.locator("text=/\\d+ - \\d+/");
     const finalIndicatorText = await finalIndicator.textContent();
 
     if (finalIndicatorText) {
