@@ -53,6 +53,7 @@ type VectorEmbeddingPolicyProperty = "dataType" | "distanceFunction" | "indexTyp
 const labelStyles = {
   root: {
     fontSize: 12,
+    color: "var(--colorNeutralForeground1)",
   },
 };
 
@@ -63,6 +64,8 @@ const textFieldStyles: IStyleFunctionOrObject<ITextFieldStyleProps, ITextFieldSt
   field: {
     fontSize: 12,
     padding: "0 8px",
+    backgroundColor: "var(--colorNeutralBackground1)",
+    color: "var(--colorNeutralForeground1)",
   },
 };
 
