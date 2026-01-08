@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
   schedule:
     # Once every two hours
-    - cron: "0 */2 * * *"
+    - cron: "0 */3 * * *"
 
 permissions:
   id-token: write
