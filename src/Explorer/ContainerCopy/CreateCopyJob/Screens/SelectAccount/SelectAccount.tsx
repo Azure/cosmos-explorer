@@ -21,7 +21,7 @@ const SelectAccount = React.memo(() => {
 
   return (
     <Stack data-test="Panel:SelectAccountContainer" className="selectAccountContainer" tokens={{ childrenGap: 15 }}>
-      <Text>{ContainerCopyMessages.selectAccountDescription}</Text>
+      <Text className="themeText">{ContainerCopyMessages.selectAccountDescription}</Text>
 
       <SubscriptionDropdown />
 

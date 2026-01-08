@@ -59,7 +59,7 @@ const Pager: React.FC<PagerProps> = ({
   return (
     <div className={className || "pager-container"}>
       {showItemCount && (
-        <Text>
+        <Text className="themeText">
           Showing {startIndex + 1} - {endIndex} of {totalCount} items
         </Text>
       )}
@@ -82,7 +82,7 @@ const Pager: React.FC<PagerProps> = ({
           disabled={disabled || currentPage === 1}
           styles={iconButtonStyles}
         />
-        <Text>
+        <Text className="themeText">
           Page {currentPage} of {totalPages}
         </Text>
         <IconButton

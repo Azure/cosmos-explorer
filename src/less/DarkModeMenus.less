@@ -316,11 +316,6 @@ body.isDarkMode {
       background-color: transparent;
     }
     
-    // High specificity override for any nested elements
-    * {
-      color: var(--colorNeutralForeground1);
-    }
-    
     // Ensure links maintain proper colors
     .ms-Link {
       color: var(--colorBrandForeground1);
@@ -438,7 +433,6 @@ body.isDarkMode {
 
   button {
     &:not(.ms-Button):not(.ms-IconButton) {
-      background-color: var(--colorNeutralBackground1);
       color: var(--colorNeutralForeground1);
       
       &:hover {

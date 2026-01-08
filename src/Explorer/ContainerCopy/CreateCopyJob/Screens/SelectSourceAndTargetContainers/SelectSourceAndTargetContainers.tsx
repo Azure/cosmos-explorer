@@ -52,7 +52,7 @@ const SelectSourceAndTargetContainers = ({ showAddCollectionPanel }: SelectSourc
       className="selectSourceAndTargetContainers"
       tokens={{ childrenGap: 25 }}
     >
-      <span>{ContainerCopyMessages.selectSourceAndTargetContainersDescription}</span>
+      <span className="themeText">{ContainerCopyMessages.selectSourceAndTargetContainersDescription}</span>
       <DatabaseContainerSection
         heading={ContainerCopyMessages.sourceContainerSubHeading}
         databaseOptions={sourceDatabaseOptions}
