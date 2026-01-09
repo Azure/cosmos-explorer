@@ -91,12 +91,8 @@ async function deleteWithRetry(client, database, accountName) {
   while (attempt < maxRetries) {
     try {
       const timestamp = Number(database.resource._ts) * 1000;
-      if (timestamp && timestamp < thirtyMinutesAgo) {
         await client.sqlResources.deleteSqlDatabase(resourceGroupName, accountName, database.name);
         console.log(`DELETED: ${accountName} | ${database.name} | Age: ${friendlyTime(Date.now() - timestamp)}`);
-      } else {
-        console.log(`SKIPPED: ${accountName} | ${database.name} | Age: ${friendlyTime(Date.now() - timestamp)}`);
-      }
       return;
     } catch (error) {
       if (error.statusCode === 429) {
