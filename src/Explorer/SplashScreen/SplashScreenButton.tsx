@@ -15,7 +15,7 @@ const useStyles = makeStyles({
   button: {
     border: "1px solid var(--colorNeutralStroke1)",
     boxSizing: "border-box",
-    boxShadow: "var(--shadow4)",
+    boxShadow: "rgba(0, 0, 0, 0.25) 0px 4px 4px",
     borderRadius: "4px",
     padding: "32px 16px",
     backgroundColor: "var(--colorNeutralBackground1)",

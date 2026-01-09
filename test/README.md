@@ -164,6 +164,9 @@ $ENV:NOSQL_TESTACCOUNT_TOKEN=az account get-access-token --scope "https://<accou
 # NoSQL API (Readonly)
 $ENV:NOSQL_READONLY_TESTACCOUNT_TOKEN=az account get-access-token --scope "https://<account name>.documents.azure.com/.default" -o tsv --query accessToken
 
+# NoSQL API (Container Copy)
+$ENV:NOSQL_CONTAINERCOPY_TESTACCOUNT_TOKEN=az account get-access-token --scope "https://<account name>.documents.azure.com/.default" -o tsv --query accessToken
+
 # Tables API
 $ENV:TABLE_TESTACCOUNT_TOKEN=az account get-access-token --scope "https://<account name>.documents.azure.com/.default" -o tsv --query accessToken
 

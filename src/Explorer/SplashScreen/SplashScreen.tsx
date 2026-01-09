@@ -61,7 +61,8 @@ const useStyles = makeStyles({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    minHeight: "100vh",
+    height: "100%",
+    overflowY: "auto",
     backgroundColor: "var(--colorNeutralBackground1)",
     color: "var(--colorNeutralForeground1)",
   },
@@ -73,20 +74,19 @@ const useStyles = makeStyles({
   },
   title: {
     fontSize: "48px",
-    fontWeight: "500",
+    fontWeight: "400",
     margin: "16px auto",
     color: "var(--colorNeutralForeground1)",
   },
   subtitle: {
     fontSize: "18px",
-    marginBottom: "40px",
     color: "var(--colorNeutralForeground2)",
   },
   cardContainer: {
     display: "grid",
     gridTemplateColumns: "repeat(2, 1fr)",
     gap: "16px",
-    width: "66%",
+    width: "60%",
     margin: "0 auto",
     backgroundColor: "var(--colorNeutralBackground1)",
     color: "var(--colorNeutralForeground1)",
@@ -100,7 +100,7 @@ const useStyles = makeStyles({
     color: "var(--colorNeutralForeground1)",
     border: "1px solid var(--colorNeutralStroke1)",
     borderRadius: "4px",
-    boxShadow: "var(--shadow4)",
+    boxShadow: "rgba(0, 0, 0, 0.25) 0px 4px 4px",
     cursor: "pointer",
     minHeight: "150px",
     "&:hover": {
@@ -128,11 +128,10 @@ const useStyles = makeStyles({
     textAlign: "left",
   },
   moreStuffContainer: {
-    display: "grid",
-    gridTemplateColumns: "repeat(3, 1fr)",
+    display: "flex",
+    justifyContent: "space-between",
     gap: "32px",
-    width: "66%",
-    margin: "40px auto",
+    width: "90%",
   },
   moreStuffColumn: {
     display: "flex",
@@ -227,7 +226,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
       return (
         <Stack
           className="splashStackContainer"
-          style={{ width: "66%", cursor: "pointer", margin: "40px auto" }}
+          style={{ width: "60%", cursor: "pointer", margin: "40px auto" }}
           tokens={{ childrenGap: 16 }}
         >
           <Stack className="splashStackRow" horizontal>
@@ -903,9 +902,9 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
   return (
     <div className={styles.splashScreenContainer}>
       <div className={styles.splashScreen}>
-        <h1 className={styles.title} role="heading" aria-label="Welcome to Azure Cosmos DB">
+        <h2 className={styles.title} role="heading" aria-label="Welcome to Azure Cosmos DB">
           Welcome to Azure Cosmos DB<span className="activePatch"></span>
-        </h1>
+        </h2>
         <div className={styles.subtitle}>Globally distributed, multi-model database service for any scale</div>
         {getSplashScreenButtons()}
         {useCarousel.getState().showCoachMark && (

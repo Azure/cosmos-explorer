@@ -406,7 +406,11 @@ body {
   width: 440px;
   min-height: 565px;
 }
-
+.dataExplorerLoaderforcopyJobs{
+   width: 100%;
+   min-height: 565px;
+   right: 0;
+}
 .dataExplorerTabLoaderContainer {
   left: initial;
   top: initial;
@@ -2643,7 +2647,7 @@ a:link {
 
 .tabPanesContainer {
   flex-grow: 1;
-  overflow-y: scroll;
+  overflow: hidden;
   background-color: var(--colorNeutralBackground1);
   color: var(--colorNeutralForeground1);
 }
@@ -2651,6 +2655,7 @@ a:link {
 .tabs-container {
   height: 100%;
   width: 100%;
+  overflow-y: auto;
 }
 
 .paddingspan4 {
@@ -2677,7 +2682,7 @@ a:link {
   width: @ActiveTabWidth;
 }
 
-.nav-tabs > li.active .contentWrapper {
+.nav-tabs > li.active .contentWrapper .tabNavText  {
   border-bottom: 2px solid var(--colorCompoundBrandBackground);
 }
 

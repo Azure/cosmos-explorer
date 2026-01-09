@@ -8,7 +8,8 @@ test("SQL database and container CRUD", async ({ page }) => {
 
   const explorer = await DataExplorer.open(page, TestAccount.SQL);
 
-  await explorer.globalCommandButton("New Container").click();
+  const newContainerButton = await explorer.globalCommandButton("New Container");
+  await newContainerButton.click();
   await explorer.whilePanelOpen(
     "New Container",
     async (panel, okButton) => {

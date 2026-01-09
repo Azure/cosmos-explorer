@@ -13,7 +13,12 @@ import useToggle from "./hooks/useToggle";
 const TooltipContent = (
   <Text>
     {ContainerCopyMessages.readPermissionAssigned.tooltip.content} &nbsp;
-    <Link href={ContainerCopyMessages.readPermissionAssigned.tooltip.href} target="_blank" rel="noopener noreferrer">
+    <Link
+      style={{ color: "var(--colorBrandForeground1)" }}
+      href={ContainerCopyMessages.readPermissionAssigned.tooltip.href}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
       {ContainerCopyMessages.readPermissionAssigned.tooltip.hrefText}
     </Link>
   </Text>
@@ -65,6 +70,7 @@ const AddReadPermissionToDefaultIdentity: React.FC<AddReadPermissionToDefaultIde
         <InfoTooltip content={TooltipContent} />
       </Text>
       <Toggle
+        data-test="btn-toggle"
         checked={readPermissionAssigned}
         onText={ContainerCopyMessages.toggleBtn.onText}
         offText={ContainerCopyMessages.toggleBtn.offText}

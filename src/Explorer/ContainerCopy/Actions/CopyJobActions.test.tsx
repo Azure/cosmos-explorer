@@ -1,5 +1,6 @@
 import "@testing-library/jest-dom";
 import Explorer from "Explorer/Explorer";
+import { getDataTransferJobs } from "../../../Common/dataAccess/dataTransfers";
 import * as Logger from "../../../Common/Logger";
 import { useSidePanel } from "../../../hooks/useSidePanel";
 import * as dataTransferService from "../../../Utils/arm/generatedClients/dataTransferService/dataTransferJobs";
@@ -30,6 +31,7 @@ jest.mock("../../../Common/Logger");
 jest.mock("../../../Utils/arm/generatedClients/dataTransferService/dataTransferJobs");
 jest.mock("../MonitorCopyJobs/MonitorCopyJobRefState");
 jest.mock("../CopyJobUtils");
+jest.mock("../../../Common/dataAccess/dataTransfers");
 
 describe("CopyJobActions", () => {
   beforeEach(() => {
@@ -154,33 +156,31 @@ describe("CopyJobActions", () => {
     });
 
     it("should fetch and format copy jobs successfully", async () => {
-      const mockResponse = {
-        value: [
-          {
-            properties: {
-              jobName: "job-1",
-              status: "InProgress",
-              lastUpdatedUtcTime: "2025-01-01T10:00:00Z",
-              processedCount: 50,
-              totalCount: 100,
-              mode: "online",
-              duration: "01:30:45",
-              source: {
-                component: "CosmosDBSql",
-                databaseName: "source-db",
-                containerName: "source-container",
-              },
-              destination: {
-                component: "CosmosDBSql",
-                databaseName: "target-db",
-                containerName: "target-container",
-              },
+      const mockResponse = [
+        {
+          properties: {
+            jobName: "job-1",
+            status: "InProgress",
+            lastUpdatedUtcTime: "2025-01-01T10:00:00Z",
+            processedCount: 50,
+            totalCount: 100,
+            mode: "online",
+            duration: "01:30:45",
+            source: {
+              component: "CosmosDBSql",
+              databaseName: "source-db",
+              containerName: "source-container",
+            },
+            destination: {
+              component: "CosmosDBSql",
+              databaseName: "target-db",
+              containerName: "target-container",
             },
           },
-        ],
-      };
+        },
+      ];
 
-      (dataTransferService.listByDatabaseAccount as jest.Mock).mockResolvedValue(mockResponse);
+      (getDataTransferJobs as jest.Mock).mockResolvedValue(mockResponse);
       (CopyJobUtils.formatUTCDateTime as jest.Mock).mockReturnValue({
         formattedDateTime: "1/1/2025, 10:00:00 AM",
         timestamp: 1704106800000,
@@ -201,38 +201,36 @@ describe("CopyJobActions", () => {
     });
 
     it("should filter jobs by CosmosDBSql component", async () => {
-      const mockResponse = {
-        value: [
-          {
-            properties: {
-              jobName: "sql-job",
-              status: "Completed",
-              lastUpdatedUtcTime: "2025-01-01T10:00:00Z",
-              processedCount: 100,
-              totalCount: 100,
-              mode: "offline",
-              duration: "02:00:00",
-              source: { component: "CosmosDBSql", databaseName: "db1", containerName: "c1" },
-              destination: { component: "CosmosDBSql", databaseName: "db2", containerName: "c2" },
-            },
+      const mockResponse = [
+        {
+          properties: {
+            jobName: "sql-job",
+            status: "Completed",
+            lastUpdatedUtcTime: "2025-01-01T10:00:00Z",
+            processedCount: 100,
+            totalCount: 100,
+            mode: "offline",
+            duration: "02:00:00",
+            source: { component: "CosmosDBSql", databaseName: "db1", containerName: "c1" },
+            destination: { component: "CosmosDBSql", databaseName: "db2", containerName: "c2" },
           },
-          {
-            properties: {
-              jobName: "other-job",
-              status: "Completed",
-              lastUpdatedUtcTime: "2025-01-01T11:00:00Z",
-              processedCount: 100,
-              totalCount: 100,
-              mode: "offline",
-              duration: "01:00:00",
-              source: { component: "OtherComponent", databaseName: "db1", containerName: "c1" },
-              destination: { component: "CosmosDBSql", databaseName: "db2", containerName: "c2" },
-            },
+        },
+        {
+          properties: {
+            jobName: "other-job",
+            status: "Completed",
+            lastUpdatedUtcTime: "2025-01-01T11:00:00Z",
+            processedCount: 100,
+            totalCount: 100,
+            mode: "offline",
+            duration: "01:00:00",
+            source: { component: "OtherComponent", databaseName: "db1", containerName: "c1" },
+            destination: { component: "CosmosDBSql", databaseName: "db2", containerName: "c2" },
           },
-        ],
-      };
+        },
+      ];
 
-      (dataTransferService.listByDatabaseAccount as jest.Mock).mockResolvedValue(mockResponse);
+      (getDataTransferJobs as jest.Mock).mockResolvedValue(mockResponse);
       (CopyJobUtils.formatUTCDateTime as jest.Mock).mockReturnValue({
         formattedDateTime: "1/1/2025, 10:00:00 AM",
         timestamp: 1704106800000,
@@ -247,38 +245,36 @@ describe("CopyJobActions", () => {
     });
 
     it("should sort jobs by last updated time (newest first)", async () => {
-      const mockResponse = {
-        value: [
-          {
-            properties: {
-              jobName: "older-job",
-              status: "Completed",
-              lastUpdatedUtcTime: "2025-01-01T10:00:00Z",
-              processedCount: 100,
-              totalCount: 100,
-              mode: "offline",
-              duration: "01:00:00",
-              source: { component: "CosmosDBSql", databaseName: "db1", containerName: "c1" },
-              destination: { component: "CosmosDBSql", databaseName: "db2", containerName: "c2" },
-            },
+      const mockResponse = [
+        {
+          properties: {
+            jobName: "older-job",
+            status: "Completed",
+            lastUpdatedUtcTime: "2025-01-01T10:00:00Z",
+            processedCount: 100,
+            totalCount: 100,
+            mode: "offline",
+            duration: "01:00:00",
+            source: { component: "CosmosDBSql", databaseName: "db1", containerName: "c1" },
+            destination: { component: "CosmosDBSql", databaseName: "db2", containerName: "c2" },
           },
-          {
-            properties: {
-              jobName: "newer-job",
-              status: "InProgress",
-              lastUpdatedUtcTime: "2025-01-02T10:00:00Z",
-              processedCount: 50,
-              totalCount: 100,
-              mode: "online",
-              duration: "00:30:00",
-              source: { component: "CosmosDBSql", databaseName: "db3", containerName: "c3" },
-              destination: { component: "CosmosDBSql", databaseName: "db4", containerName: "c4" },
-            },
+        },
+        {
+          properties: {
+            jobName: "newer-job",
+            status: "InProgress",
+            lastUpdatedUtcTime: "2025-01-02T10:00:00Z",
+            processedCount: 50,
+            totalCount: 100,
+            mode: "online",
+            duration: "00:30:00",
+            source: { component: "CosmosDBSql", databaseName: "db3", containerName: "c3" },
+            destination: { component: "CosmosDBSql", databaseName: "db4", containerName: "c4" },
           },
-        ],
-      };
+        },
+      ];
 
-      (dataTransferService.listByDatabaseAccount as jest.Mock).mockResolvedValue(mockResponse);
+      (getDataTransferJobs as jest.Mock).mockResolvedValue(mockResponse);
       (CopyJobUtils.formatUTCDateTime as jest.Mock).mockReturnValue({
         formattedDateTime: "1/1/2025, 10:00:00 AM",
         timestamp: 1704106800000,
@@ -293,25 +289,23 @@ describe("CopyJobActions", () => {
     });
 
     it("should calculate completion percentage correctly", async () => {
-      const mockResponse = {
-        value: [
-          {
-            properties: {
-              jobName: "job-1",
-              status: "InProgress",
-              lastUpdatedUtcTime: "2025-01-01T10:00:00Z",
-              processedCount: 75,
-              totalCount: 100,
-              mode: "online",
-              duration: "01:00:00",
-              source: { component: "CosmosDBSql", databaseName: "db1", containerName: "c1" },
-              destination: { component: "CosmosDBSql", databaseName: "db2", containerName: "c2" },
-            },
+      const mockResponse = [
+        {
+          properties: {
+            jobName: "job-1",
+            status: "InProgress",
+            lastUpdatedUtcTime: "2025-01-01T10:00:00Z",
+            processedCount: 75,
+            totalCount: 100,
+            mode: "online",
+            duration: "01:00:00",
+            source: { component: "CosmosDBSql", databaseName: "db1", containerName: "c1" },
+            destination: { component: "CosmosDBSql", databaseName: "db2", containerName: "c2" },
           },
-        ],
-      };
+        },
+      ];
 
-      (dataTransferService.listByDatabaseAccount as jest.Mock).mockResolvedValue(mockResponse);
+      (getDataTransferJobs as jest.Mock).mockResolvedValue(mockResponse);
       (CopyJobUtils.formatUTCDateTime as jest.Mock).mockReturnValue({
         formattedDateTime: "1/1/2025, 10:00:00 AM",
         timestamp: 1704106800000,
@@ -325,25 +319,23 @@ describe("CopyJobActions", () => {
     });
 
     it("should handle zero total count gracefully", async () => {
-      const mockResponse = {
-        value: [
-          {
-            properties: {
-              jobName: "job-1",
-              status: "Pending",
-              lastUpdatedUtcTime: "2025-01-01T10:00:00Z",
-              processedCount: 0,
-              totalCount: 0,
-              mode: "online",
-              duration: "00:00:00",
-              source: { component: "CosmosDBSql", databaseName: "db1", containerName: "c1" },
-              destination: { component: "CosmosDBSql", databaseName: "db2", containerName: "c2" },
-            },
+      const mockResponse = [
+        {
+          properties: {
+            jobName: "job-1",
+            status: "Pending",
+            lastUpdatedUtcTime: "2025-01-01T10:00:00Z",
+            processedCount: 0,
+            totalCount: 0,
+            mode: "online",
+            duration: "00:00:00",
+            source: { component: "CosmosDBSql", databaseName: "db1", containerName: "c1" },
+            destination: { component: "CosmosDBSql", databaseName: "db2", containerName: "c2" },
           },
-        ],
-      };
+        },
+      ];
 
-      (dataTransferService.listByDatabaseAccount as jest.Mock).mockResolvedValue(mockResponse);
+      (getDataTransferJobs as jest.Mock).mockResolvedValue(mockResponse);
       (CopyJobUtils.formatUTCDateTime as jest.Mock).mockReturnValue({
         formattedDateTime: "1/1/2025, 10:00:00 AM",
         timestamp: 1704106800000,
@@ -361,26 +353,24 @@ describe("CopyJobActions", () => {
         message: "Error message line 1\r\n\r\nError message line 2",
         code: "ErrorCode123",
       };
-      const mockResponse = {
-        value: [
-          {
-            properties: {
-              jobName: "failed-job",
-              status: "Failed",
-              lastUpdatedUtcTime: "2025-01-01T10:00:00Z",
-              processedCount: 50,
-              totalCount: 100,
-              mode: "offline",
-              duration: "00:30:00",
-              source: { component: "CosmosDBSql", databaseName: "db1", containerName: "c1" },
-              destination: { component: "CosmosDBSql", databaseName: "db2", containerName: "c2" },
-              error: mockError,
-            },
+      const mockResponse = [
+        {
+          properties: {
+            jobName: "failed-job",
+            status: "Failed",
+            lastUpdatedUtcTime: "2025-01-01T10:00:00Z",
+            processedCount: 50,
+            totalCount: 100,
+            mode: "offline",
+            duration: "00:30:00",
+            source: { component: "CosmosDBSql", databaseName: "db1", containerName: "c1" },
+            destination: { component: "CosmosDBSql", databaseName: "db2", containerName: "c2" },
+            error: mockError,
           },
-        ],
-      };
+        },
+      ];
 
-      (dataTransferService.listByDatabaseAccount as jest.Mock).mockResolvedValue(mockResponse);
+      (getDataTransferJobs as jest.Mock).mockResolvedValue(mockResponse);
       (CopyJobUtils.formatUTCDateTime as jest.Mock).mockReturnValue({
         formattedDateTime: "1/1/2025, 10:00:00 AM",
         timestamp: 1704106800000,
@@ -408,7 +398,7 @@ describe("CopyJobActions", () => {
       };
       (global as any).AbortController = jest.fn(() => mockAbortController);
 
-      (dataTransferService.listByDatabaseAccount as jest.Mock).mockResolvedValue({ value: [] });
+      (getDataTransferJobs as jest.Mock).mockResolvedValue([]);
 
       getCopyJobs();
       expect(mockAbortController.abort).not.toHaveBeenCalled();
@@ -418,9 +408,7 @@ describe("CopyJobActions", () => {
     });
 
     it("should throw error for invalid response format", async () => {
-      (dataTransferService.listByDatabaseAccount as jest.Mock).mockResolvedValue({
-        value: "not-an-array",
-      });
+      (getDataTransferJobs as jest.Mock).mockResolvedValue("not-an-array");
 
       await expect(getCopyJobs()).rejects.toThrow("Invalid migration job status response: Expected an array of jobs.");
     });
@@ -430,7 +418,7 @@ describe("CopyJobActions", () => {
         message: "Aborted",
         content: JSON.stringify({ message: "signal is aborted without reason" }),
       };
-      (dataTransferService.listByDatabaseAccount as jest.Mock).mockRejectedValue(abortError);
+      (getDataTransferJobs as jest.Mock).mockRejectedValue(abortError);
 
       await expect(getCopyJobs()).rejects.toMatchObject({
         message: expect.stringContaining("Previous copy job request was cancelled."),
@@ -439,7 +427,7 @@ describe("CopyJobActions", () => {
 
     it("should handle generic errors", async () => {
       const genericError = new Error("Network error");
-      (dataTransferService.listByDatabaseAccount as jest.Mock).mockRejectedValue(genericError);
+      (getDataTransferJobs as jest.Mock).mockRejectedValue(genericError);
 
       await expect(getCopyJobs()).rejects.toThrow("Network error");
     });

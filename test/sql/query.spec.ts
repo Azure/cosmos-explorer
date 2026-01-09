@@ -9,7 +9,7 @@ let queryTab: QueryTab = null!;
 let queryEditor: Editor = null!;
 
 test.beforeAll("Create Test Database", async () => {
-  context = await createTestSQLContainer(true);
+  context = await createTestSQLContainer({ includeTestData: true });
 });
 
 test.beforeEach("Open new query tab", async ({ page }) => {
@@ -30,9 +30,12 @@ test.beforeEach("Open new query tab", async ({ page }) => {
   await explorer.frame.getByTestId("NotificationConsole/Contents").waitFor();
 });
 
-test.afterAll("Delete Test Database", async () => {
-  await context?.dispose();
-});
+// Delete database only if not running in CI
+if (!process.env.CI) {
+  test.afterAll("Delete Test Database", async () => {
+    await context?.dispose();
+  });
+}
 
 test("Query results", async () => {
   // Run the query and verify the results

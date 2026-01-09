@@ -6,7 +6,7 @@ exports[`SelectAccount Component Rendering should render correctly with snapshot
   data-test="Panel:SelectAccountContainer"
 >
   <span
-    class="css-110"
+    class="themeText css-110"
   >
     Please select a source account from which to copy.
   </span>
