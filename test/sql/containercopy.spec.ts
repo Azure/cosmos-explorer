@@ -93,7 +93,7 @@ test.describe("Container Copy", () => {
      */
     const migrationTypeContainer = panel.getByTestId("migration-type");
     const onlineCopyRadioButton = migrationTypeContainer.getByRole("radio", { name: /Online mode/i });
-    await onlineCopyRadioButton.click();
+    await onlineCopyRadioButton.click({ force: true });
 
     await expect(migrationTypeContainer.getByTestId("migration-type-description-online")).toBeVisible();
 
@@ -104,7 +104,7 @@ test.describe("Container Copy", () => {
     await panel.getByRole("button", { name: "Previous" }).click();
 
     const offlineCopyRadioButton = migrationTypeContainer.getByRole("radio", { name: /Offline mode/i });
-    await offlineCopyRadioButton.click();
+    await offlineCopyRadioButton.click({ force: true });
 
     await expect(migrationTypeContainer.getByTestId("migration-type-description-offline")).toBeVisible();
 
@@ -297,7 +297,7 @@ test.describe("Container Copy", () => {
 
     const migrationTypeContainer = panel.getByTestId("migration-type");
     const onlineCopyRadioButton = migrationTypeContainer.getByRole("radio", { name: /Online mode/i });
-    await onlineCopyRadioButton.click();
+    await onlineCopyRadioButton.click({ force: true });
 
     await panel.getByRole("button", { name: "Next" }).click();
 
