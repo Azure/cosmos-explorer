@@ -14,9 +14,11 @@ test.describe("Stored Procedures", () => {
     explorer = await DataExplorer.open(page, TestAccount.SQL);
   });
 
-  test.afterAll("Delete Test Database", async () => {
-    await context?.dispose();
-  });
+  if (!process.env.CI) {
+    test.afterAll("Delete Test Database", async () => {
+      await context?.dispose();
+    });
+  }
 
   test("Add, execute, and delete stored procedure", async ({ page }, testInfo) => {
     void page;
