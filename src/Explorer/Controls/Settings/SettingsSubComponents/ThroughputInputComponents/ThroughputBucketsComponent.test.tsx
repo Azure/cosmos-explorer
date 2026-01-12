@@ -76,11 +76,11 @@ describe("ThroughputBucketsComponent", () => {
     fireEvent.change(input, { target: { value: "70" } });
 
     expect(mockOnBucketsChange).toHaveBeenCalledWith([
-      { id: 1, maxThroughputPercentage: 70 },
-      { id: 2, maxThroughputPercentage: 60 },
-      { id: 3, maxThroughputPercentage: 100 },
-      { id: 4, maxThroughputPercentage: 100 },
-      { id: 5, maxThroughputPercentage: 100 },
+      { id: 1, maxThroughputPercentage: 70, isDefaultBucket: false },
+      { id: 2, maxThroughputPercentage: 60, isDefaultBucket: false },
+      { id: 3, maxThroughputPercentage: 100, isDefaultBucket: false },
+      { id: 4, maxThroughputPercentage: 100, isDefaultBucket: false },
+      { id: 5, maxThroughputPercentage: 100, isDefaultBucket: false },
     ]);
   });
 
@@ -102,11 +102,11 @@ describe("ThroughputBucketsComponent", () => {
     fireEvent.change(input2, { target: { value: "80" } });
 
     expect(mockOnBucketsChange).toHaveBeenCalledWith([
-      { id: 1, maxThroughputPercentage: 70 },
-      { id: 2, maxThroughputPercentage: 80 },
-      { id: 3, maxThroughputPercentage: 100 },
-      { id: 4, maxThroughputPercentage: 100 },
-      { id: 5, maxThroughputPercentage: 100 },
+      { id: 1, maxThroughputPercentage: 70, isDefaultBucket: false },
+      { id: 2, maxThroughputPercentage: 80, isDefaultBucket: false },
+      { id: 3, maxThroughputPercentage: 100, isDefaultBucket: false },
+      { id: 4, maxThroughputPercentage: 100, isDefaultBucket: false },
+      { id: 5, maxThroughputPercentage: 100, isDefaultBucket: false },
     ]);
   });
 
@@ -134,8 +134,8 @@ describe("ThroughputBucketsComponent", () => {
       <ThroughputBucketsComponent
         {...defaultProps}
         currentBuckets={[
-          { id: 1, maxThroughputPercentage: 100 },
-          { id: 2, maxThroughputPercentage: 50 },
+          { id: 1, maxThroughputPercentage: 100, isDefaultBucket: false },
+          { id: 2, maxThroughputPercentage: 50, isDefaultBucket: false },
         ]}
       />,
     );
@@ -157,21 +157,21 @@ describe("ThroughputBucketsComponent", () => {
     fireEvent.click(toggles[0]);
 
     expect(mockOnBucketsChange).toHaveBeenCalledWith([
-      { id: 1, maxThroughputPercentage: 100 },
-      { id: 2, maxThroughputPercentage: 60 },
-      { id: 3, maxThroughputPercentage: 100 },
-      { id: 4, maxThroughputPercentage: 100 },
-      { id: 5, maxThroughputPercentage: 100 },
+      { id: 1, maxThroughputPercentage: 100, isDefaultBucket: false },
+      { id: 2, maxThroughputPercentage: 60, isDefaultBucket: false },
+      { id: 3, maxThroughputPercentage: 100, isDefaultBucket: false },
+      { id: 4, maxThroughputPercentage: 100, isDefaultBucket: false },
+      { id: 5, maxThroughputPercentage: 100, isDefaultBucket: false },
     ]);
 
     fireEvent.click(toggles[0]);
 
     expect(mockOnBucketsChange).toHaveBeenCalledWith([
-      { id: 1, maxThroughputPercentage: 50 },
-      { id: 2, maxThroughputPercentage: 60 },
-      { id: 3, maxThroughputPercentage: 100 },
-      { id: 4, maxThroughputPercentage: 100 },
-      { id: 5, maxThroughputPercentage: 100 },
+      { id: 1, maxThroughputPercentage: 50, isDefaultBucket: false },
+      { id: 2, maxThroughputPercentage: 60, isDefaultBucket: false },
+      { id: 3, maxThroughputPercentage: 100, isDefaultBucket: false },
+      { id: 4, maxThroughputPercentage: 100, isDefaultBucket: false },
+      { id: 5, maxThroughputPercentage: 100, isDefaultBucket: false },
     ]);
   });
 

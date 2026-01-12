@@ -3,7 +3,7 @@
   Run "npm run generateARMClients" to regenerate
   Edting this file directly should be done with extreme caution as not to diverge from ARM REST specs
 
-  Generated from: https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/specification/cosmos-db/resource-manager/Microsoft.DocumentDB/preview/2025-05-01-preview/cosmos-db.json
+  Generated from: https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/specification/cosmos-db/resource-manager/Microsoft.DocumentDB/DocumentDB/preview/2025-11-01-preview/cosmos-db.json
 */
 
 /* The List operation response, that contains the client encryption keys and their properties. */
@@ -573,6 +573,8 @@ export interface DatabaseAccountGetProperties {
 
   /* Indicates the status of the Customer Managed Key feature on the account. In case there are errors, the property provides troubleshooting guidance. */
   customerManagedKeyStatus?: string;
+  /* The version of the Customer Managed Key currently being used by the account */
+  readonly keyVaultKeyUriVersion?: string;
   /* Flag to indicate enabling/disabling of Priority Based Execution Preview feature on the account */
   enablePriorityBasedExecution?: boolean;
   /* Enum to indicate default Priority Level of request for Priority Based Execution. */
@@ -582,6 +584,10 @@ export interface DatabaseAccountGetProperties {
   enablePerRegionPerPartitionAutoscale?: boolean;
   /* Flag to indicate if All Versions and Deletes Change feed feature is enabled on the account */
   enableAllVersionsAndDeletesChangeFeed?: boolean;
+  /* Total dedicated throughput (RU/s) for database account. Represents the sum of all manual provisioned throughput and all autoscale max RU/s across all shared throughput databases and dedicated throughput containers in the account for 1 region. READ ONLY. */
+  throughputPoolDedicatedRUs?: number;
+  /* When this account is part of a fleetspace with throughput pooling enabled, this is the maximum additional throughput (RU/s) that can be consumed from the pool, summed across all shared throughput databases and dedicated throughput containers in the account for 1 region.  READ ONLY. */
+  throughputPoolMaxConsumableRUs?: number;
 }
 
 /* Properties to create and update Azure Cosmos DB database accounts. */
@@ -1105,7 +1111,7 @@ export interface ThroughputSettingsResource {
   readonly instantMaximumThroughput?: string;
   /* The maximum throughput value or the maximum maxThroughput value (for autoscale) that can be specified */
   readonly softAllowedMaximumThroughput?: string;
-  /* Array of Throughput Bucket limits to be applied to the Cosmos DB container */
+  /* Array of throughput bucket limits to be applied to the Cosmos DB container */
   throughputBuckets?: ThroughputBucketResource[];
 }
 
@@ -1140,6 +1146,8 @@ export interface ThroughputBucketResource {
   id: number;
   /* Represents maximum percentage throughput that can be used by the bucket */
   maxThroughputPercentage: number;
+  /* Indicates whether this is the default throughput bucket */
+  isDefaultBucket?: boolean;
 }
 
 /* Cosmos DB options resource object */
@@ -1296,6 +1304,9 @@ export interface SqlContainerResource {
   /* Materialized Views defined on the container. */
   materializedViews?: MaterializedViewDetails[];
 
+  /* Materialized Views Properties defined for source container. */
+  materializedViewsProperties?: MaterializedViewsProperties;
+
   /* List of computed properties */
   computedProperties?: ComputedProperty[];
 
@@ -1304,6 +1315,9 @@ export interface SqlContainerResource {
 
   /* The FullText policy for the container. */
   fullTextPolicy?: FullTextPolicy;
+
+  /* The Data Masking policy for the container. */
+  dataMaskingPolicy?: DataMaskingPolicy;
 }
 
 /* Cosmos DB indexing policy */
@@ -1327,6 +1341,9 @@ export interface IndexingPolicy {
 
   /* List of paths to include in the vector indexing */
   vectorIndexes?: VectorIndex[];
+
+  /* List of paths to include in the full text indexing */
+  fullTextIndexes?: FullTextIndexPath[];
 }
 
 /* Cosmos DB Vector Embedding Policy */
@@ -1374,6 +1391,13 @@ export interface VectorIndex {
   path: string;
   /* The index type of the vector. Currently, flat, diskANN, and quantizedFlat are supported. */
   type: "flat" | "diskANN" | "quantizedFlat";
+
+  /* The number of bytes used in product quantization of the vectors. A larger value may result in better recall for vector searches at the expense of latency. This is only applicable for the quantizedFlat and diskANN vector index types. */
+  quantizationByteSize?: number;
+  /* This is the size of the candidate list of approximate neighbors stored while building the DiskANN index as part of the optimization processes. Large values may improve recall at the expense of latency. This is only applicable for the diskANN vector index type. */
+  indexingSearchListSize?: number;
+  /* Array of shard keys for the vector index. This is only applicable for the quantizedFlat and diskANN vector index types. */
+  vectorIndexShardKey?: unknown[];
 }
 
 /* Represents a vector embedding. A vector embedding is used to define a vector field in the documents. */
@@ -1381,13 +1405,19 @@ export interface VectorEmbedding {
   /* The path to the vector field in the document. */
   path: string;
   /* Indicates the data type of vector. */
-  dataType: "float32" | "uint8" | "int8";
+  dataType: "float32" | "uint8" | "int8" | "float16";
 
   /* The distance function to use for distance calculation in between vectors. */
   distanceFunction: "euclidean" | "cosine" | "dotproduct";
 
   /* The number of dimensions in the vector. */
   dimensions: number;
+}
+
+/* Represents the full text index path. */
+export interface FullTextIndexPath {
+  /* The path to the full text field in the document. */
+  path: string;
 }
 
 /* Represents the full text path specification. */
@@ -1489,6 +1519,18 @@ export interface ClientEncryptionIncludedPath {
   encryptionAlgorithm: string;
 }
 
+/* Data masking policy for the container. */
+export interface DataMaskingPolicy {
+  /* List of JSON paths to include in the masking policy. */
+  includedPaths?: unknown[];
+
+  /* List of JSON paths to exclude from masking. */
+  excludedPaths?: unknown[];
+
+  /* Flag indicating whether the data masking policy is enabled. */
+  isPolicyEnabled?: boolean;
+}
+
 /* Materialized View definition for the container. */
 export interface MaterializedViewDefinition {
   /* An unique identifier for the source collection. This is a system generated property. */
@@ -1497,6 +1539,14 @@ export interface MaterializedViewDefinition {
   sourceCollectionId: string;
   /* The definition should be an SQL query which would be used to fetch data from the source container to populate into the Materialized View container. */
   definition: string;
+  /* Throughput bucket assigned for the materialized view operations on target container. */
+  throughputBucketForBuild?: number;
+}
+
+/* Materialized Views Properties for the source container. */
+export interface MaterializedViewsProperties {
+  /* Throughput bucket assigned for the materialized view operations on source container. */
+  throughputBucketForBuild?: number;
 }
 
 /* MaterializedViewDetails, contains Id & _rid fields of materialized view. */
