@@ -1,6 +1,7 @@
 import { Metric, onCLS, onFCP, onINP, onLCP, onTTFB } from "web-vitals";
 import { configContext } from "../ConfigContext";
-import { trackEvent } from "../Shared/appInsights";
+import { Action } from "../Shared/Telemetry/TelemetryConstants";
+import { traceMark } from "../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../UserContext";
 import MetricScenario, { reportHealthy, reportUnhealthy } from "./MetricEvents";
 import { scenarioConfigs } from "./MetricScenarioConfigs";
@@ -83,6 +84,13 @@ class ScenarioMonitor {
       ctx.phases.set(phase, { startMarkName: phaseStartMarkName });
     });
 
+    traceMark(Action.MetricsScenario, {
+      event: "scenario_start",
+      scenario,
+      requiredPhases: config.requiredPhases.join(","),
+      timeoutMs: config.timeoutMs,
+    });
+
     ctx.timeoutId = window.setTimeout(() => this.emit(ctx, false, true), config.timeoutMs);
     this.contexts.set(scenario, ctx);
   }
@@ -96,6 +104,12 @@ class ScenarioMonitor {
     const startMarkName = `scenario_${scenario}_${phase}_start`;
     performance.mark(startMarkName);
     ctx.phases.set(phase, { startMarkName });
+
+    traceMark(Action.MetricsScenario, {
+      event: "phase_start",
+      scenario,
+      phase,
+    });
   }
 
   completePhase(scenario: MetricScenario, phase: MetricPhase) {
@@ -109,6 +123,22 @@ class ScenarioMonitor {
     performance.mark(endMarkName);
     phaseCtx.endMarkName = endMarkName;
     ctx.completed.add(phase);
+
+    const navigationStart = performance.timeOrigin;
+    const startEntry = performance.getEntriesByName(phaseCtx.startMarkName)[0];
+    const endEntry = performance.getEntriesByName(endMarkName)[0];
+    const endTimeISO = endEntry ? new Date(navigationStart + endEntry.startTime).toISOString() : undefined;
+    const durationMs = startEntry && endEntry ? endEntry.startTime - startEntry.startTime : undefined;
+
+    traceMark(Action.MetricsScenario, {
+      event: "phase_complete",
+      scenario,
+      phase,
+      endTimeISO,
+      durationMs,
+      completedCount: ctx.completed.size,
+      requiredCount: ctx.config.requiredPhases.length,
+    });
 
     this.tryEmitIfReady(ctx);
   }
@@ -132,6 +162,14 @@ class ScenarioMonitor {
 
     // Build a snapshot with failure info
     const failureSnapshot = this.buildSnapshot(ctx, { final: false, timedOut: false });
+
+    traceMark(Action.MetricsScenario, {
+      event: "phase_fail",
+      scenario,
+      phase,
+      failedPhases: Array.from(ctx.failed).join(","),
+      completedPhases: Array.from(ctx.completed).join(","),
+    });
 
     // Emit unhealthy immediately
     this.emit(ctx, false, false, failureSnapshot);
@@ -191,27 +229,22 @@ class ScenarioMonitor {
     // Build snapshot if not provided
     const finalSnapshot = snapshot || this.buildSnapshot(ctx, { final: false, timedOut });
 
-    // Emit enriched telemetry with performance data
-    // TODO: Call portal backend metrics endpoint
-    trackEvent(
-      { name: "MetricScenarioComplete" },
-      {
-        scenario: ctx.scenario,
-        healthy: healthy.toString(),
-        timedOut: timedOut.toString(),
-        platform,
-        api,
-        durationMs: finalSnapshot.durationMs.toString(),
-        completedPhases: finalSnapshot.completed.join(","),
-        failedPhases: finalSnapshot.failedPhases?.join(","),
-        lcp: finalSnapshot.vitals?.lcp?.toString(),
-        inp: finalSnapshot.vitals?.inp?.toString(),
-        cls: finalSnapshot.vitals?.cls?.toString(),
-        fcp: finalSnapshot.vitals?.fcp?.toString(),
-        ttfb: finalSnapshot.vitals?.ttfb?.toString(),
-        phaseTimings: JSON.stringify(finalSnapshot.phaseTimings),
-      },
-    );
+    traceMark(Action.MetricsScenario, {
+      event: "scenario_end",
+      scenario: ctx.scenario,
+      healthy,
+      timedOut,
+      platform,
+      api,
+      durationMs: finalSnapshot.durationMs,
+      completedPhases: finalSnapshot.completed.join(","),
+      failedPhases: finalSnapshot.failedPhases?.join(","),
+      lcp: finalSnapshot.vitals?.lcp,
+      inp: finalSnapshot.vitals?.inp,
+      cls: finalSnapshot.vitals?.cls,
+      fcp: finalSnapshot.vitals?.fcp,
+      ttfb: finalSnapshot.vitals?.ttfb,
+    });
 
     // Call portal backend health metrics endpoint
     if (healthy && !timedOut) {
@@ -227,9 +260,16 @@ class ScenarioMonitor {
   private cleanupPerformanceEntries(ctx: InternalScenarioContext) {
     performance.clearMarks(ctx.startMarkName);
     ctx.config.requiredPhases.forEach((phase) => {
-      performance.clearMarks(`scenario_${ctx.scenario}_${phase}`);
+      const phaseCtx = ctx.phases.get(phase);
+      if (phaseCtx?.startMarkName) {
+        performance.clearMarks(phaseCtx.startMarkName);
+      }
+      if (phaseCtx?.endMarkName) {
+        performance.clearMarks(phaseCtx.endMarkName);
+      }
+      performance.clearMarks(`scenario_${ctx.scenario}_${phase}_failed`);
+      performance.clearMeasures(`scenario_${ctx.scenario}_${phase}_duration`);
     });
-    performance.clearMeasures(`scenario_${ctx.scenario}_total`);
   }
 
   private buildSnapshot(
