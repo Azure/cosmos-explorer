@@ -64,10 +64,10 @@ export const ThroughputBucketsComponent: FC<ThroughputBucketsComponentProps> = (
   };
 
   const getThroughputBucketOptions = (): IDropdownOption[] => {
-    const noDefaultThroughputBucketSelected: IDropdownOption[] = [
-      { key: NoDefaultThroughputSelectedKey, text: "No Default Throughput Bucket Selected" },
-    ];
-
+    const noDefaultThroughputBucketSelected: IDropdownOption = {
+      key: NoDefaultThroughputSelectedKey,
+      text: "No Default Throughput Bucket Selected",
+    };
     const throughputBucketOptions: IDropdownOption[] = throughputBuckets
       .filter((bucket) => bucket.maxThroughputPercentage !== 100)
       .map((bucket) => ({
@@ -75,7 +75,7 @@ export const ThroughputBucketsComponent: FC<ThroughputBucketsComponentProps> = (
         text: `Bucket ${bucket.id} - ${bucket.maxThroughputPercentage}%`,
       }));
 
-    return [...noDefaultThroughputBucketSelected, ...throughputBucketOptions];
+    return [noDefaultThroughputBucketSelected, ...throughputBucketOptions];
   };
 
   const [throughputBuckets, setThroughputBuckets] = useState<ThroughputBucket[]>(getThroughputBuckets(currentBuckets));
