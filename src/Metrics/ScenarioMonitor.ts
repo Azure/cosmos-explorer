@@ -1,7 +1,7 @@
 import { Metric, onCLS, onFCP, onINP, onLCP, onTTFB } from "web-vitals";
 import { configContext } from "../ConfigContext";
 import { Action } from "../Shared/Telemetry/TelemetryConstants";
-import { traceMark } from "../Shared/Telemetry/TelemetryProcessor";
+import { traceFailure, traceMark, traceStart, traceSuccess } from "../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../UserContext";
 import MetricScenario, { reportHealthy, reportUnhealthy } from "./MetricEvents";
 import { scenarioConfigs } from "./MetricScenarioConfigs";
@@ -105,7 +105,7 @@ class ScenarioMonitor {
     performance.mark(startMarkName);
     ctx.phases.set(phase, { startMarkName });
 
-    traceMark(Action.MetricsScenario, {
+    traceStart(Action.MetricsScenario, {
       event: "phase_start",
       scenario,
       phase,
@@ -130,7 +130,7 @@ class ScenarioMonitor {
     const endTimeISO = endEntry ? new Date(navigationStart + endEntry.startTime).toISOString() : undefined;
     const durationMs = startEntry && endEntry ? endEntry.startTime - startEntry.startTime : undefined;
 
-    traceMark(Action.MetricsScenario, {
+    traceSuccess(Action.MetricsScenario, {
       event: "phase_complete",
       scenario,
       phase,
@@ -163,7 +163,7 @@ class ScenarioMonitor {
     // Build a snapshot with failure info
     const failureSnapshot = this.buildSnapshot(ctx, { final: false, timedOut: false });
 
-    traceMark(Action.MetricsScenario, {
+    traceFailure(Action.MetricsScenario, {
       event: "phase_fail",
       scenario,
       phase,
