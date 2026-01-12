@@ -68,12 +68,17 @@ export const ThroughputBucketsComponent: FC<ThroughputBucketsComponentProps> = (
       key: NoDefaultThroughputSelectedKey,
       text: "No Default Throughput Bucket Selected",
     };
-    const throughputBucketOptions: IDropdownOption[] = throughputBuckets
-      .filter((bucket) => bucket.maxThroughputPercentage !== 100)
-      .map((bucket) => ({
-        key: bucket.id,
-        text: `Bucket ${bucket.id} - ${bucket.maxThroughputPercentage}%`,
-      }));
+
+    const throughputBucketOptions: IDropdownOption[] = throughputBuckets.map((bucket) => ({
+      key: bucket.id,
+      text: `Bucket ${bucket.id} - ${bucket.maxThroughputPercentage}%`,
+      disabled: bucket.maxThroughputPercentage === 100,
+      ...(bucket.maxThroughputPercentage === 100 && {
+        data: {
+          tooltip: `Bucket ${bucket.id} is not active.`,
+        },
+      }),
+    }));
 
     return [noDefaultThroughputBucketSelected, ...throughputBucketOptions];
   };
@@ -206,8 +211,20 @@ export const ThroughputBucketsComponent: FC<ThroughputBucketsComponentProps> = (
           NoDefaultThroughputSelectedKey
         }
         onChange={(_, option) => onDefaultBucketToggle(option.key as number, true)}
-        styles={{ root: { width: "50%" } }}
         onRenderLabel={onRenderDefaultThroughputBucketLabel}
+        onRenderOption={(option: IDropdownOption) => {
+          const tooltip: string = option?.data?.tooltip;
+          if (!tooltip) {
+            return <>{option?.text}</>;
+          }
+
+          return (
+            <TooltipHost content={tooltip}>
+              <span>{option?.text}</span>
+            </TooltipHost>
+          );
+        }}
+        styles={{ root: { width: "50%" } }}
       />
     </Stack>
   );
