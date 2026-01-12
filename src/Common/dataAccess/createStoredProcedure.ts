@@ -9,7 +9,7 @@ import {
   SqlStoredProcedureCreateUpdateParameters,
   SqlStoredProcedureResource,
 } from "../../Utils/arm/generatedClients/cosmos/types";
-import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
+import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";
 
@@ -20,6 +20,7 @@ export async function createStoredProcedure(
 ): Promise<StoredProcedureDefinition & Resource> {
   const clearMessage = logConsoleProgress(`Creating stored procedure ${storedProcedure.id}`);
   try {
+    let resource: StoredProcedureDefinition & Resource;
     if (
       userContext.authType === AuthType.AAD &&
       !userContext.features.enableSDKoperations &&
@@ -60,14 +61,16 @@ export async function createStoredProcedure(
         storedProcedure.id,
         createSprocParams,
       );
-      return rpResponse && (rpResponse.properties?.resource as StoredProcedureDefinition & Resource);
+      resource = rpResponse && (rpResponse.properties?.resource as StoredProcedureDefinition & Resource);
+    } else {
+      const response = await client()
+        .database(databaseId)
+        .container(collectionId)
+        .scripts.storedProcedures.create(storedProcedure);
+      resource = response.resource;
     }
-
-    const response = await client()
-      .database(databaseId)
-      .container(collectionId)
-      .scripts.storedProcedures.create(storedProcedure);
-    return response?.resource;
+    logConsoleInfo(`Successfully created stored procedure ${storedProcedure.id}`);
+    return resource;
   } catch (error) {
     handleError(error, "CreateStoredProcedure", `Error while creating stored procedure ${storedProcedure.id}`);
     throw error;
