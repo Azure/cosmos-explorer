@@ -24,6 +24,7 @@ export async function deleteTrigger(databaseId: string, collectionId: string, tr
     } else {
       await client().database(databaseId).container(collectionId).scripts.trigger(triggerId).delete();
     }
+    logConsoleProgress(`Successfully deleted trigger ${triggerId}`);
   } catch (error) {
     handleError(error, "DeleteTrigger", `Error while deleting trigger ${triggerId}`);
     throw error;

@@ -9,7 +9,7 @@ import {
   SqlUserDefinedFunctionCreateUpdateParameters,
   SqlUserDefinedFunctionResource,
 } from "../../Utils/arm/generatedClients/cosmos/types";
-import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
+import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";
 
@@ -20,6 +20,7 @@ export async function createUserDefinedFunction(
 ): Promise<UserDefinedFunctionDefinition & Resource> {
   const clearMessage = logConsoleProgress(`Creating user defined function ${userDefinedFunction.id}`);
   try {
+    let resource: UserDefinedFunctionDefinition & Resource;
     if (
       userContext.authType === AuthType.AAD &&
       !userContext.features.enableSDKoperations &&
@@ -60,14 +61,17 @@ export async function createUserDefinedFunction(
         userDefinedFunction.id,
         createUDFParams,
       );
-      return rpResponse && (rpResponse.properties?.resource as UserDefinedFunctionDefinition & Resource);
-    }
 
-    const response = await client()
-      .database(databaseId)
-      .container(collectionId)
-      .scripts.userDefinedFunctions.create(userDefinedFunction);
-    return response?.resource;
+      resource = rpResponse && (rpResponse.properties?.resource as UserDefinedFunctionDefinition & Resource);
+    } else {
+      const response = await client()
+        .database(databaseId)
+        .container(collectionId)
+        .scripts.userDefinedFunctions.create(userDefinedFunction);
+      resource = response.resource;
+    }
+    logConsoleInfo(`Successfully created user defined function ${userDefinedFunction.id}`);
+    return resource;
   } catch (error) {
     handleError(
       error,
