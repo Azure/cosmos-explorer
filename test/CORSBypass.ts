@@ -11,7 +11,7 @@ export async function setupCORSBypass(page: Page) {
       return;
     }
 
-    // Handle preflight (OPTIONS) requests separately.
+    //// Handle preflight (OPTIONS) requests separately.
     // These should not be forwarded to the target server.
     if (request.method() === "OPTIONS") {
       await route.fulfill({
@@ -20,7 +20,8 @@ export async function setupCORSBypass(page: Page) {
           "Access-Control-Allow-Origin": origin,
           "Access-Control-Allow-Credentials": "true",
           "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS,HEAD",
-          "Access-Control-Allow-Headers": request.headers()["access-control-request-headers"] || "*",
+          "Access-Control-Request-Headers": "*, x-ms-continuation",
+          "Access-Control-Max-Age": "86400", // Cache preflight response for 1 day
           Vary: "Origin",
         },
       });
@@ -34,14 +35,21 @@ export async function setupCORSBypass(page: Page) {
       },
     });
 
+    const responseHeaders = response.headers();
+    // Clean up any pre-existing CORS headers from the real response to avoid conflicts.
+    delete responseHeaders["access-control-allow-origin"];
+    delete responseHeaders["access-control-allow-credentials"];
+
     await route.fulfill({
       status: response.status(),
       headers: {
-        ...response.headers(),
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "*",
+        ...responseHeaders,
+        "Access-Control-Allow-Origin": origin,
+        "Access-Control-Allow-Credentials": "true",
+        "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS,HEAD",
         "Access-Control-Allow-Headers": "*",
-        "Access-Control-Allow-Credentials": "*",
+        "Access-Control-Expose-Headers": "x-ms-continuation,x-ms-request-charge,x-ms-session-token",
+        Vary: "Origin",
       },
       body: await response.body(),
     });
