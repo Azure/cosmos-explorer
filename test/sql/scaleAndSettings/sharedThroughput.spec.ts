@@ -180,9 +180,11 @@ test.describe("Database with Shared Throughput", () => {
       await explorer.commandBarButton(CommandBarButton.Save).click();
 
       // Verify success message
-      await expect(explorer.getConsoleMessage()).toContainText(
+      await expect(explorer.getConsoleHeaderStatus()).toContainText(
         `Successfully updated offer for database ${dbContext.database.id}`,
-        { timeout: 2 * ONE_MINUTE_MS },
+        {
+          timeout: 2 * ONE_MINUTE_MS,
+        },
       );
     });
 
@@ -206,10 +208,11 @@ test.describe("Database with Shared Throughput", () => {
       // Save changes
       await explorer.commandBarButton(CommandBarButton.Save).click();
 
-      // Verify success message
-      await expect(explorer.getConsoleMessage()).toContainText(
+      await expect(explorer.getConsoleHeaderStatus()).toContainText(
         `Successfully updated offer for database ${dbContext.database.id}`,
-        { timeout: 2 * ONE_MINUTE_MS },
+        {
+          timeout: 2 * ONE_MINUTE_MS,
+        },
       );
     });
   });
@@ -255,9 +258,11 @@ test.describe("Database with Shared Throughput", () => {
       await explorer.commandBarButton(CommandBarButton.Save).click();
 
       // Verify success message
-      await expect(explorer.getConsoleMessage()).toContainText(
+      await expect(explorer.getConsoleHeaderStatus()).toContainText(
         `Successfully updated offer for database ${dbContext.database.id}`,
-        { timeout: 2 * ONE_MINUTE_MS },
+        {
+          timeout: 2 * ONE_MINUTE_MS,
+        },
       );
     });
 
@@ -279,7 +284,7 @@ test.describe("Database with Shared Throughput", () => {
       await explorer.commandBarButton(CommandBarButton.Save).click();
 
       // Verify success message
-      await expect(explorer.getConsoleMessage()).toContainText(
+      await expect(explorer.getConsoleHeaderStatus()).toContainText(
         `Successfully updated offer for database ${dbContext.database.id}`,
         { timeout: 2 * ONE_MINUTE_MS },
       );
