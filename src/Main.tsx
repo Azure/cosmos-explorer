@@ -128,6 +128,7 @@ const App = (): JSX.Element => {
             <>
               <ContainerCopyPanel explorer={explorer} />
               <SidePanel />
+              <Dialog />
             </>
           ) : (
             <DivExplorer explorer={explorer} />
