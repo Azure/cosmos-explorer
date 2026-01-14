@@ -177,6 +177,7 @@ export const ThroughputBucketsComponent: FC<ThroughputBucketsComponentProps> = (
                 fieldGroup: { width: 80 },
               }}
               disabled={bucket.maxThroughputPercentage === 100}
+              data-test={`bucket-${bucket.id}-percentage-input`}
             />
             <Toggle
               onText="Active"
@@ -187,6 +188,7 @@ export const ThroughputBucketsComponent: FC<ThroughputBucketsComponentProps> = (
                 root: { marginBottom: 0 },
                 text: { fontSize: 12, color: "var(--colorNeutralForeground1)" },
               }}
+              data-test={`bucket-${bucket.id}-active-toggle`}
             ></Toggle>
             {/* <Toggle 
               onText="Default"
@@ -225,6 +227,7 @@ export const ThroughputBucketsComponent: FC<ThroughputBucketsComponentProps> = (
           );
         }}
         styles={{ root: { width: "50%" } }}
+        data-test="default-throughput-bucket-dropdown"
       />
     </Stack>
   );
