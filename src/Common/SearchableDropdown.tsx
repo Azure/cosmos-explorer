@@ -9,7 +9,7 @@ import {
   Text,
 } from "@fluentui/react";
 import * as React from "react";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import {
   buttonLabelStyles,
   calloutContentStyles,
@@ -58,7 +58,10 @@ export const SearchableDropdown = <T,>({
     setFilterText("");
   }, []);
 
-  const filteredItems = items?.filter((item) => getDisplayText(item).toLowerCase().includes(filterText.toLowerCase()));
+  const filteredItems = useMemo(
+    () => items?.filter((item) => getDisplayText(item).toLowerCase().includes(filterText.toLowerCase())),
+    [items, filterText, getDisplayText],
+  );
 
   const handleDismiss = useCallback(() => {
     closeDropdown();
