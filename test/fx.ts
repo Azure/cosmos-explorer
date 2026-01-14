@@ -378,7 +378,9 @@ type PanelOpenOptions = {
 
 export enum CommandBarButton {
   Save = "Save",
+  Execute = "Execute",
   ExecuteQuery = "Execute Query",
+  UploadItem = "Upload Item",
 }
 
 /** Helper class that provides locator methods for DataExplorer components, on top of a Frame */

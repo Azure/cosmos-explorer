@@ -25,7 +25,18 @@ export default {
   subscriptionDropdownPlaceholder: "Select a subscription",
   sourceAccountDropdownLabel: "Account",
   sourceAccountDropdownPlaceholder: "Select an account",
-  migrationTypeCheckboxLabel: "Copy container in offline mode",
+  migrationTypeOptions: {
+    offline: {
+      title: "Offline mode",
+      description:
+        "Offline container copy jobs let you copy data from a source container to a destination Cosmos DB container for supported APIs. To ensure data integrity between the source and destination, we recommend stopping updates on the source container before creating the copy job. Learn more about [offline copy jobs](https://learn.microsoft.com/azure/cosmos-db/how-to-container-copy?tabs=offline-copy&pivots=api-nosql).",
+    },
+    online: {
+      title: "Online mode",
+      description:
+        "Online container copy jobs let you copy data from a source container to a destination Cosmos DB NoSQL API container using the [All Versions and Delete](https://learn.microsoft.com/azure/cosmos-db/change-feed-modes?tabs=all-versions-and-deletes#all-versions-and-deletes-change-feed-mode-preview) change feed. This allows updates to continue on the source while data is copied. A brief downtime is required at the end to safely switch over client applications to the destination container. Learn more about [online copy jobs](https://learn.microsoft.com/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#getting-started).",
+    },
+  },
 
   // Select Source and Target Containers Screen
   selectSourceAndTargetContainersDescription:

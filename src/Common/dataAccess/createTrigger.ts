@@ -3,7 +3,7 @@ import { AuthType } from "../../AuthType";
 import { userContext } from "../../UserContext";
 import { createUpdateSqlTrigger, getSqlTrigger } from "../../Utils/arm/generatedClients/cosmos/sqlResources";
 import { SqlTriggerCreateUpdateParameters, SqlTriggerResource } from "../../Utils/arm/generatedClients/cosmos/types";
-import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
+import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";
 
@@ -14,6 +14,7 @@ export async function createTrigger(
 ): Promise<TriggerDefinition | SqlTriggerResource> {
   const clearMessage = logConsoleProgress(`Creating trigger ${trigger.id}`);
   try {
+    let resource: SqlTriggerResource | TriggerDefinition;
     if (
       userContext.authType === AuthType.AAD &&
       !userContext.features.enableSDKoperations &&
@@ -52,14 +53,16 @@ export async function createTrigger(
         trigger.id,
         createTriggerParams,
       );
-      return rpResponse && rpResponse.properties?.resource;
+      resource = rpResponse && rpResponse.properties?.resource;
+    } else {
+      const sdkResponse = await client()
+        .database(databaseId)
+        .container(collectionId)
+        .scripts.triggers.create(trigger as unknown as TriggerDefinition); // TODO: TypeScript does not like the SQL SDK trigger type
+      resource = sdkResponse.resource;
     }
-
-    const response = await client()
-      .database(databaseId)
-      .container(collectionId)
-      .scripts.triggers.create(trigger as unknown as TriggerDefinition); // TODO: TypeScript does not like the SQL SDK trigger type
-    return response.resource;
+    logConsoleInfo(`Successfully created trigger ${trigger.id}`);
+    return resource;
   } catch (error) {
     handleError(error, "CreateTrigger", `Error while creating trigger ${trigger.id}`);
     throw error;
