@@ -83,10 +83,12 @@ test.describe("Database with Shared Throughput", () => {
     return explorer.frame.getByTestId(`${type}-throughput-input`);
   };
 
-  test.afterEach(async () => {
-    // Clean up: delete the created database
-    await dbContext?.dispose();
-  });
+  // Delete database only if not running in CI
+  if (!process.env.CI) {
+    test.afterEach("Delete Test Database", async () => {
+      await dbContext?.dispose();
+    });
+  }
 
   test.describe("Manual Throughput Tests", () => {
     test.beforeEach(async ({ page }) => {
@@ -119,7 +121,8 @@ test.describe("Database with Shared Throughput", () => {
       await explorer.waitForNode(dbContext.database.id);
 
       // Add a container to the shared database via UI
-      await explorer.frame.getByRole("button", { name: "New Container" }).click();
+      const newContainerButton = await explorer.globalCommandButton("New Container");
+      await newContainerButton.click();
 
       await explorer.whilePanelOpen(
         "New Container",
