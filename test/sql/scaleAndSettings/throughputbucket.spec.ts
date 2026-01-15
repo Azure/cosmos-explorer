@@ -18,11 +18,9 @@ test.describe("Throughput bucket settings", () => {
   });
 
   // Delete database only if not running in CI
-  if (!process.env.CI) {
-    test.afterEach("Delete Test Database", async () => {
-      await context?.dispose();
-    });
-  }
+  test.afterEach("Delete Test Database", async () => {
+    await context?.dispose();
+  });
 
   test("Activate throughput bucket #2", async () => {
     // Activate bucket 2

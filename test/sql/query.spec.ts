@@ -31,11 +31,9 @@ test.beforeEach("Open new query tab", async ({ page }) => {
 });
 
 // Delete database only if not running in CI
-if (!process.env.CI) {
-  test.afterAll("Delete Test Database", async () => {
-    await context?.dispose();
-  });
-}
+test.afterAll("Delete Test Database", async () => {
+  await context?.dispose();
+});
 
 test("Query results", async () => {
   // Run the query and verify the results
