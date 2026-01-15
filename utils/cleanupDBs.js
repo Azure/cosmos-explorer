@@ -2,10 +2,12 @@ const { AzureCliCredential } = require("@azure/identity");
 const { CosmosDBManagementClient } = require("@azure/arm-cosmosdb");
 const ms = require("ms");
 
-const subscriptionId = process.env["AZURE_SUBSCRIPTION_ID"];
-const resourceGroupName = "de-e2e-tests";
+// const subscriptionId = process.env["AZURE_SUBSCRIPTION_ID"];
+// const resourceGroupName = "de-e2e-tests";
+const subscriptionId = "074d02eb-4d74-486a-b299-b262264d1536";
+const resourceGroupName = "bchoudhury-e2e-testing";
 
-const thirtyMinutesAgo = new Date(Date.now() - 1000 * 60 * 30).getTime();
+const thirtyMinutesAgo = new Date(Date.now() - 1000 * 60 * 5).getTime();
 
 function friendlyTime(date) {
   try {
@@ -18,7 +20,7 @@ function friendlyTime(date) {
 async function main() {
   const credentials = new AzureCliCredential();
   const client = new CosmosDBManagementClient(credentials, subscriptionId);
-  const accounts = await client.databaseAccounts.list(resourceGroupName);
+  const accounts = await client.databaseAccounts.listByResourceGroup(resourceGroupName);
   for (const account of accounts) {
     if (account.name.endsWith("-readonly")) {
       console.log(`SKIPPED: ${account.name}`);

@@ -701,6 +701,7 @@ export class ContainerCopy {
 
   static async open(page: Page, testAccount: TestAccount, iframeSrc?: string): Promise<ContainerCopy> {
     const url = await getTestExplorerUrl(testAccount, { iframeSrc, enablecontainercopy: true });
+    // console.log(`Navigating to URL: ${url}`);
     await page.goto(url);
     return ContainerCopy.waitForContainerCopy(page);
   }

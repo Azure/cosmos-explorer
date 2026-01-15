@@ -1,0 +1,23 @@
+{
+  "servers": {
+    "playwright": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp@latest"],
+      "env": {
+        "ALLOWED_DIRECTORIES": "C:/Users/bchoudhury/MyProjects/cosmos-explorer"
+      }
+    },
+    "filesystem": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem@latest",
+        "C:/Users/bchoudhury/MyProjects/cosmos-explorer/test",
+        "C:/Users/bchoudhury/MyProjects/cosmos-explorer/src"
+      ]
+    }
+  },
+  "inputs": []
+}

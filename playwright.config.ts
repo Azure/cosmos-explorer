@@ -6,15 +6,17 @@ export default defineConfig({
   testDir: "test",
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 3 : 0,
+  retries: process.env.CI ? 3 : 2,
   workers: process.env.CI ? 1 : undefined,
   reporter: process.env.CI ? "blob" : "html",
   timeout: 10 * 60 * 1000,
+  globalSetup: require.resolve('./test/global-setup.ts'),
   use: {
     trace: "retain-on-failure",
     video: "retain-on-failure",
     screenshot: "on",
     testIdAttribute: "data-test",
+    // storageState: './test/../playwright/.auth/user.json',
     contextOptions: {
       ignoreHTTPSErrors: true,
     },

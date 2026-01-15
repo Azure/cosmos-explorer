@@ -18,7 +18,10 @@ if (-not $Subscription) {
     $Subscription = $currentSubscription.Id
 }
 
-$AzSubscription = (Get-AzSubscription -SubscriptionId $Subscription -ErrorAction SilentlyContinue | Select-Object -First 1) ?? (Get-AzSubscription -SubscriptionName $Subscription -ErrorAction SilentlyContinue | Select-Object -First 1)
+$AzSubscription = (Get-AzSubscription -SubscriptionId $Subscription -ErrorAction SilentlyContinue | Select-Object -First 1)
+if (-not $AzSubscription) {
+    $AzSubscription = (Get-AzSubscription -SubscriptionName $Subscription -ErrorAction SilentlyContinue | Select-Object -First 1)
+}
 if (-not $AzSubscription) {
     throw "The subscription '$Subscription' could not be found."
 }
