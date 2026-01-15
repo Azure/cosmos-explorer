@@ -44,7 +44,8 @@ export const deleteDocuments = async (
   documentIds: DocumentId[],
   abortSignal: AbortSignal,
 ): Promise<IBulkDeleteResult[]> => {
-  const clearMessage = logConsoleProgress(`Deleting ${documentIds.length} ${getEntityName(true)}`);
+  const totalCount = documentIds.length;
+  const clearMessage = logConsoleProgress(`Deleting ${totalCount} ${getEntityName(true)}`);
   try {
     const v2Container = await client().database(collection.databaseId).container(collection.id());
 
@@ -86,7 +87,7 @@ export const deleteDocuments = async (
     handleError(
       error,
       "DeleteDocuments",
-      `Error while deleting ${documentIds.length} ${getEntityName(documentIds.length > 1)}`,
+      `Error while deleting ${totalCount} ${getEntityName(totalCount > 1)}`,
     );
     throw error;
   } finally {
