@@ -1,6 +1,3 @@
-import { CosmosDBManagementClient } from "@azure/arm-cosmosdb";
-import { CosmosClient, CosmosClientOptions, Database } from "@azure/cosmos";
-import { AzureIdentityCredentialAdapter } from "@azure/ms-rest-js";
 import { Locator, expect, test } from "@playwright/test";
 import {
   CommandBarButton,
@@ -9,69 +6,8 @@ import {
   TEST_AUTOSCALE_MAX_THROUGHPUT_RU_4K,
   TEST_MANUAL_THROUGHPUT_RU,
   TestAccount,
-  generateUniqueName,
-  getAccountName,
-  getAzureCLICredentials,
-  resourceGroupName,
-  subscriptionId,
 } from "../../fx";
-
-// Helper class for database context
-class TestDatabaseContext {
-  constructor(
-    public armClient: CosmosDBManagementClient,
-    public client: CosmosClient,
-    public database: Database,
-  ) {}
-
-  async dispose() {
-    await this.database.delete();
-  }
-}
-
-// Options for creating test database
-interface CreateTestDBOptions {
-  throughput?: number;
-  maxThroughput?: number; // For autoscale
-}
-
-// Helper function to create a test database with shared throughput
-async function createTestDB(options?: CreateTestDBOptions): Promise<TestDatabaseContext> {
-  const databaseId = generateUniqueName("db");
-  const credentials = getAzureCLICredentials();
-  const adaptedCredentials = new AzureIdentityCredentialAdapter(credentials);
-  const armClient = new CosmosDBManagementClient(adaptedCredentials, subscriptionId);
-  const accountName = getAccountName(TestAccount.SQL);
-  const account = await armClient.databaseAccounts.get(resourceGroupName, accountName);
-
-  const clientOptions: CosmosClientOptions = {
-    endpoint: account.documentEndpoint!,
-  };
-
-  const nosqlAccountRbacToken = process.env.NOSQL_TESTACCOUNT_TOKEN;
-  if (nosqlAccountRbacToken) {
-    clientOptions.tokenProvider = async (): Promise<string> => {
-      const AUTH_PREFIX = `type=aad&ver=1.0&sig=`;
-      const authorizationToken = `${AUTH_PREFIX}${nosqlAccountRbacToken}`;
-      return authorizationToken;
-    };
-  } else {
-    const keys = await armClient.databaseAccounts.listKeys(resourceGroupName, accountName);
-    clientOptions.key = keys.primaryMasterKey;
-  }
-
-  const client = new CosmosClient(clientOptions);
-
-  // Create database with provisioned throughput (shared throughput)
-  // This checks the "Provision database throughput" option
-  const { database } = await client.databases.create({
-    id: databaseId,
-    throughput: options?.throughput, // Manual throughput (e.g., 400)
-    maxThroughput: options?.maxThroughput, // Autoscale max throughput (e.g., 1000)
-  });
-
-  return new TestDatabaseContext(armClient, client, database);
-}
+import { TestDatabaseContext, createTestDB } from "../../testData";
 
 test.describe("Database with Shared Throughput", () => {
   let dbContext: TestDatabaseContext = null!;
