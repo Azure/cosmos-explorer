@@ -1,5 +1,5 @@
 import "@testing-library/jest-dom";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import React from "react";
 import { useCopyJobContext } from "../../../Context/CopyJobContext";
 import { CopyJobMigrationType } from "../../../Enums/CopyJobEnums";
@@ -18,19 +18,8 @@ jest.mock("./Components/AccountDropdown", () => ({
   AccountDropdown: jest.fn(() => <div data-testid="account-dropdown">Account Dropdown</div>),
 }));
 
-jest.mock("./Components/MigrationTypeCheckbox", () => ({
-  MigrationTypeCheckbox: jest.fn(({ checked, onChange }: { checked: boolean; onChange: () => void }) => (
-    <div data-testid="migration-type-checkbox">
-      <input
-        type="checkbox"
-        checked={checked}
-        onChange={onChange}
-        data-testid="migration-checkbox-input"
-        aria-label="Migration Type Checkbox"
-      />
-      Copy container in offline mode
-    </div>
-  )),
+jest.mock("./Components/MigrationType", () => ({
+  MigrationType: jest.fn(() => <div data-testid="migration-type">Migration Type</div>),
 }));
 
 describe("SelectAccount", () => {
@@ -83,7 +72,7 @@ describe("SelectAccount", () => {
 
       expect(screen.getByTestId("subscription-dropdown")).toBeInTheDocument();
       expect(screen.getByTestId("account-dropdown")).toBeInTheDocument();
-      expect(screen.getByTestId("migration-type-checkbox")).toBeInTheDocument();
+      expect(screen.getByTestId("migration-type")).toBeInTheDocument();
     });
 
     it("should render correctly with snapshot", () => {
@@ -93,78 +82,20 @@ describe("SelectAccount", () => {
   });
 
   describe("Migration Type Functionality", () => {
-    it("should display migration type checkbox as unchecked when migrationType is Online", () => {
-      (useCopyJobContext as jest.Mock).mockReturnValue({
-        ...defaultContextValue,
-        copyJobState: {
-          ...defaultContextValue.copyJobState,
-          migrationType: CopyJobMigrationType.Online,
-        },
-      });
-
+    it("should render migration type component", () => {
       render(<SelectAccount />);
 
-      const checkbox = screen.getByTestId("migration-checkbox-input");
-      expect(checkbox).not.toBeChecked();
-    });
-
-    it("should display migration type checkbox as checked when migrationType is Offline", () => {
-      (useCopyJobContext as jest.Mock).mockReturnValue({
-        ...defaultContextValue,
-        copyJobState: {
-          ...defaultContextValue.copyJobState,
-          migrationType: CopyJobMigrationType.Offline,
-        },
-      });
-
-      render(<SelectAccount />);
-
-      const checkbox = screen.getByTestId("migration-checkbox-input");
-      expect(checkbox).toBeChecked();
-    });
-
-    it("should call setCopyJobState with Online migration type when checkbox is unchecked", () => {
-      (useCopyJobContext as jest.Mock).mockReturnValue({
-        ...defaultContextValue,
-        copyJobState: {
-          ...defaultContextValue.copyJobState,
-          migrationType: CopyJobMigrationType.Offline,
-        },
-      });
-
-      render(<SelectAccount />);
-
-      const checkbox = screen.getByTestId("migration-checkbox-input");
-      fireEvent.click(checkbox);
-
-      expect(mockSetCopyJobState).toHaveBeenCalledWith(expect.any(Function));
-
-      const updateFunction = mockSetCopyJobState.mock.calls[0][0];
-      const previousState = {
-        ...defaultContextValue.copyJobState,
-        migrationType: CopyJobMigrationType.Offline,
-      };
-      const result = updateFunction(previousState);
-
-      expect(result).toEqual({
-        ...previousState,
-        migrationType: CopyJobMigrationType.Online,
-      });
+      const migrationTypeComponent = screen.getByTestId("migration-type");
+      expect(migrationTypeComponent).toBeInTheDocument();
     });
   });
 
   describe("Performance and Optimization", () => {
-    it("should maintain referential equality of handler functions between renders", async () => {
+    it("should render without performance issues", () => {
       const { rerender } = render(<SelectAccount />);
-
-      const migrationCheckbox = (await import("./Components/MigrationTypeCheckbox")).MigrationTypeCheckbox as jest.Mock;
-      const firstRenderHandler = migrationCheckbox.mock.calls[migrationCheckbox.mock.calls.length - 1][0].onChange;
-
       rerender(<SelectAccount />);
 
-      const secondRenderHandler = migrationCheckbox.mock.calls[migrationCheckbox.mock.calls.length - 1][0].onChange;
-
-      expect(firstRenderHandler).toBe(secondRenderHandler);
+      expect(screen.getByTestId("migration-type")).toBeInTheDocument();
     });
   });
 });

@@ -83,22 +83,33 @@ test.describe("Container Copy", () => {
     );
     await accountItem.click();
 
-    // Verifying online or offline checkbox functionality
+    // Verifying online or offline migration functionality
     /**
-     * This test verifies the functionality of the migration type checkbox that toggles between
+     * This test verifies the functionality of the migration type radio that toggles between
      * online and offline container copy modes. It ensures that:
      * 1. When online mode is selected, the user is directed to a permissions screen
      * 2. When offline mode is selected, the user bypasses the permissions screen
      * 3. The UI correctly reflects the selected migration type throughout the workflow
      */
-    const fluentUiCheckboxContainer = panel.getByTestId("migration-type-checkbox").locator("div.ms-Checkbox");
-    await fluentUiCheckboxContainer.click();
+    const migrationTypeContainer = panel.getByTestId("migration-type");
+    const onlineCopyRadioButton = migrationTypeContainer.getByRole("radio", { name: /Online mode/i });
+    await onlineCopyRadioButton.click({ force: true });
+
+    await expect(migrationTypeContainer.getByTestId("migration-type-description-online")).toBeVisible();
+
     await panel.getByRole("button", { name: "Next" }).click();
+
     await expect(panel.getByTestId("Panel:AssignPermissionsContainer")).toBeVisible();
     await expect(panel.getByText("Online container copy", { exact: true })).toBeVisible();
     await panel.getByRole("button", { name: "Previous" }).click();
-    await fluentUiCheckboxContainer.click();
+
+    const offlineCopyRadioButton = migrationTypeContainer.getByRole("radio", { name: /Offline mode/i });
+    await offlineCopyRadioButton.click({ force: true });
+
+    await expect(migrationTypeContainer.getByTestId("migration-type-description-offline")).toBeVisible();
+
     await panel.getByRole("button", { name: "Next" }).click();
+
     await expect(panel.getByTestId("Panel:SelectSourceAndTargetContainers")).toBeVisible();
     await expect(panel.getByTestId("Panel:AssignPermissionsContainer")).not.toBeVisible();
 
@@ -284,8 +295,9 @@ test.describe("Container Copy", () => {
       throw new Error("No dropdown items available after filtering");
     }
 
-    const fluentUiCheckboxContainer = panel.getByTestId("migration-type-checkbox").locator("div.ms-Checkbox");
-    await fluentUiCheckboxContainer.click();
+    const migrationTypeContainer = panel.getByTestId("migration-type");
+    const onlineCopyRadioButton = migrationTypeContainer.getByRole("radio", { name: /Online mode/i });
+    await onlineCopyRadioButton.click({ force: true });
 
     await panel.getByRole("button", { name: "Next" }).click();
 
