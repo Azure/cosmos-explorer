@@ -84,11 +84,7 @@ export const deleteDocuments = async (
     const flatAllResult = Array.prototype.concat.apply([], allResult);
     return flatAllResult;
   } catch (error) {
-    handleError(
-      error,
-      "DeleteDocuments",
-      `Error while deleting ${totalCount} ${getEntityName(totalCount > 1)}`,
-    );
+    handleError(error, "DeleteDocuments", `Error while deleting ${totalCount} ${getEntityName(totalCount > 1)}`);
     throw error;
   } finally {
     clearMessage();
