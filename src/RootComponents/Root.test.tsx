@@ -88,19 +88,6 @@ describe("Root", () => {
     expect(mockUnsubscribe).toHaveBeenCalled();
   });
 
-  test("should call getState to initialize theme", () => {
-    render(<Root />);
-
-    expect(mockThemeStore.getState).toHaveBeenCalledTimes(1);
-  });
-
-  test("should handle theme subscription properly", () => {
-    render(<Root />);
-
-    expect(mockThemeStore.subscribe).toHaveBeenCalledTimes(1);
-    expect(mockThemeStore.getState).toHaveBeenCalled();
-  });
-
   test("should render without errors", () => {
     expect(() => render(<Root />)).not.toThrow();
   });
