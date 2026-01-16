@@ -150,8 +150,6 @@ describe("App", () => {
   let mockUpdateStyles: jest.Mock;
 
   beforeEach(() => {
-    jest.clearAllMocks();
-
     mockStartScenario = jest.fn();
     mockCompletePhase = jest.fn();
 
