@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
-import { Dialog } from "../../Explorer/Controls/Dialog";
-import { SidePanel } from "../../Explorer/Panes/PanelContainerComponent";
+import { Dialog } from "../Controls/Dialog";
+import { SidePanel } from "../Panes/PanelContainerComponent";
 import CopyJobCommandBar from "./CommandBar/CopyJobCommandBar";
 import "./containerCopyStyles.less";
 import { MonitorCopyJobsRefState } from "./MonitorCopyJobs/MonitorCopyJobRefState";
