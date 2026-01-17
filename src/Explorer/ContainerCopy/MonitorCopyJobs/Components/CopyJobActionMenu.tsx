@@ -105,7 +105,7 @@ const CopyJobActionMenu: React.FC<CopyJobActionMenuProps> = ({ job, handleClick 
           text: ContainerCopyMessages.MonitorJobs.Actions.complete,
           iconProps: { iconName: "CheckMark" },
           onClick: () => showActionConfirmationDialog(job, CopyJobActions.complete),
-          disabled: isThisJobUpdating && updatingAction === CopyJobActions.complete,
+          disabled: isThisJobUpdating,
         });
       }
       return filteredItems;
