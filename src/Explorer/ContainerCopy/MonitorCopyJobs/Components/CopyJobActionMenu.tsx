@@ -61,7 +61,6 @@ const CopyJobActionMenu: React.FC<CopyJobActionMenuProps> = ({ job, handleClick 
 
   const getMenuItems = (): IContextualMenuProps["items"] => {
     const isThisJobUpdating = updatingJobAction?.jobName === job.Name;
-    const updatingAction = updatingJobAction?.action;
 
     const baseItems = [
       {
