@@ -12,7 +12,12 @@ import useToggle from "./hooks/useToggle";
 const managedIdentityTooltip = (
   <Text>
     {ContainerCopyMessages.defaultManagedIdentity.tooltip.content} &nbsp;
-    <Link href={ContainerCopyMessages.defaultManagedIdentity.tooltip.href} target="_blank" rel="noopener noreferrer">
+    <Link
+      style={{ color: "var(--colorBrandForeground1)" }}
+      href={ContainerCopyMessages.defaultManagedIdentity.tooltip.href}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
       {ContainerCopyMessages.defaultManagedIdentity.tooltip.hrefText}
     </Link>
   </Text>
@@ -27,10 +32,11 @@ const DefaultManagedIdentity: React.FC<AddManagedIdentityProps> = () => {
   return (
     <Stack className="defaultManagedIdentityContainer" tokens={{ childrenGap: 15, padding: "0 0 0 20px" }}>
       <div className="toggle-label">
-        {ContainerCopyMessages.defaultManagedIdentity.description(copyJobState?.target?.account.name)} &nbsp;
+        {ContainerCopyMessages.defaultManagedIdentity.description(copyJobState?.target?.account?.name)} &nbsp;
         <InfoTooltip content={managedIdentityTooltip} />
       </div>
       <Toggle
+        data-test="btn-toggle"
         checked={defaultSystemAssigned}
         onText={ContainerCopyMessages.toggleBtn.onText}
         offText={ContainerCopyMessages.toggleBtn.offText}
@@ -48,7 +54,7 @@ const DefaultManagedIdentity: React.FC<AddManagedIdentityProps> = () => {
         onCancel={() => onToggle(null, false)}
         onPrimary={handleAddSystemIdentity}
       >
-        {ContainerCopyMessages.defaultManagedIdentity.popoverDescription(copyJobState?.target?.account.name)}
+        {ContainerCopyMessages.defaultManagedIdentity.popoverDescription(copyJobState?.target?.account?.name)}
       </PopoverMessage>
     </Stack>
   );

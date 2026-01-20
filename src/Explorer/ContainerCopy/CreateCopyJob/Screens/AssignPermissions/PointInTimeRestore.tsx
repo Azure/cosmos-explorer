@@ -13,7 +13,12 @@ import InfoTooltip from "../Components/InfoTooltip";
 const tooltipContent = (
   <Text>
     {ContainerCopyMessages.pointInTimeRestore.tooltip.content} &nbsp;
-    <Link href={ContainerCopyMessages.pointInTimeRestore.tooltip.href} target="_blank" rel="noopener noreferrer">
+    <Link
+      style={{ color: "var(--colorBrandForeground1)" }}
+      href={ContainerCopyMessages.pointInTimeRestore.tooltip.href}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
       {ContainerCopyMessages.pointInTimeRestore.tooltip.hrefText}
     </Link>
   </Text>
@@ -31,7 +36,11 @@ const PointInTimeRestore: React.FC = () => {
   const [showRefreshButton, setShowRefreshButton] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const { copyJobState: { source } = {}, setCopyJobState } = useCopyJobContext();
+  const { copyJobState: { source } = {}, setCopyJobState, setContextError } = useCopyJobContext();
+  if (!source?.account?.id) {
+    setContextError("Invalid source account. Please select a valid source account for Point-in-Time Restore.");
+    return null;
+  }
   const sourceAccountLink = buildResourceLink(source?.account);
   const featureUrl = `${sourceAccountLink}/backupRestore`;
   const selectedSourceAccount = source?.account;
@@ -39,7 +48,7 @@ const PointInTimeRestore: React.FC = () => {
     subscriptionId: sourceSubscriptionId,
     resourceGroup: sourceResourceGroup,
     accountName: sourceAccountName,
-  } = getAccountDetailsFromResourceId(selectedSourceAccount?.id);
+  } = getAccountDetailsFromResourceId(selectedSourceAccount?.id) || {};
 
   useEffect(() => {
     return () => {
@@ -123,6 +132,7 @@ const PointInTimeRestore: React.FC = () => {
       <Stack.Item>
         {showRefreshButton ? (
           <PrimaryButton
+            data-test="pointInTimeRestore:RefreshBtn"
             className="fullWidth"
             text={ContainerCopyMessages.refreshButtonLabel}
             iconProps={{ iconName: "Refresh" }}
@@ -130,6 +140,7 @@ const PointInTimeRestore: React.FC = () => {
           />
         ) : (
           <PrimaryButton
+            data-test="pointInTimeRestore:PrimaryBtn"
             className="fullWidth"
             text={loading ? "" : ContainerCopyMessages.pointInTimeRestore.buttonText}
             {...(loading ? { iconProps: { iconName: "SyncStatusSolid" } } : {})}

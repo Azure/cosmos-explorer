@@ -1,4 +1,4 @@
-import { IPivotItemProps, IPivotProps, Pivot, PivotItem } from "@fluentui/react";
+import { IPivotItemProps, IPivotProps, Pivot, PivotItem, Stack } from "@fluentui/react";
 import { sendMessage } from "Common/MessageHandler";
 import { FabricMessageTypes } from "Contracts/FabricMessageTypes";
 import {
@@ -13,6 +13,7 @@ import {
   ThroughputBucketsComponent,
   ThroughputBucketsComponentProps,
 } from "Explorer/Controls/Settings/SettingsSubComponents/ThroughputInputComponents/ThroughputBucketsComponent";
+import { useIndexingPolicyStore } from "Explorer/Tabs/QueryTab/ResultsView";
 import { useDatabases } from "Explorer/useDatabases";
 import { isFabricNative } from "Platform/Fabric/FabricUtil";
 import { isCapabilityEnabled, isVectorSearchEnabled } from "Utils/CapabilityUtils";
@@ -73,7 +74,6 @@ import {
   parseConflictResolutionMode,
   parseConflictResolutionProcedure,
 } from "./SettingsUtils";
-
 interface SettingsV2TabInfo {
   tab: SettingsV2TabTypes;
   content: JSX.Element;
@@ -182,7 +182,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   private totalThroughputUsed: number;
   private throughputBucketsEnabled: boolean;
   public mongoDBCollectionResource: MongoDBCollectionResource;
-
+  private unsubscribe: () => void;
   constructor(props: SettingsComponentProps) {
     super(props);
 
@@ -312,6 +312,13 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     if (this.isCollectionSettingsTab) {
       this.refreshIndexTransformationProgress();
       this.loadMongoIndexes();
+      this.unsubscribe = useIndexingPolicyStore.subscribe(
+        () => {
+          this.refreshCollectionData();
+        },
+        (state) => state.indexingPolicies[this.collection?.id()],
+      );
+      this.refreshCollectionData();
     }
 
     this.setBaseline();
@@ -319,7 +326,11 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       useCommandBar.getState().setContextButtons(this.getTabsButtons());
     }
   }
-
+  componentWillUnmount(): void {
+    if (this.unsubscribe) {
+      this.unsubscribe();
+    }
+  }
   componentDidUpdate(): void {
     if (this.props.settingsTab.isActive()) {
       useCommandBar.getState().setContextButtons(this.getTabsButtons());
@@ -849,7 +860,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         { name: "name_of_property", query: "query_to_compute_property" },
       ] as DataModels.ComputedProperties;
     }
-
     const throughputBuckets = this.offer?.throughputBuckets;
 
     return {
@@ -1009,10 +1019,31 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       startKey,
     );
   };
+  private refreshCollectionData = async (): Promise<void> => {
+    const containerId = this.collection.id();
+    const latestIndexingPolicy = useIndexingPolicyStore.getState().indexingPolicies[containerId];
+    const rawPolicy = latestIndexingPolicy ?? this.collection.indexingPolicy();
+
+    const latestCollection: DataModels.IndexingPolicy = {
+      automatic: rawPolicy?.automatic ?? true,
+      indexingMode: rawPolicy?.indexingMode ?? "consistent",
+      includedPaths: rawPolicy?.includedPaths ?? [],
+      excludedPaths: rawPolicy?.excludedPaths ?? [],
+      compositeIndexes: rawPolicy?.compositeIndexes ?? [],
+      spatialIndexes: rawPolicy?.spatialIndexes ?? [],
+      vectorIndexes: rawPolicy?.vectorIndexes ?? [],
+      fullTextIndexes: rawPolicy?.fullTextIndexes ?? [],
+    };
+
+    this.collection.rawDataModel.indexingPolicy = latestCollection;
+    this.setState({
+      indexingPolicyContent: latestCollection,
+      indexingPolicyContentBaseline: latestCollection,
+    });
+  };
 
   private saveCollectionSettings = async (startKey: number): Promise<void> => {
     const newCollection: DataModels.Collection = { ...this.collection.rawDataModel };
-
     if (
       this.state.isSubSettingsSaveable ||
       this.state.isContainerPolicyDirty ||
@@ -1252,7 +1283,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       onScaleDiscardableChange: this.onScaleDiscardableChange,
       throughputError: this.state.throughputError,
     };
-
     if (!this.isCollectionSettingsTab) {
       return (
         <div className="settingsV2MainContainer">
@@ -1477,28 +1507,111 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       selectedKey: SettingsV2TabTypes[this.state.selectedTab],
     };
 
-    const pivotItems = tabs.map((tab) => {
-      const pivotItemProps: IPivotItemProps = {
-        itemKey: SettingsV2TabTypes[tab.tab],
-        style: { marginTop: 20 },
-        headerText: getTabTitle(tab.tab),
-      };
+    const pivotStyles = {
+      root: {
+        backgroundColor: "var(--colorNeutralBackground1)",
+        color: "var(--colorNeutralForeground1)",
+        selectors: {
+          "& .ms-Pivot-link": {
+            color: "var(--colorNeutralForeground1)",
+          },
+          "& .ms-Pivot-link.is-selected::before": {
+            backgroundColor: "var(--colorCompoundBrandBackground)",
+          },
+        },
+      },
+      link: {
+        backgroundColor: "var(--colorNeutralBackground1)",
+        color: "var(--colorNeutralForeground1)",
+        selectors: {
+          "&:hover": {
+            backgroundColor: "var(--colorNeutralBackground1)",
+            color: "var(--colorNeutralForeground1)",
+          },
+          "&:active": {
+            backgroundColor: "var(--colorNeutralBackground1)",
+            color: "var(--colorNeutralForeground1)",
+          },
+          '&[aria-selected="true"]': {
+            backgroundColor: "var(--colorNeutralBackground1)",
+            color: "var(--colorNeutralForeground1)",
+            selectors: {
+              "&:hover": {
+                backgroundColor: "var(--colorNeutralBackground1)",
+                color: "var(--colorNeutralForeground1)",
+              },
+              "&:active": {
+                backgroundColor: "var(--colorNeutralBackground1)",
+                color: "var(--colorNeutralForeground1)",
+              },
+            },
+          },
+        },
+      },
 
-      return (
-        <PivotItem key={pivotItemProps.itemKey} {...pivotItemProps}>
-          {tab.content}
-        </PivotItem>
-      );
-    });
+      itemContainer: {
+        // padding: '20px 24px',
+        backgroundColor: "var(--colorNeutralBackground1)",
+        color: "var(--colorNeutralForeground1)",
+      },
+    };
+
+    const contentStyles = {
+      root: {
+        backgroundColor: "var(--colorNeutralBackground1)",
+        color: "var(--colorNeutralForeground1)",
+        // padding: '20px 24px'
+      },
+    };
 
     return (
-      <div className="settingsV2MainContainer">
+      <div
+        className="settingsV2MainContainer"
+        style={
+          {
+            backgroundColor: "var(--colorNeutralBackground1)",
+            color: "var(--colorNeutralForeground1)",
+            position: "relative",
+          } as React.CSSProperties
+        }
+      >
         {this.shouldShowKeyspaceSharedThroughputMessage() && (
           <div>This table shared throughput is configured at the keyspace</div>
         )}
 
-        <div className="settingsV2TabsContainer">
-          <Pivot {...pivotProps}>{pivotItems}</Pivot>
+        <div
+          className="settingsV2TabsContainer"
+          style={
+            {
+              backgroundColor: "var(--colorNeutralBackground1)",
+              color: "var(--colorNeutralForeground1)",
+              position: "relative",
+              padding: "20px 24px",
+            } as React.CSSProperties
+          }
+        >
+          <Pivot {...pivotProps} styles={pivotStyles}>
+            {tabs.map((tab) => {
+              const pivotItemProps: IPivotItemProps = {
+                itemKey: SettingsV2TabTypes[tab.tab],
+                style: {
+                  marginTop: 20,
+                  backgroundColor: "var(--colorNeutralBackground1)",
+                  color: "var(--colorNeutralForeground1)",
+                },
+                headerText: getTabTitle(tab.tab),
+                headerButtonProps: {
+                  "data-test": `settings-tab-header/${SettingsV2TabTypes[tab.tab]}`,
+                },
+              };
+
+              return (
+                <PivotItem key={pivotItemProps.itemKey} {...pivotItemProps}>
+                  <Stack styles={contentStyles}>{tab.content}</Stack>
+                </PivotItem>
+              );
+            })}
+          </Pivot>
         </div>
       </div>
     );

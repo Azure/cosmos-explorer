@@ -1,0 +1,404 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AddReadPermissionToDefaultIdentity Component Edge Cases should handle missing source account 1`] = `
+<div>
+  <div
+    class="ms-Stack defaultManagedIdentityContainer css-109"
+  >
+    <span
+      class="toggle-label css-110"
+    >
+      To allow data copy from source to the destination container, provide read access of the source account to the default identity of the destination account.
+       
+      <div
+        data-testid="info-tooltip"
+      >
+        <span
+          class="css-110"
+        >
+          Learn more about
+            
+          <a
+            class="ms-Link root-111"
+            href="https://learn.microsoft.com/azure/cosmos-db/nosql/how-to-connect-role-based-access-control"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Read permissions.
+          </a>
+        </span>
+      </div>
+    </span>
+    <div
+      class="ms-Toggle is-enabled root-112"
+    >
+      <div
+        class="ms-Toggle-innerContainer container-114"
+      >
+        <button
+          aria-checked="false"
+          aria-labelledby="Toggle17-stateText"
+          class="ms-Toggle-background pill-115"
+          data-is-focusable="true"
+          data-ktp-target="true"
+          data-test="btn-toggle"
+          id="Toggle17"
+          role="switch"
+          type="button"
+        >
+          <span
+            class="ms-Toggle-thumb thumb-116"
+          />
+        </button>
+        <label
+          class="ms-Label ms-Toggle-stateText text-118"
+          for="Toggle17"
+          id="Toggle17-stateText"
+        >
+          Off
+        </label>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`AddReadPermissionToDefaultIdentity Component Edge Cases should handle missing target account identity 1`] = `
+<div>
+  <div
+    class="ms-Stack defaultManagedIdentityContainer css-109"
+  >
+    <span
+      class="toggle-label css-110"
+    >
+      To allow data copy from source to the destination container, provide read access of the source account to the default identity of the destination account.
+       
+      <div
+        data-testid="info-tooltip"
+      >
+        <span
+          class="css-110"
+        >
+          Learn more about
+            
+          <a
+            class="ms-Link root-111"
+            href="https://learn.microsoft.com/azure/cosmos-db/nosql/how-to-connect-role-based-access-control"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Read permissions.
+          </a>
+        </span>
+      </div>
+    </span>
+    <div
+      class="ms-Toggle is-enabled root-112"
+    >
+      <div
+        class="ms-Toggle-innerContainer container-114"
+      >
+        <button
+          aria-checked="false"
+          aria-labelledby="Toggle16-stateText"
+          class="ms-Toggle-background pill-115"
+          data-is-focusable="true"
+          data-ktp-target="true"
+          data-test="btn-toggle"
+          id="Toggle16"
+          role="switch"
+          type="button"
+        >
+          <span
+            class="ms-Toggle-thumb thumb-116"
+          />
+        </button>
+        <label
+          class="ms-Label ms-Toggle-stateText text-118"
+          for="Toggle16"
+          id="Toggle16-stateText"
+        >
+          Off
+        </label>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`AddReadPermissionToDefaultIdentity Component Rendering should render correctly when sourceReadAccessFromTarget is true 1`] = `
+<div>
+  <div
+    class="ms-Stack defaultManagedIdentityContainer css-109"
+  >
+    <span
+      class="toggle-label css-110"
+    >
+      To allow data copy from source to the destination container, provide read access of the source account to the default identity of the destination account.
+       
+      <div
+        data-testid="info-tooltip"
+      >
+        <span
+          class="css-110"
+        >
+          Learn more about
+            
+          <a
+            class="ms-Link root-111"
+            href="https://learn.microsoft.com/azure/cosmos-db/nosql/how-to-connect-role-based-access-control"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Read permissions.
+          </a>
+        </span>
+      </div>
+    </span>
+    <div
+      class="ms-Toggle is-enabled root-112"
+    >
+      <div
+        class="ms-Toggle-innerContainer container-114"
+      >
+        <button
+          aria-checked="false"
+          aria-labelledby="Toggle3-stateText"
+          class="ms-Toggle-background pill-115"
+          data-is-focusable="true"
+          data-ktp-target="true"
+          data-test="btn-toggle"
+          id="Toggle3"
+          role="switch"
+          type="button"
+        >
+          <span
+            class="ms-Toggle-thumb thumb-116"
+          />
+        </button>
+        <label
+          class="ms-Label ms-Toggle-stateText text-118"
+          for="Toggle3"
+          id="Toggle3-stateText"
+        >
+          Off
+        </label>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`AddReadPermissionToDefaultIdentity Component Rendering should render correctly when toggle is on 1`] = `
+<div>
+  <div
+    class="ms-Stack defaultManagedIdentityContainer css-109"
+  >
+    <span
+      class="toggle-label css-110"
+    >
+      To allow data copy from source to the destination container, provide read access of the source account to the default identity of the destination account.
+       
+      <div
+        data-testid="info-tooltip"
+      >
+        <span
+          class="css-110"
+        >
+          Learn more about
+            
+          <a
+            class="ms-Link root-111"
+            href="https://learn.microsoft.com/azure/cosmos-db/nosql/how-to-connect-role-based-access-control"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Read permissions.
+          </a>
+        </span>
+      </div>
+    </span>
+    <div
+      class="ms-Toggle is-checked is-enabled root-112"
+    >
+      <div
+        class="ms-Toggle-innerContainer container-114"
+      >
+        <button
+          aria-checked="true"
+          aria-labelledby="Toggle1-stateText"
+          class="ms-Toggle-background pill-119"
+          data-is-focusable="true"
+          data-ktp-target="true"
+          data-test="btn-toggle"
+          id="Toggle1"
+          role="switch"
+          type="button"
+        >
+          <span
+            class="ms-Toggle-thumb thumb-120"
+          />
+        </button>
+        <label
+          class="ms-Label ms-Toggle-stateText text-118"
+          for="Toggle1"
+          id="Toggle1-stateText"
+        >
+          On
+        </label>
+      </div>
+    </div>
+    <div
+      data-loading="false"
+      data-testid="popover-message"
+    >
+      <div
+        data-testid="popover-title"
+      >
+        Read permissions assigned to default identity.
+      </div>
+      <div
+        data-testid="popover-content"
+      >
+        Assign read permissions of the source account to the default identity of the destination account. To confirm click the “Yes” button.
+      </div>
+      <button
+        data-testid="popover-cancel"
+      >
+        Cancel
+      </button>
+      <button
+        data-testid="popover-primary"
+      >
+        Primary
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`AddReadPermissionToDefaultIdentity Component Rendering should render correctly with default state 1`] = `
+<div>
+  <div
+    class="ms-Stack defaultManagedIdentityContainer css-109"
+  >
+    <span
+      class="toggle-label css-110"
+    >
+      To allow data copy from source to the destination container, provide read access of the source account to the default identity of the destination account.
+       
+      <div
+        data-testid="info-tooltip"
+      >
+        <span
+          class="css-110"
+        >
+          Learn more about
+            
+          <a
+            class="ms-Link root-111"
+            href="https://learn.microsoft.com/azure/cosmos-db/nosql/how-to-connect-role-based-access-control"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Read permissions.
+          </a>
+        </span>
+      </div>
+    </span>
+    <div
+      class="ms-Toggle is-enabled root-112"
+    >
+      <div
+        class="ms-Toggle-innerContainer container-114"
+      >
+        <button
+          aria-checked="false"
+          aria-labelledby="Toggle0-stateText"
+          class="ms-Toggle-background pill-115"
+          data-is-focusable="true"
+          data-ktp-target="true"
+          data-test="btn-toggle"
+          id="Toggle0"
+          role="switch"
+          type="button"
+        >
+          <span
+            class="ms-Toggle-thumb thumb-116"
+          />
+        </button>
+        <label
+          class="ms-Label ms-Toggle-stateText text-118"
+          for="Toggle0"
+          id="Toggle0-stateText"
+        >
+          Off
+        </label>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`AddReadPermissionToDefaultIdentity Component Rendering should render correctly with different context states 1`] = `
+<div>
+  <div
+    class="ms-Stack defaultManagedIdentityContainer css-109"
+  >
+    <span
+      class="toggle-label css-110"
+    >
+      To allow data copy from source to the destination container, provide read access of the source account to the default identity of the destination account.
+       
+      <div
+        data-testid="info-tooltip"
+      >
+        <span
+          class="css-110"
+        >
+          Learn more about
+            
+          <a
+            class="ms-Link root-111"
+            href="https://learn.microsoft.com/azure/cosmos-db/nosql/how-to-connect-role-based-access-control"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Read permissions.
+          </a>
+        </span>
+      </div>
+    </span>
+    <div
+      class="ms-Toggle is-enabled root-112"
+    >
+      <div
+        class="ms-Toggle-innerContainer container-114"
+      >
+        <button
+          aria-checked="false"
+          aria-labelledby="Toggle2-stateText"
+          class="ms-Toggle-background pill-115"
+          data-is-focusable="true"
+          data-ktp-target="true"
+          data-test="btn-toggle"
+          id="Toggle2"
+          role="switch"
+          type="button"
+        >
+          <span
+            class="ms-Toggle-thumb thumb-116"
+          />
+        </button>
+        <label
+          class="ms-Label ms-Toggle-stateText text-118"
+          for="Toggle2"
+          id="Toggle2-stateText"
+        >
+          Off
+        </label>
+      </div>
+    </div>
+  </div>
+</div>
+`;

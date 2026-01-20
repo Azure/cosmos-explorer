@@ -1,5 +1,5 @@
 import { Link, Stack, Text, Toggle } from "@fluentui/react";
-import React, { useCallback } from "react";
+import React from "react";
 import { logError } from "../../../../../Common/Logger";
 import { assignRole } from "../../../../../Utils/arm/RbacUtils";
 import ContainerCopyMessages from "../../../ContainerCopyMessages";
@@ -13,7 +13,12 @@ import useToggle from "./hooks/useToggle";
 const TooltipContent = (
   <Text>
     {ContainerCopyMessages.readPermissionAssigned.tooltip.content} &nbsp;
-    <Link href={ContainerCopyMessages.readPermissionAssigned.tooltip.href} target="_blank" rel="noopener noreferrer">
+    <Link
+      style={{ color: "var(--colorBrandForeground1)" }}
+      href={ContainerCopyMessages.readPermissionAssigned.tooltip.href}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
       {ContainerCopyMessages.readPermissionAssigned.tooltip.hrefText}
     </Link>
   </Text>
@@ -25,7 +30,7 @@ const AddReadPermissionToDefaultIdentity: React.FC<AddReadPermissionToDefaultIde
   const { copyJobState, setCopyJobState, setContextError } = useCopyJobContext();
   const [readPermissionAssigned, onToggle] = useToggle(false);
 
-  const handleAddReadPermission = useCallback(async () => {
+  const handleAddReadPermission = async () => {
     const { source, target } = copyJobState;
     const selectedSourceAccount = source?.account;
     try {
@@ -56,7 +61,7 @@ const AddReadPermissionToDefaultIdentity: React.FC<AddReadPermissionToDefaultIde
     } finally {
       setLoading(false);
     }
-  }, [copyJobState, setCopyJobState, setContextError]);
+  };
 
   return (
     <Stack className="defaultManagedIdentityContainer" tokens={{ childrenGap: 15, padding: "0 0 0 20px" }}>
@@ -65,6 +70,7 @@ const AddReadPermissionToDefaultIdentity: React.FC<AddReadPermissionToDefaultIde
         <InfoTooltip content={TooltipContent} />
       </Text>
       <Toggle
+        data-test="btn-toggle"
         checked={readPermissionAssigned}
         onText={ContainerCopyMessages.toggleBtn.onText}
         offText={ContainerCopyMessages.toggleBtn.offText}

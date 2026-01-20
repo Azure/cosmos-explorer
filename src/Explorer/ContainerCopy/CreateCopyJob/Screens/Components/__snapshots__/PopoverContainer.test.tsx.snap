@@ -1,0 +1,560 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PopoverMessage Component Edge Cases should handle empty string title 1`] = `
+<div>
+  <div
+    class="ms-Stack popover-container foreground css-109"
+    data-test="popover-container"
+    style="max-width: 450px;"
+  >
+    <span
+      class="themeText css-110"
+      style="font-weight: 600;"
+    />
+    <span
+      class="themeText css-111"
+    >
+      <div>
+        Test content
+      </div>
+    </span>
+    <div
+      class="ms-Stack css-112"
+    >
+      <button
+        class="ms-Button ms-Button--primary root-113"
+        data-is-focusable="true"
+        type="button"
+      >
+        <span
+          class="ms-Button-flexContainer flexContainer-114"
+          data-automationid="splitbuttonprimary"
+        >
+          <span
+            class="ms-Button-textContainer textContainer-115"
+          >
+            <span
+              class="ms-Button-label label-117"
+              id="id__138"
+            >
+              Yes
+            </span>
+          </span>
+        </span>
+      </button>
+      <button
+        class="ms-Button ms-Button--default root-121"
+        data-is-focusable="true"
+        type="button"
+      >
+        <span
+          class="ms-Button-flexContainer flexContainer-114"
+          data-automationid="splitbuttonprimary"
+        >
+          <span
+            class="ms-Button-textContainer textContainer-115"
+          >
+            <span
+              class="ms-Button-label label-117"
+              id="id__141"
+            >
+              No
+            </span>
+          </span>
+        </span>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`PopoverMessage Component Edge Cases should handle null children 1`] = `
+<div>
+  <div
+    class="ms-Stack popover-container foreground css-109"
+    data-test="popover-container"
+    style="max-width: 450px;"
+  >
+    <span
+      class="themeText css-110"
+      style="font-weight: 600;"
+    >
+      Test Title
+    </span>
+    <div
+      class="ms-Stack css-112"
+    >
+      <button
+        class="ms-Button ms-Button--primary root-113"
+        data-is-focusable="true"
+        type="button"
+      >
+        <span
+          class="ms-Button-flexContainer flexContainer-114"
+          data-automationid="splitbuttonprimary"
+        >
+          <span
+            class="ms-Button-textContainer textContainer-115"
+          >
+            <span
+              class="ms-Button-label label-117"
+              id="id__132"
+            >
+              Yes
+            </span>
+          </span>
+        </span>
+      </button>
+      <button
+        class="ms-Button ms-Button--default root-121"
+        data-is-focusable="true"
+        type="button"
+      >
+        <span
+          class="ms-Button-flexContainer flexContainer-114"
+          data-automationid="splitbuttonprimary"
+        >
+          <span
+            class="ms-Button-textContainer textContainer-115"
+          >
+            <span
+              class="ms-Button-label label-117"
+              id="id__135"
+            >
+              No
+            </span>
+          </span>
+        </span>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`PopoverMessage Component Edge Cases should handle undefined children 1`] = `
+<div>
+  <div
+    class="ms-Stack popover-container foreground css-109"
+    data-test="popover-container"
+    style="max-width: 450px;"
+  >
+    <span
+      class="themeText css-110"
+      style="font-weight: 600;"
+    >
+      Test Title
+    </span>
+    <div
+      class="ms-Stack css-112"
+    >
+      <button
+        class="ms-Button ms-Button--primary root-113"
+        data-is-focusable="true"
+        type="button"
+      >
+        <span
+          class="ms-Button-flexContainer flexContainer-114"
+          data-automationid="splitbuttonprimary"
+        >
+          <span
+            class="ms-Button-textContainer textContainer-115"
+          >
+            <span
+              class="ms-Button-label label-117"
+              id="id__126"
+            >
+              Yes
+            </span>
+          </span>
+        </span>
+      </button>
+      <button
+        class="ms-Button ms-Button--default root-121"
+        data-is-focusable="true"
+        type="button"
+      >
+        <span
+          class="ms-Button-flexContainer flexContainer-114"
+          data-automationid="splitbuttonprimary"
+        >
+          <span
+            class="ms-Button-textContainer textContainer-115"
+          >
+            <span
+              class="ms-Button-label label-117"
+              id="id__129"
+            >
+              No
+            </span>
+          </span>
+        </span>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`PopoverMessage Component Edge Cases should handle very long title 1`] = `
+<div>
+  <div
+    class="ms-Stack popover-container foreground css-109"
+    data-test="popover-container"
+    style="max-width: 450px;"
+  >
+    <span
+      class="themeText css-110"
+      style="font-weight: 600;"
+    >
+      This is a very long title that might cause layout issues or text wrapping in the popover component
+    </span>
+    <span
+      class="themeText css-111"
+    >
+      <div>
+        Test content
+      </div>
+    </span>
+    <div
+      class="ms-Stack css-112"
+    >
+      <button
+        class="ms-Button ms-Button--primary root-113"
+        data-is-focusable="true"
+        type="button"
+      >
+        <span
+          class="ms-Button-flexContainer flexContainer-114"
+          data-automationid="splitbuttonprimary"
+        >
+          <span
+            class="ms-Button-textContainer textContainer-115"
+          >
+            <span
+              class="ms-Button-label label-117"
+              id="id__144"
+            >
+              Yes
+            </span>
+          </span>
+        </span>
+      </button>
+      <button
+        class="ms-Button ms-Button--default root-121"
+        data-is-focusable="true"
+        type="button"
+      >
+        <span
+          class="ms-Button-flexContainer flexContainer-114"
+          data-automationid="splitbuttonprimary"
+        >
+          <span
+            class="ms-Button-textContainer textContainer-115"
+          >
+            <span
+              class="ms-Button-label label-117"
+              id="id__147"
+            >
+              No
+            </span>
+          </span>
+        </span>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`PopoverMessage Component Rendering should render correctly when not visible 1`] = `<div />`;
+
+exports[`PopoverMessage Component Rendering should render correctly when visible 1`] = `
+<div>
+  <div
+    class="ms-Stack popover-container foreground css-109"
+    data-test="popover-container"
+    style="max-width: 450px;"
+  >
+    <span
+      class="themeText css-110"
+      style="font-weight: 600;"
+    >
+      Test Title
+    </span>
+    <span
+      class="themeText css-111"
+    >
+      <div>
+        Test content
+      </div>
+    </span>
+    <div
+      class="ms-Stack css-112"
+    >
+      <button
+        class="ms-Button ms-Button--primary root-113"
+        data-is-focusable="true"
+        type="button"
+      >
+        <span
+          class="ms-Button-flexContainer flexContainer-114"
+          data-automationid="splitbuttonprimary"
+        >
+          <span
+            class="ms-Button-textContainer textContainer-115"
+          >
+            <span
+              class="ms-Button-label label-117"
+              id="id__0"
+            >
+              Yes
+            </span>
+          </span>
+        </span>
+      </button>
+      <button
+        class="ms-Button ms-Button--default root-121"
+        data-is-focusable="true"
+        type="button"
+      >
+        <span
+          class="ms-Button-flexContainer flexContainer-114"
+          data-automationid="splitbuttonprimary"
+        >
+          <span
+            class="ms-Button-textContainer textContainer-115"
+          >
+            <span
+              class="ms-Button-label label-117"
+              id="id__3"
+            >
+              No
+            </span>
+          </span>
+        </span>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`PopoverMessage Component Rendering should render correctly with different children content 1`] = `
+<div>
+  <div
+    class="ms-Stack popover-container foreground css-109"
+    data-test="popover-container"
+    style="max-width: 450px;"
+  >
+    <span
+      class="themeText css-110"
+      style="font-weight: 600;"
+    >
+      Test Title
+    </span>
+    <span
+      class="themeText css-111"
+    >
+      <div>
+        <p>
+          First paragraph
+        </p>
+        <p>
+          Second paragraph
+        </p>
+      </div>
+    </span>
+    <div
+      class="ms-Stack css-112"
+    >
+      <button
+        class="ms-Button ms-Button--primary root-113"
+        data-is-focusable="true"
+        type="button"
+      >
+        <span
+          class="ms-Button-flexContainer flexContainer-114"
+          data-automationid="splitbuttonprimary"
+        >
+          <span
+            class="ms-Button-textContainer textContainer-115"
+          >
+            <span
+              class="ms-Button-label label-117"
+              id="id__18"
+            >
+              Yes
+            </span>
+          </span>
+        </span>
+      </button>
+      <button
+        class="ms-Button ms-Button--default root-121"
+        data-is-focusable="true"
+        type="button"
+      >
+        <span
+          class="ms-Button-flexContainer flexContainer-114"
+          data-automationid="splitbuttonprimary"
+        >
+          <span
+            class="ms-Button-textContainer textContainer-115"
+          >
+            <span
+              class="ms-Button-label label-117"
+              id="id__21"
+            >
+              No
+            </span>
+          </span>
+        </span>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`PopoverMessage Component Rendering should render correctly with different title 1`] = `
+<div>
+  <div
+    class="ms-Stack popover-container foreground css-109"
+    data-test="popover-container"
+    style="max-width: 450px;"
+  >
+    <span
+      class="themeText css-110"
+      style="font-weight: 600;"
+    >
+      Custom Title
+    </span>
+    <span
+      class="themeText css-111"
+    >
+      <div>
+        Test content
+      </div>
+    </span>
+    <div
+      class="ms-Stack css-112"
+    >
+      <button
+        class="ms-Button ms-Button--primary root-113"
+        data-is-focusable="true"
+        type="button"
+      >
+        <span
+          class="ms-Button-flexContainer flexContainer-114"
+          data-automationid="splitbuttonprimary"
+        >
+          <span
+            class="ms-Button-textContainer textContainer-115"
+          >
+            <span
+              class="ms-Button-label label-117"
+              id="id__12"
+            >
+              Yes
+            </span>
+          </span>
+        </span>
+      </button>
+      <button
+        class="ms-Button ms-Button--default root-121"
+        data-is-focusable="true"
+        type="button"
+      >
+        <span
+          class="ms-Button-flexContainer flexContainer-114"
+          data-automationid="splitbuttonprimary"
+        >
+          <span
+            class="ms-Button-textContainer textContainer-115"
+          >
+            <span
+              class="ms-Button-label label-117"
+              id="id__15"
+            >
+              No
+            </span>
+          </span>
+        </span>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`PopoverMessage Component Rendering should render correctly with loading state 1`] = `
+<div>
+  <div
+    class="ms-Stack popover-container foreground loading css-109"
+    data-test="popover-container"
+    style="max-width: 450px;"
+  >
+    <div
+      aria-label="Please wait while we process your request..."
+      data-testid="loading-overlay"
+    />
+    <span
+      class="themeText css-110"
+      style="font-weight: 600;"
+    >
+      Test Title
+    </span>
+    <span
+      class="themeText css-111"
+    >
+      <div>
+        Test content
+      </div>
+    </span>
+    <div
+      class="ms-Stack css-112"
+    >
+      <button
+        aria-disabled="true"
+        class="ms-Button ms-Button--primary is-disabled root-122"
+        data-is-focusable="false"
+        disabled=""
+        type="button"
+      >
+        <span
+          class="ms-Button-flexContainer flexContainer-114"
+          data-automationid="splitbuttonprimary"
+        >
+          <span
+            class="ms-Button-textContainer textContainer-115"
+          >
+            <span
+              class="ms-Button-label label-117"
+              id="id__6"
+            >
+              Yes
+            </span>
+          </span>
+        </span>
+      </button>
+      <button
+        aria-disabled="true"
+        class="ms-Button ms-Button--default is-disabled root-125"
+        data-is-focusable="false"
+        disabled=""
+        type="button"
+      >
+        <span
+          class="ms-Button-flexContainer flexContainer-114"
+          data-automationid="splitbuttonprimary"
+        >
+          <span
+            class="ms-Button-textContainer textContainer-115"
+          >
+            <span
+              class="ms-Button-label label-117"
+              id="id__9"
+            >
+              No
+            </span>
+          </span>
+        </span>
+      </button>
+    </div>
+  </div>
+</div>
+`;

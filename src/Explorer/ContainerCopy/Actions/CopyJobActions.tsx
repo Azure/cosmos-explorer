@@ -1,13 +1,13 @@
 import Explorer from "Explorer/Explorer";
 import React from "react";
 import { userContext } from "UserContext";
+import { getDataTransferJobs } from "../../../Common/dataAccess/dataTransfers";
 import { logError } from "../../../Common/Logger";
 import { useSidePanel } from "../../../hooks/useSidePanel";
 import {
   cancel,
   complete,
   create,
-  listByDatabaseAccount,
   pause,
   resume,
 } from "../../../Utils/arm/generatedClients/dataTransferService/dataTransferJobs";
@@ -23,6 +23,7 @@ import {
   extractErrorMessage,
   formatUTCDateTime,
   getAccountDetailsFromResourceId,
+  isIntraAccountCopy,
 } from "../CopyJobUtils";
 import CreateCopyJobScreensProvider from "../CreateCopyJob/Screens/CreateCopyJobScreensProvider";
 import { CopyJobActions, CopyJobStatusType } from "../Enums/CopyJobEnums";
@@ -62,20 +63,13 @@ export const getCopyJobs = async (): Promise<CopyJobType[]> => {
     const { subscriptionId, resourceGroup, accountName } = getAccountDetailsFromResourceId(
       userContext.databaseAccount?.id || "",
     );
-    const response = await listByDatabaseAccount(
-      subscriptionId,
-      resourceGroup,
-      accountName,
-      copyJobsAbortController.signal,
-    );
+    const jobs = await getDataTransferJobs(subscriptionId, resourceGroup, accountName, copyJobsAbortController.signal);
 
-    const jobs = response.value || [];
     if (!Array.isArray(jobs)) {
       throw new Error("Invalid migration job status response: Expected an array of jobs.");
     }
     copyJobsAbortController = null;
 
-    /* added a lower bound to "0" and upper bound to "100" */
     const calculateCompletionPercentage = (processed: number, total: number): number => {
       if (
         typeof processed !== "number" ||
@@ -124,8 +118,7 @@ export const getCopyJobs = async (): Promise<CopyJobType[]> => {
     const errorContent = JSON.stringify(error.content || error.message || error);
     if (errorContent.includes("signal is aborted without reason")) {
       throw {
-        message:
-          "Please wait for the current fetch request to complete. The previous copy job fetch request was aborted.",
+        message: "Previous copy job request was cancelled.",
       };
     } else {
       throw error;
@@ -139,11 +132,12 @@ export const submitCreateCopyJob = async (state: CopyJobContextState, onSuccess:
     const { subscriptionId, resourceGroup, accountName } = getAccountDetailsFromResourceId(
       userContext.databaseAccount?.id || "",
     );
+    const isSameAccount = isIntraAccountCopy(source?.account?.id, target?.account?.id);
     const body = {
       properties: {
         source: {
           component: "CosmosDBSql",
-          remoteAccountName: source?.account?.name,
+          ...(isSameAccount ? {} : { remoteAccountName: source?.account?.name }),
           databaseName: source?.databaseId,
           containerName: source?.containerId,
         },

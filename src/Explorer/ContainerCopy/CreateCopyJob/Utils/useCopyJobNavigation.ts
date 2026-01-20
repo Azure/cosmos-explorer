@@ -39,6 +39,7 @@ export function useCopyJobNavigation() {
   const [state, dispatch] = useReducer(navigationReducer, { screenHistory: [SCREEN_KEYS.SelectAccount] });
 
   const handlePrevious = useCallback(() => {
+    setContextError(null);
     dispatch({ type: "PREVIOUS" });
   }, [dispatch]);
 

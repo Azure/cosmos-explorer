@@ -3,6 +3,7 @@ import {
   ChoiceGroup,
   FontIcon,
   IChoiceGroupOption,
+  IMessageBarStyles,
   IProgressIndicatorStyles,
   ISeparatorStyles,
   Label,
@@ -37,7 +38,6 @@ import {
   getUpdateThroughputBeyondInstantLimitMessage,
   getUpdateThroughputBeyondSupportLimitMessage,
   manualToAutoscaleDisclaimerElement,
-  messageBarStyles,
   noLeftPaddingCheckBoxStyle,
   relaxedSpacingStackProps,
   saveThroughputWarningMessage,
@@ -100,6 +100,13 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     { key: "true", text: "Autoscale" },
     { key: "false", text: "Manual" },
   ];
+
+  // Style constants for theme-aware colors and layout
+  private static readonly TEXT_COLOR_PRIMARY = "var(--colorNeutralForeground1)";
+  private static readonly TEXT_COLOR_SECONDARY = "var(--colorNeutralForeground2)";
+  private static readonly TEXT_WIDTH_50 = "50%";
+  private static readonly TEXT_WIDTH_33 = "33%";
+  private static readonly LOCALE_EN_US = "en-US";
 
   componentDidMount(): void {
     this.onComponentUpdate();
@@ -236,12 +243,24 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
       );
       return (
         <div>
-          <Text style={{ fontWeight: 600 }}>Updated cost per month</Text>
+          <Text style={{ fontWeight: 600, color: ThroughputInputAutoPilotV3Component.TEXT_COLOR_PRIMARY }}>
+            Updated cost per month
+          </Text>
           <Stack horizontal style={{ marginTop: 5, marginBottom: 10 }}>
-            <Text style={{ width: "50%" }}>
+            <Text
+              style={{
+                width: ThroughputInputAutoPilotV3Component.TEXT_WIDTH_50,
+                color: ThroughputInputAutoPilotV3Component.TEXT_COLOR_PRIMARY,
+              }}
+            >
               {newPrices.currencySign} {calculateEstimateNumber(newPrices.monthlyPrice / 10)} min
             </Text>
-            <Text style={{ width: "50%" }}>
+            <Text
+              style={{
+                width: ThroughputInputAutoPilotV3Component.TEXT_WIDTH_50,
+                color: ThroughputInputAutoPilotV3Component.TEXT_COLOR_PRIMARY,
+              }}
+            >
               {newPrices.currencySign} {calculateEstimateNumber(newPrices.monthlyPrice)} max
             </Text>
           </Stack>
@@ -254,12 +273,24 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
       return (
         <Stack {...checkBoxAndInputStackProps} style={{ marginTop: 15 }}>
           {newThroughput && newThroughputCostElement()}
-          <Text style={{ fontWeight: 600 }}>Current cost per month</Text>
-          <Stack horizontal style={{ marginTop: 5 }}>
-            <Text style={{ width: "50%" }}>
+          <Text style={{ fontWeight: 600, color: ThroughputInputAutoPilotV3Component.TEXT_COLOR_PRIMARY }}>
+            Current cost per month
+          </Text>
+          <Stack horizontal style={{ marginTop: 5, color: ThroughputInputAutoPilotV3Component.TEXT_COLOR_PRIMARY }}>
+            <Text
+              style={{
+                width: ThroughputInputAutoPilotV3Component.TEXT_WIDTH_50,
+                color: ThroughputInputAutoPilotV3Component.TEXT_COLOR_PRIMARY,
+              }}
+            >
               {prices.currencySign} {calculateEstimateNumber(prices.monthlyPrice / 10)} min
             </Text>
-            <Text style={{ width: "50%" }}>
+            <Text
+              style={{
+                width: ThroughputInputAutoPilotV3Component.TEXT_WIDTH_50,
+                color: ThroughputInputAutoPilotV3Component.TEXT_COLOR_PRIMARY,
+              }}
+            >
               {prices.currencySign} {calculateEstimateNumber(prices.monthlyPrice)} max
             </Text>
           </Stack>
@@ -269,7 +300,12 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
 
     return getEstimatedSpendingElement(costElement(), newThroughput ?? throughput, numberOfRegions, prices, true);
   };
-
+  settingsAndScaleStyle = {
+    root: {
+      width: ThroughputInputAutoPilotV3Component.TEXT_WIDTH_33,
+      color: ThroughputInputAutoPilotV3Component.TEXT_COLOR_PRIMARY,
+    },
+  };
   private getEstimatedManualSpendElement = (
     throughput: number,
     serverId: string,
@@ -289,15 +325,17 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
       );
       return (
         <div>
-          <Text style={{ fontWeight: 600 }}>Updated cost per month</Text>
+          <Text style={{ fontWeight: 600, color: ThroughputInputAutoPilotV3Component.TEXT_COLOR_PRIMARY }}>
+            Updated cost per month
+          </Text>
           <Stack horizontal style={{ marginTop: 5, marginBottom: 10 }}>
-            <Text style={{ width: "33%" }}>
+            <Text style={this.settingsAndScaleStyle.root}>
               {newPrices.currencySign} {calculateEstimateNumber(newPrices.hourlyPrice)}/hr
             </Text>
-            <Text style={{ width: "33%" }}>
+            <Text style={this.settingsAndScaleStyle.root}>
               {newPrices.currencySign} {calculateEstimateNumber(newPrices.dailyPrice)}/day
             </Text>
-            <Text style={{ width: "33%" }}>
+            <Text style={this.settingsAndScaleStyle.root}>
               {newPrices.currencySign} {calculateEstimateNumber(newPrices.monthlyPrice)}/mo
             </Text>
           </Stack>
@@ -310,15 +348,17 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
       return (
         <Stack {...checkBoxAndInputStackProps} style={{ marginTop: 15 }}>
           {newThroughput && newThroughputCostElement()}
-          <Text style={{ fontWeight: 600 }}>Current cost per month</Text>
+          <Text style={{ fontWeight: 600, color: ThroughputInputAutoPilotV3Component.TEXT_COLOR_PRIMARY }}>
+            Current cost per month
+          </Text>
           <Stack horizontal style={{ marginTop: 5 }}>
-            <Text style={{ width: "33%" }}>
+            <Text style={this.settingsAndScaleStyle.root}>
               {prices.currencySign} {calculateEstimateNumber(prices.hourlyPrice)}/hr
             </Text>
-            <Text style={{ width: "33%" }}>
+            <Text style={this.settingsAndScaleStyle.root}>
               {prices.currencySign} {calculateEstimateNumber(prices.dailyPrice)}/day
             </Text>
-            <Text style={{ width: "33%" }}>
+            <Text style={this.settingsAndScaleStyle.root}>
               {prices.currencySign} {calculateEstimateNumber(prices.monthlyPrice)}/mo
             </Text>
           </Stack>
@@ -381,7 +421,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
             {this.overrideWithProvisionedThroughputSettings() && (
               <MessageBar
                 messageBarIconProps={{ iconName: "InfoSolid", className: "messageBarInfoIcon" }}
-                styles={messageBarStyles}
+                styles={this.darkThemeMessageBarStyles}
               >
                 {manualToAutoscaleDisclaimerElement}
               </MessageBar>
@@ -407,8 +447,8 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     const capacity: string = this.props.isFixed ? "Fixed" : "Unlimited";
     return (
       <Stack {...titleAndInputStackProps}>
-        <Label>Storage capacity</Label>
-        <Text>{capacity}</Text>
+        <Label style={{ color: "var(--colorNeutralForeground1)" }}>Storage capacity</Label>
+        <Text style={{ color: "var(--colorNeutralForeground1)" }}>{capacity}</Text>
       </Stack>
     );
   };
@@ -418,7 +458,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
       {
         selectors: {
           "::before": {
-            backgroundColor: "rgb(200, 200, 200)",
+            backgroundColor: "var(--colorNeutralStroke2)",
             height: "3px",
             marginTop: "-1px",
           },
@@ -457,10 +497,10 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
       {
         backgroundColor:
           this.getCurrentRuRange() === "instant"
-            ? "rgb(0, 120, 212)"
+            ? "var(--colorBrandBackground)"
             : this.getCurrentRuRange() === "delayed"
-            ? "rgb(255 216 109)"
-            : "rgb(251, 217, 203)",
+            ? "var(--colorStatusWarningBackground1)"
+            : "var(--colorStatusDangerBackground1)",
       },
     ],
   });
@@ -497,13 +537,18 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     <Stack>
       <Stack horizontal>
         <Stack.Item style={{ width: "34%" }}>
-          <span>{this.props.minimum.toLocaleString()}</span>
+          <span>{this.props.minimum.toLocaleString(ThroughputInputAutoPilotV3Component.LOCALE_EN_US)}</span>
         </Stack.Item>
         <Stack.Item style={{ width: "66%" }}>
           <span style={{ float: "left", transform: "translateX(-50%)" }}>
-            {this.props.instantMaximumThroughput.toLocaleString()}
+            {this.props.instantMaximumThroughput.toLocaleString(ThroughputInputAutoPilotV3Component.LOCALE_EN_US)}
           </span>
-          <span style={{ float: "right" }}>{this.props.softAllowedMaximumThroughput.toLocaleString()}</span>
+          <span style={{ float: "right" }}>
+            {this.props.softAllowedMaximumThroughput.toLocaleString(ThroughputInputAutoPilotV3Component.LOCALE_EN_US)}
+          </span>
+          <span style={{ float: "right" }} data-test="soft-allowed-maximum-throughput">
+            {this.props.softAllowedMaximumThroughput.toLocaleString(ThroughputInputAutoPilotV3Component.LOCALE_EN_US)}
+          </span>
         </Stack.Item>
       </Stack>
       <ProgressIndicator
@@ -545,12 +590,41 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     }
   };
 
+  private darkThemeMessageBarStyles: Partial<IMessageBarStyles> = {
+    root: {
+      marginTop: "5px",
+      selectors: {
+        "&.ms-MessageBar--severeWarning": {
+          backgroundColor: "var(--colorStatusDangerBackground1)",
+          border: "1px solid var(--colorStatusDangerBorder1)",
+        },
+        "&.ms-MessageBar--warning": {
+          backgroundColor: "var(--colorStatusWarningBackground1)",
+          border: "1px solid var(--colorStatusWarningBorder1)",
+        },
+        "&.ms-MessageBar--info": {
+          backgroundColor: "var(--colorNeutralBackground3)",
+          border: "1px solid var(--colorNeutralStroke1)",
+        },
+        ".ms-MessageBar-icon": {
+          color: "var(--colorNeutralForeground1)",
+        },
+        ".ms-MessageBar-text": {
+          color: "var(--colorNeutralForeground1)",
+        },
+      },
+    },
+  };
+
   private getThroughputWarningMessageBar = (): JSX.Element => {
     const isSevereWarning: boolean =
       this.currentThroughputValue() > this.props.softAllowedMaximumThroughput ||
       this.currentThroughputValue() < this.props.minimum;
     return (
-      <MessageBar messageBarType={isSevereWarning ? MessageBarType.severeWarning : MessageBarType.warning}>
+      <MessageBar
+        messageBarType={isSevereWarning ? MessageBarType.severeWarning : MessageBarType.warning}
+        styles={this.darkThemeMessageBarStyles}
+      >
         {this.getThroughputWarningMessageText()}
       </MessageBar>
     );
@@ -563,10 +637,13 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
           {/* Column 1: Minimum RU/s */}
           <Stack tokens={{ childrenGap: 4 }}>
             <Stack horizontal verticalAlign="center" tokens={{ childrenGap: 4 }}>
-              <Text variant="small" style={{ lineHeight: "20px", fontWeight: 600 }}>
+              <Text
+                variant="small"
+                style={{ lineHeight: "20px", fontWeight: 600, color: "var(--colorNeutralForeground1)" }}
+              >
                 Minimum RU/s
               </Text>
-              <FontIcon iconName="Info" style={{ fontSize: 12, color: "#666" }} />
+              <FontIcon iconName="Info" style={{ fontSize: 12, color: "var(--colorNeutralForeground2)" }} />
             </Stack>
             <Text
               style={{
@@ -581,6 +658,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
                 alignItems: "center",
                 justifyContent: "center",
                 boxSizing: "border-box",
+                color: "var(--colorNeutralForeground1)",
               }}
             >
               {AutoPilotUtils.getMinRUsBasedOnUserInput(this.props.maxAutoPilotThroughput)}
@@ -594,6 +672,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
               fontSize: 12,
               fontWeight: 400,
               paddingBottom: 6,
+              color: "var(--colorNeutralForeground1)",
             }}
           >
             x 10 =
@@ -602,10 +681,13 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
           {/* Column 3: Maximum RU/s */}
           <Stack tokens={{ childrenGap: 4 }}>
             <Stack horizontal verticalAlign="center" tokens={{ childrenGap: 4 }}>
-              <Text variant="small" style={{ lineHeight: "20px", fontWeight: 600 }}>
+              <Text
+                variant="small"
+                style={{ lineHeight: "20px", fontWeight: 600, color: "var(--colorNeutralForeground1)" }}
+              >
                 Maximum RU/s
               </Text>
-              <FontIcon iconName="Info" style={{ fontSize: 12, color: "#666" }} />
+              <FontIcon iconName="Info" style={{ fontSize: 12, color: "var(--colorNeutralForeground2)" }} />
             </Stack>
             <TextField
               required
@@ -614,8 +696,25 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
               key="auto pilot throughput input"
               styles={{
                 ...getTextFieldStyles(this.props.maxAutoPilotThroughput, this.props.maxAutoPilotThroughputBaseline),
-                fieldGroup: { width: 100, height: 28 },
-                field: { fontSize: 14, fontWeight: 400 },
+                fieldGroup: {
+                  width: 100,
+                  height: 28,
+                  backgroundColor: "var(--colorNeutralBackground4)",
+                },
+                field: {
+                  fontSize: 14,
+                  fontWeight: 400,
+                  color: "var(--colorNeutralForeground1)",
+                  backgroundColor: "var(--colorNeutralBackground4)",
+                },
+                root: {
+                  selectors: {
+                    input: {
+                      backgroundColor: "var(--colorNeutralBackground4)",
+                      color: "var(--colorNeutralForeground1)",
+                    },
+                  },
+                },
               }}
               disabled={this.overrideWithProvisionedThroughputSettings()}
               step={AutoPilotUtils.autoPilotIncrementStep}
@@ -626,11 +725,12 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
               min={autoPilotThroughput1K}
               onGetErrorMessage={(value: string) => {
                 const sanitizedValue = getSanitizedInputValue(value);
-                return sanitizedValue % 1000
-                  ? "Throughput value must be in increments of 1000"
-                  : this.props.throughputError;
+                const errorMessage: string =
+                  sanitizedValue % 1000 ? "Throughput value must be in increments of 1000" : this.props.throughputError;
+                return <span data-test="autopilot-throughput-input-error">{errorMessage}</span>;
               }}
               validateOnLoad={false}
+              data-test="autopilot-throughput-input"
             />
           </Stack>
         </Stack>
@@ -650,7 +750,10 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
           }
           onChange={this.onThroughputChange}
           min={this.props.minimum}
-          errorMessage={this.props.throughputError}
+          onGetErrorMessage={() => {
+            return <span data-test="manual-throughput-input-error">{this.props.throughputError}</span>;
+          }}
+          data-test="manual-throughput-input"
         />
       )}
     </>
@@ -668,7 +771,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
             </Stack>
           )}
           {this.props.isAutoPilotSelected ? (
-            <Text style={{ marginTop: "40px" }}>
+            <Text style={{ marginTop: "40px", color: "var(--colorNeutralForeground1)" }}>
               Based on usage, your {this.props.collectionName ? "container" : "database"} throughput will scale from{" "}
               <b>
                 {AutoPilotUtils.getMinRUsBasedOnUserInput(this.props.maxAutoPilotThroughput)} RU/s (10% of max RU/s) -{" "}
@@ -681,7 +784,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
               {this.state.exceedFreeTierThroughput && (
                 <MessageBar
                   messageBarIconProps={{ iconName: "WarningSolid", className: "messageBarWarningIcon" }}
-                  styles={messageBarStyles}
+                  styles={this.darkThemeMessageBarStyles}
                   style={{ marginTop: "40px" }}
                 >
                   {`Billing will apply if you provision more than ${SharedConstants.FreeTierLimits.RU} RU/s of manual throughput, or if the resource scales beyond ${SharedConstants.FreeTierLimits.RU} RU/s with autoscale.`}
@@ -690,7 +793,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
             </>
           )}
           {!this.overrideWithProvisionedThroughputSettings() && (
-            <Text>
+            <Text style={{ color: "var(--colorNeutralForeground1)" }}>
               Estimate your required RU/s with
               <Link target="_blank" href="https://cosmos.azure.com/capacitycalculator/">
                 {` capacity calculator`} <FontIcon iconName="NavigateExternalInline" />
@@ -731,6 +834,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         {warningMessage && (
           <MessageBar
             messageBarIconProps={{ iconName: "WarningSolid", className: "messageBarWarningIcon" }}
+            styles={this.darkThemeMessageBarStyles}
             role="alert"
           >
             {warningMessage}

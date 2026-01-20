@@ -1,0 +1,165 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AddCollectionPanelWrapper Component Rendering should match snapshot 1`] = `
+<div>
+  <div
+    class="ms-Stack addCollectionPanelWrapper css-109"
+  >
+    <div
+      class="ms-StackItem addCollectionPanelHeader css-110"
+    >
+      <span
+        class="themeText css-111"
+      >
+        Select the properties for your container.
+      </span>
+    </div>
+    <div
+      class="ms-StackItem addCollectionPanelBody css-110"
+    >
+      <div
+        data-testid="add-collection-panel"
+      >
+        <div
+          data-testid="explorer-prop"
+        >
+          no-explorer
+        </div>
+        <div
+          data-testid="copy-job-flow"
+        >
+          true
+        </div>
+        <button
+          data-testid="submit-button"
+        >
+          Submit
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`AddCollectionPanelWrapper Component Rendering should match snapshot with both props 1`] = `
+<div>
+  <div
+    class="ms-Stack addCollectionPanelWrapper css-109"
+  >
+    <div
+      class="ms-StackItem addCollectionPanelHeader css-110"
+    >
+      <span
+        class="themeText css-111"
+      >
+        Select the properties for your container.
+      </span>
+    </div>
+    <div
+      class="ms-StackItem addCollectionPanelBody css-110"
+    >
+      <div
+        data-testid="add-collection-panel"
+      >
+        <div
+          data-testid="explorer-prop"
+        >
+          explorer-present
+        </div>
+        <div
+          data-testid="copy-job-flow"
+        >
+          true
+        </div>
+        <button
+          data-testid="submit-button"
+        >
+          Submit
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`AddCollectionPanelWrapper Component Rendering should match snapshot with explorer prop 1`] = `
+<div>
+  <div
+    class="ms-Stack addCollectionPanelWrapper css-109"
+  >
+    <div
+      class="ms-StackItem addCollectionPanelHeader css-110"
+    >
+      <span
+        class="themeText css-111"
+      >
+        Select the properties for your container.
+      </span>
+    </div>
+    <div
+      class="ms-StackItem addCollectionPanelBody css-110"
+    >
+      <div
+        data-testid="add-collection-panel"
+      >
+        <div
+          data-testid="explorer-prop"
+        >
+          explorer-present
+        </div>
+        <div
+          data-testid="copy-job-flow"
+        >
+          true
+        </div>
+        <button
+          data-testid="submit-button"
+        >
+          Submit
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`AddCollectionPanelWrapper Component Rendering should match snapshot with goBack prop 1`] = `
+<div>
+  <div
+    class="ms-Stack addCollectionPanelWrapper css-109"
+  >
+    <div
+      class="ms-StackItem addCollectionPanelHeader css-110"
+    >
+      <span
+        class="themeText css-111"
+      >
+        Select the properties for your container.
+      </span>
+    </div>
+    <div
+      class="ms-StackItem addCollectionPanelBody css-110"
+    >
+      <div
+        data-testid="add-collection-panel"
+      >
+        <div
+          data-testid="explorer-prop"
+        >
+          no-explorer
+        </div>
+        <div
+          data-testid="copy-job-flow"
+        >
+          true
+        </div>
+        <button
+          data-testid="submit-button"
+        >
+          Submit
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;

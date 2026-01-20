@@ -11,8 +11,12 @@ const accountName = urlSearchParams.get("accountName") || "portal-sql-runner-wes
 const selfServeType = urlSearchParams.get("selfServeType") || "example";
 const iframeSrc = urlSearchParams.get("iframeSrc") || "explorer.html?platform=Portal&disablePortalInitCache";
 const authToken = urlSearchParams.get("token");
+const enablecontainercopy = urlSearchParams.get("enablecontainercopy");
 
-const nosqlRbacToken = urlSearchParams.get("nosqlRbacToken") || process.env.NOSQL_TESTACCOUNT_TOKEN || "";
+const nosqlRbacToken =
+  urlSearchParams.get("nosqlRbacToken") ||
+  (enablecontainercopy ? process.env.NOSQL_CONTAINERCOPY_TESTACCOUNT_TOKEN : process.env.NOSQL_TESTACCOUNT_TOKEN) ||
+  "";
 const nosqlReadOnlyRbacToken =
   urlSearchParams.get("nosqlReadOnlyRbacToken") || process.env.NOSQL_READONLY_TESTACCOUNT_TOKEN || "";
 const tableRbacToken = urlSearchParams.get("tableRbacToken") || process.env.TABLE_TESTACCOUNT_TOKEN || "";
@@ -83,6 +87,7 @@ const initTestExplorer = async (): Promise<void> => {
       authorizationToken: `Bearer ${authToken}`,
       aadToken: rbacToken,
       features: {},
+      containerCopyEnabled: enablecontainercopy === "true",
       hasWriteAccess: true,
       csmEndpoint: "https://management.azure.com",
       dnsSuffix: "documents.azure.com",

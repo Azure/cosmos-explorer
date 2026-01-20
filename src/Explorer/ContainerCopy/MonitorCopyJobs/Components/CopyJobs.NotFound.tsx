@@ -17,7 +17,7 @@ const CopyJobsNotFound: React.FC<CopyJobsNotFoundProps> = ({ explorer }) => {
       <ActionButton
         allowDisabledFocus
         className="createCopyJobButton"
-        onClick={Actions.openCreateCopyJobPanel.bind(null, explorer)}
+        onClick={() => Actions.openCreateCopyJobPanel(explorer)}
       >
         {ContainerCopyMessages.createCopyJobButtonText}
       </ActionButton>
@@ -25,4 +25,4 @@ const CopyJobsNotFound: React.FC<CopyJobsNotFoundProps> = ({ explorer }) => {
   );
 };
 
-export default CopyJobsNotFound;
+export default React.memo(CopyJobsNotFound);

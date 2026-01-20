@@ -1,0 +1,208 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CopyJobStatusWithIcon Spinner Status Types renders InProgress with spinner and expected text 1`] = `
+<div
+  class="ms-Stack css-109"
+>
+  <div
+    class="ms-Spinner root-122"
+    style="margin-right: 8px;"
+  >
+    <div
+      class="ms-Spinner-circle ms-Spinner--small circle-123"
+    />
+  </div>
+  <span
+    class="themeText css-112"
+  >
+    Running
+  </span>
+</div>
+`;
+
+exports[`CopyJobStatusWithIcon Spinner Status Types renders Partitioning with spinner and expected text 1`] = `
+<div
+  class="ms-Stack css-109"
+>
+  <div
+    class="ms-Spinner root-122"
+    style="margin-right: 8px;"
+  >
+    <div
+      class="ms-Spinner-circle ms-Spinner--small circle-123"
+    />
+  </div>
+  <span
+    class="themeText css-112"
+  >
+    Running
+  </span>
+</div>
+`;
+
+exports[`CopyJobStatusWithIcon Spinner Status Types renders Running with spinner and expected text 1`] = `
+<div
+  class="ms-Stack css-109"
+>
+  <div
+    class="ms-Spinner root-122"
+    style="margin-right: 8px;"
+  >
+    <div
+      class="ms-Spinner-circle ms-Spinner--small circle-123"
+    />
+  </div>
+  <span
+    class="themeText css-112"
+  >
+    Running
+  </span>
+</div>
+`;
+
+exports[`CopyJobStatusWithIcon Static Icon Status Types - Snapshot Tests renders Cancelled status correctly 1`] = `
+<div
+  class="ms-Stack css-109"
+>
+  <i
+    aria-label="Cancelled"
+    class="ms-Icon root-105 css-118 mocked-styles"
+    data-icon-name="StatusErrorFull"
+    role="img"
+    style="font-family: "FabricMDL2Icons-4";"
+  >
+    
+  </i>
+  <span
+    class="themeText css-112"
+  >
+    Cancelled
+  </span>
+</div>
+`;
+
+exports[`CopyJobStatusWithIcon Static Icon Status Types - Snapshot Tests renders Completed status correctly 1`] = `
+<div
+  class="ms-Stack css-109"
+>
+  <i
+    aria-label="Completed"
+    class="ms-Icon root-105 css-120 mocked-styles"
+    data-icon-name="CompletedSolid"
+    role="img"
+    style="font-family: "FabricMDL2Icons-5";"
+  >
+    
+  </i>
+  <span
+    class="themeText css-112"
+  >
+    Completed
+  </span>
+</div>
+`;
+
+exports[`CopyJobStatusWithIcon Static Icon Status Types - Snapshot Tests renders Failed status correctly 1`] = `
+<div
+  class="ms-Stack css-109"
+>
+  <i
+    aria-label="Failed"
+    class="ms-Icon root-105 css-118 mocked-styles"
+    data-icon-name="StatusErrorFull"
+    role="img"
+    style="font-family: "FabricMDL2Icons-4";"
+  >
+    
+  </i>
+  <span
+    class="themeText css-112"
+  >
+    Failed
+  </span>
+</div>
+`;
+
+exports[`CopyJobStatusWithIcon Static Icon Status Types - Snapshot Tests renders Faulted status correctly 1`] = `
+<div
+  class="ms-Stack css-109"
+>
+  <i
+    aria-label="Faulted"
+    class="ms-Icon root-105 css-118 mocked-styles"
+    data-icon-name="StatusErrorFull"
+    role="img"
+    style="font-family: "FabricMDL2Icons-4";"
+  >
+    
+  </i>
+  <span
+    class="themeText css-112"
+  >
+    Failed
+  </span>
+</div>
+`;
+
+exports[`CopyJobStatusWithIcon Static Icon Status Types - Snapshot Tests renders Paused status correctly 1`] = `
+<div
+  class="ms-Stack css-109"
+>
+  <i
+    aria-label="Paused"
+    class="ms-Icon root-105 css-114 mocked-styles"
+    data-icon-name="CirclePause"
+    role="img"
+    style="font-family: "FabricMDL2Icons-11";"
+  >
+    
+  </i>
+  <span
+    class="themeText css-112"
+  >
+    Paused
+  </span>
+</div>
+`;
+
+exports[`CopyJobStatusWithIcon Static Icon Status Types - Snapshot Tests renders Pending status correctly 1`] = `
+<div
+  class="ms-Stack css-109"
+>
+  <i
+    aria-label="Pending"
+    class="ms-Icon root-105 css-111 mocked-styles"
+    data-icon-name="Clock"
+    role="img"
+    style="font-family: "FabricMDL2Icons-2";"
+  >
+    
+  </i>
+  <span
+    class="themeText css-112"
+  >
+    Queued
+  </span>
+</div>
+`;
+
+exports[`CopyJobStatusWithIcon Static Icon Status Types - Snapshot Tests renders Skipped status correctly 1`] = `
+<div
+  class="ms-Stack css-109"
+>
+  <i
+    aria-label="Skipped"
+    class="ms-Icon root-105 css-116 mocked-styles"
+    data-icon-name="StatusCircleBlock2"
+    role="img"
+    style="font-family: "FabricMDL2Icons-9";"
+  >
+    
+  </i>
+  <span
+    class="themeText css-112"
+  >
+    Cancelled
+  </span>
+</div>
+`;

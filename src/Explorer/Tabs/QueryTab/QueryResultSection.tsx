@@ -1,20 +1,23 @@
-import { Link } from "@fluentui/react-components";
+import { Link, tokens } from "@fluentui/react-components";
 import QueryError from "Common/QueryError";
 import { IndeterminateProgressBar } from "Explorer/Controls/IndeterminateProgressBar";
 import { MessageBanner } from "Explorer/Controls/MessageBanner";
 import { useQueryTabStyles } from "Explorer/Tabs/QueryTab/Styles";
+import useZoomLevel from "hooks/useZoomLevel";
 import React from "react";
+import { conditionalClass } from "Utils/StyleUtils";
 import RunQuery from "../../../../images/RunQuery.png";
 import { QueryResults } from "../../../Contracts/ViewModels";
 import { ErrorList } from "./ErrorList";
 import { ResultsView } from "./ResultsView";
-import useZoomLevel from "hooks/useZoomLevel";
-import { conditionalClass } from "Utils/StyleUtils";
 
 export interface ResultsViewProps {
   isMongoDB: boolean;
   queryResults: QueryResults;
   executeQueryDocumentsPage: (firstItemIndex: number) => Promise<void>;
+  queryEditorContent?: string;
+  databaseId?: string;
+  containerId?: string;
 }
 
 interface QueryResultProps extends ResultsViewProps {
@@ -36,7 +39,7 @@ const ExecuteQueryCallToAction: React.FC = () => {
             aria-hidden="true"
           />
         </p>
-        <p>Execute a query to see the results</p>
+        <p style={{ color: tokens.colorNeutralForeground1 }}>Execute a query to see the results</p>
       </div>
     </div>
   );
@@ -49,6 +52,8 @@ export const QueryResultSection: React.FC<QueryResultProps> = ({
   queryResults,
   executeQueryDocumentsPage,
   isExecuting,
+  databaseId,
+  containerId,
 }: QueryResultProps): JSX.Element => {
   const styles = useQueryTabStyles();
   const maybeSubQuery = queryEditorContent && /.*\(.*SELECT.*\)/i.test(queryEditorContent);
@@ -91,6 +96,9 @@ export const QueryResultSection: React.FC<QueryResultProps> = ({
           queryResults={queryResults}
           executeQueryDocumentsPage={executeQueryDocumentsPage}
           isMongoDB={isMongoDB}
+          queryEditorContent={queryEditorContent}
+          databaseId={databaseId}
+          containerId={containerId}
         />
       ) : (
         <ExecuteQueryCallToAction />

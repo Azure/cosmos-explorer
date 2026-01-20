@@ -35,6 +35,15 @@ import * as ViewModels from "../../../Contracts/ViewModels";
 import { updateUserContext } from "../../../UserContext";
 import Explorer from "../../Explorer";
 
+jest.mock("rx-jupyter", () => ({
+  sessions: {
+    create: jest.fn(),
+  },
+  contents: {
+    JupyterContentProvider: jest.fn().mockImplementation(() => ({})),
+  },
+}));
+
 jest.mock("Common/dataAccess/queryDocuments", () => ({
   queryDocuments: jest.fn(() => ({
     // Omit headers, because we can't mock a private field and we don't need to test it

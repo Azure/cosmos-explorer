@@ -193,7 +193,11 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
     <div className="throughputInputContainer throughputInputSpacing">
       <Stack horizontal>
         <span className="mandatoryStar">*&nbsp;</span>
-        <Text aria-label="Throughput header" variant="small" style={{ lineHeight: "20px", fontWeight: 600 }}>
+        <Text
+          aria-label="Throughput header"
+          variant="small"
+          style={{ lineHeight: "20px", fontWeight: 600, color: "var(--colorNeutralForeground1)" }}
+        >
           {getThroughputLabelText()}
         </Text>
         <InfoTooltip>{PricingUtils.getRuToolTipText()}</InfoTooltip>
@@ -236,14 +240,17 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
 
       {isAutoscaleSelected && (
         <Stack className="throughputInputSpacing">
-          <Text style={{ marginTop: -2, fontSize: 12 }}>
+          <Text style={{ marginTop: -2, fontSize: 12, color: "var(--colorNeutralForeground1)" }}>
             Your container throughput will automatically scale up to the maximum value you select, from a minimum of 10%
             of that value.
           </Text>
           <Stack horizontal verticalAlign="end" tokens={{ childrenGap: 8 }}>
             <Stack tokens={{ childrenGap: 4 }}>
               <Stack horizontal verticalAlign="center" tokens={{ childrenGap: 4 }}>
-                <Text variant="small" style={{ lineHeight: "20px", fontWeight: 600 }}>
+                <Text
+                  variant="small"
+                  style={{ lineHeight: "20px", fontWeight: 600, color: "var(--colorNeutralForeground1)" }}
+                >
                   Minimum RU/s
                 </Text>
                 <InfoTooltip>The minimum RU/s your container will scale to</InfoTooltip>
@@ -260,6 +267,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
+                  color: "var(--colorNeutralForeground1)",
                 }}
               >
                 {Math.round(throughput / 10).toString()}
@@ -272,6 +280,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
                 fontSize: 12,
                 fontWeight: 400,
                 paddingBottom: 6,
+                color: "var(--colorNeutralForeground1)",
               }}
             >
               x 10 =
@@ -279,17 +288,21 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
 
             <Stack tokens={{ childrenGap: 4 }}>
               <Stack horizontal verticalAlign="center" tokens={{ childrenGap: 4 }}>
-                <Text variant="small" style={{ lineHeight: "20px", fontWeight: 600 }}>
+                <Text
+                  variant="small"
+                  style={{ lineHeight: "20px", fontWeight: 600, color: "var(--colorNeutralForeground1)" }}
+                >
                   Maximum RU/s
                 </Text>
                 <InfoTooltip>{getAutoScaleTooltip()}</InfoTooltip>
               </Stack>
               <TextField
                 id="autoscaleRUValueField"
+                data-test="autoscaleRUInput"
                 type="number"
                 styles={{
                   fieldGroup: { width: 100, height: 27, flexShrink: 0 },
-                  field: { fontSize: 14, fontWeight: 400 },
+                  field: { fontSize: 14, fontWeight: 400, color: "var(--colorNeutralForeground1)" },
                 }}
                 onChange={(_event, newInput?: string) => onThroughputValueChange(newInput)}
                 step={AutoPilotUtils.autoPilotIncrementStep}
@@ -305,7 +318,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
 
           <CostEstimateText requestUnits={throughput} isAutoscale={isAutoscaleSelected} />
           <Stack className="throughputInputSpacing">
-            <Text variant="small" aria-label="ruDescription">
+            <Text variant="small" aria-label="ruDescription" style={{ color: "var(--colorNeutralForeground1)" }}>
               Estimate your required RU/s with&nbsp;
               <Link
                 className="underlinedLink"
@@ -324,7 +337,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
 
       {!isAutoscaleSelected && (
         <Stack className="throughputInputSpacing">
-          <Text variant="small" aria-label="ruDescription">
+          <Text variant="small" aria-label="ruDescription" style={{ color: "var(--colorNeutralForeground1)" }}>
             Estimate your required RU/s with&nbsp;
             <Link
               className="underlinedLink"
@@ -337,7 +350,11 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
             .
           </Text>
           <Stack horizontal>
-            <Text variant="small" style={{ lineHeight: "20px", fontWeight: 600 }} aria-label="maxRUDescription">
+            <Text
+              variant="small"
+              style={{ lineHeight: "20px", fontWeight: 600, color: "var(--colorNeutralForeground1)" }}
+              aria-label="maxRUDescription"
+            >
               {isDatabase ? "Database" : getCollectionName()} Required RU/s
             </Text>
             <InfoTooltip>{getAutoScaleTooltip()}</InfoTooltip>

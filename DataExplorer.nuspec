@@ -19,6 +19,6 @@
     </frameworkAssemblies>
   </metadata>
   <files>
-    <file src="**\*" target="content"/>
+    <file src="**\*" exclude="obj\**\*" target="content"/>
   </files>
 </package>

@@ -1,0 +1,374 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DefaultManagedIdentity Edge Cases should handle missing account name gracefully 1`] = `
+<div>
+  <div
+    class="ms-Stack defaultManagedIdentityContainer css-109"
+  >
+    <div
+      class="toggle-label"
+    >
+      Set the system-assigned managed identity as default for "" by switching it on.
+        
+      <div
+        data-testid="info-tooltip"
+      >
+        <span
+          class="css-110"
+        >
+          Learn more about
+            
+          <a
+            class="ms-Link root-111"
+            href="https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Default Managed Identities.
+          </a>
+        </span>
+      </div>
+    </div>
+    <div
+      class="ms-Toggle is-enabled root-112"
+    >
+      <div
+        class="ms-Toggle-innerContainer container-114"
+      >
+        <button
+          aria-checked="false"
+          aria-labelledby="Toggle14-stateText"
+          class="ms-Toggle-background pill-115"
+          data-is-focusable="true"
+          data-ktp-target="true"
+          data-test="btn-toggle"
+          id="Toggle14"
+          role="switch"
+          type="button"
+        >
+          <span
+            class="ms-Toggle-thumb thumb-116"
+          />
+        </button>
+        <label
+          class="ms-Label ms-Toggle-stateText text-118"
+          for="Toggle14"
+          id="Toggle14-stateText"
+        >
+          Off
+        </label>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`DefaultManagedIdentity Edge Cases should handle null account 1`] = `
+<div>
+  <div
+    class="ms-Stack defaultManagedIdentityContainer css-109"
+  >
+    <div
+      class="toggle-label"
+    >
+      Set the system-assigned managed identity as default for "undefined" by switching it on.
+        
+      <div
+        data-testid="info-tooltip"
+      >
+        <span
+          class="css-110"
+        >
+          Learn more about
+            
+          <a
+            class="ms-Link root-111"
+            href="https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Default Managed Identities.
+          </a>
+        </span>
+      </div>
+    </div>
+    <div
+      class="ms-Toggle is-enabled root-112"
+    >
+      <div
+        class="ms-Toggle-innerContainer container-114"
+      >
+        <button
+          aria-checked="false"
+          aria-labelledby="Toggle15-stateText"
+          class="ms-Toggle-background pill-115"
+          data-is-focusable="true"
+          data-ktp-target="true"
+          data-test="btn-toggle"
+          id="Toggle15"
+          role="switch"
+          type="button"
+        >
+          <span
+            class="ms-Toggle-thumb thumb-116"
+          />
+        </button>
+        <label
+          class="ms-Label ms-Toggle-stateText text-118"
+          for="Toggle15"
+          id="Toggle15-stateText"
+        >
+          Off
+        </label>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`DefaultManagedIdentity Loading States should render loading state snapshot 1`] = `
+<div>
+  <div
+    class="ms-Stack defaultManagedIdentityContainer css-109"
+  >
+    <div
+      class="toggle-label"
+    >
+      Set the system-assigned managed identity as default for "test-cosmos-account" by switching it on.
+        
+      <div
+        data-testid="info-tooltip"
+      >
+        <span
+          class="css-110"
+        >
+          Learn more about
+            
+          <a
+            class="ms-Link root-111"
+            href="https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Default Managed Identities.
+          </a>
+        </span>
+      </div>
+    </div>
+    <div
+      class="ms-Toggle is-checked is-enabled root-112"
+    >
+      <div
+        class="ms-Toggle-innerContainer container-114"
+      >
+        <button
+          aria-checked="true"
+          aria-labelledby="Toggle10-stateText"
+          class="ms-Toggle-background pill-119"
+          data-is-focusable="true"
+          data-ktp-target="true"
+          data-test="btn-toggle"
+          id="Toggle10"
+          role="switch"
+          type="button"
+        >
+          <span
+            class="ms-Toggle-thumb thumb-120"
+          />
+        </button>
+        <label
+          class="ms-Label ms-Toggle-stateText text-118"
+          for="Toggle10"
+          id="Toggle10-stateText"
+        >
+          On
+        </label>
+      </div>
+    </div>
+    <div
+      data-testid="popover-message"
+    >
+      <div
+        data-testid="popover-title"
+      >
+        System assigned managed identity set as default
+      </div>
+      <div
+        data-testid="popover-content"
+      >
+        Assign the system-assigned managed identity as the default for "test-cosmos-account". To confirm, click the "Yes" button. 
+      </div>
+      <div
+        data-testid="popover-loading"
+      >
+        Loading
+      </div>
+      <button
+        data-testid="popover-cancel"
+      >
+        Cancel
+      </button>
+      <button
+        data-testid="popover-primary"
+      >
+        Primary
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`DefaultManagedIdentity Rendering should render correctly with default state 1`] = `
+<div>
+  <div
+    class="ms-Stack defaultManagedIdentityContainer css-109"
+  >
+    <div
+      class="toggle-label"
+    >
+      Set the system-assigned managed identity as default for "test-cosmos-account" by switching it on.
+        
+      <div
+        data-testid="info-tooltip"
+      >
+        <span
+          class="css-110"
+        >
+          Learn more about
+            
+          <a
+            class="ms-Link root-111"
+            href="https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Default Managed Identities.
+          </a>
+        </span>
+      </div>
+    </div>
+    <div
+      class="ms-Toggle is-enabled root-112"
+    >
+      <div
+        class="ms-Toggle-innerContainer container-114"
+      >
+        <button
+          aria-checked="false"
+          aria-labelledby="Toggle0-stateText"
+          class="ms-Toggle-background pill-115"
+          data-is-focusable="true"
+          data-ktp-target="true"
+          data-test="btn-toggle"
+          id="Toggle0"
+          role="switch"
+          type="button"
+        >
+          <span
+            class="ms-Toggle-thumb thumb-116"
+          />
+        </button>
+        <label
+          class="ms-Label ms-Toggle-stateText text-118"
+          for="Toggle0"
+          id="Toggle0-stateText"
+        >
+          Off
+        </label>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`DefaultManagedIdentity Toggle Interactions should render toggle with checked state when toggle is true 1`] = `
+<div>
+  <div
+    class="ms-Stack defaultManagedIdentityContainer css-109"
+  >
+    <div
+      class="toggle-label"
+    >
+      Set the system-assigned managed identity as default for "test-cosmos-account" by switching it on.
+        
+      <div
+        data-testid="info-tooltip"
+      >
+        <span
+          class="css-110"
+        >
+          Learn more about
+            
+          <a
+            class="ms-Link root-111"
+            href="https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Default Managed Identities.
+          </a>
+        </span>
+      </div>
+    </div>
+    <div
+      class="ms-Toggle is-checked is-enabled root-112"
+    >
+      <div
+        class="ms-Toggle-innerContainer container-114"
+      >
+        <button
+          aria-checked="true"
+          aria-labelledby="Toggle7-stateText"
+          class="ms-Toggle-background pill-119"
+          data-is-focusable="true"
+          data-ktp-target="true"
+          data-test="btn-toggle"
+          id="Toggle7"
+          role="switch"
+          type="button"
+        >
+          <span
+            class="ms-Toggle-thumb thumb-120"
+          />
+        </button>
+        <label
+          class="ms-Label ms-Toggle-stateText text-118"
+          for="Toggle7"
+          id="Toggle7-stateText"
+        >
+          On
+        </label>
+      </div>
+    </div>
+    <div
+      data-testid="popover-message"
+    >
+      <div
+        data-testid="popover-title"
+      >
+        System assigned managed identity set as default
+      </div>
+      <div
+        data-testid="popover-content"
+      >
+        Assign the system-assigned managed identity as the default for "test-cosmos-account". To confirm, click the "Yes" button. 
+      </div>
+      <div
+        data-testid="popover-loading"
+      >
+        Not Loading
+      </div>
+      <button
+        data-testid="popover-cancel"
+      >
+        Cancel
+      </button>
+      <button
+        data-testid="popover-primary"
+      >
+        Primary
+      </button>
+    </div>
+  </div>
+</div>
+`;

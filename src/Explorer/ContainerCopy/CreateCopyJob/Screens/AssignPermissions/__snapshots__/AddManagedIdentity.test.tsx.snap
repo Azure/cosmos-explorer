@@ -1,0 +1,412 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AddManagedIdentity Snapshot Tests renders initial state correctly 1`] = `
+<div
+  class="ms-Stack addManagedIdentityContainer css-109"
+>
+  <span
+    class="themeText css-110"
+  >
+    A system-assigned managed identity is restricted to one per resource and is tied to the lifecycle of this resource. Once enabled, you can grant permissions to the managed identity by using Azure role-based access control (Azure RBAC). The managed identity is authenticated with Microsoft Entra ID, so you don’t have to store any credentials in code.
+     
+    <a
+      class="ms-Link root-111"
+      href="https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview"
+      rel="noopener noreferrer"
+      target="_blank"
+    >
+      Learn more about Managed identities.
+    </a>
+     
+     
+    <div
+      class="ms-TooltipHost root-105"
+      role="none"
+    >
+      <div
+        class="ms-Image root-112"
+        style="width: 14px; height: 14px;"
+      >
+        <img
+          alt="Information"
+          class="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-113"
+          src="[object Object]"
+        />
+      </div>
+      <div
+        hidden=""
+        id="tooltip0"
+        style="position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0px; border: 0px; overflow: hidden; white-space: nowrap;"
+      >
+        <span
+          class="css-110"
+        >
+          Learn more about
+            
+          <a
+            class="ms-Link root-111"
+            href="https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Managed Identities.
+          </a>
+        </span>
+      </div>
+    </div>
+  </span>
+  <div
+    class="ms-Toggle is-enabled root-114"
+  >
+    <div
+      class="ms-Toggle-innerContainer container-116"
+    >
+      <button
+        aria-checked="false"
+        aria-labelledby="Toggle1-stateText"
+        class="ms-Toggle-background pill-117"
+        data-is-focusable="true"
+        data-ktp-target="true"
+        data-test="btn-toggle"
+        id="Toggle1"
+        role="switch"
+        type="button"
+      >
+        <span
+          class="ms-Toggle-thumb thumb-118"
+        />
+      </button>
+      <label
+        class="ms-Label ms-Toggle-stateText text-120"
+        for="Toggle1"
+        id="Toggle1-stateText"
+      >
+        Off
+      </label>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`AddManagedIdentity Snapshot Tests renders loading state 1`] = `
+<div
+  class="ms-Stack addManagedIdentityContainer css-109"
+>
+  <span
+    class="themeText css-110"
+  >
+    A system-assigned managed identity is restricted to one per resource and is tied to the lifecycle of this resource. Once enabled, you can grant permissions to the managed identity by using Azure role-based access control (Azure RBAC). The managed identity is authenticated with Microsoft Entra ID, so you don’t have to store any credentials in code.
+     
+    <a
+      class="ms-Link root-111"
+      href="https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview"
+      rel="noopener noreferrer"
+      target="_blank"
+    >
+      Learn more about Managed identities.
+    </a>
+     
+     
+    <div
+      class="ms-TooltipHost root-105"
+      role="none"
+    >
+      <div
+        class="ms-Image root-112"
+        style="width: 14px; height: 14px;"
+      >
+        <img
+          alt="Information"
+          class="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-113"
+          src="[object Object]"
+        />
+      </div>
+      <div
+        hidden=""
+        id="tooltip10"
+        style="position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0px; border: 0px; overflow: hidden; white-space: nowrap;"
+      >
+        <span
+          class="css-110"
+        >
+          Learn more about
+            
+          <a
+            class="ms-Link root-111"
+            href="https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Managed Identities.
+          </a>
+        </span>
+      </div>
+    </div>
+  </span>
+  <div
+    class="ms-Toggle is-checked is-enabled root-114"
+  >
+    <div
+      class="ms-Toggle-innerContainer container-116"
+    >
+      <button
+        aria-checked="true"
+        aria-labelledby="Toggle11-stateText"
+        class="ms-Toggle-background pill-121"
+        data-is-focusable="true"
+        data-ktp-target="true"
+        data-test="btn-toggle"
+        id="Toggle11"
+        role="switch"
+        type="button"
+      >
+        <span
+          class="ms-Toggle-thumb thumb-122"
+        />
+      </button>
+      <label
+        class="ms-Label ms-Toggle-stateText text-120"
+        for="Toggle11"
+        id="Toggle11-stateText"
+      >
+        On
+      </label>
+    </div>
+  </div>
+  <div
+    class="ms-Stack popover-container foreground loading css-123"
+    data-test="popover-container"
+    style="max-width: 450px;"
+  >
+    <div
+      class="ms-Overlay root-135"
+      data-test="loading-overlay"
+    >
+      <div
+        class="ms-Spinner root-137"
+      >
+        <div
+          class="ms-Spinner-circle ms-Spinner--large circle-138"
+        />
+        <div
+          class="ms-Spinner-label label-139"
+        >
+          Please wait while we process your request...
+        </div>
+      </div>
+    </div>
+    <span
+      class="themeText css-124"
+      style="font-weight: 600;"
+    >
+      Enable system assigned managed identity
+    </span>
+    <span
+      class="themeText css-110"
+    >
+      Enable system-assigned managed identity on the test-target-account. To confirm, click the "Yes" button.
+    </span>
+    <div
+      class="ms-Stack css-125"
+    >
+      <button
+        aria-disabled="true"
+        class="ms-Button ms-Button--primary is-disabled root-140"
+        data-is-focusable="false"
+        disabled=""
+        type="button"
+      >
+        <span
+          class="ms-Button-flexContainer flexContainer-127"
+          data-automationid="splitbuttonprimary"
+        >
+          <span
+            class="ms-Button-textContainer textContainer-128"
+          >
+            <span
+              class="ms-Button-label label-130"
+              id="id__12"
+            >
+              Yes
+            </span>
+          </span>
+        </span>
+      </button>
+      <button
+        aria-disabled="true"
+        class="ms-Button ms-Button--default is-disabled root-143"
+        data-is-focusable="false"
+        disabled=""
+        type="button"
+      >
+        <span
+          class="ms-Button-flexContainer flexContainer-127"
+          data-automationid="splitbuttonprimary"
+        >
+          <span
+            class="ms-Button-textContainer textContainer-128"
+          >
+            <span
+              class="ms-Button-label label-130"
+              id="id__15"
+            >
+              No
+            </span>
+          </span>
+        </span>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`AddManagedIdentity Snapshot Tests renders with toggle on and popover visible 1`] = `
+<div
+  class="ms-Stack addManagedIdentityContainer css-109"
+>
+  <span
+    class="themeText css-110"
+  >
+    A system-assigned managed identity is restricted to one per resource and is tied to the lifecycle of this resource. Once enabled, you can grant permissions to the managed identity by using Azure role-based access control (Azure RBAC). The managed identity is authenticated with Microsoft Entra ID, so you don’t have to store any credentials in code.
+     
+    <a
+      class="ms-Link root-111"
+      href="https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview"
+      rel="noopener noreferrer"
+      target="_blank"
+    >
+      Learn more about Managed identities.
+    </a>
+     
+     
+    <div
+      class="ms-TooltipHost root-105"
+      role="none"
+    >
+      <div
+        class="ms-Image root-112"
+        style="width: 14px; height: 14px;"
+      >
+        <img
+          alt="Information"
+          class="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-113"
+          src="[object Object]"
+        />
+      </div>
+      <div
+        hidden=""
+        id="tooltip2"
+        style="position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0px; border: 0px; overflow: hidden; white-space: nowrap;"
+      >
+        <span
+          class="css-110"
+        >
+          Learn more about
+            
+          <a
+            class="ms-Link root-111"
+            href="https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Managed Identities.
+          </a>
+        </span>
+      </div>
+    </div>
+  </span>
+  <div
+    class="ms-Toggle is-checked is-enabled root-114"
+  >
+    <div
+      class="ms-Toggle-innerContainer container-116"
+    >
+      <button
+        aria-checked="true"
+        aria-labelledby="Toggle3-stateText"
+        class="ms-Toggle-background pill-121"
+        data-is-focusable="true"
+        data-ktp-target="true"
+        data-test="btn-toggle"
+        id="Toggle3"
+        role="switch"
+        type="button"
+      >
+        <span
+          class="ms-Toggle-thumb thumb-122"
+        />
+      </button>
+      <label
+        class="ms-Label ms-Toggle-stateText text-120"
+        for="Toggle3"
+        id="Toggle3-stateText"
+      >
+        On
+      </label>
+    </div>
+  </div>
+  <div
+    class="ms-Stack popover-container foreground css-123"
+    data-test="popover-container"
+    style="max-width: 450px;"
+  >
+    <span
+      class="themeText css-124"
+      style="font-weight: 600;"
+    >
+      Enable system assigned managed identity
+    </span>
+    <span
+      class="themeText css-110"
+    >
+      Enable system-assigned managed identity on the test-target-account. To confirm, click the "Yes" button.
+    </span>
+    <div
+      class="ms-Stack css-125"
+    >
+      <button
+        class="ms-Button ms-Button--primary root-126"
+        data-is-focusable="true"
+        type="button"
+      >
+        <span
+          class="ms-Button-flexContainer flexContainer-127"
+          data-automationid="splitbuttonprimary"
+        >
+          <span
+            class="ms-Button-textContainer textContainer-128"
+          >
+            <span
+              class="ms-Button-label label-130"
+              id="id__4"
+            >
+              Yes
+            </span>
+          </span>
+        </span>
+      </button>
+      <button
+        class="ms-Button ms-Button--default root-134"
+        data-is-focusable="true"
+        type="button"
+      >
+        <span
+          class="ms-Button-flexContainer flexContainer-127"
+          data-automationid="splitbuttonprimary"
+        >
+          <span
+            class="ms-Button-textContainer textContainer-128"
+          >
+            <span
+              class="ms-Button-label label-130"
+              id="id__7"
+            >
+              No
+            </span>
+          </span>
+        </span>
+      </button>
+    </div>
+  </div>
+</div>
+`;

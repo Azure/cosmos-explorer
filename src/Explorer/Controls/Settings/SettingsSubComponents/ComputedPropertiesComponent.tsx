@@ -1,11 +1,11 @@
-import { FontIcon, Link, MessageBar, MessageBarType, Stack, Text } from "@fluentui/react";
+import { FontIcon, IMessageBarStyles, Link, MessageBar, MessageBarType, Stack, Text } from "@fluentui/react";
 import * as DataModels from "Contracts/DataModels";
 import { titleAndInputStackProps, unsavedEditorWarningMessage } from "Explorer/Controls/Settings/SettingsRenderUtils";
 import { isDirty } from "Explorer/Controls/Settings/SettingsUtils";
 import { loadMonaco } from "Explorer/LazyMonaco";
+import { monacoTheme, useThemeStore } from "hooks/useTheme";
 import * as monaco from "monaco-editor";
 import * as React from "react";
-
 export interface ComputedPropertiesComponentProps {
   computedPropertiesContent: DataModels.ComputedProperties;
   computedPropertiesContentBaseline: DataModels.ComputedProperties;
@@ -27,6 +27,24 @@ export class ComputedPropertiesComponent extends React.Component<
   private shouldCheckComponentIsDirty = true;
   private computedPropertiesDiv = React.createRef<HTMLDivElement>();
   private computedPropertiesEditor: monaco.editor.IStandaloneCodeEditor;
+  private themeUnsubscribe: () => void;
+
+  private darkThemeMessageBarStyles: Partial<IMessageBarStyles> = {
+    root: {
+      selectors: {
+        "&.ms-MessageBar--warning": {
+          backgroundColor: "var(--colorStatusWarningBackground1)",
+          border: "1px solid var(--colorStatusWarningBorder1)",
+        },
+        ".ms-MessageBar-icon": {
+          color: "var(--colorNeutralForeground1)",
+        },
+        ".ms-MessageBar-text": {
+          color: "var(--colorNeutralForeground1)",
+        },
+      },
+    },
+  };
 
   constructor(props: ComputedPropertiesComponentProps) {
     super(props);
@@ -46,6 +64,10 @@ export class ComputedPropertiesComponent extends React.Component<
   componentDidMount(): void {
     this.resetComputedPropertiesEditor();
     this.onComponentUpdate();
+  }
+
+  componentWillUnmount(): void {
+    this.themeUnsubscribe && this.themeUnsubscribe();
   }
 
   public resetComputedPropertiesEditor = (): void => {
@@ -86,8 +108,16 @@ export class ComputedPropertiesComponent extends React.Component<
       value: value,
       language: "json",
       ariaLabel: "Computed properties",
+      theme: monacoTheme(),
     });
     if (this.computedPropertiesEditor) {
+      // Subscribe to theme changes
+      this.themeUnsubscribe = useThemeStore.subscribe(() => {
+        if (this.computedPropertiesEditor) {
+          monaco.editor.setTheme(monacoTheme());
+        }
+      });
+
       const computedPropertiesEditorModel = this.computedPropertiesEditor.getModel();
       computedPropertiesEditorModel.onDidChangeContent(this.onEditorContentChange.bind(this));
       this.props.logComputedPropertiesSuccessMessage();
@@ -111,17 +141,26 @@ export class ComputedPropertiesComponent extends React.Component<
     return (
       <Stack {...titleAndInputStackProps}>
         {isDirty(this.props.computedPropertiesContent, this.props.computedPropertiesContentBaseline) && (
-          <MessageBar messageBarType={MessageBarType.warning}>
+          <MessageBar
+            messageBarType={MessageBarType.warning}
+            messageBarIconProps={{ iconName: "WarningSolid", className: "messageBarWarningIcon" }}
+            styles={this.darkThemeMessageBarStyles}
+          >
             {unsavedEditorWarningMessage("computedProperties")}
           </MessageBar>
         )}
-        <Text style={{ marginLeft: "30px", marginBottom: "10px" }}>
+        <Text style={{ marginLeft: "30px", marginBottom: "10px", color: "var(--colorNeutralForeground1)" }}>
           <Link target="_blank" href="https://aka.ms/computed-properties-preview/">
             {"Learn more"} <FontIcon iconName="NavigateExternalInline" />
           </Link>
           &#160; about how to define computed properties and how to use them.
         </Text>
-        <div className="settingsV2Editor" tabIndex={0} ref={this.computedPropertiesDiv}></div>
+        <div
+          className="settingsV2Editor"
+          tabIndex={0}
+          ref={this.computedPropertiesDiv}
+          data-test="computed-properties-editor"
+        ></div>
       </Stack>
     );
   }

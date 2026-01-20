@@ -40,13 +40,13 @@ To use this script, there are a few prerequisites that must be done at least onc
 5. Ensure you have a Resource Group _ready_ to deploy into, the deploy script requires an existing resource group. This resource group should be named `[username]-e2e-testing`, where `[username]` is your Windows username, (**Microsoft employees:** This should be your alias). The easiest way to do this is by running the `create-resource-group.ps1` script, specifying the Subscription (Name or ID) and Location in which you want to create the Resource Group. For example:
 
 ```powershell
-.\test\resources\create-resource-group.ps1 -SubscriptionName "My Subscription" -Location "West US 3"
+.\test\resources\create-resource-group.ps1 -SubscriptionId "My Subscription Id" -Location "West US 3"
 ```
 
 Then, whenever you want to create/update the resources, you can run the `deploy.ps1` script in the `resources` directory. As long as you're using the default naming convention (`[username]-e2e-testing`), you just need to specify the Subscription. For example:
 
 ```powershell
-.\test\resources\deploy.ps1 -SubscriptionName "My Subscription"
+.\test\resources\deploy.ps1 -Subscription "My Subscription"
 ```
 
 You'll get a confirmation prompt before anything is deployed:
@@ -163,6 +163,9 @@ $ENV:NOSQL_TESTACCOUNT_TOKEN=az account get-access-token --scope "https://<accou
 
 # NoSQL API (Readonly)
 $ENV:NOSQL_READONLY_TESTACCOUNT_TOKEN=az account get-access-token --scope "https://<account name>.documents.azure.com/.default" -o tsv --query accessToken
+
+# NoSQL API (Container Copy)
+$ENV:NOSQL_CONTAINERCOPY_TESTACCOUNT_TOKEN=az account get-access-token --scope "https://<account name>.documents.azure.com/.default" -o tsv --query accessToken
 
 # Tables API
 $ENV:TABLE_TESTACCOUNT_TOKEN=az account get-access-token --scope "https://<account name>.documents.azure.com/.default" -o tsv --query accessToken
