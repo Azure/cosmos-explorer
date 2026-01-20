@@ -183,10 +183,15 @@ export async function createTestSQLContainer({
   const client = new CosmosClient(clientOptions);
   const { database } = await client.databases.createIfNotExists({ id: databaseId });
   try {
-    const { container } = await database.containers.createIfNotExists({
-      id: containerId,
-      partitionKey,
-    });
+    const { container } = await database.containers.createIfNotExists(
+      {
+        id: containerId,
+        partitionKey,
+      },
+      {
+        offerThroughput: 4000,
+      },
+    );
     if (includeTestData) {
       const batchCount = TestData.length / 100;
       for (let i = 0; i < batchCount; i++) {
