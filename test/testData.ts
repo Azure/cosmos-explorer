@@ -186,8 +186,6 @@ export async function createTestSQLContainer({
     const { container } = await database.containers.createIfNotExists({
       id: containerId,
       partitionKey,
-    }, {
-      offerThroughput: 4000,
     });
     if (includeTestData) {
       const batchCount = TestData.length / 100;
