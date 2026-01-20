@@ -106,7 +106,7 @@ const requestAndStoreAccessToken = async (): Promise<void> => {
 };
 
 export const openRestoreContainerDialog = (): void => {
-  if (configContext.platform === Platform.Fabric) {
+  if (isFabricNative()) {
     sendCachedDataMessage(FabricMessageTypes.RestoreContainer, []);
   }
 };
