@@ -141,6 +141,9 @@ export const updateContextWithDecorator = <T extends keyof DecoratorProperties, 
   descriptorName: keyof DecoratorProperties,
   descriptorValue: K,
 ): void => {
+  console.log(context);
+  console.log(propertyName);
+  console.log(className);
   if (!(context instanceof Map)) {
     throw new Error(`@IsDisplayable should be the first decorator for the class '${className}'.`);
   }
