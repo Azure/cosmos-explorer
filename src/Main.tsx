@@ -105,9 +105,12 @@ const App = (): JSX.Element => {
   // Scenario-based health tracking: start ApplicationLoad and complete phases.
   const { startScenario, completePhase } = useMetricScenario();
   React.useEffect(() => {
-    startScenario(MetricScenario.ApplicationLoad);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    // Only start scenario after config is initialized to avoid race conditions
+    // with message handlers that depend on configContext.platform
+    if (config) {
+      startScenario(MetricScenario.ApplicationLoad);
+    }
+  }, [config, startScenario]);
 
   React.useEffect(() => {
     if (explorer) {
@@ -128,6 +131,7 @@ const App = (): JSX.Element => {
             <>
               <ContainerCopyPanel explorer={explorer} />
               <SidePanel />
+              <Dialog />
             </>
           ) : (
             <DivExplorer explorer={explorer} />
