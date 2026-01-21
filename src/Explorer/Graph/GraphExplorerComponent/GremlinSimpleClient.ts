@@ -18,6 +18,7 @@ export interface GremlinSimpleClientParameters {
 
 export interface Result {
   requestId: string; // Can be null
+  //eslint-disable-next-line
   data: any;
   requestCharge: number; // RU cost
 }
@@ -30,6 +31,7 @@ export interface GremlinRequestMessage {
   args:
     | {
         gremlin: string;
+        //eslint-disable-next-line
         bindings: {};
         language: string;
       }
@@ -54,6 +56,7 @@ export interface GremlinResponseMessage {
     message: string;
   };
   result: {
+    //eslint-disable-next-line
     data: any;
   };
 }
@@ -74,7 +77,7 @@ export class GremlinSimpleClient {
     this.requestsToSend = {};
   }
 
-  public connect() {
+  public connect(): void {
     if (this.ws) {
       if (this.ws.readyState === WebSocket.CONNECTING) {
         // Wait until it connects to execute all requests
@@ -106,9 +109,10 @@ export class GremlinSimpleClient {
     return new WebSocket(endpoint);
   }
 
-  public close() {
+  public close(): void {
     if (this.ws && this.ws.readyState !== WebSocket.CLOSING && this.ws.readyState !== WebSocket.CLOSED) {
       const msg = `Disconnecting from ${this.params.endpoint} as ${this.params.user}`;
+      //eslint-disable-next-line
       console.log(msg);
       if (this.params.infoCallback) {
         this.params.infoCallback(msg);
@@ -143,7 +147,7 @@ export class GremlinSimpleClient {
     }
   }
 
-  public onMessage(msg: MessageEvent) {
+  public onMessage(msg: MessageEvent): void {
     if (!msg) {
       if (this.params.failureCallback) {
         this.params.failureCallback(null, "onMessage called with no message");
@@ -194,8 +198,10 @@ export class GremlinSimpleClient {
         }
         break;
       case 407: // Request authentication
-        const challengeResponse = this.buildChallengeResponse(this.pendingRequests[requestId]);
-        this.sendGremlinMessage(challengeResponse);
+        {
+          const challengeResponse = this.buildChallengeResponse(this.pendingRequests[requestId]);
+          this.sendGremlinMessage(challengeResponse);
+        }
         break;
       case 401: // Unauthorized
         delete this.pendingRequests[requestId];
@@ -267,7 +273,7 @@ export class GremlinSimpleClient {
   }
 
   public buildChallengeResponse(request: GremlinRequestMessage): GremlinRequestMessage {
-    var args = {
+    const args = {
       SASL: GremlinSimpleClient.utf8ToB64("\0" + this.params.user + "\0" + this.params.password),
     };
     return {
@@ -278,9 +284,9 @@ export class GremlinSimpleClient {
     };
   }
 
-  public static utf8ToB64(utf8Str: string) {
+  public static utf8ToB64(utf8Str: string): string {
     return btoa(
-      encodeURIComponent(utf8Str).replace(/%([0-9A-F]{2})/g, function (match, p1) {
+      encodeURIComponent(utf8Str).replace(/%([0-9A-F]{2})/g, (match, p1) => {
         return String.fromCharCode(parseInt(p1, 16));
       }),
     );
@@ -291,12 +297,13 @@ export class GremlinSimpleClient {
    * mimeLength + mimeType + serialized message
    * @param requestMessage
    */
+  //eslint-disable-next-line
   public static buildGremlinMessage(requestMessage: {}): Uint8Array {
     const mimeType = "application/json";
-    let serializedMessage = mimeType + JSON.stringify(requestMessage);
+    const serializedMessage = mimeType + JSON.stringify(requestMessage);
     const encodedMessage = new TextEncoder().encode(serializedMessage);
 
-    let binaryMessage = new Uint8Array(1 + encodedMessage.length);
+    const binaryMessage = new Uint8Array(1 + encodedMessage.length);
     binaryMessage[0] = mimeType.length;
 
     for (let i = 0; i < encodedMessage.length; i++) {
@@ -305,19 +312,19 @@ export class GremlinSimpleClient {
     return binaryMessage;
   }
 
-  private onOpen(event: any) {
+  private onOpen() {
     this.executeRequestsToSend();
   }
 
   private executeRequestsToSend() {
-    for (let requestId in this.requestsToSend) {
+    for (const requestId in this.requestsToSend) {
       const request = this.requestsToSend[requestId];
       this.sendGremlinMessage(request);
       this.pendingRequests[request.requestId] = request;
       delete this.requestsToSend[request.requestId];
     }
   }
-
+  //eslint-disable-next-line
   private onError(err: any) {
     if (this.params.failureCallback) {
       this.params.failureCallback(null, err);
@@ -339,9 +346,9 @@ export class GremlinSimpleClient {
    * RFC4122 version 4 compliant UUID
    */
   private static uuidv4() {
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
-      var r = (Math.random() * 16) | 0,
-        v = c == "x" ? r : (r & 0x3) | 0x8;
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+      const r = (Math.random() * 16) | 0,
+        v = c === "x" ? r : (r & 0x3) | 0x8;
       return v.toString(16);
     });
   }
