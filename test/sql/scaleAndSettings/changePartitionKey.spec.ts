@@ -25,9 +25,12 @@ test.describe("Change Partition Key", () => {
     await PartitionKeyTab.click();
   });
 
-  test.afterEach("Delete Test Database", async () => {
-    await context?.dispose();
-  });
+  // Delete database only if not running in CI
+  if (!process.env.CI) {
+    test.afterEach("Delete Test Database", async () => {
+      await context?.dispose();
+    });
+  }
 
   test("Change partition key path", async ({ page }) => {
     await expect(explorer.frame.getByText("/partitionKey")).toBeVisible();

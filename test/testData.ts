@@ -159,7 +159,6 @@ export async function createTestSQLContainer({
   const adaptedCredentials = new AzureIdentityCredentialAdapter(credentials);
   const armClient = new CosmosDBManagementClient(adaptedCredentials, subscriptionId);
   const accountName = getAccountName(testAccount);
-  console.log(accountName);
   const account = await armClient.databaseAccounts.get(resourceGroupName, accountName);
 
   const clientOptions: CosmosClientOptions = {

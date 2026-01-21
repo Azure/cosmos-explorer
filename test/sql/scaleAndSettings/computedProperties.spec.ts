@@ -24,9 +24,12 @@ test.describe("Computed Properties", () => {
     await computedPropertiesTab.click();
   });
 
-  test.afterAll("Delete Test Database", async () => {
-    await context?.dispose();
-  });
+  // Delete database only if not running in CI
+  if (!process.env.CI) {
+    test.afterEach("Delete Test Database", async () => {
+      await context?.dispose();
+    });
+  }
 
   test("Add valid computed property", async ({ page }) => {
     await clearComputedPropertiesTextBoxContent({ page });
