@@ -40,6 +40,7 @@ export type Features = {
   readonly disableConnectionStringLogin: boolean;
   readonly enableContainerCopy: boolean;
   readonly enableCloudShell: boolean;
+  readonly enableRestoreContainer: boolean; // only for Fabric
 
   // can be set via both flight and feature flag
   autoscaleDefault: boolean;
@@ -111,6 +112,7 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     enablePriorityBasedExecution: "true" === get("enableprioritybasedexecution"),
     disableConnectionStringLogin: "true" === get("disableconnectionstringlogin"),
     enableContainerCopy: "true" === get("enablecontainercopy"),
+    enableRestoreContainer: "true" === get("enablerestorecontainer"),
     enableCloudShell: true,
   };
 }

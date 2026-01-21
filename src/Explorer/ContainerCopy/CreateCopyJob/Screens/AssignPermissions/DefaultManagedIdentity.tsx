@@ -12,7 +12,12 @@ import useToggle from "./hooks/useToggle";
 const managedIdentityTooltip = (
   <Text>
     {ContainerCopyMessages.defaultManagedIdentity.tooltip.content} &nbsp;
-    <Link href={ContainerCopyMessages.defaultManagedIdentity.tooltip.href} target="_blank" rel="noopener noreferrer">
+    <Link
+      style={{ color: "var(--colorBrandForeground1)" }}
+      href={ContainerCopyMessages.defaultManagedIdentity.tooltip.href}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
       {ContainerCopyMessages.defaultManagedIdentity.tooltip.hrefText}
     </Link>
   </Text>
@@ -31,6 +36,7 @@ const DefaultManagedIdentity: React.FC<AddManagedIdentityProps> = () => {
         <InfoTooltip content={managedIdentityTooltip} />
       </div>
       <Toggle
+        data-test="btn-toggle"
         checked={defaultSystemAssigned}
         onText={ContainerCopyMessages.toggleBtn.onText}
         offText={ContainerCopyMessages.toggleBtn.offText}

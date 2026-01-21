@@ -1,4 +1,4 @@
-import { Terminal } from "@xterm/xterm";
+import { Terminal } from "xterm";
 import { TerminalKind } from "../../../../Contracts/ViewModels";
 
 /**

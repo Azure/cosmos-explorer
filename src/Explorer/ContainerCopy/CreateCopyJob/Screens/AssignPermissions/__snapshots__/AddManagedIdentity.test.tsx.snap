@@ -5,7 +5,7 @@ exports[`AddManagedIdentity Snapshot Tests renders initial state correctly 1`] =
   class="ms-Stack addManagedIdentityContainer css-109"
 >
   <span
-    class="css-110"
+    class="themeText css-110"
   >
     A system-assigned managed identity is restricted to one per resource and is tied to the lifecycle of this resource. Once enabled, you can grant permissions to the managed identity by using Azure role-based access control (Azure RBAC). The managed identity is authenticated with Microsoft Entra ID, so you don’t have to store any credentials in code.
      
@@ -67,6 +67,7 @@ exports[`AddManagedIdentity Snapshot Tests renders initial state correctly 1`] =
         class="ms-Toggle-background pill-117"
         data-is-focusable="true"
         data-ktp-target="true"
+        data-test="btn-toggle"
         id="Toggle1"
         role="switch"
         type="button"
@@ -92,7 +93,7 @@ exports[`AddManagedIdentity Snapshot Tests renders loading state 1`] = `
   class="ms-Stack addManagedIdentityContainer css-109"
 >
   <span
-    class="css-110"
+    class="themeText css-110"
   >
     A system-assigned managed identity is restricted to one per resource and is tied to the lifecycle of this resource. Once enabled, you can grant permissions to the managed identity by using Azure role-based access control (Azure RBAC). The managed identity is authenticated with Microsoft Entra ID, so you don’t have to store any credentials in code.
      
@@ -154,6 +155,7 @@ exports[`AddManagedIdentity Snapshot Tests renders loading state 1`] = `
         class="ms-Toggle-background pill-121"
         data-is-focusable="true"
         data-ktp-target="true"
+        data-test="btn-toggle"
         id="Toggle11"
         role="switch"
         type="button"
@@ -173,10 +175,12 @@ exports[`AddManagedIdentity Snapshot Tests renders loading state 1`] = `
   </div>
   <div
     class="ms-Stack popover-container foreground loading css-123"
+    data-test="popover-container"
     style="max-width: 450px;"
   >
     <div
       class="ms-Overlay root-135"
+      data-test="loading-overlay"
     >
       <div
         class="ms-Spinner root-137"
@@ -192,13 +196,13 @@ exports[`AddManagedIdentity Snapshot Tests renders loading state 1`] = `
       </div>
     </div>
     <span
-      class="css-124"
+      class="themeText css-124"
       style="font-weight: 600;"
     >
       Enable system assigned managed identity
     </span>
     <span
-      class="css-110"
+      class="themeText css-110"
     >
       Enable system-assigned managed identity on the test-target-account. To confirm, click the "Yes" button.
     </span>
@@ -261,7 +265,7 @@ exports[`AddManagedIdentity Snapshot Tests renders with toggle on and popover vi
   class="ms-Stack addManagedIdentityContainer css-109"
 >
   <span
-    class="css-110"
+    class="themeText css-110"
   >
     A system-assigned managed identity is restricted to one per resource and is tied to the lifecycle of this resource. Once enabled, you can grant permissions to the managed identity by using Azure role-based access control (Azure RBAC). The managed identity is authenticated with Microsoft Entra ID, so you don’t have to store any credentials in code.
      
@@ -323,6 +327,7 @@ exports[`AddManagedIdentity Snapshot Tests renders with toggle on and popover vi
         class="ms-Toggle-background pill-121"
         data-is-focusable="true"
         data-ktp-target="true"
+        data-test="btn-toggle"
         id="Toggle3"
         role="switch"
         type="button"
@@ -342,16 +347,17 @@ exports[`AddManagedIdentity Snapshot Tests renders with toggle on and popover vi
   </div>
   <div
     class="ms-Stack popover-container foreground css-123"
+    data-test="popover-container"
     style="max-width: 450px;"
   >
     <span
-      class="css-124"
+      class="themeText css-124"
       style="font-weight: 600;"
     >
       Enable system assigned managed identity
     </span>
     <span
-      class="css-110"
+      class="themeText css-110"
     >
       Enable system-assigned managed identity on the test-target-account. To confirm, click the "Yes" button.
     </span>

@@ -52,15 +52,47 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
                 ".ms-ChoiceField-field.is-checked::before": {
                   "borderColor": "",
                 },
+                ".ms-ChoiceField-field:hover .ms-ChoiceFieldLabel": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
                 ".ms-ChoiceField-wrapper label": {
+                  "color": "var(--colorNeutralForeground1)",
                   "fontFamily": undefined,
                   "fontSize": 14,
                   "padding": "2px 5px",
                   "whiteSpace": "nowrap",
                 },
+                ".ms-ChoiceFieldLabel": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
+                ".ms-ChoiceFieldLabel:hover": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
               },
             },
           ],
+          "label": {
+            "color": "var(--colorNeutralForeground1)",
+          },
+          "root": {
+            "selectors": {
+              ".ms-ChoiceField-field:hover .ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceField-innerField": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceField:hover .ms-ChoiceField-innerField": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceField:hover .ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+            },
+          },
         }
       }
     />
@@ -74,16 +106,52 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
       required={true}
       styles={
         {
+          "field": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "color": "var(--colorNeutralForeground1)",
+            "selectors": {
+              ":disabled": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground2)",
+              },
+            },
+          },
           "fieldGroup": {
-            "borderColor": "",
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "borderColor": "var(--colorNeutralStroke1)",
             "height": 25,
             "selectors": {
               ":disabled": {
-                "backgroundColor": undefined,
-                "borderColor": undefined,
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "borderColor": "var(--colorNeutralStroke1)",
+                "color": "var(--colorNeutralForeground2)",
+              },
+              "input": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground1)",
+              },
+              "input#autopilotInput": {
+                "backgroundColor": "var(--colorNeutralBackground4)",
+                "color": "var(--colorNeutralForeground1)",
+              },
+              "input:disabled": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground2)",
               },
             },
             "width": 300,
+          },
+          "subComponentStyles": {
+            "label": {
+              "root": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+            },
+          },
+          "suffix": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "border": "1px solid var(--colorNeutralStroke1)",
+            "color": "var(--colorNeutralForeground1)",
           },
         }
       }
@@ -99,10 +167,12 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
     options={
       [
         {
+          "ariaLabel": "geography-option",
           "key": "Geography",
           "text": "Geography",
         },
         {
+          "ariaLabel": "geometry-option",
           "key": "Geometry",
           "text": "Geometry",
         },
@@ -122,15 +192,47 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
               ".ms-ChoiceField-field.is-checked::before": {
                 "borderColor": "",
               },
+              ".ms-ChoiceField-field:hover .ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
               ".ms-ChoiceField-wrapper label": {
+                "color": "var(--colorNeutralForeground1)",
                 "fontFamily": undefined,
                 "fontSize": 14,
                 "padding": "2px 5px",
                 "whiteSpace": "nowrap",
               },
+              ".ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceFieldLabel:hover": {
+                "color": "var(--colorNeutralForeground1)",
+              },
             },
           },
         ],
+        "label": {
+          "color": "var(--colorNeutralForeground1)",
+        },
+        "root": {
+          "selectors": {
+            ".ms-ChoiceField-field:hover .ms-ChoiceFieldLabel": {
+              "color": "var(--colorNeutralForeground1)",
+            },
+            ".ms-ChoiceField-innerField": {
+              "color": "var(--colorNeutralForeground1)",
+            },
+            ".ms-ChoiceField:hover .ms-ChoiceField-innerField": {
+              "color": "var(--colorNeutralForeground1)",
+            },
+            ".ms-ChoiceField:hover .ms-ChoiceFieldLabel": {
+              "color": "var(--colorNeutralForeground1)",
+            },
+            ".ms-ChoiceFieldLabel": {
+              "color": "var(--colorNeutralForeground1)",
+            },
+          },
+        },
       }
     }
   />
@@ -145,7 +247,7 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
             styles={
               {
                 "root": {
-                  "color": "windowtext",
+                  "color": "var(--colorNeutralForeground1)",
                   "fontSize": 14,
                 },
               }
@@ -186,15 +288,47 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
                 ".ms-ChoiceField-field.is-checked::before": {
                   "borderColor": "",
                 },
+                ".ms-ChoiceField-field:hover .ms-ChoiceFieldLabel": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
                 ".ms-ChoiceField-wrapper label": {
+                  "color": "var(--colorNeutralForeground1)",
                   "fontFamily": undefined,
                   "fontSize": 14,
                   "padding": "2px 5px",
                   "whiteSpace": "nowrap",
                 },
+                ".ms-ChoiceFieldLabel": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
+                ".ms-ChoiceFieldLabel:hover": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
               },
             },
           ],
+          "label": {
+            "color": "var(--colorNeutralForeground1)",
+          },
+          "root": {
+            "selectors": {
+              ".ms-ChoiceField-field:hover .ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceField-innerField": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceField:hover .ms-ChoiceField-innerField": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceField:hover .ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+            },
+          },
         }
       }
     />
@@ -206,32 +340,83 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
       }
     }
   >
-    <StyledTextFieldBase
-      defaultValue="/partitionKey"
-      disabled={true}
-      label="Partition key"
+    <StyledTooltipHostBase
+      content="This partition key is used to distribute data across multiple partitions for scalability. The value "/partitionKey" determines how documents are partitioned."
       styles={
         {
-          "fieldGroup": {
-            "borderColor": "",
-            "height": 25,
-            "selectors": {
-              ":disabled": {
-                "backgroundColor": undefined,
-                "borderColor": undefined,
-              },
-            },
-            "width": 300,
+          "root": {
+            "display": "block",
           },
         }
       }
-    />
-    <Text>
+    >
+      <StyledTextFieldBase
+        defaultValue="/partitionKey"
+        disabled={true}
+        label="Partition key"
+        styles={
+          {
+            "field": {
+              "backgroundColor": "var(--colorNeutralBackground2)",
+              "color": "var(--colorNeutralForeground1)",
+              "selectors": {
+                ":disabled": {
+                  "backgroundColor": "var(--colorNeutralBackground2)",
+                  "color": "var(--colorNeutralForeground2)",
+                },
+              },
+            },
+            "fieldGroup": {
+              "backgroundColor": "var(--colorNeutralBackground2)",
+              "borderColor": "var(--colorNeutralStroke1)",
+              "height": 25,
+              "selectors": {
+                ":disabled": {
+                  "backgroundColor": "var(--colorNeutralBackground2)",
+                  "borderColor": "var(--colorNeutralStroke1)",
+                  "color": "var(--colorNeutralForeground2)",
+                },
+                "input": {
+                  "backgroundColor": "var(--colorNeutralBackground2)",
+                  "color": "var(--colorNeutralForeground1)",
+                },
+                "input#autopilotInput": {
+                  "backgroundColor": "var(--colorNeutralBackground4)",
+                  "color": "var(--colorNeutralForeground1)",
+                },
+                "input:disabled": {
+                  "backgroundColor": "var(--colorNeutralBackground2)",
+                  "color": "var(--colorNeutralForeground2)",
+                },
+              },
+              "width": 300,
+            },
+            "subComponentStyles": {
+              "label": {
+                "root": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
+              },
+            },
+            "suffix": {
+              "backgroundColor": "var(--colorNeutralBackground2)",
+              "border": "1px solid var(--colorNeutralStroke1)",
+              "color": "var(--colorNeutralForeground1)",
+            },
+          }
+        }
+      />
+    </StyledTooltipHostBase>
+    <Text
+      className="hintText-115"
+    >
       Large 
       partition key
        has been enabled.
     </Text>
-    <Text>
+    <Text
+      className="hintText-115"
+    >
       Non-hierarchically partitioned container.
     </Text>
   </Stack>
@@ -248,16 +433,52 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
       label="Unique keys"
       styles={
         {
+          "field": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "color": "var(--colorNeutralForeground1)",
+            "selectors": {
+              ":disabled": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground2)",
+              },
+            },
+          },
           "fieldGroup": {
-            "borderColor": "",
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "borderColor": "var(--colorNeutralStroke1)",
             "height": 25,
             "selectors": {
               ":disabled": {
-                "backgroundColor": undefined,
-                "borderColor": undefined,
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "borderColor": "var(--colorNeutralStroke1)",
+                "color": "var(--colorNeutralForeground2)",
+              },
+              "input": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground1)",
+              },
+              "input#autopilotInput": {
+                "backgroundColor": "var(--colorNeutralBackground4)",
+                "color": "var(--colorNeutralForeground1)",
+              },
+              "input:disabled": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground2)",
               },
             },
             "width": 300,
+          },
+          "subComponentStyles": {
+            "label": {
+              "root": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+            },
+          },
+          "suffix": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "border": "1px solid var(--colorNeutralStroke1)",
+            "color": "var(--colorNeutralForeground1)",
           },
         }
       }
@@ -318,15 +539,47 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
                 ".ms-ChoiceField-field.is-checked::before": {
                   "borderColor": "",
                 },
+                ".ms-ChoiceField-field:hover .ms-ChoiceFieldLabel": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
                 ".ms-ChoiceField-wrapper label": {
+                  "color": "var(--colorNeutralForeground1)",
                   "fontFamily": undefined,
                   "fontSize": 14,
                   "padding": "2px 5px",
                   "whiteSpace": "nowrap",
                 },
+                ".ms-ChoiceFieldLabel": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
+                ".ms-ChoiceFieldLabel:hover": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
               },
             },
           ],
+          "label": {
+            "color": "var(--colorNeutralForeground1)",
+          },
+          "root": {
+            "selectors": {
+              ".ms-ChoiceField-field:hover .ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceField-innerField": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceField:hover .ms-ChoiceField-innerField": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceField:hover .ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+            },
+          },
         }
       }
     />
@@ -340,16 +593,52 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
       required={true}
       styles={
         {
+          "field": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "color": "var(--colorNeutralForeground1)",
+            "selectors": {
+              ":disabled": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground2)",
+              },
+            },
+          },
           "fieldGroup": {
-            "borderColor": "",
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "borderColor": "var(--colorNeutralStroke1)",
             "height": 25,
             "selectors": {
               ":disabled": {
-                "backgroundColor": undefined,
-                "borderColor": undefined,
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "borderColor": "var(--colorNeutralStroke1)",
+                "color": "var(--colorNeutralForeground2)",
+              },
+              "input": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground1)",
+              },
+              "input#autopilotInput": {
+                "backgroundColor": "var(--colorNeutralBackground4)",
+                "color": "var(--colorNeutralForeground1)",
+              },
+              "input:disabled": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground2)",
               },
             },
             "width": 300,
+          },
+          "subComponentStyles": {
+            "label": {
+              "root": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+            },
+          },
+          "suffix": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "border": "1px solid var(--colorNeutralStroke1)",
+            "color": "var(--colorNeutralForeground1)",
           },
         }
       }
@@ -365,10 +654,12 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
     options={
       [
         {
+          "ariaLabel": "geography-option",
           "key": "Geography",
           "text": "Geography",
         },
         {
+          "ariaLabel": "geometry-option",
           "key": "Geometry",
           "text": "Geometry",
         },
@@ -388,15 +679,47 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
               ".ms-ChoiceField-field.is-checked::before": {
                 "borderColor": "",
               },
+              ".ms-ChoiceField-field:hover .ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
               ".ms-ChoiceField-wrapper label": {
+                "color": "var(--colorNeutralForeground1)",
                 "fontFamily": undefined,
                 "fontSize": 14,
                 "padding": "2px 5px",
                 "whiteSpace": "nowrap",
               },
+              ".ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceFieldLabel:hover": {
+                "color": "var(--colorNeutralForeground1)",
+              },
             },
           },
         ],
+        "label": {
+          "color": "var(--colorNeutralForeground1)",
+        },
+        "root": {
+          "selectors": {
+            ".ms-ChoiceField-field:hover .ms-ChoiceFieldLabel": {
+              "color": "var(--colorNeutralForeground1)",
+            },
+            ".ms-ChoiceField-innerField": {
+              "color": "var(--colorNeutralForeground1)",
+            },
+            ".ms-ChoiceField:hover .ms-ChoiceField-innerField": {
+              "color": "var(--colorNeutralForeground1)",
+            },
+            ".ms-ChoiceField:hover .ms-ChoiceFieldLabel": {
+              "color": "var(--colorNeutralForeground1)",
+            },
+            ".ms-ChoiceFieldLabel": {
+              "color": "var(--colorNeutralForeground1)",
+            },
+          },
+        },
       }
     }
   />
@@ -442,15 +765,47 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
                 ".ms-ChoiceField-field.is-checked::before": {
                   "borderColor": undefined,
                 },
+                ".ms-ChoiceField-field:hover .ms-ChoiceFieldLabel": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
                 ".ms-ChoiceField-wrapper label": {
+                  "color": "var(--colorNeutralForeground1)",
                   "fontFamily": undefined,
                   "fontSize": 14,
                   "padding": "2px 5px",
                   "whiteSpace": "nowrap",
                 },
+                ".ms-ChoiceFieldLabel": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
+                ".ms-ChoiceFieldLabel:hover": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
               },
             },
           ],
+          "label": {
+            "color": "var(--colorNeutralForeground1)",
+          },
+          "root": {
+            "selectors": {
+              ".ms-ChoiceField-field:hover .ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceField-innerField": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceField:hover .ms-ChoiceField-innerField": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceField:hover .ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+            },
+          },
         }
       }
     />
@@ -466,7 +821,7 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
             styles={
               {
                 "root": {
-                  "color": "windowtext",
+                  "color": "var(--colorNeutralForeground1)",
                   "fontSize": 14,
                 },
               }
@@ -507,15 +862,47 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
                 ".ms-ChoiceField-field.is-checked::before": {
                   "borderColor": "",
                 },
+                ".ms-ChoiceField-field:hover .ms-ChoiceFieldLabel": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
                 ".ms-ChoiceField-wrapper label": {
+                  "color": "var(--colorNeutralForeground1)",
                   "fontFamily": undefined,
                   "fontSize": 14,
                   "padding": "2px 5px",
                   "whiteSpace": "nowrap",
                 },
+                ".ms-ChoiceFieldLabel": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
+                ".ms-ChoiceFieldLabel:hover": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
               },
             },
           ],
+          "label": {
+            "color": "var(--colorNeutralForeground1)",
+          },
+          "root": {
+            "selectors": {
+              ".ms-ChoiceField-field:hover .ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceField-innerField": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceField:hover .ms-ChoiceField-innerField": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceField:hover .ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+            },
+          },
         }
       }
     />
@@ -527,32 +914,83 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
       }
     }
   >
-    <StyledTextFieldBase
-      defaultValue="/partitionKey"
-      disabled={true}
-      label="Partition key"
+    <StyledTooltipHostBase
+      content="This partition key is used to distribute data across multiple partitions for scalability. The value "/partitionKey" determines how documents are partitioned."
       styles={
         {
-          "fieldGroup": {
-            "borderColor": "",
-            "height": 25,
-            "selectors": {
-              ":disabled": {
-                "backgroundColor": undefined,
-                "borderColor": undefined,
-              },
-            },
-            "width": 300,
+          "root": {
+            "display": "block",
           },
         }
       }
-    />
-    <Text>
+    >
+      <StyledTextFieldBase
+        defaultValue="/partitionKey"
+        disabled={true}
+        label="Partition key"
+        styles={
+          {
+            "field": {
+              "backgroundColor": "var(--colorNeutralBackground2)",
+              "color": "var(--colorNeutralForeground1)",
+              "selectors": {
+                ":disabled": {
+                  "backgroundColor": "var(--colorNeutralBackground2)",
+                  "color": "var(--colorNeutralForeground2)",
+                },
+              },
+            },
+            "fieldGroup": {
+              "backgroundColor": "var(--colorNeutralBackground2)",
+              "borderColor": "var(--colorNeutralStroke1)",
+              "height": 25,
+              "selectors": {
+                ":disabled": {
+                  "backgroundColor": "var(--colorNeutralBackground2)",
+                  "borderColor": "var(--colorNeutralStroke1)",
+                  "color": "var(--colorNeutralForeground2)",
+                },
+                "input": {
+                  "backgroundColor": "var(--colorNeutralBackground2)",
+                  "color": "var(--colorNeutralForeground1)",
+                },
+                "input#autopilotInput": {
+                  "backgroundColor": "var(--colorNeutralBackground4)",
+                  "color": "var(--colorNeutralForeground1)",
+                },
+                "input:disabled": {
+                  "backgroundColor": "var(--colorNeutralBackground2)",
+                  "color": "var(--colorNeutralForeground2)",
+                },
+              },
+              "width": 300,
+            },
+            "subComponentStyles": {
+              "label": {
+                "root": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
+              },
+            },
+            "suffix": {
+              "backgroundColor": "var(--colorNeutralBackground2)",
+              "border": "1px solid var(--colorNeutralStroke1)",
+              "color": "var(--colorNeutralForeground1)",
+            },
+          }
+        }
+      />
+    </StyledTooltipHostBase>
+    <Text
+      className="hintText-115"
+    >
       Large 
       partition key
        has been enabled.
     </Text>
-    <Text>
+    <Text
+      className="hintText-115"
+    >
       Non-hierarchically partitioned container.
     </Text>
   </Stack>
@@ -569,16 +1007,52 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
       label="Unique keys"
       styles={
         {
+          "field": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "color": "var(--colorNeutralForeground1)",
+            "selectors": {
+              ":disabled": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground2)",
+              },
+            },
+          },
           "fieldGroup": {
-            "borderColor": "",
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "borderColor": "var(--colorNeutralStroke1)",
             "height": 25,
             "selectors": {
               ":disabled": {
-                "backgroundColor": undefined,
-                "borderColor": undefined,
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "borderColor": "var(--colorNeutralStroke1)",
+                "color": "var(--colorNeutralForeground2)",
+              },
+              "input": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground1)",
+              },
+              "input#autopilotInput": {
+                "backgroundColor": "var(--colorNeutralBackground4)",
+                "color": "var(--colorNeutralForeground1)",
+              },
+              "input:disabled": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground2)",
               },
             },
             "width": 300,
+          },
+          "subComponentStyles": {
+            "label": {
+              "root": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+            },
+          },
+          "suffix": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "border": "1px solid var(--colorNeutralStroke1)",
+            "color": "var(--colorNeutralForeground1)",
           },
         }
       }
@@ -639,15 +1113,47 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
                 ".ms-ChoiceField-field.is-checked::before": {
                   "borderColor": "",
                 },
+                ".ms-ChoiceField-field:hover .ms-ChoiceFieldLabel": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
                 ".ms-ChoiceField-wrapper label": {
+                  "color": "var(--colorNeutralForeground1)",
                   "fontFamily": undefined,
                   "fontSize": 14,
                   "padding": "2px 5px",
                   "whiteSpace": "nowrap",
                 },
+                ".ms-ChoiceFieldLabel": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
+                ".ms-ChoiceFieldLabel:hover": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
               },
             },
           ],
+          "label": {
+            "color": "var(--colorNeutralForeground1)",
+          },
+          "root": {
+            "selectors": {
+              ".ms-ChoiceField-field:hover .ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceField-innerField": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceField:hover .ms-ChoiceField-innerField": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceField:hover .ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+            },
+          },
         }
       }
     />
@@ -661,16 +1167,52 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
       required={true}
       styles={
         {
+          "field": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "color": "var(--colorNeutralForeground1)",
+            "selectors": {
+              ":disabled": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground2)",
+              },
+            },
+          },
           "fieldGroup": {
-            "borderColor": "",
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "borderColor": "var(--colorNeutralStroke1)",
             "height": 25,
             "selectors": {
               ":disabled": {
-                "backgroundColor": undefined,
-                "borderColor": undefined,
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "borderColor": "var(--colorNeutralStroke1)",
+                "color": "var(--colorNeutralForeground2)",
+              },
+              "input": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground1)",
+              },
+              "input#autopilotInput": {
+                "backgroundColor": "var(--colorNeutralBackground4)",
+                "color": "var(--colorNeutralForeground1)",
+              },
+              "input:disabled": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground2)",
               },
             },
             "width": 300,
+          },
+          "subComponentStyles": {
+            "label": {
+              "root": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+            },
+          },
+          "suffix": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "border": "1px solid var(--colorNeutralStroke1)",
+            "color": "var(--colorNeutralForeground1)",
           },
         }
       }
@@ -686,10 +1228,12 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
     options={
       [
         {
+          "ariaLabel": "geography-option",
           "key": "Geography",
           "text": "Geography",
         },
         {
+          "ariaLabel": "geometry-option",
           "key": "Geometry",
           "text": "Geometry",
         },
@@ -709,15 +1253,47 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
               ".ms-ChoiceField-field.is-checked::before": {
                 "borderColor": "",
               },
+              ".ms-ChoiceField-field:hover .ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
               ".ms-ChoiceField-wrapper label": {
+                "color": "var(--colorNeutralForeground1)",
                 "fontFamily": undefined,
                 "fontSize": 14,
                 "padding": "2px 5px",
                 "whiteSpace": "nowrap",
               },
+              ".ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceFieldLabel:hover": {
+                "color": "var(--colorNeutralForeground1)",
+              },
             },
           },
         ],
+        "label": {
+          "color": "var(--colorNeutralForeground1)",
+        },
+        "root": {
+          "selectors": {
+            ".ms-ChoiceField-field:hover .ms-ChoiceFieldLabel": {
+              "color": "var(--colorNeutralForeground1)",
+            },
+            ".ms-ChoiceField-innerField": {
+              "color": "var(--colorNeutralForeground1)",
+            },
+            ".ms-ChoiceField:hover .ms-ChoiceField-innerField": {
+              "color": "var(--colorNeutralForeground1)",
+            },
+            ".ms-ChoiceField:hover .ms-ChoiceFieldLabel": {
+              "color": "var(--colorNeutralForeground1)",
+            },
+            ".ms-ChoiceFieldLabel": {
+              "color": "var(--colorNeutralForeground1)",
+            },
+          },
+        },
       }
     }
   />
@@ -763,15 +1339,47 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
                 ".ms-ChoiceField-field.is-checked::before": {
                   "borderColor": "",
                 },
+                ".ms-ChoiceField-field:hover .ms-ChoiceFieldLabel": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
                 ".ms-ChoiceField-wrapper label": {
+                  "color": "var(--colorNeutralForeground1)",
                   "fontFamily": undefined,
                   "fontSize": 14,
                   "padding": "2px 5px",
                   "whiteSpace": "nowrap",
                 },
+                ".ms-ChoiceFieldLabel": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
+                ".ms-ChoiceFieldLabel:hover": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
               },
             },
           ],
+          "label": {
+            "color": "var(--colorNeutralForeground1)",
+          },
+          "root": {
+            "selectors": {
+              ".ms-ChoiceField-field:hover .ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceField-innerField": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceField:hover .ms-ChoiceField-innerField": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceField:hover .ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+            },
+          },
         }
       }
     />
@@ -783,16 +1391,52 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
       required={true}
       styles={
         {
+          "field": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "color": "var(--colorNeutralForeground1)",
+            "selectors": {
+              ":disabled": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground2)",
+              },
+            },
+          },
           "fieldGroup": {
-            "borderColor": "",
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "borderColor": "var(--colorNeutralStroke1)",
             "height": 25,
             "selectors": {
               ":disabled": {
-                "backgroundColor": undefined,
-                "borderColor": undefined,
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "borderColor": "var(--colorNeutralStroke1)",
+                "color": "var(--colorNeutralForeground2)",
+              },
+              "input": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground1)",
+              },
+              "input#autopilotInput": {
+                "backgroundColor": "var(--colorNeutralBackground4)",
+                "color": "var(--colorNeutralForeground1)",
+              },
+              "input:disabled": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground2)",
               },
             },
             "width": 300,
+          },
+          "subComponentStyles": {
+            "label": {
+              "root": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+            },
+          },
+          "suffix": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "border": "1px solid var(--colorNeutralStroke1)",
+            "color": "var(--colorNeutralForeground1)",
           },
         }
       }
@@ -808,32 +1452,83 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
       }
     }
   >
-    <StyledTextFieldBase
-      defaultValue="/partitionKey"
-      disabled={true}
-      label="Partition key"
+    <StyledTooltipHostBase
+      content="This partition key is used to distribute data across multiple partitions for scalability. The value "/partitionKey" determines how documents are partitioned."
       styles={
         {
-          "fieldGroup": {
-            "borderColor": "",
-            "height": 25,
-            "selectors": {
-              ":disabled": {
-                "backgroundColor": undefined,
-                "borderColor": undefined,
-              },
-            },
-            "width": 300,
+          "root": {
+            "display": "block",
           },
         }
       }
-    />
-    <Text>
+    >
+      <StyledTextFieldBase
+        defaultValue="/partitionKey"
+        disabled={true}
+        label="Partition key"
+        styles={
+          {
+            "field": {
+              "backgroundColor": "var(--colorNeutralBackground2)",
+              "color": "var(--colorNeutralForeground1)",
+              "selectors": {
+                ":disabled": {
+                  "backgroundColor": "var(--colorNeutralBackground2)",
+                  "color": "var(--colorNeutralForeground2)",
+                },
+              },
+            },
+            "fieldGroup": {
+              "backgroundColor": "var(--colorNeutralBackground2)",
+              "borderColor": "var(--colorNeutralStroke1)",
+              "height": 25,
+              "selectors": {
+                ":disabled": {
+                  "backgroundColor": "var(--colorNeutralBackground2)",
+                  "borderColor": "var(--colorNeutralStroke1)",
+                  "color": "var(--colorNeutralForeground2)",
+                },
+                "input": {
+                  "backgroundColor": "var(--colorNeutralBackground2)",
+                  "color": "var(--colorNeutralForeground1)",
+                },
+                "input#autopilotInput": {
+                  "backgroundColor": "var(--colorNeutralBackground4)",
+                  "color": "var(--colorNeutralForeground1)",
+                },
+                "input:disabled": {
+                  "backgroundColor": "var(--colorNeutralBackground2)",
+                  "color": "var(--colorNeutralForeground2)",
+                },
+              },
+              "width": 300,
+            },
+            "subComponentStyles": {
+              "label": {
+                "root": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
+              },
+            },
+            "suffix": {
+              "backgroundColor": "var(--colorNeutralBackground2)",
+              "border": "1px solid var(--colorNeutralStroke1)",
+              "color": "var(--colorNeutralForeground1)",
+            },
+          }
+        }
+      />
+    </StyledTooltipHostBase>
+    <Text
+      className="hintText-115"
+    >
       Large 
       partition key
        has been enabled.
     </Text>
-    <Text>
+    <Text
+      className="hintText-115"
+    >
       Non-hierarchically partitioned container.
     </Text>
   </Stack>
@@ -850,16 +1545,52 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
       label="Unique keys"
       styles={
         {
+          "field": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "color": "var(--colorNeutralForeground1)",
+            "selectors": {
+              ":disabled": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground2)",
+              },
+            },
+          },
           "fieldGroup": {
-            "borderColor": "",
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "borderColor": "var(--colorNeutralStroke1)",
             "height": 25,
             "selectors": {
               ":disabled": {
-                "backgroundColor": undefined,
-                "borderColor": undefined,
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "borderColor": "var(--colorNeutralStroke1)",
+                "color": "var(--colorNeutralForeground2)",
+              },
+              "input": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground1)",
+              },
+              "input#autopilotInput": {
+                "backgroundColor": "var(--colorNeutralBackground4)",
+                "color": "var(--colorNeutralForeground1)",
+              },
+              "input:disabled": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground2)",
               },
             },
             "width": 300,
+          },
+          "subComponentStyles": {
+            "label": {
+              "root": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+            },
+          },
+          "suffix": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "border": "1px solid var(--colorNeutralStroke1)",
+            "color": "var(--colorNeutralForeground1)",
           },
         }
       }
@@ -920,15 +1651,47 @@ exports[`SubSettingsComponent renders 1`] = `
                 ".ms-ChoiceField-field.is-checked::before": {
                   "borderColor": "",
                 },
+                ".ms-ChoiceField-field:hover .ms-ChoiceFieldLabel": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
                 ".ms-ChoiceField-wrapper label": {
+                  "color": "var(--colorNeutralForeground1)",
                   "fontFamily": undefined,
                   "fontSize": 14,
                   "padding": "2px 5px",
                   "whiteSpace": "nowrap",
                 },
+                ".ms-ChoiceFieldLabel": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
+                ".ms-ChoiceFieldLabel:hover": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
               },
             },
           ],
+          "label": {
+            "color": "var(--colorNeutralForeground1)",
+          },
+          "root": {
+            "selectors": {
+              ".ms-ChoiceField-field:hover .ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceField-innerField": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceField:hover .ms-ChoiceField-innerField": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceField:hover .ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+            },
+          },
         }
       }
     />
@@ -942,16 +1705,52 @@ exports[`SubSettingsComponent renders 1`] = `
       required={true}
       styles={
         {
+          "field": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "color": "var(--colorNeutralForeground1)",
+            "selectors": {
+              ":disabled": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground2)",
+              },
+            },
+          },
           "fieldGroup": {
-            "borderColor": "",
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "borderColor": "var(--colorNeutralStroke1)",
             "height": 25,
             "selectors": {
               ":disabled": {
-                "backgroundColor": undefined,
-                "borderColor": undefined,
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "borderColor": "var(--colorNeutralStroke1)",
+                "color": "var(--colorNeutralForeground2)",
+              },
+              "input": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground1)",
+              },
+              "input#autopilotInput": {
+                "backgroundColor": "var(--colorNeutralBackground4)",
+                "color": "var(--colorNeutralForeground1)",
+              },
+              "input:disabled": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground2)",
               },
             },
             "width": 300,
+          },
+          "subComponentStyles": {
+            "label": {
+              "root": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+            },
+          },
+          "suffix": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "border": "1px solid var(--colorNeutralStroke1)",
+            "color": "var(--colorNeutralForeground1)",
           },
         }
       }
@@ -967,10 +1766,12 @@ exports[`SubSettingsComponent renders 1`] = `
     options={
       [
         {
+          "ariaLabel": "geography-option",
           "key": "Geography",
           "text": "Geography",
         },
         {
+          "ariaLabel": "geometry-option",
           "key": "Geometry",
           "text": "Geometry",
         },
@@ -990,15 +1791,47 @@ exports[`SubSettingsComponent renders 1`] = `
               ".ms-ChoiceField-field.is-checked::before": {
                 "borderColor": "",
               },
+              ".ms-ChoiceField-field:hover .ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
               ".ms-ChoiceField-wrapper label": {
+                "color": "var(--colorNeutralForeground1)",
                 "fontFamily": undefined,
                 "fontSize": 14,
                 "padding": "2px 5px",
                 "whiteSpace": "nowrap",
               },
+              ".ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceFieldLabel:hover": {
+                "color": "var(--colorNeutralForeground1)",
+              },
             },
           },
         ],
+        "label": {
+          "color": "var(--colorNeutralForeground1)",
+        },
+        "root": {
+          "selectors": {
+            ".ms-ChoiceField-field:hover .ms-ChoiceFieldLabel": {
+              "color": "var(--colorNeutralForeground1)",
+            },
+            ".ms-ChoiceField-innerField": {
+              "color": "var(--colorNeutralForeground1)",
+            },
+            ".ms-ChoiceField:hover .ms-ChoiceField-innerField": {
+              "color": "var(--colorNeutralForeground1)",
+            },
+            ".ms-ChoiceField:hover .ms-ChoiceFieldLabel": {
+              "color": "var(--colorNeutralForeground1)",
+            },
+            ".ms-ChoiceFieldLabel": {
+              "color": "var(--colorNeutralForeground1)",
+            },
+          },
+        },
       }
     }
   />
@@ -1044,15 +1877,47 @@ exports[`SubSettingsComponent renders 1`] = `
                 ".ms-ChoiceField-field.is-checked::before": {
                   "borderColor": "",
                 },
+                ".ms-ChoiceField-field:hover .ms-ChoiceFieldLabel": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
                 ".ms-ChoiceField-wrapper label": {
+                  "color": "var(--colorNeutralForeground1)",
                   "fontFamily": undefined,
                   "fontSize": 14,
                   "padding": "2px 5px",
                   "whiteSpace": "nowrap",
                 },
+                ".ms-ChoiceFieldLabel": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
+                ".ms-ChoiceFieldLabel:hover": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
               },
             },
           ],
+          "label": {
+            "color": "var(--colorNeutralForeground1)",
+          },
+          "root": {
+            "selectors": {
+              ".ms-ChoiceField-field:hover .ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceField-innerField": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceField:hover .ms-ChoiceField-innerField": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceField:hover .ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+            },
+          },
         }
       }
     />
@@ -1064,16 +1929,52 @@ exports[`SubSettingsComponent renders 1`] = `
       required={true}
       styles={
         {
+          "field": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "color": "var(--colorNeutralForeground1)",
+            "selectors": {
+              ":disabled": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground2)",
+              },
+            },
+          },
           "fieldGroup": {
-            "borderColor": "",
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "borderColor": "var(--colorNeutralStroke1)",
             "height": 25,
             "selectors": {
               ":disabled": {
-                "backgroundColor": undefined,
-                "borderColor": undefined,
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "borderColor": "var(--colorNeutralStroke1)",
+                "color": "var(--colorNeutralForeground2)",
+              },
+              "input": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground1)",
+              },
+              "input#autopilotInput": {
+                "backgroundColor": "var(--colorNeutralBackground4)",
+                "color": "var(--colorNeutralForeground1)",
+              },
+              "input:disabled": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground2)",
               },
             },
             "width": 300,
+          },
+          "subComponentStyles": {
+            "label": {
+              "root": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+            },
+          },
+          "suffix": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "border": "1px solid var(--colorNeutralStroke1)",
+            "color": "var(--colorNeutralForeground1)",
           },
         }
       }
@@ -1093,7 +1994,7 @@ exports[`SubSettingsComponent renders 1`] = `
             styles={
               {
                 "root": {
-                  "color": "windowtext",
+                  "color": "var(--colorNeutralForeground1)",
                   "fontSize": 14,
                 },
               }
@@ -1134,15 +2035,47 @@ exports[`SubSettingsComponent renders 1`] = `
                 ".ms-ChoiceField-field.is-checked::before": {
                   "borderColor": "",
                 },
+                ".ms-ChoiceField-field:hover .ms-ChoiceFieldLabel": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
                 ".ms-ChoiceField-wrapper label": {
+                  "color": "var(--colorNeutralForeground1)",
                   "fontFamily": undefined,
                   "fontSize": 14,
                   "padding": "2px 5px",
                   "whiteSpace": "nowrap",
                 },
+                ".ms-ChoiceFieldLabel": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
+                ".ms-ChoiceFieldLabel:hover": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
               },
             },
           ],
+          "label": {
+            "color": "var(--colorNeutralForeground1)",
+          },
+          "root": {
+            "selectors": {
+              ".ms-ChoiceField-field:hover .ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceField-innerField": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceField:hover .ms-ChoiceField-innerField": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceField:hover .ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+            },
+          },
         }
       }
     />
@@ -1154,32 +2087,83 @@ exports[`SubSettingsComponent renders 1`] = `
       }
     }
   >
-    <StyledTextFieldBase
-      defaultValue="/partitionKey"
-      disabled={true}
-      label="Partition key"
+    <StyledTooltipHostBase
+      content="This partition key is used to distribute data across multiple partitions for scalability. The value "/partitionKey" determines how documents are partitioned."
       styles={
         {
-          "fieldGroup": {
-            "borderColor": "",
-            "height": 25,
-            "selectors": {
-              ":disabled": {
-                "backgroundColor": undefined,
-                "borderColor": undefined,
-              },
-            },
-            "width": 300,
+          "root": {
+            "display": "block",
           },
         }
       }
-    />
-    <Text>
+    >
+      <StyledTextFieldBase
+        defaultValue="/partitionKey"
+        disabled={true}
+        label="Partition key"
+        styles={
+          {
+            "field": {
+              "backgroundColor": "var(--colorNeutralBackground2)",
+              "color": "var(--colorNeutralForeground1)",
+              "selectors": {
+                ":disabled": {
+                  "backgroundColor": "var(--colorNeutralBackground2)",
+                  "color": "var(--colorNeutralForeground2)",
+                },
+              },
+            },
+            "fieldGroup": {
+              "backgroundColor": "var(--colorNeutralBackground2)",
+              "borderColor": "var(--colorNeutralStroke1)",
+              "height": 25,
+              "selectors": {
+                ":disabled": {
+                  "backgroundColor": "var(--colorNeutralBackground2)",
+                  "borderColor": "var(--colorNeutralStroke1)",
+                  "color": "var(--colorNeutralForeground2)",
+                },
+                "input": {
+                  "backgroundColor": "var(--colorNeutralBackground2)",
+                  "color": "var(--colorNeutralForeground1)",
+                },
+                "input#autopilotInput": {
+                  "backgroundColor": "var(--colorNeutralBackground4)",
+                  "color": "var(--colorNeutralForeground1)",
+                },
+                "input:disabled": {
+                  "backgroundColor": "var(--colorNeutralBackground2)",
+                  "color": "var(--colorNeutralForeground2)",
+                },
+              },
+              "width": 300,
+            },
+            "subComponentStyles": {
+              "label": {
+                "root": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
+              },
+            },
+            "suffix": {
+              "backgroundColor": "var(--colorNeutralBackground2)",
+              "border": "1px solid var(--colorNeutralStroke1)",
+              "color": "var(--colorNeutralForeground1)",
+            },
+          }
+        }
+      />
+    </StyledTooltipHostBase>
+    <Text
+      className="hintText-115"
+    >
       Large 
       partition key
        has been enabled.
     </Text>
-    <Text>
+    <Text
+      className="hintText-115"
+    >
       Non-hierarchically partitioned container.
     </Text>
   </Stack>
@@ -1196,16 +2180,52 @@ exports[`SubSettingsComponent renders 1`] = `
       label="Unique keys"
       styles={
         {
+          "field": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "color": "var(--colorNeutralForeground1)",
+            "selectors": {
+              ":disabled": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground2)",
+              },
+            },
+          },
           "fieldGroup": {
-            "borderColor": "",
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "borderColor": "var(--colorNeutralStroke1)",
             "height": 25,
             "selectors": {
               ":disabled": {
-                "backgroundColor": undefined,
-                "borderColor": undefined,
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "borderColor": "var(--colorNeutralStroke1)",
+                "color": "var(--colorNeutralForeground2)",
+              },
+              "input": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground1)",
+              },
+              "input#autopilotInput": {
+                "backgroundColor": "var(--colorNeutralBackground4)",
+                "color": "var(--colorNeutralForeground1)",
+              },
+              "input:disabled": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground2)",
               },
             },
             "width": 300,
+          },
+          "subComponentStyles": {
+            "label": {
+              "root": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+            },
+          },
+          "suffix": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "border": "1px solid var(--colorNeutralStroke1)",
+            "color": "var(--colorNeutralForeground1)",
           },
         }
       }
@@ -1266,15 +2286,47 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
                 ".ms-ChoiceField-field.is-checked::before": {
                   "borderColor": undefined,
                 },
+                ".ms-ChoiceField-field:hover .ms-ChoiceFieldLabel": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
                 ".ms-ChoiceField-wrapper label": {
+                  "color": "var(--colorNeutralForeground1)",
                   "fontFamily": undefined,
                   "fontSize": 14,
                   "padding": "2px 5px",
                   "whiteSpace": "nowrap",
                 },
+                ".ms-ChoiceFieldLabel": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
+                ".ms-ChoiceFieldLabel:hover": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
               },
             },
           ],
+          "label": {
+            "color": "var(--colorNeutralForeground1)",
+          },
+          "root": {
+            "selectors": {
+              ".ms-ChoiceField-field:hover .ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceField-innerField": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceField:hover .ms-ChoiceField-innerField": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceField:hover .ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+            },
+          },
         }
       }
     />
@@ -1286,10 +2338,12 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
     options={
       [
         {
+          "ariaLabel": "geography-option",
           "key": "Geography",
           "text": "Geography",
         },
         {
+          "ariaLabel": "geometry-option",
           "key": "Geometry",
           "text": "Geometry",
         },
@@ -1309,15 +2363,47 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
               ".ms-ChoiceField-field.is-checked::before": {
                 "borderColor": "",
               },
+              ".ms-ChoiceField-field:hover .ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
               ".ms-ChoiceField-wrapper label": {
+                "color": "var(--colorNeutralForeground1)",
                 "fontFamily": undefined,
                 "fontSize": 14,
                 "padding": "2px 5px",
                 "whiteSpace": "nowrap",
               },
+              ".ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceFieldLabel:hover": {
+                "color": "var(--colorNeutralForeground1)",
+              },
             },
           },
         ],
+        "label": {
+          "color": "var(--colorNeutralForeground1)",
+        },
+        "root": {
+          "selectors": {
+            ".ms-ChoiceField-field:hover .ms-ChoiceFieldLabel": {
+              "color": "var(--colorNeutralForeground1)",
+            },
+            ".ms-ChoiceField-innerField": {
+              "color": "var(--colorNeutralForeground1)",
+            },
+            ".ms-ChoiceField:hover .ms-ChoiceField-innerField": {
+              "color": "var(--colorNeutralForeground1)",
+            },
+            ".ms-ChoiceField:hover .ms-ChoiceFieldLabel": {
+              "color": "var(--colorNeutralForeground1)",
+            },
+            ".ms-ChoiceFieldLabel": {
+              "color": "var(--colorNeutralForeground1)",
+            },
+          },
+        },
       }
     }
   />
@@ -1363,15 +2449,47 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
                 ".ms-ChoiceField-field.is-checked::before": {
                   "borderColor": "",
                 },
+                ".ms-ChoiceField-field:hover .ms-ChoiceFieldLabel": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
                 ".ms-ChoiceField-wrapper label": {
+                  "color": "var(--colorNeutralForeground1)",
                   "fontFamily": undefined,
                   "fontSize": 14,
                   "padding": "2px 5px",
                   "whiteSpace": "nowrap",
                 },
+                ".ms-ChoiceFieldLabel": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
+                ".ms-ChoiceFieldLabel:hover": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
               },
             },
           ],
+          "label": {
+            "color": "var(--colorNeutralForeground1)",
+          },
+          "root": {
+            "selectors": {
+              ".ms-ChoiceField-field:hover .ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceField-innerField": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceField:hover .ms-ChoiceField-innerField": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceField:hover .ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+            },
+          },
         }
       }
     />
@@ -1383,16 +2501,52 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
       required={true}
       styles={
         {
+          "field": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "color": "var(--colorNeutralForeground1)",
+            "selectors": {
+              ":disabled": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground2)",
+              },
+            },
+          },
           "fieldGroup": {
-            "borderColor": "",
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "borderColor": "var(--colorNeutralStroke1)",
             "height": 25,
             "selectors": {
               ":disabled": {
-                "backgroundColor": undefined,
-                "borderColor": undefined,
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "borderColor": "var(--colorNeutralStroke1)",
+                "color": "var(--colorNeutralForeground2)",
+              },
+              "input": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground1)",
+              },
+              "input#autopilotInput": {
+                "backgroundColor": "var(--colorNeutralBackground4)",
+                "color": "var(--colorNeutralForeground1)",
+              },
+              "input:disabled": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground2)",
               },
             },
             "width": 300,
+          },
+          "subComponentStyles": {
+            "label": {
+              "root": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+            },
+          },
+          "suffix": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "border": "1px solid var(--colorNeutralStroke1)",
+            "color": "var(--colorNeutralForeground1)",
           },
         }
       }
@@ -1412,7 +2566,7 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
             styles={
               {
                 "root": {
-                  "color": "windowtext",
+                  "color": "var(--colorNeutralForeground1)",
                   "fontSize": 14,
                 },
               }
@@ -1453,15 +2607,47 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
                 ".ms-ChoiceField-field.is-checked::before": {
                   "borderColor": "",
                 },
+                ".ms-ChoiceField-field:hover .ms-ChoiceFieldLabel": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
                 ".ms-ChoiceField-wrapper label": {
+                  "color": "var(--colorNeutralForeground1)",
                   "fontFamily": undefined,
                   "fontSize": 14,
                   "padding": "2px 5px",
                   "whiteSpace": "nowrap",
                 },
+                ".ms-ChoiceFieldLabel": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
+                ".ms-ChoiceFieldLabel:hover": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
               },
             },
           ],
+          "label": {
+            "color": "var(--colorNeutralForeground1)",
+          },
+          "root": {
+            "selectors": {
+              ".ms-ChoiceField-field:hover .ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceField-innerField": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceField:hover .ms-ChoiceField-innerField": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceField:hover .ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+              ".ms-ChoiceFieldLabel": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+            },
+          },
         }
       }
     />
@@ -1473,32 +2659,83 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
       }
     }
   >
-    <StyledTextFieldBase
-      defaultValue="/partitionKey"
-      disabled={true}
-      label="Partition key"
+    <StyledTooltipHostBase
+      content="This partition key is used to distribute data across multiple partitions for scalability. The value "/partitionKey" determines how documents are partitioned."
       styles={
         {
-          "fieldGroup": {
-            "borderColor": "",
-            "height": 25,
-            "selectors": {
-              ":disabled": {
-                "backgroundColor": undefined,
-                "borderColor": undefined,
-              },
-            },
-            "width": 300,
+          "root": {
+            "display": "block",
           },
         }
       }
-    />
-    <Text>
+    >
+      <StyledTextFieldBase
+        defaultValue="/partitionKey"
+        disabled={true}
+        label="Partition key"
+        styles={
+          {
+            "field": {
+              "backgroundColor": "var(--colorNeutralBackground2)",
+              "color": "var(--colorNeutralForeground1)",
+              "selectors": {
+                ":disabled": {
+                  "backgroundColor": "var(--colorNeutralBackground2)",
+                  "color": "var(--colorNeutralForeground2)",
+                },
+              },
+            },
+            "fieldGroup": {
+              "backgroundColor": "var(--colorNeutralBackground2)",
+              "borderColor": "var(--colorNeutralStroke1)",
+              "height": 25,
+              "selectors": {
+                ":disabled": {
+                  "backgroundColor": "var(--colorNeutralBackground2)",
+                  "borderColor": "var(--colorNeutralStroke1)",
+                  "color": "var(--colorNeutralForeground2)",
+                },
+                "input": {
+                  "backgroundColor": "var(--colorNeutralBackground2)",
+                  "color": "var(--colorNeutralForeground1)",
+                },
+                "input#autopilotInput": {
+                  "backgroundColor": "var(--colorNeutralBackground4)",
+                  "color": "var(--colorNeutralForeground1)",
+                },
+                "input:disabled": {
+                  "backgroundColor": "var(--colorNeutralBackground2)",
+                  "color": "var(--colorNeutralForeground2)",
+                },
+              },
+              "width": 300,
+            },
+            "subComponentStyles": {
+              "label": {
+                "root": {
+                  "color": "var(--colorNeutralForeground1)",
+                },
+              },
+            },
+            "suffix": {
+              "backgroundColor": "var(--colorNeutralBackground2)",
+              "border": "1px solid var(--colorNeutralStroke1)",
+              "color": "var(--colorNeutralForeground1)",
+            },
+          }
+        }
+      />
+    </StyledTooltipHostBase>
+    <Text
+      className="hintText-115"
+    >
       Large 
       partition key
        has been enabled.
     </Text>
-    <Text>
+    <Text
+      className="hintText-115"
+    >
       Non-hierarchically partitioned container.
     </Text>
   </Stack>
@@ -1515,16 +2752,52 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
       label="Unique keys"
       styles={
         {
+          "field": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "color": "var(--colorNeutralForeground1)",
+            "selectors": {
+              ":disabled": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground2)",
+              },
+            },
+          },
           "fieldGroup": {
-            "borderColor": "",
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "borderColor": "var(--colorNeutralStroke1)",
             "height": 25,
             "selectors": {
               ":disabled": {
-                "backgroundColor": undefined,
-                "borderColor": undefined,
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "borderColor": "var(--colorNeutralStroke1)",
+                "color": "var(--colorNeutralForeground2)",
+              },
+              "input": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground1)",
+              },
+              "input#autopilotInput": {
+                "backgroundColor": "var(--colorNeutralBackground4)",
+                "color": "var(--colorNeutralForeground1)",
+              },
+              "input:disabled": {
+                "backgroundColor": "var(--colorNeutralBackground2)",
+                "color": "var(--colorNeutralForeground2)",
               },
             },
             "width": 300,
+          },
+          "subComponentStyles": {
+            "label": {
+              "root": {
+                "color": "var(--colorNeutralForeground1)",
+              },
+            },
+          },
+          "suffix": {
+            "backgroundColor": "var(--colorNeutralBackground2)",
+            "border": "1px solid var(--colorNeutralStroke1)",
+            "color": "var(--colorNeutralForeground1)",
           },
         }
       }

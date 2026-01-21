@@ -59,6 +59,26 @@ export interface CommandButtonComponentProps {
   tooltipText?: string;
 
   /**
+   * Custom styles to apply to the button using Fluent UI theme tokens
+   */
+  styles?: {
+    root?: {
+      backgroundColor?: string;
+      color?: string;
+      selectors?: {
+        ":hover"?: {
+          backgroundColor?: string;
+          color?: string;
+        };
+        ":active"?: {
+          backgroundColor?: string;
+          color?: string;
+        };
+      };
+    };
+  };
+
+  /**
    * tabindex for the command button
    */
   tabIndex?: number;
@@ -250,6 +270,8 @@ export class CommandButtonComponent extends React.Component<CommandButtonCompone
       contentClassName += " hasHiddenItems";
     }
 
+    const style = this.props.styles?.root || {};
+
     return (
       <div className="commandButtonReact">
         <span
@@ -262,6 +284,7 @@ export class CommandButtonComponent extends React.Component<CommandButtonCompone
           aria-disabled={this.props.disabled}
           aria-haspopup={this.props.hasPopup}
           aria-label={this.props.ariaLabel}
+          style={style}
           onClick={(e: React.MouseEvent<HTMLSpanElement>) => this.commandClickCallback(e)}
         >
           <div className={contentClassName}>

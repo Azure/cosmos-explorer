@@ -1,30 +1,5 @@
-@import "../../../less/Common/Constants";
-
-.splashScreenContainer {
-  width: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
-
-  .splashScreen {
-    .flex-display();
-    .flex-direction();
-    text-align: left;
-    margin: auto;
-    padding-left: 21px;
-    padding-right: 16px;
-    max-width: 1168px;
-
-    > .title {
-      position: relative; // To attach FeaturePanelLauncher as absolute
-      color: @BaseHigh;
-      font-size: 48px;
-      padding-left: 0px;
-      margin: 16px auto;
-      text-align: center;
-    }
 
     > .subtitle {
-      color: @BaseHigh;
       font-size: 18px;
       padding-left: 0px;
       margin: 0px auto;
@@ -45,149 +20,40 @@
         width: 85% !important;
       }
     }
+    .legendContainer{
+      margin-left: 16px;
+      text-align: left;
+
+      .legend{
+        font-size: 18px;
+        font-size: 18px;
+        font-family: "Segoe UI Semibold", "Segoe UI", "Segoe WP", Tahoma, Arial, sans-serif;
+        } 
+        .newDescription {
+         font-size: 13px;
+        }
+
+        .legendColorBox{
+          width: 16px;
+          height: 16px;
+          margin-right: 8px;
+          border: 1px solid var(--colorNeutralStroke1);
+        }
+    }
+
+    .mainButton {
+      border: 1px solid var(--colorNeutralStroke1);
+      min-width: 124px;
+      max-width: 296px;
+      padding: 32px 16px;
+      box-sizing: border-box;
+      box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+      border-radius: 4px;
+    }
 
     .mainButtonsContainer {
-      .flex-display();
-      text-align: center;
-      cursor: pointer;
-      margin: 40px auto;
-      width: 84%;
-
-      > .mainButton {
-        min-width: 124px;
-        max-width: 296px;
-        padding: 32px 16px;
-        background-color: @BaseLight;
-        border: 1px solid #949494;
-        box-sizing: border-box;
-        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-        border-radius: 4px;
-
-        > .legendContainer {
-          margin-left: 16px;
-          text-align: left;
-
-          .legend {
-            font-family: @SemiboldFont;
-            font-size: 18px;
-          }
-
-          .description {
-            font-size: 10px;
-          }
-
-          .newDescription {
-            font-size: 13px;
-          }
-        }
-      }
-
-      > :nth-child(n + 2) {
-        margin-left: 32px;
-      }
+      display: flex;
+      gap: 0 16px;
+      margin: 40px auto
     }
-
-    .moreStuffContainer {
-      .flex-display();
-      justify-content: space-between;
-
-      .moreStuffColumn {
-        flex-grow: 1;
-        flex-basis: 0;
-        min-width: 124px;
-        max-width: 296px;
-
-        > .title {
-          font-size: 18px;
-          font-family: @SemiboldFont;
-          color: @BaseDark;
-          padding: 0px;
-          margin-bottom: 16px;
-        }
-
-        > ul {
-          list-style: none;
-          padding-left: 0px;
-          margin-bottom: 0px;
-
-          li {
-            padding: @DefaultSpace;
-            .flex-display();
-            align-items: flex-start;
-
-            > img {
-              margin-right: @DefaultSpace;
-              width: 24px;
-              height: 24px;
-            }
-
-            .oneLineContent {
-              margin-top: 4px;
-            }
-
-            .description {
-              font-size: 10px;
-              color: @BaseMediumHigh;
-            }
-          }
-        }
-
-        .tipContainer {
-          padding: 8px 16px;
-          width: 100%;
-          cursor: pointer;
-          .flex-display();
-          .flex-direction();
-
-          > .title {
-            color: @BaseDark;
-            padding: 0px;
-            font-size: 12px;
-          }
-          > .description {
-            color: @BaseDark;
-          }
-
-          &:not(:hover):not(:focus) {
-            background-color: @BaseLow;
-          }
-        }
-
-        &.commonTasks {
-          li {
-            cursor: pointer;
-          }
-        }
-
-        &.tipsContainer {
-          li {
-            margin: 2px 0px;
-          }
-        }
-      }
-    }
-
-    .focusable {
-      &:hover {
-        .hover();
-      }
-
-      &:focus {
-        .focus();
-      }
-
-      &:active {
-        .active();
-      }
-    }
-
-    .notebookSplashScreenItem {
-      padding: 12px 0 12px 12px;
-
-      .itemText {
-        margin-left: 12px;
-        font-family: @SemiboldFont;
-      }
-    }
-  }
-}
+   

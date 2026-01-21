@@ -12,7 +12,7 @@ import FieldRow from "../../Components/FieldRow";
 
 interface AccountDropdownProps {}
 
-const normalizeAccountId = (id: string) => {
+export const normalizeAccountId = (id: string = "") => {
   if (configContext.platform === Platform.Portal) {
     return id.replace("/Microsoft.DocumentDb/", "/Microsoft.DocumentDB/");
   } else if (configContext.platform === Platform.Hosted) {
@@ -27,7 +27,12 @@ export const AccountDropdown: React.FC<AccountDropdownProps> = () => {
 
   const selectedSubscriptionId = copyJobState?.source?.subscription?.subscriptionId;
   const allAccounts: DatabaseAccount[] = useDatabaseAccounts(selectedSubscriptionId);
-  const sqlApiOnlyAccounts: DatabaseAccount[] = (allAccounts || []).filter((account) => apiType(account) === "SQL");
+  const sqlApiOnlyAccounts = (allAccounts || [])
+    .filter((account) => apiType(account) === "SQL")
+    .map((account) => ({
+      ...account,
+      id: normalizeAccountId(account.id),
+    }));
 
   const updateCopyJobState = (newAccount: DatabaseAccount) => {
     setCopyJobState((prevState) => {
@@ -47,7 +52,7 @@ export const AccountDropdown: React.FC<AccountDropdownProps> = () => {
   useEffect(() => {
     if (sqlApiOnlyAccounts && sqlApiOnlyAccounts.length > 0 && selectedSubscriptionId) {
       const currentAccountId = copyJobState?.source?.account?.id;
-      const predefinedAccountId = userContext.databaseAccount?.id;
+      const predefinedAccountId = normalizeAccountId(userContext.databaseAccount?.id);
       const selectedAccountId = currentAccountId || predefinedAccountId;
 
       const targetAccount: DatabaseAccount | null =
@@ -58,7 +63,7 @@ export const AccountDropdown: React.FC<AccountDropdownProps> = () => {
 
   const accountOptions =
     sqlApiOnlyAccounts?.map((account) => ({
-      key: normalizeAccountId(account.id),
+      key: account.id,
       text: account.name,
       data: account,
     })) || [];

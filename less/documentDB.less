@@ -406,7 +406,11 @@ body {
   width: 440px;
   min-height: 565px;
 }
-
+.dataExplorerLoaderforcopyJobs{
+   width: 100%;
+   min-height: 565px;
+   right: 0;
+}
 .dataExplorerTabLoaderContainer {
   left: initial;
   top: initial;
@@ -1740,7 +1744,7 @@ input::-webkit-calendar-picker-indicator {
   flex: 1;
   padding-left: 34px;
   padding-right: 34px;
-  color: @BaseDark;
+  color: var(--colorNeutralForeground1);
   overflow-y: auto;
   overflow-x: auto;
   margin: (2 * @MediumSpace) 0px;
@@ -1749,7 +1753,6 @@ input::-webkit-calendar-picker-indicator {
 .contextual-pane .panelMainContent {
   padding-left: 34px;
   padding-right: 34px;
-  color: @BaseDark;
   margin: (2 * @MediumSpace) 0px;
 }
 
@@ -1914,7 +1917,8 @@ input::-webkit-calendar-picker-indicator::after {
 }
 
 .nav-tabs-margin {
-  background-color: #f2f2f2;
+  background-color: var(--colorNeutralBackground1);
+  color: var(--colorNeutralForeground1);
 
   .nav-tabs {
     display: flex;
@@ -1922,11 +1926,19 @@ input::-webkit-calendar-picker-indicator::after {
     align-items: flex-end;
     height: 100%;
     margin-bottom: -0.5px;
+    background-color: var(--colorNeutralBackground1Selected);
 
     li {
-      // Override the bootstrap defaults here to align with our layout constants.
       margin-bottom: 0px;
       height: 32px;
+
+      &:hover {
+        background-color: var(--colorNeutralBackground1Hover);
+      }
+
+      &:active {
+        background-color: var(--colorNeutralBackground1Pressed);
+      }
     }
   }
 }
@@ -1940,8 +1952,9 @@ input::-webkit-calendar-picker-indicator::after {
 .nav.nav-tabs.qslevel > li > a:hover {
   border: none;
   border-radius: 0;
-  background-color: transparent !important;
+  background-color: var(--colorNeutralBackground1Selected);
   border-color: transparent;
+  color: var(--colorNeutralForeground1);
 }
 
 .numbersize {
@@ -2376,6 +2389,8 @@ a:link {
   display: flex;
   flex-direction: column;
   min-width: 0; // This prevents it to grow past the parent's width if its content is too wide
+  background-color: var(--colorNeutralBackground1);
+  color: var(--colorNeutralForeground1);
 }
 
 .tabs {
@@ -2631,14 +2646,16 @@ a:link {
 }
 
 .tabPanesContainer {
-  display: flex;
   flex-grow: 1;
   overflow: hidden;
+  background-color: var(--colorNeutralBackground1);
+  color: var(--colorNeutralForeground1);
 }
 
 .tabs-container {
   height: 100%;
   width: 100%;
+  overflow-y: auto;
 }
 
 .paddingspan4 {
@@ -2655,24 +2672,18 @@ a:link {
 .nav-tabs > li.active > .tabNavContentContainer,
 .nav-tabs > li.active > .tabNavContentContainer:focus,
 .nav-tabs > li.active > .tabNavContentContainer:hover {
-  color: #555;
+  color: var(--colorNeutralForeground1);
   cursor: default;
-  background-color: @BaseLight;
-  border-color: @BaseMedium;
-  border-bottom-color: @BaseLight;
+  background-color: var(--colorNeutralBackground1);
+  border-color: var(--colorNeutralStroke1);
   border-style: solid;
   border-width: 1px;
   height: @ActiveTabHeight;
   width: @ActiveTabWidth;
 }
 
-.nav-tabs > li.active > .tabNavContentContainer > .tab_Content > .contentWrapper > .tabNavText {
-  font-weight: bolder;
-  border-bottom: 2px solid rgba(0, 120, 212, 1);
-}
-
-.nav-tabs > li.active:focus > .tabNavContentContainer {
-  .focus();
+.nav-tabs > li.active .contentWrapper .tabNavText  {
+  border-bottom: 2px solid var(--colorCompoundBrandBackground);
 }
 
 .tabNavContentContainer {
@@ -2681,7 +2692,7 @@ a:link {
   justify-content: space-between;
   border-radius: 2px 2px 0 0;
   padding: @DefaultSpace 0px @SmallSpace 0px;
-  color: @BaseHigh;
+  color: var(--colorNeutralForeground1);
   width: @TabsWidth;
   text-align: center;
   position: relative;
@@ -2689,19 +2700,21 @@ a:link {
 
   &:hover {
     text-decoration: none;
-    background-color: @BaseMediumLow;
-    border-color: @BaseMediumLow;
+    background-color: var(--colorNeutralBackground1Hover);
+    border-color: transparent;
   }
 
   &:active {
-    background-color: @BaseMediumLow;
+    background-color: var(--colorNeutralBackground1Pressed);
   }
 
   .tab_Content {
     .flex-display();
     width: @TabsWidth;
-    border-right: @ButtonBorderWidth solid @BaseMedium;
+    border-right: @ButtonBorderWidth solid var(--colorNeutralStroke1);
     white-space: nowrap;
+    color: var(--colorNeutralForeground1);
+
     .contentWrapper {
       .flex-display();
       width: @ContentWrapper;
@@ -2723,9 +2736,8 @@ a:link {
             background-image: url(../images/error_no_outline.svg);
             background-repeat: no-repeat;
             background-position: center;
-            background-size: 3px;
             display: block;
-            margin: 1px 0px 0px 6px;
+            margin: 4px 0px 0px 6px;
           }
         }
 
@@ -2750,39 +2762,60 @@ a:link {
         .loadingIcon {
           width: @LoadingErrorIconSize;
           height: @LoadingErrorIconSize;
-          margin: 0px 0px @SmallSpace @SmallSpace;
+          margin-top: 1px;
+        }
+
+        .warningIconContainer {
+          width: @ErrorIconContainer;
+          height: @ErrorIconContainer;
+          margin-top: 1px;
         }
       }
 
       .tabNavText {
         margin-left: @SmallSpace;
         margin-right: 2px;
-        color: @BaseDark;
+        color: var(--colorNeutralForeground1);
         text-overflow: ellipsis;
         overflow: hidden;
         white-space: nowrap;
         flex-grow: 1;
+        font-size: 12px;
       }
     }
 
     .tabIconSection {
-      width: 29px;
       position: relative;
-      padding-top: 2px;
 
       .cancelButton {
         padding: 0px @SmallSpace 0px @SmallSpace;
+        color: var(--colorNeutralForeground1);
+        width: 16px;
+        height: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
 
         &:hover {
-          .hover();
+          background-color: var(--colorNeutralBackground1Hover);
+          color: var(--colorNeutralForeground1);
         }
 
         &:focus {
-          .focus();
+          background-color: var(--colorNeutralBackground1Pressed);
+          color: var(--colorNeutralForeground1);
         }
 
         &:active {
-          .active();
+          background-color: var(--colorNeutralBackground1Pressed);
+          color: var(--colorNeutralForeground1);
+        }
+
+        &::before {
+          content: "×";
+          font-size: 16px;
+          line-height: 1;
         }
       }
     }
@@ -3136,4 +3169,13 @@ a:link {
 
 .sidebarContainer {
   height: 100%;
+}
+
+.close-Icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
 }

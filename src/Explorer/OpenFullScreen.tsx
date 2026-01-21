@@ -6,7 +6,7 @@ export const OpenFullScreen: React.FunctionComponent = () => {
     <>
       <div style={{ padding: "34px" }}>
         <Stack tokens={{ childrenGap: 10 }}>
-          <Text>
+          <Text style={{ color: "var(--colorNeutralForeground1)" }}>
             Open this database account in a new browser tab with Cosmos DB Explorer. You can connect using your
             Microsoft account or a connection string.
           </Text>
