@@ -3,13 +3,13 @@
   Run "npm run generateARMClients" to regenerate
   Edting this file directly should be done with extreme caution as not to diverge from ARM REST specs
 
-  Generated from: https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/specification/cosmos-db/resource-manager/Microsoft.DocumentDB/preview/2025-05-01-preview/cosmos-db.json
+  Generated from: https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/specification/cosmos-db/resource-manager/Microsoft.DocumentDB/DocumentDB/preview/2025-11-01-preview/cosmos-db.json
 */
 
 import { armRequest } from "../../request";
 import * as Types from "./types";
 import { configContext } from "../../../../ConfigContext";
-const apiVersion = "2025-05-01-preview";
+const apiVersion = "2025-11-01-preview";
 
 /* List Cosmos DB locations and their properties */
 export async function list(subscriptionId: string): Promise<Types.LocationListResult | Types.CloudError> {

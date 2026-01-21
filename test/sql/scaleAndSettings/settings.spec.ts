@@ -18,11 +18,9 @@ test.describe("Settings under Scale & Settings", () => {
   });
 
   // Delete database only if not running in CI
-  if (!process.env.CI) {
-    test.afterAll("Delete Test Database", async () => {
-      await context?.dispose();
-    });
-  }
+  test.afterAll("Delete Test Database", async () => {
+    await context?.dispose();
+  });
 
   test("Update TTL to On (no default)", async () => {
     const ttlOnNoDefaultRadioButton = explorer.frame.getByRole("radio", { name: "ttl-on-no-default-option" });
