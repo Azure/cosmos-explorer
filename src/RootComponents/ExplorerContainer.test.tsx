@@ -157,7 +157,7 @@ describe("ExplorerContainer", () => {
   test("should handle carousel states correctly", () => {
     const mockUseCarousel = jest.mocked(useCarousel);
 
-    mockUseCarousel.mockImplementation((selector: { toString: () => string | string[] }) => {
+    mockUseCarousel.mockImplementation((selector: { toString: () => string }) => {
       if (selector.toString().includes("shouldOpen")) {
         return false;
       }
