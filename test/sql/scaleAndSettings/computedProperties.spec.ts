@@ -14,7 +14,7 @@ test.describe("Computed Properties", () => {
   });
 
   test.beforeEach("Open Settings tab under Scale & Settings", async ({ page }) => {
-    explorer = await DataExplorer.open(page, TestAccount.SQL);
+    explorer = await DataExplorer.open(page, TestAccount.SQL2);
     const containerNode = await explorer.waitForContainerNode(context.database.id, context.container.id);
     await containerNode.expand();
 

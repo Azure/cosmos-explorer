@@ -45,7 +45,7 @@ test.describe("Stored Procedures", () => {
     );
 
     // Execute stored procedure
-    const executeButton = explorer.commandBarButton(CommandBarButton.Execute);
+    const executeButton = explorer.commandBarButton(CommandBarButton.Execute).first();
     await executeButton.click();
     const executeSidePanelButton = explorer.frame.getByTestId("Panel/OkButton");
     await executeSidePanelButton.click();
