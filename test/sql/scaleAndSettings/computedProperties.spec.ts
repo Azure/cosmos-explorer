@@ -24,9 +24,9 @@ test.describe("Computed Properties", () => {
     await computedPropertiesTab.click();
   });
 
-    test.afterEach("Delete Test Database", async () => {
-      await context?.dispose();
-    });
+  test.afterEach("Delete Test Database", async () => {
+    await context?.dispose();
+  });
 
   test("Add valid computed property", async ({ page }) => {
     await clearComputedPropertiesTextBoxContent({ page });

@@ -21,9 +21,9 @@ test.describe("User Defined Functions", () => {
     explorer = await DataExplorer.open(page, TestAccount.SQL2);
   });
 
-    test.afterEach("Delete Test Database", async () => {
-      await context?.dispose();
-    });
+  test.afterEach("Delete Test Database", async () => {
+    await context?.dispose();
+  });
 
   test("Add, execute, and delete user defined function", async ({ page }, testInfo) => {
     // Open container context menu and click New UDF

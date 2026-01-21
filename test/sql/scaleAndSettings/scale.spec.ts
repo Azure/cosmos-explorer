@@ -118,5 +118,5 @@ async function openScaleTab(browser: Browser): Promise<SetupResult> {
 }
 
 async function cleanup({ context }: Partial<SetupResult>) {
-await context?.dispose();
+  await context?.dispose();
 }

@@ -28,9 +28,9 @@ test.describe("Triggers", () => {
     explorer = await DataExplorer.open(page, TestAccount.SQL2);
   });
 
-    test.afterEach("Delete Test Database", async () => {
-      await context?.dispose();
-    });
+  test.afterEach("Delete Test Database", async () => {
+    await context?.dispose();
+  });
 
   test("Add and delete trigger", async ({ page }, testInfo) => {
     // Open container context menu and click New Trigger

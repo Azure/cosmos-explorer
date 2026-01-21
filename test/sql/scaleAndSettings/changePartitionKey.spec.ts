@@ -25,9 +25,9 @@ test.describe("Change Partition Key", () => {
     await PartitionKeyTab.click();
   });
 
-    test.afterEach("Delete Test Database", async () => {
-      await context?.dispose();
-    });
+  test.afterEach("Delete Test Database", async () => {
+    await context?.dispose();
+  });
 
   test("Change partition key path", async ({ page }) => {
     await expect(explorer.frame.getByText("/partitionKey")).toBeVisible();
