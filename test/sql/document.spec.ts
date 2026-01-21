@@ -136,7 +136,9 @@ test.describe.serial("Upload Item", () => {
     if (existsSync(uploadDocumentDirPath)) {
       rmdirSync(uploadDocumentDirPath);
     }
-    await context?.dispose();
+    if (!process.env.CI) {
+      await context?.dispose();
+    }
   });
 
   test.afterEach("Close Upload Items panel if still open", async () => {
