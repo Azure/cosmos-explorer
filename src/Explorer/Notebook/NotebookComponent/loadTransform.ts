@@ -1,7 +1,7 @@
 // This replicates transform loading from:
 // https://github.com/nteract/nteract/blob/master/applications/jupyter-extension/nteract_on_jupyter/app/contents/notebook.tsx
 
-export default (props: { addTransform: (component: any) => void }) => {
+export default (props: { addTransform: (component: unknown) => void }): void => {
   import(/* webpackChunkName: "plotly" */ "@nteract/transform-plotly").then((module) => {
     props.addTransform(module.default);
     props.addTransform(module.PlotlyNullTransform);

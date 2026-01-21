@@ -16,6 +16,7 @@ import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { useNotebook } from "./useNotebook";
 
 export class NotebookContainerClient {
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   private clearReconnectionAttemptMessage? = () => {};
   private isResettingWorkspace: boolean;
   private phoenixClient: PhoenixClient;
