@@ -516,7 +516,7 @@ describe("CopyJobActionMenu", () => {
       expect(screen.getByText("Cancel")).toBeInTheDocument();
     });
 
-    it("should handle complete action disabled state for online jobs", () => {
+    it("should disable complete action when job is being updated", () => {
       const job = createMockJob({
         Status: CopyJobStatusType.InProgress,
         Mode: CopyJobMigrationType.Online,
@@ -530,8 +530,34 @@ describe("CopyJobActionMenu", () => {
       const completeButton = screen.getByText("Complete");
       fireEvent.click(completeButton);
 
+      // Simulate dialog confirmation to trigger state update
+      const [, , , onOkCallback] = mockShowOkCancelModalDialog.mock.calls[0];
+      onOkCallback();
+
       fireEvent.click(actionButton);
-      expect(screen.getByText("Complete")).toBeInTheDocument();
+      const completeButtonAfterClick = screen.getByText("Complete").closest("button");
+      expect(completeButtonAfterClick).toBeInTheDocument();
+      expect(completeButtonAfterClick).toHaveAttribute("aria-disabled", "true");
+    });
+
+    it("should disable complete action when any other action is being performed", () => {
+      const job = createMockJob({
+        Status: CopyJobStatusType.InProgress,
+        Mode: CopyJobMigrationType.Online,
+      });
+
+      render(<TestComponentWrapper job={job} />);
+
+      const actionButton = screen.getByRole("button", { name: "Actions" });
+      fireEvent.click(actionButton);
+
+      const pauseButton = screen.getByText("Pause");
+      fireEvent.click(pauseButton);
+      fireEvent.click(actionButton);
+
+      const completeButtonAfterClick = screen.getByText("Complete").closest("button");
+      expect(completeButtonAfterClick).toBeInTheDocument();
+      expect(completeButtonAfterClick).toHaveAttribute("aria-disabled", "true");
     });
   });
 
