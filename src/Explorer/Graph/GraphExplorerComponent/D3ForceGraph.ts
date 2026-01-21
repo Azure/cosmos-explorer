@@ -1,4 +1,6 @@
-﻿import { BaseType } from "d3";
+﻿/*eslint-disable @typescript-eslint/no-explicit-any*/
+/*eslint-disable @typescript-eslint/no-this-alias*/
+import { BaseType } from "d3";
 import { map as d3Map } from "d3-collection";
 import { D3DragEvent, drag } from "d3-drag";
 import { forceCollide, forceLink, forceManyBody, forceSimulation } from "d3-force";
@@ -261,10 +263,10 @@ export class D3ForceGraph implements GraphRenderer {
         return;
       }
 
-      var self = this;
+      const self = this;
       // Select this node id
       selectAll(".node")
-        .filter(function (d: D3Node, i) {
+        .filter((d: D3Node) => {
           return d.id === newVal;
         })
         .each(function (d: D3Node) {
@@ -277,15 +279,15 @@ export class D3ForceGraph implements GraphRenderer {
   } // initialize
 
   private updateUniqueValues(key: string) {
-    for (var i = 0; i < this.graphDataWrapper.vertices.length; i++) {
-      let vertex = this.graphDataWrapper.vertices[i];
+    for (let i = 0; i < this.graphDataWrapper.vertices.length; i++) {
+      const vertex = this.graphDataWrapper.vertices[i];
 
-      let props = D3ForceGraph.getNodeProperties(vertex);
+      const props = D3ForceGraph.getNodeProperties(vertex);
       if (props.indexOf(key) === -1) {
         // Vertex doesn't have the property
         continue;
       }
-      let val = GraphData.getNodePropValue(vertex, key);
+      const val = GraphData.getNodePropValue(vertex, key);
       if (typeof val !== "string" && typeof val !== "number") {
         // Not a type we can map
         continue;
@@ -313,7 +315,7 @@ export class D3ForceGraph implements GraphRenderer {
    */
   private static getNodeProperties(node: D3Node): string[] {
     let props = ["id", "label"];
-
+    //eslint-disable-next-line
     if (node.hasOwnProperty("properties")) {
       props = props.concat(Object.keys(node.properties));
     }
@@ -405,7 +407,7 @@ export class D3ForceGraph implements GraphRenderer {
     // Remember nodes current position
     const posMap = new Map<string, Point2D>();
     this.simulation.nodes().forEach((d: D3Node) => {
-      if (d.x == undefined || d.y == undefined) {
+      if (d.x === undefined || d.y === undefined) {
         return;
       }
       posMap.set(d.id, { x: d.x, y: d.y });
@@ -549,7 +551,7 @@ export class D3ForceGraph implements GraphRenderer {
       .transition()
       .delay(D3ForceGraph.TRANSITION_STEP3_MS - 100)
       .duration(D3ForceGraph.TRANSITION_STEP3_MS)
-      .attrTween("fill", (t: any) => {
+      .attrTween("fill", () => {
         const ic = interpolate("#ffffff", "#000000");
         return (t: number) => {
           return ic(t);
@@ -567,7 +569,7 @@ export class D3ForceGraph implements GraphRenderer {
     // Distribute nodes initial position before simulation
     const nodes = graph.vertices;
     for (let i = 0; i < nodes.length; i++) {
-      let v = nodes[i];
+      const v = nodes[i];
 
       if (v._isRoot) {
         this.rootVertex = v;
@@ -611,6 +613,20 @@ export class D3ForceGraph implements GraphRenderer {
 
     const self = this;
 
+    const ticked = () => {
+      self.linkSelection.select(".link").attr("d", (l: D3Link) => {
+        return self.positionLink(l);
+      });
+      if (!D3ForceGraph.useSvgMarkerEnd()) {
+        self.linkSelection.select(".markerEnd").attr("transform", (l: D3Link) => {
+          return self.positionLinkEnd(l);
+        });
+      }
+      self.nodeSelection.attr("transform", (d: D3Node) => {
+        return self.positionNode(d);
+      });
+    };
+
     this.simulation.nodes(nodes).on("tick", ticked);
 
     this.simulation.force<d3.ForceLink<D3Node, D3Link>>("link").links(graph.edges);
@@ -634,20 +650,6 @@ export class D3ForceGraph implements GraphRenderer {
       this.simulation.alpha(1).restart();
       this.params.onGraphUpdated(new Date().getTime());
     });
-
-    function ticked() {
-      self.linkSelection.select(".link").attr("d", (l: D3Link) => {
-        return self.positionLink(l);
-      });
-      if (!D3ForceGraph.useSvgMarkerEnd()) {
-        self.linkSelection.select(".markerEnd").attr("transform", (l: D3Link) => {
-          return self.positionLinkEnd(l);
-        });
-      }
-      self.nodeSelection.attr("transform", (d: D3Node) => {
-        return self.positionNode(d);
-      });
-    }
   }
 
   private addNewLinks(): d3.Selection<Element, any, any, any> {
@@ -677,7 +679,7 @@ export class D3ForceGraph implements GraphRenderer {
   }
 
   private addNewNodes(): d3.Selection<Element, any, any, any> {
-    var self = this;
+    const self = this;
 
     const newNodes = this.nodeSelection
       .enter()
@@ -705,7 +707,7 @@ export class D3ForceGraph implements GraphRenderer {
         this.highlightNode(this, d);
         this.simulation.stop();
       })
-      .on("mouseout", (_: MouseEvent, d: D3Node) => {
+      .on("mouseout", () => {
         if (this.isHighlightDisabled || this.selectedNode || this.isDragging) {
           return;
         }
@@ -726,7 +728,7 @@ export class D3ForceGraph implements GraphRenderer {
       .attr("class", "main")
       .attr("r", this.igraphConfig.nodeSize);
 
-    var iconGroup = newNodes
+    const iconGroup = newNodes
       .append("g")
       .attr("class", "iconContainer")
       .attr("role", "group")
@@ -750,8 +752,8 @@ export class D3ForceGraph implements GraphRenderer {
           self.onNodeClicked(this.parentNode as BaseType, d);
         }
       });
-    var nodeSize = this.igraphConfig.nodeSize;
-    var bgsize = nodeSize + 1;
+    const nodeSize = this.igraphConfig.nodeSize;
+    const bgsize = nodeSize + 1;
 
     iconGroup
       .append("rect")
@@ -759,7 +761,7 @@ export class D3ForceGraph implements GraphRenderer {
       .attr("y", -bgsize)
       .attr("width", bgsize * 2)
       .attr("height", bgsize * 2)
-      .attr("fill-opacity", (d: D3Node) => {
+      .attr("fill-opacity", () => {
         return this.igraphConfig.nodeIconKey ? 1 : 0;
       })
       .attr("class", "icon-background");
@@ -831,10 +833,10 @@ export class D3ForceGraph implements GraphRenderer {
           self.loadNeighbors(d, PAGE_ACTION.NEXT_PAGE);
         }
       }) as any)
-      .on("mouseover", ((e: MouseEvent, d: D3Node) => {
+      .on("mouseover", ((e: MouseEvent) => {
         select(e.target as any).classed("active", true);
       }) as any)
-      .on("mouseout", ((e: MouseEvent, d: D3Node) => {
+      .on("mouseout", ((e: MouseEvent) => {
         select(e.target as any).classed("active", false);
       }) as any)
       .attr("visibility", (d: D3Node) => (!d._outEAllLoaded || !d._inEAllLoaded ? "visible" : "hidden"));
@@ -860,10 +862,10 @@ export class D3ForceGraph implements GraphRenderer {
           self.loadNeighbors(d, PAGE_ACTION.PREVIOUS_PAGE);
         }
       }) as any)
-      .on("mouseover", ((e: MouseEvent, d: D3Node) => {
+      .on("mouseover", ((e: MouseEvent) => {
         select(e.target as any).classed("active", true);
       }) as any)
-      .on("mouseout", ((e: MouseEvent, d: D3Node) => {
+      .on("mouseout", ((e: MouseEvent) => {
         select(e.target as any).classed("active", false);
       }) as any)
       .attr("visibility", (d: D3Node) =>
@@ -956,10 +958,10 @@ export class D3ForceGraph implements GraphRenderer {
           self.loadNeighbors(d, PAGE_ACTION.FIRST_PAGE);
         }
       }) as any)
-      .on("mouseover", ((e: MouseEvent, d: D3Node) => {
+      .on("mouseover", ((e: MouseEvent) => {
         select(e.target as any).classed("active", true);
       }) as any)
-      .on("mouseout", ((e: MouseEvent, d: D3Node) => {
+      .on("mouseout", ((e: MouseEvent) => {
         select(e.target as any).classed("active", false);
       }) as any);
   }
@@ -968,10 +970,9 @@ export class D3ForceGraph implements GraphRenderer {
    * Remove LoadMore subassembly for existing nodes that show all their children in the graph
    */
   private updateLoadMore(nodeSelection: d3.Selection<Element, any, any, any>) {
-    const self = this;
     nodeSelection.selectAll(".loadmore").remove();
 
-    var nodeSize = this.igraphConfig.nodeSize;
+    const nodeSize = this.igraphConfig.nodeSize;
     const rootSelectionG = nodeSelection
       .filter((d: D3Node) => {
         return !!d._isRoot && !!d._pagination;
@@ -1091,7 +1092,7 @@ export class D3ForceGraph implements GraphRenderer {
 
   private fadeNonNeighbors(nodeId: string) {
     this.g.selectAll(".node").classed("inactive", (d: D3Node) => {
-      var neighbors = ((showNeighborType) => {
+      const neighbors = ((showNeighborType) => {
         switch (showNeighborType) {
           case NeighborType.SOURCES_ONLY:
             return this.graphDataWrapper.getSourcesForId(nodeId);
@@ -1152,7 +1153,7 @@ export class D3ForceGraph implements GraphRenderer {
   }
 
   private retrieveNodeCaption(d: D3Node) {
-    let key = this.igraphConfig.nodeCaption;
+    const key = this.igraphConfig.nodeCaption;
     let value: string = d.id || d.label;
     if (key) {
       value = <string>GraphData.getNodePropValue(d, key) || "";
@@ -1203,14 +1204,14 @@ export class D3ForceGraph implements GraphRenderer {
       y: (<D3Node>l.target).y,
     };
     const d1 = D3ForceGraph.calculateControlPoint(source, target);
-    var radius = this.igraphConfig.nodeSize + 3;
+    const radius = this.igraphConfig.nodeSize + 3;
 
     // End
     const dx = target.x - d1.x;
     const dy = target.y - d1.y;
     const angle = Math.atan2(dy, dx);
-    var ux = target.x - Math.cos(angle) * radius;
-    var uy = target.y - Math.sin(angle) * radius;
+    const ux = target.x - Math.cos(angle) * radius;
+    const uy = target.y - Math.sin(angle) * radius;
 
     return `translate(${ux},${uy}) rotate(${(angle * 180) / Math.PI})`;
   }
@@ -1225,21 +1226,21 @@ export class D3ForceGraph implements GraphRenderer {
       y: (<D3Node>l.target).y,
     };
     const d1 = D3ForceGraph.calculateControlPoint(source, target);
-    var radius = this.igraphConfig.nodeSize + 3;
+    const radius = this.igraphConfig.nodeSize + 3;
 
     // Start
-    var dx = d1.x - source.x;
-    var dy = d1.y - source.y;
-    var angle = Math.atan2(dy, dx);
-    var tx = source.x + Math.cos(angle) * radius;
-    var ty = source.y + Math.sin(angle) * radius;
+    let dx = d1.x - source.x;
+    let dy = d1.y - source.y;
+    let angle = Math.atan2(dy, dx);
+    const tx = source.x + Math.cos(angle) * radius;
+    const ty = source.y + Math.sin(angle) * radius;
 
     // End
     dx = target.x - d1.x;
     dy = target.y - d1.y;
     angle = Math.atan2(dy, dx);
-    var ux = target.x - Math.cos(angle) * radius;
-    var uy = target.y - Math.sin(angle) * radius;
+    const ux = target.x - Math.cos(angle) * radius;
+    const uy = target.y - Math.sin(angle) * radius;
 
     return "M" + tx + "," + ty + "S" + d1.x + "," + d1.y + " " + ux + "," + uy;
   }
@@ -1261,9 +1262,9 @@ export class D3ForceGraph implements GraphRenderer {
   }
 
   private static computeImageData(d: D3Node, config: IGraphConfig): string {
-    let propValue = <string>GraphData.getNodePropValue(d, config.nodeIconKey) || "";
+    const propValue = <string>GraphData.getNodePropValue(d, config.nodeIconKey) || "";
     // Trim leading and trailing spaces to make comparison more forgiving.
-    let value = config.iconsMap[propValue.trim()];
+    const value = config.iconsMap[propValue.trim()];
     if (!value) {
       return undefined;
     }
@@ -1289,7 +1290,7 @@ export class D3ForceGraph implements GraphRenderer {
       // clear icons
       this.g.selectAll(".node .icon").attr("xlink:href", undefined);
     }
-    this.g.selectAll(".node .icon-background").attr("fill-opacity", (d: D3Node) => {
+    this.g.selectAll(".node .icon-background").attr("fill-opacity", () => {
       return config.nodeIconKey ? 1 : 0;
     });
     this.g.selectAll(".node text.caption").text((d: D3Node) => {
