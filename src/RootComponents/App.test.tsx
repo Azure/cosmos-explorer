@@ -2,7 +2,7 @@ import { loadTheme } from "@fluentui/react";
 import "@testing-library/jest-dom";
 import { render, screen, waitFor } from "@testing-library/react";
 import React from "react";
-import { updateStyles } from "../Common/StyleConstants";
+import * as StyleConstants from "../Common/StyleConstants";
 import { Platform } from "../ConfigContext";
 import { useConfig } from "../hooks/useConfig";
 import { useKnockoutExplorer } from "../hooks/useKnockoutExplorer";
@@ -156,7 +156,7 @@ describe("App", () => {
     mockUseKnockoutExplorer = jest.mocked(useKnockoutExplorer);
     mockUseConfig = jest.mocked(useConfig);
     mockLoadTheme = jest.mocked(loadTheme);
-    mockUpdateStyles = jest.mocked(updateStyles);
+    mockUpdateStyles = jest.mocked(StyleConstants.updateStyles);
 
     const mockUseMetricScenario = jest.mocked(useMetricScenario);
     mockUseMetricScenario.mockReturnValue({
