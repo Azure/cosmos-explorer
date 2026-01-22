@@ -12,18 +12,18 @@ test.describe("User Defined Functions", () => {
   }`;
 
   test.beforeAll("Create Test Database", async () => {
-    context = await createTestSQLContainer();
+    context = await createTestSQLContainer({
+      testAccount: TestAccount.SQL2,
+    });
   });
 
   test.beforeEach("Open container", async ({ page }) => {
-    explorer = await DataExplorer.open(page, TestAccount.SQL);
+    explorer = await DataExplorer.open(page, TestAccount.SQL2);
   });
 
-  if (!process.env.CI) {
-    test.afterAll("Delete Test Database", async () => {
-      await context?.dispose();
-    });
-  }
+  test.afterEach("Delete Test Database", async () => {
+    await context?.dispose();
+  });
 
   test("Add, execute, and delete user defined function", async ({ page }, testInfo) => {
     // Open container context menu and click New UDF

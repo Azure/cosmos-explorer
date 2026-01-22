@@ -19,18 +19,18 @@ test.describe("Triggers", () => {
         request.setBody(itemToCreate);
     }`;
   test.beforeAll("Create Test Database", async () => {
-    context = await createTestSQLContainer();
+    context = await createTestSQLContainer({
+      testAccount: TestAccount.SQL2,
+    });
   });
 
   test.beforeEach("Open container", async ({ page }) => {
-    explorer = await DataExplorer.open(page, TestAccount.SQL);
+    explorer = await DataExplorer.open(page, TestAccount.SQL2);
   });
 
-  if (!process.env.CI) {
-    test.afterAll("Delete Test Database", async () => {
-      await context?.dispose();
-    });
-  }
+  test.afterEach("Delete Test Database", async () => {
+    await context?.dispose();
+  });
 
   test("Add and delete trigger", async ({ page }, testInfo) => {
     // Open container context menu and click New Trigger

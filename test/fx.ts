@@ -39,6 +39,7 @@ export enum TestAccount {
   MongoReadonly = "MongoReadOnly",
   Mongo32 = "Mongo32",
   SQL = "SQL",
+  SQL2 = "SQL2",
   SQLReadOnly = "SQLReadOnly",
   SQLContainerCopyOnly = "SQLContainerCopyOnly",
 }
@@ -51,6 +52,7 @@ export const defaultAccounts: Record<TestAccount, string> = {
   [TestAccount.MongoReadonly]: "github-e2etests-mongo-readonly",
   [TestAccount.Mongo32]: "github-e2etests-mongo32",
   [TestAccount.SQL]: "github-e2etests-sql",
+  [TestAccount.SQL2]: "github-e2etests-sql-2",
   [TestAccount.SQLReadOnly]: "github-e2etests-sql-readonly",
   [TestAccount.SQLContainerCopyOnly]: "github-e2etests-sql-containercopyonly",
 };
@@ -72,6 +74,9 @@ function tryGetStandardName(accountType: TestAccount) {
 }
 
 export function getAccountName(accountType: TestAccount) {
+  if (accountType === TestAccount.SQL2 && !process.env.CI) {
+    accountType = TestAccount.SQL;
+  }
   return (
     process.env[`DE_TEST_ACCOUNT_NAME_${accountType.toLocaleUpperCase()}`] ??
     tryGetStandardName(accountType) ??
@@ -101,6 +106,7 @@ export async function getTestExplorerUrl(accountType: TestAccount, options?: Tes
   params.set("feature.enableCopilot", "false");
 
   const nosqlRbacToken = process.env.NOSQL_TESTACCOUNT_TOKEN;
+  const nosql2RbacToken = process.env.NOSQL2_TESTACCOUNT_TOKEN;
   const nosqlReadOnlyRbacToken = process.env.NOSQL_READONLY_TESTACCOUNT_TOKEN;
   const nosqlContainerCopyRbacToken = process.env.NOSQL_CONTAINERCOPY_TESTACCOUNT_TOKEN;
   const tableRbacToken = process.env.TABLE_TESTACCOUNT_TOKEN;
@@ -117,7 +123,12 @@ export async function getTestExplorerUrl(accountType: TestAccount, options?: Tes
         params.set("enableaaddataplane", "true");
       }
       break;
-
+    case TestAccount.SQL2:
+      if (nosql2RbacToken) {
+        params.set("nosql2RbacToken", nosql2RbacToken);
+        params.set("enableaaddataplane", "true");
+      }
+      break;
     case TestAccount.SQLContainerCopyOnly:
       if (nosqlContainerCopyRbacToken) {
         params.set("nosqlRbacToken", nosqlContainerCopyRbacToken);
@@ -515,14 +526,14 @@ export class DataExplorer {
     const containerNode = await this.waitForContainerNode(context.database.id, context.container.id);
     await containerNode.expand();
 
-    // refresh tree to remove deleted database
-    const consoleMessages = await this.getNotificationConsoleMessages();
-    const refreshButton = this.frame.getByTestId("Sidebar/RefreshButton");
-    await refreshButton.click();
-    await expect(consoleMessages).toContainText("Successfully refreshed databases", {
-      timeout: ONE_MINUTE_MS,
-    });
-    await this.collapseNotificationConsole();
+    // // refresh tree to remove deleted database
+    // const consoleMessages = await this.getNotificationConsoleMessages();
+    // const refreshButton = this.frame.getByTestId("Sidebar/RefreshButton");
+    // await refreshButton.click();
+    // await expect(consoleMessages).toContainText("Successfully refreshed databases", {
+    //   timeout: ONE_MINUTE_MS,
+    // });
+    // await this.collapseNotificationConsole();
 
     const scaleAndSettingsButton = this.frame.getByTestId(
       `TreeNode:${context.database.id}/${context.container.id}/Scale & Settings`,

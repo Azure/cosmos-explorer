@@ -10,11 +10,13 @@ test.describe("Change Partition Key", () => {
   let previousJobName: string | undefined;
 
   test.beforeAll("Create Test Database", async () => {
-    context = await createTestSQLContainer();
+    context = await createTestSQLContainer({
+      testAccount: TestAccount.SQL2,
+    });
   });
 
   test.beforeEach("Open container settings", async ({ page }) => {
-    explorer = await DataExplorer.open(page, TestAccount.SQL);
+    explorer = await DataExplorer.open(page, TestAccount.SQL2);
 
     // Click Scale & Settings and open Partition Key tab
     await explorer.openScaleAndSettings(context);
@@ -23,12 +25,9 @@ test.describe("Change Partition Key", () => {
     await PartitionKeyTab.click();
   });
 
-  // Delete database only if not running in CI
-  if (!process.env.CI) {
-    test.afterEach("Delete Test Database", async () => {
-      await context?.dispose();
-    });
-  }
+  test.afterEach("Delete Test Database", async () => {
+    await context?.dispose();
+  });
 
   test("Change partition key path", async ({ page }) => {
     await expect(explorer.frame.getByText("/partitionKey")).toBeVisible();

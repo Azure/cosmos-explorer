@@ -7,14 +7,16 @@ test.describe("Stored Procedures", () => {
   let explorer: DataExplorer = null!;
 
   test.beforeAll("Create Test Database", async () => {
-    context = await createTestSQLContainer();
+    context = await createTestSQLContainer({
+      testAccount: TestAccount.SQL2,
+    });
   });
 
   test.beforeEach("Open container", async ({ page }) => {
-    explorer = await DataExplorer.open(page, TestAccount.SQL);
+    explorer = await DataExplorer.open(page, TestAccount.SQL2);
   });
 
-  test.afterAll("Delete Test Database", async () => {
+  test.afterEach("Delete Test Database", async () => {
     await context?.dispose();
   });
 
@@ -43,7 +45,7 @@ test.describe("Stored Procedures", () => {
     );
 
     // Execute stored procedure
-    const executeButton = explorer.commandBarButton(CommandBarButton.Execute);
+    const executeButton = explorer.commandBarButton(CommandBarButton.Execute).first();
     await executeButton.click();
     const executeSidePanelButton = explorer.frame.getByTestId("Panel/OkButton");
     await executeSidePanelButton.click();

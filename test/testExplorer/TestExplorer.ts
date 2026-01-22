@@ -17,6 +17,7 @@ const nosqlRbacToken =
   urlSearchParams.get("nosqlRbacToken") ||
   (enablecontainercopy ? process.env.NOSQL_CONTAINERCOPY_TESTACCOUNT_TOKEN : process.env.NOSQL_TESTACCOUNT_TOKEN) ||
   "";
+const nosql2RbacToken = urlSearchParams.get("nosql2RbacToken") || process.env.NOSQL2_TESTACCOUNT_TOKEN || "";
 const nosqlReadOnlyRbacToken =
   urlSearchParams.get("nosqlReadOnlyRbacToken") || process.env.NOSQL_READONLY_TESTACCOUNT_TOKEN || "";
 const tableRbacToken = urlSearchParams.get("tableRbacToken") || process.env.TABLE_TESTACCOUNT_TOKEN || "";
@@ -42,6 +43,9 @@ const initTestExplorer = async (): Promise<void> => {
   switch (testAccountType) {
     case "sql":
       rbacToken = nosqlRbacToken;
+      break;
+    case "sql2":
+      rbacToken = nosql2RbacToken;
       break;
     case "sql-readonly":
       rbacToken = nosqlReadOnlyRbacToken;

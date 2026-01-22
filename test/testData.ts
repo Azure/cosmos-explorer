@@ -86,13 +86,14 @@ type createTestSqlContainerConfig = {
   includeTestData?: boolean;
   partitionKey?: string;
   databaseName?: string;
+  testAccount?: TestAccount;
 };
 
 type createMultipleTestSqlContainerConfig = {
   containerCount?: number;
   partitionKey?: string;
   databaseName?: string;
-  accountType: TestAccount.SQLContainerCopyOnly | TestAccount.SQL;
+  accountType: TestAccount.SQLContainerCopyOnly | TestAccount.SQL | TestAccount.SQL2;
 };
 
 export async function createMultipleTestContainers({
@@ -114,12 +115,7 @@ export async function createMultipleTestContainers({
     endpoint: account.documentEndpoint!,
   };
 
-  const rbacToken =
-    accountType === TestAccount.SQL
-      ? process.env.NOSQL_TESTACCOUNT_TOKEN
-      : accountType === TestAccount.SQLContainerCopyOnly
-      ? process.env.NOSQL_CONTAINERCOPY_TESTACCOUNT_TOKEN
-      : "";
+  const rbacToken = getRbacToken(accountType);
   if (rbacToken) {
     clientOptions.tokenProvider = async (): Promise<string> => {
       const AUTH_PREFIX = `type=aad&ver=1.0&sig=`;
@@ -155,20 +151,21 @@ export async function createTestSQLContainer({
   includeTestData = false,
   partitionKey = "/partitionKey",
   databaseName = "",
+  testAccount = TestAccount.SQL,
 }: createTestSqlContainerConfig = {}) {
   const databaseId = databaseName ? databaseName : generateUniqueName("db");
   const containerId = "testcontainer"; // A unique container name isn't needed because the database is unique
   const credentials = getAzureCLICredentials();
   const adaptedCredentials = new AzureIdentityCredentialAdapter(credentials);
   const armClient = new CosmosDBManagementClient(adaptedCredentials, subscriptionId);
-  const accountName = getAccountName(TestAccount.SQL);
+  const accountName = getAccountName(testAccount);
   const account = await armClient.databaseAccounts.get(resourceGroupName, accountName);
 
   const clientOptions: CosmosClientOptions = {
     endpoint: account.documentEndpoint!,
   };
 
-  const nosqlAccountRbacToken = process.env.NOSQL_TESTACCOUNT_TOKEN;
+  const nosqlAccountRbacToken = getRbacToken(testAccount);
   if (nosqlAccountRbacToken) {
     clientOptions.tokenProvider = async (): Promise<string> => {
       const AUTH_PREFIX = `type=aad&ver=1.0&sig=`;
@@ -251,4 +248,17 @@ export async function retry<T>(fn: () => Promise<T>, retries = 3, delayMs = 1000
     }
   }
   throw lastError;
+}
+
+function getRbacToken(accountType: TestAccount): string | undefined {
+  switch (accountType) {
+    case TestAccount.SQL:
+      return process.env.NOSQL_TESTACCOUNT_TOKEN;
+    case TestAccount.SQL2:
+      return process.env.NOSQL2_TESTACCOUNT_TOKEN;
+    case TestAccount.SQLContainerCopyOnly:
+      return process.env.NOSQL_CONTAINERCOPY_TESTACCOUNT_TOKEN;
+    default:
+      return undefined;
+  }
 }

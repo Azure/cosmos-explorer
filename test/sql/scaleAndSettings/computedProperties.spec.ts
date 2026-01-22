@@ -8,11 +8,13 @@ test.describe("Computed Properties", () => {
   let explorer: DataExplorer = null!;
 
   test.beforeAll("Create Test Database", async () => {
-    context = await createTestSQLContainer();
+    context = await createTestSQLContainer({
+      testAccount: TestAccount.SQL2,
+    });
   });
 
   test.beforeEach("Open Settings tab under Scale & Settings", async ({ page }) => {
-    explorer = await DataExplorer.open(page, TestAccount.SQL);
+    explorer = await DataExplorer.open(page, TestAccount.SQL2);
     const containerNode = await explorer.waitForContainerNode(context.database.id, context.container.id);
     await containerNode.expand();
 
@@ -22,7 +24,7 @@ test.describe("Computed Properties", () => {
     await computedPropertiesTab.click();
   });
 
-  test.afterAll("Delete Test Database", async () => {
+  test.afterEach("Delete Test Database", async () => {
     await context?.dispose();
   });
 
