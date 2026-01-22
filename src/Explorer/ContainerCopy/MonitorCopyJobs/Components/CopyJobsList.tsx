@@ -12,8 +12,9 @@ import {
   Stack,
   Sticky,
   StickyPositionType,
+  TextField,
 } from "@fluentui/react";
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import Pager from "../../../../Common/Pager";
 import { useThemeStore } from "../../../../hooks/useTheme";
 import { getThemeTokens } from "../../../Theme/ThemeUtil";
@@ -30,9 +31,15 @@ interface CopyJobsListProps {
 const styles = {
   container: { height: "100%" } as React.CSSProperties,
   stackItem: { position: "relative", marginBottom: "20px" } as React.CSSProperties,
+  filterContainer: {
+    margin: "15px 5px",
+  },
 };
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 15;
+
+// Columns to search across
+const searchableFields = ["Name", "Status", "LastUpdatedTime", "Mode"];
 
 const CopyJobsList: React.FC<CopyJobsListProps> = ({ jobs, handleActionClick, pageSize = PAGE_SIZE }) => {
   const isDarkMode = useThemeStore((state) => state.isDarkMode);
@@ -41,6 +48,23 @@ const CopyJobsList: React.FC<CopyJobsListProps> = ({ jobs, handleActionClick, pa
   const [sortedJobs, setSortedJobs] = React.useState<CopyJobType[]>(jobs);
   const [sortedColumnKey, setSortedColumnKey] = React.useState<string | undefined>(undefined);
   const [isSortedDescending, setIsSortedDescending] = React.useState<boolean>(false);
+  const [filterText, setFilterText] = React.useState<string>("");
+
+  const filteredJobs = useMemo(() => {
+    if (!filterText) {
+      return sortedJobs;
+    }
+    const lowerFilterText = filterText.toLowerCase();
+    return sortedJobs.filter((job: any) => {
+      return searchableFields.some((field) => {
+        const value = job[field];
+        if (value === undefined || value === null) {
+          return false;
+        }
+        return String(value).toLowerCase().includes(lowerFilterText);
+      });
+    });
+  }, [sortedJobs, filterText]);
 
   useEffect(() => {
     setSortedJobs(jobs);
@@ -64,7 +88,18 @@ const CopyJobsList: React.FC<CopyJobsListProps> = ({ jobs, handleActionClick, pa
     setStartIndex(0);
   };
 
-  const columns: IColumn[] = getColumns(handleSort, handleActionClick, sortedColumnKey, isSortedDescending);
+  useEffect(() => {
+    setStartIndex(0);
+  }, [filterText]);
+
+  const sortableColumns: IColumn[] = getColumns(handleSort, handleActionClick, sortedColumnKey, isSortedDescending);
+
+  const handleFilterTextChange = (
+    _event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
+    newValue?: string,
+  ) => {
+    setFilterText(newValue || "");
+  };
 
   const _handleRowClick = (job: CopyJobType) => {
     openCopyJobDetailsPanel(job);
@@ -81,14 +116,24 @@ const CopyJobsList: React.FC<CopyJobsListProps> = ({ jobs, handleActionClick, pa
   return (
     <div style={styles.container}>
       <Stack verticalFill={true}>
+        <Stack.Item>
+          <div style={styles.filterContainer}>
+            <TextField
+              data-test="CopyJobsList/FilterTextField"
+              placeholder="Search jobs..."
+              value={filterText}
+              onChange={handleFilterTextChange}
+            />
+          </div>
+        </Stack.Item>
         <Stack.Item verticalFill={true} grow={1} shrink={1} style={styles.stackItem}>
           <ScrollablePane scrollbarVisibility={ScrollbarVisibility.auto}>
             <ShimmeredDetailsList
               className="CopyJobListContainer"
               onRenderRow={_onRenderRow}
               checkboxVisibility={2}
-              columns={columns}
-              items={sortedJobs.slice(startIndex, startIndex + pageSize)}
+              columns={sortableColumns}
+              items={filteredJobs.slice(startIndex, startIndex + pageSize)}
               enableShimmer={false}
               constrainMode={ConstrainMode.unconstrained}
               layoutMode={DetailsListLayoutMode.justified}
@@ -117,12 +162,12 @@ const CopyJobsList: React.FC<CopyJobsListProps> = ({ jobs, handleActionClick, pa
             />
           </ScrollablePane>
         </Stack.Item>
-        {sortedJobs.length > pageSize && (
+        {filteredJobs.length > pageSize && (
           <Stack.Item>
             <Pager
               disabled={false}
               startIndex={startIndex}
-              totalCount={sortedJobs.length}
+              totalCount={filteredJobs.length}
               pageSize={pageSize}
               onLoadPage={(startIdx /* pageSize */) => {
                 setStartIndex(startIdx);

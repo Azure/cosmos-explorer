@@ -248,6 +248,10 @@ test.describe("Container Copy - Offline Migration", () => {
     // Verify panel closes and job appears in the list
     await expect(panel).not.toBeVisible({ timeout: 5000 });
 
+    const filterTextField = wrapper.getByTestId("CopyJobsList/FilterTextField");
+    await filterTextField.waitFor({ state: "visible", timeout: 5000 });
+    await filterTextField.fill(validJobName);
+
     const jobsListContainer = wrapper.locator(".CopyJobListContainer .ms-DetailsList-contentWrapper .ms-List-page");
     await jobsListContainer.waitFor({ state: "visible", timeout: 5000 });
 
