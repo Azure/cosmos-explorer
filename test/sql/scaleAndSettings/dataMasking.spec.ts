@@ -4,11 +4,11 @@ import { createTestSQLContainer, TestContainerContext } from "../../testData";
 
 /**
  * Tests for Dynamic Data Masking (DDM) feature.
- * 
+ *
  * Prerequisites:
  * - Test account must have the EnableDynamicDataMasking capability enabled
  * - If the capability is not enabled, the DataMaskingTab will not be visible and tests will be skipped
- * 
+ *
  * Important Notes:
  * - Once DDM is enabled on a container, it cannot be disabled (isPolicyEnabled cannot be set to false)
  * - Tests focus on enabling DDM and modifying the masking policy configuration
@@ -32,7 +32,10 @@ test.describe("Data Masking under Scale & Settings", () => {
     const isTabVisible = await dataMaskingTab.isVisible().catch(() => false);
 
     if (!isTabVisible) {
-      test.skip(true, "Data Masking tab is not available. Test account may not have EnableDynamicDataMasking capability.");
+      test.skip(
+        true,
+        "Data Masking tab is not available. Test account may not have EnableDynamicDataMasking capability.",
+      );
     }
 
     await dataMaskingTab.click();
@@ -42,7 +45,7 @@ test.describe("Data Masking under Scale & Settings", () => {
     await context?.dispose();
   });
 
-  test("Data Masking editor should be visible", async ({ page }) => {
+  test("Data Masking editor should be visible", async () => {
     // Verify the Data Masking editor is visible
     const dataMaskingEditor = explorer.frame.locator(".settingsV2Editor");
     await expect(dataMaskingEditor).toBeVisible();
