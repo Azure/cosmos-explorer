@@ -4,8 +4,14 @@ import { createTestSQLContainer, TestContainerContext } from "../../testData";
 
 /**
  * Tests for Dynamic Data Masking (DDM) feature.
- * Note: These tests require the test account to have the EnableDynamicDataMasking capability enabled.
- * If the capability is not enabled, the DataMaskingTab will not be visible and tests will be skipped.
+ * 
+ * Prerequisites:
+ * - Test account must have the EnableDynamicDataMasking capability enabled
+ * - If the capability is not enabled, the DataMaskingTab will not be visible and tests will be skipped
+ * 
+ * Important Notes:
+ * - Once DDM is enabled on a container, it cannot be disabled (isPolicyEnabled cannot be set to false)
+ * - Tests focus on enabling DDM and modifying the masking policy configuration
  */
 test.describe("Data Masking under Scale & Settings", () => {
   let context: TestContainerContext = null!;
@@ -42,10 +48,11 @@ test.describe("Data Masking under Scale & Settings", () => {
     await expect(dataMaskingEditor).toBeVisible();
   });
 
-  test("Update data masking policy with valid JSON", async ({ page }) => {
+  test("Enable data masking policy with valid JSON", async ({ page }) => {
     await clearDataMaskingEditorContent({ page });
 
     // Type a valid data masking policy
+    // Note: Once DDM is enabled on a container, it cannot be disabled
     const validPolicy = JSON.stringify(
       {
         includedPaths: [
@@ -64,45 +71,6 @@ test.describe("Data Masking under Scale & Settings", () => {
     );
 
     await page.keyboard.type(validPolicy);
-
-    // Wait a moment for the changes to be processed
-    await page.waitForTimeout(1000);
-
-    // Click Save button
-    const saveButton = explorer.commandBarButton(CommandBarButton.Save);
-    await expect(saveButton).toBeEnabled();
-    await saveButton.click();
-
-    // Verify success message
-    await expect(explorer.getConsoleHeaderStatus()).toContainText(
-      `Successfully updated container ${context.container.id}`,
-      {
-        timeout: 2 * ONE_MINUTE_MS,
-      },
-    );
-  });
-
-  test("Disable data masking policy", async ({ page }) => {
-    await clearDataMaskingEditorContent({ page });
-
-    const disabledPolicy = JSON.stringify(
-      {
-        includedPaths: [
-          {
-            path: "/",
-            strategy: "Default",
-            startPosition: 0,
-            length: -1,
-          },
-        ],
-        excludedPaths: [],
-        isPolicyEnabled: false,
-      },
-      null,
-      2,
-    );
-
-    await page.keyboard.type(disabledPolicy);
 
     // Wait a moment for the changes to be processed
     await page.waitForTimeout(1000);
