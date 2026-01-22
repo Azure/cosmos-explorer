@@ -73,7 +73,11 @@ for (const { name, databaseId, containerId, documents } of documentTestCases) {
             };
 
             await documentsTab.resultsEditor.setText(JSON.stringify(newDocument));
-            await page.waitForTimeout(5000); // wait for editor to process changes
+            // Verify that the document text was set correctly
+            await expect
+              .poll(async () => await documentsTab.resultsEditor.text(), { timeout: 5000 })
+              .toEqual(JSON.stringify(newDocument));
+
             const saveButton = await explorer.waitForCommandBarButton(CommandBarButton.Save, 5000);
             await saveButton.click({ timeout: 5000 });
             await expect(saveButton).toBeHidden({ timeout: 5000 });
