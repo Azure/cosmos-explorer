@@ -378,9 +378,11 @@ type PanelOpenOptions = {
 
 export enum CommandBarButton {
   Save = "Save",
+  Delete = "Delete",
   Execute = "Execute",
   ExecuteQuery = "Execute Query",
   UploadItem = "Upload Item",
+  NewDocument = "New Document",
 }
 
 /** Helper class that provides locator methods for DataExplorer components, on top of a Frame */
@@ -478,7 +480,7 @@ export class DataExplorer {
     return await this.waitForNode(`${databaseId}/${containerId}/Documents`);
   }
 
-  async waitForCommandBarButton(label: string, timeout?: number): Promise<Locator> {
+  async waitForCommandBarButton(label: CommandBarButton, timeout?: number): Promise<Locator> {
     const commandBar = this.commandBarButton(label);
     await commandBar.waitFor({ state: "visible", timeout });
     return commandBar;
