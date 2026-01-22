@@ -26,6 +26,8 @@ for (const { name, databaseId, containerId, documents } of documentTestCases) {
       await documentsTab.documentsFilter.waitFor();
       await documentsTab.documentsListPane.waitFor();
       await expect(documentsTab.resultsEditor.locator).toBeAttached({ timeout: 60 * 1000 });
+
+      await explorer.expandNotificationConsole();
     });
     test.afterEach(async ({ page }) => {
       await page.unrouteAll({ behavior: "ignoreErrors" });
