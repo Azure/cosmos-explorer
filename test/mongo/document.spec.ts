@@ -50,7 +50,7 @@ for (const { name, databaseId, containerId, documents } of documentTestCases) {
           expect(resultData?._id).not.toBeNull();
           expect(resultData?._id).toEqual(docId);
         });
-        test(`should be able to create and delete new document from ${docId}`, async () => {
+        test(`should be able to create and delete new document from ${docId}`, async ({ page }) => {
           const span = documentsTab.documentsListPane.getByText(docId, { exact: true }).nth(0);
           await span.waitFor();
           await expect(span).toBeVisible();
@@ -73,6 +73,7 @@ for (const { name, databaseId, containerId, documents } of documentTestCases) {
             };
 
             await documentsTab.resultsEditor.setText(JSON.stringify(newDocument));
+            await page.waitForTimeout(2000); // wait for editor to process changes
             const saveButton = await explorer.waitForCommandBarButton("Save", 5000);
             await saveButton.click({ timeout: 5000 });
             await expect(saveButton).toBeHidden({ timeout: 5000 });
