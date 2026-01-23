@@ -6,8 +6,8 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
   schedule:
-    # Once every two hours
-    - cron: "0 */2 * * *"
+    # Once every twelve hours
+    - cron: "0 */12 * * *"
 
 permissions:
   id-token: write
