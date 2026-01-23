@@ -88,10 +88,6 @@ const CopyJobsList: React.FC<CopyJobsListProps> = ({ jobs, handleActionClick, pa
     setStartIndex(0);
   };
 
-  useEffect(() => {
-    setStartIndex(0);
-  }, [filterText]);
-
   const sortableColumns: IColumn[] = getColumns(handleSort, handleActionClick, sortedColumnKey, isSortedDescending);
 
   const handleFilterTextChange = (
@@ -99,6 +95,7 @@ const CopyJobsList: React.FC<CopyJobsListProps> = ({ jobs, handleActionClick, pa
     newValue?: string,
   ) => {
     setFilterText(newValue || "");
+    setStartIndex(0);
   };
 
   const _handleRowClick = (job: CopyJobType) => {
