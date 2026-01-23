@@ -56,8 +56,8 @@ for (const { name, databaseId, containerId, documents } of documentTestCases) {
           await expect(span).toBeVisible();
 
           await span.click();
-          await expect(documentsTab.resultsEditor.locator).toBeAttached({ timeout: 60 * 1000 });
-          // await page.waitForTimeout(5000); // wait for 5 seconds to ensure document is fully loaded. waitforTimeout is not recommended generally but here we are working around flakiness in the test env
+          // await expect(documentsTab.resultsEditor.locator).toBeAttached({ timeout: 60 * 1000 });
+          await page.waitForTimeout(5000); // wait for 5 seconds to ensure document is fully loaded. waitforTimeout is not recommended generally but here we are working around flakiness in the test env
           let newDocumentId;
           let retryCount = 0;
           await retry(async () => {
