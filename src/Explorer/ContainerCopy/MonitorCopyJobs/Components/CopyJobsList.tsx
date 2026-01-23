@@ -121,6 +121,7 @@ const CopyJobsList: React.FC<CopyJobsListProps> = ({ jobs, handleActionClick, pa
             <TextField
               data-test="CopyJobsList/FilterTextField"
               placeholder="Search jobs..."
+              ariaLabel="Search jobs"
               value={filterText}
               onChange={handleFilterTextChange}
             />
