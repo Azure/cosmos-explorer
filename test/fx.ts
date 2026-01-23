@@ -63,6 +63,9 @@ export const TEST_MANUAL_THROUGHPUT_RU_2K = 2000;
 export const ONE_MINUTE_MS: number = 60 * 1000;
 
 function tryGetStandardName(accountType: TestAccount) {
+  if (accountType === TestAccount.MongoReadonly) {
+    return "aisayas-e2e-mongo-readonly";
+  }
   if (process.env.DE_TEST_ACCOUNT_PREFIX) {
     const actualPrefix = process.env.DE_TEST_ACCOUNT_PREFIX.endsWith("-")
       ? process.env.DE_TEST_ACCOUNT_PREFIX
