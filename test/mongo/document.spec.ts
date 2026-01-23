@@ -57,25 +57,37 @@ for (const { name, databaseId, containerId, documents } of documentTestCases) {
 
           await span.click();
           let newDocumentId;
+          let retryCount = 0;
           await retry(async () => {
-            const newDocumentButton = await explorer.waitForCommandBarButton(CommandBarButton.NewDocument, 5000);
-            await expect(newDocumentButton).toBeVisible();
-            await expect(newDocumentButton).toBeEnabled();
-            await newDocumentButton.click();
+            try {
+              const newDocumentButton = await explorer.waitForCommandBarButton(CommandBarButton.NewDocument, 5000);
+              await expect(newDocumentButton).toBeVisible();
+              await expect(newDocumentButton).toBeEnabled();
+              await newDocumentButton.click();
+              console.log(`DEBUG: Clicked New Document button - retryCount=${retryCount}`);
+              await expect(documentsTab.resultsEditor.locator).toBeAttached({ timeout: 60 * 1000 });
 
-            await expect(documentsTab.resultsEditor.locator).toBeAttached({ timeout: 60 * 1000 });
+              newDocumentId = `${Date.now().toString()}-delete`;
 
-            newDocumentId = `${Date.now().toString()}-delete`;
+              const newDocument = {
+                _id: newDocumentId,
+                ...setPartitionKeys(partitionKeys || []),
+              };
 
-            const newDocument = {
-              _id: newDocumentId,
-              ...setPartitionKeys(partitionKeys || []),
-            };
+              await documentsTab.resultsEditor.setText(JSON.stringify(newDocument));
+              const saveButton = await explorer.waitForCommandBarButton(CommandBarButton.Save, 5000);
+              await saveButton.click({ timeout: 5000 });
+              console.log(`DEBUG: Clicked Save button - retryCount=${retryCount}`);
 
-            await documentsTab.resultsEditor.setText(JSON.stringify(newDocument));
-            const saveButton = await explorer.waitForCommandBarButton(CommandBarButton.Save, 5000);
-            await saveButton.click({ timeout: 5000 });
-            await expect(saveButton).toBeHidden({ timeout: 5000 });
+              await expect(saveButton).toBeHidden({ timeout: 5000 });
+            } catch (err) {
+              retryCount++;
+              console.warn(
+                `DEBUG: Attempt ${retryCount} to create new document from ${docId} failed: ${(err as Error).message}`,
+              );
+
+              throw err;
+            }
           }, 3);
 
           await documentsTab.setFilter(`{_id: "${newDocumentId}"}`);
