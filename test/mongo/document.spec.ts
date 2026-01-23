@@ -50,12 +50,14 @@ for (const { name, databaseId, containerId, documents } of documentTestCases) {
           expect(resultData?._id).not.toBeNull();
           expect(resultData?._id).toEqual(docId);
         });
-        test(`should be able to create and delete new document from ${docId}`, async ({ page }) => {
+        test(`should be able to create and delete new document from ${docId}`, async () => {
           const span = documentsTab.documentsListPane.getByText(docId, { exact: true }).nth(0);
           await span.waitFor();
           await expect(span).toBeVisible();
 
           await span.click();
+          expect(await documentsTab.resultsEditor.text()).toContain(docId);
+
           let newDocumentId;
           let retryCount = 0;
           await retry(async () => {
