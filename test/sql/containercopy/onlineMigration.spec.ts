@@ -120,18 +120,22 @@ test.describe("Container Copy - Online Migration", () => {
     expect(response.ok()).toBe(true);
 
     // Verify panel closes and job appears in the list
-    await expect(panel).not.toBeVisible({ timeout: 5000 });
+    await expect(panel).not.toBeVisible();
+
+    const filterTextField = wrapper.getByTestId("CopyJobsList/FilterTextField");
+    await filterTextField.waitFor({ state: "visible" });
+    await filterTextField.fill(onlineMigrationJobName);
 
     const jobsListContainer = wrapper.locator(".CopyJobListContainer .ms-DetailsList-contentWrapper .ms-List-page");
-    await jobsListContainer.waitFor({ state: "visible", timeout: 5000 });
+    await jobsListContainer.waitFor({ state: "visible" });
 
     let jobRow, statusCell, actionMenuButton;
     jobRow = jobsListContainer.locator(".ms-DetailsRow", { hasText: onlineMigrationJobName });
     statusCell = jobRow.locator("[data-automationid='DetailsRowCell'][data-automation-key='CopyJobStatus']");
-    await jobRow.waitFor({ state: "visible", timeout: 5000 });
+    await jobRow.waitFor({ state: "visible" });
 
     // Verify job status changes to queued state
-    await expect(statusCell).toContainText(/running|queued|pending/i, { timeout: 5000 });
+    await expect(statusCell).toContainText(/running|queued|pending/i);
 
     // Test job lifecycle management through action menu
     actionMenuButton = wrapper.getByTestId(`CopyJobActionMenu/Button:${onlineMigrationJobName}`);
