@@ -63,9 +63,6 @@ export const TEST_MANUAL_THROUGHPUT_RU_2K = 2000;
 export const ONE_MINUTE_MS: number = 60 * 1000;
 
 function tryGetStandardName(accountType: TestAccount) {
-  // if (accountType === TestAccount.MongoReadonly) {
-  //   return "aisayas-e2e-mongo-readonly";
-  // }
   if (process.env.DE_TEST_ACCOUNT_PREFIX) {
     const actualPrefix = process.env.DE_TEST_ACCOUNT_PREFIX.endsWith("-")
       ? process.env.DE_TEST_ACCOUNT_PREFIX
@@ -519,15 +516,6 @@ export class DataExplorer {
   async openScaleAndSettings(context: TestContainerContext): Promise<void> {
     const containerNode = await this.waitForContainerNode(context.database.id, context.container.id);
     await containerNode.expand();
-
-    // // refresh tree to remove deleted database
-    // const consoleMessages = await this.getNotificationConsoleMessages();
-    // const refreshButton = this.frame.getByTestId("Sidebar/RefreshButton");
-    // await refreshButton.click();
-    // await expect(consoleMessages).toContainText("Successfully refreshed databases", {
-    //   timeout: ONE_MINUTE_MS,
-    // });
-    // await this.collapseNotificationConsole();
 
     const scaleAndSettingsButton = this.frame.getByTestId(
       `TreeNode:${context.database.id}/${context.container.id}/Scale & Settings`,

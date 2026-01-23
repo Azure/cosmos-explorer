@@ -26,8 +26,6 @@ for (const { name, databaseId, containerId, documents } of documentTestCases) {
       await documentsTab.documentsFilter.waitFor();
       await documentsTab.documentsListPane.waitFor();
       await expect(documentsTab.resultsEditor.locator).toBeAttached({ timeout: 60 * 1000 });
-
-      await explorer.expandNotificationConsole();
     });
     test.afterEach(async ({ page }) => {
       await page.unrouteAll({ behavior: "ignoreErrors" });
@@ -56,40 +54,28 @@ for (const { name, databaseId, containerId, documents } of documentTestCases) {
           await expect(span).toBeVisible();
 
           await span.click();
-          // await expect(documentsTab.resultsEditor.locator).toBeAttached({ timeout: 60 * 1000 });
           await page.waitForTimeout(5000); // wait for 5 seconds to ensure document is fully loaded. waitforTimeout is not recommended generally but here we are working around flakiness in the test env
+
           let newDocumentId;
-          let retryCount = 0;
           await retry(async () => {
-            try {
-              const newDocumentButton = await explorer.waitForCommandBarButton(CommandBarButton.NewDocument, 5000);
-              await expect(newDocumentButton).toBeVisible();
-              await expect(newDocumentButton).toBeEnabled();
-              await newDocumentButton.click();
-              console.log(`DEBUG: Clicked New Document button - retryCount=${retryCount}`);
-              await expect(documentsTab.resultsEditor.locator).toBeAttached({ timeout: 60 * 1000 });
+            const newDocumentButton = await explorer.waitForCommandBarButton(CommandBarButton.NewDocument, 5000);
+            await expect(newDocumentButton).toBeVisible();
+            await expect(newDocumentButton).toBeEnabled();
+            await newDocumentButton.click();
+            await expect(documentsTab.resultsEditor.locator).toBeAttached({ timeout: 60 * 1000 });
 
-              newDocumentId = `${Date.now().toString()}-delete`;
+            newDocumentId = `${Date.now().toString()}-delete`;
 
-              const newDocument = {
-                _id: newDocumentId,
-                ...setPartitionKeys(partitionKeys || []),
-              };
+            const newDocument = {
+              _id: newDocumentId,
+              ...setPartitionKeys(partitionKeys || []),
+            };
 
-              await documentsTab.resultsEditor.setText(JSON.stringify(newDocument));
-              const saveButton = await explorer.waitForCommandBarButton(CommandBarButton.Save, 5000);
-              await saveButton.click({ timeout: 5000 });
-              console.log(`DEBUG: Clicked Save button - retryCount=${retryCount}`);
+            await documentsTab.resultsEditor.setText(JSON.stringify(newDocument));
+            const saveButton = await explorer.waitForCommandBarButton(CommandBarButton.Save, 5000);
+            await saveButton.click({ timeout: 5000 });
 
-              await expect(saveButton).toBeHidden({ timeout: 5000 });
-            } catch (err) {
-              retryCount++;
-              console.warn(
-                `DEBUG: Attempt ${retryCount} to create new document from ${docId} failed: ${(err as Error).message}`,
-              );
-
-              throw err;
-            }
+            await expect(saveButton).toBeHidden({ timeout: 5000 });
           }, 3);
 
           await documentsTab.setFilter(`{_id: "${newDocumentId}"}`);
