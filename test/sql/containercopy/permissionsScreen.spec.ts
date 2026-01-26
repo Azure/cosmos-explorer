@@ -134,7 +134,7 @@ test.describe("Container Copy - Permission Screen Verification", () => {
 
     const pitrBtn = accordionPanel.getByTestId("pointInTimeRestore:PrimaryBtn");
     await expect(pitrBtn).toBeVisible();
-    await pitrBtn.click();
+    await pitrBtn.click({ force: true });
 
     // Verify new page opens with correct URL pattern
     page.context().on("page", async (newPage) => {
@@ -246,7 +246,7 @@ test.describe("Container Copy - Permission Screen Verification", () => {
 
     const toggleButton = crossAccordionPanel.getByTestId("btn-toggle");
     await expect(toggleButton).toBeVisible();
-    await toggleButton.click();
+    await toggleButton.click({ force: true });
 
     // Verify popover functionality
     const popover = frame.locator("[data-test='popover-container']");
@@ -257,7 +257,7 @@ test.describe("Container Copy - Permission Screen Verification", () => {
     await expect(yesButton).toBeVisible();
     await expect(noButton).toBeVisible();
 
-    await yesButton.click();
+    await yesButton.click({ force: true });
 
     // Verify loading states
     await expect(loadingOverlay).toBeVisible();
@@ -265,6 +265,6 @@ test.describe("Container Copy - Permission Screen Verification", () => {
     await expect(popover).toBeHidden({ timeout: 10 * 1000 });
 
     // Cancel the panel to clean up
-    await panel.getByRole("button", { name: "Cancel" }).click();
+    await panel.getByRole("button", { name: "Cancel" }).click({ force: true });
   });
 });

@@ -7,16 +7,27 @@ import { HttpStatusCodes } from "./Constants";
 import { logError } from "./Logger";
 import { sendMessage } from "./MessageHandler";
 
-export const handleError = (error: string | ARMError | Error, area: string, consoleErrorPrefix?: string): void => {
+export interface HandleErrorOptions {
+  /** Optional redacted error to use for telemetry logging instead of the original error */
+  redactedError?: string | ARMError | Error;
+}
+
+export const handleError = (
+  error: string | ARMError | Error,
+  area: string,
+  consoleErrorPrefix?: string,
+  options?: HandleErrorOptions,
+): void => {
   const errorMessage = getErrorMessage(error);
   const errorCode = error instanceof ARMError ? error.code : undefined;
 
-  // logs error to data explorer console
+  // logs error to data explorer console (always shows original, non-redacted message)
   const consoleErrorMessage = consoleErrorPrefix ? `${consoleErrorPrefix}:\n ${errorMessage}` : errorMessage;
   logConsoleError(consoleErrorMessage);
 
-  // logs error to both app insight and kusto
-  logError(errorMessage, area, errorCode);
+  // logs error to both app insight and kusto (use redacted message if provided)
+  const telemetryErrorMessage = options?.redactedError ? getErrorMessage(options.redactedError) : errorMessage;
+  logError(telemetryErrorMessage, area, errorCode);
 
   // checks for errors caused by firewall and sends them to portal to handle
   sendNotificationForError(errorMessage, errorCode);
