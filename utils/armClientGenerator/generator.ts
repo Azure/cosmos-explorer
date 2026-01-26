@@ -161,7 +161,8 @@ const propertyToType = (property: Property, prop: string, required: boolean) => 
 
 async function main() {
   const response = await fetch(schemaURL);
-  const schema = await response.json();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const schema: any = await response.json();
 
   // STEP 1: Convert all definitions to TypeScript types and interfaces
   for (const definition in schema.definitions) {
