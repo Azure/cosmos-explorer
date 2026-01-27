@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { CommandBarButton, DataExplorer, ONE_MINUTE_MS, TestAccount } from "../../fx";
+import { CommandBarButton, DataExplorer, Editor, ONE_MINUTE_MS, TestAccount } from "../../fx";
 import { createTestSQLContainer, TestContainerContext } from "../../testData";
 
 test.describe("Indexing Policy under Scale & Settings", () => {
@@ -37,20 +37,16 @@ test.describe("Indexing Policy under Scale & Settings", () => {
   });
 
   test("Update Indexing Policy - Change automatic to false", async () => {
-    // Get the Monaco editor element
-    const editorElement = explorer.frame.locator(".settingsV2Editor").locator(".monaco-editor");
+    // Get the Monaco editor element - IndexingPolicyComponent creates Monaco directly
+    const editorContainer = explorer.frame.locator(".settingsV2Editor");
+    const editorElement = editorContainer.locator(".monaco-editor");
     await expect(editorElement).toBeVisible();
 
-    // Get current indexing policy content
-    const currentContent = await editorElement.evaluate((element) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const win = element.ownerDocument.defaultView as any;
-      if (win._monaco_getEditorContentForElement) {
-        return win._monaco_getEditorContentForElement(element);
-      }
-      return null;
-    });
+    // Create an Editor instance using the container div
+    const editor = new Editor(explorer.frame, editorContainer);
 
+    // Get current indexing policy content
+    const currentContent = await editor.text();
     expect(currentContent).toBeTruthy();
     const indexingPolicy = JSON.parse(currentContent as string);
 
@@ -63,13 +59,7 @@ test.describe("Indexing Policy under Scale & Settings", () => {
     const updatedContent = JSON.stringify(indexingPolicy, null, 4);
 
     // Set the new content in the editor
-    await editorElement.evaluate((element, content) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const win = element.ownerDocument.defaultView as any;
-      if (win._monaco_setEditorContentForElement) {
-        win._monaco_setEditorContentForElement(element, content);
-      }
-    }, updatedContent);
+    await editor.setText(updatedContent);
 
     // Verify the warning message appears for unsaved changes
     const warningMessage = explorer.frame.locator(".ms-MessageBar--warning");
@@ -92,19 +82,15 @@ test.describe("Indexing Policy under Scale & Settings", () => {
 
   test("Update Indexing Policy - Change indexingMode to lazy", async () => {
     // Get the Monaco editor element
-    const editorElement = explorer.frame.locator(".settingsV2Editor").locator(".monaco-editor");
+    const editorContainer = explorer.frame.locator(".settingsV2Editor");
+    const editorElement = editorContainer.locator(".monaco-editor");
     await expect(editorElement).toBeVisible();
 
-    // Get current indexing policy content
-    const currentContent = await editorElement.evaluate((element) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const win = element.ownerDocument.defaultView as any;
-      if (win._monaco_getEditorContentForElement) {
-        return win._monaco_getEditorContentForElement(element);
-      }
-      return null;
-    });
+    // Create an Editor instance
+    const editor = new Editor(explorer.frame, editorContainer);
 
+    // Get current indexing policy content
+    const currentContent = await editor.text();
     expect(currentContent).toBeTruthy();
     const indexingPolicy = JSON.parse(currentContent as string);
 
@@ -113,13 +99,7 @@ test.describe("Indexing Policy under Scale & Settings", () => {
     const updatedContent = JSON.stringify(indexingPolicy, null, 4);
 
     // Set the new content in the editor
-    await editorElement.evaluate((element, content) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const win = element.ownerDocument.defaultView as any;
-      if (win._monaco_setEditorContentForElement) {
-        win._monaco_setEditorContentForElement(element, content);
-      }
-    }, updatedContent);
+    await editor.setText(updatedContent);
 
     // Verify the warning message appears
     const warningMessage = explorer.frame.locator(".ms-MessageBar--warning");
@@ -139,19 +119,15 @@ test.describe("Indexing Policy under Scale & Settings", () => {
 
   test("Update Indexing Policy - Revert automatic to true", async () => {
     // Get the Monaco editor element
-    const editorElement = explorer.frame.locator(".settingsV2Editor").locator(".monaco-editor");
+    const editorContainer = explorer.frame.locator(".settingsV2Editor");
+    const editorElement = editorContainer.locator(".monaco-editor");
     await expect(editorElement).toBeVisible();
 
-    // Get current indexing policy content
-    const currentContent = await editorElement.evaluate((element) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const win = element.ownerDocument.defaultView as any;
-      if (win._monaco_getEditorContentForElement) {
-        return win._monaco_getEditorContentForElement(element);
-      }
-      return null;
-    });
+    // Create an Editor instance
+    const editor = new Editor(explorer.frame, editorContainer);
 
+    // Get current indexing policy content
+    const currentContent = await editor.text();
     expect(currentContent).toBeTruthy();
     const indexingPolicy = JSON.parse(currentContent as string);
 
@@ -161,13 +137,7 @@ test.describe("Indexing Policy under Scale & Settings", () => {
     const updatedContent = JSON.stringify(indexingPolicy, null, 4);
 
     // Set the new content in the editor
-    await editorElement.evaluate((element, content) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const win = element.ownerDocument.defaultView as any;
-      if (win._monaco_setEditorContentForElement) {
-        win._monaco_setEditorContentForElement(element, content);
-      }
-    }, updatedContent);
+    await editor.setText(updatedContent);
 
     // Save the changes
     await explorer.commandBarButton(CommandBarButton.Save).click();
