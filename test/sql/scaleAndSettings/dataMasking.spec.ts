@@ -77,7 +77,10 @@ test.describe("Data Masking under Scale & Settings", () => {
     const isTabAvailable = await navigateToDataMaskingTab(page, explorer);
 
     if (!isTabAvailable) {
-      test.skip(true, "Data Masking tab is not available. Test account may not have EnableDynamicDataMasking capability.");
+      test.skip(
+        true,
+        "Data Masking tab is not available. Test account may not have EnableDynamicDataMasking capability.",
+      );
     }
 
     // Verify the Data Masking editor is visible
@@ -90,7 +93,10 @@ test.describe("Data Masking under Scale & Settings", () => {
     const isTabAvailable = await navigateToDataMaskingTab(page, explorer);
 
     if (!isTabAvailable) {
-      test.skip(true, "Data Masking tab is not available. Test account may not have EnableDynamicDataMasking capability.");
+      test.skip(
+        true,
+        "Data Masking tab is not available. Test account may not have EnableDynamicDataMasking capability.",
+      );
     }
 
     // Verify the editor contains the expected JSON structure fields
@@ -108,7 +114,10 @@ test.describe("Data Masking under Scale & Settings", () => {
     const isTabAvailable = await navigateToDataMaskingTab(page, explorer);
 
     if (!isTabAvailable) {
-      test.skip(true, "Data Masking tab is not available. Test account may not have EnableDynamicDataMasking capability.");
+      test.skip(
+        true,
+        "Data Masking tab is not available. Test account may not have EnableDynamicDataMasking capability.",
+      );
     }
 
     const editorContent = explorer.frame.locator(".settingsV2Editor");
