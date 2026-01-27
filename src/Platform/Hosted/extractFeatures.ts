@@ -94,7 +94,7 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     notebookBasePath: get("notebookbasepath"),
     notebookServerToken: get("notebookservertoken"),
     notebookServerUrl: get("notebookserverurl"),
-    sandboxNotebookOutputs: "true" === get("sandboxnotebookoutputs", "true"),
+    sandboxNotebookOutputs: true,
     selfServeType: get("selfservetype"),
     showMinRUSurvey: "true" === get("showminrusurvey"),
     ttl90Days: "true" === get("ttl90days"),
