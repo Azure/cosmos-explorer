@@ -1,6 +1,24 @@
-import { Callout, DirectionalHint, ISearchBoxStyles, Label, SearchBox } from "@fluentui/react";
+import {
+  Callout,
+  DefaultButton,
+  DirectionalHint,
+  ISearchBoxStyles,
+  Label,
+  SearchBox,
+  Stack,
+  Text,
+} from "@fluentui/react";
 import * as React from "react";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
+import {
+  buttonLabelStyles,
+  calloutContentStyles,
+  chevronStyles,
+  emptyMessageStyles,
+  getDropdownButtonStyles,
+  getItemStyles,
+  listContainerStyles,
+} from "./SearchableDropdown.styles";
 
 interface SearchableDropdownProps<T> {
   label: string;
@@ -14,10 +32,7 @@ interface SearchableDropdownProps<T> {
   className?: string;
   disabled?: boolean;
   onDismiss?: () => void;
-  buttonStyles?: React.CSSProperties;
   searchBoxStyles?: Partial<ISearchBoxStyles>;
-  listStyles?: React.CSSProperties;
-  itemStyles?: React.CSSProperties;
 }
 
 export const SearchableDropdown = <T,>({
@@ -32,75 +47,34 @@ export const SearchableDropdown = <T,>({
   className,
   disabled = false,
   onDismiss,
-  buttonStyles: customButtonStyles,
   searchBoxStyles: customSearchBoxStyles,
-  listStyles: customListStyles,
-  itemStyles: customItemStyles,
 }: SearchableDropdownProps<T>): React.ReactElement => {
   const [isOpen, setIsOpen] = useState(false);
   const [filterText, setFilterText] = useState("");
-  const buttonRef = useRef<HTMLButtonElement>(null);
-
-  const defaultButtonStyles: React.CSSProperties = {
-    width: "100%",
-    height: "32px",
-    padding: "0 28px 0 8px",
-    border: "1px solid #8a8886",
-    background: "#fff",
-    color: "#323130",
-    textAlign: "left",
-    cursor: disabled ? "not-allowed" : "pointer",
-    position: "relative",
-    fontFamily: "inherit",
-    fontSize: "14px",
-  };
-
-  const defaultListStyles: React.CSSProperties = {
-    maxHeight: "300px",
-    overflowY: "auto",
-  };
-
-  const defaultItemStyles: React.CSSProperties = {
-    padding: "8px 12px",
-    cursor: "pointer",
-    fontSize: "14px",
-  };
-
-  // Merge custom styles with defaults
-  const buttonStyles = { ...defaultButtonStyles, ...customButtonStyles };
-  const listStyles = { ...defaultListStyles, ...customListStyles };
-  const itemStyles = { ...defaultItemStyles, ...customItemStyles };
+  const buttonRef = useRef<HTMLDivElement>(null);
 
   const closeDropdown = useCallback(() => {
     setIsOpen(false);
     setFilterText("");
   }, []);
 
-  const filteredItems = items?.filter((item) => getDisplayText(item).toLowerCase().includes(filterText.toLowerCase()));
+  const filteredItems = useMemo(
+    () => items?.filter((item) => getDisplayText(item).toLowerCase().includes(filterText.toLowerCase())),
+    [items, filterText, getDisplayText],
+  );
 
   const handleDismiss = useCallback(() => {
     closeDropdown();
     onDismiss?.();
   }, [closeDropdown, onDismiss]);
 
-  const handleButtonClick = useCallback(
-    (event: React.MouseEvent) => {
-      if (disabled) {
-        return;
-      }
-      event.preventDefault();
-      event.stopPropagation();
-
-      if (isOpen) {
-        closeDropdown();
-        return;
-      }
-
-      setIsOpen(true);
+  const handleButtonClick = useCallback(() => {
+    if (disabled) {
       return;
-    },
-    [isOpen, closeDropdown, disabled],
-  );
+    }
+
+    setIsOpen(!isOpen);
+  }, [isOpen, disabled]);
 
   const handleSelect = useCallback(
     (item: T) => {
@@ -117,33 +91,23 @@ export const SearchableDropdown = <T,>({
     : placeholder;
 
   const buttonId = `${className}-button`;
+  const buttonStyles = getDropdownButtonStyles(disabled);
 
   return (
-    <div>
+    <Stack>
       <Label htmlFor={buttonId}>{label}</Label>
-      <button
-        id={buttonId}
-        ref={buttonRef}
-        className={className}
-        onClick={handleButtonClick}
-        style={buttonStyles}
-        disabled={disabled}
-      >
-        <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", display: "block" }}>
-          {buttonLabel}
-        </span>
-        <span
-          style={{
-            position: "absolute",
-            right: "8px",
-            top: "50%",
-            transform: "translateY(-50%)",
-            pointerEvents: "none",
-          }}
+      <div ref={buttonRef}>
+        <DefaultButton
+          id={buttonId}
+          className={className}
+          onClick={handleButtonClick}
+          styles={buttonStyles}
+          disabled={disabled}
         >
-          ▼
-        </span>
-      </button>
+          <Text styles={buttonLabelStyles}>{buttonLabel}</Text>
+          <span style={chevronStyles}>▼</span>
+        </DefaultButton>
+      </div>
       {isOpen && (
         <Callout
           target={buttonRef.current}
@@ -153,14 +117,14 @@ export const SearchableDropdown = <T,>({
           gapSpace={0}
           setInitialFocus
         >
-          <div style={{ width: buttonRef.current?.offsetWidth || 300, display: "flex", flexDirection: "column" }}>
+          <Stack styles={calloutContentStyles} style={{ width: buttonRef.current?.offsetWidth || 300 }}>
             <SearchBox
               placeholder={filterPlaceholder}
               value={filterText}
               onChange={(_, newValue) => setFilterText(newValue || "")}
               styles={customSearchBoxStyles}
             />
-            <div style={listStyles}>
+            <Stack styles={listContainerStyles}>
               {filteredItems && filteredItems.length > 0 ? (
                 filteredItems.map((item) => {
                   const key = getKey(item);
@@ -169,26 +133,23 @@ export const SearchableDropdown = <T,>({
                     <div
                       key={key}
                       onClick={() => handleSelect(item)}
-                      style={{
-                        ...itemStyles,
-                        backgroundColor: isSelected ? "#e6e6e6" : "transparent",
-                      }}
+                      style={getItemStyles(isSelected)}
                       onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#f3f2f1")}
                       onMouseLeave={(e) =>
                         (e.currentTarget.style.backgroundColor = isSelected ? "#e6e6e6" : "transparent")
                       }
                     >
-                      {getDisplayText(item)}
+                      <Text>{getDisplayText(item)}</Text>
                     </div>
                   );
                 })
               ) : (
-                <div style={{ padding: "8px 12px", color: "#605e5c" }}>No items found</div>
+                <Text styles={emptyMessageStyles}>No items found</Text>
               )}
-            </div>
-          </div>
+            </Stack>
+          </Stack>
         </Callout>
       )}
-    </div>
+    </Stack>
   );
 };
