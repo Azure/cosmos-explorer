@@ -6,6 +6,12 @@ test.describe("Indexing Policy under Scale & Settings", () => {
   let context: TestContainerContext = null!;
   let explorer: DataExplorer = null!;
 
+  // Helper function to get the indexing policy editor
+  const getIndexingPolicyEditor = (): Editor => {
+    const editorContainer = explorer.frame.locator(".settingsV2Editor");
+    return new Editor(explorer.frame, editorContainer);
+  };
+
   test.beforeAll("Create Test Database & Open Indexing Policy tab", async ({ browser }) => {
     context = await createTestSQLContainer();
     const page = await browser.newPage();
@@ -28,11 +34,12 @@ test.describe("Indexing Policy under Scale & Settings", () => {
 
   test("Verify Indexing Policy editor is present", async () => {
     // The Monaco editor is rendered in a div with class settingsV2Editor
-    const indexingPolicyEditor = explorer.frame.locator(".settingsV2Editor");
-    await expect(indexingPolicyEditor).toBeVisible();
+    const editorContainer = explorer.frame.locator(".settingsV2Editor");
+    await expect(editorContainer).toBeVisible();
 
-    // Verify the editor has content (default indexing policy)
-    const editorContent = await indexingPolicyEditor.textContent();
+    // Verify the editor has content (default indexing policy) using Editor helper
+    const editor = getIndexingPolicyEditor();
+    const editorContent = await editor.text();
     expect(editorContent).toBeTruthy();
   });
 
@@ -42,8 +49,8 @@ test.describe("Indexing Policy under Scale & Settings", () => {
     const editorElement = editorContainer.locator(".monaco-editor");
     await expect(editorElement).toBeVisible();
 
-    // Create an Editor instance using the container div
-    const editor = new Editor(explorer.frame, editorContainer);
+    // Use helper function to get editor instance
+    const editor = getIndexingPolicyEditor();
 
     // Get current indexing policy content
     const currentContent = await editor.text();
@@ -86,8 +93,8 @@ test.describe("Indexing Policy under Scale & Settings", () => {
     const editorElement = editorContainer.locator(".monaco-editor");
     await expect(editorElement).toBeVisible();
 
-    // Create an Editor instance
-    const editor = new Editor(explorer.frame, editorContainer);
+    // Use helper function to get editor instance
+    const editor = getIndexingPolicyEditor();
 
     // Get current indexing policy content
     const currentContent = await editor.text();
@@ -123,8 +130,8 @@ test.describe("Indexing Policy under Scale & Settings", () => {
     const editorElement = editorContainer.locator(".monaco-editor");
     await expect(editorElement).toBeVisible();
 
-    // Create an Editor instance
-    const editor = new Editor(explorer.frame, editorContainer);
+    // Use helper function to get editor instance
+    const editor = getIndexingPolicyEditor();
 
     // Get current indexing policy content
     const currentContent = await editor.text();
