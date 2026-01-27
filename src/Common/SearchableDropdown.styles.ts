@@ -13,9 +13,13 @@ export const getDropdownButtonStyles = (disabled: boolean): IButtonStyles => ({
     cursor: disabled ? "not-allowed" : "pointer",
     position: "relative",
   },
+  flexContainer: {
+    justifyContent: "flex-start",
+  },
   label: {
     fontWeight: "normal",
     fontSize: "14px",
+    textAlign: "left",
   },
 });
 
@@ -25,6 +29,7 @@ export const buttonLabelStyles: ITextStyles = {
     textOverflow: "ellipsis",
     whiteSpace: "nowrap",
     display: "block",
+    textAlign: "left",
   },
 };
 
@@ -55,11 +60,13 @@ export const getItemStyles = (isSelected: boolean): React.CSSProperties => ({
   cursor: "pointer",
   fontSize: "14px",
   backgroundColor: isSelected ? "#e6e6e6" : "transparent",
+  textAlign: "left",
 });
 
 export const emptyMessageStyles: ITextStyles = {
   root: {
     padding: "8px 12px",
     color: "#605e5c",
+    textAlign: "left",
   },
 };
