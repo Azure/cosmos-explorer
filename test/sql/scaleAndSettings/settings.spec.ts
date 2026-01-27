@@ -11,18 +11,15 @@ test.describe("Settings under Scale & Settings", () => {
     const page = await browser.newPage();
     explorer = await DataExplorer.open(page, TestAccount.SQL);
 
-    // Click Scale & Settings and open Scale tab
+    // Click Scale & Settings and open Settings tab
     await explorer.openScaleAndSettings(context);
     const settingsTab = explorer.frame.getByTestId("settings-tab-header/SubSettingsTab");
     await settingsTab.click();
   });
 
-  // Delete database only if not running in CI
-  if (!process.env.CI) {
-    test.afterAll("Delete Test Database", async () => {
-      await context?.dispose();
-    });
-  }
+  test.afterAll("Delete Test Database", async () => {
+    await context?.dispose();
+  });
 
   test("Update TTL to On (no default)", async () => {
     const ttlOnNoDefaultRadioButton = explorer.frame.getByRole("radio", { name: "ttl-on-no-default-option" });
@@ -50,6 +47,30 @@ test.describe("Settings under Scale & Settings", () => {
       `Successfully updated container ${context.container.id}`,
       {
         timeout: 2 * ONE_MINUTE_MS,
+      },
+    );
+  });
+
+  test("Set Geospatial Config to Geometry then Geography", async () => {
+    const geometryRadioButton = explorer.frame.getByRole("radio", { name: "geometry-option" });
+    await geometryRadioButton.click();
+
+    await explorer.commandBarButton(CommandBarButton.Save).click();
+    await expect(explorer.getConsoleHeaderStatus()).toContainText(
+      `Successfully updated container ${context.container.id}`,
+      {
+        timeout: ONE_MINUTE_MS,
+      },
+    );
+
+    const geographyRadioButton = explorer.frame.getByRole("radio", { name: "geography-option" });
+    await geographyRadioButton.click();
+
+    await explorer.commandBarButton(CommandBarButton.Save).click();
+    await expect(explorer.getConsoleHeaderStatus()).toContainText(
+      `Successfully updated container ${context.container.id}`,
+      {
+        timeout: ONE_MINUTE_MS,
       },
     );
   });

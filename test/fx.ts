@@ -11,7 +11,7 @@ export interface TestNameOptions {
   prefixed?: boolean;
 }
 
-export function generateUniqueName(baseName, options?: TestNameOptions): string {
+export function generateUniqueName(baseName: string, options?: TestNameOptions): string {
   const length = options?.length ?? 1;
   const timestamp = options?.timestampped === undefined ? true : options.timestampped;
   const prefixed = options?.prefixed === undefined ? true : options.prefixed;
@@ -40,6 +40,7 @@ export enum TestAccount {
   Mongo32 = "Mongo32",
   SQL = "SQL",
   SQLReadOnly = "SQLReadOnly",
+  SQLContainerCopyOnly = "SQLContainerCopyOnly",
 }
 
 export const defaultAccounts: Record<TestAccount, string> = {
@@ -51,6 +52,7 @@ export const defaultAccounts: Record<TestAccount, string> = {
   [TestAccount.Mongo32]: "github-e2etests-mongo32",
   [TestAccount.SQL]: "github-e2etests-sql",
   [TestAccount.SQLReadOnly]: "github-e2etests-sql-readonly",
+  [TestAccount.SQLContainerCopyOnly]: "github-e2etests-sql-containercopyonly",
 };
 
 export const resourceGroupName = process.env.DE_TEST_RESOURCE_GROUP ?? "de-e2e-tests";
@@ -77,7 +79,14 @@ export function getAccountName(accountType: TestAccount) {
   );
 }
 
-export async function getTestExplorerUrl(accountType: TestAccount, iframeSrc?: string): Promise<string> {
+type TestExplorerUrlOptions = {
+  iframeSrc?: string;
+  enablecontainercopy?: boolean;
+};
+
+export async function getTestExplorerUrl(accountType: TestAccount, options?: TestExplorerUrlOptions): Promise<string> {
+  const { iframeSrc, enablecontainercopy } = options ?? {};
+
   // We can't retrieve AZ CLI credentials from the browser so we get them here.
   const token = await getAzureCLICredentialsToken();
   const accountName = getAccountName(accountType);
@@ -93,6 +102,7 @@ export async function getTestExplorerUrl(accountType: TestAccount, iframeSrc?: s
 
   const nosqlRbacToken = process.env.NOSQL_TESTACCOUNT_TOKEN;
   const nosqlReadOnlyRbacToken = process.env.NOSQL_READONLY_TESTACCOUNT_TOKEN;
+  const nosqlContainerCopyRbacToken = process.env.NOSQL_CONTAINERCOPY_TESTACCOUNT_TOKEN;
   const tableRbacToken = process.env.TABLE_TESTACCOUNT_TOKEN;
   const gremlinRbacToken = process.env.GREMLIN_TESTACCOUNT_TOKEN;
   const cassandraRbacToken = process.env.CASSANDRA_TESTACCOUNT_TOKEN;
@@ -105,6 +115,16 @@ export async function getTestExplorerUrl(accountType: TestAccount, iframeSrc?: s
       if (nosqlRbacToken) {
         params.set("nosqlRbacToken", nosqlRbacToken);
         params.set("enableaaddataplane", "true");
+      }
+      break;
+
+    case TestAccount.SQLContainerCopyOnly:
+      if (nosqlContainerCopyRbacToken) {
+        params.set("nosqlRbacToken", nosqlContainerCopyRbacToken);
+        params.set("enableaaddataplane", "true");
+      }
+      if (enablecontainercopy) {
+        params.set("enablecontainercopy", "true");
       }
       break;
 
@@ -163,6 +183,39 @@ export async function getTestExplorerUrl(accountType: TestAccount, iframeSrc?: s
   }
 
   return `https://localhost:1234/testExplorer.html?${params.toString()}`;
+}
+
+type DropdownItemExpectations = {
+  ariaLabel?: string;
+  itemCount?: number;
+};
+
+type DropdownItemMatcher = {
+  name?: string;
+  position?: number;
+};
+
+export async function getDropdownItemByNameOrPosition(
+  frame: Frame,
+  matcher?: DropdownItemMatcher,
+  expectedOptions?: DropdownItemExpectations,
+): Promise<Locator> {
+  const dropdownItemsWrapper = frame.locator("div.ms-Dropdown-items");
+  if (expectedOptions?.ariaLabel) {
+    expect(await dropdownItemsWrapper.getAttribute("aria-label")).toEqual(expectedOptions.ariaLabel);
+  }
+  if (expectedOptions?.itemCount) {
+    const items = dropdownItemsWrapper.locator("button.ms-Dropdown-item[role='option']");
+    await expect(items).toHaveCount(expectedOptions.itemCount);
+  }
+  const containerDropdownItems = dropdownItemsWrapper.locator("button.ms-Dropdown-item[role='option']");
+  if (matcher?.name) {
+    return containerDropdownItems.filter({ hasText: matcher.name });
+  } else if (matcher?.position !== undefined) {
+    return containerDropdownItems.nth(matcher.position);
+  }
+  // Return first item if no matcher is provided
+  return containerDropdownItems.first();
 }
 
 /** Helper class that provides locator methods for TreeNode elements, on top of a Locator */
@@ -325,7 +378,11 @@ type PanelOpenOptions = {
 
 export enum CommandBarButton {
   Save = "Save",
+  Delete = "Delete",
+  Execute = "Execute",
   ExecuteQuery = "Execute Query",
+  UploadItem = "Upload Item",
+  NewDocument = "New Document",
 }
 
 /** Helper class that provides locator methods for DataExplorer components, on top of a Frame */
@@ -423,7 +480,7 @@ export class DataExplorer {
     return await this.waitForNode(`${databaseId}/${containerId}/Documents`);
   }
 
-  async waitForCommandBarButton(label: string, timeout?: number): Promise<Locator> {
+  async waitForCommandBarButton(label: CommandBarButton, timeout?: number): Promise<Locator> {
     const commandBar = this.commandBarButton(label);
     await commandBar.waitFor({ state: "visible", timeout });
     return commandBar;
@@ -459,15 +516,6 @@ export class DataExplorer {
   async openScaleAndSettings(context: TestContainerContext): Promise<void> {
     const containerNode = await this.waitForContainerNode(context.database.id, context.container.id);
     await containerNode.expand();
-
-    // refresh tree to remove deleted database
-    const consoleMessages = await this.getNotificationConsoleMessages();
-    const refreshButton = this.frame.getByTestId("Sidebar/RefreshButton");
-    await refreshButton.click();
-    await expect(consoleMessages).toContainText("Successfully refreshed databases", {
-      timeout: ONE_MINUTE_MS,
-    });
-    await this.collapseNotificationConsole();
 
     const scaleAndSettingsButton = this.frame.getByTestId(
       `TreeNode:${context.database.id}/${context.container.id}/Scale & Settings`,
@@ -515,7 +563,7 @@ export class DataExplorer {
   }
 
   /** Waits for the Data Explorer app to load */
-  static async waitForExplorer(page: Page) {
+  static async waitForExplorer(page: Page, options?: TestExplorerUrlOptions): Promise<DataExplorer> {
     const iframeElement = await page.getByTestId("DataExplorerFrame").elementHandle();
     if (iframeElement === null) {
       throw new Error("Explorer iframe not found");
@@ -527,15 +575,126 @@ export class DataExplorer {
       throw new Error("Explorer frame not found");
     }
 
-    await explorerFrame?.getByTestId("DataExplorerRoot").waitFor();
+    if (!options?.enablecontainercopy) {
+      await explorerFrame?.getByTestId("DataExplorerRoot").waitFor();
+    }
 
     return new DataExplorer(explorerFrame);
   }
 
   /** Opens the Data Explorer app using the specified test account (and optionally, the provided IFRAME src url). */
   static async open(page: Page, testAccount: TestAccount, iframeSrc?: string): Promise<DataExplorer> {
-    const url = await getTestExplorerUrl(testAccount, iframeSrc);
+    const url = await getTestExplorerUrl(testAccount, { iframeSrc });
     await page.goto(url);
     return DataExplorer.waitForExplorer(page);
+  }
+}
+
+export async function waitForApiResponse(
+  page: Page,
+  urlPattern: string,
+  method?: string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  payloadValidator?: (payload: any) => boolean,
+) {
+  try {
+    // Check if page is still valid before waiting
+    if (page.isClosed()) {
+      throw new Error(`Page is closed, cannot wait for API response: ${urlPattern}`);
+    }
+
+    return page.waitForResponse(
+      async (response) => {
+        const request = response.request();
+
+        if (!request.url().includes(urlPattern)) {
+          return false;
+        }
+
+        if (method && request.method() !== method) {
+          return false;
+        }
+
+        if (payloadValidator && (request.method() === "POST" || request.method() === "PUT")) {
+          const postData = request.postData();
+          if (postData) {
+            try {
+              const payload = JSON.parse(postData);
+              return payloadValidator(payload);
+            } catch {
+              return false;
+            }
+          }
+        }
+        return true;
+      },
+      { timeout: 60 * 1000 },
+    );
+  } catch (error) {
+    if (error instanceof Error && error.message.includes("Target page, context or browser has been closed")) {
+      console.warn("Page was closed while waiting for API response:", urlPattern);
+      throw new Error(`Page closed while waiting for API response: ${urlPattern}`);
+    }
+    throw error;
+  }
+}
+export async function interceptAndInspectApiRequest(
+  page: Page,
+  urlPattern: string,
+  method: string = "POST",
+  error: Error,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  errorValidator: (url?: string, payload?: any) => boolean,
+): Promise<void> {
+  await page.route(
+    (url) => url.pathname.includes(urlPattern),
+    async (route, request) => {
+      if (request.method() !== method) {
+        await route.continue();
+        return;
+      }
+      const postData = request.postData();
+      if (postData) {
+        try {
+          const payload = JSON.parse(postData);
+          if (errorValidator && errorValidator(request.url(), payload)) {
+            await route.fulfill({
+              status: 409,
+              contentType: "application/json",
+              body: JSON.stringify({
+                code: "Conflict",
+                message: error.message,
+              }),
+            });
+            return;
+          }
+        } catch (err) {
+          if (err instanceof Error && err.message.includes("not allowed")) {
+            throw err;
+          }
+        }
+      }
+
+      await route.continue();
+    },
+  );
+}
+
+export class ContainerCopy {
+  constructor(
+    public frame: Frame,
+    public wrapper: Locator,
+  ) {}
+
+  static async waitForContainerCopy(page: Page): Promise<ContainerCopy> {
+    const explorerFrame = await DataExplorer.waitForExplorer(page, { enablecontainercopy: true });
+    const containerCopyWrapper = explorerFrame.frame.locator("div#containerCopyWrapper");
+    return new ContainerCopy(explorerFrame.frame, containerCopyWrapper);
+  }
+
+  static async open(page: Page, testAccount: TestAccount, iframeSrc?: string): Promise<ContainerCopy> {
+    const url = await getTestExplorerUrl(testAccount, { iframeSrc, enablecontainercopy: true });
+    await page.goto(url);
+    return ContainerCopy.waitForContainerCopy(page);
   }
 }

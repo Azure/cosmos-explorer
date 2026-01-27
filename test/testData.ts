@@ -37,25 +37,33 @@ export interface PartitionKey {
   value: string | null;
 }
 
-const partitionCount = 4;
+export const partitionCount = 4;
 
 // If we increase this number, we need to split bulk creates into multiple batches.
 // Bulk operations are limited to 100 items per partition.
-const itemsPerPartition = 100;
+export const itemsPerPartition = 100;
 
 function createTestItems(): TestItem[] {
   const items: TestItem[] = [];
   for (let i = 0; i < partitionCount; i++) {
     for (let j = 0; j < itemsPerPartition; j++) {
-      const id = crypto.randomBytes(32).toString("base64");
+      const id = createSafeRandomString(32);
       items.push({
         id,
         partitionKey: `partition_${i}`,
-        randomData: crypto.randomBytes(32).toString("base64"),
+        randomData: createSafeRandomString(32),
       });
     }
   }
   return items;
+}
+
+// Document IDs cannot contain '/', '\', or '#'
+function createSafeRandomString(byteLength: number): string {
+  return crypto
+    .randomBytes(byteLength)
+    .toString("base64")
+    .replace(/[/\\#]/g, "_");
 }
 
 export const TestData: TestItem[] = createTestItems();
@@ -79,6 +87,69 @@ type createTestSqlContainerConfig = {
   partitionKey?: string;
   databaseName?: string;
 };
+
+type createMultipleTestSqlContainerConfig = {
+  containerCount?: number;
+  partitionKey?: string;
+  databaseName?: string;
+  accountType: TestAccount.SQLContainerCopyOnly | TestAccount.SQL;
+};
+
+export async function createMultipleTestContainers({
+  partitionKey = "/partitionKey",
+  databaseName = "",
+  containerCount = 1,
+  accountType = TestAccount.SQL,
+}: createMultipleTestSqlContainerConfig): Promise<TestContainerContext[]> {
+  const creationPromises: Promise<TestContainerContext>[] = [];
+
+  const databaseId = databaseName ? databaseName : generateUniqueName("db");
+  const credentials = getAzureCLICredentials();
+  const adaptedCredentials = new AzureIdentityCredentialAdapter(credentials);
+  const armClient = new CosmosDBManagementClient(adaptedCredentials, subscriptionId);
+  const accountName = getAccountName(accountType);
+  const account = await armClient.databaseAccounts.get(resourceGroupName, accountName);
+
+  const clientOptions: CosmosClientOptions = {
+    endpoint: account.documentEndpoint!,
+  };
+
+  const rbacToken =
+    accountType === TestAccount.SQL
+      ? process.env.NOSQL_TESTACCOUNT_TOKEN
+      : accountType === TestAccount.SQLContainerCopyOnly
+      ? process.env.NOSQL_CONTAINERCOPY_TESTACCOUNT_TOKEN
+      : "";
+  if (rbacToken) {
+    clientOptions.tokenProvider = async (): Promise<string> => {
+      const AUTH_PREFIX = `type=aad&ver=1.0&sig=`;
+      const authorizationToken = `${AUTH_PREFIX}${rbacToken}`;
+      return authorizationToken;
+    };
+  } else {
+    const keys = await armClient.databaseAccounts.listKeys(resourceGroupName, accountName);
+    clientOptions.key = keys.primaryMasterKey;
+  }
+
+  const client = new CosmosClient(clientOptions);
+  const { database } = await client.databases.createIfNotExists({ id: databaseId });
+
+  try {
+    for (let i = 0; i < containerCount; i++) {
+      const containerId = `testcontainer_${Date.now()}_${Math.random().toString(36).substring(6)}_${i}`;
+      creationPromises.push(
+        database.containers.createIfNotExists({ id: containerId, partitionKey }).then(({ container }) => {
+          return new TestContainerContext(armClient, client, database, container, new Map<string, TestItem>());
+        }),
+      );
+    }
+    const contexts = await Promise.all(creationPromises);
+    return contexts;
+  } catch (e) {
+    await database.delete();
+    throw e;
+  }
+}
 
 export async function createTestSQLContainer({
   includeTestData = false,

@@ -1,6 +1,52 @@
 @import "../../../less/Common/Constants.less";
 
+.themedTextFieldStyles() {
+  .ms-TextField {
+    .ms-TextField-fieldGroup {
+      background-color: var(--colorNeutralBackground1);
+      border-color: var(--colorNeutralStroke1);
+    }
+
+    .ms-TextField-field {
+      color: var(--colorNeutralForeground1);
+      background-color: var(--colorNeutralBackground1);
+
+      &::placeholder {
+        color: var(--colorNeutralForeground4);
+      }
+    }
+
+    .ms-Label {
+      color: var(--colorNeutralForeground1);
+    }
+  }
+}
+
+// Common theme-aware classes
+.themeText {
+  color: var(--colorNeutralForeground1);
+}
+
+.themeTextSecondary {
+  color: var(--colorNeutralForeground2);
+}
+
+.themeLinkText {
+  color: var(--colorBrandForeground1);
+}
+
+.themeBackground {
+  background-color: var(--colorNeutralBackground1);
+}
+
+.themeBackgroundSecondary {
+  background-color: var(--colorNeutralBackground2);
+}
+
 #containerCopyWrapper {
+  background-color: var(--colorNeutralBackground1);
+  color: var(--colorNeutralForeground1);
+
   .centerContent {
     justify-content: center;
     align-items: center;
@@ -9,19 +55,29 @@
     .noCopyJobsMessage {
       font-weight: 600;
       margin: 0 auto;
-      color: @FocusColor;
+      color: var(--colorNeutralForeground2);
     }
     button.createCopyJobButton {
-      color: @LinkColor;
+      color: var(--colorBrandForeground1);
     }
   }
 }
 .createCopyJobScreensContainer {
   height: 100%;
   padding: 1em 1.5em;
+  background-color: var(--colorNeutralBackground1);
+  color: var(--colorNeutralForeground1);
 
   .pointInTimeRestoreContainer, .onlineCopyContainer {
     position: relative;
+  }
+
+  .toggle-label {
+    color: var(--colorNeutralForeground1);
+  }
+
+  .accordionHeaderText {
+    color: var(--colorNeutralForeground1);
   }
   
   label {
@@ -71,7 +127,7 @@
   }
   .foreground {
     z-index: 10;
-    background-color: #f9f9f9;
+    background-color: var(--colorNeutralBackground2);
     padding: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     transform: translate(0%, -9%);
@@ -80,14 +136,31 @@
   .createCopyJobErrorMessageBar {
     margin-bottom: 2em;
   }
+  body.isDarkMode & {
+    .ms-TooltipHost .ms-Image {
+      filter: invert(1);
+    }
+
+    .themedTextFieldStyles();
+
+    .migrationTypeDescription {
+      p {
+        color: var(--colorNeutralForeground1);
+      }
+      a {
+        color: var(--colorBrandForeground1);
+      }
+    }
+  }
   .create-container-link-btn {
     padding: 0;
     height: 25px;
-    color: @LinkColor;
+    color: var(--colorBrandForeground1);
 
     &:focus {
       outline: none;
     }
+
   }
 
   /* Create collection panel */
@@ -106,6 +179,10 @@
   max-width: 100%;
   margin: 0 auto;
 
+  body.isDarkMode & {
+    .themedTextFieldStyles();
+  }
+
   .ms-DetailsList {
     width: 100%;
 
@@ -114,33 +191,36 @@
         padding: @DefaultSpace 20px;
         font-weight: 600;
         font-size: @DefaultFontSize;
-        color: @BaseHigh;
-        background-color: @BaseLow;
-        border-bottom: @ButtonBorderWidth solid @BaseMedium;
+        color: var(--colorNeutralForeground1);
+        background-color: var(--colorNeutralBackground2);
+        border-bottom: @ButtonBorderWidth solid var(--colorNeutralStroke1);
 
         &:hover {
-          background-color: @BaseMediumLow;
+          background-color: var(--colorNeutralBackground3);
         }
+      }
+      .ms-DetailsHeader-cellTitle {
+        padding-left: 20px;
       }
     }
 
     .ms-DetailsRow {
-      border-bottom: @ButtonBorderWidth solid @BaseMedium;
+      border-bottom: @ButtonBorderWidth solid var(--colorNeutralStroke1);
 
       &:hover {
-        background-color: @BaseMediumLow;
+        background-color: var(--colorNeutralBackground2);
       }
 
       .ms-DetailsRow-cell {
         padding: @MediumSpace 20px;
         font-size: @DefaultFontSize;
-        color: @BaseHigh;
+        color: var(--colorNeutralForeground1);
         min-height: 48px;
         display: flex;
         align-items: center;
 
         .jobNameLink {
-          color: @LinkColor;
+          color: var(--colorBrandForeground1);
           text-overflow: ellipsis;
           white-space: nowrap;
           overflow: hidden;
@@ -168,7 +248,7 @@
     }
     .ms-DetailsRow-cell {
       font-size: @DefaultFontSize;
-      color: @BaseHigh;
+      color: var(--colorNeutralForeground1);
     }
   }
 }
