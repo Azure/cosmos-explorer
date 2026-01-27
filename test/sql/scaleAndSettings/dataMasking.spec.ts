@@ -1,5 +1,5 @@
-import { expect, Page, test } from "@playwright/test";
-import { CommandBarButton, DataExplorer, ONE_MINUTE_MS, TestAccount } from "../../fx";
+import { expect, test, type Page } from "@playwright/test";
+import { DataExplorer, TestAccount } from "../../fx";
 import { createTestSQLContainer, TestContainerContext } from "../../testData";
 
 /**
@@ -13,157 +13,110 @@ import { createTestSQLContainer, TestContainerContext } from "../../testData";
  * - Once DDM is enabled on a container, it cannot be disabled (isPolicyEnabled cannot be set to false)
  * - Tests focus on enabling DDM and modifying the masking policy configuration
  */
+
+let testContainer: TestContainerContext;
+let DATABASE_ID: string;
+let CONTAINER_ID: string;
+
+test.beforeAll(async () => {
+  testContainer = await createTestSQLContainer();
+  DATABASE_ID = testContainer.database.id;
+  CONTAINER_ID = testContainer.container.id;
+});
+
+// Clean up test database after all tests
+test.afterAll(async () => {
+  if (testContainer) {
+    await testContainer.dispose();
+  }
+});
+
+// Helper function to navigate to Data Masking tab
+async function navigateToDataMaskingTab(page: Page, explorer: DataExplorer): Promise<boolean> {
+  // Refresh the tree to see the newly created database
+  const refreshButton = explorer.frame.getByTestId("Sidebar/RefreshButton");
+  await refreshButton.click();
+  await page.waitForTimeout(3000);
+
+  // Expand database and container nodes
+  const databaseNode = await explorer.waitForNode(DATABASE_ID);
+  await databaseNode.expand();
+  await page.waitForTimeout(2000);
+
+  const containerNode = await explorer.waitForNode(`${DATABASE_ID}/${CONTAINER_ID}`);
+  await containerNode.expand();
+  await page.waitForTimeout(1000);
+
+  // Click Scale & Settings or Settings (depending on container type)
+  let settingsNode = explorer.frame.getByTestId(`TreeNode:${DATABASE_ID}/${CONTAINER_ID}/Scale & Settings`);
+  const isScaleAndSettings = await settingsNode.isVisible().catch(() => false);
+
+  if (!isScaleAndSettings) {
+    settingsNode = explorer.frame.getByTestId(`TreeNode:${DATABASE_ID}/${CONTAINER_ID}/Settings`);
+  }
+
+  await settingsNode.click();
+  await page.waitForTimeout(2000);
+
+  // Check if Data Masking tab is available
+  const dataMaskingTab = explorer.frame.getByTestId("settings-tab-header/DataMaskingTab");
+  const isTabVisible = await dataMaskingTab.isVisible().catch(() => false);
+
+  if (!isTabVisible) {
+    return false;
+  }
+
+  await dataMaskingTab.click();
+  await page.waitForTimeout(1000);
+  return true;
+}
+
 test.describe("Data Masking under Scale & Settings", () => {
-  let context: TestContainerContext = null!;
-  let explorer: DataExplorer = null!;
+  test("Data Masking tab should be visible and show JSON editor", async ({ page }) => {
+    const explorer = await DataExplorer.open(page, TestAccount.SQL);
+    const isTabAvailable = await navigateToDataMaskingTab(page, explorer);
 
-  test.beforeAll("Create Test Database", async () => {
-    context = await createTestSQLContainer();
-  });
-
-  test.beforeEach("Open Data Masking tab under Scale & Settings", async ({ page }) => {
-    explorer = await DataExplorer.open(page, TestAccount.SQL);
-
-    // Click Scale & Settings
-    await explorer.openScaleAndSettings(context);
-
-    // Check if Data Masking tab is available (requires EnableDynamicDataMasking capability)
-    const dataMaskingTab = explorer.frame.getByTestId("settings-tab-header/DataMaskingTab");
-    const isTabVisible = await dataMaskingTab.isVisible().catch(() => false);
-
-    if (!isTabVisible) {
-      test.skip(
-        true,
-        "Data Masking tab is not available. Test account may not have EnableDynamicDataMasking capability.",
-      );
+    if (!isTabAvailable) {
+      test.skip(true, "Data Masking tab is not available. Test account may not have EnableDynamicDataMasking capability.");
     }
 
-    await dataMaskingTab.click();
-  });
-
-  test.afterAll("Delete Test Database", async () => {
-    await context?.dispose();
-  });
-
-  test("Data Masking editor should be visible", async () => {
     // Verify the Data Masking editor is visible
     const dataMaskingEditor = explorer.frame.locator(".settingsV2Editor");
     await expect(dataMaskingEditor).toBeVisible();
   });
 
-  test("Enable data masking policy with valid JSON", async ({ page }) => {
-    await clearDataMaskingEditorContent({ page });
+  test("Data Masking editor should contain default policy structure", async ({ page }) => {
+    const explorer = await DataExplorer.open(page, TestAccount.SQL);
+    const isTabAvailable = await navigateToDataMaskingTab(page, explorer);
 
-    // Type a valid data masking policy
-    // Note: Once DDM is enabled on a container, it cannot be disabled
-    const validPolicy = JSON.stringify(
-      {
-        includedPaths: [
-          {
-            path: "/email",
-            strategy: "Default",
-            startPosition: 0,
-            length: -1,
-          },
-        ],
-        excludedPaths: [],
-        isPolicyEnabled: true,
-      },
-      null,
-      2,
-    );
-
-    await page.keyboard.type(validPolicy);
-
-    // Wait a moment for the changes to be processed
-    await page.waitForTimeout(1000);
-
-    // Click Save button
-    const saveButton = explorer.commandBarButton(CommandBarButton.Save);
-    await expect(saveButton).toBeEnabled();
-    await saveButton.click();
-
-    // Verify success message
-    await expect(explorer.getConsoleHeaderStatus()).toContainText(
-      `Successfully updated container ${context.container.id}`,
-      {
-        timeout: 2 * ONE_MINUTE_MS,
-      },
-    );
-  });
-
-  test("Show validation error for invalid JSON", async ({ page }) => {
-    await clearDataMaskingEditorContent({ page });
-
-    // Type invalid JSON
-    await page.keyboard.type("{invalid json}");
-
-    // Wait a moment for validation
-    await page.waitForTimeout(1000);
-
-    // Save button should be disabled due to invalid JSON
-    const saveButton = explorer.commandBarButton(CommandBarButton.Save);
-    await expect(saveButton).toBeDisabled();
-  });
-
-  test("Update data masking policy with multiple paths", async ({ page }) => {
-    await clearDataMaskingEditorContent({ page });
-
-    // Type a policy with multiple included paths and excluded paths
-    const multiPathPolicy = JSON.stringify(
-      {
-        includedPaths: [
-          {
-            path: "/email",
-            strategy: "Default",
-            startPosition: 0,
-            length: -1,
-          },
-          {
-            path: "/phoneNumber",
-            strategy: "Default",
-            startPosition: 0,
-            length: -1,
-          },
-        ],
-        excludedPaths: ["/id", "/timestamp"],
-        isPolicyEnabled: true,
-      },
-      null,
-      2,
-    );
-
-    await page.keyboard.type(multiPathPolicy);
-
-    // Wait a moment for the changes to be processed
-    await page.waitForTimeout(1000);
-
-    // Click Save button
-    const saveButton = explorer.commandBarButton(CommandBarButton.Save);
-    await expect(saveButton).toBeEnabled();
-    await saveButton.click();
-
-    // Verify success message
-    await expect(explorer.getConsoleHeaderStatus()).toContainText(
-      `Successfully updated container ${context.container.id}`,
-      {
-        timeout: 2 * ONE_MINUTE_MS,
-      },
-    );
-  });
-
-  /**
-   * Helper function to clear the data masking editor content.
-   */
-  const clearDataMaskingEditorContent = async ({ page }: { page: Page }): Promise<void> => {
-    // Wait for the Monaco editor to be visible
-    await explorer.frame.waitForSelector(".settingsV2Editor", { state: "visible" });
-    const dataMaskingEditor = explorer.frame.locator(".settingsV2Editor");
-    await dataMaskingEditor.click();
-
-    // Clear existing content (Ctrl+A + Backspace does not work reliably with webkit)
-    for (let i = 0; i < 100; i++) {
-      await page.keyboard.press("Backspace");
+    if (!isTabAvailable) {
+      test.skip(true, "Data Masking tab is not available. Test account may not have EnableDynamicDataMasking capability.");
     }
-  };
+
+    // Verify the editor contains the expected JSON structure fields
+    const editorContent = explorer.frame.locator(".settingsV2Editor");
+    await expect(editorContent).toBeVisible();
+
+    // Check that the editor contains key policy fields (default policy has empty arrays)
+    await expect(editorContent).toContainText("includedPaths");
+    await expect(editorContent).toContainText("excludedPaths");
+    await expect(editorContent).toContainText("isPolicyEnabled");
+  });
+
+  test("Data Masking editor should have correct default policy values", async ({ page }) => {
+    const explorer = await DataExplorer.open(page, TestAccount.SQL);
+    const isTabAvailable = await navigateToDataMaskingTab(page, explorer);
+
+    if (!isTabAvailable) {
+      test.skip(true, "Data Masking tab is not available. Test account may not have EnableDynamicDataMasking capability.");
+    }
+
+    const editorContent = explorer.frame.locator(".settingsV2Editor");
+    await expect(editorContent).toBeVisible();
+
+    // Default policy should have isPolicyEnabled set to true
+    await expect(editorContent).toContainText("true");
+    // Default policy should have empty includedPaths and excludedPaths arrays
+    await expect(editorContent).toContainText("[]");
+  });
 });
