@@ -1,7 +1,7 @@
-import { armRequest } from "./request";
-import fetch from "node-fetch";
-import { updateUserContext } from "../../UserContext";
+import fetch, { Headers } from "node-fetch";
 import { AuthType } from "../../AuthType";
+import { updateUserContext } from "../../UserContext";
+import { armRequest } from "./request";
 
 interface Global {
   Headers: unknown;
