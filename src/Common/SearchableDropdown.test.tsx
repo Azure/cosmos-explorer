@@ -18,7 +18,7 @@ describe("SearchableDropdown", () => {
   const defaultProps = {
     label: "Test Label",
     items: mockItems,
-    selectedItem: null,
+    selectedItem: null as TestItem | null,
     onSelect: jest.fn(),
     getKey: (item: TestItem) => item.id,
     getDisplayText: (item: TestItem) => item.name,
@@ -49,7 +49,7 @@ describe("SearchableDropdown", () => {
   it("should show 'No items found' when items array is empty", () => {
     const propsWithEmptyItems = {
       ...defaultProps,
-      items: [],
+      items: [] as TestItem[],
     };
     render(<SearchableDropdown {...propsWithEmptyItems} />);
     expect(screen.getByText("No Test Labels Found")).toBeInTheDocument();
