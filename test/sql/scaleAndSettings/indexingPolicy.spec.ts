@@ -44,13 +44,12 @@ test.describe("Indexing Policy under Scale & Settings", () => {
   });
 
   test("Update Indexing Policy - Change automatic to false", async () => {
-    // Get the Monaco editor element - IndexingPolicyComponent creates Monaco directly
-    const editorContainer = explorer.frame.locator(".settingsV2Editor");
-    const editorElement = editorContainer.locator(".monaco-editor");
-    await expect(editorElement).toBeVisible();
-
     // Use helper function to get editor instance
     const editor = getIndexingPolicyEditor();
+
+    // Verify the Monaco editor is visible
+    const editorElement = explorer.frame.locator(".settingsV2Editor").locator(".monaco-editor");
+    await expect(editorElement).toBeVisible();
 
     // Get current indexing policy content
     const currentContent = await editor.text();
@@ -88,13 +87,12 @@ test.describe("Indexing Policy under Scale & Settings", () => {
   });
 
   test("Update Indexing Policy - Change indexingMode to lazy", async () => {
-    // Get the Monaco editor element
-    const editorContainer = explorer.frame.locator(".settingsV2Editor");
-    const editorElement = editorContainer.locator(".monaco-editor");
-    await expect(editorElement).toBeVisible();
-
     // Use helper function to get editor instance
     const editor = getIndexingPolicyEditor();
+
+    // Verify the Monaco editor is visible
+    const editorElement = explorer.frame.locator(".settingsV2Editor").locator(".monaco-editor");
+    await expect(editorElement).toBeVisible();
 
     // Get current indexing policy content
     const currentContent = await editor.text();
@@ -125,13 +123,12 @@ test.describe("Indexing Policy under Scale & Settings", () => {
   });
 
   test("Update Indexing Policy - Revert automatic to true", async () => {
-    // Get the Monaco editor element
-    const editorContainer = explorer.frame.locator(".settingsV2Editor");
-    const editorElement = editorContainer.locator(".monaco-editor");
-    await expect(editorElement).toBeVisible();
-
     // Use helper function to get editor instance
     const editor = getIndexingPolicyEditor();
+
+    // Verify the Monaco editor is visible
+    const editorElement = explorer.frame.locator(".settingsV2Editor").locator(".monaco-editor");
+    await expect(editorElement).toBeVisible();
 
     // Get current indexing policy content
     const currentContent = await editor.text();
