@@ -16,7 +16,7 @@ import {
 import { useIndexingPolicyStore } from "Explorer/Tabs/QueryTab/ResultsView";
 import { useDatabases } from "Explorer/useDatabases";
 import { isFabricNative } from "Platform/Fabric/FabricUtil";
-import { isCapabilityEnabled, isVectorSearchEnabled } from "Utils/CapabilityUtils";
+import { isVectorSearchEnabled } from "Utils/CapabilityUtils";
 import { isRunningOnPublicCloud } from "Utils/CloudUtils";
 import * as React from "react";
 import DiscardIcon from "../../../../images/discard.svg";
@@ -70,6 +70,7 @@ import {
   getMongoNotification,
   getTabTitle,
   hasDatabaseSharedThroughput,
+  isDataMaskingEnabled,
   isDirty,
   parseConflictResolutionMode,
   parseConflictResolutionProcedure,
@@ -1073,8 +1074,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
       newCollection.fullTextPolicy = this.state.fullTextPolicy;
 
-      // Only send data masking policy if it was modified (dirty)
-      if (this.state.isDataMaskingDirty && isCapabilityEnabled(Constants.CapabilityNames.EnableDynamicDataMasking)) {
+      // Only send data masking policy if it was modified (dirty) and data masking is enabled
+      if (this.state.isDataMaskingDirty && isDataMaskingEnabled(this.collection.dataMaskingPolicy?.())) {
         newCollection.dataMaskingPolicy = this.state.dataMaskingContent;
       }
 
@@ -1463,15 +1464,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       });
     }
 
-    // Check if DDM should be enabled
-    const shouldEnableDDM = (): boolean => {
-      const hasDataMaskingCapability = isCapabilityEnabled(Constants.CapabilityNames.EnableDynamicDataMasking);
-      const isSqlAccount = userContext.apiType === "SQL";
-
-      return isSqlAccount && hasDataMaskingCapability; // Only show for SQL accounts with DDM capability
-    };
-
-    if (shouldEnableDDM()) {
+    if (isDataMaskingEnabled(this.collection.dataMaskingPolicy?.())) {
       const dataMaskingComponentProps: DataMaskingComponentProps = {
         shouldDiscardDataMasking: this.state.shouldDiscardDataMasking,
         resetShouldDiscardDataMasking: this.resetShouldDiscardDataMasking,
