@@ -19,12 +19,9 @@ test.describe("Database with Shared Throughput", () => {
     return explorer.frame.getByTestId(`${type}-throughput-input`);
   };
 
-  // Delete database only if not running in CI
-  if (!process.env.CI) {
-    test.afterEach("Delete Test Database", async () => {
-      await dbContext?.dispose();
-    });
-  }
+  test.afterEach("Delete Test Database", async () => {
+    await dbContext?.dispose();
+  });
 
   test.describe("Manual Throughput Tests", () => {
     test.beforeEach(async ({ page }) => {
