@@ -18,10 +18,10 @@ jobs:
     if: github.ref == 'refs/heads/master'
     steps:
       - uses: actions/checkout@v4
-      - name: Use Node.js 18.x
+      - name: Use Node.js 24.x
         uses: actions/setup-node@v4
         with:
-          node-version: 18.x
+          node-version: 24.x
       - run: npm ci
       - run: node utils/codeMetrics.js
         env:
@@ -31,10 +31,10 @@ jobs:
     name: "Compile TypeScript"
     steps:
       - uses: actions/checkout@v4
-      - name: Use Node.js 18.x
+      - name: Use Node.js 24.x
         uses: actions/setup-node@v4
         with:
-          node-version: 18.x
+          node-version: 24.x
       - run: npm ci
       - run: npm run compile
       - run: npm run compile:strict
@@ -43,10 +43,10 @@ jobs:
     name: "Check Format"
     steps:
       - uses: actions/checkout@v4
-      - name: Use Node.js 18.x
+      - name: Use Node.js 24.x
         uses: actions/setup-node@v4
         with:
-          node-version: 18.x
+          node-version: 24.x
       - run: npm ci
       - run: npm run format:check
   lint:
@@ -54,10 +54,10 @@ jobs:
     name: "Lint"
     steps:
       - uses: actions/checkout@v4
-      - name: Use Node.js 18.x
+      - name: Use Node.js 24.x
         uses: actions/setup-node@v4
         with:
-          node-version: 18.x
+          node-version: 24.x
       - run: npm ci
       - run: npm run lint
   unittest:
@@ -65,10 +65,10 @@ jobs:
     name: "Unit Tests"
     steps:
       - uses: actions/checkout@v4
-      - name: Use Node.js 18.x
+      - name: Use Node.js 24.x
         uses: actions/setup-node@v4
         with:
-          node-version: 18.x
+          node-version: 24.x
       - run: npm ci
       - run: npm run test
   build:
@@ -76,10 +76,10 @@ jobs:
     name: "Build"
     steps:
       - uses: actions/checkout@v4
-      - name: Use Node.js 18.x
+      - name: Use Node.js 24.x
         uses: actions/setup-node@v4
         with:
-          node-version: 18.x
+          node-version: 24.x
       - run: npm ci
       - run: npm run build:contracts
       - name: Restore Build Cache
@@ -168,10 +168,10 @@ jobs:
         shardTotal: [20]
     steps:
       - uses: actions/checkout@v4
-      - name: Use Node.js 18.x
+      - name: Use Node.js 24.x
         uses: actions/setup-node@v4
         with:
-          node-version: 18.x
+          node-version: 24.x
       - run: npm ci
       - run: npx playwright install --with-deps
       - name: "Az CLI login"
@@ -236,7 +236,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 24.x
       - name: Install dependencies
         run: npm ci
 

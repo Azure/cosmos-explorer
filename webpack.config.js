@@ -303,10 +303,17 @@ module.exports = function (_env = {}, argv = {}) {
           }
         });
 
+        // Only handle OPTIONS for /api (preflight)
+        if (server?.app) {
+          server.app.options("/api", (_req, res) => res.sendStatus(200));
+          server.app.options("/api/*", (_req, res) => res.sendStatus(200));
+        }
+
         return middlewares;
       },
-      proxy: {
-        "/api": {
+      proxy: [
+        {
+          context: ["/api"],
           target: "https://cdb-ms-mpac-pbe.cosmos.azure.com",
           changeOrigin: true,
           logLevel: "debug",
@@ -317,37 +324,38 @@ module.exports = function (_env = {}, argv = {}) {
             }
           },
         },
-        "/proxy": {
+        {
+          context: ["/proxy"],
           target: "https://cdb-ms-mpac-pbe.cosmos.azure.com",
           changeOrigin: true,
           secure: false,
           logLevel: "debug",
           pathRewrite: { "^/proxy": "" },
-          router: (req) => {
-            let newTarget = req.headers["x-ms-proxy-target"];
-            return newTarget;
-          },
+          router: (req) => req.headers["x-ms-proxy-target"],
         },
-        "/_explorer": {
+        {
+          context: ["/_explorer"],
           target: process.env.EMULATOR_ENDPOINT || "https://localhost:8081/",
           changeOrigin: true,
           secure: false,
           logLevel: "debug",
         },
-        "/explorerProxy": {
+        {
+          context: ["/explorerProxy"],
           target: process.env.EMULATOR_ENDPOINT || "https://localhost:8081/",
           pathRewrite: { "^/explorerProxy": "" },
           changeOrigin: true,
           secure: false,
           logLevel: "debug",
         },
-        [`/${AZURE_TENANT_ID}`]: {
+        {
+          context: [`/${AZURE_TENANT_ID}`],
           target: "https://login.microsoftonline.com/",
           changeOrigin: true,
           secure: false,
           logLevel: "debug",
         },
-      },
+      ],
     },
     stats: "minimal",
   };

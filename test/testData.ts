@@ -2,7 +2,6 @@ import crypto from "crypto";
 
 import { CosmosDBManagementClient } from "@azure/arm-cosmosdb";
 import { BulkOperationType, Container, CosmosClient, CosmosClientOptions, Database, JSONObject } from "@azure/cosmos";
-import { AzureIdentityCredentialAdapter } from "@azure/ms-rest-js";
 
 import {
   generateUniqueName,
@@ -105,8 +104,7 @@ export async function createMultipleTestContainers({
 
   const databaseId = databaseName ? databaseName : generateUniqueName("db");
   const credentials = getAzureCLICredentials();
-  const adaptedCredentials = new AzureIdentityCredentialAdapter(credentials);
-  const armClient = new CosmosDBManagementClient(adaptedCredentials, subscriptionId);
+  const armClient = new CosmosDBManagementClient(credentials, subscriptionId);
   const accountName = getAccountName(accountType);
   const account = await armClient.databaseAccounts.get(resourceGroupName, accountName);
 
@@ -159,8 +157,7 @@ export async function createTestSQLContainer({
   const databaseId = databaseName ? databaseName : generateUniqueName("db");
   const containerId = "testcontainer"; // A unique container name isn't needed because the database is unique
   const credentials = getAzureCLICredentials();
-  const adaptedCredentials = new AzureIdentityCredentialAdapter(credentials);
-  const armClient = new CosmosDBManagementClient(adaptedCredentials, subscriptionId);
+  const armClient = new CosmosDBManagementClient(credentials, subscriptionId);
   const accountName = getAccountName(TestAccount.SQL);
   const account = await armClient.databaseAccounts.get(resourceGroupName, accountName);
 
@@ -211,20 +208,20 @@ export async function createTestSQLContainer({
 }
 
 export const setPartitionKeys = (partitionKeys: PartitionKey[]) => {
-  const result = {};
+  const result: Record<string, unknown> = {};
 
   partitionKeys.forEach((partitionKey) => {
     const { key: keyPath, value: keyValue } = partitionKey;
     const cleanPath = keyPath.startsWith("/") ? keyPath.slice(1) : keyPath;
     const keys = cleanPath.split("/");
-    let current = result;
+    let current: Record<string, unknown> = result;
 
     keys.forEach((key, index) => {
       if (index === keys.length - 1) {
         current[key] = keyValue;
       } else {
         current[key] = current[key] || {};
-        current = current[key];
+        current = current[key] as Record<string, unknown>;
       }
     });
   });
