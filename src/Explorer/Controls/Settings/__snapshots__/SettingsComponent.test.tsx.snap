@@ -638,7 +638,6 @@ exports[`SettingsComponent renders 1`] = `
                   "/excludedPath",
                 ],
                 "includedPaths": [],
-                "isPolicyEnabled": true,
               }
             }
             dataMaskingContentBaseline={
@@ -647,7 +646,6 @@ exports[`SettingsComponent renders 1`] = `
                   "/excludedPath",
                 ],
                 "includedPaths": [],
-                "isPolicyEnabled": true,
               }
             }
             onDataMaskingContentChange={[Function]}

@@ -695,14 +695,13 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     }
 
     const validationErrors = [];
-    if (!Array.isArray(newDataMasking.includedPaths)) {
+    if (newDataMasking.includedPaths === undefined || newDataMasking.includedPaths === null) {
+      validationErrors.push("includedPaths is required");
+    } else if (!Array.isArray(newDataMasking.includedPaths)) {
       validationErrors.push("includedPaths must be an array");
     }
-    if (!Array.isArray(newDataMasking.excludedPaths)) {
-      validationErrors.push("excludedPaths must be an array");
-    }
-    if (typeof newDataMasking.isPolicyEnabled !== "boolean") {
-      validationErrors.push("isPolicyEnabled must be a boolean");
+    if (newDataMasking.excludedPaths !== undefined && !Array.isArray(newDataMasking.excludedPaths)) {
+      validationErrors.push("excludedPaths must be an array if provided");
     }
 
     this.setState({
@@ -843,7 +842,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     const dataMaskingContent: DataModels.DataMaskingPolicy = {
       includedPaths: this.collection.dataMaskingPolicy?.()?.includedPaths || [],
       excludedPaths: this.collection.dataMaskingPolicy?.()?.excludedPaths || [],
-      isPolicyEnabled: this.collection.dataMaskingPolicy?.()?.isPolicyEnabled ?? true,
     };
     const conflictResolutionPolicy: DataModels.ConflictResolutionPolicy =
       this.collection.conflictResolutionPolicy && this.collection.conflictResolutionPolicy();

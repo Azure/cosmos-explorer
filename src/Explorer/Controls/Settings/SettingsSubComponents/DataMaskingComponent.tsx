@@ -4,7 +4,7 @@ import * as React from "react";
 import * as DataModels from "../../../../Contracts/DataModels";
 import { loadMonaco } from "../../../LazyMonaco";
 import { titleAndInputStackProps, unsavedEditorWarningMessage } from "../SettingsRenderUtils";
-import { isDataMaskingEnabled, isDirty as isContentDirty } from "../SettingsUtils";
+import { isDirty as isContentDirty, isDataMaskingEnabled } from "../SettingsUtils";
 
 export interface DataMaskingComponentProps {
   shouldDiscardDataMasking: boolean;
@@ -31,7 +31,6 @@ const emptyDataMaskingPolicy: DataModels.DataMaskingPolicy = {
     },
   ],
   excludedPaths: [],
-  isPolicyEnabled: true,
 };
 
 export class DataMaskingComponent extends React.Component<DataMaskingComponentProps, DataMaskingComponentState> {
