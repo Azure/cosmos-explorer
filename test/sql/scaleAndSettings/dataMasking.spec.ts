@@ -10,7 +10,6 @@ import { createTestSQLContainer, TestContainerContext } from "../../testData";
  * - If the capability is not enabled, the DataMaskingTab will not be visible and tests will be skipped
  *
  * Important Notes:
- * - Once DDM is enabled on a container, it cannot be disabled (isPolicyEnabled cannot be set to false)
  * - Tests focus on enabling DDM and modifying the masking policy configuration
  */
 
@@ -106,7 +105,6 @@ test.describe("Data Masking under Scale & Settings", () => {
     // Check that the editor contains key policy fields (default policy has empty arrays)
     await expect(editorContent).toContainText("includedPaths");
     await expect(editorContent).toContainText("excludedPaths");
-    await expect(editorContent).toContainText("isPolicyEnabled");
   });
 
   test("Data Masking editor should have correct default policy values", async ({ page }) => {
@@ -123,8 +121,6 @@ test.describe("Data Masking under Scale & Settings", () => {
     const editorContent = explorer.frame.locator(".settingsV2Editor");
     await expect(editorContent).toBeVisible();
 
-    // Default policy should have isPolicyEnabled set to true
-    await expect(editorContent).toContainText("true");
     // Default policy should have empty includedPaths and excludedPaths arrays
     await expect(editorContent).toContainText("[]");
   });
