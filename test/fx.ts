@@ -58,7 +58,9 @@ export const defaultAccounts: Record<TestAccount, string> = {
 export const resourceGroupName = process.env.DE_TEST_RESOURCE_GROUP ?? "de-e2e-tests";
 export const subscriptionId = process.env.DE_TEST_SUBSCRIPTION_ID ?? "69e02f2d-f059-4409-9eac-97e8a276ae2c";
 export const TEST_AUTOSCALE_THROUGHPUT_RU = 1000;
+export const TEST_MANUAL_THROUGHPUT_RU = 800;
 export const TEST_AUTOSCALE_MAX_THROUGHPUT_RU_2K = 2000;
+export const TEST_AUTOSCALE_MAX_THROUGHPUT_RU_4K = 4000;
 export const TEST_MANUAL_THROUGHPUT_RU_2K = 2000;
 export const ONE_MINUTE_MS: number = 60 * 1000;
 
