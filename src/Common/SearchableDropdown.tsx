@@ -89,8 +89,8 @@ export const SearchableDropdown = <T,>({
   const buttonLabel = selectedItem
     ? getDisplayText(selectedItem)
     : items?.length === 0
-      ? `No ${label}s Found`
-      : placeholder;
+    ? `No ${label}s Found`
+    : placeholder;
 
   const buttonId = `${className}-button`;
   const buttonStyles = getDropdownButtonStyles(disabled);
