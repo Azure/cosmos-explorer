@@ -2,18 +2,9 @@
 import "./ReactDevTools";
 
 // CSS Dependencies
-import { initializeIcons, loadTheme, useTheme } from "@fluentui/react";
-import { FluentProvider, makeStyles, webDarkTheme, webLightTheme } from "@fluentui/react-components";
-import { Platform } from "ConfigContext";
-import ContainerCopyPanel from "Explorer/ContainerCopy/ContainerCopyPanel";
-import Explorer from "Explorer/Explorer";
-import { QuickstartCarousel } from "Explorer/Quickstart/QuickstartCarousel";
-import { MongoQuickstartTutorial } from "Explorer/Quickstart/Tutorials/MongoQuickstartTutorial";
-import { SQLQuickstartTutorial } from "Explorer/Quickstart/Tutorials/SQLQuickstartTutorial";
-import { userContext } from "UserContext";
+import { initializeIcons } from "@fluentui/react";
 import "allotment/dist/style.css";
 import "bootstrap/dist/css/bootstrap.css";
-import { useCarousel } from "hooks/useCarousel";
 import React from "react";
 import ReactDOM from "react-dom";
 import "../externals/jquery-ui.min.css";
@@ -24,13 +15,8 @@ import "../externals/jquery.dataTables.min.css";
 import "../externals/jquery.typeahead.min.css";
 import "../externals/jquery.typeahead.min.js";
 // Image Dependencies
-import { SidePanel } from "Explorer/Panes/PanelContainerComponent";
-import { QueryCopilotCarousel } from "Explorer/QueryCopilot/CopilotCarousel";
-import { SidebarContainer } from "Explorer/Sidebar";
-import { KeyboardShortcutRoot } from "KeyboardShortcuts";
 import "allotment/dist/style.css";
 import "../images/CosmosDB_rgb_ui_lighttheme.ico";
-import hdeConnectImage from "../images/HdeConnectCosmosDB.svg";
 import "../images/favicon.ico";
 import "../less/TableStyles/CustomizeColumns.less";
 import "../less/TableStyles/EntityEditor.less";
@@ -42,181 +28,28 @@ import "../less/infobox.less";
 import "../less/menus.less";
 import "../less/messagebox.less";
 import "../less/resourceTree.less";
-import * as StyleConstants from "./Common/StyleConstants";
 import "./Explorer/Controls/Accordion/AccordionComponent.less";
 import "./Explorer/Controls/CollapsiblePanel/CollapsiblePanelComponent.less";
-import { Dialog } from "./Explorer/Controls/Dialog";
 import "./Explorer/Controls/ErrorDisplayComponent/ErrorDisplayComponent.less";
 import "./Explorer/Controls/JsonEditor/JsonEditorComponent.less";
 import "./Explorer/Controls/Notebook/NotebookTerminalComponent.less";
 import "./Explorer/Controls/TreeComponent/treeComponent.less";
-import { ErrorBoundary } from "./Explorer/ErrorBoundary";
 import "./Explorer/Graph/GraphExplorerComponent/graphExplorer.less";
 import "./Explorer/Menus/CommandBar/CommandBarComponent.less";
-import { CommandBar } from "./Explorer/Menus/CommandBar/CommandBarComponentAdapter";
 import "./Explorer/Menus/CommandBar/ConnectionStatusComponent.less";
 import "./Explorer/Menus/CommandBar/MemoryTrackerComponent.less";
 import "./Explorer/Menus/NotificationConsole/NotificationConsole.less";
-import { NotificationConsole } from "./Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
 import "./Explorer/Panes/PanelComponent.less";
 import "./Explorer/SplashScreen/SplashScreen.less";
 import "./Libs/jquery";
-import MetricScenario from "./Metrics/MetricEvents";
-import { MetricScenarioProvider, useMetricScenario } from "./Metrics/MetricScenarioProvider";
-import { ApplicationMetricPhase } from "./Metrics/ScenarioConfig";
-import { useInteractive } from "./Metrics/useMetricPhases";
-import { appThemeFabric } from "./Platform/Fabric/FabricTheme";
+import { MetricScenarioProvider } from "./Metrics/MetricScenarioProvider";
+import Root from "./RootComponents/Root";
 import "./Shared/appInsights";
-import { useConfig } from "./hooks/useConfig";
-import { useKnockoutExplorer } from "./hooks/useKnockoutExplorer";
-import { useThemeStore } from "./hooks/useTheme";
 import "./less/DarkModeMenus.less";
 import "./less/ThemeSystem.less";
+
 // Initialize icons before React is loaded
 initializeIcons(undefined, { disableWarnings: true });
-
-const useStyles = makeStyles({
-  root: {
-    height: "100vh",
-    width: "100vw",
-    backgroundColor: "var(--colorNeutralBackground1)",
-    color: "var(--colorNeutralForeground1)",
-  },
-});
-
-const App = (): JSX.Element => {
-  const config = useConfig();
-  const styles = useStyles();
-  // theme is used for application-wide styling
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const theme = useTheme();
-
-  // Load Fabric theme and styles only once when platform is Fabric
-  React.useEffect(() => {
-    if (config?.platform === Platform.Fabric) {
-      loadTheme(appThemeFabric);
-      import("../less/documentDBFabric.less");
-    }
-    StyleConstants.updateStyles();
-  }, [config?.platform]);
-
-  const explorer = useKnockoutExplorer(config?.platform);
-
-  // Scenario-based health tracking: start ApplicationLoad and complete phases.
-  const { startScenario, completePhase } = useMetricScenario();
-  React.useEffect(() => {
-    // Only start scenario after config is initialized to avoid race conditions
-    // with message handlers that depend on configContext.platform
-    if (config) {
-      startScenario(MetricScenario.ApplicationLoad);
-    }
-  }, [config, startScenario]);
-
-  React.useEffect(() => {
-    if (explorer) {
-      completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.ExplorerInitialized);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [explorer]);
-
-  if (!explorer) {
-    return <LoadingExplorer />;
-  }
-
-  return (
-    <div id="Main" className={styles.root}>
-      <KeyboardShortcutRoot>
-        <div className="flexContainer" aria-hidden="false">
-          {userContext.features.enableContainerCopy && userContext.apiType === "SQL" ? (
-            <>
-              <ContainerCopyPanel explorer={explorer} />
-              <SidePanel />
-              <Dialog />
-            </>
-          ) : (
-            <DivExplorer explorer={explorer} />
-          )}
-        </div>
-      </KeyboardShortcutRoot>
-    </div>
-  );
-};
-
-const DivExplorer: React.FC<{ explorer: Explorer }> = ({ explorer }) => {
-  const isCarouselOpen = useCarousel((state) => state.shouldOpen);
-  const isCopilotCarouselOpen = useCarousel((state) => state.showCopilotCarousel);
-  useInteractive(MetricScenario.ApplicationLoad);
-
-  return (
-    <div
-      className="flexContainer"
-      style={{
-        flex: 1,
-        display: "flex",
-        flexDirection: "column",
-        backgroundColor: "var(--colorNeutralBackground1)",
-        color: "var(--colorNeutralForeground1)",
-      }}
-      aria-hidden="false"
-      data-test="DataExplorerRoot"
-    >
-      <div
-        id="divExplorer"
-        className="flexContainer hideOverflows"
-        style={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "column",
-          backgroundColor: "var(--colorNeutralBackground1)",
-          color: "var(--colorNeutralForeground1)",
-        }}
-      >
-        <div id="freeTierTeachingBubble"> </div>
-        <CommandBar container={explorer} />
-        <SidebarContainer explorer={explorer} />
-        <div
-          className="dataExplorerErrorConsoleContainer"
-          role="contentinfo"
-          aria-label="Notification console"
-          id="explorerNotificationConsole"
-          style={{
-            backgroundColor: "var(--colorNeutralBackground1)",
-            color: "var(--colorNeutralForeground1)",
-          }}
-        >
-          <NotificationConsole />
-        </div>
-      </div>
-      <SidePanel />
-      <Dialog />
-      {<QuickstartCarousel isOpen={isCarouselOpen} />}
-      {<SQLQuickstartTutorial />}
-      {<MongoQuickstartTutorial />}
-      {<QueryCopilotCarousel isOpen={isCopilotCarouselOpen} explorer={explorer} />}
-    </div>
-  );
-};
-
-const Root: React.FC = () => {
-  // Use React state to track isDarkMode and subscribe to changes
-  const [isDarkMode, setIsDarkMode] = React.useState(useThemeStore.getState().isDarkMode);
-  const currentTheme = isDarkMode ? webDarkTheme : webLightTheme;
-
-  // Subscribe to theme changes
-  React.useEffect(() => {
-    return useThemeStore.subscribe((state) => {
-      setIsDarkMode(state.isDarkMode);
-    });
-  }, []);
-
-  return (
-    <ErrorBoundary>
-      <FluentProvider theme={currentTheme}>
-        <App />
-      </FluentProvider>
-    </ErrorBoundary>
-  );
-};
 
 const mainElement = document.getElementById("Main");
 if (mainElement) {
@@ -225,26 +58,5 @@ if (mainElement) {
       <Root />
     </MetricScenarioProvider>,
     mainElement,
-  );
-}
-
-function LoadingExplorer(): JSX.Element {
-  const styles = useStyles();
-  return (
-    <div className={styles.root}>
-      <div className="splashLoaderContainer">
-        <div className="splashLoaderContentContainer">
-          <p className="connectExplorerContent">
-            <img src={hdeConnectImage} alt="Azure Cosmos DB" />
-          </p>
-          <p className="splashLoaderTitle" id="explorerLoadingStatusTitle">
-            Welcome to Azure Cosmos DB
-          </p>
-          <p className="splashLoaderText" id="explorerLoadingStatusText" role="alert">
-            Connecting...
-          </p>
-        </div>
-      </div>
-    </div>
   );
 }
