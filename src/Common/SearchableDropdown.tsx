@@ -2,6 +2,7 @@ import {
   Callout,
   DefaultButton,
   DirectionalHint,
+  Icon,
   ISearchBoxStyles,
   Label,
   SearchBox,
@@ -12,6 +13,7 @@ import * as React from "react";
 import { useCallback, useMemo, useRef, useState } from "react";
 import {
   buttonLabelStyles,
+  buttonWrapperStyles,
   calloutContentStyles,
   chevronStyles,
   emptyMessageStyles,
@@ -87,8 +89,8 @@ export const SearchableDropdown = <T,>({
   const buttonLabel = selectedItem
     ? getDisplayText(selectedItem)
     : items?.length === 0
-    ? `No ${label}s Found`
-    : placeholder;
+      ? `No ${label}s Found`
+      : placeholder;
 
   const buttonId = `${className}-button`;
   const buttonStyles = getDropdownButtonStyles(disabled);
@@ -96,7 +98,7 @@ export const SearchableDropdown = <T,>({
   return (
     <Stack>
       <Label htmlFor={buttonId}>{label}</Label>
-      <div ref={buttonRef}>
+      <div ref={buttonRef} style={buttonWrapperStyles}>
         <DefaultButton
           id={buttonId}
           className={className}
@@ -105,8 +107,8 @@ export const SearchableDropdown = <T,>({
           disabled={disabled}
         >
           <Text styles={buttonLabelStyles}>{buttonLabel}</Text>
-          <span style={chevronStyles}>▼</span>
         </DefaultButton>
+        <Icon iconName="ChevronDown" style={chevronStyles} />
       </div>
       {isOpen && (
         <Callout

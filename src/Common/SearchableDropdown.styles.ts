@@ -33,12 +33,18 @@ export const buttonLabelStyles: ITextStyles = {
   },
 };
 
+export const buttonWrapperStyles: React.CSSProperties = {
+  position: "relative",
+  width: "100%",
+};
+
 export const chevronStyles: React.CSSProperties = {
   position: "absolute",
   right: "8px",
   top: "50%",
   transform: "translateY(-50%)",
   pointerEvents: "none",
+  fontSize: "12px",
 };
 
 export const calloutContentStyles: IStackStyles = {
