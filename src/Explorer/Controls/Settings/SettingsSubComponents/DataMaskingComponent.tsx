@@ -22,14 +22,7 @@ interface DataMaskingComponentState {
 }
 
 const emptyDataMaskingPolicy: DataModels.DataMaskingPolicy = {
-  includedPaths: [
-    {
-      path: "/",
-      strategy: "Default",
-      startPosition: 0,
-      length: -1,
-    },
-  ],
+  includedPaths: [],
   excludedPaths: [],
 };
 

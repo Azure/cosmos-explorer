@@ -687,13 +687,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.setState({ isComputedPropertiesDirty: isComputedPropertiesDirty });
 
   private onDataMaskingContentChange = (newDataMasking: DataModels.DataMaskingPolicy): void => {
-    if (!newDataMasking.excludedPaths) {
-      newDataMasking.excludedPaths = [];
-    }
-    if (!newDataMasking.includedPaths) {
-      newDataMasking.includedPaths = [];
-    }
-
     const validationErrors = [];
     if (newDataMasking.includedPaths === undefined || newDataMasking.includedPaths === null) {
       validationErrors.push("includedPaths is required");
