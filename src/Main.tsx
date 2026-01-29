@@ -118,6 +118,8 @@ const App = (): JSX.Element => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [explorer]);
+  const isCarouselOpen = useCarousel((state) => state.shouldOpen);
+  const isCopilotCarouselOpen = useCarousel((state) => state.showCopilotCarousel);
 
   if (!explorer) {
     return <LoadingExplorer />;
@@ -136,6 +138,12 @@ const App = (): JSX.Element => {
           ) : (
             <DivExplorer explorer={explorer} />
           )}
+          <SidePanel />
+          <Dialog />
+          {<QuickstartCarousel isOpen={isCarouselOpen} />}
+          {<SQLQuickstartTutorial />}
+          {<MongoQuickstartTutorial />}
+          {<QueryCopilotCarousel isOpen={isCopilotCarouselOpen} explorer={explorer} />}
         </div>
       </KeyboardShortcutRoot>
     </div>
@@ -143,8 +151,6 @@ const App = (): JSX.Element => {
 };
 
 const DivExplorer: React.FC<{ explorer: Explorer }> = ({ explorer }) => {
-  const isCarouselOpen = useCarousel((state) => state.shouldOpen);
-  const isCopilotCarouselOpen = useCarousel((state) => state.showCopilotCarousel);
   useInteractive(MetricScenario.ApplicationLoad);
 
   return (
@@ -187,12 +193,6 @@ const DivExplorer: React.FC<{ explorer: Explorer }> = ({ explorer }) => {
           <NotificationConsole />
         </div>
       </div>
-      <SidePanel />
-      <Dialog />
-      {<QuickstartCarousel isOpen={isCarouselOpen} />}
-      {<SQLQuickstartTutorial />}
-      {<MongoQuickstartTutorial />}
-      {<QueryCopilotCarousel isOpen={isCopilotCarouselOpen} explorer={explorer} />}
     </div>
   );
 };
