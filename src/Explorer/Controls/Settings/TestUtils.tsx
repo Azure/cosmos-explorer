@@ -68,7 +68,6 @@ export const collection = {
   dataMaskingPolicy: ko.observable<DataModels.DataMaskingPolicy>({
     includedPaths: [],
     excludedPaths: ["/excludedPath"],
-    isPolicyEnabled: true,
   }),
   readSettings: () => {
     return;

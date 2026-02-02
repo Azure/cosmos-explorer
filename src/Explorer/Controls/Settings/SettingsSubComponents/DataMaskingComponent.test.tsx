@@ -53,7 +53,6 @@ describe("DataMaskingComponent", () => {
       },
     ],
     excludedPaths: [],
-    isPolicyEnabled: false,
   };
 
   let changeContentCallback: () => void;
@@ -78,7 +77,7 @@ describe("DataMaskingComponent", () => {
       <DataMaskingComponent
         {...mockProps}
         dataMaskingContent={samplePolicy}
-        dataMaskingContentBaseline={{ ...samplePolicy, isPolicyEnabled: true }}
+        dataMaskingContentBaseline={{ ...samplePolicy, excludedPaths: ["/excluded"] }}
       />,
     );
 
@@ -123,7 +122,7 @@ describe("DataMaskingComponent", () => {
   });
 
   it("resets content when shouldDiscardDataMasking is true", async () => {
-    const baselinePolicy = { ...samplePolicy, isPolicyEnabled: true };
+    const baselinePolicy = { ...samplePolicy, excludedPaths: ["/excluded"] };
 
     const wrapper = mount(
       <DataMaskingComponent
@@ -159,7 +158,7 @@ describe("DataMaskingComponent", () => {
     wrapper.update();
 
     // Update baseline to trigger componentDidUpdate
-    const newBaseline = { ...samplePolicy, isPolicyEnabled: true };
+    const newBaseline = { ...samplePolicy, excludedPaths: ["/excluded"] };
     wrapper.setProps({ dataMaskingContentBaseline: newBaseline });
 
     expect(mockProps.onDataMaskingDirtyChange).toHaveBeenCalledWith(true);
@@ -174,7 +173,6 @@ describe("DataMaskingComponent", () => {
     const invalidPolicy: Record<string, unknown> = {
       includedPaths: "not an array",
       excludedPaths: [] as string[],
-      isPolicyEnabled: "not a boolean",
     };
 
     mockGetValue.mockReturnValue(JSON.stringify(invalidPolicy));
@@ -197,7 +195,7 @@ describe("DataMaskingComponent", () => {
     wrapper.update();
 
     // First change
-    const modifiedPolicy1 = { ...samplePolicy, isPolicyEnabled: true };
+    const modifiedPolicy1 = { ...samplePolicy, excludedPaths: ["/path1"] };
     mockGetValue.mockReturnValue(JSON.stringify(modifiedPolicy1));
     changeContentCallback();
     expect(mockProps.onDataMaskingDirtyChange).toHaveBeenCalledWith(true);
