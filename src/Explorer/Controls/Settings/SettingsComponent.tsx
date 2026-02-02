@@ -16,7 +16,7 @@ import {
 import { useIndexingPolicyStore } from "Explorer/Tabs/QueryTab/ResultsView";
 import { useDatabases } from "Explorer/useDatabases";
 import { isFabricNative } from "Platform/Fabric/FabricUtil";
-import { isCapabilityEnabled, isVectorSearchEnabled } from "Utils/CapabilityUtils";
+import { isVectorSearchEnabled } from "Utils/CapabilityUtils";
 import { isRunningOnPublicCloud } from "Utils/CloudUtils";
 import * as React from "react";
 import DiscardIcon from "../../../../images/discard.svg";
@@ -70,6 +70,7 @@ import {
   getMongoNotification,
   getTabTitle,
   hasDatabaseSharedThroughput,
+  isDataMaskingEnabled,
   isDirty,
   parseConflictResolutionMode,
   parseConflictResolutionProcedure,
@@ -686,22 +687,14 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.setState({ isComputedPropertiesDirty: isComputedPropertiesDirty });
 
   private onDataMaskingContentChange = (newDataMasking: DataModels.DataMaskingPolicy): void => {
-    if (!newDataMasking.excludedPaths) {
-      newDataMasking.excludedPaths = [];
-    }
-    if (!newDataMasking.includedPaths) {
-      newDataMasking.includedPaths = [];
-    }
-
     const validationErrors = [];
-    if (!Array.isArray(newDataMasking.includedPaths)) {
+    if (newDataMasking.includedPaths === undefined || newDataMasking.includedPaths === null) {
+      validationErrors.push("includedPaths is required");
+    } else if (!Array.isArray(newDataMasking.includedPaths)) {
       validationErrors.push("includedPaths must be an array");
     }
-    if (!Array.isArray(newDataMasking.excludedPaths)) {
-      validationErrors.push("excludedPaths must be an array");
-    }
-    if (typeof newDataMasking.isPolicyEnabled !== "boolean") {
-      validationErrors.push("isPolicyEnabled must be a boolean");
+    if (newDataMasking.excludedPaths !== undefined && !Array.isArray(newDataMasking.excludedPaths)) {
+      validationErrors.push("excludedPaths must be an array if provided");
     }
 
     this.setState({
@@ -842,7 +835,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     const dataMaskingContent: DataModels.DataMaskingPolicy = {
       includedPaths: this.collection.dataMaskingPolicy?.()?.includedPaths || [],
       excludedPaths: this.collection.dataMaskingPolicy?.()?.excludedPaths || [],
-      isPolicyEnabled: this.collection.dataMaskingPolicy?.()?.isPolicyEnabled ?? true,
     };
     const conflictResolutionPolicy: DataModels.ConflictResolutionPolicy =
       this.collection.conflictResolutionPolicy && this.collection.conflictResolutionPolicy();
@@ -1073,8 +1065,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
       newCollection.fullTextPolicy = this.state.fullTextPolicy;
 
-      // Only send data masking policy if it was modified (dirty)
-      if (this.state.isDataMaskingDirty && isCapabilityEnabled(Constants.CapabilityNames.EnableDynamicDataMasking)) {
+      // Only send data masking policy if it was modified (dirty) and data masking is enabled
+      if (this.state.isDataMaskingDirty && isDataMaskingEnabled(this.collection.dataMaskingPolicy?.())) {
         newCollection.dataMaskingPolicy = this.state.dataMaskingContent;
       }
 
@@ -1463,15 +1455,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       });
     }
 
-    // Check if DDM should be enabled
-    const shouldEnableDDM = (): boolean => {
-      const hasDataMaskingCapability = isCapabilityEnabled(Constants.CapabilityNames.EnableDynamicDataMasking);
-      const isSqlAccount = userContext.apiType === "SQL";
-
-      return isSqlAccount && hasDataMaskingCapability; // Only show for SQL accounts with DDM capability
-    };
-
-    if (shouldEnableDDM()) {
+    if (isDataMaskingEnabled(this.collection.dataMaskingPolicy?.())) {
       const dataMaskingComponentProps: DataMaskingComponentProps = {
         shouldDiscardDataMasking: this.state.shouldDiscardDataMasking,
         resetShouldDiscardDataMasking: this.resetShouldDiscardDataMasking,
