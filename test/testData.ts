@@ -82,6 +82,75 @@ export class TestContainerContext {
   }
 }
 
+export class TestDatabaseContext {
+  constructor(
+    public armClient: CosmosDBManagementClient,
+    public client: CosmosClient,
+    public database: Database,
+  ) {}
+
+  async dispose() {
+    await this.database.delete();
+  }
+}
+
+export interface CreateTestDBOptions {
+  throughput?: number;
+  maxThroughput?: number; // For autoscale
+}
+
+// Helper function to create ARM client and Cosmos client for SQL account
+async function createCosmosClientForSQLAccount(
+  accountType: TestAccount.SQL | TestAccount.SQLContainerCopyOnly = TestAccount.SQL,
+): Promise<{ armClient: CosmosDBManagementClient; client: CosmosClient }> {
+  const credentials = getAzureCLICredentials();
+  const adaptedCredentials = new AzureIdentityCredentialAdapter(credentials);
+  const armClient = new CosmosDBManagementClient(adaptedCredentials, subscriptionId);
+  const accountName = getAccountName(accountType);
+  const account = await armClient.databaseAccounts.get(resourceGroupName, accountName);
+
+  const clientOptions: CosmosClientOptions = {
+    endpoint: account.documentEndpoint!,
+  };
+
+  const rbacToken =
+    accountType === TestAccount.SQL
+      ? process.env.NOSQL_TESTACCOUNT_TOKEN
+      : accountType === TestAccount.SQLContainerCopyOnly
+      ? process.env.NOSQL_CONTAINERCOPY_TESTACCOUNT_TOKEN
+      : "";
+
+  if (rbacToken) {
+    clientOptions.tokenProvider = async (): Promise<string> => {
+      const AUTH_PREFIX = `type=aad&ver=1.0&sig=`;
+      const authorizationToken = `${AUTH_PREFIX}${rbacToken}`;
+      return authorizationToken;
+    };
+  } else {
+    const keys = await armClient.databaseAccounts.listKeys(resourceGroupName, accountName);
+    clientOptions.key = keys.primaryMasterKey;
+  }
+
+  const client = new CosmosClient(clientOptions);
+
+  return { armClient, client };
+}
+
+export async function createTestDB(options?: CreateTestDBOptions): Promise<TestDatabaseContext> {
+  const databaseId = generateUniqueName("db");
+  const { armClient, client } = await createCosmosClientForSQLAccount();
+
+  // Create database with provisioned throughput (shared throughput)
+  // This checks the "Provision database throughput" option
+  const { database } = await client.databases.create({
+    id: databaseId,
+    throughput: options?.throughput, // Manual throughput (e.g., 400)
+    maxThroughput: options?.maxThroughput, // Autoscale max throughput (e.g., 1000)
+  });
+
+  return new TestDatabaseContext(armClient, client, database);
+}
+
 type createTestSqlContainerConfig = {
   includeTestData?: boolean;
   partitionKey?: string;
@@ -104,34 +173,7 @@ export async function createMultipleTestContainers({
   const creationPromises: Promise<TestContainerContext>[] = [];
 
   const databaseId = databaseName ? databaseName : generateUniqueName("db");
-  const credentials = getAzureCLICredentials();
-  const adaptedCredentials = new AzureIdentityCredentialAdapter(credentials);
-  const armClient = new CosmosDBManagementClient(adaptedCredentials, subscriptionId);
-  const accountName = getAccountName(accountType);
-  const account = await armClient.databaseAccounts.get(resourceGroupName, accountName);
-
-  const clientOptions: CosmosClientOptions = {
-    endpoint: account.documentEndpoint!,
-  };
-
-  const rbacToken =
-    accountType === TestAccount.SQL
-      ? process.env.NOSQL_TESTACCOUNT_TOKEN
-      : accountType === TestAccount.SQLContainerCopyOnly
-      ? process.env.NOSQL_CONTAINERCOPY_TESTACCOUNT_TOKEN
-      : "";
-  if (rbacToken) {
-    clientOptions.tokenProvider = async (): Promise<string> => {
-      const AUTH_PREFIX = `type=aad&ver=1.0&sig=`;
-      const authorizationToken = `${AUTH_PREFIX}${rbacToken}`;
-      return authorizationToken;
-    };
-  } else {
-    const keys = await armClient.databaseAccounts.listKeys(resourceGroupName, accountName);
-    clientOptions.key = keys.primaryMasterKey;
-  }
-
-  const client = new CosmosClient(clientOptions);
+  const { armClient, client } = await createCosmosClientForSQLAccount(accountType);
   const { database } = await client.databases.createIfNotExists({ id: databaseId });
 
   try {
@@ -158,29 +200,8 @@ export async function createTestSQLContainer({
 }: createTestSqlContainerConfig = {}) {
   const databaseId = databaseName ? databaseName : generateUniqueName("db");
   const containerId = "testcontainer"; // A unique container name isn't needed because the database is unique
-  const credentials = getAzureCLICredentials();
-  const adaptedCredentials = new AzureIdentityCredentialAdapter(credentials);
-  const armClient = new CosmosDBManagementClient(adaptedCredentials, subscriptionId);
-  const accountName = getAccountName(TestAccount.SQL);
-  const account = await armClient.databaseAccounts.get(resourceGroupName, accountName);
+  const { armClient, client } = await createCosmosClientForSQLAccount();
 
-  const clientOptions: CosmosClientOptions = {
-    endpoint: account.documentEndpoint!,
-  };
-
-  const nosqlAccountRbacToken = process.env.NOSQL_TESTACCOUNT_TOKEN;
-  if (nosqlAccountRbacToken) {
-    clientOptions.tokenProvider = async (): Promise<string> => {
-      const AUTH_PREFIX = `type=aad&ver=1.0&sig=`;
-      const authorizationToken = `${AUTH_PREFIX}${nosqlAccountRbacToken}`;
-      return authorizationToken;
-    };
-  } else {
-    const keys = await armClient.databaseAccounts.listKeys(resourceGroupName, accountName);
-    clientOptions.key = keys.primaryMasterKey;
-  }
-
-  const client = new CosmosClient(clientOptions);
   const { database } = await client.databases.createIfNotExists({ id: databaseId });
   try {
     const { container } = await database.containers.createIfNotExists({
