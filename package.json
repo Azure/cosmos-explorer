@@ -51,7 +51,7 @@
     "allotment": "1.20.2",
     "applicationinsights": "1.8.0",
     "bootstrap": "3.4.1",
-    "canvas": "2.11.2",
+    "canvas": "3.2.1",
     "clean-webpack-plugin": "4.0.0",
     "clipboard-copy": "4.0.1",
     "copy-webpack-plugin": "11.0.0",
