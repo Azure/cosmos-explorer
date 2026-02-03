@@ -23,7 +23,7 @@ export const SwitchSubscription: FunctionComponent<Props> = ({
       getKey={(sub) => sub.subscriptionId}
       getDisplayText={(sub) => sub.displayName}
       placeholder="Select a Subscription"
-      filterPlaceholder="Filter subscriptions"
+      filterPlaceholder="Search by Subscription name"
       className="accountSwitchSubscriptionDropdown"
     />
   );

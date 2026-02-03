@@ -125,6 +125,7 @@ export const SearchableDropdown = <T,>({
               value={filterText}
               onChange={(_, newValue) => setFilterText(newValue || "")}
               styles={customSearchBoxStyles}
+              showIcon={true}
             />
             <Stack styles={listContainerStyles}>
               {filteredItems && filteredItems.length > 0 ? (

@@ -18,14 +18,14 @@ export const SwitchAccount: FunctionComponent<Props> = ({
 }: Props) => {
   return (
     <SearchableDropdown<DatabaseAccount>
-      label="Cosmos DB Account Name"
+      label="Cosmos DB Account"
       items={accounts}
       selectedItem={selectedAccount}
       onSelect={(account) => setSelectedAccountName(account.name)}
       getKey={(account) => account.name}
       getDisplayText={(account) => account.name}
       placeholder="Select an Account"
-      filterPlaceholder="Filter accounts"
+      filterPlaceholder="Search by Account name"
       className="accountSwitchAccountDropdown"
       disabled={!accounts || accounts.length === 0}
       onDismiss={dismissMenu}
