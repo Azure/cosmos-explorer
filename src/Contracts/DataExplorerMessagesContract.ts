@@ -46,6 +46,10 @@ export type DataExploreMessageV3 =
       params: {
         updateType: "created" | "deleted" | "settings";
       };
+    }
+  | {
+      type: FabricMessageTypes.RestoreContainer;
+      params: [];
     };
 export interface GetCosmosTokenMessageOptions {
   verb: "connect" | "delete" | "get" | "head" | "options" | "patch" | "post" | "put" | "trace";

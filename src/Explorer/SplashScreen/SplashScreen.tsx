@@ -164,6 +164,23 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
   const container = explorer;
   const subscriptions: Array<{ dispose: () => void }> = [];
 
+  let title: string;
+  let subtitle: string;
+
+  switch (userContext.apiType) {
+    case "Postgres":
+      title = "Welcome to Azure Cosmos DB for PostgreSQL";
+      subtitle = "Get started with our sample datasets, documentation, and additional tools.";
+      break;
+    case "VCoreMongo":
+      title = "Welcome to Azure DocumentDB (with MongoDB compatibility)";
+      subtitle = "Get started with our sample datasets, documentation, and additional tools.";
+      break;
+    default:
+      title = "Welcome to Azure Cosmos DB";
+      subtitle = "Globally distributed, multi-model database service for any scale";
+  }
+
   React.useEffect(() => {
     subscriptions.push(
       {
@@ -902,10 +919,11 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
   return (
     <div className={styles.splashScreenContainer}>
       <div className={styles.splashScreen}>
-        <h2 className={styles.title} role="heading" aria-label="Welcome to Azure Cosmos DB">
-          Welcome to Azure Cosmos DB<span className="activePatch"></span>
+        <h2 className={styles.title} role="heading" aria-label={title}>
+          {title}
+          <span className="activePatch"></span>
         </h2>
-        <div className={styles.subtitle}>Globally distributed, multi-model database service for any scale</div>
+        <div className={styles.subtitle}>{subtitle}</div>
         {getSplashScreenButtons()}
         {useCarousel.getState().showCoachMark && (
           <Coachmark

@@ -607,6 +607,58 @@ exports[`SettingsComponent renders 1`] = `
       <PivotItem
         headerButtonProps={
           {
+            "data-test": "settings-tab-header/DataMaskingTab",
+          }
+        }
+        headerText="Masking Policy (preview)"
+        itemKey="DataMaskingTab"
+        key="DataMaskingTab"
+        style={
+          {
+            "backgroundColor": "var(--colorNeutralBackground1)",
+            "color": "var(--colorNeutralForeground1)",
+            "marginTop": 20,
+          }
+        }
+      >
+        <Stack
+          styles={
+            {
+              "root": {
+                "backgroundColor": "var(--colorNeutralBackground1)",
+                "color": "var(--colorNeutralForeground1)",
+              },
+            }
+          }
+        >
+          <DataMaskingComponent
+            dataMaskingContent={
+              {
+                "excludedPaths": [
+                  "/excludedPath",
+                ],
+                "includedPaths": [],
+              }
+            }
+            dataMaskingContentBaseline={
+              {
+                "excludedPaths": [
+                  "/excludedPath",
+                ],
+                "includedPaths": [],
+              }
+            }
+            onDataMaskingContentChange={[Function]}
+            onDataMaskingDirtyChange={[Function]}
+            resetShouldDiscardDataMasking={[Function]}
+            shouldDiscardDataMasking={false}
+            validationErrors={[]}
+          />
+        </Stack>
+      </PivotItem>
+      <PivotItem
+        headerButtonProps={
+          {
             "data-test": "settings-tab-header/GlobalSecondaryIndexTab",
           }
         }

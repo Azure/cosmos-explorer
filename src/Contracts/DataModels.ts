@@ -275,8 +275,7 @@ export interface DataMaskingPolicy {
     startPosition: number;
     length: number;
   }>;
-  excludedPaths: string[];
-  isPolicyEnabled: boolean;
+  excludedPaths?: string[];
 }
 
 export interface MaterializedView {

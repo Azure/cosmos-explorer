@@ -58,7 +58,9 @@ export const defaultAccounts: Record<TestAccount, string> = {
 export const resourceGroupName = process.env.DE_TEST_RESOURCE_GROUP ?? "de-e2e-tests";
 export const subscriptionId = process.env.DE_TEST_SUBSCRIPTION_ID ?? "69e02f2d-f059-4409-9eac-97e8a276ae2c";
 export const TEST_AUTOSCALE_THROUGHPUT_RU = 1000;
+export const TEST_MANUAL_THROUGHPUT_RU = 800;
 export const TEST_AUTOSCALE_MAX_THROUGHPUT_RU_2K = 2000;
+export const TEST_AUTOSCALE_MAX_THROUGHPUT_RU_4K = 4000;
 export const TEST_MANUAL_THROUGHPUT_RU_2K = 2000;
 export const ONE_MINUTE_MS: number = 60 * 1000;
 
@@ -378,9 +380,11 @@ type PanelOpenOptions = {
 
 export enum CommandBarButton {
   Save = "Save",
+  Delete = "Delete",
   Execute = "Execute",
   ExecuteQuery = "Execute Query",
   UploadItem = "Upload Item",
+  NewDocument = "New Document",
 }
 
 /** Helper class that provides locator methods for DataExplorer components, on top of a Frame */
@@ -478,7 +482,7 @@ export class DataExplorer {
     return await this.waitForNode(`${databaseId}/${containerId}/Documents`);
   }
 
-  async waitForCommandBarButton(label: string, timeout?: number): Promise<Locator> {
+  async waitForCommandBarButton(label: CommandBarButton, timeout?: number): Promise<Locator> {
     const commandBar = this.commandBarButton(label);
     await commandBar.waitFor({ state: "visible", timeout });
     return commandBar;
@@ -514,15 +518,6 @@ export class DataExplorer {
   async openScaleAndSettings(context: TestContainerContext): Promise<void> {
     const containerNode = await this.waitForContainerNode(context.database.id, context.container.id);
     await containerNode.expand();
-
-    // refresh tree to remove deleted database
-    const consoleMessages = await this.getNotificationConsoleMessages();
-    const refreshButton = this.frame.getByTestId("Sidebar/RefreshButton");
-    await refreshButton.click();
-    await expect(consoleMessages).toContainText("Successfully refreshed databases", {
-      timeout: ONE_MINUTE_MS,
-    });
-    await this.collapseNotificationConsole();
 
     const scaleAndSettingsButton = this.frame.getByTestId(
       `TreeNode:${context.database.id}/${context.container.id}/Scale & Settings`,
