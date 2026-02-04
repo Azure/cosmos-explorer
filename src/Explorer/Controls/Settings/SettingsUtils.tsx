@@ -2,6 +2,8 @@ import * as Constants from "../../../Common/Constants";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { isFabricNative } from "../../../Platform/Fabric/FabricUtil";
+import { userContext } from "../../../UserContext";
+import { isCapabilityEnabled } from "../../../Utils/CapabilityUtils";
 import { MongoIndex } from "../../../Utils/arm/generatedClients/cosmos/types";
 
 const zeroValue = 0;
@@ -86,6 +88,19 @@ export interface MongoNotificationMessage {
 export const hasDatabaseSharedThroughput = (collection: ViewModels.Collection): boolean => {
   const database: ViewModels.Database = collection.getDatabase();
   return database?.isDatabaseShared() && !collection.offer();
+};
+
+export const isDataMaskingEnabled = (dataMaskingPolicy?: DataModels.DataMaskingPolicy): boolean => {
+  const isSqlAccount = userContext.apiType === "SQL";
+  if (!isSqlAccount) {
+    return false;
+  }
+
+  const hasDataMaskingCapability = isCapabilityEnabled(Constants.CapabilityNames.EnableDynamicDataMasking);
+  const hasDataMaskingPolicyFromCollection =
+    dataMaskingPolicy?.includedPaths?.length > 0 || dataMaskingPolicy?.excludedPaths?.length > 0;
+
+  return hasDataMaskingCapability || hasDataMaskingPolicyFromCollection;
 };
 
 export const parseConflictResolutionMode = (modeFromBackend: string): DataModels.ConflictResolutionMode => {
