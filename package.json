@@ -118,7 +118,8 @@
     "zustand": "3.5.0"
   },
   "overrides": {
-    "d3-color": "3.1.0"
+    "d3-color": "3.1.0",
+    "cross-spawn": "7.0.6"
   },
   "devDependencies": {
     "@babel/core": "7.29.0",
