@@ -8,6 +8,8 @@ import * as Logger from "../Common/Logger";
 import { configContext } from "../ConfigContext";
 import { DatabaseAccount } from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
+import { isExpectedError } from "../Metrics/ErrorClassification";
+import { scenarioMonitor } from "../Metrics/ScenarioMonitor";
 import { trace, traceFailure } from "../Shared/Telemetry/TelemetryProcessor";
 import { UserContext, userContext } from "../UserContext";
 
@@ -127,6 +129,10 @@ export async function acquireMsalTokenForAccount(
         acquireTokenType: silent ? "silent" : "interactive",
         errorMessage: JSON.stringify(error),
       });
+      // Mark expected failure for health metrics so timeout emits healthy
+      if (isExpectedError(error)) {
+        scenarioMonitor.markExpectedFailure();
+      }
       throw error;
     }
   } else {
@@ -169,7 +175,10 @@ export async function acquireTokenWithMsal(
           acquireTokenType: "interactive",
           errorMessage: JSON.stringify(interactiveError),
         });
-
+        // Mark expected failure for health metrics so timeout emits healthy
+        if (isExpectedError(interactiveError)) {
+          scenarioMonitor.markExpectedFailure();
+        }
         throw interactiveError;
       }
     } else {
@@ -178,7 +187,10 @@ export async function acquireTokenWithMsal(
         acquireTokenType: "silent",
         errorMessage: JSON.stringify(silentError),
       });
-
+      // Mark expected failure for health metrics so timeout emits healthy
+      if (isExpectedError(silentError)) {
+        scenarioMonitor.markExpectedFailure();
+      }
       throw silentError;
     }
   }
