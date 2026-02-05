@@ -250,7 +250,8 @@ class TreeNode {
       // Try three times to wait for the node to expand.
       for (let i = 0; i < RETRY_COUNT; i++) {
         try {
-          await tree.waitFor({ state: "visible" });
+          // Use a longer timeout (30s) since expanding may require loading children from the server
+          await tree.waitFor({ state: "visible", timeout: 30 * 1000 });
           // The tree has expanded, let's get out of here
           return true;
         } catch {
