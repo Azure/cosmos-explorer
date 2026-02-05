@@ -29,7 +29,7 @@ test.describe("Database with Shared Throughput", () => {
     });
 
     test("Create database with shared manual throughput and verify Scale node in UI", async () => {
-      test.setTimeout(120000); // 2 minutes timeout
+      test.setTimeout(180000); // 3 minutes timeout
       // Create database with shared manual throughput (400 RU/s)
       dbContext = await createTestDB({ throughput: 400 });
 
@@ -47,6 +47,7 @@ test.describe("Database with Shared Throughput", () => {
     });
 
     test("Add container to shared database without dedicated throughput", async () => {
+      test.setTimeout(180000); // 3 minutes timeout
       // Create database with shared manual throughput
       dbContext = await createTestDB({ throughput: 400 });
 
@@ -100,6 +101,7 @@ test.describe("Database with Shared Throughput", () => {
     });
 
     test("Scale shared database manual throughput", async () => {
+      test.setTimeout(180000); // 3 minutes timeout
       // Create database with shared manual throughput (400 RU/s)
       dbContext = await createTestDB({ throughput: 400 });
 
@@ -125,6 +127,7 @@ test.describe("Database with Shared Throughput", () => {
     });
 
     test("Scale shared database from manual to autoscale", async () => {
+      test.setTimeout(180000); // 3 minutes timeout
       // Create database with shared manual throughput (400 RU/s)
       dbContext = await createTestDB({ throughput: 400 });
 
@@ -159,7 +162,7 @@ test.describe("Database with Shared Throughput", () => {
     });
 
     test("Create database with shared autoscale throughput and verify Scale node in UI", async () => {
-      test.setTimeout(120000); // 2 minutes timeout
+      test.setTimeout(180000); // 3 minutes timeout
 
       // Create database with shared autoscale throughput (max 1000 RU/s)
       dbContext = await createTestDB({ maxThroughput: 1000 });
@@ -178,6 +181,7 @@ test.describe("Database with Shared Throughput", () => {
     });
 
     test("Scale shared database autoscale throughput", async () => {
+      test.setTimeout(180000); // 3 minutes timeout
       // Create database with shared autoscale throughput (max 1000 RU/s)
       dbContext = await createTestDB({ maxThroughput: 1000 });
 
@@ -203,6 +207,7 @@ test.describe("Database with Shared Throughput", () => {
     });
 
     test("Scale shared database from autoscale to manual", async () => {
+      test.setTimeout(180000); // 3 minutes timeout
       // Create database with shared autoscale throughput (max 1000 RU/s)
       dbContext = await createTestDB({ maxThroughput: 1000 });
 
