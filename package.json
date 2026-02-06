@@ -39,7 +39,7 @@
     "@nteract/transform-plotly": "6.1.6",
     "@nteract/transform-vdom": "4.0.11",
     "@nteract/transform-vega": "7.0.6",
-    "@octokit/rest": "17.9.2",
+    "@octokit/rest": "22.0.1",
     "@phosphor/widgets": "1.9.3",
     "@testing-library/jest-dom": "6.4.6",
     "@types/lodash": "4.14.171",
