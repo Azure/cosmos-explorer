@@ -1,4 +1,4 @@
 /**
  * Data Explorer version {major.minor.patch}
  */
-export const DataExplorer: string = "1.0.1";
+export const DataExplorer = "1.0.1";
