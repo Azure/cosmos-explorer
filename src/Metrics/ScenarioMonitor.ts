@@ -21,6 +21,7 @@ interface InternalScenarioContext {
   phases: Map<MetricPhase, PhaseContext>; // Track start/end for each phase
   timeoutId?: number;
   emitted: boolean;
+  hasExpectedFailure: boolean; // Flag for expected failures (auth, firewall, etc.)
 }
 
 class ScenarioMonitor {
@@ -75,6 +76,7 @@ class ScenarioMonitor {
       failed: new Set<MetricPhase>(),
       phases: new Map<MetricPhase, PhaseContext>(),
       emitted: false,
+      hasExpectedFailure: false,
     };
 
     // Start all required phases at scenario start time
@@ -91,7 +93,11 @@ class ScenarioMonitor {
       timeoutMs: config.timeoutMs,
     });
 
-    ctx.timeoutId = window.setTimeout(() => this.emit(ctx, false, true), config.timeoutMs);
+    ctx.timeoutId = window.setTimeout(() => {
+      // If an expected failure occurred (auth, firewall, etc.), emit healthy instead of unhealthy
+      const healthy = ctx.hasExpectedFailure;
+      this.emit(ctx, healthy, true);
+    }, config.timeoutMs);
     this.contexts.set(scenario, ctx);
   }
 
@@ -175,6 +181,24 @@ class ScenarioMonitor {
     this.emit(ctx, false, false, failureSnapshot);
   }
 
+  /**
+   * Marks that an expected failure occurred (auth, firewall, permissions, etc.).
+   * When the scenario times out with this flag set, it will emit healthy instead of unhealthy.
+   * This is called automatically from handleError when an expected error is detected.
+   */
+  markExpectedFailure() {
+    // Set the flag on all active (non-emitted) scenarios
+    this.contexts.forEach((ctx) => {
+      if (!ctx.emitted) {
+        ctx.hasExpectedFailure = true;
+        traceMark(Action.MetricsScenario, {
+          event: "expected_failure_marked",
+          scenario: ctx.scenario,
+        });
+      }
+    });
+  }
+
   private tryEmitIfReady(ctx: InternalScenarioContext) {
     const allDone = ctx.config.requiredPhases.every((p) => ctx.completed.has(p));
     if (!allDone) {
@@ -247,7 +271,8 @@ class ScenarioMonitor {
     });
 
     // Call portal backend health metrics endpoint
-    if (healthy && !timedOut) {
+    // If healthy is true (either completed successfully or timeout with expected failure), report healthy
+    if (healthy) {
       reportHealthy(ctx.scenario, platform, api);
     } else {
       reportUnhealthy(ctx.scenario, platform, api);
@@ -301,6 +326,19 @@ class ScenarioMonitor {
       vitals: { ...this.vitals },
       phaseTimings,
     };
+  }
+
+  /**
+   * Reset all scenarios (for testing purposes only).
+   * Clears all active contexts and their timeouts.
+   */
+  reset() {
+    this.contexts.forEach((ctx) => {
+      if (ctx.timeoutId) {
+        clearTimeout(ctx.timeoutId);
+      }
+    });
+    this.contexts.clear();
   }
 }
 
