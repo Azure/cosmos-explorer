@@ -126,7 +126,7 @@
     "@babel/preset-env": "7.24.7",
     "@babel/preset-react": "7.24.7",
     "@babel/preset-typescript": "7.24.7",
-    "@playwright/test": "1.49.1",
+    "@playwright/test": "1.58.2",
     "@testing-library/react": "11.2.3",
     "@types/applicationinsights-js": "1.0.7",
     "@types/codemirror": "0.0.56",
