@@ -17,7 +17,7 @@ import {
   UpdateDedicatedGatewayRequestParameters,
 } from "./SqlxTypes";
 
-const apiVersion = "2021-04-01-preview";
+const apiVersion = "2024-02-15-preview";
 
 export enum ResourceStatus {
   Running = "Running",
@@ -28,6 +28,7 @@ export enum ResourceStatus {
 
 export interface DedicatedGatewayResponse {
   sku: string;
+  dedicatedGatewayType: string;
   instances: number;
   status: string;
   endpoint: string;
@@ -37,11 +38,16 @@ export const getPath = (subscriptionId: string, resourceGroup: string, name: str
   return `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.DocumentDB/databaseAccounts/${name}/services/SqlDedicatedGateway`;
 };
 
-export const updateDedicatedGatewayResource = async (sku: string, instances: number): Promise<string> => {
+export const updateDedicatedGatewayResource = async (
+  sku: string,
+  dedicatedGatewayType: string,
+  instances: number,
+): Promise<string> => {
   const path = getPath(userContext.subscriptionId, userContext.resourceGroup, userContext.databaseAccount.name);
   const body: UpdateDedicatedGatewayRequestParameters = {
     properties: {
       instanceSize: sku,
+      dedicatedGatewayType: dedicatedGatewayType,
       instanceCount: instances,
       serviceType: "SqlDedicatedGateway",
     },
@@ -113,12 +119,19 @@ export const getCurrentProvisioningState = async (): Promise<DedicatedGatewayRes
     const response = await getDedicatedGatewayResource();
     return {
       sku: response.properties.instanceSize,
+      dedicatedGatewayType: response.properties.dedicatedGatewayType,
       instances: response.properties.instanceCount,
       status: response.properties.status,
       endpoint: response.properties.sqlxEndPoint,
     };
   } catch (e) {
-    return { sku: undefined, instances: undefined, status: undefined, endpoint: undefined };
+    return {
+      sku: undefined,
+      dedicatedGatewayType: undefined,
+      instances: undefined,
+      status: undefined,
+      endpoint: undefined,
+    };
   }
 };
 
