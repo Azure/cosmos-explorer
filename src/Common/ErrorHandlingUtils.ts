@@ -1,5 +1,7 @@
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { SubscriptionType } from "../Contracts/SubscriptionType";
+import { isExpectedError } from "../Metrics/ErrorClassification";
+import { scenarioMonitor } from "../Metrics/ScenarioMonitor";
 import { userContext } from "../UserContext";
 import { ARMError } from "../Utils/arm/request";
 import { logConsoleError } from "../Utils/NotificationConsoleUtils";
@@ -31,6 +33,12 @@ export const handleError = (
 
   // checks for errors caused by firewall and sends them to portal to handle
   sendNotificationForError(errorMessage, errorCode);
+
+  // Mark expected failures for health metrics (auth, firewall, permissions, etc.)
+  // This ensures timeouts with expected failures emit healthy instead of unhealthy
+  if (isExpectedError(error)) {
+    scenarioMonitor.markExpectedFailure();
+  }
 };
 
 export const getErrorMessage = (error: string | Error = ""): string => {
