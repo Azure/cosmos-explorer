@@ -120,7 +120,7 @@ const App = (): JSX.Element => {
   }, [explorer]);
 
   // Track interactive phase for both ContainerCopyPanel and DivExplorer paths
-  useInteractive(MetricScenario.ApplicationLoad);
+  useInteractive(MetricScenario.ApplicationLoad, !!config);
 
   if (!explorer) {
     return <LoadingExplorer />;
