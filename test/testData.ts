@@ -1,5 +1,13 @@
 import { CosmosDBManagementClient } from "@azure/arm-cosmosdb";
-import { BulkOperationType, Container, CosmosClient, CosmosClientOptions, Database, JSONObject } from "@azure/cosmos";
+import {
+  BulkOperationType,
+  Container,
+  CosmosClient,
+  CosmosClientOptions,
+  Database,
+  ErrorResponse,
+  JSONObject,
+} from "@azure/cosmos";
 import { Buffer } from "node:buffer";
 import { webcrypto } from "node:crypto";
 import {
@@ -78,7 +86,14 @@ export class TestContainerContext {
   ) {}
 
   async dispose() {
-    await this.database.delete();
+    try {
+      await this.database.delete();
+    } catch (error) {
+      if (error instanceof ErrorResponse && error.code === 404) {
+        return; // Resource already deleted, ignore
+      }
+      throw error; // Re-throw other errors
+    }
   }
 }
 
