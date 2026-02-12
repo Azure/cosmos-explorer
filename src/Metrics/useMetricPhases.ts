@@ -12,7 +12,7 @@ export function useInteractive(scenario: MetricScenario, enabled = true) {
 
   React.useEffect(() => {
     if (!enabled) {
-      return;
+      return undefined;
     }
     const id = requestAnimationFrame(() => {
       completePhase(scenario, CommonMetricPhase.Interactive);
