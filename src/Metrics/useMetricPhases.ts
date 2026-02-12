@@ -7,14 +7,18 @@ import { ApplicationMetricPhase, CommonMetricPhase } from "./ScenarioConfig";
  * Hook to automatically complete the Interactive phase when the component becomes interactive.
  * Uses requestAnimationFrame to complete after the browser has painted.
  */
-export function useInteractive(scenario: MetricScenario) {
+export function useInteractive(scenario: MetricScenario, enabled = true) {
   const { completePhase } = useMetricScenario();
 
   React.useEffect(() => {
-    requestAnimationFrame(() => {
+    if (!enabled) {
+      return;
+    }
+    const id = requestAnimationFrame(() => {
       completePhase(scenario, CommonMetricPhase.Interactive);
     });
-  }, [scenario, completePhase]);
+    return () => cancelAnimationFrame(id);
+  }, [scenario, completePhase, enabled]);
 }
 
 /**
