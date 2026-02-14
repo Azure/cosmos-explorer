@@ -124,10 +124,13 @@ export const endpoint = () => {
     const location = _global.parent ? _global.parent.location : _global.location;
     return configContext.EMULATOR_ENDPOINT || location.origin;
   }
-  return (
-    userContext.selectedRegionalEndpoint ||
+  const endpoint: string =     userContext.selectedRegionalEndpoint ||
     userContext.endpoint ||
-    userContext?.databaseAccount?.properties?.documentEndpoint
+    userContext?.databaseAccount?.properties?.documentEndpoint;
+  
+  console.log("endpoint value", endpoint);
+  return (
+endpoint
   );
 };
 
@@ -207,6 +210,8 @@ export function client(): Cosmos.CosmosClient {
     defaultHeaders: _defaultHeaders,
     connectionPolicy: {
       enableEndpointDiscovery: !userContext.selectedRegionalEndpoint,
+      enablePartitionLevelFailover: true,
+      enablePartitionLevelCircuitBreaker: true,
       retryOptions: {
         maxRetryAttemptCount: LocalStorageUtility.getEntryNumber(StorageKey.RetryAttempts),
         fixedRetryIntervalInMilliseconds: LocalStorageUtility.getEntryNumber(StorageKey.RetryInterval),
