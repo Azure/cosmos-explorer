@@ -6,7 +6,7 @@ import { MinimalQueryIterator, nextPage } from "../IteratorUtilities";
 
 // Redact sensitive information from BadRequest errors with specific codes
 export const redactSyntaxErrorMessage = (error: unknown): unknown => {
-  const codesToRedact = ["SC1001", "SC2001"];
+  const codesToRedact = ["SC1001", "SC2001", "SC1010"];
 
   try {
     // Handle error objects with a message property
