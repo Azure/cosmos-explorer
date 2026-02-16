@@ -34,8 +34,14 @@ import VisualStudioIcon from "../../../images/VisualStudio.svg";
 import NotebookIcon from "../../../images/notebook/Notebook-resource.svg";
 import CollectionIcon from "../../../images/tree-collection.svg";
 import * as Constants from "../../Common/Constants";
-import { userContext } from "../../UserContext";
+import {
+  isVCoreMongoNativeAuthDisabled,
+  userContext,
+  VCoreMongoNativeAuthDisabledMessage,
+  VCoreMongoNativeAuthLearnMoreUrl,
+} from "../../UserContext";
 import { getCollectionName } from "../../Utils/APITypeUtils";
+import { useDialog } from "../Controls/Dialog";
 import Explorer from "../Explorer";
 import * as MostRecentActivity from "../MostRecentActivity/MostRecentActivity";
 import { useNotebook } from "../Notebook/useNotebook";
@@ -423,11 +429,22 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
     }
 
     if (userContext.apiType === "VCoreMongo") {
+      const isNativeAuthDisabled = isVCoreMongoNativeAuthDisabled();
       return {
         iconSrc: PowerShellIcon,
         title: "Mongo Shell",
         description: "Create a collection and interact with data using MongoDB's shell interface",
-        onClick: () => container.openNotebookTerminal(TerminalKind.VCoreMongo),
+        onClick: () => {
+          if (isNativeAuthDisabled) {
+            useDialog.getState().showOkModalDialog(
+              "Native Authentication Disabled",
+              VCoreMongoNativeAuthDisabledMessage,
+              { linkText: "Learn more", linkUrl: VCoreMongoNativeAuthLearnMoreUrl },
+            );
+          } else {
+            container.openNotebookTerminal(TerminalKind.VCoreMongo);
+          }
+        },
       };
     }
 
