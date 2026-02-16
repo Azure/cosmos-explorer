@@ -1,9 +1,15 @@
-import crypto from "crypto";
-
 import { CosmosDBManagementClient } from "@azure/arm-cosmosdb";
-import { BulkOperationType, Container, CosmosClient, CosmosClientOptions, Database, JSONObject } from "@azure/cosmos";
-import { AzureIdentityCredentialAdapter } from "@azure/ms-rest-js";
-
+import {
+  BulkOperationType,
+  Container,
+  CosmosClient,
+  CosmosClientOptions,
+  Database,
+  ErrorResponse,
+  JSONObject,
+} from "@azure/cosmos";
+import { Buffer } from "node:buffer";
+import { webcrypto } from "node:crypto";
 import {
   generateUniqueName,
   getAccountName,
@@ -12,6 +18,7 @@ import {
   subscriptionId,
   TestAccount,
 } from "./fx";
+globalThis.crypto = webcrypto as Crypto;
 
 export interface TestItem {
   id: string;
@@ -60,8 +67,9 @@ function createTestItems(): TestItem[] {
 
 // Document IDs cannot contain '/', '\', or '#'
 function createSafeRandomString(byteLength: number): string {
-  return crypto
-    .randomBytes(byteLength)
+  const bytes = new Uint8Array(byteLength);
+  crypto.getRandomValues(bytes);
+  return Buffer.from(bytes)
     .toString("base64")
     .replace(/[/\\#]/g, "_");
 }
@@ -78,7 +86,14 @@ export class TestContainerContext {
   ) {}
 
   async dispose() {
-    await this.database.delete();
+    try {
+      await this.database.delete();
+    } catch (error) {
+      if (error instanceof ErrorResponse && error.code === 404) {
+        return; // Resource already deleted, ignore
+      }
+      throw error; // Re-throw other errors
+    }
   }
 }
 
@@ -104,8 +119,7 @@ async function createCosmosClientForSQLAccount(
   accountType: TestAccount.SQL | TestAccount.SQLContainerCopyOnly = TestAccount.SQL,
 ): Promise<{ armClient: CosmosDBManagementClient; client: CosmosClient }> {
   const credentials = getAzureCLICredentials();
-  const adaptedCredentials = new AzureIdentityCredentialAdapter(credentials);
-  const armClient = new CosmosDBManagementClient(adaptedCredentials, subscriptionId);
+  const armClient = new CosmosDBManagementClient(credentials, subscriptionId);
   const accountName = getAccountName(accountType);
   const account = await armClient.databaseAccounts.get(resourceGroupName, accountName);
 
@@ -232,7 +246,7 @@ export async function createTestSQLContainer({
 }
 
 export const setPartitionKeys = (partitionKeys: PartitionKey[]) => {
-  const result = {};
+  const result: Record<string, unknown> = {};
 
   partitionKeys.forEach((partitionKey) => {
     const { key: keyPath, value: keyValue } = partitionKey;
@@ -245,7 +259,7 @@ export const setPartitionKeys = (partitionKeys: PartitionKey[]) => {
         current[key] = keyValue;
       } else {
         current[key] = current[key] || {};
-        current = current[key];
+        current = current[key] as Record<string, unknown>;
       }
     });
   });

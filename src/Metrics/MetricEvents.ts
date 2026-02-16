@@ -15,6 +15,11 @@ export const reportUnhealthy = (scenario: MetricScenario, platform: Platform, ap
   send({ platform, api, scenario, healthy: false });
 
 const send = async (event: MetricEvent): Promise<Response> => {
+  // Skip metrics emission during local development
+  if (process.env.NODE_ENV === "development") {
+    return Promise.resolve(new Response(null, { status: 200 }));
+  }
+
   const url = createUri(configContext?.PORTAL_BACKEND_ENDPOINT, RELATIVE_PATH);
   const authHeader = getAuthorizationHeader();
 
