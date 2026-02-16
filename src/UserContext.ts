@@ -227,4 +227,3 @@ export function apiType(account: DatabaseAccount | undefined): ApiType {
 }
 
 export { updateUserContext, userContext };
-

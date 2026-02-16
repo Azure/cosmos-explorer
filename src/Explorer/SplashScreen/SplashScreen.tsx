@@ -436,11 +436,12 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
         description: "Create a collection and interact with data using MongoDB's shell interface",
         onClick: () => {
           if (isNativeAuthDisabled) {
-            useDialog.getState().showOkModalDialog(
-              "Native Authentication Disabled",
-              VCoreMongoNativeAuthDisabledMessage,
-              { linkText: "Learn more", linkUrl: VCoreMongoNativeAuthLearnMoreUrl },
-            );
+            useDialog
+              .getState()
+              .showOkModalDialog("Native Authentication Disabled", VCoreMongoNativeAuthDisabledMessage, {
+                linkText: "Learn more",
+                linkUrl: VCoreMongoNativeAuthLearnMoreUrl,
+              });
           } else {
             container.openNotebookTerminal(TerminalKind.VCoreMongo);
           }

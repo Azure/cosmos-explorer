@@ -514,8 +514,7 @@ function createOpenTerminalButtonByKind(
   const label = `Open ${terminalFriendlyName()} shell`;
   const tooltip =
     "This feature is not yet available in your account's region. View supported regions here: https://aka.ms/cosmos-enable-notebooks.";
-  const isNativeAuthDisabled =
-    terminalKind === ViewModels.TerminalKind.VCoreMongo && isVCoreMongoNativeAuthDisabled();
+  const isNativeAuthDisabled = terminalKind === ViewModels.TerminalKind.VCoreMongo && isVCoreMongoNativeAuthDisabled();
   const disableButton =
     (!useNotebook.getState().isNotebooksEnabledForAccount && !useNotebook.getState().isNotebookEnabled) ||
     isNativeAuthDisabled;
@@ -524,11 +523,10 @@ function createOpenTerminalButtonByKind(
     iconAlt: label,
     onCommandClick: () => {
       if (isNativeAuthDisabled) {
-        useDialog.getState().showOkModalDialog(
-          "Native Authentication Disabled",
-          VCoreMongoNativeAuthDisabledMessage,
-          { linkText: "Learn more", linkUrl: VCoreMongoNativeAuthLearnMoreUrl },
-        );
+        useDialog.getState().showOkModalDialog("Native Authentication Disabled", VCoreMongoNativeAuthDisabledMessage, {
+          linkText: "Learn more",
+          linkUrl: VCoreMongoNativeAuthLearnMoreUrl,
+        });
         return;
       }
       if (useNotebook.getState().isNotebookEnabled || userContext.features.enableCloudShell) {
