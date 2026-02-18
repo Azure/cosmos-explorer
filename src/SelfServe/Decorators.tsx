@@ -2,8 +2,9 @@
  * @module SelfServe/Decorators
  */
 
+import { TFunction } from "i18next";
 import { ChoiceItem, Description, Info, NumberUiType, OnChangeCallback, RefreshParams } from "./SelfServeTypes";
-import { addPropertyToMap, buildSmartUiDescriptor, DecoratorProperties } from "./SelfServeUtils";
+import { addPropertyToMap, buildSmartUiDescriptor, DecoratorProperties, SelfServeType } from "./SelfServeUtils";
 
 type ValueOf<T> = T[keyof T];
 interface Decorator {
@@ -128,8 +129,9 @@ const isDescriptionDisplayOptions = (inputOptions: InputOptions): inputOptions i
 };
 
 const addToMap = (...decorators: Decorator[]): PropertyDecorator => {
-  return (target, property) => {
-    let className = target.constructor.name;
+  console.log(decorators);
+  return async (target, property) => {
+    let className: string = getTargetName(target);
     const propertyName = property.toString();
     if (className === "Function") {
       //eslint-disable-next-line @typescript-eslint/ban-types
@@ -138,6 +140,7 @@ const addToMap = (...decorators: Decorator[]): PropertyDecorator => {
     }
 
     const propertyType = (Reflect.getMetadata("design:type", target, property)?.name as string)?.toLowerCase();
+    console.log(propertyType);
     addPropertyToMap(target, propertyName, className, "type", propertyType);
     addPropertyToMap(target, propertyName, className, "dataFieldName", propertyName);
 
@@ -205,7 +208,8 @@ export const Values = (inputOptions: InputOptions): PropertyDecorator => {
  */
 export const IsDisplayable = (): ClassDecorator => {
   return (target) => {
-    buildSmartUiDescriptor(target.name, target.prototype);
+    let targetName: string = getTargetName(target);
+    buildSmartUiDescriptor(targetName, target.prototype);
   };
 };
 
@@ -215,7 +219,26 @@ export const IsDisplayable = (): ClassDecorator => {
  * how often the auto refresh of the page occurs.
  */
 export const RefreshOptions = (refreshParams: RefreshParams): ClassDecorator => {
+  console.log(refreshParams);
   return (target) => {
-    addPropertyToMap(target.prototype, "root", target.name, "refreshParams", refreshParams);
+    let targetName: string = getTargetName(target);
+    addPropertyToMap(target.prototype, "root", targetName, "refreshParams", refreshParams);
   };
+};
+
+const getTargetName = (target: TFunction | Object): string => {
+  const targetString: string = target.toString();
+  let targetName: string;
+  if (targetString.includes(SelfServeType.example)) {
+    targetName = SelfServeType.example;
+  } else if (targetString.includes(SelfServeType.graphapicompute)) {
+    targetName = SelfServeType.graphapicompute;
+  } else if (targetString.includes(SelfServeType.materializedviewsbuilder)) {
+    targetName = SelfServeType.materializedviewsbuilder;
+  } else if (targetString.includes(SelfServeType.sqlx)) {
+    targetName = SelfServeType.sqlx;
+  } else {
+    targetName = target.constructor.name;
+  }
+  return targetName;
 };
