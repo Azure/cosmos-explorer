@@ -1,4 +1,4 @@
-import { Spinner, SpinnerSize, Stack, Text } from "@fluentui/react";
+import { Link, MessageBar, MessageBarType, Spinner, SpinnerSize, Stack, Text } from "@fluentui/react";
 import { PoolIdType } from "Common/Constants";
 import { NotebookWorkspaceConnectionInfo } from "Contracts/DataModels";
 import { MessageTypes } from "Contracts/ExplorerContracts";
@@ -8,7 +8,12 @@ import { useNotebook } from "Explorer/Notebook/useNotebook";
 import { QuickstartFirewallNotification } from "Explorer/Quickstart/QuickstartFirewallNotification";
 import { VcoreMongoQuickstartGuide } from "Explorer/Quickstart/VCoreMongoQuickstartGuide";
 import { checkFirewallRules } from "Explorer/Tabs/Shared/CheckFirewallRules";
-import { userContext } from "UserContext";
+import {
+  isVCoreMongoNativeAuthDisabled,
+  userContext,
+  VCoreMongoNativeAuthDisabledMessage,
+  VCoreMongoNativeAuthLearnMoreUrl,
+} from "UserContext";
 import React, { useEffect, useState } from "react";
 import FirewallRuleScreenshot from "../../../images/vcoreMongoFirewallRule.png";
 
@@ -21,6 +26,7 @@ export const VcoreMongoQuickstartTab: React.FC<VCoreMongoQuickstartTabProps> = (
 }: VCoreMongoQuickstartTabProps): JSX.Element => {
   const notebookServerInfo = useNotebook((state) => state.notebookServerInfo);
   const [isAllPublicIPAddressEnabled, setIsAllPublicIPAddressEnabled] = useState<boolean>(true);
+  const isNativeAuthDisabled = isVCoreMongoNativeAuthDisabled();
 
   const getNotebookServerInfo = (): NotebookWorkspaceConnectionInfo => ({
     authToken: notebookServerInfo.authToken,
@@ -48,14 +54,26 @@ export const VcoreMongoQuickstartTab: React.FC<VCoreMongoQuickstartTabProps> = (
         <VcoreMongoQuickstartGuide />
       </Stack>
       <Stack style={{ width: "50%", borderLeft: "black solid 1px" }}>
-        {!isAllPublicIPAddressEnabled && (
+        {isNativeAuthDisabled && (
+          <Stack style={{ margin: "auto", padding: 20 }}>
+            <MessageBar messageBarType={MessageBarType.warning} isMultiline={true}>
+              <Text>
+                {VCoreMongoNativeAuthDisabledMessage}{" "}
+                <Link href={VCoreMongoNativeAuthLearnMoreUrl} target="_blank">
+                  Learn more
+                </Link>
+              </Text>
+            </MessageBar>
+          </Stack>
+        )}
+        {!isNativeAuthDisabled && !isAllPublicIPAddressEnabled && (
           <QuickstartFirewallNotification
             messageType={MessageTypes.OpenVCoreMongoNetworkingBlade}
             screenshot={FirewallRuleScreenshot}
             shellName="MongoDB"
           />
         )}
-        {isAllPublicIPAddressEnabled && notebookServerInfo?.notebookServerEndpoint && (
+        {!isNativeAuthDisabled && isAllPublicIPAddressEnabled && notebookServerInfo?.notebookServerEndpoint && (
           <NotebookTerminalComponent
             notebookServerInfo={getNotebookServerInfo()}
             databaseAccount={userContext.databaseAccount}
@@ -63,7 +81,7 @@ export const VcoreMongoQuickstartTab: React.FC<VCoreMongoQuickstartTabProps> = (
             username={userContext.vcoreMongoConnectionParams.adminLogin}
           />
         )}
-        {isAllPublicIPAddressEnabled && !notebookServerInfo?.notebookServerEndpoint && (
+        {!isNativeAuthDisabled && isAllPublicIPAddressEnabled && !notebookServerInfo?.notebookServerEndpoint && (
           <Stack style={{ margin: "auto 0" }}>
             <Text block style={{ margin: "auto" }}>
               Connecting to the Mongo shell.
