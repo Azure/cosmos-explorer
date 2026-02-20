@@ -16,14 +16,14 @@ Results of this file should be checked into the repo.
 */
 
 // CHANGE THESE VALUES TO GENERATE NEW CLIENTS
-const version = "2025-05-01-preview";
+const version = "2025-11-01-preview";
 /* The following are legal options for resourceName but you generally will only use cosmos:
 "cosmos" | "managedCassandra" | "mongorbac" | "notebook" | "privateEndpointConnection" | "privateLinkResources" |
 "rbac" | "restorable" | "services" | "dataTransferService"
 */
 const githubResourceName = "cosmos-db";
 const deResourceName = "cosmos";
-const schemaURL = `https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/specification/cosmos-db/resource-manager/Microsoft.DocumentDB/preview/${version}/${githubResourceName}.json`;
+const schemaURL = `https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/specification/cosmos-db/resource-manager/Microsoft.DocumentDB/DocumentDB/preview/${version}/${githubResourceName}.json`;
 const outputDir = path.join(__dirname, `../../src/Utils/arm/generatedClients/${deResourceName}`);
 
 // Array of strings to use for eventual output
