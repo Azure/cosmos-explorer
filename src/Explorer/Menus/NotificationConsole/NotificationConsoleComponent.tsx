@@ -329,7 +329,10 @@ export class NotificationConsoleComponent extends React.Component<
   }
 
   private static extractHeaderStatus(consoleData: ConsoleData) {
-    return consoleData?.message.split(":\n")[0];
+    if (!consoleData?.message || typeof consoleData.message !== "string") {
+      return undefined;
+    }
+    return consoleData.message.split(":\n")[0];
   }
 
   private onConsoleWasExpanded = (): void => {
