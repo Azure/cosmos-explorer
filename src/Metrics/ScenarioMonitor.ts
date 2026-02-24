@@ -21,6 +21,7 @@ interface InternalScenarioContext {
   phases: Map<MetricPhase, PhaseContext>; // Track start/end for each phase
   timeoutId?: number;
   emitted: boolean;
+  hasExpectedFailure: boolean; // Flag for expected failures (auth, firewall, etc.)
 }
 
 class ScenarioMonitor {
@@ -55,6 +56,13 @@ class ScenarioMonitor {
     });
   }
 
+  private devLog(msg: string) {
+    if (process.env.NODE_ENV === "development") {
+      // eslint-disable-next-line no-console
+      console.log(`[Metrics] ${msg}`);
+    }
+  }
+
   start(scenario: MetricScenario) {
     if (this.contexts.has(scenario)) {
       return;
@@ -75,6 +83,7 @@ class ScenarioMonitor {
       failed: new Set<MetricPhase>(),
       phases: new Map<MetricPhase, PhaseContext>(),
       emitted: false,
+      hasExpectedFailure: false,
     };
 
     // Start all required phases at scenario start time
@@ -84,6 +93,10 @@ class ScenarioMonitor {
       ctx.phases.set(phase, { startMarkName: phaseStartMarkName });
     });
 
+    this.devLog(
+      `scenario_start: ${scenario} | phases=${config.requiredPhases.join(", ")} | timeout=${config.timeoutMs}ms`,
+    );
+
     traceMark(Action.MetricsScenario, {
       event: "scenario_start",
       scenario,
@@ -91,7 +104,11 @@ class ScenarioMonitor {
       timeoutMs: config.timeoutMs,
     });
 
-    ctx.timeoutId = window.setTimeout(() => this.emit(ctx, false, true), config.timeoutMs);
+    ctx.timeoutId = window.setTimeout(() => {
+      // If an expected failure occurred (auth, firewall, etc.), emit healthy instead of unhealthy
+      const healthy = ctx.hasExpectedFailure;
+      this.emit(ctx, healthy, true);
+    }, config.timeoutMs);
     this.contexts.set(scenario, ctx);
   }
 
@@ -130,6 +147,12 @@ class ScenarioMonitor {
     const endTimeISO = endEntry ? new Date(navigationStart + endEntry.startTime).toISOString() : undefined;
     const durationMs = startEntry && endEntry ? endEntry.startTime - startEntry.startTime : undefined;
 
+    this.devLog(
+      `phase_complete: ${scenario}.${phase} | ${
+        durationMs !== null && durationMs !== undefined ? `${Math.round(durationMs)}ms` : "?"
+      } | ${ctx.completed.size}/${ctx.config.requiredPhases.length} phases`,
+    );
+
     traceSuccess(Action.MetricsScenario, {
       event: "phase_complete",
       scenario,
@@ -149,6 +172,13 @@ class ScenarioMonitor {
       return;
     }
 
+    // If an expected failure was flagged (auth, firewall, etc.), treat as success.
+    if (ctx.hasExpectedFailure) {
+      this.devLog(`phase_fail: ${scenario}.${phase} — expected failure, completing as healthy`);
+      this.completePhase(scenario, phase);
+      return;
+    }
+
     // Mark the explicitly failed phase
     performance.mark(`scenario_${scenario}_${phase}_failed`);
     ctx.failed.add(phase);
@@ -163,6 +193,12 @@ class ScenarioMonitor {
     // Build a snapshot with failure info
     const failureSnapshot = this.buildSnapshot(ctx, { final: false, timedOut: false });
 
+    this.devLog(
+      `phase_fail: ${scenario}.${phase} | failed=[${Array.from(ctx.failed).join(", ")}] | completed=[${Array.from(
+        ctx.completed,
+      ).join(", ")}]`,
+    );
+
     traceFailure(Action.MetricsScenario, {
       event: "phase_fail",
       scenario,
@@ -171,8 +207,26 @@ class ScenarioMonitor {
       completedPhases: Array.from(ctx.completed).join(","),
     });
 
-    // Emit unhealthy immediately
+    // Emit unhealthy immediately for unexpected failures
     this.emit(ctx, false, false, failureSnapshot);
+  }
+
+  /**
+   * Marks that an expected failure occurred (auth, firewall, permissions, etc.).
+   * When the scenario times out with this flag set, it will emit healthy instead of unhealthy.
+   * This is called automatically from handleError when an expected error is detected.
+   */
+  markExpectedFailure() {
+    // Set the flag on all active (non-emitted) scenarios
+    this.contexts.forEach((ctx) => {
+      if (!ctx.emitted) {
+        ctx.hasExpectedFailure = true;
+        traceMark(Action.MetricsScenario, {
+          event: "expected_failure_marked",
+          scenario: ctx.scenario,
+        });
+      }
+    });
   }
 
   private tryEmitIfReady(ctx: InternalScenarioContext) {
@@ -246,8 +300,22 @@ class ScenarioMonitor {
       ttfb: finalSnapshot.vitals?.ttfb,
     });
 
+    this.devLog(
+      `scenario_end: ${ctx.scenario} | ${healthy ? "healthy" : "unhealthy"} | ${
+        timedOut ? "timed out" : `${Math.round(finalSnapshot.durationMs)}ms`
+      } | ${JSON.stringify({
+        completedPhases: finalSnapshot.completed.join(", "),
+        failedPhases: finalSnapshot.failedPhases?.join(", ") || "none",
+        platform,
+        api,
+        phaseTimings: finalSnapshot.phaseTimings,
+        vitals: finalSnapshot.vitals,
+      })}`,
+    );
+
     // Call portal backend health metrics endpoint
-    if (healthy && !timedOut) {
+    // If healthy is true (either completed successfully or timeout with expected failure), report healthy
+    if (healthy) {
       reportHealthy(ctx.scenario, platform, api);
     } else {
       reportUnhealthy(ctx.scenario, platform, api);
@@ -301,6 +369,19 @@ class ScenarioMonitor {
       vitals: { ...this.vitals },
       phaseTimings,
     };
+  }
+
+  /**
+   * Reset all scenarios (for testing purposes only).
+   * Clears all active contexts and their timeouts.
+   */
+  reset() {
+    this.contexts.forEach((ctx) => {
+      if (ctx.timeoutId) {
+        clearTimeout(ctx.timeoutId);
+      }
+    });
+    this.contexts.clear();
   }
 }
 
