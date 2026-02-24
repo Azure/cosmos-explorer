@@ -108,7 +108,9 @@ class ScenarioMonitor {
       const missingPhases = ctx.config.requiredPhases.filter((p) => !ctx.completed.has(p));
 
       this.devLog(
-        `timeout: ${scenario} | missing=[${missingPhases.join(", ")}] | completed=[${Array.from(ctx.completed).join(", ")}] | documentHidden=${document.hidden} | hasExpectedFailure=${ctx.hasExpectedFailure}`,
+        `timeout: ${scenario} | missing=[${missingPhases.join(", ")}] | completed=[${Array.from(ctx.completed).join(
+          ", ",
+        )}] | documentHidden=${document.hidden} | hasExpectedFailure=${ctx.hasExpectedFailure}`,
       );
 
       traceMark(Action.MetricsScenario, {
