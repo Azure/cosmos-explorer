@@ -212,12 +212,13 @@
     "ws": "8.17.1"
   },
   "scripts": {
-    "postinstall": "patch-package",
-    "start": "npm run generate:i18n-keys && webpack serve --mode development",
+    "postinstall": "patch-package && npm run generate:i18n-keys",
+    "prestart": "npm run generate:i18n-keys",
+    "start": "webpack serve --mode development",
     "dev": "echo \"WARNING: npm run dev has been deprecated\" && npm run build",
     "build:dataExplorer:ci": "npm run build:ci",
-    "build": "npm run generate:i18n-keys && npm run format:check && npm run lint && npm run compile && npm run compile:strict && npm run pack:prod && npm run copyToConsumers",
-    "build:ci": "npm run generate:i18n-keys && npm run format:check && npm run lint && npm run compile && npm run compile:strict && npm run pack:fast",
+    "build": "npm run format:check && npm run lint && npm run compile && npm run compile:strict && npm run pack:prod && npm run copyToConsumers",
+    "build:ci": "npm run format:check && npm run lint && npm run compile && npm run compile:strict && npm run pack:fast",
     "pack:prod": "webpack  --mode production",
     "pack:fast": "webpack  --mode development --progress",
     "copyToConsumers": "node copyToConsumers",
