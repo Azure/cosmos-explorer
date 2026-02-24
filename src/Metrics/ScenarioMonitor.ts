@@ -105,6 +105,21 @@ class ScenarioMonitor {
     });
 
     ctx.timeoutId = window.setTimeout(() => {
+      const missingPhases = ctx.config.requiredPhases.filter((p) => !ctx.completed.has(p));
+
+      this.devLog(
+        `timeout: ${scenario} | missing=[${missingPhases.join(", ")}] | completed=[${Array.from(ctx.completed).join(", ")}] | documentHidden=${document.hidden} | hasExpectedFailure=${ctx.hasExpectedFailure}`,
+      );
+
+      traceMark(Action.MetricsScenario, {
+        event: "scenario_timeout",
+        scenario,
+        missingPhases: missingPhases.join(","),
+        completedPhases: Array.from(ctx.completed).join(","),
+        documentHidden: document.hidden,
+        hasExpectedFailure: ctx.hasExpectedFailure,
+      });
+
       // If an expected failure occurred (auth, firewall, etc.), emit healthy instead of unhealthy
       const healthy = ctx.hasExpectedFailure;
       this.emit(ctx, healthy, true);
@@ -288,6 +303,7 @@ class ScenarioMonitor {
       scenario: ctx.scenario,
       healthy,
       timedOut,
+      documentHidden: document.hidden,
       platform,
       api,
       durationMs: finalSnapshot.durationMs,
