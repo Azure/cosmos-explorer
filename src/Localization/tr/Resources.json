@@ -1,7 +1,7 @@
 {
   "splashScreen": {
     "title": {
-      "default": "Welcome to Azure Cosmos DB",
+      "default": "Azure Cosmos DB'ye hoş geldiniz",
       "postgres": "Welcome to Azure Cosmos DB for PostgreSQL",
       "vcoreMongo": "Welcome to Azure DocumentDB (with MongoDB compatibility)"
     },
