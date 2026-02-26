@@ -2,12 +2,12 @@
   "splashScreen": {
     "title": {
       "default": "Selamat Datang di Azure Cosmos DB",
-      "postgres": "Welcome to Azure Cosmos DB for PostgreSQL",
-      "vcoreMongo": "Welcome to Azure DocumentDB (with MongoDB compatibility)"
+      "postgres": "Selamat datang di Azure Cosmos DB for PostgreSQL",
+      "vcoreMongo": "Selamat datang di Azure DocumentDB (dengan kompatibilitas MongoDB)"
     },
     "subtitle": {
-      "default": "Globally distributed, multi-model database service for any scale",
-      "getStarted": "Get started with our sample datasets, documentation, and additional tools."
+      "default": "Layanan database multimodel yang didistribusikan secara global untuk skala apa saja",
+      "getStarted": "Mulai dengan himpunan data sampel, dokumentasi, dan alat tambahan kami."
     }
   }
 }

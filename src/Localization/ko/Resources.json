@@ -2,12 +2,12 @@
   "splashScreen": {
     "title": {
       "default": "Azure Cosmos DB 시작",
-      "postgres": "Welcome to Azure Cosmos DB for PostgreSQL",
-      "vcoreMongo": "Welcome to Azure DocumentDB (with MongoDB compatibility)"
+      "postgres": "Azure Cosmos DB for PostgreSQL 시작",
+      "vcoreMongo": "Azure DocumentDB 시작(MongoDB 호환성 포함)"
     },
     "subtitle": {
-      "default": "Globally distributed, multi-model database service for any scale",
-      "getStarted": "Get started with our sample datasets, documentation, and additional tools."
+      "default": "모든 규모에 대해 전역적으로 분산된 다중 모델 데이터베이스 서비스",
+      "getStarted": "샘플 데이터 세트, 설명서 및 추가 도구를 시작하세요."
     }
   }
 }
