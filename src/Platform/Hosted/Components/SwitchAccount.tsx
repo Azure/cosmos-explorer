@@ -1,6 +1,6 @@
-import { Dropdown } from "@fluentui/react";
 import * as React from "react";
 import { FunctionComponent } from "react";
+import { SearchableDropdown } from "../../../Common/SearchableDropdown";
 import { DatabaseAccount } from "../../../Contracts/DataModels";
 
 interface Props {
@@ -17,23 +17,18 @@ export const SwitchAccount: FunctionComponent<Props> = ({
   dismissMenu,
 }: Props) => {
   return (
-    <Dropdown
-      label="Cosmos DB Account Name"
+    <SearchableDropdown<DatabaseAccount>
+      label="Cosmos DB Account"
+      items={accounts}
+      selectedItem={selectedAccount}
+      onSelect={(account) => setSelectedAccountName(account.name)}
+      getKey={(account) => account.name}
+      getDisplayText={(account) => account.name}
+      placeholder="Select an Account"
+      filterPlaceholder="Search by Account name"
       className="accountSwitchAccountDropdown"
-      options={accounts?.map((account) => ({
-        key: account.name,
-        text: account.name,
-        data: account,
-      }))}
-      onChange={(_, option) => {
-        setSelectedAccountName(String(option?.key));
-        dismissMenu();
-      }}
-      defaultSelectedKey={selectedAccount?.name}
-      placeholder={accounts && accounts.length === 0 ? "No Accounts Found" : "Select an Account"}
-      styles={{
-        callout: "accountSwitchAccountDropdownMenu",
-      }}
+      disabled={!accounts || accounts.length === 0}
+      onDismiss={dismissMenu}
     />
   );
 };
