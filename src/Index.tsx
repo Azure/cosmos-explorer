@@ -1,3 +1,4 @@
+import "./i18n";
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import Arrow from "../images/Arrow.svg";

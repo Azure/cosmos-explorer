@@ -9,7 +9,6 @@ import {
   Stack,
   Text,
 } from "@fluentui/react";
-import { TFunction } from "i18next";
 import promiseRetry, { AbortError, Options } from "p-retry";
 import React from "react";
 import { WithTranslation } from "react-i18next";
@@ -81,7 +80,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
   private smartUiGeneratorClassName: string;
   private retryIntervalInMs: number;
   private retryOptions: Options;
-  private translationFunction: TFunction;
+  private translationFunction: (key: string) => string;
 
   componentDidMount(): void {
     this.performRefresh().then(() => {
@@ -119,7 +118,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
     this.retryOptions = { forever: true, maxTimeout: this.retryIntervalInMs, minTimeout: this.retryIntervalInMs };
 
     // translation function passed to SelfServeComponent
-    this.translationFunction = this.props.t;
+    this.translationFunction = this.props.t as (key: string) => string;
   }
 
   private onError = (hasErrors: boolean): void => {
