@@ -79,6 +79,10 @@ let configContext: Readonly<ConfigContext> = {
     `^https:\\/\\/dataexplorer-preview\\.azurewebsites\\.net$`,
     `^https:\\/\\/explorer\\.cosmos\\.sovcloud-api\\.fr$`,
     `^https:\\/\\/portal\\.sovcloud-azure\\.fr$`,
+    `^https:\\/\\/explorer\\.cosmos\\.sovcloud-api\\.de$`,
+    `^https:\\/\\/portal\\.sovcloud-azure\\.de$`,
+    `^https:\\/\\/explorer\\.cosmos\\.sovcloud-api\\.sg$`,
+    `^https:\\/\\/portal\\.sovcloud-azure\\.sg$`,
   ], // Webpack injects this at build time
   gitSha: process.env.GIT_SHA,
   hostedExplorerURL: "https://cosmos.azure.com/",
