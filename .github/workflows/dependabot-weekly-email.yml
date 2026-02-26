@@ -1,0 +1,45 @@
+name: Weekly Dependabot Alerts Email
+
+on:
+  schedule:
+    - cron: '0 0 * * 0'  # Triggers the workflow every Sunday at midnight UTC.
+
+jobs:
+  send-email:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Checkout the repository code (optional for this task, but typical in workflows)
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Step 2: Fetch Dependabot Alerts via GitHub API
+      - name: Fetch Dependabot Alerts
+        id: dependabot-alerts
+        run: |
+          curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          -H "Accept: application/vnd.github.v3+json" \
+          "https://api.github.com/repos/${{ github.repository }}/dependabot/alerts?state=open" > dependabot_alerts.json
+
+      # Step 3: Format the Dependabot Alerts
+      - name: Format Alerts as Email Body
+        id: format-alerts
+        run: |
+          alerts=$(cat dependabot_alerts.json | jq -r '.[] | "* **\(.securityVulnerability.package.name)**: \(.securityVulnerability.severity) severity, CVE-Id: [\(.securityVulnerability.cve)](https://cve.mitre.org/cve/\(.securityVulnerability.cve))\n  \(.description)\n"')
+          echo "$alerts" > formatted_alerts.txt
+
+      # Step 4: Send the Email via Outlook SMTP (from DL1 to DL1 or DL2)
+      - name: Send Email
+        uses: dawidd6/action-send-mail@v3
+        with:
+          smtp-server: smtp.office365.com
+          smtp-port: 587
+          smtp-user: cdbportal@microsoft.com  # Use DL1's email address
+          from: cdbportal@microsoft.com  # The sender is DL1
+          to: "dl1@yourdomain.com"  # This is the recipient DL1; can also use another DL (e.g., dl2@yourdomain.com)
+          subject: "Weekly Dependabot Vulnerabilities for ${{ github.repository }}"
+          body: |
+            **Weekly Dependabot Security Alerts**
+
+            Below are the new security vulnerabilities found in your dependencies:
+
+            ${{ steps.format-alerts.outputs.alerts }}
