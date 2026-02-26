@@ -347,6 +347,7 @@ export interface Offer {
 export interface ThroughputBucket {
   id: number;
   maxThroughputPercentage: number;
+  isDefaultBucket?: boolean;
 }
 
 export interface SDKOfferDefinition extends Resource {
