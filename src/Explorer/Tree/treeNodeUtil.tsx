@@ -131,8 +131,14 @@ export const createDatabaseTreeNodes = (
   isNotebookEnabled: boolean,
   databases: ViewModels.Database[],
   refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void,
+  searchText = "",
 ): TreeNode[] => {
-  const databaseTreeNodes: TreeNode[] = databases.map((database: ViewModels.Database) => {
+  // Filter databases based on search text
+  const filteredDatabases = searchText
+    ? databases.filter((db) => db.id().toLowerCase().includes(searchText.toLowerCase()))
+    : databases;
+
+  const databaseTreeNodes: TreeNode[] = filteredDatabases.map((database: ViewModels.Database) => {
     const buildDatabaseChildNodes = (databaseNode: TreeNode) => {
       databaseNode.children = [];
       if (database.isDatabaseShared() && configContext.platform !== Platform.Fabric) {
