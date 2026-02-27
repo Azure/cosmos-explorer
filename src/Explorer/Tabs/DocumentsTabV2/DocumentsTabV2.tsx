@@ -789,7 +789,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   );
   let partitionKeyProperties = useMemo(() => {
     return partitionKeyPropertyHeaders?.map((partitionKeyPropertyHeader) =>
-      partitionKeyPropertyHeader.replace(/[/]+/g, ".").substring(1).replace(/[']+/g, ""),
+      partitionKeyPropertyHeader.replace(/[/]+/g, ".").substring(1).replace(/[']+/g, "").replace(/["]+/g, ""),
     );
   }, [partitionKeyPropertyHeaders]);
 
@@ -1470,7 +1470,11 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                 const partitionKey = _partitionKey || (_collection && _collection.partitionKey);
                 const partitionKeyPropertyHeaders = _collection?.partitionKeyPropertyHeaders || partitionKey?.paths;
                 const partitionKeyProperties = partitionKeyPropertyHeaders?.map((partitionKeyPropertyHeader) =>
-                  partitionKeyPropertyHeader.replace(/[/]+/g, ".").substring(1).replace(/[']+/g, ""),
+                  partitionKeyPropertyHeader
+                    .replace(/[/]+/g, ".")
+                    .substring(1)
+                    .replace(/[']+/g, "")
+                    .replace(/["]+/g, ""),
                 );
 
                 return newDocumentId(rawDocument, partitionKeyProperties, partitionKeyValue);
