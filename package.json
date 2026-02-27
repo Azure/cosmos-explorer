@@ -171,7 +171,7 @@
     "@webpack-cli/serve": "2.0.5",
     "babel-jest": "29.7.0",
     "babel-loader": "8.1.0",
-    "brace-expansion": "1.1.12",
+    "brace-expansion": "2.0.2",
     "buffer": "5.1.0",
     "case-sensitive-paths-webpack-plugin": "2.4.0",
     "create-file-webpack": "1.0.2",
