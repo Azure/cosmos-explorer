@@ -34,7 +34,7 @@ import Explorer from "../Explorer";
 import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
 import { CassandraAPIDataClient, CassandraTableKey, CassandraTableKeys } from "../Tables/TableDataClient";
 import ConflictsTab from "../Tabs/ConflictsTab";
-import GraphTab from "../Tabs/GraphTab";
+import type GraphTab from "../Tabs/GraphTab";
 import { NewMongoQueryTab } from "../Tabs/MongoQueryTab/MongoQueryTab";
 import { NewMongoShellTab } from "../Tabs/MongoShellTab/MongoShellTab";
 import { NewQueryTab } from "../Tabs/QueryTab/QueryTab";
@@ -450,7 +450,7 @@ export default class Collection implements ViewModels.Collection {
     }
   }
 
-  public onGraphDocumentsClick() {
+  public async onGraphDocumentsClick() {
     useSelectedNode.getState().setSelectedNode(this);
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.Graph);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
@@ -483,7 +483,8 @@ export default class Collection implements ViewModels.Collection {
         tabTitle: title,
       });
 
-      graphTab = new GraphTab({
+      const { default: GraphTabModule } = await import(/* webpackChunkName: "GraphTab" */ "../Tabs/GraphTab");
+      graphTab = new GraphTabModule({
         account: userContext.databaseAccount,
         tabKind: ViewModels.CollectionTabKind.Graph,
         node: this,
@@ -727,7 +728,7 @@ export default class Collection implements ViewModels.Collection {
     useTabs.getState().activateNewTab(newMongoQueryTab);
   }
 
-  public onNewGraphClick() {
+  public async onNewGraphClick() {
     const id: number = useTabs.getState().getTabs(ViewModels.CollectionTabKind.Graph).length + 1;
     const title: string = "Graph Query " + id;
 
@@ -739,7 +740,8 @@ export default class Collection implements ViewModels.Collection {
       tabTitle: title,
     });
 
-    const graphTab: GraphTab = new GraphTab({
+    const { default: GraphTabModule } = await import(/* webpackChunkName: "GraphTab" */ "../Tabs/GraphTab");
+    const graphTab: GraphTab = new GraphTabModule({
       account: userContext.databaseAccount,
       tabKind: ViewModels.CollectionTabKind.Graph,
       node: this,
