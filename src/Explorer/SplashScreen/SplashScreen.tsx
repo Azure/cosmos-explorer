@@ -16,6 +16,8 @@ import { sendMessage } from "Common/MessageHandler";
 import { MessageTypes } from "Contracts/ExplorerContracts";
 import { TerminalKind } from "Contracts/ViewModels";
 import { SplashScreenButton } from "Explorer/SplashScreen/SplashScreenButton";
+import { Keys } from "Localization/Keys.generated";
+import { t } from "Localization/t";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { traceOpen } from "Shared/Telemetry/TelemetryProcessor";
 import { useCarousel } from "hooks/useCarousel";
@@ -169,16 +171,16 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
 
   switch (userContext.apiType) {
     case "Postgres":
-      title = "Welcome to Azure Cosmos DB for PostgreSQL";
-      subtitle = "Get started with our sample datasets, documentation, and additional tools.";
+      title = t(Keys.splashScreen.title.postgres);
+      subtitle = t(Keys.splashScreen.subtitle.getStarted);
       break;
     case "VCoreMongo":
-      title = "Welcome to Azure DocumentDB (with MongoDB compatibility)";
-      subtitle = "Get started with our sample datasets, documentation, and additional tools.";
+      title = t(Keys.splashScreen.title.vcoreMongo);
+      subtitle = t(Keys.splashScreen.subtitle.getStarted);
       break;
     default:
-      title = "Welcome to Azure Cosmos DB";
-      subtitle = "Globally distributed, multi-model database service for any scale";
+      title = t(Keys.splashScreen.title.default);
+      subtitle = t(Keys.splashScreen.subtitle.default);
   }
 
   React.useEffect(() => {

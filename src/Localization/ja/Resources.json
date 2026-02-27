@@ -1,0 +1,13 @@
+{
+  "splashScreen": {
+    "title": {
+      "default": "Azure Cosmos DB へようこそ",
+      "postgres": "Azure Cosmos DB for PostgreSQL へようこそ",
+      "vcoreMongo": "Azure DocumentDB (MongoDB 互換) へようこそ"
+    },
+    "subtitle": {
+      "default": "あらゆるスケールに対応するグローバル分散型のマルチモデル データベース サーバー",
+      "getStarted": "サンプル データセット、ドキュメント、追加ツールを使用して開始してください。"
+    }
+  }
+}
