@@ -5,27 +5,14 @@ import "./ReactDevTools";
 import { initializeIcons, loadTheme, useTheme } from "@fluentui/react";
 import { FluentProvider, makeStyles, webDarkTheme, webLightTheme } from "@fluentui/react-components";
 import { Platform } from "ConfigContext";
-import ContainerCopyPanel from "Explorer/ContainerCopy/ContainerCopyPanel";
 import Explorer from "Explorer/Explorer";
-import { QuickstartCarousel } from "Explorer/Quickstart/QuickstartCarousel";
-import { MongoQuickstartTutorial } from "Explorer/Quickstart/Tutorials/MongoQuickstartTutorial";
-import { SQLQuickstartTutorial } from "Explorer/Quickstart/Tutorials/SQLQuickstartTutorial";
 import { userContext } from "UserContext";
 import "allotment/dist/style.css";
-import "bootstrap/dist/css/bootstrap.css";
 import { useCarousel } from "hooks/useCarousel";
 import React from "react";
 import ReactDOM from "react-dom";
-import "../externals/jquery-ui.min.css";
-import "../externals/jquery-ui.min.js";
-import "../externals/jquery-ui.structure.min.css";
-import "../externals/jquery-ui.theme.min.css";
-import "../externals/jquery.dataTables.min.css";
-import "../externals/jquery.typeahead.min.css";
-import "../externals/jquery.typeahead.min.js";
 // Image Dependencies
 import { SidePanel } from "Explorer/Panes/PanelContainerComponent";
-import { QueryCopilotCarousel } from "Explorer/QueryCopilot/CopilotCarousel";
 import { SidebarContainer } from "Explorer/Sidebar";
 import { KeyboardShortcutRoot } from "KeyboardShortcuts";
 import "allotment/dist/style.css";
@@ -72,6 +59,50 @@ import { useKnockoutExplorer } from "./hooks/useKnockoutExplorer";
 import { useThemeStore } from "./hooks/useTheme";
 import "./less/DarkModeMenus.less";
 import "./less/ThemeSystem.less";
+// Lazy-loaded components (code-split into separate chunks)
+const ContainerCopyPanel = React.lazy(
+  () => import(/* webpackChunkName: "ContainerCopyPanel" */ "Explorer/ContainerCopy/ContainerCopyPanel"),
+);
+const QuickstartCarousel = React.lazy(() =>
+  import(/* webpackChunkName: "QuickstartCarousel" */ "Explorer/Quickstart/QuickstartCarousel").then((m) => ({
+    default: m.QuickstartCarousel,
+  })),
+);
+const SQLQuickstartTutorial = React.lazy(() =>
+  import(/* webpackChunkName: "SQLQuickstartTutorial" */ "Explorer/Quickstart/Tutorials/SQLQuickstartTutorial").then(
+    (m) => ({ default: m.SQLQuickstartTutorial }),
+  ),
+);
+const MongoQuickstartTutorial = React.lazy(() =>
+  import(
+    /* webpackChunkName: "MongoQuickstartTutorial" */ "Explorer/Quickstart/Tutorials/MongoQuickstartTutorial"
+  ).then((m) => ({ default: m.MongoQuickstartTutorial })),
+);
+const QueryCopilotCarousel = React.lazy(() =>
+  import(/* webpackChunkName: "QueryCopilotCarousel" */ "Explorer/QueryCopilot/CopilotCarousel").then((m) => ({
+    default: m.QueryCopilotCarousel,
+  })),
+);
+
+// Defer loading legacy jQuery/Bootstrap CSS and JS — they are needed by Tables features, not on initial render
+const loadLegacyDependencies = () => {
+  // @ts-expect-error — side-effect-only imports handled by webpack, not real TS/ES modules
+  import(/* webpackChunkName: "legacy-styles" */ "bootstrap/dist/css/bootstrap.css");
+  // @ts-expect-error — webpack handles CSS imports
+  import(/* webpackChunkName: "legacy-styles" */ "../externals/jquery-ui.min.css");
+  // @ts-expect-error — webpack handles JS side-effect imports
+  import(/* webpackChunkName: "legacy-scripts" */ "../externals/jquery-ui.min.js");
+  // @ts-expect-error — webpack handles CSS imports
+  import(/* webpackChunkName: "legacy-styles" */ "../externals/jquery-ui.structure.min.css");
+  // @ts-expect-error — webpack handles CSS imports
+  import(/* webpackChunkName: "legacy-styles" */ "../externals/jquery-ui.theme.min.css");
+  // @ts-expect-error — webpack handles CSS imports
+  import(/* webpackChunkName: "legacy-styles" */ "../externals/jquery.dataTables.min.css");
+  // @ts-expect-error — webpack handles CSS imports
+  import(/* webpackChunkName: "legacy-styles" */ "../externals/jquery.typeahead.min.css");
+  import(/* webpackChunkName: "legacy-scripts" */ "../externals/jquery.typeahead.min.js");
+};
+
 // Initialize icons before React is loaded
 initializeIcons(undefined, { disableWarnings: true });
 
@@ -98,6 +129,8 @@ const App = (): JSX.Element => {
       import("../less/documentDBFabric.less");
     }
     StyleConstants.updateStyles();
+    // Load legacy jQuery/Bootstrap dependencies after initial render
+    loadLegacyDependencies();
   }, [config?.platform]);
 
   const explorer = useKnockoutExplorer(config?.platform);
@@ -131,11 +164,11 @@ const App = (): JSX.Element => {
       <KeyboardShortcutRoot>
         <div className="flexContainer" aria-hidden="false">
           {userContext.features.enableContainerCopy && userContext.apiType === "SQL" ? (
-            <>
+            <React.Suspense fallback={null}>
               <ContainerCopyPanel explorer={explorer} />
               <SidePanel />
               <Dialog />
-            </>
+            </React.Suspense>
           ) : (
             <DivExplorer explorer={explorer} />
           )}
@@ -191,10 +224,12 @@ const DivExplorer: React.FC<{ explorer: Explorer }> = ({ explorer }) => {
       </div>
       <SidePanel />
       <Dialog />
-      {<QuickstartCarousel isOpen={isCarouselOpen} />}
-      {<SQLQuickstartTutorial />}
-      {<MongoQuickstartTutorial />}
-      {<QueryCopilotCarousel isOpen={isCopilotCarouselOpen} explorer={explorer} />}
+      <React.Suspense fallback={null}>
+        {<QuickstartCarousel isOpen={isCarouselOpen} />}
+        {<SQLQuickstartTutorial />}
+        {<MongoQuickstartTutorial />}
+        {<QueryCopilotCarousel isOpen={isCopilotCarouselOpen} explorer={explorer} />}
+      </React.Suspense>
     </div>
   );
 };
