@@ -249,4 +249,27 @@ export const documentTestCases: DocumentTestCase[] = [
       },
     ],
   },
+  {
+    name: "Single Double-Quoted Partition Key",
+    databaseId: "e2etests-sql-readonly",
+    containerId: "doubleQuotedPartitionKey",
+    documents: [
+      {
+        documentId: "doubleQuotedPartitionKey",
+        partitionKeys: [{ key: "/partition-key", value: "doubleQuotedValue" }],
+      },
+      {
+        documentId: "doubleQuotedPartitionKey_empty_string",
+        partitionKeys: [{ key: "/partition-key", value: "" }],
+      },
+      {
+        documentId: "doubleQuotedPartitionKey_null",
+        partitionKeys: [{ key: "/partition-key", value: null }],
+      },
+      {
+        documentId: "doubleQuotedPartitionKey_missing",
+        partitionKeys: [],
+      },
+    ],
+  },
 ];
