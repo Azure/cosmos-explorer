@@ -1,0 +1,16 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "npm",
+      "script": "build",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": [],
+      "label": "npm: build",
+      "detail": "npm run format:check && npm run lint && npm run compile && npm run compile:strict && npm run pack:prod && npm run copyToConsumers"
+    }
+  ]
+}
