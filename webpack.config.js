@@ -123,7 +123,7 @@ module.exports = function (_env = {}, argv = {}) {
     new HtmlWebpackPlugin({
       filename: "explorer.html",
       template: "src/explorer.html",
-      chunks: ["main"],
+      chunks: ["main", "vendor", "vendor-fluentui", "vendor-nteract"],
     }),
     new HtmlWebpackPlugin({
       filename: "terminal.html",
@@ -262,6 +262,30 @@ module.exports = function (_env = {}, argv = {}) {
           },
         }),
       ],
+      splitChunks: {
+        chunks: "all",
+        maxInitialRequests: 10,
+        cacheGroups: {
+          fluentui: {
+            test: /[\\/]node_modules[\\/]@fluentui[\\/]/,
+            name: "vendor-fluentui",
+            chunks: "all",
+            priority: 30,
+          },
+          nteract: {
+            test: /[\\/]node_modules[\\/]@nteract[\\/]/,
+            name: "vendor-nteract",
+            chunks: "all",
+            priority: 30,
+          },
+          vendor: {
+            test: /[\\/]node_modules[\\/]/,
+            name: "vendor",
+            chunks: "all",
+            priority: 10,
+          },
+        },
+      },
     },
     watch: false,
     // Hack since it is hard to disable watch entirely with webpack dev server https://github.com/webpack/webpack-dev-server/issues/1251#issuecomment-654240734
