@@ -251,7 +251,14 @@ export const setPartitionKeys = (partitionKeys: PartitionKey[]) => {
   partitionKeys.forEach((partitionKey) => {
     const { key: keyPath, value: keyValue } = partitionKey;
     const cleanPath = keyPath.startsWith("/") ? keyPath.slice(1) : keyPath;
-    const keys = cleanPath.split("/");
+    const keys = cleanPath.split("/").map((segment) => {
+      // Strip enclosing double quotes from partition key path segments
+      // e.g., '"partition-key"' -> 'partition-key'
+      if (segment.length >= 2 && segment.charAt(0) === '"' && segment.charAt(segment.length - 1) === '"') {
+        return segment.slice(1, -1);
+      }
+      return segment;
+    });
     let current = result;
 
     keys.forEach((key, index) => {
