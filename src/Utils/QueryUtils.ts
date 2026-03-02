@@ -116,6 +116,17 @@ export const queryPagesUntilContentPresent = async (
   return await doRequest(firstItemIndex);
 };
 
+/**
+ * Strips enclosing double quotes from a partition key path segment.
+ * e.g., '"partition-key"' -> 'partition-key'
+ */
+export const stripDoubleQuotesFromSegment = (segment: string): string => {
+  if (segment.length >= 2 && segment.charAt(0) === '"' && segment.charAt(segment.length - 1) === '"') {
+    return segment.slice(1, -1);
+  }
+  return segment;
+};
+
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 export const getValueForPath = (content: any, pathSegments: string[]): any => {
   if (pathSegments.length === 0) {
@@ -146,7 +157,7 @@ export const extractPartitionKeyValues = (
   const partitionKeyValues: PartitionKey[] = [];
 
   partitionKeyDefinition.paths.forEach((partitionKeyPath: string) => {
-    const pathSegments: string[] = partitionKeyPath.substring(1).split("/");
+    const pathSegments: string[] = partitionKeyPath.substring(1).split("/").map(stripDoubleQuotesFromSegment);
     const value = getValueForPath(documentContent, pathSegments);
 
     if (value !== undefined) {
