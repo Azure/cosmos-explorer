@@ -169,7 +169,29 @@ module.exports = {
   // A map from regular expressions to paths to transformers
   transform: {
     "^.+\\.html?$": "jest-html-loader",
-    "^.+\\.[t|j]sx?$": "babel-jest",
+    "^.+\\.[t|j]sx?$": [
+      "@swc/jest",
+      {
+        jsc: {
+          parser: {
+            syntax: "typescript",
+            tsx: true,
+            decorators: true,
+          },
+          transform: {
+            legacyDecorator: true,
+            decoratorMetadata: true,
+            react: {
+              runtime: "automatic",
+            },
+          },
+          target: "es2022",
+        },
+        module: {
+          type: "commonjs",
+        },
+      },
+    ],
     "^.+\\.svg$": "<rootDir>/jest/svgTransform.js",
   },
 
