@@ -11,6 +11,8 @@ import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils"
 import { createTrigger } from "../../Common/dataAccess/createTrigger";
 import { updateTrigger } from "../../Common/dataAccess/updateTrigger";
 import * as ViewModels from "../../Contracts/ViewModels";
+import { Keys } from "../../Localization/Keys.generated";
+import { t } from "../../Localization/t";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { SqlTriggerResource } from "../../Utils/arm/generatedClients/cosmos/types";
@@ -19,8 +21,8 @@ import { EditorReact } from "../Controls/Editor/EditorReact";
 import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
 import TriggerTab from "./TriggerTab";
 const triggerTypeOptions: IDropdownOption[] = [
-  { key: "Pre", text: "Pre" },
-  { key: "Post", text: "Post" },
+  { key: "Pre", text: t(Keys.tabs.trigger.pre) },
+  { key: "Post", text: t(Keys.tabs.trigger.post) },
 ];
 
 const dropdownStyles: Partial<IDropdownStyles> = {
@@ -147,10 +149,10 @@ const dropdownStyles: Partial<IDropdownStyles> = {
 };
 
 const triggerOperationOptions: IDropdownOption[] = [
-  { key: "All", text: "All" },
-  { key: "Create", text: "Create" },
-  { key: "Delete", text: "Delete" },
-  { key: "Replace", text: "Replace" },
+  { key: "All", text: t(Keys.tabs.trigger.all) },
+  { key: "Create", text: t(Keys.tabs.trigger.operationCreate) },
+  { key: "Delete", text: t(Keys.tabs.trigger.operationDelete) },
+  { key: "Replace", text: t(Keys.tabs.trigger.operationReplace) },
 ];
 
 interface Ibutton {
@@ -334,7 +336,7 @@ export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentS
 
   protected getTabsButtons(): CommandButtonComponentProps[] {
     const buttons: CommandButtonComponentProps[] = [];
-    const label = "Save";
+    const label = t(Keys.common.save);
     if (this.saveButton.visible) {
       buttons.push({
         setState: this.setState,
@@ -351,7 +353,7 @@ export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentS
     }
 
     if (this.updateButton.visible) {
-      const label = "Update";
+      const label = t(Keys.common.update);
       buttons.push({
         ...this,
         iconSrc: SaveIcon,
@@ -366,7 +368,7 @@ export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentS
     }
 
     if (this.discardButton.visible) {
-      const label = "Discard";
+      const label = t(Keys.common.discard);
       buttons.push({
         setState: this.setState,
         ...this,
@@ -415,14 +417,14 @@ export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentS
       <div className="tab-pane flexContainer trigger-form" role="tabpanel">
         <TextField
           className="trigger-field"
-          label="Trigger Id"
+          label={t(Keys.tabs.trigger.id)}
           id="entityTimeId"
           autoFocus
           required
           type="text"
           pattern={ValidCosmosDbIdInputPattern.source}
           title={ValidCosmosDbIdDescription}
-          placeholder="Enter the new trigger id"
+          placeholder={t(Keys.tabs.trigger.idPlaceholder)}
           size={40}
           value={triggerId}
           readOnly={!isIdEditable}
@@ -446,8 +448,8 @@ export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentS
           }}
         />
         <Dropdown
-          placeholder="Trigger Type"
-          label="Trigger Type"
+          placeholder={t(Keys.tabs.trigger.type)}
+          label={t(Keys.tabs.trigger.type)}
           options={triggerTypeOptions}
           selectedKey={triggerType}
           className="trigger-field"
@@ -455,8 +457,8 @@ export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentS
           styles={dropdownStyles}
         />
         <Dropdown
-          placeholder="Trigger Operation"
-          label="Trigger Operation"
+          placeholder={t(Keys.tabs.trigger.operation)}
+          label={t(Keys.tabs.trigger.operation)}
           selectedKey={triggerOperation}
           options={triggerOperationOptions}
           className="trigger-field"
@@ -465,12 +467,12 @@ export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentS
           }
           styles={dropdownStyles}
         />
-        <Label className="trigger-field">Trigger Body</Label>
+        <Label className="trigger-field">{t(Keys.tabs.trigger.body)}</Label>
         <EditorReact
           language={"json"}
           content={triggerBody}
           isReadOnly={false}
-          ariaLabel={"Graph JSON"}
+          ariaLabel={t(Keys.tabs.trigger.bodyAriaLabel)}
           onContentChanged={this.handleTriggerBodyChange}
         />
       </div>

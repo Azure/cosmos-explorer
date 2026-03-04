@@ -41,6 +41,8 @@ import { usePrevious } from "Explorer/Tabs/DocumentsTabV2/SelectionHelper";
 import { CosmosFluentProvider, LayoutConstants, cosmosShorthands, tokens } from "Explorer/Theme/ThemeUtil";
 import { useSelectedNode } from "Explorer/useSelectedNode";
 import { KeyboardAction, KeyboardActionGroup, useKeyboardActionGroup } from "KeyboardShortcuts";
+import { Keys } from "Localization/Keys.generated";
+import { t } from "Localization/t";
 import { isFabric } from "Platform/Fabric/FabricUtil";
 import { QueryConstants } from "Shared/Constants";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
@@ -349,7 +351,7 @@ export const getTabsButtons = ({
   }
 
   const buttons: CommandButtonComponentProps[] = [];
-  const label = !isPreferredApiMongoDB ? "New Item" : "New Document";
+  const label = !isPreferredApiMongoDB ? t(Keys.tabs.documents.newItem) : t(Keys.tabs.documents.newDocument);
   if (getNewDocumentButtonState(editorState).visible) {
     buttons.push({
       iconSrc: NewDocumentIcon,
@@ -368,7 +370,7 @@ export const getTabsButtons = ({
   }
 
   if (getSaveNewDocumentButtonState(editorState).visible) {
-    const label = "Save";
+    const label = t(Keys.common.save);
     buttons.push({
       iconSrc: SaveIcon,
       iconAlt: label,
@@ -386,7 +388,7 @@ export const getTabsButtons = ({
   }
 
   if (getDiscardNewDocumentChangesButtonState(editorState).visible) {
-    const label = "Discard";
+    const label = t(Keys.common.discard);
     buttons.push({
       iconSrc: DiscardIcon,
       iconAlt: label,
@@ -403,7 +405,7 @@ export const getTabsButtons = ({
   }
 
   if (getSaveExistingDocumentButtonState(editorState).visible) {
-    const label = "Update";
+    const label = t(Keys.common.update);
     buttons.push({
       iconSrc: SaveIcon,
       iconAlt: label,
@@ -421,7 +423,7 @@ export const getTabsButtons = ({
   }
 
   if (getDiscardExistingDocumentChangesButtonState(editorState).visible) {
-    const label = "Discard";
+    const label = t(Keys.common.discard);
     buttons.push({
       iconSrc: DiscardIcon,
       iconAlt: label,
@@ -438,7 +440,7 @@ export const getTabsButtons = ({
   }
 
   if (selectedRows.size > 0) {
-    const label = "Delete";
+    const label = t(Keys.common.delete);
     buttons.push({
       iconSrc: DeleteDocumentIcon,
       iconAlt: label,
@@ -453,7 +455,7 @@ export const getTabsButtons = ({
   }
 
   if (!isPreferredApiMongoDB) {
-    const label = "Upload Item";
+    const label = t(Keys.tabs.documents.uploadItem);
     buttons.push({
       id: UPLOAD_BUTTON_ID,
       iconSrc: UploadIcon,
@@ -737,17 +739,18 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
             } else if (result.statusCode >= 400) {
               newFailed.push(result.documentId);
               logConsoleError(
-                `Failed to delete document ${result.documentId.id()} with status code ${result.statusCode}`,
+                t(Keys.tabs.documents.deleteDocumentFailedLog, {
+                  documentId: result.documentId.id(),
+                  statusCode: result.statusCode,
+                }),
               );
             }
           });
 
-          logConsoleInfo(`Successfully deleted ${newSuccessful.length} document(s)`);
+          logConsoleInfo(t(Keys.tabs.documents.deleteSuccessLog, { count: newSuccessful.length }));
 
           if (newThrottled.length > 0) {
-            logConsoleError(
-              `Failed to delete ${newThrottled.length} document(s) due to "Request too large" (429) error. Retrying...`,
-            );
+            logConsoleError(t(Keys.tabs.documents.deleteThrottledLog, { count: newThrottled.length }));
           }
 
           // Update result of the bulk delete: method is called again, because the state variables changed
@@ -917,11 +920,11 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
         useDialog
           .getState()
           .showOkCancelModalDialog(
-            "Unsaved changes",
-            "Your unsaved changes will be lost. Do you want to continue?",
-            "OK",
+            t(Keys.tabs.documents.unsavedChanges),
+            t(Keys.tabs.documents.unsavedChangesMessage),
+            t(Keys.common.ok),
             onDiscard,
-            "Cancel",
+            t(Keys.common.cancel),
             onCancelDiscard,
           );
       } else {
@@ -1011,7 +1014,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
         (error) => {
           onExecutionErrorChange(true);
           const errorMessage = getErrorMessage(error);
-          useDialog.getState().showOkModalDialog("Create document failed", errorMessage);
+          useDialog.getState().showOkModalDialog(t(Keys.tabs.documents.createDocumentFailed), errorMessage);
           TelemetryProcessor.traceFailure(
             Action.CreateDocument,
             {
@@ -1097,7 +1100,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
           selectedDocumentId.partitionKeyValue = originalPartitionKeyValue;
           onExecutionErrorChange(true);
           const errorMessage = getErrorMessage(error);
-          useDialog.getState().showOkModalDialog("Update document failed", errorMessage);
+          useDialog.getState().showOkModalDialog(t(Keys.tabs.documents.updateDocumentFailed), errorMessage);
           TelemetryProcessor.traceFailure(
             Action.UpdateDocument,
             {
@@ -1174,7 +1177,12 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
           // Remove the check for systemKey, remove call to deleteNoSqlDocument(). deleteNoSqlDocuments() should
           // always be called for NoSQL.
           deletePromise = deleteNoSqlDocument(_collection, toDeleteDocumentIds[0]).then(() => {
-            useDialog.getState().showOkModalDialog("Delete document", "Document successfully deleted.");
+            useDialog
+              .getState()
+              .showOkModalDialog(
+                t(Keys.tabs.documents.deleteDocumentDialogTitle),
+                t(Keys.tabs.documents.documentDeleted),
+              );
             return [toDeleteDocumentIds[0]];
           });
           // ----------------------------------------------------------------------------------------------------
@@ -1251,17 +1259,20 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
               useDialog
                 .getState()
                 .showOkModalDialog(
-                  "Delete documents",
-                  `Some documents failed to delete due to a rate limiting error. Please try again later. To prevent this in the future, consider increasing the throughput on your container or database.`,
+                  t(Keys.tabs.documents.deleteDocumentsDialogTitle),
+                  t(Keys.tabs.documents.throttlingError),
                   {
-                    linkText: "Learn More",
+                    linkText: t(Keys.common.learnMore),
                     linkUrl: MONGO_THROTTLING_DOC_URL,
                   },
                 );
             } else {
               useDialog
                 .getState()
-                .showOkModalDialog("Delete documents", `Deleting document(s) failed (${error.message})`);
+                .showOkModalDialog(
+                  t(Keys.tabs.documents.deleteDocumentsDialogTitle),
+                  t(Keys.tabs.documents.deleteFailed, { error: error.message }),
+                );
             }
           },
         )
@@ -1275,21 +1286,21 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     const isPlural = selectedRows.size > 1;
     const documentName = !isPreferredApiMongoDB
       ? isPlural
-        ? `the selected ${selectedRows.size} items`
-        : "the selected item"
+        ? t(Keys.tabs.documents.selectedItems, { count: selectedRows.size })
+        : t(Keys.tabs.documents.selectedItem)
       : isPlural
-      ? `the selected ${selectedRows.size} documents`
-      : "the selected document";
-    const msg = `Are you sure you want to delete ${documentName}?`;
+      ? t(Keys.tabs.documents.selectedDocuments, { count: selectedRows.size })
+      : t(Keys.tabs.documents.selectedDocument);
+    const msg = t(Keys.tabs.documents.confirmDelete, { documentName });
 
     useDialog
       .getState()
       .showOkCancelModalDialog(
-        "Confirm delete",
+        t(Keys.tabs.documents.confirmDeleteTitle),
         msg,
-        "Delete",
+        t(Keys.common.delete),
         () => deleteDocuments(Array.from(selectedRows).map((index) => documentIds[index as number])),
-        "Cancel",
+        t(Keys.common.cancel),
         undefined,
       );
   }, [deleteDocuments, documentIds, isPreferredApiMongoDB, selectedRows]);
@@ -1823,8 +1834,8 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
       const partitionKeyProperty = partitionKeyProperties?.[0];
       if (partitionKeyProperty !== "_id" && !_hasShardKeySpecified(documentContent)) {
-        const message = `The document is lacking the shard property: ${partitionKeyProperty}`;
-        useDialog.getState().showOkModalDialog("Create document failed", message);
+        const message = t(Keys.tabs.documents.missingShardProperty, { partitionKeyProperty });
+        useDialog.getState().showOkModalDialog(t(Keys.tabs.documents.createDocumentFailed), message);
         onExecutionErrorChange(true);
         TelemetryProcessor.traceFailure(
           Action.CreateDocument,
@@ -1835,7 +1846,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
           },
           startKey,
         );
-        Logger.logError("Failed to save new document: Document shard key not defined", "MongoDocumentsTab");
+        Logger.logError(t(Keys.tabs.documents.missingShardKeyLog), "MongoDocumentsTab");
         throw new Error("Document without shard key");
       }
 
@@ -1878,7 +1889,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
           (error) => {
             onExecutionErrorChange(true);
             const errorMessage = getErrorMessage(error);
-            useDialog.getState().showOkModalDialog("Create document failed", errorMessage);
+            useDialog.getState().showOkModalDialog(t(Keys.tabs.documents.createDocumentFailed), errorMessage);
             TelemetryProcessor.traceFailure(
               Action.CreateDocument,
               {
@@ -1949,7 +1960,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
           (error) => {
             onExecutionErrorChange(true);
             const errorMessage = getErrorMessage(error);
-            useDialog.getState().showOkModalDialog("Update document failed", errorMessage);
+            useDialog.getState().showOkModalDialog(t(Keys.tabs.documents.updateDocumentFailed), errorMessage);
             TelemetryProcessor.traceFailure(
               Action.UpdateDocument,
               {
@@ -2058,7 +2069,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
         }
       } catch (error) {
         console.error(error);
-        useDialog.getState().showOkModalDialog("Refresh documents grid failed", getErrorMessage(error));
+        useDialog.getState().showOkModalDialog(t(Keys.tabs.documents.refreshGridFailed), getErrorMessage(error));
       }
     },
     [createIterator, filterContent],
@@ -2070,18 +2081,17 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
    * @returns 429 warning message
    */
   const get429WarningMessageNoSql = (): string => {
-    let message = 'Some delete requests failed due to a "Request too large" exception (429)';
+    let message = t(Keys.tabs.documents.requestTooLargeBase);
 
     if (bulkDeleteOperation.count === bulkDeleteProcess.successfulIds.length) {
-      message += ", but were successfully retried.";
+      message += ", " + t(Keys.tabs.documents.retriedSuccessfully);
     } else if (bulkDeleteMode === "inProgress" || bulkDeleteMode === "aborting") {
-      message += ". Retrying now.";
+      message += ". " + t(Keys.tabs.documents.retryingNow);
     } else {
       message += ".";
     }
 
-    return (message +=
-      " To prevent this in the future, consider increasing the throughput on your container or database.");
+    return (message += " " + t(Keys.tabs.documents.increaseThroughputTip));
   };
 
   const onColumnSelectionChange = (newSelectedColumnIds: string[]): void => {
@@ -2128,7 +2138,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     const nonBlankLastFilters = lastFilterContents.filter((filter) => filter.trim() !== "");
     if (nonBlankLastFilters.length > 0) {
       options.push({
-        label: "Saved filters",
+        label: t(Keys.tabs.documents.savedFilters),
         options: nonBlankLastFilters,
       });
     }
@@ -2157,14 +2167,14 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
             dropdownOptions={getFilterChoices()}
             placeholder={
               isPreferredApiMongoDB
-                ? "Type a query predicate (e.g., {´a´:´foo´}), or choose one from the drop down list, or leave empty to query all documents."
-                : "Type a query predicate (e.g., WHERE c.id=´1´), or choose one from the drop down list, or leave empty to query all documents."
+                ? t(Keys.tabs.documents.mongoFilterPlaceholder)
+                : t(Keys.tabs.documents.sqlFilterPlaceholder)
             }
-            title="Type a query predicate or choose one from the list."
+            title={t(Keys.tabs.documents.filterTooltip)}
             value={filterContent}
             onChange={updateFilterContent}
             onKeyDown={onFilterKeyDown}
-            bottomLink={{ text: "Learn more", url: DATA_EXPLORER_DOC_URL }}
+            bottomLink={{ text: t(Keys.common.learnMore), url: DATA_EXPLORER_DOC_URL }}
           />
           <Button
             appearance="primary"
@@ -2180,10 +2190,12 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
               }
             }}
             disabled={isExecuting && isPreferredApiMongoDB}
-            aria-label={!isExecuting || isPreferredApiMongoDB ? "Apply filter" : "Cancel"}
+            aria-label={
+              !isExecuting || isPreferredApiMongoDB ? t(Keys.tabs.documents.applyFilter) : t(Keys.common.cancel)
+            }
             tabIndex={0}
           >
-            {!isExecuting || isPreferredApiMongoDB ? "Apply Filter" : "Cancel"}
+            {!isExecuting || isPreferredApiMongoDB ? t(Keys.tabs.documents.applyFilter) : t(Keys.common.cancel)}
           </Button>
         </div>
         <Allotment
@@ -2227,14 +2239,14 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                 </div>
                 {tableContainerSizePx?.width >= calculateOffset(selectedColumnIds.length) + 200 && (
                   <div
-                    title="Refresh"
+                    title={t(Keys.common.refresh)}
                     className={styles.refreshBtn}
                     role="button"
                     onClick={() => refreshDocumentsGrid(false)}
-                    aria-label="Refresh"
+                    aria-label={t(Keys.common.refresh)}
                     tabIndex={0}
                   >
-                    <img src={RefreshIcon} alt="Refresh" />
+                    <img src={RefreshIcon} alt={t(Keys.common.refresh)} />
                   </div>
                 )}
               </div>
@@ -2247,7 +2259,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                   onClick={() => loadNextPage(documentsIterator.iterator, false)}
                   onKeyDown={onLoadMoreKeyInput}
                 >
-                  Load more
+                  {t(Keys.tabs.documents.loadMore)}
                 </a>
               )}
             </div>
@@ -2259,7 +2271,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                   language={"json"}
                   content={selectedDocumentContent}
                   isReadOnly={false}
-                  ariaLabel={"Document editor"}
+                  ariaLabel={t(Keys.tabs.documents.documentEditor)}
                   lineNumbers={"on"}
                   theme={"_theme"}
                   onContentChanged={_onEditorContentChange}
@@ -2267,7 +2279,9 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                 />
               )}
               {selectedRows.size > 1 && (
-                <span style={{ margin: 10 }}>Number of selected documents: {selectedRows.size}</span>
+                <span style={{ margin: 10 }}>
+                  {t(Keys.tabs.documents.numberOfSelectedDocuments, { count: selectedRows.size })}
+                </span>
               )}
             </div>
           </Allotment.Pane>
@@ -2276,42 +2290,43 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
       {bulkDeleteOperation && (
         <ProgressModalDialog
           isOpen={isBulkDeleteDialogOpen}
-          dismissText="Abort"
+          dismissText={t(Keys.tabs.documents.abort)}
           onDismiss={() => {
             setIsBulkDeleteDialogOpen(false);
             setBulkDeleteOperation(undefined);
           }}
           onCancel={() => setBulkDeleteMode("aborting")}
-          title={`Deleting ${bulkDeleteOperation.count} document(s)`}
-          message={`Successfully deleted ${bulkDeleteProcess.successfulIds.length} document(s).`}
+          title={t(Keys.tabs.documents.deletingDocuments, { count: bulkDeleteOperation.count })}
+          message={t(Keys.tabs.documents.deletedDocumentsSuccess, { count: bulkDeleteProcess.successfulIds.length })}
           maxValue={bulkDeleteOperation.count}
           value={bulkDeleteProcess.successfulIds.length}
           mode={bulkDeleteMode}
         >
           <div className={styles.deleteProgressContent}>
             {(bulkDeleteMode === "aborting" || bulkDeleteMode === "aborted") && (
-              <div style={{ paddingBottom: tokens.spacingVerticalL }}>Deleting document(s) was aborted.</div>
+              <div style={{ paddingBottom: tokens.spacingVerticalL }}>{t(Keys.tabs.documents.deleteAborted)}</div>
             )}
             {(bulkDeleteProcess.failedIds.length > 0 ||
               (bulkDeleteProcess.throttledIds.length > 0 && bulkDeleteMode !== "inProgress")) && (
               <MessageBar intent="error" style={{ marginBottom: tokens.spacingVerticalL }}>
                 <MessageBarBody>
-                  <MessageBarTitle>Error</MessageBarTitle>
-                  Failed to delete{" "}
-                  {bulkDeleteMode === "inProgress"
-                    ? bulkDeleteProcess.failedIds.length
-                    : bulkDeleteProcess.failedIds.length + bulkDeleteProcess.throttledIds.length}{" "}
-                  document(s).
+                  <MessageBarTitle>{t(Keys.tabs.documents.error)}</MessageBarTitle>
+                  {t(Keys.tabs.documents.failedToDeleteDocuments, {
+                    count:
+                      bulkDeleteMode === "inProgress"
+                        ? bulkDeleteProcess.failedIds.length
+                        : bulkDeleteProcess.failedIds.length + bulkDeleteProcess.throttledIds.length,
+                  })}
                 </MessageBarBody>
               </MessageBar>
             )}
             {bulkDeleteProcess.hasBeenThrottled && (
               <MessageBar intent="warning">
                 <MessageBarBody>
-                  <MessageBarTitle>Warning</MessageBarTitle>
+                  <MessageBarTitle>{t(Keys.tabs.documents.warning)}</MessageBarTitle>
                   {get429WarningMessageNoSql()}{" "}
                   <Link href={NO_SQL_THROTTLING_DOC_URL} target="_blank">
-                    Learn More
+                    {t(Keys.common.learnMore)}
                   </Link>
                 </MessageBarBody>
               </MessageBar>
