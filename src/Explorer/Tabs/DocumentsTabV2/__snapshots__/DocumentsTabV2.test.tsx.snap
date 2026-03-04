@@ -24,7 +24,7 @@ exports[`Documents tab (noSql API) when rendered should render the page 1`] = `
       <InputDataList
         bottomLink={
           {
-            "text": "Learn more",
+            "text": "common.learnMore",
             "url": "https://learn.microsoft.com/en-us/azure/cosmos-db/data-explorer",
           }
         }
@@ -44,20 +44,20 @@ exports[`Documents tab (noSql API) when rendered should render the page 1`] = `
         }
         onChange={[Function]}
         onKeyDown={[Function]}
-        placeholder="Type a query predicate (e.g., WHERE c.id=´1´), or choose one from the drop down list, or leave empty to query all documents."
-        title="Type a query predicate or choose one from the list."
+        placeholder="tabs.documents.sqlFilterPlaceholder"
+        title="tabs.documents.filterTooltip"
         value=""
       />
       <Button
         appearance="primary"
-        aria-label="Apply filter"
+        aria-label="tabs.documents.applyFilter"
         data-test="DocumentsTab/ApplyFilter"
         disabled={false}
         onClick={[Function]}
         size="small"
         tabIndex={0}
       >
-        Apply Filter
+        tabs.documents.applyFilter
       </Button>
     </div>
     <Allotment
