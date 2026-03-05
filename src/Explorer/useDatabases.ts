@@ -10,7 +10,7 @@ interface DatabasesState {
   resourceTokenCollection: ViewModels.CollectionBase;
   sampleDataResourceTokenCollection: ViewModels.CollectionBase;
   databasesFetchedSuccessfully: boolean; // Track if last database fetch was successful
-  searchText: string; 
+  searchText: string;
   setSearchText: (searchText: string) => void;
   updateDatabase: (database: ViewModels.Database) => void;
   addDatabases: (databases: ViewModels.Database[]) => void;

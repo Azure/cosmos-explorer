@@ -83,19 +83,19 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ explorer }: Resource
   const headerNodes: TreeNode[] = isFabricMirrored()
     ? []
     : [
-      {
-        id: "home",
-        iconSrc: <Home16Regular />,
-        label: "Home",
-        isSelected: () =>
-          useSelectedNode.getState().selectedNode === undefined &&
-          useTabs.getState().activeReactTab === ReactTabKind.Home,
-        onClick: () => {
-          useSelectedNode.getState().setSelectedNode(undefined);
-          useTabs.getState().openAndActivateReactTab(ReactTabKind.Home);
+        {
+          id: "home",
+          iconSrc: <Home16Regular />,
+          label: "Home",
+          isSelected: () =>
+            useSelectedNode.getState().selectedNode === undefined &&
+            useTabs.getState().activeReactTab === ReactTabKind.Home,
+          onClick: () => {
+            useSelectedNode.getState().setSelectedNode(undefined);
+            useTabs.getState().openAndActivateReactTab(ReactTabKind.Home);
+          },
         },
-      },
-    ];
+      ];
 
   const rootNodes: TreeNode[] = useMemo(() => {
     if (sampleDataNodes.length > 0) {
