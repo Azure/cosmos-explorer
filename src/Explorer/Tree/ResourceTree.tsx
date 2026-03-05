@@ -1,5 +1,5 @@
-import { Tree, TreeItemValue, TreeOpenChangeData, TreeOpenChangeEvent } from "@fluentui/react-components";
-import { Home16Regular } from "@fluentui/react-icons";
+import { Input, Tree, TreeItemValue, TreeOpenChangeData, TreeOpenChangeEvent } from "@fluentui/react-components";
+import { Home16Regular, Search20Regular } from "@fluentui/react-icons";
 import { AuthType } from "AuthType";
 import { useTreeStyles } from "Explorer/Controls/TreeComponent/Styles";
 import { TreeNode, TreeNodeComponent } from "Explorer/Controls/TreeComponent/TreeNodeComponent";
@@ -55,6 +55,8 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ explorer }: Resource
     sampleDataResourceTokenCollection: state.sampleDataResourceTokenCollection,
   }));
   const databasesFetchedSuccessfully = useDatabases((state) => state.databasesFetchedSuccessfully);
+  const searchText = useDatabases((state) => state.searchText);
+  const setSearchText = useDatabases((state) => state.setSearchText);
   const { isCopilotEnabled, isCopilotSampleDBEnabled } = useQueryCopilot((state) => ({
     isCopilotEnabled: state.copilotEnabled,
     isCopilotSampleDBEnabled: state.copilotSampleDBEnabled,
@@ -63,8 +65,8 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ explorer }: Resource
   const databaseTreeNodes = useMemo(() => {
     return userContext.authType === AuthType.ResourceToken
       ? createResourceTokenTreeNodes(resourceTokenCollection)
-      : createDatabaseTreeNodes(explorer, isNotebookEnabled, databases, refreshActiveTab);
-  }, [resourceTokenCollection, databases, isNotebookEnabled, refreshActiveTab]);
+      : createDatabaseTreeNodes(explorer, isNotebookEnabled, databases, refreshActiveTab, searchText);
+  }, [resourceTokenCollection, databases, isNotebookEnabled, refreshActiveTab, searchText]);
 
   const isSampleDataEnabled =
     isCopilotEnabled &&
@@ -154,6 +156,17 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ explorer }: Resource
 
   return (
     <div className={treeStyles.treeContainer}>
+      {userContext.authType !== AuthType.ResourceToken && databases.length > 0 && (
+        <div style={{ padding: "8px" }}>
+          <Input
+            placeholder="Search databases only"
+            value={searchText}
+            onChange={(_, data) => setSearchText(data?.value || "")}
+            size="small"
+            contentBefore={<Search20Regular />}
+          />
+        </div>
+      )}
       <Tree
         aria-label="CosmosDB resources"
         openItems={openItems}
