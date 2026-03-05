@@ -10,12 +10,12 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
             "contextMenu": [
               {
                 "iconSrc": {},
-                "label": "contextMenu.openCassandraShell",
+                "label": "Open Cassandra Shell",
                 "onClick": [Function],
               },
               {
                 "iconSrc": {},
-                "label": "contextMenu.deleteContainer",
+                "label": "Delete Table",
                 "onClick": [Function],
                 "styleClass": "deleteCollectionMenuItem",
               },
@@ -30,12 +30,12 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
         "contextMenu": [
           {
             "iconSrc": {},
-            "label": "contextMenu.openCassandraShell",
+            "label": "Open Cassandra Shell",
             "onClick": [Function],
           },
           {
             "iconSrc": {},
-            "label": "contextMenu.deleteContainer",
+            "label": "Delete Table",
             "onClick": [Function],
             "styleClass": "deleteCollectionMenuItem",
           },
@@ -57,12 +57,12 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
             "contextMenu": [
               {
                 "iconSrc": {},
-                "label": "contextMenu.openCassandraShell",
+                "label": "Open Cassandra Shell",
                 "onClick": [Function],
               },
               {
                 "iconSrc": {},
-                "label": "contextMenu.deleteContainer",
+                "label": "Delete Table",
                 "onClick": [Function],
                 "styleClass": "deleteCollectionMenuItem",
               },
@@ -82,12 +82,12 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
         "contextMenu": [
           {
             "iconSrc": {},
-            "label": "contextMenu.openCassandraShell",
+            "label": "Open Cassandra Shell",
             "onClick": [Function],
           },
           {
             "iconSrc": {},
-            "label": "contextMenu.deleteContainer",
+            "label": "Delete Table",
             "onClick": [Function],
             "styleClass": "deleteCollectionMenuItem",
           },
@@ -108,12 +108,12 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
     "contextMenu": [
       {
         "iconSrc": {},
-        "label": "contextMenu.newContainer",
+        "label": "New Table",
         "onClick": [Function],
       },
       {
         "iconSrc": {},
-        "label": "contextMenu.deleteDatabase",
+        "label": "Delete Keyspace",
         "onClick": [Function],
         "styleClass": "deleteDatabaseMenuItem",
       },
@@ -145,12 +145,12 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
             "contextMenu": [
               {
                 "iconSrc": {},
-                "label": "contextMenu.openCassandraShell",
+                "label": "Open Cassandra Shell",
                 "onClick": [Function],
               },
               {
                 "iconSrc": {},
-                "label": "contextMenu.deleteContainer",
+                "label": "Delete Table",
                 "onClick": [Function],
                 "styleClass": "deleteCollectionMenuItem",
               },
@@ -165,12 +165,12 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
         "contextMenu": [
           {
             "iconSrc": {},
-            "label": "contextMenu.openCassandraShell",
+            "label": "Open Cassandra Shell",
             "onClick": [Function],
           },
           {
             "iconSrc": {},
-            "label": "contextMenu.deleteContainer",
+            "label": "Delete Table",
             "onClick": [Function],
             "styleClass": "deleteCollectionMenuItem",
           },
@@ -191,12 +191,12 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
     "contextMenu": [
       {
         "iconSrc": {},
-        "label": "contextMenu.newContainer",
+        "label": "New Table",
         "onClick": [Function],
       },
       {
         "iconSrc": {},
-        "label": "contextMenu.deleteDatabase",
+        "label": "Delete Keyspace",
         "onClick": [Function],
         "styleClass": "deleteDatabaseMenuItem",
       },
@@ -219,12 +219,12 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
             "contextMenu": [
               {
                 "iconSrc": {},
-                "label": "contextMenu.openCassandraShell",
+                "label": "Open Cassandra Shell",
                 "onClick": [Function],
               },
               {
                 "iconSrc": {},
-                "label": "contextMenu.deleteContainer",
+                "label": "Delete Table",
                 "onClick": [Function],
                 "styleClass": "deleteCollectionMenuItem",
               },
@@ -294,12 +294,12 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
         "contextMenu": [
           {
             "iconSrc": {},
-            "label": "contextMenu.openCassandraShell",
+            "label": "Open Cassandra Shell",
             "onClick": [Function],
           },
           {
             "iconSrc": {},
-            "label": "contextMenu.deleteContainer",
+            "label": "Delete Table",
             "onClick": [Function],
             "styleClass": "deleteCollectionMenuItem",
           },
@@ -325,12 +325,12 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
     "contextMenu": [
       {
         "iconSrc": {},
-        "label": "contextMenu.newContainer",
+        "label": "New Table",
         "onClick": [Function],
       },
       {
         "iconSrc": {},
-        "label": "contextMenu.deleteDatabase",
+        "label": "Delete Keyspace",
         "onClick": [Function],
         "styleClass": "deleteDatabaseMenuItem",
       },
@@ -358,17 +358,17 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
             "contextMenu": [
               {
                 "iconSrc": {},
-                "label": "contextMenu.newQuery",
+                "label": "New Query",
                 "onClick": [Function],
               },
               {
                 "iconSrc": {},
-                "label": "contextMenu.openMongoShell",
+                "label": "Open Mongo Shell",
                 "onClick": [Function],
               },
               {
                 "iconSrc": {},
-                "label": "contextMenu.deleteContainer",
+                "label": "Delete Collection",
                 "onClick": [Function],
                 "styleClass": "deleteCollectionMenuItem",
               },
@@ -389,17 +389,17 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
         "contextMenu": [
           {
             "iconSrc": {},
-            "label": "contextMenu.newQuery",
+            "label": "New Query",
             "onClick": [Function],
           },
           {
             "iconSrc": {},
-            "label": "contextMenu.openMongoShell",
+            "label": "Open Mongo Shell",
             "onClick": [Function],
           },
           {
             "iconSrc": {},
-            "label": "contextMenu.deleteContainer",
+            "label": "Delete Collection",
             "onClick": [Function],
             "styleClass": "deleteCollectionMenuItem",
           },
@@ -421,17 +421,17 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
             "contextMenu": [
               {
                 "iconSrc": {},
-                "label": "contextMenu.newQuery",
+                "label": "New Query",
                 "onClick": [Function],
               },
               {
                 "iconSrc": {},
-                "label": "contextMenu.openMongoShell",
+                "label": "Open Mongo Shell",
                 "onClick": [Function],
               },
               {
                 "iconSrc": {},
-                "label": "contextMenu.deleteContainer",
+                "label": "Delete Collection",
                 "onClick": [Function],
                 "styleClass": "deleteCollectionMenuItem",
               },
@@ -457,17 +457,17 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
         "contextMenu": [
           {
             "iconSrc": {},
-            "label": "contextMenu.newQuery",
+            "label": "New Query",
             "onClick": [Function],
           },
           {
             "iconSrc": {},
-            "label": "contextMenu.openMongoShell",
+            "label": "Open Mongo Shell",
             "onClick": [Function],
           },
           {
             "iconSrc": {},
-            "label": "contextMenu.deleteContainer",
+            "label": "Delete Collection",
             "onClick": [Function],
             "styleClass": "deleteCollectionMenuItem",
           },
@@ -488,12 +488,12 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
     "contextMenu": [
       {
         "iconSrc": {},
-        "label": "contextMenu.newContainer",
+        "label": "New Collection",
         "onClick": [Function],
       },
       {
         "iconSrc": {},
-        "label": "contextMenu.deleteDatabase",
+        "label": "Delete Database",
         "onClick": [Function],
         "styleClass": "deleteDatabaseMenuItem",
       },
@@ -525,17 +525,17 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
             "contextMenu": [
               {
                 "iconSrc": {},
-                "label": "contextMenu.newQuery",
+                "label": "New Query",
                 "onClick": [Function],
               },
               {
                 "iconSrc": {},
-                "label": "contextMenu.openMongoShell",
+                "label": "Open Mongo Shell",
                 "onClick": [Function],
               },
               {
                 "iconSrc": {},
-                "label": "contextMenu.deleteContainer",
+                "label": "Delete Collection",
                 "onClick": [Function],
                 "styleClass": "deleteCollectionMenuItem",
               },
@@ -556,17 +556,17 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
         "contextMenu": [
           {
             "iconSrc": {},
-            "label": "contextMenu.newQuery",
+            "label": "New Query",
             "onClick": [Function],
           },
           {
             "iconSrc": {},
-            "label": "contextMenu.openMongoShell",
+            "label": "Open Mongo Shell",
             "onClick": [Function],
           },
           {
             "iconSrc": {},
-            "label": "contextMenu.deleteContainer",
+            "label": "Delete Collection",
             "onClick": [Function],
             "styleClass": "deleteCollectionMenuItem",
           },
@@ -587,12 +587,12 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
     "contextMenu": [
       {
         "iconSrc": {},
-        "label": "contextMenu.newContainer",
+        "label": "New Collection",
         "onClick": [Function],
       },
       {
         "iconSrc": {},
-        "label": "contextMenu.deleteDatabase",
+        "label": "Delete Database",
         "onClick": [Function],
         "styleClass": "deleteDatabaseMenuItem",
       },
@@ -615,17 +615,17 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
             "contextMenu": [
               {
                 "iconSrc": {},
-                "label": "contextMenu.newQuery",
+                "label": "New Query",
                 "onClick": [Function],
               },
               {
                 "iconSrc": {},
-                "label": "contextMenu.openMongoShell",
+                "label": "Open Mongo Shell",
                 "onClick": [Function],
               },
               {
                 "iconSrc": {},
-                "label": "contextMenu.deleteContainer",
+                "label": "Delete Collection",
                 "onClick": [Function],
                 "styleClass": "deleteCollectionMenuItem",
               },
@@ -701,17 +701,17 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
         "contextMenu": [
           {
             "iconSrc": {},
-            "label": "contextMenu.newQuery",
+            "label": "New Query",
             "onClick": [Function],
           },
           {
             "iconSrc": {},
-            "label": "contextMenu.openMongoShell",
+            "label": "Open Mongo Shell",
             "onClick": [Function],
           },
           {
             "iconSrc": {},
-            "label": "contextMenu.deleteContainer",
+            "label": "Delete Collection",
             "onClick": [Function],
             "styleClass": "deleteCollectionMenuItem",
           },
@@ -737,12 +737,12 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
     "contextMenu": [
       {
         "iconSrc": {},
-        "label": "contextMenu.newContainer",
+        "label": "New Collection",
         "onClick": [Function],
       },
       {
         "iconSrc": {},
-        "label": "contextMenu.deleteDatabase",
+        "label": "Delete Database",
         "onClick": [Function],
         "styleClass": "deleteDatabaseMenuItem",
       },
@@ -770,12 +770,12 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "contextMenu": [
               {
                 "iconSrc": {},
-                "label": "contextMenu.newSqlQuery",
+                "label": "New SQL Query",
                 "onClick": [Function],
               },
               {
                 "iconSrc": {},
-                "label": "contextMenu.deleteContainer",
+                "label": "Delete Container",
                 "onClick": [Function],
                 "styleClass": "deleteCollectionMenuItem",
               },
@@ -796,12 +796,12 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
         "contextMenu": [
           {
             "iconSrc": {},
-            "label": "contextMenu.newSqlQuery",
+            "label": "New SQL Query",
             "onClick": [Function],
           },
           {
             "iconSrc": {},
-            "label": "contextMenu.deleteContainer",
+            "label": "Delete Container",
             "onClick": [Function],
             "styleClass": "deleteCollectionMenuItem",
           },
@@ -823,12 +823,12 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "contextMenu": [
               {
                 "iconSrc": {},
-                "label": "contextMenu.newSqlQuery",
+                "label": "New SQL Query",
                 "onClick": [Function],
               },
               {
                 "iconSrc": {},
-                "label": "contextMenu.deleteContainer",
+                "label": "Delete Container",
                 "onClick": [Function],
                 "styleClass": "deleteCollectionMenuItem",
               },
@@ -854,12 +854,12 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
         "contextMenu": [
           {
             "iconSrc": {},
-            "label": "contextMenu.newSqlQuery",
+            "label": "New SQL Query",
             "onClick": [Function],
           },
           {
             "iconSrc": {},
-            "label": "contextMenu.deleteContainer",
+            "label": "Delete Container",
             "onClick": [Function],
             "styleClass": "deleteCollectionMenuItem",
           },
@@ -880,7 +880,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
     "contextMenu": [
       {
         "iconSrc": {},
-        "label": "contextMenu.newContainer",
+        "label": "New Container",
         "onClick": [Function],
       },
     ],
@@ -902,12 +902,12 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "contextMenu": [
               {
                 "iconSrc": {},
-                "label": "contextMenu.newSqlQuery",
+                "label": "New SQL Query",
                 "onClick": [Function],
               },
               {
                 "iconSrc": {},
-                "label": "contextMenu.deleteContainer",
+                "label": "Delete Container",
                 "onClick": [Function],
                 "styleClass": "deleteCollectionMenuItem",
               },
@@ -928,12 +928,12 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
         "contextMenu": [
           {
             "iconSrc": {},
-            "label": "contextMenu.newSqlQuery",
+            "label": "New SQL Query",
             "onClick": [Function],
           },
           {
             "iconSrc": {},
-            "label": "contextMenu.deleteContainer",
+            "label": "Delete Container",
             "onClick": [Function],
             "styleClass": "deleteCollectionMenuItem",
           },
@@ -954,7 +954,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
     "contextMenu": [
       {
         "iconSrc": {},
-        "label": "contextMenu.newContainer",
+        "label": "New Container",
         "onClick": [Function],
       },
     ],
@@ -976,12 +976,12 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "contextMenu": [
               {
                 "iconSrc": {},
-                "label": "contextMenu.newSqlQuery",
+                "label": "New SQL Query",
                 "onClick": [Function],
               },
               {
                 "iconSrc": {},
-                "label": "contextMenu.deleteContainer",
+                "label": "Delete Container",
                 "onClick": [Function],
                 "styleClass": "deleteCollectionMenuItem",
               },
@@ -1057,12 +1057,12 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
         "contextMenu": [
           {
             "iconSrc": {},
-            "label": "contextMenu.newSqlQuery",
+            "label": "New SQL Query",
             "onClick": [Function],
           },
           {
             "iconSrc": {},
-            "label": "contextMenu.deleteContainer",
+            "label": "Delete Container",
             "onClick": [Function],
             "styleClass": "deleteCollectionMenuItem",
           },
@@ -1088,7 +1088,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
     "contextMenu": [
       {
         "iconSrc": {},
-        "label": "contextMenu.newContainer",
+        "label": "New Container",
         "onClick": [Function],
       },
     ],
@@ -1115,7 +1115,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
         "contextMenu": [
           {
             "iconSrc": {},
-            "label": "contextMenu.newSqlQuery",
+            "label": "New SQL Query",
             "onClick": [Function],
           },
         ],
@@ -1136,7 +1136,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
         "contextMenu": [
           {
             "iconSrc": {},
-            "label": "contextMenu.newSqlQuery",
+            "label": "New SQL Query",
             "onClick": [Function],
           },
         ],
@@ -1172,7 +1172,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
         "contextMenu": [
           {
             "iconSrc": {},
-            "label": "contextMenu.newSqlQuery",
+            "label": "New SQL Query",
             "onClick": [Function],
           },
         ],
@@ -1208,7 +1208,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
         "contextMenu": [
           {
             "iconSrc": {},
-            "label": "contextMenu.newSqlQuery",
+            "label": "New SQL Query",
             "onClick": [Function],
           },
         ],
@@ -1254,27 +1254,27 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "contextMenu": [
               {
                 "iconSrc": {},
-                "label": "contextMenu.newSqlQuery",
+                "label": "New SQL Query",
                 "onClick": [Function],
               },
               {
                 "iconSrc": {},
-                "label": "contextMenu.newStoredProcedure",
+                "label": "New Stored Procedure",
                 "onClick": [Function],
               },
               {
                 "iconSrc": {},
-                "label": "contextMenu.newUdf",
+                "label": "New UDF",
                 "onClick": [Function],
               },
               {
                 "iconSrc": {},
-                "label": "contextMenu.newTrigger",
+                "label": "New Trigger",
                 "onClick": [Function],
               },
               {
                 "iconSrc": {},
-                "label": "contextMenu.deleteContainer",
+                "label": "Delete Container",
                 "onClick": [Function],
                 "styleClass": "deleteCollectionMenuItem",
               },
@@ -1296,7 +1296,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
                 "contextMenu": [
                   {
                     "iconSrc": {},
-                    "label": "contextMenu.deleteStoredProcedure",
+                    "label": "Delete Stored Procedure",
                     "onClick": [Function],
                   },
                 ],
@@ -1314,7 +1314,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
                 "contextMenu": [
                   {
                     "iconSrc": {},
-                    "label": "contextMenu.deleteUdf",
+                    "label": "Delete User Defined Function",
                     "onClick": [Function],
                   },
                 ],
@@ -1332,7 +1332,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
                 "contextMenu": [
                   {
                     "iconSrc": {},
-                    "label": "contextMenu.deleteTrigger",
+                    "label": "Delete Trigger",
                     "onClick": [Function],
                   },
                 ],
@@ -1349,27 +1349,27 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
         "contextMenu": [
           {
             "iconSrc": {},
-            "label": "contextMenu.newSqlQuery",
+            "label": "New SQL Query",
             "onClick": [Function],
           },
           {
             "iconSrc": {},
-            "label": "contextMenu.newStoredProcedure",
+            "label": "New Stored Procedure",
             "onClick": [Function],
           },
           {
             "iconSrc": {},
-            "label": "contextMenu.newUdf",
+            "label": "New UDF",
             "onClick": [Function],
           },
           {
             "iconSrc": {},
-            "label": "contextMenu.newTrigger",
+            "label": "New Trigger",
             "onClick": [Function],
           },
           {
             "iconSrc": {},
-            "label": "contextMenu.deleteContainer",
+            "label": "Delete Container",
             "onClick": [Function],
             "styleClass": "deleteCollectionMenuItem",
           },
@@ -1391,27 +1391,27 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "contextMenu": [
               {
                 "iconSrc": {},
-                "label": "contextMenu.newSqlQuery",
+                "label": "New SQL Query",
                 "onClick": [Function],
               },
               {
                 "iconSrc": {},
-                "label": "contextMenu.newStoredProcedure",
+                "label": "New Stored Procedure",
                 "onClick": [Function],
               },
               {
                 "iconSrc": {},
-                "label": "contextMenu.newUdf",
+                "label": "New UDF",
                 "onClick": [Function],
               },
               {
                 "iconSrc": {},
-                "label": "contextMenu.newTrigger",
+                "label": "New Trigger",
                 "onClick": [Function],
               },
               {
                 "iconSrc": {},
-                "label": "contextMenu.deleteContainer",
+                "label": "Delete Container",
                 "onClick": [Function],
                 "styleClass": "deleteCollectionMenuItem",
               },
@@ -1452,27 +1452,27 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
         "contextMenu": [
           {
             "iconSrc": {},
-            "label": "contextMenu.newSqlQuery",
+            "label": "New SQL Query",
             "onClick": [Function],
           },
           {
             "iconSrc": {},
-            "label": "contextMenu.newStoredProcedure",
+            "label": "New Stored Procedure",
             "onClick": [Function],
           },
           {
             "iconSrc": {},
-            "label": "contextMenu.newUdf",
+            "label": "New UDF",
             "onClick": [Function],
           },
           {
             "iconSrc": {},
-            "label": "contextMenu.newTrigger",
+            "label": "New Trigger",
             "onClick": [Function],
           },
           {
             "iconSrc": {},
-            "label": "contextMenu.deleteContainer",
+            "label": "Delete Container",
             "onClick": [Function],
             "styleClass": "deleteCollectionMenuItem",
           },
@@ -1493,12 +1493,12 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
     "contextMenu": [
       {
         "iconSrc": {},
-        "label": "contextMenu.newContainer",
+        "label": "New Container",
         "onClick": [Function],
       },
       {
         "iconSrc": {},
-        "label": "contextMenu.deleteDatabase",
+        "label": "Delete Database",
         "onClick": [Function],
         "styleClass": "deleteDatabaseMenuItem",
       },
@@ -1530,27 +1530,27 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "contextMenu": [
               {
                 "iconSrc": {},
-                "label": "contextMenu.newSqlQuery",
+                "label": "New SQL Query",
                 "onClick": [Function],
               },
               {
                 "iconSrc": {},
-                "label": "contextMenu.newStoredProcedure",
+                "label": "New Stored Procedure",
                 "onClick": [Function],
               },
               {
                 "iconSrc": {},
-                "label": "contextMenu.newUdf",
+                "label": "New UDF",
                 "onClick": [Function],
               },
               {
                 "iconSrc": {},
-                "label": "contextMenu.newTrigger",
+                "label": "New Trigger",
                 "onClick": [Function],
               },
               {
                 "iconSrc": {},
-                "label": "contextMenu.deleteContainer",
+                "label": "Delete Container",
                 "onClick": [Function],
                 "styleClass": "deleteCollectionMenuItem",
               },
@@ -1586,27 +1586,27 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
         "contextMenu": [
           {
             "iconSrc": {},
-            "label": "contextMenu.newSqlQuery",
+            "label": "New SQL Query",
             "onClick": [Function],
           },
           {
             "iconSrc": {},
-            "label": "contextMenu.newStoredProcedure",
+            "label": "New Stored Procedure",
             "onClick": [Function],
           },
           {
             "iconSrc": {},
-            "label": "contextMenu.newUdf",
+            "label": "New UDF",
             "onClick": [Function],
           },
           {
             "iconSrc": {},
-            "label": "contextMenu.newTrigger",
+            "label": "New Trigger",
             "onClick": [Function],
           },
           {
             "iconSrc": {},
-            "label": "contextMenu.deleteContainer",
+            "label": "Delete Container",
             "onClick": [Function],
             "styleClass": "deleteCollectionMenuItem",
           },
@@ -1627,12 +1627,12 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
     "contextMenu": [
       {
         "iconSrc": {},
-        "label": "contextMenu.newContainer",
+        "label": "New Container",
         "onClick": [Function],
       },
       {
         "iconSrc": {},
-        "label": "contextMenu.deleteDatabase",
+        "label": "Delete Database",
         "onClick": [Function],
         "styleClass": "deleteDatabaseMenuItem",
       },
@@ -1655,27 +1655,27 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "contextMenu": [
               {
                 "iconSrc": {},
-                "label": "contextMenu.newSqlQuery",
+                "label": "New SQL Query",
                 "onClick": [Function],
               },
               {
                 "iconSrc": {},
-                "label": "contextMenu.newStoredProcedure",
+                "label": "New Stored Procedure",
                 "onClick": [Function],
               },
               {
                 "iconSrc": {},
-                "label": "contextMenu.newUdf",
+                "label": "New UDF",
                 "onClick": [Function],
               },
               {
                 "iconSrc": {},
-                "label": "contextMenu.newTrigger",
+                "label": "New Trigger",
                 "onClick": [Function],
               },
               {
                 "iconSrc": {},
-                "label": "contextMenu.deleteContainer",
+                "label": "Delete Container",
                 "onClick": [Function],
                 "styleClass": "deleteCollectionMenuItem",
               },
@@ -1766,27 +1766,27 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
         "contextMenu": [
           {
             "iconSrc": {},
-            "label": "contextMenu.newSqlQuery",
+            "label": "New SQL Query",
             "onClick": [Function],
           },
           {
             "iconSrc": {},
-            "label": "contextMenu.newStoredProcedure",
+            "label": "New Stored Procedure",
             "onClick": [Function],
           },
           {
             "iconSrc": {},
-            "label": "contextMenu.newUdf",
+            "label": "New UDF",
             "onClick": [Function],
           },
           {
             "iconSrc": {},
-            "label": "contextMenu.newTrigger",
+            "label": "New Trigger",
             "onClick": [Function],
           },
           {
             "iconSrc": {},
-            "label": "contextMenu.deleteContainer",
+            "label": "Delete Container",
             "onClick": [Function],
             "styleClass": "deleteCollectionMenuItem",
           },
@@ -1812,12 +1812,12 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
     "contextMenu": [
       {
         "iconSrc": {},
-        "label": "contextMenu.newContainer",
+        "label": "New Container",
         "onClick": [Function],
       },
       {
         "iconSrc": {},
-        "label": "contextMenu.deleteDatabase",
+        "label": "Delete Database",
         "onClick": [Function],
         "styleClass": "deleteDatabaseMenuItem",
       },
@@ -1845,27 +1845,27 @@ exports[`createDatabaseTreeNodes using NoSQL API on Hosted Platform creates expe
             "contextMenu": [
               {
                 "iconSrc": {},
-                "label": "contextMenu.newSqlQuery",
+                "label": "New SQL Query",
                 "onClick": [Function],
               },
               {
                 "iconSrc": {},
-                "label": "contextMenu.newStoredProcedure",
+                "label": "New Stored Procedure",
                 "onClick": [Function],
               },
               {
                 "iconSrc": {},
-                "label": "contextMenu.newUdf",
+                "label": "New UDF",
                 "onClick": [Function],
               },
               {
                 "iconSrc": {},
-                "label": "contextMenu.newTrigger",
+                "label": "New Trigger",
                 "onClick": [Function],
               },
               {
                 "iconSrc": {},
-                "label": "contextMenu.deleteContainer",
+                "label": "Delete Container",
                 "onClick": [Function],
                 "styleClass": "deleteCollectionMenuItem",
               },
@@ -1887,7 +1887,7 @@ exports[`createDatabaseTreeNodes using NoSQL API on Hosted Platform creates expe
                 "contextMenu": [
                   {
                     "iconSrc": {},
-                    "label": "contextMenu.deleteStoredProcedure",
+                    "label": "Delete Stored Procedure",
                     "onClick": [Function],
                   },
                 ],
@@ -1905,7 +1905,7 @@ exports[`createDatabaseTreeNodes using NoSQL API on Hosted Platform creates expe
                 "contextMenu": [
                   {
                     "iconSrc": {},
-                    "label": "contextMenu.deleteUdf",
+                    "label": "Delete User Defined Function",
                     "onClick": [Function],
                   },
                 ],
@@ -1923,7 +1923,7 @@ exports[`createDatabaseTreeNodes using NoSQL API on Hosted Platform creates expe
                 "contextMenu": [
                   {
                     "iconSrc": {},
-                    "label": "contextMenu.deleteTrigger",
+                    "label": "Delete Trigger",
                     "onClick": [Function],
                   },
                 ],
@@ -1940,27 +1940,27 @@ exports[`createDatabaseTreeNodes using NoSQL API on Hosted Platform creates expe
         "contextMenu": [
           {
             "iconSrc": {},
-            "label": "contextMenu.newSqlQuery",
+            "label": "New SQL Query",
             "onClick": [Function],
           },
           {
             "iconSrc": {},
-            "label": "contextMenu.newStoredProcedure",
+            "label": "New Stored Procedure",
             "onClick": [Function],
           },
           {
             "iconSrc": {},
-            "label": "contextMenu.newUdf",
+            "label": "New UDF",
             "onClick": [Function],
           },
           {
             "iconSrc": {},
-            "label": "contextMenu.newTrigger",
+            "label": "New Trigger",
             "onClick": [Function],
           },
           {
             "iconSrc": {},
-            "label": "contextMenu.deleteContainer",
+            "label": "Delete Container",
             "onClick": [Function],
             "styleClass": "deleteCollectionMenuItem",
           },
@@ -1982,27 +1982,27 @@ exports[`createDatabaseTreeNodes using NoSQL API on Hosted Platform creates expe
             "contextMenu": [
               {
                 "iconSrc": {},
-                "label": "contextMenu.newSqlQuery",
+                "label": "New SQL Query",
                 "onClick": [Function],
               },
               {
                 "iconSrc": {},
-                "label": "contextMenu.newStoredProcedure",
+                "label": "New Stored Procedure",
                 "onClick": [Function],
               },
               {
                 "iconSrc": {},
-                "label": "contextMenu.newUdf",
+                "label": "New UDF",
                 "onClick": [Function],
               },
               {
                 "iconSrc": {},
-                "label": "contextMenu.newTrigger",
+                "label": "New Trigger",
                 "onClick": [Function],
               },
               {
                 "iconSrc": {},
-                "label": "contextMenu.deleteContainer",
+                "label": "Delete Container",
                 "onClick": [Function],
                 "styleClass": "deleteCollectionMenuItem",
               },
@@ -2038,27 +2038,27 @@ exports[`createDatabaseTreeNodes using NoSQL API on Hosted Platform creates expe
         "contextMenu": [
           {
             "iconSrc": {},
-            "label": "contextMenu.newSqlQuery",
+            "label": "New SQL Query",
             "onClick": [Function],
           },
           {
             "iconSrc": {},
-            "label": "contextMenu.newStoredProcedure",
+            "label": "New Stored Procedure",
             "onClick": [Function],
           },
           {
             "iconSrc": {},
-            "label": "contextMenu.newUdf",
+            "label": "New UDF",
             "onClick": [Function],
           },
           {
             "iconSrc": {},
-            "label": "contextMenu.newTrigger",
+            "label": "New Trigger",
             "onClick": [Function],
           },
           {
             "iconSrc": {},
-            "label": "contextMenu.deleteContainer",
+            "label": "Delete Container",
             "onClick": [Function],
             "styleClass": "deleteCollectionMenuItem",
           },
@@ -2079,12 +2079,12 @@ exports[`createDatabaseTreeNodes using NoSQL API on Hosted Platform creates expe
     "contextMenu": [
       {
         "iconSrc": {},
-        "label": "contextMenu.newContainer",
+        "label": "New Container",
         "onClick": [Function],
       },
       {
         "iconSrc": {},
-        "label": "contextMenu.deleteDatabase",
+        "label": "Delete Database",
         "onClick": [Function],
         "styleClass": "deleteDatabaseMenuItem",
       },
@@ -2116,27 +2116,27 @@ exports[`createDatabaseTreeNodes using NoSQL API on Hosted Platform creates expe
             "contextMenu": [
               {
                 "iconSrc": {},
-                "label": "contextMenu.newSqlQuery",
+                "label": "New SQL Query",
                 "onClick": [Function],
               },
               {
                 "iconSrc": {},
-                "label": "contextMenu.newStoredProcedure",
+                "label": "New Stored Procedure",
                 "onClick": [Function],
               },
               {
                 "iconSrc": {},
-                "label": "contextMenu.newUdf",
+                "label": "New UDF",
                 "onClick": [Function],
               },
               {
                 "iconSrc": {},
-                "label": "contextMenu.newTrigger",
+                "label": "New Trigger",
                 "onClick": [Function],
               },
               {
                 "iconSrc": {},
-                "label": "contextMenu.deleteContainer",
+                "label": "Delete Container",
                 "onClick": [Function],
                 "styleClass": "deleteCollectionMenuItem",
               },
@@ -2172,27 +2172,27 @@ exports[`createDatabaseTreeNodes using NoSQL API on Hosted Platform creates expe
         "contextMenu": [
           {
             "iconSrc": {},
-            "label": "contextMenu.newSqlQuery",
+            "label": "New SQL Query",
             "onClick": [Function],
           },
           {
             "iconSrc": {},
-            "label": "contextMenu.newStoredProcedure",
+            "label": "New Stored Procedure",
             "onClick": [Function],
           },
           {
             "iconSrc": {},
-            "label": "contextMenu.newUdf",
+            "label": "New UDF",
             "onClick": [Function],
           },
           {
             "iconSrc": {},
-            "label": "contextMenu.newTrigger",
+            "label": "New Trigger",
             "onClick": [Function],
           },
           {
             "iconSrc": {},
-            "label": "contextMenu.deleteContainer",
+            "label": "Delete Container",
             "onClick": [Function],
             "styleClass": "deleteCollectionMenuItem",
           },
@@ -2213,12 +2213,12 @@ exports[`createDatabaseTreeNodes using NoSQL API on Hosted Platform creates expe
     "contextMenu": [
       {
         "iconSrc": {},
-        "label": "contextMenu.newContainer",
+        "label": "New Container",
         "onClick": [Function],
       },
       {
         "iconSrc": {},
-        "label": "contextMenu.deleteDatabase",
+        "label": "Delete Database",
         "onClick": [Function],
         "styleClass": "deleteDatabaseMenuItem",
       },
@@ -2241,27 +2241,27 @@ exports[`createDatabaseTreeNodes using NoSQL API on Hosted Platform creates expe
             "contextMenu": [
               {
                 "iconSrc": {},
-                "label": "contextMenu.newSqlQuery",
+                "label": "New SQL Query",
                 "onClick": [Function],
               },
               {
                 "iconSrc": {},
-                "label": "contextMenu.newStoredProcedure",
+                "label": "New Stored Procedure",
                 "onClick": [Function],
               },
               {
                 "iconSrc": {},
-                "label": "contextMenu.newUdf",
+                "label": "New UDF",
                 "onClick": [Function],
               },
               {
                 "iconSrc": {},
-                "label": "contextMenu.newTrigger",
+                "label": "New Trigger",
                 "onClick": [Function],
               },
               {
                 "iconSrc": {},
-                "label": "contextMenu.deleteContainer",
+                "label": "Delete Container",
                 "onClick": [Function],
                 "styleClass": "deleteCollectionMenuItem",
               },
@@ -2352,27 +2352,27 @@ exports[`createDatabaseTreeNodes using NoSQL API on Hosted Platform creates expe
         "contextMenu": [
           {
             "iconSrc": {},
-            "label": "contextMenu.newSqlQuery",
+            "label": "New SQL Query",
             "onClick": [Function],
           },
           {
             "iconSrc": {},
-            "label": "contextMenu.newStoredProcedure",
+            "label": "New Stored Procedure",
             "onClick": [Function],
           },
           {
             "iconSrc": {},
-            "label": "contextMenu.newUdf",
+            "label": "New UDF",
             "onClick": [Function],
           },
           {
             "iconSrc": {},
-            "label": "contextMenu.newTrigger",
+            "label": "New Trigger",
             "onClick": [Function],
           },
           {
             "iconSrc": {},
-            "label": "contextMenu.deleteContainer",
+            "label": "Delete Container",
             "onClick": [Function],
             "styleClass": "deleteCollectionMenuItem",
           },
@@ -2398,12 +2398,12 @@ exports[`createDatabaseTreeNodes using NoSQL API on Hosted Platform creates expe
     "contextMenu": [
       {
         "iconSrc": {},
-        "label": "contextMenu.newContainer",
+        "label": "New Container",
         "onClick": [Function],
       },
       {
         "iconSrc": {},
-        "label": "contextMenu.deleteDatabase",
+        "label": "Delete Database",
         "onClick": [Function],
         "styleClass": "deleteDatabaseMenuItem",
       },
@@ -2453,7 +2453,7 @@ exports[`createSampleDataTreeNodes creates the expected tree nodes 1`] = `
             "contextMenu": [
               {
                 "iconSrc": {},
-                "label": "contextMenu.newSqlQuery",
+                "label": "New SQL Query",
                 "onClick": [Function],
               },
             ],
@@ -2466,7 +2466,7 @@ exports[`createSampleDataTreeNodes creates the expected tree nodes 1`] = `
         "contextMenu": [
           {
             "iconSrc": {},
-            "label": "contextMenu.newSqlQuery",
+            "label": "New SQL Query",
             "onClick": [Function],
           },
         ],
