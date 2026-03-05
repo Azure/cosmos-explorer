@@ -4,8 +4,13 @@ import Adapter from "enzyme-adapter-react-16";
 import "jest-canvas-mock";
 import enableHooks from "jest-react-hooks-shallow";
 import { TextDecoder, TextEncoder } from "util";
+import i18n from "./i18n";
+import enResources from "./Localization/en/Resources.json";
 configure({ adapter: new Adapter() });
 initializeIcons();
+
+// Load English translations synchronously so t() returns real values in tests
+i18n.addResourceBundle("en", "Resources", enResources, true, true);
 
 if (typeof window.URL.createObjectURL === "undefined") {
   Object.defineProperty(window.URL, "createObjectURL", { value: () => {} });

@@ -11,6 +11,8 @@ import { createStoredProcedure } from "../../../Common/dataAccess/createStoredPr
 import { ExecuteSprocResult } from "../../../Common/dataAccess/executeStoredProcedure";
 import { updateStoredProcedure } from "../../../Common/dataAccess/updateStoredProcedure";
 import * as ViewModels from "../../../Contracts/ViewModels";
+import { Keys } from "../../../Localization/Keys.generated";
+import { t } from "../../../Localization/t";
 import { useNotificationConsole } from "../../../hooks/useNotificationConsole";
 import { useTabs } from "../../../hooks/useTabs";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
@@ -133,7 +135,7 @@ export default class StoredProcedureTabComponent extends React.Component<
     this.collection = this.props.collection;
     this.executeResultsEditorId = `executestoredprocedureresults${this.props.scriptTabBaseInstance.tabId}`;
     this.executeLogsEditorId = `executestoredprocedurelogs${this.props.scriptTabBaseInstance.tabId}`;
-    this.props.scriptTabBaseInstance.ariaLabel("Stored Procedure Body");
+    this.props.scriptTabBaseInstance.ariaLabel(t(Keys.tabs.storedProcedure.body));
 
     this.props.iStorProcTabComponentAccessor({
       onExecuteSprocsResultEvent: this.onExecuteSprocsResult.bind(this),
@@ -318,7 +320,7 @@ export default class StoredProcedureTabComponent extends React.Component<
 
   protected getTabsButtons(): CommandButtonComponentProps[] {
     const buttons: CommandButtonComponentProps[] = [];
-    const label = "Save";
+    const label = t(Keys.common.save);
     if (this.state.saveButton.visible) {
       buttons.push({
         iconSrc: SaveIcon,
@@ -333,7 +335,7 @@ export default class StoredProcedureTabComponent extends React.Component<
     }
 
     if (this.state.updateButton.visible) {
-      const label = "Update";
+      const label = t(Keys.common.update);
       buttons.push({
         iconSrc: SaveIcon,
         iconAlt: label,
@@ -347,7 +349,7 @@ export default class StoredProcedureTabComponent extends React.Component<
     }
 
     if (this.state.discardButton.visible) {
-      const label = "Discard";
+      const label = t(Keys.common.discard);
       buttons.push({
         iconSrc: DiscardIcon,
         iconAlt: label,
@@ -361,7 +363,7 @@ export default class StoredProcedureTabComponent extends React.Component<
     }
 
     if (this.state.executeButton.visible) {
-      const label = "Execute";
+      const label = t(Keys.common.execute);
       buttons.push({
         iconSrc: ExecuteQueryIcon,
         iconAlt: label,
@@ -519,7 +521,7 @@ export default class StoredProcedureTabComponent extends React.Component<
       <div className="tab-pane flexContainer stored-procedure-tab" role="tabpanel">
         <div className="storedTabForm flexContainer">
           <div className="formTitleFirst">
-            Stored Procedure Id
+            {t(Keys.tabs.storedProcedure.id)}
             <span className="mandatoryStar" style={{ color: "#ff0707", fontSize: "14px", fontWeight: "bold" }}>
               *&nbsp;
             </span>
@@ -531,28 +533,28 @@ export default class StoredProcedureTabComponent extends React.Component<
               required
               pattern={ValidCosmosDbIdInputPattern.source}
               title={ValidCosmosDbIdDescription}
-              aria-label="Stored procedure id"
-              placeholder="Enter the new stored procedure id"
+              aria-label={t(Keys.tabs.storedProcedure.idAriaLabel)}
+              placeholder={t(Keys.tabs.storedProcedure.idPlaceholder)}
               size={40}
               value={this.state.id}
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => this.handleIdOnChange(event)}
             />
           </span>
-          <div className="spUdfTriggerHeader">Stored Procedure Body</div>
+          <div className="spUdfTriggerHeader">{t(Keys.tabs.storedProcedure.body)}</div>
           <EditorReact
             language={"javascript"}
             content={this.state.sProcEditorContent}
             isReadOnly={false}
-            ariaLabel={"Stored procedure body"}
+            ariaLabel={t(Keys.tabs.storedProcedure.bodyAriaLabel)}
             lineNumbers={"on"}
             theme={"_theme"}
             onContentChanged={(newContent: string) => this.onChangeContent(newContent)}
           />
           {this.state.hasResults && (
             <div className="results-container">
-              <Pivot aria-label="Successful execution of stored procedure" style={{ height: "100%" }}>
+              <Pivot aria-label={t(Keys.tabs.storedProcedure.successfulExecution)} style={{ height: "100%" }}>
                 <PivotItem
-                  headerText="Result"
+                  headerText={t(Keys.common.result)}
                   headerButtonProps={{
                     "data-order": 1,
                     "data-title": "Result",
@@ -563,11 +565,11 @@ export default class StoredProcedureTabComponent extends React.Component<
                     language={"javascript"}
                     content={this.state.resultData}
                     isReadOnly={true}
-                    ariaLabel={"Execute stored procedure result"}
+                    ariaLabel={t(Keys.tabs.storedProcedure.resultAriaLabel)}
                   />
                 </PivotItem>
                 <PivotItem
-                  headerText="console.log"
+                  headerText={t(Keys.tabs.storedProcedure.consoleLogTab)}
                   headerButtonProps={{
                     "data-order": 2,
                     "data-title": "console.log",
@@ -578,7 +580,7 @@ export default class StoredProcedureTabComponent extends React.Component<
                     language={"javascript"}
                     content={this.state.logsData}
                     isReadOnly={true}
-                    ariaLabel={"Execute stored procedure logs"}
+                    ariaLabel={t(Keys.tabs.storedProcedure.logsAriaLabel)}
                   />
                 </PivotItem>
               </Pivot>
@@ -586,16 +588,16 @@ export default class StoredProcedureTabComponent extends React.Component<
           )}
           {this.state.hasErrors && (
             <div className="errors-container">
-              <div className="errors-header">Errors:</div>
+              <div className="errors-header">{t(Keys.tabs.storedProcedure.errors)}</div>
               <div className="errorContent">
                 <span className="errorMessage">{this.state.error}</span>
                 <span className="errorDetailsLink">
                   <a
-                    aria-label="Error details link"
+                    aria-label={t(Keys.tabs.storedProcedure.errorDetailsAriaLabel)}
                     onClick={() => this.onErrorDetailsClick()}
                     onKeyPress={(event: React.KeyboardEvent<HTMLAnchorElement>) => this.onErrorDetailsKeyPress(event)}
                   >
-                    More details
+                    {t(Keys.tabs.storedProcedure.moreDetails)}
                   </a>
                 </span>
               </div>
