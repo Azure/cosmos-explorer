@@ -10,7 +10,7 @@ import {
   Text,
 } from "@fluentui/react";
 import * as React from "react";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import {
   buttonLabelStyles,
   buttonWrapperStyles,
@@ -55,36 +55,33 @@ export const SearchableDropdown = <T,>({
   const [filterText, setFilterText] = useState("");
   const buttonRef = useRef<HTMLDivElement>(null);
 
-  const closeDropdown = useCallback(() => {
+  const closeDropdown = () => {
     setIsOpen(false);
     setFilterText("");
-  }, []);
+  };
 
   const filteredItems = useMemo(
     () => items?.filter((item) => getDisplayText(item).toLowerCase().includes(filterText.toLowerCase())),
     [items, filterText, getDisplayText],
   );
 
-  const handleDismiss = useCallback(() => {
+  const handleDismiss = () => {
     closeDropdown();
     onDismiss?.();
-  }, [closeDropdown, onDismiss]);
+  };
 
-  const handleButtonClick = useCallback(() => {
+  const handleButtonClick = () => {
     if (disabled) {
       return;
     }
 
     setIsOpen(!isOpen);
-  }, [isOpen, disabled]);
+  };
 
-  const handleSelect = useCallback(
-    (item: T) => {
-      onSelect(item);
-      closeDropdown();
-    },
-    [onSelect, closeDropdown],
-  );
+  const handleSelect = (item: T) => {
+    onSelect(item);
+    closeDropdown();
+  };
 
   const buttonLabel = selectedItem
     ? getDisplayText(selectedItem)
