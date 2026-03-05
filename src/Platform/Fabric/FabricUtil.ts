@@ -37,7 +37,7 @@ const requestFabricToken = async (): Promise<void> => {
 
     scheduleRefreshFabricToken();
   } catch (error) {
-    logConsoleError(error as string);
+    logConsoleError(error instanceof Error ? error.message : String(error));
     throw error;
   } finally {
     lastRequestTimestamp = undefined;
@@ -103,6 +103,12 @@ const requestAndStoreAccessToken = async (): Promise<void> => {
   updateUserContext({
     aadToken: accessTokenInfo.accessToken,
   });
+};
+
+export const openRestoreContainerDialog = (): void => {
+  if (isFabricNative()) {
+    sendCachedDataMessage(FabricMessageTypes.RestoreContainer, []);
+  }
 };
 
 /**

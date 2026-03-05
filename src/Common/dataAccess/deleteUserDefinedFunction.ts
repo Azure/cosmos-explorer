@@ -24,6 +24,7 @@ export async function deleteUserDefinedFunction(databaseId: string, collectionId
     } else {
       await client().database(databaseId).container(collectionId).scripts.userDefinedFunction(id).delete();
     }
+    logConsoleProgress(`Successfully deleted user defined function ${id}`);
   } catch (error) {
     handleError(error, "DeleteUserDefinedFunction", `Error while deleting user defined function ${id}`);
     throw error;

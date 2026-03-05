@@ -12,7 +12,7 @@ import { useCopyJobPrerequisitesCache } from "../../Utils/useCopyJobPrerequisite
 import usePermissionSections, { PermissionGroupConfig, PermissionSectionConfig } from "./hooks/usePermissionsSection";
 
 const PermissionSection: React.FC<PermissionSectionConfig> = ({ id, title, Component, completed, disabled }) => (
-  <AccordionItem key={id} value={id} disabled={disabled}>
+  <AccordionItem key={id} value={id} disabled={disabled} data-test="accordion-item">
     <AccordionHeader className="accordionHeader">
       <Text className="accordionHeaderText" variant="medium">
         {title}
@@ -25,13 +25,13 @@ const PermissionSection: React.FC<PermissionSectionConfig> = ({ id, title, Compo
         height={completed ? 20 : 24}
       />
     </AccordionHeader>
-    <AccordionPanel aria-disabled={disabled} className="accordionPanel">
+    <AccordionPanel aria-disabled={disabled} className="accordionPanel" data-test="accordion-panel">
       <Component />
     </AccordionPanel>
   </AccordionItem>
 );
 
-const PermissionGroup: React.FC<PermissionGroupConfig> = ({ title, description, sections }) => {
+const PermissionGroup: React.FC<PermissionGroupConfig> = ({ id, title, description, sections }) => {
   const [openItems, setOpenItems] = React.useState<string[]>([]);
 
   useEffect(() => {
@@ -44,11 +44,12 @@ const PermissionGroup: React.FC<PermissionGroupConfig> = ({ title, description, 
 
   return (
     <Stack
+      data-test={`permission-group-container-${id}`}
       tokens={{ childrenGap: 15 }}
       styles={{
         root: {
-          background: "#fafafa",
-          border: "1px solid #e1e1e1",
+          background: "var(--colorNeutralBackground2)",
+          border: "1px solid var(--colorNeutralStroke1)",
           borderRadius: 8,
           padding: 16,
           boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
@@ -56,11 +57,11 @@ const PermissionGroup: React.FC<PermissionGroupConfig> = ({ title, description, 
       }}
     >
       <Stack tokens={{ childrenGap: 5 }}>
-        <Text variant="medium" style={{ fontWeight: 600 }}>
+        <Text variant="medium" style={{ fontWeight: 600, color: "var(--colorNeutralForeground1)" }}>
           {title}
         </Text>
         {description && (
-          <Text variant="small" styles={{ root: { color: "#605E5C" } }}>
+          <Text variant="small" styles={{ root: { color: "var(--colorNeutralForeground2)" } }}>
             {description}
           </Text>
         )}
@@ -99,8 +100,12 @@ const AssignPermissions = () => {
   }, []);
 
   return (
-    <Stack className="assignPermissionsContainer" tokens={{ childrenGap: 20 }}>
-      <Text variant="medium">
+    <Stack
+      data-test="Panel:AssignPermissionsContainer"
+      className="assignPermissionsContainer"
+      tokens={{ childrenGap: 20 }}
+    >
+      <Text variant="medium" style={{ color: "var(--colorNeutralForeground1)" }}>
         {isSameAccount && copyJobState.migrationType === CopyJobMigrationType.Online
           ? ContainerCopyMessages.assignPermissions.intraAccountOnlineDescription(
               copyJobState?.source?.account?.name || "",

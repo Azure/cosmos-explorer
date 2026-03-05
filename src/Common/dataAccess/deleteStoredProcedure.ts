@@ -28,6 +28,7 @@ export async function deleteStoredProcedure(
     } else {
       await client().database(databaseId).container(collectionId).scripts.storedProcedure(storedProcedureId).delete();
     }
+    logConsoleProgress(`Successfully deleted stored procedure ${storedProcedureId}`);
   } catch (error) {
     handleError(error, "DeleteStoredProcedure", `Error while deleting stored procedure ${storedProcedureId}`);
     throw error;

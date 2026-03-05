@@ -16,6 +16,8 @@ import { sendMessage } from "Common/MessageHandler";
 import { MessageTypes } from "Contracts/ExplorerContracts";
 import { TerminalKind } from "Contracts/ViewModels";
 import { SplashScreenButton } from "Explorer/SplashScreen/SplashScreenButton";
+import { Keys } from "Localization/Keys.generated";
+import { t } from "Localization/t";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { traceOpen } from "Shared/Telemetry/TelemetryProcessor";
 import { useCarousel } from "hooks/useCarousel";
@@ -164,6 +166,23 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
   const container = explorer;
   const subscriptions: Array<{ dispose: () => void }> = [];
 
+  let title: string;
+  let subtitle: string;
+
+  switch (userContext.apiType) {
+    case "Postgres":
+      title = t(Keys.splashScreen.title.postgres);
+      subtitle = t(Keys.splashScreen.subtitle.getStarted);
+      break;
+    case "VCoreMongo":
+      title = t(Keys.splashScreen.title.vcoreMongo);
+      subtitle = t(Keys.splashScreen.subtitle.getStarted);
+      break;
+    default:
+      title = t(Keys.splashScreen.title.default);
+      subtitle = t(Keys.splashScreen.subtitle.default);
+  }
+
   React.useEffect(() => {
     subscriptions.push(
       {
@@ -232,8 +251,8 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
           <Stack className="splashStackRow" horizontal>
             <SplashScreenButton
               imgSrc={QuickStartIcon}
-              title={"Launch quick start"}
-              description={"Launch a quick start tutorial to get started with sample data"}
+              title={t(Keys.splashScreen.quickStart.title)}
+              description={t(Keys.splashScreen.quickStart.description)}
               onClick={() => {
                 container.onNewCollectionClicked({ isQuickstart: true });
                 traceOpen(Action.LaunchQuickstart, { apiType: userContext.apiType });
@@ -241,8 +260,8 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
             />
             <SplashScreenButton
               imgSrc={ContainersIcon}
-              title={`New ${getCollectionName()}`}
-              description={"Create a new container for storage and throughput"}
+              title={t(Keys.splashScreen.newCollection.title, { collectionName: getCollectionName() })}
+              description={t(Keys.splashScreen.newCollection.description)}
               onClick={() => {
                 container.onNewCollectionClicked();
                 traceOpen(Action.NewContainerHomepage, { apiType: userContext.apiType });
@@ -253,10 +272,8 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
             <SplashScreenButton
               imgSrc={CosmosDBIcon}
               imgSize={35}
-              title={"Azure Cosmos DB Samples Gallery"}
-              description={
-                "Discover samples that showcase scalable, intelligent app patterns. Try one now to see how fast you can go from concept to code with Cosmos DB"
-              }
+              title={t(Keys.splashScreen.samplesGallery.title)}
+              description={t(Keys.splashScreen.samplesGallery.description)}
               onClick={() => {
                 window.open("https://azurecosmosdb.github.io/gallery/?tags=example", "_blank");
                 traceOpen(Action.LearningResourcesClicked, { apiType: userContext.apiType });
@@ -264,8 +281,8 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
             />
             <SplashScreenButton
               imgSrc={ConnectIcon}
-              title={"Connect"}
-              description={"Prefer using your own choice of tooling? Find the connection string you need to connect"}
+              title={t(Keys.splashScreen.connectCard.title)}
+              description={t(Keys.splashScreen.connectCard.description)}
               onClick={() => useTabs.getState().openAndActivateReactTab(ReactTabKind.Connect)}
             />
           </Stack>
@@ -280,7 +297,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
           usePostgres.getState().showPostgreTeachingBubble &&
           !usePostgres.getState().showResetPasswordBubble && (
             <TeachingBubble
-              headline="New to Cosmos DB PGSQL?"
+              headline={t(Keys.splashScreen.teachingBubble.newToPostgres.headline)}
               target={"#mainButton-quickstartDescription"}
               hasCloseButton
               onDismiss={() => usePostgres.getState().setShowPostgreTeachingBubble(false)}
@@ -292,15 +309,14 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
                 preventDismissOnScroll: true,
               }}
               primaryButtonProps={{
-                text: "Get started",
+                text: t(Keys.common.getStarted),
                 onClick: () => {
                   useTabs.getState().openAndActivateReactTab(ReactTabKind.Quickstart);
                   usePostgres.getState().setShowPostgreTeachingBubble(false);
                 },
               }}
             >
-              Welcome! If you are new to Cosmos DB PGSQL and need help with getting started, here is where you can find
-              sample data, query.
+              {t(Keys.splashScreen.teachingBubble.newToPostgres.body)}
             </TeachingBubble>
           )}
         {/*TODO: convert below to use SplashScreenButton */}
@@ -332,7 +348,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
         ))}
         {userContext.apiType === "Postgres" && usePostgres.getState().showResetPasswordBubble && (
           <TeachingBubble
-            headline="Create your password"
+            headline={t(Keys.splashScreen.teachingBubble.resetPassword.headline)}
             target={"#mainButton-quickstartDescription"}
             hasCloseButton
             onDismiss={() => {
@@ -347,7 +363,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
               preventDismissOnScroll: true,
             }}
             primaryButtonProps={{
-              text: "Create",
+              text: t(Keys.common.create),
               onClick: () => {
                 localStorage.setItem(userContext.databaseAccount.id, "true");
                 sendMessage({
@@ -357,7 +373,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
               },
             }}
           >
-            If you haven&apos;t changed your password yet, change it now.
+            {t(Keys.splashScreen.teachingBubble.resetPassword.body)}
           </TeachingBubble>
         )}
       </div>
@@ -376,8 +392,8 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
       const launchQuickstartBtn = {
         id: "quickstartDescription",
         iconSrc: QuickStartIcon,
-        title: "Launch quick start",
-        description: "Launch a quick start tutorial to get started with sample data",
+        title: t(Keys.splashScreen.quickStart.title),
+        description: t(Keys.splashScreen.quickStart.description),
         onClick: () => {
           if (userContext.apiType === "Postgres" || userContext.apiType === "VCoreMongo") {
             useTabs.getState().openAndActivateReactTab(ReactTabKind.Quickstart);
@@ -399,8 +415,8 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
     if (userContext.apiType === "Postgres") {
       return {
         iconSrc: PowerShellIcon,
-        title: "PostgreSQL Shell",
-        description: "Create table and interact with data using PostgreSQL's shell interface",
+        title: t(Keys.splashScreen.shell.postgres.title),
+        description: t(Keys.splashScreen.shell.postgres.description),
         onClick: () => container.openNotebookTerminal(TerminalKind.Postgres),
       };
     }
@@ -408,16 +424,16 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
     if (userContext.apiType === "VCoreMongo") {
       return {
         iconSrc: PowerShellIcon,
-        title: "Mongo Shell",
-        description: "Create a collection and interact with data using MongoDB's shell interface",
+        title: t(Keys.splashScreen.shell.vcoreMongo.title),
+        description: t(Keys.splashScreen.shell.vcoreMongo.description),
         onClick: () => container.openNotebookTerminal(TerminalKind.VCoreMongo),
       };
     }
 
     return {
       iconSrc: ContainersIcon,
-      title: `New ${getCollectionName()}`,
-      description: "Create a new container for storage and throughput",
+      title: t(Keys.splashScreen.newCollection.title, { collectionName: getCollectionName() }),
+      description: t(Keys.splashScreen.newCollection.description),
       onClick: () => {
         container.onNewCollectionClicked();
         traceOpen(Action.NewContainerHomepage, { apiType: userContext.apiType });
@@ -427,19 +443,19 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
 
   const getThirdCard = (): SplashScreenItem => {
     let icon = ConnectIcon;
-    let title = "Connect";
-    let description = "Prefer using your own choice of tooling? Find the connection string you need to connect";
+    let title = t(Keys.splashScreen.connectCard.title);
+    let description = t(Keys.splashScreen.connectCard.description);
     let onClick = () => useTabs.getState().openAndActivateReactTab(ReactTabKind.Connect);
 
     if (userContext.apiType === "Postgres") {
-      title = "Connect with pgAdmin";
-      description = "Prefer pgAdmin? Find your connection strings here";
+      title = t(Keys.splashScreen.connectCard.pgAdmin.title);
+      description = t(Keys.splashScreen.connectCard.pgAdmin.description);
     }
 
     if (userContext.apiType === "VCoreMongo") {
       icon = VisualStudioIcon;
-      title = "Connect with VS Code";
-      description = "Query and Manage your MongoDB and DocumentDB clusters in Visual Studio Code";
+      title = t(Keys.splashScreen.connectCard.vsCode.title);
+      description = t(Keys.splashScreen.connectCard.vsCode.description);
       onClick = () => container?.openInVsCode && container.openInVsCode();
     }
 
@@ -468,7 +484,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
       info: activity.path,
       iconSrc: NotebookIcon,
       title: activity.name,
-      description: "Notebook",
+      description: t(Keys.splashScreen.sections.notebook),
       onClick: () => {
         const notebookItem = container.createNotebookContentItemFile(activity.name, activity.path);
         notebookItem && container.openNotebook(notebookItem);
@@ -507,18 +523,18 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
         items = [
           {
             link: "https://aka.ms/msl-modeling-partitioning-2",
-            title: "Advanced Modeling Patterns",
-            description: "Learn advanced strategies to optimize your database.",
+            title: t(Keys.splashScreen.top3Items.sql.advancedModeling.title),
+            description: t(Keys.splashScreen.top3Items.sql.advancedModeling.description),
           },
           {
             link: "https://aka.ms/msl-modeling-partitioning-1",
-            title: "Partitioning Best Practices",
-            description: "Learn to apply data model and partitioning strategies.",
+            title: t(Keys.splashScreen.top3Items.sql.partitioning.title),
+            description: t(Keys.splashScreen.top3Items.sql.partitioning.description),
           },
           {
             link: "https://aka.ms/msl-resource-planning",
-            title: "Plan Your Resource Requirements",
-            description: "Get to know the different configuration choices.",
+            title: t(Keys.splashScreen.top3Items.sql.resourcePlanning.title),
+            description: t(Keys.splashScreen.top3Items.sql.resourcePlanning.description),
           },
         ];
         break;
@@ -526,18 +542,18 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
         items = [
           {
             link: "https://aka.ms/mongodbintro",
-            title: "What is the MongoDB API?",
-            description: "Understand Azure Cosmos DB for MongoDB and its features.",
+            title: t(Keys.splashScreen.top3Items.mongo.whatIsMongo.title),
+            description: t(Keys.splashScreen.top3Items.mongo.whatIsMongo.description),
           },
           {
             link: "https://aka.ms/mongodbfeaturesupport",
-            title: "Features and Syntax",
-            description: "Discover the advantages and features",
+            title: t(Keys.splashScreen.top3Items.mongo.features.title),
+            description: t(Keys.splashScreen.top3Items.mongo.features.description),
           },
           {
             link: "https://aka.ms/mongodbpremigration",
-            title: "Migrate Your Data",
-            description: "Pre-migration steps for moving data",
+            title: t(Keys.splashScreen.top3Items.mongo.migrate.title),
+            description: t(Keys.splashScreen.top3Items.mongo.migrate.description),
           },
         ];
         break;
@@ -545,18 +561,18 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
         items = [
           {
             link: "https://aka.ms/cassandrajava",
-            title: "Build a Java App",
-            description: "Create a Java app using an SDK.",
+            title: t(Keys.splashScreen.top3Items.cassandra.buildJavaApp.title),
+            description: t(Keys.splashScreen.top3Items.cassandra.buildJavaApp.description),
           },
           {
             link: "https://aka.ms/cassandrapartitioning",
-            title: "Partitioning Best Practices",
-            description: "Learn how partitioning works.",
+            title: t(Keys.splashScreen.top3Items.cassandra.partitioning.title),
+            description: t(Keys.splashScreen.top3Items.cassandra.partitioning.description),
           },
           {
             link: "https://aka.ms/cassandraRu",
-            title: "Request Units (RUs)",
-            description: "Understand RU charges.",
+            title: t(Keys.splashScreen.top3Items.cassandra.requestUnits.title),
+            description: t(Keys.splashScreen.top3Items.cassandra.requestUnits.description),
           },
         ];
         break;
@@ -564,18 +580,18 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
         items = [
           {
             link: "https://aka.ms/Graphdatamodeling",
-            title: "Data Modeling",
-            description: "Graph data modeling recommendations",
+            title: t(Keys.splashScreen.top3Items.gremlin.dataModeling.title),
+            description: t(Keys.splashScreen.top3Items.gremlin.dataModeling.description),
           },
           {
             link: "https://aka.ms/graphpartitioning",
-            title: "Partitioning Best Practices",
-            description: "Learn how partitioning works",
+            title: t(Keys.splashScreen.top3Items.gremlin.partitioning.title),
+            description: t(Keys.splashScreen.top3Items.gremlin.partitioning.description),
           },
           {
             link: "https://aka.ms/graphapiquery",
-            title: "Query Data",
-            description: "Querying data with Gremlin",
+            title: t(Keys.splashScreen.top3Items.gremlin.queryData.title),
+            description: t(Keys.splashScreen.top3Items.gremlin.queryData.description),
           },
         ];
         break;
@@ -583,18 +599,18 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
         items = [
           {
             link: "https://aka.ms/tableintro",
-            title: "What is the Table API?",
-            description: "Understand Azure Cosmos DB for Table and its features",
+            title: t(Keys.splashScreen.top3Items.tables.whatIsTable.title),
+            description: t(Keys.splashScreen.top3Items.tables.whatIsTable.description),
           },
           {
             link: "https://aka.ms/tableimport",
-            title: "Migrate your data",
-            description: "Learn how to migrate your data",
+            title: t(Keys.splashScreen.top3Items.tables.migrate.title),
+            description: t(Keys.splashScreen.top3Items.tables.migrate.description),
           },
           {
             link: "https://aka.ms/tablefaq",
-            title: "Azure Cosmos DB for Table FAQs",
-            description: "Common questions about Azure Cosmos DB for Table",
+            title: t(Keys.splashScreen.top3Items.tables.faq.title),
+            description: t(Keys.splashScreen.top3Items.tables.faq.description),
           },
         ];
         break;
@@ -651,7 +667,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
         </ul>
         {recentItems.length > 0 && (
           <Link onClick={() => clearMostRecent()} className={styles.listItemTitle}>
-            Clear Recents
+            {t(Keys.splashScreen.sections.clearRecents)}
           </Link>
         )}
       </Stack>
@@ -666,15 +682,15 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
     }
     const cdbLiveTv: item = {
       link: "https://developer.azurecosmosdb.com/tv",
-      title: "Learn the Fundamentals",
-      description: "Watch Azure Cosmos DB Live TV show introductory and how to videos.",
+      title: t(Keys.splashScreen.learningResources.liveTv.title),
+      description: t(Keys.splashScreen.learningResources.liveTv.description),
     };
 
     const commonItems: item[] = [
       {
         link: "https://learn.microsoft.com/azure/cosmos-db/data-explorer-shortcuts",
-        title: "Data Explorer keyboard shortcuts",
-        description: "Learn keyboard shortcuts to navigate Data Explorer.",
+        title: t(Keys.splashScreen.learningResources.shortcuts.title),
+        description: t(Keys.splashScreen.learningResources.shortcuts.description),
       },
     ];
 
@@ -685,14 +701,14 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
         apiItems = [
           {
             link: "https://aka.ms/msl-sdk-connect",
-            title: "Get Started using an SDK",
-            description: "Learn about the Azure Cosmos DB SDK.",
+            title: t(Keys.splashScreen.learningResources.sql.sdk.title),
+            description: t(Keys.splashScreen.learningResources.sql.sdk.description),
           },
           cdbLiveTv,
           {
             link: "https://aka.ms/msl-move-data",
-            title: "Migrate Your Data",
-            description: "Migrate data using Azure services and open-source solutions.",
+            title: t(Keys.splashScreen.learningResources.sql.migrate.title),
+            description: t(Keys.splashScreen.learningResources.sql.migrate.description),
           },
         ];
         break;
@@ -700,13 +716,13 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
         apiItems = [
           {
             link: "https://aka.ms/mongonodejs",
-            title: "Build an app with Node.js",
-            description: "Create a Node.js app.",
+            title: t(Keys.splashScreen.learningResources.mongo.nodejs.title),
+            description: t(Keys.splashScreen.learningResources.mongo.nodejs.description),
           },
           {
             link: "https://aka.ms/mongopython",
-            title: "Getting Started Guide",
-            description: "Learn the basics to get started.",
+            title: t(Keys.splashScreen.learningResources.mongo.gettingStarted.title),
+            description: t(Keys.splashScreen.learningResources.mongo.gettingStarted.description),
           },
           cdbLiveTv,
         ];
@@ -715,14 +731,14 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
         apiItems = [
           {
             link: "https://aka.ms/cassandracontainer",
-            title: "Create a Container",
-            description: "Get to know the create a container options.",
+            title: t(Keys.splashScreen.learningResources.cassandra.createContainer.title),
+            description: t(Keys.splashScreen.learningResources.cassandra.createContainer.description),
           },
           cdbLiveTv,
           {
             link: "https://aka.ms/Cassandrathroughput",
-            title: "Provision Throughput",
-            description: "Learn how to configure throughput.",
+            title: t(Keys.splashScreen.learningResources.cassandra.throughput.title),
+            description: t(Keys.splashScreen.learningResources.cassandra.throughput.description),
           },
         ];
         break;
@@ -730,13 +746,13 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
         apiItems = [
           {
             link: "https://aka.ms/graphquickstart",
-            title: "Get Started ",
-            description: "Create, query, and traverse using the Gremlin console",
+            title: t(Keys.splashScreen.learningResources.gremlin.getStarted.title),
+            description: t(Keys.splashScreen.learningResources.gremlin.getStarted.description),
           },
           {
             link: "https://aka.ms/graphimport",
-            title: "Import Graph Data",
-            description: "Learn Bulk ingestion data using BulkExecutor",
+            title: t(Keys.splashScreen.learningResources.gremlin.importData.title),
+            description: t(Keys.splashScreen.learningResources.gremlin.importData.description),
           },
           cdbLiveTv,
         ];
@@ -745,13 +761,13 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
         apiItems = [
           {
             link: "https://aka.ms/tabledotnet",
-            title: "Build a .NET App",
-            description: "How to access Azure Cosmos DB for Table from a .NET app.",
+            title: t(Keys.splashScreen.learningResources.tables.dotnet.title),
+            description: t(Keys.splashScreen.learningResources.tables.dotnet.description),
           },
           {
             link: "https://aka.ms/Tablejava",
-            title: "Build a Java App",
-            description: "Create a Azure Cosmos DB for Table app with Java SDK ",
+            title: t(Keys.splashScreen.learningResources.tables.java.title),
+            description: t(Keys.splashScreen.learningResources.tables.java.description),
           },
           cdbLiveTv,
         ];
@@ -790,17 +806,17 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
   const postgresNextStepItems: { link: string; title: string; description: string }[] = [
     {
       link: "https://go.microsoft.com/fwlink/?linkid=2208312",
-      title: "Data Modeling",
+      title: t(Keys.splashScreen.nextStepItems.postgres.dataModeling),
       description: "",
     },
     {
       link: " https://go.microsoft.com/fwlink/?linkid=2206941 ",
-      title: "How to choose a Distribution Column",
+      title: t(Keys.splashScreen.nextStepItems.postgres.distributionColumn),
       description: "",
     },
     {
       link: "https://go.microsoft.com/fwlink/?linkid=2207425",
-      title: "Build Apps with Python/Java/Django",
+      title: t(Keys.splashScreen.nextStepItems.postgres.buildApps),
       description: "",
     },
   ];
@@ -808,17 +824,17 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
   const vcoreMongoNextStepItems: { link: string; title: string; description: string }[] = [
     {
       link: "https://learn.microsoft.com/azure/cosmos-db/mongodb/vcore/migration-options",
-      title: "Migrate Data",
+      title: t(Keys.splashScreen.nextStepItems.vcoreMongo.migrateData),
       description: "",
     },
     {
       link: "https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/vcore/vector-search-ai",
-      title: "Build AI apps with Vector Search",
+      title: t(Keys.splashScreen.nextStepItems.vcoreMongo.vectorSearch),
       description: "",
     },
     {
       link: "https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/vcore/tutorial-nodejs-web-app?tabs=github-codespaces",
-      title: "Build Apps with Nodejs",
+      title: t(Keys.splashScreen.nextStepItems.vcoreMongo.buildApps),
       description: "",
     },
   ];
@@ -846,17 +862,17 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
   const postgresLearnMoreItems: { link: string; title: string; description: string }[] = [
     {
       link: "https://go.microsoft.com/fwlink/?linkid=2207226",
-      title: "Performance Tuning",
+      title: t(Keys.splashScreen.learnMoreItems.postgres.performanceTuning),
       description: "",
     },
     {
       link: "https://go.microsoft.com/fwlink/?linkid=2208037",
-      title: "Useful Diagnostic Queries",
+      title: t(Keys.splashScreen.learnMoreItems.postgres.diagnosticQueries),
       description: "",
     },
     {
       link: "https://go.microsoft.com/fwlink/?linkid=2205270",
-      title: "Distributed SQL Reference",
+      title: t(Keys.splashScreen.learnMoreItems.postgres.sqlReference),
       description: "",
     },
   ];
@@ -864,17 +880,17 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
   const vcoreMongoLearnMoreItems: { link: string; title: string; description: string }[] = [
     {
       link: "https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/vcore/vector-search",
-      title: "Vector Search",
+      title: t(Keys.splashScreen.learnMoreItems.vcoreMongo.vectorSearch),
       description: "",
     },
     {
       link: "https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/vcore/how-to-create-text-index",
-      title: "Text Indexing",
+      title: t(Keys.splashScreen.learnMoreItems.vcoreMongo.textIndexing),
       description: "",
     },
     {
       link: "https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/vcore/troubleshoot-common-issues",
-      title: "Troubleshoot common issues",
+      title: t(Keys.splashScreen.learnMoreItems.vcoreMongo.troubleshoot),
       description: "",
     },
   ];
@@ -902,10 +918,11 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
   return (
     <div className={styles.splashScreenContainer}>
       <div className={styles.splashScreen}>
-        <h2 className={styles.title} role="heading" aria-label="Welcome to Azure Cosmos DB">
-          Welcome to Azure Cosmos DB<span className="activePatch"></span>
+        <h2 className={styles.title} role="heading" aria-label={title}>
+          {title}
+          <span className="activePatch"></span>
         </h2>
-        <div className={styles.subtitle}>Globally distributed, multi-model database service for any scale</div>
+        <div className={styles.subtitle}>{subtitle}</div>
         {getSplashScreenButtons()}
         {useCarousel.getState().showCoachMark && (
           <Coachmark
@@ -914,24 +931,25 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
             persistentBeak
           >
             <TeachingBubbleContent
-              headline={`Start with sample ${getCollectionName().toLocaleLowerCase()}`}
+              headline={t(Keys.splashScreen.teachingBubble.coachMark.headline, {
+                collectionName: getCollectionName().toLocaleLowerCase(),
+              })}
               hasCloseButton
-              closeButtonAriaLabel="Close"
+              closeButtonAriaLabel={t(Keys.common.close)}
               primaryButtonProps={{
-                text: "Get started",
+                text: t(Keys.common.getStarted),
                 onClick: () => {
                   useCarousel.getState().setShowCoachMark(false);
                   container.onNewCollectionClicked({ isQuickstart: true });
                 },
               }}
               secondaryButtonProps={{
-                text: "Cancel",
+                text: t(Keys.common.cancel),
                 onClick: () => useCarousel.getState().setShowCoachMark(false),
               }}
               onDismiss={() => useCarousel.getState().setShowCoachMark(false)}
             >
-              You will be guided to create a sample container with sample data, then we will give you a tour of data
-              explorer. You can also cancel launching this tour and explore yourself
+              {t(Keys.splashScreen.teachingBubble.coachMark.body)}
             </TeachingBubbleContent>
           </Coachmark>
         )}
@@ -945,7 +963,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
                   fontFamily: '"Segoe UI Semibold", "Segoe UI", "Segoe WP", Tahoma, Arial, sans-serif',
                 }}
               >
-                Next steps
+                {t(Keys.splashScreen.sections.nextSteps)}
               </Text>
               {getNextStepItems()}
             </Stack>
@@ -957,7 +975,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
                   fontFamily: '"Segoe UI Semibold", "Segoe UI", "Segoe WP", Tahoma, Arial, sans-serif',
                 }}
               >
-                Tips & learn more
+                {t(Keys.splashScreen.sections.tipsAndLearnMore)}
               </Text>
               {getTipsAndLearnMoreItems()}
             </Stack>
@@ -966,15 +984,15 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
         ) : (
           <div className={styles.moreStuffContainer}>
             <div className={styles.moreStuffColumn}>
-              <h2 className={styles.columnTitle}>Recents</h2>
+              <h2 className={styles.columnTitle}>{t(Keys.splashScreen.sections.recents)}</h2>
               {getRecentItems()}
             </div>
             <div className={styles.moreStuffColumn}>
-              <h2 className={styles.columnTitle}>Top 3 things you need to know</h2>
+              <h2 className={styles.columnTitle}>{t(Keys.splashScreen.sections.top3)}</h2>
               {top3Items()}
             </div>
             <div className={styles.moreStuffColumn}>
-              <h2 className={styles.columnTitle}>Learning Resources</h2>
+              <h2 className={styles.columnTitle}>{t(Keys.splashScreen.sections.learningResources)}</h2>
               {getLearningResourceItems()}
             </div>
           </div>

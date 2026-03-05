@@ -1,9 +1,15 @@
-import crypto from "crypto";
-
 import { CosmosDBManagementClient } from "@azure/arm-cosmosdb";
-import { BulkOperationType, Container, CosmosClient, CosmosClientOptions, Database, JSONObject } from "@azure/cosmos";
-import { AzureIdentityCredentialAdapter } from "@azure/ms-rest-js";
-
+import {
+  BulkOperationType,
+  Container,
+  CosmosClient,
+  CosmosClientOptions,
+  Database,
+  ErrorResponse,
+  JSONObject,
+} from "@azure/cosmos";
+import { Buffer } from "node:buffer";
+import { webcrypto } from "node:crypto";
 import {
   generateUniqueName,
   getAccountName,
@@ -12,6 +18,7 @@ import {
   subscriptionId,
   TestAccount,
 } from "./fx";
+globalThis.crypto = webcrypto as Crypto;
 
 export interface TestItem {
   id: string;
@@ -37,25 +44,34 @@ export interface PartitionKey {
   value: string | null;
 }
 
-const partitionCount = 4;
+export const partitionCount = 4;
 
 // If we increase this number, we need to split bulk creates into multiple batches.
 // Bulk operations are limited to 100 items per partition.
-const itemsPerPartition = 100;
+export const itemsPerPartition = 100;
 
 function createTestItems(): TestItem[] {
   const items: TestItem[] = [];
   for (let i = 0; i < partitionCount; i++) {
     for (let j = 0; j < itemsPerPartition; j++) {
-      const id = crypto.randomBytes(32).toString("base64");
+      const id = createSafeRandomString(32);
       items.push({
         id,
         partitionKey: `partition_${i}`,
-        randomData: crypto.randomBytes(32).toString("base64"),
+        randomData: createSafeRandomString(32),
       });
     }
   }
   return items;
+}
+
+// Document IDs cannot contain '/', '\', or '#'
+function createSafeRandomString(byteLength: number): string {
+  const bytes = new Uint8Array(byteLength);
+  crypto.getRandomValues(bytes);
+  return Buffer.from(bytes)
+    .toString("base64")
+    .replace(/[/\\#]/g, "_");
 }
 
 export const TestData: TestItem[] = createTestItems();
@@ -70,38 +86,58 @@ export class TestContainerContext {
   ) {}
 
   async dispose() {
+    try {
+      await this.database.delete();
+    } catch (error) {
+      if (error instanceof ErrorResponse && error.code === 404) {
+        return; // Resource already deleted, ignore
+      }
+      throw error; // Re-throw other errors
+    }
+  }
+}
+
+export class TestDatabaseContext {
+  constructor(
+    public armClient: CosmosDBManagementClient,
+    public client: CosmosClient,
+    public database: Database,
+  ) {}
+
+  async dispose() {
     await this.database.delete();
   }
 }
 
-type createTestSqlContainerConfig = {
-  includeTestData?: boolean;
-  partitionKey?: string;
-  databaseName?: string;
-};
+export interface CreateTestDBOptions {
+  throughput?: number;
+  maxThroughput?: number; // For autoscale
+}
 
-export async function createTestSQLContainer({
-  includeTestData = false,
-  partitionKey = "/partitionKey",
-  databaseName = "",
-}: createTestSqlContainerConfig = {}) {
-  const databaseId = databaseName ? databaseName : generateUniqueName("db");
-  const containerId = "testcontainer"; // A unique container name isn't needed because the database is unique
+// Helper function to create ARM client and Cosmos client for SQL account
+async function createCosmosClientForSQLAccount(
+  accountType: TestAccount.SQL | TestAccount.SQLContainerCopyOnly = TestAccount.SQL,
+): Promise<{ armClient: CosmosDBManagementClient; client: CosmosClient }> {
   const credentials = getAzureCLICredentials();
-  const adaptedCredentials = new AzureIdentityCredentialAdapter(credentials);
-  const armClient = new CosmosDBManagementClient(adaptedCredentials, subscriptionId);
-  const accountName = getAccountName(TestAccount.SQL);
+  const armClient = new CosmosDBManagementClient(credentials, subscriptionId);
+  const accountName = getAccountName(accountType);
   const account = await armClient.databaseAccounts.get(resourceGroupName, accountName);
 
   const clientOptions: CosmosClientOptions = {
     endpoint: account.documentEndpoint!,
   };
 
-  const nosqlAccountRbacToken = process.env.NOSQL_TESTACCOUNT_TOKEN;
-  if (nosqlAccountRbacToken) {
+  const rbacToken =
+    accountType === TestAccount.SQL
+      ? process.env.NOSQL_TESTACCOUNT_TOKEN
+      : accountType === TestAccount.SQLContainerCopyOnly
+      ? process.env.NOSQL_CONTAINERCOPY_TESTACCOUNT_TOKEN
+      : "";
+
+  if (rbacToken) {
     clientOptions.tokenProvider = async (): Promise<string> => {
       const AUTH_PREFIX = `type=aad&ver=1.0&sig=`;
-      const authorizationToken = `${AUTH_PREFIX}${nosqlAccountRbacToken}`;
+      const authorizationToken = `${AUTH_PREFIX}${rbacToken}`;
       return authorizationToken;
     };
   } else {
@@ -110,6 +146,76 @@ export async function createTestSQLContainer({
   }
 
   const client = new CosmosClient(clientOptions);
+
+  return { armClient, client };
+}
+
+export async function createTestDB(options?: CreateTestDBOptions): Promise<TestDatabaseContext> {
+  const databaseId = generateUniqueName("db");
+  const { armClient, client } = await createCosmosClientForSQLAccount();
+
+  // Create database with provisioned throughput (shared throughput)
+  // This checks the "Provision database throughput" option
+  const { database } = await client.databases.create({
+    id: databaseId,
+    throughput: options?.throughput, // Manual throughput (e.g., 400)
+    maxThroughput: options?.maxThroughput, // Autoscale max throughput (e.g., 1000)
+  });
+
+  return new TestDatabaseContext(armClient, client, database);
+}
+
+type createTestSqlContainerConfig = {
+  includeTestData?: boolean;
+  partitionKey?: string;
+  databaseName?: string;
+};
+
+type createMultipleTestSqlContainerConfig = {
+  containerCount?: number;
+  partitionKey?: string;
+  databaseName?: string;
+  accountType: TestAccount.SQLContainerCopyOnly | TestAccount.SQL;
+};
+
+export async function createMultipleTestContainers({
+  partitionKey = "/partitionKey",
+  databaseName = "",
+  containerCount = 1,
+  accountType = TestAccount.SQL,
+}: createMultipleTestSqlContainerConfig): Promise<TestContainerContext[]> {
+  const creationPromises: Promise<TestContainerContext>[] = [];
+
+  const databaseId = databaseName ? databaseName : generateUniqueName("db");
+  const { armClient, client } = await createCosmosClientForSQLAccount(accountType);
+  const { database } = await client.databases.createIfNotExists({ id: databaseId });
+
+  try {
+    for (let i = 0; i < containerCount; i++) {
+      const containerId = `testcontainer_${Date.now()}_${Math.random().toString(36).substring(6)}_${i}`;
+      creationPromises.push(
+        database.containers.createIfNotExists({ id: containerId, partitionKey }).then(({ container }) => {
+          return new TestContainerContext(armClient, client, database, container, new Map<string, TestItem>());
+        }),
+      );
+    }
+    const contexts = await Promise.all(creationPromises);
+    return contexts;
+  } catch (e) {
+    await database.delete();
+    throw e;
+  }
+}
+
+export async function createTestSQLContainer({
+  includeTestData = false,
+  partitionKey = "/partitionKey",
+  databaseName = "",
+}: createTestSqlContainerConfig = {}) {
+  const databaseId = databaseName ? databaseName : generateUniqueName("db");
+  const containerId = "testcontainer"; // A unique container name isn't needed because the database is unique
+  const { armClient, client } = await createCosmosClientForSQLAccount();
+
   const { database } = await client.databases.createIfNotExists({ id: databaseId });
   try {
     const { container } = await database.containers.createIfNotExists({
@@ -140,12 +246,19 @@ export async function createTestSQLContainer({
 }
 
 export const setPartitionKeys = (partitionKeys: PartitionKey[]) => {
-  const result = {};
+  const result: Record<string, unknown> = {};
 
   partitionKeys.forEach((partitionKey) => {
     const { key: keyPath, value: keyValue } = partitionKey;
     const cleanPath = keyPath.startsWith("/") ? keyPath.slice(1) : keyPath;
-    const keys = cleanPath.split("/");
+    const keys = cleanPath.split("/").map((segment) => {
+      // Strip enclosing double quotes from partition key path segments
+      // e.g., '"partition-key"' -> 'partition-key'
+      if (segment.length >= 2 && segment.charAt(0) === '"' && segment.charAt(segment.length - 1) === '"') {
+        return segment.slice(1, -1);
+      }
+      return segment;
+    });
     let current = result;
 
     keys.forEach((key, index) => {
@@ -153,7 +266,7 @@ export const setPartitionKeys = (partitionKeys: PartitionKey[]) => {
         current[key] = keyValue;
       } else {
         current[key] = current[key] || {};
-        current = current[key];
+        current = current[key] as Record<string, unknown>;
       }
     });
   });

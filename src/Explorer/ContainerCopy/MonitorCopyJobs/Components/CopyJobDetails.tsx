@@ -1,5 +1,6 @@
 import { DetailsList, DetailsListLayoutMode, IColumn, Stack, Text } from "@fluentui/react";
 import React, { memo } from "react";
+import { useThemeStore } from "../../../../hooks/useTheme";
 import ContainerCopyMessages from "../../ContainerCopyMessages";
 import { CopyJobStatusType } from "../../Enums/CopyJobEnums";
 import { CopyJobType } from "../../Types/CopyJobTypes";
@@ -63,6 +64,19 @@ const getCopyJobDetailsListColumns = (): IColumn[] => {
 };
 
 const CopyJobDetails: React.FC<CopyJobDetailsProps> = ({ job }) => {
+  const isDarkMode = useThemeStore((state) => state.isDarkMode);
+
+  const errorMessageStyle: React.CSSProperties = {
+    whiteSpace: "pre-wrap",
+    ...(isDarkMode && {
+      whiteSpace: "pre-wrap",
+      backgroundColor: "var(--colorNeutralBackground2)",
+      color: "var(--colorNeutralForeground1)",
+      padding: "10px",
+      borderRadius: "4px",
+    }),
+  };
+
   const selectedContainers = [
     {
       sourceContainerName: job?.Source?.containerName || "N/A",
@@ -77,10 +91,10 @@ const CopyJobDetails: React.FC<CopyJobDetailsProps> = ({ job }) => {
     <Stack className="copyJobDetailsContainer" tokens={{ childrenGap: 15 }} data-testid="copy-job-details">
       {job.Error ? (
         <Stack.Item data-testid="error-stack" style={sectionCss.verticalAlign}>
-          <Text className="bold" style={sectionCss.headingText}>
+          <Text className="bold themeText" style={sectionCss.headingText}>
             {ContainerCopyMessages.errorTitle}
           </Text>
-          <Text as="pre" style={{ whiteSpace: "pre-wrap" }}>
+          <Text as="pre" style={errorMessageStyle}>
             {job.Error.message}
           </Text>
         </Stack.Item>
@@ -88,16 +102,16 @@ const CopyJobDetails: React.FC<CopyJobDetailsProps> = ({ job }) => {
       <Stack.Item data-testid="selectedcollection-stack">
         <Stack tokens={{ childrenGap: 15 }}>
           <Stack.Item style={sectionCss.verticalAlign}>
-            <Text className="bold">{ContainerCopyMessages.MonitorJobs.Columns.lastUpdatedTime}</Text>
-            <Text>{job.LastUpdatedTime}</Text>
+            <Text className="bold themeText">{ContainerCopyMessages.MonitorJobs.Columns.lastUpdatedTime}</Text>
+            <Text className="themeText">{job.LastUpdatedTime}</Text>
           </Stack.Item>
           <Stack.Item style={sectionCss.verticalAlign}>
-            <Text className="bold">{ContainerCopyMessages.sourceAccountLabel}</Text>
-            <Text>{job.Source?.remoteAccountName}</Text>
+            <Text className="bold themeText">{ContainerCopyMessages.sourceAccountLabel}</Text>
+            <Text className="themeText">{job.Source?.remoteAccountName}</Text>
           </Stack.Item>
           <Stack.Item style={sectionCss.verticalAlign}>
-            <Text className="bold">{ContainerCopyMessages.MonitorJobs.Columns.mode}</Text>
-            <Text>{job.Mode}</Text>
+            <Text className="bold themeText">{ContainerCopyMessages.MonitorJobs.Columns.mode}</Text>
+            <Text className="themeText">{job.Mode}</Text>
           </Stack.Item>
         </Stack>
       </Stack.Item>

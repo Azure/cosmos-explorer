@@ -103,7 +103,10 @@ export const ThroughputBucketsComponent: FC<ThroughputBucketsComponentProps> = (
               offText="Inactive"
               checked={bucket.maxThroughputPercentage !== 100}
               onChange={(event, checked) => onToggle(bucket.id, checked)}
-              styles={{ root: { marginBottom: 0 }, text: { fontSize: 12 } }}
+              styles={{
+                root: { marginBottom: 0 },
+                text: { fontSize: 12, color: "var(--colorNeutralForeground1)" },
+              }}
             ></Toggle>
           </Stack>
         ))}

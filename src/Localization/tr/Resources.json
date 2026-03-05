@@ -1,0 +1,13 @@
+{
+  "splashScreen": {
+    "title": {
+      "default": "Azure Cosmos DB'ye hoş geldiniz",
+      "postgres": "Azure Cosmos DB for PostgreSQL'e hoş geldiniz",
+      "vcoreMongo": "Azure DocumentDB'ye (MongoDB uyumluluğu ile) hoş geldiniz"
+    },
+    "subtitle": {
+      "default": "Her ölçeğe uygun, global olarak dağıtılan çok modelli veritabanı hizmeti",
+      "getStarted": "Örnek veri kümelerimizi, belgelerimizi ve ek araçlarımızı kullanmaya başlayın."
+    }
+  }
+}

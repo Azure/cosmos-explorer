@@ -1,5 +1,8 @@
+import { IndexingPolicy } from "@azure/cosmos";
+import { act } from "@testing-library/react";
 import { AuthType } from "AuthType";
 import { shallow } from "enzyme";
+import { useIndexingPolicyStore } from "Explorer/Tabs/QueryTab/ResultsView";
 import ko from "knockout";
 import React from "react";
 import { updateCollection } from "../../../Common/dataAccess/updateCollection";
@@ -27,7 +30,6 @@ jest.mock("../../../Common/dataAccess/updateCollection", () => ({
     dataMaskingPolicy: {
       includedPaths: [],
       excludedPaths: ["/excludedPath"],
-      isPolicyEnabled: true,
     },
     indexes: [],
   }),
@@ -304,12 +306,10 @@ describe("SettingsComponent", () => {
       dataMaskingContent: {
         includedPaths: [],
         excludedPaths: ["/excludedPath"],
-        isPolicyEnabled: true,
       },
       dataMaskingContentBaseline: {
         includedPaths: [],
         excludedPaths: [],
-        isPolicyEnabled: false,
       },
       isDataMaskingDirty: true,
     });
@@ -323,7 +323,6 @@ describe("SettingsComponent", () => {
     expect(wrapper.state("dataMaskingContentBaseline")).toEqual({
       includedPaths: [],
       excludedPaths: ["/excludedPath"],
-      isPolicyEnabled: true,
     });
   });
 
@@ -337,7 +336,6 @@ describe("SettingsComponent", () => {
     const invalidPolicy: InvalidPolicy = {
       includedPaths: "invalid",
       excludedPaths: [],
-      isPolicyEnabled: false,
     };
     // Use type assertion since we're deliberately testing with invalid data
     settingsComponentInstance["onDataMaskingContentChange"](invalidPolicy as unknown as DataModels.DataMaskingPolicy);
@@ -346,7 +344,6 @@ describe("SettingsComponent", () => {
     expect(wrapper.state("dataMaskingContent")).toEqual({
       includedPaths: "invalid",
       excludedPaths: [],
-      isPolicyEnabled: false,
     });
     expect(wrapper.state("dataMaskingValidationErrors")).toEqual(["includedPaths must be an array"]);
 
@@ -361,7 +358,6 @@ describe("SettingsComponent", () => {
         },
       ],
       excludedPaths: ["/excludedPath"],
-      isPolicyEnabled: true,
     };
 
     settingsComponentInstance["onDataMaskingContentChange"](validPolicy);
@@ -385,7 +381,6 @@ describe("SettingsComponent", () => {
         },
       ],
       excludedPaths: ["/excludedPath1"],
-      isPolicyEnabled: false,
     };
 
     const modifiedPolicy = {
@@ -398,7 +393,6 @@ describe("SettingsComponent", () => {
         },
       ],
       excludedPaths: ["/excludedPath2"],
-      isPolicyEnabled: true,
     };
 
     // Set initial state
@@ -442,5 +436,51 @@ describe("SettingsComponent", () => {
       dataMaskingValidationErrors: [],
     });
     expect(settingsComponentInstance.isSaveSettingsButtonEnabled()).toBe(true);
+  });
+});
+
+describe("SettingsComponent - indexing policy subscription", () => {
+  const baseProps: SettingsComponentProps = {
+    settingsTab: new CollectionSettingsTabV2({
+      collection: collection,
+      tabKind: ViewModels.CollectionTabKind.CollectionSettingsV2,
+      title: "Scale & Settings",
+      tabPath: "",
+      node: undefined,
+    }),
+  };
+
+  it("subscribes to the correct container's indexing policy and updates state on change", async () => {
+    const containerId = collection.id();
+    const mockIndexingPolicy: IndexingPolicy = {
+      automatic: false,
+      indexingMode: "lazy",
+      includedPaths: [{ path: "/foo/*" }],
+      excludedPaths: [{ path: "/bar/*" }],
+      compositeIndexes: [],
+      spatialIndexes: [],
+      vectorIndexes: [],
+      fullTextIndexes: [],
+    };
+
+    const wrapper = shallow(<SettingsComponent {...baseProps} />);
+    const instance = wrapper.instance() as SettingsComponent;
+
+    await act(async () => {
+      useIndexingPolicyStore.setState({
+        indexingPolicies: {
+          [containerId]: mockIndexingPolicy,
+        },
+      });
+      // Wait for the async refreshCollectionData to complete
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+
+    wrapper.update();
+
+    expect(wrapper.state("indexingPolicyContent")).toEqual(mockIndexingPolicy);
+    expect(wrapper.state("indexingPolicyContentBaseline")).toEqual(mockIndexingPolicy);
+    // @ts-expect-error: rawDataModel is intentionally accessed for test validation
+    expect(instance.collection.rawDataModel.indexingPolicy).toEqual(mockIndexingPolicy);
   });
 });

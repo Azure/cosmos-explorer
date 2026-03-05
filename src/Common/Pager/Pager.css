@@ -11,3 +11,14 @@
   gap: 8px;
   align-items: center;
 }
+
+/* Override dark mode inherit for pagination icons */
+body.isDarkMode .pager-container .ms-Button .ms-Button-icon,
+body.isDarkMode .pager-container .ms-Button i {
+  color: var(--colorBrandForeground1);
+}
+
+body.isDarkMode .pager-container .ms-Button:disabled .ms-Button-icon,
+body.isDarkMode .pager-container .ms-Button:disabled i {
+  color: var(--colorNeutralForegroundDisabled);
+}

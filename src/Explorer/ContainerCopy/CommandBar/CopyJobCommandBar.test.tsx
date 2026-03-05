@@ -39,7 +39,7 @@ describe("CopyJobCommandBar", () => {
 
     render(<CopyJobCommandBar explorer={mockExplorer} />);
 
-    expect(mockGetCommandBarButtons).toHaveBeenCalledWith(mockExplorer);
+    expect(mockGetCommandBarButtons).toHaveBeenCalledWith(mockExplorer, false);
     expect(mockGetCommandBarButtons).toHaveBeenCalledTimes(1);
   });
 
@@ -163,7 +163,7 @@ describe("CopyJobCommandBar", () => {
 
     render(<CopyJobCommandBar explorer={mockExplorer} />);
 
-    expect(mockGetCommandBarButtons).toHaveBeenCalledWith(mockExplorer);
+    expect(mockGetCommandBarButtons).toHaveBeenCalledWith(mockExplorer, false);
     expect(mockConvertButton.mock.calls[0][0]).toEqual(mockCommandButtonProps);
   });
 
@@ -175,11 +175,11 @@ describe("CopyJobCommandBar", () => {
     mockConvertButton.mockReturnValue([]);
 
     const { rerender } = render(<CopyJobCommandBar explorer={mockExplorer1} />);
-    expect(mockGetCommandBarButtons).toHaveBeenCalledWith(mockExplorer1);
+    expect(mockGetCommandBarButtons).toHaveBeenCalledWith(mockExplorer1, false);
 
     rerender(<CopyJobCommandBar explorer={mockExplorer2} />);
 
-    expect(mockGetCommandBarButtons).toHaveBeenCalledWith(mockExplorer2);
+    expect(mockGetCommandBarButtons).toHaveBeenCalledWith(mockExplorer2, false);
     expect(mockGetCommandBarButtons).toHaveBeenCalledTimes(2);
   });
 });

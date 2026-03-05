@@ -105,9 +105,12 @@ const App = (): JSX.Element => {
   // Scenario-based health tracking: start ApplicationLoad and complete phases.
   const { startScenario, completePhase } = useMetricScenario();
   React.useEffect(() => {
-    startScenario(MetricScenario.ApplicationLoad);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    // Only start scenario after config is initialized to avoid race conditions
+    // with message handlers that depend on configContext.platform
+    if (config) {
+      startScenario(MetricScenario.ApplicationLoad);
+    }
+  }, [config, startScenario]);
 
   React.useEffect(() => {
     if (explorer) {
@@ -115,6 +118,9 @@ const App = (): JSX.Element => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [explorer]);
+
+  // Track interactive phase for both ContainerCopyPanel and DivExplorer paths
+  useInteractive(MetricScenario.ApplicationLoad, !!config);
 
   if (!explorer) {
     return <LoadingExplorer />;
@@ -128,6 +134,7 @@ const App = (): JSX.Element => {
             <>
               <ContainerCopyPanel explorer={explorer} />
               <SidePanel />
+              <Dialog />
             </>
           ) : (
             <DivExplorer explorer={explorer} />
@@ -141,7 +148,6 @@ const App = (): JSX.Element => {
 const DivExplorer: React.FC<{ explorer: Explorer }> = ({ explorer }) => {
   const isCarouselOpen = useCarousel((state) => state.shouldOpen);
   const isCopilotCarouselOpen = useCarousel((state) => state.showCopilotCarousel);
-  useInteractive(MetricScenario.ApplicationLoad);
 
   return (
     <div

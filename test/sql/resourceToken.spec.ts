@@ -2,7 +2,6 @@ import { expect, test } from "@playwright/test";
 
 import { CosmosDBManagementClient } from "@azure/arm-cosmosdb";
 import { CosmosClient, PermissionMode } from "@azure/cosmos";
-import { AzureIdentityCredentialAdapter } from "@azure/ms-rest-js";
 import {
   DataExplorer,
   TestAccount,
@@ -18,8 +17,7 @@ test("SQL account using Resource token", async ({ page }) => {
   test.skip(nosqlAccountRbacToken.length > 0, "Resource tokens not supported when using data plane RBAC.");
 
   const credentials = getAzureCLICredentials();
-  const adaptedCredentials = new AzureIdentityCredentialAdapter(credentials);
-  const armClient = new CosmosDBManagementClient(adaptedCredentials, subscriptionId);
+  const armClient = new CosmosDBManagementClient(credentials, subscriptionId);
   const accountName = getAccountName(TestAccount.SQL);
   const account = await armClient.databaseAccounts.get(resourceGroupName, accountName);
   const keys = await armClient.databaseAccounts.listKeys(resourceGroupName, accountName);
