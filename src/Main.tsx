@@ -119,6 +119,9 @@ const App = (): JSX.Element => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [explorer]);
 
+  // Track interactive phase for both ContainerCopyPanel and DivExplorer paths
+  useInteractive(MetricScenario.ApplicationLoad, !!config);
+
   if (!explorer) {
     return <LoadingExplorer />;
   }
@@ -145,7 +148,6 @@ const App = (): JSX.Element => {
 const DivExplorer: React.FC<{ explorer: Explorer }> = ({ explorer }) => {
   const isCarouselOpen = useCarousel((state) => state.shouldOpen);
   const isCopilotCarouselOpen = useCarousel((state) => state.showCopilotCarousel);
-  useInteractive(MetricScenario.ApplicationLoad);
 
   return (
     <div

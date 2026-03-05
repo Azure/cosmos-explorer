@@ -4,7 +4,12 @@ import * as sinon from "sinon";
 import * as DataModels from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
 import * as QueryUtils from "./QueryUtils";
-import { defaultQueryFields, extractPartitionKeyValues, getValueForPath } from "./QueryUtils";
+import {
+  defaultQueryFields,
+  extractPartitionKeyValues,
+  getValueForPath,
+  stripDoubleQuotesFromSegment,
+} from "./QueryUtils";
 
 const documentContent = {
   "Volcano Name": "Adams",
@@ -278,6 +283,98 @@ describe("Query Utils", () => {
       );
       expect(partitionKeyValues.length).toBe(2);
       expect(partitionKeyValues).toEqual([null, {}]);
+    });
+
+    it("should extract partition key value when path has enclosing double quotes", () => {
+      const docWithSpecialKey = {
+        id: "test-id",
+        "partition-key": "some-value",
+      };
+
+      const partitionKeyDefinition: PartitionKeyDefinition = {
+        kind: PartitionKeyKind.Hash,
+        paths: ['/"partition-key"'],
+      };
+
+      const partitionKeyValues: PartitionKey[] = extractPartitionKeyValues(docWithSpecialKey, partitionKeyDefinition);
+      expect(partitionKeyValues.length).toBe(1);
+      expect(partitionKeyValues[0]).toEqual("some-value");
+    });
+
+    it("should extract nested partition key value when path segments have enclosing double quotes", () => {
+      const docWithSpecialKey = {
+        id: "test-id",
+        "my-field": {
+          "sub-field": 42,
+        },
+      };
+
+      const partitionKeyDefinition: PartitionKeyDefinition = {
+        kind: PartitionKeyKind.Hash,
+        paths: ['/"my-field"/"sub-field"'],
+      };
+
+      const partitionKeyValues: PartitionKey[] = extractPartitionKeyValues(docWithSpecialKey, partitionKeyDefinition);
+      expect(partitionKeyValues.length).toBe(1);
+      expect(partitionKeyValues[0]).toEqual(42);
+    });
+
+    it("should return {} for missing double-quoted partition key", () => {
+      const docWithSpecialKey = {
+        id: "test-id",
+      };
+
+      const partitionKeyDefinition: PartitionKeyDefinition = {
+        kind: PartitionKeyKind.Hash,
+        paths: ['/"partition-key"'],
+      };
+
+      const partitionKeyValues: PartitionKey[] = extractPartitionKeyValues(docWithSpecialKey, partitionKeyDefinition);
+      expect(partitionKeyValues.length).toBe(1);
+      expect(partitionKeyValues[0]).toEqual({});
+    });
+
+    it("should handle multi-hash with mixed quoted and unquoted paths", () => {
+      const doc = {
+        id: "test-id",
+        Country: "Japan",
+        "partition-key": "hello",
+      };
+
+      const partitionKeyDefinition: PartitionKeyDefinition = {
+        kind: PartitionKeyKind.MultiHash,
+        paths: ["/Country", '/"partition-key"'],
+      };
+
+      const partitionKeyValues: PartitionKey[] = extractPartitionKeyValues(doc, partitionKeyDefinition);
+      expect(partitionKeyValues.length).toBe(2);
+      expect(partitionKeyValues).toEqual(["Japan", "hello"]);
+    });
+  });
+
+  describe("stripDoubleQuotesFromSegment", () => {
+    it("should strip enclosing double quotes", () => {
+      expect(stripDoubleQuotesFromSegment('"partition-key"')).toBe("partition-key");
+    });
+
+    it("should not strip if only opening quote", () => {
+      expect(stripDoubleQuotesFromSegment('"partition-key')).toBe('"partition-key');
+    });
+
+    it("should not strip if only closing quote", () => {
+      expect(stripDoubleQuotesFromSegment('partition-key"')).toBe('partition-key"');
+    });
+
+    it("should return empty string when stripping quotes from empty quoted string", () => {
+      expect(stripDoubleQuotesFromSegment('""')).toBe("");
+    });
+
+    it("should not modify unquoted segments", () => {
+      expect(stripDoubleQuotesFromSegment("Country")).toBe("Country");
+    });
+
+    it("should not strip single quotes", () => {
+      expect(stripDoubleQuotesFromSegment("'partition-key'")).toBe("'partition-key'");
     });
   });
 });
