@@ -1,36 +1,36 @@
 {
   "common": {
     "ok": "OK",
-    "cancel": "Cancel",
-    "close": "Close",
-    "save": "Save",
-    "delete": "Delete",
-    "update": "Update",
-    "discard": "Discard",
-    "execute": "Execute",
-    "loading": "Loading",
-    "loadingEllipsis": "Loading...",
-    "next": "Next",
-    "previous": "Previous",
-    "yes": "Yes",
-    "no": "No",
-    "result": "Result",
-    "learnMore": "Learn more",
-    "getStarted": "Get started",
-    "retry": "Retry",
-    "apply": "Apply",
-    "refresh": "Refresh",
-    "copy": "Copy",
-    "create": "Create",
-    "confirm": "Confirm",
-    "open": "Open",
-    "rename": "Rename",
-    "download": "Download",
-    "upload": "Upload",
-    "connect": "Connect",
-    "remove": "Remove",
-    "increaseValueBy1": "Increase value by 1",
-    "decreaseValueBy1": "Decrease value by 1"
+    "cancel": "Avbryt",
+    "close": "Stäng",
+    "save": "Spara",
+    "delete": "Ta bort",
+    "update": "Uppdatera",
+    "discard": "Ta bort",
+    "execute": "Kör",
+    "loading": "Läser in",
+    "loadingEllipsis": "Läser in...",
+    "next": "Nästa",
+    "previous": "Föregående",
+    "yes": "Ja",
+    "no": "Nej",
+    "result": "Resultat",
+    "learnMore": "Mer information",
+    "getStarted": "Kom igång",
+    "retry": "Försök igen",
+    "apply": "Använd",
+    "refresh": "Uppdatera",
+    "copy": "Kopiera",
+    "create": "Skapa",
+    "confirm": "Bekräfta",
+    "open": "Öppna",
+    "rename": "Byt namn",
+    "download": "Ladda ned",
+    "upload": "Ladda upp",
+    "connect": "Anslut",
+    "remove": "Ta bort",
+    "increaseValueBy1": "Öka värdet med 1",
+    "decreaseValueBy1": "Minska värdet med 1"
   },
   "splashScreen": {
     "title": {
@@ -43,253 +43,253 @@
       "getStarted": "Kom igång med våra exempeldatamängder, dokumentation och extra verktyg."
     },
     "quickStart": {
-      "title": "Launch quick start",
-      "description": "Launch a quick start tutorial to get started with sample data"
+      "title": "Starta snabbstart",
+      "description": "Starta en snabbstartsguide för att komma igång med exempeldata"
     },
     "newCollection": {
-      "title": "New {{collectionName}}",
-      "description": "Create a new container for storage and throughput"
+      "title": "Ny {{collectionName}}",
+      "description": "Skapa en ny container för lagring och dataflöde"
     },
     "samplesGallery": {
-      "title": "Azure Cosmos DB Samples Gallery",
-      "description": "Discover samples that showcase scalable, intelligent app patterns. Try one now to see how fast you can go from concept to code with Cosmos DB"
+      "title": "Galleri för Azure Cosmos DB-exempel",
+      "description": "Upptäck exempel som visar skalbara, intelligenta appmönster. Prova en nu för att se hur snabbt du kan gå från koncept till kod med Cosmos DB"
     },
     "connectCard": {
-      "title": "Connect",
-      "description": "Prefer using your own choice of tooling? Find the connection string you need to connect",
+      "title": "Anslut",
+      "description": "Föredrar du att använda ditt eget val av verktyg? Hitta anslutningssträngen du behöver för att ansluta",
       "pgAdmin": {
-        "title": "Connect with pgAdmin",
-        "description": "Prefer pgAdmin? Find your connection strings here"
+        "title": "Anslut med pgAdmin",
+        "description": "Föredrar du pgAdmin? Hitta dina anslutningssträngar här"
       },
       "vsCode": {
-        "title": "Connect with VS Code",
-        "description": "Query and Manage your MongoDB and DocumentDB clusters in Visual Studio Code"
+        "title": "Anslut med VS Code",
+        "description": "Fråga och hantera dina MongoDB- och DocumentDB-kluster i Visual Studio Code"
       }
     },
     "shell": {
       "postgres": {
-        "title": "PostgreSQL Shell",
-        "description": "Create table and interact with data using PostgreSQL's shell interface"
+        "title": "PostgreSQL-gränssnitt",
+        "description": "Skapa tabell och interagera med data med postgreSQL-gränssnittet"
       },
       "vcoreMongo": {
-        "title": "Mongo Shell",
-        "description": "Create a collection and interact with data using MongoDB's shell interface"
+        "title": "Mongo-gränssnitt",
+        "description": "Skapa en samling och interagera med data med hjälp av MongoDB:s gränssnitt"
       }
     },
     "teachingBubble": {
       "newToPostgres": {
-        "headline": "New to Cosmos DB PGSQL?",
-        "body": "Welcome! If you are new to Cosmos DB PGSQL and need help with getting started, here is where you can find sample data, query."
+        "headline": "Är Cosmos DB PGSQL nytt för dig?",
+        "body": "Välkommen! Om du är nybörjare på Cosmos DB PGSQL och behöver hjälp med att komma igång hittar du exempeldata och frågor här."
       },
       "resetPassword": {
-        "headline": "Create your password",
-        "body": "If you haven't changed your password yet, change it now."
+        "headline": "Skapa ett lösenord",
+        "body": "Om du inte har ändrat ditt lösenord ännu ändrar du det nu."
       },
       "coachMark": {
-        "headline": "Start with sample {{collectionName}}",
-        "body": "You will be guided to create a sample container with sample data, then we will give you a tour of data explorer. You can also cancel launching this tour and explore yourself"
+        "headline": "Börja med exempel {{collectionName}}",
+        "body": "Du får vägledning för att skapa en exempelcontainer med exempeldata, och sedan får du en rundtur i datautforskaren. Du kan också avbryta lanseringen av den här rundturen och utforska dig själv"
       }
     },
     "sections": {
-      "recents": "Recents",
-      "clearRecents": "Clear Recents",
-      "top3": "Top 3 things you need to know",
-      "learningResources": "Learning Resources",
-      "nextSteps": "Next steps",
-      "tipsAndLearnMore": "Tips & learn more",
-      "notebook": "Notebook",
-      "needHelp": "Need help?"
+      "recents": "Senaste",
+      "clearRecents": "Rensa senaste",
+      "top3": "De 3 viktigaste sakerna du behöver veta",
+      "learningResources": "Utbildningsresurser",
+      "nextSteps": "Nästa steg",
+      "tipsAndLearnMore": "Tips och läs mer",
+      "notebook": "Anteckningsbok",
+      "needHelp": "Behöver du hjälp?"
     },
     "top3Items": {
       "sql": {
         "advancedModeling": {
-          "title": "Advanced Modeling Patterns",
-          "description": "Learn advanced strategies to optimize your database."
+          "title": "Avancerade modelleringsmönster",
+          "description": "Lär dig avancerade strategier för att optimera din databas."
         },
         "partitioning": {
-          "title": "Partitioning Best Practices",
-          "description": "Learn to apply data model and partitioning strategies."
+          "title": "Metodtipsen för partitionering",
+          "description": "Lär dig hur du tillämpar strategier för datamodeller och partitionering."
         },
         "resourcePlanning": {
-          "title": "Plan Your Resource Requirements",
-          "description": "Get to know the different configuration choices."
+          "title": "Planera dina resurskrav",
+          "description": "Lär känna de olika konfigurationsalternativen."
         }
       },
       "mongo": {
         "whatIsMongo": {
-          "title": "What is the MongoDB API?",
-          "description": "Understand Azure Cosmos DB for MongoDB and its features."
+          "title": "Vad är MongoDB-API:et?",
+          "description": "Förstå Azure Cosmos DB for MongoDB och dess funktioner."
         },
         "features": {
-          "title": "Features and Syntax",
-          "description": "Discover the advantages and features"
+          "title": "Funktioner och syntax",
+          "description": "Upptäck fördelarna och funktionerna"
         },
         "migrate": {
-          "title": "Migrate Your Data",
-          "description": "Pre-migration steps for moving data"
+          "title": "Migrera dina data",
+          "description": "Steg före migrering för att flytta data"
         }
       },
       "cassandra": {
         "buildJavaApp": {
-          "title": "Build a Java App",
-          "description": "Create a Java app using an SDK."
+          "title": "Skapa en Java-app",
+          "description": "Skapa en Java-app med hjälp av en SDK."
         },
         "partitioning": {
-          "title": "Partitioning Best Practices",
-          "description": "Learn how partitioning works."
+          "title": "Metodtipsen för partitionering",
+          "description": "Lär dig hur partitionering fungerar."
         },
         "requestUnits": {
-          "title": "Request Units (RUs)",
-          "description": "Understand RU charges."
+          "title": "Enheter för programbegäran (RU)",
+          "description": "Förstå RU-avgifter."
         }
       },
       "gremlin": {
         "dataModeling": {
-          "title": "Data Modeling",
-          "description": "Graph data modeling recommendations"
+          "title": "Datamodellering",
+          "description": "Rekommendationer för diagramdatamodellering"
         },
         "partitioning": {
-          "title": "Partitioning Best Practices",
-          "description": "Learn how partitioning works"
+          "title": "Metodtipsen för partitionering",
+          "description": "Lär dig hur partitionering fungerar"
         },
         "queryData": {
-          "title": "Query Data",
-          "description": "Querying data with Gremlin"
+          "title": "Efterfråga data",
+          "description": "Köra frågor mot data med Gremlin"
         }
       },
       "tables": {
         "whatIsTable": {
-          "title": "What is the Table API?",
-          "description": "Understand Azure Cosmos DB for Table and its features"
+          "title": "Vad är Table API?",
+          "description": "Förstå Azure Cosmos DB for Table och dess funktioner"
         },
         "migrate": {
-          "title": "Migrate your data",
-          "description": "Learn how to migrate your data"
+          "title": "Migrera dina data",
+          "description": "Läs hur du migrerar dina data"
         },
         "faq": {
-          "title": "Azure Cosmos DB for Table FAQs",
-          "description": "Common questions about Azure Cosmos DB for Table"
+          "title": "Vanliga frågor och svar om Azure Cosmos DB for Table",
+          "description": "Vanliga frågor om Azure Cosmos DB för tabell"
         }
       }
     },
     "learningResources": {
       "shortcuts": {
-        "title": "Data Explorer keyboard shortcuts",
-        "description": "Learn keyboard shortcuts to navigate Data Explorer."
+        "title": "Datautforskaren kortkommandon",
+        "description": "Lär dig kortkommandon för att navigera Datautforskaren."
       },
       "liveTv": {
-        "title": "Learn the Fundamentals",
-        "description": "Watch Azure Cosmos DB Live TV show introductory and how to videos."
+        "title": "Lär dig grunderna",
+        "description": "Titta på Azure Cosmos DB introduktion till live-TV-program och hur du gör videor."
       },
       "sql": {
         "sdk": {
-          "title": "Get Started using an SDK",
-          "description": "Learn about the Azure Cosmos DB SDK."
+          "title": "Kom igång med ett SDK",
+          "description": "Läs mer om Azure Cosmos DB SDK."
         },
         "migrate": {
-          "title": "Migrate Your Data",
-          "description": "Migrate data using Azure services and open-source solutions."
+          "title": "Migrera dina data",
+          "description": "Migrera data med Hjälp av Azure-tjänster och lösningar med öppen källkod."
         }
       },
       "mongo": {
         "nodejs": {
-          "title": "Build an app with Node.js",
-          "description": "Create a Node.js app."
+          "title": "Skapa en app med Node.js",
+          "description": "Skapa en Node.js app."
         },
         "gettingStarted": {
-          "title": "Getting Started Guide",
-          "description": "Learn the basics to get started."
+          "title": "Komma igång-guide",
+          "description": "Lär dig grunderna för att komma igång."
         }
       },
       "cassandra": {
         "createContainer": {
-          "title": "Create a Container",
-          "description": "Get to know the create a container options."
+          "title": "Skapa en container",
+          "description": "Lär känna alternativen för att skapa en container."
         },
         "throughput": {
-          "title": "Provision Throughput",
-          "description": "Learn how to configure throughput."
+          "title": "Etablera dataflöde",
+          "description": "Lär dig hur du konfigurerar dataflöde."
         }
       },
       "gremlin": {
         "getStarted": {
-          "title": "Get Started ",
-          "description": "Create, query, and traverse using the Gremlin console"
+          "title": "Kom igång ",
+          "description": "Skapa, fråga och bläddra med Gremlin-konsolen"
         },
         "importData": {
-          "title": "Import Graph Data",
-          "description": "Learn Bulk ingestion data using BulkExecutor"
+          "title": "Importera diagramdata",
+          "description": "Lär dig massinmatning av data med BulkExecutor"
         }
       },
       "tables": {
         "dotnet": {
-          "title": "Build a .NET App",
-          "description": "How to access Azure Cosmos DB for Table from a .NET app."
+          "title": "Skapa en .NET-app",
+          "description": "Så här kommer du åt Azure Cosmos DB for Table från en .NET-app."
         },
         "java": {
-          "title": "Build a Java App",
-          "description": "Create a Azure Cosmos DB for Table app with Java SDK "
+          "title": "Skapa en Java-app",
+          "description": "Skapa en Azure Cosmos DB for Table-appen med Java SDK "
         }
       }
     },
     "nextStepItems": {
       "postgres": {
-        "dataModeling": "Data Modeling",
-        "distributionColumn": "How to choose a Distribution Column",
-        "buildApps": "Build Apps with Python/Java/Django"
+        "dataModeling": "Datamodellering",
+        "distributionColumn": "Så här väljer du en distributionskolumn",
+        "buildApps": "Skapa appar med Python/Java/Django"
       },
       "vcoreMongo": {
-        "migrateData": "Migrate Data",
-        "vectorSearch": "Build AI apps with Vector Search",
-        "buildApps": "Build Apps with Nodejs"
+        "migrateData": "Migrera data",
+        "vectorSearch": "Skapa AI-appar med Vector Search",
+        "buildApps": "Skapa appar med Nodejs"
       }
     },
     "learnMoreItems": {
       "postgres": {
-        "performanceTuning": "Performance Tuning",
-        "diagnosticQueries": "Useful Diagnostic Queries",
-        "sqlReference": "Distributed SQL Reference"
+        "performanceTuning": "Prestandajustering",
+        "diagnosticQueries": "Användbara diagnostikfrågor",
+        "sqlReference": "Distribuerad SQL-referens"
       },
       "vcoreMongo": {
-        "vectorSearch": "Vector Search",
-        "textIndexing": "Text Indexing",
-        "troubleshoot": "Troubleshoot common issues"
+        "vectorSearch": "Vektorssökning",
+        "textIndexing": "Textindexering",
+        "troubleshoot": "Felsök vanliga problem"
       }
     },
     "fabric": {
-      "buildTitle": "Build your database",
-      "useTitle": "Use your database",
+      "buildTitle": "Skapa din databas",
+      "useTitle": "Använda databasen",
       "newContainer": {
-        "title": "New container",
-        "description": "Create a destination container to store your data"
+        "title": "Ny container",
+        "description": "Skapa en målcontainer för att lagra dina data"
       },
       "sampleData": {
-        "title": "Sample Data",
-        "description": "Load sample data in your database"
+        "title": "Exempeldata",
+        "description": "Läs in exempeldata i databasen"
       },
       "sampleVectorData": {
-        "title": "Sample Vector Data",
-        "description": "Load sample vector data with text-embedding-ada-002"
+        "title": "Exempelvektordata",
+        "description": "Läs in exempelvektordata med textinbäddning-ada-002"
       },
       "appDevelopment": {
-        "title": "App development",
-        "description": "Start here to use an SDK to build your apps"
+        "title": "Apputveckling",
+        "description": "Börja här om du vill använda en SDK för att skapa dina appar"
       },
       "sampleGallery": {
-        "title": "Sample Gallery",
-        "description": "Get real-world end-to-end samples"
+        "title": "Exempelgalleri",
+        "description": "Få verkliga exempel från slutpunkt till slutpunkt"
       }
     },
     "sampleDataDialog": {
-      "title": "Sample Data",
-      "startButton": "Start",
-      "createPrompt": "Create a container \"{{containerName}}\" and import sample data into it. This may take a few minutes.",
-      "creatingContainer": "Creating container \"{{containerName}}\"...",
-      "importingData": "Importing data into \"{{containerName}}\"...",
-      "success": "Successfully created \"{{containerName}}\" with sample data.",
-      "errorContainerExists": "The container \"{{containerName}}\" in database \"{{databaseName}}\" already exists. Please delete it and retry.",
-      "errorCreateContainer": "Failed to create container: {{error}}",
-      "errorImportData": "Failed to import data: {{error}}"
+      "title": "Exempeldata",
+      "startButton": "Starta",
+      "createPrompt": "Skapa en container \"{{containerName}}\" och importera exempeldata till den. Det här kan ta några minuter.",
+      "creatingContainer": "Skapar container \"{{containerName}}\"...",
+      "importingData": "Importerar data till \"{{containerName}}\"...",
+      "success": "\"{{containerName}}\" med exempeldata har skapats.",
+      "errorContainerExists": "Containern \"{{containerName}}\" i databasen \"{{databaseName}}\" finns redan. Ta bort den och försök igen.",
+      "errorCreateContainer": "Det gick inte att skapa containern: {{error}}",
+      "errorImportData": "Det gick inte att importera data: {{error}}"
     }
   }
 }

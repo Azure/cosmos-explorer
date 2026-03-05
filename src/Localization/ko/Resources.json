@@ -1,36 +1,36 @@
 {
   "common": {
-    "ok": "OK",
-    "cancel": "Cancel",
-    "close": "Close",
-    "save": "Save",
-    "delete": "Delete",
-    "update": "Update",
-    "discard": "Discard",
-    "execute": "Execute",
-    "loading": "Loading",
-    "loadingEllipsis": "Loading...",
-    "next": "Next",
-    "previous": "Previous",
-    "yes": "Yes",
-    "no": "No",
-    "result": "Result",
-    "learnMore": "Learn more",
-    "getStarted": "Get started",
-    "retry": "Retry",
-    "apply": "Apply",
-    "refresh": "Refresh",
-    "copy": "Copy",
-    "create": "Create",
-    "confirm": "Confirm",
-    "open": "Open",
-    "rename": "Rename",
-    "download": "Download",
-    "upload": "Upload",
-    "connect": "Connect",
-    "remove": "Remove",
-    "increaseValueBy1": "Increase value by 1",
-    "decreaseValueBy1": "Decrease value by 1"
+    "ok": "확인",
+    "cancel": "취소",
+    "close": "닫기",
+    "save": "저장",
+    "delete": "삭제",
+    "update": "업데이트",
+    "discard": "삭제",
+    "execute": "실행",
+    "loading": "로드 중",
+    "loadingEllipsis": "로드 중...",
+    "next": "다음",
+    "previous": "이전",
+    "yes": "예",
+    "no": "아니요",
+    "result": "결과",
+    "learnMore": "자세한 정보",
+    "getStarted": "시작",
+    "retry": "다시 시도",
+    "apply": "적용",
+    "refresh": "새로 고침",
+    "copy": "복사",
+    "create": "만들기",
+    "confirm": "확인",
+    "open": "열기",
+    "rename": "이름 바꾸기",
+    "download": "다운로드",
+    "upload": "업로드",
+    "connect": "연결",
+    "remove": "제거",
+    "increaseValueBy1": "값을 1만큼 늘리기",
+    "decreaseValueBy1": "값을 1만큼 줄이기"
   },
   "splashScreen": {
     "title": {
@@ -43,253 +43,253 @@
       "getStarted": "샘플 데이터 세트, 설명서 및 추가 도구를 시작하세요."
     },
     "quickStart": {
-      "title": "Launch quick start",
-      "description": "Launch a quick start tutorial to get started with sample data"
+      "title": "빠른 시작 개시",
+      "description": "빠른 시작 자습서를 시작하여 샘플 데이터 시작"
     },
     "newCollection": {
-      "title": "New {{collectionName}}",
-      "description": "Create a new container for storage and throughput"
+      "title": "새 {{collectionName}}",
+      "description": "스토리지 및 처리량에 대한 새 컨테이너 만들기"
     },
     "samplesGallery": {
-      "title": "Azure Cosmos DB Samples Gallery",
-      "description": "Discover samples that showcase scalable, intelligent app patterns. Try one now to see how fast you can go from concept to code with Cosmos DB"
+      "title": "Azure Cosmos DB 샘플 갤러리",
+      "description": "확장성 있는 인텔리전트 앱 패턴을 보여 주는 샘플을 검색합니다. Cosmos DB 사용하여 개념에서 코드로 얼마나 빨리 이동할 수 있는지 확인해 보세요."
     },
     "connectCard": {
-      "title": "Connect",
-      "description": "Prefer using your own choice of tooling? Find the connection string you need to connect",
+      "title": "연결",
+      "description": "원하는 도구 사용을 선호하시나요? 연결해야 하는 연결 문자열 찾기",
       "pgAdmin": {
-        "title": "Connect with pgAdmin",
-        "description": "Prefer pgAdmin? Find your connection strings here"
+        "title": "pgAdmin으로 연결",
+        "description": "pgAdmin을 선호하시나요? 여기에서 연결 문자열 찾기"
       },
       "vsCode": {
-        "title": "Connect with VS Code",
-        "description": "Query and Manage your MongoDB and DocumentDB clusters in Visual Studio Code"
+        "title": "VS Code와 연결",
+        "description": "Visual Studio Code MongoDB 및 DocumentDB 클러스터 쿼리 및 관리"
       }
     },
     "shell": {
       "postgres": {
-        "title": "PostgreSQL Shell",
-        "description": "Create table and interact with data using PostgreSQL's shell interface"
+        "title": "PostgreSQL 셸",
+        "description": "PostgreSQL의 셸 인터페이스를 사용하여 테이블 만들기 및 데이터 조작"
       },
       "vcoreMongo": {
         "title": "Mongo Shell",
-        "description": "Create a collection and interact with data using MongoDB's shell interface"
+        "description": "MongoDB의 셸 인터페이스를 사용하여 컬렉션 만들기 및 데이터 조작"
       }
     },
     "teachingBubble": {
       "newToPostgres": {
-        "headline": "New to Cosmos DB PGSQL?",
-        "body": "Welcome! If you are new to Cosmos DB PGSQL and need help with getting started, here is where you can find sample data, query."
+        "headline": "PGSQL을 Cosmos DB?",
+        "body": "환영합니다. PGSQL을 Cosmos DB 시작에 대한 도움이 필요한 경우 샘플 데이터, 쿼리를 찾을 수 있는 위치는 다음과 같습니다."
       },
       "resetPassword": {
-        "headline": "Create your password",
-        "body": "If you haven't changed your password yet, change it now."
+        "headline": "암호 만들기",
+        "body": "암호를 아직 변경하지 않은 경우 지금 변경하세요."
       },
       "coachMark": {
-        "headline": "Start with sample {{collectionName}}",
-        "body": "You will be guided to create a sample container with sample data, then we will give you a tour of data explorer. You can also cancel launching this tour and explore yourself"
+        "headline": "샘플 {{collectionName}} 시작",
+        "body": "샘플 데이터를 사용하여 샘플 컨테이너를 만드는 과정을 안내한 다음 데이터 탐색기를 둘러보겠습니다. 이 둘러보기 시작을 취소하고 직접 탐색할 수도 있습니다."
       }
     },
     "sections": {
-      "recents": "Recents",
-      "clearRecents": "Clear Recents",
-      "top3": "Top 3 things you need to know",
-      "learningResources": "Learning Resources",
-      "nextSteps": "Next steps",
-      "tipsAndLearnMore": "Tips & learn more",
+      "recents": "최근 항목",
+      "clearRecents": "최근 항목 지우기",
+      "top3": "꼭 알아야 할 3가지",
+      "learningResources": "학습 리소스",
+      "nextSteps": "다음 단계",
+      "tipsAndLearnMore": "팁 및 자세한 정보",
       "notebook": "Notebook",
-      "needHelp": "Need help?"
+      "needHelp": "도움이 필요하세요?"
     },
     "top3Items": {
       "sql": {
         "advancedModeling": {
-          "title": "Advanced Modeling Patterns",
-          "description": "Learn advanced strategies to optimize your database."
+          "title": "고급 모델링 패턴",
+          "description": "데이터베이스를 최적화하기 위한 고급 전략을 알아봅니다."
         },
         "partitioning": {
-          "title": "Partitioning Best Practices",
-          "description": "Learn to apply data model and partitioning strategies."
+          "title": "분할 모범 사례",
+          "description": "데이터 모델 및 분할 전략을 적용하는 방법을 알아봅니다."
         },
         "resourcePlanning": {
-          "title": "Plan Your Resource Requirements",
-          "description": "Get to know the different configuration choices."
+          "title": "리소스 요구 사항 계획",
+          "description": "다양한 구성 선택 사항에 대해 알아보세요."
         }
       },
       "mongo": {
         "whatIsMongo": {
-          "title": "What is the MongoDB API?",
-          "description": "Understand Azure Cosmos DB for MongoDB and its features."
+          "title": "MongoDB API란?",
+          "description": "MongoDB 및 해당 기능에 대한 Azure Cosmos DB 이해합니다."
         },
         "features": {
-          "title": "Features and Syntax",
-          "description": "Discover the advantages and features"
+          "title": "기능 및 구문",
+          "description": "장점 및 기능 살펴보기"
         },
         "migrate": {
-          "title": "Migrate Your Data",
-          "description": "Pre-migration steps for moving data"
+          "title": "데이터 마이그레이션",
+          "description": "데이터 이동을 위한 마이그레이션 전 단계"
         }
       },
       "cassandra": {
         "buildJavaApp": {
-          "title": "Build a Java App",
-          "description": "Create a Java app using an SDK."
+          "title": "Java 앱 빌드",
+          "description": "SDK를 사용하여 Java 앱을 만듭니다."
         },
         "partitioning": {
-          "title": "Partitioning Best Practices",
-          "description": "Learn how partitioning works."
+          "title": "분할 모범 사례",
+          "description": "분할의 작동 방식을 알아봅니다."
         },
         "requestUnits": {
-          "title": "Request Units (RUs)",
-          "description": "Understand RU charges."
+          "title": "RU(요청 단위)",
+          "description": "RU 요금을 이해합니다."
         }
       },
       "gremlin": {
         "dataModeling": {
-          "title": "Data Modeling",
-          "description": "Graph data modeling recommendations"
+          "title": "데이터 모델링",
+          "description": "그래프 데이터 모델링 권장 사항"
         },
         "partitioning": {
-          "title": "Partitioning Best Practices",
-          "description": "Learn how partitioning works"
+          "title": "분할 모범 사례",
+          "description": "분할의 작동 방식 알아보기"
         },
         "queryData": {
-          "title": "Query Data",
-          "description": "Querying data with Gremlin"
+          "title": "데이터 쿼리",
+          "description": "Gremlin을 사용하여 데이터 쿼리"
         }
       },
       "tables": {
         "whatIsTable": {
-          "title": "What is the Table API?",
-          "description": "Understand Azure Cosmos DB for Table and its features"
+          "title": "Table API 무엇인가요?",
+          "description": "테이블 및 해당 기능에 대한 Azure Cosmos DB 이해"
         },
         "migrate": {
-          "title": "Migrate your data",
-          "description": "Learn how to migrate your data"
+          "title": "데이터 마이그레이션",
+          "description": "데이터 마이그레이션 방법 알아보기"
         },
         "faq": {
-          "title": "Azure Cosmos DB for Table FAQs",
-          "description": "Common questions about Azure Cosmos DB for Table"
+          "title": "테이블 FAQ에 대한 Azure Cosmos DB",
+          "description": "테이블 Azure Cosmos DB 대한 일반적인 질문"
         }
       }
     },
     "learningResources": {
       "shortcuts": {
-        "title": "Data Explorer keyboard shortcuts",
-        "description": "Learn keyboard shortcuts to navigate Data Explorer."
+        "title": "바로 가기 키 데이터 탐색기",
+        "description": "Data Explorer를 탐색하는 키보드 단축키를 배워보세요."
       },
       "liveTv": {
-        "title": "Learn the Fundamentals",
-        "description": "Watch Azure Cosmos DB Live TV show introductory and how to videos."
+        "title": "기본 사항 알아보기",
+        "description": "Azure Cosmos DB Live TV 쇼 소개 및 비디오 방법을 시청하세요."
       },
       "sql": {
         "sdk": {
-          "title": "Get Started using an SDK",
-          "description": "Learn about the Azure Cosmos DB SDK."
+          "title": "SDK 사용 시작",
+          "description": "Azure Cosmos DB SDK에 대해 알아봅니다."
         },
         "migrate": {
-          "title": "Migrate Your Data",
-          "description": "Migrate data using Azure services and open-source solutions."
+          "title": "데이터 마이그레이션",
+          "description": "Azure 서비스 및 오픈 소스 솔루션을 사용하여 데이터를 마이그레이션합니다."
         }
       },
       "mongo": {
         "nodejs": {
-          "title": "Build an app with Node.js",
-          "description": "Create a Node.js app."
+          "title": "Node.js 사용하여 앱 빌드",
+          "description": "Node.js 앱을 만듭니다."
         },
         "gettingStarted": {
-          "title": "Getting Started Guide",
-          "description": "Learn the basics to get started."
+          "title": "시작 가이드",
+          "description": "시작하는 데 필요한 기본 사항을 알아보세요."
         }
       },
       "cassandra": {
         "createContainer": {
-          "title": "Create a Container",
-          "description": "Get to know the create a container options."
+          "title": "컨테이너 만들기",
+          "description": "컨테이너 만들기 옵션을 알아보세요."
         },
         "throughput": {
-          "title": "Provision Throughput",
-          "description": "Learn how to configure throughput."
+          "title": "처리량 프로비저닝",
+          "description": "처리량을 구성하는 방법을 알아봅니다."
         }
       },
       "gremlin": {
         "getStarted": {
-          "title": "Get Started ",
-          "description": "Create, query, and traverse using the Gremlin console"
+          "title": "시작 ",
+          "description": "Gremlin 콘솔을 사용하여 만들기, 쿼리 및 트래버스"
         },
         "importData": {
-          "title": "Import Graph Data",
-          "description": "Learn Bulk ingestion data using BulkExecutor"
+          "title": "Graph 데이터 가져오기",
+          "description": "BulkExecutor를 사용하여 대량 수집 데이터 알아보기"
         }
       },
       "tables": {
         "dotnet": {
-          "title": "Build a .NET App",
-          "description": "How to access Azure Cosmos DB for Table from a .NET app."
+          "title": ".NET 앱 만들기",
+          "description": ".NET 앱에서 Table용 Azure Cosmos DB에 액세스하는 방법입니다."
         },
         "java": {
-          "title": "Build a Java App",
-          "description": "Create a Azure Cosmos DB for Table app with Java SDK "
+          "title": "Java 앱 빌드",
+          "description": "Java SDK를 사용하여 Table 앱에 대한 Azure Cosmos DB 만들기 "
         }
       }
     },
     "nextStepItems": {
       "postgres": {
-        "dataModeling": "Data Modeling",
-        "distributionColumn": "How to choose a Distribution Column",
-        "buildApps": "Build Apps with Python/Java/Django"
+        "dataModeling": "데이터 모델링",
+        "distributionColumn": "배포 열을 선택하는 방법",
+        "buildApps": "Python/Java/Django를 사용하여 앱 빌드"
       },
       "vcoreMongo": {
-        "migrateData": "Migrate Data",
-        "vectorSearch": "Build AI apps with Vector Search",
-        "buildApps": "Build Apps with Nodejs"
+        "migrateData": "데이터 마이그레이션",
+        "vectorSearch": "벡터 검색을 사용하여 AI 앱 빌드",
+        "buildApps": "Nodejs를 사용하여 앱 빌드"
       }
     },
     "learnMoreItems": {
       "postgres": {
-        "performanceTuning": "Performance Tuning",
-        "diagnosticQueries": "Useful Diagnostic Queries",
-        "sqlReference": "Distributed SQL Reference"
+        "performanceTuning": "성능 튜닝",
+        "diagnosticQueries": "유용한 진단 쿼리",
+        "sqlReference": "분산 SQL 참조"
       },
       "vcoreMongo": {
-        "vectorSearch": "Vector Search",
-        "textIndexing": "Text Indexing",
-        "troubleshoot": "Troubleshoot common issues"
+        "vectorSearch": "벡터 검색",
+        "textIndexing": "텍스트 인덱싱",
+        "troubleshoot": "일반적인 문제 해결"
       }
     },
     "fabric": {
-      "buildTitle": "Build your database",
-      "useTitle": "Use your database",
+      "buildTitle": "데이터베이스 빌드",
+      "useTitle": "데이터베이스 사용",
       "newContainer": {
-        "title": "New container",
-        "description": "Create a destination container to store your data"
+        "title": "새 컨테이너",
+        "description": "데이터를 저장할 대상 컨테이너 만들기"
       },
       "sampleData": {
-        "title": "Sample Data",
-        "description": "Load sample data in your database"
+        "title": "샘플 데이터",
+        "description": "데이터베이스에 샘플 데이터 로드"
       },
       "sampleVectorData": {
-        "title": "Sample Vector Data",
-        "description": "Load sample vector data with text-embedding-ada-002"
+        "title": "샘플 벡터 데이터",
+        "description": "text-embedding-ada-002를 사용하여 샘플 벡터 데이터 로드"
       },
       "appDevelopment": {
-        "title": "App development",
-        "description": "Start here to use an SDK to build your apps"
+        "title": "앱 개발",
+        "description": "SDK를 사용하여 앱을 빌드하려면 여기에서 시작하세요."
       },
       "sampleGallery": {
-        "title": "Sample Gallery",
-        "description": "Get real-world end-to-end samples"
+        "title": "샘플 갤러리",
+        "description": "실제 엔드 투 엔드 샘플 가져오기"
       }
     },
     "sampleDataDialog": {
-      "title": "Sample Data",
-      "startButton": "Start",
-      "createPrompt": "Create a container \"{{containerName}}\" and import sample data into it. This may take a few minutes.",
-      "creatingContainer": "Creating container \"{{containerName}}\"...",
-      "importingData": "Importing data into \"{{containerName}}\"...",
-      "success": "Successfully created \"{{containerName}}\" with sample data.",
-      "errorContainerExists": "The container \"{{containerName}}\" in database \"{{databaseName}}\" already exists. Please delete it and retry.",
-      "errorCreateContainer": "Failed to create container: {{error}}",
-      "errorImportData": "Failed to import data: {{error}}"
+      "title": "샘플 데이터",
+      "startButton": "시작",
+      "createPrompt": "\"{{containerName}}\" 컨테이너를 만들고 샘플 데이터를 해당 컨테이너로 가져옵니다. 몇 분 정도 걸릴 수 있습니다.",
+      "creatingContainer": "컨테이너 \"{{containerName}}\"을(를) 만드는 중...",
+      "importingData": "\"{{containerName}}\"로 데이터를 가져오는 중...",
+      "success": "샘플 데이터를 사용하여 \"{{containerName}}\"을 만들었습니다.",
+      "errorContainerExists": "데이터베이스 \"{{databaseName}}\"의 컨테이너 \"{{containerName}}\"이(가) 이미 있습니다. 삭제하고 다시 시도하세요.",
+      "errorCreateContainer": "컨테이너를 만들지 못했습니다. {{error}}",
+      "errorImportData": "데이터를 가져오지 못했습니다. {{error}}"
     }
   }
 }

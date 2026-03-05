@@ -1,36 +1,36 @@
 {
   "common": {
     "ok": "OK",
-    "cancel": "Cancel",
-    "close": "Close",
-    "save": "Save",
-    "delete": "Delete",
-    "update": "Update",
-    "discard": "Discard",
-    "execute": "Execute",
-    "loading": "Loading",
-    "loadingEllipsis": "Loading...",
-    "next": "Next",
-    "previous": "Previous",
-    "yes": "Yes",
-    "no": "No",
-    "result": "Result",
-    "learnMore": "Learn more",
-    "getStarted": "Get started",
-    "retry": "Retry",
-    "apply": "Apply",
+    "cancel": "Batal",
+    "close": "Tutup",
+    "save": "Simpan",
+    "delete": "Hapus",
+    "update": "Perbarui",
+    "discard": "Buang",
+    "execute": "Jalankan",
+    "loading": "Memuat",
+    "loadingEllipsis": "Memuat...",
+    "next": "Berikutnya",
+    "previous": "Sebelumnya",
+    "yes": "Ya",
+    "no": "Tidak",
+    "result": "Hasil",
+    "learnMore": "Pelajari selengkapnya",
+    "getStarted": "Mulai",
+    "retry": "Coba lagi",
+    "apply": "Terapkan",
     "refresh": "Refresh",
-    "copy": "Copy",
-    "create": "Create",
-    "confirm": "Confirm",
-    "open": "Open",
-    "rename": "Rename",
-    "download": "Download",
-    "upload": "Upload",
-    "connect": "Connect",
-    "remove": "Remove",
-    "increaseValueBy1": "Increase value by 1",
-    "decreaseValueBy1": "Decrease value by 1"
+    "copy": "Salin",
+    "create": "Buat",
+    "confirm": "Konfirmasi",
+    "open": "Buka",
+    "rename": "Ganti nama",
+    "download": "Unduh",
+    "upload": "Unggah",
+    "connect": "Sambungkan",
+    "remove": "Hapus",
+    "increaseValueBy1": "Tambah nilai sebesar 1",
+    "decreaseValueBy1": "Kurangi nilai sebesar 1"
   },
   "splashScreen": {
     "title": {
@@ -43,253 +43,253 @@
       "getStarted": "Mulai dengan himpunan data sampel, dokumentasi, dan alat tambahan kami."
     },
     "quickStart": {
-      "title": "Launch quick start",
-      "description": "Launch a quick start tutorial to get started with sample data"
+      "title": "Luncurkan mulai cepat",
+      "description": "Mulai tutorial cepat untuk memulai dengan data sampel"
     },
     "newCollection": {
-      "title": "New {{collectionName}}",
-      "description": "Create a new container for storage and throughput"
+      "title": "{{collectionName}} baru",
+      "description": "Buat kontainer baru untuk penyimpanan dan throughput"
     },
     "samplesGallery": {
       "title": "Azure Cosmos DB Samples Gallery",
-      "description": "Discover samples that showcase scalable, intelligent app patterns. Try one now to see how fast you can go from concept to code with Cosmos DB"
+      "description": "Temukan sampel yang menampilkan pola aplikasi cerdas yang dapat diskalakan. Coba sekarang untuk melihat seberapa cepat Anda bisa beralih dari konsep ke kode dengan Cosmos DB"
     },
     "connectCard": {
-      "title": "Connect",
-      "description": "Prefer using your own choice of tooling? Find the connection string you need to connect",
+      "title": "Sambungkan",
+      "description": "Lebih suka menggunakan alat pilihan sendiri? Temukan string koneksi yang diperlukan untuk menyambung",
       "pgAdmin": {
-        "title": "Connect with pgAdmin",
-        "description": "Prefer pgAdmin? Find your connection strings here"
+        "title": "Sambungkan dengan pgAdmin",
+        "description": "Lebih suka pgAdmin? Temukan string koneksi di sini"
       },
       "vsCode": {
-        "title": "Connect with VS Code",
-        "description": "Query and Manage your MongoDB and DocumentDB clusters in Visual Studio Code"
+        "title": "Sambungkan dengan Visual Studio Code",
+        "description": "Kueri dan kelola klaster MongoDB dan DocumentDB di Visual Studio Code"
       }
     },
     "shell": {
       "postgres": {
         "title": "PostgreSQL Shell",
-        "description": "Create table and interact with data using PostgreSQL's shell interface"
+        "description": "Buat tabel dan interaksi dengan data menggunakan antarmuka shell PostgreSQL"
       },
       "vcoreMongo": {
         "title": "Mongo Shell",
-        "description": "Create a collection and interact with data using MongoDB's shell interface"
+        "description": "Buat koleksi dan interaksi dengan data menggunakan antarmuka shell MongoDB"
       }
     },
     "teachingBubble": {
       "newToPostgres": {
-        "headline": "New to Cosmos DB PGSQL?",
-        "body": "Welcome! If you are new to Cosmos DB PGSQL and need help with getting started, here is where you can find sample data, query."
+        "headline": "Baru menggunakan Cosmos DB PGSQL?",
+        "body": "Selamat datang! Jika baru menggunakan Cosmos DB PGSQL dan butuh bantuan memulai, di sini Anda dapat menemukan data sampel dan kueri."
       },
       "resetPassword": {
-        "headline": "Create your password",
-        "body": "If you haven't changed your password yet, change it now."
+        "headline": "Buat kata sandi Anda",
+        "body": "Jika belum mengubah kata sandi, ubah sekarang."
       },
       "coachMark": {
-        "headline": "Start with sample {{collectionName}}",
-        "body": "You will be guided to create a sample container with sample data, then we will give you a tour of data explorer. You can also cancel launching this tour and explore yourself"
+        "headline": "Mulai dengan sampel {{collectionName}}",
+        "body": "Anda akan dipandu membuat kontainer sampel dengan data sampel, lalu kami akan memberikan tur penjelajah data. Anda juga bisa membatalkan tur ini dan menjelajah sendiri"
       }
     },
     "sections": {
-      "recents": "Recents",
-      "clearRecents": "Clear Recents",
-      "top3": "Top 3 things you need to know",
-      "learningResources": "Learning Resources",
-      "nextSteps": "Next steps",
-      "tipsAndLearnMore": "Tips & learn more",
-      "notebook": "Notebook",
-      "needHelp": "Need help?"
+      "recents": "Terbaru",
+      "clearRecents": "Bersihkan Riwayat Terbaru",
+      "top3": "3 Hal Terpenting yang Perlu Diketahui",
+      "learningResources": "Sumber Daya Pembelajaran",
+      "nextSteps": "Langkah berikutnya",
+      "tipsAndLearnMore": "Tips & pelajari selengkapnya",
+      "notebook": "Buku catatan",
+      "needHelp": "Perlu bantuan?"
     },
     "top3Items": {
       "sql": {
         "advancedModeling": {
-          "title": "Advanced Modeling Patterns",
-          "description": "Learn advanced strategies to optimize your database."
+          "title": "Pola Pemodelan Lanjutan",
+          "description": "Pelajari strategi lanjutan untuk mengoptimalkan database."
         },
         "partitioning": {
-          "title": "Partitioning Best Practices",
-          "description": "Learn to apply data model and partitioning strategies."
+          "title": "Praktik Terbaik Pemartisian",
+          "description": "Pelajari cara menerapkan model data dan strategi pemartisian."
         },
         "resourcePlanning": {
-          "title": "Plan Your Resource Requirements",
-          "description": "Get to know the different configuration choices."
+          "title": "Rencanakan Kebutuhan Sumber Daya Anda",
+          "description": "Kenali Berbagai Pilihan Konfigurasi."
         }
       },
       "mongo": {
         "whatIsMongo": {
-          "title": "What is the MongoDB API?",
-          "description": "Understand Azure Cosmos DB for MongoDB and its features."
+          "title": "Apa itu API MongoDB?",
+          "description": "Pahami Azure Cosmos DB for MongoDB dan fitur-fiturnya."
         },
         "features": {
-          "title": "Features and Syntax",
-          "description": "Discover the advantages and features"
+          "title": "Fitur dan Sintaks",
+          "description": "Temukan Keunggulan dan Fitur"
         },
         "migrate": {
-          "title": "Migrate Your Data",
-          "description": "Pre-migration steps for moving data"
+          "title": "Migrasikan Data",
+          "description": "Langkah Pra-migrasi untuk Memindahkan Data"
         }
       },
       "cassandra": {
         "buildJavaApp": {
-          "title": "Build a Java App",
-          "description": "Create a Java app using an SDK."
+          "title": "Buat Aplikasi Java",
+          "description": "Buat aplikasi Java menggunakan SDK."
         },
         "partitioning": {
-          "title": "Partitioning Best Practices",
-          "description": "Learn how partitioning works."
+          "title": "Praktik Terbaik Pemartisian",
+          "description": "Pelajari cara kerja pemartisian."
         },
         "requestUnits": {
-          "title": "Request Units (RUs)",
-          "description": "Understand RU charges."
+          "title": "Unit Permintaan (RU)",
+          "description": "Pahami Biaya RU."
         }
       },
       "gremlin": {
         "dataModeling": {
-          "title": "Data Modeling",
-          "description": "Graph data modeling recommendations"
+          "title": "Pemodelan Data",
+          "description": "Rekomendasi Pemodelan Data Grafik"
         },
         "partitioning": {
-          "title": "Partitioning Best Practices",
-          "description": "Learn how partitioning works"
+          "title": "Praktik Terbaik Pemartisian",
+          "description": "Pelajari cara kerja partisi"
         },
         "queryData": {
-          "title": "Query Data",
-          "description": "Querying data with Gremlin"
+          "title": "Data Kueri",
+          "description": "Mengkueri data dengan Gremlin"
         }
       },
       "tables": {
         "whatIsTable": {
-          "title": "What is the Table API?",
-          "description": "Understand Azure Cosmos DB for Table and its features"
+          "title": "Apa itu Table API?",
+          "description": "Memahami Azure Cosmos DB for Table dan fiturnya"
         },
         "migrate": {
-          "title": "Migrate your data",
-          "description": "Learn how to migrate your data"
+          "title": "Migrasikan data Anda",
+          "description": "Pelajari cara memigrasikan data Anda"
         },
         "faq": {
-          "title": "Azure Cosmos DB for Table FAQs",
-          "description": "Common questions about Azure Cosmos DB for Table"
+          "title": "Tanya Jawab Umum Azure Cosmos DB for Table",
+          "description": "Pertanyaan umum tentang Azure Cosmos DB for Table"
         }
       }
     },
     "learningResources": {
       "shortcuts": {
-        "title": "Data Explorer keyboard shortcuts",
-        "description": "Learn keyboard shortcuts to navigate Data Explorer."
+        "title": "Pintasan keyboard Data Explorer",
+        "description": "Pelajari pintasan keyboard untuk menavigasi Data Explorer."
       },
       "liveTv": {
-        "title": "Learn the Fundamentals",
-        "description": "Watch Azure Cosmos DB Live TV show introductory and how to videos."
+        "title": "Pelajari Dasar",
+        "description": "Tonton video perkenalan dan tutorial Azure Cosmos DB Live TV."
       },
       "sql": {
         "sdk": {
-          "title": "Get Started using an SDK",
-          "description": "Learn about the Azure Cosmos DB SDK."
+          "title": "Mulai menggunakan SDK",
+          "description": "Pelajari tentang Azure Cosmos DB SDK."
         },
         "migrate": {
-          "title": "Migrate Your Data",
-          "description": "Migrate data using Azure services and open-source solutions."
+          "title": "Migrasikan Data",
+          "description": "Migrasikan data menggunakan layanan Azure dan solusi sumber terbuka."
         }
       },
       "mongo": {
         "nodejs": {
-          "title": "Build an app with Node.js",
-          "description": "Create a Node.js app."
+          "title": "Buat aplikasi dengan Node.js",
+          "description": "Buat aplikasi Node.js."
         },
         "gettingStarted": {
-          "title": "Getting Started Guide",
-          "description": "Learn the basics to get started."
+          "title": "Panduan Persiapan",
+          "description": "Pelajari dasar untuk memulai."
         }
       },
       "cassandra": {
         "createContainer": {
-          "title": "Create a Container",
-          "description": "Get to know the create a container options."
+          "title": "Buat Kontainer",
+          "description": "Kenali opsi buat kontainer."
         },
         "throughput": {
-          "title": "Provision Throughput",
-          "description": "Learn how to configure throughput."
+          "title": "Throughput Penyediaan",
+          "description": "Pelajari cara mengonfigurasi throughput."
         }
       },
       "gremlin": {
         "getStarted": {
-          "title": "Get Started ",
-          "description": "Create, query, and traverse using the Gremlin console"
+          "title": "Mulai ",
+          "description": "Buat, kueri, dan jelajahi menggunakan konsol Gremlin"
         },
         "importData": {
-          "title": "Import Graph Data",
-          "description": "Learn Bulk ingestion data using BulkExecutor"
+          "title": "Impor Data Graf",
+          "description": "Pelajari penyerapan massal data menggunakan BulkExecutor"
         }
       },
       "tables": {
         "dotnet": {
-          "title": "Build a .NET App",
-          "description": "How to access Azure Cosmos DB for Table from a .NET app."
+          "title": "Buat Aplikasi .NET",
+          "description": "Cara mengakses Azure Cosmos DB for Table dari aplikasi .NET."
         },
         "java": {
-          "title": "Build a Java App",
-          "description": "Create a Azure Cosmos DB for Table app with Java SDK "
+          "title": "Buat Aplikasi Java",
+          "description": "Buat aplikasi Azure Cosmos DB for Table dengan Java SDK "
         }
       }
     },
     "nextStepItems": {
       "postgres": {
-        "dataModeling": "Data Modeling",
-        "distributionColumn": "How to choose a Distribution Column",
-        "buildApps": "Build Apps with Python/Java/Django"
+        "dataModeling": "Pemodelan Data",
+        "distributionColumn": "Cara memilih Kolom Distribusi",
+        "buildApps": "Buat Aplikasi dengan Python/Java/Django"
       },
       "vcoreMongo": {
-        "migrateData": "Migrate Data",
-        "vectorSearch": "Build AI apps with Vector Search",
-        "buildApps": "Build Apps with Nodejs"
+        "migrateData": "Migrasikan Data",
+        "vectorSearch": "Buat aplikasi AI dengan Pencarian Vektor",
+        "buildApps": "Buat Aplikasi dengan Nodejs"
       }
     },
     "learnMoreItems": {
       "postgres": {
-        "performanceTuning": "Performance Tuning",
-        "diagnosticQueries": "Useful Diagnostic Queries",
-        "sqlReference": "Distributed SQL Reference"
+        "performanceTuning": "Penyetelan Performa",
+        "diagnosticQueries": "Kueri Diagnostik yang Berguna",
+        "sqlReference": "Referensi SQL Terdistribusi"
       },
       "vcoreMongo": {
-        "vectorSearch": "Vector Search",
-        "textIndexing": "Text Indexing",
-        "troubleshoot": "Troubleshoot common issues"
+        "vectorSearch": "Pencarian Vektor",
+        "textIndexing": "Pengindeksan Teks",
+        "troubleshoot": "Pecahkan masalah umum"
       }
     },
     "fabric": {
-      "buildTitle": "Build your database",
-      "useTitle": "Use your database",
+      "buildTitle": "Bangun database Anda",
+      "useTitle": "Gunakan database Anda",
       "newContainer": {
-        "title": "New container",
-        "description": "Create a destination container to store your data"
+        "title": "Kontainer baru",
+        "description": "Buat kontainer tujuan untuk menyimpan data"
       },
       "sampleData": {
-        "title": "Sample Data",
-        "description": "Load sample data in your database"
+        "title": "Data Sampel",
+        "description": "Muat data sampel ke database"
       },
       "sampleVectorData": {
-        "title": "Sample Vector Data",
-        "description": "Load sample vector data with text-embedding-ada-002"
+        "title": "Data Vektor Sampel",
+        "description": "Muat data vektor sampel dengan text-embedding-ada-002"
       },
       "appDevelopment": {
-        "title": "App development",
-        "description": "Start here to use an SDK to build your apps"
+        "title": "Pengembangan aplikasi",
+        "description": "Mulai di sini untuk menggunakan SDK membangun aplikasi"
       },
       "sampleGallery": {
-        "title": "Sample Gallery",
-        "description": "Get real-world end-to-end samples"
+        "title": "Galeri Sampel",
+        "description": "Dapatkan sampel menyeluruh dunia nyata"
       }
     },
     "sampleDataDialog": {
-      "title": "Sample Data",
-      "startButton": "Start",
-      "createPrompt": "Create a container \"{{containerName}}\" and import sample data into it. This may take a few minutes.",
-      "creatingContainer": "Creating container \"{{containerName}}\"...",
-      "importingData": "Importing data into \"{{containerName}}\"...",
-      "success": "Successfully created \"{{containerName}}\" with sample data.",
-      "errorContainerExists": "The container \"{{containerName}}\" in database \"{{databaseName}}\" already exists. Please delete it and retry.",
-      "errorCreateContainer": "Failed to create container: {{error}}",
-      "errorImportData": "Failed to import data: {{error}}"
+      "title": "Data Sampel",
+      "startButton": "Mulai",
+      "createPrompt": "Buat kontainer \"{{containerName}}\" dan impor data sampel ke dalamnya. Proses ini memerlukan waktu beberapa menit.",
+      "creatingContainer": "Membuat kontainer \"{{containerName}}\"...",
+      "importingData": "Mengimpor data ke \"{{containerName}}\"...",
+      "success": "Berhasil membuat \"{{containerName}}\" dengan data sampel.",
+      "errorContainerExists": "Kontainer \"{{containerName}}\" di database \"{{databaseName}}\" sudah ada. Hapus dan coba lagi.",
+      "errorCreateContainer": "Gagal membuat kontainer: {{error}}",
+      "errorImportData": "Gagal mengimpor data: {{error}}"
     }
   }
 }

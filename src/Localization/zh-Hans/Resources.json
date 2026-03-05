@@ -1,36 +1,36 @@
 {
   "common": {
-    "ok": "OK",
-    "cancel": "Cancel",
-    "close": "Close",
-    "save": "Save",
-    "delete": "Delete",
-    "update": "Update",
-    "discard": "Discard",
-    "execute": "Execute",
-    "loading": "Loading",
-    "loadingEllipsis": "Loading...",
-    "next": "Next",
-    "previous": "Previous",
-    "yes": "Yes",
-    "no": "No",
-    "result": "Result",
-    "learnMore": "Learn more",
-    "getStarted": "Get started",
-    "retry": "Retry",
-    "apply": "Apply",
-    "refresh": "Refresh",
-    "copy": "Copy",
-    "create": "Create",
-    "confirm": "Confirm",
-    "open": "Open",
-    "rename": "Rename",
-    "download": "Download",
-    "upload": "Upload",
-    "connect": "Connect",
-    "remove": "Remove",
-    "increaseValueBy1": "Increase value by 1",
-    "decreaseValueBy1": "Decrease value by 1"
+    "ok": "确定",
+    "cancel": "取消",
+    "close": "关闭",
+    "save": "保存",
+    "delete": "删除",
+    "update": "更新",
+    "discard": "放弃",
+    "execute": "执行",
+    "loading": "正在加载",
+    "loadingEllipsis": "正在加载...",
+    "next": "下一步",
+    "previous": "上一步",
+    "yes": "是",
+    "no": "否",
+    "result": "结果",
+    "learnMore": "了解详细信息",
+    "getStarted": "开始使用",
+    "retry": "重试",
+    "apply": "应用",
+    "refresh": "刷新",
+    "copy": "复制",
+    "create": "创建",
+    "confirm": "确认",
+    "open": "打开",
+    "rename": "重命名",
+    "download": "下载",
+    "upload": "上传",
+    "connect": "连接",
+    "remove": "删除",
+    "increaseValueBy1": "将值增加 1",
+    "decreaseValueBy1": "将值减少 1"
   },
   "splashScreen": {
     "title": {
@@ -43,253 +43,253 @@
       "getStarted": "开始使用我们的示例数据集、文档和其他工具。"
     },
     "quickStart": {
-      "title": "Launch quick start",
-      "description": "Launch a quick start tutorial to get started with sample data"
+      "title": "启动快速入门",
+      "description": "启动快速入门教程，开始使用示例数据"
     },
     "newCollection": {
-      "title": "New {{collectionName}}",
-      "description": "Create a new container for storage and throughput"
+      "title": "新建 {{collectionName}}",
+      "description": "创建用于存储和吞吐量的新容器"
     },
     "samplesGallery": {
-      "title": "Azure Cosmos DB Samples Gallery",
-      "description": "Discover samples that showcase scalable, intelligent app patterns. Try one now to see how fast you can go from concept to code with Cosmos DB"
+      "title": "Azure Cosmos DB 示例库",
+      "description": "发现展示可扩展智能应用模式的示例。立即试用，体验如何通过 Cosmos DB 快速从概念转变到代码"
     },
     "connectCard": {
-      "title": "Connect",
-      "description": "Prefer using your own choice of tooling? Find the connection string you need to connect",
+      "title": "连接",
+      "description": "更喜欢使用自己选择的工具?查找需要连接的连接字符串",
       "pgAdmin": {
-        "title": "Connect with pgAdmin",
-        "description": "Prefer pgAdmin? Find your connection strings here"
+        "title": "使用 pgAdmin 连接",
+        "description": "首选 pgAdmin?在此处查找连接字符串"
       },
       "vsCode": {
-        "title": "Connect with VS Code",
-        "description": "Query and Manage your MongoDB and DocumentDB clusters in Visual Studio Code"
+        "title": "与 VS Code 连接",
+        "description": "在 Visual Studio Code 中查询和管理 MongoDB 和 DocumentDB 群集"
       }
     },
     "shell": {
       "postgres": {
         "title": "PostgreSQL Shell",
-        "description": "Create table and interact with data using PostgreSQL's shell interface"
+        "description": "使用 PostgreSQL shell 接口创建表并与数据交互"
       },
       "vcoreMongo": {
         "title": "Mongo Shell",
-        "description": "Create a collection and interact with data using MongoDB's shell interface"
+        "description": "使用 MongoDB shell 接口创建集合并与数据交互"
       }
     },
     "teachingBubble": {
       "newToPostgres": {
-        "headline": "New to Cosmos DB PGSQL?",
-        "body": "Welcome! If you are new to Cosmos DB PGSQL and need help with getting started, here is where you can find sample data, query."
+        "headline": "不熟悉 Cosmos DB PGSQL?",
+        "body": "欢迎!如果你不熟悉 Cosmos DB PGSQL，需要入门帮助，可在此处找到示例数据和查询。"
       },
       "resetPassword": {
-        "headline": "Create your password",
-        "body": "If you haven't changed your password yet, change it now."
+        "headline": "创建密码",
+        "body": "如果尚未更改密码，请立即更改。"
       },
       "coachMark": {
-        "headline": "Start with sample {{collectionName}}",
-        "body": "You will be guided to create a sample container with sample data, then we will give you a tour of data explorer. You can also cancel launching this tour and explore yourself"
+        "headline": "从示例 {{collectionName}} 开始",
+        "body": "系统将引导你创建包含示例数据的示例容器，然后带你了解数据资源管理器。你也可以取消此教程，改为自行探索"
       }
     },
     "sections": {
-      "recents": "Recents",
-      "clearRecents": "Clear Recents",
-      "top3": "Top 3 things you need to know",
-      "learningResources": "Learning Resources",
-      "nextSteps": "Next steps",
-      "tipsAndLearnMore": "Tips & learn more",
-      "notebook": "Notebook",
-      "needHelp": "Need help?"
+      "recents": "最近使用",
+      "clearRecents": "清除最近使用记录",
+      "top3": "你需要了解的三大要点",
+      "learningResources": "学习资源",
+      "nextSteps": "后续步骤",
+      "tipsAndLearnMore": "提示和详细信息",
+      "notebook": "笔记本",
+      "needHelp": "需要帮助?"
     },
     "top3Items": {
       "sql": {
         "advancedModeling": {
-          "title": "Advanced Modeling Patterns",
-          "description": "Learn advanced strategies to optimize your database."
+          "title": "高级建模模式",
+          "description": "了解用于优化数据库的高级策略。"
         },
         "partitioning": {
-          "title": "Partitioning Best Practices",
-          "description": "Learn to apply data model and partitioning strategies."
+          "title": "分区最佳做法",
+          "description": "了解如何应用数据模型和分区策略。"
         },
         "resourcePlanning": {
-          "title": "Plan Your Resource Requirements",
-          "description": "Get to know the different configuration choices."
+          "title": "规划资源需求",
+          "description": "了解不同的配置选择。"
         }
       },
       "mongo": {
         "whatIsMongo": {
-          "title": "What is the MongoDB API?",
-          "description": "Understand Azure Cosmos DB for MongoDB and its features."
+          "title": "什么是 MongoDB API?",
+          "description": "了解 Azure Cosmos DB for MongoDB 及其功能。"
         },
         "features": {
-          "title": "Features and Syntax",
-          "description": "Discover the advantages and features"
+          "title": "功能和语法",
+          "description": "了解优势和功能"
         },
         "migrate": {
-          "title": "Migrate Your Data",
-          "description": "Pre-migration steps for moving data"
+          "title": "迁移数据",
+          "description": "用于移动数据的迁移前步骤"
         }
       },
       "cassandra": {
         "buildJavaApp": {
-          "title": "Build a Java App",
-          "description": "Create a Java app using an SDK."
+          "title": "构建 Java 应用",
+          "description": "使用 SDK 创建 Java 应用。"
         },
         "partitioning": {
-          "title": "Partitioning Best Practices",
-          "description": "Learn how partitioning works."
+          "title": "分区最佳做法",
+          "description": "了解分区的工作原理。"
         },
         "requestUnits": {
-          "title": "Request Units (RUs)",
-          "description": "Understand RU charges."
+          "title": "请求单位(RU)",
+          "description": "了解 RU 费用。"
         }
       },
       "gremlin": {
         "dataModeling": {
-          "title": "Data Modeling",
-          "description": "Graph data modeling recommendations"
+          "title": "数据建模",
+          "description": "图形数据建模建议"
         },
         "partitioning": {
-          "title": "Partitioning Best Practices",
-          "description": "Learn how partitioning works"
+          "title": "分区最佳做法",
+          "description": "了解分区的工作原理"
         },
         "queryData": {
-          "title": "Query Data",
-          "description": "Querying data with Gremlin"
+          "title": "查询数据",
+          "description": "使用 Gremlin 查询数据"
         }
       },
       "tables": {
         "whatIsTable": {
-          "title": "What is the Table API?",
-          "description": "Understand Azure Cosmos DB for Table and its features"
+          "title": "什么是 Table API?",
+          "description": "了解 Azure Cosmos DB for Table 及其功能"
         },
         "migrate": {
-          "title": "Migrate your data",
-          "description": "Learn how to migrate your data"
+          "title": "迁移数据",
+          "description": "了解如何迁移数据"
         },
         "faq": {
-          "title": "Azure Cosmos DB for Table FAQs",
-          "description": "Common questions about Azure Cosmos DB for Table"
+          "title": "Azure Cosmos DB for Table 常见问题解答",
+          "description": "有关 Azure Cosmos DB for Table 的常见问题"
         }
       }
     },
     "learningResources": {
       "shortcuts": {
-        "title": "Data Explorer keyboard shortcuts",
-        "description": "Learn keyboard shortcuts to navigate Data Explorer."
+        "title": "数据资源管理器键盘快捷方式",
+        "description": "了解浏览数据资源管理器的键盘快捷方式。"
       },
       "liveTv": {
-        "title": "Learn the Fundamentals",
-        "description": "Watch Azure Cosmos DB Live TV show introductory and how to videos."
+        "title": "了解基础知识",
+        "description": "观看 Azure Cosmos DB 直播节目介绍及操作方法视频。"
       },
       "sql": {
         "sdk": {
-          "title": "Get Started using an SDK",
-          "description": "Learn about the Azure Cosmos DB SDK."
+          "title": "开始使用 SDK",
+          "description": "了解 Azure Cosmos DB SDK。"
         },
         "migrate": {
-          "title": "Migrate Your Data",
-          "description": "Migrate data using Azure services and open-source solutions."
+          "title": "迁移数据",
+          "description": "使用 Azure 服务和开源解决方案迁移数据。"
         }
       },
       "mongo": {
         "nodejs": {
-          "title": "Build an app with Node.js",
-          "description": "Create a Node.js app."
+          "title": "使用 Node.js 构建应用",
+          "description": "创建 Node.js 应用。"
         },
         "gettingStarted": {
-          "title": "Getting Started Guide",
-          "description": "Learn the basics to get started."
+          "title": "入门指南",
+          "description": "了解入门的基础知识。"
         }
       },
       "cassandra": {
         "createContainer": {
-          "title": "Create a Container",
-          "description": "Get to know the create a container options."
+          "title": "创建容器",
+          "description": "了解创建容器的选项。"
         },
         "throughput": {
-          "title": "Provision Throughput",
-          "description": "Learn how to configure throughput."
+          "title": "预配吞吐量",
+          "description": "了解如何配置吞吐量。"
         }
       },
       "gremlin": {
         "getStarted": {
-          "title": "Get Started ",
-          "description": "Create, query, and traverse using the Gremlin console"
+          "title": "开始 ",
+          "description": "使用 Gremlin 控制台执行创建、查询和遍历"
         },
         "importData": {
-          "title": "Import Graph Data",
-          "description": "Learn Bulk ingestion data using BulkExecutor"
+          "title": "导入图形数据",
+          "description": "了解如何使用 BulkExecutor 批量引入数据"
         }
       },
       "tables": {
         "dotnet": {
-          "title": "Build a .NET App",
-          "description": "How to access Azure Cosmos DB for Table from a .NET app."
+          "title": "构建 .NET 应用",
+          "description": "如何从 .NET 应用访问 Azure Cosmos DB for Table。"
         },
         "java": {
-          "title": "Build a Java App",
-          "description": "Create a Azure Cosmos DB for Table app with Java SDK "
+          "title": "构建 Java 应用",
+          "description": "使用 Java SDK 创建 Azure Cosmos DB for Table 应用 "
         }
       }
     },
     "nextStepItems": {
       "postgres": {
-        "dataModeling": "Data Modeling",
-        "distributionColumn": "How to choose a Distribution Column",
-        "buildApps": "Build Apps with Python/Java/Django"
+        "dataModeling": "数据建模",
+        "distributionColumn": "如何选择分布列",
+        "buildApps": "使用 Python/Java/Django 构建应用"
       },
       "vcoreMongo": {
-        "migrateData": "Migrate Data",
-        "vectorSearch": "Build AI apps with Vector Search",
-        "buildApps": "Build Apps with Nodejs"
+        "migrateData": "迁移数据",
+        "vectorSearch": "使用矢量搜索功能构建 AI 应用",
+        "buildApps": "使用 Nodejs 构建应用"
       }
     },
     "learnMoreItems": {
       "postgres": {
-        "performanceTuning": "Performance Tuning",
-        "diagnosticQueries": "Useful Diagnostic Queries",
-        "sqlReference": "Distributed SQL Reference"
+        "performanceTuning": "性能优化",
+        "diagnosticQueries": "有用的诊断查询",
+        "sqlReference": "分布式 SQL 参考"
       },
       "vcoreMongo": {
-        "vectorSearch": "Vector Search",
-        "textIndexing": "Text Indexing",
-        "troubleshoot": "Troubleshoot common issues"
+        "vectorSearch": "矢量搜索",
+        "textIndexing": "文本索引",
+        "troubleshoot": "对常见问题进行故障排除"
       }
     },
     "fabric": {
-      "buildTitle": "Build your database",
-      "useTitle": "Use your database",
+      "buildTitle": "生成数据库",
+      "useTitle": "使用你的数据库",
       "newContainer": {
-        "title": "New container",
-        "description": "Create a destination container to store your data"
+        "title": "新容器",
+        "description": "创建用于存储数据的目标容器"
       },
       "sampleData": {
-        "title": "Sample Data",
-        "description": "Load sample data in your database"
+        "title": "示例数据",
+        "description": "在数据库中加载示例数据"
       },
       "sampleVectorData": {
-        "title": "Sample Vector Data",
-        "description": "Load sample vector data with text-embedding-ada-002"
+        "title": "示例矢量数据",
+        "description": "使用 text-embedding-ada-002 加载示例矢量数据"
       },
       "appDevelopment": {
-        "title": "App development",
-        "description": "Start here to use an SDK to build your apps"
+        "title": "应用开发",
+        "description": "从此处开始使用 SDK 来构建应用"
       },
       "sampleGallery": {
-        "title": "Sample Gallery",
-        "description": "Get real-world end-to-end samples"
+        "title": "示例库",
+        "description": "获取真实的端到端示例"
       }
     },
     "sampleDataDialog": {
-      "title": "Sample Data",
-      "startButton": "Start",
-      "createPrompt": "Create a container \"{{containerName}}\" and import sample data into it. This may take a few minutes.",
-      "creatingContainer": "Creating container \"{{containerName}}\"...",
-      "importingData": "Importing data into \"{{containerName}}\"...",
-      "success": "Successfully created \"{{containerName}}\" with sample data.",
-      "errorContainerExists": "The container \"{{containerName}}\" in database \"{{databaseName}}\" already exists. Please delete it and retry.",
-      "errorCreateContainer": "Failed to create container: {{error}}",
-      "errorImportData": "Failed to import data: {{error}}"
+      "title": "示例数据",
+      "startButton": "开始",
+      "createPrompt": "创建容器“{{containerName}}”，并将示例数据导入其中。这可能需要几分钟时间。",
+      "creatingContainer": "正在创建容器“{{containerName}}”...",
+      "importingData": "正在将数据导入“{{containerName}}”...",
+      "success": "已成功使用示例数据创建“{{containerName}}”。",
+      "errorContainerExists": "数据库“{{databaseName}}”中的容器“{{containerName}}”已存在。请将其删除，然后重试。",
+      "errorCreateContainer": "未能创建容器: {{error}}",
+      "errorImportData": "未能导入数据: {{error}}"
     }
   }
 }
