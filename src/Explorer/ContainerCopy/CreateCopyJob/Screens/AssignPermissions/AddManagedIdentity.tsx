@@ -12,7 +12,12 @@ import useToggle from "./hooks/useToggle";
 const managedIdentityTooltip = (
   <Text>
     {ContainerCopyMessages.addManagedIdentity.tooltip.content} &nbsp;
-    <Link href={ContainerCopyMessages.addManagedIdentity.tooltip.href} target="_blank" rel="noopener noreferrer">
+    <Link
+      style={{ color: "var(--colorBrandForeground1)" }}
+      href={ContainerCopyMessages.addManagedIdentity.tooltip.href}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
       {ContainerCopyMessages.addManagedIdentity.tooltip.hrefText}
     </Link>
   </Text>
@@ -26,7 +31,7 @@ const AddManagedIdentity: React.FC<AddManagedIdentityProps> = () => {
 
   return (
     <Stack className="addManagedIdentityContainer" tokens={{ childrenGap: 15, padding: "0 0 0 20px" }}>
-      <Text>
+      <Text className="themeText">
         {ContainerCopyMessages.addManagedIdentity.description}&ensp;
         <Link href={ContainerCopyMessages.addManagedIdentity.descriptionHref} target="_blank" rel="noopener noreferrer">
           {ContainerCopyMessages.addManagedIdentity.descriptionHrefText}
@@ -35,6 +40,7 @@ const AddManagedIdentity: React.FC<AddManagedIdentityProps> = () => {
         <InfoTooltip content={managedIdentityTooltip} />
       </Text>
       <Toggle
+        data-test="btn-toggle"
         checked={systemAssigned}
         onText={ContainerCopyMessages.toggleBtn.onText}
         offText={ContainerCopyMessages.toggleBtn.offText}

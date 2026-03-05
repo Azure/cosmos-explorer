@@ -1,13 +1,13 @@
 import Explorer from "Explorer/Explorer";
 import React from "react";
 import { userContext } from "UserContext";
+import { getDataTransferJobs } from "../../../Common/dataAccess/dataTransfers";
 import { logError } from "../../../Common/Logger";
 import { useSidePanel } from "../../../hooks/useSidePanel";
 import {
   cancel,
   complete,
   create,
-  listByDatabaseAccount,
   pause,
   resume,
 } from "../../../Utils/arm/generatedClients/dataTransferService/dataTransferJobs";
@@ -63,14 +63,8 @@ export const getCopyJobs = async (): Promise<CopyJobType[]> => {
     const { subscriptionId, resourceGroup, accountName } = getAccountDetailsFromResourceId(
       userContext.databaseAccount?.id || "",
     );
-    const response = await listByDatabaseAccount(
-      subscriptionId,
-      resourceGroup,
-      accountName,
-      copyJobsAbortController.signal,
-    );
+    const jobs = await getDataTransferJobs(subscriptionId, resourceGroup, accountName, copyJobsAbortController.signal);
 
-    const jobs = response.value || [];
     if (!Array.isArray(jobs)) {
       throw new Error("Invalid migration job status response: Expected an array of jobs.");
     }

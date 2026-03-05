@@ -1,0 +1,14 @@
+{
+  "Projects": [
+    {
+      "LanguageSet": "Azure_LanguagesExt",
+      "LocItems": [
+        {
+          "SourceFile": "src\\Localization\\en\\Resources.json",
+          "CopyOption": "LangIDOnPath",
+          "OutputPath": "src\\Localization"
+        }
+      ]
+    }
+  ]
+}

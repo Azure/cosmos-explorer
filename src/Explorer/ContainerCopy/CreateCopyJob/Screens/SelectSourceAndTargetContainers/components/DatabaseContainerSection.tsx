@@ -15,6 +15,7 @@ export const DatabaseContainerSection = ({
   containerDisabled,
   containerOnChange,
   handleOnDemandCreateContainer,
+  sectionType,
 }: DatabaseContainerSectionProps) => (
   <Stack tokens={{ childrenGap: 15 }} className="databaseContainerSection">
     <label className="subHeading">{heading}</label>
@@ -27,6 +28,7 @@ export const DatabaseContainerSection = ({
         disabled={!!databaseDisabled}
         selectedKey={selectedDatabase}
         onChange={databaseOnChange}
+        data-test={`${sectionType}-databaseDropdown`}
       />
     </FieldRow>
     <FieldRow label={ContainerCopyMessages.containerDropdownLabel}>
@@ -39,9 +41,14 @@ export const DatabaseContainerSection = ({
           disabled={!!containerDisabled}
           selectedKey={selectedContainer}
           onChange={containerOnChange}
+          data-test={`${sectionType}-containerDropdown`}
         />
         {handleOnDemandCreateContainer && (
-          <ActionButton className="create-container-link-btn" onClick={() => handleOnDemandCreateContainer()}>
+          <ActionButton
+            className="create-container-link-btn"
+            style={{ color: "var(--colorBrandForeground1)" }}
+            onClick={() => handleOnDemandCreateContainer()}
+          >
             {ContainerCopyMessages.createContainerButtonLabel}
           </ActionButton>
         )}

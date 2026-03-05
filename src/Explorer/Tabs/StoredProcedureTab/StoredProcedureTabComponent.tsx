@@ -435,7 +435,6 @@ export default class StoredProcedureTabComponent extends React.Component<
             });
             useCommandBar.getState().setContextButtons(this.getTabsButtons());
           }, 100);
-
           return createdResource;
         },
         (createError) => {

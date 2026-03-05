@@ -113,7 +113,7 @@ export class ContainerSampleGenerator {
               ? await createMongoDocument(collection.databaseId, collection, shardKey, doc)
               : await createDocument(collection, doc);
           } catch (error) {
-            NotificationConsoleUtils.logConsoleError(error);
+            NotificationConsoleUtils.logConsoleError(error instanceof Error ? error.message : String(error));
           }
         }),
       );

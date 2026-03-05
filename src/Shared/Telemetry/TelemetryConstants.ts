@@ -2,6 +2,7 @@
 // Some of the enums names are used in Fabric. Please do not rename them.
 export enum Action {
   CollapseTreeNode,
+  MetricsScenario,
   CreateCollection, // Used in Fabric. Please do not rename.
   CreateGlobalSecondaryIndex,
   CreateDocument, // Used in Fabric. Please do not rename.

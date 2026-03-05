@@ -1,0 +1,13 @@
+{
+  "splashScreen": {
+    "title": {
+      "default": "Vítá vás Azure Cosmos DB",
+      "postgres": "Vítá vás Azure Cosmos DB for PostgreSQL",
+      "vcoreMongo": "Vítá vás Azure DocumentDB (s kompatibilitou MongoDB)"
+    },
+    "subtitle": {
+      "default": "Globálně distribuovaná databázová služba s více modely pro libovolné škálování",
+      "getStarted": "Začněte s našimi ukázkovými datovými sadami, dokumentací a dalšími nástroji."
+    }
+  }
+}

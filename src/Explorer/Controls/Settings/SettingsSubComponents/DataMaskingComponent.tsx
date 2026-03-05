@@ -1,12 +1,10 @@
 import { MessageBar, MessageBarType, Stack } from "@fluentui/react";
 import * as monaco from "monaco-editor";
 import * as React from "react";
-import * as Constants from "../../../../Common/Constants";
 import * as DataModels from "../../../../Contracts/DataModels";
-import { isCapabilityEnabled } from "../../../../Utils/CapabilityUtils";
 import { loadMonaco } from "../../../LazyMonaco";
 import { titleAndInputStackProps, unsavedEditorWarningMessage } from "../SettingsRenderUtils";
-import { isDirty as isContentDirty } from "../SettingsUtils";
+import { isDirty as isContentDirty, isDataMaskingEnabled } from "../SettingsUtils";
 
 export interface DataMaskingComponentProps {
   shouldDiscardDataMasking: boolean;
@@ -24,16 +22,8 @@ interface DataMaskingComponentState {
 }
 
 const emptyDataMaskingPolicy: DataModels.DataMaskingPolicy = {
-  includedPaths: [
-    {
-      path: "/",
-      strategy: "Default",
-      startPosition: 0,
-      length: -1,
-    },
-  ],
+  includedPaths: [],
   excludedPaths: [],
-  isPolicyEnabled: true,
 };
 
 export class DataMaskingComponent extends React.Component<DataMaskingComponentProps, DataMaskingComponentState> {
@@ -140,7 +130,7 @@ export class DataMaskingComponent extends React.Component<DataMaskingComponentPr
   };
 
   public render(): JSX.Element {
-    if (!isCapabilityEnabled(Constants.CapabilityNames.EnableDynamicDataMasking)) {
+    if (!isDataMaskingEnabled(this.props.dataMaskingContent)) {
       return null;
     }
 

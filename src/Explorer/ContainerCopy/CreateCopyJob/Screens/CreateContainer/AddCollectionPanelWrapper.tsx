@@ -41,7 +41,7 @@ const AddCollectionPanelWrapper: React.FunctionComponent<AddCollectionPanelWrapp
   return (
     <Stack className="addCollectionPanelWrapper">
       <Stack.Item className="addCollectionPanelHeader">
-        <Text>{ContainerCopyMessages.createNewContainerSubHeading}</Text>
+        <Text className="themeText">{ContainerCopyMessages.createNewContainerSubHeading}</Text>
       </Stack.Item>
       <Stack.Item className="addCollectionPanelBody">
         <AddCollectionPanel explorer={explorer} isCopyJobFlow={true} onSubmitSuccess={handleAddCollectionSuccess} />

@@ -475,6 +475,11 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
         className="panelGroupSpacing"
       >
         <Text
+          style={
+            {
+              "color": "var(--colorNeutralForeground1)",
+            }
+          }
           variant="small"
         >
           Azure Synapse Link is required for creating an analytical store

@@ -6,7 +6,7 @@ exports[`SelectAccount Component Rendering should render correctly with snapshot
   data-test="Panel:SelectAccountContainer"
 >
   <span
-    class="css-110"
+    class="themeText css-110"
   >
     Please select a source account from which to copy.
   </span>
@@ -21,14 +21,9 @@ exports[`SelectAccount Component Rendering should render correctly with snapshot
     Account Dropdown
   </div>
   <div
-    data-testid="migration-type-checkbox"
+    data-testid="migration-type"
   >
-    <input
-      aria-label="Migration Type Checkbox"
-      data-testid="migration-checkbox-input"
-      type="checkbox"
-    />
-    Copy container in offline mode
+    Migration Type
   </div>
 </div>
 `;

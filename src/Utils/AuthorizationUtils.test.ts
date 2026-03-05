@@ -27,7 +27,7 @@ describe("AuthorizationUtils", () => {
         enableKoResourceTree: false,
         enableThroughputBuckets: false,
         hostedDataExplorer: false,
-        sandboxNotebookOutputs: false,
+        sandboxNotebookOutputs: true,
         showMinRUSurvey: false,
         ttl90Days: false,
         enableThroughputCap: false,
@@ -43,6 +43,7 @@ describe("AuthorizationUtils", () => {
         partitionKeyDefault: false,
         partitionKeyDefault2: false,
         notebooksDownBanner: false,
+        enableRestoreContainer: false,
       },
     });
   };
