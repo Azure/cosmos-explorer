@@ -9,9 +9,10 @@ import {
   TestAccount,
   waitForApiResponse,
 } from "../../fx";
-import { createMultipleTestContainers } from "../../testData";
+import { createMultipleTestContainers, TestContainerContext } from "../../testData";
 
 test.describe("Container Copy - Offline Migration", () => {
+  let contexts: TestContainerContext[];
   let page: Page;
   let wrapper: Locator;
   let panel: Locator;
@@ -22,7 +23,7 @@ test.describe("Container Copy - Offline Migration", () => {
   let expectedCopyJobNameInitial: string;
 
   test.beforeEach("Setup for offline migration test", async ({ browser }) => {
-    await createMultipleTestContainers({ accountType: TestAccount.SQLContainerCopyOnly, containerCount: 2 });
+    contexts = await createMultipleTestContainers({ accountType: TestAccount.SQLContainerCopyOnly, containerCount: 2 });
 
     page = await browser.newPage();
     ({ wrapper, frame } = await ContainerCopy.open(page, TestAccount.SQLContainerCopyOnly));
@@ -33,6 +34,7 @@ test.describe("Container Copy - Offline Migration", () => {
   test.afterEach("Cleanup after offline migration test", async () => {
     await page.unroute(/.*/, (route) => route.continue());
     await page.close();
+    await Promise.all(contexts.map((context) => context?.dispose()));
   });
 
   test("Successfully create and manage offline migration copy job", async () => {

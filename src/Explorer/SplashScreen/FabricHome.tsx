@@ -6,6 +6,8 @@ import { DocumentAddRegular, LinkMultipleRegular, OpenRegular } from "@fluentui/
 import { SampleDataConfiguration, SampleDataImportDialog } from "Explorer/SplashScreen/SampleDataImportDialog";
 import { SampleDataFile } from "Explorer/SplashScreen/SampleUtil";
 import { CosmosFluentProvider } from "Explorer/Theme/ThemeUtil";
+import { Keys } from "Localization/Keys.generated";
+import { t } from "Localization/t";
 import { isFabricNative, isFabricNativeReadOnly } from "Platform/Fabric/FabricUtil";
 import * as React from "react";
 import { userContext } from "UserContext";
@@ -159,8 +161,8 @@ export const FabricHomeScreen: React.FC<SplashScreenProps> = (props: SplashScree
   const getSplashScreenButtons = (): JSX.Element => {
     const buttons: FabricHomeScreenButtonProps[] = [
       {
-        title: "New container",
-        description: "Create a destination container to store your data",
+        title: t(Keys.splashScreen.fabric.newContainer.title),
+        description: t(Keys.splashScreen.fabric.newContainer.description),
         icon: <DocumentAddRegular />,
         onClick: () => {
           const databaseId = isFabricNative() ? userContext.fabricContext?.databaseName : undefined;
@@ -168,8 +170,8 @@ export const FabricHomeScreen: React.FC<SplashScreenProps> = (props: SplashScree
         },
       },
       {
-        title: "Sample Data",
-        description: "Load sample data in your database",
+        title: t(Keys.splashScreen.fabric.sampleData.title),
+        description: t(Keys.splashScreen.fabric.sampleData.description),
         icon: <img src={CosmosDbBlackIcon} alt={"Azure Cosmos DB icon"} aria-hidden="true" />,
         onClick: () => {
           setSelectedSampleDataConfiguration({
@@ -181,8 +183,8 @@ export const FabricHomeScreen: React.FC<SplashScreenProps> = (props: SplashScree
         },
       },
       {
-        title: "Sample Vector Data",
-        description: "Load sample vector data with text-embedding-ada-002",
+        title: t(Keys.splashScreen.fabric.sampleVectorData.title),
+        description: t(Keys.splashScreen.fabric.sampleVectorData.description),
         icon: <img src={AzureOpenAiIcon} alt={"Azure Open AI icon"} aria-hidden="true" />,
         onClick: () => {
           setSelectedSampleDataConfiguration({
@@ -194,14 +196,14 @@ export const FabricHomeScreen: React.FC<SplashScreenProps> = (props: SplashScree
         },
       },
       {
-        title: "App development",
-        description: "Start here to use an SDK to build your apps",
+        title: t(Keys.splashScreen.fabric.appDevelopment.title),
+        description: t(Keys.splashScreen.fabric.appDevelopment.description),
         icon: <LinkMultipleRegular />,
         onClick: () => window.open("https://aka.ms/cosmosdbfabricsdk", "_blank"),
       },
       {
-        title: "Sample Gallery",
-        description: "Get real-world end-to-end samples",
+        title: t(Keys.splashScreen.fabric.sampleGallery.title),
+        description: t(Keys.splashScreen.fabric.sampleGallery.description),
         icon: <img src={GithubIcon} alt={"GitHub icon"} aria-hidden="true" />,
         onClick: () => window.open("https://aka.ms/CosmosFabricSamplesGallery", "_blank"),
       },
@@ -222,7 +224,9 @@ export const FabricHomeScreen: React.FC<SplashScreenProps> = (props: SplashScree
     );
   };
 
-  const title = isFabricNativeReadOnly() ? "Use your database" : "Build your database";
+  const title = isFabricNativeReadOnly()
+    ? t(Keys.splashScreen.fabric.useTitle)
+    : t(Keys.splashScreen.fabric.buildTitle);
   return (
     <>
       <CosmosFluentProvider className={styles.homeContainer}>
@@ -238,9 +242,9 @@ export const FabricHomeScreen: React.FC<SplashScreenProps> = (props: SplashScree
         {getSplashScreenButtons()}
         {
           <div className={styles.footer}>
-            Need help?{" "}
+            {t(Keys.splashScreen.sections.needHelp)}{" "}
             <Link href="https://learn.microsoft.com/fabric/database/cosmos-db/overview" target="_blank">
-              Learn more <OpenRegular />
+              {t(Keys.common.learnMore)} <OpenRegular />
             </Link>
           </div>
         }
