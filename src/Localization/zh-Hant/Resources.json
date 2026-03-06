@@ -7,7 +7,7 @@
     "delete": "刪除",
     "update": "更新",
     "discard": "捨棄",
-    "execute": "Execute",
+    "execute": "執行",
     "loading": "正在載入",
     "loadingEllipsis": "正在載入...",
     "next": "下一個",
@@ -43,253 +43,253 @@
       "getStarted": "開始使用我們的樣本資料集、文件和其他工具。"
     },
     "quickStart": {
-      "title": "Launch quick start",
-      "description": "Launch a quick start tutorial to get started with sample data"
+      "title": "啟動快速入門",
+      "description": "啟動快速入門教學課程，以開始使用範例資料"
     },
     "newCollection": {
-      "title": "New {{collectionName}}",
-      "description": "Create a new container for storage and throughput"
+      "title": "新增 {{collectionName}}",
+      "description": "建立用於儲存空間和輸送量的新容器"
     },
     "samplesGallery": {
-      "title": "Azure Cosmos DB Samples Gallery",
-      "description": "Discover samples that showcase scalable, intelligent app patterns. Try one now to see how fast you can go from concept to code with Cosmos DB"
+      "title": "Azure Cosmos DB 範例圖庫",
+      "description": "探索展示可擴展的智慧型應用模式的範例。立即嘗試，體驗使用 Cosmos DB 從概念到程式碼實作可以有多快速"
     },
     "connectCard": {
-      "title": "Connect",
-      "description": "Prefer using your own choice of tooling? Find the connection string you need to connect",
+      "title": "連線",
+      "description": "偏好使用您自己的工具?找到您需要的連接字串以進行連線",
       "pgAdmin": {
-        "title": "Connect with pgAdmin",
-        "description": "Prefer pgAdmin? Find your connection strings here"
+        "title": "使用 pgAdmin 連結",
+        "description": "偏好使用 pgAdmin?請在這裡尋找您的連接字串"
       },
       "vsCode": {
         "title": "與 VS Code 連線",
-        "description": "Query and Manage your MongoDB and DocumentDB clusters in Visual Studio Code"
+        "description": "在 Visual Studio Code 中查詢並管理您的 MongoDB 與 DocumentDB 叢集"
       }
     },
     "shell": {
       "postgres": {
-        "title": "PostgreSQL Shell",
-        "description": "Create table and interact with data using PostgreSQL's shell interface"
+        "title": "PostgreSQL 殼層",
+        "description": "建立資料表並使用 PostgreSQL 殼層介面與資料互動"
       },
       "vcoreMongo": {
-        "title": "Mongo Shell",
-        "description": "Create a collection and interact with data using MongoDB's shell interface"
+        "title": "Mongo 殼層",
+        "description": "建立集合並使用 MongoDB 殼層介面與資料互動"
       }
     },
     "teachingBubble": {
       "newToPostgres": {
-        "headline": "New to Cosmos DB PGSQL?",
-        "body": "Welcome! If you are new to Cosmos DB PGSQL and need help with getting started, here is where you can find sample data, query."
+        "headline": "首次使用 Cosmos DB PGSQL?",
+        "body": "歡迎!如果您首次使用 Cosmos DB PGSQL，需要入門協助，這裡可找到範例資料與查詢範例。"
       },
       "resetPassword": {
-        "headline": "Create your password",
-        "body": "If you haven't changed your password yet, change it now."
+        "headline": "建立您的密碼",
+        "body": "如果您尚未變更密碼，請立即變更。"
       },
       "coachMark": {
-        "headline": "Start with sample {{collectionName}}",
-        "body": "You will be guided to create a sample container with sample data, then we will give you a tour of data explorer. You can also cancel launching this tour and explore yourself"
+        "headline": "從範例 {{collectionName}} 開始",
+        "body": "我們將引導您建立一個包含範例資料的容器，並帶您導覽資料總管。您也可以取消啟動此導覽，自行探索"
       }
     },
     "sections": {
-      "recents": "Recents",
-      "clearRecents": "Clear Recents",
-      "top3": "Top 3 things you need to know",
-      "learningResources": "Learning Resources",
-      "nextSteps": "Next steps",
-      "tipsAndLearnMore": "Tips & learn more",
-      "notebook": "Notebook",
-      "needHelp": "Need help?"
+      "recents": "最近項目",
+      "clearRecents": "清除最近項目",
+      "top3": "您需要知道的 3 大重點",
+      "learningResources": "學習資源",
+      "nextSteps": "後續步驟",
+      "tipsAndLearnMore": "提示與深入了解",
+      "notebook": "筆記本",
+      "needHelp": "是否需要協助?"
     },
     "top3Items": {
       "sql": {
         "advancedModeling": {
-          "title": "Advanced Modeling Patterns",
-          "description": "Learn advanced strategies to optimize your database."
+          "title": "進階模型化模式",
+          "description": "學習進階策略以最佳化您的資料庫效能。"
         },
         "partitioning": {
-          "title": "Partitioning Best Practices",
-          "description": "Learn to apply data model and partitioning strategies."
+          "title": "資料分割的最佳做法",
+          "description": "學習套用資料模型與資料分割策略。"
         },
         "resourcePlanning": {
-          "title": "Plan Your Resource Requirements",
-          "description": "Get to know the different configuration choices."
+          "title": "規劃您的資源要求",
+          "description": "認識不同的設定選項。"
         }
       },
       "mongo": {
         "whatIsMongo": {
-          "title": "What is the MongoDB API?",
-          "description": "Understand Azure Cosmos DB for MongoDB and its features."
+          "title": "什麼是 MongoDB API?",
+          "description": "了解 Azure Cosmos DB for MongoDB 及其功能。"
         },
         "features": {
-          "title": "Features and Syntax",
-          "description": "Discover the advantages and features"
+          "title": "功能與語法",
+          "description": "探索優勢與功能"
         },
         "migrate": {
-          "title": "Migrate Your Data",
-          "description": "Pre-migration steps for moving data"
+          "title": "移轉您的資料",
+          "description": "移動資料前的預先移轉步驟"
         }
       },
       "cassandra": {
         "buildJavaApp": {
-          "title": "Build a Java App",
-          "description": "Create a Java app using an SDK."
+          "title": "建置 Java 應用程式",
+          "description": "使用 SDK 建立 Java 應用程式。"
         },
         "partitioning": {
-          "title": "Partitioning Best Practices",
-          "description": "Learn how partitioning works."
+          "title": "資料分割的最佳做法",
+          "description": "了解資料分割的運作方式。"
         },
         "requestUnits": {
-          "title": "Request Units (RUs)",
-          "description": "Understand RU charges."
+          "title": "要求單位 (RU)",
+          "description": "了解 RU 的費用。"
         }
       },
       "gremlin": {
         "dataModeling": {
-          "title": "Data Modeling",
-          "description": "Graph data modeling recommendations"
+          "title": "資料模型化",
+          "description": "圖形資料模型化建議"
         },
         "partitioning": {
-          "title": "Partitioning Best Practices",
-          "description": "Learn how partitioning works"
+          "title": "資料分割的最佳做法",
+          "description": "了解資料分割的運作方式"
         },
         "queryData": {
-          "title": "Query Data",
-          "description": "Querying data with Gremlin"
+          "title": "查詢資料",
+          "description": "正在使用 Gremlin 查詢資料"
         }
       },
       "tables": {
         "whatIsTable": {
-          "title": "What is the Table API?",
-          "description": "Understand Azure Cosmos DB for Table and its features"
+          "title": "什麼是 Table API?",
+          "description": "了解 Azure Cosmos DB for Table 及其功能"
         },
         "migrate": {
-          "title": "Migrate your data",
-          "description": "Learn how to migrate your data"
+          "title": "移轉您的資料",
+          "description": "深入了解如何移轉資料"
         },
         "faq": {
-          "title": "Azure Cosmos DB for Table FAQs",
-          "description": "Common questions about Azure Cosmos DB for Table"
+          "title": "Azure Cosmos DB for Table 常見問題解答",
+          "description": "關於 Azure Cosmos DB for Table 的常見問題"
         }
       }
     },
     "learningResources": {
       "shortcuts": {
-        "title": "Data Explorer keyboard shortcuts",
-        "description": "Learn keyboard shortcuts to navigate Data Explorer."
+        "title": "[資料總管] 鍵盤快速鍵",
+        "description": "學習使用快捷鍵來瀏覽 [資料總管]。"
       },
       "liveTv": {
-        "title": "Learn the Fundamentals",
-        "description": "Watch Azure Cosmos DB Live TV show introductory and how to videos."
+        "title": "了解基礎知識",
+        "description": "觀看 Azure Cosmos DB 直播節目，了解入門與操作教學影片。"
       },
       "sql": {
         "sdk": {
-          "title": "Get Started using an SDK",
-          "description": "Learn about the Azure Cosmos DB SDK."
+          "title": "開始使用 SDK",
+          "description": "深入了解 Azure Cosmos DB SDK。"
         },
         "migrate": {
-          "title": "Migrate Your Data",
-          "description": "Migrate data using Azure services and open-source solutions."
+          "title": "移轉您的資料",
+          "description": "使用 Azure 服務與開源解決方案來移轉資料。"
         }
       },
       "mongo": {
         "nodejs": {
-          "title": "Build an app with Node.js",
-          "description": "Create a Node.js app."
+          "title": "使用 Node.js 建置應用程式",
+          "description": "建立 Node.js 應用程式。"
         },
         "gettingStarted": {
-          "title": "Getting Started Guide",
-          "description": "Learn the basics to get started."
+          "title": "使用者入門指南",
+          "description": "學習基礎知識，以開始使用。"
         }
       },
       "cassandra": {
         "createContainer": {
-          "title": "Create a Container",
-          "description": "Get to know the create a container options."
+          "title": "建立容器",
+          "description": "了解建立容器的選項。"
         },
         "throughput": {
-          "title": "Provision Throughput",
-          "description": "Learn how to configure throughput."
+          "title": "佈建輸送量",
+          "description": "了解如何設定輸送量。"
         }
       },
       "gremlin": {
         "getStarted": {
-          "title": "Get Started ",
-          "description": "Create, query, and traverse using the Gremlin console"
+          "title": "開始使用 ",
+          "description": "使用 Gremlin 控制台建立、查詢及進行遍歷作業"
         },
         "importData": {
-          "title": "Import Graph Data",
-          "description": "Learn Bulk ingestion data using BulkExecutor"
+          "title": "匯入圖形資料",
+          "description": "使用 BulkExecutor 學習批次資料攝取"
         }
       },
       "tables": {
         "dotnet": {
-          "title": "Build a .NET App",
-          "description": "How to access Azure Cosmos DB for Table from a .NET app."
+          "title": "建置 .NET 應用程式",
+          "description": "如何從 .NET 應用程式存取 Azure Cosmos DB for Table。"
         },
         "java": {
-          "title": "Build a Java App",
-          "description": "Create a Azure Cosmos DB for Table app with Java SDK "
+          "title": "建置 Java 應用程式",
+          "description": "使用 Java SDK 建立 Azure Cosmos DB for Table 應用程式 "
         }
       }
     },
     "nextStepItems": {
       "postgres": {
-        "dataModeling": "Data Modeling",
-        "distributionColumn": "How to choose a Distribution Column",
-        "buildApps": "Build Apps with Python/Java/Django"
+        "dataModeling": "資料模型化",
+        "distributionColumn": "如何選擇分佈欄位",
+        "buildApps": "使用 Python/Java/Django 建置應用程式"
       },
       "vcoreMongo": {
-        "migrateData": "Migrate Data",
-        "vectorSearch": "Build AI apps with Vector Search",
-        "buildApps": "Build Apps with Nodejs"
+        "migrateData": "移轉資料",
+        "vectorSearch": "使用向量搜尋建置 AI 應用程式",
+        "buildApps": "使用 Node.js 建置應用程式"
       }
     },
     "learnMoreItems": {
       "postgres": {
-        "performanceTuning": "Performance Tuning",
-        "diagnosticQueries": "Useful Diagnostic Queries",
-        "sqlReference": "Distributed SQL Reference"
+        "performanceTuning": "效能微調",
+        "diagnosticQueries": "實用診斷查詢",
+        "sqlReference": "分散式 SQL 參考"
       },
       "vcoreMongo": {
-        "vectorSearch": "Vector Search",
-        "textIndexing": "Text Indexing",
-        "troubleshoot": "Troubleshoot common issues"
+        "vectorSearch": "向量搜尋",
+        "textIndexing": "文字索引",
+        "troubleshoot": "疑難排解常見問題"
       }
     },
     "fabric": {
-      "buildTitle": "Build your database",
-      "useTitle": "Use your database",
+      "buildTitle": "建立資料庫",
+      "useTitle": "使用您的資料庫",
       "newContainer": {
-        "title": "New container",
-        "description": "Create a destination container to store your data"
+        "title": "新容器",
+        "description": "建立目的地容器以儲存您的資料"
       },
       "sampleData": {
-        "title": "Sample Data",
-        "description": "Load sample data in your database"
+        "title": "範例資料",
+        "description": "在資料庫中載入範例資料"
       },
       "sampleVectorData": {
-        "title": "Sample Vector Data",
-        "description": "Load sample vector data with text-embedding-ada-002"
+        "title": "範例向量資料",
+        "description": "以 text-embedding-ada-002 載入範例向量資料"
       },
       "appDevelopment": {
-        "title": "App development",
-        "description": "Start here to use an SDK to build your apps"
+        "title": "應用程式開發",
+        "description": "從這裡開始，使用 SDK 建置您的應用程式"
       },
       "sampleGallery": {
-        "title": "Sample Gallery",
-        "description": "Get real-world end-to-end samples"
+        "title": "範例圖庫",
+        "description": "取得真實世界的端對端範例"
       }
     },
     "sampleDataDialog": {
-      "title": "Sample Data",
-      "startButton": "Start",
-      "createPrompt": "Create a container \"{{containerName}}\" and import sample data into it. This may take a few minutes.",
-      "creatingContainer": "Creating container \"{{containerName}}\"...",
-      "importingData": "Importing data into \"{{containerName}}\"...",
-      "success": "Successfully created \"{{containerName}}\" with sample data.",
-      "errorContainerExists": "The container \"{{containerName}}\" in database \"{{databaseName}}\" already exists. Please delete it and retry.",
-      "errorCreateContainer": "Failed to create container: {{error}}",
-      "errorImportData": "Failed to import data: {{error}}"
+      "title": "範例資料",
+      "startButton": "開始",
+      "createPrompt": "建立容器「{{containerName}}」並匯入範例資料至其中。這可能需要幾分鐘的時間。",
+      "creatingContainer": "正在建立容器「{{containerName}}」...",
+      "importingData": "正在將資料匯入「{{containerName}}」...",
+      "success": "已成功使用範例資料建立「{{containerName}}」。",
+      "errorContainerExists": "資料庫「{{databaseName}}」中的容器「{{containerName}}」已存在。請刪除後重試。",
+      "errorCreateContainer": "無法建立容器: {{error}}",
+      "errorImportData": "無法匯入資料: {{error}}"
     }
   },
   "contextMenu": {

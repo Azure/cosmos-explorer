@@ -7,7 +7,7 @@
     "delete": "Törlés",
     "update": "Frissítés",
     "discard": "Elvetés",
-    "execute": "Execute",
+    "execute": "Végrehajtás",
     "loading": "Betöltés folyamatban",
     "loadingEllipsis": "Betöltés...",
     "next": "Következő",
@@ -43,253 +43,253 @@
       "getStarted": "Ismerje meg a minta adathalmazok, a dokumentáció és a további eszközök használatának első lépéseit."
     },
     "quickStart": {
-      "title": "Launch quick start",
-      "description": "Launch a quick start tutorial to get started with sample data"
+      "title": "A Rövid útmutató elindítása",
+      "description": "Gyors üzembe helyezési oktatóanyag indítása a mintaadatok használatának első lépéseihez"
     },
     "newCollection": {
-      "title": "New {{collectionName}}",
-      "description": "Create a new container for storage and throughput"
+      "title": "Új {{collectionName}}",
+      "description": "Új tároló létrehozása a tároláshoz és az átviteli sebességhez"
     },
     "samplesGallery": {
-      "title": "Azure Cosmos DB Samples Gallery",
-      "description": "Discover samples that showcase scalable, intelligent app patterns. Try one now to see how fast you can go from concept to code with Cosmos DB"
+      "title": "Azure Cosmos DB minták gyűjteménye",
+      "description": "Fedezzen fel skálázható, intelligens alkalmazásmintákat. Próbálja ki most, hogy lássa, milyen gyorsan válthat a fogalmakról a kódolásra a Cosmos DB használatával"
     },
     "connectCard": {
-      "title": "Connect",
-      "description": "Prefer using your own choice of tooling? Find the connection string you need to connect",
+      "title": "Csatlakozás",
+      "description": "Inkább a saját eszközeit használná? Találja meg a kapcsolati sztringet, amire a csatlakozáshoz szüksége van",
       "pgAdmin": {
-        "title": "Connect with pgAdmin",
-        "description": "Prefer pgAdmin? Find your connection strings here"
+        "title": "Kapcsolódás pgAdmin használatával",
+        "description": "Előnyben részesíti a pgAdmin-t? Itt találja a kapcsolati sztringeket"
       },
       "vsCode": {
         "title": "Csatlakozás VS Code használatával",
-        "description": "Query and Manage your MongoDB and DocumentDB clusters in Visual Studio Code"
+        "description": "MongoDB- és DocumentDB-fürtök lekérdezése és kezelése Visual Studio Code-ban"
       }
     },
     "shell": {
       "postgres": {
         "title": "PostgreSQL Shell",
-        "description": "Create table and interact with data using PostgreSQL's shell interface"
+        "description": "Tábla létrehozása és az adatok kezelése a PostgreSQL shell felület használatával"
       },
       "vcoreMongo": {
-        "title": "Mongo Shell",
-        "description": "Create a collection and interact with data using MongoDB's shell interface"
+        "title": "Mongo shell",
+        "description": "Gyűjtemény létrehozása és az adatok kezelése a MongoDB felületének használatával"
       }
     },
     "teachingBubble": {
       "newToPostgres": {
-        "headline": "New to Cosmos DB PGSQL?",
-        "body": "Welcome! If you are new to Cosmos DB PGSQL and need help with getting started, here is where you can find sample data, query."
+        "headline": "Most ismerkedik a Cosmos DB PGSQL-lel?",
+        "body": "Üdvözöljük! Ha most ismerkedik a Cosmos DB PGSQL használatával és segítségre van szüksége az első lépésekhez, itt találhat mintaadatokat, lekérdezéseket."
       },
       "resetPassword": {
-        "headline": "Create your password",
-        "body": "If you haven't changed your password yet, change it now."
+        "headline": "Jelszó létrehozása",
+        "body": "Ha még nem módosította a jelszavát, módosítsa most."
       },
       "coachMark": {
-        "headline": "Start with sample {{collectionName}}",
-        "body": "You will be guided to create a sample container with sample data, then we will give you a tour of data explorer. You can also cancel launching this tour and explore yourself"
+        "headline": "Kezdje a(z) {{collectionName}} mintával",
+        "body": "Végigvezetjük egy mintatároló létrehozásán mintaadatokkal, majd bemutatjuk az adatkezelőt. A bemutató indítását meg is szakíthatja, és felfedezheti önállóan"
       }
     },
     "sections": {
-      "recents": "Recents",
-      "clearRecents": "Clear Recents",
-      "top3": "Top 3 things you need to know",
-      "learningResources": "Learning Resources",
-      "nextSteps": "Next steps",
-      "tipsAndLearnMore": "Tips & learn more",
-      "notebook": "Notebook",
-      "needHelp": "Need help?"
+      "recents": "Legutóbbiak",
+      "clearRecents": "Legutóbbiak törlése",
+      "top3": "A 3 legfontosabb tudnivaló",
+      "learningResources": "Tanulási források",
+      "nextSteps": "Következő lépések",
+      "tipsAndLearnMore": "Tippek és további információ",
+      "notebook": "Jegyzetfüzet",
+      "needHelp": "Segítségre van szüksége?"
     },
     "top3Items": {
       "sql": {
         "advancedModeling": {
-          "title": "Advanced Modeling Patterns",
-          "description": "Learn advanced strategies to optimize your database."
+          "title": "Speciális modellezési minták",
+          "description": "Ismerjen meg speciális stratégiákat z adatbázis optimalizálásához."
         },
         "partitioning": {
-          "title": "Partitioning Best Practices",
-          "description": "Learn to apply data model and partitioning strategies."
+          "title": "Ajánlott particionálási eljárások",
+          "description": "Tudja meg, hogyan alkalmazhat adatmodellt és particionálási stratégiákat."
         },
         "resourcePlanning": {
-          "title": "Plan Your Resource Requirements",
-          "description": "Get to know the different configuration choices."
+          "title": "Az erőforrás-követelmények megtervezése",
+          "description": "Ismerkedjen meg a különböző konfigurációs lehetőségekkel."
         }
       },
       "mongo": {
         "whatIsMongo": {
-          "title": "What is the MongoDB API?",
-          "description": "Understand Azure Cosmos DB for MongoDB and its features."
+          "title": "Mi az a MongoDB API?",
+          "description": "Ismerje meg az Azure Cosmos DB for MongoDB használatát és funkcióit."
         },
         "features": {
-          "title": "Features and Syntax",
-          "description": "Discover the advantages and features"
+          "title": "Funkciók és szintaxis",
+          "description": "Az előnyök és funkciók felfedezése"
         },
         "migrate": {
-          "title": "Migrate Your Data",
-          "description": "Pre-migration steps for moving data"
+          "title": "Adatok áttelepítése",
+          "description": "Áttelepítés előtti lépések az adatok áthelyezéséhez"
         }
       },
       "cassandra": {
         "buildJavaApp": {
-          "title": "Build a Java App",
-          "description": "Create a Java app using an SDK."
+          "title": "Java-alkalmazás létrehozása",
+          "description": "Java-alkalmazás létrehozása SDK használatával."
         },
         "partitioning": {
-          "title": "Partitioning Best Practices",
-          "description": "Learn how partitioning works."
+          "title": "Ajánlott particionálási eljárások",
+          "description": "Ismerje meg a particionálás működését."
         },
         "requestUnits": {
-          "title": "Request Units (RUs)",
-          "description": "Understand RU charges."
+          "title": "Kérelemegységek (RU-k)",
+          "description": "A kérelemegység-díjak ismertetése."
         }
       },
       "gremlin": {
         "dataModeling": {
-          "title": "Data Modeling",
-          "description": "Graph data modeling recommendations"
+          "title": "Adatmodellezés",
+          "description": "Gráfadatok modellezésével kapcsolatos javaslatok"
         },
         "partitioning": {
-          "title": "Partitioning Best Practices",
-          "description": "Learn how partitioning works"
+          "title": "Ajánlott particionálási eljárások",
+          "description": "Ismerje meg a particionálás működését"
         },
         "queryData": {
-          "title": "Query Data",
-          "description": "Querying data with Gremlin"
+          "title": "Adatok lekérdezése",
+          "description": "Adatok lekérdezése a Gremlinnel"
         }
       },
       "tables": {
         "whatIsTable": {
-          "title": "What is the Table API?",
-          "description": "Understand Azure Cosmos DB for Table and its features"
+          "title": "Mi a tábla-API?",
+          "description": "Ismerje meg az Azure Cosmos DB for Table használatát és funkcióit"
         },
         "migrate": {
-          "title": "Migrate your data",
-          "description": "Learn how to migrate your data"
+          "title": "Adatok áttelepítése",
+          "description": "Ismerje meg, hogyan telepítheti át az adatait"
         },
         "faq": {
-          "title": "Azure Cosmos DB for Table FAQs",
-          "description": "Common questions about Azure Cosmos DB for Table"
+          "title": "Azure Cosmos DB for Table GYIK",
+          "description": "Gyakori kérdések a Azure Cosmos DB for Table kapcsán"
         }
       }
     },
     "learningResources": {
       "shortcuts": {
-        "title": "Data Explorer keyboard shortcuts",
-        "description": "Learn keyboard shortcuts to navigate Data Explorer."
+        "title": "Adatkezelő billentyűparancsok",
+        "description": "Ismerje meg a Data Explorer navigálásához használható billentyűparancsokat."
       },
       "liveTv": {
-        "title": "Learn the Fundamentals",
-        "description": "Watch Azure Cosmos DB Live TV show introductory and how to videos."
+        "title": "Az alapok megismerése",
+        "description": "Nézze meg Azure Cosmos DB élő tv-műsor bevezető videóit és videóit."
       },
       "sql": {
         "sdk": {
-          "title": "Get Started using an SDK",
-          "description": "Learn about the Azure Cosmos DB SDK."
+          "title": "Az SDK használatának első lépései",
+          "description": "Tudnivalók a Azure Cosmos DB SDK-ról."
         },
         "migrate": {
-          "title": "Migrate Your Data",
-          "description": "Migrate data using Azure services and open-source solutions."
+          "title": "Adatok áttelepítése",
+          "description": "Adatok áttelepítése Azure-szolgáltatásokkal és nyílt forráskódú megoldásokkal."
         }
       },
       "mongo": {
         "nodejs": {
-          "title": "Build an app with Node.js",
-          "description": "Create a Node.js app."
+          "title": "Alkalmazás készítése Node.js használatával",
+          "description": "Hozzon létre egy Node.js alkalmazást."
         },
         "gettingStarted": {
-          "title": "Getting Started Guide",
-          "description": "Learn the basics to get started."
+          "title": "Első lépéseket ismertető útmutató",
+          "description": "Első lépésként ismerkedjen meg az alapokkal."
         }
       },
       "cassandra": {
         "createContainer": {
-          "title": "Create a Container",
-          "description": "Get to know the create a container options."
+          "title": "Tároló létrehozása",
+          "description": "Ismerje meg a tárolók létrehozásának lehetőségeit."
         },
         "throughput": {
-          "title": "Provision Throughput",
-          "description": "Learn how to configure throughput."
+          "title": "Átviteli sebesség kiosztása",
+          "description": "Útmutató az átviteli sebesség konfigurálásához."
         }
       },
       "gremlin": {
         "getStarted": {
-          "title": "Get Started ",
-          "description": "Create, query, and traverse using the Gremlin console"
+          "title": "Első lépések ",
+          "description": "Létrehozás, lekérdezés és bejárás a Gremlin-konzol használatával"
         },
         "importData": {
-          "title": "Import Graph Data",
-          "description": "Learn Bulk ingestion data using BulkExecutor"
+          "title": "Gráfadatok importálása",
+          "description": "Tömeges betöltési adatok megismerése a BulkExecutor használatával"
         }
       },
       "tables": {
         "dotnet": {
-          "title": "Build a .NET App",
-          "description": "How to access Azure Cosmos DB for Table from a .NET app."
+          "title": ".NET-alkalmazás létrehozása",
+          "description": "Az Azure Cosmos DB for Table elérése .NET-alkalmazásból."
         },
         "java": {
-          "title": "Build a Java App",
-          "description": "Create a Azure Cosmos DB for Table app with Java SDK "
+          "title": "Java-alkalmazás létrehozása",
+          "description": "Azure Cosmos DB for Table alkalmazás létrehozása Java SDK használatával "
         }
       }
     },
     "nextStepItems": {
       "postgres": {
-        "dataModeling": "Data Modeling",
-        "distributionColumn": "How to choose a Distribution Column",
-        "buildApps": "Build Apps with Python/Java/Django"
+        "dataModeling": "Adatmodellezés",
+        "distributionColumn": "Terjesztési oszlop kiválasztása",
+        "buildApps": "Alkalmazások készítése Python/Java/Django használatával"
       },
       "vcoreMongo": {
-        "migrateData": "Migrate Data",
-        "vectorSearch": "Build AI apps with Vector Search",
-        "buildApps": "Build Apps with Nodejs"
+        "migrateData": "Adatok áttelepítése",
+        "vectorSearch": "AI-alkalmazások létrehozása vektor keresés használatával",
+        "buildApps": "Alkalmazások létrehozása a Nodejs használatával"
       }
     },
     "learnMoreItems": {
       "postgres": {
-        "performanceTuning": "Performance Tuning",
-        "diagnosticQueries": "Useful Diagnostic Queries",
-        "sqlReference": "Distributed SQL Reference"
+        "performanceTuning": "Teljesítményhangolás",
+        "diagnosticQueries": "Hasznos diagnosztikai lekérdezések",
+        "sqlReference": "Elosztott SQL-referencia"
       },
       "vcoreMongo": {
-        "vectorSearch": "Vector Search",
-        "textIndexing": "Text Indexing",
-        "troubleshoot": "Troubleshoot common issues"
+        "vectorSearch": "Vektor keresés",
+        "textIndexing": "Szövegindexelés",
+        "troubleshoot": "A leggyakoribb problémák elhárítása"
       }
     },
     "fabric": {
-      "buildTitle": "Build your database",
-      "useTitle": "Use your database",
+      "buildTitle": "Adatbázis létrehozása",
+      "useTitle": "Saját adatbázis használata",
       "newContainer": {
-        "title": "New container",
-        "description": "Create a destination container to store your data"
+        "title": "Új tároló",
+        "description": "Céltároló létrehozása az adatok tárolásához"
       },
       "sampleData": {
-        "title": "Sample Data",
-        "description": "Load sample data in your database"
+        "title": "Mintaadatok",
+        "description": "Mintaadatok betöltése az adatbázisban"
       },
       "sampleVectorData": {
-        "title": "Sample Vector Data",
-        "description": "Load sample vector data with text-embedding-ada-002"
+        "title": "Mintavektoradatok",
+        "description": "Mintavektoradatok betöltése text-embedding-ada-002 használatával"
       },
       "appDevelopment": {
-        "title": "App development",
-        "description": "Start here to use an SDK to build your apps"
+        "title": "Alkalmazásfejlesztés",
+        "description": "Kezdje itt az alkalmazások SDK-val történő létrehozásához"
       },
       "sampleGallery": {
-        "title": "Sample Gallery",
-        "description": "Get real-world end-to-end samples"
+        "title": "Mintagyűjtemény",
+        "description": "Valós, teljes körű minták"
       }
     },
     "sampleDataDialog": {
-      "title": "Sample Data",
-      "startButton": "Start",
-      "createPrompt": "Create a container \"{{containerName}}\" and import sample data into it. This may take a few minutes.",
-      "creatingContainer": "Creating container \"{{containerName}}\"...",
-      "importingData": "Importing data into \"{{containerName}}\"...",
-      "success": "Successfully created \"{{containerName}}\" with sample data.",
-      "errorContainerExists": "The container \"{{containerName}}\" in database \"{{databaseName}}\" already exists. Please delete it and retry.",
-      "errorCreateContainer": "Failed to create container: {{error}}",
-      "errorImportData": "Failed to import data: {{error}}"
+      "title": "Mintaadatok",
+      "startButton": "Kezdés",
+      "createPrompt": "Hozzon létre egy {{containerName}} tárolót, és importálja a mintaadatokat. Ez több percet is igénybe vehet.",
+      "creatingContainer": "A(z) {{containerName}} tároló létrehozása...",
+      "importingData": "Adatok importálása a következőbe: {{containerName}}...",
+      "success": "A(z) {{containerName}} sikeresen létrehozva mintaadatokkal.",
+      "errorContainerExists": "A(z) {{containerName}} tároló már létezik a(z) {{databaseName}} adatbázisban. Törölje, majd próbálkozzon újra.",
+      "errorCreateContainer": "Nem sikerült létrehozni a tárolót: {{error}}",
+      "errorImportData": "Nem sikerült az adatok importálása: {{error}}"
     }
   },
   "contextMenu": {

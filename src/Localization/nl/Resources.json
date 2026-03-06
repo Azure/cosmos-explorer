@@ -7,7 +7,7 @@
     "delete": "Verwijderen",
     "update": "Bijwerken",
     "discard": "Negeren",
-    "execute": "Execute",
+    "execute": "Uitvoeren",
     "loading": "Laden",
     "loadingEllipsis": "Laden...",
     "next": "Volgende",
@@ -43,253 +43,253 @@
       "getStarted": "Ga aan de slag met onze voorbeelddatasets, documentatie en extra tools."
     },
     "quickStart": {
-      "title": "Launch quick start",
-      "description": "Launch a quick start tutorial to get started with sample data"
+      "title": "Quick Start starten",
+      "description": "Start een snelstart-zelfstudie om aan de slag te gaan met voorbeeldgegevens"
     },
     "newCollection": {
-      "title": "New {{collectionName}}",
-      "description": "Create a new container for storage and throughput"
+      "title": "Nieuw {{collectionName}}",
+      "description": "Een nieuwe container maken voor opslag en doorvoer"
     },
     "samplesGallery": {
-      "title": "Azure Cosmos DB Samples Gallery",
-      "description": "Discover samples that showcase scalable, intelligent app patterns. Try one now to see how fast you can go from concept to code with Cosmos DB"
+      "title": "Galerie met voorbeelden van Azure Cosmos DB",
+      "description": "Ontdek voorbeelden waarin schaalbare, intelligente app-patronen worden getoond. Probeer er nu een om te zien hoe snel u van concept naar code kunt gaan met Cosmos DB"
     },
     "connectCard": {
-      "title": "Connect",
-      "description": "Prefer using your own choice of tooling? Find the connection string you need to connect",
+      "title": "Verbinding maken",
+      "description": "Gebruikt u liever uw eigen hulpprogramma's? Zoek de connection string die u nodig hebt om verbinding te maken",
       "pgAdmin": {
-        "title": "Connect with pgAdmin",
-        "description": "Prefer pgAdmin? Find your connection strings here"
+        "title": "Verbinden met pgAdmin",
+        "description": "Voorkeur voor pgAdmin? Uw verbindingsreeksen vindt u hier"
       },
       "vsCode": {
         "title": "Verbinding maken met VS Code",
-        "description": "Query and Manage your MongoDB and DocumentDB clusters in Visual Studio Code"
+        "description": "Query's uitvoeren en beheren op uw MongoDB- en DocumentDB-clusters in Visual Studio Code"
       }
     },
     "shell": {
       "postgres": {
-        "title": "PostgreSQL Shell",
-        "description": "Create table and interact with data using PostgreSQL's shell interface"
+        "title": "PostgreSQL-shell",
+        "description": "Een tabel maken en communiceren met gegevens met de shell-interface van PostgreSQL"
       },
       "vcoreMongo": {
-        "title": "Mongo Shell",
-        "description": "Create a collection and interact with data using MongoDB's shell interface"
+        "title": "Mongo-shell",
+        "description": "Een verzameling maken en communiceren met gegevens met behulp van de shell-interface van MongoDB"
       }
     },
     "teachingBubble": {
       "newToPostgres": {
-        "headline": "New to Cosmos DB PGSQL?",
-        "body": "Welcome! If you are new to Cosmos DB PGSQL and need help with getting started, here is where you can find sample data, query."
+        "headline": "Nieuw bij Cosmos DB PGSQL?",
+        "body": "Welkom! Als u Cosmos DB PGSQL nog niet kent en hulp nodig hebt om aan de slag te gaan, kunt u hier voorbeeldgegevens vinden en query's uitvoeren."
       },
       "resetPassword": {
-        "headline": "Create your password",
-        "body": "If you haven't changed your password yet, change it now."
+        "headline": "Uw wachtwoord maken",
+        "body": "Als u uw wachtwoord nog niet hebt gewijzigd, doe dat dan nu."
       },
       "coachMark": {
-        "headline": "Start with sample {{collectionName}}",
-        "body": "You will be guided to create a sample container with sample data, then we will give you a tour of data explorer. You can also cancel launching this tour and explore yourself"
+        "headline": "Beginnen met voorbeeld {{collectionName}}",
+        "body": "U wordt begeleid bij het maken van een voorbeeldcontainer met voorbeeldgegevens. Vervolgens krijgt u een rondleiding door Data Explorer. U kunt ook het starten van deze tour annuleren en zelf op verkenning gaan"
       }
     },
     "sections": {
-      "recents": "Recents",
-      "clearRecents": "Clear Recents",
-      "top3": "Top 3 things you need to know",
-      "learningResources": "Learning Resources",
-      "nextSteps": "Next steps",
-      "tipsAndLearnMore": "Tips & learn more",
-      "notebook": "Notebook",
-      "needHelp": "Need help?"
+      "recents": "Recente items",
+      "clearRecents": "Recente items wissen",
+      "top3": "De drie belangrijkste zaken om te weten",
+      "learningResources": "Trainingsresources",
+      "nextSteps": "Volgende stappen",
+      "tipsAndLearnMore": "Tips & meer informatie",
+      "notebook": "Notitieboek",
+      "needHelp": "Hulp nodig?"
     },
     "top3Items": {
       "sql": {
         "advancedModeling": {
-          "title": "Advanced Modeling Patterns",
-          "description": "Learn advanced strategies to optimize your database."
+          "title": "Geavanceerde modelleringspatronen",
+          "description": "Leer geavanceerde strategieën om uw database te optimaliseren."
         },
         "partitioning": {
-          "title": "Partitioning Best Practices",
-          "description": "Learn to apply data model and partitioning strategies."
+          "title": "Best practices voor partitionering",
+          "description": "Meer informatie over het toepassen van gegevensmodel- en partitioneringsstrategieën."
         },
         "resourcePlanning": {
-          "title": "Plan Your Resource Requirements",
-          "description": "Get to know the different configuration choices."
+          "title": "Uw resourcevereisten plannen",
+          "description": "Leer de verschillende configuratieopties kennen."
         }
       },
       "mongo": {
         "whatIsMongo": {
-          "title": "What is the MongoDB API?",
-          "description": "Understand Azure Cosmos DB for MongoDB and its features."
+          "title": "Wat is de MongoDB-API?",
+          "description": "Meer informatie over Azure Cosmos DB for MongoDB en de bijbehorende functies."
         },
         "features": {
-          "title": "Features and Syntax",
-          "description": "Discover the advantages and features"
+          "title": "Functies en syntaxis",
+          "description": "Ontdek de voordelen en functies"
         },
         "migrate": {
-          "title": "Migrate Your Data",
-          "description": "Pre-migration steps for moving data"
+          "title": "Uw gegevens migreren",
+          "description": "Stappen voorafgaand aan de migratie voor het verplaatsen van gegevens"
         }
       },
       "cassandra": {
         "buildJavaApp": {
-          "title": "Build a Java App",
-          "description": "Create a Java app using an SDK."
+          "title": "Een Java-app bouwen",
+          "description": "Maak een Java-app met behulp van een SDK."
         },
         "partitioning": {
-          "title": "Partitioning Best Practices",
-          "description": "Learn how partitioning works."
+          "title": "Best practices voor partitionering",
+          "description": "Meer informatie over de werking van partitionering."
         },
         "requestUnits": {
-          "title": "Request Units (RUs)",
-          "description": "Understand RU charges."
+          "title": "Aanvraageenheden (RU's)",
+          "description": "Meer informatie over RU-kosten."
         }
       },
       "gremlin": {
         "dataModeling": {
-          "title": "Data Modeling",
-          "description": "Graph data modeling recommendations"
+          "title": "Gegevensmodellering",
+          "description": "Aanbevelingen voor grafiekgegevensmodellering"
         },
         "partitioning": {
-          "title": "Partitioning Best Practices",
-          "description": "Learn how partitioning works"
+          "title": "Best practices voor partitionering",
+          "description": "Meer informatie over partitionering"
         },
         "queryData": {
-          "title": "Query Data",
-          "description": "Querying data with Gremlin"
+          "title": "Gegevens opvragen",
+          "description": "Gegevens opvragen met Gremlin"
         }
       },
       "tables": {
         "whatIsTable": {
-          "title": "What is the Table API?",
-          "description": "Understand Azure Cosmos DB for Table and its features"
+          "title": "Wat is de tabel-API?",
+          "description": "Meer informatie over Azure Cosmos DB for Table en de bijbehorende functies"
         },
         "migrate": {
-          "title": "Migrate your data",
-          "description": "Learn how to migrate your data"
+          "title": "Uw gegevens migreren",
+          "description": "Meer informatie over het migreren van uw gegevens"
         },
         "faq": {
-          "title": "Azure Cosmos DB for Table FAQs",
-          "description": "Common questions about Azure Cosmos DB for Table"
+          "title": "Veelgestelde vragen over Azure Cosmos DB for Table",
+          "description": "Veelgestelde vragen over Azure Cosmos DB for Table"
         }
       }
     },
     "learningResources": {
       "shortcuts": {
-        "title": "Data Explorer keyboard shortcuts",
-        "description": "Learn keyboard shortcuts to navigate Data Explorer."
+        "title": "Sneltoetsen in Data Explorer",
+        "description": "Leer sneltoetsen om door Data Explorer te navigeren."
       },
       "liveTv": {
-        "title": "Learn the Fundamentals",
-        "description": "Watch Azure Cosmos DB Live TV show introductory and how to videos."
+        "title": "Meer informatie over de basisprincipes",
+        "description": "Bekijk de introductie- en instructievideo's van Azure Cosmos DB Live TV."
       },
       "sql": {
         "sdk": {
-          "title": "Get Started using an SDK",
-          "description": "Learn about the Azure Cosmos DB SDK."
+          "title": "Aan de slag met een SDK",
+          "description": "Meer informatie over de Azure Cosmos DB SDK."
         },
         "migrate": {
-          "title": "Migrate Your Data",
-          "description": "Migrate data using Azure services and open-source solutions."
+          "title": "Uw gegevens migreren",
+          "description": "Migreer gegevens met behulp van Azure-services en opensource-oplossingen."
         }
       },
       "mongo": {
         "nodejs": {
-          "title": "Build an app with Node.js",
-          "description": "Create a Node.js app."
+          "title": "Een app bouwen met Node.js",
+          "description": "Maak een Node.js-app."
         },
         "gettingStarted": {
-          "title": "Getting Started Guide",
-          "description": "Learn the basics to get started."
+          "title": "Aan de slag-handleiding",
+          "description": "Leer de basisbeginselen om aan de slag te gaan."
         }
       },
       "cassandra": {
         "createContainer": {
-          "title": "Create a Container",
-          "description": "Get to know the create a container options."
+          "title": "Een container maken",
+          "description": "Maak kennis met de opties om een container te maken."
         },
         "throughput": {
-          "title": "Provision Throughput",
-          "description": "Learn how to configure throughput."
+          "title": "Inrichtingsdoorvoer",
+          "description": "Meer informatie over het configureren van doorvoer."
         }
       },
       "gremlin": {
         "getStarted": {
-          "title": "Get Started ",
-          "description": "Create, query, and traverse using the Gremlin console"
+          "title": "Aan de slag ",
+          "description": "Maken, query's uitvoeren en bladeren met behulp van de Gremlin-console"
         },
         "importData": {
-          "title": "Import Graph Data",
-          "description": "Learn Bulk ingestion data using BulkExecutor"
+          "title": "Grafiekgegevens importeren",
+          "description": "Informatie over bulkopnamegegevens met BulkExecutor"
         }
       },
       "tables": {
         "dotnet": {
-          "title": "Build a .NET App",
-          "description": "How to access Azure Cosmos DB for Table from a .NET app."
+          "title": "Een .NET-app bouwen",
+          "description": "Toegang krijgen tot Azure Cosmos DB for Table vanuit een .NET-app."
         },
         "java": {
-          "title": "Build a Java App",
-          "description": "Create a Azure Cosmos DB for Table app with Java SDK "
+          "title": "Een Java-app bouwen",
+          "description": "Een Azure Cosmos DB for Table-app maken met Java SDK "
         }
       }
     },
     "nextStepItems": {
       "postgres": {
-        "dataModeling": "Data Modeling",
-        "distributionColumn": "How to choose a Distribution Column",
-        "buildApps": "Build Apps with Python/Java/Django"
+        "dataModeling": "Gegevensmodellering",
+        "distributionColumn": "Een distributiekolom kiezen",
+        "buildApps": "Apps bouwen met Python/Java/Django"
       },
       "vcoreMongo": {
-        "migrateData": "Migrate Data",
-        "vectorSearch": "Build AI apps with Vector Search",
-        "buildApps": "Build Apps with Nodejs"
+        "migrateData": "Gegevens migreren",
+        "vectorSearch": "AI-apps bouwen met vector search",
+        "buildApps": "Apps bouwen met Node.js"
       }
     },
     "learnMoreItems": {
       "postgres": {
-        "performanceTuning": "Performance Tuning",
-        "diagnosticQueries": "Useful Diagnostic Queries",
-        "sqlReference": "Distributed SQL Reference"
+        "performanceTuning": "Prestaties afstemmen",
+        "diagnosticQueries": "Nuttige diagnostische query's",
+        "sqlReference": "Gedistribueerde SQL-verwijzing"
       },
       "vcoreMongo": {
-        "vectorSearch": "Vector Search",
-        "textIndexing": "Text Indexing",
-        "troubleshoot": "Troubleshoot common issues"
+        "vectorSearch": "Vector search",
+        "textIndexing": "Tekstindexeren",
+        "troubleshoot": "Veelvoorkomende problemen oplossen"
       }
     },
     "fabric": {
-      "buildTitle": "Build your database",
-      "useTitle": "Use your database",
+      "buildTitle": "Uw database bouwen",
+      "useTitle": "Uw database gebruiken",
       "newContainer": {
-        "title": "New container",
-        "description": "Create a destination container to store your data"
+        "title": "Nieuwe container",
+        "description": "Een doelcontainer maken om uw gegevens op te slaan"
       },
       "sampleData": {
-        "title": "Sample Data",
-        "description": "Load sample data in your database"
+        "title": "Voorbeeldgegevens",
+        "description": "Voorbeeldgegevens laden in uw database"
       },
       "sampleVectorData": {
-        "title": "Sample Vector Data",
-        "description": "Load sample vector data with text-embedding-ada-002"
+        "title": "Voorbeeldvectorgegevens",
+        "description": "Voorbeeldvectorgegevens laden met Text-Embedding-ADA-002"
       },
       "appDevelopment": {
-        "title": "App development",
-        "description": "Start here to use an SDK to build your apps"
+        "title": "App-ontwikkeling",
+        "description": "Begin hier met het gebruik van een SDK om uw apps te bouwen"
       },
       "sampleGallery": {
-        "title": "Sample Gallery",
-        "description": "Get real-world end-to-end samples"
+        "title": "Voorbeeldgalerie",
+        "description": "Krijg end-to-end-voorbeelden uit de praktijk"
       }
     },
     "sampleDataDialog": {
-      "title": "Sample Data",
-      "startButton": "Start",
-      "createPrompt": "Create a container \"{{containerName}}\" and import sample data into it. This may take a few minutes.",
-      "creatingContainer": "Creating container \"{{containerName}}\"...",
-      "importingData": "Importing data into \"{{containerName}}\"...",
-      "success": "Successfully created \"{{containerName}}\" with sample data.",
-      "errorContainerExists": "The container \"{{containerName}}\" in database \"{{databaseName}}\" already exists. Please delete it and retry.",
-      "errorCreateContainer": "Failed to create container: {{error}}",
-      "errorImportData": "Failed to import data: {{error}}"
+      "title": "Voorbeeldgegevens",
+      "startButton": "Begin",
+      "createPrompt": "Maak een container {{containerName}} en importeer er voorbeeldgegevens in. Dit kan enkele minuten duren.",
+      "creatingContainer": "De container {{containerName}} wordt gemaakt...",
+      "importingData": "Gegevens importeren in {{containerName}}...",
+      "success": "{{containerName}} is gemaakt met voorbeeldgegevens.",
+      "errorContainerExists": "De container {{containerName}} in database {{databaseName}} bestaat al. Verwijder het en probeer het opnieuw.",
+      "errorCreateContainer": "Kan de container niet maken: {{error}}",
+      "errorImportData": "Kan geen gegevens importeren: {{error}}"
     }
   },
   "contextMenu": {

@@ -7,7 +7,7 @@
     "delete": "削除",
     "update": "更新",
     "discard": "破棄",
-    "execute": "Execute",
+    "execute": "実行",
     "loading": "読み込み中",
     "loadingEllipsis": "読み込み中...",
     "next": "次へ",
@@ -43,253 +43,253 @@
       "getStarted": "サンプル データセット、ドキュメント、追加ツールを使用して開始してください。"
     },
     "quickStart": {
-      "title": "Launch quick start",
-      "description": "Launch a quick start tutorial to get started with sample data"
+      "title": "クイック スタートの起動",
+      "description": "クイック スタート チュートリアルを起動してサンプル データの使用を開始します"
     },
     "newCollection": {
-      "title": "New {{collectionName}}",
-      "description": "Create a new container for storage and throughput"
+      "title": "新しい {{collectionName}}",
+      "description": "ストレージとスループット用の新しいコンテナーを作成します"
     },
     "samplesGallery": {
-      "title": "Azure Cosmos DB Samples Gallery",
-      "description": "Discover samples that showcase scalable, intelligent app patterns. Try one now to see how fast you can go from concept to code with Cosmos DB"
+      "title": "Azure Cosmos DB サンプル ギャラリー",
+      "description": "スケーラブルでインテリジェントなアプリ パターンを紹介するサンプルをご確認ください。今すぐ試して、Cosmos DB を使用して概念からコードにどれほど迅速に移行できるか確認してください"
     },
     "connectCard": {
-      "title": "Connect",
-      "description": "Prefer using your own choice of tooling? Find the connection string you need to connect",
+      "title": "接続",
+      "description": "独自に選択したツールの使用を優先しますか?接続に必要な接続文字列を検索します",
       "pgAdmin": {
-        "title": "Connect with pgAdmin",
-        "description": "Prefer pgAdmin? Find your connection strings here"
+        "title": "pgAdmin を使用して接続",
+        "description": "pgAdmin を優先しますか?ここで接続文字列を検索します"
       },
       "vsCode": {
         "title": "VS Code で接続する",
-        "description": "Query and Manage your MongoDB and DocumentDB clusters in Visual Studio Code"
+        "description": "Visual Studio Code で MongoDB および DocumentDB クラスターのクエリの実行と管理を行います"
       }
     },
     "shell": {
       "postgres": {
-        "title": "PostgreSQL Shell",
-        "description": "Create table and interact with data using PostgreSQL's shell interface"
+        "title": "PostgreSQL シェル",
+        "description": "PostgreSQL のシェル インターフェイスを使用して、テーブルを作成し、データを操作します"
       },
       "vcoreMongo": {
-        "title": "Mongo Shell",
-        "description": "Create a collection and interact with data using MongoDB's shell interface"
+        "title": "Mongo シェル",
+        "description": "MongoDB のシェル インターフェイスを使用して、コレクションを作成し、データを操作します"
       }
     },
     "teachingBubble": {
       "newToPostgres": {
-        "headline": "New to Cosmos DB PGSQL?",
-        "body": "Welcome! If you are new to Cosmos DB PGSQL and need help with getting started, here is where you can find sample data, query."
+        "headline": "Cosmos DB PGSQL を使用するのは初めてですか?",
+        "body": "ようこそ! Cosmos DB PGSQL を使用するのが初めてで、作業の開始に関するヘルプが必要な場合は、ここでサンプル データやクエリを見つけることができます。"
       },
       "resetPassword": {
-        "headline": "Create your password",
-        "body": "If you haven't changed your password yet, change it now."
+        "headline": "パスワードの作成",
+        "body": "パスワードをまだ変更していない場合は、今すぐ変更してください。"
       },
       "coachMark": {
-        "headline": "Start with sample {{collectionName}}",
-        "body": "You will be guided to create a sample container with sample data, then we will give you a tour of data explorer. You can also cancel launching this tour and explore yourself"
+        "headline": "サンプル {{collectionName}} から開始する",
+        "body": "サンプル データを含むサンプル コンテナーを作成するように案内され、その後、データ エクスプローラーのツアーが表示されます。このツアーの開始を取り消して、自分で探索することもできます"
       }
     },
     "sections": {
-      "recents": "Recents",
-      "clearRecents": "Clear Recents",
-      "top3": "Top 3 things you need to know",
-      "learningResources": "Learning Resources",
-      "nextSteps": "Next steps",
-      "tipsAndLearnMore": "Tips & learn more",
-      "notebook": "Notebook",
-      "needHelp": "Need help?"
+      "recents": "最近使用したもの",
+      "clearRecents": "最近使用したものをクリアする",
+      "top3": "知っておくべき上位 3 つのこと",
+      "learningResources": "学習リソース",
+      "nextSteps": "次の手順",
+      "tipsAndLearnMore": "ヒントと詳細の確認",
+      "notebook": "ノートブック",
+      "needHelp": "ヘルプが必要ですか?"
     },
     "top3Items": {
       "sql": {
         "advancedModeling": {
-          "title": "Advanced Modeling Patterns",
-          "description": "Learn advanced strategies to optimize your database."
+          "title": "高度なモデリング パターン",
+          "description": "データベースを最適化するための高度な戦略について説明します。"
         },
         "partitioning": {
-          "title": "Partitioning Best Practices",
-          "description": "Learn to apply data model and partitioning strategies."
+          "title": "パーティション分割のベスト プラクティス",
+          "description": "データ モデルとパーティション分割戦略の適用について説明します。"
         },
         "resourcePlanning": {
-          "title": "Plan Your Resource Requirements",
-          "description": "Get to know the different configuration choices."
+          "title": "リソース要件の計画",
+          "description": "さまざまな構成の選択肢について理解を深めます。"
         }
       },
       "mongo": {
         "whatIsMongo": {
-          "title": "What is the MongoDB API?",
-          "description": "Understand Azure Cosmos DB for MongoDB and its features."
+          "title": "MongoDB API とは",
+          "description": "Azure Cosmos DB for MongoDB とその機能について理解します。"
         },
         "features": {
-          "title": "Features and Syntax",
-          "description": "Discover the advantages and features"
+          "title": "機能と構文",
+          "description": "利点と機能を確認します"
         },
         "migrate": {
-          "title": "Migrate Your Data",
-          "description": "Pre-migration steps for moving data"
+          "title": "データの移行",
+          "description": "データを移動するための移行前の手順"
         }
       },
       "cassandra": {
         "buildJavaApp": {
-          "title": "Build a Java App",
-          "description": "Create a Java app using an SDK."
+          "title": "Java アプリのビルド",
+          "description": "SDK を使用して Java アプリを作成します。"
         },
         "partitioning": {
-          "title": "Partitioning Best Practices",
-          "description": "Learn how partitioning works."
+          "title": "パーティション分割のベスト プラクティス",
+          "description": "パーティション分割のしくみについて説明します。"
         },
         "requestUnits": {
-          "title": "Request Units (RUs)",
-          "description": "Understand RU charges."
+          "title": "要求ユニット (RU)",
+          "description": "RU 料金について理解します。"
         }
       },
       "gremlin": {
         "dataModeling": {
-          "title": "Data Modeling",
-          "description": "Graph data modeling recommendations"
+          "title": "データ モデリング",
+          "description": "グラフ データ モデリングの推奨事項"
         },
         "partitioning": {
-          "title": "Partitioning Best Practices",
-          "description": "Learn how partitioning works"
+          "title": "パーティション分割のベスト プラクティス",
+          "description": "パーティション分割のしくみについて確認します"
         },
         "queryData": {
-          "title": "Query Data",
-          "description": "Querying data with Gremlin"
+          "title": "データのクエリを実行",
+          "description": "Gremlin を使用してデータのクエリを実行しています"
         }
       },
       "tables": {
         "whatIsTable": {
-          "title": "What is the Table API?",
-          "description": "Understand Azure Cosmos DB for Table and its features"
+          "title": "Table API とは",
+          "description": "Azure Cosmos DB for Table とその機能について理解します"
         },
         "migrate": {
-          "title": "Migrate your data",
-          "description": "Learn how to migrate your data"
+          "title": "データの移行",
+          "description": "データを移行する方法について確認します"
         },
         "faq": {
-          "title": "Azure Cosmos DB for Table FAQs",
-          "description": "Common questions about Azure Cosmos DB for Table"
+          "title": "Azure Cosmos DB for Table に関する FAQ",
+          "description": "Azure Cosmos DB for Table に関する一般的な質問"
         }
       }
     },
     "learningResources": {
       "shortcuts": {
-        "title": "Data Explorer keyboard shortcuts",
-        "description": "Learn keyboard shortcuts to navigate Data Explorer."
+        "title": "Data Explorer のキーボード ショートカット",
+        "description": "データ エクスプローラーを操作するためのキーボード ショートカットについて説明します。"
       },
       "liveTv": {
-        "title": "Learn the Fundamentals",
-        "description": "Watch Azure Cosmos DB Live TV show introductory and how to videos."
+        "title": "基礎を確認する",
+        "description": "Azure Cosmos DB のライブ テレビ ショーの紹介や使い方に関するビデオをご覧ください。"
       },
       "sql": {
         "sdk": {
-          "title": "Get Started using an SDK",
-          "description": "Learn about the Azure Cosmos DB SDK."
+          "title": "SDK を使用して開始",
+          "description": "Azure Cosmos DB SDK について説明します。"
         },
         "migrate": {
-          "title": "Migrate Your Data",
-          "description": "Migrate data using Azure services and open-source solutions."
+          "title": "データの移行",
+          "description": "Azure サービスとオープンソース ソリューションを使用してデータを移行します。"
         }
       },
       "mongo": {
         "nodejs": {
-          "title": "Build an app with Node.js",
-          "description": "Create a Node.js app."
+          "title": "Node.js を使用してアプリをビルド",
+          "description": "Node.js アプリを作成します。"
         },
         "gettingStarted": {
-          "title": "Getting Started Guide",
-          "description": "Learn the basics to get started."
+          "title": "作業の開始ガイド",
+          "description": "開始するための基本情報について説明します。"
         }
       },
       "cassandra": {
         "createContainer": {
-          "title": "Create a Container",
-          "description": "Get to know the create a container options."
+          "title": "コンテナーの作成",
+          "description": "コンテナーの作成オプションについて理解を深めます。"
         },
         "throughput": {
-          "title": "Provision Throughput",
-          "description": "Learn how to configure throughput."
+          "title": "スループットのプロビジョニング",
+          "description": "スループットを構成する方法について説明します。"
         }
       },
       "gremlin": {
         "getStarted": {
-          "title": "Get Started ",
-          "description": "Create, query, and traverse using the Gremlin console"
+          "title": "開始 ",
+          "description": "Gremlin コンソールを使用して作成、クエリの実行、走査を行います"
         },
         "importData": {
-          "title": "Import Graph Data",
-          "description": "Learn Bulk ingestion data using BulkExecutor"
+          "title": "グラフ データのインポート",
+          "description": "BulkExecutor を使用した一括インジェスト データについて確認します"
         }
       },
       "tables": {
         "dotnet": {
-          "title": "Build a .NET App",
-          "description": "How to access Azure Cosmos DB for Table from a .NET app."
+          "title": ".NET アプリのビルド",
+          "description": ".NET アプリから Azure Cosmos DB for Table にアクセスする方法。"
         },
         "java": {
-          "title": "Build a Java App",
-          "description": "Create a Azure Cosmos DB for Table app with Java SDK "
+          "title": "Java アプリのビルド",
+          "description": "Java SDK を使用して Azure Cosmos DB for Table アプリを作成します "
         }
       }
     },
     "nextStepItems": {
       "postgres": {
-        "dataModeling": "Data Modeling",
-        "distributionColumn": "How to choose a Distribution Column",
-        "buildApps": "Build Apps with Python/Java/Django"
+        "dataModeling": "データ モデリング",
+        "distributionColumn": "ディストリビューション列を選択する方法",
+        "buildApps": "Python/Java/Django を使用してアプリをビルド"
       },
       "vcoreMongo": {
-        "migrateData": "Migrate Data",
-        "vectorSearch": "Build AI apps with Vector Search",
-        "buildApps": "Build Apps with Nodejs"
+        "migrateData": "データの移行",
+        "vectorSearch": "ベクトル検索を使用して AI アプリをビルド",
+        "buildApps": "Nodejs を使用してアプリをビルド"
       }
     },
     "learnMoreItems": {
       "postgres": {
-        "performanceTuning": "Performance Tuning",
-        "diagnosticQueries": "Useful Diagnostic Queries",
-        "sqlReference": "Distributed SQL Reference"
+        "performanceTuning": "パフォーマンス チューニング",
+        "diagnosticQueries": "有用な診断クエリ",
+        "sqlReference": "分散 SQL リファレンス"
       },
       "vcoreMongo": {
-        "vectorSearch": "Vector Search",
-        "textIndexing": "Text Indexing",
-        "troubleshoot": "Troubleshoot common issues"
+        "vectorSearch": "ベクトル検索",
+        "textIndexing": "テキストのインデックス作成",
+        "troubleshoot": "一般的な問題のトラブルシューティング"
       }
     },
     "fabric": {
-      "buildTitle": "Build your database",
-      "useTitle": "Use your database",
+      "buildTitle": "データベースのビルド",
+      "useTitle": "データベースの使用",
       "newContainer": {
-        "title": "New container",
-        "description": "Create a destination container to store your data"
+        "title": "新しいコンテナー",
+        "description": "データを格納する先のコンテナーを作成します"
       },
       "sampleData": {
-        "title": "Sample Data",
-        "description": "Load sample data in your database"
+        "title": "サンプル データ",
+        "description": "データベースにサンプル データを読み込みます"
       },
       "sampleVectorData": {
-        "title": "Sample Vector Data",
-        "description": "Load sample vector data with text-embedding-ada-002"
+        "title": "サンプル ベクトル データ",
+        "description": "text-embedding-ada-002 を使用してサンプル ベクトル データを読み込みます"
       },
       "appDevelopment": {
-        "title": "App development",
-        "description": "Start here to use an SDK to build your apps"
+        "title": "アプリ開発",
+        "description": "SDK を使用してアプリをビルドするには、ここから開始してください"
       },
       "sampleGallery": {
-        "title": "Sample Gallery",
-        "description": "Get real-world end-to-end samples"
+        "title": "サンプル ギャラリー",
+        "description": "実際のエンド ツー エンドのサンプルを取得します"
       }
     },
     "sampleDataDialog": {
-      "title": "Sample Data",
-      "startButton": "Start",
-      "createPrompt": "Create a container \"{{containerName}}\" and import sample data into it. This may take a few minutes.",
-      "creatingContainer": "Creating container \"{{containerName}}\"...",
-      "importingData": "Importing data into \"{{containerName}}\"...",
-      "success": "Successfully created \"{{containerName}}\" with sample data.",
-      "errorContainerExists": "The container \"{{containerName}}\" in database \"{{databaseName}}\" already exists. Please delete it and retry.",
-      "errorCreateContainer": "Failed to create container: {{error}}",
-      "errorImportData": "Failed to import data: {{error}}"
+      "title": "サンプル データ",
+      "startButton": "開始",
+      "createPrompt": "コンテナー \"{{containerName}}\" を作成し、そこにサンプル データをインポートしてください。これには数分かかる場合があります。",
+      "creatingContainer": "コンテナー \"{{containerName}}\" を作成しています...",
+      "importingData": "データを \"{{containerName}}\" にインポートしています...",
+      "success": "サンプル データを含む \"{{containerName}}\" が正常に作成されました。",
+      "errorContainerExists": "データベース \"{{databaseName}}\" のコンテナー \"{{containerName}}\" は既に存在します。削除してから、もう一度お試しください。",
+      "errorCreateContainer": "コンテナーを作成できませんでした: {{error}}",
+      "errorImportData": "データをインポートできませんでした: {{error}}"
     }
   },
   "contextMenu": {

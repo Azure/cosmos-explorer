@@ -7,7 +7,7 @@
     "delete": "Odstranit",
     "update": "Aktualizovat",
     "discard": "Zahodit",
-    "execute": "Execute",
+    "execute": "Provést",
     "loading": "Načítání",
     "loadingEllipsis": "Načítání…",
     "next": "Další",
@@ -43,253 +43,253 @@
       "getStarted": "Začněte s našimi ukázkovými datovými sadami, dokumentací a dalšími nástroji."
     },
     "quickStart": {
-      "title": "Launch quick start",
-      "description": "Launch a quick start tutorial to get started with sample data"
+      "title": "Spustit rychlý start",
+      "description": "Spusťte kurz rychlého startu a začněte pracovat s ukázkovými daty"
     },
     "newCollection": {
-      "title": "New {{collectionName}}",
-      "description": "Create a new container for storage and throughput"
+      "title": "Nové: {{collectionName}}",
+      "description": "Vytvořit nový kontejner pro úložiště a propustnost"
     },
     "samplesGallery": {
-      "title": "Azure Cosmos DB Samples Gallery",
-      "description": "Discover samples that showcase scalable, intelligent app patterns. Try one now to see how fast you can go from concept to code with Cosmos DB"
+      "title": "Galerie ukázek Azure Cosmos DB",
+      "description": "Prohlédněte si ukázky, které představují škálovatelné a inteligentní vzory aplikací. Vyzkoušejte si to hned a uvidíte, jak rychle můžete s Cosmos DB přejít od konceptu ke kódu."
     },
     "connectCard": {
-      "title": "Connect",
-      "description": "Prefer using your own choice of tooling? Find the connection string you need to connect",
+      "title": "Připojit",
+      "description": "Dáváte přednost používání vlastních nástrojů? Najděte připojovací řetězec, který potřebujete k připojení",
       "pgAdmin": {
-        "title": "Connect with pgAdmin",
-        "description": "Prefer pgAdmin? Find your connection strings here"
+        "title": "Připojit pomocí pgAdmin",
+        "description": "Upřednostňujete pgAdmin? Tady najdete připojovací řetězce."
       },
       "vsCode": {
         "title": "Připojení pomocí VS Code",
-        "description": "Query and Manage your MongoDB and DocumentDB clusters in Visual Studio Code"
+        "description": "Dotazujte se na své clustery MongoDB a DocumentDB a spravujte je ve Visual Studio Code"
       }
     },
     "shell": {
       "postgres": {
-        "title": "PostgreSQL Shell",
-        "description": "Create table and interact with data using PostgreSQL's shell interface"
+        "title": "Prostředí PostgreSQL",
+        "description": "Vytvoření tabulky a interakce s daty pomocí rozhraní prostředí PostgreSQL"
       },
       "vcoreMongo": {
-        "title": "Mongo Shell",
-        "description": "Create a collection and interact with data using MongoDB's shell interface"
+        "title": "Prostředí Mongo",
+        "description": "Vytvořte kolekci a pracujte s daty pomocí rozhraní prostředí MongoDB"
       }
     },
     "teachingBubble": {
       "newToPostgres": {
-        "headline": "New to Cosmos DB PGSQL?",
-        "body": "Welcome! If you are new to Cosmos DB PGSQL and need help with getting started, here is where you can find sample data, query."
+        "headline": "Začínáte s Cosmos DB PGSQL?",
+        "body": "Vítejte! Pokud s Cosmos DB PGSQL začínáte a potřebujete pomoc s prvními kroky, najdete tady ukázková data a dotazy."
       },
       "resetPassword": {
-        "headline": "Create your password",
-        "body": "If you haven't changed your password yet, change it now."
+        "headline": "Vytvořte si heslo",
+        "body": "Pokud jste si ještě nezměnili heslo, změňte si ho teď."
       },
       "coachMark": {
-        "headline": "Start with sample {{collectionName}}",
-        "body": "You will be guided to create a sample container with sample data, then we will give you a tour of data explorer. You can also cancel launching this tour and explore yourself"
+        "headline": "Začít s ukázkou {{collectionName}}",
+        "body": "Provedeme vás vytvořením ukázkového kontejneru s ukázkovými daty. Pak vás provedeme průzkumníkem dat. Můžete také zrušit spuštění této prohlídky a prozkoumat si vše sami"
       }
     },
     "sections": {
-      "recents": "Recents",
-      "clearRecents": "Clear Recents",
-      "top3": "Top 3 things you need to know",
-      "learningResources": "Learning Resources",
-      "nextSteps": "Next steps",
-      "tipsAndLearnMore": "Tips & learn more",
-      "notebook": "Notebook",
-      "needHelp": "Need help?"
+      "recents": "Poslední",
+      "clearRecents": "Vymazat poslední",
+      "top3": "3 nejdůležitější věci, které potřebujete vědět",
+      "learningResources": "Studijní materiály",
+      "nextSteps": "Další kroky",
+      "tipsAndLearnMore": "Tipy a další informace",
+      "notebook": "Poznámkový blok",
+      "needHelp": "Potřebujete pomoc?"
     },
     "top3Items": {
       "sql": {
         "advancedModeling": {
-          "title": "Advanced Modeling Patterns",
-          "description": "Learn advanced strategies to optimize your database."
+          "title": "Pokročilé vzory modelování",
+          "description": "Seznamte se s pokročilými strategiemi pro optimalizaci databáze."
         },
         "partitioning": {
-          "title": "Partitioning Best Practices",
-          "description": "Learn to apply data model and partitioning strategies."
+          "title": "Osvědčené postupy vytváření oddílů",
+          "description": "Naučte se používat strategie datového modelu a rozdělení na oddíly"
         },
         "resourcePlanning": {
-          "title": "Plan Your Resource Requirements",
-          "description": "Get to know the different configuration choices."
+          "title": "Naplánujte si požadavky na zdroje",
+          "description": "Seznamte se s různými možnostmi konfigurace."
         }
       },
       "mongo": {
         "whatIsMongo": {
-          "title": "What is the MongoDB API?",
-          "description": "Understand Azure Cosmos DB for MongoDB and its features."
+          "title": "Co je rozhraní MongoDB API?",
+          "description": "Seznamte se se službou Azure Cosmos DB for MongoDB a s jejími funkcemi."
         },
         "features": {
-          "title": "Features and Syntax",
-          "description": "Discover the advantages and features"
+          "title": "Funkce a syntaxe",
+          "description": "Objevte výhody a funkce"
         },
         "migrate": {
-          "title": "Migrate Your Data",
-          "description": "Pre-migration steps for moving data"
+          "title": "Migrovat data",
+          "description": "Kroky před migrací pro přesun dat"
         }
       },
       "cassandra": {
         "buildJavaApp": {
-          "title": "Build a Java App",
-          "description": "Create a Java app using an SDK."
+          "title": "Vytvořte aplikaci Java",
+          "description": "Vytvořte aplikaci v Javě pomocí sady SDK."
         },
         "partitioning": {
-          "title": "Partitioning Best Practices",
-          "description": "Learn how partitioning works."
+          "title": "Osvědčené postupy vytváření oddílů",
+          "description": "Zjistěte, jak funguje dělení na oddíly."
         },
         "requestUnits": {
-          "title": "Request Units (RUs)",
-          "description": "Understand RU charges."
+          "title": "Jednotky žádosti (RU)",
+          "description": "Vysvětlení poplatků za RU"
         }
       },
       "gremlin": {
         "dataModeling": {
-          "title": "Data Modeling",
-          "description": "Graph data modeling recommendations"
+          "title": "Modelování dat",
+          "description": "Doporučení k modelování dat grafu"
         },
         "partitioning": {
-          "title": "Partitioning Best Practices",
-          "description": "Learn how partitioning works"
+          "title": "Osvědčené postupy vytváření oddílů",
+          "description": "Zjistěte, jak funguje dělení na oddíly"
         },
         "queryData": {
-          "title": "Query Data",
-          "description": "Querying data with Gremlin"
+          "title": "Data dotazu",
+          "description": "Dotazování na data pomocí Gremlin"
         }
       },
       "tables": {
         "whatIsTable": {
-          "title": "What is the Table API?",
-          "description": "Understand Azure Cosmos DB for Table and its features"
+          "title": "Co je Table API?",
+          "description": "Seznamte se se službou Azure Cosmos DB for Table a s jejími funkcemi"
         },
         "migrate": {
-          "title": "Migrate your data",
-          "description": "Learn how to migrate your data"
+          "title": "Migrujte svá data",
+          "description": "Informace o migraci dat"
         },
         "faq": {
-          "title": "Azure Cosmos DB for Table FAQs",
-          "description": "Common questions about Azure Cosmos DB for Table"
+          "title": "Nejčastější dotazy k Azure Cosmos DB for Table",
+          "description": "Běžné otázky k Azure Cosmos DB for Table"
         }
       }
     },
     "learningResources": {
       "shortcuts": {
-        "title": "Data Explorer keyboard shortcuts",
-        "description": "Learn keyboard shortcuts to navigate Data Explorer."
+        "title": "Klávesové zkratky Data Exploreru",
+        "description": "Naučte se klávesové zkratky pro navigaci v Data Exploreru."
       },
       "liveTv": {
-        "title": "Learn the Fundamentals",
-        "description": "Watch Azure Cosmos DB Live TV show introductory and how to videos."
+        "title": "Naučte se základy",
+        "description": "Podívejte se na úvodní videa a videa s postupy Azure Cosmos DB Live TV."
       },
       "sql": {
         "sdk": {
-          "title": "Get Started using an SDK",
-          "description": "Learn about the Azure Cosmos DB SDK."
+          "title": "Začínáme s používáním sady SDK",
+          "description": "Přečtěte si o sadě Azure Cosmos DB SDK."
         },
         "migrate": {
-          "title": "Migrate Your Data",
-          "description": "Migrate data using Azure services and open-source solutions."
+          "title": "Migrovat data",
+          "description": "Migrujte data pomocí služeb Azure a opensourcových řešení."
         }
       },
       "mongo": {
         "nodejs": {
-          "title": "Build an app with Node.js",
-          "description": "Create a Node.js app."
+          "title": "Vytvořit aplikaci s Node.js",
+          "description": "Vytvořte aplikaci Node.js."
         },
         "gettingStarted": {
-          "title": "Getting Started Guide",
-          "description": "Learn the basics to get started."
+          "title": "Úvodní příručka",
+          "description": "Seznamte se se základy, které vám pomůžou začít."
         }
       },
       "cassandra": {
         "createContainer": {
-          "title": "Create a Container",
-          "description": "Get to know the create a container options."
+          "title": "Vytvořit kontejner",
+          "description": "Seznamte se s možnostmi vytvoření kontejneru."
         },
         "throughput": {
-          "title": "Provision Throughput",
-          "description": "Learn how to configure throughput."
+          "title": "Zřídit propustnost",
+          "description": "Zjistěte, jak nakonfigurovat propustnost."
         }
       },
       "gremlin": {
         "getStarted": {
-          "title": "Get Started ",
-          "description": "Create, query, and traverse using the Gremlin console"
+          "title": "Začínáme ",
+          "description": "Vytvoření, dotaz a procházení pomocí konzoly Gremlin"
         },
         "importData": {
-          "title": "Import Graph Data",
-          "description": "Learn Bulk ingestion data using BulkExecutor"
+          "title": "Importovat data grafu",
+          "description": "Naučte se hromadně přijímat data pomocí BulkExecutor"
         }
       },
       "tables": {
         "dotnet": {
-          "title": "Build a .NET App",
-          "description": "How to access Azure Cosmos DB for Table from a .NET app."
+          "title": "Vytvoření aplikace .NET",
+          "description": "Jak získat přístup k Azure Cosmos DB for Table z aplikace .NET"
         },
         "java": {
-          "title": "Build a Java App",
-          "description": "Create a Azure Cosmos DB for Table app with Java SDK "
+          "title": "Vytvořte aplikaci Java",
+          "description": "Vytvořte aplikaci Azure Cosmos DB for Table se sadou Java SDK "
         }
       }
     },
     "nextStepItems": {
       "postgres": {
-        "dataModeling": "Data Modeling",
-        "distributionColumn": "How to choose a Distribution Column",
-        "buildApps": "Build Apps with Python/Java/Django"
+        "dataModeling": "Modelování dat",
+        "distributionColumn": "Jak zvolit sloupec pro distribuci",
+        "buildApps": "Vytvářejte aplikace pomocí Pythonu, Javy nebo Django"
       },
       "vcoreMongo": {
-        "migrateData": "Migrate Data",
-        "vectorSearch": "Build AI apps with Vector Search",
-        "buildApps": "Build Apps with Nodejs"
+        "migrateData": "Migrovat data",
+        "vectorSearch": "Vytvářejte AI aplikace pomocí vektorového vyhledávání",
+        "buildApps": "Vytvářejte aplikace pomocí Node.js"
       }
     },
     "learnMoreItems": {
       "postgres": {
-        "performanceTuning": "Performance Tuning",
-        "diagnosticQueries": "Useful Diagnostic Queries",
-        "sqlReference": "Distributed SQL Reference"
+        "performanceTuning": "Optimalizace výkonu",
+        "diagnosticQueries": "Užitečné diagnostické dotazy",
+        "sqlReference": "Referenční informace k distribuovanému SQL"
       },
       "vcoreMongo": {
-        "vectorSearch": "Vector Search",
-        "textIndexing": "Text Indexing",
-        "troubleshoot": "Troubleshoot common issues"
+        "vectorSearch": "Vektorové vyhledávání",
+        "textIndexing": "Indexování textu",
+        "troubleshoot": "Řešení častých problémů"
       }
     },
     "fabric": {
-      "buildTitle": "Build your database",
-      "useTitle": "Use your database",
+      "buildTitle": "Vytvořit databázi",
+      "useTitle": "Použijte svou databázi",
       "newContainer": {
-        "title": "New container",
-        "description": "Create a destination container to store your data"
+        "title": "Nový kontejner",
+        "description": "Vytvořit cílový kontejner pro uložení dat"
       },
       "sampleData": {
-        "title": "Sample Data",
-        "description": "Load sample data in your database"
+        "title": "Ukázková data",
+        "description": "Načtěte ukázková data do své databáze"
       },
       "sampleVectorData": {
-        "title": "Sample Vector Data",
-        "description": "Load sample vector data with text-embedding-ada-002"
+        "title": "Ukázková vektorová data",
+        "description": "Načíst ukázková vektorová data pomocí text-embedding-ada-002"
       },
       "appDevelopment": {
-        "title": "App development",
-        "description": "Start here to use an SDK to build your apps"
+        "title": "Vývoj aplikací",
+        "description": "Začněte tady, pokud chcete k vytváření aplikací použít sadu SDK"
       },
       "sampleGallery": {
-        "title": "Sample Gallery",
-        "description": "Get real-world end-to-end samples"
+        "title": "Galerie ukázek",
+        "description": "Získejte komplexní ukázky z reálného světa"
       }
     },
     "sampleDataDialog": {
-      "title": "Sample Data",
-      "startButton": "Start",
-      "createPrompt": "Create a container \"{{containerName}}\" and import sample data into it. This may take a few minutes.",
-      "creatingContainer": "Creating container \"{{containerName}}\"...",
-      "importingData": "Importing data into \"{{containerName}}\"...",
-      "success": "Successfully created \"{{containerName}}\" with sample data.",
-      "errorContainerExists": "The container \"{{containerName}}\" in database \"{{databaseName}}\" already exists. Please delete it and retry.",
-      "errorCreateContainer": "Failed to create container: {{error}}",
-      "errorImportData": "Failed to import data: {{error}}"
+      "title": "Ukázková data",
+      "startButton": "Spustit",
+      "createPrompt": "Vytvořte kontejner {{containerName}} a importujte do něj ukázková data. Může to trvat několik minut.",
+      "creatingContainer": "Vytváří se kontejner {{containerName}}...",
+      "importingData": "Importují se data do {{containerName}}...",
+      "success": "{{containerName}} – úspěšně vytvořeno s ukázkovými daty",
+      "errorContainerExists": "Kontejner {{containerName}} v databázi {{databaseName}} už existuje. Odstraňte ho prosím a zkuste to znovu.",
+      "errorCreateContainer": "Nepovedlo se vytvořit kontejner: {{error}}",
+      "errorImportData": "Nepovedlo se naimportovat data: {{error}}"
     }
   },
   "contextMenu": {
