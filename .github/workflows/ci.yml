@@ -219,6 +219,7 @@ jobs:
       - name: Run test shard ${{ matrix['shardIndex'] }} of ${{ matrix['shardTotal']}}
         run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }} --workers=3
       - name: "Generate code coverage report for shard ${{ matrix['shardIndex'] }}"
+        if: ${{ !cancelled() }}
         run: npx nyc report --reporter=html --reporter=text --report-dir=coverage/shard-${{ matrix.shardIndex }}
       - name: Upload blob report to GitHub Actions Artifacts
         if: ${{ !cancelled() }}
@@ -234,6 +235,44 @@ jobs:
           name: coverage-report-${{ matrix.shardIndex }}
           path: coverage/shard-${{ matrix.shardIndex }}
           retention-days: 1
+      - name: Upload raw coverage data for merging
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: nyc-output-${{ matrix.shardIndex }}
+          path: .nyc_output
+          retention-days: 1
+
+  merge-coverage-reports:
+    name: "Merge Coverage Reports"
+    if: ${{ !cancelled() }}
+    needs: [playwright-tests]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Install dependencies
+        run: npm ci
+      - name: Download all raw coverage data
+        uses: actions/download-artifact@v4
+        with:
+          path: all-coverage
+          pattern: nyc-output-*
+          merge-multiple: true
+      - name: Move coverage files into .nyc_output
+        run: |
+          mkdir -p .nyc_output
+          cp all-coverage/*.json .nyc_output/
+      - name: Generate merged coverage report
+        run: npx nyc report --reporter=html --reporter=text --reporter=lcov --report-dir=coverage-e2e
+      - name: Upload merged coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: merged-coverage-report--attempt-${{ github.run_attempt }}
+          path: coverage-e2e
+          retention-days: 14
 
   merge-playwright-reports:
     name: "Merge Playwright Reports"
