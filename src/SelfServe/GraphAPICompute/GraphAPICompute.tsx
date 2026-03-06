@@ -37,7 +37,7 @@ const connectionStringValue: Description = {
   textTKey: "ConnectionStringText",
   type: DescriptionType.Text,
   link: {
-    href: generateBladeLink(BladeType.SqlKeys),
+    href: generateBladeLink(BladeType.ConnectionStrings),
     textTKey: "KeysBlade",
   },
 };
