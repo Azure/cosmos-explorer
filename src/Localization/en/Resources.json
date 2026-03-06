@@ -434,7 +434,8 @@
     },
     "addDatabase": {
       "databaseLabel": "Database {{suffix}}",
-      "databaseIdLabel": "{{databaseLabel}} id",
+      "databaseIdLabel": "Database id",
+      "keyspaceIdLabel": "Keyspace id",
       "databaseIdPlaceholder": "Type a new {{databaseLabel}} id",
       "databaseTooltip": "A {{databaseLabel}} is a logical container of one or more {{collectionsLabel}}",
       "shareThroughput": "Share throughput across {{collectionsLabel}}",
@@ -596,7 +597,7 @@
     },
     "saveQuery": {
       "panelTitle": "Save Query",
-      "setupCostMessage": "For compliance reasons, we save queries in a container in your Azure Cosmos account, in a separate database called \"{{databaseName}}\". To proceed, we need to create a container in your account, estimated additional cost is $0.77 daily.",
+      "setupCostMessage": "For compliance reasons, we save queries in a container in your Azure Cosmos account, in a separate database called \u201c{{databaseName}}\u201d. To proceed, we need to create a container in your account, estimated additional cost is $0.77 daily.",
       "completeSetup": "Complete setup",
       "noQueryNameError": "No query name specified",
       "invalidQueryContentError": "Invalid query content specified",
@@ -607,9 +608,9 @@
     },
     "loadQuery": {
       "noFileSpecifiedError": "No file specified",
-      "failedToOpenFileError": "Failed to open file {{fileName}}",
-      "failedToReadFileError": "Failed to read file {{fileName}} as text",
-      "selectFilesToOpen": "Select the file to open",
+      "failedToLoadQueryError": "Failed to load query",
+      "failedToLoadQueryFromFileError": "Failed to load query from file {{fileName}}",
+      "selectFilesToOpen": "Select a query document",
       "browseFiles": "Browse"
     },
     "executeStoredProcedure": {
@@ -622,12 +623,12 @@
       "addParam": "Add param",
       "deleteParam": "Delete param",
       "invalidParamError": "Invalid param specified: {{invalidParam}}",
-      "notValidLiteralError": "{{invalidParam}} is not a valid literal value",
+      "invalidParamConsoleError": "Invalid param specified: {{invalidParam}} is not a valid literal value",
       "stringType": "String",
       "customType": "Custom"
     },
     "uploadItems": {
-      "noFilesSelectedError": "No files were selected. Please input at least one file.",
+      "noFilesSpecifiedError": "No files were specified. Please input at least one file.",
       "selectJsonFiles": "Select JSON Files",
       "selectJsonFilesTooltip": "Select one or more JSON files to upload. Each file can contain a single JSON document or an array of JSON documents. The combined size of all files in an individual upload operation must be less than 2 MB. You can perform multiple upload operations for larger data sets.",
       "fileNameColumn": "FILE NAME",
@@ -639,13 +640,12 @@
       "copyFailedError": "Failed to copy {{name}} to {{destination}}",
       "uploadFailedError": "Failed to upload {{name}}",
       "location": "Location",
-      "locationAriaLabel": "Select a notebook location to copy",
+      "locationAriaLabel": "Location",
       "selectLocation": "Select a notebook location to copy",
       "name": "Name"
     },
     "publishNotebook": {
       "publishFailedError": "Failed to publish {{notebookName}} to gallery",
-      "detailError": "Portal Portal Portal Portal Portal",
       "publishDescription": "When published, this notebook will appear in the Azure Cosmos DB notebooks public gallery. Make sure you have removed any sensitive data or output before publishing.",
       "publishPrompt": "Would you like to publish and share \"{{name}}\" to the gallery?",
       "coverImage": "Cover image",
@@ -667,7 +667,7 @@
     "changePartitionKey": {
       "failedToStartError": "Failed to start data transfer job",
       "suboptimalPartitionKeyError": "Warning: The system has detected that your collection may be using a suboptimal partition key",
-      "description": "Changing the partition key requires creating a new destination collection with the desired partition key configuration and then running a job to copy the data from the source to the destination collection.",
+      "description": "When changing a container\u2019s partition key, you will need to create a destination container with the correct partition key. You may also select an existing destination container.",
       "sourceContainerId": "Source {{collectionName}} id",
       "destinationContainerId": "Destination {{collectionName}} id",
       "collectionIdTooltip": "Unique identifier for the {{collectionName}} and used for id-based routing through REST and all SDKs.",
@@ -678,7 +678,7 @@
     },
     "cassandraAddCollection": {
       "keyspaceLabel": "Keyspace name",
-      "keyspaceTooltip": "Select an existing keyspace or enter a new one.",
+      "keyspaceTooltip": "Select an existing keyspace or enter a new keyspace id.",
       "tableIdLabel": "Enter CQL command to create the table.",
       "enterTableId": "Enter table Id",
       "tableSchemaAriaLabel": "Table schema",
@@ -696,11 +696,11 @@
       "propertyTypeEmptyError": "Property type cannot be empty. Please select a type from the dropdown for property {{property}}"
     },
     "tableQuerySelect": {
-      "selectColumns": "Select the columns that you wish to query.",
+      "selectColumns": "Select the columns that you want to query.",
       "availableColumns": "Available Columns"
     },
     "tableColumnSelection": {
-      "selectColumns": "Select the columns to view from the table below. You can reorder columns by clicking and dragging the column header.",
+      "selectColumns": "Select which columns to display in your view of items in your container.",
       "searchFields": "Search fields",
       "reset": "Reset",
       "partitionKeySuffix": " (partition key)"

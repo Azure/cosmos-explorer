@@ -42,7 +42,9 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
   const isCassandraAccount: boolean = userContext.apiType === "Cassandra";
   const databaseLabel: string = isCassandraAccount ? "keyspace" : "database";
   const collectionsLabel: string = isCassandraAccount ? "tables" : "collections";
-  const databaseIdLabel: string = t(Keys.panes.addDatabase.databaseIdLabel, { databaseLabel });
+  const databaseIdLabel: string = isCassandraAccount
+    ? t(Keys.panes.addDatabase.keyspaceIdLabel)
+    : t(Keys.panes.addDatabase.databaseIdLabel);
   const databaseIdPlaceHolder: string = t(Keys.panes.addDatabase.databaseIdPlaceholder, { databaseLabel });
 
   const [databaseId, setDatabaseId] = useState<string>("");

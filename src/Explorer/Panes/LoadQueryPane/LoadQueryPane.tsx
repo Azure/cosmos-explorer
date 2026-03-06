@@ -50,7 +50,7 @@ export const LoadQueryPane: FunctionComponent = (): JSX.Element => {
       setLoadingFalse();
     } catch (error) {
       setLoadingFalse();
-      setFormError(t(Keys.panes.loadQuery.failedToOpenFileError, { fileName: file.name }));
+      setFormError(t(Keys.panes.loadQuery.failedToLoadQueryError));
       logConsoleError(`Failed to load query from file ${file.name}: ${error}`);
     }
   };
@@ -73,7 +73,7 @@ export const LoadQueryPane: FunctionComponent = (): JSX.Element => {
     };
 
     reader.onerror = (): void => {
-      setFormError(t(Keys.panes.loadQuery.failedToReadFileError, { fileName: file.name }));
+      setFormError(t(Keys.panes.loadQuery.failedToLoadQueryFromFileError, { fileName: file.name }));
       logConsoleError(`Failed to load query from file ${file.name}`);
     };
     return reader.readAsText(file);

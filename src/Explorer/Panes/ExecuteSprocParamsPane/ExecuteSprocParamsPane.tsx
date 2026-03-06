@@ -48,11 +48,7 @@ export const ExecuteSprocParamsPane: FunctionComponent<ExecuteSprocParamsPanePro
 
   const setInvalidParamError = (invalidParam: string): void => {
     setFormError(t(Keys.panes.executeStoredProcedure.invalidParamError, { invalidParam }));
-    logConsoleError(
-      t(Keys.panes.executeStoredProcedure.invalidParamError, { invalidParam }) +
-        ": " +
-        t(Keys.panes.executeStoredProcedure.notValidLiteralError, { invalidParam }),
-    );
+    logConsoleError(t(Keys.panes.executeStoredProcedure.invalidParamConsoleError, { invalidParam }));
   };
 
   const submit = (): void => {

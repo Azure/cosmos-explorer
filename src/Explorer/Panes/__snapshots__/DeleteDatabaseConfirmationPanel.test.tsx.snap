@@ -714,9 +714,7 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
             <span
               className="css-126"
             >
-              What is the reason why you are deleting this 
-              Database
-              ?
+              What is the reason why you are deleting this Database?
             </span>
           </Text>
           <StyledTextFieldBase

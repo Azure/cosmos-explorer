@@ -65,8 +65,8 @@ export const UploadItemsPane: FunctionComponent<UploadItemsPaneProps> = ({ onUpl
   const onSubmit = () => {
     setFormError("");
     if (!files || files.length === 0) {
-      setFormError(t(Keys.panes.uploadItems.noFilesSelectedError));
-      logConsoleError(t(Keys.panes.uploadItems.noFilesSelectedError));
+      setFormError(t(Keys.panes.uploadItems.noFilesSpecifiedError));
+      logConsoleError(t(Keys.panes.uploadItems.noFilesSpecifiedError));
       return;
     }
 
