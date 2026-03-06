@@ -12,6 +12,8 @@ import {
 } from "@fluentui/react";
 import * as React from "react";
 import * as ViewModels from "../../../../Contracts/ViewModels";
+import { Keys } from "../../../../Localization/Keys.generated";
+import { t } from "../../../../Localization/t";
 import { userContext } from "../../../../UserContext";
 import { Int32 } from "../../../Panes/Tables/Validators/EntityPropertyValidationCommon";
 import {
@@ -85,9 +87,12 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
   constructor(props: SubSettingsComponentProps) {
     super(props);
     this.geospatialVisible = userContext.apiType === "SQL";
-    this.partitionKeyName = userContext.apiType === "Mongo" ? "Shard key" : "Partition key";
+    this.partitionKeyName =
+      userContext.apiType === "Mongo"
+        ? t(Keys.controls.settings.partitionKey.shardKey)
+        : t(Keys.controls.settings.partitionKey.partitionKey);
     this.partitionKeyValue = this.getPartitionKeyValue();
-    this.uniqueKeyName = "Unique keys";
+    this.uniqueKeyName = t(Keys.controls.settings.subSettings.uniqueKeys);
     this.uniqueKeyValue = this.getUniqueKeyValue();
   }
 
@@ -143,9 +148,13 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
   };
 
   private ttlChoiceGroupOptions: IChoiceGroupOption[] = [
-    { key: TtlType.Off, text: "Off", ariaLabel: "ttl-off-option" },
-    { key: TtlType.OnNoDefault, text: "On (no default)", ariaLabel: "ttl-on-no-default-option" },
-    { key: TtlType.On, text: "On", ariaLabel: "ttl-on-option" },
+    { key: TtlType.Off, text: t(Keys.controls.settings.subSettings.ttlOff), ariaLabel: "ttl-off-option" },
+    {
+      key: TtlType.OnNoDefault,
+      text: t(Keys.controls.settings.subSettings.ttlOnNoDefault),
+      ariaLabel: "ttl-on-no-default-option",
+    },
+    { key: TtlType.On, text: t(Keys.controls.settings.subSettings.ttlOn), ariaLabel: "ttl-on-option" },
   ];
 
   public getTtlValue = (value: string): TtlType => {
@@ -216,13 +225,13 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
         }}
       >
         <Text style={{ color: "var(--colorNeutralForeground1)" }}>
-          To enable time-to-live (TTL) for your collection/documents,{" "}
+          {t(Keys.controls.settings.subSettings.mongoTtlMessage)}{" "}
           <Link
             href="https://docs.microsoft.com/en-us/azure/cosmos-db/mongodb-time-to-live"
             target="_blank"
             style={{ color: "var(--colorBrandForeground1)" }}
           >
-            create a TTL index
+            {t(Keys.controls.settings.subSettings.mongoTtlLinkText)}
           </Link>
           .
         </Text>
@@ -231,7 +240,7 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
       <Stack {...titleAndInputStackProps}>
         <ChoiceGroup
           id="timeToLive"
-          label="Time to Live"
+          label={t(Keys.controls.settings.subSettings.timeToLive)}
           selectedKey={this.props.timeToLive}
           options={this.ttlChoiceGroupOptions}
           onChange={this.onTtlChange}
@@ -255,8 +264,8 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
             max={Int32.Max}
             value={this.props.displayedTtlSeconds}
             onChange={this.onTimeToLiveSecondsChange}
-            suffix="second(s)"
-            ariaLabel={`Time to live in seconds`}
+            suffix={t(Keys.controls.settings.subSettings.seconds)}
+            ariaLabel={t(Keys.controls.settings.subSettings.timeToLiveInSeconds)}
             data-test="ttl-input"
           />
         )}
@@ -264,16 +273,16 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
     );
 
   private analyticalTtlChoiceGroupOptions: IChoiceGroupOption[] = [
-    { key: TtlType.Off, text: "Off", disabled: true },
-    { key: TtlType.OnNoDefault, text: "On (no default)" },
-    { key: TtlType.On, text: "On" },
+    { key: TtlType.Off, text: t(Keys.controls.settings.subSettings.ttlOff), disabled: true },
+    { key: TtlType.OnNoDefault, text: t(Keys.controls.settings.subSettings.ttlOnNoDefault) },
+    { key: TtlType.On, text: t(Keys.controls.settings.subSettings.ttlOn) },
   ];
 
   private getAnalyticalStorageTtlComponent = (): JSX.Element => (
     <Stack {...titleAndInputStackProps}>
       <ChoiceGroup
         id="analyticalStorageTimeToLive"
-        label="Analytical Storage Time to Live"
+        label={t(Keys.controls.settings.subSettings.analyticalStorageTtl)}
         selectedKey={this.props.analyticalStorageTtlSelection}
         options={this.analyticalTtlChoiceGroupOptions}
         onChange={this.onAnalyticalStorageTtlSelectionChange}
@@ -294,7 +303,7 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
           min={1}
           max={Int32.Max}
           value={this.props.analyticalStorageTtlSeconds?.toString()}
-          suffix="second(s)"
+          suffix={t(Keys.controls.settings.subSettings.seconds)}
           onChange={this.onAnalyticalStorageTtlSecondsChange}
         />
       )}
@@ -302,14 +311,22 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
   );
 
   private geoSpatialConfigTypeChoiceGroupOptions: IChoiceGroupOption[] = [
-    { key: GeospatialConfigType.Geography, text: "Geography", ariaLabel: "geography-option" },
-    { key: GeospatialConfigType.Geometry, text: "Geometry", ariaLabel: "geometry-option" },
+    {
+      key: GeospatialConfigType.Geography,
+      text: t(Keys.controls.settings.subSettings.geography),
+      ariaLabel: "geography-option",
+    },
+    {
+      key: GeospatialConfigType.Geometry,
+      text: t(Keys.controls.settings.subSettings.geometry),
+      ariaLabel: "geometry-option",
+    },
   ];
 
   private getGeoSpatialComponent = (): JSX.Element => (
     <ChoiceGroup
       id="geoSpatialConfig"
-      label="Geospatial Configuration"
+      label={t(Keys.controls.settings.subSettings.geospatialConfiguration)}
       selectedKey={this.props.geospatialConfigType}
       options={this.geoSpatialConfigTypeChoiceGroupOptions}
       onChange={this.onGeoSpatialConfigTypeChange}
@@ -318,8 +335,8 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
   );
 
   private changeFeedChoiceGroupOptions: IChoiceGroupOption[] = [
-    { key: ChangeFeedPolicyState.Off, text: "Off" },
-    { key: ChangeFeedPolicyState.On, text: "On" },
+    { key: ChangeFeedPolicyState.Off, text: t(Keys.controls.settings.subSettings.ttlOff) },
+    { key: ChangeFeedPolicyState.On, text: t(Keys.controls.settings.subSettings.ttlOn) },
   ];
 
   private getChangeFeedComponent = (): JSX.Element => {
@@ -328,7 +345,10 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
     return (
       <Stack>
         <Label id={labelId}>
-          <ToolTipLabelComponent label="Change feed log retention policy" toolTipElement={changeFeedPolicyToolTip} />
+          <ToolTipLabelComponent
+            label={t(Keys.controls.settings.changeFeed.label)}
+            toolTipElement={changeFeedPolicyToolTip}
+          />
         </Label>
         <ChoiceGroup
           id="changeFeedPolicy"
@@ -373,14 +393,20 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
       )}
 
       {userContext.apiType === "SQL" && this.isLargePartitionKeyEnabled() && (
-        <Text className={classNames.hintText}>Large {this.partitionKeyName.toLowerCase()} has been enabled.</Text>
+        <Text className={classNames.hintText}>
+          {t(Keys.controls.settings.subSettings.largePartitionKeyEnabled, {
+            partitionKeyName: this.partitionKeyName.toLowerCase(),
+          })}
+        </Text>
       )}
 
       {userContext.apiType === "SQL" &&
         (this.isHierarchicalPartitionedContainer() ? (
-          <Text className={classNames.hintText}>Hierarchically partitioned container.</Text>
+          <Text className={classNames.hintText}>{t(Keys.controls.settings.subSettings.hierarchicalPartitioned)}</Text>
         ) : (
-          <Text className={classNames.hintText}>Non-hierarchically partitioned container.</Text>
+          <Text className={classNames.hintText}>
+            {t(Keys.controls.settings.subSettings.nonHierarchicalPartitioned)}
+          </Text>
         ))}
     </Stack>
   );
