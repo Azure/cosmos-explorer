@@ -171,10 +171,12 @@
     "@webpack-cli/serve": "2.0.5",
     "babel-jest": "29.7.0",
     "babel-loader": "8.1.0",
+    "babel-plugin-istanbul": "7.0.1",
     "brace-expansion": "1.1.12",
     "buffer": "5.1.0",
     "case-sensitive-paths-webpack-plugin": "2.4.0",
     "create-file-webpack": "1.0.2",
+    "cross-env": "10.1.0",
     "css-loader": "6.8.1",
     "enzyme": "3.11.0",
     "enzyme-adapter-react-16": "1.15.8",
@@ -204,6 +206,7 @@
     "mini-css-extract-plugin": "2.1.0",
     "monaco-editor-webpack-plugin": "7.1.0",
     "node-fetch": "2.6.7",
+    "nyc": "18.0.0",
     "prettier": "3.0.3",
     "process": "0.11.10",
     "querystring-es3": "0.2.1",
@@ -238,6 +241,9 @@
     "test": "rimraf coverage && jest",
     "test:debug": "jest --runInBand",
     "test:e2e": "jest -c ./jest.config.playwright.js --detectOpenHandles",
+    "test:e2e:coverage": "cross-env COVERAGE=1 npx playwright test",
+    "test:e2e:coverage:report": "nyc report --reporter=html --reporter=text --report-dir=coverage-e2e",
+    "start:coverage": "cross-env COVERAGE=1 webpack serve --mode development",
     "test:file": "jest --coverage=false",
     "watch": "npm run start",
     "wait-for-server": "wait-on -t 240000 -i 5000 -v https-get://0.0.0.0:1234/",
@@ -271,6 +277,22 @@
     "url": "https://github.com/Azure/cosmos-explorer/issues"
   },
   "homepage": "https://github.com/Azure/cosmos-explorer",
+  "nyc": {
+    "report-dir": "coverage-e2e",
+    "temp-dir": ".nyc_output",
+    "include": [
+      "src/**"
+    ],
+    "exclude": [
+      "node_modules",
+      "test"
+    ],
+    "reporter": [
+      "text",
+      "html",
+      "lcov"
+    ]
+  },
   "prettier": {
     "printWidth": 120,
     "endOfLine": "auto"

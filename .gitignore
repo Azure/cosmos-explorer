@@ -22,3 +22,5 @@ src/Localization/Keys.generated.ts
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+.nyc_output/
+coverage-e2e/

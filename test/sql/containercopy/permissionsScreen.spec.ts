@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { expect, Frame, Locator, Page, test } from "@playwright/test";
 import { set } from "lodash";
+import { expect, Frame, Locator, Page, test } from "../../coverage";
 import { ContainerCopy, getAccountName, TestAccount } from "../../fx";
 
 const VISIBLE_TIMEOUT_MS = 30 * 1000;

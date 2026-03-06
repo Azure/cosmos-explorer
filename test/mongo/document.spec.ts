@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "../coverage";
 
 import { setupCORSBypass } from "../CORSBypass";
 import { CommandBarButton, DataExplorer, DocumentsTab, TestAccount } from "../fx";
