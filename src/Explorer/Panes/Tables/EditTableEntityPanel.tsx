@@ -1,5 +1,7 @@
 import { IDropdownOption, Image, Label, Stack, Text, TextField } from "@fluentui/react";
 import { useBoolean } from "@fluentui/react-hooks";
+import { Keys } from "Localization/Keys.generated";
+import { t } from "Localization/t";
 import { logConsoleError } from "Utils/NotificationConsoleUtils";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import * as _ from "underscore";
@@ -198,7 +200,7 @@ export const EditTableEntityPanel: FunctionComponent<EditTableEntityPanelProps> 
       }
 
       if (!type) {
-        setFormError(`Property type cannot be empty. Please select a type from the dropdown for property ${property}`);
+        setFormError(t(Keys.panes.tables.propertyTypeEmptyError, { property }));
         return;
       }
 
@@ -208,8 +210,8 @@ export const EditTableEntityPanel: FunctionComponent<EditTableEntityPanelProps> 
         (property === "RowKey" && value === "") ||
         (property === "RowKey" && value === undefined)
       ) {
-        logConsoleError(`${property} cannot be empty. Please input a value for ${property}`);
-        setFormError(`${property} cannot be empty. Please input a value for ${property}`);
+        logConsoleError(t(Keys.panes.tables.propertyEmptyError, { property }));
+        setFormError(t(Keys.panes.tables.propertyEmptyError, { property }));
         return;
       }
     }
@@ -403,7 +405,7 @@ export const EditTableEntityPanel: FunctionComponent<EditTableEntityPanelProps> 
         )}
       </div>
       <div className="panelNullWarning" style={{ padding: "20px", color: "red" }}>
-        Warning: Null fields will not be displayed for editing.
+        {t(Keys.panes.tables.nullFieldsWarning)}
       </div>
     </RightPaneForm>
   );
