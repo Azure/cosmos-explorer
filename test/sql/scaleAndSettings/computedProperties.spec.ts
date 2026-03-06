@@ -1,5 +1,5 @@
-import { expect, Page, test } from "@playwright/test";
 import * as DataModels from "../../../src/Contracts/DataModels";
+import { expect, Page, test } from "../../coverage";
 import { CommandBarButton, DataExplorer, ONE_MINUTE_MS, TestAccount } from "../../fx";
 import { createTestSQLContainer, TestContainerContext } from "../../testData";
 

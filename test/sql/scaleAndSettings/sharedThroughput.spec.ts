@@ -1,4 +1,4 @@
-import { Locator, expect, test } from "@playwright/test";
+import { Locator, expect, test } from "../../coverage";
 import {
   CommandBarButton,
   DataExplorer,

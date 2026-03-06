@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { expect, Frame, Locator, Page, test } from "@playwright/test";
+import { expect, Frame, Locator, Page, test } from "../../coverage";
 import {
   ContainerCopy,
   getAccountName,
