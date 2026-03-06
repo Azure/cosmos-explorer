@@ -130,7 +130,8 @@ exports[`SettingsUtils functions render 1`] = `
     Database:
      
     sampleDb
-    , 
+    ,
+     
     Container:
      
     sampleCollection
