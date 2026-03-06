@@ -888,6 +888,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 <Stack id="collapsibleVectorPolicySectionContent" styles={{ root: { position: "relative" } }}>
                   <Stack styles={{ root: { paddingLeft: 40 } }}>
                     <VectorEmbeddingPoliciesComponent
+                      vectorEmbeddingsBaseline={[]}
                       vectorEmbeddings={this.state.vectorEmbeddingPolicy}
                       vectorIndexes={this.state.vectorIndexingPolicy}
                       onVectorEmbeddingChange={(

@@ -14,6 +14,7 @@ export interface ContainerPolicyComponentProps {
   vectorEmbeddingPolicyBaseline: VectorEmbeddingPolicy;
   onVectorEmbeddingPolicyChange: (newVectorEmbeddingPolicy: VectorEmbeddingPolicy) => void;
   onVectorEmbeddingPolicyDirtyChange: (isVectorEmbeddingPolicyDirty: boolean) => void;
+  onVectorEmbeddingPolicyValidationChange: (isValid: boolean) => void;
   isVectorSearchEnabled: boolean;
   fullTextPolicy: FullTextPolicy;
   fullTextPolicyBaseline: FullTextPolicy;
@@ -30,6 +31,7 @@ export const ContainerPolicyComponent: React.FC<ContainerPolicyComponentProps> =
   vectorEmbeddingPolicyBaseline,
   onVectorEmbeddingPolicyChange,
   onVectorEmbeddingPolicyDirtyChange,
+  onVectorEmbeddingPolicyValidationChange,
   isVectorSearchEnabled,
   fullTextPolicy,
   fullTextPolicyBaseline,
@@ -42,8 +44,12 @@ export const ContainerPolicyComponent: React.FC<ContainerPolicyComponentProps> =
   const [selectedTab, setSelectedTab] = React.useState<ContainerPolicyTabTypes>(
     ContainerPolicyTabTypes.VectorPolicyTab,
   );
-  const [vectorEmbeddings, setVectorEmbeddings] = React.useState<VectorEmbedding[]>();
-  const [vectorEmbeddingsBaseline, setVectorEmbeddingsBaseline] = React.useState<VectorEmbedding[]>();
+  const [vectorEmbeddings, setVectorEmbeddings] = React.useState<VectorEmbedding[]>(
+    vectorEmbeddingPolicy?.vectorEmbeddings ?? [],
+  );
+  const [vectorEmbeddingsBaseline, setVectorEmbeddingsBaseline] = React.useState<VectorEmbedding[]>(
+    vectorEmbeddingPolicyBaseline?.vectorEmbeddings ?? [],
+  );
   const [discardVectorChanges, setDiscardVectorChanges] = React.useState<boolean>(false);
   const [fullTextSearchPolicy, setFullTextSearchPolicy] = React.useState<FullTextPolicy>();
   const [fullTextSearchPolicyBaseline, setFullTextSearchPolicyBaseline] = React.useState<FullTextPolicy>();
@@ -52,7 +58,7 @@ export const ContainerPolicyComponent: React.FC<ContainerPolicyComponentProps> =
   React.useEffect(() => {
     setVectorEmbeddings(vectorEmbeddingPolicy?.vectorEmbeddings);
     setVectorEmbeddingsBaseline(vectorEmbeddingPolicyBaseline?.vectorEmbeddings);
-  }, [vectorEmbeddingPolicy]);
+  }, [vectorEmbeddingPolicy, vectorEmbeddingPolicyBaseline]);
 
   React.useEffect(() => {
     setFullTextSearchPolicy(fullTextPolicy);
@@ -69,12 +75,15 @@ export const ContainerPolicyComponent: React.FC<ContainerPolicyComponentProps> =
     }
   });
 
-  const checkAndSendVectorEmbeddingPoliciesToSettings = (newVectorEmbeddings: VectorEmbedding[]): void => {
-    if (isDirty(newVectorEmbeddings, vectorEmbeddingsBaseline)) {
-      onVectorEmbeddingPolicyDirtyChange(true);
+  const checkAndSendVectorEmbeddingPoliciesToSettings = (
+    newVectorEmbeddings: VectorEmbedding[],
+    validationPassed: boolean,
+  ): void => {
+    onVectorEmbeddingPolicyValidationChange(validationPassed);
+    const isVectorDirty: boolean = isDirty(newVectorEmbeddings, vectorEmbeddingsBaseline);
+    onVectorEmbeddingPolicyDirtyChange(isVectorDirty);
+    if (isVectorDirty) {
       onVectorEmbeddingPolicyChange({ vectorEmbeddings: newVectorEmbeddings });
-    } else {
-      resetShouldDiscardContainerPolicyChange();
     }
   };
 
@@ -156,18 +165,18 @@ export const ContainerPolicyComponent: React.FC<ContainerPolicyComponentProps> =
             headerText="Vector Policy"
           >
             <Stack {...titleAndInputStackProps} styles={{ root: { position: "relative", maxWidth: "400px" } }}>
-              {vectorEmbeddings && (
-                <VectorEmbeddingPoliciesComponent
-                  disabled={true}
-                  vectorEmbeddings={vectorEmbeddings}
-                  vectorIndexes={undefined}
-                  onVectorEmbeddingChange={(vectorEmbeddings: VectorEmbedding[]) =>
-                    checkAndSendVectorEmbeddingPoliciesToSettings(vectorEmbeddings)
-                  }
-                  discardChanges={discardVectorChanges}
-                  onChangesDiscarded={onVectorChangesDiscarded}
-                />
-              )}
+              <VectorEmbeddingPoliciesComponent
+                vectorEmbeddingsBaseline={vectorEmbeddingsBaseline}
+                vectorEmbeddings={vectorEmbeddings}
+                vectorIndexes={undefined}
+                onVectorEmbeddingChange={(
+                  vectorEmbeddings: VectorEmbedding[],
+                  _vectorIndexingPolicies,
+                  validationPassed: boolean,
+                ) => checkAndSendVectorEmbeddingPoliciesToSettings(vectorEmbeddings, validationPassed)}
+                discardChanges={discardVectorChanges}
+                onChangesDiscarded={onVectorChangesDiscarded}
+              />
             </Stack>
           </PivotItem>
         )}
