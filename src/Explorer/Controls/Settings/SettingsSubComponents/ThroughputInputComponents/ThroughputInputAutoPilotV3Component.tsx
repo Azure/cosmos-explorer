@@ -546,9 +546,6 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
           <span style={{ float: "right" }}>
             {this.props.softAllowedMaximumThroughput.toLocaleString(ThroughputInputAutoPilotV3Component.LOCALE_EN_US)}
           </span>
-          <span style={{ float: "right" }} data-test="soft-allowed-maximum-throughput">
-            {this.props.softAllowedMaximumThroughput.toLocaleString(ThroughputInputAutoPilotV3Component.LOCALE_EN_US)}
-          </span>
         </Stack.Item>
       </Stack>
       <ProgressIndicator
