@@ -85,8 +85,22 @@ export class MongoIndexingPolicyComponent extends React.Component<MongoIndexingP
   };
 
   private initialIndexesColumns: IColumn[] = [
-    { key: "definition", name: t(Keys.controls.settings.mongoIndexing.definitionColumn), fieldName: "definition", minWidth: 100, maxWidth: 200, isResizable: true },
-    { key: "type", name: t(Keys.controls.settings.mongoIndexing.typeColumn), fieldName: "type", minWidth: 100, maxWidth: 200, isResizable: true },
+    {
+      key: "definition",
+      name: t(Keys.controls.settings.mongoIndexing.definitionColumn),
+      fieldName: "definition",
+      minWidth: 100,
+      maxWidth: 200,
+      isResizable: true,
+    },
+    {
+      key: "type",
+      name: t(Keys.controls.settings.mongoIndexing.typeColumn),
+      fieldName: "type",
+      minWidth: 100,
+      maxWidth: 200,
+      isResizable: true,
+    },
     {
       key: "actionButton",
       name: t(Keys.controls.settings.mongoIndexing.dropIndexColumn),
@@ -98,8 +112,22 @@ export class MongoIndexingPolicyComponent extends React.Component<MongoIndexingP
   ];
 
   private indexesToBeDroppedColumns: IColumn[] = [
-    { key: "definition", name: t(Keys.controls.settings.mongoIndexing.definitionColumn), fieldName: "definition", minWidth: 100, maxWidth: 200, isResizable: true },
-    { key: "type", name: t(Keys.controls.settings.mongoIndexing.typeColumn), fieldName: "type", minWidth: 100, maxWidth: 200, isResizable: true },
+    {
+      key: "definition",
+      name: t(Keys.controls.settings.mongoIndexing.definitionColumn),
+      fieldName: "definition",
+      minWidth: 100,
+      maxWidth: 200,
+      isResizable: true,
+    },
+    {
+      key: "type",
+      name: t(Keys.controls.settings.mongoIndexing.typeColumn),
+      fieldName: "type",
+      minWidth: 100,
+      maxWidth: 200,
+      isResizable: true,
+    },
     {
       key: "actionButton",
       name: t(Keys.controls.settings.mongoIndexing.addIndexBackColumn),
@@ -260,7 +288,10 @@ export class MongoIndexingPolicyComponent extends React.Component<MongoIndexingP
 
     return (
       <Stack {...createAndAddMongoIndexStackProps} styles={mediumWidthStackStyles}>
-          <CollapsibleSectionComponent title={t(Keys.controls.settings.mongoIndexing.currentIndexes)} isExpandedByDefault={true}>
+        <CollapsibleSectionComponent
+          title={t(Keys.controls.settings.mongoIndexing.currentIndexes)}
+          isExpandedByDefault={true}
+        >
           {
             <>
               <DetailsList
@@ -287,7 +318,10 @@ export class MongoIndexingPolicyComponent extends React.Component<MongoIndexingP
 
     return (
       <Stack styles={mediumWidthStackStyles}>
-          <CollapsibleSectionComponent title={t(Keys.controls.settings.mongoIndexing.indexesToBeDropped)} isExpandedByDefault={true}>
+        <CollapsibleSectionComponent
+          title={t(Keys.controls.settings.mongoIndexing.indexesToBeDropped)}
+          isExpandedByDefault={true}
+        >
           {indexesToBeDropped.length > 0 && (
             <DetailsList
               styles={customDetailsListStyles}

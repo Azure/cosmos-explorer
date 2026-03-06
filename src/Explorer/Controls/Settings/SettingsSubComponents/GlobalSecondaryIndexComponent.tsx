@@ -23,7 +23,9 @@ export const GlobalSecondaryIndexComponent: React.FC<GlobalSecondaryIndexCompone
     <Stack tokens={{ childrenGap: 8 }} styles={{ root: { maxWidth: 600 } }}>
       <Stack horizontal verticalAlign="center" wrap tokens={{ childrenGap: 8 }}>
         {isSourceContainer && (
-          <Text styles={{ root: { fontWeight: 600 } }}>{t(Keys.controls.settings.globalSecondaryIndex.indexesDefined)}</Text>
+          <Text styles={{ root: { fontWeight: 600 } }}>
+            {t(Keys.controls.settings.globalSecondaryIndex.indexesDefined)}
+          </Text>
         )}
         <Text>
           <Link

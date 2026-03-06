@@ -190,9 +190,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
           <Stack {...titleAndInputStackProps}>
             <Text>{t(Keys.controls.settings.scale.throughputRuS)}</Text>
             <TextField disabled styles={getTextFieldStyles(undefined, undefined)} />
-            <Text>
-              {t(Keys.controls.settings.scale.autoScaleCustomSettings)}
-            </Text>
+            <Text>{t(Keys.controls.settings.scale.autoScaleCustomSettings)}</Text>
           </Stack>
         )}
       </Stack>

@@ -340,7 +340,9 @@ export const getEstimatedSpendingElement = (
   const ruRange: string = isAutoscale ? throughput / 10 + " RU/s - " : "";
   return (
     <Stack>
-      <Text style={{ fontWeight: 600, color: "var(--colorNeutralForeground1)" }}>{t(Keys.controls.settings.costEstimate.title)}</Text>
+      <Text style={{ fontWeight: 600, color: "var(--colorNeutralForeground1)" }}>
+        {t(Keys.controls.settings.costEstimate.title)}
+      </Text>
       {costElement}
       <Text style={{ fontWeight: 600, marginTop: 15, color: "var(--colorNeutralForeground1)" }}>
         {t(Keys.controls.settings.costEstimate.howWeCalculate)}
@@ -355,7 +357,8 @@ export const getEstimatedSpendingElement = (
         </span>
         <span>
           {priceBreakdown.currencySign}
-          {priceBreakdown.pricePerRu}{t(Keys.controls.settings.costEstimate.perRu)}
+          {priceBreakdown.pricePerRu}
+          {t(Keys.controls.settings.costEstimate.perRu)}
         </span>
       </Stack>
       <Text style={{ marginTop: 15, color: "var(--colorNeutralForeground1)" }}>
@@ -403,7 +406,9 @@ export const updateThroughputDelayedApplyWarningMessage: JSX.Element = (
 export const getUpdateThroughputBeyondInstantLimitMessage = (instantMaximumThroughput: number): JSX.Element => {
   return (
     <Text id="updateThroughputDelayedApplyWarningMessage">
-      {t(Keys.controls.settings.throughput.scalingUpDelayMessage, { instantMaximumThroughput: String(instantMaximumThroughput) })}
+      {t(Keys.controls.settings.throughput.scalingUpDelayMessage, {
+        instantMaximumThroughput: String(instantMaximumThroughput),
+      })}
     </Text>
   );
 };
@@ -418,9 +423,15 @@ export const getUpdateThroughputBeyondSupportLimitMessage = (
         {t(Keys.controls.settings.throughput.exceedPreAllocatedMessage)}
       </Text>
       <ol style={{ fontSize: 14, color: "var(--colorNeutralForeground1)", marginTop: "5px" }}>
-        <li>{t(Keys.controls.settings.throughput.instantScaleOption, { instantMaximumThroughput: String(instantMaximumThroughput) })}</li>
+        <li>
+          {t(Keys.controls.settings.throughput.instantScaleOption, {
+            instantMaximumThroughput: String(instantMaximumThroughput),
+          })}
+        </li>
         {instantMaximumThroughput < maximumThroughput && (
-          <li>{t(Keys.controls.settings.throughput.asyncScaleOption, { maximumThroughput: String(maximumThroughput) })}</li>
+          <li>
+            {t(Keys.controls.settings.throughput.asyncScaleOption, { maximumThroughput: String(maximumThroughput) })}
+          </li>
         )}
         <li>
           {t(Keys.controls.settings.throughput.quotaMaxOption, { maximumThroughput: String(maximumThroughput) })}
@@ -451,9 +462,7 @@ export const getUpdateThroughputBelowMinimumMessage = (minimum: number): JSX.Ele
 };
 
 export const saveThroughputWarningMessage: JSX.Element = (
-  <Text>
-    {t(Keys.controls.settings.throughput.saveThroughputWarning)}
-  </Text>
+  <Text>{t(Keys.controls.settings.throughput.saveThroughputWarning)}</Text>
 );
 
 const getCurrentThroughput = (
@@ -467,20 +476,26 @@ const getCurrentThroughput = (
       return isAutoscale
         ? `, ${t(Keys.controls.settings.throughput.currentAutoscaleThroughput)} ${Math.round(
             throughput / 10,
-          )} - ${throughput} ${throughputUnit}, ${t(Keys.controls.settings.throughput.targetAutoscaleThroughput)} ${Math.round(
-            targetThroughput / 10,
-          )} - ${targetThroughput} ${throughputUnit}`
-        : `, ${t(Keys.controls.settings.throughput.currentManualThroughput)} ${throughput} ${throughputUnit}, ${t(Keys.controls.settings.throughput.targetManualThroughput)} ${targetThroughput}`;
+          )} - ${throughput} ${throughputUnit}, ${t(
+            Keys.controls.settings.throughput.targetAutoscaleThroughput,
+          )} ${Math.round(targetThroughput / 10)} - ${targetThroughput} ${throughputUnit}`
+        : `, ${t(Keys.controls.settings.throughput.currentManualThroughput)} ${throughput} ${throughputUnit}, ${t(
+            Keys.controls.settings.throughput.targetManualThroughput,
+          )} ${targetThroughput}`;
     } else {
       return isAutoscale
-        ? `, ${t(Keys.controls.settings.throughput.targetAutoscaleThroughput)} ${Math.round(targetThroughput / 10)} - ${targetThroughput} ${throughputUnit}`
+        ? `, ${t(Keys.controls.settings.throughput.targetAutoscaleThroughput)} ${Math.round(
+            targetThroughput / 10,
+          )} - ${targetThroughput} ${throughputUnit}`
         : `, ${t(Keys.controls.settings.throughput.targetManualThroughput)} ${targetThroughput} ${throughputUnit}`;
     }
   }
 
   if (!targetThroughput && throughput) {
     return isAutoscale
-      ? `, ${t(Keys.controls.settings.throughput.currentAutoscaleThroughput)} ${Math.round(throughput / 10)} - ${throughput} ${throughputUnit}`
+      ? `, ${t(Keys.controls.settings.throughput.currentAutoscaleThroughput)} ${Math.round(
+          throughput / 10,
+        )} - ${throughput} ${throughputUnit}`
       : `, ${t(Keys.controls.settings.throughput.currentManualThroughput)} ${throughput} ${throughputUnit}`;
   }
 
@@ -498,7 +513,8 @@ export const getThroughputApplyDelayedMessage = (
   <Text styles={infoAndToolTipTextStyle}>
     {t(Keys.controls.settings.throughput.applyDelayedMessage)}
     <br />
-    {t(Keys.controls.settings.throughput.databaseLabel)} {databaseName}, {t(Keys.controls.settings.throughput.containerLabel)} {collectionName}{" "}
+    {t(Keys.controls.settings.throughput.databaseLabel)} {databaseName},{" "}
+    {t(Keys.controls.settings.throughput.containerLabel)} {collectionName}{" "}
     {getCurrentThroughput(isAutoscale, throughput, throughputUnit, requestedThroughput)}
   </Text>
 );
@@ -513,7 +529,11 @@ export const getThroughputApplyShortDelayMessage = (
   <Text styles={infoAndToolTipTextStyle} id="throughputApplyShortDelayMessage">
     {t(Keys.controls.settings.throughput.applyShortDelayMessage)}
     <br />
-    {collectionName ? `${t(Keys.controls.settings.throughput.databaseLabel)} ${databaseName}, ${t(Keys.controls.settings.throughput.containerLabel)} ${collectionName} ` : `${t(Keys.controls.settings.throughput.databaseLabel)} ${databaseName} `}
+    {collectionName
+      ? `${t(Keys.controls.settings.throughput.databaseLabel)} ${databaseName}, ${t(
+          Keys.controls.settings.throughput.containerLabel,
+        )} ${collectionName} `
+      : `${t(Keys.controls.settings.throughput.databaseLabel)} ${databaseName} `}
     {getCurrentThroughput(isAutoscale, throughput, throughputUnit)}
   </Text>
 );
@@ -529,7 +549,11 @@ export const getThroughputApplyLongDelayMessage = (
   <Text styles={infoAndToolTipTextStyle} id="throughputApplyLongDelayMessage">
     {t(Keys.controls.settings.throughput.applyLongDelayMessage)}
     <br />
-    {collectionName ? `${t(Keys.controls.settings.throughput.databaseLabel)} ${databaseName}, ${t(Keys.controls.settings.throughput.containerLabel)} ${collectionName} ` : `${t(Keys.controls.settings.throughput.databaseLabel)} ${databaseName} `}
+    {collectionName
+      ? `${t(Keys.controls.settings.throughput.databaseLabel)} ${databaseName}, ${t(
+          Keys.controls.settings.throughput.containerLabel,
+        )} ${collectionName} `
+      : `${t(Keys.controls.settings.throughput.databaseLabel)} ${databaseName} `}
     {getCurrentThroughput(isAutoscale, throughput, throughputUnit, requestedThroughput)}
   </Text>
 );
@@ -538,9 +562,7 @@ export const getToolTipContainer = (content: string | JSX.Element): JSX.Element 
   content ? <Text styles={infoAndToolTipTextStyle}>{content}</Text> : undefined;
 
 export const conflictResolutionLwwTooltip: JSX.Element = (
-  <Text styles={infoAndToolTipTextStyle}>
-    {t(Keys.controls.settings.conflictResolution.lwwTooltip)}
-  </Text>
+  <Text styles={infoAndToolTipTextStyle}>{t(Keys.controls.settings.conflictResolution.lwwTooltip)}</Text>
 );
 
 export const conflictResolutionCustomToolTip: JSX.Element = (
@@ -554,9 +576,7 @@ export const conflictResolutionCustomToolTip: JSX.Element = (
 );
 
 export const changeFeedPolicyToolTip: JSX.Element = (
-  <Text styles={infoAndToolTipTextStyle}>
-    {t(Keys.controls.settings.changeFeed.tooltip)}
-  </Text>
+  <Text styles={infoAndToolTipTextStyle}>{t(Keys.controls.settings.changeFeed.tooltip)}</Text>
 );
 
 export const mongoIndexingPolicyDisclaimer: JSX.Element = (
@@ -611,7 +631,10 @@ export const renderMongoIndexTransformationRefreshMessage = (
   } else {
     return (
       <Text styles={infoAndToolTipTextStyle}>
-        {`${t(Keys.controls.settings.mongoIndexing.canMakeMoreChangesProgress).replace("{{progress}}", String(progress))} `}
+        {`${t(Keys.controls.settings.mongoIndexing.canMakeMoreChangesProgress).replace(
+          "{{progress}}",
+          String(progress),
+        )} `}
         <Link onClick={performRefresh}>{t(Keys.controls.settings.mongoIndexing.refreshToCheckProgress)}</Link>
       </Text>
     );

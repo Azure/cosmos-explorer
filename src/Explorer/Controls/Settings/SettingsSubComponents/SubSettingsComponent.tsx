@@ -149,7 +149,11 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
 
   private ttlChoiceGroupOptions: IChoiceGroupOption[] = [
     { key: TtlType.Off, text: t(Keys.controls.settings.subSettings.ttlOff), ariaLabel: "ttl-off-option" },
-    { key: TtlType.OnNoDefault, text: t(Keys.controls.settings.subSettings.ttlOnNoDefault), ariaLabel: "ttl-on-no-default-option" },
+    {
+      key: TtlType.OnNoDefault,
+      text: t(Keys.controls.settings.subSettings.ttlOnNoDefault),
+      ariaLabel: "ttl-on-no-default-option",
+    },
     { key: TtlType.On, text: t(Keys.controls.settings.subSettings.ttlOn), ariaLabel: "ttl-on-option" },
   ];
 
@@ -307,8 +311,16 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
   );
 
   private geoSpatialConfigTypeChoiceGroupOptions: IChoiceGroupOption[] = [
-    { key: GeospatialConfigType.Geography, text: t(Keys.controls.settings.subSettings.geography), ariaLabel: "geography-option" },
-    { key: GeospatialConfigType.Geometry, text: t(Keys.controls.settings.subSettings.geometry), ariaLabel: "geometry-option" },
+    {
+      key: GeospatialConfigType.Geography,
+      text: t(Keys.controls.settings.subSettings.geography),
+      ariaLabel: "geography-option",
+    },
+    {
+      key: GeospatialConfigType.Geometry,
+      text: t(Keys.controls.settings.subSettings.geometry),
+      ariaLabel: "geometry-option",
+    },
   ];
 
   private getGeoSpatialComponent = (): JSX.Element => (
@@ -333,7 +345,10 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
     return (
       <Stack>
         <Label id={labelId}>
-          <ToolTipLabelComponent label={t(Keys.controls.settings.changeFeed.label)} toolTipElement={changeFeedPolicyToolTip} />
+          <ToolTipLabelComponent
+            label={t(Keys.controls.settings.changeFeed.label)}
+            toolTipElement={changeFeedPolicyToolTip}
+          />
         </Label>
         <ChoiceGroup
           id="changeFeedPolicy"
@@ -378,14 +393,20 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
       )}
 
       {userContext.apiType === "SQL" && this.isLargePartitionKeyEnabled() && (
-          <Text className={classNames.hintText}>{t(Keys.controls.settings.subSettings.largePartitionKeyEnabled, { partitionKeyName: this.partitionKeyName.toLowerCase() })}</Text>
+        <Text className={classNames.hintText}>
+          {t(Keys.controls.settings.subSettings.largePartitionKeyEnabled, {
+            partitionKeyName: this.partitionKeyName.toLowerCase(),
+          })}
+        </Text>
       )}
 
       {userContext.apiType === "SQL" &&
         (this.isHierarchicalPartitionedContainer() ? (
           <Text className={classNames.hintText}>{t(Keys.controls.settings.subSettings.hierarchicalPartitioned)}</Text>
         ) : (
-          <Text className={classNames.hintText}>{t(Keys.controls.settings.subSettings.nonHierarchicalPartitioned)}</Text>
+          <Text className={classNames.hintText}>
+            {t(Keys.controls.settings.subSettings.nonHierarchicalPartitioned)}
+          </Text>
         ))}
     </Stack>
   );

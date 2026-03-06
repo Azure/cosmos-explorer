@@ -255,7 +255,8 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
                 color: ThroughputInputAutoPilotV3Component.TEXT_COLOR_PRIMARY,
               }}
             >
-              {newPrices.currencySign} {calculateEstimateNumber(newPrices.monthlyPrice / 10)} {t(Keys.controls.settings.throughputInput.min)}
+              {newPrices.currencySign} {calculateEstimateNumber(newPrices.monthlyPrice / 10)}{" "}
+              {t(Keys.controls.settings.throughputInput.min)}
             </Text>
             <Text
               style={{
@@ -263,7 +264,8 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
                 color: ThroughputInputAutoPilotV3Component.TEXT_COLOR_PRIMARY,
               }}
             >
-              {newPrices.currencySign} {calculateEstimateNumber(newPrices.monthlyPrice)} {t(Keys.controls.settings.throughputInput.max)}
+              {newPrices.currencySign} {calculateEstimateNumber(newPrices.monthlyPrice)}{" "}
+              {t(Keys.controls.settings.throughputInput.max)}
             </Text>
           </Stack>
         </div>
@@ -285,7 +287,8 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
                 color: ThroughputInputAutoPilotV3Component.TEXT_COLOR_PRIMARY,
               }}
             >
-              {prices.currencySign} {calculateEstimateNumber(prices.monthlyPrice / 10)} {t(Keys.controls.settings.throughputInput.min)}
+              {prices.currencySign} {calculateEstimateNumber(prices.monthlyPrice / 10)}{" "}
+              {t(Keys.controls.settings.throughputInput.min)}
             </Text>
             <Text
               style={{
@@ -293,7 +296,8 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
                 color: ThroughputInputAutoPilotV3Component.TEXT_COLOR_PRIMARY,
               }}
             >
-              {prices.currencySign} {calculateEstimateNumber(prices.monthlyPrice)} {t(Keys.controls.settings.throughputInput.max)}
+              {prices.currencySign} {calculateEstimateNumber(prices.monthlyPrice)}{" "}
+              {t(Keys.controls.settings.throughputInput.max)}
             </Text>
           </Stack>
         </Stack>
@@ -446,10 +450,14 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     this.setState({ spendAckChecked: checked });
 
   private getStorageCapacityTitle = (): JSX.Element => {
-    const capacity: string = this.props.isFixed ? t(Keys.controls.settings.throughputInput.fixed) : t(Keys.controls.settings.throughputInput.unlimited);
+    const capacity: string = this.props.isFixed
+      ? t(Keys.controls.settings.throughputInput.fixed)
+      : t(Keys.controls.settings.throughputInput.unlimited);
     return (
       <Stack {...titleAndInputStackProps}>
-        <Label style={{ color: "var(--colorNeutralForeground1)" }}>{t(Keys.controls.settings.throughputInput.storageCapacity)}</Label>
+        <Label style={{ color: "var(--colorNeutralForeground1)" }}>
+          {t(Keys.controls.settings.throughputInput.storageCapacity)}
+        </Label>
         <Text style={{ color: "var(--colorNeutralForeground1)" }}>{capacity}</Text>
       </Stack>
     );
@@ -560,10 +568,14 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
       />
       <Stack horizontal>
         <Stack.Item style={{ width: "34%", paddingRight: "5px" }}>
-          <Separator styles={this.thoughputRangeSeparatorStyles}>{t(Keys.controls.settings.throughputInput.instant)}</Separator>
+          <Separator styles={this.thoughputRangeSeparatorStyles}>
+            {t(Keys.controls.settings.throughputInput.instant)}
+          </Separator>
         </Stack.Item>
         <Stack.Item style={{ width: "66%", paddingLeft: "5px" }}>
-          <Separator styles={this.thoughputRangeSeparatorStyles}>{t(Keys.controls.settings.throughputInput.fourToSixHrs)}</Separator>
+          <Separator styles={this.thoughputRangeSeparatorStyles}>
+            {t(Keys.controls.settings.throughputInput.fourToSixHrs)}
+          </Separator>
         </Stack.Item>
       </Stack>
     </Stack>
@@ -728,7 +740,9 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
               onGetErrorMessage={(value: string) => {
                 const sanitizedValue = getSanitizedInputValue(value);
                 const errorMessage: string =
-                  sanitizedValue % 1000 ? t(Keys.controls.settings.throughput.throughputIncrementError) : this.props.throughputError;
+                  sanitizedValue % 1000
+                    ? t(Keys.controls.settings.throughput.throughputIncrementError)
+                    : this.props.throughputError;
                 return <span data-test="autopilot-throughput-input-error">{errorMessage}</span>;
               }}
               validateOnLoad={false}
@@ -774,7 +788,9 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
           )}
           {this.props.isAutoPilotSelected ? (
             <Text style={{ marginTop: "40px", color: "var(--colorNeutralForeground1)" }}>
-              {t(Keys.controls.settings.throughputInput.autoscaleDescription, { resourceType: this.props.collectionName ? "container" : "database" })}{" "}
+              {t(Keys.controls.settings.throughputInput.autoscaleDescription, {
+                resourceType: this.props.collectionName ? "container" : "database",
+              })}{" "}
               <b>
                 {AutoPilotUtils.getMinRUsBasedOnUserInput(this.props.maxAutoPilotThroughput)} RU/s (10% of max RU/s) -{" "}
                 {this.props.maxAutoPilotThroughput} RU/s
@@ -789,7 +805,9 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
                   styles={this.darkThemeMessageBarStyles}
                   style={{ marginTop: "40px" }}
                 >
-                  {t(Keys.controls.settings.throughputInput.freeTierWarning, { ru: String(SharedConstants.FreeTierLimits.RU) })}
+                  {t(Keys.controls.settings.throughputInput.freeTierWarning, {
+                    ru: String(SharedConstants.FreeTierLimits.RU),
+                  })}
                 </MessageBar>
               )}
             </>
@@ -798,7 +816,8 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
             <Text style={{ color: "var(--colorNeutralForeground1)" }}>
               {t(Keys.controls.settings.throughputInput.capacityCalculator)}
               <Link target="_blank" href="https://cosmos.azure.com/capacitycalculator/">
-                {t(Keys.controls.settings.throughputInput.capacityCalculatorLink)} <FontIcon iconName="NavigateExternalInline" />
+                {t(Keys.controls.settings.throughputInput.capacityCalculatorLink)}{" "}
+                <FontIcon iconName="NavigateExternalInline" />
               </Link>
             </Text>
           )}
@@ -811,9 +830,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
               onChange={this.onSpendAckChecked}
             />
           )}
-          {this.props.isFixed && (
-            <p>{t(Keys.controls.settings.throughputInput.fixedStorageNote)}</p>
-          )}
+          {this.props.isFixed && <p>{t(Keys.controls.settings.throughputInput.fixedStorageNote)}</p>}
           {this.props.collectionName && (
             <Stack.Item style={{ marginTop: "40px" }}>{this.getStorageCapacityTitle()}</Stack.Item>
           )}

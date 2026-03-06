@@ -254,7 +254,9 @@ export const isIndexTransforming = (indexTransformationProgress: number): boolea
 
 export const getPartitionKeyName = (apiType: string, isLowerCase?: boolean): string => {
   const partitionKeyName =
-    apiType === "Mongo" ? t(Keys.controls.settings.partitionKey.shardKey) : t(Keys.controls.settings.partitionKey.partitionKey);
+    apiType === "Mongo"
+      ? t(Keys.controls.settings.partitionKey.shardKey)
+      : t(Keys.controls.settings.partitionKey.partitionKey);
   return isLowerCase ? partitionKeyName.toLocaleLowerCase() : partitionKeyName;
 };
 
@@ -262,10 +264,9 @@ export const getPartitionKeyTooltipText = (apiType: string): string => {
   if (apiType === "Mongo") {
     return t(Keys.controls.settings.partitionKey.shardKeyTooltip);
   }
-  let tooltipText = `The ${getPartitionKeyName(
-    apiType,
-    true,
-  )} ${t(Keys.controls.settings.partitionKey.partitionKeyTooltip)}`;
+  let tooltipText = `The ${getPartitionKeyName(apiType, true)} ${t(
+    Keys.controls.settings.partitionKey.partitionKeyTooltip,
+  )}`;
   if (apiType === "SQL") {
     tooltipText += t(Keys.controls.settings.partitionKey.sqlPartitionKeyTooltipSuffix);
   }

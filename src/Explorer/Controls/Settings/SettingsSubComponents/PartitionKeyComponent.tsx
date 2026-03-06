@@ -150,7 +150,13 @@ export const PartitionKeyComponent: React.FC<PartitionKeyComponentProps> = ({
   const getProgressDescription = (): string => {
     const processedCount = portalDataTransferJob?.properties?.processedCount;
     const totalCount = portalDataTransferJob?.properties?.totalCount;
-    const processedCountString = totalCount > 0 ? t(Keys.controls.settings.partitionKeyEditor.documentsProcessed, { processedCount: String(processedCount), totalCount: String(totalCount) }) : "";
+    const processedCountString =
+      totalCount > 0
+        ? t(Keys.controls.settings.partitionKeyEditor.documentsProcessed, {
+            processedCount: String(processedCount),
+            totalCount: String(totalCount),
+          })
+        : "";
     return `${portalDataTransferJob?.properties?.status} ${processedCountString}`;
   };
 
@@ -183,16 +189,28 @@ export const PartitionKeyComponent: React.FC<PartitionKeyComponentProps> = ({
   return (
     <Stack tokens={{ childrenGap: 20 }} styles={{ root: { maxWidth: 600 } }}>
       <Stack tokens={{ childrenGap: 10 }}>
-        {!isReadOnly && <Text styles={textHeadingStyle}>{t(Keys.controls.settings.partitionKeyEditor.changePartitionKey, { partitionKeyName: partitionKeyName.toLowerCase() })}</Text>}
+        {!isReadOnly && (
+          <Text styles={textHeadingStyle}>
+            {t(Keys.controls.settings.partitionKeyEditor.changePartitionKey, {
+              partitionKeyName: partitionKeyName.toLowerCase(),
+            })}
+          </Text>
+        )}
         <Stack horizontal tokens={{ childrenGap: 20 }}>
           <Stack tokens={{ childrenGap: 5 }}>
-            <Text styles={textSubHeadingStyle}>{t(Keys.controls.settings.partitionKeyEditor.currentPartitionKey, { partitionKeyName: partitionKeyName.toLowerCase() })}</Text>
+            <Text styles={textSubHeadingStyle}>
+              {t(Keys.controls.settings.partitionKeyEditor.currentPartitionKey, {
+                partitionKeyName: partitionKeyName.toLowerCase(),
+              })}
+            </Text>
             <Text styles={textSubHeadingStyle}>{t(Keys.controls.settings.partitionKeyEditor.partitioning)}</Text>
           </Stack>
           <Stack tokens={{ childrenGap: 5 }} data-test="partition-key-values">
             <Text styles={textSubHeadingStyle1}>{partitionKeyValue}</Text>
             <Text styles={textSubHeadingStyle1}>
-              {isHierarchicalPartitionedContainer() ? t(Keys.controls.settings.partitionKeyEditor.hierarchical) : t(Keys.controls.settings.partitionKeyEditor.nonHierarchical)}
+              {isHierarchicalPartitionedContainer()
+                ? t(Keys.controls.settings.partitionKeyEditor.hierarchical)
+                : t(Keys.controls.settings.partitionKeyEditor.nonHierarchical)}
             </Text>
           </Stack>
         </Stack>
@@ -230,7 +248,9 @@ export const PartitionKeyComponent: React.FC<PartitionKeyComponentProps> = ({
           )}
           {portalDataTransferJob && (
             <Stack>
-              <Text styles={textHeadingStyle}>{t(Keys.controls.settings.partitionKeyEditor.changeJob, { partitionKeyName })}</Text>
+              <Text styles={textHeadingStyle}>
+                {t(Keys.controls.settings.partitionKeyEditor.changeJob, { partitionKeyName })}
+              </Text>
               <Stack
                 horizontal
                 tokens={{ childrenGap: 20 }}
@@ -251,7 +271,10 @@ export const PartitionKeyComponent: React.FC<PartitionKeyComponentProps> = ({
                   }}
                 ></ProgressIndicator>
                 {isCurrentJobInProgress(portalDataTransferJob) && (
-                  <DefaultButton text={t(Keys.controls.settings.partitionKeyEditor.cancelButton)} onClick={() => cancelRunningDataTransferJob(portalDataTransferJob)} />
+                  <DefaultButton
+                    text={t(Keys.controls.settings.partitionKeyEditor.cancelButton)}
+                    onClick={() => cancelRunningDataTransferJob(portalDataTransferJob)}
+                  />
                 )}
               </Stack>
             </Stack>

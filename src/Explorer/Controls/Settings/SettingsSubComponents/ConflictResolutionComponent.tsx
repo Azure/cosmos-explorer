@@ -36,7 +36,10 @@ export class ConflictResolutionComponent extends React.Component<ConflictResolut
       key: DataModels.ConflictResolutionMode.LastWriterWins,
       text: t(Keys.controls.settings.conflictResolution.lwwDefault),
     },
-    { key: DataModels.ConflictResolutionMode.Custom, text: t(Keys.controls.settings.conflictResolution.customMergeProcedure) },
+    {
+      key: DataModels.ConflictResolutionMode.Custom,
+      text: t(Keys.controls.settings.conflictResolution.customMergeProcedure),
+    },
   ];
 
   componentDidMount(): void {

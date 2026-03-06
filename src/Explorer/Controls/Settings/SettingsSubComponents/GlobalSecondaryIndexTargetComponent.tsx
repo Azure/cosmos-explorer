@@ -30,14 +30,18 @@ export const GlobalSecondaryIndexTargetComponent: React.FC<GlobalSecondaryIndexT
       <Text styles={textHeadingStyle}>{t(Keys.controls.settings.globalSecondaryIndex.settingsTitle)}</Text>
 
       <Stack tokens={{ childrenGap: 5 }}>
-        <Text styles={{ root: { fontWeight: "600" } }}>{t(Keys.controls.settings.globalSecondaryIndex.sourceContainer)}</Text>
+        <Text styles={{ root: { fontWeight: "600" } }}>
+          {t(Keys.controls.settings.globalSecondaryIndex.sourceContainer)}
+        </Text>
         <Stack styles={valueBoxStyle}>
           <Text>{globalSecondaryIndexDefinition?.sourceCollectionId}</Text>
         </Stack>
       </Stack>
 
       <Stack tokens={{ childrenGap: 5 }}>
-        <Text styles={{ root: { fontWeight: "600" } }}>{t(Keys.controls.settings.globalSecondaryIndex.indexDefinition)}</Text>
+        <Text styles={{ root: { fontWeight: "600" } }}>
+          {t(Keys.controls.settings.globalSecondaryIndex.indexDefinition)}
+        </Text>
         <Stack styles={valueBoxStyle}>
           <Text>{globalSecondaryIndexDefinition?.definition}</Text>
         </Stack>
