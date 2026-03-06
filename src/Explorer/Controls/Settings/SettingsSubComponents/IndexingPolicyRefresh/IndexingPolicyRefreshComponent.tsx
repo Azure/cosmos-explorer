@@ -1,6 +1,8 @@
 import { MessageBar, MessageBarType } from "@fluentui/react";
 import * as React from "react";
 import { handleError } from "../../../../../Common/ErrorHandlingUtils";
+import { Keys } from "../../../../../Localization/Keys.generated";
+import { t } from "../../../../../Localization/t";
 import {
   mongoIndexTransformationRefreshingMessage,
   renderMongoIndexTransformationRefreshMessage,
@@ -46,7 +48,7 @@ export class IndexingPolicyRefreshComponent extends React.Component<
     try {
       await this.props.refreshIndexTransformationProgress();
     } catch (error) {
-      handleError(error, "RefreshIndexTransformationProgress", "Refreshing index transformation progress failed");
+      handleError(error, "RefreshIndexTransformationProgress", t(Keys.controls.settings.indexingPolicyRefresh.refreshFailed));
     } finally {
       this.setState({ isRefreshing: false });
     }

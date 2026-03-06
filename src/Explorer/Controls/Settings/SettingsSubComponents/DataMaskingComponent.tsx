@@ -2,6 +2,8 @@ import { MessageBar, MessageBarType, Stack } from "@fluentui/react";
 import * as monaco from "monaco-editor";
 import * as React from "react";
 import * as DataModels from "../../../../Contracts/DataModels";
+import { Keys } from "../../../../Localization/Keys.generated";
+import { t } from "../../../../Localization/t";
 import { loadMonaco } from "../../../LazyMonaco";
 import { titleAndInputStackProps, unsavedEditorWarningMessage } from "../SettingsRenderUtils";
 import { isDirty as isContentDirty, isDataMaskingEnabled } from "../SettingsUtils";
@@ -89,7 +91,7 @@ export class DataMaskingComponent extends React.Component<DataMaskingComponentPr
       value: value,
       language: "json",
       automaticLayout: true,
-      ariaLabel: "Data Masking Policy",
+      ariaLabel: t(Keys.controls.settings.dataMasking.ariaLabel),
       fontSize: 13,
       minimap: { enabled: false },
       wordWrap: "off",
@@ -142,7 +144,7 @@ export class DataMaskingComponent extends React.Component<DataMaskingComponentPr
         )}
         {this.props.validationErrors.length > 0 && (
           <MessageBar messageBarType={MessageBarType.error}>
-            Validation failed: {this.props.validationErrors.join(", ")}
+            {t(Keys.controls.settings.dataMasking.validationFailed)} {this.props.validationErrors.join(", ")}
           </MessageBar>
         )}
         <div className="settingsV2Editor" tabIndex={0} ref={this.dataMaskingDiv}></div>

@@ -1,5 +1,7 @@
 import { Label, Slider, Stack, TextField, Toggle } from "@fluentui/react";
 import { ThroughputBucket } from "Contracts/DataModels";
+import { Keys } from "../../../../../Localization/Keys.generated";
+import { t } from "../../../../../Localization/t";
 import React, { FC, useEffect, useState } from "react";
 import { isDirty } from "../../SettingsUtils";
 
@@ -65,7 +67,7 @@ export const ThroughputBucketsComponent: FC<ThroughputBucketsComponentProps> = (
 
   return (
     <Stack tokens={{ childrenGap: "m" }} styles={{ root: { width: "70%", maxWidth: 700 } }}>
-      <Label styles={{ root: { color: "var(--colorNeutralForeground1)" } }}>Throughput Buckets</Label>
+      <Label styles={{ root: { color: "var(--colorNeutralForeground1)" } }}>{t(Keys.controls.settings.throughputBuckets.label)}</Label>
       <Stack>
         {throughputBuckets?.map((bucket) => (
           <Stack key={bucket.id} horizontal tokens={{ childrenGap: 8 }} verticalAlign="center">
@@ -76,7 +78,7 @@ export const ThroughputBucketsComponent: FC<ThroughputBucketsComponentProps> = (
               value={bucket.maxThroughputPercentage}
               onChange={(newValue) => handleBucketChange(bucket.id, newValue)}
               showValue={false}
-              label={`Bucket ${bucket.id}${bucket.id === 1 ? " (Data Explorer Query Bucket)" : ""}`}
+              label={`${t(Keys.controls.settings.throughputBuckets.bucketLabel, { id: String(bucket.id) })}${bucket.id === 1 ? t(Keys.controls.settings.throughputBuckets.dataExplorerQueryBucket) : ""}`}
               styles={{
                 root: { flex: 2, maxWidth: 400 },
                 titleLabel: {
@@ -99,8 +101,8 @@ export const ThroughputBucketsComponent: FC<ThroughputBucketsComponentProps> = (
               disabled={bucket.maxThroughputPercentage === 100}
             />
             <Toggle
-              onText="Active"
-              offText="Inactive"
+              onText={t(Keys.controls.settings.throughputBuckets.active)}
+              offText={t(Keys.controls.settings.throughputBuckets.inactive)}
               checked={bucket.maxThroughputPercentage !== 100}
               onChange={(event, checked) => onToggle(bucket.id, checked)}
               styles={{

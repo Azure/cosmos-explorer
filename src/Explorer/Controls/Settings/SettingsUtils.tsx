@@ -1,6 +1,8 @@
 import * as Constants from "../../../Common/Constants";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";
+import { Keys } from "../../../Localization/Keys.generated";
+import { t } from "../../../Localization/t";
 import { isFabricNative } from "../../../Platform/Fabric/FabricUtil";
 import { userContext } from "../../../UserContext";
 import { isCapabilityEnabled } from "../../../Utils/CapabilityUtils";
@@ -175,25 +177,27 @@ const getStringValue = (value: isDirtyTypes, type: string): string => {
 export const getTabTitle = (tab: SettingsV2TabTypes): string => {
   switch (tab) {
     case SettingsV2TabTypes.ScaleTab:
-      return "Scale";
+      return t(Keys.controls.settings.tabTitles.scale);
     case SettingsV2TabTypes.ConflictResolutionTab:
-      return "Conflict Resolution";
+      return t(Keys.controls.settings.tabTitles.conflictResolution);
     case SettingsV2TabTypes.SubSettingsTab:
-      return "Settings";
+      return t(Keys.controls.settings.tabTitles.settings);
     case SettingsV2TabTypes.IndexingPolicyTab:
-      return "Indexing Policy";
+      return t(Keys.controls.settings.tabTitles.indexingPolicy);
     case SettingsV2TabTypes.PartitionKeyTab:
-      return isFabricNative() ? "Partition Keys" : "Partition Keys (preview)";
+      return isFabricNative()
+        ? t(Keys.controls.settings.tabTitles.partitionKeys)
+        : t(Keys.controls.settings.tabTitles.partitionKeysPreview);
     case SettingsV2TabTypes.ComputedPropertiesTab:
-      return "Computed Properties";
+      return t(Keys.controls.settings.tabTitles.computedProperties);
     case SettingsV2TabTypes.ContainerVectorPolicyTab:
-      return "Container Policies";
+      return t(Keys.controls.settings.tabTitles.containerPolicies);
     case SettingsV2TabTypes.ThroughputBucketsTab:
-      return "Throughput Buckets";
+      return t(Keys.controls.settings.tabTitles.throughputBuckets);
     case SettingsV2TabTypes.GlobalSecondaryIndexTab:
-      return "Global Secondary Index (Preview)";
+      return t(Keys.controls.settings.tabTitles.globalSecondaryIndexPreview);
     case SettingsV2TabTypes.DataMaskingTab:
-      return "Masking Policy (preview)";
+      return t(Keys.controls.settings.tabTitles.maskingPolicyPreview);
     default:
       throw new Error(`Unknown tab ${tab}`);
   }
@@ -203,19 +207,19 @@ export const getMongoNotification = (description: string, type: MongoIndexTypes)
   if (description && !type) {
     return {
       type: MongoNotificationType.Warning,
-      message: "Please select a type for each index.",
+      message: t(Keys.controls.settings.mongoNotifications.selectTypeWarning),
     };
   }
 
   if (type && (!description || description.trim().length === 0)) {
     return {
       type: MongoNotificationType.Error,
-      message: "Please enter a field name.",
+      message: t(Keys.controls.settings.mongoNotifications.enterFieldNameError),
     };
   } else if (type === MongoIndexTypes.Wildcard && description?.indexOf("$**") === -1) {
     return {
       type: MongoNotificationType.Error,
-      message: "Wildcard path is not present in the field name. Use a pattern like " + MongoWildcardPlaceHolder,
+      message: t(Keys.controls.settings.mongoNotifications.wildcardPathError) + MongoWildcardPlaceHolder,
     };
   }
 
@@ -249,28 +253,28 @@ export const isIndexTransforming = (indexTransformationProgress: number): boolea
   indexTransformationProgress !== undefined && indexTransformationProgress !== 100;
 
 export const getPartitionKeyName = (apiType: string, isLowerCase?: boolean): string => {
-  const partitionKeyName = apiType === "Mongo" ? "Shard key" : "Partition key";
+  const partitionKeyName =
+    apiType === "Mongo" ? t(Keys.controls.settings.partitionKey.shardKey) : t(Keys.controls.settings.partitionKey.partitionKey);
   return isLowerCase ? partitionKeyName.toLocaleLowerCase() : partitionKeyName;
 };
 
 export const getPartitionKeyTooltipText = (apiType: string): string => {
   if (apiType === "Mongo") {
-    return "The shard key (field) is used to split your data across many replica sets (shards) to achieve unlimited scalability. It’s critical to choose a field that will evenly distribute your data.";
+    return t(Keys.controls.settings.partitionKey.shardKeyTooltip);
   }
   let tooltipText = `The ${getPartitionKeyName(
     apiType,
     true,
-  )} is used to automatically distribute data across partitions for scalability. Choose a property in your JSON document that has a wide range of values and evenly distributes request volume.`;
+  )} ${t(Keys.controls.settings.partitionKey.partitionKeyTooltip)}`;
   if (apiType === "SQL") {
-    tooltipText += " For small read-heavy workloads or write-heavy workloads of any size, id is often a good choice.";
+    tooltipText += t(Keys.controls.settings.partitionKey.sqlPartitionKeyTooltipSuffix);
   }
   return tooltipText;
 };
 
 export const getPartitionKeySubtext = (partitionKeyDefault: boolean, apiType: string): string => {
   if (partitionKeyDefault && (apiType === "SQL" || apiType === "Mongo")) {
-    const subtext = "For small workloads, the item ID is a suitable choice for the partition key.";
-    return subtext;
+    return t(Keys.controls.settings.partitionKey.partitionKeySubtext);
   }
   return "";
 };
@@ -278,18 +282,18 @@ export const getPartitionKeySubtext = (partitionKeyDefault: boolean, apiType: st
 export const getPartitionKeyPlaceHolder = (apiType: string, index?: number): string => {
   switch (apiType) {
     case "Mongo":
-      return "e.g., categoryId";
+      return t(Keys.controls.settings.partitionKey.mongoPlaceholder);
     case "Gremlin":
-      return "e.g., /address";
+      return t(Keys.controls.settings.partitionKey.gremlinPlaceholder);
     case "SQL":
       return `${
         index === undefined
-          ? "Required - first partition key e.g., /TenantId"
+          ? t(Keys.controls.settings.partitionKey.sqlFirstPartitionKey)
           : index === 0
-          ? "second partition key e.g., /UserId"
-          : "third partition key e.g., /SessionId"
+          ? t(Keys.controls.settings.partitionKey.sqlSecondPartitionKey)
+          : t(Keys.controls.settings.partitionKey.sqlThirdPartitionKey)
       }`;
     default:
-      return "e.g., /address/zipCode";
+      return t(Keys.controls.settings.partitionKey.defaultPlaceholder);
   }
 };
