@@ -1,5 +1,7 @@
 import { Checkbox, Stack, Text, TextField } from "@fluentui/react";
 import { getNewDatabaseSharedThroughputDefault } from "Common/DatabaseUtility";
+import { Keys } from "Localization/Keys.generated";
+import { t } from "Localization/t";
 import { ValidCosmosDbIdDescription, ValidCosmosDbIdInputPattern } from "Utils/ValidationUtils";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import * as Constants from "../../../Common/Constants";
@@ -40,15 +42,16 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
   const isCassandraAccount: boolean = userContext.apiType === "Cassandra";
   const databaseLabel: string = isCassandraAccount ? "keyspace" : "database";
   const collectionsLabel: string = isCassandraAccount ? "tables" : "collections";
-  const databaseIdLabel: string = isCassandraAccount ? "Keyspace id" : "Database id";
-  const databaseIdPlaceHolder: string = isCassandraAccount ? "Type a new keyspace id" : "Type a new database id";
+  const databaseIdLabel: string = t(Keys.panes.addDatabase.databaseIdLabel, { databaseLabel });
+  const databaseIdPlaceHolder: string = t(Keys.panes.addDatabase.databaseIdPlaceholder, { databaseLabel });
 
   const [databaseId, setDatabaseId] = useState<string>("");
-  const databaseIdTooltipText = `A ${
-    isCassandraAccount ? "keyspace" : "database"
-  } is a logical container of one or more ${isCassandraAccount ? "tables" : "collections"}`;
+  const databaseIdTooltipText = t(Keys.panes.addDatabase.databaseTooltip, { databaseLabel, collectionsLabel });
 
-  const databaseLevelThroughputTooltipText = `Provisioned throughput at the ${databaseLabel} level will be shared across all ${collectionsLabel} within the ${databaseLabel}.`;
+  const databaseLevelThroughputTooltipText = t(Keys.panes.addDatabase.shareThroughputTooltip, {
+    databaseLabel,
+    collectionsLabel,
+  });
   const [databaseCreateNewShared, setDatabaseCreateNewShared] = useState<boolean>(
     getNewDatabaseSharedThroughputDefault(),
   );
@@ -144,15 +147,15 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
     // TODO add feature flag that disables validation for customers with custom accounts
     if (isAutoscaleSelected) {
       if (!AutoPilotUtils.isValidAutoPilotThroughput(throughput)) {
-        setFormErrors(
-          `Please enter a value greater than ${AutoPilotUtils.autoPilotThroughput1K} for autopilot throughput`,
-        );
+        setFormErrors(t(Keys.panes.addDatabase.greaterThanError, { minValue: AutoPilotUtils.autoPilotThroughput1K }));
         return false;
       }
     }
 
     if (throughput > SharedConstants.CollectionCreation.DefaultCollectionRUs100K && !isCostAcknowledged) {
-      setFormErrors(`Please acknowledge the estimated ${isAutoscaleSelected ? "monthly" : "daily"} spend.`);
+      setFormErrors(
+        t(Keys.panes.addDatabase.acknowledgeSpendError, { period: isAutoscaleSelected ? "monthly" : "daily" }),
+      );
       return false;
     }
 
@@ -169,7 +172,7 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
   const props: RightPaneFormProps = {
     formError: formErrors,
     isExecuting,
-    submitButtonText: "OK",
+    submitButtonText: t(Keys.common.ok),
     isSubmitButtonDisabled: isThroughputCapExceeded,
     onSubmit,
   };
@@ -187,7 +190,7 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
           messageType="info"
           showErrorDetails={false}
           link={Constants.Urls.freeTierInformation}
-          linkText="Learn more"
+          linkText={t(Keys.common.learnMore)}
         />
       )}
       <div className="panelMainContent">

@@ -13,6 +13,8 @@ import {
 } from "@fluentui/react";
 import { Upload } from "Common/Upload/Upload";
 import { UploadDetailsRecord } from "Contracts/ViewModels";
+import { Keys } from "Localization/Keys.generated";
+import { t } from "Localization/t";
 import { logConsoleError } from "Utils/NotificationConsoleUtils";
 import React, { ChangeEvent, FunctionComponent, useReducer, useState } from "react";
 import { getErrorMessage } from "../../Tables/Utilities";
@@ -63,8 +65,8 @@ export const UploadItemsPane: FunctionComponent<UploadItemsPaneProps> = ({ onUpl
   const onSubmit = () => {
     setFormError("");
     if (!files || files.length === 0) {
-      setFormError("No files were specified. Please input at least one file.");
-      logConsoleError("Could not upload items -- No files were specified. Please input at least one file.");
+      setFormError(t(Keys.panes.uploadItems.noFilesSelectedError));
+      logConsoleError(t(Keys.panes.uploadItems.noFilesSelectedError));
       return;
     }
 
@@ -150,7 +152,7 @@ export const UploadItemsPane: FunctionComponent<UploadItemsPaneProps> = ({ onUpl
     },
     {
       key: "fileName",
-      name: "FILE NAME",
+      name: t(Keys.panes.uploadItems.fileNameColumn),
       fieldName: "fileName",
       minWidth: 120,
       maxWidth: 140,
@@ -169,7 +171,7 @@ export const UploadItemsPane: FunctionComponent<UploadItemsPaneProps> = ({ onUpl
     },
     {
       key: "status",
-      name: "STATUS",
+      name: t(Keys.panes.uploadItems.statusColumn),
       fieldName: "numSucceeded",
       minWidth: 120,
       maxWidth: 140,
@@ -178,7 +180,11 @@ export const UploadItemsPane: FunctionComponent<UploadItemsPaneProps> = ({ onUpl
       data: "string",
       isPadded: true,
       onRender: (item: UploadDetailsRecord, index: number, column: IColumn) => {
-        const fieldContent = `${item.numSucceeded} created, ${item.numThrottled} throttled, ${item.numFailed} errors`;
+        const fieldContent = t(Keys.panes.uploadItems.uploadStatus, {
+          numSucceeded: item.numSucceeded,
+          numThrottled: item.numThrottled,
+          numFailed: item.numFailed,
+        });
         return (
           <TooltipHost
             content={fieldContent}
@@ -197,12 +203,12 @@ export const UploadItemsPane: FunctionComponent<UploadItemsPaneProps> = ({ onUpl
       <div className="paneMainContent">
         <Upload
           key={reducer} // Force re-render on state change
-          label="Select JSON Files"
+          label={t(Keys.panes.uploadItems.selectJsonFiles)}
           onUpload={updateSelectedFiles}
           accept="application/json"
           multiple
           tabIndex={0}
-          tooltip="Select one or more JSON files to upload. Each file can contain a single JSON document or an array of JSON documents. The combined size of all files in an individual upload operation must be less than 2 MB. You can perform multiple upload operations for larger data sets."
+          tooltip={t(Keys.panes.uploadItems.selectJsonFilesTooltip)}
         />
         {uploadFileData?.length > 0 && (
           <div className="fileUploadSummaryContainer" data-test="file-upload-status">
