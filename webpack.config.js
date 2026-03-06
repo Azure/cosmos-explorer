@@ -65,16 +65,28 @@ const htmlRule = {
 };
 
 // We compile our own code with ts-loader
+const typescriptLoaders = [
+  {
+    loader: "ts-loader",
+    options: {
+      transpileOnly: true,
+    },
+  },
+];
+
+// When COVERAGE is enabled, add babel-loader with istanbul plugin to instrument code
+if (process.env.COVERAGE === "true") {
+  typescriptLoaders.unshift({
+    loader: "babel-loader",
+    options: {
+      plugins: ["istanbul"],
+    },
+  });
+}
+
 const typescriptRule = {
   test: /\.tsx?$/,
-  use: [
-    {
-      loader: "ts-loader",
-      options: {
-        transpileOnly: true,
-      },
-    },
-  ],
+  use: typescriptLoaders,
   exclude: /node_modules/,
 };
 

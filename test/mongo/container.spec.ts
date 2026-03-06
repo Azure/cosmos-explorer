@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "../baseTest";
 
 import { DataExplorer, TestAccount, generateUniqueName } from "../fx";
 

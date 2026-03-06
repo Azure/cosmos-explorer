@@ -1,6 +1,8 @@
 built/*
 dist/*
 coverage/**
+coverage-e2e/**
+.nyc_output/
 css/*
 Definitions/**/*
 libs/**/*

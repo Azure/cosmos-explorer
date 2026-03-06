@@ -1,16 +1,16 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "../baseTest";
 
 import { CosmosDBManagementClient } from "@azure/arm-cosmosdb";
 import { CosmosClient, PermissionMode } from "@azure/cosmos";
 import { AzureIdentityCredentialAdapter } from "@azure/ms-rest-js";
 import {
-  DataExplorer,
-  TestAccount,
-  generateUniqueName,
-  getAccountName,
-  getAzureCLICredentials,
-  resourceGroupName,
-  subscriptionId,
+    DataExplorer,
+    TestAccount,
+    generateUniqueName,
+    getAccountName,
+    getAzureCLICredentials,
+    resourceGroupName,
+    subscriptionId,
 } from "../fx";
 
 test("SQL account using Resource token", async ({ page }) => {

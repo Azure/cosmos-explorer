@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "../baseTest";
 
 import { DataExplorer, DocumentsTab, TestAccount } from "../fx";
 import { retry, setPartitionKeys } from "../testData";
