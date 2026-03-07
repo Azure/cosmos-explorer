@@ -7,7 +7,7 @@
     "delete": "削除",
     "update": "更新",
     "discard": "破棄",
-    "execute": "Execute",
+    "execute": "実行",
     "loading": "読み込み中",
     "loadingEllipsis": "読み込み中...",
     "next": "次へ",
@@ -29,6 +29,9 @@
     "upload": "アップロード",
     "connect": "接続",
     "remove": "削除",
+    "load": "Load",
+    "publish": "Publish",
+    "browse": "Browse",
     "increaseValueBy1": "値を 1 増加",
     "decreaseValueBy1": "値を 1 減少"
   },
@@ -43,253 +46,682 @@
       "getStarted": "サンプル データセット、ドキュメント、追加ツールを使用して開始してください。"
     },
     "quickStart": {
-      "title": "Launch quick start",
-      "description": "Launch a quick start tutorial to get started with sample data"
+      "title": "クイック スタートの起動",
+      "description": "クイック スタート チュートリアルを起動してサンプル データの使用を開始します"
     },
     "newCollection": {
-      "title": "New {{collectionName}}",
-      "description": "Create a new container for storage and throughput"
+      "title": "新しい {{collectionName}}",
+      "description": "ストレージとスループット用の新しいコンテナーを作成します"
     },
     "samplesGallery": {
-      "title": "Azure Cosmos DB Samples Gallery",
-      "description": "Discover samples that showcase scalable, intelligent app patterns. Try one now to see how fast you can go from concept to code with Cosmos DB"
+      "title": "Azure Cosmos DB サンプル ギャラリー",
+      "description": "スケーラブルでインテリジェントなアプリ パターンを紹介するサンプルをご確認ください。今すぐ試して、Cosmos DB を使用して概念からコードにどれほど迅速に移行できるか確認してください"
     },
     "connectCard": {
-      "title": "Connect",
-      "description": "Prefer using your own choice of tooling? Find the connection string you need to connect",
+      "title": "接続",
+      "description": "独自に選択したツールの使用を優先しますか?接続に必要な接続文字列を検索します",
       "pgAdmin": {
-        "title": "Connect with pgAdmin",
-        "description": "Prefer pgAdmin? Find your connection strings here"
+        "title": "pgAdmin を使用して接続",
+        "description": "pgAdmin を優先しますか?ここで接続文字列を検索します"
       },
       "vsCode": {
         "title": "VS Code で接続する",
-        "description": "Query and Manage your MongoDB and DocumentDB clusters in Visual Studio Code"
+        "description": "Visual Studio Code で MongoDB および DocumentDB クラスターのクエリの実行と管理を行います"
       }
     },
     "shell": {
       "postgres": {
-        "title": "PostgreSQL Shell",
-        "description": "Create table and interact with data using PostgreSQL's shell interface"
+        "title": "PostgreSQL シェル",
+        "description": "PostgreSQL のシェル インターフェイスを使用して、テーブルを作成し、データを操作します"
       },
       "vcoreMongo": {
-        "title": "Mongo Shell",
-        "description": "Create a collection and interact with data using MongoDB's shell interface"
+        "title": "Mongo シェル",
+        "description": "MongoDB のシェル インターフェイスを使用して、コレクションを作成し、データを操作します"
       }
     },
     "teachingBubble": {
       "newToPostgres": {
-        "headline": "New to Cosmos DB PGSQL?",
-        "body": "Welcome! If you are new to Cosmos DB PGSQL and need help with getting started, here is where you can find sample data, query."
+        "headline": "Cosmos DB PGSQL を使用するのは初めてですか?",
+        "body": "ようこそ! Cosmos DB PGSQL を使用するのが初めてで、作業の開始に関するヘルプが必要な場合は、ここでサンプル データやクエリを見つけることができます。"
       },
       "resetPassword": {
-        "headline": "Create your password",
-        "body": "If you haven't changed your password yet, change it now."
+        "headline": "パスワードの作成",
+        "body": "パスワードをまだ変更していない場合は、今すぐ変更してください。"
       },
       "coachMark": {
-        "headline": "Start with sample {{collectionName}}",
-        "body": "You will be guided to create a sample container with sample data, then we will give you a tour of data explorer. You can also cancel launching this tour and explore yourself"
+        "headline": "サンプル {{collectionName}} から開始する",
+        "body": "サンプル データを含むサンプル コンテナーを作成するように案内され、その後、データ エクスプローラーのツアーが表示されます。このツアーの開始を取り消して、自分で探索することもできます"
       }
     },
     "sections": {
-      "recents": "Recents",
-      "clearRecents": "Clear Recents",
-      "top3": "Top 3 things you need to know",
-      "learningResources": "Learning Resources",
-      "nextSteps": "Next steps",
-      "tipsAndLearnMore": "Tips & learn more",
-      "notebook": "Notebook",
-      "needHelp": "Need help?"
+      "recents": "最近使用したもの",
+      "clearRecents": "最近使用したものをクリアする",
+      "top3": "知っておくべき上位 3 つのこと",
+      "learningResources": "学習リソース",
+      "nextSteps": "次の手順",
+      "tipsAndLearnMore": "ヒントと詳細の確認",
+      "notebook": "ノートブック",
+      "needHelp": "ヘルプが必要ですか?"
     },
     "top3Items": {
       "sql": {
         "advancedModeling": {
-          "title": "Advanced Modeling Patterns",
-          "description": "Learn advanced strategies to optimize your database."
+          "title": "高度なモデリング パターン",
+          "description": "データベースを最適化するための高度な戦略について説明します。"
         },
         "partitioning": {
-          "title": "Partitioning Best Practices",
-          "description": "Learn to apply data model and partitioning strategies."
+          "title": "パーティション分割のベスト プラクティス",
+          "description": "データ モデルとパーティション分割戦略の適用について説明します。"
         },
         "resourcePlanning": {
-          "title": "Plan Your Resource Requirements",
-          "description": "Get to know the different configuration choices."
+          "title": "リソース要件の計画",
+          "description": "さまざまな構成の選択肢について理解を深めます。"
         }
       },
       "mongo": {
         "whatIsMongo": {
-          "title": "What is the MongoDB API?",
-          "description": "Understand Azure Cosmos DB for MongoDB and its features."
+          "title": "MongoDB API とは",
+          "description": "Azure Cosmos DB for MongoDB とその機能について理解します。"
         },
         "features": {
-          "title": "Features and Syntax",
-          "description": "Discover the advantages and features"
+          "title": "機能と構文",
+          "description": "利点と機能を確認します"
         },
         "migrate": {
-          "title": "Migrate Your Data",
-          "description": "Pre-migration steps for moving data"
+          "title": "データの移行",
+          "description": "データを移動するための移行前の手順"
         }
       },
       "cassandra": {
         "buildJavaApp": {
-          "title": "Build a Java App",
-          "description": "Create a Java app using an SDK."
+          "title": "Java アプリのビルド",
+          "description": "SDK を使用して Java アプリを作成します。"
         },
         "partitioning": {
-          "title": "Partitioning Best Practices",
-          "description": "Learn how partitioning works."
+          "title": "パーティション分割のベスト プラクティス",
+          "description": "パーティション分割のしくみについて説明します。"
         },
         "requestUnits": {
-          "title": "Request Units (RUs)",
-          "description": "Understand RU charges."
+          "title": "要求ユニット (RU)",
+          "description": "RU 料金について理解します。"
         }
       },
       "gremlin": {
         "dataModeling": {
-          "title": "Data Modeling",
-          "description": "Graph data modeling recommendations"
+          "title": "データ モデリング",
+          "description": "グラフ データ モデリングの推奨事項"
         },
         "partitioning": {
-          "title": "Partitioning Best Practices",
-          "description": "Learn how partitioning works"
+          "title": "パーティション分割のベスト プラクティス",
+          "description": "パーティション分割のしくみについて確認します"
         },
         "queryData": {
-          "title": "Query Data",
-          "description": "Querying data with Gremlin"
+          "title": "データのクエリを実行",
+          "description": "Gremlin を使用してデータのクエリを実行しています"
         }
       },
       "tables": {
         "whatIsTable": {
-          "title": "What is the Table API?",
-          "description": "Understand Azure Cosmos DB for Table and its features"
+          "title": "Table API とは",
+          "description": "Azure Cosmos DB for Table とその機能について理解します"
         },
         "migrate": {
-          "title": "Migrate your data",
-          "description": "Learn how to migrate your data"
+          "title": "データの移行",
+          "description": "データを移行する方法について確認します"
         },
         "faq": {
-          "title": "Azure Cosmos DB for Table FAQs",
-          "description": "Common questions about Azure Cosmos DB for Table"
+          "title": "Azure Cosmos DB for Table に関する FAQ",
+          "description": "Azure Cosmos DB for Table に関する一般的な質問"
         }
       }
     },
     "learningResources": {
       "shortcuts": {
-        "title": "Data Explorer keyboard shortcuts",
-        "description": "Learn keyboard shortcuts to navigate Data Explorer."
+        "title": "Data Explorer のキーボード ショートカット",
+        "description": "データ エクスプローラーを操作するためのキーボード ショートカットについて説明します。"
       },
       "liveTv": {
-        "title": "Learn the Fundamentals",
-        "description": "Watch Azure Cosmos DB Live TV show introductory and how to videos."
+        "title": "基礎を確認する",
+        "description": "Azure Cosmos DB のライブ テレビ ショーの紹介や使い方に関するビデオをご覧ください。"
       },
       "sql": {
         "sdk": {
-          "title": "Get Started using an SDK",
-          "description": "Learn about the Azure Cosmos DB SDK."
+          "title": "SDK を使用して開始",
+          "description": "Azure Cosmos DB SDK について説明します。"
         },
         "migrate": {
-          "title": "Migrate Your Data",
-          "description": "Migrate data using Azure services and open-source solutions."
+          "title": "データの移行",
+          "description": "Azure サービスとオープンソース ソリューションを使用してデータを移行します。"
         }
       },
       "mongo": {
         "nodejs": {
-          "title": "Build an app with Node.js",
-          "description": "Create a Node.js app."
+          "title": "Node.js を使用してアプリをビルド",
+          "description": "Node.js アプリを作成します。"
         },
         "gettingStarted": {
-          "title": "Getting Started Guide",
-          "description": "Learn the basics to get started."
+          "title": "作業の開始ガイド",
+          "description": "開始するための基本情報について説明します。"
         }
       },
       "cassandra": {
         "createContainer": {
-          "title": "Create a Container",
-          "description": "Get to know the create a container options."
+          "title": "コンテナーの作成",
+          "description": "コンテナーの作成オプションについて理解を深めます。"
         },
         "throughput": {
-          "title": "Provision Throughput",
-          "description": "Learn how to configure throughput."
+          "title": "スループットのプロビジョニング",
+          "description": "スループットを構成する方法について説明します。"
         }
       },
       "gremlin": {
         "getStarted": {
-          "title": "Get Started ",
-          "description": "Create, query, and traverse using the Gremlin console"
+          "title": "開始 ",
+          "description": "Gremlin コンソールを使用して作成、クエリの実行、走査を行います"
         },
         "importData": {
-          "title": "Import Graph Data",
-          "description": "Learn Bulk ingestion data using BulkExecutor"
+          "title": "グラフ データのインポート",
+          "description": "BulkExecutor を使用した一括インジェスト データについて確認します"
         }
       },
       "tables": {
         "dotnet": {
-          "title": "Build a .NET App",
-          "description": "How to access Azure Cosmos DB for Table from a .NET app."
+          "title": ".NET アプリのビルド",
+          "description": ".NET アプリから Azure Cosmos DB for Table にアクセスする方法。"
         },
         "java": {
-          "title": "Build a Java App",
-          "description": "Create a Azure Cosmos DB for Table app with Java SDK "
+          "title": "Java アプリのビルド",
+          "description": "Java SDK を使用して Azure Cosmos DB for Table アプリを作成します "
         }
       }
     },
     "nextStepItems": {
       "postgres": {
-        "dataModeling": "Data Modeling",
-        "distributionColumn": "How to choose a Distribution Column",
-        "buildApps": "Build Apps with Python/Java/Django"
+        "dataModeling": "データ モデリング",
+        "distributionColumn": "ディストリビューション列を選択する方法",
+        "buildApps": "Python/Java/Django を使用してアプリをビルド"
       },
       "vcoreMongo": {
-        "migrateData": "Migrate Data",
-        "vectorSearch": "Build AI apps with Vector Search",
-        "buildApps": "Build Apps with Nodejs"
+        "migrateData": "データの移行",
+        "vectorSearch": "ベクトル検索を使用して AI アプリをビルド",
+        "buildApps": "Nodejs を使用してアプリをビルド"
       }
     },
     "learnMoreItems": {
       "postgres": {
-        "performanceTuning": "Performance Tuning",
-        "diagnosticQueries": "Useful Diagnostic Queries",
-        "sqlReference": "Distributed SQL Reference"
+        "performanceTuning": "パフォーマンス チューニング",
+        "diagnosticQueries": "有用な診断クエリ",
+        "sqlReference": "分散 SQL リファレンス"
       },
       "vcoreMongo": {
-        "vectorSearch": "Vector Search",
-        "textIndexing": "Text Indexing",
-        "troubleshoot": "Troubleshoot common issues"
+        "vectorSearch": "ベクトル検索",
+        "textIndexing": "テキストのインデックス作成",
+        "troubleshoot": "一般的な問題のトラブルシューティング"
       }
     },
     "fabric": {
-      "buildTitle": "Build your database",
-      "useTitle": "Use your database",
+      "buildTitle": "データベースのビルド",
+      "useTitle": "データベースの使用",
       "newContainer": {
-        "title": "New container",
-        "description": "Create a destination container to store your data"
+        "title": "新しいコンテナー",
+        "description": "データを格納する先のコンテナーを作成します"
       },
       "sampleData": {
-        "title": "Sample Data",
-        "description": "Load sample data in your database"
+        "title": "サンプル データ",
+        "description": "データベースにサンプル データを読み込みます"
       },
       "sampleVectorData": {
-        "title": "Sample Vector Data",
-        "description": "Load sample vector data with text-embedding-ada-002"
+        "title": "サンプル ベクトル データ",
+        "description": "text-embedding-ada-002 を使用してサンプル ベクトル データを読み込みます"
       },
       "appDevelopment": {
-        "title": "App development",
-        "description": "Start here to use an SDK to build your apps"
+        "title": "アプリ開発",
+        "description": "SDK を使用してアプリをビルドするには、ここから開始してください"
       },
       "sampleGallery": {
-        "title": "Sample Gallery",
-        "description": "Get real-world end-to-end samples"
+        "title": "サンプル ギャラリー",
+        "description": "実際のエンド ツー エンドのサンプルを取得します"
       }
     },
     "sampleDataDialog": {
-      "title": "Sample Data",
-      "startButton": "Start",
-      "createPrompt": "Create a container \"{{containerName}}\" and import sample data into it. This may take a few minutes.",
-      "creatingContainer": "Creating container \"{{containerName}}\"...",
-      "importingData": "Importing data into \"{{containerName}}\"...",
-      "success": "Successfully created \"{{containerName}}\" with sample data.",
-      "errorContainerExists": "The container \"{{containerName}}\" in database \"{{databaseName}}\" already exists. Please delete it and retry.",
-      "errorCreateContainer": "Failed to create container: {{error}}",
-      "errorImportData": "Failed to import data: {{error}}"
+      "title": "サンプル データ",
+      "startButton": "開始",
+      "createPrompt": "コンテナー \"{{containerName}}\" を作成し、そこにサンプル データをインポートしてください。これには数分かかる場合があります。",
+      "creatingContainer": "コンテナー \"{{containerName}}\" を作成しています...",
+      "importingData": "データを \"{{containerName}}\" にインポートしています...",
+      "success": "サンプル データを含む \"{{containerName}}\" が正常に作成されました。",
+      "errorContainerExists": "データベース \"{{databaseName}}\" のコンテナー \"{{containerName}}\" は既に存在します。削除してから、もう一度お試しください。",
+      "errorCreateContainer": "コンテナーを作成できませんでした: {{error}}",
+      "errorImportData": "データをインポートできませんでした: {{error}}"
+    }
+  },
+  "contextMenu": {
+    "newContainer": "新しい {{containerName}}",
+    "restoreContainer": "{{containerName}} の復元",
+    "deleteDatabase": "{{databaseName}} の削除",
+    "deleteContainer": "{{containerName}} の削除",
+    "newSqlQuery": "新しい SQL クエリ",
+    "newQuery": "新しいクエリ",
+    "openMongoShell": "Mongo シェルを開く",
+    "newShell": "新しいシェル",
+    "openCassandraShell": "Cassandra シェルを開く",
+    "newStoredProcedure": "新しいストアド プロシージャ",
+    "newUdf": "新しい UDF",
+    "newTrigger": "新しいトリガー",
+    "deleteStoredProcedure": "ストアド プロシージャの削除",
+    "deleteTrigger": "トリガーの削除",
+    "deleteUdf": "ユーザー定義関数の削除"
+  },
+  "tabs": {
+    "documents": {
+      "newItem": "新しい項目",
+      "newDocument": "新規ドキュメント",
+      "uploadItem": "項目のアップロード",
+      "applyFilter": "フィルターの適用",
+      "unsavedChanges": "未保存の変更",
+      "unsavedChangesMessage": "保存されていない変更はすべて失われます。続行しますか?",
+      "createDocumentFailed": "ドキュメントの作成に失敗しました",
+      "updateDocumentFailed": "ドキュメントの更新に失敗しました",
+      "documentDeleted": "ドキュメントが正常に削除されました。",
+      "deleteDocumentDialogTitle": "ドキュメントの削除",
+      "deleteDocumentsDialogTitle": "ドキュメントの削除",
+      "throttlingError": "レート制限エラーにより、一部のドキュメントの削除に失敗しました。後でもう一度お試しください。今後これを防ぐには、コンテナーまたはデータベースのスループットを増やすことを検討してください。",
+      "deleteFailed": "ドキュメントの削除に失敗しました ({{error}})",
+      "missingShardProperty": "ドキュメントにシャード プロパティがありません: {{partitionKeyProperty}}",
+      "refreshGridFailed": "ドキュメント グリッドの更新に失敗しました",
+      "confirmDelete": "{{documentName}} を削除しますか?",
+      "confirmDeleteTitle": "削除の確認",
+      "selectedItems": "選択した {{count}} 個の項目",
+      "selectedItem": "選択した項目",
+      "selectedDocuments": "選択した {{count}} 件のドキュメント",
+      "selectedDocument": "選択したドキュメント",
+      "deleteDocumentFailedLog": "状態コード {{statusCode}} で、ドキュメント {{documentId}} を削除できませんでした",
+      "deleteSuccessLog": "{{count}} 件のドキュメントが正常に削除されました",
+      "deleteThrottledLog": "\"要求が大きすぎる\" (429) エラーにより {{count}} 件のドキュメントを削除できませんでした。再試行しています...",
+      "missingShardKeyLog": "新しいドキュメントを保存できませんでした: ドキュメントのシャード キーが定義されていません",
+      "filterTooltip": "クエリ述語を入力するか、一覧から 1 つ選択してください。",
+      "loadMore": "さらに読み込む",
+      "documentEditor": "ドキュメント エディター",
+      "savedFilters": "保存済みのフィルター",
+      "defaultFilters": "既定のフィルター",
+      "abort": "中止",
+      "deletingDocuments": "{{count}} 件のドキュメントを削除しています",
+      "deletedDocumentsSuccess": "{{count}} 件のドキュメントが正常に削除されました。",
+      "deleteAborted": "ドキュメントの削除が中止されました。",
+      "failedToDeleteDocuments": "{{count}} 件のドキュメントを削除できませんでした。",
+      "requestTooLargeBase": "\"要求が大きすぎる\" 例外 (429) により、一部の削除要求が失敗しました",
+      "retriedSuccessfully": "正常に再試行されました。",
+      "retryingNow": "再試行しています。",
+      "increaseThroughputTip": "今後これを防ぐには、コンテナーまたはデータベースのスループットを増やすことを検討してください。",
+      "numberOfSelectedDocuments": "選択したドキュメントの数: {{count}}",
+      "mongoFilterPlaceholder": "クエリ述語 (例: {\"id\":\"foo\"}) を入力するか、ドロップダウン リストから 1 つ選択するか、すべてのドキュメントをクエリする場合は空のままにします。",
+      "sqlFilterPlaceholder": "クエリ述語 (WHERE c.id=\"1\" など) を入力するか、ドロップダウン リストからクエリ述語を選択するか、空のままにしてすべてのドキュメントのクエリを実行します。",
+      "error": "エラー",
+      "warning": "警告"
+    },
+    "query": {
+      "executeQuery": "クエリの実行",
+      "executeSelection": "選択範囲の実行",
+      "saveQuery": "クエリの保存",
+      "downloadQuery": "クエリのダウンロード",
+      "cancelQuery": "クエリのキャンセル",
+      "openSavedQueries": "保存したクエリを開く",
+      "vertical": "縦",
+      "horizontal": "水平",
+      "view": "表示",
+      "editingQuery": "クエリを編集しています"
+    },
+    "storedProcedure": {
+      "id": "ストアド プロシージャ ID",
+      "idPlaceholder": "新しいストアド プロシージャ ID を入力してください",
+      "idAriaLabel": "ストアド プロシージャ ID",
+      "body": "ストアド プロシージャ本文",
+      "bodyAriaLabel": "ストアド プロシージャ本文",
+      "successfulExecution": "ストアド プロシージャの正常な実行",
+      "resultAriaLabel": "ストアド プロシージャの実行結果",
+      "logsAriaLabel": "ストアド プロシージャの実行ログ",
+      "errors": "エラー:",
+      "errorDetailsAriaLabel": "エラーの詳細リンク",
+      "moreDetails": "その他の詳細",
+      "consoleLogTab": "console.log"
+    },
+    "trigger": {
+      "id": "トリガー ID",
+      "idPlaceholder": "新しいトリガー ID を入力してください",
+      "type": "トリガーの種類",
+      "operation": "トリガーの操作",
+      "body": "トリガー本文",
+      "bodyAriaLabel": "トリガー本文",
+      "pre": "プレ",
+      "post": "投稿",
+      "all": "すべて",
+      "operationCreate": "作成",
+      "operationDelete": "削除",
+      "operationReplace": "置換"
+    },
+    "udf": {
+      "id": "ユーザー定義関数 ID",
+      "idPlaceholder": "新しいユーザー定義関数 ID を入力してください",
+      "body": "ユーザー定義関数本文",
+      "bodyAriaLabel": "ユーザー定義関数本文"
+    },
+    "conflicts": {
+      "unsavedChanges": "未保存の変更",
+      "changesWillBeLost": "変更が失われます。続行しますか?",
+      "resolveConflictFailed": "競合の解決に失敗しました",
+      "deleteConflictFailed": "削除の競合が失敗しました",
+      "refreshGridFailed": "ドキュメント グリッドの更新に失敗しました"
+    },
+    "mongoShell": {
+      "title": "Mongo シェル"
+    }
+  },
+  "panes": {
+    "deleteDatabase": {
+      "panelTitle": "Delete {{databaseName}}",
+      "warningMessage": "Warning! The action you are about to take cannot be undone. Continuing will permanently delete this resource and all of its children resources.",
+      "confirmPrompt": "Confirm by typing the {{databaseName}} id (name)",
+      "inputMismatch": "Input {{databaseName}} name \"{{input}}\" does not match the selected {{databaseName}} \"{{selectedId}}\"",
+      "feedbackTitle": "Help us improve Azure Cosmos DB!",
+      "feedbackReason": "What is the reason why you are deleting this {{databaseName}}?"
+    },
+    "deleteCollection": {
+      "panelTitle": "Delete {{collectionName}}",
+      "confirmPrompt": "Confirm by typing the {{collectionName}} id",
+      "inputMismatch": "Input id {{input}} does not match the selected {{selectedId}}",
+      "feedbackTitle": "Help us improve Azure Cosmos DB!",
+      "feedbackReason": "What is the reason why you are deleting this {{collectionName}}?"
+    },
+    "addDatabase": {
+      "databaseLabel": "Database {{suffix}}",
+      "databaseIdLabel": "Database id",
+      "keyspaceIdLabel": "Keyspace id",
+      "databaseIdPlaceholder": "Type a new {{databaseLabel}} id",
+      "databaseTooltip": "A {{databaseLabel}} is a logical container of one or more {{collectionsLabel}}",
+      "shareThroughput": "Share throughput across {{collectionsLabel}}",
+      "shareThroughputTooltip": "Provisioned throughput at the {{databaseLabel}} level will be shared across all {{collectionsLabel}} within the {{databaseLabel}}.",
+      "greaterThanError": "Please enter a value greater than {{minValue}} for autopilot throughput",
+      "acknowledgeSpendError": "Please acknowledge the estimated {{period}} spend."
+    },
+    "addCollection": {
+      "createNew": "Create new",
+      "useExisting": "Use existing",
+      "databaseTooltip": "A database is analogous to a namespace. It is the unit of management for a set of {{collectionName}}.",
+      "shareThroughput": "Share throughput across {{collectionName}}",
+      "shareThroughputTooltip": "Throughput configured at the database level will be shared across all {{collectionName}} within the database.",
+      "collectionIdLabel": "{{collectionName}} id",
+      "collectionIdTooltip": "Unique identifier for the {{collectionName}} and used for id-based routing through REST and all SDKs.",
+      "collectionIdPlaceholder": "e.g., {{collectionName}}1",
+      "collectionIdAriaLabel": "{{collectionName}} id, Example {{collectionName}}1",
+      "existingDatabaseAriaLabel": "Choose existing {{databaseName}} id",
+      "existingDatabasePlaceholder": "Choose existing {{databaseName}} id",
+      "indexing": "Indexing",
+      "turnOnIndexing": "Turn on indexing",
+      "automatic": "Automatic",
+      "turnOffIndexing": "Turn off indexing",
+      "off": "Off",
+      "sharding": "Sharding",
+      "shardingTooltip": "Sharded collections split your data across many replica sets (shards) to achieve unlimited scalability. Sharded collections require choosing a shard key (field) to evenly distribute your data.",
+      "unsharded": "Unsharded",
+      "unshardedLabel": "Unsharded (20GB limit)",
+      "sharded": "Sharded",
+      "addPartitionKey": "Add hierarchical partition key",
+      "hierarchicalPartitionKeyInfo": "This feature allows you to partition your data with up to three levels of keys for better data distribution. Requires .NET V3, Java V4 SDK, or preview JavaScript V3 SDK.",
+      "provisionDedicatedThroughput": "Provision dedicated throughput for this {{collectionName}}",
+      "provisionDedicatedThroughputTooltip": "You can optionally provision dedicated throughput for a {{collectionName}} within a database that has throughput provisioned. This dedicated throughput amount will not be shared with other {{collectionNamePlural}} in the database and does not count towards the throughput you provisioned for the database. This throughput amount will be billed in addition to the throughput amount you provisioned at the database level.",
+      "uniqueKeysPlaceholderMongo": "Comma separated paths e.g. firstName,address.zipCode",
+      "uniqueKeysPlaceholderSql": "Comma separated paths e.g. /firstName,/address/zipCode",
+      "addUniqueKey": "Add unique key",
+      "enableAnalyticalStore": "Enable analytical store",
+      "disableAnalyticalStore": "Disable analytical store",
+      "on": "On",
+      "analyticalStoreSynapseLinkRequired": "Azure Synapse Link is required for creating an analytical store {{collectionName}}. Enable Synapse Link for this Cosmos DB account.",
+      "enable": "Enable",
+      "containerVectorPolicy": "Container Vector Policy",
+      "containerFullTextSearchPolicy": "Container Full Text Search Policy",
+      "advanced": "Advanced",
+      "mongoIndexingTooltip": "The _id field is indexed by default. Creating a wildcard index for all fields will optimize queries and is recommended for development.",
+      "createWildcardIndex": "Create a Wildcard Index on all fields",
+      "legacySdkCheckbox": "My application uses an older Cosmos .NET or Java SDK version (.NET V1 or Java V2)",
+      "legacySdkInfo": "To ensure compatibility with older SDKs, the created container will use a legacy partitioning scheme that supports partition key values of size only up to 101 bytes. If this is enabled, you will not be able to use hierarchical partition keys.",
+      "indexingOnInfo": "All properties in your documents will be indexed by default for flexible and efficient queries.",
+      "indexingOffInfo": "Indexing will be turned off. Recommended if you don't need to run queries or only have key value operations.",
+      "indexingOffWarning": "By creating this container with indexing turned off, you will not be able to make any indexing policy changes. Indexing changes are only allowed on a container with a indexing policy.",
+      "acknowledgeSpendErrorMonthly": "Please acknowledge the estimated monthly spend.",
+      "acknowledgeSpendErrorDaily": "Please acknowledge the estimated daily spend.",
+      "unshardedMaxRuError": "Unsharded collections support up to 10,000 RUs",
+      "acknowledgeShareThroughputError": "Please acknowledge the estimated cost of this dedicated throughput.",
+      "vectorPolicyError": "Please fix errors in container vector policy",
+      "fullTextSearchPolicyError": "Please fix errors in container full text search policy",
+      "addingSampleDataSet": "Adding sample data set"
+    },
+    "addCollectionUtility": {
+      "shardKeyTooltip": "The shard key (field) is used to split your data across many replica sets (shards) to achieve unlimited scalability. It's critical to choose a field that will evenly distribute your data.",
+      "partitionKeyTooltip": "The {{partitionKeyName}} is used to automatically distribute data across partitions for scalability. Choose a property in your JSON document that has a wide range of values and evenly distributes request volume.",
+      "partitionKeyTooltipSqlSuffix": " For small read-heavy workloads or write-heavy workloads of any size, id is often a good choice.",
+      "shardKeyLabel": "Shard key",
+      "partitionKeyLabel": "Partition key",
+      "shardKeyPlaceholder": "e.g., categoryId",
+      "partitionKeyPlaceholderDefault": "e.g., /address",
+      "partitionKeyPlaceholderFirst": "Required - first partition key e.g., /TenantId",
+      "partitionKeyPlaceholderSecond": "second partition key e.g., /UserId",
+      "partitionKeyPlaceholderThird": "third partition key e.g., /SessionId",
+      "partitionKeyPlaceholderGraph": "e.g., /address/zipCode",
+      "uniqueKeysTooltip": "Unique keys provide developers with the ability to add a layer of data integrity to their database. By creating a unique key policy when a container is created, you ensure the uniqueness of one or more values per partition key.",
+      "uniqueKeysLabel": "Unique keys",
+      "analyticalStoreLabel": "Analytical Store",
+      "analyticalStoreTooltip": "Enable analytical store capability to perform near real-time analytics on your operational data, without impacting the performance of transactional workloads.",
+      "analyticalStoreDescription": "Enable analytical store capability to perform near real-time analytics on your operational data, without impacting the performance of transactional workloads.",
+      "vectorPolicyTooltip": "Describe any properties in your data that contain vectors, so that they can be made available for similarity queries."
+    },
+    "settings": {
+      "pageOptions": "Page Options",
+      "pageOptionsDescription": "Choose Custom to specify a fixed amount of query results to show, or choose Unlimited to show as many query results per page.",
+      "queryResultsPerPage": "Query results per page",
+      "queryResultsPerPageTooltip": "Enter the number of query results that should be shown per page.",
+      "customQueryItemsPerPage": "Custom query items per page",
+      "custom": "Custom",
+      "unlimited": "Unlimited",
+      "entraIdRbac": "Enable Entra ID RBAC",
+      "entraIdRbacDescription": "Choose Automatic to enable Entra ID RBAC automatically. True/False to force enable/disable Entra ID RBAC.",
+      "true": "True",
+      "false": "False",
+      "regionSelection": "Region Selection",
+      "regionSelectionDescription": "Changes region the Cosmos Client uses to access account.",
+      "selectRegion": "Select Region",
+      "selectRegionTooltip": "Changes the account endpoint used to perform client operations.",
+      "globalDefault": "Global (Default)",
+      "readWrite": "(Read/Write)",
+      "read": "(Read)",
+      "queryTimeout": "Query Timeout",
+      "queryTimeoutDescription": "When a query reaches a specified time limit, a popup with an option to cancel the query will show unless automatic cancellation has been enabled.",
+      "enableQueryTimeout": "Enable query timeout",
+      "queryTimeoutMs": "Query timeout (ms)",
+      "automaticallyCancelQuery": "Automatically cancel query after timeout",
+      "ruLimit": "RU Limit",
+      "ruLimitDescription": "If a query exceeds a configured RU limit, the query will be aborted.",
+      "enableRuLimit": "Enable RU limit",
+      "ruLimitLabel": "RU Limit (RU)",
+      "defaultQueryResults": "Default Query Results View",
+      "defaultQueryResultsDescription": "Select the default view to use when displaying query results.",
+      "retrySettings": "Retry Settings",
+      "retrySettingsDescription": "Retry policy associated with throttled requests during CosmosDB queries.",
+      "maxRetryAttempts": "Max retry attempts",
+      "maxRetryAttemptsTooltip": "Max number of retries to be performed for a request. Default value 9.",
+      "fixedRetryInterval": "Fixed retry interval (ms)",
+      "fixedRetryIntervalTooltip": "Fixed retry interval in milliseconds to wait between each retry ignoring the retryAfter returned as part of the response. Default value is 0 milliseconds.",
+      "maxWaitTime": "Max wait time (s)",
+      "maxWaitTimeTooltip": "Max wait time in seconds to wait for a request while the retries are happening. Default value 30 seconds.",
+      "enableContainerPagination": "Enable container pagination",
+      "enableContainerPaginationDescription": "Load 50 containers at a time. Currently, containers are not pulled in alphanumeric order.",
+      "enableCrossPartitionQuery": "Enable cross-partition query",
+      "enableCrossPartitionQueryDescription": "Send more than one request while executing a query. More than one request is necessary if the query is not scoped to single partition key value.",
+      "maxDegreeOfParallelism": "Max degree of parallelism",
+      "maxDegreeOfParallelismDescription": "Gets or sets the number of concurrent operations run client side during parallel query execution. A positive property value limits the number of concurrent operations to the set value. If it is set to less than 0, the system automatically decides the number of concurrent operations to run.",
+      "maxDegreeOfParallelismQuery": "Query up to the max degree of parallelism.",
+      "priorityLevel": "Priority Level",
+      "priorityLevelDescription": "Sets the priority level for data-plane requests from Data Explorer when using Priority-Based Execution. If \"None\" is selected, Data Explorer will not specify priority level, and the server-side default priority level will be used.",
+      "displayGremlinQueryResults": "Display Gremlin query results as:",
+      "displayGremlinQueryResultsDescription": "Select Graph to automatically visualize the query results as a Graph or JSON to display the results as JSON.",
+      "graph": "Graph",
+      "json": "JSON",
+      "graphAutoVisualization": "Graph Auto-visualization",
+      "enableSampleDatabase": "Enable sample database",
+      "enableSampleDatabaseDescription": "This is a sample database and collection with synthetic product data you can use to explore using NoSQL queries. This will appear as another database in the Data Explorer UI, and is created by, and maintained by Microsoft at no cost to you.",
+      "enableSampleDbAriaLabel": "Enable sample db for query exploration",
+      "guidRepresentation": "Guid Representation",
+      "guidRepresentationDescription": "GuidRepresentation in MongoDB refers to how Globally Unique Identifiers (GUIDs) are serialized and deserialized when stored in BSON documents. This will apply to all document operations.",
+      "advancedSettings": "Advanced Settings",
+      "ignorePartitionKey": "Ignore partition key on document update",
+      "ignorePartitionKeyTooltip": "If checked, the partition key value will not be used to locate the document during update operations. Only use this if document updates are failing due to an abnormal partition key.",
+      "clearHistory": "Clear History",
+      "clearHistoryConfirm": "Are you sure you want to proceed?",
+      "clearHistoryDescription": "This action will clear the all customizations for this account in this browser, including:",
+      "clearHistoryTabLayout": "Reset your customized tab layout, including the splitter positions",
+      "clearHistoryTableColumns": "Erase your table column preferences, including any custom columns",
+      "clearHistoryFilters": "Clear your filter history",
+      "clearHistoryRegion": "Reset region selection to global",
+      "increaseValueBy1000": "Increase value by 1000",
+      "decreaseValueBy1000": "Decrease value by 1000",
+      "none": "None",
+      "low": "Low",
+      "high": "High",
+      "automatic": "Automatic",
+      "enhancedQueryControl": "Enhanced query control",
+      "enableQueryControl": "Enable query control",
+      "explorerVersion": "Explorer Version",
+      "accountId": "Account ID",
+      "sessionId": "Session ID",
+      "popupsDisabledError": "We were unable to establish authorization for this account, due to pop-ups being disabled in the browser.\nPlease enable pop-ups for this site and click on \"Login for Entra ID\" button",
+      "failedToAcquireTokenError": "Failed to acquire authorization token automatically. Please click on \"Login for Entra ID\" button to enable Entra ID RBAC operations"
+    },
+    "saveQuery": {
+      "panelTitle": "Save Query",
+      "setupCostMessage": "For compliance reasons, we save queries in a container in your Azure Cosmos account, in a separate database called “{{databaseName}}”. To proceed, we need to create a container in your account, estimated additional cost is $0.77 daily.",
+      "completeSetup": "Complete setup",
+      "noQueryNameError": "No query name specified",
+      "invalidQueryContentError": "Invalid query content specified",
+      "failedToSaveQueryError": "Failed to save query {{queryName}}",
+      "failedToSetupContainerError": "Failed to setup a container for saved queries",
+      "accountNotSetupError": "Failed to save query: account not setup to save queries",
+      "name": "Name"
+    },
+    "loadQuery": {
+      "noFileSpecifiedError": "No file specified",
+      "failedToLoadQueryError": "Failed to load query",
+      "failedToLoadQueryFromFileError": "Failed to load query from file {{fileName}}",
+      "selectFilesToOpen": "Select a query document",
+      "browseFiles": "Browse"
+    },
+    "executeStoredProcedure": {
+      "enterInputParameters": "Enter input parameters (if any)",
+      "key": "Key",
+      "param": "Param",
+      "partitionKeyValue": "Partition key value",
+      "value": "Value",
+      "addNewParam": "Add New Param",
+      "addParam": "Add param",
+      "deleteParam": "Delete param",
+      "invalidParamError": "Invalid param specified: {{invalidParam}}",
+      "invalidParamConsoleError": "Invalid param specified: {{invalidParam}} is not a valid literal value",
+      "stringType": "String",
+      "customType": "Custom"
+    },
+    "uploadItems": {
+      "noFilesSpecifiedError": "No files were specified. Please input at least one file.",
+      "selectJsonFiles": "Select JSON Files",
+      "selectJsonFilesTooltip": "Select one or more JSON files to upload. Each file can contain a single JSON document or an array of JSON documents. The combined size of all files in an individual upload operation must be less than 2 MB. You can perform multiple upload operations for larger data sets.",
+      "fileNameColumn": "FILE NAME",
+      "statusColumn": "STATUS",
+      "uploadStatus": "{{numSucceeded}} created, {{numThrottled}} throttled, {{numFailed}} errors",
+      "uploadedFiles": "Uploaded files"
+    },
+    "copyNotebook": {
+      "copyFailedError": "Failed to copy {{name}} to {{destination}}",
+      "uploadFailedError": "Failed to upload {{name}}",
+      "location": "Location",
+      "locationAriaLabel": "Location",
+      "selectLocation": "Select a notebook location to copy",
+      "name": "Name"
+    },
+    "publishNotebook": {
+      "publishFailedError": "Failed to publish {{notebookName}} to gallery",
+      "publishDescription": "When published, this notebook will appear in the Azure Cosmos DB notebooks public gallery. Make sure you have removed any sensitive data or output before publishing.",
+      "publishPrompt": "Would you like to publish and share \"{{name}}\" to the gallery?",
+      "coverImage": "Cover image",
+      "coverImageUrl": "Cover image url",
+      "name": "Name",
+      "description": "Description",
+      "tags": "Tags",
+      "tagsPlaceholder": "Optional tag 1, Optional tag 2",
+      "preview": "Preview",
+      "urlType": "URL",
+      "customImage": "Custom Image",
+      "takeScreenshot": "Take Screenshot",
+      "useFirstDisplayOutput": "Use First Display Output",
+      "failedToCaptureOutput": "Failed to capture first output",
+      "outputDoesNotExist": "Output does not exist for any of the cells.",
+      "failedToConvertError": "Failed to convert {{fileName}} to base64 format",
+      "failedToUploadError": "Failed to upload {{fileName}}"
+    },
+    "changePartitionKey": {
+      "failedToStartError": "Failed to start data transfer job",
+      "suboptimalPartitionKeyError": "Warning: The system has detected that your collection may be using a suboptimal partition key",
+      "description": "When changing a container’s partition key, you will need to create a destination container with the correct partition key. You may also select an existing destination container.",
+      "sourceContainerId": "Source {{collectionName}} id",
+      "destinationContainerId": "Destination {{collectionName}} id",
+      "collectionIdTooltip": "Unique identifier for the {{collectionName}} and used for id-based routing through REST and all SDKs.",
+      "collectionIdPlaceholder": "e.g., {{collectionName}}1",
+      "collectionIdAriaLabel": "{{collectionName}} id, Example {{collectionName}}1",
+      "existingContainers": "Existing Containers",
+      "partitionKeyWarning": "The destination container must not already exist. Data Explorer will create a new destination container for you."
+    },
+    "cassandraAddCollection": {
+      "keyspaceLabel": "Keyspace name",
+      "keyspaceTooltip": "Select an existing keyspace or enter a new keyspace id.",
+      "tableIdLabel": "Enter CQL command to create the table.",
+      "enterTableId": "Enter table Id",
+      "tableSchemaAriaLabel": "Table schema",
+      "provisionDedicatedThroughput": "Provision dedicated throughput for this table",
+      "provisionDedicatedThroughputTooltip": "You can optionally provision dedicated throughput for a table within a keyspace that has throughput provisioned. This dedicated throughput amount will not be shared with other tables in the keyspace and does not count towards the throughput you provisioned for the keyspace. This throughput amount will be billed in addition to the throughput amount you provisioned at the keyspace level."
+    },
+    "tables": {
+      "addProperty": "Add Property",
+      "addRow": "Add Row",
+      "addEntity": "Add Entity",
+      "back": "back",
+      "nullFieldsWarning": "Warning: Null fields will not be displayed for editing.",
+      "propertyEmptyError": "{{property}} cannot be empty. Please input a value for {{property}}",
+      "whitespaceError": "{{property}} cannot have whitespace. Please input a value for {{property}} without whitespace",
+      "propertyTypeEmptyError": "Property type cannot be empty. Please select a type from the dropdown for property {{property}}"
+    },
+    "tableQuerySelect": {
+      "selectColumns": "Select the columns that you want to query.",
+      "availableColumns": "Available Columns"
+    },
+    "tableColumnSelection": {
+      "selectColumns": "Select which columns to display in your view of items in your container.",
+      "searchFields": "Search fields",
+      "reset": "Reset",
+      "partitionKeySuffix": " (partition key)"
+    },
+    "newVertex": {
+      "addProperty": "Add Property"
+    },
+    "addGlobalSecondaryIndex": {
+      "globalSecondaryIndexId": "Global secondary index container id",
+      "globalSecondaryIndexIdPlaceholder": "e.g., indexbyEmailId",
+      "projectionQuery": "Projection query",
+      "projectionQueryPlaceholder": "SELECT c.email, c.accountId FROM c",
+      "projectionQueryTooltip": "Learn more about defining global secondary indexes.",
+      "disabledTitle": "A global secondary index is already being created. Please wait for it to complete before creating another one."
+    },
+    "stringInput": {
+      "inputMismatchError": "Input {{input}} does not match the selected {{selectedId}}"
+    },
+    "panelInfo": {
+      "information": "Information",
+      "moreDetails": "More details"
     }
   }
 }
