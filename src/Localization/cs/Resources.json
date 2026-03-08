@@ -29,9 +29,9 @@
     "upload": "Nahrát",
     "connect": "Připojit",
     "remove": "Odebrat",
-    "load": "Load",
-    "publish": "Publish",
-    "browse": "Browse",
+    "load": "Načíst",
+    "publish": "Publikovat",
+    "browse": "Procházet",
     "increaseValueBy1": "Zvýšit hodnotu o 1",
     "decreaseValueBy1": "Snížit hodnotu o 1"
   },
@@ -504,7 +504,7 @@
       "shardKeyPlaceholder": "e.g., categoryId",
       "partitionKeyPlaceholderDefault": "e.g., /address",
       "partitionKeyPlaceholderFirst": "Required - first partition key e.g., /TenantId",
-      "partitionKeyPlaceholderSecond": "second partition key e.g., /UserId",
+      "partitionKeyPlaceholderSecond": "druhý klíč oddílu, například /UserId",
       "partitionKeyPlaceholderThird": "third partition key e.g., /SessionId",
       "partitionKeyPlaceholderGraph": "e.g., /address/zipCode",
       "uniqueKeysTooltip": "Unique keys provide developers with the ability to add a layer of data integrity to their database. By creating a unique key policy when a container is created, you ensure the uniqueness of one or more values per partition key.",
@@ -556,7 +556,7 @@
       "enableContainerPaginationDescription": "Load 50 containers at a time. Currently, containers are not pulled in alphanumeric order.",
       "enableCrossPartitionQuery": "Enable cross-partition query",
       "enableCrossPartitionQueryDescription": "Send more than one request while executing a query. More than one request is necessary if the query is not scoped to single partition key value.",
-      "maxDegreeOfParallelism": "Max degree of parallelism",
+      "maxDegreeOfParallelism": "Maximální stupeň paralelismu",
       "maxDegreeOfParallelismDescription": "Gets or sets the number of concurrent operations run client side during parallel query execution. A positive property value limits the number of concurrent operations to the set value. If it is set to less than 0, the system automatically decides the number of concurrent operations to run.",
       "maxDegreeOfParallelismQuery": "Query up to the max degree of parallelism.",
       "priorityLevel": "Priority Level",
@@ -575,7 +575,7 @@
       "ignorePartitionKey": "Ignore partition key on document update",
       "ignorePartitionKeyTooltip": "If checked, the partition key value will not be used to locate the document during update operations. Only use this if document updates are failing due to an abnormal partition key.",
       "clearHistory": "Clear History",
-      "clearHistoryConfirm": "Are you sure you want to proceed?",
+      "clearHistoryConfirm": "Opravdu chcete pokračovat?",
       "clearHistoryDescription": "This action will clear the all customizations for this account in this browser, including:",
       "clearHistoryTabLayout": "Reset your customized tab layout, including the splitter positions",
       "clearHistoryTableColumns": "Erase your table column preferences, including any custom columns",
@@ -608,7 +608,7 @@
     },
     "loadQuery": {
       "noFileSpecifiedError": "No file specified",
-      "failedToLoadQueryError": "Failed to load query",
+      "failedToLoadQueryError": "Dotaz se nepovedlo načíst.",
       "failedToLoadQueryFromFileError": "Failed to load query from file {{fileName}}",
       "selectFilesToOpen": "Select a query document",
       "browseFiles": "Browse"
@@ -696,7 +696,7 @@
       "propertyTypeEmptyError": "Property type cannot be empty. Please select a type from the dropdown for property {{property}}"
     },
     "tableQuerySelect": {
-      "selectColumns": "Select the columns that you want to query.",
+      "selectColumns": "Vyberte sloupce, na které se chcete dotázat.",
       "availableColumns": "Available Columns"
     },
     "tableColumnSelection": {
