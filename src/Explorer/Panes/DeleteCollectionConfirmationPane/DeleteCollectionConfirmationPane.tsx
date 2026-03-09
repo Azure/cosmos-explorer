@@ -4,6 +4,8 @@ import DeleteFeedback from "Common/DeleteFeedback";
 import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
 import { deleteCollection } from "Common/dataAccess/deleteCollection";
 import { Collection } from "Contracts/ViewModels";
+import { Keys } from "Localization/Keys.generated";
+import { t } from "Localization/t";
 import { DefaultExperienceUtility } from "Shared/DefaultExperienceUtility";
 import { Action, ActionModifiers } from "Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "Shared/Telemetry/TelemetryProcessor";
@@ -52,12 +54,15 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
     useDatabases.getState().isLastCollection() && !useDatabases.getState().findSelectedDatabase()?.isDatabaseShared();
 
   const collectionName = getCollectionName().toLocaleLowerCase();
-  const paneTitle = "Delete " + collectionName;
+  const paneTitle = t(Keys.panes.deleteCollection.panelTitle, { collectionName });
 
   const onSubmit = async (): Promise<void> => {
     const collection = useSelectedNode.getState().findSelectedCollection();
     if (!collection || inputCollectionName !== collection.id()) {
-      const errorMessage = "Input id " + inputCollectionName + " does not match the selected " + collection.id();
+      const errorMessage = t(Keys.panes.deleteCollection.inputMismatch, {
+        input: inputCollectionName,
+        selectedId: collection.id(),
+      });
       setFormError(errorMessage);
       NotificationConsoleUtils.logConsoleError(
         `Error while deleting ${collectionName} ${collection.id()}: ${errorMessage}`,
@@ -124,21 +129,23 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
   const props: RightPaneFormProps = {
     formError: formError,
     isExecuting,
-    submitButtonText: "OK",
+    submitButtonText: t(Keys.common.ok),
     onSubmit,
   };
-  const confirmContainer = `Confirm by typing the ${collectionName.toLowerCase()} id`;
-  const reasonInfo = `Help us improve Azure Cosmos DB! What is the reason why you are deleting this ${collectionName}?`;
-
+  const confirmContainer = t(Keys.panes.deleteCollection.confirmPrompt, {
+    collectionName: collectionName.toLowerCase(),
+  });
+  const reasonInfo =
+    t(Keys.panes.deleteCollection.feedbackTitle) +
+    " " +
+    t(Keys.panes.deleteCollection.feedbackReason, { collectionName });
   return (
     <RightPaneForm {...props}>
       <div className="panelFormWrapper">
         <div className="panelMainContent">
           <div className="confirmDeleteInput">
             <span className="mandatoryStar">* </span>
-            <Text variant="small" style={{ color: "var(--colorNeutralForeground1)" }}>
-              Confirm by typing the {collectionName.toLowerCase()} id
-            </Text>
+            <Text variant="small" style={{ color: "var(--colorNeutralForeground1)" }}>{confirmContainer}</Text>
             <TextField
               id="confirmCollectionId"
               autoFocus
@@ -154,10 +161,10 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
           {shouldRecordFeedback() && (
             <div className="deleteCollectionFeedback">
               <Text variant="small" block style={{ color: "var(--colorNeutralForeground1)" }}>
-                Help us improve Azure Cosmos DB!
+                {t(Keys.panes.deleteCollection.feedbackTitle)}
               </Text>
               <Text variant="small" block style={{ color: "var(--colorNeutralForeground1)" }}>
-                What is the reason why you are deleting this {collectionName}?
+                {t(Keys.panes.deleteCollection.feedbackReason, { collectionName })}
               </Text>
               <TextField
                 id="deleteCollectionFeedbackInput"

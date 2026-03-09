@@ -1,6 +1,8 @@
 import { useBoolean } from "@fluentui/react-hooks";
 import React, { FunctionComponent, useState } from "react";
 import * as ViewModels from "../../../Contracts/ViewModels";
+import { Keys } from "../../../Localization/Keys.generated";
+import { t } from "../../../Localization/t";
 import { useSidePanel } from "../../../hooks/useSidePanel";
 import { NewVertexComponent } from "../../Graph/NewVertexComponent/NewVertexComponent";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
@@ -41,7 +43,7 @@ export const NewVertexPanel: FunctionComponent<INewVertexPanelProps> = ({
   const props: RightPaneFormProps = {
     formError: errorMessage,
     isExecuting: isLoading,
-    submitButtonText: "OK",
+    submitButtonText: t(Keys.common.ok),
     onSubmit: () => submit(),
   };
 

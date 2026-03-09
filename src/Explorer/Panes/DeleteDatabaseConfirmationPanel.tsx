@@ -5,6 +5,8 @@ import DeleteFeedback from "Common/DeleteFeedback";
 import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
 import { deleteDatabase } from "Common/dataAccess/deleteDatabase";
 import { Collection, Database } from "Contracts/ViewModels";
+import { Keys } from "Localization/Keys.generated";
+import { t } from "Localization/t";
 import { DefaultExperienceUtility } from "Shared/DefaultExperienceUtility";
 import { Action, ActionModifiers } from "Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "Shared/Telemetry/TelemetryProcessor";
@@ -56,11 +58,19 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
   const submit = async (): Promise<void> => {
     if (selectedDatabase?.id() && databaseInput !== selectedDatabase.id()) {
       setFormError(
-        `Input ${getDatabaseName()} name "${databaseInput}" does not match the selected ${getDatabaseName()} "${selectedDatabase.id()}"`,
+        t(Keys.panes.deleteDatabase.inputMismatch, {
+          databaseName: getDatabaseName(),
+          input: databaseInput,
+          selectedId: selectedDatabase.id(),
+        }),
       );
       logConsoleError(`Error while deleting ${getDatabaseName()} ${selectedDatabase && selectedDatabase.id()}`);
       logConsoleError(
-        `Input ${getDatabaseName()} name "${databaseInput}" does not match the selected ${getDatabaseName()} "${selectedDatabase.id()}"`,
+        t(Keys.panes.deleteDatabase.inputMismatch, {
+          databaseName: getDatabaseName(),
+          input: databaseInput,
+          selectedId: selectedDatabase.id(),
+        }),
       );
       return;
     }
@@ -132,18 +142,20 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
   const props: RightPaneFormProps = {
     formError,
     isExecuting: isLoading,
-    submitButtonText: "OK",
+    submitButtonText: t(Keys.common.ok),
     onSubmit: () => submit(),
   };
 
   const errorProps: PanelInfoErrorProps = {
     messageType: "warning",
     showErrorDetails: false,
-    message:
-      "Warning! The action you are about to take cannot be undone. Continuing will permanently delete this resource and all of its children resources.",
+    message: t(Keys.panes.deleteDatabase.warningMessage),
   };
-  const confirmDatabase = `Confirm by typing the ${getDatabaseName()} id (name)`;
-  const reasonInfo = `Help us improve Azure Cosmos DB! What is the reason why you are deleting this ${getDatabaseName()}?`;
+  const confirmDatabase = t(Keys.panes.deleteDatabase.confirmPrompt, { databaseName: getDatabaseName() });
+  const reasonInfo =
+    t(Keys.panes.deleteDatabase.feedbackTitle) +
+    " " +
+    t(Keys.panes.deleteDatabase.feedbackReason, { databaseName: getDatabaseName() });
   return (
     <RightPaneForm {...props}>
       {!formError && <PanelInfoErrorComponent {...errorProps} />}

@@ -44,9 +44,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                   }
                 }
               >
-                Confirm by typing the 
-                container
-                 id
+                Confirm by typing the container id
               </span>
             </Text>
             <StyledTextFieldBase

@@ -1,4 +1,37 @@
 {
+  "common": {
+    "ok": "Tamam",
+    "cancel": "İptal",
+    "close": "Kapat",
+    "save": "Kaydet",
+    "delete": "Sil",
+    "update": "Güncelleştir",
+    "discard": "At",
+    "execute": "Execute",
+    "loading": "Yükleniyor",
+    "loadingEllipsis": "Yükleniyor...",
+    "next": "Sonraki",
+    "previous": "Önceki",
+    "yes": "Evet",
+    "no": "Hayır",
+    "result": "Sonuç",
+    "learnMore": "Daha fazla bilgi edinin",
+    "getStarted": "Kullanmaya başlayın",
+    "retry": "Yeniden dene",
+    "apply": "Uygula",
+    "refresh": "Yenile",
+    "copy": "Kopyala",
+    "create": "Oluştur",
+    "confirm": "Onayla",
+    "open": "Aç",
+    "rename": "Yeniden adlandır",
+    "download": "İndir",
+    "upload": "Karşıya yükle",
+    "connect": "Bağlan",
+    "remove": "Kaldır",
+    "increaseValueBy1": "Değeri 1 artır",
+    "decreaseValueBy1": "Değeri 1 azalt"
+  },
   "splashScreen": {
     "title": {
       "default": "Azure Cosmos DB'ye hoş geldiniz",
@@ -8,6 +41,255 @@
     "subtitle": {
       "default": "Her ölçeğe uygun, global olarak dağıtılan çok modelli veritabanı hizmeti",
       "getStarted": "Örnek veri kümelerimizi, belgelerimizi ve ek araçlarımızı kullanmaya başlayın."
+    },
+    "quickStart": {
+      "title": "Launch quick start",
+      "description": "Launch a quick start tutorial to get started with sample data"
+    },
+    "newCollection": {
+      "title": "New {{collectionName}}",
+      "description": "Create a new container for storage and throughput"
+    },
+    "samplesGallery": {
+      "title": "Azure Cosmos DB Samples Gallery",
+      "description": "Discover samples that showcase scalable, intelligent app patterns. Try one now to see how fast you can go from concept to code with Cosmos DB"
+    },
+    "connectCard": {
+      "title": "Connect",
+      "description": "Prefer using your own choice of tooling? Find the connection string you need to connect",
+      "pgAdmin": {
+        "title": "Connect with pgAdmin",
+        "description": "Prefer pgAdmin? Find your connection strings here"
+      },
+      "vsCode": {
+        "title": "VS Code ile Bağlan",
+        "description": "Query and Manage your MongoDB and DocumentDB clusters in Visual Studio Code"
+      }
+    },
+    "shell": {
+      "postgres": {
+        "title": "PostgreSQL Shell",
+        "description": "Create table and interact with data using PostgreSQL's shell interface"
+      },
+      "vcoreMongo": {
+        "title": "Mongo Shell",
+        "description": "Create a collection and interact with data using MongoDB's shell interface"
+      }
+    },
+    "teachingBubble": {
+      "newToPostgres": {
+        "headline": "New to Cosmos DB PGSQL?",
+        "body": "Welcome! If you are new to Cosmos DB PGSQL and need help with getting started, here is where you can find sample data, query."
+      },
+      "resetPassword": {
+        "headline": "Create your password",
+        "body": "If you haven't changed your password yet, change it now."
+      },
+      "coachMark": {
+        "headline": "Start with sample {{collectionName}}",
+        "body": "You will be guided to create a sample container with sample data, then we will give you a tour of data explorer. You can also cancel launching this tour and explore yourself"
+      }
+    },
+    "sections": {
+      "recents": "Recents",
+      "clearRecents": "Clear Recents",
+      "top3": "Top 3 things you need to know",
+      "learningResources": "Learning Resources",
+      "nextSteps": "Next steps",
+      "tipsAndLearnMore": "Tips & learn more",
+      "notebook": "Notebook",
+      "needHelp": "Need help?"
+    },
+    "top3Items": {
+      "sql": {
+        "advancedModeling": {
+          "title": "Advanced Modeling Patterns",
+          "description": "Learn advanced strategies to optimize your database."
+        },
+        "partitioning": {
+          "title": "Partitioning Best Practices",
+          "description": "Learn to apply data model and partitioning strategies."
+        },
+        "resourcePlanning": {
+          "title": "Plan Your Resource Requirements",
+          "description": "Get to know the different configuration choices."
+        }
+      },
+      "mongo": {
+        "whatIsMongo": {
+          "title": "What is the MongoDB API?",
+          "description": "Understand Azure Cosmos DB for MongoDB and its features."
+        },
+        "features": {
+          "title": "Features and Syntax",
+          "description": "Discover the advantages and features"
+        },
+        "migrate": {
+          "title": "Migrate Your Data",
+          "description": "Pre-migration steps for moving data"
+        }
+      },
+      "cassandra": {
+        "buildJavaApp": {
+          "title": "Build a Java App",
+          "description": "Create a Java app using an SDK."
+        },
+        "partitioning": {
+          "title": "Partitioning Best Practices",
+          "description": "Learn how partitioning works."
+        },
+        "requestUnits": {
+          "title": "Request Units (RUs)",
+          "description": "Understand RU charges."
+        }
+      },
+      "gremlin": {
+        "dataModeling": {
+          "title": "Data Modeling",
+          "description": "Graph data modeling recommendations"
+        },
+        "partitioning": {
+          "title": "Partitioning Best Practices",
+          "description": "Learn how partitioning works"
+        },
+        "queryData": {
+          "title": "Query Data",
+          "description": "Querying data with Gremlin"
+        }
+      },
+      "tables": {
+        "whatIsTable": {
+          "title": "What is the Table API?",
+          "description": "Understand Azure Cosmos DB for Table and its features"
+        },
+        "migrate": {
+          "title": "Migrate your data",
+          "description": "Learn how to migrate your data"
+        },
+        "faq": {
+          "title": "Azure Cosmos DB for Table FAQs",
+          "description": "Common questions about Azure Cosmos DB for Table"
+        }
+      }
+    },
+    "learningResources": {
+      "shortcuts": {
+        "title": "Data Explorer keyboard shortcuts",
+        "description": "Learn keyboard shortcuts to navigate Data Explorer."
+      },
+      "liveTv": {
+        "title": "Learn the Fundamentals",
+        "description": "Watch Azure Cosmos DB Live TV show introductory and how to videos."
+      },
+      "sql": {
+        "sdk": {
+          "title": "Get Started using an SDK",
+          "description": "Learn about the Azure Cosmos DB SDK."
+        },
+        "migrate": {
+          "title": "Migrate Your Data",
+          "description": "Migrate data using Azure services and open-source solutions."
+        }
+      },
+      "mongo": {
+        "nodejs": {
+          "title": "Build an app with Node.js",
+          "description": "Create a Node.js app."
+        },
+        "gettingStarted": {
+          "title": "Getting Started Guide",
+          "description": "Learn the basics to get started."
+        }
+      },
+      "cassandra": {
+        "createContainer": {
+          "title": "Create a Container",
+          "description": "Get to know the create a container options."
+        },
+        "throughput": {
+          "title": "Provision Throughput",
+          "description": "Learn how to configure throughput."
+        }
+      },
+      "gremlin": {
+        "getStarted": {
+          "title": "Get Started ",
+          "description": "Create, query, and traverse using the Gremlin console"
+        },
+        "importData": {
+          "title": "Import Graph Data",
+          "description": "Learn Bulk ingestion data using BulkExecutor"
+        }
+      },
+      "tables": {
+        "dotnet": {
+          "title": "Build a .NET App",
+          "description": "How to access Azure Cosmos DB for Table from a .NET app."
+        },
+        "java": {
+          "title": "Build a Java App",
+          "description": "Create a Azure Cosmos DB for Table app with Java SDK "
+        }
+      }
+    },
+    "nextStepItems": {
+      "postgres": {
+        "dataModeling": "Data Modeling",
+        "distributionColumn": "How to choose a Distribution Column",
+        "buildApps": "Build Apps with Python/Java/Django"
+      },
+      "vcoreMongo": {
+        "migrateData": "Migrate Data",
+        "vectorSearch": "Build AI apps with Vector Search",
+        "buildApps": "Build Apps with Nodejs"
+      }
+    },
+    "learnMoreItems": {
+      "postgres": {
+        "performanceTuning": "Performance Tuning",
+        "diagnosticQueries": "Useful Diagnostic Queries",
+        "sqlReference": "Distributed SQL Reference"
+      },
+      "vcoreMongo": {
+        "vectorSearch": "Vector Search",
+        "textIndexing": "Text Indexing",
+        "troubleshoot": "Troubleshoot common issues"
+      }
+    },
+    "fabric": {
+      "buildTitle": "Build your database",
+      "useTitle": "Use your database",
+      "newContainer": {
+        "title": "New container",
+        "description": "Create a destination container to store your data"
+      },
+      "sampleData": {
+        "title": "Sample Data",
+        "description": "Load sample data in your database"
+      },
+      "sampleVectorData": {
+        "title": "Sample Vector Data",
+        "description": "Load sample vector data with text-embedding-ada-002"
+      },
+      "appDevelopment": {
+        "title": "App development",
+        "description": "Start here to use an SDK to build your apps"
+      },
+      "sampleGallery": {
+        "title": "Sample Gallery",
+        "description": "Get real-world end-to-end samples"
+      }
+    },
+    "sampleDataDialog": {
+      "title": "Sample Data",
+      "startButton": "Start",
+      "createPrompt": "Create a container \"{{containerName}}\" and import sample data into it. This may take a few minutes.",
+      "creatingContainer": "Creating container \"{{containerName}}\"...",
+      "importingData": "Importing data into \"{{containerName}}\"...",
+      "success": "Successfully created \"{{containerName}}\" with sample data.",
+      "errorContainerExists": "The container \"{{containerName}}\" in database \"{{databaseName}}\" already exists. Please delete it and retry.",
+      "errorCreateContainer": "Failed to create container: {{error}}",
+      "errorImportData": "Failed to import data: {{error}}"
     }
   }
 }

@@ -1,4 +1,37 @@
 {
+  "common": {
+    "ok": "确定",
+    "cancel": "取消",
+    "close": "关闭",
+    "save": "保存",
+    "delete": "删除",
+    "update": "更新",
+    "discard": "放弃",
+    "execute": "执行",
+    "loading": "正在加载",
+    "loadingEllipsis": "正在加载...",
+    "next": "下一步",
+    "previous": "上一步",
+    "yes": "是",
+    "no": "否",
+    "result": "结果",
+    "learnMore": "了解详细信息",
+    "getStarted": "开始使用",
+    "retry": "重试",
+    "apply": "应用",
+    "refresh": "刷新",
+    "copy": "复制",
+    "create": "创建",
+    "confirm": "确认",
+    "open": "打开",
+    "rename": "重命名",
+    "download": "下载",
+    "upload": "上传",
+    "connect": "连接",
+    "remove": "删除",
+    "increaseValueBy1": "将值增加 1",
+    "decreaseValueBy1": "将值减少 1"
+  },
   "splashScreen": {
     "title": {
       "default": "欢迎使用 Azure Cosmos DB",
@@ -8,6 +41,255 @@
     "subtitle": {
       "default": "任何规模的全球分布式多模型数据库服务",
       "getStarted": "开始使用我们的示例数据集、文档和其他工具。"
+    },
+    "quickStart": {
+      "title": "启动快速入门",
+      "description": "启动快速入门教程，开始使用示例数据"
+    },
+    "newCollection": {
+      "title": "新建 {{collectionName}}",
+      "description": "创建用于存储和吞吐量的新容器"
+    },
+    "samplesGallery": {
+      "title": "Azure Cosmos DB 示例库",
+      "description": "发现展示可扩展智能应用模式的示例。立即试用，体验如何通过 Cosmos DB 快速从概念转变到代码"
+    },
+    "connectCard": {
+      "title": "连接",
+      "description": "更喜欢使用自己选择的工具?查找需要连接的连接字符串",
+      "pgAdmin": {
+        "title": "使用 pgAdmin 连接",
+        "description": "首选 pgAdmin?在此处查找连接字符串"
+      },
+      "vsCode": {
+        "title": "与 VS Code 连接",
+        "description": "在 Visual Studio Code 中查询和管理 MongoDB 和 DocumentDB 群集"
+      }
+    },
+    "shell": {
+      "postgres": {
+        "title": "PostgreSQL Shell",
+        "description": "使用 PostgreSQL shell 接口创建表并与数据交互"
+      },
+      "vcoreMongo": {
+        "title": "Mongo Shell",
+        "description": "使用 MongoDB shell 接口创建集合并与数据交互"
+      }
+    },
+    "teachingBubble": {
+      "newToPostgres": {
+        "headline": "不熟悉 Cosmos DB PGSQL?",
+        "body": "欢迎!如果你不熟悉 Cosmos DB PGSQL，需要入门帮助，可在此处找到示例数据和查询。"
+      },
+      "resetPassword": {
+        "headline": "创建密码",
+        "body": "如果尚未更改密码，请立即更改。"
+      },
+      "coachMark": {
+        "headline": "从示例 {{collectionName}} 开始",
+        "body": "系统将引导你创建包含示例数据的示例容器，然后带你了解数据资源管理器。你也可以取消此教程，改为自行探索"
+      }
+    },
+    "sections": {
+      "recents": "最近使用",
+      "clearRecents": "清除最近使用记录",
+      "top3": "你需要了解的三大要点",
+      "learningResources": "学习资源",
+      "nextSteps": "后续步骤",
+      "tipsAndLearnMore": "提示和详细信息",
+      "notebook": "笔记本",
+      "needHelp": "需要帮助?"
+    },
+    "top3Items": {
+      "sql": {
+        "advancedModeling": {
+          "title": "高级建模模式",
+          "description": "了解用于优化数据库的高级策略。"
+        },
+        "partitioning": {
+          "title": "分区最佳做法",
+          "description": "了解如何应用数据模型和分区策略。"
+        },
+        "resourcePlanning": {
+          "title": "规划资源需求",
+          "description": "了解不同的配置选择。"
+        }
+      },
+      "mongo": {
+        "whatIsMongo": {
+          "title": "什么是 MongoDB API?",
+          "description": "了解 Azure Cosmos DB for MongoDB 及其功能。"
+        },
+        "features": {
+          "title": "功能和语法",
+          "description": "了解优势和功能"
+        },
+        "migrate": {
+          "title": "迁移数据",
+          "description": "用于移动数据的迁移前步骤"
+        }
+      },
+      "cassandra": {
+        "buildJavaApp": {
+          "title": "构建 Java 应用",
+          "description": "使用 SDK 创建 Java 应用。"
+        },
+        "partitioning": {
+          "title": "分区最佳做法",
+          "description": "了解分区的工作原理。"
+        },
+        "requestUnits": {
+          "title": "请求单位(RU)",
+          "description": "了解 RU 费用。"
+        }
+      },
+      "gremlin": {
+        "dataModeling": {
+          "title": "数据建模",
+          "description": "图形数据建模建议"
+        },
+        "partitioning": {
+          "title": "分区最佳做法",
+          "description": "了解分区的工作原理"
+        },
+        "queryData": {
+          "title": "查询数据",
+          "description": "使用 Gremlin 查询数据"
+        }
+      },
+      "tables": {
+        "whatIsTable": {
+          "title": "什么是 Table API?",
+          "description": "了解 Azure Cosmos DB for Table 及其功能"
+        },
+        "migrate": {
+          "title": "迁移数据",
+          "description": "了解如何迁移数据"
+        },
+        "faq": {
+          "title": "Azure Cosmos DB for Table 常见问题解答",
+          "description": "有关 Azure Cosmos DB for Table 的常见问题"
+        }
+      }
+    },
+    "learningResources": {
+      "shortcuts": {
+        "title": "数据资源管理器键盘快捷方式",
+        "description": "了解浏览数据资源管理器的键盘快捷方式。"
+      },
+      "liveTv": {
+        "title": "了解基础知识",
+        "description": "观看 Azure Cosmos DB 直播节目介绍及操作方法视频。"
+      },
+      "sql": {
+        "sdk": {
+          "title": "开始使用 SDK",
+          "description": "了解 Azure Cosmos DB SDK。"
+        },
+        "migrate": {
+          "title": "迁移数据",
+          "description": "使用 Azure 服务和开源解决方案迁移数据。"
+        }
+      },
+      "mongo": {
+        "nodejs": {
+          "title": "使用 Node.js 构建应用",
+          "description": "创建 Node.js 应用。"
+        },
+        "gettingStarted": {
+          "title": "入门指南",
+          "description": "了解入门的基础知识。"
+        }
+      },
+      "cassandra": {
+        "createContainer": {
+          "title": "创建容器",
+          "description": "了解创建容器的选项。"
+        },
+        "throughput": {
+          "title": "预配吞吐量",
+          "description": "了解如何配置吞吐量。"
+        }
+      },
+      "gremlin": {
+        "getStarted": {
+          "title": "开始 ",
+          "description": "使用 Gremlin 控制台执行创建、查询和遍历"
+        },
+        "importData": {
+          "title": "导入图形数据",
+          "description": "了解如何使用 BulkExecutor 批量引入数据"
+        }
+      },
+      "tables": {
+        "dotnet": {
+          "title": "构建 .NET 应用",
+          "description": "如何从 .NET 应用访问 Azure Cosmos DB for Table。"
+        },
+        "java": {
+          "title": "构建 Java 应用",
+          "description": "使用 Java SDK 创建 Azure Cosmos DB for Table 应用 "
+        }
+      }
+    },
+    "nextStepItems": {
+      "postgres": {
+        "dataModeling": "数据建模",
+        "distributionColumn": "如何选择分布列",
+        "buildApps": "使用 Python/Java/Django 构建应用"
+      },
+      "vcoreMongo": {
+        "migrateData": "迁移数据",
+        "vectorSearch": "使用矢量搜索功能构建 AI 应用",
+        "buildApps": "使用 Nodejs 构建应用"
+      }
+    },
+    "learnMoreItems": {
+      "postgres": {
+        "performanceTuning": "性能优化",
+        "diagnosticQueries": "有用的诊断查询",
+        "sqlReference": "分布式 SQL 参考"
+      },
+      "vcoreMongo": {
+        "vectorSearch": "矢量搜索",
+        "textIndexing": "文本索引",
+        "troubleshoot": "对常见问题进行故障排除"
+      }
+    },
+    "fabric": {
+      "buildTitle": "生成数据库",
+      "useTitle": "使用你的数据库",
+      "newContainer": {
+        "title": "新容器",
+        "description": "创建用于存储数据的目标容器"
+      },
+      "sampleData": {
+        "title": "示例数据",
+        "description": "在数据库中加载示例数据"
+      },
+      "sampleVectorData": {
+        "title": "示例矢量数据",
+        "description": "使用 text-embedding-ada-002 加载示例矢量数据"
+      },
+      "appDevelopment": {
+        "title": "应用开发",
+        "description": "从此处开始使用 SDK 来构建应用"
+      },
+      "sampleGallery": {
+        "title": "示例库",
+        "description": "获取真实的端到端示例"
+      }
+    },
+    "sampleDataDialog": {
+      "title": "示例数据",
+      "startButton": "开始",
+      "createPrompt": "创建容器“{{containerName}}”，并将示例数据导入其中。这可能需要几分钟时间。",
+      "creatingContainer": "正在创建容器“{{containerName}}”...",
+      "importingData": "正在将数据导入“{{containerName}}”...",
+      "success": "已成功使用示例数据创建“{{containerName}}”。",
+      "errorContainerExists": "数据库“{{databaseName}}”中的容器“{{containerName}}”已存在。请将其删除，然后重试。",
+      "errorCreateContainer": "未能创建容器: {{error}}",
+      "errorImportData": "未能导入数据: {{error}}"
     }
   }
 }

@@ -762,9 +762,7 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
                 }
               }
             >
-              What is the reason why you are deleting this 
-              Database
-              ?
+              What is the reason why you are deleting this Database?
             </span>
           </Text>
           <StyledTextFieldBase

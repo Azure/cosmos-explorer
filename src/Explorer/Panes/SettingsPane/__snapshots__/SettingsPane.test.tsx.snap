@@ -660,7 +660,7 @@ exports[`Settings Pane should render Default properly 1`] = `
               Send more than one request while executing a query. More than one request is necessary if the query is not scoped to single partition key value.
             </div>
             <StyledCheckboxBase
-              ariaLabel="Enable cross partition query"
+              ariaLabel="Enable cross-partition query"
               checked={false}
               className="padding"
               onChange={[Function]}
@@ -705,7 +705,7 @@ exports[`Settings Pane should render Default properly 1`] = `
               </a>
             </div>
             <StyledCheckboxBase
-              ariaLabel="EnableQueryControl"
+              ariaLabel="Enable query control"
               checked={false}
               className="padding"
               onChange={[Function]}
@@ -1190,7 +1190,8 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
           <div
             className="___j7dlp70_0000000 fq02s40 f19n0e5"
           >
-            Display Gremlin query results as: 
+            Display Gremlin query results as:
+             
           </div>
         </AccordionHeader>
         <AccordionPanel>
