@@ -374,9 +374,10 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
     <Stack {...titleAndInputStackProps}>
       {this.getPartitionKeyVisible() && (
         <TooltipHost
-          content={`This ${this.partitionKeyName.toLowerCase()} is used to distribute data across multiple partitions for scalability. The value "${
-            this.partitionKeyValue
-          }" determines how documents are partitioned.`}
+          content={t(Keys.controls.settings.subSettings.partitionKeyTooltipTemplate, {
+            partitionKeyName: this.partitionKeyName.toLowerCase(),
+            partitionKeyValue: this.partitionKeyValue,
+          })}
           styles={{
             root: {
               display: "block",

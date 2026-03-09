@@ -930,9 +930,6 @@
         "active": "Active",
         "inactive": "Inactive"
       }
-    },
-    "dialog": {
-      "defaultCloseButton": "Close"
     }
   }
 }
