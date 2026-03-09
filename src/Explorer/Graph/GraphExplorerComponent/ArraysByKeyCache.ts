@@ -61,12 +61,12 @@ export class ArraysByKeyCache<T> {
    * @param pageSize
    */
   public retrieve(key: string, startIndex: number, pageSize: number): T[] | null {
-    if (!this.cache.hasOwnProperty(key)) {
-      return null;
+    if (!Object.prototype.hasOwnProperty.call(this.cache, key)) {
+      return undefined;
     }
     const elements = this.cache[key];
     if (startIndex + pageSize > elements.length) {
-      return null;
+      return undefined;
     }
 
     return elements.slice(startIndex, startIndex + pageSize);
