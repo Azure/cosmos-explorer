@@ -1,4 +1,37 @@
 {
+  "common": {
+    "ok": "OK",
+    "cancel": "Anuluj",
+    "close": "Zamknij",
+    "save": "Zapisz",
+    "delete": "Usuń",
+    "update": "Aktualizuj",
+    "discard": "Odrzuć",
+    "execute": "Wykonaj",
+    "loading": "Ładowanie",
+    "loadingEllipsis": "Trwa ładowanie...",
+    "next": "Dalej",
+    "previous": "Wstecz",
+    "yes": "Tak",
+    "no": "Nie",
+    "result": "Wynik",
+    "learnMore": "Dowiedz się więcej",
+    "getStarted": "Wprowadzenie",
+    "retry": "Ponów próbę",
+    "apply": "Zastosuj",
+    "refresh": "Odśwież",
+    "copy": "Kopiuj",
+    "create": "Utwórz",
+    "confirm": "Potwierdź",
+    "open": "Otwarte",
+    "rename": "Zmień nazwę",
+    "download": "Pobierz",
+    "upload": "Przekaż",
+    "connect": "Połącz",
+    "remove": "Usuń",
+    "increaseValueBy1": "Zwiększ wartość o 1",
+    "decreaseValueBy1": "Zmniejsz wartość o 1"
+  },
   "splashScreen": {
     "title": {
       "default": "Azure Cosmos DB — Zapraszamy!",
@@ -8,6 +41,255 @@
     "subtitle": {
       "default": "Globalnie rozproszona, wielomodelowa usługa bazy danych na dowolną skalę",
       "getStarted": "Rozpocznij pracę z naszymi przykładowymi zestawami danych, dokumentacją i dodatkowymi narzędziami."
+    },
+    "quickStart": {
+      "title": "Uruchom przewodnik Szybki start",
+      "description": "Uruchom samouczek Szybki start, aby rozpocząć pracę z przykładowymi danymi"
+    },
+    "newCollection": {
+      "title": "Nowy element {{collectionName}}",
+      "description": "Utwórz nowy kontener na potrzeby magazynu i przepływności"
+    },
+    "samplesGallery": {
+      "title": "Galeria przykładów usługi Azure Cosmos DB",
+      "description": "Odkryj przykłady przedstawiające skalowalne, inteligentne wzorce aplikacji. Wypróbuj ją teraz, aby zobaczyć, jak szybko możesz przejść od koncepcji do kodu za pomocą usługi Cosmos DB"
+    },
+    "connectCard": {
+      "title": "Połącz",
+      "description": "Wolisz korzystać z własnych narzędzi? Znajdź parametr połączenia potrzebny do nawiązania połączenia",
+      "pgAdmin": {
+        "title": "Nawiąż połączenie za pomocą narzędzia pgAdmin",
+        "description": "Wolisz pgAdmin? Tutaj znajdziesz parametry połączenia"
+      },
+      "vsCode": {
+        "title": "Nawiązywanie połączenia z edytorem VS Code",
+        "description": "Wykonuj zapytania dotyczące klastrów MongoDB i DocumentDB oraz zarządzaj nimi w programie Visual Studio Code"
+      }
+    },
+    "shell": {
+      "postgres": {
+        "title": "Powłoka PostgreSQL",
+        "description": "Utwórz tabelę i pracuj z danymi za pomocą powłoki interfejsu PostgreSQL"
+      },
+      "vcoreMongo": {
+        "title": "Powłoka Mongo",
+        "description": "Utwórz kolekcję i pracuj z danymi przy użyciu interfejsu powłoki bazy danych MongoDB"
+      }
+    },
+    "teachingBubble": {
+      "newToPostgres": {
+        "headline": "Jesteś nowym użytkownikiem usługi Cosmos DB PGSQL?",
+        "body": "Witaj! Jeśli dopiero zaczynasz pracę z Cosmos DB PGSQL i potrzebujesz pomocy przy rozpoczynaniu pracy, tutaj znajdziesz przykładowe dane i zapytania."
+      },
+      "resetPassword": {
+        "headline": "Utwórz hasło",
+        "body": "Jeśli hasło nie zostało jeszcze zmienione, zmień je teraz."
+      },
+      "coachMark": {
+        "headline": "Rozpocznij od przykładu {{collectionName}}",
+        "body": "Zostanie wyświetlony przewodnik, aby utworzyć przykładowy kontener z przykładowymi danymi, a następnie udostępnimy Ci przewodnik po eksploratorze danych. Możesz również anulować uruchamianie tego przewodnika i eksplorować siebie"
+      }
+    },
+    "sections": {
+      "recents": "Ostatnie",
+      "clearRecents": "Wyczyść ostatnie",
+      "top3": "3 najważniejsze rzeczy, które musisz wiedzieć",
+      "learningResources": "Zasoby szkoleniowe",
+      "nextSteps": "Następne kroki",
+      "tipsAndLearnMore": "Porady i dowiedz się więcej",
+      "notebook": "Notes",
+      "needHelp": "Potrzebujesz pomocy?"
+    },
+    "top3Items": {
+      "sql": {
+        "advancedModeling": {
+          "title": "Zaawansowane wzorce modelowania",
+          "description": "Poznaj zaawansowane strategie optymalizowania bazy danych."
+        },
+        "partitioning": {
+          "title": "Najlepsze rozwiązania dotyczące partycjonowania",
+          "description": "Dowiedz się, jak stosować model danych i strategie partycjonowania."
+        },
+        "resourcePlanning": {
+          "title": "Planowanie wymagań dotyczących zasobów",
+          "description": "Poznaj różne opcje konfiguracji."
+        }
+      },
+      "mongo": {
+        "whatIsMongo": {
+          "title": "Co to jest interfejs API bazy danych MongoDB?",
+          "description": "Omówienie usługi Azure Cosmos DB dla bazy danych MongoDB i jej funkcji."
+        },
+        "features": {
+          "title": "Funkcje i składnia",
+          "description": "Odkryj zalety i funkcje"
+        },
+        "migrate": {
+          "title": "Migrowanie danych",
+          "description": "Kroki przed migracją na potrzeby przenoszenia danych"
+        }
+      },
+      "cassandra": {
+        "buildJavaApp": {
+          "title": "Utwórz aplikację Java",
+          "description": "Utwórz aplikację Java przy użyciu zestawu SDK."
+        },
+        "partitioning": {
+          "title": "Najlepsze rozwiązania dotyczące partycjonowania",
+          "description": "Dowiedz się, jak działa partycjonowanie."
+        },
+        "requestUnits": {
+          "title": "Jednostki żądania (jednostki RU)",
+          "description": "Informacje o opłatach za jednostki RU."
+        }
+      },
+      "gremlin": {
+        "dataModeling": {
+          "title": "Modelowanie danych",
+          "description": "Zalecenia dotyczące modelowania danych programu Graph"
+        },
+        "partitioning": {
+          "title": "najlepszymi rozwiązaniami dotyczącymi partycjonowania",
+          "description": "Dowiedz się, jak działa partycjonowanie"
+        },
+        "queryData": {
+          "title": "Wykonaj zapytanie dotyczące danych",
+          "description": "Wykonywanie zapytań o dane przy użyciu języka Gremlin"
+        }
+      },
+      "tables": {
+        "whatIsTable": {
+          "title": "Co to jest interfejs API tabel?",
+          "description": "Omówienie usługi Azure Cosmos DB for Table i jej funkcji"
+        },
+        "migrate": {
+          "title": "Migrowanie danych",
+          "description": "Dowiedz się, jak migrować dane"
+        },
+        "faq": {
+          "title": "Azure Cosmos DB for Table — często zadawane pytania",
+          "description": "Typowe pytania dotyczące usługi Azure Cosmos DB for Table"
+        }
+      }
+    },
+    "learningResources": {
+      "shortcuts": {
+        "title": "Skróty klawiaturowe w Eksploratorze danych",
+        "description": "Poznaj skróty klawiaturowe umożliwiające nawigowanie w Eksploratorze danych."
+      },
+      "liveTv": {
+        "title": "Poznaj podstawy",
+        "description": "Obejrzyj wprowadzenie do programu telewizyjnego na żywo w usłudze Azure Cosmos DB i obejrzyj wideo."
+      },
+      "sql": {
+        "sdk": {
+          "title": "Wprowadzenie do korzystania z zestawu SDK",
+          "description": "Dowiedz się więcej o zestawie SDK usługi Azure Cosmos DB."
+        },
+        "migrate": {
+          "title": "Migrowanie danych",
+          "description": "Migruj dane przy użyciu usług platformy Azure i rozwiązań typu open source."
+        }
+      },
+      "mongo": {
+        "nodejs": {
+          "title": "Tworzenie aplikacji za pomocą Node.js",
+          "description": "Utwórz aplikację Node.js."
+        },
+        "gettingStarted": {
+          "title": "Przewodnik Wprowadzenie",
+          "description": "Zapoznaj się z podstawowymi informacjami dotyczącymi rozpoczynania pracy."
+        }
+      },
+      "cassandra": {
+        "createContainer": {
+          "title": "Utwórz kontener",
+          "description": "Zapoznaj się z opcjami tworzenia kontenera."
+        },
+        "throughput": {
+          "title": "Zaaprowizuj przepływność",
+          "description": "Dowiedz się, jak skonfigurować przepływność."
+        }
+      },
+      "gremlin": {
+        "getStarted": {
+          "title": "Wprowadzenie ",
+          "description": "Twórz, wykonuj zapytania i przechodź przy użyciu konsoli Gremlin"
+        },
+        "importData": {
+          "title": "Importuj dane wykresu",
+          "description": "Dowiedz się więcej o zbiorczym pozyskiwaniu danych przy użyciu narzędzia BulkExecutor"
+        }
+      },
+      "tables": {
+        "dotnet": {
+          "title": "Utwórz aplikację platformy .NET",
+          "description": "Jak uzyskać dostęp do usługi Azure Cosmos DB for Table z poziomu aplikacji platformy .NET."
+        },
+        "java": {
+          "title": "Utwórz aplikację Java",
+          "description": "Utwórz aplikację usługi Azure Cosmos DB for Table przy użyciu zestawu Java SDK "
+        }
+      }
+    },
+    "nextStepItems": {
+      "postgres": {
+        "dataModeling": "Modelowanie danych",
+        "distributionColumn": "Jak wybrać kolumnę dystrybucji",
+        "buildApps": "Twórz aplikacje przy użyciu języka Python/Java/Django"
+      },
+      "vcoreMongo": {
+        "migrateData": "Migruj dane",
+        "vectorSearch": "Twórz aplikacje AI za pomocą funkcji wyszukiwania wektorowego",
+        "buildApps": "Twórz aplikacje za pomocą środowiska Nodejs"
+      }
+    },
+    "learnMoreItems": {
+      "postgres": {
+        "performanceTuning": "Dostrajanie wydajności",
+        "diagnosticQueries": "Przydatne zapytania diagnostyczne",
+        "sqlReference": "Rozproszona dokumentacja SQL"
+      },
+      "vcoreMongo": {
+        "vectorSearch": "Wyszukiwanie wektorowe",
+        "textIndexing": "Indeksowanie tekstu",
+        "troubleshoot": "Rozwiązywanie typowych problemów"
+      }
+    },
+    "fabric": {
+      "buildTitle": "Utwórz bazę danych",
+      "useTitle": "Wykonaj „diff” dla swojej bazy danych",
+      "newContainer": {
+        "title": "Nowy kontener",
+        "description": "Utwórz kontener docelowy do przechowywania danych"
+      },
+      "sampleData": {
+        "title": "Dane przykładowe",
+        "description": "Załaduj przykładowe dane w bazie danych"
+      },
+      "sampleVectorData": {
+        "title": "Przykładowe dane wektorowe",
+        "description": "Załaduj przykładowe dane wektorowe za pomocą polecenia text-embedding-ada-002"
+      },
+      "appDevelopment": {
+        "title": "Opracowywanie aplikacji",
+        "description": "Zacznij tutaj, aby używać zestawu SDK do kompilowania aplikacji"
+      },
+      "sampleGallery": {
+        "title": "Galeria przykładów",
+        "description": "Uzyskaj rzeczywiste, kompleksowe przykłady"
+      }
+    },
+    "sampleDataDialog": {
+      "title": "Dane przykładowe",
+      "startButton": "Start",
+      "createPrompt": "Utwórz kontener „{{containerName}}” i zaimportuj do niego przykładowe dane. Może to potrwać kilka minut.",
+      "creatingContainer": "Tworzenie kontenera „{{containerName}}”...",
+      "importingData": "Trwa importowanie danych do folderu „{{containerName}}”...",
+      "success": "Pomyślnie utworzono „{{containerName}}” z przykładowymi danymi.",
+      "errorContainerExists": "Kontener „{{containerName}}” w bazie danych „{{databaseName}}” już istnieje. Usuń go i spróbuj ponownie.",
+      "errorCreateContainer": "Nie można utworzyć kontenera: {{error}}",
+      "errorImportData": "Nie można zaimportować danych: {{error}}"
     }
   }
 }

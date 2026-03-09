@@ -18,6 +18,8 @@ import { queryConflicts } from "../../Common/dataAccess/queryConflicts";
 import { updateDocument } from "../../Common/dataAccess/updateDocument";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
+import { Keys } from "../../Localization/Keys.generated";
+import { t } from "../../Localization/t";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
@@ -57,7 +59,7 @@ export default class ConflictsTab extends TabsBase {
 
   private _documentsIterator: MinimalQueryIterator;
   private _container: Explorer;
-  private _acceptButtonLabel: ko.Observable<string> = ko.observable("Save");
+  private _acceptButtonLabel: ko.Observable<string> = ko.observable(t(Keys.common.save));
 
   constructor(options: ViewModels.ConflictsTabOptions) {
     super(options);
@@ -213,9 +215,9 @@ export default class ConflictsTab extends TabsBase {
     this.selectedConflictContent.subscribe((newContent: string) => this._onEditorContentChange(newContent));
 
     this.conflictOperation.subscribe((newOperationType: string) => {
-      let operationLabel = "Save";
+      let operationLabel = t(Keys.common.save);
       if (newOperationType === Constants.ConflictOperationType.Replace) {
-        operationLabel = "Update";
+        operationLabel = t(Keys.common.update);
       }
 
       this._acceptButtonLabel(operationLabel);
@@ -229,7 +231,7 @@ export default class ConflictsTab extends TabsBase {
       this._documentsIterator = this.createIterator();
       await this.loadNextPage();
     } catch (error) {
-      useDialog.getState().showOkModalDialog("Refresh documents grid failed", getErrorMessage(error));
+      useDialog.getState().showOkModalDialog(t(Keys.tabs.conflicts.refreshGridFailed), getErrorMessage(error));
     }
   }
 
@@ -257,11 +259,11 @@ export default class ConflictsTab extends TabsBase {
       useDialog
         .getState()
         .showOkCancelModalDialog(
-          "Unsaved changes",
-          "Changes will be lost. Do you want to continue?",
-          "OK",
+          t(Keys.tabs.conflicts.unsavedChanges),
+          t(Keys.tabs.conflicts.changesWillBeLost),
+          t(Keys.common.ok),
           async () => await this.resolveConflict(),
-          "Cancel",
+          t(Keys.common.cancel),
           undefined,
         );
     } else {
@@ -332,7 +334,7 @@ export default class ConflictsTab extends TabsBase {
     } catch (error) {
       this.isExecutionError(true);
       const errorMessage = getErrorMessage(error);
-      useDialog.getState().showOkModalDialog("Resolve conflict failed", errorMessage);
+      useDialog.getState().showOkModalDialog(t(Keys.tabs.conflicts.resolveConflictFailed), errorMessage);
       TelemetryProcessor.traceFailure(
         Action.ResolveConflict,
         {
@@ -386,7 +388,7 @@ export default class ConflictsTab extends TabsBase {
     } catch (error) {
       this.isExecutionError(true);
       const errorMessage = getErrorMessage(error);
-      useDialog.getState().showOkModalDialog("Delete conflict failed", errorMessage);
+      useDialog.getState().showOkModalDialog(t(Keys.tabs.conflicts.deleteConflictFailed), errorMessage);
       TelemetryProcessor.traceFailure(
         Action.DeleteConflict,
         {
@@ -617,7 +619,7 @@ export default class ConflictsTab extends TabsBase {
     }
 
     if (this.discardButton.visible()) {
-      const label = "Discard";
+      const label = t(Keys.common.discard);
       buttons.push({
         iconSrc: DiscardIcon,
         iconAlt: label,
@@ -630,7 +632,7 @@ export default class ConflictsTab extends TabsBase {
     }
 
     if (this.deleteButton.visible()) {
-      const label = "Delete";
+      const label = t(Keys.common.delete);
       buttons.push({
         iconSrc: DeleteIcon,
         iconAlt: label,
