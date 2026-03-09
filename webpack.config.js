@@ -117,6 +117,7 @@ module.exports = function (_env = {}, argv = {}) {
     selfServe: "./src/SelfServe/SelfServe.tsx",
     connectToGitHub: "./src/GitHub/GitHubConnector.ts",
     ...(mode !== "production" && { testExplorer: "./test/testExplorer/TestExplorer.ts" }),
+    ...(mode !== "production" && { searchableDropdownFixture: "./test/component-fixtures/searchableDropdown/SearchableDropdownFixture.tsx" }),
   };
 
   const htmlWebpackPlugins = [
@@ -171,6 +172,11 @@ module.exports = function (_env = {}, argv = {}) {
             filename: "testExplorer.html",
             template: "test/testExplorer/testExplorer.html",
             chunks: ["testExplorer"],
+          }),
+          new HtmlWebpackPlugin({
+            filename: "searchableDropdownFixture.html",
+            template: "test/component-fixtures/searchableDropdown/searchableDropdown.html",
+            chunks: ["searchableDropdownFixture"],
           }),
         ]
       : []),
