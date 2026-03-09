@@ -138,9 +138,7 @@ export const useDatabases: UseStore<DatabasesState> = create((set, get) => ({
     return true;
   },
   loadDatabaseOffers: async () => {
-    await Promise.all(
-      get().databases.map((database: ViewModels.Database) => database.loadOffer()),
-    );
+    await Promise.all(get().databases.map((database: ViewModels.Database) => database.loadOffer()));
   },
   loadAllOffers: async () => {
     await Promise.all(
@@ -157,9 +155,7 @@ export const useDatabases: UseStore<DatabasesState> = create((set, get) => ({
     if (databases.length === 0) {
       return false;
     }
-    return databases.some(
-      (database) => database.collections()?.length > 0 || !!database.offer(),
-    );
+    return databases.some((database) => database.collections()?.length > 0 || !!database.offer());
   },
   findSelectedDatabase: (): ViewModels.Database => {
     const selectedNode = useSelectedNode.getState().selectedNode;
