@@ -64,17 +64,27 @@ const htmlRule = {
   ],
 };
 
-// We compile our own code with ts-loader
+// We compile our own code with ts-loader (or babel-loader with istanbul when COVERAGE=1)
 const typescriptRule = {
   test: /\.tsx?$/,
-  use: [
-    {
-      loader: "ts-loader",
-      options: {
-        transpileOnly: true,
-      },
-    },
-  ],
+  use: process.env.COVERAGE
+    ? [
+        {
+          loader: "babel-loader",
+          options: {
+            presets: [["@babel/preset-env", { targets: { node: "current" } }], "@babel/preset-typescript"],
+            plugins: [["istanbul", { extension: [".ts", ".tsx"] }]],
+          },
+        },
+      ]
+    : [
+        {
+          loader: "ts-loader",
+          options: {
+            transpileOnly: true,
+          },
+        },
+      ],
   exclude: /node_modules/,
 };
 
@@ -103,7 +113,10 @@ module.exports = function (_env = {}, argv = {}) {
     envVars.NODE_ENV = "development";
     envVars.AZURE_CLIENT_SECRET = AZURE_CLIENT_SECRET || null;
     envVars.RESOURCE_GROUP = RESOURCE_GROUP;
-    typescriptRule.use[0].options.compilerOptions = { target: "ES2018" };
+    // compilerOptions is a ts-loader option; skip it when using babel-loader for coverage
+    if (!process.env.COVERAGE) {
+      typescriptRule.use[0].options.compilerOptions = { target: "ES2018" };
+    }
   }
 
   const entry = {

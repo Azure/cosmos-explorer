@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "../coverage";
 import { DataExplorer, TestAccount } from "../fx";
 
 test("Self Serve", async ({ page, browserName }) => {
