@@ -142,8 +142,14 @@ export interface CommandButtonComponentProps {
 }
 
 export class CommandButtonComponent extends React.Component<CommandButtonComponentProps> {
-  private dropdownElt: HTMLElement;
-  private expandButtonElt: HTMLElement;
+  private dropdownElt: HTMLDivElement | undefined;
+  private expandButtonElt: HTMLDivElement | undefined;
+
+  constructor(props: CommandButtonComponentProps) {
+    super(props);
+    this.dropdownElt = undefined;
+    this.expandButtonElt = undefined;
+  }
 
   public componentDidUpdate(): void {
     if (!this.dropdownElt || !this.expandButtonElt) {
@@ -163,15 +169,19 @@ export class CommandButtonComponent extends React.Component<CommandButtonCompone
 
   private onLauncherKeyDown(event: React.KeyboardEvent<HTMLDivElement>): boolean {
     if (event.keyCode === KeyCodes.DownArrow) {
-      $(this.dropdownElt).hide();
-      $(this.dropdownElt).show().focus();
-      event.stopPropagation();
-      return false;
+      if (this.dropdownElt) {
+        $(this.dropdownElt).hide();
+        $(this.dropdownElt).show().focus();
+        event.stopPropagation();
+        return false;
+      }
     }
     if (event.keyCode === KeyCodes.UpArrow) {
-      $(this.dropdownElt).hide();
-      event.stopPropagation();
-      return false;
+      if (this.dropdownElt) {
+        $(this.dropdownElt).hide();
+        event.stopPropagation();
+        return false;
+      }
     }
     return true;
   }
@@ -213,8 +223,8 @@ export class CommandButtonComponent extends React.Component<CommandButtonCompone
       <div
         className="commandExpand"
         tabIndex={0}
-        ref={(ref: HTMLElement) => {
-          this.expandButtonElt = ref;
+        ref={(instance: HTMLDivElement) => {
+          this.expandButtonElt = instance;
         }}
         onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => this.onLauncherKeyDown(e)}
       >
@@ -226,8 +236,8 @@ export class CommandButtonComponent extends React.Component<CommandButtonCompone
         </div>
         <div
           className="commandDropdownContainer"
-          ref={(ref: HTMLElement) => {
-            this.dropdownElt = ref;
+          ref={(instance: HTMLDivElement) => {
+            this.dropdownElt = instance;
           }}
         >
           <div className="commandDropdown">

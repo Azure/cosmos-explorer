@@ -23,7 +23,7 @@ export const Upload: FunctionComponent<UploadProps> = ({
 }: UploadProps) => {
   const [selectedFilesTitle, setSelectedFilesTitle] = useState<string[]>([]);
 
-  const fileRef = useRef<HTMLInputElement>();
+  const fileRef = useRef<HTMLInputElement>() as React.MutableRefObject<HTMLInputElement>;
 
   const onImportLinkKeyPress = (event: KeyboardEvent<HTMLAnchorElement>): void => {
     if (event.keyCode === Constants.KeyCodes.Enter || event.keyCode === Constants.KeyCodes.Space) {
@@ -39,12 +39,14 @@ export const Upload: FunctionComponent<UploadProps> = ({
     const { files } = event.target;
 
     const newFileList = [];
-    for (let i = 0; i < files.length; i++) {
-      newFileList.push(files.item(i).name);
-    }
-    if (newFileList) {
-      setSelectedFilesTitle(newFileList);
-      props.onUpload(event);
+    if (files) {
+      for (let i = 0; i < files.length; i++) {
+        newFileList.push(files[i].name);
+      }
+      if (newFileList) {
+        setSelectedFilesTitle(newFileList);
+        props.onUpload(event);
+      }
     }
   };
   const title = label + " to upload";
