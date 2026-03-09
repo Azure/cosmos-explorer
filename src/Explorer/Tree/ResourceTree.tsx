@@ -6,12 +6,7 @@ import {
   TreeOpenChangeData,
   TreeOpenChangeEvent,
 } from "@fluentui/react-components";
-import {
-  ArrowSortDown20Regular,
-  ArrowSortUp20Regular,
-  Home16Regular,
-  Search20Regular,
-} from "@fluentui/react-icons";
+import { ArrowSortDown20Regular, ArrowSortUp20Regular, Home16Regular, Search20Regular } from "@fluentui/react-icons";
 import { AuthType } from "AuthType";
 import { useTreeStyles } from "Explorer/Controls/TreeComponent/Styles";
 import { TreeNode, TreeNodeComponent } from "Explorer/Controls/TreeComponent/TreeNodeComponent";

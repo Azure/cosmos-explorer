@@ -162,7 +162,9 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
       <div className="panelMainContent">
         <div className="confirmDeleteInput">
           <span className="mandatoryStar">* </span>
-          <Text variant="small" style={{ color: "var(--colorNeutralForeground1)" }}>{confirmDatabase}</Text>
+          <Text variant="small" style={{ color: "var(--colorNeutralForeground1)" }}>
+            {confirmDatabase}
+          </Text>
           <TextField
             id="confirmDatabaseId"
             data-test="Input:confirmDatabaseId"

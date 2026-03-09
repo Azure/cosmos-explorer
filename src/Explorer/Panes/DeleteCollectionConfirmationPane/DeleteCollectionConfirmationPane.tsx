@@ -145,7 +145,9 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
         <div className="panelMainContent">
           <div className="confirmDeleteInput">
             <span className="mandatoryStar">* </span>
-            <Text variant="small" style={{ color: "var(--colorNeutralForeground1)" }}>{confirmContainer}</Text>
+            <Text variant="small" style={{ color: "var(--colorNeutralForeground1)" }}>
+              {confirmContainer}
+            </Text>
             <TextField
               id="confirmCollectionId"
               autoFocus

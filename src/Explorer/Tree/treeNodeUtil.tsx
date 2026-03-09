@@ -1,4 +1,10 @@
-import { DatabaseRegular, DocumentMultipleRegular, EyeRegular, Pin16Filled, SettingsRegular } from "@fluentui/react-icons";
+import {
+  DatabaseRegular,
+  DocumentMultipleRegular,
+  EyeRegular,
+  Pin16Filled,
+  SettingsRegular,
+} from "@fluentui/react-icons";
 import { TreeNode } from "Explorer/Controls/TreeComponent/TreeNodeComponent";
 import { collectionWasOpened } from "Explorer/MostRecentActivity/MostRecentActivity";
 import TabsBase from "Explorer/Tabs/TabsBase";
@@ -148,7 +154,9 @@ export const createDatabaseTreeNodes = (
   const orderedDatabases = [...filteredDatabases].sort((first, second) => {
     const isFirstPinned = pinnedDatabaseIds.has(first.id());
     const isSecondPinned = pinnedDatabaseIds.has(second.id());
-    if (isFirstPinned !== isSecondPinned) return isFirstPinned ? -1 : 1;
+    if (isFirstPinned !== isSecondPinned) {
+      return isFirstPinned ? -1 : 1;
+    }
     const firstName = first.id();
     const secondName = second.id();
     return sortOrder === "az"
