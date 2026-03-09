@@ -178,10 +178,10 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
         {isLastNonEmptyDatabase() && (
           <div className="deleteDatabaseFeedback">
             <Text variant="small" block style={{ color: "var(--colorNeutralForeground1)" }}>
-              Help us improve Azure Cosmos DB!
+              {t(Keys.panes.deleteDatabase.feedbackTitle)}
             </Text>
             <Text variant="small" block style={{ color: "var(--colorNeutralForeground1)" }}>
-              What is the reason why you are deleting this {getDatabaseName()}?
+              {t(Keys.panes.deleteDatabase.feedbackReason, { databaseName: getDatabaseName() })}
             </Text>
             <TextField
               id="deleteDatabaseFeedbackInput"
