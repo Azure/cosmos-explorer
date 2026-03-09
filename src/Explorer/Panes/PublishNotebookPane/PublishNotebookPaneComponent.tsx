@@ -1,6 +1,8 @@
 import { Dropdown, IDropdownProps, ITextFieldProps, Stack, Text, TextField } from "@fluentui/react";
 import { ImmutableNotebook } from "@nteract/commutable";
 import React, { FunctionComponent, useState } from "react";
+import { Keys } from "../../../Localization/Keys.generated";
+import { t } from "../../../Localization/t";
 import { GalleryCardComponent } from "../../Controls/NotebookGallery/Cards/GalleryCardComponent";
 import * as FileSystemUtil from "../../Notebook/FileSystemUtil";
 import { SnapshotRequest } from "../../Notebook/NotebookComponent/types";
@@ -57,13 +59,11 @@ export const PublishNotebookPaneComponent: FunctionComponent<PublishNotebookPane
 
   const maxImageSizeInMib = 1.5;
 
-  const descriptionPara1 =
-    "When published, this notebook will appear in the Azure Cosmos DB notebooks public gallery. Make sure you have removed any sensitive data or output before publishing.";
+  const descriptionPara1 = t(Keys.panes.publishNotebook.publishDescription);
 
-  const descriptionPara2 = `Would you like to publish and share "${FileSystemUtil.stripExtension(
-    notebookName,
-    "ipynb",
-  )}" to the gallery?`;
+  const descriptionPara2 = t(Keys.panes.publishNotebook.publishPrompt, {
+    name: FileSystemUtil.stripExtension(notebookName, "ipynb"),
+  });
 
   const options: ImageTypes[] = [ImageTypes.CustomImage, ImageTypes.Url];
   if (onTakeSnapshot) {
@@ -74,9 +74,9 @@ export const PublishNotebookPaneComponent: FunctionComponent<PublishNotebookPane
   }
 
   const thumbnailSelectorProps: IDropdownProps = {
-    label: "Cover image",
+    label: t(Keys.panes.publishNotebook.coverImage),
     selectedKey: type,
-    ariaLabel: "Cover image",
+    ariaLabel: t(Keys.panes.publishNotebook.coverImage),
     options: options.map((value: string) => ({ text: value, key: value })),
     onChange: async (event, options) => {
       setImageSrc("");
@@ -99,7 +99,7 @@ export const PublishNotebookPaneComponent: FunctionComponent<PublishNotebookPane
             notebookContentRef,
           });
         } else {
-          firstOutputErrorHandler(new Error("Output does not exist for any of the cells."));
+          firstOutputErrorHandler(new Error(t(Keys.panes.publishNotebook.outputDoesNotExist)));
         }
       }
       setType(options.text);
@@ -107,8 +107,8 @@ export const PublishNotebookPaneComponent: FunctionComponent<PublishNotebookPane
   };
 
   const thumbnailUrlProps: ITextFieldProps = {
-    label: "Cover image url",
-    ariaLabel: "Cover image url",
+    label: t(Keys.panes.publishNotebook.coverImageUrl),
+    ariaLabel: t(Keys.panes.publishNotebook.coverImageUrl),
     required: true,
     onChange: (event, newValue) => {
       setImageSrc(newValue);
@@ -116,7 +116,7 @@ export const PublishNotebookPaneComponent: FunctionComponent<PublishNotebookPane
   };
 
   const firstOutputErrorHandler = (error: Error) => {
-    const formError = "Failed to capture first output";
+    const formError = t(Keys.panes.publishNotebook.failedToCaptureOutput);
     const formErrorDetail = `${error}`;
     const area = "PublishNotebookPaneComponent/UseFirstOutput";
     onError(formError, formErrorDetail, area);
@@ -130,7 +130,7 @@ export const PublishNotebookPaneComponent: FunctionComponent<PublishNotebookPane
     };
 
     reader.onerror = (error) => {
-      const formError = `Failed to convert ${file.name} to base64 format`;
+      const formError = t(Keys.panes.publishNotebook.failedToConvertError, { fileName: file.name });
       const formErrorDetail = `${error}`;
       const area = "PublishNotebookPaneComponent/selectImageFile";
       onError(formError, formErrorDetail, area);
@@ -151,7 +151,7 @@ export const PublishNotebookPaneComponent: FunctionComponent<PublishNotebookPane
               const file = event.target.files[0];
               if (file.size / 1024 ** 2 > maxImageSizeInMib) {
                 event.target.value = "";
-                const formError = `Failed to upload ${file.name}`;
+                const formError = t(Keys.panes.publishNotebook.failedToUploadError, { fileName: file.name });
                 const formErrorDetail = `Image is larger than ${maxImageSizeInMib} MiB. Please Choose a different image.`;
                 const area = "PublishNotebookPaneComponent/selectImageFile";
 
@@ -185,8 +185,8 @@ export const PublishNotebookPaneComponent: FunctionComponent<PublishNotebookPane
 
         <Stack.Item>
           <TextField
-            label="Name"
-            ariaLabel="Name"
+            label={t(Keys.panes.publishNotebook.name)}
+            ariaLabel={t(Keys.panes.publishNotebook.name)}
             defaultValue={FileSystemUtil.stripExtension(notebookName, "ipynb")}
             required
             onChange={(event, newValue) => {
@@ -198,8 +198,8 @@ export const PublishNotebookPaneComponent: FunctionComponent<PublishNotebookPane
 
         <Stack.Item>
           <TextField
-            label="Description"
-            ariaLabel="Description"
+            label={t(Keys.panes.publishNotebook.description)}
+            ariaLabel={t(Keys.panes.publishNotebook.description)}
             multiline
             rows={3}
             required
@@ -211,9 +211,9 @@ export const PublishNotebookPaneComponent: FunctionComponent<PublishNotebookPane
 
         <Stack.Item>
           <TextField
-            label="Tags"
-            ariaLabel="Tags"
-            placeholder="Optional tag 1, Optional tag 2"
+            label={t(Keys.panes.publishNotebook.tags)}
+            ariaLabel={t(Keys.panes.publishNotebook.tags)}
+            placeholder={t(Keys.panes.publishNotebook.tagsPlaceholder)}
             onChange={(event, newValue) => {
               setNotebookTags(newValue);
             }}
@@ -227,7 +227,7 @@ export const PublishNotebookPaneComponent: FunctionComponent<PublishNotebookPane
         <Stack.Item>{renderThumbnailSelectors(type)}</Stack.Item>
 
         <Stack.Item>
-          <Text>Preview</Text>
+          <Text>{t(Keys.panes.publishNotebook.preview)}</Text>
         </Stack.Item>
         <Stack.Item>
           <GalleryCardComponent

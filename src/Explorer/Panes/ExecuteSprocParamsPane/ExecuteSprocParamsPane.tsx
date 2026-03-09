@@ -3,6 +3,8 @@ import { useBoolean } from "@fluentui/react-hooks";
 import React, { FunctionComponent, useRef, useState } from "react";
 import AddPropertyIcon from "../../../../images/Add-property.svg";
 import { useSidePanel } from "../../../hooks/useSidePanel";
+import { Keys } from "../../../Localization/Keys.generated";
+import { t } from "../../../Localization/t";
 import { logConsoleError } from "../../../Utils/NotificationConsoleUtils";
 import StoredProcedure from "../../Tree/StoredProcedure";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
@@ -45,8 +47,8 @@ export const ExecuteSprocParamsPane: FunctionComponent<ExecuteSprocParamsPanePro
   };
 
   const setInvalidParamError = (invalidParam: string): void => {
-    setFormError(`Invalid param specified: ${invalidParam}`);
-    logConsoleError(`Invalid param specified: ${invalidParam} is not a valid literal value`);
+    setFormError(t(Keys.panes.executeStoredProcedure.invalidParamError, { invalidParam }));
+    logConsoleError(t(Keys.panes.executeStoredProcedure.invalidParamConsoleError, { invalidParam }));
   };
 
   const submit = (): void => {
@@ -96,7 +98,7 @@ export const ExecuteSprocParamsPane: FunctionComponent<ExecuteSprocParamsPanePro
   const props: RightPaneFormProps = {
     formError: formError,
     isExecuting: isLoading,
-    submitButtonText: "Execute",
+    submitButtonText: t(Keys.common.execute),
     onSubmit: () => submit(),
   };
 
@@ -107,9 +109,9 @@ export const ExecuteSprocParamsPane: FunctionComponent<ExecuteSprocParamsPanePro
       inputParameters.push(
         <InputParameter
           key={paramKeyValue.text + i}
-          dropdownLabel={i === 0 ? "Key" : ""}
-          inputParameterTitle={i === 0 ? "Enter input parameters (if any)" : ""}
-          inputLabel={i === 0 ? "Param" : ""}
+          dropdownLabel={i === 0 ? t(Keys.panes.executeStoredProcedure.key) : ""}
+          inputParameterTitle={i === 0 ? t(Keys.panes.executeStoredProcedure.enterInputParameters) : ""}
+          inputLabel={i === 0 ? t(Keys.panes.executeStoredProcedure.param) : ""}
           isAddRemoveVisible={true}
           onDeleteParamKeyPress={() => deleteParamAtIndex(i)}
           onAddNewParamKeyPress={() => addNewParamAtIndex(i + 1)}
@@ -130,9 +132,9 @@ export const ExecuteSprocParamsPane: FunctionComponent<ExecuteSprocParamsPanePro
     <RightPaneForm {...props}>
       <div className="panelMainContent">
         <InputParameter
-          dropdownLabel="Key"
-          inputParameterTitle="Partition key value"
-          inputLabel="Value"
+          dropdownLabel={t(Keys.panes.executeStoredProcedure.key)}
+          inputParameterTitle={t(Keys.panes.executeStoredProcedure.partitionKeyValue)}
+          inputLabel={t(Keys.panes.executeStoredProcedure.value)}
           isAddRemoveVisible={false}
           onParamValueChange={(_event, newInput?: string) => (partitionValueRef.current = newInput)}
           onParamKeyChange={(_event: React.FormEvent<HTMLDivElement>, item: IDropdownOption) =>
@@ -143,8 +145,8 @@ export const ExecuteSprocParamsPane: FunctionComponent<ExecuteSprocParamsPanePro
         />
         {getInputParameterComponent()}
         <Stack horizontal onClick={() => addNewParamAtLastIndex()} tabIndex={0}>
-          <Image {...imageProps} src={AddPropertyIcon} alt="Add param" />
-          <Text className="addNewParamStyle">Add New Param</Text>
+          <Image {...imageProps} src={AddPropertyIcon} alt={t(Keys.panes.executeStoredProcedure.addParam)} />
+          <Text className="addNewParamStyle">{t(Keys.panes.executeStoredProcedure.addNewParam)}</Text>
         </Stack>
       </div>
     </RightPaneForm>
