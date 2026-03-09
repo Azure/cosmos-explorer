@@ -1,11 +1,11 @@
-import { DatabaseRegular, DocumentMultipleRegular, EyeRegular, SettingsRegular } from "@fluentui/react-icons";
+import { DatabaseRegular, DocumentMultipleRegular, EyeRegular, Pin16Filled, SettingsRegular } from "@fluentui/react-icons";
 import { TreeNode } from "Explorer/Controls/TreeComponent/TreeNodeComponent";
 import { collectionWasOpened } from "Explorer/MostRecentActivity/MostRecentActivity";
 import TabsBase from "Explorer/Tabs/TabsBase";
 import StoredProcedure from "Explorer/Tree/StoredProcedure";
 import Trigger from "Explorer/Tree/Trigger";
 import UserDefinedFunction from "Explorer/Tree/UserDefinedFunction";
-import { useDatabases } from "Explorer/useDatabases";
+import { DatabaseSortOrder, useDatabases } from "Explorer/useDatabases";
 import { isFabric, isFabricMirrored, isFabricNative, isFabricNativeReadOnly } from "Platform/Fabric/FabricUtil";
 import { getItemName } from "Utils/APITypeUtils";
 import { isServerlessAccount } from "Utils/CapabilityUtils";
@@ -27,7 +27,10 @@ export const shouldShowScriptNodes = (): boolean => {
 const TreeDatabaseIcon = <DatabaseRegular fontSize={16} />;
 const TreeSettingsIcon = <SettingsRegular fontSize={16} />;
 const TreeCollectionIcon = <DocumentMultipleRegular fontSize={16} />;
-const GlobalSecondaryIndexCollectionIcon = <EyeRegular fontSize={16} />; //check icon
+const GlobalSecondaryIndexCollectionIcon = <EyeRegular fontSize={16} />;
+
+const pinnedIconStyle: React.CSSProperties = { display: "inline-flex", alignItems: "center", gap: "2px" };
+const pinnedBadgeStyle: React.CSSProperties = { color: "#0078D4" };
 
 export const createSampleDataTreeNodes = (sampleDataResourceTokenCollection: ViewModels.CollectionBase): TreeNode[] => {
   const updatedSampleTree: TreeNode = {
@@ -132,13 +135,28 @@ export const createDatabaseTreeNodes = (
   databases: ViewModels.Database[],
   refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void,
   searchText = "",
+  sortOrder: DatabaseSortOrder = "az",
+  pinnedDatabaseIds: Set<string> = new Set(),
 ): TreeNode[] => {
-  // Filter databases based on search text
+  // Filter databases based on search text (cache lowercase to avoid repeated conversion)
+  const lowerSearch = searchText.toLowerCase();
   const filteredDatabases = searchText
-    ? databases.filter((db) => db.id().toLowerCase().includes(searchText.toLowerCase()))
+    ? databases.filter((db) => db.id().toLowerCase().includes(lowerSearch))
     : databases;
 
-  const databaseTreeNodes: TreeNode[] = filteredDatabases.map((database: ViewModels.Database) => {
+  // Sort: pinned first, then by name (A-Z or Z-A) within each group
+  const orderedDatabases = [...filteredDatabases].sort((first, second) => {
+    const isFirstPinned = pinnedDatabaseIds.has(first.id());
+    const isSecondPinned = pinnedDatabaseIds.has(second.id());
+    if (isFirstPinned !== isSecondPinned) return isFirstPinned ? -1 : 1;
+    const firstName = first.id();
+    const secondName = second.id();
+    return sortOrder === "az"
+      ? firstName.localeCompare(secondName, undefined, { sensitivity: "base" })
+      : secondName.localeCompare(firstName, undefined, { sensitivity: "base" });
+  });
+
+  const databaseTreeNodes: TreeNode[] = orderedDatabases.map((database: ViewModels.Database) => {
     const buildDatabaseChildNodes = (databaseNode: TreeNode) => {
       databaseNode.children = [];
       if (database.isDatabaseShared() && configContext.platform !== Platform.Fabric) {
@@ -176,13 +194,24 @@ export const createDatabaseTreeNodes = (
       }
     };
 
+    const isPinned = pinnedDatabaseIds.has(database.id());
+
+    const databaseIcon = isPinned ? (
+      <span style={pinnedIconStyle}>
+        <DatabaseRegular fontSize={16} />
+        <Pin16Filled fontSize={10} style={pinnedBadgeStyle} />
+      </span>
+    ) : (
+      TreeDatabaseIcon
+    );
+
     const databaseNode: TreeNode = {
       label: database.id(),
       className: "databaseNode",
       children: [],
       isSelected: () => useSelectedNode.getState().isDataNodeSelected(database.id()),
       contextMenu: ResourceTreeContextMenuButtonFactory.createDatabaseContextMenu(container, database.id()),
-      iconSrc: TreeDatabaseIcon,
+      iconSrc: databaseIcon,
       onExpanded: async () => {
         useSelectedNode.getState().setSelectedNode(database);
         if (!databaseNode.children || databaseNode.children?.length === 0) {
@@ -198,7 +227,6 @@ export const createDatabaseTreeNodes = (
       isExpanded: database.isDatabaseExpanded(),
       onCollapsed: () => {
         database.collapseDatabase();
-        // useCommandBar.getState().setContextButtons([]);
         useDatabases.getState().updateDatabase(database);
       },
     };
@@ -248,13 +276,13 @@ export const buildCollectionNode = (
         (tab: TabsBase) =>
           tab.collection?.id() === collection.id() && tab.collection.databaseId === collection.databaseId,
       );
-      useDatabases.getState().updateDatabase(database);
-
-      // If we're showing script nodes, start loading them.
+      // If we're showing script nodes, start loading them in parallel.
       if (shouldShowScriptNodes()) {
-        await collection.loadStoredProcedures();
-        await collection.loadUserDefinedFunctions();
-        await collection.loadTriggers();
+        await Promise.all([
+          collection.loadStoredProcedures(),
+          collection.loadUserDefinedFunctions(),
+          collection.loadTriggers(),
+        ]);
       }
 
       useDatabases.getState().updateDatabase(database);
@@ -263,7 +291,6 @@ export const buildCollectionNode = (
     onContextMenuOpen: () => useSelectedNode.getState().setSelectedNode(collection),
     onCollapsed: () => {
       collection.collapseCollection();
-      // useCommandBar.getState().setContextButtons([]);
       useDatabases.getState().updateDatabase(database);
     },
     isExpanded: collection.isCollectionExpanded(),

@@ -1,5 +1,17 @@
-import { Input, Tree, TreeItemValue, TreeOpenChangeData, TreeOpenChangeEvent } from "@fluentui/react-components";
-import { Home16Regular, Search20Regular } from "@fluentui/react-icons";
+import {
+  Button,
+  Input,
+  Tree,
+  TreeItemValue,
+  TreeOpenChangeData,
+  TreeOpenChangeEvent,
+} from "@fluentui/react-components";
+import {
+  ArrowSortDown20Regular,
+  ArrowSortUp20Regular,
+  Home16Regular,
+  Search20Regular,
+} from "@fluentui/react-icons";
 import { AuthType } from "AuthType";
 import { useTreeStyles } from "Explorer/Controls/TreeComponent/Styles";
 import { TreeNode, TreeNodeComponent } from "Explorer/Controls/TreeComponent/TreeNodeComponent";
@@ -57,6 +69,9 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ explorer }: Resource
   const databasesFetchedSuccessfully = useDatabases((state) => state.databasesFetchedSuccessfully);
   const searchText = useDatabases((state) => state.searchText);
   const setSearchText = useDatabases((state) => state.setSearchText);
+  const sortOrder = useDatabases((state) => state.sortOrder);
+  const setSortOrder = useDatabases((state) => state.setSortOrder);
+  const pinnedDatabaseIds = useDatabases((state) => state.pinnedDatabaseIds);
   const { isCopilotEnabled, isCopilotSampleDBEnabled } = useQueryCopilot((state) => ({
     isCopilotEnabled: state.copilotEnabled,
     isCopilotSampleDBEnabled: state.copilotSampleDBEnabled,
@@ -65,8 +80,24 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ explorer }: Resource
   const databaseTreeNodes = useMemo(() => {
     return userContext.authType === AuthType.ResourceToken
       ? createResourceTokenTreeNodes(resourceTokenCollection)
-      : createDatabaseTreeNodes(explorer, isNotebookEnabled, databases, refreshActiveTab, searchText);
-  }, [resourceTokenCollection, databases, isNotebookEnabled, refreshActiveTab, searchText]);
+      : createDatabaseTreeNodes(
+          explorer,
+          isNotebookEnabled,
+          databases,
+          refreshActiveTab,
+          searchText,
+          sortOrder,
+          pinnedDatabaseIds,
+        );
+  }, [
+    resourceTokenCollection,
+    databases,
+    isNotebookEnabled,
+    refreshActiveTab,
+    searchText,
+    sortOrder,
+    pinnedDatabaseIds,
+  ]);
 
   const isSampleDataEnabled =
     isCopilotEnabled &&
@@ -80,22 +111,26 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ explorer }: Resource
       : [];
   }, [isSampleDataEnabled, sampleDataResourceTokenCollection]);
 
-  const headerNodes: TreeNode[] = isFabricMirrored()
-    ? []
-    : [
-        {
-          id: "home",
-          iconSrc: <Home16Regular />,
-          label: "Home",
-          isSelected: () =>
-            useSelectedNode.getState().selectedNode === undefined &&
-            useTabs.getState().activeReactTab === ReactTabKind.Home,
-          onClick: () => {
-            useSelectedNode.getState().setSelectedNode(undefined);
-            useTabs.getState().openAndActivateReactTab(ReactTabKind.Home);
-          },
-        },
-      ];
+  const headerNodes: TreeNode[] = useMemo(
+    () =>
+      isFabricMirrored()
+        ? []
+        : [
+            {
+              id: "home",
+              iconSrc: <Home16Regular />,
+              label: "Home",
+              isSelected: () =>
+                useSelectedNode.getState().selectedNode === undefined &&
+                useTabs.getState().activeReactTab === ReactTabKind.Home,
+              onClick: () => {
+                useSelectedNode.getState().setSelectedNode(undefined);
+                useTabs.getState().openAndActivateReactTab(ReactTabKind.Home);
+              },
+            },
+          ],
+    [],
+  );
 
   const rootNodes: TreeNode[] = useMemo(() => {
     if (sampleDataNodes.length > 0) {
@@ -116,54 +151,60 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ explorer }: Resource
     } else {
       return [...headerNodes, ...databaseTreeNodes];
     }
-  }, [databaseTreeNodes, sampleDataNodes]);
+  }, [headerNodes, databaseTreeNodes, sampleDataNodes]);
 
   // Track complete DatabaseLoad scenario (start, tree rendered, interactive)
   useDatabaseLoadScenario(databaseTreeNodes, databasesFetchedSuccessfully);
 
   useEffect(() => {
-    // Compute open items based on node.isExpanded
-    const updateOpenItems = (node: TreeNode, parentNodeId: string): void => {
-      // This will look for ANY expanded node, event if its parent node isn't expanded
-      // and add it to the openItems list
+    const expandedIds: TreeItemValue[] = [];
+    const collectExpandedIds = (node: TreeNode, parentNodeId: string | undefined): void => {
       const globalId = parentNodeId === undefined ? node.label : `${parentNodeId}/${node.label}`;
-
       if (node.isExpanded) {
-        let found = false;
-        for (const id of openItems) {
-          if (id === globalId) {
-            found = true;
-            break;
-          }
-        }
-        if (!found) {
-          setOpenItems((prevOpenItems) => [...prevOpenItems, globalId]);
-        }
+        expandedIds.push(globalId);
       }
-
       if (node.children) {
         for (const child of node.children) {
-          updateOpenItems(child, globalId);
+          collectExpandedIds(child, globalId);
         }
       }
     };
 
-    rootNodes.forEach((n) => updateOpenItems(n, undefined));
-  }, [rootNodes, openItems, setOpenItems]);
+    rootNodes.forEach((n) => collectExpandedIds(n, undefined));
+
+    if (expandedIds.length > 0) {
+      setOpenItems((prevOpenItems) => {
+        const prevSet = new Set(prevOpenItems);
+        const newIds = expandedIds.filter((id) => !prevSet.has(id));
+        return newIds.length > 0 ? [...prevOpenItems, ...newIds] : prevOpenItems;
+      });
+    }
+  }, [rootNodes]);
 
   const handleOpenChange = (event: TreeOpenChangeEvent, data: TreeOpenChangeData) =>
     setOpenItems(Array.from(data.openItems));
 
+  const toggleSortOrder = () => {
+    setSortOrder(sortOrder === "az" ? "za" : "az");
+  };
+
   return (
     <div className={treeStyles.treeContainer}>
       {userContext.authType !== AuthType.ResourceToken && databases.length > 0 && (
-        <div style={{ padding: "8px" }}>
+        <div style={{ padding: "8px", display: "flex", gap: "4px", alignItems: "center" }}>
           <Input
             placeholder="Search databases only"
             value={searchText}
             onChange={(_, data) => setSearchText(data?.value || "")}
             size="small"
             contentBefore={<Search20Regular />}
+            style={{ flex: 1 }}
+          />
+          <Button
+            appearance="subtle"
+            size="small"
+            icon={sortOrder === "az" ? <ArrowSortDown20Regular /> : <ArrowSortUp20Regular />}
+            onClick={toggleSortOrder}
           />
         </div>
       )}

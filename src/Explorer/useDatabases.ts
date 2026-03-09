@@ -1,9 +1,12 @@
-import _ from "underscore";
 import create, { UseStore } from "zustand";
 import * as Constants from "../Common/Constants";
 import * as ViewModels from "../Contracts/ViewModels";
+import * as LocalStorageUtility from "../Shared/LocalStorageUtility";
+import { StorageKey } from "../Shared/StorageUtility";
 import { userContext } from "../UserContext";
 import { useSelectedNode } from "./useSelectedNode";
+
+export type DatabaseSortOrder = "az" | "za";
 
 interface DatabasesState {
   databases: ViewModels.Database[];
@@ -11,7 +14,12 @@ interface DatabasesState {
   sampleDataResourceTokenCollection: ViewModels.CollectionBase;
   databasesFetchedSuccessfully: boolean; // Track if last database fetch was successful
   searchText: string;
+  sortOrder: DatabaseSortOrder;
+  pinnedDatabaseIds: Set<string>;
   setSearchText: (searchText: string) => void;
+  setSortOrder: (sortOrder: DatabaseSortOrder) => void;
+  togglePinDatabase: (databaseId: string) => void;
+  isPinned: (databaseId: string) => boolean;
   updateDatabase: (database: ViewModels.Database) => void;
   addDatabases: (databases: ViewModels.Database[]) => void;
   deleteDatabase: (database: ViewModels.Database) => void;
@@ -29,13 +37,41 @@ interface DatabasesState {
   validateCollectionId: (databaseId: string, collectionId: string) => Promise<boolean>;
 }
 
+const loadPinnedDatabases = (): Set<string> => {
+  const stored = LocalStorageUtility.getEntryObject<string[]>(StorageKey.PinnedDatabases);
+  return new Set(Array.isArray(stored) ? stored : []);
+};
+
+const loadSortOrder = (): DatabaseSortOrder => {
+  const stored = LocalStorageUtility.getEntryString(StorageKey.DatabaseSortOrder);
+  return stored === "az" || stored === "za" ? stored : "az";
+};
+
 export const useDatabases: UseStore<DatabasesState> = create((set, get) => ({
   databases: [],
   resourceTokenCollection: undefined,
   sampleDataResourceTokenCollection: undefined,
   databasesFetchedSuccessfully: false,
   searchText: "",
+  sortOrder: loadSortOrder(),
+  pinnedDatabaseIds: loadPinnedDatabases(),
   setSearchText: (searchText: string) => set({ searchText }),
+  setSortOrder: (sortOrder: DatabaseSortOrder) => {
+    LocalStorageUtility.setEntryString(StorageKey.DatabaseSortOrder, sortOrder);
+    set({ sortOrder });
+  },
+  togglePinDatabase: (databaseId: string) => {
+    const current = get().pinnedDatabaseIds;
+    const updated = new Set(current);
+    if (updated.has(databaseId)) {
+      updated.delete(databaseId);
+    } else {
+      updated.add(databaseId);
+    }
+    LocalStorageUtility.setEntryObject(StorageKey.PinnedDatabases, [...updated]);
+    set({ pinnedDatabaseIds: updated });
+  },
+  isPinned: (databaseId: string) => get().pinnedDatabaseIds.has(databaseId),
   updateDatabase: (updatedDatabase: ViewModels.Database) =>
     set((state) => {
       const updatedDatabases = state.databases.map((database: ViewModels.Database) => {
@@ -49,29 +85,27 @@ export const useDatabases: UseStore<DatabasesState> = create((set, get) => ({
     }),
   addDatabases: (databases: ViewModels.Database[]) =>
     set((state) => ({
-      databases: [...state.databases, ...databases].sort((db1, db2) => db1.id().localeCompare(db2.id())),
+      databases: [...state.databases, ...databases],
     })),
   deleteDatabase: (database: ViewModels.Database) =>
-    set((state) => ({ databases: state.databases.filter((db) => database.id() !== db.id()) })),
+    set((state) => {
+      const updated = new Set(state.pinnedDatabaseIds);
+      if (updated.delete(database.id())) {
+        LocalStorageUtility.setEntryObject(StorageKey.PinnedDatabases, [...updated]);
+      }
+      return {
+        databases: state.databases.filter((db) => database.id() !== db.id()),
+        pinnedDatabaseIds: updated,
+      };
+    }),
   clearDatabases: () => set(() => ({ databases: [] })),
   isSaveQueryEnabled: () => {
-    const savedQueriesDatabase: ViewModels.Database = _.find(
-      get().databases,
-      (database: ViewModels.Database) => database.id() === Constants.SavedQueries.DatabaseName,
+    const savedQueriesDatabase = get().databases.find(
+      (database) => database.id() === Constants.SavedQueries.DatabaseName,
     );
-    if (!savedQueriesDatabase) {
-      return false;
-    }
-    const savedQueriesCollection: ViewModels.Collection =
-      savedQueriesDatabase &&
-      _.find(
-        savedQueriesDatabase.collections(),
-        (collection: ViewModels.Collection) => collection.id() === Constants.SavedQueries.CollectionName,
-      );
-    if (!savedQueriesCollection) {
-      return false;
-    }
-    return true;
+    return !!savedQueriesDatabase
+      ?.collections()
+      ?.find((collection) => collection.id() === Constants.SavedQueries.CollectionName);
   },
   findDatabaseWithId: (databaseId: string, isSampleDatabase?: boolean) => {
     return isSampleDatabase === undefined
@@ -105,43 +139,27 @@ export const useDatabases: UseStore<DatabasesState> = create((set, get) => ({
   },
   loadDatabaseOffers: async () => {
     await Promise.all(
-      get().databases?.map(async (database: ViewModels.Database) => {
-        await database.loadOffer();
-      }),
+      get().databases.map((database: ViewModels.Database) => database.loadOffer()),
     );
   },
   loadAllOffers: async () => {
     await Promise.all(
-      get().databases?.map(async (database: ViewModels.Database) => {
-        await database.loadOffer();
-        await database.loadCollections();
+      get().databases.map(async (database: ViewModels.Database) => {
+        await Promise.all([database.loadOffer(), database.loadCollections()]);
         await Promise.all(
-          (database.collections() || []).map(async (collection: ViewModels.Collection) => {
-            await collection.loadOffer();
-          }),
+          (database.collections() || []).map((collection: ViewModels.Collection) => collection.loadOffer()),
         );
       }),
     );
   },
   isFirstResourceCreated: () => {
     const databases = get().databases;
-
-    if (!databases || databases.length === 0) {
+    if (databases.length === 0) {
       return false;
     }
-
-    return databases.some((database) => {
-      // user has created at least one collection
-      if (database.collections()?.length > 0) {
-        return true;
-      }
-      // user has created a database with shared throughput
-      if (database.offer()) {
-        return true;
-      }
-      // use has created an empty database without shared throughput
-      return false;
-    });
+    return databases.some(
+      (database) => database.collections()?.length > 0 || !!database.offer(),
+    );
   },
   findSelectedDatabase: (): ViewModels.Database => {
     const selectedNode = useSelectedNode.getState().selectedNode;
@@ -149,7 +167,7 @@ export const useDatabases: UseStore<DatabasesState> = create((set, get) => ({
       return undefined;
     }
     if (selectedNode.nodeKind === "Database") {
-      return _.find(get().databases, (database: ViewModels.Database) => database.id() === selectedNode.id());
+      return get().databases.find((database) => database.id() === selectedNode.id());
     }
 
     if (selectedNode.nodeKind === "Collection") {

@@ -167,7 +167,7 @@ export function createContextCommandBarButtons(
 
 export function createControlCommandBarButtons(container: Explorer): CommandButtonComponentProps[] {
   const buttons: CommandButtonComponentProps[] = [
-    ThemeToggleButton(),
+    ...(configContext.platform !== Platform.Portal ? [ThemeToggleButton()] : []),
     {
       iconSrc: SettingsIcon,
       iconAlt: "Settings",
