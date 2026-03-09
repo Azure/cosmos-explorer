@@ -19,7 +19,7 @@ import {
 
 import type { ChoiceItem } from "../SelfServeTypes";
 
-import { BladeType, generateBladeLink } from "../SelfServeUtils";
+import { BladeType, generateBladeLink, SelfServeType } from "../SelfServeUtils";
 import {
   deleteMaterializedViewsBuilderResource,
   getCurrentProvisioningState,
@@ -385,6 +385,10 @@ export default class MaterializedViewsBuilder extends SelfServeBaseClass {
     }
     defaults.set("warningBanner", undefined);
     return defaults;
+  };
+
+  public getSelfServeType = (): SelfServeType => {
+    return SelfServeType.materializedviewsbuilder;
   };
 
   @Values({
