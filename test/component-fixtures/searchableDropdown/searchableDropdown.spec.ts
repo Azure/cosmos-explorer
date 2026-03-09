@@ -63,7 +63,9 @@ test.describe("SearchableDropdown Component", () => {
     await page.getByText("Development Subscription").click();
 
     // Dropdown should close and show selected item
-    await expect(page.locator("[data-test='subscription-dropdown']").getByText("Development Subscription")).toBeVisible();
+    await expect(
+      page.locator("[data-test='subscription-dropdown']").getByText("Development Subscription"),
+    ).toBeVisible();
     // External state should update
     await expect(page.locator("[data-test='selected-subscription']")).toHaveText("Development Subscription");
   });
@@ -221,7 +223,9 @@ test.describe("SearchableDropdown Component", () => {
     await expect(page.getByText("cosmos-staging-westus2")).toBeVisible();
   });
 
-  test("shows 'No Cosmos DB Accounts Found' when account list is empty (no subscription selected)", async ({ page }) => {
+  test("shows 'No Cosmos DB Accounts Found' when account list is empty (no subscription selected)", async ({
+    page,
+  }) => {
     // The account dropdown shows "No Cosmos DB Accounts Found" when disabled with no items
     const accountButtonText = page.locator("[data-test='account-dropdown'] button");
     await expect(accountButtonText).toHaveText("No Cosmos DB Accounts Found");

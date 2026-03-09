@@ -35,10 +35,34 @@ const mockSubscriptions: MockSubscription[] = [
 ];
 
 const mockAccounts: MockDatabaseAccount[] = [
-  { id: "acc-001", name: "cosmos-dev-westus", location: "westus", type: "Microsoft.DocumentDB/databaseAccounts", kind: "GlobalDocumentDB" },
-  { id: "acc-002", name: "cosmos-prod-eastus", location: "eastus", type: "Microsoft.DocumentDB/databaseAccounts", kind: "GlobalDocumentDB" },
-  { id: "acc-003", name: "cosmos-test-northeurope", location: "northeurope", type: "Microsoft.DocumentDB/databaseAccounts", kind: "GlobalDocumentDB" },
-  { id: "acc-004", name: "cosmos-staging-westus2", location: "westus2", type: "Microsoft.DocumentDB/databaseAccounts", kind: "GlobalDocumentDB" },
+  {
+    id: "acc-001",
+    name: "cosmos-dev-westus",
+    location: "westus",
+    type: "Microsoft.DocumentDB/databaseAccounts",
+    kind: "GlobalDocumentDB",
+  },
+  {
+    id: "acc-002",
+    name: "cosmos-prod-eastus",
+    location: "eastus",
+    type: "Microsoft.DocumentDB/databaseAccounts",
+    kind: "GlobalDocumentDB",
+  },
+  {
+    id: "acc-003",
+    name: "cosmos-test-northeurope",
+    location: "northeurope",
+    type: "Microsoft.DocumentDB/databaseAccounts",
+    kind: "GlobalDocumentDB",
+  },
+  {
+    id: "acc-004",
+    name: "cosmos-staging-westus2",
+    location: "westus2",
+    type: "Microsoft.DocumentDB/databaseAccounts",
+    kind: "GlobalDocumentDB",
+  },
 ];
 
 const SearchableDropdownTestFixture: React.FC = () => {

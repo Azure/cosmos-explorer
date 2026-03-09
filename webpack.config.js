@@ -117,7 +117,9 @@ module.exports = function (_env = {}, argv = {}) {
     selfServe: "./src/SelfServe/SelfServe.tsx",
     connectToGitHub: "./src/GitHub/GitHubConnector.ts",
     ...(mode !== "production" && { testExplorer: "./test/testExplorer/TestExplorer.ts" }),
-    ...(mode !== "production" && { searchableDropdownFixture: "./test/component-fixtures/searchableDropdown/SearchableDropdownFixture.tsx" }),
+    ...(mode !== "production" && {
+      searchableDropdownFixture: "./test/component-fixtures/searchableDropdown/SearchableDropdownFixture.tsx",
+    }),
   };
 
   const htmlWebpackPlugins = [
