@@ -11,8 +11,8 @@ import {
 import React, { FunctionComponent } from "react";
 import AddPropertyIcon from "../../../../images/Add-property.svg";
 import EntityCancelIcon from "../../../../images/Entity_cancel.svg";
-import { Keys } from "../../../Localization/Keys.generated";
-import { t } from "../../../Localization/t";
+import { Keys } from "Localization/Keys.generated";
+import { t } from "Localization/t";
 
 const dropdownStyles: Partial<IDropdownStyles> = { dropdown: { width: 100 } };
 const options = [

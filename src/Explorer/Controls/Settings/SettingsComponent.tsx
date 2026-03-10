@@ -44,8 +44,8 @@ import { useCommandBar } from "../../Menus/CommandBar/CommandBarComponentAdapter
 import { SettingsTabV2 } from "../../Tabs/SettingsTabV2";
 import "./SettingsComponent.less";
 import { mongoIndexingPolicyAADError } from "./SettingsRenderUtils";
-import { Keys } from "../../../Localization/Keys.generated";
-import { t } from "../../../Localization/t";
+import { Keys } from "Localization/Keys.generated";
+import { t } from "Localization/t";
 import {
   ConflictResolutionComponent,
   ConflictResolutionComponentProps,

@@ -1,8 +1,8 @@
 import * as Constants from "../../../Common/Constants";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";
-import { Keys } from "../../../Localization/Keys.generated";
-import { t } from "../../../Localization/t";
+import { Keys } from "Localization/Keys.generated";
+import { t } from "Localization/t";
 import { isFabricNative } from "../../../Platform/Fabric/FabricUtil";
 import { userContext } from "../../../UserContext";
 import { isCapabilityEnabled } from "../../../Utils/CapabilityUtils";

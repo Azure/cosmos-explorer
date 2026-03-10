@@ -11,8 +11,8 @@ import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils"
 import { createTrigger } from "../../Common/dataAccess/createTrigger";
 import { updateTrigger } from "../../Common/dataAccess/updateTrigger";
 import * as ViewModels from "../../Contracts/ViewModels";
-import { Keys } from "../../Localization/Keys.generated";
-import { t } from "../../Localization/t";
+import { Keys } from "Localization/Keys.generated";
+import { t } from "Localization/t";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { SqlTriggerResource } from "../../Utils/arm/generatedClients/cosmos/types";

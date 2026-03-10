@@ -12,8 +12,8 @@ import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils"
 import { createUserDefinedFunction } from "../../Common/dataAccess/createUserDefinedFunction";
 import { updateUserDefinedFunction } from "../../Common/dataAccess/updateUserDefinedFunction";
 import * as ViewModels from "../../Contracts/ViewModels";
-import { Keys } from "../../Localization/Keys.generated";
-import { t } from "../../Localization/t";
+import { Keys } from "Localization/Keys.generated";
+import { t } from "Localization/t";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";

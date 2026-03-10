@@ -12,8 +12,8 @@ import {
 } from "@fluentui/react";
 import * as React from "react";
 import * as ViewModels from "../../../../Contracts/ViewModels";
-import { Keys } from "../../../../Localization/Keys.generated";
-import { t } from "../../../../Localization/t";
+import { Keys } from "Localization/Keys.generated";
+import { t } from "Localization/t";
 import { userContext } from "../../../../UserContext";
 import { Int32 } from "../../../Panes/Tables/Validators/EntityPropertyValidationCommon";
 import {

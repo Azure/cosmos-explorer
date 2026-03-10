@@ -1,7 +1,7 @@
 import { Label, Slider, Stack, TextField, Toggle } from "@fluentui/react";
 import { ThroughputBucket } from "Contracts/DataModels";
-import { Keys } from "../../../../../Localization/Keys.generated";
-import { t } from "../../../../../Localization/t";
+import { Keys } from "Localization/Keys.generated";
+import { t } from "Localization/t";
 import React, { FC, useEffect, useState } from "react";
 import { isDirty } from "../../SettingsUtils";
 

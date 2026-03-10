@@ -4,8 +4,8 @@ import { titleAndInputStackProps, unsavedEditorWarningMessage } from "Explorer/C
 import { isDirty } from "Explorer/Controls/Settings/SettingsUtils";
 import { loadMonaco } from "Explorer/LazyMonaco";
 import { monacoTheme, useThemeStore } from "hooks/useTheme";
-import { Keys } from "../../../../Localization/Keys.generated";
-import { t } from "../../../../Localization/t";
+import { Keys } from "Localization/Keys.generated";
+import { t } from "Localization/t";
 import * as monaco from "monaco-editor";
 import * as React from "react";
 export interface ComputedPropertiesComponentProps {

@@ -9,8 +9,8 @@ import { useSidePanel } from "hooks/useSidePanel";
 import * as monaco from "monaco-editor";
 import React, { useEffect, useRef } from "react";
 import * as ViewModels from "../../../../Contracts/ViewModels";
-import { Keys } from "../../../../Localization/Keys.generated";
-import { t } from "../../../../Localization/t";
+import { Keys } from "Localization/Keys.generated";
+import { t } from "Localization/t";
 
 export interface GlobalSecondaryIndexSourceComponentProps {
   collection: ViewModels.Collection;

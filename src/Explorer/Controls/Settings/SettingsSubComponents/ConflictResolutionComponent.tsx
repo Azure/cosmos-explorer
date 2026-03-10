@@ -2,8 +2,8 @@ import { ChoiceGroup, IChoiceGroupOption, ITextFieldProps, Stack, TextField } fr
 import * as React from "react";
 import * as DataModels from "../../../../Contracts/DataModels";
 import * as ViewModels from "../../../../Contracts/ViewModels";
-import { Keys } from "../../../../Localization/Keys.generated";
-import { t } from "../../../../Localization/t";
+import { Keys } from "Localization/Keys.generated";
+import { t } from "Localization/t";
 import {
   conflictResolutionCustomToolTip,
   conflictResolutionLwwTooltip,

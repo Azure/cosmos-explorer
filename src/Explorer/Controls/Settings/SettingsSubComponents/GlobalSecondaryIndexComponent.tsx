@@ -2,8 +2,8 @@ import { FontIcon, Link, Stack, Text } from "@fluentui/react";
 import Explorer from "Explorer/Explorer";
 import React from "react";
 import * as ViewModels from "../../../../Contracts/ViewModels";
-import { Keys } from "../../../../Localization/Keys.generated";
-import { t } from "../../../../Localization/t";
+import { Keys } from "Localization/Keys.generated";
+import { t } from "Localization/t";
 import { GlobalSecondaryIndexSourceComponent } from "./GlobalSecondaryIndexSourceComponent";
 import { GlobalSecondaryIndexTargetComponent } from "./GlobalSecondaryIndexTargetComponent";
 

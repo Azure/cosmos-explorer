@@ -7,8 +7,8 @@ import {
 import { titleAndInputStackProps } from "Explorer/Controls/Settings/SettingsRenderUtils";
 import { ContainerPolicyTabTypes, isDirty } from "Explorer/Controls/Settings/SettingsUtils";
 import { VectorEmbeddingPoliciesComponent } from "Explorer/Controls/VectorSearch/VectorEmbeddingPoliciesComponent";
-import { Keys } from "../../../../Localization/Keys.generated";
-import { t } from "../../../../Localization/t";
+import { Keys } from "Localization/Keys.generated";
+import { t } from "Localization/t";
 import React from "react";
 
 export interface ContainerPolicyComponentProps {

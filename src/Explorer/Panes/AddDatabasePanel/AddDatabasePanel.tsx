@@ -156,7 +156,9 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
 
     if (throughput > SharedConstants.CollectionCreation.DefaultCollectionRUs100K && !isCostAcknowledged) {
       setFormErrors(
-        t(Keys.panes.addDatabase.acknowledgeSpendError, { period: isAutoscaleSelected ? "monthly" : "daily" }),
+        isAutoscaleSelected
+          ? t(Keys.panes.addDatabase.acknowledgeSpendErrorMonthly)
+          : t(Keys.panes.addDatabase.acknowledgeSpendErrorDaily),
       );
       return false;
     }
@@ -227,7 +229,7 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
           {!isServerlessAccount() && (
             <Stack horizontal>
               <Checkbox
-                title="Provision shared throughput"
+                title={t(Keys.panes.addDatabase.provisionSharedThroughputTitle)}
                 styles={{
                   text: { fontSize: 12, color: "var(--colorNeutralForeground1)" },
                   checkbox: { width: 12, height: 12 },
@@ -238,7 +240,7 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
                     },
                   },
                 }}
-                label="Provision throughput"
+                label={t(Keys.panes.addDatabase.provisionThroughputLabel)}
                 checked={databaseCreateNewShared}
                 onChange={() => setDatabaseCreateNewShared(!databaseCreateNewShared)}
               />

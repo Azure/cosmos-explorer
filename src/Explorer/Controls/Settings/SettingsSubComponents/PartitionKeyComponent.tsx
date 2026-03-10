@@ -18,8 +18,8 @@ import { cancelDataTransferJob, pollDataTransferJob } from "Common/dataAccess/da
 import { Platform, configContext } from "ConfigContext";
 import Explorer from "Explorer/Explorer";
 import { ChangePartitionKeyPane } from "Explorer/Panes/ChangePartitionKeyPane/ChangePartitionKeyPane";
-import { Keys } from "../../../../Localization/Keys.generated";
-import { t } from "../../../../Localization/t";
+import { Keys } from "Localization/Keys.generated";
+import { t } from "Localization/t";
 import {
   CosmosSqlDataTransferDataSourceSink,
   DataTransferJobGetResults,
@@ -164,7 +164,9 @@ export const PartitionKeyComponent: React.FC<PartitionKeyComponentProps> = ({
     useSidePanel
       .getState()
       .openSidePanel(
-        "Change partition key",
+        t(Keys.controls.settings.partitionKeyEditor.changePartitionKey, {
+          partitionKeyName: t(Keys.controls.settings.partitionKey.partitionKey).toLowerCase(),
+        }),
         <ChangePartitionKeyPane
           sourceDatabase={database}
           sourceCollection={collection}

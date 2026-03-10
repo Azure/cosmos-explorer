@@ -9,8 +9,8 @@ import {
   IDropdownOption,
   ITextField,
 } from "@fluentui/react";
-import { Keys } from "../../../../../Localization/Keys.generated";
-import { t } from "../../../../../Localization/t";
+import { Keys } from "Localization/Keys.generated";
+import { t } from "Localization/t";
 import {
   addMongoIndexSubElementsTokens,
   mongoErrorMessageStyles,

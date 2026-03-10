@@ -11,8 +11,8 @@ import { createStoredProcedure } from "../../../Common/dataAccess/createStoredPr
 import { ExecuteSprocResult } from "../../../Common/dataAccess/executeStoredProcedure";
 import { updateStoredProcedure } from "../../../Common/dataAccess/updateStoredProcedure";
 import * as ViewModels from "../../../Contracts/ViewModels";
-import { Keys } from "../../../Localization/Keys.generated";
-import { t } from "../../../Localization/t";
+import { Keys } from "Localization/Keys.generated";
+import { t } from "Localization/t";
 import { useNotificationConsole } from "../../../hooks/useNotificationConsole";
 import { useTabs } from "../../../hooks/useTabs";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
