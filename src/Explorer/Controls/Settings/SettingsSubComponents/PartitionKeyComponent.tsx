@@ -161,19 +161,17 @@ export const PartitionKeyComponent: React.FC<PartitionKeyComponentProps> = ({
   };
 
   const startPartitionkeyChangeWorkflow = () => {
-    useSidePanel
-      .getState()
-      .openSidePanel(
-        t(Keys.controls.settings.partitionKeyEditor.changePartitionKey, {
-          partitionKeyName: t(Keys.controls.settings.partitionKey.partitionKey).toLowerCase(),
-        }),
-        <ChangePartitionKeyPane
-          sourceDatabase={database}
-          sourceCollection={collection}
-          explorer={explorer}
-          onClose={refreshDataTransferOperations}
-        />,
-      );
+    useSidePanel.getState().openSidePanel(
+      t(Keys.controls.settings.partitionKeyEditor.changePartitionKey, {
+        partitionKeyName: t(Keys.controls.settings.partitionKey.partitionKey).toLowerCase(),
+      }),
+      <ChangePartitionKeyPane
+        sourceDatabase={database}
+        sourceCollection={collection}
+        explorer={explorer}
+        onClose={refreshDataTransferOperations}
+      />,
+    );
   };
 
   const getPercentageComplete = () => {
