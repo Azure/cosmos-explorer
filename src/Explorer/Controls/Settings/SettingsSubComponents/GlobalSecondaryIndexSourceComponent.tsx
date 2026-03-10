@@ -9,6 +9,8 @@ import { useSidePanel } from "hooks/useSidePanel";
 import * as monaco from "monaco-editor";
 import React, { useEffect, useRef } from "react";
 import * as ViewModels from "../../../../Contracts/ViewModels";
+import { Keys } from "../../../../Localization/Keys.generated";
+import { t } from "../../../../Localization/t";
 
 export interface GlobalSecondaryIndexSourceComponentProps {
   collection: ViewModels.Collection;
@@ -67,7 +69,7 @@ export const GlobalSecondaryIndexSourceComponent: React.FC<GlobalSecondaryIndexS
       editorRef.current = monacoInstance.editor.create(editorContainerRef.current, {
         value: jsonValue,
         language: "json",
-        ariaLabel: "Global Secondary Index JSON",
+        ariaLabel: t(Keys.controls.settings.globalSecondaryIndex.jsonAriaLabel),
         readOnly: true,
       });
     };
@@ -98,7 +100,7 @@ export const GlobalSecondaryIndexSourceComponent: React.FC<GlobalSecondaryIndexS
         }}
       />
       <PrimaryButton
-        text="Add index"
+        text={t(Keys.controls.settings.globalSecondaryIndex.addIndex)}
         styles={{ root: { width: "fit-content", marginTop: 12 } }}
         onClick={() =>
           useSidePanel
