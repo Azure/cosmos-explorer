@@ -18,6 +18,8 @@ import { cancelDataTransferJob, pollDataTransferJob } from "Common/dataAccess/da
 import { Platform, configContext } from "ConfigContext";
 import Explorer from "Explorer/Explorer";
 import { ChangePartitionKeyPane } from "Explorer/Panes/ChangePartitionKeyPane/ChangePartitionKeyPane";
+import { Keys } from "../../../../Localization/Keys.generated";
+import { t } from "../../../../Localization/t";
 import {
   CosmosSqlDataTransferDataSourceSink,
   DataTransferJobGetResults,
@@ -80,7 +82,7 @@ export const PartitionKeyComponent: React.FC<PartitionKeyComponentProps> = ({
     return (collection.partitionKeyProperties || []).map((property) => "/" + property).join(", ");
   };
 
-  const partitionKeyName = "Partition key";
+  const partitionKeyName = t(Keys.controls.settings.partitionKey.partitionKey);
   const partitionKeyValue = getPartitionKeyValue();
 
   const textHeadingStyle = {
@@ -148,7 +150,13 @@ export const PartitionKeyComponent: React.FC<PartitionKeyComponentProps> = ({
   const getProgressDescription = (): string => {
     const processedCount = portalDataTransferJob?.properties?.processedCount;
     const totalCount = portalDataTransferJob?.properties?.totalCount;
-    const processedCountString = totalCount > 0 ? `(${processedCount} of ${totalCount} documents processed)` : "";
+    const processedCountString =
+      totalCount > 0
+        ? t(Keys.controls.settings.partitionKeyEditor.documentsProcessed, {
+            processedCount: String(processedCount),
+            totalCount: String(totalCount),
+          })
+        : "";
     return `${portalDataTransferJob?.properties?.status} ${processedCountString}`;
   };
 
@@ -181,16 +189,28 @@ export const PartitionKeyComponent: React.FC<PartitionKeyComponentProps> = ({
   return (
     <Stack tokens={{ childrenGap: 20 }} styles={{ root: { maxWidth: 600 } }}>
       <Stack tokens={{ childrenGap: 10 }}>
-        {!isReadOnly && <Text styles={textHeadingStyle}>Change {partitionKeyName.toLowerCase()}</Text>}
+        {!isReadOnly && (
+          <Text styles={textHeadingStyle}>
+            {t(Keys.controls.settings.partitionKeyEditor.changePartitionKey, {
+              partitionKeyName: partitionKeyName.toLowerCase(),
+            })}
+          </Text>
+        )}
         <Stack horizontal tokens={{ childrenGap: 20 }}>
           <Stack tokens={{ childrenGap: 5 }}>
-            <Text styles={textSubHeadingStyle}>Current {partitionKeyName.toLowerCase()}</Text>
-            <Text styles={textSubHeadingStyle}>Partitioning</Text>
+            <Text styles={textSubHeadingStyle}>
+              {t(Keys.controls.settings.partitionKeyEditor.currentPartitionKey, {
+                partitionKeyName: partitionKeyName.toLowerCase(),
+              })}
+            </Text>
+            <Text styles={textSubHeadingStyle}>{t(Keys.controls.settings.partitionKeyEditor.partitioning)}</Text>
           </Stack>
           <Stack tokens={{ childrenGap: 5 }} data-test="partition-key-values">
             <Text styles={textSubHeadingStyle1}>{partitionKeyValue}</Text>
             <Text styles={textSubHeadingStyle1}>
-              {isHierarchicalPartitionedContainer() ? "Hierarchical" : "Non-hierarchical"}
+              {isHierarchicalPartitionedContainer()
+                ? t(Keys.controls.settings.partitionKeyEditor.hierarchical)
+                : t(Keys.controls.settings.partitionKeyEditor.nonHierarchical)}
             </Text>
           </Stack>
         </Stack>
@@ -204,33 +224,33 @@ export const PartitionKeyComponent: React.FC<PartitionKeyComponentProps> = ({
             messageBarIconProps={{ iconName: "WarningSolid", className: "messageBarWarningIcon" }}
             styles={darkThemeMessageBarStyles}
           >
-            To safeguard the integrity of the data being copied to the new container, ensure that no updates are made to
-            the source container for the entire duration of the partition key change process.
+            {t(Keys.controls.settings.partitionKeyEditor.safeguardWarning)}
             <Link
               href="https://learn.microsoft.com/azure/cosmos-db/container-copy#how-does-container-copy-work"
               target="_blank"
               underline
               style={{ color: "var(--colorBrandForeground1)" }}
             >
-              Learn more
+              {t(Keys.common.learnMore)}
             </Link>
           </MessageBar>
           <Text styles={{ root: { color: "var(--colorNeutralForeground1)" } }}>
-            To change the partition key, a new destination container must be created or an existing destination
-            container selected. Data will then be copied to the destination container.
+            {t(Keys.controls.settings.partitionKeyEditor.changeDescription)}
           </Text>
           {configContext.platform !== Platform.Emulator && (
             <PrimaryButton
               data-test="change-partition-key-button"
               styles={{ root: { width: "fit-content" } }}
-              text="Change"
+              text={t(Keys.controls.settings.partitionKeyEditor.changeButton)}
               onClick={startPartitionkeyChangeWorkflow}
               disabled={isCurrentJobInProgress(portalDataTransferJob)}
             />
           )}
           {portalDataTransferJob && (
             <Stack>
-              <Text styles={textHeadingStyle}>{partitionKeyName} change job</Text>
+              <Text styles={textHeadingStyle}>
+                {t(Keys.controls.settings.partitionKeyEditor.changeJob, { partitionKeyName })}
+              </Text>
               <Stack
                 horizontal
                 tokens={{ childrenGap: 20 }}
@@ -251,7 +271,10 @@ export const PartitionKeyComponent: React.FC<PartitionKeyComponentProps> = ({
                   }}
                 ></ProgressIndicator>
                 {isCurrentJobInProgress(portalDataTransferJob) && (
-                  <DefaultButton text="Cancel" onClick={() => cancelRunningDataTransferJob(portalDataTransferJob)} />
+                  <DefaultButton
+                    text={t(Keys.controls.settings.partitionKeyEditor.cancelButton)}
+                    onClick={() => cancelRunningDataTransferJob(portalDataTransferJob)}
+                  />
                 )}
               </Stack>
             </Stack>

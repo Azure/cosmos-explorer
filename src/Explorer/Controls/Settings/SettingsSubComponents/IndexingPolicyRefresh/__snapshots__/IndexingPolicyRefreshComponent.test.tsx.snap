@@ -14,7 +14,7 @@ exports[`IndexingPolicyRefreshComponent renders 1`] = `
       }
     }
   >
-    You can make more indexing changes once the current index transformation has completed. It is 90% complete. 
+    You can make more indexing changes once the current index transformation has completed. It is 90% complete.  
     <StyledLinkBase
       onClick={[Function]}
     >

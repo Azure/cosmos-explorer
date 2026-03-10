@@ -2,6 +2,8 @@ import { FontIcon, Link, Stack, Text } from "@fluentui/react";
 import Explorer from "Explorer/Explorer";
 import React from "react";
 import * as ViewModels from "../../../../Contracts/ViewModels";
+import { Keys } from "../../../../Localization/Keys.generated";
+import { t } from "../../../../Localization/t";
 import { GlobalSecondaryIndexSourceComponent } from "./GlobalSecondaryIndexSourceComponent";
 import { GlobalSecondaryIndexTargetComponent } from "./GlobalSecondaryIndexTargetComponent";
 
@@ -21,7 +23,9 @@ export const GlobalSecondaryIndexComponent: React.FC<GlobalSecondaryIndexCompone
     <Stack tokens={{ childrenGap: 8 }} styles={{ root: { maxWidth: 600 } }}>
       <Stack horizontal verticalAlign="center" wrap tokens={{ childrenGap: 8 }}>
         {isSourceContainer && (
-          <Text styles={{ root: { fontWeight: 600 } }}>This container has the following indexes defined for it.</Text>
+          <Text styles={{ root: { fontWeight: 600 } }}>
+            {t(Keys.controls.settings.globalSecondaryIndex.indexesDefined)}
+          </Text>
         )}
         <Text>
           <Link
@@ -31,7 +35,7 @@ export const GlobalSecondaryIndexComponent: React.FC<GlobalSecondaryIndexCompone
             Learn more
             <FontIcon iconName="NavigateExternalInline" style={{ marginLeft: "4px" }} />
           </Link>{" "}
-          about how to define global secondary indexes and how to use them.
+          {t(Keys.controls.settings.globalSecondaryIndex.learnMoreSuffix)}
         </Text>
       </Stack>
       {isSourceContainer && <GlobalSecondaryIndexSourceComponent collection={collection} explorer={explorer} />}
