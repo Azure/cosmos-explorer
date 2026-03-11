@@ -40,8 +40,7 @@ import { PanelInfoErrorComponent } from "Explorer/Panes/PanelInfoErrorComponent"
 import { PanelLoadingScreen } from "Explorer/Panes/PanelLoadingScreen";
 import { useDatabases } from "Explorer/useDatabases";
 import { useSidePanel } from "hooks/useSidePanel";
-import { Keys } from "Localization/Keys.generated";
-import { t } from "Localization/t";
+import { Keys, t } from "Localization";
 import React, { MutableRefObject, useEffect, useRef, useState } from "react";
 import { CollectionCreation } from "Shared/Constants";
 import { Action } from "Shared/Telemetry/TelemetryConstants";

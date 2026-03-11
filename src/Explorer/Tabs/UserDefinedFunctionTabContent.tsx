@@ -2,6 +2,7 @@ import { UserDefinedFunctionDefinition } from "@azure/cosmos";
 import { Label, TextField } from "@fluentui/react";
 import { FluentProvider, webDarkTheme, webLightTheme } from "@fluentui/react-components";
 import { KeyboardAction } from "KeyboardShortcuts";
+import { Keys, t } from "Localization";
 import { ValidCosmosDbIdDescription, ValidCosmosDbIdInputPattern } from "Utils/ValidationUtils";
 import { useThemeStore } from "hooks/useTheme";
 import React, { Component } from "react";
@@ -12,8 +13,6 @@ import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils"
 import { createUserDefinedFunction } from "../../Common/dataAccess/createUserDefinedFunction";
 import { updateUserDefinedFunction } from "../../Common/dataAccess/updateUserDefinedFunction";
 import * as ViewModels from "../../Contracts/ViewModels";
-import { Keys } from "../../Localization/Keys.generated";
-import { t } from "../../Localization/t";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
