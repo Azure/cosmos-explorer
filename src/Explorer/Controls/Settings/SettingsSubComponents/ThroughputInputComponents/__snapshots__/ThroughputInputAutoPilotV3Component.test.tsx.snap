@@ -552,9 +552,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
                 }
               }
             >
-              You are not able to lower throughput below your current minimum of 
-              10000
-               RU/s. For more information on this limit, please refer to our service quote documentation.
+              You are not able to lower throughput below your current minimum of 10000 RU/s. For more information on this limit, please refer to our service quote documentation.
               <StyledLinkBase
                 href="https://learn.microsoft.com/en-us/azure/cosmos-db/concepts-limits#minimum-throughput-limits"
                 target="_blank"
@@ -572,9 +570,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
             }
           }
         >
-          Based on usage, your 
-          container
-           throughput will scale from
+          Based on usage, your container throughput will scale from
            
           <b>
             400
@@ -683,7 +679,8 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
                 $
                  
                 35.04
-                 min
+                 
+                min
               </Text>
               <Text
                 style={
@@ -696,7 +693,8 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
                 $
                  
                 350.40
-                 max
+                 
+                max
               </Text>
             </Stack>
           </div>
@@ -730,7 +728,8 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
               $
                
               35.04
-               min
+               
+              min
             </Text>
             <Text
               style={
@@ -743,7 +742,8 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
               $
                
               350.40
-               max
+               
+              max
             </Text>
           </Stack>
         </Stack>
@@ -1151,9 +1151,7 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
                 }
               }
             >
-              You are not able to lower throughput below your current minimum of 
-              10000
-               RU/s. For more information on this limit, please refer to our service quote documentation.
+              You are not able to lower throughput below your current minimum of 10000 RU/s. For more information on this limit, please refer to our service quote documentation.
               <StyledLinkBase
                 href="https://learn.microsoft.com/en-us/azure/cosmos-db/concepts-limits#minimum-throughput-limits"
                 target="_blank"
@@ -1728,9 +1726,7 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
                 }
               }
             >
-              You are not able to lower throughput below your current minimum of 
-              10000
-               RU/s. For more information on this limit, please refer to our service quote documentation.
+              You are not able to lower throughput below your current minimum of 10000 RU/s. For more information on this limit, please refer to our service quote documentation.
               <StyledLinkBase
                 href="https://learn.microsoft.com/en-us/azure/cosmos-db/concepts-limits#minimum-throughput-limits"
                 target="_blank"
