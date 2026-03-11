@@ -4,6 +4,8 @@ import { titleAndInputStackProps, unsavedEditorWarningMessage } from "Explorer/C
 import { isDirty } from "Explorer/Controls/Settings/SettingsUtils";
 import { loadMonaco } from "Explorer/LazyMonaco";
 import { monacoTheme, useThemeStore } from "hooks/useTheme";
+import { Keys } from "../../../../Localization/Keys.generated";
+import { t } from "../../../../Localization/t";
 import * as monaco from "monaco-editor";
 import * as React from "react";
 export interface ComputedPropertiesComponentProps {
@@ -107,7 +109,7 @@ export class ComputedPropertiesComponent extends React.Component<
     this.computedPropertiesEditor = monaco.editor.create(this.computedPropertiesDiv.current, {
       value: value,
       language: "json",
-      ariaLabel: "Computed properties",
+      ariaLabel: t(Keys.controls.settings.computedProperties.ariaLabel),
       theme: monacoTheme(),
     });
     if (this.computedPropertiesEditor) {
@@ -151,9 +153,9 @@ export class ComputedPropertiesComponent extends React.Component<
         )}
         <Text style={{ marginLeft: "30px", marginBottom: "10px", color: "var(--colorNeutralForeground1)" }}>
           <Link target="_blank" href="https://aka.ms/computed-properties-preview/">
-            {"Learn more"} <FontIcon iconName="NavigateExternalInline" />
+            {t(Keys.common.learnMore)} <FontIcon iconName="NavigateExternalInline" />
           </Link>
-          &#160; about how to define computed properties and how to use them.
+          &#160; {t(Keys.controls.settings.computedProperties.learnMorePrefix)}
         </Text>
         <div
           className="settingsV2Editor"

@@ -3,6 +3,8 @@ import { monacoTheme, useThemeStore } from "hooks/useTheme";
 import * as monaco from "monaco-editor";
 import * as React from "react";
 import * as DataModels from "../../../../Contracts/DataModels";
+import { Keys } from "../../../../Localization/Keys.generated";
+import { t } from "../../../../Localization/t";
 import { loadMonaco } from "../../../LazyMonaco";
 import { titleAndInputStackProps, unsavedEditorWarningMessage } from "../SettingsRenderUtils";
 import { isDirty, isIndexTransforming } from "../SettingsUtils";
@@ -119,7 +121,7 @@ export class IndexingPolicyComponent extends React.Component<
         value: value,
         language: "json",
         readOnly: isIndexTransforming(this.props.indexTransformationProgress),
-        ariaLabel: "Indexing Policy",
+        ariaLabel: t(Keys.controls.settings.indexingPolicy.ariaLabel),
         theme: monacoTheme(),
       });
       if (this.indexingPolicyEditor) {

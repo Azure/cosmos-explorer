@@ -17,6 +17,8 @@ import {
 } from "@fluentui/react";
 import React, { FC, useEffect } from "react";
 import create, { UseStore } from "zustand";
+import { Keys } from "../../Localization/Keys.generated";
+import { t } from "../../Localization/t";
 
 export interface DialogState {
   visible: boolean;
@@ -88,7 +90,7 @@ export const useDialog: UseStore<DialogState> = create((set, get) => ({
       isModal: true,
       title,
       subText,
-      primaryButtonText: "Close",
+      primaryButtonText: t(Keys.common.close),
       secondaryButtonText: undefined,
       onPrimaryButtonClick: () => {
         get().closeDialog();
