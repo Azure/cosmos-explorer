@@ -16,10 +16,9 @@ import {
   Text,
   TextField,
 } from "@fluentui/react";
+import { Keys, t } from "Localization";
 import React from "react";
 import * as DataModels from "../../../../../Contracts/DataModels";
-import { Keys } from "../../../../../Localization/Keys.generated";
-import { t } from "../../../../../Localization/t";
 import * as SharedConstants from "../../../../../Shared/Constants";
 import { Action, ActionModifiers } from "../../../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../../../Shared/Telemetry/TelemetryProcessor";
@@ -336,13 +335,16 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
           </Text>
           <Stack horizontal style={{ marginTop: 5, marginBottom: 10 }}>
             <Text style={this.settingsAndScaleStyle.root}>
-              {newPrices.currencySign} {calculateEstimateNumber(newPrices.hourlyPrice)}/hr
+              {newPrices.currencySign} {calculateEstimateNumber(newPrices.hourlyPrice)}
+              {t(Keys.controls.settings.costEstimate.perHour)}
             </Text>
             <Text style={this.settingsAndScaleStyle.root}>
-              {newPrices.currencySign} {calculateEstimateNumber(newPrices.dailyPrice)}/day
+              {newPrices.currencySign} {calculateEstimateNumber(newPrices.dailyPrice)}
+              {t(Keys.controls.settings.costEstimate.perDay)}
             </Text>
             <Text style={this.settingsAndScaleStyle.root}>
-              {newPrices.currencySign} {calculateEstimateNumber(newPrices.monthlyPrice)}/mo
+              {newPrices.currencySign} {calculateEstimateNumber(newPrices.monthlyPrice)}
+              {t(Keys.controls.settings.costEstimate.perMonth)}
             </Text>
           </Stack>
         </div>
@@ -359,13 +361,16 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
           </Text>
           <Stack horizontal style={{ marginTop: 5 }}>
             <Text style={this.settingsAndScaleStyle.root}>
-              {prices.currencySign} {calculateEstimateNumber(prices.hourlyPrice)}/hr
+              {prices.currencySign} {calculateEstimateNumber(prices.hourlyPrice)}
+              {t(Keys.controls.settings.costEstimate.perHour)}
             </Text>
             <Text style={this.settingsAndScaleStyle.root}>
-              {prices.currencySign} {calculateEstimateNumber(prices.dailyPrice)}/day
+              {prices.currencySign} {calculateEstimateNumber(prices.dailyPrice)}
+              {t(Keys.controls.settings.costEstimate.perDay)}
             </Text>
             <Text style={this.settingsAndScaleStyle.root}>
-              {prices.currencySign} {calculateEstimateNumber(prices.monthlyPrice)}/mo
+              {prices.currencySign} {calculateEstimateNumber(prices.monthlyPrice)}
+              {t(Keys.controls.settings.costEstimate.perMonth)}
             </Text>
           </Stack>
         </Stack>

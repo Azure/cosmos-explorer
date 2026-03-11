@@ -11,8 +11,7 @@ import {
 import { configContext } from "ConfigContext";
 import { ColumnDefinition } from "Explorer/Tabs/DocumentsTabV2/DocumentsTableComponent";
 import { CosmosFluentProvider, getPlatformTheme } from "Explorer/Theme/ThemeUtil";
-import { Keys } from "Localization/Keys.generated";
-import { t } from "Localization/t";
+import { Keys, t } from "Localization";
 import React from "react";
 import { useSidePanel } from "../../../hooks/useSidePanel";
 
