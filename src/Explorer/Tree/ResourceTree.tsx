@@ -106,26 +106,22 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ explorer }: Resource
       : [];
   }, [isSampleDataEnabled, sampleDataResourceTokenCollection]);
 
-  const headerNodes: TreeNode[] = useMemo(
-    () =>
-      isFabricMirrored()
-        ? []
-        : [
-            {
-              id: "home",
-              iconSrc: <Home16Regular />,
-              label: "Home",
-              isSelected: () =>
-                useSelectedNode.getState().selectedNode === undefined &&
-                useTabs.getState().activeReactTab === ReactTabKind.Home,
-              onClick: () => {
-                useSelectedNode.getState().setSelectedNode(undefined);
-                useTabs.getState().openAndActivateReactTab(ReactTabKind.Home);
-              },
-            },
-          ],
-    [],
-  );
+  const headerNodes: TreeNode[] = isFabricMirrored()
+    ? []
+    : [
+        {
+          id: "home",
+          iconSrc: <Home16Regular />,
+          label: "Home",
+          isSelected: () =>
+            useSelectedNode.getState().selectedNode === undefined &&
+            useTabs.getState().activeReactTab === ReactTabKind.Home,
+          onClick: () => {
+            useSelectedNode.getState().setSelectedNode(undefined);
+            useTabs.getState().openAndActivateReactTab(ReactTabKind.Home);
+          },
+        },
+      ];
 
   const rootNodes: TreeNode[] = useMemo(() => {
     if (sampleDataNodes.length > 0) {
@@ -146,7 +142,9 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ explorer }: Resource
     } else {
       return [...headerNodes, ...databaseTreeNodes];
     }
-  }, [headerNodes, databaseTreeNodes, sampleDataNodes]);
+    // headerNodes is intentionally excluded — it depends only on isFabricMirrored() which is stable.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [databaseTreeNodes, sampleDataNodes]);
 
   // Track complete DatabaseLoad scenario (start, tree rendered, interactive)
   useDatabaseLoadScenario(databaseTreeNodes, databasesFetchedSuccessfully);
