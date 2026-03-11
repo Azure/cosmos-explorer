@@ -12,8 +12,7 @@ import {
 } from "@fluentui/react-components";
 import Explorer from "Explorer/Explorer";
 import { checkContainerExists, createContainer, importData, SampleDataFile } from "Explorer/SplashScreen/SampleUtil";
-import { Keys } from "Localization/Keys.generated";
-import { t } from "Localization/t";
+import { Keys, t } from "Localization";
 import React, { useEffect, useState } from "react";
 import * as ViewModels from "../../Contracts/ViewModels";
 

@@ -1,7 +1,6 @@
 import { Checkbox, Stack, Text, TextField } from "@fluentui/react";
 import { getNewDatabaseSharedThroughputDefault } from "Common/DatabaseUtility";
-import { Keys } from "Localization/Keys.generated";
-import { t } from "Localization/t";
+import { Keys, t } from "Localization";
 import { ValidCosmosDbIdDescription, ValidCosmosDbIdInputPattern } from "Utils/ValidationUtils";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import * as Constants from "../../../Common/Constants";

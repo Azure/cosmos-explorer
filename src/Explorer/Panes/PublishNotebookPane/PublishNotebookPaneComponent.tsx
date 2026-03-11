@@ -1,8 +1,7 @@
 import { Dropdown, IDropdownProps, ITextFieldProps, Stack, Text, TextField } from "@fluentui/react";
 import { ImmutableNotebook } from "@nteract/commutable";
 import React, { FunctionComponent, useState } from "react";
-import { Keys } from "Localization/Keys.generated";
-import { t } from "Localization/t";
+import { Keys, t } from "Localization";
 import { GalleryCardComponent } from "../../Controls/NotebookGallery/Cards/GalleryCardComponent";
 import * as FileSystemUtil from "../../Notebook/FileSystemUtil";
 import { SnapshotRequest } from "../../Notebook/NotebookComponent/types";

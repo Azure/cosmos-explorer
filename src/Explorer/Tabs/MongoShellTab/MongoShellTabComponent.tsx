@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import { configContext } from "../../../ConfigContext";
 import * as ViewModels from "../../../Contracts/ViewModels";
-import { Keys } from "Localization/Keys.generated";
-import { t } from "Localization/t";
+import { Keys, t } from "Localization";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../../UserContext";

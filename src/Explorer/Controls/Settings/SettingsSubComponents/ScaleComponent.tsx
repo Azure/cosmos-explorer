@@ -1,6 +1,5 @@
 import { Link, MessageBar, MessageBarType, Stack, Text, TextField } from "@fluentui/react";
-import { Keys } from "Localization/Keys.generated";
-import { t } from "Localization/t";
+import { Keys, t } from "Localization";
 import * as React from "react";
 import * as Constants from "../../../../Common/Constants";
 import { Platform, configContext } from "../../../../ConfigContext";

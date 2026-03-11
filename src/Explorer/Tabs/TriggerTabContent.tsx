@@ -2,6 +2,7 @@ import { TriggerDefinition } from "@azure/cosmos";
 import { IDropdownOption, IDropdownStyles, Label, TextField } from "@fluentui/react";
 import { Dropdown } from "@fluentui/react/lib/Dropdown";
 import { KeyboardAction } from "KeyboardShortcuts";
+import { Keys, t } from "Localization";
 import { ValidCosmosDbIdDescription, ValidCosmosDbIdInputPattern } from "Utils/ValidationUtils";
 import React, { Component } from "react";
 import DiscardIcon from "../../../images/discard.svg";
@@ -11,8 +12,6 @@ import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils"
 import { createTrigger } from "../../Common/dataAccess/createTrigger";
 import { updateTrigger } from "../../Common/dataAccess/updateTrigger";
 import * as ViewModels from "../../Contracts/ViewModels";
-import { Keys } from "Localization/Keys.generated";
-import { t } from "Localization/t";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { SqlTriggerResource } from "../../Utils/arm/generatedClients/cosmos/types";

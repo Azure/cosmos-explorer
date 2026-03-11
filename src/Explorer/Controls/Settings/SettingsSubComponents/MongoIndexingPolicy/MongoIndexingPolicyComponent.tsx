@@ -15,8 +15,7 @@ import {
 } from "@fluentui/react";
 import * as React from "react";
 import { MongoIndex } from "../../../../../Utils/arm/generatedClients/cosmos/types";
-import { Keys } from "Localization/Keys.generated";
-import { t } from "Localization/t";
+import { Keys, t } from "Localization";
 import { CollapsibleSectionComponent } from "../../../CollapsiblePanel/CollapsibleSectionComponent";
 import {
   addMongoIndexStackProps,

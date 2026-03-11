@@ -42,8 +42,7 @@ import {
 } from "Explorer/Panes/AddCollectionPanel/AddCollectionPanelUtility";
 import { useSidePanel } from "hooks/useSidePanel";
 import { useTeachingBubble } from "hooks/useTeachingBubble";
-import { Keys } from "Localization/Keys.generated";
-import { t } from "Localization/t";
+import { Keys, t } from "Localization";
 import { DEFAULT_FABRIC_NATIVE_CONTAINER_THROUGHPUT, isFabricNative } from "Platform/Fabric/FabricUtil";
 import React from "react";
 import { CollectionCreation } from "Shared/Constants";

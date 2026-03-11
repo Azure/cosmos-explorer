@@ -22,8 +22,7 @@ import {
   Stack,
   Text,
 } from "@fluentui/react";
-import { Keys } from "Localization/Keys.generated";
-import { t } from "Localization/t";
+import { Keys, t } from "Localization";
 import * as React from "react";
 import { Urls } from "../../../Common/Constants";
 import { StyleConstants } from "../../../Common/StyleConstants";

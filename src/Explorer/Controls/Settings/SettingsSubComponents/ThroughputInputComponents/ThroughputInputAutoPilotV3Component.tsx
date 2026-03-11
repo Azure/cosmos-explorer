@@ -16,8 +16,7 @@ import {
   Text,
   TextField,
 } from "@fluentui/react";
-import { Keys } from "Localization/Keys.generated";
-import { t } from "Localization/t";
+import { Keys, t } from "Localization";
 import React from "react";
 import * as DataModels from "../../../../../Contracts/DataModels";
 import * as SharedConstants from "../../../../../Shared/Constants";

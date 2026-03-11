@@ -18,8 +18,7 @@ import { cancelDataTransferJob, pollDataTransferJob } from "Common/dataAccess/da
 import { Platform, configContext } from "ConfigContext";
 import Explorer from "Explorer/Explorer";
 import { ChangePartitionKeyPane } from "Explorer/Panes/ChangePartitionKeyPane/ChangePartitionKeyPane";
-import { Keys } from "Localization/Keys.generated";
-import { t } from "Localization/t";
+import { Keys, t } from "Localization";
 import {
   CosmosSqlDataTransferDataSourceSink,
   DataTransferJobGetResults,

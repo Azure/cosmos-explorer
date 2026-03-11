@@ -1,8 +1,7 @@
 import { MessageBar, MessageBarType } from "@fluentui/react";
 import * as React from "react";
 import { handleError } from "../../../../../Common/ErrorHandlingUtils";
-import { Keys } from "Localization/Keys.generated";
-import { t } from "Localization/t";
+import { Keys, t } from "Localization";
 import {
   mongoIndexTransformationRefreshingMessage,
   renderMongoIndexTransformationRefreshMessage,
