@@ -4,6 +4,8 @@ import * as Constants from "../../../../Common/Constants";
 import { Platform, configContext } from "../../../../ConfigContext";
 import * as DataModels from "../../../../Contracts/DataModels";
 import * as ViewModels from "../../../../Contracts/ViewModels";
+import { Keys } from "../../../../Localization/Keys.generated";
+import { t } from "../../../../Localization/t";
 import * as SharedConstants from "../../../../Shared/Constants";
 import { userContext } from "../../../../UserContext";
 import * as AutoPilotUtils from "../../../../Utils/AutoPilotUtils";
@@ -156,14 +158,12 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
     const freeTierLimits = SharedConstants.FreeTierLimits;
     return (
       <Text>
-        With free tier, you will get the first {freeTierLimits.RU} RU/s and {freeTierLimits.Storage} GB of storage in
-        this account for free. To keep your account free, keep the total RU/s across all resources in the account to{" "}
-        {freeTierLimits.RU} RU/s.
+        {t(Keys.controls.settings.scale.freeTierInfo, { ru: freeTierLimits.RU, storage: freeTierLimits.Storage })}
         <Link
           href="https://docs.microsoft.com/en-us/azure/cosmos-db/understand-your-bill#billing-examples-with-free-tier-accounts"
           target="_blank"
         >
-          Learn more.
+          {t(Keys.controls.settings.scale.freeTierLearnMore)}
         </Link>
       </Text>
     );
@@ -188,12 +188,9 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
         {/* TODO: Replace link with call to the Azure Support blade */}
         {this.isAutoScaleEnabled() && (
           <Stack {...titleAndInputStackProps}>
-            <Text>Throughput (RU/s)</Text>
+            <Text>{t(Keys.controls.settings.scale.throughputRuS)}</Text>
             <TextField disabled styles={getTextFieldStyles(undefined, undefined)} />
-            <Text>
-              Your account has custom settings that prevents setting throughput at the container level. Please work with
-              your Cosmos DB engineering team point of contact to make changes.
-            </Text>
+            <Text>{t(Keys.controls.settings.scale.autoScaleCustomSettings)}</Text>
           </Stack>
         )}
       </Stack>
