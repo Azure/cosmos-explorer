@@ -12,8 +12,7 @@ import {
 import { GitHubReposTitle } from "Explorer/Tree/ResourceTree";
 import React, { FormEvent, FunctionComponent } from "react";
 import { IPinnedRepo } from "../../../Juno/JunoClient";
-import { Keys } from "../../../Localization/Keys.generated";
-import { t } from "../../../Localization/t";
+import { Keys, t } from "Localization";
 import * as GitHubUtils from "../../../Utils/GitHubUtils";
 import { useNotebook } from "../../Notebook/useNotebook";
 
