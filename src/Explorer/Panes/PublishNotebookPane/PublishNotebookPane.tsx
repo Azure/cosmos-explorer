@@ -5,8 +5,7 @@ import { getErrorMessage, getErrorStack, handleError } from "../../../Common/Err
 import { useNotebookSnapshotStore } from "../../../hooks/useNotebookSnapshotStore";
 import { useSidePanel } from "../../../hooks/useSidePanel";
 import { JunoClient } from "../../../Juno/JunoClient";
-import { Keys } from "../../../Localization/Keys.generated";
-import { t } from "../../../Localization/t";
+import { Keys, t } from "Localization";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 import { traceFailure, traceStart, traceSuccess } from "../../../Shared/Telemetry/TelemetryProcessor";
 import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";

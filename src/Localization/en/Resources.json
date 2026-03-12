@@ -441,7 +441,11 @@
       "shareThroughput": "Share throughput across {{collectionsLabel}}",
       "shareThroughputTooltip": "Provisioned throughput at the {{databaseLabel}} level will be shared across all {{collectionsLabel}} within the {{databaseLabel}}.",
       "greaterThanError": "Please enter a value greater than {{minValue}} for autopilot throughput",
-      "acknowledgeSpendError": "Please acknowledge the estimated {{period}} spend."
+      "acknowledgeSpendError": "Please acknowledge the estimated {{period}} spend.",
+      "acknowledgeSpendErrorMonthly": "Please acknowledge the estimated monthly spend.",
+      "acknowledgeSpendErrorDaily": "Please acknowledge the estimated daily spend.",
+      "provisionSharedThroughputTitle": "Provision shared throughput",
+      "provisionThroughputLabel": "Provision throughput"
     },
     "addCollection": {
       "createNew": "Create new",
@@ -493,7 +497,31 @@
       "acknowledgeShareThroughputError": "Please acknowledge the estimated cost of this dedicated throughput.",
       "vectorPolicyError": "Please fix errors in container vector policy",
       "fullTextSearchPolicyError": "Please fix errors in container full text search policy",
-      "addingSampleDataSet": "Adding sample data set"
+      "addingSampleDataSet": "Adding sample data set",
+      "databaseFieldLabelName": "Database name",
+      "databaseFieldLabelId": "Database id",
+      "newDatabaseIdPlaceholder": "Type a new database id",
+      "newDatabaseIdAriaLabel": "New database id, Type a new database id",
+      "createNewDatabaseAriaLabel": "Create new database",
+      "useExistingDatabaseAriaLabel": "Use existing database",
+      "chooseExistingDatabase": "Choose an existing database",
+      "teachingBubble": {
+        "step1Headline": "Create sample database",
+        "step1Body": "Database is the parent of a container. You can create a new database or use an existing one. In this tutorial we are creating a new database named SampleDB.",
+        "step1LearnMore": "Learn more about resources.",
+        "step2Headline": "Setting throughput",
+        "step2Body": "Cosmos DB recommends sharing throughput across database. Autoscale will give you a flexible amount of throughput based on the max RU/s set (Request Units).",
+        "step2LearnMore": "Learn more about RU/s.",
+        "step3Headline": "Naming container",
+        "step3Body": "Name your container",
+        "step4Headline": "Setting partition key",
+        "step4Body": "Last step - you will need to define a partition key for your collection. /address was chosen for this particular example. A good partition key should have a wide range of possible value",
+        "step4CreateContainer": "Create container",
+        "step5Headline": "Creating sample container",
+        "step5Body": "A sample container is now being created and we are adding sample data for you. It should take about 1 minute.",
+        "step5BodyFollowUp": "Once the sample container is created, review your sample dataset and follow next steps",
+        "stepOfTotal": "Step {{current}} of {{total}}"
+      }
     },
     "addCollectionUtility": {
       "shardKeyTooltip": "The shard key (field) is used to split your data across many replica sets (shards) to achieve unlimited scalability. It's critical to choose a field that will evenly distribute your data.",
@@ -763,7 +791,10 @@
         "howWeCalculate": "How we calculate this",
         "updatedCostPerMonth": "Updated cost per month",
         "currentCostPerMonth": "Current cost per month",
-        "perRu": "/RU"
+        "perRu": "/RU",
+        "perHour": "/hr",
+        "perDay": "/day",
+        "perMonth": "/mo"
       },
       "throughput": {
         "manualToAutoscaleDisclaimer": "The starting autoscale max RU/s will be determined by the system, based on the current manual throughput settings and storage of your resource. After autoscale has been enabled, you can change the max RU/s.",
@@ -858,7 +889,9 @@
         "freeTierLearnMore": "Learn more.",
         "throughputRuS": "Throughput (RU/s)",
         "autoScaleCustomSettings": "Your account has custom settings that prevents setting throughput at the container level. Please work with your Cosmos DB engineering team point of contact to make changes.",
-        "keyspaceSharedThroughput": "This table shared throughput is configured at the keyspace"
+        "keyspaceSharedThroughput": "This table shared throughput is configured at the keyspace",
+        "throughputRangeLabel": "Throughput ({{min}} - {{max}} RU/s)",
+        "unlimited": "unlimited"
       },
       "partitionKeyEditor": {
         "changePartitionKey": "Change {{partitionKeyName}}",

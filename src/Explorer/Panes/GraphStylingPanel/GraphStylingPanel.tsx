@@ -1,7 +1,6 @@
 import React, { FunctionComponent } from "react";
 import * as ViewModels from "../../../Contracts/ViewModels";
-import { Keys } from "../../../Localization/Keys.generated";
-import { t } from "../../../Localization/t";
+import { Keys, t } from "Localization";
 import { useSidePanel } from "../../../hooks/useSidePanel";
 import { GraphStyleComponent } from "../../Graph/GraphStyleComponent/GraphStyleComponent";
 import { IGraphConfig } from "../../Tabs/GraphTab";

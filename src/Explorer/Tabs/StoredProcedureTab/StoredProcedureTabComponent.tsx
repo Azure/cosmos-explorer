@@ -1,6 +1,7 @@
 import { Resource, StoredProcedureDefinition } from "@azure/cosmos";
 import { Pivot, PivotItem } from "@fluentui/react";
 import { KeyboardAction } from "KeyboardShortcuts";
+import { Keys, t } from "Localization";
 import { ValidCosmosDbIdDescription, ValidCosmosDbIdInputPattern } from "Utils/ValidationUtils";
 import React from "react";
 import ExecuteQueryIcon from "../../../../images/ExecuteQuery.svg";
@@ -11,8 +12,6 @@ import { createStoredProcedure } from "../../../Common/dataAccess/createStoredPr
 import { ExecuteSprocResult } from "../../../Common/dataAccess/executeStoredProcedure";
 import { updateStoredProcedure } from "../../../Common/dataAccess/updateStoredProcedure";
 import * as ViewModels from "../../../Contracts/ViewModels";
-import { Keys } from "../../../Localization/Keys.generated";
-import { t } from "../../../Localization/t";
 import { useNotificationConsole } from "../../../hooks/useNotificationConsole";
 import { useTabs } from "../../../hooks/useTabs";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";

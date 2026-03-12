@@ -1,11 +1,10 @@
 import { Link, MessageBar, MessageBarType, Stack, Text, TextField } from "@fluentui/react";
+import { Keys, t } from "Localization";
 import * as React from "react";
 import * as Constants from "../../../../Common/Constants";
 import { Platform, configContext } from "../../../../ConfigContext";
 import * as DataModels from "../../../../Contracts/DataModels";
 import * as ViewModels from "../../../../Contracts/ViewModels";
-import { Keys } from "../../../../Localization/Keys.generated";
-import { t } from "../../../../Localization/t";
 import * as SharedConstants from "../../../../Shared/Constants";
 import { userContext } from "../../../../UserContext";
 import * as AutoPilotUtils from "../../../../Utils/AutoPilotUtils";
@@ -94,8 +93,10 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
     }
 
     const minThroughput: string = this.getMinRUs().toLocaleString();
-    const maxThroughput: string = !this.props.isFixedContainer ? "unlimited" : this.getMaxRUs().toLocaleString();
-    return `Throughput (${minThroughput} - ${maxThroughput} RU/s)`;
+    const maxThroughput: string = !this.props.isFixedContainer
+      ? t(Keys.controls.settings.scale.unlimited)
+      : this.getMaxRUs().toLocaleString();
+    return t(Keys.controls.settings.scale.throughputRangeLabel, { min: minThroughput, max: maxThroughput });
   };
 
   public canThroughputExceedMaximumValue = (): boolean => {

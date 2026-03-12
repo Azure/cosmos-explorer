@@ -13,8 +13,7 @@ import {
 } from "@fluentui/react";
 import { Upload } from "Common/Upload/Upload";
 import { UploadDetailsRecord } from "Contracts/ViewModels";
-import { Keys } from "Localization/Keys.generated";
-import { t } from "Localization/t";
+import { Keys, t } from "Localization";
 import { logConsoleError } from "Utils/NotificationConsoleUtils";
 import React, { ChangeEvent, FunctionComponent, useReducer, useState } from "react";
 import { getErrorMessage } from "../../Tables/Utilities";

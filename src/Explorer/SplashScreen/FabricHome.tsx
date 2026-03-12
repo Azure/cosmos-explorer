@@ -6,8 +6,7 @@ import { DocumentAddRegular, LinkMultipleRegular, OpenRegular } from "@fluentui/
 import { SampleDataConfiguration, SampleDataImportDialog } from "Explorer/SplashScreen/SampleDataImportDialog";
 import { SampleDataFile } from "Explorer/SplashScreen/SampleUtil";
 import { CosmosFluentProvider } from "Explorer/Theme/ThemeUtil";
-import { Keys } from "Localization/Keys.generated";
-import { t } from "Localization/t";
+import { Keys, t } from "Localization";
 import { isFabricNative, isFabricNativeReadOnly } from "Platform/Fabric/FabricUtil";
 import * as React from "react";
 import { userContext } from "UserContext";

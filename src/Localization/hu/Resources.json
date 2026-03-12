@@ -7,7 +7,7 @@
     "delete": "Törlés",
     "update": "Frissítés",
     "discard": "Elvetés",
-    "execute": "Execute",
+    "execute": "Végrehajtás",
     "loading": "Betöltés folyamatban",
     "loadingEllipsis": "Betöltés...",
     "next": "Következő",
@@ -29,6 +29,9 @@
     "upload": "Feltöltés",
     "connect": "Kapcsolódás",
     "remove": "Eltávolítás",
+    "load": "Betöltés",
+    "publish": "Közzététel",
+    "browse": "Tallózás",
     "increaseValueBy1": "Érték növelése 1-gyel",
     "decreaseValueBy1": "Érték csökkentése 1-gyel"
   },
@@ -43,253 +46,682 @@
       "getStarted": "Ismerje meg a minta adathalmazok, a dokumentáció és a további eszközök használatának első lépéseit."
     },
     "quickStart": {
-      "title": "Launch quick start",
-      "description": "Launch a quick start tutorial to get started with sample data"
+      "title": "A Rövid útmutató elindítása",
+      "description": "Gyors üzembe helyezési oktatóanyag indítása a mintaadatok használatának első lépéseihez"
     },
     "newCollection": {
-      "title": "New {{collectionName}}",
-      "description": "Create a new container for storage and throughput"
+      "title": "Új {{collectionName}}",
+      "description": "Új tároló létrehozása a tároláshoz és az átviteli sebességhez"
     },
     "samplesGallery": {
-      "title": "Azure Cosmos DB Samples Gallery",
-      "description": "Discover samples that showcase scalable, intelligent app patterns. Try one now to see how fast you can go from concept to code with Cosmos DB"
+      "title": "Azure Cosmos DB minták gyűjteménye",
+      "description": "Fedezzen fel skálázható, intelligens alkalmazásmintákat. Próbálja ki most, hogy lássa, milyen gyorsan válthat a fogalmakról a kódolásra a Cosmos DB használatával"
     },
     "connectCard": {
-      "title": "Connect",
-      "description": "Prefer using your own choice of tooling? Find the connection string you need to connect",
+      "title": "Csatlakozás",
+      "description": "Inkább a saját eszközeit használná? Találja meg a kapcsolati sztringet, amire a csatlakozáshoz szüksége van",
       "pgAdmin": {
-        "title": "Connect with pgAdmin",
-        "description": "Prefer pgAdmin? Find your connection strings here"
+        "title": "Kapcsolódás pgAdmin használatával",
+        "description": "Előnyben részesíti a pgAdmin-t? Itt találja a kapcsolati sztringeket"
       },
       "vsCode": {
         "title": "Csatlakozás VS Code használatával",
-        "description": "Query and Manage your MongoDB and DocumentDB clusters in Visual Studio Code"
+        "description": "MongoDB- és DocumentDB-fürtök lekérdezése és kezelése Visual Studio Code-ban"
       }
     },
     "shell": {
       "postgres": {
         "title": "PostgreSQL Shell",
-        "description": "Create table and interact with data using PostgreSQL's shell interface"
+        "description": "Tábla létrehozása és az adatok kezelése a PostgreSQL shell felület használatával"
       },
       "vcoreMongo": {
-        "title": "Mongo Shell",
-        "description": "Create a collection and interact with data using MongoDB's shell interface"
+        "title": "Mongo shell",
+        "description": "Gyűjtemény létrehozása és az adatok kezelése a MongoDB felületének használatával"
       }
     },
     "teachingBubble": {
       "newToPostgres": {
-        "headline": "New to Cosmos DB PGSQL?",
-        "body": "Welcome! If you are new to Cosmos DB PGSQL and need help with getting started, here is where you can find sample data, query."
+        "headline": "Most ismerkedik a Cosmos DB PGSQL-lel?",
+        "body": "Üdvözöljük! Ha most ismerkedik a Cosmos DB PGSQL használatával és segítségre van szüksége az első lépésekhez, itt találhat mintaadatokat, lekérdezéseket."
       },
       "resetPassword": {
-        "headline": "Create your password",
-        "body": "If you haven't changed your password yet, change it now."
+        "headline": "Jelszó létrehozása",
+        "body": "Ha még nem módosította a jelszavát, módosítsa most."
       },
       "coachMark": {
-        "headline": "Start with sample {{collectionName}}",
-        "body": "You will be guided to create a sample container with sample data, then we will give you a tour of data explorer. You can also cancel launching this tour and explore yourself"
+        "headline": "Kezdje a(z) {{collectionName}} mintával",
+        "body": "Végigvezetjük egy mintatároló létrehozásán mintaadatokkal, majd bemutatjuk az adatkezelőt. A bemutató indítását meg is szakíthatja, és felfedezheti önállóan"
       }
     },
     "sections": {
-      "recents": "Recents",
-      "clearRecents": "Clear Recents",
-      "top3": "Top 3 things you need to know",
-      "learningResources": "Learning Resources",
-      "nextSteps": "Next steps",
-      "tipsAndLearnMore": "Tips & learn more",
-      "notebook": "Notebook",
-      "needHelp": "Need help?"
+      "recents": "Legutóbbiak",
+      "clearRecents": "Legutóbbiak törlése",
+      "top3": "A 3 legfontosabb tudnivaló",
+      "learningResources": "Tanulási források",
+      "nextSteps": "Következő lépések",
+      "tipsAndLearnMore": "Tippek és további információ",
+      "notebook": "Jegyzetfüzet",
+      "needHelp": "Segítségre van szüksége?"
     },
     "top3Items": {
       "sql": {
         "advancedModeling": {
-          "title": "Advanced Modeling Patterns",
-          "description": "Learn advanced strategies to optimize your database."
+          "title": "Speciális modellezési minták",
+          "description": "Ismerjen meg speciális stratégiákat z adatbázis optimalizálásához."
         },
         "partitioning": {
-          "title": "Partitioning Best Practices",
-          "description": "Learn to apply data model and partitioning strategies."
+          "title": "Ajánlott particionálási eljárások",
+          "description": "Tudja meg, hogyan alkalmazhat adatmodellt és particionálási stratégiákat."
         },
         "resourcePlanning": {
-          "title": "Plan Your Resource Requirements",
-          "description": "Get to know the different configuration choices."
+          "title": "Az erőforrás-követelmények megtervezése",
+          "description": "Ismerkedjen meg a különböző konfigurációs lehetőségekkel."
         }
       },
       "mongo": {
         "whatIsMongo": {
-          "title": "What is the MongoDB API?",
-          "description": "Understand Azure Cosmos DB for MongoDB and its features."
+          "title": "Mi az a MongoDB API?",
+          "description": "Ismerje meg az Azure Cosmos DB for MongoDB használatát és funkcióit."
         },
         "features": {
-          "title": "Features and Syntax",
-          "description": "Discover the advantages and features"
+          "title": "Funkciók és szintaxis",
+          "description": "Az előnyök és funkciók felfedezése"
         },
         "migrate": {
-          "title": "Migrate Your Data",
-          "description": "Pre-migration steps for moving data"
+          "title": "Adatok áttelepítése",
+          "description": "Áttelepítés előtti lépések az adatok áthelyezéséhez"
         }
       },
       "cassandra": {
         "buildJavaApp": {
-          "title": "Build a Java App",
-          "description": "Create a Java app using an SDK."
+          "title": "Java-alkalmazás létrehozása",
+          "description": "Java-alkalmazás létrehozása SDK használatával."
         },
         "partitioning": {
-          "title": "Partitioning Best Practices",
-          "description": "Learn how partitioning works."
+          "title": "Ajánlott particionálási eljárások",
+          "description": "Ismerje meg a particionálás működését."
         },
         "requestUnits": {
-          "title": "Request Units (RUs)",
-          "description": "Understand RU charges."
+          "title": "Kérelemegységek (RU-k)",
+          "description": "A kérelemegység-díjak ismertetése."
         }
       },
       "gremlin": {
         "dataModeling": {
-          "title": "Data Modeling",
-          "description": "Graph data modeling recommendations"
+          "title": "Adatmodellezés",
+          "description": "Gráfadatok modellezésével kapcsolatos javaslatok"
         },
         "partitioning": {
-          "title": "Partitioning Best Practices",
-          "description": "Learn how partitioning works"
+          "title": "Ajánlott particionálási eljárások",
+          "description": "Ismerje meg a particionálás működését"
         },
         "queryData": {
-          "title": "Query Data",
-          "description": "Querying data with Gremlin"
+          "title": "Adatok lekérdezése",
+          "description": "Adatok lekérdezése a Gremlinnel"
         }
       },
       "tables": {
         "whatIsTable": {
-          "title": "What is the Table API?",
-          "description": "Understand Azure Cosmos DB for Table and its features"
+          "title": "Mi a tábla-API?",
+          "description": "Ismerje meg az Azure Cosmos DB for Table használatát és funkcióit"
         },
         "migrate": {
-          "title": "Migrate your data",
-          "description": "Learn how to migrate your data"
+          "title": "Adatok áttelepítése",
+          "description": "Ismerje meg, hogyan telepítheti át az adatait"
         },
         "faq": {
-          "title": "Azure Cosmos DB for Table FAQs",
-          "description": "Common questions about Azure Cosmos DB for Table"
+          "title": "Azure Cosmos DB for Table GYIK",
+          "description": "Gyakori kérdések a Azure Cosmos DB for Table kapcsán"
         }
       }
     },
     "learningResources": {
       "shortcuts": {
-        "title": "Data Explorer keyboard shortcuts",
-        "description": "Learn keyboard shortcuts to navigate Data Explorer."
+        "title": "Adatkezelő billentyűparancsok",
+        "description": "Ismerje meg a Data Explorer navigálásához használható billentyűparancsokat."
       },
       "liveTv": {
-        "title": "Learn the Fundamentals",
-        "description": "Watch Azure Cosmos DB Live TV show introductory and how to videos."
+        "title": "Az alapok megismerése",
+        "description": "Nézze meg Azure Cosmos DB élő tv-műsor bevezető videóit és videóit."
       },
       "sql": {
         "sdk": {
-          "title": "Get Started using an SDK",
-          "description": "Learn about the Azure Cosmos DB SDK."
+          "title": "Az SDK használatának első lépései",
+          "description": "Tudnivalók a Azure Cosmos DB SDK-ról."
         },
         "migrate": {
-          "title": "Migrate Your Data",
-          "description": "Migrate data using Azure services and open-source solutions."
+          "title": "Adatok áttelepítése",
+          "description": "Adatok áttelepítése Azure-szolgáltatásokkal és nyílt forráskódú megoldásokkal."
         }
       },
       "mongo": {
         "nodejs": {
-          "title": "Build an app with Node.js",
-          "description": "Create a Node.js app."
+          "title": "Alkalmazás készítése Node.js használatával",
+          "description": "Hozzon létre egy Node.js alkalmazást."
         },
         "gettingStarted": {
-          "title": "Getting Started Guide",
-          "description": "Learn the basics to get started."
+          "title": "Első lépéseket ismertető útmutató",
+          "description": "Első lépésként ismerkedjen meg az alapokkal."
         }
       },
       "cassandra": {
         "createContainer": {
-          "title": "Create a Container",
-          "description": "Get to know the create a container options."
+          "title": "Tároló létrehozása",
+          "description": "Ismerje meg a tárolók létrehozásának lehetőségeit."
         },
         "throughput": {
-          "title": "Provision Throughput",
-          "description": "Learn how to configure throughput."
+          "title": "Átviteli sebesség kiosztása",
+          "description": "Útmutató az átviteli sebesség konfigurálásához."
         }
       },
       "gremlin": {
         "getStarted": {
-          "title": "Get Started ",
-          "description": "Create, query, and traverse using the Gremlin console"
+          "title": "Első lépések ",
+          "description": "Létrehozás, lekérdezés és bejárás a Gremlin-konzol használatával"
         },
         "importData": {
-          "title": "Import Graph Data",
-          "description": "Learn Bulk ingestion data using BulkExecutor"
+          "title": "Gráfadatok importálása",
+          "description": "Tömeges betöltési adatok megismerése a BulkExecutor használatával"
         }
       },
       "tables": {
         "dotnet": {
-          "title": "Build a .NET App",
-          "description": "How to access Azure Cosmos DB for Table from a .NET app."
+          "title": ".NET-alkalmazás létrehozása",
+          "description": "Az Azure Cosmos DB for Table elérése .NET-alkalmazásból."
         },
         "java": {
-          "title": "Build a Java App",
-          "description": "Create a Azure Cosmos DB for Table app with Java SDK "
+          "title": "Java-alkalmazás létrehozása",
+          "description": "Azure Cosmos DB for Table alkalmazás létrehozása Java SDK használatával "
         }
       }
     },
     "nextStepItems": {
       "postgres": {
-        "dataModeling": "Data Modeling",
-        "distributionColumn": "How to choose a Distribution Column",
-        "buildApps": "Build Apps with Python/Java/Django"
+        "dataModeling": "Adatmodellezés",
+        "distributionColumn": "Terjesztési oszlop kiválasztása",
+        "buildApps": "Alkalmazások készítése Python/Java/Django használatával"
       },
       "vcoreMongo": {
-        "migrateData": "Migrate Data",
-        "vectorSearch": "Build AI apps with Vector Search",
-        "buildApps": "Build Apps with Nodejs"
+        "migrateData": "Adatok áttelepítése",
+        "vectorSearch": "AI-alkalmazások létrehozása vektor keresés használatával",
+        "buildApps": "Alkalmazások létrehozása a Nodejs használatával"
       }
     },
     "learnMoreItems": {
       "postgres": {
-        "performanceTuning": "Performance Tuning",
-        "diagnosticQueries": "Useful Diagnostic Queries",
-        "sqlReference": "Distributed SQL Reference"
+        "performanceTuning": "Teljesítményhangolás",
+        "diagnosticQueries": "Hasznos diagnosztikai lekérdezések",
+        "sqlReference": "Elosztott SQL-referencia"
       },
       "vcoreMongo": {
-        "vectorSearch": "Vector Search",
-        "textIndexing": "Text Indexing",
-        "troubleshoot": "Troubleshoot common issues"
+        "vectorSearch": "Vektor keresés",
+        "textIndexing": "Szövegindexelés",
+        "troubleshoot": "A leggyakoribb problémák elhárítása"
       }
     },
     "fabric": {
-      "buildTitle": "Build your database",
-      "useTitle": "Use your database",
+      "buildTitle": "Adatbázis létrehozása",
+      "useTitle": "Saját adatbázis használata",
       "newContainer": {
-        "title": "New container",
-        "description": "Create a destination container to store your data"
+        "title": "Új tároló",
+        "description": "Céltároló létrehozása az adatok tárolásához"
       },
       "sampleData": {
-        "title": "Sample Data",
-        "description": "Load sample data in your database"
+        "title": "Mintaadatok",
+        "description": "Mintaadatok betöltése az adatbázisban"
       },
       "sampleVectorData": {
-        "title": "Sample Vector Data",
-        "description": "Load sample vector data with text-embedding-ada-002"
+        "title": "Mintavektoradatok",
+        "description": "Mintavektoradatok betöltése text-embedding-ada-002 használatával"
       },
       "appDevelopment": {
-        "title": "App development",
-        "description": "Start here to use an SDK to build your apps"
+        "title": "Alkalmazásfejlesztés",
+        "description": "Kezdje itt az alkalmazások SDK-val történő létrehozásához"
       },
       "sampleGallery": {
-        "title": "Sample Gallery",
-        "description": "Get real-world end-to-end samples"
+        "title": "Mintagyűjtemény",
+        "description": "Valós, teljes körű minták"
       }
     },
     "sampleDataDialog": {
-      "title": "Sample Data",
-      "startButton": "Start",
-      "createPrompt": "Create a container \"{{containerName}}\" and import sample data into it. This may take a few minutes.",
-      "creatingContainer": "Creating container \"{{containerName}}\"...",
-      "importingData": "Importing data into \"{{containerName}}\"...",
-      "success": "Successfully created \"{{containerName}}\" with sample data.",
-      "errorContainerExists": "The container \"{{containerName}}\" in database \"{{databaseName}}\" already exists. Please delete it and retry.",
-      "errorCreateContainer": "Failed to create container: {{error}}",
-      "errorImportData": "Failed to import data: {{error}}"
+      "title": "Mintaadatok",
+      "startButton": "Kezdés",
+      "createPrompt": "Hozzon létre egy {{containerName}} tárolót, és importálja a mintaadatokat. Ez több percet is igénybe vehet.",
+      "creatingContainer": "A(z) {{containerName}} tároló létrehozása...",
+      "importingData": "Adatok importálása a következőbe: {{containerName}}...",
+      "success": "A(z) {{containerName}} sikeresen létrehozva mintaadatokkal.",
+      "errorContainerExists": "A(z) {{containerName}} tároló már létezik a(z) {{databaseName}} adatbázisban. Törölje, majd próbálkozzon újra.",
+      "errorCreateContainer": "Nem sikerült létrehozni a tárolót: {{error}}",
+      "errorImportData": "Nem sikerült az adatok importálása: {{error}}"
+    }
+  },
+  "contextMenu": {
+    "newContainer": "Új {{containerName}}",
+    "restoreContainer": "{{containerName}} visszaállítása",
+    "deleteDatabase": "{{databaseName}} törlése",
+    "deleteContainer": "{{containerName}} törlése",
+    "newSqlQuery": "Új SQL-lekérdezés",
+    "newQuery": "Új lekérdezés",
+    "openMongoShell": "Mongo-felület megnyitása",
+    "newShell": "Új felület",
+    "openCassandraShell": "Cassandra-felület megnyitása",
+    "newStoredProcedure": "Új tárolt eljárás",
+    "newUdf": "Új UDF",
+    "newTrigger": "Új eseményindító",
+    "deleteStoredProcedure": "Tárolt eljárás törlése",
+    "deleteTrigger": "Trigger törlése",
+    "deleteUdf": "Felhasználó által definiált függvény törlése"
+  },
+  "tabs": {
+    "documents": {
+      "newItem": "Új elem",
+      "newDocument": "Új dokumentum",
+      "uploadItem": "Elem feltöltése",
+      "applyFilter": "Szűrő alkalmazása",
+      "unsavedChanges": "Nem mentett módosítások",
+      "unsavedChangesMessage": "A nem mentett módosítások elvesznek. Folytatja?",
+      "createDocumentFailed": "A dokumentum létrehozása nem sikerült",
+      "updateDocumentFailed": "A dokumentum frissítése nem sikerült",
+      "documentDeleted": "A dokumentum törlése sikerült.",
+      "deleteDocumentDialogTitle": "Dokumentum törlése",
+      "deleteDocumentsDialogTitle": "Dokumentumok törlése",
+      "throttlingError": "Néhány dokumentum törlése sebességkorlátozási hiba miatt nem sikerült. Próbálkozzon újra később. A jövőben a hasonló esetek elkerülése érdekében fontolja meg a tároló vagy az adatbázis átviteli sebességének növelését.",
+      "deleteFailed": "Nem sikerült törölni a dokumentum(oka)t ({{error}})",
+      "missingShardProperty": "A dokumentumból hiányzik a szegmens tulajdonság: {{partitionKeyProperty}}",
+      "refreshGridFailed": "Nem sikerült frissíteni a dokumentumrácsot",
+      "confirmDelete": "Biztosan törli a következőt: {{documentName}}?",
+      "confirmDeleteTitle": "Törlés megerősítése",
+      "selectedItems": "a kijelölt {{count}} elemek",
+      "selectedItem": "a kijelölt elem",
+      "selectedDocuments": "a kijelölt {{count}} dokumentumok",
+      "selectedDocument": "a kijelölt dokumentum",
+      "deleteDocumentFailedLog": "Nem sikerült törölni a(z) {{statusCode}} állapotkóddal rendelkező {{documentId}} dokumentumot",
+      "deleteSuccessLog": "{{count}} dokumentum törlése sikerült",
+      "deleteThrottledLog": "Nem sikerült törölni {{count}} dokumentumot a „Túl nagy kérés” (429) hiba miatt. Újrapróbálkozás...",
+      "missingShardKeyLog": "Nem sikerült menteni az új dokumentumot: a dokumentum szegmenskulcsa nincs megadva",
+      "filterTooltip": "Írjon be egy lekérdezési predikátumot, vagy válasszon egyet a listából.",
+      "loadMore": "Továbbiak betöltése",
+      "documentEditor": "Dokumentumszerkesztő",
+      "savedFilters": "Mentett szűrők",
+      "defaultFilters": "Alapértelmezett szűrők",
+      "abort": "Megszakítás",
+      "deletingDocuments": "{{count}} dokumentum törlése",
+      "deletedDocumentsSuccess": "{{count}} dokumentum törlése sikerült.",
+      "deleteAborted": "A dokumentum(ok) törlése megszakadt.",
+      "failedToDeleteDocuments": "Nem sikerült törölni {{count}} dokumentumot.",
+      "requestTooLargeBase": "Néhány törlési kérés sikertelen volt a „Túl nagy kérés” kivétel (429) miatt",
+      "retriedSuccessfully": "de a rendszer sikeresen újrapróbálkozott.",
+      "retryingNow": "Újrapróbálkozás most.",
+      "increaseThroughputTip": "A jövőben a hasonló esetek elkerülése érdekében fontolja meg a tároló vagy az adatbázis átviteli sebességének növelését.",
+      "numberOfSelectedDocuments": "A kijelölt dokumentumok száma: {{count}}",
+      "mongoFilterPlaceholder": "Írjon be egy lekérdezési feltételt (pl. {\"id\":\"foo\"}), válasszon egyet a legördülő listából, vagy hagyja üresen az összes dokumentum lekérdezéséhez.",
+      "sqlFilterPlaceholder": "Írjon be egy lekérdezési feltételt (pl. WHERE c.id=\"1\"), válasszon egyet a legördülő listából, vagy hagyja üresen az összes dokumentum lekérdezéséhez.",
+      "error": "Hiba",
+      "warning": "Figyelmeztetés"
+    },
+    "query": {
+      "executeQuery": "Lekérdezés végrehajtása",
+      "executeSelection": "Kijelölés végrehajtása",
+      "saveQuery": "Lekérdezés mentése",
+      "downloadQuery": "Lekérdezés letöltése",
+      "cancelQuery": "Lekérdezés megszakítása",
+      "openSavedQueries": "Mentett lekérdezések megnyitása",
+      "vertical": "Ágazat",
+      "horizontal": "Vízszintes",
+      "view": "Megtekintés",
+      "editingQuery": "Lekérdezés szerkesztése"
+    },
+    "storedProcedure": {
+      "id": "Tárolt eljárás azonosítója",
+      "idPlaceholder": "Adja meg az új tárolt eljárás azonosítóját",
+      "idAriaLabel": "Tárolt eljárás azonosítója",
+      "body": "Tárolt eljárás törzse",
+      "bodyAriaLabel": "Tárolt eljárás törzse",
+      "successfulExecution": "A tárolt eljárás sikeres végrehajtása",
+      "resultAriaLabel": "Tárolt eljárás végrehajtásának eredménye",
+      "logsAriaLabel": "Tárolt eljárásnaplók végrehajtása",
+      "errors": "Hibák:",
+      "errorDetailsAriaLabel": "Hiba részleteinek hivatkozása",
+      "moreDetails": "További részletek",
+      "consoleLogTab": "console.log"
+    },
+    "trigger": {
+      "id": "Eseményindító azonosítója",
+      "idPlaceholder": "Adja meg az új eseményindító azonosítóját",
+      "type": "Eseményindító típusa",
+      "operation": "Triggerművelet",
+      "body": "Triggertörzs",
+      "bodyAriaLabel": "Eseményindító törzse",
+      "pre": "Előzetes",
+      "post": "Közzététel",
+      "all": "Az összes",
+      "operationCreate": "Létrehozás",
+      "operationDelete": "Törlés",
+      "operationReplace": "Lecserélés"
+    },
+    "udf": {
+      "id": "Felhasználó által meghatározott függvény azonosítója",
+      "idPlaceholder": "Adja meg az új, felhasználó által meghatározott függvény azonosítóját",
+      "body": "Felhasználó által meghatározott függvény törzse",
+      "bodyAriaLabel": "Felhasználó által meghatározott függvény törzse"
+    },
+    "conflicts": {
+      "unsavedChanges": "Nem mentett módosítások",
+      "changesWillBeLost": "Az összes módosítás elveszik. Folytatja?",
+      "resolveConflictFailed": "Az ütközés feloldása meghiúsult",
+      "deleteConflictFailed": "Az ütközés törlése nem sikerült",
+      "refreshGridFailed": "Nem sikerült frissíteni a dokumentumrácsot"
+    },
+    "mongoShell": {
+      "title": "Mongo-felület"
+    }
+  },
+  "panes": {
+    "deleteDatabase": {
+      "panelTitle": "A(z) {{databaseName}} törlése",
+      "warningMessage": "Figyelem! A végrehajtani kívánt művelet nem vonható vissza. Ha folytatja, úgy véglegesen törli az erőforrást és annak minden gyermekerőforrását.",
+      "confirmPrompt": "Megerősítés a(z) {{databaseName}}-azonosító (név) beírásával",
+      "inputMismatch": "A(z) {{databaseName}} bemenet {{input}} neve nem egyezik a kijelölt {{databaseName}} {{selectedId}} értékével",
+      "feedbackTitle": "Segítsen a Azure Cosmos DB továbbfejlesztésében!",
+      "feedbackReason": "Mi a(z) {{databaseName}} törlésének oka?"
+    },
+    "deleteCollection": {
+      "panelTitle": "A(z) {{collectionName}} törlése",
+      "confirmPrompt": "Megerősítés a(z) {{collectionName}} azonosítójának beírásával",
+      "inputMismatch": "A(z) {{input}} bemeneti azonosító nem egyezik a kijelölt {{selectedId}} értékével",
+      "feedbackTitle": "Segítsen a Azure Cosmos DB továbbfejlesztésében!",
+      "feedbackReason": "Mi a(z) {{collectionName}} törlésének oka?"
+    },
+    "addDatabase": {
+      "databaseLabel": "{{suffix}} adatbázis",
+      "databaseIdLabel": "Adatbázis-azonosító",
+      "keyspaceIdLabel": "Kulcstér azonosítója",
+      "databaseIdPlaceholder": "Írjon be egy új {{databaseLabel}}-azonosítót",
+      "databaseTooltip": "A(z) {{databaseLabel}} egy vagy több {{collectionsLabel}} logikai tárolója",
+      "shareThroughput": "Átviteli sebesség megosztása az összes {{collectionsLabel}} között",
+      "shareThroughputTooltip": "A(z) {{databaseLabel}} szinten kiépített átviteli sebesség meg lesz osztva az összes {{collectionsLabel}} között a(z) {{databaseLabel}} keretein belül.",
+      "greaterThanError": "Az Autopilot átviteli sebességéhez olyan értéket adjon meg, ami nagyobb, mint {{minValue}}",
+      "acknowledgeSpendError": "Nyugtázza a becsült {{period}} ráfordítást."
+    },
+    "addCollection": {
+      "createNew": "Új létrehozása",
+      "useExisting": "Meglévő használata",
+      "databaseTooltip": "Az adatbázis hasonló a névtérhez. Ez a(z) {{collectionName}}-készlet felügyeleti egysége.",
+      "shareThroughput": "Átviteli sebesség megosztása az összes {{collectionName}} között",
+      "shareThroughputTooltip": "Az adatbázis szintjén konfigurált átviteli sebesség az összes {{collectionName}} között meg lesz osztva az adatbázisban.",
+      "collectionIdLabel": "{{collectionName}}-azonosító",
+      "collectionIdTooltip": "A(z) {{collectionName}} egyedi azonosítója, amelyet a rendszer az azonosítóalapú útválasztás során használ a REST-ben és az összes SDK-ban.",
+      "collectionIdPlaceholder": "például {{collectionName}}1",
+      "collectionIdAriaLabel": "{{collectionName}}-azonosító, {{collectionName}}1. példa",
+      "existingDatabaseAriaLabel": "Meglévő {{databaseName}}-azonosító kiválasztása",
+      "existingDatabasePlaceholder": "Meglévő {{databaseName}}-azonosító kiválasztása",
+      "indexing": "Indexelés",
+      "turnOnIndexing": "Indexelés bekapcsolása",
+      "automatic": "Automatikus",
+      "turnOffIndexing": "Indexelés kikapcsolása",
+      "off": "Ki",
+      "sharding": "Horizontális skálázás",
+      "shardingTooltip": "A horizontálisan skálázott gyűjtemények több replikakészletre (szegmensre) osztják fel az adatokat a korlátlan méretezhetőség érdekében. A horizontálisan skálázott gyűjtemények esetében ki kell választani egy szegmenskulcsot (mezőt) az adatok egyenletes elosztásához.",
+      "unsharded": "Horizontálisan nem skálázott",
+      "unshardedLabel": "Horizontálisan nem skálázott (20 GB-os korlát)",
+      "sharded": "Horizontálisan skálázott",
+      "addPartitionKey": "Hierarchikus partíciókulcs hozzáadása",
+      "hierarchicalPartitionKeyInfo": "Ez a funkció lehetővé teszi, hogy akár három kulcsszinttel particionálja az adatokat a jobb adatelosztás érdekében. A használatához .NET V3, Java V4 SDK vagy előzetes verziójú JavaScript V3 SDK szükséges.",
+      "provisionDedicatedThroughput": "Dedikált átviteli sebesség kiépítése ehhez: {{collectionName}}",
+      "provisionDedicatedThroughputTooltip": "Opcionálisan dedikált átviteli sebességet is kioszthat egy {{collectionName}} elemhez egy kiépített átviteli sebességgel rendelkező adatbázison belül. Ez a dedikált átviteli sebesség-mennyiség nem lesz megosztva a kulcstér más {{collectionNamePlural}} elemeivel, és nem számít bele az adatbázis kiosztott átviteli sebességbe. Ezt az átviteli sebességet az adatbázis szintjén kiosztott átviteli sebességen felül számlázzuk.",
+      "uniqueKeysPlaceholderMongo": "Vesszővel elválasztott elérési utak, például firstName,address.zipCode",
+      "uniqueKeysPlaceholderSql": "Vesszővel elválasztott elérési utak, például /firstName,/address/zipCode",
+      "addUniqueKey": "Egyedi kulcs hozzáadása",
+      "enableAnalyticalStore": "Elemzési tár engedélyezése",
+      "disableAnalyticalStore": "Elemzési tár letiltása",
+      "on": "Be",
+      "analyticalStoreSynapseLinkRequired": "Azure Synapse Link szükséges a(z) {{collectionName}} elemzési tár létrehozásához. Engedélyezze a Synapse Link szolgáltatást ehhez a Cosmos DB fiókhoz.",
+      "enable": "Engedélyezés",
+      "containerVectorPolicy": "Tárolóvektor-házirend",
+      "containerFullTextSearchPolicy": "Tároló teljes szöveges keresési szabályzata",
+      "advanced": "Speciális",
+      "mongoIndexingTooltip": "Az _id mező alapértelmezés szerint indexelve van. Egy helyettesítő karakteres index létrehozása az összes mezőhöz optimalizálja a lekérdezéseket; ez ajánlott a fejlesztéshez.",
+      "createWildcardIndex": "Helyettesítő karakteres index létrehozása az összes mezőhöz",
+      "legacySdkCheckbox": "Az alkalmazásom egy régebbi Cosmos .NET- vagy Java SDK-verziót (.NET V1 vagy Java V2) használ",
+      "legacySdkInfo": "A régebbi SDK-kkal való kompatibilitás biztosítása érdekében a létrehozott tároló egy örökölt particionálási sémát fog használni, amely legfeljebb 101 bájt méretű partíciókulcs-értékeket támogat. Ha ez engedélyezve van, nem használhat hierarchikus partíciókulcsokat.",
+      "indexingOnInfo": "A dokumentumok összes tulajdonsága alapértelmezés szerint indexelve lesz a rugalmas és hatékony lekérdezések érdekében.",
+      "indexingOffInfo": "Az indexelés ki lesz kapcsolva. Akkor ajánlott, ha nem kell lekérdezéseket futtatnia, vagy csak kulcsérték-műveletekkel rendelkezik.",
+      "indexingOffWarning": "Ha úgy hozza létre ezt a tárolót, hogy az indexelés ki van kapcsolva, nem fogja tudni módosítani az indexelési szabályzatot. Az indexelési módosítások csak indexelési szabályzattal rendelkező tárolókon engedélyezettek.",
+      "acknowledgeSpendErrorMonthly": "Nyugtázza a becsült havi ráfordítást.",
+      "acknowledgeSpendErrorDaily": "Nyugtázza a becsült napi ráfordítást.",
+      "unshardedMaxRuError": "A horizontálisan nem skálázott gyűjtemények legfeljebb 10 000 kérelemegységet támogatnak",
+      "acknowledgeShareThroughputError": "Nyugtázza a dedikált átviteli sebesség becsült költségét.",
+      "vectorPolicyError": "Javítsa ki a tároló vektorházirendjének hibáit",
+      "fullTextSearchPolicyError": "Javítsa ki a tároló teljes szöveges keresési szabályzatának hibáit",
+      "addingSampleDataSet": "Mintaadatkészlet hozzáadása"
+    },
+    "addCollectionUtility": {
+      "shardKeyTooltip": "A szegmenskulcs (mező) az adatok több replikakészletre (szegmensre) való felosztására szolgál a korlátlan méretezhetőség érdekében. Kritikus fontosságú olyan mezőt választani, amely egyenletesen osztja el az adatokat.",
+      "partitionKeyTooltip": "A(z) {{partitionKeyName}} automatikusan elosztja az adatokat a partíciók között a méretezhetőség érdekében. Válasszon egy olyan tulajdonságot a JSON-dokumentumban, amely számos értékkel rendelkezik, és egyenletesen osztja el a kérések mennyiségét.",
+      "partitionKeyTooltipSqlSuffix": " A kisméretű olvasásigényes, vagy bármilyen méretű írásigényes számítási feladatok esetében az azonosító gyakran jó választás.",
+      "shardKeyLabel": "Szegmenskulcs",
+      "partitionKeyLabel": "Partíciókulcs",
+      "shardKeyPlaceholder": "például categoryId",
+      "partitionKeyPlaceholderDefault": "például /address",
+      "partitionKeyPlaceholderFirst": "Kötelező – első partíciókulcs, például /TenantId",
+      "partitionKeyPlaceholderSecond": "második partíciókulcs, például /UserId",
+      "partitionKeyPlaceholderThird": "harmadik partíciókulcs, például /SessionId",
+      "partitionKeyPlaceholderGraph": "például, /address/zipCode",
+      "uniqueKeysTooltip": "Az egyedi kulcsok lehetővé teszik a fejlesztők számára, hogy adatintegritási réteget adjanak az adatbázisukhoz. Egy tároló létrehozásakor egy egyedi kulcsszabályzat létrehozásával biztosítja egy vagy több érték egyediségét partíciókulcsonként.",
+      "uniqueKeysLabel": "Egyedi kulcsok",
+      "analyticalStoreLabel": "Elemzési tár",
+      "analyticalStoreTooltip": "Engedélyezze az elemzési tár képességet, hogy közel valós idejű elemzéseket végezhessen az operatív adatokon anélkül, hogy az hatással lenne a tranzakciós számítási feladatok teljesítményére.",
+      "analyticalStoreDescription": "Engedélyezze az elemzési tár képességet, hogy közel valós idejű elemzéseket végezhessen az operatív adatokon anélkül, hogy az hatással lenne a tranzakciós számítási feladatok teljesítményére.",
+      "vectorPolicyTooltip": "Ismertesse az adataiban a vektorokat tartalmazó tulajdonságokat, hogy elérhetővé lehessen tenni azokat hasonlósági lekérdezésekhez."
+    },
+    "settings": {
+      "pageOptions": "Lapbeállítások",
+      "pageOptionsDescription": "Válassza az Egyéni lehetőséget a megjelenítendő lekérdezési eredmények rögzített mennyiségének megadásához, vagy válassza a Korlátlan lehetőséget, ha oldalanként annyi lekérdezési eredményt szeretne megjeleníteni.",
+      "queryResultsPerPage": "Lekérdezési eredmények oldalanként",
+      "queryResultsPerPageTooltip": "Adja meg az oldalanként megjelenítendő lekérdezési eredmények számát.",
+      "customQueryItemsPerPage": "Egyéni lekérdezéselemek oldalanként",
+      "custom": "Egyéni",
+      "unlimited": "Korlátlan",
+      "entraIdRbac": "Entra ID RBAC engedélyezése",
+      "entraIdRbacDescription": "Válassza az Automatikus lehetőséget az Entra ID RBAC automatikus engedélyezéséhez. Igaz/Hamis az Entra ID RBAC engedélyezésének/letiltásának kényszerítéséhez.",
+      "true": "Igaz",
+      "false": "Hamis",
+      "regionSelection": "Régió kiválasztása",
+      "regionSelectionDescription": "A Cosmos-ügyfél által a fiók eléréséhez használt régiót módosítja.",
+      "selectRegion": "Régió kiválasztása",
+      "selectRegionTooltip": "Módosítja az ügyfélműveletek végrehajtásához használt fiókvégpontot.",
+      "globalDefault": "Globális (alapértelmezett)",
+      "readWrite": "(Olvasás/írás)",
+      "read": "(Olvasás)",
+      "queryTimeout": "Lekérdezés időkorlátja",
+      "queryTimeoutDescription": "Ha egy lekérdezés eléri a megadott időkorlátot, megjelenik egy, a lekérdezés megszakítására szolgáló előugró ablak, kivéve, ha engedélyezve van az automatikus megszakítás.",
+      "enableQueryTimeout": "Lekérdezés időtúllépésének engedélyezése",
+      "queryTimeoutMs": "Lekérdezés időkorlátja (ms)",
+      "automaticallyCancelQuery": "Lekérdezés automatikus megszakítása időtúllépés után",
+      "ruLimit": "RU-korlát",
+      "ruLimitDescription": "Ha egy lekérdezés túllépi a konfigurált RU-korlátot, a rendszer megszakítja a lekérdezést.",
+      "enableRuLimit": "RU-korlát bekapcsolása",
+      "ruLimitLabel": "RU-korlát (RU)",
+      "defaultQueryResults": "Lekérdezési eredmények alapértelmezett nézete",
+      "defaultQueryResultsDescription": "Válassza ki a lekérdezés eredményeinek megjelenítésekor használandó alapértelmezett nézetet.",
+      "retrySettings": "Ismétlések beállításai",
+      "retrySettingsDescription": "Szabályozott kérelmekhez társított újrapróbálkozási szabályzat a CosmosDB-lekérdezések során.",
+      "maxRetryAttempts": "Újrapróbálkozások maximális száma",
+      "maxRetryAttemptsTooltip": "A kérelmekhez végrehajtandó újrapróbálkozások maximális száma. Alapértelmezett érték: 9.",
+      "fixedRetryInterval": "Rögzített újrapróbálkozási időköz (ms)",
+      "fixedRetryIntervalTooltip": "Kijavítottuk az egyes újrapróbálkozások közötti várakozáshoz ezredmásodpercben megadott újrapróbálkozási időközt amely, figyelmen kívül hagyta a válasz részeként visszaadott retryAfter értéket. Az alapértelmezett érték 0 ezredmásodperc.",
+      "maxWaitTime": "Maximális várakozási idő (s)",
+      "maxWaitTimeTooltip": "Maximális várakozási idő másodpercben, amíg a rendszer egy kérelemre várakozik, amíg az újrapróbálkozások történnek. Alapértelmezett érték: 30 másodperc.",
+      "enableContainerPagination": "Tároló oldalakra tördelésének engedélyezése",
+      "enableContainerPaginationDescription": "Egyszerre 50 tároló betöltése. A tárolók lekérése jelenleg nem alfanumerikus sorrendben történik.",
+      "enableCrossPartitionQuery": "Partíciók közötti lekérdezés engedélyezése",
+      "enableCrossPartitionQueryDescription": "Lekérdezés végrehajtása során több kérés is küldhető. Egynél több kérésre van szükség, ha a lekérdezés hatóköre nincs egyetlen partíciókulcs-értékre korlátozva.",
+      "maxDegreeOfParallelism": "Párhuzamosság maximális foka",
+      "maxDegreeOfParallelismDescription": "Lekérdezi vagy beállítja az egyidejűleg futtatott műveletek számát az ügyféloldalon a párhuzamos lekérdezés-végrehajtás során. A pozitív tulajdonságérték az egyidejű műveletek számát a beállított értékre korlátozza. Ha 0-nál kisebb értékre van állítva, a rendszer automatikusan eldönti az egyidejű futtatandó műveletek számát.",
+      "maxDegreeOfParallelismQuery": "Lekérdezés a párhuzamosság maximális mértékéig.",
+      "priorityLevel": "Prioritásszint",
+      "priorityLevelDescription": "Beállítja a prioritási szintet a Data Explorerből érkező adatsík-kérelmekhez prioritásalapú végrehajtás használatakor. Ha a Nincs érték van kiválasztva, a Data Explorer nem adja meg a prioritási szintet, és a kiszolgálóoldali alapértelmezett prioritási szintet fogja használni.",
+      "displayGremlinQueryResults": "Gremlin-lekérdezés eredményeinek megjelenítése a következőként:",
+      "displayGremlinQueryResultsDescription": "Válassza a Graph lehetőséget a lekérdezés eredményeinek automatikusan gráfként, vagy a JSON lehetőséget JSON-ként való megjelenítéséhez.",
+      "graph": "Gráf",
+      "json": "JSON",
+      "graphAutoVisualization": "Gráf automatikus vizualizációja",
+      "enableSampleDatabase": "Mintaadatbázis engedélyezése",
+      "enableSampleDatabaseDescription": "Ez egy mintaadatbázis és -gyűjtemény szintetikus termékadatokkal, amelyeket NoSQL-lekérdezésekkel való felderítésre használhat. Ez egy másik adatbázisként jelenik meg a Data Explorer felhasználói felületén, amelyet a Microsoft hoz létre és tart karban díjmentesen.",
+      "enableSampleDbAriaLabel": "Mintaadatbázis engedélyezése a lekérdezések feltárásához",
+      "guidRepresentation": "GUID-ábrázolás",
+      "guidRepresentationDescription": "A MongoDB GuidRepresentation tulajdonsága arra utal, hogy a globálisan egyedi azonosítók (GUID-ok) szerializálása és deszerializálása hogyan történik BSON-dokumentumokban való tárolás esetén. Ez minden dokumentumműveletre érvényes lesz.",
+      "advancedSettings": "Speciális beállítások",
+      "ignorePartitionKey": "Partíciókulcs figyelmen kívül hagyása a dokumentum frissítésekor",
+      "ignorePartitionKeyTooltip": "Ha be van jelölve, a rendszer nem használja a partíciókulcs értékét a dokumentum megkereséséhez a frissítési műveletek során. Csak akkor használja, ha a dokumentumfrissítések rendellenes partíciókulcs miatt meghiúsulnak.",
+      "clearHistory": "Előzmények törlése",
+      "clearHistoryConfirm": "Biztosan folytatja?",
+      "clearHistoryDescription": "Ez a művelet törli a fiók összes testreszabását ebben a böngészőben, beleértve a következőket:",
+      "clearHistoryTabLayout": "A testre szabott lapelrendezés alaphelyzetbe állítása, beleértve az elválasztóhelyeket is",
+      "clearHistoryTableColumns": "A táblázat oszlopbeállításainak törlése, beleértve az egyéni oszlopokat is",
+      "clearHistoryFilters": "Szűrőelőzmények törlése",
+      "clearHistoryRegion": "Régiókiválasztás visszaállítása globálisra",
+      "increaseValueBy1000": "Érték növelése 1000-rel",
+      "decreaseValueBy1000": "Érték csökkentése 1000-rel",
+      "none": "Nincs",
+      "low": "Alacsony",
+      "high": "Magas",
+      "automatic": "Automatikus",
+      "enhancedQueryControl": "Továbbfejlesztett lekérdezésvezérlő",
+      "enableQueryControl": "Lekérdezésvezérlő engedélyezése",
+      "explorerVersion": "Explorer verziója",
+      "accountId": "Fiókazonosító",
+      "sessionId": "Munkamenet-azonosító",
+      "popupsDisabledError": "Nem sikerült hitelesítést létrehozni ehhez a fiókhoz, mert a böngészőben le vannak tiltva az előugró ablakok.\nEngedélyezze az előugró ablakokat ehhez a webhelyhez, majd kattintson az Entra ID bejelentkezés gombra",
+      "failedToAcquireTokenError": "Nem sikerült automatikusan beszerezni az engedélyezési jogkivonatot. Kattintson az Entra ID bejelentkezés gombra az Entra ID RBAC-műveletek engedélyezéséhez"
+    },
+    "saveQuery": {
+      "panelTitle": "Lekérdezés mentése",
+      "setupCostMessage": "Megfelelőségi okokból a lekérdezéseket egy tárolóba mentjük az Azure Cosmos-fiókjában, egy különálló, {{databaseName}} nevű adatbázisban. A folytatáshoz létre kell hoznunk egy tárolót a fiókjában. A becsült további költség naponta 0,77 USD.",
+      "completeSetup": "Beállítás befejezése",
+      "noQueryNameError": "Nincs megadva lekérdezésnév",
+      "invalidQueryContentError": "Érvénytelen lekérdezési tartalom megadva",
+      "failedToSaveQueryError": "A(z) {{queryName}} lekérdezés mentése nem sikerült",
+      "failedToSetupContainerError": "Nem sikerült beállítani tárolót a mentett lekérdezésekhez",
+      "accountNotSetupError": "Nem sikerült menteni a lekérdezést: a fiók nincs beállítva a lekérdezések mentéséhez",
+      "name": "Név"
+    },
+    "loadQuery": {
+      "noFileSpecifiedError": "Nincs megadva fájl",
+      "failedToLoadQueryError": "Nem sikerült betölteni a lekérdezést",
+      "failedToLoadQueryFromFileError": "Nem sikerült betölteni a lekérdezést (z) {{fileName}} fájlból",
+      "selectFilesToOpen": "Lekérdezési dokumentum kiválasztása",
+      "browseFiles": "Tallózás"
+    },
+    "executeStoredProcedure": {
+      "enterInputParameters": "Adja meg a bemeneti paramétereket (ha vannak ilyenek)",
+      "key": "Kulcs",
+      "param": "Paraméter",
+      "partitionKeyValue": "Partíciókulcs értéke",
+      "value": "Érték",
+      "addNewParam": "Új paraméter hozzáadása",
+      "addParam": "Paraméter hozzáadása",
+      "deleteParam": "Paraméter törlése",
+      "invalidParamError": "Érvénytelen paraméter megadva: {{invalidParam}}",
+      "invalidParamConsoleError": "Érvénytelen paraméter megadva: a(z) {{invalidParam}} nem érvényes konstansérték",
+      "stringType": "Sztring",
+      "customType": "Egyéni"
+    },
+    "uploadItems": {
+      "noFilesSpecifiedError": "Nincs megadva fájl. Adjon meg legalább egy fájlt.",
+      "selectJsonFiles": "JSON-fájlok kiválasztása",
+      "selectJsonFilesTooltip": "Jelöljön ki egy vagy több feltöltendő JSON-fájlt. Minden fájl egyetlen JSON-dokumentumot vagy egy JSON-dokumentumtömböt tartalmazhat. Az egyes feltöltési műveletek összes fájljának összesített méretének 2 MB alatt kell lennie. Nagyobb adatkészletek esetében több feltöltési műveletet is végrehajthat.",
+      "fileNameColumn": "FÁJLNÉV",
+      "statusColumn": "ÁLLAPOT",
+      "uploadStatus": "{{numSucceeded}} létrehozva, {{numThrottled}} szabályozva, {{numFailed}} hiba",
+      "uploadedFiles": "Feltöltött fájlok"
+    },
+    "copyNotebook": {
+      "copyFailedError": "Nem sikerült a(z) {{name}} másolása ide: {{destination}}",
+      "uploadFailedError": "Nem sikerült a(z) {{name}} feltöltése",
+      "location": "Hely",
+      "locationAriaLabel": "Hely",
+      "selectLocation": "Jegyzetfüzet másolási helyének kiválasztása",
+      "name": "Név"
+    },
+    "publishNotebook": {
+      "publishFailedError": "Nem sikerült a(z) {{notebookName}} közzététele a katalógusban",
+      "publishDescription": "Közzétételkor ez a jegyzetfüzet megjelenik a Azure Cosmos DB jegyzetfüzetek nyilvános katalógusában. A közzététel előtt győződjön meg arról, hogy eltávolította a bizalmas adatokat vagy kimeneteket.",
+      "publishPrompt": "Közzéteszi és megosztja a(z) {{name}} dokumentumot a katalógusban?",
+      "coverImage": "Borítókép",
+      "coverImageUrl": "Borítókép URL-címe",
+      "name": "Név",
+      "description": "Leírás",
+      "tags": "Címkék",
+      "tagsPlaceholder": "Nem kötelező címke 1, nem kötelező címke 2",
+      "preview": "Előzetes verzió",
+      "urlType": "URL-cím",
+      "customImage": "Egyéni rendszerkép",
+      "takeScreenshot": "Képernyőkép készítése",
+      "useFirstDisplayOutput": "Első megjelenítési kimenet használata",
+      "failedToCaptureOutput": "Nem sikerült rögzíteni az első kimenetet",
+      "outputDoesNotExist": "A kimenet nem létezik egyik cellához sem.",
+      "failedToConvertError": "Nem sikerült a(z) {{fileName}} base64 formátumra való konvertálása",
+      "failedToUploadError": "Nem sikerült a(z) {{fileName}} feltöltése"
+    },
+    "changePartitionKey": {
+      "failedToStartError": "Nem sikerült elindítani az adatátviteli feladatot",
+      "suboptimalPartitionKeyError": "Figyelmeztetés: A rendszer úgy észlelte, hogy a gyűjtemény valószínűleg nem optimális partíciókulcsot használ",
+      "description": "A tároló partíciókulcsának módosításakor létre kell hoznia egy céltárolót a megfelelő partíciókulccsal. Kiválaszthat egy meglévő céltárolót is.",
+      "sourceContainerId": "Forrás {{collectionName}}-azonosítója",
+      "destinationContainerId": "Cél {{collectionName}}-azonosítója",
+      "collectionIdTooltip": "A(z) {{collectionName}} egyedi azonosítója, amelyet a rendszer az azonosítóalapú útválasztás során használ a REST-ben és az összes SDK-ban.",
+      "collectionIdPlaceholder": "például {{collectionName}}1",
+      "collectionIdAriaLabel": "{{collectionName}}-azonosító, {{collectionName}}1. példa",
+      "existingContainers": "Meglévő tárolók",
+      "partitionKeyWarning": "A céltároló még nem létezhet. A Data Explorer egy új céltárolót hoz létre."
+    },
+    "cassandraAddCollection": {
+      "keyspaceLabel": "Kulcstér neve",
+      "keyspaceTooltip": "Válasszon ki egy meglévő kulcsteret, vagy adjon meg egy új kulcstér-azonosítót.",
+      "tableIdLabel": "A tábla létrehozásához írja be a CQL parancsot.",
+      "enterTableId": "Táblaazonosító megadása",
+      "tableSchemaAriaLabel": "Táblaséma",
+      "provisionDedicatedThroughput": "Dedikált átviteli sebesség kiépítése ehhez a táblához",
+      "provisionDedicatedThroughputTooltip": "Opcionálisan dedikált átviteli sebességet is kioszthat egy táblához egy kiépített átviteli sebességgel rendelkező kulcstéren belül. Ez a dedikált átviteli sebesség nem lesz megosztva a kulcstér más tábláival, és nem számít bele a kulcstérhez kiosztott átviteli sebességbe. Ezt az átviteli sebességet a kulcstér szintjén kiosztott átviteli sebességen felül számlázzuk."
+    },
+    "tables": {
+      "addProperty": "Tulajdonság hozzáadása",
+      "addRow": "Sor hozzáadása",
+      "addEntity": "Entitás hozzáadása",
+      "back": "vissza",
+      "nullFieldsWarning": "Figyelmeztetés: A null értékű mezők nem jelennek meg szerkesztésre.",
+      "propertyEmptyError": "A(z) {{property}} nem lehet üres. Adjon meg egy értéket a(z) {{property}} tulajdonsághoz",
+      "whitespaceError": "a(z) {{property}} nem rendelkezhet szóközzel. Adjon meg egy szóköz nélküli értéket a(z) {{property}} számára",
+      "propertyTypeEmptyError": "A tulajdonságtípus nem lehet üres. Válasszon típust a(z) {{property}}tulajdonság legördülő listájából"
+    },
+    "tableQuerySelect": {
+      "selectColumns": "Válassza ki a lekérdezni kívánt oszlopokat.",
+      "availableColumns": "Elérhető oszlopok"
+    },
+    "tableColumnSelection": {
+      "selectColumns": "Válassza ki, hogy mely oszlopok jelenjenek meg a tároló elemeinek nézetében.",
+      "searchFields": "Mezők keresése",
+      "reset": "Alaphelyzetbe állítás",
+      "partitionKeySuffix": " (partíciókulcs)"
+    },
+    "newVertex": {
+      "addProperty": "Tulajdonság hozzáadása"
+    },
+    "addGlobalSecondaryIndex": {
+      "globalSecondaryIndexId": "Globális másodlagos index tárolóazonosítója",
+      "globalSecondaryIndexIdPlaceholder": "például indexbyEmailId",
+      "projectionQuery": "Leképezési lekérdezés",
+      "projectionQueryPlaceholder": "SELECT c.email, c.accountId FROM c",
+      "projectionQueryTooltip": "További információ a globális másodlagos indexek definiálásáról.",
+      "disabledTitle": "Már folyamatban van egy globális másodlagos index létrehozása. Várja meg, amíg befejeződik, mielőtt egy másikat hozna létre."
+    },
+    "stringInput": {
+      "inputMismatchError": "A(z) {{input}} bemenet nem egyezik a kijelölt {{selectedId}} értékével"
+    },
+    "panelInfo": {
+      "information": "Információ",
+      "moreDetails": "További részletek"
     }
   }
 }

@@ -17,8 +17,7 @@ import { QueryTabStyles, useQueryTabStyles } from "Explorer/Tabs/QueryTab/Styles
 import { CosmosFluentProvider } from "Explorer/Theme/ThemeUtil";
 import { useSelectedNode } from "Explorer/useSelectedNode";
 import { KeyboardAction } from "KeyboardShortcuts";
-import { Keys } from "Localization/Keys.generated";
-import { t } from "Localization/t";
+import { Keys, t } from "Localization";
 import { QueryConstants } from "Shared/Constants";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { Action } from "Shared/Telemetry/TelemetryConstants";

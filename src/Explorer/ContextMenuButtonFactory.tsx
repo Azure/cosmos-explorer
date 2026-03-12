@@ -7,8 +7,7 @@ import {
   AddGlobalSecondaryIndexPanelProps,
 } from "Explorer/Panes/AddGlobalSecondaryIndexPanel/AddGlobalSecondaryIndexPanel";
 import { useDatabases } from "Explorer/useDatabases";
-import { Keys } from "Localization/Keys.generated";
-import { t } from "Localization/t";
+import { Keys, t } from "Localization";
 import { isFabric, isFabricNative, openRestoreContainerDialog } from "Platform/Fabric/FabricUtil";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { traceOpen } from "Shared/Telemetry/TelemetryProcessor";
