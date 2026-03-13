@@ -291,9 +291,9 @@ function createLoginForEntraIDButton(container: Explorer): CommandButtonComponen
   console.log("is dataplane rbac enabled", userContext.dataPlaneRbacEnabled);
   console.log("aad token", userContext.aadToken);
 
-  if (!userContext.dataPlaneRbacEnabled || userContext.aadToken) {
-    return undefined;
-  }
+  // if (!userContext.dataPlaneRbacEnabled || userContext.aadToken) {
+  //   return undefined;
+  // }
 
   const label = "Login for Entra ID RBAC";
   return {

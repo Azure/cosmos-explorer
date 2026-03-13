@@ -162,15 +162,15 @@ export async function acquireTokenWithMsal(
     account: msalInstance.getActiveAccount() || null,
     ...request,
   };
-
+  console.log("tokenRequest", tokenRequest);
   try {
     // attempt silent acquisition first
     return (await msalInstance.acquireTokenSilent(tokenRequest)).accessToken;
   } catch (silentError) {
-    console.log(silentError)
+    console.log(silentError);
     if (
-      (silentError instanceof msal.InteractionRequiredAuthError) &&
-      // (silentError instanceof msal.InteractionRequiredAuthError || silentError instanceof msal.AuthError) &&
+      silentError instanceof msal.InteractionRequiredAuthError &&
+      // (silentError instanceof msal.InteractionRequiredAuthError || (silentError instanceof msal.AuthError)) &&
       silent === false
     ) {
       try {
