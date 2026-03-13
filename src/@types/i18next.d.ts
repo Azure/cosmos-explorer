@@ -1,5 +1,5 @@
 import "i18next";
-import Resources from "../Localization/en/Resources.json";
+import Resources from "Localization/en/Resources.json";
 
 declare module "i18next" {
   interface CustomTypeOptions {
