@@ -441,7 +441,11 @@
       "shareThroughput": "跨 {{collectionsLabel}} 共用輸送量",
       "shareThroughputTooltip": "{{databaseLabel}} 層級的已佈建輸送量將會跨 {{databaseLabel}} 內的所有 {{collectionsLabel}} 共用。",
       "greaterThanError": "請為 Autopilot 輸送量輸入大於 {{minValue}} 的值",
-      "acknowledgeSpendError": "請認知估計的 {{period}} 支出。"
+      "acknowledgeSpendError": "請認知估計的 {{period}} 支出。",
+      "acknowledgeSpendErrorMonthly": "Please acknowledge the estimated monthly spend.",
+      "acknowledgeSpendErrorDaily": "Please acknowledge the estimated daily spend.",
+      "provisionSharedThroughputTitle": "Provision shared throughput",
+      "provisionThroughputLabel": "Provision throughput"
     },
     "addCollection": {
       "createNew": "新建",
@@ -493,7 +497,31 @@
       "acknowledgeShareThroughputError": "請認知此專用輸送量的估計成本。",
       "vectorPolicyError": "請修正容器向量原則中的錯誤",
       "fullTextSearchPolicyError": "請修正容器全文搜尋原則中的錯誤",
-      "addingSampleDataSet": "新增範例資料集"
+      "addingSampleDataSet": "新增範例資料集",
+      "databaseFieldLabelName": "Database name",
+      "databaseFieldLabelId": "Database id",
+      "newDatabaseIdPlaceholder": "Type a new database id",
+      "newDatabaseIdAriaLabel": "New database id, Type a new database id",
+      "createNewDatabaseAriaLabel": "Create new database",
+      "useExistingDatabaseAriaLabel": "Use existing database",
+      "chooseExistingDatabase": "Choose an existing database",
+      "teachingBubble": {
+        "step1Headline": "Create sample database",
+        "step1Body": "Database is the parent of a container. You can create a new database or use an existing one. In this tutorial we are creating a new database named SampleDB.",
+        "step1LearnMore": "Learn more about resources.",
+        "step2Headline": "Setting throughput",
+        "step2Body": "Cosmos DB recommends sharing throughput across database. Autoscale will give you a flexible amount of throughput based on the max RU/s set (Request Units).",
+        "step2LearnMore": "Learn more about RU/s.",
+        "step3Headline": "Naming container",
+        "step3Body": "Name your container",
+        "step4Headline": "Setting partition key",
+        "step4Body": "Last step - you will need to define a partition key for your collection. /address was chosen for this particular example. A good partition key should have a wide range of possible value",
+        "step4CreateContainer": "Create container",
+        "step5Headline": "Creating sample container",
+        "step5Body": "A sample container is now being created and we are adding sample data for you. It should take about 1 minute.",
+        "step5BodyFollowUp": "Once the sample container is created, review your sample dataset and follow next steps",
+        "stepOfTotal": "Step {{current}} of {{total}}"
+      }
     },
     "addCollectionUtility": {
       "shardKeyTooltip": "分區索引鍵 (欄位) 可用來將您的資料分割到多個複本集 (分區)，以達到無限制的擴充性。選擇將平均散發您的資料的欄位非常重要。",
@@ -722,6 +750,219 @@
     "panelInfo": {
       "information": "資訊",
       "moreDetails": "其他詳細資料"
+    }
+  },
+  "controls": {
+    "settings": {
+      "tabTitles": {
+        "scale": "縮放",
+        "conflictResolution": "衝突解決",
+        "settings": "設定",
+        "indexingPolicy": "編製索引原則",
+        "partitionKeys": "資料分割索引鍵",
+        "partitionKeysPreview": "磁碟分割索引鍵 (預覽)",
+        "computedProperties": "計算屬性",
+        "containerPolicies": "容器原則",
+        "throughputBuckets": "輸送量貯體",
+        "globalSecondaryIndexPreview": "全域次要索引 (預覽)",
+        "maskingPolicyPreview": "遮罩原則 (預覽)"
+      },
+      "mongoNotifications": {
+        "selectTypeWarning": "請選取每個索引的類型。",
+        "enterFieldNameError": "請輸入欄位名稱。",
+        "wildcardPathError": "欄位名稱中不存在萬用字元路徑。使用以下類似模式 "
+      },
+      "partitionKey": {
+        "shardKey": "分區索引鍵",
+        "partitionKey": "資料分割索引鍵",
+        "shardKeyTooltip": "分區索引鍵 (欄位) 可用來將您的資料分割到多個複本集 (分區)，以達到無限制的擴充性。選擇將平均散發您的資料的欄位非常重要。",
+        "partitionKeyTooltip": "用於自動跨資料分割散發資料，以獲得可擴縮性。選擇 JSON 文件中具有各種值範圍且平均散發要求數量的屬性。",
+        "sqlPartitionKeyTooltipSuffix": " 針對小型大量讀取的工作負載或任何大小的大量寫入工作負載，識別碼通常是良好的選擇。",
+        "partitionKeySubtext": "對於小型工作負載，項目識別碼是資料分割索引鍵的合適選擇。",
+        "mongoPlaceholder": "例如，categoryId",
+        "gremlinPlaceholder": "例如，/address",
+        "sqlFirstPartitionKey": "必要 - 第一個資料分割索引鍵，例如 /TenantId",
+        "sqlSecondPartitionKey": "第二個資料分割索引鍵，例如 /UserId",
+        "sqlThirdPartitionKey": "第三個資料分割索引鍵，例如，/SessionId",
+        "defaultPlaceholder": "例如，/address/zipCode"
+      },
+      "costEstimate": {
+        "title": "成本預估*",
+        "howWeCalculate": "計算方式",
+        "updatedCostPerMonth": "每月更新成本",
+        "currentCostPerMonth": "目前每月成本",
+        "perRu": "/RU",
+        "perHour": "/hr",
+        "perDay": "/day",
+        "perMonth": "/mo"
+      },
+      "throughput": {
+        "manualToAutoscaleDisclaimer": "系統會根據目前的手動輸送量設定和您的資源儲存體，決定起始自動調整每秒 RU 上限。啟用自動調整之後，您可以變更每秒 RU 上限。",
+        "ttlWarningText": "系統會根據您提供的 TTL 值 (秒) 自動刪除項目，而不需要用戶端應用程式明確發出的刪除作業。如需詳細資訊，請參閱:",
+        "ttlWarningLinkText": "Azure Cosmos DB 中的存留時間 (TTL)",
+        "unsavedIndexingPolicy": "編製索引原則",
+        "unsavedDataMaskingPolicy": "資料遮罩原則",
+        "unsavedComputedProperties": "計算屬性",
+        "unsavedEditorWarningPrefix": "您尚未儲存最近所做的變更:",
+        "unsavedEditorWarningSuffix": ".請按一下 [儲存] 以確認變更。",
+        "updateDelayedApplyWarning": "您即將要求增加超出預先配置容量的輸送量。此作業需要一些時間才能完成。",
+        "scalingUpDelayMessage": "擴大需要 4-6 小時，因為它超過 Azure Cosmos DB 可根據實體磁碟分割數目前立即支援的數量。您可立即將輸送量增加至 {{instantMaximumThroughput}}，或繼續處理此值，然後等到擴大完成。",
+        "exceedPreAllocatedMessage": "您增加輸送量的要求超過預先配置的容量，這可能需要比預期更久的時間。您有三個選項可供選擇來繼續執行:",
+        "instantScaleOption": "您可以立即擴大為每秒 {{instantMaximumThroughput}} RU。",
+        "asyncScaleOption": "您可以在 4-6 小時內，以非同步方式擴大至低於每秒 RU {{maximumThroughput}} 的任何值。",
+        "quotaMaxOption": "您目前的配額上限為每秒 {{maximumThroughput}} RU。若要超過此限制，您必須要求增加配額，而 Azure Cosmos DB 小組將會審查。",
+        "belowMinimumMessage": "您無法將輸送量降低至低於您目前的每秒 {{minimum}} RU 下限。如需此限制的詳細資訊，請參閱我們的服務報價文件。",
+        "saveThroughputWarning": "更新輸送量設定時，您的帳單將會受到影響。請先檢閱下方已更新的成本預估，再儲存變更",
+        "currentAutoscaleThroughput": "目前的自動調整輸送量：",
+        "targetAutoscaleThroughput": "目標自動調整輸送量:",
+        "currentManualThroughput": "目前手動輸送量:",
+        "targetManualThroughput": "目標手動輸送量:",
+        "applyDelayedMessage": "已順利提交增加輸送量的要求。此作業需要 1-3 個工作天才能完成。檢視通知中的最新狀態。",
+        "databaseLabel": "資料庫:",
+        "containerLabel": "容器:",
+        "applyShortDelayMessage": "增加輸送量的要求目前正在處理中。此作業需要一些時間才能完成。",
+        "applyLongDelayMessage": "增加輸送量的要求目前正在處理中。此作業需要 1-3 個工作天才能完成。檢視通知中的最新狀態。",
+        "throughputCapError": "您的帳戶目前設定的總輸送量限制為每秒 {{throughputCap}} RU。無法執行此更新，因為它會將總輸送量增加至每秒 {{newTotalThroughput}} RU。請變更成本管理中的總輸送量限制。",
+        "throughputIncrementError": "輸送量值必須以 1000 遞增"
+      },
+      "conflictResolution": {
+        "lwwDefault": "最後寫入者優先 (預設值)",
+        "customMergeProcedure": "合併程序 (自訂)",
+        "mode": "模式",
+        "conflictResolverProperty": "衝突解析程式屬性",
+        "storedProcedure": "預存程序",
+        "lwwTooltip": "取得或設定文件中用於最後寫入者優先 (LWW) 型衝突解決方案之整數屬性的名稱。根據預設，系統會使用系統定義的時間戳記屬性 _ts，決定文件衝突版本的優先者。如果您想要覆寫預設時間戳記型衝突解決方案，請指定您自己的整數屬性。",
+        "customTooltip": "取得或設定預存程序 (又稱為合併程序) 的名稱以便解決衝突。您可以撰寫應用程式定義的邏輯，以判斷文件衝突版本的優先者。預存程序將在伺服器端以交易方式執行一次。如果您未提供預存程序，衝突會填入",
+        "customTooltipConflictsFeed": " 衝突摘要",
+        "customTooltipSuffix": ".您隨時都可以更新/重新註冊預存程序。"
+      },
+      "changeFeed": {
+        "label": "變更摘要記錄保留原則",
+        "tooltip": "啟用變更摘要記錄保留原則，依預設保留容器中項目的過去 10 分鐘歷程記錄。為了支援這項功能，此容器的要求單位 (RU) 費用將會針對寫入乘以 2 的係數。讀取不受影響。"
+      },
+      "mongoIndexing": {
+        "disclaimer": "對於依據多個屬性篩選的查詢，請建立多個單一欄位索引，而不是複合索引。",
+        "disclaimerCompoundIndexesLink": " 複合索引 ",
+        "disclaimerSuffix": "僅用於排序查詢結果。如果您需要新增複合索引，您可以使用 Mongo Shell 建立一個複合索引。",
+        "compoundNotSupported": "索引編輯器中尚不支援具有複合索引的集合。若要修改此集合的索引編製原則，請使用 Mongo Shell。",
+        "aadError": "若要使用索引編製原則編輯器，請登入",
+        "aadErrorLink": "Azure 入口網站。",
+        "refreshingProgress": "重新整理索引轉換進度",
+        "canMakeMoreChangesZero": "當目前的索引轉換完成後，您可以進行更多索引變更。",
+        "refreshToCheck": "重新整理以檢查是否已完成。",
+        "canMakeMoreChangesProgress": "當目前的索引轉換完成後，您可以進行更多索引變更。已完成 {{progress}}%。",
+        "refreshToCheckProgress": "重新整理以檢查進度。",
+        "definitionColumn": "定義",
+        "typeColumn": "類型",
+        "dropIndexColumn": "卸除索引",
+        "addIndexBackColumn": "重新新增索引",
+        "deleteIndexButton": "刪除索引按鈕",
+        "addBackIndexButton": "重新新增索引按鈕",
+        "currentIndexes": "目前的索引",
+        "indexesToBeDropped": "要捨棄的索引",
+        "indexFieldName": "索引欄位名稱",
+        "indexType": "索引類型",
+        "selectIndexType": "選取索引類型",
+        "undoButton": "復原按鈕"
+      },
+      "subSettings": {
+        "timeToLive": "存留時間",
+        "ttlOff": "關閉",
+        "ttlOnNoDefault": "開啟 (無預設)",
+        "ttlOn": "於",
+        "seconds": "秒",
+        "timeToLiveInSeconds": "存留時間 (秒)",
+        "analyticalStorageTtl": "分析儲存體存留時間",
+        "geospatialConfiguration": "地理空間設定",
+        "geography": "地理位置",
+        "geometry": "幾何",
+        "uniqueKeys": "唯一索引鍵",
+        "mongoTtlMessage": "若要啟用集合/文件的存留時間 (TTL)，",
+        "mongoTtlLinkText": "建立 TTL 索引",
+        "partitionKeyTooltipTemplate": "此 {{partitionKeyName}} 用於將資料分散於多個磁碟分區，以獲得可擴縮性。\"{{partitionKeyValue}}\" 值決定文件的分割方法。",
+        "largePartitionKeyEnabled": "大型 {{partitionKeyName}} 已啟用。",
+        "hierarchicalPartitioned": "階層式分割容器。",
+        "nonHierarchicalPartitioned": "非階層式分割容器。"
+      },
+      "scale": {
+        "freeTierInfo": "使用免費層時，您將免費取得此帳戶中第一個每秒 {{ru}} RU和 {{storage}} GB 的儲存體。若要讓您的帳戶保持免費，請將帳戶中所有資源的每秒 RU 總計保留為每秒 {{ru}} RU。",
+        "freeTierLearnMore": "深入了解。",
+        "throughputRuS": "輸送量 (每秒 RU)",
+        "autoScaleCustomSettings": "您的帳戶有自訂設定可防止在容器層級設定輸送量。請與您的 Cosmos DB 工程小組連絡人合作以進行變更。",
+        "keyspaceSharedThroughput": "此資料表共用輸送量設定於索引鍵空間",
+        "throughputRangeLabel": "Throughput ({{min}} - {{max}} RU/s)",
+        "unlimited": "unlimited"
+      },
+      "partitionKeyEditor": {
+        "changePartitionKey": "變更 {{partitionKeyName}}",
+        "currentPartitionKey": "目前的 {{partitionKeyName}}",
+        "partitioning": "資料分割",
+        "hierarchical": "階層式",
+        "nonHierarchical": "非階層式",
+        "safeguardWarning": "若要保護要複製到新容器的資料完整性，請確保整個資料分割索引鍵變更處理期間，不會更新來源容器。",
+        "changeDescription": "若要變更資料分割索引鍵，必須建立新的目的地容器或選取現有的目的地容器。接著，資料會複製到目的地容器。",
+        "changeButton": "變更",
+        "changeJob": "{{partitionKeyName}} 變更作業",
+        "cancelButton": "取消",
+        "documentsProcessed": "已處理 {{totalCount}} 份文件中的 {{processedCount}} 份"
+      },
+      "computedProperties": {
+        "ariaLabel": "計算屬性",
+        "learnMorePrefix": "關於如何定義計算屬性，以及如何使用它們。"
+      },
+      "indexingPolicy": {
+        "ariaLabel": "編製索引原則"
+      },
+      "dataMasking": {
+        "ariaLabel": "資料遮罩原則",
+        "validationFailed": "驗證失敗:",
+        "includedPathsRequired": "需要 includedPaths",
+        "includedPathsMustBeArray": "includedPaths 必須是陣列",
+        "excludedPathsMustBeArray": "如果提供，excludedPaths 必須是陣列"
+      },
+      "containerPolicy": {
+        "vectorPolicy": "向量原則",
+        "fullTextPolicy": "全文檢索原則",
+        "createFullTextPolicy": "建立新的全文檢索搜索原則"
+      },
+      "globalSecondaryIndex": {
+        "indexesDefined": "此容器已定義下列索引。",
+        "learnMoreSuffix": "關於如何定義全域次要索引，以及如何使用它們。",
+        "jsonAriaLabel": "全域次要索引 JSON",
+        "addIndex": "新增索引",
+        "settingsTitle": "全域次要索引設定",
+        "sourceContainer": "來源容器",
+        "indexDefinition": "全域次要索引定義"
+      },
+      "indexingPolicyRefresh": {
+        "refreshFailed": "重新整理索引轉換進度失敗"
+      },
+      "throughputInput": {
+        "autoscale": "自動縮放",
+        "manual": "手動",
+        "minimumRuS": "每秒 RU 下限",
+        "maximumRuS": "每秒 RU 上限",
+        "x10Equals": "x 10 =",
+        "storageCapacity": "儲存體容量",
+        "fixed": "已修正",
+        "unlimited": "無限制",
+        "instant": "立即",
+        "fourToSixHrs": "4-6 小時",
+        "autoscaleDescription": "根據使用量，您的 {{resourceType}} 輸送量將調整自",
+        "freeTierWarning": "如果您佈建超過每秒 {{ru}} RU 的手動輸送量，或資源調整超過自動調整的每秒 {{ru}} RU，則適用計費。",
+        "capacityCalculator": "預估您所需的每秒 RU",
+        "capacityCalculatorLink": " 容量計算機",
+        "fixedStorageNote": "使用具有固定儲存體容量的集合時，您最多可以設定每秒 10,000 RU。",
+        "min": "分鐘",
+        "max": "最大值"
+      },
+      "throughputBuckets": {
+        "label": "輸送量貯體",
+        "bucketLabel": "貯體 {{id}}",
+        "dataExplorerQueryBucket": " (資料總管查詢貯體)",
+        "active": "使用中",
+        "inactive": "非使用中"
+      }
     }
   }
 }

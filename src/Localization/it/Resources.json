@@ -441,7 +441,11 @@
       "shareThroughput": "Condividi velocità effettiva in {{collectionsLabel}}",
       "shareThroughputTooltip": "La velocità effettiva con provisioning al livello {{databaseLabel}} sarà condivisa tra tutte le {{collectionsLabel}} all'interno di {{databaseLabel}}.",
       "greaterThanError": "Immettere un valore maggiore di {{minValue}} per la velocità effettiva di Autopilot",
-      "acknowledgeSpendError": "Confermare la spesa stimata di {{period}}."
+      "acknowledgeSpendError": "Confermare la spesa stimata di {{period}}.",
+      "acknowledgeSpendErrorMonthly": "Please acknowledge the estimated monthly spend.",
+      "acknowledgeSpendErrorDaily": "Please acknowledge the estimated daily spend.",
+      "provisionSharedThroughputTitle": "Provision shared throughput",
+      "provisionThroughputLabel": "Provision throughput"
     },
     "addCollection": {
       "createNew": "Crea nuovo",
@@ -493,7 +497,31 @@
       "acknowledgeShareThroughputError": "Confermare il costo stimato di questa velocità effettiva dedicata.",
       "vectorPolicyError": "Correggere gli errori nei criteri sul vettore contenitore",
       "fullTextSearchPolicyError": "Correggere gli errori nei criteri di ricerca full-text del contenitore",
-      "addingSampleDataSet": "Aggiunta dei set di dati di esempio"
+      "addingSampleDataSet": "Aggiunta dei set di dati di esempio",
+      "databaseFieldLabelName": "Database name",
+      "databaseFieldLabelId": "Database id",
+      "newDatabaseIdPlaceholder": "Type a new database id",
+      "newDatabaseIdAriaLabel": "New database id, Type a new database id",
+      "createNewDatabaseAriaLabel": "Create new database",
+      "useExistingDatabaseAriaLabel": "Use existing database",
+      "chooseExistingDatabase": "Choose an existing database",
+      "teachingBubble": {
+        "step1Headline": "Create sample database",
+        "step1Body": "Database is the parent of a container. You can create a new database or use an existing one. In this tutorial we are creating a new database named SampleDB.",
+        "step1LearnMore": "Learn more about resources.",
+        "step2Headline": "Setting throughput",
+        "step2Body": "Cosmos DB recommends sharing throughput across database. Autoscale will give you a flexible amount of throughput based on the max RU/s set (Request Units).",
+        "step2LearnMore": "Learn more about RU/s.",
+        "step3Headline": "Naming container",
+        "step3Body": "Name your container",
+        "step4Headline": "Setting partition key",
+        "step4Body": "Last step - you will need to define a partition key for your collection. /address was chosen for this particular example. A good partition key should have a wide range of possible value",
+        "step4CreateContainer": "Create container",
+        "step5Headline": "Creating sample container",
+        "step5Body": "A sample container is now being created and we are adding sample data for you. It should take about 1 minute.",
+        "step5BodyFollowUp": "Once the sample container is created, review your sample dataset and follow next steps",
+        "stepOfTotal": "Step {{current}} of {{total}}"
+      }
     },
     "addCollectionUtility": {
       "shardKeyTooltip": "La chiave di partizione (campo) viene usata per distribuire i dati su molti set di repliche (partizioni) per ottenere scalabilità illimitata. È fondamentale scegliere un campo che distribuisca uniformemente i dati.",
@@ -722,6 +750,219 @@
     "panelInfo": {
       "information": "Informazioni",
       "moreDetails": "Altri dettagli"
+    }
+  },
+  "controls": {
+    "settings": {
+      "tabTitles": {
+        "scale": "Ridimensiona",
+        "conflictResolution": "Risoluzione dei conflitti",
+        "settings": "Impostazioni",
+        "indexingPolicy": "Criteri di indicizzazione",
+        "partitionKeys": "Chiavi di partizione",
+        "partitionKeysPreview": "Chiavi di partizione (anteprima)",
+        "computedProperties": "Proprietà calcolate",
+        "containerPolicies": "Criteri contenitore",
+        "throughputBuckets": "Bucket di velocità effettiva",
+        "globalSecondaryIndexPreview": "Indice secondario globale (anteprima)",
+        "maskingPolicyPreview": "Criteri di mascheramento (anteprima)"
+      },
+      "mongoNotifications": {
+        "selectTypeWarning": "Selezionare un tipo per ogni indice.",
+        "enterFieldNameError": "Immettere un nome di campo.",
+        "wildcardPathError": "Il percorso con caratteri jolly non è presente nel nome del campo. Usare un modello come "
+      },
+      "partitionKey": {
+        "shardKey": "Chiave di partizione",
+        "partitionKey": "Chiave di partizione",
+        "shardKeyTooltip": "La chiave di partizione (campo) viene usata per distribuire i dati su molti set di repliche (partizioni) per ottenere scalabilità illimitata. È fondamentale scegliere un campo che distribuisca uniformemente i dati.",
+        "partitionKeyTooltip": "viene usata per distribuire automaticamente i dati tra le partizioni per la scalabilità. Scegliere una proprietà nel documento JSON che abbia un'ampia gamma di valori e distribuisca uniformemente il volume delle richieste.",
+        "sqlPartitionKeyTooltipSuffix": " Per carichi di lavoro piccoli e con molte letture o per carichi di qualsiasi dimensione con molte scritture, ID è spesso una buona scelta.",
+        "partitionKeySubtext": "Per i carichi di lavoro di piccole dimensioni, l'ID elemento è una scelta appropriata per la chiave di partizione.",
+        "mongoPlaceholder": "Ad esempio, categoryId",
+        "gremlinPlaceholder": "Ad esempio, /address",
+        "sqlFirstPartitionKey": "Obbligatorio - prima chiave di partizione, ad esempio /TenantId",
+        "sqlSecondPartitionKey": "seconda chiave di partizione, ad esempio /UserId",
+        "sqlThirdPartitionKey": "terza chiave di partizione, ad esempio /SessionId",
+        "defaultPlaceholder": "Ad esempio, /address/zipCode"
+      },
+      "costEstimate": {
+        "title": "Stima del costo*",
+        "howWeCalculate": "Modalità di calcolo usata",
+        "updatedCostPerMonth": "Costo aggiornato al mese",
+        "currentCostPerMonth": "Costo corrente al mese",
+        "perRu": "/UR",
+        "perHour": "/hr",
+        "perDay": "/day",
+        "perMonth": "/mo"
+      },
+      "throughput": {
+        "manualToAutoscaleDisclaimer": "Il numero massimo di UR/sec con scalabilità automatica iniziale verrà determinato dal sistema, in base alle impostazioni correnti della velocità effettiva manuale e all'archiviazione della risorsa. Dopo aver abilitato la scalabilità automatica, è possibile modificare il numero massimo di UR/sec.",
+        "ttlWarningText": "Il sistema eliminerà automaticamente gli elementi in base al valore TTL (in secondi) specificato, senza la necessità di un'operazione di eliminazione eseguita in modo esplicito da un'applicazione client. Per altre informazioni, vedere",
+        "ttlWarningLinkText": "Durata (TTL) in Azure Cosmos DB",
+        "unsavedIndexingPolicy": "criteri di indicizzazione",
+        "unsavedDataMaskingPolicy": "criteri di maschera dati",
+        "unsavedComputedProperties": "proprietà calcolate",
+        "unsavedEditorWarningPrefix": "Non sono state salvate le modifiche più recenti apportate a",
+        "unsavedEditorWarningSuffix": ". Fare clic su Salva per confermare le modifiche.",
+        "updateDelayedApplyWarning": "Si sta per richiedere un aumento della velocità effettiva oltre la capacità preallocata. Il completamento dell'operazione potrebbe richiedere alcuni minuti.",
+        "scalingUpDelayMessage": "L'aumento richiederà 4-6 ore perché supera quello che Azure Cosmos DB può attualmente supportare immediatamente in base al numero di partizioni fisiche. È possibile aumentare immediatamente la velocità effettiva a {{instantMaximumThroughput}} o procedere con questo valore e attendere il completamento dell'aumento.",
+        "exceedPreAllocatedMessage": "La richiesta di aumento della velocità effettiva supera la capacità preallocata, quindi potrebbe richiedere più tempo del previsto. Per continuare, è possibile scegliere tra tre opzioni:",
+        "instantScaleOption": "È possibile aumentare immediatamente fino a {{instantMaximumThroughput}} UR/sec.",
+        "asyncScaleOption": "È possibile aumentare in modo asincrono fino a qualsiasi valore inferiore a {{maximumThroughput}} UR/sec in 4-6 ore.",
+        "quotaMaxOption": "Il valore massimo della quota corrente è {{maximumThroughput}} UR/s. Per superare questo limite, è necessario richiedere un aumento della quota e il team di Azure Cosmos DB esaminerà la richiesta.",
+        "belowMinimumMessage": "Non è possibile ridurre la velocità effettiva al di sotto del valore minimo corrente di {{minimum}} UR/sec. Per altre informazioni su questo limite, fare riferimento alla documentazione relativa alle quote dei servizi.",
+        "saveThroughputWarning": "La fattura sarà interessata dall'aggiornamento delle impostazioni della velocità effettiva. Prima di salvare le modifiche, esaminare la stima dei costi aggiornata riportata di seguito",
+        "currentAutoscaleThroughput": "Velocità effettiva con scalabilità automatica corrente:",
+        "targetAutoscaleThroughput": "Velocità effettiva con scalabilità automatica di destinazione:",
+        "currentManualThroughput": "Velocità effettiva manuale corrente:",
+        "targetManualThroughput": "Velocità effettiva manuale di destinazione:",
+        "applyDelayedMessage": "La richiesta di aumento della velocità effettiva è stata inviata. Il completamento dell'operazione richiederà da 1 a 3 giorni lavorativi. Visualizzare lo stato più recente nelle notifiche.",
+        "databaseLabel": "Database:",
+        "containerLabel": "Contenitore:",
+        "applyShortDelayMessage": "È attualmente in corso una richiesta di aumento della velocità effettiva. Il completamento dell'operazione potrebbe richiedere alcuni minuti.",
+        "applyLongDelayMessage": "È attualmente in corso una richiesta di aumento della velocità effettiva. Il completamento dell'operazione richiederà da 1 a 3 giorni lavorativi. Visualizzare lo stato più recente nelle notifiche.",
+        "throughputCapError": "L'account è attualmente configurato con un limite di velocità effettiva totale di {{throughputCap}} UR/sec. Questo aggiornamento non è possibile perché aumenterebbe la velocità effettiva totale fino a {{newTotalThroughput}} UR/sec. Modificare il limite di velocità effettiva totale nella gestione dei costi.",
+        "throughputIncrementError": "Il valore della velocità effettiva deve essere in incrementi di 1000"
+      },
+      "conflictResolution": {
+        "lwwDefault": "Priorità ultima scrittura (impostazione predefinita)",
+        "customMergeProcedure": "Procedura di unione (personalizzata)",
+        "mode": "Modalità",
+        "conflictResolverProperty": "Proprietà resolver dei conflitti",
+        "storedProcedure": "Stored procedure",
+        "lwwTooltip": "Ottiene o imposta il nome di una proprietà Integer nei documenti, usata per lo schema di risoluzione dei conflitti basato su Priorità ultima scrittura. Per impostazione predefinita, il sistema usa la proprietà timestamp definita dal sistema, _ts, per decidere il vincitore per le versioni in conflitto del documento. Specificare una proprietà Integer personalizzata se si vuole eseguire l'override della risoluzione dei conflitti predefinita basata sul timestamp.",
+        "customTooltip": "Ottiene o imposta il nome di una stored procedure (nota anche come procedura di unione) per la risoluzione dei conflitti. È possibile scrivere la logica definita dall'applicazione per determinare il vincitore delle versioni in conflitto di un documento. La stored procedure verrà eseguita in modo transazionale, esattamente una volta, sul lato server. Se non si specifica una stored procedure, i conflitti verranno popolati in",
+        "customTooltipConflictsFeed": " feed dei conflitti",
+        "customTooltipSuffix": ". È possibile aggiornare/registrare nuovamente la stored procedure in qualsiasi momento."
+      },
+      "changeFeed": {
+        "label": "Criteri di conservazione dei log dei feed di modifiche",
+        "tooltip": "Abilitare i criteri di conservazione dei log dei feed di modifiche per mantenere gli ultimi 10 minuti di cronologia per gli elementi nel contenitore per impostazione predefinita. A tale scopo, l'addebito dell'unità richiesta per questo contenitore verrà moltiplicato per un fattore pari a due per le operazioni di scrittura. Le operazioni di lettura non sono interessate."
+      },
+      "mongoIndexing": {
+        "disclaimer": "Per le query che filtrano in base a più proprietà, creare più indici di campi singoli anziché un indice composto.",
+        "disclaimerCompoundIndexesLink": " Indici composti ",
+        "disclaimerSuffix": "vengono usati solo per l'ordinamento dei risultati della query. Se è necessario aggiungere un indice composto, è possibile crearne uno usando la shell Mongo.",
+        "compoundNotSupported": "Le raccolte con indici composti non sono ancora supportate nell'editor di indicizzazione. Per modificare i criteri di indicizzazione per questa raccolta, usare la shell Mongo.",
+        "aadError": "Per usare l'editor dei criteri di indicizzazione, accedere a",
+        "aadErrorLink": "portale di Azure.",
+        "refreshingProgress": "Aggiornamento dello stato di avanzamento della trasformazione dell'indice",
+        "canMakeMoreChangesZero": "Al termine della trasformazione dell'indice corrente, è possibile apportare altre modifiche all'indicizzazione. ",
+        "refreshToCheck": "Aggiornare per verificare se è stato completato.",
+        "canMakeMoreChangesProgress": "Dopo aver completato la trasformazione dell'indice corrente, è possibile apportare altre modifiche all'indicizzazione. Completamento: {{progress}}%. ",
+        "refreshToCheckProgress": "Aggiornare per controllare lo stato di avanzamento.",
+        "definitionColumn": "Definizione",
+        "typeColumn": "Tipo",
+        "dropIndexColumn": "Elimina indice",
+        "addIndexBackColumn": "Aggiungi di nuovo indice",
+        "deleteIndexButton": "Pulsante Elimina indice",
+        "addBackIndexButton": "Pulsante Aggiungi di nuovo indice",
+        "currentIndexes": "Indici correnti",
+        "indexesToBeDropped": "Indici da eliminare",
+        "indexFieldName": "Nome campo indice",
+        "indexType": "Tipo di indice",
+        "selectIndexType": "Selezionare un tipo di indice",
+        "undoButton": "Pulsante Annulla"
+      },
+      "subSettings": {
+        "timeToLive": "Durata (TTL)",
+        "ttlOff": "Disattivato",
+        "ttlOnNoDefault": "Sì (nessun valore predefinito)",
+        "ttlOn": "Attivato",
+        "seconds": "secondo/i",
+        "timeToLiveInSeconds": "Durata (TTL) in secondi",
+        "analyticalStorageTtl": "Durata (TTL) dell'archiviazione analitica",
+        "geospatialConfiguration": "Configurazione geospaziale",
+        "geography": "Geografia",
+        "geometry": "Geometria",
+        "uniqueKeys": "Chiavi univoche",
+        "mongoTtlMessage": "Per abilitare la durata (TTL) per la raccolta o i documenti,",
+        "mongoTtlLinkText": "Crea indice TTL",
+        "partitionKeyTooltipTemplate": "{{partitionKeyName}} viene usata per distribuire i dati tra più partizioni per la scalabilità. Il valore \"{{partitionKeyValue}}\" determina la modalità di partizionamento dei documenti.",
+        "largePartitionKeyEnabled": "Abilitazione di {{partitionKeyName}} di grandi dimensioni completata.",
+        "hierarchicalPartitioned": "Contenitore partizionato in modo gerarchico.",
+        "nonHierarchicalPartitioned": "Contenitore partizionato in modo non gerarchico."
+      },
+      "scale": {
+        "freeTierInfo": "Con il livello gratuito si otterranno gratuitamente le prime {{ru}} UR/s e {{storage}} GB di spazio di archiviazione in questo account. Per mantenere l'account gratuito, mantenere il totale delle UR/sec in tutte le risorse dell'account al di sotto di {{ru}} UR/sec.",
+        "freeTierLearnMore": "Altre informazioni.",
+        "throughputRuS": "Unità elaborate (UR/sec)",
+        "autoScaleCustomSettings": "L'account ha impostazioni personalizzate che impediscono l'impostazione della velocità effettiva a livello di contenitore. Collaborare con il punto di contatto del team tecnico di Cosmos DB per apportare modifiche.",
+        "keyspaceSharedThroughput": "La velocità effettiva condivisa di questa tabella è configurata nello spazio delle chiavi",
+        "throughputRangeLabel": "Throughput ({{min}} - {{max}} RU/s)",
+        "unlimited": "unlimited"
+      },
+      "partitionKeyEditor": {
+        "changePartitionKey": "Modifica {{partitionKeyName}}",
+        "currentPartitionKey": "{{partitionKeyName}} corrente",
+        "partitioning": "Partizionamento",
+        "hierarchical": "Gerarchico",
+        "nonHierarchical": "Non gerarchico",
+        "safeguardWarning": "Per proteggere l'integrità dei dati copiati nel nuovo contenitore, assicurarsi che non vengano apportati aggiornamenti al contenitore di origine per l'intera durata del processo di modifica della chiave di partizione.",
+        "changeDescription": "Per modificare la chiave di partizione, è necessario creare un nuovo contenitore di destinazione o selezionare un contenitore di destinazione esistente. I dati verranno quindi copiati nel contenitore di destinazione.",
+        "changeButton": "Cambia",
+        "changeJob": "Processo di modifica di {{partitionKeyName}}",
+        "cancelButton": "Annulla",
+        "documentsProcessed": "({{processedCount}} di {{totalCount}} documenti elaborati)"
+      },
+      "computedProperties": {
+        "ariaLabel": "Proprietà calcolate",
+        "learnMorePrefix": "su come definire le proprietà calcolate e su come usarle."
+      },
+      "indexingPolicy": {
+        "ariaLabel": "Criteri di indicizzazione"
+      },
+      "dataMasking": {
+        "ariaLabel": "Criteri di maschera dati",
+        "validationFailed": "Convalida non riuscita:",
+        "includedPathsRequired": "includedPaths è obbligatorio",
+        "includedPathsMustBeArray": "includedPaths deve essere una matrice",
+        "excludedPathsMustBeArray": "excludedPaths deve essere una matrice, se specificato"
+      },
+      "containerPolicy": {
+        "vectorPolicy": "Criteri vettoriali",
+        "fullTextPolicy": "Criteri full-text",
+        "createFullTextPolicy": "Crea nuovi criteri di ricerca full-text"
+      },
+      "globalSecondaryIndex": {
+        "indexesDefined": "Per questo contenitore sono definiti gli indici seguenti.",
+        "learnMoreSuffix": "su come definire gli indici secondari globali e su come usarli.",
+        "jsonAriaLabel": "JSON indice secondario globale",
+        "addIndex": "Aggiungi indice",
+        "settingsTitle": "Impostazioni globali dell'indice secondario",
+        "sourceContainer": "Contenitore di origine",
+        "indexDefinition": "Definizione di indice secondario globale"
+      },
+      "indexingPolicyRefresh": {
+        "refreshFailed": "L'aggiornamento dello stato di avanzamento della trasformazione dell'indice non è riuscito"
+      },
+      "throughputInput": {
+        "autoscale": "Scalabilità automatica",
+        "manual": "Manuale",
+        "minimumRuS": "Numero minimo di UR/s",
+        "maximumRuS": "Numero massimo di UR/s",
+        "x10Equals": "x 10 =",
+        "storageCapacity": "Capacità di archiviazione",
+        "fixed": "Fissa",
+        "unlimited": "Senza limiti",
+        "instant": "Immediata",
+        "fourToSixHrs": "4-6 ore",
+        "autoscaleDescription": "In base all'utilizzo, la velocità effettiva {{resourceType}} verrà ridimensionata da",
+        "freeTierWarning": "La fatturazione verrà applicata se si effettua il provisioning di più di {{ru}} UR/sec di velocità effettiva manuale o se la risorsa viene ridimensionata oltre a {{ru}} UR/sec con scalabilità automatica.",
+        "capacityCalculator": "Stima le UR/sec necessarie con",
+        "capacityCalculatorLink": " calcolatore capacità",
+        "fixedStorageNote": "Quando si usa una raccolta con capacità di archiviazione fissa, è possibile impostare fino a 10.000 UR/sec.",
+        "min": "min",
+        "max": "max"
+      },
+      "throughputBuckets": {
+        "label": "Bucket di velocità effettiva",
+        "bucketLabel": "Bucket {{id}}",
+        "dataExplorerQueryBucket": " (Bucket di query Esplora dati)",
+        "active": "Attivo",
+        "inactive": "Inattivo"
+      }
     }
   }
 }
