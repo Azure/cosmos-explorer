@@ -24,8 +24,7 @@ import { InfoTooltip } from "Common/Tooltip/InfoTooltip";
 import { Platform, configContext } from "ConfigContext";
 import { useDialog } from "Explorer/Controls/Dialog";
 import { useDatabases } from "Explorer/useDatabases";
-import { Keys } from "Localization/Keys.generated";
-import { t } from "Localization/t";
+import { Keys, t } from "Localization";
 import { isFabric, isFabricNative } from "Platform/Fabric/FabricUtil";
 import {
   AppStateComponentNames,

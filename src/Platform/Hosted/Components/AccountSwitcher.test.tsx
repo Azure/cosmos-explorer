@@ -1,12 +1,12 @@
 jest.mock("../../../hooks/useSubscriptions");
 jest.mock("../../../hooks/useDatabaseAccounts");
-import React from "react";
-import { render, fireEvent, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import { AccountSwitcher } from "./AccountSwitcher";
-import { useSubscriptions } from "../../../hooks/useSubscriptions";
-import { useDatabaseAccounts } from "../../../hooks/useDatabaseAccounts";
+import { fireEvent, render, screen } from "@testing-library/react";
+import React from "react";
 import { DatabaseAccount, Subscription } from "../../../Contracts/DataModels";
+import { useDatabaseAccounts } from "../../../hooks/useDatabaseAccounts";
+import { useSubscriptions } from "../../../hooks/useSubscriptions";
+import { AccountSwitcher } from "./AccountSwitcher";
 
 it("calls setAccount from parent component", () => {
   const armToken = "fakeToken";
@@ -25,7 +25,7 @@ it("calls setAccount from parent component", () => {
   expect(screen.getByLabelText("Subscription")).toHaveTextContent("Select a Subscription");
   fireEvent.click(screen.getByText("Select a Subscription"));
   fireEvent.click(screen.getByText(subscriptions[0].displayName));
-  expect(screen.getByLabelText("Cosmos DB Account Name")).toHaveTextContent("Select an Account");
+  expect(screen.getByLabelText("Cosmos DB Account")).toHaveTextContent("Select an Account");
   fireEvent.click(screen.getByText("Select an Account"));
   fireEvent.click(screen.getByText(accounts[0].name));
   expect(setDatabaseAccount).toHaveBeenCalledWith(accounts[0]);

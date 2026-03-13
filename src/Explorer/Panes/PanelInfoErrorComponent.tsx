@@ -1,6 +1,5 @@
 import { Icon, Link, Stack, Text } from "@fluentui/react";
-import { Keys } from "Localization/Keys.generated";
-import { t } from "Localization/t";
+import { Keys, t } from "Localization";
 import React from "react";
 import { useNotificationConsole } from "../../hooks/useNotificationConsole";
 

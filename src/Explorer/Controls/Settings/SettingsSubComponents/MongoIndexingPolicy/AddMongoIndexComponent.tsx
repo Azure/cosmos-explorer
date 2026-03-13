@@ -9,6 +9,7 @@ import {
   IDropdownOption,
   ITextField,
 } from "@fluentui/react";
+import { Keys, t } from "Localization";
 import {
   addMongoIndexSubElementsTokens,
   mongoErrorMessageStyles,
@@ -66,7 +67,7 @@ export class AddMongoIndexComponent extends React.Component<AddMongoIndexCompone
       <Stack {...mongoWarningStackProps}>
         <Stack horizontal tokens={addMongoIndexSubElementsTokens}>
           <TextField
-            ariaLabel={"Index Field Name " + this.props.position}
+            ariaLabel={t(Keys.controls.settings.mongoIndexing.indexFieldName) + " " + this.props.position}
             disabled={this.props.disabled}
             styles={shortWidthTextFieldStyles}
             componentRef={this.setRef}
@@ -76,17 +77,17 @@ export class AddMongoIndexComponent extends React.Component<AddMongoIndexCompone
           />
 
           <Dropdown
-            ariaLabel={"Index Type " + this.props.position}
+            ariaLabel={t(Keys.controls.settings.mongoIndexing.indexType) + " " + this.props.position}
             disabled={this.props.disabled}
             styles={shortWidthDropDownStyles}
-            placeholder="Select an index type"
+            placeholder={t(Keys.controls.settings.mongoIndexing.selectIndexType)}
             selectedKey={this.props.type}
             options={this.indexTypes}
             onChange={this.onTypeChange}
           />
 
           <IconButton
-            ariaLabel={"Undo Button " + this.props.position}
+            ariaLabel={t(Keys.controls.settings.mongoIndexing.undoButton) + " " + this.props.position}
             iconProps={{ iconName: "Undo" }}
             disabled={!this.props.description && !this.props.type}
             onClick={() => this.props.onDiscard()}
