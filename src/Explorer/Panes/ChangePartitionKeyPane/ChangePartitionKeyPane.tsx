@@ -26,8 +26,7 @@ import {
 import Explorer from "Explorer/Explorer";
 import { RightPaneForm } from "Explorer/Panes/RightPaneForm/RightPaneForm";
 import { useDatabases } from "Explorer/useDatabases";
-import { Keys } from "Localization/Keys.generated";
-import { t } from "Localization/t";
+import { Keys, t } from "Localization";
 import { userContext } from "UserContext";
 import { getCollectionName } from "Utils/APITypeUtils";
 import { ValidCosmosDbIdDescription, ValidCosmosDbIdInputPattern } from "Utils/ValidationUtils";

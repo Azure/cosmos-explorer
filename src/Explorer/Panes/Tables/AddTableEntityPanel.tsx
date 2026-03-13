@@ -1,7 +1,6 @@
 import { IDropdownOption, Image, Label, Stack, Text, TextField } from "@fluentui/react";
 import { useBoolean } from "@fluentui/react-hooks";
-import { Keys } from "Localization/Keys.generated";
-import { t } from "Localization/t";
+import { Keys, t } from "Localization";
 import { logConsoleError } from "Utils/NotificationConsoleUtils";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import * as _ from "underscore";

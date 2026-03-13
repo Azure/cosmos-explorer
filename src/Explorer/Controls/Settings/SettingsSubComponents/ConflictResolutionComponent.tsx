@@ -2,6 +2,7 @@ import { ChoiceGroup, IChoiceGroupOption, ITextFieldProps, Stack, TextField } fr
 import * as React from "react";
 import * as DataModels from "../../../../Contracts/DataModels";
 import * as ViewModels from "../../../../Contracts/ViewModels";
+import { Keys, t } from "Localization";
 import {
   conflictResolutionCustomToolTip,
   conflictResolutionLwwTooltip,
@@ -32,9 +33,12 @@ export class ConflictResolutionComponent extends React.Component<ConflictResolut
   private conflictResolutionChoiceGroupOptions: IChoiceGroupOption[] = [
     {
       key: DataModels.ConflictResolutionMode.LastWriterWins,
-      text: "Last Write Wins (default)",
+      text: t(Keys.controls.settings.conflictResolution.lwwDefault),
     },
-    { key: DataModels.ConflictResolutionMode.Custom, text: "Merge Procedure (custom)" },
+    {
+      key: DataModels.ConflictResolutionMode.Custom,
+      text: t(Keys.controls.settings.conflictResolution.customMergeProcedure),
+    },
   ];
 
   componentDidMount(): void {
@@ -85,7 +89,7 @@ export class ConflictResolutionComponent extends React.Component<ConflictResolut
 
   private getConflictResolutionModeComponent = (): JSX.Element => (
     <ChoiceGroup
-      label="Mode"
+      label={t(Keys.controls.settings.conflictResolution.mode)}
       selectedKey={this.props.conflictResolutionPolicyMode}
       options={this.conflictResolutionChoiceGroupOptions}
       onChange={this.onConflictResolutionPolicyModeChange}
@@ -103,7 +107,7 @@ export class ConflictResolutionComponent extends React.Component<ConflictResolut
   private getConflictResolutionLWWComponent = (): JSX.Element => (
     <TextField
       id="conflictResolutionLwwTextField"
-      label={"Conflict Resolver Property"}
+      label={t(Keys.controls.settings.conflictResolution.conflictResolverProperty)}
       onRenderLabel={this.onRenderLwwComponentTextField}
       styles={{
         fieldGroup: {
@@ -158,7 +162,7 @@ export class ConflictResolutionComponent extends React.Component<ConflictResolut
     return (
       <TextField
         id="conflictResolutionCustomTextField"
-        label="Stored procedure"
+        label={t(Keys.controls.settings.conflictResolution.storedProcedure)}
         onRenderLabel={this.onRenderCustomComponentTextField}
         styles={{
           fieldGroup: {
