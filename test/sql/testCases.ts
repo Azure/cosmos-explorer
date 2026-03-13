@@ -272,4 +272,27 @@ export const documentTestCases: DocumentTestCase[] = [
       },
     ],
   },
+  {
+    name: "Single Partition Key With Whitespace",
+    databaseId: "e2etests-sql-readonly",
+    containerId: "whitespacePartitionKey",
+    documents: [
+      {
+        documentId: "whitespacePartitionKey",
+        partitionKeys: [{ key: "/ partitionKey ", value: "whitespaceValue" }],
+      },
+      {
+        documentId: "whitespacePartitionKey_empty_string",
+        partitionKeys: [{ key: "/ partitionKey ", value: "" }],
+      },
+      {
+        documentId: "whitespacePartitionKey_null",
+        partitionKeys: [{ key: "/ partitionKey ", value: null }],
+      },
+      {
+        documentId: "whitespacePartitionKey_missing",
+        partitionKeys: [],
+      },
+    ],
+  },
 ];
