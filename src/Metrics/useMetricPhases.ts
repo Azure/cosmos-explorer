@@ -1,25 +1,41 @@
 import React from "react";
 import MetricScenario from "./MetricEvents";
-import { scenarioMonitor } from "./ScenarioMonitor";
 import { ApplicationMetricPhase, CommonMetricPhase } from "./ScenarioConfig";
+import { scenarioMonitor } from "./ScenarioMonitor";
 
 /**
- * Hook to automatically complete the Interactive phase when the component becomes interactive.
- * Uses requestAnimationFrame to complete after the browser has painted.
+ * Completes the Interactive phase once the browser is ready to paint.
  *
- * Calls scenarioMonitor directly (not via React context) so that the effect dependencies
- * are only [scenario, enabled] — both stable primitives. This prevents re-renders from
- * cancelling the pending rAF due to an unstable context function reference.
+ * Uses requestAnimationFrame with a setTimeout fallback. In foreground tabs rAF fires
+ * first (~16 ms) giving an accurate "browser painted" signal. In background tabs browsers
+ * suspend rAF indefinitely, so the setTimeout fallback (1 s) completes the phase instead —
+ * well within the 10 s scenario timeout — preventing false-negative unhealthy reports.
  */
 export function useInteractive(scenario: MetricScenario, enabled = true) {
   React.useEffect(() => {
     if (!enabled) {
       return undefined;
     }
-    const id = requestAnimationFrame(() => {
+
+    let completed = false;
+    const complete = () => {
+      if (completed) {
+        return;
+      }
+      completed = true;
+      cancelAnimationFrame(rafId);
+      clearTimeout(timeoutId);
       scenarioMonitor.completePhase(scenario, CommonMetricPhase.Interactive);
-    });
-    return () => cancelAnimationFrame(id);
+    };
+
+    const rafId = requestAnimationFrame(complete);
+    // Fallback for background tabs where rAF is suspended.
+    const timeoutId = setTimeout(complete, 1000);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      clearTimeout(timeoutId);
+    };
   }, [scenario, enabled]);
 }
 
