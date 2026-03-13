@@ -1,6 +1,5 @@
 import { Checkbox, Text } from "@fluentui/react";
-import { Keys } from "Localization/Keys.generated";
-import { t } from "Localization/t";
+import { Keys, t } from "Localization";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { userContext } from "../../../../UserContext";
 import { useSidePanel } from "../../../../hooks/useSidePanel";

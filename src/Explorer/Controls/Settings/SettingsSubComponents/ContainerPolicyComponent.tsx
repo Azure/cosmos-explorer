@@ -7,6 +7,7 @@ import {
 import { titleAndInputStackProps } from "Explorer/Controls/Settings/SettingsRenderUtils";
 import { ContainerPolicyTabTypes, isDirty } from "Explorer/Controls/Settings/SettingsUtils";
 import { VectorEmbeddingPoliciesComponent } from "Explorer/Controls/VectorSearch/VectorEmbeddingPoliciesComponent";
+import { Keys, t } from "Localization";
 import React from "react";
 
 export interface ContainerPolicyComponentProps {
@@ -153,7 +154,7 @@ export const ContainerPolicyComponent: React.FC<ContainerPolicyComponentProps> =
           <PivotItem
             itemKey={ContainerPolicyTabTypes[ContainerPolicyTabTypes.VectorPolicyTab]}
             style={{ marginTop: 20, color: "var(--colorNeutralForeground1)" }}
-            headerText="Vector Policy"
+            headerText={t(Keys.controls.settings.containerPolicy.vectorPolicy)}
           >
             <Stack {...titleAndInputStackProps} styles={{ root: { position: "relative", maxWidth: "400px" } }}>
               {vectorEmbeddings && (
@@ -175,7 +176,7 @@ export const ContainerPolicyComponent: React.FC<ContainerPolicyComponentProps> =
           <PivotItem
             itemKey={ContainerPolicyTabTypes[ContainerPolicyTabTypes.FullTextPolicyTab]}
             style={{ marginTop: 20, color: "var(--colorNeutralForeground1)" }}
-            headerText="Full Text Policy"
+            headerText={t(Keys.controls.settings.containerPolicy.fullTextPolicy)}
           >
             <Stack {...titleAndInputStackProps} styles={{ root: { position: "relative", maxWidth: "400px" } }}>
               {fullTextSearchPolicy ? (
@@ -218,7 +219,7 @@ export const ContainerPolicyComponent: React.FC<ContainerPolicyComponentProps> =
                     });
                   }}
                 >
-                  Create new full text search policy
+                  {t(Keys.controls.settings.containerPolicy.createFullTextPolicy)}
                 </DefaultButton>
               )}
             </Stack>
