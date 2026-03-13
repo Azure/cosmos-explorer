@@ -279,18 +279,21 @@ function createOpenVsCodeDialogButton(container: Explorer): CommandButtonCompone
 }
 
 function createLoginForEntraIDButton(container: Explorer): CommandButtonComponentProps {
-  if (configContext.platform !== Platform.Portal) {
-    return undefined;
-  }
+  // if (configContext.platform !== Platform.Portal) {
+  //   return undefined;
+  // }
 
   const handleCommandClick = async () => {
     await container.openLoginForEntraIDPopUp();
     useDataPlaneRbac.setState({ dataPlaneRbacEnabled: true });
   };
 
-  if (!userContext.dataPlaneRbacEnabled || userContext.aadToken) {
-    return undefined;
-  }
+  console.log("is dataplane rbac enabled", userContext.dataPlaneRbacEnabled);
+  console.log("aad token", userContext.aadToken);
+
+  // if (!userContext.dataPlaneRbacEnabled || userContext.aadToken) {
+  //   return undefined;
+  // }
 
   const label = "Login for Entra ID RBAC";
   return {
