@@ -442,10 +442,10 @@
       "shareThroughputTooltip": "La velocità effettiva con provisioning al livello {{databaseLabel}} sarà condivisa tra tutte le {{collectionsLabel}} all'interno di {{databaseLabel}}.",
       "greaterThanError": "Immettere un valore maggiore di {{minValue}} per la velocità effettiva di Autopilot",
       "acknowledgeSpendError": "Confermare la spesa stimata di {{period}}.",
-      "acknowledgeSpendErrorMonthly": "Please acknowledge the estimated monthly spend.",
-      "acknowledgeSpendErrorDaily": "Please acknowledge the estimated daily spend.",
-      "provisionSharedThroughputTitle": "Provision shared throughput",
-      "provisionThroughputLabel": "Provision throughput"
+      "acknowledgeSpendErrorMonthly": "Confermare la spesa mensile stimata.",
+      "acknowledgeSpendErrorDaily": "Confermare la spesa giornaliera stimata.",
+      "provisionSharedThroughputTitle": "Provisioning velocità effettiva condivisa",
+      "provisionThroughputLabel": "Provisioning velocità effettiva"
     },
     "addCollection": {
       "createNew": "Crea nuovo",
@@ -498,29 +498,29 @@
       "vectorPolicyError": "Correggere gli errori nei criteri sul vettore contenitore",
       "fullTextSearchPolicyError": "Correggere gli errori nei criteri di ricerca full-text del contenitore",
       "addingSampleDataSet": "Aggiunta dei set di dati di esempio",
-      "databaseFieldLabelName": "Database name",
-      "databaseFieldLabelId": "Database id",
-      "newDatabaseIdPlaceholder": "Type a new database id",
-      "newDatabaseIdAriaLabel": "New database id, Type a new database id",
-      "createNewDatabaseAriaLabel": "Create new database",
-      "useExistingDatabaseAriaLabel": "Use existing database",
-      "chooseExistingDatabase": "Choose an existing database",
+      "databaseFieldLabelName": "Nome del database",
+      "databaseFieldLabelId": "ID database",
+      "newDatabaseIdPlaceholder": "Digitare un nuovo ID database",
+      "newDatabaseIdAriaLabel": "Nuovo ID database. Digitare un nuovo ID database",
+      "createNewDatabaseAriaLabel": "Creare nuovo database",
+      "useExistingDatabaseAriaLabel": "Usare database esistente",
+      "chooseExistingDatabase": "Utilizza un database esistente",
       "teachingBubble": {
-        "step1Headline": "Create sample database",
-        "step1Body": "Database is the parent of a container. You can create a new database or use an existing one. In this tutorial we are creating a new database named SampleDB.",
-        "step1LearnMore": "Learn more about resources.",
-        "step2Headline": "Setting throughput",
-        "step2Body": "Cosmos DB recommends sharing throughput across database. Autoscale will give you a flexible amount of throughput based on the max RU/s set (Request Units).",
-        "step2LearnMore": "Learn more about RU/s.",
-        "step3Headline": "Naming container",
-        "step3Body": "Name your container",
-        "step4Headline": "Setting partition key",
-        "step4Body": "Last step - you will need to define a partition key for your collection. /address was chosen for this particular example. A good partition key should have a wide range of possible value",
-        "step4CreateContainer": "Create container",
-        "step5Headline": "Creating sample container",
-        "step5Body": "A sample container is now being created and we are adding sample data for you. It should take about 1 minute.",
-        "step5BodyFollowUp": "Once the sample container is created, review your sample dataset and follow next steps",
-        "stepOfTotal": "Step {{current}} of {{total}}"
+        "step1Headline": "Creare set di dati campione",
+        "step1Body": "Il database è l'elemento principale di un contenitore. È possibile creare un nuovo database o usarne uno esistente. In questo tutorial creeremo un nuovo database denominato SampleDB.",
+        "step1LearnMore": "Altre informazioni sulle risorse.",
+        "step2Headline": "Impostazione della velocità effettiva",
+        "step2Body": "Cosmos DB consiglia di condividere la velocità effettiva tra i database. La scalabilità automatica offre una velocità effettiva flessibile basata sul valore massimo di UR/s impostato (unità di richiesta).",
+        "step2LearnMore": "Altre informazioni su UR/s.",
+        "step3Headline": "Denominare il contenitore",
+        "step3Body": "Immettere il nome del contenitore",
+        "step4Headline": "Impostazione della chiave di partizione",
+        "step4Body": "Ultimo passaggio: è necessario definire una chiave di partizione per la raccolta. Per questo esempio è stata scelta /address. Una buona chiave di partizione deve avere un'ampia gamma di valori possibili",
+        "step4CreateContainer": "Creare contenitore",
+        "step5Headline": "Creazione del contenitore campione",
+        "step5Body": "È in corso la creazione di un contenitore campione e stiamo aggiungendo dati campione. L'operazione dovrebbe richiedere circa 1 minuto.",
+        "step5BodyFollowUp": "Una volta creato il contenitore campione, esaminare il set di dati campione e seguire i passaggi successivi",
+        "stepOfTotal": "Passaggio {{current}} di {{total}}"
       }
     },
     "addCollectionUtility": {
@@ -792,9 +792,9 @@
         "updatedCostPerMonth": "Costo aggiornato al mese",
         "currentCostPerMonth": "Costo corrente al mese",
         "perRu": "/UR",
-        "perHour": "/hr",
-        "perDay": "/day",
-        "perMonth": "/mo"
+        "perHour": "/ora",
+        "perDay": "/giorno",
+        "perMonth": "/mese"
       },
       "throughput": {
         "manualToAutoscaleDisclaimer": "Il numero massimo di UR/sec con scalabilità automatica iniziale verrà determinato dal sistema, in base alle impostazioni correnti della velocità effettiva manuale e all'archiviazione della risorsa. Dopo aver abilitato la scalabilità automatica, è possibile modificare il numero massimo di UR/sec.",
@@ -890,8 +890,8 @@
         "throughputRuS": "Unità elaborate (UR/sec)",
         "autoScaleCustomSettings": "L'account ha impostazioni personalizzate che impediscono l'impostazione della velocità effettiva a livello di contenitore. Collaborare con il punto di contatto del team tecnico di Cosmos DB per apportare modifiche.",
         "keyspaceSharedThroughput": "La velocità effettiva condivisa di questa tabella è configurata nello spazio delle chiavi",
-        "throughputRangeLabel": "Throughput ({{min}} - {{max}} RU/s)",
-        "unlimited": "unlimited"
+        "throughputRangeLabel": "Velocità effettiva ({{min}}-{{max}} UR/s)",
+        "unlimited": "senza limiti"
       },
       "partitionKeyEditor": {
         "changePartitionKey": "Modifica {{partitionKeyName}}",

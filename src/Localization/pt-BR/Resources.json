@@ -442,8 +442,8 @@
       "shareThroughputTooltip": "A taxa de transferência provisionada no nível {{databaseLabel}} será compartilhada entre todos {{collectionsLabel}} no {{databaseLabel}}.",
       "greaterThanError": "Insira um valor maior que {{minValue}} para a taxa de transferência do Autopilot",
       "acknowledgeSpendError": "Confirme os gastos estimados de {{period}}.",
-      "acknowledgeSpendErrorMonthly": "Please acknowledge the estimated monthly spend.",
-      "acknowledgeSpendErrorDaily": "Please acknowledge the estimated daily spend.",
+      "acknowledgeSpendErrorMonthly": "Confirme os gastos mensais estimados.",
+      "acknowledgeSpendErrorDaily": "Confirme os gastos diários estimados.",
       "provisionSharedThroughputTitle": "Provision shared throughput",
       "provisionThroughputLabel": "Provision throughput"
     },
@@ -504,7 +504,7 @@
       "newDatabaseIdAriaLabel": "New database id, Type a new database id",
       "createNewDatabaseAriaLabel": "Create new database",
       "useExistingDatabaseAriaLabel": "Use existing database",
-      "chooseExistingDatabase": "Choose an existing database",
+      "chooseExistingDatabase": "Escolha um banco de dados existente",
       "teachingBubble": {
         "step1Headline": "Create sample database",
         "step1Body": "Database is the parent of a container. You can create a new database or use an existing one. In this tutorial we are creating a new database named SampleDB.",

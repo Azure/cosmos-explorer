@@ -442,8 +442,8 @@
       "shareThroughputTooltip": "{{databaseLabel}} 層級的已佈建輸送量將會跨 {{databaseLabel}} 內的所有 {{collectionsLabel}} 共用。",
       "greaterThanError": "請為 Autopilot 輸送量輸入大於 {{minValue}} 的值",
       "acknowledgeSpendError": "請認知估計的 {{period}} 支出。",
-      "acknowledgeSpendErrorMonthly": "Please acknowledge the estimated monthly spend.",
-      "acknowledgeSpendErrorDaily": "Please acknowledge the estimated daily spend.",
+      "acknowledgeSpendErrorMonthly": "請認知每月預估支出。",
+      "acknowledgeSpendErrorDaily": "請認知估計的每日支出。",
       "provisionSharedThroughputTitle": "Provision shared throughput",
       "provisionThroughputLabel": "Provision throughput"
     },
@@ -504,7 +504,7 @@
       "newDatabaseIdAriaLabel": "New database id, Type a new database id",
       "createNewDatabaseAriaLabel": "Create new database",
       "useExistingDatabaseAriaLabel": "Use existing database",
-      "chooseExistingDatabase": "Choose an existing database",
+      "chooseExistingDatabase": "選擇我現有資料庫",
       "teachingBubble": {
         "step1Headline": "Create sample database",
         "step1Body": "Database is the parent of a container. You can create a new database or use an existing one. In this tutorial we are creating a new database named SampleDB.",

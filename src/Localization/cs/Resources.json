@@ -442,8 +442,8 @@
       "shareThroughputTooltip": "Zřízená propustnost na úrovni {{databaseLabel}} se bude sdílet napříč všemi {{collectionsLabel}} v rámci {{databaseLabel}}.",
       "greaterThanError": "Zadejte prosím hodnotu větší než {{minValue}} pro propustnost autopilota.",
       "acknowledgeSpendError": "Potvrďte prosím odhadovaný výdaj za {{period}}.",
-      "acknowledgeSpendErrorMonthly": "Please acknowledge the estimated monthly spend.",
-      "acknowledgeSpendErrorDaily": "Please acknowledge the estimated daily spend.",
+      "acknowledgeSpendErrorMonthly": "Potvrďte prosím odhadované měsíční výdaje.",
+      "acknowledgeSpendErrorDaily": "Potvrďte prosím odhadované denní výdaje.",
       "provisionSharedThroughputTitle": "Provision shared throughput",
       "provisionThroughputLabel": "Provision throughput"
     },
@@ -504,7 +504,7 @@
       "newDatabaseIdAriaLabel": "New database id, Type a new database id",
       "createNewDatabaseAriaLabel": "Create new database",
       "useExistingDatabaseAriaLabel": "Use existing database",
-      "chooseExistingDatabase": "Choose an existing database",
+      "chooseExistingDatabase": "Zvolit stávající databázi",
       "teachingBubble": {
         "step1Headline": "Create sample database",
         "step1Body": "Database is the parent of a container. You can create a new database or use an existing one. In this tutorial we are creating a new database named SampleDB.",
