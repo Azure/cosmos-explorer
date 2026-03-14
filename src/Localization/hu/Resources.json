@@ -444,8 +444,8 @@
       "acknowledgeSpendError": "Nyugtázza a becsült {{period}} ráfordítást.",
       "acknowledgeSpendErrorMonthly": "Nyugtázza a becsült havi ráfordítást.",
       "acknowledgeSpendErrorDaily": "Nyugtázza a becsült napi ráfordítást.",
-      "provisionSharedThroughputTitle": "Provision shared throughput",
-      "provisionThroughputLabel": "Provision throughput"
+      "provisionSharedThroughputTitle": "Megosztott átviteli sebesség kiosztása",
+      "provisionThroughputLabel": "Átviteli sebesség kiosztása"
     },
     "addCollection": {
       "createNew": "Új létrehozása",
@@ -498,29 +498,29 @@
       "vectorPolicyError": "Javítsa ki a tároló vektorházirendjének hibáit",
       "fullTextSearchPolicyError": "Javítsa ki a tároló teljes szöveges keresési szabályzatának hibáit",
       "addingSampleDataSet": "Mintaadatkészlet hozzáadása",
-      "databaseFieldLabelName": "Database name",
-      "databaseFieldLabelId": "Database id",
-      "newDatabaseIdPlaceholder": "Type a new database id",
-      "newDatabaseIdAriaLabel": "New database id, Type a new database id",
-      "createNewDatabaseAriaLabel": "Create new database",
-      "useExistingDatabaseAriaLabel": "Use existing database",
+      "databaseFieldLabelName": "Adatbázis neve",
+      "databaseFieldLabelId": "Adatbázis-azonosító",
+      "newDatabaseIdPlaceholder": "Írjon be egy új adatbázis-azonosítót",
+      "newDatabaseIdAriaLabel": "Új adatbázis-azonosító, új adatbázis-azonosító beírása",
+      "createNewDatabaseAriaLabel": "Új adatbázis létrehozása",
+      "useExistingDatabaseAriaLabel": "Meglévő adatbázis használata",
       "chooseExistingDatabase": "Meglévő adatbázis kiválasztása",
       "teachingBubble": {
-        "step1Headline": "Create sample database",
-        "step1Body": "Database is the parent of a container. You can create a new database or use an existing one. In this tutorial we are creating a new database named SampleDB.",
-        "step1LearnMore": "Learn more about resources.",
-        "step2Headline": "Setting throughput",
-        "step2Body": "Cosmos DB recommends sharing throughput across database. Autoscale will give you a flexible amount of throughput based on the max RU/s set (Request Units).",
-        "step2LearnMore": "Learn more about RU/s.",
-        "step3Headline": "Naming container",
-        "step3Body": "Name your container",
-        "step4Headline": "Setting partition key",
-        "step4Body": "Last step - you will need to define a partition key for your collection. /address was chosen for this particular example. A good partition key should have a wide range of possible value",
-        "step4CreateContainer": "Create container",
-        "step5Headline": "Creating sample container",
-        "step5Body": "A sample container is now being created and we are adding sample data for you. It should take about 1 minute.",
-        "step5BodyFollowUp": "Once the sample container is created, review your sample dataset and follow next steps",
-        "stepOfTotal": "Step {{current}} of {{total}}"
+        "step1Headline": "Mintaadatbázis létrehozása",
+        "step1Body": "Az adatbázis a tároló szülője. Létrehozhat egy új adatbázist, vagy használhat egy meglévőt. Ebben az oktatóanyagban egy új, SampleDB nevű adatbázist hozunk létre.",
+        "step1LearnMore": "További információ az erőforrásokról.",
+        "step2Headline": "Átviteli sebesség beállítása",
+        "step2Body": "Cosmos DB azt javasolja, hogy ossza meg az átviteli sebességet az adatbázisok között. Az automatikus skálázás rugalmas átviteli sebességet biztosít a maximális RU/s készlet (kérelemegység) alapján.",
+        "step2LearnMore": "További információ a RU/mp értékről.",
+        "step3Headline": "Tároló elnevezése",
+        "step3Body": "Nevezze el a tárolót",
+        "step4Headline": "Partíciókulcs beállítása:",
+        "step4Body": "Utolsó lépés – meg kell határoznia egy partíciókulcsot a gyűjteményhez. Ehhez a példához a /address lett kiválasztva. Egy jó partíciókulcsnak számos lehetséges értékkel kell rendelkeznie",
+        "step4CreateContainer": "Tároló létrehozása",
+        "step5Headline": "Mintatároló létrehozása",
+        "step5Body": "Most létrehozunk egy mintatárolót, és felveszünk bele mintaadatokat Önnek. Ez körülbelül 1 percet vesz igénybe.",
+        "step5BodyFollowUp": "A mintatároló létrehozása után tekintse át a mintaadatkészletet, majd kövesse a következő lépéseket",
+        "stepOfTotal": "{{current}}/{{total}}. lépés"
       }
     },
     "addCollectionUtility": {
@@ -792,9 +792,9 @@
         "updatedCostPerMonth": "Frissített havi költség",
         "currentCostPerMonth": "Aktuális havi költség",
         "perRu": "/RU",
-        "perHour": "/hr",
-        "perDay": "/day",
-        "perMonth": "/mo"
+        "perHour": "/óra",
+        "perDay": "/nap",
+        "perMonth": "/hó"
       },
       "throughput": {
         "manualToAutoscaleDisclaimer": "Az automatikus skálázás kezdő maximális RU/s értékét a rendszer határozza meg az erőforrás aktuális manuális átviteli sebességbeállításai és tárterülete alapján. Az automatikus skálázás engedélyezése után módosíthatja a maximális RU/s értékét.",
@@ -890,8 +890,8 @@
         "throughputRuS": "Átviteli sebesség (RU/mp)",
         "autoScaleCustomSettings": "A fiókja egyéni beállításokkal rendelkezik, amelyek megakadályozzák az átviteli sebesség tárolószinten történő beállítását. Kérjük, hogy a módosítások végrehajtása érdekében vegye fel a kapcsolatot a Cosmos DB mérnöki csapatával.",
         "keyspaceSharedThroughput": "Ez a tábla megosztott átviteli sebesség a kulcstérben van konfigurálva",
-        "throughputRangeLabel": "Throughput ({{min}} - {{max}} RU/s)",
-        "unlimited": "unlimited"
+        "throughputRangeLabel": "Átviteli sebesség ({{min}}-{{max}} RU/mp)",
+        "unlimited": "korlátlan"
       },
       "partitionKeyEditor": {
         "changePartitionKey": "{{partitionKeyName}} módosítása",

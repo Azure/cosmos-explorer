@@ -444,8 +444,8 @@
       "acknowledgeSpendError": "Bevestig de geschatte {{period}} uitgaven.",
       "acknowledgeSpendErrorMonthly": "Bevestig de geschatte maandelijkse uitgaven.",
       "acknowledgeSpendErrorDaily": "Bevestig de geschatte dagelijkse uitgaven.",
-      "provisionSharedThroughputTitle": "Provision shared throughput",
-      "provisionThroughputLabel": "Provision throughput"
+      "provisionSharedThroughputTitle": "Gedeelde doorvoer inrichten",
+      "provisionThroughputLabel": "Inrichtingsdoorvoer"
     },
     "addCollection": {
       "createNew": "Nieuw item maken",
@@ -498,29 +498,29 @@
       "vectorPolicyError": "Los fouten op in het containervectorbeleid",
       "fullTextSearchPolicyError": "Los fouten op in het zoekbeleid voor volledige tekst van container",
       "addingSampleDataSet": "Voorbeeldgegevensset toevoegen",
-      "databaseFieldLabelName": "Database name",
-      "databaseFieldLabelId": "Database id",
-      "newDatabaseIdPlaceholder": "Type a new database id",
-      "newDatabaseIdAriaLabel": "New database id, Type a new database id",
-      "createNewDatabaseAriaLabel": "Create new database",
-      "useExistingDatabaseAriaLabel": "Use existing database",
+      "databaseFieldLabelName": "Databasenaam",
+      "databaseFieldLabelId": "Database-id",
+      "newDatabaseIdPlaceholder": "Typ een nieuwe database-id",
+      "newDatabaseIdAriaLabel": "Nieuwe database-id, typ een nieuwe database-id",
+      "createNewDatabaseAriaLabel": "Nieuwe database maken",
+      "useExistingDatabaseAriaLabel": "Bestaande database gebruiken",
       "chooseExistingDatabase": "Een bestaande database kiezen",
       "teachingBubble": {
-        "step1Headline": "Create sample database",
-        "step1Body": "Database is the parent of a container. You can create a new database or use an existing one. In this tutorial we are creating a new database named SampleDB.",
-        "step1LearnMore": "Learn more about resources.",
-        "step2Headline": "Setting throughput",
-        "step2Body": "Cosmos DB recommends sharing throughput across database. Autoscale will give you a flexible amount of throughput based on the max RU/s set (Request Units).",
-        "step2LearnMore": "Learn more about RU/s.",
-        "step3Headline": "Naming container",
-        "step3Body": "Name your container",
-        "step4Headline": "Setting partition key",
-        "step4Body": "Last step - you will need to define a partition key for your collection. /address was chosen for this particular example. A good partition key should have a wide range of possible value",
-        "step4CreateContainer": "Create container",
-        "step5Headline": "Creating sample container",
-        "step5Body": "A sample container is now being created and we are adding sample data for you. It should take about 1 minute.",
-        "step5BodyFollowUp": "Once the sample container is created, review your sample dataset and follow next steps",
-        "stepOfTotal": "Step {{current}} of {{total}}"
+        "step1Headline": "Voorbeelddatabase maken",
+        "step1Body": "De database is het bovenliggende element van een container. U kunt een nieuwe database maken of een bestaande gebruiken. In deze tutorial maken we een nieuwe database met de naam SampleDB.",
+        "step1LearnMore": "Meer informatie over resources.",
+        "step2Headline": "Instelling doorvoer",
+        "step2Body": "Cosmos DB raadt aan om de doorvoer over de database te delen. Autoscale geeft u een flexibele hoeveelheid doorvoer op basis van de ingestelde maximale RU/s (Request Units).",
+        "step2LearnMore": "Meer informatie over RU/s.",
+        "step3Headline": "Container benoemen",
+        "step3Body": "Geef uw container een naam",
+        "step4Headline": "Partitiesleutel instellen",
+        "step4Body": "Laatste stap: u moet een partitiesleutel definiëren voor uw collectie. /adres is gekozen voor dit specifieke voorbeeld. Een goede partitiesleutel heeft een breed scala aan mogelijke waarden",
+        "step4CreateContainer": "Container maken",
+        "step5Headline": "Voorbeeldcontainer maken",
+        "step5Body": "Er wordt nu een voorbeeldcontainer gemaakt en er worden voorbeeldgegevens voor u toegevoegd. Dit duurt ongeveer 1 minuut.",
+        "step5BodyFollowUp": "Zodra de voorbeeldcontainer is gemaakt, bekijkt u de voorbeeldgegevensset en volgt u de volgende stappen",
+        "stepOfTotal": "Stap {{current}} van {{total}}"
       }
     },
     "addCollectionUtility": {
@@ -792,9 +792,9 @@
         "updatedCostPerMonth": "Bijgewerkte kosten per maand",
         "currentCostPerMonth": "Actuele kosten per maand",
         "perRu": "/RU",
-        "perHour": "/hr",
-        "perDay": "/day",
-        "perMonth": "/mo"
+        "perHour": "/uur",
+        "perDay": "/dag",
+        "perMonth": "/mnd"
       },
       "throughput": {
         "manualToAutoscaleDisclaimer": "Het startmaximum voor automatisch schalen van RU/s wordt door het systeem bepaald op basis van de huidige handmatige doorvoerinstellingen en opslag van uw resource. Nadat automatisch schalen is ingeschakeld, kunt u het maximum RU/s wijzigen.",
@@ -890,8 +890,8 @@
         "throughputRuS": "Doorvoer (RU/s)",
         "autoScaleCustomSettings": "Uw account heeft aangepaste instellingen die het instellen van doorvoer op containerniveau verhinderen. Werk samen met uw contactpersoon van het Cosmos DB-engineeringteam om wijzigingen aan te brengen.",
         "keyspaceSharedThroughput": "Deze gedeelde doorvoer van de tabel is geconfigureerd in de sleutelruimte",
-        "throughputRangeLabel": "Throughput ({{min}} - {{max}} RU/s)",
-        "unlimited": "unlimited"
+        "throughputRangeLabel": "Doorvoer ({{min}} - {{max}} RU/s)",
+        "unlimited": "onbeperkt"
       },
       "partitionKeyEditor": {
         "changePartitionKey": "{{partitionKeyName}} wijzigen",

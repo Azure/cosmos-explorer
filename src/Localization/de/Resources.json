@@ -444,8 +444,8 @@
       "acknowledgeSpendError": "Bestätigen Sie die geschätzten {{period}} Ausgaben.",
       "acknowledgeSpendErrorMonthly": "Bestätigen Sie die geschätzten monatlichen Ausgaben.",
       "acknowledgeSpendErrorDaily": "Bestätigen Sie die geschätzten täglichen Ausgaben.",
-      "provisionSharedThroughputTitle": "Provision shared throughput",
-      "provisionThroughputLabel": "Provision throughput"
+      "provisionSharedThroughputTitle": "Freigegebenen Durchsatz bereitstellen",
+      "provisionThroughputLabel": "Durchsatz bereitstellen"
     },
     "addCollection": {
       "createNew": "Neu erstellen",
@@ -498,29 +498,29 @@
       "vectorPolicyError": "Beheben Sie Fehler in der Containervektorrichtlinie.",
       "fullTextSearchPolicyError": "Beheben Sie Fehler in der Richtlinie für die Container-Volltextsuche.",
       "addingSampleDataSet": "Beispieldataset wird hinzugefügt",
-      "databaseFieldLabelName": "Database name",
-      "databaseFieldLabelId": "Database id",
-      "newDatabaseIdPlaceholder": "Type a new database id",
-      "newDatabaseIdAriaLabel": "New database id, Type a new database id",
-      "createNewDatabaseAriaLabel": "Create new database",
-      "useExistingDatabaseAriaLabel": "Use existing database",
+      "databaseFieldLabelName": "Datenbankname",
+      "databaseFieldLabelId": "Datenbank-ID",
+      "newDatabaseIdPlaceholder": "Geben Sie eine neue Datenbank-ID ein.",
+      "newDatabaseIdAriaLabel": "Neue Datenbank-ID; Geben Sie eine neue Datenbank-ID ein.",
+      "createNewDatabaseAriaLabel": "Neue Datenbank erstellen",
+      "useExistingDatabaseAriaLabel": "Vorhandene Datenbank verwenden",
       "chooseExistingDatabase": "Vorhandene Datenbank auswählen",
       "teachingBubble": {
-        "step1Headline": "Create sample database",
-        "step1Body": "Database is the parent of a container. You can create a new database or use an existing one. In this tutorial we are creating a new database named SampleDB.",
-        "step1LearnMore": "Learn more about resources.",
-        "step2Headline": "Setting throughput",
-        "step2Body": "Cosmos DB recommends sharing throughput across database. Autoscale will give you a flexible amount of throughput based on the max RU/s set (Request Units).",
-        "step2LearnMore": "Learn more about RU/s.",
-        "step3Headline": "Naming container",
-        "step3Body": "Name your container",
-        "step4Headline": "Setting partition key",
-        "step4Body": "Last step - you will need to define a partition key for your collection. /address was chosen for this particular example. A good partition key should have a wide range of possible value",
-        "step4CreateContainer": "Create container",
-        "step5Headline": "Creating sample container",
-        "step5Body": "A sample container is now being created and we are adding sample data for you. It should take about 1 minute.",
-        "step5BodyFollowUp": "Once the sample container is created, review your sample dataset and follow next steps",
-        "stepOfTotal": "Step {{current}} of {{total}}"
+        "step1Headline": "Beispieldatenbank erstellen",
+        "step1Body": "Die Datenbank ist das übergeordnete Element eines Containers. Sie können eine neue Datenbank erstellen oder eine vorhandene verwenden. In diesem Tutorial erstellen wir eine neue Datenbank namens SampleDB.",
+        "step1LearnMore": "Weitere Informationen zu Ressourcen",
+        "step2Headline": "Durchsatz festlegen",
+        "step2Body": "Cosmos DB empfiehlt, den Durchsatz über die Datenbank hinweg zu teilen. Die Autoskalierung bietet Ihnen einen flexiblen Durchsatz basierend auf dem festgelegten maximalen RU/s-Wert (Request Units).",
+        "step2LearnMore": "Weitere Informationen zu RU/s.",
+        "step3Headline": "Container wird benannt",
+        "step3Body": "Container benennen",
+        "step4Headline": "Partitionsschlüssel wird festgelegt",
+        "step4Body": "Letzter Schritt: Sie müssen einen Partitionsschlüssel für Ihre Sammlung festlegen. Für dieses Beispiel wurde /address ausgewählt. Ein guter Partitionsschlüssel sollte eine breite Palette möglicher Werte abdecken.",
+        "step4CreateContainer": "Container erstellen",
+        "step5Headline": "Beispielcontainer wird erstellt",
+        "step5Body": "Es wird jetzt ein Beispielcontainer erstellt, und wir fügen Beispieldaten für Sie hinzu. Das dauert etwa eine Minute.",
+        "step5BodyFollowUp": "Nachdem der Beispielcontainer erstellt wurde, überprüfen Sie Ihren Beispieldatensatz und folgen Sie den nächsten Schritten.",
+        "stepOfTotal": "Schritt {{current}} von {{total}}"
       }
     },
     "addCollectionUtility": {
@@ -792,9 +792,9 @@
         "updatedCostPerMonth": "Aktualisierte Kosten pro Monat",
         "currentCostPerMonth": "Aktuelle Kosten pro Monat",
         "perRu": "/RU",
-        "perHour": "/hr",
-        "perDay": "/day",
-        "perMonth": "/mo"
+        "perHour": "/Std.",
+        "perDay": "/Tag",
+        "perMonth": "/Mo."
       },
       "throughput": {
         "manualToAutoscaleDisclaimer": "Die maximale RU/s-Anzahl für die Autoskalierung wird vom System basierend auf den aktuellen manuellen Durchsatzeinstellungen und dem Speicher Ihrer Ressource festgelegt. Nachdem die Autoskalierung aktiviert wurde, können Sie die maximale RU/s-Anzahl ändern.",
@@ -890,8 +890,8 @@
         "throughputRuS": "Durchsatz (RU/s)",
         "autoScaleCustomSettings": "Ihr Konto verfügt über benutzerdefinierte Einstellungen, die die Festlegung des Durchsatzes auf Containerebene verhindern. Bitte wenden Sie sich für Änderungen an Ihren Ansprechpartner im Cosmos DB-Entwicklungsteam.",
         "keyspaceSharedThroughput": "Dieser gemeinsame Durchsatz der Tabelle wird im Keyspace konfiguriert.",
-        "throughputRangeLabel": "Throughput ({{min}} - {{max}} RU/s)",
-        "unlimited": "unlimited"
+        "throughputRangeLabel": "Durchsatz ({{min}}–{{max}} RU/s)",
+        "unlimited": "unbegrenzt"
       },
       "partitionKeyEditor": {
         "changePartitionKey": "„{{partitionKeyName}}“ ändern",

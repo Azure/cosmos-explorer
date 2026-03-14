@@ -444,8 +444,8 @@
       "acknowledgeSpendError": "請認知估計的 {{period}} 支出。",
       "acknowledgeSpendErrorMonthly": "請認知每月預估支出。",
       "acknowledgeSpendErrorDaily": "請認知估計的每日支出。",
-      "provisionSharedThroughputTitle": "Provision shared throughput",
-      "provisionThroughputLabel": "Provision throughput"
+      "provisionSharedThroughputTitle": "佈建共用輸送量",
+      "provisionThroughputLabel": "佈建輸送量"
     },
     "addCollection": {
       "createNew": "新建",
@@ -498,29 +498,29 @@
       "vectorPolicyError": "請修正容器向量原則中的錯誤",
       "fullTextSearchPolicyError": "請修正容器全文搜尋原則中的錯誤",
       "addingSampleDataSet": "新增範例資料集",
-      "databaseFieldLabelName": "Database name",
-      "databaseFieldLabelId": "Database id",
-      "newDatabaseIdPlaceholder": "Type a new database id",
-      "newDatabaseIdAriaLabel": "New database id, Type a new database id",
-      "createNewDatabaseAriaLabel": "Create new database",
-      "useExistingDatabaseAriaLabel": "Use existing database",
+      "databaseFieldLabelName": "資料庫名稱",
+      "databaseFieldLabelId": "資料庫識別碼",
+      "newDatabaseIdPlaceholder": "輸入新資料庫識別碼",
+      "newDatabaseIdAriaLabel": "新資料庫識別碼，請輸入新的資料庫識別碼",
+      "createNewDatabaseAriaLabel": "建立新資料庫",
+      "useExistingDatabaseAriaLabel": "使用現有資料庫",
       "chooseExistingDatabase": "選擇我現有資料庫",
       "teachingBubble": {
-        "step1Headline": "Create sample database",
-        "step1Body": "Database is the parent of a container. You can create a new database or use an existing one. In this tutorial we are creating a new database named SampleDB.",
-        "step1LearnMore": "Learn more about resources.",
-        "step2Headline": "Setting throughput",
-        "step2Body": "Cosmos DB recommends sharing throughput across database. Autoscale will give you a flexible amount of throughput based on the max RU/s set (Request Units).",
-        "step2LearnMore": "Learn more about RU/s.",
-        "step3Headline": "Naming container",
-        "step3Body": "Name your container",
-        "step4Headline": "Setting partition key",
-        "step4Body": "Last step - you will need to define a partition key for your collection. /address was chosen for this particular example. A good partition key should have a wide range of possible value",
-        "step4CreateContainer": "Create container",
-        "step5Headline": "Creating sample container",
-        "step5Body": "A sample container is now being created and we are adding sample data for you. It should take about 1 minute.",
-        "step5BodyFollowUp": "Once the sample container is created, review your sample dataset and follow next steps",
-        "stepOfTotal": "Step {{current}} of {{total}}"
+        "step1Headline": "建立範例資料庫",
+        "step1Body": "資料庫是容器的上層結構。您可以建立新的資料庫或使用現有資料庫。在本教學課程中，我們將建立一個名為 SampleDB 的新資料庫。",
+        "step1LearnMore": "深入了解資源。",
+        "step2Headline": "設定輸送量",
+        "step2Body": "Cosmos DB 建議在資料庫間共用輸送量。自動調整會根據設定的最大要求單位數 (RU/s) 提供彈性的輸送量。",
+        "step2LearnMore": "深入了解 RU/秒。",
+        "step3Headline": "正在命名容器",
+        "step3Body": "命名您的容器",
+        "step4Headline": "正在設定資料分割索引鍵",
+        "step4Body": "最後一步——您需要為集合定義資料分割索引鍵。此範例選擇了 /address。好的資料分割索引鍵應該具有廣泛的可能值範圍",
+        "step4CreateContainer": "建立容器",
+        "step5Headline": "正在建立範例容器",
+        "step5Body": "目前正在建立範例容器，並為您新增範例資料。大約需要 1 分鐘的時間。",
+        "step5BodyFollowUp": "範例容器建立完成後，請檢視您的範例資料集，並依照後續步驟操作",
+        "stepOfTotal": "步驟 {{current}} / {{total}}"
       }
     },
     "addCollectionUtility": {
@@ -792,9 +792,9 @@
         "updatedCostPerMonth": "每月更新成本",
         "currentCostPerMonth": "目前每月成本",
         "perRu": "/RU",
-        "perHour": "/hr",
-        "perDay": "/day",
-        "perMonth": "/mo"
+        "perHour": "/小時",
+        "perDay": "/天",
+        "perMonth": "/月"
       },
       "throughput": {
         "manualToAutoscaleDisclaimer": "系統會根據目前的手動輸送量設定和您的資源儲存體，決定起始自動調整每秒 RU 上限。啟用自動調整之後，您可以變更每秒 RU 上限。",
@@ -890,8 +890,8 @@
         "throughputRuS": "輸送量 (每秒 RU)",
         "autoScaleCustomSettings": "您的帳戶有自訂設定可防止在容器層級設定輸送量。請與您的 Cosmos DB 工程小組連絡人合作以進行變更。",
         "keyspaceSharedThroughput": "此資料表共用輸送量設定於索引鍵空間",
-        "throughputRangeLabel": "Throughput ({{min}} - {{max}} RU/s)",
-        "unlimited": "unlimited"
+        "throughputRangeLabel": "輸送量 (每秒 {{min}} - {{max}} RU)",
+        "unlimited": "無限制"
       },
       "partitionKeyEditor": {
         "changePartitionKey": "變更 {{partitionKeyName}}",

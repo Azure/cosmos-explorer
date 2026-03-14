@@ -444,8 +444,8 @@
       "acknowledgeSpendError": "Confirme os gastos estimados de {{period}} .",
       "acknowledgeSpendErrorMonthly": "Confirme os gastos mensais estimados.",
       "acknowledgeSpendErrorDaily": "Confirme os gastos diários estimados.",
-      "provisionSharedThroughputTitle": "Provision shared throughput",
-      "provisionThroughputLabel": "Provision throughput"
+      "provisionSharedThroughputTitle": "Aprovisionar débito partilhado",
+      "provisionThroughputLabel": "Aprovisionar débito"
     },
     "addCollection": {
       "createNew": "Criar novo",
@@ -498,29 +498,29 @@
       "vectorPolicyError": "Corrija os erros na política de vetor do contentor",
       "fullTextSearchPolicyError": "Corrija os erros na política de pesquisa de texto completo do contentor.",
       "addingSampleDataSet": "Adicionar conjunto de dados de amostra",
-      "databaseFieldLabelName": "Database name",
-      "databaseFieldLabelId": "Database id",
-      "newDatabaseIdPlaceholder": "Type a new database id",
-      "newDatabaseIdAriaLabel": "New database id, Type a new database id",
-      "createNewDatabaseAriaLabel": "Create new database",
-      "useExistingDatabaseAriaLabel": "Use existing database",
+      "databaseFieldLabelName": "Nome da base de dados",
+      "databaseFieldLabelId": "ID da base de dados",
+      "newDatabaseIdPlaceholder": "Introduza um novo ID de base de dados",
+      "newDatabaseIdAriaLabel": "Novo ID de base de dados. Introduza um novo ID de base de dados",
+      "createNewDatabaseAriaLabel": "Criar nova base de dados",
+      "useExistingDatabaseAriaLabel": "Utilizar base de dados existente",
       "chooseExistingDatabase": "Selecione uma base de dados existente",
       "teachingBubble": {
-        "step1Headline": "Create sample database",
-        "step1Body": "Database is the parent of a container. You can create a new database or use an existing one. In this tutorial we are creating a new database named SampleDB.",
-        "step1LearnMore": "Learn more about resources.",
-        "step2Headline": "Setting throughput",
-        "step2Body": "Cosmos DB recommends sharing throughput across database. Autoscale will give you a flexible amount of throughput based on the max RU/s set (Request Units).",
-        "step2LearnMore": "Learn more about RU/s.",
-        "step3Headline": "Naming container",
-        "step3Body": "Name your container",
-        "step4Headline": "Setting partition key",
-        "step4Body": "Last step - you will need to define a partition key for your collection. /address was chosen for this particular example. A good partition key should have a wide range of possible value",
-        "step4CreateContainer": "Create container",
-        "step5Headline": "Creating sample container",
-        "step5Body": "A sample container is now being created and we are adding sample data for you. It should take about 1 minute.",
-        "step5BodyFollowUp": "Once the sample container is created, review your sample dataset and follow next steps",
-        "stepOfTotal": "Step {{current}} of {{total}}"
+        "step1Headline": "Criar base de dados de exemplo",
+        "step1Body": "A base de dados é o elemento principal de um contentor. Pode criar uma nova base de dados ou utilizar uma já existente. Neste tutorial, iremos a criar uma nova base de dados com o nome SampleDB.",
+        "step1LearnMore": "Saiba mais sobre recursos.",
+        "step2Headline": "A definir o débito",
+        "step2Body": "O Cosmos DB recomenda a partilha do débito em toda a base de dados. O Dimensionamento automático irá proporcionar-lhe uma quantidade flexível de débito com base no máximo de RU/s (Unidades de Pedido) definido.",
+        "step2LearnMore": "Saiba mais sobre RU/s.",
+        "step3Headline": "Atribuir um nome ao contentor",
+        "step3Body": "Atribua um nome ao contentor",
+        "step4Headline": "Definir a chave de partição",
+        "step4Body": "Último passo - terá de definir uma chave de partição para a coleção. /address foi escolhida para este exemplo específico. Uma boa chave de partição deve ter uma ampla gama de valores possíveis",
+        "step4CreateContainer": "Criar contentor",
+        "step5Headline": "A criar contentor de exemplo",
+        "step5Body": "Está agora a ser criado um contentor de exemplo e estamos a adicionar dados de exemplo para si. Esta operação deverá demorar cerca de um minuto.",
+        "step5BodyFollowUp": "Assim que o contentor de exemplo for criado, reveja o conjunto de dados de exemplo e siga os próximos passos",
+        "stepOfTotal": "Passo {{current}} de {{total}}"
       }
     },
     "addCollectionUtility": {
@@ -792,9 +792,9 @@
         "updatedCostPerMonth": "Custo mensal atualizado",
         "currentCostPerMonth": "Custo mensal atual",
         "perRu": "/RU",
-        "perHour": "/hr",
-        "perDay": "/day",
-        "perMonth": "/mo"
+        "perHour": "/h",
+        "perDay": "/dia",
+        "perMonth": "/mês"
       },
       "throughput": {
         "manualToAutoscaleDisclaimer": "O valor máximo inicial de RU/s com dimensionamento automático será determinado pelo sistema, com base nas definições atuais de débito manual e no armazenamento do seu recurso. Após o dimensionamento automático estar ativado, pode alterar o máximo de RU/s.",
@@ -890,8 +890,8 @@
         "throughputRuS": "Débito (RU/s)",
         "autoScaleCustomSettings": "A conta tem definições personalizadas que impedem a definição do débito ao nível do contentor. Trabalhe com o contacto da sua equipa de engenharia do Cosmos DB para efetuar alterações.",
         "keyspaceSharedThroughput": "O débito partilhado desta tabela está configurado ao nível do espaço de chaves",
-        "throughputRangeLabel": "Throughput ({{min}} - {{max}} RU/s)",
-        "unlimited": "unlimited"
+        "throughputRangeLabel": "Débito ({{min}} - {{max}} RU/s)",
+        "unlimited": "ilimitado"
       },
       "partitionKeyEditor": {
         "changePartitionKey": "Alterar {{partitionKeyName}}",

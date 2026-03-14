@@ -444,8 +444,8 @@
       "acknowledgeSpendError": "Bekräfta den uppskattade {{period}} kostnaden.",
       "acknowledgeSpendErrorMonthly": "Bekräfta den uppskattade månadskostnaden.",
       "acknowledgeSpendErrorDaily": "Bekräfta den uppskattade dagliga kostnaden.",
-      "provisionSharedThroughputTitle": "Provision shared throughput",
-      "provisionThroughputLabel": "Provision throughput"
+      "provisionSharedThroughputTitle": "Etablera delat dataflöde",
+      "provisionThroughputLabel": "Etablera dataflöde"
     },
     "addCollection": {
       "createNew": "Skapa ny",
@@ -498,29 +498,29 @@
       "vectorPolicyError": "Åtgärda fel i containervektorprincipen",
       "fullTextSearchPolicyError": "Åtgärda felen i containerns fulltextsökningsprincip.",
       "addingSampleDataSet": "Lägger till exempeldatauppsättning",
-      "databaseFieldLabelName": "Database name",
-      "databaseFieldLabelId": "Database id",
-      "newDatabaseIdPlaceholder": "Type a new database id",
-      "newDatabaseIdAriaLabel": "New database id, Type a new database id",
-      "createNewDatabaseAriaLabel": "Create new database",
-      "useExistingDatabaseAriaLabel": "Use existing database",
+      "databaseFieldLabelName": "Namn på databas",
+      "databaseFieldLabelId": "Databas-ID",
+      "newDatabaseIdPlaceholder": "Skriv ett nytt databas-ID",
+      "newDatabaseIdAriaLabel": "Nytt databas-ID, skriv ett nytt databas-ID",
+      "createNewDatabaseAriaLabel": "Skapa ny databas",
+      "useExistingDatabaseAriaLabel": "Använd befintlig databas",
       "chooseExistingDatabase": "Använd en befintlig databas",
       "teachingBubble": {
-        "step1Headline": "Create sample database",
-        "step1Body": "Database is the parent of a container. You can create a new database or use an existing one. In this tutorial we are creating a new database named SampleDB.",
-        "step1LearnMore": "Learn more about resources.",
-        "step2Headline": "Setting throughput",
-        "step2Body": "Cosmos DB recommends sharing throughput across database. Autoscale will give you a flexible amount of throughput based on the max RU/s set (Request Units).",
-        "step2LearnMore": "Learn more about RU/s.",
-        "step3Headline": "Naming container",
-        "step3Body": "Name your container",
-        "step4Headline": "Setting partition key",
-        "step4Body": "Last step - you will need to define a partition key for your collection. /address was chosen for this particular example. A good partition key should have a wide range of possible value",
-        "step4CreateContainer": "Create container",
-        "step5Headline": "Creating sample container",
-        "step5Body": "A sample container is now being created and we are adding sample data for you. It should take about 1 minute.",
-        "step5BodyFollowUp": "Once the sample container is created, review your sample dataset and follow next steps",
-        "stepOfTotal": "Step {{current}} of {{total}}"
+        "step1Headline": "Skapa exempeldatabas",
+        "step1Body": "Databasen är överordnad en container. Du kan skapa en ny databas eller använda en befintlig databas. I den här självstudien skapar vi en ny databas med namnet SampleDB.",
+        "step1LearnMore": "Läs mer om resurser.",
+        "step2Headline": "Anger dataflöde",
+        "step2Body": "Cosmos DB rekommenderar att du delar dataflödet över databasen. Med autoskalning får du ett flexibelt dataflöde baserat på den maximala RU/s-uppsättningen (enheter för programbegäran).",
+        "step2LearnMore": "Läs mer om RU/s.",
+        "step3Headline": "Namnge container",
+        "step3Body": "Namnge din container",
+        "step4Headline": "Anger partitionsnyckel",
+        "step4Body": "Sista steget – du måste definiera en partitionsnyckel för din samling. /address har valts för det här exemplet. En bra partitionsnyckel bör ha ett brett utbud av möjliga värden",
+        "step4CreateContainer": "Skapa container",
+        "step5Headline": "Skapar exempelcontainer",
+        "step5Body": "Nu skapas en exempelcontainer och vi lägger till exempeldata åt dig. Det bör ta ungefär 1 minut.",
+        "step5BodyFollowUp": "När exempelcontainern har skapats granskar du exempeldatauppsättningen och följer nästa steg",
+        "stepOfTotal": "Steg {{current}} av {{total}}"
       }
     },
     "addCollectionUtility": {
@@ -792,9 +792,9 @@
         "updatedCostPerMonth": "Uppdaterad kostnad per månad",
         "currentCostPerMonth": "Aktuell kostnad per månad",
         "perRu": "/RU",
-        "perHour": "/hr",
-        "perDay": "/day",
-        "perMonth": "/mo"
+        "perHour": "/tim",
+        "perDay": "/dag",
+        "perMonth": "/mån"
       },
       "throughput": {
         "manualToAutoscaleDisclaimer": "Den första autoskalningsgränsen för RU/s bestäms av systemet baserat på de aktuella manuella dataflödesinställningarna och lagringen av resursen. När autoskalning har aktiverats kan du ändra max antal RU/s.",
@@ -890,8 +890,8 @@
         "throughputRuS": "Dataflöde (RU/s)",
         "autoScaleCustomSettings": "Ditt konto har anpassade inställningar som förhindrar att dataflödet anges på containernivå. Kontakta din Cosmos DB tekniska team för att göra ändringar.",
         "keyspaceSharedThroughput": "Den här tabellens delade dataflöde har konfigurerats i nyckelområdet",
-        "throughputRangeLabel": "Throughput ({{min}} - {{max}} RU/s)",
-        "unlimited": "unlimited"
+        "throughputRangeLabel": "Dataflöde ({{min}} – {{max}} RU/s)",
+        "unlimited": "obegränsat"
       },
       "partitionKeyEditor": {
         "changePartitionKey": "Ändra {{partitionKeyName}}",
