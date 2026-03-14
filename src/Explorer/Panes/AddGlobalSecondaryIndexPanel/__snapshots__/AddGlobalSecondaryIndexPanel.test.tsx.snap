@@ -146,6 +146,7 @@ exports[`AddGlobalSecondaryIndexPanel render default panel 1`] = `
         explorer={
           Explorer {
             "_isInitializingNotebooks": false,
+            "databasesRefreshed": Promise {},
             "isFixedCollectionWithSharedThroughputSupported": [Function],
             "isTabsContentExpanded": [Function],
             "onRefreshDatabasesKeyPress": [Function],
