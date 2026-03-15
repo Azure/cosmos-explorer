@@ -279,15 +279,15 @@ export const documentTestCases: DocumentTestCase[] = [
     documents: [
       {
         documentId: "whitespacePartitionKey",
-        partitionKeys: [{ key: "/ partitionKey ", value: "whitespaceValue" }],
+        partitionKeys: [{ key: "/ partitionKey", value: "whitespaceValue" }],
       },
       {
         documentId: "whitespacePartitionKey_empty_string",
-        partitionKeys: [{ key: "/ partitionKey ", value: "" }],
+        partitionKeys: [{ key: "/ partitionKey", value: "" }],
       },
       {
         documentId: "whitespacePartitionKey_null",
-        partitionKeys: [{ key: "/ partitionKey ", value: null }],
+        partitionKeys: [{ key: "/ partitionKey", value: null }],
       },
       {
         documentId: "whitespacePartitionKey_missing",
