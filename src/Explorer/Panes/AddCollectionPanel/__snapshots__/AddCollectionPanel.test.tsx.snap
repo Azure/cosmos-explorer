@@ -29,8 +29,7 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
           className="panelTextBold"
           variant="small"
         >
-          Database 
-          id
+          Database id
         </Text>
         <StyledTooltipHostBase
           content="A database is analogous to a namespace. It is the unit of management for a set of containers."

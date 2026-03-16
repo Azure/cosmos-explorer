@@ -17,8 +17,7 @@ import {
 } from "@fluentui/react";
 import React, { FC, useEffect } from "react";
 import create, { UseStore } from "zustand";
-import { Keys } from "../../Localization/Keys.generated";
-import { t } from "../../Localization/t";
+import { Keys, t } from "Localization";
 
 export interface DialogState {
   visible: boolean;

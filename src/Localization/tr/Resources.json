@@ -7,7 +7,7 @@
     "delete": "Sil",
     "update": "Güncelleştir",
     "discard": "At",
-    "execute": "Execute",
+    "execute": "Yürüt",
     "loading": "Yükleniyor",
     "loadingEllipsis": "Yükleniyor...",
     "next": "Sonraki",
@@ -29,6 +29,9 @@
     "upload": "Karşıya yükle",
     "connect": "Bağlan",
     "remove": "Kaldır",
+    "load": "Yükle",
+    "publish": "Yayımla",
+    "browse": "Gözat",
     "increaseValueBy1": "Değeri 1 artır",
     "decreaseValueBy1": "Değeri 1 azalt"
   },
@@ -43,253 +46,923 @@
       "getStarted": "Örnek veri kümelerimizi, belgelerimizi ve ek araçlarımızı kullanmaya başlayın."
     },
     "quickStart": {
-      "title": "Launch quick start",
-      "description": "Launch a quick start tutorial to get started with sample data"
+      "title": "Hızlı başlangıcı başlatın",
+      "description": "Örnek verilerle başlamanız için hızlı başlangıç öğreticisini başlatın"
     },
     "newCollection": {
-      "title": "New {{collectionName}}",
-      "description": "Create a new container for storage and throughput"
+      "title": "Yeni {{collectionName}}",
+      "description": "Depolama ve aktarım hızı için yeni bir kapsayıcı oluşturun"
     },
     "samplesGallery": {
-      "title": "Azure Cosmos DB Samples Gallery",
-      "description": "Discover samples that showcase scalable, intelligent app patterns. Try one now to see how fast you can go from concept to code with Cosmos DB"
+      "title": "Azure Cosmos DB Örnekler Galerisi",
+      "description": "Ölçeklenebilir, akıllı uygulama desenlerini gösteren örnekleri keşfedin. Cosmos DB ile kavramdan koda ne kadar hızlı geçebileceğinizi görmek için hemen birini deneyin"
     },
     "connectCard": {
-      "title": "Connect",
-      "description": "Prefer using your own choice of tooling? Find the connection string you need to connect",
+      "title": "Bağlan",
+      "description": "Kendi araçlarınızı kullanmayı mı tercih ediyorsunuz? Bağlanmak için ihtiyacınız olan bağlantı dizesini bulun",
       "pgAdmin": {
-        "title": "Connect with pgAdmin",
-        "description": "Prefer pgAdmin? Find your connection strings here"
+        "title": "pgAdmin ile bağlanın",
+        "description": "pgAdmin'i mi tercih edersiniz? Bağlantı dizelerinizi burada bulabilirsiniz"
       },
       "vsCode": {
         "title": "VS Code ile Bağlan",
-        "description": "Query and Manage your MongoDB and DocumentDB clusters in Visual Studio Code"
+        "description": "Visual Studio Code'da MongoDB ve DocumentDB kümelerinizi sorgulayın ve yönetin"
       }
     },
     "shell": {
       "postgres": {
-        "title": "PostgreSQL Shell",
-        "description": "Create table and interact with data using PostgreSQL's shell interface"
+        "title": "PostgreSQL Kabuk",
+        "description": "PostgreSQL kabuk arayüzünü kullanarak tablo oluşturun ve verilerle etkileşim kurun"
       },
       "vcoreMongo": {
         "title": "Mongo Shell",
-        "description": "Create a collection and interact with data using MongoDB's shell interface"
+        "description": "MongoDB kabuk arayüzünü kullanarak koleksiyon oluşturun ve verilerle etkileşim kurun"
       }
     },
     "teachingBubble": {
       "newToPostgres": {
-        "headline": "New to Cosmos DB PGSQL?",
-        "body": "Welcome! If you are new to Cosmos DB PGSQL and need help with getting started, here is where you can find sample data, query."
+        "headline": "Cosmos DB PGSQL yeni misiniz?",
+        "body": "Hoş geldiniz! Cosmos DB PGSQL kullanmaya yeni başladıysanız ve başlamayla ilgili yardıma ihtiyacınız varsa, örnek verileri ve sorguları burada bulabilirsiniz."
       },
       "resetPassword": {
-        "headline": "Create your password",
-        "body": "If you haven't changed your password yet, change it now."
+        "headline": "Parolanızı oluşturun",
+        "body": "Henüz parolanızı değiştirmediyseniz, şimdi değiştirin."
       },
       "coachMark": {
-        "headline": "Start with sample {{collectionName}}",
-        "body": "You will be guided to create a sample container with sample data, then we will give you a tour of data explorer. You can also cancel launching this tour and explore yourself"
+        "headline": "{{collectionName}} örneğiyle başlayın",
+        "body": "Örnek verilerle örnek bir kapsayıcı oluşturmanız için size rehberlik edeceğiz, ardından Veri Gezgini turu yapacağız. Bu turu başlatmayı iptal edip kendiniz de keşfedebilirsiniz"
       }
     },
     "sections": {
-      "recents": "Recents",
-      "clearRecents": "Clear Recents",
-      "top3": "Top 3 things you need to know",
-      "learningResources": "Learning Resources",
-      "nextSteps": "Next steps",
-      "tipsAndLearnMore": "Tips & learn more",
-      "notebook": "Notebook",
-      "needHelp": "Need help?"
+      "recents": "Son kullanılanlar",
+      "clearRecents": "Son Kullanılanları Temizle",
+      "top3": "Bilmeniz gereken ilk 3 şey",
+      "learningResources": "Öğrenme Kaynakları",
+      "nextSteps": "Sonraki adımlar",
+      "tipsAndLearnMore": "İpuçları & daha fazla bilgi edinin",
+      "notebook": "Not Defteri",
+      "needHelp": "Yardıma mı ihtiyacınız var?"
     },
     "top3Items": {
       "sql": {
         "advancedModeling": {
-          "title": "Advanced Modeling Patterns",
-          "description": "Learn advanced strategies to optimize your database."
+          "title": "Gelişmiş Modelleme Desenleri",
+          "description": "Veritabanınızı iyileştirme için gelişmiş stratejiler öğrenin."
         },
         "partitioning": {
-          "title": "Partitioning Best Practices",
-          "description": "Learn to apply data model and partitioning strategies."
+          "title": "Bölümleme için En İyi Uygulamalar",
+          "description": "Veri modeli ve bölümleme stratejilerini uygulamayı öğrenin."
         },
         "resourcePlanning": {
-          "title": "Plan Your Resource Requirements",
-          "description": "Get to know the different configuration choices."
+          "title": "Kaynak Gereksinimlerinizi Planlayın",
+          "description": "Farklı yapılandırma seçeneklerini öğrenin."
         }
       },
       "mongo": {
         "whatIsMongo": {
-          "title": "What is the MongoDB API?",
-          "description": "Understand Azure Cosmos DB for MongoDB and its features."
+          "title": "MongoDB API'si nedir?",
+          "description": "Azure Cosmos DB for MongoDB ve özelliklerini anlayın."
         },
         "features": {
-          "title": "Features and Syntax",
-          "description": "Discover the advantages and features"
+          "title": "Özellikler ve Söz Dizimi",
+          "description": "Avantajları ve özellikleri keşfedin"
         },
         "migrate": {
-          "title": "Migrate Your Data",
-          "description": "Pre-migration steps for moving data"
+          "title": "Verinizi Taşıyın",
+          "description": "Veri taşımaya yönelik geçiş öncesi adımlar"
         }
       },
       "cassandra": {
         "buildJavaApp": {
-          "title": "Build a Java App",
-          "description": "Create a Java app using an SDK."
+          "title": "Java Uygulaması oluşturun",
+          "description": "SDK kullanarak Java uygulaması oluşturun."
         },
         "partitioning": {
-          "title": "Partitioning Best Practices",
-          "description": "Learn how partitioning works."
+          "title": "Bölümleme için En İyi Uygulamalar",
+          "description": "Bölümlemenin nasıl çalıştığını öğrenin."
         },
         "requestUnits": {
-          "title": "Request Units (RUs)",
-          "description": "Understand RU charges."
+          "title": "İstek Birimleri (RU'lar)",
+          "description": "RU ücretlerini anlayın."
         }
       },
       "gremlin": {
         "dataModeling": {
-          "title": "Data Modeling",
-          "description": "Graph data modeling recommendations"
+          "title": "Veri Modelleme",
+          "description": "Grafik veri modelleme önerileri"
         },
         "partitioning": {
-          "title": "Partitioning Best Practices",
-          "description": "Learn how partitioning works"
+          "title": "Bölümleme için En İyi Uygulamalar",
+          "description": "Bölümlemenin nasıl çalıştığını öğrenin"
         },
         "queryData": {
-          "title": "Query Data",
-          "description": "Querying data with Gremlin"
+          "title": "Veri Sorgula",
+          "description": "Gremlin ile veri sorgulama"
         }
       },
       "tables": {
         "whatIsTable": {
-          "title": "What is the Table API?",
-          "description": "Understand Azure Cosmos DB for Table and its features"
+          "title": "Table API nedir?",
+          "description": "Azure Cosmos DB for Table ve özelliklerini anlayın"
         },
         "migrate": {
-          "title": "Migrate your data",
-          "description": "Learn how to migrate your data"
+          "title": "Verinizi taşıyın",
+          "description": "Verilerinizi taşımayı öğrenin"
         },
         "faq": {
-          "title": "Azure Cosmos DB for Table FAQs",
-          "description": "Common questions about Azure Cosmos DB for Table"
+          "title": "Azure Cosmos DB for Table SSS",
+          "description": "Azure Cosmos DB for Table hakkında sık sorulan sorular"
         }
       }
     },
     "learningResources": {
       "shortcuts": {
-        "title": "Data Explorer keyboard shortcuts",
-        "description": "Learn keyboard shortcuts to navigate Data Explorer."
+        "title": "Veri Gezgini klavye kısayolları",
+        "description": "Veri Gezgini'nde gezinmek için klavye kısayollarını öğrenin."
       },
       "liveTv": {
-        "title": "Learn the Fundamentals",
-        "description": "Watch Azure Cosmos DB Live TV show introductory and how to videos."
+        "title": "Temelleri Öğrenin",
+        "description": "Azure Cosmos DB Canlı TV şovunun tanıtım ve nasıl yapılır videolarını izleyin."
       },
       "sql": {
         "sdk": {
-          "title": "Get Started using an SDK",
-          "description": "Learn about the Azure Cosmos DB SDK."
+          "title": "SDK kullanarak Başla",
+          "description": "Azure Cosmos DB SDK hakkında bilgi edinin."
         },
         "migrate": {
-          "title": "Migrate Your Data",
-          "description": "Migrate data using Azure services and open-source solutions."
+          "title": "Verinizi Taşıyın",
+          "description": "Azure hizmetleri ve açık kaynak çözümler kullanarak verileri taşıyın."
         }
       },
       "mongo": {
         "nodejs": {
-          "title": "Build an app with Node.js",
-          "description": "Create a Node.js app."
+          "title": "Node.js ile uygulama oluşturun",
+          "description": "Node.js uygulaması oluşturun."
         },
         "gettingStarted": {
-          "title": "Getting Started Guide",
-          "description": "Learn the basics to get started."
+          "title": "Başlangıç Kılavuzu",
+          "description": "Başlamak için temel bilgileri öğrenin."
         }
       },
       "cassandra": {
         "createContainer": {
-          "title": "Create a Container",
-          "description": "Get to know the create a container options."
+          "title": "Kapsayıcı Oluştur",
+          "description": "Kapsayıcı oluşturma seçeneklerini öğrenin."
         },
         "throughput": {
-          "title": "Provision Throughput",
-          "description": "Learn how to configure throughput."
+          "title": "Aktarım Hızı Sağla",
+          "description": "Verimliliği nasıl yapılandıracağınızı öğrenin."
         }
       },
       "gremlin": {
         "getStarted": {
-          "title": "Get Started ",
-          "description": "Create, query, and traverse using the Gremlin console"
+          "title": "Başlayın ",
+          "description": "Gremlin konsolunu kullanarak oluşturun, sorgulayın ve gezin"
         },
         "importData": {
-          "title": "Import Graph Data",
-          "description": "Learn Bulk ingestion data using BulkExecutor"
+          "title": "Grafik Verilerini İçe Aktar",
+          "description": "BulkExecutor kullanarak toplu veri alımını öğrenin"
         }
       },
       "tables": {
         "dotnet": {
-          "title": "Build a .NET App",
-          "description": "How to access Azure Cosmos DB for Table from a .NET app."
+          "title": ".NET Uygulaması oluşturun",
+          "description": ".NET uygulamasından Azure Cosmos DB for Table'a nasıl erişilir."
         },
         "java": {
-          "title": "Build a Java App",
-          "description": "Create a Azure Cosmos DB for Table app with Java SDK "
+          "title": "Java Uygulaması oluşturun",
+          "description": "Java SDK ile Azure Cosmos DB for Table uygulaması oluşturun "
         }
       }
     },
     "nextStepItems": {
       "postgres": {
-        "dataModeling": "Data Modeling",
-        "distributionColumn": "How to choose a Distribution Column",
-        "buildApps": "Build Apps with Python/Java/Django"
+        "dataModeling": "Veri Modelleme",
+        "distributionColumn": "Dağıtım Sütunu nasıl seçilir",
+        "buildApps": "Python/Java/Django ile Uygulama Geliştirin"
       },
       "vcoreMongo": {
-        "migrateData": "Migrate Data",
-        "vectorSearch": "Build AI apps with Vector Search",
-        "buildApps": "Build Apps with Nodejs"
+        "migrateData": "Verileri Geçir",
+        "vectorSearch": "Vektör Arama ile yapay zeka uygulamaları geliştirin",
+        "buildApps": "Node.js ile Uygulama Geliştirin"
       }
     },
     "learnMoreItems": {
       "postgres": {
-        "performanceTuning": "Performance Tuning",
-        "diagnosticQueries": "Useful Diagnostic Queries",
-        "sqlReference": "Distributed SQL Reference"
+        "performanceTuning": "Performans Ayarlama",
+        "diagnosticQueries": "Yararlı Tanılama Sorguları",
+        "sqlReference": "Dağıtılmış SQL Referansı"
       },
       "vcoreMongo": {
-        "vectorSearch": "Vector Search",
-        "textIndexing": "Text Indexing",
-        "troubleshoot": "Troubleshoot common issues"
+        "vectorSearch": "Vektör Araması",
+        "textIndexing": "Metin Dizini",
+        "troubleshoot": "Sık karşılaşılan sorunları giderme"
       }
     },
     "fabric": {
-      "buildTitle": "Build your database",
-      "useTitle": "Use your database",
+      "buildTitle": "Veritabanınızı oluşturma",
+      "useTitle": "Veritabanınızı kullanma",
       "newContainer": {
-        "title": "New container",
-        "description": "Create a destination container to store your data"
+        "title": "Yeni kapsayıcı",
+        "description": "Verilerinizi depolamak için hedef kapsayıcı oluşturun"
       },
       "sampleData": {
-        "title": "Sample Data",
-        "description": "Load sample data in your database"
+        "title": "Örnek Veriler",
+        "description": "Örnek verileri veritabanınıza yükleyin"
       },
       "sampleVectorData": {
-        "title": "Sample Vector Data",
-        "description": "Load sample vector data with text-embedding-ada-002"
+        "title": "Örnek Vektör Verileri",
+        "description": "text-embedding-ada-002 ile örnek vektör verilerini yükleyin"
       },
       "appDevelopment": {
-        "title": "App development",
-        "description": "Start here to use an SDK to build your apps"
+        "title": "Uygulama geliştirme",
+        "description": "Uygulamalarınızı oluşturmak için bir SDK kullanmaya buradan başlayın"
       },
       "sampleGallery": {
-        "title": "Sample Gallery",
-        "description": "Get real-world end-to-end samples"
+        "title": "Örnek Galeri",
+        "description": "Gerçek uçtan uca örnekler alın"
       }
     },
     "sampleDataDialog": {
-      "title": "Sample Data",
-      "startButton": "Start",
-      "createPrompt": "Create a container \"{{containerName}}\" and import sample data into it. This may take a few minutes.",
-      "creatingContainer": "Creating container \"{{containerName}}\"...",
-      "importingData": "Importing data into \"{{containerName}}\"...",
-      "success": "Successfully created \"{{containerName}}\" with sample data.",
-      "errorContainerExists": "The container \"{{containerName}}\" in database \"{{databaseName}}\" already exists. Please delete it and retry.",
-      "errorCreateContainer": "Failed to create container: {{error}}",
-      "errorImportData": "Failed to import data: {{error}}"
+      "title": "Örnek Veriler",
+      "startButton": "Başlat",
+      "createPrompt": "\"{{containerName}}\" kapsayıcısını oluşturun ve örnek verileri içe aktarın. Bu işlem birkaç dakika sürebilir.",
+      "creatingContainer": "\"{{containerName}}\" kapsayıcısı oluşturuluyor...",
+      "importingData": "Veriler \"{{containerName}}\" içine aktarılıyor...",
+      "success": "\"{{containerName}}\" örnek verilerle başarıyla oluşturuldu.",
+      "errorContainerExists": "\"{{databaseName}}\" veritabanındaki \"{{containerName}}\" kapsayıcısı zaten var. Lütfen silip tekrar deneyin.",
+      "errorCreateContainer": "Kapsayıcı oluşturulamadı: {{error}}",
+      "errorImportData": "Veriler içeri aktarılamadı: {{error}}"
+    }
+  },
+  "contextMenu": {
+    "newContainer": "Yeni {{containerName}}",
+    "restoreContainer": "{{containerName}} öğesini geri yükle",
+    "deleteDatabase": "{{databaseName}} öğesini sil",
+    "deleteContainer": "{{containerName}} öğesini sil",
+    "newSqlQuery": "Yeni SQL Sorgusu",
+    "newQuery": "Yeni Sorgu",
+    "openMongoShell": "Mongo Shell'i Aç",
+    "newShell": "Yeni Kabuk",
+    "openCassandraShell": "Cassandra Shell'i Aç",
+    "newStoredProcedure": "Yeni Saklı Yordam",
+    "newUdf": "Yeni UDF",
+    "newTrigger": "Yeni Tetikleyici",
+    "deleteStoredProcedure": "Saklı Yordamı Sil",
+    "deleteTrigger": "Tetikleyiciyi Sil",
+    "deleteUdf": "Kullanıcı Tanımlı İşlevi Sil"
+  },
+  "tabs": {
+    "documents": {
+      "newItem": "Yeni Öğe",
+      "newDocument": "Yeni Belge",
+      "uploadItem": "Öğeyi Karşıya Yükle",
+      "applyFilter": "Filtre Uygula",
+      "unsavedChanges": "Kaydedilmemiş değişiklikler",
+      "unsavedChangesMessage": "Kaydedilmemiş değişiklikleriniz kaybedilir. Devam etmek istiyor musunuz?",
+      "createDocumentFailed": "Belge oluşturma işlemi başarısız oldu",
+      "updateDocumentFailed": "Belge güncelleştirme işlemi başarısız oldu",
+      "documentDeleted": "Belge başarıyla silindi.",
+      "deleteDocumentDialogTitle": "Belgeyi sil",
+      "deleteDocumentsDialogTitle": "Belgeleri sil",
+      "throttlingError": "Bazı belgeler hız sınırlama hatası nedeniyle silinemedi. Lütfen daha sonra yeniden deneyin. Gelecekte bunu engellemek için, kapsayıcınızda veya veritabanınızda aktarım hızını artırmayı göz önünde bulundurun.",
+      "deleteFailed": "Belgeleri silme işlemi başarısız oldu ({{error}})",
+      "missingShardProperty": "Belgede parça özelliği eksik: {{partitionKeyProperty}}",
+      "refreshGridFailed": "Belgeler kılavuzu yenilenemedi",
+      "confirmDelete": "{{documentName}} belgesini silmek istediğinizden emin misiniz?",
+      "confirmDeleteTitle": "Silmeyi onaylayın",
+      "selectedItems": "seçili {{count}} öğe",
+      "selectedItem": "seçili öğe",
+      "selectedDocuments": "seçili {{count}} belge",
+      "selectedDocument": "seçili belge",
+      "deleteDocumentFailedLog": "{{documentId}} belgesi silinemedi. Durum kodu: {{statusCode}}",
+      "deleteSuccessLog": "{{count}} belge başarıyla silindi",
+      "deleteThrottledLog": "“İstek fazla büyük” (429) hatası nedeniyle {{count}} belge silinemedi. Yeniden deneniyor...",
+      "missingShardKeyLog": "Yeni belge kaydedilemedi: Belge parça anahtarı tanımlanmadı",
+      "filterTooltip": "Bir sorgu koşulu yazın veya listeden bir koşul seçin.",
+      "loadMore": "Daha fazla yükle",
+      "documentEditor": "Belge düzenleyicisi",
+      "savedFilters": "Kaydedilmiş filtreler",
+      "defaultFilters": "Varsayılan filtreler",
+      "abort": "Durdur",
+      "deletingDocuments": "{{count}} belge siliniyor",
+      "deletedDocumentsSuccess": "{{count}} belge başarıyla silindi.",
+      "deleteAborted": "Belgeleri silme işlemi durduruldu.",
+      "failedToDeleteDocuments": "{{count}} belge silinemedi.",
+      "requestTooLargeBase": "Bazı silme istekleri \"İstek fazla büyük\" (429) hatası nedeniyle başarısız oldu",
+      "retriedSuccessfully": "ancak başarıyla yeniden denendi.",
+      "retryingNow": "Şimdi yeniden deneniyor.",
+      "increaseThroughputTip": "Gelecekte bunu engellemek için, kapsayıcınızda veya veritabanınızda aktarım hızını artırmayı göz önünde bulundurun.",
+      "numberOfSelectedDocuments": "Seçili belge sayısı: {{count}}",
+      "mongoFilterPlaceholder": "Bir sorgu koşulu yazın (örneğin, {\"id\":\"foo\"}) veya açılan listeden bir koşul seçin. Ayrıca tüm belgeleri sorgulamak için boş bırakabilirsiniz.",
+      "sqlFilterPlaceholder": "Bir sorgu koşulu yazın (örneğin, WHERE c.id=\"1\") veya açılan listeden bir koşul seçin. Ayrıca tüm belgeleri sorgulamak için boş bırakabilirsiniz.",
+      "error": "Hata",
+      "warning": "Uyarı"
+    },
+    "query": {
+      "executeQuery": "Sorguyu Yürüt",
+      "executeSelection": "Seçimi Yürüt",
+      "saveQuery": "Sorguyu Kaydet",
+      "downloadQuery": "Sorguyu İndir",
+      "cancelQuery": "Sorguyu iptal et",
+      "openSavedQueries": "Kaydedilmiş Sorguları Aç",
+      "vertical": "Dikey kategori",
+      "horizontal": "Yatay",
+      "view": "Görünüm",
+      "editingQuery": "Sorgu Düzenleniyor"
+    },
+    "storedProcedure": {
+      "id": "Saklı Yordam Kimliği",
+      "idPlaceholder": "Yeni saklı yordam kimliğini girin",
+      "idAriaLabel": "Saklı yordam kimliği",
+      "body": "Saklı Yordam Gövdesi",
+      "bodyAriaLabel": "Saklı yordam gövdesi",
+      "successfulExecution": "Saklı yordamın başarıyla yürütülmesi",
+      "resultAriaLabel": "Saklı yordam sonucunu yürüt",
+      "logsAriaLabel": "Saklı yordam günlüklerini yürüt",
+      "errors": "Hatalar:",
+      "errorDetailsAriaLabel": "Hata ayrıntıları bağlantısı",
+      "moreDetails": "Diğer ayrıntılar",
+      "consoleLogTab": "console.log"
+    },
+    "trigger": {
+      "id": "Tetikleyici Kimliği",
+      "idPlaceholder": "Yeni tetikleyici kimliğini girin",
+      "type": "Tetikleyici Türü",
+      "operation": "Tetikleyici İşlemi",
+      "body": "Tetikleyici Gövdesi",
+      "bodyAriaLabel": "Tetikleyici gövdesi",
+      "pre": "Önce",
+      "post": "Gönder",
+      "all": "Tümü",
+      "operationCreate": "Oluştur",
+      "operationDelete": "Sil",
+      "operationReplace": "Değiştir"
+    },
+    "udf": {
+      "id": "Kullanıcı Tanımlı İşlev Kimliği",
+      "idPlaceholder": "Yeni kullanıcı tanımlı işlev kimliğini girin",
+      "body": "Kullanıcı Tanımlı İşlev Gövdesi",
+      "bodyAriaLabel": "Kullanıcı tanımlı işlev gövdesi"
+    },
+    "conflicts": {
+      "unsavedChanges": "Kaydedilmemiş değişiklikler",
+      "changesWillBeLost": "Değişiklikler kaybolacak. Devam etmek istiyor musunuz?",
+      "resolveConflictFailed": "Çakışmayı çözme işlemi başarısız oldu",
+      "deleteConflictFailed": "Çakışmayı silme işlemi başarısız oldu",
+      "refreshGridFailed": "Belgeler kılavuzu yenilenemedi"
+    },
+    "mongoShell": {
+      "title": "Mongo Shell"
+    }
+  },
+  "panes": {
+    "deleteDatabase": {
+      "panelTitle": "{{databaseName}} veritabanını sil",
+      "warningMessage": "Uyarı! Gerçekleştirmek üzere olduğunuz eylem geri alınamaz. Devam etmeniz durumunda, bu kaynak ve tüm alt kaynakları kalıcı olarak silinir.",
+      "confirmPrompt": "{{databaseName}} kimliğini (adını) yazarak onaylayın",
+      "inputMismatch": "{{databaseName}} girişi \"{{input}}\" adı seçilen {{databaseName}} \"{{selectedId}}\" ile eşleşmiyor",
+      "feedbackTitle": "Azure Cosmos DB’yi geliştirmemize yardımcı olun!",
+      "feedbackReason": "Bu {{databaseName}} veritabanını silmenizin nedeni nedir?"
+    },
+    "deleteCollection": {
+      "panelTitle": "{{collectionName}} koleksiyonunu sil",
+      "confirmPrompt": "{{collectionName}} kimliğini yazarak onaylayın",
+      "inputMismatch": "{{input}} giriş kimliği seçilen {{selectedId}} ile eşleşmiyor",
+      "feedbackTitle": "Azure Cosmos DB’yi geliştirmemize yardımcı olun!",
+      "feedbackReason": "Bu {{collectionName}} koleksiyonunu silmenizin nedeni nedir?"
+    },
+    "addDatabase": {
+      "databaseLabel": "Veritabanı {{suffix}}",
+      "databaseIdLabel": "Veritabanı kimliği",
+      "keyspaceIdLabel": "Anahtar alanı kimliği",
+      "databaseIdPlaceholder": "Yeni bir {{databaseLabel}} kimliği girin",
+      "databaseTooltip": "{{databaseLabel}}, bir veya daha fazla {{collectionsLabel}} içeren bir mantıksal kapsayıcıdır.",
+      "shareThroughput": "Aktarım hızını {{collectionsLabel}} koleksiyonunda paylaş",
+      "shareThroughputTooltip": "{{databaseLabel}} düzeyinde sağlanan aktarım hızı, {{databaseLabel}} altındaki tüm {{collectionsLabel}} ile paylaşılır.",
+      "greaterThanError": "Autopilot aktarım hızı için {{minValue}} değerinden büyük bir değer girin",
+      "acknowledgeSpendError": "Lütfen tahmini {{period}} harcamayı kabul edin.",
+      "acknowledgeSpendErrorMonthly": "Please acknowledge the estimated monthly spend.",
+      "acknowledgeSpendErrorDaily": "Please acknowledge the estimated daily spend.",
+      "provisionSharedThroughputTitle": "Provision shared throughput",
+      "provisionThroughputLabel": "Provision throughput"
+    },
+    "addCollection": {
+      "createNew": "Yeni oluştur",
+      "useExisting": "Mevcut olanı kullan",
+      "databaseTooltip": "Veritabanı, ad alanına benzer. Bu, {{collectionName}} kümesi için yönetim birimidir.",
+      "shareThroughput": "Aktarım hızını {{collectionName}} koleksiyonunda paylaş",
+      "shareThroughputTooltip": "Veritabanı düzeyinde yapılandırılan aktarım hızı, veritabanındaki tüm {{collectionName}} genelinde paylaşılır.",
+      "collectionIdLabel": "{{collectionName}} kimliği",
+      "collectionIdTooltip": "{{collectionName}} için benzersiz tanımlayıcı ve REST ve tüm SDK’larda kimlik tabanlı yönlendirme için kullanılır.",
+      "collectionIdPlaceholder": "ör. {{collectionName}}1",
+      "collectionIdAriaLabel": "{{collectionName}} kimliği, Örnek {{collectionName}}1",
+      "existingDatabaseAriaLabel": "Mevcut {{databaseName}} kimliğini seçin",
+      "existingDatabasePlaceholder": "Mevcut {{databaseName}} kimliğini seçin",
+      "indexing": "Dizin oluşturma",
+      "turnOnIndexing": "Dizin oluşturmayı aç",
+      "automatic": "Otomatik",
+      "turnOffIndexing": "Dizin oluşturmayı kapat",
+      "off": "Kapalı",
+      "sharding": "Parçalama",
+      "shardingTooltip": "Parçalanmış koleksiyonlar, sınırsız ölçeklenebilirlik sağlamak için verilerinizi birçok çoğaltma kümesi (parça) arasında bölebilir. Parçalanmış koleksiyonlar, verilerinizi eşit olarak dağıtmak için bir parça anahtarı (alan) seçmeyi gerektirir.",
+      "unsharded": "Parçalanmamış",
+      "unshardedLabel": "Parçalanmamış (20 GB sınırı)",
+      "sharded": "Parçalanmış",
+      "addPartitionKey": "Hiyerarşik bölüm anahtarı ekle",
+      "hierarchicalPartitionKeyInfo": "Bu özellik, daha iyi veri dağıtımı için verilerinizi üç anahtar düzeyi ile bölümlemenize olanak tanır. .NET V3, Java V4 SDK veya önizleme JavaScript V3 SDK gerektirir.",
+      "provisionDedicatedThroughput": "Bu {{collectionName}} için ayrılmış aktarım hızı sağlayın",
+      "provisionDedicatedThroughputTooltip": "İsteğe bağlı olarak, aktarım hızı sağlanan bir veritabanındaki bir {{collectionName}} için ayrılmış aktarım hızı sağlayabilirsiniz. Bu ayrılmış aktarım hızı miktarı, veritabanındaki diğer {{collectionNamePlural}} ile paylaşılmaz ve veritabanı için sağladığınız aktarım hızını etkilemez. Bu aktarım hızı miktarı veritabanı düzeyinde sağladığınız aktarım hızına ek olarak faturalandırılır.",
+      "uniqueKeysPlaceholderMongo": "Virgülle ayrılmış yollar, ör. firstName,/address/zipCode",
+      "uniqueKeysPlaceholderSql": "Virgülle ayrılmış yollar, ör. /firstName,/address/zipCode",
+      "addUniqueKey": "Benzersiz anahtar ekle",
+      "enableAnalyticalStore": "Analiz deposunu etkinleştir",
+      "disableAnalyticalStore": "Analiz deposunu devre dışı bırak",
+      "on": "Açık",
+      "analyticalStoreSynapseLinkRequired": "Azure Synapse Link, bir {{collectionName}} analiz deposu oluşturmak için gereklidir. Bu Cosmos DB hesabı için Synapse Link’i etkinleştirin.",
+      "enable": "Etkinleştir",
+      "containerVectorPolicy": "Kapsayıcı Vektör İlkesi",
+      "containerFullTextSearchPolicy": "Kapsayıcı Tam Metin Arama İlkesi",
+      "advanced": "Gelişmiş",
+      "mongoIndexingTooltip": "Belirtilen _id alanı varsayılan olarak dizine alınır. Tüm alanlar için joker karakter dizini oluşturulması sorguları iyileştirir ve geliştirme için önerilir.",
+      "createWildcardIndex": "Tüm alanlarda Joker Karakter Dizini oluştur",
+      "legacySdkCheckbox": "Uygulamam daha eski bir Cosmos .NET veya Java SDK sürümünü (.NET V1 veya Java V2) kullanıyor.",
+      "legacySdkInfo": "Eski SDK’larla uyumluluğu sağlamak için, oluşturulan kapsayıcı yalnızca 101 bayta kadar boyuta sahip bölüm anahtarı değerlerini destekleyen eski bir bölümleme şemasını kullanır. Bu özellik etkinleştirilirse, hiyerarşik bölüm anahtarlarını kullanamazsınız.",
+      "indexingOnInfo": "Belgelerinizdeki tüm özellikler, sorguların esnek ve verimli olmasını sağlamak için varsayılan olarak dizine alınır.",
+      "indexingOffInfo": "Dizin oluşturma kapatılır. Sorgu çalıştırmanız gerekmiyorsa veya yalnızca anahtar-değer işlemleriniz varsa önerilir.",
+      "indexingOffWarning": "Bu kapsayıcıyı dizin oluşturma kapalıyken oluşturduğunuzda, dizin oluşturma ilkesinde değişiklik yapamazsınız. Dizin oluşturma değişikliklerine yalnızca dizin oluşturma ilkesine sahip kapsayıcılarda izin verilir.",
+      "acknowledgeSpendErrorMonthly": "Lütfen tahmini aylık harcamayı kabul edin.",
+      "acknowledgeSpendErrorDaily": "Lütfen tahmini günlük harcamayı kabul edin.",
+      "unshardedMaxRuError": "Parçalanmamış koleksiyonlar en fazla 10.000 RU’yu destekler",
+      "acknowledgeShareThroughputError": "Lütfen bu ayrılmış aktarım hızının tahmini maliyetini onaylayın.",
+      "vectorPolicyError": "Kapsayıcı vektör ilkesindeki hataları düzeltin",
+      "fullTextSearchPolicyError": "Kapsayıcı tam metin arama ilkesindeki hataları düzeltin.",
+      "addingSampleDataSet": "Örnek veri kümesi ekleniyor",
+      "databaseFieldLabelName": "Database name",
+      "databaseFieldLabelId": "Database id",
+      "newDatabaseIdPlaceholder": "Type a new database id",
+      "newDatabaseIdAriaLabel": "New database id, Type a new database id",
+      "createNewDatabaseAriaLabel": "Create new database",
+      "useExistingDatabaseAriaLabel": "Use existing database",
+      "chooseExistingDatabase": "Choose an existing database",
+      "teachingBubble": {
+        "step1Headline": "Create sample database",
+        "step1Body": "Database is the parent of a container. You can create a new database or use an existing one. In this tutorial we are creating a new database named SampleDB.",
+        "step1LearnMore": "Learn more about resources.",
+        "step2Headline": "Setting throughput",
+        "step2Body": "Cosmos DB recommends sharing throughput across database. Autoscale will give you a flexible amount of throughput based on the max RU/s set (Request Units).",
+        "step2LearnMore": "Learn more about RU/s.",
+        "step3Headline": "Naming container",
+        "step3Body": "Name your container",
+        "step4Headline": "Setting partition key",
+        "step4Body": "Last step - you will need to define a partition key for your collection. /address was chosen for this particular example. A good partition key should have a wide range of possible value",
+        "step4CreateContainer": "Create container",
+        "step5Headline": "Creating sample container",
+        "step5Body": "A sample container is now being created and we are adding sample data for you. It should take about 1 minute.",
+        "step5BodyFollowUp": "Once the sample container is created, review your sample dataset and follow next steps",
+        "stepOfTotal": "Step {{current}} of {{total}}"
+      }
+    },
+    "addCollectionUtility": {
+      "shardKeyTooltip": "Parça anahtarı (alan), sınırsız ölçeklenebilirlik sağlamak amacıyla verilerinizi birçok çoğaltma kümesi (parça) arasında bölmek için kullanılır. Verilerinizi eşit olarak dağıtacak bir alan seçmeniz kritik önem taşır.",
+      "partitionKeyTooltip": "{{partitionKeyName}}, bölümler arasında ölçeklenebilirlik için verileri otomatik olarak dağıtmak amacıyla kullanılır. JSON belgenizde çeşitli değerlerin yer aldığı ve istek hacmini eşit olarak dağıtan bir özellik seçin.",
+      "partitionKeyTooltipSqlSuffix": " Her boyuttaki küçük okuma yoğun iş yükleri veya yazma yoğun iş yükleri için, kimlik genellikle iyi bir seçenektir.",
+      "shardKeyLabel": "Parça anahtarı",
+      "partitionKeyLabel": "Bölüm anahtarı",
+      "shardKeyPlaceholder": "ör. categoryId",
+      "partitionKeyPlaceholderDefault": "ör. /address",
+      "partitionKeyPlaceholderFirst": "Gerekli - ilk bölüm anahtarı ör. /TenantId",
+      "partitionKeyPlaceholderSecond": "ikinci bölüm anahtarı, örneğin, /UserId",
+      "partitionKeyPlaceholderThird": "üçüncü bölüm anahtarı, ör. /SessionId",
+      "partitionKeyPlaceholderGraph": "ör. /address/zipCode",
+      "uniqueKeysTooltip": "Benzersiz anahtarlar, geliştiricilere veritabanına bir veri bütünlüğü katmanı ekleme yeteneği sunar. Kapsayıcı oluşturulurken bir benzersiz anahtar ilkesi oluşturarak, bölüm anahtarı başına bir veya daha fazla değerin benzersiz olmasını sağlarsınız.",
+      "uniqueKeysLabel": "Benzersiz anahtarlar",
+      "analyticalStoreLabel": "Analiz Deposu",
+      "analyticalStoreTooltip": "İşlemsel iş yüklerinin performansını etkilemeden işlem verilerinizde gerçek zamanlıya yakın analiz yapmak için analiz deposu özelliğini etkinleştirin.",
+      "analyticalStoreDescription": "İşlemsel iş yüklerinin performansını etkilemeden işlem verilerinizde gerçek zamanlıya yakın analiz yapmak için analiz deposu özelliğini etkinleştirin.",
+      "vectorPolicyTooltip": "Benzerlik sorgularında kullanılabilmesi için verilerinizde vektör içeren özellikleri açıklayın."
+    },
+    "settings": {
+      "pageOptions": "Sayfa Seçenekleri",
+      "pageOptionsDescription": "Gösterilecek sabit sorgu sonucu sayısını belirtmek için Özel seçeneğini veya sayfa başına çok sayıda sorgu sonucu göstermek için Sınırsız seçeneğini belirleyin.",
+      "queryResultsPerPage": "Sayfa başına sorgu sonuçları",
+      "queryResultsPerPageTooltip": "Sayfa başına gösterilecek sorgu sonucu sayısını girin.",
+      "customQueryItemsPerPage": "Sayfa başına özel sorgu öğeleri",
+      "custom": "Özel",
+      "unlimited": "Sınırsız",
+      "entraIdRbac": "Entra ID RBAC’yi etkinleştir",
+      "entraIdRbacDescription": "Entra ID RBAC’yi otomatik olarak etkinleştirmek için Otomatik seçeneğini belirleyin. Entra ID RBAC’yi etkinleştirmeyi veya devre dışı bırakmayı zorlamak için Doğru/Yanlış seçin.",
+      "true": "Doğru",
+      "false": "Yanlış",
+      "regionSelection": "Bölge Seçimi",
+      "regionSelectionDescription": "Cosmos İstemcisinin hesaba erişmek için kullandığı bölgeyi değiştirir.",
+      "selectRegion": "Bölge Seç",
+      "selectRegionTooltip": "İstemci işlemlerini gerçekleştirmek için kullanılan hesap uç noktasını değiştirir.",
+      "globalDefault": "Genel (Varsayılan)",
+      "readWrite": "(Okuma/Yazma)",
+      "read": "(Okuma)",
+      "queryTimeout": "Sorgu Zaman Aşımı",
+      "queryTimeoutDescription": "Bir sorgu belirtilen süre sınırına ulaştığında, otomatik iptal etkinleştirilmediği sürece sorguyu iptal etme seçeneği içeren bir açılır pencere gösterilir.",
+      "enableQueryTimeout": "Sorgu zaman aşımını etkinleştir",
+      "queryTimeoutMs": "Sorgu zaman aşımı (ms)",
+      "automaticallyCancelQuery": "Zaman aşımından sonra sorguyu otomatik olarak iptal et",
+      "ruLimit": "RU Sınırı",
+      "ruLimitDescription": "Bir sorgu yapılandırılan RU sınırını aşarsa, sorgu durdurulur.",
+      "enableRuLimit": "RU sınırını etkinleştir",
+      "ruLimitLabel": "RU Sınırı (RU)",
+      "defaultQueryResults": "Varsayılan Sorgu Sonuçları Görünümü",
+      "defaultQueryResultsDescription": "Sorgu sonuçlarını görüntülerken kullanılacak varsayılan görünümü seçin.",
+      "retrySettings": "Yeniden Deneme Ayarları",
+      "retrySettingsDescription": "CosmosDB sorguları sırasında kısıtlanan isteklerle ilişkili yeniden deneme ilkesi.",
+      "maxRetryAttempts": "Maksimum yeniden deneme sayısı",
+      "maxRetryAttemptsTooltip": "Bir istek için gerçekleştirilecek maksimum yeniden deneme sayısı. Varsayılan değer 9’dur.",
+      "fixedRetryInterval": "Sabit yeniden deneme aralığı (ms)",
+      "fixedRetryIntervalTooltip": "Yanıtın bir parçası olarak döndürülen retryAfter yoksayılarak her yeniden deneme arasında beklenen milisaniye cinsinden sabit yeniden deneme aralığı. Varsayılan değer 0 milisaniyedir.",
+      "maxWaitTime": "Maksimum bekleme süresi (sn)",
+      "maxWaitTimeTooltip": "Yeniden denemeler gerçekleştirilirken bir isteğin bekleyebileceği saniye cinsinden maksimum süre. Varsayılan değer 30 saniyedir.",
+      "enableContainerPagination": "Kapsayıcı sayfalandırmayı etkinleştir",
+      "enableContainerPaginationDescription": "Aynı anda 50 kapsayıcı yükleyin. Şu anda kapsayıcılar alfasayısal sırayla çekilmiyor.",
+      "enableCrossPartitionQuery": "Bölümler arası sorguyu etkinleştir",
+      "enableCrossPartitionQueryDescription": "Sorgu yürütülürken birden fazla istek gönderin. Sorgu tek bir bölüm anahtarı değeri kapsamına alınmadıysa, birden fazla istek gerekir.",
+      "maxDegreeOfParallelism": "Maksimum paralellik derecesi",
+      "maxDegreeOfParallelismDescription": "Paralel sorgu yürütme sırasında istemci tarafında çalıştırılan eşzamanlı işlem sayısını alır veya ayarlar. Pozitif özellik değeri, eşzamanlı işlem sayısını ayarlanan değerle sınırlandırır. 0’dan küçük bir değere ayarlanırsa, sistem çalıştırılacak eşzamanlı işlem sayısını otomatik olarak belirler.",
+      "maxDegreeOfParallelismQuery": "Maksimum paralellik derecesine kadar sorgu.",
+      "priorityLevel": "Öncelik Düzeyi",
+      "priorityLevelDescription": "Öncelik Tabanlı Yürütme kullanılırken Veri Gezgini’nden gelen veri düzlemi istekleri için öncelik düzeyini ayarlar. “Yok” seçilirse, Veri Gezgini öncelik düzeyini belirtmez ve sunucu tarafı varsayılan öncelik düzeyi kullanılır.",
+      "displayGremlinQueryResults": "Gremlin sorgu sonuçlarını farklı görüntüle:",
+      "displayGremlinQueryResultsDescription": "Sorgu sonuçlarını otomatik olarak Grafik biçiminde görselleştirmek için Grafik ve sonuçları JSON olarak görüntülemek için JSON seçeneğini belirleyin.",
+      "graph": "Grafik",
+      "json": "JSON",
+      "graphAutoVisualization": "Grafik Otomatik görselleştirme",
+      "enableSampleDatabase": "Örnek veritabanını etkinleştir",
+      "enableSampleDatabaseDescription": "Bu, NoSQL sorgularını kullanarak keşfetmek için kullanabileceğiniz yapay ürün verileri içeren örnek bir veritabanı ve koleksiyondur. Bu, Veri Gezgini kullanıcı arabiriminde başka bir veritabanı olarak görünür ve Microsoft tarafından ücretsiz olarak oluşturulur ve yönetilir.",
+      "enableSampleDbAriaLabel": "Sorgu keşfi için örnek veritabanını etkinleştir",
+      "guidRepresentation": "GUID Gösterimi",
+      "guidRepresentationDescription": "MongoDB’de GuidRepresentation, Genel Benzersiz Tanımlayıcıların (GUID) BSON belgelerinde depolandığında nasıl seri hale getirildiğini ve seri durumdan çıkarıldığını ifade eder. Bu ayar tüm belge işlemlerine uygulanır.",
+      "advancedSettings": "Gelişmiş Ayarlar",
+      "ignorePartitionKey": "Belge güncelleştirme sırasında bölüm anahtarını yoksay",
+      "ignorePartitionKeyTooltip": "İşaretlenirse, güncelleştirme işlemleri sırasında belgeyi bulmak için bölüm anahtarı değeri kullanılmaz. Bunu yalnızca belge güncelleştirmeleri anormal bir bölüm anahtarı nedeniyle başarısız oluyorsa kullanın.",
+      "clearHistory": "Geçmişi Temizle",
+      "clearHistoryConfirm": "Devam etmek istediğinizden emin misiniz?",
+      "clearHistoryDescription": "Bu işlem, bu tarayıcıda bu hesapla ilgili aşağıdakiler dahil tüm özelleştirmeleri temizler:",
+      "clearHistoryTabLayout": "Bölücü konumları dahil olmak üzere özelleştirilmiş sekme düzeninizi sıfırlayın.",
+      "clearHistoryTableColumns": "Özel sütunlar dahil olmak üzere tablo sütunu tercihlerinizi silin",
+      "clearHistoryFilters": "Filtre geçmişinizi temizleyin",
+      "clearHistoryRegion": "Bölge seçimini genel olarak sıfırla",
+      "increaseValueBy1000": "Değeri 1000 artır",
+      "decreaseValueBy1000": "Değeri 1000 azalt",
+      "none": "Yok",
+      "low": "Düşük",
+      "high": "Yüksek",
+      "automatic": "Otomatik",
+      "enhancedQueryControl": "Gelişmiş sorgu denetimi",
+      "enableQueryControl": "Sorgu denetimini etkinleştir",
+      "explorerVersion": "Gezgin Sürümü",
+      "accountId": "Hesap Kimliği",
+      "sessionId": "Oturum Kimliği",
+      "popupsDisabledError": "Tarayıcıda açılır pencereler devre dışı bırakıldığından bu hesap için yetkilendirme sağlanamadı.\nBu site için açılır pencereleri etkinleştirin ve “Entra ID için Oturum Aç” düğmesine tıklayın.",
+      "failedToAcquireTokenError": "Yetkilendirme belirteci otomatik olarak alınamadı. Entra ID RBAC işlemlerini etkinleştirmek için “Entra ID için Oturum Aç” düğmesine tıklayın."
+    },
+    "saveQuery": {
+      "panelTitle": "Sorguyu Kaydet",
+      "setupCostMessage": "Uyumluluk nedeniyle, sorgular Azure Cosmos hesabınızdaki bir kapsayıcıya, \"{{databaseName}}\" adlı ayrı bir veritabanına kaydedilir. Devam etmek için hesabınızda bir kapsayıcı oluşturmamız gerekiyor; tahmini ek maliyet günde 0,77 USD’dir.",
+      "completeSetup": "Kurulumu tamamla",
+      "noQueryNameError": "Sorgu adı belirtilmedi",
+      "invalidQueryContentError": "Geçersiz sorgu içeriği belirtildi",
+      "failedToSaveQueryError": "{{queryName}} sorgusu kaydedilemedi",
+      "failedToSetupContainerError": "Kaydedilmiş sorgular için kapsayıcı ayarlanamadı",
+      "accountNotSetupError": "Sorgu kaydedilemedi: hesap sorguları kaydetmek üzere ayarlanmadı.",
+      "name": "Ad"
+    },
+    "loadQuery": {
+      "noFileSpecifiedError": "Dosya belirtilmedi",
+      "failedToLoadQueryError": "Sorgu yüklenemedi",
+      "failedToLoadQueryFromFileError": "{{fileName}} dosyasından sorgu yüklenemedi",
+      "selectFilesToOpen": "Sorgu belgesi seçin",
+      "browseFiles": "Göz At"
+    },
+    "executeStoredProcedure": {
+      "enterInputParameters": "Giriş parametrelerini girin (varsa)",
+      "key": "Anahtar",
+      "param": "Parametre",
+      "partitionKeyValue": "Bölüm anahtarı değeri",
+      "value": "Değer",
+      "addNewParam": "Yeni Parametre Ekle",
+      "addParam": "Parametre ekle",
+      "deleteParam": "Parametreyi sil",
+      "invalidParamError": "Geçersiz parametre belirtildi: {{invalidParam}}",
+      "invalidParamConsoleError": "Geçersiz parametre belirtildi: {{invalidParam}} geçerli bir değişmez değer değil",
+      "stringType": "Dize",
+      "customType": "Özel"
+    },
+    "uploadItems": {
+      "noFilesSpecifiedError": "Dosya belirtilmedi. Lütfen en az bir dosya girin.",
+      "selectJsonFiles": "JSON Dosyalarını Seç",
+      "selectJsonFilesTooltip": "Karşıya yüklemek için bir veya daha fazla JSON dosyası seçin. Her dosya tek bir JSON belgesi veya bir JSON belgeleri dizisi içerebilir. Tek bir karşıya yükleme işleminde tüm dosyaların birleşik boyutu 2 MB’tan küçük olmalıdır. Daha büyük veri kümeleri için birden fazla karşıya yükleme işlemi gerçekleştirebilirsiniz.",
+      "fileNameColumn": "DOSYA ADI",
+      "statusColumn": "DURUM",
+      "uploadStatus": "{{numSucceeded}} oluşturuldu, {{numThrottled}} kısıtlandı, {{numFailed}} hata",
+      "uploadedFiles": "Karşıya yüklenen dosyalar"
+    },
+    "copyNotebook": {
+      "copyFailedError": "{{name}} öğesi {{destination}} hedefine kopyalanamadı",
+      "uploadFailedError": "{{name}} karşıya yüklenemedi",
+      "location": "Konum",
+      "locationAriaLabel": "Konum",
+      "selectLocation": "Kopyalamak için bir defter konumu seçin",
+      "name": "Ad"
+    },
+    "publishNotebook": {
+      "publishFailedError": "{{notebookName}} galeride yayımlanamadı",
+      "publishDescription": "Yayımlandığında, bu not defteri Azure Cosmos DB not defterleri genel galerisinde görünür. Yayımlamadan önce hassas verileri veya çıktıları kaldırdığınızdan emin olun.",
+      "publishPrompt": "“{{name}}” öğesini galeride yayımlamak ve paylaşmak istiyor musunuz?",
+      "coverImage": "Kapak resmi",
+      "coverImageUrl": "Kapak resmi URL’si",
+      "name": "Ad",
+      "description": "Açıklama",
+      "tags": "Etiketler",
+      "tagsPlaceholder": "İsteğe bağlı etiket 1, İsteğe bağlı etiket 2",
+      "preview": "Önizleme",
+      "urlType": "URL",
+      "customImage": "Özel Görüntü",
+      "takeScreenshot": "Ekran Görüntüsü Al",
+      "useFirstDisplayOutput": "İlk Görüntü Çıkışını Kullan",
+      "failedToCaptureOutput": "İlk çıkış yakalanamadı",
+      "outputDoesNotExist": "Hiçbir hücre için çıkış yok.",
+      "failedToConvertError": "{{fileName}} base64 biçimine dönüştürülemedi",
+      "failedToUploadError": "{{fileName}} karşıya yüklenemedi"
+    },
+    "changePartitionKey": {
+      "failedToStartError": "Veri aktarım işi başlatılamadı",
+      "suboptimalPartitionKeyError": "Uyarı: Sistem, koleksiyonunuzun optimal olmayan bir bölüm anahtarı kullanıyor olabileceğini algıladı",
+      "description": "Bir kapsayıcının bölüm anahtarını değiştirirken, doğru bölüm anahtarına sahip bir hedef kapsayıcı oluşturmanız gerekir. Ayrıca mevcut bir hedef kapsayıcıyı seçebilirsiniz.",
+      "sourceContainerId": "Kaynak {{collectionName}} kimliği",
+      "destinationContainerId": "Hedef {{collectionName}} kimliği",
+      "collectionIdTooltip": "{{collectionName}} için benzersiz tanımlayıcı ve REST ve tüm SDK’larda kimlik tabanlı yönlendirme için kullanılır.",
+      "collectionIdPlaceholder": "ör. {{collectionName}}1",
+      "collectionIdAriaLabel": "{{collectionName}} kimliği, Örnek {{collectionName}}1",
+      "existingContainers": "Mevcut Kapsayıcılar",
+      "partitionKeyWarning": "Hedef kapsayıcı zaten mevcut olmamalıdır. Veri Gezgini sizin için yeni bir hedef kapsayıcı oluşturur."
+    },
+    "cassandraAddCollection": {
+      "keyspaceLabel": "Anahtar alanı adı",
+      "keyspaceTooltip": "Mevcut bir anahtar alanını seçin veya yeni bir anahtar alanı kimliği girin.",
+      "tableIdLabel": "Tabloyu oluşturmak için CQL komutunu girin.",
+      "enterTableId": "Tablo kimliğini girin",
+      "tableSchemaAriaLabel": "Tablo şeması",
+      "provisionDedicatedThroughput": "Bu tablo için ayrılmış aktarım hızı sağlayın",
+      "provisionDedicatedThroughputTooltip": "İsteğe bağlı olarak, aktarım hızı sağlanan bir anahtar alanındaki bir tablo için ayrılmış aktarım hızı sağlayabilirsiniz. Bu ayrılmış aktarım hızı miktarı, anahtar alanındaki diğer tablolarla paylaşılmaz ve anahtar alanı için sağladığınız aktarım hızını etkilemez. Bu aktarım hızı miktarı anahtar alanı düzeyinde sağladığınız aktarım hızına ek olarak faturalandırılır."
+    },
+    "tables": {
+      "addProperty": "Özellik Ekle",
+      "addRow": "Satır Ekle",
+      "addEntity": "Varlık Ekle",
+      "back": "geri",
+      "nullFieldsWarning": "Uyarı: Null alanlar düzenleme için görüntülenmez.",
+      "propertyEmptyError": "{{property}} boş olamaz. {{property}} için geçerli bir değer girin",
+      "whitespaceError": "{{property}} boşluk içeremez. Lütfen boşluk olmadan {{property}} için bir değer girin.",
+      "propertyTypeEmptyError": "Özellik türü boş olamaz. {{property}} özelliği için açılan listeden bir tür seçin."
+    },
+    "tableQuerySelect": {
+      "selectColumns": "Sorgulamak istediğiniz sütunları seçin.",
+      "availableColumns": "Kullanılabilir Sütunlar"
+    },
+    "tableColumnSelection": {
+      "selectColumns": "Kapsayıcınızdaki öğelerin görünümünde görüntülenecek sütunları seçin.",
+      "searchFields": "Alan arayın",
+      "reset": "Sıfırla",
+      "partitionKeySuffix": " (bölüm anahtarı)"
+    },
+    "newVertex": {
+      "addProperty": "Özellik Ekle"
+    },
+    "addGlobalSecondaryIndex": {
+      "globalSecondaryIndexId": "Genel ikincil dizin kapsayıcı kimliği",
+      "globalSecondaryIndexIdPlaceholder": "ör. indexbyEmailId",
+      "projectionQuery": "Projeksiyon sorgusu",
+      "projectionQueryPlaceholder": "SELECT c.email, c.accountId FROM c",
+      "projectionQueryTooltip": "Genel ikincil dizinleri tanımlama hakkında daha fazla bilgi edinin.",
+      "disabledTitle": "Genel ikincil dizin zaten oluşturuluyor. Yeni bir dizin oluşturmadan önce lütfen mevcut dizinin tamamlanmasını bekleyin."
+    },
+    "stringInput": {
+      "inputMismatchError": "{{input}} girişi seçilen {{selectedId}} ile eşleşmiyor"
+    },
+    "panelInfo": {
+      "information": "Bilgi",
+      "moreDetails": "Diğer ayrıntılar"
+    }
+  },
+  "controls": {
+    "settings": {
+      "tabTitles": {
+        "scale": "Scale",
+        "conflictResolution": "Conflict Resolution",
+        "settings": "Settings",
+        "indexingPolicy": "Indexing Policy",
+        "partitionKeys": "Partition Keys",
+        "partitionKeysPreview": "Partition Keys (preview)",
+        "computedProperties": "Computed Properties",
+        "containerPolicies": "Container Policies",
+        "throughputBuckets": "Throughput Buckets",
+        "globalSecondaryIndexPreview": "Global Secondary Index (Preview)",
+        "maskingPolicyPreview": "Masking Policy (preview)"
+      },
+      "mongoNotifications": {
+        "selectTypeWarning": "Please select a type for each index.",
+        "enterFieldNameError": "Lütfen bir alan adı girin.",
+        "wildcardPathError": "Wildcard path is not present in the field name. Use a pattern like "
+      },
+      "partitionKey": {
+        "shardKey": "Shard key",
+        "partitionKey": "Partition key",
+        "shardKeyTooltip": "Parça anahtarı (alan), sınırsız ölçeklenebilirlik sağlamak amacıyla verilerinizi birçok çoğaltma kümesi (parça) arasında bölmek için kullanılır. Verilerinizi eşit olarak dağıtacak bir alan seçmeniz kritik önem taşır.",
+        "partitionKeyTooltip": "is used to automatically distribute data across partitions for scalability. Choose a property in your JSON document that has a wide range of values and evenly distributes request volume.",
+        "sqlPartitionKeyTooltipSuffix": " Her boyuttaki küçük okuma yoğun iş yükleri veya yazma yoğun iş yükleri için, kimlik genellikle iyi bir seçenektir.",
+        "partitionKeySubtext": "For small workloads, the item ID is a suitable choice for the partition key.",
+        "mongoPlaceholder": "e.g., categoryId",
+        "gremlinPlaceholder": "e.g., /address",
+        "sqlFirstPartitionKey": "Gerekli - ilk bölüm anahtarı ör. /TenantId",
+        "sqlSecondPartitionKey": "ikinci bölüm anahtarı, örneğin, /UserId",
+        "sqlThirdPartitionKey": "üçüncü bölüm anahtarı, ör. /SessionId",
+        "defaultPlaceholder": "e.g., /address/zipCode"
+      },
+      "costEstimate": {
+        "title": "Cost estimate*",
+        "howWeCalculate": "How we calculate this",
+        "updatedCostPerMonth": "Updated cost per month",
+        "currentCostPerMonth": "Current cost per month",
+        "perRu": "/RU",
+        "perHour": "/hr",
+        "perDay": "/day",
+        "perMonth": "/mo"
+      },
+      "throughput": {
+        "manualToAutoscaleDisclaimer": "The starting autoscale max RU/s will be determined by the system, based on the current manual throughput settings and storage of your resource. After autoscale has been enabled, you can change the max RU/s.",
+        "ttlWarningText": "The system will automatically delete items based on the TTL value (in seconds) you provide, without needing a delete operation explicitly issued by a client application. For more information see,",
+        "ttlWarningLinkText": "Time to Live (TTL) in Azure Cosmos DB",
+        "unsavedIndexingPolicy": "indexing policy",
+        "unsavedDataMaskingPolicy": "data masking policy",
+        "unsavedComputedProperties": "computed properties",
+        "unsavedEditorWarningPrefix": "You have not saved the latest changes made to your",
+        "unsavedEditorWarningSuffix": ". Please click save to confirm the changes.",
+        "updateDelayedApplyWarning": "You are about to request an increase in throughput beyond the pre-allocated capacity. This operation will take some time to complete.",
+        "scalingUpDelayMessage": "Scaling up will take 4-6 hours as it exceeds what Azure Cosmos DB can instantly support currently based on your number of physical partitions. You can increase your throughput to {{instantMaximumThroughput}} instantly or proceed with this value and wait until the scale-up is completed.",
+        "exceedPreAllocatedMessage": "Your request to increase throughput exceeds the pre-allocated capacity which may take longer than expected. There are three options you can choose from to proceed:",
+        "instantScaleOption": "You can instantly scale up to {{instantMaximumThroughput}} RU/s.",
+        "asyncScaleOption": "You can asynchronously scale up to any value under {{maximumThroughput}} RU/s in 4-6 hours.",
+        "quotaMaxOption": "Your current quota max is {{maximumThroughput}} RU/s. To go over this limit, you must request a quota increase and the Azure Cosmos DB team will review.",
+        "belowMinimumMessage": "You are not able to lower throughput below your current minimum of {{minimum}} RU/s. For more information on this limit, please refer to our service quote documentation.",
+        "saveThroughputWarning": "Your bill will be affected as you update your throughput settings. Please review the updated cost estimate below before saving your changes",
+        "currentAutoscaleThroughput": "Current autoscale throughput:",
+        "targetAutoscaleThroughput": "Target autoscale throughput:",
+        "currentManualThroughput": "Current manual throughput:",
+        "targetManualThroughput": "Target manual throughput:",
+        "applyDelayedMessage": "The request to increase the throughput has successfully been submitted. This operation will take 1-3 business days to complete. View the latest status in Notifications.",
+        "databaseLabel": "Database:",
+        "containerLabel": "Container:",
+        "applyShortDelayMessage": "A request to increase the throughput is currently in progress. This operation will take some time to complete.",
+        "applyLongDelayMessage": "A request to increase the throughput is currently in progress. This operation will take 1-3 business days to complete. View the latest status in Notifications.",
+        "throughputCapError": "Your account is currently configured with a total throughput limit of {{throughputCap}} RU/s. This update isn't possible because it would increase the total throughput to {{newTotalThroughput}} RU/s. Change total throughput limit in cost management.",
+        "throughputIncrementError": "Throughput value must be in increments of 1000"
+      },
+      "conflictResolution": {
+        "lwwDefault": "Last Write Wins (default)",
+        "customMergeProcedure": "Merge Procedure (custom)",
+        "mode": "Mode",
+        "conflictResolverProperty": "Conflict Resolver Property",
+        "storedProcedure": "Stored procedure",
+        "lwwTooltip": "Gets or sets the name of a integer property in your documents which is used for the Last Write Wins (LWW) based conflict resolution scheme. By default, the system uses the system defined timestamp property, _ts to decide the winner for the conflicting versions of the document. Specify your own integer property if you want to override the default timestamp based conflict resolution.",
+        "customTooltip": "Gets or sets the name of a stored procedure (aka merge procedure) for resolving the conflicts. You can write application defined logic to determine the winner of the conflicting versions of a document. The stored procedure will get executed transactionally, exactly once, on the server side. If you do not provide a stored procedure, the conflicts will be populated in the",
+        "customTooltipConflictsFeed": " conflicts feed",
+        "customTooltipSuffix": ". You can update/re-register the stored procedure at any time."
+      },
+      "changeFeed": {
+        "label": "Change feed log retention policy",
+        "tooltip": "Enable change feed log retention policy to retain last 10 minutes of history for items in the container by default. To support this, the request unit (RU) charge for this container will be multiplied by a factor of two for writes. Reads are unaffected."
+      },
+      "mongoIndexing": {
+        "disclaimer": "For queries that filter on multiple properties, create multiple single field indexes instead of a compound index.",
+        "disclaimerCompoundIndexesLink": " Compound indexes ",
+        "disclaimerSuffix": "are only used for sorting query results. If you need to add a compound index, you can create one using the Mongo shell.",
+        "compoundNotSupported": "Collections with compound indexes are not yet supported in the indexing editor. To modify indexing policy for this collection, use the Mongo Shell.",
+        "aadError": "To use the indexing policy editor, please login to the",
+        "aadErrorLink": "azure portal.",
+        "refreshingProgress": "Refreshing index transformation progress",
+        "canMakeMoreChangesZero": "You can make more indexing changes once the current index transformation is complete. ",
+        "refreshToCheck": "Refresh to check if it has completed.",
+        "canMakeMoreChangesProgress": "You can make more indexing changes once the current index transformation has completed. It is {{progress}}% complete. ",
+        "refreshToCheckProgress": "Refresh to check the progress.",
+        "definitionColumn": "Definition",
+        "typeColumn": "Type",
+        "dropIndexColumn": "Drop Index",
+        "addIndexBackColumn": "Add index back",
+        "deleteIndexButton": "Delete index Button",
+        "addBackIndexButton": "Add back Index Button",
+        "currentIndexes": "Current index(es)",
+        "indexesToBeDropped": "Index(es) to be dropped",
+        "indexFieldName": "Index Field Name",
+        "indexType": "Index Type",
+        "selectIndexType": "Select an index type",
+        "undoButton": "Undo Button"
+      },
+      "subSettings": {
+        "timeToLive": "Time to Live",
+        "ttlOff": "Off",
+        "ttlOnNoDefault": "On (no default)",
+        "ttlOn": "On",
+        "seconds": "second(s)",
+        "timeToLiveInSeconds": "Time to live in seconds",
+        "analyticalStorageTtl": "Analytical Storage Time to Live",
+        "geospatialConfiguration": "Geospatial Configuration",
+        "geography": "Geography",
+        "geometry": "Geometry",
+        "uniqueKeys": "Unique keys",
+        "mongoTtlMessage": "To enable time-to-live (TTL) for your collection/documents,",
+        "mongoTtlLinkText": "create a TTL index",
+        "partitionKeyTooltipTemplate": "This {{partitionKeyName}} is used to distribute data across multiple partitions for scalability. The value \"{{partitionKeyValue}}\" determines how documents are partitioned.",
+        "largePartitionKeyEnabled": "Large {{partitionKeyName}} has been enabled.",
+        "hierarchicalPartitioned": "Hierarchically partitioned container.",
+        "nonHierarchicalPartitioned": "Non-hierarchically partitioned container."
+      },
+      "scale": {
+        "freeTierInfo": "With free tier, you will get the first {{ru}} RU/s and {{storage}} GB of storage in this account for free. To keep your account free, keep the total RU/s across all resources in the account to {{ru}} RU/s.",
+        "freeTierLearnMore": "Learn more.",
+        "throughputRuS": "Throughput (RU/s)",
+        "autoScaleCustomSettings": "Your account has custom settings that prevents setting throughput at the container level. Please work with your Cosmos DB engineering team point of contact to make changes.",
+        "keyspaceSharedThroughput": "This table shared throughput is configured at the keyspace",
+        "throughputRangeLabel": "Throughput ({{min}} - {{max}} RU/s)",
+        "unlimited": "unlimited"
+      },
+      "partitionKeyEditor": {
+        "changePartitionKey": "Change {{partitionKeyName}}",
+        "currentPartitionKey": "Current {{partitionKeyName}}",
+        "partitioning": "Partitioning",
+        "hierarchical": "Hierarchical",
+        "nonHierarchical": "Non-hierarchical",
+        "safeguardWarning": "To safeguard the integrity of the data being copied to the new container, ensure that no updates are made to the source container for the entire duration of the partition key change process.",
+        "changeDescription": "To change the partition key, a new destination container must be created or an existing destination container selected. Data will then be copied to the destination container.",
+        "changeButton": "Change",
+        "changeJob": "{{partitionKeyName}} change job",
+        "cancelButton": "Cancel",
+        "documentsProcessed": "({{processedCount}} of {{totalCount}} documents processed)"
+      },
+      "computedProperties": {
+        "ariaLabel": "Computed properties",
+        "learnMorePrefix": "about how to define computed properties and how to use them."
+      },
+      "indexingPolicy": {
+        "ariaLabel": "Indexing Policy"
+      },
+      "dataMasking": {
+        "ariaLabel": "Data Masking Policy",
+        "validationFailed": "Validation failed:",
+        "includedPathsRequired": "includedPaths is required",
+        "includedPathsMustBeArray": "includedPaths must be an array",
+        "excludedPathsMustBeArray": "excludedPaths must be an array if provided"
+      },
+      "containerPolicy": {
+        "vectorPolicy": "Vector Policy",
+        "fullTextPolicy": "Full Text Policy",
+        "createFullTextPolicy": "Create new full text search policy"
+      },
+      "globalSecondaryIndex": {
+        "indexesDefined": "This container has the following indexes defined for it.",
+        "learnMoreSuffix": "about how to define global secondary indexes and how to use them.",
+        "jsonAriaLabel": "Global Secondary Index JSON",
+        "addIndex": "Add index",
+        "settingsTitle": "Global Secondary Index Settings",
+        "sourceContainer": "Source container",
+        "indexDefinition": "Global secondary index definition"
+      },
+      "indexingPolicyRefresh": {
+        "refreshFailed": "Refreshing index transformation progress failed"
+      },
+      "throughputInput": {
+        "autoscale": "Autoscale",
+        "manual": "Manual",
+        "minimumRuS": "Minimum RU/s",
+        "maximumRuS": "Maximum RU/s",
+        "x10Equals": "x 10 =",
+        "storageCapacity": "Storage capacity",
+        "fixed": "Fixed",
+        "unlimited": "Unlimited",
+        "instant": "Instant",
+        "fourToSixHrs": "4-6 hrs",
+        "autoscaleDescription": "Based on usage, your {{resourceType}} throughput will scale from",
+        "freeTierWarning": "Billing will apply if you provision more than {{ru}} RU/s of manual throughput, or if the resource scales beyond {{ru}} RU/s with autoscale.",
+        "capacityCalculator": "Estimate your required RU/s with",
+        "capacityCalculatorLink": " capacity calculator",
+        "fixedStorageNote": "When using a collection with fixed storage capacity, you can set up to 10,000 RU/s.",
+        "min": "min",
+        "max": "max"
+      },
+      "throughputBuckets": {
+        "label": "Throughput Buckets",
+        "bucketLabel": "Bucket {{id}}",
+        "dataExplorerQueryBucket": " (Data Explorer Query Bucket)",
+        "active": "Active",
+        "inactive": "Inactive"
+      }
     }
   }
 }
