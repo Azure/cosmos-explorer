@@ -441,7 +441,11 @@
       "shareThroughput": "Bagikan throughput di {{collectionsLabel}}",
       "shareThroughputTooltip": "Throughput yang diprovisi di tingkat {{databaseLabel}} akan dibagikan ke semua {{collectionsLabel}} dalam {{databaseLabel}}.",
       "greaterThanError": "Masukkan nilai yang lebih besar dari {{minValue}} untuk throughput autopilot",
-      "acknowledgeSpendError": "Setujui perkiraan pengeluaran {{period}}."
+      "acknowledgeSpendError": "Setujui perkiraan pengeluaran {{period}}.",
+      "acknowledgeSpendErrorMonthly": "Please acknowledge the estimated monthly spend.",
+      "acknowledgeSpendErrorDaily": "Please acknowledge the estimated daily spend.",
+      "provisionSharedThroughputTitle": "Provision shared throughput",
+      "provisionThroughputLabel": "Provision throughput"
     },
     "addCollection": {
       "createNew": "Buat baru",
@@ -493,7 +497,31 @@
       "acknowledgeShareThroughputError": "Setujui perkiraan biaya throughput khusus ini.",
       "vectorPolicyError": "Perbaiki kesalahan dalam kebijakan vektor kontainer",
       "fullTextSearchPolicyError": "Perbaiki kesalahan dalam kebijakan pencarian teks lengkap kontainer",
-      "addingSampleDataSet": "Menambahkan sampel himpunan data"
+      "addingSampleDataSet": "Menambahkan sampel himpunan data",
+      "databaseFieldLabelName": "Database name",
+      "databaseFieldLabelId": "Database id",
+      "newDatabaseIdPlaceholder": "Type a new database id",
+      "newDatabaseIdAriaLabel": "New database id, Type a new database id",
+      "createNewDatabaseAriaLabel": "Create new database",
+      "useExistingDatabaseAriaLabel": "Use existing database",
+      "chooseExistingDatabase": "Choose an existing database",
+      "teachingBubble": {
+        "step1Headline": "Create sample database",
+        "step1Body": "Database is the parent of a container. You can create a new database or use an existing one. In this tutorial we are creating a new database named SampleDB.",
+        "step1LearnMore": "Learn more about resources.",
+        "step2Headline": "Setting throughput",
+        "step2Body": "Cosmos DB recommends sharing throughput across database. Autoscale will give you a flexible amount of throughput based on the max RU/s set (Request Units).",
+        "step2LearnMore": "Learn more about RU/s.",
+        "step3Headline": "Naming container",
+        "step3Body": "Name your container",
+        "step4Headline": "Setting partition key",
+        "step4Body": "Last step - you will need to define a partition key for your collection. /address was chosen for this particular example. A good partition key should have a wide range of possible value",
+        "step4CreateContainer": "Create container",
+        "step5Headline": "Creating sample container",
+        "step5Body": "A sample container is now being created and we are adding sample data for you. It should take about 1 minute.",
+        "step5BodyFollowUp": "Once the sample container is created, review your sample dataset and follow next steps",
+        "stepOfTotal": "Step {{current}} of {{total}}"
+      }
     },
     "addCollectionUtility": {
       "shardKeyTooltip": "Kunci shard (bidang) digunakan untuk membagi data Anda ke banyak set replika (shard) untuk mencapai skalabilitas tanpa batas. Penting memilih bidang yang mendistribusikan data secara merata.",
@@ -722,6 +750,219 @@
     "panelInfo": {
       "information": "Informasi",
       "moreDetails": "Detail selengkapnya"
+    }
+  },
+  "controls": {
+    "settings": {
+      "tabTitles": {
+        "scale": "Skalakan",
+        "conflictResolution": "Resolusi Konflik",
+        "settings": "Pengaturan",
+        "indexingPolicy": "Kebijakan Pengindeksan",
+        "partitionKeys": "Kunci Partisi",
+        "partitionKeysPreview": "Kunci Partisi (pratinjau)",
+        "computedProperties": "Properti Terkomputasi",
+        "containerPolicies": "Kebijakan Kontainer",
+        "throughputBuckets": "Wadah Throughput",
+        "globalSecondaryIndexPreview": "Indeks Sekunder Global (Pratinjau)",
+        "maskingPolicyPreview": "Kebijakan Penyembunyian (pratinjau)"
+      },
+      "mongoNotifications": {
+        "selectTypeWarning": "Pilih tipe untuk setiap indeks.",
+        "enterFieldNameError": "Masukkan nama bidang.",
+        "wildcardPathError": "Jalur wildcard tidak ada dalam nama bidang. Gunakan pola seperti "
+      },
+      "partitionKey": {
+        "shardKey": "Tombol shard",
+        "partitionKey": "Kunci partisi",
+        "shardKeyTooltip": "Kunci shard (bidang) digunakan untuk membagi data Anda ke banyak set replika (shard) untuk mencapai skalabilitas tanpa batas. Penting memilih bidang yang mendistribusikan data secara merata.",
+        "partitionKeyTooltip": "digunakan untuk mendistribusikan data secara otomatis di seluruh partisi untuk skalabilitas. Pilih properti dalam dokumen JSON Anda yang memiliki berbagai nilai dan mendistribusikan volume permintaan secara merata.",
+        "sqlPartitionKeyTooltipSuffix": " Untuk beban kerja baca berat atau beban kerja tulis berat yang kecil dengan ukuran apa pun, id sering menjadi pilihan yang baik.",
+        "partitionKeySubtext": "Untuk beban kerja kecil, ID item adalah pilihan yang cocok untuk kunci partisi.",
+        "mongoPlaceholder": "misalnya, categoryId",
+        "gremlinPlaceholder": "misalnya, /address",
+        "sqlFirstPartitionKey": "Wajib - kunci partisi pertama misalnya, /TenantId",
+        "sqlSecondPartitionKey": "kunci partisi kedua misalnya, /UserId",
+        "sqlThirdPartitionKey": "kunci partisi ketiga misalnya, /SessionId",
+        "defaultPlaceholder": "misalnya /address/zipCode"
+      },
+      "costEstimate": {
+        "title": "Perkiraan biaya*",
+        "howWeCalculate": "Cara menghitung",
+        "updatedCostPerMonth": "Biaya per bulan yang baru",
+        "currentCostPerMonth": "Biaya per bulan saat ini",
+        "perRu": "/RU",
+        "perHour": "/hr",
+        "perDay": "/day",
+        "perMonth": "/mo"
+      },
+      "throughput": {
+        "manualToAutoscaleDisclaimer": "RU/dtk maks skala otomatis awal akan ditentukan oleh sistem, berdasarkan pengaturan throughput manual saat ini dan penyimpanan sumber daya Anda. Setelah skala otomatis diaktifkan, Anda dapat mengubah maksimum RU/dtk.",
+        "ttlWarningText": "Sistem akan secara otomatis menghapus item berdasarkan nilai TTL (dalam detik) yang Anda berikan, tanpa perlu operasi penghapusan yang dikeluarkan secara eksplisit oleh aplikasi klien. Untuk informasi selengkapnya, lihat,",
+        "ttlWarningLinkText": "Masa Pakai (TTL) di Azure Cosmos DB",
+        "unsavedIndexingPolicy": "kebijakan pengindeksan",
+        "unsavedDataMaskingPolicy": "kebijakan penyembunyian data",
+        "unsavedComputedProperties": "properti terkomputasi",
+        "unsavedEditorWarningPrefix": "Anda belum menyimpan perubahan terbaru yang dibuat di",
+        "unsavedEditorWarningSuffix": ". Klik simpan untuk mengonfirmasi perubahan.",
+        "updateDelayedApplyWarning": "Anda akan meminta penambahan throughput di atas kapasitas yang dialokasikan sebelumnya. Operasi ini akan memakan waktu beberapa saat.",
+        "scalingUpDelayMessage": "Penskalaan akan memakan waktu 4-6 jam karena melebihi apa yang dapat langsung didukung Azure Cosmos DB berdasarkan jumlah partisi fisik Anda. Anda dapat menaikkan throughput untuk {{instantMaximumThroughput}} langsung atau melanjutkan dengan nilai ini dan menunggu hingga peningkatan skala selesai.",
+        "exceedPreAllocatedMessage": "Permintaan Anda untuk menambah throughput melebihi kapasitas yang dialokasikan sebelumnya yang mungkin memerlukan waktu lebih lama dari yang diharapkan. Ada tiga opsi yang dapat Anda pilih untuk melanjutkan:",
+        "instantScaleOption": "Anda dapat langsung menaikkan skala hingga {{instantMaximumThroughput}} RU/dtk.",
+        "asyncScaleOption": "Anda dapat menaikkan skala secara asinkron ke nilai apa pun di bawah {{maximumThroughput}} RU/dtk dalam 4-6 jam.",
+        "quotaMaxOption": "Maksimum kuota Anda saat ini adalah {{maximumThroughput}} RU/dtk. Untuk menambah di atas batas ini, Anda harus mengajukan permintaan penambahan kuota dan tim Azure Cosmos DB akan meninjaunya.",
+        "belowMinimumMessage": "Anda tidak dapat menurunkan throughput di bawah minimum {{minimum}} RU/dtk saat ini. Untuk informasi selengkapnya tentang batas ini, lihat dokumentasi kutipan layanan kami.",
+        "saveThroughputWarning": "Tagihan Anda akan terpengaruh jika Anda memperbarui pengaturan throughput. Periksa perkiraan biaya yang baru di bawah ini sebelum menyimpan perubahan Anda",
+        "currentAutoscaleThroughput": "Throughput skala otomatis saat ini:",
+        "targetAutoscaleThroughput": "Throughput skala otomatis target:",
+        "currentManualThroughput": "Throughput manual saat ini:",
+        "targetManualThroughput": "Throughput manual target:",
+        "applyDelayedMessage": "Permintaan untuk menambah throughput berhasil dikirimkan. Operasi ini akan memakan waktu 1-3 hari kerja. Tampilkan status terbaru di Pemberitahuan.",
+        "databaseLabel": "Database:",
+        "containerLabel": "Kontainer:",
+        "applyShortDelayMessage": "Permintaan untuk menambah throughput saat ini sedang berlangsung. Operasi ini akan memakan waktu beberapa saat.",
+        "applyLongDelayMessage": "Permintaan untuk menambah throughput saat ini sedang berlangsung. Operasi ini akan memakan waktu 1-3 hari kerja. Tampilkan status terbaru di Pemberitahuan.",
+        "throughputCapError": "Akun Anda saat ini dikonfigurasi dengan total batas throughput {{throughputCap}} RU/dtk. Pembaruan ini tidak dapat dilakukan karena akan menaikkan total throughput menjadi {{newTotalThroughput}} RU/dtk. Ubah total batas throughput di manajemen biaya.",
+        "throughputIncrementError": "Kenaikan nilai throughput harus dalam kelipatan 1000"
+      },
+      "conflictResolution": {
+        "lwwDefault": "Last Write Wins (default)",
+        "customMergeProcedure": "Prosedur Penggabungan (kustom)",
+        "mode": "Mode",
+        "conflictResolverProperty": "Properti Pemecah Konflik",
+        "storedProcedure": "Prosedur tersimpan",
+        "lwwTooltip": "Mengambil atau mengatur nama properti bilangan bulat dalam dokumen Anda yang digunakan untuk skema resolusi konflik berbasis Last Write Wins (LWW). Secara default, sistem menggunakan properti stempel waktu yang ditentukan sistem, _ts untuk memutuskan pemenang untuk versi dokumen yang berkonflik. Tentukan properti bilangan bulat Anda sendiri jika Anda ingin menimpa resolusi konflik berbasis stempel waktu default.",
+        "customTooltip": "Mengambil atau mengatur nama prosedur tersimpan (alias prosedur penggabungan) untuk mengatasi konflik. Anda dapat menulis logika yang ditentukan aplikasi untuk menentukan pemenang versi dokumen yang berkonflik. Prosedur tersimpan akan dijalankan secara transaksi, tepat satu kali, di sisi server. Jika Anda tidak memberikan prosedur tersimpan, konflik akan diisi di",
+        "customTooltipConflictsFeed": " umpan konflik",
+        "customTooltipSuffix": ". Anda dapat memperbarui/mendaftarkan ulang prosedur tersimpan kapan saja."
+      },
+      "changeFeed": {
+        "label": "Ubah kebijakan penyimpanan log umpan",
+        "tooltip": "Memungkinkan kebijakan retensi log umpan perubahan untuk menyimpan riwayat item dalam kontainer hingga 10 menit terakhir secara default. Untuk mendukung hal ini, biaya unit permintaan (RU) untuk kontainer ini akan dikalikan dua untuk penulisan. Pembacaan tidak terpengaruh."
+      },
+      "mongoIndexing": {
+        "disclaimer": "Untuk kueri yang memfilter beberapa properti, buat beberapa indeks bidang tunggal, daripada indeks gabungan.",
+        "disclaimerCompoundIndexesLink": " Indeks gabungan ",
+        "disclaimerSuffix": "hanya digunakan untuk mengurutkan hasil kueri. Jika perlu menambahkan indeks gabungan, Anda dapat membuatnya menggunakan shell Mongo.",
+        "compoundNotSupported": "Koleksi dengan indeks gabungan belum didukung di editor pengindeksan. Untuk mengubah kebijakan pengindeksan untuk koleksi ini, gunakan Mongo Shell.",
+        "aadError": "Untuk menggunakan editor kebijakan pengindeksan, masuk ke",
+        "aadErrorLink": "portal azure.",
+        "refreshingProgress": "Menyegarkan kemajuan transformasi indeks",
+        "canMakeMoreChangesZero": "Anda dapat membuat perubahan pengindeksan lainnya setelah transformasi indeks saat ini selesai. ",
+        "refreshToCheck": "Refresh untuk memeriksa apakah telah selesai.",
+        "canMakeMoreChangesProgress": "Anda dapat membuat perubahan pengindeksan lainnya setelah transformasi indeks saat ini selesai. Proses telah selesai {{progress}}%. ",
+        "refreshToCheckProgress": "Refresh untuk memeriksa kemajuan.",
+        "definitionColumn": "Definisi",
+        "typeColumn": "Tipe",
+        "dropIndexColumn": "Drop indeks",
+        "addIndexBackColumn": "Tambahkan indeks kembali",
+        "deleteIndexButton": "Tombol Hapus Indeks",
+        "addBackIndexButton": "Tombol Tambahkan Kembali Indeks",
+        "currentIndexes": "Indeks saat ini",
+        "indexesToBeDropped": "Indeks yang akan didrop",
+        "indexFieldName": "Nama Bidang Indeks",
+        "indexType": "Tipe Indeks",
+        "selectIndexType": "Pilih tipe indeks",
+        "undoButton": "Tombol Batalkan"
+      },
+      "subSettings": {
+        "timeToLive": "Masa Pakai",
+        "ttlOff": "Nonaktif",
+        "ttlOnNoDefault": "Aktif (tidak ada default)",
+        "ttlOn": "Pada",
+        "seconds": "detik",
+        "timeToLiveInSeconds": "Masa pakai dalam detik",
+        "analyticalStorageTtl": "Masa Pakai Penyimpanan Analitik",
+        "geospatialConfiguration": "Konfigurasi Geospasial",
+        "geography": "Geografi",
+        "geometry": "Geometri",
+        "uniqueKeys": "Kunci unik",
+        "mongoTtlMessage": "Untuk mengaktifkan masa pakai (TTL) untuk koleksi/dokumen Anda,",
+        "mongoTtlLinkText": "buat indeks TTL",
+        "partitionKeyTooltipTemplate": "{{partitionKeyName}} ini digunakan untuk mendistribusikan data ke beberapa partisi untuk skalabilitas. Nilai \"{{partitionKeyValue}}\" menentukan bagaimana dokumen dipartisi.",
+        "largePartitionKeyEnabled": "{{partitionKeyName}} besar telah diaktifkan.",
+        "hierarchicalPartitioned": "Kontainer yang dipartisi secara hierarkis.",
+        "nonHierarchicalPartitioned": "Kontainer yang tidak dipartisi secara hierarki."
+      },
+      "scale": {
+        "freeTierInfo": "Dengan tingkat gratis, Anda akan mendapatkan {{ru}} RU/dtk pertama dan penyimpanan {{storage}} GB di akun ini secara gratis. Agar akun Anda tetap gratis, simpan total RU di semua sumber daya di akun ke {{ru}} RU.",
+        "freeTierLearnMore": "Pelajari selengkapnya.",
+        "throughputRuS": "Throughput (RU/dtk)",
+        "autoScaleCustomSettings": "Akun Anda memiliki pengaturan kustom yang mencegah pengaturan throughput pada tingkat kontainer. Diskusikan dengan titik kontak tim rekayasawan Cosmos DB Anda untuk membuat perubahan.",
+        "keyspaceSharedThroughput": "Throughput bersama tabel ini dikonfigurasi di keyspace",
+        "throughputRangeLabel": "Throughput ({{min}} - {{max}} RU/s)",
+        "unlimited": "unlimited"
+      },
+      "partitionKeyEditor": {
+        "changePartitionKey": "Ubah {{partitionKeyName}}",
+        "currentPartitionKey": "{{partitionKeyName}} saat Ini",
+        "partitioning": "Pemartisian",
+        "hierarchical": "Hierarkis",
+        "nonHierarchical": "Non-hierarkis",
+        "safeguardWarning": "Untuk melindungi integritas data yang disalin ke kontainer baru, pastikan tidak ada pembaruan yang dibuat ke kontainer sumber selama seluruh durasi proses perubahan kunci partisi.",
+        "changeDescription": "Untuk mengubah kunci partisi, kontainer tujuan baru harus dibuat atau kontainer tujuan yang sudah ada dipilih. Data kemudian akan disalin ke kontainer tujuan.",
+        "changeButton": "Ubah",
+        "changeJob": "{{partitionKeyName}} mengubah tugas",
+        "cancelButton": "Batal",
+        "documentsProcessed": "({{processedCount}} dari {{totalCount}} dokumen diproses)"
+      },
+      "computedProperties": {
+        "ariaLabel": "Properti terkomputasi",
+        "learnMorePrefix": "tentang cara menentukan properti terkomputasi dan cara menggunakannya."
+      },
+      "indexingPolicy": {
+        "ariaLabel": "Kebijakan Pengindeksan"
+      },
+      "dataMasking": {
+        "ariaLabel": "Kebijakan Penyembunyian Data",
+        "validationFailed": "Validasi gagal:",
+        "includedPathsRequired": "includedPaths diperlukan",
+        "includedPathsMustBeArray": "includedPaths harus berupa array",
+        "excludedPathsMustBeArray": "excludedPaths harus berupa array jika diberikan"
+      },
+      "containerPolicy": {
+        "vectorPolicy": "Kebijakan Vektor",
+        "fullTextPolicy": "Kebijakan Teks Lengkap",
+        "createFullTextPolicy": "Buat kebijakan pencarian teks lengkap baru"
+      },
+      "globalSecondaryIndex": {
+        "indexesDefined": "Kontainer ini memiliki indeks yang ditentukan untuknya sebagai berikut.",
+        "learnMoreSuffix": "tentang cara menentukan indeks sekunder global dan cara menggunakannya.",
+        "jsonAriaLabel": "JSON Indeks Sekunder Global",
+        "addIndex": "Tambahkan indeks",
+        "settingsTitle": "Pengaturan Indeks Sekunder Global",
+        "sourceContainer": "Kontainer sumber",
+        "indexDefinition": "Definisi indeks sekunder global"
+      },
+      "indexingPolicyRefresh": {
+        "refreshFailed": "Penyegaran kemajuan transformasi indeks gagal"
+      },
+      "throughputInput": {
+        "autoscale": "Penskalaan otomatis",
+        "manual": "Manual",
+        "minimumRuS": "RU/dtk minimum",
+        "maximumRuS": "RU/dtk maksimum",
+        "x10Equals": "x 10 =",
+        "storageCapacity": "Kapasitas penyimpanan",
+        "fixed": "Tetap",
+        "unlimited": "Tidak terbatas",
+        "instant": "Instan",
+        "fourToSixHrs": "4-6 jam",
+        "autoscaleDescription": "Berdasarkan penggunaan, throughput {{resourceType}} Anda akan diskalakan dari",
+        "freeTierWarning": "Tagihan akan berlaku jika Anda menyediakan lebih dari {{ru}} RU/dtk throughput manual, atau jika sumber daya menaikkan skala melebihi {{ru}} RU/dtk dengan penskalaan otomatis.",
+        "capacityCalculator": "Perkirakan RU/dtk yang Anda perlukan dengan",
+        "capacityCalculatorLink": " kalkulator kapasitas",
+        "fixedStorageNote": "Jika menggunakan koleksi dengan kapasitas penyimpanan tetap, Anda dapat menyiapkan hingga 10.000 RU/dtk.",
+        "min": "min",
+        "max": "maks"
+      },
+      "throughputBuckets": {
+        "label": "Wadah Throughput",
+        "bucketLabel": "Wadah {{id}}",
+        "dataExplorerQueryBucket": " (Wadah Kueri Data Explorer)",
+        "active": "Aktif",
+        "inactive": "Tidak aktif"
+      }
     }
   }
 }

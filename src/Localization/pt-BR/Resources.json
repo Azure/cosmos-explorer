@@ -441,7 +441,11 @@
       "shareThroughput": "Compartilhar taxa de transferência entre {{collectionsLabel}}",
       "shareThroughputTooltip": "A taxa de transferência provisionada no nível {{databaseLabel}} será compartilhada entre todos {{collectionsLabel}} no {{databaseLabel}}.",
       "greaterThanError": "Insira um valor maior que {{minValue}} para a taxa de transferência do Autopilot",
-      "acknowledgeSpendError": "Confirme os gastos estimados de {{period}}."
+      "acknowledgeSpendError": "Confirme os gastos estimados de {{period}}.",
+      "acknowledgeSpendErrorMonthly": "Please acknowledge the estimated monthly spend.",
+      "acknowledgeSpendErrorDaily": "Please acknowledge the estimated daily spend.",
+      "provisionSharedThroughputTitle": "Provision shared throughput",
+      "provisionThroughputLabel": "Provision throughput"
     },
     "addCollection": {
       "createNew": "Criar novo",
@@ -493,7 +497,31 @@
       "acknowledgeShareThroughputError": "Confirme o custo estimado dessa taxa de transferência dedicada.",
       "vectorPolicyError": "Corrija erros na política do vetor de contêiner",
       "fullTextSearchPolicyError": "Corrija erros na política de pesquisa de texto completo do contêiner",
-      "addingSampleDataSet": "Adicionando conjunto de dados de exemplo"
+      "addingSampleDataSet": "Adicionando conjunto de dados de exemplo",
+      "databaseFieldLabelName": "Database name",
+      "databaseFieldLabelId": "Database id",
+      "newDatabaseIdPlaceholder": "Type a new database id",
+      "newDatabaseIdAriaLabel": "New database id, Type a new database id",
+      "createNewDatabaseAriaLabel": "Create new database",
+      "useExistingDatabaseAriaLabel": "Use existing database",
+      "chooseExistingDatabase": "Choose an existing database",
+      "teachingBubble": {
+        "step1Headline": "Create sample database",
+        "step1Body": "Database is the parent of a container. You can create a new database or use an existing one. In this tutorial we are creating a new database named SampleDB.",
+        "step1LearnMore": "Learn more about resources.",
+        "step2Headline": "Setting throughput",
+        "step2Body": "Cosmos DB recommends sharing throughput across database. Autoscale will give you a flexible amount of throughput based on the max RU/s set (Request Units).",
+        "step2LearnMore": "Learn more about RU/s.",
+        "step3Headline": "Naming container",
+        "step3Body": "Name your container",
+        "step4Headline": "Setting partition key",
+        "step4Body": "Last step - you will need to define a partition key for your collection. /address was chosen for this particular example. A good partition key should have a wide range of possible value",
+        "step4CreateContainer": "Create container",
+        "step5Headline": "Creating sample container",
+        "step5Body": "A sample container is now being created and we are adding sample data for you. It should take about 1 minute.",
+        "step5BodyFollowUp": "Once the sample container is created, review your sample dataset and follow next steps",
+        "stepOfTotal": "Step {{current}} of {{total}}"
+      }
     },
     "addCollectionUtility": {
       "shardKeyTooltip": "A chave de fragmento (campo) é usada para dividir seus dados em vários conjuntos de réplicas (fragmentos) para obter escalabilidade ilimitada. É fundamental escolher um campo que distribuirá uniformemente seus dados.",
@@ -722,6 +750,219 @@
     "panelInfo": {
       "information": "Informações",
       "moreDetails": "Mais detalhes"
+    }
+  },
+  "controls": {
+    "settings": {
+      "tabTitles": {
+        "scale": "Escala",
+        "conflictResolution": "Resolução de Conflitos",
+        "settings": "Configurações",
+        "indexingPolicy": "Política de Indexação",
+        "partitionKeys": "Chaves de Partição",
+        "partitionKeysPreview": "Chaves de Partição (versão prévia)",
+        "computedProperties": "Propriedades Calculadas",
+        "containerPolicies": "Políticas de Contêiner",
+        "throughputBuckets": "Buckets de Taxa de Transferência",
+        "globalSecondaryIndexPreview": "Índice Secundário Global (Versão Prévia)",
+        "maskingPolicyPreview": "Política de Mascaramento (versão prévia)"
+      },
+      "mongoNotifications": {
+        "selectTypeWarning": "Selecione um tipo para cada índice.",
+        "enterFieldNameError": "Insira um nome de campo.",
+        "wildcardPathError": "O caminho curinga não está presente no nome do campo. Use um padrão como "
+      },
+      "partitionKey": {
+        "shardKey": "Chave de shard",
+        "partitionKey": "Chave de partição",
+        "shardKeyTooltip": "A chave de fragmento (campo) é usada para dividir seus dados em vários conjuntos de réplicas (fragmentos) para obter escalabilidade ilimitada. É fundamental escolher um campo que distribuirá uniformemente seus dados.",
+        "partitionKeyTooltip": "é usado para distribuir automaticamente os dados entre partições para escalabilidade. Escolha uma propriedade no documento JSON que tenha uma ampla gama de valores e distribua uniformemente o volume de solicitações.",
+        "sqlPartitionKeyTooltipSuffix": " Para cargas de trabalho pequenas com muitas leituras ou cargas de trabalho de gravação de qualquer tamanho, a ID costuma ser uma boa escolha.",
+        "partitionKeySubtext": "Para pequenas cargas de trabalho, a ID do item é uma escolha adequada para a chave de partição.",
+        "mongoPlaceholder": "por exemplo, categoryId",
+        "gremlinPlaceholder": "por exemplo, /address",
+        "sqlFirstPartitionKey": "Obrigatório – primeira chave de partição, por exemplo, /TenantId",
+        "sqlSecondPartitionKey": "segunda chave de partição, por exemplo, /UserId",
+        "sqlThirdPartitionKey": "terceira chave de partição, por exemplo, /SessionId",
+        "defaultPlaceholder": "por exemplo, /address/zipCode"
+      },
+      "costEstimate": {
+        "title": "Estimativa de custo*",
+        "howWeCalculate": "Como calculamos isso",
+        "updatedCostPerMonth": "Custo atualizado por mês",
+        "currentCostPerMonth": "Custo atual por mês",
+        "perRu": "/RU",
+        "perHour": "/hr",
+        "perDay": "/day",
+        "perMonth": "/mo"
+      },
+      "throughput": {
+        "manualToAutoscaleDisclaimer": "As RU/s máximas de escala automática inicial serão determinadas pelo sistema, com base nas configurações manuais atuais de taxa de transferência e no armazenamento do recurso. Depois que a escala automática for habilitada, você poderá alterar as RU/s máximas.",
+        "ttlWarningText": "O sistema excluirá automaticamente os itens com base no valor TTL (em segundos) fornecido, sem a necessidade de uma operação de exclusão emitida explicitamente por um aplicativo cliente. Para mais informações, confira",
+        "ttlWarningLinkText": "Vida Útil (TTL) no Azure Cosmos DB",
+        "unsavedIndexingPolicy": "política de indexação",
+        "unsavedDataMaskingPolicy": "política de mascaramento de dados",
+        "unsavedComputedProperties": "propriedades calculadas",
+        "unsavedEditorWarningPrefix": "Você não salvou as alterações mais recentes feitas em sua",
+        "unsavedEditorWarningSuffix": ". Clique em Salvar para confirmar as alterações.",
+        "updateDelayedApplyWarning": "Você está prestes a solicitar um aumento na taxa de transferência além da capacidade pré-alocada. Essa operação levará algum tempo para ser concluída.",
+        "scalingUpDelayMessage": "A escalabilidade levará de 4 a 6 horas, pois excede o que o Azure Cosmos DB pode oferecer suporte instantaneamente atualmente com base no número de partições físicas. Você pode aumentar sua taxa de transferência para {{instantMaximumThroughput}} imediatamente ou continuar com este valor e aguardar até que a escala seja concluída.",
+        "exceedPreAllocatedMessage": "Sua solicitação de aumento da taxa de transferência excede a capacidade pré-alocada, o que pode demorar mais do que o esperado. Você pode escolher uma das três opções para continuar:",
+        "instantScaleOption": "Você pode escalar verticalmente para {{instantMaximumThroughput}} RU/s instantaneamente.",
+        "asyncScaleOption": "Você pode escalar verticalmente de forma assíncrona para qualquer valor abaixo de {{maximumThroughput}} RU/s em 4 a 6 horas.",
+        "quotaMaxOption": "Sua cota máxima atual é de {{maximumThroughput}} RU/s. Para exceder esse limite, você deve solicitar um aumento de cota, que será revisado pela equipe do Azure Cosmos DB.",
+        "belowMinimumMessage": "Não é possível reduzir a taxa de transferência abaixo do mínimo atual de {{minimum}} RU/s. Para mais informações sobre esse limite, consulte nossa documentação de cotas de serviço.",
+        "saveThroughputWarning": "Sua cobrança será afetada à medida que você atualizar as configurações de taxa de transferência. Revise a estimativa de custo atualizada abaixo antes de salvar as alterações",
+        "currentAutoscaleThroughput": "Taxa de transferência atual da escala automática:",
+        "targetAutoscaleThroughput": "Taxa de transferência de escala automática de destino:",
+        "currentManualThroughput": "Taxa de transferência manual atual:",
+        "targetManualThroughput": "Taxa de transferência manual de destino:",
+        "applyDelayedMessage": "A solicitação de aumento da taxa de transferência foi enviada com êxito. Essa operação levará de 1 a 3 dias úteis para ser concluída. Exiba o status mais recente em Notificações.",
+        "databaseLabel": "Banco de Dados:",
+        "containerLabel": "Contêiner:",
+        "applyShortDelayMessage": "Há uma solicitação de aumento da taxa de transferência em andamento. Essa operação levará algum tempo para ser concluída.",
+        "applyLongDelayMessage": "Há uma solicitação de aumento da taxa de transferência em andamento. Essa operação levará de 1 a 3 dias úteis para ser concluída. Exiba o status mais recente em Notificações.",
+        "throughputCapError": "Sua conta está configurada atualmente com um limite total de taxa de transferência de {{throughputCap}} RU/s. Esta atualização não é possível porque aumentaria a taxa de transferência total para {{newTotalThroughput}} RU/s. Alterar limite total de taxa de transferência no gerenciamento de custos.",
+        "throughputIncrementError": "O valor da taxa de transferência deve ser em incrementos de 1000"
+      },
+      "conflictResolution": {
+        "lwwDefault": "Última Gravação Vence (padrão)",
+        "customMergeProcedure": "Procedimento de Mesclagem (personalizado)",
+        "mode": "Modo",
+        "conflictResolverProperty": "Propriedade do Resolvedor de Conflitos",
+        "storedProcedure": "Procedimento armazenado",
+        "lwwTooltip": "Obtém ou define o nome de uma propriedade inteira em seus documentos que é usada para o esquema de resolução de conflitos baseado em Última Gravação Vence (LWW). Por padrão, o sistema usa a propriedade de carimbo de data/hora definida pelo sistema, _ts, para decidir o vencedor das versões conflitantes do documento. Especifique sua própria propriedade inteira se quiser substituir a resolução de conflitos padrão baseada em carimbo de data/hora.",
+        "customTooltip": "Obtém ou define o nome de um procedimento armazenado (também conhecido como procedimento de mesclagem) para resolver os conflitos. Você pode escrever uma lógica definida pelo aplicativo para determinar o vencedor das versões conflitantes de um documento. O procedimento armazenado será executado transacionalmente, exatamente uma vez, no lado do servidor. Se você não fornecer um procedimento armazenado, os conflitos serão preenchidos no",
+        "customTooltipConflictsFeed": " feed de conflitos",
+        "customTooltipSuffix": ". Você pode atualizar/registrar novamente o procedimento armazenado a qualquer momento."
+      },
+      "changeFeed": {
+        "label": "Política de retenção de log do feed de alterações",
+        "tooltip": "Habilite a política de retenção de log do feed de alterações para reter os últimos 10 minutos do histórico de itens no contêiner por padrão. Para dar suporte a isso, a cobrança de unidade de solicitação (RU) para este contêiner será multiplicada por dois para gravações. As leituras não são afetadas."
+      },
+      "mongoIndexing": {
+        "disclaimer": "Para consultas que filtram várias propriedades, crie vários índices de campo único em vez de um índice composto.",
+        "disclaimerCompoundIndexesLink": " Índices compostos ",
+        "disclaimerSuffix": "são usados apenas para classificar os resultados da consulta. Se você precisar adicionar um índice composto, poderá criar um usando o shell do Mongo.",
+        "compoundNotSupported": "Coleções com índices compostos ainda não têm suporte no editor de indexação. Para modificar a política de indexação desta coleção, use o Mongo Shell.",
+        "aadError": "Para usar o editor de políticas de indexação, faça logon no",
+        "aadErrorLink": "portal do azure.",
+        "refreshingProgress": "Atualizando o progresso da transformação de índice",
+        "canMakeMoreChangesZero": "Você pode fazer mais alterações de indexação quando a transformação do índice atual for concluída. ",
+        "refreshToCheck": "Atualize para verificar se foi concluído.",
+        "canMakeMoreChangesProgress": "Você pode fazer mais alterações de indexação quando a transformação do índice atual for concluída. Está {{progress}}% concluído. ",
+        "refreshToCheckProgress": "Atualize para verificar o andamento.",
+        "definitionColumn": "Definição",
+        "typeColumn": "Tipo",
+        "dropIndexColumn": "Remover índice",
+        "addIndexBackColumn": "Adicionar índice novamente",
+        "deleteIndexButton": "Botão Excluir índice",
+        "addBackIndexButton": "Adicionar novamente o botão Índice",
+        "currentIndexes": "Índices atuais",
+        "indexesToBeDropped": "Índices a serem removidos",
+        "indexFieldName": "Nome do Campo do Índice",
+        "indexType": "Tipo de Índice",
+        "selectIndexType": "Selecione um tipo de índice",
+        "undoButton": "Botão Desfazer"
+      },
+      "subSettings": {
+        "timeToLive": "Vida Útil",
+        "ttlOff": "Desativado",
+        "ttlOnNoDefault": "Ativado (sem padrão)",
+        "ttlOn": "Ativado",
+        "seconds": "segundos",
+        "timeToLiveInSeconds": "Vida útil em segundos",
+        "analyticalStorageTtl": "Tempo de Vida do Armazenamento Analítico",
+        "geospatialConfiguration": "Configuração Geoespacial",
+        "geography": "Geografia",
+        "geometry": "Geometria",
+        "uniqueKeys": "Chaves exclusivas",
+        "mongoTtlMessage": "Para habilitar a vida útil (TTL) da coleção/documentos,",
+        "mongoTtlLinkText": "criar um índice TTL",
+        "partitionKeyTooltipTemplate": "Esse {{partitionKeyName}} é usado para distribuir dados em várias partições para escalabilidade. O valor \"{{partitionKeyValue}}\" determina como os documentos são particionados.",
+        "largePartitionKeyEnabled": "O recurso Grande {{partitionKeyName}} foi habilitado.",
+        "hierarchicalPartitioned": "Contêiner particionado hierarquicamente.",
+        "nonHierarchicalPartitioned": "Contêiner particionado de forma não hierárquica."
+      },
+      "scale": {
+        "freeTierInfo": "Com a camada gratuita, você terá as primeiras {{ru}} RU/s e {{storage}} GB de armazenamento nesta conta gratuitamente. Para manter a conta gratuita, mantenha o total de RU/s em todos os recursos da conta em {{ru}} RU/s.",
+        "freeTierLearnMore": "Saiba mais.",
+        "throughputRuS": "Taxa de transferência (RU/s)",
+        "autoScaleCustomSettings": "Sua conta tem configurações personalizadas que impedem a definição de taxa de transferência no nível do contêiner. Trabalhe com seu ponto de contato da equipe de engenharia do Cosmos DB para fazer alterações.",
+        "keyspaceSharedThroughput": "Esta taxa de transferência compartilhada da tabela é configurada no keyspace",
+        "throughputRangeLabel": "Throughput ({{min}} - {{max}} RU/s)",
+        "unlimited": "unlimited"
+      },
+      "partitionKeyEditor": {
+        "changePartitionKey": "Alterar {{partitionKeyName}}",
+        "currentPartitionKey": "{{partitionKeyName}} atual",
+        "partitioning": "Particionamento",
+        "hierarchical": "Hierárquico",
+        "nonHierarchical": "Não hierárquico",
+        "safeguardWarning": "Para garantir a integridade dos dados que estão sendo copiados para o novo contêiner, verifique se não há atualizações no contêiner de origem durante todo o processo de alteração da chave de partição.",
+        "changeDescription": "Para alterar a chave de partição, um novo contêiner de destino deve ser criado ou um contêiner de destino existente deve ser selecionado. Os dados serão copiados para o contêiner de destino.",
+        "changeButton": "Alterar",
+        "changeJob": "trabalho de alteração de {{partitionKeyName}}",
+        "cancelButton": "Cancelar",
+        "documentsProcessed": "({{processedCount}} de {{totalCount}} documentos processados)"
+      },
+      "computedProperties": {
+        "ariaLabel": "Propriedades calculadas",
+        "learnMorePrefix": "sobre como definir propriedades calculadas e como usá-las."
+      },
+      "indexingPolicy": {
+        "ariaLabel": "Política de Indexação"
+      },
+      "dataMasking": {
+        "ariaLabel": "Política de Mascaramento de Dados",
+        "validationFailed": "Falha na validação:",
+        "includedPathsRequired": "includedPaths é obrigatório",
+        "includedPathsMustBeArray": "includedPaths deve ser uma matriz",
+        "excludedPathsMustBeArray": "excludedPaths deve ser uma matriz, se fornecido"
+      },
+      "containerPolicy": {
+        "vectorPolicy": "Política de Vetor",
+        "fullTextPolicy": "Política de Texto Completo",
+        "createFullTextPolicy": "Criar política de pesquisa de texto completo"
+      },
+      "globalSecondaryIndex": {
+        "indexesDefined": "Este contêiner tem os seguintes índices definidos para ele.",
+        "learnMoreSuffix": "sobre como definir índices secundários globais e como usá-los.",
+        "jsonAriaLabel": "JSON do Índice Secundário Global",
+        "addIndex": "Adicionar índice",
+        "settingsTitle": "Configurações de Índice Secundário Global",
+        "sourceContainer": "Contêiner de origem",
+        "indexDefinition": "Definição de índice secundário global"
+      },
+      "indexingPolicyRefresh": {
+        "refreshFailed": "Falha ao atualizar o andamento da transformação do índice"
+      },
+      "throughputInput": {
+        "autoscale": "Escala automática",
+        "manual": "Manual",
+        "minimumRuS": "RU/s mínimas",
+        "maximumRuS": "RU/s máximas",
+        "x10Equals": "x 10 =",
+        "storageCapacity": "Capacidade de armazenamento",
+        "fixed": "Fixa",
+        "unlimited": "Ilimitado",
+        "instant": "Instantâneo",
+        "fourToSixHrs": "4 a 6 h",
+        "autoscaleDescription": "Com base no uso, a taxa de transferência {{resourceType}} será escalada de",
+        "freeTierWarning": "A cobrança será aplicada se você provisionar mais de {{ru}} RU/s de taxa de transferência manual ou se o recurso escalar além de {{ru}} RU/s com a escala automática.",
+        "capacityCalculator": "Estime as RU/s necessárias com",
+        "capacityCalculatorLink": " calculadora de capacidade",
+        "fixedStorageNote": "Ao usar uma coleção com capacidade de armazenamento fixa, você pode definir até 10.000 RU/s.",
+        "min": "mín.",
+        "max": "máx."
+      },
+      "throughputBuckets": {
+        "label": "Buckets de Taxa de Transferência",
+        "bucketLabel": "Bucket {{id}}",
+        "dataExplorerQueryBucket": " (Bucket de Consulta do Data Explorer)",
+        "active": "Ativo",
+        "inactive": "Inativo"
+      }
     }
   }
 }
