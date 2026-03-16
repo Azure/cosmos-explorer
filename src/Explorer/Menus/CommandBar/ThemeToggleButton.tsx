@@ -5,7 +5,7 @@ import SunIcon from "../../../../images/SunIcon.svg";
 import { useThemeStore } from "../../../hooks/useTheme";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 
-const PORTAL_SETTINGS_URL = "https://learn.microsoft.com/en-us/azure/azure-portal/set-preferences";
+const PORTAL_SETTINGS_URL = "https://learn.microsoft.com/azure/azure-portal/set-preferences";
 
 export const ThemeToggleButton = (isPortal?: boolean): CommandButtonComponentProps => {
   const [darkMode, setDarkMode] = React.useState(useThemeStore.getState().isDarkMode);
