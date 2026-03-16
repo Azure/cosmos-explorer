@@ -20,6 +20,24 @@ import { useSelectedNode } from "../useSelectedNode";
 import { PanelInfoErrorComponent, PanelInfoErrorProps } from "./PanelInfoErrorComponent";
 import { RightPaneForm, RightPaneFormProps } from "./RightPaneForm/RightPaneForm";
 
+const themedTextFieldStyles = {
+  fieldGroup: {
+    width: 300,
+    backgroundColor: "var(--colorNeutralBackground1)",
+    borderColor: "var(--colorNeutralStroke1)",
+    selectors: {
+      ":hover": { borderColor: "var(--colorNeutralStroke1Hover)" },
+    },
+  },
+  field: {
+    color: "var(--colorNeutralForeground1)",
+    backgroundColor: "var(--colorNeutralBackground1)",
+  },
+  subComponentStyles: {
+    label: { root: { color: "var(--colorNeutralForeground1)" } },
+  },
+};
+
 interface DeleteDatabaseConfirmationPanelProps {
   refreshDatabases: () => Promise<void>;
 }
@@ -143,12 +161,14 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
       <div className="panelMainContent">
         <div className="confirmDeleteInput">
           <span className="mandatoryStar">* </span>
-          <Text variant="small">{confirmDatabase}</Text>
+          <Text variant="small" style={{ color: "var(--colorNeutralForeground1)" }}>
+            {confirmDatabase}
+          </Text>
           <TextField
             id="confirmDatabaseId"
             data-test="Input:confirmDatabaseId"
             autoFocus
-            styles={{ fieldGroup: { width: 300 } }}
+            styles={themedTextFieldStyles}
             onChange={(event, newInput?: string) => {
               setDatabaseInput(newInput);
             }}
@@ -158,15 +178,15 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
         </div>
         {isLastNonEmptyDatabase() && (
           <div className="deleteDatabaseFeedback">
-            <Text variant="small" block>
+            <Text variant="small" block style={{ color: "var(--colorNeutralForeground1)" }}>
               {t(Keys.panes.deleteDatabase.feedbackTitle)}
             </Text>
-            <Text variant="small" block>
+            <Text variant="small" block style={{ color: "var(--colorNeutralForeground1)" }}>
               {t(Keys.panes.deleteDatabase.feedbackReason, { databaseName: getDatabaseName() })}
             </Text>
             <TextField
               id="deleteDatabaseFeedbackInput"
-              styles={{ fieldGroup: { width: 300 } }}
+              styles={themedTextFieldStyles}
               multiline
               rows={3}
               onChange={(event, newInput?: string) => {
