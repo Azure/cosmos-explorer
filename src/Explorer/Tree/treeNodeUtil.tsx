@@ -36,7 +36,7 @@ const TreeCollectionIcon = <DocumentMultipleRegular fontSize={16} />;
 const GlobalSecondaryIndexCollectionIcon = <EyeRegular fontSize={16} />;
 
 const pinnedIconStyle: React.CSSProperties = { display: "inline-flex", alignItems: "center", gap: "2px" };
-const pinnedBadgeStyle: React.CSSProperties = { color: "#0078D4" };
+const pinnedBadgeStyle: React.CSSProperties = { color: "var(--colorBrandForeground1)" };
 
 export const createSampleDataTreeNodes = (sampleDataResourceTokenCollection: ViewModels.CollectionBase): TreeNode[] => {
   const updatedSampleTree: TreeNode = {
