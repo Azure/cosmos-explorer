@@ -441,7 +441,11 @@
       "shareThroughput": "Partager le débit sur {{collectionsLabel}}",
       "shareThroughputTooltip": "Le débit approvisionné au niveau {{databaseLabel}} est partagé entre tous les {{collectionsLabel}} du {{databaseLabel}}.",
       "greaterThanError": "Entrer une valeur supérieure à {{minValue}} pour le débit Autopilot",
-      "acknowledgeSpendError": "Prenez en compte l’estimation des dépenses {{period}}."
+      "acknowledgeSpendError": "Prenez en compte l’estimation des dépenses {{period}}.",
+      "acknowledgeSpendErrorMonthly": "Please acknowledge the estimated monthly spend.",
+      "acknowledgeSpendErrorDaily": "Please acknowledge the estimated daily spend.",
+      "provisionSharedThroughputTitle": "Provision shared throughput",
+      "provisionThroughputLabel": "Provision throughput"
     },
     "addCollection": {
       "createNew": "Créer",
@@ -493,7 +497,31 @@
       "acknowledgeShareThroughputError": "N’oubliez pas de prendre en compte le coût estimé de ce débit dédié.",
       "vectorPolicyError": "Corriger les erreurs dans la stratégie de vecteur du conteneur",
       "fullTextSearchPolicyError": "Corrigez les erreurs dans la stratégie de recherche en texte intégral du conteneur",
-      "addingSampleDataSet": "Ajout en cours d’un exemple de jeu de données"
+      "addingSampleDataSet": "Ajout en cours d’un exemple de jeu de données",
+      "databaseFieldLabelName": "Database name",
+      "databaseFieldLabelId": "Database id",
+      "newDatabaseIdPlaceholder": "Type a new database id",
+      "newDatabaseIdAriaLabel": "New database id, Type a new database id",
+      "createNewDatabaseAriaLabel": "Create new database",
+      "useExistingDatabaseAriaLabel": "Use existing database",
+      "chooseExistingDatabase": "Choose an existing database",
+      "teachingBubble": {
+        "step1Headline": "Create sample database",
+        "step1Body": "Database is the parent of a container. You can create a new database or use an existing one. In this tutorial we are creating a new database named SampleDB.",
+        "step1LearnMore": "Learn more about resources.",
+        "step2Headline": "Setting throughput",
+        "step2Body": "Cosmos DB recommends sharing throughput across database. Autoscale will give you a flexible amount of throughput based on the max RU/s set (Request Units).",
+        "step2LearnMore": "Learn more about RU/s.",
+        "step3Headline": "Naming container",
+        "step3Body": "Name your container",
+        "step4Headline": "Setting partition key",
+        "step4Body": "Last step - you will need to define a partition key for your collection. /address was chosen for this particular example. A good partition key should have a wide range of possible value",
+        "step4CreateContainer": "Create container",
+        "step5Headline": "Creating sample container",
+        "step5Body": "A sample container is now being created and we are adding sample data for you. It should take about 1 minute.",
+        "step5BodyFollowUp": "Once the sample container is created, review your sample dataset and follow next steps",
+        "stepOfTotal": "Step {{current}} of {{total}}"
+      }
     },
     "addCollectionUtility": {
       "shardKeyTooltip": "Utilisez les clés de partition (champ) pour fractionner vos données entre de nombreux jeux de réplicas (partitions) pour atteindre une scalabilité illimitée. Il est essentiel de choisir un champ qui répartit uniformément vos données.",
@@ -722,6 +750,219 @@
     "panelInfo": {
       "information": "Informations",
       "moreDetails": "Plus de détails"
+    }
+  },
+  "controls": {
+    "settings": {
+      "tabTitles": {
+        "scale": "Scale",
+        "conflictResolution": "Conflict Resolution",
+        "settings": "Settings",
+        "indexingPolicy": "Indexing Policy",
+        "partitionKeys": "Partition Keys",
+        "partitionKeysPreview": "Partition Keys (preview)",
+        "computedProperties": "Computed Properties",
+        "containerPolicies": "Container Policies",
+        "throughputBuckets": "Throughput Buckets",
+        "globalSecondaryIndexPreview": "Global Secondary Index (Preview)",
+        "maskingPolicyPreview": "Masking Policy (preview)"
+      },
+      "mongoNotifications": {
+        "selectTypeWarning": "Please select a type for each index.",
+        "enterFieldNameError": "Entrez un nom de champ.",
+        "wildcardPathError": "Wildcard path is not present in the field name. Use a pattern like "
+      },
+      "partitionKey": {
+        "shardKey": "Shard key",
+        "partitionKey": "Partition key",
+        "shardKeyTooltip": "Utilisez les clés de partition (champ) pour fractionner vos données entre de nombreux jeux de réplicas (partitions) pour atteindre une scalabilité illimitée. Il est essentiel de choisir un champ qui répartit uniformément vos données.",
+        "partitionKeyTooltip": "is used to automatically distribute data across partitions for scalability. Choose a property in your JSON document that has a wide range of values and evenly distributes request volume.",
+        "sqlPartitionKeyTooltipSuffix": " Pour les charges de travail de petite taille à lecture intensive ou les charges de travail à écriture intensive de toute taille, l’ID est souvent un choix judicieux.",
+        "partitionKeySubtext": "For small workloads, the item ID is a suitable choice for the partition key.",
+        "mongoPlaceholder": "e.g., categoryId",
+        "gremlinPlaceholder": "e.g., /address",
+        "sqlFirstPartitionKey": "Obligatoire : première clé de partition, p. ex. /TenantId",
+        "sqlSecondPartitionKey": "deuxième clé de partition, par exemple, /UserId",
+        "sqlThirdPartitionKey": "troisième clé de partition, p. ex. /SessionId",
+        "defaultPlaceholder": "e.g., /address/zipCode"
+      },
+      "costEstimate": {
+        "title": "Cost estimate*",
+        "howWeCalculate": "How we calculate this",
+        "updatedCostPerMonth": "Updated cost per month",
+        "currentCostPerMonth": "Current cost per month",
+        "perRu": "/RU",
+        "perHour": "/hr",
+        "perDay": "/day",
+        "perMonth": "/mo"
+      },
+      "throughput": {
+        "manualToAutoscaleDisclaimer": "The starting autoscale max RU/s will be determined by the system, based on the current manual throughput settings and storage of your resource. After autoscale has been enabled, you can change the max RU/s.",
+        "ttlWarningText": "The system will automatically delete items based on the TTL value (in seconds) you provide, without needing a delete operation explicitly issued by a client application. For more information see,",
+        "ttlWarningLinkText": "Time to Live (TTL) in Azure Cosmos DB",
+        "unsavedIndexingPolicy": "indexing policy",
+        "unsavedDataMaskingPolicy": "data masking policy",
+        "unsavedComputedProperties": "computed properties",
+        "unsavedEditorWarningPrefix": "You have not saved the latest changes made to your",
+        "unsavedEditorWarningSuffix": ". Please click save to confirm the changes.",
+        "updateDelayedApplyWarning": "You are about to request an increase in throughput beyond the pre-allocated capacity. This operation will take some time to complete.",
+        "scalingUpDelayMessage": "Scaling up will take 4-6 hours as it exceeds what Azure Cosmos DB can instantly support currently based on your number of physical partitions. You can increase your throughput to {{instantMaximumThroughput}} instantly or proceed with this value and wait until the scale-up is completed.",
+        "exceedPreAllocatedMessage": "Your request to increase throughput exceeds the pre-allocated capacity which may take longer than expected. There are three options you can choose from to proceed:",
+        "instantScaleOption": "You can instantly scale up to {{instantMaximumThroughput}} RU/s.",
+        "asyncScaleOption": "You can asynchronously scale up to any value under {{maximumThroughput}} RU/s in 4-6 hours.",
+        "quotaMaxOption": "Your current quota max is {{maximumThroughput}} RU/s. To go over this limit, you must request a quota increase and the Azure Cosmos DB team will review.",
+        "belowMinimumMessage": "You are not able to lower throughput below your current minimum of {{minimum}} RU/s. For more information on this limit, please refer to our service quote documentation.",
+        "saveThroughputWarning": "Your bill will be affected as you update your throughput settings. Please review the updated cost estimate below before saving your changes",
+        "currentAutoscaleThroughput": "Current autoscale throughput:",
+        "targetAutoscaleThroughput": "Target autoscale throughput:",
+        "currentManualThroughput": "Current manual throughput:",
+        "targetManualThroughput": "Target manual throughput:",
+        "applyDelayedMessage": "The request to increase the throughput has successfully been submitted. This operation will take 1-3 business days to complete. View the latest status in Notifications.",
+        "databaseLabel": "Database:",
+        "containerLabel": "Container:",
+        "applyShortDelayMessage": "A request to increase the throughput is currently in progress. This operation will take some time to complete.",
+        "applyLongDelayMessage": "A request to increase the throughput is currently in progress. This operation will take 1-3 business days to complete. View the latest status in Notifications.",
+        "throughputCapError": "Your account is currently configured with a total throughput limit of {{throughputCap}} RU/s. This update isn't possible because it would increase the total throughput to {{newTotalThroughput}} RU/s. Change total throughput limit in cost management.",
+        "throughputIncrementError": "Throughput value must be in increments of 1000"
+      },
+      "conflictResolution": {
+        "lwwDefault": "Last Write Wins (default)",
+        "customMergeProcedure": "Merge Procedure (custom)",
+        "mode": "Mode",
+        "conflictResolverProperty": "Conflict Resolver Property",
+        "storedProcedure": "Stored procedure",
+        "lwwTooltip": "Gets or sets the name of a integer property in your documents which is used for the Last Write Wins (LWW) based conflict resolution scheme. By default, the system uses the system defined timestamp property, _ts to decide the winner for the conflicting versions of the document. Specify your own integer property if you want to override the default timestamp based conflict resolution.",
+        "customTooltip": "Gets or sets the name of a stored procedure (aka merge procedure) for resolving the conflicts. You can write application defined logic to determine the winner of the conflicting versions of a document. The stored procedure will get executed transactionally, exactly once, on the server side. If you do not provide a stored procedure, the conflicts will be populated in the",
+        "customTooltipConflictsFeed": " conflicts feed",
+        "customTooltipSuffix": ". You can update/re-register the stored procedure at any time."
+      },
+      "changeFeed": {
+        "label": "Change feed log retention policy",
+        "tooltip": "Enable change feed log retention policy to retain last 10 minutes of history for items in the container by default. To support this, the request unit (RU) charge for this container will be multiplied by a factor of two for writes. Reads are unaffected."
+      },
+      "mongoIndexing": {
+        "disclaimer": "For queries that filter on multiple properties, create multiple single field indexes instead of a compound index.",
+        "disclaimerCompoundIndexesLink": " Compound indexes ",
+        "disclaimerSuffix": "are only used for sorting query results. If you need to add a compound index, you can create one using the Mongo shell.",
+        "compoundNotSupported": "Collections with compound indexes are not yet supported in the indexing editor. To modify indexing policy for this collection, use the Mongo Shell.",
+        "aadError": "To use the indexing policy editor, please login to the",
+        "aadErrorLink": "azure portal.",
+        "refreshingProgress": "Refreshing index transformation progress",
+        "canMakeMoreChangesZero": "You can make more indexing changes once the current index transformation is complete. ",
+        "refreshToCheck": "Refresh to check if it has completed.",
+        "canMakeMoreChangesProgress": "You can make more indexing changes once the current index transformation has completed. It is {{progress}}% complete. ",
+        "refreshToCheckProgress": "Refresh to check the progress.",
+        "definitionColumn": "Definition",
+        "typeColumn": "Type",
+        "dropIndexColumn": "Drop Index",
+        "addIndexBackColumn": "Add index back",
+        "deleteIndexButton": "Delete index Button",
+        "addBackIndexButton": "Add back Index Button",
+        "currentIndexes": "Current index(es)",
+        "indexesToBeDropped": "Index(es) to be dropped",
+        "indexFieldName": "Index Field Name",
+        "indexType": "Index Type",
+        "selectIndexType": "Select an index type",
+        "undoButton": "Undo Button"
+      },
+      "subSettings": {
+        "timeToLive": "Time to Live",
+        "ttlOff": "Off",
+        "ttlOnNoDefault": "On (no default)",
+        "ttlOn": "On",
+        "seconds": "second(s)",
+        "timeToLiveInSeconds": "Time to live in seconds",
+        "analyticalStorageTtl": "Analytical Storage Time to Live",
+        "geospatialConfiguration": "Geospatial Configuration",
+        "geography": "Geography",
+        "geometry": "Geometry",
+        "uniqueKeys": "Unique keys",
+        "mongoTtlMessage": "To enable time-to-live (TTL) for your collection/documents,",
+        "mongoTtlLinkText": "create a TTL index",
+        "partitionKeyTooltipTemplate": "This {{partitionKeyName}} is used to distribute data across multiple partitions for scalability. The value \"{{partitionKeyValue}}\" determines how documents are partitioned.",
+        "largePartitionKeyEnabled": "Large {{partitionKeyName}} has been enabled.",
+        "hierarchicalPartitioned": "Hierarchically partitioned container.",
+        "nonHierarchicalPartitioned": "Non-hierarchically partitioned container."
+      },
+      "scale": {
+        "freeTierInfo": "With free tier, you will get the first {{ru}} RU/s and {{storage}} GB of storage in this account for free. To keep your account free, keep the total RU/s across all resources in the account to {{ru}} RU/s.",
+        "freeTierLearnMore": "Learn more.",
+        "throughputRuS": "Throughput (RU/s)",
+        "autoScaleCustomSettings": "Your account has custom settings that prevents setting throughput at the container level. Please work with your Cosmos DB engineering team point of contact to make changes.",
+        "keyspaceSharedThroughput": "This table shared throughput is configured at the keyspace",
+        "throughputRangeLabel": "Throughput ({{min}} - {{max}} RU/s)",
+        "unlimited": "unlimited"
+      },
+      "partitionKeyEditor": {
+        "changePartitionKey": "Change {{partitionKeyName}}",
+        "currentPartitionKey": "Current {{partitionKeyName}}",
+        "partitioning": "Partitioning",
+        "hierarchical": "Hierarchical",
+        "nonHierarchical": "Non-hierarchical",
+        "safeguardWarning": "To safeguard the integrity of the data being copied to the new container, ensure that no updates are made to the source container for the entire duration of the partition key change process.",
+        "changeDescription": "To change the partition key, a new destination container must be created or an existing destination container selected. Data will then be copied to the destination container.",
+        "changeButton": "Change",
+        "changeJob": "{{partitionKeyName}} change job",
+        "cancelButton": "Cancel",
+        "documentsProcessed": "({{processedCount}} of {{totalCount}} documents processed)"
+      },
+      "computedProperties": {
+        "ariaLabel": "Computed properties",
+        "learnMorePrefix": "about how to define computed properties and how to use them."
+      },
+      "indexingPolicy": {
+        "ariaLabel": "Indexing Policy"
+      },
+      "dataMasking": {
+        "ariaLabel": "Data Masking Policy",
+        "validationFailed": "Validation failed:",
+        "includedPathsRequired": "includedPaths is required",
+        "includedPathsMustBeArray": "includedPaths must be an array",
+        "excludedPathsMustBeArray": "excludedPaths must be an array if provided"
+      },
+      "containerPolicy": {
+        "vectorPolicy": "Vector Policy",
+        "fullTextPolicy": "Full Text Policy",
+        "createFullTextPolicy": "Create new full text search policy"
+      },
+      "globalSecondaryIndex": {
+        "indexesDefined": "This container has the following indexes defined for it.",
+        "learnMoreSuffix": "about how to define global secondary indexes and how to use them.",
+        "jsonAriaLabel": "Global Secondary Index JSON",
+        "addIndex": "Add index",
+        "settingsTitle": "Global Secondary Index Settings",
+        "sourceContainer": "Source container",
+        "indexDefinition": "Global secondary index definition"
+      },
+      "indexingPolicyRefresh": {
+        "refreshFailed": "Refreshing index transformation progress failed"
+      },
+      "throughputInput": {
+        "autoscale": "Autoscale",
+        "manual": "Manual",
+        "minimumRuS": "Minimum RU/s",
+        "maximumRuS": "Maximum RU/s",
+        "x10Equals": "x 10 =",
+        "storageCapacity": "Storage capacity",
+        "fixed": "Fixed",
+        "unlimited": "Unlimited",
+        "instant": "Instant",
+        "fourToSixHrs": "4-6 hrs",
+        "autoscaleDescription": "Based on usage, your {{resourceType}} throughput will scale from",
+        "freeTierWarning": "Billing will apply if you provision more than {{ru}} RU/s of manual throughput, or if the resource scales beyond {{ru}} RU/s with autoscale.",
+        "capacityCalculator": "Estimate your required RU/s with",
+        "capacityCalculatorLink": " capacity calculator",
+        "fixedStorageNote": "When using a collection with fixed storage capacity, you can set up to 10,000 RU/s.",
+        "min": "min",
+        "max": "max"
+      },
+      "throughputBuckets": {
+        "label": "Throughput Buckets",
+        "bucketLabel": "Bucket {{id}}",
+        "dataExplorerQueryBucket": " (Data Explorer Query Bucket)",
+        "active": "Active",
+        "inactive": "Inactive"
+      }
     }
   }
 }

@@ -107,6 +107,12 @@ export default class Explorer {
 
   private static readonly MaxNbDatabasesToAutoExpand = 5;
   public phoenixClient: PhoenixClient;
+
+  /**
+   * Resolves when the initial refreshAllDatabases (including collection loading) completes.
+   * Await this instead of calling refreshAllDatabases again to avoid duplicate concurrent loads.
+   */
+  public databasesRefreshed: Promise<void> = Promise.resolve();
   constructor() {
     const startKey: number = TelemetryProcessor.traceStart(Action.InitializeDataExplorer, {
       dataExplorerArea: Constants.Areas.ResourceTree,
@@ -1197,9 +1203,11 @@ export default class Explorer {
     }
 
     if (userContext.apiType !== "Postgres" && userContext.apiType !== "VCoreMongo") {
-      userContext.authType === AuthType.ResourceToken
-        ? this.refreshDatabaseForResourceToken()
-        : await this.refreshAllDatabases(); // await: we rely on the databases to be loaded before restoring the tabs further in the flow
+      this.databasesRefreshed =
+        userContext.authType === AuthType.ResourceToken
+          ? this.refreshDatabaseForResourceToken()
+          : this.refreshAllDatabases();
+      await this.databasesRefreshed; // await: we rely on the databases to be loaded before restoring the tabs further in the flow
     }
 
     if (!isFabricNative()) {

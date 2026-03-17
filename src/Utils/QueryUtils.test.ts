@@ -350,6 +350,25 @@ describe("Query Utils", () => {
       expect(partitionKeyValues.length).toBe(2);
       expect(partitionKeyValues).toEqual(["Japan", "hello"]);
     });
+
+    it("should extract partition key value when path has surrounding whitespace", () => {
+      const doc = {
+        id: "test-id",
+        Country: "United States",
+        Location: {
+          type: "Point",
+        },
+      };
+
+      const partitionKeyDefinition: PartitionKeyDefinition = {
+        kind: PartitionKeyKind.MultiHash,
+        paths: ["/ Country ", "/ Location / type "],
+      };
+
+      const partitionKeyValues: PartitionKey[] = extractPartitionKeyValues(doc, partitionKeyDefinition);
+      expect(partitionKeyValues.length).toBe(2);
+      expect(partitionKeyValues).toEqual(["United States", "Point"]);
+    });
   });
 
   describe("stripDoubleQuotesFromSegment", () => {
