@@ -442,10 +442,10 @@
       "shareThroughputTooltip": "Пропускная способность, настроенная на уровне {{databaseLabel}}, будет совместно использоваться всеми {{collectionsLabel}} в {{databaseLabel}}.",
       "greaterThanError": "Введите значение, большее {{minValue}}, для пропускной способности автопилота",
       "acknowledgeSpendError": "Подтвердите, что осведомлены о смете ежемесячных расходов за {{period}}.",
-      "acknowledgeSpendErrorMonthly": "Please acknowledge the estimated monthly spend.",
-      "acknowledgeSpendErrorDaily": "Please acknowledge the estimated daily spend.",
-      "provisionSharedThroughputTitle": "Provision shared throughput",
-      "provisionThroughputLabel": "Provision throughput"
+      "acknowledgeSpendErrorMonthly": "Подтвердите, что осведомлены о смете ежемесячных расходов.",
+      "acknowledgeSpendErrorDaily": "Подтвердите, что осведомлены о смете ежемесячных расходов за день.",
+      "provisionSharedThroughputTitle": "Подготовить пропускную способность для совместного использования",
+      "provisionThroughputLabel": "Подготовить пропускную способность"
     },
     "addCollection": {
       "createNew": "Создать новую",
@@ -498,29 +498,29 @@
       "vectorPolicyError": "Исправьте ошибки в политике вектора контейнера",
       "fullTextSearchPolicyError": "Исправьте ошибки в политике полнотекстового поиска контейнера",
       "addingSampleDataSet": "Выполняется добавление примера набора данных",
-      "databaseFieldLabelName": "Database name",
-      "databaseFieldLabelId": "Database id",
-      "newDatabaseIdPlaceholder": "Type a new database id",
-      "newDatabaseIdAriaLabel": "New database id, Type a new database id",
-      "createNewDatabaseAriaLabel": "Create new database",
-      "useExistingDatabaseAriaLabel": "Use existing database",
-      "chooseExistingDatabase": "Choose an existing database",
+      "databaseFieldLabelName": "Имя базы данных",
+      "databaseFieldLabelId": "Идентификатор базы данных",
+      "newDatabaseIdPlaceholder": "Введите новый ИД базы данных",
+      "newDatabaseIdAriaLabel": "Новый идентификатор базы данных, введите новый идентификатор базы данных",
+      "createNewDatabaseAriaLabel": "Создать базу данных",
+      "useExistingDatabaseAriaLabel": "Использовать существующую базу данных",
+      "chooseExistingDatabase": "Выберите существующую базу данных",
       "teachingBubble": {
-        "step1Headline": "Create sample database",
-        "step1Body": "Database is the parent of a container. You can create a new database or use an existing one. In this tutorial we are creating a new database named SampleDB.",
-        "step1LearnMore": "Learn more about resources.",
-        "step2Headline": "Setting throughput",
-        "step2Body": "Cosmos DB recommends sharing throughput across database. Autoscale will give you a flexible amount of throughput based on the max RU/s set (Request Units).",
-        "step2LearnMore": "Learn more about RU/s.",
-        "step3Headline": "Naming container",
-        "step3Body": "Name your container",
-        "step4Headline": "Setting partition key",
-        "step4Body": "Last step - you will need to define a partition key for your collection. /address was chosen for this particular example. A good partition key should have a wide range of possible value",
-        "step4CreateContainer": "Create container",
-        "step5Headline": "Creating sample container",
-        "step5Body": "A sample container is now being created and we are adding sample data for you. It should take about 1 minute.",
-        "step5BodyFollowUp": "Once the sample container is created, review your sample dataset and follow next steps",
-        "stepOfTotal": "Step {{current}} of {{total}}"
+        "step1Headline": "Создание примера базы данных",
+        "step1Body": "База данных — это родительский объект контейнера. Можно создать новую базу данных или использовать существующую. В этом руководстве мы создаем новую базу данных с именем SampleDB.",
+        "step1LearnMore": "Подробнее о ресурсах.",
+        "step2Headline": "Настраивается пропускная способность",
+        "step2Body": "Cosmos DB рекомендует совместное использование пропускной способности на уровне базы данных. Автомасштабирование обеспечит гибкий объем пропускной способности в зависимости от максимального значения ЕЗ (единиц запросов) в секунду.",
+        "step2LearnMore": "Подробнее о единицах запросов в секунду.",
+        "step3Headline": "Присвоение имени контейнеру",
+        "step3Body": "Дайте имя своему контейнеру",
+        "step4Headline": "Задание ключа раздела",
+        "step4Body": "Последний шаг — нужно определить ключ раздела для коллекции. В этом примере выбран /address. Хороший ключ раздела должен иметь широкий диапазон возможных значений",
+        "step4CreateContainer": "Создать контейнер",
+        "step5Headline": "Создание примера контейнера",
+        "step5Body": "Создается пример контейнера, и для вас добавляются образцы данных. Это займет около минуты.",
+        "step5BodyFollowUp": "После создания примера контейнера просмотрите пример набора данных и выполните следующие шаги",
+        "stepOfTotal": "Шаг {{current}} из {{total}}"
       }
     },
     "addCollectionUtility": {
@@ -792,9 +792,9 @@
         "updatedCostPerMonth": "Обновленная стоимость в месяц",
         "currentCostPerMonth": "Текущая стоимость в месяц",
         "perRu": "/RU",
-        "perHour": "/hr",
-        "perDay": "/day",
-        "perMonth": "/mo"
+        "perHour": "за час",
+        "perDay": "за день",
+        "perMonth": "в месяц"
       },
       "throughput": {
         "manualToAutoscaleDisclaimer": "Начальный максимальный объем автоматически масштабируемых RU/s будет определяться системой на основе текущих настроек пропускной способности, заданных вручную, и объема хранилища ваших ресурсов. После включения автомасштабирования вы можете изменить максимальное значение RU/s.",
@@ -890,8 +890,8 @@
         "throughputRuS": "Пропускная способность (единицы запросов в секунду)",
         "autoScaleCustomSettings": "В вашей учетной записи установлены пользовательские параметры, которые не позволяют задавать пропускную способность на уровне контейнера. Свяжитесь со своим контактным лицом из команды разработчиков Cosmos DB для внесения изменений.",
         "keyspaceSharedThroughput": "Пропускная способность, распределяемая между таблицами, настраивается в пространстве ключей",
-        "throughputRangeLabel": "Throughput ({{min}} - {{max}} RU/s)",
-        "unlimited": "unlimited"
+        "throughputRangeLabel": "Пропускная способность ({{min}}–{{max}} единиц запросов в секунду)",
+        "unlimited": "без ограничений"
       },
       "partitionKeyEditor": {
         "changePartitionKey": "Изменить {{partitionKeyName}}",

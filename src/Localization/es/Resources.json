@@ -442,10 +442,10 @@
       "shareThroughputTooltip": "El rendimiento aprovisionado en el {{databaseLabel}} nivel se compartirá entre todos {{collectionsLabel}} dentro de {{databaseLabel}}.",
       "greaterThanError": "Escriba un valor mayor que para el {{minValue}} rendimiento de Autopilot",
       "acknowledgeSpendError": "Confirme el gasto estimado {{period}}.",
-      "acknowledgeSpendErrorMonthly": "Please acknowledge the estimated monthly spend.",
-      "acknowledgeSpendErrorDaily": "Please acknowledge the estimated daily spend.",
-      "provisionSharedThroughputTitle": "Provision shared throughput",
-      "provisionThroughputLabel": "Provision throughput"
+      "acknowledgeSpendErrorMonthly": "Confirme el gasto mensual estimado.",
+      "acknowledgeSpendErrorDaily": "Confirme el gasto diario estimado.",
+      "provisionSharedThroughputTitle": "Aprovisionamiento del rendimiento compartido",
+      "provisionThroughputLabel": "Aprovisionamiento del rendimiento"
     },
     "addCollection": {
       "createNew": "Crear nuevo",
@@ -498,29 +498,29 @@
       "vectorPolicyError": "Corrija los errores en la directiva de vector de contenedor",
       "fullTextSearchPolicyError": "Corrija los errores en la directiva de búsqueda de texto completo del contenedor",
       "addingSampleDataSet": "Adición de un conjunto de datos de ejemplo",
-      "databaseFieldLabelName": "Database name",
-      "databaseFieldLabelId": "Database id",
-      "newDatabaseIdPlaceholder": "Type a new database id",
-      "newDatabaseIdAriaLabel": "New database id, Type a new database id",
-      "createNewDatabaseAriaLabel": "Create new database",
-      "useExistingDatabaseAriaLabel": "Use existing database",
-      "chooseExistingDatabase": "Choose an existing database",
+      "databaseFieldLabelName": "Nombre de la base de datos",
+      "databaseFieldLabelId": "Id. de base de datos",
+      "newDatabaseIdPlaceholder": "Escriba un nuevo identificador de base de datos",
+      "newDatabaseIdAriaLabel": "Nuevo identificador de base de datos, escriba un nuevo identificador de base de datos",
+      "createNewDatabaseAriaLabel": "Crear nueva base de datos",
+      "useExistingDatabaseAriaLabel": "Usar base de datos existente",
+      "chooseExistingDatabase": "Elegir una base de datos existente",
       "teachingBubble": {
-        "step1Headline": "Create sample database",
-        "step1Body": "Database is the parent of a container. You can create a new database or use an existing one. In this tutorial we are creating a new database named SampleDB.",
-        "step1LearnMore": "Learn more about resources.",
-        "step2Headline": "Setting throughput",
-        "step2Body": "Cosmos DB recommends sharing throughput across database. Autoscale will give you a flexible amount of throughput based on the max RU/s set (Request Units).",
-        "step2LearnMore": "Learn more about RU/s.",
-        "step3Headline": "Naming container",
-        "step3Body": "Name your container",
-        "step4Headline": "Setting partition key",
-        "step4Body": "Last step - you will need to define a partition key for your collection. /address was chosen for this particular example. A good partition key should have a wide range of possible value",
-        "step4CreateContainer": "Create container",
-        "step5Headline": "Creating sample container",
-        "step5Body": "A sample container is now being created and we are adding sample data for you. It should take about 1 minute.",
-        "step5BodyFollowUp": "Once the sample container is created, review your sample dataset and follow next steps",
-        "stepOfTotal": "Step {{current}} of {{total}}"
+        "step1Headline": "Crear base de datos de ejemplo",
+        "step1Body": "La base de datos es el elemento primario de un contenedor. Puede crear una nueva base de datos o usar una existente. En este tutorial vamos a crear una nueva base de datos denominada SampleDB.",
+        "step1LearnMore": "Obtenga más información sobre los recursos.",
+        "step2Headline": "Estableciendo el rendimiento",
+        "step2Body": "Cosmos DB recomienda compartir el rendimiento entre bases de datos. La escalabilidad automática le proporcionará una cantidad flexible de rendimiento en función del número máximo de RU/s establecido (unidades de solicitud).",
+        "step2LearnMore": "Más información sobre RU/s.",
+        "step3Headline": "Contenedor de nomenclatura",
+        "step3Body": "Asigne un nombre al contenedor",
+        "step4Headline": "Estableciendo clave de partición",
+        "step4Body": "Último paso: tendrá que definir una clave de partición para la colección. Se eligió /address para este ejemplo concreto. Una buena clave de partición debe tener una amplia gama de valores posibles",
+        "step4CreateContainer": "Crear contenedor",
+        "step5Headline": "Creando contenedor de ejemplo",
+        "step5Body": "Ahora se está creando un contenedor de ejemplo y estamos agregando datos de ejemplo. Debería tardar aproximadamente 1 minuto.",
+        "step5BodyFollowUp": "Una vez creado el contenedor de ejemplo, revise el conjunto de datos de ejemplo y siga los pasos siguientes",
+        "stepOfTotal": "Paso {{current}} de {{total}}"
       }
     },
     "addCollectionUtility": {
@@ -793,7 +793,7 @@
         "currentCostPerMonth": "Coste actual al mes",
         "perRu": "/RU",
         "perHour": "/hr",
-        "perDay": "/day",
+        "perDay": "/día",
         "perMonth": "/mo"
       },
       "throughput": {
@@ -890,8 +890,8 @@
         "throughputRuS": "Rendimiento (RU/s)",
         "autoScaleCustomSettings": "La cuenta tiene una configuración personalizada que impide establecer el rendimiento en el nivel de contenedor. Trabaje con su Cosmos DB punto de contacto del equipo de ingeniería para realizar cambios.",
         "keyspaceSharedThroughput": "Este rendimiento compartido de tabla se configura en el espacio de claves",
-        "throughputRangeLabel": "Throughput ({{min}} - {{max}} RU/s)",
-        "unlimited": "unlimited"
+        "throughputRangeLabel": "Rendimiento ({{min}} - {{max}} RU/s)",
+        "unlimited": "ilimitado"
       },
       "partitionKeyEditor": {
         "changePartitionKey": "Cambiar {{partitionKeyName}}",
