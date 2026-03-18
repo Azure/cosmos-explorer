@@ -157,7 +157,11 @@ export const extractPartitionKeyValues = (
   const partitionKeyValues: PartitionKey[] = [];
 
   partitionKeyDefinition.paths.forEach((partitionKeyPath: string) => {
-    const pathSegments: string[] = partitionKeyPath.substring(1).split("/").map(stripDoubleQuotesFromSegment);
+    const pathSegments: string[] = partitionKeyPath
+      .substring(1)
+      .split("/")
+      .map(stripDoubleQuotesFromSegment)
+      .map((s) => s.trim());
     const value = getValueForPath(documentContent, pathSegments);
 
     if (value !== undefined) {

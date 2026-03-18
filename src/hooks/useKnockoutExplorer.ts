@@ -165,7 +165,7 @@ async function configureFabric(): Promise<Explorer> {
               explorer = createExplorerFabricLegacy(initializationMessage, data.version);
               await scheduleRefreshFabricToken(true);
               resolve(explorer);
-              await explorer.refreshAllDatabases();
+              await explorer.databasesRefreshed;
               if (userContext.fabricContext.isVisible) {
                 firstContainerOpened = true;
                 openFirstContainer(explorer, userContext.fabricContext.databaseName);
@@ -189,7 +189,7 @@ async function configureFabric(): Promise<Explorer> {
               }
 
               resolve(explorer);
-              await explorer.refreshAllDatabases();
+              await explorer.databasesRefreshed;
 
               const { databaseName } = userContext.fabricContext;
               if (userContext.fabricContext.isVisible && databaseName) {
