@@ -1,11 +1,12 @@
+import type { PhaseTimings, WebVitals } from "Metrics/Constants";
 import { Metric, onCLS, onFCP, onINP, onLCP, onTTFB } from "web-vitals";
 import { configContext } from "../ConfigContext";
 import { Action } from "../Shared/Telemetry/TelemetryConstants";
 import { traceFailure, traceMark, traceStart, traceSuccess } from "../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../UserContext";
-import MetricScenario, { reportHealthy, reportUnhealthy } from "./MetricEvents";
+import MetricScenario, { reportMetric } from "./MetricEvents";
 import { scenarioConfigs } from "./MetricScenarioConfigs";
-import { MetricPhase, PhaseTimings, ScenarioConfig, ScenarioContextSnapshot, WebVitals } from "./ScenarioConfig";
+import { MetricPhase, ScenarioConfig, ScenarioContextSnapshot } from "./ScenarioConfig";
 
 interface PhaseContext {
   startMarkName: string; // Performance mark name for phase start
@@ -331,13 +332,23 @@ class ScenarioMonitor {
       })}`,
     );
 
-    // Call portal backend health metrics endpoint
-    // If healthy is true (either completed successfully or timeout with expected failure), report healthy
-    if (healthy) {
-      reportHealthy(ctx.scenario, platform, api);
-    } else {
-      reportUnhealthy(ctx.scenario, platform, api);
-    }
+    // Call portal backend health metrics endpoint with enriched payload
+    reportMetric({
+      platform,
+      api,
+      scenario: ctx.scenario,
+      healthy,
+      durationMs: finalSnapshot.durationMs,
+      timedOut,
+      documentHidden: document.hidden,
+      hasExpectedFailure: ctx.hasExpectedFailure,
+      completedPhases: finalSnapshot.completed,
+      failedPhases: finalSnapshot.failedPhases ?? [],
+      phaseTimings: finalSnapshot.phaseTimings,
+      startTimeISO: finalSnapshot.startTimeISO,
+      endTimeISO: finalSnapshot.endTimeISO,
+      vitals: finalSnapshot.vitals,
+    });
 
     // Cleanup performance entries
     this.cleanupPerformanceEntries(ctx);
