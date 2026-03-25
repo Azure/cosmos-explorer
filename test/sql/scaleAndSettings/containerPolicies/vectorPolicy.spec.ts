@@ -32,7 +32,7 @@ test.describe("Vector Policy under Scale & Settings", () => {
     // Click Add vector embedding button
     const addButton = explorer.frame.locator("#add-vector-policy");
     await addButton.click();
-    
+
     // Fill in path
     const pathInput = explorer.frame.locator("#vector-policy-path-1");
     await pathInput.fill("/embedding");

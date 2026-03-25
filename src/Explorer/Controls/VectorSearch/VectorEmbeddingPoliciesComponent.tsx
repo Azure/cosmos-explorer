@@ -483,11 +483,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
             </Stack>
           </CollapsibleSectionComponent>
         ))}
-      <DefaultButton
-        id={`add-vector-policy`}
-        styles={{ root: { maxWidth: 170, fontSize: 12 } }}
-        onClick={onAdd}
-      >
+      <DefaultButton id={`add-vector-policy`} styles={{ root: { maxWidth: 170, fontSize: 12 } }} onClick={onAdd}>
         Add vector embedding
       </DefaultButton>
     </Stack>
