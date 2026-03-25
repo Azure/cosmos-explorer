@@ -58,6 +58,7 @@ export async function getMsalInstance() {
     auth: {
       authority: `${configContext.AAD_ENDPOINT}organizations`,
       clientId: "203f1145-856a-4232-83d4-a43568fba23d",
+      knownAuthorities: [configContext.AAD_ENDPOINT],
     },
   };
 
@@ -84,14 +85,16 @@ export async function acquireMsalTokenForAccount(
     hrefEndpoint = new URL(userContext.databaseAccount.properties.documentEndpoint).href.replace(/\/+$/, "/.default");
   }
   const msalInstance = await getMsalInstance();
+  console.log("msalInstance", msalInstance);
   const knownAccounts = msalInstance.getAllAccounts();
+  console.log("knownAccounts", knownAccounts);
   // If user_hint is provided, we will try to use it to find the account.
   // If no account is found, we will use the current active account or first account in the list.
   const msalAccount =
     knownAccounts?.filter((account) => account.username === user_hint)[0] ??
     msalInstance.getActiveAccount() ??
     knownAccounts?.[0];
-
+  console.log("msalAccount", msalAccount);
   if (!msalAccount) {
     // If no account was found, we need to sign in.
     // This will eventually throw InteractionRequiredAuthError if silent is true, we won't handle it here.
@@ -100,6 +103,7 @@ export async function acquireMsalTokenForAccount(
       loginHint: user_hint ?? userContext.userName,
       authority: userContext.tenantId ? `${configContext.AAD_ENDPOINT}${userContext.tenantId}` : undefined,
     };
+    console.log("loginRequest", loginRequest);
     try {
       if (silent) {
         // We can try to use SSO between different apps to avoid showing a popup.
@@ -158,12 +162,17 @@ export async function acquireTokenWithMsal(
     account: msalInstance.getActiveAccount() || null,
     ...request,
   };
-
+  console.log("tokenRequest", tokenRequest);
   try {
     // attempt silent acquisition first
     return (await msalInstance.acquireTokenSilent(tokenRequest)).accessToken;
   } catch (silentError) {
-    if (silentError instanceof msal.InteractionRequiredAuthError && silent === false) {
+    console.log(silentError);
+    if (
+      silentError instanceof msal.InteractionRequiredAuthError &&
+      // (silentError instanceof msal.InteractionRequiredAuthError || (silentError instanceof msal.AuthError)) &&
+      silent === false
+    ) {
       try {
         // The error indicates that we need to acquire the token interactively.
         // This will display a pop-up to re-establish authorization. If user does not
