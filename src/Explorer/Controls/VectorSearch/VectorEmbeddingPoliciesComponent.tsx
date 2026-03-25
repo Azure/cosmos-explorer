@@ -20,6 +20,7 @@ import {
 import React, { FunctionComponent, useState } from "react";
 
 export interface IVectorEmbeddingPoliciesComponentProps {
+  vectorEmbeddingsBaseline: VectorEmbedding[];
   vectorEmbeddings: VectorEmbedding[];
   onVectorEmbeddingChange: (
     vectorEmbeddings: VectorEmbedding[],
@@ -29,7 +30,6 @@ export interface IVectorEmbeddingPoliciesComponentProps {
   vectorIndexes?: VectorIndex[];
   discardChanges?: boolean;
   onChangesDiscarded?: () => void;
-  disabled?: boolean;
   isGlobalSecondaryIndex?: boolean;
 }
 
@@ -85,14 +85,28 @@ const dropdownStyles = {
 };
 
 export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddingPoliciesComponentProps> = ({
+  vectorEmbeddingsBaseline,
   vectorEmbeddings,
   vectorIndexes,
   onVectorEmbeddingChange,
   discardChanges,
   onChangesDiscarded,
-  disabled,
   isGlobalSecondaryIndex,
 }): JSX.Element => {
+  const isExistingPolicy = (policy: VectorEmbeddingPolicyData): boolean => {
+    if (!vectorEmbeddingsBaseline || vectorEmbeddingsBaseline.length === 0) {
+      return false;
+    }
+
+    return vectorEmbeddingsBaseline.some(
+      (baseline) =>
+        baseline.path === policy.path &&
+        baseline.dataType === policy.dataType &&
+        baseline.dimensions === policy.dimensions &&
+        baseline.distanceFunction === policy.distanceFunction,
+    );
+  };
+
   const onVectorEmbeddingPathError = (path: string, index?: number): string => {
     let error = "";
     if (!path) {
@@ -139,7 +153,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
 
   const initializeData = (vectorEmbeddings: VectorEmbedding[], vectorIndexes: VectorIndex[]) => {
     const mergedData: VectorEmbeddingPolicyData[] = [];
-    vectorEmbeddings.forEach((embedding) => {
+    vectorEmbeddings?.forEach((embedding) => {
       const matchingIndex = displayIndexes ? vectorIndexes.find((index) => index.path === embedding.path) : undefined;
       mergedData.push({
         ...embedding,
@@ -151,6 +165,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
         dimensionsError: onVectorEmbeddingDimensionError(embedding.dimensions, matchingIndex?.type || "none"),
       });
     });
+
     return mergedData;
   };
 
@@ -192,6 +207,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
     const validationPassed = vectorEmbeddingPolicyData.every(
       (policy: VectorEmbeddingPolicyData) => policy.pathError === "" && policy.dimensionsError === "",
     );
+
     onVectorEmbeddingChange(vectorEmbeddings, vectorIndexes, validationPassed);
   };
 
@@ -300,12 +316,13 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
         vectorEmbeddingPolicyData.length > 0 &&
         vectorEmbeddingPolicyData.map((vectorEmbeddingPolicy: VectorEmbeddingPolicyData, index: number) => (
           <CollapsibleSectionComponent
-            disabled={disabled}
+            disabled={isExistingPolicy(vectorEmbeddingPolicy)}
             key={index}
             isExpandedByDefault={true}
             title={`Vector embedding ${index + 1}`}
             showDelete={true}
             onDelete={() => onDelete(index)}
+            disableDelete={false}
           >
             <Stack horizontal tokens={{ childrenGap: 4 }}>
               <Stack
@@ -319,11 +336,11 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
                 }}
               >
                 <Stack>
-                  <Label disabled={disabled} styles={labelStyles}>
+                  <Label disabled={isExistingPolicy(vectorEmbeddingPolicy)} styles={labelStyles}>
                     Path
                   </Label>
                   <TextField
-                    disabled={disabled}
+                    disabled={isExistingPolicy(vectorEmbeddingPolicy)}
                     id={`vector-policy-path-${index + 1}`}
                     required={true}
                     placeholder="/vector1"
@@ -334,11 +351,11 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
                   />
                 </Stack>
                 <Stack>
-                  <Label disabled={disabled} styles={labelStyles}>
+                  <Label disabled={isExistingPolicy(vectorEmbeddingPolicy)} styles={labelStyles}>
                     Data type
                   </Label>
                   <Dropdown
-                    disabled={disabled}
+                    disabled={isExistingPolicy(vectorEmbeddingPolicy)}
                     required={true}
                     styles={dropdownStyles}
                     options={getDataTypeOptions()}
@@ -349,11 +366,11 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
                   ></Dropdown>
                 </Stack>
                 <Stack>
-                  <Label disabled={disabled} styles={labelStyles}>
+                  <Label disabled={isExistingPolicy(vectorEmbeddingPolicy)} styles={labelStyles}>
                     Distance function
                   </Label>
                   <Dropdown
-                    disabled={disabled}
+                    disabled={isExistingPolicy(vectorEmbeddingPolicy)}
                     required={true}
                     styles={dropdownStyles}
                     options={getDistanceFunctionOptions()}
@@ -364,11 +381,11 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
                   ></Dropdown>
                 </Stack>
                 <Stack>
-                  <Label disabled={disabled} styles={labelStyles}>
+                  <Label disabled={isExistingPolicy(vectorEmbeddingPolicy)} styles={labelStyles}>
                     Dimensions
                   </Label>
                   <TextField
-                    disabled={disabled}
+                    disabled={isExistingPolicy(vectorEmbeddingPolicy)}
                     id={`vector-policy-dimension-${index + 1}`}
                     required={true}
                     styles={textFieldStyles}
@@ -381,11 +398,11 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
                 </Stack>
                 {displayIndexes && (
                   <Stack>
-                    <Label disabled={disabled} styles={labelStyles}>
+                    <Label disabled={isExistingPolicy(vectorEmbeddingPolicy)} styles={labelStyles}>
                       Index type
                     </Label>
                     <Dropdown
-                      disabled={disabled}
+                      disabled={isExistingPolicy(vectorEmbeddingPolicy)}
                       required={true}
                       styles={dropdownStyles}
                       options={getIndexTypeOptions()}
@@ -397,7 +414,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
                     <Stack style={{ marginLeft: "10px" }}>
                       <Label
                         disabled={
-                          disabled ||
+                          isExistingPolicy(vectorEmbeddingPolicy) ||
                           (vectorEmbeddingPolicy.indexType !== "quantizedFlat" &&
                             vectorEmbeddingPolicy.indexType !== "diskANN")
                         }
@@ -408,7 +425,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
                       </Label>
                       <TextField
                         disabled={
-                          disabled ||
+                          isExistingPolicy(vectorEmbeddingPolicy) ||
                           (vectorEmbeddingPolicy.indexType !== "quantizedFlat" &&
                             vectorEmbeddingPolicy.indexType !== "diskANN")
                         }
@@ -421,11 +438,18 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
                       />
                     </Stack>
                     <Stack style={{ marginLeft: "10px" }}>
-                      <Label disabled={disabled || vectorEmbeddingPolicy.indexType !== "diskANN"} styles={labelStyles}>
+                      <Label
+                        disabled={
+                          isExistingPolicy(vectorEmbeddingPolicy) || vectorEmbeddingPolicy.indexType !== "diskANN"
+                        }
+                        styles={labelStyles}
+                      >
                         Indexing search list size
                       </Label>
                       <TextField
-                        disabled={disabled || vectorEmbeddingPolicy.indexType !== "diskANN"}
+                        disabled={
+                          isExistingPolicy(vectorEmbeddingPolicy) || vectorEmbeddingPolicy.indexType !== "diskANN"
+                        }
                         id={`vector-policy-indexingSearchListSize-${index + 1}`}
                         styles={textFieldStyles}
                         value={String(vectorEmbeddingPolicy.indexingSearchListSize || "")}
@@ -435,11 +459,18 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
                       />
                     </Stack>
                     <Stack style={{ marginLeft: "10px" }}>
-                      <Label disabled={disabled || vectorEmbeddingPolicy.indexType !== "diskANN"} styles={labelStyles}>
+                      <Label
+                        disabled={
+                          isExistingPolicy(vectorEmbeddingPolicy) || vectorEmbeddingPolicy.indexType !== "diskANN"
+                        }
+                        styles={labelStyles}
+                      >
                         Vector index shard key
                       </Label>
                       <TextField
-                        disabled={disabled || vectorEmbeddingPolicy.indexType !== "diskANN"}
+                        disabled={
+                          isExistingPolicy(vectorEmbeddingPolicy) || vectorEmbeddingPolicy.indexType !== "diskANN"
+                        }
                         id={`vector-policy-vectorIndexShardKey-${index + 1}`}
                         styles={textFieldStyles}
                         value={String(vectorEmbeddingPolicy.vectorIndexShardKey?.[0] ?? "")}
@@ -452,12 +483,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
             </Stack>
           </CollapsibleSectionComponent>
         ))}
-      <DefaultButton
-        disabled={disabled}
-        id={`add-vector-policy`}
-        styles={{ root: { maxWidth: 170, fontSize: 12 } }}
-        onClick={onAdd}
-      >
+      <DefaultButton id={`add-vector-policy`} styles={{ root: { maxWidth: 170, fontSize: 12 } }} onClick={onAdd}>
         Add vector embedding
       </DefaultButton>
     </Stack>
