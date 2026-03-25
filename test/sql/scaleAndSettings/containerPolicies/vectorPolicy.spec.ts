@@ -120,6 +120,53 @@ test.describe("Vector Policy under Scale & Settings", () => {
     await expect(newDimensionsInput).toBeEnabled();
   });
 
+  test("Delete existing vector embedding policy", async () => {
+    // First add a vector embedding policy
+    const addButton = explorer.frame.locator("#add-vector-policy");
+    await addButton.click();
+
+    const pathInput = explorer.frame.locator("#vector-policy-path-1");
+    await pathInput.fill("/toBeDeleted");
+
+    const dimensionsInput = explorer.frame.locator("#vector-policy-dimension-1");
+    await dimensionsInput.fill("256");
+
+    // Save the policy
+    const saveButton = explorer.commandBarButton(CommandBarButton.Save);
+    await saveButton.click();
+    await expect(explorer.getConsoleHeaderStatus()).toContainText(
+      `Successfully updated container ${context.container.id}`,
+      {
+        timeout: 2 * ONE_MINUTE_MS,
+      },
+    );
+
+    // Verify the policy exists
+    await expect(pathInput).toBeVisible();
+
+    // Click the delete (trash) button for the vector embedding
+    const deleteButton = explorer.frame.locator("#delete-Vector-embedding-1");
+    await expect(deleteButton).toBeEnabled();
+    await deleteButton.click();
+
+    // Verify the policy fields are removed
+    await expect(explorer.frame.locator("#vector-policy-path-1")).not.toBeVisible();
+    await expect(explorer.frame.locator("#vector-policy-dimension-1")).not.toBeVisible();
+
+    // Save the deletion
+    await expect(saveButton).toBeEnabled();
+    await saveButton.click();
+    await expect(explorer.getConsoleHeaderStatus()).toContainText(
+      `Successfully updated container ${context.container.id}`,
+      {
+        timeout: 2 * ONE_MINUTE_MS,
+      },
+    );
+
+    // Verify the policy is still gone after save
+    await expect(explorer.frame.locator("#vector-policy-path-1")).not.toBeVisible();
+  });
+
   test("Validation error for empty path", async () => {
     const addButton = explorer.frame.locator("#add-vector-policy");
     await addButton.click();
