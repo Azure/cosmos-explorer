@@ -142,7 +142,7 @@ export function isEqual(prevJobs: CopyJobType[], newJobs: CopyJobType[]): boolea
     if (!newJob) {
       return false;
     }
-    return prevJob.Status === newJob.Status;
+    return prevJob.Status === newJob.Status && prevJob.CompletionPercentage === newJob.CompletionPercentage;
   });
 }
 

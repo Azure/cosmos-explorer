@@ -1,4 +1,5 @@
 import { Checkbox, Text } from "@fluentui/react";
+import { Keys, t } from "Localization";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { userContext } from "../../../../UserContext";
 import { useSidePanel } from "../../../../hooks/useSidePanel";
@@ -35,7 +36,7 @@ export const TableQuerySelectPanel: FunctionComponent<TableQuerySelectPanelProps
   const props: RightPaneFormProps = {
     formError: "",
     isExecuting: false,
-    submitButtonText: "OK",
+    submitButtonText: t(Keys.common.ok),
     onSubmit,
   };
 
@@ -121,11 +122,11 @@ export const TableQuerySelectPanel: FunctionComponent<TableQuerySelectPanelProps
     <RightPaneForm {...props}>
       <div className="panelFormWrapper">
         <div className="panelMainContent">
-          <Text>Select the columns that you want to query.</Text>
+          <Text>{t(Keys.panes.tableQuerySelect.selectColumns)}</Text>
           <div className="column-select-view">
             <Checkbox
               id="availableCheckbox"
-              label="Available Columns"
+              label={t(Keys.panes.tableQuerySelect.availableColumns)}
               checked={isAvailableColumnChecked}
               onChange={availableColumnsCheckboxClick}
             />

@@ -356,10 +356,20 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
             * 
           </span>
           <Text
+            style={
+              {
+                "color": "var(--colorNeutralForeground1)",
+              }
+            }
             variant="small"
           >
             <span
               className="css-113"
+              style={
+                {
+                  "color": "var(--colorNeutralForeground1)",
+                }
+              }
             >
               Confirm by typing the Database id (name)
             </span>
@@ -373,8 +383,26 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
             required={true}
             styles={
               {
+                "field": {
+                  "backgroundColor": "var(--colorNeutralBackground1)",
+                  "color": "var(--colorNeutralForeground1)",
+                },
                 "fieldGroup": {
+                  "backgroundColor": "var(--colorNeutralBackground1)",
+                  "borderColor": "var(--colorNeutralStroke1)",
+                  "selectors": {
+                    ":hover": {
+                      "borderColor": "var(--colorNeutralStroke1Hover)",
+                    },
+                  },
                   "width": 300,
+                },
+                "subComponentStyles": {
+                  "label": {
+                    "root": {
+                      "color": "var(--colorNeutralForeground1)",
+                    },
+                  },
                 },
               }
             }
@@ -699,24 +727,42 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
         >
           <Text
             block={true}
+            style={
+              {
+                "color": "var(--colorNeutralForeground1)",
+              }
+            }
             variant="small"
           >
             <span
               className="css-126"
+              style={
+                {
+                  "color": "var(--colorNeutralForeground1)",
+                }
+              }
             >
               Help us improve Azure Cosmos DB!
             </span>
           </Text>
           <Text
             block={true}
+            style={
+              {
+                "color": "var(--colorNeutralForeground1)",
+              }
+            }
             variant="small"
           >
             <span
               className="css-126"
+              style={
+                {
+                  "color": "var(--colorNeutralForeground1)",
+                }
+              }
             >
-              What is the reason why you are deleting this 
-              Database
-              ?
+              What is the reason why you are deleting this Database?
             </span>
           </Text>
           <StyledTextFieldBase
@@ -727,8 +773,26 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
             rows={3}
             styles={
               {
+                "field": {
+                  "backgroundColor": "var(--colorNeutralBackground1)",
+                  "color": "var(--colorNeutralForeground1)",
+                },
                 "fieldGroup": {
+                  "backgroundColor": "var(--colorNeutralBackground1)",
+                  "borderColor": "var(--colorNeutralStroke1)",
+                  "selectors": {
+                    ":hover": {
+                      "borderColor": "var(--colorNeutralStroke1Hover)",
+                    },
+                  },
                   "width": 300,
+                },
+                "subComponentStyles": {
+                  "label": {
+                    "root": {
+                      "color": "var(--colorNeutralForeground1)",
+                    },
+                  },
                 },
               }
             }

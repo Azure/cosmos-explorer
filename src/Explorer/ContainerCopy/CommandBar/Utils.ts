@@ -14,6 +14,7 @@ import { CopyJobCommandBarBtnType } from "../Types/CopyJobTypes";
 
 function getCopyJobBtns(explorer: Explorer, isDarkMode: boolean): CopyJobCommandBarBtnType[] {
   const monitorCopyJobsRef = MonitorCopyJobsRefState((state) => state.ref);
+  const isPortal = configContext.platform === Platform.Portal;
   const buttons: CopyJobCommandBarBtnType[] = [
     {
       key: "createCopyJob",
@@ -33,8 +34,13 @@ function getCopyJobBtns(explorer: Explorer, isDarkMode: boolean): CopyJobCommand
       key: "themeToggle",
       iconSrc: isDarkMode ? SunIcon : MoonIcon,
       label: isDarkMode ? "Light Theme" : "Dark Theme",
-      ariaLabel: isDarkMode ? "Switch to Light Theme" : "Switch to Dark Theme",
-      onClick: () => useThemeStore.getState().toggleTheme(),
+      ariaLabel: isPortal
+        ? "Dark Mode is managed in Azure Portal Settings"
+        : isDarkMode
+        ? "Switch to Light Theme"
+        : "Switch to Dark Theme",
+      disabled: isPortal,
+      onClick: isPortal ? () => {} : () => useThemeStore.getState().toggleTheme(),
     },
   ];
 

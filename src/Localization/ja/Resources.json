@@ -1,0 +1,968 @@
+{
+  "common": {
+    "ok": "OK",
+    "cancel": "キャンセル",
+    "close": "閉じる",
+    "save": "保存",
+    "delete": "削除",
+    "update": "更新",
+    "discard": "破棄",
+    "execute": "実行",
+    "loading": "読み込み中",
+    "loadingEllipsis": "読み込み中...",
+    "next": "次へ",
+    "previous": "前へ",
+    "yes": "はい",
+    "no": "いいえ",
+    "result": "結果",
+    "learnMore": "詳細情報",
+    "getStarted": "開始する",
+    "retry": "再試行",
+    "apply": "適用",
+    "refresh": "最新の情報に更新",
+    "copy": "コピー",
+    "create": "作成",
+    "confirm": "確認",
+    "open": "開く",
+    "rename": "名前の変更",
+    "download": "ダウンロード",
+    "upload": "アップロード",
+    "connect": "接続",
+    "remove": "削除",
+    "load": "読み込み",
+    "publish": "公開",
+    "browse": "参照",
+    "increaseValueBy1": "値を 1 増加",
+    "decreaseValueBy1": "値を 1 減少"
+  },
+  "splashScreen": {
+    "title": {
+      "default": "Azure Cosmos DB へようこそ",
+      "postgres": "Azure Cosmos DB for PostgreSQL へようこそ",
+      "vcoreMongo": "Azure DocumentDB (MongoDB 互換) へようこそ"
+    },
+    "subtitle": {
+      "default": "あらゆるスケールに対応するグローバル分散型のマルチモデル データベース サーバー",
+      "getStarted": "サンプル データセット、ドキュメント、追加ツールを使用して開始してください。"
+    },
+    "quickStart": {
+      "title": "クイック スタートの起動",
+      "description": "クイック スタート チュートリアルを起動してサンプル データの使用を開始します"
+    },
+    "newCollection": {
+      "title": "新しい {{collectionName}}",
+      "description": "ストレージとスループット用の新しいコンテナーを作成します"
+    },
+    "samplesGallery": {
+      "title": "Azure Cosmos DB サンプル ギャラリー",
+      "description": "スケーラブルでインテリジェントなアプリ パターンを紹介するサンプルをご確認ください。今すぐ試して、Cosmos DB を使用して概念からコードにどれほど迅速に移行できるか確認してください"
+    },
+    "connectCard": {
+      "title": "接続",
+      "description": "独自に選択したツールの使用を優先しますか?接続に必要な接続文字列を検索します",
+      "pgAdmin": {
+        "title": "pgAdmin を使用して接続",
+        "description": "pgAdmin を優先しますか?ここで接続文字列を検索します"
+      },
+      "vsCode": {
+        "title": "VS Code で接続する",
+        "description": "Visual Studio Code で MongoDB および DocumentDB クラスターのクエリの実行と管理を行います"
+      }
+    },
+    "shell": {
+      "postgres": {
+        "title": "PostgreSQL シェル",
+        "description": "PostgreSQL のシェル インターフェイスを使用して、テーブルを作成し、データを操作します"
+      },
+      "vcoreMongo": {
+        "title": "Mongo シェル",
+        "description": "MongoDB のシェル インターフェイスを使用して、コレクションを作成し、データを操作します"
+      }
+    },
+    "teachingBubble": {
+      "newToPostgres": {
+        "headline": "Cosmos DB PGSQL を使用するのは初めてですか?",
+        "body": "ようこそ! Cosmos DB PGSQL を使用するのが初めてで、作業の開始に関するヘルプが必要な場合は、ここでサンプル データやクエリを見つけることができます。"
+      },
+      "resetPassword": {
+        "headline": "パスワードの作成",
+        "body": "パスワードをまだ変更していない場合は、今すぐ変更してください。"
+      },
+      "coachMark": {
+        "headline": "サンプル {{collectionName}} から開始する",
+        "body": "サンプル データを含むサンプル コンテナーを作成するように案内され、その後、データ エクスプローラーのツアーが表示されます。このツアーの開始を取り消して、自分で探索することもできます"
+      }
+    },
+    "sections": {
+      "recents": "最近使用したもの",
+      "clearRecents": "最近使用したものをクリアする",
+      "top3": "知っておくべき上位 3 つのこと",
+      "learningResources": "学習リソース",
+      "nextSteps": "次の手順",
+      "tipsAndLearnMore": "ヒントと詳細の確認",
+      "notebook": "ノートブック",
+      "needHelp": "ヘルプが必要ですか?"
+    },
+    "top3Items": {
+      "sql": {
+        "advancedModeling": {
+          "title": "高度なモデリング パターン",
+          "description": "データベースを最適化するための高度な戦略について説明します。"
+        },
+        "partitioning": {
+          "title": "パーティション分割のベスト プラクティス",
+          "description": "データ モデルとパーティション分割戦略の適用について説明します。"
+        },
+        "resourcePlanning": {
+          "title": "リソース要件の計画",
+          "description": "さまざまな構成の選択肢について理解を深めます。"
+        }
+      },
+      "mongo": {
+        "whatIsMongo": {
+          "title": "MongoDB API とは",
+          "description": "Azure Cosmos DB for MongoDB とその機能について理解します。"
+        },
+        "features": {
+          "title": "機能と構文",
+          "description": "利点と機能を確認します"
+        },
+        "migrate": {
+          "title": "データの移行",
+          "description": "データを移動するための移行前の手順"
+        }
+      },
+      "cassandra": {
+        "buildJavaApp": {
+          "title": "Java アプリのビルド",
+          "description": "SDK を使用して Java アプリを作成します。"
+        },
+        "partitioning": {
+          "title": "パーティション分割のベスト プラクティス",
+          "description": "パーティション分割のしくみについて説明します。"
+        },
+        "requestUnits": {
+          "title": "要求ユニット (RU)",
+          "description": "RU 料金について理解します。"
+        }
+      },
+      "gremlin": {
+        "dataModeling": {
+          "title": "データ モデリング",
+          "description": "グラフ データ モデリングの推奨事項"
+        },
+        "partitioning": {
+          "title": "パーティション分割のベスト プラクティス",
+          "description": "パーティション分割のしくみについて確認します"
+        },
+        "queryData": {
+          "title": "データのクエリを実行",
+          "description": "Gremlin を使用してデータのクエリを実行しています"
+        }
+      },
+      "tables": {
+        "whatIsTable": {
+          "title": "Table API とは",
+          "description": "Azure Cosmos DB for Table とその機能について理解します"
+        },
+        "migrate": {
+          "title": "データの移行",
+          "description": "データを移行する方法について確認します"
+        },
+        "faq": {
+          "title": "Azure Cosmos DB for Table に関する FAQ",
+          "description": "Azure Cosmos DB for Table に関する一般的な質問"
+        }
+      }
+    },
+    "learningResources": {
+      "shortcuts": {
+        "title": "Data Explorer のキーボード ショートカット",
+        "description": "データ エクスプローラーを操作するためのキーボード ショートカットについて説明します。"
+      },
+      "liveTv": {
+        "title": "基礎を確認する",
+        "description": "Azure Cosmos DB のライブ テレビ ショーの紹介や使い方に関するビデオをご覧ください。"
+      },
+      "sql": {
+        "sdk": {
+          "title": "SDK を使用して開始",
+          "description": "Azure Cosmos DB SDK について説明します。"
+        },
+        "migrate": {
+          "title": "データの移行",
+          "description": "Azure サービスとオープンソース ソリューションを使用してデータを移行します。"
+        }
+      },
+      "mongo": {
+        "nodejs": {
+          "title": "Node.js を使用してアプリをビルド",
+          "description": "Node.js アプリを作成します。"
+        },
+        "gettingStarted": {
+          "title": "作業の開始ガイド",
+          "description": "開始するための基本情報について説明します。"
+        }
+      },
+      "cassandra": {
+        "createContainer": {
+          "title": "コンテナーの作成",
+          "description": "コンテナーの作成オプションについて理解を深めます。"
+        },
+        "throughput": {
+          "title": "スループットのプロビジョニング",
+          "description": "スループットを構成する方法について説明します。"
+        }
+      },
+      "gremlin": {
+        "getStarted": {
+          "title": "開始 ",
+          "description": "Gremlin コンソールを使用して作成、クエリの実行、走査を行います"
+        },
+        "importData": {
+          "title": "グラフ データのインポート",
+          "description": "BulkExecutor を使用した一括インジェスト データについて確認します"
+        }
+      },
+      "tables": {
+        "dotnet": {
+          "title": ".NET アプリのビルド",
+          "description": ".NET アプリから Azure Cosmos DB for Table にアクセスする方法。"
+        },
+        "java": {
+          "title": "Java アプリのビルド",
+          "description": "Java SDK を使用して Azure Cosmos DB for Table アプリを作成します "
+        }
+      }
+    },
+    "nextStepItems": {
+      "postgres": {
+        "dataModeling": "データ モデリング",
+        "distributionColumn": "ディストリビューション列を選択する方法",
+        "buildApps": "Python/Java/Django を使用してアプリをビルド"
+      },
+      "vcoreMongo": {
+        "migrateData": "データの移行",
+        "vectorSearch": "ベクトル検索を使用して AI アプリをビルド",
+        "buildApps": "Nodejs を使用してアプリをビルド"
+      }
+    },
+    "learnMoreItems": {
+      "postgres": {
+        "performanceTuning": "パフォーマンス チューニング",
+        "diagnosticQueries": "有用な診断クエリ",
+        "sqlReference": "分散 SQL リファレンス"
+      },
+      "vcoreMongo": {
+        "vectorSearch": "ベクトル検索",
+        "textIndexing": "テキストのインデックス作成",
+        "troubleshoot": "一般的な問題のトラブルシューティング"
+      }
+    },
+    "fabric": {
+      "buildTitle": "データベースのビルド",
+      "useTitle": "データベースの使用",
+      "newContainer": {
+        "title": "新しいコンテナー",
+        "description": "データを格納する先のコンテナーを作成します"
+      },
+      "sampleData": {
+        "title": "サンプル データ",
+        "description": "データベースにサンプル データを読み込みます"
+      },
+      "sampleVectorData": {
+        "title": "サンプル ベクトル データ",
+        "description": "text-embedding-ada-002 を使用してサンプル ベクトル データを読み込みます"
+      },
+      "appDevelopment": {
+        "title": "アプリ開発",
+        "description": "SDK を使用してアプリをビルドするには、ここから開始してください"
+      },
+      "sampleGallery": {
+        "title": "サンプル ギャラリー",
+        "description": "実際のエンド ツー エンドのサンプルを取得します"
+      }
+    },
+    "sampleDataDialog": {
+      "title": "サンプル データ",
+      "startButton": "開始",
+      "createPrompt": "コンテナー \"{{containerName}}\" を作成し、そこにサンプル データをインポートしてください。これには数分かかる場合があります。",
+      "creatingContainer": "コンテナー \"{{containerName}}\" を作成しています...",
+      "importingData": "データを \"{{containerName}}\" にインポートしています...",
+      "success": "サンプル データを含む \"{{containerName}}\" が正常に作成されました。",
+      "errorContainerExists": "データベース \"{{databaseName}}\" のコンテナー \"{{containerName}}\" は既に存在します。削除してから、もう一度お試しください。",
+      "errorCreateContainer": "コンテナーを作成できませんでした: {{error}}",
+      "errorImportData": "データをインポートできませんでした: {{error}}"
+    }
+  },
+  "contextMenu": {
+    "newContainer": "新しい {{containerName}}",
+    "restoreContainer": "{{containerName}} の復元",
+    "deleteDatabase": "{{databaseName}} の削除",
+    "deleteContainer": "{{containerName}} の削除",
+    "newSqlQuery": "新しい SQL クエリ",
+    "newQuery": "新しいクエリ",
+    "openMongoShell": "Mongo シェルを開く",
+    "newShell": "新しいシェル",
+    "openCassandraShell": "Cassandra シェルを開く",
+    "newStoredProcedure": "新しいストアド プロシージャ",
+    "newUdf": "新しい UDF",
+    "newTrigger": "新しいトリガー",
+    "deleteStoredProcedure": "ストアド プロシージャの削除",
+    "deleteTrigger": "トリガーの削除",
+    "deleteUdf": "ユーザー定義関数の削除"
+  },
+  "tabs": {
+    "documents": {
+      "newItem": "新しい項目",
+      "newDocument": "新規ドキュメント",
+      "uploadItem": "項目のアップロード",
+      "applyFilter": "フィルターの適用",
+      "unsavedChanges": "未保存の変更",
+      "unsavedChangesMessage": "保存されていない変更はすべて失われます。続行しますか?",
+      "createDocumentFailed": "ドキュメントの作成に失敗しました",
+      "updateDocumentFailed": "ドキュメントの更新に失敗しました",
+      "documentDeleted": "ドキュメントが正常に削除されました。",
+      "deleteDocumentDialogTitle": "ドキュメントの削除",
+      "deleteDocumentsDialogTitle": "ドキュメントの削除",
+      "throttlingError": "レート制限エラーにより、一部のドキュメントの削除に失敗しました。後でもう一度お試しください。今後これを防ぐには、コンテナーまたはデータベースのスループットを増やすことを検討してください。",
+      "deleteFailed": "ドキュメントの削除に失敗しました ({{error}})",
+      "missingShardProperty": "ドキュメントにシャード プロパティがありません: {{partitionKeyProperty}}",
+      "refreshGridFailed": "ドキュメント グリッドの更新に失敗しました",
+      "confirmDelete": "{{documentName}} を削除しますか?",
+      "confirmDeleteTitle": "削除の確認",
+      "selectedItems": "選択した {{count}} 個の項目",
+      "selectedItem": "選択した項目",
+      "selectedDocuments": "選択した {{count}} 件のドキュメント",
+      "selectedDocument": "選択したドキュメント",
+      "deleteDocumentFailedLog": "状態コード {{statusCode}} で、ドキュメント {{documentId}} を削除できませんでした",
+      "deleteSuccessLog": "{{count}} 件のドキュメントが正常に削除されました",
+      "deleteThrottledLog": "\"要求が大きすぎる\" (429) エラーにより {{count}} 件のドキュメントを削除できませんでした。再試行しています...",
+      "missingShardKeyLog": "新しいドキュメントを保存できませんでした: ドキュメントのシャード キーが定義されていません",
+      "filterTooltip": "クエリ述語を入力するか、一覧から 1 つ選択してください。",
+      "loadMore": "さらに読み込む",
+      "documentEditor": "ドキュメント エディター",
+      "savedFilters": "保存済みのフィルター",
+      "defaultFilters": "既定のフィルター",
+      "abort": "中止",
+      "deletingDocuments": "{{count}} 件のドキュメントを削除しています",
+      "deletedDocumentsSuccess": "{{count}} 件のドキュメントが正常に削除されました。",
+      "deleteAborted": "ドキュメントの削除が中止されました。",
+      "failedToDeleteDocuments": "{{count}} 件のドキュメントを削除できませんでした。",
+      "requestTooLargeBase": "\"要求が大きすぎる\" 例外 (429) により、一部の削除要求が失敗しました",
+      "retriedSuccessfully": "正常に再試行されました。",
+      "retryingNow": "再試行しています。",
+      "increaseThroughputTip": "今後これを防ぐには、コンテナーまたはデータベースのスループットを増やすことを検討してください。",
+      "numberOfSelectedDocuments": "選択したドキュメントの数: {{count}}",
+      "mongoFilterPlaceholder": "クエリ述語 (例: {\"id\":\"foo\"}) を入力するか、ドロップダウン リストから 1 つ選択するか、すべてのドキュメントをクエリする場合は空のままにします。",
+      "sqlFilterPlaceholder": "クエリ述語 (WHERE c.id=\"1\" など) を入力するか、ドロップダウン リストからクエリ述語を選択するか、空のままにしてすべてのドキュメントのクエリを実行します。",
+      "error": "エラー",
+      "warning": "警告"
+    },
+    "query": {
+      "executeQuery": "クエリの実行",
+      "executeSelection": "選択範囲の実行",
+      "saveQuery": "クエリの保存",
+      "downloadQuery": "クエリのダウンロード",
+      "cancelQuery": "クエリのキャンセル",
+      "openSavedQueries": "保存したクエリを開く",
+      "vertical": "縦",
+      "horizontal": "水平",
+      "view": "表示",
+      "editingQuery": "クエリを編集しています"
+    },
+    "storedProcedure": {
+      "id": "ストアド プロシージャ ID",
+      "idPlaceholder": "新しいストアド プロシージャ ID を入力してください",
+      "idAriaLabel": "ストアド プロシージャ ID",
+      "body": "ストアド プロシージャ本文",
+      "bodyAriaLabel": "ストアド プロシージャ本文",
+      "successfulExecution": "ストアド プロシージャの正常な実行",
+      "resultAriaLabel": "ストアド プロシージャの実行結果",
+      "logsAriaLabel": "ストアド プロシージャの実行ログ",
+      "errors": "エラー:",
+      "errorDetailsAriaLabel": "エラーの詳細リンク",
+      "moreDetails": "その他の詳細",
+      "consoleLogTab": "console.log"
+    },
+    "trigger": {
+      "id": "トリガー ID",
+      "idPlaceholder": "新しいトリガー ID を入力してください",
+      "type": "トリガーの種類",
+      "operation": "トリガーの操作",
+      "body": "トリガー本文",
+      "bodyAriaLabel": "トリガー本文",
+      "pre": "プレ",
+      "post": "投稿",
+      "all": "すべて",
+      "operationCreate": "作成",
+      "operationDelete": "削除",
+      "operationReplace": "置換"
+    },
+    "udf": {
+      "id": "ユーザー定義関数 ID",
+      "idPlaceholder": "新しいユーザー定義関数 ID を入力してください",
+      "body": "ユーザー定義関数本文",
+      "bodyAriaLabel": "ユーザー定義関数本文"
+    },
+    "conflicts": {
+      "unsavedChanges": "未保存の変更",
+      "changesWillBeLost": "変更が失われます。続行しますか?",
+      "resolveConflictFailed": "競合の解決に失敗しました",
+      "deleteConflictFailed": "削除の競合が失敗しました",
+      "refreshGridFailed": "ドキュメント グリッドの更新に失敗しました"
+    },
+    "mongoShell": {
+      "title": "Mongo シェル"
+    }
+  },
+  "panes": {
+    "deleteDatabase": {
+      "panelTitle": "{{databaseName}} の削除",
+      "warningMessage": "警告!実行しようとしている操作を元に戻すことはできません。続行すると、このリソースとそのすべての子リソースが完全に削除されます。",
+      "confirmPrompt": "{{databaseName}} ID (名前) を入力して確認してください",
+      "inputMismatch": "入力 {{databaseName}} 名 \"{{input}}\" が、選択した {{databaseName}} \"{{selectedId}}\" と一致しません",
+      "feedbackTitle": "Azure Cosmos DB の改善にご協力ください。",
+      "feedbackReason": "この {{databaseName}} を削除する理由を教えてください。"
+    },
+    "deleteCollection": {
+      "panelTitle": "{{collectionName}} の削除",
+      "confirmPrompt": "{{collectionName}} ID を入力して確認してください",
+      "inputMismatch": "入力 ID {{input}} が選択した {{selectedId}} と一致しません",
+      "feedbackTitle": "Azure Cosmos DB の改善にご協力ください。",
+      "feedbackReason": "この {{collectionName}} を削除する理由を教えてください。"
+    },
+    "addDatabase": {
+      "databaseLabel": "データベース {{suffix}}",
+      "databaseIdLabel": "データベース ID",
+      "keyspaceIdLabel": "キースペース ID",
+      "databaseIdPlaceholder": "新しい {{databaseLabel}} ID を入力してください",
+      "databaseTooltip": "{{databaseLabel}} は 1 つ以上の {{collectionsLabel}} の論理コンテナーです",
+      "shareThroughput": "{{collectionsLabel}} 全体でスループットを共有する",
+      "shareThroughputTooltip": "{{databaseLabel}} レベルでプロビジョニングされたスループットは、{{collectionsLabel}} 内のすべての {{databaseLabel}} で共有されます。",
+      "greaterThanError": "オートパイロット スループットの {{minValue}} より大きい値を入力してください",
+      "acknowledgeSpendError": "毎月の推定 {{period}} 支出に同意してください。",
+      "acknowledgeSpendErrorMonthly": "毎月の推定支出に同意してください。",
+      "acknowledgeSpendErrorDaily": "毎日の推定支出に同意してください。",
+      "provisionSharedThroughputTitle": "共有スループットのプロビジョニング",
+      "provisionThroughputLabel": "スループットのプロビジョニング"
+    },
+    "addCollection": {
+      "createNew": "新規作成",
+      "useExisting": "既存のものを使用",
+      "databaseTooltip": "データベースは名前空間に類似しています。{{collectionName}} のセットの管理単位です。",
+      "shareThroughput": "{{collectionName}} 全体でスループットを共有する",
+      "shareThroughputTooltip": "データベース レベルで構成されたスループットは、データベース内のすべての {{collectionName}} で共有されます。",
+      "collectionIdLabel": "{{collectionName}} ID",
+      "collectionIdTooltip": "REST とすべての SDK を介した ID ベースのルーティングに使用される {{collectionName}} の一意識別子。",
+      "collectionIdPlaceholder": "例: {{collectionName}}1",
+      "collectionIdAriaLabel": "{{collectionName}} ID、例 {{collectionName}}1",
+      "existingDatabaseAriaLabel": "既存の {{databaseName}} ID を選択してください",
+      "existingDatabasePlaceholder": "既存の {{databaseName}} ID を選択してください",
+      "indexing": "インデックス作成",
+      "turnOnIndexing": "インデックス作成を有効にする",
+      "automatic": "自動",
+      "turnOffIndexing": "インデックス作成を無効にする",
+      "off": "オフ",
+      "sharding": "シャーディング",
+      "shardingTooltip": "シャード化されたコレクションは、無制限のスケーラビリティを実現するために、データを多数のレプリカ セット (シャード) に分割します。シャード コレクションでは、データを均等に分散するためにシャード キー (フィールド) を選択する必要があります。",
+      "unsharded": "シャードなし",
+      "unshardedLabel": "シャードなし (20 GB の制限)",
+      "sharded": "シャード化",
+      "addPartitionKey": "階層パーティション キーの追加",
+      "hierarchicalPartitionKeyInfo": "この機能を使用すると、データを最大 3 レベルのキーでパーティション分割して、データの分散を向上できます。.NET V3、Java V4 SDK、またはプレビュー JavaScript V3 SDK が必要です。",
+      "provisionDedicatedThroughput": "この {{collectionName}} の専用スループットをプロビジョニングする",
+      "provisionDedicatedThroughputTooltip": "必要に応じて、スループットがプロビジョニングされているデータベース内の {{collectionName}} に対して専用のスループットをプロビジョニングできます。この専用スループット量は、データベース内の他の {{collectionNamePlural}} と共有されず、データベース用にプロビジョニングしたスループットにはカウントされません。このスループットはデータベース レベルでプロビジョニングしたスループットに加えて課金されます。",
+      "uniqueKeysPlaceholderMongo": "コンマ区切りのパス (例: firstName,address.zipCode)",
+      "uniqueKeysPlaceholderSql": "コンマ区切りのパス (例: /firstName,/address/zipCode)",
+      "addUniqueKey": "一意キーの追加",
+      "enableAnalyticalStore": "分析ストアを有効にする",
+      "disableAnalyticalStore": "分析ストアを無効にする",
+      "on": "オン",
+      "analyticalStoreSynapseLinkRequired": "Azure Synapse リンクは、{{collectionName}} 分析ストアを作成するために必要です。この Cosmos DB アカウントで Synapse Link を有効にします。",
+      "enable": "有効にする",
+      "containerVectorPolicy": "コンテナー ベクトル ポリシー",
+      "containerFullTextSearchPolicy": "コンテナーのフルテキスト検索ポリシー",
+      "advanced": "詳細",
+      "mongoIndexingTooltip": "_id フィールドは、既定でインデックスが作成されます。すべてのフィールドにワイルドカード インデックスを作成すると、クエリが最適化され、開発に推奨されます。",
+      "createWildcardIndex": "すべてのフィールドにワイルドカード インデックスを作成する",
+      "legacySdkCheckbox": "アプリケーションで以前の Cosmos .NET または Java SDK バージョン (.NET V1 または Java V2) を使用しています",
+      "legacySdkInfo": "古い SDK との互換性を確保するため、作成されるコンテナーは最大 101 バイトのサイズのパーティション キー値のみをサポートするレガシ パーティション スキーマを使用します。これを有効にすると、階層パーティション キーは使用できません。",
+      "indexingOnInfo": "ドキュメント内のすべてのプロパティは、柔軟で効率的なクエリのために既定でインデックスが作成されます。",
+      "indexingOffInfo": "インデックス作成は無効になります。クエリを実行する必要がない、またはキー値操作のみを行う場合に推奨されます。",
+      "indexingOffWarning": "インデックス作成をオフにしてこのコンテナーを作成すると、インデックス作成ポリシーの変更はできません。インデックス作成ポリシーの変更は、インデックス作成ポリシーを持つコンテナーでのみ許可されます。",
+      "acknowledgeSpendErrorMonthly": "毎月の推定支出に同意してください。",
+      "acknowledgeSpendErrorDaily": "毎日の推定支出に同意してください。",
+      "unshardedMaxRuError": "シャーディングされていないコレクションでは、最大 10,000 RU がサポートされます",
+      "acknowledgeShareThroughputError": "この専用スループットの推定コストを確認してください。",
+      "vectorPolicyError": "コンテナー ベクトル ポリシーのエラーを修正してください",
+      "fullTextSearchPolicyError": "コンテナーのフルテキスト検索ポリシーのエラーを修正してください",
+      "addingSampleDataSet": "サンプル データ セットの追加",
+      "databaseFieldLabelName": "データベース名",
+      "databaseFieldLabelId": "データベース ID",
+      "newDatabaseIdPlaceholder": "新しいデータベース ID を入力してください",
+      "newDatabaseIdAriaLabel": "新しいデータベース ID、新しいデータベース ID を入力してください",
+      "createNewDatabaseAriaLabel": "新しいデータベースの作成",
+      "useExistingDatabaseAriaLabel": "既存のデータベースを使用する",
+      "chooseExistingDatabase": "既存のデータベースを選択する",
+      "teachingBubble": {
+        "step1Headline": "サンプル データベースの作成",
+        "step1Body": "データベースはコンテナーの親にあたります。新しいデータベースを作成するか、既存のものを使用できます。このチュートリアルでは、SampleDB という名前の新しいデータベースを作成します。",
+        "step1LearnMore": "リソースに関する詳細情報。",
+        "step2Headline": "スループットを設定しています",
+        "step2Body": "Cosmos DB では、データベース間でスループットを共有することを推奨しています。自動スケーリングにより、設定した最大 RU/秒 (要求ユニット) に基づいて、スループットを柔軟に調整します。",
+        "step2LearnMore": "RU/秒の詳細を確認します。",
+        "step3Headline": "コンテナーの名前を指定しています",
+        "step3Body": "コンテナーに名前を付けてください",
+        "step4Headline": "パーティション キーの設定",
+        "step4Body": "最後の手順です。コレクションのパーティション キーを定義する必要があります。この例では /address が選択されました。適切なパーティション キーは、値の範囲が広いものが望ましいです",
+        "step4CreateContainer": "コンテナーの作成",
+        "step5Headline": "サンプル コンテナーを作成しています",
+        "step5Body": "サンプル コンテナーを作成中で、サンプル データを追加しています。約 1 分かかります。",
+        "step5BodyFollowUp": "サンプル コンテナーが作成されたら、サンプル データセットを確認し、次の手順に進んでください",
+        "stepOfTotal": "手順 {{current}}/{{total}}"
+      }
+    },
+    "addCollectionUtility": {
+      "shardKeyTooltip": "シャード キー (フィールド) は、無制限のスケーラビリティを実現するために、多数のレプリカ セット (シャード) にデータを分割するために使用されます。データを均等に分散するフィールドを選択することが重要です。",
+      "partitionKeyTooltip": "{{partitionKeyName}} は、スケーラビリティのためにパーティション間でデータを自動的に分散するために使用されます。さまざまな値を持ち、要求ボリュームを均等に分散する JSON ドキュメントのプロパティを選択します。",
+      "partitionKeyTooltipSqlSuffix": " 読み取り負荷の高い小規模なワークロードや、任意のサイズの書き込み負荷の高いワークロードの場合、ID が適していることがよくあります。",
+      "shardKeyLabel": "シャード キー",
+      "partitionKeyLabel": "パーティション キー",
+      "shardKeyPlaceholder": "例: categoryId",
+      "partitionKeyPlaceholderDefault": "例: /address",
+      "partitionKeyPlaceholderFirst": "必須: 最初のパーティション キー (例: /TenantId)",
+      "partitionKeyPlaceholderSecond": "2 番目のパーティション キー (例: /UserId)",
+      "partitionKeyPlaceholderThird": "3 番目のパーティション キー 例: /SessionId",
+      "partitionKeyPlaceholderGraph": "例: /address/zipCode",
+      "uniqueKeysTooltip": "一意キーにより、開発者はデータベースにデータ整合性の層を追加できます。コンテナーの作成時に一意キー ポリシーを作成することで、パーティション キーごとに 1 つ以上の値の一意性を確保します。",
+      "uniqueKeysLabel": "一意キー",
+      "analyticalStoreLabel": "分析ストア",
+      "analyticalStoreTooltip": "分析ストア機能を有効にすると、トランザクション ワークロードのパフォーマンスに影響を与えずに、操作データに対してほぼリアルタイムの分析を実行できます。",
+      "analyticalStoreDescription": "分析ストア機能を有効にすると、トランザクション ワークロードのパフォーマンスに影響を与えずに、操作データに対してほぼリアルタイムの分析を実行できます。",
+      "vectorPolicyTooltip": "ベクトルを含むデータ内のプロパティを記述して、類似性クエリで使用できるようにします。"
+    },
+    "settings": {
+      "pageOptions": "ページ オプション",
+      "pageOptionsDescription": "[カスタム] を選択して表示するクエリ結果の固定数を指定するか、[無制限] を選択してページあたりのクエリ結果の数を無制限に表示します。",
+      "queryResultsPerPage": "ページあたりのクエリ結果",
+      "queryResultsPerPageTooltip": "ページごとに表示するクエリ結果の数を入力します。",
+      "customQueryItemsPerPage": "ページあたりのカスタム クエリ アイテム数",
+      "custom": "カスタム",
+      "unlimited": "無制限",
+      "entraIdRbac": "Entra ID RBAC を有効にする",
+      "entraIdRbacDescription": "[自動] を選択すると Entra ID RBAC が自動的に有効になります。強制的に有効または無効にする場合は True/False を選択します。",
+      "true": "True",
+      "false": "False",
+      "regionSelection": "リージョンの選択",
+      "regionSelectionDescription": "Cosmos Client がアカウントへのアクセスに使用するリージョンを変更します。",
+      "selectRegion": "リージョンの選択",
+      "selectRegionTooltip": "クライアント操作の実行に使用するアカウント エンドポイントを変更します。",
+      "globalDefault": "グローバル (既定)",
+      "readWrite": "(読み取り/書き込み)",
+      "read": "(読み取り)",
+      "queryTimeout": "クエリ タイムアウト",
+      "queryTimeoutDescription": "クエリが指定された制限時間に達すると、自動キャンセルが有効になっていない限り、クエリをキャンセルするオプションを含むポップアップが表示されます。",
+      "enableQueryTimeout": "クエリタイムアウトを有効にする",
+      "queryTimeoutMs": "クエリ タイムアウト (ms)",
+      "automaticallyCancelQuery": "タイムアウト後にクエリを自動的にキャンセルする",
+      "ruLimit": "RU 制限",
+      "ruLimitDescription": "クエリが構成された RU 制限を超えた場合、クエリは中止されます。",
+      "enableRuLimit": "RU 制限を有効にする",
+      "ruLimitLabel": "RU 制限 (RU)",
+      "defaultQueryResults": "既定のクエリ結果ビュー",
+      "defaultQueryResultsDescription": "クエリ結果を表示するときに使用する既定のビューを選択します。",
+      "retrySettings": "再試行の設定",
+      "retrySettingsDescription": "CosmosDB クエリ中に調整された要求に関連付けられている再試行ポリシー。",
+      "maxRetryAttempts": "最大再試行回数",
+      "maxRetryAttemptsTooltip": "要求に対して実行される再試行の最大数。既定値 9。",
+      "fixedRetryInterval": "固定再試行間隔 (ミリ秒)",
+      "fixedRetryIntervalTooltip": "応答の一部として返された retryAfter を無視して、各再試行の間に待機する固定の間隔 (ミリ秒単位)。既定値は 0 ミリ秒です。",
+      "maxWaitTime": "最大待機時間 (秒)",
+      "maxWaitTimeTooltip": "再試行が行われている間に要求を待機する最大待機時間 (秒)。既定値は 30 秒です。",
+      "enableContainerPagination": "コンテナーのページネーションを有効にする",
+      "enableContainerPaginationDescription": "一度に 50 個のコンテナーを読み込みます。現時点では、コンテナーは英数字順にプルされません。",
+      "enableCrossPartitionQuery": "クロスパーティション クエリを有効にする",
+      "enableCrossPartitionQueryDescription": "クエリ実行中に複数の要求を送信します。クエリのスコープが 1 つのパーティション キー値でない場合は、複数の要求が必要です。",
+      "maxDegreeOfParallelism": "並列処理の最大次数",
+      "maxDegreeOfParallelismDescription": "並列クエリの実行中にクライアント側で実行される同時実行操作の数を取得または設定します。正のプロパティ値は、同時操作の数を設定値に制限します。0 未満に設定すると、システムが同時に実行する操作の数を自動的に決定します。",
+      "maxDegreeOfParallelismQuery": "並列処理の最大限度までクエリを実行します。",
+      "priorityLevel": "優先度レベル",
+      "priorityLevelDescription": "優先度ベースの実行を使用する場合のデータ エクスプローラーからのデータ プレーン要求の優先度レベルを設定します。[なし] が選択されている場合、データ エクスプローラーは優先度レベルを指定せず、サーバー側の既定の優先度レベルが使用されます。",
+      "displayGremlinQueryResults": "Gremlin クエリの結果を次のように表示します:",
+      "displayGremlinQueryResultsDescription": "[グラフ] を選択すると、クエリ結果がグラフまたは JSON として自動的に視覚化され、結果が JSON として表示されます。",
+      "graph": "グラフ",
+      "json": "JSON",
+      "graphAutoVisualization": "グラフの自動視覚化",
+      "enableSampleDatabase": "サンプル データベースを有効にする",
+      "enableSampleDatabaseDescription": "これは、NoSQL クエリの探索に使用できる合成製品データを含むサンプルのデータベースとコレクションです。データ エクスプローラー UI に別のデータベースとして表示され、Microsoft によって作成、管理され、無料で利用できます。",
+      "enableSampleDbAriaLabel": "クエリ探索用にサンプル db を有効にします",
+      "guidRepresentation": "GUID 表現",
+      "guidRepresentationDescription": "MongoDB の GuidRepresentation は、BSON ドキュメントに格納されている場合にグローバル一意識別子 (GUID) をシリアル化および逆シリアル化する方法を示します。これは、すべてのドキュメント操作に適用されます。",
+      "advancedSettings": "詳細設定",
+      "ignorePartitionKey": "ドキュメントの更新時にパーティション キーを無視する",
+      "ignorePartitionKeyTooltip": "オンにした場合、パーティション キーの値は、更新操作中にドキュメントを検索するために使用されません。これは、異常なパーティション キーが原因でドキュメントの更新が失敗する場合にのみ使用します。",
+      "clearHistory": "履歴のクリア",
+      "clearHistoryConfirm": "続行しますか?",
+      "clearHistoryDescription": "この操作により、このブラウザーでこのアカウントのすべてのカスタマイズがクリアされます。次のものが含まれます:",
+      "clearHistoryTabLayout": "スプリッターの位置を含め、カスタマイズしたタブ レイアウトをリセットする",
+      "clearHistoryTableColumns": "カスタム列を含むテーブル列の基本設定を消去する",
+      "clearHistoryFilters": "フィルター履歴をクリアする",
+      "clearHistoryRegion": "リージョンの選択をグローバルにリセットする",
+      "increaseValueBy1000": "値を 1000 増やす",
+      "decreaseValueBy1000": "値を 1000 減らす",
+      "none": "なし",
+      "low": "低",
+      "high": "高",
+      "automatic": "自動",
+      "enhancedQueryControl": "拡張クエリ コントロール",
+      "enableQueryControl": "クエリ コントロールを有効にする",
+      "explorerVersion": "エクスプローラー バージョン",
+      "accountId": "アカウント ID",
+      "sessionId": "セッション ID",
+      "popupsDisabledError": "ブラウザーでポップアップが無効になっているため、このアカウントの承認を確立できませんでした。\nこのサイトのポップアップを有効にし、[Entra ID のログイン] ボタンをクリックしてください",
+      "failedToAcquireTokenError": "承認トークンを自動的に取得できませんでした。[Entra ID のログイン] ボタンをクリックして、Entra ID RBAC 操作を有効にしてください"
+    },
+    "saveQuery": {
+      "panelTitle": "クエリの保存",
+      "setupCostMessage": "コンプライアンス上の理由から、クエリは Azure Cosmos アカウントのコンテナーに保存され、“{{databaseName}}”という名の別のデータベースに保存されます。続行するには、アカウントにコンテナーを作成する必要があります。推定追加コストは 1 日 0.77 ドルです。",
+      "completeSetup": "セットアップが完了しました",
+      "noQueryNameError": "クエリ名が指定されていません",
+      "invalidQueryContentError": "無効なクエリ コンテンツが指定されました",
+      "failedToSaveQueryError": "クエリ {{queryName}} の保存に失敗しました",
+      "failedToSetupContainerError": "保存されたクエリ用のコンテナーをセットアップできませんでした",
+      "accountNotSetupError": "クエリの保存に失敗しました: アカウントがクエリ保存用に設定されていません",
+      "name": "名前"
+    },
+    "loadQuery": {
+      "noFileSpecifiedError": "ファイルが指定されていません",
+      "failedToLoadQueryError": "クエリを読み込めませんでした",
+      "failedToLoadQueryFromFileError": "ファイル {{fileName}} からクエリを読み込めませんでした",
+      "selectFilesToOpen": "クエリ ドキュメントを選択してください",
+      "browseFiles": "参照"
+    },
+    "executeStoredProcedure": {
+      "enterInputParameters": "入力パラメーターを入力します (存在する場合)",
+      "key": "キー",
+      "param": "パラメーター",
+      "partitionKeyValue": "パーティション キーの値",
+      "value": "値",
+      "addNewParam": "新しいパラメーターを追加する",
+      "addParam": "パラメーターを追加する",
+      "deleteParam": "パラメーターを削除する",
+      "invalidParamError": "無効なパラメーターが指定されました: {{invalidParam}}",
+      "invalidParamConsoleError": "無効なパラメーターが指定されました: {{invalidParam}} は有効なリテラル値ではありません",
+      "stringType": "文字列",
+      "customType": "カスタム"
+    },
+    "uploadItems": {
+      "noFilesSpecifiedError": "ファイルが指定されていません。少なくとも 1 つのファイルを入力してください。",
+      "selectJsonFiles": "JSON ファイルの選択",
+      "selectJsonFilesTooltip": "アップロードする JSON ファイルを 1 つ以上選択します。各ファイルには単一の JSON ドキュメントまたは JSON ドキュメントの配列を含めることができます。個々のアップロード操作でのすべてのファイルの合計サイズは 2 MB 未満である必要があります。大規模なデータ セットに対して複数のアップロード操作を実行できます。",
+      "fileNameColumn": "ファイル名",
+      "statusColumn": "状態",
+      "uploadStatus": "{{numSucceeded}} 件作成済み、{{numThrottled}} 件調整済み、{{numFailed}} 件のエラー",
+      "uploadedFiles": "ファイルをアップロードしました"
+    },
+    "copyNotebook": {
+      "copyFailedError": "{{name}} を {{destination}} にコピーできませんでした",
+      "uploadFailedError": "{{name}} をアップロードできませんでした",
+      "location": "場所",
+      "locationAriaLabel": "場所",
+      "selectLocation": "コピーするノートブックの場所を選択する",
+      "name": "名前"
+    },
+    "publishNotebook": {
+      "publishFailedError": "{{notebookName}} をギャラリーに発行できませんでした",
+      "publishDescription": "公開すると、このノートブックは Azure Cosmos DB ノートブックのパブリック ギャラリーに表示されます。公開前に機密データや出力が削除されていることを確認してください。",
+      "publishPrompt": "\"{{name}}\" をギャラリーに公開して共有しますか?",
+      "coverImage": "カバー画像",
+      "coverImageUrl": "カバー画像の URL",
+      "name": "名前",
+      "description": "説明",
+      "tags": "タグ",
+      "tagsPlaceholder": "オプションのタグ 1、オプションのタグ 2",
+      "preview": "プレビュー",
+      "urlType": "URL",
+      "customImage": "カスタム イメージ",
+      "takeScreenshot": "スクリーンショットを撮る",
+      "useFirstDisplayOutput": "最初のディスプレイ出力を使用する",
+      "failedToCaptureOutput": "最初の出力をキャプチャできませんでした",
+      "outputDoesNotExist": "どのセルにも出力が存在しません。",
+      "failedToConvertError": "{{fileName}} を base64 形式に変換できませんでした",
+      "failedToUploadError": "{{fileName}} をアップロードできませんでした"
+    },
+    "changePartitionKey": {
+      "failedToStartError": "データ転送ジョブの開始に失敗しました",
+      "suboptimalPartitionKeyError": "警告: システムはコレクションが最適でないパーティション キーを使用している可能性を検出しました",
+      "description": "コンテナーのパーティション キーを変更する場合は、適切なパーティション キーを使用して宛先コンテナーを作成する必要があります。既存の宛先コンテナーを選択することも可能です。",
+      "sourceContainerId": "ソース {{collectionName}} ID",
+      "destinationContainerId": "宛先 {{collectionName}} ID",
+      "collectionIdTooltip": "REST とすべての SDK を介した ID ベースのルーティングに使用される {{collectionName}} の一意識別子。",
+      "collectionIdPlaceholder": "例: {{collectionName}}1",
+      "collectionIdAriaLabel": "{{collectionName}} ID、例 {{collectionName}}1",
+      "existingContainers": "既存のコンテナー",
+      "partitionKeyWarning": "宛先コンテナーがまだ存在していない必要があります。データ エクスプローラーが新しい宛先コンテナーを作成します。"
+    },
+    "cassandraAddCollection": {
+      "keyspaceLabel": "キースペース名",
+      "keyspaceTooltip": "既存のキースペースを選択するか、新しいキースペース ID を入力します。",
+      "tableIdLabel": "CQL コマンドを入力してテーブルを作成します。",
+      "enterTableId": "テーブル ID の入力",
+      "tableSchemaAriaLabel": "テーブル スキーマ",
+      "provisionDedicatedThroughput": "このテーブルの専用スループットをプロビジョニングする",
+      "provisionDedicatedThroughputTooltip": "必要に応じて、スループットがプロビジョニングされているキースペース内のテーブルの専用スループットをプロビジョニングできます。この専用スループットはキースペース内の他のテーブルと共有されず、キースペースにプロビジョニングしたスループットには含まれません。このスループットはキースペース レベルでプロビジョニングしたスループットに加えて課金されます。"
+    },
+    "tables": {
+      "addProperty": "プロパティの追加",
+      "addRow": "行の追加",
+      "addEntity": "エンティティの追加",
+      "back": "戻る",
+      "nullFieldsWarning": "警告: null 値フィールドは編集用に表示されません。",
+      "propertyEmptyError": "{{property}} を空にすることはできません。{{property}} の値を入力してください",
+      "whitespaceError": "{{property}} に空白を含めることはできません。空白を含まない {{property}} の値を入力してください",
+      "propertyTypeEmptyError": "プロパティの型を空にすることはできません。プロパティ {{property}} のドロップダウンから型を選択してください"
+    },
+    "tableQuerySelect": {
+      "selectColumns": "クエリを実行する列を選択してください。",
+      "availableColumns": "使用可能な列"
+    },
+    "tableColumnSelection": {
+      "selectColumns": "コンテナー内の項目のビューに表示する列を選択します。",
+      "searchFields": "検索フィールド",
+      "reset": "リセット",
+      "partitionKeySuffix": " (パーティション キー)"
+    },
+    "newVertex": {
+      "addProperty": "プロパティの追加"
+    },
+    "addGlobalSecondaryIndex": {
+      "globalSecondaryIndexId": "グローバル セカンダリ インデックス コンテナー ID",
+      "globalSecondaryIndexIdPlaceholder": "例: indexbyEmailId",
+      "projectionQuery": "プロジェクション クエリ",
+      "projectionQueryPlaceholder": "SELECT c.email, c.accountId FROM c",
+      "projectionQueryTooltip": "グローバル セカンダリ インデックスの定義に関する詳細情報",
+      "disabledTitle": "グローバル セカンダリ インデックスは既に作成されています。完了するまで待ってから、別のものを作成してください。"
+    },
+    "stringInput": {
+      "inputMismatchError": "入力 {{input}} が選択した {{selectedId}} と一致しません"
+    },
+    "panelInfo": {
+      "information": "情報",
+      "moreDetails": "その他の詳細"
+    }
+  },
+  "controls": {
+    "settings": {
+      "tabTitles": {
+        "scale": "スケーリング",
+        "conflictResolution": "競合の解決",
+        "settings": "設定",
+        "indexingPolicy": "インデックス作成ポリシー",
+        "partitionKeys": "パーティション キー",
+        "partitionKeysPreview": "パーティション キー (プレビュー)",
+        "computedProperties": "計算されたプロパティ",
+        "containerPolicies": "コンテナー ポリシー",
+        "throughputBuckets": "スループット バケット",
+        "globalSecondaryIndexPreview": "グローバル セカンダリ インデックス (プレビュー)",
+        "maskingPolicyPreview": "マスキング ポリシー (プレビュー)"
+      },
+      "mongoNotifications": {
+        "selectTypeWarning": "各インデックスの種類を選択してください。",
+        "enterFieldNameError": "フィールド名を入力してください。",
+        "wildcardPathError": "ワイルドカード パスがフィールド名に存在しません。次のようなパターンを使用してください: "
+      },
+      "partitionKey": {
+        "shardKey": "シャード キー",
+        "partitionKey": "パーティション キー",
+        "shardKeyTooltip": "シャード キー (フィールド) は、無制限のスケーラビリティを実現するために、多数のレプリカ セット (シャード) にデータを分割するために使用されます。データを均等に分散するフィールドを選択することが重要です。",
+        "partitionKeyTooltip": "は、スケーラビリティのためにパーティション間でデータを自動的に分散するために使用されます。幅広い値を持ち、要求ボリュームを均等に分散する JSON ドキュメントのプロパティを選択します。",
+        "sqlPartitionKeyTooltipSuffix": " 読み取り負荷の高い小規模なワークロードや、任意のサイズの書き込み負荷の高いワークロードの場合、ID が適していることがよくあります。",
+        "partitionKeySubtext": "小規模なワークロードの場合、項目 ID はパーティション キーに適した選択肢です。",
+        "mongoPlaceholder": "例: categoryId",
+        "gremlinPlaceholder": "例: /address",
+        "sqlFirstPartitionKey": "必須: 最初のパーティション キー (例: /TenantId)",
+        "sqlSecondPartitionKey": "2 番目のパーティション キー (例: /UserId)",
+        "sqlThirdPartitionKey": "3 番目のパーティション キー 例: /SessionId",
+        "defaultPlaceholder": "例: /address/zipCode"
+      },
+      "costEstimate": {
+        "title": "コストの見積もり*",
+        "howWeCalculate": "これを計算する方法",
+        "updatedCostPerMonth": "1 か月あたりの更新されたコスト",
+        "currentCostPerMonth": "1 か月あたりの現在のコスト",
+        "perRu": "/RU",
+        "perHour": "/時",
+        "perDay": "/日",
+        "perMonth": "/月"
+      },
+      "throughput": {
+        "manualToAutoscaleDisclaimer": "開始時の自動スケーリングの最大 RU/秒は、現在の手動スループット設定とリソースのストレージに基づいて、システムによって決定されます。自動スケーリングを有効にした後は、最大 RU/秒を変更できます。",
+        "ttlWarningText": "システムは、クライアント アプリケーションによって明示的に発行される削除操作を必要とせずに、指定した TTL 値 (秒単位) に基づいて項目を自動的に削除します。詳細については次を参照してください:",
+        "ttlWarningLinkText": "Azure Cosmos DB の Time to Live (TTL)",
+        "unsavedIndexingPolicy": "インデックス作成ポリシー",
+        "unsavedDataMaskingPolicy": "データ マスキング ポリシー",
+        "unsavedComputedProperties": "計算されたプロパティ",
+        "unsavedEditorWarningPrefix": "次に加えられた最新の変更が保存されていません:",
+        "unsavedEditorWarningSuffix": "。[保存] をクリックして変更を確認してください。",
+        "updateDelayedApplyWarning": "事前に割り当てられた容量を超えるスループットの増加を要求しようとしています。この操作は、完了するまでにしばらく時間がかかります。",
+        "scalingUpDelayMessage": "スケールアップは、物理パーティションの数に基づき、現在 Azure Cosmos DB が即座にサポートできる範囲を超えているため、4 から 6 時間かかります。スループットを即座に {{instantMaximumThroughput}} に増加させたり、この値で続行してスケールアップが完了するまで待ったりすることができます。",
+        "exceedPreAllocatedMessage": "スループットの増加要求が、事前に割り当てられた容量を超えており、予想以上に時間がかかる場合があります。続行するには、次の 3 つのオプションから選択できます。",
+        "instantScaleOption": "即座に {{instantMaximumThroughput}} RU/秒までスケールアップできます。",
+        "asyncScaleOption": "{{maximumThroughput}} RU/秒未満の任意の値に、4 から 6 時間で、非同期的にスケールアップできます。",
+        "quotaMaxOption": "現在のクォータの最大値は {{maximumThroughput}} RU/秒です。この制限を超えるには、クォータの引き上げを要求する必要があり、Azure Cosmos DB チームがレビューします。",
+        "belowMinimumMessage": "現在の最小値 {{minimum}} RU/秒よりも低くスループットを設定することはできません。この制限の詳細については、サービス見積もりのドキュメントを参照してください。",
+        "saveThroughputWarning": "スループット設定を更新すると、課金に影響します。変更を保存する前に、以下の更新されたコスト見積もりをレビューしてください",
+        "currentAutoscaleThroughput": "現在の自動スケーリング スループット:",
+        "targetAutoscaleThroughput": "ターゲット自動スケーリング スループット:",
+        "currentManualThroughput": "現在の手動スループット:",
+        "targetManualThroughput": "ターゲット手動スループット:",
+        "applyDelayedMessage": "スループットの増加要求が正常に送信されました。この操作は、完了するまでに 1 から 3 営業日かかります。[通知] で最新の状態を表示してください。",
+        "databaseLabel": "データベース:",
+        "containerLabel": "コンテナー:",
+        "applyShortDelayMessage": "スループットの増加要求は現在処理中です。この操作は、完了するまでにしばらく時間がかかります。",
+        "applyLongDelayMessage": "スループットの増加要求は現在処理中です。この操作は、完了するまでに 1 から 3 営業日かかります。[通知] で最新の状態を表示してください。",
+        "throughputCapError": "お使いのアカウントは現在、合計スループット制限 {{throughputCap}} RU/秒で構成されています。この更新は、合計スループットが {{newTotalThroughput}} RU/秒に増加するため、実行できません。コスト管理の合計スループット制限を変更してください。",
+        "throughputIncrementError": "スループット値は 1000 単位で指定する必要があります"
+      },
+      "conflictResolution": {
+        "lwwDefault": "最終書き込み優先(既定)",
+        "customMergeProcedure": "マージ プロシージャ (カスタム)",
+        "mode": "モード",
+        "conflictResolverProperty": "競合リゾルバー プロパティ",
+        "storedProcedure": "ストアド プロシージャ",
+        "lwwTooltip": "最終書き込み優先 (LWW) ベースの競合解決スキームに使用される、ドキュメント内の整数プロパティの名前を取得または設定します。既定では、システム定義のタイムスタンプ プロパティ _ts を使用して、優先するドキュメントの競合するバージョンが決定されます。既定のタイムスタンプ ベースの競合解決をオーバーライドする場合は、独自の整数プロパティを指定します。",
+        "customTooltip": "競合を解決するためのストアド プロシージャ (マージ プロシージャとも呼ばれる) の名前を取得または設定します。アプリケーション定義のロジックを記述して、優先するドキュメントの競合するバージョンを決定できます。ストアド プロシージャは、サーバー側でトランザクションで 1 回だけ実行されます。ストアド プロシージャを指定しない場合、次で競合が発生します:",
+        "customTooltipConflictsFeed": " 競合フィード",
+        "customTooltipSuffix": "。ストアド プロシージャはいつでも更新または再登録できます。"
+      },
+      "changeFeed": {
+        "label": "変更フィード ログの保持ポリシー",
+        "tooltip": "変更フィード ログの保持ポリシーを有効にして、既定でコンテナー内の項目の過去 10 分間の履歴を保持します。これをサポートするために、書き込みに対するこのコンテナーの要求ユニット (RU) の料金は 2倍になります。読み取りは影響を受けません。"
+      },
+      "mongoIndexing": {
+        "disclaimer": "複数のプロパティでフィルター処理するクエリの場合は、複合インデックスではなく、複数の単一フィールド インデックスを作成してください。",
+        "disclaimerCompoundIndexesLink": " 複合インデックス ",
+        "disclaimerSuffix": "は、クエリ結果の並べ替えにのみ使用されます。複合インデックスを追加する必要がある場合は、Mongo シェルを使用して作成できます。",
+        "compoundNotSupported": "複合インデックスを持つコレクションは、インデックス作成エディターではまだサポートされていません。このコレクションのインデックス作成ポリシーを変更するには、Mongo シェルを使用してください。",
+        "aadError": "インデックス作成ポリシー エディターを使用するには、次にログインしてください:",
+        "aadErrorLink": "Azure portal。",
+        "refreshingProgress": "インデックス変換の進行状況を更新しています",
+        "canMakeMoreChangesZero": "現在のインデックス変換が完了したら、さらにインデックス作成の変更を行うことができます。",
+        "refreshToCheck": "更新して、完了したかどうかを確認します。",
+        "canMakeMoreChangesProgress": "現在のインデックス変換が完了したら、さらにインデックス作成の変更を行うことができます。{{progress}}% 完了しています。",
+        "refreshToCheckProgress": "更新して、進行状況を確認します。",
+        "definitionColumn": "定義",
+        "typeColumn": "型",
+        "dropIndexColumn": "インデックスのドロップ",
+        "addIndexBackColumn": "インデックスを追加し直す",
+        "deleteIndexButton": "[インデックスの削除] ボタン",
+        "addBackIndexButton": "[インデックスを追加し直す] ボタン",
+        "currentIndexes": "現在のインデックス",
+        "indexesToBeDropped": "ドロップするインデックス",
+        "indexFieldName": "インデックス フィールド名",
+        "indexType": "インデックスの種類",
+        "selectIndexType": "インデックスの種類を選択する",
+        "undoButton": "[元に戻す] ボタン"
+      },
+      "subSettings": {
+        "timeToLive": "Time to Live",
+        "ttlOff": "オフ",
+        "ttlOnNoDefault": "オン (既定値なし)",
+        "ttlOn": "オン",
+        "seconds": "秒",
+        "timeToLiveInSeconds": "秒単位の Time to Live",
+        "analyticalStorageTtl": "分析ストレージの Time to Live",
+        "geospatialConfiguration": "地理空間構成",
+        "geography": "地理",
+        "geometry": "ジオメトリ",
+        "uniqueKeys": "一意のキー",
+        "mongoTtlMessage": "コレクション/ドキュメントの有効期間 (Time to Live: TTL) を有効にするには、",
+        "mongoTtlLinkText": "TTL インデックスを作成する",
+        "partitionKeyTooltipTemplate": "この {{partitionKeyName}} は、スケーラビリティのために複数のパーティションにデータを分散するために使用されます。値 \"{{partitionKeyValue}}\" は、ドキュメントのパーティション分割方法を決定します。",
+        "largePartitionKeyEnabled": "大規模な {{partitionKeyName}} が有効になっています。",
+        "hierarchicalPartitioned": "階層的にパーティション分割されたコンテナー。",
+        "nonHierarchicalPartitioned": "非階層的にパーティション分割されたコンテナー。"
+      },
+      "scale": {
+        "freeTierInfo": "Free レベルでは、最初の {{ru}} RU/秒と {{storage}} GB のストレージをこのアカウントで無料で利用できます。アカウントを無料に保つには、アカウント内のすべてのリソースの合計 RU/秒を {{ru}} RU/秒に維持してください。",
+        "freeTierLearnMore": "詳細をご確認ください。",
+        "throughputRuS": "スループット (RU/秒)",
+        "autoScaleCustomSettings": "アカウントには、コンテナー レベルでのスループットの設定を妨げるカスタム設定があります。変更を加えるには、Cosmos DB エンジニアリング チームの連絡先担当者にお問い合わせください。",
+        "keyspaceSharedThroughput": "このテーブルの共有スループットは、キースペースで構成されています",
+        "throughputRangeLabel": "スループット ({{min}} - {{max}} RU/秒)",
+        "unlimited": "無制限"
+      },
+      "partitionKeyEditor": {
+        "changePartitionKey": "{{partitionKeyName}} の変更",
+        "currentPartitionKey": "現在の {{partitionKeyName}}",
+        "partitioning": "パーティション分割",
+        "hierarchical": "階層",
+        "nonHierarchical": "非階層",
+        "safeguardWarning": "新しいコンテナーにコピーされるデータの整合性を保つには、パーティション キー変更プロセスの間、ソース コンテナーに対して更新が行われないようにしてください。",
+        "changeDescription": "パーティション キーを変更するには、新しい宛先コンテナーを作成するか、既存の宛先コンテナーを選択する必要があります。その後、データが宛先コンテナーにコピーされます。",
+        "changeButton": "変更",
+        "changeJob": "{{partitionKeyName}} 変更ジョブ",
+        "cancelButton": "キャンセル",
+        "documentsProcessed": "({{processedCount}} 個中 {{totalCount}} 個のドキュメントが処理されました)"
+      },
+      "computedProperties": {
+        "ariaLabel": "計算されたプロパティ",
+        "learnMorePrefix": "計算されたプロパティの定義方法と使用方法について。"
+      },
+      "indexingPolicy": {
+        "ariaLabel": "インデックス作成ポリシー"
+      },
+      "dataMasking": {
+        "ariaLabel": "データ マスキング ポリシー",
+        "validationFailed": "検証に失敗しました:",
+        "includedPathsRequired": "includedPaths は必須です",
+        "includedPathsMustBeArray": "includedPaths は配列である必要があります",
+        "excludedPathsMustBeArray": "excludedPaths を指定する場合は、配列である必要があります"
+      },
+      "containerPolicy": {
+        "vectorPolicy": "ベクター ポリシー",
+        "fullTextPolicy": "フルテキスト ポリシー",
+        "createFullTextPolicy": "新しいフルテキスト検索ポリシーの作成"
+      },
+      "globalSecondaryIndex": {
+        "indexesDefined": "このコンテナーには、次のインデックスが定義されています。",
+        "learnMoreSuffix": "グローバル セカンダリ インデックスの定義方法と使用方法について。",
+        "jsonAriaLabel": "グローバル セカンダリ インデックス JSON",
+        "addIndex": "インデックスの追加",
+        "settingsTitle": "グローバル セカンダリ インデックス設定",
+        "sourceContainer": "ソース コンテナー",
+        "indexDefinition": "グローバル セカンダリ インデックスの定義"
+      },
+      "indexingPolicyRefresh": {
+        "refreshFailed": "インデックス変換の進行状況を更新できませんでした"
+      },
+      "throughputInput": {
+        "autoscale": "自動スケーリング",
+        "manual": "手動",
+        "minimumRuS": "最小 RU/秒",
+        "maximumRuS": "最大 RU/秒",
+        "x10Equals": "x 10 =",
+        "storageCapacity": "ストレージ容量",
+        "fixed": "修正済み",
+        "unlimited": "無制限",
+        "instant": "即座",
+        "fourToSixHrs": "4 から 6 時間",
+        "autoscaleDescription": "使用量に基づいて、{{resourceType}} のスループットは次からスケーリングされます:",
+        "freeTierWarning": "{{ru}} RU/秒を超える手動スループットをプロビジョニングした場合、またはリソースが自動スケーリングで {{ru}} RU/秒を超えてスケーリングされた場合は、課金が適用されます。",
+        "capacityCalculator": "次で必要な RU/秒を見積もる:",
+        "capacityCalculatorLink": " 容量計算ツール",
+        "fixedStorageNote": "固定ストレージ容量のコレクションを使用する場合は、最大 10,000 RU/秒まで設定できます。",
+        "min": "分",
+        "max": "最大"
+      },
+      "throughputBuckets": {
+        "label": "スループット バケット",
+        "bucketLabel": "バケット {{id}}",
+        "dataExplorerQueryBucket": " (データ エクスプローラー クエリ バケット)",
+        "active": "アクティブ",
+        "inactive": "非アクティブ"
+      }
+    }
+  }
+}

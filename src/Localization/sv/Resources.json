@@ -1,0 +1,968 @@
+{
+  "common": {
+    "ok": "OK",
+    "cancel": "Avbryt",
+    "close": "Stäng",
+    "save": "Spara",
+    "delete": "Ta bort",
+    "update": "Uppdatera",
+    "discard": "Ta bort",
+    "execute": "Kör",
+    "loading": "Läser in",
+    "loadingEllipsis": "Läser in...",
+    "next": "Nästa",
+    "previous": "Föregående",
+    "yes": "Ja",
+    "no": "Nej",
+    "result": "Resultat",
+    "learnMore": "Mer information",
+    "getStarted": "Kom igång",
+    "retry": "Försök igen",
+    "apply": "Använd",
+    "refresh": "Uppdatera",
+    "copy": "Kopiera",
+    "create": "Skapa",
+    "confirm": "Bekräfta",
+    "open": "Öppna",
+    "rename": "Byt namn",
+    "download": "Ladda ned",
+    "upload": "Ladda upp",
+    "connect": "Anslut",
+    "remove": "Ta bort",
+    "load": "Läs in",
+    "publish": "Publicera",
+    "browse": "Bläddra",
+    "increaseValueBy1": "Öka värdet med 1",
+    "decreaseValueBy1": "Minska värdet med 1"
+  },
+  "splashScreen": {
+    "title": {
+      "default": "Välkommen till Azure Cosmos DB",
+      "postgres": "Välkommen till Azure Cosmos DB for PostgreSQL",
+      "vcoreMongo": "Välkommen till Azure DocumentDB (med MongoDB-kompatibilitet)"
+    },
+    "subtitle": {
+      "default": "Globalt distribuerad databas för flera datamodeller oavsett skala",
+      "getStarted": "Kom igång med våra exempeldatamängder, dokumentation och extra verktyg."
+    },
+    "quickStart": {
+      "title": "Starta snabbstart",
+      "description": "Starta en snabbstartsguide för att komma igång med exempeldata"
+    },
+    "newCollection": {
+      "title": "Ny {{collectionName}}",
+      "description": "Skapa en ny container för lagring och dataflöde"
+    },
+    "samplesGallery": {
+      "title": "Galleri för Azure Cosmos DB-exempel",
+      "description": "Upptäck exempel som visar skalbara, intelligenta appmönster. Prova en nu för att se hur snabbt du kan gå från koncept till kod med Cosmos DB"
+    },
+    "connectCard": {
+      "title": "Anslut",
+      "description": "Föredrar du att använda ditt eget val av verktyg? Hitta anslutningssträngen du behöver för att ansluta",
+      "pgAdmin": {
+        "title": "Anslut med pgAdmin",
+        "description": "Föredrar du pgAdmin? Hitta dina anslutningssträngar här"
+      },
+      "vsCode": {
+        "title": "Anslut med VS Code",
+        "description": "Fråga och hantera dina MongoDB- och DocumentDB-kluster i Visual Studio Code"
+      }
+    },
+    "shell": {
+      "postgres": {
+        "title": "PostgreSQL-gränssnitt",
+        "description": "Skapa tabell och interagera med data med postgreSQL-gränssnittet"
+      },
+      "vcoreMongo": {
+        "title": "Mongo-gränssnitt",
+        "description": "Skapa en samling och interagera med data med hjälp av MongoDB:s gränssnitt"
+      }
+    },
+    "teachingBubble": {
+      "newToPostgres": {
+        "headline": "Är Cosmos DB PGSQL nytt för dig?",
+        "body": "Välkommen! Om du är nybörjare på Cosmos DB PGSQL och behöver hjälp med att komma igång hittar du exempeldata och frågor här."
+      },
+      "resetPassword": {
+        "headline": "Skapa ett lösenord",
+        "body": "Om du inte har ändrat ditt lösenord ännu ändrar du det nu."
+      },
+      "coachMark": {
+        "headline": "Börja med exempel {{collectionName}}",
+        "body": "Du får vägledning för att skapa en exempelcontainer med exempeldata, och sedan får du en rundtur i datautforskaren. Du kan också avbryta lanseringen av den här rundturen och utforska dig själv"
+      }
+    },
+    "sections": {
+      "recents": "Senaste",
+      "clearRecents": "Rensa senaste",
+      "top3": "De 3 viktigaste sakerna du behöver veta",
+      "learningResources": "Utbildningsresurser",
+      "nextSteps": "Nästa steg",
+      "tipsAndLearnMore": "Tips och läs mer",
+      "notebook": "Anteckningsbok",
+      "needHelp": "Behöver du hjälp?"
+    },
+    "top3Items": {
+      "sql": {
+        "advancedModeling": {
+          "title": "Avancerade modelleringsmönster",
+          "description": "Lär dig avancerade strategier för att optimera din databas."
+        },
+        "partitioning": {
+          "title": "Metodtipsen för partitionering",
+          "description": "Lär dig hur du tillämpar strategier för datamodeller och partitionering."
+        },
+        "resourcePlanning": {
+          "title": "Planera dina resurskrav",
+          "description": "Lär känna de olika konfigurationsalternativen."
+        }
+      },
+      "mongo": {
+        "whatIsMongo": {
+          "title": "Vad är MongoDB-API:et?",
+          "description": "Förstå Azure Cosmos DB for MongoDB och dess funktioner."
+        },
+        "features": {
+          "title": "Funktioner och syntax",
+          "description": "Upptäck fördelarna och funktionerna"
+        },
+        "migrate": {
+          "title": "Migrera dina data",
+          "description": "Steg före migrering för att flytta data"
+        }
+      },
+      "cassandra": {
+        "buildJavaApp": {
+          "title": "Skapa en Java-app",
+          "description": "Skapa en Java-app med hjälp av en SDK."
+        },
+        "partitioning": {
+          "title": "Metodtipsen för partitionering",
+          "description": "Lär dig hur partitionering fungerar."
+        },
+        "requestUnits": {
+          "title": "Enheter för programbegäran (RU)",
+          "description": "Förstå RU-avgifter."
+        }
+      },
+      "gremlin": {
+        "dataModeling": {
+          "title": "Datamodellering",
+          "description": "Rekommendationer för diagramdatamodellering"
+        },
+        "partitioning": {
+          "title": "Metodtipsen för partitionering",
+          "description": "Lär dig hur partitionering fungerar"
+        },
+        "queryData": {
+          "title": "Efterfråga data",
+          "description": "Köra frågor mot data med Gremlin"
+        }
+      },
+      "tables": {
+        "whatIsTable": {
+          "title": "Vad är Table API?",
+          "description": "Förstå Azure Cosmos DB for Table och dess funktioner"
+        },
+        "migrate": {
+          "title": "Migrera dina data",
+          "description": "Läs hur du migrerar dina data"
+        },
+        "faq": {
+          "title": "Vanliga frågor och svar om Azure Cosmos DB for Table",
+          "description": "Vanliga frågor om Azure Cosmos DB för tabell"
+        }
+      }
+    },
+    "learningResources": {
+      "shortcuts": {
+        "title": "Datautforskaren kortkommandon",
+        "description": "Lär dig kortkommandon för att navigera Datautforskaren."
+      },
+      "liveTv": {
+        "title": "Lär dig grunderna",
+        "description": "Titta på Azure Cosmos DB introduktion till live-TV-program och hur du gör videor."
+      },
+      "sql": {
+        "sdk": {
+          "title": "Kom igång med ett SDK",
+          "description": "Läs mer om Azure Cosmos DB SDK."
+        },
+        "migrate": {
+          "title": "Migrera dina data",
+          "description": "Migrera data med Hjälp av Azure-tjänster och lösningar med öppen källkod."
+        }
+      },
+      "mongo": {
+        "nodejs": {
+          "title": "Skapa en app med Node.js",
+          "description": "Skapa en Node.js app."
+        },
+        "gettingStarted": {
+          "title": "Komma igång-guide",
+          "description": "Lär dig grunderna för att komma igång."
+        }
+      },
+      "cassandra": {
+        "createContainer": {
+          "title": "Skapa en container",
+          "description": "Lär känna alternativen för att skapa en container."
+        },
+        "throughput": {
+          "title": "Etablera dataflöde",
+          "description": "Lär dig hur du konfigurerar dataflöde."
+        }
+      },
+      "gremlin": {
+        "getStarted": {
+          "title": "Kom igång ",
+          "description": "Skapa, fråga och bläddra med Gremlin-konsolen"
+        },
+        "importData": {
+          "title": "Importera diagramdata",
+          "description": "Lär dig massinmatning av data med BulkExecutor"
+        }
+      },
+      "tables": {
+        "dotnet": {
+          "title": "Skapa en .NET-app",
+          "description": "Så här kommer du åt Azure Cosmos DB for Table från en .NET-app."
+        },
+        "java": {
+          "title": "Skapa en Java-app",
+          "description": "Skapa en Azure Cosmos DB for Table-appen med Java SDK "
+        }
+      }
+    },
+    "nextStepItems": {
+      "postgres": {
+        "dataModeling": "Datamodellering",
+        "distributionColumn": "Så här väljer du en distributionskolumn",
+        "buildApps": "Skapa appar med Python/Java/Django"
+      },
+      "vcoreMongo": {
+        "migrateData": "Migrera data",
+        "vectorSearch": "Skapa AI-appar med Vector Search",
+        "buildApps": "Skapa appar med Nodejs"
+      }
+    },
+    "learnMoreItems": {
+      "postgres": {
+        "performanceTuning": "Prestandajustering",
+        "diagnosticQueries": "Användbara diagnostikfrågor",
+        "sqlReference": "Distribuerad SQL-referens"
+      },
+      "vcoreMongo": {
+        "vectorSearch": "Vektorssökning",
+        "textIndexing": "Textindexering",
+        "troubleshoot": "Felsök vanliga problem"
+      }
+    },
+    "fabric": {
+      "buildTitle": "Skapa din databas",
+      "useTitle": "Använda databasen",
+      "newContainer": {
+        "title": "Ny container",
+        "description": "Skapa en målcontainer för att lagra dina data"
+      },
+      "sampleData": {
+        "title": "Exempeldata",
+        "description": "Läs in exempeldata i databasen"
+      },
+      "sampleVectorData": {
+        "title": "Exempelvektordata",
+        "description": "Läs in exempelvektordata med textinbäddning-ada-002"
+      },
+      "appDevelopment": {
+        "title": "Apputveckling",
+        "description": "Börja här om du vill använda en SDK för att skapa dina appar"
+      },
+      "sampleGallery": {
+        "title": "Exempelgalleri",
+        "description": "Få verkliga exempel från slutpunkt till slutpunkt"
+      }
+    },
+    "sampleDataDialog": {
+      "title": "Exempeldata",
+      "startButton": "Starta",
+      "createPrompt": "Skapa en container \"{{containerName}}\" och importera exempeldata till den. Det här kan ta några minuter.",
+      "creatingContainer": "Skapar container \"{{containerName}}\"...",
+      "importingData": "Importerar data till \"{{containerName}}\"...",
+      "success": "\"{{containerName}}\" med exempeldata har skapats.",
+      "errorContainerExists": "Containern \"{{containerName}}\" i databasen \"{{databaseName}}\" finns redan. Ta bort den och försök igen.",
+      "errorCreateContainer": "Det gick inte att skapa containern: {{error}}",
+      "errorImportData": "Det gick inte att importera data: {{error}}"
+    }
+  },
+  "contextMenu": {
+    "newContainer": "Ny {{containerName}}",
+    "restoreContainer": "Återställ {{containerName}}",
+    "deleteDatabase": "Ta bort {{databaseName}}",
+    "deleteContainer": "Ta bort {{containerName}}",
+    "newSqlQuery": "Ny SQL-fråga",
+    "newQuery": "Ny fråga",
+    "openMongoShell": "Öppna Mongo Shell",
+    "newShell": "Ny Shell",
+    "openCassandraShell": "Öppna Cassandra Shell",
+    "newStoredProcedure": "Ny lagrad procedur",
+    "newUdf": "Ny UDF",
+    "newTrigger": "Ny utlösare",
+    "deleteStoredProcedure": "Ta bort lagrad procedur",
+    "deleteTrigger": "Ta bort utlösaren",
+    "deleteUdf": "Ta bort användardefinierad funktion"
+  },
+  "tabs": {
+    "documents": {
+      "newItem": "Nytt objekt",
+      "newDocument": "Nytt dokument",
+      "uploadItem": "Ladda upp objekt",
+      "applyFilter": "Använd filter",
+      "unsavedChanges": "Ändringar som inte har sparats",
+      "unsavedChangesMessage": "Ej sparade ändringar går förlorade. Vill du fortsätta?",
+      "createDocumentFailed": "Det gick inte att skapa dokumentet",
+      "updateDocumentFailed": "Det gick inte att uppdatera dokumentet",
+      "documentDeleted": "Dokument har tagits bort.",
+      "deleteDocumentDialogTitle": "Ta bort dokument",
+      "deleteDocumentsDialogTitle": "Ta bort dokument",
+      "throttlingError": "Det gick inte att ta bort vissa dokument på grund av ett fel med hastighetsbegränsning. Försök igen senare. Om du vill undvika detta i framtiden, överväg att öka genomströmningen på din container eller databas.",
+      "deleteFailed": "Det gick inte att ta bort dokument ({{error}})",
+      "missingShardProperty": "Dokumentet saknar shardegenskapen: {{partitionKeyProperty}}",
+      "refreshGridFailed": "Det gick inte att uppdatera dokumentrutnätet",
+      "confirmDelete": "Vill du ta bort {{documentName}}?",
+      "confirmDeleteTitle": "Bekräfta borttagning",
+      "selectedItems": "de valda {{count}}-objekten",
+      "selectedItem": "det markerade objektet",
+      "selectedDocuments": "de valda {{count}}-dokumenten",
+      "selectedDocument": "det markerade dokumentet",
+      "deleteDocumentFailedLog": "Det gick inte att ta bort dokumentet {{documentId}} med statuskod {{statusCode}}",
+      "deleteSuccessLog": "{{count}} dokument har tagits bort",
+      "deleteThrottledLog": "Det gick inte att ta bort {{count}} dokument på grund av felet \"Begäran är för stor\" (429). Försöker igen...",
+      "missingShardKeyLog": "Det gick inte att spara det nya dokumentet: Dokumentshardnyckeln är inte definierad",
+      "filterTooltip": "Skriv ett frågepredikat eller välj ett från listan.",
+      "loadMore": "Läs in mer",
+      "documentEditor": "Dokumentredigeraren",
+      "savedFilters": "Sparade filter",
+      "defaultFilters": "Standardfilter",
+      "abort": "Avbryt",
+      "deletingDocuments": "Tar bort {{count}} dokument",
+      "deletedDocumentsSuccess": "{{count}} dokument har tagits bort.",
+      "deleteAborted": "Borttagning av dokument avbröts.",
+      "failedToDeleteDocuments": "Det gick inte att ta bort {{count}} dokument.",
+      "requestTooLargeBase": "Vissa borttagningsförfrågningar misslyckades på grund av undantaget \"Begäran är för stor\" (429)",
+      "retriedSuccessfully": "men ett nytt försök har gjorts.",
+      "retryingNow": "Försöker igen nu.",
+      "increaseThroughputTip": "Om du vill undvika detta i framtiden, överväg att öka genomströmningen på din container eller databas.",
+      "numberOfSelectedDocuments": "Antal markerade dokument: {{count}}",
+      "mongoFilterPlaceholder": "Skriv ett frågepredikat (t.ex. {\"id\":\"foo\"}), välj ett från rullgardinslistan eller lämna tomt för att fråga alla dokument.",
+      "sqlFilterPlaceholder": "Skriv ett frågepredikat (t.ex. WHERE c.id=\"1\"), välj ett från rullgardinslistan eller lämna tomt för att fråga alla dokument.",
+      "error": "Fel",
+      "warning": "Varning"
+    },
+    "query": {
+      "executeQuery": "Kör fråga",
+      "executeSelection": "Kör markering",
+      "saveQuery": "Spara fråga",
+      "downloadQuery": "Ladda ned fråga",
+      "cancelQuery": "Avbryt fråga",
+      "openSavedQueries": "Öppna sparade frågor",
+      "vertical": "Lodrät",
+      "horizontal": "Vågrät",
+      "view": "Visa",
+      "editingQuery": "Redigerar fråga"
+    },
+    "storedProcedure": {
+      "id": "Lagrad procedur-id",
+      "idPlaceholder": "Ange det nya lagrade procedur-ID:t",
+      "idAriaLabel": "Lagrad procedur-id",
+      "body": "Lagrad procedurtext",
+      "bodyAriaLabel": "Lagrad procedurtext",
+      "successfulExecution": "Slutförd körning av lagrad procedur",
+      "resultAriaLabel": "Kör lagrade procedurloggsresultat",
+      "logsAriaLabel": "Kör lagrade procedurloggar",
+      "errors": "Fel:",
+      "errorDetailsAriaLabel": "Felinformationsrutnät",
+      "moreDetails": "Mer information",
+      "consoleLogTab": "console.log"
+    },
+    "trigger": {
+      "id": "Utlösar-ID",
+      "idPlaceholder": "Ange det nya utlösar-ID:t",
+      "type": "Utlösartyp",
+      "operation": "Utlösaråtgärd",
+      "body": "Utlösarens innehåll",
+      "bodyAriaLabel": "Utlösarens innehåll",
+      "pre": "För",
+      "post": "Inlägg",
+      "all": "Alla",
+      "operationCreate": "Skapa",
+      "operationDelete": "Ta bort",
+      "operationReplace": "Ersätt"
+    },
+    "udf": {
+      "id": "Användardefinierad funktion",
+      "idPlaceholder": "Ange det nya användardefinierade funktions-ID:t",
+      "body": "Användardefinierad funktionstext",
+      "bodyAriaLabel": "Användardefinierad funktionstext"
+    },
+    "conflicts": {
+      "unsavedChanges": "Ändringar som inte har sparats",
+      "changesWillBeLost": "Ändringar går förlorade. Vill du fortsätta?",
+      "resolveConflictFailed": "Det gick inte att lösa konflikten",
+      "deleteConflictFailed": "Det gick inte att ta bort konflikten",
+      "refreshGridFailed": "Det gick inte att uppdatera dokumentrutnätet"
+    },
+    "mongoShell": {
+      "title": "Mongo-gränssnitt"
+    }
+  },
+  "panes": {
+    "deleteDatabase": {
+      "panelTitle": "Ta bort {{databaseName}}",
+      "warningMessage": "Varning! Den åtgärd du är i färd med att genomföra kan du inte ångra senare. Om du fortsätter tas den här resursen och alla dess underordnade resurser bort permanent.",
+      "confirmPrompt": "Bekräfta genom att skriva ID:t {{databaseName}} (namn)",
+      "inputMismatch": "{{databaseName}}Indatanamnet {{input}} matchar inte det valda {{databaseName}} {{selectedId}}",
+      "feedbackTitle": "Hjälp oss att förbättra Azure Cosmos DB!",
+      "feedbackReason": "Vad är anledningen till att du tar bort {{databaseName}}?"
+    },
+    "deleteCollection": {
+      "panelTitle": "Ta bort {{collectionName}}",
+      "confirmPrompt": "Bekräfta genom att skriva ID:t {{collectionName}} ",
+      "inputMismatch": "Indata-ID {{input}} matchar inte det valda {{selectedId}}",
+      "feedbackTitle": "Hjälp oss att förbättra Azure Cosmos DB!",
+      "feedbackReason": "Vad är anledningen till att du tar bort {{collectionName}}?"
+    },
+    "addDatabase": {
+      "databaseLabel": "Databas {{suffix}}",
+      "databaseIdLabel": "Databas-ID",
+      "keyspaceIdLabel": "Nyckelområdes-ID",
+      "databaseIdPlaceholder": "Skriv ett nytt {{databaseLabel}}-ID",
+      "databaseTooltip": "A {{databaseLabel}} är en logisk container för en eller flera {{collectionsLabel}}",
+      "shareThroughput": "Dela dataflöde över {{collectionsLabel}}",
+      "shareThroughputTooltip": "Etablerat dataflöde på {{databaseLabel}}-nivån delas över alla {{collectionsLabel}} i {{databaseLabel}}.",
+      "greaterThanError": "Ange ett värde som är större än {{minValue}} för autopilot-dataflöde",
+      "acknowledgeSpendError": "Bekräfta den uppskattade {{period}} kostnaden.",
+      "acknowledgeSpendErrorMonthly": "Bekräfta den uppskattade månadskostnaden.",
+      "acknowledgeSpendErrorDaily": "Bekräfta den uppskattade dagliga kostnaden.",
+      "provisionSharedThroughputTitle": "Etablera delat dataflöde",
+      "provisionThroughputLabel": "Etablera dataflöde"
+    },
+    "addCollection": {
+      "createNew": "Skapa ny",
+      "useExisting": "Använd befintlig",
+      "databaseTooltip": "En databas motsvarar ett namnområde. Det är hanteringsenheten för en uppsättning . {{collectionName}}",
+      "shareThroughput": "Dela dataflöde över {{collectionName}}",
+      "shareThroughputTooltip": "Dataflödet som konfigurerats på databasnivå delas över alla {{collectionName}} i databasen.",
+      "collectionIdLabel": "{{collectionName}} -ID",
+      "collectionIdTooltip": "Unik identifierare för {{collectionName}} och används för ID-baserad routning via REST och alla SDK:er.",
+      "collectionIdPlaceholder": "t.ex. {{collectionName}}1",
+      "collectionIdAriaLabel": "{{collectionName}}-ID, exempel {{collectionName}}1",
+      "existingDatabaseAriaLabel": "Välj befintligt {{databaseName}}-ID",
+      "existingDatabasePlaceholder": "Välj befintligt {{databaseName}}-ID",
+      "indexing": "Indexering",
+      "turnOnIndexing": "Aktivera indexering",
+      "automatic": "Automatisk",
+      "turnOffIndexing": "Inaktivera indexering",
+      "off": "Av",
+      "sharding": "Horisontell partitionering",
+      "shardingTooltip": "Shardade samlingar används för att dela dina data över många replikuppsättningar (shards) för att uppnå obegränsad skalbarhet. Shardade samlingar kräver att du väljer en shard-nyckel (fält) för att fördela dina data jämnt.",
+      "unsharded": "Ej fragmenterad",
+      "unshardedLabel": "Ej fragmenterad (gräns på 20 GB)",
+      "sharded": "Shardad",
+      "addPartitionKey": "Lägg till hierarkisk partitionsnyckel",
+      "hierarchicalPartitionKeyInfo": "Med den här funktionen kan du partitionera dina data med upp till tre nivåer av nycklar för bättre datadistribution. Kräver .NET V3, Java V4 SDK eller förhandsversion av JavaScript V3 SDK.",
+      "provisionDedicatedThroughput": "Etablera dedikerat dataflöde för detta {{collectionName}}",
+      "provisionDedicatedThroughputTooltip": "Du kan också etablera dedikerat dataflöde för en {{collectionName}} i en databas som har etablerat dataflöde. Den här dedikerade dataflödesmängden delas inte med andra {{collectionNamePlural}} i databasen och räknas inte in i det dataflöde som du etablerade för databasen. Det här dataflödesbeloppet faktureras utöver det dataflödesbelopp som du etablerade på databasnivå.",
+      "uniqueKeysPlaceholderMongo": "Kommaavgränsade sökvägar, t.ex. firstName,address.zipCode",
+      "uniqueKeysPlaceholderSql": "Kommaavgränsade sökvägar, t.ex. /firstName,/address/zipCode",
+      "addUniqueKey": "Lägg till unik nyckel",
+      "enableAnalyticalStore": "Aktivera analysarkiv",
+      "disableAnalyticalStore": "Inaktivera analysarkiv",
+      "on": "På",
+      "analyticalStoreSynapseLinkRequired": "Azure Synapse Link krävs för att skapa ett analysarkiv {{collectionName}}. Aktivera Synapse Link för det här Cosmos DB-kontot.",
+      "enable": "Aktivera",
+      "containerVectorPolicy": "Containervektorprincip",
+      "containerFullTextSearchPolicy": "Princip för fulltextsökning för behållare",
+      "advanced": "Avancerat",
+      "mongoIndexingTooltip": "Fältet _id indexeras som standard. Att skapa ett jokerteckenindex för alla fält optimerar frågorna och rekommenderas för utveckling.",
+      "createWildcardIndex": "Skapa ett jokerteckenindex för alla fält",
+      "legacySdkCheckbox": "Mitt program använder en äldre Cosmos .NET- eller Java SDK-version (.NET V1 eller Java V2)",
+      "legacySdkInfo": "För att säkerställa kompatibilitet med äldre SDK:er använder den skapade containern ett äldre partitioneringsschema som stöder partitionsnyckelvärden med endast storlek upp till 101 byte. Om detta är aktiverat kan du inte använda hierarkiska partitionsnycklar.",
+      "indexingOnInfo": "Alla egenskaper i dina dokument indexeras som standard för flexibla och effektiva frågor.",
+      "indexingOffInfo": "Indexering inaktiveras. Rekommenderas om du inte behöver köra frågor eller bara har nyckelvärdesåtgärder.",
+      "indexingOffWarning": "Genom att skapa den här containern med indexering inaktiverad kan du inte göra några ändringar i indexeringsprincipen. Indexeringsändringar tillåts bara för en container med en indexeringsprincip.",
+      "acknowledgeSpendErrorMonthly": "Bekräfta den uppskattade månadskostnaden.",
+      "acknowledgeSpendErrorDaily": "Bekräfta den uppskattade dagliga kostnaden.",
+      "unshardedMaxRuError": "Ej shardade samlingar stöder upp till 10 000 RU:er",
+      "acknowledgeShareThroughputError": "Bekräfta den uppskattade kostnaden för det här dedikerade dataflödet.",
+      "vectorPolicyError": "Åtgärda fel i containervektorprincipen",
+      "fullTextSearchPolicyError": "Åtgärda felen i containerns fulltextsökningsprincip.",
+      "addingSampleDataSet": "Lägger till exempeldatauppsättning",
+      "databaseFieldLabelName": "Namn på databas",
+      "databaseFieldLabelId": "Databas-ID",
+      "newDatabaseIdPlaceholder": "Skriv ett nytt databas-ID",
+      "newDatabaseIdAriaLabel": "Nytt databas-ID, skriv ett nytt databas-ID",
+      "createNewDatabaseAriaLabel": "Skapa ny databas",
+      "useExistingDatabaseAriaLabel": "Använd befintlig databas",
+      "chooseExistingDatabase": "Använd en befintlig databas",
+      "teachingBubble": {
+        "step1Headline": "Skapa exempeldatabas",
+        "step1Body": "Databasen är överordnad en container. Du kan skapa en ny databas eller använda en befintlig databas. I den här självstudien skapar vi en ny databas med namnet SampleDB.",
+        "step1LearnMore": "Läs mer om resurser.",
+        "step2Headline": "Anger dataflöde",
+        "step2Body": "Cosmos DB rekommenderar att du delar dataflödet över databasen. Med autoskalning får du ett flexibelt dataflöde baserat på den maximala RU/s-uppsättningen (enheter för programbegäran).",
+        "step2LearnMore": "Läs mer om RU/s.",
+        "step3Headline": "Namnge container",
+        "step3Body": "Namnge din container",
+        "step4Headline": "Anger partitionsnyckel",
+        "step4Body": "Sista steget – du måste definiera en partitionsnyckel för din samling. /address har valts för det här exemplet. En bra partitionsnyckel bör ha ett brett utbud av möjliga värden",
+        "step4CreateContainer": "Skapa container",
+        "step5Headline": "Skapar exempelcontainer",
+        "step5Body": "Nu skapas en exempelcontainer och vi lägger till exempeldata åt dig. Det bör ta ungefär 1 minut.",
+        "step5BodyFollowUp": "När exempelcontainern har skapats granskar du exempeldatauppsättningen och följer nästa steg",
+        "stepOfTotal": "Steg {{current}} av {{total}}"
+      }
+    },
+    "addCollectionUtility": {
+      "shardKeyTooltip": "Shard-nyckeln (fältet) används för att dela dina data över många replikuppsättningar (shards) för att uppnå obegränsad skalbarhet. Det är viktigt att välja ett fält som distribuerar dina data jämnt.",
+      "partitionKeyTooltip": "{{partitionKeyName}} används för att automatiskt distribuera data över partitioner för skalbarhet. Välj en egenskap i JSON-dokumentet som har ett stort antal värden och distribuerar begärandevolymen jämnt.",
+      "partitionKeyTooltipSqlSuffix": " För små lästunga arbetsbelastningar eller skrivtunga arbetsbelastningar av alla storlekar är id ofta ett bra val.",
+      "shardKeyLabel": "Shard-nyckel",
+      "partitionKeyLabel": "Partitionsnyckel",
+      "shardKeyPlaceholder": "t.ex. categoryId",
+      "partitionKeyPlaceholderDefault": "t.ex. /address",
+      "partitionKeyPlaceholderFirst": "Obligatoriskt – den första partitionsnyckeln, t.ex. /TenantId",
+      "partitionKeyPlaceholderSecond": "den andra partitionsnyckeln, t.ex. /UserId",
+      "partitionKeyPlaceholderThird": "tredje partitionsnyckeln, t.ex. /SessionId",
+      "partitionKeyPlaceholderGraph": "t. ex. /address/zipCode",
+      "uniqueKeysTooltip": "Med unika nycklar kan utvecklare lägga till ett lager med dataintegritet i databasen. Genom att skapa en unik nyckelprincip när en container skapas ser du till att ett eller flera värden per partitionsnyckel är unika.",
+      "uniqueKeysLabel": "Unika nycklar",
+      "analyticalStoreLabel": "Analyslager",
+      "analyticalStoreTooltip": "Aktivera analyslagringsfunktionen för att utföra analyser i nära realtid på dina driftdata, utan att påverka prestandan för transaktionsarbetsbelastningar.",
+      "analyticalStoreDescription": "Aktivera analyslagringsfunktionen för att utföra analyser i nära realtid på dina driftdata, utan att påverka prestandan för transaktionsarbetsbelastningar.",
+      "vectorPolicyTooltip": "Beskriv alla egenskaper i dina data som innehåller vektorer, så att de kan göras tillgängliga för likhetsfrågor."
+    },
+    "settings": {
+      "pageOptions": "Sidalternativ",
+      "pageOptionsDescription": "Välj Anpassat för att ange ett fast antal frågeresultat som ska visas, eller välj Obegränsat för att visa så många frågeresultat som möjligt per sida.",
+      "queryResultsPerPage": "Frågeresultat per sida",
+      "queryResultsPerPageTooltip": "Ange antalet frågeresultat som ska visas per sida.",
+      "customQueryItemsPerPage": "Anpassade frågeobjekt per sida",
+      "custom": "Anpassat",
+      "unlimited": "Obegränsat",
+      "entraIdRbac": "Aktivera Entra ID RBAC",
+      "entraIdRbacDescription": "Välj Automatisk om du vill aktivera Entra ID RBAC automatiskt. Sant/falskt för att framtvinga aktivering/inaktivering av Entra ID RBAC.",
+      "true": "Sant",
+      "false": "Falskt",
+      "regionSelection": "Regionval",
+      "regionSelectionDescription": "Ändrar regionen som Cosmos-klienten använder för att komma åt kontot.",
+      "selectRegion": "Välj region",
+      "selectRegionTooltip": "Ändrar den kontoslutpunkt som används för att utföra klientåtgärder.",
+      "globalDefault": "Globalt (standardvärde)",
+      "readWrite": "(Läs/skriv)",
+      "read": "(Läs)",
+      "queryTimeout": "Timeout för fråga",
+      "queryTimeoutDescription": "När en fråga når en angiven tidsgräns visas ett popup-fönster med ett alternativ för att avbryta frågan om inte automatisk annullering har aktiverats.",
+      "enableQueryTimeout": "Aktivera tidsgräns för fråga",
+      "queryTimeoutMs": "Tidsgräns för fråga (ms)",
+      "automaticallyCancelQuery": "Avbryt frågan automatiskt efter tidsgräns",
+      "ruLimit": "RU-gräns",
+      "ruLimitDescription": "Om en fråga överskrider en konfigurerad RU-gräns avbryts frågan.",
+      "enableRuLimit": "Aktivera RU-gräns",
+      "ruLimitLabel": "RU-gräns (RU)",
+      "defaultQueryResults": "Standardvy för frågeresultat",
+      "defaultQueryResultsDescription": "Välj den standardvy som ska användas när frågeresultat visas.",
+      "retrySettings": "Inställningar för nya försök",
+      "retrySettingsDescription": "Återförsöksprincip som är associerad med begränsade begäranden under CosmosDB-frågor.",
+      "maxRetryAttempts": "Maximalt antal återförsök",
+      "maxRetryAttemptsTooltip": "Maximalt antal återförsök som ska utföras för en begäran. Standardvärde 9.",
+      "fixedRetryInterval": "Fast återförsöksintervall (ms)",
+      "fixedRetryIntervalTooltip": "Fast återförsöksintervall i millisekunder att vänta mellan varje försök, oavsett retryAfter-värdet som returneras i svaret. Standardvärdet är 0 millisekunder.",
+      "maxWaitTime": "Maximal väntetid (s)",
+      "maxWaitTimeTooltip": "Maximal väntetid i sekunder för en begäran medan nya försök görs. Standardvärde 30 sekunder.",
+      "enableContainerPagination": "Aktivera containenumrering",
+      "enableContainerPaginationDescription": "Läs in 50 containrar åt gången. För närvarande hämtas inte containrar i alfanumerisk ordning.",
+      "enableCrossPartitionQuery": "Aktivera fråga mellan partitioner",
+      "enableCrossPartitionQueryDescription": "Skicka mer än en begäran medan du kör en fråga. Mer än en begäran krävs om frågan inte är begränsad till värdet för en enskild partitionsnyckel.",
+      "maxDegreeOfParallelism": "Maximal grad av parallellitet",
+      "maxDegreeOfParallelismDescription": "Hämtar eller anger antalet samtidiga åtgärder som körs på klientsidan under parallell frågekörning. Ett positivt egenskapsvärde begränsar antalet samtidiga åtgärder till det angivna värdet. Om den är inställd på mindre än 0 bestämmer systemet automatiskt antalet samtidiga åtgärder som ska köras.",
+      "maxDegreeOfParallelismQuery": "Fråga upp till maximal parallellitetsgrad.",
+      "priorityLevel": "Prioritetsnivå",
+      "priorityLevelDescription": "Anger prioritetsnivån för dataplansbegäranden från datautforskaren när prioritetsbaserad körning används. Om Ingen är markerat anger datautforskaren inte prioritetsnivå och standardprioritetsnivån på serversidan används.",
+      "displayGremlinQueryResults": "Visa Gremlin-frågeresultat som:",
+      "displayGremlinQueryResultsDescription": "Välj Diagram för att automatiskt visualisera frågeresultaten som ett diagram eller JSON för att visa resultaten som JSON.",
+      "graph": "Graf",
+      "json": "JSON",
+      "graphAutoVisualization": "Automatisk grafvisualisering",
+      "enableSampleDatabase": "Aktivera exempeldatabas",
+      "enableSampleDatabaseDescription": "Det här är en exempeldatabas och samling med syntetiska produktdata som du kan använda för att utforska med hjälp av NoSQL-frågor. Detta visas som en annan databas i Data Explorer-gränssnittet och skapas av och underhålls av Microsoft utan kostnad för dig.",
+      "enableSampleDbAriaLabel": "Aktivera exempeldatabas för frågeutforskning",
+      "guidRepresentation": "Guid-representation",
+      "guidRepresentationDescription": "GuidRepresentation i MongoDB syftar på hur globalt unika identifierare (GUID) serialiseras och avserialiseras när de lagras i BSON-dokument. Detta gäller för alla dokumentåtgärder.",
+      "advancedSettings": "Avancerade inställningar",
+      "ignorePartitionKey": "Ignorera partitionsnyckel vid dokumentuppdatering",
+      "ignorePartitionKeyTooltip": "Om det här alternativet är markerat används inte partitionsnyckelvärdet för att hitta dokumentet under uppdateringsåtgärderna. Använd endast detta om dokumentuppdateringar misslyckas på grund av en onormal partitionsnyckel.",
+      "clearHistory": "Rensa historiken",
+      "clearHistoryConfirm": "Vill du fortsätta?",
+      "clearHistoryDescription": "Den här åtgärden rensar alla anpassningar för det här kontot i den här webbläsaren, inklusive:",
+      "clearHistoryTabLayout": "Återställ din anpassade fliklayout, inklusive delningspositionerna",
+      "clearHistoryTableColumns": "Radera inställningarna för tabellkolumner, inklusive eventuella anpassade kolumner",
+      "clearHistoryFilters": "Rensa filterhistoriken",
+      "clearHistoryRegion": "Återställ val av region till global",
+      "increaseValueBy1000": "Öka värdet med 1000",
+      "decreaseValueBy1000": "Minska värdet med 1000",
+      "none": "Inget",
+      "low": "Låg",
+      "high": "Hög",
+      "automatic": "Automatisk",
+      "enhancedQueryControl": "Förbättrad frågekontroll",
+      "enableQueryControl": "Aktivera frågekontroll",
+      "explorerVersion": "Explorer-version",
+      "accountId": "Konto-id",
+      "sessionId": "Sessions-id",
+      "popupsDisabledError": "Det gick inte att upprätta auktorisering för det här kontot eftersom popup-fönster är blockerade i webbläsaren.\nAktivera popup-fönster för den här webbplatsen och klicka på knappen Logga in för Entra ID",
+      "failedToAcquireTokenError": "Det gick inte att hämta auktoriseringstoken automatiskt. Klicka på knappen Logga in för Entra ID för att aktivera Entra ID RBAC-åtgärder."
+    },
+    "saveQuery": {
+      "panelTitle": "Spara fråga",
+      "setupCostMessage": "Av efterlevnadsskäl sparar vi frågor i en container i ditt Azure Cosmos-konto, i en separat databas som heter {{databaseName}}. För att kunna fortsätta måste vi skapa en container på ditt konto. Den uppskattade extra kostnaden är 0,77 USD per dag.",
+      "completeSetup": "Slutför installationen",
+      "noQueryNameError": "Inget frågenamn har angetts",
+      "invalidQueryContentError": "Ogiltigt frågeinnehåll har angetts",
+      "failedToSaveQueryError": "Det gick inte att spara frågan {{queryName}}",
+      "failedToSetupContainerError": "Det gick inte att konfigurera en container för sparade frågor",
+      "accountNotSetupError": "Det gick inte att spara frågan: kontot har inte konfigurerats för att spara frågor",
+      "name": "Namn"
+    },
+    "loadQuery": {
+      "noFileSpecifiedError": "Ingen fil har angetts",
+      "failedToLoadQueryError": "Det gick inte att läsa in fråga",
+      "failedToLoadQueryFromFileError": "Det gick inte att läsa in frågan från filen {{fileName}}",
+      "selectFilesToOpen": "Välj ett frågedokument",
+      "browseFiles": "Bläddra"
+    },
+    "executeStoredProcedure": {
+      "enterInputParameters": "Ange indataparametrar (om sådana finns)",
+      "key": "Nyckel",
+      "param": "Param.",
+      "partitionKeyValue": "Partitionsnyckelvärde",
+      "value": "Värde",
+      "addNewParam": "Lägg till ny param",
+      "addParam": "Lägg till param",
+      "deleteParam": "Ta bort param",
+      "invalidParamError": "Ogiltig param har angetts: {{invalidParam}}",
+      "invalidParamConsoleError": "Ogiltig param har angetts: {{invalidParam}} är inte ett giltigt literalvärde",
+      "stringType": "Sträng",
+      "customType": "Anpassat"
+    },
+    "uploadItems": {
+      "noFilesSpecifiedError": "Inga filer har angetts. Ange minst en fil.",
+      "selectJsonFiles": "Välj JSON-filer",
+      "selectJsonFilesTooltip": "Välj en eller flera JSON-filer att ladda upp. Varje fil kan innehålla ett enda JSON-dokument eller en matris med JSON-dokument. Den kombinerade storleken för alla filer i en enskild uppladdningsåtgärd måste vara mindre än 2 MB. Du kan utföra flera uppladdningsåtgärder för större datauppsättningar.",
+      "fileNameColumn": "FILNAMN",
+      "statusColumn": "STATUS",
+      "uploadStatus": "{{numSucceeded}} skapades,  {{numThrottled}} begränsades,  {{numFailed}} fel",
+      "uploadedFiles": "Uppladdade filer"
+    },
+    "copyNotebook": {
+      "copyFailedError": "Det gick inte att kopiera {{name}} till {{destination}}",
+      "uploadFailedError": "Det gick inte att ladda upp {{name}}",
+      "location": "Plats",
+      "locationAriaLabel": "Plats",
+      "selectLocation": "Välj en plats för anteckningsbok att kopiera",
+      "name": "Namn"
+    },
+    "publishNotebook": {
+      "publishFailedError": "Det gick inte att publicera {{notebookName}} till galleriet",
+      "publishDescription": "När den här anteckningsboken publiceras visas den i det offentliga galleriet för Azure Cosmos DB notebook-filer. Kontrollera att du har tagit bort känsliga data eller utdata innan du publicerar.",
+      "publishPrompt": "Vill du publicera och dela {{name}} till galleriet?",
+      "coverImage": "Omslagsbild",
+      "coverImageUrl": "URL för omslagsbild",
+      "name": "Namn",
+      "description": "Beskrivning",
+      "tags": "Taggar",
+      "tagsPlaceholder": "Valfri tagg 1, valfri tagg 2",
+      "preview": "Förhandsversion",
+      "urlType": "Webbadress",
+      "customImage": "Anpassad avbildning",
+      "takeScreenshot": "Ta skärmbild",
+      "useFirstDisplayOutput": "Använd första visningsutdata",
+      "failedToCaptureOutput": "Det gick inte att samla in första utdata",
+      "outputDoesNotExist": "Utdata finns inte för någon av cellerna.",
+      "failedToConvertError": "Det gick inte att konvertera {{fileName}} till base64-format",
+      "failedToUploadError": "Det gick inte att ladda upp {{fileName}}"
+    },
+    "changePartitionKey": {
+      "failedToStartError": "Det gick inte att starta dataöverföringsjobbet",
+      "suboptimalPartitionKeyError": "Varning! Systemet har upptäckt att din samling kanske använder en suboptimal partitionsnyckel",
+      "description": "När du ändrar en containers partitionsnyckel måste du skapa en målcontainer med rätt partitionsnyckel. Du kan också välja en befintlig målcontainer.",
+      "sourceContainerId": "Käll-id {{collectionName}}",
+      "destinationContainerId": "Mål-{{collectionName}}-ID",
+      "collectionIdTooltip": "Unik identifierare för {{collectionName}} och används för ID-baserad routning via REST och alla SDK:er.",
+      "collectionIdPlaceholder": "t.ex. {{collectionName}}1",
+      "collectionIdAriaLabel": "{{collectionName}}-ID, exempel {{collectionName}}1",
+      "existingContainers": "Befintliga containrar",
+      "partitionKeyWarning": "Målcontainern får inte redan finnas. Datautforskaren skapar en ny målcontainer åt dig."
+    },
+    "cassandraAddCollection": {
+      "keyspaceLabel": "Namn på nyckelutrymme",
+      "keyspaceTooltip": "Välj ett befintligt nyckelutrymme eller ange ett nytt nyckelområdes-ID.",
+      "tableIdLabel": "Ange CQL-kommandot för att skapa tabellen.",
+      "enterTableId": "Ange tabell-Id",
+      "tableSchemaAriaLabel": "Tabellschema",
+      "provisionDedicatedThroughput": "Etablera dedikerat dataflöde för den här tabellen",
+      "provisionDedicatedThroughputTooltip": "Du kan också etablera dedikerat dataflöde för en tabell i ett nyckelområde som har etablerat dataflöde. Det här dedikerade dataflödesbeloppet delas inte med andra tabeller i nyckelområdet och räknas inte in i det dataflöde som du etablerade för nyckelområdet. Det här dataflödesbeloppet faktureras utöver det dataflödesbelopp som du etablerade på nyckelområdesnivå."
+    },
+    "tables": {
+      "addProperty": "Lägg till egenskap",
+      "addRow": "Lägg till rad",
+      "addEntity": "Lägg till entitet",
+      "back": "tillbaka",
+      "nullFieldsWarning": "Varning! Null-fält visas inte för redigering.",
+      "propertyEmptyError": "{{property}} måste anges Ange ett värde för {{property}}",
+      "whitespaceError": "{{property}} får inte innehålla blanksteg. Ange ett värde för {{property}} utan blanksteg",
+      "propertyTypeEmptyError": "Egenskapstypen får inte vara tom. Välj en typ i listrutan för egenskapen {{property}}"
+    },
+    "tableQuerySelect": {
+      "selectColumns": "Välj de kolumner som du vill fråga.",
+      "availableColumns": "Tillgängliga kolumner"
+    },
+    "tableColumnSelection": {
+      "selectColumns": "Välj vilka kolumner som ska visas i vyn över objekt i containern.",
+      "searchFields": "Sökfält",
+      "reset": "Återställ",
+      "partitionKeySuffix": " (partitionsnyckel)"
+    },
+    "newVertex": {
+      "addProperty": "Lägg till egenskap"
+    },
+    "addGlobalSecondaryIndex": {
+      "globalSecondaryIndexId": "Container-ID för globalt sekundärt index",
+      "globalSecondaryIndexIdPlaceholder": "t.ex. indexbyEmailId",
+      "projectionQuery": "Projektionsfråga",
+      "projectionQueryPlaceholder": "VÄLJ c.email, c.accountId FRÅN c",
+      "projectionQueryTooltip": "Läs mer om att definiera globala sekundära index.",
+      "disabledTitle": "Ett globalt sekundärt index skapas redan. Vänta tills den har slutförts innan du skapar en till."
+    },
+    "stringInput": {
+      "inputMismatchError": "Indata {{input}} matchar inte den valda {{selectedId}}"
+    },
+    "panelInfo": {
+      "information": "Information",
+      "moreDetails": "Mer information"
+    }
+  },
+  "controls": {
+    "settings": {
+      "tabTitles": {
+        "scale": "Skala",
+        "conflictResolution": "Lösning av konflikt",
+        "settings": "Inställningar",
+        "indexingPolicy": "Indexeringspolicy",
+        "partitionKeys": "Partitionsnycklar",
+        "partitionKeysPreview": "Partitionsnycklar (förhandsversion)",
+        "computedProperties": "Beräknade egenskaper",
+        "containerPolicies": "Containerprinciper",
+        "throughputBuckets": "Dataflödesbuckets",
+        "globalSecondaryIndexPreview": "Globalt sekundärt index (förhandsversion)",
+        "maskingPolicyPreview": "Namngivningsprincip (förhandsversion)"
+      },
+      "mongoNotifications": {
+        "selectTypeWarning": "Välj en typ för varje index.",
+        "enterFieldNameError": "Ange ett fältnamn.",
+        "wildcardPathError": "Jokerteckensökvägen finns inte i fältnamnet. Använd ett mönster som "
+      },
+      "partitionKey": {
+        "shardKey": "Shard-nyckel",
+        "partitionKey": "Partitionsnyckel",
+        "shardKeyTooltip": "Shard-nyckeln (fältet) används för att dela dina data över många replikuppsättningar (shards) för att uppnå obegränsad skalbarhet. Det är viktigt att välja ett fält som distribuerar dina data jämnt.",
+        "partitionKeyTooltip": "används för att automatiskt distribuera data över partitioner för skalbarhet. Välj en egenskap i JSON-dokumentet som har ett stort antal värden och distribuerar begärandevolymen jämnt.",
+        "sqlPartitionKeyTooltipSuffix": " För små lästunga arbetsbelastningar eller skrivtunga arbetsbelastningar av alla storlekar är id ofta ett bra val.",
+        "partitionKeySubtext": "För små arbetsbelastningar är objekt-ID ett lämpligt val för partitionsnyckeln.",
+        "mongoPlaceholder": "t.ex. categoryId",
+        "gremlinPlaceholder": "t.ex. /address",
+        "sqlFirstPartitionKey": "Obligatoriskt – den första partitionsnyckeln, t.ex. /TenantId",
+        "sqlSecondPartitionKey": "den andra partitionsnyckeln, t.ex. /UserId",
+        "sqlThirdPartitionKey": "tredje partitionsnyckeln, t.ex. /SessionId",
+        "defaultPlaceholder": "t. ex. /address/zipCode"
+      },
+      "costEstimate": {
+        "title": "Kostnadsuppskattning",
+        "howWeCalculate": "Hur vi beräknar detta",
+        "updatedCostPerMonth": "Uppdaterad kostnad per månad",
+        "currentCostPerMonth": "Aktuell kostnad per månad",
+        "perRu": "/RU",
+        "perHour": "/tim",
+        "perDay": "/dag",
+        "perMonth": "/mån"
+      },
+      "throughput": {
+        "manualToAutoscaleDisclaimer": "Den första autoskalningsgränsen för RU/s bestäms av systemet baserat på de aktuella manuella dataflödesinställningarna och lagringen av resursen. När autoskalning har aktiverats kan du ändra max antal RU/s.",
+        "ttlWarningText": "Systemet tar automatiskt bort objekt baserat på TTL-värdet (i sekunder) som du anger, utan att en borttagningsåtgärd uttryckligen behöver utfärdas av ett klientprogram. Mer information finns i",
+        "ttlWarningLinkText": "Time to Live (TTL) i Azure Cosmos DB",
+        "unsavedIndexingPolicy": "indexeringspolicy",
+        "unsavedDataMaskingPolicy": "datamaskeringsprincip",
+        "unsavedComputedProperties": "beräknade egenskaper",
+        "unsavedEditorWarningPrefix": "Du har inte sparat de senaste ändringarna i din",
+        "unsavedEditorWarningSuffix": ". Bekräfta ändringarna genom att klicka på Spara.",
+        "updateDelayedApplyWarning": "Du är på väg att begära ett ökat dataflöde utöver den förallokerade kapaciteten. Den här åtgärden tar lite tid att slutföra.",
+        "scalingUpDelayMessage": "Det tar 4–6 timmar att skala upp eftersom det överskrider det som Azure Cosmos DB direkt kan stödja baserat på antalet fysiska partitioner. Du kan öka ditt dataflöde för att {{instantMaximumThroughput}} omedelbart eller fortsätta med det här värdet och vänta tills uppskalningen har slutförts.",
+        "exceedPreAllocatedMessage": "Din begäran om att öka dataflödet överskrider den förallokerade kapaciteten, vilket kan ta längre tid än förväntat. Det finns tre alternativ som du kan välja mellan för att fortsätta:",
+        "instantScaleOption": "Du kan skala upp till {{instantMaximumThroughput}} RU/s direkt.",
+        "asyncScaleOption": "Du kan asynkront skala upp till valfritt värde under {{maximumThroughput}} RU/s på 4–6 timmar.",
+        "quotaMaxOption": "Den aktuella kvotgränsen är {{maximumThroughput}} RU/s. Om du vill överskrida den här gränsen måste du begära en kvotökning och Azure Cosmos DB team kommer att granska.",
+        "belowMinimumMessage": "Du kan inte sänka dataflödet under det aktuella minimivärdet {{minimum}} på RU/s. Mer information om den här gränsen finns i vår dokumentation om tjänstcitat.",
+        "saveThroughputWarning": "Din faktura påverkas när du uppdaterar dina dataflödesinställningar. Granska den uppdaterade kostnadsuppskattningen nedan innan du sparar ändringarna",
+        "currentAutoscaleThroughput": "Aktuellt dataflöde för autoskalning:",
+        "targetAutoscaleThroughput": "Dataflöde för automatisk målskalning:",
+        "currentManualThroughput": "Aktuellt manuellt dataflöde:",
+        "targetManualThroughput": "Manuellt måldataflöde:",
+        "applyDelayedMessage": "Begäran om att öka dataflödet har skickats. Den här åtgärden tar 1–3 arbetsdagar att slutföra. Visa den senaste statusen i Meddelanden.",
+        "databaseLabel": "Databas:",
+        "containerLabel": "Container:",
+        "applyShortDelayMessage": "En begäran om att öka dataflödet pågår för närvarande. Den här åtgärden tar lite tid att slutföra.",
+        "applyLongDelayMessage": "En begäran om att öka dataflödet pågår för närvarande. Den här åtgärden tar 1–3 arbetsdagar att slutföra. Visa den senaste statusen i Meddelanden.",
+        "throughputCapError": "Ditt konto har konfigurerats med en total dataflödesgräns på {{throughputCap}} RU/s. Det går inte att uppdatera eftersom det totala dataflödet skulle öka till {{newTotalThroughput}} RU/s. Ändra total dataflödesgräns i kostnadshantering.",
+        "throughputIncrementError": "Värdet måste vara i steg om 1000"
+      },
+      "conflictResolution": {
+        "lwwDefault": "Senaste skrivsegrar (standard)",
+        "customMergeProcedure": "Sammanslagningsprocedur (anpassad)",
+        "mode": "Läge",
+        "conflictResolverProperty": "Egenskap för konfliktresolver",
+        "storedProcedure": "Lagrad procedur",
+        "lwwTooltip": "Hämtar eller anger namnet på en heltalsegenskap i dina dokument som används för det LWW-baserade konfliktlösningsschemat (Last Write Wins). Som standard använder systemet den systemdefinierade tidsstämpelegenskapen _ts för att avgöra vem som vinner de motstridiga versionerna av dokumentet. Ange din egen heltalsegenskap om du vill åsidosätta standard tidsstämpelbaserade konfliktlösningen.",
+        "customTooltip": "Hämtar eller anger namnet på en lagrad procedur (även kallat sammanslagningsprocedur) för att lösa konflikterna. Du kan skriva programdefinierad logik för att fastställa vinnaren av de motstridiga versionerna av ett dokument. Den lagrade proceduren körs transaktionsmässigt, exakt en gång, på serversidan. Om du inte anger någon lagrad procedur fylls konflikterna i",
+        "customTooltipConflictsFeed": " konfliktflöde",
+        "customTooltipSuffix": ". Du kan när som helst uppdatera/omregistrera den lagrade proceduren."
+      },
+      "changeFeed": {
+        "label": "Ändra kvarhållningsprincip för flödeslogg",
+        "tooltip": "Aktivera kvarhållningsprincip för ändringsflödeslogg för att behålla de senaste 10 minuternas historik för objekt i containern som standard. För att stödja detta multipliceras ru-avgiften (request unit) för den här containern med en faktor på två för skrivningar. Läsningar påverkas inte."
+      },
+      "mongoIndexing": {
+        "disclaimer": "För frågor som filtrerar på flera egenskaper skapar du flera index för ett enda fält i stället för ett sammansatt index.",
+        "disclaimerCompoundIndexesLink": " Sammansatta index ",
+        "disclaimerSuffix": "används endast för att sortera frågeresultat. Om du behöver lägga till ett sammansatt index kan du skapa ett med Hjälp av Mongo-gränssnittet.",
+        "compoundNotSupported": "Samlingar med sammansatta index stöds ännu inte i indexeringsredigeraren. Om du vill ändra indexeringsprincipen för den här samlingen använder du Mongo Shell.",
+        "aadError": "Om du vill använda redigeraren för indexeringsprincip loggar du in på",
+        "aadErrorLink": "azure portal.",
+        "refreshingProgress": "Uppdaterar förlopp för indexeringstransformationen",
+        "canMakeMoreChangesZero": "Du kan göra fler indexeringsändringar när den aktuella indextransformeringen är klar. ",
+        "refreshToCheck": "Uppdatera för att kontrollera om den har slutförts.",
+        "canMakeMoreChangesProgress": "Du kan göra fler indexeringsändringar när den aktuella indexomvandlingen har slutförts. Den är {{progress}} % slutförd. ",
+        "refreshToCheckProgress": "Uppdatera för att kontrollera förloppet.",
+        "definitionColumn": "Definition",
+        "typeColumn": "Typ",
+        "dropIndexColumn": "Ta bort index",
+        "addIndexBackColumn": "Lägg till index tillbaka",
+        "deleteIndexButton": "Knappen Ta bort index",
+        "addBackIndexButton": "Knappen Lägg till tillbaka index",
+        "currentIndexes": "Aktuellt index(es)",
+        "indexesToBeDropped": "Index som ska tas bort",
+        "indexFieldName": "Namn på indexfält",
+        "indexType": "Indextyp",
+        "selectIndexType": "Välj en indextyp",
+        "undoButton": "Knappen Ångra"
+      },
+      "subSettings": {
+        "timeToLive": "Time to Live",
+        "ttlOff": "Av",
+        "ttlOnNoDefault": "På (inte standard)",
+        "ttlOn": "På",
+        "seconds": "sekund(er)",
+        "timeToLiveInSeconds": "TTL-värde i sekunder",
+        "analyticalStorageTtl": "Analyslagring Time to Live",
+        "geospatialConfiguration": "Geospatial konfiguration",
+        "geography": "Geografiskt område",
+        "geometry": "Geometri",
+        "uniqueKeys": "Unika nycklar",
+        "mongoTtlMessage": "Om du vill aktivera TTL (Time To Live) för din samling/dina dokument",
+        "mongoTtlLinkText": "skapa ett TTL-index",
+        "partitionKeyTooltipTemplate": "Detta {{partitionKeyName}} används för att distribuera data över flera partitioner för skalbarhet. Värdet \"{{partitionKeyValue}}\" avgör hur dokument partitioneras.",
+        "largePartitionKeyEnabled": "Stor {{partitionKeyName}} har aktiverats.",
+        "hierarchicalPartitioned": "Hierarkiskt partitionerad container.",
+        "nonHierarchicalPartitioned": "Icke-hierarkiskt partitionerad container."
+      },
+      "scale": {
+        "freeTierInfo": "Med den kostnadsfria nivån får du de första {{ru}} RU/s och {{storage}} GB lagringsutrymmet i det här kontot kostnadsfritt. Om du vill hålla ditt konto kostnadsfritt behåller du det totala antalet RU/s för alla resurser i kontot till {{ru}} RU/s.",
+        "freeTierLearnMore": "Mer information.",
+        "throughputRuS": "Dataflöde (RU/s)",
+        "autoScaleCustomSettings": "Ditt konto har anpassade inställningar som förhindrar att dataflödet anges på containernivå. Kontakta din Cosmos DB tekniska team för att göra ändringar.",
+        "keyspaceSharedThroughput": "Den här tabellens delade dataflöde har konfigurerats i nyckelområdet",
+        "throughputRangeLabel": "Dataflöde ({{min}} – {{max}} RU/s)",
+        "unlimited": "obegränsat"
+      },
+      "partitionKeyEditor": {
+        "changePartitionKey": "Ändra {{partitionKeyName}}",
+        "currentPartitionKey": "Nuvarande {{partitionKeyName}}",
+        "partitioning": "Partitionering",
+        "hierarchical": "Hierarkiskt",
+        "nonHierarchical": "Icke-hierarkisk",
+        "safeguardWarning": "Skydda integriteten för de data som kopieras till den nya containern genom att se till att inga uppdateringar görs i källcontainern under hela processen för ändring av partitionsnyckel.",
+        "changeDescription": "Om du vill ändra partitionsnyckeln måste du skapa en ny målcontainer eller välja en befintlig målcontainer. Data kopieras sedan till målcontainern.",
+        "changeButton": "Ändra",
+        "changeJob": "{{partitionKeyName}} ändra jobb",
+        "cancelButton": "Avbryt",
+        "documentsProcessed": "({{processedCount}} av {{totalCount}} bearbetade dokument)"
+      },
+      "computedProperties": {
+        "ariaLabel": "Beräknade egenskaper",
+        "learnMorePrefix": "om hur du definierar beräknade egenskaper och hur du använder dem."
+      },
+      "indexingPolicy": {
+        "ariaLabel": "Indexeringspolicy"
+      },
+      "dataMasking": {
+        "ariaLabel": "Datamaskeringsprincip",
+        "validationFailed": "Verifieringen misslyckades:",
+        "includedPathsRequired": "includedPaths krävs",
+        "includedPathsMustBeArray": "includedPaths måste vara en matris",
+        "excludedPathsMustBeArray": "excludedPaths måste vara en matris om den tillhandahålls"
+      },
+      "containerPolicy": {
+        "vectorPolicy": "Vektorprincip",
+        "fullTextPolicy": "Fulltextprincip",
+        "createFullTextPolicy": "Skapa ny fulltextsökningsprincip"
+      },
+      "globalSecondaryIndex": {
+        "indexesDefined": "Följande index har definierats för den här containern.",
+        "learnMoreSuffix": "om hur du definierar globala sekundära index och hur du använder dem.",
+        "jsonAriaLabel": "JSON för globalt sekundärt index",
+        "addIndex": "Lägg till index",
+        "settingsTitle": "Inställningar för globalt sekundärt index",
+        "sourceContainer": "Källcontainer",
+        "indexDefinition": "Global sekundär indexdefinition"
+      },
+      "indexingPolicyRefresh": {
+        "refreshFailed": "Det gick inte att uppdatera förloppet för indextransformering"
+      },
+      "throughputInput": {
+        "autoscale": "Autoskalning",
+        "manual": "Manuellt",
+        "minimumRuS": "Lägsta RU/s",
+        "maximumRuS": "Max RU/s",
+        "x10Equals": "x 10 =",
+        "storageCapacity": "Lagringskapacitet",
+        "fixed": "Åtgärdat",
+        "unlimited": "Obegränsat",
+        "instant": "Omedelbar",
+        "fourToSixHrs": "4-6 timmar",
+        "autoscaleDescription": "Baserat på användning skalas ditt {{resourceType}} dataflöde från",
+        "freeTierWarning": "Faktureringen gäller om du etablerar mer än {{ru}} RU/s manuellt dataflöde, eller om resursen skalas bortom {{ru}} RU/s med autoskalning.",
+        "capacityCalculator": "Beräkna din begärda RU/s med",
+        "capacityCalculatorLink": " Kapacitetskalkylator",
+        "fixedStorageNote": "När du använder en samling med fast lagringskapacitet kan du konfigurera upp till 10 000 RU/s.",
+        "min": "min",
+        "max": "högst"
+      },
+      "throughputBuckets": {
+        "label": "Dataflödesbuckets",
+        "bucketLabel": "Bucket {{id}}",
+        "dataExplorerQueryBucket": " (Datautforskaren frågebucket)",
+        "active": "Aktiv",
+        "inactive": "Inaktivt"
+      }
+    }
+  }
+}

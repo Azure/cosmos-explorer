@@ -42,6 +42,7 @@ import {
 } from "Explorer/Panes/AddCollectionPanel/AddCollectionPanelUtility";
 import { useSidePanel } from "hooks/useSidePanel";
 import { useTeachingBubble } from "hooks/useTeachingBubble";
+import { Keys, t } from "Localization";
 import { DEFAULT_FABRIC_NATIVE_CONTAINER_THROUGHPUT, isFabricNative } from "Platform/Fabric/FabricUtil";
 import React from "react";
 import { CollectionCreation } from "Shared/Constants";
@@ -177,31 +178,31 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             messageType="info"
             showErrorDetails={false}
             link={Constants.Urls.freeTierInformation}
-            linkText="Learn more"
+            linkText={t(Keys.common.learnMore)}
           />
         )}
 
         {this.state.teachingBubbleStep === 1 && (
           <TeachingBubble
-            headline="Create sample database"
+            headline={t(Keys.panes.addCollection.teachingBubble.step1Headline)}
             target={"#newDatabaseId"}
             calloutProps={{ gapSpace: 16 }}
-            primaryButtonProps={{ text: "Next", onClick: () => this.setState({ teachingBubbleStep: 2 }) }}
-            secondaryButtonProps={{ text: "Cancel", onClick: () => this.setState({ teachingBubbleStep: 0 }) }}
+            primaryButtonProps={{ text: t(Keys.common.next), onClick: () => this.setState({ teachingBubbleStep: 2 }) }}
+            secondaryButtonProps={{
+              text: t(Keys.common.cancel),
+              onClick: () => this.setState({ teachingBubbleStep: 0 }),
+            }}
             onDismiss={() => this.setState({ teachingBubbleStep: 0 })}
-            footerContent="Step 1 of 4"
+            footerContent={t(Keys.panes.addCollection.teachingBubble.stepOfTotal, { current: "1", total: "4" })}
           >
             <Stack>
-              <Text style={{ color: "white" }}>
-                Database is the parent of a container. You can create a new database or use an existing one. In this
-                tutorial we are creating a new database named SampleDB.
-              </Text>
+              <Text style={{ color: "white" }}>{t(Keys.panes.addCollection.teachingBubble.step1Body)}</Text>
               <Link
                 style={{ color: "white", fontWeight: 600 }}
                 target="_blank"
                 href="https://aka.ms/TeachingbubbleResources"
               >
-                Learn more about resources.
+                {t(Keys.panes.addCollection.teachingBubble.step1LearnMore)}
               </Link>
             </Stack>
           </TeachingBubble>
@@ -209,21 +210,21 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
         {this.state.teachingBubbleStep === 2 && (
           <TeachingBubble
-            headline="Setting throughput"
+            headline={t(Keys.panes.addCollection.teachingBubble.step2Headline)}
             target={"#autoscaleRUValueField"}
             calloutProps={{ gapSpace: 16 }}
-            primaryButtonProps={{ text: "Next", onClick: () => this.setState({ teachingBubbleStep: 3 }) }}
-            secondaryButtonProps={{ text: "Previous", onClick: () => this.setState({ teachingBubbleStep: 1 }) }}
+            primaryButtonProps={{ text: t(Keys.common.next), onClick: () => this.setState({ teachingBubbleStep: 3 }) }}
+            secondaryButtonProps={{
+              text: t(Keys.common.previous),
+              onClick: () => this.setState({ teachingBubbleStep: 1 }),
+            }}
             onDismiss={() => this.setState({ teachingBubbleStep: 0 })}
-            footerContent="Step 2 of 4"
+            footerContent={t(Keys.panes.addCollection.teachingBubble.stepOfTotal, { current: "2", total: "4" })}
           >
             <Stack>
-              <Text style={{ color: "white" }}>
-                Cosmos DB recommends sharing throughput across database. Autoscale will give you a flexible amount of
-                throughput based on the max RU/s set (Request Units).
-              </Text>
+              <Text style={{ color: "white" }}>{t(Keys.panes.addCollection.teachingBubble.step2Body)}</Text>
               <Link style={{ color: "white", fontWeight: 600 }} target="_blank" href="https://aka.ms/teachingbubbleRU">
-                Learn more about RU/s.
+                {t(Keys.panes.addCollection.teachingBubble.step2LearnMore)}
               </Link>
             </Stack>
           </TeachingBubble>
@@ -231,36 +232,41 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
         {this.state.teachingBubbleStep === 3 && (
           <TeachingBubble
-            headline="Naming container"
+            headline={t(Keys.panes.addCollection.teachingBubble.step3Headline)}
             target={"#collectionId"}
             calloutProps={{ gapSpace: 16 }}
-            primaryButtonProps={{ text: "Next", onClick: () => this.setState({ teachingBubbleStep: 4 }) }}
-            secondaryButtonProps={{ text: "Previous", onClick: () => this.setState({ teachingBubbleStep: 2 }) }}
+            primaryButtonProps={{ text: t(Keys.common.next), onClick: () => this.setState({ teachingBubbleStep: 4 }) }}
+            secondaryButtonProps={{
+              text: t(Keys.common.previous),
+              onClick: () => this.setState({ teachingBubbleStep: 2 }),
+            }}
             onDismiss={() => this.setState({ teachingBubbleStep: 0 })}
-            footerContent="Step 3 of 4"
+            footerContent={t(Keys.panes.addCollection.teachingBubble.stepOfTotal, { current: "3", total: "4" })}
           >
-            Name your container
+            {t(Keys.panes.addCollection.teachingBubble.step3Body)}
           </TeachingBubble>
         )}
 
         {this.state.teachingBubbleStep === 4 && (
           <TeachingBubble
-            headline="Setting partition key"
+            headline={t(Keys.panes.addCollection.teachingBubble.step4Headline)}
             target={"#addCollection-partitionKeyValue"}
             calloutProps={{ gapSpace: 16 }}
             primaryButtonProps={{
-              text: "Create container",
+              text: t(Keys.panes.addCollection.teachingBubble.step4CreateContainer),
               onClick: () => {
                 this.setState({ teachingBubbleStep: 5 });
                 this.submit();
               },
             }}
-            secondaryButtonProps={{ text: "Previous", onClick: () => this.setState({ teachingBubbleStep: 2 }) }}
+            secondaryButtonProps={{
+              text: t(Keys.common.previous),
+              onClick: () => this.setState({ teachingBubbleStep: 2 }),
+            }}
             onDismiss={() => this.setState({ teachingBubbleStep: 0 })}
-            footerContent="Step 4 of 4"
+            footerContent={t(Keys.panes.addCollection.teachingBubble.stepOfTotal, { current: "4", total: "4" })}
           >
-            Last step - you will need to define a partition key for your collection. /address was chosen for this
-            particular example. A good partition key should have a wide range of possible value
+            {t(Keys.panes.addCollection.teachingBubble.step4Body)}
           </TeachingBubble>
         )}
 
@@ -270,21 +276,23 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               <Stack horizontal>
                 <span className="mandatoryStar">*&nbsp;</span>
                 <Text className="panelTextBold" variant="small">
-                  Database {userContext.apiType === "Mongo" ? "name" : "id"}
+                  {userContext.apiType === "Mongo"
+                    ? t(Keys.panes.addCollection.databaseFieldLabelName)
+                    : t(Keys.panes.addCollection.databaseFieldLabelId)}
                 </Text>
                 <TooltipHost
                   directionalHint={DirectionalHint.bottomLeftEdge}
-                  content={`A database is analogous to a namespace. It is the unit of management for a set of ${getCollectionName(
-                    true,
-                  ).toLocaleLowerCase()}.`}
+                  content={t(Keys.panes.addCollection.databaseTooltip, {
+                    collectionName: getCollectionName(true).toLocaleLowerCase(),
+                  })}
                 >
                   <Icon
                     iconName="Info"
                     className="panelInfoIcon"
                     tabIndex={0}
-                    ariaLabel={`A database is analogous to a namespace. It is the unit of management for a set of ${getCollectionName(
-                      true,
-                    ).toLocaleLowerCase()}.`}
+                    ariaLabel={t(Keys.panes.addCollection.databaseTooltip, {
+                      collectionName: getCollectionName(true).toLocaleLowerCase(),
+                    })}
                   />
                 </TooltipHost>
               </Stack>
@@ -295,7 +303,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                     <input
                       className="panelRadioBtn"
                       checked={this.state.createNewDatabase}
-                      aria-label="Create new database"
+                      aria-label={t(Keys.panes.addCollection.createNewDatabaseAriaLabel)}
                       aria-checked={this.state.createNewDatabase}
                       name="databaseType"
                       type="radio"
@@ -304,12 +312,12 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                       tabIndex={0}
                       onChange={this.onCreateNewDatabaseRadioBtnChange.bind(this)}
                     />
-                    <span className="panelRadioBtnLabel">Create new</span>
+                    <span className="panelRadioBtnLabel">{t(Keys.panes.addCollection.createNew)}</span>
 
                     <input
                       className="panelRadioBtn"
                       checked={!this.state.createNewDatabase}
-                      aria-label="Use existing database"
+                      aria-label={t(Keys.panes.addCollection.useExistingDatabaseAriaLabel)}
                       aria-checked={!this.state.createNewDatabase}
                       name="databaseType"
                       type="radio"
@@ -317,7 +325,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                       tabIndex={0}
                       onChange={this.onUseExistingDatabaseRadioBtnChange.bind(this)}
                     />
-                    <span className="panelRadioBtnLabel">Use existing</span>
+                    <span className="panelRadioBtnLabel">{t(Keys.panes.addCollection.useExisting)}</span>
                   </div>
                 </Stack>
               )}
@@ -333,10 +341,10 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                     autoComplete="off"
                     pattern={ValidCosmosDbIdInputPattern.source}
                     title={ValidCosmosDbIdDescription}
-                    placeholder="Type a new database id"
+                    placeholder={t(Keys.panes.addCollection.newDatabaseIdPlaceholder)}
                     size={40}
                     className="panelTextField"
-                    aria-label="New database id, Type a new database id"
+                    aria-label={t(Keys.panes.addCollection.newDatabaseIdAriaLabel)}
                     tabIndex={0}
                     value={this.state.newDatabaseId}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
@@ -347,7 +355,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   {!isServerlessAccount() && (
                     <Stack horizontal>
                       <Checkbox
-                        label={`Share throughput across ${getCollectionName(true).toLocaleLowerCase()}`}
+                        label={t(Keys.panes.addCollection.shareThroughput, {
+                          collectionName: getCollectionName(true).toLocaleLowerCase(),
+                        })}
                         checked={this.state.isSharedThroughputChecked}
                         styles={{
                           text: { fontSize: 12, color: "var(--colorNeutralForeground1)" },
@@ -365,17 +375,17 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                       />
                       <TooltipHost
                         directionalHint={DirectionalHint.bottomLeftEdge}
-                        content={`Throughput configured at the database level will be shared across all ${getCollectionName(
-                          true,
-                        ).toLocaleLowerCase()} within the database.`}
+                        content={t(Keys.panes.addCollection.shareThroughputTooltip, {
+                          collectionName: getCollectionName(true).toLocaleLowerCase(),
+                        })}
                       >
                         <Icon
                           iconName="Info"
                           className="panelInfoIcon"
                           tabIndex={0}
-                          ariaLabel={`Throughput configured at the database level will be shared across all ${getCollectionName(
-                            true,
-                          ).toLocaleLowerCase()} within the database.`}
+                          ariaLabel={t(Keys.panes.addCollection.shareThroughputTooltip, {
+                            collectionName: getCollectionName(true).toLocaleLowerCase(),
+                          })}
                         />
                       </TooltipHost>
                     </Stack>
@@ -400,10 +410,10 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               )}
               {!this.state.createNewDatabase && (
                 <Dropdown
-                  ariaLabel="Choose an existing database"
+                  ariaLabel={t(Keys.panes.addCollection.chooseExistingDatabase)}
                   styles={{ title: { height: 27, lineHeight: 27 }, dropdownItem: { fontSize: 12 } }}
                   style={{ width: 300, fontSize: 12 }}
-                  placeholder="Choose an existing database"
+                  placeholder={t(Keys.panes.addCollection.chooseExistingDatabase)}
                   options={this.getDatabaseOptions()}
                   onChange={(event: React.FormEvent<HTMLDivElement>, database: IDropdownOption) =>
                     this.setState({ selectedDatabaseId: database.key as string })
@@ -424,14 +434,18 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               </Text>
               <TooltipHost
                 directionalHint={DirectionalHint.bottomLeftEdge}
-                content={`Unique identifier for the ${getCollectionName().toLocaleLowerCase()} and used for id-based routing through REST and all SDKs.`}
+                content={t(Keys.panes.addCollection.collectionIdTooltip, {
+                  collectionName: getCollectionName().toLocaleLowerCase(),
+                })}
               >
                 <Icon
                   role="button"
                   iconName="Info"
                   className="panelInfoIcon"
                   tabIndex={0}
-                  ariaLabel={`Unique identifier for the ${getCollectionName().toLocaleLowerCase()} and used for id-based routing through REST and all SDKs.`}
+                  ariaLabel={t(Keys.panes.addCollection.collectionIdTooltip, {
+                    collectionName: getCollectionName().toLocaleLowerCase(),
+                  })}
                 />
               </TooltipHost>
             </Stack>
@@ -445,10 +459,10 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               autoComplete="off"
               pattern={ValidCosmosDbIdInputPattern.source}
               title={ValidCosmosDbIdDescription}
-              placeholder={`e.g., ${getCollectionName()}1`}
+              placeholder={t(Keys.panes.addCollection.collectionIdPlaceholder, { collectionName: getCollectionName() })}
               size={40}
               className="panelTextField"
-              aria-label={`${getCollectionName()} id, Example ${getCollectionName()}1`}
+              aria-label={t(Keys.panes.addCollection.collectionIdAriaLabel, { collectionName: getCollectionName() })}
               value={this.state.collectionId}
               onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
                 this.setState({ collectionId: event.target.value })
@@ -462,7 +476,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               <Stack horizontal style={{ marginTop: -4, marginBottom: -5 }}>
                 <span className="mandatoryStar">*&nbsp;</span>
                 <Text className="panelTextBold" variant="small">
-                  Indexing
+                  {t(Keys.panes.addCollection.indexing)}
                 </Text>
               </Stack>
 
@@ -470,32 +484,32 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 <input
                   className="panelRadioBtn"
                   checked={this.state.enableIndexing}
-                  aria-label="Turn on indexing"
+                  aria-label={t(Keys.panes.addCollection.turnOnIndexing)}
                   aria-checked={this.state.enableIndexing}
                   type="radio"
                   role="radio"
                   tabIndex={0}
                   onChange={this.onTurnOnIndexing.bind(this)}
                 />
-                <span className="panelRadioBtnLabel">Automatic</span>
+                <span className="panelRadioBtnLabel">{t(Keys.panes.addCollection.automatic)}</span>
 
                 <input
                   className="panelRadioBtn"
                   checked={!this.state.enableIndexing}
-                  aria-label="Turn off indexing"
+                  aria-label={t(Keys.panes.addCollection.turnOffIndexing)}
                   aria-checked={!this.state.enableIndexing}
                   type="radio"
                   role="radio"
                   tabIndex={0}
                   onChange={this.onTurnOffIndexing.bind(this)}
                 />
-                <span className="panelRadioBtnLabel">Off</span>
+                <span className="panelRadioBtnLabel">{t(Keys.panes.addCollection.off)}</span>
               </Stack>
 
               <Text variant="small">
                 {this.getFreeTierIndexingText()}{" "}
                 <Link target="_blank" href="https://aka.ms/cosmos-indexing-policy">
-                  Learn more
+                  {t(Keys.common.learnMore)}
                 </Link>
               </Text>
             </Stack>
@@ -508,21 +522,17 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 <Stack horizontal style={{ marginTop: -5, marginBottom: -4 }}>
                   <span className="mandatoryStar">*&nbsp;</span>
                   <Text className="panelTextBold" variant="small">
-                    Sharding
+                    {t(Keys.panes.addCollection.sharding)}
                   </Text>
                   <TooltipHost
                     directionalHint={DirectionalHint.bottomLeftEdge}
-                    content={
-                      "Sharded collections split your data across many replica sets (shards) to achieve unlimited scalability. Sharded collections require choosing a shard key (field) to evenly distribute your data."
-                    }
+                    content={t(Keys.panes.addCollection.shardingTooltip)}
                   >
                     <Icon
                       iconName="Info"
                       className="panelInfoIcon"
                       tabIndex={0}
-                      ariaLabel={
-                        "Sharded collections split your data across many replica sets (shards) to achieve unlimited scalability. Sharded collections require choosing a shard key (field) to evenly distribute your data."
-                      }
+                      ariaLabel={t(Keys.panes.addCollection.shardingTooltip)}
                     />
                   </TooltipHost>
                 </Stack>
@@ -531,7 +541,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   <input
                     className="panelRadioBtn"
                     checked={!this.state.isSharded}
-                    aria-label="Unsharded"
+                    aria-label={t(Keys.panes.addCollection.unsharded)}
                     aria-checked={!this.state.isSharded}
                     name="unsharded"
                     type="radio"
@@ -540,12 +550,12 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                     tabIndex={0}
                     onChange={this.onUnshardedRadioBtnChange.bind(this)}
                   />
-                  <span className="panelRadioBtnLabel">Unsharded (20GB limit)</span>
+                  <span className="panelRadioBtnLabel">{t(Keys.panes.addCollection.unshardedLabel)}</span>
 
                   <input
                     className="panelRadioBtn"
                     checked={this.state.isSharded}
-                    aria-label="Sharded"
+                    aria-label={t(Keys.panes.addCollection.sharded)}
                     aria-checked={this.state.isSharded}
                     name="sharded"
                     type="radio"
@@ -554,7 +564,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                     tabIndex={0}
                     onChange={this.onShardedRadioBtnChange.bind(this)}
                   />
-                  <span className="panelRadioBtnLabel">Sharded</span>
+                  <span className="panelRadioBtnLabel">{t(Keys.panes.addCollection.sharded)}</span>
                 </Stack>
               </Stack>
             )}
@@ -679,15 +689,14 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                     disabled={this.state.subPartitionKeys.length >= Constants.BackendDefaults.maxNumMultiHashPartition}
                     onClick={() => this.setState({ subPartitionKeys: [...this.state.subPartitionKeys, ""] })}
                   >
-                    Add hierarchical partition key
+                    {t(Keys.panes.addCollection.addPartitionKey)}
                   </DefaultButton>
                   {this.state.subPartitionKeys.length > 0 && (
                     <Text variant="small" style={{ color: "var(--colorNeutralForeground1)" }}>
-                      <Icon iconName="InfoSolid" className="removeIcon" tabIndex={0} /> This feature allows you to
-                      partition your data with up to three levels of keys for better data distribution. Requires .NET
-                      V3, Java V4 SDK, or preview JavaScript V3 SDK.{" "}
+                      <Icon iconName="InfoSolid" className="removeIcon" tabIndex={0} />{" "}
+                      {t(Keys.panes.addCollection.hierarchicalPartitionKeyInfo)}{" "}
                       <Link href="https://aka.ms/cosmos-hierarchical-partitioning" target="_blank">
-                        Learn more
+                        {t(Keys.common.learnMore)}
                       </Link>
                     </Text>
                   )}
@@ -700,7 +709,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
           {!isServerlessAccount() && !this.state.createNewDatabase && this.isSelectedDatabaseSharedThroughput() && (
             <Stack horizontal verticalAlign="center">
               <Checkbox
-                label={`Provision dedicated throughput for this ${getCollectionName().toLocaleLowerCase()}`}
+                label={t(Keys.panes.addCollection.provisionDedicatedThroughput, {
+                  collectionName: getCollectionName().toLocaleLowerCase(),
+                })}
                 checked={this.state.enableDedicatedThroughput}
                 styles={{
                   text: { fontSize: 12, color: "var(--colorNeutralForeground1)" },
@@ -718,23 +729,19 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               />
               <TooltipHost
                 directionalHint={DirectionalHint.bottomLeftEdge}
-                content={`You can optionally provision dedicated throughput for a ${getCollectionName().toLocaleLowerCase()} within a database that has throughput
-                  provisioned. This dedicated throughput amount will not be shared with other ${getCollectionName(
-                    true,
-                  ).toLocaleLowerCase()} in the database and
-                  does not count towards the throughput you provisioned for the database. This throughput amount will be
-                  billed in addition to the throughput amount you provisioned at the database level.`}
+                content={t(Keys.panes.addCollection.provisionDedicatedThroughputTooltip, {
+                  collectionName: getCollectionName().toLocaleLowerCase(),
+                  collectionNamePlural: getCollectionName(true).toLocaleLowerCase(),
+                })}
               >
                 <Icon
                   iconName="Info"
                   className="panelInfoIcon"
                   tabIndex={0}
-                  ariaLabel={`You can optionally provision dedicated throughput for a ${getCollectionName().toLocaleLowerCase()} within a database that has throughput
-                provisioned. This dedicated throughput amount will not be shared with other ${getCollectionName(
-                  true,
-                ).toLocaleLowerCase()} in the database and
-                does not count towards the throughput you provisioned for the database. This throughput amount will be
-                billed in addition to the throughput amount you provisioned at the database level.`}
+                  ariaLabel={t(Keys.panes.addCollection.provisionDedicatedThroughputTooltip, {
+                    collectionName: getCollectionName().toLocaleLowerCase(),
+                    collectionNamePlural: getCollectionName(true).toLocaleLowerCase(),
+                  })}
                 />
               </TooltipHost>
             </Stack>
@@ -769,8 +776,8 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                       autoComplete="off"
                       placeholder={
                         userContext.apiType === "Mongo"
-                          ? "Comma separated paths e.g. firstName,address.zipCode"
-                          : "Comma separated paths e.g. /firstName,/address/zipCode"
+                          ? t(Keys.panes.addCollection.uniqueKeysPlaceholderMongo)
+                          : t(Keys.panes.addCollection.uniqueKeysPlaceholderSql)
                       }
                       className="panelTextField"
                       value={uniqueKey}
@@ -802,7 +809,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 styles={{ root: { padding: 0 }, label: { fontSize: 12, color: "var(--colorNeutralForeground1)" } }}
                 onClick={() => this.setState({ uniqueKeys: [...this.state.uniqueKeys, ""] })}
               >
-                Add unique key
+                {t(Keys.panes.addCollection.addUniqueKey)}
               </ActionButton>
             </Stack>
           )}
@@ -823,7 +830,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                     className="panelRadioBtn"
                     checked={this.state.enableAnalyticalStore}
                     disabled={!isSynapseLinkEnabled()}
-                    aria-label="Enable analytical store"
+                    aria-label={t(Keys.panes.addCollection.enableAnalyticalStore)}
                     aria-checked={this.state.enableAnalyticalStore}
                     name="analyticalStore"
                     type="radio"
@@ -832,13 +839,13 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                     tabIndex={0}
                     onChange={this.onEnableAnalyticalStoreRadioBtnChange.bind(this)}
                   />
-                  <span className="panelRadioBtnLabel">On</span>
+                  <span className="panelRadioBtnLabel">{t(Keys.panes.addCollection.on)}</span>
 
                   <input
                     className="panelRadioBtn"
                     checked={!this.state.enableAnalyticalStore}
                     disabled={!isSynapseLinkEnabled()}
-                    aria-label="Disable analytical store"
+                    aria-label={t(Keys.panes.addCollection.disableAnalyticalStore)}
                     aria-checked={!this.state.enableAnalyticalStore}
                     name="analyticalStore"
                     type="radio"
@@ -847,26 +854,28 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                     tabIndex={0}
                     onChange={this.onDisableAnalyticalStoreRadioBtnChange.bind(this)}
                   />
-                  <span className="panelRadioBtnLabel">Off</span>
+                  <span className="panelRadioBtnLabel">{t(Keys.panes.addCollection.off)}</span>
                 </div>
               </Stack>
 
               {!isSynapseLinkEnabled() && (
                 <Stack className="panelGroupSpacing">
                   <Text variant="small" style={{ color: "var(--colorNeutralForeground1)" }}>
-                    Azure Synapse Link is required for creating an analytical store{" "}
-                    {getCollectionName().toLocaleLowerCase()}. Enable Synapse Link for this Cosmos DB account. <br />
+                    {t(Keys.panes.addCollection.analyticalStoreSynapseLinkRequired, {
+                      collectionName: getCollectionName().toLocaleLowerCase(),
+                    })}{" "}
+                    <br />
                     <Link
                       href="https://aka.ms/cosmosdb-synapselink"
                       target="_blank"
                       aria-label={Constants.ariaLabelForLearnMoreLink.AzureSynapseLink}
                       className="capacitycalculator-link"
                     >
-                      Learn more
+                      {t(Keys.common.learnMore)}
                     </Link>
                   </Text>
                   <DefaultButton
-                    text="Enable"
+                    text={t(Keys.panes.addCollection.enable)}
                     onClick={() => this.props.explorer.openEnableSynapseLinkDialog()}
                     style={{ height: 27, width: 80 }}
                     styles={{ label: { fontSize: 12 } }}
@@ -878,7 +887,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
           {this.shouldShowVectorSearchParameters() && (
             <Stack>
               <CollapsibleSectionComponent
-                title="Container Vector Policy"
+                title={t(Keys.panes.addCollection.containerVectorPolicy)}
                 isExpandedByDefault={false}
                 onExpand={() => {
                   scrollToSection("collapsibleVectorPolicySectionContent");
@@ -907,7 +916,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
           {this.shouldShowFullTextSearchParameters() && (
             <Stack>
               <CollapsibleSectionComponent
-                title="Container Full Text Search Policy"
+                title={t(Keys.panes.addCollection.containerFullTextSearchPolicy)}
                 isExpandedByDefault={false}
                 onExpand={() => {
                   scrollToSection("collapsibleFullTextPolicySectionContent");
@@ -936,7 +945,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
           )}
           {!isFabricNative() && userContext.apiType !== "Tables" && (
             <CollapsibleSectionComponent
-              title="Advanced"
+              title={t(Keys.panes.addCollection.advanced)}
               isExpandedByDefault={false}
               onExpand={() => {
                 TelemetryProcessor.traceOpen(Action.ExpandAddCollectionPaneAdvancedSection);
@@ -949,23 +958,23 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                     <Stack horizontal>
                       <span className="mandatoryStar">*&nbsp;</span>
                       <Text className="panelTextBold" variant="small">
-                        Indexing
+                        {t(Keys.panes.addCollection.indexing)}
                       </Text>
                       <TooltipHost
                         directionalHint={DirectionalHint.bottomLeftEdge}
-                        content="The _id field is indexed by default. Creating a wildcard index for all fields will optimize queries and is recommended for development."
+                        content={t(Keys.panes.addCollection.mongoIndexingTooltip)}
                       >
                         <Icon
                           iconName="Info"
                           className="panelInfoIcon"
                           tabIndex={0}
-                          ariaLabel="The _id field is indexed by default. Creating a wildcard index for all fields will optimize queries and is recommended for development."
+                          ariaLabel={t(Keys.panes.addCollection.mongoIndexingTooltip)}
                         />
                       </TooltipHost>
                     </Stack>
 
                     <Checkbox
-                      label="Create a Wildcard Index on all fields"
+                      label={t(Keys.panes.addCollection.createWildcardIndex)}
                       checked={this.state.createMongoWildCardIndex}
                       styles={{
                         text: { fontSize: 12, color: "var(--colorNeutralForeground1)" },
@@ -987,7 +996,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 {userContext.apiType === "SQL" && (
                   <Stack className="panelGroupSpacing">
                     <Checkbox
-                      label="My application uses an older Cosmos .NET or Java SDK version (.NET V1 or Java V2)"
+                      label={t(Keys.panes.addCollection.legacySdkCheckbox)}
                       checked={this.state.useHashV1}
                       styles={{
                         text: { fontSize: 12, color: "var(--colorNeutralForeground1)" },
@@ -1004,11 +1013,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                       }
                     />
                     <Text variant="small" style={{ color: "var(--colorNeutralForeground1)" }}>
-                      <Icon iconName="InfoSolid" className="removeIcon" /> To ensure compatibility with older SDKs, the
-                      created container will use a legacy partitioning scheme that supports partition key values of size
-                      only up to 101 bytes. If this is enabled, you will not be able to use hierarchical partition keys.{" "}
+                      <Icon iconName="InfoSolid" className="removeIcon" /> {t(Keys.panes.addCollection.legacySdkInfo)}{" "}
                       <Link href="https://aka.ms/cosmos-large-pk" target="_blank">
-                        Learn more
+                        {t(Keys.common.learnMore)}
                       </Link>
                     </Text>
                   </Stack>
@@ -1019,7 +1026,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
         </div>
 
         {!this.props.isCopyJobFlow && (
-          <PanelFooterComponent buttonLabel="OK" isButtonDisabled={this.state.isThroughputCapExceeded} />
+          <PanelFooterComponent buttonLabel={t(Keys.common.ok)} isButtonDisabled={this.state.isThroughputCapExceeded} />
         )}
 
         {this.state.isExecuting && (
@@ -1027,16 +1034,15 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             <PanelLoadingScreen />
             {this.state.teachingBubbleStep === 5 && (
               <TeachingBubble
-                headline="Creating sample container"
+                headline={t(Keys.panes.addCollection.teachingBubble.step5Headline)}
                 target={"#loadingScreen"}
                 onDismiss={() => this.setState({ teachingBubbleStep: 0 })}
                 styles={{ footer: { width: "100%" } }}
               >
-                A sample container is now being created and we are adding sample data for you. It should take about 1
-                minute.
+                {t(Keys.panes.addCollection.teachingBubble.step5Body)}
                 <br />
                 <br />
-                Once the sample container is created, review your sample dataset and follow next steps
+                {t(Keys.panes.addCollection.teachingBubble.step5BodyFollowUp)}
                 <br />
                 <br />
                 <ProgressIndicator
@@ -1045,7 +1051,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                     progressTrack: { backgroundColor: "#A6A6A6" },
                     progressBar: { background: "white" },
                   }}
-                  label="Adding sample data set"
+                  label={t(Keys.panes.addCollection.addingSampleDataSet)}
                 />
               </TeachingBubble>
             )}
@@ -1151,8 +1157,8 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
   private getFreeTierIndexingText(): string {
     return this.state.enableIndexing
-      ? "All properties in your documents will be indexed by default for flexible and efficient queries."
-      : "Indexing will be turned off. Recommended if you don't need to run queries or only have key value operations.";
+      ? t(Keys.panes.addCollection.indexingOnInfo)
+      : t(Keys.panes.addCollection.indexingOffInfo);
   }
 
   private getPartitionKeySubtext(): string {
@@ -1250,14 +1256,14 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     const throughput = this.state.createNewDatabase ? this.newDatabaseThroughput : this.collectionThroughput;
     if (throughput > CollectionCreation.DefaultCollectionRUs100K && !this.isCostAcknowledged) {
       const errorMessage = this.isNewDatabaseAutoscale
-        ? "Please acknowledge the estimated monthly spend."
-        : "Please acknowledge the estimated daily spend.";
+        ? t(Keys.panes.addCollection.acknowledgeSpendErrorMonthly)
+        : t(Keys.panes.addCollection.acknowledgeSpendErrorDaily);
       this.setState({ errorMessage });
       return false;
     }
 
     if (throughput > CollectionCreation.MaxRUPerPartition && !this.state.isSharded) {
-      this.setState({ errorMessage: "Unsharded collections support up to 10,000 RUs" });
+      this.setState({ errorMessage: t(Keys.panes.addCollection.unshardedMaxRuError) });
       return false;
     }
 
@@ -1271,12 +1277,12 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
     if (this.shouldShowVectorSearchParameters()) {
       if (!this.state.vectorPolicyValidated) {
-        this.setState({ errorMessage: "Please fix errors in container vector policy" });
+        this.setState({ errorMessage: t(Keys.panes.addCollection.vectorPolicyError) });
         return false;
       }
 
       if (!this.state.fullTextPolicyValidated) {
-        this.setState({ errorMessage: "Please fix errors in container full text search polilcy" });
+        this.setState({ errorMessage: t(Keys.panes.addCollection.fullTextSearchPolicyError) });
         return false;
       }
     }

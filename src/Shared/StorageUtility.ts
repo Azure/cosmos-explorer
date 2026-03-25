@@ -36,6 +36,8 @@ export enum StorageKey {
   AppState,
   MongoGuidRepresentation,
   IgnorePartitionKeyOnDocumentUpdate,
+  PinnedDatabases,
+  DatabaseSortOrder,
 }
 
 export const hasRUThresholdBeenConfigured = (): boolean => {

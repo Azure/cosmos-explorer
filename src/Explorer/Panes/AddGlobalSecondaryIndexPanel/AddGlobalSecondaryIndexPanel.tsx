@@ -40,6 +40,7 @@ import { PanelInfoErrorComponent } from "Explorer/Panes/PanelInfoErrorComponent"
 import { PanelLoadingScreen } from "Explorer/Panes/PanelLoadingScreen";
 import { useDatabases } from "Explorer/useDatabases";
 import { useSidePanel } from "hooks/useSidePanel";
+import { Keys, t } from "Localization";
 import React, { MutableRefObject, useEffect, useRef, useState } from "react";
 import { CollectionCreation } from "Shared/Constants";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
@@ -168,19 +169,19 @@ export const AddGlobalSecondaryIndexPanel = (props: AddGlobalSecondaryIndexPanel
     }
 
     if (globalSecondaryIndexThroughput > CollectionCreation.DefaultCollectionRUs100K && !isCostAcknowledged) {
-      const errorMessage: string = "Please acknowledge the estimated monthly spend.";
+      const errorMessage: string = t(Keys.panes.addCollection.acknowledgeSpendErrorMonthly);
       setErrorMessage(errorMessage);
       return false;
     }
 
     if (showVectorSearchParameters()) {
       if (!vectorPolicyValidated) {
-        setErrorMessage("Please fix errors in container vector policy");
+        setErrorMessage(t(Keys.panes.addCollection.vectorPolicyError));
         return false;
       }
 
       if (!fullTextPolicyValidated) {
-        setErrorMessage("Please fix errors in container full text search policy");
+        setErrorMessage(t(Keys.panes.addCollection.fullTextSearchPolicyError));
         return false;
       }
     }
@@ -307,7 +308,7 @@ export const AddGlobalSecondaryIndexPanel = (props: AddGlobalSecondaryIndexPanel
           <Stack horizontal>
             <span className="mandatoryStar">*&nbsp;</span>
             <Text className="panelTextBold" variant="small">
-              Global secondary index container id
+              {t(Keys.panes.addGlobalSecondaryIndex.globalSecondaryIndexId)}
             </Text>
           </Stack>
           <input
@@ -318,7 +319,7 @@ export const AddGlobalSecondaryIndexPanel = (props: AddGlobalSecondaryIndexPanel
             autoComplete="off"
             pattern={ValidCosmosDbIdInputPattern.source}
             title={ValidCosmosDbIdDescription}
-            placeholder={`e.g., indexbyEmailId`}
+            placeholder={t(Keys.panes.addGlobalSecondaryIndex.globalSecondaryIndexIdPlaceholder)}
             size={40}
             className="panelTextField"
             value={globalSecondaryIndexId}
@@ -336,7 +337,7 @@ export const AddGlobalSecondaryIndexPanel = (props: AddGlobalSecondaryIndexPanel
                   href="https://learn.microsoft.com/en-us/azure/cosmos-db/nosql/materialized-views#defining-materialized-views"
                   target="blank"
                 >
-                  Learn more about defining global secondary indexes.
+                  {t(Keys.panes.addGlobalSecondaryIndex.projectionQueryTooltip)}
                 </Link>
               }
             >
@@ -349,7 +350,7 @@ export const AddGlobalSecondaryIndexPanel = (props: AddGlobalSecondaryIndexPanel
             aria-required
             required
             autoComplete="off"
-            placeholder={"SELECT c.email, c.accountId FROM c"}
+            placeholder={t(Keys.panes.addGlobalSecondaryIndex.projectionQueryPlaceholder)}
             size={40}
             className="panelTextField"
             value={definition || ""}
@@ -393,7 +394,7 @@ export const AddGlobalSecondaryIndexPanel = (props: AddGlobalSecondaryIndexPanel
           <AdvancedComponent {...{ useHashV1, setUseHashV1, setSubPartitionKeys }} />
         </Stack>
       </div>
-      <PanelFooterComponent buttonLabel="OK" isButtonDisabled={isThroughputCapExceeded} />
+      <PanelFooterComponent buttonLabel={t(Keys.common.ok)} isButtonDisabled={isThroughputCapExceeded} />
       {isExecuting && <PanelLoadingScreen />}
     </form>
   );

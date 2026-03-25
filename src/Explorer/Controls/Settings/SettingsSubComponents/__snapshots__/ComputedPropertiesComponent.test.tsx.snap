@@ -27,7 +27,8 @@ exports[`ComputedPropertiesComponent renders 1`] = `
         iconName="NavigateExternalInline"
       />
     </StyledLinkBase>
-      about how to define computed properties and how to use them.
+      
+    about how to define computed properties and how to use them.
   </Text>
   <div
     className="settingsV2Editor"

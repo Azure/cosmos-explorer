@@ -5,6 +5,7 @@ import folderIcon from "../../../../images/folder_16x16.svg";
 import { logError } from "../../../Common/Logger";
 import { Collection } from "../../../Contracts/ViewModels";
 import { useSidePanel } from "../../../hooks/useSidePanel";
+import { Keys, t } from "Localization";
 import { userContext } from "../../../UserContext";
 import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../../../Utils/NotificationConsoleUtils";
 import { useSelectedNode } from "../../useSelectedNode";
@@ -33,8 +34,8 @@ export const LoadQueryPane: FunctionComponent = (): JSX.Element => {
   const submit = async (): Promise<void> => {
     setFormError("");
     if (!selectedFiles || selectedFiles.length === 0) {
-      setFormError("No file specified");
-      logConsoleError("Could not load query -- No file specified. Please input a file.");
+      setFormError(t(Keys.panes.loadQuery.noFileSpecifiedError));
+      logConsoleError(t(Keys.panes.loadQuery.noFileSpecifiedError));
       return;
     }
 
@@ -48,7 +49,7 @@ export const LoadQueryPane: FunctionComponent = (): JSX.Element => {
       setLoadingFalse();
     } catch (error) {
       setLoadingFalse();
-      setFormError("Failed to load query");
+      setFormError(t(Keys.panes.loadQuery.failedToLoadQueryError));
       logConsoleError(`Failed to load query from file ${file.name}: ${error}`);
     }
   };
@@ -71,7 +72,7 @@ export const LoadQueryPane: FunctionComponent = (): JSX.Element => {
     };
 
     reader.onerror = (): void => {
-      setFormError("Failed to load query");
+      setFormError(t(Keys.panes.loadQuery.failedToLoadQueryFromFileError, { fileName: file.name }));
       logConsoleError(`Failed to load query from file ${file.name}`);
     };
     return reader.readAsText(file);
@@ -79,7 +80,7 @@ export const LoadQueryPane: FunctionComponent = (): JSX.Element => {
   const props: RightPaneFormProps = {
     formError: formError,
     isExecuting: isLoading,
-    submitButtonText: "Load",
+    submitButtonText: t(Keys.common.load),
     onSubmit: () => submit(),
   };
 
@@ -90,7 +91,7 @@ export const LoadQueryPane: FunctionComponent = (): JSX.Element => {
           <Stack horizontal>
             <TextField
               id="confirmCollectionId"
-              label="Select a query document"
+              label={t(Keys.panes.loadQuery.selectFilesToOpen)}
               value={selectedFileName}
               autoFocus
               readOnly

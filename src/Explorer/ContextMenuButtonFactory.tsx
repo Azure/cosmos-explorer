@@ -7,6 +7,7 @@ import {
   AddGlobalSecondaryIndexPanelProps,
 } from "Explorer/Panes/AddGlobalSecondaryIndexPanel/AddGlobalSecondaryIndexPanel";
 import { useDatabases } from "Explorer/useDatabases";
+import { Keys, t } from "Localization";
 import { isFabric, isFabricNative, openRestoreContainerDialog } from "Platform/Fabric/FabricUtil";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { traceOpen } from "Shared/Telemetry/TelemetryProcessor";
@@ -23,7 +24,9 @@ import DeleteSprocIcon from "../../images/DeleteSproc.svg";
 import DeleteTriggerIcon from "../../images/DeleteTrigger.svg";
 import DeleteUDFIcon from "../../images/DeleteUDF.svg";
 import HostedTerminalIcon from "../../images/Hosted-Terminal.svg";
+import PinIcon from "../../images/Pin.svg";
 import * as ViewModels from "../Contracts/ViewModels";
+import { extractFeatures } from "../Platform/Hosted/extractFeatures";
 import { userContext } from "../UserContext";
 import { getCollectionName, getDatabaseName } from "../Utils/APITypeUtils";
 import { useSidePanel } from "../hooks/useSidePanel";
@@ -35,7 +38,6 @@ import StoredProcedure from "./Tree/StoredProcedure";
 import Trigger from "./Tree/Trigger";
 import UserDefinedFunction from "./Tree/UserDefinedFunction";
 import { useSelectedNode } from "./useSelectedNode";
-import { extractFeatures } from "../Platform/Hosted/extractFeatures";
 
 export interface CollectionContextMenuButtonParams {
   databaseId: string;
@@ -52,12 +54,18 @@ export const createDatabaseContextMenu = (container: Explorer, databaseId: strin
   if (isFabric() && userContext.fabricContext?.isReadOnly) {
     return undefined;
   }
+  const isPinned = useDatabases.getState().isPinned(databaseId);
 
   const items: TreeNodeMenuItem[] = [
     {
+      iconSrc: PinIcon,
+      onClick: () => useDatabases.getState().togglePinDatabase(databaseId),
+      label: isPinned ? "Unpin from top" : "Pin to top",
+    },
+    {
       iconSrc: AddCollectionIcon,
       onClick: () => container.onNewCollectionClicked({ databaseId }),
-      label: `New ${getCollectionName()}`,
+      label: t(Keys.contextMenu.newContainer, { containerName: getCollectionName() }),
     },
   ];
 
@@ -67,7 +75,7 @@ export const createDatabaseContextMenu = (container: Explorer, databaseId: strin
       items.push({
         iconSrc: AddCollectionIcon,
         onClick: () => openRestoreContainerDialog(),
-        label: `Restore ${getCollectionName()}`,
+        label: t(Keys.contextMenu.restoreContainer, { containerName: getCollectionName() }),
       });
     }
   }
@@ -76,15 +84,15 @@ export const createDatabaseContextMenu = (container: Explorer, databaseId: strin
     items.push({
       iconSrc: DeleteDatabaseIcon,
       onClick: (lastFocusedElement?: React.RefObject<HTMLElement>) => {
-        (useSidePanel.getState().getRef = lastFocusedElement),
-          useSidePanel
-            .getState()
-            .openSidePanel(
-              "Delete " + getDatabaseName(),
-              <DeleteDatabaseConfirmationPanel refreshDatabases={() => container.refreshAllDatabases()} />,
-            );
+        useSidePanel.getState().getRef = lastFocusedElement;
+        useSidePanel
+          .getState()
+          .openSidePanel(
+            "Delete " + getDatabaseName(),
+            <DeleteDatabaseConfirmationPanel refreshDatabases={() => container.refreshAllDatabases()} />,
+          );
       },
-      label: `Delete ${getDatabaseName()}`,
+      label: t(Keys.contextMenu.deleteDatabase, { databaseName: getDatabaseName() }),
       styleClass: "deleteDatabaseMenuItem",
     });
   }
@@ -100,7 +108,7 @@ export const createCollectionContextMenuButton = (
     items.push({
       iconSrc: AddSqlQueryIcon,
       onClick: () => selectedCollection && selectedCollection.onNewQueryClick(selectedCollection, undefined),
-      label: "New SQL Query",
+      label: t(Keys.contextMenu.newSqlQuery),
     });
   }
 
@@ -108,7 +116,7 @@ export const createCollectionContextMenuButton = (
     items.push({
       iconSrc: AddSqlQueryIcon,
       onClick: () => selectedCollection && selectedCollection.onNewMongoQueryClick(selectedCollection, undefined),
-      label: "New Query",
+      label: t(Keys.contextMenu.newQuery),
     });
 
     items.push({
@@ -123,8 +131,8 @@ export const createCollectionContextMenuButton = (
       },
       label:
         useNotebook.getState().isShellEnabled || userContext.features.enableCloudShell
-          ? "Open Mongo Shell"
-          : "New Shell",
+          ? t(Keys.contextMenu.openMongoShell)
+          : t(Keys.contextMenu.newShell),
     });
   }
 
@@ -137,7 +145,7 @@ export const createCollectionContextMenuButton = (
       onClick: () => {
         container.openNotebookTerminal(ViewModels.TerminalKind.Cassandra);
       },
-      label: "Open Cassandra Shell",
+      label: t(Keys.contextMenu.openCassandraShell),
     });
   }
 
@@ -150,7 +158,7 @@ export const createCollectionContextMenuButton = (
       onClick: () => {
         selectedCollection && selectedCollection.onNewStoredProcedureClick(selectedCollection, undefined);
       },
-      label: "New Stored Procedure",
+      label: t(Keys.contextMenu.newStoredProcedure),
     });
 
     items.push({
@@ -158,7 +166,7 @@ export const createCollectionContextMenuButton = (
       onClick: () => {
         selectedCollection && selectedCollection.onNewUserDefinedFunctionClick(selectedCollection);
       },
-      label: "New UDF",
+      label: t(Keys.contextMenu.newUdf),
     });
 
     items.push({
@@ -166,7 +174,7 @@ export const createCollectionContextMenuButton = (
       onClick: () => {
         selectedCollection && selectedCollection.onNewTriggerClick(selectedCollection, undefined);
       },
-      label: "New Trigger",
+      label: t(Keys.contextMenu.newTrigger),
     });
   }
 
@@ -175,15 +183,15 @@ export const createCollectionContextMenuButton = (
       iconSrc: DeleteCollectionIcon,
       onClick: (lastFocusedElement?: React.RefObject<HTMLElement>) => {
         useSelectedNode.getState().setSelectedNode(selectedCollection);
-        (useSidePanel.getState().getRef = lastFocusedElement),
-          useSidePanel
-            .getState()
-            .openSidePanel(
-              "Delete " + getCollectionName(),
-              <DeleteCollectionConfirmationPane refreshDatabases={() => container.refreshAllDatabases()} />,
-            );
+        useSidePanel.getState().getRef = lastFocusedElement;
+        useSidePanel
+          .getState()
+          .openSidePanel(
+            "Delete " + getCollectionName(),
+            <DeleteCollectionConfirmationPane refreshDatabases={() => container.refreshAllDatabases()} />,
+          );
       },
-      label: `Delete ${getCollectionName()}`,
+      label: t(Keys.contextMenu.deleteContainer, { containerName: getCollectionName() }),
       styleClass: "deleteCollectionMenuItem",
     });
   }
@@ -220,14 +228,14 @@ export const createSampleCollectionContextMenuButton = (): TreeNodeMenuItem[] =>
           useTabs.getState().openAndActivateReactTab(ReactTabKind.QueryCopilot);
           traceOpen(Action.OpenQueryCopilotFromNewQuery, { apiType: userContext.apiType });
         },
-        label: "New SQL Query",
+        label: t(Keys.contextMenu.newSqlQuery),
       });
     } else if (copilotVersion === "v2.0") {
       const sampleCollection = useDatabases.getState().sampleDataResourceTokenCollection;
       items.push({
         iconSrc: AddSqlQueryIcon,
         onClick: () => sampleCollection && sampleCollection.onNewQueryClick(sampleCollection, undefined),
-        label: "New SQL Query",
+        label: t(Keys.contextMenu.newSqlQuery),
       });
     }
   }
@@ -247,7 +255,7 @@ export const createStoreProcedureContextMenuItems = (
     {
       iconSrc: DeleteSprocIcon,
       onClick: () => storedProcedure.delete(),
-      label: "Delete Stored Procedure",
+      label: t(Keys.contextMenu.deleteStoredProcedure),
     },
   ];
 };
@@ -261,7 +269,7 @@ export const createTriggerContextMenuItems = (container: Explorer, trigger: Trig
     {
       iconSrc: DeleteTriggerIcon,
       onClick: () => trigger.delete(),
-      label: "Delete Trigger",
+      label: t(Keys.contextMenu.deleteTrigger),
     },
   ];
 };
@@ -278,7 +286,7 @@ export const createUserDefinedFunctionContextMenuItems = (
     {
       iconSrc: DeleteUDFIcon,
       onClick: () => userDefinedFunction.delete(),
-      label: "Delete User Defined Function",
+      label: t(Keys.contextMenu.deleteUdf),
     },
   ];
 };

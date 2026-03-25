@@ -11,6 +11,7 @@ import {
 import React, { FunctionComponent } from "react";
 import AddPropertyIcon from "../../../../images/Add-property.svg";
 import EntityCancelIcon from "../../../../images/Entity_cancel.svg";
+import { Keys, t } from "Localization";
 
 const dropdownStyles: Partial<IDropdownStyles> = { dropdown: { width: 100 } };
 const options = [
@@ -74,7 +75,7 @@ export const InputParameter: FunctionComponent<InputParameterProps> = ({
               <Image
                 {...imageProps}
                 src={EntityCancelIcon}
-                alt="Delete param"
+                alt={t(Keys.panes.executeStoredProcedure.deleteParam)}
                 id="deleteparam"
                 role="button"
                 onClick={onDeleteParamKeyPress}
@@ -84,7 +85,7 @@ export const InputParameter: FunctionComponent<InputParameterProps> = ({
               <Image
                 {...imageProps}
                 src={AddPropertyIcon}
-                alt="Add param"
+                alt={t(Keys.panes.executeStoredProcedure.addParam)}
                 id="addparam"
                 role="button"
                 onClick={onAddNewParamKeyPress}

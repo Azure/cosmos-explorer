@@ -395,6 +395,14 @@ describe("CopyJobUtils", () => {
       expect(result).toBe(false);
     });
 
+    it("should return false for different completion percentage", () => {
+      const jobs1 = [createMockJob("job1", "Running")];
+      const jobs2 = [{ ...createMockJob("job1", "Running"), CompletionPercentage: 75 }];
+
+      const result = CopyJobUtils.isEqual(jobs1, jobs2);
+      expect(result).toBe(false);
+    });
+
     it("should return true for empty arrays", () => {
       const result = CopyJobUtils.isEqual([], []);
       expect(result).toBe(true);

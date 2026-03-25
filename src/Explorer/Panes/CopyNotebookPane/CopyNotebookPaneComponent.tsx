@@ -12,6 +12,7 @@ import {
 import { GitHubReposTitle } from "Explorer/Tree/ResourceTree";
 import React, { FormEvent, FunctionComponent } from "react";
 import { IPinnedRepo } from "../../../Juno/JunoClient";
+import { Keys, t } from "Localization";
 import * as GitHubUtils from "../../../Utils/GitHubUtils";
 import { useNotebook } from "../../Notebook/useNotebook";
 
@@ -96,8 +97,8 @@ export const CopyNotebookPaneComponent: FunctionComponent<CopyNotebookPaneProps>
     return options;
   };
   const dropDownProps: IDropdownProps = {
-    label: "Location",
-    ariaLabel: "Location",
+    label: t(Keys.panes.copyNotebook.location),
+    ariaLabel: t(Keys.panes.copyNotebook.locationAriaLabel),
     placeholder: "Select an option",
     onRenderTitle: onRenderDropDownTitle,
     onRenderOption: onRenderDropDownOption,
@@ -109,7 +110,7 @@ export const CopyNotebookPaneComponent: FunctionComponent<CopyNotebookPaneProps>
     <div className="paneMainContent">
       <Stack tokens={{ childrenGap: 10 }}>
         <Stack.Item>
-          <Label htmlFor="notebookName">Name</Label>
+          <Label htmlFor="notebookName">{t(Keys.panes.copyNotebook.name)}</Label>
           <Text id="notebookName">{name}</Text>
         </Stack.Item>
 

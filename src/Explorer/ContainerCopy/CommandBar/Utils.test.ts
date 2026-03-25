@@ -185,9 +185,10 @@ describe("CommandBar Utils", () => {
     it("should respect disabled state when provided", () => {
       const buttons = getCommandBarButtons(mockExplorer, false);
 
-      buttons.forEach((button) => {
-        expect(button.disabled).toBe(false);
-      });
+      // Theme toggle (index 2) is disabled in Portal mode, others are not
+      const expectedDisabled = buttons.map((_, index) => index === 2);
+      const actualDisabled = buttons.map((button) => button.disabled);
+      expect(actualDisabled).toEqual(expectedDisabled);
     });
 
     it("should return CommandButtonComponentProps with all required properties", () => {

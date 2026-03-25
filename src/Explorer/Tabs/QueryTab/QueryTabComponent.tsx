@@ -17,6 +17,7 @@ import { QueryTabStyles, useQueryTabStyles } from "Explorer/Tabs/QueryTab/Styles
 import { CosmosFluentProvider } from "Explorer/Theme/ThemeUtil";
 import { useSelectedNode } from "Explorer/useSelectedNode";
 import { KeyboardAction } from "KeyboardShortcuts";
+import { Keys, t } from "Localization";
 import { QueryConstants } from "Shared/Constants";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
@@ -315,7 +316,9 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
   };
 
   public onSaveQueryClick = (): void => {
-    useSidePanel.getState().openSidePanel("Save Query", <SaveQueryPane explorer={this.props.collection.container} />);
+    useSidePanel
+      .getState()
+      .openSidePanel(t(Keys.tabs.query.saveQuery), <SaveQueryPane explorer={this.props.collection.container} />);
   };
 
   public launchQueryCopilotChat = (): void => {
@@ -325,7 +328,10 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
   public onSavedQueriesClick = (): void => {
     useSidePanel
       .getState()
-      .openSidePanel("Open Saved Queries", <BrowseQueriesPane explorer={this.props.collection.container} />);
+      .openSidePanel(
+        t(Keys.tabs.query.openSavedQueries),
+        <BrowseQueriesPane explorer={this.props.collection.container} />,
+      );
   };
 
   public toggleResult(): void {
@@ -473,7 +479,8 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
   protected getTabsButtons(): CommandButtonComponentProps[] {
     const buttons: CommandButtonComponentProps[] = [];
     if (this.executeQueryButton.visible) {
-      const label = this.state.selectedContent?.length > 0 ? "Execute Selection" : "Execute Query";
+      const label =
+        this.state.selectedContent?.length > 0 ? t(Keys.tabs.query.executeSelection) : t(Keys.tabs.query.executeQuery);
       buttons.push({
         iconSrc: ExecuteQueryIcon,
         iconAlt: label,
@@ -490,7 +497,7 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
 
     if (this.saveQueryButton.visible) {
       if (configContext.platform !== Platform.Fabric) {
-        const label = "Save Query";
+        const label = t(Keys.tabs.query.saveQuery);
         buttons.push({
           iconSrc: SaveQueryIcon,
           iconAlt: label,
@@ -507,11 +514,11 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
 
       buttons.push({
         iconSrc: DownloadQueryIcon,
-        iconAlt: "Download Query",
+        iconAlt: t(Keys.tabs.query.downloadQuery),
         keyboardAction: KeyboardAction.DOWNLOAD_ITEM,
         onCommandClick: this.onDownloadQueryClick,
-        commandButtonLabel: "Download Query",
-        ariaLabel: "Download Query",
+        commandButtonLabel: t(Keys.tabs.query.downloadQuery),
+        ariaLabel: t(Keys.tabs.query.downloadQuery),
         hasPopup: false,
         disabled: !this.saveQueryButton.enabled,
       });
@@ -568,7 +575,7 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
     // }
 
     if (!this.props.isPreferredApiMongoDB && this.state.isExecuting) {
-      const label = "Cancel query";
+      const label = t(Keys.tabs.query.cancelQuery);
       buttons.push({
         iconSrc: CancelQueryIcon,
         iconAlt: label,
@@ -589,23 +596,23 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
     const verticalButton: CommandButtonComponentProps = {
       isSelected: this.state.queryResultsView === SplitterDirection.Vertical,
       iconSrc: this.state.queryResultsView === SplitterDirection.Vertical ? CheckIcon : undefined,
-      commandButtonLabel: "Vertical",
-      ariaLabel: "Vertical",
+      commandButtonLabel: t(Keys.tabs.query.vertical),
+      ariaLabel: t(Keys.tabs.query.vertical),
       onCommandClick: () => this._setViewLayout(SplitterDirection.Vertical),
       hasPopup: false,
     };
     const horizontalButton: CommandButtonComponentProps = {
       isSelected: this.state.queryResultsView === SplitterDirection.Horizontal,
       iconSrc: this.state.queryResultsView === SplitterDirection.Horizontal ? CheckIcon : undefined,
-      commandButtonLabel: "Horizontal",
-      ariaLabel: "Horizontal",
+      commandButtonLabel: t(Keys.tabs.query.horizontal),
+      ariaLabel: t(Keys.tabs.query.horizontal),
       onCommandClick: () => this._setViewLayout(SplitterDirection.Horizontal),
       hasPopup: false,
     };
 
     return {
-      commandButtonLabel: "View",
-      ariaLabel: "View",
+      commandButtonLabel: t(Keys.tabs.query.view),
+      ariaLabel: t(Keys.tabs.query.view),
       hasPopup: true,
       children: [verticalButton, horizontalButton],
     };
@@ -782,7 +789,7 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
                 modelMarkers={this.state.modelMarkers}
                 isReadOnly={false}
                 wordWrap={"on"}
-                ariaLabel={"Editing Query"}
+                ariaLabel={t(Keys.tabs.query.editingQuery)}
                 lineNumbers={"on"}
                 theme={this.props.monacoTheme}
                 onContentChanged={(newContent: string) => this.onChangeContent(newContent)}

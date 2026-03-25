@@ -11,6 +11,7 @@ import {
 import { configContext } from "ConfigContext";
 import { ColumnDefinition } from "Explorer/Tabs/DocumentsTabV2/DocumentsTableComponent";
 import { CosmosFluentProvider, getPlatformTheme } from "Explorer/Theme/ThemeUtil";
+import { Keys, t } from "Localization";
 import React from "react";
 import { useSidePanel } from "../../../hooks/useSidePanel";
 
@@ -113,13 +114,13 @@ export const TableColumnSelectionPane: React.FC<TableColumnSelectionPaneProps> =
       <CosmosFluentProvider>
         <div className="panelFormWrapper">
           <div className="panelMainContent" style={{ display: "flex", flexDirection: "column" }}>
-            <Text>Select which columns to display in your view of items in your container.</Text>
+            <Text>{t(Keys.panes.tableColumnSelection.selectColumns)}</Text>
             <div /* Wrap <SearchBox> to avoid margin-bottom set by panelMainContent css */>
               <SearchBox
                 className={styles.searchBox}
                 value={columnSearchText}
                 onChange={onSearchChange}
-                placeholder="Search fields"
+                placeholder={t(Keys.panes.tableColumnSelection.searchFields)}
               />
             </div>
 
@@ -130,7 +131,9 @@ export const TableColumnSelectionPane: React.FC<TableColumnSelectionPaneProps> =
                   key={columnDefinition.id}
                   label={{
                     className: styles.checkboxLabel,
-                    children: `${columnDefinition.label}${columnDefinition.isPartitionKey ? " (partition key)" : ""}`,
+                    children: `${columnDefinition.label}${
+                      columnDefinition.isPartitionKey ? t(Keys.panes.tableColumnSelection.partitionKeySuffix) : ""
+                    }`,
                   }}
                   checked={selectedColumnIdsSet.has(columnDefinition.id)}
                   onChange={(_, data) => onCheckedValueChange(columnDefinition.id, data)}
@@ -138,15 +141,15 @@ export const TableColumnSelectionPane: React.FC<TableColumnSelectionPaneProps> =
               ))}
             </div>
             <Button appearance="secondary" size="small" onClick={() => setNewSelectedColumnIds(defaultSelection)}>
-              Reset
+              {t(Keys.panes.tableColumnSelection.reset)}
             </Button>
           </div>
           <div className="panelFooter" style={{ display: "flex", gap: theme.spacingHorizontalS }}>
             <Button appearance="primary" onClick={onSave}>
-              Save
+              {t(Keys.common.save)}
             </Button>
             <Button appearance="secondary" onClick={closeSidePanel}>
-              Cancel
+              {t(Keys.common.cancel)}
             </Button>
           </div>
         </div>

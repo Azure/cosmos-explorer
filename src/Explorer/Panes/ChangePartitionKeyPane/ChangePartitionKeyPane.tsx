@@ -26,6 +26,7 @@ import {
 import Explorer from "Explorer/Explorer";
 import { RightPaneForm } from "Explorer/Panes/RightPaneForm/RightPaneForm";
 import { useDatabases } from "Explorer/useDatabases";
+import { Keys, t } from "Localization";
 import { userContext } from "UserContext";
 import { getCollectionName } from "Utils/APITypeUtils";
 import { ValidCosmosDbIdDescription, ValidCosmosDbIdInputPattern } from "Utils/ValidationUtils";
@@ -72,7 +73,7 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
       await createDataTransferJob();
       await onClose();
     } catch (error) {
-      handleError(error, "ChangePartitionKey", "Failed to start data transfer job");
+      handleError(error, "ChangePartitionKey", t(Keys.panes.changePartitionKey.failedToStartError));
     }
     setIsExecuting(false);
     useSidePanel.getState().closeSidePanel();
@@ -133,17 +134,21 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
   };
 
   return (
-    <RightPaneForm formError={formError} isExecuting={isExecuting} onSubmit={submit} submitButtonText="OK">
+    <RightPaneForm
+      formError={formError}
+      isExecuting={isExecuting}
+      onSubmit={submit}
+      submitButtonText={t(Keys.common.ok)}
+    >
       <Stack tokens={{ childrenGap: 10 }} className="panelMainContent">
         <Text variant="small" style={{ color: "var(--colorNeutralForeground1)" }}>
-          When changing a container’s partition key, you will need to create a destination container with the correct
-          partition key. You may also select an existing destination container.&nbsp;
+          {t(Keys.panes.changePartitionKey.description)}&nbsp;
           <Link
             href="https://learn.microsoft.com/en-us/azure/cosmos-db/container-copy#container-copy-within-an-azure-cosmos-db-account"
             target="_blank"
             underline
           >
-            Learn more
+            {t(Keys.common.learnMore)}
           </Link>
         </Text>
         <Stack>
@@ -218,14 +223,18 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
                 </Text>
                 <TooltipHost
                   directionalHint={DirectionalHint.bottomLeftEdge}
-                  content={`Unique identifier for the ${getCollectionName().toLocaleLowerCase()} and used for id-based routing through REST and all SDKs.`}
+                  content={t(Keys.panes.changePartitionKey.collectionIdTooltip, {
+                    collectionName: getCollectionName().toLocaleLowerCase(),
+                  })}
                 >
                   <Icon
                     role="button"
                     iconName="Info"
                     className="panelInfoIcon"
                     tabIndex={0}
-                    ariaLabel={`Unique identifier for the ${getCollectionName().toLocaleLowerCase()} and used for id-based routing through REST and all SDKs.`}
+                    ariaLabel={t(Keys.panes.changePartitionKey.collectionIdTooltip, {
+                      collectionName: getCollectionName().toLocaleLowerCase(),
+                    })}
                   />
                 </TooltipHost>
               </Stack>
@@ -239,10 +248,14 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
                 autoComplete="off"
                 pattern={ValidCosmosDbIdInputPattern.source}
                 title={ValidCosmosDbIdDescription}
-                placeholder={`e.g., ${getCollectionName()}1`}
+                placeholder={t(Keys.panes.changePartitionKey.collectionIdPlaceholder, {
+                  collectionName: getCollectionName(),
+                })}
                 size={40}
                 className="panelTextField"
-                aria-label={`${getCollectionName()} id, Example ${getCollectionName()}1`}
+                aria-label={t(Keys.panes.changePartitionKey.collectionIdAriaLabel, {
+                  collectionName: getCollectionName(),
+                })}
                 value={targetCollectionId}
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => setTargetCollectionId(event.target.value)}
               />
@@ -349,7 +362,7 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
                   disabled={subPartitionKeys.length >= Constants.BackendDefaults.maxNumMultiHashPartition}
                   onClick={() => setSubPartitionKeys([...subPartitionKeys, ""])}
                 >
-                  Add hierarchical partition key
+                  {t(Keys.panes.addCollection.addPartitionKey)}
                 </DefaultButton>
                 {subPartitionKeys.length > 0 && (
                   <Text
@@ -357,11 +370,10 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
                     variant="small"
                     style={{ color: "var(--colorNeutralForeground1)" }}
                   >
-                    <Icon iconName="InfoSolid" className="removeIcon" tabIndex={0} /> This feature allows you to
-                    partition your data with up to three levels of keys for better data distribution. Requires .NET V3,
-                    Java V4 SDK, or preview JavaScript V3 SDK.{" "}
+                    <Icon iconName="InfoSolid" className="removeIcon" tabIndex={0} />{" "}
+                    {t(Keys.panes.addCollection.hierarchicalPartitionKeyInfo)}{" "}
                     <Link href="https://aka.ms/cosmos-hierarchical-partitioning" target="_blank">
-                      Learn more
+                      {t(Keys.common.learnMore)}
                     </Link>
                   </Text>
                 )}
@@ -377,14 +389,18 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
               </Text>
               <TooltipHost
                 directionalHint={DirectionalHint.bottomLeftEdge}
-                content={`Unique identifier for the ${getCollectionName().toLocaleLowerCase()} and used for id-based routing through REST and all SDKs.`}
+                content={t(Keys.panes.changePartitionKey.collectionIdTooltip, {
+                  collectionName: getCollectionName().toLocaleLowerCase(),
+                })}
               >
                 <Icon
                   role="button"
                   iconName="Info"
                   className="panelInfoIcon"
                   tabIndex={0}
-                  ariaLabel={`Unique identifier for the ${getCollectionName().toLocaleLowerCase()} and used for id-based routing through REST and all SDKs.`}
+                  ariaLabel={t(Keys.panes.changePartitionKey.collectionIdTooltip, {
+                    collectionName: getCollectionName().toLocaleLowerCase(),
+                  })}
                 />
               </TooltipHost>
             </Stack>
@@ -400,7 +416,7 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
               }}
               defaultSelectedKey={targetCollectionId}
               responsiveMode={999}
-              ariaLabel="Existing Containers"
+              ariaLabel={t(Keys.panes.changePartitionKey.existingContainers)}
             />
           </Stack>
         )}

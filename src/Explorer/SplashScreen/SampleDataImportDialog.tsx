@@ -12,6 +12,7 @@ import {
 } from "@fluentui/react-components";
 import Explorer from "Explorer/Explorer";
 import { checkContainerExists, createContainer, importData, SampleDataFile } from "Explorer/SplashScreen/SampleUtil";
+import { Keys, t } from "Localization";
 import React, { useEffect, useState } from "react";
 import * as ViewModels from "../../Contracts/ViewModels";
 
@@ -59,7 +60,7 @@ export const SampleDataImportDialog: React.FC<{
     setStatus("creating");
     const databaseName = props.sampleDataConfiguration.databaseName;
     if (checkContainerExists(databaseName, containerName)) {
-      const msg = `The container "${containerName}" in database "${databaseName}" already exists. Please delete it and retry.`;
+      const msg = t(Keys.splashScreen.sampleDataDialog.errorContainerExists, { containerName, databaseName });
       setStatus("error");
       setErrorMessage(msg);
       return;
@@ -75,7 +76,11 @@ export const SampleDataImportDialog: React.FC<{
       );
     } catch (error) {
       setStatus("error");
-      setErrorMessage(`Failed to create container: ${error instanceof Error ? error.message : String(error)}`);
+      setErrorMessage(
+        t(Keys.splashScreen.sampleDataDialog.errorCreateContainer, {
+          error: error instanceof Error ? error.message : String(error),
+        }),
+      );
       return;
     }
 
@@ -86,7 +91,11 @@ export const SampleDataImportDialog: React.FC<{
       setStatus("completed");
     } catch (error) {
       setStatus("error");
-      setErrorMessage(`Failed to import data: ${error instanceof Error ? error.message : String(error)}`);
+      setErrorMessage(
+        t(Keys.splashScreen.sampleDataDialog.errorImportData, {
+          error: error instanceof Error ? error.message : String(error),
+        }),
+      );
     }
   };
 
@@ -112,14 +121,26 @@ export const SampleDataImportDialog: React.FC<{
   const renderContent = () => {
     switch (status) {
       case "idle":
-        return `Create a container "${containerName}" and import sample data into it. This may take a few minutes.`;
+        return t(Keys.splashScreen.sampleDataDialog.createPrompt, { containerName });
 
       case "creating":
-        return <Spinner size="small" labelPosition="above" label={`Creating container "${containerName}"...`} />;
+        return (
+          <Spinner
+            size="small"
+            labelPosition="above"
+            label={t(Keys.splashScreen.sampleDataDialog.creatingContainer, { containerName })}
+          />
+        );
       case "importing":
-        return <Spinner size="small" labelPosition="above" label={`Importing data into "${containerName}"...`} />;
+        return (
+          <Spinner
+            size="small"
+            labelPosition="above"
+            label={t(Keys.splashScreen.sampleDataDialog.importingData, { containerName })}
+          />
+        );
       case "completed":
-        return `Successfully created "${containerName}" with sample data.`;
+        return t(Keys.splashScreen.sampleDataDialog.success, { containerName });
       case "error":
         return (
           <div style={{ color: "red" }}>
@@ -132,14 +153,14 @@ export const SampleDataImportDialog: React.FC<{
   const getButtonLabel = () => {
     switch (status) {
       case "idle":
-        return "Start";
+        return t(Keys.splashScreen.sampleDataDialog.startButton);
       case "creating":
       case "importing":
-        return "Close";
+        return t(Keys.common.close);
       case "completed":
-        return "Close";
+        return t(Keys.common.close);
       case "error":
-        return "Close";
+        return t(Keys.common.close);
     }
   };
 
@@ -147,7 +168,7 @@ export const SampleDataImportDialog: React.FC<{
     <Dialog open={props.open} onOpenChange={(event, data) => props.setOpen(data.open)}>
       <DialogSurface>
         <DialogBody>
-          <DialogTitle>Sample Data</DialogTitle>
+          <DialogTitle>{t(Keys.splashScreen.sampleDataDialog.title)}</DialogTitle>
           <DialogContent>
             <div className={styles.dialogContent}>{renderContent()}</div>
           </DialogContent>

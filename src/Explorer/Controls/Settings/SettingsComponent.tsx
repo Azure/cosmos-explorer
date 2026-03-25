@@ -44,6 +44,7 @@ import { useCommandBar } from "../../Menus/CommandBar/CommandBarComponentAdapter
 import { SettingsTabV2 } from "../../Tabs/SettingsTabV2";
 import "./SettingsComponent.less";
 import { mongoIndexingPolicyAADError } from "./SettingsRenderUtils";
+import { Keys, t } from "Localization";
 import {
   ConflictResolutionComponent,
   ConflictResolutionComponentProps,
@@ -699,12 +700,12 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   private onDataMaskingContentChange = (newDataMasking: DataModels.DataMaskingPolicy): void => {
     const validationErrors = [];
     if (newDataMasking.includedPaths === undefined || newDataMasking.includedPaths === null) {
-      validationErrors.push("includedPaths is required");
+      validationErrors.push(t(Keys.controls.settings.dataMasking.includedPathsRequired));
     } else if (!Array.isArray(newDataMasking.includedPaths)) {
-      validationErrors.push("includedPaths must be an array");
+      validationErrors.push(t(Keys.controls.settings.dataMasking.includedPathsMustBeArray));
     }
     if (newDataMasking.excludedPaths !== undefined && !Array.isArray(newDataMasking.excludedPaths)) {
-      validationErrors.push("excludedPaths must be an array if provided");
+      validationErrors.push(t(Keys.controls.settings.dataMasking.excludedPathsMustBeArray));
     }
 
     this.setState({
@@ -906,7 +907,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     const buttons: CommandButtonComponentProps[] = [];
     const isExecuting = this.props.settingsTab.isExecuting();
     if (this.saveSettingsButton.isVisible()) {
-      const label = "Save";
+      const label = t(Keys.common.save);
       buttons.push({
         iconSrc: SaveIcon,
         iconAlt: label,
@@ -919,7 +920,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     }
 
     if (this.discardSettingsChangesButton.isVisible()) {
-      const label = "Discard";
+      const label = t(Keys.common.discard);
       buttons.push({
         iconSrc: DiscardIcon,
         iconAlt: label,
@@ -944,9 +945,10 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     const numberOfRegions = userContext.databaseAccount?.properties.locations?.length || 1;
     const throughputDelta = (newThroughput - this.offer.autoscaleMaxThroughput) * numberOfRegions;
     if (throughputCap && throughputCap !== -1 && throughputCap - this.totalThroughputUsed < throughputDelta) {
-      throughputError = `Your account is currently configured with a total throughput limit of ${throughputCap} RU/s. This update isn't possible because it would increase the total throughput to ${
-        this.totalThroughputUsed + throughputDelta
-      } RU/s. Change total throughput limit in cost management.`;
+      throughputError = t(Keys.controls.settings.throughput.throughputCapError, {
+        throughputCap: String(throughputCap),
+        newTotalThroughput: String(this.totalThroughputUsed + throughputDelta),
+      });
     }
     this.setState({ autoPilotThroughput: newThroughput, throughputError });
   };
@@ -957,9 +959,10 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     const numberOfRegions = userContext.databaseAccount?.properties.locations?.length || 1;
     const throughputDelta = (newThroughput - this.offer.manualThroughput) * numberOfRegions;
     if (throughputCap && throughputCap !== -1 && throughputCap - this.totalThroughputUsed < throughputDelta) {
-      throughputError = `Your account is currently configured with a total throughput limit of ${throughputCap} RU/s. This update isn't possible because it would increase the total throughput to ${
-        this.totalThroughputUsed + throughputDelta
-      } RU/s. Change total throughput limit in cost management.`;
+      throughputError = t(Keys.controls.settings.throughput.throughputCapError, {
+        throughputCap: String(throughputCap),
+        newTotalThroughput: String(this.totalThroughputUsed + throughputDelta),
+      });
     }
     this.setState({ throughput: newThroughput, throughputError });
   };
@@ -1571,7 +1574,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         }
       >
         {this.shouldShowKeyspaceSharedThroughputMessage() && (
-          <div>This table shared throughput is configured at the keyspace</div>
+          <div>{t(Keys.controls.settings.scale.keyspaceSharedThroughput)}</div>
         )}
 
         <div

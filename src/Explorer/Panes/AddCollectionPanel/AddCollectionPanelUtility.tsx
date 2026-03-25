@@ -3,28 +3,32 @@ import * as Constants from "Common/Constants";
 import { configContext, Platform } from "ConfigContext";
 import * as DataModels from "Contracts/DataModels";
 import { getFullTextLanguageOptions } from "Explorer/Controls/FullTextSeach/FullTextPoliciesComponent";
+import { Keys, t } from "Localization";
 import { isFabricNative } from "Platform/Fabric/FabricUtil";
 import React from "react";
 import { userContext } from "UserContext";
 
 export function getPartitionKeyTooltipText(): string {
   if (userContext.apiType === "Mongo") {
-    return "The shard key (field) is used to split your data across many replica sets (shards) to achieve unlimited scalability. It’s critical to choose a field that will evenly distribute your data.";
+    return t(Keys.panes.addCollectionUtility.shardKeyTooltip);
   }
 
-  let tooltipText = `The ${getPartitionKeyName(
-    true,
-  )} is used to automatically distribute data across partitions for scalability. Choose a property in your JSON document that has a wide range of values and evenly distributes request volume.`;
+  let tooltipText = t(Keys.panes.addCollectionUtility.partitionKeyTooltip, {
+    partitionKeyName: getPartitionKeyName(true),
+  });
 
   if (userContext.apiType === "SQL") {
-    tooltipText += " For small read-heavy workloads or write-heavy workloads of any size, id is often a good choice.";
+    tooltipText += t(Keys.panes.addCollectionUtility.partitionKeyTooltipSqlSuffix);
   }
 
   return tooltipText;
 }
 
 export function getPartitionKeyName(isLowerCase?: boolean): string {
-  const partitionKeyName = userContext.apiType === "Mongo" ? "Shard key" : "Partition key";
+  const partitionKeyName =
+    userContext.apiType === "Mongo"
+      ? t(Keys.panes.addCollectionUtility.shardKeyLabel)
+      : t(Keys.panes.addCollectionUtility.partitionKeyLabel);
 
   return isLowerCase ? partitionKeyName.toLocaleLowerCase() : partitionKeyName;
 }
@@ -32,19 +36,19 @@ export function getPartitionKeyName(isLowerCase?: boolean): string {
 export function getPartitionKeyPlaceHolder(index?: number): string {
   switch (userContext.apiType) {
     case "Mongo":
-      return "e.g., categoryId";
+      return t(Keys.panes.addCollectionUtility.shardKeyPlaceholder);
     case "Gremlin":
-      return "e.g., /address";
+      return t(Keys.panes.addCollectionUtility.partitionKeyPlaceholderDefault);
     case "SQL":
       return `${
         index === undefined
-          ? "Required - first partition key e.g., /TenantId"
+          ? t(Keys.panes.addCollectionUtility.partitionKeyPlaceholderFirst)
           : index === 0
-          ? "second partition key e.g., /UserId"
-          : "third partition key e.g., /SessionId"
+          ? t(Keys.panes.addCollectionUtility.partitionKeyPlaceholderSecond)
+          : t(Keys.panes.addCollectionUtility.partitionKeyPlaceholderThird)
       }`;
     default:
-      return "e.g., /address/zipCode";
+      return t(Keys.panes.addCollectionUtility.partitionKeyPlaceholderGraph);
   }
 }
 
@@ -69,13 +73,12 @@ export function isFreeTierAccount(): boolean {
 }
 
 export function UniqueKeysHeader(): JSX.Element {
-  const tooltipContent =
-    "Unique keys provide developers with the ability to add a layer of data integrity to their database. By creating a unique key policy when a container is created, you ensure the uniqueness of one or more values per partition key.";
+  const tooltipContent = t(Keys.panes.addCollectionUtility.uniqueKeysTooltip);
 
   return (
     <Stack horizontal style={{ marginBottom: -2 }}>
       <Text className="panelTextBold" variant="small">
-        Unique keys
+        {t(Keys.panes.addCollectionUtility.uniqueKeysLabel)}
       </Text>
       <TooltipHost directionalHint={DirectionalHint.bottomLeftEdge} content={tooltipContent}>
         <Icon iconName="Info" className="panelInfoIcon" tabIndex={0} ariaLabel={tooltipContent} />
@@ -99,12 +102,11 @@ export function shouldShowAnalyticalStoreOptions(): boolean {
 }
 
 export function AnalyticalStoreHeader(): JSX.Element {
-  const tooltipContent =
-    "Enable analytical store capability to perform near real-time analytics on your operational data, without impacting the performance of transactional workloads.";
+  const tooltipContent = t(Keys.panes.addCollectionUtility.analyticalStoreTooltip);
   return (
     <Stack horizontal style={{ marginBottom: -2 }}>
       <Text className="panelTextBold" variant="small">
-        Analytical Store
+        {t(Keys.panes.addCollectionUtility.analyticalStoreLabel)}
       </Text>
       <TooltipHost directionalHint={DirectionalHint.bottomLeftEdge} content={tooltipContent}>
         <Icon iconName="Info" className="panelInfoIcon" tabIndex={0} ariaLabel={tooltipContent} />
@@ -116,14 +118,13 @@ export function AnalyticalStoreHeader(): JSX.Element {
 export function AnalyticalStorageContent(): JSX.Element {
   return (
     <Text variant="small">
-      Enable analytical store capability to perform near real-time analytics on your operational data, without impacting
-      the performance of transactional workloads.{" "}
+      {t(Keys.panes.addCollectionUtility.analyticalStoreDescription)}{" "}
       <Link
         aria-label={Constants.ariaLabelForLearnMoreLink.AnalyticalStore}
         target="_blank"
         href="https://aka.ms/analytical-store-overview"
       >
-        Learn more
+        {t(Keys.common.learnMore)}
       </Link>
     </Text>
   );
@@ -155,10 +156,9 @@ export function scrollToSection(id: string): void {
 export function ContainerVectorPolicyTooltipContent(): JSX.Element {
   return (
     <Text variant="small">
-      Describe any properties in your data that contain vectors, so that they can be made available for similarity
-      queries.{" "}
+      {t(Keys.panes.addCollectionUtility.vectorPolicyTooltip)}{" "}
       <Link target="_blank" href="https://aka.ms/CosmosDBVectorSetup">
-        Learn more
+        {t(Keys.common.learnMore)}
       </Link>
     </Text>
   );

@@ -1,4 +1,5 @@
 import { Icon, Link, Stack, Text } from "@fluentui/react";
+import { Keys, t } from "Localization";
 import React from "react";
 import { useNotificationConsole } from "../../hooks/useNotificationConsole";
 
@@ -20,13 +21,17 @@ export const PanelInfoErrorComponent: React.FunctionComponent<PanelInfoErrorProp
 }: PanelInfoErrorProps): JSX.Element => {
   const expandConsole = useNotificationConsole((state) => state.expandConsole);
 
-  let icon: JSX.Element = <Icon iconName="InfoSolid" className="panelLargeInfoIcon" aria-label="Infomation" />;
+  let icon: JSX.Element = (
+    <Icon iconName="InfoSolid" className="panelLargeInfoIcon" aria-label={t(Keys.panes.panelInfo.information)} />
+  );
   if (messageType === "error") {
     icon = <Icon iconName="StatusErrorFull" className="panelErrorIcon" aria-label="error" />;
   } else if (messageType === "warning") {
     icon = <Icon iconName="WarningSolid" className="panelWarningIcon" aria-label="warning" />;
   } else if (messageType === "info") {
-    icon = <Icon iconName="InfoSolid" className="panelLargeInfoIcon" aria-label="Infomation" />;
+    icon = (
+      <Icon iconName="InfoSolid" className="panelLargeInfoIcon" aria-label={t(Keys.panes.panelInfo.information)} />
+    );
   }
 
   return (
@@ -43,7 +48,7 @@ export const PanelInfoErrorComponent: React.FunctionComponent<PanelInfoErrorProp
         </Text>
         {showErrorDetails && (
           <a className="paneErrorLink" role="button" onClick={expandConsole} tabIndex={0} onKeyPress={expandConsole}>
-            More details
+            {t(Keys.panes.panelInfo.moreDetails)}
           </a>
         )}
       </span>

@@ -410,9 +410,7 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
     <Text
       className="hintText-115"
     >
-      Large 
-      partition key
-       has been enabled.
+      Large partition key has been enabled.
     </Text>
     <Text
       className="hintText-115"
@@ -984,9 +982,7 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
     <Text
       className="hintText-115"
     >
-      Large 
-      partition key
-       has been enabled.
+      Large partition key has been enabled.
     </Text>
     <Text
       className="hintText-115"
@@ -1522,9 +1518,7 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
     <Text
       className="hintText-115"
     >
-      Large 
-      partition key
-       has been enabled.
+      Large partition key has been enabled.
     </Text>
     <Text
       className="hintText-115"
@@ -2157,9 +2151,7 @@ exports[`SubSettingsComponent renders 1`] = `
     <Text
       className="hintText-115"
     >
-      Large 
-      partition key
-       has been enabled.
+      Large partition key has been enabled.
     </Text>
     <Text
       className="hintText-115"
@@ -2729,9 +2721,7 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
     <Text
       className="hintText-115"
     >
-      Large 
-      partition key
-       has been enabled.
+      Large partition key has been enabled.
     </Text>
     <Text
       className="hintText-115"

@@ -249,4 +249,50 @@ export const documentTestCases: DocumentTestCase[] = [
       },
     ],
   },
+  {
+    name: "Single Double-Quoted Partition Key",
+    databaseId: "e2etests-sql-readonly",
+    containerId: "doubleQuotedPartitionKey",
+    documents: [
+      {
+        documentId: "doubleQuotedPartitionKey",
+        partitionKeys: [{ key: "/partition-key", value: "doubleQuotedValue" }],
+      },
+      {
+        documentId: "doubleQuotedPartitionKey_empty_string",
+        partitionKeys: [{ key: "/partition-key", value: "" }],
+      },
+      {
+        documentId: "doubleQuotedPartitionKey_null",
+        partitionKeys: [{ key: "/partition-key", value: null }],
+      },
+      {
+        documentId: "doubleQuotedPartitionKey_missing",
+        partitionKeys: [],
+      },
+    ],
+  },
+  {
+    name: "Single Partition Key With Whitespace",
+    databaseId: "e2etests-sql-readonly",
+    containerId: "whitespacePartitionKey",
+    documents: [
+      {
+        documentId: "whitespacePartitionKey",
+        partitionKeys: [{ key: "/ partitionKey", value: "whitespaceValue" }],
+      },
+      {
+        documentId: "whitespacePartitionKey_empty_string",
+        partitionKeys: [{ key: "/ partitionKey", value: "" }],
+      },
+      {
+        documentId: "whitespacePartitionKey_null",
+        partitionKeys: [{ key: "/ partitionKey", value: null }],
+      },
+      {
+        documentId: "whitespacePartitionKey_missing",
+        partitionKeys: [],
+      },
+    ],
+  },
 ];

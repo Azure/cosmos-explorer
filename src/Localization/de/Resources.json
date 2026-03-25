@@ -1,0 +1,968 @@
+{
+  "common": {
+    "ok": "OK",
+    "cancel": "Abbrechen",
+    "close": "Schließen",
+    "save": "Speichern",
+    "delete": "Löschen",
+    "update": "Aktualisieren",
+    "discard": "Verwerfen",
+    "execute": "Ausführen",
+    "loading": "Wird geladen",
+    "loadingEllipsis": "Wird geladen...",
+    "next": "Weiter",
+    "previous": "Zurück",
+    "yes": "Ja",
+    "no": "Nein",
+    "result": "Ergebnis",
+    "learnMore": "Weitere Informationen",
+    "getStarted": "Erste Schritte",
+    "retry": "Wiederholen",
+    "apply": "Anwenden",
+    "refresh": "Aktualisieren",
+    "copy": "Kopieren",
+    "create": "Erstellen",
+    "confirm": "Bestätigen",
+    "open": "Öffnen",
+    "rename": "Umbenennen",
+    "download": "Herunterladen",
+    "upload": "Hochladen",
+    "connect": "Verbinden",
+    "remove": "Entfernen",
+    "load": "Laden",
+    "publish": "Veröffentlichen",
+    "browse": "Durchsuchen",
+    "increaseValueBy1": "Wert um 1 erhöhen",
+    "decreaseValueBy1": "Wert um 1 verringern"
+  },
+  "splashScreen": {
+    "title": {
+      "default": "Willkommen bei Azure Cosmos DB",
+      "postgres": "Willkommen bei Azure Cosmos DB for PostgreSQL",
+      "vcoreMongo": "Willkommen bei Azure DocumentDB (mit MongoDB-Kompatibilität)"
+    },
+    "subtitle": {
+      "default": "Global verteilter Datenbankdienst mit Unterstützung mehrerer Datenmodelle in jeder Größenordnung",
+      "getStarted": "Erste Schritte mit unseren Beispieldatensätzen, der Dokumentation und weiteren Tools."
+    },
+    "quickStart": {
+      "title": "Schnellstart starten",
+      "description": "Starten Sie ein Schnellstarttutorial, um mit Beispieldaten zu beginnen."
+    },
+    "newCollection": {
+      "title": "Neue {{collectionName}}",
+      "description": "Neuen Container für Speicher und Durchsatz erstellen"
+    },
+    "samplesGallery": {
+      "title": "Azure Cosmos DB-Beispielgalerie",
+      "description": "Entdecken Sie Beispiele, die skalierbare, intelligente App-Muster zeigen. Probieren Sie jetzt eines aus, um zu sehen, wie schnell Sie mit Cosmos DB vom Konzept zum Code gelangen."
+    },
+    "connectCard": {
+      "title": "Verbinden",
+      "description": "Bevorzugen Sie Ihre eigene Toolauswahl? Finden Sie die Verbindungszeichenfolge, die Sie für die Verbindung benötigen.",
+      "pgAdmin": {
+        "title": "Verbindung mit pgAdmin herstellen",
+        "description": "pgAdmin bevorzugen? Hier finden Sie Ihre Verbindungszeichenfolgen."
+      },
+      "vsCode": {
+        "title": "Mit VS Code verbinden",
+        "description": "Abfragen und Verwalten Ihrer MongoDB- und DocumentDB-Cluster in Visual Studio Code."
+      }
+    },
+    "shell": {
+      "postgres": {
+        "title": "PostgreSQL-Shell",
+        "description": "Erstellen Sie eine Tabelle und interagieren Sie mit Daten über die Shellschnittstelle von PostgreSQL."
+      },
+      "vcoreMongo": {
+        "title": "Mongo-Shell",
+        "description": "Erstellen Sie eine Sammlung und interagieren Sie mit Daten über die Shellschnittstelle von MongoDB."
+      }
+    },
+    "teachingBubble": {
+      "newToPostgres": {
+        "headline": "Neu bei Cosmos DB PGSQL?",
+        "body": "Willkommen! Wenn Sie neu bei Cosmos DB PGSQL sind und Hilfe beim Einstieg benötigen, finden Sie hier Beispieldaten und Abfragen."
+      },
+      "resetPassword": {
+        "headline": "Ihr Kennwort erstellen",
+        "body": "Wenn Sie Ihr Kennwort noch nicht geändert haben, ändern Sie es jetzt."
+      },
+      "coachMark": {
+        "headline": "Mit Beispiel „{{collectionName}}“ starten",
+        "body": "Sie werden angeleitet, einen Beispielcontainer mit Beispieldaten zu erstellen. Anschließend erhalten Sie eine Tour durch den Datenexplorer. Sie können die Tour auch abbrechen und selbst erkunden."
+      }
+    },
+    "sections": {
+      "recents": "Zuletzt verwendet",
+      "clearRecents": "Zuletzt verwendete Elemente löschen",
+      "top3": "Die drei wichtigsten Dinge, die Sie wissen sollten",
+      "learningResources": "Lernressourcen",
+      "nextSteps": "Nächste Schritte",
+      "tipsAndLearnMore": "Tipps und weitere Informationen",
+      "notebook": "Notebook",
+      "needHelp": "Benötigen Sie Hilfe?"
+    },
+    "top3Items": {
+      "sql": {
+        "advancedModeling": {
+          "title": "Erweiterte Modellierungsmuster",
+          "description": "Erfahren Sie mehr über fortgeschrittene Strategien zur Optimierung Ihrer Datenbank."
+        },
+        "partitioning": {
+          "title": "Best Practices für die Partitionierung",
+          "description": "Lernen Sie, Datenmodell- und Partitionierungsstrategien anzuwenden."
+        },
+        "resourcePlanning": {
+          "title": "Ihre Ressourcenanforderungen planen",
+          "description": "Machen Sie sich mit den verschiedenen Konfigurationsmöglichkeiten vertraut."
+        }
+      },
+      "mongo": {
+        "whatIsMongo": {
+          "title": "Was ist die MongoDB-API?",
+          "description": "Verstehen Sie Azure Cosmos DB for MongoDB und seine Funktionen."
+        },
+        "features": {
+          "title": "Funktionen und Syntax",
+          "description": "Entdecken Sie die Vorteile und Funktionen"
+        },
+        "migrate": {
+          "title": "Ihre Daten migrieren",
+          "description": "Vorbereitende Schritte zur Datenmigration"
+        }
+      },
+      "cassandra": {
+        "buildJavaApp": {
+          "title": "Java-App erstellen",
+          "description": "Java-App mithilfe eines SDK erstellen."
+        },
+        "partitioning": {
+          "title": "Best Practices für die Partitionierung",
+          "description": "Erfahren Sie, wie Partitionierung funktioniert."
+        },
+        "requestUnits": {
+          "title": "Anforderungseinheiten (RUs)",
+          "description": "RU-Gebühren verstehen"
+        }
+      },
+      "gremlin": {
+        "dataModeling": {
+          "title": "Datenmodellierung",
+          "description": "Empfehlungen zur Graphdatenmodellierung"
+        },
+        "partitioning": {
+          "title": "Best Practices für die Partitionierung",
+          "description": "Erfahren Sie, wie Partitionierung funktioniert"
+        },
+        "queryData": {
+          "title": "Daten abfragen",
+          "description": "Daten mit Gremlin abfragen"
+        }
+      },
+      "tables": {
+        "whatIsTable": {
+          "title": "Was ist die Table-API?",
+          "description": "Verstehen Sie Azure Cosmos DB for Table und seine Funktionen."
+        },
+        "migrate": {
+          "title": "Ihre Daten migrieren",
+          "description": "Erfahren Sie, wie Sie Ihre Daten migrieren."
+        },
+        "faq": {
+          "title": "Häufig gestellte Fragen zu Azure Cosmos DB for Table",
+          "description": "Häufige Fragen zu Azure Cosmos DB for Table"
+        }
+      }
+    },
+    "learningResources": {
+      "shortcuts": {
+        "title": "Tastenkombinationen im Datenexplorer",
+        "description": "Lernen Sie Tastenkombinationen zur Navigation im Datenexplorer."
+      },
+      "liveTv": {
+        "title": "Grundlagen erlernen",
+        "description": "Sehen Sie sich die Einführung und Anleitungsvideos der Azure Cosmos DB Live TV-Sendung an."
+      },
+      "sql": {
+        "sdk": {
+          "title": "Erste Schritte mit einem SDK",
+          "description": "Mehr über das Azure Cosmos DB SDK erfahren."
+        },
+        "migrate": {
+          "title": "Ihre Daten migrieren",
+          "description": "Migrieren Sie Daten mit Azure-Diensten und Open-Source-Lösungen."
+        }
+      },
+      "mongo": {
+        "nodejs": {
+          "title": "App mit Node.js erstellen",
+          "description": "Node.js-App erstellen."
+        },
+        "gettingStarted": {
+          "title": "Leitfaden für erste Schritte",
+          "description": "Lernen Sie die Grundlagen für den Einstieg kennen."
+        }
+      },
+      "cassandra": {
+        "createContainer": {
+          "title": "Container erstellen",
+          "description": "Erfahren Sie mehr über die Optionen zum Erstellen eines Containers."
+        },
+        "throughput": {
+          "title": "Durchsatz bereitstellen",
+          "description": "Erfahren Sie, wie Sie den Durchsatz konfigurieren."
+        }
+      },
+      "gremlin": {
+        "getStarted": {
+          "title": "Erste Schritte ",
+          "description": "Erstellen, Abfragen und Durchlaufen mithilfe der Gremlin-Konsole"
+        },
+        "importData": {
+          "title": "Graphdaten importieren",
+          "description": "Massendatenaufnahme mit BulkExecutor erlernen"
+        }
+      },
+      "tables": {
+        "dotnet": {
+          "title": ".NET-App erstellen",
+          "description": "So greifen Sie mit einer .NET-App auf Azure Cosmos DB for Table zu."
+        },
+        "java": {
+          "title": "Java-App erstellen",
+          "description": "Erstellen Sie eine Azure Cosmos DB for Table-App mit dem Java SDK. "
+        }
+      }
+    },
+    "nextStepItems": {
+      "postgres": {
+        "dataModeling": "Datenmodellierung",
+        "distributionColumn": "So wählen Sie eine Verteilungsspalte aus.",
+        "buildApps": "Apps mit Python/Java/Django erstellen"
+      },
+      "vcoreMongo": {
+        "migrateData": "Daten migrieren",
+        "vectorSearch": "KI-Apps mit Vektorsuche erstellen",
+        "buildApps": "Apps mit Node.js erstellen"
+      }
+    },
+    "learnMoreItems": {
+      "postgres": {
+        "performanceTuning": "Leistungsoptimierung",
+        "diagnosticQueries": "Nützliche Diagnoseabfragen",
+        "sqlReference": "Referenz für verteiltes SQL"
+      },
+      "vcoreMongo": {
+        "vectorSearch": "Vektorsuche",
+        "textIndexing": "Textindizierung",
+        "troubleshoot": "Häufige Probleme beheben"
+      }
+    },
+    "fabric": {
+      "buildTitle": "Ihre Datenbank erstellen",
+      "useTitle": "Ihre Datenbank nutzen",
+      "newContainer": {
+        "title": "Neuer Container",
+        "description": "Zielcontainer zum Speichern Ihrer Daten erstellen."
+      },
+      "sampleData": {
+        "title": "Beispieldaten",
+        "description": "Beispieldaten in Ihrer Datenbank laden"
+      },
+      "sampleVectorData": {
+        "title": "Beispielvektordaten",
+        "description": "Beispielvektordaten mit text-embedding-ada-002 laden"
+      },
+      "appDevelopment": {
+        "title": "App-Entwicklung",
+        "description": "Starten Sie hier, um ein SDK zum Erstellen Ihrer Apps zu verwenden."
+      },
+      "sampleGallery": {
+        "title": "Beispielgalerie",
+        "description": "End-to-End-Beispiele aus der Praxis ansehen"
+      }
+    },
+    "sampleDataDialog": {
+      "title": "Beispieldaten",
+      "startButton": "Starten",
+      "createPrompt": "Erstellen Sie einen Container „{{containerName}}“ und importieren Sie Beispieldaten. Dies kann einige Minuten dauern.",
+      "creatingContainer": "Container „{{containerName}}“ wird erstellt...",
+      "importingData": "Daten werden in „{{containerName}}“ importiert...",
+      "success": "„{{containerName}}“ wurde erfolgreich mit Beispieldaten erstellt.",
+      "errorContainerExists": "Der Container „{{containerName}}“ in der Datenbank „{{databaseName}}“ existiert bereits. Bitte löschen Sie ihn und versuchen Sie es erneut.",
+      "errorCreateContainer": "Fehler beim Erstellen des Containers: {{error}}",
+      "errorImportData": "Fehler beim Importieren von Daten: {{error}}"
+    }
+  },
+  "contextMenu": {
+    "newContainer": "Neu: {{containerName}}",
+    "restoreContainer": "{{containerName}} wiederherstellen",
+    "deleteDatabase": "{{databaseName}} löschen",
+    "deleteContainer": "{{containerName}} löschen",
+    "newSqlQuery": "Neue SQL-Abfrage",
+    "newQuery": "Neue Abfrage",
+    "openMongoShell": "Mongo Shell öffnen",
+    "newShell": "Neue Shell",
+    "openCassandraShell": "Cassandra Shell öffnen",
+    "newStoredProcedure": "Neue gespeicherte Prozedur",
+    "newUdf": "Neue UDF",
+    "newTrigger": "Neuer Trigger",
+    "deleteStoredProcedure": "Gespeicherte Prozedur löschen",
+    "deleteTrigger": "Trigger löschen",
+    "deleteUdf": "Benutzerdefinierte Funktion löschen"
+  },
+  "tabs": {
+    "documents": {
+      "newItem": "Neues Element",
+      "newDocument": "Neues Dokument",
+      "uploadItem": "Element hochladen",
+      "applyFilter": "Filter anwenden",
+      "unsavedChanges": "Nicht gespeicherte Änderungen",
+      "unsavedChangesMessage": "Ihre nicht gespeicherten Änderungen gehen verloren. Möchten Sie fortfahren?",
+      "createDocumentFailed": "Fehler beim Erstellen des Dokuments",
+      "updateDocumentFailed": "Fehler beim Aktualisieren des Dokuments",
+      "documentDeleted": "Das Dokument wurde erfolgreich gelöscht.",
+      "deleteDocumentDialogTitle": "Dokument löschen",
+      "deleteDocumentsDialogTitle": "Dokumente löschen",
+      "throttlingError": "Einige Dokumente konnten aufgrund einer Ratenbegrenzung nicht gelöscht werden. Versuchen Sie es später erneut. Um dies künftig zu vermeiden, sollten Sie den Durchsatz Ihres Containers oder Ihrer Datenbank erhöhen.",
+      "deleteFailed": "Fehler beim Löschen von Dokumenten ({{error}}).",
+      "missingShardProperty": "Im Dokument fehlt die Shardeigenschaft: {{partitionKeyProperty}}",
+      "refreshGridFailed": "Fehler beim Aktualisieren des Dokumentrasters",
+      "confirmDelete": "Möchten Sie {{documentName}} wirklich löschen?",
+      "confirmDeleteTitle": "Löschen bestätigen",
+      "selectedItems": "die ausgewählten {{count}} Elemente",
+      "selectedItem": "das ausgewählte Element",
+      "selectedDocuments": "die ausgewählten {{count}} Dokumente",
+      "selectedDocument": "das ausgewählte Dokument",
+      "deleteDocumentFailedLog": "Fehler beim Löschen des Dokuments {{documentId}} mit Statuscode {{statusCode}}.",
+      "deleteSuccessLog": "{{count}} Dokument(e) wurde(n) erfolgreich gelöscht.",
+      "deleteThrottledLog": "Fehler beim Löschen von {{count}} Dokument(en) aufgrund des Fehlers „Anforderung zu groß“ (429) Vorgang wird wiederholt …",
+      "missingShardKeyLog": "Fehler beim Speichern des neuen Dokuments: Der Shardschlüssel des Dokuments ist nicht definiert.",
+      "filterTooltip": "Geben Sie ein Abfrageprädikat ein oder wählen Sie eines aus der Liste aus.",
+      "loadMore": "Mehr laden",
+      "documentEditor": "Dokumenteneditor",
+      "savedFilters": "Gespeicherte Filter",
+      "defaultFilters": "Standardfilter",
+      "abort": "Abbrechen",
+      "deletingDocuments": "{{count}} Dokument(e) wird/werden gelöscht",
+      "deletedDocumentsSuccess": "{{count}} Dokument(e) wurde(n) erfolgreich gelöscht.",
+      "deleteAborted": "Das Löschen von Dokumenten wurde abgebrochen.",
+      "failedToDeleteDocuments": "Fehler beim Löschen von {{count}} Dokument(en).",
+      "requestTooLargeBase": "Einige Löschanforderungen sind aufgrund einer Ausnahme „Anforderung zu groß“ (429) fehlgeschlagen.",
+      "retriedSuccessfully": "wurden jedoch erfolgreich wiederholt.",
+      "retryingNow": "Der Vorgang wird jetzt wiederholt.",
+      "increaseThroughputTip": "Um dies künftig zu vermeiden, sollten Sie den Durchsatz Ihres Containers oder Ihrer Datenbank erhöhen.",
+      "numberOfSelectedDocuments": "Anzahl der ausgewählten Dokumente: {{count}}",
+      "mongoFilterPlaceholder": "Geben Sie ein Abfrageprädikat (z. B. {\"id\":\"foo\"}) ein, wählen Sie eines aus der Dropdownliste oder lassen Sie das Feld leer, um alle Dokumente abzufragen.",
+      "sqlFilterPlaceholder": "Geben Sie ein Abfrageprädikat (z. B. WHERE c.id=\"1\") ein, wählen Sie eines aus der Dropdownliste oder lassen Sie das Feld leer, um alle Dokumente abzufragen.",
+      "error": "Fehler",
+      "warning": "Warnung"
+    },
+    "query": {
+      "executeQuery": "Abfrage ausführen",
+      "executeSelection": "Auswahl ausführen",
+      "saveQuery": "Abfrage speichern",
+      "downloadQuery": "Abfrage herunterladen",
+      "cancelQuery": "Abfrage abbrechen",
+      "openSavedQueries": "Gespeicherte Abfragen öffnen",
+      "vertical": "Vertikal",
+      "horizontal": "Horizontal",
+      "view": "Ansicht",
+      "editingQuery": "Abfrage wird bearbeitet"
+    },
+    "storedProcedure": {
+      "id": "ID der gespeicherten Prozedur",
+      "idPlaceholder": "Geben Sie die ID der neuen gespeicherten Prozedur ein.",
+      "idAriaLabel": "ID der gespeicherten Prozedur",
+      "body": "Text der gespeicherten Prozedur",
+      "bodyAriaLabel": "Text der gespeicherten Prozedur",
+      "successfulExecution": "Die gespeicherte Prozedur wurde erfolgreich ausgeführt.",
+      "resultAriaLabel": "Ergebnis der gespeicherten Prozedur ausführen",
+      "logsAriaLabel": "Protokolle für gespeicherte Prozedur ausführen",
+      "errors": "Fehler:",
+      "errorDetailsAriaLabel": "Link zu Fehlerdetails",
+      "moreDetails": "Weitere Details",
+      "consoleLogTab": "console.log"
+    },
+    "trigger": {
+      "id": "Trigger-ID",
+      "idPlaceholder": "Geben Sie die neue Trigger-ID ein.",
+      "type": "Triggertyp",
+      "operation": "Triggervorgang",
+      "body": "Triggertext",
+      "bodyAriaLabel": "Triggertext",
+      "pre": "Vor",
+      "post": "Beitrag",
+      "all": "Alle",
+      "operationCreate": "Erstellen",
+      "operationDelete": "Löschen",
+      "operationReplace": "Ersetzen"
+    },
+    "udf": {
+      "id": "ID der benutzerdefinierten Funktion",
+      "idPlaceholder": "Geben Sie die ID der neuen benutzerdefinierten Funktion ein.",
+      "body": "Text der benutzerdefinierten Funktion",
+      "bodyAriaLabel": "Text der benutzerdefinierten Funktion"
+    },
+    "conflicts": {
+      "unsavedChanges": "Nicht gespeicherte Änderungen",
+      "changesWillBeLost": "Nicht gespeicherte Änderungen gehen verloren. Möchten Sie fortfahren?",
+      "resolveConflictFailed": "Fehler beim Auflösen des Konflikts",
+      "deleteConflictFailed": "Fehler beim Löschen des Konflikts.",
+      "refreshGridFailed": "Fehler beim Aktualisieren des Dokumentrasters"
+    },
+    "mongoShell": {
+      "title": "Mongo Shell"
+    }
+  },
+  "panes": {
+    "deleteDatabase": {
+      "panelTitle": "{{databaseName}} löschen",
+      "warningMessage": "Warnung! Die Aktion, die Sie ausführen möchten, kann nicht rückgängig gemacht werden. Wenn Sie fortfahren, werden diese Ressource und alle untergeordneten Ressourcen dauerhaft gelöscht.",
+      "confirmPrompt": "Durch Eingabe der {{databaseName}}-ID (Name) bestätigen",
+      "inputMismatch": "Eingabe {{databaseName}} Name „{{input}}“ stimmt nicht mit dem ausgewählten {{databaseName}} „{{selectedId}}“ überein.",
+      "feedbackTitle": "Helfen Sie uns, Azure Cosmos DB zu verbessern!",
+      "feedbackReason": "Aus welchem Grund löschen Sie diese {{databaseName}}?"
+    },
+    "deleteCollection": {
+      "panelTitle": "{{collectionName}} löschen",
+      "confirmPrompt": "Durch Eingabe der {{collectionName}}-ID bestätigen",
+      "inputMismatch": "Die Eingabe-ID {{input}} stimmt nicht mit der ausgewählten {{selectedId}} überein.",
+      "feedbackTitle": "Helfen Sie uns, Azure Cosmos DB zu verbessern!",
+      "feedbackReason": "Aus welchem Grund löschen Sie diese {{collectionName}}?"
+    },
+    "addDatabase": {
+      "databaseLabel": "Datenbank {{suffix}}",
+      "databaseIdLabel": "Datenbank-ID",
+      "keyspaceIdLabel": "Keyspace-ID",
+      "databaseIdPlaceholder": "Neue {{databaseLabel}}-ID eingeben",
+      "databaseTooltip": "{{databaseLabel}} ist ein logischer Container mit mindestens einem {{collectionsLabel}}",
+      "shareThroughput": "Durchsatz für {{collectionsLabel}} gemeinsam nutzen",
+      "shareThroughputTooltip": "Der bereitgestellte Durchsatz auf der {{databaseLabel}}-Ebene wird von allen {{collectionsLabel}} innerhalb von {{databaseLabel}} gemeinsam genutzt.",
+      "greaterThanError": "Geben Sie für den Autopilot-Durchsatz einen Wert ein, der größer als {{minValue}} ist.",
+      "acknowledgeSpendError": "Bestätigen Sie die geschätzten {{period}} Ausgaben.",
+      "acknowledgeSpendErrorMonthly": "Bestätigen Sie die geschätzten monatlichen Ausgaben.",
+      "acknowledgeSpendErrorDaily": "Bestätigen Sie die geschätzten täglichen Ausgaben.",
+      "provisionSharedThroughputTitle": "Freigegebenen Durchsatz bereitstellen",
+      "provisionThroughputLabel": "Durchsatz bereitstellen"
+    },
+    "addCollection": {
+      "createNew": "Neu erstellen",
+      "useExisting": "Vorhandene verwenden",
+      "databaseTooltip": "Eine Datenbank entspricht einem Namespace. Das ist die Verwaltungseinheit für einen Satz von {{collectionName}}.",
+      "shareThroughput": "Durchsatz für {{collectionName}} gemeinsam nutzen",
+      "shareThroughputTooltip": "Der auf Datenbankebene konfigurierte Durchsatz wird von allen {{collectionName}} innerhalb der Datenbank gemeinsam genutzt.",
+      "collectionIdLabel": "{{collectionName}} ID",
+      "collectionIdTooltip": "Eindeutiger Bezeichner für {{collectionName}} und wird für id-basiertes Routing über REST und alle SDKs verwendet.",
+      "collectionIdPlaceholder": "Beispiel: {{collectionName}}1",
+      "collectionIdAriaLabel": "{{collectionName}} ID, Beispiel {{collectionName}}1",
+      "existingDatabaseAriaLabel": "Vorhandene {{databaseName}}-ID auswählen",
+      "existingDatabasePlaceholder": "Vorhandene {{databaseName}}-ID auswählen",
+      "indexing": "Indizierung",
+      "turnOnIndexing": "Indizierung aktivieren",
+      "automatic": "Automatisch",
+      "turnOffIndexing": "Indizierung deaktivieren",
+      "off": "Aus",
+      "sharding": "Sharding",
+      "shardingTooltip": "Shardsammlungen teilen Ihre Daten auf viele Replikatgruppen (Shards) auf, um unbegrenzte Skalierbarkeit zu erzielen. Shardsammlungen erfordern die Auswahl eines Shardschlüssels (Felds), um Ihre Daten gleichmäßig zu verteilen.",
+      "unsharded": "Ohne Sharding",
+      "unshardedLabel": "Ohne Sharding (20-GB-Limit)",
+      "sharded": "Mit Sharding",
+      "addPartitionKey": "Hierarchischen Partitionsschlüssel hinzufügen",
+      "hierarchicalPartitionKeyInfo": "Mit diesem Feature können Sie Ihre Daten mit bis zu drei Schlüsselebenen partitionieren, um eine bessere Datenverteilung zu erzielen. Erfordert .NET V3, Java V4 SDK oder JavaScript V3 SDK (Vorschauversion).",
+      "provisionDedicatedThroughput": "Dedizierten Durchsatz für {{collectionName}} bereitstellen",
+      "provisionDedicatedThroughputTooltip": "Sie können optional dedizierten Durchsatz für eine {{collectionName}} in einer Datenbank bereitstellen, für die Durchsatz bereitgestellt wurde. Dieser dedizierte Durchsatz wird nicht für andere {{collectionNamePlural}} in der Datenbank freigegeben und zählt nicht zum Durchsatz, den Sie für die Datenbank bereitgestellt haben. Diese Durchsatzmenge wird zusätzlich zu dem Durchsatz, den Sie auf Datenbankebene bereitgestellt haben, in Rechnung gestellt.",
+      "uniqueKeysPlaceholderMongo": "Durch Trennzeichen getrennte Pfade, z. B. firstName,address.zipCode",
+      "uniqueKeysPlaceholderSql": "Durch Trennzeichen getrennte Pfade, z. B. /firstName,/address/zipCode",
+      "addUniqueKey": "Eindeutigen Schlüssel hinzufügen",
+      "enableAnalyticalStore": "Analysespeicher aktivieren",
+      "disableAnalyticalStore": "Analysespeicher deaktivieren",
+      "on": "Ein",
+      "analyticalStoreSynapseLinkRequired": "Azure Synapse Link ist zum Erstellen eines Analysespeichers {{collectionName}}erforderlich. Aktivieren Sie Synapse Link für dieses Cosmos DB-Konto.",
+      "enable": "Aktivieren",
+      "containerVectorPolicy": "Containervektorrichtlinie",
+      "containerFullTextSearchPolicy": "Richtlinie für Container-Volltextsuche",
+      "advanced": "Erweitert",
+      "mongoIndexingTooltip": "Das Feld _id wird standardmäßig indiziert. Das Erstellen eines Platzhalterindexes für alle Felder wird für die Entwicklung empfohlen, weil dadurch Abfragen optimiert werden.",
+      "createWildcardIndex": "Platzhalterindex für alle Felder erstellen",
+      "legacySdkCheckbox": "Meine Anwendung verwendet eine ältere Cosmos .NET- oder Java SDK-Version (.NET V1 oder Java V2).",
+      "legacySdkInfo": "Um die Kompatibilität mit älteren SDKs sicherzustellen, verwendet der erstellte Container ein Legacypartitionierungsschema, das Partitionsschlüsselwerte nur mit einer Größe von bis zu 101 Bytes unterstützt. Wenn dies aktiviert ist, können Sie keine hierarchischen Partitionsschlüssel verwenden.",
+      "indexingOnInfo": "Alle Eigenschaften in Ihren Dokumenten werden standardmäßig für flexible und effiziente Abfragen indiziert.",
+      "indexingOffInfo": "Die Indizierung wird deaktiviert. Empfohlen, wenn Sie keine Abfragen ausführen müssen oder nur Schlüsselwertvorgänge ausführen müssen.",
+      "indexingOffWarning": "Wenn Sie diesen Container mit deaktivierter Indizierung erstellen, können Sie keine Änderungen an der Indizierungsrichtlinie vornehmen. Indizierungsänderungen sind nur an einem Container mit einer Indizierungsrichtlinie zulässig.",
+      "acknowledgeSpendErrorMonthly": "Bestätigen Sie die geschätzten monatlichen Ausgaben.",
+      "acknowledgeSpendErrorDaily": "Bestätigen Sie die geschätzten täglichen Ausgaben.",
+      "unshardedMaxRuError": "Sammlungen ohne Sharding unterstützen bis zu 10.000 RUs.",
+      "acknowledgeShareThroughputError": "Bestätigen Sie die geschätzten Kosten für diesen dedizierten Durchsatz.",
+      "vectorPolicyError": "Beheben Sie Fehler in der Containervektorrichtlinie.",
+      "fullTextSearchPolicyError": "Beheben Sie Fehler in der Richtlinie für die Container-Volltextsuche.",
+      "addingSampleDataSet": "Beispieldataset wird hinzugefügt",
+      "databaseFieldLabelName": "Datenbankname",
+      "databaseFieldLabelId": "Datenbank-ID",
+      "newDatabaseIdPlaceholder": "Geben Sie eine neue Datenbank-ID ein.",
+      "newDatabaseIdAriaLabel": "Neue Datenbank-ID; Geben Sie eine neue Datenbank-ID ein.",
+      "createNewDatabaseAriaLabel": "Neue Datenbank erstellen",
+      "useExistingDatabaseAriaLabel": "Vorhandene Datenbank verwenden",
+      "chooseExistingDatabase": "Vorhandene Datenbank auswählen",
+      "teachingBubble": {
+        "step1Headline": "Beispieldatenbank erstellen",
+        "step1Body": "Die Datenbank ist das übergeordnete Element eines Containers. Sie können eine neue Datenbank erstellen oder eine vorhandene verwenden. In diesem Tutorial erstellen wir eine neue Datenbank namens SampleDB.",
+        "step1LearnMore": "Weitere Informationen zu Ressourcen",
+        "step2Headline": "Durchsatz festlegen",
+        "step2Body": "Cosmos DB empfiehlt, den Durchsatz über die Datenbank hinweg zu teilen. Die Autoskalierung bietet Ihnen einen flexiblen Durchsatz basierend auf dem festgelegten maximalen RU/s-Wert (Request Units).",
+        "step2LearnMore": "Weitere Informationen zu RU/s.",
+        "step3Headline": "Container wird benannt",
+        "step3Body": "Container benennen",
+        "step4Headline": "Partitionsschlüssel wird festgelegt",
+        "step4Body": "Letzter Schritt: Sie müssen einen Partitionsschlüssel für Ihre Sammlung festlegen. Für dieses Beispiel wurde /address ausgewählt. Ein guter Partitionsschlüssel sollte eine breite Palette möglicher Werte abdecken.",
+        "step4CreateContainer": "Container erstellen",
+        "step5Headline": "Beispielcontainer wird erstellt",
+        "step5Body": "Es wird jetzt ein Beispielcontainer erstellt, und wir fügen Beispieldaten für Sie hinzu. Das dauert etwa eine Minute.",
+        "step5BodyFollowUp": "Nachdem der Beispielcontainer erstellt wurde, überprüfen Sie Ihren Beispieldatensatz und folgen Sie den nächsten Schritten.",
+        "stepOfTotal": "Schritt {{current}} von {{total}}"
+      }
+    },
+    "addCollectionUtility": {
+      "shardKeyTooltip": "Der Shardschlüssel (Feld) wird verwendet, um Ihre Daten auf viele Replikatgruppen (Shards) aufzuteilen, um unbegrenzte Skalierbarkeit zu erzielen. Es ist wichtig, ein Feld auszuwählen, das Ihre Daten gleichmäßig verteilt.",
+      "partitionKeyTooltip": "{{partitionKeyName}} wird verwendet, um Daten aus Gründen der Skalierbarkeit automatisch auf Partitionen zu verteilen. Wählen Sie in Ihrem JSON-Dokument eine Eigenschaft, die eine große Bandbreite an Werten aufweist und das Anforderungsvolumen gleichmäßig verteilt.",
+      "partitionKeyTooltipSqlSuffix": " Bei kleinen Workloads mit vielen Lese- oder Schreibvorgängen beliebiger Größe ist die ID häufig eine gute Wahl.",
+      "shardKeyLabel": "Shardschlüssel",
+      "partitionKeyLabel": "Partitionsschlüssel",
+      "shardKeyPlaceholder": "Beispiel: categoryId",
+      "partitionKeyPlaceholderDefault": "Beispiel: /address",
+      "partitionKeyPlaceholderFirst": "Erforderlich – erster Partitionsschlüssel, z. B. /TenantId",
+      "partitionKeyPlaceholderSecond": "zweiter Partitionsschlüssel, z. B. /UserId",
+      "partitionKeyPlaceholderThird": "Dritter Partitionsschlüssel, z. B. /SessionId",
+      "partitionKeyPlaceholderGraph": "Beispiel: /address/zipCode",
+      "uniqueKeysTooltip": "Eindeutige Schlüssel bieten Entwicklern die Möglichkeit, ihrer Datenbank eine Ebene der Datenintegrität hinzuzufügen. Indem Sie beim Erstellen eines Containers eine Richtlinie für eindeutige Schlüssel erstellen, stellen Sie die Eindeutigkeit eines oder mehrerer Werte pro Partitionsschlüssel sicher.",
+      "uniqueKeysLabel": "Eindeutige Schlüssel",
+      "analyticalStoreLabel": "Analysespeicher",
+      "analyticalStoreTooltip": "Aktivieren Sie die Analysespeicherfunktion, um Analysen ihrer operativen Daten nahezu in Echtzeit durchzuführen, ohne die Leistung von Transaktionsworkloads zu beeinträchtigen.",
+      "analyticalStoreDescription": "Aktivieren Sie die Analysespeicherfunktion, um Analysen ihrer operativen Daten nahezu in Echtzeit durchzuführen, ohne die Leistung von Transaktionsworkloads zu beeinträchtigen.",
+      "vectorPolicyTooltip": "Beschreiben Sie alle Eigenschaften in Ihren Daten, die Vektoren enthalten, damit sie für Ähnlichkeitsabfragen verfügbar gemacht werden können."
+    },
+    "settings": {
+      "pageOptions": "Seitenoptionen",
+      "pageOptionsDescription": "Wählen Sie „Benutzerdefiniert“ aus, um eine feste Anzahl anzuzeigender Abfrageergebnisse anzugeben, oder wählen Sie „Unbegrenzt“ aus, um beliebig viele Abfrageergebnisse pro Seite anzuzeigen.",
+      "queryResultsPerPage": "Abfrageergebnisse pro Seite",
+      "queryResultsPerPageTooltip": "Geben Sie die Anzahl der Abfrageergebnisse ein, die pro Seite angezeigt werden sollen.",
+      "customQueryItemsPerPage": "Benutzerdefinierte Abfrageelemente pro Seite",
+      "custom": "Benutzerdefiniert",
+      "unlimited": "Unbegrenzt",
+      "entraIdRbac": "RBAC für Entra ID aktivieren",
+      "entraIdRbacDescription": "Wählen Sie „Automatisch“ aus, um RBAC für Entra ID automatisch zu aktivieren. True/False, um das Aktivieren/Deaktivieren von RBAC für Entra ID zu erzwingen.",
+      "true": "Wahr",
+      "false": "Falsch",
+      "regionSelection": "Bereichsauswahl",
+      "regionSelectionDescription": "Ändert die Region, die der Cosmos-Client für den Zugriff auf das Konto verwendet.",
+      "selectRegion": "Region auswählen",
+      "selectRegionTooltip": "Ändert den Kontoendpunkt, der zum Ausführen von Clientvorgängen verwendet wird.",
+      "globalDefault": "Global (Standard)",
+      "readWrite": "(Lesen/Schreiben)",
+      "read": "(Lesen)",
+      "queryTimeout": "Abfragetimeout",
+      "queryTimeoutDescription": "Wenn eine Abfrage ein angegebenes Zeitlimit erreicht, wird ein Popup mit einer Option zum Abbrechen der Abfrage angezeigt, es sei denn, der automatische Abbruch wurde aktiviert.",
+      "enableQueryTimeout": "Abfragetimeout aktivieren",
+      "queryTimeoutMs": "Abfragetimeout (ms)",
+      "automaticallyCancelQuery": "Abfrage nach Timeout automatisch abbrechen",
+      "ruLimit": "RU-Limit",
+      "ruLimitDescription": "Wenn eine Abfrage ein konfiguriertes RU-Limit überschreitet, wird die Abfrage abgebrochen.",
+      "enableRuLimit": "RU-Limit aktivieren",
+      "ruLimitLabel": "RU-Limit (RU)",
+      "defaultQueryResults": "Standardansicht der Abfrageergebnisse",
+      "defaultQueryResultsDescription": "Wählen Sie die Standardansicht aus, die zum Anzeigen von Abfrageergebnissen verwendet werden soll.",
+      "retrySettings": "Wiederholungseinstellungen",
+      "retrySettingsDescription": "Wiederholungsrichtlinie, die gedrosselten Anforderungen während CosmosDB-Abfragen zugeordnet ist.",
+      "maxRetryAttempts": "Max. Wiederholungsversuche",
+      "maxRetryAttemptsTooltip": "Maximale Anzahl von Wiederholungen, die für eine Anforderung ausgeführt werden sollen. Standardwert: 9.",
+      "fixedRetryInterval": "Festes Wiederholungsintervall (ms)",
+      "fixedRetryIntervalTooltip": "Festes Wiederholungsintervall in Millisekunden, das zwischen den einzelnen Wiederholungsversuchen abgewartet wird, wobei das als Teil der Antwort zurückgegebene retryAfter ignoriert wird. Der Standardwert beträgt 0 Millisekunden.",
+      "maxWaitTime": "Maximale Wartezeit (s)",
+      "maxWaitTimeTooltip": "Maximale Wartezeit in Sekunden für eine Anforderung während der Wiederholungsversuche. Standardwert: 30 Sekunden.",
+      "enableContainerPagination": "Containerpaginierung aktivieren",
+      "enableContainerPaginationDescription": "Laden Sie jeweils 50 Container. Derzeit werden Container nicht in alphanumerischer Reihenfolge abgerufen.",
+      "enableCrossPartitionQuery": "Partitionsübergreifende Abfrage aktivieren",
+      "enableCrossPartitionQueryDescription": "Senden Sie während der Ausführung einer Abfrage mehrere Anforderungen. Wenn die Abfrage nicht auf einen einzelnen Partitionsschlüsselwert beschränkt ist, sind mehrere Anforderungen erforderlich.",
+      "maxDegreeOfParallelism": "Max. Grad an Parallelität",
+      "maxDegreeOfParallelismDescription": "Ruft die Anzahl gleichzeitiger Vorgänge ab, die während der parallelen Abfrageausführung clientseitig ausgeführt werden, oder legt diese fest. Ein positiver Eigenschaftswert schränkt die Anzahl gleichzeitiger Vorgänge auf den festgelegten Wert ein. Wenn der Wert auf weniger als 0 festgelegt ist, entscheidet das System automatisch, wie viele gleichzeitige Vorgänge ausgeführt werden sollen.",
+      "maxDegreeOfParallelismQuery": "Bis zum maximalen Grad an Parallelität abfragen.",
+      "priorityLevel": "Prioritätsstufe",
+      "priorityLevelDescription": "Legt die Prioritätsstufe für Datenebenenanforderungen von Daten-Explorer fest, wenn die prioritätsbasierte Ausführung verwendet wird. Wenn „Keine“ ausgewählt ist, gibt Daten-Explorer keine Prioritätsstufe an, und die serverseitige Standardprioritätsstufe wird verwendet.",
+      "displayGremlinQueryResults": "Gremlin-Abfrageergebnisse anzeigen als:",
+      "displayGremlinQueryResultsDescription": "Wählen Sie „Graph“ aus, um die Abfrageergebnisse automatisch als Graph zu visualisieren, oder wählen Sie „JSON“ aus, um die Ergebnisse als JSON anzuzeigen.",
+      "graph": "Graph",
+      "json": "JSON",
+      "graphAutoVisualization": "Automatische Graphvisualisierung",
+      "enableSampleDatabase": "Beispieldatenbank aktivieren",
+      "enableSampleDatabaseDescription": "Dies ist eine Beispieldatenbank und Sammlung mit synthetischen Produktdaten, die Sie mithilfe von NoSQL-Abfragen untersuchen können. Dies wird als eine weitere Datenbank auf der Daten-Explorer-Benutzeroberfläche angezeigt und von Microsoft erstellt und kostenlos für Sie verwaltet.",
+      "enableSampleDbAriaLabel": "Beispieldatenbank für die Abfrageuntersuchung aktivieren",
+      "guidRepresentation": "GUID-Darstellung",
+      "guidRepresentationDescription": "GuidRepresentation in MongoDB bezieht sich darauf, wie GUIDs (Globally Unique Identifiers) serialisiert und deserialisiert werden, wenn sie in BSON-Dokumenten gespeichert werden. Dies gilt für alle Dokumentvorgänge.",
+      "advancedSettings": "Erweiterte Einstellungen",
+      "ignorePartitionKey": "Partitionsschlüssel bei Dokumentaktualisierung ignorieren",
+      "ignorePartitionKeyTooltip": "Wenn diese Option aktiviert ist, wird der Partitionsschlüsselwert nicht verwendet, um das Dokument während Aktualisierungsvorgängen zu finden. Verwenden Sie diese Option nur, wenn Dokumentaktualisierungen aufgrund eines ungewöhnlichen Partitionsschlüssels fehlschlagen.",
+      "clearHistory": "Verlauf löschen",
+      "clearHistoryConfirm": "Möchten Sie fortfahren?",
+      "clearHistoryDescription": "Durch diese Aktion werden alle Anpassungen für dieses Konto in diesem Browser gelöscht, einschließlich:",
+      "clearHistoryTabLayout": "Setzen Sie Ihre benutzerdefinierten Registerkartenlayouts zurück, einschließlich der Splitterpositionen",
+      "clearHistoryTableColumns": "Löschen Sie Ihre Tabellenspalteneinstellungen, einschließlich aller benutzerdefinierten Spalten",
+      "clearHistoryFilters": "Filterverlauf löschen",
+      "clearHistoryRegion": "Bereichsauswahl auf „Global“ zurücksetzen",
+      "increaseValueBy1000": "Wert um 1000 erhöhen",
+      "decreaseValueBy1000": "Wert um 1000 verringern",
+      "none": "Kein(e)",
+      "low": "Niedrig",
+      "high": "Hoch",
+      "automatic": "Automatisch",
+      "enhancedQueryControl": "Erweitertes Abfragesteuerelement",
+      "enableQueryControl": "Abfragesteuerelement aktivieren",
+      "explorerVersion": "Explorer-Version",
+      "accountId": "Konto-ID",
+      "sessionId": "Sitzungs-ID",
+      "popupsDisabledError": "Wir konnten keine Autorisierung für dieses Konto einrichten, weil Popups im Browser deaktiviert wurden.\nAktivieren Sie Popups für diese Website, und klicken Sie auf die Schaltfläche „Anmeldung für Entra-ID“.",
+      "failedToAcquireTokenError": "Fehler beim automatischen Abrufen des Autorisierungstokens. Klicken Sie auf die Schaltfläche „Anmeldung für Entra-ID“, um RBAC-Vorgänge für Entra ID zu aktivieren."
+    },
+    "saveQuery": {
+      "panelTitle": "Abfrage speichern",
+      "setupCostMessage": "Aus Compliancegründen speichern wir Abfragen in einem Container in Ihrem Azure Cosmos-Konto in einer separaten Datenbank namens „{{databaseName}}“. Um fortzufahren, müssen wir einen Container in Ihrem Konto erstellen. Die geschätzten zusätzlichen Kosten betragen 0,77 USD pro Tag.",
+      "completeSetup": "Einrichtung abschließen",
+      "noQueryNameError": "Kein Abfragename angegeben",
+      "invalidQueryContentError": "Ungültiger Abfrageinhalt angegeben",
+      "failedToSaveQueryError": "Fehler beim Speichern der Abfrage {{queryName}}",
+      "failedToSetupContainerError": "Fehler beim Einrichten eines Containers für gespeicherte Abfragen",
+      "accountNotSetupError": "Fehler beim Speichern der Abfrage: Konto zum Speichern von Abfragen nicht eingerichtet",
+      "name": "Name"
+    },
+    "loadQuery": {
+      "noFileSpecifiedError": "Keine Datei angegeben",
+      "failedToLoadQueryError": "Fehler beim Laden der Abfrage.",
+      "failedToLoadQueryFromFileError": "Fehler beim Laden der Abfrage aus der Datei {{fileName}}",
+      "selectFilesToOpen": "Abfragedokument auswählen",
+      "browseFiles": "Durchsuchen"
+    },
+    "executeStoredProcedure": {
+      "enterInputParameters": "Eingabeparameter eingeben (falls vorhanden)",
+      "key": "Schlüssel",
+      "param": "Param.",
+      "partitionKeyValue": "Partitionsschlüsselwert",
+      "value": "Wert",
+      "addNewParam": "Neuen Parameter hinzufügen",
+      "addParam": "Parameter hinzufügen",
+      "deleteParam": "Parameter löschen",
+      "invalidParamError": "Ungültiger Parameter angegeben: {{invalidParam}}",
+      "invalidParamConsoleError": "Ungültiger Parameter angegeben: {{invalidParam}} ist kein gültiger Literalwert.",
+      "stringType": "Zeichenfolge",
+      "customType": "Benutzerdefiniert"
+    },
+    "uploadItems": {
+      "noFilesSpecifiedError": "Es wurden keine Dateien angegeben. Geben Sie mindestens eine Datei ein.",
+      "selectJsonFiles": "JSON-Dateien auswählen",
+      "selectJsonFilesTooltip": "Wählen Sie mindestens eine JSON-Datei zum Hochladen aus. Jede Datei kann ein einzelnes JSON-Dokument oder ein Array von JSON-Dokumenten enthalten. Die kombinierte Größe aller Dateien in einem einzelnen Uploadvorgang muss kleiner als 2 MB sein. Sie können mehrere Uploadvorgänge für größere Datasets ausführen.",
+      "fileNameColumn": "DATEINAME",
+      "statusColumn": "STATUS",
+      "uploadStatus": "{{numSucceeded}} erstellt, {{numThrottled}} gedrosselt, {{numFailed}} Fehler",
+      "uploadedFiles": "Hochgeladene Dateien"
+    },
+    "copyNotebook": {
+      "copyFailedError": "Fehler beim Kopieren von {{name}} nach {{destination}}",
+      "uploadFailedError": "Fehler beim Hochladen von „{{name}}“",
+      "location": "Speicherort",
+      "locationAriaLabel": "Speicherort",
+      "selectLocation": "Notizbuchspeicherort zum Kopieren auswählen",
+      "name": "Name"
+    },
+    "publishNotebook": {
+      "publishFailedError": "Fehler beim Veröffentlichen von {{notebookName}} im Katalog",
+      "publishDescription": "Nach der Veröffentlichung wird dieses Notebook im öffentlichen Katalog Azure Cosmos DB Notebooks angezeigt. Stellen Sie sicher, dass Sie alle vertraulichen Daten oder Ausgaben vor der Veröffentlichung entfernt haben.",
+      "publishPrompt": "Möchten Sie „{{name}}“ im Katalog veröffentlichen und freigeben?",
+      "coverImage": "Titelbild",
+      "coverImageUrl": "Titelbild-URL",
+      "name": "Name",
+      "description": "Beschreibung",
+      "tags": "Kategorien",
+      "tagsPlaceholder": "Optionales Tag 1, optionales Tag 2",
+      "preview": "Vorschau",
+      "urlType": "URL",
+      "customImage": "Benutzerdefiniertes Image",
+      "takeScreenshot": "Screenshot erstellen",
+      "useFirstDisplayOutput": "Erste Anzeigeausgabe verwenden",
+      "failedToCaptureOutput": "Fehler beim Erfassen der ersten Ausgabe",
+      "outputDoesNotExist": "Für keine der Zellen ist eine Ausgabe vorhanden.",
+      "failedToConvertError": "Fehler beim Konvertieren von {{fileName}} in das Base64-Format",
+      "failedToUploadError": "Fehler beim Hochladen von „{{fileName}}“"
+    },
+    "changePartitionKey": {
+      "failedToStartError": "Fehler beim Starten des Datenübertragungsauftrags",
+      "suboptimalPartitionKeyError": "Warnung: Das System hat festgestellt, dass Ihre Sammlung möglicherweise keinen optimalen Partitionsschlüssel verwendet.",
+      "description": "Wenn Sie den Partitionsschlüssel eines Containers ändern, müssen Sie einen Zielcontainer mit dem richtigen Partitionsschlüssel erstellen. Sie können auch einen vorhandenen Zielcontainer auswählen.",
+      "sourceContainerId": "Quell-{{collectionName}}-ID",
+      "destinationContainerId": "Ziel-{{collectionName}}-ID",
+      "collectionIdTooltip": "Eindeutiger Bezeichner für {{collectionName}} und wird für id-basiertes Routing über REST und alle SDKs verwendet.",
+      "collectionIdPlaceholder": "Beispiel: {{collectionName}}1",
+      "collectionIdAriaLabel": "{{collectionName}} ID, Beispiel {{collectionName}}1",
+      "existingContainers": "Vorhandene Container",
+      "partitionKeyWarning": "Der Zielcontainer darf nicht bereits vorhanden sein. Daten-Explorer erstellt einen neuen Zielcontainer für Sie."
+    },
+    "cassandraAddCollection": {
+      "keyspaceLabel": "Keyspacename",
+      "keyspaceTooltip": "Wählen Sie einen vorhandenen Keyspace aus, oder geben Sie eine neue Keyspace-ID ein.",
+      "tableIdLabel": "Geben Sie den CQL-Befehl ein, um die Tabelle zu erstellen.",
+      "enterTableId": "Tabellen-ID eingeben",
+      "tableSchemaAriaLabel": "Tabellenschema",
+      "provisionDedicatedThroughput": "Dedizierten Durchsatz für diese Tabelle bereitstellen",
+      "provisionDedicatedThroughputTooltip": "Sie können optional dedizierten Durchsatz für eine Tabelle in einem Keyspace bereitstellen, in dem Durchsatz bereitgestellt wurde. Diese dedizierte Durchsatzmenge wird nicht für andere Tabellen im Keyspace freigegeben und wird nicht auf den Durchsatz angerechnet, den Sie für den Keyspace bereitgestellt haben. Diese Durchsatzmenge wird zusätzlich zu dem Durchsatz in Rechnung gestellt, den Sie auf Keyspaceebene bereitgestellt haben."
+    },
+    "tables": {
+      "addProperty": "Eigenschaft hinzufügen",
+      "addRow": "Zeile hinzufügen",
+      "addEntity": "Entität hinzufügen",
+      "back": "zurück",
+      "nullFieldsWarning": "Warnung: Nullfelder werden nicht zum Bearbeiten angezeigt.",
+      "propertyEmptyError": "{{property}} darf nicht leer sein. Geben Sie einen Wert für {{property}} ein.",
+      "whitespaceError": "{{property}} darf keine Leerzeichen enthalten. Geben Sie einen Wert für {{property}} ohne Leerzeichen ein.",
+      "propertyTypeEmptyError": "Der Eigenschaftentyp darf nicht leer sein. Wählen Sie einen Typ aus der Dropdownliste für die Eigenschaft {{property}} aus."
+    },
+    "tableQuerySelect": {
+      "selectColumns": "Wählen Sie die Spalten aus, die abgefragt werden sollen.",
+      "availableColumns": "Verfügbare Spalten"
+    },
+    "tableColumnSelection": {
+      "selectColumns": "Wählen Sie aus, welche Spalten in der Ansicht der Elemente in Ihrem Container angezeigt werden sollen.",
+      "searchFields": "Suchfelder",
+      "reset": "Zurücksetzen",
+      "partitionKeySuffix": " (Partitionsschlüssel)"
+    },
+    "newVertex": {
+      "addProperty": "Eigenschaft hinzufügen"
+    },
+    "addGlobalSecondaryIndex": {
+      "globalSecondaryIndexId": "Container-ID des globalen sekundären Indexes",
+      "globalSecondaryIndexIdPlaceholder": "Beispiel: indexbyEmailId",
+      "projectionQuery": "Projektionsabfrage",
+      "projectionQueryPlaceholder": "SELECT c.email, c.accountId FROM c",
+      "projectionQueryTooltip": "Erfahren Sie mehr über das Definieren globaler sekundärer Indizes.",
+      "disabledTitle": "Ein globaler sekundärer Index wird bereits erstellt. Warten Sie, bis der Vorgang abgeschlossen ist, bevor Sie einen weiteren erstellen."
+    },
+    "stringInput": {
+      "inputMismatchError": "Die Eingabe {{input}} stimmt nicht mit der ausgewählten {{selectedId}} überein."
+    },
+    "panelInfo": {
+      "information": "Informationen",
+      "moreDetails": "Weitere Details"
+    }
+  },
+  "controls": {
+    "settings": {
+      "tabTitles": {
+        "scale": "Skalieren",
+        "conflictResolution": "Konfliktauflösung",
+        "settings": "Einstellungen",
+        "indexingPolicy": "Indizierungsrichtlinie",
+        "partitionKeys": "Partitionsschlüssel",
+        "partitionKeysPreview": "Partitionsschlüssel (Vorschau)",
+        "computedProperties": "Berechnete Eigenschaften",
+        "containerPolicies": "Containerrichtlinien",
+        "throughputBuckets": "Durchsatzbuckets",
+        "globalSecondaryIndexPreview": "Globaler sekundärer Index (Vorschau)",
+        "maskingPolicyPreview": "Maskierungsrichtlinie (Vorschau)"
+      },
+      "mongoNotifications": {
+        "selectTypeWarning": "Bitte wählen Sie für jeden Index einen Typ aus.",
+        "enterFieldNameError": "Geben Sie einen Feldnamen ein.",
+        "wildcardPathError": "Im Feldnamen ist kein Platzhalterpfad vorhanden. Verwenden Sie ein Muster wie "
+      },
+      "partitionKey": {
+        "shardKey": "Shardschlüssel",
+        "partitionKey": "Partitionsschlüssel",
+        "shardKeyTooltip": "Der Shardschlüssel (Feld) wird verwendet, um Ihre Daten auf viele Replikatgruppen (Shards) aufzuteilen, um unbegrenzte Skalierbarkeit zu erzielen. Es ist wichtig, ein Feld auszuwählen, das Ihre Daten gleichmäßig verteilt.",
+        "partitionKeyTooltip": "wird verwendet, um Daten automatisch über Partitionen zu verteilen und so die Skalierbarkeit zu gewährleisten. Wählen Sie in Ihrem JSON-Dokument eine Eigenschaft, die eine große Bandbreite an Werten aufweist und das Anforderungsvolumen gleichmäßig verteilt.",
+        "sqlPartitionKeyTooltipSuffix": " Bei kleinen Workloads mit vielen Lese- oder Schreibvorgängen beliebiger Größe ist die ID häufig eine gute Wahl.",
+        "partitionKeySubtext": "Für kleine Workloads ist die Element-ID eine geeignete Wahl als Partitionsschlüssel.",
+        "mongoPlaceholder": "Beispiel: categoryId",
+        "gremlinPlaceholder": "Beispiel: /address",
+        "sqlFirstPartitionKey": "Erforderlich – erster Partitionsschlüssel, z. B. /TenantId",
+        "sqlSecondPartitionKey": "zweiter Partitionsschlüssel, z. B. /UserId",
+        "sqlThirdPartitionKey": "Dritter Partitionsschlüssel, z. B. /SessionId",
+        "defaultPlaceholder": "Beispiel: /address/zipCode"
+      },
+      "costEstimate": {
+        "title": "Kostenschätzung*",
+        "howWeCalculate": "So berechnen wir das",
+        "updatedCostPerMonth": "Aktualisierte Kosten pro Monat",
+        "currentCostPerMonth": "Aktuelle Kosten pro Monat",
+        "perRu": "/RU",
+        "perHour": "/Std.",
+        "perDay": "/Tag",
+        "perMonth": "/Mo."
+      },
+      "throughput": {
+        "manualToAutoscaleDisclaimer": "Die maximale RU/s-Anzahl für die Autoskalierung wird vom System basierend auf den aktuellen manuellen Durchsatzeinstellungen und dem Speicher Ihrer Ressource festgelegt. Nachdem die Autoskalierung aktiviert wurde, können Sie die maximale RU/s-Anzahl ändern.",
+        "ttlWarningText": "Das System löscht Elemente automatisch auf Grundlage des von Ihnen angegebenen TTL-Werts (in Sekunden), ohne dass eine Löschoperation explizit von einer Clientanwendung angefordert werden muss. Weitere Informationen finden Sie unter",
+        "ttlWarningLinkText": "Gültigkeitsdauer (TTL) in Azure Cosmos DB",
+        "unsavedIndexingPolicy": "Indizierungsrichtlinie",
+        "unsavedDataMaskingPolicy": "Datenmaskierungsrichtlinie",
+        "unsavedComputedProperties": "berechnete Eigenschaften",
+        "unsavedEditorWarningPrefix": "Sie haben die neuesten Änderungen an",
+        "unsavedEditorWarningSuffix": ". Klicken Sie auf „Speichern“, um die Änderung zu bestätigen.",
+        "updateDelayedApplyWarning": "Sie sind dabei, eine Erhöhung des Durchsatzes über die vorab zugeordnete Kapazität hinaus anzufordern. Dieser Vorgang kann eine Weile dauern.",
+        "scalingUpDelayMessage": "Das Hochskalieren dauert 4–6 Stunden, da es die sofortige Unterstützung von Azure Cosmos DB basierend auf Ihrer Anzahl physischer Partitionen übersteigt. Sie können Ihren Durchsatz sofort auf {{instantMaximumThroughput}} erhöhen oder mit dem aktuellen Wert fortfahren und warten, bis das Hochskalieren abgeschlossen ist.",
+        "exceedPreAllocatedMessage": "Ihre Anfrage zur Erhöhung des Durchsatzes übersteigt die vorab zugewiesene Kapazität, was zu einer längeren Bearbeitungszeit als erwartet führen kann. Sie können aus drei Optionen wählen, um fortzufahren:",
+        "instantScaleOption": "Sie können sofort auf {{instantMaximumThroughput}} RU/s hochskalieren.",
+        "asyncScaleOption": "Sie können asynchron innerhalb von 4–6 Stunden auf einen beliebigen Wert unter {{maximumThroughput}} RU/s skalieren.",
+        "quotaMaxOption": "Ihr aktuelles Kontingent liegt bei {{maximumThroughput}} RU/s. Um dieses Limit zu überschreiten, müssen Sie eine Kontingenterhöhung anfordern und das Azure Cosmos DB-Team wird diese prüfen.",
+        "belowMinimumMessage": "Sie können den Durchsatz nicht unter den aktuellen Mindestwert von {{minimum}} RU/s senken. Weitere Informationen zu diesem Limit finden Sie in unserer Dokumentation zum Serviceangebot.",
+        "saveThroughputWarning": "Ihre Rechnung wird sich ändern, wenn Sie Ihre Durchsatzeinstellungen aktualisieren. Bitte überprüfen Sie die untenstehende aktualisierte Kostenschätzung, bevor Sie Ihre Änderungen speichern.",
+        "currentAutoscaleThroughput": "Aktueller Durchsatz der Autoskalierung:",
+        "targetAutoscaleThroughput": "Zieldurchsatz für Autoskalierung:",
+        "currentManualThroughput": "Aktueller manueller Durchsatz:",
+        "targetManualThroughput": "Manueller Zieldurchsatz:",
+        "applyDelayedMessage": "Die Anforderung zur Erhöhung des Durchsatzes wurde erfolgreich übermittelt. Dieser Vorgang dauert 1–3 Werktage. Die neuesten Statusinformationen finden Sie in den Benachrichtigungen.",
+        "databaseLabel": "Datenbank:",
+        "containerLabel": "Container:",
+        "applyShortDelayMessage": "Zurzeit wird eine Anforderung zur Erhöhung des Durchsatzes ausgeführt. Dieser Vorgang kann eine Weile dauern.",
+        "applyLongDelayMessage": "Zurzeit wird eine Anforderung zur Erhöhung des Durchsatzes ausgeführt. Dieser Vorgang dauert 1–3 Werktage. Die neuesten Statusinformationen finden Sie in den Benachrichtigungen.",
+        "throughputCapError": "Ihr Konto ist derzeit mit einem Gesamtdurchsatzlimit von {{throughputCap}} RU/s konfiguriert. Dieses Update ist nicht möglich, da es den Gesamtdurchsatz auf {{newTotalThroughput}} RU/s erhöhen würde. Ändern Sie das Gesamtdurchsatzlimit in der Kostenverwaltung.",
+        "throughputIncrementError": "Der Durchsatzwert muss in 1.000er-Schritten angegeben werden."
+      },
+      "conflictResolution": {
+        "lwwDefault": "Letzter Schreibvorgang gewinnt (Standard)",
+        "customMergeProcedure": "Mergeprozedur (benutzerdefiniert)",
+        "mode": "Modus",
+        "conflictResolverProperty": "Eigenschaft des Konfliktlösers",
+        "storedProcedure": "Gespeicherte Prozedur",
+        "lwwTooltip": "Ruft den Namen einer ganzzahligen Eigenschaft in Ihren Dokumenten ab oder legt diesen fest, der für das Konfliktlösungsschema „Last Write Wins“ (LWW, Letzter Schreibvorgang gewinnt) verwendet wird. Standardmäßig verwendet das System die systemdefinierte Zeitstempel-Eigenschaft „_ts“, um den Gewinner bei widersprüchlichen Versionen des Dokuments zu ermitteln. Geben Sie Ihre eigene Integer-Eigenschaft an, wenn Sie die standardmäßige Konfliktlösung auf Basis des Zeitstempels überschreiben möchten.",
+        "customTooltip": "Ruft den Namen einer gespeicherten Prozedur (auch bekannt als Merge-Prozedur) zum Auflösen von Konflikten ab oder legt diesen fest. Sie können anwendungsdefinierte Logik schreiben, um den Gewinner der widersprüchlichen Versionen eines Dokuments zu ermitteln. Die gespeicherte Prozedur wird transaktional, genau einmal, auf der Serverseite ausgeführt. Wenn Sie keine gespeicherte Prozedur bereitstellen, werden die Konflikte in",
+        "customTooltipConflictsFeed": " Konfliktfeed",
+        "customTooltipSuffix": ". Sie können die gespeicherte Prozedur jederzeit aktualisieren oder erneut registrieren."
+      },
+      "changeFeed": {
+        "label": "Aufbewahrungsrichtlinie für Änderungsfeedprotokolle ändern",
+        "tooltip": "Aktivieren Sie die Richtlinie zur Aufbewahrung von Änderungsfeedprotokollen, um standardmäßig die letzten 10 Minuten des Verlaufs für Elemente im Container aufzubewahren. Um dies zu ermöglichen, wird die Anforderungseinheit (RU, Request Unit) für diesen Container bei Schreibvorgängen mit dem Faktor zwei multipliziert. Lesevorgänge sind davon nicht betroffen."
+      },
+      "mongoIndexing": {
+        "disclaimer": "Für Abfragen, die nach mehreren Eigenschaften filtern, erstellen Sie mehrere Einzelfeldindizes anstelle eines zusammengesetzten Index.",
+        "disclaimerCompoundIndexesLink": " Zusammengesetzte Indizes ",
+        "disclaimerSuffix": "werden nur zum Sortieren von Abfrageergebnissen verwendet. Wenn Sie einen zusammengesetzten Index hinzufügen müssen, können Sie diesen mit der Mongo Shell erstellen.",
+        "compoundNotSupported": "Sammlungen mit zusammengesetzten Indizes werden im Indizierungseditor derzeit noch nicht unterstützt. Um die Indizierungsrichtlinie für diese Sammlung zu ändern, verwenden Sie die Mongo Shell.",
+        "aadError": "Um den Indexierungsrichtlinien-Editor zu verwenden, melden Sie sich bei",
+        "aadErrorLink": "Azure-Portal.",
+        "refreshingProgress": "Fortschritt der Indextransformation wird aktualisiert",
+        "canMakeMoreChangesZero": "Sobald die aktuelle Indextransformation abgeschlossen ist, können Sie weitere Änderungen an der Indizierung vornehmen. ",
+        "refreshToCheck": "Aktualisieren Sie, um zu überprüfen, ob der Vorgang abgeschlossen ist.",
+        "canMakeMoreChangesProgress": "Sie können weitere Indizierungsänderungen vornehmen, sobald die aktuelle Indextransformation abgeschlossen ist. Sie ist zu {{progress}} % abgeschlossen. ",
+        "refreshToCheckProgress": "Aktualisieren, um den Fortschritt zu überprüfen",
+        "definitionColumn": "Definition",
+        "typeColumn": "Typ",
+        "dropIndexColumn": "Index löschen",
+        "addIndexBackColumn": "Index wieder hinzufügen",
+        "deleteIndexButton": "Schaltfläche „Index löschen“",
+        "addBackIndexButton": "Schaltfläche „Index wieder hinzufügen“",
+        "currentIndexes": "Aktuelle Indizes",
+        "indexesToBeDropped": "Zu löschende Indizes",
+        "indexFieldName": "Indexfeldname",
+        "indexType": "Indextyp",
+        "selectIndexType": "Indextyp auswählen",
+        "undoButton": "Schaltfläche „Rückgängig“"
+      },
+      "subSettings": {
+        "timeToLive": "Gültigkeitsdauer",
+        "ttlOff": "Aus",
+        "ttlOnNoDefault": "Ein (Kein Standard)",
+        "ttlOn": "Ein",
+        "seconds": "Sekunde(n)",
+        "timeToLiveInSeconds": "Gültigkeitsdauer in Sekunden",
+        "analyticalStorageTtl": "Gültigkeitsdauer des analytischen Speichers",
+        "geospatialConfiguration": "Geodatenkonfiguration",
+        "geography": "Geografie",
+        "geometry": "Geometrie",
+        "uniqueKeys": "Eindeutige Schlüssel",
+        "mongoTtlMessage": "Um die Time-to-Live (TTL) für Ihre Sammlung/Dokumente zu aktivieren,",
+        "mongoTtlLinkText": "TTL-Index erstellen",
+        "partitionKeyTooltipTemplate": "Diese {{partitionKeyName}} wird verwendet, um Daten zur Skalierbarkeit auf mehrere Partitionen zu verteilen. Der Wert „{{partitionKeyValue}}“ bestimmt, wie Dokumente partitioniert werden.",
+        "largePartitionKeyEnabled": "Das große „{{partitionKeyName}}“ wurde aktiviert.",
+        "hierarchicalPartitioned": "Hierarchisch partitionierter Container",
+        "nonHierarchicalPartitioned": "Nicht hierarchisch partitionierter Container."
+      },
+      "scale": {
+        "freeTierInfo": "Im kostenlosen Tarif erhalten Sie die ersten {{ru}} RU/s und {{storage}} GB Speicher in diesem Konto kostenlos. Damit Ihr Konto kostenlos bleibt, begrenzen Sie den gesamten RU/s-Wert aller Ressourcen im Konto auf {{ru}} RU/s.",
+        "freeTierLearnMore": "Weitere Informationen.",
+        "throughputRuS": "Durchsatz (RU/s)",
+        "autoScaleCustomSettings": "Ihr Konto verfügt über benutzerdefinierte Einstellungen, die die Festlegung des Durchsatzes auf Containerebene verhindern. Bitte wenden Sie sich für Änderungen an Ihren Ansprechpartner im Cosmos DB-Entwicklungsteam.",
+        "keyspaceSharedThroughput": "Dieser gemeinsame Durchsatz der Tabelle wird im Keyspace konfiguriert.",
+        "throughputRangeLabel": "Durchsatz ({{min}}–{{max}} RU/s)",
+        "unlimited": "unbegrenzt"
+      },
+      "partitionKeyEditor": {
+        "changePartitionKey": "„{{partitionKeyName}}“ ändern",
+        "currentPartitionKey": "Aktueller {{partitionKeyName}}",
+        "partitioning": "Partitionierung",
+        "hierarchical": "Hierarchisch",
+        "nonHierarchical": "Nicht-hierarchisch",
+        "safeguardWarning": "Um die Integrität der Daten zu gewährleisten, die in den neuen Container kopiert werden, stellen Sie sicher, dass während des gesamten Prozesses der Änderung des Partitionsschlüssels keine Aktualisierungen am Quellcontainer vorgenommen werden.",
+        "changeDescription": "Um den Partitionsschlüssel zu ändern, muss ein neuer Zielcontainer erstellt oder ein vorhandener Zielcontainer ausgewählt werden. Anschließend werden die Daten in den Zielcontainer kopiert.",
+        "changeButton": "Ändern",
+        "changeJob": "{{partitionKeyName}} Auftrag ändern",
+        "cancelButton": "Abbrechen",
+        "documentsProcessed": "({{processedCount}} von {{totalCount}} Dokumenten verarbeitet)"
+      },
+      "computedProperties": {
+        "ariaLabel": "Berechnete Eigenschaften",
+        "learnMorePrefix": "über die Definition berechneter Eigenschaften und deren Verwendung."
+      },
+      "indexingPolicy": {
+        "ariaLabel": "Indizierungsrichtlinie"
+      },
+      "dataMasking": {
+        "ariaLabel": "Richtlinie für Datenmaskierung",
+        "validationFailed": "Fehler bei Überprüfung:",
+        "includedPathsRequired": "includedPaths ist erforderlich.",
+        "includedPathsMustBeArray": "includedPaths muss ein Array sein.",
+        "excludedPathsMustBeArray": "excludedPaths muss ein Array sein, wenn es angegeben ist."
+      },
+      "containerPolicy": {
+        "vectorPolicy": "Vektorrichtlinie",
+        "fullTextPolicy": "Richtlinie für Volltextsuche",
+        "createFullTextPolicy": "Neue Volltextsuchrichtlinie erstellen"
+      },
+      "globalSecondaryIndex": {
+        "indexesDefined": "Für diesen Container sind die folgenden Indizes definiert.",
+        "learnMoreSuffix": "über die Definition globaler Sekundärindizes und deren Verwendung.",
+        "jsonAriaLabel": "JSON für globalen sekundären Index",
+        "addIndex": "Index hinzufügen",
+        "settingsTitle": "Globale Einstellungen für sekundären Index",
+        "sourceContainer": "Quellcontainer",
+        "indexDefinition": "Definition des globalen sekundären Index"
+      },
+      "indexingPolicyRefresh": {
+        "refreshFailed": "Fehler beim Aktualisieren des Fortschritts der Indextransformation"
+      },
+      "throughputInput": {
+        "autoscale": "Autoskalierung",
+        "manual": "Manuell",
+        "minimumRuS": "Minimaler RU/s",
+        "maximumRuS": "Maximale Anzahl von RU/s",
+        "x10Equals": "x 10 =",
+        "storageCapacity": "Speicherkapazität",
+        "fixed": "Korrigiert",
+        "unlimited": "Unbegrenzt",
+        "instant": "Sofort",
+        "fourToSixHrs": "4–6 Stunden",
+        "autoscaleDescription": "Basierend auf der Nutzung wird Ihr {{resourceType}}-Durchsatz von",
+        "freeTierWarning": "Die Abrechnung erfolgt, wenn Sie mehr als {{ru}} RU/s manuellen Durchsatz bereitstellen oder wenn die Ressource mit Autoscale über {{ru}} RU/s skaliert.",
+        "capacityCalculator": "Schätzen Sie Ihren erforderlichen RU/s mit",
+        "capacityCalculatorLink": " Kapazitätsrechner",
+        "fixedStorageNote": "Wenn Sie eine Sammlung mit fester Speicherkapazität verwenden, können Sie bis zu 10.000 RU/s festlegen.",
+        "min": "Min.",
+        "max": "Max."
+      },
+      "throughputBuckets": {
+        "label": "Durchsatzbuckets",
+        "bucketLabel": "Bucket {{id}}",
+        "dataExplorerQueryBucket": " (Daten-Explorer-Abfragebucket)",
+        "active": "Aktiv",
+        "inactive": "Inaktiv"
+      }
+    }
+  }
+}
