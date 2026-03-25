@@ -2,9 +2,8 @@
  * @jest-environment jsdom
  */
 
-import { configContext } from "../ConfigContext";
 import { updateUserContext } from "../UserContext";
-import MetricScenario, { reportHealthy, reportUnhealthy } from "./MetricEvents";
+import MetricScenario, { reportMetric } from "./MetricEvents";
 import { ApplicationMetricPhase, CommonMetricPhase } from "./ScenarioConfig";
 import { scenarioMonitor } from "./ScenarioMonitor";
 
@@ -15,8 +14,7 @@ jest.mock("./MetricEvents", () => ({
     ApplicationLoad: "ApplicationLoad",
     DatabaseLoad: "DatabaseLoad",
   },
-  reportHealthy: jest.fn().mockResolvedValue({ ok: true }),
-  reportUnhealthy: jest.fn().mockResolvedValue({ ok: true }),
+  reportMetric: jest.fn().mockResolvedValue({ ok: true }),
 }));
 
 // Mock configContext
@@ -83,8 +81,14 @@ describe("ScenarioMonitor", () => {
       // Let timeout fire - should emit healthy because of expected failure
       jest.advanceTimersByTime(10000);
 
-      expect(reportHealthy).toHaveBeenCalledWith(MetricScenario.ApplicationLoad, configContext.platform, "SQL");
-      expect(reportUnhealthy).not.toHaveBeenCalled();
+      expect(reportMetric).toHaveBeenCalledWith(
+        expect.objectContaining({
+          scenario: MetricScenario.ApplicationLoad,
+          healthy: true,
+          hasExpectedFailure: true,
+          timedOut: true,
+        }),
+      );
     });
 
     it("sets flag on multiple active scenarios", () => {
@@ -98,8 +102,8 @@ describe("ScenarioMonitor", () => {
       // Let timeouts fire
       jest.advanceTimersByTime(10000);
 
-      expect(reportHealthy).toHaveBeenCalledTimes(2);
-      expect(reportUnhealthy).not.toHaveBeenCalled();
+      expect(reportMetric).toHaveBeenCalledTimes(2);
+      expect(reportMetric).toHaveBeenCalledWith(expect.objectContaining({ healthy: true, hasExpectedFailure: true }));
     });
 
     it("does not affect already emitted scenarios", () => {
@@ -113,8 +117,9 @@ describe("ScenarioMonitor", () => {
       // Now mark expected failure - should not change anything
       scenarioMonitor.markExpectedFailure();
 
-      // Healthy was called when phases completed
-      expect(reportHealthy).toHaveBeenCalledTimes(1);
+      // reportMetric was called when phases completed
+      expect(reportMetric).toHaveBeenCalledTimes(1);
+      expect(reportMetric).toHaveBeenCalledWith(expect.objectContaining({ healthy: true }));
     });
   });
 
@@ -125,8 +130,13 @@ describe("ScenarioMonitor", () => {
       // Let timeout fire without marking expected failure
       jest.advanceTimersByTime(10000);
 
-      expect(reportUnhealthy).toHaveBeenCalledWith(MetricScenario.ApplicationLoad, configContext.platform, "SQL");
-      expect(reportHealthy).not.toHaveBeenCalled();
+      expect(reportMetric).toHaveBeenCalledWith(
+        expect.objectContaining({
+          scenario: MetricScenario.ApplicationLoad,
+          healthy: false,
+          timedOut: true,
+        }),
+      );
     });
 
     it("emits healthy on timeout with expected failure", () => {
@@ -138,8 +148,14 @@ describe("ScenarioMonitor", () => {
       // Let timeout fire
       jest.advanceTimersByTime(10000);
 
-      expect(reportHealthy).toHaveBeenCalledWith(MetricScenario.ApplicationLoad, configContext.platform, "SQL");
-      expect(reportUnhealthy).not.toHaveBeenCalled();
+      expect(reportMetric).toHaveBeenCalledWith(
+        expect.objectContaining({
+          scenario: MetricScenario.ApplicationLoad,
+          healthy: true,
+          timedOut: true,
+          hasExpectedFailure: true,
+        }),
+      );
     });
 
     it("emits healthy even with partial phase completion and expected failure", () => {
@@ -154,8 +170,14 @@ describe("ScenarioMonitor", () => {
       // Let timeout fire (Interactive phase not completed)
       jest.advanceTimersByTime(10000);
 
-      expect(reportHealthy).toHaveBeenCalled();
-      expect(reportUnhealthy).not.toHaveBeenCalled();
+      expect(reportMetric).toHaveBeenCalledWith(
+        expect.objectContaining({
+          healthy: true,
+          timedOut: true,
+          hasExpectedFailure: true,
+          completedPhases: expect.arrayContaining(["ExplorerInitialized"]),
+        }),
+      );
     });
   });
 
@@ -167,7 +189,13 @@ describe("ScenarioMonitor", () => {
       scenarioMonitor.failPhase(MetricScenario.DatabaseLoad, ApplicationMetricPhase.DatabasesFetched);
 
       // Should emit unhealthy immediately, not wait for timeout
-      expect(reportUnhealthy).toHaveBeenCalledWith(MetricScenario.DatabaseLoad, configContext.platform, "SQL");
+      expect(reportMetric).toHaveBeenCalledWith(
+        expect.objectContaining({
+          scenario: MetricScenario.DatabaseLoad,
+          healthy: false,
+          timedOut: false,
+        }),
+      );
     });
 
     it("does not emit twice after failPhase and timeout", () => {
@@ -180,7 +208,7 @@ describe("ScenarioMonitor", () => {
       jest.advanceTimersByTime(10000);
 
       // Should only have emitted once (from failPhase)
-      expect(reportUnhealthy).toHaveBeenCalledTimes(1);
+      expect(reportMetric).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -192,7 +220,14 @@ describe("ScenarioMonitor", () => {
       scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.ExplorerInitialized);
       scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, CommonMetricPhase.Interactive);
 
-      expect(reportHealthy).toHaveBeenCalledWith(MetricScenario.ApplicationLoad, configContext.platform, "SQL");
+      expect(reportMetric).toHaveBeenCalledWith(
+        expect.objectContaining({
+          scenario: MetricScenario.ApplicationLoad,
+          healthy: true,
+          timedOut: false,
+          completedPhases: expect.arrayContaining(["ExplorerInitialized", "Interactive"]),
+        }),
+      );
     });
 
     it("does not emit until all phases complete", () => {
@@ -201,8 +236,7 @@ describe("ScenarioMonitor", () => {
       // Complete only one phase
       scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.ExplorerInitialized);
 
-      expect(reportHealthy).not.toHaveBeenCalled();
-      expect(reportUnhealthy).not.toHaveBeenCalled();
+      expect(reportMetric).not.toHaveBeenCalled();
     });
   });
 
@@ -224,8 +258,11 @@ describe("ScenarioMonitor", () => {
 
       // ApplicationLoad emitted healthy on completion
       // DatabaseLoad emits healthy on timeout (expected failure)
-      expect(reportHealthy).toHaveBeenCalledTimes(2);
-      expect(reportUnhealthy).not.toHaveBeenCalled();
+      expect(reportMetric).toHaveBeenCalledTimes(2);
+      // Both should be healthy
+      const calls = (reportMetric as jest.Mock).mock.calls;
+      expect(calls[0][0].healthy).toBe(true);
+      expect(calls[1][0].healthy).toBe(true);
     });
   });
 });

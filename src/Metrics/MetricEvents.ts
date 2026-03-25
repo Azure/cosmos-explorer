@@ -1,18 +1,14 @@
 // Metrics module: scenario metric emission logic.
 import { MetricEvent, MetricScenario } from "Metrics/Constants";
 import { createUri } from "../Common/UrlUtility";
-import { configContext, Platform } from "../ConfigContext";
-import { ApiType } from "../UserContext";
+import { configContext } from "../ConfigContext";
 import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import { fetchWithTimeout } from "../Utils/FetchWithTimeout";
 
 const RELATIVE_PATH = "/api/dataexplorer/metrics/health"; // Endpoint retains 'health' for backend compatibility.
 
-export const reportHealthy = (scenario: MetricScenario, platform: Platform, api: ApiType): Promise<Response> =>
-  send({ platform, api, scenario, healthy: true });
-
-export const reportUnhealthy = (scenario: MetricScenario, platform: Platform, api: ApiType): Promise<Response> =>
-  send({ platform, api, scenario, healthy: false });
+/** Send a full enriched MetricEvent to the backend. */
+export const reportMetric = (event: MetricEvent): Promise<Response> => send(event);
 
 const send = async (event: MetricEvent): Promise<Response> => {
   // Skip metrics emission during local development
