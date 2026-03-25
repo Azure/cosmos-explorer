@@ -1,6 +1,6 @@
-import { expect, test } from "@playwright/test";
 import { setupCORSBypass } from "../CORSBypass";
-import { DataExplorer, QueryTab, TestAccount, CommandBarButton, Editor } from "../fx";
+import { expect, test } from "../coverage";
+import { CommandBarButton, DataExplorer, Editor, QueryTab, TestAccount } from "../fx";
 import { serializeMongoToJson } from "../testData";
 
 const databaseId = "test-e2etests-mongo-pagination";

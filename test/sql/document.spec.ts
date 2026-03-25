@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "../coverage";
 
 import { existsSync, mkdtempSync, rmdirSync, unlinkSync, writeFileSync } from "fs";
 import { tmpdir } from "os";

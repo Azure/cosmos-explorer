@@ -161,6 +161,7 @@ jobs:
     env:
       NODE_TLS_REJECT_UNAUTHORIZED: 0
       AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      COVERAGE: 1
     strategy:
       fail-fast: false
       matrix:
@@ -217,6 +218,9 @@ jobs:
         run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }} --list
       - name: Run test shard ${{ matrix['shardIndex'] }} of ${{ matrix['shardTotal']}}
         run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }} --workers=3
+      - name: "Generate code coverage report for shard ${{ matrix['shardIndex'] }}"
+        if: ${{ !cancelled() }}
+        run: npx nyc report --reporter=html --reporter=text --reporter=lcov --report-dir=coverage/shard-${{ matrix.shardIndex }}
       - name: Upload blob report to GitHub Actions Artifacts
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
@@ -224,6 +228,40 @@ jobs:
           name: blob-report-${{ matrix.shardIndex }}
           path: blob-report
           retention-days: 1
+      - name: Upload coverage report to GitHub Actions Artifacts
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report-${{ matrix.shardIndex }}
+          path: coverage/shard-${{ matrix.shardIndex }}
+          retention-days: 1
+
+  merge-coverage-reports:
+    name: "Merge Coverage Reports"
+    if: ${{ !cancelled() }}
+    needs: [playwright-tests]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Install dependencies
+        run: npm ci
+      - name: Download all raw coverage data
+        uses: actions/download-artifact@v4
+        with:
+          path: all-coverage
+          pattern: coverage-report-*
+          merge-multiple: true
+      - name: Generate merged coverage report
+        run: npx nyc merge all-coverage coverage.json
+      - name: Upload merged coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: merged-coverage-report--attempt-${{ github.run_attempt }}
+          path: all-coverage
+          retention-days: 14
 
   merge-playwright-reports:
     name: "Merge Playwright Reports"
