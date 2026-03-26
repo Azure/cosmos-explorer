@@ -43,12 +43,12 @@ jest.mock("./AddManagedIdentity", () => {
   return MockAddManagedIdentity;
 });
 
-jest.mock("./AddReadPermissionToDefaultIdentity", () => {
-  const MockAddReadPermissionToDefaultIdentity = () => {
-    return <div data-testid="add-read-permission">Add Read Permission Component</div>;
+jest.mock("./AddReadWritePermissionToDefaultIdentity", () => {
+  const MockAddReadWritePermissionToDefaultIdentity = () => {
+    return <div data-testid="add-read-write-permission">Add Read-Write Permission Component</div>;
   };
-  MockAddReadPermissionToDefaultIdentity.displayName = "MockAddReadPermissionToDefaultIdentity";
-  return MockAddReadPermissionToDefaultIdentity;
+  MockAddReadWritePermissionToDefaultIdentity.displayName = "MockAddReadWritePermissionToDefaultIdentity";
+  return MockAddReadWritePermissionToDefaultIdentity;
 });
 
 jest.mock("./DefaultManagedIdentity", () => {
@@ -96,7 +96,7 @@ describe("AssignPermissions Component", () => {
       databaseId: "target-db",
       containerId: "target-container",
     },
-    sourceReadAccessFromTarget: false,
+    sourceReadWriteAccessFromTarget: false,
     ...overrides,
   });
 
@@ -201,7 +201,7 @@ describe("AssignPermissions Component", () => {
               completed: true,
             },
             {
-              id: "readPermissionAssigned",
+              id: "readWritePermissionAssigned",
               title: "Read Permission Assigned",
               Component: () => <div data-testid="add-read-permission">Add Read Permission Component</div>,
               disabled: false,

@@ -93,7 +93,7 @@ export const assignRole = async (
     return null;
   }
   const accountScope = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}`;
-  const roleDefinitionId = `${accountScope}/sqlRoleDefinitions/00000000-0000-0000-0000-000000000001`;
+  const roleDefinitionId = `${accountScope}/sqlRoleDefinitions/00000000-0000-0000-0000-000000000002`; // Built-in Contributor role definition ID for Cosmos DB
   const roleAssignmentName = crypto.randomUUID();
   const path = `${accountScope}/sqlRoleAssignments/${roleAssignmentName}`;
 
