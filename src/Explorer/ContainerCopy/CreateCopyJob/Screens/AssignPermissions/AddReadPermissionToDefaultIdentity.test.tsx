@@ -86,7 +86,7 @@ describe("AddReadPermissionToDefaultIdentity Component", () => {
       jobName: "test-job",
       migrationType: CopyJobMigrationType.Offline,
       source: {
-        subscription: { subscriptionId: "source-sub-id" } as Subscription,
+        subscriptionId: "source-sub-id",
         account: {
           id: "/subscriptions/source-sub-id/resourceGroups/source-rg/providers/Microsoft.DocumentDB/databaseAccounts/source-account",
           name: "source-account",
@@ -101,7 +101,7 @@ describe("AddReadPermissionToDefaultIdentity Component", () => {
         containerId: "source-container",
       },
       target: {
-        subscriptionId: "target-sub-id",
+        subscription: { subscriptionId: "target-sub-id" } as Subscription,
         account: {
           id: "/subscriptions/target-sub-id/resourceGroups/target-rg/providers/Microsoft.DocumentDB/databaseAccounts/target-account",
           name: "target-account",

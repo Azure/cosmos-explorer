@@ -85,13 +85,13 @@ describe("AssignPermissions Component", () => {
     jobName: "test-job",
     migrationType: CopyJobMigrationType.Offline,
     source: {
-      subscription: { subscriptionId: "source-sub" } as any,
+      subscriptionId: "source-sub",
       account: { id: "source-account", name: "Source Account" } as any,
       databaseId: "source-db",
       containerId: "source-container",
     },
     target: {
-      subscriptionId: "target-sub",
+      subscription: { subscriptionId: "target-sub" } as any,
       account: { id: "target-account", name: "Target Account" } as any,
       databaseId: "target-db",
       containerId: "target-container",
@@ -164,13 +164,13 @@ describe("AssignPermissions Component", () => {
       const copyJobState = createMockCopyJobState({
         migrationType: CopyJobMigrationType.Online,
         source: {
-          subscription: { subscriptionId: "same-sub" } as any,
+          subscriptionId: "same-sub",
           account: { id: "same-account", name: "Same Account" } as any,
           databaseId: "source-db",
           containerId: "source-container",
         },
         target: {
-          subscriptionId: "same-sub",
+          subscription: { subscriptionId: "same-sub" } as any,
           account: { id: "same-account", name: "Same Account" } as any,
           databaseId: "target-db",
           containerId: "target-container",
@@ -347,7 +347,7 @@ describe("AssignPermissions Component", () => {
     it("should handle missing account names", () => {
       const copyJobState = createMockCopyJobState({
         source: {
-          subscription: { subscriptionId: "source-sub" } as any,
+          subscriptionId: "source-sub",
           account: { id: "source-account" } as any,
           databaseId: "source-db",
           containerId: "source-container",

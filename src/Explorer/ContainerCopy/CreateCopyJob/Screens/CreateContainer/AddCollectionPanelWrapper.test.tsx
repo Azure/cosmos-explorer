@@ -109,7 +109,7 @@ describe("AddCollectionPanelWrapper", () => {
       expect(container.querySelector(".addCollectionPanelWrapper")).toBeInTheDocument();
       expect(container.querySelector(".addCollectionPanelHeader")).toBeInTheDocument();
       expect(container.querySelector(".addCollectionPanelBody")).toBeInTheDocument();
-      expect(screen.getByText(ContainerCopyMessages.createNewContainerSubHeading)).toBeInTheDocument();
+      expect(screen.getByText(ContainerCopyMessages.createNewContainerSubHeading())).toBeInTheDocument();
       expect(screen.getByTestId("add-collection-panel")).toBeInTheDocument();
     });
 
