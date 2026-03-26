@@ -67,7 +67,7 @@ describe("AddManagedIdentity", () => {
       databaseId: "target-db",
       containerId: "target-container",
     },
-    sourceReadAccessFromTarget: false,
+    sourceReadWriteAccessFromTarget: false,
   };
 
   const mockContextValue = {

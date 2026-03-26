@@ -55,7 +55,7 @@ export interface DatabaseContainerSectionProps {
 export interface CopyJobContextState {
   jobName: string;
   migrationType: CopyJobMigrationType;
-  sourceReadAccessFromTarget?: boolean;
+  sourceReadWriteAccessFromTarget?: boolean;
   source: {
     subscriptionId: string;
     account: DatabaseAccount | null;

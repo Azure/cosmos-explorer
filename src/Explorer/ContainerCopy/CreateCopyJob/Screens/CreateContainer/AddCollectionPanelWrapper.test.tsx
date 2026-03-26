@@ -81,7 +81,7 @@ describe("AddCollectionPanelWrapper", () => {
         databaseId: "",
         containerId: "",
       },
-      sourceReadAccessFromTarget: false,
+      sourceReadWriteAccessFromTarget: false,
     },
     setCopyJobState: mockSetCopyJobState,
     flow: null,

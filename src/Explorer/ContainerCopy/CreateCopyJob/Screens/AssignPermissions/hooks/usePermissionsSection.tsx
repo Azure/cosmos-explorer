@@ -12,7 +12,7 @@ import {
 import { CopyJobContextState } from "../../../../Types/CopyJobTypes";
 import { useCopyJobPrerequisitesCache } from "../../../Utils/useCopyJobPrerequisitesCache";
 import AddManagedIdentity from "../AddManagedIdentity";
-import AddReadPermissionToDefaultIdentity from "../AddReadPermissionToDefaultIdentity";
+import AddReadWritePermissionToDefaultIdentity from "../AddReadWritePermissionToDefaultIdentity";
 import DefaultManagedIdentity from "../DefaultManagedIdentity";
 import OnlineCopyEnabled from "../OnlineCopyEnabled";
 import PointInTimeRestore from "../PointInTimeRestore";
@@ -36,10 +36,12 @@ export interface PermissionGroupConfig {
 export const SECTION_IDS = {
   addManagedIdentity: "addManagedIdentity",
   defaultManagedIdentity: "defaultManagedIdentity",
-  readPermissionAssigned: "readPermissionAssigned",
+  readWritePermissionAssigned: "readWritePermissionAssigned",
   pointInTimeRestore: "pointInTimeRestore",
   onlineCopyEnabled: "onlineCopyEnabled",
 } as const;
+
+const COSMOS_DB_BUILT_IN_DATA_CONTRIBUTOR_ROLE_ID = "00000000-0000-0000-0000-000000000002";
 
 const PERMISSION_SECTIONS_CONFIG: PermissionSectionConfig[] = [
   {
@@ -66,9 +68,9 @@ const PERMISSION_SECTIONS_CONFIG: PermissionSectionConfig[] = [
     },
   },
   {
-    id: SECTION_IDS.readPermissionAssigned,
-    title: ContainerCopyMessages.readPermissionAssigned.title,
-    Component: AddReadPermissionToDefaultIdentity,
+    id: SECTION_IDS.readWritePermissionAssigned,
+    title: ContainerCopyMessages.readWritePermissionAssigned.title,
+    Component: AddReadWritePermissionToDefaultIdentity,
     disabled: true,
     validate: async (state: CopyJobContextState) => {
       const principalId = state?.target?.account?.identity?.principalId;
@@ -87,7 +89,7 @@ const PERMISSION_SECTIONS_CONFIG: PermissionSectionConfig[] = [
       );
 
       const roleDefinitions = await fetchRoleDefinitions(rolesAssigned ?? []);
-      return checkTargetHasReaderRoleOnSource(roleDefinitions ?? []);
+      return checkTargetHasReadWriteRoleOnSource(roleDefinitions ?? []);
     },
   },
 ];
@@ -119,18 +121,34 @@ const PERMISSION_SECTIONS_FOR_ONLINE_JOBS: PermissionSectionConfig[] = [
 ];
 
 /**
- * Checks if the user has the Reader role based on role definitions.
+ * Checks if the user has contributor-style read-write access on the source account.
  */
-export function checkTargetHasReaderRoleOnSource(roleDefinitions: RoleDefinitionType[]): boolean {
-  return roleDefinitions?.some(
-    (role) =>
-      role.name === "00000000-0000-0000-0000-000000000001" ||
-      role.permissions.some(
-        (permission) =>
-          permission.dataActions.includes("Microsoft.DocumentDB/databaseAccounts/readMetadata") &&
-          permission.dataActions.includes("Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/read"),
-      ),
-  );
+export function checkTargetHasReadWriteRoleOnSource(roleDefinitions: RoleDefinitionType[]): boolean {
+  return roleDefinitions?.some((role) => {
+    if (role.name === COSMOS_DB_BUILT_IN_DATA_CONTRIBUTOR_ROLE_ID) {
+      return true;
+    }
+
+    const dataActions = role.permissions?.flatMap((permission) => permission.dataActions ?? []) ?? [];
+
+    const hasAccountWildcard = dataActions.includes("Microsoft.DocumentDB/databaseAccounts/*");
+    const hasContainerWildcard =
+      hasAccountWildcard || dataActions.includes("Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*");
+    const hasItemsWildcard =
+      hasContainerWildcard ||
+      dataActions.includes("Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*");
+
+    const hasAccountReadMetadata =
+      hasAccountWildcard || dataActions.includes("Microsoft.DocumentDB/databaseAccounts/readMetadata");
+    const hasItemRead =
+      hasItemsWildcard ||
+      dataActions.includes("Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/read");
+    const hasItemWrite =
+      hasItemsWildcard ||
+      dataActions.includes("Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/write");
+
+    return hasAccountReadMetadata && hasItemRead && hasItemWrite;
+  });
 }
 
 /**

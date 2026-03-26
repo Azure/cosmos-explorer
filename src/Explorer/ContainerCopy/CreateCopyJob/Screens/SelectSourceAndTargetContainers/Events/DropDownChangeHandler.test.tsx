@@ -7,7 +7,7 @@ import { dropDownChangeHandler } from "./DropDownChangeHandler";
 const createMockInitialState = (): CopyJobContextState => ({
   jobName: "test-job",
   migrationType: CopyJobMigrationType.Offline,
-  sourceReadAccessFromTarget: false,
+  sourceReadWriteAccessFromTarget: false,
   source: {
     subscriptionId: "source-sub-id",
     account: {
@@ -181,7 +181,7 @@ describe("dropDownChangeHandler", () => {
 
       expect(capturedState.jobName).toBe(initialState.jobName);
       expect(capturedState.migrationType).toBe(initialState.migrationType);
-      expect(capturedState.sourceReadAccessFromTarget).toBe(initialState.sourceReadAccessFromTarget);
+      expect(capturedState.sourceReadWriteAccessFromTarget).toBe(initialState.sourceReadWriteAccessFromTarget);
     });
   });
 
@@ -227,7 +227,7 @@ describe("dropDownChangeHandler", () => {
 
       expect(capturedState.jobName).toBe(initialState.jobName);
       expect(capturedState.migrationType).toBe(initialState.migrationType);
-      expect(capturedState.sourceReadAccessFromTarget).toBe(initialState.sourceReadAccessFromTarget);
+      expect(capturedState.sourceReadWriteAccessFromTarget).toBe(initialState.sourceReadWriteAccessFromTarget);
     });
   });
 

@@ -75,7 +75,7 @@ describe("CopyJobContext", () => {
           databaseId: "",
           containerId: "",
         },
-        sourceReadAccessFromTarget: false,
+        sourceReadWriteAccessFromTarget: false,
       });
       expect(contextValue.flow).toBeNull();
       expect(contextValue.contextError).toBeNull();
@@ -620,7 +620,7 @@ describe("CopyJobContext", () => {
       expect(contextValue.copyJobState.target.account).toBeNull();
     });
 
-    it("should initialize sourceReadAccessFromTarget as false", () => {
+    it("should initialize sourceReadWriteAccessFromTarget as false", () => {
       let contextValue: any;
 
       render(
@@ -634,7 +634,7 @@ describe("CopyJobContext", () => {
         </CopyJobContextProvider>,
       );
 
-      expect(contextValue.copyJobState.sourceReadAccessFromTarget).toBe(false);
+      expect(contextValue.copyJobState.sourceReadWriteAccessFromTarget).toBe(false);
     });
 
     it("should initialize with empty database and container ids", () => {

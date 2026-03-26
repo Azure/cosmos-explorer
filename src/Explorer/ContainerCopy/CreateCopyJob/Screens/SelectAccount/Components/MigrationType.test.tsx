@@ -29,7 +29,7 @@ describe("MigrationType", () => {
         databaseId: "",
         containerId: "",
       },
-      sourceReadAccessFromTarget: false,
+      sourceReadWriteAccessFromTarget: false,
     },
     setCopyJobState: mockSetCopyJobState,
     flow: { currentScreen: "selectAccount" },

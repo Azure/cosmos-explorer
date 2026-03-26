@@ -34,7 +34,7 @@ const getInitialCopyJobState = (): CopyJobContextState => {
       databaseId: "",
       containerId: "",
     },
-    sourceReadAccessFromTarget: false,
+    sourceReadWriteAccessFromTarget: false,
   };
 };
 
