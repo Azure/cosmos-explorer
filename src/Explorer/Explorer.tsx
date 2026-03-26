@@ -223,7 +223,11 @@ export default class Explorer {
     this.refreshNotebookList();
   }
 
-  public openEnableSynapseLinkDialog(): void {
+  public openEnableSynapseLinkDialog(targetAccountOverride?: DataModels.AccountOverride): void {
+    const subscriptionId = targetAccountOverride?.subscriptionId ?? userContext.subscriptionId;
+    const resourceGroup = targetAccountOverride?.resourceGroup ?? userContext.resourceGroup;
+    const accountName = targetAccountOverride?.accountName ?? userContext.databaseAccount.name;
+
     const addSynapseLinkDialogProps: DialogProps = {
       linkProps: {
         linkText: "Learn more",
@@ -245,7 +249,7 @@ export default class Explorer {
         useDialog.getState().closeDialog();
 
         try {
-          await update(userContext.subscriptionId, userContext.resourceGroup, userContext.databaseAccount.name, {
+          await update(subscriptionId, resourceGroup, accountName, {
             properties: {
               enableAnalyticalStorage: true,
             },
@@ -254,7 +258,9 @@ export default class Explorer {
           clearInProgressMessage();
           logConsoleInfo("Enabled Azure Synapse Link for this account");
           TelemetryProcessor.traceSuccess(Action.EnableAzureSynapseLink, {}, startTime);
-          userContext.databaseAccount.properties.enableAnalyticalStorage = true;
+          if (!targetAccountOverride) {
+            userContext.databaseAccount.properties.enableAnalyticalStorage = true;
+          }
         } catch (error) {
           clearInProgressMessage();
           logConsoleError(`Enabling Azure Synapse Link for this account failed. ${getErrorMessage(error)}`);

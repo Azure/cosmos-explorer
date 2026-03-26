@@ -120,3 +120,20 @@ async function readDatabasesWithARM(): Promise<DataModels.Database[]> {
 
   return rpResponse?.value?.map((database) => database.properties?.resource as DataModels.Database);
 }
+
+export async function readDatabasesForAccount(
+  subscriptionId: string,
+  resourceGroup: string,
+  accountName: string,
+): Promise<DataModels.Database[]> {
+  const clearMessage = logConsoleProgress(`Querying databases for account ${accountName}`);
+  try {
+    const rpResponse = await listSqlDatabases(subscriptionId, resourceGroup, accountName);
+    return rpResponse?.value?.map((database) => database.properties?.resource as DataModels.Database) ?? [];
+  } catch (error) {
+    handleError(error, "ReadDatabasesForAccount", `Error while querying databases for account ${accountName}`);
+    throw error;
+  } finally {
+    clearMessage();
+  }
+}
