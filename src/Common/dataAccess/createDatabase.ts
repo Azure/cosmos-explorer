@@ -41,7 +41,7 @@ export async function createDatabase(params: DataModels.CreateDatabaseParams): P
 }
 
 async function createDatabaseWithARM(params: DataModels.CreateDatabaseParams): Promise<DataModels.Database> {
-  if (!useDatabases.getState().validateDatabaseId(params.databaseId)) {
+  if (!params.targetAccountOverride && !useDatabases.getState().validateDatabaseId(params.databaseId)) {
     const databaseName = getDatabaseName().toLocaleLowerCase();
     throw new Error(`Create ${databaseName} failed: ${databaseName} with id ${params.databaseId} already exists`);
   }
@@ -72,13 +72,10 @@ async function createSqlDatabase(params: DataModels.CreateDatabaseParams): Promi
       options,
     },
   };
-  const createResponse = await createUpdateSqlDatabase(
-    userContext.subscriptionId,
-    userContext.resourceGroup,
-    userContext.databaseAccount.name,
-    params.databaseId,
-    rpPayload,
-  );
+  const sub = params.targetAccountOverride?.subscriptionId ?? userContext.subscriptionId;
+  const rg = params.targetAccountOverride?.resourceGroup ?? userContext.resourceGroup;
+  const acct = params.targetAccountOverride?.accountName ?? userContext.databaseAccount.name;
+  const createResponse = await createUpdateSqlDatabase(sub, rg, acct, params.databaseId, rpPayload);
   return createResponse && (createResponse.properties.resource as DataModels.Database);
 }
 

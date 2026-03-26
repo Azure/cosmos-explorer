@@ -34,6 +34,7 @@ export const createCollection = async (params: DataModels.CreateCollectionParams
           databaseId: params.databaseId,
           databaseLevelThroughput: params.databaseLevelThroughput,
           offerThroughput: params.offerThroughput,
+          targetAccountOverride: params.targetAccountOverride,
         };
         await createDatabase(createDatabaseParams);
       }
@@ -63,7 +64,7 @@ export const createCollection = async (params: DataModels.CreateCollectionParams
 };
 
 const createCollectionWithARM = async (params: DataModels.CreateCollectionParams): Promise<DataModels.Collection> => {
-  if (!params.createNewDatabase) {
+  if (!params.createNewDatabase && !params.targetAccountOverride) {
     const isValid = await useDatabases.getState().validateCollectionId(params.databaseId, params.collectionId);
     if (!isValid) {
       const collectionName = getCollectionName().toLocaleLowerCase();
@@ -122,9 +123,9 @@ const createSqlContainer = async (params: DataModels.CreateCollectionParams): Pr
   };
 
   const createResponse = await createUpdateSqlContainer(
-    userContext.subscriptionId,
-    userContext.resourceGroup,
-    userContext.databaseAccount.name,
+    params.targetAccountOverride?.subscriptionId ?? userContext.subscriptionId,
+    params.targetAccountOverride?.resourceGroup ?? userContext.resourceGroup,
+    params.targetAccountOverride?.accountName ?? userContext.databaseAccount.name,
     params.databaseId,
     params.collectionId,
     rpPayload,
