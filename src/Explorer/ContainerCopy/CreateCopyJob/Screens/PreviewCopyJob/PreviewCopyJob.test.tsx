@@ -98,7 +98,7 @@ describe("PreviewCopyJob", () => {
         databaseId: "target-database",
         containerId: "target-container",
       },
-      sourceReadAccessFromTarget: false,
+      sourceReadWriteAccessFromTarget: false,
       ...overrides,
     };
 
@@ -290,7 +290,7 @@ describe("PreviewCopyJob", () => {
         databaseId: "target-database",
         containerId: "target-container",
       },
-      sourceReadAccessFromTarget: true,
+      sourceReadWriteAccessFromTarget: true,
     });
 
     const { container } = render(

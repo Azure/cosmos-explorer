@@ -90,7 +90,7 @@ describe("SelectSourceAndTargetContainers", () => {
       databaseId: "db2",
       containerId: "container2",
     },
-    sourceReadAccessFromTarget: false,
+    sourceReadWriteAccessFromTarget: false,
   };
 
   const mockMemoizedData = {

@@ -61,7 +61,7 @@ describe("PointInTimeRestore", () => {
       databaseId: "target-db",
       containerId: "target-container",
     },
-    sourceReadAccessFromTarget: false,
+    sourceReadWriteAccessFromTarget: false,
   } as CopyJobContextState;
 
   const mockSetCopyJobState = jest.fn();

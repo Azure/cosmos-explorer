@@ -9,7 +9,7 @@ exports[`AssignPermissions Component Accordion Behavior should render accordion 
     <span
       class="css-110"
     >
-      To copy data from the source to the destination container, ensure that the managed identity of the destination account has read access to the source account by completing the following steps.
+      To copy data from the source to the destination container, ensure that the managed identity of the destination account has read-write access to the source account by completing the following steps.
     </span>
     <div
       class="ms-Stack css-111"
@@ -212,7 +212,7 @@ exports[`AssignPermissions Component Edge Cases should calculate correct indent 
     <span
       class="css-110"
     >
-      To copy data from the source to the destination container, ensure that the managed identity of the destination account has read access to the source account by completing the following steps.
+      To copy data from the source to the destination container, ensure that the managed identity of the destination account has read-write access to the source account by completing the following steps.
     </span>
     <div
       class="ms-Stack css-111"
@@ -618,7 +618,7 @@ exports[`AssignPermissions Component Edge Cases should handle missing account na
     <span
       class="css-110"
     >
-      To copy data from the source to the destination container, ensure that the managed identity of the destination account has read access to the source account by completing the following steps.
+      To copy data from the source to the destination container, ensure that the managed identity of the destination account has read-write access to the source account by completing the following steps.
     </span>
     <div
       class="ms-Stack css-111"
@@ -1153,7 +1153,7 @@ exports[`AssignPermissions Component Permission Groups should render permission 
     <span
       class="css-110"
     >
-      To copy data from the source to the destination container, ensure that the managed identity of the destination account has read access to the source account by completing the following steps.
+      To copy data from the source to the destination container, ensure that the managed identity of the destination account has read-write access to the source account by completing the following steps.
     </span>
     <div
       class="ms-Stack css-111"
@@ -1307,7 +1307,7 @@ exports[`AssignPermissions Component Rendering should render without crashing wi
     <span
       class="css-110"
     >
-      To copy data from the source to the destination container, ensure that the managed identity of the destination account has read access to the source account by completing the following steps.
+      To copy data from the source to the destination container, ensure that the managed identity of the destination account has read-write access to the source account by completing the following steps.
     </span>
     <div
       data-testid="shimmer-tree"
@@ -1329,7 +1329,7 @@ exports[`AssignPermissions Component Rendering should render without crashing wi
     <span
       class="css-110"
     >
-      To copy data from the source to the destination container, ensure that the managed identity of the destination account has read access to the source account by completing the following steps.
+      To copy data from the source to the destination container, ensure that the managed identity of the destination account has read-write access to the source account by completing the following steps.
     </span>
     <div
       data-testid="shimmer-tree"
