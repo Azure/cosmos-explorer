@@ -69,7 +69,7 @@ describe("useSourceAndTargetData", () => {
   const mockCopyJobState: CopyJobContextState = {
     jobName: "test-job",
     migrationType: CopyJobMigrationType.Offline,
-    sourceReadAccessFromTarget: false,
+    sourceReadWriteAccessFromTarget: false,
     source: {
       subscriptionId: "source-subscription-id",
       account: mockSourceAccount,

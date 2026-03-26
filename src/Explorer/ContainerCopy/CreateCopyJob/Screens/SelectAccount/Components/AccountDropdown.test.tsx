@@ -52,7 +52,7 @@ describe("AccountDropdown", () => {
       databaseId: "",
       containerId: "",
     },
-    sourceReadAccessFromTarget: false,
+    sourceReadWriteAccessFromTarget: false,
   } as CopyJobContextState;
 
   const mockCopyJobContextValue = {

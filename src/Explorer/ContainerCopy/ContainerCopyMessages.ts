@@ -66,7 +66,7 @@ export default {
   // Assign Permissions Screen
   assignPermissions: {
     crossAccountDescription:
-      "To copy data from the source to the destination container, ensure that the managed identity of the destination account has read access to the source account by completing the following steps.",
+      "To copy data from the source to the destination container, ensure that the managed identity of the destination account has read-write access to the source account by completing the following steps.",
     intraAccountOnlineDescription: (accountName: string) =>
       `Follow the steps below to enable online copy on your "${accountName}" account.`,
     crossAccountConfiguration: {
@@ -119,18 +119,18 @@ export default {
     popoverDescription: (accountName: string) =>
       `Assign the system-assigned managed identity as the default for "${accountName}". To confirm, click the "Yes" button. `,
   },
-  readPermissionAssigned: {
-    title: "Read permissions assigned to the default identity.",
+  readWritePermissionAssigned: {
+    title: "Read-write permissions assigned to the default identity.",
     description:
-      "To allow data copy from source to the destination container, provide read access of the source account to the default identity of the destination account.",
+      "To allow data copy from source to the destination container, provide read-write access on the source account to the default identity of the destination account.",
     tooltip: {
       content: "Learn more about",
-      hrefText: "Read permissions.",
+      hrefText: "Read-write permissions.",
       href: "https://learn.microsoft.com/azure/cosmos-db/nosql/how-to-connect-role-based-access-control",
     },
-    popoverTitle: "Read permissions assigned to default identity.",
+    popoverTitle: "Assign read-write permissions to default identity.",
     popoverDescription:
-      "Assign read permissions of the source account to the default identity of the destination account. To confirm click the “Yes” button.",
+      'Assign read-write permissions on the source account to the default identity of the destination account. To confirm, click the "Yes" button.',
   },
   pointInTimeRestore: {
     title: "Point In Time Restore enabled",
