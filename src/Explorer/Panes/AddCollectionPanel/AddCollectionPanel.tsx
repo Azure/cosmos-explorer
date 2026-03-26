@@ -20,6 +20,7 @@ import { createCollection } from "Common/dataAccess/createCollection";
 import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
 import { configContext, Platform } from "ConfigContext";
 import * as DataModels from "Contracts/DataModels";
+import { AccountOverride } from "Contracts/DataModels";
 import { FullTextPoliciesComponent } from "Explorer/Controls/FullTextSeach/FullTextPoliciesComponent";
 import { VectorEmbeddingPoliciesComponent } from "Explorer/Controls/VectorSearch/VectorEmbeddingPoliciesComponent";
 import {
@@ -67,6 +68,8 @@ export interface AddCollectionPanelProps {
   isQuickstart?: boolean;
   isCopyJobFlow?: boolean;
   onSubmitSuccess?: (collectionData: { databaseId: string; collectionId: string }) => void;
+  targetAccountOverride?: AccountOverride;
+  externalDatabaseOptions?: IDropdownOption[];
 }
 
 export const DefaultVectorEmbeddingPolicy: DataModels.VectorEmbeddingPolicy = {
@@ -814,7 +817,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   </Text>
                   <DefaultButton
                     text={t(Keys.panes.addCollection.enable)}
-                    onClick={() => this.props.explorer.openEnableSynapseLinkDialog()}
+                    onClick={() => this.props.explorer.openEnableSynapseLinkDialog(this.props.targetAccountOverride)}
                     style={{ height: 27, width: 80 }}
                     styles={{ label: { fontSize: 12 } }}
                   />
@@ -1000,6 +1003,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
   }
 
   private getDatabaseOptions(): IDropdownOption[] {
+    if (this.props.externalDatabaseOptions) {
+      return this.props.externalDatabaseOptions;
+    }
     return useDatabases.getState().databases?.map((database) => ({
       key: database.id(),
       text: database.id(),
@@ -1084,6 +1090,10 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
   private isSelectedDatabaseSharedThroughput(): boolean {
     if (!this.state.selectedDatabaseId) {
+      return false;
+    }
+
+    if (this.props.targetAccountOverride) {
       return false;
     }
 
@@ -1367,13 +1377,16 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       createMongoWildcardIndex: this.state.createMongoWildCardIndex,
       vectorEmbeddingPolicy,
       fullTextPolicy: this.state.fullTextPolicy,
+      targetAccountOverride: this.props.targetAccountOverride,
     };
 
     this.setState({ isExecuting: true });
 
     try {
       await createCollection(createCollectionParams);
-      await this.props.explorer.refreshAllDatabases();
+      if (!this.props.isCopyJobFlow) {
+        await this.props.explorer.refreshAllDatabases();
+      }
       if (this.props.isQuickstart) {
         const database = useDatabases.getState().findDatabaseWithId(databaseId);
         if (database) {
@@ -1402,7 +1415,13 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
         useSidePanel.getState().closeSidePanel();
       }
     } catch (error) {
-      const errorMessage: string = getErrorMessage(error);
+      const rawMessage: string = getErrorMessage(error);
+      const errorMessage =
+        this.props.isCopyJobFlow && (rawMessage.includes("AuthorizationFailed") || rawMessage.includes("403"))
+          ? `You do not have permission to create databases or containers on the destination account (${
+              this.props.targetAccountOverride?.accountName ?? "unknown"
+            }). Please ensure you have Contributor or Owner access.`
+          : rawMessage;
       this.setState({ isExecuting: false, errorMessage, showErrorDetails: true });
       const failureTelemetryData = { ...telemetryData, error: errorMessage, errorStack: getErrorStack(error) };
       TelemetryProcessor.traceFailure(Action.CreateCollection, failureTelemetryData, startKey);

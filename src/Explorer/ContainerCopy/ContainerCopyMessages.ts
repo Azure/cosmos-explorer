@@ -20,11 +20,11 @@ export default {
   createCopyJobPanelTitle: "Create copy job",
 
   // Select Account Screen
-  selectAccountDescription: "Please select a source account from which to copy.",
+  selectAccountDescription: "Please select a destination account to copy to.",
   subscriptionDropdownLabel: "Subscription",
   subscriptionDropdownPlaceholder: "Select a subscription",
-  sourceAccountDropdownLabel: "Account",
-  sourceAccountDropdownPlaceholder: "Select an account",
+  destinationAccountDropdownLabel: "Account",
+  destinationAccountDropdownPlaceholder: "Select an account",
   migrationTypeOptions: {
     offline: {
       title: "Offline mode",
@@ -47,14 +47,17 @@ export default {
   databaseDropdownPlaceholder: "Select a database",
   containerDropdownLabel: "Container",
   containerDropdownPlaceholder: "Select a container",
-  createNewContainerSubHeading: "Select the properties for your container.",
+  createNewContainerSubHeading: (accountName?: string) =>
+    accountName
+      ? `Configure the properties for the new container on destination account "${accountName}".`
+      : "Configure the properties for the new container.",
   createContainerButtonLabel: "Create a new container",
   createContainerHeading: "Create new container",
 
   // Preview and Create Screen
   jobNameLabel: "Job name",
-  sourceSubscriptionLabel: "Source subscription",
-  sourceAccountLabel: "Source account",
+  destinationSubscriptionLabel: "Destination subscription",
+  destinationAccountLabel: "Destination account",
   sourceDatabaseLabel: "Source database",
   sourceContainerLabel: "Source container",
   targetDatabaseLabel: "Destination database",

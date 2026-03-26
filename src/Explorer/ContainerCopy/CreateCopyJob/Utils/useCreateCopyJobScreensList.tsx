@@ -36,7 +36,7 @@ function useCreateCopyJobScreensList(goBack: () => void): Screen[] {
         component: <SelectAccount />,
         validations: [
           {
-            validate: (state: CopyJobContextState) => !!state?.source?.subscription && !!state?.source?.account,
+            validate: (state: CopyJobContextState) => !!state?.target?.subscription && !!state?.target?.account,
             message: "Please select a subscription and account to proceed",
           },
         ],

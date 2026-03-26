@@ -137,12 +137,12 @@ export const submitCreateCopyJob = async (state: CopyJobContextState, onSuccess:
       properties: {
         source: {
           component: "CosmosDBSql",
-          ...(isSameAccount ? {} : { remoteAccountName: source?.account?.name }),
           databaseName: source?.databaseId,
           containerName: source?.containerId,
         },
         destination: {
           component: "CosmosDBSql",
+          ...(isSameAccount ? {} : { remoteAccountName: target?.account?.name }),
           databaseName: target?.databaseId,
           containerName: target?.containerId,
         },

@@ -71,13 +71,13 @@ describe("useSourceAndTargetData", () => {
     migrationType: CopyJobMigrationType.Offline,
     sourceReadAccessFromTarget: false,
     source: {
-      subscription: mockSubscription,
+      subscriptionId: "source-subscription-id",
       account: mockSourceAccount,
       databaseId: "source-db",
       containerId: "source-container",
     },
     target: {
-      subscriptionId: "target-subscription-id",
+      subscription: mockSubscription,
       account: mockTargetAccount,
       databaseId: "target-db",
       containerId: "target-container",

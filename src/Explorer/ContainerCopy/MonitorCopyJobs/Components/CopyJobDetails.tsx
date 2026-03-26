@@ -106,8 +106,8 @@ const CopyJobDetails: React.FC<CopyJobDetailsProps> = ({ job }) => {
             <Text className="themeText">{job.LastUpdatedTime}</Text>
           </Stack.Item>
           <Stack.Item style={sectionCss.verticalAlign}>
-            <Text className="bold themeText">{ContainerCopyMessages.sourceAccountLabel}</Text>
-            <Text className="themeText">{job.Source?.remoteAccountName}</Text>
+            <Text className="bold themeText">{ContainerCopyMessages.destinationAccountLabel}</Text>
+            <Text className="themeText">{job.Destination?.remoteAccountName}</Text>
           </Stack.Item>
           <Stack.Item style={sectionCss.verticalAlign}>
             <Text className="bold themeText">{ContainerCopyMessages.MonitorJobs.Columns.mode}</Text>

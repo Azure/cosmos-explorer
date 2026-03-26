@@ -23,14 +23,14 @@ const getInitialCopyJobState = (): CopyJobContextState => {
     jobName: "",
     migrationType: CopyJobMigrationType.Offline,
     source: {
-      subscription: null,
-      account: null,
+      subscriptionId: userContext.subscriptionId || "",
+      account: userContext.databaseAccount || null,
       databaseId: "",
       containerId: "",
     },
     target: {
-      subscriptionId: userContext.subscriptionId || "",
-      account: userContext.databaseAccount || null,
+      subscription: null,
+      account: null,
       databaseId: "",
       containerId: "",
     },

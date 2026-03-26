@@ -36,15 +36,15 @@ const PreviewCopyJob: React.FC = () => {
         <TextField data-test="job-name-textfield" value={jobName} onChange={onJobNameChange} />
       </FieldRow>
       <Stack>
-        <Text className="bold themeText">{ContainerCopyMessages.sourceSubscriptionLabel}</Text>
-        <Text data-test="source-subscription-name" className="themeText">
-          {copyJobState.source?.subscription?.displayName}
+        <Text className="bold themeText">{ContainerCopyMessages.destinationSubscriptionLabel}</Text>
+        <Text data-test="destination-subscription-name" className="themeText">
+          {copyJobState.target?.subscription?.displayName}
         </Text>
       </Stack>
       <Stack>
-        <Text className="bold themeText">{ContainerCopyMessages.sourceAccountLabel}</Text>
-        <Text data-test="source-account-name" className="themeText">
-          {copyJobState.source?.account?.name}
+        <Text className="bold themeText">{ContainerCopyMessages.destinationAccountLabel}</Text>
+        <Text data-test="destination-account-name" className="themeText">
+          {copyJobState.target?.account?.name}
         </Text>
       </Stack>
       <Stack>

@@ -406,11 +406,18 @@ export interface AutoPilotOfferSettings {
   targetMaxThroughput?: number;
 }
 
+export interface AccountOverride {
+  subscriptionId: string;
+  resourceGroup: string;
+  accountName: string;
+}
+
 export interface CreateDatabaseParams {
   autoPilotMaxThroughput?: number;
   databaseId: string;
   databaseLevelThroughput?: boolean;
   offerThroughput?: number;
+  targetAccountOverride?: AccountOverride;
 }
 
 export interface CreateCollectionParamsBase {
@@ -430,6 +437,7 @@ export interface CreateCollectionParamsBase {
 export interface CreateCollectionParams extends CreateCollectionParamsBase {
   createNewDatabase: boolean;
   collectionId: string;
+  targetAccountOverride?: AccountOverride;
 }
 
 export interface CreateMaterializedViewsParams extends CreateCollectionParamsBase {

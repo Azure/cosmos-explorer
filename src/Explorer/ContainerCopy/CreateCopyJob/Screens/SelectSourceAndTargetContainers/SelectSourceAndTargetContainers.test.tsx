@@ -73,7 +73,7 @@ describe("SelectSourceAndTargetContainers", () => {
     jobName: "",
     migrationType: CopyJobMigrationType.Offline,
     source: {
-      subscription: { subscriptionId: "test-subscription-id" },
+      subscriptionId: "test-subscription-id",
       account: {
         id: "/subscriptions/test-sub/resourceGroups/test-rg/providers/Microsoft.DocumentDB/databaseAccounts/test-account",
         name: "test-account",
@@ -82,7 +82,7 @@ describe("SelectSourceAndTargetContainers", () => {
       containerId: "container1",
     },
     target: {
-      subscriptionId: "test-subscription-id",
+      subscription: { subscriptionId: "test-subscription-id" },
       account: {
         id: "/subscriptions/test-sub/resourceGroups/test-rg/providers/Microsoft.DocumentDB/databaseAccounts/test-account",
         name: "test-account",

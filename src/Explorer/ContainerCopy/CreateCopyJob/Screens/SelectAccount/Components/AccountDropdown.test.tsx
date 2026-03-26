@@ -38,16 +38,16 @@ describe("AccountDropdown", () => {
     jobName: "",
     migrationType: CopyJobMigrationType.Offline,
     source: {
-      subscription: {
-        subscriptionId: "test-subscription-id",
-        displayName: "Test Subscription",
-      },
+      subscriptionId: "",
       account: null,
       databaseId: "",
       containerId: "",
     },
     target: {
-      subscriptionId: "",
+      subscription: {
+        subscriptionId: "test-subscription-id",
+        displayName: "Test Subscription",
+      },
       account: null,
       databaseId: "",
       containerId: "",
@@ -129,11 +129,11 @@ describe("AccountDropdown", () => {
       renderWithContext();
 
       expect(
-        screen.getByText(`${ContainerCopyMessages.sourceAccountDropdownLabel}:`, { exact: true }),
+        screen.getByText(`${ContainerCopyMessages.destinationAccountDropdownLabel}:`, { exact: true }),
       ).toBeInTheDocument();
       expect(screen.getByRole("combobox")).toHaveAttribute(
         "aria-label",
-        ContainerCopyMessages.sourceAccountDropdownLabel,
+        ContainerCopyMessages.destinationAccountDropdownLabel,
       );
     });
 
@@ -202,7 +202,7 @@ describe("AccountDropdown", () => {
 
       const stateUpdateFunction = mockSetCopyJobState.mock.calls[0][0];
       const newState = stateUpdateFunction(mockCopyJobState);
-      expect(newState.source.account).toEqual({
+      expect(newState.target.account).toEqual({
         ...mockDatabaseAccount1,
         id: normalizeAccountId(mockDatabaseAccount1.id),
       });
@@ -226,20 +226,21 @@ describe("AccountDropdown", () => {
 
       const stateUpdateFunction = mockSetCopyJobState.mock.calls[0][0];
       const newState = stateUpdateFunction(mockCopyJobState);
-      expect(newState.source.account).toEqual({
+      expect(newState.target.account).toEqual({
         ...mockDatabaseAccount2,
         id: normalizeAccountId(mockDatabaseAccount2.id),
       });
     });
 
     it("should keep current account if it exists in the filtered list", async () => {
+      const normalizedAccount1 = { ...mockDatabaseAccount1, id: normalizeAccountId(mockDatabaseAccount1.id) };
       const contextWithSelectedAccount = {
         ...mockCopyJobContextValue,
         copyJobState: {
           ...mockCopyJobState,
-          source: {
-            ...mockCopyJobState.source,
-            account: mockDatabaseAccount1,
+          target: {
+            ...mockCopyJobState.target,
+            account: normalizedAccount1,
           },
         },
       };
@@ -256,12 +257,9 @@ describe("AccountDropdown", () => {
       const newState = stateUpdateFunction(contextWithSelectedAccount.copyJobState);
       expect(newState).toEqual({
         ...contextWithSelectedAccount.copyJobState,
-        source: {
-          ...contextWithSelectedAccount.copyJobState.source,
-          account: {
-            ...mockDatabaseAccount1,
-            id: normalizeAccountId(mockDatabaseAccount1.id),
-          },
+        target: {
+          ...contextWithSelectedAccount.copyJobState.target,
+          account: normalizedAccount1,
         },
       });
     });
@@ -297,8 +295,8 @@ describe("AccountDropdown", () => {
         ...mockCopyJobContextValue,
         copyJobState: {
           ...mockCopyJobState,
-          source: {
-            ...mockCopyJobState.source,
+          target: {
+            ...mockCopyJobState.target,
             account: portalAccount,
           },
         },
@@ -323,8 +321,8 @@ describe("AccountDropdown", () => {
         ...mockCopyJobContextValue,
         copyJobState: {
           ...mockCopyJobState,
-          source: {
-            ...mockCopyJobState.source,
+          target: {
+            ...mockCopyJobState.target,
             account: hostedAccount,
           },
         },
@@ -361,8 +359,8 @@ describe("AccountDropdown", () => {
         ...mockCopyJobContextValue,
         copyJobState: {
           ...mockCopyJobState,
-          source: {
-            ...mockCopyJobState.source,
+          target: {
+            ...mockCopyJobState.target,
             subscription: null,
           },
         } as CopyJobContextState,
@@ -376,13 +374,13 @@ describe("AccountDropdown", () => {
     });
 
     it("should not update state if account is already selected and the same", async () => {
-      const selectedAccount = mockDatabaseAccount1;
+      const selectedAccount = { ...mockDatabaseAccount1, id: normalizeAccountId(mockDatabaseAccount1.id) };
       const contextWithSelectedAccount = {
         ...mockCopyJobContextValue,
         copyJobState: {
           ...mockCopyJobState,
-          source: {
-            ...mockCopyJobState.source,
+          target: {
+            ...mockCopyJobState.target,
             account: selectedAccount,
           },
         },
@@ -409,7 +407,7 @@ describe("AccountDropdown", () => {
       renderWithContext();
 
       const dropdown = screen.getByRole("combobox");
-      expect(dropdown).toHaveAttribute("aria-label", ContainerCopyMessages.sourceAccountDropdownLabel);
+      expect(dropdown).toHaveAttribute("aria-label", ContainerCopyMessages.destinationAccountDropdownLabel);
     });
 
     it("should have required attribute", () => {

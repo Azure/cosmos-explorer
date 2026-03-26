@@ -17,11 +17,11 @@ export const SubscriptionDropdown: React.FC<SubscriptionDropdownProps> = React.m
 
   const updateCopyJobState = (newSubscription: Subscription) => {
     setCopyJobState((prevState) => {
-      if (prevState.source?.subscription?.subscriptionId !== newSubscription.subscriptionId) {
+      if (prevState.target?.subscription?.subscriptionId !== newSubscription.subscriptionId) {
         return {
           ...prevState,
-          source: {
-            ...prevState.source,
+          target: {
+            ...prevState.target,
             subscription: newSubscription,
             account: null,
           },
@@ -33,7 +33,7 @@ export const SubscriptionDropdown: React.FC<SubscriptionDropdownProps> = React.m
 
   useEffect(() => {
     if (subscriptions && subscriptions.length > 0) {
-      const currentSubscriptionId = copyJobState?.source?.subscription?.subscriptionId;
+      const currentSubscriptionId = copyJobState?.target?.subscription?.subscriptionId;
       const predefinedSubscriptionId = userContext.subscriptionId;
       const selectedSubscriptionId = currentSubscriptionId || predefinedSubscriptionId;
 
@@ -61,7 +61,7 @@ export const SubscriptionDropdown: React.FC<SubscriptionDropdownProps> = React.m
     }
   };
 
-  const selectedSubscriptionId = copyJobState?.source?.subscription?.subscriptionId;
+  const selectedSubscriptionId = copyJobState?.target?.subscription?.subscriptionId;
 
   return (
     <FieldRow label={ContainerCopyMessages.subscriptionDropdownLabel}>
