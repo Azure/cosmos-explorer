@@ -2,6 +2,7 @@
 
 UI for Azure Cosmos DB. Powers the [Azure Portal](https://portal.azure.com/), https://cosmos.azure.com/, and the [Cosmos DB Emulator](https://docs.microsoft.com/en-us/azure/cosmos-db/local-emulator)
 
+
 ![](https://sdkctlstore.blob.core.windows.net/exe/dataexplorer.gif)
 
 ## Getting Started
