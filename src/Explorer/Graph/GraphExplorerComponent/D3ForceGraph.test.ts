@@ -1,4 +1,5 @@
-﻿import * as sinon from "sinon";
+﻿/*eslint-disable jest/no-test-callback */
+import * as sinon from "sinon";
 import GraphTab from "../../Tabs/GraphTab";
 import { D3Link, D3Node, GraphData } from "../GraphExplorerComponent/GraphData";
 import { D3ForceGraph, D3GraphNodeData, LoadMoreDataAction } from "./D3ForceGraph";
@@ -70,6 +71,7 @@ describe("D3ForceGraph", () => {
       forceGraph = new D3ForceGraph({
         igraphConfig: GraphTab.createIGraphConfig(),
         onHighlightedNode: sinon.spy(),
+        //eslint-disable-next-line
         onLoadMoreData: (action: LoadMoreDataAction): void => {},
 
         // parent to graph
