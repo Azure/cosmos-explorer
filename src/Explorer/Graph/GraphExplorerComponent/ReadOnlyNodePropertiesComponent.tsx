@@ -60,9 +60,7 @@ export class ReadOnlyNodePropertiesComponent extends React.Component<ReadOnlyNod
   }
 
   public static singlePropertyValueToString(value: ViewModels.GremlinPropertyValueType): string {
-    if (value === null) {
-      return "null";
-    } else if (typeof value === "undefined") {
+    if (typeof value === "undefined") {
       return "undefined";
     } else {
       return value.toString();
@@ -71,11 +69,8 @@ export class ReadOnlyNodePropertiesComponent extends React.Component<ReadOnlyNod
 
   public static renderSinglePropertyValue(value: ViewModels.GremlinPropertyValueType): JSX.Element {
     let singlePropValue = value;
-    let className = "propertyValue";
-    if (singlePropValue === null) {
-      singlePropValue = "null";
-      className += " isNull";
-    } else if (typeof singlePropValue === "undefined") {
+    const className = "propertyValue";
+    if (typeof singlePropValue === "undefined") {
       singlePropValue = "undefined";
     } else {
       singlePropValue = value.toString();
