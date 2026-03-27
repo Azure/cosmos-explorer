@@ -118,6 +118,9 @@ export async function getTestExplorerUrl(accountType: TestAccount, options?: Tes
         params.set("nosqlRbacToken", nosqlRbacToken);
         params.set("enableaaddataplane", "true");
       }
+      if (enablecontainercopy) {
+        params.set("enablecontainercopy", "true");
+      }
       break;
 
     case TestAccount.SQLContainerCopyOnly:
