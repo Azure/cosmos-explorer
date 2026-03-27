@@ -13,7 +13,7 @@ import {
 import { CopyJobContextState } from "../../../../Types/CopyJobTypes";
 import * as CopyJobPrerequisitesCacheModule from "../../../Utils/useCopyJobPrerequisitesCache";
 import usePermissionSections, {
-  checkTargetHasReaderRoleOnSource,
+  checkTargetHasReadWriteRoleOnSource,
   PermissionGroupConfig,
   SECTION_IDS,
 } from "./usePermissionsSection";
@@ -40,12 +40,12 @@ jest.mock("../AddManagedIdentity", () => {
   return MockAddManagedIdentity;
 });
 
-jest.mock("../AddReadPermissionToDefaultIdentity", () => {
-  const MockAddReadPermissionToDefaultIdentity = () => {
-    return <div data-testid="add-read-permission">AddReadPermissionToDefaultIdentity</div>;
+jest.mock("../AddReadWritePermissionToDefaultIdentity", () => {
+  const MockAddReadWritePermissionToDefaultIdentity = () => {
+    return <div data-testid="add-read-write-permission">AddReadWritePermissionToDefaultIdentity</div>;
   };
-  MockAddReadPermissionToDefaultIdentity.displayName = "MockAddReadPermissionToDefaultIdentity";
-  return MockAddReadPermissionToDefaultIdentity;
+  MockAddReadWritePermissionToDefaultIdentity.displayName = "MockAddReadWritePermissionToDefaultIdentity";
+  return MockAddReadWritePermissionToDefaultIdentity;
 });
 
 jest.mock("../DefaultManagedIdentity", () => {
@@ -133,7 +133,7 @@ describe("usePermissionsSection", () => {
         type: "",
         kind: "",
       },
-      subscription: undefined,
+      subscriptionId: "",
       databaseId: "",
       containerId: "",
     },
@@ -152,7 +152,7 @@ describe("usePermissionsSection", () => {
         type: "",
         kind: "",
       },
-      subscriptionId: "",
+      subscription: undefined,
       databaseId: "",
       containerId: "",
     },
@@ -193,7 +193,7 @@ describe("usePermissionsSection", () => {
       expect(capturedResult[0].sections.map((s) => s.id)).toEqual([
         SECTION_IDS.addManagedIdentity,
         SECTION_IDS.defaultManagedIdentity,
-        SECTION_IDS.readPermissionAssigned,
+        SECTION_IDS.readWritePermissionAssigned,
       ]);
     });
 
@@ -208,7 +208,7 @@ describe("usePermissionsSection", () => {
             type: "",
             kind: "",
           },
-          subscription: undefined,
+          subscriptionId: "",
           databaseId: "",
           containerId: "",
         },
@@ -222,7 +222,7 @@ describe("usePermissionsSection", () => {
             type: "",
             kind: "",
           },
-          subscriptionId: "",
+          subscription: undefined,
           databaseId: "",
           containerId: "",
         },
@@ -299,7 +299,7 @@ describe("usePermissionsSection", () => {
             type: "",
             kind: "",
           },
-          subscriptionId: "",
+          subscription: undefined,
           databaseId: "",
           containerId: "",
         },
@@ -337,7 +337,7 @@ describe("usePermissionsSection", () => {
             type: "",
             kind: "",
           },
-          subscriptionId: "",
+          subscription: undefined,
           databaseId: "",
           containerId: "",
         },
@@ -358,16 +358,17 @@ describe("usePermissionsSection", () => {
       expect(defaultManagedIdentitySection?.completed).toBe(true);
     });
 
-    it("should validate readPermissionAssigned section with reader role", async () => {
+    it("should validate readWritePermissionAssigned section with contributor role", async () => {
       const mockRoleDefinitions: RbacUtils.RoleDefinitionType[] = [
         {
           id: "role-1",
-          name: "Custom Role",
+          name: "00000000-0000-0000-0000-000000000002",
           permissions: [
             {
               dataActions: [
                 "Microsoft.DocumentDB/databaseAccounts/readMetadata",
                 "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/read",
+                "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/write",
               ],
             },
           ],
@@ -398,7 +399,7 @@ describe("usePermissionsSection", () => {
             type: "",
             kind: "",
           },
-          subscriptionId: "",
+          subscription: undefined,
           databaseId: "",
           containerId: "",
         },
@@ -407,7 +408,9 @@ describe("usePermissionsSection", () => {
       render(<TestWrapper state={state} onResult={noop} />);
 
       await waitFor(() => {
-        expect(screen.getByTestId(`section-${SECTION_IDS.readPermissionAssigned}-completed`)).toHaveTextContent("true");
+        expect(screen.getByTestId(`section-${SECTION_IDS.readWritePermissionAssigned}-completed`)).toHaveTextContent(
+          "true",
+        );
       });
 
       expect(mockedRbacUtils.fetchRoleAssignments).toHaveBeenCalledWith(
@@ -435,7 +438,7 @@ describe("usePermissionsSection", () => {
             type: "",
             kind: "",
           },
-          subscription: undefined,
+          subscriptionId: "",
           databaseId: "",
           containerId: "",
         },
@@ -476,7 +479,7 @@ describe("usePermissionsSection", () => {
             type: "",
             kind: "",
           },
-          subscription: undefined,
+          subscriptionId: "",
           databaseId: "",
           containerId: "",
         },
@@ -546,7 +549,7 @@ describe("usePermissionsSection", () => {
             type: "",
             kind: "",
           },
-          subscriptionId: "",
+          subscription: undefined,
           databaseId: "",
           containerId: "",
         },
@@ -568,12 +571,12 @@ describe("usePermissionsSection", () => {
   });
 });
 
-describe("checkTargetHasReaderRoleOnSource", () => {
-  it("should return true for built-in Reader role", () => {
+describe("checkTargetHasReadWriteRoleOnSource", () => {
+  it("should return true for built-in Contributor role", () => {
     const roleDefinitions: RbacUtils.RoleDefinitionType[] = [
       {
         id: "role-1",
-        name: "00000000-0000-0000-0000-000000000001",
+        name: "00000000-0000-0000-0000-000000000002",
         permissions: [],
         assignableScopes: [],
         resourceGroup: "",
@@ -583,20 +586,21 @@ describe("checkTargetHasReaderRoleOnSource", () => {
       },
     ];
 
-    const result = checkTargetHasReaderRoleOnSource(roleDefinitions);
+    const result = checkTargetHasReadWriteRoleOnSource(roleDefinitions);
     expect(result).toBe(true);
   });
 
-  it("should return true for custom role with required data actions", () => {
+  it("should return true for custom role with read-write data actions", () => {
     const roleDefinitions: RbacUtils.RoleDefinitionType[] = [
       {
         id: "role-1",
-        name: "Custom Reader Role",
+        name: "Custom Contributor Role",
         permissions: [
           {
             dataActions: [
               "Microsoft.DocumentDB/databaseAccounts/readMetadata",
               "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/read",
+              "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/write",
             ],
           },
         ],
@@ -608,7 +612,7 @@ describe("checkTargetHasReaderRoleOnSource", () => {
       },
     ];
 
-    const result = checkTargetHasReaderRoleOnSource(roleDefinitions);
+    const result = checkTargetHasReadWriteRoleOnSource(roleDefinitions);
     expect(result).toBe(true);
   });
 
@@ -630,12 +634,12 @@ describe("checkTargetHasReaderRoleOnSource", () => {
       },
     ];
 
-    const result = checkTargetHasReaderRoleOnSource(roleDefinitions);
+    const result = checkTargetHasReadWriteRoleOnSource(roleDefinitions);
     expect(result).toBe(false);
   });
 
   it("should return false for empty role definitions", () => {
-    const result = checkTargetHasReaderRoleOnSource([]);
+    const result = checkTargetHasReadWriteRoleOnSource([]);
     expect(result).toBe(false);
   });
 
@@ -653,11 +657,11 @@ describe("checkTargetHasReaderRoleOnSource", () => {
       },
     ];
 
-    const result = checkTargetHasReaderRoleOnSource(roleDefinitions);
+    const result = checkTargetHasReadWriteRoleOnSource(roleDefinitions);
     expect(result).toBe(false);
   });
 
-  it("should handle multiple roles and return true if any has sufficient permissions", () => {
+  it("should handle multiple roles and return true if any has sufficient read-write permissions", () => {
     const roleDefinitions: RbacUtils.RoleDefinitionType[] = [
       {
         id: "role-1",
@@ -675,7 +679,7 @@ describe("checkTargetHasReaderRoleOnSource", () => {
       },
       {
         id: "role-2",
-        name: "00000000-0000-0000-0000-000000000001",
+        name: "00000000-0000-0000-0000-000000000002",
         permissions: [],
         assignableScopes: [],
         resourceGroup: "",
@@ -685,7 +689,7 @@ describe("checkTargetHasReaderRoleOnSource", () => {
       },
     ];
 
-    const result = checkTargetHasReaderRoleOnSource(roleDefinitions);
+    const result = checkTargetHasReadWriteRoleOnSource(roleDefinitions);
     expect(result).toBe(true);
   });
 });

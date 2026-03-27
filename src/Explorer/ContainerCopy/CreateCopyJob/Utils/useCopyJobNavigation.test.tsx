@@ -86,13 +86,13 @@ describe("useCopyJobNavigation", () => {
     jobName: "test-job",
     migrationType: CopyJobMigrationType.Offline,
     source: {
-      subscription: { subscriptionId: "source-sub-id" } as any,
+      subscriptionId: "source-sub-id",
       account: { id: "source-account-id", name: "Account-1" } as any,
       databaseId: "source-db",
       containerId: "source-container",
     },
     target: {
-      subscriptionId: "target-sub-id",
+      subscription: { subscriptionId: "target-sub-id" } as any,
       account: { id: "target-account-id", name: "Account-2" } as any,
       databaseId: "target-db",
       containerId: "target-container",

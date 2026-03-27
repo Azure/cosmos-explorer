@@ -87,18 +87,18 @@ describe("PreviewCopyJob", () => {
       jobName: "",
       migrationType: CopyJobMigrationType.Offline,
       source: {
-        subscription: mockSubscription,
+        subscriptionId: "test-subscription-id",
         account: mockDatabaseAccount,
         databaseId: "source-database",
         containerId: "source-container",
       },
       target: {
-        subscriptionId: "test-subscription-id",
+        subscription: mockSubscription,
         account: mockDatabaseAccount,
         databaseId: "target-database",
         containerId: "target-container",
       },
-      sourceReadAccessFromTarget: false,
+      sourceReadWriteAccessFromTarget: false,
       ...overrides,
     };
 
@@ -146,7 +146,7 @@ describe("PreviewCopyJob", () => {
   it("should render with missing source subscription information", () => {
     const mockContext = createMockContext({
       source: {
-        subscription: undefined,
+        subscriptionId: "",
         account: mockDatabaseAccount,
         databaseId: "source-database",
         containerId: "source-container",
@@ -165,7 +165,7 @@ describe("PreviewCopyJob", () => {
   it("should render with missing source account information", () => {
     const mockContext = createMockContext({
       source: {
-        subscription: mockSubscription,
+        subscriptionId: "test-subscription-id",
         account: null,
         databaseId: "source-database",
         containerId: "source-container",
@@ -184,13 +184,13 @@ describe("PreviewCopyJob", () => {
   it("should render with undefined database and container names", () => {
     const mockContext = createMockContext({
       source: {
-        subscription: mockSubscription,
+        subscriptionId: "test-subscription-id",
         account: mockDatabaseAccount,
         databaseId: "",
         containerId: "",
       },
       target: {
-        subscriptionId: "test-subscription-id",
+        subscription: mockSubscription,
         account: mockDatabaseAccount,
         databaseId: "",
         containerId: "",
@@ -219,7 +219,7 @@ describe("PreviewCopyJob", () => {
 
     const mockContext = createMockContext({
       source: {
-        subscription: longNameSubscription,
+        subscriptionId: longNameSubscription.subscriptionId,
         account: longNameAccount,
         databaseId: "long-database-name-for-testing-purposes",
         containerId: "long-container-name-for-testing-purposes",
@@ -253,13 +253,13 @@ describe("PreviewCopyJob", () => {
   it("should handle special characters in database and container names", () => {
     const mockContext = createMockContext({
       source: {
-        subscription: mockSubscription,
+        subscriptionId: "test-subscription-id",
         account: mockDatabaseAccount,
         databaseId: "test-db_with@special#chars",
         containerId: "test-container_with@special#chars",
       },
       target: {
-        subscriptionId: "test-subscription-id",
+        subscription: mockSubscription,
         account: mockDatabaseAccount,
         databaseId: "target-db_with@special#chars",
         containerId: "target-container_with@special#chars",
@@ -285,12 +285,12 @@ describe("PreviewCopyJob", () => {
 
     const mockContext = createMockContext({
       target: {
-        subscriptionId: "target-subscription-id",
+        subscription: mockSubscription,
         account: targetAccount,
         databaseId: "target-database",
         containerId: "target-container",
       },
-      sourceReadAccessFromTarget: true,
+      sourceReadWriteAccessFromTarget: true,
     });
 
     const { container } = render(
@@ -360,7 +360,7 @@ describe("PreviewCopyJob", () => {
     );
 
     expect(getByText(/Job name/i)).toBeInTheDocument();
-    expect(getByText(/Source subscription/i)).toBeInTheDocument();
-    expect(getByText(/Source account/i)).toBeInTheDocument();
+    expect(getByText(/Destination subscription/i)).toBeInTheDocument();
+    expect(getByText(/Destination account/i)).toBeInTheDocument();
   });
 });
