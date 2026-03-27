@@ -2,25 +2,47 @@ import { Spinner, SpinnerSize, TooltipHost } from "@fluentui/react";
 import { CollectionTabKind } from "Contracts/ViewModels";
 import Explorer from "Explorer/Explorer";
 import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
-import { QueryCopilotTab } from "Explorer/QueryCopilot/QueryCopilotTab";
-import { FabricHomeScreen } from "Explorer/SplashScreen/FabricHome";
 import { SplashScreen } from "Explorer/SplashScreen/SplashScreen";
 import { ConnectTab } from "Explorer/Tabs/ConnectTab";
-import { PostgresConnectTab } from "Explorer/Tabs/PostgresConnectTab";
 import { QuickstartTab } from "Explorer/Tabs/QuickstartTab";
-import { VcoreMongoConnectTab } from "Explorer/Tabs/VCoreMongoConnectTab";
-import { VcoreMongoQuickstartTab } from "Explorer/Tabs/VCoreMongoQuickstartTab";
 import { KeyboardAction, KeyboardActionGroup, useKeyboardActionGroup } from "KeyboardShortcuts";
 import { isFabricNative } from "Platform/Fabric/FabricUtil";
 import { userContext } from "UserContext";
 import { useTeachingBubble } from "hooks/useTeachingBubble";
 import ko from "knockout";
-import React, { MutableRefObject, useEffect, useRef, useState } from "react";
+import React, { MutableRefObject, Suspense, useEffect, useRef, useState } from "react";
 import errorQuery from "../../../images/error_no_outline.svg";
 import warningIconSvg from "../../../images/warning.svg";
 import { useObservable } from "../../hooks/useObservable";
 import { ReactTabKind, useTabs } from "../../hooks/useTabs";
 import TabsBase from "./TabsBase";
+
+// Lazy-loaded tab components (code-split by API type)
+const QueryCopilotTab = React.lazy(() =>
+  import(/* webpackChunkName: "QueryCopilotTab" */ "Explorer/QueryCopilot/QueryCopilotTab").then((m) => ({
+    default: m.QueryCopilotTab,
+  })),
+);
+const FabricHomeScreen = React.lazy(() =>
+  import(/* webpackChunkName: "FabricHomeScreen" */ "Explorer/SplashScreen/FabricHome").then((m) => ({
+    default: m.FabricHomeScreen,
+  })),
+);
+const PostgresConnectTab = React.lazy(() =>
+  import(/* webpackChunkName: "PostgresConnectTab" */ "Explorer/Tabs/PostgresConnectTab").then((m) => ({
+    default: m.PostgresConnectTab,
+  })),
+);
+const VcoreMongoConnectTab = React.lazy(() =>
+  import(/* webpackChunkName: "VcoreMongoConnectTab" */ "Explorer/Tabs/VCoreMongoConnectTab").then((m) => ({
+    default: m.VcoreMongoConnectTab,
+  })),
+);
+const VcoreMongoQuickstartTab = React.lazy(() =>
+  import(/* webpackChunkName: "VcoreMongoQuickstartTab" */ "Explorer/Tabs/VCoreMongoQuickstartTab").then((m) => ({
+    default: m.VcoreMongoQuickstartTab,
+  })),
+);
 
 type Tab = TabsBase | (TabsBase & { render: () => JSX.Element });
 
@@ -302,30 +324,33 @@ const isQueryErrorThrown = (tab?: Tab, tabKind?: ReactTabKind): boolean => {
 };
 
 const getReactTabContent = (activeReactTab: ReactTabKind, explorer: Explorer): JSX.Element => {
-  switch (activeReactTab) {
-    case ReactTabKind.Connect:
-      return userContext.apiType === "VCoreMongo" ? (
-        <VcoreMongoConnectTab />
-      ) : userContext.apiType === "Postgres" ? (
-        <PostgresConnectTab />
-      ) : (
-        <ConnectTab />
-      );
-    case ReactTabKind.Home:
-      if (isFabricNative()) {
-        return <FabricHomeScreen explorer={explorer} />;
-      } else {
-        return <SplashScreen explorer={explorer} />;
-      }
-    case ReactTabKind.Quickstart:
-      return userContext.apiType === "VCoreMongo" ? (
-        <VcoreMongoQuickstartTab explorer={explorer} />
-      ) : (
-        <QuickstartTab explorer={explorer} />
-      );
-    case ReactTabKind.QueryCopilot:
-      return <QueryCopilotTab explorer={explorer} />;
-    default:
-      throw new Error(`Unsupported tab kind ${ReactTabKind[activeReactTab]}`);
-  }
+  const content = (() => {
+    switch (activeReactTab) {
+      case ReactTabKind.Connect:
+        return userContext.apiType === "VCoreMongo" ? (
+          <VcoreMongoConnectTab />
+        ) : userContext.apiType === "Postgres" ? (
+          <PostgresConnectTab />
+        ) : (
+          <ConnectTab />
+        );
+      case ReactTabKind.Home:
+        if (isFabricNative()) {
+          return <FabricHomeScreen explorer={explorer} />;
+        } else {
+          return <SplashScreen explorer={explorer} />;
+        }
+      case ReactTabKind.Quickstart:
+        return userContext.apiType === "VCoreMongo" ? (
+          <VcoreMongoQuickstartTab explorer={explorer} />
+        ) : (
+          <QuickstartTab explorer={explorer} />
+        );
+      case ReactTabKind.QueryCopilot:
+        return <QueryCopilotTab explorer={explorer} />;
+      default:
+        throw new Error(`Unsupported tab kind ${ReactTabKind[activeReactTab]}`);
+    }
+  })();
+  return <Suspense fallback={<Spinner size={SpinnerSize.large} />}>{content}</Suspense>;
 };
