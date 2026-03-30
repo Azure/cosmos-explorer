@@ -18,6 +18,7 @@ describe("AddVectorEmbeddingPolicyForm", () => {
   beforeEach(() => {
     component = render(
       <VectorEmbeddingPoliciesComponent
+        vectorEmbeddingsBaseline={mockVectorEmbedding}
         vectorEmbeddings={mockVectorEmbedding}
         vectorIndexes={mockVectorIndex}
         onVectorEmbeddingChange={mockOnVectorEmbeddingChange}
