@@ -1,6 +1,8 @@
 import { configContext } from "ConfigContext";
 import { FeatureRegistration } from "Contracts/DataModels";
 import { AuthorizationTokenHeaderMetadata } from "Contracts/ViewModels";
+import { Action } from "Shared/Telemetry/TelemetryConstants";
+import { traceFailure, traceStart, traceSuccess } from "Shared/Telemetry/TelemetryProcessor";
 import { getAuthorizationHeader } from "Utils/AuthorizationUtils";
 
 export const featureRegistered = async (subscriptionId: string, feature: string) => {
@@ -9,20 +11,27 @@ export const featureRegistered = async (subscriptionId: string, feature: string)
   const authorizationHeader: AuthorizationTokenHeaderMetadata = getAuthorizationHeader();
   const headers = { [authorizationHeader.header]: authorizationHeader.token };
 
+  const startKey = traceStart(Action.CheckFeatureRegistration, {
+    feature,
+  });
   let response;
 
   try {
     response = await _fetchWithTimeout(url, headers);
   } catch (error) {
+    traceFailure(Action.CheckFeatureRegistration, { feature, error: String(error) }, startKey);
     return false;
   }
 
   if (!response?.ok) {
+    traceFailure(Action.CheckFeatureRegistration, { feature, status: response?.status }, startKey);
     return false;
   }
 
   const featureRegistration = (await response?.json()) as FeatureRegistration;
-  return featureRegistration?.properties?.state === "Registered";
+  const registered = featureRegistration?.properties?.state === "Registered";
+  traceSuccess(Action.CheckFeatureRegistration, { feature, registered }, startKey);
+  return registered;
 };
 
 async function _fetchWithTimeout(

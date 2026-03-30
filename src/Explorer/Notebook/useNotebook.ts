@@ -129,6 +129,9 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
         : databaseAccount?.properties?.writeLocations?.[0]?.locationName.toLowerCase();
     const disallowedLocationsUri: string = `${configContext.PORTAL_BACKEND_ENDPOINT}/api/disallowedlocations`;
     const authorizationHeader = getAuthorizationHeader();
+    const startKey = TelemetryProcessor.traceStart(Action.RefreshNotebooksEnabled, {
+      dataExplorerArea: "Notebook",
+    });
     try {
       const response = await fetch(disallowedLocationsUri, {
         method: "POST",
@@ -155,9 +158,11 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
       // firstWriteLocation should not be disallowed
       const isAccountInAllowedLocation = firstWriteLocation && disallowedLocations.indexOf(firstWriteLocation) === -1;
       set({ isNotebooksEnabledForAccount: isAccountInAllowedLocation });
+      TelemetryProcessor.traceSuccess(Action.RefreshNotebooksEnabled, { isAccountInAllowedLocation }, startKey);
     } catch (error) {
       Logger.logError(getErrorMessage(error), "Explorer/isNotebooksEnabledForAccount");
       set({ isNotebooksEnabledForAccount: false });
+      TelemetryProcessor.traceFailure(Action.RefreshNotebooksEnabled, { error: getErrorMessage(error) }, startKey);
     }
   },
   findItem: (root: NotebookContentItem, item: NotebookContentItem): NotebookContentItem => {
@@ -304,6 +309,9 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
   setContainerStatus: (containerStatus: ContainerInfo) => set({ containerStatus }),
   getPhoenixStatus: async () => {
     if (get().isPhoenixNotebooks === undefined || get().isPhoenixFeatures === undefined) {
+      const startKey = TelemetryProcessor.traceStart(Action.CheckPhoenixStatus, {
+        dataExplorerArea: "Notebook",
+      });
       let isPhoenixNotebooks = false;
       let isPhoenixFeatures = false;
 
@@ -328,6 +336,7 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
       }
       set({ isPhoenixNotebooks: isPhoenixNotebooks });
       set({ isPhoenixFeatures: isPhoenixFeatures });
+      TelemetryProcessor.traceSuccess(Action.CheckPhoenixStatus, { isPhoenixNotebooks, isPhoenixFeatures }, startKey);
     }
   },
   setIsPhoenixNotebooks: (isPhoenixNotebooks: boolean) => set({ isPhoenixNotebooks: isPhoenixNotebooks }),

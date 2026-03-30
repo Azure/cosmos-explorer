@@ -2,6 +2,8 @@ import { CosmosDbArtifactType } from "Contracts/FabricMessagesContract";
 import { isFabric, isFabricMirroredKey, isFabricNative } from "Platform/Fabric/FabricUtil";
 import { AuthType } from "../../AuthType";
 import * as DataModels from "../../Contracts/DataModels";
+import { Action } from "../../Shared/Telemetry/TelemetryConstants";
+import { traceFailure, traceStart, traceSuccess } from "../../Shared/Telemetry/TelemetryProcessor";
 import { FabricArtifactInfo, userContext } from "../../UserContext";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { listCassandraKeyspaces } from "../../Utils/arm/generatedClients/cosmos/cassandraResources";
@@ -14,6 +16,10 @@ import { handleError } from "../ErrorHandlingUtils";
 export async function readDatabases(): Promise<DataModels.Database[]> {
   let databases: DataModels.Database[];
   const clearMessage = logConsoleProgress(`Querying databases`);
+  const startKey = traceStart(Action.ReadDatabases, {
+    dataExplorerArea: "ResourceTree",
+    apiType: userContext.apiType,
+  });
 
   if (
     isFabricMirroredKey() &&
@@ -81,9 +87,11 @@ export async function readDatabases(): Promise<DataModels.Database[]> {
       databases = sdkResponse.resources as DataModels.Database[];
     }
   } catch (error) {
+    traceFailure(Action.ReadDatabases, { error: error?.message }, startKey);
     handleError(error, "ReadDatabases", `Error while querying databases`);
     throw error;
   }
+  traceSuccess(Action.ReadDatabases, { databaseCount: databases?.length }, startKey);
   clearMessage();
   return databases;
 }

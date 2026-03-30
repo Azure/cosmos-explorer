@@ -158,64 +158,82 @@ export default class Database implements ViewModels.Database {
     if (restart) {
       this.collectionsContinuationToken = undefined;
     }
+    const startKey = TelemetryProcessor.traceStart(Action.LoadCollectionsPerDatabase, {
+      dataExplorerArea: Constants.Areas.ResourceTree,
+      databaseId: this.id(),
+    });
     const containerPaginationEnabled =
       StorageUtility.LocalStorageUtility.getEntryString(StorageUtility.StorageKey.ContainerPaginationEnabled) ===
       "true";
-    if (containerPaginationEnabled) {
-      const collectionsWithPagination: DataModels.CollectionsWithPagination = await readCollectionsWithPagination(
-        this.id(),
-        this.collectionsContinuationToken,
-      );
+    try {
+      if (containerPaginationEnabled) {
+        const collectionsWithPagination: DataModels.CollectionsWithPagination = await readCollectionsWithPagination(
+          this.id(),
+          this.collectionsContinuationToken,
+        );
 
-      if (collectionsWithPagination.collections?.length === Constants.Queries.containersPerPage) {
-        this.collectionsContinuationToken = collectionsWithPagination.continuationToken;
-      } else {
-        this.collectionsContinuationToken = undefined;
-      }
-      collections = collectionsWithPagination.collections;
-    } else {
-      collections = await readCollections(this.id());
-    }
-
-    // TODO Remove
-    // This is a hack to make Mongo collections read via ARM have a SQL-ish partitionKey property
-    if (userContext.apiType === "Mongo" && userContext.authType === AuthType.AAD) {
-      collections.map((collection) => {
-        if (collection.shardKey) {
-          const shardKey = Object.keys(collection.shardKey)[0];
-          collection.partitionKey = {
-            version: undefined,
-            kind: "Hash",
-            paths: [`/"$v"/"${shardKey.split(".").join(`"/"$v"/"`)}"/"$v"`],
-          };
+        if (collectionsWithPagination.collections?.length === Constants.Queries.containersPerPage) {
+          this.collectionsContinuationToken = collectionsWithPagination.continuationToken;
         } else {
-          collection.partitionKey = {
-            paths: ["/'$v'/'_partitionKey'/'$v'"],
-            kind: "Hash",
-            version: 2,
-            systemKey: true,
-          };
+          this.collectionsContinuationToken = undefined;
         }
+        collections = collectionsWithPagination.collections;
+      } else {
+        collections = await readCollections(this.id());
+      }
+
+      // TODO Remove
+      // This is a hack to make Mongo collections read via ARM have a SQL-ish partitionKey property
+      if (userContext.apiType === "Mongo" && userContext.authType === AuthType.AAD) {
+        collections.map((collection) => {
+          if (collection.shardKey) {
+            const shardKey = Object.keys(collection.shardKey)[0];
+            collection.partitionKey = {
+              version: undefined,
+              kind: "Hash",
+              paths: [`/"$v"/"${shardKey.split(".").join(`"/"$v"/"`)}"/"$v"`],
+            };
+          } else {
+            collection.partitionKey = {
+              paths: ["/'$v'/'_partitionKey'/'$v'"],
+              kind: "Hash",
+              version: 2,
+              systemKey: true,
+            };
+          }
+        });
+      }
+      const deltaCollections = this.getDeltaCollections(collections);
+
+      collections.forEach((collection: DataModels.Collection) => {
+        this.addSchema(collection);
       });
+
+      deltaCollections.toAdd.forEach((collection: DataModels.Collection) => {
+        const collectionVM: Collection = new Collection(this.container, this.id(), collection);
+        collectionVMs.push(collectionVM);
+      });
+
+      //merge collections
+      this.addCollectionsToList(collectionVMs);
+      if (!containerPaginationEnabled || restart) {
+        this.deleteCollectionsFromList(deltaCollections.toDelete);
+      }
+
+      useDatabases.getState().updateDatabase(this);
+      TelemetryProcessor.traceSuccess(
+        Action.LoadCollectionsPerDatabase,
+        { dataExplorerArea: Constants.Areas.ResourceTree, databaseId: this.id(), collectionCount: collections?.length },
+        startKey,
+      );
+    } catch (error) {
+      TelemetryProcessor.traceFailure(
+        Action.LoadCollectionsPerDatabase,
+        { dataExplorerArea: Constants.Areas.ResourceTree, databaseId: this.id(), error: error?.message },
+        startKey,
+      );
+      throw error;
     }
-    const deltaCollections = this.getDeltaCollections(collections);
-
-    collections.forEach((collection: DataModels.Collection) => {
-      this.addSchema(collection);
-    });
-
-    deltaCollections.toAdd.forEach((collection: DataModels.Collection) => {
-      const collectionVM: Collection = new Collection(this.container, this.id(), collection);
-      collectionVMs.push(collectionVM);
-    });
-
-    //merge collections
-    this.addCollectionsToList(collectionVMs);
-    if (!containerPaginationEnabled || restart) {
-      this.deleteCollectionsFromList(deltaCollections.toDelete);
-    }
-
-    useDatabases.getState().updateDatabase(this);
   }
 
   public async openAddCollection(database: Database): Promise<void> {
