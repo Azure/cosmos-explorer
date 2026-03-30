@@ -124,6 +124,7 @@ export interface SettingsComponentState {
 
   vectorEmbeddingPolicy: DataModels.VectorEmbeddingPolicy;
   vectorEmbeddingPolicyBaseline: DataModels.VectorEmbeddingPolicy;
+  isVectorEmbeddingPolicyValid: boolean;
   fullTextPolicy: DataModels.FullTextPolicy;
   fullTextPolicyBaseline: DataModels.FullTextPolicy;
   shouldDiscardContainerPolicies: boolean;
@@ -245,6 +246,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
       vectorEmbeddingPolicy: undefined,
       vectorEmbeddingPolicyBaseline: undefined,
+      isVectorEmbeddingPolicyValid: true,
       fullTextPolicy: undefined,
       fullTextPolicyBaseline: undefined,
       shouldDiscardContainerPolicies: false,
@@ -369,6 +371,10 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     }
 
     if (this.state.dataMaskingValidationErrors.length > 0) {
+      return false;
+    }
+
+    if (!this.state.isVectorEmbeddingPolicyValid) {
       return false;
     }
 
@@ -506,6 +512,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       changeFeedPolicy: this.state.changeFeedPolicyBaseline,
       autoPilotThroughput: this.state.autoPilotThroughputBaseline,
       isAutoPilotSelected: this.state.wasAutopilotOriginallySet,
+      isVectorEmbeddingPolicyValid: true,
       shouldDiscardContainerPolicies: true,
       shouldDiscardIndexingPolicy: true,
       isScaleSaveable: false,
@@ -649,6 +656,9 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
   private onVectorEmbeddingPolicyDirtyChange = (isVectorEmbeddingPolicyDirty: boolean): void =>
     this.setState({ isContainerPolicyDirty: isVectorEmbeddingPolicyDirty });
+
+  private onVectorEmbeddingPolicyValidationChange = (isVectorEmbeddingPolicyValid: boolean): void =>
+    this.setState({ isVectorEmbeddingPolicyValid });
 
   private onFullTextPolicyDirtyChange = (isFullTextPolicyDirty: boolean): void =>
     this.setState({ isContainerPolicyDirty: isFullTextPolicyDirty });
@@ -1321,6 +1331,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       vectorEmbeddingPolicyBaseline: this.state.vectorEmbeddingPolicyBaseline,
       onVectorEmbeddingPolicyChange: this.onVectorEmbeddingPolicyChange,
       onVectorEmbeddingPolicyDirtyChange: this.onVectorEmbeddingPolicyDirtyChange,
+      onVectorEmbeddingPolicyValidationChange: this.onVectorEmbeddingPolicyValidationChange,
       isVectorSearchEnabled: this.isVectorSearchEnabled,
       fullTextPolicy: this.state.fullTextPolicy,
       fullTextPolicyBaseline: this.state.fullTextPolicyBaseline,

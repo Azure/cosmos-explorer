@@ -40,6 +40,7 @@ export const VectorSearchComponent = (props: VectorSearchComponentProps): JSX.El
         <Stack id="collapsibleVectorPolicySectionContent" styles={{ root: { position: "relative" } }}>
           <Stack styles={{ root: { paddingLeft: 40 } }}>
             <VectorEmbeddingPoliciesComponent
+              vectorEmbeddingsBaseline={[]}
               vectorEmbeddings={vectorEmbeddingPolicy}
               vectorIndexes={vectorIndexingPolicy}
               onVectorEmbeddingChange={(
