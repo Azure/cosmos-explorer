@@ -278,7 +278,7 @@ export default class Explorer {
         updateUserContext({ aadToken: aadToken });
         useDataPlaneRbac.setState({ aadTokenUpdated: true });
       } catch (error) {
-        if (error instanceof msal.AuthError && error.errorCode === msal.BrowserAuthErrorCodes.popupWindowError) {
+        if (error instanceof msal.AuthError && error.errorCode === msal.BrowserAuthErrorMessage.popUpWindowError.code) {
           logConsoleError(
             "We were unable to establish authorization for this account, due to pop-ups being disabled in the browser.\nPlease enable pop-ups for this site and try again",
           );

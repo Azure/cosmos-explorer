@@ -1,17 +1,20 @@
-import { AuthError as msalAuthError, BrowserAuthErrorCodes as msalBrowserAuthErrorCodes } from "@azure/msal-browser";
 import {
-    Checkbox,
-    ChoiceGroup,
-    DefaultButton,
-    Dropdown,
-    IChoiceGroupOption,
-    IDropdownOption,
-    ISpinButtonStyles,
-    IToggleStyles,
-    Position,
-    SpinButton,
-    Stack,
-    Toggle,
+  AuthError as msalAuthError,
+  BrowserAuthErrorMessage as msalBrowserAuthErrorMessage,
+} from "@azure/msal-browser";
+import {
+  Checkbox,
+  ChoiceGroup,
+  DefaultButton,
+  Dropdown,
+  IChoiceGroupOption,
+  IDropdownOption,
+  ISpinButtonStyles,
+  IToggleStyles,
+  Position,
+  SpinButton,
+  Stack,
+  Toggle,
 } from "@fluentui/react";
 import { Accordion, AccordionHeader, AccordionItem, AccordionPanel, makeStyles } from "@fluentui/react-components";
 import { AuthType } from "AuthType";
@@ -23,20 +26,20 @@ import { useDialog } from "Explorer/Controls/Dialog";
 import { useDatabases } from "Explorer/useDatabases";
 import { isFabric, isFabricNative } from "Platform/Fabric/FabricUtil";
 import {
-    AppStateComponentNames,
-    deleteAllStates,
-    deleteState,
-    hasState,
-    loadState,
-    saveState,
+  AppStateComponentNames,
+  deleteAllStates,
+  deleteState,
+  hasState,
+  loadState,
+  saveState,
 } from "Shared/AppStatePersistenceUtility";
 import {
-    DefaultRUThreshold,
-    LocalStorageUtility,
-    StorageKey,
-    getDefaultQueryResultsView,
-    getRUThreshold,
-    ruThresholdEnabled as isRUThresholdEnabled,
+  DefaultRUThreshold,
+  LocalStorageUtility,
+  StorageKey,
+  getDefaultQueryResultsView,
+  getRUThreshold,
+  ruThresholdEnabled as isRUThresholdEnabled,
 } from "Shared/StorageUtility";
 import * as StringUtility from "Shared/StringUtility";
 import { updateUserContext, userContext } from "UserContext";
@@ -312,7 +315,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
         } catch (authError) {
           if (
             authError instanceof msalAuthError &&
-            authError.errorCode === msalBrowserAuthErrorCodes.popupWindowError
+            authError.errorCode === msalBrowserAuthErrorMessage.popUpWindowError.code
           ) {
             logConsoleError(
               `We were unable to establish authorization for this account, due to pop-ups being disabled in the browser.\nPlease enable pop-ups for this site and click on "Login for Entra ID" button`,

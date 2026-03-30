@@ -116,7 +116,6 @@ module.exports = function (_env = {}, argv = {}) {
     galleryViewer: "./src/GalleryViewer/GalleryViewer.tsx",
     selfServe: "./src/SelfServe/SelfServe.tsx",
     connectToGitHub: "./src/GitHub/GitHubConnector.ts",
-    redirectBridge: "./src/redirectBridge.ts",
     ...(mode !== "production" && { testExplorer: "./test/testExplorer/TestExplorer.ts" }),
   };
 
@@ -165,11 +164,6 @@ module.exports = function (_env = {}, argv = {}) {
       filename: "selfServe.html",
       template: "src/SelfServe/selfServe.html",
       chunks: ["selfServe"],
-    }),
-    new HtmlWebpackPlugin({
-      filename: "redirectBridge.html",
-      template: "src/redirectBridge.html",
-      chunks: ["redirectBridge"],
     }),
     ...(mode !== "production"
       ? [
