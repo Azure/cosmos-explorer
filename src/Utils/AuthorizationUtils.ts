@@ -49,6 +49,9 @@ export function decryptJWTToken(token: string) {
 }
 
 export async function getMsalInstance() {
+  // Compute the redirect bridge URL for MSAL v5 COOP handling
+  const redirectBridgeUrl = `${window.location.origin}/redirectBridge.html`;
+
   const msalConfig: msal.Configuration = {
     cache: {
       cacheLocation: "localStorage",
@@ -56,14 +59,18 @@ export async function getMsalInstance() {
     auth: {
       authority: `${configContext.AAD_ENDPOINT}organizations`,
       clientId: "203f1145-856a-4232-83d4-a43568fba23d",
+      // MSAL v5 requires redirect bridge for popup/silent flows (CG alert MVS-2026-vmmw-f85q)
+      redirectUri: redirectBridgeUrl,
     },
   };
 
-  if (process.env.NODE_ENV === "development") {
-    msalConfig.auth.redirectUri = "https://dataexplorer-dev.azurewebsites.net";
+  if (process.env.NODE_ENV === "development" && !window.location.hostname.includes("localhost")) {
+    msalConfig.auth.redirectUri = "https://dataexplorer-dev.azurewebsites.net/redirectBridge.html";
   }
 
   const msalInstance = new msal.PublicClientApplication(msalConfig);
+  // v3+ requires explicit initialization before using MSAL APIs
+  await msalInstance.initialize();
   return msalInstance;
 }
 
