@@ -5,6 +5,7 @@ import { getErrorMessage, getErrorStack, handleError } from "../../../Common/Err
 import { useNotebookSnapshotStore } from "../../../hooks/useNotebookSnapshotStore";
 import { useSidePanel } from "../../../hooks/useSidePanel";
 import { JunoClient } from "../../../Juno/JunoClient";
+import { Keys, t } from "Localization";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 import { traceFailure, traceStart, traceSuccess } from "../../../Shared/Telemetry/TelemetryProcessor";
 import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
@@ -91,7 +92,7 @@ export const PublishNotebookPane: FunctionComponent<PublishNotebookPaneAProps> =
     let startKey: number;
 
     if (!notebookName || !notebookDescription || !author || !imageSrc) {
-      setFormError(`Failed to publish ${notebookName} to gallery`);
+      setFormError(t(Keys.panes.publishNotebook.publishFailedError, { notebookName }));
       setFormErrorDetail("Name, description, author and cover image are required");
       createFormError(formError, formErrorDetail, "PublishNotebookPaneAdapter/submit");
       setIsExecuting(false);
@@ -143,7 +144,11 @@ export const PublishNotebookPane: FunctionComponent<PublishNotebookPaneAProps> =
       );
 
       const errorMessage = getErrorMessage(error);
-      setFormError(`Failed to publish ${FileSystemUtil.stripExtension(notebookName, "ipynb")} to gallery`);
+      setFormError(
+        t(Keys.panes.publishNotebook.publishFailedError, {
+          notebookName: FileSystemUtil.stripExtension(notebookName, "ipynb"),
+        }),
+      );
       setFormErrorDetail(`${errorMessage}`);
       handleError(errorMessage, "PublishNotebookPaneAdapter/submit", formError);
       return;

@@ -82,6 +82,32 @@ const useStyles = makeStyles({
     backgroundColor: "var(--colorNeutralBackground1)",
     color: "var(--colorNeutralForeground1)",
   },
+  splashContainer: {
+    zIndex: 5,
+    position: "absolute",
+    left: 0,
+    top: 0,
+    width: "100%",
+    height: "100%",
+    backgroundColor: "var(--colorNeutralBackground1)",
+    opacity: "0.7",
+  },
+  splashContent: {
+    display: "flex",
+    flexDirection: "column",
+    height: "100%",
+    textAlign: "center",
+    justifyContent: "center",
+  },
+  splashTitle: {
+    fontSize: "13px",
+    color: "var(--colorNeutralForeground1)",
+    margin: "6px 6px 12px 6px",
+  },
+  splashText: {
+    marginTop: "12px",
+    color: "var(--colorNeutralForeground2)",
+  },
 });
 
 const App = (): JSX.Element => {
@@ -105,9 +131,12 @@ const App = (): JSX.Element => {
   // Scenario-based health tracking: start ApplicationLoad and complete phases.
   const { startScenario, completePhase } = useMetricScenario();
   React.useEffect(() => {
-    startScenario(MetricScenario.ApplicationLoad);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    // Only start scenario after config is initialized to avoid race conditions
+    // with message handlers that depend on configContext.platform
+    if (config) {
+      startScenario(MetricScenario.ApplicationLoad);
+    }
+  }, [config, startScenario]);
 
   React.useEffect(() => {
     if (explorer) {
@@ -115,6 +144,9 @@ const App = (): JSX.Element => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [explorer]);
+
+  // Track interactive phase for both ContainerCopyPanel and DivExplorer paths
+  useInteractive(MetricScenario.ApplicationLoad, !!config);
 
   if (!explorer) {
     return <LoadingExplorer />;
@@ -128,6 +160,7 @@ const App = (): JSX.Element => {
             <>
               <ContainerCopyPanel explorer={explorer} />
               <SidePanel />
+              <Dialog />
             </>
           ) : (
             <DivExplorer explorer={explorer} />
@@ -141,7 +174,6 @@ const App = (): JSX.Element => {
 const DivExplorer: React.FC<{ explorer: Explorer }> = ({ explorer }) => {
   const isCarouselOpen = useCarousel((state) => state.shouldOpen);
   const isCopilotCarouselOpen = useCarousel((state) => state.showCopilotCarousel);
-  useInteractive(MetricScenario.ApplicationLoad);
 
   return (
     <div
@@ -228,15 +260,15 @@ function LoadingExplorer(): JSX.Element {
   const styles = useStyles();
   return (
     <div className={styles.root}>
-      <div className="splashLoaderContainer">
-        <div className="splashLoaderContentContainer">
+      <div className={styles.splashContainer}>
+        <div className={styles.splashContent}>
           <p className="connectExplorerContent">
             <img src={hdeConnectImage} alt="Azure Cosmos DB" />
           </p>
-          <p className="splashLoaderTitle" id="explorerLoadingStatusTitle">
+          <p className={styles.splashTitle} id="explorerLoadingStatusTitle">
             Welcome to Azure Cosmos DB
           </p>
-          <p className="splashLoaderText" id="explorerLoadingStatusText" role="alert">
+          <p className={styles.splashText} id="explorerLoadingStatusText" role="alert">
             Connecting...
           </p>
         </div>

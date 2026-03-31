@@ -24,6 +24,7 @@ import { InfoTooltip } from "Common/Tooltip/InfoTooltip";
 import { Platform, configContext } from "ConfigContext";
 import { useDialog } from "Explorer/Controls/Dialog";
 import { useDatabases } from "Explorer/useDatabases";
+import { Keys, t } from "Localization";
 import { isFabric, isFabricNative } from "Platform/Fabric/FabricUtil";
 import {
   AppStateComponentNames,
@@ -235,7 +236,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
   const regionOptions: IDropdownOption[] = [];
   regionOptions.push({
     key: userContext?.databaseAccount?.properties?.documentEndpoint,
-    text: `Global (Default)`,
+    text: t(Keys.panes.settings.globalDefault),
     data: {
       isGlobal: true,
       writeEnabled: true,
@@ -246,7 +247,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
       uniqueAccountRegions.add(loc.locationName);
       regionOptions.push({
         key: loc.documentEndpoint,
-        text: `${loc.locationName} (Read/Write)`,
+        text: `${loc.locationName} ${t(Keys.panes.settings.readWrite)}`,
         data: {
           isGlobal: false,
           writeEnabled: true,
@@ -259,7 +260,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
       uniqueAccountRegions.add(loc.locationName);
       regionOptions.push({
         key: loc.documentEndpoint,
-        text: `${loc.locationName} (Read)`,
+        text: `${loc.locationName} ${t(Keys.panes.settings.read)}`,
         data: {
           isGlobal: false,
           writeEnabled: false,
@@ -317,13 +318,9 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
             authError instanceof msalAuthError &&
             authError.errorCode === msalBrowserAuthErrorMessage.popUpWindowError.code
           ) {
-            logConsoleError(
-              `We were unable to establish authorization for this account, due to pop-ups being disabled in the browser.\nPlease enable pop-ups for this site and click on "Login for Entra ID" button`,
-            );
+            logConsoleError(t(Keys.panes.settings.popupsDisabledError));
           } else {
-            logConsoleError(
-              `"Failed to acquire authorization token automatically. Please click on "Login for Entra ID" button to enable Entra ID RBAC operations`,
-            );
+            logConsoleError(t(Keys.panes.settings.failedToAcquireTokenError));
           }
         }
       } else {
@@ -485,33 +482,33 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
   const genericPaneProps: RightPaneFormProps = {
     formError: "",
     isExecuting,
-    submitButtonText: "Apply",
+    submitButtonText: t(Keys.common.apply),
     onSubmit: () => handlerOnSubmit(),
   };
   const pageOptionList: IChoiceGroupOption[] = [
-    { key: Constants.Queries.CustomPageOption, text: "Custom" },
-    { key: Constants.Queries.UnlimitedPageOption, text: "Unlimited" },
+    { key: Constants.Queries.CustomPageOption, text: t(Keys.panes.settings.custom) },
+    { key: Constants.Queries.UnlimitedPageOption, text: t(Keys.panes.settings.unlimited) },
   ];
 
   const graphAutoOptionList: IChoiceGroupOption[] = [
-    { key: "false", text: "Graph" },
-    { key: "true", text: "JSON" },
+    { key: "false", text: t(Keys.panes.settings.graph) },
+    { key: "true", text: t(Keys.panes.settings.json) },
   ];
 
   const priorityLevelOptionList: IChoiceGroupOption[] = [
-    { key: Constants.PriorityLevel.Low, text: "Low" },
-    { key: Constants.PriorityLevel.High, text: "High" },
+    { key: Constants.PriorityLevel.Low, text: t(Keys.panes.settings.low) },
+    { key: Constants.PriorityLevel.High, text: t(Keys.panes.settings.high) },
   ];
 
   const dataPlaneRBACOptionsList: IChoiceGroupOption[] = [
-    { key: Constants.RBACOptions.setAutomaticRBACOption, text: "Automatic" },
-    { key: Constants.RBACOptions.setTrueRBACOption, text: "True" },
-    { key: Constants.RBACOptions.setFalseRBACOption, text: "False" },
+    { key: Constants.RBACOptions.setAutomaticRBACOption, text: t(Keys.panes.settings.automatic) },
+    { key: Constants.RBACOptions.setTrueRBACOption, text: t(Keys.panes.settings["true"]) },
+    { key: Constants.RBACOptions.setFalseRBACOption, text: t(Keys.panes.settings["false"]) },
   ];
 
   const defaultQueryResultsViewOptionList: IChoiceGroupOption[] = [
-    { key: SplitterDirection.Vertical, text: "Vertical" },
-    { key: SplitterDirection.Horizontal, text: "Horizontal" },
+    { key: SplitterDirection.Vertical, text: t(Keys.tabs.query.vertical) },
+    { key: SplitterDirection.Horizontal, text: t(Keys.tabs.query.horizontal) },
   ];
 
   const mongoGuidRepresentationDropdownOptions: IDropdownOption[] = [
@@ -724,13 +721,12 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
             {shouldShowQueryPageOptions && (
               <AccordionItem value="1">
                 <AccordionHeader>
-                  <div className={styles.header}>Page Options</div>
+                  <div className={styles.header}>{t(Keys.panes.settings.pageOptions)}</div>
                 </AccordionHeader>
                 <AccordionPanel>
                   <div className={styles.settingsSectionContainer}>
                     <div className={styles.settingsSectionDescription}>
-                      Choose Custom to specify a fixed amount of query results to show, or choose Unlimited to show as
-                      many query results per page.
+                      {t(Keys.panes.settings.pageOptionsDescription)}
                     </div>
                     <ChoiceGroup
                       ariaLabelledBy="pageOptions"
@@ -744,14 +740,14 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                     {isCustomPageOptionSelected() && (
                       <div className="tabcontent">
                         <div className={styles.settingsSectionDescription}>
-                          Query results per page{" "}
+                          {t(Keys.panes.settings.queryResultsPerPage)}{" "}
                           <InfoTooltip className={styles.headerIcon}>
-                            Enter the number of query results that should be shown per page.
+                            {t(Keys.panes.settings.queryResultsPerPageTooltip)}
                           </InfoTooltip>
                         </div>
 
                         <SpinButton
-                          ariaLabel="Custom query items per page"
+                          ariaLabel={t(Keys.panes.settings.customQueryItemsPerPage)}
                           value={"" + customItemPerPage}
                           onIncrement={(newValue) => {
                             setCustomItemPerPage(parseInt(newValue) + 1 || customItemPerPage);
@@ -761,8 +757,8 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                           min={1}
                           step={1}
                           className="textfontclr"
-                          incrementButtonAriaLabel="Increase value by 1"
-                          decrementButtonAriaLabel="Decrease value by 1"
+                          incrementButtonAriaLabel={t(Keys.common.increaseValueBy1)}
+                          decrementButtonAriaLabel={t(Keys.common.decreaseValueBy1)}
                           styles={spinButtonStyles}
                         />
                       </div>
@@ -774,20 +770,19 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
             {showEnableEntraIdRbac && (
               <AccordionItem value="2">
                 <AccordionHeader>
-                  <div className={styles.header}>Enable Entra ID RBAC</div>
+                  <div className={styles.header}>{t(Keys.panes.settings.entraIdRbac)}</div>
                 </AccordionHeader>
                 <AccordionPanel>
                   <div className={styles.settingsSectionContainer}>
                     <div className={styles.settingsSectionDescription}>
-                      Choose Automatic to enable Entra ID RBAC automatically. True/False to force enable/disable Entra
-                      ID RBAC.
+                      {t(Keys.panes.settings.entraIdRbacDescription)}
                       <a
                         href="https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-setup-rbac#use-data-explorer"
                         target="_blank"
                         rel="noopener noreferrer"
                       >
                         {" "}
-                        Learn more{" "}
+                        {t(Keys.common.learnMore)}{" "}
                       </a>
                     </div>
                     <ChoiceGroup
@@ -804,17 +799,17 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
             {userContext.apiType === "SQL" && userContext.authType === AuthType.AAD && !isFabric() && (
               <AccordionItem value="3">
                 <AccordionHeader>
-                  <div className={styles.header}>Region Selection</div>
+                  <div className={styles.header}>{t(Keys.panes.settings.regionSelection)}</div>
                 </AccordionHeader>
                 <AccordionPanel>
                   <div className={styles.settingsSectionContainer}>
                     <div className={styles.settingsSectionDescription}>
-                      Changes region the Cosmos Client uses to access account.
+                      {t(Keys.panes.settings.regionSelectionDescription)}
                     </div>
                     <div>
-                      <span className={styles.subHeader}>Select Region</span>
+                      <span className={styles.subHeader}>{t(Keys.panes.settings.selectRegion)}</span>
                       <InfoTooltip className={styles.headerIcon}>
-                        Changes the account endpoint used to perform client operations.
+                        {t(Keys.panes.settings.selectRegionTooltip)}
                       </InfoTooltip>
                     </div>
                     <Dropdown
@@ -865,17 +860,16 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
               <>
                 <AccordionItem value="4">
                   <AccordionHeader>
-                    <div className={styles.header}>Query Timeout</div>
+                    <div className={styles.header}>{t(Keys.panes.settings.queryTimeout)}</div>
                   </AccordionHeader>
                   <AccordionPanel>
                     <div className={styles.settingsSectionContainer}>
                       <div className={styles.settingsSectionDescription}>
-                        When a query reaches a specified time limit, a popup with an option to cancel the query will
-                        show unless automatic cancellation has been enabled.
+                        {t(Keys.panes.settings.queryTimeoutDescription)}
                       </div>
                       <Toggle
                         styles={toggleStyles}
-                        label="Enable query timeout"
+                        label={t(Keys.panes.settings.enableQueryTimeout)}
                         onChange={handleOnQueryTimeoutToggleChange}
                         defaultChecked={queryTimeoutEnabled}
                       />
@@ -883,18 +877,18 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                     {queryTimeoutEnabled && (
                       <div className={styles.settingsSectionContainer}>
                         <SpinButton
-                          label="Query timeout (ms)"
+                          label={t(Keys.panes.settings.queryTimeoutMs)}
                           labelPosition={Position.top}
                           defaultValue={(queryTimeout || 5000).toString()}
                           min={100}
                           step={1000}
                           onChange={handleOnQueryTimeoutSpinButtonChange}
-                          incrementButtonAriaLabel="Increase value by 1000"
-                          decrementButtonAriaLabel="Decrease value by 1000"
+                          incrementButtonAriaLabel={t(Keys.panes.settings.increaseValueBy1000)}
+                          decrementButtonAriaLabel={t(Keys.panes.settings.decreaseValueBy1000)}
                           styles={spinButtonStyles}
                         />
                         <Toggle
-                          label="Automatically cancel query after timeout"
+                          label={t(Keys.panes.settings.automaticallyCancelQuery)}
                           styles={toggleStyles}
                           onChange={handleOnAutomaticallyCancelQueryToggleChange}
                           defaultChecked={automaticallyCancelQueryAfterTimeout}
@@ -905,16 +899,16 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                 </AccordionItem>
                 <AccordionItem value="5">
                   <AccordionHeader>
-                    <div className={styles.header}>RU Limit</div>
+                    <div className={styles.header}>{t(Keys.panes.settings.ruLimit)}</div>
                   </AccordionHeader>
                   <AccordionPanel>
                     <div className={styles.settingsSectionContainer}>
                       <div className={styles.settingsSectionDescription}>
-                        If a query exceeds a configured RU limit, the query will be aborted.
+                        {t(Keys.panes.settings.ruLimitDescription)}
                       </div>
                       <Toggle
                         styles={toggleStyles}
-                        label="Enable RU limit"
+                        label={t(Keys.panes.settings.enableRuLimit)}
                         onChange={handleOnRUThresholdToggleChange}
                         defaultChecked={ruThresholdEnabled}
                       />
@@ -922,14 +916,14 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                     {ruThresholdEnabled && (
                       <div className={styles.settingsSectionContainer}>
                         <SpinButton
-                          label="RU Limit (RU)"
+                          label={t(Keys.panes.settings.ruLimitLabel)}
                           labelPosition={Position.top}
                           defaultValue={(ruThreshold || DefaultRUThreshold).toString()}
                           min={1}
                           step={1000}
                           onChange={handleOnRUThresholdSpinButtonChange}
-                          incrementButtonAriaLabel="Increase value by 1000"
-                          decrementButtonAriaLabel="Decrease value by 1000"
+                          incrementButtonAriaLabel={t(Keys.panes.settings.increaseValueBy1000)}
+                          decrementButtonAriaLabel={t(Keys.panes.settings.decreaseValueBy1000)}
                           styles={spinButtonStyles}
                         />
                       </div>
@@ -939,12 +933,12 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
 
                 <AccordionItem value="6">
                   <AccordionHeader>
-                    <div className={styles.header}>Default Query Results View</div>
+                    <div className={styles.header}>{t(Keys.panes.settings.defaultQueryResults)}</div>
                   </AccordionHeader>
                   <AccordionPanel>
                     <div className={styles.settingsSectionContainer}>
                       <div className={styles.settingsSectionDescription}>
-                        Select the default view to use when displaying query results.
+                        {t(Keys.panes.settings.defaultQueryResultsDescription)}
                       </div>
                       <ChoiceGroup
                         ariaLabelledBy="defaultQueryResultsView"
@@ -962,17 +956,17 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
             {showRetrySettings && (
               <AccordionItem value="7">
                 <AccordionHeader>
-                  <div className={styles.header}>Retry Settings</div>
+                  <div className={styles.header}>{t(Keys.panes.settings.retrySettings)}</div>
                 </AccordionHeader>
                 <AccordionPanel>
                   <div className={styles.settingsSectionContainer}>
                     <div className={styles.settingsSectionDescription}>
-                      Retry policy associated with throttled requests during CosmosDB queries.
+                      {t(Keys.panes.settings.retrySettingsDescription)}
                     </div>
                     <div>
-                      <span className={styles.subHeader}>Max retry attempts</span>
+                      <span className={styles.subHeader}>{t(Keys.panes.settings.maxRetryAttempts)}</span>
                       <InfoTooltip className={styles.headerIcon}>
-                        Max number of retries to be performed for a request. Default value 9.
+                        {t(Keys.panes.settings.maxRetryAttemptsTooltip)}
                       </InfoTooltip>
                     </div>
                     <SpinButton
@@ -981,18 +975,17 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                       step={1}
                       value={"" + retryAttempts}
                       onChange={handleOnQueryRetryAttemptsSpinButtonChange}
-                      incrementButtonAriaLabel="Increase value by 1"
-                      decrementButtonAriaLabel="Decrease value by 1"
+                      incrementButtonAriaLabel={t(Keys.common.increaseValueBy1)}
+                      decrementButtonAriaLabel={t(Keys.common.decreaseValueBy1)}
                       onIncrement={(newValue) => setRetryAttempts(parseInt(newValue) + 1 || retryAttempts)}
                       onDecrement={(newValue) => setRetryAttempts(parseInt(newValue) - 1 || retryAttempts)}
                       onValidate={(newValue) => setRetryAttempts(parseInt(newValue) || retryAttempts)}
                       styles={spinButtonStyles}
                     />
                     <div>
-                      <span className={styles.subHeader}>Fixed retry interval (ms)</span>
+                      <span className={styles.subHeader}>{t(Keys.panes.settings.fixedRetryInterval)}</span>
                       <InfoTooltip className={styles.headerIcon}>
-                        Fixed retry interval in milliseconds to wait between each retry ignoring the retryAfter returned
-                        as part of the response. Default value is 0 milliseconds.
+                        {t(Keys.panes.settings.fixedRetryIntervalTooltip)}
                       </InfoTooltip>
                     </div>
                     <SpinButton
@@ -1001,18 +994,17 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                       step={1000}
                       value={"" + retryInterval}
                       onChange={handleOnRetryIntervalSpinButtonChange}
-                      incrementButtonAriaLabel="Increase value by 1000"
-                      decrementButtonAriaLabel="Decrease value by 1000"
+                      incrementButtonAriaLabel={t(Keys.panes.settings.increaseValueBy1000)}
+                      decrementButtonAriaLabel={t(Keys.panes.settings.decreaseValueBy1000)}
                       onIncrement={(newValue) => setRetryInterval(parseInt(newValue) + 1000 || retryInterval)}
                       onDecrement={(newValue) => setRetryInterval(parseInt(newValue) - 1000 || retryInterval)}
                       onValidate={(newValue) => setRetryInterval(parseInt(newValue) || retryInterval)}
                       styles={spinButtonStyles}
                     />
                     <div>
-                      <span className={styles.subHeader}>Max wait time (s)</span>
+                      <span className={styles.subHeader}>{t(Keys.panes.settings.maxWaitTime)}</span>
                       <InfoTooltip className={styles.headerIcon}>
-                        Max wait time in seconds to wait for a request while the retries are happening. Default value 30
-                        seconds.
+                        {t(Keys.panes.settings.maxWaitTimeTooltip)}
                       </InfoTooltip>
                     </div>
                     <SpinButton
@@ -1021,8 +1013,8 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                       step={1}
                       value={"" + MaxWaitTimeInSeconds}
                       onChange={handleOnMaxWaitTimeSpinButtonChange}
-                      incrementButtonAriaLabel="Increase value by 1"
-                      decrementButtonAriaLabel="Decrease value by 1"
+                      incrementButtonAriaLabel={t(Keys.common.increaseValueBy1)}
+                      decrementButtonAriaLabel={t(Keys.common.decreaseValueBy1)}
                       onIncrement={(newValue) =>
                         setMaxWaitTimeInSeconds(parseInt(newValue) + 1 || MaxWaitTimeInSeconds)
                       }
@@ -1039,24 +1031,26 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
             {!isEmulator && (
               <AccordionItem value="8">
                 <AccordionHeader>
-                  <div className={styles.header}>Enable container pagination</div>
+                  <div className={styles.header}>{t(Keys.panes.settings.enableContainerPagination)}</div>
                 </AccordionHeader>
                 <AccordionPanel>
                   <div className={styles.settingsSectionContainer}>
                     <div className={styles.settingsSectionDescription}>
-                      Load 50 containers at a time. Currently, containers are not pulled in alphanumeric order.
+                      {t(Keys.panes.settings.enableContainerPaginationDescription)}
                     </div>
                     <Checkbox
                       styles={{
                         label: { padding: 0 },
                       }}
                       className="padding"
-                      ariaLabel="Enable container pagination"
+                      ariaLabel={t(Keys.panes.settings.enableContainerPagination)}
                       checked={containerPaginationEnabled}
                       onChange={() => setContainerPaginationEnabled(!containerPaginationEnabled)}
-                      label="Enable container pagination"
+                      label={t(Keys.panes.settings.enableContainerPagination)}
                       onRenderLabel={() => (
-                        <span style={{ color: "var(--colorNeutralForeground1)" }}>Enable container pagination</span>
+                        <span style={{ color: "var(--colorNeutralForeground1)" }}>
+                          {t(Keys.panes.settings.enableContainerPagination)}
+                        </span>
                       )}
                     />
                   </div>
@@ -1066,24 +1060,25 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
             {shouldShowCrossPartitionOption && (
               <AccordionItem value="9">
                 <AccordionHeader>
-                  <div className={styles.header}>Enable cross-partition query</div>
+                  <div className={styles.header}>{t(Keys.panes.settings.enableCrossPartitionQuery)}</div>
                 </AccordionHeader>
                 <AccordionPanel>
                   <div className={styles.settingsSectionContainer}>
                     <div className={styles.settingsSectionDescription}>
-                      Send more than one request while executing a query. More than one request is necessary if the
-                      query is not scoped to single partition key value.
+                      {t(Keys.panes.settings.enableCrossPartitionQueryDescription)}
                     </div>
                     <Checkbox
                       styles={{
                         label: { padding: 0 },
                       }}
                       className="padding"
-                      ariaLabel="Enable cross partition query"
+                      ariaLabel={t(Keys.panes.settings.enableCrossPartitionQuery)}
                       checked={crossPartitionQueryEnabled}
                       onChange={() => setCrossPartitionQueryEnabled(!crossPartitionQueryEnabled)}
                       onRenderLabel={() => (
-                        <span style={{ color: "var(--colorNeutralForeground1)" }}>Enable cross-partition query</span>
+                        <span style={{ color: "var(--colorNeutralForeground1)" }}>
+                          {t(Keys.panes.settings.enableCrossPartitionQuery)}
+                        </span>
                       )}
                     />
                   </div>
@@ -1093,19 +1088,19 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
             {shouldShowEnhancedQueryControl && (
               <AccordionItem value="10">
                 <AccordionHeader>
-                  <div className={styles.header}>Enhanced query control</div>
+                  <div className={styles.header}>{t(Keys.panes.settings.enhancedQueryControl)}</div>
                 </AccordionHeader>
                 <AccordionPanel>
                   <div className={styles.settingsSectionContainer}>
                     <div className={styles.settingsSectionDescription}>
-                      Query up to the max degree of parallelism.
+                      {t(Keys.panes.settings.maxDegreeOfParallelismQuery)}
                       <a
                         href="https://learn.microsoft.com/en-us/azure/cosmos-db/nosql/performance-tips-query-sdk?tabs=v3&pivots=programming-language-nodejs#enhanced-query-control"
                         target="_blank"
                         rel="noopener noreferrer"
                       >
                         {" "}
-                        Learn more{" "}
+                        {t(Keys.common.learnMore)}{" "}
                       </a>
                     </div>
                     <Checkbox
@@ -1113,11 +1108,13 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                         label: { padding: 0 },
                       }}
                       className="padding"
-                      ariaLabel="EnableQueryControl"
+                      ariaLabel={t(Keys.panes.settings.enableQueryControl)}
                       checked={queryControlEnabled}
                       onChange={() => setQueryControlEnabled(!queryControlEnabled)}
                       onRenderLabel={() => (
-                        <span style={{ color: "var(--colorNeutralForeground1)" }}>Enable query control</span>
+                        <span style={{ color: "var(--colorNeutralForeground1)" }}>
+                          {t(Keys.panes.settings.enableQueryControl)}
+                        </span>
                       )}
                     />
                   </div>
@@ -1127,14 +1124,12 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
             {shouldShowParallelismOption && (
               <AccordionItem value="10">
                 <AccordionHeader>
-                  <div className={styles.header}>Max degree of parallelism</div>
+                  <div className={styles.header}>{t(Keys.panes.settings.maxDegreeOfParallelism)}</div>
                 </AccordionHeader>
                 <AccordionPanel>
                   <div className={styles.settingsSectionContainer}>
                     <div className={styles.settingsSectionDescription}>
-                      Gets or sets the number of concurrent operations run client side during parallel query execution.
-                      A positive property value limits the number of concurrent operations to the set value. If it is
-                      set to less than 0, the system automatically decides the number of concurrent operations to run.
+                      {t(Keys.panes.settings.maxDegreeOfParallelismDescription)}
                     </div>
                     <SpinButton
                       min={-1}
@@ -1150,8 +1145,8 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                         setMaxDegreeOfParallelism(parseInt(newValue) - 1 || maxDegreeOfParallelism)
                       }
                       onValidate={(newValue) => setMaxDegreeOfParallelism(parseInt(newValue) || maxDegreeOfParallelism)}
-                      ariaLabel="Max degree of parallelism"
-                      label="Max degree of parallelism"
+                      ariaLabel={t(Keys.panes.settings.maxDegreeOfParallelism)}
+                      label={t(Keys.panes.settings.maxDegreeOfParallelism)}
                       styles={spinButtonStyles}
                     />
                   </div>
@@ -1161,14 +1156,12 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
             {shouldShowPriorityLevelOption && (
               <AccordionItem value="11">
                 <AccordionHeader>
-                  <div className={styles.header}>Priority Level</div>
+                  <div className={styles.header}>{t(Keys.panes.settings.priorityLevel)}</div>
                 </AccordionHeader>
                 <AccordionPanel>
                   <div className={styles.settingsSectionContainer}>
                     <div className={styles.settingsSectionDescription}>
-                      Sets the priority level for data-plane requests from Data Explorer when using Priority-Based
-                      Execution. If &quot;None&quot; is selected, Data Explorer will not specify priority level, and the
-                      server-side default priority level will be used.
+                      {t(Keys.panes.settings.priorityLevelDescription)}
                     </div>
                     <ChoiceGroup
                       ariaLabelledBy="priorityLevel"
@@ -1184,19 +1177,18 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
             {shouldShowGraphAutoVizOption && (
               <AccordionItem value="12">
                 <AccordionHeader>
-                  <div className={styles.header}>Display Gremlin query results as:&nbsp;</div>
+                  <div className={styles.header}>{t(Keys.panes.settings.displayGremlinQueryResults)}&nbsp;</div>
                 </AccordionHeader>
                 <AccordionPanel>
                   <div className={styles.settingsSectionContainer}>
                     <div className={styles.settingsSectionDescription}>
-                      Select Graph to automatically visualize the query results as a Graph or JSON to display the
-                      results as JSON.
+                      {t(Keys.panes.settings.displayGremlinQueryResultsDescription)}
                     </div>
                     <ChoiceGroup
                       selectedKey={graphAutoVizDisabled}
                       options={graphAutoOptionList}
                       onChange={handleOnGremlinChange}
-                      aria-label="Graph Auto-visualization"
+                      aria-label={t(Keys.panes.settings.graphAutoVisualization)}
                     />
                   </div>
                 </AccordionPanel>
@@ -1205,25 +1197,25 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
             {shouldShowCopilotSampleDBOption && (
               <AccordionItem value="13">
                 <AccordionHeader>
-                  <div className={styles.header}>Enable sample database</div>
+                  <div className={styles.header}>{t(Keys.panes.settings.enableSampleDatabase)}</div>
                 </AccordionHeader>
                 <AccordionPanel>
                   <div className={styles.settingsSectionContainer}>
                     <div className={styles.settingsSectionDescription}>
-                      This is a sample database and collection with synthetic product data you can use to explore using
-                      NoSQL queries. This will appear as another database in the Data Explorer UI, and is created by,
-                      and maintained by Microsoft at no cost to you.
+                      {t(Keys.panes.settings.enableSampleDatabaseDescription)}
                     </div>
                     <Checkbox
                       styles={{
                         label: { padding: 0 },
                       }}
                       className="padding"
-                      ariaLabel="Enable sample db for query exploration"
+                      ariaLabel={t(Keys.panes.settings.enableSampleDbAriaLabel)}
                       checked={copilotSampleDBEnabled}
                       onChange={handleSampleDatabaseChange}
                       onRenderLabel={() => (
-                        <span style={{ color: "var(--colorNeutralForeground1)" }}>Enable sample database</span>
+                        <span style={{ color: "var(--colorNeutralForeground1)" }}>
+                          {t(Keys.panes.settings.enableSampleDatabase)}
+                        </span>
                       )}
                     />
                   </div>
@@ -1233,13 +1225,12 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
             {shouldShowMongoGuidRepresentationOption && (
               <AccordionItem value="14">
                 <AccordionHeader>
-                  <div className={styles.header}>Guid Representation</div>
+                  <div className={styles.header}>{t(Keys.panes.settings.guidRepresentation)}</div>
                 </AccordionHeader>
                 <AccordionPanel>
                   <div className={styles.settingsSectionContainer}>
                     <div className={styles.settingsSectionDescription}>
-                      GuidRepresentation in MongoDB refers to how Globally Unique Identifiers (GUIDs) are serialized and
-                      deserialized when stored in BSON documents. This will apply to all document operations.
+                      {t(Keys.panes.settings.guidRepresentationDescription)}
                     </div>
                     <Dropdown
                       aria-labelledby="mongoGuidRepresentation"
@@ -1253,7 +1244,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
             )}
             <AccordionItem value="15">
               <AccordionHeader>
-                <div className={styles.header}>Advanced Settings</div>
+                <div className={styles.header}>{t(Keys.panes.settings.advancedSettings)}</div>
               </AccordionHeader>
               <AccordionPanel>
                 <div className={styles.settingsSectionContainer}>
@@ -1283,14 +1274,13 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                         },
                       }}
                       className="padding"
-                      ariaLabel="Ignore partition key on document update"
+                      ariaLabel={t(Keys.panes.settings.ignorePartitionKey)}
                       checked={ignorePartitionKeyOnDocumentUpdate}
                       onChange={handleOnIgnorePartitionKeyOnDocumentUpdateChange}
-                      label="Ignore partition key on document update"
+                      label={t(Keys.panes.settings.ignorePartitionKey)}
                     />
                     <InfoTooltip className={styles.headerIcon}>
-                      If checked, the partition key value will not be used to locate the document during update
-                      operations. Only use this if document updates are failing due to an abnormal partition key.
+                      {t(Keys.panes.settings.ignorePartitionKeyTooltip)}
                     </InfoTooltip>
                   </Stack>
                 </div>
@@ -1320,9 +1310,9 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
               }}
               onClick={() => {
                 useDialog.getState().showOkCancelModalDialog(
-                  "Clear History",
+                  t(Keys.panes.settings.clearHistory),
                   undefined,
-                  "Are you sure you want to proceed?",
+                  t(Keys.panes.settings.clearHistoryConfirm),
                   () => {
                     deleteAllStates();
                     updateUserContext({
@@ -1332,35 +1322,33 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                     });
                     useClientWriteEnabled.setState({ clientWriteEnabled: true });
                   },
-                  "Cancel",
+                  t(Keys.common.cancel),
                   undefined,
                   <>
-                    <span>
-                      This action will clear the all customizations for this account in this browser, including:
-                    </span>
+                    <span>{t(Keys.panes.settings.clearHistoryDescription)}</span>
                     <ul className={styles.bulletList}>
-                      <li>Reset your customized tab layout, including the splitter positions</li>
-                      <li>Erase your table column preferences, including any custom columns</li>
-                      <li>Clear your filter history</li>
-                      <li>Reset region selection to global</li>
+                      <li>{t(Keys.panes.settings.clearHistoryTabLayout)}</li>
+                      <li>{t(Keys.panes.settings.clearHistoryTableColumns)}</li>
+                      <li>{t(Keys.panes.settings.clearHistoryFilters)}</li>
+                      <li>{t(Keys.panes.settings.clearHistoryRegion)}</li>
                     </ul>
                   </>,
                 );
               }}
             >
-              Clear History
+              {t(Keys.panes.settings.clearHistory)}
             </DefaultButton>
           </div>
         </div>
         <div className="settingsSection">
           <div className={`settingsSectionPart ${styles.settingsSectionContainer}`}>
-            <div className="settingsSectionLabel">Explorer Version</div>
+            <div className="settingsSectionLabel">{t(Keys.panes.settings.explorerVersion)}</div>
             <div>{explorerVersion}</div>
           </div>
         </div>
         <div className="settingsSection">
           <div className="settingsSectionPart">
-            <div className="settingsSectionLabel">Session ID</div>
+            <div className="settingsSectionLabel">{t(Keys.panes.settings.sessionId)}</div>
             <div>{sessionId}</div>
           </div>
         </div>

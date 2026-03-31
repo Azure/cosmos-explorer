@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { configContext } from "../../../ConfigContext";
 import * as ViewModels from "../../../Contracts/ViewModels";
+import { Keys, t } from "Localization";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../../UserContext";
@@ -212,7 +213,7 @@ export default class MongoShellTabComponent extends Component<
         src={this.state.url}
         id={this.props.tabsBaseInstance.tabId}
         onLoad={(event) => this.setContentFocus(event)}
-        title="Mongo Shell"
+        title={t(Keys.tabs.mongoShell.title)}
         role="tabpanel"
       ></iframe>
     );

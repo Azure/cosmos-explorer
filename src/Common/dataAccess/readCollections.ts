@@ -1,5 +1,6 @@
 import { ContainerResponse } from "@azure/cosmos";
 import { Queries } from "Common/Constants";
+import * as Logger from "Common/Logger";
 import { CosmosDbArtifactType } from "Contracts/FabricMessagesContract";
 import { isFabric, isFabricMirroredKey } from "Platform/Fabric/FabricUtil";
 import { AuthType } from "../../AuthType";
@@ -61,7 +62,14 @@ export async function readCollections(databaseId: string): Promise<DataModels.Co
       return await readCollectionsWithARM(databaseId);
     }
 
+    Logger.logInfo(`readCollections: calling fetchAll for database ${databaseId}`, "readCollections");
+    const fetchAllStart = Date.now();
     const sdkResponse = await client().database(databaseId).containers.readAll().fetchAll();
+    Logger.logInfo(
+      `readCollections: fetchAll completed for database ${databaseId}, count=${sdkResponse.resources
+        ?.length}, durationMs=${Date.now() - fetchAllStart}`,
+      "readCollections",
+    );
     return sdkResponse.resources as DataModels.Collection[];
   } catch (error) {
     handleError(error, "ReadCollections", `Error while querying containers for database ${databaseId}`);

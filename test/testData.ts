@@ -1,9 +1,15 @@
-import crypto from "crypto";
-
 import { CosmosDBManagementClient } from "@azure/arm-cosmosdb";
-import { BulkOperationType, Container, CosmosClient, CosmosClientOptions, Database, JSONObject } from "@azure/cosmos";
-import { AzureIdentityCredentialAdapter } from "@azure/ms-rest-js";
-
+import {
+  BulkOperationType,
+  Container,
+  CosmosClient,
+  CosmosClientOptions,
+  Database,
+  ErrorResponse,
+  JSONObject,
+} from "@azure/cosmos";
+import { Buffer } from "node:buffer";
+import { webcrypto } from "node:crypto";
 import {
   generateUniqueName,
   getAccountName,
@@ -12,6 +18,7 @@ import {
   subscriptionId,
   TestAccount,
 } from "./fx";
+globalThis.crypto = webcrypto as Crypto;
 
 export interface TestItem {
   id: string;
@@ -60,8 +67,9 @@ function createTestItems(): TestItem[] {
 
 // Document IDs cannot contain '/', '\', or '#'
 function createSafeRandomString(byteLength: number): string {
-  return crypto
-    .randomBytes(byteLength)
+  const bytes = new Uint8Array(byteLength);
+  crypto.getRandomValues(bytes);
+  return Buffer.from(bytes)
     .toString("base64")
     .replace(/[/\\#]/g, "_");
 }
@@ -78,8 +86,83 @@ export class TestContainerContext {
   ) {}
 
   async dispose() {
+    try {
+      await this.database.delete();
+    } catch (error) {
+      if (error instanceof ErrorResponse && error.code === 404) {
+        return; // Resource already deleted, ignore
+      }
+      throw error; // Re-throw other errors
+    }
+  }
+}
+
+export class TestDatabaseContext {
+  constructor(
+    public armClient: CosmosDBManagementClient,
+    public client: CosmosClient,
+    public database: Database,
+  ) {}
+
+  async dispose() {
     await this.database.delete();
   }
+}
+
+export interface CreateTestDBOptions {
+  throughput?: number;
+  maxThroughput?: number; // For autoscale
+}
+
+// Helper function to create ARM client and Cosmos client for SQL account
+async function createCosmosClientForSQLAccount(
+  accountType: TestAccount.SQL | TestAccount.SQLContainerCopyOnly = TestAccount.SQL,
+): Promise<{ armClient: CosmosDBManagementClient; client: CosmosClient }> {
+  const credentials = getAzureCLICredentials();
+  const armClient = new CosmosDBManagementClient(credentials, subscriptionId);
+  const accountName = getAccountName(accountType);
+  const account = await armClient.databaseAccounts.get(resourceGroupName, accountName);
+
+  const clientOptions: CosmosClientOptions = {
+    endpoint: account.documentEndpoint!,
+  };
+
+  const rbacToken =
+    accountType === TestAccount.SQL
+      ? process.env.NOSQL_TESTACCOUNT_TOKEN
+      : accountType === TestAccount.SQLContainerCopyOnly
+      ? process.env.NOSQL_CONTAINERCOPY_TESTACCOUNT_TOKEN
+      : "";
+
+  if (rbacToken) {
+    clientOptions.tokenProvider = async (): Promise<string> => {
+      const AUTH_PREFIX = `type=aad&ver=1.0&sig=`;
+      const authorizationToken = `${AUTH_PREFIX}${rbacToken}`;
+      return authorizationToken;
+    };
+  } else {
+    const keys = await armClient.databaseAccounts.listKeys(resourceGroupName, accountName);
+    clientOptions.key = keys.primaryMasterKey;
+  }
+
+  const client = new CosmosClient(clientOptions);
+
+  return { armClient, client };
+}
+
+export async function createTestDB(options?: CreateTestDBOptions): Promise<TestDatabaseContext> {
+  const databaseId = generateUniqueName("db");
+  const { armClient, client } = await createCosmosClientForSQLAccount();
+
+  // Create database with provisioned throughput (shared throughput)
+  // This checks the "Provision database throughput" option
+  const { database } = await client.databases.create({
+    id: databaseId,
+    throughput: options?.throughput, // Manual throughput (e.g., 400)
+    maxThroughput: options?.maxThroughput, // Autoscale max throughput (e.g., 1000)
+  });
+
+  return new TestDatabaseContext(armClient, client, database);
 }
 
 type createTestSqlContainerConfig = {
@@ -104,34 +187,7 @@ export async function createMultipleTestContainers({
   const creationPromises: Promise<TestContainerContext>[] = [];
 
   const databaseId = databaseName ? databaseName : generateUniqueName("db");
-  const credentials = getAzureCLICredentials();
-  const adaptedCredentials = new AzureIdentityCredentialAdapter(credentials);
-  const armClient = new CosmosDBManagementClient(adaptedCredentials, subscriptionId);
-  const accountName = getAccountName(accountType);
-  const account = await armClient.databaseAccounts.get(resourceGroupName, accountName);
-
-  const clientOptions: CosmosClientOptions = {
-    endpoint: account.documentEndpoint!,
-  };
-
-  const rbacToken =
-    accountType === TestAccount.SQL
-      ? process.env.NOSQL_TESTACCOUNT_TOKEN
-      : accountType === TestAccount.SQLContainerCopyOnly
-      ? process.env.NOSQL_CONTAINERCOPY_TESTACCOUNT_TOKEN
-      : "";
-  if (rbacToken) {
-    clientOptions.tokenProvider = async (): Promise<string> => {
-      const AUTH_PREFIX = `type=aad&ver=1.0&sig=`;
-      const authorizationToken = `${AUTH_PREFIX}${rbacToken}`;
-      return authorizationToken;
-    };
-  } else {
-    const keys = await armClient.databaseAccounts.listKeys(resourceGroupName, accountName);
-    clientOptions.key = keys.primaryMasterKey;
-  }
-
-  const client = new CosmosClient(clientOptions);
+  const { armClient, client } = await createCosmosClientForSQLAccount(accountType);
   const { database } = await client.databases.createIfNotExists({ id: databaseId });
 
   try {
@@ -158,29 +214,8 @@ export async function createTestSQLContainer({
 }: createTestSqlContainerConfig = {}) {
   const databaseId = databaseName ? databaseName : generateUniqueName("db");
   const containerId = "testcontainer"; // A unique container name isn't needed because the database is unique
-  const credentials = getAzureCLICredentials();
-  const adaptedCredentials = new AzureIdentityCredentialAdapter(credentials);
-  const armClient = new CosmosDBManagementClient(adaptedCredentials, subscriptionId);
-  const accountName = getAccountName(TestAccount.SQL);
-  const account = await armClient.databaseAccounts.get(resourceGroupName, accountName);
+  const { armClient, client } = await createCosmosClientForSQLAccount();
 
-  const clientOptions: CosmosClientOptions = {
-    endpoint: account.documentEndpoint!,
-  };
-
-  const nosqlAccountRbacToken = process.env.NOSQL_TESTACCOUNT_TOKEN;
-  if (nosqlAccountRbacToken) {
-    clientOptions.tokenProvider = async (): Promise<string> => {
-      const AUTH_PREFIX = `type=aad&ver=1.0&sig=`;
-      const authorizationToken = `${AUTH_PREFIX}${nosqlAccountRbacToken}`;
-      return authorizationToken;
-    };
-  } else {
-    const keys = await armClient.databaseAccounts.listKeys(resourceGroupName, accountName);
-    clientOptions.key = keys.primaryMasterKey;
-  }
-
-  const client = new CosmosClient(clientOptions);
   const { database } = await client.databases.createIfNotExists({ id: databaseId });
   try {
     const { container } = await database.containers.createIfNotExists(
@@ -216,12 +251,19 @@ export async function createTestSQLContainer({
 }
 
 export const setPartitionKeys = (partitionKeys: PartitionKey[]) => {
-  const result = {};
+  const result: Record<string, unknown> = {};
 
   partitionKeys.forEach((partitionKey) => {
     const { key: keyPath, value: keyValue } = partitionKey;
     const cleanPath = keyPath.startsWith("/") ? keyPath.slice(1) : keyPath;
-    const keys = cleanPath.split("/");
+    const keys = cleanPath.split("/").map((segment) => {
+      // Strip enclosing double quotes from partition key path segments
+      // e.g., '"partition-key"' -> 'partition-key'
+      if (segment.length >= 2 && segment.charAt(0) === '"' && segment.charAt(segment.length - 1) === '"') {
+        return segment.slice(1, -1);
+      }
+      return segment;
+    });
     let current = result;
 
     keys.forEach((key, index) => {
@@ -229,7 +271,7 @@ export const setPartitionKeys = (partitionKeys: PartitionKey[]) => {
         current[key] = keyValue;
       } else {
         current[key] = current[key] || {};
-        current = current[key];
+        current = current[key] as Record<string, unknown>;
       }
     });
   });

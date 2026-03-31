@@ -5,6 +5,7 @@ import {
   IconType,
   IDropdownOption,
   IDropdownStyles,
+  TooltipHost,
 } from "@fluentui/react";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { KeyboardHandlerMap } from "KeyboardShortcuts";
@@ -153,6 +154,21 @@ export const convertButton = (btns: CommandButtonComponentProps[], backgroundCol
         className: btn.className,
         id: btn.id,
       };
+
+      if (btn.tooltipContent) {
+        result.title = undefined;
+        result.commandBarButtonAs = (props: IComponentAsProps<ICommandBarItemProps>) => {
+          const { defaultRender: DefaultRender, ...rest } = props;
+          return React.createElement(
+            TooltipHost,
+            {
+              content: btn.tooltipContent as JSX.Element,
+              calloutProps: { gapSpace: 0 },
+            },
+            React.createElement(DefaultRender, rest),
+          );
+        };
+      }
 
       if (isSplit) {
         // It's a split button

@@ -29,8 +29,7 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
           className="panelTextBold"
           variant="small"
         >
-          Database 
-          id
+          Database id
         </Text>
         <StyledTooltipHostBase
           content="A database is analogous to a namespace. It is the unit of management for a set of containers."
@@ -482,10 +481,8 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
           }
           variant="small"
         >
-          Azure Synapse Link is required for creating an analytical store
+          Azure Synapse Link is required for creating an analytical store container. Enable Synapse Link for this Cosmos DB account.
            
-          container
-          . Enable Synapse Link for this Cosmos DB account. 
           <br />
           <StyledLinkBase
             aria-label="Learn more about Azure Synapse Link."
@@ -608,7 +605,8 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
               className="removeIcon"
               iconName="InfoSolid"
             />
-             To ensure compatibility with older SDKs, the created container will use a legacy partitioning scheme that supports partition key values of size only up to 101 bytes. If this is enabled, you will not be able to use hierarchical partition keys.
+             
+            To ensure compatibility with older SDKs, the created container will use a legacy partitioning scheme that supports partition key values of size only up to 101 bytes. If this is enabled, you will not be able to use hierarchical partition keys.
              
             <StyledLinkBase
               href="https://aka.ms/cosmos-large-pk"

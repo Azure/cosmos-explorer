@@ -184,5 +184,10 @@ export default {
       Skipped: "Cancelled",
       Cancelled: "Cancelled",
     },
+    dialog: {
+      heading: "",
+      confirmButtonText: "Confirm",
+      cancelButtonText: "Cancel",
+    },
   },
 };

@@ -1,5 +1,6 @@
 import { IDropdownOption, Image, Label, Stack, Text, TextField } from "@fluentui/react";
 import { useBoolean } from "@fluentui/react-hooks";
+import { Keys, t } from "Localization";
 import { logConsoleError } from "Utils/NotificationConsoleUtils";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import * as _ from "underscore";
@@ -100,8 +101,8 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
     for (let i = 0; i < entities.length; i++) {
       const { property, type, value } = entities[i];
       if ((property === "PartitionKey" && value === "") || (property === "RowKey" && value === "")) {
-        logConsoleError(`${property} cannot be empty. Please input a value for ${property}`);
-        setFormError(`${property} cannot be empty. Please input a value for ${property}`);
+        logConsoleError(t(Keys.panes.tables.propertyEmptyError, { property }));
+        setFormError(t(Keys.panes.tables.propertyEmptyError, { property }));
         return;
       }
 
@@ -109,13 +110,13 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
         (property === "PartitionKey" && containsAnyWhiteSpace(value) === true) ||
         (property === "RowKey" && containsAnyWhiteSpace(value) === true)
       ) {
-        logConsoleError(`${property} cannot have whitespace. Please input a value for ${property} without whitespace`);
-        setFormError(`${property} cannot have whitespace. Please input a value for ${property} without whitespace`);
+        logConsoleError(t(Keys.panes.tables.whitespaceError, { property }));
+        setFormError(t(Keys.panes.tables.whitespaceError, { property }));
         return;
       }
 
       if (!type) {
-        setFormError(`Property type cannot be empty. Please select a type from the dropdown for property ${property}`);
+        setFormError(t(Keys.panes.tables.propertyTypeEmptyError, { property }));
         return;
       }
 

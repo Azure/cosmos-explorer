@@ -110,6 +110,7 @@ exports[`SettingsComponent renders 1`] = `
                 "conflictResolutionPolicy": [Function],
                 "container": Explorer {
                   "_isInitializingNotebooks": false,
+                  "databasesRefreshed": Promise {},
                   "isFixedCollectionWithSharedThroughputSupported": [Function],
                   "isTabsContentExpanded": [Function],
                   "onRefreshDatabasesKeyPress": [Function],
@@ -231,6 +232,7 @@ exports[`SettingsComponent renders 1`] = `
                 "conflictResolutionPolicy": [Function],
                 "container": Explorer {
                   "_isInitializingNotebooks": false,
+                  "databasesRefreshed": Promise {},
                   "isFixedCollectionWithSharedThroughputSupported": [Function],
                   "isTabsContentExpanded": [Function],
                   "onRefreshDatabasesKeyPress": [Function],
@@ -356,6 +358,7 @@ exports[`SettingsComponent renders 1`] = `
             onFullTextPolicyDirtyChange={[Function]}
             onVectorEmbeddingPolicyChange={[Function]}
             onVectorEmbeddingPolicyDirtyChange={[Function]}
+            onVectorEmbeddingPolicyValidationChange={[Function]}
             resetShouldDiscardContainerPolicyChange={[Function]}
             shouldDiscardContainerPolicies={false}
             vectorEmbeddingPolicy={{}}
@@ -453,6 +456,7 @@ exports[`SettingsComponent renders 1`] = `
                 "conflictResolutionPolicy": [Function],
                 "container": Explorer {
                   "_isInitializingNotebooks": false,
+                  "databasesRefreshed": Promise {},
                   "isFixedCollectionWithSharedThroughputSupported": [Function],
                   "isTabsContentExpanded": [Function],
                   "onRefreshDatabasesKeyPress": [Function],
@@ -524,6 +528,7 @@ exports[`SettingsComponent renders 1`] = `
             explorer={
               Explorer {
                 "_isInitializingNotebooks": false,
+                "databasesRefreshed": Promise {},
                 "isFixedCollectionWithSharedThroughputSupported": [Function],
                 "isTabsContentExpanded": [Function],
                 "onRefreshDatabasesKeyPress": [Function],
@@ -607,6 +612,58 @@ exports[`SettingsComponent renders 1`] = `
       <PivotItem
         headerButtonProps={
           {
+            "data-test": "settings-tab-header/DataMaskingTab",
+          }
+        }
+        headerText="Masking Policy (preview)"
+        itemKey="DataMaskingTab"
+        key="DataMaskingTab"
+        style={
+          {
+            "backgroundColor": "var(--colorNeutralBackground1)",
+            "color": "var(--colorNeutralForeground1)",
+            "marginTop": 20,
+          }
+        }
+      >
+        <Stack
+          styles={
+            {
+              "root": {
+                "backgroundColor": "var(--colorNeutralBackground1)",
+                "color": "var(--colorNeutralForeground1)",
+              },
+            }
+          }
+        >
+          <DataMaskingComponent
+            dataMaskingContent={
+              {
+                "excludedPaths": [
+                  "/excludedPath",
+                ],
+                "includedPaths": [],
+              }
+            }
+            dataMaskingContentBaseline={
+              {
+                "excludedPaths": [
+                  "/excludedPath",
+                ],
+                "includedPaths": [],
+              }
+            }
+            onDataMaskingContentChange={[Function]}
+            onDataMaskingDirtyChange={[Function]}
+            resetShouldDiscardDataMasking={[Function]}
+            shouldDiscardDataMasking={false}
+            validationErrors={[]}
+          />
+        </Stack>
+      </PivotItem>
+      <PivotItem
+        headerButtonProps={
+          {
             "data-test": "settings-tab-header/GlobalSecondaryIndexTab",
           }
         }
@@ -640,6 +697,7 @@ exports[`SettingsComponent renders 1`] = `
                 "conflictResolutionPolicy": [Function],
                 "container": Explorer {
                   "_isInitializingNotebooks": false,
+                  "databasesRefreshed": Promise {},
                   "isFixedCollectionWithSharedThroughputSupported": [Function],
                   "isTabsContentExpanded": [Function],
                   "onRefreshDatabasesKeyPress": [Function],
@@ -711,6 +769,7 @@ exports[`SettingsComponent renders 1`] = `
             explorer={
               Explorer {
                 "_isInitializingNotebooks": false,
+                "databasesRefreshed": Promise {},
                 "isFixedCollectionWithSharedThroughputSupported": [Function],
                 "isTabsContentExpanded": [Function],
                 "onRefreshDatabasesKeyPress": [Function],

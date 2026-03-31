@@ -275,8 +275,7 @@ export interface DataMaskingPolicy {
     startPosition: number;
     length: number;
   }>;
-  excludedPaths: string[];
-  isPolicyEnabled: boolean;
+  excludedPaths?: string[];
 }
 
 export interface MaterializedView {
@@ -442,7 +441,7 @@ export interface VectorEmbeddingPolicy {
 }
 
 export interface VectorEmbedding {
-  dataType: "float32" | "uint8" | "int8";
+  dataType: "float32" | "uint8" | "int8" | "float16";
   dimensions: number;
   distanceFunction: "euclidean" | "cosine" | "dotproduct";
   path: string;

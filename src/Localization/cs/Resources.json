@@ -1,0 +1,968 @@
+{
+  "common": {
+    "ok": "OK",
+    "cancel": "Zrušit",
+    "close": "Zavřít",
+    "save": "Uložit",
+    "delete": "Odstranit",
+    "update": "Aktualizovat",
+    "discard": "Zahodit",
+    "execute": "Provést",
+    "loading": "Načítání",
+    "loadingEllipsis": "Načítání…",
+    "next": "Další",
+    "previous": "Předchozí",
+    "yes": "Ano",
+    "no": "Ne",
+    "result": "Výsledek",
+    "learnMore": "Další informace",
+    "getStarted": "Začínáme",
+    "retry": "Zkusit znovu",
+    "apply": "Použít",
+    "refresh": "Aktualizovat",
+    "copy": "Kopírovat",
+    "create": "Vytvořit",
+    "confirm": "Potvrdit",
+    "open": "Otevřít",
+    "rename": "Přejmenovat",
+    "download": "Stáhnout",
+    "upload": "Nahrát",
+    "connect": "Připojit",
+    "remove": "Odebrat",
+    "load": "Načíst",
+    "publish": "Publikovat",
+    "browse": "Procházet",
+    "increaseValueBy1": "Zvýšit hodnotu o 1",
+    "decreaseValueBy1": "Snížit hodnotu o 1"
+  },
+  "splashScreen": {
+    "title": {
+      "default": "Vítá vás Azure Cosmos DB",
+      "postgres": "Vítá vás Azure Cosmos DB for PostgreSQL",
+      "vcoreMongo": "Vítá vás Azure DocumentDB (s kompatibilitou MongoDB)"
+    },
+    "subtitle": {
+      "default": "Globálně distribuovaná databázová služba s více modely pro libovolné škálování",
+      "getStarted": "Začněte s našimi ukázkovými datovými sadami, dokumentací a dalšími nástroji."
+    },
+    "quickStart": {
+      "title": "Spustit rychlý start",
+      "description": "Spusťte kurz rychlého startu a začněte pracovat s ukázkovými daty"
+    },
+    "newCollection": {
+      "title": "Nové: {{collectionName}}",
+      "description": "Vytvořit nový kontejner pro úložiště a propustnost"
+    },
+    "samplesGallery": {
+      "title": "Galerie ukázek Azure Cosmos DB",
+      "description": "Prohlédněte si ukázky, které představují škálovatelné a inteligentní vzory aplikací. Vyzkoušejte si to hned a uvidíte, jak rychle můžete s Cosmos DB přejít od konceptu ke kódu."
+    },
+    "connectCard": {
+      "title": "Připojit",
+      "description": "Dáváte přednost používání vlastních nástrojů? Najděte připojovací řetězec, který potřebujete k připojení",
+      "pgAdmin": {
+        "title": "Připojit pomocí pgAdmin",
+        "description": "Upřednostňujete pgAdmin? Tady najdete připojovací řetězce."
+      },
+      "vsCode": {
+        "title": "Připojení pomocí VS Code",
+        "description": "Dotazujte se na své clustery MongoDB a DocumentDB a spravujte je ve Visual Studio Code"
+      }
+    },
+    "shell": {
+      "postgres": {
+        "title": "Prostředí PostgreSQL",
+        "description": "Vytvoření tabulky a interakce s daty pomocí rozhraní prostředí PostgreSQL"
+      },
+      "vcoreMongo": {
+        "title": "Prostředí Mongo",
+        "description": "Vytvořte kolekci a pracujte s daty pomocí rozhraní prostředí MongoDB"
+      }
+    },
+    "teachingBubble": {
+      "newToPostgres": {
+        "headline": "Začínáte s Cosmos DB PGSQL?",
+        "body": "Vítejte! Pokud s Cosmos DB PGSQL začínáte a potřebujete pomoc s prvními kroky, najdete tady ukázková data a dotazy."
+      },
+      "resetPassword": {
+        "headline": "Vytvořte si heslo",
+        "body": "Pokud jste si ještě nezměnili heslo, změňte si ho teď."
+      },
+      "coachMark": {
+        "headline": "Začít s ukázkou {{collectionName}}",
+        "body": "Provedeme vás vytvořením ukázkového kontejneru s ukázkovými daty. Pak vás provedeme průzkumníkem dat. Můžete také zrušit spuštění této prohlídky a prozkoumat si vše sami"
+      }
+    },
+    "sections": {
+      "recents": "Poslední",
+      "clearRecents": "Vymazat poslední",
+      "top3": "3 nejdůležitější věci, které potřebujete vědět",
+      "learningResources": "Studijní materiály",
+      "nextSteps": "Další kroky",
+      "tipsAndLearnMore": "Tipy a další informace",
+      "notebook": "Poznámkový blok",
+      "needHelp": "Potřebujete pomoc?"
+    },
+    "top3Items": {
+      "sql": {
+        "advancedModeling": {
+          "title": "Pokročilé vzory modelování",
+          "description": "Seznamte se s pokročilými strategiemi pro optimalizaci databáze."
+        },
+        "partitioning": {
+          "title": "Osvědčené postupy vytváření oddílů",
+          "description": "Naučte se používat strategie datového modelu a rozdělení na oddíly"
+        },
+        "resourcePlanning": {
+          "title": "Naplánujte si požadavky na zdroje",
+          "description": "Seznamte se s různými možnostmi konfigurace."
+        }
+      },
+      "mongo": {
+        "whatIsMongo": {
+          "title": "Co je rozhraní MongoDB API?",
+          "description": "Seznamte se se službou Azure Cosmos DB for MongoDB a s jejími funkcemi."
+        },
+        "features": {
+          "title": "Funkce a syntaxe",
+          "description": "Objevte výhody a funkce"
+        },
+        "migrate": {
+          "title": "Migrovat data",
+          "description": "Kroky před migrací pro přesun dat"
+        }
+      },
+      "cassandra": {
+        "buildJavaApp": {
+          "title": "Vytvořte aplikaci Java",
+          "description": "Vytvořte aplikaci v Javě pomocí sady SDK."
+        },
+        "partitioning": {
+          "title": "Osvědčené postupy vytváření oddílů",
+          "description": "Zjistěte, jak funguje dělení na oddíly."
+        },
+        "requestUnits": {
+          "title": "Jednotky žádosti (RU)",
+          "description": "Vysvětlení poplatků za RU"
+        }
+      },
+      "gremlin": {
+        "dataModeling": {
+          "title": "Modelování dat",
+          "description": "Doporučení k modelování dat grafu"
+        },
+        "partitioning": {
+          "title": "Osvědčené postupy vytváření oddílů",
+          "description": "Zjistěte, jak funguje dělení na oddíly"
+        },
+        "queryData": {
+          "title": "Data dotazu",
+          "description": "Dotazování na data pomocí Gremlin"
+        }
+      },
+      "tables": {
+        "whatIsTable": {
+          "title": "Co je Table API?",
+          "description": "Seznamte se se službou Azure Cosmos DB for Table a s jejími funkcemi"
+        },
+        "migrate": {
+          "title": "Migrujte svá data",
+          "description": "Informace o migraci dat"
+        },
+        "faq": {
+          "title": "Nejčastější dotazy k Azure Cosmos DB for Table",
+          "description": "Běžné otázky k Azure Cosmos DB for Table"
+        }
+      }
+    },
+    "learningResources": {
+      "shortcuts": {
+        "title": "Klávesové zkratky Data Exploreru",
+        "description": "Naučte se klávesové zkratky pro navigaci v Data Exploreru."
+      },
+      "liveTv": {
+        "title": "Naučte se základy",
+        "description": "Podívejte se na úvodní videa a videa s postupy Azure Cosmos DB Live TV."
+      },
+      "sql": {
+        "sdk": {
+          "title": "Začínáme s používáním sady SDK",
+          "description": "Přečtěte si o sadě Azure Cosmos DB SDK."
+        },
+        "migrate": {
+          "title": "Migrovat data",
+          "description": "Migrujte data pomocí služeb Azure a opensourcových řešení."
+        }
+      },
+      "mongo": {
+        "nodejs": {
+          "title": "Vytvořit aplikaci s Node.js",
+          "description": "Vytvořte aplikaci Node.js."
+        },
+        "gettingStarted": {
+          "title": "Úvodní příručka",
+          "description": "Seznamte se se základy, které vám pomůžou začít."
+        }
+      },
+      "cassandra": {
+        "createContainer": {
+          "title": "Vytvořit kontejner",
+          "description": "Seznamte se s možnostmi vytvoření kontejneru."
+        },
+        "throughput": {
+          "title": "Zřídit propustnost",
+          "description": "Zjistěte, jak nakonfigurovat propustnost."
+        }
+      },
+      "gremlin": {
+        "getStarted": {
+          "title": "Začínáme ",
+          "description": "Vytvoření, dotaz a procházení pomocí konzoly Gremlin"
+        },
+        "importData": {
+          "title": "Importovat data grafu",
+          "description": "Naučte se hromadně přijímat data pomocí BulkExecutor"
+        }
+      },
+      "tables": {
+        "dotnet": {
+          "title": "Vytvoření aplikace .NET",
+          "description": "Jak získat přístup k Azure Cosmos DB for Table z aplikace .NET"
+        },
+        "java": {
+          "title": "Vytvořte aplikaci Java",
+          "description": "Vytvořte aplikaci Azure Cosmos DB for Table se sadou Java SDK "
+        }
+      }
+    },
+    "nextStepItems": {
+      "postgres": {
+        "dataModeling": "Modelování dat",
+        "distributionColumn": "Jak zvolit sloupec pro distribuci",
+        "buildApps": "Vytvářejte aplikace pomocí Pythonu, Javy nebo Django"
+      },
+      "vcoreMongo": {
+        "migrateData": "Migrovat data",
+        "vectorSearch": "Vytvářejte AI aplikace pomocí vektorového vyhledávání",
+        "buildApps": "Vytvářejte aplikace pomocí Node.js"
+      }
+    },
+    "learnMoreItems": {
+      "postgres": {
+        "performanceTuning": "Optimalizace výkonu",
+        "diagnosticQueries": "Užitečné diagnostické dotazy",
+        "sqlReference": "Referenční informace k distribuovanému SQL"
+      },
+      "vcoreMongo": {
+        "vectorSearch": "Vektorové vyhledávání",
+        "textIndexing": "Indexování textu",
+        "troubleshoot": "Řešení častých problémů"
+      }
+    },
+    "fabric": {
+      "buildTitle": "Vytvořit databázi",
+      "useTitle": "Použijte svou databázi",
+      "newContainer": {
+        "title": "Nový kontejner",
+        "description": "Vytvořit cílový kontejner pro uložení dat"
+      },
+      "sampleData": {
+        "title": "Ukázková data",
+        "description": "Načtěte ukázková data do své databáze"
+      },
+      "sampleVectorData": {
+        "title": "Ukázková vektorová data",
+        "description": "Načíst ukázková vektorová data pomocí text-embedding-ada-002"
+      },
+      "appDevelopment": {
+        "title": "Vývoj aplikací",
+        "description": "Začněte tady, pokud chcete k vytváření aplikací použít sadu SDK"
+      },
+      "sampleGallery": {
+        "title": "Galerie ukázek",
+        "description": "Získejte komplexní ukázky z reálného světa"
+      }
+    },
+    "sampleDataDialog": {
+      "title": "Ukázková data",
+      "startButton": "Spustit",
+      "createPrompt": "Vytvořte kontejner {{containerName}} a importujte do něj ukázková data. Může to trvat několik minut.",
+      "creatingContainer": "Vytváří se kontejner {{containerName}}...",
+      "importingData": "Importují se data do {{containerName}}...",
+      "success": "{{containerName}} – úspěšně vytvořeno s ukázkovými daty",
+      "errorContainerExists": "Kontejner {{containerName}} v databázi {{databaseName}} už existuje. Odstraňte ho prosím a zkuste to znovu.",
+      "errorCreateContainer": "Nepovedlo se vytvořit kontejner: {{error}}",
+      "errorImportData": "Nepovedlo se naimportovat data: {{error}}"
+    }
+  },
+  "contextMenu": {
+    "newContainer": "Nový kontejner {{containerName}}",
+    "restoreContainer": "Obnovit kontejner {{containerName}}",
+    "deleteDatabase": "Odstranit databázi {{databaseName}}",
+    "deleteContainer": "Odstranit kontejner {{containerName}}",
+    "newSqlQuery": "Nový dotaz SQL",
+    "newQuery": "Nový dotaz",
+    "openMongoShell": "Otevřít Mongo Shell",
+    "newShell": "Nové prostředí",
+    "openCassandraShell": "Otevřít prostředí Cassandra",
+    "newStoredProcedure": "Nová uložená procedura",
+    "newUdf": "Nové UDF",
+    "newTrigger": "Nová aktivační událost",
+    "deleteStoredProcedure": "Odstranit uloženou proceduru",
+    "deleteTrigger": "Odstranit aktivační událost",
+    "deleteUdf": "Odstranit uživatelem definovanou funkci"
+  },
+  "tabs": {
+    "documents": {
+      "newItem": "Nová položka",
+      "newDocument": "Nový dokument",
+      "uploadItem": "Nahrát položku",
+      "applyFilter": "Použít filtr",
+      "unsavedChanges": "Neuložené změny",
+      "unsavedChangesMessage": "Vaše neuložené změny se ztratí. Chcete pokračovat?",
+      "createDocumentFailed": "Vytvoření dokumentu se nezdařilo",
+      "updateDocumentFailed": "Nepovedlo se aktualizovat dokument",
+      "documentDeleted": "Dokument se úspěšně odstranil.",
+      "deleteDocumentDialogTitle": "Odstranit dokument",
+      "deleteDocumentsDialogTitle": "Odstranit dokumenty",
+      "throttlingError": "Některé dokumenty se nepovedlo odstranit kvůli chybě omezení rychlosti. Zkuste to prosím znovu později. Pokud tomu chcete v budoucnu zabránit, zvažte zvýšení propustnosti vašeho kontejneru nebo databáze.",
+      "deleteFailed": "Odstranění dokumentů (celkem {{error}}) se nezdařilo",
+      "missingShardProperty": "V dokumentu chybí vlastnost extentu: {{partitionKeyProperty}}",
+      "refreshGridFailed": "Nepovedlo se aktualizovat mřížku dokumentů",
+      "confirmDelete": "Opravdu chcete odstranit dokument {{documentName}}?",
+      "confirmDeleteTitle": "Potvrdit odstranění",
+      "selectedItems": "vybrané položky (celkem {{count}})",
+      "selectedItem": "vybraná položka",
+      "selectedDocuments": "vybrané dokumenty (celkem {{count}})",
+      "selectedDocument": "vybraný dokument",
+      "deleteDocumentFailedLog": "Nepovedlo se odstranit dokument {{documentId}} se stavovým kódem {{statusCode}}",
+      "deleteSuccessLog": "Dokumenty (celkem {{count}}) se úspěšně odstranily",
+      "deleteThrottledLog": "Nepovedlo se odstranit tento počet dokumentů: {{count}}, protože došlo k chybě „Žádost je příliš velká“ (429). Opakování…",
+      "missingShardKeyLog": "Nepovedlo se uložit nový dokument: Klíč extentu dokumentu není definovaný",
+      "filterTooltip": "Zadejte predikát dotazu nebo ho vyberte ze seznamu.",
+      "loadMore": "Načíst další",
+      "documentEditor": "Editor dokumentů",
+      "savedFilters": "Uložené filtry",
+      "defaultFilters": "Výchozí filtry",
+      "abort": "Přerušit",
+      "deletingDocuments": "Odstraňují se dokumenty (celkem {{count}})",
+      "deletedDocumentsSuccess": "Dokumenty (celkem {{count}}) se úspěšně odstranily.",
+      "deleteAborted": "Odstraňování dokumentů bylo přerušeno.",
+      "failedToDeleteDocuments": "Nepovedlo se odstranit dokumenty (celkem {{count}}).",
+      "requestTooLargeBase": "Některé žádosti o odstranění selhaly kvůli výjimce „Žádost je příliš velká“ (429)",
+      "retriedSuccessfully": "Bylo ale úspěšně opakováno.",
+      "retryingNow": "Probíhá opakovaný pokus.",
+      "increaseThroughputTip": "Pokud tomu chcete v budoucnu zabránit, zvažte zvýšení propustnosti vašeho kontejneru nebo databáze.",
+      "numberOfSelectedDocuments": "Počet vybraných dokumentů: {{count}}",
+      "mongoFilterPlaceholder": "Zadejte predikát dotazu (např. {\"id\":\"foo\"}) nebo zvolte některý z rozevíracího seznamu, případně to ponechte prázdné pro dotazování všech dokumentů.",
+      "sqlFilterPlaceholder": "Zadejte predikát dotazu (např. WHERE c.id=\"1\") nebo zvolte některý z rozevíracího seznamu, případně to ponechte prázdné pro dotazování všech dokumentů.",
+      "error": "Chyba",
+      "warning": "Upozornění"
+    },
+    "query": {
+      "executeQuery": "Spustit dotaz",
+      "executeSelection": "Spustit výběr",
+      "saveQuery": "Uložit dotaz",
+      "downloadQuery": "Stáhnout dotaz",
+      "cancelQuery": "Zrušit dotaz",
+      "openSavedQueries": "Otevřít uložené dotazy",
+      "vertical": "Svislé",
+      "horizontal": "Vodorovné",
+      "view": "Zobrazit",
+      "editingQuery": "Upravuje se dotaz"
+    },
+    "storedProcedure": {
+      "id": "ID uložené procedury",
+      "idPlaceholder": "Zadejte nové ID uložené procedury",
+      "idAriaLabel": "ID uložené procedury",
+      "body": "Text uložené procedury",
+      "bodyAriaLabel": "Text uložené procedury",
+      "successfulExecution": "Úspěšné spuštění uložené procedury",
+      "resultAriaLabel": "Spustit výsledek uložené procedury",
+      "logsAriaLabel": "Spustit protokoly uložených procedur",
+      "errors": "Chyby:",
+      "errorDetailsAriaLabel": "Odkaz na podrobnosti o chybě",
+      "moreDetails": "Více podrobností",
+      "consoleLogTab": "console.log"
+    },
+    "trigger": {
+      "id": "ID aktivační události",
+      "idPlaceholder": "Zadejte nové ID aktivační události",
+      "type": "Typ aktivační události",
+      "operation": "Operace aktivační události",
+      "body": "Tělo aktivační události",
+      "bodyAriaLabel": "Text aktivační události",
+      "pre": "Před",
+      "post": "Publikovat",
+      "all": "Vše",
+      "operationCreate": "Vytvořit",
+      "operationDelete": "Odstranit",
+      "operationReplace": "Nahradit"
+    },
+    "udf": {
+      "id": "ID uživatelem definované funkce",
+      "idPlaceholder": "Zadejte nové ID uživatelem definované funkce",
+      "body": "Text uživatelem definované funkce",
+      "bodyAriaLabel": "Text uživatelem definované funkce"
+    },
+    "conflicts": {
+      "unsavedChanges": "Neuložené změny",
+      "changesWillBeLost": "Změny budou ztraceny. Chcete pokračovat?",
+      "resolveConflictFailed": "Vyřešení konfliktu se nezdařilo",
+      "deleteConflictFailed": "Odstranění konfliktu se nezdařilo",
+      "refreshGridFailed": "Nepovedlo se aktualizovat mřížku dokumentů"
+    },
+    "mongoShell": {
+      "title": "Prostředí Mongo"
+    }
+  },
+  "panes": {
+    "deleteDatabase": {
+      "panelTitle": "Odstranit databázi {{databaseName}}",
+      "warningMessage": "Pozor! Akci, kterou se chystáte provést, nelze vrátit zpět. Pokračováním trvale odstraníte tento prostředek a všechny jeho podřízené prostředky.",
+      "confirmPrompt": "Potvrďte zadáním ID (názvu) pro {{databaseName}}.",
+      "inputMismatch": "Vstup {{databaseName}} s názvem {{input}} neodpovídá vybranému {{databaseName}} {{selectedId}}.",
+      "feedbackTitle": "Pomozte nám vylepšit Azure Cosmos DB!",
+      "feedbackReason": "Z jakého důvodu tuto databázi {{databaseName}} odstraňujete?"
+    },
+    "deleteCollection": {
+      "panelTitle": "Odstranit {{collectionName}}",
+      "confirmPrompt": "Potvrďte zadáním ID {{collectionName}}.",
+      "inputMismatch": "Vstup s ID {{input}} neodpovídá vybranému {{selectedId}}.",
+      "feedbackTitle": "Pomozte nám vylepšit Azure Cosmos DB!",
+      "feedbackReason": "Z jakého důvodu tento kontejner {{collectionName}} odstraňujete?"
+    },
+    "addDatabase": {
+      "databaseLabel": "Databáze {{suffix}}",
+      "databaseIdLabel": "ID databáze",
+      "keyspaceIdLabel": "ID prostoru klíčů",
+      "databaseIdPlaceholder": "Zadejte nové ID {{databaseLabel}}",
+      "databaseTooltip": "{{databaseLabel}} je logický kontejner minimálně pro 1 {{collectionsLabel}}",
+      "shareThroughput": "Sdílet propustnost napříč {{collectionsLabel}}",
+      "shareThroughputTooltip": "Zřízená propustnost na úrovni {{databaseLabel}} se bude sdílet napříč všemi {{collectionsLabel}} v rámci {{databaseLabel}}.",
+      "greaterThanError": "Zadejte prosím hodnotu větší než {{minValue}} pro propustnost autopilota.",
+      "acknowledgeSpendError": "Potvrďte prosím odhadovaný výdaj za {{period}}.",
+      "acknowledgeSpendErrorMonthly": "Potvrďte prosím odhadované měsíční výdaje.",
+      "acknowledgeSpendErrorDaily": "Potvrďte prosím odhadované denní výdaje.",
+      "provisionSharedThroughputTitle": "Zřídit sdílenou propustnost",
+      "provisionThroughputLabel": "Zřídit propustnost"
+    },
+    "addCollection": {
+      "createNew": "Vytvořit nové",
+      "useExisting": "Použít existující",
+      "databaseTooltip": "Databáze je obdobou oboru názvů. Je to jednotka správy sady {{collectionName}}.",
+      "shareThroughput": "Sdílet propustnost napříč {{collectionName}}",
+      "shareThroughputTooltip": "Propustnost nakonfigurovaná na úrovni databáze bude sdílena napříč všemi {{collectionName}} v rámci databáze.",
+      "collectionIdLabel": "ID {{collectionName}}",
+      "collectionIdTooltip": "Jedinečný identifikátor pro {{collectionName}}, který se používá pro směrování na základě ID prostřednictvím REST a všech sad SDK",
+      "collectionIdPlaceholder": "např. {{collectionName}}1",
+      "collectionIdAriaLabel": "{{collectionName}} ID, příklad: {{collectionName}}1",
+      "existingDatabaseAriaLabel": "Zvolte existující ID {{databaseName}}",
+      "existingDatabasePlaceholder": "Zvolte existující ID {{databaseName}}",
+      "indexing": "Indexování",
+      "turnOnIndexing": "Zapnout indexování",
+      "automatic": "Automatické",
+      "turnOffIndexing": "Vypnout indexování",
+      "off": "Vypnuto",
+      "sharding": "Sharding",
+      "shardingTooltip": "Kolekce shardů rozdělují data mezi více sad replik (shardů), aby bylo možné dosáhnout neomezené škálovatelnosti. Kolekce shardů vyžadují výběr klíče shardu (pole) pro rovnoměrné rozdělení dat.",
+      "unsharded": "Neshardované",
+      "unshardedLabel": "Neshardované (limit 20 GB)",
+      "sharded": "Shardované",
+      "addPartitionKey": "Přidat hierarchický klíč oddílu",
+      "hierarchicalPartitionKeyInfo": "Tato funkce vám umožňuje rozdělit data pomocí až tří úrovní klíčů, což zajišťuje rovnoměrnější rozložení dat. Vyžaduje .NET V3, Java V4 SDK nebo JavaScript V3 SDK Preview.",
+      "provisionDedicatedThroughput": "Zřídit vyhrazenou propustnost pro {{collectionName}}",
+      "provisionDedicatedThroughputTooltip": "Volitelně můžete zřídit vyhrazenou propustnost pro {{collectionName}} v rámci databáze se zřízenou propustností. Tato vyhrazená propustnost se nebude sdílet s jinými {{collectionNamePlural}} v databázi a nezapočítává se do propustnosti, kterou jste pro databázi zřídili. Tato hodnota propustnosti se bude účtovat navíc k propustnosti, kterou jste zřídili na úrovni databáze.",
+      "uniqueKeysPlaceholderMongo": "Čárkami oddělené cesty, například firstName, address.zipCode",
+      "uniqueKeysPlaceholderSql": "Čárkami oddělené cesty, např. /firstName,/address/zipCode",
+      "addUniqueKey": "Přidat jedinečný klíč",
+      "enableAnalyticalStore": "Povolit analytické úložiště",
+      "disableAnalyticalStore": "Zakázat analytické úložiště",
+      "on": "Zapnuto",
+      "analyticalStoreSynapseLinkRequired": "Pro vytvoření analytického úložiště {{collectionName}} je vyžadována funkce Azure Synapse Link. Povolte Synapse Link pro tento účet Cosmos DB.",
+      "enable": "Povolit",
+      "containerVectorPolicy": "Zásady vektoru kontejneru",
+      "containerFullTextSearchPolicy": "Zásady fulltextového vyhledávání kontejneru",
+      "advanced": "Rozšířené",
+      "mongoIndexingTooltip": "Pole _id je ve výchozím nastavení indexováno. Vytvoření indexu se zástupnými znaky pro všechna pole optimalizuje dotazy a doporučuje se pro vývoj.",
+      "createWildcardIndex": "Vytvořit index se zástupnými znaky pro všechna pole",
+      "legacySdkCheckbox": "Moje aplikace používá starší verzi Cosmos .NET nebo Java SDK (.NET V1 nebo Java V2)",
+      "legacySdkInfo": "Aby byla zajištěna kompatibilita se staršími sadami SDK, vytvořený kontejner bude používat starší schéma dělení na oddíly, které podporuje hodnoty klíče oddílu o velikosti pouze do 101 bajtů. Pokud je tato možnost povolená, nebudete moct používat hierarchické klíče oddílu.",
+      "indexingOnInfo": "Ve výchozím nastavení budou všechny vlastnosti ve vašich dokumentech indexovány, aby bylo možné provádět flexibilní a efektivní dotazy.",
+      "indexingOffInfo": "Indexování bude vypnuto. Doporučuje se, pokud nepotřebujete spouštět dotazy nebo máte jenom operace s hodnotou klíče.",
+      "indexingOffWarning": "Pokud tento kontejner vytvoříte s vypnutým indexováním, nebudete moct provádět žádné změny zásad indexování. Změny indexování se povolují jenom u kontejnerů se zásadami indexování.",
+      "acknowledgeSpendErrorMonthly": "Potvrďte prosím odhadované měsíční výdaje.",
+      "acknowledgeSpendErrorDaily": "Potvrďte prosím odhadované denní výdaje.",
+      "unshardedMaxRuError": "Neshardované kolekce podporují až 10 000 RU.",
+      "acknowledgeShareThroughputError": "Potvrďte prosím odhadované náklady na tuto vyhrazenou propustnost.",
+      "vectorPolicyError": "Opravte prosím chyby v zásadě vektoru kontejneru.",
+      "fullTextSearchPolicyError": "Opravte prosím chyby v zásadě fulltextového vyhledávání kontejneru.",
+      "addingSampleDataSet": "Přidává se ukázková sada dat.",
+      "databaseFieldLabelName": "Název databáze",
+      "databaseFieldLabelId": "ID databáze",
+      "newDatabaseIdPlaceholder": "Zadejte nové ID databáze",
+      "newDatabaseIdAriaLabel": "Nové ID databáze. Zadejte nové ID databáze.",
+      "createNewDatabaseAriaLabel": "Vytvořit novou databázi",
+      "useExistingDatabaseAriaLabel": "Použít stávající databázi",
+      "chooseExistingDatabase": "Zvolit stávající databázi",
+      "teachingBubble": {
+        "step1Headline": "Vytvoření ukázkové databáze",
+        "step1Body": "Databáze je nadřazená kontejneru. Můžete vytvořit novou databázi nebo použít existující. V tomto kurzu vytváříme novou databázi s názvem SampleDB.",
+        "step1LearnMore": "Získejte další informace o prostředcích.",
+        "step2Headline": "Nastavení propustnosti",
+        "step2Body": "Cosmos DB doporučuje sdílet propustnost mezi databázemi. Automatické škálování vám poskytne flexibilní objem propustnosti podle maximální hodnoty RU/s (Request Unit), kterou nastavíte.",
+        "step2LearnMore": "Další informace o RU/s",
+        "step3Headline": "Pojmenování kontejneru",
+        "step3Body": "Pojmenujte svůj kontejner",
+        "step4Headline": "Nastavení klíče oddílu",
+        "step4Body": "Poslední krok: Budete muset definovat klíč oddílu pro svou kolekci. V tomto konkrétním příkladu byl zvolen klíč oddílu /address. Správný klíč oddílu by měl mít širokou škálu možných hodnot.",
+        "step4CreateContainer": "Vytvořit kontejner",
+        "step5Headline": "Vytváří se ukázkový kontejner",
+        "step5Body": "Právě se vytváří ukázkový kontejner a přidáváme pro vás ukázková data. Mělo by to trvat přibližně 1 minutu.",
+        "step5BodyFollowUp": "Po vytvoření ukázkového kontejneru zkontrolujte ukázkovou datovou sadu a postupujte podle dalších kroků.",
+        "stepOfTotal": "Krok {{current}} z(e) {{total}}"
+      }
+    },
+    "addCollectionUtility": {
+      "shardKeyTooltip": "Klíč shardu (pole) se používá k rozdělení dat mezi více sad replik (shardů), aby bylo možné dosáhnout neomezené škálovatelnosti. Je důležité zvolit pole, které bude rovnoměrně distribuovat vaše data.",
+      "partitionKeyTooltip": "{{partitionKeyName}} se používá k automatické distribuci dat mezi oddíly pro zajištění škálovatelnosti. Zvolte vlastnost v dokumentu JSON, která má širokou škálu hodnot a rovnoměrně distribuuje objem žádostí.",
+      "partitionKeyTooltipSqlSuffix": " Pro malé úlohy s převahou čtení nebo úlohy s převahou zápisu libovolné velikosti je často vhodnou volbou id.",
+      "shardKeyLabel": "Klíč shardu",
+      "partitionKeyLabel": "Klíč oddílu",
+      "shardKeyPlaceholder": "např. categoryId",
+      "partitionKeyPlaceholderDefault": "např. /address",
+      "partitionKeyPlaceholderFirst": "Povinné – první klíč oddílu, např. /TenantId",
+      "partitionKeyPlaceholderSecond": "druhý klíč oddílu, například /UserId",
+      "partitionKeyPlaceholderThird": "třetí klíč oddílu, například /SessionId",
+      "partitionKeyPlaceholderGraph": "např. /address/zipCode",
+      "uniqueKeysTooltip": "Jedinečné klíče poskytují vývojářům možnost přidat do své databáze vrstvu integrity dat. Vytvořením zásad jedinečného klíče při vytvoření kontejneru zajistíte jedinečnost jedné nebo více hodnot na klíč oddílu.",
+      "uniqueKeysLabel": "Jedinečné klíče",
+      "analyticalStoreLabel": "Analytické úložiště",
+      "analyticalStoreTooltip": "Schopnost analytického úložiště umožňuje provádět analýzy provozních dat téměř v reálném čase, aniž by to mělo vliv na výkon transakčních úloh.",
+      "analyticalStoreDescription": "Schopnost analytického úložiště umožňuje provádět analýzy provozních dat téměř v reálném čase, aniž by to mělo vliv na výkon transakčních úloh.",
+      "vectorPolicyTooltip": "Popište všechny vlastnosti v datech, které obsahují vektory, aby je bylo možné zpřístupnit pro dotazy podobnosti."
+    },
+    "settings": {
+      "pageOptions": "Možnosti stránky",
+      "pageOptionsDescription": "Pokud chcete zadat pevný počet výsledků dotazu, které se mají zobrazit, zvolte Vlastní. Pokud chcete zobrazit co nejvíce výsledků dotazu na stránku, zvolte Neomezeno.",
+      "queryResultsPerPage": "Výsledky dotazu na stránku",
+      "queryResultsPerPageTooltip": "Zadejte počet výsledků dotazu, které se mají zobrazit na stránce.",
+      "customQueryItemsPerPage": "Položky vlastního dotazu na stránku",
+      "custom": "Vlastní",
+      "unlimited": "Neomezené",
+      "entraIdRbac": "Povolit RBAC Entra ID",
+      "entraIdRbacDescription": "Pokud chcete povolit RBAC ID Entra automaticky, zvolte Automaticky. True/False, pokud chcete vynutit povolení nebo zakázání RBAC Entra ID",
+      "true": "True",
+      "false": "False",
+      "regionSelection": "Výběr oblasti",
+      "regionSelectionDescription": "Změní oblast, kterou klient Cosmos používá pro přístup k účtu.",
+      "selectRegion": "Vybrat oblast",
+      "selectRegionTooltip": "Změní koncový bod účtu použitý k provádění operací klienta.",
+      "globalDefault": "Globální (výchozí)",
+      "readWrite": "(Čtení/zápis)",
+      "read": "(Čtení)",
+      "queryTimeout": "Časový limit dotazu",
+      "queryTimeoutDescription": "Když dotaz dosáhne zadaného časového limitu, zobrazí se automaticky otevírané okno s možností zrušení dotazu, pokud není povolené automatické zrušení.",
+      "enableQueryTimeout": "Povolit časový limit dotazu",
+      "queryTimeoutMs": "Časový limit dotazu (ms)",
+      "automaticallyCancelQuery": "Automaticky zrušit dotaz po vypršení časového limitu",
+      "ruLimit": "Limit počtu jednotek RU",
+      "ruLimitDescription": "Pokud dotaz překročí nakonfigurovaný limit počtu jednotek RU, dotaz se přeruší.",
+      "enableRuLimit": "Povolit limit RU",
+      "ruLimitLabel": "Limit počtu jednotek RU (RU)",
+      "defaultQueryResults": "Výchozí zobrazení výsledků dotazu",
+      "defaultQueryResultsDescription": "Vyberte výchozí zobrazení, které se má použít při zobrazování výsledků dotazu.",
+      "retrySettings": "Nastavení opakování",
+      "retrySettingsDescription": "Zásady opakování přidružené k omezeným požadavkům během dotazů CosmosDB",
+      "maxRetryAttempts": "Maximální počet opakovaných pokusů",
+      "maxRetryAttemptsTooltip": "Maximální počet opakovaných pokusů, které se mají provést pro požadavek. Výchozí hodnota je 9.",
+      "fixedRetryInterval": "Pevný interval opakování (ms)",
+      "fixedRetryIntervalTooltip": "Pevný interval opakování v milisekundách, po který se má čekat mezi jednotlivými pokusy, přičemž se ignoruje hodnota retryAfter vrácená jako součást odpovědi. Výchozí hodnota je 0 milisekund.",
+      "maxWaitTime": "Maximální doba čekání (s)",
+      "maxWaitTimeTooltip": "Maximální doba čekání v sekundách na požadavek během opakovaných pokusů. Výchozí hodnota 30 sekund.",
+      "enableContainerPagination": "Povolit stránkování kontejnerů",
+      "enableContainerPaginationDescription": "Načte 50 kontejnerů najednou. Kontejnery se v současné době nenačítají v alfanumerickém pořadí.",
+      "enableCrossPartitionQuery": "Povolit dotaz mezi oddíly",
+      "enableCrossPartitionQueryDescription": "Při provádění dotazu odešlete více než jeden požadavek. Pokud dotaz není omezen na jednu hodnotu klíče oddílu, je nutné odeslat více než jeden požadavek.",
+      "maxDegreeOfParallelism": "Maximální stupeň paralelismu",
+      "maxDegreeOfParallelismDescription": "Získá nebo nastaví počet souběžných operací spuštěných na straně klienta během paralelního provádění dotazu. Kladná hodnota vlastnosti omezuje počet souběžných operací na nastavenou hodnotu. Pokud je nastavená hodnota menší než 0, systém automaticky rozhodne o počtu souběžných operací, které se mají spustit.",
+      "maxDegreeOfParallelismQuery": "Dotazovat až do maximálního stupně paralelismu",
+      "priorityLevel": "Úroveň priority",
+      "priorityLevelDescription": "Nastaví úroveň priority pro požadavky na rovinu dat z Data Exploreru při použití provádění založeného na prioritách. Pokud je vybraná možnost Žádné, Data Explorer neurčí úroveň priority a použije se výchozí úroveň priority na straně serveru.",
+      "displayGremlinQueryResults": "Zobrazit výsledky dotazu Gremlin jako:",
+      "displayGremlinQueryResultsDescription": "Vyberte Graph, chcete-li výsledky dotazu automaticky vizualizovat jako graf, nebo JSON, chcete-li výsledky zobrazit jako JSON.",
+      "graph": "Graf",
+      "json": "JSON",
+      "graphAutoVisualization": "Automatická vizualizace grafu",
+      "enableSampleDatabase": "Povolit ukázkovou databázi",
+      "enableSampleDatabaseDescription": "Jedná se o ukázkovou databázi a kontejner se syntetickými produktovými daty, které můžete použít k prozkoumání práce s dotazy NoSQL. V uživatelském rozhraní Data Exploreru se zobrazí jako další databáze, kterou vytváří a spravuje Microsoft, a to bez jakýchkoli nákladů z vaší strany.",
+      "enableSampleDbAriaLabel": "Povolit ukázkovou databázi pro průzkum dotazů",
+      "guidRepresentation": "Reprezentace identifikátoru GUID",
+      "guidRepresentationDescription": "GuidRepresentation v MongoDB označuje způsob, jakým se globálně jedinečné identifikátory (GUID) serializují a deserializují při ukládání do dokumentů BSON. Toto platí pro všechny operace s dokumenty.",
+      "advancedSettings": "Upřesňující nastavení",
+      "ignorePartitionKey": "Ignorovat klíč oddílu při aktualizaci dokumentu",
+      "ignorePartitionKeyTooltip": "Pokud je zaškrtnuto, hodnota klíče oddílu nebude použita k vyhledání dokumentu během operací aktualizace. Tuto možnost použijte pouze v případě, že aktualizace dokumentu selhávají kvůli neobvyklému klíči oddílu.",
+      "clearHistory": "Vymazat historii",
+      "clearHistoryConfirm": "Opravdu chcete pokračovat?",
+      "clearHistoryDescription": "Tato akce vymaže všechna vlastní nastavení pro tento účet v tomto prohlížeči, včetně:",
+      "clearHistoryTabLayout": "Resetovat přizpůsobené rozložení karet včetně pozic rozdělovače",
+      "clearHistoryTableColumns": "Vymažte předvolby sloupců tabulky, včetně všech vlastních sloupců.",
+      "clearHistoryFilters": "Vymazání historie filtrů",
+      "clearHistoryRegion": "Obnovit výběr oblasti na globální",
+      "increaseValueBy1000": "Zvýšit hodnotu o 1000",
+      "decreaseValueBy1000": "Snížit hodnotu o 1000",
+      "none": "Žádné",
+      "low": "Nízká",
+      "high": "Vysoké",
+      "automatic": "Automatické",
+      "enhancedQueryControl": "Pokročilé možnosti ovládání dotazů",
+      "enableQueryControl": "Povolit ovládání dotazů",
+      "explorerVersion": "Verze Exploreru",
+      "accountId": "ID účtu",
+      "sessionId": "ID relace",
+      "popupsDisabledError": "Nepovedlo se nám vytvořit autorizaci pro tento účet kvůli zakázání automaticky otevíraných oken v prohlížeči.\nPovolte automaticky otevíraná okna pro tento web a klikněte na tlačítko Přihlášení pro Entra ID.",
+      "failedToAcquireTokenError": "Nepodařilo se automaticky získat autorizační token. Pokud chcete povolit operace RBAC Entra ID, klikněte prosím na tlačítko Přihlášení pro Entra ID."
+    },
+    "saveQuery": {
+      "panelTitle": "Uložit dotaz",
+      "setupCostMessage": "Z důvodu dodržování předpisů ukládáme dotazy do kontejneru ve vašem účtu Azure Cosmos v samostatné databázi s názvem {{databaseName}}. Aby bylo možné pokračovat, je nutné ve vašem účtu vytvořit kontejner. Odhadované dodatečné náklady jsou 0,77 USD denně.",
+      "completeSetup": "Dokončit nastavení",
+      "noQueryNameError": "Nebyl zadán žádný název dotazu.",
+      "invalidQueryContentError": "Byl zadán neplatný obsah dotazu.",
+      "failedToSaveQueryError": "Nepovedlo se uložit dotaz {{queryName}}.",
+      "failedToSetupContainerError": "Nepovedlo se nastavit kontejner pro uložené dotazy.",
+      "accountNotSetupError": "Uložení dotazu se nezdařilo: účet není nastaven pro ukládání dotazů.",
+      "name": "Název"
+    },
+    "loadQuery": {
+      "noFileSpecifiedError": "Nebyl zadán žádný soubor.",
+      "failedToLoadQueryError": "Dotaz se nepovedlo načíst.",
+      "failedToLoadQueryFromFileError": "Nepovedlo se načíst dotaz ze souboru {{fileName}}",
+      "selectFilesToOpen": "Výběr dokumentu dotazu",
+      "browseFiles": "Procházet"
+    },
+    "executeStoredProcedure": {
+      "enterInputParameters": "Zadejte vstupní parametry (pokud nějaké jsou)",
+      "key": "Klíč",
+      "param": "Parametr",
+      "partitionKeyValue": "Hodnota klíče oddílu",
+      "value": "Hodnota",
+      "addNewParam": "Přidat nový parametr",
+      "addParam": "Přidat parametr",
+      "deleteParam": "Odstranit parametr",
+      "invalidParamError": "Byl zadán neplatný parametr: {{invalidParam}}.",
+      "invalidParamConsoleError": "Byl zadán neplatný parametr: {{invalidParam}} není platná hodnota literálu.",
+      "stringType": "Řetězec",
+      "customType": "Vlastní"
+    },
+    "uploadItems": {
+      "noFilesSpecifiedError": "Nezadal se žádný soubor. Zadejte prosím aspoň jeden soubor.",
+      "selectJsonFiles": "Vybrat soubory JSON",
+      "selectJsonFilesTooltip": "Vyberte jeden nebo více souborů JSON, které chcete nahrát. Každý soubor může obsahovat jeden dokument JSON nebo pole dokumentů JSON. Celková velikost všech souborů v jednotlivých operacích nahrávání musí být menší než 2 MB. U větších datových sad můžete provádět více operací nahrávání.",
+      "fileNameColumn": "NÁZEV SOUBORU",
+      "statusColumn": "STAV",
+      "uploadStatus": "Vytvořeno: {{numSucceeded}}, omezeno: {{numThrottled}}, počet chyb: {{numFailed}}",
+      "uploadedFiles": "Nahrané soubory"
+    },
+    "copyNotebook": {
+      "copyFailedError": "Nepovedlo se zkopírovat {{name}} do {{destination}}",
+      "uploadFailedError": "Nepodařilo se nahrát {{name}}",
+      "location": "Umístění",
+      "locationAriaLabel": "Umístění",
+      "selectLocation": "Vyberte umístění poznámkového bloku ke kopírování.",
+      "name": "Název"
+    },
+    "publishNotebook": {
+      "publishFailedError": "Publikování do galerie se {{notebookName}} nezdařilo.",
+      "publishDescription": "Po publikování se tento poznámkový blok zobrazí ve veřejné galerii poznámkových bloků Azure Cosmos DB. Před publikováním se ujistěte, že jste odebrali všechna citlivá data nebo výstup.",
+      "publishPrompt": "Chcete {{name}} publikovat a nasdílet do galerie?",
+      "coverImage": "Titulní obrázek",
+      "coverImageUrl": "Adresa URL titulního obrázku",
+      "name": "Název",
+      "description": "Popis",
+      "tags": "Značky",
+      "tagsPlaceholder": "Volitelná značka 1, volitelná značka 2",
+      "preview": "Náhled",
+      "urlType": "Adresa URL",
+      "customImage": "Vlastní image",
+      "takeScreenshot": "Pořídit snímek obrazovky",
+      "useFirstDisplayOutput": "Použít první zobrazený výstup",
+      "failedToCaptureOutput": "Nepovedlo se zachytit první výstup.",
+      "outputDoesNotExist": "Pro žádnou z buněk neexistuje výstup.",
+      "failedToConvertError": "Nepovedlo se převést {{fileName}} do formátu base64",
+      "failedToUploadError": "Nepodařilo se nahrát {{fileName}}."
+    },
+    "changePartitionKey": {
+      "failedToStartError": "Nepovedlo se spustit úlohu přenosu dat.",
+      "suboptimalPartitionKeyError": "Upozornění: Systém zjistil, že vaše kolekce pravděpodobně používá neoptimální klíč oddílu.",
+      "description": "Při změně klíče oddílu kontejneru bude nutné vytvořit cílový kontejner se správným klíčem oddílu. Můžete také vybrat existující cílový kontejner.",
+      "sourceContainerId": "ID zdrojového kontejneru {{collectionName}}",
+      "destinationContainerId": "ID cílového {{collectionName}}",
+      "collectionIdTooltip": "Jedinečný identifikátor pro {{collectionName}}, který se používá pro směrování na základě ID prostřednictvím REST a všech sad SDK",
+      "collectionIdPlaceholder": "např. {{collectionName}}1",
+      "collectionIdAriaLabel": "{{collectionName}} ID, příklad: {{collectionName}}1",
+      "existingContainers": "Existující kontejnery",
+      "partitionKeyWarning": "Cílový kontejner ještě nesmí existovat. Data Explorer pro vás vytvoří nový cílový kontejner."
+    },
+    "cassandraAddCollection": {
+      "keyspaceLabel": "Název prostoru klíčů",
+      "keyspaceTooltip": "Vyberte existující prostor klíčů nebo zadejte ID nového prostoru klíčů.",
+      "tableIdLabel": "Zadáním příkazu CQL vytvořte tabulku.",
+      "enterTableId": "Zadejte ID tabulky",
+      "tableSchemaAriaLabel": "Schéma tabulky",
+      "provisionDedicatedThroughput": "Zřídit vyhrazenou propustnost pro tuto tabulku",
+      "provisionDedicatedThroughputTooltip": "Volitelně můžete zřídit vyhrazenou propustnost pro tabulku v rámci prostoru klíčů, který má zřízenou propustnost. Tato vyhrazená propustnost se nebude sdílet s jinými tabulkami v prostoru klíčů a nezapočítává se do propustnosti, kterou jste pro prostor klíčů zřídili. Tato hodnota propustnosti se bude účtovat navíc k propustnosti, kterou jste zřídili na úrovni prostoru klíčů."
+    },
+    "tables": {
+      "addProperty": "Přidat vlastnost",
+      "addRow": "Přidat řádek",
+      "addEntity": "Přidat entitu",
+      "back": "zpět",
+      "nullFieldsWarning": "Upozornění: Pole s hodnotou null nebudou zobrazena pro úpravy.",
+      "propertyEmptyError": "{{property}} nemůže být prázdné. Zadejte prosím hodnotu pro {{property}}.",
+      "whitespaceError": "{{property}} nemůže obsahovat prázdné znaky. Zadejte prosím hodnotu pro {{property}} bez prázdných znaků.",
+      "propertyTypeEmptyError": "Typ vlastnosti nemůže být prázdný. Vyberte prosím typ z rozevíracího seznamu pro vlastnost {{property}}."
+    },
+    "tableQuerySelect": {
+      "selectColumns": "Vyberte sloupce, na které se chcete dotázat.",
+      "availableColumns": "Dostupné sloupce"
+    },
+    "tableColumnSelection": {
+      "selectColumns": "Vyberte sloupce, které se mají zobrazit v zobrazení položek v kontejneru.",
+      "searchFields": "Prohledat pole",
+      "reset": "Resetovat",
+      "partitionKeySuffix": " (klíč oddílu)"
+    },
+    "newVertex": {
+      "addProperty": "Přidat vlastnost"
+    },
+    "addGlobalSecondaryIndex": {
+      "globalSecondaryIndexId": "ID kontejneru globálního sekundárního indexu",
+      "globalSecondaryIndexIdPlaceholder": "např. indexbyEmailId",
+      "projectionQuery": "Dotaz projekce",
+      "projectionQueryPlaceholder": "SELECT c.email, c.accountId FROM c",
+      "projectionQueryTooltip": "Zjistěte více o definování globálních sekundárních indexů.",
+      "disabledTitle": "Globální sekundární index se už vytváří. Než spustíte vytváření jiného, počkejte, až se dokončí vytváření toho aktuálního."
+    },
+    "stringInput": {
+      "inputMismatchError": "Vstup s {{input}} neodpovídá vybranému {{selectedId}}."
+    },
+    "panelInfo": {
+      "information": "Informace",
+      "moreDetails": "Více podrobností"
+    }
+  },
+  "controls": {
+    "settings": {
+      "tabTitles": {
+        "scale": "Škálování",
+        "conflictResolution": "Řešení konfliktu",
+        "settings": "Nastavení",
+        "indexingPolicy": "Zásada indexování",
+        "partitionKeys": "Klíče oddílu",
+        "partitionKeysPreview": "Klíče oddílů (Preview)",
+        "computedProperties": "Vypočítané vlastnosti",
+        "containerPolicies": "Zásady kontejneru",
+        "throughputBuckets": "Kbelíky propustnosti",
+        "globalSecondaryIndexPreview": "Globální sekundární index (Preview)",
+        "maskingPolicyPreview": "Zásada maskování (Preview)"
+      },
+      "mongoNotifications": {
+        "selectTypeWarning": "Vyberte prosím typ pro každý index.",
+        "enterFieldNameError": "Zadejte prosím název pole.",
+        "wildcardPathError": "V názvu pole se nenachází cesta se zástupným znakem. Použijte například vzor "
+      },
+      "partitionKey": {
+        "shardKey": "Klíč shardu",
+        "partitionKey": "Klíč oddílu",
+        "shardKeyTooltip": "Klíč shardu (pole) se používá k rozdělení dat mezi více sad replik (shardů), aby bylo možné dosáhnout neomezené škálovatelnosti. Je důležité zvolit pole, které bude rovnoměrně distribuovat vaše data.",
+        "partitionKeyTooltip": "se používá k automatické distribuci dat mezi oddíly pro zajištění škálovatelnosti. Zvolte vlastnost v dokumentu JSON, která má širokou škálu hodnot a rovnoměrně distribuuje objem žádostí.",
+        "sqlPartitionKeyTooltipSuffix": " Pro malé úlohy s převahou čtení nebo úlohy s převahou zápisu libovolné velikosti je často vhodnou volbou id.",
+        "partitionKeySubtext": "U malých úloh je ID položky vhodnou volbou pro klíč oddílu.",
+        "mongoPlaceholder": "např. categoryId",
+        "gremlinPlaceholder": "např. /address",
+        "sqlFirstPartitionKey": "Povinné – první klíč oddílu, např. /TenantId",
+        "sqlSecondPartitionKey": "druhý klíč oddílu, například /UserId",
+        "sqlThirdPartitionKey": "třetí klíč oddílu, například /SessionId",
+        "defaultPlaceholder": "např. /address/zipCode"
+      },
+      "costEstimate": {
+        "title": "Odhad nákladů*",
+        "howWeCalculate": "Jak to vypočítáváme",
+        "updatedCostPerMonth": "Aktualizované náklady za měsíc",
+        "currentCostPerMonth": "Aktuální náklady na měsíc",
+        "perRu": "/RU",
+        "perHour": "/h",
+        "perDay": "/den",
+        "perMonth": "/měs."
+      },
+      "throughput": {
+        "manualToAutoscaleDisclaimer": "Počáteční maximální hodnota RU/s pro automatické škálování bude určena systémem na základě nastavení aktuální manuální propustnosti a úložiště vašeho prostředku. Po povolení automatického škálování můžete změnit maximální počet RU/s.",
+        "ttlWarningText": "Systém bude položky automaticky odstraňovat na základě hodnoty TTL (v sekundách), kterou zadáte, aniž by klientská aplikace musela výslovně provést operaci odstranění. Další informace viz",
+        "ttlWarningLinkText": "Hodnota TTL (Time to Live) v Azure Cosmos DB",
+        "unsavedIndexingPolicy": "zásada indexování",
+        "unsavedDataMaskingPolicy": "zásada maskování dat",
+        "unsavedComputedProperties": "vypočítané vlastnosti",
+        "unsavedEditorWarningPrefix": "Neuložili jste nejnovější změny provedené ve vašem",
+        "unsavedEditorWarningSuffix": ". Kliknutím na Uložit potvrďte provedené změny.",
+        "updateDelayedApplyWarning": "Chystáte se požádat o zvýšení propustnosti nad rámec předem přidělené kapacity. Dokončení této operace bude nějakou dobu trvat.",
+        "scalingUpDelayMessage": "Vertikální navýšení kapacity bude trvat 4–6 hodin, protože při současném počtu fyzických oddílů přesahuje okamžité možnosti služby Azure Cosmos DB. Propustnost můžete okamžitě zvýšit na {{instantMaximumThroughput}} nebo pokračovat s touto hodnotou a počkat, než se dokončí vertikální navýšení kapacity.",
+        "exceedPreAllocatedMessage": "Vaše žádost o zvýšení propustnosti překračuje předem přidělenou kapacitu, takže její zpracování může trvat déle, než by se očekávalo. Můžete si vybrat ze tří možností, jak pokračovat:",
+        "instantScaleOption": "Kapacitu můžete okamžitě vertikálně navýšit až na {{instantMaximumThroughput}} RU/s.",
+        "asyncScaleOption": "Propustnost můžete asynchronně vertikálně navýšit až na libovolnou hodnotu pod {{maximumThroughput}} RU/s během 4–6 hodin.",
+        "quotaMaxOption": "Aktuální maximální kvóta je {{maximumThroughput}} RU/s. Pokud chcete tento limit překročit, musíte požádat o navýšení kvóty a tým Azure Cosmos DB vaši žádost posoudí.",
+        "belowMinimumMessage": "Nemůžete snížit propustnost pod aktuální minimum {{minimum}} RU/s. Další informace o tomto limitu najdete v naší dokumentaci k nabídce služeb.",
+        "saveThroughputWarning": "Změna nastavení propustnosti ovlivní výši vaší faktury. Před uložením změn si prosím projděte aktualizovaný odhad nákladů uvedený níže.",
+        "currentAutoscaleThroughput": "Aktuální propustnost automatického škálování:",
+        "targetAutoscaleThroughput": "Cílová propustnost automatického škálování:",
+        "currentManualThroughput": "Aktuální manuální propustnost:",
+        "targetManualThroughput": "Cílová manuální propustnost:",
+        "applyDelayedMessage": "Žádost o zvýšení propustnosti se úspěšně odeslala. Dokončení této operace bude trvat 1 až 3 pracovní dny. Nejnovější stav najdete v části Oznámení.",
+        "databaseLabel": "Databáze:",
+        "containerLabel": "Kontejner:",
+        "applyShortDelayMessage": "V tuto chvíli se zpracovává žádost o zvýšení propustnosti. Dokončení této operace bude nějakou dobu trvat.",
+        "applyLongDelayMessage": "V tuto chvíli se zpracovává žádost o zvýšení propustnosti. Dokončení této operace bude trvat 1 až 3 pracovní dny. Nejnovější stav najdete v části Oznámení.",
+        "throughputCapError": "Váš účet je aktuálně nakonfigurovaný s celkovým limitem propustnosti {{throughputCap}} RU/s. Tato aktualizace není možná, protože by zvýšila celkovou propustnost na {{newTotalThroughput}} RU/s. Ve správě nákladů změňte limit celkové propustnosti.",
+        "throughputIncrementError": "Hodnota propustnosti musí být v přírůstcích po 1000."
+      },
+      "conflictResolution": {
+        "lwwDefault": "Poslední zápis rozhoduje (výchozí)",
+        "customMergeProcedure": "Procedura sloučení (vlastní)",
+        "mode": "Režim",
+        "conflictResolverProperty": "Vlastnost řešení konfliktů",
+        "storedProcedure": "Uložená procedura",
+        "lwwTooltip": "Získá nebo nastaví název celočíselné vlastnosti ve vašich dokumentech, která se používá pro schéma řešení konfliktů na základě principu Poslední zápis rozhoduje (LWW). Ve výchozím nastavení systém používá systémem definovanou vlastnost časového razítka _ts k určení, která z konfliktních verzí dokumentu má přednost. Pokud chcete přepsat výchozí řešení konfliktů založené na časovém razítku, zadejte vlastní celočíselnou vlastnost.",
+        "customTooltip": "Získá nebo nastaví název uložené procedury (neboli procedury sloučení) pro řešení konfliktů. Můžete napsat logiku definovanou aplikací, která rozhodne, která z konfliktních verzí dokumentu bude zachována. Uložená procedura se na straně serveru provede transakčně a právě jednou. Pokud neposkytnete uloženou proceduru, konflikty se zaznamenají do:",
+        "customTooltipConflictsFeed": " kanál konfliktů",
+        "customTooltipSuffix": ". Uloženou proceduru můžete kdykoli aktualizovat nebo znovu zaregistrovat."
+      },
+      "changeFeed": {
+        "label": "Zásady uchovávání informací protokolu kanálu změn",
+        "tooltip": "Povolte zásadu uchovávání informací protokolu kanálu změn, která ve výchozím nastavení uchovává posledních 10 minut historie položek v kontejneru. Aby to bylo možné zajistit, bude se poplatek za jednotky požadavků (RU) pro zápisy do tohoto kontejneru násobit koeficientem 2. Čtení nejsou ovlivněna."
+      },
+      "mongoIndexing": {
+        "disclaimer": "Pro dotazy, které filtrují podle více vlastností, vytvořte místo složeného indexu více jednosloupcových indexů.",
+        "disclaimerCompoundIndexesLink": " Složené indexy ",
+        "disclaimerSuffix": "se používají jenom pro řazení výsledků dotazu. Pokud potřebujete přidat složený index, můžete ho vytvořit pomocí prostředí Mongo Shell.",
+        "compoundNotSupported": "Kolekce se složenými indexy se v editoru indexování ještě nepodporují. Pokud chcete upravit zásadu indexování pro tuto kolekci, použijte Mongo Shell.",
+        "aadError": "Pokud chcete použít editor zásad indexování, přihlaste se prosím k:",
+        "aadErrorLink": "Azure Portal.",
+        "refreshingProgress": "Aktualizuje se průběh transformace indexu.",
+        "canMakeMoreChangesZero": "Další změny indexování můžete provést, jakmile bude dokončena aktuální transformace indexu. ",
+        "refreshToCheck": "Aktualizujte zobrazení a zkontrolujte, zda je proces dokončen.",
+        "canMakeMoreChangesProgress": "Po dokončení aktuální transformace indexu můžete provést další změny indexování. Je dokončeno {{progress}} %. ",
+        "refreshToCheckProgress": "Pokud chcete zkontrolovat průběh, aktualizujte zobrazení.",
+        "definitionColumn": "Definice",
+        "typeColumn": "Typ",
+        "dropIndexColumn": "Odstranit index",
+        "addIndexBackColumn": "Přidat index zpět",
+        "deleteIndexButton": "Tlačítko Odstranit index",
+        "addBackIndexButton": "Tlačítko Přidat zpět index",
+        "currentIndexes": "Aktuální indexy",
+        "indexesToBeDropped": "Indexy k odstranění",
+        "indexFieldName": "Název pole indexu",
+        "indexType": "Typ indexu",
+        "selectIndexType": "Vyberte typ indexu.",
+        "undoButton": "Tlačítko zpět"
+      },
+      "subSettings": {
+        "timeToLive": "Hodnota TTL (Time to Live)",
+        "ttlOff": "Vypnuto",
+        "ttlOnNoDefault": "Zapnuto (žádná výchozí hodnota)",
+        "ttlOn": "Zapnuto",
+        "seconds": "s",
+        "timeToLiveInSeconds": "Hodnota TTL (Time to Live) v sekundách",
+        "analyticalStorageTtl": "Hodnota TTL (Time to Live) analytického úložiště",
+        "geospatialConfiguration": "Geoprostorová konfigurace",
+        "geography": "Geografická lokalita",
+        "geometry": "Geometrie",
+        "uniqueKeys": "Jedinečné klíče",
+        "mongoTtlMessage": "Pokud chcete povolit hodnotu TTL (Time to Live) pro vaši kolekci nebo dokumenty,",
+        "mongoTtlLinkText": "vytvořit index TTL",
+        "partitionKeyTooltipTemplate": "Tento {{partitionKeyName}} slouží k rozdělení dat mezi více oddílů za účelem škálování. Hodnota {{partitionKeyValue}} určuje, jak jsou dokumenty rozděleny do oddílů.",
+        "largePartitionKeyEnabled": "Velký klíč oddílu {{partitionKeyName}} byl povolen.",
+        "hierarchicalPartitioned": "Kontejner rozdělený na oddíly hierarchickým způsobem",
+        "nonHierarchicalPartitioned": "Kontejner rozdělený na oddíly nehierarchickým způsobem"
+      },
+      "scale": {
+        "freeTierInfo": "S úrovní Free získáte první(ch) {{ru}} RU/s a {{storage}} GB úložiště v tomto účtu zdarma. Aby váš účet zůstal bezplatný, udržujte celkový počet RU/s ve všech prostředcích v rámci účtu do {{ru}} RU/s.",
+        "freeTierLearnMore": "Získejte další informace.",
+        "throughputRuS": "Propustnost (Jednotka žádosti/s)",
+        "autoScaleCustomSettings": "Váš účet má vlastní nastavení, která brání nastavení propustnosti na úrovni kontejneru. Pokud chcete provést změny, obraťte se na svého kontaktního pracovníka z technického týmu Cosmos DB.",
+        "keyspaceSharedThroughput": "Sdílená propustnost této tabulky je nakonfigurovaná v prostoru klíčů.",
+        "throughputRangeLabel": "Propustnost ({{min}} – {{max}} RU/s)",
+        "unlimited": "bez omezení"
+      },
+      "partitionKeyEditor": {
+        "changePartitionKey": "Změnit: {{partitionKeyName}}",
+        "currentPartitionKey": "Aktuální {{partitionKeyName}}",
+        "partitioning": "Dělení na oddíly",
+        "hierarchical": "Hierarchický",
+        "nonHierarchical": "Nehierarchický",
+        "safeguardWarning": "Abyste zachovali integritu dat kopírovaných do nového kontejneru, zajistěte, aby po celou dobu procesu změny klíče oddílu nebyly ve zdrojovém kontejneru prováděny žádné aktualizace.",
+        "changeDescription": "Pokud chcete změnit klíč oddílu, musíte vytvořit nový cílový kontejner nebo vybrat existující cílový kontejner. Data se pak zkopírují do cílového kontejneru.",
+        "changeButton": "Změnit",
+        "changeJob": "Úloha změny {{partitionKeyName}}",
+        "cancelButton": "Zrušit",
+        "documentsProcessed": "(počet zpracovaných dokumentů: {{processedCount}} z {{totalCount}})"
+      },
+      "computedProperties": {
+        "ariaLabel": "Vypočítané vlastnosti",
+        "learnMorePrefix": "o tom, jak definovat počítané vlastnosti a jak je používat."
+      },
+      "indexingPolicy": {
+        "ariaLabel": "Zásada indexování"
+      },
+      "dataMasking": {
+        "ariaLabel": "Zásada maskování dat",
+        "validationFailed": "Ověření selhalo:",
+        "includedPathsRequired": "IncludedPaths je povinné.",
+        "includedPathsMustBeArray": "includedPaths musí být pole.",
+        "excludedPathsMustBeArray": "excludedPaths musí být pole, pokud je zadáno"
+      },
+      "containerPolicy": {
+        "vectorPolicy": "Zásada vektoru",
+        "fullTextPolicy": "Zásada fulltextového vyhledávání",
+        "createFullTextPolicy": "Vytvořit novou zásadu fulltextového vyhledávání"
+      },
+      "globalSecondaryIndex": {
+        "indexesDefined": "Pro tento kontejner jsou definované následující indexy.",
+        "learnMoreSuffix": "o tom, jak definovat globální sekundární indexy a jak je používat.",
+        "jsonAriaLabel": "JSON globálního sekundárního indexu",
+        "addIndex": "Přidat index",
+        "settingsTitle": "Nastavení globálního sekundárního indexu",
+        "sourceContainer": "Zdrojový kontejner",
+        "indexDefinition": "Definice globálního sekundárního indexu"
+      },
+      "indexingPolicyRefresh": {
+        "refreshFailed": "Nepovedlo se aktualizovat průběh transformace indexu."
+      },
+      "throughputInput": {
+        "autoscale": "Automaticky škálovat",
+        "manual": "Ručně",
+        "minimumRuS": "Minimální RU/s",
+        "maximumRuS": "Maximální RU/s",
+        "x10Equals": "x 10 =",
+        "storageCapacity": "Kapacita úložiště",
+        "fixed": "Fixní",
+        "unlimited": "Neomezené",
+        "instant": "Okamžité",
+        "fourToSixHrs": "4–6 hodin",
+        "autoscaleDescription": "Na základě využití se vaše propustnost {{resourceType}} bude škálovat od",
+        "freeTierWarning": "Fakturace začne, pokud zřídíte více než {{ru}} RU/s manuální propustnosti nebo pokud se prostředek při automatickém škálování bude škálovat nad {{ru}} RU/s.",
+        "capacityCalculator": "Odhadněte požadovanou hodnotu RU/s pomocí",
+        "capacityCalculatorLink": " kalkulačka kapacity",
+        "fixedStorageNote": "Při použití kolekce s pevnou kapacitou úložiště můžete nastavit až 10 000 RU/s.",
+        "min": "min",
+        "max": "max."
+      },
+      "throughputBuckets": {
+        "label": "Kbelíky propustnosti",
+        "bucketLabel": "Kbelík {{id}}",
+        "dataExplorerQueryBucket": " (Kbelík dotazů Data Exploreru)",
+        "active": "Aktivní",
+        "inactive": "Neaktivní"
+      }
+    }
+  }
+}

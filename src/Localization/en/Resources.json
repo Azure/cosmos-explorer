@@ -1,0 +1,968 @@
+{
+  "common": {
+    "ok": "OK",
+    "cancel": "Cancel",
+    "close": "Close",
+    "save": "Save",
+    "delete": "Delete",
+    "update": "Update",
+    "discard": "Discard",
+    "execute": "Execute",
+    "loading": "Loading",
+    "loadingEllipsis": "Loading...",
+    "next": "Next",
+    "previous": "Previous",
+    "yes": "Yes",
+    "no": "No",
+    "result": "Result",
+    "learnMore": "Learn more",
+    "getStarted": "Get started",
+    "retry": "Retry",
+    "apply": "Apply",
+    "refresh": "Refresh",
+    "copy": "Copy",
+    "create": "Create",
+    "confirm": "Confirm",
+    "open": "Open",
+    "rename": "Rename",
+    "download": "Download",
+    "upload": "Upload",
+    "connect": "Connect",
+    "remove": "Remove",
+    "load": "Load",
+    "publish": "Publish",
+    "browse": "Browse",
+    "increaseValueBy1": "Increase value by 1",
+    "decreaseValueBy1": "Decrease value by 1"
+  },
+  "splashScreen": {
+    "title": {
+      "default": "Welcome to Azure Cosmos DB",
+      "postgres": "Welcome to Azure Cosmos DB for PostgreSQL",
+      "vcoreMongo": "Welcome to Azure DocumentDB (with MongoDB compatibility)"
+    },
+    "subtitle": {
+      "default": "Globally distributed, multi-model database service for any scale",
+      "getStarted": "Get started with our sample datasets, documentation, and additional tools."
+    },
+    "quickStart": {
+      "title": "Launch quick start",
+      "description": "Launch a quick start tutorial to get started with sample data"
+    },
+    "newCollection": {
+      "title": "New {{collectionName}}",
+      "description": "Create a new container for storage and throughput"
+    },
+    "samplesGallery": {
+      "title": "Azure Cosmos DB Samples Gallery",
+      "description": "Discover samples that showcase scalable, intelligent app patterns. Try one now to see how fast you can go from concept to code with Cosmos DB"
+    },
+    "connectCard": {
+      "title": "Connect",
+      "description": "Prefer using your own choice of tooling? Find the connection string you need to connect",
+      "pgAdmin": {
+        "title": "Connect with pgAdmin",
+        "description": "Prefer pgAdmin? Find your connection strings here"
+      },
+      "vsCode": {
+        "title": "Connect with VS Code",
+        "description": "Query and Manage your MongoDB and DocumentDB clusters in Visual Studio Code"
+      }
+    },
+    "shell": {
+      "postgres": {
+        "title": "PostgreSQL Shell",
+        "description": "Create table and interact with data using PostgreSQL's shell interface"
+      },
+      "vcoreMongo": {
+        "title": "Mongo Shell",
+        "description": "Create a collection and interact with data using MongoDB's shell interface"
+      }
+    },
+    "teachingBubble": {
+      "newToPostgres": {
+        "headline": "New to Cosmos DB PGSQL?",
+        "body": "Welcome! If you are new to Cosmos DB PGSQL and need help with getting started, here is where you can find sample data, query."
+      },
+      "resetPassword": {
+        "headline": "Create your password",
+        "body": "If you haven't changed your password yet, change it now."
+      },
+      "coachMark": {
+        "headline": "Start with sample {{collectionName}}",
+        "body": "You will be guided to create a sample container with sample data, then we will give you a tour of data explorer. You can also cancel launching this tour and explore yourself"
+      }
+    },
+    "sections": {
+      "recents": "Recents",
+      "clearRecents": "Clear Recents",
+      "top3": "Top 3 things you need to know",
+      "learningResources": "Learning Resources",
+      "nextSteps": "Next steps",
+      "tipsAndLearnMore": "Tips & learn more",
+      "notebook": "Notebook",
+      "needHelp": "Need help?"
+    },
+    "top3Items": {
+      "sql": {
+        "advancedModeling": {
+          "title": "Advanced Modeling Patterns",
+          "description": "Learn advanced strategies to optimize your database."
+        },
+        "partitioning": {
+          "title": "Partitioning Best Practices",
+          "description": "Learn to apply data model and partitioning strategies."
+        },
+        "resourcePlanning": {
+          "title": "Plan Your Resource Requirements",
+          "description": "Get to know the different configuration choices."
+        }
+      },
+      "mongo": {
+        "whatIsMongo": {
+          "title": "What is the MongoDB API?",
+          "description": "Understand Azure Cosmos DB for MongoDB and its features."
+        },
+        "features": {
+          "title": "Features and Syntax",
+          "description": "Discover the advantages and features"
+        },
+        "migrate": {
+          "title": "Migrate Your Data",
+          "description": "Pre-migration steps for moving data"
+        }
+      },
+      "cassandra": {
+        "buildJavaApp": {
+          "title": "Build a Java App",
+          "description": "Create a Java app using an SDK."
+        },
+        "partitioning": {
+          "title": "Partitioning Best Practices",
+          "description": "Learn how partitioning works."
+        },
+        "requestUnits": {
+          "title": "Request Units (RUs)",
+          "description": "Understand RU charges."
+        }
+      },
+      "gremlin": {
+        "dataModeling": {
+          "title": "Data Modeling",
+          "description": "Graph data modeling recommendations"
+        },
+        "partitioning": {
+          "title": "Partitioning Best Practices",
+          "description": "Learn how partitioning works"
+        },
+        "queryData": {
+          "title": "Query Data",
+          "description": "Querying data with Gremlin"
+        }
+      },
+      "tables": {
+        "whatIsTable": {
+          "title": "What is the Table API?",
+          "description": "Understand Azure Cosmos DB for Table and its features"
+        },
+        "migrate": {
+          "title": "Migrate your data",
+          "description": "Learn how to migrate your data"
+        },
+        "faq": {
+          "title": "Azure Cosmos DB for Table FAQs",
+          "description": "Common questions about Azure Cosmos DB for Table"
+        }
+      }
+    },
+    "learningResources": {
+      "shortcuts": {
+        "title": "Data Explorer keyboard shortcuts",
+        "description": "Learn keyboard shortcuts to navigate Data Explorer."
+      },
+      "liveTv": {
+        "title": "Learn the Fundamentals",
+        "description": "Watch Azure Cosmos DB Live TV show introductory and how to videos."
+      },
+      "sql": {
+        "sdk": {
+          "title": "Get Started using an SDK",
+          "description": "Learn about the Azure Cosmos DB SDK."
+        },
+        "migrate": {
+          "title": "Migrate Your Data",
+          "description": "Migrate data using Azure services and open-source solutions."
+        }
+      },
+      "mongo": {
+        "nodejs": {
+          "title": "Build an app with Node.js",
+          "description": "Create a Node.js app."
+        },
+        "gettingStarted": {
+          "title": "Getting Started Guide",
+          "description": "Learn the basics to get started."
+        }
+      },
+      "cassandra": {
+        "createContainer": {
+          "title": "Create a Container",
+          "description": "Get to know the create a container options."
+        },
+        "throughput": {
+          "title": "Provision Throughput",
+          "description": "Learn how to configure throughput."
+        }
+      },
+      "gremlin": {
+        "getStarted": {
+          "title": "Get Started ",
+          "description": "Create, query, and traverse using the Gremlin console"
+        },
+        "importData": {
+          "title": "Import Graph Data",
+          "description": "Learn Bulk ingestion data using BulkExecutor"
+        }
+      },
+      "tables": {
+        "dotnet": {
+          "title": "Build a .NET App",
+          "description": "How to access Azure Cosmos DB for Table from a .NET app."
+        },
+        "java": {
+          "title": "Build a Java App",
+          "description": "Create a Azure Cosmos DB for Table app with Java SDK "
+        }
+      }
+    },
+    "nextStepItems": {
+      "postgres": {
+        "dataModeling": "Data Modeling",
+        "distributionColumn": "How to choose a Distribution Column",
+        "buildApps": "Build Apps with Python/Java/Django"
+      },
+      "vcoreMongo": {
+        "migrateData": "Migrate Data",
+        "vectorSearch": "Build AI apps with Vector Search",
+        "buildApps": "Build Apps with Nodejs"
+      }
+    },
+    "learnMoreItems": {
+      "postgres": {
+        "performanceTuning": "Performance Tuning",
+        "diagnosticQueries": "Useful Diagnostic Queries",
+        "sqlReference": "Distributed SQL Reference"
+      },
+      "vcoreMongo": {
+        "vectorSearch": "Vector Search",
+        "textIndexing": "Text Indexing",
+        "troubleshoot": "Troubleshoot common issues"
+      }
+    },
+    "fabric": {
+      "buildTitle": "Build your database",
+      "useTitle": "Use your database",
+      "newContainer": {
+        "title": "New container",
+        "description": "Create a destination container to store your data"
+      },
+      "sampleData": {
+        "title": "Sample Data",
+        "description": "Load sample data in your database"
+      },
+      "sampleVectorData": {
+        "title": "Sample Vector Data",
+        "description": "Load sample vector data with text-embedding-ada-002"
+      },
+      "appDevelopment": {
+        "title": "App development",
+        "description": "Start here to use an SDK to build your apps"
+      },
+      "sampleGallery": {
+        "title": "Sample Gallery",
+        "description": "Get real-world end-to-end samples"
+      }
+    },
+    "sampleDataDialog": {
+      "title": "Sample Data",
+      "startButton": "Start",
+      "createPrompt": "Create a container \"{{containerName}}\" and import sample data into it. This may take a few minutes.",
+      "creatingContainer": "Creating container \"{{containerName}}\"...",
+      "importingData": "Importing data into \"{{containerName}}\"...",
+      "success": "Successfully created \"{{containerName}}\" with sample data.",
+      "errorContainerExists": "The container \"{{containerName}}\" in database \"{{databaseName}}\" already exists. Please delete it and retry.",
+      "errorCreateContainer": "Failed to create container: {{error}}",
+      "errorImportData": "Failed to import data: {{error}}"
+    }
+  },
+  "contextMenu": {
+    "newContainer": "New {{containerName}}",
+    "restoreContainer": "Restore {{containerName}}",
+    "deleteDatabase": "Delete {{databaseName}}",
+    "deleteContainer": "Delete {{containerName}}",
+    "newSqlQuery": "New SQL Query",
+    "newQuery": "New Query",
+    "openMongoShell": "Open Mongo Shell",
+    "newShell": "New Shell",
+    "openCassandraShell": "Open Cassandra Shell",
+    "newStoredProcedure": "New Stored Procedure",
+    "newUdf": "New UDF",
+    "newTrigger": "New Trigger",
+    "deleteStoredProcedure": "Delete Stored Procedure",
+    "deleteTrigger": "Delete Trigger",
+    "deleteUdf": "Delete User Defined Function"
+  },
+  "tabs": {
+    "documents": {
+      "newItem": "New Item",
+      "newDocument": "New Document",
+      "uploadItem": "Upload Item",
+      "applyFilter": "Apply Filter",
+      "unsavedChanges": "Unsaved changes",
+      "unsavedChangesMessage": "Your unsaved changes will be lost. Do you want to continue?",
+      "createDocumentFailed": "Create document failed",
+      "updateDocumentFailed": "Update document failed",
+      "documentDeleted": "Document successfully deleted.",
+      "deleteDocumentDialogTitle": "Delete document",
+      "deleteDocumentsDialogTitle": "Delete documents",
+      "throttlingError": "Some documents failed to delete due to a rate limiting error. Please try again later. To prevent this in the future, consider increasing the throughput on your container or database.",
+      "deleteFailed": "Deleting document(s) failed ({{error}})",
+      "missingShardProperty": "The document is lacking the shard property: {{partitionKeyProperty}}",
+      "refreshGridFailed": "Refresh documents grid failed",
+      "confirmDelete": "Are you sure you want to delete {{documentName}}?",
+      "confirmDeleteTitle": "Confirm delete",
+      "selectedItems": "the selected {{count}} items",
+      "selectedItem": "the selected item",
+      "selectedDocuments": "the selected {{count}} documents",
+      "selectedDocument": "the selected document",
+      "deleteDocumentFailedLog": "Failed to delete document {{documentId}} with status code {{statusCode}}",
+      "deleteSuccessLog": "Successfully deleted {{count}} document(s)",
+      "deleteThrottledLog": "Failed to delete {{count}} document(s) due to \"Request too large\" (429) error. Retrying...",
+      "missingShardKeyLog": "Failed to save new document: Document shard key not defined",
+      "filterTooltip": "Type a query predicate or choose one from the list.",
+      "loadMore": "Load more",
+      "documentEditor": "Document editor",
+      "savedFilters": "Saved filters",
+      "defaultFilters": "Default filters",
+      "abort": "Abort",
+      "deletingDocuments": "Deleting {{count}} document(s)",
+      "deletedDocumentsSuccess": "Successfully deleted {{count}} document(s).",
+      "deleteAborted": "Deleting document(s) was aborted.",
+      "failedToDeleteDocuments": "Failed to delete {{count}} document(s).",
+      "requestTooLargeBase": "Some delete requests failed due to a \"Request too large\" exception (429)",
+      "retriedSuccessfully": "but were successfully retried.",
+      "retryingNow": "Retrying now.",
+      "increaseThroughputTip": "To prevent this in the future, consider increasing the throughput on your container or database.",
+      "numberOfSelectedDocuments": "Number of selected documents: {{count}}",
+      "mongoFilterPlaceholder": "Type a query predicate (e.g., {\"id\":\"foo\"}), or choose one from the drop down list, or leave empty to query all documents.",
+      "sqlFilterPlaceholder": "Type a query predicate (e.g., WHERE c.id=\"1\"), or choose one from the drop down list, or leave empty to query all documents.",
+      "error": "Error",
+      "warning": "Warning"
+    },
+    "query": {
+      "executeQuery": "Execute Query",
+      "executeSelection": "Execute Selection",
+      "saveQuery": "Save Query",
+      "downloadQuery": "Download Query",
+      "cancelQuery": "Cancel query",
+      "openSavedQueries": "Open Saved Queries",
+      "vertical": "Vertical",
+      "horizontal": "Horizontal",
+      "view": "View",
+      "editingQuery": "Editing Query"
+    },
+    "storedProcedure": {
+      "id": "Stored Procedure Id",
+      "idPlaceholder": "Enter the new stored procedure id",
+      "idAriaLabel": "Stored procedure id",
+      "body": "Stored Procedure Body",
+      "bodyAriaLabel": "Stored procedure body",
+      "successfulExecution": "Successful execution of stored procedure",
+      "resultAriaLabel": "Execute stored procedure result",
+      "logsAriaLabel": "Execute stored procedure logs",
+      "errors": "Errors:",
+      "errorDetailsAriaLabel": "Error details link",
+      "moreDetails": "More details",
+      "consoleLogTab": "console.log"
+    },
+    "trigger": {
+      "id": "Trigger Id",
+      "idPlaceholder": "Enter the new trigger id",
+      "type": "Trigger Type",
+      "operation": "Trigger Operation",
+      "body": "Trigger Body",
+      "bodyAriaLabel": "Trigger body",
+      "pre": "Pre",
+      "post": "Post",
+      "all": "All",
+      "operationCreate": "Create",
+      "operationDelete": "Delete",
+      "operationReplace": "Replace"
+    },
+    "udf": {
+      "id": "User Defined Function Id",
+      "idPlaceholder": "Enter the new user defined function id",
+      "body": "User Defined Function Body",
+      "bodyAriaLabel": "User defined function body"
+    },
+    "conflicts": {
+      "unsavedChanges": "Unsaved changes",
+      "changesWillBeLost": "Changes will be lost. Do you want to continue?",
+      "resolveConflictFailed": "Resolve conflict failed",
+      "deleteConflictFailed": "Delete conflict failed",
+      "refreshGridFailed": "Refresh documents grid failed"
+    },
+    "mongoShell": {
+      "title": "Mongo Shell"
+    }
+  },
+  "panes": {
+    "deleteDatabase": {
+      "panelTitle": "Delete {{databaseName}}",
+      "warningMessage": "Warning! The action you are about to take cannot be undone. Continuing will permanently delete this resource and all of its children resources.",
+      "confirmPrompt": "Confirm by typing the {{databaseName}} id (name)",
+      "inputMismatch": "Input {{databaseName}} name \"{{input}}\" does not match the selected {{databaseName}} \"{{selectedId}}\"",
+      "feedbackTitle": "Help us improve Azure Cosmos DB!",
+      "feedbackReason": "What is the reason why you are deleting this {{databaseName}}?"
+    },
+    "deleteCollection": {
+      "panelTitle": "Delete {{collectionName}}",
+      "confirmPrompt": "Confirm by typing the {{collectionName}} id",
+      "inputMismatch": "Input id {{input}} does not match the selected {{selectedId}}",
+      "feedbackTitle": "Help us improve Azure Cosmos DB!",
+      "feedbackReason": "What is the reason why you are deleting this {{collectionName}}?"
+    },
+    "addDatabase": {
+      "databaseLabel": "Database {{suffix}}",
+      "databaseIdLabel": "Database id",
+      "keyspaceIdLabel": "Keyspace id",
+      "databaseIdPlaceholder": "Type a new {{databaseLabel}} id",
+      "databaseTooltip": "A {{databaseLabel}} is a logical container of one or more {{collectionsLabel}}",
+      "shareThroughput": "Share throughput across {{collectionsLabel}}",
+      "shareThroughputTooltip": "Provisioned throughput at the {{databaseLabel}} level will be shared across all {{collectionsLabel}} within the {{databaseLabel}}.",
+      "greaterThanError": "Please enter a value greater than {{minValue}} for autopilot throughput",
+      "acknowledgeSpendError": "Please acknowledge the estimated {{period}} spend.",
+      "acknowledgeSpendErrorMonthly": "Please acknowledge the estimated monthly spend.",
+      "acknowledgeSpendErrorDaily": "Please acknowledge the estimated daily spend.",
+      "provisionSharedThroughputTitle": "Provision shared throughput",
+      "provisionThroughputLabel": "Provision throughput"
+    },
+    "addCollection": {
+      "createNew": "Create new",
+      "useExisting": "Use existing",
+      "databaseTooltip": "A database is analogous to a namespace. It is the unit of management for a set of {{collectionName}}.",
+      "shareThroughput": "Share throughput across {{collectionName}}",
+      "shareThroughputTooltip": "Throughput configured at the database level will be shared across all {{collectionName}} within the database.",
+      "collectionIdLabel": "{{collectionName}} id",
+      "collectionIdTooltip": "Unique identifier for the {{collectionName}} and used for id-based routing through REST and all SDKs.",
+      "collectionIdPlaceholder": "e.g., {{collectionName}}1",
+      "collectionIdAriaLabel": "{{collectionName}} id, Example {{collectionName}}1",
+      "existingDatabaseAriaLabel": "Choose existing {{databaseName}} id",
+      "existingDatabasePlaceholder": "Choose existing {{databaseName}} id",
+      "indexing": "Indexing",
+      "turnOnIndexing": "Turn on indexing",
+      "automatic": "Automatic",
+      "turnOffIndexing": "Turn off indexing",
+      "off": "Off",
+      "sharding": "Sharding",
+      "shardingTooltip": "Sharded collections split your data across many replica sets (shards) to achieve unlimited scalability. Sharded collections require choosing a shard key (field) to evenly distribute your data.",
+      "unsharded": "Unsharded",
+      "unshardedLabel": "Unsharded (20GB limit)",
+      "sharded": "Sharded",
+      "addPartitionKey": "Add hierarchical partition key",
+      "hierarchicalPartitionKeyInfo": "This feature allows you to partition your data with up to three levels of keys for better data distribution. Requires .NET V3, Java V4 SDK, or preview JavaScript V3 SDK.",
+      "provisionDedicatedThroughput": "Provision dedicated throughput for this {{collectionName}}",
+      "provisionDedicatedThroughputTooltip": "You can optionally provision dedicated throughput for a {{collectionName}} within a database that has throughput provisioned. This dedicated throughput amount will not be shared with other {{collectionNamePlural}} in the database and does not count towards the throughput you provisioned for the database. This throughput amount will be billed in addition to the throughput amount you provisioned at the database level.",
+      "uniqueKeysPlaceholderMongo": "Comma separated paths e.g. firstName,address.zipCode",
+      "uniqueKeysPlaceholderSql": "Comma separated paths e.g. /firstName,/address/zipCode",
+      "addUniqueKey": "Add unique key",
+      "enableAnalyticalStore": "Enable analytical store",
+      "disableAnalyticalStore": "Disable analytical store",
+      "on": "On",
+      "analyticalStoreSynapseLinkRequired": "Azure Synapse Link is required for creating an analytical store {{collectionName}}. Enable Synapse Link for this Cosmos DB account.",
+      "enable": "Enable",
+      "containerVectorPolicy": "Container Vector Policy",
+      "containerFullTextSearchPolicy": "Container Full Text Search Policy",
+      "advanced": "Advanced",
+      "mongoIndexingTooltip": "The _id field is indexed by default. Creating a wildcard index for all fields will optimize queries and is recommended for development.",
+      "createWildcardIndex": "Create a Wildcard Index on all fields",
+      "legacySdkCheckbox": "My application uses an older Cosmos .NET or Java SDK version (.NET V1 or Java V2)",
+      "legacySdkInfo": "To ensure compatibility with older SDKs, the created container will use a legacy partitioning scheme that supports partition key values of size only up to 101 bytes. If this is enabled, you will not be able to use hierarchical partition keys.",
+      "indexingOnInfo": "All properties in your documents will be indexed by default for flexible and efficient queries.",
+      "indexingOffInfo": "Indexing will be turned off. Recommended if you don't need to run queries or only have key value operations.",
+      "indexingOffWarning": "By creating this container with indexing turned off, you will not be able to make any indexing policy changes. Indexing changes are only allowed on a container with a indexing policy.",
+      "acknowledgeSpendErrorMonthly": "Please acknowledge the estimated monthly spend.",
+      "acknowledgeSpendErrorDaily": "Please acknowledge the estimated daily spend.",
+      "unshardedMaxRuError": "Unsharded collections support up to 10,000 RUs",
+      "acknowledgeShareThroughputError": "Please acknowledge the estimated cost of this dedicated throughput.",
+      "vectorPolicyError": "Please fix errors in container vector policy",
+      "fullTextSearchPolicyError": "Please fix errors in container full text search policy",
+      "addingSampleDataSet": "Adding sample data set",
+      "databaseFieldLabelName": "Database name",
+      "databaseFieldLabelId": "Database id",
+      "newDatabaseIdPlaceholder": "Type a new database id",
+      "newDatabaseIdAriaLabel": "New database id, Type a new database id",
+      "createNewDatabaseAriaLabel": "Create new database",
+      "useExistingDatabaseAriaLabel": "Use existing database",
+      "chooseExistingDatabase": "Choose an existing database",
+      "teachingBubble": {
+        "step1Headline": "Create sample database",
+        "step1Body": "Database is the parent of a container. You can create a new database or use an existing one. In this tutorial we are creating a new database named SampleDB.",
+        "step1LearnMore": "Learn more about resources.",
+        "step2Headline": "Setting throughput",
+        "step2Body": "Cosmos DB recommends sharing throughput across database. Autoscale will give you a flexible amount of throughput based on the max RU/s set (Request Units).",
+        "step2LearnMore": "Learn more about RU/s.",
+        "step3Headline": "Naming container",
+        "step3Body": "Name your container",
+        "step4Headline": "Setting partition key",
+        "step4Body": "Last step - you will need to define a partition key for your collection. /address was chosen for this particular example. A good partition key should have a wide range of possible value",
+        "step4CreateContainer": "Create container",
+        "step5Headline": "Creating sample container",
+        "step5Body": "A sample container is now being created and we are adding sample data for you. It should take about 1 minute.",
+        "step5BodyFollowUp": "Once the sample container is created, review your sample dataset and follow next steps",
+        "stepOfTotal": "Step {{current}} of {{total}}"
+      }
+    },
+    "addCollectionUtility": {
+      "shardKeyTooltip": "The shard key (field) is used to split your data across many replica sets (shards) to achieve unlimited scalability. It's critical to choose a field that will evenly distribute your data.",
+      "partitionKeyTooltip": "The {{partitionKeyName}} is used to automatically distribute data across partitions for scalability. Choose a property in your JSON document that has a wide range of values and evenly distributes request volume.",
+      "partitionKeyTooltipSqlSuffix": " For small read-heavy workloads or write-heavy workloads of any size, id is often a good choice.",
+      "shardKeyLabel": "Shard key",
+      "partitionKeyLabel": "Partition key",
+      "shardKeyPlaceholder": "e.g., categoryId",
+      "partitionKeyPlaceholderDefault": "e.g., /address",
+      "partitionKeyPlaceholderFirst": "Required - first partition key e.g., /TenantId",
+      "partitionKeyPlaceholderSecond": "second partition key e.g., /UserId",
+      "partitionKeyPlaceholderThird": "third partition key e.g., /SessionId",
+      "partitionKeyPlaceholderGraph": "e.g., /address/zipCode",
+      "uniqueKeysTooltip": "Unique keys provide developers with the ability to add a layer of data integrity to their database. By creating a unique key policy when a container is created, you ensure the uniqueness of one or more values per partition key.",
+      "uniqueKeysLabel": "Unique keys",
+      "analyticalStoreLabel": "Analytical Store",
+      "analyticalStoreTooltip": "Enable analytical store capability to perform near real-time analytics on your operational data, without impacting the performance of transactional workloads.",
+      "analyticalStoreDescription": "Enable analytical store capability to perform near real-time analytics on your operational data, without impacting the performance of transactional workloads.",
+      "vectorPolicyTooltip": "Describe any properties in your data that contain vectors, so that they can be made available for similarity queries."
+    },
+    "settings": {
+      "pageOptions": "Page Options",
+      "pageOptionsDescription": "Choose Custom to specify a fixed amount of query results to show, or choose Unlimited to show as many query results per page.",
+      "queryResultsPerPage": "Query results per page",
+      "queryResultsPerPageTooltip": "Enter the number of query results that should be shown per page.",
+      "customQueryItemsPerPage": "Custom query items per page",
+      "custom": "Custom",
+      "unlimited": "Unlimited",
+      "entraIdRbac": "Enable Entra ID RBAC",
+      "entraIdRbacDescription": "Choose Automatic to enable Entra ID RBAC automatically. True/False to force enable/disable Entra ID RBAC.",
+      "true": "True",
+      "false": "False",
+      "regionSelection": "Region Selection",
+      "regionSelectionDescription": "Changes region the Cosmos Client uses to access account.",
+      "selectRegion": "Select Region",
+      "selectRegionTooltip": "Changes the account endpoint used to perform client operations.",
+      "globalDefault": "Global (Default)",
+      "readWrite": "(Read/Write)",
+      "read": "(Read)",
+      "queryTimeout": "Query Timeout",
+      "queryTimeoutDescription": "When a query reaches a specified time limit, a popup with an option to cancel the query will show unless automatic cancellation has been enabled.",
+      "enableQueryTimeout": "Enable query timeout",
+      "queryTimeoutMs": "Query timeout (ms)",
+      "automaticallyCancelQuery": "Automatically cancel query after timeout",
+      "ruLimit": "RU Limit",
+      "ruLimitDescription": "If a query exceeds a configured RU limit, the query will be aborted.",
+      "enableRuLimit": "Enable RU limit",
+      "ruLimitLabel": "RU Limit (RU)",
+      "defaultQueryResults": "Default Query Results View",
+      "defaultQueryResultsDescription": "Select the default view to use when displaying query results.",
+      "retrySettings": "Retry Settings",
+      "retrySettingsDescription": "Retry policy associated with throttled requests during CosmosDB queries.",
+      "maxRetryAttempts": "Max retry attempts",
+      "maxRetryAttemptsTooltip": "Max number of retries to be performed for a request. Default value 9.",
+      "fixedRetryInterval": "Fixed retry interval (ms)",
+      "fixedRetryIntervalTooltip": "Fixed retry interval in milliseconds to wait between each retry ignoring the retryAfter returned as part of the response. Default value is 0 milliseconds.",
+      "maxWaitTime": "Max wait time (s)",
+      "maxWaitTimeTooltip": "Max wait time in seconds to wait for a request while the retries are happening. Default value 30 seconds.",
+      "enableContainerPagination": "Enable container pagination",
+      "enableContainerPaginationDescription": "Load 50 containers at a time. Currently, containers are not pulled in alphanumeric order.",
+      "enableCrossPartitionQuery": "Enable cross-partition query",
+      "enableCrossPartitionQueryDescription": "Send more than one request while executing a query. More than one request is necessary if the query is not scoped to single partition key value.",
+      "maxDegreeOfParallelism": "Max degree of parallelism",
+      "maxDegreeOfParallelismDescription": "Gets or sets the number of concurrent operations run client side during parallel query execution. A positive property value limits the number of concurrent operations to the set value. If it is set to less than 0, the system automatically decides the number of concurrent operations to run.",
+      "maxDegreeOfParallelismQuery": "Query up to the max degree of parallelism.",
+      "priorityLevel": "Priority Level",
+      "priorityLevelDescription": "Sets the priority level for data-plane requests from Data Explorer when using Priority-Based Execution. If \"None\" is selected, Data Explorer will not specify priority level, and the server-side default priority level will be used.",
+      "displayGremlinQueryResults": "Display Gremlin query results as:",
+      "displayGremlinQueryResultsDescription": "Select Graph to automatically visualize the query results as a Graph or JSON to display the results as JSON.",
+      "graph": "Graph",
+      "json": "JSON",
+      "graphAutoVisualization": "Graph Auto-visualization",
+      "enableSampleDatabase": "Enable sample database",
+      "enableSampleDatabaseDescription": "This is a sample database and collection with synthetic product data you can use to explore using NoSQL queries. This will appear as another database in the Data Explorer UI, and is created by, and maintained by Microsoft at no cost to you.",
+      "enableSampleDbAriaLabel": "Enable sample db for query exploration",
+      "guidRepresentation": "Guid Representation",
+      "guidRepresentationDescription": "GuidRepresentation in MongoDB refers to how Globally Unique Identifiers (GUIDs) are serialized and deserialized when stored in BSON documents. This will apply to all document operations.",
+      "advancedSettings": "Advanced Settings",
+      "ignorePartitionKey": "Ignore partition key on document update",
+      "ignorePartitionKeyTooltip": "If checked, the partition key value will not be used to locate the document during update operations. Only use this if document updates are failing due to an abnormal partition key.",
+      "clearHistory": "Clear History",
+      "clearHistoryConfirm": "Are you sure you want to proceed?",
+      "clearHistoryDescription": "This action will clear the all customizations for this account in this browser, including:",
+      "clearHistoryTabLayout": "Reset your customized tab layout, including the splitter positions",
+      "clearHistoryTableColumns": "Erase your table column preferences, including any custom columns",
+      "clearHistoryFilters": "Clear your filter history",
+      "clearHistoryRegion": "Reset region selection to global",
+      "increaseValueBy1000": "Increase value by 1000",
+      "decreaseValueBy1000": "Decrease value by 1000",
+      "none": "None",
+      "low": "Low",
+      "high": "High",
+      "automatic": "Automatic",
+      "enhancedQueryControl": "Enhanced query control",
+      "enableQueryControl": "Enable query control",
+      "explorerVersion": "Explorer Version",
+      "accountId": "Account ID",
+      "sessionId": "Session ID",
+      "popupsDisabledError": "We were unable to establish authorization for this account, due to pop-ups being disabled in the browser.\nPlease enable pop-ups for this site and click on \"Login for Entra ID\" button",
+      "failedToAcquireTokenError": "Failed to acquire authorization token automatically. Please click on \"Login for Entra ID\" button to enable Entra ID RBAC operations"
+    },
+    "saveQuery": {
+      "panelTitle": "Save Query",
+      "setupCostMessage": "For compliance reasons, we save queries in a container in your Azure Cosmos account, in a separate database called \u201c{{databaseName}}\u201d. To proceed, we need to create a container in your account, estimated additional cost is $0.77 daily.",
+      "completeSetup": "Complete setup",
+      "noQueryNameError": "No query name specified",
+      "invalidQueryContentError": "Invalid query content specified",
+      "failedToSaveQueryError": "Failed to save query {{queryName}}",
+      "failedToSetupContainerError": "Failed to setup a container for saved queries",
+      "accountNotSetupError": "Failed to save query: account not setup to save queries",
+      "name": "Name"
+    },
+    "loadQuery": {
+      "noFileSpecifiedError": "No file specified",
+      "failedToLoadQueryError": "Failed to load query",
+      "failedToLoadQueryFromFileError": "Failed to load query from file {{fileName}}",
+      "selectFilesToOpen": "Select a query document",
+      "browseFiles": "Browse"
+    },
+    "executeStoredProcedure": {
+      "enterInputParameters": "Enter input parameters (if any)",
+      "key": "Key",
+      "param": "Param",
+      "partitionKeyValue": "Partition key value",
+      "value": "Value",
+      "addNewParam": "Add New Param",
+      "addParam": "Add param",
+      "deleteParam": "Delete param",
+      "invalidParamError": "Invalid param specified: {{invalidParam}}",
+      "invalidParamConsoleError": "Invalid param specified: {{invalidParam}} is not a valid literal value",
+      "stringType": "String",
+      "customType": "Custom"
+    },
+    "uploadItems": {
+      "noFilesSpecifiedError": "No files were specified. Please input at least one file.",
+      "selectJsonFiles": "Select JSON Files",
+      "selectJsonFilesTooltip": "Select one or more JSON files to upload. Each file can contain a single JSON document or an array of JSON documents. The combined size of all files in an individual upload operation must be less than 2 MB. You can perform multiple upload operations for larger data sets.",
+      "fileNameColumn": "FILE NAME",
+      "statusColumn": "STATUS",
+      "uploadStatus": "{{numSucceeded}} created, {{numThrottled}} throttled, {{numFailed}} errors",
+      "uploadedFiles": "Uploaded files"
+    },
+    "copyNotebook": {
+      "copyFailedError": "Failed to copy {{name}} to {{destination}}",
+      "uploadFailedError": "Failed to upload {{name}}",
+      "location": "Location",
+      "locationAriaLabel": "Location",
+      "selectLocation": "Select a notebook location to copy",
+      "name": "Name"
+    },
+    "publishNotebook": {
+      "publishFailedError": "Failed to publish {{notebookName}} to gallery",
+      "publishDescription": "When published, this notebook will appear in the Azure Cosmos DB notebooks public gallery. Make sure you have removed any sensitive data or output before publishing.",
+      "publishPrompt": "Would you like to publish and share \"{{name}}\" to the gallery?",
+      "coverImage": "Cover image",
+      "coverImageUrl": "Cover image url",
+      "name": "Name",
+      "description": "Description",
+      "tags": "Tags",
+      "tagsPlaceholder": "Optional tag 1, Optional tag 2",
+      "preview": "Preview",
+      "urlType": "URL",
+      "customImage": "Custom Image",
+      "takeScreenshot": "Take Screenshot",
+      "useFirstDisplayOutput": "Use First Display Output",
+      "failedToCaptureOutput": "Failed to capture first output",
+      "outputDoesNotExist": "Output does not exist for any of the cells.",
+      "failedToConvertError": "Failed to convert {{fileName}} to base64 format",
+      "failedToUploadError": "Failed to upload {{fileName}}"
+    },
+    "changePartitionKey": {
+      "failedToStartError": "Failed to start data transfer job",
+      "suboptimalPartitionKeyError": "Warning: The system has detected that your collection may be using a suboptimal partition key",
+      "description": "When changing a container\u2019s partition key, you will need to create a destination container with the correct partition key. You may also select an existing destination container.",
+      "sourceContainerId": "Source {{collectionName}} id",
+      "destinationContainerId": "Destination {{collectionName}} id",
+      "collectionIdTooltip": "Unique identifier for the {{collectionName}} and used for id-based routing through REST and all SDKs.",
+      "collectionIdPlaceholder": "e.g., {{collectionName}}1",
+      "collectionIdAriaLabel": "{{collectionName}} id, Example {{collectionName}}1",
+      "existingContainers": "Existing Containers",
+      "partitionKeyWarning": "The destination container must not already exist. Data Explorer will create a new destination container for you."
+    },
+    "cassandraAddCollection": {
+      "keyspaceLabel": "Keyspace name",
+      "keyspaceTooltip": "Select an existing keyspace or enter a new keyspace id.",
+      "tableIdLabel": "Enter CQL command to create the table.",
+      "enterTableId": "Enter table Id",
+      "tableSchemaAriaLabel": "Table schema",
+      "provisionDedicatedThroughput": "Provision dedicated throughput for this table",
+      "provisionDedicatedThroughputTooltip": "You can optionally provision dedicated throughput for a table within a keyspace that has throughput provisioned. This dedicated throughput amount will not be shared with other tables in the keyspace and does not count towards the throughput you provisioned for the keyspace. This throughput amount will be billed in addition to the throughput amount you provisioned at the keyspace level."
+    },
+    "tables": {
+      "addProperty": "Add Property",
+      "addRow": "Add Row",
+      "addEntity": "Add Entity",
+      "back": "back",
+      "nullFieldsWarning": "Warning: Null fields will not be displayed for editing.",
+      "propertyEmptyError": "{{property}} cannot be empty. Please input a value for {{property}}",
+      "whitespaceError": "{{property}} cannot have whitespace. Please input a value for {{property}} without whitespace",
+      "propertyTypeEmptyError": "Property type cannot be empty. Please select a type from the dropdown for property {{property}}"
+    },
+    "tableQuerySelect": {
+      "selectColumns": "Select the columns that you want to query.",
+      "availableColumns": "Available Columns"
+    },
+    "tableColumnSelection": {
+      "selectColumns": "Select which columns to display in your view of items in your container.",
+      "searchFields": "Search fields",
+      "reset": "Reset",
+      "partitionKeySuffix": " (partition key)"
+    },
+    "newVertex": {
+      "addProperty": "Add Property"
+    },
+    "addGlobalSecondaryIndex": {
+      "globalSecondaryIndexId": "Global secondary index container id",
+      "globalSecondaryIndexIdPlaceholder": "e.g., indexbyEmailId",
+      "projectionQuery": "Projection query",
+      "projectionQueryPlaceholder": "SELECT c.email, c.accountId FROM c",
+      "projectionQueryTooltip": "Learn more about defining global secondary indexes.",
+      "disabledTitle": "A global secondary index is already being created. Please wait for it to complete before creating another one."
+    },
+    "stringInput": {
+      "inputMismatchError": "Input {{input}} does not match the selected {{selectedId}}"
+    },
+    "panelInfo": {
+      "information": "Information",
+      "moreDetails": "More details"
+    }
+  },
+  "controls": {
+    "settings": {
+      "tabTitles": {
+        "scale": "Scale",
+        "conflictResolution": "Conflict Resolution",
+        "settings": "Settings",
+        "indexingPolicy": "Indexing Policy",
+        "partitionKeys": "Partition Keys",
+        "partitionKeysPreview": "Partition Keys (preview)",
+        "computedProperties": "Computed Properties",
+        "containerPolicies": "Container Policies",
+        "throughputBuckets": "Throughput Buckets",
+        "globalSecondaryIndexPreview": "Global Secondary Index (Preview)",
+        "maskingPolicyPreview": "Masking Policy (preview)"
+      },
+      "mongoNotifications": {
+        "selectTypeWarning": "Please select a type for each index.",
+        "enterFieldNameError": "Please enter a field name.",
+        "wildcardPathError": "Wildcard path is not present in the field name. Use a pattern like "
+      },
+      "partitionKey": {
+        "shardKey": "Shard key",
+        "partitionKey": "Partition key",
+        "shardKeyTooltip": "The shard key (field) is used to split your data across many replica sets (shards) to achieve unlimited scalability. It's critical to choose a field that will evenly distribute your data.",
+        "partitionKeyTooltip": "is used to automatically distribute data across partitions for scalability. Choose a property in your JSON document that has a wide range of values and evenly distributes request volume.",
+        "sqlPartitionKeyTooltipSuffix": " For small read-heavy workloads or write-heavy workloads of any size, id is often a good choice.",
+        "partitionKeySubtext": "For small workloads, the item ID is a suitable choice for the partition key.",
+        "mongoPlaceholder": "e.g., categoryId",
+        "gremlinPlaceholder": "e.g., /address",
+        "sqlFirstPartitionKey": "Required - first partition key e.g., /TenantId",
+        "sqlSecondPartitionKey": "second partition key e.g., /UserId",
+        "sqlThirdPartitionKey": "third partition key e.g., /SessionId",
+        "defaultPlaceholder": "e.g., /address/zipCode"
+      },
+      "costEstimate": {
+        "title": "Cost estimate*",
+        "howWeCalculate": "How we calculate this",
+        "updatedCostPerMonth": "Updated cost per month",
+        "currentCostPerMonth": "Current cost per month",
+        "perRu": "/RU",
+        "perHour": "/hr",
+        "perDay": "/day",
+        "perMonth": "/mo"
+      },
+      "throughput": {
+        "manualToAutoscaleDisclaimer": "The starting autoscale max RU/s will be determined by the system, based on the current manual throughput settings and storage of your resource. After autoscale has been enabled, you can change the max RU/s.",
+        "ttlWarningText": "The system will automatically delete items based on the TTL value (in seconds) you provide, without needing a delete operation explicitly issued by a client application. For more information see,",
+        "ttlWarningLinkText": "Time to Live (TTL) in Azure Cosmos DB",
+        "unsavedIndexingPolicy": "indexing policy",
+        "unsavedDataMaskingPolicy": "data masking policy",
+        "unsavedComputedProperties": "computed properties",
+        "unsavedEditorWarningPrefix": "You have not saved the latest changes made to your",
+        "unsavedEditorWarningSuffix": ". Please click save to confirm the changes.",
+        "updateDelayedApplyWarning": "You are about to request an increase in throughput beyond the pre-allocated capacity. This operation will take some time to complete.",
+        "scalingUpDelayMessage": "Scaling up will take 4-6 hours as it exceeds what Azure Cosmos DB can instantly support currently based on your number of physical partitions. You can increase your throughput to {{instantMaximumThroughput}} instantly or proceed with this value and wait until the scale-up is completed.",
+        "exceedPreAllocatedMessage": "Your request to increase throughput exceeds the pre-allocated capacity which may take longer than expected. There are three options you can choose from to proceed:",
+        "instantScaleOption": "You can instantly scale up to {{instantMaximumThroughput}} RU/s.",
+        "asyncScaleOption": "You can asynchronously scale up to any value under {{maximumThroughput}} RU/s in 4-6 hours.",
+        "quotaMaxOption": "Your current quota max is {{maximumThroughput}} RU/s. To go over this limit, you must request a quota increase and the Azure Cosmos DB team will review.",
+        "belowMinimumMessage": "You are not able to lower throughput below your current minimum of {{minimum}} RU/s. For more information on this limit, please refer to our service quote documentation.",
+        "saveThroughputWarning": "Your bill will be affected as you update your throughput settings. Please review the updated cost estimate below before saving your changes",
+        "currentAutoscaleThroughput": "Current autoscale throughput:",
+        "targetAutoscaleThroughput": "Target autoscale throughput:",
+        "currentManualThroughput": "Current manual throughput:",
+        "targetManualThroughput": "Target manual throughput:",
+        "applyDelayedMessage": "The request to increase the throughput has successfully been submitted. This operation will take 1-3 business days to complete. View the latest status in Notifications.",
+        "databaseLabel": "Database:",
+        "containerLabel": "Container:",
+        "applyShortDelayMessage": "A request to increase the throughput is currently in progress. This operation will take some time to complete.",
+        "applyLongDelayMessage": "A request to increase the throughput is currently in progress. This operation will take 1-3 business days to complete. View the latest status in Notifications.",
+        "throughputCapError": "Your account is currently configured with a total throughput limit of {{throughputCap}} RU/s. This update isn't possible because it would increase the total throughput to {{newTotalThroughput}} RU/s. Change total throughput limit in cost management.",
+        "throughputIncrementError": "Throughput value must be in increments of 1000"
+      },
+      "conflictResolution": {
+        "lwwDefault": "Last Write Wins (default)",
+        "customMergeProcedure": "Merge Procedure (custom)",
+        "mode": "Mode",
+        "conflictResolverProperty": "Conflict Resolver Property",
+        "storedProcedure": "Stored procedure",
+        "lwwTooltip": "Gets or sets the name of a integer property in your documents which is used for the Last Write Wins (LWW) based conflict resolution scheme. By default, the system uses the system defined timestamp property, _ts to decide the winner for the conflicting versions of the document. Specify your own integer property if you want to override the default timestamp based conflict resolution.",
+        "customTooltip": "Gets or sets the name of a stored procedure (aka merge procedure) for resolving the conflicts. You can write application defined logic to determine the winner of the conflicting versions of a document. The stored procedure will get executed transactionally, exactly once, on the server side. If you do not provide a stored procedure, the conflicts will be populated in the",
+        "customTooltipConflictsFeed": " conflicts feed",
+        "customTooltipSuffix": ". You can update/re-register the stored procedure at any time."
+      },
+      "changeFeed": {
+        "label": "Change feed log retention policy",
+        "tooltip": "Enable change feed log retention policy to retain last 10 minutes of history for items in the container by default. To support this, the request unit (RU) charge for this container will be multiplied by a factor of two for writes. Reads are unaffected."
+      },
+      "mongoIndexing": {
+        "disclaimer": "For queries that filter on multiple properties, create multiple single field indexes instead of a compound index.",
+        "disclaimerCompoundIndexesLink": " Compound indexes ",
+        "disclaimerSuffix": "are only used for sorting query results. If you need to add a compound index, you can create one using the Mongo shell.",
+        "compoundNotSupported": "Collections with compound indexes are not yet supported in the indexing editor. To modify indexing policy for this collection, use the Mongo Shell.",
+        "aadError": "To use the indexing policy editor, please login to the",
+        "aadErrorLink": "azure portal.",
+        "refreshingProgress": "Refreshing index transformation progress",
+        "canMakeMoreChangesZero": "You can make more indexing changes once the current index transformation is complete. ",
+        "refreshToCheck": "Refresh to check if it has completed.",
+        "canMakeMoreChangesProgress": "You can make more indexing changes once the current index transformation has completed. It is {{progress}}% complete. ",
+        "refreshToCheckProgress": "Refresh to check the progress.",
+        "definitionColumn": "Definition",
+        "typeColumn": "Type",
+        "dropIndexColumn": "Drop Index",
+        "addIndexBackColumn": "Add index back",
+        "deleteIndexButton": "Delete index Button",
+        "addBackIndexButton": "Add back Index Button",
+        "currentIndexes": "Current index(es)",
+        "indexesToBeDropped": "Index(es) to be dropped",
+        "indexFieldName": "Index Field Name",
+        "indexType": "Index Type",
+        "selectIndexType": "Select an index type",
+        "undoButton": "Undo Button"
+      },
+      "subSettings": {
+        "timeToLive": "Time to Live",
+        "ttlOff": "Off",
+        "ttlOnNoDefault": "On (no default)",
+        "ttlOn": "On",
+        "seconds": "second(s)",
+        "timeToLiveInSeconds": "Time to live in seconds",
+        "analyticalStorageTtl": "Analytical Storage Time to Live",
+        "geospatialConfiguration": "Geospatial Configuration",
+        "geography": "Geography",
+        "geometry": "Geometry",
+        "uniqueKeys": "Unique keys",
+        "mongoTtlMessage": "To enable time-to-live (TTL) for your collection/documents,",
+        "mongoTtlLinkText": "create a TTL index",
+        "partitionKeyTooltipTemplate": "This {{partitionKeyName}} is used to distribute data across multiple partitions for scalability. The value \"{{partitionKeyValue}}\" determines how documents are partitioned.",
+        "largePartitionKeyEnabled": "Large {{partitionKeyName}} has been enabled.",
+        "hierarchicalPartitioned": "Hierarchically partitioned container.",
+        "nonHierarchicalPartitioned": "Non-hierarchically partitioned container."
+      },
+      "scale": {
+        "freeTierInfo": "With free tier, you will get the first {{ru}} RU/s and {{storage}} GB of storage in this account for free. To keep your account free, keep the total RU/s across all resources in the account to {{ru}} RU/s.",
+        "freeTierLearnMore": "Learn more.",
+        "throughputRuS": "Throughput (RU/s)",
+        "autoScaleCustomSettings": "Your account has custom settings that prevents setting throughput at the container level. Please work with your Cosmos DB engineering team point of contact to make changes.",
+        "keyspaceSharedThroughput": "This table shared throughput is configured at the keyspace",
+        "throughputRangeLabel": "Throughput ({{min}} - {{max}} RU/s)",
+        "unlimited": "unlimited"
+      },
+      "partitionKeyEditor": {
+        "changePartitionKey": "Change {{partitionKeyName}}",
+        "currentPartitionKey": "Current {{partitionKeyName}}",
+        "partitioning": "Partitioning",
+        "hierarchical": "Hierarchical",
+        "nonHierarchical": "Non-hierarchical",
+        "safeguardWarning": "To safeguard the integrity of the data being copied to the new container, ensure that no updates are made to the source container for the entire duration of the partition key change process.",
+        "changeDescription": "To change the partition key, a new destination container must be created or an existing destination container selected. Data will then be copied to the destination container.",
+        "changeButton": "Change",
+        "changeJob": "{{partitionKeyName}} change job",
+        "cancelButton": "Cancel",
+        "documentsProcessed": "({{processedCount}} of {{totalCount}} documents processed)"
+      },
+      "computedProperties": {
+        "ariaLabel": "Computed properties",
+        "learnMorePrefix": "about how to define computed properties and how to use them."
+      },
+      "indexingPolicy": {
+        "ariaLabel": "Indexing Policy"
+      },
+      "dataMasking": {
+        "ariaLabel": "Data Masking Policy",
+        "validationFailed": "Validation failed:",
+        "includedPathsRequired": "includedPaths is required",
+        "includedPathsMustBeArray": "includedPaths must be an array",
+        "excludedPathsMustBeArray": "excludedPaths must be an array if provided"
+      },
+      "containerPolicy": {
+        "vectorPolicy": "Vector Policy",
+        "fullTextPolicy": "Full Text Policy",
+        "createFullTextPolicy": "Create new full text search policy"
+      },
+      "globalSecondaryIndex": {
+        "indexesDefined": "This container has the following indexes defined for it.",
+        "learnMoreSuffix": "about how to define global secondary indexes and how to use them.",
+        "jsonAriaLabel": "Global Secondary Index JSON",
+        "addIndex": "Add index",
+        "settingsTitle": "Global Secondary Index Settings",
+        "sourceContainer": "Source container",
+        "indexDefinition": "Global secondary index definition"
+      },
+      "indexingPolicyRefresh": {
+        "refreshFailed": "Refreshing index transformation progress failed"
+      },
+      "throughputInput": {
+        "autoscale": "Autoscale",
+        "manual": "Manual",
+        "minimumRuS": "Minimum RU/s",
+        "maximumRuS": "Maximum RU/s",
+        "x10Equals": "x 10 =",
+        "storageCapacity": "Storage capacity",
+        "fixed": "Fixed",
+        "unlimited": "Unlimited",
+        "instant": "Instant",
+        "fourToSixHrs": "4-6 hrs",
+        "autoscaleDescription": "Based on usage, your {{resourceType}} throughput will scale from",
+        "freeTierWarning": "Billing will apply if you provision more than {{ru}} RU/s of manual throughput, or if the resource scales beyond {{ru}} RU/s with autoscale.",
+        "capacityCalculator": "Estimate your required RU/s with",
+        "capacityCalculatorLink": " capacity calculator",
+        "fixedStorageNote": "When using a collection with fixed storage capacity, you can set up to 10,000 RU/s.",
+        "min": "min",
+        "max": "max"
+      },
+      "throughputBuckets": {
+        "label": "Throughput Buckets",
+        "bucketLabel": "Bucket {{id}}",
+        "dataExplorerQueryBucket": " (Data Explorer Query Bucket)",
+        "active": "Active",
+        "inactive": "Inactive"
+      }
+    }
+  }
+}

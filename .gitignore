@@ -17,6 +17,7 @@ Contracts/*
 failure.png
 screenshots/*
 GettingStarted-ignore*.ipynb
+src/Localization/Keys.generated.ts
 /test-results/
 /playwright-report/
 /blob-report/

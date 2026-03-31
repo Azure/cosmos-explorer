@@ -4,6 +4,7 @@ import { HttpStatusCodes, PoolIdType } from "../../../Common/Constants";
 import { getErrorMessage, handleError } from "../../../Common/ErrorHandlingUtils";
 import { GitHubOAuthService } from "../../../GitHub/GitHubOAuthService";
 import { IPinnedRepo, JunoClient } from "../../../Juno/JunoClient";
+import { Keys, t } from "Localization";
 import * as GitHubUtils from "../../../Utils/GitHubUtils";
 import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
 import { useSidePanel } from "../../../hooks/useSidePanel";
@@ -82,14 +83,14 @@ export const CopyNotebookPane: FunctionComponent<CopyNotebookPanelProps> = ({
 
       const notebookContentItem = await copyNotebook(selectedLocation);
       if (!notebookContentItem) {
-        throw new Error(`Failed to upload ${name}`);
+        throw new Error(t(Keys.panes.copyNotebook.uploadFailedError, { name }));
       }
 
       NotificationConsoleUtils.logConsoleInfo(`Successfully copied ${name} to ${destination}`);
       closeSidePanel();
     } catch (error) {
       const errorMessage = getErrorMessage(error);
-      setFormError(`Failed to copy ${name} to ${destination}`);
+      setFormError(t(Keys.panes.copyNotebook.copyFailedError, { name, destination }));
       handleError(errorMessage, "CopyNotebookPaneAdapter/submit", formError);
     } finally {
       clearMessage && clearMessage();
@@ -136,7 +137,7 @@ export const CopyNotebookPane: FunctionComponent<CopyNotebookPanelProps> = ({
   const props: RightPaneFormProps = {
     formError,
     isExecuting: isExecuting,
-    submitButtonText: "OK",
+    submitButtonText: t(Keys.common.ok),
     onSubmit: () => submit(),
   };
 

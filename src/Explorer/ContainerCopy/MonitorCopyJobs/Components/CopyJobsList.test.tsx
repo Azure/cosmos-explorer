@@ -12,8 +12,16 @@ jest.mock("../../Actions/CopyJobActions", () => ({
 jest.mock("./CopyJobColumns", () => ({
   getColumns: jest.fn(() => [
     {
+      key: "LastUpdatedTime",
+      name: "Date & time",
+      fieldName: "LastUpdatedTime",
+      minWidth: 140,
+      maxWidth: 300,
+      isResizable: true,
+    },
+    {
       key: "Name",
-      name: "Name",
+      name: "Job name",
       fieldName: "Name",
       minWidth: 140,
       maxWidth: 300,
@@ -164,6 +172,165 @@ describe("CopyJobsList", () => {
       expect(screen.getByTestId("action-menu-job-1")).toBeInTheDocument();
       expect(screen.getByTestId("action-menu-job-2")).toBeInTheDocument();
       expect(screen.getByTestId("action-menu-job-3")).toBeInTheDocument();
+    });
+
+    it("renders filter TextField with data-test attribute", () => {
+      render(<CopyJobsList jobs={mockJobs} handleActionClick={mockHandleActionClick} />);
+
+      const filterTextField = document.querySelector('[data-test="CopyJobsList/FilterTextField"]');
+      expect(filterTextField).toBeInTheDocument();
+    });
+
+    it("renders search TextField with correct placeholder", () => {
+      render(<CopyJobsList jobs={mockJobs} handleActionClick={mockHandleActionClick} />);
+
+      const searchInput = screen.getByPlaceholderText("Search jobs...");
+      expect(searchInput).toBeInTheDocument();
+    });
+  });
+
+  describe("Filtering", () => {
+    it("filters jobs by Name when text is entered", async () => {
+      render(<CopyJobsList jobs={mockJobs} handleActionClick={mockHandleActionClick} />);
+
+      const filterInput = screen.getByPlaceholderText("Search jobs...");
+      fireEvent.change(filterInput, { target: { value: "Job 1" } });
+
+      await waitFor(() => {
+        expect(screen.getByText("Test Job 1")).toBeInTheDocument();
+        expect(screen.queryByText("Test Job 2")).not.toBeInTheDocument();
+        expect(screen.queryByText("Test Job 3")).not.toBeInTheDocument();
+      });
+    });
+
+    it("filters jobs case-insensitively", async () => {
+      render(<CopyJobsList jobs={mockJobs} handleActionClick={mockHandleActionClick} />);
+
+      const filterInput = screen.getByPlaceholderText("Search jobs...");
+      fireEvent.change(filterInput, { target: { value: "test job 1" } });
+
+      await waitFor(() => {
+        expect(screen.getByText("Test Job 1")).toBeInTheDocument();
+        expect(screen.queryByText("Test Job 2")).not.toBeInTheDocument();
+      });
+    });
+
+    it("shows all jobs when filter text is empty", async () => {
+      render(<CopyJobsList jobs={mockJobs} handleActionClick={mockHandleActionClick} />);
+
+      const filterInput = screen.getByPlaceholderText("Search jobs...");
+      fireEvent.change(filterInput, { target: { value: "Job 1" } });
+
+      await waitFor(() => {
+        expect(screen.queryByText("Test Job 2")).not.toBeInTheDocument();
+      });
+
+      fireEvent.change(filterInput, { target: { value: "" } });
+
+      await waitFor(() => {
+        expect(screen.getByText("Test Job 1")).toBeInTheDocument();
+        expect(screen.getByText("Test Job 2")).toBeInTheDocument();
+        expect(screen.getByText("Test Job 3")).toBeInTheDocument();
+      });
+    });
+
+    it("filters jobs by Status across all columns", async () => {
+      render(<CopyJobsList jobs={mockJobs} handleActionClick={mockHandleActionClick} />);
+
+      const filterInput = screen.getByPlaceholderText("Search jobs...");
+      fireEvent.change(filterInput, { target: { value: CopyJobStatusType.Running } });
+
+      await waitFor(() => {
+        expect(screen.getByText("Test Job 1")).toBeInTheDocument();
+        expect(screen.queryByText("Test Job 2")).not.toBeInTheDocument();
+        expect(screen.queryByText("Test Job 3")).not.toBeInTheDocument();
+      });
+    });
+
+    it("filters jobs by Mode across all columns", async () => {
+      render(<CopyJobsList jobs={mockJobs} handleActionClick={mockHandleActionClick} />);
+
+      const filterInput = screen.getByPlaceholderText("Search jobs...");
+      fireEvent.change(filterInput, { target: { value: "Offline" } });
+
+      await waitFor(() => {
+        expect(screen.queryByText("Test Job 1")).not.toBeInTheDocument();
+        expect(screen.getByText("Test Job 2")).toBeInTheDocument();
+        expect(screen.queryByText("Test Job 3")).not.toBeInTheDocument();
+      });
+    });
+
+    it("shows no results when filter matches no jobs", async () => {
+      render(<CopyJobsList jobs={mockJobs} handleActionClick={mockHandleActionClick} />);
+
+      const filterInput = screen.getByPlaceholderText("Search jobs...");
+      fireEvent.change(filterInput, { target: { value: "NonExistentJob" } });
+
+      await waitFor(() => {
+        expect(screen.queryByText("Test Job 1")).not.toBeInTheDocument();
+        expect(screen.queryByText("Test Job 2")).not.toBeInTheDocument();
+        expect(screen.queryByText("Test Job 3")).not.toBeInTheDocument();
+      });
+    });
+
+    it("filters by partial text match", async () => {
+      render(<CopyJobsList jobs={mockJobs} handleActionClick={mockHandleActionClick} />);
+
+      const filterInput = screen.getByPlaceholderText("Search jobs...");
+      fireEvent.change(filterInput, { target: { value: "Test" } });
+
+      await waitFor(() => {
+        expect(screen.getByText("Test Job 1")).toBeInTheDocument();
+        expect(screen.getByText("Test Job 2")).toBeInTheDocument();
+        expect(screen.getByText("Test Job 3")).toBeInTheDocument();
+      });
+    });
+
+    it("resets pagination when filter changes", async () => {
+      const manyJobs: CopyJobType[] = Array.from({ length: 25 }, (_, i) => ({
+        ...mockJobs[0],
+        ID: `job-${i + 1}`,
+        Name: `Test Job ${i + 1}`,
+      }));
+
+      render(<CopyJobsList jobs={manyJobs} handleActionClick={mockHandleActionClick} pageSize={10} />);
+
+      // Navigate to page 2
+      fireEvent.click(screen.getByLabelText("Go to next page"));
+
+      await waitFor(() => {
+        expect(screen.getByText("Showing 11 - 20 of 25 items")).toBeInTheDocument();
+      });
+
+      // Apply filter - should reset to page 1
+      const filterInput = screen.getByPlaceholderText("Search jobs...");
+      fireEvent.change(filterInput, { target: { value: "Job 1" } });
+
+      await waitFor(() => {
+        // Filtered results show from the beginning
+        expect(screen.getByText("Test Job 1")).toBeInTheDocument();
+      });
+    });
+
+    it("updates filtered count in pager", async () => {
+      const manyJobs: CopyJobType[] = Array.from({ length: 25 }, (_, i) => ({
+        ...mockJobs[0],
+        ID: `job-${i + 1}`,
+        Name: i < 5 ? `Alpha Job ${i + 1}` : `Beta Job ${i + 1}`,
+      }));
+
+      render(<CopyJobsList jobs={manyJobs} handleActionClick={mockHandleActionClick} pageSize={10} />);
+
+      expect(screen.getByText("Showing 1 - 10 of 25 items")).toBeInTheDocument();
+
+      const filterInput = screen.getByPlaceholderText("Search jobs...");
+      fireEvent.change(filterInput, { target: { value: "Alpha" } });
+
+      await waitFor(() => {
+        expect(screen.queryByText("Showing 1 - 10 of 25 items")).not.toBeInTheDocument();
+        // Pager should not be visible since filtered results (5) are less than page size (10)
+        expect(screen.queryByLabelText("Go to next page")).not.toBeInTheDocument();
+      });
     });
   });
 
@@ -342,7 +509,7 @@ describe("CopyJobsList", () => {
 
   describe("Component Props", () => {
     it("uses default page size when not provided", () => {
-      const manyJobs: CopyJobType[] = Array.from({ length: 12 }, (_, i) => ({
+      const manyJobs: CopyJobType[] = Array.from({ length: 20 }, (_, i) => ({
         ...mockJobs[0],
         ID: `job-${i + 1}`,
         Name: `Test Job ${i + 1}`,
@@ -351,7 +518,7 @@ describe("CopyJobsList", () => {
       render(<CopyJobsList jobs={manyJobs} handleActionClick={mockHandleActionClick} />);
 
       expect(screen.getByLabelText("Go to next page")).toBeInTheDocument();
-      expect(screen.getByText("Showing 1 - 10 of 12 items")).toBeInTheDocument();
+      expect(screen.getByText("Showing 1 - 15 of 20 items")).toBeInTheDocument();
     });
 
     it("passes correct props to getColumns function", async () => {
@@ -440,7 +607,33 @@ describe("CopyJobsList", () => {
         render(<CopyJobsList jobs={largeJobsList} handleActionClick={mockHandleActionClick} />);
       }).not.toThrow();
 
-      expect(screen.getByText("Showing 1 - 10 of 1000 items")).toBeInTheDocument();
+      expect(screen.getByText("Showing 1 - 15 of 1000 items")).toBeInTheDocument();
+    });
+
+    it("handles filtering with null or undefined values gracefully", async () => {
+      const jobsWithNullValues: CopyJobType[] = [
+        {
+          ...mockJobs[0],
+          ID: "job-with-values",
+          Name: "Valid Job",
+        },
+        {
+          ...mockJobs[1],
+          ID: "job-null-name",
+          Name: undefined as unknown as string,
+        },
+      ];
+
+      expect(() => {
+        render(<CopyJobsList jobs={jobsWithNullValues} handleActionClick={mockHandleActionClick} />);
+      }).not.toThrow();
+
+      const filterInput = screen.getByPlaceholderText("Search jobs...");
+      fireEvent.change(filterInput, { target: { value: "Valid" } });
+
+      await waitFor(() => {
+        expect(screen.getByText("Valid Job")).toBeInTheDocument();
+      });
     });
   });
 });

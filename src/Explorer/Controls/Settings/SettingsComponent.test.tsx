@@ -30,7 +30,6 @@ jest.mock("../../../Common/dataAccess/updateCollection", () => ({
     dataMaskingPolicy: {
       includedPaths: [],
       excludedPaths: ["/excludedPath"],
-      isPolicyEnabled: true,
     },
     indexes: [],
   }),
@@ -307,12 +306,10 @@ describe("SettingsComponent", () => {
       dataMaskingContent: {
         includedPaths: [],
         excludedPaths: ["/excludedPath"],
-        isPolicyEnabled: true,
       },
       dataMaskingContentBaseline: {
         includedPaths: [],
         excludedPaths: [],
-        isPolicyEnabled: false,
       },
       isDataMaskingDirty: true,
     });
@@ -326,7 +323,6 @@ describe("SettingsComponent", () => {
     expect(wrapper.state("dataMaskingContentBaseline")).toEqual({
       includedPaths: [],
       excludedPaths: ["/excludedPath"],
-      isPolicyEnabled: true,
     });
   });
 
@@ -340,7 +336,6 @@ describe("SettingsComponent", () => {
     const invalidPolicy: InvalidPolicy = {
       includedPaths: "invalid",
       excludedPaths: [],
-      isPolicyEnabled: false,
     };
     // Use type assertion since we're deliberately testing with invalid data
     settingsComponentInstance["onDataMaskingContentChange"](invalidPolicy as unknown as DataModels.DataMaskingPolicy);
@@ -349,7 +344,6 @@ describe("SettingsComponent", () => {
     expect(wrapper.state("dataMaskingContent")).toEqual({
       includedPaths: "invalid",
       excludedPaths: [],
-      isPolicyEnabled: false,
     });
     expect(wrapper.state("dataMaskingValidationErrors")).toEqual(["includedPaths must be an array"]);
 
@@ -364,7 +358,6 @@ describe("SettingsComponent", () => {
         },
       ],
       excludedPaths: ["/excludedPath"],
-      isPolicyEnabled: true,
     };
 
     settingsComponentInstance["onDataMaskingContentChange"](validPolicy);
@@ -388,7 +381,6 @@ describe("SettingsComponent", () => {
         },
       ],
       excludedPaths: ["/excludedPath1"],
-      isPolicyEnabled: false,
     };
 
     const modifiedPolicy = {
@@ -401,7 +393,6 @@ describe("SettingsComponent", () => {
         },
       ],
       excludedPaths: ["/excludedPath2"],
-      isPolicyEnabled: true,
     };
 
     // Set initial state

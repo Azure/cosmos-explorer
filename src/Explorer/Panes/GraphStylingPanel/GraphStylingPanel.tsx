@@ -1,5 +1,6 @@
 import React, { FunctionComponent } from "react";
 import * as ViewModels from "../../../Contracts/ViewModels";
+import { Keys, t } from "Localization";
 import { useSidePanel } from "../../../hooks/useSidePanel";
 import { GraphStyleComponent } from "../../Graph/GraphStyleComponent/GraphStyleComponent";
 import { IGraphConfig } from "../../Tabs/GraphTab";
@@ -17,7 +18,7 @@ export const GraphStylingPanel: FunctionComponent<GraphStylingProps> = ({
 }: GraphStylingProps): JSX.Element => {
   const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
 
-  const buttonLabel = "Ok";
+  const buttonLabel = t(Keys.common.ok);
 
   const submit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();

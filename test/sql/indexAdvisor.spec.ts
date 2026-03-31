@@ -10,7 +10,7 @@ let CONTAINER_ID: string;
 
 // Set up test database and container with data before all tests
 test.beforeAll(async () => {
-  testContainer = await createTestSQLContainer(true);
+  testContainer = await createTestSQLContainer({ includeTestData: true });
   DATABASE_ID = testContainer.database.id;
   CONTAINER_ID = testContainer.container.id;
 });

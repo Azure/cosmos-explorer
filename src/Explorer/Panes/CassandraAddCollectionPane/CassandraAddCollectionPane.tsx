@@ -2,14 +2,15 @@ import { Checkbox, Dropdown, IDropdownOption, Link, Stack, Text, TextField } fro
 import * as Constants from "Common/Constants";
 import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
 import { InfoTooltip } from "Common/Tooltip/InfoTooltip";
+import { useSidePanel } from "hooks/useSidePanel";
+import { Keys, t } from "Localization";
+import React, { FunctionComponent, useState } from "react";
 import * as SharedConstants from "Shared/Constants";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "UserContext";
 import { isServerlessAccount } from "Utils/CapabilityUtils";
 import { ValidCosmosDbIdDescription, ValidCosmosDbIdInputPattern } from "Utils/ValidationUtils";
-import { useSidePanel } from "hooks/useSidePanel";
-import React, { FunctionComponent, useState } from "react";
 import { ThroughputInput } from "../../Controls/ThroughputInput/ThroughputInput";
 import Explorer from "../../Explorer";
 import { CassandraAPIDataClient } from "../../Tables/TableDataClient";
@@ -71,8 +72,8 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
     if (throughput > SharedConstants.CollectionCreation.DefaultCollectionRUs100K && !isCostAcknowledged) {
       const errorMessage =
         isNewKeySpaceAutoscale || isTableAutoscale
-          ? "Please acknowledge the estimated monthly spend."
-          : "Please acknowledge the estimated daily spend.";
+          ? t(Keys.panes.addCollection.acknowledgeSpendErrorMonthly)
+          : t(Keys.panes.addCollection.acknowledgeSpendErrorDaily);
       setFormError(errorMessage);
       return;
     }
@@ -149,7 +150,7 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
   const props: RightPaneFormProps = {
     formError,
     isExecuting,
-    submitButtonText: "OK",
+    submitButtonText: t(Keys.common.ok),
     isSubmitButtonDisabled: isThroughputCapExceeded,
     onSubmit,
   };
@@ -161,7 +162,8 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
           <Stack horizontal>
             <span className="mandatoryStar">*&nbsp;</span>
             <Text className="panelTextBold" variant="small">
-              Keyspace name <InfoTooltip>Select an existing keyspace or enter a new keyspace id.</InfoTooltip>
+              {t(Keys.panes.cassandraAddCollection.keyspaceLabel)}{" "}
+              <InfoTooltip>{t(Keys.panes.cassandraAddCollection.keyspaceTooltip)}</InfoTooltip>
             </Text>
           </Stack>
 
@@ -179,7 +181,7 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
                 setExistingKeyspaceId("");
               }}
             />
-            <span className="panelRadioBtnLabel">Create new</span>
+            <span className="panelRadioBtnLabel">{t(Keys.panes.addCollection.createNew)}</span>
 
             <input
               className="panelRadioBtn"
@@ -193,7 +195,7 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
                 setIsKeyspaceShared(false);
               }}
             />
-            <span className="panelRadioBtnLabel">Use existing</span>
+            <span className="panelRadioBtnLabel">{t(Keys.panes.addCollection.useExisting)}</span>
           </Stack>
 
           {keyspaceCreateNew && (
@@ -275,9 +277,9 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
           <Stack horizontal>
             <span className="mandatoryStar">*&nbsp;</span>
             <Text className="panelTextBold" variant="small">
-              Enter CQL command to create the table.{" "}
+              {t(Keys.panes.cassandraAddCollection.tableIdLabel)}{" "}
               <Link className="underlinedLink" href="https://aka.ms/cassandra-create-table" target="_blank">
-                Learn More
+                {t(Keys.common.learnMore)}
               </Link>
             </Text>
           </Stack>
@@ -295,7 +297,7 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
               autoComplete="off"
               pattern={ValidCosmosDbIdInputPattern.source}
               title={ValidCosmosDbIdDescription}
-              placeholder="Enter table Id"
+              placeholder={t(Keys.panes.cassandraAddCollection.enterTableId)}
               size={20}
               value={tableId}
               onChange={(e, newValue) => setTableId(newValue)}
@@ -307,7 +309,7 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
             multiline
             id="editor-area"
             rows={5}
-            ariaLabel="Table schema"
+            ariaLabel={t(Keys.panes.cassandraAddCollection.tableSchemaAriaLabel)}
             value={userTableQuery}
             onChange={(e, newValue) => setUserTableQuery(newValue)}
           />
@@ -318,17 +320,12 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
             <input
               type="checkbox"
               id="tableSharedThroughput"
-              title="Provision dedicated throughput for this table"
+              title={t(Keys.panes.cassandraAddCollection.provisionDedicatedThroughput)}
               checked={dedicateTableThroughput}
               onChange={(e) => setDedicateTableThroughput(e.target.checked)}
             />
-            <span>Provision dedicated throughput for this table</span>
-            <InfoTooltip>
-              You can optionally provision dedicated throughput for a table within a keyspace that has throughput
-              provisioned. This dedicated throughput amount will not be shared with other tables in the keyspace and
-              does not count towards the throughput you provisioned for the keyspace. This throughput amount will be
-              billed in addition to the throughput amount you provisioned at the keyspace level.
-            </InfoTooltip>
+            <span>{t(Keys.panes.cassandraAddCollection.provisionDedicatedThroughput)}</span>
+            <InfoTooltip>{t(Keys.panes.cassandraAddCollection.provisionDedicatedThroughputTooltip)}</InfoTooltip>
           </Stack>
         )}
         {!isServerlessAccount() && (!isKeyspaceShared || dedicateTableThroughput) && (

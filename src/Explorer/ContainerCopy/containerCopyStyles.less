@@ -1,5 +1,27 @@
 @import "../../../less/Common/Constants.less";
 
+.themedTextFieldStyles() {
+  .ms-TextField {
+    .ms-TextField-fieldGroup {
+      background-color: var(--colorNeutralBackground1);
+      border-color: var(--colorNeutralStroke1);
+    }
+
+    .ms-TextField-field {
+      color: var(--colorNeutralForeground1);
+      background-color: var(--colorNeutralBackground1);
+
+      &::placeholder {
+        color: var(--colorNeutralForeground4);
+      }
+    }
+
+    .ms-Label {
+      color: var(--colorNeutralForeground1);
+    }
+  }
+}
+
 // Common theme-aware classes
 .themeText {
   color: var(--colorNeutralForeground1);
@@ -119,25 +141,8 @@
       filter: invert(1);
     }
 
-    .ms-TextField {
-      .ms-TextField-fieldGroup {
-        background-color: var(--colorNeutralBackground1);
-        border-color: var(--colorNeutralStroke1);
-      }
+    .themedTextFieldStyles();
 
-      .ms-TextField-field {
-        color: var(--colorNeutralForeground1);
-        background-color: var(--colorNeutralBackground1);
-
-        &::placeholder {
-          color: var(--colorNeutralForeground4);
-        }
-      }
-
-      .ms-Label {
-        color: var(--colorNeutralForeground1);
-      }
-    }
     .migrationTypeDescription {
       p {
         color: var(--colorNeutralForeground1);
@@ -173,6 +178,11 @@
   width: 100%;
   max-width: 100%;
   margin: 0 auto;
+
+  body.isDarkMode & {
+    .themedTextFieldStyles();
+  }
+
   .ms-DetailsList {
     width: 100%;
 

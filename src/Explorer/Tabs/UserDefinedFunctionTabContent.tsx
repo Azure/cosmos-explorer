@@ -2,6 +2,7 @@ import { UserDefinedFunctionDefinition } from "@azure/cosmos";
 import { Label, TextField } from "@fluentui/react";
 import { FluentProvider, webDarkTheme, webLightTheme } from "@fluentui/react-components";
 import { KeyboardAction } from "KeyboardShortcuts";
+import { Keys, t } from "Localization";
 import { ValidCosmosDbIdDescription, ValidCosmosDbIdInputPattern } from "Utils/ValidationUtils";
 import { useThemeStore } from "hooks/useTheme";
 import React, { Component } from "react";
@@ -82,7 +83,7 @@ export default class UserDefinedFunctionTabContent extends Component<
 
   protected getTabsButtons(): CommandButtonComponentProps[] {
     const buttons: CommandButtonComponentProps[] = [];
-    const label = "Save";
+    const label = t(Keys.common.save);
     if (this.saveButton.visible) {
       buttons.push({
         ...this,
@@ -99,7 +100,7 @@ export default class UserDefinedFunctionTabContent extends Component<
     }
 
     if (this.updateButton.visible) {
-      const label = "Update";
+      const label = t(Keys.common.update);
       buttons.push({
         ...this,
         iconSrc: SaveIcon,
@@ -114,7 +115,7 @@ export default class UserDefinedFunctionTabContent extends Component<
     }
 
     if (this.discardButton.visible) {
-      const label = "Discard";
+      const label = t(Keys.common.discard);
       buttons.push({
         setState: this.setState,
         ...this,
@@ -265,7 +266,7 @@ export default class UserDefinedFunctionTabContent extends Component<
         <FluentProvider theme={currentTheme}>
           <TextField
             className="trigger-field"
-            label="User Defined Function Id"
+            label={t(Keys.tabs.udf.id)}
             id="entityTimeId"
             autoFocus
             required
@@ -273,7 +274,7 @@ export default class UserDefinedFunctionTabContent extends Component<
             type="text"
             pattern={ValidCosmosDbIdInputPattern.source}
             title={ValidCosmosDbIdDescription}
-            placeholder="Enter the new user defined function id"
+            placeholder={t(Keys.tabs.udf.idPlaceholder)}
             size={40}
             value={udfId}
             onChange={this.handleUdfIdChange}
@@ -299,12 +300,12 @@ export default class UserDefinedFunctionTabContent extends Component<
             }}
           />{" "}
         </FluentProvider>
-        <Label className="trigger-field">User Defined Function Body</Label>
+        <Label className="trigger-field">{t(Keys.tabs.udf.body)}</Label>
         <EditorReact
           language={"javascript"}
           content={udfBody}
           isReadOnly={false}
-          ariaLabel={"User defined function body"}
+          ariaLabel={t(Keys.tabs.udf.bodyAriaLabel)}
           onContentChanged={this.handleUdfBodyChange}
         />
       </div>

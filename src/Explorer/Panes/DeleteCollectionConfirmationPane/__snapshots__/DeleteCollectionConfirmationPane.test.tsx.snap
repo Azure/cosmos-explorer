@@ -29,14 +29,22 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
               * 
             </span>
             <Text
+              style={
+                {
+                  "color": "var(--colorNeutralForeground1)",
+                }
+              }
               variant="small"
             >
               <span
                 className="css-109"
+                style={
+                  {
+                    "color": "var(--colorNeutralForeground1)",
+                  }
+                }
               >
-                Confirm by typing the 
-                container
-                 id
+                Confirm by typing the container id
               </span>
             </Text>
             <StyledTextFieldBase
@@ -47,8 +55,26 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
               required={true}
               styles={
                 {
+                  "field": {
+                    "backgroundColor": "var(--colorNeutralBackground1)",
+                    "color": "var(--colorNeutralForeground1)",
+                  },
                   "fieldGroup": {
+                    "backgroundColor": "var(--colorNeutralBackground1)",
+                    "borderColor": "var(--colorNeutralStroke1)",
+                    "selectors": {
+                      ":hover": {
+                        "borderColor": "var(--colorNeutralStroke1Hover)",
+                      },
+                    },
                     "width": 300,
+                  },
+                  "subComponentStyles": {
+                    "label": {
+                      "root": {
+                        "color": "var(--colorNeutralForeground1)",
+                      },
+                    },
                   },
                 }
               }
