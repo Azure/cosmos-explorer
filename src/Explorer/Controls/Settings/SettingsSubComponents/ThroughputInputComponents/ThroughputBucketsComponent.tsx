@@ -127,7 +127,7 @@ export const ThroughputBucketsComponent: FC<ThroughputBucketsComponentProps> = (
     const tooltipContent = (): JSX.Element => (
       <Text>
         The default throughput bucket is used for operations that do not specify a particular bucket.{" "}
-        <Link href="https://aka.ms/cosmsodb-bucketing" target="_blank">
+        <Link href="https://learn.microsoft.com/azure/cosmos-db/throughput-buckets?tabs=dotnet#configuring-default-throughput-bucket" target="_blank">
           Learn more.
         </Link>
       </Text>
