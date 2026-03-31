@@ -67,16 +67,19 @@ export const ThroughputBucketsComponent: FC<ThroughputBucketsComponentProps> = (
   const getThroughputBucketOptions = (): IDropdownOption[] => {
     const noDefaultThroughputBucketSelected: IDropdownOption = {
       key: NoDefaultThroughputSelectedKey,
-      text: "No Default Throughput Bucket Selected",
+      text: t(Keys.controls.settings.throughputBuckets.noDefaultBucketSelected),
     };
 
     const throughputBucketOptions: IDropdownOption[] = throughputBuckets.map((bucket) => ({
       key: bucket.id,
-      text: `Bucket ${bucket.id} - ${bucket.maxThroughputPercentage}%`,
+      text: t(Keys.controls.settings.throughputBuckets.bucketOptionLabel, {
+        id: String(bucket.id),
+        percentage: String(bucket.maxThroughputPercentage),
+      }),
       disabled: bucket.maxThroughputPercentage === 100,
       ...(bucket.maxThroughputPercentage === 100 && {
         data: {
-          tooltip: `Bucket ${bucket.id} is not active.`,
+          tooltip: t(Keys.controls.settings.throughputBuckets.bucketNotActive, { id: String(bucket.id) }),
         },
       }),
     }));
@@ -127,16 +130,19 @@ export const ThroughputBucketsComponent: FC<ThroughputBucketsComponentProps> = (
   const onRenderDefaultThroughputBucketLabel = (): JSX.Element => {
     const tooltipContent = (): JSX.Element => (
       <Text>
-        The default throughput bucket is used for operations that do not specify a particular bucket.{" "}
-        <Link href="https://learn.microsoft.com/azure/cosmos-db/throughput-buckets?tabs=dotnet#configuring-default-throughput-bucket" target="_blank">
-          Learn more.
+        {t(Keys.controls.settings.throughputBuckets.defaultBucketTooltip)}{" "}
+        <Link
+          href="https://learn.microsoft.com/azure/cosmos-db/throughput-buckets?tabs=dotnet#configuring-default-throughput-bucket"
+          target="_blank"
+        >
+          {t(Keys.controls.settings.throughputBuckets.defaultBucketTooltipLearnMore)}
         </Link>
       </Text>
     );
 
     return (
       <Stack horizontal verticalAlign="center">
-        <Label>Default Throughput Bucket</Label>
+        <Label>{t(Keys.controls.settings.throughputBuckets.defaultBucketLabel)}</Label>
         <TooltipHost content={tooltipContent()}>
           <Icon iconName="Info" styles={{ root: { marginLeft: 4, marginTop: 5 } }} />
         </TooltipHost>
@@ -210,8 +216,8 @@ export const ThroughputBucketsComponent: FC<ThroughputBucketsComponentProps> = (
         ))}
       </Stack>
       <Dropdown
-        placeholder="Select a default throughput bucket"
-        label="Default Throughput Bucket"
+        placeholder={t(Keys.controls.settings.throughputBuckets.defaultBucketPlaceholder)}
+        label={t(Keys.controls.settings.throughputBuckets.defaultBucketLabel)}
         options={getThroughputBucketOptions()}
         selectedKey={
           throughputBuckets?.find((throughputbucket: ThroughputBucket) => throughputbucket.isDefaultBucket)?.id ||
