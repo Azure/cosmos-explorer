@@ -110,7 +110,13 @@ describe("ScenarioMonitor", () => {
       // Start scenario
       scenarioMonitor.start(MetricScenario.ApplicationLoad);
 
-      // Complete all phases to emit
+      // Complete all phases to emit (PlatformConfigured auto-started, deferred phases need start+complete)
+      scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.PlatformConfigured);
+      scenarioMonitor.startPhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.CopilotConfigured);
+      scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.CopilotConfigured);
+      scenarioMonitor.startPhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.SampleDataLoaded);
+      scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.SampleDataLoaded);
+      scenarioMonitor.startPhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.ExplorerInitialized);
       scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.ExplorerInitialized);
       scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, CommonMetricPhase.Interactive);
 
@@ -161,13 +167,13 @@ describe("ScenarioMonitor", () => {
     it("emits healthy even with partial phase completion and expected failure", () => {
       scenarioMonitor.start(MetricScenario.ApplicationLoad);
 
-      // Complete one phase
-      scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.ExplorerInitialized);
+      // Complete one non-deferred phase
+      scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.PlatformConfigured);
 
       // Mark expected failure
       scenarioMonitor.markExpectedFailure();
 
-      // Let timeout fire (Interactive phase not completed)
+      // Let timeout fire (deferred phases and Interactive not completed)
       jest.advanceTimersByTime(10000);
 
       expect(reportMetric).toHaveBeenCalledWith(
@@ -175,7 +181,7 @@ describe("ScenarioMonitor", () => {
           healthy: true,
           timedOut: true,
           hasExpectedFailure: true,
-          completedPhases: expect.arrayContaining(["ExplorerInitialized"]),
+          completedPhases: expect.arrayContaining(["PlatformConfigured"]),
         }),
       );
     });
@@ -216,7 +222,13 @@ describe("ScenarioMonitor", () => {
     it("emits healthy when all phases complete", () => {
       scenarioMonitor.start(MetricScenario.ApplicationLoad);
 
-      // Complete all required phases
+      // Complete all required phases (PlatformConfigured + Interactive auto-started, deferred need start)
+      scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.PlatformConfigured);
+      scenarioMonitor.startPhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.CopilotConfigured);
+      scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.CopilotConfigured);
+      scenarioMonitor.startPhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.SampleDataLoaded);
+      scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.SampleDataLoaded);
+      scenarioMonitor.startPhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.ExplorerInitialized);
       scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.ExplorerInitialized);
       scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, CommonMetricPhase.Interactive);
 
@@ -225,7 +237,13 @@ describe("ScenarioMonitor", () => {
           scenario: MetricScenario.ApplicationLoad,
           healthy: true,
           timedOut: false,
-          completedPhases: expect.arrayContaining(["ExplorerInitialized", "Interactive"]),
+          completedPhases: expect.arrayContaining([
+            "PlatformConfigured",
+            "CopilotConfigured",
+            "SampleDataLoaded",
+            "ExplorerInitialized",
+            "Interactive",
+          ]),
         }),
       );
     });
@@ -233,8 +251,8 @@ describe("ScenarioMonitor", () => {
     it("does not emit until all phases complete", () => {
       scenarioMonitor.start(MetricScenario.ApplicationLoad);
 
-      // Complete only one phase
-      scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.ExplorerInitialized);
+      // Complete only one non-deferred phase
+      scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.PlatformConfigured);
 
       expect(reportMetric).not.toHaveBeenCalled();
     });
@@ -246,7 +264,13 @@ describe("ScenarioMonitor", () => {
       scenarioMonitor.start(MetricScenario.ApplicationLoad);
       scenarioMonitor.start(MetricScenario.DatabaseLoad);
 
-      // Complete ApplicationLoad
+      // Complete ApplicationLoad (all phases including deferred)
+      scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.PlatformConfigured);
+      scenarioMonitor.startPhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.CopilotConfigured);
+      scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.CopilotConfigured);
+      scenarioMonitor.startPhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.SampleDataLoaded);
+      scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.SampleDataLoaded);
+      scenarioMonitor.startPhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.ExplorerInitialized);
       scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.ExplorerInitialized);
       scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, CommonMetricPhase.Interactive);
 
