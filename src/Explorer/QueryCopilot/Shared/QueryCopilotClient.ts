@@ -63,20 +63,27 @@ export const isCopilotFeatureRegistered = async (subscriptionId: string): Promis
   const authorizationHeader: AuthorizationTokenHeaderMetadata = getAuthorizationHeader();
   const headers = { [authorizationHeader.header]: authorizationHeader.token };
 
+  const startKey = traceStart(Action.CheckCopilotFeatureRegistration, {
+    dataExplorerArea: Areas.Copilot,
+  });
   let response;
 
   try {
     response = await fetchWithTimeout(url, headers);
   } catch (error) {
+    traceFailure(Action.CheckCopilotFeatureRegistration, { error: String(error) }, startKey);
     return false;
   }
 
   if (!response?.ok) {
+    traceFailure(Action.CheckCopilotFeatureRegistration, { status: response?.status }, startKey);
     return false;
   }
 
   const featureRegistration = (await response?.json()) as FeatureRegistration;
-  return featureRegistration?.properties?.state === "Registered";
+  const registered = featureRegistration?.properties?.state === "Registered";
+  traceSuccess(Action.CheckCopilotFeatureRegistration, { registered }, startKey);
+  return registered;
 };
 
 export const getCopilotEnabled = async (): Promise<boolean> => {
@@ -86,20 +93,27 @@ export const getCopilotEnabled = async (): Promise<boolean> => {
   const authorizationHeader: AuthorizationTokenHeaderMetadata = getAuthorizationHeader();
   const headers = { [authorizationHeader.header]: authorizationHeader.token };
 
+  const startKey = traceStart(Action.GetCopilotEnabled, {
+    dataExplorerArea: Areas.Copilot,
+  });
   let response;
 
   try {
     response = await fetchWithTimeout(url, headers);
   } catch (error) {
+    traceFailure(Action.GetCopilotEnabled, { error: String(error) }, startKey);
     return false;
   }
 
   if (!response?.ok) {
+    traceFailure(Action.GetCopilotEnabled, { status: response?.status }, startKey);
     return false;
   }
 
   const copilotPortalConfiguration = (await response?.json()) as CopilotEnabledConfiguration;
-  return copilotPortalConfiguration?.isEnabled;
+  const isEnabled = copilotPortalConfiguration?.isEnabled;
+  traceSuccess(Action.GetCopilotEnabled, { isEnabled }, startKey);
+  return isEnabled;
 };
 
 export const allocatePhoenixContainer = async ({

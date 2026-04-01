@@ -87,8 +87,12 @@ class ScenarioMonitor {
       hasExpectedFailure: false,
     };
 
-    // Start all required phases at scenario start time
+    // Start all required phases at scenario start time, except deferred ones
+    const deferredSet = new Set(config.deferredPhases ?? []);
     config.requiredPhases.forEach((phase) => {
+      if (deferredSet.has(phase)) {
+        return; // Deferred phases are started explicitly via startPhase()
+      }
       const phaseStartMarkName = `scenario_${scenario}_${phase}_start`;
       performance.mark(phaseStartMarkName);
       ctx.phases.set(phase, { startMarkName: phaseStartMarkName });
@@ -135,6 +139,11 @@ class ScenarioMonitor {
     if (!ctx || ctx.emitted || !ctx.config.requiredPhases.includes(phase) || ctx.phases.has(phase)) {
       return;
     }
+    // Only deferred phases can be started via startPhase(); non-deferred are auto-started in start()
+    const isDeferredPhase = ctx.config.deferredPhases?.includes(phase) ?? false;
+    if (!isDeferredPhase) {
+      return;
+    }
 
     const startMarkName = `scenario_${scenario}_${phase}_start`;
     performance.mark(startMarkName);
@@ -147,10 +156,37 @@ class ScenarioMonitor {
     });
   }
 
+  /**
+   * Marks a phase as skipped (e.g. copilot disabled). Removes the phase from
+   * requiredPhases so it no longer blocks scenario completion.
+   */
+  skipPhase(scenario: MetricScenario, phase: MetricPhase) {
+    const ctx = this.contexts.get(scenario);
+    if (!ctx || ctx.emitted) {
+      return;
+    }
+    // Remove from requiredPhases so it doesn't block completion
+    ctx.config = {
+      ...ctx.config,
+      requiredPhases: ctx.config.requiredPhases.filter((p) => p !== phase),
+      deferredPhases: ctx.config.deferredPhases?.filter((p) => p !== phase),
+    };
+
+    this.devLog(`phase_skip: ${scenario}.${phase}`);
+
+    traceMark(Action.MetricsScenario, {
+      event: "phase_skip",
+      scenario,
+      phase,
+    });
+
+    this.tryEmitIfReady(ctx);
+  }
+
   completePhase(scenario: MetricScenario, phase: MetricPhase) {
     const ctx = this.contexts.get(scenario);
     const phaseCtx = ctx?.phases.get(phase);
-    if (!ctx || ctx.emitted || !ctx.config.requiredPhases.includes(phase) || !phaseCtx) {
+    if (!ctx || ctx.emitted || ctx.completed.has(phase) || !ctx.config.requiredPhases.includes(phase) || !phaseCtx) {
       return;
     }
 
@@ -356,8 +392,7 @@ class ScenarioMonitor {
 
   private cleanupPerformanceEntries(ctx: InternalScenarioContext) {
     performance.clearMarks(ctx.startMarkName);
-    ctx.config.requiredPhases.forEach((phase) => {
-      const phaseCtx = ctx.phases.get(phase);
+    ctx.phases.forEach((phaseCtx, phase) => {
       if (phaseCtx?.startMarkName) {
         performance.clearMarks(phaseCtx.startMarkName);
       }

@@ -49,6 +49,9 @@ import {
   HostedExplorerChildFrame,
   ResourceToken,
 } from "../HostedExplorerChildFrame";
+import MetricScenario from "../Metrics/MetricEvents";
+import { ApplicationMetricPhase } from "../Metrics/ScenarioConfig";
+import { scenarioMonitor } from "../Metrics/ScenarioMonitor";
 import { emulatorAccount } from "../Platform/Emulator/emulatorAccount";
 import { parseResourceTokenConnectionString } from "../Platform/Hosted/Helpers/ResourceTokenUtils";
 import {
@@ -57,6 +60,8 @@ import {
 } from "../Platform/Hosted/HostedUtils";
 import { extractFeatures } from "../Platform/Hosted/extractFeatures";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
+import { Action } from "../Shared/Telemetry/TelemetryConstants";
+import { traceFailure, traceStart, traceSuccess } from "../Shared/Telemetry/TelemetryProcessor";
 import { FabricArtifactInfo, Node, PortalEnv, updateUserContext, userContext } from "../UserContext";
 import {
   acquireMsalTokenForAccount,
@@ -88,23 +93,37 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
         }
 
         let explorer: Explorer;
-        if (platform === Platform.Hosted) {
-          explorer = await configureHosted();
-        } else if (platform === Platform.Emulator) {
-          explorer = configureEmulator();
-        } else if (platform === Platform.Portal) {
-          explorer = await configurePortal();
-        } else if (platform === Platform.Fabric) {
-          explorer = await configureFabric();
+        try {
+          if (platform === Platform.Hosted) {
+            explorer = await configureHosted();
+          } else if (platform === Platform.Emulator) {
+            explorer = configureEmulator();
+          } else if (platform === Platform.Portal) {
+            explorer = await configurePortal();
+          } else if (platform === Platform.Fabric) {
+            explorer = await configureFabric();
+          }
+        } catch (error) {
+          scenarioMonitor.failPhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.PlatformConfigured);
+          throw error;
         }
+        scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.PlatformConfigured);
+
         if (explorer && userContext.features.enableCopilot) {
           await updateContextForCopilot(explorer);
           await updateContextForSampleData(explorer);
+        } else {
+          // Explorer falsy or copilot disabled — skip deferred copilot/sampleData phases
+          scenarioMonitor.skipPhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.CopilotConfigured);
+          scenarioMonitor.skipPhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.SampleDataLoaded);
         }
 
         restoreOpenTabs();
 
+        // Complete ExplorerInitialized — React state update that unblocks ResourceTree
+        scenarioMonitor.startPhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.ExplorerInitialized);
         setExplorer(explorer);
+        scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.ExplorerInitialized);
       }
     };
     effect();
@@ -657,6 +676,11 @@ function configureEmulator(): Explorer {
 
 export async function fetchAndUpdateKeys(subscriptionId: string, resourceGroup: string, account: string) {
   Logger.logInfo(`Fetching keys for ${userContext.apiType} account ${account}`, "Explorer/fetchAndUpdateKeys");
+  const startKey = traceStart(Action.FetchAccountKeys, {
+    dataExplorerArea: "ResourceTree",
+    apiType: userContext.apiType,
+    accountName: account,
+  });
   let keys;
   try {
     keys = await listKeys(subscriptionId, resourceGroup, account);
@@ -664,6 +688,7 @@ export async function fetchAndUpdateKeys(subscriptionId: string, resourceGroup: 
     updateUserContext({
       masterKey: keys.primaryMasterKey,
     });
+    traceSuccess(Action.FetchAccountKeys, { accountName: account }, startKey);
   } catch (error) {
     if (error.code === "AuthorizationFailed") {
       keys = await getReadOnlyKeys(subscriptionId, resourceGroup, account);
@@ -674,18 +699,23 @@ export async function fetchAndUpdateKeys(subscriptionId: string, resourceGroup: 
       updateUserContext({
         masterKey: keys.primaryReadonlyMasterKey,
       });
+      traceSuccess(Action.FetchAccountKeys, { accountName: account, fallbackToReadOnly: true }, startKey);
     } else {
       logConsoleError(`Error occurred fetching keys for the account." ${error.message}`);
       Logger.logError(
         `Error during fetching keys or updating user context: ${error} for ${userContext.apiType} account ${account}`,
         "Explorer/fetchAndUpdateKeys",
       );
+      traceFailure(Action.FetchAccountKeys, { accountName: account, error: error.message }, startKey);
       throw error;
     }
   }
 }
 
 async function configurePortal(): Promise<Explorer> {
+  const configureStartKey = traceStart(Action.ConfigurePortal, {
+    dataExplorerArea: "ResourceTree",
+  });
   updateUserContext({
     authType: AuthType.AAD,
   });
@@ -800,6 +830,7 @@ async function configurePortal(): Promise<Explorer> {
           }
 
           explorer = new Explorer();
+          traceSuccess(Action.ConfigurePortal, {}, configureStartKey);
           resolve(explorer);
 
           if (openAction) {
@@ -1018,34 +1049,59 @@ interface PortalMessage {
 }
 
 async function updateContextForCopilot(explorer: Explorer): Promise<void> {
-  await explorer.configureCopilot();
+  scenarioMonitor.startPhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.CopilotConfigured);
+  const startKey = traceStart(Action.UpdateCopilotContext, {
+    dataExplorerArea: "ResourceTree",
+  });
+  try {
+    await explorer.configureCopilot();
+    traceSuccess(Action.UpdateCopilotContext, {}, startKey);
+  } catch (error) {
+    traceFailure(Action.UpdateCopilotContext, { error: error?.message }, startKey);
+  } finally {
+    scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.CopilotConfigured);
+  }
 }
 
 async function updateContextForSampleData(explorer: Explorer): Promise<void> {
+  scenarioMonitor.startPhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.SampleDataLoaded);
   const copilotEnabled =
     userContext.apiType === "SQL" && userContext.features.enableCopilot && useQueryCopilot.getState().copilotEnabled;
 
   if (!copilotEnabled) {
+    scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.SampleDataLoaded);
     return;
   }
 
-  const url: string = createUri(configContext.PORTAL_BACKEND_ENDPOINT, "/api/sampledata");
-  const authorizationHeader = getAuthorizationHeader();
-  const headers = { [authorizationHeader.header]: authorizationHeader.token };
-
-  const response = await window.fetch(url, {
-    headers,
+  const startKey = traceStart(Action.UpdateSampleDataContext, {
+    dataExplorerArea: "ResourceTree",
   });
+  try {
+    const url: string = createUri(configContext.PORTAL_BACKEND_ENDPOINT, "/api/sampledata");
+    const authorizationHeader = getAuthorizationHeader();
+    const headers = { [authorizationHeader.header]: authorizationHeader.token };
 
-  if (!response.ok) {
-    return undefined;
+    const response = await window.fetch(url, {
+      headers,
+    });
+
+    if (!response.ok) {
+      traceSuccess(Action.UpdateSampleDataContext, { sampleDataAvailable: false }, startKey);
+      scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.SampleDataLoaded);
+      return undefined;
+    }
+
+    const data: SampledataconnectionResponse = await response.json();
+    const sampleDataConnectionInfo = parseResourceTokenConnectionString(data.connectionString);
+    updateUserContext({ sampleDataConnectionInfo });
+
+    explorer.refreshSampleData();
+    traceSuccess(Action.UpdateSampleDataContext, { sampleDataAvailable: true }, startKey);
+  } catch (error) {
+    traceFailure(Action.UpdateSampleDataContext, { error: error?.message }, startKey);
+  } finally {
+    scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.SampleDataLoaded);
   }
-
-  const data: SampledataconnectionResponse = await response.json();
-  const sampleDataConnectionInfo = parseResourceTokenConnectionString(data.connectionString);
-  updateUserContext({ sampleDataConnectionInfo });
-
-  explorer.refreshSampleData();
 }
 
 interface SampledataconnectionResponse {
