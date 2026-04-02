@@ -1,6 +1,6 @@
 import { AuthType } from "../AuthType";
 import * as Constants from "../Common/Constants";
-import { configContext, resetConfigContext, updateConfigContext } from "../ConfigContext";
+import { resetConfigContext, updateConfigContext } from "../ConfigContext";
 import { ApiType, updateUserContext, userContext } from "../UserContext";
 import * as AuthorizationUtils from "./AuthorizationUtils";
 jest.mock("../Explorer/Explorer");
