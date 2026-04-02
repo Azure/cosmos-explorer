@@ -10,7 +10,7 @@ Quick reference:
 npm install              # Install dependencies (runs patch-package and i18n key generation automatically)
 npm run build            # Full build: format check → lint → compile → strict compile → webpack prod → copy
 npm run build:ci         # CI build: same as above but uses webpack dev mode (faster)
-npm start                # Dev server with hot reload at https://localhost:1234
+npm start                # Dev server with hot reload at https://localhost:1234 (see /dev-server skill)
 
 npm run compile          # TypeScript check only (no emit)
 npm run compile:strict   # TypeScript strict mode check (subset of files in tsconfig.strict.json)
@@ -36,6 +36,12 @@ npx playwright test test/sql/document.spec.ts  # Run a single E2E spec
 ```
 
 Unit tests live adjacent to source files (`*.test.ts` / `*.test.tsx` in `src/`). E2E tests are in `test/` organized by API type (sql, mongo, cassandra, gremlin, tables).
+
+### Dev Server
+
+**To start the local dev server and connect a browser, use the `/dev-server` skill.** It handles dependency checks, server startup, readiness polling, and Playwright browser navigation. See `.github/skills/dev-server/SKILL.md` for full details.
+
+The dev server runs at `https://localhost:1234` with a `/_ready` health-check endpoint. Entry points include `hostedExplorer.html` (standalone), `explorer.html` (portal iframe), and `index.html` (emulator).
 
 ## Architecture
 

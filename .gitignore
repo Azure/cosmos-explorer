@@ -23,3 +23,4 @@ src/Localization/Keys.generated.ts
 /blob-report/
 /playwright/.cache/
 .vscode/mcp.json
+.playwright-mcp/
