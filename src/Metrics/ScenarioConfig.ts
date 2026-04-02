@@ -9,7 +9,11 @@ export enum CommonMetricPhase {
 // Application-specific phases
 export enum ApplicationMetricPhase {
   ExplorerInitialized = "ExplorerInitialized",
+  PlatformConfigured = "PlatformConfigured",
+  CopilotConfigured = "CopilotConfigured",
+  SampleDataLoaded = "SampleDataLoaded",
   DatabasesFetched = "DatabasesFetched",
+  CollectionsLoaded = "CollectionsLoaded",
   DatabaseTreeRendered = "DatabaseTreeRendered",
 }
 
@@ -18,6 +22,7 @@ export type MetricPhase = CommonMetricPhase | ApplicationMetricPhase;
 
 export interface ScenarioConfig<TPhase extends string = MetricPhase> {
   requiredPhases: TPhase[];
+  deferredPhases?: TPhase[]; // Phases not auto-started at scenario start; started explicitly via startPhase()
   timeoutMs: number;
   validate?: (ctx: ScenarioContextSnapshot<TPhase>) => boolean; // Optional custom validation
 }

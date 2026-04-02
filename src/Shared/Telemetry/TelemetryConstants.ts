@@ -152,6 +152,22 @@ export enum Action {
   CloudShellTerminalSession,
   OpenVSCode,
   ImportSampleData,
+
+  // Tracing for ApplicationLoad & DatabaseLoad scenarios
+  ConfigurePortal,
+  FetchAccountKeys,
+  AcquireMsalToken,
+  UpdateCopilotContext,
+  GetCopilotEnabled,
+  CheckCopilotFeatureRegistration,
+  UpdateSampleDataContext,
+  RefreshSampleData,
+  ReadDatabases,
+  ReadCollections,
+  LoadCollectionsPerDatabase,
+  RefreshNotebooksEnabled,
+  CheckPhoenixStatus,
+  CheckFeatureRegistration,
 }
 
 export const ActionModifiers = {
