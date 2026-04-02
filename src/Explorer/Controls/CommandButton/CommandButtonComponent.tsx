@@ -59,6 +59,11 @@ export interface CommandButtonComponentProps {
   tooltipText?: string;
 
   /**
+   * Rich JSX content for tooltip (used instead of tooltipText when provided)
+   */
+  tooltipContent?: React.ReactNode;
+
+  /**
    * Custom styles to apply to the button using Fluent UI theme tokens
    */
   styles?: {

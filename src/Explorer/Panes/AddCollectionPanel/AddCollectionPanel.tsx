@@ -42,8 +42,7 @@ import {
 } from "Explorer/Panes/AddCollectionPanel/AddCollectionPanelUtility";
 import { useSidePanel } from "hooks/useSidePanel";
 import { useTeachingBubble } from "hooks/useTeachingBubble";
-import { Keys } from "Localization/Keys.generated";
-import { t } from "Localization/t";
+import { Keys, t } from "Localization";
 import { DEFAULT_FABRIC_NATIVE_CONTAINER_THROUGHPUT, isFabricNative } from "Platform/Fabric/FabricUtil";
 import React from "react";
 import { CollectionCreation } from "Shared/Constants";
@@ -185,25 +184,25 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
         {this.state.teachingBubbleStep === 1 && (
           <TeachingBubble
-            headline="Create sample database"
+            headline={t(Keys.panes.addCollection.teachingBubble.step1Headline)}
             target={"#newDatabaseId"}
             calloutProps={{ gapSpace: 16 }}
-            primaryButtonProps={{ text: "Next", onClick: () => this.setState({ teachingBubbleStep: 2 }) }}
-            secondaryButtonProps={{ text: "Cancel", onClick: () => this.setState({ teachingBubbleStep: 0 }) }}
+            primaryButtonProps={{ text: t(Keys.common.next), onClick: () => this.setState({ teachingBubbleStep: 2 }) }}
+            secondaryButtonProps={{
+              text: t(Keys.common.cancel),
+              onClick: () => this.setState({ teachingBubbleStep: 0 }),
+            }}
             onDismiss={() => this.setState({ teachingBubbleStep: 0 })}
-            footerContent="Step 1 of 4"
+            footerContent={t(Keys.panes.addCollection.teachingBubble.stepOfTotal, { current: "1", total: "4" })}
           >
             <Stack>
-              <Text style={{ color: "white" }}>
-                Database is the parent of a container. You can create a new database or use an existing one. In this
-                tutorial we are creating a new database named SampleDB.
-              </Text>
+              <Text style={{ color: "white" }}>{t(Keys.panes.addCollection.teachingBubble.step1Body)}</Text>
               <Link
                 style={{ color: "white", fontWeight: 600 }}
                 target="_blank"
                 href="https://aka.ms/TeachingbubbleResources"
               >
-                Learn more about resources.
+                {t(Keys.panes.addCollection.teachingBubble.step1LearnMore)}
               </Link>
             </Stack>
           </TeachingBubble>
@@ -211,21 +210,21 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
         {this.state.teachingBubbleStep === 2 && (
           <TeachingBubble
-            headline="Setting throughput"
+            headline={t(Keys.panes.addCollection.teachingBubble.step2Headline)}
             target={"#autoscaleRUValueField"}
             calloutProps={{ gapSpace: 16 }}
-            primaryButtonProps={{ text: "Next", onClick: () => this.setState({ teachingBubbleStep: 3 }) }}
-            secondaryButtonProps={{ text: "Previous", onClick: () => this.setState({ teachingBubbleStep: 1 }) }}
+            primaryButtonProps={{ text: t(Keys.common.next), onClick: () => this.setState({ teachingBubbleStep: 3 }) }}
+            secondaryButtonProps={{
+              text: t(Keys.common.previous),
+              onClick: () => this.setState({ teachingBubbleStep: 1 }),
+            }}
             onDismiss={() => this.setState({ teachingBubbleStep: 0 })}
-            footerContent="Step 2 of 4"
+            footerContent={t(Keys.panes.addCollection.teachingBubble.stepOfTotal, { current: "2", total: "4" })}
           >
             <Stack>
-              <Text style={{ color: "white" }}>
-                Cosmos DB recommends sharing throughput across database. Autoscale will give you a flexible amount of
-                throughput based on the max RU/s set (Request Units).
-              </Text>
+              <Text style={{ color: "white" }}>{t(Keys.panes.addCollection.teachingBubble.step2Body)}</Text>
               <Link style={{ color: "white", fontWeight: 600 }} target="_blank" href="https://aka.ms/teachingbubbleRU">
-                Learn more about RU/s.
+                {t(Keys.panes.addCollection.teachingBubble.step2LearnMore)}
               </Link>
             </Stack>
           </TeachingBubble>
@@ -233,36 +232,41 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
         {this.state.teachingBubbleStep === 3 && (
           <TeachingBubble
-            headline="Naming container"
+            headline={t(Keys.panes.addCollection.teachingBubble.step3Headline)}
             target={"#collectionId"}
             calloutProps={{ gapSpace: 16 }}
-            primaryButtonProps={{ text: "Next", onClick: () => this.setState({ teachingBubbleStep: 4 }) }}
-            secondaryButtonProps={{ text: "Previous", onClick: () => this.setState({ teachingBubbleStep: 2 }) }}
+            primaryButtonProps={{ text: t(Keys.common.next), onClick: () => this.setState({ teachingBubbleStep: 4 }) }}
+            secondaryButtonProps={{
+              text: t(Keys.common.previous),
+              onClick: () => this.setState({ teachingBubbleStep: 2 }),
+            }}
             onDismiss={() => this.setState({ teachingBubbleStep: 0 })}
-            footerContent="Step 3 of 4"
+            footerContent={t(Keys.panes.addCollection.teachingBubble.stepOfTotal, { current: "3", total: "4" })}
           >
-            Name your container
+            {t(Keys.panes.addCollection.teachingBubble.step3Body)}
           </TeachingBubble>
         )}
 
         {this.state.teachingBubbleStep === 4 && (
           <TeachingBubble
-            headline="Setting partition key"
+            headline={t(Keys.panes.addCollection.teachingBubble.step4Headline)}
             target={"#addCollection-partitionKeyValue"}
             calloutProps={{ gapSpace: 16 }}
             primaryButtonProps={{
-              text: "Create container",
+              text: t(Keys.panes.addCollection.teachingBubble.step4CreateContainer),
               onClick: () => {
                 this.setState({ teachingBubbleStep: 5 });
                 this.submit();
               },
             }}
-            secondaryButtonProps={{ text: "Previous", onClick: () => this.setState({ teachingBubbleStep: 2 }) }}
+            secondaryButtonProps={{
+              text: t(Keys.common.previous),
+              onClick: () => this.setState({ teachingBubbleStep: 2 }),
+            }}
             onDismiss={() => this.setState({ teachingBubbleStep: 0 })}
-            footerContent="Step 4 of 4"
+            footerContent={t(Keys.panes.addCollection.teachingBubble.stepOfTotal, { current: "4", total: "4" })}
           >
-            Last step - you will need to define a partition key for your collection. /address was chosen for this
-            particular example. A good partition key should have a wide range of possible value
+            {t(Keys.panes.addCollection.teachingBubble.step4Body)}
           </TeachingBubble>
         )}
 
@@ -272,7 +276,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               <Stack horizontal>
                 <span className="mandatoryStar">*&nbsp;</span>
                 <Text className="panelTextBold" variant="small">
-                  Database {userContext.apiType === "Mongo" ? "name" : "id"}
+                  {userContext.apiType === "Mongo"
+                    ? t(Keys.panes.addCollection.databaseFieldLabelName)
+                    : t(Keys.panes.addCollection.databaseFieldLabelId)}
                 </Text>
                 <TooltipHost
                   directionalHint={DirectionalHint.bottomLeftEdge}
@@ -297,7 +303,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                     <input
                       className="panelRadioBtn"
                       checked={this.state.createNewDatabase}
-                      aria-label="Create new database"
+                      aria-label={t(Keys.panes.addCollection.createNewDatabaseAriaLabel)}
                       aria-checked={this.state.createNewDatabase}
                       name="databaseType"
                       type="radio"
@@ -311,7 +317,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                     <input
                       className="panelRadioBtn"
                       checked={!this.state.createNewDatabase}
-                      aria-label="Use existing database"
+                      aria-label={t(Keys.panes.addCollection.useExistingDatabaseAriaLabel)}
                       aria-checked={!this.state.createNewDatabase}
                       name="databaseType"
                       type="radio"
@@ -335,10 +341,10 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                     autoComplete="off"
                     pattern={ValidCosmosDbIdInputPattern.source}
                     title={ValidCosmosDbIdDescription}
-                    placeholder="Type a new database id"
+                    placeholder={t(Keys.panes.addCollection.newDatabaseIdPlaceholder)}
                     size={40}
                     className="panelTextField"
-                    aria-label="New database id, Type a new database id"
+                    aria-label={t(Keys.panes.addCollection.newDatabaseIdAriaLabel)}
                     tabIndex={0}
                     value={this.state.newDatabaseId}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
@@ -404,10 +410,10 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               )}
               {!this.state.createNewDatabase && (
                 <Dropdown
-                  ariaLabel="Choose an existing database"
+                  ariaLabel={t(Keys.panes.addCollection.chooseExistingDatabase)}
                   styles={{ title: { height: 27, lineHeight: 27 }, dropdownItem: { fontSize: 12 } }}
                   style={{ width: 300, fontSize: 12 }}
-                  placeholder="Choose an existing database"
+                  placeholder={t(Keys.panes.addCollection.chooseExistingDatabase)}
                   options={this.getDatabaseOptions()}
                   onChange={(event: React.FormEvent<HTMLDivElement>, database: IDropdownOption) =>
                     this.setState({ selectedDatabaseId: database.key as string })
@@ -891,6 +897,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 <Stack id="collapsibleVectorPolicySectionContent" styles={{ root: { position: "relative" } }}>
                   <Stack styles={{ root: { paddingLeft: 40 } }}>
                     <VectorEmbeddingPoliciesComponent
+                      vectorEmbeddingsBaseline={[]}
                       vectorEmbeddings={this.state.vectorEmbeddingPolicy}
                       vectorIndexes={this.state.vectorIndexingPolicy}
                       onVectorEmbeddingChange={(
@@ -1027,16 +1034,15 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             <PanelLoadingScreen />
             {this.state.teachingBubbleStep === 5 && (
               <TeachingBubble
-                headline="Creating sample container"
+                headline={t(Keys.panes.addCollection.teachingBubble.step5Headline)}
                 target={"#loadingScreen"}
                 onDismiss={() => this.setState({ teachingBubbleStep: 0 })}
                 styles={{ footer: { width: "100%" } }}
               >
-                A sample container is now being created and we are adding sample data for you. It should take about 1
-                minute.
+                {t(Keys.panes.addCollection.teachingBubble.step5Body)}
                 <br />
                 <br />
-                Once the sample container is created, review your sample dataset and follow next steps
+                {t(Keys.panes.addCollection.teachingBubble.step5BodyFollowUp)}
                 <br />
                 <br />
                 <ProgressIndicator

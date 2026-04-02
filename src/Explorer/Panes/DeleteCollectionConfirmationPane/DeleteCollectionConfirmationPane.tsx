@@ -4,8 +4,7 @@ import DeleteFeedback from "Common/DeleteFeedback";
 import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
 import { deleteCollection } from "Common/dataAccess/deleteCollection";
 import { Collection } from "Contracts/ViewModels";
-import { Keys } from "Localization/Keys.generated";
-import { t } from "Localization/t";
+import { Keys, t } from "Localization";
 import { DefaultExperienceUtility } from "Shared/DefaultExperienceUtility";
 import { Action, ActionModifiers } from "Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "Shared/Telemetry/TelemetryProcessor";
@@ -18,6 +17,24 @@ import React, { FunctionComponent, useState } from "react";
 import { useDatabases } from "../../useDatabases";
 import { useSelectedNode } from "../../useSelectedNode";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
+
+const themedTextFieldStyles = {
+  fieldGroup: {
+    width: 300,
+    backgroundColor: "var(--colorNeutralBackground1)",
+    borderColor: "var(--colorNeutralStroke1)",
+    selectors: {
+      ":hover": { borderColor: "var(--colorNeutralStroke1Hover)" },
+    },
+  },
+  field: {
+    color: "var(--colorNeutralForeground1)",
+    backgroundColor: "var(--colorNeutralBackground1)",
+  },
+  subComponentStyles: {
+    label: { root: { color: "var(--colorNeutralForeground1)" } },
+  },
+};
 
 export interface DeleteCollectionConfirmationPaneProps {
   refreshDatabases: () => Promise<void>;
@@ -127,12 +144,14 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
         <div className="panelMainContent">
           <div className="confirmDeleteInput">
             <span className="mandatoryStar">* </span>
-            <Text variant="small">{confirmContainer}</Text>
+            <Text variant="small" style={{ color: "var(--colorNeutralForeground1)" }}>
+              {confirmContainer}
+            </Text>
             <TextField
               id="confirmCollectionId"
               autoFocus
               value={inputCollectionName}
-              styles={{ fieldGroup: { width: 300 } }}
+              styles={themedTextFieldStyles}
               onChange={(event, newInput?: string) => {
                 setInputCollectionName(newInput);
               }}
@@ -142,15 +161,15 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
           </div>
           {shouldRecordFeedback() && (
             <div className="deleteCollectionFeedback">
-              <Text variant="small" block>
+              <Text variant="small" block style={{ color: "var(--colorNeutralForeground1)" }}>
                 {t(Keys.panes.deleteCollection.feedbackTitle)}
               </Text>
-              <Text variant="small" block>
+              <Text variant="small" block style={{ color: "var(--colorNeutralForeground1)" }}>
                 {t(Keys.panes.deleteCollection.feedbackReason, { collectionName })}
               </Text>
               <TextField
                 id="deleteCollectionFeedbackInput"
-                styles={{ fieldGroup: { width: 300 } }}
+                styles={themedTextFieldStyles}
                 multiline
                 value={deleteCollectionFeedback}
                 rows={3}

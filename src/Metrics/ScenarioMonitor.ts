@@ -1,11 +1,12 @@
+import type { PhaseTimings, WebVitals } from "Metrics/Constants";
 import { Metric, onCLS, onFCP, onINP, onLCP, onTTFB } from "web-vitals";
 import { configContext } from "../ConfigContext";
 import { Action } from "../Shared/Telemetry/TelemetryConstants";
 import { traceFailure, traceMark, traceStart, traceSuccess } from "../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../UserContext";
-import MetricScenario, { reportHealthy, reportUnhealthy } from "./MetricEvents";
+import MetricScenario, { reportMetric } from "./MetricEvents";
 import { scenarioConfigs } from "./MetricScenarioConfigs";
-import { MetricPhase, PhaseTimings, ScenarioConfig, ScenarioContextSnapshot, WebVitals } from "./ScenarioConfig";
+import { MetricPhase, ScenarioConfig, ScenarioContextSnapshot } from "./ScenarioConfig";
 
 interface PhaseContext {
   startMarkName: string; // Performance mark name for phase start
@@ -86,8 +87,12 @@ class ScenarioMonitor {
       hasExpectedFailure: false,
     };
 
-    // Start all required phases at scenario start time
+    // Start all required phases at scenario start time, except deferred ones
+    const deferredSet = new Set(config.deferredPhases ?? []);
     config.requiredPhases.forEach((phase) => {
+      if (deferredSet.has(phase)) {
+        return; // Deferred phases are started explicitly via startPhase()
+      }
       const phaseStartMarkName = `scenario_${scenario}_${phase}_start`;
       performance.mark(phaseStartMarkName);
       ctx.phases.set(phase, { startMarkName: phaseStartMarkName });
@@ -134,6 +139,11 @@ class ScenarioMonitor {
     if (!ctx || ctx.emitted || !ctx.config.requiredPhases.includes(phase) || ctx.phases.has(phase)) {
       return;
     }
+    // Only deferred phases can be started via startPhase(); non-deferred are auto-started in start()
+    const isDeferredPhase = ctx.config.deferredPhases?.includes(phase) ?? false;
+    if (!isDeferredPhase) {
+      return;
+    }
 
     const startMarkName = `scenario_${scenario}_${phase}_start`;
     performance.mark(startMarkName);
@@ -146,10 +156,37 @@ class ScenarioMonitor {
     });
   }
 
+  /**
+   * Marks a phase as skipped (e.g. copilot disabled). Removes the phase from
+   * requiredPhases so it no longer blocks scenario completion.
+   */
+  skipPhase(scenario: MetricScenario, phase: MetricPhase) {
+    const ctx = this.contexts.get(scenario);
+    if (!ctx || ctx.emitted) {
+      return;
+    }
+    // Remove from requiredPhases so it doesn't block completion
+    ctx.config = {
+      ...ctx.config,
+      requiredPhases: ctx.config.requiredPhases.filter((p) => p !== phase),
+      deferredPhases: ctx.config.deferredPhases?.filter((p) => p !== phase),
+    };
+
+    this.devLog(`phase_skip: ${scenario}.${phase}`);
+
+    traceMark(Action.MetricsScenario, {
+      event: "phase_skip",
+      scenario,
+      phase,
+    });
+
+    this.tryEmitIfReady(ctx);
+  }
+
   completePhase(scenario: MetricScenario, phase: MetricPhase) {
     const ctx = this.contexts.get(scenario);
     const phaseCtx = ctx?.phases.get(phase);
-    if (!ctx || ctx.emitted || !ctx.config.requiredPhases.includes(phase) || !phaseCtx) {
+    if (!ctx || ctx.emitted || ctx.completed.has(phase) || !ctx.config.requiredPhases.includes(phase) || !phaseCtx) {
       return;
     }
 
@@ -331,13 +368,23 @@ class ScenarioMonitor {
       })}`,
     );
 
-    // Call portal backend health metrics endpoint
-    // If healthy is true (either completed successfully or timeout with expected failure), report healthy
-    if (healthy) {
-      reportHealthy(ctx.scenario, platform, api);
-    } else {
-      reportUnhealthy(ctx.scenario, platform, api);
-    }
+    // Call portal backend health metrics endpoint with enriched payload
+    reportMetric({
+      platform,
+      api,
+      scenario: ctx.scenario,
+      healthy,
+      durationMs: finalSnapshot.durationMs,
+      timedOut,
+      documentHidden: document.hidden,
+      hasExpectedFailure: ctx.hasExpectedFailure,
+      completedPhases: finalSnapshot.completed,
+      failedPhases: finalSnapshot.failedPhases ?? [],
+      phaseTimings: finalSnapshot.phaseTimings,
+      startTimeISO: finalSnapshot.startTimeISO,
+      endTimeISO: finalSnapshot.endTimeISO,
+      vitals: finalSnapshot.vitals,
+    });
 
     // Cleanup performance entries
     this.cleanupPerformanceEntries(ctx);
@@ -345,8 +392,7 @@ class ScenarioMonitor {
 
   private cleanupPerformanceEntries(ctx: InternalScenarioContext) {
     performance.clearMarks(ctx.startMarkName);
-    ctx.config.requiredPhases.forEach((phase) => {
-      const phaseCtx = ctx.phases.get(phase);
+    ctx.phases.forEach((phaseCtx, phase) => {
       if (phaseCtx?.startMarkName) {
         performance.clearMarks(phaseCtx.startMarkName);
       }

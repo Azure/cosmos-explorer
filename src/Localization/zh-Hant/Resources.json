@@ -7,7 +7,7 @@
     "delete": "刪除",
     "update": "更新",
     "discard": "捨棄",
-    "execute": "Execute",
+    "execute": "執行",
     "loading": "正在載入",
     "loadingEllipsis": "正在載入...",
     "next": "下一個",
@@ -29,6 +29,9 @@
     "upload": "上傳",
     "connect": "連線",
     "remove": "移除",
+    "load": "載入",
+    "publish": "發佈",
+    "browse": "瀏覽",
     "increaseValueBy1": "將值增加 1",
     "decreaseValueBy1": "將值減少 1"
   },
@@ -43,253 +46,923 @@
       "getStarted": "開始使用我們的樣本資料集、文件和其他工具。"
     },
     "quickStart": {
-      "title": "Launch quick start",
-      "description": "Launch a quick start tutorial to get started with sample data"
+      "title": "啟動快速入門",
+      "description": "啟動快速入門教學課程，以開始使用範例資料"
     },
     "newCollection": {
-      "title": "New {{collectionName}}",
-      "description": "Create a new container for storage and throughput"
+      "title": "新增 {{collectionName}}",
+      "description": "建立用於儲存空間和輸送量的新容器"
     },
     "samplesGallery": {
-      "title": "Azure Cosmos DB Samples Gallery",
-      "description": "Discover samples that showcase scalable, intelligent app patterns. Try one now to see how fast you can go from concept to code with Cosmos DB"
+      "title": "Azure Cosmos DB 範例圖庫",
+      "description": "探索展示可擴展的智慧型應用模式的範例。立即嘗試，體驗使用 Cosmos DB 從概念到程式碼實作可以有多快速"
     },
     "connectCard": {
-      "title": "Connect",
-      "description": "Prefer using your own choice of tooling? Find the connection string you need to connect",
+      "title": "連線",
+      "description": "偏好使用您自己的工具?找到您需要的連接字串以進行連線",
       "pgAdmin": {
-        "title": "Connect with pgAdmin",
-        "description": "Prefer pgAdmin? Find your connection strings here"
+        "title": "使用 pgAdmin 連結",
+        "description": "偏好使用 pgAdmin?請在這裡尋找您的連接字串"
       },
       "vsCode": {
         "title": "與 VS Code 連線",
-        "description": "Query and Manage your MongoDB and DocumentDB clusters in Visual Studio Code"
+        "description": "在 Visual Studio Code 中查詢並管理您的 MongoDB 與 DocumentDB 叢集"
       }
     },
     "shell": {
       "postgres": {
-        "title": "PostgreSQL Shell",
-        "description": "Create table and interact with data using PostgreSQL's shell interface"
+        "title": "PostgreSQL 殼層",
+        "description": "建立資料表並使用 PostgreSQL 殼層介面與資料互動"
       },
       "vcoreMongo": {
-        "title": "Mongo Shell",
-        "description": "Create a collection and interact with data using MongoDB's shell interface"
+        "title": "Mongo 殼層",
+        "description": "建立集合並使用 MongoDB 殼層介面與資料互動"
       }
     },
     "teachingBubble": {
       "newToPostgres": {
-        "headline": "New to Cosmos DB PGSQL?",
-        "body": "Welcome! If you are new to Cosmos DB PGSQL and need help with getting started, here is where you can find sample data, query."
+        "headline": "首次使用 Cosmos DB PGSQL?",
+        "body": "歡迎!如果您首次使用 Cosmos DB PGSQL，需要入門協助，這裡可找到範例資料與查詢範例。"
       },
       "resetPassword": {
-        "headline": "Create your password",
-        "body": "If you haven't changed your password yet, change it now."
+        "headline": "建立您的密碼",
+        "body": "如果您尚未變更密碼，請立即變更。"
       },
       "coachMark": {
-        "headline": "Start with sample {{collectionName}}",
-        "body": "You will be guided to create a sample container with sample data, then we will give you a tour of data explorer. You can also cancel launching this tour and explore yourself"
+        "headline": "從範例 {{collectionName}} 開始",
+        "body": "我們將引導您建立一個包含範例資料的容器，並帶您導覽資料總管。您也可以取消啟動此導覽，自行探索"
       }
     },
     "sections": {
-      "recents": "Recents",
-      "clearRecents": "Clear Recents",
-      "top3": "Top 3 things you need to know",
-      "learningResources": "Learning Resources",
-      "nextSteps": "Next steps",
-      "tipsAndLearnMore": "Tips & learn more",
-      "notebook": "Notebook",
-      "needHelp": "Need help?"
+      "recents": "最近項目",
+      "clearRecents": "清除最近項目",
+      "top3": "您需要知道的 3 大重點",
+      "learningResources": "學習資源",
+      "nextSteps": "後續步驟",
+      "tipsAndLearnMore": "提示與深入了解",
+      "notebook": "筆記本",
+      "needHelp": "是否需要協助?"
     },
     "top3Items": {
       "sql": {
         "advancedModeling": {
-          "title": "Advanced Modeling Patterns",
-          "description": "Learn advanced strategies to optimize your database."
+          "title": "進階模型化模式",
+          "description": "學習進階策略以最佳化您的資料庫效能。"
         },
         "partitioning": {
-          "title": "Partitioning Best Practices",
-          "description": "Learn to apply data model and partitioning strategies."
+          "title": "資料分割的最佳做法",
+          "description": "學習套用資料模型與資料分割策略。"
         },
         "resourcePlanning": {
-          "title": "Plan Your Resource Requirements",
-          "description": "Get to know the different configuration choices."
+          "title": "規劃您的資源要求",
+          "description": "認識不同的設定選項。"
         }
       },
       "mongo": {
         "whatIsMongo": {
-          "title": "What is the MongoDB API?",
-          "description": "Understand Azure Cosmos DB for MongoDB and its features."
+          "title": "什麼是 MongoDB API?",
+          "description": "了解 Azure Cosmos DB for MongoDB 及其功能。"
         },
         "features": {
-          "title": "Features and Syntax",
-          "description": "Discover the advantages and features"
+          "title": "功能與語法",
+          "description": "探索優勢與功能"
         },
         "migrate": {
-          "title": "Migrate Your Data",
-          "description": "Pre-migration steps for moving data"
+          "title": "移轉您的資料",
+          "description": "移動資料前的預先移轉步驟"
         }
       },
       "cassandra": {
         "buildJavaApp": {
-          "title": "Build a Java App",
-          "description": "Create a Java app using an SDK."
+          "title": "建置 Java 應用程式",
+          "description": "使用 SDK 建立 Java 應用程式。"
         },
         "partitioning": {
-          "title": "Partitioning Best Practices",
-          "description": "Learn how partitioning works."
+          "title": "資料分割的最佳做法",
+          "description": "了解資料分割的運作方式。"
         },
         "requestUnits": {
-          "title": "Request Units (RUs)",
-          "description": "Understand RU charges."
+          "title": "要求單位 (RU)",
+          "description": "了解 RU 的費用。"
         }
       },
       "gremlin": {
         "dataModeling": {
-          "title": "Data Modeling",
-          "description": "Graph data modeling recommendations"
+          "title": "資料模型化",
+          "description": "圖形資料模型化建議"
         },
         "partitioning": {
-          "title": "Partitioning Best Practices",
-          "description": "Learn how partitioning works"
+          "title": "資料分割的最佳做法",
+          "description": "了解資料分割的運作方式"
         },
         "queryData": {
-          "title": "Query Data",
-          "description": "Querying data with Gremlin"
+          "title": "查詢資料",
+          "description": "正在使用 Gremlin 查詢資料"
         }
       },
       "tables": {
         "whatIsTable": {
-          "title": "What is the Table API?",
-          "description": "Understand Azure Cosmos DB for Table and its features"
+          "title": "什麼是 Table API?",
+          "description": "了解 Azure Cosmos DB for Table 及其功能"
         },
         "migrate": {
-          "title": "Migrate your data",
-          "description": "Learn how to migrate your data"
+          "title": "移轉您的資料",
+          "description": "深入了解如何移轉資料"
         },
         "faq": {
-          "title": "Azure Cosmos DB for Table FAQs",
-          "description": "Common questions about Azure Cosmos DB for Table"
+          "title": "Azure Cosmos DB for Table 常見問題解答",
+          "description": "關於 Azure Cosmos DB for Table 的常見問題"
         }
       }
     },
     "learningResources": {
       "shortcuts": {
-        "title": "Data Explorer keyboard shortcuts",
-        "description": "Learn keyboard shortcuts to navigate Data Explorer."
+        "title": "[資料總管] 鍵盤快速鍵",
+        "description": "學習使用快捷鍵來瀏覽 [資料總管]。"
       },
       "liveTv": {
-        "title": "Learn the Fundamentals",
-        "description": "Watch Azure Cosmos DB Live TV show introductory and how to videos."
+        "title": "了解基礎知識",
+        "description": "觀看 Azure Cosmos DB 直播節目，了解入門與操作教學影片。"
       },
       "sql": {
         "sdk": {
-          "title": "Get Started using an SDK",
-          "description": "Learn about the Azure Cosmos DB SDK."
+          "title": "開始使用 SDK",
+          "description": "深入了解 Azure Cosmos DB SDK。"
         },
         "migrate": {
-          "title": "Migrate Your Data",
-          "description": "Migrate data using Azure services and open-source solutions."
+          "title": "移轉您的資料",
+          "description": "使用 Azure 服務與開源解決方案來移轉資料。"
         }
       },
       "mongo": {
         "nodejs": {
-          "title": "Build an app with Node.js",
-          "description": "Create a Node.js app."
+          "title": "使用 Node.js 建置應用程式",
+          "description": "建立 Node.js 應用程式。"
         },
         "gettingStarted": {
-          "title": "Getting Started Guide",
-          "description": "Learn the basics to get started."
+          "title": "使用者入門指南",
+          "description": "學習基礎知識，以開始使用。"
         }
       },
       "cassandra": {
         "createContainer": {
-          "title": "Create a Container",
-          "description": "Get to know the create a container options."
+          "title": "建立容器",
+          "description": "了解建立容器的選項。"
         },
         "throughput": {
-          "title": "Provision Throughput",
-          "description": "Learn how to configure throughput."
+          "title": "佈建輸送量",
+          "description": "了解如何設定輸送量。"
         }
       },
       "gremlin": {
         "getStarted": {
-          "title": "Get Started ",
-          "description": "Create, query, and traverse using the Gremlin console"
+          "title": "開始使用 ",
+          "description": "使用 Gremlin 控制台建立、查詢及進行遍歷作業"
         },
         "importData": {
-          "title": "Import Graph Data",
-          "description": "Learn Bulk ingestion data using BulkExecutor"
+          "title": "匯入圖形資料",
+          "description": "使用 BulkExecutor 學習批次資料攝取"
         }
       },
       "tables": {
         "dotnet": {
-          "title": "Build a .NET App",
-          "description": "How to access Azure Cosmos DB for Table from a .NET app."
+          "title": "建置 .NET 應用程式",
+          "description": "如何從 .NET 應用程式存取 Azure Cosmos DB for Table。"
         },
         "java": {
-          "title": "Build a Java App",
-          "description": "Create a Azure Cosmos DB for Table app with Java SDK "
+          "title": "建置 Java 應用程式",
+          "description": "使用 Java SDK 建立 Azure Cosmos DB for Table 應用程式 "
         }
       }
     },
     "nextStepItems": {
       "postgres": {
-        "dataModeling": "Data Modeling",
-        "distributionColumn": "How to choose a Distribution Column",
-        "buildApps": "Build Apps with Python/Java/Django"
+        "dataModeling": "資料模型化",
+        "distributionColumn": "如何選擇分佈欄位",
+        "buildApps": "使用 Python/Java/Django 建置應用程式"
       },
       "vcoreMongo": {
-        "migrateData": "Migrate Data",
-        "vectorSearch": "Build AI apps with Vector Search",
-        "buildApps": "Build Apps with Nodejs"
+        "migrateData": "移轉資料",
+        "vectorSearch": "使用向量搜尋建置 AI 應用程式",
+        "buildApps": "使用 Node.js 建置應用程式"
       }
     },
     "learnMoreItems": {
       "postgres": {
-        "performanceTuning": "Performance Tuning",
-        "diagnosticQueries": "Useful Diagnostic Queries",
-        "sqlReference": "Distributed SQL Reference"
+        "performanceTuning": "效能微調",
+        "diagnosticQueries": "實用診斷查詢",
+        "sqlReference": "分散式 SQL 參考"
       },
       "vcoreMongo": {
-        "vectorSearch": "Vector Search",
-        "textIndexing": "Text Indexing",
-        "troubleshoot": "Troubleshoot common issues"
+        "vectorSearch": "向量搜尋",
+        "textIndexing": "文字索引",
+        "troubleshoot": "疑難排解常見問題"
       }
     },
     "fabric": {
-      "buildTitle": "Build your database",
-      "useTitle": "Use your database",
+      "buildTitle": "建立資料庫",
+      "useTitle": "使用您的資料庫",
       "newContainer": {
-        "title": "New container",
-        "description": "Create a destination container to store your data"
+        "title": "新容器",
+        "description": "建立目的地容器以儲存您的資料"
       },
       "sampleData": {
-        "title": "Sample Data",
-        "description": "Load sample data in your database"
+        "title": "範例資料",
+        "description": "在資料庫中載入範例資料"
       },
       "sampleVectorData": {
-        "title": "Sample Vector Data",
-        "description": "Load sample vector data with text-embedding-ada-002"
+        "title": "範例向量資料",
+        "description": "以 text-embedding-ada-002 載入範例向量資料"
       },
       "appDevelopment": {
-        "title": "App development",
-        "description": "Start here to use an SDK to build your apps"
+        "title": "應用程式開發",
+        "description": "從這裡開始，使用 SDK 建置您的應用程式"
       },
       "sampleGallery": {
-        "title": "Sample Gallery",
-        "description": "Get real-world end-to-end samples"
+        "title": "範例圖庫",
+        "description": "取得真實世界的端對端範例"
       }
     },
     "sampleDataDialog": {
-      "title": "Sample Data",
-      "startButton": "Start",
-      "createPrompt": "Create a container \"{{containerName}}\" and import sample data into it. This may take a few minutes.",
-      "creatingContainer": "Creating container \"{{containerName}}\"...",
-      "importingData": "Importing data into \"{{containerName}}\"...",
-      "success": "Successfully created \"{{containerName}}\" with sample data.",
-      "errorContainerExists": "The container \"{{containerName}}\" in database \"{{databaseName}}\" already exists. Please delete it and retry.",
-      "errorCreateContainer": "Failed to create container: {{error}}",
-      "errorImportData": "Failed to import data: {{error}}"
+      "title": "範例資料",
+      "startButton": "開始",
+      "createPrompt": "建立容器「{{containerName}}」並匯入範例資料至其中。這可能需要幾分鐘的時間。",
+      "creatingContainer": "正在建立容器「{{containerName}}」...",
+      "importingData": "正在將資料匯入「{{containerName}}」...",
+      "success": "已成功使用範例資料建立「{{containerName}}」。",
+      "errorContainerExists": "資料庫「{{databaseName}}」中的容器「{{containerName}}」已存在。請刪除後重試。",
+      "errorCreateContainer": "無法建立容器: {{error}}",
+      "errorImportData": "無法匯入資料: {{error}}"
+    }
+  },
+  "contextMenu": {
+    "newContainer": "新增 {{containerName}}",
+    "restoreContainer": "還原 {{containerName}}",
+    "deleteDatabase": "刪除 {{databaseName}}",
+    "deleteContainer": "刪除 {{containerName}}",
+    "newSqlQuery": "新增 SQL 查詢",
+    "newQuery": "新增查詢",
+    "openMongoShell": "開啟 Mongo 殼層",
+    "newShell": "新增殼層",
+    "openCassandraShell": "開啟 Cassandra 殼層",
+    "newStoredProcedure": "新增預存程序",
+    "newUdf": "新增 UDF",
+    "newTrigger": "新增觸發程序",
+    "deleteStoredProcedure": "刪除預存程序",
+    "deleteTrigger": "刪除觸發程序",
+    "deleteUdf": "刪除使用者定義的函式"
+  },
+  "tabs": {
+    "documents": {
+      "newItem": "新增項目",
+      "newDocument": "新增文件",
+      "uploadItem": "上傳項目",
+      "applyFilter": "套用篩選",
+      "unsavedChanges": "未儲存的變更",
+      "unsavedChangesMessage": "您未儲存的變更都會遺失。是否要繼續?",
+      "createDocumentFailed": "建立文件失敗",
+      "updateDocumentFailed": "更新文件失敗",
+      "documentDeleted": "已成功刪除文件。",
+      "deleteDocumentDialogTitle": "刪除文件",
+      "deleteDocumentsDialogTitle": "刪除文件",
+      "throttlingError": "由於速率限制錯誤，部分文件無法刪除。請稍後再試。若要在未來避免此情況，請考慮增加容器或資料庫上的輸送量。",
+      "deleteFailed": "刪除文件失敗 ({{error}})",
+      "missingShardProperty": "文件缺少分區屬性: {{partitionKeyProperty}}",
+      "refreshGridFailed": "重新整理文件方格失敗",
+      "confirmDelete": "確定要刪除 {{documentName}}?",
+      "confirmDeleteTitle": "確認刪除",
+      "selectedItems": "選取的 {{count}} 個項目",
+      "selectedItem": "選取的項目",
+      "selectedDocuments": "選取的 {{count}} 個文件",
+      "selectedDocument": "選取的文件",
+      "deleteDocumentFailedLog": "無法刪除文件 {{documentId}}，出現狀態代碼 {{statusCode}}",
+      "deleteSuccessLog": "已成功刪除 {{count}} 個文件",
+      "deleteThrottledLog": "由於「要求太大」(429) 錯誤，無法刪除 {{count}} 個文件。正在重試...",
+      "missingShardKeyLog": "無法儲存新文件: 未定義文件分區金鑰",
+      "filterTooltip": "輸入查詢述詞，或從清單中選擇一個。",
+      "loadMore": "載入更多",
+      "documentEditor": "文件編輯器",
+      "savedFilters": "儲存的篩選",
+      "defaultFilters": "預設篩選",
+      "abort": "中止",
+      "deletingDocuments": "正在刪除 {{count}} 個文件",
+      "deletedDocumentsSuccess": "已成功刪除 {{count}} 個文件。",
+      "deleteAborted": "刪除文件已中止。",
+      "failedToDeleteDocuments": "無法刪除 {{count}} 個文件。",
+      "requestTooLargeBase": "由於「要求太大」例外狀況 (429)，部分刪除要求失敗",
+      "retriedSuccessfully": "但已成功重試。",
+      "retryingNow": "正在重試。",
+      "increaseThroughputTip": "若要在未來避免此情況，請考慮增加容器或資料庫上的輸送量。",
+      "numberOfSelectedDocuments": "選取的文件數目: {{count}}",
+      "mongoFilterPlaceholder": "輸入查詢述詞 (例如 {\"id\":\"foo\"})，或從下拉式清單中選擇一個，或保留空白以查詢所有文件。",
+      "sqlFilterPlaceholder": "輸入查詢述詞 (例如 WHERE c.id=\"1\")，或從下拉式清單中選擇一個，或保留空白以查詢所有文件。",
+      "error": "錯誤",
+      "warning": "警告"
+    },
+    "query": {
+      "executeQuery": "執行查詢",
+      "executeSelection": "執行選取範圍",
+      "saveQuery": "儲存查詢",
+      "downloadQuery": "下載查詢",
+      "cancelQuery": "取消查詢",
+      "openSavedQueries": "開啟已儲存的查詢",
+      "vertical": "垂直",
+      "horizontal": "水平",
+      "view": "檢視",
+      "editingQuery": "編輯查詢"
+    },
+    "storedProcedure": {
+      "id": "預存程序識別碼",
+      "idPlaceholder": "輸入新的預存程序識別碼",
+      "idAriaLabel": "預存程序識別碼",
+      "body": "預存程序主體",
+      "bodyAriaLabel": "預存程序主體",
+      "successfulExecution": "成功執行預存程序",
+      "resultAriaLabel": "執行預存程序結果",
+      "logsAriaLabel": "執行預存程序記錄",
+      "errors": "錯誤:",
+      "errorDetailsAriaLabel": "錯誤詳細資料連結",
+      "moreDetails": "其他詳細資料",
+      "consoleLogTab": "console.log"
+    },
+    "trigger": {
+      "id": "觸發程序識別碼",
+      "idPlaceholder": "輸入新的觸發程序識別碼",
+      "type": "觸發程序類型",
+      "operation": "觸發程序作業",
+      "body": "觸發程序主體",
+      "bodyAriaLabel": "觸發程序主體",
+      "pre": "之前",
+      "post": "張貼",
+      "all": "全部",
+      "operationCreate": "建立",
+      "operationDelete": "刪除",
+      "operationReplace": "取代"
+    },
+    "udf": {
+      "id": "使用者定義的函式識別碼",
+      "idPlaceholder": "輸入新的使用者定義函式識別碼",
+      "body": "使用者定義的函式主體",
+      "bodyAriaLabel": "使用者定義的函式主體"
+    },
+    "conflicts": {
+      "unsavedChanges": "未儲存的變更",
+      "changesWillBeLost": "變更將會遺失。是否要繼續?",
+      "resolveConflictFailed": "解決衝突失敗",
+      "deleteConflictFailed": "刪除衝突失敗",
+      "refreshGridFailed": "重新整理文件方格失敗"
+    },
+    "mongoShell": {
+      "title": "Mongo 殼層"
+    }
+  },
+  "panes": {
+    "deleteDatabase": {
+      "panelTitle": "刪除 {{databaseName}}",
+      "warningMessage": "警告!您即將進行的動作無法復原。繼續將會永久刪除此資源及其所有子資源。",
+      "confirmPrompt": "輸入 {{databaseName}} 識別碼 (名稱) 以確認",
+      "inputMismatch": "輸入 {{databaseName}} 名稱 \"{{input}}\" 與選取的 {{databaseName}} \"{{selectedId}}\" 不符",
+      "feedbackTitle": "協助我們改進 Azure Cosmos DB!",
+      "feedbackReason": "您刪除此 {{databaseName}} 的原因為何?"
+    },
+    "deleteCollection": {
+      "panelTitle": "刪除 {{collectionName}}",
+      "confirmPrompt": "輸入 {{collectionName}} 識別碼以確認",
+      "inputMismatch": "輸入識別碼 {{input}} 與選取的 {{selectedId}} 不符",
+      "feedbackTitle": "協助我們改進 Azure Cosmos DB!",
+      "feedbackReason": "您刪除此 {{collectionName}} 的原因為何?"
+    },
+    "addDatabase": {
+      "databaseLabel": "資料庫 {{suffix}}",
+      "databaseIdLabel": "資料庫識別碼",
+      "keyspaceIdLabel": "索引鍵空間識別碼",
+      "databaseIdPlaceholder": "輸入新的 {{databaseLabel}} 識別碼",
+      "databaseTooltip": "{{databaseLabel}} 是一或多個 {{collectionsLabel}} 的邏輯容器",
+      "shareThroughput": "跨 {{collectionsLabel}} 共用輸送量",
+      "shareThroughputTooltip": "{{databaseLabel}} 層級的已佈建輸送量將會跨 {{databaseLabel}} 內的所有 {{collectionsLabel}} 共用。",
+      "greaterThanError": "請為 Autopilot 輸送量輸入大於 {{minValue}} 的值",
+      "acknowledgeSpendError": "請認知估計的 {{period}} 支出。",
+      "acknowledgeSpendErrorMonthly": "請認知每月預估支出。",
+      "acknowledgeSpendErrorDaily": "請認知估計的每日支出。",
+      "provisionSharedThroughputTitle": "佈建共用輸送量",
+      "provisionThroughputLabel": "佈建輸送量"
+    },
+    "addCollection": {
+      "createNew": "新建",
+      "useExisting": "使用現有項目",
+      "databaseTooltip": "資料庫類似於命名空間。它是一組 {{collectionName}} 的管理單位。",
+      "shareThroughput": "跨 {{collectionName}} 共用輸送量",
+      "shareThroughputTooltip": "在資料庫層級所設定的輸送量，將會跨資料庫內的所有 {{collectionName}} 共用。",
+      "collectionIdLabel": "{{collectionName}} 識別碼",
+      "collectionIdTooltip": "{{collectionName}} 的唯一識別碼，並用於透過 REST 和所有 SDK 進行識別碼型路由。",
+      "collectionIdPlaceholder": "例如，{{collectionName}}1",
+      "collectionIdAriaLabel": "{{collectionName}} 識別碼，範例 {{collectionName}}1",
+      "existingDatabaseAriaLabel": "選擇現有的 {{databaseName}} 識別碼",
+      "existingDatabasePlaceholder": "選擇現有的 {{databaseName}} 識別碼",
+      "indexing": "編製索引",
+      "turnOnIndexing": "開啟索引編製",
+      "automatic": "自動",
+      "turnOffIndexing": "關閉索引編製",
+      "off": "關閉",
+      "sharding": "分區化",
+      "shardingTooltip": "分區集合會將您的資料分割到多個複本集 (分區)，以達到無限制的擴充性。分區集合需要選擇分區索引鍵 (欄位)，以平均散發您的資料。",
+      "unsharded": "未分區",
+      "unshardedLabel": "未分區 (20 GB 限制)",
+      "sharded": "已分區",
+      "addPartitionKey": "新增階層式資料分割索引鍵",
+      "hierarchicalPartitionKeyInfo": "此功能可讓您使用最多三個層級的索引鍵來分割資料，以提供更好的資料散發。需要 .NET V3、Java V4 SDK 或預覽 JavaScript V3 SDK。",
+      "provisionDedicatedThroughput": "為此 {{collectionName}} 佈建專用輸送量",
+      "provisionDedicatedThroughputTooltip": "您可以選擇性地為已佈建輸送量的資料庫內的 {{collectionName}} 佈建專用的輸送量。此專用輸送量數量不會與資料庫中的其他 {{collectionNamePlural}} 共用，也不會計入您為資料庫所佈建的輸送量。除了您在資料庫層級佈建的輸送量數量之外，也將針對此輸送量計費。",
+      "uniqueKeysPlaceholderMongo": "以逗號分隔的路徑，例如 firstName,address.zipCode",
+      "uniqueKeysPlaceholderSql": "以逗號分隔的路徑，例如 /firstName,/address/zipCode",
+      "addUniqueKey": "新增唯一索引鍵",
+      "enableAnalyticalStore": "啟用分析存放區",
+      "disableAnalyticalStore": "停用分析存放區",
+      "on": "開啟",
+      "analyticalStoreSynapseLinkRequired": "建立分析存放區 {{collectionName}} 需要 Azure Synapse Link。為此 Cosmos DB 帳戶啟用 Synapse Link。",
+      "enable": "啟用",
+      "containerVectorPolicy": "容器向量原則",
+      "containerFullTextSearchPolicy": "容器全文搜尋原則",
+      "advanced": "進階",
+      "mongoIndexingTooltip": "預設會編製 _id 欄位的索引。建立所有欄位的萬用字元索引將最佳化查詢，並且建議用於開發。",
+      "createWildcardIndex": "在所有欄位上建立萬用字元索引",
+      "legacySdkCheckbox": "我的應用程式使用舊版 Cosmos .NET 或 Java SDK 版本 (.NET V1 或 Java V2)",
+      "legacySdkInfo": "為確保與舊版 SDK 的相容性，已建立的容器將使用舊版分割配置，其支援大小最多僅 101 個位元組的資料分割索引鍵值。如果啟用此功能，您將無法使用階層式資料分割索引鍵。",
+      "indexingOnInfo": "預設會對文件中的所有屬性編製索引，以獲得彈性且有效率的查詢。",
+      "indexingOffInfo": "索引編製將會關閉。如果您不需要執行查詢或只有索引鍵值作業，建議您使用。",
+      "indexingOffWarning": "藉由建立此容器並關閉索引編製，您將無法進行任何索引編製原則變更。索引變更只允許在具有索引編製原則的容器上執行。",
+      "acknowledgeSpendErrorMonthly": "請認知每月預估支出。",
+      "acknowledgeSpendErrorDaily": "請認知估計的每日支出。",
+      "unshardedMaxRuError": "未分區的集合最多支援 10,000 個 RU",
+      "acknowledgeShareThroughputError": "請認知此專用輸送量的估計成本。",
+      "vectorPolicyError": "請修正容器向量原則中的錯誤",
+      "fullTextSearchPolicyError": "請修正容器全文搜尋原則中的錯誤",
+      "addingSampleDataSet": "新增範例資料集",
+      "databaseFieldLabelName": "資料庫名稱",
+      "databaseFieldLabelId": "資料庫識別碼",
+      "newDatabaseIdPlaceholder": "輸入新資料庫識別碼",
+      "newDatabaseIdAriaLabel": "新資料庫識別碼，請輸入新的資料庫識別碼",
+      "createNewDatabaseAriaLabel": "建立新資料庫",
+      "useExistingDatabaseAriaLabel": "使用現有資料庫",
+      "chooseExistingDatabase": "選擇我現有資料庫",
+      "teachingBubble": {
+        "step1Headline": "建立範例資料庫",
+        "step1Body": "資料庫是容器的上層結構。您可以建立新的資料庫或使用現有資料庫。在本教學課程中，我們將建立一個名為 SampleDB 的新資料庫。",
+        "step1LearnMore": "深入了解資源。",
+        "step2Headline": "設定輸送量",
+        "step2Body": "Cosmos DB 建議在資料庫間共用輸送量。自動調整會根據設定的最大要求單位數 (RU/s) 提供彈性的輸送量。",
+        "step2LearnMore": "深入了解 RU/秒。",
+        "step3Headline": "正在命名容器",
+        "step3Body": "命名您的容器",
+        "step4Headline": "正在設定資料分割索引鍵",
+        "step4Body": "最後一步——您需要為集合定義資料分割索引鍵。此範例選擇了 /address。好的資料分割索引鍵應該具有廣泛的可能值範圍",
+        "step4CreateContainer": "建立容器",
+        "step5Headline": "正在建立範例容器",
+        "step5Body": "目前正在建立範例容器，並為您新增範例資料。大約需要 1 分鐘的時間。",
+        "step5BodyFollowUp": "範例容器建立完成後，請檢視您的範例資料集，並依照後續步驟操作",
+        "stepOfTotal": "步驟 {{current}} / {{total}}"
+      }
+    },
+    "addCollectionUtility": {
+      "shardKeyTooltip": "分區索引鍵 (欄位) 可用來將您的資料分割到多個複本集 (分區)，以達到無限制的擴充性。選擇將平均散發您的資料的欄位非常重要。",
+      "partitionKeyTooltip": "使用 {{partitionKeyName}} 來自動跨資料分割散發資料，以獲得可擴縮性。選擇 JSON 文件中具有各種值範圍且平均散發要求數量的屬性。",
+      "partitionKeyTooltipSqlSuffix": " 針對小型大量讀取的工作負載或任何大小的大量寫入工作負載，識別碼通常是良好的選擇。",
+      "shardKeyLabel": "分區索引鍵",
+      "partitionKeyLabel": "資料分割索引鍵",
+      "shardKeyPlaceholder": "例如，categoryId",
+      "partitionKeyPlaceholderDefault": "例如，/address",
+      "partitionKeyPlaceholderFirst": "必要 - 第一個資料分割索引鍵，例如 /TenantId",
+      "partitionKeyPlaceholderSecond": "第二個資料分割索引鍵，例如 /UserId",
+      "partitionKeyPlaceholderThird": "第三個資料分割索引鍵，例如，/SessionId",
+      "partitionKeyPlaceholderGraph": "例如，/address/zipCode",
+      "uniqueKeysTooltip": "唯一索引鍵可讓開發人員新增一層資料完整性至其資料庫。在建立容器時建立唯一的索引鍵原則，可確保每個資料分割索引鍵一或多個值的唯一性。",
+      "uniqueKeysLabel": "唯一索引鍵",
+      "analyticalStoreLabel": "分析存放區",
+      "analyticalStoreTooltip": "啟用分析存放區功能，以對作業資料執行接近即時的分析，而不會影響交易工作負載的效能。",
+      "analyticalStoreDescription": "啟用分析存放區功能，以對作業資料執行接近即時的分析，而不會影響交易工作負載的效能。",
+      "vectorPolicyTooltip": "描述資料中包含向量的任何屬性，以便可供相似性查詢使用。"
+    },
+    "settings": {
+      "pageOptions": "頁面選項",
+      "pageOptionsDescription": "選擇 [自訂] 以指定要顯示的查詢結果的固定數量，或選擇選擇 [無限制]，以每頁顯示盡可能多的查詢結果。",
+      "queryResultsPerPage": "每個頁面查詢結果",
+      "queryResultsPerPageTooltip": "輸入每個頁面應顯示的查詢結果數目。",
+      "customQueryItemsPerPage": "自訂每個頁面的查詢項目",
+      "custom": "自訂",
+      "unlimited": "無限制",
+      "entraIdRbac": "啟用 Entra ID RBAC",
+      "entraIdRbacDescription": "選擇 [自動] 以自動啟用 Entra ID RBAC。True/False 可強制啟用/停用 Entra ID RBAC。",
+      "true": "True",
+      "false": "False",
+      "regionSelection": "區域選取項目",
+      "regionSelectionDescription": "變更 Cosmos 用戶端用來存取帳戶的區域。",
+      "selectRegion": "選取區域",
+      "selectRegionTooltip": "變更用來執行用戶端作業的帳戶端點。",
+      "globalDefault": "全域 (預設值)",
+      "readWrite": "(讀取/寫入)",
+      "read": "(讀取)",
+      "queryTimeout": "查詢逾時",
+      "queryTimeoutDescription": "當查詢達到指定的時間限制時，除非已啟用自動取消，否則會顯示包含取消查詢選項的快顯視窗。",
+      "enableQueryTimeout": "啟用查詢逾時",
+      "queryTimeoutMs": "查詢逾時 (毫秒)",
+      "automaticallyCancelQuery": "逾時後自動取消查詢",
+      "ruLimit": "RU 限制",
+      "ruLimitDescription": "如果查詢超過設定的 RU 限制，查詢將會中止。",
+      "enableRuLimit": "啟用 RU 限制",
+      "ruLimitLabel": "RU 限制 (RU)",
+      "defaultQueryResults": "預設查詢結果檢視",
+      "defaultQueryResultsDescription": "選取顯示查詢結果時要使用的預設檢視。",
+      "retrySettings": "重試設定",
+      "retrySettingsDescription": "重試在 CosmosDB 查詢期間，與節流要求相關聯的原則。",
+      "maxRetryAttempts": "最大重試嘗試次數",
+      "maxRetryAttemptsTooltip": "要針對要求執行的重試次數上限。預設值 9。",
+      "fixedRetryInterval": "修正重試間隔 (毫秒)",
+      "fixedRetryIntervalTooltip": "已修正要在每個重試之間等候的重試間隔 (以毫秒為單位)，正在忽略隨著回應傳回的 retryAfter。預設值為 0 毫秒。",
+      "maxWaitTime": "最長等候時間",
+      "maxWaitTimeTooltip": "重試時等候要求的等候時間上限 (秒)。預設值 30 秒。",
+      "enableContainerPagination": "啟用容器分頁",
+      "enableContainerPaginationDescription": "一次載入 50 個容器。目前容器未以英數字元順序提取。",
+      "enableCrossPartitionQuery": "啟用跨資料分割查詢",
+      "enableCrossPartitionQueryDescription": "執行查詢時傳送多個要求。如果查詢範圍未限制在單一資料分割索引鍵值，則需要多個要求。",
+      "maxDegreeOfParallelism": "平行處理原則的最大程度",
+      "maxDegreeOfParallelismDescription": "取得或設定在平行查詢執行期間，並行作業執行用戶端的數目。正數的屬性值會將並行作業數目限制為設定值。如果設定為小於 0，系統會自動決定要執行的並行作業數目。",
+      "maxDegreeOfParallelismQuery": "查詢至平行處理原則的最大程度。",
+      "priorityLevel": "優先順序層級",
+      "priorityLevelDescription": "使用以優先順序為基礎的執行時，從資料總管設定資料平面要求的優先順序等級。如果選取 [無]，資料總管將不會指定優先順序等級，且會使用伺服器端的預設優先順序等級。",
+      "displayGremlinQueryResults": "將 Gremlin 查詢結果顯示為:",
+      "displayGremlinQueryResultsDescription": "選取 [圖表] 以將查詢結果自動視覺化為圖表，或選取 [JSON] 以 JSON 形式顯示結果。",
+      "graph": "圖表",
+      "json": "JSON",
+      "graphAutoVisualization": "圖表自動視覺效果",
+      "enableSampleDatabase": "啟用範例資料庫",
+      "enableSampleDatabaseDescription": "這是包含綜合產品資料的範例資料庫和集合，您可以使用 NoSQL 查詢來探索。這會在資料總管 UI 中顯示為另一個資料庫，且由 Microsoft 建立並維護，您無需付費。",
+      "enableSampleDbAriaLabel": "啟用用於查詢探索的範例資料庫",
+      "guidRepresentation": "GUID 表示法",
+      "guidRepresentationDescription": "MongoDB 中的 GuidRepresentation 是指儲存在 BSON 文件中時，全域唯一識別碼 (GUID) 的序列化與還原序列化方式。這將套用至所有文件作業。",
+      "advancedSettings": "進階設定",
+      "ignorePartitionKey": "在文件更新時忽略資料分割索引鍵",
+      "ignorePartitionKeyTooltip": "如果勾選，將不會在更新作業期間使用資料分割索引鍵值來尋找文件。只有在文件更新由於異常的資料分割索引鍵而失敗時，才使用此功能。",
+      "clearHistory": "清除歷程記錄",
+      "clearHistoryConfirm": "確定要繼續嗎?",
+      "clearHistoryDescription": "此動作會清除此瀏覽器中此帳戶的所有自訂項目，包括:",
+      "clearHistoryTabLayout": "重設您自訂的索引標籤版面配置，包括分隔器位置",
+      "clearHistoryTableColumns": "清除資料表資料行喜好設定，包括任何自訂資料行",
+      "clearHistoryFilters": "清除您的篩選歷程記錄",
+      "clearHistoryRegion": "將區域選取範圍重設為全域",
+      "increaseValueBy1000": "將值增加 1000",
+      "decreaseValueBy1000": "將值減少 1000",
+      "none": "無",
+      "low": "低",
+      "high": "高",
+      "automatic": "自動",
+      "enhancedQueryControl": "增強的查詢控制",
+      "enableQueryControl": "啟用查詢控制",
+      "explorerVersion": "瀏覽器版本",
+      "accountId": "帳戶識別碼",
+      "sessionId": "工作階段識別碼",
+      "popupsDisabledError": "由於瀏覽器中停用快顯視窗，我們無法為此帳戶建立授權。\n請為此網站啟用快顯視窗，然後按一下 [Entra ID 的登入] 按鈕",
+      "failedToAcquireTokenError": "無法自動取得授權權杖。請按一下 [Entra ID 的登入] 按鈕，以啟用 Entra ID RBAC 作業"
+    },
+    "saveQuery": {
+      "panelTitle": "儲存查詢",
+      "setupCostMessage": "為了符合規範，我們會將查詢儲存在 Azure Cosmos 帳戶的容器中，在名為「{{databaseName}}」的個別資料庫中。若要繼續，我們需要在您的帳戶中建立容器，估計每天的額外費用為 $0.77 美元。",
+      "completeSetup": "完成設定",
+      "noQueryNameError": "未指定查詢名稱",
+      "invalidQueryContentError": "指定的查詢內容無效",
+      "failedToSaveQueryError": "無法儲存查詢 {{queryName}}",
+      "failedToSetupContainerError": "無法為已儲存的查詢設定容器",
+      "accountNotSetupError": "無法儲存查詢: 帳戶未設定為儲存查詢",
+      "name": "名稱"
+    },
+    "loadQuery": {
+      "noFileSpecifiedError": "未指定檔案",
+      "failedToLoadQueryError": "無法載入查詢",
+      "failedToLoadQueryFromFileError": "無法從檔案 {{fileName}} 載入查詢",
+      "selectFilesToOpen": "選取查詢文件",
+      "browseFiles": "瀏覽"
+    },
+    "executeStoredProcedure": {
+      "enterInputParameters": "輸入輸入參數 (如果有)",
+      "key": "索引鍵",
+      "param": "參數",
+      "partitionKeyValue": "資料分割索引鍵值",
+      "value": "值",
+      "addNewParam": "新增參數",
+      "addParam": "新增參數",
+      "deleteParam": "刪除參數",
+      "invalidParamError": "指定的參數無效: {{invalidParam}}",
+      "invalidParamConsoleError": "指定的參數無效: {{invalidParam}} 不是有效的常值",
+      "stringType": "字串",
+      "customType": "自訂"
+    },
+    "uploadItems": {
+      "noFilesSpecifiedError": "未指定任何檔案。請至少輸入一個檔案。",
+      "selectJsonFiles": "選取 JSON 檔案",
+      "selectJsonFilesTooltip": "選取一或多個要上傳的 JSON 檔案。每個檔案可以包含單一 JSON 文件或 JSON 文件的陣列。個別上傳作業中所有檔案的合併大小必須小於 2 MB。您可以針對較大的資料集執行多個上傳作業。",
+      "fileNameColumn": "檔案名稱",
+      "statusColumn": "狀態",
+      "uploadStatus": "{{numSucceeded}} 個已建立，{{numThrottled}} 個已節流，{{numFailed}} 個錯誤",
+      "uploadedFiles": "上傳的檔案"
+    },
+    "copyNotebook": {
+      "copyFailedError": "無法將 {{name}} 複製到 {{destination}}",
+      "uploadFailedError": "無法上傳 {{name}}",
+      "location": "位置",
+      "locationAriaLabel": "位置",
+      "selectLocation": "選取要複製的筆記本位置",
+      "name": "名稱"
+    },
+    "publishNotebook": {
+      "publishFailedError": "無法將 {{notebookName}} 發佈至資源庫",
+      "publishDescription": "發佈後，此筆記本會出現在 Azure Cosmos DB 筆記本公用資源庫中。發佈前，請確定已移除任何敏感性資料或輸出。",
+      "publishPrompt": "您是否要發佈並共用 \"{{name}}\" 至資源庫?",
+      "coverImage": "封面影像",
+      "coverImageUrl": "封面影像 URL",
+      "name": "名稱",
+      "description": "描述",
+      "tags": "標籤",
+      "tagsPlaceholder": "選用標記 1，選用標記 2",
+      "preview": "預覽",
+      "urlType": "URL",
+      "customImage": "自訂映像",
+      "takeScreenshot": "擷取螢幕擷取畫面",
+      "useFirstDisplayOutput": "使用第一個顯示輸出",
+      "failedToCaptureOutput": "無法擷取第一個輸出",
+      "outputDoesNotExist": "任何儲存格的輸出都不存在。",
+      "failedToConvertError": "無法將 {{fileName}} 轉換為 base64 格式",
+      "failedToUploadError": "無法上傳 {{fileName}}"
+    },
+    "changePartitionKey": {
+      "failedToStartError": "無法啟動資料傳輸工作",
+      "suboptimalPartitionKeyError": "警告: 系統偵測到您的集合可能在使用次佳的資料分割索引鍵",
+      "description": "變更容器的資料分割索引鍵時，您將必須使用正確的資料分割索引鍵來建立目的地容器。您也可以選取現有的目的地容器。",
+      "sourceContainerId": "來源 {{collectionName}} 識別碼",
+      "destinationContainerId": "目的地 {{collectionName}} 識別碼",
+      "collectionIdTooltip": "{{collectionName}} 的唯一識別碼，並用於透過 REST 和所有 SDK 進行識別碼型路由。",
+      "collectionIdPlaceholder": "例如，{{collectionName}}1",
+      "collectionIdAriaLabel": "{{collectionName}} 識別碼，範例 {{collectionName}}1",
+      "existingContainers": "現有的容器",
+      "partitionKeyWarning": "目的地容器必不得已存在。資料總管將為您建立新的目的地容器。"
+    },
+    "cassandraAddCollection": {
+      "keyspaceLabel": "索引鍵空間名稱",
+      "keyspaceTooltip": "選取現有的索引鍵空間或輸入新的索引鍵空間識別碼。",
+      "tableIdLabel": "輸入 CQL 命令以建立資料表。",
+      "enterTableId": "輸入資料表識別碼",
+      "tableSchemaAriaLabel": "資料表結構描述",
+      "provisionDedicatedThroughput": "為此資料表佈建專用輸送量",
+      "provisionDedicatedThroughputTooltip": "您可以選擇性地為已佈建輸送量的索引鍵空間內的資料表佈建專用輸送量。此專用輸送量數量不會與索引鍵空間中的其他資料表共用，也不會計入您為索引鍵空間所佈建的輸送量。除了您在索引鍵空間層級佈建的輸送量數量之外，也將針對此輸送量計費。"
+    },
+    "tables": {
+      "addProperty": "新增屬性",
+      "addRow": "新增資料列",
+      "addEntity": "新增實體",
+      "back": "返回",
+      "nullFieldsWarning": "警告: 將不會顯示 Null 欄位供編輯。",
+      "propertyEmptyError": "{{property}} 不得為空白。請輸入 {{property}} 的值",
+      "whitespaceError": "{{property}} 不能有空格。請輸入 {{property}} 的值 (不含空格)",
+      "propertyTypeEmptyError": "屬性類型不可為空白。請從屬性 {{property}} 的下拉式清單中選擇類型"
+    },
+    "tableQuerySelect": {
+      "selectColumns": "請選取您要查詢的資料行。",
+      "availableColumns": "可用的資料行"
+    },
+    "tableColumnSelection": {
+      "selectColumns": "選取要在您的容器的項目檢視中顯示的資料行。",
+      "searchFields": "搜尋欄位",
+      "reset": "重設",
+      "partitionKeySuffix": " (資料分割索引鍵)"
+    },
+    "newVertex": {
+      "addProperty": "新增屬性"
+    },
+    "addGlobalSecondaryIndex": {
+      "globalSecondaryIndexId": "全域次要索引容器識別碼",
+      "globalSecondaryIndexIdPlaceholder": "例如，indexbyEmailId",
+      "projectionQuery": "投射查詢",
+      "projectionQueryPlaceholder": "SELECT c.email, c.accountId FROM c",
+      "projectionQueryTooltip": "深入了解如何定義全域次要索引。",
+      "disabledTitle": "已在建立全域次要索引。請等候它完成，再建立新的工作。"
+    },
+    "stringInput": {
+      "inputMismatchError": "輸入 {{input}} 與選取的 {{selectedId}} 不符"
+    },
+    "panelInfo": {
+      "information": "資訊",
+      "moreDetails": "其他詳細資料"
+    }
+  },
+  "controls": {
+    "settings": {
+      "tabTitles": {
+        "scale": "縮放",
+        "conflictResolution": "衝突解決",
+        "settings": "設定",
+        "indexingPolicy": "編製索引原則",
+        "partitionKeys": "資料分割索引鍵",
+        "partitionKeysPreview": "磁碟分割索引鍵 (預覽)",
+        "computedProperties": "計算屬性",
+        "containerPolicies": "容器原則",
+        "throughputBuckets": "輸送量貯體",
+        "globalSecondaryIndexPreview": "全域次要索引 (預覽)",
+        "maskingPolicyPreview": "遮罩原則 (預覽)"
+      },
+      "mongoNotifications": {
+        "selectTypeWarning": "請選取每個索引的類型。",
+        "enterFieldNameError": "請輸入欄位名稱。",
+        "wildcardPathError": "欄位名稱中不存在萬用字元路徑。使用以下類似模式 "
+      },
+      "partitionKey": {
+        "shardKey": "分區索引鍵",
+        "partitionKey": "資料分割索引鍵",
+        "shardKeyTooltip": "分區索引鍵 (欄位) 可用來將您的資料分割到多個複本集 (分區)，以達到無限制的擴充性。選擇將平均散發您的資料的欄位非常重要。",
+        "partitionKeyTooltip": "用於自動跨資料分割散發資料，以獲得可擴縮性。選擇 JSON 文件中具有各種值範圍且平均散發要求數量的屬性。",
+        "sqlPartitionKeyTooltipSuffix": " 針對小型大量讀取的工作負載或任何大小的大量寫入工作負載，識別碼通常是良好的選擇。",
+        "partitionKeySubtext": "對於小型工作負載，項目識別碼是資料分割索引鍵的合適選擇。",
+        "mongoPlaceholder": "例如，categoryId",
+        "gremlinPlaceholder": "例如，/address",
+        "sqlFirstPartitionKey": "必要 - 第一個資料分割索引鍵，例如 /TenantId",
+        "sqlSecondPartitionKey": "第二個資料分割索引鍵，例如 /UserId",
+        "sqlThirdPartitionKey": "第三個資料分割索引鍵，例如，/SessionId",
+        "defaultPlaceholder": "例如，/address/zipCode"
+      },
+      "costEstimate": {
+        "title": "成本預估*",
+        "howWeCalculate": "計算方式",
+        "updatedCostPerMonth": "每月更新成本",
+        "currentCostPerMonth": "目前每月成本",
+        "perRu": "/RU",
+        "perHour": "/小時",
+        "perDay": "/天",
+        "perMonth": "/月"
+      },
+      "throughput": {
+        "manualToAutoscaleDisclaimer": "系統會根據目前的手動輸送量設定和您的資源儲存體，決定起始自動調整每秒 RU 上限。啟用自動調整之後，您可以變更每秒 RU 上限。",
+        "ttlWarningText": "系統會根據您提供的 TTL 值 (秒) 自動刪除項目，而不需要用戶端應用程式明確發出的刪除作業。如需詳細資訊，請參閱:",
+        "ttlWarningLinkText": "Azure Cosmos DB 中的存留時間 (TTL)",
+        "unsavedIndexingPolicy": "編製索引原則",
+        "unsavedDataMaskingPolicy": "資料遮罩原則",
+        "unsavedComputedProperties": "計算屬性",
+        "unsavedEditorWarningPrefix": "您尚未儲存最近所做的變更:",
+        "unsavedEditorWarningSuffix": ".請按一下 [儲存] 以確認變更。",
+        "updateDelayedApplyWarning": "您即將要求增加超出預先配置容量的輸送量。此作業需要一些時間才能完成。",
+        "scalingUpDelayMessage": "擴大需要 4-6 小時，因為它超過 Azure Cosmos DB 可根據實體磁碟分割數目前立即支援的數量。您可立即將輸送量增加至 {{instantMaximumThroughput}}，或繼續處理此值，然後等到擴大完成。",
+        "exceedPreAllocatedMessage": "您增加輸送量的要求超過預先配置的容量，這可能需要比預期更久的時間。您有三個選項可供選擇來繼續執行:",
+        "instantScaleOption": "您可以立即擴大為每秒 {{instantMaximumThroughput}} RU。",
+        "asyncScaleOption": "您可以在 4-6 小時內，以非同步方式擴大至低於每秒 RU {{maximumThroughput}} 的任何值。",
+        "quotaMaxOption": "您目前的配額上限為每秒 {{maximumThroughput}} RU。若要超過此限制，您必須要求增加配額，而 Azure Cosmos DB 小組將會審查。",
+        "belowMinimumMessage": "您無法將輸送量降低至低於您目前的每秒 {{minimum}} RU 下限。如需此限制的詳細資訊，請參閱我們的服務報價文件。",
+        "saveThroughputWarning": "更新輸送量設定時，您的帳單將會受到影響。請先檢閱下方已更新的成本預估，再儲存變更",
+        "currentAutoscaleThroughput": "目前的自動調整輸送量：",
+        "targetAutoscaleThroughput": "目標自動調整輸送量:",
+        "currentManualThroughput": "目前手動輸送量:",
+        "targetManualThroughput": "目標手動輸送量:",
+        "applyDelayedMessage": "已順利提交增加輸送量的要求。此作業需要 1-3 個工作天才能完成。檢視通知中的最新狀態。",
+        "databaseLabel": "資料庫:",
+        "containerLabel": "容器:",
+        "applyShortDelayMessage": "增加輸送量的要求目前正在處理中。此作業需要一些時間才能完成。",
+        "applyLongDelayMessage": "增加輸送量的要求目前正在處理中。此作業需要 1-3 個工作天才能完成。檢視通知中的最新狀態。",
+        "throughputCapError": "您的帳戶目前設定的總輸送量限制為每秒 {{throughputCap}} RU。無法執行此更新，因為它會將總輸送量增加至每秒 {{newTotalThroughput}} RU。請變更成本管理中的總輸送量限制。",
+        "throughputIncrementError": "輸送量值必須以 1000 遞增"
+      },
+      "conflictResolution": {
+        "lwwDefault": "最後寫入者優先 (預設值)",
+        "customMergeProcedure": "合併程序 (自訂)",
+        "mode": "模式",
+        "conflictResolverProperty": "衝突解析程式屬性",
+        "storedProcedure": "預存程序",
+        "lwwTooltip": "取得或設定文件中用於最後寫入者優先 (LWW) 型衝突解決方案之整數屬性的名稱。根據預設，系統會使用系統定義的時間戳記屬性 _ts，決定文件衝突版本的優先者。如果您想要覆寫預設時間戳記型衝突解決方案，請指定您自己的整數屬性。",
+        "customTooltip": "取得或設定預存程序 (又稱為合併程序) 的名稱以便解決衝突。您可以撰寫應用程式定義的邏輯，以判斷文件衝突版本的優先者。預存程序將在伺服器端以交易方式執行一次。如果您未提供預存程序，衝突會填入",
+        "customTooltipConflictsFeed": " 衝突摘要",
+        "customTooltipSuffix": ".您隨時都可以更新/重新註冊預存程序。"
+      },
+      "changeFeed": {
+        "label": "變更摘要記錄保留原則",
+        "tooltip": "啟用變更摘要記錄保留原則，依預設保留容器中項目的過去 10 分鐘歷程記錄。為了支援這項功能，此容器的要求單位 (RU) 費用將會針對寫入乘以 2 的係數。讀取不受影響。"
+      },
+      "mongoIndexing": {
+        "disclaimer": "對於依據多個屬性篩選的查詢，請建立多個單一欄位索引，而不是複合索引。",
+        "disclaimerCompoundIndexesLink": " 複合索引 ",
+        "disclaimerSuffix": "僅用於排序查詢結果。如果您需要新增複合索引，您可以使用 Mongo Shell 建立一個複合索引。",
+        "compoundNotSupported": "索引編輯器中尚不支援具有複合索引的集合。若要修改此集合的索引編製原則，請使用 Mongo Shell。",
+        "aadError": "若要使用索引編製原則編輯器，請登入",
+        "aadErrorLink": "Azure 入口網站。",
+        "refreshingProgress": "重新整理索引轉換進度",
+        "canMakeMoreChangesZero": "當目前的索引轉換完成後，您可以進行更多索引變更。",
+        "refreshToCheck": "重新整理以檢查是否已完成。",
+        "canMakeMoreChangesProgress": "當目前的索引轉換完成後，您可以進行更多索引變更。已完成 {{progress}}%。",
+        "refreshToCheckProgress": "重新整理以檢查進度。",
+        "definitionColumn": "定義",
+        "typeColumn": "類型",
+        "dropIndexColumn": "卸除索引",
+        "addIndexBackColumn": "重新新增索引",
+        "deleteIndexButton": "刪除索引按鈕",
+        "addBackIndexButton": "重新新增索引按鈕",
+        "currentIndexes": "目前的索引",
+        "indexesToBeDropped": "要捨棄的索引",
+        "indexFieldName": "索引欄位名稱",
+        "indexType": "索引類型",
+        "selectIndexType": "選取索引類型",
+        "undoButton": "復原按鈕"
+      },
+      "subSettings": {
+        "timeToLive": "存留時間",
+        "ttlOff": "關閉",
+        "ttlOnNoDefault": "開啟 (無預設)",
+        "ttlOn": "於",
+        "seconds": "秒",
+        "timeToLiveInSeconds": "存留時間 (秒)",
+        "analyticalStorageTtl": "分析儲存體存留時間",
+        "geospatialConfiguration": "地理空間設定",
+        "geography": "地理位置",
+        "geometry": "幾何",
+        "uniqueKeys": "唯一索引鍵",
+        "mongoTtlMessage": "若要啟用集合/文件的存留時間 (TTL)，",
+        "mongoTtlLinkText": "建立 TTL 索引",
+        "partitionKeyTooltipTemplate": "此 {{partitionKeyName}} 用於將資料分散於多個磁碟分區，以獲得可擴縮性。\"{{partitionKeyValue}}\" 值決定文件的分割方法。",
+        "largePartitionKeyEnabled": "大型 {{partitionKeyName}} 已啟用。",
+        "hierarchicalPartitioned": "階層式分割容器。",
+        "nonHierarchicalPartitioned": "非階層式分割容器。"
+      },
+      "scale": {
+        "freeTierInfo": "使用免費層時，您將免費取得此帳戶中第一個每秒 {{ru}} RU和 {{storage}} GB 的儲存體。若要讓您的帳戶保持免費，請將帳戶中所有資源的每秒 RU 總計保留為每秒 {{ru}} RU。",
+        "freeTierLearnMore": "深入了解。",
+        "throughputRuS": "輸送量 (每秒 RU)",
+        "autoScaleCustomSettings": "您的帳戶有自訂設定可防止在容器層級設定輸送量。請與您的 Cosmos DB 工程小組連絡人合作以進行變更。",
+        "keyspaceSharedThroughput": "此資料表共用輸送量設定於索引鍵空間",
+        "throughputRangeLabel": "輸送量 (每秒 {{min}} - {{max}} RU)",
+        "unlimited": "無限制"
+      },
+      "partitionKeyEditor": {
+        "changePartitionKey": "變更 {{partitionKeyName}}",
+        "currentPartitionKey": "目前的 {{partitionKeyName}}",
+        "partitioning": "資料分割",
+        "hierarchical": "階層式",
+        "nonHierarchical": "非階層式",
+        "safeguardWarning": "若要保護要複製到新容器的資料完整性，請確保整個資料分割索引鍵變更處理期間，不會更新來源容器。",
+        "changeDescription": "若要變更資料分割索引鍵，必須建立新的目的地容器或選取現有的目的地容器。接著，資料會複製到目的地容器。",
+        "changeButton": "變更",
+        "changeJob": "{{partitionKeyName}} 變更作業",
+        "cancelButton": "取消",
+        "documentsProcessed": "已處理 {{totalCount}} 份文件中的 {{processedCount}} 份"
+      },
+      "computedProperties": {
+        "ariaLabel": "計算屬性",
+        "learnMorePrefix": "關於如何定義計算屬性，以及如何使用它們。"
+      },
+      "indexingPolicy": {
+        "ariaLabel": "編製索引原則"
+      },
+      "dataMasking": {
+        "ariaLabel": "資料遮罩原則",
+        "validationFailed": "驗證失敗:",
+        "includedPathsRequired": "需要 includedPaths",
+        "includedPathsMustBeArray": "includedPaths 必須是陣列",
+        "excludedPathsMustBeArray": "如果提供，excludedPaths 必須是陣列"
+      },
+      "containerPolicy": {
+        "vectorPolicy": "向量原則",
+        "fullTextPolicy": "全文檢索原則",
+        "createFullTextPolicy": "建立新的全文檢索搜索原則"
+      },
+      "globalSecondaryIndex": {
+        "indexesDefined": "此容器已定義下列索引。",
+        "learnMoreSuffix": "關於如何定義全域次要索引，以及如何使用它們。",
+        "jsonAriaLabel": "全域次要索引 JSON",
+        "addIndex": "新增索引",
+        "settingsTitle": "全域次要索引設定",
+        "sourceContainer": "來源容器",
+        "indexDefinition": "全域次要索引定義"
+      },
+      "indexingPolicyRefresh": {
+        "refreshFailed": "重新整理索引轉換進度失敗"
+      },
+      "throughputInput": {
+        "autoscale": "自動縮放",
+        "manual": "手動",
+        "minimumRuS": "每秒 RU 下限",
+        "maximumRuS": "每秒 RU 上限",
+        "x10Equals": "x 10 =",
+        "storageCapacity": "儲存體容量",
+        "fixed": "已修正",
+        "unlimited": "無限制",
+        "instant": "立即",
+        "fourToSixHrs": "4-6 小時",
+        "autoscaleDescription": "根據使用量，您的 {{resourceType}} 輸送量將調整自",
+        "freeTierWarning": "如果您佈建超過每秒 {{ru}} RU 的手動輸送量，或資源調整超過自動調整的每秒 {{ru}} RU，則適用計費。",
+        "capacityCalculator": "預估您所需的每秒 RU",
+        "capacityCalculatorLink": " 容量計算機",
+        "fixedStorageNote": "使用具有固定儲存體容量的集合時，您最多可以設定每秒 10,000 RU。",
+        "min": "分鐘",
+        "max": "最大值"
+      },
+      "throughputBuckets": {
+        "label": "輸送量貯體",
+        "bucketLabel": "貯體 {{id}}",
+        "dataExplorerQueryBucket": " (資料總管查詢貯體)",
+        "active": "使用中",
+        "inactive": "非使用中"
+      }
     }
   }
 }

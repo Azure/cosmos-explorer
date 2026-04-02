@@ -22,6 +22,7 @@ import {
   Stack,
   Text,
 } from "@fluentui/react";
+import { Keys, t } from "Localization";
 import * as React from "react";
 import { Urls } from "../../../Common/Constants";
 import { StyleConstants } from "../../../Common/StyleConstants";
@@ -338,10 +339,12 @@ export const getEstimatedSpendingElement = (
   const ruRange: string = isAutoscale ? throughput / 10 + " RU/s - " : "";
   return (
     <Stack>
-      <Text style={{ fontWeight: 600, color: "var(--colorNeutralForeground1)" }}>Cost estimate*</Text>
+      <Text style={{ fontWeight: 600, color: "var(--colorNeutralForeground1)" }}>
+        {t(Keys.controls.settings.costEstimate.title)}
+      </Text>
       {costElement}
       <Text style={{ fontWeight: 600, marginTop: 15, color: "var(--colorNeutralForeground1)" }}>
-        How we calculate this
+        {t(Keys.controls.settings.costEstimate.howWeCalculate)}
       </Text>
       <Stack id="throughputSpendElement" style={{ marginTop: 5 }}>
         <span>
@@ -353,7 +356,8 @@ export const getEstimatedSpendingElement = (
         </span>
         <span>
           {priceBreakdown.currencySign}
-          {priceBreakdown.pricePerRu}/RU
+          {priceBreakdown.pricePerRu}
+          {t(Keys.controls.settings.costEstimate.perRu)}
         </span>
       </Stack>
       <Text style={{ marginTop: 15, color: "var(--colorNeutralForeground1)" }}>
@@ -365,18 +369,16 @@ export const getEstimatedSpendingElement = (
 
 export const manualToAutoscaleDisclaimerElement: JSX.Element = (
   <Text styles={infoAndToolTipTextStyle} id="manualToAutoscaleDisclaimerElement">
-    The starting autoscale max RU/s will be determined by the system, based on the current manual throughput settings
-    and storage of your resource. After autoscale has been enabled, you can change the max RU/s.{" "}
-    <Link href={Urls.autoscaleMigration}>Learn more</Link>
+    {t(Keys.controls.settings.throughput.manualToAutoscaleDisclaimer)}{" "}
+    <Link href={Urls.autoscaleMigration}>{t(Keys.common.learnMore)}</Link>
   </Text>
 );
 
 export const ttlWarning: JSX.Element = (
   <Text styles={infoAndToolTipTextStyle}>
-    The system will automatically delete items based on the TTL value (in seconds) you provide, without needing a delete
-    operation explicitly issued by a client application. For more information see,{" "}
+    {t(Keys.controls.settings.throughput.ttlWarningText)}{" "}
     <Link target="_blank" href="https://aka.ms/cosmos-db-ttl">
-      Time to Live (TTL) in Azure Cosmos DB
+      {t(Keys.controls.settings.throughput.ttlWarningLinkText)}
     </Link>
     .
   </Text>
@@ -384,29 +386,28 @@ export const ttlWarning: JSX.Element = (
 
 export const unsavedEditorWarningMessage = (editor: editorType): JSX.Element => (
   <Text styles={infoAndToolTipTextStyle}>
-    You have not saved the latest changes made to your{" "}
+    {t(Keys.controls.settings.throughput.unsavedEditorWarningPrefix)}{" "}
     {editor === "indexPolicy"
-      ? "indexing policy"
+      ? t(Keys.controls.settings.throughput.unsavedIndexingPolicy)
       : editor === "dataMasking"
-      ? "data masking policy"
-      : "computed properties"}
-    . Please click save to confirm the changes.
+      ? t(Keys.controls.settings.throughput.unsavedDataMaskingPolicy)
+      : t(Keys.controls.settings.throughput.unsavedComputedProperties)}
+    {t(Keys.controls.settings.throughput.unsavedEditorWarningSuffix)}
   </Text>
 );
 
 export const updateThroughputDelayedApplyWarningMessage: JSX.Element = (
   <Text styles={infoAndToolTipTextStyle} id="updateThroughputDelayedApplyWarningMessage">
-    You are about to request an increase in throughput beyond the pre-allocated capacity. This operation will take some
-    time to complete.
+    {t(Keys.controls.settings.throughput.updateDelayedApplyWarning)}
   </Text>
 );
 
 export const getUpdateThroughputBeyondInstantLimitMessage = (instantMaximumThroughput: number): JSX.Element => {
   return (
     <Text id="updateThroughputDelayedApplyWarningMessage">
-      Scaling up will take 4-6 hours as it exceeds what Azure Cosmos DB can instantly support currently based on your
-      number of physical partitions. You can increase your throughput to {instantMaximumThroughput} instantly or proceed
-      with this value and wait until the scale-up is completed.
+      {t(Keys.controls.settings.throughput.scalingUpDelayMessage, {
+        instantMaximumThroughput: String(instantMaximumThroughput),
+      })}
     </Text>
   );
 };
@@ -418,22 +419,26 @@ export const getUpdateThroughputBeyondSupportLimitMessage = (
   return (
     <>
       <Text styles={infoAndToolTipTextStyle} id="updateThroughputDelayedApplyWarningMessage">
-        Your request to increase throughput exceeds the pre-allocated capacity which may take longer than expected.
-        There are three options you can choose from to proceed:
+        {t(Keys.controls.settings.throughput.exceedPreAllocatedMessage)}
       </Text>
       <ol style={{ fontSize: 14, color: "var(--colorNeutralForeground1)", marginTop: "5px" }}>
-        <li>You can instantly scale up to {instantMaximumThroughput} RU/s.</li>
+        <li>
+          {t(Keys.controls.settings.throughput.instantScaleOption, {
+            instantMaximumThroughput: String(instantMaximumThroughput),
+          })}
+        </li>
         {instantMaximumThroughput < maximumThroughput && (
-          <li>You can asynchronously scale up to any value under {maximumThroughput} RU/s in 4-6 hours.</li>
+          <li>
+            {t(Keys.controls.settings.throughput.asyncScaleOption, { maximumThroughput: String(maximumThroughput) })}
+          </li>
         )}
         <li>
-          Your current quota max is {maximumThroughput} RU/s. To go over this limit, you must request a quota increase
-          and the Azure Cosmos DB team will review.
+          {t(Keys.controls.settings.throughput.quotaMaxOption, { maximumThroughput: String(maximumThroughput) })}
           <Link
             href="https://learn.microsoft.com/en-us/azure/cosmos-db/nosql/create-support-request-quota-increase"
             target="_blank"
           >
-            Learn more
+            {t(Keys.common.learnMore)}
           </Link>
         </li>
       </ol>
@@ -444,23 +449,19 @@ export const getUpdateThroughputBeyondSupportLimitMessage = (
 export const getUpdateThroughputBelowMinimumMessage = (minimum: number): JSX.Element => {
   return (
     <Text styles={infoAndToolTipTextStyle}>
-      You are not able to lower throughput below your current minimum of {minimum} RU/s. For more information on this
-      limit, please refer to our service quote documentation.
+      {t(Keys.controls.settings.throughput.belowMinimumMessage, { minimum: String(minimum) })}
       <Link
         href="https://learn.microsoft.com/en-us/azure/cosmos-db/concepts-limits#minimum-throughput-limits"
         target="_blank"
       >
-        Learn more
+        {t(Keys.common.learnMore)}
       </Link>
     </Text>
   );
 };
 
 export const saveThroughputWarningMessage: JSX.Element = (
-  <Text>
-    Your bill will be affected as you update your throughput settings. Please review the updated cost estimate below
-    before saving your changes
-  </Text>
+  <Text>{t(Keys.controls.settings.throughput.saveThroughputWarning)}</Text>
 );
 
 const getCurrentThroughput = (
@@ -472,23 +473,29 @@ const getCurrentThroughput = (
   if (targetThroughput) {
     if (throughput) {
       return isAutoscale
-        ? `, Current autoscale throughput: ${Math.round(
+        ? `, ${t(Keys.controls.settings.throughput.currentAutoscaleThroughput)} ${Math.round(
             throughput / 10,
-          )} - ${throughput} ${throughputUnit}, Target autoscale throughput: ${Math.round(
-            targetThroughput / 10,
-          )} - ${targetThroughput} ${throughputUnit}`
-        : `, Current manual throughput: ${throughput} ${throughputUnit}, Target manual throughput: ${targetThroughput}`;
+          )} - ${throughput} ${throughputUnit}, ${t(
+            Keys.controls.settings.throughput.targetAutoscaleThroughput,
+          )} ${Math.round(targetThroughput / 10)} - ${targetThroughput} ${throughputUnit}`
+        : `, ${t(Keys.controls.settings.throughput.currentManualThroughput)} ${throughput} ${throughputUnit}, ${t(
+            Keys.controls.settings.throughput.targetManualThroughput,
+          )} ${targetThroughput}`;
     } else {
       return isAutoscale
-        ? `, Target autoscale throughput: ${Math.round(targetThroughput / 10)} - ${targetThroughput} ${throughputUnit}`
-        : `, Target manual throughput: ${targetThroughput} ${throughputUnit}`;
+        ? `, ${t(Keys.controls.settings.throughput.targetAutoscaleThroughput)} ${Math.round(
+            targetThroughput / 10,
+          )} - ${targetThroughput} ${throughputUnit}`
+        : `, ${t(Keys.controls.settings.throughput.targetManualThroughput)} ${targetThroughput} ${throughputUnit}`;
     }
   }
 
   if (!targetThroughput && throughput) {
     return isAutoscale
-      ? `, Current autoscale throughput: ${Math.round(throughput / 10)} - ${throughput} ${throughputUnit}`
-      : `, Current manual throughput: ${throughput} ${throughputUnit}`;
+      ? `, ${t(Keys.controls.settings.throughput.currentAutoscaleThroughput)} ${Math.round(
+          throughput / 10,
+        )} - ${throughput} ${throughputUnit}`
+      : `, ${t(Keys.controls.settings.throughput.currentManualThroughput)} ${throughput} ${throughputUnit}`;
   }
 
   return "";
@@ -503,10 +510,10 @@ export const getThroughputApplyDelayedMessage = (
   requestedThroughput: number,
 ): JSX.Element => (
   <Text styles={infoAndToolTipTextStyle}>
-    The request to increase the throughput has successfully been submitted. This operation will take 1-3 business days
-    to complete. View the latest status in Notifications.
+    {t(Keys.controls.settings.throughput.applyDelayedMessage)}
     <br />
-    Database: {databaseName}, Container: {collectionName}{" "}
+    {t(Keys.controls.settings.throughput.databaseLabel)} {databaseName},{" "}
+    {t(Keys.controls.settings.throughput.containerLabel)} {collectionName}{" "}
     {getCurrentThroughput(isAutoscale, throughput, throughputUnit, requestedThroughput)}
   </Text>
 );
@@ -519,9 +526,13 @@ export const getThroughputApplyShortDelayMessage = (
   collectionName: string,
 ): JSX.Element => (
   <Text styles={infoAndToolTipTextStyle} id="throughputApplyShortDelayMessage">
-    A request to increase the throughput is currently in progress. This operation will take some time to complete.
+    {t(Keys.controls.settings.throughput.applyShortDelayMessage)}
     <br />
-    {collectionName ? `Database: ${databaseName}, Container: ${collectionName} ` : `Database: ${databaseName} `}
+    {collectionName
+      ? `${t(Keys.controls.settings.throughput.databaseLabel)} ${databaseName}, ${t(
+          Keys.controls.settings.throughput.containerLabel,
+        )} ${collectionName} `
+      : `${t(Keys.controls.settings.throughput.databaseLabel)} ${databaseName} `}
     {getCurrentThroughput(isAutoscale, throughput, throughputUnit)}
   </Text>
 );
@@ -535,10 +546,13 @@ export const getThroughputApplyLongDelayMessage = (
   requestedThroughput: number,
 ): JSX.Element => (
   <Text styles={infoAndToolTipTextStyle} id="throughputApplyLongDelayMessage">
-    A request to increase the throughput is currently in progress. This operation will take 1-3 business days to
-    complete. View the latest status in Notifications.
+    {t(Keys.controls.settings.throughput.applyLongDelayMessage)}
     <br />
-    {collectionName ? `Database: ${databaseName}, Container: ${collectionName} ` : `Database: ${databaseName} `}
+    {collectionName
+      ? `${t(Keys.controls.settings.throughput.databaseLabel)} ${databaseName}, ${t(
+          Keys.controls.settings.throughput.containerLabel,
+        )} ${collectionName} `
+      : `${t(Keys.controls.settings.throughput.databaseLabel)} ${databaseName} `}
     {getCurrentThroughput(isAutoscale, throughput, throughputUnit, requestedThroughput)}
   </Text>
 );
@@ -547,63 +561,49 @@ export const getToolTipContainer = (content: string | JSX.Element): JSX.Element 
   content ? <Text styles={infoAndToolTipTextStyle}>{content}</Text> : undefined;
 
 export const conflictResolutionLwwTooltip: JSX.Element = (
-  <Text styles={infoAndToolTipTextStyle}>
-    Gets or sets the name of a integer property in your documents which is used for the Last Write Wins (LWW) based
-    conflict resolution scheme. By default, the system uses the system defined timestamp property, _ts to decide the
-    winner for the conflicting versions of the document. Specify your own integer property if you want to override the
-    default timestamp based conflict resolution.
-  </Text>
+  <Text styles={infoAndToolTipTextStyle}>{t(Keys.controls.settings.conflictResolution.lwwTooltip)}</Text>
 );
 
 export const conflictResolutionCustomToolTip: JSX.Element = (
   <Text styles={infoAndToolTipTextStyle}>
-    Gets or sets the name of a stored procedure (aka merge procedure) for resolving the conflicts. You can write
-    application defined logic to determine the winner of the conflicting versions of a document. The stored procedure
-    will get executed transactionally, exactly once, on the server side. If you do not provide a stored procedure, the
-    conflicts will be populated in the
+    {t(Keys.controls.settings.conflictResolution.customTooltip)}
     <Link className="linkDarkBackground" href="https://aka.ms/dataexplorerconflics" target="_blank">
-      {` conflicts feed`}
+      {t(Keys.controls.settings.conflictResolution.customTooltipConflictsFeed)}
     </Link>
-    . You can update/re-register the stored procedure at any time.
+    {t(Keys.controls.settings.conflictResolution.customTooltipSuffix)}
   </Text>
 );
 
 export const changeFeedPolicyToolTip: JSX.Element = (
-  <Text styles={infoAndToolTipTextStyle}>
-    Enable change feed log retention policy to retain last 10 minutes of history for items in the container by default.
-    To support this, the request unit (RU) charge for this container will be multiplied by a factor of two for writes.
-    Reads are unaffected.
-  </Text>
+  <Text styles={infoAndToolTipTextStyle}>{t(Keys.controls.settings.changeFeed.tooltip)}</Text>
 );
 
 export const mongoIndexingPolicyDisclaimer: JSX.Element = (
   <Text style={{ color: "var(--colorNeutralForeground1)" }}>
-    For queries that filter on multiple properties, create multiple single field indexes instead of a compound index.
+    {t(Keys.controls.settings.mongoIndexing.disclaimer)}
     <Link
       href="https://docs.microsoft.com/azure/cosmos-db/mongodb-indexing#index-types"
       target="_blank"
       style={{ color: "var(--colorBrandForeground1)" }}
     >
-      {` Compound indexes `}
+      {t(Keys.controls.settings.mongoIndexing.disclaimerCompoundIndexesLink)}
     </Link>
-    are only used for sorting query results. If you need to add a compound index, you can create one using the Mongo
-    shell.
+    {t(Keys.controls.settings.mongoIndexing.disclaimerSuffix)}
   </Text>
 );
 
 export const mongoCompoundIndexNotSupportedMessage: JSX.Element = (
   <Text style={{ color: "var(--colorNeutralForeground1)" }}>
-    Collections with compound indexes are not yet supported in the indexing editor. To modify indexing policy for this
-    collection, use the Mongo Shell.
+    {t(Keys.controls.settings.mongoIndexing.compoundNotSupported)}
   </Text>
 );
 
 export const mongoIndexingPolicyAADError: JSX.Element = (
   <MessageBar messageBarType={MessageBarType.error}>
     <Text>
-      To use the indexing policy editor, please login to the
+      {t(Keys.controls.settings.mongoIndexing.aadError)}
       <Link target="_blank" href="https://portal.azure.com">
-        {"azure portal."}
+        {t(Keys.controls.settings.mongoIndexing.aadErrorLink)}
       </Link>
     </Text>
   </MessageBar>
@@ -611,7 +611,7 @@ export const mongoIndexingPolicyAADError: JSX.Element = (
 
 export const mongoIndexTransformationRefreshingMessage: JSX.Element = (
   <Stack horizontal {...mongoWarningStackProps}>
-    <Text styles={infoAndToolTipTextStyle}>Refreshing index transformation progress</Text>
+    <Text styles={infoAndToolTipTextStyle}>{t(Keys.controls.settings.mongoIndexing.refreshingProgress)}</Text>
     <Spinner size={SpinnerSize.small} />
   </Stack>
 );
@@ -623,15 +623,18 @@ export const renderMongoIndexTransformationRefreshMessage = (
   if (progress === 0) {
     return (
       <Text styles={infoAndToolTipTextStyle}>
-        {"You can make more indexing changes once the current index transformation is complete. "}
-        <Link onClick={performRefresh}>{"Refresh to check if it has completed."}</Link>
+        {t(Keys.controls.settings.mongoIndexing.canMakeMoreChangesZero)}
+        <Link onClick={performRefresh}>{t(Keys.controls.settings.mongoIndexing.refreshToCheck)}</Link>
       </Text>
     );
   } else {
     return (
       <Text styles={infoAndToolTipTextStyle}>
-        {`You can make more indexing changes once the current index transformation has completed. It is ${progress}% complete. `}
-        <Link onClick={performRefresh}>{"Refresh to check the progress."}</Link>
+        {`${t(Keys.controls.settings.mongoIndexing.canMakeMoreChangesProgress).replace(
+          "{{progress}}",
+          String(progress),
+        )} `}
+        <Link onClick={performRefresh}>{t(Keys.controls.settings.mongoIndexing.refreshToCheckProgress)}</Link>
       </Text>
     );
   }

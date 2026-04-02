@@ -7,8 +7,7 @@ import {
   AddGlobalSecondaryIndexPanelProps,
 } from "Explorer/Panes/AddGlobalSecondaryIndexPanel/AddGlobalSecondaryIndexPanel";
 import { useDatabases } from "Explorer/useDatabases";
-import { Keys } from "Localization/Keys.generated";
-import { t } from "Localization/t";
+import { Keys, t } from "Localization";
 import { isFabric, isFabricNative, openRestoreContainerDialog } from "Platform/Fabric/FabricUtil";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { traceOpen } from "Shared/Telemetry/TelemetryProcessor";
@@ -25,6 +24,7 @@ import DeleteSprocIcon from "../../images/DeleteSproc.svg";
 import DeleteTriggerIcon from "../../images/DeleteTrigger.svg";
 import DeleteUDFIcon from "../../images/DeleteUDF.svg";
 import HostedTerminalIcon from "../../images/Hosted-Terminal.svg";
+import PinIcon from "../../images/Pin.svg";
 import * as ViewModels from "../Contracts/ViewModels";
 import { extractFeatures } from "../Platform/Hosted/extractFeatures";
 import { userContext } from "../UserContext";
@@ -54,8 +54,14 @@ export const createDatabaseContextMenu = (container: Explorer, databaseId: strin
   if (isFabric() && userContext.fabricContext?.isReadOnly) {
     return undefined;
   }
+  const isPinned = useDatabases.getState().isPinned(databaseId);
 
   const items: TreeNodeMenuItem[] = [
+    {
+      iconSrc: PinIcon,
+      onClick: () => useDatabases.getState().togglePinDatabase(databaseId),
+      label: isPinned ? "Unpin from top" : "Pin to top",
+    },
     {
       iconSrc: AddCollectionIcon,
       onClick: () => container.onNewCollectionClicked({ databaseId }),
@@ -78,13 +84,13 @@ export const createDatabaseContextMenu = (container: Explorer, databaseId: strin
     items.push({
       iconSrc: DeleteDatabaseIcon,
       onClick: (lastFocusedElement?: React.RefObject<HTMLElement>) => {
-        (useSidePanel.getState().getRef = lastFocusedElement),
-          useSidePanel
-            .getState()
-            .openSidePanel(
-              t(Keys.contextMenu.deleteDatabase, { databaseName: getDatabaseName() }),
-              <DeleteDatabaseConfirmationPanel refreshDatabases={() => container.refreshAllDatabases()} />,
-            );
+        useSidePanel.getState().getRef = lastFocusedElement;
+        useSidePanel
+          .getState()
+          .openSidePanel(
+            "Delete " + getDatabaseName(),
+            <DeleteDatabaseConfirmationPanel refreshDatabases={() => container.refreshAllDatabases()} />,
+          );
       },
       label: t(Keys.contextMenu.deleteDatabase, { databaseName: getDatabaseName() }),
       styleClass: "deleteDatabaseMenuItem",
@@ -177,13 +183,13 @@ export const createCollectionContextMenuButton = (
       iconSrc: DeleteCollectionIcon,
       onClick: (lastFocusedElement?: React.RefObject<HTMLElement>) => {
         useSelectedNode.getState().setSelectedNode(selectedCollection);
-        (useSidePanel.getState().getRef = lastFocusedElement),
-          useSidePanel
-            .getState()
-            .openSidePanel(
-              t(Keys.contextMenu.deleteContainer, { containerName: getCollectionName() }),
-              <DeleteCollectionConfirmationPane refreshDatabases={() => container.refreshAllDatabases()} />,
-            );
+        useSidePanel.getState().getRef = lastFocusedElement;
+        useSidePanel
+          .getState()
+          .openSidePanel(
+            "Delete " + getCollectionName(),
+            <DeleteCollectionConfirmationPane refreshDatabases={() => container.refreshAllDatabases()} />,
+          );
       },
       label: t(Keys.contextMenu.deleteContainer, { containerName: getCollectionName() }),
       styleClass: "deleteCollectionMenuItem",

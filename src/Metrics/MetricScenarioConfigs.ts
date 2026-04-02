@@ -3,15 +3,28 @@ import { ApplicationMetricPhase, CommonMetricPhase, ScenarioConfig } from "./Sce
 
 export const scenarioConfigs: Record<MetricScenario, ScenarioConfig> = {
   [MetricScenario.ApplicationLoad]: {
-    requiredPhases: [ApplicationMetricPhase.ExplorerInitialized, CommonMetricPhase.Interactive],
+    requiredPhases: [
+      ApplicationMetricPhase.PlatformConfigured,
+      ApplicationMetricPhase.CopilotConfigured,
+      ApplicationMetricPhase.SampleDataLoaded,
+      ApplicationMetricPhase.ExplorerInitialized,
+      CommonMetricPhase.Interactive,
+    ],
+    deferredPhases: [
+      ApplicationMetricPhase.CopilotConfigured,
+      ApplicationMetricPhase.SampleDataLoaded,
+      ApplicationMetricPhase.ExplorerInitialized,
+    ],
     timeoutMs: 10000,
   },
   [MetricScenario.DatabaseLoad]: {
     requiredPhases: [
       ApplicationMetricPhase.DatabasesFetched,
+      ApplicationMetricPhase.CollectionsLoaded,
       ApplicationMetricPhase.DatabaseTreeRendered,
       CommonMetricPhase.Interactive,
     ],
+    deferredPhases: [ApplicationMetricPhase.CollectionsLoaded, ApplicationMetricPhase.DatabaseTreeRendered],
     timeoutMs: 10000,
   },
 };

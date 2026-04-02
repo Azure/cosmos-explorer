@@ -363,7 +363,7 @@ describe("createDatabaseTreeNodes", () => {
           },
         } as never,
       });
-      nodes = createDatabaseTreeNodes(explorer, false, useDatabases.getState().databases, refreshActiveTab);
+      nodes = createDatabaseTreeNodes(explorer, false, useDatabases.getState().databases, refreshActiveTab, "");
     });
 
     it("creates expected tree", () => {
@@ -445,6 +445,7 @@ describe("createDatabaseTreeNodes", () => {
         isNotebookEnabled,
         useDatabases.getState().databases,
         refreshActiveTab,
+        "",
       );
       expect(nodes).toMatchSnapshot();
     },
@@ -455,7 +456,7 @@ describe("createDatabaseTreeNodes", () => {
   // The goal is to cover some key behaviors like loading child nodes, opening tabs/side panels, etc.
 
   it("adds new collections to database as they appear", () => {
-    const nodes = createDatabaseTreeNodes(explorer, false, useDatabases.getState().databases, refreshActiveTab);
+    const nodes = createDatabaseTreeNodes(explorer, false, useDatabases.getState().databases, refreshActiveTab, "");
     const giganticDbNode = nodes.find((node) => node.label === giganticDb.id());
     expect(giganticDbNode).toBeDefined();
     expect(giganticDbNode.children.map((node) => node.label)).toStrictEqual(["schemaCollection", "load more"]);
@@ -487,7 +488,7 @@ describe("createDatabaseTreeNodes", () => {
           },
         } as unknown as DataModels.DatabaseAccount,
       });
-      nodes = createDatabaseTreeNodes(explorer, false, useDatabases.getState().databases, refreshActiveTab);
+      nodes = createDatabaseTreeNodes(explorer, false, useDatabases.getState().databases, refreshActiveTab, "");
       standardDbNode = nodes.find((node) => node.label === standardDb.id());
       sharedDbNode = nodes.find((node) => node.label === sharedDb.id());
       giganticDbNode = nodes.find((node) => node.label === giganticDb.id());
@@ -642,7 +643,7 @@ describe("createDatabaseTreeNodes", () => {
         setup();
 
         // Rebuild the nodes after changing the user/config context.
-        nodes = createDatabaseTreeNodes(explorer, false, useDatabases.getState().databases, refreshActiveTab);
+        nodes = createDatabaseTreeNodes(explorer, false, useDatabases.getState().databases, refreshActiveTab, "");
         standardDbNode = nodes.find((node) => node.label === standardDb.id());
         standardCollectionNode = standardDbNode.children.find((node) => node.label === standardCollection.id());
 

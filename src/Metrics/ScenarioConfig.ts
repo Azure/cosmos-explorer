@@ -1,3 +1,4 @@
+import type { PhaseTimings, WebVitals } from "Metrics/Constants";
 import MetricScenario from "./MetricEvents";
 
 // Common phases shared across all scenarios
@@ -8,30 +9,22 @@ export enum CommonMetricPhase {
 // Application-specific phases
 export enum ApplicationMetricPhase {
   ExplorerInitialized = "ExplorerInitialized",
+  PlatformConfigured = "PlatformConfigured",
+  CopilotConfigured = "CopilotConfigured",
+  SampleDataLoaded = "SampleDataLoaded",
   DatabasesFetched = "DatabasesFetched",
+  CollectionsLoaded = "CollectionsLoaded",
   DatabaseTreeRendered = "DatabaseTreeRendered",
 }
 
 // Combined type for all metric phases
 export type MetricPhase = CommonMetricPhase | ApplicationMetricPhase;
 
-export interface WebVitals {
-  lcp?: number; // Largest Contentful Paint
-  inp?: number; // Interaction to Next Paint
-  cls?: number; // Cumulative Layout Shift
-  fcp?: number; // First Contentful Paint
-  ttfb?: number; // Time to First Byte
-}
-
 export interface ScenarioConfig<TPhase extends string = MetricPhase> {
   requiredPhases: TPhase[];
+  deferredPhases?: TPhase[]; // Phases not auto-started at scenario start; started explicitly via startPhase()
   timeoutMs: number;
   validate?: (ctx: ScenarioContextSnapshot<TPhase>) => boolean; // Optional custom validation
-}
-
-export interface PhaseTimings {
-  endTimeISO: string; // When the phase completed
-  durationMs: number; // Duration from scenario start to phase completion
 }
 
 export interface ScenarioContextSnapshot<TPhase extends string = MetricPhase> {

@@ -110,6 +110,7 @@ exports[`SettingsComponent renders 1`] = `
                 "conflictResolutionPolicy": [Function],
                 "container": Explorer {
                   "_isInitializingNotebooks": false,
+                  "databasesRefreshed": Promise {},
                   "isFixedCollectionWithSharedThroughputSupported": [Function],
                   "isTabsContentExpanded": [Function],
                   "onRefreshDatabasesKeyPress": [Function],
@@ -231,6 +232,7 @@ exports[`SettingsComponent renders 1`] = `
                 "conflictResolutionPolicy": [Function],
                 "container": Explorer {
                   "_isInitializingNotebooks": false,
+                  "databasesRefreshed": Promise {},
                   "isFixedCollectionWithSharedThroughputSupported": [Function],
                   "isTabsContentExpanded": [Function],
                   "onRefreshDatabasesKeyPress": [Function],
@@ -356,6 +358,7 @@ exports[`SettingsComponent renders 1`] = `
             onFullTextPolicyDirtyChange={[Function]}
             onVectorEmbeddingPolicyChange={[Function]}
             onVectorEmbeddingPolicyDirtyChange={[Function]}
+            onVectorEmbeddingPolicyValidationChange={[Function]}
             resetShouldDiscardContainerPolicyChange={[Function]}
             shouldDiscardContainerPolicies={false}
             vectorEmbeddingPolicy={{}}
@@ -453,6 +456,7 @@ exports[`SettingsComponent renders 1`] = `
                 "conflictResolutionPolicy": [Function],
                 "container": Explorer {
                   "_isInitializingNotebooks": false,
+                  "databasesRefreshed": Promise {},
                   "isFixedCollectionWithSharedThroughputSupported": [Function],
                   "isTabsContentExpanded": [Function],
                   "onRefreshDatabasesKeyPress": [Function],
@@ -524,6 +528,7 @@ exports[`SettingsComponent renders 1`] = `
             explorer={
               Explorer {
                 "_isInitializingNotebooks": false,
+                "databasesRefreshed": Promise {},
                 "isFixedCollectionWithSharedThroughputSupported": [Function],
                 "isTabsContentExpanded": [Function],
                 "onRefreshDatabasesKeyPress": [Function],
@@ -692,6 +697,7 @@ exports[`SettingsComponent renders 1`] = `
                 "conflictResolutionPolicy": [Function],
                 "container": Explorer {
                   "_isInitializingNotebooks": false,
+                  "databasesRefreshed": Promise {},
                   "isFixedCollectionWithSharedThroughputSupported": [Function],
                   "isTabsContentExpanded": [Function],
                   "onRefreshDatabasesKeyPress": [Function],
@@ -763,6 +769,7 @@ exports[`SettingsComponent renders 1`] = `
             explorer={
               Explorer {
                 "_isInitializingNotebooks": false,
+                "databasesRefreshed": Promise {},
                 "isFixedCollectionWithSharedThroughputSupported": [Function],
                 "isTabsContentExpanded": [Function],
                 "onRefreshDatabasesKeyPress": [Function],

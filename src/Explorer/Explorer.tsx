@@ -107,6 +107,12 @@ export default class Explorer {
 
   private static readonly MaxNbDatabasesToAutoExpand = 5;
   public phoenixClient: PhoenixClient;
+
+  /**
+   * Resolves when the initial refreshAllDatabases (including collection loading) completes.
+   * Await this instead of calling refreshAllDatabases again to avoid duplicate concurrent loads.
+   */
+  public databasesRefreshed: Promise<void> = Promise.resolve();
   constructor() {
     const startKey: number = TelemetryProcessor.traceStart(Action.InitializeDataExplorer, {
       dataExplorerArea: Constants.Areas.ResourceTree,
@@ -630,6 +636,7 @@ export default class Explorer {
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
 
+    scenarioMonitor.startPhase(MetricScenario.DatabaseLoad, ApplicationMetricPhase.CollectionsLoaded);
     try {
       await Promise.all(
         databasesToLoad.map(async (database: ViewModels.Database) => {
@@ -641,13 +648,16 @@ export default class Explorer {
           useTabs
             .getState()
             .refreshActiveTab((tab) => tab.collection && tab.collection.getDatabase().id() === database.id());
-          TelemetryProcessor.traceSuccess(
-            Action.LoadCollections,
-            { dataExplorerArea: Constants.Areas.ResourceTree },
-            startKey,
-          );
         }),
       );
+      TelemetryProcessor.traceSuccess(
+        Action.LoadCollections,
+        { dataExplorerArea: Constants.Areas.ResourceTree },
+        startKey,
+      );
+      scenarioMonitor.completePhase(MetricScenario.DatabaseLoad, ApplicationMetricPhase.CollectionsLoaded);
+      // Start DatabaseTreeRendered — React render cycle will complete it in ResourceTree
+      scenarioMonitor.startPhase(MetricScenario.DatabaseLoad, ApplicationMetricPhase.DatabaseTreeRendered);
     } catch (error) {
       TelemetryProcessor.traceFailure(
         Action.LoadCollections,
@@ -658,6 +668,7 @@ export default class Explorer {
         },
         startKey,
       );
+      scenarioMonitor.failPhase(MetricScenario.DatabaseLoad, ApplicationMetricPhase.CollectionsLoaded);
     }
   }
 
@@ -1197,9 +1208,16 @@ export default class Explorer {
     }
 
     if (userContext.apiType !== "Postgres" && userContext.apiType !== "VCoreMongo") {
-      userContext.authType === AuthType.ResourceToken
-        ? this.refreshDatabaseForResourceToken()
-        : await this.refreshAllDatabases(); // await: we rely on the databases to be loaded before restoring the tabs further in the flow
+      if (userContext.authType === AuthType.ResourceToken) {
+        scenarioMonitor.skipPhase(MetricScenario.DatabaseLoad, ApplicationMetricPhase.CollectionsLoaded);
+        scenarioMonitor.skipPhase(MetricScenario.DatabaseLoad, ApplicationMetricPhase.DatabaseTreeRendered);
+        this.databasesRefreshed = this.refreshDatabaseForResourceToken().then(() => {
+          scenarioMonitor.completePhase(MetricScenario.DatabaseLoad, ApplicationMetricPhase.DatabasesFetched);
+        });
+      } else {
+        this.databasesRefreshed = this.refreshAllDatabases();
+      }
+      await this.databasesRefreshed; // await: we rely on the databases to be loaded before restoring the tabs further in the flow
     }
 
     if (!isFabricNative()) {
@@ -1266,16 +1284,23 @@ export default class Explorer {
       return;
     }
 
+    const startKey = TelemetryProcessor.traceStart(Action.RefreshSampleData, {
+      dataExplorerArea: Constants.Areas.ResourceTree,
+      databaseId,
+    });
     readSampleCollection()
       .then((collection: DataModels.Collection) => {
         if (!collection) {
+          TelemetryProcessor.traceSuccess(Action.RefreshSampleData, { sampleCollectionFound: false }, startKey);
           return;
         }
 
         const sampleDataResourceTokenCollection = new ResourceTokenCollection(this, databaseId, collection, true);
         useDatabases.setState({ sampleDataResourceTokenCollection });
+        TelemetryProcessor.traceSuccess(Action.RefreshSampleData, { sampleCollectionFound: true }, startKey);
       })
       .catch((error) => {
+        TelemetryProcessor.traceFailure(Action.RefreshSampleData, { error: getErrorMessage(error) }, startKey);
         Logger.logError(getErrorMessage(error), "Explorer/refreshSampleData");
       });
   }

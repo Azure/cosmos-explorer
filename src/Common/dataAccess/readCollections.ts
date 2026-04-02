@@ -1,9 +1,12 @@
 import { ContainerResponse } from "@azure/cosmos";
 import { Queries } from "Common/Constants";
+import * as Logger from "Common/Logger";
 import { CosmosDbArtifactType } from "Contracts/FabricMessagesContract";
 import { isFabric, isFabricMirroredKey } from "Platform/Fabric/FabricUtil";
 import { AuthType } from "../../AuthType";
 import * as DataModels from "../../Contracts/DataModels";
+import { Action } from "../../Shared/Telemetry/TelemetryConstants";
+import { traceFailure, traceStart, traceSuccess } from "../../Shared/Telemetry/TelemetryProcessor";
 import { FabricArtifactInfo, userContext } from "../../UserContext";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { listCassandraTables } from "../../Utils/arm/generatedClients/cosmos/cassandraResources";
@@ -16,6 +19,11 @@ import { handleError } from "../ErrorHandlingUtils";
 
 export async function readCollections(databaseId: string): Promise<DataModels.Collection[]> {
   const clearMessage = logConsoleProgress(`Querying containers for database ${databaseId}`);
+  const startKey = traceStart(Action.ReadCollections, {
+    dataExplorerArea: "ResourceTree",
+    databaseId,
+    apiType: userContext.apiType,
+  });
 
   if (isFabricMirroredKey() && userContext.fabricContext?.databaseName === databaseId) {
     const collections: DataModels.Collection[] = [];
@@ -42,8 +50,10 @@ export async function readCollections(databaseId: string): Promise<DataModels.Co
 
       // Sort collections by id before returning
       collections.sort((a, b) => a.id.localeCompare(b.id));
+      traceSuccess(Action.ReadCollections, { databaseId, collectionCount: collections.length }, startKey);
       return collections;
     } catch (error) {
+      traceFailure(Action.ReadCollections, { databaseId, error: error?.message }, startKey);
       handleError(error, "ReadCollections", `Error while querying containers for database ${databaseId}`);
       throw error;
     } finally {
@@ -58,12 +68,27 @@ export async function readCollections(databaseId: string): Promise<DataModels.Co
       userContext.apiType !== "Tables" &&
       !isFabric()
     ) {
-      return await readCollectionsWithARM(databaseId);
+      const result = await readCollectionsWithARM(databaseId);
+      traceSuccess(Action.ReadCollections, { databaseId, collectionCount: result?.length, path: "ARM" }, startKey);
+      return result;
     }
 
+    Logger.logInfo(`readCollections: calling fetchAll for database ${databaseId}`, "readCollections");
+    const fetchAllStart = Date.now();
     const sdkResponse = await client().database(databaseId).containers.readAll().fetchAll();
+    Logger.logInfo(
+      `readCollections: fetchAll completed for database ${databaseId}, count=${sdkResponse.resources
+        ?.length}, durationMs=${Date.now() - fetchAllStart}`,
+      "readCollections",
+    );
+    traceSuccess(
+      Action.ReadCollections,
+      { databaseId, collectionCount: sdkResponse.resources?.length, path: "SDK" },
+      startKey,
+    );
     return sdkResponse.resources as DataModels.Collection[];
   } catch (error) {
+    traceFailure(Action.ReadCollections, { databaseId, error: error?.message }, startKey);
     handleError(error, "ReadCollections", `Error while querying containers for database ${databaseId}`);
     throw error;
   } finally {
@@ -76,6 +101,11 @@ export async function readCollectionsWithPagination(
   continuationToken?: string,
 ): Promise<DataModels.CollectionsWithPagination> {
   const clearMessage = logConsoleProgress(`Querying containers for database ${databaseId}`);
+  const startKey = traceStart(Action.ReadCollections, {
+    dataExplorerArea: "ResourceTree",
+    databaseId,
+    paginated: true,
+  });
   try {
     const sdkResponse = await client()
       .database(databaseId)
@@ -91,8 +121,14 @@ export async function readCollectionsWithPagination(
       collections: sdkResponse.resources as DataModels.Collection[],
       continuationToken: sdkResponse.continuationToken,
     };
+    traceSuccess(
+      Action.ReadCollections,
+      { databaseId, collectionCount: collectionsWithPagination.collections?.length, paginated: true },
+      startKey,
+    );
     return collectionsWithPagination;
   } catch (error) {
+    traceFailure(Action.ReadCollections, { databaseId, error: error?.message, paginated: true }, startKey);
     handleError(error, "ReadCollections", `Error while querying containers for database ${databaseId}`);
     throw error;
   } finally {

@@ -10,7 +10,7 @@ import { DatabaseAccount } from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
 import { isExpectedError } from "../Metrics/ErrorClassification";
 import { scenarioMonitor } from "../Metrics/ScenarioMonitor";
-import { trace, traceFailure } from "../Shared/Telemetry/TelemetryProcessor";
+import { trace, traceFailure, traceStart, traceSuccess } from "../Shared/Telemetry/TelemetryProcessor";
 import { UserContext, userContext } from "../UserContext";
 
 export function getAuthorizationHeader(): ViewModels.AuthorizationTokenHeaderMetadata {
@@ -58,7 +58,6 @@ export async function getMsalInstance() {
     auth: {
       authority: `${configContext.AAD_ENDPOINT}organizations`,
       clientId: "203f1145-856a-4232-83d4-a43568fba23d",
-      knownAuthorities: [configContext.AAD_ENDPOINT],
     },
   };
 
@@ -77,7 +76,11 @@ export async function acquireMsalTokenForAccount(
   silent: boolean = false,
   user_hint?: string,
 ) {
+  const msalStartKey = traceStart(Action.AcquireMsalToken, {
+    acquireTokenType: silent ? "silent" : "interactive",
+  });
   if (userContext.databaseAccount.properties?.documentEndpoint === undefined) {
+    traceFailure(Action.AcquireMsalToken, { error: "No document endpoint" }, msalStartKey);
     throw new Error("Database account has no document endpoint defined");
   }
   let hrefEndpoint = "";
@@ -110,6 +113,7 @@ export async function acquireMsalTokenForAccount(
         // See https://learn.microsoft.com/en-us/entra/identity-platform/msal-js-sso#sso-between-different-apps
         try {
           const loginResponse = await msalInstance.ssoSilent(loginRequest);
+          traceSuccess(Action.AcquireMsalToken, { method: "ssoSilent" }, msalStartKey);
           return loginResponse.accessToken;
         } catch (silentError) {
           trace(Action.SignInAad, ActionModifiers.Mark, {
@@ -125,6 +129,7 @@ export async function acquireMsalTokenForAccount(
       // See https://learn.microsoft.com/en-us/entra/identity-platform/msal-js-prompt-behavior#interactive-requests-with-promptnone
       // The hint will be used to pre-fill the username field in the popup if silent is false.
       const loginResponse = await msalInstance.loginPopup({ prompt: silent ? "none" : "login", ...loginRequest });
+      traceSuccess(Action.AcquireMsalToken, { method: "loginPopup" }, msalStartKey);
       return loginResponse.accessToken;
     } catch (error) {
       traceFailure(Action.SignInAad, {
@@ -132,6 +137,7 @@ export async function acquireMsalTokenForAccount(
         acquireTokenType: silent ? "silent" : "interactive",
         errorMessage: JSON.stringify(error),
       });
+      traceFailure(Action.AcquireMsalToken, { error: JSON.stringify(error) }, msalStartKey);
       // Mark expected failure for health metrics so timeout emits healthy
       if (isExpectedError(error)) {
         scenarioMonitor.markExpectedFailure();
@@ -164,7 +170,8 @@ export async function acquireTokenWithMsal(
 
   try {
     // attempt silent acquisition first
-    return (await msalInstance.acquireTokenSilent(tokenRequest)).accessToken;
+    const token = (await msalInstance.acquireTokenSilent(tokenRequest)).accessToken;
+    return token;
   } catch (silentError) {
     if (silentError instanceof msal.InteractionRequiredAuthError && silent === false) {
       try {
