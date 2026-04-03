@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Page } from "../coverage";
 
 import { CommandBarButton, DataExplorer, TestAccount } from "../fx";
 import { createTestSQLContainer, TestContainerContext } from "../testData";

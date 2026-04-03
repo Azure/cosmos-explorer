@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { expect, Frame, Locator, Page, test } from "@playwright/test";
 import { truncateName } from "../../../src/Explorer/ContainerCopy/CopyJobUtils";
+import { expect, Frame, Locator, Page, test } from "../../coverage";
 import {
   ContainerCopy,
   getAccountName,
