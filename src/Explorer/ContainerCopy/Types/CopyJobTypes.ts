@@ -55,15 +55,15 @@ export interface DatabaseContainerSectionProps {
 export interface CopyJobContextState {
   jobName: string;
   migrationType: CopyJobMigrationType;
-  sourceReadAccessFromTarget?: boolean;
+  sourceReadWriteAccessFromTarget?: boolean;
   source: {
-    subscription: Subscription | null;
+    subscriptionId: string;
     account: DatabaseAccount | null;
     databaseId: string;
     containerId: string;
   };
   target: {
-    subscriptionId: string;
+    subscription: Subscription | null;
     account: DatabaseAccount | null;
     databaseId: string;
     containerId: string;

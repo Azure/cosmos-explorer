@@ -20,11 +20,11 @@ export default {
   createCopyJobPanelTitle: "Create copy job",
 
   // Select Account Screen
-  selectAccountDescription: "Please select a source account from which to copy.",
+  selectAccountDescription: "Please select a destination account to copy to.",
   subscriptionDropdownLabel: "Subscription",
   subscriptionDropdownPlaceholder: "Select a subscription",
-  sourceAccountDropdownLabel: "Account",
-  sourceAccountDropdownPlaceholder: "Select an account",
+  destinationAccountDropdownLabel: "Account",
+  destinationAccountDropdownPlaceholder: "Select an account",
   migrationTypeOptions: {
     offline: {
       title: "Offline mode",
@@ -47,14 +47,17 @@ export default {
   databaseDropdownPlaceholder: "Select a database",
   containerDropdownLabel: "Container",
   containerDropdownPlaceholder: "Select a container",
-  createNewContainerSubHeading: "Select the properties for your container.",
+  createNewContainerSubHeading: (accountName?: string) =>
+    accountName
+      ? `Configure the properties for the new container on destination account "${accountName}".`
+      : "Configure the properties for the new container.",
   createContainerButtonLabel: "Create a new container",
   createContainerHeading: "Create new container",
 
   // Preview and Create Screen
   jobNameLabel: "Job name",
-  sourceSubscriptionLabel: "Source subscription",
-  sourceAccountLabel: "Source account",
+  destinationSubscriptionLabel: "Destination subscription",
+  destinationAccountLabel: "Destination account",
   sourceDatabaseLabel: "Source database",
   sourceContainerLabel: "Source container",
   targetDatabaseLabel: "Destination database",
@@ -63,7 +66,7 @@ export default {
   // Assign Permissions Screen
   assignPermissions: {
     crossAccountDescription:
-      "To copy data from the source to the destination container, ensure that the managed identity of the destination account has read access to the source account by completing the following steps.",
+      "To copy data from the source to the destination container, ensure that the managed identity of the destination account has read-write access to the source account by completing the following steps.",
     intraAccountOnlineDescription: (accountName: string) =>
       `Follow the steps below to enable online copy on your "${accountName}" account.`,
     crossAccountConfiguration: {
@@ -116,18 +119,18 @@ export default {
     popoverDescription: (accountName: string) =>
       `Assign the system-assigned managed identity as the default for "${accountName}". To confirm, click the "Yes" button. `,
   },
-  readPermissionAssigned: {
-    title: "Read permissions assigned to the default identity.",
+  readWritePermissionAssigned: {
+    title: "Read-write permissions assigned to the default identity.",
     description:
-      "To allow data copy from source to the destination container, provide read access of the source account to the default identity of the destination account.",
+      "To allow data copy from source to the destination container, provide read-write access on the source account to the default identity of the destination account.",
     tooltip: {
       content: "Learn more about",
-      hrefText: "Read permissions.",
+      hrefText: "Read-write permissions.",
       href: "https://learn.microsoft.com/azure/cosmos-db/nosql/how-to-connect-role-based-access-control",
     },
-    popoverTitle: "Read permissions assigned to default identity.",
+    popoverTitle: "Assign read-write permissions to default identity.",
     popoverDescription:
-      "Assign read permissions of the source account to the default identity of the destination account. To confirm click the “Yes” button.",
+      'Assign read-write permissions on the source account to the default identity of the destination account. To confirm, click the "Yes" button.',
   },
   pointInTimeRestore: {
     title: "Point In Time Restore enabled",

@@ -4,7 +4,7 @@ import React from "react";
 import ContainerCopyMessages from "../../../ContainerCopyMessages";
 import { CopyJobContext } from "../../../Context/CopyJobContext";
 import { CopyJobContextProviderType } from "../../../Types/CopyJobTypes";
-import AddReadPermissionToDefaultIdentity from "./AddReadPermissionToDefaultIdentity";
+import AddReadWritePermissionToDefaultIdentity from "./AddReadWritePermissionToDefaultIdentity";
 
 jest.mock("../../../../../Common/Logger", () => ({
   logError: jest.fn(),
@@ -73,7 +73,7 @@ import { assignRole, RoleAssignmentType } from "../../../../../Utils/arm/RbacUti
 import { getAccountDetailsFromResourceId } from "../../../CopyJobUtils";
 import useToggle from "./hooks/useToggle";
 
-describe("AddReadPermissionToDefaultIdentity Component", () => {
+describe("AddReadWritePermissionToDefaultIdentity Component", () => {
   const mockUseToggle = useToggle as jest.MockedFunction<typeof useToggle>;
   const mockAssignRole = assignRole as jest.MockedFunction<typeof assignRole>;
   const mockGetAccountDetailsFromResourceId = getAccountDetailsFromResourceId as jest.MockedFunction<
@@ -86,7 +86,7 @@ describe("AddReadPermissionToDefaultIdentity Component", () => {
       jobName: "test-job",
       migrationType: CopyJobMigrationType.Offline,
       source: {
-        subscription: { subscriptionId: "source-sub-id" } as Subscription,
+        subscriptionId: "source-sub-id",
         account: {
           id: "/subscriptions/source-sub-id/resourceGroups/source-rg/providers/Microsoft.DocumentDB/databaseAccounts/source-account",
           name: "source-account",
@@ -101,7 +101,7 @@ describe("AddReadPermissionToDefaultIdentity Component", () => {
         containerId: "source-container",
       },
       target: {
-        subscriptionId: "target-sub-id",
+        subscription: { subscriptionId: "target-sub-id" } as Subscription,
         account: {
           id: "/subscriptions/target-sub-id/resourceGroups/target-rg/providers/Microsoft.DocumentDB/databaseAccounts/target-account",
           name: "target-account",
@@ -119,7 +119,7 @@ describe("AddReadPermissionToDefaultIdentity Component", () => {
         databaseId: "target-db",
         containerId: "target-container",
       },
-      sourceReadAccessFromTarget: false,
+      sourceReadWriteAccessFromTarget: false,
     },
     setCopyJobState: jest.fn(),
     setContextError: jest.fn(),
@@ -133,7 +133,7 @@ describe("AddReadPermissionToDefaultIdentity Component", () => {
   const renderComponent = (contextValue = mockContextValue) => {
     return render(
       <CopyJobContext.Provider value={contextValue}>
-        <AddReadPermissionToDefaultIdentity />
+        <AddReadWritePermissionToDefaultIdentity />
       </CopyJobContext.Provider>,
     );
   };
@@ -164,12 +164,12 @@ describe("AddReadPermissionToDefaultIdentity Component", () => {
       expect(container).toMatchSnapshot();
     });
 
-    it("should render correctly when sourceReadAccessFromTarget is true", () => {
+    it("should render correctly when sourceReadWriteAccessFromTarget is true", () => {
       const contextWithAccess = {
         ...mockContextValue,
         copyJobState: {
           ...mockContextValue.copyJobState,
-          sourceReadAccessFromTarget: true,
+          sourceReadWriteAccessFromTarget: true,
         },
       };
       const { container } = renderComponent(contextWithAccess);
@@ -180,7 +180,7 @@ describe("AddReadPermissionToDefaultIdentity Component", () => {
   describe("Component Structure", () => {
     it("should display the description text", () => {
       renderComponent();
-      expect(screen.getByText(ContainerCopyMessages.readPermissionAssigned.description)).toBeInTheDocument();
+      expect(screen.getByText(ContainerCopyMessages.readWritePermissionAssigned.description)).toBeInTheDocument();
     });
 
     it("should display the info tooltip", () => {
@@ -212,10 +212,10 @@ describe("AddReadPermissionToDefaultIdentity Component", () => {
 
       expect(screen.getByTestId("popover-message")).toBeInTheDocument();
       expect(screen.getByTestId("popover-title")).toHaveTextContent(
-        ContainerCopyMessages.readPermissionAssigned.popoverTitle,
+        ContainerCopyMessages.readWritePermissionAssigned.popoverTitle,
       );
       expect(screen.getByTestId("popover-content")).toHaveTextContent(
-        ContainerCopyMessages.readPermissionAssigned.popoverDescription,
+        ContainerCopyMessages.readWritePermissionAssigned.popoverDescription,
       );
     });
 
@@ -243,7 +243,7 @@ describe("AddReadPermissionToDefaultIdentity Component", () => {
       expect(mockOnToggle).toHaveBeenCalledWith(null, false);
     });
 
-    it("should call handleAddReadPermission when primary button is clicked", async () => {
+    it("should call handleAddReadWritePermission when primary button is clicked", async () => {
       mockGetAccountDetailsFromResourceId.mockReturnValue({
         subscriptionId: "source-sub-id",
         resourceGroup: "source-rg",
@@ -264,7 +264,7 @@ describe("AddReadPermissionToDefaultIdentity Component", () => {
     });
   });
 
-  describe("handleAddReadPermission Function", () => {
+  describe("handleAddReadWritePermission Function", () => {
     beforeEach(() => {
       mockUseToggle.mockReturnValue([true, jest.fn()]);
     });
@@ -312,7 +312,7 @@ describe("AddReadPermissionToDefaultIdentity Component", () => {
       await waitFor(() => {
         expect(mockLogError).toHaveBeenCalledWith(
           "Permission denied",
-          "CopyJob/AddReadPermissionToDefaultIdentity.handleAddReadPermission",
+          "CopyJob/AddReadWritePermissionToDefaultIdentity.handleAddReadWritePermission",
         );
       });
 
@@ -336,14 +336,14 @@ describe("AddReadPermissionToDefaultIdentity Component", () => {
 
       await waitFor(() => {
         expect(mockLogError).toHaveBeenCalledWith(
-          "Error assigning read permission to default identity. Please try again later.",
-          "CopyJob/AddReadPermissionToDefaultIdentity.handleAddReadPermission",
+          "Error assigning read-write permission to default identity. Please try again later.",
+          "CopyJob/AddReadWritePermissionToDefaultIdentity.handleAddReadWritePermission",
         );
       });
 
       await waitFor(() => {
         expect(mockContextValue.setContextError).toHaveBeenCalledWith(
-          "Error assigning read permission to default identity. Please try again later.",
+          "Error assigning read-write permission to default identity. Please try again later.",
         );
       });
     });
@@ -496,7 +496,7 @@ describe("AddReadPermissionToDefaultIdentity Component", () => {
 
       expect(updatedState).toEqual({
         ...mockContextValue.copyJobState,
-        sourceReadAccessFromTarget: true,
+        sourceReadWriteAccessFromTarget: true,
       });
     });
   });
