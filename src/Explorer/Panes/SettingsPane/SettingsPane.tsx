@@ -23,7 +23,6 @@ import { SplitterDirection } from "Common/Splitter";
 import { InfoTooltip } from "Common/Tooltip/InfoTooltip";
 import { Platform, configContext } from "ConfigContext";
 import { useDialog } from "Explorer/Controls/Dialog";
-import { useDatabases } from "Explorer/useDatabases";
 import { Keys, t } from "Localization";
 import { isFabric, isFabricNative } from "Platform/Fabric/FabricUtil";
 import {
@@ -50,7 +49,6 @@ import { logConsoleError, logConsoleInfo } from "Utils/NotificationConsoleUtils"
 import * as PriorityBasedExecutionUtils from "Utils/PriorityBasedExecutionUtils";
 import { getReadOnlyKeys, listKeys } from "Utils/arm/generatedClients/cosmos/databaseAccounts";
 import { useClientWriteEnabled } from "hooks/useClientWriteEnabled";
-import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { useSidePanel } from "hooks/useSidePanel";
 import React, { FunctionComponent, useState } from "react";
 import create, { UseStore } from "zustand";
@@ -199,9 +197,6 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
       ? LocalStorageUtility.getEntryString(StorageKey.PriorityLevel)
       : Constants.PriorityLevel.Default,
   );
-  const [copilotSampleDBEnabled, setCopilotSampleDBEnabled] = useState<boolean>(
-    LocalStorageUtility.getEntryString(StorageKey.CopilotSampleDBEnabled) === "true",
-  );
 
   const [mongoGuidRepresentation, setMongoGuidRepresentation] = useState<Constants.MongoGuidRepresentation>(
     LocalStorageUtility.hasItem(StorageKey.MongoGuidRepresentation)
@@ -268,12 +263,6 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
       });
     }
   });
-
-  const shouldShowCopilotSampleDBOption =
-    userContext.apiType === "SQL" &&
-    useQueryCopilot.getState().copilotEnabled &&
-    useDatabases.getState().sampleDataResourceTokenCollection &&
-    !isEmulator;
 
   const shouldShowMongoGuidRepresentationOption = userContext.apiType === "Mongo";
 
@@ -402,7 +391,6 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
     LocalStorageUtility.setEntryString(StorageKey.QueryControlEnabled, queryControlEnabled.toString());
     LocalStorageUtility.setEntryNumber(StorageKey.MaxDegreeOfParellism, maxDegreeOfParallelism);
     LocalStorageUtility.setEntryString(StorageKey.PriorityLevel, priorityLevel.toString());
-    LocalStorageUtility.setEntryString(StorageKey.CopilotSampleDBEnabled, copilotSampleDBEnabled.toString());
     LocalStorageUtility.setEntryString(StorageKey.DefaultQueryResultsView, defaultQueryResultsView);
 
     if (shouldShowGraphAutoVizOption) {
@@ -592,12 +580,6 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
     if (!isNaN(MaxWaitTimeInSeconds)) {
       setMaxWaitTimeInSeconds(MaxWaitTimeInSeconds);
     }
-  };
-
-  const handleSampleDatabaseChange = async (ev: React.MouseEvent<HTMLElement>, checked?: boolean): Promise<void> => {
-    setCopilotSampleDBEnabled(checked);
-    useQueryCopilot.getState().setCopilotSampleDBEnabled(checked);
-    setRefreshExplorer(false);
   };
 
   const handleOnMongoGuidRepresentationOptionChange = (
@@ -1189,34 +1171,6 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                       options={graphAutoOptionList}
                       onChange={handleOnGremlinChange}
                       aria-label={t(Keys.panes.settings.graphAutoVisualization)}
-                    />
-                  </div>
-                </AccordionPanel>
-              </AccordionItem>
-            )}
-            {shouldShowCopilotSampleDBOption && (
-              <AccordionItem value="13">
-                <AccordionHeader>
-                  <div className={styles.header}>{t(Keys.panes.settings.enableSampleDatabase)}</div>
-                </AccordionHeader>
-                <AccordionPanel>
-                  <div className={styles.settingsSectionContainer}>
-                    <div className={styles.settingsSectionDescription}>
-                      {t(Keys.panes.settings.enableSampleDatabaseDescription)}
-                    </div>
-                    <Checkbox
-                      styles={{
-                        label: { padding: 0 },
-                      }}
-                      className="padding"
-                      ariaLabel={t(Keys.panes.settings.enableSampleDbAriaLabel)}
-                      checked={copilotSampleDBEnabled}
-                      onChange={handleSampleDatabaseChange}
-                      onRenderLabel={() => (
-                        <span style={{ color: "var(--colorNeutralForeground1)" }}>
-                          {t(Keys.panes.settings.enableSampleDatabase)}
-                        </span>
-                      )}
                     />
                   </div>
                 </AccordionPanel>

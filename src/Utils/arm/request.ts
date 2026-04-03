@@ -79,11 +79,23 @@ export async function armRequestWithoutPolling<T>({
     ...(customHeaders || {}),
   };
 
+  let effectiveSignal = signal;
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
+  if (!effectiveSignal) {
+    const controller = new AbortController();
+    effectiveSignal = controller.signal;
+    timeoutId = setTimeout(() => controller.abort(), 8000);
+  }
+
   const response = await window.fetch(url.href, {
     method,
     headers,
     body: requestBody ? JSON.stringify(requestBody) : undefined,
-    signal,
+    signal: effectiveSignal,
+  }).finally(() => {
+    if (timeoutId !== undefined) {
+      clearTimeout(timeoutId);
+    }
   });
 
   if (!response.ok) {

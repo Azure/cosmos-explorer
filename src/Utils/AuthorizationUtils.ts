@@ -148,7 +148,7 @@ export async function acquireMsalTokenForAccount(
 
   const tokenRequest = {
     account: msalAccount || null,
-    forceRefresh: true,
+    forceRefresh: false,
     scopes: [hrefEndpoint],
     loginHint: user_hint ?? userContext.userName,
     authority: `${configContext.AAD_ENDPOINT}${userContext.tenantId ?? msalAccount.tenantId}`,
