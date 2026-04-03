@@ -18,10 +18,7 @@ import {
   subscriptionId,
   TestAccount,
 } from "./fx";
-
-if (!globalThis.crypto) {
-  globalThis.crypto = webcrypto as Crypto;
-}
+globalThis.crypto = webcrypto as Crypto;
 
 export interface TestItem {
   id: string;
