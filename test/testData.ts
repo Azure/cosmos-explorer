@@ -9,7 +9,6 @@ import {
   JSONObject,
 } from "@azure/cosmos";
 import { Buffer } from "node:buffer";
-import { webcrypto } from "node:crypto";
 import {
   generateUniqueName,
   getAccountName,
@@ -18,7 +17,6 @@ import {
   subscriptionId,
   TestAccount,
 } from "./fx";
-globalThis.crypto = webcrypto as Crypto;
 
 export interface TestItem {
   id: string;
