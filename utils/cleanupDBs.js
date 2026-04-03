@@ -18,15 +18,15 @@ function friendlyTime(date) {
 async function main() {
   const credentials = new AzureCliCredential();
   const client = new CosmosDBManagementClient(credentials, subscriptionId);
-  const accounts = await client.databaseAccounts.list(resourceGroupName);
-  for (const account of accounts) {
+  const accounts = client.databaseAccounts.listByResourceGroup(resourceGroupName);
+  for await (const account of accounts) {
     if (account.name.endsWith("-readonly")) {
       console.log(`SKIPPED: ${account.name}`);
       continue;
     }
     if (account.kind === "MongoDB") {
-      const mongoDatabases = await client.mongoDBResources.listMongoDBDatabases(resourceGroupName, account.name);
-      for (const database of mongoDatabases) {
+      const mongoDatabases = client.mongoDBResources.listMongoDBDatabases(resourceGroupName, account.name);
+      for await (const database of mongoDatabases) {
         // Unfortunately Mongo does not provide a timestamp in ARM. There is no way to tell how old the DB is other thn encoding it in the ID :(
         const timestamp = Number(database.name.split("_").pop());
         if (timestamp && timestamp < thirtyMinutesAgo) {
@@ -37,11 +37,11 @@ async function main() {
         }
       }
     } else if (account.capabilities.find((c) => c.name === "EnableCassandra")) {
-      const cassandraDatabases = await client.cassandraResources.listCassandraKeyspaces(
+      const cassandraDatabases = client.cassandraResources.listCassandraKeyspaces(
         resourceGroupName,
         account.name,
       );
-      for (const database of cassandraDatabases) {
+      for await (const database of cassandraDatabases) {
         const timestamp = Number(database.resource._ts) * 1000;
         if (timestamp && timestamp < thirtyMinutesAgo) {
           await client.cassandraResources.deleteCassandraKeyspace(resourceGroupName, account.name, database.name);
@@ -51,8 +51,8 @@ async function main() {
         }
       }
     } else if (account.capabilities.find((c) => c.name === "EnableTable")) {
-      const tablesDatabase = await client.tableResources.listTables(resourceGroupName, account.name);
-      for (const database of tablesDatabase) {
+      const tablesDatabase = client.tableResources.listTables(resourceGroupName, account.name);
+      for await (const database of tablesDatabase) {
         const timestamp = Number(database.resource._ts) * 1000;
         if (timestamp && timestamp < thirtyMinutesAgo) {
           await client.tableResources.deleteTable(resourceGroupName, account.name, database.name);
@@ -62,8 +62,8 @@ async function main() {
         }
       }
     } else if (account.capabilities.find((c) => c.name === "EnableGremlin")) {
-      const graphDatabases = await client.gremlinResources.listGremlinDatabases(resourceGroupName, account.name);
-      for (const database of graphDatabases) {
+      const graphDatabases = client.gremlinResources.listGremlinDatabases(resourceGroupName, account.name);
+      for await (const database of graphDatabases) {
         const timestamp = Number(database.resource._ts) * 1000;
         if (timestamp && timestamp < thirtyMinutesAgo) {
           await client.gremlinResources.deleteGremlinDatabase(resourceGroupName, account.name, database.name);
@@ -73,10 +73,11 @@ async function main() {
         }
       }
     } else if (account.kind === "GlobalDocumentDB") {
-      const sqlDatabases = await client.sqlResources.listSqlDatabases(resourceGroupName, account.name);
-      const sqlDatabasesToDelete = sqlDatabases.map(async (database) => {
-        await deleteWithRetry(client, database, account.name);
-      });
+      const sqlDatabases = client.sqlResources.listSqlDatabases(resourceGroupName, account.name);
+      const sqlDatabasesToDelete = [];
+      for await (const database of sqlDatabases) {
+        sqlDatabasesToDelete.push(deleteWithRetry(client, database, account.name));
+      }
       await Promise.all(sqlDatabasesToDelete);
     }
   }
