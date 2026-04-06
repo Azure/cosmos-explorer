@@ -18,7 +18,12 @@ import {
   subscriptionId,
   TestAccount,
 } from "./fx";
-globalThis.crypto = webcrypto as Crypto;
+
+// In Node.js >= 19, globalThis.crypto is already available as a read-only getter.
+// Only assign the polyfill for older versions.
+if (!globalThis.crypto) {
+  Object.defineProperty(globalThis, "crypto", { value: webcrypto, writable: true, configurable: true });
+}
 
 export interface TestItem {
   id: string;

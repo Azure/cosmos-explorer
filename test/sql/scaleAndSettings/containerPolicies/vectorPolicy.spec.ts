@@ -36,17 +36,57 @@ test.describe("Vector Policy under Scale & Settings", () => {
     await context?.dispose();
   });
 
+  /** Count vector policy entries currently in the DOM. */
+  const getPolicyCount = async (): Promise<number> => {
+    for (let i = 1; i <= 20; i++) {
+      if ((await explorer.frame.locator(`#vector-policy-path-${i}`).count()) === 0) {
+        return i - 1;
+      }
+    }
+    return 20;
+  };
+
+  /**
+   * Ensure at least one saved (existing) vector policy exists on the container.
+   * If none exist, add one and save it. Returns the total policy count afterward.
+   */
+  const ensureExistingPolicy = async (): Promise<number> => {
+    const count = await getPolicyCount();
+    if (count > 0) {
+      return count;
+    }
+
+    // No saved policies — add and save one
+    const addButton = explorer.frame.locator("#add-vector-policy");
+    await addButton.click();
+
+    await explorer.frame.locator("#vector-policy-path-1").fill("/existingPolicy");
+    await explorer.frame.locator("#vector-policy-dimension-1").fill("500");
+
+    const saveButton = explorer.commandBarButton(CommandBarButton.Save);
+    await saveButton.click();
+    await expect(explorer.getConsoleHeaderStatus()).toContainText(
+      `Successfully updated container ${context.container.id}`,
+      { timeout: 2 * ONE_MINUTE_MS },
+    );
+    return 1;
+  };
+
   test("Add new vector embedding policy", async () => {
+    const existingCount = await getPolicyCount();
+
     // Click Add vector embedding button
     const addButton = explorer.frame.locator("#add-vector-policy");
     await addButton.click();
 
+    const newIndex = existingCount + 1;
+
     // Fill in path
-    const pathInput = explorer.frame.locator("#vector-policy-path-1");
+    const pathInput = explorer.frame.locator(`#vector-policy-path-${newIndex}`);
     await pathInput.fill("/embedding");
 
     // Fill in dimensions
-    const dimensionsInput = explorer.frame.locator("#vector-policy-dimension-1");
+    const dimensionsInput = explorer.frame.locator(`#vector-policy-dimension-${newIndex}`);
     await dimensionsInput.fill("1500");
 
     // Save changes
@@ -62,25 +102,8 @@ test.describe("Vector Policy under Scale & Settings", () => {
   });
 
   test("Existing vector embedding policy fields are disabled", async () => {
-    // First add a vector embedding policy
-    const addButton = explorer.frame.locator("#add-vector-policy");
-    await addButton.click();
-
-    const pathInput = explorer.frame.locator("#vector-policy-path-1");
-    await pathInput.fill("/existingEmbedding");
-
-    const dimensionsInput = explorer.frame.locator("#vector-policy-dimension-1");
-    await dimensionsInput.fill("700");
-
-    // Save the policy
-    const saveButton = explorer.commandBarButton(CommandBarButton.Save);
-    await saveButton.click();
-    await expect(explorer.getConsoleHeaderStatus()).toContainText(
-      `Successfully updated container ${context.container.id}`,
-      {
-        timeout: 2 * ONE_MINUTE_MS,
-      },
-    );
+    // Ensure there is at least one saved policy
+    await ensureExistingPolicy();
 
     // Verify the path field is disabled for the existing policy
     const existingPathInput = explorer.frame.locator("#vector-policy-path-1");
@@ -92,28 +115,14 @@ test.describe("Vector Policy under Scale & Settings", () => {
   });
 
   test("New vector embedding policy fields are enabled while existing are disabled", async () => {
-    // First, create an existing policy
+    // Ensure there is at least one saved policy
+    const existingCount = await ensureExistingPolicy();
+
+    // Now add a new policy
     const addButton = explorer.frame.locator("#add-vector-policy");
     await addButton.click();
 
-    const firstPathInput = explorer.frame.locator("#vector-policy-path-1");
-    await firstPathInput.fill("/existingPolicy");
-
-    const firstDimensionsInput = explorer.frame.locator("#vector-policy-dimension-1");
-    await firstDimensionsInput.fill("500");
-
-    // Save the policy to make it "existing"
-    const saveButton = explorer.commandBarButton(CommandBarButton.Save);
-    await saveButton.click();
-    await expect(explorer.getConsoleHeaderStatus()).toContainText(
-      `Successfully updated container ${context.container.id}`,
-      {
-        timeout: 2 * ONE_MINUTE_MS,
-      },
-    );
-
-    // Now add a new policy
-    await addButton.click();
+    const newIndex = existingCount + 1;
 
     // Verify the existing policy fields are disabled
     const existingPathInput = explorer.frame.locator("#vector-policy-path-1");
@@ -122,46 +131,31 @@ test.describe("Vector Policy under Scale & Settings", () => {
     await expect(existingDimensionsInput).toBeDisabled();
 
     // Verify the new policy fields are enabled
-    const newPathInput = explorer.frame.locator("#vector-policy-path-2");
-    const newDimensionsInput = explorer.frame.locator("#vector-policy-dimension-2");
+    const newPathInput = explorer.frame.locator(`#vector-policy-path-${newIndex}`);
+    const newDimensionsInput = explorer.frame.locator(`#vector-policy-dimension-${newIndex}`);
     await expect(newPathInput).toBeEnabled();
     await expect(newDimensionsInput).toBeEnabled();
   });
 
   test("Delete existing vector embedding policy", async () => {
-    // First add a vector embedding policy
-    const addButton = explorer.frame.locator("#add-vector-policy");
-    await addButton.click();
-
-    const pathInput = explorer.frame.locator("#vector-policy-path-1");
-    await pathInput.fill("/toBeDeleted");
-
-    const dimensionsInput = explorer.frame.locator("#vector-policy-dimension-1");
-    await dimensionsInput.fill("256");
-
-    // Save the policy
-    const saveButton = explorer.commandBarButton(CommandBarButton.Save);
-    await saveButton.click();
-    await expect(explorer.getConsoleHeaderStatus()).toContainText(
-      `Successfully updated container ${context.container.id}`,
-      {
-        timeout: 2 * ONE_MINUTE_MS,
-      },
-    );
+    // Ensure there is at least one saved policy to delete
+    const existingCount = await ensureExistingPolicy();
 
     // Verify the policy exists
+    const pathInput = explorer.frame.locator("#vector-policy-path-1");
     await expect(pathInput).toBeVisible();
 
-    // Click the delete (trash) button for the vector embedding
+    // Click the delete (trash) button for the first vector embedding
     const deleteButton = explorer.frame.locator("#delete-Vector-embedding-1");
     await expect(deleteButton).toBeEnabled();
     await deleteButton.click();
 
-    // Verify the policy fields are removed
-    await expect(explorer.frame.locator("#vector-policy-path-1")).not.toBeVisible();
-    await expect(explorer.frame.locator("#vector-policy-dimension-1")).not.toBeVisible();
+    // Verify one fewer policy entry in the UI
+    const countAfterDelete = await getPolicyCount();
+    expect(countAfterDelete).toBe(existingCount - 1);
 
     // Save the deletion
+    const saveButton = explorer.commandBarButton(CommandBarButton.Save);
     await expect(saveButton).toBeEnabled();
     await saveButton.click();
     await expect(explorer.getConsoleHeaderStatus()).toContainText(
@@ -171,16 +165,21 @@ test.describe("Vector Policy under Scale & Settings", () => {
       },
     );
 
-    // Verify the policy is still gone after save
-    await expect(explorer.frame.locator("#vector-policy-path-1")).not.toBeVisible();
+    // Verify the count is still reduced after save
+    const countAfterSave = await getPolicyCount();
+    expect(countAfterSave).toBe(existingCount - 1);
   });
 
   test("Validation error for empty path", async () => {
+    const existingCount = await getPolicyCount();
+
     const addButton = explorer.frame.locator("#add-vector-policy");
     await addButton.click();
 
+    const newIndex = existingCount + 1;
+
     // Leave path empty, just fill dimensions
-    const dimensionsInput = explorer.frame.locator("#vector-policy-dimension-1");
+    const dimensionsInput = explorer.frame.locator(`#vector-policy-dimension-${newIndex}`);
     await dimensionsInput.fill("512");
 
     // Check for validation error on path
