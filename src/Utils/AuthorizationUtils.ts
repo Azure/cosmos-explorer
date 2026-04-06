@@ -52,7 +52,10 @@ export function decryptJWTToken(token: string) {
 
 export async function getMsalInstance() {
   // Compute the redirect bridge URL for MSAL v5 COOP handling
-  const redirectBridgeUrl = `${window.location.origin}/redirectBridge.html`;
+  const redirectBridgeUrl =
+    process.env.NODE_ENV === "development"
+      ? "https://dataexplorer-dev.azurewebsites.net/redirectBridge.html"
+      : `${window.location.origin}/redirectBridge.html`;
 
   const msalConfig: msal.Configuration = {
     cache: {
@@ -66,7 +69,7 @@ export async function getMsalInstance() {
     },
   };
 
-  if (process.env.NODE_ENV === "development" && !window.location.hostname.includes("localhost")) {
+  if (process.env.NODE_ENV === "development") {
     msalConfig.auth.redirectUri = "https://dataexplorer-dev.azurewebsites.net/redirectBridge.html";
   }
 
