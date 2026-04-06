@@ -113,7 +113,7 @@
     "swr": "0.4.0",
     "terser-webpack-plugin": "5.3.9",
     "tinykeys": "2.1.0",
-    "underscore": "1.12.1",
+    "underscore": "1.13.8",
     "utility-types": "3.10.0",
     "uuid": "9.0.0",
     "web-vitals": "4.2.4",
