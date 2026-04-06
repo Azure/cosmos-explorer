@@ -29,7 +29,7 @@ test.describe("Vector Policy under Scale & Settings", () => {
   });
 
   /** Count vector policy entries currently in the DOM. */
-  async function getPolicyCount(): Promise<number> {
+  const getPolicyCount = async (): Promise<number> => {
     for (let i = 1; i <= 20; i++) {
       if ((await explorer.frame.locator(`#vector-policy-path-${i}`).count()) === 0) {
         return i - 1;
@@ -42,7 +42,7 @@ test.describe("Vector Policy under Scale & Settings", () => {
    * Ensure at least one saved (existing) vector policy exists on the container.
    * If none exist, add one and save it. Returns the total policy count afterward.
    */
-  async function ensureExistingPolicy(): Promise<number> {
+  const ensureExistingPolicy = async (): Promise<number> => {
     const count = await getPolicyCount();
     if (count > 0) {
       return count;
