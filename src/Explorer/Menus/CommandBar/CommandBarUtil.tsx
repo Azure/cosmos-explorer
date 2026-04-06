@@ -11,7 +11,7 @@ import { KeyboardHandlerMap } from "KeyboardShortcuts";
 import * as React from "react";
 import _ from "underscore";
 import ChevronDownIcon from "../../../../images/Chevron_down.svg";
-import { PoolIdType } from "../../../Common/Constants";
+
 import { StyleConstants } from "../../../Common/StyleConstants";
 import { configContext, Platform } from "../../../ConfigContext";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
@@ -265,10 +265,10 @@ export const createMemoryTracker = (key: string): ICommandBarItemProps => {
   };
 };
 
-export const createConnectionStatus = (container: Explorer, poolId: PoolIdType, key: string): ICommandBarItemProps => {
+export const createConnectionStatus = (container: Explorer, key: string): ICommandBarItemProps => {
   return {
     key,
-    onRender: () => <ConnectionStatus container={container} poolId={poolId} />,
+    onRender: () => <ConnectionStatus container={container} />,
   };
 };
 

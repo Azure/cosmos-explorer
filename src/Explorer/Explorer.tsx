@@ -23,7 +23,7 @@ import shallow from "zustand/shallow";
 import { AuthType } from "../AuthType";
 import { BindingHandlersRegisterer } from "../Bindings/BindingHandlersRegisterer";
 import * as Constants from "../Common/Constants";
-import { Areas, ConnectionStatusType, HttpStatusCodes, Notebook, PoolIdType } from "../Common/Constants";
+import { Areas, ConnectionStatusType, HttpStatusCodes, Notebook } from "../Common/Constants";
 import { getErrorMessage, getErrorStack, handleError } from "../Common/ErrorHandlingUtils";
 import * as Logger from "../Common/Logger";
 import { QueriesClient } from "../Common/QueriesClient";
@@ -467,7 +467,7 @@ export default class Explorer {
     this._isInitializingNotebooks = false;
   }
 
-  public async allocateContainer(poolId: PoolIdType, mode?: string): Promise<void> {
+  public async allocateContainer(): Promise<void> {
     const notebookServerInfo = useNotebook.getState().notebookServerInfo;
     const isAllocating = useNotebook.getState().isAllocating;
     if (
@@ -607,23 +607,18 @@ export default class Explorer {
 
     scenarioMonitor.startPhase(MetricScenario.DatabaseLoad, ApplicationMetricPhase.CollectionsLoaded);
     try {
-      // Limit concurrency to avoid thundering herd on collection loading
-      const concurrencyLimit = 5;
-      for (let i = 0; i < databasesToLoad.length; i += concurrencyLimit) {
-        const batch = databasesToLoad.slice(i, i + concurrencyLimit);
-        await Promise.all(
-          batch.map(async (database: ViewModels.Database) => {
-            await database.loadCollections(true);
-            const isNewDatabase: boolean = _.some(newDatabases, (db: ViewModels.Database) => db.id() === database.id());
-            if (isNewDatabase) {
-              database.expandDatabase();
-            }
-            useTabs
-              .getState()
-              .refreshActiveTab((tab) => tab.collection && tab.collection.getDatabase().id() === database.id());
-          }),
-        );
-      }
+      await Promise.all(
+        databasesToLoad.map(async (database: ViewModels.Database) => {
+          await database.loadCollections(true);
+          const isNewDatabase: boolean = _.some(newDatabases, (db: ViewModels.Database) => db.id() === database.id());
+          if (isNewDatabase) {
+            database.expandDatabase();
+          }
+          useTabs
+            .getState()
+            .refreshActiveTab((tab) => tab.collection && tab.collection.getDatabase().id() === database.id());
+        }),
+      );
       TelemetryProcessor.traceSuccess(
         Action.LoadCollections,
         { dataExplorerArea: Constants.Areas.ResourceTree },
@@ -754,7 +749,7 @@ export default class Explorer {
       throw new Error(`Invalid notebookContentItem: ${notebookContentItem}`);
     }
     if (notebookContentItem.type === NotebookContentItemType.Notebook && useNotebook.getState().isPhoenixNotebooks) {
-      await this.allocateContainer(PoolIdType.DefaultPoolId);
+      await this.allocateContainer();
     }
 
     const notebookTabs = useTabs
@@ -983,7 +978,7 @@ export default class Explorer {
     if (userContext.features.enableCloudShell) {
       this.connectToNotebookTerminal(kind);
     } else if (useNotebook.getState().isPhoenixFeatures) {
-      await this.allocateContainer(PoolIdType.DefaultPoolId);
+      await this.allocateContainer();
       const notebookServerInfo = useNotebook.getState().notebookServerInfo;
       if (notebookServerInfo && notebookServerInfo.notebookServerEndpoint !== undefined) {
         this.connectToNotebookTerminal(kind);
@@ -1127,7 +1122,7 @@ export default class Explorer {
       await useNotebook.getState().getPhoenixStatus();
     }
     if (useNotebook.getState().isPhoenixNotebooks) {
-      await this.allocateContainer(PoolIdType.DefaultPoolId);
+      await this.allocateContainer();
     }
 
     // We still use github urls like https://github.com/Azure-Samples/cosmos-notebooks/blob/master/CSharp_quickstarts/GettingStarted_CSharp.ipynb

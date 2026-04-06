@@ -9,6 +9,7 @@ import promiseRetry, { AbortError } from "p-retry";
 import { HttpHeaders } from "../../Common/Constants";
 import { configContext } from "../../ConfigContext";
 import { userContext } from "../../UserContext";
+import { fetchWithTimeout } from "../FetchWithTimeout";
 
 interface ErrorResponse {
   code: string;
@@ -79,24 +80,14 @@ export async function armRequestWithoutPolling<T>({
     ...(customHeaders || {}),
   };
 
-  let effectiveSignal = signal;
-  let timeoutId: ReturnType<typeof setTimeout> | undefined;
-  if (!effectiveSignal) {
-    const controller = new AbortController();
-    effectiveSignal = controller.signal;
-    timeoutId = setTimeout(() => controller.abort(), 8000);
-  }
-
-  const response = await window.fetch(url.href, {
+  const fetchInit: RequestInit = {
     method,
     headers,
     body: requestBody ? JSON.stringify(requestBody) : undefined,
-    signal: effectiveSignal,
-  }).finally(() => {
-    if (timeoutId !== undefined) {
-      clearTimeout(timeoutId);
-    }
-  });
+    ...(signal ? { signal } : {}),
+  };
+
+  const response = signal ? await window.fetch(url.href, fetchInit) : await fetchWithTimeout(url.href, fetchInit);
 
   if (!response.ok) {
     let error: ARMError;

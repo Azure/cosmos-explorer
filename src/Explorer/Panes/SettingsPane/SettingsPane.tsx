@@ -113,7 +113,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
 }): JSX.Element => {
   const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
-  const [refreshExplorer, setRefreshExplorer] = useState<boolean>(false);
+  const [refreshExplorer] = useState<boolean>(false);
   const [pageOption, setPageOption] = useState<string>(
     LocalStorageUtility.getEntryNumber(StorageKey.ActualItemPerPage) === Constants.Queries.unlimitedItemsPerPage
       ? Constants.Queries.UnlimitedPageOption
