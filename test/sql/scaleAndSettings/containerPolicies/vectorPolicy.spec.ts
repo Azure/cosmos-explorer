@@ -44,7 +44,7 @@ test.describe("Vector Policy under Scale & Settings", () => {
       }
     }
     return 20;
-  }
+  };
 
   /**
    * Ensure at least one saved (existing) vector policy exists on the container.
@@ -70,7 +70,7 @@ test.describe("Vector Policy under Scale & Settings", () => {
       { timeout: 2 * ONE_MINUTE_MS },
     );
     return 1;
-  }
+  };
 
   test("Add new vector embedding policy", async () => {
     const existingCount = await getPolicyCount();
