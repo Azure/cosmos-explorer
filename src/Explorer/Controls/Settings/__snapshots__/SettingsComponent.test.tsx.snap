@@ -615,7 +615,7 @@ exports[`SettingsComponent renders 1`] = `
             "data-test": "settings-tab-header/DataMaskingTab",
           }
         }
-        headerText="Masking Policy (preview)"
+        headerText="Masking Policy"
         itemKey="DataMaskingTab"
         key="DataMaskingTab"
         style={
