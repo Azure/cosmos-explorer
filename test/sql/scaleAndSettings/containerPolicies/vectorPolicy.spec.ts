@@ -24,6 +24,14 @@ test.describe("Vector Policy under Scale & Settings", () => {
     await vectorPolicyTab.click();
   });
 
+  test.afterEach("Clear vector policies", async () => {
+    const { resource: containerDef } = await context.container.read();
+    if (containerDef.vectorEmbeddingPolicy?.vectorEmbeddings?.length) {
+      containerDef.vectorEmbeddingPolicy.vectorEmbeddings = [];
+      await context.container.replace(containerDef);
+    }
+  });
+
   test.afterAll("Delete Test Database", async () => {
     await context?.dispose();
   });
