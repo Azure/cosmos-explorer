@@ -1176,23 +1176,38 @@ export default class Explorer {
       scenarioMonitor.start(MetricScenario.DatabaseLoad);
     }
 
-    if (userContext.apiType !== "Postgres" && userContext.apiType !== "VCoreMongo") {
-      if (userContext.authType === AuthType.ResourceToken) {
-        scenarioMonitor.skipPhase(MetricScenario.DatabaseLoad, ApplicationMetricPhase.CollectionsLoaded);
-        scenarioMonitor.skipPhase(MetricScenario.DatabaseLoad, ApplicationMetricPhase.DatabaseTreeRendered);
-        this.databasesRefreshed = this.refreshDatabaseForResourceToken().then(() => {
-          scenarioMonitor.completePhase(MetricScenario.DatabaseLoad, ApplicationMetricPhase.DatabasesFetched);
-        });
-      } else {
-        this.databasesRefreshed = this.refreshAllDatabases();
-      }
-      await this.databasesRefreshed; // await: we rely on the databases to be loaded before restoring the tabs further in the flow
-    }
+    // Run independent initialization tasks in parallel:
+    // - Database loading (ARM/SDK calls for databases + collections)
+    // - Notebook enabled check (Phoenix + Portal backend — no dependency on databases)
+    // - Feature registration check (ARM call — no dependency on databases or notebooks)
+    const databasesTask =
+      userContext.apiType !== "Postgres" && userContext.apiType !== "VCoreMongo"
+        ? (async () => {
+            if (userContext.authType === AuthType.ResourceToken) {
+              scenarioMonitor.skipPhase(MetricScenario.DatabaseLoad, ApplicationMetricPhase.CollectionsLoaded);
+              scenarioMonitor.skipPhase(MetricScenario.DatabaseLoad, ApplicationMetricPhase.DatabaseTreeRendered);
+              this.databasesRefreshed = this.refreshDatabaseForResourceToken().then(() => {
+                scenarioMonitor.completePhase(MetricScenario.DatabaseLoad, ApplicationMetricPhase.DatabasesFetched);
+              });
+            } else {
+              this.databasesRefreshed = this.refreshAllDatabases();
+            }
+            await this.databasesRefreshed;
+          })()
+        : Promise.resolve();
 
-    if (!isFabricNative()) {
-      await useNotebook.getState().refreshNotebooksEnabledStateForAccount();
-    }
+    const notebooksTask = !isFabricNative()
+      ? useNotebook.getState().refreshNotebooksEnabledStateForAccount()
+      : Promise.resolve();
 
+    const featureRegistrationTask =
+      userContext.authType === AuthType.AAD && userContext.apiType === "SQL" && !isFabricNative()
+        ? featureRegistered(userContext.subscriptionId, "ThroughputBucketing")
+        : Promise.resolve(false);
+
+    const [, , throughputBucketsEnabled] = await Promise.all([databasesTask, notebooksTask, featureRegistrationTask]);
+
+    // Notebook initialization depends on refreshNotebooksEnabledStateForAccount completing above
     // TODO: remove reference to isNotebookEnabled and isNotebooksEnabledForAccount
     const isNotebookEnabled =
       configContext.platform !== Platform.Fabric &&
@@ -1213,8 +1228,7 @@ export default class Explorer {
       await this.initNotebooks(userContext.databaseAccount);
     }
 
-    if (userContext.authType === AuthType.AAD && userContext.apiType === "SQL" && !isFabricNative()) {
-      const throughputBucketsEnabled = await featureRegistered(userContext.subscriptionId, "ThroughputBucketing");
+    if (throughputBucketsEnabled) {
       updateUserContext({ throughputBucketsEnabled });
     }
   }

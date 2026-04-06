@@ -340,6 +340,10 @@ async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
   const accountResourceId = account.id;
   const subscriptionId = accountResourceId && accountResourceId.split("subscriptions/")[1].split("/")[0];
   const resourceGroup = accountResourceId && accountResourceId.split("resourceGroups/")[1].split("/")[0];
+
+  // Start the ARM GET call early — it runs in parallel with the MSAL token acquisition below
+  const databaseAccountPromise = get(subscriptionId, account.resourceGroup, account.name);
+
   let aadToken;
   if (account.properties?.documentEndpoint) {
     let hrefEndpoint = "";
@@ -363,12 +367,8 @@ async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
     }
   }
   try {
-    // TO DO - Remove once we have ARG API support for enableMaterializedViews property
-    const databaseAccount: Types.DatabaseAccountGetResults = await get(
-      subscriptionId,
-      account.resourceGroup,
-      account.name,
-    );
+    // Await the ARM GET that was started in parallel with MSAL token acquisition
+    const databaseAccount: Types.DatabaseAccountGetResults = await databaseAccountPromise;
     config.databaseAccount.properties.enableMaterializedViews = databaseAccount.properties?.enableMaterializedViews;
 
     updateUserContext({
