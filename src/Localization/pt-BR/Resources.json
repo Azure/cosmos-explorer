@@ -765,7 +765,7 @@
         "containerPolicies": "Políticas de Contêiner",
         "throughputBuckets": "Buckets de Taxa de Transferência",
         "globalSecondaryIndexPreview": "Índice Secundário Global (Versão Prévia)",
-        "maskingPolicyPreview": "Política de Mascaramento (versão prévia)"
+        "maskingPolicyPreview": "Masking Policy"
       },
       "mongoNotifications": {
         "selectTypeWarning": "Selecione um tipo para cada índice.",

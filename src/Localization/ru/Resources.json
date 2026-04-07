@@ -765,7 +765,7 @@
         "containerPolicies": "Правила перевозки контейнеров",
         "throughputBuckets": "Группы пропускной способности",
         "globalSecondaryIndexPreview": "Глобальный вторичный индекс (предварительный просмотр)",
-        "maskingPolicyPreview": "Политика ношения масок (предварительная версия)"
+        "maskingPolicyPreview": "Masking Policy"
       },
       "mongoNotifications": {
         "selectTypeWarning": "Выберите тип для каждого указателя.",

@@ -765,7 +765,7 @@
         "containerPolicies": "Kapsayıcı İlkeleri",
         "throughputBuckets": "Aktarım Hızı Demetleri",
         "globalSecondaryIndexPreview": "Genel İkincil Dizini (Önizleme)",
-        "maskingPolicyPreview": "Maskeleme İlkesi (önizleme)"
+        "maskingPolicyPreview": "Masking Policy"
       },
       "mongoNotifications": {
         "selectTypeWarning": "Lütfen her dizin için bir tür seçeneğini belirtin.",

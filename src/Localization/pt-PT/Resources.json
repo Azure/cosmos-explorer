@@ -765,7 +765,7 @@
         "containerPolicies": "Políticas de Contentor",
         "throughputBuckets": "Registos de Débito",
         "globalSecondaryIndexPreview": "Índice Secundário Global (Pré-Visualização)",
-        "maskingPolicyPreview": "Política de Mascaramento (pré-visualização)"
+        "maskingPolicyPreview": "Masking Policy"
       },
       "mongoNotifications": {
         "selectTypeWarning": "Selecione um tipo para cada índice.",

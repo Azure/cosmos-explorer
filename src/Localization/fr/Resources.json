@@ -765,7 +765,7 @@
         "containerPolicies": "Stratégies relatives aux conteneurs",
         "throughputBuckets": "Bacs de débit",
         "globalSecondaryIndexPreview": "Indice mondial du secteur secondaire (Aperçu)",
-        "maskingPolicyPreview": "Stratégie de masquage (aperçu)"
+        "maskingPolicyPreview": "Masking Policy"
       },
       "mongoNotifications": {
         "selectTypeWarning": "Veuillez sélectionner un type pour chaque index.",

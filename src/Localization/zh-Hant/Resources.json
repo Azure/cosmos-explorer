@@ -765,7 +765,7 @@
         "containerPolicies": "容器原則",
         "throughputBuckets": "輸送量貯體",
         "globalSecondaryIndexPreview": "全域次要索引 (預覽)",
-        "maskingPolicyPreview": "遮罩原則 (預覽)"
+        "maskingPolicyPreview": "Masking Policy"
       },
       "mongoNotifications": {
         "selectTypeWarning": "請選取每個索引的類型。",

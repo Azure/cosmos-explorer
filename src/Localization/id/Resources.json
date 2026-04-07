@@ -765,7 +765,7 @@
         "containerPolicies": "Kebijakan Kontainer",
         "throughputBuckets": "Wadah Throughput",
         "globalSecondaryIndexPreview": "Indeks Sekunder Global (Pratinjau)",
-        "maskingPolicyPreview": "Kebijakan Penyembunyian (pratinjau)"
+        "maskingPolicyPreview": "Masking Policy"
       },
       "mongoNotifications": {
         "selectTypeWarning": "Pilih tipe untuk setiap indeks.",

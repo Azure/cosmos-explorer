@@ -765,7 +765,7 @@
         "containerPolicies": "容器策略",
         "throughputBuckets": "吞吐量存储桶",
         "globalSecondaryIndexPreview": "全局辅助索引(预览版)",
-        "maskingPolicyPreview": "掩码策略(预览版)"
+        "maskingPolicyPreview": "Masking Policy"
       },
       "mongoNotifications": {
         "selectTypeWarning": "请为每个索引选择一个类型。",

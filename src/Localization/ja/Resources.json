@@ -765,7 +765,7 @@
         "containerPolicies": "コンテナー ポリシー",
         "throughputBuckets": "スループット バケット",
         "globalSecondaryIndexPreview": "グローバル セカンダリ インデックス (プレビュー)",
-        "maskingPolicyPreview": "マスキング ポリシー (プレビュー)"
+        "maskingPolicyPreview": "Masking Policy"
       },
       "mongoNotifications": {
         "selectTypeWarning": "各インデックスの種類を選択してください。",
