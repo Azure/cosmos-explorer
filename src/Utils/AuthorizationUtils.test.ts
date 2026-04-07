@@ -144,11 +144,22 @@ describe("AuthorizationUtils", () => {
   });
 
   describe("getMsalInstance()", () => {
+    const originalNodeEnv = process.env.NODE_ENV;
+
     afterEach(() => {
+      process.env.NODE_ENV = originalNodeEnv;
       resetConfigContext();
     });
 
-    it("should use redirect bridge URL based on origin in production", async () => {
+    it("should use dev redirect bridge URL in development mode", async () => {
+      process.env.NODE_ENV = "development";
+      const instance = await AuthorizationUtils.getMsalInstance();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      expect((instance as any)._config.auth.redirectUri).toBe("https://dataexplorer-dev.azurewebsites.net/redirectBridge.html");
+    });
+
+    it("should use origin-based redirect bridge URL in production", async () => {
+      process.env.NODE_ENV = "production";
       const instance = await AuthorizationUtils.getMsalInstance();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       expect((instance as any)._config.auth.redirectUri).toBe("http://localhost/redirectBridge.html");
