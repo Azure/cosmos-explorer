@@ -69,13 +69,11 @@ export async function getMsalInstance() {
     },
   };
 
-  if (process.env.NODE_ENV === "development") {
-    msalConfig.auth.redirectUri = "https://dataexplorer-dev.azurewebsites.net/redirectBridge.html";
-  }
-
   const msalInstance = new msal.PublicClientApplication(msalConfig);
   // v3+ requires explicit initialization before using MSAL APIs
   await msalInstance.initialize();
+  // Handle any redirect response (e.g., after logoutRedirect) to clear interaction state
+  await msalInstance.handleRedirectPromise();
   return msalInstance;
 }
 
