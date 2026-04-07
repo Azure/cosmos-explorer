@@ -7,7 +7,6 @@
  *
  * Security Note: This file must be bundled with your application, NOT loaded from a CDN.
  *
- * CG Alert: MVS-2026-vmmw-f85q
  */
 import { broadcastResponseToMainFrame } from "@azure/msal-browser/redirect-bridge";
 
