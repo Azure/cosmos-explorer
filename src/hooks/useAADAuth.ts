@@ -58,7 +58,7 @@ export function useAADAuth(config?: ConfigContext): ReturnType {
     if (!msalInstance || !config) {
       return;
     }
-    // Use redirect bridge for MSAL v5 COOP handling (CG alert MVS-2026-vmmw-f85q)
+    // Use redirect bridge for MSAL v5 COOP handling
     const redirectBridgeUrl =
       process.env.NODE_ENV === "development"
         ? "https://dataexplorer-dev.azurewebsites.net/redirectBridge.html"
@@ -99,7 +99,7 @@ export function useAADAuth(config?: ConfigContext): ReturnType {
       if (!msalInstance || !config) {
         return;
       }
-      // Use redirect bridge for MSAL v5 COOP handling (CG alert MVS-2026-vmmw-f85q)
+      // Use redirect bridge for MSAL v5 COOP handling
       const redirectBridgeUrl =
         process.env.NODE_ENV === "development"
           ? "https://dataexplorer-dev.azurewebsites.net/redirectBridge.html"

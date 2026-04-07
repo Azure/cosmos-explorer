@@ -64,7 +64,7 @@ export async function getMsalInstance() {
     auth: {
       authority: `${configContext.AAD_ENDPOINT}organizations`,
       clientId: "203f1145-856a-4232-83d4-a43568fba23d",
-      // MSAL v5 requires redirect bridge for popup/silent flows (CG alert MVS-2026-vmmw-f85q)
+      // MSAL v5 requires redirect bridge for popup/silent flows
       redirectUri: redirectBridgeUrl,
     },
   };
