@@ -86,7 +86,12 @@ export function useAADAuth(config?: ConfigContext): ReturnType {
     }
     setLoggedOut();
     localStorage.removeItem("cachedTenantId");
-    msalInstance.logoutRedirect();
+    // Redirect back to the hosted explorer after logout
+    const postLogoutRedirectUri =
+      process.env.NODE_ENV === "development"
+        ? "https://dataexplorer-dev.azurewebsites.net/hostedExplorer.html"
+        : `${window.location.origin}`;
+    msalInstance.logoutRedirect({ postLogoutRedirectUri });
   }, [msalInstance]);
 
   const switchTenant = React.useCallback(
