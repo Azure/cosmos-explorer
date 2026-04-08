@@ -50,12 +50,17 @@ export function decryptJWTToken(token: string) {
   return JSON.parse(tokenPayload);
 }
 
+export function getRedirectBridgeUrl(): string {
+  if (process.env.NODE_ENV === "development") {
+    return "https://dataexplorer-dev.azurewebsites.net/redirectBridge.html";
+  }
+  const basePath = window.location.pathname.startsWith("/mpac/") ? "/mpac" : "";
+  return `${window.location.origin}${basePath}/redirectBridge.html`;
+}
+
 export async function getMsalInstance() {
   // Compute the redirect bridge URL for MSAL v5 COOP handling
-  const redirectBridgeUrl =
-    process.env.NODE_ENV === "development"
-      ? "https://dataexplorer-dev.azurewebsites.net/redirectBridge.html"
-      : `${window.location.origin}/redirectBridge.html`;
+  const redirectBridgeUrl = getRedirectBridgeUrl();
 
   const msalConfig: msal.Configuration = {
     cache: {
