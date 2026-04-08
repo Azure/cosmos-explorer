@@ -9,7 +9,6 @@ import {
   makeStyles,
   shorthands,
 } from "@fluentui/react-components";
-import { QueryCopilotSampleContainerId, QueryCopilotSampleDatabaseId } from "Common/Constants";
 import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
 import MongoUtility from "Common/MongoUtility";
 import { createDocument } from "Common/dataAccess/createDocument";
@@ -27,7 +26,7 @@ import { EditorReact } from "Explorer/Controls/Editor/EditorReact";
 import { InputDataList, InputDatalistDropdownOptionSection } from "Explorer/Controls/InputDataList/InputDataList";
 import { ProgressModalDialog } from "Explorer/Controls/ProgressModalDialog";
 import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
-import { querySampleDocuments, readSampleDocument } from "Explorer/QueryCopilot/QueryCopilotUtilities";
+
 import {
   ColumnsSelection,
   FilterHistory,
@@ -360,10 +359,7 @@ export const getTabsButtons = ({
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: false,
-      disabled:
-        !getNewDocumentButtonState(editorState).enabled ||
-        !clientWriteEnabled ||
-        useSelectedNode.getState().isQueryCopilotCollectionSelected(),
+      disabled: !getNewDocumentButtonState(editorState).enabled || !clientWriteEnabled,
       id: NEW_DOCUMENT_BUTTON_ID,
     });
   }
@@ -378,10 +374,7 @@ export const getTabsButtons = ({
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: false,
-      disabled:
-        !getSaveNewDocumentButtonState(editorState).enabled ||
-        !clientWriteEnabled ||
-        useSelectedNode.getState().isQueryCopilotCollectionSelected(),
+      disabled: !getSaveNewDocumentButtonState(editorState).enabled || !clientWriteEnabled,
       id: SAVE_BUTTON_ID,
     });
   }
@@ -396,9 +389,7 @@ export const getTabsButtons = ({
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: false,
-      disabled:
-        !getDiscardNewDocumentChangesButtonState(editorState).enabled ||
-        useSelectedNode.getState().isQueryCopilotCollectionSelected(),
+      disabled: !getDiscardNewDocumentChangesButtonState(editorState).enabled,
       id: DISCARD_BUTTON_ID,
     });
   }
@@ -413,10 +404,7 @@ export const getTabsButtons = ({
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: false,
-      disabled:
-        !getSaveExistingDocumentButtonState(editorState).enabled ||
-        !clientWriteEnabled ||
-        useSelectedNode.getState().isQueryCopilotCollectionSelected(),
+      disabled: !getSaveExistingDocumentButtonState(editorState).enabled || !clientWriteEnabled,
       id: UPDATE_BUTTON_ID,
     });
   }
@@ -431,9 +419,7 @@ export const getTabsButtons = ({
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: false,
-      disabled:
-        !getDiscardExistingDocumentChangesButtonState(editorState).enabled ||
-        useSelectedNode.getState().isQueryCopilotCollectionSelected(),
+      disabled: !getDiscardExistingDocumentChangesButtonState(editorState).enabled,
       id: DISCARD_BUTTON_ID,
     });
   }
@@ -448,7 +434,7 @@ export const getTabsButtons = ({
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: false,
-      disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected() || !clientWriteEnabled,
+      disabled: !clientWriteEnabled,
       id: DELETE_BUTTON_ID,
     });
   }
@@ -465,8 +451,7 @@ export const getTabsButtons = ({
       hasPopup: true,
       disabled:
         useSelectedNode.getState().isDatabaseNodeOrNoneSelected() ||
-        !useClientWriteEnabled.getState().clientWriteEnabled ||
-        useSelectedNode.getState().isQueryCopilotCollectionSelected(),
+        !useClientWriteEnabled.getState().clientWriteEnabled,
     });
   }
 
@@ -641,11 +626,6 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
       leftPaneWidthPercent: 35,
     }),
   );
-
-  const isQueryCopilotSampleContainer =
-    _collection?.isSampleCollection &&
-    _collection?.databaseId === QueryCopilotSampleDatabaseId &&
-    _collection?.id() === QueryCopilotSampleContainerId;
 
   // For Mongo only
   const [continuationToken, setContinuationToken] = useState<string>(undefined);
@@ -1400,16 +1380,13 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     // Fixes compile error error TS2741: Property 'throwIfAborted' is missing in type 'AbortSignal' but required in type 'import("/home/runner/work/cosmos-explorer/cosmos-explorer/node_modules/node-abort-controller/index").AbortSignal'.
     options.abortSignal = _queryAbortController.signal;
 
-    return isQueryCopilotSampleContainer
-      ? querySampleDocuments(query, options)
-      : queryDocuments(_collection.databaseId, _collection.id(), query, options);
+    return queryDocuments(_collection.databaseId, _collection.id(), query, options);
   }, [
     filterContent,
     isPreferredApiMongoDB,
     partitionKeyProperties,
     partitionKey,
     resourceTokenPartitionKey,
-    isQueryCopilotSampleContainer,
     _collection,
     selectedColumnIds,
   ]);
@@ -1567,11 +1544,6 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     }
   };
 
-  const _isQueryCopilotSampleContainer =
-    _collection?.isSampleCollection &&
-    _collection?.databaseId === QueryCopilotSampleDatabaseId &&
-    _collection?.id() === QueryCopilotSampleContainerId;
-
   // Table config here
   const tableItems: DocumentsTableComponentItem[] = documentIds.map((documentId) => {
     const item: DocumentsTableComponentItem = documentId.tableFields || { id: documentId.id() };
@@ -1635,14 +1607,12 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   };
 
   let loadDocument = (documentId: DocumentId) =>
-    (_isQueryCopilotSampleContainer ? readSampleDocument(documentId) : readDocument(_collection, documentId)).then(
-      (content) => {
-        initDocumentEditor(documentId, content);
+    readDocument(_collection, documentId).then((content) => {
+      initDocumentEditor(documentId, content);
 
-        // Update columns
-        setColumnDefinitionsFromDocument(content);
-      },
-    );
+      // Update columns
+      setColumnDefinitionsFromDocument(content);
+    });
 
   const initDocumentEditor = (documentId: DocumentId, documentContent: unknown): void => {
     if (documentId) {

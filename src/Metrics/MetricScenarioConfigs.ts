@@ -5,16 +5,10 @@ export const scenarioConfigs: Record<MetricScenario, ScenarioConfig> = {
   [MetricScenario.ApplicationLoad]: {
     requiredPhases: [
       ApplicationMetricPhase.PlatformConfigured,
-      ApplicationMetricPhase.CopilotConfigured,
-      ApplicationMetricPhase.SampleDataLoaded,
       ApplicationMetricPhase.ExplorerInitialized,
       CommonMetricPhase.Interactive,
     ],
-    deferredPhases: [
-      ApplicationMetricPhase.CopilotConfigured,
-      ApplicationMetricPhase.SampleDataLoaded,
-      ApplicationMetricPhase.ExplorerInitialized,
-    ],
+    deferredPhases: [ApplicationMetricPhase.ExplorerInitialized],
     timeoutMs: 10000,
   },
   [MetricScenario.DatabaseLoad]: {

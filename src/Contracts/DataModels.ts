@@ -735,10 +735,6 @@ export enum PhoenixErrorType {
   UserMissingPermissionsError = "UserMissingPermissionsError",
 }
 
-export interface CopilotEnabledConfiguration {
-  isEnabled: boolean;
-}
-
 export interface FeatureRegistration {
   name: string;
   properties: {
