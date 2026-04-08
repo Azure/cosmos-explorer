@@ -1,12 +1,14 @@
 import { AuthType } from "../AuthType";
 import * as Constants from "../Common/Constants";
-import { resetConfigContext, updateConfigContext } from "../ConfigContext";
+import { resetConfigContext } from "../ConfigContext";
 import { ApiType, updateUserContext, userContext } from "../UserContext";
 import * as AuthorizationUtils from "./AuthorizationUtils";
 jest.mock("../Explorer/Explorer");
 jest.mock("@azure/msal-browser", () => ({
   PublicClientApplication: jest.fn().mockImplementation((config) => ({
     _config: config,
+    initialize: jest.fn().mockResolvedValue(undefined),
+    handleRedirectPromise: jest.fn().mockResolvedValue(null),
   })),
 }));
 
@@ -138,41 +140,27 @@ describe("AuthorizationUtils", () => {
   });
 
   describe("getMsalInstance()", () => {
-    const originalHostname = window.location.hostname;
+    const originalNodeEnv = process.env.NODE_ENV;
 
     afterEach(() => {
+      process.env.NODE_ENV = originalNodeEnv;
       resetConfigContext();
-      Object.defineProperty(window, "location", {
-        value: { ...window.location, hostname: originalHostname },
-        writable: true,
-      });
     });
 
-    it("should use configContext.msalRedirectURI when set", async () => {
-      updateConfigContext({ msalRedirectURI: "https://dataexplorer-preview.azurewebsites.net/" });
+    it("should use dev redirect bridge URL in development mode", async () => {
+      process.env.NODE_ENV = "development";
       const instance = await AuthorizationUtils.getMsalInstance();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      expect((instance as any)._config.auth.redirectUri).toBe("https://dataexplorer-preview.azurewebsites.net/");
+      expect((instance as any)._config.auth.redirectUri).toBe(
+        "https://dataexplorer-dev.azurewebsites.net/redirectBridge.html",
+      );
     });
 
-    it("should use dev redirect URI on localhost", async () => {
-      Object.defineProperty(window, "location", {
-        value: { ...window.location, hostname: "localhost" },
-        writable: true,
-      });
+    it("should use origin-based redirect bridge URL in production", async () => {
+      process.env.NODE_ENV = "production";
       const instance = await AuthorizationUtils.getMsalInstance();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      expect((instance as any)._config.auth.redirectUri).toBe("https://dataexplorer-dev.azurewebsites.net");
-    });
-
-    it("should not set redirect URI in non-localhost production", async () => {
-      Object.defineProperty(window, "location", {
-        value: { ...window.location, hostname: "cosmos.azure.com" },
-        writable: true,
-      });
-      const instance = await AuthorizationUtils.getMsalInstance();
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      expect((instance as any)._config.auth.redirectUri).toBeUndefined();
+      expect((instance as any)._config.auth.redirectUri).toBe("http://localhost/redirectBridge.html");
     });
   });
 });

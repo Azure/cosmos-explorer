@@ -1,7 +1,4 @@
-import {
-  AuthError as msalAuthError,
-  BrowserAuthErrorMessage as msalBrowserAuthErrorMessage,
-} from "@azure/msal-browser";
+import { AuthError as msalAuthError, BrowserAuthErrorCodes as msalBrowserAuthErrorCodes } from "@azure/msal-browser";
 import {
   Checkbox,
   ChoiceGroup,
@@ -305,7 +302,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
         } catch (authError) {
           if (
             authError instanceof msalAuthError &&
-            authError.errorCode === msalBrowserAuthErrorMessage.popUpWindowError.code
+            authError.errorCode === msalBrowserAuthErrorCodes.popupWindowError
           ) {
             logConsoleError(t(Keys.panes.settings.popupsDisabledError));
           } else {

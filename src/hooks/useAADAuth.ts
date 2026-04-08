@@ -58,10 +58,15 @@ export function useAADAuth(config?: ConfigContext): ReturnType {
     if (!msalInstance || !config) {
       return;
     }
+    // Use redirect bridge for MSAL v5 COOP handling
+    const redirectBridgeUrl =
+      process.env.NODE_ENV === "development"
+        ? "https://dataexplorer-dev.azurewebsites.net/redirectBridge.html"
+        : `${window.location.origin}/redirectBridge.html`;
 
     try {
       const response = await msalInstance.loginPopup({
-        redirectUri: config.msalRedirectURI,
+        redirectUri: redirectBridgeUrl,
         scopes: [],
       });
       setLoggedIn();
@@ -81,7 +86,12 @@ export function useAADAuth(config?: ConfigContext): ReturnType {
     }
     setLoggedOut();
     localStorage.removeItem("cachedTenantId");
-    msalInstance.logoutRedirect();
+    // Redirect back to the hosted explorer after logout
+    const postLogoutRedirectUri =
+      process.env.NODE_ENV === "development"
+        ? "https://dataexplorer-dev.azurewebsites.net/hostedExplorer.html"
+        : `${window.location.origin}`;
+    msalInstance.logoutRedirect({ postLogoutRedirectUri });
   }, [msalInstance]);
 
   const switchTenant = React.useCallback(
@@ -89,9 +99,14 @@ export function useAADAuth(config?: ConfigContext): ReturnType {
       if (!msalInstance || !config) {
         return;
       }
+      // Use redirect bridge for MSAL v5 COOP handling
+      const redirectBridgeUrl =
+        process.env.NODE_ENV === "development"
+          ? "https://dataexplorer-dev.azurewebsites.net/redirectBridge.html"
+          : `${window.location.origin}/redirectBridge.html`;
       try {
         const response = await msalInstance.loginPopup({
-          redirectUri: config.msalRedirectURI,
+          redirectUri: redirectBridgeUrl,
           authority: `${config.AAD_ENDPOINT}${id}`,
           scopes: [],
         });
@@ -120,7 +135,7 @@ export function useAADAuth(config?: ConfigContext): ReturnType {
       setArmToken(armToken);
       setAuthFailure(null);
     } catch (error) {
-      if (error instanceof msal.AuthError && error.errorCode === msal.BrowserAuthErrorMessage.popUpWindowError.code) {
+      if (error instanceof msal.AuthError && error.errorCode === msal.BrowserAuthErrorCodes.popupWindowError) {
         // This error can occur when acquireTokenWithMsal() has attempted to acquire token interactively
         // and user has popups disabled in browser. This fails as the popup is not the result of a explicit user
         // action. In this case, we display the failure and a link to repeat the operation. Clicking on the
