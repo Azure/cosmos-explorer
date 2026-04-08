@@ -765,7 +765,7 @@
         "containerPolicies": "Criteri contenitore",
         "throughputBuckets": "Bucket di velocità effettiva",
         "globalSecondaryIndexPreview": "Indice secondario globale (anteprima)",
-        "maskingPolicyPreview": "Masking Policy"
+        "maskingPolicyPreview": "Criteri di maschera"
       },
       "mongoNotifications": {
         "selectTypeWarning": "Selezionare un tipo per ogni indice.",

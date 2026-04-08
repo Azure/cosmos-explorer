@@ -765,7 +765,7 @@
         "containerPolicies": "Zásady kontejneru",
         "throughputBuckets": "Kbelíky propustnosti",
         "globalSecondaryIndexPreview": "Globální sekundární index (Preview)",
-        "maskingPolicyPreview": "Masking Policy"
+        "maskingPolicyPreview": "Zásady maskování"
       },
       "mongoNotifications": {
         "selectTypeWarning": "Vyberte prosím typ pro každý index.",

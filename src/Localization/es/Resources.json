@@ -765,7 +765,7 @@
         "containerPolicies": "Directivas de contenedor",
         "throughputBuckets": "Depósitos de rendimiento",
         "globalSecondaryIndexPreview": "Índice secundario global (versión preliminar)",
-        "maskingPolicyPreview": "Masking Policy"
+        "maskingPolicyPreview": "Directiva de enmascaramiento"
       },
       "mongoNotifications": {
         "selectTypeWarning": "Seleccione un tipo para cada índice.",

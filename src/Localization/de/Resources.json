@@ -765,7 +765,7 @@
         "containerPolicies": "Containerrichtlinien",
         "throughputBuckets": "Durchsatzbuckets",
         "globalSecondaryIndexPreview": "Globaler sekundärer Index (Vorschau)",
-        "maskingPolicyPreview": "Masking Policy"
+        "maskingPolicyPreview": "Maskierungsrichtlinie"
       },
       "mongoNotifications": {
         "selectTypeWarning": "Bitte wählen Sie für jeden Index einen Typ aus.",
