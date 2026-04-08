@@ -8,6 +8,7 @@ import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
 export enum AppStateComponentNames {
   DocumentsTab = "DocumentsTab",
   MostRecentActivity = "MostRecentActivity",
+  QueryCopilot = "QueryCopilot",
   DataExplorerAction = "DataExplorerAction",
   SelectedRegionalEndpoint = "SelectedRegionalEndpoint",
 }

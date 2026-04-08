@@ -10,11 +10,16 @@ import { ArrowSortDown20Regular, ArrowSortUp20Regular, Home16Regular, Search20Re
 import { AuthType } from "AuthType";
 import { useTreeStyles } from "Explorer/Controls/TreeComponent/Styles";
 import { TreeNode, TreeNodeComponent } from "Explorer/Controls/TreeComponent/TreeNodeComponent";
-import { createDatabaseTreeNodes, createResourceTokenTreeNodes } from "Explorer/Tree/treeNodeUtil";
+import {
+  createDatabaseTreeNodes,
+  createResourceTokenTreeNodes,
+  createSampleDataTreeNodes,
+} from "Explorer/Tree/treeNodeUtil";
 import { useDatabases } from "Explorer/useDatabases";
 import { useSelectedNode } from "Explorer/useSelectedNode";
 import { isFabricMirrored } from "Platform/Fabric/FabricUtil";
 import { userContext } from "UserContext";
+import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
 import * as React from "react";
 import { useEffect, useMemo } from "react";
@@ -62,6 +67,10 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ explorer }: Resource
   const sortOrder = useDatabases((state) => state.sortOrder);
   const setSortOrder = useDatabases((state) => state.setSortOrder);
   const pinnedDatabaseIds = useDatabases((state) => state.pinnedDatabaseIds);
+  const { isCopilotEnabled, isCopilotSampleDBEnabled } = useQueryCopilot((state) => ({
+    isCopilotEnabled: state.copilotEnabled,
+    isCopilotSampleDBEnabled: state.copilotSampleDBEnabled,
+  }));
 
   const databaseTreeNodes = useMemo(() => {
     return userContext.authType === AuthType.ResourceToken
@@ -85,6 +94,18 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ explorer }: Resource
     pinnedDatabaseIds,
   ]);
 
+  const isSampleDataEnabled =
+    isCopilotEnabled &&
+    isCopilotSampleDBEnabled &&
+    userContext.sampleDataConnectionInfo &&
+    userContext.apiType === "SQL";
+
+  const sampleDataNodes = useMemo<TreeNode[]>(() => {
+    return isSampleDataEnabled && sampleDataResourceTokenCollection
+      ? createSampleDataTreeNodes(sampleDataResourceTokenCollection)
+      : [];
+  }, [isSampleDataEnabled, sampleDataResourceTokenCollection]);
+
   const headerNodes: TreeNode[] = isFabricMirrored()
     ? []
     : [
@@ -103,10 +124,27 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ explorer }: Resource
       ];
 
   const rootNodes: TreeNode[] = useMemo(() => {
-    return [...headerNodes, ...databaseTreeNodes];
+    if (sampleDataNodes.length > 0) {
+      return [
+        ...headerNodes,
+        {
+          id: "data",
+          label: MY_DATA_TREE_LABEL,
+          children: databaseTreeNodes,
+          isScrollable: true,
+        },
+        {
+          id: "sampleData",
+          label: SAMPLE_DATA_TREE_LABEL,
+          children: sampleDataNodes,
+        },
+      ];
+    } else {
+      return [...headerNodes, ...databaseTreeNodes];
+    }
     // headerNodes is intentionally excluded — it depends only on isFabricMirrored() which is stable.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [databaseTreeNodes]);
+  }, [databaseTreeNodes, sampleDataNodes]);
 
   // Track complete DatabaseLoad scenario (start, tree rendered, interactive)
   useDatabaseLoadScenario(databaseTreeNodes, databasesFetchedSuccessfully);

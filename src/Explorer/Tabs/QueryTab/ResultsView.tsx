@@ -42,6 +42,7 @@ import { logConsoleProgress } from "Utils/NotificationConsoleUtils";
 import create from "zustand";
 import { client } from "../../../Common/CosmosClient";
 import { handleError } from "../../../Common/ErrorHandlingUtils";
+import { sampleDataClient } from "../../../Common/SampleDataClient";
 import { ResultsViewProps } from "./QueryResultSection";
 import { useIndexAdvisorStyles } from "./StylesAdvisor";
 enum ResultsTabs {
@@ -582,7 +583,8 @@ export const IndexAdvisorTab: React.FC<{
         query: queryEditorContent,
       };
 
-      const cosmosClient = client();
+      // Use sampleDataClient for CopilotSampleDB, regular client for other databases
+      const cosmosClient = databaseId === "CopilotSampleDB" ? sampleDataClient() : client();
 
       const sdkResponse = await cosmosClient
         .database(databaseId)

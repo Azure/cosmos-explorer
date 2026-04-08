@@ -1,0 +1,64 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Header snapshot test should close on button click 1`] = `
+<Stack
+  horizontal={true}
+  style={
+    {
+      "display": "flex",
+      "justifyContent": "space-between",
+      "margin": "15px 0px 0px 0px",
+      "padding": "5px",
+    }
+  }
+  verticalAlign="center"
+>
+  <Stack
+    horizontal={true}
+    verticalAlign="center"
+  >
+    <Image
+      src={{}}
+    />
+    <Text
+      style={
+        {
+          "fontWeight": "bold",
+          "marginLeft": "5px",
+        }
+      }
+    >
+      Copilot
+    </Text>
+    <Text
+      style={
+        {
+          "background": "#f0f0f0",
+          "borderRadius": "8px",
+          "fontSize": "10px",
+          "marginLeft": "5px",
+          "padding": "2px 4px",
+        }
+      }
+    >
+      Preview
+    </Text>
+  </Stack>
+  <CustomizedIconButton
+    ariaLabel="Exit"
+    iconProps={
+      {
+        "iconName": "Cancel",
+      }
+    }
+    onClick={[Function]}
+    style={
+      {
+        "color": "#424242",
+        "verticalAlign": "middle",
+      }
+    }
+    title="Exit"
+  />
+</Stack>
+`;
