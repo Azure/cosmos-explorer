@@ -61,7 +61,9 @@ export async function getMsalInstance() {
     },
   };
 
-  if (process.env.NODE_ENV === "development") {
+  if (configContext.msalRedirectURI) {
+    msalConfig.auth.redirectUri = configContext.msalRedirectURI;
+  } else if (process.env.NODE_ENV === "development" || window.location.hostname === "localhost") {
     msalConfig.auth.redirectUri = "https://dataexplorer-dev.azurewebsites.net";
   }
 
