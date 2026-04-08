@@ -1,5 +1,5 @@
 import { Spinner, SpinnerSize, Stack, Text } from "@fluentui/react";
-
+import { PoolIdType } from "Common/Constants";
 import { NotebookWorkspaceConnectionInfo } from "Contracts/DataModels";
 import { MessageTypes } from "Contracts/ExplorerContracts";
 import { NotebookTerminalComponent } from "Explorer/Controls/Notebook/NotebookTerminalComponent";
@@ -35,7 +35,7 @@ export const QuickstartTab: React.FC<QuickstartTabProps> = ({ explorer }: Quicks
   });
 
   useEffect(() => {
-    explorer.allocateContainer();
+    explorer.allocateContainer(PoolIdType.DefaultPoolId);
   }, []);
 
   return (

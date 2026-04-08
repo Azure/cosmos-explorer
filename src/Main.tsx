@@ -25,6 +25,7 @@ import "../externals/jquery.typeahead.min.css";
 import "../externals/jquery.typeahead.min.js";
 // Image Dependencies
 import { SidePanel } from "Explorer/Panes/PanelContainerComponent";
+import { QueryCopilotCarousel } from "Explorer/QueryCopilot/CopilotCarousel";
 import { SidebarContainer } from "Explorer/Sidebar";
 import { KeyboardShortcutRoot } from "KeyboardShortcuts";
 import "allotment/dist/style.css";
@@ -172,6 +173,7 @@ const App = (): JSX.Element => {
 
 const DivExplorer: React.FC<{ explorer: Explorer }> = ({ explorer }) => {
   const isCarouselOpen = useCarousel((state) => state.shouldOpen);
+  const isCopilotCarouselOpen = useCarousel((state) => state.showCopilotCarousel);
 
   return (
     <div
@@ -218,6 +220,7 @@ const DivExplorer: React.FC<{ explorer: Explorer }> = ({ explorer }) => {
       {<QuickstartCarousel isOpen={isCarouselOpen} />}
       {<SQLQuickstartTutorial />}
       {<MongoQuickstartTutorial />}
+      {<QueryCopilotCarousel isOpen={isCopilotCarouselOpen} explorer={explorer} />}
     </div>
   );
 };

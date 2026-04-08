@@ -3,6 +3,7 @@ import { useDialog } from "Explorer/Controls/Dialog";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { userContext } from "UserContext";
 import { allowedJunoOrigins, validateEndpoint } from "Utils/EndpointUtils";
+import { useQueryCopilot } from "hooks/useQueryCopilot";
 import promiseRetry, { AbortError, Options } from "p-retry";
 import {
   Areas,
@@ -148,7 +149,9 @@ export class PhoenixClient {
             dataExplorerArea: Areas.Notebook,
             message: getErrorMessage(error),
           });
-          shouldUseNotebookStates ? useNotebook.getState().resetContainerConnection(connectionStatus) : undefined;
+          shouldUseNotebookStates
+            ? useNotebook.getState().resetContainerConnection(connectionStatus)
+            : useQueryCopilot.getState().resetContainerConnection();
           shouldUseNotebookStates && useNotebook.getState().setIsRefreshed(!useNotebook.getState().isRefreshed);
           shouldUseNotebookStates &&
             useDialog
@@ -176,7 +179,9 @@ export class PhoenixClient {
       const connectionStatus: ContainerConnectionInfo = {
         status: ConnectionStatusType.Failed,
       };
-      shouldUseNotebookStates ? useNotebook.getState().resetContainerConnection(connectionStatus) : undefined;
+      shouldUseNotebookStates
+        ? useNotebook.getState().resetContainerConnection(connectionStatus)
+        : useQueryCopilot.getState().resetContainerConnection();
       shouldUseNotebookStates && useNotebook.getState().setIsRefreshed(!useNotebook.getState().isRefreshed);
       return {
         durationLeftInMinutes: undefined,
@@ -188,9 +193,13 @@ export class PhoenixClient {
 
   private async getContainerHealth(shouldUseNotebookStates: boolean, delayMs: number, containerData: IContainerData) {
     const containerInfo = await this.getContainerStatusAsync(shouldUseNotebookStates, containerData);
-    shouldUseNotebookStates ? useNotebook.getState().setContainerStatus(containerInfo) : undefined;
+    shouldUseNotebookStates
+      ? useNotebook.getState().setContainerStatus(containerInfo)
+      : useQueryCopilot.getState().setContainerStatus(containerInfo);
 
-    const containerStatus = shouldUseNotebookStates ? useNotebook.getState().containerStatus?.status : undefined;
+    const containerStatus = shouldUseNotebookStates
+      ? useNotebook.getState().containerStatus?.status
+      : useQueryCopilot.getState().containerStatus?.status;
     if (containerStatus === ContainerStatusType.Active) {
       this.scheduleContainerHeartbeat(shouldUseNotebookStates, delayMs, containerData);
     }

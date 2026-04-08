@@ -42,18 +42,19 @@ export function useInteractive(scenario: MetricScenario, enabled = true) {
 /**
  * Hook to manage DatabaseLoad scenario phase completions.
  * Tracks tree rendering and completes Interactive phase.
- * Only attempts to complete DatabaseTreeRendered if the database fetch was successful.
+ * Only completes DatabaseTreeRendered if the database fetch was successful.
  * Note: Scenario must be started before databases are fetched (in refreshExplorer).
  *
- * No one-shot guard is needed — completePhase is idempotent (ScenarioMonitor returns
- * early if the phase hasn't been started yet, is already completed, or is already
- * emitted). This lets the effect safely re-fire on every databaseTreeNodes change
- * until the phase has actually been started via startPhase() in Explorer.tsx.
+ * Calls scenarioMonitor directly (not via React context) for the same stability reason
+ * as useInteractive — avoids effect re-runs from unstable context function references.
  */
 export function useDatabaseLoadScenario(databaseTreeNodes: unknown[], fetchSucceeded: boolean) {
+  const hasCompletedTreeRenderRef = React.useRef(false);
+
   // Track DatabaseTreeRendered phase (only if fetch succeeded)
   React.useEffect(() => {
-    if (fetchSucceeded) {
+    if (!hasCompletedTreeRenderRef.current && fetchSucceeded) {
+      hasCompletedTreeRenderRef.current = true;
       scenarioMonitor.completePhase(MetricScenario.DatabaseLoad, ApplicationMetricPhase.DatabaseTreeRendered);
     }
   }, [databaseTreeNodes, fetchSucceeded]);
