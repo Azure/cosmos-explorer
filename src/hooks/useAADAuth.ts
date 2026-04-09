@@ -2,7 +2,12 @@ import * as msal from "@azure/msal-browser";
 import { useBoolean } from "@fluentui/react-hooks";
 import * as React from "react";
 import { ConfigContext } from "../ConfigContext";
-import { acquireTokenWithMsal, getMsalInstance, getRedirectBridgeUrl } from "../Utils/AuthorizationUtils";
+import {
+  acquireTokenWithMsal,
+  getMsalInstance,
+  getPostLogoutRedirectUrl,
+  getRedirectBridgeUrl,
+} from "../Utils/AuthorizationUtils";
 
 const cachedTenantId = localStorage.getItem("cachedTenantId");
 
@@ -84,13 +89,7 @@ export function useAADAuth(config?: ConfigContext): ReturnType {
     setLoggedOut();
     localStorage.removeItem("cachedTenantId");
     // Redirect back to the hosted explorer after logout
-    let postLogoutRedirectUri: string;
-    if (process.env.NODE_ENV === "development") {
-      postLogoutRedirectUri = "https://dataexplorer-dev.azurewebsites.net/hostedExplorer.html";
-    } else {
-      const basePath = window.location.pathname.startsWith("/mpac/") ? "/mpac" : "";
-      postLogoutRedirectUri = `${window.location.origin}${basePath}`;
-    }
+    const postLogoutRedirectUri = getPostLogoutRedirectUrl();
     msalInstance.logoutRedirect({ postLogoutRedirectUri });
   }, [msalInstance]);
 

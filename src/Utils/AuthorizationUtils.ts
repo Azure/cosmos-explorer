@@ -58,6 +58,14 @@ export function getRedirectBridgeUrl(): string {
   return `${window.location.origin}${basePath}/redirectBridge.html`;
 }
 
+export function getPostLogoutRedirectUrl(): string {
+  if (process.env.NODE_ENV === "development") {
+    return "https://dataexplorer-dev.azurewebsites.net/hostedExplorer.html";
+  }
+  const basePath = window.location.pathname.startsWith("/mpac/") ? "/mpac" : "";
+  return `${window.location.origin}${basePath}`;
+}
+
 export async function getMsalInstance() {
   // Compute the redirect bridge URL for MSAL v5 COOP handling
   const redirectBridgeUrl = getRedirectBridgeUrl();
