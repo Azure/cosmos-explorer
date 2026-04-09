@@ -17,7 +17,6 @@ export enum StorageKey {
   MaxWaitTimeInSeconds,
   AutomaticallyCancelQueryAfterTimeout,
   ContainerPaginationEnabled,
-  CopilotSampleDBEnabled,
   CustomItemPerPage,
   DatabaseAccountId,
   EncryptedKeyToken,

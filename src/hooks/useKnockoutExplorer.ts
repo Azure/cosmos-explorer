@@ -1,6 +1,5 @@
 import * as Constants from "Common/Constants";
 import { getEnvironmentScopeEndpoint } from "Common/EnvironmentUtility";
-import { createUri } from "Common/UrlUtility";
 import { DATA_EXPLORER_RPC_VERSION } from "Contracts/DataExplorerMessagesContract";
 import { FabricMessageTypes } from "Contracts/FabricMessageTypes";
 import {
@@ -28,7 +27,6 @@ import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { isDataplaneRbacSupported } from "Utils/APITypeUtils";
 import { logConsoleError } from "Utils/NotificationConsoleUtils";
 import { useClientWriteEnabled } from "hooks/useClientWriteEnabled";
-import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
 import { useEffect, useState } from "react";
 import { AuthType } from "../AuthType";
@@ -66,7 +64,6 @@ import { FabricArtifactInfo, Node, PortalEnv, updateUserContext, userContext } f
 import {
   acquireMsalTokenForAccount,
   acquireTokenWithMsal,
-  getAuthorizationHeader,
   getMsalInstance,
   isDataplaneRbacEnabledForProxyApi,
 } from "../Utils/AuthorizationUtils";
@@ -108,15 +105,6 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
           throw error;
         }
         scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.PlatformConfigured);
-
-        if (explorer && userContext.features.enableCopilot) {
-          await updateContextForCopilot(explorer);
-          await updateContextForSampleData(explorer);
-        } else {
-          // Explorer falsy or copilot disabled — skip deferred copilot/sampleData phases
-          scenarioMonitor.skipPhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.CopilotConfigured);
-          scenarioMonitor.skipPhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.SampleDataLoaded);
-        }
 
         restoreOpenTabs();
 
@@ -352,6 +340,10 @@ async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
   const accountResourceId = account.id;
   const subscriptionId = accountResourceId && accountResourceId.split("subscriptions/")[1].split("/")[0];
   const resourceGroup = accountResourceId && accountResourceId.split("resourceGroups/")[1].split("/")[0];
+
+  // Start the ARM GET call early — it runs in parallel with the MSAL token acquisition below
+  const databaseAccountPromise = get(subscriptionId, account.resourceGroup, account.name);
+
   let aadToken;
   if (account.properties?.documentEndpoint) {
     let hrefEndpoint = "";
@@ -375,12 +367,8 @@ async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
     }
   }
   try {
-    // TO DO - Remove once we have ARG API support for enableMaterializedViews property
-    const databaseAccount: Types.DatabaseAccountGetResults = await get(
-      subscriptionId,
-      account.resourceGroup,
-      account.name,
-    );
+    // Await the ARM GET that was started in parallel with MSAL token acquisition
+    const databaseAccount: Types.DatabaseAccountGetResults = await databaseAccountPromise;
     config.databaseAccount.properties.enableMaterializedViews = databaseAccount.properties?.enableMaterializedViews;
 
     updateUserContext({
@@ -1046,66 +1034,6 @@ interface PortalMessage {
   actionType?: ActionType;
   type?: MessageTypes;
   inputs?: DataExplorerInputsFrame;
-}
-
-async function updateContextForCopilot(explorer: Explorer): Promise<void> {
-  scenarioMonitor.startPhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.CopilotConfigured);
-  const startKey = traceStart(Action.UpdateCopilotContext, {
-    dataExplorerArea: "ResourceTree",
-  });
-  try {
-    await explorer.configureCopilot();
-    traceSuccess(Action.UpdateCopilotContext, {}, startKey);
-  } catch (error) {
-    traceFailure(Action.UpdateCopilotContext, { error: error?.message }, startKey);
-  } finally {
-    scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.CopilotConfigured);
-  }
-}
-
-async function updateContextForSampleData(explorer: Explorer): Promise<void> {
-  scenarioMonitor.startPhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.SampleDataLoaded);
-  const copilotEnabled =
-    userContext.apiType === "SQL" && userContext.features.enableCopilot && useQueryCopilot.getState().copilotEnabled;
-
-  if (!copilotEnabled) {
-    scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.SampleDataLoaded);
-    return;
-  }
-
-  const startKey = traceStart(Action.UpdateSampleDataContext, {
-    dataExplorerArea: "ResourceTree",
-  });
-  try {
-    const url: string = createUri(configContext.PORTAL_BACKEND_ENDPOINT, "/api/sampledata");
-    const authorizationHeader = getAuthorizationHeader();
-    const headers = { [authorizationHeader.header]: authorizationHeader.token };
-
-    const response = await window.fetch(url, {
-      headers,
-    });
-
-    if (!response.ok) {
-      traceSuccess(Action.UpdateSampleDataContext, { sampleDataAvailable: false }, startKey);
-      scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.SampleDataLoaded);
-      return undefined;
-    }
-
-    const data: SampledataconnectionResponse = await response.json();
-    const sampleDataConnectionInfo = parseResourceTokenConnectionString(data.connectionString);
-    updateUserContext({ sampleDataConnectionInfo });
-
-    explorer.refreshSampleData();
-    traceSuccess(Action.UpdateSampleDataContext, { sampleDataAvailable: true }, startKey);
-  } catch (error) {
-    traceFailure(Action.UpdateSampleDataContext, { error: error?.message }, startKey);
-  } finally {
-    scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.SampleDataLoaded);
-  }
-}
-
-interface SampledataconnectionResponse {
-  connectionString: string;
 }
 
 const restoreOpenTabs = () => {

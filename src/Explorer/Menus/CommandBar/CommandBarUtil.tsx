@@ -7,12 +7,11 @@ import {
   IDropdownStyles,
   TooltipHost,
 } from "@fluentui/react";
-import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { KeyboardHandlerMap } from "KeyboardShortcuts";
 import * as React from "react";
 import _ from "underscore";
 import ChevronDownIcon from "../../../../images/Chevron_down.svg";
-import { PoolIdType } from "../../../Common/Constants";
+
 import { StyleConstants } from "../../../Common/StyleConstants";
 import { configContext, Platform } from "../../../ConfigContext";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
@@ -64,11 +63,7 @@ export const convertButton = (btns: CommandButtonComponentProps[], backgroundCol
         onClick: btn.onCommandClick
           ? (ev?: React.MouseEvent<HTMLElement, MouseEvent> | React.KeyboardEvent<HTMLElement>) => {
               btn.onCommandClick(ev);
-              let copilotEnabled = false;
-              if (useQueryCopilot.getState().copilotEnabled && useQueryCopilot.getState().copilotUserDBEnabled) {
-                copilotEnabled = useQueryCopilot.getState().copilotEnabledforExecution;
-              }
-              TelemetryProcessor.trace(Action.ClickCommandBarButton, ActionModifiers.Mark, { label, copilotEnabled });
+              TelemetryProcessor.trace(Action.ClickCommandBarButton, ActionModifiers.Mark, { label });
             }
           : undefined,
         key: `${btn.commandButtonLabel}${index}`,
@@ -270,10 +265,10 @@ export const createMemoryTracker = (key: string): ICommandBarItemProps => {
   };
 };
 
-export const createConnectionStatus = (container: Explorer, poolId: PoolIdType, key: string): ICommandBarItemProps => {
+export const createConnectionStatus = (container: Explorer, key: string): ICommandBarItemProps => {
   return {
     key,
-    onRender: () => <ConnectionStatus container={container} poolId={poolId} />,
+    onRender: () => <ConnectionStatus container={container} />,
   };
 };
 
