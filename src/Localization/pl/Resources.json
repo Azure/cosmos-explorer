@@ -765,7 +765,7 @@
         "containerPolicies": "Zasady kontenera",
         "throughputBuckets": "Zasobniki przepływności",
         "globalSecondaryIndexPreview": "Globalny indeks pomocniczy (wersja zapoznawcza)",
-        "maskingPolicyPreview": "Masking Policy"
+        "maskingPolicyPreview": "Zasady maskowania"
       },
       "mongoNotifications": {
         "selectTypeWarning": "Wybierz typ dla każdego indeksu.",

@@ -765,7 +765,7 @@
         "containerPolicies": "Tárolószabályzatok",
         "throughputBuckets": "Átviteli sebesség gyűjtői",
         "globalSecondaryIndexPreview": "Globális másodlagos index (előzetes verzió)",
-        "maskingPolicyPreview": "Masking Policy"
+        "maskingPolicyPreview": "Maszkolási szabályzat"
       },
       "mongoNotifications": {
         "selectTypeWarning": "Válasszon típust az egyes indexekhez.",

@@ -765,7 +765,7 @@
         "containerPolicies": "Containerprinciper",
         "throughputBuckets": "Dataflödesbuckets",
         "globalSecondaryIndexPreview": "Globalt sekundärt index (förhandsversion)",
-        "maskingPolicyPreview": "Masking Policy"
+        "maskingPolicyPreview": "Maskeringsprincip"
       },
       "mongoNotifications": {
         "selectTypeWarning": "Välj en typ för varje index.",
