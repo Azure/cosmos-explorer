@@ -163,4 +163,42 @@ describe("AuthorizationUtils", () => {
       expect((instance as any)._config.auth.redirectUri).toBe("http://localhost/redirectBridge.html");
     });
   });
+
+  describe("getRedirectBridgeUrl()", () => {
+    const originalNodeEnv = process.env.NODE_ENV;
+    const originalPathname = window.location.pathname;
+
+    afterEach(() => {
+      process.env.NODE_ENV = originalNodeEnv;
+      Object.defineProperty(window, "location", {
+        value: { ...window.location, pathname: originalPathname },
+        writable: true,
+      });
+    });
+
+    it("should use dev URL in development mode", () => {
+      process.env.NODE_ENV = "development";
+      expect(AuthorizationUtils.getRedirectBridgeUrl()).toBe(
+        "https://dataexplorer-dev.azurewebsites.net/redirectBridge.html",
+      );
+    });
+
+    it("should use MPAC path when on /mpac/", () => {
+      process.env.NODE_ENV = "production";
+      Object.defineProperty(window, "location", {
+        value: { origin: "https://cosmos.azure.com", pathname: "/mpac/explorer.html" },
+        writable: true,
+      });
+      expect(AuthorizationUtils.getRedirectBridgeUrl()).toBe("https://cosmos.azure.com/mpac/redirectBridge.html");
+    });
+
+    it("should use root path when not on /mpac/", () => {
+      process.env.NODE_ENV = "production";
+      Object.defineProperty(window, "location", {
+        value: { origin: "https://cosmos.azure.com", pathname: "/explorer.html" },
+        writable: true,
+      });
+      expect(AuthorizationUtils.getRedirectBridgeUrl()).toBe("https://cosmos.azure.com/redirectBridge.html");
+    });
+  });
 });
