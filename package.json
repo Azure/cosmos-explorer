@@ -124,7 +124,8 @@
     "d3-color": "3.1.0",
     "cross-spawn": "7.0.6",
     "less-vars-loader": {
-      "json5": "1.0.2"
+      "json5": "1.0.2",
+      "loader-utils": "1.4.2"
     },
     "trim": "0.0.3",
     "@octokit/plugin-paginate-rest": "9.2.2",
