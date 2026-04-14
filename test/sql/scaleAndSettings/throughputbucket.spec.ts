@@ -6,8 +6,11 @@ test.describe("Throughput bucket settings", () => {
   let context: TestContainerContext = null!;
   let explorer: DataExplorer = null!;
 
-  test.beforeEach("Create Test Database & Open Throughput Bucket Settings", async ({ browser }) => {
+  test.beforeAll("Create Test Database", async () => {
     context = await createTestSQLContainer();
+  });
+
+  test.beforeEach("Open Throughput Bucket Settings", async ({ browser }) => {
     const page = await browser.newPage();
     explorer = await DataExplorer.open(page, TestAccount.SQL);
 
@@ -19,7 +22,7 @@ test.describe("Throughput bucket settings", () => {
 
   // Delete database only if not running in CI
   if (!process.env.CI) {
-    test.afterEach("Delete Test Database", async () => {
+    test.afterAll("Delete Test Database", async () => {
       await context?.dispose();
     });
   }
