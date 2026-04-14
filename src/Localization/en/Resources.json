@@ -961,7 +961,14 @@
         "bucketLabel": "Bucket {{id}}",
         "dataExplorerQueryBucket": " (Data Explorer Query Bucket)",
         "active": "Active",
-        "inactive": "Inactive"
+        "inactive": "Inactive",
+        "defaultBucketLabel": "Default Throughput Bucket",
+        "defaultBucketPlaceholder": "Select a default throughput bucket",
+        "defaultBucketTooltip": "The default throughput bucket is used for operations that do not specify a particular bucket.",
+        "defaultBucketTooltipLearnMore": "Learn more.",
+        "noDefaultBucketSelected": "No Default Throughput Bucket Selected",
+        "bucketOptionLabel": "Bucket {{id}} - {{percentage}}%",
+        "bucketNotActive": "Bucket {{id}} is not active."
       }
     }
   }

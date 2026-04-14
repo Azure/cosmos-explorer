@@ -20,7 +20,7 @@ test.describe("Container Copy - Permission Screen Verification", () => {
   });
 
   test.afterEach("Cleanup after each test", async () => {
-    await page.unroute(/.*/, (route) => route.continue());
+    await page.unrouteAll({ behavior: "ignoreErrors" });
     await page.close();
   });
 
