@@ -8,7 +8,7 @@
     "@azure/cosmos": "4.7.0",
     "@azure/cosmos-language-service": "0.0.5",
     "@azure/identity": "4.5.0",
-    "@azure/msal-browser": "^5.2.0",
+    "@azure/msal-browser": "^5.4.0",
     "@babel/plugin-proposal-class-properties": "7.12.1",
     "@babel/plugin-proposal-decorators": "7.12.12",
     "@fluentui/react": "8.119.0",
@@ -132,7 +132,8 @@
     "@octokit/request-error": "5.1.1",
     "@octokit/request": "8.4.1",
     "prismjs": "1.30.0",
-    "sanitize-html": "2.17.0"
+    "sanitize-html": "2.17.0",
+    "@types/react-redux": "7.1.7"
   },
   "devDependencies": {
     "@babel/core": "7.29.0",
