@@ -201,17 +201,6 @@ export const ThroughputBucketsComponent: FC<ThroughputBucketsComponentProps> = (
               }}
               data-test={`bucket-${bucket.id}-active-toggle`}
             ></Toggle>
-            {/* <Toggle 
-              onText="Default"
-              offText="Not Default"
-              checked={bucket.isDefaultBucket || false}
-              onChange={(_, checked) => onDefaultBucketToggle(bucket.id, checked)}
-              disabled={bucket.maxThroughputPercentage === 100}
-              styles={{
-                root: { marginBottom: 0 },
-                text: { fontSize: 12, color: "var(--colorNeutralForeground1)" },
-              }}
-            /> */}
           </Stack>
         ))}
       </Stack>
