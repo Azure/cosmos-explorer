@@ -961,7 +961,14 @@
         "bucketLabel": "Kbelík {{id}}",
         "dataExplorerQueryBucket": " (Kbelík dotazů Data Exploreru)",
         "active": "Aktivní",
-        "inactive": "Neaktivní"
+        "inactive": "Neaktivní",
+        "defaultBucketLabel": "Default Throughput Bucket",
+        "defaultBucketPlaceholder": "Select a default throughput bucket",
+        "defaultBucketTooltip": "The default throughput bucket is used for operations that do not specify a particular bucket.",
+        "defaultBucketTooltipLearnMore": "Learn more.",
+        "noDefaultBucketSelected": "No Default Throughput Bucket Selected",
+        "bucketOptionLabel": "Bucket {{id}} - {{percentage}}%",
+        "bucketNotActive": "Bucket {{id}} is not active."
       }
     }
   }

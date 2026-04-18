@@ -961,7 +961,14 @@
         "bucketLabel": "貯體 {{id}}",
         "dataExplorerQueryBucket": " (資料總管查詢貯體)",
         "active": "使用中",
-        "inactive": "非使用中"
+        "inactive": "非使用中",
+        "defaultBucketLabel": "Default Throughput Bucket",
+        "defaultBucketPlaceholder": "Select a default throughput bucket",
+        "defaultBucketTooltip": "The default throughput bucket is used for operations that do not specify a particular bucket.",
+        "defaultBucketTooltipLearnMore": "Learn more.",
+        "noDefaultBucketSelected": "No Default Throughput Bucket Selected",
+        "bucketOptionLabel": "Bucket {{id}} - {{percentage}}%",
+        "bucketNotActive": "Bucket {{id}} is not active."
       }
     }
   }
