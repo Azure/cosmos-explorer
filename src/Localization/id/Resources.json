@@ -962,13 +962,13 @@
         "dataExplorerQueryBucket": " (Wadah Kueri Data Explorer)",
         "active": "Aktif",
         "inactive": "Tidak aktif",
-        "defaultBucketLabel": "Default Throughput Bucket",
-        "defaultBucketPlaceholder": "Select a default throughput bucket",
-        "defaultBucketTooltip": "The default throughput bucket is used for operations that do not specify a particular bucket.",
-        "defaultBucketTooltipLearnMore": "Learn more.",
-        "noDefaultBucketSelected": "No Default Throughput Bucket Selected",
-        "bucketOptionLabel": "Bucket {{id}} - {{percentage}}%",
-        "bucketNotActive": "Bucket {{id}} is not active."
+        "defaultBucketLabel": "Wadah Throughput Default",
+        "defaultBucketPlaceholder": "Pilih wadah throughput default",
+        "defaultBucketTooltip": "Wadah throughput default digunakan untuk operasi yang tidak menentukan wadah tertentu.",
+        "defaultBucketTooltipLearnMore": "Pelajari selengkapnya.",
+        "noDefaultBucketSelected": "Tidak Ada Wadah Throughput Default yang Dipilih",
+        "bucketOptionLabel": "Wadah {{id}} - {{percentage}}%",
+        "bucketNotActive": "Wadah {{id}} tidak aktif."
       }
     }
   }

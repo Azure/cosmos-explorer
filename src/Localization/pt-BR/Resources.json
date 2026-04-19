@@ -962,13 +962,13 @@
         "dataExplorerQueryBucket": " (Bucket de Consulta do Data Explorer)",
         "active": "Ativo",
         "inactive": "Inativo",
-        "defaultBucketLabel": "Default Throughput Bucket",
-        "defaultBucketPlaceholder": "Select a default throughput bucket",
-        "defaultBucketTooltip": "The default throughput bucket is used for operations that do not specify a particular bucket.",
-        "defaultBucketTooltipLearnMore": "Learn more.",
-        "noDefaultBucketSelected": "No Default Throughput Bucket Selected",
+        "defaultBucketLabel": "Bucket de Taxa de Transferência Padrão",
+        "defaultBucketPlaceholder": "Selecionar um bucket de taxa de transferência padrão",
+        "defaultBucketTooltip": "O bucket de taxa de transferência padrão é usado para operações que não especificam um bucket específico.",
+        "defaultBucketTooltipLearnMore": "Saiba mais.",
+        "noDefaultBucketSelected": "Nenhum Bucket de Taxa de Transferência Padrão Selecionado",
         "bucketOptionLabel": "Bucket {{id}} - {{percentage}}%",
-        "bucketNotActive": "Bucket {{id}} is not active."
+        "bucketNotActive": "O bucket {{id}} não está ativo."
       }
     }
   }

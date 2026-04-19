@@ -962,13 +962,13 @@
         "dataExplorerQueryBucket": " (Compartiment de requêtes de Data Explorer)",
         "active": "Actif",
         "inactive": "Inactif",
-        "defaultBucketLabel": "Default Throughput Bucket",
-        "defaultBucketPlaceholder": "Select a default throughput bucket",
-        "defaultBucketTooltip": "The default throughput bucket is used for operations that do not specify a particular bucket.",
-        "defaultBucketTooltipLearnMore": "Learn more.",
-        "noDefaultBucketSelected": "No Default Throughput Bucket Selected",
-        "bucketOptionLabel": "Bucket {{id}} - {{percentage}}%",
-        "bucketNotActive": "Bucket {{id}} is not active."
+        "defaultBucketLabel": "Compartiment de débit par défaut",
+        "defaultBucketPlaceholder": "Sélectionnez un compartiment de débit par défaut",
+        "defaultBucketTooltip": "Le compartiment de débit par défaut est utilisé pour des opérations qui ne spécifient pas de compartiment particulier.",
+        "defaultBucketTooltipLearnMore": "Découvrez plus d’informations.",
+        "noDefaultBucketSelected": "Aucun compartiment de débit par défaut n’est sélectionné",
+        "bucketOptionLabel": "Compartiment {{id}} – {{percentage}} %",
+        "bucketNotActive": "Le compartiment {{id}} n’est pas actif."
       }
     }
   }

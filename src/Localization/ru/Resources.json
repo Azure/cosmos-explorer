@@ -962,13 +962,13 @@
         "dataExplorerQueryBucket": " (Область запросов Data Explorer)",
         "active": "Активно",
         "inactive": "Неактивно",
-        "defaultBucketLabel": "Default Throughput Bucket",
-        "defaultBucketPlaceholder": "Select a default throughput bucket",
-        "defaultBucketTooltip": "The default throughput bucket is used for operations that do not specify a particular bucket.",
-        "defaultBucketTooltipLearnMore": "Learn more.",
-        "noDefaultBucketSelected": "No Default Throughput Bucket Selected",
-        "bucketOptionLabel": "Bucket {{id}} - {{percentage}}%",
-        "bucketNotActive": "Bucket {{id}} is not active."
+        "defaultBucketLabel": "Контейнер пропускной способности по умолчанию",
+        "defaultBucketPlaceholder": "Выберите контейнер пропускной способности по умолчанию",
+        "defaultBucketTooltip": "Контейнер пропускной способности по умолчанию используется для операций, в которых не указан конкретный контейнер.",
+        "defaultBucketTooltipLearnMore": "Подробнее.",
+        "noDefaultBucketSelected": "Контейнер пропускной способности по умолчанию не выбран",
+        "bucketOptionLabel": "Контейнер {{id}} — {{percentage}}%",
+        "bucketNotActive": "Контейнер {{id}} неактивен."
       }
     }
   }

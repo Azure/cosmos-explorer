@@ -962,13 +962,13 @@
         "dataExplorerQueryBucket": " (データ エクスプローラー クエリ バケット)",
         "active": "アクティブ",
         "inactive": "非アクティブ",
-        "defaultBucketLabel": "Default Throughput Bucket",
-        "defaultBucketPlaceholder": "Select a default throughput bucket",
-        "defaultBucketTooltip": "The default throughput bucket is used for operations that do not specify a particular bucket.",
-        "defaultBucketTooltipLearnMore": "Learn more.",
-        "noDefaultBucketSelected": "No Default Throughput Bucket Selected",
-        "bucketOptionLabel": "Bucket {{id}} - {{percentage}}%",
-        "bucketNotActive": "Bucket {{id}} is not active."
+        "defaultBucketLabel": "既定のスループット バケット",
+        "defaultBucketPlaceholder": "既定のスループット バケットを選択する",
+        "defaultBucketTooltip": "既定のスループット バケットは、特定のバケットを指定しない操作に使用されます。",
+        "defaultBucketTooltipLearnMore": "詳細をご確認ください。",
+        "noDefaultBucketSelected": "既定のスループット バケットが選択されていません",
+        "bucketOptionLabel": "バケット {{id}} - {{percentage}}%",
+        "bucketNotActive": "バケット {{id}} がアクティブではありません。"
       }
     }
   }

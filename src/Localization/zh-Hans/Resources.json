@@ -962,13 +962,13 @@
         "dataExplorerQueryBucket": " (数据资源管理器查询存储桶)",
         "active": "活动",
         "inactive": "非活动",
-        "defaultBucketLabel": "Default Throughput Bucket",
-        "defaultBucketPlaceholder": "Select a default throughput bucket",
-        "defaultBucketTooltip": "The default throughput bucket is used for operations that do not specify a particular bucket.",
-        "defaultBucketTooltipLearnMore": "Learn more.",
-        "noDefaultBucketSelected": "No Default Throughput Bucket Selected",
-        "bucketOptionLabel": "Bucket {{id}} - {{percentage}}%",
-        "bucketNotActive": "Bucket {{id}} is not active."
+        "defaultBucketLabel": "默认吞吐量存储桶",
+        "defaultBucketPlaceholder": "选择默认吞吐量存储桶",
+        "defaultBucketTooltip": "默认吞吐量存储桶用于未指定特定存储桶的操作。",
+        "defaultBucketTooltipLearnMore": "了解详细信息。",
+        "noDefaultBucketSelected": "未选择默认吞吐量存储桶",
+        "bucketOptionLabel": "存储桶 {{id}} - {{percentage}}%",
+        "bucketNotActive": "存储桶 {{id}} 未处于活动状态。"
       }
     }
   }

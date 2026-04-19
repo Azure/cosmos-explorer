@@ -962,13 +962,13 @@
         "dataExplorerQueryBucket": " (Kbelík dotazů Data Exploreru)",
         "active": "Aktivní",
         "inactive": "Neaktivní",
-        "defaultBucketLabel": "Default Throughput Bucket",
-        "defaultBucketPlaceholder": "Select a default throughput bucket",
-        "defaultBucketTooltip": "The default throughput bucket is used for operations that do not specify a particular bucket.",
-        "defaultBucketTooltipLearnMore": "Learn more.",
-        "noDefaultBucketSelected": "No Default Throughput Bucket Selected",
-        "bucketOptionLabel": "Bucket {{id}} - {{percentage}}%",
-        "bucketNotActive": "Bucket {{id}} is not active."
+        "defaultBucketLabel": "Výchozí kontejner propustnosti",
+        "defaultBucketPlaceholder": "Vyberte výchozí kontejner propustnosti",
+        "defaultBucketTooltip": "Výchozí kontejner propustnosti se používá pro operace, které neurčují konkrétní kontejner.",
+        "defaultBucketTooltipLearnMore": "Získejte další informace.",
+        "noDefaultBucketSelected": "Není vybrán žádný výchozí kontejner propustnosti.",
+        "bucketOptionLabel": "Kontejner {{id}} – {{percentage}} %",
+        "bucketNotActive": "Kontejner {{id}} není aktivní."
       }
     }
   }

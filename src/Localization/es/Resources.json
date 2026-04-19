@@ -962,13 +962,13 @@
         "dataExplorerQueryBucket": " (Depósito de consultas de Data Explorer)",
         "active": "Activo",
         "inactive": "Inactivo",
-        "defaultBucketLabel": "Default Throughput Bucket",
-        "defaultBucketPlaceholder": "Select a default throughput bucket",
-        "defaultBucketTooltip": "The default throughput bucket is used for operations that do not specify a particular bucket.",
-        "defaultBucketTooltipLearnMore": "Learn more.",
-        "noDefaultBucketSelected": "No Default Throughput Bucket Selected",
-        "bucketOptionLabel": "Bucket {{id}} - {{percentage}}%",
-        "bucketNotActive": "Bucket {{id}} is not active."
+        "defaultBucketLabel": "Depósito de rendimiento predeterminado",
+        "defaultBucketPlaceholder": "Selección de un depósito de rendimiento predeterminado",
+        "defaultBucketTooltip": "El cubo de rendimiento predeterminado se usa para las operaciones que no especifican un cubo determinado.",
+        "defaultBucketTooltipLearnMore": "Más información.",
+        "noDefaultBucketSelected": "No se ha seleccionado ningún depósito de rendimiento predeterminado",
+        "bucketOptionLabel": "Cubo {{id}} - {{percentage}}%",
+        "bucketNotActive": "El cubo {{id}} no está activo."
       }
     }
   }

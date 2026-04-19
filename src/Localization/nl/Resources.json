@@ -962,13 +962,13 @@
         "dataExplorerQueryBucket": " (Data Explorer-querybucket)",
         "active": "Actief",
         "inactive": "Inactief",
-        "defaultBucketLabel": "Default Throughput Bucket",
-        "defaultBucketPlaceholder": "Select a default throughput bucket",
-        "defaultBucketTooltip": "The default throughput bucket is used for operations that do not specify a particular bucket.",
-        "defaultBucketTooltipLearnMore": "Learn more.",
-        "noDefaultBucketSelected": "No Default Throughput Bucket Selected",
+        "defaultBucketLabel": "Standaard doorvoerbucket",
+        "defaultBucketPlaceholder": "Een standaard doorvoerbucket selecteren",
+        "defaultBucketTooltip": "De standaard doorvoerbucket wordt gebruikt voor bewerkingen die geen bucket specificeren.",
+        "defaultBucketTooltipLearnMore": "Meer informatie.",
+        "noDefaultBucketSelected": "Er is geen standaard doorvoerbucket geselecteerd",
         "bucketOptionLabel": "Bucket {{id}} - {{percentage}}%",
-        "bucketNotActive": "Bucket {{id}} is not active."
+        "bucketNotActive": "Bucket {{id}} is niet actief."
       }
     }
   }

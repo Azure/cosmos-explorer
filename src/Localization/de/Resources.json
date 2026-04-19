@@ -962,13 +962,13 @@
         "dataExplorerQueryBucket": " (Daten-Explorer-Abfragebucket)",
         "active": "Aktiv",
         "inactive": "Inaktiv",
-        "defaultBucketLabel": "Default Throughput Bucket",
-        "defaultBucketPlaceholder": "Select a default throughput bucket",
-        "defaultBucketTooltip": "The default throughput bucket is used for operations that do not specify a particular bucket.",
-        "defaultBucketTooltipLearnMore": "Learn more.",
-        "noDefaultBucketSelected": "No Default Throughput Bucket Selected",
-        "bucketOptionLabel": "Bucket {{id}} - {{percentage}}%",
-        "bucketNotActive": "Bucket {{id}} is not active."
+        "defaultBucketLabel": "Standard-Durchsatzbucket",
+        "defaultBucketPlaceholder": "Standard-Durchsatzbucket auswählen",
+        "defaultBucketTooltip": "Der Standard-Durchsatzbucket wird für Vorgänge verwendet, die keinen bestimmten Bucket angeben.",
+        "defaultBucketTooltipLearnMore": "Weitere Informationen.",
+        "noDefaultBucketSelected": "Kein Standard-Durchsatzbucket ausgewählt",
+        "bucketOptionLabel": "Bucket {{id}} – {{percentage}} %",
+        "bucketNotActive": "Bucket {{id}} ist nicht aktiv."
       }
     }
   }

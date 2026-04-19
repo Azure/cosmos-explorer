@@ -962,13 +962,13 @@
         "dataExplorerQueryBucket": " (資料總管查詢貯體)",
         "active": "使用中",
         "inactive": "非使用中",
-        "defaultBucketLabel": "Default Throughput Bucket",
-        "defaultBucketPlaceholder": "Select a default throughput bucket",
-        "defaultBucketTooltip": "The default throughput bucket is used for operations that do not specify a particular bucket.",
-        "defaultBucketTooltipLearnMore": "Learn more.",
-        "noDefaultBucketSelected": "No Default Throughput Bucket Selected",
-        "bucketOptionLabel": "Bucket {{id}} - {{percentage}}%",
-        "bucketNotActive": "Bucket {{id}} is not active."
+        "defaultBucketLabel": "預設輸送量貯體",
+        "defaultBucketPlaceholder": "選取預設輸送量貯體",
+        "defaultBucketTooltip": "預設輸送量貯體用於未指定特定貯體的作業。",
+        "defaultBucketTooltipLearnMore": "深入了解。",
+        "noDefaultBucketSelected": "未選取預設輸送量貯體",
+        "bucketOptionLabel": "貯體 {{id}} - {{percentage}}%",
+        "bucketNotActive": "貯體 {{id}} 不在作用中。"
       }
     }
   }
