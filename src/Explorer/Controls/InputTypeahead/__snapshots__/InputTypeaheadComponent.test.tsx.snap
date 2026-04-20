@@ -14,7 +14,6 @@ exports[`inputTypeahead renders <input /> 1`] = `
       <StyledTextFieldBase
         ariaLabel="Input query"
         className="input-type-head-text-field"
-        id="input"
         multiline={false}
         onChange={[Function]}
         onFocus={[Function]}
@@ -41,7 +40,6 @@ exports[`inputTypeahead renders <textarea /> 1`] = `
       <StyledTextFieldBase
         ariaLabel="Input query"
         className="input-type-head-text-field"
-        id="input"
         multiline={true}
         onChange={[Function]}
         onFocus={[Function]}
