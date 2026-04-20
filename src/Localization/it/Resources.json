@@ -962,13 +962,13 @@
         "dataExplorerQueryBucket": " (Bucket di query Esplora dati)",
         "active": "Attivo",
         "inactive": "Inattivo",
-        "defaultBucketLabel": "Default Throughput Bucket",
-        "defaultBucketPlaceholder": "Select a default throughput bucket",
-        "defaultBucketTooltip": "The default throughput bucket is used for operations that do not specify a particular bucket.",
-        "defaultBucketTooltipLearnMore": "Learn more.",
-        "noDefaultBucketSelected": "No Default Throughput Bucket Selected",
-        "bucketOptionLabel": "Bucket {{id}} - {{percentage}}%",
-        "bucketNotActive": "Bucket {{id}} is not active."
+        "defaultBucketLabel": "Contenitore di velocità effettiva predefinito",
+        "defaultBucketPlaceholder": "Selezionare un contenitore di velocità effettiva predefinito",
+        "defaultBucketTooltip": "Il contenitore di velocità effettiva predefinito viene usato per le operazioni che non specificano un contenitore particolare.",
+        "defaultBucketTooltipLearnMore": "Altre informazioni.",
+        "noDefaultBucketSelected": "Nessun contenitore di velocità effettiva predefinito selezionato",
+        "bucketOptionLabel": "Contenitore {{id}} - {{percentage}}%",
+        "bucketNotActive": "Il contenitore {{id}} non è attivo."
       }
     }
   }

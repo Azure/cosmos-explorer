@@ -962,13 +962,13 @@
         "dataExplorerQueryBucket": " (Registo de Consultas do Data Explorer)",
         "active": "Ativo",
         "inactive": "Inativo",
-        "defaultBucketLabel": "Default Throughput Bucket",
-        "defaultBucketPlaceholder": "Select a default throughput bucket",
-        "defaultBucketTooltip": "The default throughput bucket is used for operations that do not specify a particular bucket.",
-        "defaultBucketTooltipLearnMore": "Learn more.",
-        "noDefaultBucketSelected": "No Default Throughput Bucket Selected",
+        "defaultBucketLabel": "Bucket de Débito Predefinido",
+        "defaultBucketPlaceholder": "Selecione um bucket de débito predefinido",
+        "defaultBucketTooltip": "O bucket de débito predefinido é utilizado para operações que não especificam um bucket em particular.",
+        "defaultBucketTooltipLearnMore": "Saiba mais.",
+        "noDefaultBucketSelected": "Nenhum bucket de débito predefinido selecionado",
         "bucketOptionLabel": "Bucket {{id}} - {{percentage}}%",
-        "bucketNotActive": "Bucket {{id}} is not active."
+        "bucketNotActive": "O bucket {{id}} não está ativo."
       }
     }
   }

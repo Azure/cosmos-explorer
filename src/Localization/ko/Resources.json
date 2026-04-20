@@ -962,13 +962,13 @@
         "dataExplorerQueryBucket": " (데이터 탐색기 쿼리 버킷)",
         "active": "활성",
         "inactive": "비활성",
-        "defaultBucketLabel": "Default Throughput Bucket",
-        "defaultBucketPlaceholder": "Select a default throughput bucket",
-        "defaultBucketTooltip": "The default throughput bucket is used for operations that do not specify a particular bucket.",
-        "defaultBucketTooltipLearnMore": "Learn more.",
-        "noDefaultBucketSelected": "No Default Throughput Bucket Selected",
-        "bucketOptionLabel": "Bucket {{id}} - {{percentage}}%",
-        "bucketNotActive": "Bucket {{id}} is not active."
+        "defaultBucketLabel": "기본 처리량 버킷",
+        "defaultBucketPlaceholder": "기본 처리량 버킷 선택",
+        "defaultBucketTooltip": "기본 처리량 버킷은 특정 버킷을 지정하지 않는 작업에 사용됩니다.",
+        "defaultBucketTooltipLearnMore": "자세히 알아보세요.",
+        "noDefaultBucketSelected": "기본 처리량 버킷이 선택되지 않음",
+        "bucketOptionLabel": "버킷 {{id}} - {{percentage}}%",
+        "bucketNotActive": "버킷 {{id}}이(가) 활성 상태가 아닙니다."
       }
     }
   }

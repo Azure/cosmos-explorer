@@ -962,13 +962,13 @@
         "dataExplorerQueryBucket": " (Datautforskaren frågebucket)",
         "active": "Aktiv",
         "inactive": "Inaktivt",
-        "defaultBucketLabel": "Default Throughput Bucket",
-        "defaultBucketPlaceholder": "Select a default throughput bucket",
-        "defaultBucketTooltip": "The default throughput bucket is used for operations that do not specify a particular bucket.",
-        "defaultBucketTooltipLearnMore": "Learn more.",
-        "noDefaultBucketSelected": "No Default Throughput Bucket Selected",
+        "defaultBucketLabel": "Standardbucket för dataflöde",
+        "defaultBucketPlaceholder": "Välj en standardbucket för dataflöde",
+        "defaultBucketTooltip": "Standardbucketen för dataflöde används för åtgärder som inte anger en viss bucket.",
+        "defaultBucketTooltipLearnMore": "Mer information.",
+        "noDefaultBucketSelected": "Ingen standardbucket för dataflöde har valts",
         "bucketOptionLabel": "Bucket {{id}} - {{percentage}}%",
-        "bucketNotActive": "Bucket {{id}} is not active."
+        "bucketNotActive": "Bucketen {{id}} är inte aktiv."
       }
     }
   }

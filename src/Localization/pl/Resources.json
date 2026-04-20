@@ -962,13 +962,13 @@
         "dataExplorerQueryBucket": " (Przedział zapytań Eksploratora danych)",
         "active": "Aktywne",
         "inactive": "Nieaktywne",
-        "defaultBucketLabel": "Default Throughput Bucket",
-        "defaultBucketPlaceholder": "Select a default throughput bucket",
-        "defaultBucketTooltip": "The default throughput bucket is used for operations that do not specify a particular bucket.",
-        "defaultBucketTooltipLearnMore": "Learn more.",
-        "noDefaultBucketSelected": "No Default Throughput Bucket Selected",
-        "bucketOptionLabel": "Bucket {{id}} - {{percentage}}%",
-        "bucketNotActive": "Bucket {{id}} is not active."
+        "defaultBucketLabel": "Domyślny przedział przepływności",
+        "defaultBucketPlaceholder": "Wybierz domyślny zasobnik przepływności",
+        "defaultBucketTooltip": "Domyślny zasobnik przepływności jest używany w przypadku operacji, które nie określają konkretnego zasobnika.",
+        "defaultBucketTooltipLearnMore": "Dowiedz się więcej.",
+        "noDefaultBucketSelected": "Nie wybrano domyślnego zasobnika przepływności",
+        "bucketOptionLabel": "Zasobnik {{id}} — {{percentage}}%",
+        "bucketNotActive": "Zasobnik {{id}} nie jest aktywny."
       }
     }
   }

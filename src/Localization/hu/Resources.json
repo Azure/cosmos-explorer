@@ -962,13 +962,13 @@
         "dataExplorerQueryBucket": " (Adatkezelő lekérdezésgyűjtő)",
         "active": "Aktív",
         "inactive": "Inaktív",
-        "defaultBucketLabel": "Default Throughput Bucket",
-        "defaultBucketPlaceholder": "Select a default throughput bucket",
-        "defaultBucketTooltip": "The default throughput bucket is used for operations that do not specify a particular bucket.",
-        "defaultBucketTooltipLearnMore": "Learn more.",
-        "noDefaultBucketSelected": "No Default Throughput Bucket Selected",
-        "bucketOptionLabel": "Bucket {{id}} - {{percentage}}%",
-        "bucketNotActive": "Bucket {{id}} is not active."
+        "defaultBucketLabel": "Alapértelmezett átvitelisebesség-sáv",
+        "defaultBucketPlaceholder": "Alapértelmezett átvitelisebesség-sáv kiválasztása",
+        "defaultBucketTooltip": "Az alapértelmezett átvitelisebesség-sáv olyan műveletekhez használatos, amelyek nem jelölnek meg konkrét sávot.",
+        "defaultBucketTooltipLearnMore": "További információ.",
+        "noDefaultBucketSelected": "Nincs kiválasztva alapértelmezett átvitelisebesség-sáv",
+        "bucketOptionLabel": "Sáv: {{id}} – {{percentage}}%",
+        "bucketNotActive": "A(z) {{id}} sáv nem aktív."
       }
     }
   }

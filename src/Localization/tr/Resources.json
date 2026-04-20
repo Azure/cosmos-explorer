@@ -962,13 +962,13 @@
         "dataExplorerQueryBucket": " (Veri Gezgini Sorgu Kümesi)",
         "active": "Etkin",
         "inactive": "Etkin değil",
-        "defaultBucketLabel": "Default Throughput Bucket",
-        "defaultBucketPlaceholder": "Select a default throughput bucket",
-        "defaultBucketTooltip": "The default throughput bucket is used for operations that do not specify a particular bucket.",
-        "defaultBucketTooltipLearnMore": "Learn more.",
-        "noDefaultBucketSelected": "No Default Throughput Bucket Selected",
-        "bucketOptionLabel": "Bucket {{id}} - {{percentage}}%",
-        "bucketNotActive": "Bucket {{id}} is not active."
+        "defaultBucketLabel": "Varsayılan Aktarım Hızı Demeti",
+        "defaultBucketPlaceholder": "Varsayılan aktarım hızı demetini seçin",
+        "defaultBucketTooltip": "Varsayılan aktarım hızı demeti, belirli bir demet belirtilmeyen işlemlerde kullanılır.",
+        "defaultBucketTooltipLearnMore": "Daha fazla bilgi edinin.",
+        "noDefaultBucketSelected": "Varsayılan Aktarım Hızı Demeti Seçilmedi",
+        "bucketOptionLabel": "{{id}} demeti - %{{percentage}}",
+        "bucketNotActive": "{{id}} demeti etkin değil."
       }
     }
   }
