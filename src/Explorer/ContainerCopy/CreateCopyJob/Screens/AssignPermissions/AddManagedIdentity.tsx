@@ -53,7 +53,7 @@ const AddManagedIdentity: React.FC<AddManagedIdentityProps> = () => {
         onCancel={() => onToggle(null, false)}
         onPrimary={handleAddSystemIdentity}
       >
-        {ContainerCopyMessages.addManagedIdentity.enablementDescription(copyJobState.target?.account?.name)}
+        {ContainerCopyMessages.addManagedIdentity.enablementDescription(copyJobState.source?.account?.name)}
       </PopoverMessage>
     </Stack>
   );

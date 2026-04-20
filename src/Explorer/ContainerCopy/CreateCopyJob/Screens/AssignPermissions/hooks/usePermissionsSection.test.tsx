@@ -5,17 +5,17 @@ import { noop } from "underscore";
 import { CapabilityNames } from "../../../../../../Common/Constants";
 import * as RbacUtils from "../../../../../../Utils/arm/RbacUtils";
 import {
-  BackupPolicyType,
-  CopyJobMigrationType,
-  DefaultIdentityType,
-  IdentityType,
+    BackupPolicyType,
+    CopyJobMigrationType,
+    DefaultIdentityType,
+    IdentityType,
 } from "../../../../Enums/CopyJobEnums";
 import { CopyJobContextState } from "../../../../Types/CopyJobTypes";
 import * as CopyJobPrerequisitesCacheModule from "../../../Utils/useCopyJobPrerequisitesCache";
 import usePermissionSections, {
-  checkTargetHasReadWriteRoleOnSource,
-  PermissionGroupConfig,
-  SECTION_IDS,
+    checkTargetHasReadWriteRoleOnSource,
+    PermissionGroupConfig,
+    SECTION_IDS,
 } from "./usePermissionsSection";
 
 jest.mock("../../../../../../Utils/arm/RbacUtils");
@@ -284,22 +284,25 @@ describe("usePermissionsSection", () => {
   describe("Section validation", () => {
     it("should validate addManagedIdentity section correctly", async () => {
       const stateWithSystemAssigned = createMockState({
-        target: {
+        source: {
           account: {
-            id: "target-account-id",
-            name: "target-account",
+            id: "source-account-id",
+            name: "source-account",
             identity: {
               type: IdentityType.SystemAssigned,
               principalId: "principal-123",
             },
             properties: {
-              defaultIdentity: DefaultIdentityType.FirstPartyIdentity,
+              backupPolicy: {
+                type: BackupPolicyType.Periodic,
+              },
+              capabilities: [],
             },
             location: "",
             type: "",
             kind: "",
           },
-          subscription: undefined,
+          subscriptionId: "",
           databaseId: "",
           containerId: "",
         },
@@ -322,22 +325,26 @@ describe("usePermissionsSection", () => {
 
     it("should validate defaultManagedIdentity section correctly", async () => {
       const stateWithSystemAssignedIdentity = createMockState({
-        target: {
+        source: {
           account: {
-            id: "target-account-id",
-            name: "target-account",
+            id: "source-account-id",
+            name: "source-account",
             identity: {
               type: IdentityType.SystemAssigned,
               principalId: "principal-123",
             },
             properties: {
               defaultIdentity: DefaultIdentityType.SystemAssignedIdentity,
+              backupPolicy: {
+                type: BackupPolicyType.Periodic,
+              },
+              capabilities: [],
             },
             location: "",
             type: "",
             kind: "",
           },
-          subscription: undefined,
+          subscriptionId: "",
           databaseId: "",
           containerId: "",
         },
@@ -384,22 +391,26 @@ describe("usePermissionsSection", () => {
       mockedRbacUtils.fetchRoleDefinitions.mockResolvedValue(mockRoleDefinitions);
 
       const state = createMockState({
-        target: {
+        source: {
           account: {
-            id: "target-account-id",
-            name: "target-account",
+            id: "source-account-id",
+            name: "source-account",
             identity: {
               type: IdentityType.SystemAssigned,
               principalId: "principal-123",
             },
             properties: {
               defaultIdentity: DefaultIdentityType.SystemAssignedIdentity,
+              backupPolicy: {
+                type: BackupPolicyType.Periodic,
+              },
+              capabilities: [],
             },
             location: "",
             type: "",
             kind: "",
           },
-          subscription: undefined,
+          subscriptionId: "",
           databaseId: "",
           containerId: "",
         },

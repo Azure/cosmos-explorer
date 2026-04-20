@@ -50,10 +50,10 @@ const PERMISSION_SECTIONS_CONFIG: PermissionSectionConfig[] = [
     Component: AddManagedIdentity,
     disabled: true,
     validate: (state: CopyJobContextState) => {
-      const targetAccountIdentityType = (state?.target?.account?.identity?.type ?? "").toLowerCase();
+      const sourceAccountIdentityType = (state?.source?.account?.identity?.type ?? "").toLowerCase();
       return (
-        targetAccountIdentityType === IdentityType.SystemAssigned ||
-        targetAccountIdentityType === IdentityType.UserAssigned
+        sourceAccountIdentityType === IdentityType.SystemAssigned ||
+        sourceAccountIdentityType === IdentityType.UserAssigned
       );
     },
   },
@@ -63,8 +63,8 @@ const PERMISSION_SECTIONS_CONFIG: PermissionSectionConfig[] = [
     Component: DefaultManagedIdentity,
     disabled: true,
     validate: (state: CopyJobContextState) => {
-      const targetAccountDefaultIdentity = (state?.target?.account?.properties?.defaultIdentity ?? "").toLowerCase();
-      return targetAccountDefaultIdentity === DefaultIdentityType.SystemAssignedIdentity;
+      const sourceAccountDefaultIdentity = (state?.source?.account?.properties?.defaultIdentity ?? "").toLowerCase();
+      return sourceAccountDefaultIdentity === DefaultIdentityType.SystemAssignedIdentity;
     },
   },
   {
@@ -73,18 +73,18 @@ const PERMISSION_SECTIONS_CONFIG: PermissionSectionConfig[] = [
     Component: AddReadWritePermissionToDefaultIdentity,
     disabled: true,
     validate: async (state: CopyJobContextState) => {
-      const principalId = state?.target?.account?.identity?.principalId;
-      const selectedSourceAccount = state?.source?.account;
+      const principalId = state?.source?.account?.identity?.principalId;
+      const selectedTargetAccount = state?.target?.account;
       const {
-        subscriptionId: sourceSubscriptionId,
-        resourceGroup: sourceResourceGroup,
-        accountName: sourceAccountName,
-      } = getAccountDetailsFromResourceId(selectedSourceAccount?.id);
+        subscriptionId: targetSubscriptionId,
+        resourceGroup: targetResourceGroup,
+        accountName: targetAccountName,
+      } = getAccountDetailsFromResourceId(selectedTargetAccount?.id);
 
       const rolesAssigned = await fetchRoleAssignments(
-        sourceSubscriptionId,
-        sourceResourceGroup,
-        sourceAccountName,
+        targetSubscriptionId,
+        targetResourceGroup,
+        targetAccountName,
         principalId,
       );
 

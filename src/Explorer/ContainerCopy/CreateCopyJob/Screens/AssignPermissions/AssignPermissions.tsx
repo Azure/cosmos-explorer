@@ -106,7 +106,7 @@ const AssignPermissions = () => {
       tokens={{ childrenGap: 20 }}
     >
       <Text variant="medium" style={{ color: "var(--colorNeutralForeground1)" }}>
-        {isSameAccount && copyJobState.migrationType === CopyJobMigrationType.Online
+        {isSameAccount && copyJobState?.migrationType === CopyJobMigrationType.Online
           ? ContainerCopyMessages.assignPermissions.intraAccountOnlineDescription(
               copyJobState?.source?.account?.name || "",
             )

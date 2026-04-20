@@ -69,6 +69,12 @@ const mockUseToggle = useToggle as jest.MockedFunction<typeof useToggle>;
 describe("DefaultManagedIdentity", () => {
   const mockCopyJobContextValue = {
     copyJobState: {
+      source: {
+        account: {
+          name: "test-cosmos-account",
+          id: "/subscriptions/test-sub/resourceGroups/test-rg/providers/Microsoft.DocumentDB/databaseAccounts/test-cosmos-account",
+        },
+      },
       target: {
         account: {
           name: "test-cosmos-account",
@@ -260,6 +266,12 @@ describe("DefaultManagedIdentity", () => {
       const contextValueWithoutAccount = {
         ...mockCopyJobContextValue,
         copyJobState: {
+          source: {
+            account: {
+              name: "",
+              id: "/subscriptions/test-sub/resourceGroups/test-rg/providers/Microsoft.DocumentDB/databaseAccounts/",
+            },
+          },
           target: {
             account: {
               name: "",
@@ -277,6 +289,9 @@ describe("DefaultManagedIdentity", () => {
       const contextValueWithNullAccount = {
         ...mockCopyJobContextValue,
         copyJobState: {
+          source: {
+            account: null as DatabaseAccount | null,
+          },
           target: {
             account: null as DatabaseAccount | null,
           },

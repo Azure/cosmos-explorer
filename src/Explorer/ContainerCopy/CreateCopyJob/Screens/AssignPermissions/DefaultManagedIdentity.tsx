@@ -32,7 +32,7 @@ const DefaultManagedIdentity: React.FC<AddManagedIdentityProps> = () => {
   return (
     <Stack className="defaultManagedIdentityContainer" tokens={{ childrenGap: 15, padding: "0 0 0 20px" }}>
       <div className="toggle-label">
-        {ContainerCopyMessages.defaultManagedIdentity.description(copyJobState?.target?.account?.name)} &nbsp;
+        {ContainerCopyMessages.defaultManagedIdentity.description(copyJobState?.source?.account?.name)} &nbsp;
         <InfoTooltip content={managedIdentityTooltip} />
       </div>
       <Toggle
@@ -54,7 +54,7 @@ const DefaultManagedIdentity: React.FC<AddManagedIdentityProps> = () => {
         onCancel={() => onToggle(null, false)}
         onPrimary={handleAddSystemIdentity}
       >
-        {ContainerCopyMessages.defaultManagedIdentity.popoverDescription(copyJobState?.target?.account?.name)}
+        {ContainerCopyMessages.defaultManagedIdentity.popoverDescription(copyJobState?.source?.account?.name)}
       </PopoverMessage>
     </Stack>
   );
