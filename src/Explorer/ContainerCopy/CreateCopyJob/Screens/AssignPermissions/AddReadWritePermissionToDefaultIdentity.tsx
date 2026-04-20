@@ -33,21 +33,21 @@ const AddReadWritePermissionToDefaultIdentity: React.FC<AddReadWritePermissionTo
 
   const handleAddReadWritePermission = async () => {
     const { source, target } = copyJobState;
-    const selectedSourceAccount = source?.account;
+    const selectedTargetAccount = target?.account;
 
     try {
       const {
-        subscriptionId: sourceSubscriptionId,
-        resourceGroup: sourceResourceGroup,
-        accountName: sourceAccountName,
-      } = getAccountDetailsFromResourceId(selectedSourceAccount?.id);
+        subscriptionId: targetSubscriptionId,
+        resourceGroup: targetResourceGroup,
+        accountName: targetAccountName,
+      } = getAccountDetailsFromResourceId(selectedTargetAccount?.id);
 
       setLoading(true);
       const assignedRole = await assignRole(
-        sourceSubscriptionId,
-        sourceResourceGroup,
-        sourceAccountName,
-        target?.account?.identity?.principalId ?? "",
+        targetSubscriptionId,
+        targetResourceGroup,
+        targetAccountName,
+        source?.account?.identity?.principalId ?? "",
       );
 
       if (assignedRole) {

@@ -198,7 +198,7 @@ describe("AddManagedIdentity", () => {
 
     it("displays correct enablement description with account name", () => {
       const expectedDescription = ContainerCopyMessages.addManagedIdentity.enablementDescription(
-        mockCopyJobState.target.account.name,
+        mockCopyJobState.source.account.name,
       );
       expect(screen.getByText(expectedDescription)).toBeInTheDocument();
     });

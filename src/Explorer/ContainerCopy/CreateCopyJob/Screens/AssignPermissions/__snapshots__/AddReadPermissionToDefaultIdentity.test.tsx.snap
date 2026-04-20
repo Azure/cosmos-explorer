@@ -8,7 +8,7 @@ exports[`AddReadWritePermissionToDefaultIdentity Component Edge Cases should han
     <span
       class="toggle-label css-110"
     >
-      To allow data copy from source to the destination container, provide read-write access on the source account to the default identity of the destination account.
+      To allow data copy from source to the destination container, provide read-write access on the destination account to the default identity of the source account.
        
       <div
         data-testid="info-tooltip"
@@ -71,7 +71,7 @@ exports[`AddReadWritePermissionToDefaultIdentity Component Edge Cases should han
     <span
       class="toggle-label css-110"
     >
-      To allow data copy from source to the destination container, provide read-write access on the source account to the default identity of the destination account.
+      To allow data copy from source to the destination container, provide read-write access on the destination account to the default identity of the source account.
        
       <div
         data-testid="info-tooltip"
@@ -134,7 +134,7 @@ exports[`AddReadWritePermissionToDefaultIdentity Component Rendering should rend
     <span
       class="toggle-label css-110"
     >
-      To allow data copy from source to the destination container, provide read-write access on the source account to the default identity of the destination account.
+      To allow data copy from source to the destination container, provide read-write access on the destination account to the default identity of the source account.
        
       <div
         data-testid="info-tooltip"
@@ -197,7 +197,7 @@ exports[`AddReadWritePermissionToDefaultIdentity Component Rendering should rend
     <span
       class="toggle-label css-110"
     >
-      To allow data copy from source to the destination container, provide read-write access on the source account to the default identity of the destination account.
+      To allow data copy from source to the destination container, provide read-write access on the destination account to the default identity of the source account.
        
       <div
         data-testid="info-tooltip"
@@ -260,7 +260,7 @@ exports[`AddReadWritePermissionToDefaultIdentity Component Rendering should rend
       <div
         data-testid="popover-content"
       >
-        Assign read-write permissions on the source account to the default identity of the destination account. To confirm, click the "Yes" button.
+        Assign read-write permissions on the destination account to the default identity of the source account. To confirm, click the "Yes" button.
       </div>
       <button
         data-testid="popover-cancel"
@@ -285,7 +285,7 @@ exports[`AddReadWritePermissionToDefaultIdentity Component Rendering should rend
     <span
       class="toggle-label css-110"
     >
-      To allow data copy from source to the destination container, provide read-write access on the source account to the default identity of the destination account.
+      To allow data copy from source to the destination container, provide read-write access on the destination account to the default identity of the source account.
        
       <div
         data-testid="info-tooltip"
@@ -348,7 +348,7 @@ exports[`AddReadWritePermissionToDefaultIdentity Component Rendering should rend
     <span
       class="toggle-label css-110"
     >
-      To allow data copy from source to the destination container, provide read-write access on the source account to the default identity of the destination account.
+      To allow data copy from source to the destination container, provide read-write access on the destination account to the default identity of the source account.
        
       <div
         data-testid="info-tooltip"

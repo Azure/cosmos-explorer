@@ -96,6 +96,10 @@ describe("AddReadWritePermissionToDefaultIdentity Component", () => {
           properties: {
             documentEndpoint: "https://source-account.documents.azure.com:443/",
           },
+          identity: {
+            principalId: "source-principal-id",
+            type: "SystemAssigned",
+          },
         },
         databaseId: "source-db",
         containerId: "source-container",
@@ -245,9 +249,9 @@ describe("AddReadWritePermissionToDefaultIdentity Component", () => {
 
     it("should call handleAddReadWritePermission when primary button is clicked", async () => {
       mockGetAccountDetailsFromResourceId.mockReturnValue({
-        subscriptionId: "source-sub-id",
-        resourceGroup: "source-rg",
-        accountName: "source-account",
+        subscriptionId: "target-sub-id",
+        resourceGroup: "target-rg",
+        accountName: "target-account",
       });
       mockAssignRole.mockResolvedValue({ id: "role-assignment-id" } as RoleAssignmentType);
 
@@ -258,7 +262,7 @@ describe("AddReadWritePermissionToDefaultIdentity Component", () => {
 
       await waitFor(() => {
         expect(mockGetAccountDetailsFromResourceId).toHaveBeenCalledWith(
-          "/subscriptions/source-sub-id/resourceGroups/source-rg/providers/Microsoft.DocumentDB/databaseAccounts/source-account",
+          "/subscriptions/target-sub-id/resourceGroups/target-rg/providers/Microsoft.DocumentDB/databaseAccounts/target-account",
         );
       });
     });
@@ -271,9 +275,9 @@ describe("AddReadWritePermissionToDefaultIdentity Component", () => {
 
     it("should successfully assign role and update context", async () => {
       mockGetAccountDetailsFromResourceId.mockReturnValue({
-        subscriptionId: "source-sub-id",
-        resourceGroup: "source-rg",
-        accountName: "source-account",
+        subscriptionId: "target-sub-id",
+        resourceGroup: "target-rg",
+        accountName: "target-account",
       });
       mockAssignRole.mockResolvedValue({ id: "role-assignment-id" } as RoleAssignmentType);
 
@@ -284,10 +288,10 @@ describe("AddReadWritePermissionToDefaultIdentity Component", () => {
 
       await waitFor(() => {
         expect(mockAssignRole).toHaveBeenCalledWith(
-          "source-sub-id",
-          "source-rg",
-          "source-account",
-          "target-principal-id",
+          "target-sub-id",
+          "target-rg",
+          "target-account",
+          "source-principal-id",
         );
       });
 
@@ -298,9 +302,9 @@ describe("AddReadWritePermissionToDefaultIdentity Component", () => {
 
     it("should handle error when assignRole fails", async () => {
       mockGetAccountDetailsFromResourceId.mockReturnValue({
-        subscriptionId: "source-sub-id",
-        resourceGroup: "source-rg",
-        accountName: "source-account",
+        subscriptionId: "target-sub-id",
+        resourceGroup: "target-rg",
+        accountName: "target-account",
       });
       mockAssignRole.mockRejectedValue(new Error("Permission denied"));
 
@@ -323,9 +327,9 @@ describe("AddReadWritePermissionToDefaultIdentity Component", () => {
 
     it("should handle error without message", async () => {
       mockGetAccountDetailsFromResourceId.mockReturnValue({
-        subscriptionId: "source-sub-id",
-        resourceGroup: "source-rg",
-        accountName: "source-account",
+        subscriptionId: "target-sub-id",
+        resourceGroup: "target-rg",
+        accountName: "target-account",
       });
       mockAssignRole.mockRejectedValue({});
 
@@ -350,9 +354,9 @@ describe("AddReadWritePermissionToDefaultIdentity Component", () => {
 
     it("should show loading state during role assignment", async () => {
       mockGetAccountDetailsFromResourceId.mockReturnValue({
-        subscriptionId: "source-sub-id",
-        resourceGroup: "source-rg",
-        accountName: "source-account",
+        subscriptionId: "target-sub-id",
+        resourceGroup: "target-rg",
+        accountName: "target-account",
       });
 
       mockAssignRole.mockImplementation(
@@ -371,9 +375,9 @@ describe("AddReadWritePermissionToDefaultIdentity Component", () => {
 
     it.skip("should not assign role when assignRole returns falsy", async () => {
       mockGetAccountDetailsFromResourceId.mockReturnValue({
-        subscriptionId: "source-sub-id",
-        resourceGroup: "source-rg",
-        accountName: "source-account",
+        subscriptionId: "target-sub-id",
+        resourceGroup: "target-rg",
+        accountName: "target-account",
       });
       mockAssignRole.mockResolvedValue(null);
 
@@ -431,10 +435,10 @@ describe("AddReadWritePermissionToDefaultIdentity Component", () => {
         ...mockContextValue,
         copyJobState: {
           ...mockContextValue.copyJobState,
-          target: {
-            ...mockContextValue.copyJobState.target,
+          source: {
+            ...mockContextValue.copyJobState.source,
             account: {
-              ...mockContextValue.copyJobState.target.account!,
+              ...mockContextValue.copyJobState.source.account!,
               identity: {
                 principalId: "",
                 type: "SystemAssigned",
@@ -446,9 +450,9 @@ describe("AddReadWritePermissionToDefaultIdentity Component", () => {
 
       mockUseToggle.mockReturnValue([true, jest.fn()]);
       mockGetAccountDetailsFromResourceId.mockReturnValue({
-        subscriptionId: "source-sub-id",
-        resourceGroup: "source-rg",
-        accountName: "source-account",
+        subscriptionId: "target-sub-id",
+        resourceGroup: "target-rg",
+        accountName: "target-account",
       });
       mockAssignRole.mockResolvedValue({ id: "role-assignment-id" } as RoleAssignmentType);
 
@@ -458,7 +462,7 @@ describe("AddReadWritePermissionToDefaultIdentity Component", () => {
       fireEvent.click(primaryButton);
 
       await waitFor(() => {
-        expect(mockAssignRole).toHaveBeenCalledWith("source-sub-id", "source-rg", "source-account", "");
+        expect(mockAssignRole).toHaveBeenCalledWith("target-sub-id", "target-rg", "target-account", "");
       });
     });
   });
@@ -476,9 +480,9 @@ describe("AddReadWritePermissionToDefaultIdentity Component", () => {
 
       mockUseToggle.mockReturnValue([true, jest.fn()]);
       mockGetAccountDetailsFromResourceId.mockReturnValue({
-        subscriptionId: "source-sub-id",
-        resourceGroup: "source-rg",
-        accountName: "source-account",
+        subscriptionId: "target-sub-id",
+        resourceGroup: "target-rg",
+        accountName: "target-account",
       });
       mockAssignRole.mockResolvedValue({ id: "role-assignment-id" } as RoleAssignmentType);
 
