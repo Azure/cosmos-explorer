@@ -13,7 +13,7 @@
   "dependencies": {
     "body-parser": "^2.2.2",
     "express": "^5.2.1",
-    "follow-redirects": "^1.15.6",
+    "follow-redirects": "^1.16.0",
     "http-proxy-middleware": "^3.0.5",
     "node": "^20.19.5",
     "node-fetch": "^2.6.1",
