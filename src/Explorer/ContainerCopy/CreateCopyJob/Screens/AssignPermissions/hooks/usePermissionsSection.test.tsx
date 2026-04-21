@@ -5,17 +5,17 @@ import { noop } from "underscore";
 import { CapabilityNames } from "../../../../../../Common/Constants";
 import * as RbacUtils from "../../../../../../Utils/arm/RbacUtils";
 import {
-    BackupPolicyType,
-    CopyJobMigrationType,
-    DefaultIdentityType,
-    IdentityType,
+  BackupPolicyType,
+  CopyJobMigrationType,
+  DefaultIdentityType,
+  IdentityType,
 } from "../../../../Enums/CopyJobEnums";
 import { CopyJobContextState } from "../../../../Types/CopyJobTypes";
 import * as CopyJobPrerequisitesCacheModule from "../../../Utils/useCopyJobPrerequisitesCache";
 import usePermissionSections, {
-    checkTargetHasReadWriteRoleOnSource,
-    PermissionGroupConfig,
-    SECTION_IDS,
+  checkTargetHasReadWriteRoleOnSource,
+  PermissionGroupConfig,
+  SECTION_IDS,
 } from "./usePermissionsSection";
 
 jest.mock("../../../../../../Utils/arm/RbacUtils");
