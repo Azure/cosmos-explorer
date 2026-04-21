@@ -1,5 +1,6 @@
-import * as Utilities from "../../../Tables/Utilities";
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as StorageExplorerConstants from "../../../Tables/Constants";
+import * as Utilities from "../../../Tables/Utilities";
 import * as EntityPropertyValidationCommon from "./EntityPropertyValidationCommon";
 
 interface IValidationResult {
@@ -9,21 +10,21 @@ interface IValidationResult {
 
 interface IValueValidator {
   validate: (value: string) => IValidationResult;
-  parseValue: (value: string) => any;
+  parseValue: (value: string) => unknown;
 }
 
 /* Constants */
-var noHelp: string = "";
-var MaximumStringLength = 64 * 1024; // 64 KB
-var MaximumRequiredStringLength = 1 * 1024; //  1 KB
+const noHelp = "";
+const MaximumStringLength = 64 * 1024; // 64 KB
+const MaximumRequiredStringLength = 1 * 1024; //  1 KB
 
 class ValueValidator implements IValueValidator {
-  public validate(value: string): IValidationResult {
+  public validate(_value: string): IValidationResult {
     // throw new Errors.NotImplementedFunctionError("ValueValidator.validate");
-    return null;
+    return undefined;
   }
 
-  public parseValue(value: string): any {
+  public parseValue(value: string): unknown {
     return value; // default pass-thru implementation
   }
 }
@@ -33,7 +34,7 @@ class KeyValidator implements ValueValidator {
 
   public validate(value: string): IValidationResult {
     if (
-      value == null ||
+      value === undefined ||
       value.trim().length === 0 ||
       EntityPropertyValidationCommon.ValidationRegExp.PrimaryKey.test(value)
     ) {
@@ -52,8 +53,8 @@ class BooleanValueValidator extends ValueValidator {
   private detailedHelp = "Enter true or false."; // localize
 
   public validate(value: string): IValidationResult {
-    var success: boolean = false;
-    var help: string = noHelp;
+    let success = false;
+    let help: string = noHelp;
 
     if (value) {
       success = EntityPropertyValidationCommon.ValidationRegExp.Boolean.test(value);
@@ -76,12 +77,12 @@ class DateTimeValueValidator extends ValueValidator {
   private detailedHelp = "Enter a date and time."; // localize
 
   public validate(value: string): IValidationResult {
-    var success: boolean = false;
-    var help: string = noHelp;
+    let success = false;
+    let help: string = noHelp;
 
     if (value) {
       // Try to parse the value to see if it is a valid date string
-      var parsed: number = Date.parse(value);
+      const parsed: number = Date.parse(value);
 
       success = !isNaN(parsed);
     }
@@ -94,8 +95,8 @@ class DateTimeValueValidator extends ValueValidator {
   }
 
   public parseValue(value: string): Date {
-    var millisecondTime = Date.parse(value);
-    var parsed: Date = new Date(millisecondTime);
+    const millisecondTime = Date.parse(value);
+    const parsed: Date = new Date(millisecondTime);
 
     return parsed;
   }
@@ -105,8 +106,8 @@ class DoubleValueValidator extends ValueValidator {
   private detailedHelp = "Enter a 64-bit floating point value."; // localize
 
   public validate(value: string): IValidationResult {
-    var success: boolean = false;
-    var help: string = noHelp;
+    let success = false;
+    let help: string = noHelp;
 
     if (value) {
       success = EntityPropertyValidationCommon.ValidationRegExp.Float.test(value);
@@ -128,8 +129,8 @@ class GuidValueValidator extends ValueValidator {
   private detailedHelp = "Enter a 16-byte (128-bit) GUID value."; // localize
 
   public validate(value: string): IValidationResult {
-    var success: boolean = false;
-    var help: string = noHelp;
+    let success = false;
+    let help: string = noHelp;
 
     if (value) {
       success = EntityPropertyValidationCommon.ValidationRegExp.Guid.test(value);
@@ -149,20 +150,20 @@ class IntegerValueValidator extends ValueValidator {
 
   private isInt64: boolean;
 
-  constructor(isInt64: boolean = true) {
+  constructor(isInt64 = true) {
     super();
 
     this.isInt64 = isInt64;
   }
 
   public validate(value: string): IValidationResult {
-    var success: boolean = false;
-    var help: string = noHelp;
+    let success = false;
+    let help: string = noHelp;
 
     if (value) {
       success = EntityPropertyValidationCommon.ValidationRegExp.Integer.test(value) && Utilities.isSafeInteger(value);
       if (success) {
-        var intValue = parseInt(value, 10);
+        const intValue = parseInt(value, 10);
 
         success = !isNaN(intValue);
         if (success && !this.isInt64) {
@@ -199,14 +200,14 @@ class StringValidator extends ValueValidator {
   }
 
   public validate(value: string): IValidationResult {
-    var help: string = this.isRequired ? this.isRequiredHelp : this.detailedHelp;
-    if (value === null) {
+    let help: string = this.isRequired ? this.isRequiredHelp : this.detailedHelp;
+    if (value === undefined) {
       return { isInvalid: false, help: help };
     }
     // Ensure we validate the string projection of value.
     value = String(value);
 
-    var success = true;
+    let success = true;
 
     if (success) {
       success = value.length <= (this.isRequired ? MaximumRequiredStringLength : MaximumStringLength);
@@ -235,12 +236,12 @@ class NotSupportedValidator extends ValueValidator {
 
   public validate(ignoredValue: string): IValidationResult {
     //throw new Errors.NotSupportedError(this.getMessage());
-    return null;
+    return undefined;
   }
 
-  public parseValue(ignoredValue: string): any {
+  public parseValue(ignoredValue: string): undefined {
     //throw new Errors.NotSupportedError(this.getMessage());
-    return null;
+    return undefined;
   }
 
   private getMessage(): string {
@@ -250,7 +251,7 @@ class NotSupportedValidator extends ValueValidator {
 
 class PropertyValidatorFactory {
   public getValidator(type: string, isRequired: boolean) {
-    var validator: IValueValidator = null;
+    let validator: IValueValidator;
 
     // TODO classify rest of Cassandra types/create validators for them
     switch (type) {
@@ -273,7 +274,6 @@ class PropertyValidatorFactory {
         break;
       case StorageExplorerConstants.TableType.Int32:
       case StorageExplorerConstants.CassandraType.Int:
-      // TODO create separate validators for smallint and tinyint
       case StorageExplorerConstants.CassandraType.Smallint:
       case StorageExplorerConstants.CassandraType.Tinyint:
         validator = new IntegerValueValidator(/* isInt64 */ false);
@@ -317,19 +317,19 @@ export default class EntityPropertyValueValidator {
   }
 
   public validate(value: string, type: string): IValidationResult {
-    var validator: IValueValidator = this.getValidator(type);
+    const validator: IValueValidator = this.getValidator(type);
 
-    return validator ? validator.validate(value) : null; // Should not happen.
+    return validator ? validator.validate(value) : undefined; // Should not happen.
   }
 
-  public parseValue(value: string, type: string): any {
-    var validator: IValueValidator = this.getValidator(type);
+  public parseValue(value: string, type: string): unknown {
+    const validator: IValueValidator = this.getValidator(type);
 
-    return validator ? validator.parseValue(value) : null; // Should not happen.
+    return validator ? validator.parseValue(value) : undefined; // Should not happen.
   }
 
   private getValidator(type: string): IValueValidator {
-    var validator: IValueValidator = this.validators[type];
+    let validator: IValueValidator = this.validators[type];
 
     if (!validator) {
       validator = this.validatorFactory.getValidator(type, this.isRequired);
