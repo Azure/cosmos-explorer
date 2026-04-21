@@ -1,4 +1,5 @@
-import { IconButton, Text, TextField } from "@fluentui/react";import { Areas } from "Common/Constants";
+import { IconButton, Text, TextField } from "@fluentui/react";
+import { Areas } from "Common/Constants";
 import DeleteFeedback from "Common/DeleteFeedback";
 import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
 import { deleteCollection } from "Common/dataAccess/deleteCollection";
