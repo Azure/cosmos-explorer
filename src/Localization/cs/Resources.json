@@ -420,6 +420,7 @@
     "deleteDatabase": {
       "panelTitle": "Odstranit databázi {{databaseName}}",
       "warningMessage": "Pozor! Akci, kterou se chystáte provést, nelze vrátit zpět. Pokračováním trvale odstraníte tento prostředek a všechny jeho podřízené prostředky.",
+      "copyableId": "{{databaseName}} id:",
       "confirmPrompt": "Potvrďte zadáním ID (názvu) pro {{databaseName}}.",
       "inputMismatch": "Vstup {{databaseName}} s názvem {{input}} neodpovídá vybranému {{databaseName}} {{selectedId}}.",
       "feedbackTitle": "Pomozte nám vylepšit Azure Cosmos DB!",
@@ -427,6 +428,7 @@
     },
     "deleteCollection": {
       "panelTitle": "Odstranit {{collectionName}}",
+      "copyableId": "{{collectionName}} id:",
       "confirmPrompt": "Potvrďte zadáním ID {{collectionName}}.",
       "inputMismatch": "Vstup s ID {{input}} neodpovídá vybranému {{selectedId}}.",
       "feedbackTitle": "Pomozte nám vylepšit Azure Cosmos DB!",

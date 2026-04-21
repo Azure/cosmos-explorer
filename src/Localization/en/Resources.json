@@ -420,6 +420,7 @@
     "deleteDatabase": {
       "panelTitle": "Delete {{databaseName}}",
       "warningMessage": "Warning! The action you are about to take cannot be undone. Continuing will permanently delete this resource and all of its children resources.",
+      "copyableId": "{{databaseName}} id:",
       "confirmPrompt": "Confirm by typing the {{databaseName}} id (name)",
       "inputMismatch": "Input {{databaseName}} name \"{{input}}\" does not match the selected {{databaseName}} \"{{selectedId}}\"",
       "feedbackTitle": "Help us improve Azure Cosmos DB!",
@@ -427,6 +428,7 @@
     },
     "deleteCollection": {
       "panelTitle": "Delete {{collectionName}}",
+      "copyableId": "{{collectionName}} id:",
       "confirmPrompt": "Confirm by typing the {{collectionName}} id",
       "inputMismatch": "Input id {{input}} does not match the selected {{selectedId}}",
       "feedbackTitle": "Help us improve Azure Cosmos DB!",

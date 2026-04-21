@@ -420,6 +420,7 @@
     "deleteDatabase": {
       "panelTitle": "Usuń {{databaseName}}",
       "warningMessage": "Ostrzeżenie! Akcji, którą zamierzasz wykonać, nie można cofnąć. Kontynuowanie spowoduje trwałe usunięcie tego zasobu i wszystkich jego zasobów podrzędnych.",
+      "copyableId": "{{databaseName}} id:",
       "confirmPrompt": "Potwierdź, wpisując identyfikator {{databaseName}} (nazwa)",
       "inputMismatch": "Nazwa wejściowa {{databaseName}} „{{input}}” nie pasuje do wybranej nazwy {{databaseName}} „{{selectedId}}”",
       "feedbackTitle": "Pomóż nam ulepszać usługę Azure Cosmos DB!",
@@ -427,6 +428,7 @@
     },
     "deleteCollection": {
       "panelTitle": "Usuń {{collectionName}}",
+      "copyableId": "{{collectionName}} id:",
       "confirmPrompt": "Potwierdź, wpisując identyfikator {{collectionName}}",
       "inputMismatch": "Identyfikator wejściowy {{input}} jest niezgodny z wybranym {{selectedId}}",
       "feedbackTitle": "Pomóż nam ulepszać usługę Azure Cosmos DB!",

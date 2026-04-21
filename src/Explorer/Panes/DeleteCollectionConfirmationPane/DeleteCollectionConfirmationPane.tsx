@@ -1,5 +1,4 @@
-import { Text, TextField } from "@fluentui/react";
-import { Areas } from "Common/Constants";
+import { IconButton, Text, TextField } from "@fluentui/react";import { Areas } from "Common/Constants";
 import DeleteFeedback from "Common/DeleteFeedback";
 import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
 import { deleteCollection } from "Common/dataAccess/deleteCollection";
@@ -54,6 +53,10 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
 
   const collectionName = getCollectionName().toLocaleLowerCase();
   const paneTitle = t(Keys.panes.deleteCollection.panelTitle, { collectionName });
+  const selectedCollection = useSelectedNode.getState().selectedNode
+    ? useSelectedNode.getState().findSelectedCollection()
+    : undefined;
+  const selectedCollectionId = selectedCollection?.id() ?? "";
 
   const onSubmit = async (): Promise<void> => {
     const collection = useSelectedNode.getState().findSelectedCollection();
@@ -131,6 +134,9 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
     submitButtonText: t(Keys.common.ok),
     onSubmit,
   };
+  const copyableIdLabel = t(Keys.panes.deleteCollection.copyableId, {
+    collectionName: collectionName.toLowerCase(),
+  });
   const confirmContainer = t(Keys.panes.deleteCollection.confirmPrompt, {
     collectionName: collectionName.toLowerCase(),
   });
@@ -143,6 +149,25 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
       <div className="panelFormWrapper">
         <div className="panelMainContent">
           <div className="confirmDeleteInput">
+            <Text variant="small" style={{ color: "var(--colorNeutralForeground1)" }}>
+              {copyableIdLabel}
+            </Text>
+            <TextField
+              id="copyableCollectionId"
+              readOnly
+              value={selectedCollectionId}
+              styles={themedTextFieldStyles}
+              onRenderSuffix={() => (
+                <IconButton
+                  iconProps={{ iconName: "Copy" }}
+                  title={t(Keys.common.copy)}
+                  ariaLabel={t(Keys.common.copy)}
+                  onClick={() => navigator.clipboard.writeText(selectedCollectionId)}
+                  styles={{ root: { height: "100%" } }}
+                />
+              )}
+              ariaLabel={copyableIdLabel}
+            />
             <span className="mandatoryStar">* </span>
             <Text variant="small" style={{ color: "var(--colorNeutralForeground1)" }}>
               {confirmContainer}
