@@ -420,7 +420,6 @@
     "deleteDatabase": {
       "panelTitle": "Supprimer {{databaseName}}",
       "warningMessage": "Attention ! Il ne sera pas possible d’annuler cette action. Si vous continuez, cette ressource et toutes ses ressources enfants seront définitivement supprimées.",
-      "copyableId": "{{databaseName}} id:",
       "confirmPrompt": "Confirmer en tapant l’ID de {{databaseName}} (nom)",
       "inputMismatch": "Le nom « {{input}} » de l’entrée {{databaseName}} ne correspond pas au {{databaseName}} « {{selectedId}} » sélectionné",
       "feedbackTitle": "Aidez-nous à améliorer Azure Cosmos DB !",
@@ -428,7 +427,6 @@
     },
     "deleteCollection": {
       "panelTitle": "Supprimer {{collectionName}}",
-      "copyableId": "{{collectionName}} id:",
       "confirmPrompt": "Confirmer en tapant l’ID de {{collectionName}}",
       "inputMismatch": "L’ID d’entrée {{input}} ne correspond pas à l’ID {{selectedId}} sélectionné",
       "feedbackTitle": "Aidez-nous à améliorer Azure Cosmos DB !",
@@ -968,4 +966,3 @@
     }
   }
 }
-

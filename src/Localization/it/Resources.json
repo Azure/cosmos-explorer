@@ -420,7 +420,6 @@
     "deleteDatabase": {
       "panelTitle": "Elimina {{databaseName}}",
       "warningMessage": "Avviso! L'azione che si sta per eseguire non può essere annullata. Se si continua, la risorsa verrà definitivamente eliminata insieme a tutte le relative risorse figlio.",
-      "copyableId": "{{databaseName}} id:",
       "confirmPrompt": "Conferma digitando l'ID {{databaseName}} (nome)",
       "inputMismatch": "Il nome di input {{databaseName}} \"{{input}}\" non corrisponde all'elemento {{databaseName}} selezionato \"{{selectedId}}\"",
       "feedbackTitle": "Aiutaci a migliorare Azure Cosmos DB!",
@@ -428,7 +427,6 @@
     },
     "deleteCollection": {
       "panelTitle": "Elimina {{collectionName}}",
-      "copyableId": "{{collectionName}} id:",
       "confirmPrompt": "Conferma digitando l'ID {{collectionName}}",
       "inputMismatch": "L'ID input {{input}} non corrisponde all'elemento {{selectedId}} selezionato",
       "feedbackTitle": "Aiutaci a migliorare Azure Cosmos DB!",

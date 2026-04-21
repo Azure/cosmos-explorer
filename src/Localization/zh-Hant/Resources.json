@@ -420,7 +420,6 @@
     "deleteDatabase": {
       "panelTitle": "刪除 {{databaseName}}",
       "warningMessage": "警告!您即將進行的動作無法復原。繼續將會永久刪除此資源及其所有子資源。",
-      "copyableId": "{{databaseName}} id:",
       "confirmPrompt": "輸入 {{databaseName}} 識別碼 (名稱) 以確認",
       "inputMismatch": "輸入 {{databaseName}} 名稱 \"{{input}}\" 與選取的 {{databaseName}} \"{{selectedId}}\" 不符",
       "feedbackTitle": "協助我們改進 Azure Cosmos DB!",
@@ -428,7 +427,6 @@
     },
     "deleteCollection": {
       "panelTitle": "刪除 {{collectionName}}",
-      "copyableId": "{{collectionName}} id:",
       "confirmPrompt": "輸入 {{collectionName}} 識別碼以確認",
       "inputMismatch": "輸入識別碼 {{input}} 與選取的 {{selectedId}} 不符",
       "feedbackTitle": "協助我們改進 Azure Cosmos DB!",

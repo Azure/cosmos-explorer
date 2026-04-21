@@ -420,7 +420,6 @@
     "deleteDatabase": {
       "panelTitle": "Hapus {{databaseName}}",
       "warningMessage": "Peringatan! Tindakan yang akan Anda lakukan tidak dapat dibatalkan. Melanjutkan akan menghapus sumber daya dan semua sumber daya anaknya secara permanen.",
-      "copyableId": "{{databaseName}} id:",
       "confirmPrompt": "Konfirmasikan dengan mengetik id {{databaseName}} (nama)",
       "inputMismatch": "Nama {{databaseName}} input \"{{input}}\" tidak cocok dengan {{databaseName}} \"{{selectedId}}\" yang dipilih",
       "feedbackTitle": "Bantuan kami meningkatkan Azure Cosmos DB!",
@@ -428,7 +427,6 @@
     },
     "deleteCollection": {
       "panelTitle": "Hapus {{collectionName}}",
-      "copyableId": "{{collectionName}} id:",
       "confirmPrompt": "Konfirmasikan dengan mengetik id {{collectionName}}",
       "inputMismatch": "Id input {{input}} tidak cocok dengan {{selectedId}} yang dipilih",
       "feedbackTitle": "Bantuan kami meningkatkan Azure Cosmos DB!",
