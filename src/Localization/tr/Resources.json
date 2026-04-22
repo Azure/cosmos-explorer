@@ -435,7 +435,7 @@
     "addDatabase": {
       "databaseLabel": "Veritabanı {{suffix}}",
       "databaseIdLabel": "Veritabanı kimliği",
-      "keyspaceIdLabel": "Anahtar alanı kimliği",
+      "keyspaceIdLabel": "Keyspace kimliği",
       "databaseIdPlaceholder": "Yeni bir {{databaseLabel}} kimliği girin",
       "databaseTooltip": "{{databaseLabel}}, bir veya daha fazla {{collectionsLabel}} içeren bir mantıksal kapsayıcıdır.",
       "shareThroughput": "Aktarım hızını {{collectionsLabel}} koleksiyonunda paylaş",
@@ -705,13 +705,13 @@
       "partitionKeyWarning": "Hedef kapsayıcı zaten mevcut olmamalıdır. Veri Gezgini sizin için yeni bir hedef kapsayıcı oluşturur."
     },
     "cassandraAddCollection": {
-      "keyspaceLabel": "Anahtar alanı adı",
-      "keyspaceTooltip": "Mevcut bir anahtar alanını seçin veya yeni bir anahtar alanı kimliği girin.",
+      "keyspaceLabel": "Keyspace adı",
+      "keyspaceTooltip": "Mevcut bir keyspace'i seçin veya yeni bir keyspace kimliği girin.",
       "tableIdLabel": "Tabloyu oluşturmak için CQL komutunu girin.",
       "enterTableId": "Tablo kimliğini girin",
       "tableSchemaAriaLabel": "Tablo şeması",
       "provisionDedicatedThroughput": "Bu tablo için ayrılmış aktarım hızı sağlayın",
-      "provisionDedicatedThroughputTooltip": "İsteğe bağlı olarak, aktarım hızı sağlanan bir anahtar alanındaki bir tablo için ayrılmış aktarım hızı sağlayabilirsiniz. Bu ayrılmış aktarım hızı miktarı, anahtar alanındaki diğer tablolarla paylaşılmaz ve anahtar alanı için sağladığınız aktarım hızını etkilemez. Bu aktarım hızı miktarı anahtar alanı düzeyinde sağladığınız aktarım hızına ek olarak faturalandırılır."
+      "provisionDedicatedThroughputTooltip": "İsteğe bağlı olarak, aktarım hızı sağlanan bir keyspace'in bir tablo için ayrılmış aktarım hızı sağlayabilirsiniz. Bu ayrılmış aktarım hızı miktarı, keyspace'teki diğer tablolarla paylaşılmaz ve keyspace için sağladığınız aktarım hızını etkilemez. Bu keyspace miktarı anahtar alanı düzeyinde sağladığınız aktarım hızına ek olarak faturalandırılır."
     },
     "tables": {
       "addProperty": "Özellik Ekle",
@@ -889,7 +889,7 @@
         "freeTierLearnMore": "Daha fazla bilgi edinin.",
         "throughputRuS": "Aktarım hızı (RU/s)",
         "autoScaleCustomSettings": "Hesabınızda, kapsayıcı düzeyinde aktarım hızı ayarlamayı engelleyen özel ayarlar var. Değişiklik yapmak için lütfen Cosmos DB mühendislik ekibiyle iletişim kurduğunuz kişiyle çalışın.",
-        "keyspaceSharedThroughput": "Bu tablo paylaşılan aktarım hızı anahtar alanında yapılandırılmıştır",
+        "keyspaceSharedThroughput": "Bu tablo paylaşılan aktarım hızı keyspace'inde yapılandırılmıştır",
         "throughputRangeLabel": "Aktarım hızı ({{min}} - {{max}} RU/s)",
         "unlimited": "sınırsız"
       },

@@ -435,7 +435,7 @@
     "addDatabase": {
       "databaseLabel": "Databas {{suffix}}",
       "databaseIdLabel": "Databas-ID",
-      "keyspaceIdLabel": "Nyckelområdes-ID",
+      "keyspaceIdLabel": "Keyspace-ID",
       "databaseIdPlaceholder": "Skriv ett nytt {{databaseLabel}}-ID",
       "databaseTooltip": "A {{databaseLabel}} är en logisk container för en eller flera {{collectionsLabel}}",
       "shareThroughput": "Dela dataflöde över {{collectionsLabel}}",
@@ -705,13 +705,13 @@
       "partitionKeyWarning": "Målcontainern får inte redan finnas. Datautforskaren skapar en ny målcontainer åt dig."
     },
     "cassandraAddCollection": {
-      "keyspaceLabel": "Namn på nyckelutrymme",
-      "keyspaceTooltip": "Välj ett befintligt nyckelutrymme eller ange ett nytt nyckelområdes-ID.",
+      "keyspaceLabel": "Namn på keyspace",
+      "keyspaceTooltip": "Välj ett befintligt keyspace eller ange ett nytt keyspace-ID.",
       "tableIdLabel": "Ange CQL-kommandot för att skapa tabellen.",
       "enterTableId": "Ange tabell-Id",
       "tableSchemaAriaLabel": "Tabellschema",
       "provisionDedicatedThroughput": "Etablera dedikerat dataflöde för den här tabellen",
-      "provisionDedicatedThroughputTooltip": "Du kan också etablera dedikerat dataflöde för en tabell i ett nyckelområde som har etablerat dataflöde. Det här dedikerade dataflödesbeloppet delas inte med andra tabeller i nyckelområdet och räknas inte in i det dataflöde som du etablerade för nyckelområdet. Det här dataflödesbeloppet faktureras utöver det dataflödesbelopp som du etablerade på nyckelområdesnivå."
+      "provisionDedicatedThroughputTooltip": "Du kan också etablera dedikerat dataflöde för en tabell i ett keyspace som har etablerat dataflöde. Det här dedikerade dataflödesbeloppet delas inte med andra tabeller i detta keyspace och räknas inte in i det dataflöde som du etablerade för detta keyspace. Det här dataflödesbeloppet faktureras utöver det dataflödesbelopp som du etablerade på keyspacenivå."
     },
     "tables": {
       "addProperty": "Lägg till egenskap",
@@ -889,7 +889,7 @@
         "freeTierLearnMore": "Mer information.",
         "throughputRuS": "Dataflöde (RU/s)",
         "autoScaleCustomSettings": "Ditt konto har anpassade inställningar som förhindrar att dataflödet anges på containernivå. Kontakta din Cosmos DB tekniska team för att göra ändringar.",
-        "keyspaceSharedThroughput": "Den här tabellens delade dataflöde har konfigurerats i nyckelområdet",
+        "keyspaceSharedThroughput": "Den här tabellens delade dataflöde har konfigurerats i keyspace",
         "throughputRangeLabel": "Dataflöde ({{min}} – {{max}} RU/s)",
         "unlimited": "obegränsat"
       },
