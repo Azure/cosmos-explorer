@@ -113,7 +113,6 @@ export function getAccountName(accountType: TestAccount) {
 
   const defaultAccountNames = defaultAccounts[accountType];
   const accountName = defaultAccountNames[parseInt(shardIndex) % defaultAccountNames.length];
-  console.log(`Using account name ${accountName} for shard index ${shardIndex}`);
   return accountName;
 }
 
