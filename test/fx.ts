@@ -43,16 +43,37 @@ export enum TestAccount {
   SQLContainerCopyOnly = "SQLContainerCopyOnly",
 }
 
-export const defaultAccounts: Record<TestAccount, string> = {
-  [TestAccount.Tables]: "github-e2etests-tables",
-  [TestAccount.Cassandra]: "github-e2etests-cassandra",
-  [TestAccount.Gremlin]: "github-e2etests-gremlin",
-  [TestAccount.Mongo]: "github-e2etests-mongo",
-  [TestAccount.MongoReadonly]: "github-e2etests-mongo-readonly",
-  [TestAccount.Mongo32]: "github-e2etests-mongo32",
-  [TestAccount.SQL]: "github-e2etests-sql",
-  [TestAccount.SQLReadOnly]: "github-e2etests-sql-readonly",
-  [TestAccount.SQLContainerCopyOnly]: "github-e2etests-sql-containercopyonly",
+export const defaultAccounts: Record<TestAccount, string[]> = {
+  [TestAccount.Tables]: ["github-e2etests-tables"],
+  [TestAccount.Cassandra]: ["github-e2etests-cassandra"],
+  [TestAccount.Gremlin]: ["github-e2etests-gremlin"],
+  [TestAccount.Mongo]: ["github-e2etests-mongo"],
+  [TestAccount.MongoReadonly]: ["github-e2etests-mongo-readonly"],
+  [TestAccount.Mongo32]: ["github-e2etests-mongo32"],
+  [TestAccount.SQL]: [
+    "github-e2etests-sql-1",
+    "github-e2etests-sql-2",
+    "github-e2etests-sql-3",
+    "github-e2etests-sql-4",
+    "github-e2etests-sql-5",
+    "github-e2etests-sql-6",
+    "github-e2etests-sql-7",
+    "github-e2etests-sql-8",
+    "github-e2etests-sql-9",
+    "github-e2etests-sql-10",
+    "github-e2etests-sql-11",
+    "github-e2etests-sql-12",
+    "github-e2etests-sql-13",
+    "github-e2etests-sql-14",
+    "github-e2etests-sql-15",
+    "github-e2etests-sql-16",
+    "github-e2etests-sql-17",
+    "github-e2etests-sql-18",
+    "github-e2etests-sql-19",
+    "github-e2etests-sql-20",
+  ],
+  [TestAccount.SQLReadOnly]: ["github-e2etests-sql-readonly"],
+  [TestAccount.SQLContainerCopyOnly]: ["github-e2etests-sql-containercopyonly"],
 };
 
 export const resourceGroupName = process.env.DE_TEST_RESOURCE_GROUP ?? "de-e2e-tests";
@@ -74,11 +95,24 @@ function tryGetStandardName(accountType: TestAccount) {
 }
 
 export function getAccountName(accountType: TestAccount) {
-  return (
-    process.env[`DE_TEST_ACCOUNT_NAME_${accountType.toLocaleUpperCase()}`] ??
-    tryGetStandardName(accountType) ??
-    defaultAccounts[accountType]
-  );
+  const environmentVariableAccountName = process.env[`DE_TEST_ACCOUNT_NAME_${accountType.toLocaleUpperCase()}`];
+  if (environmentVariableAccountName) {
+    return environmentVariableAccountName;
+  }
+
+  const standardName = tryGetStandardName(accountType);
+  if (standardName) {
+    return standardName;
+  }
+
+  // If we reach here, we should be running in the CI workflow. Determine the account name based on the shard index.
+  const shardIndex = process.env.PLAYWRIGHT_SHARD_INDEX;
+  if (!shardIndex) {
+    throw new Error("PLAYWRIGHT_SHARD_INDEX environment variable is not set");
+  }
+
+  const defaultAccountNames = defaultAccounts[accountType];
+  return defaultAccountNames[parseInt(shardIndex) % defaultAccountNames.length];
 }
 
 type TestExplorerUrlOptions = {

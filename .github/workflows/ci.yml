@@ -188,7 +188,8 @@ jobs:
         with:
           azcliversion: latest
           inlineScript: |
-            NOSQL_TESTACCOUNT_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql.documents.azure.com/.default" -o tsv --query accessToken)
+            SHARD_INDEX=${{ matrix.shardIndex }}
+            NOSQL_TESTACCOUNT_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql-${SHARD_INDEX}.documents.azure.com/.default" -o tsv --query accessToken)
             echo "::add-mask::$NOSQL_TESTACCOUNT_TOKEN"
             echo NOSQL_TESTACCOUNT_TOKEN=$NOSQL_TESTACCOUNT_TOKEN >> $GITHUB_ENV
             NOSQL_READONLY_TESTACCOUNT_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql-readonly.documents.azure.com/.default" -o tsv --query accessToken)
