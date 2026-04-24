@@ -435,7 +435,7 @@
     "addDatabase": {
       "databaseLabel": "Base de données {{suffix}}",
       "databaseIdLabel": "ID de base de données",
-      "keyspaceIdLabel": "ID d’espace clé",
+      "keyspaceIdLabel": "ID de keyspace",
       "databaseIdPlaceholder": "Entrer un nouvel ID de {{databaseLabel}}",
       "databaseTooltip": "Une {{databaseLabel}} est un conteneur logique d’un ou plusieurs {{collectionsLabel}}",
       "greaterThanError": "Entrer une valeur supérieure à {{minValue}} pour le débit Autopilot",
@@ -699,13 +699,13 @@
       "partitionKeyWarning": "Le conteneur de destination ne doit pas déjà exister. L’Explorateur de données vous crée un nouveau conteneur de destination."
     },
     "cassandraAddCollection": {
-      "keyspaceLabel": "Nom de l’espace de clés",
-      "keyspaceTooltip": "Sélectionnez un espace de clés existant ou saisissez un nouvel ID d’espace de clés.",
+      "keyspaceLabel": "Nom du keyspace",
+      "keyspaceTooltip": "Sélectionnez un keyspace existant ou saisissez un nouvel ID de keyspace.",
       "tableIdLabel": "Entrez la commande CQL pour créer le tableau.",
       "enterTableId": "Entrer l’ID de tableau",
       "tableSchemaAriaLabel": "Schéma de tableau",
       "provisionDedicatedThroughput": "Approvisionner le débit dédié pour ce tableau",
-      "provisionDedicatedThroughputTooltip": "Vous pouvez éventuellement approvisionner un débit dédié pour un tableau dans un espace de clés dont le débit est approvisionné. Ce débit dédié ne sera pas partagé avec les autres tableaux de l’espace de clés et ne sera pas pris en compte dans le débit que vous approvisionnez pour l’espace de clés. Cette quantité de débit sera facturée en plus du débit que vous approvisionnez au niveau de l’espace de clés."
+      "provisionDedicatedThroughputTooltip": "Vous pouvez éventuellement approvisionner un débit dédié pour un tableau dans un keyspace dont le débit est approvisionné. Ce débit dédié ne sera pas partagé avec les autres tableaux du keyspace et ne sera pas pris en compte dans le débit que vous approvisionnez pour le keyspace. Cette quantité de débit sera facturée en plus du débit que vous approvisionnez au niveau de le keyspace."
     },
     "tables": {
       "addProperty": "Ajouter une propriété",
@@ -883,7 +883,7 @@
         "freeTierLearnMore": "En savoir plus.",
         "throughputRuS": "Débit (RU/s)",
         "autoScaleCustomSettings": "Votre compte possède des paramètres personnalisés qui empêchent la configuration du débit au niveau du conteneur. Veuillez collaborer avec votre interlocuteur au sein de l'équipe d'ingénierie Cosmos DB pour apporter les modifications nécessaires.",
-        "keyspaceSharedThroughput": "Le débit partagé de cette table est configuré au niveau de l'espace de clés",
+        "keyspaceSharedThroughput": "Le débit partagé de cette table est configuré au niveau du keyspace",
         "throughputRangeLabel": "Débit ({{min}} à {{max}} RU/s)",
         "unlimited": "illimité"
       },

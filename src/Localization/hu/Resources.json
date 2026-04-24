@@ -435,7 +435,7 @@
     "addDatabase": {
       "databaseLabel": "{{suffix}} adatbázis",
       "databaseIdLabel": "Adatbázis-azonosító",
-      "keyspaceIdLabel": "Kulcstér azonosítója",
+      "keyspaceIdLabel": "Keyspace azonosítója",
       "databaseIdPlaceholder": "Írjon be egy új {{databaseLabel}}-azonosítót",
       "databaseTooltip": "A(z) {{databaseLabel}} egy vagy több {{collectionsLabel}} logikai tárolója",
       "greaterThanError": "Az Autopilot átviteli sebességéhez olyan értéket adjon meg, ami nagyobb, mint {{minValue}}",
@@ -699,13 +699,13 @@
       "partitionKeyWarning": "A céltároló még nem létezhet. A Data Explorer egy új céltárolót hoz létre."
     },
     "cassandraAddCollection": {
-      "keyspaceLabel": "Kulcstér neve",
-      "keyspaceTooltip": "Válasszon ki egy meglévő kulcsteret, vagy adjon meg egy új kulcstér-azonosítót.",
+      "keyspaceLabel": "Keyspace neve",
+      "keyspaceTooltip": "Válasszon ki egy meglévő keyspace-t, vagy adjon meg egy új keyspace-azonosítót.",
       "tableIdLabel": "A tábla létrehozásához írja be a CQL parancsot.",
       "enterTableId": "Táblaazonosító megadása",
       "tableSchemaAriaLabel": "Táblaséma",
       "provisionDedicatedThroughput": "Dedikált átviteli sebesség kiépítése ehhez a táblához",
-      "provisionDedicatedThroughputTooltip": "Opcionálisan dedikált átviteli sebességet is kioszthat egy táblához egy kiépített átviteli sebességgel rendelkező kulcstéren belül. Ez a dedikált átviteli sebesség nem lesz megosztva a kulcstér más tábláival, és nem számít bele a kulcstérhez kiosztott átviteli sebességbe. Ezt az átviteli sebességet a kulcstér szintjén kiosztott átviteli sebességen felül számlázzuk."
+      "provisionDedicatedThroughputTooltip": "Opcionálisan dedikált átviteli sebességet is kioszthat egy táblához egy kiépített átviteli sebességgel rendelkező keyspace-en belül. Ez a dedikált átviteli sebesség nem lesz megosztva a keyspace más tábláival, és nem számít bele a keyspace-hez kiosztott átviteli sebességbe. Ezt az átviteli sebességet a keyspace szintjén kiosztott átviteli sebességen felül számlázzuk."
     },
     "tables": {
       "addProperty": "Tulajdonság hozzáadása",
@@ -883,7 +883,7 @@
         "freeTierLearnMore": "További információ.",
         "throughputRuS": "Átviteli sebesség (RU/mp)",
         "autoScaleCustomSettings": "A fiókja egyéni beállításokkal rendelkezik, amelyek megakadályozzák az átviteli sebesség tárolószinten történő beállítását. Kérjük, hogy a módosítások végrehajtása érdekében vegye fel a kapcsolatot a Cosmos DB mérnöki csapatával.",
-        "keyspaceSharedThroughput": "Ez a tábla megosztott átviteli sebesség a kulcstérben van konfigurálva",
+        "keyspaceSharedThroughput": "Ez a tábla megosztott átviteli sebesség a keyspace-ben van konfigurálva",
         "throughputRangeLabel": "Átviteli sebesség ({{min}}-{{max}} RU/mp)",
         "unlimited": "korlátlan"
       },
