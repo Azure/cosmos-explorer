@@ -190,7 +190,9 @@ jobs:
           inlineScript: |
             SHARD_INDEX=${{ matrix.shardIndex }}
             echo PLAYWRIGHT_SHARD_INDEX=$SHARD_INDEX >> $GITHUB_ENV
-            NOSQL_TESTACCOUNT_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql-${SHARD_INDEX}.documents.azure.com/.default" -o tsv --query accessToken)
+            NOSQL_TESTACCOUNT_SCOPE="https://github-e2etests-sql-$SHARD_INDEX.documents.azure.com/.default"
+            echo NOSQL_TESTACCOUNT_SCOPE=$NOSQL_TESTACCOUNT_SCOPE >> $GITHUB_ENV
+            NOSQL_TESTACCOUNT_TOKEN=$(az account get-access-token --scope "$NOSQL_TESTACCOUNT_SCOPE" -o tsv --query accessToken)
             echo "::add-mask::$NOSQL_TESTACCOUNT_TOKEN"
             echo NOSQL_TESTACCOUNT_TOKEN=$NOSQL_TESTACCOUNT_TOKEN >> $GITHUB_ENV
             NOSQL_READONLY_TESTACCOUNT_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql-readonly.documents.azure.com/.default" -o tsv --query accessToken)
