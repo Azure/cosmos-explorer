@@ -50,7 +50,9 @@ export const defaultAccounts: Record<TestAccount, string[]> = {
   [TestAccount.Mongo]: ["github-e2etests-mongo"],
   [TestAccount.MongoReadonly]: ["github-e2etests-mongo-readonly"],
   [TestAccount.Mongo32]: ["github-e2etests-mongo32"],
+  // Below order is important for the CI workflow. Shard index must map to the same sql-XX value.
   [TestAccount.SQL]: [
+    "github-e2etests-sql-20",
     "github-e2etests-sql-1",
     "github-e2etests-sql-2",
     "github-e2etests-sql-3",
@@ -70,7 +72,6 @@ export const defaultAccounts: Record<TestAccount, string[]> = {
     "github-e2etests-sql-17",
     "github-e2etests-sql-18",
     "github-e2etests-sql-19",
-    "github-e2etests-sql-20",
   ],
   [TestAccount.SQLReadOnly]: ["github-e2etests-sql-readonly"],
   [TestAccount.SQLContainerCopyOnly]: ["github-e2etests-sql-containercopyonly"],
