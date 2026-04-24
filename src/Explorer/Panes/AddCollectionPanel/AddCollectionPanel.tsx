@@ -17,7 +17,6 @@ import {
 } from "@fluentui/react";
 import * as Constants from "Common/Constants";
 import { createCollection } from "Common/dataAccess/createCollection";
-import { getNewDatabaseSharedThroughputDefault } from "Common/DatabaseUtility";
 import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
 import { configContext, Platform } from "ConfigContext";
 import * as DataModels from "Contracts/DataModels";
@@ -77,7 +76,6 @@ export const DefaultVectorEmbeddingPolicy: DataModels.VectorEmbeddingPolicy = {
 export interface AddCollectionPanelState {
   createNewDatabase: boolean;
   newDatabaseId: string;
-  isSharedThroughputChecked: boolean;
   selectedDatabaseId: string;
   collectionId: string;
   enableIndexing: boolean;
@@ -103,8 +101,6 @@ export interface AddCollectionPanelState {
 }
 
 export class AddCollectionPanel extends React.Component<AddCollectionPanelProps, AddCollectionPanelState> {
-  private newDatabaseThroughput: number;
-  private isNewDatabaseAutoscale: boolean;
   private collectionThroughput: number;
   private isCollectionAutoscale: boolean;
   private isCostAcknowledged: boolean;
@@ -117,7 +113,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       createNewDatabase:
         userContext.apiType !== "Tables" && configContext.platform !== Platform.Fabric && !this.props.databaseId,
       newDatabaseId: props.isQuickstart ? this.getSampleDBName() : "",
-      isSharedThroughputChecked: getNewDatabaseSharedThroughputDefault(),
       selectedDatabaseId:
         userContext.apiType === "Tables" ? CollectionCreation.TablesAPIDefaultDatabase : this.props.databaseId,
       collectionId: props.isQuickstart ? `Sample${getCollectionName()}` : "",
@@ -351,61 +346,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                       this.setState({ newDatabaseId: event.target.value })
                     }
                   />
-
-                  {!isServerlessAccount() && (
-                    <Stack horizontal>
-                      <Checkbox
-                        label={t(Keys.panes.addCollection.shareThroughput, {
-                          collectionName: getCollectionName(true).toLocaleLowerCase(),
-                        })}
-                        checked={this.state.isSharedThroughputChecked}
-                        styles={{
-                          text: { fontSize: 12, color: "var(--colorNeutralForeground1)" },
-                          checkbox: { width: 12, height: 12 },
-                          label: { padding: 0, alignItems: "center" },
-                          root: {
-                            selectors: {
-                              ":hover .ms-Checkbox-text": { color: "var(--colorNeutralForeground1)" },
-                            },
-                          },
-                        }}
-                        onChange={(ev: React.FormEvent<HTMLElement>, isChecked: boolean) =>
-                          this.setState({ isSharedThroughputChecked: isChecked })
-                        }
-                      />
-                      <TooltipHost
-                        directionalHint={DirectionalHint.bottomLeftEdge}
-                        content={t(Keys.panes.addCollection.shareThroughputTooltip, {
-                          collectionName: getCollectionName(true).toLocaleLowerCase(),
-                        })}
-                      >
-                        <Icon
-                          iconName="Info"
-                          className="panelInfoIcon"
-                          tabIndex={0}
-                          ariaLabel={t(Keys.panes.addCollection.shareThroughputTooltip, {
-                            collectionName: getCollectionName(true).toLocaleLowerCase(),
-                          })}
-                        />
-                      </TooltipHost>
-                    </Stack>
-                  )}
-
-                  {!isServerlessAccount() && this.state.isSharedThroughputChecked && (
-                    <ThroughputInput
-                      showFreeTierExceedThroughputTooltip={isFreeTierAccount() && !isFirstResourceCreated}
-                      isDatabase={true}
-                      isSharded={this.state.isSharded}
-                      isFreeTier={isFreeTierAccount()}
-                      isQuickstart={this.props.isQuickstart}
-                      setThroughputValue={(throughput: number) => (this.newDatabaseThroughput = throughput)}
-                      setIsAutoscale={(isAutoscale: boolean) => (this.isNewDatabaseAutoscale = isAutoscale)}
-                      setIsThroughputCapExceeded={(isThroughputCapExceeded: boolean) =>
-                        this.setState({ isThroughputCapExceeded })
-                      }
-                      onCostAcknowledgeChange={(isAcknowledge: boolean) => (this.isCostAcknowledged = isAcknowledge)}
-                    />
-                  )}
                 </Stack>
               )}
               {!this.state.createNewDatabase && (
@@ -515,59 +455,57 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             </Stack>
           )}
 
-          {userContext.apiType === "Mongo" &&
-            (!this.state.isSharedThroughputChecked ||
-              this.props.explorer.isFixedCollectionWithSharedThroughputSupported()) && (
-              <Stack>
-                <Stack horizontal style={{ marginTop: -5, marginBottom: -4 }}>
-                  <span className="mandatoryStar">*&nbsp;</span>
-                  <Text className="panelTextBold" variant="small">
-                    {t(Keys.panes.addCollection.sharding)}
-                  </Text>
-                  <TooltipHost
-                    directionalHint={DirectionalHint.bottomLeftEdge}
-                    content={t(Keys.panes.addCollection.shardingTooltip)}
-                  >
-                    <Icon
-                      iconName="Info"
-                      className="panelInfoIcon"
-                      tabIndex={0}
-                      ariaLabel={t(Keys.panes.addCollection.shardingTooltip)}
-                    />
-                  </TooltipHost>
-                </Stack>
-
-                <Stack horizontal verticalAlign="center">
-                  <input
-                    className="panelRadioBtn"
-                    checked={!this.state.isSharded}
-                    aria-label={t(Keys.panes.addCollection.unsharded)}
-                    aria-checked={!this.state.isSharded}
-                    name="unsharded"
-                    type="radio"
-                    role="radio"
-                    id="unshardedOption"
+          {userContext.apiType === "Mongo" && this.props.explorer.isFixedCollectionWithSharedThroughputSupported() && (
+            <Stack>
+              <Stack horizontal style={{ marginTop: -5, marginBottom: -4 }}>
+                <span className="mandatoryStar">*&nbsp;</span>
+                <Text className="panelTextBold" variant="small">
+                  {t(Keys.panes.addCollection.sharding)}
+                </Text>
+                <TooltipHost
+                  directionalHint={DirectionalHint.bottomLeftEdge}
+                  content={t(Keys.panes.addCollection.shardingTooltip)}
+                >
+                  <Icon
+                    iconName="Info"
+                    className="panelInfoIcon"
                     tabIndex={0}
-                    onChange={this.onUnshardedRadioBtnChange.bind(this)}
+                    ariaLabel={t(Keys.panes.addCollection.shardingTooltip)}
                   />
-                  <span className="panelRadioBtnLabel">{t(Keys.panes.addCollection.unshardedLabel)}</span>
-
-                  <input
-                    className="panelRadioBtn"
-                    checked={this.state.isSharded}
-                    aria-label={t(Keys.panes.addCollection.sharded)}
-                    aria-checked={this.state.isSharded}
-                    name="sharded"
-                    type="radio"
-                    role="radio"
-                    id="shardedOption"
-                    tabIndex={0}
-                    onChange={this.onShardedRadioBtnChange.bind(this)}
-                  />
-                  <span className="panelRadioBtnLabel">{t(Keys.panes.addCollection.sharded)}</span>
-                </Stack>
+                </TooltipHost>
               </Stack>
-            )}
+
+              <Stack horizontal verticalAlign="center">
+                <input
+                  className="panelRadioBtn"
+                  checked={!this.state.isSharded}
+                  aria-label={t(Keys.panes.addCollection.unsharded)}
+                  aria-checked={!this.state.isSharded}
+                  name="unsharded"
+                  type="radio"
+                  role="radio"
+                  id="unshardedOption"
+                  tabIndex={0}
+                  onChange={this.onUnshardedRadioBtnChange.bind(this)}
+                />
+                <span className="panelRadioBtnLabel">{t(Keys.panes.addCollection.unshardedLabel)}</span>
+
+                <input
+                  className="panelRadioBtn"
+                  checked={this.state.isSharded}
+                  aria-label={t(Keys.panes.addCollection.sharded)}
+                  aria-checked={this.state.isSharded}
+                  name="sharded"
+                  type="radio"
+                  role="radio"
+                  id="shardedOption"
+                  tabIndex={0}
+                  onChange={this.onShardedRadioBtnChange.bind(this)}
+                />
+                <span className="panelRadioBtnLabel">{t(Keys.panes.addCollection.sharded)}</span>
+              </Stack>
+            </Stack>
+          )}
 
           {this.state.isSharded && (
             <Stack>
@@ -1191,7 +1129,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     }
 
     if (this.state.createNewDatabase) {
-      return !this.state.isSharedThroughputChecked;
+      return true;
     }
 
     if (this.state.enableDedicatedThroughput) {
@@ -1206,9 +1144,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       return false;
     }
 
-    return this.state.createNewDatabase
-      ? this.state.isSharedThroughputChecked
-      : this.isSelectedDatabaseSharedThroughput();
+    return this.state.createNewDatabase ? false : this.isSelectedDatabaseSharedThroughput();
   }
 
   private shouldShowVectorSearchParameters() {
@@ -1253,9 +1189,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       return false;
     }
 
-    const throughput = this.state.createNewDatabase ? this.newDatabaseThroughput : this.collectionThroughput;
+    const throughput = this.collectionThroughput;
     if (throughput > CollectionCreation.DefaultCollectionRUs100K && !this.isCostAcknowledged) {
-      const errorMessage = this.isNewDatabaseAutoscale
+      const errorMessage = this.isCollectionAutoscale
         ? t(Keys.panes.addCollection.acknowledgeSpendErrorMonthly)
         : t(Keys.panes.addCollection.acknowledgeSpendErrorDaily);
       this.setState({ errorMessage });
@@ -1379,9 +1315,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       database: {
         id: databaseId,
         new: this.state.createNewDatabase,
-        shared: this.state.createNewDatabase
-          ? this.state.isSharedThroughputChecked
-          : this.isSelectedDatabaseSharedThroughput(),
+        shared: this.state.createNewDatabase ? false : this.isSelectedDatabaseSharedThroughput(),
       },
       collection: {
         id: this.state.collectionId,
@@ -1399,7 +1333,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     const startKey: number = TelemetryProcessor.traceStart(Action.CreateCollection, telemetryData);
 
     const databaseLevelThroughput: boolean = this.state.createNewDatabase
-      ? this.state.isSharedThroughputChecked
+      ? false
       : this.isSelectedDatabaseSharedThroughput() && !this.state.enableDedicatedThroughput;
 
     let offerThroughput: number;
@@ -1410,13 +1344,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       autoPilotMaxThroughput = DEFAULT_FABRIC_NATIVE_CONTAINER_THROUGHPUT;
       offerThroughput = undefined;
     } else if (databaseLevelThroughput) {
-      if (this.state.createNewDatabase) {
-        if (this.isNewDatabaseAutoscale) {
-          autoPilotMaxThroughput = this.newDatabaseThroughput;
-        } else {
-          offerThroughput = this.newDatabaseThroughput;
-        }
-      }
+      // Existing shared database: no collection-level throughput needed
     } else {
       if (this.isCollectionAutoscale) {
         autoPilotMaxThroughput = this.collectionThroughput;

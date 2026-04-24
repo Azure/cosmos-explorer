@@ -440,21 +440,15 @@
       "keyspaceIdLabel": "Keyspace id",
       "databaseIdPlaceholder": "Type a new {{databaseLabel}} id",
       "databaseTooltip": "A {{databaseLabel}} is a logical container of one or more {{collectionsLabel}}",
-      "shareThroughput": "Share throughput across {{collectionsLabel}}",
-      "shareThroughputTooltip": "Provisioned throughput at the {{databaseLabel}} level will be shared across all {{collectionsLabel}} within the {{databaseLabel}}.",
       "greaterThanError": "Please enter a value greater than {{minValue}} for autopilot throughput",
       "acknowledgeSpendError": "Please acknowledge the estimated {{period}} spend.",
       "acknowledgeSpendErrorMonthly": "Please acknowledge the estimated monthly spend.",
-      "acknowledgeSpendErrorDaily": "Please acknowledge the estimated daily spend.",
-      "provisionSharedThroughputTitle": "Provision shared throughput",
-      "provisionThroughputLabel": "Provision throughput"
+      "acknowledgeSpendErrorDaily": "Please acknowledge the estimated daily spend."
     },
     "addCollection": {
       "createNew": "Create new",
       "useExisting": "Use existing",
       "databaseTooltip": "A database is analogous to a namespace. It is the unit of management for a set of {{collectionName}}.",
-      "shareThroughput": "Share throughput across {{collectionName}}",
-      "shareThroughputTooltip": "Throughput configured at the database level will be shared across all {{collectionName}} within the database.",
       "collectionIdLabel": "{{collectionName}} id",
       "collectionIdTooltip": "Unique identifier for the {{collectionName}} and used for id-based routing through REST and all SDKs.",
       "collectionIdPlaceholder": "e.g., {{collectionName}}1",
