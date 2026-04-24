@@ -438,21 +438,15 @@
       "keyspaceIdLabel": "键空间 ID",
       "databaseIdPlaceholder": "键入新的 {{databaseLabel}} ID",
       "databaseTooltip": "{{databaseLabel}} 是一个或多个 {{collectionsLabel}} 的逻辑容器",
-      "shareThroughput": "跨 {{collectionsLabel}} 共享吞吐量",
-      "shareThroughputTooltip": "{{databaseLabel}} 级别的预配吞吐量将在 {{databaseLabel}} 内的所有 {{collectionsLabel}} 之间共享。",
       "greaterThanError": "对于 autopilot 吞吐量，请输入大于 {{minValue}} 的值",
       "acknowledgeSpendError": "请确认估计的 {{period}} 支出。",
       "acknowledgeSpendErrorMonthly": "请确认估计的每月支出。",
-      "acknowledgeSpendErrorDaily": "请确认估计的每日支出。",
-      "provisionSharedThroughputTitle": "预配共享吞吐量",
-      "provisionThroughputLabel": "预配吞吐量"
+      "acknowledgeSpendErrorDaily": "请确认估计的每日支出。"
     },
     "addCollection": {
       "createNew": "新建",
       "useExisting": "使用现有项",
       "databaseTooltip": "数据库类似于命名空间。它是一组 {{collectionName}} 的管理单元。",
-      "shareThroughput": "跨 {{collectionName}} 共享吞吐量",
-      "shareThroughputTooltip": "在数据库级别配置的吞吐量将在数据库内的所有 {{collectionName}} 之间共享。",
       "collectionIdLabel": "{{collectionName}} id",
       "collectionIdTooltip": "{{collectionName}} 的唯一标识符，用于通过 REST 和所有 SDK 进行基于 ID 的路由。",
       "collectionIdPlaceholder": "例如，{{collectionName}}1",

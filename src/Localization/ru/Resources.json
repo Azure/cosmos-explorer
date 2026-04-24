@@ -438,21 +438,15 @@
       "keyspaceIdLabel": "ИД ключевого пространства",
       "databaseIdPlaceholder": "Введите новый идентификатор {{databaseLabel}}",
       "databaseTooltip": "{{databaseLabel}} — логический контейнер с одним или несколькими {{collectionsLabel}}",
-      "shareThroughput": "Делиться пропускной способностью в пределах {{collectionsLabel}}",
-      "shareThroughputTooltip": "Пропускная способность, настроенная на уровне {{databaseLabel}}, будет совместно использоваться всеми {{collectionsLabel}} в {{databaseLabel}}.",
       "greaterThanError": "Введите значение, большее {{minValue}}, для пропускной способности автопилота",
       "acknowledgeSpendError": "Подтвердите, что осведомлены о смете ежемесячных расходов за {{period}}.",
       "acknowledgeSpendErrorMonthly": "Подтвердите, что осведомлены о смете ежемесячных расходов.",
-      "acknowledgeSpendErrorDaily": "Подтвердите, что осведомлены о смете ежемесячных расходов за день.",
-      "provisionSharedThroughputTitle": "Подготовить пропускную способность для совместного использования",
-      "provisionThroughputLabel": "Подготовить пропускную способность"
+      "acknowledgeSpendErrorDaily": "Подтвердите, что осведомлены о смете ежемесячных расходов за день."
     },
     "addCollection": {
       "createNew": "Создать новую",
       "useExisting": "Использовать существующие",
       "databaseTooltip": "База данных аналогична пространству имён. Это единица управления для набора {{collectionName}}.",
-      "shareThroughput": "Делиться пропускной способностью в пределах {{collectionName}}",
-      "shareThroughputTooltip": "Пропускная способность, настроенная на уровне базы данных, будет совместно использоваться всеми {{collectionName}} в базе данных.",
       "collectionIdLabel": "ИД {{collectionName}}",
       "collectionIdTooltip": "Уникальный идентификатор {{collectionName}}, который используется для маршрутизации на основе идентификаторов в REST и всех пакетах SDK.",
       "collectionIdPlaceholder": "например, {{collectionName}}1",

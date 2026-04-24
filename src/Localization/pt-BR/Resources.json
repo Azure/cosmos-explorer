@@ -438,21 +438,15 @@
       "keyspaceIdLabel": "ID do Keyspace",
       "databaseIdPlaceholder": "Digite uma nova ID de {{databaseLabel}}",
       "databaseTooltip": "O {{databaseLabel}} é um contêiner lógico de um ou mais {{collectionsLabel}}",
-      "shareThroughput": "Compartilhar taxa de transferência entre {{collectionsLabel}}",
-      "shareThroughputTooltip": "A taxa de transferência provisionada no nível {{databaseLabel}} será compartilhada entre todos {{collectionsLabel}} no {{databaseLabel}}.",
       "greaterThanError": "Insira um valor maior que {{minValue}} para a taxa de transferência do Autopilot",
       "acknowledgeSpendError": "Confirme os gastos estimados de {{period}}.",
       "acknowledgeSpendErrorMonthly": "Confirme os gastos mensais estimados.",
-      "acknowledgeSpendErrorDaily": "Confirme os gastos diários estimados.",
-      "provisionSharedThroughputTitle": "Provisionar taxa de transferência compartilhada",
-      "provisionThroughputLabel": "Provisionar taxa de transferência"
+      "acknowledgeSpendErrorDaily": "Confirme os gastos diários estimados."
     },
     "addCollection": {
       "createNew": "Criar novo",
       "useExisting": "Usar o existente",
       "databaseTooltip": "Um banco de dados é análogo a um namespace. Essa é a unidade de gerenciamento para um conjunto de {{collectionName}}.",
-      "shareThroughput": "Compartilhar taxa de transferência entre {{collectionName}}",
-      "shareThroughputTooltip": "A taxa de transferência configurada no nível do banco de dados será compartilhada entre todos os {{collectionName}} dentro do banco de dados.",
       "collectionIdLabel": "ID de {{collectionName}}",
       "collectionIdTooltip": "Identificador exclusivo para o {{collectionName}} e usado para roteamento baseado em ID por meio de REST e todos os SDKs.",
       "collectionIdPlaceholder": "Por exemplo, {{collectionName}}1",

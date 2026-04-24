@@ -438,21 +438,15 @@
       "keyspaceIdLabel": "Id ruang kunci",
       "databaseIdPlaceholder": "Ketik id {{databaseLabel}} baru",
       "databaseTooltip": "{{databaseLabel}} adalah kontainer logis dari satu atau beberapa {{collectionsLabel}}",
-      "shareThroughput": "Bagikan throughput di {{collectionsLabel}}",
-      "shareThroughputTooltip": "Throughput yang diprovisi di tingkat {{databaseLabel}} akan dibagikan ke semua {{collectionsLabel}} dalam {{databaseLabel}}.",
       "greaterThanError": "Masukkan nilai yang lebih besar dari {{minValue}} untuk throughput autopilot",
       "acknowledgeSpendError": "Setujui perkiraan pengeluaran {{period}}.",
       "acknowledgeSpendErrorMonthly": "Setujui perkiraan pengeluaran bulanan.",
-      "acknowledgeSpendErrorDaily": "Setujui perkiraan pengeluaran harian.",
-      "provisionSharedThroughputTitle": "Menyediakan throughput bersama",
-      "provisionThroughputLabel": "Berikan throughput"
+      "acknowledgeSpendErrorDaily": "Setujui perkiraan pengeluaran harian."
     },
     "addCollection": {
       "createNew": "Buat baru",
       "useExisting": "Gunakan yang sudah ada",
       "databaseTooltip": "Database serupa dengan namespace. Ini adalah unit manajemen untuk serangkaian {{collectionName}}.",
-      "shareThroughput": "Bagikan throughput di {{collectionName}}",
-      "shareThroughputTooltip": "Throughput yang dikonfigurasi di tingkat database akan dibagikan ke semua {{collectionName}} dalam database.",
       "collectionIdLabel": "{{collectionName}} id",
       "collectionIdTooltip": "Pengidentifikasi unik untuk {{collectionName}} dan digunakan untuk perutean berbasis id melalui REST dan semua SDK.",
       "collectionIdPlaceholder": "misalnya, {{collectionName}}1",

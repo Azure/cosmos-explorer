@@ -438,21 +438,15 @@
       "keyspaceIdLabel": "Identyfikator przestrzeni kluczy",
       "databaseIdPlaceholder": "Wpisz nowy identyfikator {{databaseLabel}}",
       "databaseTooltip": "{{databaseLabel}} to logiczny kontener co najmniej jednego {{collectionsLabel}}",
-      "shareThroughput": "Udostępnij przepływność w usłudze {{collectionsLabel}}",
-      "shareThroughputTooltip": "Aprowizowana przepływność na poziomie {{databaseLabel}} będzie współdzielona przez wszystkie {{collectionsLabel}} w {{databaseLabel}}.",
       "greaterThanError": "Wprowadź wartość większą niż {{minValue}} dla przepływności rozwiązania Autopilot",
       "acknowledgeSpendError": "Potwierdź szacowane wydatki {{period}}.",
       "acknowledgeSpendErrorMonthly": "Potwierdź szacowane miesięczne wydatki.",
-      "acknowledgeSpendErrorDaily": "Potwierdź szacowane dzienne wydatki.",
-      "provisionSharedThroughputTitle": "Aprowizowanie współużytkowanej przepływności",
-      "provisionThroughputLabel": "Aprowizowanie przepływności"
+      "acknowledgeSpendErrorDaily": "Potwierdź szacowane dzienne wydatki."
     },
     "addCollection": {
       "createNew": "Utwórz nowy",
       "useExisting": "Użyj istniejących",
       "databaseTooltip": "Baza danych jest odpowiednikiem przestrzeni nazw. To jednostka zarządzania zestawem {{collectionName}}.",
-      "shareThroughput": "Udostępnij przepływność w usłudze {{collectionName}}",
-      "shareThroughputTooltip": "Przepływność skonfigurowana na poziomie bazy danych będzie współdzielona przez wszystkie {{collectionName}} w bazie danych.",
       "collectionIdLabel": "identyfikator {{collectionName}}",
       "collectionIdTooltip": "Identyfikator unikatowy {{collectionName}} używany do routingu opartego na identyfikatorach prowadzącego przez interfejs REST i wszystkie zestawy SDK.",
       "collectionIdPlaceholder": "np. {{collectionName}}1",

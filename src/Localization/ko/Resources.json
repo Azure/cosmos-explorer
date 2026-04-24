@@ -438,21 +438,15 @@
       "keyspaceIdLabel": "키스페이스 ID",
       "databaseIdPlaceholder": "새 {{databaseLabel}} ID 입력",
       "databaseTooltip": "{{databaseLabel}}은(는) 하나 이상의 {{collectionsLabel}} 논리 컨테이너입니다.",
-      "shareThroughput": "{{collectionsLabel}} 전체에서 처리량 공유",
-      "shareThroughputTooltip": "{{databaseLabel}} 수준에서 프로비전된 처리량은 {{databaseLabel}} 내의 모든 {{collectionsLabel}}에서 공유됩니다.",
       "greaterThanError": "autopilot 처리량에 대해 {{minValue}} 보다 큰 값을 입력하세요.",
       "acknowledgeSpendError": "예상 {{period}} 지출을 확인하세요.",
       "acknowledgeSpendErrorMonthly": "월별 예상 지출을 확인하세요.",
-      "acknowledgeSpendErrorDaily": "예상 일별 지출을 확인하세요.",
-      "provisionSharedThroughputTitle": "공유 처리량 프로비전",
-      "provisionThroughputLabel": "처리량 프로비전"
+      "acknowledgeSpendErrorDaily": "예상 일별 지출을 확인하세요."
     },
     "addCollection": {
       "createNew": "새로 만들기",
       "useExisting": "기존 항목 사용",
       "databaseTooltip": "데이터베이스는 네임스페이스와 유사합니다. 데이터베이스는 {{collectionName}} 집합을 관리하는 단위입니다.",
-      "shareThroughput": "{{collectionName}}의 처리량 공유",
-      "shareThroughputTooltip": "데이터베이스 수준에서 구성된 처리량은 데이터베이스 내 모든 {{collectionName}}에서 공유됩니다.",
       "collectionIdLabel": "{{collectionName}} ID",
       "collectionIdTooltip": "{{collectionName}}의 고유 식별자이며 REST 및 모든 SDK를 통해 ID 기반 라우팅에 사용됩니다.",
       "collectionIdPlaceholder": "e.g., {{collectionName}}1",

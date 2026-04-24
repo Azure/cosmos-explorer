@@ -438,21 +438,15 @@
       "keyspaceIdLabel": "ID do espaço de chaves",
       "databaseIdPlaceholder": "Escreva um novo ID {{databaseLabel}} ",
       "databaseTooltip": "Um {{databaseLabel}} é um contentor lógico de um ou mais {{collectionsLabel}}",
-      "shareThroughput": "Partilhar débito entre {{collectionsLabel}}",
-      "shareThroughputTooltip": "O débito aprovisionado ao nível {{databaseLabel}} será partilhado por todos os {{collectionsLabel}} dentro do {{databaseLabel}}.",
       "greaterThanError": "Introduza um valor superior a {{minValue}}  para o débito do autopilot",
       "acknowledgeSpendError": "Confirme os gastos estimados de {{period}} .",
       "acknowledgeSpendErrorMonthly": "Confirme os gastos mensais estimados.",
-      "acknowledgeSpendErrorDaily": "Confirme os gastos diários estimados.",
-      "provisionSharedThroughputTitle": "Aprovisionar débito partilhado",
-      "provisionThroughputLabel": "Aprovisionar débito"
+      "acknowledgeSpendErrorDaily": "Confirme os gastos diários estimados."
     },
     "addCollection": {
       "createNew": "Criar novo",
       "useExisting": "Utilizar existente",
       "databaseTooltip": "Uma base de dados é análoga a um espaço de nomes. É a unidade de gestão para um conjunto de {{collectionName}}.",
-      "shareThroughput": "Partilhar débito entre {{collectionName}}",
-      "shareThroughputTooltip": "O débito configurado ao nível da base de dados será partilhado por todos os {{collectionName}}  na base de dados.",
       "collectionIdLabel": "id {{collectionName}}",
       "collectionIdTooltip": "Identificador único para o {{collectionName}} e utilizado para encaminhamento com base no id através do REST e de todos os SDKs.",
       "collectionIdPlaceholder": "por exemplo, 1{{collectionName}}",

@@ -438,21 +438,15 @@
       "keyspaceIdLabel": "索引 Keyspace 識別碼",
       "databaseIdPlaceholder": "輸入新的 {{databaseLabel}} 識別碼",
       "databaseTooltip": "{{databaseLabel}} 是一或多個 {{collectionsLabel}} 的邏輯容器",
-      "shareThroughput": "跨 {{collectionsLabel}} 共用輸送量",
-      "shareThroughputTooltip": "{{databaseLabel}} 層級的已佈建輸送量將會跨 {{databaseLabel}} 內的所有 {{collectionsLabel}} 共用。",
       "greaterThanError": "請為 Autopilot 輸送量輸入大於 {{minValue}} 的值",
       "acknowledgeSpendError": "請認知估計的 {{period}} 支出。",
       "acknowledgeSpendErrorMonthly": "請認知每月預估支出。",
-      "acknowledgeSpendErrorDaily": "請認知估計的每日支出。",
-      "provisionSharedThroughputTitle": "佈建共用輸送量",
-      "provisionThroughputLabel": "佈建輸送量"
+      "acknowledgeSpendErrorDaily": "請認知估計的每日支出。"
     },
     "addCollection": {
       "createNew": "新建",
       "useExisting": "使用現有項目",
       "databaseTooltip": "資料庫類似於命名空間。它是一組 {{collectionName}} 的管理單位。",
-      "shareThroughput": "跨 {{collectionName}} 共用輸送量",
-      "shareThroughputTooltip": "在資料庫層級所設定的輸送量，將會跨資料庫內的所有 {{collectionName}} 共用。",
       "collectionIdLabel": "{{collectionName}} 識別碼",
       "collectionIdTooltip": "{{collectionName}} 的唯一識別碼，並用於透過 REST 和所有 SDK 進行識別碼型路由。",
       "collectionIdPlaceholder": "例如，{{collectionName}}1",

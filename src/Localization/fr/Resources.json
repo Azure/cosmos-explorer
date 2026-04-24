@@ -438,21 +438,15 @@
       "keyspaceIdLabel": "ID d’espace clé",
       "databaseIdPlaceholder": "Entrer un nouvel ID de {{databaseLabel}}",
       "databaseTooltip": "Une {{databaseLabel}} est un conteneur logique d’un ou plusieurs {{collectionsLabel}}",
-      "shareThroughput": "Partager le débit sur {{collectionsLabel}}",
-      "shareThroughputTooltip": "Le débit approvisionné au niveau {{databaseLabel}} est partagé entre tous les {{collectionsLabel}} du {{databaseLabel}}.",
       "greaterThanError": "Entrer une valeur supérieure à {{minValue}} pour le débit Autopilot",
       "acknowledgeSpendError": "Prenez en compte l’estimation des dépenses {{period}}.",
       "acknowledgeSpendErrorMonthly": "Prenez en compte l’estimation des dépenses mensuelles.",
-      "acknowledgeSpendErrorDaily": "Prenez en compte l’estimation des dépenses quotidiennes.",
-      "provisionSharedThroughputTitle": "Approvisionnez le débit partagé",
-      "provisionThroughputLabel": "Débit d’approvisionnement"
+      "acknowledgeSpendErrorDaily": "Prenez en compte l’estimation des dépenses quotidiennes."
     },
     "addCollection": {
       "createNew": "Créer",
       "useExisting": "Utiliser l’élément existant",
       "databaseTooltip": "Une base de données est comparable à un espace de noms. Il s’agit de l’unité de gestion d’un ensemble de {{collectionName}}.",
-      "shareThroughput": "Partager le débit sur {{collectionName}}",
-      "shareThroughputTooltip": "Le débit configuré au niveau de la base de données sera partagé entre tous les {{collectionName}} de la base de données.",
       "collectionIdLabel": "ID de {{collectionName}}",
       "collectionIdTooltip": "L’identificateur unique du {{collectionName}}, également utilisé pour le routage basé sur l’ID dans REST et tous les SDK.",
       "collectionIdPlaceholder": "p. ex. {{collectionName}}1",

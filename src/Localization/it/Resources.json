@@ -438,21 +438,15 @@
       "keyspaceIdLabel": "ID spazio chiavi",
       "databaseIdPlaceholder": "Digitare un nuovo ID {{databaseLabel}}",
       "databaseTooltip": "Un {{databaseLabel}} è un contenitore logico di una o più {{collectionsLabel}}",
-      "shareThroughput": "Condividi velocità effettiva in {{collectionsLabel}}",
-      "shareThroughputTooltip": "La velocità effettiva con provisioning al livello {{databaseLabel}} sarà condivisa tra tutte le {{collectionsLabel}} all'interno di {{databaseLabel}}.",
       "greaterThanError": "Immettere un valore maggiore di {{minValue}} per la velocità effettiva di Autopilot",
       "acknowledgeSpendError": "Confermare la spesa stimata di {{period}}.",
       "acknowledgeSpendErrorMonthly": "Confermare la spesa mensile stimata.",
-      "acknowledgeSpendErrorDaily": "Confermare la spesa giornaliera stimata.",
-      "provisionSharedThroughputTitle": "Provisioning velocità effettiva condivisa",
-      "provisionThroughputLabel": "Provisioning velocità effettiva"
+      "acknowledgeSpendErrorDaily": "Confermare la spesa giornaliera stimata."
     },
     "addCollection": {
       "createNew": "Crea nuovo",
       "useExisting": "Usa esistente",
       "databaseTooltip": "Un database è analogo a uno spazio dei nomi. È l'unità di gestione per un set di {{collectionName}}.",
-      "shareThroughput": "Condividi velocità effettiva in {{collectionName}}",
-      "shareThroughputTooltip": "La velocità effettiva configurata a livello di database sarà condivisa tra tutte le {{collectionName}} all'interno del database.",
       "collectionIdLabel": "ID {{collectionName}}",
       "collectionIdTooltip": "Identificatore univoco per {{collectionName}} e usato per il routing basato su IP in REST e in tutti gli SDK.",
       "collectionIdPlaceholder": "Ad esempio, {{collectionName}}1",

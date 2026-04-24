@@ -438,21 +438,15 @@
       "keyspaceIdLabel": "Kulcstér azonosítója",
       "databaseIdPlaceholder": "Írjon be egy új {{databaseLabel}}-azonosítót",
       "databaseTooltip": "A(z) {{databaseLabel}} egy vagy több {{collectionsLabel}} logikai tárolója",
-      "shareThroughput": "Átviteli sebesség megosztása az összes {{collectionsLabel}} között",
-      "shareThroughputTooltip": "A(z) {{databaseLabel}} szinten kiépített átviteli sebesség meg lesz osztva az összes {{collectionsLabel}} között a(z) {{databaseLabel}} keretein belül.",
       "greaterThanError": "Az Autopilot átviteli sebességéhez olyan értéket adjon meg, ami nagyobb, mint {{minValue}}",
       "acknowledgeSpendError": "Nyugtázza a becsült {{period}} ráfordítást.",
       "acknowledgeSpendErrorMonthly": "Nyugtázza a becsült havi ráfordítást.",
-      "acknowledgeSpendErrorDaily": "Nyugtázza a becsült napi ráfordítást.",
-      "provisionSharedThroughputTitle": "Megosztott átviteli sebesség kiosztása",
-      "provisionThroughputLabel": "Átviteli sebesség kiosztása"
+      "acknowledgeSpendErrorDaily": "Nyugtázza a becsült napi ráfordítást."
     },
     "addCollection": {
       "createNew": "Új létrehozása",
       "useExisting": "Meglévő használata",
       "databaseTooltip": "Az adatbázis hasonló a névtérhez. Ez a(z) {{collectionName}}-készlet felügyeleti egysége.",
-      "shareThroughput": "Átviteli sebesség megosztása az összes {{collectionName}} között",
-      "shareThroughputTooltip": "Az adatbázis szintjén konfigurált átviteli sebesség az összes {{collectionName}} között meg lesz osztva az adatbázisban.",
       "collectionIdLabel": "{{collectionName}}-azonosító",
       "collectionIdTooltip": "A(z) {{collectionName}} egyedi azonosítója, amelyet a rendszer az azonosítóalapú útválasztás során használ a REST-ben és az összes SDK-ban.",
       "collectionIdPlaceholder": "például {{collectionName}}1",

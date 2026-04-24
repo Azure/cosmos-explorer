@@ -438,21 +438,15 @@
       "keyspaceIdLabel": "キースペース ID",
       "databaseIdPlaceholder": "新しい {{databaseLabel}} ID を入力してください",
       "databaseTooltip": "{{databaseLabel}} は 1 つ以上の {{collectionsLabel}} の論理コンテナーです",
-      "shareThroughput": "{{collectionsLabel}} 全体でスループットを共有する",
-      "shareThroughputTooltip": "{{databaseLabel}} レベルでプロビジョニングされたスループットは、{{collectionsLabel}} 内のすべての {{databaseLabel}} で共有されます。",
       "greaterThanError": "オートパイロット スループットの {{minValue}} より大きい値を入力してください",
       "acknowledgeSpendError": "毎月の推定 {{period}} 支出に同意してください。",
       "acknowledgeSpendErrorMonthly": "毎月の推定支出に同意してください。",
-      "acknowledgeSpendErrorDaily": "毎日の推定支出に同意してください。",
-      "provisionSharedThroughputTitle": "共有スループットのプロビジョニング",
-      "provisionThroughputLabel": "スループットのプロビジョニング"
+      "acknowledgeSpendErrorDaily": "毎日の推定支出に同意してください。"
     },
     "addCollection": {
       "createNew": "新規作成",
       "useExisting": "既存のものを使用",
       "databaseTooltip": "データベースは名前空間に類似しています。{{collectionName}} のセットの管理単位です。",
-      "shareThroughput": "{{collectionName}} 全体でスループットを共有する",
-      "shareThroughputTooltip": "データベース レベルで構成されたスループットは、データベース内のすべての {{collectionName}} で共有されます。",
       "collectionIdLabel": "{{collectionName}} ID",
       "collectionIdTooltip": "REST とすべての SDK を介した ID ベースのルーティングに使用される {{collectionName}} の一意識別子。",
       "collectionIdPlaceholder": "例: {{collectionName}}1",

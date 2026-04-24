@@ -438,21 +438,15 @@
       "keyspaceIdLabel": "Keyspace-ID",
       "databaseIdPlaceholder": "Neue {{databaseLabel}}-ID eingeben",
       "databaseTooltip": "{{databaseLabel}} ist ein logischer Container mit mindestens einem {{collectionsLabel}}",
-      "shareThroughput": "Durchsatz für {{collectionsLabel}} gemeinsam nutzen",
-      "shareThroughputTooltip": "Der bereitgestellte Durchsatz auf der {{databaseLabel}}-Ebene wird von allen {{collectionsLabel}} innerhalb von {{databaseLabel}} gemeinsam genutzt.",
       "greaterThanError": "Geben Sie für den Autopilot-Durchsatz einen Wert ein, der größer als {{minValue}} ist.",
       "acknowledgeSpendError": "Bestätigen Sie die geschätzten {{period}} Ausgaben.",
       "acknowledgeSpendErrorMonthly": "Bestätigen Sie die geschätzten monatlichen Ausgaben.",
-      "acknowledgeSpendErrorDaily": "Bestätigen Sie die geschätzten täglichen Ausgaben.",
-      "provisionSharedThroughputTitle": "Freigegebenen Durchsatz bereitstellen",
-      "provisionThroughputLabel": "Durchsatz bereitstellen"
+      "acknowledgeSpendErrorDaily": "Bestätigen Sie die geschätzten täglichen Ausgaben."
     },
     "addCollection": {
       "createNew": "Neu erstellen",
       "useExisting": "Vorhandene verwenden",
       "databaseTooltip": "Eine Datenbank entspricht einem Namespace. Das ist die Verwaltungseinheit für einen Satz von {{collectionName}}.",
-      "shareThroughput": "Durchsatz für {{collectionName}} gemeinsam nutzen",
-      "shareThroughputTooltip": "Der auf Datenbankebene konfigurierte Durchsatz wird von allen {{collectionName}} innerhalb der Datenbank gemeinsam genutzt.",
       "collectionIdLabel": "{{collectionName}} ID",
       "collectionIdTooltip": "Eindeutiger Bezeichner für {{collectionName}} und wird für id-basiertes Routing über REST und alle SDKs verwendet.",
       "collectionIdPlaceholder": "Beispiel: {{collectionName}}1",

@@ -438,21 +438,15 @@
       "keyspaceIdLabel": "Keyspace kimliği",
       "databaseIdPlaceholder": "Yeni bir {{databaseLabel}} kimliği girin",
       "databaseTooltip": "{{databaseLabel}}, bir veya daha fazla {{collectionsLabel}} içeren bir mantıksal kapsayıcıdır.",
-      "shareThroughput": "Aktarım hızını {{collectionsLabel}} koleksiyonunda paylaş",
-      "shareThroughputTooltip": "{{databaseLabel}} düzeyinde sağlanan aktarım hızı, {{databaseLabel}} altındaki tüm {{collectionsLabel}} ile paylaşılır.",
       "greaterThanError": "Autopilot aktarım hızı için {{minValue}} değerinden büyük bir değer girin",
       "acknowledgeSpendError": "Lütfen tahmini {{period}} harcamayı kabul edin.",
       "acknowledgeSpendErrorMonthly": "Lütfen tahmini aylık harcamayı kabul edin.",
-      "acknowledgeSpendErrorDaily": "Lütfen tahmini günlük harcamayı kabul edin.",
-      "provisionSharedThroughputTitle": "Paylaşılan aktarım hızını ayarlayın",
-      "provisionThroughputLabel": "Aktarım hızı sağla"
+      "acknowledgeSpendErrorDaily": "Lütfen tahmini günlük harcamayı kabul edin."
     },
     "addCollection": {
       "createNew": "Yeni oluştur",
       "useExisting": "Mevcut olanı kullan",
       "databaseTooltip": "Veritabanı, ad alanına benzer. Bu, {{collectionName}} kümesi için yönetim birimidir.",
-      "shareThroughput": "Aktarım hızını {{collectionName}} koleksiyonunda paylaş",
-      "shareThroughputTooltip": "Veritabanı düzeyinde yapılandırılan aktarım hızı, veritabanındaki tüm {{collectionName}} genelinde paylaşılır.",
       "collectionIdLabel": "{{collectionName}} kimliği",
       "collectionIdTooltip": "{{collectionName}} için benzersiz tanımlayıcı ve REST ve tüm SDK’larda kimlik tabanlı yönlendirme için kullanılır.",
       "collectionIdPlaceholder": "ör. {{collectionName}}1",

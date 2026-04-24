@@ -438,21 +438,15 @@
       "keyspaceIdLabel": "Id. de espacio de claves",
       "databaseIdPlaceholder": "Escriba un nuevo {{databaseLabel}} identificador",
       "databaseTooltip": "Un {{databaseLabel}} es un contenedor lógico de uno o varios {{collectionsLabel}}",
-      "shareThroughput": "Compartir el rendimiento entre {{collectionsLabel}}",
-      "shareThroughputTooltip": "El rendimiento aprovisionado en el {{databaseLabel}} nivel se compartirá entre todos {{collectionsLabel}} dentro de {{databaseLabel}}.",
       "greaterThanError": "Escriba un valor mayor que para el {{minValue}} rendimiento de Autopilot",
       "acknowledgeSpendError": "Confirme el gasto estimado {{period}}.",
       "acknowledgeSpendErrorMonthly": "Confirme el gasto mensual estimado.",
-      "acknowledgeSpendErrorDaily": "Confirme el gasto diario estimado.",
-      "provisionSharedThroughputTitle": "Aprovisionamiento del rendimiento compartido",
-      "provisionThroughputLabel": "Aprovisionamiento del rendimiento"
+      "acknowledgeSpendErrorDaily": "Confirme el gasto diario estimado."
     },
     "addCollection": {
       "createNew": "Crear nuevo",
       "useExisting": "Usar existente",
       "databaseTooltip": "Una base de datos es análoga a un espacio de nombres. Es la unidad de administración de un conjunto de {{collectionName}}.",
-      "shareThroughput": "Compartir el rendimiento entre {{collectionName}}",
-      "shareThroughputTooltip": "El rendimiento configurado en el nivel de base de datos se compartirá en toda {{collectionName}} la base de datos.",
       "collectionIdLabel": "{{collectionName}} Id. ",
       "collectionIdTooltip": "Identificador único de y usado para el {{collectionName}} enrutamiento basado en identificadores a través de REST y todos los SDK.",
       "collectionIdPlaceholder": "por ejemplo, {{collectionName}}1",

@@ -438,21 +438,15 @@
       "keyspaceIdLabel": "Keyspace-id",
       "databaseIdPlaceholder": "Typ een nieuwe {{databaseLabel}}-id",
       "databaseTooltip": "Een {{databaseLabel}} is een logische container van een of meer {{collectionsLabel}}",
-      "shareThroughput": "Doorvoer delen in {{collectionsLabel}}",
-      "shareThroughputTooltip": "Ingerichte doorvoer op het {{databaseLabel}} niveau wordt gedeeld in alle {{collectionsLabel}} binnen de {{databaseLabel}}.",
       "greaterThanError": "Voer een waarde in die groter is dan {{minValue}} voor autopilot-doorvoer",
       "acknowledgeSpendError": "Bevestig de geschatte {{period}} uitgaven.",
       "acknowledgeSpendErrorMonthly": "Bevestig de geschatte maandelijkse uitgaven.",
-      "acknowledgeSpendErrorDaily": "Bevestig de geschatte dagelijkse uitgaven.",
-      "provisionSharedThroughputTitle": "Gedeelde doorvoer inrichten",
-      "provisionThroughputLabel": "Inrichtingsdoorvoer"
+      "acknowledgeSpendErrorDaily": "Bevestig de geschatte dagelijkse uitgaven."
     },
     "addCollection": {
       "createNew": "Nieuw item maken",
       "useExisting": "Bestaand item gebruiken",
       "databaseTooltip": "Een database is gelijk aan een naamruimte. Het is de beheereenheid voor een set {{collectionName}}.",
-      "shareThroughput": "Doorvoer delen in {{collectionName}}",
-      "shareThroughputTooltip": "Doorvoer die op databaseniveau is geconfigureerd, wordt gedeeld over alle {{collectionName}} binnen de database.",
       "collectionIdLabel": "{{collectionName}} id",
       "collectionIdTooltip": "Unieke id voor de {{collectionName}} en gebruikt voor routering op basis van id's via REST en alle SDK's.",
       "collectionIdPlaceholder": "bijvoorbeeld {{collectionName}}1",

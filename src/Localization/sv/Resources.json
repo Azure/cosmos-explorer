@@ -438,21 +438,15 @@
       "keyspaceIdLabel": "Keyspace-ID",
       "databaseIdPlaceholder": "Skriv ett nytt {{databaseLabel}}-ID",
       "databaseTooltip": "A {{databaseLabel}} är en logisk container för en eller flera {{collectionsLabel}}",
-      "shareThroughput": "Dela dataflöde över {{collectionsLabel}}",
-      "shareThroughputTooltip": "Etablerat dataflöde på {{databaseLabel}}-nivån delas över alla {{collectionsLabel}} i {{databaseLabel}}.",
       "greaterThanError": "Ange ett värde som är större än {{minValue}} för autopilot-dataflöde",
       "acknowledgeSpendError": "Bekräfta den uppskattade {{period}} kostnaden.",
       "acknowledgeSpendErrorMonthly": "Bekräfta den uppskattade månadskostnaden.",
-      "acknowledgeSpendErrorDaily": "Bekräfta den uppskattade dagliga kostnaden.",
-      "provisionSharedThroughputTitle": "Etablera delat dataflöde",
-      "provisionThroughputLabel": "Etablera dataflöde"
+      "acknowledgeSpendErrorDaily": "Bekräfta den uppskattade dagliga kostnaden."
     },
     "addCollection": {
       "createNew": "Skapa ny",
       "useExisting": "Använd befintlig",
       "databaseTooltip": "En databas motsvarar ett namnområde. Det är hanteringsenheten för en uppsättning . {{collectionName}}",
-      "shareThroughput": "Dela dataflöde över {{collectionName}}",
-      "shareThroughputTooltip": "Dataflödet som konfigurerats på databasnivå delas över alla {{collectionName}} i databasen.",
       "collectionIdLabel": "{{collectionName}} -ID",
       "collectionIdTooltip": "Unik identifierare för {{collectionName}} och används för ID-baserad routning via REST och alla SDK:er.",
       "collectionIdPlaceholder": "t.ex. {{collectionName}}1",
