@@ -15,7 +15,7 @@ describe("Cassandra add collection pane test", () => {
 
   it("should render default properly", () => {
     expect(screen.getByRole("radio", { name: "Create new keyspace", checked: true })).toBeDefined();
-    expect(screen.getByRole("checkbox", { name: "Provision shared throughput", checked: false })).toBeDefined();
+    expect(screen.queryByRole("checkbox", { name: "Provision shared throughput" })).toBeNull();
   });
 
   it("click on use existing", () => {
