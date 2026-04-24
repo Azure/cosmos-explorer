@@ -138,7 +138,9 @@ export async function getTestExplorerUrl(accountType: TestAccount, options?: Tes
   // For now, since we don't test copilot, we can disable the copilot APIs by setting the feature flag to false.
   params.set("feature.enableCopilot", "false");
 
-  const nosqlRbacToken = process.env.NOSQL_TESTACCOUNT_TOKEN;
+  const shardIndex = process.env.PLAYWRIGHT_SHARD_INDEX;
+
+  const nosqlRbacToken = process.env[`NOSQL_TESTACCOUNT_${shardIndex}_TOKEN`];
   const nosqlReadOnlyRbacToken = process.env.NOSQL_READONLY_TESTACCOUNT_TOKEN;
   const nosqlContainerCopyRbacToken = process.env.NOSQL_CONTAINERCOPY_TESTACCOUNT_TOKEN;
   const tableRbacToken = process.env.TABLE_TESTACCOUNT_TOKEN;
