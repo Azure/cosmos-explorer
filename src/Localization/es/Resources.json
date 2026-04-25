@@ -435,7 +435,7 @@
     "addDatabase": {
       "databaseLabel": "Base de datos {{suffix}}",
       "databaseIdLabel": "Id. de base de datos",
-      "keyspaceIdLabel": "Id. de espacio de claves",
+      "keyspaceIdLabel": "Id. de Keyspace",
       "databaseIdPlaceholder": "Escriba un nuevo {{databaseLabel}} identificador",
       "databaseTooltip": "Un {{databaseLabel}} es un contenedor lógico de uno o varios {{collectionsLabel}}",
       "greaterThanError": "Escriba un valor mayor que para el {{minValue}} rendimiento de Autopilot",
@@ -699,13 +699,13 @@
       "partitionKeyWarning": "El contenedor de destino no debe existir aún. Explorador de datos creará un nuevo contenedor de destino."
     },
     "cassandraAddCollection": {
-      "keyspaceLabel": "Nombre del espacio de claves",
-      "keyspaceTooltip": "Seleccione un espacio de claves existente o escriba un nuevo identificador de espacio de claves.",
+      "keyspaceLabel": "Nombre de Keyspace",
+      "keyspaceTooltip": "Seleccione un keyspace existente o escriba un nuevo identificador de espacio de claves.",
       "tableIdLabel": "Escriba el comando CQL para crear la tabla.",
       "enterTableId": "Escriba el id. de tabla",
       "tableSchemaAriaLabel": "Esquema de tabla",
       "provisionDedicatedThroughput": "Aprovisionamiento del rendimiento dedicado para esta tabla",
-      "provisionDedicatedThroughputTooltip": "Opcionalmente, puede aprovisionar el rendimiento dedicado para una tabla dentro de un espacio de claves que tenga aprovisionado el rendimiento. Esta cantidad de rendimiento dedicado no se compartirá con otras tablas del espacio de claves y no cuenta para el rendimiento aprovisionado para el espacio de claves. Esta cantidad de rendimiento se facturará además de la cantidad de rendimiento que aprovisionó en el nivel de espacio de claves."
+      "provisionDedicatedThroughputTooltip": "Opcionalmente, puede aprovisionar el rendimiento dedicado para una tabla dentro de un espacio de claves que tenga aprovisionado el rendimiento. Esta cantidad de rendimiento dedicado no se compartirá con otras tablas del espacio de claves y no cuenta para el rendimiento aprovisionado para el espacio de claves. Esta cantidad de rendimiento se facturará además de la cantidad de rendimiento que aprovisionó en el nivel de keyspace."
     },
     "tables": {
       "addProperty": "Agregar propiedad",
@@ -883,7 +883,7 @@
         "freeTierLearnMore": "Más información.",
         "throughputRuS": "Rendimiento (RU/s)",
         "autoScaleCustomSettings": "La cuenta tiene una configuración personalizada que impide establecer el rendimiento en el nivel de contenedor. Trabaje con su Cosmos DB punto de contacto del equipo de ingeniería para realizar cambios.",
-        "keyspaceSharedThroughput": "Este rendimiento compartido de tabla se configura en el espacio de claves",
+        "keyspaceSharedThroughput": "Este rendimiento compartido de tabla se configura en el keyspace",
         "throughputRangeLabel": "Rendimiento ({{min}} - {{max}} RU/s)",
         "unlimited": "ilimitado"
       },

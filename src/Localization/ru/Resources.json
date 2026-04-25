@@ -435,7 +435,7 @@
     "addDatabase": {
       "databaseLabel": "База данных {{suffix}}",
       "databaseIdLabel": "Идентификатор базы данных",
-      "keyspaceIdLabel": "ИД ключевого пространства",
+      "keyspaceIdLabel": "ИД пространства ключей",
       "databaseIdPlaceholder": "Введите новый идентификатор {{databaseLabel}}",
       "databaseTooltip": "{{databaseLabel}} — логический контейнер с одним или несколькими {{collectionsLabel}}",
       "greaterThanError": "Введите значение, большее {{minValue}}, для пропускной способности автопилота",

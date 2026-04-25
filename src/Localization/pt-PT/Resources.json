@@ -435,7 +435,7 @@
     "addDatabase": {
       "databaseLabel": "Base de dados {{suffix}}",
       "databaseIdLabel": "ID da base de dados",
-      "keyspaceIdLabel": "ID do espaço de chaves",
+      "keyspaceIdLabel": "ID do keyspace",
       "databaseIdPlaceholder": "Escreva um novo ID {{databaseLabel}} ",
       "databaseTooltip": "Um {{databaseLabel}} é um contentor lógico de um ou mais {{collectionsLabel}}",
       "greaterThanError": "Introduza um valor superior a {{minValue}}  para o débito do autopilot",
@@ -699,13 +699,13 @@
       "partitionKeyWarning": "O contentor de destino não pode já existir. O Data Explorer criará um novo contentor de destino para si."
     },
     "cassandraAddCollection": {
-      "keyspaceLabel": "Nome do espaço de chaves",
-      "keyspaceTooltip": "Selecione um espaço de chaves existente ou introduza um novo ID de espaço de chaves.",
+      "keyspaceLabel": "Nome do keyspace",
+      "keyspaceTooltip": "Selecione um keyspace existente ou introduza um novo ID de keyspace.",
       "tableIdLabel": "Introduza o comando CQL para criar a tabela.",
       "enterTableId": "Introduzir o Id de tabela",
       "tableSchemaAriaLabel": "Esquema da tabela",
       "provisionDedicatedThroughput": "Aprovisionar débito dedicado para esta tabela",
-      "provisionDedicatedThroughputTooltip": "Pode opcionalmente aprovisionar débito dedicado para uma tabela dentro de um espaço de chaves que tenha débito aprovisionado. Esta quantidade de débito dedicado não será partilhada com outras tabelas no espaço de chaves e não conta para o débito que aprovisionou para o espaço de chaves. Este valor de débito será faturado para além do montante de débito aprovisionado ao nível do espaço de chaves."
+      "provisionDedicatedThroughputTooltip": "Pode opcionalmente aprovisionar débito dedicado para uma tabela dentro de um keyspace que tenha débito aprovisionado. Esta quantidade de débito dedicado não será partilhada com outras tabelas no keyspace e não conta para o débito que aprovisionou para o keyspace. Este valor de débito será faturado para além do montante de débito aprovisionado ao nível do keyspace."
     },
     "tables": {
       "addProperty": "Adicionar Propriedade",
@@ -883,7 +883,7 @@
         "freeTierLearnMore": "Saiba mais.",
         "throughputRuS": "Débito (RU/s)",
         "autoScaleCustomSettings": "A conta tem definições personalizadas que impedem a definição do débito ao nível do contentor. Trabalhe com o contacto da sua equipa de engenharia do Cosmos DB para efetuar alterações.",
-        "keyspaceSharedThroughput": "O débito partilhado desta tabela está configurado ao nível do espaço de chaves",
+        "keyspaceSharedThroughput": "O débito partilhado desta tabela está configurado ao nível do keyspace",
         "throughputRangeLabel": "Débito ({{min}} - {{max}} RU/s)",
         "unlimited": "ilimitado"
       },

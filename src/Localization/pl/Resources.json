@@ -705,7 +705,7 @@
       "enterTableId": "Wprowadź identyfikator tabeli",
       "tableSchemaAriaLabel": "Schemat tabeli",
       "provisionDedicatedThroughput": "Aprowizowanie dedykowanej przepływności dla tej tabeli",
-      "provisionDedicatedThroughputTooltip": "Możesz opcjonalnie przydzielić dedykowaną przepustowość dla tabeli w przestrzeni kluczy, która ma już przydzieloną przepustowość. Ta dedykowana przepustowość nie będzie współdzielona z innymi tabelami w przestrzeni kluczy i nie będzie wliczana do przepustowości przydzielonej dla przestrzeni kluczy. Ta przepustowość będzie rozliczana dodatkowo do przepustowości przydzielonej na poziomie przestrzeni kluczy."
+      "provisionDedicatedThroughputTooltip": "Możesz opcjonalnie przydzielić dedykowaną przepływność dla tabeli w przestrzeni kluczy, która ma już przydzieloną przepływność. Ta dedykowana przepływność nie będzie współdzielona z innymi tabelami w przestrzeni kluczy i nie będzie wliczana do przepływności przydzielonej dla przestrzeni kluczy. Ta przepływność będzie rozliczana dodatkowo do przepływności przydzielonej na poziomie przestrzeni kluczy."
     },
     "tables": {
       "addProperty": "Dodaj właściwość",
