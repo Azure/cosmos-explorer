@@ -435,7 +435,7 @@
     "addDatabase": {
       "databaseLabel": "データベース {{suffix}}",
       "databaseIdLabel": "データベース ID",
-      "keyspaceIdLabel": "キースペース ID",
+      "keyspaceIdLabel": "keyspace ID",
       "databaseIdPlaceholder": "新しい {{databaseLabel}} ID を入力してください",
       "databaseTooltip": "{{databaseLabel}} は 1 つ以上の {{collectionsLabel}} の論理コンテナーです",
       "greaterThanError": "オートパイロット スループットの {{minValue}} より大きい値を入力してください",
@@ -699,13 +699,13 @@
       "partitionKeyWarning": "宛先コンテナーがまだ存在していない必要があります。データ エクスプローラーが新しい宛先コンテナーを作成します。"
     },
     "cassandraAddCollection": {
-      "keyspaceLabel": "キースペース名",
-      "keyspaceTooltip": "既存のキースペースを選択するか、新しいキースペース ID を入力します。",
+      "keyspaceLabel": "keyspace 名",
+      "keyspaceTooltip": "既存の keyspace を選択するか、新しい keyspace ID を入力します。",
       "tableIdLabel": "CQL コマンドを入力してテーブルを作成します。",
       "enterTableId": "テーブル ID の入力",
       "tableSchemaAriaLabel": "テーブル スキーマ",
       "provisionDedicatedThroughput": "このテーブルの専用スループットをプロビジョニングする",
-      "provisionDedicatedThroughputTooltip": "必要に応じて、スループットがプロビジョニングされているキースペース内のテーブルの専用スループットをプロビジョニングできます。この専用スループットはキースペース内の他のテーブルと共有されず、キースペースにプロビジョニングしたスループットには含まれません。このスループットはキースペース レベルでプロビジョニングしたスループットに加えて課金されます。"
+      "provisionDedicatedThroughputTooltip": "必要に応じて、スループットがプロビジョニングされている keyspace 内のテーブルの専用スループットをプロビジョニングできます。この専用スループットはkeyspace内の他のテーブルと共有されず、keyspaceにプロビジョニングしたスループットには含まれません。このスループットは keyspace レベルでプロビジョニングしたスループットに加えて課金されます。"
     },
     "tables": {
       "addProperty": "プロパティの追加",
@@ -883,7 +883,7 @@
         "freeTierLearnMore": "詳細をご確認ください。",
         "throughputRuS": "スループット (RU/秒)",
         "autoScaleCustomSettings": "アカウントには、コンテナー レベルでのスループットの設定を妨げるカスタム設定があります。変更を加えるには、Cosmos DB エンジニアリング チームの連絡先担当者にお問い合わせください。",
-        "keyspaceSharedThroughput": "このテーブルの共有スループットは、キースペースで構成されています",
+        "keyspaceSharedThroughput": "このテーブルの共有スループットは、keyspace で構成されています",
         "throughputRangeLabel": "スループット ({{min}} - {{max}} RU/秒)",
         "unlimited": "無制限"
       },
