@@ -435,24 +435,18 @@
     "addDatabase": {
       "databaseLabel": "資料庫 {{suffix}}",
       "databaseIdLabel": "資料庫識別碼",
-      "keyspaceIdLabel": "索引鍵空間識別碼",
+      "keyspaceIdLabel": "索引 Keyspace 識別碼",
       "databaseIdPlaceholder": "輸入新的 {{databaseLabel}} 識別碼",
       "databaseTooltip": "{{databaseLabel}} 是一或多個 {{collectionsLabel}} 的邏輯容器",
-      "shareThroughput": "跨 {{collectionsLabel}} 共用輸送量",
-      "shareThroughputTooltip": "{{databaseLabel}} 層級的已佈建輸送量將會跨 {{databaseLabel}} 內的所有 {{collectionsLabel}} 共用。",
       "greaterThanError": "請為 Autopilot 輸送量輸入大於 {{minValue}} 的值",
       "acknowledgeSpendError": "請認知估計的 {{period}} 支出。",
       "acknowledgeSpendErrorMonthly": "請認知每月預估支出。",
-      "acknowledgeSpendErrorDaily": "請認知估計的每日支出。",
-      "provisionSharedThroughputTitle": "佈建共用輸送量",
-      "provisionThroughputLabel": "佈建輸送量"
+      "acknowledgeSpendErrorDaily": "請認知估計的每日支出。"
     },
     "addCollection": {
       "createNew": "新建",
       "useExisting": "使用現有項目",
       "databaseTooltip": "資料庫類似於命名空間。它是一組 {{collectionName}} 的管理單位。",
-      "shareThroughput": "跨 {{collectionName}} 共用輸送量",
-      "shareThroughputTooltip": "在資料庫層級所設定的輸送量，將會跨資料庫內的所有 {{collectionName}} 共用。",
       "collectionIdLabel": "{{collectionName}} 識別碼",
       "collectionIdTooltip": "{{collectionName}} 的唯一識別碼，並用於透過 REST 和所有 SDK 進行識別碼型路由。",
       "collectionIdPlaceholder": "例如，{{collectionName}}1",
@@ -705,13 +699,13 @@
       "partitionKeyWarning": "目的地容器必不得已存在。資料總管將為您建立新的目的地容器。"
     },
     "cassandraAddCollection": {
-      "keyspaceLabel": "索引鍵空間名稱",
-      "keyspaceTooltip": "選取現有的索引鍵空間或輸入新的索引鍵空間識別碼。",
+      "keyspaceLabel": "索引 Keyspace 名稱",
+      "keyspaceTooltip": "選取現有的索引 Keyspace 或輸入新的索引 Keyspace 識別碼。",
       "tableIdLabel": "輸入 CQL 命令以建立資料表。",
       "enterTableId": "輸入資料表識別碼",
       "tableSchemaAriaLabel": "資料表結構描述",
       "provisionDedicatedThroughput": "為此資料表佈建專用輸送量",
-      "provisionDedicatedThroughputTooltip": "您可以選擇性地為已佈建輸送量的索引鍵空間內的資料表佈建專用輸送量。此專用輸送量數量不會與索引鍵空間中的其他資料表共用，也不會計入您為索引鍵空間所佈建的輸送量。除了您在索引鍵空間層級佈建的輸送量數量之外，也將針對此輸送量計費。"
+      "provisionDedicatedThroughputTooltip": "您可以選擇性地為已佈建輸送量的索引 Keyspace 內的資料表佈建專用輸送量。此專用輸送量數量不會與索引 Keyspace 中的其他資料表共用，也不會計入您為索引 Keyspace 所佈建的輸送量。除了您在索引 Keyspace 層級佈建的輸送量數量之外，也將針對此輸送量計費。"
     },
     "tables": {
       "addProperty": "新增屬性",
@@ -765,7 +759,7 @@
         "containerPolicies": "容器原則",
         "throughputBuckets": "輸送量貯體",
         "globalSecondaryIndexPreview": "全域次要索引 (預覽)",
-        "maskingPolicyPreview": "遮罩原則 (預覽)"
+        "maskingPolicyPreview": "遮罩原則"
       },
       "mongoNotifications": {
         "selectTypeWarning": "請選取每個索引的類型。",
@@ -889,7 +883,7 @@
         "freeTierLearnMore": "深入了解。",
         "throughputRuS": "輸送量 (每秒 RU)",
         "autoScaleCustomSettings": "您的帳戶有自訂設定可防止在容器層級設定輸送量。請與您的 Cosmos DB 工程小組連絡人合作以進行變更。",
-        "keyspaceSharedThroughput": "此資料表共用輸送量設定於索引鍵空間",
+        "keyspaceSharedThroughput": "此資料表共用輸送量設定於索引 Keyspace",
         "throughputRangeLabel": "輸送量 (每秒 {{min}} - {{max}} RU)",
         "unlimited": "無限制"
       },
@@ -961,7 +955,14 @@
         "bucketLabel": "貯體 {{id}}",
         "dataExplorerQueryBucket": " (資料總管查詢貯體)",
         "active": "使用中",
-        "inactive": "非使用中"
+        "inactive": "非使用中",
+        "defaultBucketLabel": "預設輸送量貯體",
+        "defaultBucketPlaceholder": "選取預設輸送量貯體",
+        "defaultBucketTooltip": "預設輸送量貯體用於未指定特定貯體的作業。",
+        "defaultBucketTooltipLearnMore": "深入了解。",
+        "noDefaultBucketSelected": "未選取預設輸送量貯體",
+        "bucketOptionLabel": "貯體 {{id}} - {{percentage}}%",
+        "bucketNotActive": "貯體 {{id}} 不在作用中。"
       }
     }
   }

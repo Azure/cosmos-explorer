@@ -438,21 +438,15 @@
       "keyspaceIdLabel": "键空间 ID",
       "databaseIdPlaceholder": "键入新的 {{databaseLabel}} ID",
       "databaseTooltip": "{{databaseLabel}} 是一个或多个 {{collectionsLabel}} 的逻辑容器",
-      "shareThroughput": "跨 {{collectionsLabel}} 共享吞吐量",
-      "shareThroughputTooltip": "{{databaseLabel}} 级别的预配吞吐量将在 {{databaseLabel}} 内的所有 {{collectionsLabel}} 之间共享。",
       "greaterThanError": "对于 autopilot 吞吐量，请输入大于 {{minValue}} 的值",
       "acknowledgeSpendError": "请确认估计的 {{period}} 支出。",
       "acknowledgeSpendErrorMonthly": "请确认估计的每月支出。",
-      "acknowledgeSpendErrorDaily": "请确认估计的每日支出。",
-      "provisionSharedThroughputTitle": "预配共享吞吐量",
-      "provisionThroughputLabel": "预配吞吐量"
+      "acknowledgeSpendErrorDaily": "请确认估计的每日支出。"
     },
     "addCollection": {
       "createNew": "新建",
       "useExisting": "使用现有项",
       "databaseTooltip": "数据库类似于命名空间。它是一组 {{collectionName}} 的管理单元。",
-      "shareThroughput": "跨 {{collectionName}} 共享吞吐量",
-      "shareThroughputTooltip": "在数据库级别配置的吞吐量将在数据库内的所有 {{collectionName}} 之间共享。",
       "collectionIdLabel": "{{collectionName}} id",
       "collectionIdTooltip": "{{collectionName}} 的唯一标识符，用于通过 REST 和所有 SDK 进行基于 ID 的路由。",
       "collectionIdPlaceholder": "例如，{{collectionName}}1",
@@ -765,7 +759,7 @@
         "containerPolicies": "容器策略",
         "throughputBuckets": "吞吐量存储桶",
         "globalSecondaryIndexPreview": "全局辅助索引(预览版)",
-        "maskingPolicyPreview": "掩码策略(预览版)"
+        "maskingPolicyPreview": "掩码策略"
       },
       "mongoNotifications": {
         "selectTypeWarning": "请为每个索引选择一个类型。",
@@ -889,7 +883,7 @@
         "freeTierLearnMore": "了解详细信息。",
         "throughputRuS": "吞吐量(RU/s)",
         "autoScaleCustomSettings": "你的帐户具有阻止在容器级别设置吞吐量的自定义设置。请与 Cosmos DB 工程团队联系点合作进行更改。",
-        "keyspaceSharedThroughput": "此表共享吞吐量是在密钥空间中配置的",
+        "keyspaceSharedThroughput": "此表共享吞吐量是在键空间中配置的",
         "throughputRangeLabel": "吞吐量({{min}} - {{max}} RU/秒)",
         "unlimited": "无限制"
       },
@@ -961,7 +955,14 @@
         "bucketLabel": "存储桶 {{id}}",
         "dataExplorerQueryBucket": " (数据资源管理器查询存储桶)",
         "active": "活动",
-        "inactive": "非活动"
+        "inactive": "非活动",
+        "defaultBucketLabel": "默认吞吐量存储桶",
+        "defaultBucketPlaceholder": "选择默认吞吐量存储桶",
+        "defaultBucketTooltip": "默认吞吐量存储桶用于未指定特定存储桶的操作。",
+        "defaultBucketTooltipLearnMore": "了解详细信息。",
+        "noDefaultBucketSelected": "未选择默认吞吐量存储桶",
+        "bucketOptionLabel": "存储桶 {{id}} - {{percentage}}%",
+        "bucketNotActive": "存储桶 {{id}} 未处于活动状态。"
       }
     }
   }
