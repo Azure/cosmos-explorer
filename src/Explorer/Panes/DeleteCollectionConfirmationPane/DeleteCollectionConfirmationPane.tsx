@@ -136,7 +136,7 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
     onSubmit,
   };
   const copyableIdLabel = t(Keys.panes.deleteCollection.copyableId, {
-    collectionName: collectionName.toLowerCase(),
+    collectionName: getCollectionName(),
   });
   const confirmContainer = t(Keys.panes.deleteCollection.confirmPrompt, {
     collectionName: collectionName.toLowerCase(),
