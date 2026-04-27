@@ -39,11 +39,11 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                   }
                 }
               >
-                container id:
+                container Id:
               </span>
             </Text>
             <StyledTextFieldBase
-              ariaLabel="container id:"
+              ariaLabel="container Id:"
               id="copyableCollectionId"
               onRenderSuffix={[Function]}
               readOnly={true}
@@ -75,7 +75,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
               value="testCol"
             >
               <TextFieldBase
-                ariaLabel="container id:"
+                ariaLabel="container Id:"
                 deferredValidationTime={200}
                 id="copyableCollectionId"
                 onRenderSuffix={[Function]}
@@ -369,7 +369,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                     >
                       <input
                         aria-invalid={false}
-                        aria-label="container id:"
+                        aria-label="container Id:"
                         aria-labelledby="TextFieldSuffix4"
                         className="ms-TextField-field field-113"
                         id="copyableCollectionId"

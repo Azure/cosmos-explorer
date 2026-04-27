@@ -366,11 +366,11 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
                 }
               }
             >
-              Database id:
+              Database Id:
             </span>
           </Text>
           <StyledTextFieldBase
-            ariaLabel="Database id:"
+            ariaLabel="Database Id:"
             id="copyableDatabaseId"
             onRenderSuffix={[Function]}
             readOnly={true}
@@ -402,7 +402,7 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
             value="testDatabase"
           >
             <TextFieldBase
-              ariaLabel="Database id:"
+              ariaLabel="Database Id:"
               deferredValidationTime={200}
               id="copyableDatabaseId"
               onRenderSuffix={[Function]}
@@ -696,7 +696,7 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
                   >
                     <input
                       aria-invalid={false}
-                      aria-label="Database id:"
+                      aria-label="Database Id:"
                       aria-labelledby="TextFieldSuffix4"
                       className="ms-TextField-field field-117"
                       id="copyableDatabaseId"
