@@ -17,6 +17,7 @@ import React, { FunctionComponent, useState } from "react";
 import { useDatabases } from "../../useDatabases";
 import { useSelectedNode } from "../../useSelectedNode";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
+import { PanelInfoErrorComponent, PanelInfoErrorProps } from "../PanelInfoErrorComponent";
 
 const themedTextFieldStyles = {
   fieldGroup: {
@@ -135,6 +136,11 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
     submitButtonText: t(Keys.common.ok),
     onSubmit,
   };
+  const errorProps: PanelInfoErrorProps = {
+    messageType: "warning",
+    showErrorDetails: false,
+    message: t(Keys.panes.deleteCollection.warningMessage),
+  };
   const copyableIdLabel = t(Keys.panes.deleteCollection.copyableId, {
     collectionName: getCollectionName(),
   });
@@ -147,6 +153,7 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
     t(Keys.panes.deleteCollection.feedbackReason, { collectionName });
   return (
     <RightPaneForm {...props}>
+      {!formError && <PanelInfoErrorComponent {...errorProps} />}
       <div className="panelFormWrapper">
         <div className="panelMainContent">
           <div className="confirmDeleteInput">
