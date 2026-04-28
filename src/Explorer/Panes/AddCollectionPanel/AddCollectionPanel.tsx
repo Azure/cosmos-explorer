@@ -170,7 +170,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
           />
         )}
 
-        {!this.state.errorMessage && isFreeTierAccount() && (
+        {!this.state.errorMessage && isFreeTierAccount(this.props.targetAccountOverride) && (
           <PanelInfoErrorComponent
             message={getUpsellMessage(userContext.portalEnv, true, isFirstResourceCreated, true)}
             messageType="info"
@@ -647,53 +647,57 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             </Stack>
           )}
 
-          {!isServerlessAccount() && !this.state.createNewDatabase && this.isSelectedDatabaseSharedThroughput() && (
-            <Stack horizontal verticalAlign="center">
-              <Checkbox
-                label={t(Keys.panes.addCollection.provisionDedicatedThroughput, {
-                  collectionName: getCollectionName().toLocaleLowerCase(),
-                })}
-                checked={this.state.enableDedicatedThroughput}
-                styles={{
-                  text: { fontSize: 12, color: "var(--colorNeutralForeground1)" },
-                  checkbox: { width: 12, height: 12 },
-                  label: { padding: 0, alignItems: "center" },
-                  root: {
-                    selectors: {
-                      ":hover .ms-Checkbox-text": { color: "var(--colorNeutralForeground1)" },
+          {!isServerlessAccount(this.props.targetAccountOverride) &&
+            !this.state.createNewDatabase &&
+            this.isSelectedDatabaseSharedThroughput() && (
+              <Stack horizontal verticalAlign="center">
+                <Checkbox
+                  label={t(Keys.panes.addCollection.provisionDedicatedThroughput, {
+                    collectionName: getCollectionName().toLocaleLowerCase(),
+                  })}
+                  checked={this.state.enableDedicatedThroughput}
+                  styles={{
+                    text: { fontSize: 12, color: "var(--colorNeutralForeground1)" },
+                    checkbox: { width: 12, height: 12 },
+                    label: { padding: 0, alignItems: "center" },
+                    root: {
+                      selectors: {
+                        ":hover .ms-Checkbox-text": { color: "var(--colorNeutralForeground1)" },
+                      },
                     },
-                  },
-                }}
-                onChange={(ev: React.FormEvent<HTMLElement>, isChecked: boolean) =>
-                  this.setState({ enableDedicatedThroughput: isChecked })
-                }
-              />
-              <TooltipHost
-                directionalHint={DirectionalHint.bottomLeftEdge}
-                content={t(Keys.panes.addCollection.provisionDedicatedThroughputTooltip, {
-                  collectionName: getCollectionName().toLocaleLowerCase(),
-                  collectionNamePlural: getCollectionName(true).toLocaleLowerCase(),
-                })}
-              >
-                <Icon
-                  iconName="Info"
-                  className="panelInfoIcon"
-                  tabIndex={0}
-                  ariaLabel={t(Keys.panes.addCollection.provisionDedicatedThroughputTooltip, {
+                  }}
+                  onChange={(ev: React.FormEvent<HTMLElement>, isChecked: boolean) =>
+                    this.setState({ enableDedicatedThroughput: isChecked })
+                  }
+                />
+                <TooltipHost
+                  directionalHint={DirectionalHint.bottomLeftEdge}
+                  content={t(Keys.panes.addCollection.provisionDedicatedThroughputTooltip, {
                     collectionName: getCollectionName().toLocaleLowerCase(),
                     collectionNamePlural: getCollectionName(true).toLocaleLowerCase(),
                   })}
-                />
-              </TooltipHost>
-            </Stack>
-          )}
+                >
+                  <Icon
+                    iconName="Info"
+                    className="panelInfoIcon"
+                    tabIndex={0}
+                    ariaLabel={t(Keys.panes.addCollection.provisionDedicatedThroughputTooltip, {
+                      collectionName: getCollectionName().toLocaleLowerCase(),
+                      collectionNamePlural: getCollectionName(true).toLocaleLowerCase(),
+                    })}
+                  />
+                </TooltipHost>
+              </Stack>
+            )}
 
           {this.shouldShowCollectionThroughputInput() && !isFabricNative() && (
             <ThroughputInput
-              showFreeTierExceedThroughputTooltip={isFreeTierAccount() && !isFirstResourceCreated}
+              showFreeTierExceedThroughputTooltip={
+                isFreeTierAccount(this.props.targetAccountOverride) && !isFirstResourceCreated
+              }
               isDatabase={false}
               isSharded={this.state.isSharded}
-              isFreeTier={isFreeTierAccount()}
+              isFreeTier={isFreeTierAccount(this.props.targetAccountOverride)}
               isQuickstart={this.props.isQuickstart}
               setThroughputValue={(throughput: number) => (this.collectionThroughput = throughput)}
               setIsAutoscale={(isAutoscale: boolean) => (this.isCollectionAutoscale = isAutoscale)}
@@ -770,7 +774,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   <input
                     className="panelRadioBtn"
                     checked={this.state.enableAnalyticalStore}
-                    disabled={!isSynapseLinkEnabled()}
+                    disabled={!isSynapseLinkEnabled(this.props.targetAccountOverride)}
                     aria-label={t(Keys.panes.addCollection.enableAnalyticalStore)}
                     aria-checked={this.state.enableAnalyticalStore}
                     name="analyticalStore"
@@ -785,7 +789,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   <input
                     className="panelRadioBtn"
                     checked={!this.state.enableAnalyticalStore}
-                    disabled={!isSynapseLinkEnabled()}
+                    disabled={!isSynapseLinkEnabled(this.props.targetAccountOverride)}
                     aria-label={t(Keys.panes.addCollection.disableAnalyticalStore)}
                     aria-checked={!this.state.enableAnalyticalStore}
                     name="analyticalStore"
@@ -799,7 +803,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 </div>
               </Stack>
 
-              {!isSynapseLinkEnabled() && (
+              {!isSynapseLinkEnabled(this.props.targetAccountOverride) && (
                 <Stack className="panelGroupSpacing">
                   <Text variant="small" style={{ color: "var(--colorNeutralForeground1)" }}>
                     {t(Keys.panes.addCollection.analyticalStoreSynapseLinkRequired, {
@@ -868,6 +872,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 <Stack id="collapsibleFullTextPolicySectionContent" styles={{ root: { position: "relative" } }}>
                   <Stack styles={{ root: { paddingLeft: 40 } }}>
                     <FullTextPoliciesComponent
+                      targetAccountOverride={this.props.targetAccountOverride}
                       fullTextPolicy={this.state.fullTextPolicy}
                       onFullTextPathChange={(
                         fullTextPolicy: DataModels.FullTextPolicy,
@@ -1134,7 +1139,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
   // }
 
   private shouldShowCollectionThroughputInput(): boolean {
-    if (isServerlessAccount()) {
+    if (isServerlessAccount(this.props.targetAccountOverride)) {
       return false;
     }
 
@@ -1150,7 +1155,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
   }
 
   private shouldShowIndexingOptionsForFreeTierAccount(): boolean {
-    if (!isFreeTierAccount()) {
+    if (!isFreeTierAccount(this.props.targetAccountOverride)) {
       return false;
     }
 
@@ -1158,7 +1163,11 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
   }
 
   private shouldShowVectorSearchParameters() {
-    return isVectorSearchEnabled() && (isServerlessAccount() || this.shouldShowCollectionThroughputInput());
+    const targetAccount = this.props.targetAccountOverride;
+    return (
+      isVectorSearchEnabled(targetAccount) &&
+      (isServerlessAccount(targetAccount) || this.shouldShowCollectionThroughputInput())
+    );
   }
 
   private shouldShowFullTextSearchParameters() {
@@ -1237,7 +1246,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
   }
 
   private getAnalyticalStorageTtl(): number {
-    if (!isSynapseLinkEnabled()) {
+    if (!isSynapseLinkEnabled(this.props.targetAccountOverride)) {
       return undefined;
     }
 

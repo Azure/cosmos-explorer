@@ -34,6 +34,10 @@ const AddCollectionPanelWrapper: React.FunctionComponent<AddCollectionPanelWrapp
       subscriptionId: details.subscriptionId,
       resourceGroup: details.resourceGroup,
       accountName: details.accountName,
+      capabilities: copyJobState?.target?.account?.properties?.capabilities ?? [],
+      capacityMode: copyJobState?.target?.account?.properties?.capacityMode,
+      enableFreeTier: copyJobState?.target?.account?.properties?.enableFreeTier,
+      enableAnalyticalStorage: copyJobState?.target?.account?.properties?.enableAnalyticalStorage,
     };
   }, [copyJobState?.target?.account?.id]);
 

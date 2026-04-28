@@ -6,7 +6,7 @@ jest.mock("Utils/NotificationConsoleUtils", () => ({
 }));
 jest.mock("Shared/Telemetry/TelemetryProcessor");
 
-import { DatabaseAccount } from "../Contracts/DataModels";
+import { Capability, DatabaseAccount } from "../Contracts/DataModels";
 import { updateUserContext, userContext } from "../UserContext";
 import { update } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
 import Explorer from "./Explorer";
@@ -53,7 +53,7 @@ describe("Explorer.openEnableSynapseLinkDialog", () => {
     tags: {},
     properties: {
       documentEndpoint: "https://ctx-account.documents.azure.com:443/",
-      capabilities: [],
+      capabilities: [] as Capability[],
       enableMultipleWriteLocations: false,
     },
   };
@@ -109,6 +109,7 @@ describe("Explorer.openEnableSynapseLinkDialog", () => {
       subscriptionId: "override-sub",
       resourceGroup: "override-rg",
       accountName: "override-account",
+      capabilities: [] as Capability[],
     };
 
     it("should open a dialog when called with override", () => {
