@@ -420,6 +420,7 @@
     "deleteDatabase": {
       "panelTitle": "{{databaseName}} veritabanını sil",
       "warningMessage": "Uyarı! Gerçekleştirmek üzere olduğunuz eylem geri alınamaz. Devam etmeniz durumunda, bu kaynak ve tüm alt kaynakları kalıcı olarak silinir.",
+      "copyableId": "{{databaseName}} Id:",
       "confirmPrompt": "{{databaseName}} kimliğini (adını) yazarak onaylayın",
       "inputMismatch": "{{databaseName}} girişi \"{{input}}\" adı seçilen {{databaseName}} \"{{selectedId}}\" ile eşleşmiyor",
       "feedbackTitle": "Azure Cosmos DB’yi geliştirmemize yardımcı olun!",
@@ -427,6 +428,8 @@
     },
     "deleteCollection": {
       "panelTitle": "{{collectionName}} koleksiyonunu sil",
+      "warningMessage": "Warning! The action you are about to take cannot be undone. Continuing will permanently delete this resource and all of its children resources.",
+      "copyableId": "{{collectionName}} Id:",
       "confirmPrompt": "{{collectionName}} kimliğini yazarak onaylayın",
       "inputMismatch": "{{input}} giriş kimliği seçilen {{selectedId}} ile eşleşmiyor",
       "feedbackTitle": "Azure Cosmos DB’yi geliştirmemize yardımcı olun!",

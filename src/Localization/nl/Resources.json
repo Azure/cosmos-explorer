@@ -420,6 +420,7 @@
     "deleteDatabase": {
       "panelTitle": "{{databaseName}} verwijderen",
       "warningMessage": "Waarschuwing! De actie die u gaat uitvoeren kan niet ongedaan worden gemaakt. Als u doorgaat, worden deze resource en alle onderliggende resources permanent verwijderd.",
+      "copyableId": "{{databaseName}} Id:",
       "confirmPrompt": "Bevestig door de {{databaseName}}-id (naam) te typen",
       "inputMismatch": "Invoernaam {{databaseName}} naam '{{input}}' komt niet overeen met de geselecteerde {{databaseName}} '{{selectedId}}'",
       "feedbackTitle": "Help ons Azure Cosmos DB te verbeteren.",
@@ -427,6 +428,8 @@
     },
     "deleteCollection": {
       "panelTitle": "{{collectionName}} verwijderen",
+      "warningMessage": "Warning! The action you are about to take cannot be undone. Continuing will permanently delete this resource and all of its children resources.",
+      "copyableId": "{{collectionName}} Id:",
       "confirmPrompt": "Bevestig door de {{collectionName}}-id te typen",
       "inputMismatch": "Invoer-id {{input}} komt niet overeen met de geselecteerde {{selectedId}}",
       "feedbackTitle": "Help ons Azure Cosmos DB te verbeteren.",

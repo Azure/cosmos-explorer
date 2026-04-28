@@ -420,6 +420,7 @@
     "deleteDatabase": {
       "panelTitle": "{{databaseName}} 삭제",
       "warningMessage": "경고! 수행하려는 작업은 실행 취소할 수 없습니다. 계속하면 이 리소스와 모든 자식 리소스가 영구적으로 삭제됩니다.",
+      "copyableId": "{{databaseName}} Id:",
       "confirmPrompt": "{{databaseName}} ID(이름)를 입력하여 확인",
       "inputMismatch": "입력한 {{databaseName}} 이름 \"{{input}}\"이(가) 선택한 {{databaseName}} \"{{selectedId}}\"와(과) 일치하지 않습니다.",
       "feedbackTitle": "Azure Cosmos DB 개선에 도움을 주세요!",
@@ -427,6 +428,8 @@
     },
     "deleteCollection": {
       "panelTitle": "{{collectionName}} 삭제",
+      "warningMessage": "Warning! The action you are about to take cannot be undone. Continuing will permanently delete this resource and all of its children resources.",
+      "copyableId": "{{collectionName}} Id:",
       "confirmPrompt": "{{collectionName}} ID를 입력하여 확인하세요",
       "inputMismatch": "입력한 ID {{input}}이(가) 선택한 {{selectedId}}와(과) 일치하지 않습니다.",
       "feedbackTitle": "Azure Cosmos DB 개선에 도움을 주세요!",

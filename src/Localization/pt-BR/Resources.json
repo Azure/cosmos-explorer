@@ -420,6 +420,7 @@
     "deleteDatabase": {
       "panelTitle": "Excluir {{databaseName}}",
       "warningMessage": "Aviso! A ação que você está prestes a realizar não pode ser desfeita. Continuar excluirá permanentemente esse recurso e todos os seus recursos filhos.",
+      "copyableId": "{{databaseName}} Id:",
       "confirmPrompt": "Confirme digitando a ID de {{databaseName}} (nome)",
       "inputMismatch": "O nome de entrada {{databaseName}} \"{{input}}\" não corresponde ao {{databaseName}} selecionado \"{{selectedId}}\"",
       "feedbackTitle": "Ajude-nos a melhorar o Azure Cosmos DB!",
@@ -427,6 +428,8 @@
     },
     "deleteCollection": {
       "panelTitle": "Excluir {{collectionName}}",
+      "warningMessage": "Warning! The action you are about to take cannot be undone. Continuing will permanently delete this resource and all of its children resources.",
+      "copyableId": "{{collectionName}} Id:",
       "confirmPrompt": "Confirme digitando a ID de {{collectionName}}",
       "inputMismatch": "A ID de entrada {{input}} não corresponde à {{selectedId}} selecionada",
       "feedbackTitle": "Ajude-nos a melhorar o Azure Cosmos DB!",
