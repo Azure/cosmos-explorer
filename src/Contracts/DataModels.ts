@@ -410,6 +410,10 @@ export interface AccountOverride {
   subscriptionId: string;
   resourceGroup: string;
   accountName: string;
+  capabilities: Capability[];
+  capacityMode?: CapacityMode;
+  enableFreeTier?: boolean;
+  enableAnalyticalStorage?: boolean;
 }
 
 export interface CreateDatabaseParams {

@@ -1,3 +1,4 @@
+import { Capability } from "Contracts/DataModels";
 import { shallow } from "enzyme";
 import React from "react";
 import Explorer from "../../Explorer";
@@ -19,6 +20,7 @@ describe("AddCollectionPanel", () => {
         subscriptionId: "override-sub",
         resourceGroup: "override-rg",
         accountName: "override-account",
+        capabilities: [] as Capability[],
       };
       const wrapper = shallow(<AddCollectionPanel {...props} targetAccountOverride={override} />);
       expect(wrapper).toBeDefined();
@@ -31,6 +33,7 @@ describe("AddCollectionPanel", () => {
         subscriptionId: "override-sub",
         resourceGroup: "override-rg",
         accountName: "override-account",
+        capabilities: [] as Capability[],
       };
 
       const wrapper = shallow(

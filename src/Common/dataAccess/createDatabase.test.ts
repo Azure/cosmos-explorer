@@ -49,6 +49,7 @@ describe("createDatabase", () => {
           subscriptionId: "override-sub",
           resourceGroup: "override-rg",
           accountName: "override-account",
+          capabilities: [],
         },
       };
 
@@ -88,6 +89,7 @@ describe("createDatabase", () => {
           subscriptionId: "override-sub",
           resourceGroup: "override-rg",
           accountName: "override-account",
+          capabilities: [],
         },
       };
 
@@ -113,6 +115,7 @@ describe("createDatabase", () => {
           subscriptionId: "any-sub",
           resourceGroup: "any-rg",
           accountName: "any-account",
+          capabilities: [],
         },
       };
 
