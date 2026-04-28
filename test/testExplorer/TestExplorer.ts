@@ -67,30 +67,27 @@ const initTestExplorer = async (): Promise<void> => {
       break;
   }
 
-
   if (rbacToken.length > 0) {
     updateUserContext({
       dataPlaneRbacEnabled: true,
     });
 
     // DEBUG
-    try {
-      const token = rbacToken;
-      const base64Url = token.split('.')[1];
-      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      const jsonPayload = decodeURIComponent(
-      atob(base64)
-      .split('')
-      .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-      .join('')
-      );
-      const foo = JSON.parse(jsonPayload);
-      console.log('Parsed RBAC token payload:', foo ? "success" : "failed");
-    }
-    catch (error) {
-      console.error(`Error validating RBAC token for test account type ${testAccountType}:`, error);
-    }
-
+    //try {
+    //  const token = rbacToken;
+    //  const base64Url = token.split(".")[1];
+    //  const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    //  const jsonPayload = decodeURIComponent(
+    //    atob(base64)
+    //      .split("")
+    //      .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+    //      .join(""),
+    //  );
+    //  const foo = JSON.parse(jsonPayload);
+    //  console.log("Parsed RBAC token payload:", foo ? "success" : "failed");
+    //} catch (error) {
+    //  console.error(`Error validating RBAC token for test account type ${testAccountType}:`, error);
+   // }
   } else {
     console.error(`No RBAC token found for test account type ${testAccountType}`);
   }

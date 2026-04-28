@@ -40,7 +40,6 @@ module.exports = {
     },
   ],
   rules: {
-    "no-console": ["error", { allow: ["error", "warn", "dir"] }],
     curly: "error",
     "@typescript-eslint/switch-exhaustiveness-check": "error",
     "@typescript-eslint/no-unused-vars": "error",
