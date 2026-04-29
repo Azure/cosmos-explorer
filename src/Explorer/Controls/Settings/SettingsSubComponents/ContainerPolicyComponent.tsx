@@ -1,8 +1,8 @@
 import { DefaultButton, Pivot, PivotItem, Stack } from "@fluentui/react";
 import { FullTextPolicy, VectorEmbedding, VectorEmbeddingPolicy, VectorIndex } from "Contracts/DataModels";
 import {
-    FullTextPoliciesComponent,
-    getFullTextLanguageOptions,
+  FullTextPoliciesComponent,
+  getFullTextLanguageOptions,
 } from "Explorer/Controls/FullTextSeach/FullTextPoliciesComponent";
 import { titleAndInputStackProps } from "Explorer/Controls/Settings/SettingsRenderUtils";
 import { ContainerPolicyTabTypes, isDirty } from "Explorer/Controls/Settings/SettingsUtils";

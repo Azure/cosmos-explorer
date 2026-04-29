@@ -15,6 +15,7 @@ export type isDirtyTypes =
   | DataModels.IndexingPolicy
   | DataModels.ComputedProperties
   | DataModels.VectorEmbedding[]
+  | DataModels.VectorIndex[]
   | DataModels.FullTextPolicy
   | DataModels.ThroughputBucket[]
   | DataModels.DataMaskingPolicy;
