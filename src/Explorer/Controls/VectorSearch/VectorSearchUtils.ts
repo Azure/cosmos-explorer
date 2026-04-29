@@ -7,6 +7,10 @@ const indexTypes = ["none", "flat", "diskANN", "quantizedFlat"];
 export const getDataTypeOptions = (): IDropdownOption[] => createDropdownOptionsFromLiterals(dataTypes);
 export const getDistanceFunctionOptions = (): IDropdownOption[] => createDropdownOptionsFromLiterals(distanceFunctions);
 export const getIndexTypeOptions = (): IDropdownOption[] => createDropdownOptionsFromLiterals(indexTypes);
+export const getQuantizerTypeOptions = (): IDropdownOption[] => [
+  { key: "product", text: "Product" },
+  { key: "spherical", text: "Spherical (Preview)" },
+];
 
 function createDropdownOptionsFromLiterals<T extends string>(literals: T[]): IDropdownOption[] {
   return literals.map((value) => ({
