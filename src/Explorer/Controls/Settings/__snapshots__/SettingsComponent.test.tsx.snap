@@ -426,7 +426,7 @@ exports[`SettingsComponent renders 1`] = `
             "data-test": "settings-tab-header/PartitionKeyTab",
           }
         }
-        headerText="Partition Keys (preview)"
+        headerText="Partition Keys"
         itemKey="PartitionKeyTab"
         key="PartitionKeyTab"
         style={

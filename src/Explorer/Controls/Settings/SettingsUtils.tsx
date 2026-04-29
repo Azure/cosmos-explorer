@@ -1,8 +1,7 @@
+import { Keys, t } from "Localization";
 import * as Constants from "../../../Common/Constants";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";
-import { Keys, t } from "Localization";
-import { isFabricNative } from "../../../Platform/Fabric/FabricUtil";
 import { userContext } from "../../../UserContext";
 import { isCapabilityEnabled } from "../../../Utils/CapabilityUtils";
 import { MongoIndex } from "../../../Utils/arm/generatedClients/cosmos/types";
@@ -184,9 +183,7 @@ export const getTabTitle = (tab: SettingsV2TabTypes): string => {
     case SettingsV2TabTypes.IndexingPolicyTab:
       return t(Keys.controls.settings.tabTitles.indexingPolicy);
     case SettingsV2TabTypes.PartitionKeyTab:
-      return isFabricNative()
-        ? t(Keys.controls.settings.tabTitles.partitionKeys)
-        : t(Keys.controls.settings.tabTitles.partitionKeysPreview);
+      return t(Keys.controls.settings.tabTitles.partitionKeys);
     case SettingsV2TabTypes.ComputedPropertiesTab:
       return t(Keys.controls.settings.tabTitles.computedProperties);
     case SettingsV2TabTypes.ContainerVectorPolicyTab:
@@ -286,13 +283,12 @@ export const getPartitionKeyPlaceHolder = (apiType: string, index?: number): str
     case "Gremlin":
       return t(Keys.controls.settings.partitionKey.gremlinPlaceholder);
     case "SQL":
-      return `${
-        index === undefined
+      return `${index === undefined
           ? t(Keys.controls.settings.partitionKey.sqlFirstPartitionKey)
           : index === 0
-          ? t(Keys.controls.settings.partitionKey.sqlSecondPartitionKey)
-          : t(Keys.controls.settings.partitionKey.sqlThirdPartitionKey)
-      }`;
+            ? t(Keys.controls.settings.partitionKey.sqlSecondPartitionKey)
+            : t(Keys.controls.settings.partitionKey.sqlThirdPartitionKey)
+        }`;
     default:
       return t(Keys.controls.settings.partitionKey.defaultPlaceholder);
   }

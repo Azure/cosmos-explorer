@@ -291,7 +291,7 @@ describe("SettingsUtils", () => {
 
     it("handles partition key tab title based on fabric native", () => {
       // Assuming initially not fabric native
-      expect(getTabTitle(SettingsV2TabTypes.PartitionKeyTab)).toBe("Partition Keys (preview)");
+      expect(getTabTitle(SettingsV2TabTypes.PartitionKeyTab)).toBe("Partition Keys");
     });
 
     it("throws error for unknown tab type", () => {

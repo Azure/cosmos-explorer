@@ -760,7 +760,6 @@
         "settings": "Settings",
         "indexingPolicy": "Indexing Policy",
         "partitionKeys": "Partition Keys",
-        "partitionKeysPreview": "Partition Keys (preview)",
         "computedProperties": "Computed Properties",
         "containerPolicies": "Container Policies",
         "throughputBuckets": "Throughput Buckets",
@@ -895,6 +894,10 @@
       },
       "partitionKeyEditor": {
         "changePartitionKey": "Change {{partitionKeyName}}",
+        "confirmCancel1": "You are about to cancel the following copy job.",
+        "confirmCancel2": "Cancelling will stop the job immediately.",
+        "confirmComplete1": "You are about to complete the following copy job.",
+        "confrimComplete2": "Once completed, continuous data copy will stop after any pending documents are processed. To maintain data integrity, we recommend stopping updates to the source container before completing the job.",
         "currentPartitionKey": "Current {{partitionKeyName}}",
         "partitioning": "Partitioning",
         "hierarchical": "Hierarchical",

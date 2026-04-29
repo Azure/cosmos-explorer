@@ -1,18 +1,25 @@
 import {
+  ChoiceGroup,
   DefaultButton,
   DirectionalHint,
   Dropdown,
+  IChoiceGroupOption,
   IDropdownOption,
   Icon,
   IconButton,
   Link,
   MessageBar,
+  MessageBarType,
+  PrimaryButton,
   Stack,
   Text,
   TooltipHost,
 } from "@fluentui/react";
+import { CapabilityNames } from "Common/Constants";
 import * as Constants from "Common/Constants";
 import { handleError } from "Common/ErrorHandlingUtils";
+import LoadingOverlay from "Common/LoadingOverlay";
+import { logError } from "Common/Logger";
 import { createCollection } from "Common/dataAccess/createCollection";
 import { DataTransferParams, initiateDataTransfer } from "Common/dataAccess/dataTransfers";
 import * as DataModels from "Contracts/DataModels";
@@ -23,6 +30,8 @@ import {
   getPartitionKeySubtext,
   getPartitionKeyTooltipText,
 } from "Explorer/Controls/Settings/SettingsUtils";
+import ContainerCopyMessages from "Explorer/ContainerCopy/ContainerCopyMessages";
+import { BackupPolicyType, CopyJobMigrationType } from "Explorer/ContainerCopy/Enums/CopyJobEnums";
 import Explorer from "Explorer/Explorer";
 import { RightPaneForm } from "Explorer/Panes/RightPaneForm/RightPaneForm";
 import { useDatabases } from "Explorer/useDatabases";
@@ -30,6 +39,8 @@ import { Keys, t } from "Localization";
 import { userContext } from "UserContext";
 import { getCollectionName } from "Utils/APITypeUtils";
 import { ValidCosmosDbIdDescription, ValidCosmosDbIdInputPattern } from "Utils/ValidationUtils";
+import { fetchDatabaseAccount } from "Utils/arm/databaseAccountUtils";
+import { update as updateDatabaseAccount } from "Utils/arm/generatedClients/cosmos/databaseAccounts";
 import { useSidePanel } from "hooks/useSidePanel";
 import * as React from "react";
 
@@ -39,6 +50,42 @@ export interface ChangePartitionKeyPaneProps {
   explorer: Explorer;
   onClose: () => Promise<void>;
 }
+
+const migrationTypeOptions: IChoiceGroupOption[] = [
+  {
+    key: CopyJobMigrationType.Offline,
+    text: ContainerCopyMessages.migrationTypeOptions.offline.title,
+    styles: { root: { width: "33%" } },
+  },
+  {
+    key: CopyJobMigrationType.Online,
+    text: ContainerCopyMessages.migrationTypeOptions.online.title,
+    styles: { root: { width: "33%" } },
+  },
+];
+
+const choiceGroupStyles = {
+  flexContainer: { display: "flex" as const },
+  root: {
+    selectors: {
+      ".ms-ChoiceField": {
+        color: "var(--colorNeutralForeground1)",
+      },
+      ".ms-ChoiceField-field:hover .ms-ChoiceFieldLabel": {
+        color: "var(--colorNeutralForeground1)",
+      },
+    },
+  },
+};
+
+const checkPitrEnabled = (account: DataModels.DatabaseAccount): boolean => {
+  return account?.properties?.backupPolicy?.type === BackupPolicyType.Continuous;
+};
+
+const checkOnlineCopyEnabled = (account: DataModels.DatabaseAccount): boolean => {
+  const capabilities = account?.properties?.capabilities ?? [];
+  return capabilities.some((cap) => cap.name === CapabilityNames.EnableOnlineCopyFeature);
+};
 
 export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
   sourceDatabase,
@@ -52,6 +99,116 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
   const [isExecuting, setIsExecuting] = React.useState<boolean>(false);
   const [subPartitionKeys, setSubPartitionKeys] = React.useState<string[]>([]);
   const [partitionKey, setPartitionKey] = React.useState<string>();
+  const [migrationType, setMigrationType] = React.useState<CopyJobMigrationType>(CopyJobMigrationType.Offline);
+
+  // Pane-local account state for tracking prerequisite enablement
+  const [localAccount, setLocalAccount] = React.useState<DataModels.DatabaseAccount>(userContext.databaseAccount);
+  const [isEnablingPrerequisite, setIsEnablingPrerequisite] = React.useState<boolean>(false);
+  const [prerequisiteLoaderMessage, setPrerequisiteLoaderMessage] = React.useState<string>("");
+
+  const pitrEnabled = checkPitrEnabled(localAccount);
+  const onlineCopyFeatureEnabled = checkOnlineCopyEnabled(localAccount);
+  const onlinePrerequisitesMet = pitrEnabled && onlineCopyFeatureEnabled;
+  const isOnlineMode = migrationType === CopyJobMigrationType.Online;
+
+  const accountName = localAccount?.name ?? "";
+  const subscriptionId = userContext.subscriptionId;
+  const resourceGroup = userContext.resourceGroup;
+
+  const intervalRef = React.useRef<NodeJS.Timeout | null>(null);
+  const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+
+  React.useEffect(() => {
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+
+  const refreshAccount = async (): Promise<DataModels.DatabaseAccount | null> => {
+    try {
+      const account = await fetchDatabaseAccount(subscriptionId, resourceGroup, accountName);
+      if (account) {
+        setLocalAccount(account);
+      }
+      return account;
+    } catch (error) {
+      logError(
+        error.message || "Error fetching account after enabling prerequisite.",
+        "ChangePartitionKey/refreshAccount",
+      );
+      return null;
+    }
+  };
+
+  const clearPollingTimers = () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+  };
+
+  const startPollingForAccountUpdate = () => {
+    intervalRef.current = setInterval(() => {
+      refreshAccount();
+    }, 30 * 1000);
+
+    timeoutRef.current = setTimeout(
+      () => {
+        clearPollingTimers();
+        setIsEnablingPrerequisite(false);
+      },
+      10 * 60 * 1000,
+    );
+  };
+
+  const handleEnablePitr = () => {
+    const featureUrl = `https://portal.azure.com/#@/resource/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/backupRestore`;
+    setIsEnablingPrerequisite(true);
+    setPrerequisiteLoaderMessage(ContainerCopyMessages.popoverOverlaySpinnerLabel);
+    window.open(featureUrl, "_blank");
+    startPollingForAccountUpdate();
+  };
+
+  const handleEnableOnlineCopy = async () => {
+    setIsEnablingPrerequisite(true);
+    try {
+      setPrerequisiteLoaderMessage(
+        ContainerCopyMessages.onlineCopyEnabled.validateAllVersionsAndDeletesChangeFeedSpinnerLabel,
+      );
+      const currentAccount = await fetchDatabaseAccount(subscriptionId, resourceGroup, accountName);
+      if (!currentAccount?.properties?.enableAllVersionsAndDeletesChangeFeed) {
+        setPrerequisiteLoaderMessage(
+          ContainerCopyMessages.onlineCopyEnabled.enablingAllVersionsAndDeletesChangeFeedSpinnerLabel,
+        );
+        await updateDatabaseAccount(subscriptionId, resourceGroup, accountName, {
+          properties: {
+            enableAllVersionsAndDeletesChangeFeed: true,
+          },
+        });
+      }
+      const capabilities = currentAccount?.properties?.capabilities ?? [];
+      setPrerequisiteLoaderMessage(ContainerCopyMessages.onlineCopyEnabled.enablingOnlineCopySpinnerLabel(accountName));
+      await updateDatabaseAccount(subscriptionId, resourceGroup, accountName, {
+        properties: {
+          capabilities: [...capabilities, { name: CapabilityNames.EnableOnlineCopyFeature }],
+        },
+      });
+      startPollingForAccountUpdate();
+    } catch (error) {
+      logError(error.message || "Failed to enable online copy feature.", "ChangePartitionKey/handleEnableOnlineCopy");
+      setFormError("Failed to enable online copy feature. Please try again.");
+      setIsEnablingPrerequisite(false);
+    }
+  };
 
   const getCollectionOptions = (): IDropdownOption[] => {
     return sourceDatabase
@@ -84,7 +241,15 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
       setFormError("Choose an existing container");
       return false;
     }
+    if (isOnlineMode && !onlinePrerequisitesMet) {
+      setFormError("Online migration prerequisites must be enabled before proceeding.");
+      return false;
+    }
     return true;
+  };
+
+  const getModeForApi = (): "Offline" | "Online" => {
+    return migrationType === CopyJobMigrationType.Online ? "Online" : "Offline";
   };
 
   const createDataTransferJob = async () => {
@@ -99,6 +264,7 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
       sourceCollectionName: sourceCollection.id(),
       targetDatabaseName: sourceDatabase.id(),
       targetCollectionName: targetCollectionId,
+      mode: getModeForApi(),
     };
     await initiateDataTransfer(dataTransferParams);
   };
@@ -133,12 +299,15 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
     return !!selectedDatabase?.offer();
   };
 
+  const isSubmitDisabled = isOnlineMode && !onlinePrerequisitesMet;
+
   return (
     <RightPaneForm
       formError={formError}
       isExecuting={isExecuting}
       onSubmit={submit}
       submitButtonText={t(Keys.common.ok)}
+      isSubmitButtonDisabled={isSubmitDisabled}
     >
       <Stack tokens={{ childrenGap: 10 }} className="panelMainContent">
         <Text variant="small" style={{ color: "var(--colorNeutralForeground1)" }}>
@@ -151,6 +320,37 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
             {t(Keys.common.learnMore)}
           </Link>
         </Text>
+
+        {/* Migration Type */}
+        <Stack data-test="migration-type-section">
+          <Text className="panelTextBold" variant="small" style={{ marginBottom: 4 }}>
+            Migration type
+          </Text>
+          <ChoiceGroup
+            data-test="migration-type-choice"
+            selectedKey={migrationType}
+            options={migrationTypeOptions}
+            onChange={(_ev, option) => {
+              if (option) {
+                setMigrationType(option.key as CopyJobMigrationType);
+              }
+            }}
+            ariaLabelledBy="migrationTypeChoiceGroup"
+            styles={choiceGroupStyles}
+          />
+          {migrationType && (
+            <Text
+              variant="small"
+              style={{ color: "var(--colorNeutralForeground1)", marginTop: 4 }}
+              data-test={`migration-type-description-${migrationType}`}
+            >
+              {migrationType === CopyJobMigrationType.Offline
+                ? ContainerCopyMessages.migrationTypeOptions.offline.description
+                : ContainerCopyMessages.migrationTypeOptions.online.description}
+            </Text>
+          )}
+        </Stack>
+
         <Stack>
           <Stack horizontal>
             <span className="mandatoryStar">*&nbsp;</span>
@@ -418,6 +618,89 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
               responsiveMode={999}
               ariaLabel={t(Keys.panes.changePartitionKey.existingContainers)}
             />
+          </Stack>
+        )}
+
+        {/* Online prerequisites section */}
+        {isOnlineMode && (
+          <Stack data-test="online-prerequisites-section" tokens={{ childrenGap: 10 }}>
+            <LoadingOverlay isLoading={isEnablingPrerequisite} label={prerequisiteLoaderMessage} />
+            <Text className="panelTextBold" variant="small">
+              {ContainerCopyMessages.assignPermissions.onlineConfiguration.title}
+            </Text>
+            <Text variant="small" style={{ color: "var(--colorNeutralForeground1)" }}>
+              {ContainerCopyMessages.assignPermissions.onlineConfiguration.description(accountName)}
+            </Text>
+
+            {/* Point In Time Restore */}
+            <Stack tokens={{ childrenGap: 5 }}>
+              <Stack horizontal verticalAlign="center" tokens={{ childrenGap: 5 }}>
+                <Icon
+                  iconName={pitrEnabled ? "SkypeCircleCheck" : "StatusCircleRing"}
+                  styles={{
+                    root: { color: pitrEnabled ? "green" : "var(--colorNeutralForeground1)", fontSize: 16 },
+                  }}
+                />
+                <Text variant="small" style={{ fontWeight: 600, color: "var(--colorNeutralForeground1)" }}>
+                  {ContainerCopyMessages.pointInTimeRestore.title}
+                </Text>
+              </Stack>
+              {!pitrEnabled && (
+                <Stack tokens={{ childrenGap: 10, padding: "0 0 0 20px" }}>
+                  <Text variant="small" style={{ color: "var(--colorNeutralForeground1)" }}>
+                    {ContainerCopyMessages.pointInTimeRestore.description(accountName)}
+                  </Text>
+                  <PrimaryButton
+                    data-test="enable-pitr-button"
+                    text={ContainerCopyMessages.pointInTimeRestore.buttonText}
+                    disabled={isEnablingPrerequisite}
+                    onClick={handleEnablePitr}
+                    styles={{ root: { width: "fit-content" } }}
+                  />
+                </Stack>
+              )}
+            </Stack>
+
+            {/* Online Copy Enabled */}
+            <Stack tokens={{ childrenGap: 5 }}>
+              <Stack horizontal verticalAlign="center" tokens={{ childrenGap: 5 }}>
+                <Icon
+                  iconName={onlineCopyFeatureEnabled ? "SkypeCircleCheck" : "StatusCircleRing"}
+                  styles={{
+                    root: {
+                      color: onlineCopyFeatureEnabled ? "green" : "var(--colorNeutralForeground1)",
+                      fontSize: 16,
+                    },
+                  }}
+                />
+                <Text variant="small" style={{ fontWeight: 600, color: "var(--colorNeutralForeground1)" }}>
+                  {ContainerCopyMessages.onlineCopyEnabled.title}
+                </Text>
+              </Stack>
+              {!onlineCopyFeatureEnabled && (
+                <Stack tokens={{ childrenGap: 10, padding: "0 0 0 20px" }}>
+                  <Text variant="small" style={{ color: "var(--colorNeutralForeground1)" }}>
+                    {ContainerCopyMessages.onlineCopyEnabled.description(accountName)}&ensp;
+                    <Link href={ContainerCopyMessages.onlineCopyEnabled.href} target="_blank" rel="noopener noreferrer">
+                      {ContainerCopyMessages.onlineCopyEnabled.hrefText}
+                    </Link>
+                  </Text>
+                  <PrimaryButton
+                    data-test="enable-online-copy-button"
+                    text={ContainerCopyMessages.onlineCopyEnabled.buttonText}
+                    disabled={isEnablingPrerequisite || !pitrEnabled}
+                    onClick={handleEnableOnlineCopy}
+                    styles={{ root: { width: "fit-content" } }}
+                  />
+                </Stack>
+              )}
+            </Stack>
+
+            {!onlinePrerequisitesMet && (
+              <MessageBar messageBarType={MessageBarType.warning} data-test="online-prerequisites-warning">
+                Online migration prerequisites must be enabled before proceeding.
+              </MessageBar>
+            )}
           </Stack>
         )}
       </Stack>
