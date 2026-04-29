@@ -3,7 +3,7 @@ import "../../less/hostedexplorer.less";
 import { DataExplorerInputsFrame } from "../../src/Contracts/ViewModels";
 import { updateUserContext } from "../../src/UserContext";
 import { get, listKeys } from "../../src/Utils/arm/generatedClients/cosmos/databaseAccounts";
-import { getNoSqlRbacToken } from "../fx";
+import { getNoSqlRbacToken } from "../NoSqlRbacTokens";
 
 const urlSearchParams = new URLSearchParams(window.location.search);
 const resourceGroup = urlSearchParams.get("resourceGroup") || process.env.RESOURCE_GROUP || "";
@@ -18,6 +18,7 @@ const nosqlRbacToken =
   urlSearchParams.get("nosqlRbacToken") ||
   (enablecontainercopy ? process.env.NOSQL_CONTAINERCOPY_TESTACCOUNT_TOKEN : getNoSqlRbacToken()) ||
   "";
+
 const nosqlReadOnlyRbacToken =
   urlSearchParams.get("nosqlReadOnlyRbacToken") || process.env.NOSQL_READONLY_TESTACCOUNT_TOKEN || "";
 const tableRbacToken = urlSearchParams.get("tableRbacToken") || process.env.TABLE_TESTACCOUNT_TOKEN || "";
@@ -87,7 +88,7 @@ const initTestExplorer = async (): Promise<void> => {
     //  console.log("Parsed RBAC token payload:", foo ? "success" : "failed");
     //} catch (error) {
     //  console.error(`Error validating RBAC token for test account type ${testAccountType}:`, error);
-   // }
+    // }
   } else {
     console.error(`No RBAC token found for test account type ${testAccountType}`);
   }

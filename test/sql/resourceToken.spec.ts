@@ -8,10 +8,10 @@ import {
   generateUniqueName,
   getAccountName,
   getAzureCLICredentials,
-  getNoSqlRbacToken,
   resourceGroupName,
   subscriptionId,
 } from "../fx";
+import { getNoSqlRbacToken } from "../NoSqlRbacTokens";
 
 test("SQL account using Resource token", async ({ page }) => {
   const nosqlAccountRbacToken = getNoSqlRbacToken() ?? "";
