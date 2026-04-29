@@ -14,11 +14,11 @@ import {
   generateUniqueName,
   getAccountName,
   getAzureCLICredentials,
-  getNoSqlRbacToken,
   resourceGroupName,
   subscriptionId,
   TestAccount,
 } from "./fx";
+import { getNoSqlRbacToken } from "./NoSqlRbacTokens";
 
 // In Node.js >= 19, globalThis.crypto is already available as a read-only getter.
 // Only assign the polyfill for older versions.
