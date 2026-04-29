@@ -420,7 +420,7 @@
     "deleteDatabase": {
       "panelTitle": "Hapus {{databaseName}}",
       "warningMessage": "Peringatan! Tindakan yang akan Anda lakukan tidak dapat dibatalkan. Melanjutkan akan menghapus sumber daya dan semua sumber daya anaknya secara permanen.",
-      "copyableId": "{{databaseName}} Id:",
+      "copyableId": "ID {{databaseName}}:",
       "confirmPrompt": "Konfirmasikan dengan mengetik id {{databaseName}} (nama)",
       "inputMismatch": "Nama {{databaseName}} input \"{{input}}\" tidak cocok dengan {{databaseName}} \"{{selectedId}}\" yang dipilih",
       "feedbackTitle": "Bantuan kami meningkatkan Azure Cosmos DB!",
@@ -428,8 +428,8 @@
     },
     "deleteCollection": {
       "panelTitle": "Hapus {{collectionName}}",
-      "warningMessage": "Warning! The action you are about to take cannot be undone. Continuing will permanently delete this resource and all of its children resources.",
-      "copyableId": "{{collectionName}} Id:",
+      "warningMessage": "Peringatan! Tindakan yang akan Anda lakukan tidak dapat dibatalkan. Melanjutkan akan menghapus sumber daya dan semua sumber daya anaknya secara permanen.",
+      "copyableId": "ID {{collectionName}}:",
       "confirmPrompt": "Konfirmasikan dengan mengetik id {{collectionName}}",
       "inputMismatch": "Id input {{input}} tidak cocok dengan {{selectedId}} yang dipilih",
       "feedbackTitle": "Bantuan kami meningkatkan Azure Cosmos DB!",

@@ -420,7 +420,7 @@
     "deleteDatabase": {
       "panelTitle": "A(z) {{databaseName}} törlése",
       "warningMessage": "Figyelem! A végrehajtani kívánt művelet nem vonható vissza. Ha folytatja, úgy véglegesen törli az erőforrást és annak minden gyermekerőforrását.",
-      "copyableId": "{{databaseName}} Id:",
+      "copyableId": "{{databaseName}}-azonosító:",
       "confirmPrompt": "Megerősítés a(z) {{databaseName}}-azonosító (név) beírásával",
       "inputMismatch": "A(z) {{databaseName}} bemenet {{input}} neve nem egyezik a kijelölt {{databaseName}} {{selectedId}} értékével",
       "feedbackTitle": "Segítsen a Azure Cosmos DB továbbfejlesztésében!",
@@ -428,8 +428,8 @@
     },
     "deleteCollection": {
       "panelTitle": "A(z) {{collectionName}} törlése",
-      "warningMessage": "Warning! The action you are about to take cannot be undone. Continuing will permanently delete this resource and all of its children resources.",
-      "copyableId": "{{collectionName}} Id:",
+      "warningMessage": "Figyelem! A végrehajtani kívánt művelet nem vonható vissza. Ha folytatja, úgy véglegesen törli az erőforrást és annak minden gyermekerőforrását.",
+      "copyableId": "{{collectionName}}-azonosító:",
       "confirmPrompt": "Megerősítés a(z) {{collectionName}} azonosítójának beírásával",
       "inputMismatch": "A(z) {{input}} bemeneti azonosító nem egyezik a kijelölt {{selectedId}} értékével",
       "feedbackTitle": "Segítsen a Azure Cosmos DB továbbfejlesztésében!",

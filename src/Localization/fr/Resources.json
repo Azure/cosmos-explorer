@@ -420,7 +420,7 @@
     "deleteDatabase": {
       "panelTitle": "Supprimer {{databaseName}}",
       "warningMessage": "Attention ! Il ne sera pas possible d’annuler cette action. Si vous continuez, cette ressource et toutes ses ressources enfants seront définitivement supprimées.",
-      "copyableId": "{{databaseName}} Id:",
+      "copyableId": "{{databaseName}} Id :",
       "confirmPrompt": "Confirmer en tapant l’ID de {{databaseName}} (nom)",
       "inputMismatch": "Le nom « {{input}} » de l’entrée {{databaseName}} ne correspond pas au {{databaseName}} « {{selectedId}} » sélectionné",
       "feedbackTitle": "Aidez-nous à améliorer Azure Cosmos DB !",
@@ -428,8 +428,8 @@
     },
     "deleteCollection": {
       "panelTitle": "Supprimer {{collectionName}}",
-      "warningMessage": "Warning! The action you are about to take cannot be undone. Continuing will permanently delete this resource and all of its children resources.",
-      "copyableId": "{{collectionName}} Id:",
+      "warningMessage": "Attention ! Il ne sera pas possible d’annuler cette action. Si vous continuez, cette ressource et toutes ses ressources enfants seront définitivement supprimées.",
+      "copyableId": "{{collectionName}} Id :",
       "confirmPrompt": "Confirmer en tapant l’ID de {{collectionName}}",
       "inputMismatch": "L’ID d’entrée {{input}} ne correspond pas à l’ID {{selectedId}} sélectionné",
       "feedbackTitle": "Aidez-nous à améliorer Azure Cosmos DB !",

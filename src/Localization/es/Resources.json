@@ -428,7 +428,7 @@
     },
     "deleteCollection": {
       "panelTitle": "Eliminar {{collectionName}}",
-      "warningMessage": "Warning! The action you are about to take cannot be undone. Continuing will permanently delete this resource and all of its children resources.",
+      "warningMessage": "¡Advertencia! La acción que va a realizar no se puede deshacer. Si continúa, se eliminará permanentemente este recurso y todos sus recursos secundarios.",
       "copyableId": "{{collectionName}} Id:",
       "confirmPrompt": "Confirme escribiendo el {{collectionName}} id.",
       "inputMismatch": "El id de entrada {{input}} no coincide con el seleccionado {{selectedId}}",

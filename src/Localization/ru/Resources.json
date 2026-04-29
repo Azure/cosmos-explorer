@@ -428,7 +428,7 @@
     },
     "deleteCollection": {
       "panelTitle": "Удалить {{collectionName}}",
-      "warningMessage": "Warning! The action you are about to take cannot be undone. Continuing will permanently delete this resource and all of its children resources.",
+      "warningMessage": "Предупреждение! Действие, которое вы собираетесь предпринять, невозможно отменить. Если вы продолжите, ресурс и все его дочерние ресурсы будут удалены без возможности восстановления.",
       "copyableId": "{{collectionName}} Id:",
       "confirmPrompt": "Подтвердите, введя идентификатор {{collectionName}}",
       "inputMismatch": "Введённое имя базы данных {{input}} не соответствует выбранному {{selectedId}}",

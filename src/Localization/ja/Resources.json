@@ -420,7 +420,7 @@
     "deleteDatabase": {
       "panelTitle": "{{databaseName}} の削除",
       "warningMessage": "警告!実行しようとしている操作を元に戻すことはできません。続行すると、このリソースとそのすべての子リソースが完全に削除されます。",
-      "copyableId": "{{databaseName}} Id:",
+      "copyableId": "{{databaseName}} ID:",
       "confirmPrompt": "{{databaseName}} ID (名前) を入力して確認してください",
       "inputMismatch": "入力 {{databaseName}} 名 \"{{input}}\" が、選択した {{databaseName}} \"{{selectedId}}\" と一致しません",
       "feedbackTitle": "Azure Cosmos DB の改善にご協力ください。",
@@ -428,8 +428,8 @@
     },
     "deleteCollection": {
       "panelTitle": "{{collectionName}} の削除",
-      "warningMessage": "Warning! The action you are about to take cannot be undone. Continuing will permanently delete this resource and all of its children resources.",
-      "copyableId": "{{collectionName}} Id:",
+      "warningMessage": "警告!実行しようとしている操作を元に戻すことはできません。続行すると、このリソースとそのすべての子リソースが完全に削除されます。",
+      "copyableId": "{{collectionName}} ID:",
       "confirmPrompt": "{{collectionName}} ID を入力して確認してください",
       "inputMismatch": "入力 ID {{input}} が選択した {{selectedId}} と一致しません",
       "feedbackTitle": "Azure Cosmos DB の改善にご協力ください。",

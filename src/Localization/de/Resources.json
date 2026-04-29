@@ -420,7 +420,7 @@
     "deleteDatabase": {
       "panelTitle": "{{databaseName}} löschen",
       "warningMessage": "Warnung! Die Aktion, die Sie ausführen möchten, kann nicht rückgängig gemacht werden. Wenn Sie fortfahren, werden diese Ressource und alle untergeordneten Ressourcen dauerhaft gelöscht.",
-      "copyableId": "{{databaseName}} Id:",
+      "copyableId": "{{databaseName}}-ID:",
       "confirmPrompt": "Durch Eingabe der {{databaseName}}-ID (Name) bestätigen",
       "inputMismatch": "Eingabe {{databaseName}} Name „{{input}}“ stimmt nicht mit dem ausgewählten {{databaseName}} „{{selectedId}}“ überein.",
       "feedbackTitle": "Helfen Sie uns, Azure Cosmos DB zu verbessern!",
@@ -428,8 +428,8 @@
     },
     "deleteCollection": {
       "panelTitle": "{{collectionName}} löschen",
-      "warningMessage": "Warning! The action you are about to take cannot be undone. Continuing will permanently delete this resource and all of its children resources.",
-      "copyableId": "{{collectionName}} Id:",
+      "warningMessage": "Warnung! Die Aktion, die Sie ausführen möchten, kann nicht rückgängig gemacht werden. Wenn Sie fortfahren, werden diese Ressource und alle untergeordneten Ressourcen dauerhaft gelöscht.",
+      "copyableId": "{{collectionName}}-ID:",
       "confirmPrompt": "Durch Eingabe der {{collectionName}}-ID bestätigen",
       "inputMismatch": "Die Eingabe-ID {{input}} stimmt nicht mit der ausgewählten {{selectedId}} überein.",
       "feedbackTitle": "Helfen Sie uns, Azure Cosmos DB zu verbessern!",
