@@ -1,7 +1,7 @@
 import { DefaultAzureCredential } from "@azure/identity";
 import { Frame, Locator, Page, expect } from "@playwright/test";
 import crypto from "crypto";
-import { getNoSqlRbacToken } from "./NoSqlRbacTokens";
+import { getNoSqlRbacToken } from "./NoSqlTestSetup";
 import { TestContainerContext } from "./testData";
 
 const RETRY_COUNT = 3;
@@ -44,39 +44,34 @@ export enum TestAccount {
   SQLContainerCopyOnly = "SQLContainerCopyOnly",
 }
 
-export const defaultAccounts: Record<TestAccount, string[]> = {
-  [TestAccount.Tables]: ["github-e2etests-tables"],
-  [TestAccount.Cassandra]: ["github-e2etests-cassandra"],
-  [TestAccount.Gremlin]: ["github-e2etests-gremlin"],
-  [TestAccount.Mongo]: ["github-e2etests-mongo"],
-  [TestAccount.MongoReadonly]: ["github-e2etests-mongo-readonly"],
-  [TestAccount.Mongo32]: ["github-e2etests-mongo32"],
-  // Below order is important for the CI workflow. Shard index must map to the same sql-XX value.
-  [TestAccount.SQL]: [
-    "github-e2etests-sql-20",
-    "github-e2etests-sql-1",
-    "github-e2etests-sql-2",
-    "github-e2etests-sql-3",
-    "github-e2etests-sql-4",
-    "github-e2etests-sql-5",
-    "github-e2etests-sql-6",
-    "github-e2etests-sql-7",
-    "github-e2etests-sql-8",
-    "github-e2etests-sql-9",
-    "github-e2etests-sql-10",
-    "github-e2etests-sql-11",
-    "github-e2etests-sql-12",
-    "github-e2etests-sql-13",
-    "github-e2etests-sql-14",
-    "github-e2etests-sql-15",
-    "github-e2etests-sql-16",
-    "github-e2etests-sql-17",
-    "github-e2etests-sql-18",
-    "github-e2etests-sql-19",
-  ],
-  [TestAccount.SQLReadOnly]: ["github-e2etests-sql-readonly"],
-  [TestAccount.SQLContainerCopyOnly]: ["github-e2etests-sql-containercopyonly"],
-};
+export function getDefaultAccountName(accountType: TestAccount): string {
+  switch (accountType) {
+    case TestAccount.Tables:
+      return "github-e2etests-tables";
+    case TestAccount.Cassandra:
+      return "github-e2etests-cassandra";
+    case TestAccount.Gremlin:
+      return "github-e2etests-gremlin";
+    case TestAccount.Mongo:
+      return "github-e2etests-mongo";
+    case TestAccount.MongoReadonly:
+      return "github-e2etests-mongo-readonly";
+    case TestAccount.Mongo32:
+      return "github-e2etests-mongo32";
+    case TestAccount.SQLReadOnly:
+      return "github-e2etests-sql-readonly";
+    case TestAccount.SQLContainerCopyOnly:
+      return "github-e2etests-sql-containercopyonly";
+    case TestAccount.SQL:
+      const shardIndex = process.env.PLAYWRIGHT_SHARD_INDEX ?? "";
+      if (!shardIndex) {
+        throw new Error("PLAYWRIGHT_SHARD_INDEX is not set");
+      }
+      return "github-e2etests-sql-" + shardIndex;
+    default:
+      throw new Error(`No default account name defined for account type ${accountType}`);
+  }
+}
 
 export const resourceGroupName = process.env.DE_TEST_RESOURCE_GROUP ?? "de-e2e-tests";
 export const subscriptionId = process.env.DE_TEST_SUBSCRIPTION_ID ?? "69e02f2d-f059-4409-9eac-97e8a276ae2c";
@@ -97,25 +92,11 @@ function tryGetStandardName(accountType: TestAccount) {
 }
 
 export function getAccountName(accountType: TestAccount) {
-  const environmentVariableAccountName = process.env[`DE_TEST_ACCOUNT_NAME_${accountType.toLocaleUpperCase()}`];
-  if (environmentVariableAccountName) {
-    return environmentVariableAccountName;
-  }
-
-  const standardName = tryGetStandardName(accountType);
-  if (standardName) {
-    return standardName;
-  }
-
-  // If we reach here, we should be running in the CI workflow. Determine the account name based on the shard index.
-  const shardIndex = process.env.PLAYWRIGHT_SHARD_INDEX;
-  if (!shardIndex) {
-    throw new Error("PLAYWRIGHT_SHARD_INDEX environment variable is not set");
-  }
-
-  const defaultAccountNames = defaultAccounts[accountType];
-  const accountName = defaultAccountNames[parseInt(shardIndex) % defaultAccountNames.length];
-  return accountName;
+  return (
+    process.env[`DE_TEST_ACCOUNT_NAME_${accountType.toLocaleUpperCase()}`] ??
+    tryGetStandardName(accountType) ??
+    getDefaultAccountName(accountType)
+  );
 }
 
 type TestExplorerUrlOptions = {

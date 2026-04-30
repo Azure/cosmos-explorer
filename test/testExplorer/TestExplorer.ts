@@ -3,7 +3,7 @@ import "../../less/hostedexplorer.less";
 import { DataExplorerInputsFrame } from "../../src/Contracts/ViewModels";
 import { updateUserContext } from "../../src/UserContext";
 import { get, listKeys } from "../../src/Utils/arm/generatedClients/cosmos/databaseAccounts";
-import { getNoSqlRbacToken } from "../NoSqlRbacTokens";
+import { getNoSqlRbacToken } from "../NoSqlTestSetup";
 
 const urlSearchParams = new URLSearchParams(window.location.search);
 const resourceGroup = urlSearchParams.get("resourceGroup") || process.env.RESOURCE_GROUP || "";
@@ -72,23 +72,6 @@ const initTestExplorer = async (): Promise<void> => {
     updateUserContext({
       dataPlaneRbacEnabled: true,
     });
-
-    // DEBUG
-    //try {
-    //  const token = rbacToken;
-    //  const base64Url = token.split(".")[1];
-    //  const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-    //  const jsonPayload = decodeURIComponent(
-    //    atob(base64)
-    //      .split("")
-    //      .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
-    //      .join(""),
-    //  );
-    //  const foo = JSON.parse(jsonPayload);
-    //  console.log("Parsed RBAC token payload:", foo ? "success" : "failed");
-    //} catch (error) {
-    //  console.error(`Error validating RBAC token for test account type ${testAccountType}:`, error);
-    // }
   } else {
     console.error(`No RBAC token found for test account type ${testAccountType}`);
   }

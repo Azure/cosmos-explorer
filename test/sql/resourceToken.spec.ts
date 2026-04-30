@@ -11,7 +11,7 @@ import {
   resourceGroupName,
   subscriptionId,
 } from "../fx";
-import { getNoSqlRbacToken } from "../NoSqlRbacTokens";
+import { getNoSqlRbacToken } from "../NoSqlTestSetup";
 
 test("SQL account using Resource token", async ({ page }) => {
   const nosqlAccountRbacToken = getNoSqlRbacToken() ?? "";
