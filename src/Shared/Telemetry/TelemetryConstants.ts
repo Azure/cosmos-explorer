@@ -87,6 +87,7 @@ export enum Action {
   PhoenixConnection,
   PhoenixHeartBeat,
   PhoenixResetWorkspace,
+  PhoenixDBAccountAllowed,
   DeleteCellFromMenu,
   OpenTerminal,
   OpenCloudShellTerminal,
@@ -154,6 +155,7 @@ export enum Action {
   ReadCollections,
   LoadCollectionsPerDatabase,
   RefreshNotebooksEnabled,
+  CheckPhoenixStatus,
   CheckFeatureRegistration,
 }
 
