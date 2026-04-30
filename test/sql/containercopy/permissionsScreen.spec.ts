@@ -53,7 +53,6 @@ test.describe("Container Copy - Permission Screen Verification", () => {
               return d;
             });
           }
-          console.log("Mocking Resource Graph API response for database accounts", responseData.data);
           await route.fulfill({
             status: 200,
             contentType: "application/json",

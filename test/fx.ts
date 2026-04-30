@@ -62,12 +62,13 @@ export function getDefaultAccountName(accountType: TestAccount): string {
       return "github-e2etests-sql-readonly";
     case TestAccount.SQLContainerCopyOnly:
       return "github-e2etests-sql-containercopyonly";
-    case TestAccount.SQL:
+    case TestAccount.SQL: {
       const shardIndex = process.env.PLAYWRIGHT_SHARD_INDEX ?? "";
       if (!shardIndex) {
         throw new Error("PLAYWRIGHT_SHARD_INDEX is not set");
       }
       return "github-e2etests-sql-" + shardIndex;
+    }
     default:
       throw new Error(`No default account name defined for account type ${accountType}`);
   }
