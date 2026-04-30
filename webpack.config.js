@@ -212,7 +212,9 @@ module.exports = function (_env = {}, argv = {}) {
     new HTMLInlineCSSWebpackPlugin({
       filter: (fileName) => fileName.includes("cellOutputViewer"),
     }),
-    new MonacoWebpackPlugin(),
+    new MonacoWebpackPlugin({
+      languages: ["json", "sql", "javascript", "python", "plaintext"],
+    }),
     new CopyWebpackPlugin({
       patterns: [
         { from: "DataExplorer.nuspec" },
@@ -262,6 +264,37 @@ module.exports = function (_env = {}, argv = {}) {
       extensions: [".tsx", ".ts", ".js"],
     },
     optimization: {
+      splitChunks: {
+        chunks: "all",
+        minSize: 30000,
+        maxInitialRequests: 10,
+        cacheGroups: {
+          fluentui: {
+            test: /[\\/]node_modules[\\/]@fluentui[\\/]/,
+            name: "vendor-fluentui",
+            chunks: "all",
+            priority: 30,
+          },
+          nteract: {
+            test: /[\\/]node_modules[\\/]@nteract[\\/]/,
+            name: "vendor-nteract",
+            chunks: "all",
+            priority: 30,
+          },
+          azure: {
+            test: /[\\/]node_modules[\\/]@azure[\\/]/,
+            name: "vendor-azure",
+            chunks: "all",
+            priority: 30,
+          },
+          vendor: {
+            test: /[\\/]node_modules[\\/]/,
+            name: "vendor-common",
+            chunks: "all",
+            priority: 10,
+          },
+        },
+      },
       minimize: mode === "production" ? true : false,
       minimizer: [
         new TerserPlugin({
