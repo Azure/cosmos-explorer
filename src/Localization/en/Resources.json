@@ -33,7 +33,8 @@
     "publish": "Publish",
     "browse": "Browse",
     "increaseValueBy1": "Increase value by 1",
-    "decreaseValueBy1": "Decrease value by 1"
+    "decreaseValueBy1": "Decrease value by 1",
+    "preview": "Preview"
   },
   "splashScreen": {
     "title": {
@@ -981,6 +982,8 @@
       "quantizationByteSizeTooltipGlobalSecondaryIndexName": "global secondary index",
       "quantizerType": "Quantizer type",
       "quantizerTypeTooltip": "The quantization method used by the vector index.",
+      "quantizerTypeProduct": "Product",
+      "quantizerTypeSpherical": "Spherical",
       "indexingSearchListSize": "Indexing search list size",
       "vectorIndexShardKey": "Vector index shard key",
       "addVectorEmbedding": "Add vector embedding",

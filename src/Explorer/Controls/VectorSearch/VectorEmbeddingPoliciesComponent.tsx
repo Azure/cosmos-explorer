@@ -17,6 +17,7 @@ import {
   getDistanceFunctionOptions,
   getIndexTypeOptions,
   getQuantizerTypeOptions,
+  supportsQuantization,
 } from "Explorer/Controls/VectorSearch/VectorSearchUtils";
 import { Keys, t } from "Localization";
 import React, { FunctionComponent, useState } from "react";
@@ -159,7 +160,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
     vectorEmbeddings?.forEach((embedding) => {
       const matchingIndex = displayIndexes ? vectorIndexes.find((index) => index.path === embedding.path) : undefined;
       const matchingType = matchingIndex?.type;
-      const supportsQuantizer = matchingType === "quantizedFlat" || matchingType === "diskANN";
+      const supportsQuantizer = supportsQuantization(matchingType);
       mergedData.push({
         ...embedding,
         indexType: matchingType || "none",
@@ -208,7 +209,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
             indexingSearchListSize: policy.indexingSearchListSize,
             quantizationByteSize: policy.quantizationByteSize,
             vectorIndexShardKey: policy.vectorIndexShardKey,
-            ...((policy.indexType === "quantizedFlat" || policy.indexType === "diskANN") && policy.quantizerType
+            ...(supportsQuantization(policy.indexType) && policy.quantizerType
               ? { quantizerType: policy.quantizerType }
               : {}),
           }) as VectorIndex,
@@ -254,7 +255,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
     } else {
       vectorEmbedding.indexingSearchListSize = undefined;
     }
-    if (vectorEmbedding.indexType === "quantizedFlat" || vectorEmbedding.indexType === "diskANN") {
+    if (supportsQuantization(vectorEmbedding.indexType)) {
       vectorEmbedding.quantizerType = vectorEmbedding.quantizerType || "product";
     } else {
       vectorEmbedding.quantizerType = undefined;
@@ -437,8 +438,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
                       <Label
                         disabled={
                           isExistingPolicy(vectorEmbeddingPolicy) ||
-                          (vectorEmbeddingPolicy.indexType !== "quantizedFlat" &&
-                            vectorEmbeddingPolicy.indexType !== "diskANN")
+                          !supportsQuantization(vectorEmbeddingPolicy.indexType)
                         }
                         styles={labelStyles}
                       >
@@ -448,8 +448,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
                       <TextField
                         disabled={
                           isExistingPolicy(vectorEmbeddingPolicy) ||
-                          (vectorEmbeddingPolicy.indexType !== "quantizedFlat" &&
-                            vectorEmbeddingPolicy.indexType !== "diskANN")
+                          !supportsQuantization(vectorEmbeddingPolicy.indexType)
                         }
                         id={`vector-policy-quantizationByteSize-${index + 1}`}
                         styles={textFieldStyles}
@@ -463,8 +462,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
                       <Label
                         disabled={
                           isExistingPolicy(vectorEmbeddingPolicy) ||
-                          (vectorEmbeddingPolicy.indexType !== "quantizedFlat" &&
-                            vectorEmbeddingPolicy.indexType !== "diskANN")
+                          !supportsQuantization(vectorEmbeddingPolicy.indexType)
                         }
                         styles={labelStyles}
                       >
@@ -474,8 +472,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
                       <Dropdown
                         disabled={
                           isExistingPolicy(vectorEmbeddingPolicy) ||
-                          (vectorEmbeddingPolicy.indexType !== "quantizedFlat" &&
-                            vectorEmbeddingPolicy.indexType !== "diskANN")
+                          !supportsQuantization(vectorEmbeddingPolicy.indexType)
                         }
                         id={`vector-policy-quantizerType-${index + 1}`}
                         styles={dropdownStyles}
