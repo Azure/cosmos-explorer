@@ -982,8 +982,6 @@
       "quantizationByteSizeTooltipGlobalSecondaryIndexName": "global secondary index",
       "quantizerType": "Quantizer type",
       "quantizerTypeTooltip": "The quantization method used by the vector index.",
-      "quantizerTypeProduct": "Product",
-      "quantizerTypeSpherical": "Spherical",
       "indexingSearchListSize": "Indexing search list size",
       "vectorIndexShardKey": "Vector index shard key",
       "addVectorEmbedding": "Add vector embedding",

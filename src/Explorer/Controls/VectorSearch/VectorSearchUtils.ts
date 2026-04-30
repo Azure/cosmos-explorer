@@ -10,11 +10,8 @@ export const getDataTypeOptions = (): IDropdownOption[] => createDropdownOptions
 export const getDistanceFunctionOptions = (): IDropdownOption[] => createDropdownOptionsFromLiterals(distanceFunctions);
 export const getIndexTypeOptions = (): IDropdownOption[] => createDropdownOptionsFromLiterals(indexTypes);
 export const getQuantizerTypeOptions = (): IDropdownOption[] => [
-  { key: "product", text: t(Keys.controls.vectorEmbeddingPolicies.quantizerTypeProduct) },
-  {
-    key: "spherical",
-    text: `${t(Keys.controls.vectorEmbeddingPolicies.quantizerTypeSpherical)} (${t(Keys.common.preview)})`,
-  },
+  { key: "product", text: "Product" },
+  { key: "spherical", text: `Spherical (${t(Keys.common.preview)})` },
 ];
 
 export const supportsQuantization = (indexType: VectorIndex["type"] | "none" | undefined): boolean =>
