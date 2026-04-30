@@ -420,7 +420,7 @@
     "deleteDatabase": {
       "panelTitle": "Ta bort {{databaseName}}",
       "warningMessage": "Varning! Den åtgärd du är i färd med att genomföra kan du inte ångra senare. Om du fortsätter tas den här resursen och alla dess underordnade resurser bort permanent.",
-      "copyableId": "{{databaseName}} Id:",
+      "copyableId": "{{databaseName}}-ID:",
       "confirmPrompt": "Bekräfta genom att skriva ID:t {{databaseName}} (namn)",
       "inputMismatch": "{{databaseName}}Indatanamnet {{input}} matchar inte det valda {{databaseName}} {{selectedId}}",
       "feedbackTitle": "Hjälp oss att förbättra Azure Cosmos DB!",
@@ -429,7 +429,7 @@
     "deleteCollection": {
       "panelTitle": "Ta bort {{collectionName}}",
       "warningMessage": "Varning! Den åtgärd du är i färd med att genomföra kan du inte ångra senare. Om du fortsätter tas den här resursen och alla dess underordnade resurser bort permanent.",
-      "copyableId": "{{collectionName}} Id:",
+      "copyableId": "{{collectionName}}-ID:",
       "confirmPrompt": "Bekräfta genom att skriva ID:t {{collectionName}} ",
       "inputMismatch": "Indata-ID {{input}} matchar inte det valda {{selectedId}}",
       "feedbackTitle": "Hjälp oss att förbättra Azure Cosmos DB!",

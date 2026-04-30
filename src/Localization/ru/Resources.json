@@ -420,7 +420,7 @@
     "deleteDatabase": {
       "panelTitle": "Удалить {{databaseName}}",
       "warningMessage": "Предупреждение! Действие, которое вы собираетесь предпринять, невозможно отменить. Если вы продолжите, ресурс и все его дочерние ресурсы будут удалены без возможности восстановления.",
-      "copyableId": "{{databaseName}} Id:",
+      "copyableId": "{{databaseName}} ИД:",
       "confirmPrompt": "Подтвердите, введя идентификатор {{databaseName}} (имя)",
       "inputMismatch": "Введённое имя базы данных {{databaseName}} \"{{input}}\" не соответствует выбранному {{databaseName}} \"{{selectedId}}\"",
       "feedbackTitle": "Помогите нам улучшить Azure Cosmos DB!",
@@ -429,7 +429,7 @@
     "deleteCollection": {
       "panelTitle": "Удалить {{collectionName}}",
       "warningMessage": "Предупреждение! Действие, которое вы собираетесь предпринять, невозможно отменить. Если вы продолжите, ресурс и все его дочерние ресурсы будут удалены без возможности восстановления.",
-      "copyableId": "{{collectionName}} Id:",
+      "copyableId": "{{collectionName}} ИД:",
       "confirmPrompt": "Подтвердите, введя идентификатор {{collectionName}}",
       "inputMismatch": "Введённое имя базы данных {{input}} не соответствует выбранному {{selectedId}}",
       "feedbackTitle": "Помогите нам улучшить Azure Cosmos DB!",
