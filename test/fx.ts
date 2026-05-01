@@ -1,6 +1,7 @@
 import { DefaultAzureCredential } from "@azure/identity";
 import { Frame, Locator, Page, expect } from "@playwright/test";
 import crypto from "crypto";
+import { getNoSqlRbacToken } from "./NoSqlTestSetup";
 import { TestContainerContext } from "./testData";
 
 const RETRY_COUNT = 3;
@@ -43,17 +44,35 @@ export enum TestAccount {
   SQLContainerCopyOnly = "SQLContainerCopyOnly",
 }
 
-export const defaultAccounts: Record<TestAccount, string> = {
-  [TestAccount.Tables]: "github-e2etests-tables",
-  [TestAccount.Cassandra]: "github-e2etests-cassandra",
-  [TestAccount.Gremlin]: "github-e2etests-gremlin",
-  [TestAccount.Mongo]: "github-e2etests-mongo",
-  [TestAccount.MongoReadonly]: "github-e2etests-mongo-readonly",
-  [TestAccount.Mongo32]: "github-e2etests-mongo32",
-  [TestAccount.SQL]: "github-e2etests-sql",
-  [TestAccount.SQLReadOnly]: "github-e2etests-sql-readonly",
-  [TestAccount.SQLContainerCopyOnly]: "github-e2etests-sql-containercopyonly",
-};
+export function getDefaultAccountName(accountType: TestAccount): string {
+  switch (accountType) {
+    case TestAccount.Tables:
+      return "github-e2etests-tables";
+    case TestAccount.Cassandra:
+      return "github-e2etests-cassandra";
+    case TestAccount.Gremlin:
+      return "github-e2etests-gremlin";
+    case TestAccount.Mongo:
+      return "github-e2etests-mongo";
+    case TestAccount.MongoReadonly:
+      return "github-e2etests-mongo-readonly";
+    case TestAccount.Mongo32:
+      return "github-e2etests-mongo32";
+    case TestAccount.SQLReadOnly:
+      return "github-e2etests-sql-readonly";
+    case TestAccount.SQLContainerCopyOnly:
+      return "github-e2etests-sql-containercopyonly";
+    case TestAccount.SQL: {
+      const shardIndex = process.env.PLAYWRIGHT_SHARD_INDEX ?? "";
+      if (!shardIndex) {
+        throw new Error("PLAYWRIGHT_SHARD_INDEX is not set");
+      }
+      return "github-e2etests-sql-" + shardIndex;
+    }
+    default:
+      throw new Error(`No default account name defined for account type ${accountType}`);
+  }
+}
 
 export const resourceGroupName = process.env.DE_TEST_RESOURCE_GROUP ?? "de-e2e-tests";
 export const subscriptionId = process.env.DE_TEST_SUBSCRIPTION_ID ?? "69e02f2d-f059-4409-9eac-97e8a276ae2c";
@@ -77,7 +96,7 @@ export function getAccountName(accountType: TestAccount) {
   return (
     process.env[`DE_TEST_ACCOUNT_NAME_${accountType.toLocaleUpperCase()}`] ??
     tryGetStandardName(accountType) ??
-    defaultAccounts[accountType]
+    getDefaultAccountName(accountType)
   );
 }
 
@@ -102,7 +121,11 @@ export async function getTestExplorerUrl(accountType: TestAccount, options?: Tes
   // For now, since we don't test copilot, we can disable the copilot APIs by setting the feature flag to false.
   params.set("feature.enableCopilot", "false");
 
-  const nosqlRbacToken = process.env.NOSQL_TESTACCOUNT_TOKEN;
+  const nosqlRbacToken = getNoSqlRbacToken();
+  if (!nosqlRbacToken) {
+    throw new Error("No NOSQL RBAC token found.");
+  }
+
   const nosqlReadOnlyRbacToken = process.env.NOSQL_READONLY_TESTACCOUNT_TOKEN;
   const nosqlContainerCopyRbacToken = process.env.NOSQL_CONTAINERCOPY_TESTACCOUNT_TOKEN;
   const tableRbacToken = process.env.TABLE_TESTACCOUNT_TOKEN;
