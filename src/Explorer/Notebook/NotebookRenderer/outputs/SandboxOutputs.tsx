@@ -159,7 +159,7 @@ export const makeMapStateToProps = (
       const cell = selectors.notebook.cellById(model, { id });
       if (cell) {
         outputs = cell.get("outputs", Immutable.List());
-        hidden = cell.cell_type === "code" && cell.getIn(["metadata", "jupyter", "outputs_hidden"]);
+        hidden = cell.cell_type === "code" && (cell.getIn(["metadata", "jupyter", "outputs_hidden"]) as boolean);
         expanded = cell.cell_type === "code" && cell.getIn(["metadata", "collapsed"]) === false;
       }
     }

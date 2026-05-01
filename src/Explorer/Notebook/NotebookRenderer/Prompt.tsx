@@ -66,7 +66,7 @@ const makeMapStateToProps = (_state: CdbAppState, ownProps: ComponentProps): ((s
     let executionCount;
 
     if (model && model.type === "notebook") {
-      status = model.transient.getIn(["cellMap", id, "status"]);
+      status = model.transient.getIn(["cellMap", id, "status"]) as string | undefined;
       const cell = selectors.notebook.cellById(model, { id });
       if (cell) {
         executionCount = cell.get("execution_count", undefined);
