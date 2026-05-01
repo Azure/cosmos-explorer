@@ -255,6 +255,7 @@ export interface VectorIndex {
   vectorIndexShardKey?: string[];
   indexingSearchListSize?: number;
   quantizationByteSize?: number;
+  quantizerType?: "product" | "spherical";
 }
 
 export interface FullTextIndex {
