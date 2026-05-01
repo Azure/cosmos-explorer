@@ -112,6 +112,9 @@ describe("Delete Collection Confirmation Pane", () => {
       const wrapper = mount(<DeleteCollectionConfirmationPane refreshDatabases={() => undefined} />);
       expect(wrapper).toMatchSnapshot();
 
+      expect(wrapper.exists("#copyableCollectionId")).toBe(true);
+      expect(wrapper.find("#copyableCollectionId").hostNodes().prop("value")).toBe(selectedCollectionId);
+
       expect(wrapper.exists("#confirmCollectionId")).toBe(true);
       wrapper
         .find("#confirmCollectionId")

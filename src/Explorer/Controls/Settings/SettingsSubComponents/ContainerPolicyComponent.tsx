@@ -1,5 +1,5 @@
 import { DefaultButton, Pivot, PivotItem, Stack } from "@fluentui/react";
-import { FullTextPolicy, VectorEmbedding, VectorEmbeddingPolicy } from "Contracts/DataModels";
+import { FullTextPolicy, VectorEmbedding, VectorEmbeddingPolicy, VectorIndex } from "Contracts/DataModels";
 import {
   FullTextPoliciesComponent,
   getFullTextLanguageOptions,
@@ -16,6 +16,9 @@ export interface ContainerPolicyComponentProps {
   onVectorEmbeddingPolicyChange: (newVectorEmbeddingPolicy: VectorEmbeddingPolicy) => void;
   onVectorEmbeddingPolicyDirtyChange: (isVectorEmbeddingPolicyDirty: boolean) => void;
   onVectorEmbeddingPolicyValidationChange: (isValid: boolean) => void;
+  vectorIndexes: VectorIndex[];
+  vectorIndexesBaseline: VectorIndex[];
+  onVectorIndexesChange: (newVectorIndexes: VectorIndex[]) => void;
   isVectorSearchEnabled: boolean;
   fullTextPolicy: FullTextPolicy;
   fullTextPolicyBaseline: FullTextPolicy;
@@ -33,6 +36,9 @@ export const ContainerPolicyComponent: React.FC<ContainerPolicyComponentProps> =
   onVectorEmbeddingPolicyChange,
   onVectorEmbeddingPolicyDirtyChange,
   onVectorEmbeddingPolicyValidationChange,
+  vectorIndexes,
+  vectorIndexesBaseline,
+  onVectorIndexesChange,
   isVectorSearchEnabled,
   fullTextPolicy,
   fullTextPolicyBaseline,
@@ -78,6 +84,7 @@ export const ContainerPolicyComponent: React.FC<ContainerPolicyComponentProps> =
 
   const checkAndSendVectorEmbeddingPoliciesToSettings = (
     newVectorEmbeddings: VectorEmbedding[],
+    newVectorIndexes: VectorIndex[],
     validationPassed: boolean,
   ): void => {
     onVectorEmbeddingPolicyValidationChange(validationPassed);
@@ -85,6 +92,9 @@ export const ContainerPolicyComponent: React.FC<ContainerPolicyComponentProps> =
     onVectorEmbeddingPolicyDirtyChange(isVectorDirty);
     if (isVectorDirty) {
       onVectorEmbeddingPolicyChange({ vectorEmbeddings: newVectorEmbeddings });
+    }
+    if (isDirty(newVectorIndexes ?? [], vectorIndexesBaseline ?? [])) {
+      onVectorIndexesChange(newVectorIndexes);
     }
   };
 
@@ -169,12 +179,14 @@ export const ContainerPolicyComponent: React.FC<ContainerPolicyComponentProps> =
               <VectorEmbeddingPoliciesComponent
                 vectorEmbeddingsBaseline={vectorEmbeddingsBaseline}
                 vectorEmbeddings={vectorEmbeddings}
-                vectorIndexes={undefined}
+                vectorIndexes={vectorIndexes ?? []}
                 onVectorEmbeddingChange={(
-                  vectorEmbeddings: VectorEmbedding[],
-                  _vectorIndexingPolicies,
+                  newVectorEmbeddings: VectorEmbedding[],
+                  newVectorIndexes: VectorIndex[],
                   validationPassed: boolean,
-                ) => checkAndSendVectorEmbeddingPoliciesToSettings(vectorEmbeddings, validationPassed)}
+                ) =>
+                  checkAndSendVectorEmbeddingPoliciesToSettings(newVectorEmbeddings, newVectorIndexes, validationPassed)
+                }
                 discardChanges={discardVectorChanges}
                 onChangesDiscarded={onVectorChangesDiscarded}
               />
