@@ -393,7 +393,7 @@ export enum CollectionTabKind {
   Terminal = 14,
   NotebookV2 = 15,
   SparkMasterTab = 16 /* Deprecated */,
-  Gallery = 17,
+  Gallery = 17 /* Deprecated */,
   NotebookViewer = 18,
   Schema = 19,
   CollectionSettingsV2 = 20,

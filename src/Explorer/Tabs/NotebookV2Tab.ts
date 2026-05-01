@@ -1,7 +1,6 @@
 import { stringifyNotebook, toJS } from "@nteract/commutable";
 import * as ko from "knockout";
 import * as Q from "q";
-import { userContext } from "UserContext";
 import ClearAllOutputsIcon from "../../../images/notebook/Notebook-clear-all-outputs.svg";
 import CopyIcon from "../../../images/notebook/Notebook-copy.svg";
 import CutIcon from "../../../images/notebook/Notebook-cut.svg";
@@ -12,8 +11,7 @@ import RunAllIcon from "../../../images/notebook/Notebook-run-all.svg";
 import RunIcon from "../../../images/notebook/Notebook-run.svg";
 import { default as InterruptKernelIcon, default as KillKernelIcon } from "../../../images/notebook/Notebook-stop.svg";
 import SaveIcon from "../../../images/save-cosmos.svg";
-import { useNotebookSnapshotStore } from "../../hooks/useNotebookSnapshotStore";
-import { Action, ActionModifiers, Source } from "../../Shared/Telemetry/TelemetryConstants";
+import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import * as NotebookConfigurationUtils from "../../Utils/NotebookConfigurationUtils";
 import { logConsoleInfo } from "../../Utils/NotificationConsoleUtils";
@@ -21,9 +19,7 @@ import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandBu
 import { useDialog } from "../Controls/Dialog";
 import * as CommandBarComponentButtonFactory from "../Menus/CommandBar/CommandBarComponentButtonFactory";
 import { KernelSpecsDisplay } from "../Notebook/NotebookClientV2";
-import * as CdbActions from "../Notebook/NotebookComponent/actions";
 import { NotebookComponentAdapter } from "../Notebook/NotebookComponent/NotebookComponentAdapter";
-import { CdbAppState, SnapshotRequest } from "../Notebook/NotebookComponent/types";
 import { NotebookContentItem } from "../Notebook/NotebookContentItem";
 import { NotebookUtil } from "../Notebook/NotebookUtil";
 import { useNotebook } from "../Notebook/useNotebook";
@@ -97,7 +93,6 @@ export default class NotebookTabV2 extends NotebookTabBase {
 
     const saveLabel = "Save";
     const copyToLabel = "Copy to ...";
-    const publishLabel = "Publish to gallery";
     const kernelLabel = "No Kernel";
     const runLabel = "Run";
     const runActiveCellLabel = "Run Active Cell";
@@ -127,17 +122,6 @@ export default class NotebookTabV2 extends NotebookTabBase {
         hasPopup: false,
         disabled: false,
         ariaLabel: copyToLabel,
-      });
-    }
-
-    if (userContext.features.publicGallery) {
-      saveButtonChildren.push({
-        iconName: "PublishContent",
-        onCommandClick: async () => await this.publishToGallery(),
-        commandButtonLabel: publishLabel,
-        hasPopup: false,
-        disabled: false,
-        ariaLabel: publishLabel,
       });
     }
 
@@ -382,40 +366,6 @@ export default class NotebookTabV2 extends NotebookTabBase {
       sparkClusterConnectionInfo,
     );
   }
-
-  private publishToGallery = async () => {
-    TelemetryProcessor.trace(Action.NotebooksGalleryClickPublishToGallery, ActionModifiers.Mark, {
-      source: Source.CommandBarMenu,
-    });
-
-    const notebookReduxStore = NotebookTabV2.clientManager.getStore();
-    const unsubscribe = notebookReduxStore.subscribe(() => {
-      const cdbState = (notebookReduxStore.getState() as CdbAppState).cdb;
-      useNotebookSnapshotStore.setState({
-        snapshot: cdbState.notebookSnapshot?.imageSrc,
-        error: cdbState.notebookSnapshotError,
-      });
-    });
-
-    const notebookContent = this.notebookComponentAdapter.getContent();
-    const notebookContentRef = this.notebookComponentAdapter.contentRef;
-    const onPanelClose = (): void => {
-      unsubscribe();
-      useNotebookSnapshotStore.setState({
-        snapshot: undefined,
-        error: undefined,
-      });
-      notebookReduxStore.dispatch(CdbActions.takeNotebookSnapshot(undefined));
-    };
-
-    await this.container.publishNotebook(
-      notebookContent.name,
-      notebookContent.content,
-      notebookContentRef,
-      (request: SnapshotRequest) => notebookReduxStore.dispatch(CdbActions.takeNotebookSnapshot(request)),
-      onPanelClose,
-    );
-  };
 
   private copyNotebook = () => {
     const notebookContent = this.notebookComponentAdapter.getContent();

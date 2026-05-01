@@ -25,10 +25,6 @@ describe("NotebookMetadataComponent", () => {
       isFavorite: false,
       downloadButtonText: "Download",
       onTagClick: undefined,
-      onDownloadClick: undefined,
-      onFavoriteClick: undefined,
-      onUnfavoriteClick: undefined,
-      onReportAbuseClick: undefined,
     };
 
     const wrapper = shallow(<NotebookMetadataComponent {...props} />);
@@ -57,10 +53,6 @@ describe("NotebookMetadataComponent", () => {
       isFavorite: true,
       downloadButtonText: "Download",
       onTagClick: undefined,
-      onDownloadClick: undefined,
-      onFavoriteClick: undefined,
-      onUnfavoriteClick: undefined,
-      onReportAbuseClick: undefined,
     };
 
     const wrapper = shallow(<NotebookMetadataComponent {...props} />);

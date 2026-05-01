@@ -1,7 +1,7 @@
 /**
  * Wrapper around Notebook Viewer Read only content
  */
-import { IChoiceGroupProps, Icon, IProgressIndicatorProps, Link, ProgressIndicator } from "@fluentui/react";
+import { Icon, Link, ProgressIndicator } from "@fluentui/react";
 import { Notebook } from "@nteract/commutable";
 import { createContentRef } from "@nteract/core";
 import * as React from "react";
@@ -11,14 +11,11 @@ import { IGalleryItem, JunoClient } from "../../../Juno/JunoClient";
 import { SessionStorageUtility } from "../../../Shared/StorageUtility";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 import { traceFailure, traceStart, traceSuccess } from "../../../Shared/Telemetry/TelemetryProcessor";
-import * as GalleryUtils from "../../../Utils/GalleryUtils";
-import { DialogHost } from "../../../Utils/GalleryUtils";
 import Explorer from "../../Explorer";
 import { NotebookClientV2 } from "../../Notebook/NotebookClientV2";
 import { NotebookComponentBootstrapper } from "../../Notebook/NotebookComponent/NotebookComponentBootstrapper";
 import NotebookReadOnlyRenderer from "../../Notebook/NotebookRenderer/NotebookReadOnlyRenderer";
 import { useNotebook } from "../../Notebook/useNotebook";
-import { Dialog, TextFieldProps, useDialog } from "../Dialog";
 import { NotebookMetadataComponent } from "./NotebookMetadataComponent";
 import "./NotebookViewerComponent.less";
 
@@ -42,10 +39,10 @@ interface NotebookViewerComponentState {
   showProgressBar: boolean;
 }
 
-export class NotebookViewerComponent
-  extends React.Component<NotebookViewerComponentProps, NotebookViewerComponentState>
-  implements DialogHost
-{
+export class NotebookViewerComponent extends React.Component<
+  NotebookViewerComponentProps,
+  NotebookViewerComponentState
+> {
   private clientManager: NotebookClientV2;
   private notebookComponentBootstrapper: NotebookComponentBootstrapper;
 
@@ -102,7 +99,6 @@ export class NotebookViewerComponent
       );
 
       const notebook: Notebook = await response.json();
-      GalleryUtils.removeNotebookViewerLink(notebook, this.props.galleryItem?.newCellId);
       this.notebookComponentBootstrapper.setContent("json", notebook);
       this.setState({ content: notebook, showProgressBar: false });
 
@@ -150,10 +146,6 @@ export class NotebookViewerComponent
               isFavorite={this.state.isFavorite}
               downloadButtonText={this.props.container && `Download to ${useNotebook.getState().notebookFolderName}`}
               onTagClick={this.props.onTagClick}
-              onFavoriteClick={this.favoriteItem}
-              onUnfavoriteClick={this.unfavoriteItem}
-              onDownloadClick={this.downloadItem}
-              onReportAbuseClick={this.state.galleryItem.isSample ? undefined : this.reportAbuse}
             />
           </div>
         ) : (
@@ -166,7 +158,6 @@ export class NotebookViewerComponent
           hideInputs: this.props.hideInputs,
           hidePrompts: this.props.hidePrompts,
         })}
-        <Dialog />
       </div>
     );
   }
@@ -191,81 +182,4 @@ export class NotebookViewerComponent
       isFavorite,
     };
   }
-
-  showOkModalDialog(
-    title: string,
-    msg: string,
-    okLabel: string,
-    onOk: () => void,
-    progressIndicatorProps?: IProgressIndicatorProps,
-  ): void {
-    useDialog.getState().openDialog({
-      isModal: true,
-      title,
-      subText: msg,
-      primaryButtonText: okLabel,
-      onPrimaryButtonClick: () => {
-        useDialog.getState().closeDialog();
-        onOk && onOk();
-      },
-      secondaryButtonText: undefined,
-      onSecondaryButtonClick: undefined,
-      progressIndicatorProps,
-    });
-  }
-
-  showOkCancelModalDialog(
-    title: string,
-    msg: string,
-    okLabel: string,
-    onOk: () => void,
-    cancelLabel: string,
-    onCancel: () => void,
-    progressIndicatorProps?: IProgressIndicatorProps,
-    choiceGroupProps?: IChoiceGroupProps,
-    textFieldProps?: TextFieldProps,
-    primaryButtonDisabled?: boolean,
-  ): void {
-    useDialog.getState().openDialog({
-      isModal: true,
-      title,
-      subText: msg,
-      primaryButtonText: okLabel,
-      secondaryButtonText: cancelLabel,
-      onPrimaryButtonClick: () => {
-        useDialog.getState().closeDialog();
-        onOk && onOk();
-      },
-      onSecondaryButtonClick: () => {
-        useDialog.getState().closeDialog();
-        onCancel && onCancel();
-      },
-      progressIndicatorProps,
-      choiceGroupProps,
-      textFieldProps,
-      primaryButtonDisabled,
-    });
-  }
-
-  private favoriteItem = async (): Promise<void> => {
-    GalleryUtils.favoriteItem(this.props.container, this.props.junoClient, this.state.galleryItem, (item) =>
-      this.setState({ galleryItem: item, isFavorite: true }),
-    );
-  };
-
-  private unfavoriteItem = async (): Promise<void> => {
-    GalleryUtils.unfavoriteItem(this.props.container, this.props.junoClient, this.state.galleryItem, (item) =>
-      this.setState({ galleryItem: item, isFavorite: false }),
-    );
-  };
-
-  private downloadItem = async (): Promise<void> => {
-    GalleryUtils.downloadItem(this.props.container, this.props.junoClient, this.state.galleryItem, (item) =>
-      this.setState({ galleryItem: item }),
-    );
-  };
-
-  private reportAbuse = (): void => {
-    GalleryUtils.reportAbuse(this.props.junoClient, this.state.galleryItem, this, () => {});
-  };
 }

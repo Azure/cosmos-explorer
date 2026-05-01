@@ -1,46 +1,21 @@
 /**
  * Wrapper around Notebook metadata
  */
-import { FontWeights, Icon, IconButton, Link, Persona, PersonaSize, PrimaryButton, Stack, Text } from "@fluentui/react";
+import { FontWeights, Icon, Link, Persona, PersonaSize, Stack, Text } from "@fluentui/react";
 import * as React from "react";
 import { IGalleryItem } from "../../../Juno/JunoClient";
 import * as FileSystemUtil from "../../Notebook/FileSystemUtil";
 import "./NotebookViewerComponent.less";
 import CosmosDBLogo from "../../../../images/CosmosDB-logo.svg";
-import { InfoComponent } from "../NotebookGallery/InfoComponent/InfoComponent";
 
 export interface NotebookMetadataComponentProps {
   data: IGalleryItem;
   isFavorite: boolean;
   downloadButtonText?: string;
   onTagClick: (tag: string) => void;
-  onFavoriteClick: () => void;
-  onUnfavoriteClick: () => void;
-  onDownloadClick: () => void;
-  onReportAbuseClick: () => void;
 }
 
 export class NotebookMetadataComponent extends React.Component<NotebookMetadataComponentProps> {
-  private renderFavouriteButton = (): JSX.Element => {
-    return (
-      <Text>
-        {this.props.isFavorite !== undefined ? (
-          <>
-            <IconButton
-              iconProps={{ iconName: this.props.isFavorite ? "HeartFill" : "Heart" }}
-              onClick={this.props.isFavorite ? this.props.onUnfavoriteClick : this.props.onFavoriteClick}
-            />
-            {this.props.data.favorites} likes
-          </>
-        ) : (
-          <>
-            <Icon iconName="Heart" /> {this.props.data.favorites} likes
-          </>
-        )}
-      </Text>
-    );
-  };
-
   public render(): JSX.Element {
     const options: Intl.DateTimeFormatOptions = {
       year: "numeric",
@@ -59,20 +34,10 @@ export class NotebookMetadataComponent extends React.Component<NotebookMetadataC
             </Text>
           </Stack.Item>
 
-          <Stack.Item>{this.renderFavouriteButton()}</Stack.Item>
-
-          {this.props.downloadButtonText && (
-            <Stack.Item>
-              <PrimaryButton text={this.props.downloadButtonText} onClick={this.props.onDownloadClick} />
-            </Stack.Item>
-          )}
-
-          <Stack.Item grow>
-            <></>
-          </Stack.Item>
-
           <Stack.Item>
-            <InfoComponent onReportAbuseClick={this.props.onReportAbuseClick} />
+            <Text>
+              <Icon iconName="Heart" /> {this.props.data.favorites} likes
+            </Text>
           </Stack.Item>
         </Stack>
 
