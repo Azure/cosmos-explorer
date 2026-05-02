@@ -33,7 +33,8 @@
     "publish": "Publier",
     "browse": "Parcourir",
     "increaseValueBy1": "Augmenter la valeur de 1",
-    "decreaseValueBy1": "Diminuer la valeur de 1"
+    "decreaseValueBy1": "Diminuer la valeur de 1",
+    "preview": "Preview"
   },
   "splashScreen": {
     "title": {
@@ -967,6 +968,29 @@
         "bucketOptionLabel": "Compartiment {{id}} – {{percentage}} %",
         "bucketNotActive": "Le compartiment {{id}} n’est pas actif."
       }
+    },
+    "vectorEmbeddingPolicies": {
+      "vectorEmbeddingTitle": "Vector embedding {{index}}",
+      "path": "Path",
+      "dataType": "Data type",
+      "distanceFunction": "Distance function",
+      "dimensions": "Dimensions",
+      "indexType": "Index type",
+      "quantizationByteSize": "Quantization byte size",
+      "quantizationByteSizeTooltip": "This is dynamically set by the {{containerName}} if left blank, or it can be set to a fixed number",
+      "quantizationByteSizeTooltipContainerName": "container",
+      "quantizationByteSizeTooltipGlobalSecondaryIndexName": "global secondary index",
+      "quantizerType": "Quantizer type",
+      "quantizerTypeTooltip": "The quantization method used by the vector index.",
+      "indexingSearchListSize": "Indexing search list size",
+      "vectorIndexShardKey": "Vector index shard key",
+      "addVectorEmbedding": "Add vector embedding",
+      "pathEmptyError": "Path should not be empty",
+      "pathDuplicateError": "Path is already defined",
+      "dimensionRangeError": "Dimension must be greater than 0 and less than or equal 4096",
+      "dimensionFlatIndexError": "Maximum allowed dimension for flat index is 505",
+      "quantizationByteSizeRangeError": "Quantization byte size must be greater than 0 and less than or equal to 512",
+      "indexingSearchListSizeRangeError": "Indexing search list size must be greater than or equal to 25 and less than or equal to 500"
     }
   }
 }
