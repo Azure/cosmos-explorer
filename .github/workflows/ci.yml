@@ -373,11 +373,17 @@ jobs:
         run: |
           PLAYWRIGHT_JSON_OUTPUT_NAME=results.json npx playwright merge-reports --reporter json ./all-blob-reports
           read PASSED FAILED FLAKY SKIPPED DURATION < <(jq -r '[.stats.expected,.stats.unexpected,.stats.flaky,.stats.skipped,(.stats.duration/1000|floor)] | @tsv' results.json)
-          [ "$FAILED" -gt 0 ] && ICON="❌ failed" || ICON="✅ passed"
+          BROKEN=$(gh api "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/attempts/${{ github.run_attempt }}/jobs" \
+            --jq '[.jobs[] | select(.name | startswith("Run Playwright Tests")) | select(.conclusion == "failure")] | length')
+          if [ "$FAILED" -gt 0 ] || [ "$BROKEN" -gt 0 ]; then ICON="❌ failed"; else ICON="✅ passed"; fi
+          NOTE=""
+          [ "$BROKEN" -gt 0 ] && NOTE="
+
+          > ⚠️ $BROKEN shard(s) failed before tests ran (infra/auth issue). Stats below reflect only shards that executed."
           gh pr comment "$PR" --body "### Playwright tests $ICON
 
           | Passed | Failed | Flaky | Skipped | Duration |
           | :---: | :---: | :---: | :---: | :---: |
           | $PASSED | $FAILED | $FLAKY | $SKIPPED | ${DURATION}s |
 
-          📊 [Open full report]($REPORT_URL) · [Workflow run]($RUN_URL)"
+          📊 [Open full report]($REPORT_URL) · [Workflow run]($RUN_URL)$NOTE"
