@@ -314,6 +314,10 @@ jobs:
     needs: [playwright-tests]
 
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -358,3 +362,22 @@ jobs:
             --account-name ${{ secrets.PREVIEW_STORAGE_ACCOUNT_NAME }} \
             --auth-mode login --overwrite true
           echo "📊 [Open Playwright report](${BASE}/playwright-reports/${KEY}/index.html)" >> $GITHUB_STEP_SUMMARY
+
+      - name: Comment Playwright results on PR
+        if: ${{ !cancelled() && github.event_name == 'pull_request' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR: ${{ github.event.pull_request.number }}
+          REPORT_URL: https://dataexplorerpreview.z5.web.core.windows.net/playwright-reports/${{ github.run_id }}-${{ github.run_attempt }}/index.html
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          PLAYWRIGHT_JSON_OUTPUT_NAME=results.json npx playwright merge-reports --reporter json ./all-blob-reports
+          read PASSED FAILED FLAKY SKIPPED DURATION < <(jq -r '[.stats.expected,.stats.unexpected,.stats.flaky,.stats.skipped,(.stats.duration/1000|floor)] | @tsv' results.json)
+          [ "$FAILED" -gt 0 ] && ICON="❌ failed" || ICON="✅ passed"
+          gh pr comment "$PR" --body "### Playwright tests $ICON
+
+          | Passed | Failed | Flaky | Skipped | Duration |
+          | :---: | :---: | :---: | :---: | :---: |
+          | $PASSED | $FAILED | $FLAKY | $SKIPPED | ${DURATION}s |
+
+          📊 [Open full report]($REPORT_URL) · [Workflow run]($RUN_URL)"
