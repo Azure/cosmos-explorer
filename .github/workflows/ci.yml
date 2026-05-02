@@ -296,9 +296,9 @@ jobs:
             echo "::add-mask::$MONGO_READONLY_TESTACCOUNT_TOKEN"
             echo MONGO_READONLY_TESTACCOUNT_TOKEN=$MONGO_READONLY_TESTACCOUNT_TOKEN >> $GITHUB_ENV
       - name: List test files for shard ${{ matrix['shardIndex'] }} of ${{ matrix['shardTotal']}}
-        run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }} --list
+        run: npx playwright test test/sql/query.spec.ts --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }} --list
       - name: Run test shard ${{ matrix['shardIndex'] }} of ${{ matrix['shardTotal']}}
-        run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }} --workers=3
+        run: npx playwright test test/sql/query.spec.ts --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }} --workers=3
       - name: Upload blob report to GitHub Actions Artifacts
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
@@ -338,3 +338,23 @@ jobs:
           name: html-report--attempt-${{ github.run_attempt }}
           path: playwright-report
           retention-days: 14
+
+      - name: "Az CLI login"
+        if: ${{ !cancelled() }}
+        uses: Azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.PREVIEW_SUBSCRIPTION_ID }}
+
+      - name: Upload Playwright report to blob storage
+        if: ${{ !cancelled() }}
+        env:
+          KEY: ${{ github.run_id }}-${{ github.run_attempt }}
+          BASE: https://dataexplorerpreview.z5.web.core.windows.net
+        run: |
+          az storage blob upload-batch -d '$web' -s playwright-report \
+            --destination-path "playwright-reports/${KEY}" \
+            --account-name ${{ secrets.PREVIEW_STORAGE_ACCOUNT_NAME }} \
+            --auth-mode login --overwrite true
+          echo "📊 [Open Playwright report](${BASE}/playwright-reports/${KEY}/index.html)" >> $GITHUB_STEP_SUMMARY
