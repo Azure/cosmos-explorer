@@ -34,7 +34,7 @@
     "browse": "Bladeren",
     "increaseValueBy1": "Waarde verhogen met 1",
     "decreaseValueBy1": "Waarde verlagen met 1",
-    "preview": "Preview"
+    "preview": "Voorbeeld"
   },
   "splashScreen": {
     "title": {
@@ -970,27 +970,27 @@
       }
     },
     "vectorEmbeddingPolicies": {
-      "vectorEmbeddingTitle": "Vector embedding {{index}}",
-      "path": "Path",
-      "dataType": "Data type",
-      "distanceFunction": "Distance function",
-      "dimensions": "Dimensions",
-      "indexType": "Index type",
-      "quantizationByteSize": "Quantization byte size",
-      "quantizationByteSizeTooltip": "This is dynamically set by the {{containerName}} if left blank, or it can be set to a fixed number",
+      "vectorEmbeddingTitle": "Vector insluiten {{index}}",
+      "path": "Pad",
+      "dataType": "Gegevenstype",
+      "distanceFunction": "Afstand functie",
+      "dimensions": "Afmetingen",
+      "indexType": "Indextype",
+      "quantizationByteSize": "Grootte van de kwantisatiebyte",
+      "quantizationByteSizeTooltip": "Dit wordt dynamisch ingesteld door de {{containerName}} als leeg wordt gelaten, of kan worden ingesteld op een vast getal",
       "quantizationByteSizeTooltipContainerName": "container",
-      "quantizationByteSizeTooltipGlobalSecondaryIndexName": "global secondary index",
-      "quantizerType": "Quantizer type",
-      "quantizerTypeTooltip": "The quantization method used by the vector index.",
-      "indexingSearchListSize": "Indexing search list size",
-      "vectorIndexShardKey": "Vector index shard key",
-      "addVectorEmbedding": "Add vector embedding",
-      "pathEmptyError": "Path should not be empty",
-      "pathDuplicateError": "Path is already defined",
-      "dimensionRangeError": "Dimension must be greater than 0 and less than or equal 4096",
-      "dimensionFlatIndexError": "Maximum allowed dimension for flat index is 505",
-      "quantizationByteSizeRangeError": "Quantization byte size must be greater than 0 and less than or equal to 512",
-      "indexingSearchListSizeRangeError": "Indexing search list size must be greater than or equal to 25 and less than or equal to 500"
+      "quantizationByteSizeTooltipGlobalSecondaryIndexName": "globale secundaire index",
+      "quantizerType": "Kwantisatie-type",
+      "quantizerTypeTooltip": "De kwantisatiemethode die wordt gebruikt door de vectorindex.",
+      "indexingSearchListSize": "Grootte van zoeklijst indexeren",
+      "vectorIndexShardKey": "Shardsleutel voor vectorindex",
+      "addVectorEmbedding": "Vector insluiten toevoegen",
+      "pathEmptyError": "Pad mag niet leeg zijn",
+      "pathDuplicateError": "Poort is al gedefinieerd",
+      "dimensionRangeError": "Deze moet groter zijn dan 0 en kleiner dan of gelijk aan 4096",
+      "dimensionFlatIndexError": "De maximaal toegestane dimensie voor een platte index is 505",
+      "quantizationByteSizeRangeError": "De grootte van de kwantisatiebyte moet groter zijn dan 0 en kleiner dan of gelijk zijn aan 512",
+      "indexingSearchListSizeRangeError": "De grootte van de zoeklijst voor indexering moet groter zijn dan of gelijk zijn aan 25 en kleiner dan of gelijk zijn aan 500"
     }
   }
 }

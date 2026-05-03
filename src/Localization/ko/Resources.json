@@ -34,7 +34,7 @@
     "browse": "찾아보기",
     "increaseValueBy1": "값을 1만큼 늘리기",
     "decreaseValueBy1": "값을 1만큼 줄이기",
-    "preview": "Preview"
+    "preview": "미리 보기"
   },
   "splashScreen": {
     "title": {
@@ -970,27 +970,27 @@
       }
     },
     "vectorEmbeddingPolicies": {
-      "vectorEmbeddingTitle": "Vector embedding {{index}}",
-      "path": "Path",
-      "dataType": "Data type",
-      "distanceFunction": "Distance function",
-      "dimensions": "Dimensions",
-      "indexType": "Index type",
-      "quantizationByteSize": "Quantization byte size",
-      "quantizationByteSizeTooltip": "This is dynamically set by the {{containerName}} if left blank, or it can be set to a fixed number",
-      "quantizationByteSizeTooltipContainerName": "container",
-      "quantizationByteSizeTooltipGlobalSecondaryIndexName": "global secondary index",
-      "quantizerType": "Quantizer type",
-      "quantizerTypeTooltip": "The quantization method used by the vector index.",
-      "indexingSearchListSize": "Indexing search list size",
-      "vectorIndexShardKey": "Vector index shard key",
-      "addVectorEmbedding": "Add vector embedding",
-      "pathEmptyError": "Path should not be empty",
-      "pathDuplicateError": "Path is already defined",
-      "dimensionRangeError": "Dimension must be greater than 0 and less than or equal 4096",
-      "dimensionFlatIndexError": "Maximum allowed dimension for flat index is 505",
-      "quantizationByteSizeRangeError": "Quantization byte size must be greater than 0 and less than or equal to 512",
-      "indexingSearchListSizeRangeError": "Indexing search list size must be greater than or equal to 25 and less than or equal to 500"
+      "vectorEmbeddingTitle": "벡터 임베딩 {{index}}",
+      "path": "경로",
+      "dataType": "데이터 형식",
+      "distanceFunction": "거리 함수",
+      "dimensions": "차원",
+      "indexType": "인덱스 유형",
+      "quantizationByteSize": "양자화 바이트 크기",
+      "quantizationByteSizeTooltip": "비워 두면 {{containerName}} 에서 동적으로 설정되며, 고정된 숫자로도 설정할 수 있습니다.",
+      "quantizationByteSizeTooltipContainerName": "컨테이너",
+      "quantizationByteSizeTooltipGlobalSecondaryIndexName": "전역 보조 인덱스",
+      "quantizerType": "양자화 유형",
+      "quantizerTypeTooltip": "벡터 인덱스에서 사용하는 양자화 방식입니다.",
+      "indexingSearchListSize": "인덱싱 검색 목록 크기",
+      "vectorIndexShardKey": "벡터 인덱스 샤드 키",
+      "addVectorEmbedding": "벡터 임베딩 추가",
+      "pathEmptyError": "경로는 비워 둘 수 없습니다.",
+      "pathDuplicateError": "경로가 이미 정의되어 있습니다.",
+      "dimensionRangeError": "차원은 0보다 크고 4096보다 작거나 같아야 합니다.",
+      "dimensionFlatIndexError": "플랫 인덱스 최대 허용 차원은 505입니다.",
+      "quantizationByteSizeRangeError": "양자화 바이트 크기는 0보다 크고 512 이하이어야 합니다.",
+      "indexingSearchListSizeRangeError": "인덱싱 검색 목록 크기는 25보다 크거나 같고 500보다 작거나 같아야 합니다."
     }
   }
 }

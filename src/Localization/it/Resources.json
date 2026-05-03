@@ -34,7 +34,7 @@
     "browse": "Sfoglia",
     "increaseValueBy1": "Aumentare il valore di 1",
     "decreaseValueBy1": "Diminuisci il valore di 1",
-    "preview": "Preview"
+    "preview": "Anteprima"
   },
   "splashScreen": {
     "title": {
@@ -970,27 +970,27 @@
       }
     },
     "vectorEmbeddingPolicies": {
-      "vectorEmbeddingTitle": "Vector embedding {{index}}",
-      "path": "Path",
-      "dataType": "Data type",
-      "distanceFunction": "Distance function",
-      "dimensions": "Dimensions",
-      "indexType": "Index type",
-      "quantizationByteSize": "Quantization byte size",
-      "quantizationByteSizeTooltip": "This is dynamically set by the {{containerName}} if left blank, or it can be set to a fixed number",
-      "quantizationByteSizeTooltipContainerName": "container",
-      "quantizationByteSizeTooltipGlobalSecondaryIndexName": "global secondary index",
-      "quantizerType": "Quantizer type",
-      "quantizerTypeTooltip": "The quantization method used by the vector index.",
-      "indexingSearchListSize": "Indexing search list size",
-      "vectorIndexShardKey": "Vector index shard key",
-      "addVectorEmbedding": "Add vector embedding",
-      "pathEmptyError": "Path should not be empty",
-      "pathDuplicateError": "Path is already defined",
-      "dimensionRangeError": "Dimension must be greater than 0 and less than or equal 4096",
-      "dimensionFlatIndexError": "Maximum allowed dimension for flat index is 505",
-      "quantizationByteSizeRangeError": "Quantization byte size must be greater than 0 and less than or equal to 512",
-      "indexingSearchListSizeRangeError": "Indexing search list size must be greater than or equal to 25 and less than or equal to 500"
+      "vectorEmbeddingTitle": "Incorporamento vettoriale {{index}}",
+      "path": "Percorso",
+      "dataType": "Tipo di dati",
+      "distanceFunction": "Funzione di distanza",
+      "dimensions": "Dimensioni",
+      "indexType": "Tipo di indice",
+      "quantizationByteSize": "Dimensione di quantizzazione in byte",
+      "quantizationByteSizeTooltip": "Viene impostato dinamicamente dal {{containerName}} se lasciato vuoto oppure può essere impostato su un numero fisso",
+      "quantizationByteSizeTooltipContainerName": "contenitore",
+      "quantizationByteSizeTooltipGlobalSecondaryIndexName": "indice secondario globale",
+      "quantizerType": "Tipo di quantizzatore",
+      "quantizerTypeTooltip": "Metodo di quantizzazione utilizzato dall'indice vettoriale.",
+      "indexingSearchListSize": "Indicizzazione delle dimensioni dell'elenco di ricerca",
+      "vectorIndexShardKey": "Chiave di partizione dell'indice vettoriale",
+      "addVectorEmbedding": "Aggiungere l'incorporamento vettoriale",
+      "pathEmptyError": "Il percorso non deve essere vuoto",
+      "pathDuplicateError": "Il percorso è già definito",
+      "dimensionRangeError": "La dimensione deve essere maggiore di 0 e minore o uguale a 4096",
+      "dimensionFlatIndexError": "La dimensione massima consentita per l'indice flat è 505",
+      "quantizationByteSizeRangeError": "La dimensione di quantizzazione in byte deve essere maggiore di 0 e minore o uguale a 512",
+      "indexingSearchListSizeRangeError": "La dimensione dell'elenco di ricerca di indicizzazione deve essere maggiore o uguale a 25 e minore o uguale a 500"
     }
   }
 }

@@ -34,7 +34,7 @@
     "browse": "Tallózás",
     "increaseValueBy1": "Érték növelése 1-gyel",
     "decreaseValueBy1": "Érték csökkentése 1-gyel",
-    "preview": "Preview"
+    "preview": "Előnézet"
   },
   "splashScreen": {
     "title": {
@@ -970,27 +970,27 @@
       }
     },
     "vectorEmbeddingPolicies": {
-      "vectorEmbeddingTitle": "Vector embedding {{index}}",
-      "path": "Path",
-      "dataType": "Data type",
-      "distanceFunction": "Distance function",
-      "dimensions": "Dimensions",
-      "indexType": "Index type",
-      "quantizationByteSize": "Quantization byte size",
-      "quantizationByteSizeTooltip": "This is dynamically set by the {{containerName}} if left blank, or it can be set to a fixed number",
-      "quantizationByteSizeTooltipContainerName": "container",
-      "quantizationByteSizeTooltipGlobalSecondaryIndexName": "global secondary index",
-      "quantizerType": "Quantizer type",
-      "quantizerTypeTooltip": "The quantization method used by the vector index.",
-      "indexingSearchListSize": "Indexing search list size",
-      "vectorIndexShardKey": "Vector index shard key",
-      "addVectorEmbedding": "Add vector embedding",
-      "pathEmptyError": "Path should not be empty",
-      "pathDuplicateError": "Path is already defined",
-      "dimensionRangeError": "Dimension must be greater than 0 and less than or equal 4096",
-      "dimensionFlatIndexError": "Maximum allowed dimension for flat index is 505",
-      "quantizationByteSizeRangeError": "Quantization byte size must be greater than 0 and less than or equal to 512",
-      "indexingSearchListSizeRangeError": "Indexing search list size must be greater than or equal to 25 and less than or equal to 500"
+      "vectorEmbeddingTitle": "Vektorbeágyazás {{index}}",
+      "path": "Elérési út",
+      "dataType": "Adattípus",
+      "distanceFunction": "Távolság függvény",
+      "dimensions": "Dimenziók",
+      "indexType": "Index típusa",
+      "quantizationByteSize": "Kvantálási bájtméret",
+      "quantizationByteSizeTooltip": "Ezt dinamikusan állítja be a(z) {{containerName}}, ha üresen hagyja, vagy beállítható egy rögzített számra is",
+      "quantizationByteSizeTooltipContainerName": "tároló",
+      "quantizationByteSizeTooltipGlobalSecondaryIndexName": "globális másodlagos index",
+      "quantizerType": "Kvantáló típusa",
+      "quantizerTypeTooltip": "A vektorindex által használt kvantálási módszer.",
+      "indexingSearchListSize": "Keresési lista méretének indexelése",
+      "vectorIndexShardKey": "Vektorindex szegmenskulcsa",
+      "addVectorEmbedding": "Vektorbeágyazás hozzáadása",
+      "pathEmptyError": "Az elérési út nem lehet üres",
+      "pathDuplicateError": "Az elérési út már meg van határozva",
+      "dimensionRangeError": "A dimenziónak 0-nál nagyobb és 4096-nál nem nagyobb értéknek kell lennie",
+      "dimensionFlatIndexError": "Az egybesimított index maximálisan megengedett dimenziója 505",
+      "quantizationByteSizeRangeError": "A kvantálási bájtméretnek nagyobbnak kell lennie 0-nál, és legfeljebb 512 lehet",
+      "indexingSearchListSizeRangeError": "Az indexelő keresési lista méretének 25-tel egyenlőnek vagy annál nagyobbnak és ugyanakkor 500-nál kisebbnek vagy azzal egyenlőnek kell lennie"
     }
   }
 }

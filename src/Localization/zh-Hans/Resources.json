@@ -34,7 +34,7 @@
     "browse": "浏览",
     "increaseValueBy1": "将值增加 1",
     "decreaseValueBy1": "将值减少 1",
-    "preview": "Preview"
+    "preview": "预览"
   },
   "splashScreen": {
     "title": {
@@ -970,27 +970,27 @@
       }
     },
     "vectorEmbeddingPolicies": {
-      "vectorEmbeddingTitle": "Vector embedding {{index}}",
-      "path": "Path",
-      "dataType": "Data type",
-      "distanceFunction": "Distance function",
-      "dimensions": "Dimensions",
-      "indexType": "Index type",
-      "quantizationByteSize": "Quantization byte size",
-      "quantizationByteSizeTooltip": "This is dynamically set by the {{containerName}} if left blank, or it can be set to a fixed number",
-      "quantizationByteSizeTooltipContainerName": "container",
-      "quantizationByteSizeTooltipGlobalSecondaryIndexName": "global secondary index",
-      "quantizerType": "Quantizer type",
-      "quantizerTypeTooltip": "The quantization method used by the vector index.",
-      "indexingSearchListSize": "Indexing search list size",
-      "vectorIndexShardKey": "Vector index shard key",
-      "addVectorEmbedding": "Add vector embedding",
-      "pathEmptyError": "Path should not be empty",
-      "pathDuplicateError": "Path is already defined",
-      "dimensionRangeError": "Dimension must be greater than 0 and less than or equal 4096",
-      "dimensionFlatIndexError": "Maximum allowed dimension for flat index is 505",
-      "quantizationByteSizeRangeError": "Quantization byte size must be greater than 0 and less than or equal to 512",
-      "indexingSearchListSizeRangeError": "Indexing search list size must be greater than or equal to 25 and less than or equal to 500"
+      "vectorEmbeddingTitle": "矢量嵌入 {{index}}",
+      "path": "路径",
+      "dataType": "数据类型",
+      "distanceFunction": "距离函数",
+      "dimensions": "维度",
+      "indexType": "索引类型",
+      "quantizationByteSize": "量化字节大小",
+      "quantizationByteSizeTooltip": "如果留空，则由 {{containerName}} 动态设置此项，也可以设置为固定数字",
+      "quantizationByteSizeTooltipContainerName": "容器",
+      "quantizationByteSizeTooltipGlobalSecondaryIndexName": "全局辅助索引",
+      "quantizerType": "量化器类型",
+      "quantizerTypeTooltip": "矢量索引使用的量化方法。",
+      "indexingSearchListSize": "索引搜索列表大小",
+      "vectorIndexShardKey": "矢量索引分片键",
+      "addVectorEmbedding": "添加矢量嵌入",
+      "pathEmptyError": "路径不应为空",
+      "pathDuplicateError": "已定义路径",
+      "dimensionRangeError": "维度必须大于 0 且小于或等于 4096",
+      "dimensionFlatIndexError": "平面索引允许的最大维度为 505",
+      "quantizationByteSizeRangeError": "量化字节大小必须大于 0 且小于或等于 512",
+      "indexingSearchListSizeRangeError": "索引搜索列表大小必须大于或等于 25 且小于或等于 500"
     }
   }
 }

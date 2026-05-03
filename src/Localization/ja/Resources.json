@@ -34,7 +34,7 @@
     "browse": "参照",
     "increaseValueBy1": "値を 1 増加",
     "decreaseValueBy1": "値を 1 減少",
-    "preview": "Preview"
+    "preview": "プレビュー"
   },
   "splashScreen": {
     "title": {
@@ -970,27 +970,27 @@
       }
     },
     "vectorEmbeddingPolicies": {
-      "vectorEmbeddingTitle": "Vector embedding {{index}}",
-      "path": "Path",
-      "dataType": "Data type",
-      "distanceFunction": "Distance function",
-      "dimensions": "Dimensions",
-      "indexType": "Index type",
-      "quantizationByteSize": "Quantization byte size",
-      "quantizationByteSizeTooltip": "This is dynamically set by the {{containerName}} if left blank, or it can be set to a fixed number",
-      "quantizationByteSizeTooltipContainerName": "container",
-      "quantizationByteSizeTooltipGlobalSecondaryIndexName": "global secondary index",
-      "quantizerType": "Quantizer type",
-      "quantizerTypeTooltip": "The quantization method used by the vector index.",
-      "indexingSearchListSize": "Indexing search list size",
-      "vectorIndexShardKey": "Vector index shard key",
-      "addVectorEmbedding": "Add vector embedding",
-      "pathEmptyError": "Path should not be empty",
-      "pathDuplicateError": "Path is already defined",
-      "dimensionRangeError": "Dimension must be greater than 0 and less than or equal 4096",
-      "dimensionFlatIndexError": "Maximum allowed dimension for flat index is 505",
-      "quantizationByteSizeRangeError": "Quantization byte size must be greater than 0 and less than or equal to 512",
-      "indexingSearchListSizeRangeError": "Indexing search list size must be greater than or equal to 25 and less than or equal to 500"
+      "vectorEmbeddingTitle": "ベクター埋め込み {{index}}",
+      "path": "パス",
+      "dataType": "データ型",
+      "distanceFunction": "距離関数",
+      "dimensions": "ディメンション",
+      "indexType": "インデックスの種類",
+      "quantizationByteSize": "量子化バイト サイズ",
+      "quantizationByteSizeTooltip": "これは、空白のままにした場合は {{containerName}} によって動的に設定されます。または、固定数に設定することもできます",
+      "quantizationByteSizeTooltipContainerName": "コンテナー",
+      "quantizationByteSizeTooltipGlobalSecondaryIndexName": "グローバル セカンダリ インデックス",
+      "quantizerType": "量子化器の種類",
+      "quantizerTypeTooltip": "ベクター インデックスで使用される量子化方法。",
+      "indexingSearchListSize": "インデックス検索リスト サイズ",
+      "vectorIndexShardKey": "ベクター インデックス シャード キー",
+      "addVectorEmbedding": "ベクター埋め込みを追加する",
+      "pathEmptyError": "パスを空にすることはできません",
+      "pathDuplicateError": "パスは既に定義されています",
+      "dimensionRangeError": "ディメンションは 0 より大きく、4096 以下である必要があります",
+      "dimensionFlatIndexError": "フラット インデックスで許容される最大ディメンションは 505 です",
+      "quantizationByteSizeRangeError": "量子化バイト サイズは 0 より大きく、512 以下である必要があります",
+      "indexingSearchListSizeRangeError": "インデックス検索リスト サイズは 25 以上 500 以下である必要があります"
     }
   }
 }
