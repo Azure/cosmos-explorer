@@ -296,9 +296,9 @@ jobs:
             echo "::add-mask::$MONGO_READONLY_TESTACCOUNT_TOKEN"
             echo MONGO_READONLY_TESTACCOUNT_TOKEN=$MONGO_READONLY_TESTACCOUNT_TOKEN >> $GITHUB_ENV
       - name: List test files for shard ${{ matrix['shardIndex'] }} of ${{ matrix['shardTotal']}}
-        run: npx playwright test test/sql/query.spec.ts --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }} --list
+        run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }} --list
       - name: Run test shard ${{ matrix['shardIndex'] }} of ${{ matrix['shardTotal']}}
-        run: npx playwright test test/sql/query.spec.ts --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }} --workers=3
+        run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }} --workers=3
       - name: Upload blob report to GitHub Actions Artifacts
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
