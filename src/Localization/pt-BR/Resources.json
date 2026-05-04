@@ -33,7 +33,8 @@
     "publish": "Publicar",
     "browse": "Procurar",
     "increaseValueBy1": "Aumentar o valor em 1",
-    "decreaseValueBy1": "Diminuir valor em 1"
+    "decreaseValueBy1": "Diminuir valor em 1",
+    "preview": "Pré-visualização"
   },
   "splashScreen": {
     "title": {
@@ -420,6 +421,7 @@
     "deleteDatabase": {
       "panelTitle": "Excluir {{databaseName}}",
       "warningMessage": "Aviso! A ação que você está prestes a realizar não pode ser desfeita. Continuar excluirá permanentemente esse recurso e todos os seus recursos filhos.",
+      "copyableId": "{{databaseName}} ID:",
       "confirmPrompt": "Confirme digitando a ID de {{databaseName}} (nome)",
       "inputMismatch": "O nome de entrada {{databaseName}} \"{{input}}\" não corresponde ao {{databaseName}} selecionado \"{{selectedId}}\"",
       "feedbackTitle": "Ajude-nos a melhorar o Azure Cosmos DB!",
@@ -427,6 +429,8 @@
     },
     "deleteCollection": {
       "panelTitle": "Excluir {{collectionName}}",
+      "warningMessage": "Aviso! A ação que você está prestes a realizar não pode ser desfeita. Continuar excluirá permanentemente esse recurso e todos os seus recursos filhos.",
+      "copyableId": "{{collectionName}} ID:",
       "confirmPrompt": "Confirme digitando a ID de {{collectionName}}",
       "inputMismatch": "A ID de entrada {{input}} não corresponde à {{selectedId}} selecionada",
       "feedbackTitle": "Ajude-nos a melhorar o Azure Cosmos DB!",
@@ -438,21 +442,15 @@
       "keyspaceIdLabel": "ID do Keyspace",
       "databaseIdPlaceholder": "Digite uma nova ID de {{databaseLabel}}",
       "databaseTooltip": "O {{databaseLabel}} é um contêiner lógico de um ou mais {{collectionsLabel}}",
-      "shareThroughput": "Compartilhar taxa de transferência entre {{collectionsLabel}}",
-      "shareThroughputTooltip": "A taxa de transferência provisionada no nível {{databaseLabel}} será compartilhada entre todos {{collectionsLabel}} no {{databaseLabel}}.",
       "greaterThanError": "Insira um valor maior que {{minValue}} para a taxa de transferência do Autopilot",
       "acknowledgeSpendError": "Confirme os gastos estimados de {{period}}.",
       "acknowledgeSpendErrorMonthly": "Confirme os gastos mensais estimados.",
-      "acknowledgeSpendErrorDaily": "Confirme os gastos diários estimados.",
-      "provisionSharedThroughputTitle": "Provisionar taxa de transferência compartilhada",
-      "provisionThroughputLabel": "Provisionar taxa de transferência"
+      "acknowledgeSpendErrorDaily": "Confirme os gastos diários estimados."
     },
     "addCollection": {
       "createNew": "Criar novo",
       "useExisting": "Usar o existente",
       "databaseTooltip": "Um banco de dados é análogo a um namespace. Essa é a unidade de gerenciamento para um conjunto de {{collectionName}}.",
-      "shareThroughput": "Compartilhar taxa de transferência entre {{collectionName}}",
-      "shareThroughputTooltip": "A taxa de transferência configurada no nível do banco de dados será compartilhada entre todos os {{collectionName}} dentro do banco de dados.",
       "collectionIdLabel": "ID de {{collectionName}}",
       "collectionIdTooltip": "Identificador exclusivo para o {{collectionName}} e usado para roteamento baseado em ID por meio de REST e todos os SDKs.",
       "collectionIdPlaceholder": "Por exemplo, {{collectionName}}1",
@@ -765,7 +763,7 @@
         "containerPolicies": "Políticas de Contêiner",
         "throughputBuckets": "Buckets de Taxa de Transferência",
         "globalSecondaryIndexPreview": "Índice Secundário Global (Versão Prévia)",
-        "maskingPolicyPreview": "Política de Mascaramento (versão prévia)"
+        "maskingPolicyPreview": "Política de Mascaramento"
       },
       "mongoNotifications": {
         "selectTypeWarning": "Selecione um tipo para cada índice.",
@@ -961,8 +959,38 @@
         "bucketLabel": "Bucket {{id}}",
         "dataExplorerQueryBucket": " (Bucket de Consulta do Data Explorer)",
         "active": "Ativo",
-        "inactive": "Inativo"
+        "inactive": "Inativo",
+        "defaultBucketLabel": "Bucket de Taxa de Transferência Padrão",
+        "defaultBucketPlaceholder": "Selecionar um bucket de taxa de transferência padrão",
+        "defaultBucketTooltip": "O bucket de taxa de transferência padrão é usado para operações que não especificam um bucket específico.",
+        "defaultBucketTooltipLearnMore": "Saiba mais.",
+        "noDefaultBucketSelected": "Nenhum Bucket de Taxa de Transferência Padrão Selecionado",
+        "bucketOptionLabel": "Bucket {{id}} - {{percentage}}%",
+        "bucketNotActive": "O bucket {{id}} não está ativo."
       }
+    },
+    "vectorEmbeddingPolicies": {
+      "vectorEmbeddingTitle": "Inserção de vetor {{index}}",
+      "path": "Caminho",
+      "dataType": "Tipo de dados",
+      "distanceFunction": "Função de distância",
+      "dimensions": "Dimensões",
+      "indexType": "Tipo de índice",
+      "quantizationByteSize": "Tamanho do byte de quantização",
+      "quantizationByteSizeTooltip": "Isso é definido dinamicamente pelo {{containerName}} se deixado em branco ou pode ser definido como um número fixo",
+      "quantizationByteSizeTooltipContainerName": "contêiner",
+      "quantizationByteSizeTooltipGlobalSecondaryIndexName": "índice secundário global",
+      "quantizerType": "Tipo de quantificador",
+      "quantizerTypeTooltip": "O método de quantização usado pelo índice de vetor.",
+      "indexingSearchListSize": "Tamanho da lista de pesquisa de indexação",
+      "vectorIndexShardKey": "Chave de fragmento do índice de vetor",
+      "addVectorEmbedding": "Adicionar inserção de vetor",
+      "pathEmptyError": "O caminho não deve estar vazio",
+      "pathDuplicateError": "O caminho já está definido",
+      "dimensionRangeError": "A dimensão deve ser maior que 0 e menor ou igual a 4096",
+      "dimensionFlatIndexError": "A dimensão máxima permitida para o índice simples é 505",
+      "quantizationByteSizeRangeError": "O tamanho do byte de quantização deve ser maior que 0 e menor ou igual a 512",
+      "indexingSearchListSizeRangeError": "O tamanho da lista de pesquisa de indexação deve ser maior ou igual a 25 e menor ou igual a 500"
     }
   }
 }

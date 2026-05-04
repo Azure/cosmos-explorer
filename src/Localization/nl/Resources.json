@@ -33,7 +33,8 @@
     "publish": "Publiceren",
     "browse": "Bladeren",
     "increaseValueBy1": "Waarde verhogen met 1",
-    "decreaseValueBy1": "Waarde verlagen met 1"
+    "decreaseValueBy1": "Waarde verlagen met 1",
+    "preview": "Voorbeeld"
   },
   "splashScreen": {
     "title": {
@@ -420,6 +421,7 @@
     "deleteDatabase": {
       "panelTitle": "{{databaseName}} verwijderen",
       "warningMessage": "Waarschuwing! De actie die u gaat uitvoeren kan niet ongedaan worden gemaakt. Als u doorgaat, worden deze resource en alle onderliggende resources permanent verwijderd.",
+      "copyableId": "{{databaseName}} Id:",
       "confirmPrompt": "Bevestig door de {{databaseName}}-id (naam) te typen",
       "inputMismatch": "Invoernaam {{databaseName}} naam '{{input}}' komt niet overeen met de geselecteerde {{databaseName}} '{{selectedId}}'",
       "feedbackTitle": "Help ons Azure Cosmos DB te verbeteren.",
@@ -427,6 +429,8 @@
     },
     "deleteCollection": {
       "panelTitle": "{{collectionName}} verwijderen",
+      "warningMessage": "Waarschuwing! De actie die u gaat uitvoeren kan niet ongedaan worden gemaakt. Als u doorgaat, worden deze resource en alle onderliggende resources permanent verwijderd.",
+      "copyableId": "{{collectionName}} Id:",
       "confirmPrompt": "Bevestig door de {{collectionName}}-id te typen",
       "inputMismatch": "Invoer-id {{input}} komt niet overeen met de geselecteerde {{selectedId}}",
       "feedbackTitle": "Help ons Azure Cosmos DB te verbeteren.",
@@ -438,21 +442,15 @@
       "keyspaceIdLabel": "Keyspace-id",
       "databaseIdPlaceholder": "Typ een nieuwe {{databaseLabel}}-id",
       "databaseTooltip": "Een {{databaseLabel}} is een logische container van een of meer {{collectionsLabel}}",
-      "shareThroughput": "Doorvoer delen in {{collectionsLabel}}",
-      "shareThroughputTooltip": "Ingerichte doorvoer op het {{databaseLabel}} niveau wordt gedeeld in alle {{collectionsLabel}} binnen de {{databaseLabel}}.",
       "greaterThanError": "Voer een waarde in die groter is dan {{minValue}} voor autopilot-doorvoer",
       "acknowledgeSpendError": "Bevestig de geschatte {{period}} uitgaven.",
       "acknowledgeSpendErrorMonthly": "Bevestig de geschatte maandelijkse uitgaven.",
-      "acknowledgeSpendErrorDaily": "Bevestig de geschatte dagelijkse uitgaven.",
-      "provisionSharedThroughputTitle": "Gedeelde doorvoer inrichten",
-      "provisionThroughputLabel": "Inrichtingsdoorvoer"
+      "acknowledgeSpendErrorDaily": "Bevestig de geschatte dagelijkse uitgaven."
     },
     "addCollection": {
       "createNew": "Nieuw item maken",
       "useExisting": "Bestaand item gebruiken",
       "databaseTooltip": "Een database is gelijk aan een naamruimte. Het is de beheereenheid voor een set {{collectionName}}.",
-      "shareThroughput": "Doorvoer delen in {{collectionName}}",
-      "shareThroughputTooltip": "Doorvoer die op databaseniveau is geconfigureerd, wordt gedeeld over alle {{collectionName}} binnen de database.",
       "collectionIdLabel": "{{collectionName}} id",
       "collectionIdTooltip": "Unieke id voor de {{collectionName}} en gebruikt voor routering op basis van id's via REST en alle SDK's.",
       "collectionIdPlaceholder": "bijvoorbeeld {{collectionName}}1",
@@ -711,7 +709,7 @@
       "enterTableId": "Tabel-id invoeren",
       "tableSchemaAriaLabel": "Tabelschema",
       "provisionDedicatedThroughput": "Toegewezen doorvoer inrichten voor deze tabel",
-      "provisionDedicatedThroughputTooltip": "U kunt optioneel toegewijde doorvoer instellen voor een tabel binnen een sleutelruimte waarvoor doorvoer is ingesteld. Dit toegewezen doorvoeraantal wordt niet gedeeld met andere tabellen in de keyspace en telt niet mee voor de doorvoer die u hebt ingericht voor de keyspace. Dit doorvoeraantal wordt in rekening gebracht naast het doorvoeraantal die u hebt ingericht op het niveau van de keyspace."
+      "provisionDedicatedThroughputTooltip": "U kunt optioneel toegewijde doorvoer instellen voor een tabel binnen een keyspace waarvoor doorvoer is ingesteld. Dit toegewezen doorvoeraantal wordt niet gedeeld met andere tabellen in de keyspace en telt niet mee voor de doorvoer die u hebt ingericht voor de keyspace. Dit doorvoeraantal wordt in rekening gebracht naast het doorvoeraantal die u hebt ingericht op het niveau van de keyspace."
     },
     "tables": {
       "addProperty": "Eigenschap toevoegen",
@@ -765,7 +763,7 @@
         "containerPolicies": "Containerbeleidsregels",
         "throughputBuckets": "Doorvoerbuckets",
         "globalSecondaryIndexPreview": "Globale secundaire index (preview)",
-        "maskingPolicyPreview": "Maskeringsbeleid (preview)"
+        "maskingPolicyPreview": "Beleid voor maskering"
       },
       "mongoNotifications": {
         "selectTypeWarning": "Selecteer een type voor elke index.",
@@ -889,7 +887,7 @@
         "freeTierLearnMore": "Meer informatie.",
         "throughputRuS": "Doorvoer (RU/s)",
         "autoScaleCustomSettings": "Uw account heeft aangepaste instellingen die het instellen van doorvoer op containerniveau verhinderen. Werk samen met uw contactpersoon van het Cosmos DB-engineeringteam om wijzigingen aan te brengen.",
-        "keyspaceSharedThroughput": "Deze gedeelde doorvoer van de tabel is geconfigureerd in de sleutelruimte",
+        "keyspaceSharedThroughput": "Deze gedeelde doorvoer van de tabel is geconfigureerd in de keyspace",
         "throughputRangeLabel": "Doorvoer ({{min}} - {{max}} RU/s)",
         "unlimited": "onbeperkt"
       },
@@ -961,8 +959,38 @@
         "bucketLabel": "Bucket {{id}}",
         "dataExplorerQueryBucket": " (Data Explorer-querybucket)",
         "active": "Actief",
-        "inactive": "Inactief"
+        "inactive": "Inactief",
+        "defaultBucketLabel": "Standaard doorvoerbucket",
+        "defaultBucketPlaceholder": "Een standaard doorvoerbucket selecteren",
+        "defaultBucketTooltip": "De standaard doorvoerbucket wordt gebruikt voor bewerkingen die geen bucket specificeren.",
+        "defaultBucketTooltipLearnMore": "Meer informatie.",
+        "noDefaultBucketSelected": "Er is geen standaard doorvoerbucket geselecteerd",
+        "bucketOptionLabel": "Bucket {{id}} - {{percentage}}%",
+        "bucketNotActive": "Bucket {{id}} is niet actief."
       }
+    },
+    "vectorEmbeddingPolicies": {
+      "vectorEmbeddingTitle": "Vector insluiten {{index}}",
+      "path": "Pad",
+      "dataType": "Gegevenstype",
+      "distanceFunction": "Afstand functie",
+      "dimensions": "Afmetingen",
+      "indexType": "Indextype",
+      "quantizationByteSize": "Grootte van de kwantisatiebyte",
+      "quantizationByteSizeTooltip": "Dit wordt dynamisch ingesteld door de {{containerName}} als leeg wordt gelaten, of kan worden ingesteld op een vast getal",
+      "quantizationByteSizeTooltipContainerName": "container",
+      "quantizationByteSizeTooltipGlobalSecondaryIndexName": "globale secundaire index",
+      "quantizerType": "Kwantisatie-type",
+      "quantizerTypeTooltip": "De kwantisatiemethode die wordt gebruikt door de vectorindex.",
+      "indexingSearchListSize": "Grootte van zoeklijst indexeren",
+      "vectorIndexShardKey": "Shardsleutel voor vectorindex",
+      "addVectorEmbedding": "Vector insluiten toevoegen",
+      "pathEmptyError": "Pad mag niet leeg zijn",
+      "pathDuplicateError": "Poort is al gedefinieerd",
+      "dimensionRangeError": "Deze moet groter zijn dan 0 en kleiner dan of gelijk aan 4096",
+      "dimensionFlatIndexError": "De maximaal toegestane dimensie voor een platte index is 505",
+      "quantizationByteSizeRangeError": "De grootte van de kwantisatiebyte moet groter zijn dan 0 en kleiner dan of gelijk zijn aan 512",
+      "indexingSearchListSizeRangeError": "De grootte van de zoeklijst voor indexering moet groter zijn dan of gelijk zijn aan 25 en kleiner dan of gelijk zijn aan 500"
     }
   }
 }

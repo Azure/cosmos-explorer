@@ -33,7 +33,8 @@
     "publish": "Yayımla",
     "browse": "Gözat",
     "increaseValueBy1": "Değeri 1 artır",
-    "decreaseValueBy1": "Değeri 1 azalt"
+    "decreaseValueBy1": "Değeri 1 azalt",
+    "preview": "Önizleme"
   },
   "splashScreen": {
     "title": {
@@ -420,6 +421,7 @@
     "deleteDatabase": {
       "panelTitle": "{{databaseName}} veritabanını sil",
       "warningMessage": "Uyarı! Gerçekleştirmek üzere olduğunuz eylem geri alınamaz. Devam etmeniz durumunda, bu kaynak ve tüm alt kaynakları kalıcı olarak silinir.",
+      "copyableId": "{{databaseName}} kimliği:",
       "confirmPrompt": "{{databaseName}} kimliğini (adını) yazarak onaylayın",
       "inputMismatch": "{{databaseName}} girişi \"{{input}}\" adı seçilen {{databaseName}} \"{{selectedId}}\" ile eşleşmiyor",
       "feedbackTitle": "Azure Cosmos DB’yi geliştirmemize yardımcı olun!",
@@ -427,6 +429,8 @@
     },
     "deleteCollection": {
       "panelTitle": "{{collectionName}} koleksiyonunu sil",
+      "warningMessage": "Uyarı! Gerçekleştirmek üzere olduğunuz eylem geri alınamaz. Devam etmeniz durumunda, bu kaynak ve tüm alt kaynakları kalıcı olarak silinir.",
+      "copyableId": "{{collectionName}} kimliği:",
       "confirmPrompt": "{{collectionName}} kimliğini yazarak onaylayın",
       "inputMismatch": "{{input}} giriş kimliği seçilen {{selectedId}} ile eşleşmiyor",
       "feedbackTitle": "Azure Cosmos DB’yi geliştirmemize yardımcı olun!",
@@ -435,24 +439,18 @@
     "addDatabase": {
       "databaseLabel": "Veritabanı {{suffix}}",
       "databaseIdLabel": "Veritabanı kimliği",
-      "keyspaceIdLabel": "Anahtar alanı kimliği",
+      "keyspaceIdLabel": "Keyspace kimliği",
       "databaseIdPlaceholder": "Yeni bir {{databaseLabel}} kimliği girin",
       "databaseTooltip": "{{databaseLabel}}, bir veya daha fazla {{collectionsLabel}} içeren bir mantıksal kapsayıcıdır.",
-      "shareThroughput": "Aktarım hızını {{collectionsLabel}} koleksiyonunda paylaş",
-      "shareThroughputTooltip": "{{databaseLabel}} düzeyinde sağlanan aktarım hızı, {{databaseLabel}} altındaki tüm {{collectionsLabel}} ile paylaşılır.",
       "greaterThanError": "Autopilot aktarım hızı için {{minValue}} değerinden büyük bir değer girin",
       "acknowledgeSpendError": "Lütfen tahmini {{period}} harcamayı kabul edin.",
       "acknowledgeSpendErrorMonthly": "Lütfen tahmini aylık harcamayı kabul edin.",
-      "acknowledgeSpendErrorDaily": "Lütfen tahmini günlük harcamayı kabul edin.",
-      "provisionSharedThroughputTitle": "Paylaşılan aktarım hızını ayarlayın",
-      "provisionThroughputLabel": "Aktarım hızı sağla"
+      "acknowledgeSpendErrorDaily": "Lütfen tahmini günlük harcamayı kabul edin."
     },
     "addCollection": {
       "createNew": "Yeni oluştur",
       "useExisting": "Mevcut olanı kullan",
       "databaseTooltip": "Veritabanı, ad alanına benzer. Bu, {{collectionName}} kümesi için yönetim birimidir.",
-      "shareThroughput": "Aktarım hızını {{collectionName}} koleksiyonunda paylaş",
-      "shareThroughputTooltip": "Veritabanı düzeyinde yapılandırılan aktarım hızı, veritabanındaki tüm {{collectionName}} genelinde paylaşılır.",
       "collectionIdLabel": "{{collectionName}} kimliği",
       "collectionIdTooltip": "{{collectionName}} için benzersiz tanımlayıcı ve REST ve tüm SDK’larda kimlik tabanlı yönlendirme için kullanılır.",
       "collectionIdPlaceholder": "ör. {{collectionName}}1",
@@ -705,13 +703,13 @@
       "partitionKeyWarning": "Hedef kapsayıcı zaten mevcut olmamalıdır. Veri Gezgini sizin için yeni bir hedef kapsayıcı oluşturur."
     },
     "cassandraAddCollection": {
-      "keyspaceLabel": "Anahtar alanı adı",
-      "keyspaceTooltip": "Mevcut bir anahtar alanını seçin veya yeni bir anahtar alanı kimliği girin.",
+      "keyspaceLabel": "Keyspace adı",
+      "keyspaceTooltip": "Mevcut bir keyspace'i seçin veya yeni bir keyspace kimliği girin.",
       "tableIdLabel": "Tabloyu oluşturmak için CQL komutunu girin.",
       "enterTableId": "Tablo kimliğini girin",
       "tableSchemaAriaLabel": "Tablo şeması",
       "provisionDedicatedThroughput": "Bu tablo için ayrılmış aktarım hızı sağlayın",
-      "provisionDedicatedThroughputTooltip": "İsteğe bağlı olarak, aktarım hızı sağlanan bir anahtar alanındaki bir tablo için ayrılmış aktarım hızı sağlayabilirsiniz. Bu ayrılmış aktarım hızı miktarı, anahtar alanındaki diğer tablolarla paylaşılmaz ve anahtar alanı için sağladığınız aktarım hızını etkilemez. Bu aktarım hızı miktarı anahtar alanı düzeyinde sağladığınız aktarım hızına ek olarak faturalandırılır."
+      "provisionDedicatedThroughputTooltip": "İsteğe bağlı olarak, aktarım hızı sağlanan bir keyspace'in bir tablo için ayrılmış aktarım hızı sağlayabilirsiniz. Bu ayrılmış aktarım hızı miktarı, keyspace'teki diğer tablolarla paylaşılmaz ve keyspace için sağladığınız aktarım hızını etkilemez. Bu keyspace miktarı anahtar alanı düzeyinde sağladığınız aktarım hızına ek olarak faturalandırılır."
     },
     "tables": {
       "addProperty": "Özellik Ekle",
@@ -765,7 +763,7 @@
         "containerPolicies": "Kapsayıcı İlkeleri",
         "throughputBuckets": "Aktarım Hızı Demetleri",
         "globalSecondaryIndexPreview": "Genel İkincil Dizini (Önizleme)",
-        "maskingPolicyPreview": "Maskeleme İlkesi (önizleme)"
+        "maskingPolicyPreview": "Veri Maskeleme İlkesi"
       },
       "mongoNotifications": {
         "selectTypeWarning": "Lütfen her dizin için bir tür seçeneğini belirtin.",
@@ -889,7 +887,7 @@
         "freeTierLearnMore": "Daha fazla bilgi edinin.",
         "throughputRuS": "Aktarım hızı (RU/s)",
         "autoScaleCustomSettings": "Hesabınızda, kapsayıcı düzeyinde aktarım hızı ayarlamayı engelleyen özel ayarlar var. Değişiklik yapmak için lütfen Cosmos DB mühendislik ekibiyle iletişim kurduğunuz kişiyle çalışın.",
-        "keyspaceSharedThroughput": "Bu tablo paylaşılan aktarım hızı anahtar alanında yapılandırılmıştır",
+        "keyspaceSharedThroughput": "Bu tablo paylaşılan aktarım hızı keyspace'inde yapılandırılmıştır",
         "throughputRangeLabel": "Aktarım hızı ({{min}} - {{max}} RU/s)",
         "unlimited": "sınırsız"
       },
@@ -961,8 +959,38 @@
         "bucketLabel": "Demet {{id}}",
         "dataExplorerQueryBucket": " (Veri Gezgini Sorgu Kümesi)",
         "active": "Etkin",
-        "inactive": "Etkin değil"
+        "inactive": "Etkin değil",
+        "defaultBucketLabel": "Varsayılan Aktarım Hızı Demeti",
+        "defaultBucketPlaceholder": "Varsayılan aktarım hızı demetini seçin",
+        "defaultBucketTooltip": "Varsayılan aktarım hızı demeti, belirli bir demet belirtilmeyen işlemlerde kullanılır.",
+        "defaultBucketTooltipLearnMore": "Daha fazla bilgi edinin.",
+        "noDefaultBucketSelected": "Varsayılan Aktarım Hızı Demeti Seçilmedi",
+        "bucketOptionLabel": "{{id}} demeti - %{{percentage}}",
+        "bucketNotActive": "{{id}} demeti etkin değil."
       }
+    },
+    "vectorEmbeddingPolicies": {
+      "vectorEmbeddingTitle": "Vektör eklemesi {{index}}",
+      "path": "Yol",
+      "dataType": "Veri türü",
+      "distanceFunction": "Uzaklık işlevi",
+      "dimensions": "Boyutlar",
+      "indexType": "Dizin türü",
+      "quantizationByteSize": "Bölme bayt boyutu",
+      "quantizationByteSizeTooltip": "Bu boş bırakılırsa {{containerName}} tarafından dinamik olarak ayarlanır veya sabit bir sayıya ayarlanabilir",
+      "quantizationByteSizeTooltipContainerName": "kapsayıcı",
+      "quantizationByteSizeTooltipGlobalSecondaryIndexName": "genel ikincil dizin",
+      "quantizerType": "Bölme türü",
+      "quantizerTypeTooltip": "Vektör dizini tarafından kullanılan bölme yöntemi.",
+      "indexingSearchListSize": "Dizin arama listesi boyutu",
+      "vectorIndexShardKey": "Vektör dizini parça anahtarı",
+      "addVectorEmbedding": "Vektör eklemesi ekle",
+      "pathEmptyError": "Yol boş olmamalıdır",
+      "pathDuplicateError": "Yol zaten tanımlandı",
+      "dimensionRangeError": "Boyut 0’dan büyük ve 4096’dan küçük veya buna eşit olmalıdır",
+      "dimensionFlatIndexError": "Düz dizin için izin verilen boyut üst sınırı 505",
+      "quantizationByteSizeRangeError": "Bölme bayt boyutu 0'dan büyük ve 512'den küçük veya buna eşit olmalıdır",
+      "indexingSearchListSizeRangeError": "Dizin arama listesi boyutu 25'ten büyük veya buna eşit ve 500'den küçük veya buna eşit olmalıdır"
     }
   }
 }

@@ -33,7 +33,8 @@
     "publish": "Publier",
     "browse": "Parcourir",
     "increaseValueBy1": "Augmenter la valeur de 1",
-    "decreaseValueBy1": "Diminuer la valeur de 1"
+    "decreaseValueBy1": "Diminuer la valeur de 1",
+    "preview": "Aperçu"
   },
   "splashScreen": {
     "title": {
@@ -420,6 +421,7 @@
     "deleteDatabase": {
       "panelTitle": "Supprimer {{databaseName}}",
       "warningMessage": "Attention ! Il ne sera pas possible d’annuler cette action. Si vous continuez, cette ressource et toutes ses ressources enfants seront définitivement supprimées.",
+      "copyableId": "{{databaseName}} Id :",
       "confirmPrompt": "Confirmer en tapant l’ID de {{databaseName}} (nom)",
       "inputMismatch": "Le nom « {{input}} » de l’entrée {{databaseName}} ne correspond pas au {{databaseName}} « {{selectedId}} » sélectionné",
       "feedbackTitle": "Aidez-nous à améliorer Azure Cosmos DB !",
@@ -427,6 +429,8 @@
     },
     "deleteCollection": {
       "panelTitle": "Supprimer {{collectionName}}",
+      "warningMessage": "Attention ! Il ne sera pas possible d’annuler cette action. Si vous continuez, cette ressource et toutes ses ressources enfants seront définitivement supprimées.",
+      "copyableId": "{{collectionName}} Id :",
       "confirmPrompt": "Confirmer en tapant l’ID de {{collectionName}}",
       "inputMismatch": "L’ID d’entrée {{input}} ne correspond pas à l’ID {{selectedId}} sélectionné",
       "feedbackTitle": "Aidez-nous à améliorer Azure Cosmos DB !",
@@ -435,24 +439,18 @@
     "addDatabase": {
       "databaseLabel": "Base de données {{suffix}}",
       "databaseIdLabel": "ID de base de données",
-      "keyspaceIdLabel": "ID d’espace clé",
+      "keyspaceIdLabel": "ID de keyspace",
       "databaseIdPlaceholder": "Entrer un nouvel ID de {{databaseLabel}}",
       "databaseTooltip": "Une {{databaseLabel}} est un conteneur logique d’un ou plusieurs {{collectionsLabel}}",
-      "shareThroughput": "Partager le débit sur {{collectionsLabel}}",
-      "shareThroughputTooltip": "Le débit approvisionné au niveau {{databaseLabel}} est partagé entre tous les {{collectionsLabel}} du {{databaseLabel}}.",
       "greaterThanError": "Entrer une valeur supérieure à {{minValue}} pour le débit Autopilot",
       "acknowledgeSpendError": "Prenez en compte l’estimation des dépenses {{period}}.",
       "acknowledgeSpendErrorMonthly": "Prenez en compte l’estimation des dépenses mensuelles.",
-      "acknowledgeSpendErrorDaily": "Prenez en compte l’estimation des dépenses quotidiennes.",
-      "provisionSharedThroughputTitle": "Approvisionnez le débit partagé",
-      "provisionThroughputLabel": "Débit d’approvisionnement"
+      "acknowledgeSpendErrorDaily": "Prenez en compte l’estimation des dépenses quotidiennes."
     },
     "addCollection": {
       "createNew": "Créer",
       "useExisting": "Utiliser l’élément existant",
       "databaseTooltip": "Une base de données est comparable à un espace de noms. Il s’agit de l’unité de gestion d’un ensemble de {{collectionName}}.",
-      "shareThroughput": "Partager le débit sur {{collectionName}}",
-      "shareThroughputTooltip": "Le débit configuré au niveau de la base de données sera partagé entre tous les {{collectionName}} de la base de données.",
       "collectionIdLabel": "ID de {{collectionName}}",
       "collectionIdTooltip": "L’identificateur unique du {{collectionName}}, également utilisé pour le routage basé sur l’ID dans REST et tous les SDK.",
       "collectionIdPlaceholder": "p. ex. {{collectionName}}1",
@@ -705,13 +703,13 @@
       "partitionKeyWarning": "Le conteneur de destination ne doit pas déjà exister. L’Explorateur de données vous crée un nouveau conteneur de destination."
     },
     "cassandraAddCollection": {
-      "keyspaceLabel": "Nom de l’espace de clés",
-      "keyspaceTooltip": "Sélectionnez un espace de clés existant ou saisissez un nouvel ID d’espace de clés.",
+      "keyspaceLabel": "Nom du keyspace",
+      "keyspaceTooltip": "Sélectionnez un keyspace existant ou saisissez un nouvel ID de keyspace.",
       "tableIdLabel": "Entrez la commande CQL pour créer le tableau.",
       "enterTableId": "Entrer l’ID de tableau",
       "tableSchemaAriaLabel": "Schéma de tableau",
       "provisionDedicatedThroughput": "Approvisionner le débit dédié pour ce tableau",
-      "provisionDedicatedThroughputTooltip": "Vous pouvez éventuellement approvisionner un débit dédié pour un tableau dans un espace de clés dont le débit est approvisionné. Ce débit dédié ne sera pas partagé avec les autres tableaux de l’espace de clés et ne sera pas pris en compte dans le débit que vous approvisionnez pour l’espace de clés. Cette quantité de débit sera facturée en plus du débit que vous approvisionnez au niveau de l’espace de clés."
+      "provisionDedicatedThroughputTooltip": "Vous pouvez éventuellement approvisionner un débit dédié pour un tableau dans un keyspace dont le débit est approvisionné. Ce débit dédié ne sera pas partagé avec les autres tableaux du keyspace et ne sera pas pris en compte dans le débit que vous approvisionnez pour le keyspace. Cette quantité de débit sera facturée en plus du débit que vous approvisionnez au niveau de le keyspace."
     },
     "tables": {
       "addProperty": "Ajouter une propriété",
@@ -765,7 +763,7 @@
         "containerPolicies": "Stratégies relatives aux conteneurs",
         "throughputBuckets": "Bacs de débit",
         "globalSecondaryIndexPreview": "Indice mondial du secteur secondaire (Aperçu)",
-        "maskingPolicyPreview": "Stratégie de masquage (aperçu)"
+        "maskingPolicyPreview": "Stratégie de masquage"
       },
       "mongoNotifications": {
         "selectTypeWarning": "Veuillez sélectionner un type pour chaque index.",
@@ -889,7 +887,7 @@
         "freeTierLearnMore": "En savoir plus.",
         "throughputRuS": "Débit (RU/s)",
         "autoScaleCustomSettings": "Votre compte possède des paramètres personnalisés qui empêchent la configuration du débit au niveau du conteneur. Veuillez collaborer avec votre interlocuteur au sein de l'équipe d'ingénierie Cosmos DB pour apporter les modifications nécessaires.",
-        "keyspaceSharedThroughput": "Le débit partagé de cette table est configuré au niveau de l'espace de clés",
+        "keyspaceSharedThroughput": "Le débit partagé de cette table est configuré au niveau du keyspace",
         "throughputRangeLabel": "Débit ({{min}} à {{max}} RU/s)",
         "unlimited": "illimité"
       },
@@ -961,8 +959,38 @@
         "bucketLabel": "Compartiment {{id}}",
         "dataExplorerQueryBucket": " (Compartiment de requêtes de Data Explorer)",
         "active": "Actif",
-        "inactive": "Inactif"
+        "inactive": "Inactif",
+        "defaultBucketLabel": "Compartiment de débit par défaut",
+        "defaultBucketPlaceholder": "Sélectionnez un compartiment de débit par défaut",
+        "defaultBucketTooltip": "Le compartiment de débit par défaut est utilisé pour des opérations qui ne spécifient pas de compartiment particulier.",
+        "defaultBucketTooltipLearnMore": "Découvrez plus d’informations.",
+        "noDefaultBucketSelected": "Aucun compartiment de débit par défaut n’est sélectionné",
+        "bucketOptionLabel": "Compartiment {{id}} – {{percentage}} %",
+        "bucketNotActive": "Le compartiment {{id}} n’est pas actif."
       }
+    },
+    "vectorEmbeddingPolicies": {
+      "vectorEmbeddingTitle": "Représentation vectorielle {{index}}",
+      "path": "Chemin d’accès",
+      "dataType": "Type de données",
+      "distanceFunction": "Fonction de distance",
+      "dimensions": "Dimensions",
+      "indexType": "Type d’index",
+      "quantizationByteSize": "Taille en octets de quantification",
+      "quantizationByteSizeTooltip": "Cela est défini dynamiquement par le {{containerName}} si laissé vide, ou peut être fixé à un nombre précis",
+      "quantizationByteSizeTooltipContainerName": "conteneur",
+      "quantizationByteSizeTooltipGlobalSecondaryIndexName": "index secondaire global",
+      "quantizerType": "Type de quantificateur",
+      "quantizerTypeTooltip": "Méthode de quantification utilisée par l’index vectoriel.",
+      "indexingSearchListSize": "Taille de la liste de recherche pour l’indexation",
+      "vectorIndexShardKey": "Clé de partition de l’index vectoriel",
+      "addVectorEmbedding": "Ajouter une représentation vectorielle",
+      "pathEmptyError": "Le chemin d’accès ne doit pas être vide",
+      "pathDuplicateError": "Le chemin d’accès est déjà défini",
+      "dimensionRangeError": "La dimension doit être supérieure à 0 et inférieur ou égal à 4096",
+      "dimensionFlatIndexError": "La dimension maximale autorisée pour l’index plat est de 505",
+      "quantizationByteSizeRangeError": "La taille en octets de quantification doit être supérieure à 0 et inférieure ou égale à 512",
+      "indexingSearchListSizeRangeError": "La taille de la liste de recherche d’indexation doit être comprise entre 25 et 500 inclus"
     }
   }
 }

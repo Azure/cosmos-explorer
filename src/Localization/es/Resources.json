@@ -33,7 +33,8 @@
     "publish": "Publicar",
     "browse": "Examinar",
     "increaseValueBy1": "Aumentar valor en 1",
-    "decreaseValueBy1": "Disminuir valor en 1"
+    "decreaseValueBy1": "Disminuir valor en 1",
+    "preview": "Versión preliminar"
   },
   "splashScreen": {
     "title": {
@@ -420,6 +421,7 @@
     "deleteDatabase": {
       "panelTitle": "Eliminar {{databaseName}}",
       "warningMessage": "¡Advertencia! La acción que va a realizar no se puede deshacer. Si continúa, se eliminará permanentemente este recurso y todos sus recursos secundarios.",
+      "copyableId": "{{databaseName}} Id:",
       "confirmPrompt": "Confirme escribiendo el {{databaseName}} identificador (nombre)",
       "inputMismatch": "El nombre de entrada {{databaseName}} \"{{input}}\" no coincide con el {{databaseName}} seleccionado \"{{selectedId}}\"",
       "feedbackTitle": "Ayúdenos a mejorar Azure Cosmos DB.",
@@ -427,6 +429,8 @@
     },
     "deleteCollection": {
       "panelTitle": "Eliminar {{collectionName}}",
+      "warningMessage": "¡Advertencia! La acción que va a realizar no se puede deshacer. Si continúa, se eliminará permanentemente este recurso y todos sus recursos secundarios.",
+      "copyableId": "{{collectionName}} Id:",
       "confirmPrompt": "Confirme escribiendo el {{collectionName}} id.",
       "inputMismatch": "El id de entrada {{input}} no coincide con el seleccionado {{selectedId}}",
       "feedbackTitle": "Ayúdenos a mejorar Azure Cosmos DB.",
@@ -435,24 +439,18 @@
     "addDatabase": {
       "databaseLabel": "Base de datos {{suffix}}",
       "databaseIdLabel": "Id. de base de datos",
-      "keyspaceIdLabel": "Id. de espacio de claves",
+      "keyspaceIdLabel": "Id. de Keyspace",
       "databaseIdPlaceholder": "Escriba un nuevo {{databaseLabel}} identificador",
       "databaseTooltip": "Un {{databaseLabel}} es un contenedor lógico de uno o varios {{collectionsLabel}}",
-      "shareThroughput": "Compartir el rendimiento entre {{collectionsLabel}}",
-      "shareThroughputTooltip": "El rendimiento aprovisionado en el {{databaseLabel}} nivel se compartirá entre todos {{collectionsLabel}} dentro de {{databaseLabel}}.",
       "greaterThanError": "Escriba un valor mayor que para el {{minValue}} rendimiento de Autopilot",
       "acknowledgeSpendError": "Confirme el gasto estimado {{period}}.",
       "acknowledgeSpendErrorMonthly": "Confirme el gasto mensual estimado.",
-      "acknowledgeSpendErrorDaily": "Confirme el gasto diario estimado.",
-      "provisionSharedThroughputTitle": "Aprovisionamiento del rendimiento compartido",
-      "provisionThroughputLabel": "Aprovisionamiento del rendimiento"
+      "acknowledgeSpendErrorDaily": "Confirme el gasto diario estimado."
     },
     "addCollection": {
       "createNew": "Crear nuevo",
       "useExisting": "Usar existente",
       "databaseTooltip": "Una base de datos es análoga a un espacio de nombres. Es la unidad de administración de un conjunto de {{collectionName}}.",
-      "shareThroughput": "Compartir el rendimiento entre {{collectionName}}",
-      "shareThroughputTooltip": "El rendimiento configurado en el nivel de base de datos se compartirá en toda {{collectionName}} la base de datos.",
       "collectionIdLabel": "{{collectionName}} Id. ",
       "collectionIdTooltip": "Identificador único de y usado para el {{collectionName}} enrutamiento basado en identificadores a través de REST y todos los SDK.",
       "collectionIdPlaceholder": "por ejemplo, {{collectionName}}1",
@@ -705,13 +703,13 @@
       "partitionKeyWarning": "El contenedor de destino no debe existir aún. Explorador de datos creará un nuevo contenedor de destino."
     },
     "cassandraAddCollection": {
-      "keyspaceLabel": "Nombre del espacio de claves",
-      "keyspaceTooltip": "Seleccione un espacio de claves existente o escriba un nuevo identificador de espacio de claves.",
+      "keyspaceLabel": "Nombre de Keyspace",
+      "keyspaceTooltip": "Seleccione un keyspace existente o escriba un nuevo identificador de espacio de claves.",
       "tableIdLabel": "Escriba el comando CQL para crear la tabla.",
       "enterTableId": "Escriba el id. de tabla",
       "tableSchemaAriaLabel": "Esquema de tabla",
       "provisionDedicatedThroughput": "Aprovisionamiento del rendimiento dedicado para esta tabla",
-      "provisionDedicatedThroughputTooltip": "Opcionalmente, puede aprovisionar el rendimiento dedicado para una tabla dentro de un espacio de claves que tenga aprovisionado el rendimiento. Esta cantidad de rendimiento dedicado no se compartirá con otras tablas del espacio de claves y no cuenta para el rendimiento aprovisionado para el espacio de claves. Esta cantidad de rendimiento se facturará además de la cantidad de rendimiento que aprovisionó en el nivel de espacio de claves."
+      "provisionDedicatedThroughputTooltip": "Opcionalmente, puede aprovisionar el rendimiento dedicado para una tabla dentro de un espacio de claves que tenga aprovisionado el rendimiento. Esta cantidad de rendimiento dedicado no se compartirá con otras tablas del espacio de claves y no cuenta para el rendimiento aprovisionado para el espacio de claves. Esta cantidad de rendimiento se facturará además de la cantidad de rendimiento que aprovisionó en el nivel de keyspace."
     },
     "tables": {
       "addProperty": "Agregar propiedad",
@@ -765,7 +763,7 @@
         "containerPolicies": "Directivas de contenedor",
         "throughputBuckets": "Depósitos de rendimiento",
         "globalSecondaryIndexPreview": "Índice secundario global (versión preliminar)",
-        "maskingPolicyPreview": "Directiva de enmascaramiento (versión preliminar)"
+        "maskingPolicyPreview": "Directiva de enmascaramiento"
       },
       "mongoNotifications": {
         "selectTypeWarning": "Seleccione un tipo para cada índice.",
@@ -889,7 +887,7 @@
         "freeTierLearnMore": "Más información.",
         "throughputRuS": "Rendimiento (RU/s)",
         "autoScaleCustomSettings": "La cuenta tiene una configuración personalizada que impide establecer el rendimiento en el nivel de contenedor. Trabaje con su Cosmos DB punto de contacto del equipo de ingeniería para realizar cambios.",
-        "keyspaceSharedThroughput": "Este rendimiento compartido de tabla se configura en el espacio de claves",
+        "keyspaceSharedThroughput": "Este rendimiento compartido de tabla se configura en el keyspace",
         "throughputRangeLabel": "Rendimiento ({{min}} - {{max}} RU/s)",
         "unlimited": "ilimitado"
       },
@@ -961,8 +959,38 @@
         "bucketLabel": "Depósito {{id}}",
         "dataExplorerQueryBucket": " (Depósito de consultas de Data Explorer)",
         "active": "Activo",
-        "inactive": "Inactivo"
+        "inactive": "Inactivo",
+        "defaultBucketLabel": "Depósito de rendimiento predeterminado",
+        "defaultBucketPlaceholder": "Selección de un depósito de rendimiento predeterminado",
+        "defaultBucketTooltip": "El cubo de rendimiento predeterminado se usa para las operaciones que no especifican un cubo determinado.",
+        "defaultBucketTooltipLearnMore": "Más información.",
+        "noDefaultBucketSelected": "No se ha seleccionado ningún depósito de rendimiento predeterminado",
+        "bucketOptionLabel": "Cubo {{id}} - {{percentage}}%",
+        "bucketNotActive": "El cubo {{id}} no está activo."
       }
+    },
+    "vectorEmbeddingPolicies": {
+      "vectorEmbeddingTitle": "Incrustación de vectores {{index}}",
+      "path": "Ruta",
+      "dataType": "Tipo de datos",
+      "distanceFunction": "Función Distancia",
+      "dimensions": "Dimensiones",
+      "indexType": "Tipo de índice",
+      "quantizationByteSize": "Tamaño de bytes de cuantificación",
+      "quantizationByteSizeTooltip": "Si se deja en blanco, lo establece {{containerName}} dinámicamente o se puede establecer en un número fijo",
+      "quantizationByteSizeTooltipContainerName": "contenedor",
+      "quantizationByteSizeTooltipGlobalSecondaryIndexName": "índice secundario global",
+      "quantizerType": "Tipo de cuantificador",
+      "quantizerTypeTooltip": "Método de cuantificación utilizado por el índice vectorial.",
+      "indexingSearchListSize": "Tamaño de la lista de búsqueda de indexación",
+      "vectorIndexShardKey": "Clave de partición de índice vectorial",
+      "addVectorEmbedding": "Agregar incrustación de vectores",
+      "pathEmptyError": "La ruta de acceso no debe estar vacía",
+      "pathDuplicateError": "La ruta de acceso ya está definida",
+      "dimensionRangeError": "La dimensión debe ser mayor que 0 y menor o igual que 4096",
+      "dimensionFlatIndexError": "La dimensión máxima permitida para el índice plano es 505",
+      "quantizationByteSizeRangeError": "El tamaño de bytes de cuantificación debe ser mayor que 0 y menor o igual que 512",
+      "indexingSearchListSizeRangeError": "El tamaño de la lista de búsqueda de indexación debe ser mayor o igual que 25 y menor o igual que 500"
     }
   }
 }

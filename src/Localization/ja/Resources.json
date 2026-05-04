@@ -33,7 +33,8 @@
     "publish": "公開",
     "browse": "参照",
     "increaseValueBy1": "値を 1 増加",
-    "decreaseValueBy1": "値を 1 減少"
+    "decreaseValueBy1": "値を 1 減少",
+    "preview": "プレビュー"
   },
   "splashScreen": {
     "title": {
@@ -420,6 +421,7 @@
     "deleteDatabase": {
       "panelTitle": "{{databaseName}} の削除",
       "warningMessage": "警告!実行しようとしている操作を元に戻すことはできません。続行すると、このリソースとそのすべての子リソースが完全に削除されます。",
+      "copyableId": "{{databaseName}} ID:",
       "confirmPrompt": "{{databaseName}} ID (名前) を入力して確認してください",
       "inputMismatch": "入力 {{databaseName}} 名 \"{{input}}\" が、選択した {{databaseName}} \"{{selectedId}}\" と一致しません",
       "feedbackTitle": "Azure Cosmos DB の改善にご協力ください。",
@@ -427,6 +429,8 @@
     },
     "deleteCollection": {
       "panelTitle": "{{collectionName}} の削除",
+      "warningMessage": "警告!実行しようとしている操作を元に戻すことはできません。続行すると、このリソースとそのすべての子リソースが完全に削除されます。",
+      "copyableId": "{{collectionName}} ID:",
       "confirmPrompt": "{{collectionName}} ID を入力して確認してください",
       "inputMismatch": "入力 ID {{input}} が選択した {{selectedId}} と一致しません",
       "feedbackTitle": "Azure Cosmos DB の改善にご協力ください。",
@@ -435,24 +439,18 @@
     "addDatabase": {
       "databaseLabel": "データベース {{suffix}}",
       "databaseIdLabel": "データベース ID",
-      "keyspaceIdLabel": "キースペース ID",
+      "keyspaceIdLabel": "keyspace ID",
       "databaseIdPlaceholder": "新しい {{databaseLabel}} ID を入力してください",
       "databaseTooltip": "{{databaseLabel}} は 1 つ以上の {{collectionsLabel}} の論理コンテナーです",
-      "shareThroughput": "{{collectionsLabel}} 全体でスループットを共有する",
-      "shareThroughputTooltip": "{{databaseLabel}} レベルでプロビジョニングされたスループットは、{{collectionsLabel}} 内のすべての {{databaseLabel}} で共有されます。",
       "greaterThanError": "オートパイロット スループットの {{minValue}} より大きい値を入力してください",
       "acknowledgeSpendError": "毎月の推定 {{period}} 支出に同意してください。",
       "acknowledgeSpendErrorMonthly": "毎月の推定支出に同意してください。",
-      "acknowledgeSpendErrorDaily": "毎日の推定支出に同意してください。",
-      "provisionSharedThroughputTitle": "共有スループットのプロビジョニング",
-      "provisionThroughputLabel": "スループットのプロビジョニング"
+      "acknowledgeSpendErrorDaily": "毎日の推定支出に同意してください。"
     },
     "addCollection": {
       "createNew": "新規作成",
       "useExisting": "既存のものを使用",
       "databaseTooltip": "データベースは名前空間に類似しています。{{collectionName}} のセットの管理単位です。",
-      "shareThroughput": "{{collectionName}} 全体でスループットを共有する",
-      "shareThroughputTooltip": "データベース レベルで構成されたスループットは、データベース内のすべての {{collectionName}} で共有されます。",
       "collectionIdLabel": "{{collectionName}} ID",
       "collectionIdTooltip": "REST とすべての SDK を介した ID ベースのルーティングに使用される {{collectionName}} の一意識別子。",
       "collectionIdPlaceholder": "例: {{collectionName}}1",
@@ -705,13 +703,13 @@
       "partitionKeyWarning": "宛先コンテナーがまだ存在していない必要があります。データ エクスプローラーが新しい宛先コンテナーを作成します。"
     },
     "cassandraAddCollection": {
-      "keyspaceLabel": "キースペース名",
-      "keyspaceTooltip": "既存のキースペースを選択するか、新しいキースペース ID を入力します。",
+      "keyspaceLabel": "keyspace 名",
+      "keyspaceTooltip": "既存の keyspace を選択するか、新しい keyspace ID を入力します。",
       "tableIdLabel": "CQL コマンドを入力してテーブルを作成します。",
       "enterTableId": "テーブル ID の入力",
       "tableSchemaAriaLabel": "テーブル スキーマ",
       "provisionDedicatedThroughput": "このテーブルの専用スループットをプロビジョニングする",
-      "provisionDedicatedThroughputTooltip": "必要に応じて、スループットがプロビジョニングされているキースペース内のテーブルの専用スループットをプロビジョニングできます。この専用スループットはキースペース内の他のテーブルと共有されず、キースペースにプロビジョニングしたスループットには含まれません。このスループットはキースペース レベルでプロビジョニングしたスループットに加えて課金されます。"
+      "provisionDedicatedThroughputTooltip": "必要に応じて、スループットがプロビジョニングされている keyspace 内のテーブルの専用スループットをプロビジョニングできます。この専用スループットはkeyspace内の他のテーブルと共有されず、keyspaceにプロビジョニングしたスループットには含まれません。このスループットは keyspace レベルでプロビジョニングしたスループットに加えて課金されます。"
     },
     "tables": {
       "addProperty": "プロパティの追加",
@@ -765,7 +763,7 @@
         "containerPolicies": "コンテナー ポリシー",
         "throughputBuckets": "スループット バケット",
         "globalSecondaryIndexPreview": "グローバル セカンダリ インデックス (プレビュー)",
-        "maskingPolicyPreview": "マスキング ポリシー (プレビュー)"
+        "maskingPolicyPreview": "マスキング ポリシー"
       },
       "mongoNotifications": {
         "selectTypeWarning": "各インデックスの種類を選択してください。",
@@ -889,7 +887,7 @@
         "freeTierLearnMore": "詳細をご確認ください。",
         "throughputRuS": "スループット (RU/秒)",
         "autoScaleCustomSettings": "アカウントには、コンテナー レベルでのスループットの設定を妨げるカスタム設定があります。変更を加えるには、Cosmos DB エンジニアリング チームの連絡先担当者にお問い合わせください。",
-        "keyspaceSharedThroughput": "このテーブルの共有スループットは、キースペースで構成されています",
+        "keyspaceSharedThroughput": "このテーブルの共有スループットは、keyspace で構成されています",
         "throughputRangeLabel": "スループット ({{min}} - {{max}} RU/秒)",
         "unlimited": "無制限"
       },
@@ -961,8 +959,38 @@
         "bucketLabel": "バケット {{id}}",
         "dataExplorerQueryBucket": " (データ エクスプローラー クエリ バケット)",
         "active": "アクティブ",
-        "inactive": "非アクティブ"
+        "inactive": "非アクティブ",
+        "defaultBucketLabel": "既定のスループット バケット",
+        "defaultBucketPlaceholder": "既定のスループット バケットを選択する",
+        "defaultBucketTooltip": "既定のスループット バケットは、特定のバケットを指定しない操作に使用されます。",
+        "defaultBucketTooltipLearnMore": "詳細をご確認ください。",
+        "noDefaultBucketSelected": "既定のスループット バケットが選択されていません",
+        "bucketOptionLabel": "バケット {{id}} - {{percentage}}%",
+        "bucketNotActive": "バケット {{id}} がアクティブではありません。"
       }
+    },
+    "vectorEmbeddingPolicies": {
+      "vectorEmbeddingTitle": "ベクター埋め込み {{index}}",
+      "path": "パス",
+      "dataType": "データ型",
+      "distanceFunction": "距離関数",
+      "dimensions": "ディメンション",
+      "indexType": "インデックスの種類",
+      "quantizationByteSize": "量子化バイト サイズ",
+      "quantizationByteSizeTooltip": "これは、空白のままにした場合は {{containerName}} によって動的に設定されます。または、固定数に設定することもできます",
+      "quantizationByteSizeTooltipContainerName": "コンテナー",
+      "quantizationByteSizeTooltipGlobalSecondaryIndexName": "グローバル セカンダリ インデックス",
+      "quantizerType": "量子化器の種類",
+      "quantizerTypeTooltip": "ベクター インデックスで使用される量子化方法。",
+      "indexingSearchListSize": "インデックス検索リスト サイズ",
+      "vectorIndexShardKey": "ベクター インデックス シャード キー",
+      "addVectorEmbedding": "ベクター埋め込みを追加する",
+      "pathEmptyError": "パスを空にすることはできません",
+      "pathDuplicateError": "パスは既に定義されています",
+      "dimensionRangeError": "ディメンションは 0 より大きく、4096 以下である必要があります",
+      "dimensionFlatIndexError": "フラット インデックスで許容される最大ディメンションは 505 です",
+      "quantizationByteSizeRangeError": "量子化バイト サイズは 0 より大きく、512 以下である必要があります",
+      "indexingSearchListSizeRangeError": "インデックス検索リスト サイズは 25 以上 500 以下である必要があります"
     }
   }
 }

@@ -33,7 +33,8 @@
     "publish": "Publikovat",
     "browse": "Procházet",
     "increaseValueBy1": "Zvýšit hodnotu o 1",
-    "decreaseValueBy1": "Snížit hodnotu o 1"
+    "decreaseValueBy1": "Snížit hodnotu o 1",
+    "preview": "Preview"
   },
   "splashScreen": {
     "title": {
@@ -420,6 +421,7 @@
     "deleteDatabase": {
       "panelTitle": "Odstranit databázi {{databaseName}}",
       "warningMessage": "Pozor! Akci, kterou se chystáte provést, nelze vrátit zpět. Pokračováním trvale odstraníte tento prostředek a všechny jeho podřízené prostředky.",
+      "copyableId": "ID databáze {{databaseName}}:",
       "confirmPrompt": "Potvrďte zadáním ID (názvu) pro {{databaseName}}.",
       "inputMismatch": "Vstup {{databaseName}} s názvem {{input}} neodpovídá vybranému {{databaseName}} {{selectedId}}.",
       "feedbackTitle": "Pomozte nám vylepšit Azure Cosmos DB!",
@@ -427,6 +429,8 @@
     },
     "deleteCollection": {
       "panelTitle": "Odstranit {{collectionName}}",
+      "warningMessage": "Pozor! Akci, kterou se chystáte provést, nelze vrátit zpět. Pokračováním trvale odstraníte tento prostředek a všechny jeho podřízené prostředky.",
+      "copyableId": "ID kolekce {{collectionName}}:",
       "confirmPrompt": "Potvrďte zadáním ID {{collectionName}}.",
       "inputMismatch": "Vstup s ID {{input}} neodpovídá vybranému {{selectedId}}.",
       "feedbackTitle": "Pomozte nám vylepšit Azure Cosmos DB!",
@@ -438,21 +442,15 @@
       "keyspaceIdLabel": "ID prostoru klíčů",
       "databaseIdPlaceholder": "Zadejte nové ID {{databaseLabel}}",
       "databaseTooltip": "{{databaseLabel}} je logický kontejner minimálně pro 1 {{collectionsLabel}}",
-      "shareThroughput": "Sdílet propustnost napříč {{collectionsLabel}}",
-      "shareThroughputTooltip": "Zřízená propustnost na úrovni {{databaseLabel}} se bude sdílet napříč všemi {{collectionsLabel}} v rámci {{databaseLabel}}.",
       "greaterThanError": "Zadejte prosím hodnotu větší než {{minValue}} pro propustnost autopilota.",
       "acknowledgeSpendError": "Potvrďte prosím odhadovaný výdaj za {{period}}.",
       "acknowledgeSpendErrorMonthly": "Potvrďte prosím odhadované měsíční výdaje.",
-      "acknowledgeSpendErrorDaily": "Potvrďte prosím odhadované denní výdaje.",
-      "provisionSharedThroughputTitle": "Zřídit sdílenou propustnost",
-      "provisionThroughputLabel": "Zřídit propustnost"
+      "acknowledgeSpendErrorDaily": "Potvrďte prosím odhadované denní výdaje."
     },
     "addCollection": {
       "createNew": "Vytvořit nové",
       "useExisting": "Použít existující",
       "databaseTooltip": "Databáze je obdobou oboru názvů. Je to jednotka správy sady {{collectionName}}.",
-      "shareThroughput": "Sdílet propustnost napříč {{collectionName}}",
-      "shareThroughputTooltip": "Propustnost nakonfigurovaná na úrovni databáze bude sdílena napříč všemi {{collectionName}} v rámci databáze.",
       "collectionIdLabel": "ID {{collectionName}}",
       "collectionIdTooltip": "Jedinečný identifikátor pro {{collectionName}}, který se používá pro směrování na základě ID prostřednictvím REST a všech sad SDK",
       "collectionIdPlaceholder": "např. {{collectionName}}1",
@@ -765,7 +763,7 @@
         "containerPolicies": "Zásady kontejneru",
         "throughputBuckets": "Kbelíky propustnosti",
         "globalSecondaryIndexPreview": "Globální sekundární index (Preview)",
-        "maskingPolicyPreview": "Zásada maskování (Preview)"
+        "maskingPolicyPreview": "Zásady maskování"
       },
       "mongoNotifications": {
         "selectTypeWarning": "Vyberte prosím typ pro každý index.",
@@ -961,8 +959,38 @@
         "bucketLabel": "Kbelík {{id}}",
         "dataExplorerQueryBucket": " (Kbelík dotazů Data Exploreru)",
         "active": "Aktivní",
-        "inactive": "Neaktivní"
+        "inactive": "Neaktivní",
+        "defaultBucketLabel": "Výchozí kontejner propustnosti",
+        "defaultBucketPlaceholder": "Vyberte výchozí kontejner propustnosti",
+        "defaultBucketTooltip": "Výchozí kontejner propustnosti se používá pro operace, které neurčují konkrétní kontejner.",
+        "defaultBucketTooltipLearnMore": "Získejte další informace.",
+        "noDefaultBucketSelected": "Není vybrán žádný výchozí kontejner propustnosti.",
+        "bucketOptionLabel": "Kontejner {{id}} – {{percentage}} %",
+        "bucketNotActive": "Kontejner {{id}} není aktivní."
       }
+    },
+    "vectorEmbeddingPolicies": {
+      "vectorEmbeddingTitle": "Vektorové vložení {{index}}",
+      "path": "Cesta",
+      "dataType": "Typ dat",
+      "distanceFunction": "Funkce vzdálenosti",
+      "dimensions": "Dimenze",
+      "indexType": "Typ indexu",
+      "quantizationByteSize": "Velikost kvantování v bajtech",
+      "quantizationByteSizeTooltip": "Nastavuje se dynamicky pomocí {{containerName}}, pokud zůstane prázdná, nebo ji lze nastavit na pevnou hodnotu.",
+      "quantizationByteSizeTooltipContainerName": "kontejner",
+      "quantizationByteSizeTooltipGlobalSecondaryIndexName": "globální sekundární index",
+      "quantizerType": "Typ kvantizéru",
+      "quantizerTypeTooltip": "Metoda kvantování používaná vektorovým indexem",
+      "indexingSearchListSize": "Velikost seznamu vyhledávání při indexování",
+      "vectorIndexShardKey": "Klíč shardu vektorového indexu",
+      "addVectorEmbedding": "Přidat vektorové vložení",
+      "pathEmptyError": "Cesta by neměla být prázdná.",
+      "pathDuplicateError": "Cesta je už definovaná.",
+      "dimensionRangeError": "Dimenze musí být větší než 0 a menší nebo rovna 4096.",
+      "dimensionFlatIndexError": "Maximální povolená dimenze pro plochý index je 505.",
+      "quantizationByteSizeRangeError": "Velikost kvantování v bajtech musí být větší než 0 a menší nebo rovna 512.",
+      "indexingSearchListSizeRangeError": "Velikost seznamu prohledávání indexu musí být větší nebo rovna 25 a menší nebo rovna 500."
     }
   }
 }
