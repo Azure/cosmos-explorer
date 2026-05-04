@@ -1,15 +1,13 @@
-import { isPublicInternetAccessAllowed } from "Common/DatabaseAccountUtility";
-import { PhoenixClient } from "Phoenix/PhoenixClient";
 import { cloneDeep } from "lodash";
 import create, { UseStore } from "zustand";
 import { AuthType } from "../../AuthType";
 import * as Constants from "../../Common/Constants";
-import { ConnectionStatusType, HttpStatusCodes } from "../../Common/Constants";
+import { ConnectionStatusType } from "../../Common/Constants";
 import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 import * as Logger from "../../Common/Logger";
 import { configContext } from "../../ConfigContext";
 import * as DataModels from "../../Contracts/DataModels";
-import { ContainerConnectionInfo, ContainerInfo, PhoenixErrorType } from "../../Contracts/DataModels";
+import { ContainerConnectionInfo, ContainerInfo } from "../../Contracts/DataModels";
 import { IPinnedRepo } from "../../Juno/JunoClient";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
@@ -309,34 +307,9 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
   setContainerStatus: (containerStatus: ContainerInfo) => set({ containerStatus }),
   getPhoenixStatus: async () => {
     if (get().isPhoenixNotebooks === undefined || get().isPhoenixFeatures === undefined) {
-      const startKey = TelemetryProcessor.traceStart(Action.CheckPhoenixStatus, {
-        dataExplorerArea: "Notebook",
-      });
-      let isPhoenixNotebooks = false;
-      let isPhoenixFeatures = false;
-
-      const isPublicInternetAllowed = isPublicInternetAccessAllowed();
-      const phoenixClient = new PhoenixClient(userContext?.databaseAccount?.id);
-      const dbAccountAllowedInfo = await phoenixClient.getDbAccountAllowedStatus();
-
-      if (dbAccountAllowedInfo.status === HttpStatusCodes.OK) {
-        if (dbAccountAllowedInfo?.type === PhoenixErrorType.PhoenixFlightFallback) {
-          isPhoenixNotebooks = isPublicInternetAllowed && userContext.features.phoenixNotebooks === true;
-          isPhoenixFeatures =
-            isPublicInternetAllowed &&
-            // phoenix needs to be enabled for Postgres and VCoreMongo accounts since the PSQL and mongo shell requires phoenix containers
-            (userContext.features.phoenixFeatures === true ||
-              userContext.apiType === "Postgres" ||
-              userContext.apiType === "VCoreMongo");
-        } else {
-          isPhoenixNotebooks = isPhoenixFeatures = isPublicInternetAllowed;
-        }
-      } else {
-        isPhoenixNotebooks = isPhoenixFeatures = false;
-      }
-      set({ isPhoenixNotebooks: isPhoenixNotebooks });
-      set({ isPhoenixFeatures: isPhoenixFeatures });
-      TelemetryProcessor.traceSuccess(Action.CheckPhoenixStatus, { isPhoenixNotebooks, isPhoenixFeatures }, startKey);
+      // getDbAccountAllowedStatus has been deprecated; Phoenix features are no longer available.
+      set({ isPhoenixNotebooks: false });
+      set({ isPhoenixFeatures: false });
     }
   },
   setIsPhoenixNotebooks: (isPhoenixNotebooks: boolean) => set({ isPhoenixNotebooks: isPhoenixNotebooks }),
