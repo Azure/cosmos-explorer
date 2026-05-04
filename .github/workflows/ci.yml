@@ -382,8 +382,8 @@ jobs:
           > ⚠️ $BROKEN shard(s) failed before tests ran (infra/auth issue). Stats below reflect only shards that executed."
           gh pr comment "$PR" --body "### Playwright tests $ICON
 
-          | Passed | Failed | Flaky | Skipped | Duration |
-          | :---: | :---: | :---: | :---: | :---: |
-          | $PASSED | $FAILED | $FLAKY | $SKIPPED | ${DURATION}s |
+          | Passed | Failed | Flaky | Duration |
+          | :---: | :---: | :---: | :---: |
+          | $PASSED | $FAILED | $FLAKY | ${DURATION}s |
 
           📊 [Open full report]($REPORT_URL) · [Workflow run]($RUN_URL)$NOTE"
