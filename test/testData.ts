@@ -18,6 +18,7 @@ import {
   subscriptionId,
   TestAccount,
 } from "./fx";
+import { getNoSqlRbacToken } from "./NoSqlTestSetup";
 
 // In Node.js >= 19, globalThis.crypto is already available as a read-only getter.
 // Only assign the polyfill for older versions.
@@ -134,7 +135,7 @@ async function createCosmosClientForSQLAccount(
 
   const rbacToken =
     accountType === TestAccount.SQL
-      ? process.env.NOSQL_TESTACCOUNT_TOKEN
+      ? getNoSqlRbacToken()
       : accountType === TestAccount.SQLContainerCopyOnly
       ? process.env.NOSQL_CONTAINERCOPY_TESTACCOUNT_TOKEN
       : "";
@@ -223,10 +224,15 @@ export async function createTestSQLContainer({
 
   const { database } = await client.databases.createIfNotExists({ id: databaseId });
   try {
-    const { container } = await database.containers.createIfNotExists({
-      id: containerId,
-      partitionKey,
-    });
+    const { container } = await database.containers.createIfNotExists(
+      {
+        id: containerId,
+        partitionKey,
+      },
+      {
+        offerThroughput: 4000,
+      },
+    );
     if (includeTestData) {
       const batchCount = TestData.length / 100;
       for (let i = 0; i < batchCount; i++) {

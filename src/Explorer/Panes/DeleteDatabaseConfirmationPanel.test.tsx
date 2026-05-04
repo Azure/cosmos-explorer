@@ -62,13 +62,15 @@ describe("Delete Database Confirmation Pane", () => {
     const wrapper = mount(<DeleteDatabaseConfirmationPanel refreshDatabases={() => undefined} />);
     expect(wrapper).toMatchSnapshot();
     expect(wrapper.exists("#confirmDatabaseId")).toBe(true);
+    expect(wrapper.exists("#copyableDatabaseId")).toBe(true);
+    expect(wrapper.find("#copyableDatabaseId").hostNodes().prop("value")).toBe(selectedDatabaseId);
 
     wrapper
       .find("#confirmDatabaseId")
       .hostNodes()
       .simulate("change", { target: { value: selectedDatabaseId } });
     expect(wrapper.exists("button")).toBe(true);
-    wrapper.find("button").hostNodes().simulate("submit");
+    wrapper.find("#sidePanelOkButton").hostNodes().simulate("submit");
     expect(deleteDatabase).toHaveBeenCalledWith(selectedDatabaseId);
     wrapper.unmount();
   });

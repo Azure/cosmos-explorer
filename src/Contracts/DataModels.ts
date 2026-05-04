@@ -255,6 +255,7 @@ export interface VectorIndex {
   vectorIndexShardKey?: string[];
   indexingSearchListSize?: number;
   quantizationByteSize?: number;
+  quantizerType?: "product" | "spherical";
 }
 
 export interface FullTextIndex {
@@ -347,6 +348,7 @@ export interface Offer {
 export interface ThroughputBucket {
   id: number;
   maxThroughputPercentage: number;
+  isDefaultBucket?: boolean;
 }
 
 export interface SDKOfferDefinition extends Resource {
@@ -598,12 +600,6 @@ export interface IContainerData {
   forwardingId: string;
 }
 
-export interface IDbAccountAllow {
-  status: number;
-  message?: string;
-  type?: string;
-}
-
 export interface IResponse<T> {
   status: number;
   data: T;
@@ -733,10 +729,6 @@ export enum PhoenixErrorType {
   UnknownError = "UnknownError",
   PhoenixFlightFallback = "PhoenixFlightFallback",
   UserMissingPermissionsError = "UserMissingPermissionsError",
-}
-
-export interface CopilotEnabledConfiguration {
-  isEnabled: boolean;
 }
 
 export interface FeatureRegistration {

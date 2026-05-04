@@ -20,7 +20,7 @@ test.describe("Container Copy - Permission Screen Verification", () => {
   });
 
   test.afterEach("Cleanup after each test", async () => {
-    await page.unroute(/.*/, (route) => route.continue());
+    await page.unrouteAll({ behavior: "ignoreErrors" });
     await page.close();
   });
 
@@ -34,6 +34,36 @@ test.describe("Container Copy - Permission Screen Verification", () => {
     await expect(createCopyJobButton).toBeVisible();
     await expect(wrapper.getByTestId("CommandBar/Button:Refresh")).toBeVisible();
     await expect(wrapper.getByTestId("CommandBar/Button:Feedback")).toBeVisible();
+
+    // Mock Resource Graph API — fires on auto-subscription selection to populate account dropdown
+    await page.route(
+      "https://management.azure.com/providers/Microsoft.ResourceGraph/resources?api-version=2021-03-01",
+      async (route) => {
+        const request = route.request();
+        if (
+          request.method() === "POST" &&
+          (request.postDataJSON()?.query as string) ===
+            "resources | where type =~ 'microsoft.documentdb/databaseaccounts'"
+        ) {
+          const response = await route.fetch();
+          const responseData = await response.json();
+          if (responseData.data && Array.isArray(responseData.data)) {
+            responseData.data = responseData.data.map((d: any) => {
+              d.properties.backupPolicy.type = "Periodic";
+              return d;
+            });
+          }
+          await route.fulfill({
+            status: 200,
+            contentType: "application/json",
+            body: JSON.stringify(responseData),
+          });
+        } else {
+          await route.continue();
+        }
+      },
+      { times: 2 },
+    );
 
     // Open the Create Copy Job panel
     await createCopyJobButton.click();
