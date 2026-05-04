@@ -314,6 +314,9 @@ jobs:
     needs: [playwright-tests]
 
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -338,3 +341,62 @@ jobs:
           name: html-report--attempt-${{ github.run_attempt }}
           path: playwright-report
           retention-days: 14
+
+      - name: Comment Playwright results on PR
+        if: ${{ !cancelled() && github.event_name == 'pull_request' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR: ${{ github.event.pull_request.number }}
+          REPORT_URL: https://dataexplorerpreview.z5.web.core.windows.net/playwright-reports/${{ github.run_id }}-${{ github.run_attempt }}/index.html
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          PLAYWRIGHT_JSON_OUTPUT_NAME=results.json npx playwright merge-reports --reporter json ./all-blob-reports
+          read PASSED FAILED FLAKY SKIPPED DURATION < <(jq -r '[.stats.expected,.stats.unexpected,.stats.flaky,.stats.skipped,(.stats.duration/1000|floor)] | @tsv' results.json)
+          BROKEN=$(gh api "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/attempts/${{ github.run_attempt }}/jobs" \
+            --jq '[.jobs[] | select(.name | startswith("Run Playwright Tests")) | select(.conclusion == "failure")] | length')
+          if [ "$FAILED" -gt 0 ] || [ "$BROKEN" -gt 0 ]; then ICON="❌ failed"; else ICON="✅ passed"; fi
+          NOTE=""
+          [ "$BROKEN" -gt 0 ] && NOTE="
+
+          > ⚠️ $BROKEN shard(s) failed before tests ran (infra/auth issue). Stats below reflect only shards that executed."
+          gh pr comment "$PR" --body "### Playwright tests $ICON
+
+          | Passed | Failed | Flaky | Duration |
+          | :---: | :---: | :---: | :---: |
+          | $PASSED | $FAILED | $FLAKY | ${DURATION}s |
+
+          📊 [Open full report]($REPORT_URL) · [Workflow run]($RUN_URL)$NOTE"
+
+  publish-playwright-report:
+    name: "Publish Playwright Report to Blob"
+    if: ${{ !cancelled() }}
+    needs: [merge-playwright-reports]
+
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Download HTML report artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: html-report--attempt-${{ github.run_attempt }}
+          path: playwright-report
+
+      - name: "Az CLI login"
+        uses: Azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.PREVIEW_SUBSCRIPTION_ID }}
+
+      - name: Upload Playwright report to blob storage
+        env:
+          KEY: ${{ github.run_id }}-${{ github.run_attempt }}
+          BASE: https://dataexplorerpreview.z5.web.core.windows.net
+        run: |
+          az storage blob upload-batch -d '$web' -s playwright-report \
+            --destination-path "playwright-reports/${KEY}" \
+            --account-name ${{ secrets.PREVIEW_STORAGE_ACCOUNT_NAME }} \
+            --auth-mode login --overwrite true
+          echo "📊 [Open Playwright report](${BASE}/playwright-reports/${KEY}/index.html)" >> $GITHUB_STEP_SUMMARY
