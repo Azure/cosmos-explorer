@@ -5,7 +5,6 @@ import { sendMessage } from "Common/MessageHandler";
 import { Platform, configContext } from "ConfigContext";
 import { MessageTypes } from "Contracts/ExplorerContracts";
 import { useDataPlaneRbac } from "Explorer/Panes/SettingsPane/SettingsPane";
-import { IGalleryItem } from "Juno/JunoClient";
 import {
   isFabricMirrored,
   isFabricMirroredKey,
@@ -52,13 +51,10 @@ import { useSidePanel } from "../hooks/useSidePanel";
 import { ReactTabKind, useTabs } from "../hooks/useTabs";
 import "./ComponentRegisterer";
 import { DialogProps, useDialog } from "./Controls/Dialog";
-import { GalleryTab as GalleryTabKind } from "./Controls/NotebookGallery/GalleryViewerComponent";
 import { useCommandBar } from "./Menus/CommandBar/CommandBarComponentAdapter";
 import * as FileSystemUtil from "./Notebook/FileSystemUtil";
-import { SnapshotRequest } from "./Notebook/NotebookComponent/types";
 import { NotebookContentItem, NotebookContentItemType } from "./Notebook/NotebookContentItem";
 import type NotebookManager from "./Notebook/NotebookManager";
-import { NotebookPaneContent } from "./Notebook/NotebookManager";
 import { NotebookUtil } from "./Notebook/NotebookUtil";
 import { useNotebook } from "./Notebook/useNotebook";
 import { AddCollectionPanel } from "./Panes/AddCollectionPanel/AddCollectionPanel";
@@ -708,24 +704,6 @@ export default class Explorer {
     return Promise.resolve(false);
   }
 
-  public async publishNotebook(
-    name: string,
-    content: NotebookPaneContent,
-    notebookContentRef?: string,
-    onTakeSnapshot?: (request: SnapshotRequest) => void,
-    onClosePanel?: () => void,
-  ): Promise<void> {
-    if (this.notebookManager) {
-      await this.notebookManager.openPublishNotebookPane(
-        name,
-        content,
-        notebookContentRef,
-        onTakeSnapshot,
-        onClosePanel,
-      );
-    }
-  }
-
   public copyNotebook(name: string, content: string): void {
     this.notebookManager?.openCopyNotebookPane(name, content);
   }
@@ -1043,45 +1021,6 @@ export default class Explorer {
     });
 
     useTabs.getState().activateNewTab(newTab);
-  }
-
-  public async openGallery(
-    selectedTab?: GalleryTabKind,
-    notebookUrl?: string,
-    galleryItem?: IGalleryItem,
-    isFavorite?: boolean,
-  ): Promise<void> {
-    const title = "Gallery";
-    const GalleryTab = await (await import(/* webpackChunkName: "GalleryTab" */ "./Tabs/GalleryTab")).default;
-    const galleryTab = useTabs
-      .getState()
-      .getTabs(ViewModels.CollectionTabKind.Gallery)
-      .find((tab) => tab.tabTitle() === title);
-
-    if (galleryTab instanceof GalleryTab) {
-      useTabs.getState().activateTab(galleryTab);
-    } else {
-      useTabs.getState().activateNewTab(
-        new GalleryTab(
-          {
-            tabKind: ViewModels.CollectionTabKind.Gallery,
-            title,
-            tabPath: title,
-            onLoadStartKey: undefined,
-            isTabsContentExpanded: ko.observable(true),
-          },
-          {
-            account: userContext.databaseAccount,
-            container: this,
-            junoClient: this.notebookManager?.junoClient,
-            selectedTab: selectedTab || GalleryTabKind.OfficialSamples,
-            notebookUrl,
-            galleryItem,
-            isFavorite,
-          },
-        ),
-      );
-    }
   }
 
   public async onNewCollectionClicked(

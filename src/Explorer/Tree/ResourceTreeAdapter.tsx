@@ -10,7 +10,6 @@ import CopyIcon from "../../../images/notebook/Notebook-copy.svg";
 import NewNotebookIcon from "../../../images/notebook/Notebook-new.svg";
 import NotebookIcon from "../../../images/notebook/Notebook-resource.svg";
 import FileIcon from "../../../images/notebook/file-cosmos.svg";
-import PublishIcon from "../../../images/notebook/publish_content.svg";
 import RefreshIcon from "../../../images/refresh-cosmos.svg";
 import CollectionIcon from "../../../images/tree-collection.svg";
 import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
@@ -18,7 +17,7 @@ import { isPublicInternetAccessAllowed } from "../../Common/DatabaseAccountUtili
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { IPinnedRepo } from "../../Juno/JunoClient";
-import { Action, ActionModifiers, Source } from "../../Shared/Telemetry/TelemetryConstants";
+import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
 import { isServerlessAccount } from "../../Utils/CapabilityUtils";
@@ -49,7 +48,6 @@ export class ResourceTreeAdapter implements ReactAdapter {
 
   public parameters: ko.Observable<number>;
 
-  public galleryContentRoot: NotebookContentItem;
   public myNotebooksContentRoot: NotebookContentItem;
   public gitHubNotebooksContentRoot: NotebookContentItem;
 
@@ -102,11 +100,6 @@ export class ResourceTreeAdapter implements ReactAdapter {
   public async initialize(): Promise<void[]> {
     const refreshTasks: Promise<void>[] = [];
 
-    this.galleryContentRoot = {
-      name: "Gallery",
-      path: "Gallery",
-      type: NotebookContentItemType.File,
-    };
     this.myNotebooksContentRoot = {
       name: useNotebook.getState().notebookFolderName,
       path: useNotebook.getState().notebookBasePath,
@@ -538,20 +531,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
     ];
 
     if (item.type === NotebookContentItemType.Notebook) {
-      items.push({
-        label: "Publish to gallery",
-        iconSrc: PublishIcon,
-        onClick: async () => {
-          TelemetryProcessor.trace(Action.NotebooksGalleryClickPublishToGallery, ActionModifiers.Mark, {
-            source: Source.ResourceTreeMenu,
-          });
-
-          const content = await this.container.readFile(item);
-          if (content) {
-            await this.container.publishNotebook(item.name, content);
-          }
-        },
-      });
+      // Additional notebook-specific context menu items can be added here
     }
 
     // "Copy to ..." isn't needed if github locations are not available

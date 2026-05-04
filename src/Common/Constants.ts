@@ -1,9 +1,3 @@
-export class CodeOfConductEndpoints {
-  public static privacyStatement: string = "https://aka.ms/ms-privacy-policy";
-  public static codeOfConduct: string = "https://aka.ms/cosmos-code-of-conduct";
-  public static termsOfUse: string = "https://aka.ms/ms-terms-of-use";
-}
-
 export class EndpointsRegex {
   public static readonly cassandra = [
     "AccountEndpoint=(.*).cassandra.cosmosdb.azure.com",
@@ -118,7 +112,6 @@ export class Flights {
   public static readonly PhoenixNotebooks = "phoenixnotebooks";
   public static readonly PhoenixFeatures = "phoenixfeatures";
   public static readonly NotebooksDownBanner = "notebooksdownbanner";
-  public static readonly PublicGallery = "publicgallery";
 }
 
 export class AfecFeatures {
