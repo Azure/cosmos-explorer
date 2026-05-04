@@ -3,6 +3,7 @@ import "../../less/hostedexplorer.less";
 import { DataExplorerInputsFrame } from "../../src/Contracts/ViewModels";
 import { updateUserContext } from "../../src/UserContext";
 import { get, listKeys } from "../../src/Utils/arm/generatedClients/cosmos/databaseAccounts";
+import { getNoSqlRbacToken } from "../NoSqlTestSetup";
 
 const urlSearchParams = new URLSearchParams(window.location.search);
 const resourceGroup = urlSearchParams.get("resourceGroup") || process.env.RESOURCE_GROUP || "";
@@ -15,8 +16,9 @@ const enablecontainercopy = urlSearchParams.get("enablecontainercopy");
 
 const nosqlRbacToken =
   urlSearchParams.get("nosqlRbacToken") ||
-  (enablecontainercopy ? process.env.NOSQL_CONTAINERCOPY_TESTACCOUNT_TOKEN : process.env.NOSQL_TESTACCOUNT_TOKEN) ||
+  (enablecontainercopy ? process.env.NOSQL_CONTAINERCOPY_TESTACCOUNT_TOKEN : getNoSqlRbacToken()) ||
   "";
+
 const nosqlReadOnlyRbacToken =
   urlSearchParams.get("nosqlReadOnlyRbacToken") || process.env.NOSQL_READONLY_TESTACCOUNT_TOKEN || "";
 const tableRbacToken = urlSearchParams.get("tableRbacToken") || process.env.TABLE_TESTACCOUNT_TOKEN || "";
@@ -70,6 +72,8 @@ const initTestExplorer = async (): Promise<void> => {
     updateUserContext({
       dataPlaneRbacEnabled: true,
     });
+  } else {
+    console.error(`No RBAC token found for test account type ${testAccountType}`);
   }
 
   const keys = await listKeys(subscriptionId, resourceGroup, accountName);

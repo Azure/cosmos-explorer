@@ -255,6 +255,7 @@ export interface VectorIndex {
   vectorIndexShardKey?: string[];
   indexingSearchListSize?: number;
   quantizationByteSize?: number;
+  quantizerType?: "product" | "spherical";
 }
 
 export interface FullTextIndex {
@@ -597,12 +598,6 @@ export interface IProvisionData {
 
 export interface IContainerData {
   forwardingId: string;
-}
-
-export interface IDbAccountAllow {
-  status: number;
-  message?: string;
-  type?: string;
 }
 
 export interface IResponse<T> {

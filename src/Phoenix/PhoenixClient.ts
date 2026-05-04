@@ -12,13 +12,12 @@ import {
   HttpStatusCodes,
   Notebook,
 } from "../Common/Constants";
-import { getErrorMessage, getErrorStack } from "../Common/ErrorHandlingUtils";
+import { getErrorMessage } from "../Common/ErrorHandlingUtils";
 import * as Logger from "../Common/Logger";
 import {
   ContainerConnectionInfo,
   ContainerInfo,
   IContainerData,
-  IDbAccountAllow,
   IMaxAllocationTimeExceeded,
   IPhoenixConnectionInfoResult,
   IPhoenixError,
@@ -193,51 +192,6 @@ export class PhoenixClient {
     const containerStatus = shouldUseNotebookStates ? useNotebook.getState().containerStatus?.status : undefined;
     if (containerStatus === ContainerStatusType.Active) {
       this.scheduleContainerHeartbeat(shouldUseNotebookStates, delayMs, containerData);
-    }
-  }
-
-  public async getDbAccountAllowedStatus(): Promise<IDbAccountAllow> {
-    const startKey = TelemetryProcessor.traceStart(Action.PhoenixDBAccountAllowed, {
-      dataExplorerArea: Areas.Notebook,
-    });
-    let responseJson;
-    try {
-      const response = await window.fetch(`${this.getPhoenixControlPlanePathPrefix()}`, {
-        method: "GET",
-        headers: PhoenixClient.getHeaders(),
-      });
-      responseJson = await response?.json();
-      if (response.status !== HttpStatusCodes.OK) {
-        throw new Error(`Received status code: ${response?.status}`);
-      }
-      TelemetryProcessor.traceSuccess(
-        Action.PhoenixDBAccountAllowed,
-        {
-          dataExplorerArea: Areas.Notebook,
-        },
-        startKey,
-      );
-      return {
-        status: response.status,
-        message: responseJson?.message,
-        type: responseJson?.type,
-      };
-    } catch (error) {
-      TelemetryProcessor.traceFailure(
-        Action.PhoenixDBAccountAllowed,
-        {
-          dataExplorerArea: Areas.Notebook,
-          error: getErrorMessage(error),
-          errorStack: getErrorStack(error),
-        },
-        startKey,
-      );
-      Logger.logError(getErrorMessage(error), "PhoenixClient/IsDbAcountWhitelisted");
-      return {
-        status: HttpStatusCodes.Forbidden,
-        message: responseJson?.message,
-        type: responseJson?.type,
-      };
     }
   }
 
