@@ -315,7 +315,6 @@ jobs:
 
     runs-on: ubuntu-latest
     permissions:
-      id-token: write
       contents: read
       pull-requests: write
     steps:
@@ -343,26 +342,6 @@ jobs:
           path: playwright-report
           retention-days: 14
 
-      - name: "Az CLI login"
-        if: ${{ !cancelled() }}
-        uses: Azure/login@v2
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.PREVIEW_SUBSCRIPTION_ID }}
-
-      - name: Upload Playwright report to blob storage
-        if: ${{ !cancelled() }}
-        env:
-          KEY: ${{ github.run_id }}-${{ github.run_attempt }}
-          BASE: https://dataexplorerpreview.z5.web.core.windows.net
-        run: |
-          az storage blob upload-batch -d '$web' -s playwright-report \
-            --destination-path "playwright-reports/${KEY}" \
-            --account-name ${{ secrets.PREVIEW_STORAGE_ACCOUNT_NAME }} \
-            --auth-mode login --overwrite true
-          echo "📊 [Open Playwright report](${BASE}/playwright-reports/${KEY}/index.html)" >> $GITHUB_STEP_SUMMARY
-
       - name: Comment Playwright results on PR
         if: ${{ !cancelled() && github.event_name == 'pull_request' }}
         env:
@@ -387,3 +366,37 @@ jobs:
           | $PASSED | $FAILED | $FLAKY | ${DURATION}s |
 
           📊 [Open full report]($REPORT_URL) · [Workflow run]($RUN_URL)$NOTE"
+
+  publish-playwright-report:
+    name: "Publish Playwright Report to Blob"
+    if: ${{ !cancelled() }}
+    needs: [merge-playwright-reports]
+
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Download HTML report artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: html-report--attempt-${{ github.run_attempt }}
+          path: playwright-report
+
+      - name: "Az CLI login"
+        uses: Azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.PREVIEW_SUBSCRIPTION_ID }}
+
+      - name: Upload Playwright report to blob storage
+        env:
+          KEY: ${{ github.run_id }}-${{ github.run_attempt }}
+          BASE: https://dataexplorerpreview.z5.web.core.windows.net
+        run: |
+          az storage blob upload-batch -d '$web' -s playwright-report \
+            --destination-path "playwright-reports/${KEY}" \
+            --account-name ${{ secrets.PREVIEW_STORAGE_ACCOUNT_NAME }} \
+            --auth-mode login --overwrite true
+          echo "📊 [Open Playwright report](${BASE}/playwright-reports/${KEY}/index.html)" >> $GITHUB_STEP_SUMMARY
