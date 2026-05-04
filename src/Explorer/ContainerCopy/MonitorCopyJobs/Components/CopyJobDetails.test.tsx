@@ -13,22 +13,6 @@ jest.mock("./CopyJobStatusWithIcon", () => {
   return MockCopyJobStatusWithIcon;
 });
 
-jest.mock("../../ContainerCopyMessages", () => ({
-  errorTitle: "Error Details",
-  sourceDatabaseLabel: "Source Database",
-  sourceContainerLabel: "Source Container",
-  targetDatabaseLabel: "Destination Database",
-  targetContainerLabel: "Destination Container",
-  sourceAccountLabel: "Source Account",
-  MonitorJobs: {
-    Columns: {
-      lastUpdatedTime: "Date & time",
-      status: "Status",
-      mode: "Mode",
-    },
-  },
-}));
-
 describe("CopyJobDetails", () => {
   const mockBasicJob: CopyJobType = {
     ID: "test-job-1",
@@ -102,7 +86,7 @@ describe("CopyJobDetails", () => {
       expect(screen.getByText("Date & time")).toBeInTheDocument();
       expect(screen.getByText("2024-01-01T10:00:00Z")).toBeInTheDocument();
 
-      expect(screen.getByText("Source Account")).toBeInTheDocument();
+      expect(screen.getByText("Source account")).toBeInTheDocument();
       expect(screen.getByText("sourceAccount")).toBeInTheDocument();
 
       expect(screen.getByText("Mode")).toBeInTheDocument();
@@ -322,7 +306,7 @@ describe("CopyJobDetails", () => {
       render(<CopyJobDetails job={mockBasicJob} />);
 
       const dateTimeHeading = screen.getByText("Date & time");
-      const sourceAccountHeading = screen.getByText("Source Account");
+      const sourceAccountHeading = screen.getByText("Source account");
       const modeHeading = screen.getByText("Mode");
 
       expect(dateTimeHeading).toHaveClass("bold");

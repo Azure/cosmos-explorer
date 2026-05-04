@@ -1,7 +1,7 @@
 import { DetailsList, DetailsListLayoutMode, IColumn, Stack, Text } from "@fluentui/react";
 import React, { memo } from "react";
 import { useThemeStore } from "../../../../hooks/useTheme";
-import ContainerCopyMessages from "../../ContainerCopyMessages";
+import { Keys, t } from "Localization";
 import { CopyJobStatusType } from "../../Enums/CopyJobEnums";
 import { CopyJobType } from "../../Types/CopyJobTypes";
 import CopyJobStatusWithIcon from "./CopyJobStatusWithIcon";
@@ -31,31 +31,31 @@ const getCopyJobDetailsListColumns = (): IColumn[] => {
   return [
     {
       key: "sourcedbcol",
-      name: ContainerCopyMessages.sourceDatabaseLabel,
+      name: t(Keys.containerCopy.preview.sourceDatabaseLabel),
       fieldName: "sourceDatabaseName",
       ...commonProps,
     },
     {
       key: "sourcecol",
-      name: ContainerCopyMessages.sourceContainerLabel,
+      name: t(Keys.containerCopy.preview.sourceContainerLabel),
       fieldName: "sourceContainerName",
       ...commonProps,
     },
     {
       key: "targetdbcol",
-      name: ContainerCopyMessages.targetDatabaseLabel,
+      name: t(Keys.containerCopy.preview.targetDatabaseLabel),
       fieldName: "targetDatabaseName",
       ...commonProps,
     },
     {
       key: "targetcol",
-      name: ContainerCopyMessages.targetContainerLabel,
+      name: t(Keys.containerCopy.preview.targetContainerLabel),
       fieldName: "targetContainerName",
       ...commonProps,
     },
     {
       key: "statuscol",
-      name: ContainerCopyMessages.MonitorJobs.Columns.status,
+      name: t(Keys.containerCopy.monitorJobs.columns.status),
       fieldName: "jobStatus",
       onRender: ({ jobStatus }: { jobStatus: CopyJobStatusType }) => <CopyJobStatusWithIcon status={jobStatus} />,
       ...commonProps,
@@ -92,7 +92,7 @@ const CopyJobDetails: React.FC<CopyJobDetailsProps> = ({ job }) => {
       {job.Error ? (
         <Stack.Item data-testid="error-stack" style={sectionCss.verticalAlign}>
           <Text className="bold themeText" style={sectionCss.headingText}>
-            {ContainerCopyMessages.errorTitle}
+            {t(Keys.containerCopy.jobDetails.errorTitle)}
           </Text>
           <Text as="pre" style={errorMessageStyle}>
             {job.Error.message}
@@ -102,15 +102,15 @@ const CopyJobDetails: React.FC<CopyJobDetailsProps> = ({ job }) => {
       <Stack.Item data-testid="selectedcollection-stack">
         <Stack tokens={{ childrenGap: 15 }}>
           <Stack.Item style={sectionCss.verticalAlign}>
-            <Text className="bold themeText">{ContainerCopyMessages.MonitorJobs.Columns.lastUpdatedTime}</Text>
+            <Text className="bold themeText">{t(Keys.containerCopy.monitorJobs.columns.lastUpdatedTime)}</Text>
             <Text className="themeText">{job.LastUpdatedTime}</Text>
           </Stack.Item>
           <Stack.Item style={sectionCss.verticalAlign}>
-            <Text className="bold themeText">{ContainerCopyMessages.sourceAccountLabel}</Text>
+            <Text className="bold themeText">{t(Keys.containerCopy.preview.sourceAccountLabel)}</Text>
             <Text className="themeText">{job.Source?.remoteAccountName}</Text>
           </Stack.Item>
           <Stack.Item style={sectionCss.verticalAlign}>
-            <Text className="bold themeText">{ContainerCopyMessages.MonitorJobs.Columns.mode}</Text>
+            <Text className="bold themeText">{t(Keys.containerCopy.monitorJobs.columns.mode)}</Text>
             <Text className="themeText">{job.Mode}</Text>
           </Stack.Item>
         </Stack>

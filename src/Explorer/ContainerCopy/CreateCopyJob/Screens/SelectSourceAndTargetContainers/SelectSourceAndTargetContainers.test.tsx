@@ -1,5 +1,6 @@
 import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
+import { Keys, t } from "Localization";
 import { DatabaseModel } from "Contracts/DataModels";
 import React from "react";
 import Explorer from "../../../../../Explorer/Explorer";
@@ -13,15 +14,6 @@ jest.mock("../../../../../hooks/useDatabases", () => ({
 
 jest.mock("../../../../../hooks/useDataContainers", () => ({
   useDataContainers: jest.fn(),
-}));
-
-jest.mock("../../../ContainerCopyMessages", () => ({
-  __esModule: true,
-  default: {
-    selectSourceAndTargetContainersDescription: "Select source and target containers for migration",
-    sourceContainerSubHeading: "Source Container",
-    targetContainerSubHeading: "Target Container",
-  },
 }));
 
 jest.mock("./Events/DropDownChangeHandler", () => ({
@@ -124,22 +116,26 @@ describe("SelectSourceAndTargetContainers", () => {
   describe("Component Rendering", () => {
     it("should render without crashing", () => {
       renderWithContext(<SelectSourceAndTargetContainers />);
-      expect(screen.getByText("Select source and target containers for migration")).toBeInTheDocument();
+      expect(
+        screen.getByText("Please select a source container and a destination container to copy to."),
+      ).toBeInTheDocument();
     });
 
     it("should render description text", () => {
       renderWithContext(<SelectSourceAndTargetContainers />);
-      expect(screen.getByText("Select source and target containers for migration")).toBeInTheDocument();
+      expect(
+        screen.getByText("Please select a source container and a destination container to copy to."),
+      ).toBeInTheDocument();
     });
 
     it("should render source container section", () => {
       renderWithContext(<SelectSourceAndTargetContainers />);
-      expect(screen.getByText("Source Container")).toBeInTheDocument();
+      expect(screen.getByText("Source container")).toBeInTheDocument();
     });
 
     it("should render target container section", () => {
       renderWithContext(<SelectSourceAndTargetContainers />);
-      expect(screen.getByText("Target Container")).toBeInTheDocument();
+      expect(screen.getByText("Destination container")).toBeInTheDocument();
     });
 
     it("should return null when source is not available", () => {
@@ -238,14 +234,14 @@ describe("SelectSourceAndTargetContainers", () => {
   describe("Component Props", () => {
     it("should pass showAddCollectionPanel to DatabaseContainerSection", () => {
       renderWithContext(<SelectSourceAndTargetContainers showAddCollectionPanel={mockShowAddCollectionPanel} />);
-      expect(screen.getByText("Target Container")).toBeInTheDocument();
+      expect(screen.getByText("Destination container")).toBeInTheDocument();
     });
 
     it("should render without showAddCollectionPanel prop", () => {
       renderWithContext(<SelectSourceAndTargetContainers />);
 
-      expect(screen.getByText("Source Container")).toBeInTheDocument();
-      expect(screen.getByText("Target Container")).toBeInTheDocument();
+      expect(screen.getByText("Source container")).toBeInTheDocument();
+      expect(screen.getByText("Destination container")).toBeInTheDocument();
     });
   });
 
@@ -310,13 +306,13 @@ describe("SelectSourceAndTargetContainers", () => {
     it("should pass correct props to source DatabaseContainerSection", () => {
       renderWithContext(<SelectSourceAndTargetContainers />);
 
-      expect(screen.getByText("Source Container")).toBeInTheDocument();
+      expect(screen.getByText("Source container")).toBeInTheDocument();
     });
 
     it("should pass correct props to target DatabaseContainerSection", () => {
       renderWithContext(<SelectSourceAndTargetContainers showAddCollectionPanel={mockShowAddCollectionPanel} />);
 
-      expect(screen.getByText("Target Container")).toBeInTheDocument();
+      expect(screen.getByText("Destination container")).toBeInTheDocument();
     });
 
     it("should disable source container dropdown when no database is selected", () => {
@@ -329,7 +325,7 @@ describe("SelectSourceAndTargetContainers", () => {
       } as ReturnType<typeof useSourceAndTargetData>);
 
       renderWithContext(<SelectSourceAndTargetContainers />);
-      expect(screen.getByText("Source Container")).toBeInTheDocument();
+      expect(screen.getByText("Source container")).toBeInTheDocument();
     });
 
     it("should disable target container dropdown when no database is selected", () => {
@@ -342,7 +338,7 @@ describe("SelectSourceAndTargetContainers", () => {
       } as ReturnType<typeof useSourceAndTargetData>);
 
       renderWithContext(<SelectSourceAndTargetContainers />);
-      expect(screen.getByText("Target Container")).toBeInTheDocument();
+      expect(screen.getByText("Destination container")).toBeInTheDocument();
     });
   });
 
@@ -353,7 +349,9 @@ describe("SelectSourceAndTargetContainers", () => {
 
       renderWithContext(<SelectSourceAndTargetContainers />);
 
-      expect(screen.getByText("Select source and target containers for migration")).toBeInTheDocument();
+      expect(
+        screen.getByText("Please select a source container and a destination container to copy to."),
+      ).toBeInTheDocument();
     });
 
     it("should handle hooks throwing errors gracefully", () => {
@@ -421,7 +419,9 @@ describe("SelectSourceAndTargetContainers", () => {
     it("should apply correct spacing tokens", () => {
       renderWithContext(<SelectSourceAndTargetContainers />);
 
-      expect(screen.getByText("Select source and target containers for migration")).toBeInTheDocument();
+      expect(
+        screen.getByText("Please select a source container and a destination container to copy to."),
+      ).toBeInTheDocument();
     });
   });
 
@@ -429,9 +429,9 @@ describe("SelectSourceAndTargetContainers", () => {
     it("should render description, source section, and target section in correct order", () => {
       renderWithContext(<SelectSourceAndTargetContainers />);
 
-      const description = screen.getByText("Select source and target containers for migration");
-      const sourceSection = screen.getByText("Source Container");
-      const targetSection = screen.getByText("Target Container");
+      const description = screen.getByText("Please select a source container and a destination container to copy to.");
+      const sourceSection = screen.getByText("Source container");
+      const targetSection = screen.getByText("Destination container");
 
       expect(description).toBeInTheDocument();
       expect(sourceSection).toBeInTheDocument();

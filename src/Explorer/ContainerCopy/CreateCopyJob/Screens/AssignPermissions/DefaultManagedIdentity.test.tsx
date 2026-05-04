@@ -1,8 +1,8 @@
 import "@testing-library/jest-dom";
 import { fireEvent, render, screen } from "@testing-library/react";
+import { Keys, t } from "Localization";
 import React from "react";
 import { updateDefaultIdentity } from "../../../../../Utils/arm/identityUtils";
-import ContainerCopyMessages from "../../../ContainerCopyMessages";
 import { CopyJobContext } from "../../../Context/CopyJobContext";
 import DefaultManagedIdentity from "./DefaultManagedIdentity";
 
@@ -117,7 +117,7 @@ describe("DefaultManagedIdentity", () => {
       renderComponent();
 
       const description = screen.getByText(
-        /Set the system-assigned managed identity as default for "test-cosmos-account"/,
+        t(Keys.containerCopy.defaultManagedIdentity.description, { accountName: "test-cosmos-account" }),
       );
       expect(description).toBeInTheDocument();
     });
@@ -127,8 +127,8 @@ describe("DefaultManagedIdentity", () => {
 
       const tooltip = screen.getByTestId("info-tooltip");
       expect(tooltip).toBeInTheDocument();
-      expect(tooltip).toHaveTextContent("Learn more about");
-      expect(tooltip).toHaveTextContent("Default Managed Identities.");
+      expect(tooltip).toHaveTextContent(t(Keys.containerCopy.defaultManagedIdentity.tooltipContent));
+      expect(tooltip).toHaveTextContent(t(Keys.containerCopy.defaultManagedIdentity.tooltipHrefText));
     });
 
     it("should render the toggle button with correct initial state", () => {
@@ -166,11 +166,11 @@ describe("DefaultManagedIdentity", () => {
       expect(popover).toBeInTheDocument();
 
       const title = screen.getByTestId("popover-title");
-      expect(title).toHaveTextContent(ContainerCopyMessages.defaultManagedIdentity.popoverTitle);
+      expect(title).toHaveTextContent(t(Keys.containerCopy.defaultManagedIdentity.popoverTitle));
 
       const content = screen.getByTestId("popover-content");
       expect(content).toHaveTextContent(
-        /Assign the system-assigned managed identity as the default for "test-cosmos-account"/,
+        t(Keys.containerCopy.defaultManagedIdentity.popoverDescription, { accountName: "test-cosmos-account" }).trim(),
       );
     });
 
@@ -339,8 +339,8 @@ describe("DefaultManagedIdentity", () => {
     it("should display correct toggle button text", () => {
       renderComponent();
 
-      const onText = screen.queryByText(ContainerCopyMessages.toggleBtn.onText);
-      const offText = screen.queryByText(ContainerCopyMessages.toggleBtn.offText);
+      const onText = screen.queryByText("On");
+      const offText = screen.queryByText("Off");
 
       expect(onText || offText).toBeTruthy();
     });
@@ -348,7 +348,7 @@ describe("DefaultManagedIdentity", () => {
     it("should display correct link text in tooltip", () => {
       renderComponent();
 
-      const linkText = screen.getByText(ContainerCopyMessages.defaultManagedIdentity.tooltip.hrefText);
+      const linkText = screen.getByText(t(Keys.containerCopy.defaultManagedIdentity.tooltipHrefText));
       expect(linkText).toBeInTheDocument();
     });
   });

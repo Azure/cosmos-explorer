@@ -4,8 +4,8 @@ import { CopyJobMigrationType } from "Explorer/ContainerCopy/Enums/CopyJobEnums"
 import { CopyJobContextProviderType } from "Explorer/ContainerCopy/Types/CopyJobTypes";
 import Explorer from "Explorer/Explorer";
 import { useSidePanel } from "hooks/useSidePanel";
+import { Keys, t } from "Localization";
 import React from "react";
-import ContainerCopyMessages from "../../../ContainerCopyMessages";
 import { useCopyJobContext } from "../../../Context/CopyJobContext";
 import AddCollectionPanelWrapper from "./AddCollectionPanelWrapper";
 
@@ -109,7 +109,7 @@ describe("AddCollectionPanelWrapper", () => {
       expect(container.querySelector(".addCollectionPanelWrapper")).toBeInTheDocument();
       expect(container.querySelector(".addCollectionPanelHeader")).toBeInTheDocument();
       expect(container.querySelector(".addCollectionPanelBody")).toBeInTheDocument();
-      expect(screen.getByText(ContainerCopyMessages.createNewContainerSubHeading)).toBeInTheDocument();
+      expect(screen.getByText(t(Keys.containerCopy.selectContainers.createNewContainerSubHeading))).toBeInTheDocument();
       expect(screen.getByTestId("add-collection-panel")).toBeInTheDocument();
     });
 
@@ -138,7 +138,7 @@ describe("AddCollectionPanelWrapper", () => {
     it("should set header text to create container heading on mount", () => {
       render(<AddCollectionPanelWrapper />);
 
-      expect(mockSetHeaderText).toHaveBeenCalledWith(ContainerCopyMessages.createContainerHeading);
+      expect(mockSetHeaderText).toHaveBeenCalledWith(t(Keys.containerCopy.selectContainers.createContainerHeading));
     });
 
     it("should reset header text to create copy job panel title on unmount", () => {
@@ -146,13 +146,13 @@ describe("AddCollectionPanelWrapper", () => {
 
       unmount();
 
-      expect(mockSetHeaderText).toHaveBeenCalledWith(ContainerCopyMessages.createCopyJobPanelTitle);
+      expect(mockSetHeaderText).toHaveBeenCalledWith(t(Keys.containerCopy.createCopyJob.panelTitle));
     });
 
     it("should not change header text if already set correctly", () => {
       const modifiedSidePanelState = {
         ...mockSidePanelState,
-        headerText: ContainerCopyMessages.createContainerHeading,
+        headerText: t(Keys.containerCopy.selectContainers.createContainerHeading),
       };
 
       mockUseSidePanel.getState = jest.fn().mockReturnValue(modifiedSidePanelState);
@@ -245,10 +245,10 @@ describe("AddCollectionPanelWrapper", () => {
   describe("Component Lifecycle", () => {
     it("should properly cleanup on unmount", () => {
       const { unmount } = render(<AddCollectionPanelWrapper />);
-      expect(mockSetHeaderText).toHaveBeenCalledWith(ContainerCopyMessages.createContainerHeading);
+      expect(mockSetHeaderText).toHaveBeenCalledWith(t(Keys.containerCopy.selectContainers.createContainerHeading));
       mockSetHeaderText.mockClear();
       unmount();
-      expect(mockSetHeaderText).toHaveBeenCalledWith(ContainerCopyMessages.createCopyJobPanelTitle);
+      expect(mockSetHeaderText).toHaveBeenCalledWith(t(Keys.containerCopy.createCopyJob.panelTitle));
     });
 
     it("should re-render correctly when props change", () => {

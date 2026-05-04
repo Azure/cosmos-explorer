@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom";
 import { render, RenderResult } from "@testing-library/react";
+import { Keys, t } from "Localization";
 import React from "react";
-import ContainerCopyMessages from "../../../ContainerCopyMessages";
 import { CopyJobContext } from "../../../Context/CopyJobContext";
 import { CopyJobMigrationType } from "../../../Enums/CopyJobEnums";
 import { CopyJobContextProviderType, CopyJobContextState } from "../../../Types/CopyJobTypes";
@@ -154,7 +154,7 @@ describe("AssignPermissions Component", () => {
       const copyJobState = createMockCopyJobState();
       const { getByText } = renderWithContext(copyJobState);
 
-      expect(getByText(ContainerCopyMessages.assignPermissions.crossAccountDescription)).toBeInTheDocument();
+      expect(getByText(t(Keys.containerCopy.assignPermissions.crossAccountDescription))).toBeInTheDocument();
     });
 
     it("should display intra account description for same accounts with online migration", async () => {
@@ -179,7 +179,9 @@ describe("AssignPermissions Component", () => {
 
       const { getByText } = renderWithContext(copyJobState);
       expect(
-        getByText(ContainerCopyMessages.assignPermissions.intraAccountOnlineDescription("Same Account")),
+        getByText(
+          t(Keys.containerCopy.assignPermissions.intraAccountOnlineDescription, { accountName: "Same Account" }),
+        ),
       ).toBeInTheDocument();
     });
   });

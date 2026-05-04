@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom";
 import { fireEvent, render, screen } from "@testing-library/react";
+import { Keys, t } from "Localization";
 import React from "react";
-import ContainerCopyMessages from "../../../../ContainerCopyMessages";
 import { useCopyJobContext } from "../../../../Context/CopyJobContext";
 import { CopyJobMigrationType } from "../../../../Enums/CopyJobEnums";
 import { MigrationType } from "./MigrationType";
@@ -53,9 +53,9 @@ describe("MigrationType", () => {
       expect(screen.getByRole("radiogroup")).toBeInTheDocument();
 
       const offlineRadio = screen.getByRole("radio", {
-        name: ContainerCopyMessages.migrationTypeOptions.offline.title,
+        name: t(Keys.containerCopy.migrationType.offline.title),
       });
-      const onlineRadio = screen.getByRole("radio", { name: ContainerCopyMessages.migrationTypeOptions.online.title });
+      const onlineRadio = screen.getByRole("radio", { name: t(Keys.containerCopy.migrationType.online.title) });
 
       expect(offlineRadio).toBeInTheDocument();
       expect(onlineRadio).toBeInTheDocument();
@@ -65,9 +65,9 @@ describe("MigrationType", () => {
     it("should render with online mode selected by default", () => {
       render(<MigrationType />);
 
-      const onlineRadio = screen.getByRole("radio", { name: ContainerCopyMessages.migrationTypeOptions.online.title });
+      const onlineRadio = screen.getByRole("radio", { name: t(Keys.containerCopy.migrationType.online.title) });
       const offlineRadio = screen.getByRole("radio", {
-        name: ContainerCopyMessages.migrationTypeOptions.offline.title,
+        name: t(Keys.containerCopy.migrationType.offline.title),
       });
 
       expect(onlineRadio).toBeChecked();
@@ -86,9 +86,9 @@ describe("MigrationType", () => {
       render(<MigrationType />);
 
       const offlineRadio = screen.getByRole("radio", {
-        name: ContainerCopyMessages.migrationTypeOptions.offline.title,
+        name: t(Keys.containerCopy.migrationType.offline.title),
       });
-      const onlineRadio = screen.getByRole("radio", { name: ContainerCopyMessages.migrationTypeOptions.online.title });
+      const onlineRadio = screen.getByRole("radio", { name: t(Keys.containerCopy.migrationType.online.title) });
 
       expect(offlineRadio).toBeChecked();
       expect(onlineRadio).not.toBeChecked();
@@ -141,7 +141,7 @@ describe("MigrationType", () => {
       render(<MigrationType />);
 
       const offlineRadio = screen.getByRole("radio", {
-        name: ContainerCopyMessages.migrationTypeOptions.offline.title,
+        name: t(Keys.containerCopy.migrationType.offline.title),
       });
       fireEvent.click(offlineRadio);
 
@@ -167,7 +167,7 @@ describe("MigrationType", () => {
 
       render(<MigrationType />);
 
-      const onlineRadio = screen.getByRole("radio", { name: ContainerCopyMessages.migrationTypeOptions.online.title });
+      const onlineRadio = screen.getByRole("radio", { name: t(Keys.containerCopy.migrationType.online.title) });
       fireEvent.click(onlineRadio);
 
       expect(mockSetCopyJobState).toHaveBeenCalledWith(expect.any(Function));
@@ -198,11 +198,9 @@ describe("MigrationType", () => {
       render(<MigrationType />);
 
       expect(
-        screen.getByRole("radio", { name: ContainerCopyMessages.migrationTypeOptions.offline.title }),
+        screen.getByRole("radio", { name: t(Keys.containerCopy.migrationType.offline.title) }),
       ).toBeInTheDocument();
-      expect(
-        screen.getByRole("radio", { name: ContainerCopyMessages.migrationTypeOptions.online.title }),
-      ).toBeInTheDocument();
+      expect(screen.getByRole("radio", { name: t(Keys.containerCopy.migrationType.online.title) })).toBeInTheDocument();
     });
   });
 
@@ -220,11 +218,9 @@ describe("MigrationType", () => {
 
       expect(container.querySelector("[data-test='migration-type']")).toBeInTheDocument();
       expect(
-        screen.getByRole("radio", { name: ContainerCopyMessages.migrationTypeOptions.offline.title }),
+        screen.getByRole("radio", { name: t(Keys.containerCopy.migrationType.offline.title) }),
       ).toBeInTheDocument();
-      expect(
-        screen.getByRole("radio", { name: ContainerCopyMessages.migrationTypeOptions.online.title }),
-      ).toBeInTheDocument();
+      expect(screen.getByRole("radio", { name: t(Keys.containerCopy.migrationType.online.title) })).toBeInTheDocument();
     });
 
     it("should handle null copyJobState gracefully", () => {

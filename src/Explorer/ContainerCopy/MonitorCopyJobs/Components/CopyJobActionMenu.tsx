@@ -1,7 +1,7 @@
 import { DirectionalHint, IconButton, IContextualMenuProps, Stack } from "@fluentui/react";
 import React from "react";
 import { useDialog } from "../../../Controls/Dialog";
-import ContainerCopyMessages from "../../ContainerCopyMessages";
+import { Keys, t } from "Localization";
 import { CopyJobActions, CopyJobMigrationType, CopyJobStatusType } from "../../Enums/CopyJobEnums";
 import { CopyJobType, HandleJobActionClickType } from "../../Types/CopyJobTypes";
 
@@ -49,11 +49,11 @@ const CopyJobActionMenu: React.FC<CopyJobActionMenuProps> = ({ job, handleClick 
     useDialog
       .getState()
       .showOkCancelModalDialog(
-        ContainerCopyMessages.MonitorJobs.dialog.heading,
+        "",
         null,
-        ContainerCopyMessages.MonitorJobs.dialog.confirmButtonText,
+        t(Keys.common.confirm),
         () => handleClick(job, action, setUpdatingJobAction),
-        ContainerCopyMessages.MonitorJobs.dialog.cancelButtonText,
+        t(Keys.common.cancel),
         null,
         action in dialogBody ? dialogBody[action as keyof typeof dialogBody](job.Name) : null,
       );
@@ -65,21 +65,21 @@ const CopyJobActionMenu: React.FC<CopyJobActionMenuProps> = ({ job, handleClick 
     const baseItems = [
       {
         key: CopyJobActions.pause,
-        text: ContainerCopyMessages.MonitorJobs.Actions.pause,
+        text: t(Keys.containerCopy.monitorJobs.actions.pause),
         iconProps: { iconName: "Pause" },
         onClick: () => handleClick(job, CopyJobActions.pause, setUpdatingJobAction),
         disabled: isThisJobUpdating,
       },
       {
         key: CopyJobActions.cancel,
-        text: ContainerCopyMessages.MonitorJobs.Actions.cancel,
+        text: t(Keys.common.cancel),
         iconProps: { iconName: "Cancel" },
         onClick: () => showActionConfirmationDialog(job, CopyJobActions.cancel),
         disabled: isThisJobUpdating,
       },
       {
         key: CopyJobActions.resume,
-        text: ContainerCopyMessages.MonitorJobs.Actions.resume,
+        text: t(Keys.containerCopy.monitorJobs.actions.resume),
         iconProps: { iconName: "Play" },
         onClick: () => handleClick(job, CopyJobActions.resume, setUpdatingJobAction),
         disabled: isThisJobUpdating,
@@ -101,7 +101,7 @@ const CopyJobActionMenu: React.FC<CopyJobActionMenuProps> = ({ job, handleClick 
       if ((job.Mode ?? "").toLowerCase() === CopyJobMigrationType.Online) {
         filteredItems.push({
           key: CopyJobActions.complete,
-          text: ContainerCopyMessages.MonitorJobs.Actions.complete,
+          text: t(Keys.containerCopy.monitorJobs.actions.complete),
           iconProps: { iconName: "CheckMark" },
           onClick: () => showActionConfirmationDialog(job, CopyJobActions.complete),
           disabled: isThisJobUpdating,
@@ -124,8 +124,8 @@ const CopyJobActionMenu: React.FC<CopyJobActionMenuProps> = ({ job, handleClick 
       iconProps={{ iconName: "More", styles: { root: { fontSize: "20px", fontWeight: "bold" } } }}
       menuProps={{ items: getMenuItems(), directionalHint: DirectionalHint.leftTopEdge, directionalHintFixed: false }}
       menuIconProps={{ iconName: "", className: "hidden" }}
-      ariaLabel={ContainerCopyMessages.MonitorJobs.Columns.actions}
-      title={ContainerCopyMessages.MonitorJobs.Columns.actions}
+      ariaLabel={t(Keys.containerCopy.monitorJobs.columns.actions)}
+      title={t(Keys.containerCopy.monitorJobs.columns.actions)}
     />
   );
 };

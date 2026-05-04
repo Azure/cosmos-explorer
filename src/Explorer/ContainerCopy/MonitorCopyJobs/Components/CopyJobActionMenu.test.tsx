@@ -20,28 +20,6 @@ jest.mock("../../../Controls/Dialog", () => ({
   },
 }));
 
-jest.mock("../../ContainerCopyMessages", () => ({
-  __esModule: true,
-  default: {
-    MonitorJobs: {
-      Columns: {
-        actions: "Actions",
-      },
-      Actions: {
-        pause: "Pause",
-        resume: "Resume",
-        cancel: "Cancel",
-        complete: "Complete",
-      },
-      dialog: {
-        heading: "Confirm Action",
-        confirmButtonText: "Confirm",
-        cancelButtonText: "Cancel",
-      },
-    },
-  },
-}));
-
 describe("CopyJobActionMenu", () => {
   const createMockJob = (overrides: Partial<CopyJobType> = {}): CopyJobType =>
     ({
@@ -301,7 +279,7 @@ describe("CopyJobActionMenu", () => {
       fireEvent.click(cancelButton);
 
       expect(mockShowOkCancelModalDialog).toHaveBeenCalledWith(
-        "Confirm Action",
+        "",
         null,
         "Confirm",
         expect.any(Function),
@@ -358,7 +336,7 @@ describe("CopyJobActionMenu", () => {
       fireEvent.click(completeButton);
 
       expect(mockShowOkCancelModalDialog).toHaveBeenCalledWith(
-        "Confirm Action",
+        "",
         null,
         "Confirm",
         expect.any(Function),
@@ -402,7 +380,7 @@ describe("CopyJobActionMenu", () => {
       fireEvent.click(cancelButton);
 
       expect(mockShowOkCancelModalDialog).toHaveBeenCalledWith(
-        "Confirm Action",
+        "",
         null,
         "Confirm",
         expect.any(Function),
@@ -433,7 +411,7 @@ describe("CopyJobActionMenu", () => {
       fireEvent.click(completeButton);
 
       expect(mockShowOkCancelModalDialog).toHaveBeenCalledWith(
-        "Confirm Action",
+        "",
         null,
         "Confirm",
         expect.any(Function),
@@ -849,7 +827,7 @@ describe("CopyJobActionMenu", () => {
       fireEvent.click(cancelButton);
 
       expect(mockShowOkCancelModalDialog).toHaveBeenCalledWith(
-        "Confirm Action", // title
+        "", // title
         null, // subText
         "Confirm", // confirmLabel
         expect.any(Function), // onOk

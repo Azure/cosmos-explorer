@@ -1,6 +1,7 @@
 import "@testing-library/jest-dom";
 import { fireEvent, render, waitFor } from "@testing-library/react";
 import { Subscription } from "Contracts/DataModels";
+import { Keys, t } from "Localization";
 import React from "react";
 import { CopyJobContext } from "../../../Context/CopyJobContext";
 import { CopyJobMigrationType } from "../../../Enums/CopyJobEnums";
@@ -350,7 +351,7 @@ describe("PreviewCopyJob", () => {
     expect(mockSetCopyJobState).toHaveBeenCalledWith(expect.any(Function));
   });
 
-  it("should display proper field labels from ContainerCopyMessages", () => {
+  it("should display proper field labels", () => {
     const mockContext = createMockContext();
 
     const { getByText } = render(
@@ -359,8 +360,8 @@ describe("PreviewCopyJob", () => {
       </CopyJobContext.Provider>,
     );
 
-    expect(getByText(/Job name/i)).toBeInTheDocument();
-    expect(getByText(/Source subscription/i)).toBeInTheDocument();
-    expect(getByText(/Source account/i)).toBeInTheDocument();
+    expect(getByText(new RegExp(t(Keys.containerCopy.preview.jobNameLabel), "i"))).toBeInTheDocument();
+    expect(getByText(new RegExp(t(Keys.containerCopy.preview.sourceSubscriptionLabel), "i"))).toBeInTheDocument();
+    expect(getByText(new RegExp(t(Keys.containerCopy.preview.sourceAccountLabel), "i"))).toBeInTheDocument();
   });
 });

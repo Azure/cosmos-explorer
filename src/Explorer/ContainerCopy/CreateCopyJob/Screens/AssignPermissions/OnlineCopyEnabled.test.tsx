@@ -2,12 +2,12 @@ import "@testing-library/jest-dom";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { DatabaseAccount } from "Contracts/DataModels";
 import { CopyJobContextProviderType } from "Explorer/ContainerCopy/Types/CopyJobTypes";
+import { Keys, t } from "Localization";
 import React from "react";
 import { fetchDatabaseAccount } from "Utils/arm/databaseAccountUtils";
 import { CapabilityNames } from "../../../../../Common/Constants";
 import { logError } from "../../../../../Common/Logger";
 import { update as updateDatabaseAccount } from "../../../../../Utils/arm/generatedClients/cosmos/databaseAccounts";
-import ContainerCopyMessages from "../../../ContainerCopyMessages";
 import { CopyJobContext } from "../../../Context/CopyJobContext";
 import OnlineCopyEnabled from "./OnlineCopyEnabled";
 
@@ -97,7 +97,9 @@ describe("OnlineCopyEnabled", () => {
     it("should render the description with account name", () => {
       renderComponent();
 
-      const description = screen.getByText(ContainerCopyMessages.onlineCopyEnabled.description("test-account"));
+      const description = screen.getByText(
+        t(Keys.containerCopy.onlineCopyEnabled.description, { accountName: "test-account" }),
+      );
       expect(description).toBeInTheDocument();
     });
 
@@ -105,10 +107,10 @@ describe("OnlineCopyEnabled", () => {
       renderComponent();
 
       const link = screen.getByRole("link", {
-        name: ContainerCopyMessages.onlineCopyEnabled.hrefText,
+        name: t(Keys.containerCopy.onlineCopyEnabled.hrefText),
       });
       expect(link).toBeInTheDocument();
-      expect(link).toHaveAttribute("href", ContainerCopyMessages.onlineCopyEnabled.href);
+      expect(link).toHaveAttribute("href", t(Keys.containerCopy.onlineCopyEnabled.href));
       expect(link).toHaveAttribute("target", "_blank");
       expect(link).toHaveAttribute("rel", "noopener noreferrer");
     });
@@ -117,7 +119,7 @@ describe("OnlineCopyEnabled", () => {
       renderComponent();
 
       const button = screen.getByRole("button", {
-        name: ContainerCopyMessages.onlineCopyEnabled.buttonText,
+        name: t(Keys.containerCopy.onlineCopyEnabled.buttonText),
       });
       expect(button).toBeInTheDocument();
       expect(button).not.toBeDisabled();
@@ -134,7 +136,7 @@ describe("OnlineCopyEnabled", () => {
       renderComponent();
 
       const refreshButton = screen.queryByRole("button", {
-        name: ContainerCopyMessages.refreshButtonLabel,
+        name: "Refresh",
       });
       expect(refreshButton).not.toBeInTheDocument();
     });
@@ -167,7 +169,7 @@ describe("OnlineCopyEnabled", () => {
       renderComponent();
 
       const enableButton = screen.getByRole("button", {
-        name: ContainerCopyMessages.onlineCopyEnabled.buttonText,
+        name: t(Keys.containerCopy.onlineCopyEnabled.buttonText),
       });
 
       await act(async () => {
@@ -222,7 +224,7 @@ describe("OnlineCopyEnabled", () => {
       renderComponent();
 
       const enableButton = screen.getByRole("button", {
-        name: ContainerCopyMessages.onlineCopyEnabled.buttonText,
+        name: t(Keys.containerCopy.onlineCopyEnabled.buttonText),
       });
 
       await act(async () => {
@@ -246,7 +248,7 @@ describe("OnlineCopyEnabled", () => {
       renderComponent();
 
       const enableButton = screen.getByRole("button", {
-        name: ContainerCopyMessages.onlineCopyEnabled.buttonText,
+        name: t(Keys.containerCopy.onlineCopyEnabled.buttonText),
       });
 
       await act(async () => {
@@ -259,7 +261,9 @@ describe("OnlineCopyEnabled", () => {
 
       await waitFor(() => {
         expect(
-          screen.getByText(ContainerCopyMessages.onlineCopyEnabled.enablingOnlineCopySpinnerLabel("test-account")),
+          screen.getByText(
+            t(Keys.containerCopy.onlineCopyEnabled.enablingOnlineCopySpinnerLabel, { accountName: "test-account" }),
+          ),
         ).toBeInTheDocument();
       });
     });
@@ -272,7 +276,7 @@ describe("OnlineCopyEnabled", () => {
       renderComponent();
 
       const enableButton = screen.getByRole("button", {
-        name: ContainerCopyMessages.onlineCopyEnabled.buttonText,
+        name: t(Keys.containerCopy.onlineCopyEnabled.buttonText),
       });
 
       await act(async () => {
@@ -306,7 +310,7 @@ describe("OnlineCopyEnabled", () => {
       renderComponent();
 
       const enableButton = screen.getByRole("button", {
-        name: ContainerCopyMessages.onlineCopyEnabled.buttonText,
+        name: t(Keys.containerCopy.onlineCopyEnabled.buttonText),
       });
 
       await act(async () => {
@@ -318,7 +322,7 @@ describe("OnlineCopyEnabled", () => {
       });
 
       const refreshButton = screen.getByRole("button", {
-        name: ContainerCopyMessages.refreshButtonLabel,
+        name: "Refresh",
       });
 
       await act(async () => {
@@ -349,7 +353,7 @@ describe("OnlineCopyEnabled", () => {
       renderComponent();
 
       const enableButton = screen.getByRole("button", {
-        name: ContainerCopyMessages.onlineCopyEnabled.buttonText,
+        name: t(Keys.containerCopy.onlineCopyEnabled.buttonText),
       });
 
       await act(async () => {
@@ -379,7 +383,7 @@ describe("OnlineCopyEnabled", () => {
       renderComponent();
 
       const enableButton = screen.getByRole("button", {
-        name: ContainerCopyMessages.onlineCopyEnabled.buttonText,
+        name: t(Keys.containerCopy.onlineCopyEnabled.buttonText),
       });
 
       await act(async () => {
@@ -401,7 +405,7 @@ describe("OnlineCopyEnabled", () => {
       renderComponent();
 
       const enableButton = screen.getByRole("button", {
-        name: ContainerCopyMessages.onlineCopyEnabled.buttonText,
+        name: t(Keys.containerCopy.onlineCopyEnabled.buttonText),
       });
 
       await act(async () => {
@@ -418,7 +422,7 @@ describe("OnlineCopyEnabled", () => {
       renderComponent();
 
       const enableButton = screen.getByRole("button", {
-        name: ContainerCopyMessages.onlineCopyEnabled.buttonText,
+        name: t(Keys.containerCopy.onlineCopyEnabled.buttonText),
       });
 
       await act(async () => {
@@ -436,7 +440,7 @@ describe("OnlineCopyEnabled", () => {
       renderComponent();
 
       const enableButton = screen.getByRole("button", {
-        name: ContainerCopyMessages.onlineCopyEnabled.buttonText,
+        name: t(Keys.containerCopy.onlineCopyEnabled.buttonText),
       });
 
       await act(async () => {
@@ -450,7 +454,7 @@ describe("OnlineCopyEnabled", () => {
       mockFetchDatabaseAccount.mockImplementation(() => new Promise(() => {}));
 
       const refreshButton = screen.getByRole("button", {
-        name: ContainerCopyMessages.refreshButtonLabel,
+        name: "Refresh",
       });
 
       await act(async () => {
@@ -536,7 +540,7 @@ describe("OnlineCopyEnabled", () => {
       renderComponent(contextWithNoCapabilities);
 
       const enableButton = screen.getByRole("button", {
-        name: ContainerCopyMessages.onlineCopyEnabled.buttonText,
+        name: t(Keys.containerCopy.onlineCopyEnabled.buttonText),
       });
       expect(enableButton).toBeInTheDocument();
     });
@@ -547,7 +551,7 @@ describe("OnlineCopyEnabled", () => {
       renderComponent();
 
       const button = screen.getByRole("button", {
-        name: ContainerCopyMessages.onlineCopyEnabled.buttonText,
+        name: t(Keys.containerCopy.onlineCopyEnabled.buttonText),
       });
       expect(button).toBeInTheDocument();
     });

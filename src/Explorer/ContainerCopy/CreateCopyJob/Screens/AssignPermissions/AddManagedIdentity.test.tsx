@@ -2,9 +2,9 @@ import "@testing-library/jest-dom";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { DatabaseAccount } from "Contracts/DataModels";
 import { CopyJobContextProviderType } from "Explorer/ContainerCopy/Types/CopyJobTypes";
+import { Keys, t } from "Localization";
 import React from "react";
 import { updateSystemIdentity } from "../../../../../Utils/arm/identityUtils";
-import ContainerCopyMessages from "../../../ContainerCopyMessages";
 import { CopyJobContext } from "../../../Context/CopyJobContext";
 import AddManagedIdentity from "./AddManagedIdentity";
 
@@ -133,16 +133,16 @@ describe("AddManagedIdentity", () => {
     it("renders all required elements", () => {
       renderWithContext();
 
-      expect(screen.getByText(ContainerCopyMessages.addManagedIdentity.description)).toBeInTheDocument();
-      expect(screen.getByText(ContainerCopyMessages.addManagedIdentity.descriptionHrefText)).toBeInTheDocument();
+      expect(screen.getByText(t(Keys.containerCopy.addManagedIdentity.description))).toBeInTheDocument();
+      expect(screen.getByText(t(Keys.containerCopy.addManagedIdentity.descriptionHrefText))).toBeInTheDocument();
       expect(screen.getByRole("switch")).toBeInTheDocument();
     });
 
     it("renders description link with correct href", () => {
       renderWithContext();
 
-      const link = screen.getByText(ContainerCopyMessages.addManagedIdentity.descriptionHrefText);
-      expect(link.closest("a")).toHaveAttribute("href", ContainerCopyMessages.addManagedIdentity.descriptionHref);
+      const link = screen.getByText(t(Keys.containerCopy.addManagedIdentity.descriptionHrefText));
+      expect(link.closest("a")).toHaveAttribute("href", t(Keys.containerCopy.addManagedIdentity.descriptionHref));
       expect(link.closest("a")).toHaveAttribute("target", "_blank");
       expect(link.closest("a")).toHaveAttribute("rel", "noopener noreferrer");
     });
@@ -175,7 +175,7 @@ describe("AddManagedIdentity", () => {
       const toggle = screen.getByRole("switch");
       fireEvent.click(toggle);
 
-      expect(screen.getByText(ContainerCopyMessages.addManagedIdentity.enablementTitle)).toBeInTheDocument();
+      expect(screen.getByText(t(Keys.containerCopy.addManagedIdentity.enablementTitle))).toBeInTheDocument();
     });
 
     it("hides popover when toggle is off", () => {
@@ -185,7 +185,7 @@ describe("AddManagedIdentity", () => {
       fireEvent.click(toggle);
       fireEvent.click(toggle);
 
-      expect(screen.queryByText(ContainerCopyMessages.addManagedIdentity.enablementTitle)).not.toBeInTheDocument();
+      expect(screen.queryByText(t(Keys.containerCopy.addManagedIdentity.enablementTitle))).not.toBeInTheDocument();
     });
   });
 
@@ -197,10 +197,11 @@ describe("AddManagedIdentity", () => {
     });
 
     it("displays correct enablement description with account name", () => {
-      const expectedDescription = ContainerCopyMessages.addManagedIdentity.enablementDescription(
-        mockCopyJobState.target.account.name,
-      );
-      expect(screen.getByText(expectedDescription)).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          t(Keys.containerCopy.addManagedIdentity.enablementDescription, { accountName: "test-target-account" }),
+        ),
+      ).toBeInTheDocument();
     });
 
     it("calls handleAddSystemIdentity when primary button clicked", async () => {
@@ -220,7 +221,7 @@ describe("AddManagedIdentity", () => {
       const cancelButton = screen.getByText("Cancel");
       fireEvent.click(cancelButton);
 
-      expect(screen.queryByText(ContainerCopyMessages.addManagedIdentity.enablementTitle)).not.toBeInTheDocument();
+      expect(screen.queryByText(t(Keys.containerCopy.addManagedIdentity.enablementTitle))).not.toBeInTheDocument();
 
       const toggle = screen.getByRole("switch");
       expect(toggle).not.toBeChecked();

@@ -25,7 +25,6 @@ import {
   resumeDataTransferJob,
 } from "Common/dataAccess/dataTransfers";
 import { Platform, configContext } from "ConfigContext";
-import ContainerCopyMessages from "Explorer/ContainerCopy/ContainerCopyMessages";
 import { CopyJobActions, CopyJobMigrationType } from "Explorer/ContainerCopy/Enums/CopyJobEnums";
 import { useDialog } from "Explorer/Controls/Dialog";
 import Explorer from "Explorer/Explorer";
@@ -174,7 +173,8 @@ export const PartitionKeyComponent: React.FC<PartitionKeyComponentProps> = ({
       action === CopyJobActions.cancel ? (
         <Stack tokens={{ childrenGap: 10 }}>
           <Stack.Item>
-            {/*t(Keys.controls.settings.partitionKeyEditor.confirmCancel1)*/}<br />
+            {/*t(Keys.controls.settings.partitionKeyEditor.confirmCancel1)*/}
+            <br />
             <b>{jobName}</b>
           </Stack.Item>
           <Stack.Item>{/*t(Keys.controls.settings.partitionKeyEditor.confirmCancel2)*/}</Stack.Item>
@@ -182,26 +182,17 @@ export const PartitionKeyComponent: React.FC<PartitionKeyComponentProps> = ({
       ) : action === CopyJobActions.complete ? (
         <Stack tokens={{ childrenGap: 10 }}>
           <Stack.Item>
-            {/*t(Keys.controls.settings.partitionKeyEditor.confirmComplete1)*/}<br />
+            {/*t(Keys.controls.settings.partitionKeyEditor.confirmComplete1)*/}
+            <br />
             <b>{jobName}</b>
           </Stack.Item>
-          <Stack.Item>
-            {/*t(Keys.controls.settings.partitionKeyEditor.confrimComplete2)*/}
-          </Stack.Item>
+          <Stack.Item>{/*t(Keys.controls.settings.partitionKeyEditor.confrimComplete2)*/}</Stack.Item>
         </Stack>
       ) : null;
 
     useDialog
       .getState()
-      .showOkCancelModalDialog(
-        ContainerCopyMessages.MonitorJobs.dialog.heading,
-        null,
-        ContainerCopyMessages.MonitorJobs.dialog.confirmButtonText,
-        onConfirm,
-        ContainerCopyMessages.MonitorJobs.dialog.cancelButtonText,
-        null,
-        dialogBody,
-      );
+      .showOkCancelModalDialog("", null, t(Keys.common.confirm), onConfirm, t(Keys.common.cancel), null, dialogBody);
   };
 
   const getOnlineJobMenuProps = (currentJob: DataTransferJobGetResults): IContextualMenuProps => {
@@ -213,7 +204,7 @@ export const PartitionKeyComponent: React.FC<PartitionKeyComponentProps> = ({
     if (!isPaused) {
       items.push({
         key: CopyJobActions.pause,
-        text: ContainerCopyMessages.MonitorJobs.Actions.pause,
+        text: t(Keys.containerCopy.monitorJobs.actions.pause),
         iconProps: { iconName: "Pause" },
         onClick: () => {
           pauseRunningDataTransferJob(currentJob);
@@ -224,7 +215,7 @@ export const PartitionKeyComponent: React.FC<PartitionKeyComponentProps> = ({
     if (isPaused) {
       items.push({
         key: CopyJobActions.resume,
-        text: ContainerCopyMessages.MonitorJobs.Actions.resume,
+        text: t(Keys.containerCopy.monitorJobs.actions.resume),
         iconProps: { iconName: "Play" },
         onClick: () => {
           resumePausedDataTransferJob(currentJob);
@@ -234,7 +225,7 @@ export const PartitionKeyComponent: React.FC<PartitionKeyComponentProps> = ({
 
     items.push({
       key: CopyJobActions.cancel,
-      text: ContainerCopyMessages.MonitorJobs.Actions.cancel,
+      text: t(Keys.common.cancel),
       iconProps: { iconName: "Cancel" },
       onClick: () =>
         showActionConfirmationDialog(currentJob, CopyJobActions.cancel, () => cancelRunningDataTransferJob(currentJob)),
@@ -242,7 +233,7 @@ export const PartitionKeyComponent: React.FC<PartitionKeyComponentProps> = ({
 
     items.push({
       key: CopyJobActions.complete,
-      text: ContainerCopyMessages.MonitorJobs.Actions.complete,
+      text: t(Keys.containerCopy.monitorJobs.actions.complete),
       iconProps: { iconName: "CheckMark" },
       onClick: () =>
         showActionConfirmationDialog(currentJob, CopyJobActions.complete, () =>
@@ -290,9 +281,9 @@ export const PartitionKeyComponent: React.FC<PartitionKeyComponentProps> = ({
     const processedCountString =
       totalCount > 0
         ? t(Keys.controls.settings.partitionKeyEditor.documentsProcessed, {
-          processedCount: String(processedCount),
-          totalCount: String(totalCount),
-        })
+            processedCount: String(processedCount),
+            totalCount: String(totalCount),
+          })
         : "";
     return `${portalDataTransferJob?.properties?.status} ${processedCountString}`;
   };
@@ -418,8 +409,8 @@ export const PartitionKeyComponent: React.FC<PartitionKeyComponentProps> = ({
                       }}
                       menuProps={getOnlineJobMenuProps(portalDataTransferJob)}
                       menuIconProps={{ iconName: "", className: "hidden" }}
-                      ariaLabel={ContainerCopyMessages.MonitorJobs.Columns.actions}
-                      title={ContainerCopyMessages.MonitorJobs.Columns.actions}
+                      ariaLabel={t(Keys.containerCopy.monitorJobs.columns.actions)}
+                      title={t(Keys.containerCopy.monitorJobs.columns.actions)}
                     />
                   ) : (
                     <DefaultButton

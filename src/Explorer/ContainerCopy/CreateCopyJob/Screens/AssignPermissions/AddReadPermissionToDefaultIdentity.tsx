@@ -1,8 +1,8 @@
 import { Link, Stack, Text, Toggle } from "@fluentui/react";
+import { Keys, t } from "Localization";
 import React from "react";
 import { logError } from "../../../../../Common/Logger";
 import { assignRole } from "../../../../../Utils/arm/RbacUtils";
-import ContainerCopyMessages from "../../../ContainerCopyMessages";
 import { useCopyJobContext } from "../../../Context/CopyJobContext";
 import { getAccountDetailsFromResourceId } from "../../../CopyJobUtils";
 import InfoTooltip from "../Components/InfoTooltip";
@@ -12,14 +12,14 @@ import useToggle from "./hooks/useToggle";
 
 const TooltipContent = (
   <Text>
-    {ContainerCopyMessages.readPermissionAssigned.tooltip.content} &nbsp;
+    {t(Keys.containerCopy.readPermissionAssigned.tooltipContent)} &nbsp;
     <Link
       style={{ color: "var(--colorBrandForeground1)" }}
-      href={ContainerCopyMessages.readPermissionAssigned.tooltip.href}
+      href={t(Keys.containerCopy.readPermissionAssigned.tooltipHref)}
       target="_blank"
       rel="noopener noreferrer"
     >
-      {ContainerCopyMessages.readPermissionAssigned.tooltip.hrefText}
+      {t(Keys.containerCopy.readPermissionAssigned.tooltipHrefText)}
     </Link>
   </Text>
 );
@@ -66,14 +66,14 @@ const AddReadPermissionToDefaultIdentity: React.FC<AddReadPermissionToDefaultIde
   return (
     <Stack className="defaultManagedIdentityContainer" tokens={{ childrenGap: 15, padding: "0 0 0 20px" }}>
       <Text className="toggle-label">
-        {ContainerCopyMessages.readPermissionAssigned.description}&ensp;
+        {t(Keys.containerCopy.readPermissionAssigned.description)}&ensp;
         <InfoTooltip content={TooltipContent} />
       </Text>
       <Toggle
         data-test="btn-toggle"
         checked={readPermissionAssigned}
-        onText={ContainerCopyMessages.toggleBtn.onText}
-        offText={ContainerCopyMessages.toggleBtn.offText}
+        onText="On"
+        offText="Off"
         onChange={onToggle}
         inlineLabel
         styles={{
@@ -84,11 +84,11 @@ const AddReadPermissionToDefaultIdentity: React.FC<AddReadPermissionToDefaultIde
       <PopoverMessage
         isLoading={loading}
         visible={readPermissionAssigned}
-        title={ContainerCopyMessages.readPermissionAssigned.popoverTitle}
+        title={t(Keys.containerCopy.readPermissionAssigned.popoverTitle)}
         onCancel={() => onToggle(null, false)}
         onPrimary={handleAddReadPermission}
       >
-        {ContainerCopyMessages.readPermissionAssigned.popoverDescription}
+        {t(Keys.containerCopy.readPermissionAssigned.popoverDescription)}
       </PopoverMessage>
     </Stack>
   );

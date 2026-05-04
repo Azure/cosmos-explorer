@@ -1,7 +1,7 @@
 import { FontIcon, mergeStyles, Spinner, SpinnerSize, Stack, Text } from "@fluentui/react";
 import PropTypes from "prop-types";
 import React from "react";
-import ContainerCopyMessages from "../../ContainerCopyMessages";
+import { Keys, t } from "Localization";
 import { CopyJobStatusType } from "../../Enums/CopyJobEnums";
 
 const iconClass = mergeStyles({
@@ -30,12 +30,25 @@ const statusIconColors: Partial<Record<CopyJobStatusType, string>> = {
   [CopyJobStatusType.Paused]: "var(--colorBrandForeground1)",
 };
 
+const statusKeyMap: Record<CopyJobStatusType, string> = {
+  [CopyJobStatusType.Pending]: Keys.containerCopy.monitorJobs.status.pending,
+  [CopyJobStatusType.InProgress]: Keys.containerCopy.monitorJobs.status.inProgress,
+  [CopyJobStatusType.Running]: Keys.containerCopy.monitorJobs.status.running,
+  [CopyJobStatusType.Partitioning]: Keys.containerCopy.monitorJobs.status.partitioning,
+  [CopyJobStatusType.Paused]: Keys.containerCopy.monitorJobs.status.paused,
+  [CopyJobStatusType.Completed]: Keys.containerCopy.monitorJobs.status.completed,
+  [CopyJobStatusType.Failed]: Keys.containerCopy.monitorJobs.status.failed,
+  [CopyJobStatusType.Faulted]: Keys.containerCopy.monitorJobs.status.faulted,
+  [CopyJobStatusType.Skipped]: Keys.containerCopy.monitorJobs.status.skipped,
+  [CopyJobStatusType.Cancelled]: Keys.containerCopy.monitorJobs.status.cancelled,
+};
+
 export interface CopyJobStatusWithIconProps {
   status: CopyJobStatusType;
 }
 
 const CopyJobStatusWithIcon: React.FC<CopyJobStatusWithIconProps> = React.memo(({ status }) => {
-  const statusText = ContainerCopyMessages.MonitorJobs.Status[status] || "Unknown";
+  const statusText = statusKeyMap[status] ? t(statusKeyMap[status] as Parameters<typeof t>[0]) : "Unknown";
 
   const isSpinnerStatus = [
     CopyJobStatusType.Running,

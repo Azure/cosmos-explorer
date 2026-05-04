@@ -30,7 +30,6 @@ import {
   getPartitionKeySubtext,
   getPartitionKeyTooltipText,
 } from "Explorer/Controls/Settings/SettingsUtils";
-import ContainerCopyMessages from "Explorer/ContainerCopy/ContainerCopyMessages";
 import { BackupPolicyType, CopyJobMigrationType } from "Explorer/ContainerCopy/Enums/CopyJobEnums";
 import Explorer from "Explorer/Explorer";
 import { RightPaneForm } from "Explorer/Panes/RightPaneForm/RightPaneForm";
@@ -54,12 +53,12 @@ export interface ChangePartitionKeyPaneProps {
 const migrationTypeOptions: IChoiceGroupOption[] = [
   {
     key: CopyJobMigrationType.Offline,
-    text: ContainerCopyMessages.migrationTypeOptions.offline.title,
+    text: t(Keys.containerCopy.migrationType.offline.title),
     styles: { root: { width: "33%" } },
   },
   {
     key: CopyJobMigrationType.Online,
-    text: ContainerCopyMessages.migrationTypeOptions.online.title,
+    text: t(Keys.containerCopy.migrationType.online.title),
     styles: { root: { width: "33%" } },
   },
 ];
@@ -173,7 +172,7 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
   const handleEnablePitr = () => {
     const featureUrl = `https://portal.azure.com/#@/resource/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/backupRestore`;
     setIsEnablingPrerequisite(true);
-    setPrerequisiteLoaderMessage(ContainerCopyMessages.popoverOverlaySpinnerLabel);
+    setPrerequisiteLoaderMessage(t(Keys.containerCopy.popoverOverlaySpinnerLabel));
     window.open(featureUrl, "_blank");
     startPollingForAccountUpdate();
   };
@@ -182,12 +181,12 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
     setIsEnablingPrerequisite(true);
     try {
       setPrerequisiteLoaderMessage(
-        ContainerCopyMessages.onlineCopyEnabled.validateAllVersionsAndDeletesChangeFeedSpinnerLabel,
+        t(Keys.containerCopy.onlineCopyEnabled.validateAllVersionsAndDeletesChangeFeedSpinnerLabel),
       );
       const currentAccount = await fetchDatabaseAccount(subscriptionId, resourceGroup, accountName);
       if (!currentAccount?.properties?.enableAllVersionsAndDeletesChangeFeed) {
         setPrerequisiteLoaderMessage(
-          ContainerCopyMessages.onlineCopyEnabled.enablingAllVersionsAndDeletesChangeFeedSpinnerLabel,
+          t(Keys.containerCopy.onlineCopyEnabled.enablingAllVersionsAndDeletesChangeFeedSpinnerLabel),
         );
         await updateDatabaseAccount(subscriptionId, resourceGroup, accountName, {
           properties: {
@@ -196,7 +195,9 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
         });
       }
       const capabilities = currentAccount?.properties?.capabilities ?? [];
-      setPrerequisiteLoaderMessage(ContainerCopyMessages.onlineCopyEnabled.enablingOnlineCopySpinnerLabel(accountName));
+      setPrerequisiteLoaderMessage(
+        t(Keys.containerCopy.onlineCopyEnabled.enablingOnlineCopySpinnerLabel, { accountName }),
+      );
       await updateDatabaseAccount(subscriptionId, resourceGroup, accountName, {
         properties: {
           capabilities: [...capabilities, { name: CapabilityNames.EnableOnlineCopyFeature }],
@@ -345,8 +346,8 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
               data-test={`migration-type-description-${migrationType}`}
             >
               {migrationType === CopyJobMigrationType.Offline
-                ? ContainerCopyMessages.migrationTypeOptions.offline.description
-                : ContainerCopyMessages.migrationTypeOptions.online.description}
+                ? t(Keys.containerCopy.migrationType.offline.description)
+                : t(Keys.containerCopy.migrationType.online.description)}
             </Text>
           )}
         </Stack>
@@ -626,10 +627,10 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
           <Stack data-test="online-prerequisites-section" tokens={{ childrenGap: 10 }}>
             <LoadingOverlay isLoading={isEnablingPrerequisite} label={prerequisiteLoaderMessage} />
             <Text className="panelTextBold" variant="small">
-              {ContainerCopyMessages.assignPermissions.onlineConfiguration.title}
+              {t(Keys.containerCopy.assignPermissions.onlineConfiguration.title)}
             </Text>
             <Text variant="small" style={{ color: "var(--colorNeutralForeground1)" }}>
-              {ContainerCopyMessages.assignPermissions.onlineConfiguration.description(accountName)}
+              {t(Keys.containerCopy.assignPermissions.onlineConfiguration.description, { accountName })}
             </Text>
 
             {/* Point In Time Restore */}
@@ -642,17 +643,17 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
                   }}
                 />
                 <Text variant="small" style={{ fontWeight: 600, color: "var(--colorNeutralForeground1)" }}>
-                  {ContainerCopyMessages.pointInTimeRestore.title}
+                  {t(Keys.containerCopy.pointInTimeRestore.title)}
                 </Text>
               </Stack>
               {!pitrEnabled && (
                 <Stack tokens={{ childrenGap: 10, padding: "0 0 0 20px" }}>
                   <Text variant="small" style={{ color: "var(--colorNeutralForeground1)" }}>
-                    {ContainerCopyMessages.pointInTimeRestore.description(accountName)}
+                    {t(Keys.containerCopy.pointInTimeRestore.description, { accessName: accountName })}
                   </Text>
                   <PrimaryButton
                     data-test="enable-pitr-button"
-                    text={ContainerCopyMessages.pointInTimeRestore.buttonText}
+                    text={t(Keys.containerCopy.pointInTimeRestore.buttonText)}
                     disabled={isEnablingPrerequisite}
                     onClick={handleEnablePitr}
                     styles={{ root: { width: "fit-content" } }}
@@ -674,20 +675,20 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
                   }}
                 />
                 <Text variant="small" style={{ fontWeight: 600, color: "var(--colorNeutralForeground1)" }}>
-                  {ContainerCopyMessages.onlineCopyEnabled.title}
+                  {t(Keys.containerCopy.onlineCopyEnabled.title)}
                 </Text>
               </Stack>
               {!onlineCopyFeatureEnabled && (
                 <Stack tokens={{ childrenGap: 10, padding: "0 0 0 20px" }}>
                   <Text variant="small" style={{ color: "var(--colorNeutralForeground1)" }}>
-                    {ContainerCopyMessages.onlineCopyEnabled.description(accountName)}&ensp;
-                    <Link href={ContainerCopyMessages.onlineCopyEnabled.href} target="_blank" rel="noopener noreferrer">
-                      {ContainerCopyMessages.onlineCopyEnabled.hrefText}
+                    {t(Keys.containerCopy.onlineCopyEnabled.description, { accountName })}&ensp;
+                    <Link href={t(Keys.containerCopy.onlineCopyEnabled.href)} target="_blank" rel="noopener noreferrer">
+                      {t(Keys.containerCopy.onlineCopyEnabled.hrefText)}
                     </Link>
                   </Text>
                   <PrimaryButton
                     data-test="enable-online-copy-button"
-                    text={ContainerCopyMessages.onlineCopyEnabled.buttonText}
+                    text={t(Keys.containerCopy.onlineCopyEnabled.buttonText)}
                     disabled={isEnablingPrerequisite || !pitrEnabled}
                     onClick={handleEnableOnlineCopy}
                     styles={{ root: { width: "fit-content" } }}

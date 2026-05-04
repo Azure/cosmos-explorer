@@ -15,7 +15,7 @@ import {
   CreateJobRequest,
   DataTransferJobGetResults,
 } from "../../../Utils/arm/generatedClients/dataTransferService/types";
-import ContainerCopyMessages from "../ContainerCopyMessages";
+import { Keys, t } from "Localization";
 import {
   convertTime,
   convertToCamelCase,
@@ -35,7 +35,7 @@ export const openCreateCopyJobPanel = (explorer: Explorer) => {
   const sidePanelState = useSidePanel.getState();
   sidePanelState.setPanelHasConsole(false);
   sidePanelState.openSidePanel(
-    ContainerCopyMessages.createCopyJobPanelTitle,
+    t(Keys.containerCopy.createCopyJob.panelTitle),
     <CreateCopyJobScreensProvider explorer={explorer} />,
     "650px",
   );
@@ -45,7 +45,7 @@ export const openCopyJobDetailsPanel = (job: CopyJobType) => {
   const sidePanelState = useSidePanel.getState();
   sidePanelState.setPanelHasConsole(false);
   sidePanelState.openSidePanel(
-    ContainerCopyMessages.copyJobDetailsPanelTitle(job.Name),
+    job.Name || t(Keys.containerCopy.jobDetails.panelTitleDefault),
     <CopyJobDetails job={job} />,
     "650px",
   );
@@ -193,7 +193,7 @@ export const updateCopyJobStatus = async (job: CopyJobType, action: string): Pro
     const pattern = new RegExp(`'(${statusList.join("|")})'`, "g");
     const normalizedErrorMessage = errorMessage.replace(
       pattern,
-      `'${ContainerCopyMessages.MonitorJobs.Status.InProgress}'`,
+      `'${t(Keys.containerCopy.monitorJobs.status.inProgress)}'`,
     );
     logError(`Error updating copy job status: ${normalizedErrorMessage}`, "CopyJob/CopyJobActions.updateCopyJobStatus");
     throw error;

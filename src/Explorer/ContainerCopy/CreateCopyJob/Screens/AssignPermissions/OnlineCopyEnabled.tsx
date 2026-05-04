@@ -1,12 +1,12 @@
 import { Link, PrimaryButton, Stack } from "@fluentui/react";
 import { DatabaseAccount } from "Contracts/DataModels";
+import { Keys, t } from "Localization";
 import React from "react";
 import { fetchDatabaseAccount } from "Utils/arm/databaseAccountUtils";
 import { CapabilityNames } from "../../../../../Common/Constants";
 import LoadingOverlay from "../../../../../Common/LoadingOverlay";
 import { logError } from "../../../../../Common/Logger";
 import { update as updateDatabaseAccount } from "../../../../../Utils/arm/generatedClients/cosmos/databaseAccounts";
-import ContainerCopyMessages from "../../../ContainerCopyMessages";
 import { useCopyJobContext } from "../../../Context/CopyJobContext";
 import { getAccountDetailsFromResourceId } from "../../../CopyJobUtils";
 import { AccountValidatorFn } from "../../../Types/CopyJobTypes";
@@ -76,21 +76,23 @@ const OnlineCopyEnabled: React.FC = () => {
     setShowRefreshButton(false);
 
     try {
-      setLoaderMessage(ContainerCopyMessages.onlineCopyEnabled.validateAllVersionsAndDeletesChangeFeedSpinnerLabel);
+      setLoaderMessage(t(Keys.containerCopy.onlineCopyEnabled.validateAllVersionsAndDeletesChangeFeedSpinnerLabel));
       const sourAccountBeforeUpdate = await fetchDatabaseAccount(
         sourceSubscriptionId,
         sourceResourceGroup,
         sourceAccountName,
       );
       if (!sourAccountBeforeUpdate?.properties.enableAllVersionsAndDeletesChangeFeed) {
-        setLoaderMessage(ContainerCopyMessages.onlineCopyEnabled.enablingAllVersionsAndDeletesChangeFeedSpinnerLabel);
+        setLoaderMessage(t(Keys.containerCopy.onlineCopyEnabled.enablingAllVersionsAndDeletesChangeFeedSpinnerLabel));
         await updateDatabaseAccount(sourceSubscriptionId, sourceResourceGroup, sourceAccountName, {
           properties: {
             enableAllVersionsAndDeletesChangeFeed: true,
           },
         });
       }
-      setLoaderMessage(ContainerCopyMessages.onlineCopyEnabled.enablingOnlineCopySpinnerLabel(sourceAccountName));
+      setLoaderMessage(
+        t(Keys.containerCopy.onlineCopyEnabled.enablingOnlineCopySpinnerLabel, { accountName: sourceAccountName }),
+      );
       await updateDatabaseAccount(sourceSubscriptionId, sourceResourceGroup, sourceAccountName, {
         properties: {
           capabilities: [...sourceAccountCapabilities, { name: CapabilityNames.EnableOnlineCopyFeature }],
@@ -132,16 +134,16 @@ const OnlineCopyEnabled: React.FC = () => {
     <Stack className="onlineCopyContainer" tokens={{ childrenGap: 15, padding: "0 0 0 20px" }}>
       <LoadingOverlay isLoading={loading} label={loaderMessage} />
       <Stack.Item className="info-message">
-        {ContainerCopyMessages.onlineCopyEnabled.description(source?.account?.name || "")}&ensp;
-        <Link href={ContainerCopyMessages.onlineCopyEnabled.href} target="_blank" rel="noopener noreferrer">
-          {ContainerCopyMessages.onlineCopyEnabled.hrefText}
+        {t(Keys.containerCopy.onlineCopyEnabled.description, { accountName: source?.account?.name || "" })}&ensp;
+        <Link href={t(Keys.containerCopy.onlineCopyEnabled.href)} target="_blank" rel="noopener noreferrer">
+          {t(Keys.containerCopy.onlineCopyEnabled.hrefText)}
         </Link>
       </Stack.Item>
       <Stack.Item>
         {showRefreshButton ? (
           <PrimaryButton
             className="fullWidth"
-            text={ContainerCopyMessages.refreshButtonLabel}
+            text={t(Keys.common.refresh)}
             iconProps={{ iconName: "Refresh" }}
             onClick={handleRefresh}
             disabled={loading}
@@ -149,7 +151,7 @@ const OnlineCopyEnabled: React.FC = () => {
         ) : (
           <PrimaryButton
             className="fullWidth"
-            text={loading ? "" : ContainerCopyMessages.onlineCopyEnabled.buttonText}
+            text={loading ? "" : t(Keys.containerCopy.onlineCopyEnabled.buttonText)}
             {...(loading ? { iconProps: { iconName: "SyncStatusSolid" } } : {})}
             disabled={loading}
             onClick={handleOnlineCopyEnable}

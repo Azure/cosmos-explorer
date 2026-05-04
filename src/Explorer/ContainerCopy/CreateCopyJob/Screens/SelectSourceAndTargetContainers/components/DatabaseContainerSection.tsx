@@ -1,6 +1,6 @@
 import { ActionButton, Dropdown, Stack } from "@fluentui/react";
+import { Keys, t } from "Localization";
 import React from "react";
-import ContainerCopyMessages from "../../../../ContainerCopyMessages";
 import { DatabaseContainerSectionProps } from "../../../../Types/CopyJobTypes";
 import FieldRow from "../../Components/FieldRow";
 
@@ -19,10 +19,10 @@ export const DatabaseContainerSection = ({
 }: DatabaseContainerSectionProps) => (
   <Stack tokens={{ childrenGap: 15 }} className="databaseContainerSection">
     <label className="subHeading">{heading}</label>
-    <FieldRow label={ContainerCopyMessages.databaseDropdownLabel}>
+    <FieldRow label={t(Keys.containerCopy.selectContainers.databaseDropdownLabel)}>
       <Dropdown
-        placeholder={ContainerCopyMessages.databaseDropdownPlaceholder}
-        ariaLabel={ContainerCopyMessages.databaseDropdownLabel}
+        placeholder={t(Keys.containerCopy.selectContainers.databaseDropdownPlaceholder)}
+        ariaLabel={t(Keys.containerCopy.selectContainers.databaseDropdownLabel)}
         options={databaseOptions}
         required
         disabled={!!databaseDisabled}
@@ -31,11 +31,11 @@ export const DatabaseContainerSection = ({
         data-test={`${sectionType}-databaseDropdown`}
       />
     </FieldRow>
-    <FieldRow label={ContainerCopyMessages.containerDropdownLabel}>
+    <FieldRow label={t(Keys.containerCopy.selectContainers.containerDropdownLabel)}>
       <Stack>
         <Dropdown
-          placeholder={ContainerCopyMessages.containerDropdownPlaceholder}
-          ariaLabel={ContainerCopyMessages.containerDropdownLabel}
+          placeholder={t(Keys.containerCopy.selectContainers.containerDropdownPlaceholder)}
+          ariaLabel={t(Keys.containerCopy.selectContainers.containerDropdownLabel)}
           options={containerOptions}
           required
           disabled={!!containerDisabled}
@@ -49,7 +49,7 @@ export const DatabaseContainerSection = ({
             style={{ color: "var(--colorBrandForeground1)" }}
             onClick={() => handleOnDemandCreateContainer()}
           >
-            {ContainerCopyMessages.createContainerButtonLabel}
+            {t(Keys.containerCopy.selectContainers.createContainerButtonLabel)}
           </ActionButton>
         )}
       </Stack>

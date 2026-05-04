@@ -8,14 +8,9 @@ import { SubscriptionDropdown } from "./SubscriptionDropdown";
 
 jest.mock("../../../../../../hooks/useSubscriptions");
 jest.mock("../../../../../../UserContext");
-jest.mock("../../../../ContainerCopyMessages");
 
 const mockUseSubscriptions = jest.requireMock("../../../../../../hooks/useSubscriptions").useSubscriptions;
 const mockUserContext = jest.requireMock("../../../../../../UserContext").userContext;
-const mockContainerCopyMessages = jest.requireMock("../../../../ContainerCopyMessages").default;
-
-mockContainerCopyMessages.subscriptionDropdownLabel = "Subscription";
-mockContainerCopyMessages.subscriptionDropdownPlaceholder = "Select a subscription";
 
 describe("SubscriptionDropdown", () => {
   let mockExplorer: Explorer;

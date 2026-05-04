@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom";
 import { fireEvent, render, screen } from "@testing-library/react";
+import { Keys, t } from "Localization";
 import React from "react";
-import ContainerCopyMessages from "../../../../ContainerCopyMessages";
 import { DatabaseContainerSectionProps, DropdownOptionType } from "../../../../Types/CopyJobTypes";
 import { DatabaseContainerSection } from "./DatabaseContainerSection";
 
@@ -60,11 +60,14 @@ describe("DatabaseContainerSection", () => {
       render(<DatabaseContainerSection {...defaultProps} />);
 
       const databaseDropdown = screen.getByRole("combobox", {
-        name: ContainerCopyMessages.databaseDropdownLabel,
+        name: t(Keys.containerCopy.selectContainers.databaseDropdownLabel),
       });
 
       expect(databaseDropdown).toBeInTheDocument();
-      expect(databaseDropdown).toHaveAttribute("aria-label", ContainerCopyMessages.databaseDropdownLabel);
+      expect(databaseDropdown).toHaveAttribute(
+        "aria-label",
+        t(Keys.containerCopy.selectContainers.databaseDropdownLabel),
+      );
       expect(databaseDropdown).not.toBeDisabled();
     });
 
@@ -72,30 +75,35 @@ describe("DatabaseContainerSection", () => {
       render(<DatabaseContainerSection {...defaultProps} />);
 
       const containerDropdown = screen.getByRole("combobox", {
-        name: ContainerCopyMessages.containerDropdownLabel,
+        name: t(Keys.containerCopy.selectContainers.containerDropdownLabel),
       });
 
       expect(containerDropdown).toBeInTheDocument();
-      expect(containerDropdown).toHaveAttribute("aria-label", ContainerCopyMessages.containerDropdownLabel);
+      expect(containerDropdown).toHaveAttribute(
+        "aria-label",
+        t(Keys.containerCopy.selectContainers.containerDropdownLabel),
+      );
       expect(containerDropdown).not.toBeDisabled();
     });
 
     it("renders database label correctly", () => {
       render(<DatabaseContainerSection {...defaultProps} />);
 
-      expect(screen.getByText(`${ContainerCopyMessages.databaseDropdownLabel}:`)).toBeInTheDocument();
+      expect(screen.getByText(`${t(Keys.containerCopy.selectContainers.databaseDropdownLabel)}:`)).toBeInTheDocument();
     });
 
     it("renders container label correctly", () => {
       render(<DatabaseContainerSection {...defaultProps} />);
 
-      expect(screen.getByText(`${ContainerCopyMessages.containerDropdownLabel}:`)).toBeInTheDocument();
+      expect(screen.getByText(`${t(Keys.containerCopy.selectContainers.containerDropdownLabel)}:`)).toBeInTheDocument();
     });
 
     it("does not render create container button when handleOnDemandCreateContainer is not provided", () => {
       render(<DatabaseContainerSection {...defaultProps} />);
 
-      expect(screen.queryByText(ContainerCopyMessages.createContainerButtonLabel)).not.toBeInTheDocument();
+      expect(
+        screen.queryByText(t(Keys.containerCopy.selectContainers.createContainerButtonLabel)),
+      ).not.toBeInTheDocument();
     });
 
     it("renders create container button when handleOnDemandCreateContainer is provided", () => {
@@ -107,7 +115,7 @@ describe("DatabaseContainerSection", () => {
       const createButton = container.querySelector(".create-container-link-btn");
 
       expect(createButton).toBeInTheDocument();
-      expect(createButton).toHaveTextContent(ContainerCopyMessages.createContainerButtonLabel);
+      expect(createButton).toHaveTextContent(t(Keys.containerCopy.selectContainers.createContainerButtonLabel));
     });
   });
 
@@ -121,7 +129,7 @@ describe("DatabaseContainerSection", () => {
       render(<DatabaseContainerSection {...propsWithDisabledDatabase} />);
 
       const databaseDropdown = screen.getByRole("combobox", {
-        name: ContainerCopyMessages.databaseDropdownLabel,
+        name: t(Keys.containerCopy.selectContainers.databaseDropdownLabel),
       });
 
       expect(databaseDropdown).toHaveAttribute("aria-disabled", "true");
@@ -136,7 +144,7 @@ describe("DatabaseContainerSection", () => {
       render(<DatabaseContainerSection {...propsWithDisabledContainer} />);
 
       const containerDropdown = screen.getByRole("combobox", {
-        name: ContainerCopyMessages.containerDropdownLabel,
+        name: t(Keys.containerCopy.selectContainers.containerDropdownLabel),
       });
 
       expect(containerDropdown).toHaveAttribute("aria-disabled", "true");
@@ -152,10 +160,10 @@ describe("DatabaseContainerSection", () => {
       render(<DatabaseContainerSection {...propsWithFalsyDisabled} />);
 
       const databaseDropdown = screen.getByRole("combobox", {
-        name: ContainerCopyMessages.databaseDropdownLabel,
+        name: t(Keys.containerCopy.selectContainers.databaseDropdownLabel),
       });
       const containerDropdown = screen.getByRole("combobox", {
-        name: ContainerCopyMessages.containerDropdownLabel,
+        name: t(Keys.containerCopy.selectContainers.containerDropdownLabel),
       });
 
       expect(databaseDropdown).not.toHaveAttribute("aria-disabled", "true");
@@ -167,21 +175,27 @@ describe("DatabaseContainerSection", () => {
     it("calls databaseOnChange when database dropdown selection changes", () => {
       render(<DatabaseContainerSection {...defaultProps} />);
       const databaseDropdown = screen.getByRole("combobox", {
-        name: ContainerCopyMessages.databaseDropdownLabel,
+        name: t(Keys.containerCopy.selectContainers.databaseDropdownLabel),
       });
 
       fireEvent.click(databaseDropdown);
-      expect(databaseDropdown).toHaveAttribute("aria-label", ContainerCopyMessages.databaseDropdownLabel);
+      expect(databaseDropdown).toHaveAttribute(
+        "aria-label",
+        t(Keys.containerCopy.selectContainers.databaseDropdownLabel),
+      );
     });
 
     it("calls containerOnChange when container dropdown selection changes", () => {
       render(<DatabaseContainerSection {...defaultProps} />);
       const containerDropdown = screen.getByRole("combobox", {
-        name: ContainerCopyMessages.containerDropdownLabel,
+        name: t(Keys.containerCopy.selectContainers.containerDropdownLabel),
       });
 
       fireEvent.click(containerDropdown);
-      expect(containerDropdown).toHaveAttribute("aria-label", ContainerCopyMessages.containerDropdownLabel);
+      expect(containerDropdown).toHaveAttribute(
+        "aria-label",
+        t(Keys.containerCopy.selectContainers.containerDropdownLabel),
+      );
     });
 
     it("calls handleOnDemandCreateContainer when create container button is clicked", () => {
@@ -192,7 +206,7 @@ describe("DatabaseContainerSection", () => {
 
       render(<DatabaseContainerSection {...propsWithCreateHandler} />);
 
-      const createButton = screen.getByText(ContainerCopyMessages.createContainerButtonLabel);
+      const createButton = screen.getByText(t(Keys.containerCopy.selectContainers.createContainerButtonLabel));
       fireEvent.click(createButton);
 
       expect(mockHandleOnDemandCreateContainer).toHaveBeenCalledTimes(1);
@@ -235,10 +249,10 @@ describe("DatabaseContainerSection", () => {
       render(<DatabaseContainerSection {...propsWithEmptyOptions} />);
 
       const databaseDropdown = screen.getByRole("combobox", {
-        name: ContainerCopyMessages.databaseDropdownLabel,
+        name: t(Keys.containerCopy.selectContainers.databaseDropdownLabel),
       });
       const containerDropdown = screen.getByRole("combobox", {
-        name: ContainerCopyMessages.containerDropdownLabel,
+        name: t(Keys.containerCopy.selectContainers.containerDropdownLabel),
       });
 
       expect(databaseDropdown).toBeInTheDocument();
@@ -251,24 +265,30 @@ describe("DatabaseContainerSection", () => {
       render(<DatabaseContainerSection {...defaultProps} />);
 
       const databaseDropdown = screen.getByRole("combobox", {
-        name: ContainerCopyMessages.databaseDropdownLabel,
+        name: t(Keys.containerCopy.selectContainers.databaseDropdownLabel),
       });
       const containerDropdown = screen.getByRole("combobox", {
-        name: ContainerCopyMessages.containerDropdownLabel,
+        name: t(Keys.containerCopy.selectContainers.containerDropdownLabel),
       });
 
-      expect(databaseDropdown).toHaveAttribute("aria-label", ContainerCopyMessages.databaseDropdownLabel);
-      expect(containerDropdown).toHaveAttribute("aria-label", ContainerCopyMessages.containerDropdownLabel);
+      expect(databaseDropdown).toHaveAttribute(
+        "aria-label",
+        t(Keys.containerCopy.selectContainers.databaseDropdownLabel),
+      );
+      expect(containerDropdown).toHaveAttribute(
+        "aria-label",
+        t(Keys.containerCopy.selectContainers.containerDropdownLabel),
+      );
     });
 
     it("has proper required attributes for dropdowns", () => {
       render(<DatabaseContainerSection {...defaultProps} />);
 
       const databaseDropdown = screen.getByRole("combobox", {
-        name: ContainerCopyMessages.databaseDropdownLabel,
+        name: t(Keys.containerCopy.selectContainers.databaseDropdownLabel),
       });
       const containerDropdown = screen.getByRole("combobox", {
-        name: ContainerCopyMessages.containerDropdownLabel,
+        name: t(Keys.containerCopy.selectContainers.containerDropdownLabel),
       });
 
       expect(databaseDropdown).toHaveAttribute("aria-required", "true");
@@ -278,8 +298,8 @@ describe("DatabaseContainerSection", () => {
     it("maintains proper label associations", () => {
       render(<DatabaseContainerSection {...defaultProps} />);
 
-      expect(screen.getByText(`${ContainerCopyMessages.databaseDropdownLabel}:`)).toBeInTheDocument();
-      expect(screen.getByText(`${ContainerCopyMessages.containerDropdownLabel}:`)).toBeInTheDocument();
+      expect(screen.getByText(`${t(Keys.containerCopy.selectContainers.databaseDropdownLabel)}:`)).toBeInTheDocument();
+      expect(screen.getByText(`${t(Keys.containerCopy.selectContainers.containerDropdownLabel)}:`)).toBeInTheDocument();
     });
   });
 
@@ -299,7 +319,9 @@ describe("DatabaseContainerSection", () => {
       render(<DatabaseContainerSection {...minimalProps} />);
 
       expect(screen.getByText("Test Heading")).toBeInTheDocument();
-      expect(screen.queryByText(ContainerCopyMessages.createContainerButtonLabel)).not.toBeInTheDocument();
+      expect(
+        screen.queryByText(t(Keys.containerCopy.selectContainers.createContainerButtonLabel)),
+      ).not.toBeInTheDocument();
     });
 
     it("handles empty string selections", () => {
@@ -366,7 +388,7 @@ describe("DatabaseContainerSection", () => {
 
       const { container } = render(<DatabaseContainerSection {...propsWithCreateHandler} />);
 
-      const createButton = screen.getByText(ContainerCopyMessages.createContainerButtonLabel);
+      const createButton = screen.getByText(t(Keys.containerCopy.selectContainers.createContainerButtonLabel));
       expect(createButton).toBeInTheDocument();
 
       const containerSection = container.querySelector(".databaseContainerSection");
@@ -381,7 +403,7 @@ describe("DatabaseContainerSection", () => {
 
       render(<DatabaseContainerSection {...propsWithCreateHandler} />);
 
-      expect(screen.getByText(ContainerCopyMessages.createContainerButtonLabel)).toBeInTheDocument();
+      expect(screen.getByText(t(Keys.containerCopy.selectContainers.createContainerButtonLabel))).toBeInTheDocument();
     });
   });
 

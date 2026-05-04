@@ -2,11 +2,11 @@
 /* eslint-disable react/display-name */
 import { Dropdown } from "@fluentui/react";
 import { configContext, Platform } from "ConfigContext";
+import { Keys, t } from "Localization";
 import React, { useEffect } from "react";
 import { DatabaseAccount } from "../../../../../../Contracts/DataModels";
 import { useDatabaseAccounts } from "../../../../../../hooks/useDatabaseAccounts";
 import { apiType, userContext } from "../../../../../../UserContext";
-import ContainerCopyMessages from "../../../../ContainerCopyMessages";
 import { useCopyJobContext } from "../../../../Context/CopyJobContext";
 import FieldRow from "../../Components/FieldRow";
 
@@ -80,10 +80,10 @@ export const AccountDropdown: React.FC<AccountDropdownProps> = () => {
   const selectedAccountId = normalizeAccountId(copyJobState?.source?.account?.id ?? "");
 
   return (
-    <FieldRow label={ContainerCopyMessages.sourceAccountDropdownLabel}>
+    <FieldRow label={t(Keys.containerCopy.selectAccount.sourceAccountDropdownLabel)}>
       <Dropdown
-        placeholder={ContainerCopyMessages.sourceAccountDropdownPlaceholder}
-        ariaLabel={ContainerCopyMessages.sourceAccountDropdownLabel}
+        placeholder={t(Keys.containerCopy.selectAccount.sourceAccountDropdownPlaceholder)}
+        ariaLabel={t(Keys.containerCopy.selectAccount.sourceAccountDropdownLabel)}
         options={accountOptions}
         disabled={isAccountDropdownDisabled}
         required

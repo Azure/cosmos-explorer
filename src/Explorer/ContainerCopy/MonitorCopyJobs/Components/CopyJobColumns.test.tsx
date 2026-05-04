@@ -1,8 +1,8 @@
 import { IColumn } from "@fluentui/react";
 import "@testing-library/jest-dom";
 import { render } from "@testing-library/react";
+import { Keys, t } from "Localization";
 import React from "react";
-import ContainerCopyMessages from "../../ContainerCopyMessages";
 import { CopyJobStatusType } from "../../Enums/CopyJobEnums";
 import { CopyJobType, HandleJobActionClickType } from "../../Types/CopyJobTypes";
 import { getColumns } from "./CopyJobColumns";
@@ -79,14 +79,14 @@ describe("CopyJobColumns", () => {
       expect(actualKeys).toEqual(expectedKeys);
     });
 
-    it("should have correct column names from ContainerCopyMessages", () => {
+    it("should have correct column names from i18n", () => {
       const columns = getColumns(mockHandleSort, mockHandleActionClick, undefined, false);
 
-      expect(columns[0].name).toBe(ContainerCopyMessages.MonitorJobs.Columns.lastUpdatedTime);
-      expect(columns[1].name).toBe(ContainerCopyMessages.MonitorJobs.Columns.name);
-      expect(columns[2].name).toBe(ContainerCopyMessages.MonitorJobs.Columns.mode);
-      expect(columns[3].name).toBe(ContainerCopyMessages.MonitorJobs.Columns.completionPercentage);
-      expect(columns[4].name).toBe(ContainerCopyMessages.MonitorJobs.Columns.status);
+      expect(columns[0].name).toBe(t(Keys.containerCopy.monitorJobs.columns.lastUpdatedTime));
+      expect(columns[1].name).toBe(t(Keys.containerCopy.monitorJobs.columns.name));
+      expect(columns[2].name).toBe(t(Keys.containerCopy.monitorJobs.columns.mode));
+      expect(columns[3].name).toBe(t(Keys.containerCopy.monitorJobs.columns.completionPercentage));
+      expect(columns[4].name).toBe(t(Keys.containerCopy.monitorJobs.columns.status));
       expect(columns[5].name).toBe("");
     });
 

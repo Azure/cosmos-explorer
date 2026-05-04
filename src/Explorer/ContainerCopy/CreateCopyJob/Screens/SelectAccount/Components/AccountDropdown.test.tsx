@@ -1,11 +1,11 @@
 import "@testing-library/jest-dom";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { Keys, t } from "Localization";
 import React from "react";
 import { configContext, Platform } from "../../../../../../ConfigContext";
 import { DatabaseAccount } from "../../../../../../Contracts/DataModels";
 import * as useDatabaseAccountsHook from "../../../../../../hooks/useDatabaseAccounts";
 import { apiType, userContext } from "../../../../../../UserContext";
-import ContainerCopyMessages from "../../../../ContainerCopyMessages";
 import { CopyJobContext } from "../../../../Context/CopyJobContext";
 import { CopyJobMigrationType } from "../../../../Enums/CopyJobEnums";
 import { CopyJobContextProviderType, CopyJobContextState } from "../../../../Types/CopyJobTypes";
@@ -129,11 +129,11 @@ describe("AccountDropdown", () => {
       renderWithContext();
 
       expect(
-        screen.getByText(`${ContainerCopyMessages.sourceAccountDropdownLabel}:`, { exact: true }),
+        screen.getByText(`${t(Keys.containerCopy.selectAccount.sourceAccountDropdownLabel)}:`, { exact: true }),
       ).toBeInTheDocument();
       expect(screen.getByRole("combobox")).toHaveAttribute(
         "aria-label",
-        ContainerCopyMessages.sourceAccountDropdownLabel,
+        t(Keys.containerCopy.selectAccount.sourceAccountDropdownLabel),
       );
     });
 
@@ -409,7 +409,7 @@ describe("AccountDropdown", () => {
       renderWithContext();
 
       const dropdown = screen.getByRole("combobox");
-      expect(dropdown).toHaveAttribute("aria-label", ContainerCopyMessages.sourceAccountDropdownLabel);
+      expect(dropdown).toHaveAttribute("aria-label", t(Keys.containerCopy.selectAccount.sourceAccountDropdownLabel));
     });
 
     it("should have required attribute", () => {

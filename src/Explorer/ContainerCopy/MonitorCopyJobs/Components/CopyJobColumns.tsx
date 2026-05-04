@@ -1,6 +1,6 @@
 import { IColumn } from "@fluentui/react";
 import React from "react";
-import ContainerCopyMessages from "../../ContainerCopyMessages";
+import { Keys, t } from "Localization";
 import { CopyJobType, HandleJobActionClickType } from "../../Types/CopyJobTypes";
 import CopyJobActionMenu from "./CopyJobActionMenu";
 import CopyJobStatusWithIcon from "./CopyJobStatusWithIcon";
@@ -13,7 +13,7 @@ export const getColumns = (
 ): IColumn[] => [
   {
     key: "LastUpdatedTime",
-    name: ContainerCopyMessages.MonitorJobs.Columns.lastUpdatedTime,
+    name: t(Keys.containerCopy.monitorJobs.columns.lastUpdatedTime),
     fieldName: "LastUpdatedTime",
     minWidth: 140,
     maxWidth: 300,
@@ -24,7 +24,7 @@ export const getColumns = (
   },
   {
     key: "Name",
-    name: ContainerCopyMessages.MonitorJobs.Columns.name,
+    name: t(Keys.containerCopy.monitorJobs.columns.name),
     fieldName: "Name",
     minWidth: 140,
     maxWidth: 300,
@@ -36,7 +36,7 @@ export const getColumns = (
   },
   {
     key: "Mode",
-    name: ContainerCopyMessages.MonitorJobs.Columns.mode,
+    name: t(Keys.containerCopy.monitorJobs.columns.mode),
     fieldName: "Mode",
     minWidth: 90,
     maxWidth: 200,
@@ -47,7 +47,7 @@ export const getColumns = (
   },
   {
     key: "CompletionPercentage",
-    name: ContainerCopyMessages.MonitorJobs.Columns.completionPercentage,
+    name: t(Keys.containerCopy.monitorJobs.columns.completionPercentage),
     fieldName: "CompletionPercentage",
     minWidth: 110,
     maxWidth: 200,
@@ -59,7 +59,7 @@ export const getColumns = (
   },
   {
     key: "CopyJobStatus",
-    name: ContainerCopyMessages.MonitorJobs.Columns.status,
+    name: t(Keys.containerCopy.monitorJobs.columns.status),
     fieldName: "Status",
     minWidth: 130,
     maxWidth: 200,

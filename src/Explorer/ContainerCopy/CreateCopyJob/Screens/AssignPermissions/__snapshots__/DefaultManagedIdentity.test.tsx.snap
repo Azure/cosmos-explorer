@@ -71,7 +71,7 @@ exports[`DefaultManagedIdentity Edge Cases should handle null account 1`] = `
     <div
       class="toggle-label"
     >
-      Set the system-assigned managed identity as default for "undefined" by switching it on.
+      Set the system-assigned managed identity as default for "" by switching it on.
         
       <div
         data-testid="info-tooltip"

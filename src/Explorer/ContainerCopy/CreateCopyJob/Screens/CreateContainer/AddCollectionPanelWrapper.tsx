@@ -2,9 +2,9 @@ import { Stack, Text } from "@fluentui/react";
 import Explorer from "Explorer/Explorer";
 import { useSidePanel } from "hooks/useSidePanel";
 import { produce } from "immer";
+import { Keys, t } from "Localization";
 import React, { useCallback, useEffect } from "react";
 import { AddCollectionPanel } from "../../../../Panes/AddCollectionPanel/AddCollectionPanel";
-import ContainerCopyMessages from "../../../ContainerCopyMessages";
 import { useCopyJobContext } from "../../../Context/CopyJobContext";
 
 type AddCollectionPanelWrapperProps = {
@@ -17,11 +17,11 @@ const AddCollectionPanelWrapper: React.FunctionComponent<AddCollectionPanelWrapp
 
   useEffect(() => {
     const sidePanelStore = useSidePanel.getState();
-    if (sidePanelStore.headerText !== ContainerCopyMessages.createContainerHeading) {
-      sidePanelStore.setHeaderText(ContainerCopyMessages.createContainerHeading);
+    if (sidePanelStore.headerText !== t(Keys.containerCopy.selectContainers.createContainerHeading)) {
+      sidePanelStore.setHeaderText(t(Keys.containerCopy.selectContainers.createContainerHeading));
     }
     return () => {
-      sidePanelStore.setHeaderText(ContainerCopyMessages.createCopyJobPanelTitle);
+      sidePanelStore.setHeaderText(t(Keys.containerCopy.createCopyJob.panelTitle));
     };
   }, []);
 
@@ -41,7 +41,7 @@ const AddCollectionPanelWrapper: React.FunctionComponent<AddCollectionPanelWrapp
   return (
     <Stack className="addCollectionPanelWrapper">
       <Stack.Item className="addCollectionPanelHeader">
-        <Text className="themeText">{ContainerCopyMessages.createNewContainerSubHeading}</Text>
+        <Text className="themeText">{t(Keys.containerCopy.selectContainers.createNewContainerSubHeading)}</Text>
       </Stack.Item>
       <Stack.Item className="addCollectionPanelBody">
         <AddCollectionPanel explorer={explorer} isCopyJobFlow={true} onSubmitSuccess={handleAddCollectionSuccess} />
