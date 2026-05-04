@@ -7,19 +7,9 @@ import { dropDownChangeHandler } from "./DropDownChangeHandler";
 const createMockInitialState = (): CopyJobContextState => ({
   jobName: "test-job",
   migrationType: CopyJobMigrationType.Offline,
-  sourceReadAccessFromTarget: false,
+  sourceReadWriteAccessFromTarget: false,
   source: {
-    subscription: {
-      subscriptionId: "source-sub-id",
-      displayName: "Source Subscription",
-      state: "Enabled",
-      subscriptionPolicies: {
-        locationPlacementId: "test",
-        quotaId: "test",
-        spendingLimit: "Off",
-      },
-      authorizationSource: "test",
-    },
+    subscriptionId: "source-sub-id",
     account: {
       id: "source-account-id",
       name: "source-account",
@@ -50,7 +40,17 @@ const createMockInitialState = (): CopyJobContextState => ({
     containerId: "source-container",
   },
   target: {
-    subscriptionId: "target-sub-id",
+    subscription: {
+      subscriptionId: "target-sub-id",
+      displayName: "Target Subscription",
+      state: "Enabled",
+      subscriptionPolicies: {
+        locationPlacementId: "test",
+        quotaId: "test",
+        spendingLimit: "Off",
+      },
+      authorizationSource: "test",
+    },
     account: {
       id: "target-account-id",
       name: "target-account",
@@ -169,7 +169,7 @@ describe("dropDownChangeHandler", () => {
 
       expect(capturedState.source.databaseId).toBe("new-source-db");
       expect(capturedState.source.containerId).toBeUndefined();
-      expect(capturedState.source.subscription).toEqual(initialState.source.subscription);
+      expect(capturedState.source.subscriptionId).toEqual(initialState.source.subscriptionId);
       expect(capturedState.source.account).toEqual(initialState.source.account);
       expect(capturedState.target).toEqual(initialState.target);
     });
@@ -181,7 +181,7 @@ describe("dropDownChangeHandler", () => {
 
       expect(capturedState.jobName).toBe(initialState.jobName);
       expect(capturedState.migrationType).toBe(initialState.migrationType);
-      expect(capturedState.sourceReadAccessFromTarget).toBe(initialState.sourceReadAccessFromTarget);
+      expect(capturedState.sourceReadWriteAccessFromTarget).toBe(initialState.sourceReadWriteAccessFromTarget);
     });
   });
 
@@ -193,7 +193,7 @@ describe("dropDownChangeHandler", () => {
 
       expect(capturedState.source.containerId).toBe("new-source-container");
       expect(capturedState.source.databaseId).toBe(initialState.source.databaseId);
-      expect(capturedState.source.subscription).toEqual(initialState.source.subscription);
+      expect(capturedState.source.subscriptionId).toEqual(initialState.source.subscriptionId);
       expect(capturedState.source.account).toEqual(initialState.source.account);
       expect(capturedState.target).toEqual(initialState.target);
     });
@@ -215,7 +215,7 @@ describe("dropDownChangeHandler", () => {
 
       expect(capturedState.target.databaseId).toBe("new-target-db");
       expect(capturedState.target.containerId).toBeUndefined();
-      expect(capturedState.target.subscriptionId).toBe(initialState.target.subscriptionId);
+      expect(capturedState.target.subscription).toEqual(initialState.target.subscription);
       expect(capturedState.target.account).toEqual(initialState.target.account);
       expect(capturedState.source).toEqual(initialState.source);
     });
@@ -227,7 +227,7 @@ describe("dropDownChangeHandler", () => {
 
       expect(capturedState.jobName).toBe(initialState.jobName);
       expect(capturedState.migrationType).toBe(initialState.migrationType);
-      expect(capturedState.sourceReadAccessFromTarget).toBe(initialState.sourceReadAccessFromTarget);
+      expect(capturedState.sourceReadWriteAccessFromTarget).toBe(initialState.sourceReadWriteAccessFromTarget);
     });
   });
 
@@ -239,7 +239,7 @@ describe("dropDownChangeHandler", () => {
 
       expect(capturedState.target.containerId).toBe("new-target-container");
       expect(capturedState.target.databaseId).toBe(initialState.target.databaseId);
-      expect(capturedState.target.subscriptionId).toBe(initialState.target.subscriptionId);
+      expect(capturedState.target.subscription).toEqual(initialState.target.subscription);
       expect(capturedState.target.account).toEqual(initialState.target.account);
       expect(capturedState.source).toEqual(initialState.source);
     });

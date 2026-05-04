@@ -204,7 +204,7 @@ exports[`AddManagedIdentity Snapshot Tests renders loading state 1`] = `
     <span
       class="themeText css-110"
     >
-      Enable system-assigned managed identity on the test-target-account. To confirm, click the "Yes" button.
+      Enable system-assigned managed identity on the source-account-name. To confirm, click the "Yes" button.
     </span>
     <div
       class="ms-Stack css-125"
@@ -359,7 +359,7 @@ exports[`AddManagedIdentity Snapshot Tests renders with toggle on and popover vi
     <span
       class="themeText css-110"
     >
-      Enable system-assigned managed identity on the test-target-account. To confirm, click the "Yes" button.
+      Enable system-assigned managed identity on the source-account-name. To confirm, click the "Yes" button.
     </span>
     <div
       class="ms-Stack css-125"

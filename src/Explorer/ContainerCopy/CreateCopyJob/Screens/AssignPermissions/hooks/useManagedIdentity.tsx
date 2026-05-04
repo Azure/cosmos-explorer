@@ -26,18 +26,18 @@ const useManagedIdentity = (
   const handleAddSystemIdentity = useCallback(async (): Promise<void> => {
     try {
       setLoading(true);
-      const selectedTargetAccount = copyJobState?.target?.account;
+      const selectedSourceAccount = copyJobState?.source?.account;
       const {
-        subscriptionId: targetSubscriptionId,
-        resourceGroup: targetResourceGroup,
-        accountName: targetAccountName,
-      } = getAccountDetailsFromResourceId(selectedTargetAccount?.id) || {};
+        subscriptionId: sourceSubscriptionId,
+        resourceGroup: sourceResourceGroup,
+        accountName: sourceAccountName,
+      } = getAccountDetailsFromResourceId(selectedSourceAccount?.id) || {};
 
-      const updatedAccount = await updateIdentityFn(targetSubscriptionId, targetResourceGroup, targetAccountName);
+      const updatedAccount = await updateIdentityFn(sourceSubscriptionId, sourceResourceGroup, sourceAccountName);
       if (updatedAccount) {
         setCopyJobState((prevState) => ({
           ...prevState,
-          target: { ...prevState.target, account: updatedAccount },
+          source: { ...prevState.source, account: updatedAccount },
         }));
       }
     } catch (error) {
@@ -46,7 +46,7 @@ const useManagedIdentity = (
       setContextError(errorMessage);
       setLoading(false);
     }
-  }, [copyJobState?.target?.account?.id, updateIdentityFn, setCopyJobState]);
+  }, [copyJobState?.source?.account?.id, updateIdentityFn, setCopyJobState]);
 
   return { loading, handleAddSystemIdentity };
 };

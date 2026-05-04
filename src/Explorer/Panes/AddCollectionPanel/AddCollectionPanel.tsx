@@ -20,6 +20,7 @@ import { createCollection } from "Common/dataAccess/createCollection";
 import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
 import { configContext, Platform } from "ConfigContext";
 import * as DataModels from "Contracts/DataModels";
+import { AccountOverride } from "Contracts/DataModels";
 import { FullTextPoliciesComponent } from "Explorer/Controls/FullTextSeach/FullTextPoliciesComponent";
 import { VectorEmbeddingPoliciesComponent } from "Explorer/Controls/VectorSearch/VectorEmbeddingPoliciesComponent";
 import {
@@ -67,6 +68,8 @@ export interface AddCollectionPanelProps {
   isQuickstart?: boolean;
   isCopyJobFlow?: boolean;
   onSubmitSuccess?: (collectionData: { databaseId: string; collectionId: string }) => void;
+  targetAccountOverride?: AccountOverride;
+  externalDatabaseOptions?: IDropdownOption[];
 }
 
 export const DefaultVectorEmbeddingPolicy: DataModels.VectorEmbeddingPolicy = {
@@ -167,7 +170,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
           />
         )}
 
-        {!this.state.errorMessage && isFreeTierAccount() && (
+        {!this.state.errorMessage && isFreeTierAccount(this.props.targetAccountOverride) && (
           <PanelInfoErrorComponent
             message={getUpsellMessage(userContext.portalEnv, true, isFirstResourceCreated, true)}
             messageType="info"
@@ -644,53 +647,57 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             </Stack>
           )}
 
-          {!isServerlessAccount() && !this.state.createNewDatabase && this.isSelectedDatabaseSharedThroughput() && (
-            <Stack horizontal verticalAlign="center">
-              <Checkbox
-                label={t(Keys.panes.addCollection.provisionDedicatedThroughput, {
-                  collectionName: getCollectionName().toLocaleLowerCase(),
-                })}
-                checked={this.state.enableDedicatedThroughput}
-                styles={{
-                  text: { fontSize: 12, color: "var(--colorNeutralForeground1)" },
-                  checkbox: { width: 12, height: 12 },
-                  label: { padding: 0, alignItems: "center" },
-                  root: {
-                    selectors: {
-                      ":hover .ms-Checkbox-text": { color: "var(--colorNeutralForeground1)" },
+          {!isServerlessAccount(this.props.targetAccountOverride) &&
+            !this.state.createNewDatabase &&
+            this.isSelectedDatabaseSharedThroughput() && (
+              <Stack horizontal verticalAlign="center">
+                <Checkbox
+                  label={t(Keys.panes.addCollection.provisionDedicatedThroughput, {
+                    collectionName: getCollectionName().toLocaleLowerCase(),
+                  })}
+                  checked={this.state.enableDedicatedThroughput}
+                  styles={{
+                    text: { fontSize: 12, color: "var(--colorNeutralForeground1)" },
+                    checkbox: { width: 12, height: 12 },
+                    label: { padding: 0, alignItems: "center" },
+                    root: {
+                      selectors: {
+                        ":hover .ms-Checkbox-text": { color: "var(--colorNeutralForeground1)" },
+                      },
                     },
-                  },
-                }}
-                onChange={(ev: React.FormEvent<HTMLElement>, isChecked: boolean) =>
-                  this.setState({ enableDedicatedThroughput: isChecked })
-                }
-              />
-              <TooltipHost
-                directionalHint={DirectionalHint.bottomLeftEdge}
-                content={t(Keys.panes.addCollection.provisionDedicatedThroughputTooltip, {
-                  collectionName: getCollectionName().toLocaleLowerCase(),
-                  collectionNamePlural: getCollectionName(true).toLocaleLowerCase(),
-                })}
-              >
-                <Icon
-                  iconName="Info"
-                  className="panelInfoIcon"
-                  tabIndex={0}
-                  ariaLabel={t(Keys.panes.addCollection.provisionDedicatedThroughputTooltip, {
+                  }}
+                  onChange={(ev: React.FormEvent<HTMLElement>, isChecked: boolean) =>
+                    this.setState({ enableDedicatedThroughput: isChecked })
+                  }
+                />
+                <TooltipHost
+                  directionalHint={DirectionalHint.bottomLeftEdge}
+                  content={t(Keys.panes.addCollection.provisionDedicatedThroughputTooltip, {
                     collectionName: getCollectionName().toLocaleLowerCase(),
                     collectionNamePlural: getCollectionName(true).toLocaleLowerCase(),
                   })}
-                />
-              </TooltipHost>
-            </Stack>
-          )}
+                >
+                  <Icon
+                    iconName="Info"
+                    className="panelInfoIcon"
+                    tabIndex={0}
+                    ariaLabel={t(Keys.panes.addCollection.provisionDedicatedThroughputTooltip, {
+                      collectionName: getCollectionName().toLocaleLowerCase(),
+                      collectionNamePlural: getCollectionName(true).toLocaleLowerCase(),
+                    })}
+                  />
+                </TooltipHost>
+              </Stack>
+            )}
 
           {this.shouldShowCollectionThroughputInput() && !isFabricNative() && (
             <ThroughputInput
-              showFreeTierExceedThroughputTooltip={isFreeTierAccount() && !isFirstResourceCreated}
+              showFreeTierExceedThroughputTooltip={
+                isFreeTierAccount(this.props.targetAccountOverride) && !isFirstResourceCreated
+              }
               isDatabase={false}
               isSharded={this.state.isSharded}
-              isFreeTier={isFreeTierAccount()}
+              isFreeTier={isFreeTierAccount(this.props.targetAccountOverride)}
               isQuickstart={this.props.isQuickstart}
               setThroughputValue={(throughput: number) => (this.collectionThroughput = throughput)}
               setIsAutoscale={(isAutoscale: boolean) => (this.isCollectionAutoscale = isAutoscale)}
@@ -767,7 +774,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   <input
                     className="panelRadioBtn"
                     checked={this.state.enableAnalyticalStore}
-                    disabled={!isSynapseLinkEnabled()}
+                    disabled={!isSynapseLinkEnabled(this.props.targetAccountOverride)}
                     aria-label={t(Keys.panes.addCollection.enableAnalyticalStore)}
                     aria-checked={this.state.enableAnalyticalStore}
                     name="analyticalStore"
@@ -782,7 +789,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   <input
                     className="panelRadioBtn"
                     checked={!this.state.enableAnalyticalStore}
-                    disabled={!isSynapseLinkEnabled()}
+                    disabled={!isSynapseLinkEnabled(this.props.targetAccountOverride)}
                     aria-label={t(Keys.panes.addCollection.disableAnalyticalStore)}
                     aria-checked={!this.state.enableAnalyticalStore}
                     name="analyticalStore"
@@ -796,7 +803,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 </div>
               </Stack>
 
-              {!isSynapseLinkEnabled() && (
+              {!isSynapseLinkEnabled(this.props.targetAccountOverride) && (
                 <Stack className="panelGroupSpacing">
                   <Text variant="small" style={{ color: "var(--colorNeutralForeground1)" }}>
                     {t(Keys.panes.addCollection.analyticalStoreSynapseLinkRequired, {
@@ -814,7 +821,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   </Text>
                   <DefaultButton
                     text={t(Keys.panes.addCollection.enable)}
-                    onClick={() => this.props.explorer.openEnableSynapseLinkDialog()}
+                    onClick={() => this.props.explorer.openEnableSynapseLinkDialog(this.props.targetAccountOverride)}
                     style={{ height: 27, width: 80 }}
                     styles={{ label: { fontSize: 12 } }}
                   />
@@ -865,6 +872,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 <Stack id="collapsibleFullTextPolicySectionContent" styles={{ root: { position: "relative" } }}>
                   <Stack styles={{ root: { paddingLeft: 40 } }}>
                     <FullTextPoliciesComponent
+                      targetAccountOverride={this.props.targetAccountOverride}
                       fullTextPolicy={this.state.fullTextPolicy}
                       onFullTextPathChange={(
                         fullTextPolicy: DataModels.FullTextPolicy,
@@ -1000,6 +1008,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
   }
 
   private getDatabaseOptions(): IDropdownOption[] {
+    if (this.props.externalDatabaseOptions) {
+      return this.props.externalDatabaseOptions;
+    }
     return useDatabases.getState().databases?.map((database) => ({
       key: database.id(),
       text: database.id(),
@@ -1087,6 +1098,10 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       return false;
     }
 
+    if (this.props.targetAccountOverride) {
+      return false;
+    }
+
     const selectedDatabase = useDatabases
       .getState()
       .databases?.find((database) => database.id() === this.state.selectedDatabaseId);
@@ -1124,7 +1139,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
   // }
 
   private shouldShowCollectionThroughputInput(): boolean {
-    if (isServerlessAccount()) {
+    if (isServerlessAccount(this.props.targetAccountOverride)) {
       return false;
     }
 
@@ -1140,7 +1155,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
   }
 
   private shouldShowIndexingOptionsForFreeTierAccount(): boolean {
-    if (!isFreeTierAccount()) {
+    if (!isFreeTierAccount(this.props.targetAccountOverride)) {
       return false;
     }
 
@@ -1148,7 +1163,11 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
   }
 
   private shouldShowVectorSearchParameters() {
-    return isVectorSearchEnabled() && (isServerlessAccount() || this.shouldShowCollectionThroughputInput());
+    const targetAccount = this.props.targetAccountOverride;
+    return (
+      isVectorSearchEnabled(targetAccount) &&
+      (isServerlessAccount(targetAccount) || this.shouldShowCollectionThroughputInput())
+    );
   }
 
   private shouldShowFullTextSearchParameters() {
@@ -1227,7 +1246,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
   }
 
   private getAnalyticalStorageTtl(): number {
-    if (!isSynapseLinkEnabled()) {
+    if (!isSynapseLinkEnabled(this.props.targetAccountOverride)) {
       return undefined;
     }
 
@@ -1367,13 +1386,16 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       createMongoWildcardIndex: this.state.createMongoWildCardIndex,
       vectorEmbeddingPolicy,
       fullTextPolicy: this.state.fullTextPolicy,
+      targetAccountOverride: this.props.targetAccountOverride,
     };
 
     this.setState({ isExecuting: true });
 
     try {
       await createCollection(createCollectionParams);
-      await this.props.explorer.refreshAllDatabases();
+      if (!this.props.isCopyJobFlow) {
+        await this.props.explorer.refreshAllDatabases();
+      }
       if (this.props.isQuickstart) {
         const database = useDatabases.getState().findDatabaseWithId(databaseId);
         if (database) {
@@ -1402,7 +1424,13 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
         useSidePanel.getState().closeSidePanel();
       }
     } catch (error) {
-      const errorMessage: string = getErrorMessage(error);
+      const rawMessage: string = getErrorMessage(error);
+      const errorMessage =
+        this.props.isCopyJobFlow && (rawMessage.includes("AuthorizationFailed") || rawMessage.includes("403"))
+          ? `You do not have permission to create databases or containers on the destination account (${
+              this.props.targetAccountOverride?.accountName ?? "unknown"
+            }). Please ensure you have Contributor or Owner access.`
+          : rawMessage;
       this.setState({ isExecuting: false, errorMessage, showErrorDetails: true });
       const failureTelemetryData = { ...telemetryData, error: errorMessage, errorStack: getErrorStack(error) };
       TelemetryProcessor.traceFailure(Action.CreateCollection, failureTelemetryData, startKey);

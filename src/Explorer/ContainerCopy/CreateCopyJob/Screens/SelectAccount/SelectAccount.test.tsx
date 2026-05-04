@@ -30,18 +30,18 @@ describe("SelectAccount", () => {
       jobName: "",
       migrationType: CopyJobMigrationType.Online,
       source: {
-        subscription: null as any,
-        account: null as any,
-        databaseId: "",
-        containerId: "",
-      },
-      target: {
         subscriptionId: "",
         account: null as any,
         databaseId: "",
         containerId: "",
       },
-      sourceReadAccessFromTarget: false,
+      target: {
+        subscription: null as any,
+        account: null as any,
+        databaseId: "",
+        containerId: "",
+      },
+      sourceReadWriteAccessFromTarget: false,
     },
     setCopyJobState: mockSetCopyJobState,
     flow: { currentScreen: "selectAccount" },
@@ -68,7 +68,7 @@ describe("SelectAccount", () => {
       expect(container.firstChild).toHaveAttribute("data-test", "Panel:SelectAccountContainer");
       expect(container.firstChild).toHaveClass("selectAccountContainer");
 
-      expect(screen.getByText(/Please select a source account from which to copy/i)).toBeInTheDocument();
+      expect(screen.getByText(/Please select a destination account to copy to/i)).toBeInTheDocument();
 
       expect(screen.getByTestId("subscription-dropdown")).toBeInTheDocument();
       expect(screen.getByTestId("account-dropdown")).toBeInTheDocument();

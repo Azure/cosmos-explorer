@@ -8,7 +8,7 @@ exports[`SelectAccount Component Rendering should render correctly with snapshot
   <span
     class="themeText css-110"
   >
-    Please select a source account from which to copy.
+    Please select a destination account to copy to.
   </span>
   <div
     data-testid="subscription-dropdown"

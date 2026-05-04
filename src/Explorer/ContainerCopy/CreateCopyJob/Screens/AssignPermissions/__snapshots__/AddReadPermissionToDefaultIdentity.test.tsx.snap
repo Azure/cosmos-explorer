@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`AddReadPermissionToDefaultIdentity Component Edge Cases should handle missing source account 1`] = `
+exports[`AddReadWritePermissionToDefaultIdentity Component Edge Cases should handle missing source account 1`] = `
 <div>
   <div
     class="ms-Stack defaultManagedIdentityContainer css-109"
@@ -8,7 +8,7 @@ exports[`AddReadPermissionToDefaultIdentity Component Edge Cases should handle m
     <span
       class="toggle-label css-110"
     >
-      To allow data copy from source to the destination container, provide read access of the source account to the default identity of the destination account.
+      To allow data copy from source to the destination container, provide read-write access on the destination account to the default identity of the source account.
        
       <div
         data-testid="info-tooltip"
@@ -24,7 +24,7 @@ exports[`AddReadPermissionToDefaultIdentity Component Edge Cases should handle m
             rel="noopener noreferrer"
             target="_blank"
           >
-            Read permissions.
+            Read-write permissions.
           </a>
         </span>
       </div>
@@ -63,7 +63,7 @@ exports[`AddReadPermissionToDefaultIdentity Component Edge Cases should handle m
 </div>
 `;
 
-exports[`AddReadPermissionToDefaultIdentity Component Edge Cases should handle missing target account identity 1`] = `
+exports[`AddReadWritePermissionToDefaultIdentity Component Edge Cases should handle missing target account identity 1`] = `
 <div>
   <div
     class="ms-Stack defaultManagedIdentityContainer css-109"
@@ -71,7 +71,7 @@ exports[`AddReadPermissionToDefaultIdentity Component Edge Cases should handle m
     <span
       class="toggle-label css-110"
     >
-      To allow data copy from source to the destination container, provide read access of the source account to the default identity of the destination account.
+      To allow data copy from source to the destination container, provide read-write access on the destination account to the default identity of the source account.
        
       <div
         data-testid="info-tooltip"
@@ -87,7 +87,7 @@ exports[`AddReadPermissionToDefaultIdentity Component Edge Cases should handle m
             rel="noopener noreferrer"
             target="_blank"
           >
-            Read permissions.
+            Read-write permissions.
           </a>
         </span>
       </div>
@@ -126,7 +126,7 @@ exports[`AddReadPermissionToDefaultIdentity Component Edge Cases should handle m
 </div>
 `;
 
-exports[`AddReadPermissionToDefaultIdentity Component Rendering should render correctly when sourceReadAccessFromTarget is true 1`] = `
+exports[`AddReadWritePermissionToDefaultIdentity Component Rendering should render correctly when sourceReadWriteAccessFromTarget is true 1`] = `
 <div>
   <div
     class="ms-Stack defaultManagedIdentityContainer css-109"
@@ -134,7 +134,7 @@ exports[`AddReadPermissionToDefaultIdentity Component Rendering should render co
     <span
       class="toggle-label css-110"
     >
-      To allow data copy from source to the destination container, provide read access of the source account to the default identity of the destination account.
+      To allow data copy from source to the destination container, provide read-write access on the destination account to the default identity of the source account.
        
       <div
         data-testid="info-tooltip"
@@ -150,7 +150,7 @@ exports[`AddReadPermissionToDefaultIdentity Component Rendering should render co
             rel="noopener noreferrer"
             target="_blank"
           >
-            Read permissions.
+            Read-write permissions.
           </a>
         </span>
       </div>
@@ -189,7 +189,7 @@ exports[`AddReadPermissionToDefaultIdentity Component Rendering should render co
 </div>
 `;
 
-exports[`AddReadPermissionToDefaultIdentity Component Rendering should render correctly when toggle is on 1`] = `
+exports[`AddReadWritePermissionToDefaultIdentity Component Rendering should render correctly when toggle is on 1`] = `
 <div>
   <div
     class="ms-Stack defaultManagedIdentityContainer css-109"
@@ -197,7 +197,7 @@ exports[`AddReadPermissionToDefaultIdentity Component Rendering should render co
     <span
       class="toggle-label css-110"
     >
-      To allow data copy from source to the destination container, provide read access of the source account to the default identity of the destination account.
+      To allow data copy from source to the destination container, provide read-write access on the destination account to the default identity of the source account.
        
       <div
         data-testid="info-tooltip"
@@ -213,7 +213,7 @@ exports[`AddReadPermissionToDefaultIdentity Component Rendering should render co
             rel="noopener noreferrer"
             target="_blank"
           >
-            Read permissions.
+            Read-write permissions.
           </a>
         </span>
       </div>
@@ -255,12 +255,12 @@ exports[`AddReadPermissionToDefaultIdentity Component Rendering should render co
       <div
         data-testid="popover-title"
       >
-        Read permissions assigned to default identity.
+        Assign read-write permissions to default identity.
       </div>
       <div
         data-testid="popover-content"
       >
-        Assign read permissions of the source account to the default identity of the destination account. To confirm click the “Yes” button.
+        Assign read-write permissions on the destination account to the default identity of the source account. To confirm, click the "Yes" button.
       </div>
       <button
         data-testid="popover-cancel"
@@ -277,7 +277,7 @@ exports[`AddReadPermissionToDefaultIdentity Component Rendering should render co
 </div>
 `;
 
-exports[`AddReadPermissionToDefaultIdentity Component Rendering should render correctly with default state 1`] = `
+exports[`AddReadWritePermissionToDefaultIdentity Component Rendering should render correctly with default state 1`] = `
 <div>
   <div
     class="ms-Stack defaultManagedIdentityContainer css-109"
@@ -285,7 +285,7 @@ exports[`AddReadPermissionToDefaultIdentity Component Rendering should render co
     <span
       class="toggle-label css-110"
     >
-      To allow data copy from source to the destination container, provide read access of the source account to the default identity of the destination account.
+      To allow data copy from source to the destination container, provide read-write access on the destination account to the default identity of the source account.
        
       <div
         data-testid="info-tooltip"
@@ -301,7 +301,7 @@ exports[`AddReadPermissionToDefaultIdentity Component Rendering should render co
             rel="noopener noreferrer"
             target="_blank"
           >
-            Read permissions.
+            Read-write permissions.
           </a>
         </span>
       </div>
@@ -340,7 +340,7 @@ exports[`AddReadPermissionToDefaultIdentity Component Rendering should render co
 </div>
 `;
 
-exports[`AddReadPermissionToDefaultIdentity Component Rendering should render correctly with different context states 1`] = `
+exports[`AddReadWritePermissionToDefaultIdentity Component Rendering should render correctly with different context states 1`] = `
 <div>
   <div
     class="ms-Stack defaultManagedIdentityContainer css-109"
@@ -348,7 +348,7 @@ exports[`AddReadPermissionToDefaultIdentity Component Rendering should render co
     <span
       class="toggle-label css-110"
     >
-      To allow data copy from source to the destination container, provide read access of the source account to the default identity of the destination account.
+      To allow data copy from source to the destination container, provide read-write access on the destination account to the default identity of the source account.
        
       <div
         data-testid="info-tooltip"
@@ -364,7 +364,7 @@ exports[`AddReadPermissionToDefaultIdentity Component Rendering should render co
             rel="noopener noreferrer"
             target="_blank"
           >
-            Read permissions.
+            Read-write permissions.
           </a>
         </span>
       </div>
