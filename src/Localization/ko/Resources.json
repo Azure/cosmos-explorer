@@ -435,24 +435,18 @@
     "addDatabase": {
       "databaseLabel": "데이터베이스 {{suffix}}",
       "databaseIdLabel": "데이터베이스 ID",
-      "keyspaceIdLabel": "키스페이스 ID",
+      "keyspaceIdLabel": "keyspace ID",
       "databaseIdPlaceholder": "새 {{databaseLabel}} ID 입력",
       "databaseTooltip": "{{databaseLabel}}은(는) 하나 이상의 {{collectionsLabel}} 논리 컨테이너입니다.",
-      "shareThroughput": "{{collectionsLabel}} 전체에서 처리량 공유",
-      "shareThroughputTooltip": "{{databaseLabel}} 수준에서 프로비전된 처리량은 {{databaseLabel}} 내의 모든 {{collectionsLabel}}에서 공유됩니다.",
       "greaterThanError": "autopilot 처리량에 대해 {{minValue}} 보다 큰 값을 입력하세요.",
       "acknowledgeSpendError": "예상 {{period}} 지출을 확인하세요.",
       "acknowledgeSpendErrorMonthly": "월별 예상 지출을 확인하세요.",
-      "acknowledgeSpendErrorDaily": "예상 일별 지출을 확인하세요.",
-      "provisionSharedThroughputTitle": "공유 처리량 프로비전",
-      "provisionThroughputLabel": "처리량 프로비전"
+      "acknowledgeSpendErrorDaily": "예상 일별 지출을 확인하세요."
     },
     "addCollection": {
       "createNew": "새로 만들기",
       "useExisting": "기존 항목 사용",
       "databaseTooltip": "데이터베이스는 네임스페이스와 유사합니다. 데이터베이스는 {{collectionName}} 집합을 관리하는 단위입니다.",
-      "shareThroughput": "{{collectionName}}의 처리량 공유",
-      "shareThroughputTooltip": "데이터베이스 수준에서 구성된 처리량은 데이터베이스 내 모든 {{collectionName}}에서 공유됩니다.",
       "collectionIdLabel": "{{collectionName}} ID",
       "collectionIdTooltip": "{{collectionName}}의 고유 식별자이며 REST 및 모든 SDK를 통해 ID 기반 라우팅에 사용됩니다.",
       "collectionIdPlaceholder": "e.g., {{collectionName}}1",
@@ -705,13 +699,13 @@
       "partitionKeyWarning": "대상 컨테이너가 이미 존재하면 안 됩니다. Explorer가 새 대상 컨테이너를 생성합니다."
     },
     "cassandraAddCollection": {
-      "keyspaceLabel": "키스페이스 이름",
-      "keyspaceTooltip": "기존 키스페이스를 선택하거나 새 키스페이스 ID를 입력하세요.",
+      "keyspaceLabel": "keyspace 이름",
+      "keyspaceTooltip": "기존 keyspace를 선택하거나 새 keyspace ID를 입력하세요.",
       "tableIdLabel": "테이블을 만들려면 CQL 명령을 입력하세요.",
       "enterTableId": "테이블 ID 입력",
       "tableSchemaAriaLabel": "테이블 스키마",
       "provisionDedicatedThroughput": "이 테이블에 대한 전용 처리량 프로비전",
-      "provisionDedicatedThroughputTooltip": "키스페이스에 처리량이 프로비전된 경우, 테이블에 전용 처리량을 선택적으로 프로비전할 수 있습니다. 이 전용 처리량은 키스페이스 내 다른 테이블과 공유되지 않으며, 키스페이스에 프로비전한 처리량에 포함되지 않습니다. 이 전용 처리량은 키스페이스 수준에서 프로비전한 처리량과 별도로 청구됩니다."
+      "provisionDedicatedThroughputTooltip": "keyspace에 처리량이 프로비전된 경우, 테이블에 전용 처리량을 선택적으로 프로비전할 수 있습니다. 이 전용 처리량은 keyspace 내 다른 테이블과 공유되지 않으며, keyspace에 프로비전한 처리량에 포함되지 않습니다. 이 전용 처리량은 keyspace 수준에서 프로비전한 처리량과 별도로 청구됩니다."
     },
     "tables": {
       "addProperty": "속성 추가",
@@ -765,7 +759,7 @@
         "containerPolicies": "컨테이너 정책",
         "throughputBuckets": "처리량 버킷",
         "globalSecondaryIndexPreview": "전역 보조 인덱스(미리 보기)",
-        "maskingPolicyPreview": "마스킹 정책(미리 보기)"
+        "maskingPolicyPreview": "마스킹 정책"
       },
       "mongoNotifications": {
         "selectTypeWarning": "각 인덱스 유형을 선택하세요.",
@@ -889,7 +883,7 @@
         "freeTierLearnMore": "자세히 알아보세요.",
         "throughputRuS": "처리량(RU/s)",
         "autoScaleCustomSettings": "계정에 컨테이너 수준에서 처리량 설정을 제한하는 사용자 지정 설정이 있습니다. 변경하려면 Cosmos DB 엔지니어링 팀 담당자와 협력하세요.",
-        "keyspaceSharedThroughput": "이 테이블 공유 처리량은 키스페이스에서 구성되어 있습니다.",
+        "keyspaceSharedThroughput": "이 테이블 공유 처리량은 keyspace에서 구성되어 있습니다.",
         "throughputRangeLabel": "처리량({{min}} - {{max}} RU/s)",
         "unlimited": "무제한"
       },
@@ -961,7 +955,14 @@
         "bucketLabel": "버킷 {{id}}",
         "dataExplorerQueryBucket": " (데이터 탐색기 쿼리 버킷)",
         "active": "활성",
-        "inactive": "비활성"
+        "inactive": "비활성",
+        "defaultBucketLabel": "기본 처리량 버킷",
+        "defaultBucketPlaceholder": "기본 처리량 버킷 선택",
+        "defaultBucketTooltip": "기본 처리량 버킷은 특정 버킷을 지정하지 않는 작업에 사용됩니다.",
+        "defaultBucketTooltipLearnMore": "자세히 알아보세요.",
+        "noDefaultBucketSelected": "기본 처리량 버킷이 선택되지 않음",
+        "bucketOptionLabel": "버킷 {{id}} - {{percentage}}%",
+        "bucketNotActive": "버킷 {{id}}이(가) 활성 상태가 아닙니다."
       }
     }
   }
