@@ -33,7 +33,8 @@
     "publish": "Pubblica",
     "browse": "Sfoglia",
     "increaseValueBy1": "Aumentare il valore di 1",
-    "decreaseValueBy1": "Diminuisci il valore di 1"
+    "decreaseValueBy1": "Diminuisci il valore di 1",
+    "preview": "Anteprima"
   },
   "splashScreen": {
     "title": {
@@ -420,6 +421,7 @@
     "deleteDatabase": {
       "panelTitle": "Elimina {{databaseName}}",
       "warningMessage": "Avviso! L'azione che si sta per eseguire non può essere annullata. Se si continua, la risorsa verrà definitivamente eliminata insieme a tutte le relative risorse figlio.",
+      "copyableId": "ID {{databaseName}}:",
       "confirmPrompt": "Conferma digitando l'ID {{databaseName}} (nome)",
       "inputMismatch": "Il nome di input {{databaseName}} \"{{input}}\" non corrisponde all'elemento {{databaseName}} selezionato \"{{selectedId}}\"",
       "feedbackTitle": "Aiutaci a migliorare Azure Cosmos DB!",
@@ -427,6 +429,8 @@
     },
     "deleteCollection": {
       "panelTitle": "Elimina {{collectionName}}",
+      "warningMessage": "Avviso! L'azione che si sta per eseguire non può essere annullata. Se si continua, la risorsa verrà definitivamente eliminata insieme a tutte le relative risorse figlio.",
+      "copyableId": "ID {{collectionName}}:",
       "confirmPrompt": "Conferma digitando l'ID {{collectionName}}",
       "inputMismatch": "L'ID input {{input}} non corrisponde all'elemento {{selectedId}} selezionato",
       "feedbackTitle": "Aiutaci a migliorare Azure Cosmos DB!",
@@ -435,24 +439,18 @@
     "addDatabase": {
       "databaseLabel": "Database {{suffix}}",
       "databaseIdLabel": "ID database",
-      "keyspaceIdLabel": "ID spazio chiavi",
+      "keyspaceIdLabel": "ID keyspace",
       "databaseIdPlaceholder": "Digitare un nuovo ID {{databaseLabel}}",
       "databaseTooltip": "Un {{databaseLabel}} è un contenitore logico di una o più {{collectionsLabel}}",
-      "shareThroughput": "Condividi velocità effettiva in {{collectionsLabel}}",
-      "shareThroughputTooltip": "La velocità effettiva con provisioning al livello {{databaseLabel}} sarà condivisa tra tutte le {{collectionsLabel}} all'interno di {{databaseLabel}}.",
       "greaterThanError": "Immettere un valore maggiore di {{minValue}} per la velocità effettiva di Autopilot",
       "acknowledgeSpendError": "Confermare la spesa stimata di {{period}}.",
       "acknowledgeSpendErrorMonthly": "Confermare la spesa mensile stimata.",
-      "acknowledgeSpendErrorDaily": "Confermare la spesa giornaliera stimata.",
-      "provisionSharedThroughputTitle": "Provisioning velocità effettiva condivisa",
-      "provisionThroughputLabel": "Provisioning velocità effettiva"
+      "acknowledgeSpendErrorDaily": "Confermare la spesa giornaliera stimata."
     },
     "addCollection": {
       "createNew": "Crea nuovo",
       "useExisting": "Usa esistente",
       "databaseTooltip": "Un database è analogo a uno spazio dei nomi. È l'unità di gestione per un set di {{collectionName}}.",
-      "shareThroughput": "Condividi velocità effettiva in {{collectionName}}",
-      "shareThroughputTooltip": "La velocità effettiva configurata a livello di database sarà condivisa tra tutte le {{collectionName}} all'interno del database.",
       "collectionIdLabel": "ID {{collectionName}}",
       "collectionIdTooltip": "Identificatore univoco per {{collectionName}} e usato per il routing basato su IP in REST e in tutti gli SDK.",
       "collectionIdPlaceholder": "Ad esempio, {{collectionName}}1",
@@ -705,13 +703,13 @@
       "partitionKeyWarning": "Il contenitore di destinazione non deve essere già presente. Esplora dati creerà un nuovo contenitore di destinazione per l'utente."
     },
     "cassandraAddCollection": {
-      "keyspaceLabel": "Nome spazio chiavi",
-      "keyspaceTooltip": "Selezionare uno spazio chiavi esistente o inserire un nuovo ID spazio chiavi.",
+      "keyspaceLabel": "Nome keyspace",
+      "keyspaceTooltip": "Seleziona un keyspace esistente o inserisci un nuovo ID keyspace.",
       "tableIdLabel": "Immettere il comando CQL per creare la tabella.",
       "enterTableId": "Immetti ID tabella",
       "tableSchemaAriaLabel": "Schema della tabella",
       "provisionDedicatedThroughput": "Eseguire il provisioning della velocità effettiva dedicata per questa tabella",
-      "provisionDedicatedThroughputTooltip": "È possibile effettuare facoltativamente il provisioning di una velocità effettiva dedicata per una tabella all'interno di uno spazio chiavi che ha già una velocità con provisioning. Questa velocità effettiva dedicata non sarà condivisa con altre tabelle nello spazio chiavi e non verrà conteggiata nella velocità con provisioning per lo spazio chiavi. Questa velocità effettiva verrà fatturata in aggiunta a quella con provisioning a livello di spazio chiavi."
+      "provisionDedicatedThroughputTooltip": "È possibile effettuare facoltativamente il provisioning di una capacità effettiva dedicata per una tabella all'interno di un keyspace che ha già una capacità con provisioning. Questa capacità effettiva dedicata non sarà condivisa con altre tabelle nel keyspace e non verrà conteggiata nella capacità con provisioning per il keyspace. Questa capacità effettiva verrà fatturata in aggiunta a quella con provisioning a livello di keyspace."
     },
     "tables": {
       "addProperty": "Aggiungi proprietà",
@@ -765,7 +763,7 @@
         "containerPolicies": "Criteri contenitore",
         "throughputBuckets": "Bucket di velocità effettiva",
         "globalSecondaryIndexPreview": "Indice secondario globale (anteprima)",
-        "maskingPolicyPreview": "Criteri di mascheramento (anteprima)"
+        "maskingPolicyPreview": "Criteri di maschera"
       },
       "mongoNotifications": {
         "selectTypeWarning": "Selezionare un tipo per ogni indice.",
@@ -889,7 +887,7 @@
         "freeTierLearnMore": "Altre informazioni.",
         "throughputRuS": "Unità elaborate (UR/sec)",
         "autoScaleCustomSettings": "L'account ha impostazioni personalizzate che impediscono l'impostazione della velocità effettiva a livello di contenitore. Collaborare con il punto di contatto del team tecnico di Cosmos DB per apportare modifiche.",
-        "keyspaceSharedThroughput": "La velocità effettiva condivisa di questa tabella è configurata nello spazio delle chiavi",
+        "keyspaceSharedThroughput": "La capacità effettiva condivisa di questa tabella è configurata nel keyspace",
         "throughputRangeLabel": "Velocità effettiva ({{min}}-{{max}} UR/s)",
         "unlimited": "senza limiti"
       },
@@ -961,8 +959,38 @@
         "bucketLabel": "Bucket {{id}}",
         "dataExplorerQueryBucket": " (Bucket di query Esplora dati)",
         "active": "Attivo",
-        "inactive": "Inattivo"
+        "inactive": "Inattivo",
+        "defaultBucketLabel": "Contenitore di velocità effettiva predefinito",
+        "defaultBucketPlaceholder": "Selezionare un contenitore di velocità effettiva predefinito",
+        "defaultBucketTooltip": "Il contenitore di velocità effettiva predefinito viene usato per le operazioni che non specificano un contenitore particolare.",
+        "defaultBucketTooltipLearnMore": "Altre informazioni.",
+        "noDefaultBucketSelected": "Nessun contenitore di velocità effettiva predefinito selezionato",
+        "bucketOptionLabel": "Contenitore {{id}} - {{percentage}}%",
+        "bucketNotActive": "Il contenitore {{id}} non è attivo."
       }
+    },
+    "vectorEmbeddingPolicies": {
+      "vectorEmbeddingTitle": "Incorporamento vettoriale {{index}}",
+      "path": "Percorso",
+      "dataType": "Tipo di dati",
+      "distanceFunction": "Funzione di distanza",
+      "dimensions": "Dimensioni",
+      "indexType": "Tipo di indice",
+      "quantizationByteSize": "Dimensione di quantizzazione in byte",
+      "quantizationByteSizeTooltip": "Viene impostato dinamicamente dal {{containerName}} se lasciato vuoto oppure può essere impostato su un numero fisso",
+      "quantizationByteSizeTooltipContainerName": "contenitore",
+      "quantizationByteSizeTooltipGlobalSecondaryIndexName": "indice secondario globale",
+      "quantizerType": "Tipo di quantizzatore",
+      "quantizerTypeTooltip": "Metodo di quantizzazione utilizzato dall'indice vettoriale.",
+      "indexingSearchListSize": "Indicizzazione delle dimensioni dell'elenco di ricerca",
+      "vectorIndexShardKey": "Chiave di partizione dell'indice vettoriale",
+      "addVectorEmbedding": "Aggiungere l'incorporamento vettoriale",
+      "pathEmptyError": "Il percorso non deve essere vuoto",
+      "pathDuplicateError": "Il percorso è già definito",
+      "dimensionRangeError": "La dimensione deve essere maggiore di 0 e minore o uguale a 4096",
+      "dimensionFlatIndexError": "La dimensione massima consentita per l'indice flat è 505",
+      "quantizationByteSizeRangeError": "La dimensione di quantizzazione in byte deve essere maggiore di 0 e minore o uguale a 512",
+      "indexingSearchListSizeRangeError": "La dimensione dell'elenco di ricerca di indicizzazione deve essere maggiore o uguale a 25 e minore o uguale a 500"
     }
   }
 }
