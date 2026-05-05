@@ -33,7 +33,8 @@
     "publish": "Опубликовать",
     "browse": "Обзор",
     "increaseValueBy1": "Увеличить значение на 1",
-    "decreaseValueBy1": "Уменьшить значение на 1"
+    "decreaseValueBy1": "Уменьшить значение на 1",
+    "preview": "Предварительная версия"
   },
   "splashScreen": {
     "title": {
@@ -420,6 +421,7 @@
     "deleteDatabase": {
       "panelTitle": "Удалить {{databaseName}}",
       "warningMessage": "Предупреждение! Действие, которое вы собираетесь предпринять, невозможно отменить. Если вы продолжите, ресурс и все его дочерние ресурсы будут удалены без возможности восстановления.",
+      "copyableId": "{{databaseName}} ИД:",
       "confirmPrompt": "Подтвердите, введя идентификатор {{databaseName}} (имя)",
       "inputMismatch": "Введённое имя базы данных {{databaseName}} \"{{input}}\" не соответствует выбранному {{databaseName}} \"{{selectedId}}\"",
       "feedbackTitle": "Помогите нам улучшить Azure Cosmos DB!",
@@ -427,6 +429,8 @@
     },
     "deleteCollection": {
       "panelTitle": "Удалить {{collectionName}}",
+      "warningMessage": "Предупреждение! Действие, которое вы собираетесь предпринять, невозможно отменить. Если вы продолжите, ресурс и все его дочерние ресурсы будут удалены без возможности восстановления.",
+      "copyableId": "{{collectionName}} ИД:",
       "confirmPrompt": "Подтвердите, введя идентификатор {{collectionName}}",
       "inputMismatch": "Введённое имя базы данных {{input}} не соответствует выбранному {{selectedId}}",
       "feedbackTitle": "Помогите нам улучшить Azure Cosmos DB!",
@@ -964,6 +968,29 @@
         "bucketOptionLabel": "Контейнер {{id}} — {{percentage}}%",
         "bucketNotActive": "Контейнер {{id}} неактивен."
       }
+    },
+    "vectorEmbeddingPolicies": {
+      "vectorEmbeddingTitle": "Векторное встраивание {{index}}",
+      "path": "Путь",
+      "dataType": "Тип данных",
+      "distanceFunction": "Функция расстояния",
+      "dimensions": "Измерения",
+      "indexType": "Тип индекса",
+      "quantizationByteSize": "Размер байт квантования",
+      "quantizationByteSizeTooltip": "Это значение динамически устанавливается посредством {{containerName}}, если оставить поле пустым, или его можно настроить в виде фиксированного числа",
+      "quantizationByteSizeTooltipContainerName": "контейнер",
+      "quantizationByteSizeTooltipGlobalSecondaryIndexName": "глобальный вторичный индекс",
+      "quantizerType": "Тип квантизатора",
+      "quantizerTypeTooltip": "Метод квантования, используемый векторным индексом.",
+      "indexingSearchListSize": "Размер списка поиска при индексировании",
+      "vectorIndexShardKey": "Ключ экстента векторного индекса",
+      "addVectorEmbedding": "Добавить векторное встраивание",
+      "pathEmptyError": "Путь не должен быть пустым",
+      "pathDuplicateError": "Путь уже определен",
+      "dimensionRangeError": "Измерение должно быть больше 0 и меньше или равно 4096",
+      "dimensionFlatIndexError": "Максимально допустимое измерение для плоского индекса: 505",
+      "quantizationByteSizeRangeError": "Размер байта квантования должен быть больше 0 и меньше или равен 512",
+      "indexingSearchListSizeRangeError": "Размер списка поиска при индексировании должен быть не меньше 25 и не больше 500"
     }
   }
 }

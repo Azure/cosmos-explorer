@@ -33,7 +33,8 @@
     "publish": "Yayımla",
     "browse": "Gözat",
     "increaseValueBy1": "Değeri 1 artır",
-    "decreaseValueBy1": "Değeri 1 azalt"
+    "decreaseValueBy1": "Değeri 1 azalt",
+    "preview": "Önizleme"
   },
   "splashScreen": {
     "title": {
@@ -420,6 +421,7 @@
     "deleteDatabase": {
       "panelTitle": "{{databaseName}} veritabanını sil",
       "warningMessage": "Uyarı! Gerçekleştirmek üzere olduğunuz eylem geri alınamaz. Devam etmeniz durumunda, bu kaynak ve tüm alt kaynakları kalıcı olarak silinir.",
+      "copyableId": "{{databaseName}} kimliği:",
       "confirmPrompt": "{{databaseName}} kimliğini (adını) yazarak onaylayın",
       "inputMismatch": "{{databaseName}} girişi \"{{input}}\" adı seçilen {{databaseName}} \"{{selectedId}}\" ile eşleşmiyor",
       "feedbackTitle": "Azure Cosmos DB’yi geliştirmemize yardımcı olun!",
@@ -427,6 +429,8 @@
     },
     "deleteCollection": {
       "panelTitle": "{{collectionName}} koleksiyonunu sil",
+      "warningMessage": "Uyarı! Gerçekleştirmek üzere olduğunuz eylem geri alınamaz. Devam etmeniz durumunda, bu kaynak ve tüm alt kaynakları kalıcı olarak silinir.",
+      "copyableId": "{{collectionName}} kimliği:",
       "confirmPrompt": "{{collectionName}} kimliğini yazarak onaylayın",
       "inputMismatch": "{{input}} giriş kimliği seçilen {{selectedId}} ile eşleşmiyor",
       "feedbackTitle": "Azure Cosmos DB’yi geliştirmemize yardımcı olun!",
@@ -964,6 +968,29 @@
         "bucketOptionLabel": "{{id}} demeti - %{{percentage}}",
         "bucketNotActive": "{{id}} demeti etkin değil."
       }
+    },
+    "vectorEmbeddingPolicies": {
+      "vectorEmbeddingTitle": "Vektör eklemesi {{index}}",
+      "path": "Yol",
+      "dataType": "Veri türü",
+      "distanceFunction": "Uzaklık işlevi",
+      "dimensions": "Boyutlar",
+      "indexType": "Dizin türü",
+      "quantizationByteSize": "Bölme bayt boyutu",
+      "quantizationByteSizeTooltip": "Bu boş bırakılırsa {{containerName}} tarafından dinamik olarak ayarlanır veya sabit bir sayıya ayarlanabilir",
+      "quantizationByteSizeTooltipContainerName": "kapsayıcı",
+      "quantizationByteSizeTooltipGlobalSecondaryIndexName": "genel ikincil dizin",
+      "quantizerType": "Bölme türü",
+      "quantizerTypeTooltip": "Vektör dizini tarafından kullanılan bölme yöntemi.",
+      "indexingSearchListSize": "Dizin arama listesi boyutu",
+      "vectorIndexShardKey": "Vektör dizini parça anahtarı",
+      "addVectorEmbedding": "Vektör eklemesi ekle",
+      "pathEmptyError": "Yol boş olmamalıdır",
+      "pathDuplicateError": "Yol zaten tanımlandı",
+      "dimensionRangeError": "Boyut 0’dan büyük ve 4096’dan küçük veya buna eşit olmalıdır",
+      "dimensionFlatIndexError": "Düz dizin için izin verilen boyut üst sınırı 505",
+      "quantizationByteSizeRangeError": "Bölme bayt boyutu 0'dan büyük ve 512'den küçük veya buna eşit olmalıdır",
+      "indexingSearchListSizeRangeError": "Dizin arama listesi boyutu 25'ten büyük veya buna eşit ve 500'den küçük veya buna eşit olmalıdır"
     }
   }
 }

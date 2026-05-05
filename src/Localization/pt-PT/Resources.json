@@ -33,7 +33,8 @@
     "publish": "Publicar",
     "browse": "Procurar",
     "increaseValueBy1": "Aumentar valor em 1",
-    "decreaseValueBy1": "Diminuir valor em 1"
+    "decreaseValueBy1": "Diminuir valor em 1",
+    "preview": "Pré-visualização"
   },
   "splashScreen": {
     "title": {
@@ -420,6 +421,7 @@
     "deleteDatabase": {
       "panelTitle": "Eliminar {{databaseName}}",
       "warningMessage": "Aviso! A ação que está prestes a efetuar não pode ser anulada. Se continuar, este recurso e todos os seus recursos subordinados serão eliminados permanentemente.",
+      "copyableId": "{{databaseName}} Id:",
       "confirmPrompt": "Confirmar escrevendo o {{databaseName}} id (nome)",
       "inputMismatch": "O nome \"{{databaseName}}\" da entrada {{input}}  não corresponde ao {{databaseName}}  \"{{selectedId}}\" selecionado.",
       "feedbackTitle": "Ajude-nos a melhorar o Azure Cosmos DB!",
@@ -427,6 +429,8 @@
     },
     "deleteCollection": {
       "panelTitle": "Eliminar {{collectionName}}",
+      "warningMessage": "Aviso! A ação que está prestes a efetuar não pode ser anulada. Se continuar, este recurso e todos os seus recursos subordinados serão eliminados permanentemente.",
+      "copyableId": "{{collectionName}} Id:",
       "confirmPrompt": "Confirmar escrevendo o {{collectionName}} id",
       "inputMismatch": "O ID de entrada {{input}} não corresponde ao {{selectedId}} selecionado",
       "feedbackTitle": "Ajude-nos a melhorar o Azure Cosmos DB!",
@@ -964,6 +968,29 @@
         "bucketOptionLabel": "Bucket {{id}} - {{percentage}}%",
         "bucketNotActive": "O bucket {{id}} não está ativo."
       }
+    },
+    "vectorEmbeddingPolicies": {
+      "vectorEmbeddingTitle": "Incorporação de vetor {{index}}",
+      "path": "Caminho",
+      "dataType": "Tipo de dados",
+      "distanceFunction": "Função de distância",
+      "dimensions": "Dimensões",
+      "indexType": "Tipo de índice",
+      "quantizationByteSize": "Tamanho do byte de quantização",
+      "quantizationByteSizeTooltip": "Isto é definido dinamicamente pelo {{containerName}} se for deixado em branco, ou pode ser definido para um número fixo",
+      "quantizationByteSizeTooltipContainerName": "contentor",
+      "quantizationByteSizeTooltipGlobalSecondaryIndexName": "índice secundário global",
+      "quantizerType": "Tipo de quantização",
+      "quantizerTypeTooltip": "O método de quantização utilizado pelo índice de vetores.",
+      "indexingSearchListSize": "Tamanho da lista de pesquisa para indexação",
+      "vectorIndexShardKey": "Chave de fragmento do índice de vetores",
+      "addVectorEmbedding": "Adicionar incorporação de vetor",
+      "pathEmptyError": "O caminho não deve estar vazio",
+      "pathDuplicateError": "O caminho já está definido",
+      "dimensionRangeError": "A dimensão tem de ser maior do que 0 e menor ou igual a 4096",
+      "dimensionFlatIndexError": "A dimensão máxima permitida para o índice plano é 505",
+      "quantizationByteSizeRangeError": "O tamanho do byte de quantização tem de ser superior a 0 e inferior ou igual a 512",
+      "indexingSearchListSizeRangeError": "O tamanho da lista de pesquisa de indexação tem de ser maior ou igual a 25 e menor ou igual a 500"
     }
   }
 }

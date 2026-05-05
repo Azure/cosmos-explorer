@@ -33,7 +33,8 @@
     "publish": "Terbitkan",
     "browse": "Telusuri",
     "increaseValueBy1": "Tambah nilai sebesar 1",
-    "decreaseValueBy1": "Kurangi nilai sebesar 1"
+    "decreaseValueBy1": "Kurangi nilai sebesar 1",
+    "preview": "Pratinjau"
   },
   "splashScreen": {
     "title": {
@@ -420,6 +421,7 @@
     "deleteDatabase": {
       "panelTitle": "Hapus {{databaseName}}",
       "warningMessage": "Peringatan! Tindakan yang akan Anda lakukan tidak dapat dibatalkan. Melanjutkan akan menghapus sumber daya dan semua sumber daya anaknya secara permanen.",
+      "copyableId": "ID {{databaseName}}:",
       "confirmPrompt": "Konfirmasikan dengan mengetik id {{databaseName}} (nama)",
       "inputMismatch": "Nama {{databaseName}} input \"{{input}}\" tidak cocok dengan {{databaseName}} \"{{selectedId}}\" yang dipilih",
       "feedbackTitle": "Bantuan kami meningkatkan Azure Cosmos DB!",
@@ -427,6 +429,8 @@
     },
     "deleteCollection": {
       "panelTitle": "Hapus {{collectionName}}",
+      "warningMessage": "Peringatan! Tindakan yang akan Anda lakukan tidak dapat dibatalkan. Melanjutkan akan menghapus sumber daya dan semua sumber daya anaknya secara permanen.",
+      "copyableId": "ID {{collectionName}}:",
       "confirmPrompt": "Konfirmasikan dengan mengetik id {{collectionName}}",
       "inputMismatch": "Id input {{input}} tidak cocok dengan {{selectedId}} yang dipilih",
       "feedbackTitle": "Bantuan kami meningkatkan Azure Cosmos DB!",
@@ -964,6 +968,29 @@
         "bucketOptionLabel": "Wadah {{id}} - {{percentage}}%",
         "bucketNotActive": "Wadah {{id}} tidak aktif."
       }
+    },
+    "vectorEmbeddingPolicies": {
+      "vectorEmbeddingTitle": "Penyematan vektor {{index}}",
+      "path": "Jalur",
+      "dataType": "Tipe data",
+      "distanceFunction": "Fungsi jarak",
+      "dimensions": "Dimensi",
+      "indexType": "Tipe indeks",
+      "quantizationByteSize": "Ukuran byte kuantisasi",
+      "quantizationByteSizeTooltip": "Ukuran ini diatur secara dinamis oleh {{containerName}} jika dibiarkan kosong, atau dapat diatur ke angka tetap",
+      "quantizationByteSizeTooltipContainerName": "kontainer",
+      "quantizationByteSizeTooltipGlobalSecondaryIndexName": "indeks sekunder global",
+      "quantizerType": "Tipe penguantisasi",
+      "quantizerTypeTooltip": "Metode kuantisasi yang digunakan oleh indeks vektor.",
+      "indexingSearchListSize": "Ukuran daftar pencarian pengindeks",
+      "vectorIndexShardKey": "Kunci pecahan indeks vektor",
+      "addVectorEmbedding": "Tambahkan penyematan vektor",
+      "pathEmptyError": "Jalur tidak boleh kosong",
+      "pathDuplicateError": "Jalur sudah ditentukan",
+      "dimensionRangeError": "Dimensi harus lebih besar dari 0 dan kurang dari atau sama dengan 4096",
+      "dimensionFlatIndexError": "Dimensi maksimum yang diizinkan untuk indeks datar adalah 505",
+      "quantizationByteSizeRangeError": "Ukuran byte kuantisasi harus lebih besar dari 0 dan kurang dari atau sama dengan 512",
+      "indexingSearchListSizeRangeError": "Ukuran daftar pencarian pengindeks harus lebih besar dari atau sama dengan 25 dan kurang dari atau sama dengan 500"
     }
   }
 }

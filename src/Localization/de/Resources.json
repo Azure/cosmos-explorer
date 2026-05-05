@@ -33,7 +33,8 @@
     "publish": "Veröffentlichen",
     "browse": "Durchsuchen",
     "increaseValueBy1": "Wert um 1 erhöhen",
-    "decreaseValueBy1": "Wert um 1 verringern"
+    "decreaseValueBy1": "Wert um 1 verringern",
+    "preview": "Vorschau"
   },
   "splashScreen": {
     "title": {
@@ -420,6 +421,7 @@
     "deleteDatabase": {
       "panelTitle": "{{databaseName}} löschen",
       "warningMessage": "Warnung! Die Aktion, die Sie ausführen möchten, kann nicht rückgängig gemacht werden. Wenn Sie fortfahren, werden diese Ressource und alle untergeordneten Ressourcen dauerhaft gelöscht.",
+      "copyableId": "{{databaseName}}-ID:",
       "confirmPrompt": "Durch Eingabe der {{databaseName}}-ID (Name) bestätigen",
       "inputMismatch": "Eingabe {{databaseName}} Name „{{input}}“ stimmt nicht mit dem ausgewählten {{databaseName}} „{{selectedId}}“ überein.",
       "feedbackTitle": "Helfen Sie uns, Azure Cosmos DB zu verbessern!",
@@ -427,6 +429,8 @@
     },
     "deleteCollection": {
       "panelTitle": "{{collectionName}} löschen",
+      "warningMessage": "Warnung! Die Aktion, die Sie ausführen möchten, kann nicht rückgängig gemacht werden. Wenn Sie fortfahren, werden diese Ressource und alle untergeordneten Ressourcen dauerhaft gelöscht.",
+      "copyableId": "{{collectionName}}-ID:",
       "confirmPrompt": "Durch Eingabe der {{collectionName}}-ID bestätigen",
       "inputMismatch": "Die Eingabe-ID {{input}} stimmt nicht mit der ausgewählten {{selectedId}} überein.",
       "feedbackTitle": "Helfen Sie uns, Azure Cosmos DB zu verbessern!",
@@ -964,6 +968,29 @@
         "bucketOptionLabel": "Bucket {{id}} – {{percentage}} %",
         "bucketNotActive": "Bucket {{id}} ist nicht aktiv."
       }
+    },
+    "vectorEmbeddingPolicies": {
+      "vectorEmbeddingTitle": "Vektoreinbettung {{index}}",
+      "path": "Pfad",
+      "dataType": "Datentyp",
+      "distanceFunction": "Distanzfunktion",
+      "dimensions": "Dimensionen",
+      "indexType": "Indextyp",
+      "quantizationByteSize": "Quantisierungs-Bytegröße",
+      "quantizationByteSizeTooltip": "Dies wird dynamisch von „{{containerName}}“ festgelegt, wenn es leer bleibt, oder es kann auf eine feste Zahl gesetzt werden.",
+      "quantizationByteSizeTooltipContainerName": "Container",
+      "quantizationByteSizeTooltipGlobalSecondaryIndexName": "Globaler sekundärer Index",
+      "quantizerType": "Quantisierertyp",
+      "quantizerTypeTooltip": "Die vom Vektorindex verwendete Quantisierungsmethode.",
+      "indexingSearchListSize": "Größe der Suchliste für die Indexierung",
+      "vectorIndexShardKey": "Shardschlüssel für Vektorindex",
+      "addVectorEmbedding": "Vektoreinbettung hinzufügen",
+      "pathEmptyError": "Der Pfad darf nicht leer sein.",
+      "pathDuplicateError": "Der Pfad wurde bereits definiert.",
+      "dimensionRangeError": "Die Dimension muss größer als 0 und kleiner oder gleich 4096 sein.",
+      "dimensionFlatIndexError": "Die maximal zulässige Dimension für einen Flat-Index ist 505.",
+      "quantizationByteSizeRangeError": "Die Quantisierungsbytegröße muss größer als 0 und kleiner oder gleich 512 sein.",
+      "indexingSearchListSizeRangeError": "Die Größe der Indizierungssuchliste muss größer oder gleich 25 und kleiner oder gleich 500 sein."
     }
   }
 }

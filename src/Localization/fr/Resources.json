@@ -33,7 +33,8 @@
     "publish": "Publier",
     "browse": "Parcourir",
     "increaseValueBy1": "Augmenter la valeur de 1",
-    "decreaseValueBy1": "Diminuer la valeur de 1"
+    "decreaseValueBy1": "Diminuer la valeur de 1",
+    "preview": "Aperçu"
   },
   "splashScreen": {
     "title": {
@@ -420,6 +421,7 @@
     "deleteDatabase": {
       "panelTitle": "Supprimer {{databaseName}}",
       "warningMessage": "Attention ! Il ne sera pas possible d’annuler cette action. Si vous continuez, cette ressource et toutes ses ressources enfants seront définitivement supprimées.",
+      "copyableId": "{{databaseName}} Id :",
       "confirmPrompt": "Confirmer en tapant l’ID de {{databaseName}} (nom)",
       "inputMismatch": "Le nom « {{input}} » de l’entrée {{databaseName}} ne correspond pas au {{databaseName}} « {{selectedId}} » sélectionné",
       "feedbackTitle": "Aidez-nous à améliorer Azure Cosmos DB !",
@@ -427,6 +429,8 @@
     },
     "deleteCollection": {
       "panelTitle": "Supprimer {{collectionName}}",
+      "warningMessage": "Attention ! Il ne sera pas possible d’annuler cette action. Si vous continuez, cette ressource et toutes ses ressources enfants seront définitivement supprimées.",
+      "copyableId": "{{collectionName}} Id :",
       "confirmPrompt": "Confirmer en tapant l’ID de {{collectionName}}",
       "inputMismatch": "L’ID d’entrée {{input}} ne correspond pas à l’ID {{selectedId}} sélectionné",
       "feedbackTitle": "Aidez-nous à améliorer Azure Cosmos DB !",
@@ -964,6 +968,29 @@
         "bucketOptionLabel": "Compartiment {{id}} – {{percentage}} %",
         "bucketNotActive": "Le compartiment {{id}} n’est pas actif."
       }
+    },
+    "vectorEmbeddingPolicies": {
+      "vectorEmbeddingTitle": "Représentation vectorielle {{index}}",
+      "path": "Chemin d’accès",
+      "dataType": "Type de données",
+      "distanceFunction": "Fonction de distance",
+      "dimensions": "Dimensions",
+      "indexType": "Type d’index",
+      "quantizationByteSize": "Taille en octets de quantification",
+      "quantizationByteSizeTooltip": "Cela est défini dynamiquement par le {{containerName}} si laissé vide, ou peut être fixé à un nombre précis",
+      "quantizationByteSizeTooltipContainerName": "conteneur",
+      "quantizationByteSizeTooltipGlobalSecondaryIndexName": "index secondaire global",
+      "quantizerType": "Type de quantificateur",
+      "quantizerTypeTooltip": "Méthode de quantification utilisée par l’index vectoriel.",
+      "indexingSearchListSize": "Taille de la liste de recherche pour l’indexation",
+      "vectorIndexShardKey": "Clé de partition de l’index vectoriel",
+      "addVectorEmbedding": "Ajouter une représentation vectorielle",
+      "pathEmptyError": "Le chemin d’accès ne doit pas être vide",
+      "pathDuplicateError": "Le chemin d’accès est déjà défini",
+      "dimensionRangeError": "La dimension doit être supérieure à 0 et inférieur ou égal à 4096",
+      "dimensionFlatIndexError": "La dimension maximale autorisée pour l’index plat est de 505",
+      "quantizationByteSizeRangeError": "La taille en octets de quantification doit être supérieure à 0 et inférieure ou égale à 512",
+      "indexingSearchListSizeRangeError": "La taille de la liste de recherche d’indexation doit être comprise entre 25 et 500 inclus"
     }
   }
 }

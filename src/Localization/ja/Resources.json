@@ -33,7 +33,8 @@
     "publish": "公開",
     "browse": "参照",
     "increaseValueBy1": "値を 1 増加",
-    "decreaseValueBy1": "値を 1 減少"
+    "decreaseValueBy1": "値を 1 減少",
+    "preview": "プレビュー"
   },
   "splashScreen": {
     "title": {
@@ -420,6 +421,7 @@
     "deleteDatabase": {
       "panelTitle": "{{databaseName}} の削除",
       "warningMessage": "警告!実行しようとしている操作を元に戻すことはできません。続行すると、このリソースとそのすべての子リソースが完全に削除されます。",
+      "copyableId": "{{databaseName}} ID:",
       "confirmPrompt": "{{databaseName}} ID (名前) を入力して確認してください",
       "inputMismatch": "入力 {{databaseName}} 名 \"{{input}}\" が、選択した {{databaseName}} \"{{selectedId}}\" と一致しません",
       "feedbackTitle": "Azure Cosmos DB の改善にご協力ください。",
@@ -427,6 +429,8 @@
     },
     "deleteCollection": {
       "panelTitle": "{{collectionName}} の削除",
+      "warningMessage": "警告!実行しようとしている操作を元に戻すことはできません。続行すると、このリソースとそのすべての子リソースが完全に削除されます。",
+      "copyableId": "{{collectionName}} ID:",
       "confirmPrompt": "{{collectionName}} ID を入力して確認してください",
       "inputMismatch": "入力 ID {{input}} が選択した {{selectedId}} と一致しません",
       "feedbackTitle": "Azure Cosmos DB の改善にご協力ください。",
@@ -964,6 +968,29 @@
         "bucketOptionLabel": "バケット {{id}} - {{percentage}}%",
         "bucketNotActive": "バケット {{id}} がアクティブではありません。"
       }
+    },
+    "vectorEmbeddingPolicies": {
+      "vectorEmbeddingTitle": "ベクター埋め込み {{index}}",
+      "path": "パス",
+      "dataType": "データ型",
+      "distanceFunction": "距離関数",
+      "dimensions": "ディメンション",
+      "indexType": "インデックスの種類",
+      "quantizationByteSize": "量子化バイト サイズ",
+      "quantizationByteSizeTooltip": "これは、空白のままにした場合は {{containerName}} によって動的に設定されます。または、固定数に設定することもできます",
+      "quantizationByteSizeTooltipContainerName": "コンテナー",
+      "quantizationByteSizeTooltipGlobalSecondaryIndexName": "グローバル セカンダリ インデックス",
+      "quantizerType": "量子化器の種類",
+      "quantizerTypeTooltip": "ベクター インデックスで使用される量子化方法。",
+      "indexingSearchListSize": "インデックス検索リスト サイズ",
+      "vectorIndexShardKey": "ベクター インデックス シャード キー",
+      "addVectorEmbedding": "ベクター埋め込みを追加する",
+      "pathEmptyError": "パスを空にすることはできません",
+      "pathDuplicateError": "パスは既に定義されています",
+      "dimensionRangeError": "ディメンションは 0 より大きく、4096 以下である必要があります",
+      "dimensionFlatIndexError": "フラット インデックスで許容される最大ディメンションは 505 です",
+      "quantizationByteSizeRangeError": "量子化バイト サイズは 0 より大きく、512 以下である必要があります",
+      "indexingSearchListSizeRangeError": "インデックス検索リスト サイズは 25 以上 500 以下である必要があります"
     }
   }
 }

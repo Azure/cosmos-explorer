@@ -33,7 +33,8 @@
     "publish": "發佈",
     "browse": "瀏覽",
     "increaseValueBy1": "將值增加 1",
-    "decreaseValueBy1": "將值減少 1"
+    "decreaseValueBy1": "將值減少 1",
+    "preview": "預覽"
   },
   "splashScreen": {
     "title": {
@@ -420,6 +421,7 @@
     "deleteDatabase": {
       "panelTitle": "刪除 {{databaseName}}",
       "warningMessage": "警告!您即將進行的動作無法復原。繼續將會永久刪除此資源及其所有子資源。",
+      "copyableId": "{{databaseName}} 識別碼:",
       "confirmPrompt": "輸入 {{databaseName}} 識別碼 (名稱) 以確認",
       "inputMismatch": "輸入 {{databaseName}} 名稱 \"{{input}}\" 與選取的 {{databaseName}} \"{{selectedId}}\" 不符",
       "feedbackTitle": "協助我們改進 Azure Cosmos DB!",
@@ -427,6 +429,8 @@
     },
     "deleteCollection": {
       "panelTitle": "刪除 {{collectionName}}",
+      "warningMessage": "警告!您即將進行的動作無法復原。繼續將會永久刪除此資源及其所有子資源。",
+      "copyableId": "{{collectionName}} 識別碼:",
       "confirmPrompt": "輸入 {{collectionName}} 識別碼以確認",
       "inputMismatch": "輸入識別碼 {{input}} 與選取的 {{selectedId}} 不符",
       "feedbackTitle": "協助我們改進 Azure Cosmos DB!",
@@ -964,6 +968,29 @@
         "bucketOptionLabel": "貯體 {{id}} - {{percentage}}%",
         "bucketNotActive": "貯體 {{id}} 不在作用中。"
       }
+    },
+    "vectorEmbeddingPolicies": {
+      "vectorEmbeddingTitle": "向量內嵌 {{index}}",
+      "path": "路徑",
+      "dataType": "資料類型",
+      "distanceFunction": "距離函數",
+      "dimensions": "維度",
+      "indexType": "索引類型",
+      "quantizationByteSize": "量化位元組大小",
+      "quantizationByteSizeTooltip": "如果保留空白，則由 {{containerName}} 動態設定，或可設定為固定數字",
+      "quantizationByteSizeTooltipContainerName": "容器",
+      "quantizationByteSizeTooltipGlobalSecondaryIndexName": "全域從屬索引",
+      "quantizerType": "量化器類型",
+      "quantizerTypeTooltip": "向量索引所使用的量化方法。",
+      "indexingSearchListSize": "索引搜尋清單大小",
+      "vectorIndexShardKey": "向量索引分區索引鍵",
+      "addVectorEmbedding": "新增向量內嵌",
+      "pathEmptyError": "路徑不應為空白",
+      "pathDuplicateError": "已定義路徑",
+      "dimensionRangeError": "維度必須大於 0 且小於或等於 4096",
+      "dimensionFlatIndexError": "平面索引允許的最大維度為 505",
+      "quantizationByteSizeRangeError": "量化位元組大小必須大於 0 且小於或等於 512",
+      "indexingSearchListSizeRangeError": "索引搜尋清單大小必須大於或等於 25 且小於或等於 500"
     }
   }
 }

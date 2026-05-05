@@ -33,7 +33,8 @@
     "publish": "Publicera",
     "browse": "Bläddra",
     "increaseValueBy1": "Öka värdet med 1",
-    "decreaseValueBy1": "Minska värdet med 1"
+    "decreaseValueBy1": "Minska värdet med 1",
+    "preview": "Förhandsversion"
   },
   "splashScreen": {
     "title": {
@@ -420,6 +421,7 @@
     "deleteDatabase": {
       "panelTitle": "Ta bort {{databaseName}}",
       "warningMessage": "Varning! Den åtgärd du är i färd med att genomföra kan du inte ångra senare. Om du fortsätter tas den här resursen och alla dess underordnade resurser bort permanent.",
+      "copyableId": "{{databaseName}}-ID:",
       "confirmPrompt": "Bekräfta genom att skriva ID:t {{databaseName}} (namn)",
       "inputMismatch": "{{databaseName}}Indatanamnet {{input}} matchar inte det valda {{databaseName}} {{selectedId}}",
       "feedbackTitle": "Hjälp oss att förbättra Azure Cosmos DB!",
@@ -427,6 +429,8 @@
     },
     "deleteCollection": {
       "panelTitle": "Ta bort {{collectionName}}",
+      "warningMessage": "Varning! Den åtgärd du är i färd med att genomföra kan du inte ångra senare. Om du fortsätter tas den här resursen och alla dess underordnade resurser bort permanent.",
+      "copyableId": "{{collectionName}}-ID:",
       "confirmPrompt": "Bekräfta genom att skriva ID:t {{collectionName}} ",
       "inputMismatch": "Indata-ID {{input}} matchar inte det valda {{selectedId}}",
       "feedbackTitle": "Hjälp oss att förbättra Azure Cosmos DB!",
@@ -964,6 +968,29 @@
         "bucketOptionLabel": "Bucket {{id}} - {{percentage}}%",
         "bucketNotActive": "Bucketen {{id}} är inte aktiv."
       }
+    },
+    "vectorEmbeddingPolicies": {
+      "vectorEmbeddingTitle": "Vektorinbäddning {{index}}",
+      "path": "Sökväg",
+      "dataType": "Datatyp",
+      "distanceFunction": "Avståndsfunktion",
+      "dimensions": "Dimensioner",
+      "indexType": "Indextyp",
+      "quantizationByteSize": "Kvantisering, bytestorlek",
+      "quantizationByteSizeTooltip": "Detta anges dynamiskt av {{containerName}} om det lämnas tomt, eller så kan det sättas till ett fast värde",
+      "quantizationByteSizeTooltipContainerName": "container",
+      "quantizationByteSizeTooltipGlobalSecondaryIndexName": "globalt sekundärt index",
+      "quantizerType": "Typ av kvantiserare",
+      "quantizerTypeTooltip": "Kvantiseringsmetoden som används av vektorindexet.",
+      "indexingSearchListSize": "Storlek på söklista för indexering",
+      "vectorIndexShardKey": "Shard-nyckel för vektorindex",
+      "addVectorEmbedding": "Lägg till vektorinbäddning",
+      "pathEmptyError": "Sökvägen måste anges",
+      "pathDuplicateError": "Porten har redan definierats",
+      "dimensionRangeError": "Dimension måste vara större än 0 och mindre än eller lika med 4096",
+      "dimensionFlatIndexError": "Högsta tillåtna dimension för platt index är 505",
+      "quantizationByteSizeRangeError": "Kvantiseringsbytestorleken måste vara större än 0 och högst 512",
+      "indexingSearchListSizeRangeError": "Indexeringssöklistans storlek måste vara större än eller lika med 25 och mindre än eller lika med 500"
     }
   }
 }
