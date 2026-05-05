@@ -438,21 +438,15 @@
       "keyspaceIdLabel": "ID prostoru klíčů",
       "databaseIdPlaceholder": "Zadejte nové ID {{databaseLabel}}",
       "databaseTooltip": "{{databaseLabel}} je logický kontejner minimálně pro 1 {{collectionsLabel}}",
-      "shareThroughput": "Sdílet propustnost napříč {{collectionsLabel}}",
-      "shareThroughputTooltip": "Zřízená propustnost na úrovni {{databaseLabel}} se bude sdílet napříč všemi {{collectionsLabel}} v rámci {{databaseLabel}}.",
       "greaterThanError": "Zadejte prosím hodnotu větší než {{minValue}} pro propustnost autopilota.",
       "acknowledgeSpendError": "Potvrďte prosím odhadovaný výdaj za {{period}}.",
       "acknowledgeSpendErrorMonthly": "Potvrďte prosím odhadované měsíční výdaje.",
-      "acknowledgeSpendErrorDaily": "Potvrďte prosím odhadované denní výdaje.",
-      "provisionSharedThroughputTitle": "Zřídit sdílenou propustnost",
-      "provisionThroughputLabel": "Zřídit propustnost"
+      "acknowledgeSpendErrorDaily": "Potvrďte prosím odhadované denní výdaje."
     },
     "addCollection": {
       "createNew": "Vytvořit nové",
       "useExisting": "Použít existující",
       "databaseTooltip": "Databáze je obdobou oboru názvů. Je to jednotka správy sady {{collectionName}}.",
-      "shareThroughput": "Sdílet propustnost napříč {{collectionName}}",
-      "shareThroughputTooltip": "Propustnost nakonfigurovaná na úrovni databáze bude sdílena napříč všemi {{collectionName}} v rámci databáze.",
       "collectionIdLabel": "ID {{collectionName}}",
       "collectionIdTooltip": "Jedinečný identifikátor pro {{collectionName}}, který se používá pro směrování na základě ID prostřednictvím REST a všech sad SDK",
       "collectionIdPlaceholder": "např. {{collectionName}}1",
@@ -765,7 +759,7 @@
         "containerPolicies": "Zásady kontejneru",
         "throughputBuckets": "Kbelíky propustnosti",
         "globalSecondaryIndexPreview": "Globální sekundární index (Preview)",
-        "maskingPolicyPreview": "Zásada maskování (Preview)"
+        "maskingPolicyPreview": "Zásady maskování"
       },
       "mongoNotifications": {
         "selectTypeWarning": "Vyberte prosím typ pro každý index.",
@@ -961,7 +955,14 @@
         "bucketLabel": "Kbelík {{id}}",
         "dataExplorerQueryBucket": " (Kbelík dotazů Data Exploreru)",
         "active": "Aktivní",
-        "inactive": "Neaktivní"
+        "inactive": "Neaktivní",
+        "defaultBucketLabel": "Výchozí kontejner propustnosti",
+        "defaultBucketPlaceholder": "Vyberte výchozí kontejner propustnosti",
+        "defaultBucketTooltip": "Výchozí kontejner propustnosti se používá pro operace, které neurčují konkrétní kontejner.",
+        "defaultBucketTooltipLearnMore": "Získejte další informace.",
+        "noDefaultBucketSelected": "Není vybrán žádný výchozí kontejner propustnosti.",
+        "bucketOptionLabel": "Kontejner {{id}} – {{percentage}} %",
+        "bucketNotActive": "Kontejner {{id}} není aktivní."
       }
     }
   }

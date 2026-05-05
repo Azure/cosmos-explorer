@@ -435,24 +435,18 @@
     "addDatabase": {
       "databaseLabel": "{{suffix}} adatbázis",
       "databaseIdLabel": "Adatbázis-azonosító",
-      "keyspaceIdLabel": "Kulcstér azonosítója",
+      "keyspaceIdLabel": "Keyspace azonosítója",
       "databaseIdPlaceholder": "Írjon be egy új {{databaseLabel}}-azonosítót",
       "databaseTooltip": "A(z) {{databaseLabel}} egy vagy több {{collectionsLabel}} logikai tárolója",
-      "shareThroughput": "Átviteli sebesség megosztása az összes {{collectionsLabel}} között",
-      "shareThroughputTooltip": "A(z) {{databaseLabel}} szinten kiépített átviteli sebesség meg lesz osztva az összes {{collectionsLabel}} között a(z) {{databaseLabel}} keretein belül.",
       "greaterThanError": "Az Autopilot átviteli sebességéhez olyan értéket adjon meg, ami nagyobb, mint {{minValue}}",
       "acknowledgeSpendError": "Nyugtázza a becsült {{period}} ráfordítást.",
       "acknowledgeSpendErrorMonthly": "Nyugtázza a becsült havi ráfordítást.",
-      "acknowledgeSpendErrorDaily": "Nyugtázza a becsült napi ráfordítást.",
-      "provisionSharedThroughputTitle": "Megosztott átviteli sebesség kiosztása",
-      "provisionThroughputLabel": "Átviteli sebesség kiosztása"
+      "acknowledgeSpendErrorDaily": "Nyugtázza a becsült napi ráfordítást."
     },
     "addCollection": {
       "createNew": "Új létrehozása",
       "useExisting": "Meglévő használata",
       "databaseTooltip": "Az adatbázis hasonló a névtérhez. Ez a(z) {{collectionName}}-készlet felügyeleti egysége.",
-      "shareThroughput": "Átviteli sebesség megosztása az összes {{collectionName}} között",
-      "shareThroughputTooltip": "Az adatbázis szintjén konfigurált átviteli sebesség az összes {{collectionName}} között meg lesz osztva az adatbázisban.",
       "collectionIdLabel": "{{collectionName}}-azonosító",
       "collectionIdTooltip": "A(z) {{collectionName}} egyedi azonosítója, amelyet a rendszer az azonosítóalapú útválasztás során használ a REST-ben és az összes SDK-ban.",
       "collectionIdPlaceholder": "például {{collectionName}}1",
@@ -705,13 +699,13 @@
       "partitionKeyWarning": "A céltároló még nem létezhet. A Data Explorer egy új céltárolót hoz létre."
     },
     "cassandraAddCollection": {
-      "keyspaceLabel": "Kulcstér neve",
-      "keyspaceTooltip": "Válasszon ki egy meglévő kulcsteret, vagy adjon meg egy új kulcstér-azonosítót.",
+      "keyspaceLabel": "Keyspace neve",
+      "keyspaceTooltip": "Válasszon ki egy meglévő keyspace-t, vagy adjon meg egy új keyspace-azonosítót.",
       "tableIdLabel": "A tábla létrehozásához írja be a CQL parancsot.",
       "enterTableId": "Táblaazonosító megadása",
       "tableSchemaAriaLabel": "Táblaséma",
       "provisionDedicatedThroughput": "Dedikált átviteli sebesség kiépítése ehhez a táblához",
-      "provisionDedicatedThroughputTooltip": "Opcionálisan dedikált átviteli sebességet is kioszthat egy táblához egy kiépített átviteli sebességgel rendelkező kulcstéren belül. Ez a dedikált átviteli sebesség nem lesz megosztva a kulcstér más tábláival, és nem számít bele a kulcstérhez kiosztott átviteli sebességbe. Ezt az átviteli sebességet a kulcstér szintjén kiosztott átviteli sebességen felül számlázzuk."
+      "provisionDedicatedThroughputTooltip": "Opcionálisan dedikált átviteli sebességet is kioszthat egy táblához egy kiépített átviteli sebességgel rendelkező keyspace-en belül. Ez a dedikált átviteli sebesség nem lesz megosztva a keyspace más tábláival, és nem számít bele a keyspace-hez kiosztott átviteli sebességbe. Ezt az átviteli sebességet a keyspace szintjén kiosztott átviteli sebességen felül számlázzuk."
     },
     "tables": {
       "addProperty": "Tulajdonság hozzáadása",
@@ -765,7 +759,7 @@
         "containerPolicies": "Tárolószabályzatok",
         "throughputBuckets": "Átviteli sebesség gyűjtői",
         "globalSecondaryIndexPreview": "Globális másodlagos index (előzetes verzió)",
-        "maskingPolicyPreview": "Maszkolási házirend (előzetes verzió)"
+        "maskingPolicyPreview": "Maszkolási szabályzat"
       },
       "mongoNotifications": {
         "selectTypeWarning": "Válasszon típust az egyes indexekhez.",
@@ -889,7 +883,7 @@
         "freeTierLearnMore": "További információ.",
         "throughputRuS": "Átviteli sebesség (RU/mp)",
         "autoScaleCustomSettings": "A fiókja egyéni beállításokkal rendelkezik, amelyek megakadályozzák az átviteli sebesség tárolószinten történő beállítását. Kérjük, hogy a módosítások végrehajtása érdekében vegye fel a kapcsolatot a Cosmos DB mérnöki csapatával.",
-        "keyspaceSharedThroughput": "Ez a tábla megosztott átviteli sebesség a kulcstérben van konfigurálva",
+        "keyspaceSharedThroughput": "Ez a tábla megosztott átviteli sebesség a keyspace-ben van konfigurálva",
         "throughputRangeLabel": "Átviteli sebesség ({{min}}-{{max}} RU/mp)",
         "unlimited": "korlátlan"
       },
@@ -961,7 +955,14 @@
         "bucketLabel": "Gyűjtő {{id}}",
         "dataExplorerQueryBucket": " (Adatkezelő lekérdezésgyűjtő)",
         "active": "Aktív",
-        "inactive": "Inaktív"
+        "inactive": "Inaktív",
+        "defaultBucketLabel": "Alapértelmezett átvitelisebesség-sáv",
+        "defaultBucketPlaceholder": "Alapértelmezett átvitelisebesség-sáv kiválasztása",
+        "defaultBucketTooltip": "Az alapértelmezett átvitelisebesség-sáv olyan műveletekhez használatos, amelyek nem jelölnek meg konkrét sávot.",
+        "defaultBucketTooltipLearnMore": "További információ.",
+        "noDefaultBucketSelected": "Nincs kiválasztva alapértelmezett átvitelisebesség-sáv",
+        "bucketOptionLabel": "Sáv: {{id}} – {{percentage}}%",
+        "bucketNotActive": "A(z) {{id}} sáv nem aktív."
       }
     }
   }

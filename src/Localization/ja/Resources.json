@@ -435,24 +435,18 @@
     "addDatabase": {
       "databaseLabel": "データベース {{suffix}}",
       "databaseIdLabel": "データベース ID",
-      "keyspaceIdLabel": "キースペース ID",
+      "keyspaceIdLabel": "keyspace ID",
       "databaseIdPlaceholder": "新しい {{databaseLabel}} ID を入力してください",
       "databaseTooltip": "{{databaseLabel}} は 1 つ以上の {{collectionsLabel}} の論理コンテナーです",
-      "shareThroughput": "{{collectionsLabel}} 全体でスループットを共有する",
-      "shareThroughputTooltip": "{{databaseLabel}} レベルでプロビジョニングされたスループットは、{{collectionsLabel}} 内のすべての {{databaseLabel}} で共有されます。",
       "greaterThanError": "オートパイロット スループットの {{minValue}} より大きい値を入力してください",
       "acknowledgeSpendError": "毎月の推定 {{period}} 支出に同意してください。",
       "acknowledgeSpendErrorMonthly": "毎月の推定支出に同意してください。",
-      "acknowledgeSpendErrorDaily": "毎日の推定支出に同意してください。",
-      "provisionSharedThroughputTitle": "共有スループットのプロビジョニング",
-      "provisionThroughputLabel": "スループットのプロビジョニング"
+      "acknowledgeSpendErrorDaily": "毎日の推定支出に同意してください。"
     },
     "addCollection": {
       "createNew": "新規作成",
       "useExisting": "既存のものを使用",
       "databaseTooltip": "データベースは名前空間に類似しています。{{collectionName}} のセットの管理単位です。",
-      "shareThroughput": "{{collectionName}} 全体でスループットを共有する",
-      "shareThroughputTooltip": "データベース レベルで構成されたスループットは、データベース内のすべての {{collectionName}} で共有されます。",
       "collectionIdLabel": "{{collectionName}} ID",
       "collectionIdTooltip": "REST とすべての SDK を介した ID ベースのルーティングに使用される {{collectionName}} の一意識別子。",
       "collectionIdPlaceholder": "例: {{collectionName}}1",
@@ -705,13 +699,13 @@
       "partitionKeyWarning": "宛先コンテナーがまだ存在していない必要があります。データ エクスプローラーが新しい宛先コンテナーを作成します。"
     },
     "cassandraAddCollection": {
-      "keyspaceLabel": "キースペース名",
-      "keyspaceTooltip": "既存のキースペースを選択するか、新しいキースペース ID を入力します。",
+      "keyspaceLabel": "keyspace 名",
+      "keyspaceTooltip": "既存の keyspace を選択するか、新しい keyspace ID を入力します。",
       "tableIdLabel": "CQL コマンドを入力してテーブルを作成します。",
       "enterTableId": "テーブル ID の入力",
       "tableSchemaAriaLabel": "テーブル スキーマ",
       "provisionDedicatedThroughput": "このテーブルの専用スループットをプロビジョニングする",
-      "provisionDedicatedThroughputTooltip": "必要に応じて、スループットがプロビジョニングされているキースペース内のテーブルの専用スループットをプロビジョニングできます。この専用スループットはキースペース内の他のテーブルと共有されず、キースペースにプロビジョニングしたスループットには含まれません。このスループットはキースペース レベルでプロビジョニングしたスループットに加えて課金されます。"
+      "provisionDedicatedThroughputTooltip": "必要に応じて、スループットがプロビジョニングされている keyspace 内のテーブルの専用スループットをプロビジョニングできます。この専用スループットはkeyspace内の他のテーブルと共有されず、keyspaceにプロビジョニングしたスループットには含まれません。このスループットは keyspace レベルでプロビジョニングしたスループットに加えて課金されます。"
     },
     "tables": {
       "addProperty": "プロパティの追加",
@@ -765,7 +759,7 @@
         "containerPolicies": "コンテナー ポリシー",
         "throughputBuckets": "スループット バケット",
         "globalSecondaryIndexPreview": "グローバル セカンダリ インデックス (プレビュー)",
-        "maskingPolicyPreview": "マスキング ポリシー (プレビュー)"
+        "maskingPolicyPreview": "マスキング ポリシー"
       },
       "mongoNotifications": {
         "selectTypeWarning": "各インデックスの種類を選択してください。",
@@ -889,7 +883,7 @@
         "freeTierLearnMore": "詳細をご確認ください。",
         "throughputRuS": "スループット (RU/秒)",
         "autoScaleCustomSettings": "アカウントには、コンテナー レベルでのスループットの設定を妨げるカスタム設定があります。変更を加えるには、Cosmos DB エンジニアリング チームの連絡先担当者にお問い合わせください。",
-        "keyspaceSharedThroughput": "このテーブルの共有スループットは、キースペースで構成されています",
+        "keyspaceSharedThroughput": "このテーブルの共有スループットは、keyspace で構成されています",
         "throughputRangeLabel": "スループット ({{min}} - {{max}} RU/秒)",
         "unlimited": "無制限"
       },
@@ -961,7 +955,14 @@
         "bucketLabel": "バケット {{id}}",
         "dataExplorerQueryBucket": " (データ エクスプローラー クエリ バケット)",
         "active": "アクティブ",
-        "inactive": "非アクティブ"
+        "inactive": "非アクティブ",
+        "defaultBucketLabel": "既定のスループット バケット",
+        "defaultBucketPlaceholder": "既定のスループット バケットを選択する",
+        "defaultBucketTooltip": "既定のスループット バケットは、特定のバケットを指定しない操作に使用されます。",
+        "defaultBucketTooltipLearnMore": "詳細をご確認ください。",
+        "noDefaultBucketSelected": "既定のスループット バケットが選択されていません",
+        "bucketOptionLabel": "バケット {{id}} - {{percentage}}%",
+        "bucketNotActive": "バケット {{id}} がアクティブではありません。"
       }
     }
   }

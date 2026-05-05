@@ -435,24 +435,18 @@
     "addDatabase": {
       "databaseLabel": "Databas {{suffix}}",
       "databaseIdLabel": "Databas-ID",
-      "keyspaceIdLabel": "Nyckelområdes-ID",
+      "keyspaceIdLabel": "Keyspace-ID",
       "databaseIdPlaceholder": "Skriv ett nytt {{databaseLabel}}-ID",
       "databaseTooltip": "A {{databaseLabel}} är en logisk container för en eller flera {{collectionsLabel}}",
-      "shareThroughput": "Dela dataflöde över {{collectionsLabel}}",
-      "shareThroughputTooltip": "Etablerat dataflöde på {{databaseLabel}}-nivån delas över alla {{collectionsLabel}} i {{databaseLabel}}.",
       "greaterThanError": "Ange ett värde som är större än {{minValue}} för autopilot-dataflöde",
       "acknowledgeSpendError": "Bekräfta den uppskattade {{period}} kostnaden.",
       "acknowledgeSpendErrorMonthly": "Bekräfta den uppskattade månadskostnaden.",
-      "acknowledgeSpendErrorDaily": "Bekräfta den uppskattade dagliga kostnaden.",
-      "provisionSharedThroughputTitle": "Etablera delat dataflöde",
-      "provisionThroughputLabel": "Etablera dataflöde"
+      "acknowledgeSpendErrorDaily": "Bekräfta den uppskattade dagliga kostnaden."
     },
     "addCollection": {
       "createNew": "Skapa ny",
       "useExisting": "Använd befintlig",
       "databaseTooltip": "En databas motsvarar ett namnområde. Det är hanteringsenheten för en uppsättning . {{collectionName}}",
-      "shareThroughput": "Dela dataflöde över {{collectionName}}",
-      "shareThroughputTooltip": "Dataflödet som konfigurerats på databasnivå delas över alla {{collectionName}} i databasen.",
       "collectionIdLabel": "{{collectionName}} -ID",
       "collectionIdTooltip": "Unik identifierare för {{collectionName}} och används för ID-baserad routning via REST och alla SDK:er.",
       "collectionIdPlaceholder": "t.ex. {{collectionName}}1",
@@ -705,13 +699,13 @@
       "partitionKeyWarning": "Målcontainern får inte redan finnas. Datautforskaren skapar en ny målcontainer åt dig."
     },
     "cassandraAddCollection": {
-      "keyspaceLabel": "Namn på nyckelutrymme",
-      "keyspaceTooltip": "Välj ett befintligt nyckelutrymme eller ange ett nytt nyckelområdes-ID.",
+      "keyspaceLabel": "Namn på keyspace",
+      "keyspaceTooltip": "Välj ett befintligt keyspace eller ange ett nytt keyspace-ID.",
       "tableIdLabel": "Ange CQL-kommandot för att skapa tabellen.",
       "enterTableId": "Ange tabell-Id",
       "tableSchemaAriaLabel": "Tabellschema",
       "provisionDedicatedThroughput": "Etablera dedikerat dataflöde för den här tabellen",
-      "provisionDedicatedThroughputTooltip": "Du kan också etablera dedikerat dataflöde för en tabell i ett nyckelområde som har etablerat dataflöde. Det här dedikerade dataflödesbeloppet delas inte med andra tabeller i nyckelområdet och räknas inte in i det dataflöde som du etablerade för nyckelområdet. Det här dataflödesbeloppet faktureras utöver det dataflödesbelopp som du etablerade på nyckelområdesnivå."
+      "provisionDedicatedThroughputTooltip": "Du kan också etablera dedikerat dataflöde för en tabell i ett keyspace som har etablerat dataflöde. Det här dedikerade dataflödesbeloppet delas inte med andra tabeller i detta keyspace och räknas inte in i det dataflöde som du etablerade för detta keyspace. Det här dataflödesbeloppet faktureras utöver det dataflödesbelopp som du etablerade på keyspacenivå."
     },
     "tables": {
       "addProperty": "Lägg till egenskap",
@@ -765,7 +759,7 @@
         "containerPolicies": "Containerprinciper",
         "throughputBuckets": "Dataflödesbuckets",
         "globalSecondaryIndexPreview": "Globalt sekundärt index (förhandsversion)",
-        "maskingPolicyPreview": "Namngivningsprincip (förhandsversion)"
+        "maskingPolicyPreview": "Maskeringsprincip"
       },
       "mongoNotifications": {
         "selectTypeWarning": "Välj en typ för varje index.",
@@ -889,7 +883,7 @@
         "freeTierLearnMore": "Mer information.",
         "throughputRuS": "Dataflöde (RU/s)",
         "autoScaleCustomSettings": "Ditt konto har anpassade inställningar som förhindrar att dataflödet anges på containernivå. Kontakta din Cosmos DB tekniska team för att göra ändringar.",
-        "keyspaceSharedThroughput": "Den här tabellens delade dataflöde har konfigurerats i nyckelområdet",
+        "keyspaceSharedThroughput": "Den här tabellens delade dataflöde har konfigurerats i keyspace",
         "throughputRangeLabel": "Dataflöde ({{min}} – {{max}} RU/s)",
         "unlimited": "obegränsat"
       },
@@ -961,7 +955,14 @@
         "bucketLabel": "Bucket {{id}}",
         "dataExplorerQueryBucket": " (Datautforskaren frågebucket)",
         "active": "Aktiv",
-        "inactive": "Inaktivt"
+        "inactive": "Inaktivt",
+        "defaultBucketLabel": "Standardbucket för dataflöde",
+        "defaultBucketPlaceholder": "Välj en standardbucket för dataflöde",
+        "defaultBucketTooltip": "Standardbucketen för dataflöde används för åtgärder som inte anger en viss bucket.",
+        "defaultBucketTooltipLearnMore": "Mer information.",
+        "noDefaultBucketSelected": "Ingen standardbucket för dataflöde har valts",
+        "bucketOptionLabel": "Bucket {{id}} - {{percentage}}%",
+        "bucketNotActive": "Bucketen {{id}} är inte aktiv."
       }
     }
   }

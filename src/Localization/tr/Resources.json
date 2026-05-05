@@ -435,24 +435,18 @@
     "addDatabase": {
       "databaseLabel": "Veritabanı {{suffix}}",
       "databaseIdLabel": "Veritabanı kimliği",
-      "keyspaceIdLabel": "Anahtar alanı kimliği",
+      "keyspaceIdLabel": "Keyspace kimliği",
       "databaseIdPlaceholder": "Yeni bir {{databaseLabel}} kimliği girin",
       "databaseTooltip": "{{databaseLabel}}, bir veya daha fazla {{collectionsLabel}} içeren bir mantıksal kapsayıcıdır.",
-      "shareThroughput": "Aktarım hızını {{collectionsLabel}} koleksiyonunda paylaş",
-      "shareThroughputTooltip": "{{databaseLabel}} düzeyinde sağlanan aktarım hızı, {{databaseLabel}} altındaki tüm {{collectionsLabel}} ile paylaşılır.",
       "greaterThanError": "Autopilot aktarım hızı için {{minValue}} değerinden büyük bir değer girin",
       "acknowledgeSpendError": "Lütfen tahmini {{period}} harcamayı kabul edin.",
       "acknowledgeSpendErrorMonthly": "Lütfen tahmini aylık harcamayı kabul edin.",
-      "acknowledgeSpendErrorDaily": "Lütfen tahmini günlük harcamayı kabul edin.",
-      "provisionSharedThroughputTitle": "Paylaşılan aktarım hızını ayarlayın",
-      "provisionThroughputLabel": "Aktarım hızı sağla"
+      "acknowledgeSpendErrorDaily": "Lütfen tahmini günlük harcamayı kabul edin."
     },
     "addCollection": {
       "createNew": "Yeni oluştur",
       "useExisting": "Mevcut olanı kullan",
       "databaseTooltip": "Veritabanı, ad alanına benzer. Bu, {{collectionName}} kümesi için yönetim birimidir.",
-      "shareThroughput": "Aktarım hızını {{collectionName}} koleksiyonunda paylaş",
-      "shareThroughputTooltip": "Veritabanı düzeyinde yapılandırılan aktarım hızı, veritabanındaki tüm {{collectionName}} genelinde paylaşılır.",
       "collectionIdLabel": "{{collectionName}} kimliği",
       "collectionIdTooltip": "{{collectionName}} için benzersiz tanımlayıcı ve REST ve tüm SDK’larda kimlik tabanlı yönlendirme için kullanılır.",
       "collectionIdPlaceholder": "ör. {{collectionName}}1",
@@ -705,13 +699,13 @@
       "partitionKeyWarning": "Hedef kapsayıcı zaten mevcut olmamalıdır. Veri Gezgini sizin için yeni bir hedef kapsayıcı oluşturur."
     },
     "cassandraAddCollection": {
-      "keyspaceLabel": "Anahtar alanı adı",
-      "keyspaceTooltip": "Mevcut bir anahtar alanını seçin veya yeni bir anahtar alanı kimliği girin.",
+      "keyspaceLabel": "Keyspace adı",
+      "keyspaceTooltip": "Mevcut bir keyspace'i seçin veya yeni bir keyspace kimliği girin.",
       "tableIdLabel": "Tabloyu oluşturmak için CQL komutunu girin.",
       "enterTableId": "Tablo kimliğini girin",
       "tableSchemaAriaLabel": "Tablo şeması",
       "provisionDedicatedThroughput": "Bu tablo için ayrılmış aktarım hızı sağlayın",
-      "provisionDedicatedThroughputTooltip": "İsteğe bağlı olarak, aktarım hızı sağlanan bir anahtar alanındaki bir tablo için ayrılmış aktarım hızı sağlayabilirsiniz. Bu ayrılmış aktarım hızı miktarı, anahtar alanındaki diğer tablolarla paylaşılmaz ve anahtar alanı için sağladığınız aktarım hızını etkilemez. Bu aktarım hızı miktarı anahtar alanı düzeyinde sağladığınız aktarım hızına ek olarak faturalandırılır."
+      "provisionDedicatedThroughputTooltip": "İsteğe bağlı olarak, aktarım hızı sağlanan bir keyspace'in bir tablo için ayrılmış aktarım hızı sağlayabilirsiniz. Bu ayrılmış aktarım hızı miktarı, keyspace'teki diğer tablolarla paylaşılmaz ve keyspace için sağladığınız aktarım hızını etkilemez. Bu keyspace miktarı anahtar alanı düzeyinde sağladığınız aktarım hızına ek olarak faturalandırılır."
     },
     "tables": {
       "addProperty": "Özellik Ekle",
@@ -765,7 +759,7 @@
         "containerPolicies": "Kapsayıcı İlkeleri",
         "throughputBuckets": "Aktarım Hızı Demetleri",
         "globalSecondaryIndexPreview": "Genel İkincil Dizini (Önizleme)",
-        "maskingPolicyPreview": "Maskeleme İlkesi (önizleme)"
+        "maskingPolicyPreview": "Veri Maskeleme İlkesi"
       },
       "mongoNotifications": {
         "selectTypeWarning": "Lütfen her dizin için bir tür seçeneğini belirtin.",
@@ -889,7 +883,7 @@
         "freeTierLearnMore": "Daha fazla bilgi edinin.",
         "throughputRuS": "Aktarım hızı (RU/s)",
         "autoScaleCustomSettings": "Hesabınızda, kapsayıcı düzeyinde aktarım hızı ayarlamayı engelleyen özel ayarlar var. Değişiklik yapmak için lütfen Cosmos DB mühendislik ekibiyle iletişim kurduğunuz kişiyle çalışın.",
-        "keyspaceSharedThroughput": "Bu tablo paylaşılan aktarım hızı anahtar alanında yapılandırılmıştır",
+        "keyspaceSharedThroughput": "Bu tablo paylaşılan aktarım hızı keyspace'inde yapılandırılmıştır",
         "throughputRangeLabel": "Aktarım hızı ({{min}} - {{max}} RU/s)",
         "unlimited": "sınırsız"
       },
@@ -961,7 +955,14 @@
         "bucketLabel": "Demet {{id}}",
         "dataExplorerQueryBucket": " (Veri Gezgini Sorgu Kümesi)",
         "active": "Etkin",
-        "inactive": "Etkin değil"
+        "inactive": "Etkin değil",
+        "defaultBucketLabel": "Varsayılan Aktarım Hızı Demeti",
+        "defaultBucketPlaceholder": "Varsayılan aktarım hızı demetini seçin",
+        "defaultBucketTooltip": "Varsayılan aktarım hızı demeti, belirli bir demet belirtilmeyen işlemlerde kullanılır.",
+        "defaultBucketTooltipLearnMore": "Daha fazla bilgi edinin.",
+        "noDefaultBucketSelected": "Varsayılan Aktarım Hızı Demeti Seçilmedi",
+        "bucketOptionLabel": "{{id}} demeti - %{{percentage}}",
+        "bucketNotActive": "{{id}} demeti etkin değil."
       }
     }
   }

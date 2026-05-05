@@ -435,24 +435,18 @@
     "addDatabase": {
       "databaseLabel": "База данных {{suffix}}",
       "databaseIdLabel": "Идентификатор базы данных",
-      "keyspaceIdLabel": "ИД ключевого пространства",
+      "keyspaceIdLabel": "ИД пространства ключей",
       "databaseIdPlaceholder": "Введите новый идентификатор {{databaseLabel}}",
       "databaseTooltip": "{{databaseLabel}} — логический контейнер с одним или несколькими {{collectionsLabel}}",
-      "shareThroughput": "Делиться пропускной способностью в пределах {{collectionsLabel}}",
-      "shareThroughputTooltip": "Пропускная способность, настроенная на уровне {{databaseLabel}}, будет совместно использоваться всеми {{collectionsLabel}} в {{databaseLabel}}.",
       "greaterThanError": "Введите значение, большее {{minValue}}, для пропускной способности автопилота",
       "acknowledgeSpendError": "Подтвердите, что осведомлены о смете ежемесячных расходов за {{period}}.",
       "acknowledgeSpendErrorMonthly": "Подтвердите, что осведомлены о смете ежемесячных расходов.",
-      "acknowledgeSpendErrorDaily": "Подтвердите, что осведомлены о смете ежемесячных расходов за день.",
-      "provisionSharedThroughputTitle": "Подготовить пропускную способность для совместного использования",
-      "provisionThroughputLabel": "Подготовить пропускную способность"
+      "acknowledgeSpendErrorDaily": "Подтвердите, что осведомлены о смете ежемесячных расходов за день."
     },
     "addCollection": {
       "createNew": "Создать новую",
       "useExisting": "Использовать существующие",
       "databaseTooltip": "База данных аналогична пространству имён. Это единица управления для набора {{collectionName}}.",
-      "shareThroughput": "Делиться пропускной способностью в пределах {{collectionName}}",
-      "shareThroughputTooltip": "Пропускная способность, настроенная на уровне базы данных, будет совместно использоваться всеми {{collectionName}} в базе данных.",
       "collectionIdLabel": "ИД {{collectionName}}",
       "collectionIdTooltip": "Уникальный идентификатор {{collectionName}}, который используется для маршрутизации на основе идентификаторов в REST и всех пакетах SDK.",
       "collectionIdPlaceholder": "например, {{collectionName}}1",
@@ -765,7 +759,7 @@
         "containerPolicies": "Правила перевозки контейнеров",
         "throughputBuckets": "Группы пропускной способности",
         "globalSecondaryIndexPreview": "Глобальный вторичный индекс (предварительный просмотр)",
-        "maskingPolicyPreview": "Политика ношения масок (предварительная версия)"
+        "maskingPolicyPreview": "Политика маскирования"
       },
       "mongoNotifications": {
         "selectTypeWarning": "Выберите тип для каждого указателя.",
@@ -961,7 +955,14 @@
         "bucketLabel": "Сегмент {{id}}",
         "dataExplorerQueryBucket": " (Область запросов Data Explorer)",
         "active": "Активно",
-        "inactive": "Неактивно"
+        "inactive": "Неактивно",
+        "defaultBucketLabel": "Контейнер пропускной способности по умолчанию",
+        "defaultBucketPlaceholder": "Выберите контейнер пропускной способности по умолчанию",
+        "defaultBucketTooltip": "Контейнер пропускной способности по умолчанию используется для операций, в которых не указан конкретный контейнер.",
+        "defaultBucketTooltipLearnMore": "Подробнее.",
+        "noDefaultBucketSelected": "Контейнер пропускной способности по умолчанию не выбран",
+        "bucketOptionLabel": "Контейнер {{id}} — {{percentage}}%",
+        "bucketNotActive": "Контейнер {{id}} неактивен."
       }
     }
   }
