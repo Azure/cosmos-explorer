@@ -33,7 +33,8 @@
     "publish": "Terbitkan",
     "browse": "Telusuri",
     "increaseValueBy1": "Tambah nilai sebesar 1",
-    "decreaseValueBy1": "Kurangi nilai sebesar 1"
+    "decreaseValueBy1": "Kurangi nilai sebesar 1",
+    "preview": "Pratinjau"
   },
   "splashScreen": {
     "title": {
@@ -420,6 +421,7 @@
     "deleteDatabase": {
       "panelTitle": "Hapus {{databaseName}}",
       "warningMessage": "Peringatan! Tindakan yang akan Anda lakukan tidak dapat dibatalkan. Melanjutkan akan menghapus sumber daya dan semua sumber daya anaknya secara permanen.",
+      "copyableId": "ID {{databaseName}}:",
       "confirmPrompt": "Konfirmasikan dengan mengetik id {{databaseName}} (nama)",
       "inputMismatch": "Nama {{databaseName}} input \"{{input}}\" tidak cocok dengan {{databaseName}} \"{{selectedId}}\" yang dipilih",
       "feedbackTitle": "Bantuan kami meningkatkan Azure Cosmos DB!",
@@ -427,6 +429,8 @@
     },
     "deleteCollection": {
       "panelTitle": "Hapus {{collectionName}}",
+      "warningMessage": "Peringatan! Tindakan yang akan Anda lakukan tidak dapat dibatalkan. Melanjutkan akan menghapus sumber daya dan semua sumber daya anaknya secara permanen.",
+      "copyableId": "ID {{collectionName}}:",
       "confirmPrompt": "Konfirmasikan dengan mengetik id {{collectionName}}",
       "inputMismatch": "Id input {{input}} tidak cocok dengan {{selectedId}} yang dipilih",
       "feedbackTitle": "Bantuan kami meningkatkan Azure Cosmos DB!",
@@ -438,21 +442,15 @@
       "keyspaceIdLabel": "Id ruang kunci",
       "databaseIdPlaceholder": "Ketik id {{databaseLabel}} baru",
       "databaseTooltip": "{{databaseLabel}} adalah kontainer logis dari satu atau beberapa {{collectionsLabel}}",
-      "shareThroughput": "Bagikan throughput di {{collectionsLabel}}",
-      "shareThroughputTooltip": "Throughput yang diprovisi di tingkat {{databaseLabel}} akan dibagikan ke semua {{collectionsLabel}} dalam {{databaseLabel}}.",
       "greaterThanError": "Masukkan nilai yang lebih besar dari {{minValue}} untuk throughput autopilot",
       "acknowledgeSpendError": "Setujui perkiraan pengeluaran {{period}}.",
       "acknowledgeSpendErrorMonthly": "Setujui perkiraan pengeluaran bulanan.",
-      "acknowledgeSpendErrorDaily": "Setujui perkiraan pengeluaran harian.",
-      "provisionSharedThroughputTitle": "Menyediakan throughput bersama",
-      "provisionThroughputLabel": "Berikan throughput"
+      "acknowledgeSpendErrorDaily": "Setujui perkiraan pengeluaran harian."
     },
     "addCollection": {
       "createNew": "Buat baru",
       "useExisting": "Gunakan yang sudah ada",
       "databaseTooltip": "Database serupa dengan namespace. Ini adalah unit manajemen untuk serangkaian {{collectionName}}.",
-      "shareThroughput": "Bagikan throughput di {{collectionName}}",
-      "shareThroughputTooltip": "Throughput yang dikonfigurasi di tingkat database akan dibagikan ke semua {{collectionName}} dalam database.",
       "collectionIdLabel": "{{collectionName}} id",
       "collectionIdTooltip": "Pengidentifikasi unik untuk {{collectionName}} dan digunakan untuk perutean berbasis id melalui REST dan semua SDK.",
       "collectionIdPlaceholder": "misalnya, {{collectionName}}1",
@@ -765,7 +763,7 @@
         "containerPolicies": "Kebijakan Kontainer",
         "throughputBuckets": "Wadah Throughput",
         "globalSecondaryIndexPreview": "Indeks Sekunder Global (Pratinjau)",
-        "maskingPolicyPreview": "Kebijakan Penyembunyian (pratinjau)"
+        "maskingPolicyPreview": "Kebijakan Masking"
       },
       "mongoNotifications": {
         "selectTypeWarning": "Pilih tipe untuk setiap indeks.",
@@ -961,8 +959,38 @@
         "bucketLabel": "Wadah {{id}}",
         "dataExplorerQueryBucket": " (Wadah Kueri Data Explorer)",
         "active": "Aktif",
-        "inactive": "Tidak aktif"
+        "inactive": "Tidak aktif",
+        "defaultBucketLabel": "Wadah Throughput Default",
+        "defaultBucketPlaceholder": "Pilih wadah throughput default",
+        "defaultBucketTooltip": "Wadah throughput default digunakan untuk operasi yang tidak menentukan wadah tertentu.",
+        "defaultBucketTooltipLearnMore": "Pelajari selengkapnya.",
+        "noDefaultBucketSelected": "Tidak Ada Wadah Throughput Default yang Dipilih",
+        "bucketOptionLabel": "Wadah {{id}} - {{percentage}}%",
+        "bucketNotActive": "Wadah {{id}} tidak aktif."
       }
+    },
+    "vectorEmbeddingPolicies": {
+      "vectorEmbeddingTitle": "Penyematan vektor {{index}}",
+      "path": "Jalur",
+      "dataType": "Tipe data",
+      "distanceFunction": "Fungsi jarak",
+      "dimensions": "Dimensi",
+      "indexType": "Tipe indeks",
+      "quantizationByteSize": "Ukuran byte kuantisasi",
+      "quantizationByteSizeTooltip": "Ukuran ini diatur secara dinamis oleh {{containerName}} jika dibiarkan kosong, atau dapat diatur ke angka tetap",
+      "quantizationByteSizeTooltipContainerName": "kontainer",
+      "quantizationByteSizeTooltipGlobalSecondaryIndexName": "indeks sekunder global",
+      "quantizerType": "Tipe penguantisasi",
+      "quantizerTypeTooltip": "Metode kuantisasi yang digunakan oleh indeks vektor.",
+      "indexingSearchListSize": "Ukuran daftar pencarian pengindeks",
+      "vectorIndexShardKey": "Kunci pecahan indeks vektor",
+      "addVectorEmbedding": "Tambahkan penyematan vektor",
+      "pathEmptyError": "Jalur tidak boleh kosong",
+      "pathDuplicateError": "Jalur sudah ditentukan",
+      "dimensionRangeError": "Dimensi harus lebih besar dari 0 dan kurang dari atau sama dengan 4096",
+      "dimensionFlatIndexError": "Dimensi maksimum yang diizinkan untuk indeks datar adalah 505",
+      "quantizationByteSizeRangeError": "Ukuran byte kuantisasi harus lebih besar dari 0 dan kurang dari atau sama dengan 512",
+      "indexingSearchListSizeRangeError": "Ukuran daftar pencarian pengindeks harus lebih besar dari atau sama dengan 25 dan kurang dari atau sama dengan 500"
     }
   }
 }

@@ -33,7 +33,8 @@
     "publish": "Publicar",
     "browse": "Procurar",
     "increaseValueBy1": "Aumentar valor em 1",
-    "decreaseValueBy1": "Diminuir valor em 1"
+    "decreaseValueBy1": "Diminuir valor em 1",
+    "preview": "Pré-visualização"
   },
   "splashScreen": {
     "title": {
@@ -420,6 +421,7 @@
     "deleteDatabase": {
       "panelTitle": "Eliminar {{databaseName}}",
       "warningMessage": "Aviso! A ação que está prestes a efetuar não pode ser anulada. Se continuar, este recurso e todos os seus recursos subordinados serão eliminados permanentemente.",
+      "copyableId": "{{databaseName}} Id:",
       "confirmPrompt": "Confirmar escrevendo o {{databaseName}} id (nome)",
       "inputMismatch": "O nome \"{{databaseName}}\" da entrada {{input}}  não corresponde ao {{databaseName}}  \"{{selectedId}}\" selecionado.",
       "feedbackTitle": "Ajude-nos a melhorar o Azure Cosmos DB!",
@@ -427,6 +429,8 @@
     },
     "deleteCollection": {
       "panelTitle": "Eliminar {{collectionName}}",
+      "warningMessage": "Aviso! A ação que está prestes a efetuar não pode ser anulada. Se continuar, este recurso e todos os seus recursos subordinados serão eliminados permanentemente.",
+      "copyableId": "{{collectionName}} Id:",
       "confirmPrompt": "Confirmar escrevendo o {{collectionName}} id",
       "inputMismatch": "O ID de entrada {{input}} não corresponde ao {{selectedId}} selecionado",
       "feedbackTitle": "Ajude-nos a melhorar o Azure Cosmos DB!",
@@ -435,24 +439,18 @@
     "addDatabase": {
       "databaseLabel": "Base de dados {{suffix}}",
       "databaseIdLabel": "ID da base de dados",
-      "keyspaceIdLabel": "ID do espaço de chaves",
+      "keyspaceIdLabel": "ID do keyspace",
       "databaseIdPlaceholder": "Escreva um novo ID {{databaseLabel}} ",
       "databaseTooltip": "Um {{databaseLabel}} é um contentor lógico de um ou mais {{collectionsLabel}}",
-      "shareThroughput": "Partilhar débito entre {{collectionsLabel}}",
-      "shareThroughputTooltip": "O débito aprovisionado ao nível {{databaseLabel}} será partilhado por todos os {{collectionsLabel}} dentro do {{databaseLabel}}.",
       "greaterThanError": "Introduza um valor superior a {{minValue}}  para o débito do autopilot",
       "acknowledgeSpendError": "Confirme os gastos estimados de {{period}} .",
       "acknowledgeSpendErrorMonthly": "Confirme os gastos mensais estimados.",
-      "acknowledgeSpendErrorDaily": "Confirme os gastos diários estimados.",
-      "provisionSharedThroughputTitle": "Aprovisionar débito partilhado",
-      "provisionThroughputLabel": "Aprovisionar débito"
+      "acknowledgeSpendErrorDaily": "Confirme os gastos diários estimados."
     },
     "addCollection": {
       "createNew": "Criar novo",
       "useExisting": "Utilizar existente",
       "databaseTooltip": "Uma base de dados é análoga a um espaço de nomes. É a unidade de gestão para um conjunto de {{collectionName}}.",
-      "shareThroughput": "Partilhar débito entre {{collectionName}}",
-      "shareThroughputTooltip": "O débito configurado ao nível da base de dados será partilhado por todos os {{collectionName}}  na base de dados.",
       "collectionIdLabel": "id {{collectionName}}",
       "collectionIdTooltip": "Identificador único para o {{collectionName}} e utilizado para encaminhamento com base no id através do REST e de todos os SDKs.",
       "collectionIdPlaceholder": "por exemplo, 1{{collectionName}}",
@@ -705,13 +703,13 @@
       "partitionKeyWarning": "O contentor de destino não pode já existir. O Data Explorer criará um novo contentor de destino para si."
     },
     "cassandraAddCollection": {
-      "keyspaceLabel": "Nome do espaço de chaves",
-      "keyspaceTooltip": "Selecione um espaço de chaves existente ou introduza um novo ID de espaço de chaves.",
+      "keyspaceLabel": "Nome do keyspace",
+      "keyspaceTooltip": "Selecione um keyspace existente ou introduza um novo ID de keyspace.",
       "tableIdLabel": "Introduza o comando CQL para criar a tabela.",
       "enterTableId": "Introduzir o Id de tabela",
       "tableSchemaAriaLabel": "Esquema da tabela",
       "provisionDedicatedThroughput": "Aprovisionar débito dedicado para esta tabela",
-      "provisionDedicatedThroughputTooltip": "Pode opcionalmente aprovisionar débito dedicado para uma tabela dentro de um espaço de chaves que tenha débito aprovisionado. Esta quantidade de débito dedicado não será partilhada com outras tabelas no espaço de chaves e não conta para o débito que aprovisionou para o espaço de chaves. Este valor de débito será faturado para além do montante de débito aprovisionado ao nível do espaço de chaves."
+      "provisionDedicatedThroughputTooltip": "Pode opcionalmente aprovisionar débito dedicado para uma tabela dentro de um keyspace que tenha débito aprovisionado. Esta quantidade de débito dedicado não será partilhada com outras tabelas no keyspace e não conta para o débito que aprovisionou para o keyspace. Este valor de débito será faturado para além do montante de débito aprovisionado ao nível do keyspace."
     },
     "tables": {
       "addProperty": "Adicionar Propriedade",
@@ -765,7 +763,7 @@
         "containerPolicies": "Políticas de Contentor",
         "throughputBuckets": "Registos de Débito",
         "globalSecondaryIndexPreview": "Índice Secundário Global (Pré-Visualização)",
-        "maskingPolicyPreview": "Política de Mascaramento (pré-visualização)"
+        "maskingPolicyPreview": "Política de Mascaramento"
       },
       "mongoNotifications": {
         "selectTypeWarning": "Selecione um tipo para cada índice.",
@@ -889,7 +887,7 @@
         "freeTierLearnMore": "Saiba mais.",
         "throughputRuS": "Débito (RU/s)",
         "autoScaleCustomSettings": "A conta tem definições personalizadas que impedem a definição do débito ao nível do contentor. Trabalhe com o contacto da sua equipa de engenharia do Cosmos DB para efetuar alterações.",
-        "keyspaceSharedThroughput": "O débito partilhado desta tabela está configurado ao nível do espaço de chaves",
+        "keyspaceSharedThroughput": "O débito partilhado desta tabela está configurado ao nível do keyspace",
         "throughputRangeLabel": "Débito ({{min}} - {{max}} RU/s)",
         "unlimited": "ilimitado"
       },
@@ -961,8 +959,38 @@
         "bucketLabel": "Registo {{id}}",
         "dataExplorerQueryBucket": " (Registo de Consultas do Data Explorer)",
         "active": "Ativo",
-        "inactive": "Inativo"
+        "inactive": "Inativo",
+        "defaultBucketLabel": "Bucket de Débito Predefinido",
+        "defaultBucketPlaceholder": "Selecione um bucket de débito predefinido",
+        "defaultBucketTooltip": "O bucket de débito predefinido é utilizado para operações que não especificam um bucket em particular.",
+        "defaultBucketTooltipLearnMore": "Saiba mais.",
+        "noDefaultBucketSelected": "Nenhum bucket de débito predefinido selecionado",
+        "bucketOptionLabel": "Bucket {{id}} - {{percentage}}%",
+        "bucketNotActive": "O bucket {{id}} não está ativo."
       }
+    },
+    "vectorEmbeddingPolicies": {
+      "vectorEmbeddingTitle": "Incorporação de vetor {{index}}",
+      "path": "Caminho",
+      "dataType": "Tipo de dados",
+      "distanceFunction": "Função de distância",
+      "dimensions": "Dimensões",
+      "indexType": "Tipo de índice",
+      "quantizationByteSize": "Tamanho do byte de quantização",
+      "quantizationByteSizeTooltip": "Isto é definido dinamicamente pelo {{containerName}} se for deixado em branco, ou pode ser definido para um número fixo",
+      "quantizationByteSizeTooltipContainerName": "contentor",
+      "quantizationByteSizeTooltipGlobalSecondaryIndexName": "índice secundário global",
+      "quantizerType": "Tipo de quantização",
+      "quantizerTypeTooltip": "O método de quantização utilizado pelo índice de vetores.",
+      "indexingSearchListSize": "Tamanho da lista de pesquisa para indexação",
+      "vectorIndexShardKey": "Chave de fragmento do índice de vetores",
+      "addVectorEmbedding": "Adicionar incorporação de vetor",
+      "pathEmptyError": "O caminho não deve estar vazio",
+      "pathDuplicateError": "O caminho já está definido",
+      "dimensionRangeError": "A dimensão tem de ser maior do que 0 e menor ou igual a 4096",
+      "dimensionFlatIndexError": "A dimensão máxima permitida para o índice plano é 505",
+      "quantizationByteSizeRangeError": "O tamanho do byte de quantização tem de ser superior a 0 e inferior ou igual a 512",
+      "indexingSearchListSizeRangeError": "O tamanho da lista de pesquisa de indexação tem de ser maior ou igual a 25 e menor ou igual a 500"
     }
   }
 }

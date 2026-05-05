@@ -33,7 +33,8 @@
     "publish": "Publikuj",
     "browse": "Przeglądaj",
     "increaseValueBy1": "Zwiększ wartość o 1",
-    "decreaseValueBy1": "Zmniejsz wartość o 1"
+    "decreaseValueBy1": "Zmniejsz wartość o 1",
+    "preview": "Podgląd"
   },
   "splashScreen": {
     "title": {
@@ -420,6 +421,7 @@
     "deleteDatabase": {
       "panelTitle": "Usuń {{databaseName}}",
       "warningMessage": "Ostrzeżenie! Akcji, którą zamierzasz wykonać, nie można cofnąć. Kontynuowanie spowoduje trwałe usunięcie tego zasobu i wszystkich jego zasobów podrzędnych.",
+      "copyableId": "Identyfikator bazy danych {{databaseName}}:",
       "confirmPrompt": "Potwierdź, wpisując identyfikator {{databaseName}} (nazwa)",
       "inputMismatch": "Nazwa wejściowa {{databaseName}} „{{input}}” nie pasuje do wybranej nazwy {{databaseName}} „{{selectedId}}”",
       "feedbackTitle": "Pomóż nam ulepszać usługę Azure Cosmos DB!",
@@ -427,6 +429,8 @@
     },
     "deleteCollection": {
       "panelTitle": "Usuń {{collectionName}}",
+      "warningMessage": "Ostrzeżenie! Akcji, którą zamierzasz wykonać, nie można cofnąć. Kontynuowanie spowoduje trwałe usunięcie tego zasobu i wszystkich jego zasobów podrzędnych.",
+      "copyableId": "Identyfikator kolekcji {{collectionName}}:",
       "confirmPrompt": "Potwierdź, wpisując identyfikator {{collectionName}}",
       "inputMismatch": "Identyfikator wejściowy {{input}} jest niezgodny z wybranym {{selectedId}}",
       "feedbackTitle": "Pomóż nam ulepszać usługę Azure Cosmos DB!",
@@ -438,21 +442,15 @@
       "keyspaceIdLabel": "Identyfikator przestrzeni kluczy",
       "databaseIdPlaceholder": "Wpisz nowy identyfikator {{databaseLabel}}",
       "databaseTooltip": "{{databaseLabel}} to logiczny kontener co najmniej jednego {{collectionsLabel}}",
-      "shareThroughput": "Udostępnij przepływność w usłudze {{collectionsLabel}}",
-      "shareThroughputTooltip": "Aprowizowana przepływność na poziomie {{databaseLabel}} będzie współdzielona przez wszystkie {{collectionsLabel}} w {{databaseLabel}}.",
       "greaterThanError": "Wprowadź wartość większą niż {{minValue}} dla przepływności rozwiązania Autopilot",
       "acknowledgeSpendError": "Potwierdź szacowane wydatki {{period}}.",
       "acknowledgeSpendErrorMonthly": "Potwierdź szacowane miesięczne wydatki.",
-      "acknowledgeSpendErrorDaily": "Potwierdź szacowane dzienne wydatki.",
-      "provisionSharedThroughputTitle": "Aprowizowanie współużytkowanej przepływności",
-      "provisionThroughputLabel": "Aprowizowanie przepływności"
+      "acknowledgeSpendErrorDaily": "Potwierdź szacowane dzienne wydatki."
     },
     "addCollection": {
       "createNew": "Utwórz nowy",
       "useExisting": "Użyj istniejących",
       "databaseTooltip": "Baza danych jest odpowiednikiem przestrzeni nazw. To jednostka zarządzania zestawem {{collectionName}}.",
-      "shareThroughput": "Udostępnij przepływność w usłudze {{collectionName}}",
-      "shareThroughputTooltip": "Przepływność skonfigurowana na poziomie bazy danych będzie współdzielona przez wszystkie {{collectionName}} w bazie danych.",
       "collectionIdLabel": "identyfikator {{collectionName}}",
       "collectionIdTooltip": "Identyfikator unikatowy {{collectionName}} używany do routingu opartego na identyfikatorach prowadzącego przez interfejs REST i wszystkie zestawy SDK.",
       "collectionIdPlaceholder": "np. {{collectionName}}1",
@@ -711,7 +709,7 @@
       "enterTableId": "Wprowadź identyfikator tabeli",
       "tableSchemaAriaLabel": "Schemat tabeli",
       "provisionDedicatedThroughput": "Aprowizowanie dedykowanej przepływności dla tej tabeli",
-      "provisionDedicatedThroughputTooltip": "Możesz opcjonalnie przydzielić dedykowaną przepustowość dla tabeli w przestrzeni kluczy, która ma już przydzieloną przepustowość. Ta dedykowana przepustowość nie będzie współdzielona z innymi tabelami w przestrzeni kluczy i nie będzie wliczana do przepustowości przydzielonej dla przestrzeni kluczy. Ta przepustowość będzie rozliczana dodatkowo do przepustowości przydzielonej na poziomie przestrzeni kluczy."
+      "provisionDedicatedThroughputTooltip": "Możesz opcjonalnie przydzielić dedykowaną przepływność dla tabeli w przestrzeni kluczy, która ma już przydzieloną przepływność. Ta dedykowana przepływność nie będzie współdzielona z innymi tabelami w przestrzeni kluczy i nie będzie wliczana do przepływności przydzielonej dla przestrzeni kluczy. Ta przepływność będzie rozliczana dodatkowo do przepływności przydzielonej na poziomie przestrzeni kluczy."
     },
     "tables": {
       "addProperty": "Dodaj właściwość",
@@ -765,7 +763,7 @@
         "containerPolicies": "Zasady kontenera",
         "throughputBuckets": "Zasobniki przepływności",
         "globalSecondaryIndexPreview": "Globalny indeks pomocniczy (wersja zapoznawcza)",
-        "maskingPolicyPreview": "Zasady maskowania (wersja zapoznawcza)"
+        "maskingPolicyPreview": "Zasady maskowania"
       },
       "mongoNotifications": {
         "selectTypeWarning": "Wybierz typ dla każdego indeksu.",
@@ -961,8 +959,38 @@
         "bucketLabel": "Zasobnik {{id}}",
         "dataExplorerQueryBucket": " (Przedział zapytań Eksploratora danych)",
         "active": "Aktywne",
-        "inactive": "Nieaktywne"
+        "inactive": "Nieaktywne",
+        "defaultBucketLabel": "Domyślny przedział przepływności",
+        "defaultBucketPlaceholder": "Wybierz domyślny zasobnik przepływności",
+        "defaultBucketTooltip": "Domyślny zasobnik przepływności jest używany w przypadku operacji, które nie określają konkretnego zasobnika.",
+        "defaultBucketTooltipLearnMore": "Dowiedz się więcej.",
+        "noDefaultBucketSelected": "Nie wybrano domyślnego zasobnika przepływności",
+        "bucketOptionLabel": "Zasobnik {{id}} — {{percentage}}%",
+        "bucketNotActive": "Zasobnik {{id}} nie jest aktywny."
       }
+    },
+    "vectorEmbeddingPolicies": {
+      "vectorEmbeddingTitle": "Osadzenie wektora {{index}}",
+      "path": "Ścieżka",
+      "dataType": "Typ danych",
+      "distanceFunction": "Funkcja odległości",
+      "dimensions": "Wymiary",
+      "indexType": "Typ indeksu",
+      "quantizationByteSize": "Rozmiar bajtów kwantyzacji",
+      "quantizationByteSizeTooltip": "Ta wartość jest ustawiana dynamicznie przez {{containerName}}, jeśli pozostanie pusta, lub może być ustawiona na stałą liczbę",
+      "quantizationByteSizeTooltipContainerName": "kontener",
+      "quantizationByteSizeTooltipGlobalSecondaryIndexName": "globalny indeks pomocniczy",
+      "quantizerType": "Typ kwantyfikatora",
+      "quantizerTypeTooltip": "Metoda kwantyzacji używana przez indeks wektora.",
+      "indexingSearchListSize": "Indeksowanie rozmiaru listy wyszukiwania",
+      "vectorIndexShardKey": "Klucz fragmentu indeksu wektora",
+      "addVectorEmbedding": "Dodaj osadzenie wektora",
+      "pathEmptyError": "Ścieżka nie powinna być pusta",
+      "pathDuplicateError": "Ścieżka jest już zdefiniowana",
+      "dimensionRangeError": "Wymiar musi być większy niż 0 i mniejszy lub równy 4096",
+      "dimensionFlatIndexError": "Maksymalny dozwolony wymiar indeksu prostego to 505",
+      "quantizationByteSizeRangeError": "Rozmiar bajtów kwantyzacji musi być większy od 0 i mniejszy lub równy 512",
+      "indexingSearchListSizeRangeError": "Rozmiar listy wyszukiwania indeksowania musi być większy lub równy 25 i mniejszy lub równy 500"
     }
   }
 }
