@@ -1,12 +1,14 @@
 import { render, screen } from "@testing-library/react";
+import { DatabaseAccount } from "Contracts/DataModels";
 import {
   PartitionKeyComponent,
   PartitionKeyComponentProps,
 } from "Explorer/Controls/Settings/SettingsSubComponents/PartitionKeyComponent";
+import * as useDataTransferJobs from "hooks/useDataTransferJobs";
 import React from "react";
 import { updateUserContext } from "UserContext";
-import { DatabaseAccount } from "Contracts/DataModels";
 import { DataTransferJobGetResults } from "Utils/arm/generatedClients/dataTransferService/types";
+import Explorer from "../../../Explorer";
 
 jest.mock("Common/dataAccess/dataTransfers", () => ({
   cancelDataTransferJob: jest.fn().mockResolvedValue(undefined),
@@ -67,7 +69,6 @@ const mockOnlineJob = {
 
 describe("PartitionKeyComponent", () => {
   const setupTest = () => {
-    const Explorer = require("Explorer/Explorer");
     const explorer = new Explorer();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mockDatabase = {} as any as import("../../../../Contracts/ViewModels").Database;
@@ -116,7 +117,7 @@ describe("PartitionKeyComponent", () => {
   });
 
   it("shows cancel button for offline job in progress", () => {
-    jest.spyOn(require("hooks/useDataTransferJobs"), "useDataTransferJobs").mockReturnValue({
+    jest.spyOn(useDataTransferJobs, "useDataTransferJobs").mockReturnValue({
       dataTransferJobs: [mockOfflineJob],
     });
 
@@ -127,7 +128,7 @@ describe("PartitionKeyComponent", () => {
   });
 
   it("shows ellipsis action menu for online job in progress", () => {
-    jest.spyOn(require("hooks/useDataTransferJobs"), "useDataTransferJobs").mockReturnValue({
+    jest.spyOn(useDataTransferJobs, "useDataTransferJobs").mockReturnValue({
       dataTransferJobs: [mockOnlineJob],
     });
 

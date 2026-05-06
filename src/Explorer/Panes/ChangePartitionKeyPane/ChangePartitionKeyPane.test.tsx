@@ -1,14 +1,24 @@
-import { fireEvent, render, screen } from "@testing-library/react";
-import { CopyJobMigrationType } from "Explorer/ContainerCopy/Enums/CopyJobEnums";
-import * as React from "react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
+import { initiateDataTransfer } from "Common/dataAccess/dataTransfers";
+import { DatabaseAccount } from "Contracts/DataModels";
 import * as ViewModels from "Contracts/ViewModels";
 import Explorer from "Explorer/Explorer";
+import * as React from "react";
+import { updateUserContext } from "UserContext";
 import { ChangePartitionKeyPane } from "./ChangePartitionKeyPane";
-import { userContext, updateUserContext } from "UserContext";
-import { DatabaseAccount } from "Contracts/DataModels";
+
+jest.mock("Common/ErrorHandlingUtils", () => ({
+  handleError: jest.fn(),
+  getErrorMessage: jest.fn().mockReturnValue("error"),
+  getErrorStack: jest.fn().mockReturnValue(""),
+}));
 
 jest.mock("Common/dataAccess/createCollection", () => ({
   createCollection: jest.fn().mockResolvedValue({}),
+}));
+
+jest.mock("Common/dataAccess/readDatabases", () => ({
+  readDatabases: jest.fn().mockResolvedValue([]),
 }));
 
 jest.mock("Common/dataAccess/dataTransfers", () => ({
@@ -184,18 +194,25 @@ describe("ChangePartitionKeyPane", () => {
   });
 
   it("passes mode to initiateDataTransfer when submitting", async () => {
-    const { initiateDataTransfer } = require("Common/dataAccess/dataTransfers");
-    renderPane();
+    const mockInitiateDataTransfer = jest.mocked(initiateDataTransfer);
+    // Mock refreshAllDatabases on the prototype to catch all calls
+    const refreshSpy = jest.spyOn(Explorer.prototype, "refreshAllDatabases").mockResolvedValue();
+    const { container } = renderPane();
 
-    // Submit form with offline mode (default)
-    const form = document.querySelector("form");
-    if (form) {
-      fireEvent.submit(form);
-    }
+    // Fill in partition key (required for createContainer — state starts undefined)
+    const partitionKeyInput = container.querySelector("#addCollection-partitionKeyValue") as HTMLInputElement;
+    expect(partitionKeyInput).not.toBeNull();
+    fireEvent.change(partitionKeyInput, { target: { value: "/myKey" } });
 
-    // The mode should be Offline (capitalized for ARM API)
-    if (initiateDataTransfer.mock.calls.length > 0) {
-      expect(initiateDataTransfer.mock.calls[0][0].mode).toBe("Offline");
-    }
+    const form = container.querySelector("form");
+    expect(form).not.toBeNull();
+
+    await act(async () => {
+      fireEvent.submit(form!);
+    });
+
+    expect(mockInitiateDataTransfer).toHaveBeenCalled();
+    expect(mockInitiateDataTransfer.mock.calls[0][0].mode).toBe("Offline");
+    refreshSpy.mockRestore();
   });
 });

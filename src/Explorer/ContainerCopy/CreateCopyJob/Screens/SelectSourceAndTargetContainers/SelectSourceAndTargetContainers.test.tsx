@@ -1,6 +1,5 @@
 import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
-import { Keys, t } from "Localization";
 import { DatabaseModel } from "Contracts/DataModels";
 import React from "react";
 import Explorer from "../../../../../Explorer/Explorer";

@@ -283,12 +283,13 @@ export const getPartitionKeyPlaceHolder = (apiType: string, index?: number): str
     case "Gremlin":
       return t(Keys.controls.settings.partitionKey.gremlinPlaceholder);
     case "SQL":
-      return `${index === undefined
+      return `${
+        index === undefined
           ? t(Keys.controls.settings.partitionKey.sqlFirstPartitionKey)
           : index === 0
-            ? t(Keys.controls.settings.partitionKey.sqlSecondPartitionKey)
-            : t(Keys.controls.settings.partitionKey.sqlThirdPartitionKey)
-        }`;
+          ? t(Keys.controls.settings.partitionKey.sqlSecondPartitionKey)
+          : t(Keys.controls.settings.partitionKey.sqlThirdPartitionKey)
+      }`;
     default:
       return t(Keys.controls.settings.partitionKey.defaultPlaceholder);
   }

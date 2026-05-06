@@ -192,14 +192,7 @@ export const PartitionKeyComponent: React.FC<PartitionKeyComponentProps> = ({
 
     useDialog
       .getState()
-      .showOkCancelModalDialog(
-        "",
-        null,
-        t(Keys.common.confirm),
-        onConfirm,
-        t(Keys.common.cancel),
-        null,
-        dialogBody);
+      .showOkCancelModalDialog("", null, t(Keys.common.confirm), onConfirm, t(Keys.common.cancel), null, dialogBody);
   };
 
   const getOnlineJobMenuProps = (currentJob: DataTransferJobGetResults): IContextualMenuProps => {
@@ -288,9 +281,9 @@ export const PartitionKeyComponent: React.FC<PartitionKeyComponentProps> = ({
     const processedCountString =
       totalCount > 0
         ? t(Keys.controls.settings.partitionKeyEditor.documentsProcessed, {
-          processedCount: String(processedCount),
-          totalCount: String(totalCount),
-        })
+            processedCount: String(processedCount),
+            totalCount: String(totalCount),
+          })
         : "";
     return `${portalDataTransferJob?.properties?.status} ${processedCountString}`;
   };
