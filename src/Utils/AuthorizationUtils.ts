@@ -153,8 +153,7 @@ export async function acquireMsalTokenForAccount(
       // (redirect_in_iframe), so we fall back to loginPopup — MSAL v5's redirect bridge
       // handles COOP via BroadcastChannel rather than window.opener, so the popup still works.
       const isMooncake = configContext.AAD_ENDPOINT === Constants.AadEndpoints.Mooncake;
-      const isInIframe = window !== window.parent;
-      if (isMooncake && !isInIframe) {
+      if (isMooncake) {
         if (silent) {
           // ssoSilent already failed; a redirect cannot be used silently.
           // Re-throw so the caller knows silent acquisition was not possible.
@@ -221,8 +220,7 @@ export async function acquireTokenWithMsal(
       // we fall back to acquireTokenPopup — MSAL v5's redirect bridge handles COOP via
       // BroadcastChannel (not window.opener) so the popup works even from within an iframe.
       const isMooncake = configContext.AAD_ENDPOINT === Constants.AadEndpoints.Mooncake;
-      const isInIframe = window !== window.parent;
-      if (isMooncake && !isInIframe) {
+      if (isMooncake) {
         try {
           // acquireTokenRedirect navigates the browser away; execution does not continue
           // past this await. On return, getMsalInstance()'s handleRedirectPromise() will
