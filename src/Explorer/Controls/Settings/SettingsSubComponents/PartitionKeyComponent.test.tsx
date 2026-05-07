@@ -1,10 +1,10 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { DatabaseAccount } from "Contracts/DataModels";
 import {
   PartitionKeyComponent,
   PartitionKeyComponentProps,
 } from "Explorer/Controls/Settings/SettingsSubComponents/PartitionKeyComponent";
-import * as useDataTransferJobs from "hooks/useDataTransferJobs";
+import { useDataTransferJobs } from "hooks/useDataTransferJobs";
 import React from "react";
 import { updateUserContext } from "UserContext";
 import { DataTransferJobGetResults } from "Utils/arm/generatedClients/dataTransferService/types";
@@ -19,7 +19,7 @@ jest.mock("Common/dataAccess/dataTransfers", () => ({
 }));
 
 jest.mock("hooks/useDataTransferJobs", () => ({
-  useDataTransferJobs: () => ({ dataTransferJobs: [] }),
+  useDataTransferJobs: jest.fn(() => ({ dataTransferJobs: [] })),
   refreshDataTransferJobs: jest.fn().mockResolvedValue(undefined),
 }));
 
@@ -117,7 +117,7 @@ describe("PartitionKeyComponent", () => {
   });
 
   it("shows cancel button for offline job in progress", () => {
-    jest.spyOn(useDataTransferJobs, "useDataTransferJobs").mockReturnValue({
+    (useDataTransferJobs as jest.Mock).mockReturnValue({
       dataTransferJobs: [mockOfflineJob],
     });
 
@@ -127,13 +127,15 @@ describe("PartitionKeyComponent", () => {
     expect(container.querySelector("[data-test='online-job-action-menu']")).toBeNull();
   });
 
-  it("shows ellipsis action menu for online job in progress", () => {
-    jest.spyOn(useDataTransferJobs, "useDataTransferJobs").mockReturnValue({
+  it("shows ellipsis action menu for online job in progress", async () => {
+    (useDataTransferJobs as jest.Mock).mockReturnValue({
       dataTransferJobs: [mockOnlineJob],
     });
 
     const { props } = setupTest();
     const { container } = render(<PartitionKeyComponent {...props} />);
-    expect(container.querySelector("[data-test='online-job-action-menu']")).toBeTruthy();
+    await waitFor(() => {
+      expect(container.querySelector("[data-test='online-job-action-menu']")).toBeTruthy();
+    });
   });
 });

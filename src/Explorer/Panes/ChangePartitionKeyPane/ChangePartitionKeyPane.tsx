@@ -2,7 +2,6 @@ import {
   DefaultButton,
   DirectionalHint,
   Dropdown,
-  IChoiceGroupOption,
   IDropdownOption,
   Icon,
   IconButton,
@@ -24,7 +23,7 @@ import { createCollection } from "Common/dataAccess/createCollection";
 import { DataTransferParams, initiateDataTransfer } from "Common/dataAccess/dataTransfers";
 import * as DataModels from "Contracts/DataModels";
 import * as ViewModels from "Contracts/ViewModels";
-import { BackupPolicyType, CopyJobMigrationType } from "Explorer/ContainerCopy/Enums/CopyJobEnums";
+import { BackupPolicyType } from "Explorer/ContainerCopy/Enums/CopyJobEnums";
 import {
   getPartitionKeyName,
   getPartitionKeyPlaceHolder,
@@ -49,33 +48,6 @@ export interface ChangePartitionKeyPaneProps {
   explorer: Explorer;
   onClose: () => Promise<void>;
 }
-
-const migrationTypeOptions: IChoiceGroupOption[] = [
-  {
-    key: CopyJobMigrationType.Offline,
-    text: t(Keys.containerCopy.migrationType.offline.title),
-    styles: { root: { width: "33%" } },
-  },
-  {
-    key: CopyJobMigrationType.Online,
-    text: t(Keys.containerCopy.migrationType.online.title),
-    styles: { root: { width: "33%" } },
-  },
-];
-
-const choiceGroupStyles = {
-  flexContainer: { display: "flex" as const },
-  root: {
-    selectors: {
-      ".ms-ChoiceField": {
-        color: "var(--colorNeutralForeground1)",
-      },
-      ".ms-ChoiceField-field:hover .ms-ChoiceFieldLabel": {
-        color: "var(--colorNeutralForeground1)",
-      },
-    },
-  },
-};
 
 const checkPitrEnabled = (account: DataModels.DatabaseAccount): boolean => {
   return account?.properties?.backupPolicy?.type === BackupPolicyType.Continuous;
