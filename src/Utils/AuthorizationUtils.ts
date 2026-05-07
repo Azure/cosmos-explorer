@@ -147,11 +147,23 @@ export async function acquireMsalTokenForAccount(
           });
         }
       }
-      // If silent acquisition failed, we need to show a popup.
-      // Passing prompt: "none" will still show a popup but not perform a full sign-in.
-      // This will only work if the user has already signed in and the session is still valid.
-      // See https://learn.microsoft.com/en-us/entra/identity-platform/msal-js-prompt-behavior#interactive-requests-with-promptnone
-      // The hint will be used to pre-fill the username field in the popup if silent is false.
+      // For Mooncake, popups to login.partner.microsoftonline.cn are blocked by COOP headers
+      // (ERR_BLOCKED_BY_RESPONSE). Use loginRedirect instead for interactive sign-in.
+      // Silent attempts (prompt: "none") are skipped on Mooncake for the same reason —
+      // ssoSilent already failed above, so there is nothing more to try silently.
+      const isMooncake = configContext.AAD_ENDPOINT === Constants.AadEndpoints.Mooncake;
+      if (isMooncake) {
+        if (silent) {
+          // ssoSilent already failed; a prompt:none popup would also be blocked on Mooncake.
+          // Re-throw so the caller knows silent acquisition was not possible.
+          throw new Error("Silent login not possible on Mooncake; interactive sign-in required.");
+        }
+        // Interactive: navigate the browser to the Mooncake AAD login page.
+        // On return, handleRedirectPromise() in getMsalInstance() will cache the token.
+        await msalInstance.loginRedirect({ prompt: "login", ...loginRequest });
+        // Browser has navigated away; this line is never reached.
+        return "";
+      }
       const loginResponse = await msalInstance.loginPopup({ prompt: silent ? "none" : "login", ...loginRequest });
       traceSuccess(Action.AcquireMsalToken, { method: "loginPopup" }, msalStartKey);
       return loginResponse.accessToken;
