@@ -85,8 +85,13 @@ export async function getMsalInstance() {
   const msalInstance = new msal.PublicClientApplication(msalConfig);
   // v3+ requires explicit initialization before using MSAL APIs
   await msalInstance.initialize();
-  // Handle any redirect response (e.g., after logoutRedirect) to clear interaction state
-  await msalInstance.handleRedirectPromise();
+  // Handle any redirect response (e.g., after acquireTokenRedirect or logoutRedirect).
+  // When returning from a redirect-based auth flow, this resolves the auth result and
+  // caches the token so that subsequent acquireTokenSilent calls succeed.
+  const redirectResponse = await msalInstance.handleRedirectPromise();
+  if (redirectResponse?.account) {
+    msalInstance.setActiveAccount(redirectResponse.account);
+  }
   return msalInstance;
 }
 
@@ -168,7 +173,7 @@ export async function acquireMsalTokenForAccount(
   }
 
   const tokenRequest = {
-    account: msalAccount || null,
+    account: msalAccount ?? undefined,
     forceRefresh: true,
     scopes: [hrefEndpoint],
     loginHint: user_hint ?? userContext.userName,
@@ -183,7 +188,7 @@ export async function acquireTokenWithMsal(
   silent: boolean = false,
 ) {
   const tokenRequest = {
-    account: msalInstance.getActiveAccount() || null,
+    account: msalInstance.getActiveAccount() ?? undefined,
     ...request,
   };
 
@@ -193,10 +198,34 @@ export async function acquireTokenWithMsal(
     return token;
   } catch (silentError) {
     if (silentError instanceof msal.InteractionRequiredAuthError && silent === false) {
+      // Sovereign cloud environments (e.g., Azure China / Mooncake) block popups in some
+      // browser configurations. Use redirect-based flow instead to ensure compatibility.
+      // Detection is based on configContext.AAD_ENDPOINT (set from the portal's serverId message
+      // via updateAADEndpoints), NOT window.location.host — the latter is unreliable when running
+      // the explorer locally (localhost) embedded inside portal.azure.cn.
+      const isMooncake = configContext.AAD_ENDPOINT === Constants.AadEndpoints.Mooncake;
+      if (isMooncake) {
+        try {
+          // acquireTokenRedirect navigates the browser away; execution does not continue
+          // past this await. On return, getMsalInstance()'s handleRedirectPromise() will
+          // cache the token so the next acquireTokenSilent call succeeds.
+          await msalInstance.acquireTokenRedirect(tokenRequest);
+          // This line is never reached in practice because the browser has navigated away.
+          return "";
+        } catch (redirectError) {
+          traceFailure(Action.SignInAad, {
+            request: JSON.stringify(tokenRequest),
+            acquireTokenType: "redirect",
+            errorMessage: JSON.stringify(redirectError),
+          });
+          if (isExpectedError(redirectError)) {
+            scenarioMonitor.markExpectedFailure();
+          }
+          throw redirectError;
+        }
+      }
       try {
-        // The error indicates that we need to acquire the token interactively.
-        // This will display a pop-up to re-establish authorization. If user does not
-        // have pop-ups enabled in their browser, this will fail.
+        // Non-mooncake: use popup-based interactive acquisition.
         return (await msalInstance.acquireTokenPopup(tokenRequest)).accessToken;
       } catch (interactiveError) {
         traceFailure(Action.SignInAad, {
