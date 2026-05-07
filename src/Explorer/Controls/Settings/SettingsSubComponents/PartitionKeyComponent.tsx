@@ -105,11 +105,11 @@ export const PartitionKeyComponent: React.FC<PartitionKeyComponentProps> = ({
   const textSubHeadingStyle1 = {
     root: { color: "var(--colorNeutralForeground1)" },
   };
-  const startPollingforUpdate = (currentJob: DataTransferJobGetResults) => {
+  const startPollingforUpdate = async (currentJob: DataTransferJobGetResults) => {
     if (isCurrentJobInProgress(currentJob)) {
       const jobName = currentJob?.properties?.jobName;
       try {
-        pollDataTransferJob(
+        await pollDataTransferJob(
           jobName,
           userContext.subscriptionId,
           userContext.resourceGroup,

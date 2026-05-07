@@ -1,5 +1,4 @@
 import {
-  ChoiceGroup,
   DefaultButton,
   DirectionalHint,
   Dropdown,
@@ -15,8 +14,9 @@ import {
   Text,
   TooltipHost,
 } from "@fluentui/react";
-import { CapabilityNames } from "Common/Constants";
+import MarkdownRender from "@nteract/markdown";
 import * as Constants from "Common/Constants";
+import { CapabilityNames } from "Common/Constants";
 import { handleError } from "Common/ErrorHandlingUtils";
 import LoadingOverlay from "Common/LoadingOverlay";
 import { logError } from "Common/Logger";
@@ -24,13 +24,13 @@ import { createCollection } from "Common/dataAccess/createCollection";
 import { DataTransferParams, initiateDataTransfer } from "Common/dataAccess/dataTransfers";
 import * as DataModels from "Contracts/DataModels";
 import * as ViewModels from "Contracts/ViewModels";
+import { BackupPolicyType, CopyJobMigrationType } from "Explorer/ContainerCopy/Enums/CopyJobEnums";
 import {
   getPartitionKeyName,
   getPartitionKeyPlaceHolder,
   getPartitionKeySubtext,
   getPartitionKeyTooltipText,
 } from "Explorer/Controls/Settings/SettingsUtils";
-import { BackupPolicyType, CopyJobMigrationType } from "Explorer/ContainerCopy/Enums/CopyJobEnums";
 import Explorer from "Explorer/Explorer";
 import { RightPaneForm } from "Explorer/Panes/RightPaneForm/RightPaneForm";
 import { useDatabases } from "Explorer/useDatabases";
@@ -98,7 +98,7 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
   const [isExecuting, setIsExecuting] = React.useState<boolean>(false);
   const [subPartitionKeys, setSubPartitionKeys] = React.useState<string[]>([]);
   const [partitionKey, setPartitionKey] = React.useState<string>();
-  const [migrationType, setMigrationType] = React.useState<CopyJobMigrationType>(CopyJobMigrationType.Offline);
+  const [onlineMode, setOnlineMode] = React.useState<boolean>(false);
 
   // Pane-local account state for tracking prerequisite enablement
   const [localAccount, setLocalAccount] = React.useState<DataModels.DatabaseAccount>(userContext.databaseAccount);
@@ -108,7 +108,6 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
   const pitrEnabled = checkPitrEnabled(localAccount);
   const onlineCopyFeatureEnabled = checkOnlineCopyEnabled(localAccount);
   const onlinePrerequisitesMet = pitrEnabled && onlineCopyFeatureEnabled;
-  const isOnlineMode = migrationType === CopyJobMigrationType.Online;
 
   const accountName = localAccount?.name ?? "";
   const subscriptionId = userContext.subscriptionId;
@@ -242,7 +241,7 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
       setFormError("Choose an existing container");
       return false;
     }
-    if (isOnlineMode && !onlinePrerequisitesMet) {
+    if (onlineMode && !onlinePrerequisitesMet) {
       setFormError("Online migration prerequisites must be enabled before proceeding.");
       return false;
     }
@@ -250,7 +249,7 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
   };
 
   const getModeForApi = (): "Offline" | "Online" => {
-    return migrationType === CopyJobMigrationType.Online ? "Online" : "Offline";
+    return onlineMode ? "Online" : "Offline";
   };
 
   const createDataTransferJob = async () => {
@@ -300,7 +299,10 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
     return !!selectedDatabase?.offer();
   };
 
-  const isSubmitDisabled = isOnlineMode && !onlinePrerequisitesMet;
+  const isSubmitDisabled = onlineMode && !onlinePrerequisitesMet;
+
+  const migrationTypeLowercase = getModeForApi().toLowerCase() as keyof typeof Keys.containerCopy.migrationType;
+  const migrationTypeContent = Keys.containerCopy.migrationType[migrationTypeLowercase];
 
   return (
     <RightPaneForm
@@ -327,27 +329,43 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
           <Text className="panelTextBold" variant="small" style={{ marginBottom: 4 }}>
             Migration type
           </Text>
-          <ChoiceGroup
-            data-test="migration-type-choice"
-            selectedKey={migrationType}
-            options={migrationTypeOptions}
-            onChange={(_ev, option) => {
-              if (option) {
-                setMigrationType(option.key as CopyJobMigrationType);
-              }
-            }}
-            ariaLabelledBy="migrationTypeChoiceGroup"
-            styles={choiceGroupStyles}
-          />
-          {migrationType && (
+          <Stack className="panelGroupSpacing" horizontal verticalAlign="center">
+            <div role="radiogroup">
+              <input
+                className="panelRadioBtn"
+                checked={!onlineMode}
+                aria-label="Offline mode"
+                aria-checked={!onlineMode}
+                name="migrationType"
+                type="radio"
+                role="radio"
+                id="migrationTypeOffline"
+                tabIndex={0}
+                onChange={() => setOnlineMode(false)}
+              />
+              <span className="panelRadioBtnLabel">Offline mode</span>
+
+              <input
+                className="panelRadioBtn"
+                checked={onlineMode}
+                aria-label="Online mode"
+                aria-checked={onlineMode}
+                name="migrationType"
+                type="radio"
+                role="radio"
+                tabIndex={0}
+                onChange={() => setOnlineMode(true)}
+              />
+              <span className="panelRadioBtnLabel">Online mode</span>
+            </div>
+          </Stack>
+          {migrationTypeContent && (
             <Text
               variant="small"
               style={{ color: "var(--colorNeutralForeground1)", marginTop: 4 }}
-              data-test={`migration-type-description-${migrationType}`}
+              data-test={`migration-type-description-${migrationTypeLowercase}`}
             >
-              {migrationType === CopyJobMigrationType.Offline
-                ? t(Keys.containerCopy.migrationType.offline.description)
-                : t(Keys.containerCopy.migrationType.online.description)}
+              <MarkdownRender source={t(migrationTypeContent.description)} linkTarget="_blank" />
             </Text>
           )}
         </Stack>
@@ -623,7 +641,7 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
         )}
 
         {/* Online prerequisites section */}
-        {isOnlineMode && (
+        {onlineMode && (
           <Stack data-test="online-prerequisites-section" tokens={{ childrenGap: 10 }}>
             <LoadingOverlay isLoading={isEnablingPrerequisite} label={prerequisiteLoaderMessage} />
             <Text className="panelTextBold" variant="small">
