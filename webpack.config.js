@@ -97,6 +97,7 @@ module.exports = function (_env = {}, argv = {}) {
 
   if (mode === "production") {
     envVars.NODE_ENV = "production";
+    typescriptRule.use[0].options.compilerOptions = { target: "ES2018" };
   }
 
   if (mode === "development") {
@@ -262,7 +263,7 @@ module.exports = function (_env = {}, argv = {}) {
       extensions: [".tsx", ".ts", ".js"],
     },
     optimization: {
-      minimize: mode === "production" ? true : false,
+      minimize: false,
       minimizer: [
         new TerserPlugin({
           terserOptions: {
