@@ -147,18 +147,20 @@ export async function acquireMsalTokenForAccount(
           });
         }
       }
-      // For Mooncake, popups to login.partner.microsoftonline.cn are blocked by COOP headers
-      // (ERR_BLOCKED_BY_RESPONSE). Use loginRedirect instead for interactive sign-in.
-      // Silent attempts (prompt: "none") are skipped on Mooncake for the same reason —
-      // ssoSilent already failed above, so there is nothing more to try silently.
+      // For Mooncake, popups to login.partner.microsoftonline.cn are blocked by COOP headers.
+      // Use loginRedirect when running standalone (not in an iframe) so the top-level page can
+      // navigate away and return. Inside a portal iframe, redirect is forbidden by MSAL
+      // (redirect_in_iframe), so we fall back to loginPopup — MSAL v5's redirect bridge
+      // handles COOP via BroadcastChannel rather than window.opener, so the popup still works.
       const isMooncake = configContext.AAD_ENDPOINT === Constants.AadEndpoints.Mooncake;
-      if (isMooncake) {
+      const isInIframe = window !== window.parent;
+      if (isMooncake && !isInIframe) {
         if (silent) {
-          // ssoSilent already failed; a prompt:none popup would also be blocked on Mooncake.
+          // ssoSilent already failed; a redirect cannot be used silently.
           // Re-throw so the caller knows silent acquisition was not possible.
           throw new Error("Silent login not possible on Mooncake; interactive sign-in required.");
         }
-        // Interactive: navigate the browser to the Mooncake AAD login page.
+        // Standalone (hosted explorer): navigate the page to the Mooncake AAD login URL.
         // On return, handleRedirectPromise() in getMsalInstance() will cache the token.
         await msalInstance.loginRedirect({ prompt: "login", ...loginRequest });
         // Browser has navigated away; this line is never reached.
@@ -211,12 +213,16 @@ export async function acquireTokenWithMsal(
   } catch (silentError) {
     if (silentError instanceof msal.InteractionRequiredAuthError && silent === false) {
       // Sovereign cloud environments (e.g., Azure China / Mooncake) block popups in some
-      // browser configurations. Use redirect-based flow instead to ensure compatibility.
+      // browser configurations. Use redirect-based flow instead when running standalone.
       // Detection is based on configContext.AAD_ENDPOINT (set from the portal's serverId message
       // via updateAADEndpoints), NOT window.location.host — the latter is unreliable when running
       // the explorer locally (localhost) embedded inside portal.azure.cn.
+      // Inside a portal iframe, redirect is forbidden by MSAL (redirect_in_iframe error), so
+      // we fall back to acquireTokenPopup — MSAL v5's redirect bridge handles COOP via
+      // BroadcastChannel (not window.opener) so the popup works even from within an iframe.
       const isMooncake = configContext.AAD_ENDPOINT === Constants.AadEndpoints.Mooncake;
-      if (isMooncake) {
+      const isInIframe = window !== window.parent;
+      if (isMooncake && !isInIframe) {
         try {
           // acquireTokenRedirect navigates the browser away; execution does not continue
           // past this await. On return, getMsalInstance()'s handleRedirectPromise() will
