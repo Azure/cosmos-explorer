@@ -1,12 +1,12 @@
 import { IDropdownOption, MessageBar, MessageBarType, Spinner, SpinnerSize, Stack, Text } from "@fluentui/react";
-import { readDatabasesForAccount } from "Common/dataAccess/readDatabases";
+import { readDatabasesWithARM } from "Common/dataAccess/readDatabases";
 import { AccountOverride } from "Contracts/DataModels";
 import Explorer from "Explorer/Explorer";
 import { useSidePanel } from "hooks/useSidePanel";
 import { produce } from "immer";
+import { Keys, t } from "Localization";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { AddCollectionPanel } from "../../../../Panes/AddCollectionPanel/AddCollectionPanel";
-import ContainerCopyMessages from "../../../ContainerCopyMessages";
 import { useCopyJobContext } from "../../../Context/CopyJobContext";
 import { getAccountDetailsFromResourceId } from "../../../CopyJobUtils";
 
@@ -43,11 +43,11 @@ const AddCollectionPanelWrapper: React.FunctionComponent<AddCollectionPanelWrapp
 
   useEffect(() => {
     const sidePanelStore = useSidePanel.getState();
-    if (sidePanelStore.headerText !== ContainerCopyMessages.createContainerHeading) {
-      sidePanelStore.setHeaderText(ContainerCopyMessages.createContainerHeading);
+    if (sidePanelStore.headerText !== t(Keys.containerCopy.selectContainers.createContainerHeading)) {
+      sidePanelStore.setHeaderText(t(Keys.containerCopy.selectContainers.createContainerHeading));
     }
     return () => {
-      sidePanelStore.setHeaderText(ContainerCopyMessages.createCopyJobPanelTitle);
+      sidePanelStore.setHeaderText(t(Keys.containerCopy.createCopyJob.panelTitle));
     };
   }, []);
 
@@ -62,11 +62,12 @@ const AddCollectionPanelWrapper: React.FunctionComponent<AddCollectionPanelWrapp
       setIsLoading(true);
       setPermissionError(null);
       try {
-        const databases = await readDatabasesForAccount(
-          targetAccountOverride.subscriptionId,
-          targetAccountOverride.resourceGroup,
-          targetAccountOverride.accountName,
-        );
+        const databases = await readDatabasesWithARM({
+          subscriptionId: targetAccountOverride.subscriptionId,
+          resourceGroup: targetAccountOverride.resourceGroup,
+          accountName: targetAccountOverride.accountName,
+          apiType: "SQL",
+        });
         if (!cancelled) {
           setDestinationDatabases(databases.map((db) => ({ key: db.id, text: db.id })));
         }
@@ -130,7 +131,11 @@ const AddCollectionPanelWrapper: React.FunctionComponent<AddCollectionPanelWrapp
     <Stack className="addCollectionPanelWrapper">
       <Stack.Item className="addCollectionPanelHeader">
         <Text className="themeText">
-          {ContainerCopyMessages.createNewContainerSubHeading(targetAccountOverride?.accountName)}
+          {targetAccountOverride?.accountName
+            ? t(Keys.containerCopy.selectContainers.createNewContainerSubHeading, {
+                accountName: targetAccountOverride.accountName,
+              })
+            : t(Keys.containerCopy.selectContainers.createNewContainerSubHeadingDefault)}
         </Text>
       </Stack.Item>
       <Stack.Item className="addCollectionPanelBody">

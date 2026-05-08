@@ -13,22 +13,6 @@ jest.mock("./CopyJobStatusWithIcon", () => {
   return MockCopyJobStatusWithIcon;
 });
 
-jest.mock("../../ContainerCopyMessages", () => ({
-  errorTitle: "Error Details",
-  sourceDatabaseLabel: "Source Database",
-  sourceContainerLabel: "Source Container",
-  targetDatabaseLabel: "Destination Database",
-  targetContainerLabel: "Destination Container",
-  destinationAccountLabel: "Destination account",
-  MonitorJobs: {
-    Columns: {
-      lastUpdatedTime: "Date & time",
-      status: "Status",
-      mode: "Mode",
-    },
-  },
-}));
-
 describe("CopyJobDetails", () => {
   const mockBasicJob: CopyJobType = {
     ID: "test-job-1",

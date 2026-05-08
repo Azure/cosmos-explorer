@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import React from "react";
-import ContainerCopyMessages from "../../../ContainerCopyMessages";
+import { Keys, t } from "Localization";
 import { CopyJobContext } from "../../../Context/CopyJobContext";
 import { CopyJobContextProviderType } from "../../../Types/CopyJobTypes";
 import AddReadWritePermissionToDefaultIdentity from "./AddReadWritePermissionToDefaultIdentity";
@@ -184,7 +184,7 @@ describe("AddReadWritePermissionToDefaultIdentity Component", () => {
   describe("Component Structure", () => {
     it("should display the description text", () => {
       renderComponent();
-      expect(screen.getByText(ContainerCopyMessages.readWritePermissionAssigned.description)).toBeInTheDocument();
+      expect(screen.getByText(t(Keys.containerCopy.readWritePermissionAssigned.description))).toBeInTheDocument();
     });
 
     it("should display the info tooltip", () => {
@@ -216,10 +216,10 @@ describe("AddReadWritePermissionToDefaultIdentity Component", () => {
 
       expect(screen.getByTestId("popover-message")).toBeInTheDocument();
       expect(screen.getByTestId("popover-title")).toHaveTextContent(
-        ContainerCopyMessages.readWritePermissionAssigned.popoverTitle,
+        t(Keys.containerCopy.readWritePermissionAssigned.popoverTitle),
       );
       expect(screen.getByTestId("popover-content")).toHaveTextContent(
-        ContainerCopyMessages.readWritePermissionAssigned.popoverDescription,
+        t(Keys.containerCopy.readWritePermissionAssigned.popoverDescription),
       );
     });
 

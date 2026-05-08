@@ -1,8 +1,8 @@
 import "@testing-library/jest-dom";
 import { fireEvent, render, screen } from "@testing-library/react";
+import { Keys, t } from "Localization";
 import React from "react";
 import { updateDefaultIdentity } from "../../../../../Utils/arm/identityUtils";
-import ContainerCopyMessages from "../../../ContainerCopyMessages";
 import { CopyJobContext } from "../../../Context/CopyJobContext";
 import DefaultManagedIdentity from "./DefaultManagedIdentity";
 
@@ -172,7 +172,7 @@ describe("DefaultManagedIdentity", () => {
       expect(popover).toBeInTheDocument();
 
       const title = screen.getByTestId("popover-title");
-      expect(title).toHaveTextContent(ContainerCopyMessages.defaultManagedIdentity.popoverTitle);
+      expect(title).toHaveTextContent(t(Keys.containerCopy.defaultManagedIdentity.popoverTitle));
 
       const content = screen.getByTestId("popover-content");
       expect(content).toHaveTextContent(
@@ -354,8 +354,8 @@ describe("DefaultManagedIdentity", () => {
     it("should display correct toggle button text", () => {
       renderComponent();
 
-      const onText = screen.queryByText(ContainerCopyMessages.toggleBtn.onText);
-      const offText = screen.queryByText(ContainerCopyMessages.toggleBtn.offText);
+      const onText = screen.queryByText(t(Keys.common.on));
+      const offText = screen.queryByText(t(Keys.common.off));
 
       expect(onText || offText).toBeTruthy();
     });
@@ -363,7 +363,7 @@ describe("DefaultManagedIdentity", () => {
     it("should display correct link text in tooltip", () => {
       renderComponent();
 
-      const linkText = screen.getByText(ContainerCopyMessages.defaultManagedIdentity.tooltip.hrefText);
+      const linkText = screen.getByText(t(Keys.containerCopy.defaultManagedIdentity.tooltipHrefText));
       expect(linkText).toBeInTheDocument();
     });
   });

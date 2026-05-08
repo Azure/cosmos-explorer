@@ -4,7 +4,7 @@ import { AuthType } from "../../AuthType";
 import * as DataModels from "../../Contracts/DataModels";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import { traceFailure, traceStart, traceSuccess } from "../../Shared/Telemetry/TelemetryProcessor";
-import { FabricArtifactInfo, userContext } from "../../UserContext";
+import { ApiType, FabricArtifactInfo, userContext } from "../../UserContext";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { listCassandraKeyspaces } from "../../Utils/arm/generatedClients/cosmos/cassandraResources";
 import { listGremlinDatabases } from "../../Utils/arm/generatedClients/cosmos/gremlinResources";
@@ -96,10 +96,17 @@ export async function readDatabases(): Promise<DataModels.Database[]> {
   return databases;
 }
 
-async function readDatabasesWithARM(): Promise<DataModels.Database[]> {
+export async function readDatabasesWithARM(accountOverride?: {
+  subscriptionId: string;
+  resourceGroup: string;
+  accountName: string;
+  apiType?: ApiType;
+}): Promise<DataModels.Database[]> {
   let rpResponse;
-  const { subscriptionId, resourceGroup, apiType, databaseAccount } = userContext;
-  const accountName = databaseAccount.name;
+  const subscriptionId = accountOverride?.subscriptionId ?? userContext.subscriptionId ?? "";
+  const resourceGroup = accountOverride?.resourceGroup ?? userContext.resourceGroup ?? "";
+  const accountName = accountOverride?.accountName ?? userContext?.databaseAccount?.name ?? "";
+  const apiType = accountOverride?.apiType ?? userContext.apiType;
 
   switch (apiType) {
     case "SQL":
@@ -118,22 +125,5 @@ async function readDatabasesWithARM(): Promise<DataModels.Database[]> {
       throw new Error(`Unsupported default experience type: ${apiType}`);
   }
 
-  return rpResponse?.value?.map((database) => database.properties?.resource as DataModels.Database);
-}
-
-export async function readDatabasesForAccount(
-  subscriptionId: string,
-  resourceGroup: string,
-  accountName: string,
-): Promise<DataModels.Database[]> {
-  const clearMessage = logConsoleProgress(`Querying databases for account ${accountName}`);
-  try {
-    const rpResponse = await listSqlDatabases(subscriptionId, resourceGroup, accountName);
-    return rpResponse?.value?.map((database) => database.properties?.resource as DataModels.Database) ?? [];
-  } catch (error) {
-    handleError(error, "ReadDatabasesForAccount", `Error while querying databases for account ${accountName}`);
-    throw error;
-  } finally {
-    clearMessage();
-  }
+  return rpResponse?.value?.map((database) => database.properties?.resource as DataModels.Database) ?? [];
 }

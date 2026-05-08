@@ -6,7 +6,7 @@ import { DatabaseAccount } from "../../Contracts/DataModels";
 import { updateUserContext } from "../../UserContext";
 import { armRequest } from "../../Utils/arm/request";
 import { client } from "../CosmosClient";
-import { readDatabases, readDatabasesForAccount } from "./readDatabases";
+import { readDatabases, readDatabasesWithARM } from "./readDatabases";
 
 describe("readDatabases", () => {
   beforeAll(() => {
@@ -44,9 +44,18 @@ describe("readDatabases", () => {
   });
 });
 
-describe("readDatabasesForAccount", () => {
+describe("readDatabasesWithARM (with accountOverride)", () => {
   const mockDatabase = { id: "testDb", _rid: "", _self: "", _etag: "", _ts: 0 };
   const mockArmResponse = { value: [{ properties: { resource: mockDatabase } }] };
+
+  beforeAll(() => {
+    updateUserContext({
+      databaseAccount: { name: "context-account" } as DatabaseAccount,
+      subscriptionId: "context-sub",
+      resourceGroup: "context-rg",
+      apiType: "SQL",
+    });
+  });
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -55,7 +64,7 @@ describe("readDatabasesForAccount", () => {
   it("should call ARM with a path that includes the provided subscriptionId, resourceGroup, and accountName", async () => {
     (armRequest as jest.Mock).mockResolvedValue(mockArmResponse);
 
-    await readDatabasesForAccount("test-sub", "test-rg", "test-account");
+    await readDatabasesWithARM({ subscriptionId: "test-sub", resourceGroup: "test-rg", accountName: "test-account" });
 
     expect(armRequest).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -69,6 +78,80 @@ describe("readDatabasesForAccount", () => {
     );
   });
 
+  it("should use apiType from accountOverride when provided (SQL)", async () => {
+    (armRequest as jest.Mock).mockResolvedValue(mockArmResponse);
+
+    await readDatabasesWithARM({ subscriptionId: "sub", resourceGroup: "rg", accountName: "account", apiType: "SQL" });
+
+    expect(armRequest).toHaveBeenCalledWith(
+      expect.objectContaining({ path: expect.stringContaining("/sqlDatabases") }),
+    );
+  });
+
+  it("should use apiType from accountOverride when provided (Mongo)", async () => {
+    (armRequest as jest.Mock).mockResolvedValue(mockArmResponse);
+
+    await readDatabasesWithARM({
+      subscriptionId: "sub",
+      resourceGroup: "rg",
+      accountName: "account",
+      apiType: "Mongo",
+    });
+
+    expect(armRequest).toHaveBeenCalledWith(
+      expect.objectContaining({ path: expect.stringContaining("/mongodbDatabases") }),
+    );
+  });
+
+  it("should use apiType from accountOverride when provided (Cassandra)", async () => {
+    (armRequest as jest.Mock).mockResolvedValue(mockArmResponse);
+
+    await readDatabasesWithARM({
+      subscriptionId: "sub",
+      resourceGroup: "rg",
+      accountName: "account",
+      apiType: "Cassandra",
+    });
+
+    expect(armRequest).toHaveBeenCalledWith(
+      expect.objectContaining({ path: expect.stringContaining("/cassandraKeyspaces") }),
+    );
+  });
+
+  it("should use apiType from accountOverride when provided (Gremlin)", async () => {
+    (armRequest as jest.Mock).mockResolvedValue(mockArmResponse);
+
+    await readDatabasesWithARM({
+      subscriptionId: "sub",
+      resourceGroup: "rg",
+      accountName: "account",
+      apiType: "Gremlin",
+    });
+
+    expect(armRequest).toHaveBeenCalledWith(
+      expect.objectContaining({ path: expect.stringContaining("/gremlinDatabases") }),
+    );
+  });
+
+  it("should fall back to userContext.apiType when apiType is not in accountOverride", async () => {
+    updateUserContext({ apiType: "Mongo" });
+    (armRequest as jest.Mock).mockResolvedValue(mockArmResponse);
+
+    await readDatabasesWithARM({ subscriptionId: "sub", resourceGroup: "rg", accountName: "account" });
+
+    expect(armRequest).toHaveBeenCalledWith(
+      expect.objectContaining({ path: expect.stringContaining("/mongodbDatabases") }),
+    );
+
+    updateUserContext({ apiType: "SQL" }); // restore
+  });
+
+  it("should throw for unsupported apiType", async () => {
+    await expect(
+      readDatabasesWithARM({ subscriptionId: "sub", resourceGroup: "rg", accountName: "account", apiType: "Tables" }),
+    ).rejects.toThrow("Unsupported default experience type: Tables");
+  });
+
   it("should return mapped database resources from the response", async () => {
     const db1 = { id: "db1", _rid: "r1", _self: "/dbs/db1", _etag: "", _ts: 1 };
     const db2 = { id: "db2", _rid: "r2", _self: "/dbs/db2", _etag: "", _ts: 2 };
@@ -77,7 +160,7 @@ describe("readDatabasesForAccount", () => {
       value: [{ properties: { resource: db1 } }, { properties: { resource: db2 } }],
     });
 
-    const result = await readDatabasesForAccount("sub", "rg", "account");
+    const result = await readDatabasesWithARM({ subscriptionId: "sub", resourceGroup: "rg", accountName: "account" });
 
     expect(result).toEqual([db1, db2]);
   });
@@ -85,7 +168,7 @@ describe("readDatabasesForAccount", () => {
   it("should return an empty array when the response is null", async () => {
     (armRequest as jest.Mock).mockResolvedValue(null);
 
-    const result = await readDatabasesForAccount("sub", "rg", "account");
+    const result = await readDatabasesWithARM({ subscriptionId: "sub", resourceGroup: "rg", accountName: "account" });
 
     expect(result).toEqual([]);
   });
@@ -93,7 +176,7 @@ describe("readDatabasesForAccount", () => {
   it("should return an empty array when value is an empty list", async () => {
     (armRequest as jest.Mock).mockResolvedValue({ value: [] });
 
-    const result = await readDatabasesForAccount("sub", "rg", "account");
+    const result = await readDatabasesWithARM({ subscriptionId: "sub", resourceGroup: "rg", accountName: "account" });
 
     expect(result).toEqual([]);
   });
@@ -101,6 +184,8 @@ describe("readDatabasesForAccount", () => {
   it("should throw and propagate errors from the ARM call", async () => {
     (armRequest as jest.Mock).mockRejectedValue(new Error("ARM request failed"));
 
-    await expect(readDatabasesForAccount("sub", "rg", "account")).rejects.toThrow("ARM request failed");
+    await expect(
+      readDatabasesWithARM({ subscriptionId: "sub", resourceGroup: "rg", accountName: "account" }),
+    ).rejects.toThrow("ARM request failed");
   });
 });

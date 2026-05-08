@@ -1,7 +1,7 @@
 import { Link, Stack, Text, Toggle } from "@fluentui/react";
+import { Keys, t } from "Localization";
 import React from "react";
 import { updateSystemIdentity } from "../../../../../Utils/arm/identityUtils";
-import ContainerCopyMessages from "../../../ContainerCopyMessages";
 import { useCopyJobContext } from "../../../Context/CopyJobContext";
 import InfoTooltip from "../Components/InfoTooltip";
 import PopoverMessage from "../Components/PopoverContainer";
@@ -11,14 +11,14 @@ import useToggle from "./hooks/useToggle";
 
 const managedIdentityTooltip = (
   <Text>
-    {ContainerCopyMessages.addManagedIdentity.tooltip.content} &nbsp;
+    {t(Keys.containerCopy.addManagedIdentity.tooltipContent)} &nbsp;
     <Link
       style={{ color: "var(--colorBrandForeground1)" }}
-      href={ContainerCopyMessages.addManagedIdentity.tooltip.href}
+      href={t(Keys.containerCopy.addManagedIdentity.tooltipHref)}
       target="_blank"
       rel="noopener noreferrer"
     >
-      {ContainerCopyMessages.addManagedIdentity.tooltip.hrefText}
+      {t(Keys.containerCopy.addManagedIdentity.tooltipHrefText)}
     </Link>
   </Text>
 );
@@ -32,9 +32,9 @@ const AddManagedIdentity: React.FC<AddManagedIdentityProps> = () => {
   return (
     <Stack className="addManagedIdentityContainer" tokens={{ childrenGap: 15, padding: "0 0 0 20px" }}>
       <Text className="themeText">
-        {ContainerCopyMessages.addManagedIdentity.description}&ensp;
-        <Link href={ContainerCopyMessages.addManagedIdentity.descriptionHref} target="_blank" rel="noopener noreferrer">
-          {ContainerCopyMessages.addManagedIdentity.descriptionHrefText}
+        {t(Keys.containerCopy.addManagedIdentity.description)}&ensp;
+        <Link href={t(Keys.containerCopy.addManagedIdentity.descriptionHref)} target="_blank" rel="noopener noreferrer">
+          {t(Keys.containerCopy.addManagedIdentity.descriptionHrefText)}
         </Link>{" "}
         &nbsp;
         <InfoTooltip content={managedIdentityTooltip} />
@@ -42,18 +42,20 @@ const AddManagedIdentity: React.FC<AddManagedIdentityProps> = () => {
       <Toggle
         data-test="btn-toggle"
         checked={systemAssigned}
-        onText={ContainerCopyMessages.toggleBtn.onText}
-        offText={ContainerCopyMessages.toggleBtn.offText}
+        onText={t(Keys.common.on)}
+        offText={t(Keys.common.off)}
         onChange={onToggle}
       />
       <PopoverMessage
         isLoading={loading}
         visible={systemAssigned}
-        title={ContainerCopyMessages.addManagedIdentity.enablementTitle}
+        title={t(Keys.containerCopy.addManagedIdentity.enablementTitle)}
         onCancel={() => onToggle(null, false)}
         onPrimary={handleAddSystemIdentity}
       >
-        {ContainerCopyMessages.addManagedIdentity.enablementDescription(copyJobState.source?.account?.name)}
+        {t(Keys.containerCopy.addManagedIdentity.enablementDescription, {
+          accountName: copyJobState.source?.account?.name,
+        })}
       </PopoverMessage>
     </Stack>
   );

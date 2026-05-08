@@ -350,7 +350,7 @@ describe("PreviewCopyJob", () => {
     expect(mockSetCopyJobState).toHaveBeenCalledWith(expect.any(Function));
   });
 
-  it("should display proper field labels from ContainerCopyMessages", () => {
+  it("should display proper field labels", () => {
     const mockContext = createMockContext();
 
     const { getByText } = render(

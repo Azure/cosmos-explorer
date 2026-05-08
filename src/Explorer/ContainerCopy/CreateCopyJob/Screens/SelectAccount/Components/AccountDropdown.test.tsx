@@ -5,7 +5,7 @@ import { configContext, Platform } from "../../../../../../ConfigContext";
 import { DatabaseAccount } from "../../../../../../Contracts/DataModels";
 import * as useDatabaseAccountsHook from "../../../../../../hooks/useDatabaseAccounts";
 import { apiType, userContext } from "../../../../../../UserContext";
-import ContainerCopyMessages from "../../../../ContainerCopyMessages";
+import { Keys, t } from "Localization";
 import { CopyJobContext } from "../../../../Context/CopyJobContext";
 import { CopyJobMigrationType } from "../../../../Enums/CopyJobEnums";
 import { CopyJobContextProviderType, CopyJobContextState } from "../../../../Types/CopyJobTypes";
@@ -129,11 +129,11 @@ describe("AccountDropdown", () => {
       renderWithContext();
 
       expect(
-        screen.getByText(`${ContainerCopyMessages.destinationAccountDropdownLabel}:`, { exact: true }),
+        screen.getByText(`${t(Keys.containerCopy.selectAccount.accountDropdownLabel)}:`, { exact: true }),
       ).toBeInTheDocument();
       expect(screen.getByRole("combobox")).toHaveAttribute(
         "aria-label",
-        ContainerCopyMessages.destinationAccountDropdownLabel,
+        t(Keys.containerCopy.selectAccount.accountDropdownLabel),
       );
     });
 
@@ -407,7 +407,7 @@ describe("AccountDropdown", () => {
       renderWithContext();
 
       const dropdown = screen.getByRole("combobox");
-      expect(dropdown).toHaveAttribute("aria-label", ContainerCopyMessages.destinationAccountDropdownLabel);
+      expect(dropdown).toHaveAttribute("aria-label", t(Keys.containerCopy.selectAccount.accountDropdownLabel));
     });
 
     it("should have required attribute", () => {

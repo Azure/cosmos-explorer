@@ -1,7 +1,7 @@
+import { Keys, t } from "Localization";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { CapabilityNames } from "../../../../../../Common/Constants";
 import { fetchRoleAssignments, fetchRoleDefinitions, RoleDefinitionType } from "../../../../../../Utils/arm/RbacUtils";
-import ContainerCopyMessages from "../../../../ContainerCopyMessages";
 import { getAccountDetailsFromResourceId, getContainerIdentifiers, isIntraAccountCopy } from "../../../../CopyJobUtils";
 import {
   BackupPolicyType,
@@ -46,7 +46,7 @@ const COSMOS_DB_BUILT_IN_DATA_CONTRIBUTOR_ROLE_ID = "00000000-0000-0000-0000-000
 const PERMISSION_SECTIONS_CONFIG: PermissionSectionConfig[] = [
   {
     id: SECTION_IDS.addManagedIdentity,
-    title: ContainerCopyMessages.addManagedIdentity.title,
+    title: t(Keys.containerCopy.addManagedIdentity.title),
     Component: AddManagedIdentity,
     disabled: true,
     validate: (state: CopyJobContextState) => {
@@ -59,7 +59,7 @@ const PERMISSION_SECTIONS_CONFIG: PermissionSectionConfig[] = [
   },
   {
     id: SECTION_IDS.defaultManagedIdentity,
-    title: ContainerCopyMessages.defaultManagedIdentity.title,
+    title: t(Keys.containerCopy.defaultManagedIdentity.title),
     Component: DefaultManagedIdentity,
     disabled: true,
     validate: (state: CopyJobContextState) => {
@@ -69,7 +69,7 @@ const PERMISSION_SECTIONS_CONFIG: PermissionSectionConfig[] = [
   },
   {
     id: SECTION_IDS.readWritePermissionAssigned,
-    title: ContainerCopyMessages.readWritePermissionAssigned.title,
+    title: t(Keys.containerCopy.readWritePermissionAssigned.title),
     Component: AddReadWritePermissionToDefaultIdentity,
     disabled: true,
     validate: async (state: CopyJobContextState) => {
@@ -97,7 +97,7 @@ const PERMISSION_SECTIONS_CONFIG: PermissionSectionConfig[] = [
 const PERMISSION_SECTIONS_FOR_ONLINE_JOBS: PermissionSectionConfig[] = [
   {
     id: SECTION_IDS.pointInTimeRestore,
-    title: ContainerCopyMessages.pointInTimeRestore.title,
+    title: t(Keys.containerCopy.pointInTimeRestore.title),
     Component: PointInTimeRestore,
     disabled: true,
     validate: (state: CopyJobContextState) => {
@@ -107,7 +107,7 @@ const PERMISSION_SECTIONS_FOR_ONLINE_JOBS: PermissionSectionConfig[] = [
   },
   {
     id: SECTION_IDS.onlineCopyEnabled,
-    title: ContainerCopyMessages.onlineCopyEnabled.title,
+    title: t(Keys.containerCopy.onlineCopyEnabled.title),
     Component: OnlineCopyEnabled,
     disabled: true,
     validate: (state: CopyJobContextState) => {
@@ -212,11 +212,11 @@ const usePermissionSections = (state: CopyJobContextState): PermissionGroupConfi
     if (crossAccountSections.length > 0) {
       groups.push({
         id: "crossAccountConfigs",
-        title: ContainerCopyMessages.assignPermissions.crossAccountConfiguration.title,
-        description: ContainerCopyMessages.assignPermissions.crossAccountConfiguration.description(
-          sourceAccountName,
-          targetAccountName,
-        ),
+        title: t(Keys.containerCopy.assignPermissions.crossAccountConfiguration.title),
+        description: t(Keys.containerCopy.assignPermissions.crossAccountConfiguration.description, {
+          sourceAccount: sourceAccountName,
+          destinationAccount: targetAccountName,
+        }),
         sections: crossAccountSections,
       });
     }
@@ -224,8 +224,10 @@ const usePermissionSections = (state: CopyJobContextState): PermissionGroupConfi
     if (state.migrationType === CopyJobMigrationType.Online) {
       groups.push({
         id: "onlineConfigs",
-        title: ContainerCopyMessages.assignPermissions.onlineConfiguration.title,
-        description: ContainerCopyMessages.assignPermissions.onlineConfiguration.description(sourceAccountName),
+        title: t(Keys.containerCopy.assignPermissions.onlineConfiguration.title),
+        description: t(Keys.containerCopy.assignPermissions.onlineConfiguration.description, {
+          accountName: sourceAccountName,
+        }),
         sections: [...PERMISSION_SECTIONS_FOR_ONLINE_JOBS],
       });
     }
