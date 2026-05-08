@@ -76,7 +76,7 @@
         "description": "Een tabel maken en communiceren met gegevens met de shell-interface van PostgreSQL"
       },
       "vcoreMongo": {
-        "title": "Mongo-shell",
+        "title": "Mongo Shell",
         "description": "Een verzameling maken en communiceren met gegevens met behulp van de shell-interface van MongoDB"
       }
     },
@@ -303,7 +303,7 @@
     "deleteContainer": "{{containerName}} verwijderen",
     "newSqlQuery": "Nieuwe SQL-query",
     "newQuery": "Nieuwe query",
-    "openMongoShell": "Mongo-shell openen",
+    "openMongoShell": "Mongo Shell openen",
     "newShell": "Nieuwe shell",
     "openCassandraShell": "Cassandra-shell openen",
     "newStoredProcedure": "Nieuwe opgeslagen procedure",
@@ -414,7 +414,7 @@
       "refreshGridFailed": "Kan het raster met documenten niet vernieuwen"
     },
     "mongoShell": {
-      "title": "Mongo-shell"
+      "title": "Mongo Shell"
     }
   },
   "panes": {
@@ -469,8 +469,8 @@
       "sharded": "Shard",
       "addPartitionKey": "Hiërarchische partitiesleutel toevoegen",
       "hierarchicalPartitionKeyInfo": "Met deze functie kunt u uw gegevens partitioneren met maximaal drie niveaus aan sleutels voor een betere distributie. Hiervoor is .NET V3, Java V4 SDK of preview javaScript V3 SDK vereist.",
-      "provisionDedicatedThroughput": "Toegewezen doorvoer inrichten voor deze {{collectionName}}",
-      "provisionDedicatedThroughputTooltip": "U kunt optioneel toegewezen doorvoer inrichten voor een {{collectionName}} binnen een database waarvoor doorvoer is ingericht. Dit toegewezen doorvoeraantal wordt niet gedeeld met andere {{collectionNamePlural}} in de database en telt niet mee voor de doorvoer die u voor de database hebt ingericht. Dit doorvoeraantal wordt in rekening gebracht naast het doorvoeraantal die u hebt ingericht op databaseniveau.",
+      "provisionDedicatedThroughput": "Speciale doorvoer inrichten voor deze {{collectionName}}",
+      "provisionDedicatedThroughputTooltip": "U kunt optioneel speciale doorvoer inrichten voor een {{collectionName}} binnen een database waarvoor doorvoer is ingericht. Dit speciale-doorvoeraantal wordt niet gedeeld met andere {{collectionNamePlural}} in de database en telt niet mee voor de doorvoer die u voor de database hebt ingericht. Dit doorvoeraantal wordt in rekening gebracht naast het doorvoeraantal die u hebt ingericht op databaseniveau.",
       "uniqueKeysPlaceholderMongo": "Door komma's gescheiden paden, bijvoorbeeld firstName,address.zipCode",
       "uniqueKeysPlaceholderSql": "Door komma's gescheiden paden, bijvoorbeeld /firstName,/address/zipCode",
       "addUniqueKey": "Unieke sleutel toevoegen",
@@ -492,7 +492,7 @@
       "acknowledgeSpendErrorMonthly": "Bevestig de geschatte maandelijkse uitgaven.",
       "acknowledgeSpendErrorDaily": "Bevestig de geschatte dagelijkse uitgaven.",
       "unshardedMaxRuError": "Geen shard verzamelingen ondersteunen maximaal 10.000 RU's",
-      "acknowledgeShareThroughputError": "Bevestig de geschatte kosten van deze toegewezen doorvoer.",
+      "acknowledgeShareThroughputError": "Bevestig de kostenraming van deze speciale doorvoer.",
       "vectorPolicyError": "Los fouten op in het containervectorbeleid",
       "fullTextSearchPolicyError": "Los fouten op in het zoekbeleid voor volledige tekst van container",
       "addingSampleDataSet": "Voorbeeldgegevensset toevoegen",
@@ -708,8 +708,8 @@
       "tableIdLabel": "Voer de CQL-opdracht in om de tabel te maken.",
       "enterTableId": "Tabel-id invoeren",
       "tableSchemaAriaLabel": "Tabelschema",
-      "provisionDedicatedThroughput": "Toegewezen doorvoer inrichten voor deze tabel",
-      "provisionDedicatedThroughputTooltip": "U kunt optioneel toegewijde doorvoer instellen voor een tabel binnen een keyspace waarvoor doorvoer is ingesteld. Dit toegewezen doorvoeraantal wordt niet gedeeld met andere tabellen in de keyspace en telt niet mee voor de doorvoer die u hebt ingericht voor de keyspace. Dit doorvoeraantal wordt in rekening gebracht naast het doorvoeraantal die u hebt ingericht op het niveau van de keyspace."
+      "provisionDedicatedThroughput": "Speciale doorvoer inrichten voor deze tabel",
+      "provisionDedicatedThroughputTooltip": "U kunt optioneel speciale doorvoer instellen voor een tabel binnen een keyspace waarvoor doorvoer is ingesteld. Dit toegewezen doorvoeraantal wordt niet gedeeld met andere tabellen in de keyspace en telt niet mee voor de doorvoer die u hebt ingericht voor de keyspace. Dit doorvoeraantal wordt in rekening gebracht naast het doorvoeraantal die u hebt ingericht op het niveau van de keyspace."
     },
     "tables": {
       "addProperty": "Eigenschap toevoegen",
@@ -811,8 +811,8 @@
         "quotaMaxOption": "Uw huidige quotumlimiet is {{maximumThroughput}} RU/s. Om deze limiet te overschrijden, moet u een quotumverhoging aanvragen; het Azure Cosmos DB-team zal dit beoordelen.",
         "belowMinimumMessage": "U kunt de doorvoer niet verlagen tot onder uw huidige minimum van {{minimum}} RU/s. Raadpleeg de documentatie bij de serviceofferte voor meer informatie over deze limiet.",
         "saveThroughputWarning": "Uw factuur wordt beïnvloed wanneer u uw doorvoerinstellingen bijwerkt. Controleer de bijgewerkte kostenraming hieronder voordat u uw wijzigingen opslaat",
-        "currentAutoscaleThroughput": "Huidige doorvoer voor automatische schaalaanpassing:",
-        "targetAutoscaleThroughput": "Doeldoorvoer voor automatische schaalaanpassing:",
+        "currentAutoscaleThroughput": "Huidig automatisch schalen van doorvoer:",
+        "targetAutoscaleThroughput": "Automatisch schalen van doorvoer van doel:",
         "currentManualThroughput": "Actuele handmatige doorvoer:",
         "targetManualThroughput": "Handmatige doorvoer van doel:",
         "applyDelayedMessage": "De aanvraag om de doorvoer te verhogen is ingediend. Deze bewerking duurt 1-3 werkdagen om te voltooien. Bekijk de meest recente status in Meldingen.",
