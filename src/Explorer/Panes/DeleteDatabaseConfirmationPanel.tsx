@@ -1,4 +1,4 @@
-import { Text, TextField } from "@fluentui/react";
+import { IconButton, Text, TextField } from "@fluentui/react";
 import { useBoolean } from "@fluentui/react-hooks";
 import { Areas } from "Common/Constants";
 import DeleteFeedback from "Common/DeleteFeedback";
@@ -150,6 +150,7 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
     showErrorDetails: false,
     message: t(Keys.panes.deleteDatabase.warningMessage),
   };
+  const copyableIdLabel = t(Keys.panes.deleteDatabase.copyableId, { databaseName: getDatabaseName() });
   const confirmDatabase = t(Keys.panes.deleteDatabase.confirmPrompt, { databaseName: getDatabaseName() });
   const reasonInfo =
     t(Keys.panes.deleteDatabase.feedbackTitle) +
@@ -160,6 +161,25 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
       {!formError && <PanelInfoErrorComponent {...errorProps} />}
       <div className="panelMainContent">
         <div className="confirmDeleteInput">
+          <Text variant="small" style={{ color: "var(--colorNeutralForeground1)" }}>
+            {copyableIdLabel}
+          </Text>
+          <TextField
+            id="copyableDatabaseId"
+            readOnly
+            value={selectedDatabase?.id() ?? ""}
+            styles={themedTextFieldStyles}
+            onRenderSuffix={() => (
+              <IconButton
+                iconProps={{ iconName: "Copy" }}
+                title={t(Keys.common.copy)}
+                ariaLabel={t(Keys.common.copy)}
+                onClick={() => navigator.clipboard.writeText(selectedDatabase?.id() ?? "")}
+                styles={{ root: { height: "100%" } }}
+              />
+            )}
+            ariaLabel={copyableIdLabel}
+          />
           <span className="mandatoryStar">* </span>
           <Text variant="small" style={{ color: "var(--colorNeutralForeground1)" }}>
             {confirmDatabase}

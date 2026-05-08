@@ -359,10 +359,13 @@ exports[`SettingsComponent renders 1`] = `
             onVectorEmbeddingPolicyChange={[Function]}
             onVectorEmbeddingPolicyDirtyChange={[Function]}
             onVectorEmbeddingPolicyValidationChange={[Function]}
+            onVectorIndexesChange={[Function]}
             resetShouldDiscardContainerPolicyChange={[Function]}
             shouldDiscardContainerPolicies={false}
             vectorEmbeddingPolicy={{}}
             vectorEmbeddingPolicyBaseline={{}}
+            vectorIndexes={[]}
+            vectorIndexesBaseline={[]}
           />
         </Stack>
       </PivotItem>

@@ -33,7 +33,8 @@
     "publish": "Veröffentlichen",
     "browse": "Durchsuchen",
     "increaseValueBy1": "Wert um 1 erhöhen",
-    "decreaseValueBy1": "Wert um 1 verringern"
+    "decreaseValueBy1": "Wert um 1 verringern",
+    "preview": "Vorschau"
   },
   "splashScreen": {
     "title": {
@@ -420,6 +421,7 @@
     "deleteDatabase": {
       "panelTitle": "{{databaseName}} löschen",
       "warningMessage": "Warnung! Die Aktion, die Sie ausführen möchten, kann nicht rückgängig gemacht werden. Wenn Sie fortfahren, werden diese Ressource und alle untergeordneten Ressourcen dauerhaft gelöscht.",
+      "copyableId": "{{databaseName}}-ID:",
       "confirmPrompt": "Durch Eingabe der {{databaseName}}-ID (Name) bestätigen",
       "inputMismatch": "Eingabe {{databaseName}} Name „{{input}}“ stimmt nicht mit dem ausgewählten {{databaseName}} „{{selectedId}}“ überein.",
       "feedbackTitle": "Helfen Sie uns, Azure Cosmos DB zu verbessern!",
@@ -427,6 +429,8 @@
     },
     "deleteCollection": {
       "panelTitle": "{{collectionName}} löschen",
+      "warningMessage": "Warnung! Die Aktion, die Sie ausführen möchten, kann nicht rückgängig gemacht werden. Wenn Sie fortfahren, werden diese Ressource und alle untergeordneten Ressourcen dauerhaft gelöscht.",
+      "copyableId": "{{collectionName}}-ID:",
       "confirmPrompt": "Durch Eingabe der {{collectionName}}-ID bestätigen",
       "inputMismatch": "Die Eingabe-ID {{input}} stimmt nicht mit der ausgewählten {{selectedId}} überein.",
       "feedbackTitle": "Helfen Sie uns, Azure Cosmos DB zu verbessern!",
@@ -438,21 +442,15 @@
       "keyspaceIdLabel": "Keyspace-ID",
       "databaseIdPlaceholder": "Neue {{databaseLabel}}-ID eingeben",
       "databaseTooltip": "{{databaseLabel}} ist ein logischer Container mit mindestens einem {{collectionsLabel}}",
-      "shareThroughput": "Durchsatz für {{collectionsLabel}} gemeinsam nutzen",
-      "shareThroughputTooltip": "Der bereitgestellte Durchsatz auf der {{databaseLabel}}-Ebene wird von allen {{collectionsLabel}} innerhalb von {{databaseLabel}} gemeinsam genutzt.",
       "greaterThanError": "Geben Sie für den Autopilot-Durchsatz einen Wert ein, der größer als {{minValue}} ist.",
       "acknowledgeSpendError": "Bestätigen Sie die geschätzten {{period}} Ausgaben.",
       "acknowledgeSpendErrorMonthly": "Bestätigen Sie die geschätzten monatlichen Ausgaben.",
-      "acknowledgeSpendErrorDaily": "Bestätigen Sie die geschätzten täglichen Ausgaben.",
-      "provisionSharedThroughputTitle": "Freigegebenen Durchsatz bereitstellen",
-      "provisionThroughputLabel": "Durchsatz bereitstellen"
+      "acknowledgeSpendErrorDaily": "Bestätigen Sie die geschätzten täglichen Ausgaben."
     },
     "addCollection": {
       "createNew": "Neu erstellen",
       "useExisting": "Vorhandene verwenden",
       "databaseTooltip": "Eine Datenbank entspricht einem Namespace. Das ist die Verwaltungseinheit für einen Satz von {{collectionName}}.",
-      "shareThroughput": "Durchsatz für {{collectionName}} gemeinsam nutzen",
-      "shareThroughputTooltip": "Der auf Datenbankebene konfigurierte Durchsatz wird von allen {{collectionName}} innerhalb der Datenbank gemeinsam genutzt.",
       "collectionIdLabel": "{{collectionName}} ID",
       "collectionIdTooltip": "Eindeutiger Bezeichner für {{collectionName}} und wird für id-basiertes Routing über REST und alle SDKs verwendet.",
       "collectionIdPlaceholder": "Beispiel: {{collectionName}}1",
@@ -765,7 +763,7 @@
         "containerPolicies": "Containerrichtlinien",
         "throughputBuckets": "Durchsatzbuckets",
         "globalSecondaryIndexPreview": "Globaler sekundärer Index (Vorschau)",
-        "maskingPolicyPreview": "Maskierungsrichtlinie (Vorschau)"
+        "maskingPolicyPreview": "Maskierungsrichtlinie"
       },
       "mongoNotifications": {
         "selectTypeWarning": "Bitte wählen Sie für jeden Index einen Typ aus.",
@@ -961,8 +959,38 @@
         "bucketLabel": "Bucket {{id}}",
         "dataExplorerQueryBucket": " (Daten-Explorer-Abfragebucket)",
         "active": "Aktiv",
-        "inactive": "Inaktiv"
+        "inactive": "Inaktiv",
+        "defaultBucketLabel": "Standard-Durchsatzbucket",
+        "defaultBucketPlaceholder": "Standard-Durchsatzbucket auswählen",
+        "defaultBucketTooltip": "Der Standard-Durchsatzbucket wird für Vorgänge verwendet, die keinen bestimmten Bucket angeben.",
+        "defaultBucketTooltipLearnMore": "Weitere Informationen.",
+        "noDefaultBucketSelected": "Kein Standard-Durchsatzbucket ausgewählt",
+        "bucketOptionLabel": "Bucket {{id}} – {{percentage}} %",
+        "bucketNotActive": "Bucket {{id}} ist nicht aktiv."
       }
+    },
+    "vectorEmbeddingPolicies": {
+      "vectorEmbeddingTitle": "Vektoreinbettung {{index}}",
+      "path": "Pfad",
+      "dataType": "Datentyp",
+      "distanceFunction": "Distanzfunktion",
+      "dimensions": "Dimensionen",
+      "indexType": "Indextyp",
+      "quantizationByteSize": "Quantisierungs-Bytegröße",
+      "quantizationByteSizeTooltip": "Dies wird dynamisch von „{{containerName}}“ festgelegt, wenn es leer bleibt, oder es kann auf eine feste Zahl gesetzt werden.",
+      "quantizationByteSizeTooltipContainerName": "Container",
+      "quantizationByteSizeTooltipGlobalSecondaryIndexName": "Globaler sekundärer Index",
+      "quantizerType": "Quantisierertyp",
+      "quantizerTypeTooltip": "Die vom Vektorindex verwendete Quantisierungsmethode.",
+      "indexingSearchListSize": "Größe der Suchliste für die Indexierung",
+      "vectorIndexShardKey": "Shardschlüssel für Vektorindex",
+      "addVectorEmbedding": "Vektoreinbettung hinzufügen",
+      "pathEmptyError": "Der Pfad darf nicht leer sein.",
+      "pathDuplicateError": "Der Pfad wurde bereits definiert.",
+      "dimensionRangeError": "Die Dimension muss größer als 0 und kleiner oder gleich 4096 sein.",
+      "dimensionFlatIndexError": "Die maximal zulässige Dimension für einen Flat-Index ist 505.",
+      "quantizationByteSizeRangeError": "Die Quantisierungsbytegröße muss größer als 0 und kleiner oder gleich 512 sein.",
+      "indexingSearchListSizeRangeError": "Die Größe der Indizierungssuchliste muss größer oder gleich 25 und kleiner oder gleich 500 sein."
     }
   }
 }

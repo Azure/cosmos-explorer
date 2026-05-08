@@ -1,4 +1,4 @@
-import { Checkbox, Dropdown, IDropdownOption, Link, Stack, Text, TextField } from "@fluentui/react";
+import { Dropdown, IDropdownOption, Link, Stack, Text, TextField } from "@fluentui/react";
 import * as Constants from "Common/Constants";
 import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
 import { InfoTooltip } from "Common/Tooltip/InfoTooltip";
@@ -27,8 +27,6 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
   explorer: container,
   cassandraApiClient,
 }: CassandraAddCollectionPaneProps) => {
-  let newKeySpaceThroughput: number;
-  let isNewKeySpaceAutoscale: boolean;
   let tableThroughput: number;
   let isTableAutoscale: boolean;
   let isCostAcknowledged: boolean;
@@ -52,7 +50,7 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
     collection: {
       id: tableId,
       storage: Constants.BackendDefaults.multiPartitionStorageInGb,
-      offerThroughput: newKeySpaceThroughput || tableThroughput,
+      offerThroughput: tableThroughput,
       partitionKey: "",
       databaseId: keyspaceCreateNew ? newKeyspaceId : existingKeyspaceId,
     },
@@ -60,33 +58,28 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
     subscriptionQuotaId: userContext.quotaId,
     defaultsCheck: {
       storage: "u",
-      throughput: newKeySpaceThroughput || tableThroughput,
+      throughput: tableThroughput,
     },
     dataExplorerArea: Constants.Areas.ContextualPane,
   };
 
   const onSubmit = async () => {
-    const throughput = keyspaceCreateNew ? newKeySpaceThroughput : tableThroughput;
+    const throughput = tableThroughput;
     const keyspaceId = keyspaceCreateNew ? newKeyspaceId : existingKeyspaceId;
 
     if (throughput > SharedConstants.CollectionCreation.DefaultCollectionRUs100K && !isCostAcknowledged) {
-      const errorMessage =
-        isNewKeySpaceAutoscale || isTableAutoscale
-          ? t(Keys.panes.addCollection.acknowledgeSpendErrorMonthly)
-          : t(Keys.panes.addCollection.acknowledgeSpendErrorDaily);
+      const errorMessage = isTableAutoscale
+        ? t(Keys.panes.addCollection.acknowledgeSpendErrorMonthly)
+        : t(Keys.panes.addCollection.acknowledgeSpendErrorDaily);
       setFormError(errorMessage);
       return;
     }
 
     setIsExecuting(true);
-    const autoPilotCommand = `cosmosdb_autoscale_max_throughput`;
     const createKeyspaceQueryPrefix = `CREATE KEYSPACE ${keyspaceId.trim()} WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 3 }`;
-    const createKeyspaceQuery: string = isKeyspaceShared
-      ? isNewKeySpaceAutoscale
-        ? `${createKeyspaceQueryPrefix} AND ${autoPilotCommand}=${newKeySpaceThroughput};`
-        : `${createKeyspaceQueryPrefix} AND cosmosdb_provisioned_throughput=${newKeySpaceThroughput};`
-      : `${createKeyspaceQueryPrefix};`;
+    const createKeyspaceQuery = `${createKeyspaceQueryPrefix};`;
     let tableQuery: string;
+    const autoPilotCommand = `cosmosdb_autoscale_max_throughput`;
     const createTableQueryPrefix = `CREATE TABLE ${keyspaceId}.${tableId.trim()} ${userTableQuery}`;
 
     if (tableThroughput) {
@@ -177,7 +170,6 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
               tabIndex={0}
               onChange={() => {
                 setKeyspaceCreateNew(true);
-                setIsKeyspaceShared(false);
                 setExistingKeyspaceId("");
               }}
             />
@@ -192,7 +184,6 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
               tabIndex={0}
               onChange={() => {
                 setKeyspaceCreateNew(false);
-                setIsKeyspaceShared(false);
               }}
             />
             <span className="panelRadioBtnLabel">{t(Keys.panes.addCollection.useExisting)}</span>
@@ -214,25 +205,6 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
                 ariaLabel="Keyspace id"
                 autoFocus
               />
-
-              {!isServerlessAccount() && (
-                <Stack horizontal>
-                  <Checkbox
-                    label="Provision shared throughput"
-                    checked={isKeyspaceShared}
-                    styles={{
-                      text: { fontSize: 12 },
-                      checkbox: { width: 12, height: 12 },
-                      label: { padding: 0, alignItems: "center" },
-                    }}
-                    onChange={(ev: React.FormEvent<HTMLElement>, isChecked: boolean) => setIsKeyspaceShared(isChecked)}
-                  />
-                  <InfoTooltip>
-                    Provisioned throughput at the keyspace level will be shared across unlimited number of tables within
-                    the keyspace
-                  </InfoTooltip>
-                </Stack>
-              )}
             </Stack>
           )}
 
@@ -254,21 +226,6 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
                 setIsKeyspaceShared(option.data.isShared);
               }}
               responsiveMode={999}
-            />
-          )}
-
-          {!isServerlessAccount() && keyspaceCreateNew && isKeyspaceShared && (
-            <ThroughputInput
-              showFreeTierExceedThroughputTooltip={
-                isFreeTierAccount && !useDatabases.getState().isFirstResourceCreated()
-              }
-              isDatabase
-              isSharded
-              isFreeTier={isFreeTierAccount}
-              setThroughputValue={(throughput: number) => (newKeySpaceThroughput = throughput)}
-              setIsAutoscale={(isAutoscale: boolean) => (isNewKeySpaceAutoscale = isAutoscale)}
-              setIsThroughputCapExceeded={(isCapExceeded: boolean) => setIsThroughputCapExceeded(isCapExceeded)}
-              onCostAcknowledgeChange={(isAcknowledged: boolean) => (isCostAcknowledged = isAcknowledged)}
             />
           )}
         </Stack>
@@ -328,7 +285,7 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
             <InfoTooltip>{t(Keys.panes.cassandraAddCollection.provisionDedicatedThroughputTooltip)}</InfoTooltip>
           </Stack>
         )}
-        {!isServerlessAccount() && (!isKeyspaceShared || dedicateTableThroughput) && (
+        {!isServerlessAccount() && (keyspaceCreateNew || !isKeyspaceShared || dedicateTableThroughput) && (
           <ThroughputInput
             showFreeTierExceedThroughputTooltip={isFreeTierAccount && !useDatabases.getState().isFirstResourceCreated()}
             isDatabase={false}

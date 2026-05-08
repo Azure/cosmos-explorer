@@ -109,6 +109,8 @@ const title = t("splashScreen.title.default");
 ```
 The `ResourceKey` type (derived from `Resources.json`) ensures compile-time safety — invalid keys will cause a type error. When adding new strings, add the English entry to `Resources.json` first, then reference it with `t()`.
 
+**Important:** Only modify the English resource file (`src/Localization/en/Resources.json`). Do not modify non-English locale files (`src/Localization/<locale>/Resources.json`) — translations are managed by a separate localization process.
+
 ### Imports
 
 TypeScript `baseUrl` is set to `src/`, so imports from `src/` are written without a leading `./src/` prefix:
