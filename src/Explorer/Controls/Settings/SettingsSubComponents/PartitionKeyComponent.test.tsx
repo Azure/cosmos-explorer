@@ -117,7 +117,7 @@ describe("PartitionKeyComponent", () => {
   });
 
   it("shows cancel button for offline job in progress", () => {
-    (useDataTransferJobs as jest.Mock).mockReturnValue({
+    (useDataTransferJobs as unknown as jest.Mock).mockReturnValue({
       dataTransferJobs: [mockOfflineJob],
     });
 
@@ -128,7 +128,7 @@ describe("PartitionKeyComponent", () => {
   });
 
   it("shows ellipsis action menu for online job in progress", async () => {
-    (useDataTransferJobs as jest.Mock).mockReturnValue({
+    (useDataTransferJobs as unknown as jest.Mock).mockReturnValue({
       dataTransferJobs: [mockOnlineJob],
     });
 
