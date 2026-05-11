@@ -78,7 +78,7 @@
         "description": "Vytvoření tabulky a interakce s daty pomocí rozhraní prostředí PostgreSQL"
       },
       "vcoreMongo": {
-        "title": "Prostředí Mongo",
+        "title": "Mongo Shell",
         "description": "Vytvořte kolekci a pracujte s daty pomocí rozhraní prostředí MongoDB"
       }
     },
@@ -416,7 +416,7 @@
       "refreshGridFailed": "Nepovedlo se aktualizovat mřížku dokumentů"
     },
     "mongoShell": {
-      "title": "Prostředí Mongo"
+      "title": "Mongo Shell"
     }
   },
   "panes": {
@@ -797,7 +797,7 @@
         "perMonth": "/měs."
       },
       "throughput": {
-        "manualToAutoscaleDisclaimer": "Počáteční maximální hodnota RU/s pro automatické škálování bude určena systémem na základě nastavení aktuální manuální propustnosti a úložiště vašeho prostředku. Po povolení automatického škálování můžete změnit maximální počet RU/s.",
+        "manualToAutoscaleDisclaimer": "Počáteční maximální hodnota RU/s pro automatické škálování bude určena systémem na základě nastavení aktuální ruční propustnosti a úložiště vašeho prostředku. Po povolení automatického škálování můžete změnit maximální počet RU/s.",
         "ttlWarningText": "Systém bude položky automaticky odstraňovat na základě hodnoty TTL (v sekundách), kterou zadáte, aniž by klientská aplikace musela výslovně provést operaci odstranění. Další informace viz",
         "ttlWarningLinkText": "Hodnota TTL (Time to Live) v Azure Cosmos DB",
         "unsavedIndexingPolicy": "zásada indexování",
@@ -815,8 +815,8 @@
         "saveThroughputWarning": "Změna nastavení propustnosti ovlivní výši vaší faktury. Před uložením změn si prosím projděte aktualizovaný odhad nákladů uvedený níže.",
         "currentAutoscaleThroughput": "Aktuální propustnost automatického škálování:",
         "targetAutoscaleThroughput": "Cílová propustnost automatického škálování:",
-        "currentManualThroughput": "Aktuální manuální propustnost:",
-        "targetManualThroughput": "Cílová manuální propustnost:",
+        "currentManualThroughput": "Aktuální ruční propustnost:",
+        "targetManualThroughput": "Cílová ruční propustnost:",
         "applyDelayedMessage": "Žádost o zvýšení propustnosti se úspěšně odeslala. Dokončení této operace bude trvat 1 až 3 pracovní dny. Nejnovější stav najdete v části Oznámení.",
         "databaseLabel": "Databáze:",
         "containerLabel": "Kontejner:",
@@ -949,7 +949,7 @@
         "instant": "Okamžité",
         "fourToSixHrs": "4–6 hodin",
         "autoscaleDescription": "Na základě využití se vaše propustnost {{resourceType}} bude škálovat od",
-        "freeTierWarning": "Fakturace začne, pokud zřídíte více než {{ru}} RU/s manuální propustnosti nebo pokud se prostředek při automatickém škálování bude škálovat nad {{ru}} RU/s.",
+        "freeTierWarning": "Fakturace začne, pokud zřídíte více než {{ru}} RU/s ruční propustnosti nebo pokud se prostředek při automatickém škálování bude škálovat nad {{ru}} RU/s.",
         "capacityCalculator": "Odhadněte požadovanou hodnotu RU/s pomocí",
         "capacityCalculatorLink": " kalkulačka kapacity",
         "fixedStorageNote": "Při použití kolekce s pevnou kapacitou úložiště můžete nastavit až 10 000 RU/s.",

@@ -214,7 +214,7 @@
         },
         "throughput": {
           "title": "Aktarım Hızı Sağla",
-          "description": "Verimliliği nasıl yapılandıracağınızı öğrenin."
+          "description": "Aktarım hızını nasıl yapılandıracağınızı öğrenin."
         }
       },
       "gremlin": {
@@ -737,12 +737,12 @@
       "addProperty": "Özellik Ekle"
     },
     "addGlobalSecondaryIndex": {
-      "globalSecondaryIndexId": "Genel ikincil dizin kapsayıcı kimliği",
+      "globalSecondaryIndexId": "Global ikincil endeks kapsayıcı kimliği",
       "globalSecondaryIndexIdPlaceholder": "ör. indexbyEmailId",
       "projectionQuery": "Projeksiyon sorgusu",
       "projectionQueryPlaceholder": "SELECT c.email, c.accountId FROM c",
-      "projectionQueryTooltip": "Genel ikincil dizinleri tanımlama hakkında daha fazla bilgi edinin.",
-      "disabledTitle": "Genel ikincil dizin zaten oluşturuluyor. Yeni bir dizin oluşturmadan önce lütfen mevcut dizinin tamamlanmasını bekleyin."
+      "projectionQueryTooltip": "Global ikincil endeksleri tanımlama hakkında daha fazla bilgi edinin.",
+      "disabledTitle": "Global ikincil endeks zaten oluşturuluyor. Yeni bir endeks oluşturmadan önce lütfen mevcut dizinin tamamlanmasını bekleyin."
     },
     "stringInput": {
       "inputMismatchError": "{{input}} girişi seçilen {{selectedId}} ile eşleşmiyor"
@@ -764,7 +764,7 @@
         "computedProperties": "Hesaplanan Özellikler",
         "containerPolicies": "Kapsayıcı İlkeleri",
         "throughputBuckets": "Aktarım Hızı Demetleri",
-        "globalSecondaryIndexPreview": "Genel İkincil Dizini (Önizleme)",
+        "globalSecondaryIndexPreview": "Global İkincil Endeks (Önizleme)",
         "maskingPolicyPreview": "Veri Maskeleme İlkesi"
       },
       "mongoNotifications": {
@@ -797,7 +797,7 @@
         "perMonth": "/ay"
       },
       "throughput": {
-        "manualToAutoscaleDisclaimer": "Başlangıç otomatik ölçeklendirme maksimum RU/sn değeri, mevcut el ile aktarım hızı ayarları ve kaynağınızın depolama durumuna göre sistem tarafından belirlenir. Otomatik ölçeklendirme etkinleştirildikten sonra maksimum RU/sn değerini değiştirebilirsiniz.",
+        "manualToAutoscaleDisclaimer": "Başlangıç otomatik ölçeklendirme maksimum RU/sn değeri, mevcut manuel aktarım hızı ayarları ve kaynağınızın depolama durumuna göre sistem tarafından belirlenir. Otomatik ölçeklendirme etkinleştirildikten sonra maksimum RU/sn değerini değiştirebilirsiniz.",
         "ttlWarningText": "Sistem, istemci uygulaması tarafından açıkça silme işlemi yapılmasına gerek kalmadan, girdiğiniz TTL değerine (saniye cinsinden) göre öğeleri otomatik olarak siler. Daha fazla bilgi için şu sayfaya bakın,",
         "ttlWarningLinkText": "Azure Cosmos DB'de Yaşam Süresi (TTL)",
         "unsavedIndexingPolicy": "Dizin oluşturma ilkesi",
@@ -815,8 +815,8 @@
         "saveThroughputWarning": "Aktarım hızı ayarlarınızı güncelleştirdiğinzde faturanız etkilenir. Değişiklikleri kaydetmeden önce lütfen aşağıdaki güncelleştirilmiş maliyet tahminini gözden geçirin",
         "currentAutoscaleThroughput": "Geçerli otomatik ölçeklendirme aktarım hızı:",
         "targetAutoscaleThroughput": "Hedef otomatik ölçeklendirme aktarım hızı:",
-        "currentManualThroughput": "Geçerli el ile aktarım hızı:",
-        "targetManualThroughput": "Hedef el ile aktarım hızı:",
+        "currentManualThroughput": "Geçerli manuel aktarım hızı:",
+        "targetManualThroughput": "Hedef manuel aktarım hızı:",
         "applyDelayedMessage": "Aktarım hızını artırma talebi başarıyla gönderildi. Bu işlem 1-3 iş günü sürebilir. En son durumu Bildirimler'den görüntüleyin.",
         "databaseLabel": "Veritabanı:",
         "containerLabel": "Kapsayıcı:",
@@ -927,12 +927,12 @@
       },
       "globalSecondaryIndex": {
         "indexesDefined": "Bu kapsayıcı için aşağıdaki dizinler tanımlanmıştır.",
-        "learnMoreSuffix": "Genel ikincil dizinlerin nasıl tanımlanacağı ve nasıl kullanılacağı hakkında.",
-        "jsonAriaLabel": "Genel İkincil Dizin JSON'u",
+        "learnMoreSuffix": "Global ikincil endekslerin nasıl tanımlanacağı ve nasıl kullanılacağı hakkında.",
+        "jsonAriaLabel": "Global İkincil Endeks JSON'u",
         "addIndex": "Dizin ekle",
-        "settingsTitle": "Genel İkincil Dizin Ayarları",
+        "settingsTitle": "Global İkincil Endeks Ayarları",
         "sourceContainer": "Kaynak kapsayıcı",
-        "indexDefinition": "Genel ikincil dizin tanımı"
+        "indexDefinition": "Global İkincil Endeks tanımı"
       },
       "indexingPolicyRefresh": {
         "refreshFailed": "Dizin dönüştürme ilerlemesi yenilenemedi"
@@ -949,7 +949,7 @@
         "instant": "Anında",
         "fourToSixHrs": "4-6 saat",
         "autoscaleDescription": "Kullanıma bağlı olarak {{resourceType}} aktarım hızınız şu aralıkta değişecektir",
-        "freeTierWarning": "El ile aktarım hızını {{ru}} RU/sn'den fazla sağlarsanız veya kaynak otomatik ölçeklendirme ile {{ru}} RU/sn'nin üzerine çıkarsa faturalandırma uygulanır.",
+        "freeTierWarning": "Manuel aktarım hızını {{ru}} RU/sn'den fazla sağlarsanız veya kaynak otomatik ölçeklendirme ile {{ru}} RU/sn'nin üzerine çıkarsa faturalandırma uygulanır.",
         "capacityCalculator": "Gerekli RU/sn miktarınızı şu şekilde tahmin edin",
         "capacityCalculatorLink": " kapasite hesaplayıcısı",
         "fixedStorageNote": "Sabit depolama kapasitesine sahip bir koleksiyon kullanırken, 10.000 RU/sn'ye kadar ayarlayabilirsiniz.",
@@ -981,7 +981,7 @@
       "quantizationByteSize": "Bölme bayt boyutu",
       "quantizationByteSizeTooltip": "Bu boş bırakılırsa {{containerName}} tarafından dinamik olarak ayarlanır veya sabit bir sayıya ayarlanabilir",
       "quantizationByteSizeTooltipContainerName": "kapsayıcı",
-      "quantizationByteSizeTooltipGlobalSecondaryIndexName": "genel ikincil dizin",
+      "quantizationByteSizeTooltipGlobalSecondaryIndexName": "global ikincil endeks",
       "quantizerType": "Bölme türü",
       "quantizerTypeTooltip": "Vektör dizini tarafından kullanılan bölme yöntemi.",
       "indexingSearchListSize": "Dizin arama listesi boyutu",
