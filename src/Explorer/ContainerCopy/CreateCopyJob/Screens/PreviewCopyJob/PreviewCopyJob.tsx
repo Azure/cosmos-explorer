@@ -1,6 +1,6 @@
 import { DetailsList, DetailsListLayoutMode, Stack, Text, TextField } from "@fluentui/react";
+import { Keys, t } from "Localization";
 import React, { useEffect } from "react";
-import ContainerCopyMessages from "../../../ContainerCopyMessages";
 import { useCopyJobContext } from "../../../Context/CopyJobContext";
 import { getDefaultJobName } from "../../../CopyJobUtils";
 import FieldRow from "../Components/FieldRow";
@@ -32,19 +32,19 @@ const PreviewCopyJob: React.FC = () => {
   };
   return (
     <Stack tokens={{ childrenGap: 20 }} className="previewCopyJobContainer" data-test="Panel:PreviewCopyJob">
-      <FieldRow label={ContainerCopyMessages.jobNameLabel}>
+      <FieldRow label={t(Keys.containerCopy.preview.jobNameLabel)}>
         <TextField data-test="job-name-textfield" value={jobName} onChange={onJobNameChange} />
       </FieldRow>
       <Stack>
-        <Text className="bold themeText">{ContainerCopyMessages.sourceSubscriptionLabel}</Text>
-        <Text data-test="source-subscription-name" className="themeText">
-          {copyJobState.source?.subscription?.displayName}
+        <Text className="bold themeText">{t(Keys.containerCopy.preview.subscriptionLabel)}</Text>
+        <Text data-test="destination-subscription-name" className="themeText">
+          {copyJobState.target?.subscription?.displayName}
         </Text>
       </Stack>
       <Stack>
-        <Text className="bold themeText">{ContainerCopyMessages.sourceAccountLabel}</Text>
-        <Text data-test="source-account-name" className="themeText">
-          {copyJobState.source?.account?.name}
+        <Text className="bold themeText">{t(Keys.containerCopy.preview.accountLabel)}</Text>
+        <Text data-test="destination-account-name" className="themeText">
+          {copyJobState.target?.account?.name}
         </Text>
       </Stack>
       <Stack>

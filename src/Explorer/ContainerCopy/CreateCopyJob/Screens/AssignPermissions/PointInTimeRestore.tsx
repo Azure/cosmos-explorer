@@ -1,10 +1,10 @@
 import { Link, PrimaryButton, Stack, Text } from "@fluentui/react";
 import { DatabaseAccount } from "Contracts/DataModels";
+import { Keys, t } from "Localization";
 import React, { useEffect, useRef, useState } from "react";
 import { fetchDatabaseAccount } from "Utils/arm/databaseAccountUtils";
 import LoadingOverlay from "../../../../../Common/LoadingOverlay";
 import { logError } from "../../../../../Common/Logger";
-import ContainerCopyMessages from "../../../ContainerCopyMessages";
 import { useCopyJobContext } from "../../../Context/CopyJobContext";
 import { buildResourceLink, getAccountDetailsFromResourceId } from "../../../CopyJobUtils";
 import { AccountValidatorFn } from "../../../Types/CopyJobTypes";
@@ -12,14 +12,14 @@ import InfoTooltip from "../Components/InfoTooltip";
 
 const tooltipContent = (
   <Text>
-    {ContainerCopyMessages.pointInTimeRestore.tooltip.content} &nbsp;
+    {t(Keys.containerCopy.pointInTimeRestore.tooltipContent)} &nbsp;
     <Link
       style={{ color: "var(--colorBrandForeground1)" }}
-      href={ContainerCopyMessages.pointInTimeRestore.tooltip.href}
+      href={t(Keys.containerCopy.pointInTimeRestore.tooltipHref)}
       target="_blank"
       rel="noopener noreferrer"
     >
-      {ContainerCopyMessages.pointInTimeRestore.tooltip.hrefText}
+      {t(Keys.containerCopy.pointInTimeRestore.tooltipHrefText)}
     </Link>
   </Text>
 );
@@ -119,9 +119,9 @@ const PointInTimeRestore: React.FC = () => {
 
   return (
     <Stack className="pointInTimeRestoreContainer" tokens={{ childrenGap: 15, padding: "0 0 0 20px" }}>
-      <LoadingOverlay isLoading={loading} label={ContainerCopyMessages.popoverOverlaySpinnerLabel} />
+      <LoadingOverlay isLoading={loading} label={t(Keys.containerCopy.popoverOverlaySpinnerLabel)} />
       <Stack.Item className="toggle-label">
-        {ContainerCopyMessages.pointInTimeRestore.description(source.account?.name ?? "")}
+        {t(Keys.containerCopy.pointInTimeRestore.description, { accessName: source.account?.name ?? "" })}
         {tooltipContent && (
           <>
             {" "}
@@ -134,7 +134,7 @@ const PointInTimeRestore: React.FC = () => {
           <PrimaryButton
             data-test="pointInTimeRestore:RefreshBtn"
             className="fullWidth"
-            text={ContainerCopyMessages.refreshButtonLabel}
+            text={t(Keys.common.refresh)}
             iconProps={{ iconName: "Refresh" }}
             onClick={handleRefresh}
           />
@@ -142,7 +142,7 @@ const PointInTimeRestore: React.FC = () => {
           <PrimaryButton
             data-test="pointInTimeRestore:PrimaryBtn"
             className="fullWidth"
-            text={loading ? "" : ContainerCopyMessages.pointInTimeRestore.buttonText}
+            text={loading ? "" : t(Keys.containerCopy.pointInTimeRestore.buttonText)}
             {...(loading ? { iconProps: { iconName: "SyncStatusSolid" } } : {})}
             disabled={loading}
             onClick={openWindowAndMonitor}
