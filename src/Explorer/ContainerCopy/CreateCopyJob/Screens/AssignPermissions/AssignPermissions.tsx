@@ -1,10 +1,10 @@
 import { Image, Stack, Text } from "@fluentui/react";
 import { Accordion, AccordionHeader, AccordionItem, AccordionPanel } from "@fluentui/react-components";
+import { Keys, t } from "Localization";
 import React, { useEffect } from "react";
 import CheckmarkIcon from "../../../../../../images/successfulPopup.svg";
 import WarningIcon from "../../../../../../images/warning.svg";
 import ShimmerTree, { IndentLevel } from "../../../../../Common/ShimmerTree/ShimmerTree";
-import ContainerCopyMessages from "../../../ContainerCopyMessages";
 import { useCopyJobContext } from "../../../Context/CopyJobContext";
 import { isIntraAccountCopy } from "../../../CopyJobUtils";
 import { CopyJobMigrationType } from "../../../Enums/CopyJobEnums";
@@ -106,11 +106,11 @@ const AssignPermissions = () => {
       tokens={{ childrenGap: 20 }}
     >
       <Text variant="medium" style={{ color: "var(--colorNeutralForeground1)" }}>
-        {isSameAccount && copyJobState.migrationType === CopyJobMigrationType.Online
-          ? ContainerCopyMessages.assignPermissions.intraAccountOnlineDescription(
-              copyJobState?.source?.account?.name || "",
-            )
-          : ContainerCopyMessages.assignPermissions.crossAccountDescription}
+        {isSameAccount && copyJobState?.migrationType === CopyJobMigrationType.Online
+          ? t(Keys.containerCopy.assignPermissions.intraAccountOnlineDescription, {
+              accountName: copyJobState?.source?.account?.name || "",
+            })
+          : t(Keys.containerCopy.assignPermissions.crossAccountDescription)}
       </Text>
 
       {totalSectionsCount === 0 ? (

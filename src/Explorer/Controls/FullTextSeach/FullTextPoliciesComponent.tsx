@@ -10,7 +10,7 @@ import {
   Stack,
   TextField,
 } from "@fluentui/react";
-import { FullTextIndex, FullTextPath, FullTextPolicy } from "Contracts/DataModels";
+import { AccountOverride, FullTextIndex, FullTextPath, FullTextPolicy } from "Contracts/DataModels";
 import { CollapsibleSectionComponent } from "Explorer/Controls/CollapsiblePanel/CollapsibleSectionComponent";
 import * as React from "react";
 import { isFullTextSearchPreviewFeaturesEnabled } from "Utils/CapabilityUtils";
@@ -25,6 +25,7 @@ export interface FullTextPoliciesComponentProps {
   discardChanges?: boolean;
   onChangesDiscarded?: () => void;
   englishOnly?: boolean;
+  targetAccountOverride?: AccountOverride;
 }
 
 export interface FullTextPolicyData {
@@ -206,6 +207,7 @@ export const FullTextPoliciesComponent: React.FunctionComponent<FullTextPolicies
   discardChanges,
   onChangesDiscarded,
   englishOnly,
+  targetAccountOverride,
 }): JSX.Element => {
   const getFullTextPathError = (path: string, index?: number): string => {
     let error = "";
@@ -236,7 +238,9 @@ export const FullTextPoliciesComponent: React.FunctionComponent<FullTextPolicies
 
   const [fullTextPathData, setFullTextPathData] = React.useState<FullTextPolicyData[]>(initializeData(fullTextPolicy));
   const [defaultLanguage, setDefaultLanguage] = React.useState<string>(
-    fullTextPolicy ? fullTextPolicy.defaultLanguage : (getFullTextLanguageOptions()[0].key as never),
+    fullTextPolicy
+      ? fullTextPolicy.defaultLanguage
+      : (getFullTextLanguageOptions(englishOnly, targetAccountOverride)[0].key as never),
   );
 
   React.useEffect(() => {
@@ -307,7 +311,7 @@ export const FullTextPoliciesComponent: React.FunctionComponent<FullTextPolicies
         <Dropdown
           required={true}
           styles={dropdownStyles}
-          options={getFullTextLanguageOptions(englishOnly)}
+          options={getFullTextLanguageOptions(englishOnly, targetAccountOverride)}
           selectedKey={defaultLanguage}
           onChange={(_event: React.FormEvent<HTMLDivElement>, option: IDropdownOption) =>
             setDefaultLanguage(option.key as never)
@@ -352,7 +356,7 @@ export const FullTextPoliciesComponent: React.FunctionComponent<FullTextPolicies
                   <Dropdown
                     required={true}
                     styles={dropdownStyles}
-                    options={getFullTextLanguageOptions(englishOnly)}
+                    options={getFullTextLanguageOptions(englishOnly, targetAccountOverride)}
                     selectedKey={fullTextPolicy.language}
                     onChange={(_event: React.FormEvent<HTMLDivElement>, option: IDropdownOption) =>
                       onFullTextPathPolicyChange(index, option)
@@ -395,8 +399,12 @@ export const FullTextPoliciesComponent: React.FunctionComponent<FullTextPolicies
   );
 };
 
-export const getFullTextLanguageOptions = (englishOnly?: boolean): IDropdownOption[] => {
-  const multiLanguageSupportEnabled: boolean = isFullTextSearchPreviewFeaturesEnabled() && !englishOnly;
+export const getFullTextLanguageOptions = (
+  englishOnly?: boolean,
+  targetAccountOverride?: AccountOverride,
+): IDropdownOption[] => {
+  const multiLanguageSupportEnabled: boolean =
+    isFullTextSearchPreviewFeaturesEnabled(targetAccountOverride) && !englishOnly;
   const fullTextLanguageOptions: IDropdownOption[] = [
     {
       key: "en-US",

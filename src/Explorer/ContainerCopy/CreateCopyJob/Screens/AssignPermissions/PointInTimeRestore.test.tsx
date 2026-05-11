@@ -50,18 +50,18 @@ describe("PointInTimeRestore", () => {
     jobName: "test-job",
     migrationType: CopyJobMigrationType.Offline,
     source: {
-      subscription: { subscriptionId: "test-sub", displayName: "Test Subscription" },
+      subscriptionId: "test-sub",
       account: mockSourceAccount,
       databaseId: "test-db",
       containerId: "test-container",
     },
     target: {
-      subscriptionId: "test-sub",
+      subscription: { subscriptionId: "test-sub", displayName: "Test Subscription" },
       account: mockSourceAccount,
       databaseId: "target-db",
       containerId: "target-container",
     },
-    sourceReadAccessFromTarget: false,
+    sourceReadWriteAccessFromTarget: false,
   } as CopyJobContextState;
 
   const mockSetCopyJobState = jest.fn();

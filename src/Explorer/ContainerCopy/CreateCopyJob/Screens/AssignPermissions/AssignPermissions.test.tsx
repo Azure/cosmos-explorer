@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom";
 import { render, RenderResult } from "@testing-library/react";
 import React from "react";
-import ContainerCopyMessages from "../../../ContainerCopyMessages";
+import { Keys, t } from "Localization";
 import { CopyJobContext } from "../../../Context/CopyJobContext";
 import { CopyJobMigrationType } from "../../../Enums/CopyJobEnums";
 import { CopyJobContextProviderType, CopyJobContextState } from "../../../Types/CopyJobTypes";
@@ -43,12 +43,12 @@ jest.mock("./AddManagedIdentity", () => {
   return MockAddManagedIdentity;
 });
 
-jest.mock("./AddReadPermissionToDefaultIdentity", () => {
-  const MockAddReadPermissionToDefaultIdentity = () => {
-    return <div data-testid="add-read-permission">Add Read Permission Component</div>;
+jest.mock("./AddReadWritePermissionToDefaultIdentity", () => {
+  const MockAddReadWritePermissionToDefaultIdentity = () => {
+    return <div data-testid="add-read-write-permission">Add Read-Write Permission Component</div>;
   };
-  MockAddReadPermissionToDefaultIdentity.displayName = "MockAddReadPermissionToDefaultIdentity";
-  return MockAddReadPermissionToDefaultIdentity;
+  MockAddReadWritePermissionToDefaultIdentity.displayName = "MockAddReadWritePermissionToDefaultIdentity";
+  return MockAddReadWritePermissionToDefaultIdentity;
 });
 
 jest.mock("./DefaultManagedIdentity", () => {
@@ -85,18 +85,18 @@ describe("AssignPermissions Component", () => {
     jobName: "test-job",
     migrationType: CopyJobMigrationType.Offline,
     source: {
-      subscription: { subscriptionId: "source-sub" } as any,
+      subscriptionId: "source-sub",
       account: { id: "source-account", name: "Source Account" } as any,
       databaseId: "source-db",
       containerId: "source-container",
     },
     target: {
-      subscriptionId: "target-sub",
+      subscription: { subscriptionId: "target-sub" } as any,
       account: { id: "target-account", name: "Target Account" } as any,
       databaseId: "target-db",
       containerId: "target-container",
     },
-    sourceReadAccessFromTarget: false,
+    sourceReadWriteAccessFromTarget: false,
     ...overrides,
   });
 
@@ -154,7 +154,7 @@ describe("AssignPermissions Component", () => {
       const copyJobState = createMockCopyJobState();
       const { getByText } = renderWithContext(copyJobState);
 
-      expect(getByText(ContainerCopyMessages.assignPermissions.crossAccountDescription)).toBeInTheDocument();
+      expect(getByText(t(Keys.containerCopy.assignPermissions.crossAccountDescription))).toBeInTheDocument();
     });
 
     it("should display intra account description for same accounts with online migration", async () => {
@@ -164,13 +164,13 @@ describe("AssignPermissions Component", () => {
       const copyJobState = createMockCopyJobState({
         migrationType: CopyJobMigrationType.Online,
         source: {
-          subscription: { subscriptionId: "same-sub" } as any,
+          subscriptionId: "same-sub",
           account: { id: "same-account", name: "Same Account" } as any,
           databaseId: "source-db",
           containerId: "source-container",
         },
         target: {
-          subscriptionId: "same-sub",
+          subscription: { subscriptionId: "same-sub" } as any,
           account: { id: "same-account", name: "Same Account" } as any,
           databaseId: "target-db",
           containerId: "target-container",
@@ -179,7 +179,9 @@ describe("AssignPermissions Component", () => {
 
       const { getByText } = renderWithContext(copyJobState);
       expect(
-        getByText(ContainerCopyMessages.assignPermissions.intraAccountOnlineDescription("Same Account")),
+        getByText(
+          t(Keys.containerCopy.assignPermissions.intraAccountOnlineDescription, { accountName: "Same Account" }),
+        ),
       ).toBeInTheDocument();
     });
   });
@@ -201,7 +203,7 @@ describe("AssignPermissions Component", () => {
               completed: true,
             },
             {
-              id: "readPermissionAssigned",
+              id: "readWritePermissionAssigned",
               title: "Read Permission Assigned",
               Component: () => <div data-testid="add-read-permission">Add Read Permission Component</div>,
               disabled: false,
@@ -347,7 +349,7 @@ describe("AssignPermissions Component", () => {
     it("should handle missing account names", () => {
       const copyJobState = createMockCopyJobState({
         source: {
-          subscription: { subscriptionId: "source-sub" } as any,
+          subscriptionId: "source-sub",
           account: { id: "source-account" } as any,
           databaseId: "source-db",
           containerId: "source-container",
