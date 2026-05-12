@@ -47,8 +47,13 @@ export const MigrationType: React.FC<MigrationTypeProps> = React.memo(() => {
   };
 
   const selectedKey = copyJobState?.migrationType ?? "";
-  const selectedKeyLowercase = selectedKey.toLowerCase() as keyof typeof Keys.containerCopy.migrationType;
-  const selectedKeyContent = Keys.containerCopy.migrationType[selectedKeyLowercase];
+  const selectedKeyLowercase = selectedKey.toLowerCase() as "offline" | "online";
+  const migrationTypeDescriptionKey =
+    selectedKeyLowercase === "offline"
+      ? Keys.containerCopy.migrationType.offline.description
+      : selectedKeyLowercase === "online"
+      ? Keys.containerCopy.migrationType.online.description
+      : null;
 
   return (
     <Stack data-test="migration-type" className="migrationTypeContainer">
@@ -61,14 +66,14 @@ export const MigrationType: React.FC<MigrationTypeProps> = React.memo(() => {
           styles={choiceGroupStyles}
         />
       </Stack.Item>
-      {selectedKeyContent && (
+      {migrationTypeDescriptionKey && (
         <Stack.Item styles={{ root: { marginTop: 10 } }}>
           <Text
             variant="small"
             className="migrationTypeDescription"
             data-test={`migration-type-description-${selectedKeyLowercase}`}
           >
-            <MarkdownRender source={t(selectedKeyContent.description)} linkTarget="_blank" />
+            <MarkdownRender source={t(migrationTypeDescriptionKey)} linkTarget="_blank" />
           </Text>
         </Stack.Item>
       )}

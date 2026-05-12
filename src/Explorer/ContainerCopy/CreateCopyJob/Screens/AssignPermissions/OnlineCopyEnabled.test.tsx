@@ -136,7 +136,7 @@ describe("OnlineCopyEnabled", () => {
       renderComponent();
 
       const refreshButton = screen.queryByRole("button", {
-        name: "Refresh",
+        name: t(Keys.common.refresh),
       });
       expect(refreshButton).not.toBeInTheDocument();
     });
@@ -322,7 +322,7 @@ describe("OnlineCopyEnabled", () => {
       });
 
       const refreshButton = screen.getByRole("button", {
-        name: "Refresh",
+        name: t(Keys.common.refresh),
       });
 
       await act(async () => {
@@ -454,7 +454,7 @@ describe("OnlineCopyEnabled", () => {
       mockFetchDatabaseAccount.mockImplementation(() => new Promise(() => {}));
 
       const refreshButton = screen.getByRole("button", {
-        name: "Refresh",
+        name: t(Keys.common.refresh),
       });
 
       await act(async () => {

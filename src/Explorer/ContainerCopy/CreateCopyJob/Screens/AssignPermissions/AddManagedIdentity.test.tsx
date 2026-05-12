@@ -67,7 +67,7 @@ describe("AddManagedIdentity", () => {
       databaseId: "target-db",
       containerId: "target-container",
     },
-    sourceReadAccessFromTarget: false,
+    sourceReadWriteAccessFromTarget: false,
   };
 
   const mockContextValue = {
@@ -197,11 +197,10 @@ describe("AddManagedIdentity", () => {
     });
 
     it("displays correct enablement description with account name", () => {
-      expect(
-        screen.getByText(
-          t(Keys.containerCopy.addManagedIdentity.enablementDescription, { accountName: "test-target-account" }),
-        ),
-      ).toBeInTheDocument();
+      const expectedDescription = t(Keys.containerCopy.addManagedIdentity.enablementDescription, {
+        accountName: mockCopyJobState.source.account.name,
+      });
+      expect(screen.getByText(expectedDescription)).toBeInTheDocument();
     });
 
     it("calls handleAddSystemIdentity when primary button clicked", async () => {

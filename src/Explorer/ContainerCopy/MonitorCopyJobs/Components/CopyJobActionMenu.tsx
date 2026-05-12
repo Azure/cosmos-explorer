@@ -1,7 +1,7 @@
 import { DirectionalHint, IconButton, IContextualMenuProps, Stack } from "@fluentui/react";
+import { Keys, t } from "Localization";
 import React from "react";
 import { useDialog } from "../../../Controls/Dialog";
-import { Keys, t } from "Localization";
 import { CopyJobActions, CopyJobMigrationType, CopyJobStatusType } from "../../Enums/CopyJobEnums";
 import { CopyJobType, HandleJobActionClickType } from "../../Types/CopyJobTypes";
 
@@ -50,7 +50,7 @@ const CopyJobActionMenu: React.FC<CopyJobActionMenuProps> = ({ job, handleClick 
       .getState()
       .showOkCancelModalDialog(
         "",
-        null,
+        "",
         t(Keys.common.confirm),
         () => handleClick(job, action, setUpdatingJobAction),
         t(Keys.common.cancel),

@@ -1,7 +1,7 @@
 import { FontIcon, mergeStyles, Spinner, SpinnerSize, Stack, Text } from "@fluentui/react";
+import { Keys, t } from "Localization";
 import PropTypes from "prop-types";
 import React from "react";
-import { Keys, t } from "Localization";
 import { CopyJobStatusType } from "../../Enums/CopyJobEnums";
 
 const iconClass = mergeStyles({

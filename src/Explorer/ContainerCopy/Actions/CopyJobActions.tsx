@@ -1,4 +1,5 @@
 import Explorer from "Explorer/Explorer";
+import { Keys, t } from "Localization";
 import React from "react";
 import { userContext } from "UserContext";
 import { getDataTransferJobs } from "../../../Common/dataAccess/dataTransfers";
@@ -15,7 +16,6 @@ import {
   CreateJobRequest,
   DataTransferJobGetResults,
 } from "../../../Utils/arm/generatedClients/dataTransferService/types";
-import { Keys, t } from "Localization";
 import {
   convertTime,
   convertToCamelCase,
@@ -137,12 +137,12 @@ export const submitCreateCopyJob = async (state: CopyJobContextState, onSuccess:
       properties: {
         source: {
           component: "CosmosDBSql",
-          ...(isSameAccount ? {} : { remoteAccountName: source?.account?.name }),
           databaseName: source?.databaseId,
           containerName: source?.containerId,
         },
         destination: {
           component: "CosmosDBSql",
+          ...(isSameAccount ? {} : { remoteAccountName: target?.account?.name }),
           databaseName: target?.databaseId,
           containerName: target?.containerId,
         },

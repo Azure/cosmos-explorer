@@ -86,8 +86,8 @@ describe("CopyJobDetails", () => {
       expect(screen.getByText("Date & time")).toBeInTheDocument();
       expect(screen.getByText("2024-01-01T10:00:00Z")).toBeInTheDocument();
 
-      expect(screen.getByText("Source account")).toBeInTheDocument();
-      expect(screen.getByText("sourceAccount")).toBeInTheDocument();
+      expect(screen.getByText("Destination account")).toBeInTheDocument();
+      expect(screen.getByText("targetAccount")).toBeInTheDocument();
 
       expect(screen.getByText("Mode")).toBeInTheDocument();
       expect(screen.getByText("Offline")).toBeInTheDocument();
@@ -247,7 +247,7 @@ describe("CopyJobDetails", () => {
       expect(screen.getByText("complex_source_container_with_underscores")).toBeInTheDocument();
       expect(screen.getByText("complex-target-db-with-hyphens")).toBeInTheDocument();
       expect(screen.getByText("complex_target_container_with_underscores")).toBeInTheDocument();
-      expect(screen.getByText("complex.source.account")).toBeInTheDocument();
+      expect(screen.getByText("complex.target.account")).toBeInTheDocument();
     });
   });
 
@@ -306,11 +306,11 @@ describe("CopyJobDetails", () => {
       render(<CopyJobDetails job={mockBasicJob} />);
 
       const dateTimeHeading = screen.getByText("Date & time");
-      const sourceAccountHeading = screen.getByText("Source account");
+      const destinationAccountHeading = screen.getByText("Destination account");
       const modeHeading = screen.getByText("Mode");
 
       expect(dateTimeHeading).toHaveClass("bold");
-      expect(sourceAccountHeading).toHaveClass("bold");
+      expect(destinationAccountHeading).toHaveClass("bold");
       expect(modeHeading).toHaveClass("bold");
     });
   });

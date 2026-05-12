@@ -39,7 +39,13 @@ const AddManagedIdentity: React.FC<AddManagedIdentityProps> = () => {
         &nbsp;
         <InfoTooltip content={managedIdentityTooltip} />
       </Text>
-      <Toggle data-test="btn-toggle" checked={systemAssigned} onText="On" offText="Off" onChange={onToggle} />
+      <Toggle
+        data-test="btn-toggle"
+        checked={systemAssigned}
+        onText={t(Keys.common.on)}
+        offText={t(Keys.common.off)}
+        onChange={onToggle}
+      />
       <PopoverMessage
         isLoading={loading}
         visible={systemAssigned}
@@ -47,11 +53,9 @@ const AddManagedIdentity: React.FC<AddManagedIdentityProps> = () => {
         onCancel={() => onToggle(null, false)}
         onPrimary={handleAddSystemIdentity}
       >
-        {copyJobState.target?.account?.name
-          ? t(Keys.containerCopy.addManagedIdentity.enablementDescription, {
-              accountName: copyJobState.target?.account?.name,
-            })
-          : ""}
+        {t(Keys.containerCopy.addManagedIdentity.enablementDescription, {
+          accountName: copyJobState.source?.account?.name,
+        })}
       </PopoverMessage>
     </Stack>
   );

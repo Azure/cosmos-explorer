@@ -280,7 +280,7 @@ describe("CopyJobActionMenu", () => {
 
       expect(mockShowOkCancelModalDialog).toHaveBeenCalledWith(
         "",
-        null,
+        "",
         "Confirm",
         expect.any(Function),
         "Cancel",
@@ -337,7 +337,7 @@ describe("CopyJobActionMenu", () => {
 
       expect(mockShowOkCancelModalDialog).toHaveBeenCalledWith(
         "",
-        null,
+        "",
         "Confirm",
         expect.any(Function),
         "Cancel",
@@ -381,7 +381,7 @@ describe("CopyJobActionMenu", () => {
 
       expect(mockShowOkCancelModalDialog).toHaveBeenCalledWith(
         "",
-        null,
+        "",
         "Confirm",
         expect.any(Function),
         "Cancel",
@@ -412,7 +412,7 @@ describe("CopyJobActionMenu", () => {
 
       expect(mockShowOkCancelModalDialog).toHaveBeenCalledWith(
         "",
-        null,
+        "",
         "Confirm",
         expect.any(Function),
         "Cancel",
@@ -828,7 +828,7 @@ describe("CopyJobActionMenu", () => {
 
       expect(mockShowOkCancelModalDialog).toHaveBeenCalledWith(
         "", // title
-        null, // subText
+        "", // subText
         "Confirm", // confirmLabel
         expect.any(Function), // onOk
         "Cancel", // cancelLabel

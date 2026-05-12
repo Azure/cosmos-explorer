@@ -79,7 +79,7 @@ describe("CopyJobColumns", () => {
       expect(actualKeys).toEqual(expectedKeys);
     });
 
-    it("should have correct column names from i18n", () => {
+    it("should have correct column names", () => {
       const columns = getColumns(mockHandleSort, mockHandleActionClick, undefined, false);
 
       expect(columns[0].name).toBe(t(Keys.containerCopy.monitorJobs.columns.lastUpdatedTime));

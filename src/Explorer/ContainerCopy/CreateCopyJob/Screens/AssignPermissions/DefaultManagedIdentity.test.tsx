@@ -69,6 +69,12 @@ const mockUseToggle = useToggle as jest.MockedFunction<typeof useToggle>;
 describe("DefaultManagedIdentity", () => {
   const mockCopyJobContextValue = {
     copyJobState: {
+      source: {
+        account: {
+          name: "test-cosmos-account",
+          id: "/subscriptions/test-sub/resourceGroups/test-rg/providers/Microsoft.DocumentDB/databaseAccounts/test-cosmos-account",
+        },
+      },
       target: {
         account: {
           name: "test-cosmos-account",
@@ -117,7 +123,7 @@ describe("DefaultManagedIdentity", () => {
       renderComponent();
 
       const description = screen.getByText(
-        t(Keys.containerCopy.defaultManagedIdentity.description, { accountName: "test-cosmos-account" }),
+        /Set the system-assigned managed identity as default for "test-cosmos-account"/,
       );
       expect(description).toBeInTheDocument();
     });
@@ -127,8 +133,8 @@ describe("DefaultManagedIdentity", () => {
 
       const tooltip = screen.getByTestId("info-tooltip");
       expect(tooltip).toBeInTheDocument();
-      expect(tooltip).toHaveTextContent(t(Keys.containerCopy.defaultManagedIdentity.tooltipContent));
-      expect(tooltip).toHaveTextContent(t(Keys.containerCopy.defaultManagedIdentity.tooltipHrefText));
+      expect(tooltip).toHaveTextContent("Learn more about");
+      expect(tooltip).toHaveTextContent("Default Managed Identities.");
     });
 
     it("should render the toggle button with correct initial state", () => {
@@ -170,7 +176,7 @@ describe("DefaultManagedIdentity", () => {
 
       const content = screen.getByTestId("popover-content");
       expect(content).toHaveTextContent(
-        t(Keys.containerCopy.defaultManagedIdentity.popoverDescription, { accountName: "test-cosmos-account" }).trim(),
+        /Assign the system-assigned managed identity as the default for "test-cosmos-account"/,
       );
     });
 
@@ -260,6 +266,12 @@ describe("DefaultManagedIdentity", () => {
       const contextValueWithoutAccount = {
         ...mockCopyJobContextValue,
         copyJobState: {
+          source: {
+            account: {
+              name: "",
+              id: "/subscriptions/test-sub/resourceGroups/test-rg/providers/Microsoft.DocumentDB/databaseAccounts/",
+            },
+          },
           target: {
             account: {
               name: "",
@@ -277,6 +289,9 @@ describe("DefaultManagedIdentity", () => {
       const contextValueWithNullAccount = {
         ...mockCopyJobContextValue,
         copyJobState: {
+          source: {
+            account: null as DatabaseAccount | null,
+          },
           target: {
             account: null as DatabaseAccount | null,
           },
@@ -339,8 +354,8 @@ describe("DefaultManagedIdentity", () => {
     it("should display correct toggle button text", () => {
       renderComponent();
 
-      const onText = screen.queryByText("On");
-      const offText = screen.queryByText("Off");
+      const onText = screen.queryByText(t(Keys.common.on));
+      const offText = screen.queryByText(t(Keys.common.off));
 
       expect(onText || offText).toBeTruthy();
     });

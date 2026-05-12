@@ -1,7 +1,7 @@
 import { DetailsList, DetailsListLayoutMode, IColumn, Stack, Text } from "@fluentui/react";
+import { Keys, t } from "Localization";
 import React, { memo } from "react";
 import { useThemeStore } from "../../../../hooks/useTheme";
-import { Keys, t } from "Localization";
 import { CopyJobStatusType } from "../../Enums/CopyJobEnums";
 import { CopyJobType } from "../../Types/CopyJobTypes";
 import CopyJobStatusWithIcon from "./CopyJobStatusWithIcon";
@@ -106,8 +106,8 @@ const CopyJobDetails: React.FC<CopyJobDetailsProps> = ({ job }) => {
             <Text className="themeText">{job.LastUpdatedTime}</Text>
           </Stack.Item>
           <Stack.Item style={sectionCss.verticalAlign}>
-            <Text className="bold themeText">{t(Keys.containerCopy.preview.sourceAccountLabel)}</Text>
-            <Text className="themeText">{job.Source?.remoteAccountName}</Text>
+            <Text className="bold themeText">{t(Keys.containerCopy.preview.accountLabel)}</Text>
+            <Text className="themeText">{job.Destination?.remoteAccountName}</Text>
           </Stack.Item>
           <Stack.Item style={sectionCss.verticalAlign}>
             <Text className="bold themeText">{t(Keys.containerCopy.monitorJobs.columns.mode)}</Text>

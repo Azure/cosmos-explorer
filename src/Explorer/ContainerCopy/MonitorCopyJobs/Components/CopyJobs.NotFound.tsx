@@ -1,5 +1,6 @@
 import { ActionButton, Image } from "@fluentui/react";
 import Explorer from "Explorer/Explorer";
+import { Keys, t } from "Localization";
 import React from "react";
 import CopyJobIcon from "../../../../../images/ContainerCopy/copy-jobs.svg";
 import { Keys, t } from "Localization";

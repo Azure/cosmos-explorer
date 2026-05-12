@@ -1020,11 +1020,11 @@
       "panelTitle": "Create copy job"
     },
     "selectAccount": {
-      "description": "Please select a source account from which to copy.",
+      "description": "Please select a destination account to copy to.",
       "subscriptionDropdownLabel": "Subscription",
       "subscriptionDropdownPlaceholder": "Select a subscription",
-      "sourceAccountDropdownLabel": "Account",
-      "sourceAccountDropdownPlaceholder": "Select an account"
+      "accountDropdownLabel": "Account",
+      "accountDropdownPlaceholder": "Select an account"
     },
     "migrationType": {
       "offline": {
@@ -1044,21 +1044,22 @@
       "databaseDropdownPlaceholder": "Select a database",
       "containerDropdownLabel": "Container",
       "containerDropdownPlaceholder": "Select a container",
-      "createNewContainerSubHeading": "Select the properties for your container.",
+      "createNewContainerSubHeading": "Configure the properties for the new container on destination account \"{{accountName}}\".",
+      "createNewContainerSubHeadingDefault": "Configure the properties for the new container.",
       "createContainerButtonLabel": "Create a new container",
       "createContainerHeading": "Create new container"
     },
     "preview": {
       "jobNameLabel": "Job name",
-      "sourceSubscriptionLabel": "Source subscription",
-      "sourceAccountLabel": "Source account",
+      "subscriptionLabel": "Destination subscription",
+      "accountLabel": "Destination account",
       "sourceDatabaseLabel": "Source database",
       "sourceContainerLabel": "Source container",
       "targetDatabaseLabel": "Destination database",
       "targetContainerLabel": "Destination container"
     },
     "assignPermissions": {
-      "crossAccountDescription": "To copy data from the source to the destination container, ensure that the managed identity of the destination account has read access to the source account by completing the following steps.",
+      "crossAccountDescription": "To copy data from the source to the destination container, ensure that the managed identity of the source account has read-write access to the destination account by completing the following steps.",
       "intraAccountOnlineDescription": "Follow the steps below to enable online copy on your \"{{accountName}}\" account.",
       "crossAccountConfiguration": {
         "title": "Cross-account container copy",
@@ -1094,14 +1095,14 @@
       "popoverTitle": "System assigned managed identity set as default",
       "popoverDescription": "Assign the system-assigned managed identity as the default for \"{{accountName}}\". To confirm, click the \"Yes\" button. "
     },
-    "readPermissionAssigned": {
-      "title": "Read permissions assigned to the default identity.",
-      "description": "To allow data copy from source to the destination container, provide read access of the source account to the default identity of the destination account.",
+    "readWritePermissionAssigned": {
+      "title": "Read-write permissions assigned to the default identity.",
+      "description": "To allow data copy from source to the destination container, provide read-write access on the destination account to the default identity of the source account.",
       "tooltipContent": "Learn more about",
-      "tooltipHrefText": "Read permissions.",
+      "tooltipHrefText": "Read-write permissions.",
       "tooltipHref": "https://learn.microsoft.com/azure/cosmos-db/nosql/how-to-connect-role-based-access-control",
-      "popoverTitle": "Read permissions assigned to default identity.",
-      "popoverDescription": "Assign read permissions of the source account to the default identity of the destination account. To confirm click the \u201cYes\u201d button."
+      "popoverTitle": "Assign read-write permissions to default identity.",
+      "popoverDescription": "Assign read-write permissions on the destination account to the default identity of the source account. To confirm, click the \"Yes\" button."
     },
     "pointInTimeRestore": {
       "title": "Point In Time Restore enabled",

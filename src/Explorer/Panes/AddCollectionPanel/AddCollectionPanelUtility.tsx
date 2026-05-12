@@ -2,6 +2,7 @@ import { DirectionalHint, Icon, Link, Stack, Text, TooltipHost } from "@fluentui
 import * as Constants from "Common/Constants";
 import { configContext, Platform } from "ConfigContext";
 import * as DataModels from "Contracts/DataModels";
+import { AccountOverride } from "Contracts/DataModels";
 import { getFullTextLanguageOptions } from "Explorer/Controls/FullTextSeach/FullTextPoliciesComponent";
 import { Keys, t } from "Localization";
 import { isFabricNative } from "Platform/Fabric/FabricUtil";
@@ -68,7 +69,10 @@ export function getPartitionKey(isQuickstart?: boolean): string {
   return "";
 }
 
-export function isFreeTierAccount(): boolean {
+export function isFreeTierAccount(targetAccountOverride?: AccountOverride): boolean {
+  if (targetAccountOverride) {
+    return targetAccountOverride.enableFreeTier ?? false;
+  }
   return userContext.databaseAccount?.properties?.enableFreeTier;
 }
 
@@ -130,7 +134,16 @@ export function AnalyticalStorageContent(): JSX.Element {
   );
 }
 
-export function isSynapseLinkEnabled(): boolean {
+export function isSynapseLinkEnabled(targetAccountOverride?: AccountOverride): boolean {
+  if (targetAccountOverride) {
+    if (targetAccountOverride.enableAnalyticalStorage) {
+      return true;
+    }
+    return targetAccountOverride.capabilities?.some(
+      (capability) => capability.name === Constants.CapabilityNames.EnableStorageAnalytics,
+    );
+  }
+
   if (!userContext.databaseAccount) {
     return false;
   }

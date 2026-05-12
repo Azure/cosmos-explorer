@@ -91,7 +91,9 @@ const OnlineCopyEnabled: React.FC = () => {
         });
       }
       setLoaderMessage(
-        t(Keys.containerCopy.onlineCopyEnabled.enablingOnlineCopySpinnerLabel, { accountName: sourceAccountName }),
+        t(Keys.containerCopy.onlineCopyEnabled.enablingOnlineCopySpinnerLabel, {
+          accountName: sourceAccountName,
+        }),
       );
       await updateDatabaseAccount(sourceSubscriptionId, sourceResourceGroup, sourceAccountName, {
         properties: {
