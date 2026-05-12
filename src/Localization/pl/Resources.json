@@ -34,8 +34,8 @@
     "browse": "Przeglądaj",
     "increaseValueBy1": "Zwiększ wartość o 1",
     "decreaseValueBy1": "Zmniejsz wartość o 1",
-    "on": "On",
-    "off": "Off",
+    "on": "Włączone",
+    "off": "Wyłączone",
     "preview": "Podgląd"
   },
   "splashScreen": {
@@ -1043,7 +1043,7 @@
       "containerDropdownPlaceholder": "Select a container",
       "createNewContainerSubHeading": "Configure the properties for the new container on destination account \"{{accountName}}\".",
       "createNewContainerSubHeadingDefault": "Configure the properties for the new container.",
-      "createContainerButtonLabel": "Create a new container",
+      "createContainerButtonLabel": "Utwórz nowy kontener",
       "createContainerHeading": "Create new container"
     },
     "preview": {
@@ -1071,16 +1071,16 @@
     "addManagedIdentity": {
       "title": "System-assigned managed identity enabled.",
       "description": "A system-assigned managed identity is restricted to one per resource and is tied to the lifecycle of this resource. Once enabled, you can grant permissions to the managed identity by using Azure role-based access control (Azure RBAC). The managed identity is authenticated with Microsoft Entra ID, so you don't have to store any credentials in code.",
-      "descriptionHrefText": "Learn more about Managed identities.",
+      "descriptionHrefText": "Dowiedz się więcej o tożsamościach zarządzanych.",
       "descriptionHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
-      "toggleLabel": "System assigned managed identity",
+      "toggleLabel": "Tożsamość zarządzana przypisana przez system",
       "tooltipContent": "Learn more about",
       "tooltipHrefText": "Managed Identities.",
       "tooltipHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
       "userAssignedIdentityTooltip": "You can select an existing user assigned identity or create a new one.",
       "userAssignedIdentityLabel": "You may also select a user assigned managed identity.",
-      "createUserAssignedIdentityLink": "Create User Assigned Managed Identity",
-      "enablementTitle": "Enable system assigned managed identity",
+      "createUserAssignedIdentityLink": "Tworzenie tożsamości zarządzanej przypisanej przez użytkownika",
+      "enablementTitle": "Włącz tożsamość zarządzaną przypisaną przez system",
       "enablementDescription": "Enable system-assigned managed identity on the {{accountName}}. To confirm, click the \"Yes\" button."
     },
     "defaultManagedIdentity": {

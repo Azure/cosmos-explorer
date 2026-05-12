@@ -34,8 +34,8 @@
     "browse": "Bläddra",
     "increaseValueBy1": "Öka värdet med 1",
     "decreaseValueBy1": "Minska värdet med 1",
-    "on": "On",
-    "off": "Off",
+    "on": "På",
+    "off": "Av",
     "preview": "Förhandsversion"
   },
   "splashScreen": {
@@ -998,159 +998,159 @@
   "containerCopy": {
     "commandBar": {
       "feedbackButtonLabel": "Feedback",
-      "feedbackButtonAriaLabel": "Provide feedback on copy jobs",
-      "refreshButtonAriaLabel": "Refresh copy jobs",
-      "createCopyJobButtonLabel": "Create Copy Job",
-      "createCopyJobButtonAriaLabel": "Create a new container copy job"
+      "feedbackButtonAriaLabel": "Ge feedback om kopieringsjobb",
+      "refreshButtonAriaLabel": "Uppdatera kopieringsjobb",
+      "createCopyJobButtonLabel": "Skapa kopieringsjobb",
+      "createCopyJobButtonAriaLabel": "Skapa ett nytt containerkopieringsjobb"
     },
     "noCopyJobs": {
-      "title": "No copy jobs to show",
-      "createCopyJobButtonText": "Create a container copy job"
+      "title": "Det finns inga kopieringsjobb att visa",
+      "createCopyJobButtonText": "Skapa ett containerkopieringsjobb"
     },
     "jobDetails": {
       "panelTitle": "{{jobName}}",
-      "panelTitleDefault": "Job Details",
-      "errorTitle": "Error Details",
-      "selectedContainers": "Selected Containers"
+      "panelTitleDefault": "Jobbinformation",
+      "errorTitle": "Information om fel",
+      "selectedContainers": "Valda containrar"
     },
     "createCopyJob": {
-      "panelTitle": "Create copy job"
+      "panelTitle": "Skapa kopieringsjobb"
     },
     "selectAccount": {
-      "description": "Please select a destination account to copy to.",
-      "subscriptionDropdownLabel": "Subscription",
-      "subscriptionDropdownPlaceholder": "Select a subscription",
-      "accountDropdownLabel": "Account",
-      "accountDropdownPlaceholder": "Select an account"
+      "description": "Välj ett målkonto att kopiera till.",
+      "subscriptionDropdownLabel": "Prenumeration",
+      "subscriptionDropdownPlaceholder": "Välj en prenumeration",
+      "accountDropdownLabel": "Konto",
+      "accountDropdownPlaceholder": "Välj ett konto"
     },
     "migrationType": {
       "offline": {
-        "title": "Offline mode",
-        "description": "Offline container copy jobs let you copy data from a source container to a destination Cosmos DB container for supported APIs. To ensure data integrity between the source and destination, we recommend stopping updates on the source container before creating the copy job. Learn more about [offline copy jobs](https://learn.microsoft.com/azure/cosmos-db/how-to-container-copy?tabs=offline-copy&pivots=api-nosql)."
+        "title": "Offlineläge",
+        "description": "Med offline-containerkopieringsjobb kan du kopiera data från en källcontainer till ett mål Cosmos DB container för API:er som stöds. För att säkerställa dataintegriteten mellan källan och målet rekommenderar vi att du stoppar uppdateringar på källcontainern innan du skapar kopieringsjobbet. Läs mer om [offlinekopieringsjobb](https://learn.microsoft.com/azure/cosmos-db/how-to-container-copy?tabs=offline-copy&pivots=api-nosql)."
       },
       "online": {
-        "title": "Online mode",
-        "description": "Online container copy jobs let you copy data from a source container to a destination Cosmos DB NoSQL API container using the [All Versions and Delete](https://learn.microsoft.com/azure/cosmos-db/change-feed-modes?tabs=all-versions-and-deletes#all-versions-and-deletes-change-feed-mode-preview) change feed. This allows updates to continue on the source while data is copied. A brief downtime is required at the end to safely switch over client applications to the destination container. Learn more about [online copy jobs](https://learn.microsoft.com/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#getting-started)."
+        "title": "Onlineläge",
+        "description": "Med online-containerkopieringsjobb kan du kopiera data från en källcontainer till ett mål Cosmos DB NoSQL API-containern med ändringsflödet [Alla versioner och ta bort](https://learn.microsoft.com/azure/cosmos-db/change-feed-modes?tabs=all-versions-and-deletes#all-versions-and-deletes-change-feed-mode-preview). Detta gör att uppdateringar kan fortsätta på källan medan data kopieras. En kort stilleståndstid krävs i slutet för att på ett säkert sätt växla över klientprogram till målcontainern. Läs mer om [onlinekopieringsjobb](https://learn.microsoft.com/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#getting-started)."
       }
     },
     "selectContainers": {
-      "description": "Please select a source container and a destination container to copy to.",
-      "sourceContainerSubHeading": "Source container",
-      "targetContainerSubHeading": "Destination container",
-      "databaseDropdownLabel": "Database",
-      "databaseDropdownPlaceholder": "Select a database",
+      "description": "Välj en källcontainer och en målcontainer att kopiera till.",
+      "sourceContainerSubHeading": "Källcontainer",
+      "targetContainerSubHeading": "Målcontainer",
+      "databaseDropdownLabel": "Databas",
+      "databaseDropdownPlaceholder": "Välj en databas",
       "containerDropdownLabel": "Container",
-      "containerDropdownPlaceholder": "Select a container",
-      "createNewContainerSubHeading": "Configure the properties for the new container on destination account \"{{accountName}}\".",
-      "createNewContainerSubHeadingDefault": "Configure the properties for the new container.",
-      "createContainerButtonLabel": "Create a new container",
-      "createContainerHeading": "Create new container"
+      "containerDropdownPlaceholder": "Välj en container",
+      "createNewContainerSubHeading": "Konfigurera egenskaperna för den nya containern på målkontot \"{{accountName}}\".",
+      "createNewContainerSubHeadingDefault": "Konfigurera egenskaperna för den nya containern.",
+      "createContainerButtonLabel": "Skapa en ny container",
+      "createContainerHeading": "Skapa ny container"
     },
     "preview": {
-      "jobNameLabel": "Job name",
-      "subscriptionLabel": "Destination subscription",
-      "accountLabel": "Destination account",
-      "sourceDatabaseLabel": "Source database",
-      "sourceContainerLabel": "Source container",
-      "targetDatabaseLabel": "Destination database",
-      "targetContainerLabel": "Destination container"
+      "jobNameLabel": "Jobbnamn",
+      "subscriptionLabel": "Nytt abonnemang",
+      "accountLabel": "Målkonto",
+      "sourceDatabaseLabel": "Källdatabas",
+      "sourceContainerLabel": "Källcontainer",
+      "targetDatabaseLabel": "Måldatabas",
+      "targetContainerLabel": "Målcontainer"
     },
     "assignPermissions": {
-      "crossAccountDescription": "To copy data from the source to the destination container, ensure that the managed identity of the source account has read-write access to the destination account by completing the following steps.",
-      "intraAccountOnlineDescription": "Follow the steps below to enable online copy on your \"{{accountName}}\" account.",
+      "crossAccountDescription": "Om du vill kopiera data från källan till målcontainern kontrollerar du att källkontots hanterade identitet har läs- och skrivbehörighet till målkontot genom att utföra följande steg.",
+      "intraAccountOnlineDescription": "Följ stegen nedan för att aktivera onlinekopiering på ditt {{accountName}}-konto.",
       "crossAccountConfiguration": {
-        "title": "Cross-account container copy",
-        "description": "Please follow the instruction below to grant requisite permissions to copy data from \"{{sourceAccount}}\" to \"{{destinationAccount}}\"."
+        "title": "Kopia av container för flera konton",
+        "description": "Följ anvisningarna nedan för att bevilja nödvändiga behörigheter för att kopiera data från \"{{sourceAccount}}\" till \"{{destinationAccount}}\"."
       },
       "onlineConfiguration": {
-        "title": "Online container copy",
-        "description": "Please follow the instructions below to enable online copy on your \"{{accountName}}\" account."
+        "title": "Onlinecontainerkopiering",
+        "description": "Följ anvisningarna nedan för att aktivera onlinekopiering på ditt {{accountName}}-konto."
       }
     },
-    "popoverOverlaySpinnerLabel": "Please wait while we process your request...",
+    "popoverOverlaySpinnerLabel": "Vänta medan vi behandlar din begäran...",
     "addManagedIdentity": {
-      "title": "System-assigned managed identity enabled.",
-      "description": "A system-assigned managed identity is restricted to one per resource and is tied to the lifecycle of this resource. Once enabled, you can grant permissions to the managed identity by using Azure role-based access control (Azure RBAC). The managed identity is authenticated with Microsoft Entra ID, so you don't have to store any credentials in code.",
-      "descriptionHrefText": "Learn more about Managed identities.",
+      "title": "Systemtilldelad hanterad identitet har aktiverats.",
+      "description": "En systemtilldelad hanterad identitet begränsas till en per resurs och är bunden till resursens livscykel. När det är aktiverat kan du bevilja behörigheter till den hanterade identiteten med hjälp av Azure rollbaserad åtkomstkontroll (Azure RBAC). Den hanterade identiteten autentiseras med Microsoft Entra ID, så du behöver inte lagra några autentiseringsuppgifter i koden.",
+      "descriptionHrefText": "Mer information om hanterade identiteter.",
       "descriptionHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
-      "toggleLabel": "System assigned managed identity",
-      "tooltipContent": "Learn more about",
-      "tooltipHrefText": "Managed Identities.",
+      "toggleLabel": "Systemtilldelad hanterad identitet",
+      "tooltipContent": "Mer information om",
+      "tooltipHrefText": "Hanterade identiteter.",
       "tooltipHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
-      "userAssignedIdentityTooltip": "You can select an existing user assigned identity or create a new one.",
-      "userAssignedIdentityLabel": "You may also select a user assigned managed identity.",
-      "createUserAssignedIdentityLink": "Create User Assigned Managed Identity",
-      "enablementTitle": "Enable system assigned managed identity",
-      "enablementDescription": "Enable system-assigned managed identity on the {{accountName}}. To confirm, click the \"Yes\" button."
+      "userAssignedIdentityTooltip": "Du kan välja en befintlig användartilldelade identitet eller skapa en ny.",
+      "userAssignedIdentityLabel": "Du kan också välja en användartilldelad hanterad identitet.",
+      "createUserAssignedIdentityLink": "Skapa användartilldelad hanterad identitet",
+      "enablementTitle": "Aktivera systemtilldelade hanterade identiteter",
+      "enablementDescription": "Aktivera systemtilldelad hanterad identitet på {{accountName}}. Bekräfta genom att klicka på knappen \"Ja\"."
     },
     "defaultManagedIdentity": {
-      "title": "System-assigned managed identity set as default.",
-      "description": "Set the system-assigned managed identity as default for \"{{accountName}}\" by switching it on.",
-      "tooltipContent": "Learn more about",
-      "tooltipHrefText": "Default Managed Identities.",
+      "title": "Systemtilldelad hanterad identitet har angetts som standard.",
+      "description": "Ange den systemtilldelade hanterade identiteten som standard för \"{{accountName}}\" genom att aktivera den.",
+      "tooltipContent": "Mer information om",
+      "tooltipHrefText": "Hanterade standardidentiteter.",
       "tooltipHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
-      "popoverTitle": "System assigned managed identity set as default",
-      "popoverDescription": "Assign the system-assigned managed identity as the default for \"{{accountName}}\". To confirm, click the \"Yes\" button. "
+      "popoverTitle": "Systemtilldelade hanterade identiteter har angetts som standard",
+      "popoverDescription": "Tilldela den systemtilldelade hanterade identiteten som standard för \"{{accountName}}\". Bekräfta genom att klicka på knappen \"Ja\". "
     },
     "readWritePermissionAssigned": {
-      "title": "Read-write permissions assigned to the default identity.",
-      "description": "To allow data copy from source to the destination container, provide read-write access on the destination account to the default identity of the source account.",
-      "tooltipContent": "Learn more about",
-      "tooltipHrefText": "Read-write permissions.",
+      "title": "Läs- och skrivbehörigheter som tilldelats standardidentiteten.",
+      "description": "Om du vill tillåta datakopiering från källan till målcontainern anger du läs- och skrivåtkomst på målkontot till källkontots standardidentitet.",
+      "tooltipContent": "Mer information om",
+      "tooltipHrefText": "Läs- och skrivbehörigheter.",
       "tooltipHref": "https://learn.microsoft.com/azure/cosmos-db/nosql/how-to-connect-role-based-access-control",
-      "popoverTitle": "Assign read-write permissions to default identity.",
-      "popoverDescription": "Assign read-write permissions on the destination account to the default identity of the source account. To confirm, click the \"Yes\" button."
+      "popoverTitle": "Tilldela läs- och skrivbehörigheter till standardidentiteten.",
+      "popoverDescription": "Tilldela läs- och skrivbehörigheter för målkontot till standardidentiteten för källkontot. Bekräfta genom att klicka på knappen \"Ja\"."
     },
     "pointInTimeRestore": {
-      "title": "Point In Time Restore enabled",
-      "description": "To facilitate online container copy jobs, please update your \"{{accessName}}\" backup policy from periodic to continuous backup. Enabling continuous backup is required for this functionality.",
-      "tooltipContent": "Learn more about",
-      "tooltipHrefText": "Continuous Backup",
+      "title": "Återställning till tidpunkt har aktiverats",
+      "description": "Om du vill underlätta kopieringsjobb för onlinecontainer uppdaterar du säkerhetskopieringsprincipen \"{{accessName}}\" från periodisk till kontinuerlig säkerhetskopiering. Kontinuerlig säkerhetskopiering krävs för den här funktionen.",
+      "tooltipContent": "Mer information om",
+      "tooltipHrefText": "Kontinuerlig säkerhetskopiering",
       "tooltipHref": "https://learn.microsoft.com/en-us/azure/cosmos-db/continuous-backup-restore-introduction",
-      "buttonText": "Enable Point In Time Restore"
+      "buttonText": "Aktivera återställning till tidpunkt"
     },
     "onlineCopyEnabled": {
-      "title": "Online copy enabled",
-      "description": "Enable online container copy by clicking the button below on your \"{{accountName}}\" account.",
-      "hrefText": "Learn more about online copy jobs",
+      "title": "Onlinekopiering har aktiverats",
+      "description": "Aktivera onlinecontainerkopiering genom att klicka på knappen nedan på ditt {{accountName}}-konto.",
+      "hrefText": "Läs mer om kopieringsjobb online",
       "href": "https://learn.microsoft.com/en-us/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#enable-online-copy",
-      "buttonText": "Enable Online Copy",
-      "validateAllVersionsAndDeletesChangeFeedSpinnerLabel": "Validating All versions and deletes change feed mode (preview)...",
-      "enablingAllVersionsAndDeletesChangeFeedSpinnerLabel": "Enabling All versions and deletes change feed mode (preview)...",
-      "enablingOnlineCopySpinnerLabel": "Enabling online copy on your \"{{accountName}}\" account ..."
+      "buttonText": "Aktivera onlinekopiering",
+      "validateAllVersionsAndDeletesChangeFeedSpinnerLabel": "Verifierar alla versioner och tar bort ändringsflödesläge (förhandsversion)...",
+      "enablingAllVersionsAndDeletesChangeFeedSpinnerLabel": "Aktiverar alla versioner och tar bort ändringsflödesläge (förhandsversion)...",
+      "enablingOnlineCopySpinnerLabel": "Aktiverar onlinekopiering på ditt {{accountName}}-konto..."
     },
     "monitorJobs": {
       "columns": {
-        "lastUpdatedTime": "Date & time",
-        "name": "Job name",
+        "lastUpdatedTime": "Datum och tid",
+        "name": "Jobbnamn",
         "status": "Status",
-        "completionPercentage": "Completion %",
-        "duration": "Duration",
-        "error": "Error message",
-        "mode": "Mode",
-        "actions": "Actions"
+        "completionPercentage": "Slutförande %",
+        "duration": "Varaktighet",
+        "error": "Felmeddelande",
+        "mode": "Läge",
+        "actions": "Åtgärder"
       },
       "actions": {
-        "pause": "Pause",
-        "resume": "Resume",
-        "complete": "Complete",
-        "viewDetails": "View Details"
+        "pause": "Pausa",
+        "resume": "Återuppta",
+        "complete": "Slutfört",
+        "viewDetails": "Visa information"
       },
       "status": {
-        "pending": "Queued",
-        "inProgress": "Running",
-        "running": "Running",
-        "partitioning": "Running",
-        "paused": "Paused",
-        "completed": "Completed",
-        "failed": "Failed",
-        "faulted": "Failed",
-        "skipped": "Cancelled",
-        "cancelled": "Cancelled"
+        "pending": "I kö",
+        "inProgress": "Pågår",
+        "running": "Pågår",
+        "partitioning": "Pågår",
+        "paused": "Pausad",
+        "completed": "Slutfört",
+        "failed": "Misslyckades",
+        "faulted": "Misslyckades",
+        "skipped": "Avbrutet",
+        "cancelled": "Avbrutet"
       },
       "dialog": {
-        "confirmButtonText": "Confirm",
-        "cancelButtonText": "Cancel"
+        "confirmButtonText": "Bekräfta",
+        "cancelButtonText": "Avbryt"
       }
     }
   }

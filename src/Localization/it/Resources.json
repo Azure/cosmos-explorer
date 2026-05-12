@@ -34,8 +34,8 @@
     "browse": "Sfoglia",
     "increaseValueBy1": "Aumentare il valore di 1",
     "decreaseValueBy1": "Diminuisci il valore di 1",
-    "on": "On",
-    "off": "Off",
+    "on": "Attivato",
+    "off": "Disattivato",
     "preview": "Anteprima"
   },
   "splashScreen": {
@@ -78,7 +78,7 @@
         "description": "Creare una tabella e interagire con i dati usando l'interfaccia shell di PostgreSQL"
       },
       "vcoreMongo": {
-        "title": "Shell Mongo",
+        "title": "Mongo Shell",
         "description": "Creare una raccolta e interagire con i dati usando l'interfaccia shell di MongoDB"
       }
     },
@@ -305,7 +305,7 @@
     "deleteContainer": "Elimina {{containerName}}",
     "newSqlQuery": "Nuova query SQL",
     "newQuery": "Nuova query",
-    "openMongoShell": "Apri shell Mongo",
+    "openMongoShell": "Apri Mongo Shell",
     "newShell": "Nuova Shell",
     "openCassandraShell": "Apri shell Cassandra",
     "newStoredProcedure": "Nuova stored procedure",
@@ -416,7 +416,7 @@
       "refreshGridFailed": "Aggiornamento griglia documenti non riuscito"
     },
     "mongoShell": {
-      "title": "Shell Mongo"
+      "title": "Mongo Shell"
     }
   },
   "panes": {
@@ -444,7 +444,7 @@
       "keyspaceIdLabel": "ID keyspace",
       "databaseIdPlaceholder": "Digitare un nuovo ID {{databaseLabel}}",
       "databaseTooltip": "Un {{databaseLabel}} è un contenitore logico di una o più {{collectionsLabel}}",
-      "greaterThanError": "Immettere un valore maggiore di {{minValue}} per la velocità effettiva di Autopilot",
+      "greaterThanError": "Immetti un valore maggiore di {{minValue}} per la velocità effettiva di Autopilot",
       "acknowledgeSpendError": "Confermare la spesa stimata di {{period}}.",
       "acknowledgeSpendErrorMonthly": "Confermare la spesa mensile stimata.",
       "acknowledgeSpendErrorDaily": "Confermare la spesa giornaliera stimata."
@@ -471,7 +471,7 @@
       "sharded": "Partizionato",
       "addPartitionKey": "Aggiungi chiave di partizione gerarchica",
       "hierarchicalPartitionKeyInfo": "Questa funzionalità consente di partizionare i dati con fino a tre livelli di chiavi per una migliore distribuzione dei dati. Richiede .NET V3, Java V4 SDK o JavaScript V3 SDK in anteprima.",
-      "provisionDedicatedThroughput": "Eseguire il provisioning della velocità effettiva dedicata per {{collectionName}}",
+      "provisionDedicatedThroughput": "Esegui il provisioning della velocità effettiva dedicata per {{collectionName}}",
       "provisionDedicatedThroughputTooltip": "È possibile effettuare facoltativamente il provisioning di una velocità effettiva dedicata per un {{collectionName}} di un database che ha già una velocità effettiva con provisioning. Questa velocità effettiva dedicata non sarà condivisa con altri {{collectionNamePlural}} nel database e non verrà conteggiata nella velocità effettiva con provisioning per il database. Questa velocità effettiva verrà fatturata in aggiunta a quella con provisioning a livello di database.",
       "uniqueKeysPlaceholderMongo": "Percorsi separati da virgole, ad esempio, firstName,address.zipCode",
       "uniqueKeysPlaceholderSql": "Percorsi separati da virgole, ad esempio /firstName,/address/zipCode",
@@ -494,7 +494,7 @@
       "acknowledgeSpendErrorMonthly": "Confermare la spesa mensile stimata.",
       "acknowledgeSpendErrorDaily": "Confermare la spesa giornaliera stimata.",
       "unshardedMaxRuError": "Le raccolte non partizionate supportano fino a 10.000 UR",
-      "acknowledgeShareThroughputError": "Confermare il costo stimato di questa velocità effettiva dedicata.",
+      "acknowledgeShareThroughputError": "Conferma il costo stimato di questa velocità effettiva dedicata.",
       "vectorPolicyError": "Correggere gli errori nei criteri sul vettore contenitore",
       "fullTextSearchPolicyError": "Correggere gli errori nei criteri di ricerca full-text del contenitore",
       "addingSampleDataSet": "Aggiunta dei set di dati di esempio",
@@ -710,7 +710,7 @@
       "tableIdLabel": "Immettere il comando CQL per creare la tabella.",
       "enterTableId": "Immetti ID tabella",
       "tableSchemaAriaLabel": "Schema della tabella",
-      "provisionDedicatedThroughput": "Eseguire il provisioning della velocità effettiva dedicata per questa tabella",
+      "provisionDedicatedThroughput": "Esegui il provisioning della velocità effettiva dedicata per questa tabella",
       "provisionDedicatedThroughputTooltip": "È possibile effettuare facoltativamente il provisioning di una capacità effettiva dedicata per una tabella all'interno di un keyspace che ha già una capacità con provisioning. Questa capacità effettiva dedicata non sarà condivisa con altre tabelle nel keyspace e non verrà conteggiata nella capacità con provisioning per il keyspace. Questa capacità effettiva verrà fatturata in aggiunta a quella con provisioning a livello di keyspace."
     },
     "tables": {
@@ -797,7 +797,7 @@
         "perMonth": "/mese"
       },
       "throughput": {
-        "manualToAutoscaleDisclaimer": "Il numero massimo di UR/sec con scalabilità automatica iniziale verrà determinato dal sistema, in base alle impostazioni correnti della velocità effettiva manuale e all'archiviazione della risorsa. Dopo aver abilitato la scalabilità automatica, è possibile modificare il numero massimo di UR/sec.",
+        "manualToAutoscaleDisclaimer": "Il numero massimo di UR/s con scalabilità automatica iniziale verrà determinato dal sistema, in base alle impostazioni correnti della velocità effettiva configurata manualmente e all'archiviazione della risorsa. Dopo aver abilitato la scalabilità automatica, è possibile modificare il numero massimo di UR/s.",
         "ttlWarningText": "Il sistema eliminerà automaticamente gli elementi in base al valore TTL (in secondi) specificato, senza la necessità di un'operazione di eliminazione eseguita in modo esplicito da un'applicazione client. Per altre informazioni, vedere",
         "ttlWarningLinkText": "Durata (TTL) in Azure Cosmos DB",
         "unsavedIndexingPolicy": "criteri di indicizzazione",
@@ -805,24 +805,24 @@
         "unsavedComputedProperties": "proprietà calcolate",
         "unsavedEditorWarningPrefix": "Non sono state salvate le modifiche più recenti apportate a",
         "unsavedEditorWarningSuffix": ". Fare clic su Salva per confermare le modifiche.",
-        "updateDelayedApplyWarning": "Si sta per richiedere un aumento della velocità effettiva oltre la capacità preallocata. Il completamento dell'operazione potrebbe richiedere alcuni minuti.",
-        "scalingUpDelayMessage": "L'aumento richiederà 4-6 ore perché supera quello che Azure Cosmos DB può attualmente supportare immediatamente in base al numero di partizioni fisiche. È possibile aumentare immediatamente la velocità effettiva a {{instantMaximumThroughput}} o procedere con questo valore e attendere il completamento dell'aumento.",
-        "exceedPreAllocatedMessage": "La richiesta di aumento della velocità effettiva supera la capacità preallocata, quindi potrebbe richiedere più tempo del previsto. Per continuare, è possibile scegliere tra tre opzioni:",
-        "instantScaleOption": "È possibile aumentare immediatamente fino a {{instantMaximumThroughput}} UR/sec.",
-        "asyncScaleOption": "È possibile aumentare in modo asincrono fino a qualsiasi valore inferiore a {{maximumThroughput}} UR/sec in 4-6 ore.",
+        "updateDelayedApplyWarning": "Stai per richiedere un aumento della velocità effettiva oltre la capacità preallocata. Il completamento dell'operazione potrebbe richiedere alcuni minuti.",
+        "scalingUpDelayMessage": "L'aumento richiederà 4-6 ore perché supera quello che Azure Cosmos DB può attualmente supportare in base al numero di partizioni fisiche. È possibile aumentare immediatamente la velocità effettiva a {{instantMaximumThroughput}} o procedere con questo valore e attendere il completamento dell'aumento.",
+        "exceedPreAllocatedMessage": "La richiesta di aumento della velocità effettiva supera la capacità preallocata, quindi potrebbe richiedere più tempo del previsto. Per continuare, puoi scegliere tra tre opzioni:",
+        "instantScaleOption": "È possibile aumentare immediatamente fino a {{instantMaximumThroughput}} UR/s.",
+        "asyncScaleOption": "È possibile aumentare in modo asincrono fino a qualsiasi valore inferiore a {{maximumThroughput}} UR/s in 4-6 ore.",
         "quotaMaxOption": "Il valore massimo della quota corrente è {{maximumThroughput}} UR/s. Per superare questo limite, è necessario richiedere un aumento della quota e il team di Azure Cosmos DB esaminerà la richiesta.",
-        "belowMinimumMessage": "Non è possibile ridurre la velocità effettiva al di sotto del valore minimo corrente di {{minimum}} UR/sec. Per altre informazioni su questo limite, fare riferimento alla documentazione relativa alle quote dei servizi.",
-        "saveThroughputWarning": "La fattura sarà interessata dall'aggiornamento delle impostazioni della velocità effettiva. Prima di salvare le modifiche, esaminare la stima dei costi aggiornata riportata di seguito",
+        "belowMinimumMessage": "Non è possibile ridurre la velocità effettiva al di sotto del valore minimo corrente di {{minimum}} UR/s. Per altre informazioni su questo limite, fai riferimento alla documentazione relativa alle quote dei servizi.",
+        "saveThroughputWarning": "La fattura sarà interessata dall'aggiornamento delle impostazioni della velocità effettiva. Prima di salvare le modifiche, esamina la stima dei costi aggiornata riportata di seguito",
         "currentAutoscaleThroughput": "Velocità effettiva con scalabilità automatica corrente:",
         "targetAutoscaleThroughput": "Velocità effettiva con scalabilità automatica di destinazione:",
-        "currentManualThroughput": "Velocità effettiva manuale corrente:",
-        "targetManualThroughput": "Velocità effettiva manuale di destinazione:",
-        "applyDelayedMessage": "La richiesta di aumento della velocità effettiva è stata inviata. Il completamento dell'operazione richiederà da 1 a 3 giorni lavorativi. Visualizzare lo stato più recente nelle notifiche.",
+        "currentManualThroughput": "Velocità effettiva corrente configurata manualmente:",
+        "targetManualThroughput": "Velocità effettiva di destinazione configurata manualmente:",
+        "applyDelayedMessage": "La richiesta di aumento della velocità effettiva è stata inviata. Il completamento dell'operazione richiederà da 1 a 3 giorni lavorativi. Visualizza lo stato più recente nelle notifiche.",
         "databaseLabel": "Database:",
         "containerLabel": "Contenitore:",
         "applyShortDelayMessage": "È attualmente in corso una richiesta di aumento della velocità effettiva. Il completamento dell'operazione potrebbe richiedere alcuni minuti.",
-        "applyLongDelayMessage": "È attualmente in corso una richiesta di aumento della velocità effettiva. Il completamento dell'operazione richiederà da 1 a 3 giorni lavorativi. Visualizzare lo stato più recente nelle notifiche.",
-        "throughputCapError": "L'account è attualmente configurato con un limite di velocità effettiva totale di {{throughputCap}} UR/sec. Questo aggiornamento non è possibile perché aumenterebbe la velocità effettiva totale fino a {{newTotalThroughput}} UR/sec. Modificare il limite di velocità effettiva totale nella gestione dei costi.",
+        "applyLongDelayMessage": "È attualmente in corso una richiesta di aumento della velocità effettiva. Il completamento dell'operazione richiederà da 1 a 3 giorni lavorativi. Visualizza lo stato più recente nelle notifiche.",
+        "throughputCapError": "L'account è attualmente configurato con un limite di velocità effettiva totale di {{throughputCap}} UR/s. Questo aggiornamento non è possibile perché aumenterebbe la velocità effettiva totale fino a {{newTotalThroughput}} UR/s. Modifica il limite di velocità effettiva totale nella gestione dei costi.",
         "throughputIncrementError": "Il valore della velocità effettiva deve essere in incrementi di 1000"
       },
       "conflictResolution": {
@@ -843,9 +843,9 @@
       "mongoIndexing": {
         "disclaimer": "Per le query che filtrano in base a più proprietà, creare più indici di campi singoli anziché un indice composto.",
         "disclaimerCompoundIndexesLink": " Indici composti ",
-        "disclaimerSuffix": "vengono usati solo per l'ordinamento dei risultati della query. Se è necessario aggiungere un indice composto, è possibile crearne uno usando la shell Mongo.",
-        "compoundNotSupported": "Le raccolte con indici composti non sono ancora supportate nell'editor di indicizzazione. Per modificare i criteri di indicizzazione per questa raccolta, usare la shell Mongo.",
-        "aadError": "Per usare l'editor dei criteri di indicizzazione, accedere a",
+        "disclaimerSuffix": "vengono usati solo per l'ordinamento dei risultati della query. Se è necessario aggiungere un indice composto, è possibile crearne uno usando Mongo Shell.",
+        "compoundNotSupported": "Le raccolte con indici composti non sono ancora supportate nell'editor di indicizzazione. Per modificare i criteri di indicizzazione per questa raccolta, usa Mongo Shell.",
+        "aadError": "Per usare l'editor dei criteri di indicizzazione, accedi a",
         "aadErrorLink": "portale di Azure.",
         "refreshingProgress": "Aggiornamento dello stato di avanzamento della trasformazione dell'indice",
         "canMakeMoreChangesZero": "Al termine della trasformazione dell'indice corrente, è possibile apportare altre modifiche all'indicizzazione. ",
@@ -887,10 +887,10 @@
       "scale": {
         "freeTierInfo": "Con il livello gratuito si otterranno gratuitamente le prime {{ru}} UR/s e {{storage}} GB di spazio di archiviazione in questo account. Per mantenere l'account gratuito, mantenere il totale delle UR/sec in tutte le risorse dell'account al di sotto di {{ru}} UR/sec.",
         "freeTierLearnMore": "Altre informazioni.",
-        "throughputRuS": "Unità elaborate (UR/sec)",
-        "autoScaleCustomSettings": "L'account ha impostazioni personalizzate che impediscono l'impostazione della velocità effettiva a livello di contenitore. Collaborare con il punto di contatto del team tecnico di Cosmos DB per apportare modifiche.",
+        "throughputRuS": "Velocità effettiva (UR/s)",
+        "autoScaleCustomSettings": "L'account ha impostazioni personalizzate che impediscono la configurazione della velocità effettiva a livello di contenitore. Collabora con il punto di contatto del team tecnico di Cosmos DB per apportare modifiche.",
         "keyspaceSharedThroughput": "La capacità effettiva condivisa di questa tabella è configurata nel keyspace",
-        "throughputRangeLabel": "Velocità effettiva ({{min}}-{{max}} UR/s)",
+        "throughputRangeLabel": "Velocità effettiva ({{min}} - {{max}} UR/s)",
         "unlimited": "senza limiti"
       },
       "partitionKeyEditor": {
@@ -930,7 +930,7 @@
         "learnMoreSuffix": "su come definire gli indici secondari globali e su come usarli.",
         "jsonAriaLabel": "JSON indice secondario globale",
         "addIndex": "Aggiungi indice",
-        "settingsTitle": "Impostazioni globali dell'indice secondario",
+        "settingsTitle": "Impostazioni dell'indice secondario globale",
         "sourceContainer": "Contenitore di origine",
         "indexDefinition": "Definizione di indice secondario globale"
       },
@@ -949,7 +949,7 @@
         "instant": "Immediata",
         "fourToSixHrs": "4-6 ore",
         "autoscaleDescription": "In base all'utilizzo, la velocità effettiva {{resourceType}} verrà ridimensionata da",
-        "freeTierWarning": "La fatturazione verrà applicata se si effettua il provisioning di più di {{ru}} UR/sec di velocità effettiva manuale o se la risorsa viene ridimensionata oltre a {{ru}} UR/sec con scalabilità automatica.",
+        "freeTierWarning": "La fatturazione verrà applicata se si effettua il provisioning di più di {{ru}} UR/s di velocità effettiva configurata manualmente o se la risorsa viene ridimensionata oltre a {{ru}} UR/s con scalabilità automatica.",
         "capacityCalculator": "Stima le UR/sec necessarie con",
         "capacityCalculatorLink": " calcolatore capacità",
         "fixedStorageNote": "Quando si usa una raccolta con capacità di archiviazione fissa, è possibile impostare fino a 10.000 UR/sec.",
@@ -963,7 +963,7 @@
         "active": "Attivo",
         "inactive": "Inattivo",
         "defaultBucketLabel": "Contenitore di velocità effettiva predefinito",
-        "defaultBucketPlaceholder": "Selezionare un contenitore di velocità effettiva predefinito",
+        "defaultBucketPlaceholder": "Seleziona un contenitore di velocità effettiva predefinito",
         "defaultBucketTooltip": "Il contenitore di velocità effettiva predefinito viene usato per le operazioni che non specificano un contenitore particolare.",
         "defaultBucketTooltipLearnMore": "Altre informazioni.",
         "noDefaultBucketSelected": "Nessun contenitore di velocità effettiva predefinito selezionato",
@@ -1043,7 +1043,7 @@
       "containerDropdownPlaceholder": "Select a container",
       "createNewContainerSubHeading": "Configure the properties for the new container on destination account \"{{accountName}}\".",
       "createNewContainerSubHeadingDefault": "Configure the properties for the new container.",
-      "createContainerButtonLabel": "Create a new container",
+      "createContainerButtonLabel": "Crea un nuovo contenitore",
       "createContainerHeading": "Create new container"
     },
     "preview": {
@@ -1071,16 +1071,16 @@
     "addManagedIdentity": {
       "title": "System-assigned managed identity enabled.",
       "description": "A system-assigned managed identity is restricted to one per resource and is tied to the lifecycle of this resource. Once enabled, you can grant permissions to the managed identity by using Azure role-based access control (Azure RBAC). The managed identity is authenticated with Microsoft Entra ID, so you don't have to store any credentials in code.",
-      "descriptionHrefText": "Learn more about Managed identities.",
+      "descriptionHrefText": "Altre informazioni sulle identità gestite.",
       "descriptionHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
-      "toggleLabel": "System assigned managed identity",
+      "toggleLabel": "Identità gestita assegnata dal sistema",
       "tooltipContent": "Learn more about",
       "tooltipHrefText": "Managed Identities.",
       "tooltipHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
       "userAssignedIdentityTooltip": "You can select an existing user assigned identity or create a new one.",
       "userAssignedIdentityLabel": "You may also select a user assigned managed identity.",
-      "createUserAssignedIdentityLink": "Create User Assigned Managed Identity",
-      "enablementTitle": "Enable system assigned managed identity",
+      "createUserAssignedIdentityLink": "Crea identità gestita assegnata dall'utente",
+      "enablementTitle": "Abilitare l'identità gestita assegnata dal sistema",
       "enablementDescription": "Enable system-assigned managed identity on the {{accountName}}. To confirm, click the \"Yes\" button."
     },
     "defaultManagedIdentity": {

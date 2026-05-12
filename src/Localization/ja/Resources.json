@@ -34,8 +34,8 @@
     "browse": "参照",
     "increaseValueBy1": "値を 1 増加",
     "decreaseValueBy1": "値を 1 減少",
-    "on": "On",
-    "off": "Off",
+    "on": "オン",
+    "off": "オフ",
     "preview": "プレビュー"
   },
   "splashScreen": {
@@ -78,7 +78,7 @@
         "description": "PostgreSQL のシェル インターフェイスを使用して、テーブルを作成し、データを操作します"
       },
       "vcoreMongo": {
-        "title": "Mongo シェル",
+        "title": "Mongo Shell",
         "description": "MongoDB のシェル インターフェイスを使用して、コレクションを作成し、データを操作します"
       }
     },
@@ -305,7 +305,7 @@
     "deleteContainer": "{{containerName}} の削除",
     "newSqlQuery": "新しい SQL クエリ",
     "newQuery": "新しいクエリ",
-    "openMongoShell": "Mongo シェルを開く",
+    "openMongoShell": "Mongo Shell を開く",
     "newShell": "新しいシェル",
     "openCassandraShell": "Cassandra シェルを開く",
     "newStoredProcedure": "新しいストアド プロシージャ",
@@ -416,7 +416,7 @@
       "refreshGridFailed": "ドキュメント グリッドの更新に失敗しました"
     },
     "mongoShell": {
-      "title": "Mongo シェル"
+      "title": "Mongo Shell"
     }
   },
   "panes": {
@@ -843,8 +843,8 @@
       "mongoIndexing": {
         "disclaimer": "複数のプロパティでフィルター処理するクエリの場合は、複合インデックスではなく、複数の単一フィールド インデックスを作成してください。",
         "disclaimerCompoundIndexesLink": " 複合インデックス ",
-        "disclaimerSuffix": "は、クエリ結果の並べ替えにのみ使用されます。複合インデックスを追加する必要がある場合は、Mongo シェルを使用して作成できます。",
-        "compoundNotSupported": "複合インデックスを持つコレクションは、インデックス作成エディターではまだサポートされていません。このコレクションのインデックス作成ポリシーを変更するには、Mongo シェルを使用してください。",
+        "disclaimerSuffix": "は、クエリ結果の並べ替えにのみ使用されます。複合インデックスを追加する必要がある場合は、Mongo Shell を使用して作成できます。",
+        "compoundNotSupported": "複合インデックスを持つコレクションは、インデックス作成エディターではまだサポートされていません。このコレクションのインデックス作成ポリシーを変更するには、Mongo Shell を使用してください。",
         "aadError": "インデックス作成ポリシー エディターを使用するには、次にログインしてください:",
         "aadErrorLink": "Azure portal。",
         "refreshingProgress": "インデックス変換の進行状況を更新しています",
@@ -997,160 +997,160 @@
   },
   "containerCopy": {
     "commandBar": {
-      "feedbackButtonLabel": "Feedback",
-      "feedbackButtonAriaLabel": "Provide feedback on copy jobs",
-      "refreshButtonAriaLabel": "Refresh copy jobs",
-      "createCopyJobButtonLabel": "Create Copy Job",
-      "createCopyJobButtonAriaLabel": "Create a new container copy job"
+      "feedbackButtonLabel": "フィードバック",
+      "feedbackButtonAriaLabel": "コピー ジョブに関するフィードバックを提供する",
+      "refreshButtonAriaLabel": "コピー ジョブの更新",
+      "createCopyJobButtonLabel": "コピー ジョブの作成",
+      "createCopyJobButtonAriaLabel": "新しいコンテナー コピー ジョブの作成"
     },
     "noCopyJobs": {
-      "title": "No copy jobs to show",
-      "createCopyJobButtonText": "Create a container copy job"
+      "title": "表示するコピー ジョブはありません",
+      "createCopyJobButtonText": "コンテナー コピー ジョブの作成"
     },
     "jobDetails": {
       "panelTitle": "{{jobName}}",
-      "panelTitleDefault": "Job Details",
-      "errorTitle": "Error Details",
-      "selectedContainers": "Selected Containers"
+      "panelTitleDefault": "ジョブの詳細",
+      "errorTitle": "エラーの詳細",
+      "selectedContainers": "選択したコンテナー"
     },
     "createCopyJob": {
-      "panelTitle": "Create copy job"
+      "panelTitle": "コピー ジョブの作成"
     },
     "selectAccount": {
-      "description": "Please select a destination account to copy to.",
-      "subscriptionDropdownLabel": "Subscription",
-      "subscriptionDropdownPlaceholder": "Select a subscription",
-      "accountDropdownLabel": "Account",
-      "accountDropdownPlaceholder": "Select an account"
+      "description": "コピー先のアカウントを選択してください。",
+      "subscriptionDropdownLabel": "サブスクリプション",
+      "subscriptionDropdownPlaceholder": "サブスクリプションを選択します",
+      "accountDropdownLabel": "アカウント",
+      "accountDropdownPlaceholder": "アカウントの選択"
     },
     "migrationType": {
       "offline": {
-        "title": "Offline mode",
-        "description": "Offline container copy jobs let you copy data from a source container to a destination Cosmos DB container for supported APIs. To ensure data integrity between the source and destination, we recommend stopping updates on the source container before creating the copy job. Learn more about [offline copy jobs](https://learn.microsoft.com/azure/cosmos-db/how-to-container-copy?tabs=offline-copy&pivots=api-nosql)."
+        "title": "オフライン モード",
+        "description": "オフライン コンテナー コピー ジョブでは、サポートされている API のソース コンテナーからコピー先の Cosmos DB コンテナーにデータをコピーできます。ソースとコピー先の間でデータ整合性を確保するため、コピー ジョブを作成する前にソース コンテナーでの更新を停止することをお勧めします。[オフライン コピー ジョブ](https://learn.microsoft.com/azure/cosmos-db/how-to-container-copy?tabs=offline-copy&pivots=api-nosql) の詳細をご覧ください。"
       },
       "online": {
-        "title": "Online mode",
-        "description": "Online container copy jobs let you copy data from a source container to a destination Cosmos DB NoSQL API container using the [All Versions and Delete](https://learn.microsoft.com/azure/cosmos-db/change-feed-modes?tabs=all-versions-and-deletes#all-versions-and-deletes-change-feed-mode-preview) change feed. This allows updates to continue on the source while data is copied. A brief downtime is required at the end to safely switch over client applications to the destination container. Learn more about [online copy jobs](https://learn.microsoft.com/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#getting-started)."
+        "title": "オンライン モード",
+        "description": "オンライン コンテナー コピー ジョブでは、[All Versions and Delete](https://learn.microsoft.com/azure/cosmos-db/change-feed-modes?tabs=all-versions-and-deletes#all-versions-and-deletes-change-feed-mode-preview) 変更フィードを使用して、ソース コンテナーからコピー先の Cosmos DB NoSQL API コンテナーにデータをコピーできます。これにより、データのコピー中もソースで更新を継続できます。クライアント アプリケーションをコピー先コンテナーに安全に切り替えるには、最後に短時間のダウンタイムが必要です。[online copy jobs](https://learn.microsoft.com/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#getting-started) についての詳細をご覧ください。"
       }
     },
     "selectContainers": {
-      "description": "Please select a source container and a destination container to copy to.",
-      "sourceContainerSubHeading": "Source container",
-      "targetContainerSubHeading": "Destination container",
-      "databaseDropdownLabel": "Database",
-      "databaseDropdownPlaceholder": "Select a database",
-      "containerDropdownLabel": "Container",
-      "containerDropdownPlaceholder": "Select a container",
-      "createNewContainerSubHeading": "Configure the properties for the new container on destination account \"{{accountName}}\".",
-      "createNewContainerSubHeadingDefault": "Configure the properties for the new container.",
-      "createContainerButtonLabel": "Create a new container",
-      "createContainerHeading": "Create new container"
+      "description": "コピー元のコンテナーとコピー先のコンテナーを選択してください。",
+      "sourceContainerSubHeading": "ソース コンテナー",
+      "targetContainerSubHeading": "コピー先のコンテナー",
+      "databaseDropdownLabel": "データベース",
+      "databaseDropdownPlaceholder": "データベースの選択",
+      "containerDropdownLabel": "コンテナー",
+      "containerDropdownPlaceholder": "コンテナーの選択",
+      "createNewContainerSubHeading": "コピー先のアカウント \"{{accountName}}\" の新しいコンテナーのプロパティを構成します。",
+      "createNewContainerSubHeadingDefault": "新しいコンテナーのプロパティを構成します。",
+      "createContainerButtonLabel": "新しいコンテナーを作成する",
+      "createContainerHeading": "新しいコンテナーの作成"
     },
     "preview": {
-      "jobNameLabel": "Job name",
-      "subscriptionLabel": "Destination subscription",
-      "accountLabel": "Destination account",
-      "sourceDatabaseLabel": "Source database",
-      "sourceContainerLabel": "Source container",
-      "targetDatabaseLabel": "Destination database",
-      "targetContainerLabel": "Destination container"
+      "jobNameLabel": "ジョブ名",
+      "subscriptionLabel": "変換先サービス",
+      "accountLabel": "コピー先のアカウント",
+      "sourceDatabaseLabel": "ソース データベース",
+      "sourceContainerLabel": "ソース コンテナー",
+      "targetDatabaseLabel": "転送先データベース:",
+      "targetContainerLabel": "コピー先のコンテナー"
     },
     "assignPermissions": {
-      "crossAccountDescription": "To copy data from the source to the destination container, ensure that the managed identity of the source account has read-write access to the destination account by completing the following steps.",
-      "intraAccountOnlineDescription": "Follow the steps below to enable online copy on your \"{{accountName}}\" account.",
+      "crossAccountDescription": "ソースからコピー先のコンテナーにデータをコピーするには、次の手順を実行して、ソース アカウントのマネージド ID にコピー先のアカウントへの読み取り/書き込みアクセス許可があることを確認します。",
+      "intraAccountOnlineDescription": "\"{{accountName}}\" アカウントでオンライン コピーを有効にするには、次の手順に従ってください。",
       "crossAccountConfiguration": {
-        "title": "Cross-account container copy",
-        "description": "Please follow the instruction below to grant requisite permissions to copy data from \"{{sourceAccount}}\" to \"{{destinationAccount}}\"."
+        "title": "アカウント間でのコンテナーのコピー",
+        "description": "\"{{sourceAccount}}\" から \"{{destinationAccount}}\" にデータをコピーするために必要なアクセス許可を付与するには、以下の手順に従ってください。"
       },
       "onlineConfiguration": {
-        "title": "Online container copy",
-        "description": "Please follow the instructions below to enable online copy on your \"{{accountName}}\" account."
+        "title": "オンライン コンテナー コピー",
+        "description": "\"{{accountName}}\" アカウントでオンライン コピーを有効にするには、以下の手順に従ってください。"
       }
     },
-    "popoverOverlaySpinnerLabel": "Please wait while we process your request...",
+    "popoverOverlaySpinnerLabel": "要求を処理しています。しばらくお待ちください...",
     "addManagedIdentity": {
-      "title": "System-assigned managed identity enabled.",
-      "description": "A system-assigned managed identity is restricted to one per resource and is tied to the lifecycle of this resource. Once enabled, you can grant permissions to the managed identity by using Azure role-based access control (Azure RBAC). The managed identity is authenticated with Microsoft Entra ID, so you don't have to store any credentials in code.",
-      "descriptionHrefText": "Learn more about Managed identities.",
+      "title": "システム割り当てマネージド ID が有効化されました。",
+      "description": "システム割り当てマネージド ID は 1 つのリソースにつき 1 つに限定されており、このリソースのライフサイクルに関連付けられています。有効にすると、Azure ロールベースのアクセス制御 (Azure RBAC) を使用して、マネージド ID にアクセス許可を付与できます。マネージド ID は Microsoft Entra ID で認証されるため、コード内に資格情報を格納する必要はありません。",
+      "descriptionHrefText": "マネージド ID に関する詳細情報。",
       "descriptionHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
-      "toggleLabel": "System assigned managed identity",
-      "tooltipContent": "Learn more about",
-      "tooltipHrefText": "Managed Identities.",
+      "toggleLabel": "システム割り当てマネージド ID",
+      "tooltipContent": "次に関する詳細をご確認ください:",
+      "tooltipHrefText": "マネージド ID。",
       "tooltipHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
-      "userAssignedIdentityTooltip": "You can select an existing user assigned identity or create a new one.",
-      "userAssignedIdentityLabel": "You may also select a user assigned managed identity.",
-      "createUserAssignedIdentityLink": "Create User Assigned Managed Identity",
-      "enablementTitle": "Enable system assigned managed identity",
-      "enablementDescription": "Enable system-assigned managed identity on the {{accountName}}. To confirm, click the \"Yes\" button."
+      "userAssignedIdentityTooltip": "既存のユーザー割り当てマネージド ID を選択するか、新しい ID を作成できます。",
+      "userAssignedIdentityLabel": "ユーザー割り当てマネージド ID を選択することもできます。",
+      "createUserAssignedIdentityLink": "ユーザー割り当てマネージド ID の作成",
+      "enablementTitle": "システム割り当てマネージド ID の有効化",
+      "enablementDescription": "{{accountName}} でシステム割り当てマネージド ID を有効にします。確認するには、[はい] ボタンをクリックします。"
     },
     "defaultManagedIdentity": {
-      "title": "System-assigned managed identity set as default.",
-      "description": "Set the system-assigned managed identity as default for \"{{accountName}}\" by switching it on.",
-      "tooltipContent": "Learn more about",
-      "tooltipHrefText": "Default Managed Identities.",
+      "title": "システム割り当てマネージド ID は既定として設定されます。",
+      "description": "オンに切り替えて、システム割り当てマネージド ID を \"{{accountName}}\" の既定として設定します。",
+      "tooltipContent": "次に関する詳細をご確認ください:",
+      "tooltipHrefText": "既定のマネージド ID。",
       "tooltipHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
-      "popoverTitle": "System assigned managed identity set as default",
-      "popoverDescription": "Assign the system-assigned managed identity as the default for \"{{accountName}}\". To confirm, click the \"Yes\" button. "
+      "popoverTitle": "システム割り当てマネージド ID を既定として設定する",
+      "popoverDescription": "システム割り当てマネージド ID を \"{{accountName}}\" の既定として割り当てます。確認するには、[はい] ボタンをクリックします。"
     },
     "readWritePermissionAssigned": {
-      "title": "Read-write permissions assigned to the default identity.",
-      "description": "To allow data copy from source to the destination container, provide read-write access on the destination account to the default identity of the source account.",
-      "tooltipContent": "Learn more about",
-      "tooltipHrefText": "Read-write permissions.",
+      "title": "既定の ID に割り当てられた読み取り/書き込みアクセス許可。",
+      "description": "ソースからコピー先のコンテナーへのデータのコピーを許可するには、コピー先のアカウントでソース アカウントの既定の ID に読み取り/書き込みアクセス許可を付与します。",
+      "tooltipContent": "次に関する詳細をご確認ください:",
+      "tooltipHrefText": "読み取り/書き込みアクセス許可。",
       "tooltipHref": "https://learn.microsoft.com/azure/cosmos-db/nosql/how-to-connect-role-based-access-control",
-      "popoverTitle": "Assign read-write permissions to default identity.",
-      "popoverDescription": "Assign read-write permissions on the destination account to the default identity of the source account. To confirm, click the \"Yes\" button."
+      "popoverTitle": "既定の ID に読み取り/書き込みアクセス許可を割り当てます。",
+      "popoverDescription": "コピー先アカウントの読み取り/書き込みアクセス許可を、ソース アカウントの既定の ID に割り当てます。確認するには、[はい] ボタンをクリックします。"
     },
     "pointInTimeRestore": {
-      "title": "Point In Time Restore enabled",
-      "description": "To facilitate online container copy jobs, please update your \"{{accessName}}\" backup policy from periodic to continuous backup. Enabling continuous backup is required for this functionality.",
-      "tooltipContent": "Learn more about",
-      "tooltipHrefText": "Continuous Backup",
+      "title": "ポイントインタイム リストアが有効です",
+      "description": "オンライン コンテナー コピー ジョブを有効にするには、\"{{accessName}}\" バックアップ ポリシーを定期バックアップから継続的バックアップに更新してください。この機能を使用するには、継続的バックアップを有効にする必要があります。",
+      "tooltipContent": "次に関する詳細をご確認ください:",
+      "tooltipHrefText": "継続的バックアップ",
       "tooltipHref": "https://learn.microsoft.com/en-us/azure/cosmos-db/continuous-backup-restore-introduction",
-      "buttonText": "Enable Point In Time Restore"
+      "buttonText": "ポイントインタイム リストアを有効にする"
     },
     "onlineCopyEnabled": {
-      "title": "Online copy enabled",
-      "description": "Enable online container copy by clicking the button below on your \"{{accountName}}\" account.",
-      "hrefText": "Learn more about online copy jobs",
+      "title": "オンライン コピーが有効",
+      "description": "\"{{accountName}}\" アカウントで下のボタンをクリックして、オンライン コンテナー コピーを有効にします。",
+      "hrefText": "オンライン コピー ジョブの詳細情報",
       "href": "https://learn.microsoft.com/en-us/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#enable-online-copy",
-      "buttonText": "Enable Online Copy",
-      "validateAllVersionsAndDeletesChangeFeedSpinnerLabel": "Validating All versions and deletes change feed mode (preview)...",
-      "enablingAllVersionsAndDeletesChangeFeedSpinnerLabel": "Enabling All versions and deletes change feed mode (preview)...",
-      "enablingOnlineCopySpinnerLabel": "Enabling online copy on your \"{{accountName}}\" account ..."
+      "buttonText": "オンライン コピーを有効にする",
+      "validateAllVersionsAndDeletesChangeFeedSpinnerLabel": "すべてのバージョンを検証し、変更フィード モードを削除します (プレビュー)...",
+      "enablingAllVersionsAndDeletesChangeFeedSpinnerLabel": "すべてのバージョンおよび削除の変更フィード モード (プレビュー) を有効にしています",
+      "enablingOnlineCopySpinnerLabel": "\"{{accountName}}\" アカウントでオンライン コピーを有効にしています..."
     },
     "monitorJobs": {
       "columns": {
-        "lastUpdatedTime": "Date & time",
-        "name": "Job name",
-        "status": "Status",
-        "completionPercentage": "Completion %",
-        "duration": "Duration",
-        "error": "Error message",
-        "mode": "Mode",
-        "actions": "Actions"
+        "lastUpdatedTime": "日付と時刻",
+        "name": "ジョブ名",
+        "status": "状態",
+        "completionPercentage": "完了率",
+        "duration": "期間",
+        "error": "エラー メッセージ",
+        "mode": "モード",
+        "actions": "アクション"
       },
       "actions": {
-        "pause": "Pause",
-        "resume": "Resume",
-        "complete": "Complete",
-        "viewDetails": "View Details"
+        "pause": "一時停止",
+        "resume": "再開",
+        "complete": "完了",
+        "viewDetails": "詳細の表示"
       },
       "status": {
-        "pending": "Queued",
-        "inProgress": "Running",
-        "running": "Running",
-        "partitioning": "Running",
-        "paused": "Paused",
-        "completed": "Completed",
-        "failed": "Failed",
-        "faulted": "Failed",
-        "skipped": "Cancelled",
-        "cancelled": "Cancelled"
+        "pending": "キューに登録済み",
+        "inProgress": "実行中",
+        "running": "実行中",
+        "partitioning": "実行中",
+        "paused": "一時停止",
+        "completed": "完了済み",
+        "failed": "失敗",
+        "faulted": "失敗",
+        "skipped": "取り消し済み",
+        "cancelled": "取り消し済み"
       },
       "dialog": {
-        "confirmButtonText": "Confirm",
-        "cancelButtonText": "Cancel"
+        "confirmButtonText": "確認",
+        "cancelButtonText": "キャンセル"
       }
     }
   }

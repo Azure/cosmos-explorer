@@ -34,8 +34,8 @@
     "browse": "瀏覽",
     "increaseValueBy1": "將值增加 1",
     "decreaseValueBy1": "將值減少 1",
-    "on": "On",
-    "off": "Off",
+    "on": "開啟",
+    "off": "關閉",
     "preview": "預覽"
   },
   "splashScreen": {
@@ -997,160 +997,160 @@
   },
   "containerCopy": {
     "commandBar": {
-      "feedbackButtonLabel": "Feedback",
-      "feedbackButtonAriaLabel": "Provide feedback on copy jobs",
-      "refreshButtonAriaLabel": "Refresh copy jobs",
-      "createCopyJobButtonLabel": "Create Copy Job",
-      "createCopyJobButtonAriaLabel": "Create a new container copy job"
+      "feedbackButtonLabel": "意見反應",
+      "feedbackButtonAriaLabel": "提供有關複製工作的意見反應",
+      "refreshButtonAriaLabel": "重新整理複製工作",
+      "createCopyJobButtonLabel": "建立複製工作",
+      "createCopyJobButtonAriaLabel": "建立新的容器複製工作"
     },
     "noCopyJobs": {
-      "title": "No copy jobs to show",
-      "createCopyJobButtonText": "Create a container copy job"
+      "title": "沒有可顯示的複製工作",
+      "createCopyJobButtonText": "建立容器複製工作"
     },
     "jobDetails": {
       "panelTitle": "{{jobName}}",
-      "panelTitleDefault": "Job Details",
-      "errorTitle": "Error Details",
-      "selectedContainers": "Selected Containers"
+      "panelTitleDefault": "工作詳細資料",
+      "errorTitle": "錯誤詳細資料",
+      "selectedContainers": "已選取的容器"
     },
     "createCopyJob": {
-      "panelTitle": "Create copy job"
+      "panelTitle": "建立複本工作"
     },
     "selectAccount": {
-      "description": "Please select a destination account to copy to.",
-      "subscriptionDropdownLabel": "Subscription",
-      "subscriptionDropdownPlaceholder": "Select a subscription",
-      "accountDropdownLabel": "Account",
-      "accountDropdownPlaceholder": "Select an account"
+      "description": "請選取要複製到的目的地帳戶。",
+      "subscriptionDropdownLabel": "訂用帳戶",
+      "subscriptionDropdownPlaceholder": "選取訂用帳戶",
+      "accountDropdownLabel": "帳戶",
+      "accountDropdownPlaceholder": "選取帳戶"
     },
     "migrationType": {
       "offline": {
-        "title": "Offline mode",
-        "description": "Offline container copy jobs let you copy data from a source container to a destination Cosmos DB container for supported APIs. To ensure data integrity between the source and destination, we recommend stopping updates on the source container before creating the copy job. Learn more about [offline copy jobs](https://learn.microsoft.com/azure/cosmos-db/how-to-container-copy?tabs=offline-copy&pivots=api-nosql)."
+        "title": "離線模式",
+        "description": "離線容器複製工作可讓您將資料從來源容器複製到目的地 Cosmos DB 容器，適用於支援的 API。為確保來源與目的地之間的資料完整性，我們建議您在建立複製工作之前，先停止來源容器上的更新。深入了解 [離線複製工作](https://learn.microsoft.com/azure/cosmos-db/how-to-container-copy?tabs=offline-copy&pivots=api-nosql)。"
       },
       "online": {
-        "title": "Online mode",
-        "description": "Online container copy jobs let you copy data from a source container to a destination Cosmos DB NoSQL API container using the [All Versions and Delete](https://learn.microsoft.com/azure/cosmos-db/change-feed-modes?tabs=all-versions-and-deletes#all-versions-and-deletes-change-feed-mode-preview) change feed. This allows updates to continue on the source while data is copied. A brief downtime is required at the end to safely switch over client applications to the destination container. Learn more about [online copy jobs](https://learn.microsoft.com/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#getting-started)."
+        "title": "線上模式",
+        "description": "線上容器複製工作可讓您使用 [所有版本和刪除](https://learn.microsoft.com/azure/cosmos-db/change-feed-modes?tabs=all-versions-and-deletes#all-versions-and-deletes-change-feed-mode-preview) 變更摘要，將資料從來源容器複製到目的地 Cosmos DB NoSQL API 容器。這可讓您在複製資料的同時，繼續對來源進行更新。最後需要短暫停機，才能安全地將用戶端應用程式切換到目的地容器。深入了解 [線上複製工作](https://learn.microsoft.com/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#getting-started)。"
       }
     },
     "selectContainers": {
-      "description": "Please select a source container and a destination container to copy to.",
-      "sourceContainerSubHeading": "Source container",
-      "targetContainerSubHeading": "Destination container",
-      "databaseDropdownLabel": "Database",
-      "databaseDropdownPlaceholder": "Select a database",
-      "containerDropdownLabel": "Container",
-      "containerDropdownPlaceholder": "Select a container",
-      "createNewContainerSubHeading": "Configure the properties for the new container on destination account \"{{accountName}}\".",
-      "createNewContainerSubHeadingDefault": "Configure the properties for the new container.",
-      "createContainerButtonLabel": "Create a new container",
-      "createContainerHeading": "Create new container"
+      "description": "請選取來源容器和要複製到的目的地容器。",
+      "sourceContainerSubHeading": "來源容器",
+      "targetContainerSubHeading": "目的地容器",
+      "databaseDropdownLabel": "資料庫",
+      "databaseDropdownPlaceholder": "選取資料庫",
+      "containerDropdownLabel": "容器",
+      "containerDropdownPlaceholder": "選取容器",
+      "createNewContainerSubHeading": "請在目的地帳戶「{{accountName}}」上設定新容器的屬性。",
+      "createNewContainerSubHeadingDefault": "設定新容器的屬性。",
+      "createContainerButtonLabel": "建立新容器",
+      "createContainerHeading": "建立新的容器"
     },
     "preview": {
-      "jobNameLabel": "Job name",
-      "subscriptionLabel": "Destination subscription",
-      "accountLabel": "Destination account",
-      "sourceDatabaseLabel": "Source database",
-      "sourceContainerLabel": "Source container",
-      "targetDatabaseLabel": "Destination database",
-      "targetContainerLabel": "Destination container"
+      "jobNameLabel": "工作名稱",
+      "subscriptionLabel": "目標訂閱",
+      "accountLabel": "目的地帳戶",
+      "sourceDatabaseLabel": "來源資料庫",
+      "sourceContainerLabel": "來源容器",
+      "targetDatabaseLabel": "目的地資料庫",
+      "targetContainerLabel": "目的地容器"
     },
     "assignPermissions": {
-      "crossAccountDescription": "To copy data from the source to the destination container, ensure that the managed identity of the source account has read-write access to the destination account by completing the following steps.",
-      "intraAccountOnlineDescription": "Follow the steps below to enable online copy on your \"{{accountName}}\" account.",
+      "crossAccountDescription": "若要將資料從來源複製到目的地容器，請完成下列步驟，確保來源帳戶的受控識別具有目的地帳戶的讀寫存取權。",
+      "intraAccountOnlineDescription": "請依照下列步驟，在您的「{{accountName}}」帳戶上啟用線上複製。",
       "crossAccountConfiguration": {
-        "title": "Cross-account container copy",
-        "description": "Please follow the instruction below to grant requisite permissions to copy data from \"{{sourceAccount}}\" to \"{{destinationAccount}}\"."
+        "title": "跨帳戶容器複製",
+        "description": "請遵循下列指示，授與必要權限，以將資料從「{{sourceAccount}}」複製到「{{destinationAccount}}」。"
       },
       "onlineConfiguration": {
-        "title": "Online container copy",
-        "description": "Please follow the instructions below to enable online copy on your \"{{accountName}}\" account."
+        "title": "線上容器複製",
+        "description": "請遵循下列指示，在您的「{{accountName}}」帳戶上啟用線上複製。"
       }
     },
-    "popoverOverlaySpinnerLabel": "Please wait while we process your request...",
+    "popoverOverlaySpinnerLabel": "正在處理您的要求，請稍候...",
     "addManagedIdentity": {
-      "title": "System-assigned managed identity enabled.",
-      "description": "A system-assigned managed identity is restricted to one per resource and is tied to the lifecycle of this resource. Once enabled, you can grant permissions to the managed identity by using Azure role-based access control (Azure RBAC). The managed identity is authenticated with Microsoft Entra ID, so you don't have to store any credentials in code.",
-      "descriptionHrefText": "Learn more about Managed identities.",
+      "title": "系統指派的受控識別已啟用。",
+      "description": "系統指派的受控識別每個資源僅限一個，且與此資源的生命週期相繫結。一旦啟用，您就可以使用 Azure 角色型存取控制 (Azure RBAC) 將權限授與受控識別。受控識別由 Microsoft Entra ID 驗證，因此您不需要在程式碼中儲存任何認證。",
+      "descriptionHrefText": "深入了解受控識別",
       "descriptionHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
-      "toggleLabel": "System assigned managed identity",
-      "tooltipContent": "Learn more about",
-      "tooltipHrefText": "Managed Identities.",
+      "toggleLabel": "系統指派的受控識別",
+      "tooltipContent": "深入了解",
+      "tooltipHrefText": "受控識別。",
       "tooltipHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
-      "userAssignedIdentityTooltip": "You can select an existing user assigned identity or create a new one.",
-      "userAssignedIdentityLabel": "You may also select a user assigned managed identity.",
-      "createUserAssignedIdentityLink": "Create User Assigned Managed Identity",
-      "enablementTitle": "Enable system assigned managed identity",
-      "enablementDescription": "Enable system-assigned managed identity on the {{accountName}}. To confirm, click the \"Yes\" button."
+      "userAssignedIdentityTooltip": "您可以選取現有的使用者指派受控識別，或建立新的受控識別。",
+      "userAssignedIdentityLabel": "您也可以選取使用者指派的受控識別。",
+      "createUserAssignedIdentityLink": "建立使用者指派的受控識別",
+      "enablementTitle": "啟用系統指派的受控識別",
+      "enablementDescription": "啟用 {{accountName}} 上的系統指派的受控識別。若要確認，請按一下「是」按鈕。"
     },
     "defaultManagedIdentity": {
-      "title": "System-assigned managed identity set as default.",
-      "description": "Set the system-assigned managed identity as default for \"{{accountName}}\" by switching it on.",
-      "tooltipContent": "Learn more about",
-      "tooltipHrefText": "Default Managed Identities.",
+      "title": "系統指派的受控識別設定為預設。",
+      "description": "請將系統指派的受控識別開啟，以將其設為「{{accountName}}」的預設值。",
+      "tooltipContent": "深入了解",
+      "tooltipHrefText": "預設受控識別。",
       "tooltipHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
-      "popoverTitle": "System assigned managed identity set as default",
-      "popoverDescription": "Assign the system-assigned managed identity as the default for \"{{accountName}}\". To confirm, click the \"Yes\" button. "
+      "popoverTitle": "系統指派的受控識別設定為預設",
+      "popoverDescription": "請將系統指派的受控識別指派為「{{accountName}}」的預設值。若要確認，請按一下「是」按鈕。"
     },
     "readWritePermissionAssigned": {
-      "title": "Read-write permissions assigned to the default identity.",
-      "description": "To allow data copy from source to the destination container, provide read-write access on the destination account to the default identity of the source account.",
-      "tooltipContent": "Learn more about",
-      "tooltipHrefText": "Read-write permissions.",
+      "title": "已指派給預設身分識別的讀寫權限。",
+      "description": "若要允許將資料從來源複製到目的地容器，請將目的地帳戶的讀寫存取權提供給來源帳戶的預設受控識別。",
+      "tooltipContent": "深入了解",
+      "tooltipHrefText": "讀寫權限。",
       "tooltipHref": "https://learn.microsoft.com/azure/cosmos-db/nosql/how-to-connect-role-based-access-control",
-      "popoverTitle": "Assign read-write permissions to default identity.",
-      "popoverDescription": "Assign read-write permissions on the destination account to the default identity of the source account. To confirm, click the \"Yes\" button."
+      "popoverTitle": "將讀寫權限指派給預設身分識別。",
+      "popoverDescription": "請將目的地帳戶的讀寫權限指派給來源帳戶的預設受控識別。若要確認，請按一下「是」按鈕。"
     },
     "pointInTimeRestore": {
-      "title": "Point In Time Restore enabled",
-      "description": "To facilitate online container copy jobs, please update your \"{{accessName}}\" backup policy from periodic to continuous backup. Enabling continuous backup is required for this functionality.",
-      "tooltipContent": "Learn more about",
-      "tooltipHrefText": "Continuous Backup",
+      "title": "已啟用時間點還原",
+      "description": "為輔助線上容器複製工作，請將您的「{{accessName}}」備份原則從定期備份更新為連續備份。此功能需要啟用連續備份。",
+      "tooltipContent": "深入了解",
+      "tooltipHrefText": "連續備份",
       "tooltipHref": "https://learn.microsoft.com/en-us/azure/cosmos-db/continuous-backup-restore-introduction",
-      "buttonText": "Enable Point In Time Restore"
+      "buttonText": "啟用時間點還原"
     },
     "onlineCopyEnabled": {
-      "title": "Online copy enabled",
-      "description": "Enable online container copy by clicking the button below on your \"{{accountName}}\" account.",
-      "hrefText": "Learn more about online copy jobs",
+      "title": "已啟用線上複製",
+      "description": "按一下您「{{accountName}}」帳戶下方的按鈕，即可啟用線上容器複製。",
+      "hrefText": "深入了解線上複製工作",
       "href": "https://learn.microsoft.com/en-us/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#enable-online-copy",
-      "buttonText": "Enable Online Copy",
-      "validateAllVersionsAndDeletesChangeFeedSpinnerLabel": "Validating All versions and deletes change feed mode (preview)...",
-      "enablingAllVersionsAndDeletesChangeFeedSpinnerLabel": "Enabling All versions and deletes change feed mode (preview)...",
-      "enablingOnlineCopySpinnerLabel": "Enabling online copy on your \"{{accountName}}\" account ..."
+      "buttonText": "啟用線上複製",
+      "validateAllVersionsAndDeletesChangeFeedSpinnerLabel": "驗證所有版本與刪除的變更摘要模式 (預覽)...",
+      "enablingAllVersionsAndDeletesChangeFeedSpinnerLabel": "啟用所有版本與刪除的變更摘要模式 (預覽)...",
+      "enablingOnlineCopySpinnerLabel": "正在啟用您「{{accountName}}」帳戶的線上複製..."
     },
     "monitorJobs": {
       "columns": {
-        "lastUpdatedTime": "Date & time",
-        "name": "Job name",
-        "status": "Status",
-        "completionPercentage": "Completion %",
-        "duration": "Duration",
-        "error": "Error message",
-        "mode": "Mode",
-        "actions": "Actions"
+        "lastUpdatedTime": "日期和時間",
+        "name": "工作名稱",
+        "status": "狀態",
+        "completionPercentage": "完成百分比",
+        "duration": "期間",
+        "error": "錯誤訊息",
+        "mode": "模式",
+        "actions": "動作"
       },
       "actions": {
-        "pause": "Pause",
-        "resume": "Resume",
-        "complete": "Complete",
-        "viewDetails": "View Details"
+        "pause": "暫停",
+        "resume": "繼續",
+        "complete": "完成",
+        "viewDetails": "檢視詳細資料"
       },
       "status": {
-        "pending": "Queued",
-        "inProgress": "Running",
-        "running": "Running",
-        "partitioning": "Running",
-        "paused": "Paused",
-        "completed": "Completed",
-        "failed": "Failed",
-        "faulted": "Failed",
-        "skipped": "Cancelled",
-        "cancelled": "Cancelled"
+        "pending": "已加入佇列",
+        "inProgress": "執行中",
+        "running": "執行中",
+        "partitioning": "執行中",
+        "paused": "暫停",
+        "completed": "已完成",
+        "failed": "失敗",
+        "faulted": "失敗",
+        "skipped": "已取消",
+        "cancelled": "已取消"
       },
       "dialog": {
-        "confirmButtonText": "Confirm",
-        "cancelButtonText": "Cancel"
+        "confirmButtonText": "確認",
+        "cancelButtonText": "取消"
       }
     }
   }

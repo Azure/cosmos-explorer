@@ -34,8 +34,8 @@
     "browse": "Procurar",
     "increaseValueBy1": "Aumentar valor em 1",
     "decreaseValueBy1": "Diminuir valor em 1",
-    "on": "On",
-    "off": "Off",
+    "on": "Ativado",
+    "off": "Desativado",
     "preview": "Pré-visualização"
   },
   "splashScreen": {
@@ -998,159 +998,159 @@
   "containerCopy": {
     "commandBar": {
       "feedbackButtonLabel": "Feedback",
-      "feedbackButtonAriaLabel": "Provide feedback on copy jobs",
-      "refreshButtonAriaLabel": "Refresh copy jobs",
-      "createCopyJobButtonLabel": "Create Copy Job",
-      "createCopyJobButtonAriaLabel": "Create a new container copy job"
+      "feedbackButtonAriaLabel": "Fornecer feedback sobre tarefas de cópia",
+      "refreshButtonAriaLabel": "Atualizar tarefas de cópia",
+      "createCopyJobButtonLabel": "Criar Tarefa de Cópia",
+      "createCopyJobButtonAriaLabel": "Criar uma nova tarefa de cópia de contentor"
     },
     "noCopyJobs": {
-      "title": "No copy jobs to show",
-      "createCopyJobButtonText": "Create a container copy job"
+      "title": "Não existem tarefas de cópia para apresentar",
+      "createCopyJobButtonText": "Criar uma tarefa de cópia de contentor"
     },
     "jobDetails": {
       "panelTitle": "{{jobName}}",
-      "panelTitleDefault": "Job Details",
-      "errorTitle": "Error Details",
-      "selectedContainers": "Selected Containers"
+      "panelTitleDefault": "Detalhes da Tarefa",
+      "errorTitle": "Detalhes do Erro",
+      "selectedContainers": "Contentores selecionados"
     },
     "createCopyJob": {
-      "panelTitle": "Create copy job"
+      "panelTitle": "Criar tarefa de cópia"
     },
     "selectAccount": {
-      "description": "Please select a destination account to copy to.",
-      "subscriptionDropdownLabel": "Subscription",
-      "subscriptionDropdownPlaceholder": "Select a subscription",
-      "accountDropdownLabel": "Account",
-      "accountDropdownPlaceholder": "Select an account"
+      "description": "Selecione uma conta de destino para copiar para ela.",
+      "subscriptionDropdownLabel": "Subscrição",
+      "subscriptionDropdownPlaceholder": "Selecionar uma subscrição",
+      "accountDropdownLabel": "Conta",
+      "accountDropdownPlaceholder": "Selecione uma conta"
     },
     "migrationType": {
       "offline": {
-        "title": "Offline mode",
-        "description": "Offline container copy jobs let you copy data from a source container to a destination Cosmos DB container for supported APIs. To ensure data integrity between the source and destination, we recommend stopping updates on the source container before creating the copy job. Learn more about [offline copy jobs](https://learn.microsoft.com/azure/cosmos-db/how-to-container-copy?tabs=offline-copy&pivots=api-nosql)."
+        "title": "Modo offline",
+        "description": "As tarefas de cópia de contentores offline permitem-lhe copiar dados de um contentor de origem para um contentor de destino do Cosmos DB para APIs suportadas. Para garantir a integridade dos dados entre a origem e o destino, recomendamos que pare as atualizações no contentor de origem antes de criar a tarefa de cópia. Saiba mais sobre [offline copy jobs](https://learn.microsoft.com/azure/cosmos-db/how-to-container-copy?tabs=offline-copy&pivots=api-nosql)."
       },
       "online": {
-        "title": "Online mode",
-        "description": "Online container copy jobs let you copy data from a source container to a destination Cosmos DB NoSQL API container using the [All Versions and Delete](https://learn.microsoft.com/azure/cosmos-db/change-feed-modes?tabs=all-versions-and-deletes#all-versions-and-deletes-change-feed-mode-preview) change feed. This allows updates to continue on the source while data is copied. A brief downtime is required at the end to safely switch over client applications to the destination container. Learn more about [online copy jobs](https://learn.microsoft.com/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#getting-started)."
+        "title": "Modo online",
+        "description": "As tarefas de cópia de contentores online permitem-lhe copiar dados de um contentor de origem para um contentor de destino da API NoSQL do Cosmos DB usando o feed de alterações [All Versions and Delete](https://learn.microsoft.com/azure/cosmos-db/change-feed-modes?tabs=all-versions-and-deletes#all-versions-and-deletes-change-feed-mode-preview). Isto permite que as atualizações continuem na origem enquanto os dados são copiados. É necessário um breve período de inatividade no final para mudar em segurança as aplicações cliente para o contentor de destino. Saiba mais sobre [online copy jobs](https://learn.microsoft.com/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#getting-started)."
       }
     },
     "selectContainers": {
-      "description": "Please select a source container and a destination container to copy to.",
-      "sourceContainerSubHeading": "Source container",
-      "targetContainerSubHeading": "Destination container",
-      "databaseDropdownLabel": "Database",
-      "databaseDropdownPlaceholder": "Select a database",
-      "containerDropdownLabel": "Container",
-      "containerDropdownPlaceholder": "Select a container",
-      "createNewContainerSubHeading": "Configure the properties for the new container on destination account \"{{accountName}}\".",
-      "createNewContainerSubHeadingDefault": "Configure the properties for the new container.",
-      "createContainerButtonLabel": "Create a new container",
-      "createContainerHeading": "Create new container"
+      "description": "Selecione um contentor de origem e um contentor de destino para o qual copiar.",
+      "sourceContainerSubHeading": "Contentor de origem",
+      "targetContainerSubHeading": "Contentor de destino",
+      "databaseDropdownLabel": "Base de dados",
+      "databaseDropdownPlaceholder": "Selecionar uma base de dados",
+      "containerDropdownLabel": "Contentor",
+      "containerDropdownPlaceholder": "Selecionar um contentor",
+      "createNewContainerSubHeading": "Configure as propriedades do novo contentor na conta de destino \"{{accountName}}\".",
+      "createNewContainerSubHeadingDefault": "Configure as propriedades do novo contentor.",
+      "createContainerButtonLabel": "Criar novo contentor",
+      "createContainerHeading": "Criar novo contentor"
     },
     "preview": {
-      "jobNameLabel": "Job name",
-      "subscriptionLabel": "Destination subscription",
-      "accountLabel": "Destination account",
-      "sourceDatabaseLabel": "Source database",
-      "sourceContainerLabel": "Source container",
-      "targetDatabaseLabel": "Destination database",
-      "targetContainerLabel": "Destination container"
+      "jobNameLabel": "Nome da tarefa",
+      "subscriptionLabel": "Subscrição de destino",
+      "accountLabel": "Conta de destino",
+      "sourceDatabaseLabel": "Base de dados de origem",
+      "sourceContainerLabel": "Contentor de origem",
+      "targetDatabaseLabel": "Base de Dados de Destino",
+      "targetContainerLabel": "Contentor de destino"
     },
     "assignPermissions": {
-      "crossAccountDescription": "To copy data from the source to the destination container, ensure that the managed identity of the source account has read-write access to the destination account by completing the following steps.",
-      "intraAccountOnlineDescription": "Follow the steps below to enable online copy on your \"{{accountName}}\" account.",
+      "crossAccountDescription": "Para copiar dados do contentor de origem para o contentor de destino, certifique-se de que a identidade gerida da conta de origem tem acesso de leitura/escrita à conta de destino ao concluir os passos seguintes.",
+      "intraAccountOnlineDescription": "Siga os passos abaixo para ativar a cópia online na sua conta \"{{accountName}}\".",
       "crossAccountConfiguration": {
-        "title": "Cross-account container copy",
-        "description": "Please follow the instruction below to grant requisite permissions to copy data from \"{{sourceAccount}}\" to \"{{destinationAccount}}\"."
+        "title": "Cópia de contentor entre contas",
+        "description": "Siga as instruções abaixo para conceder as permissões necessárias para copiar dados de \"{{sourceAccount}}\" para \"{{destinationAccount}}\"."
       },
       "onlineConfiguration": {
-        "title": "Online container copy",
-        "description": "Please follow the instructions below to enable online copy on your \"{{accountName}}\" account."
+        "title": "Cópia de contentor online",
+        "description": "Siga as instruções abaixo para ativar a cópia online na sua conta \"{{accountName}}\"."
       }
     },
-    "popoverOverlaySpinnerLabel": "Please wait while we process your request...",
+    "popoverOverlaySpinnerLabel": "Aguarde enquanto processamos o seu pedido...",
     "addManagedIdentity": {
-      "title": "System-assigned managed identity enabled.",
-      "description": "A system-assigned managed identity is restricted to one per resource and is tied to the lifecycle of this resource. Once enabled, you can grant permissions to the managed identity by using Azure role-based access control (Azure RBAC). The managed identity is authenticated with Microsoft Entra ID, so you don't have to store any credentials in code.",
-      "descriptionHrefText": "Learn more about Managed identities.",
+      "title": "Identidade gerida atribuída pelo sistema ativada",
+      "description": "Uma identidade gerida atribuída pelo sistema está restrita a uma por recurso e associada ao ciclo de vida deste recurso. Depois de ativada, pode conceder permissões à identidade gerida através do controlo de acesso baseado em funções do Azure (Azure RBAC). A identidade gerida é autenticada com o Microsoft Entra ID, pelo que não tem de armazenar credenciais em código.",
+      "descriptionHrefText": "Saiba mais sobre as Identidades geridas.",
       "descriptionHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
-      "toggleLabel": "System assigned managed identity",
-      "tooltipContent": "Learn more about",
-      "tooltipHrefText": "Managed Identities.",
+      "toggleLabel": "Identidade gerida atribuída pelo sistema",
+      "tooltipContent": "Saiba mais sobre",
+      "tooltipHrefText": "Identidades geridas.",
       "tooltipHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
-      "userAssignedIdentityTooltip": "You can select an existing user assigned identity or create a new one.",
-      "userAssignedIdentityLabel": "You may also select a user assigned managed identity.",
-      "createUserAssignedIdentityLink": "Create User Assigned Managed Identity",
-      "enablementTitle": "Enable system assigned managed identity",
-      "enablementDescription": "Enable system-assigned managed identity on the {{accountName}}. To confirm, click the \"Yes\" button."
+      "userAssignedIdentityTooltip": "Pode selecionar uma identidade atribuída pelo utilizador existente ou criar uma nova.",
+      "userAssignedIdentityLabel": "Também pode selecionar uma identidade gerida atribuída pelo utilizador.",
+      "createUserAssignedIdentityLink": "Criar Identidade Gerida Atribuída pelo Utilizador",
+      "enablementTitle": "Ativar a identidade gerida atribuída pelo sistema",
+      "enablementDescription": "Ative a identidade gerida atribuída pelo sistema no {{accountName}} Para confirmar, clique no botão \"Sim\"."
     },
     "defaultManagedIdentity": {
-      "title": "System-assigned managed identity set as default.",
-      "description": "Set the system-assigned managed identity as default for \"{{accountName}}\" by switching it on.",
-      "tooltipContent": "Learn more about",
-      "tooltipHrefText": "Default Managed Identities.",
+      "title": "Identidade gerida atribuída pelo sistema definida como predefinição.",
+      "description": "Defina a identidade gerida atribuída pelo sistema como predefinição para \"{{accountName}}\" ao ativá-la.",
+      "tooltipContent": "Saiba mais sobre",
+      "tooltipHrefText": "Identidades Gerida Predefinida.",
       "tooltipHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
-      "popoverTitle": "System assigned managed identity set as default",
-      "popoverDescription": "Assign the system-assigned managed identity as the default for \"{{accountName}}\". To confirm, click the \"Yes\" button. "
+      "popoverTitle": "Identidade gerida atribuída pelo sistema definida como predefinição",
+      "popoverDescription": "Atribua a identidade gerida atribuída pelo sistema como predefinição para \"{{accountName}}\". Para confirmar, clique no botão \"Sim\". "
     },
     "readWritePermissionAssigned": {
-      "title": "Read-write permissions assigned to the default identity.",
-      "description": "To allow data copy from source to the destination container, provide read-write access on the destination account to the default identity of the source account.",
-      "tooltipContent": "Learn more about",
-      "tooltipHrefText": "Read-write permissions.",
+      "title": "Permissões de leitura/escrita atribuídas à identidade predefinida.",
+      "description": "Para permitir a cópia de dados do contentor de origem para o contentor de destino, conceda acesso de leitura/escrita na conta de destino à identidade predefinida da conta de origem.",
+      "tooltipContent": "Saiba mais sobre",
+      "tooltipHrefText": "Permissões de leitura/escrita.",
       "tooltipHref": "https://learn.microsoft.com/azure/cosmos-db/nosql/how-to-connect-role-based-access-control",
-      "popoverTitle": "Assign read-write permissions to default identity.",
-      "popoverDescription": "Assign read-write permissions on the destination account to the default identity of the source account. To confirm, click the \"Yes\" button."
+      "popoverTitle": "Atribua permissões de leitura/escrita à identidade predefinida.",
+      "popoverDescription": "Atribua permissões de leitura/escrita na conta de destino à identidade predefinida da conta de origem. Para confirmar, clique no botão \"Sim\"."
     },
     "pointInTimeRestore": {
-      "title": "Point In Time Restore enabled",
-      "description": "To facilitate online container copy jobs, please update your \"{{accessName}}\" backup policy from periodic to continuous backup. Enabling continuous backup is required for this functionality.",
-      "tooltipContent": "Learn more about",
-      "tooltipHrefText": "Continuous Backup",
+      "title": "Restauro para Um Ponto No Tempo ativado",
+      "description": "Para facilitar as tarefas de cópia online de contentores, atualize a sua política de cópia de segurança \"{{accessName}}\" de cópia de segurança periódica para cópia de segurança contínua. É necessário ativar a cópia de segurança contínua para esta funcionalidade.",
+      "tooltipContent": "Saiba mais sobre",
+      "tooltipHrefText": "Cópia de Segurança Contínua",
       "tooltipHref": "https://learn.microsoft.com/en-us/azure/cosmos-db/continuous-backup-restore-introduction",
-      "buttonText": "Enable Point In Time Restore"
+      "buttonText": "Ativar Restauro para Um Ponto No Tempo"
     },
     "onlineCopyEnabled": {
-      "title": "Online copy enabled",
-      "description": "Enable online container copy by clicking the button below on your \"{{accountName}}\" account.",
-      "hrefText": "Learn more about online copy jobs",
+      "title": "Cópia online ativada",
+      "description": "Ative a cópia online de contentores ao clicar no botão abaixo na sua conta \"{{accountName}}\".",
+      "hrefText": "Saiba mais sobre tarefas de cópia online",
       "href": "https://learn.microsoft.com/en-us/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#enable-online-copy",
-      "buttonText": "Enable Online Copy",
-      "validateAllVersionsAndDeletesChangeFeedSpinnerLabel": "Validating All versions and deletes change feed mode (preview)...",
-      "enablingAllVersionsAndDeletesChangeFeedSpinnerLabel": "Enabling All versions and deletes change feed mode (preview)...",
-      "enablingOnlineCopySpinnerLabel": "Enabling online copy on your \"{{accountName}}\" account ..."
+      "buttonText": "Ativar Cópia Online",
+      "validateAllVersionsAndDeletesChangeFeedSpinnerLabel": "A validar o modo de feed de alterações para todas as versões e eliminações (pré-visualização)...",
+      "enablingAllVersionsAndDeletesChangeFeedSpinnerLabel": "A ativar o modo de feed de alterações para todas as versões e eliminações (pré-visualização)...",
+      "enablingOnlineCopySpinnerLabel": "A ativar a cópia online na sua conta \"{{accountName}}\"..."
     },
     "monitorJobs": {
       "columns": {
-        "lastUpdatedTime": "Date & time",
-        "name": "Job name",
-        "status": "Status",
-        "completionPercentage": "Completion %",
-        "duration": "Duration",
-        "error": "Error message",
-        "mode": "Mode",
-        "actions": "Actions"
+        "lastUpdatedTime": "Data e hora",
+        "name": "Nome da tarefa",
+        "status": "Estado",
+        "completionPercentage": "Conclusão %",
+        "duration": "Duração",
+        "error": "Mensagem de erro",
+        "mode": "Modo",
+        "actions": "Ações"
       },
       "actions": {
-        "pause": "Pause",
-        "resume": "Resume",
-        "complete": "Complete",
-        "viewDetails": "View Details"
+        "pause": "Colocar em pausa",
+        "resume": "Retomar",
+        "complete": "Completo",
+        "viewDetails": "Ver Detalhes"
       },
       "status": {
-        "pending": "Queued",
-        "inProgress": "Running",
-        "running": "Running",
-        "partitioning": "Running",
-        "paused": "Paused",
-        "completed": "Completed",
-        "failed": "Failed",
-        "faulted": "Failed",
-        "skipped": "Cancelled",
-        "cancelled": "Cancelled"
+        "pending": "Em fila",
+        "inProgress": "Em execução",
+        "running": "Em execução",
+        "partitioning": "Em execução",
+        "paused": "Em pausa",
+        "completed": "Concluído",
+        "failed": "Com falhas",
+        "faulted": "Com falhas",
+        "skipped": "Cancelado",
+        "cancelled": "Cancelado"
       },
       "dialog": {
-        "confirmButtonText": "Confirm",
-        "cancelButtonText": "Cancel"
+        "confirmButtonText": "Confirmar",
+        "cancelButtonText": "Cancelar"
       }
     }
   }
