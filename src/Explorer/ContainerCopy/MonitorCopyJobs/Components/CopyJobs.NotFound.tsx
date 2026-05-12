@@ -3,7 +3,6 @@ import Explorer from "Explorer/Explorer";
 import { Keys, t } from "Localization";
 import React from "react";
 import CopyJobIcon from "../../../../../images/ContainerCopy/copy-jobs.svg";
-import { Keys, t } from "Localization";
 import * as Actions from "../../Actions/CopyJobActions";
 
 interface CopyJobsNotFoundProps {
