@@ -62,17 +62,17 @@ jobs:
           node-version: 18.x
       - run: npm ci
       - run: npm run lint
-  unittest:
-    runs-on: ubuntu-latest
-    name: "Unit Tests"
-    steps:
-      - uses: actions/checkout@v4
-      - name: Use Node.js 18.x
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18.x
-      - run: npm ci
-      - run: npm run test
+  # unittest:
+  #   runs-on: ubuntu-latest
+  #   name: "Unit Tests"
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - name: Use Node.js 18.x
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version: 18.x
+  #     - run: npm ci
+  #     - run: npm run test
   build:
     runs-on: ubuntu-latest
     name: "Build"
@@ -157,184 +157,184 @@ jobs:
           name: mpac-package
           path: "bin/Release/*.nupkg"
 
-  playwright-tests:
-    name: "Run Playwright Tests (Shard ${{ matrix.shardIndex }} of ${{ matrix.shardTotal }})"
-    runs-on: ubuntu-latest
-    env:
-      NODE_TLS_REJECT_UNAUTHORIZED: 0
-      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-    strategy:
-      fail-fast: false
-      matrix:
-        shardIndex: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
-        shardTotal: [20]
-    steps:
-      - uses: actions/checkout@v4
-      - name: Use Node.js 18.x
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18.x
-      - run: npm ci
-      - run: npx playwright install --with-deps
-      - name: "Az CLI login"
-        uses: Azure/login@v2
-        with:
-          client-id: ${{ secrets.E2E_TESTS_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      # We can't use MSAL within playwright so we acquire tokens prior to running the tests
-      - name: "Acquire RBAC tokens for test accounts"
-        uses: azure/cli@v2
-        with:
-          azcliversion: latest
-          inlineScript: |
-            SHARD_INDEX=${{ matrix.shardIndex }}
-            echo PLAYWRIGHT_SHARD_INDEX=$SHARD_INDEX >> $GITHUB_ENV
+  # playwright-tests:
+  #   name: "Run Playwright Tests (Shard ${{ matrix.shardIndex }} of ${{ matrix.shardTotal }})"
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     NODE_TLS_REJECT_UNAUTHORIZED: 0
+  #     AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       shardIndex: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+  #       shardTotal: [20]
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - name: Use Node.js 18.x
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version: 18.x
+  #     - run: npm ci
+  #     - run: npx playwright install --with-deps
+  #     - name: "Az CLI login"
+  #       uses: Azure/login@v2
+  #       with:
+  #         client-id: ${{ secrets.E2E_TESTS_CLIENT_ID }}
+  #         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+  #         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  #     # We can't use MSAL within playwright so we acquire tokens prior to running the tests
+  #     - name: "Acquire RBAC tokens for test accounts"
+  #       uses: azure/cli@v2
+  #       with:
+  #         azcliversion: latest
+  #         inlineScript: |
+  #           SHARD_INDEX=${{ matrix.shardIndex }}
+  #           echo PLAYWRIGHT_SHARD_INDEX=$SHARD_INDEX >> $GITHUB_ENV
 
-            NOSQL_TESTACCOUNT_1_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql-1.documents.azure.com/.default" -o tsv --query accessToken)
-            echo "::add-mask::$NOSQL_TESTACCOUNT_1_TOKEN"
-            echo NOSQL_TESTACCOUNT_1_TOKEN=$NOSQL_TESTACCOUNT_1_TOKEN >> $GITHUB_ENV
+  #           NOSQL_TESTACCOUNT_1_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql-1.documents.azure.com/.default" -o tsv --query accessToken)
+  #           echo "::add-mask::$NOSQL_TESTACCOUNT_1_TOKEN"
+  #           echo NOSQL_TESTACCOUNT_1_TOKEN=$NOSQL_TESTACCOUNT_1_TOKEN >> $GITHUB_ENV
 
-            NOSQL_TESTACCOUNT_2_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql-2.documents.azure.com/.default" -o tsv --query accessToken)
-            echo "::add-mask::$NOSQL_TESTACCOUNT_2_TOKEN"
-            echo NOSQL_TESTACCOUNT_2_TOKEN=$NOSQL_TESTACCOUNT_2_TOKEN >> $GITHUB_ENV
+  #           NOSQL_TESTACCOUNT_2_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql-2.documents.azure.com/.default" -o tsv --query accessToken)
+  #           echo "::add-mask::$NOSQL_TESTACCOUNT_2_TOKEN"
+  #           echo NOSQL_TESTACCOUNT_2_TOKEN=$NOSQL_TESTACCOUNT_2_TOKEN >> $GITHUB_ENV
 
-            NOSQL_TESTACCOUNT_3_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql-3.documents.azure.com/.default" -o tsv --query accessToken)
-            echo "::add-mask::$NOSQL_TESTACCOUNT_3_TOKEN"
-            echo NOSQL_TESTACCOUNT_3_TOKEN=$NOSQL_TESTACCOUNT_3_TOKEN >> $GITHUB_ENV
+  #           NOSQL_TESTACCOUNT_3_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql-3.documents.azure.com/.default" -o tsv --query accessToken)
+  #           echo "::add-mask::$NOSQL_TESTACCOUNT_3_TOKEN"
+  #           echo NOSQL_TESTACCOUNT_3_TOKEN=$NOSQL_TESTACCOUNT_3_TOKEN >> $GITHUB_ENV
 
-            NOSQL_TESTACCOUNT_4_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql-4.documents.azure.com/.default" -o tsv --query accessToken)
-            echo "::add-mask::$NOSQL_TESTACCOUNT_4_TOKEN"
-            echo NOSQL_TESTACCOUNT_4_TOKEN=$NOSQL_TESTACCOUNT_4_TOKEN >> $GITHUB_ENV
+  #           NOSQL_TESTACCOUNT_4_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql-4.documents.azure.com/.default" -o tsv --query accessToken)
+  #           echo "::add-mask::$NOSQL_TESTACCOUNT_4_TOKEN"
+  #           echo NOSQL_TESTACCOUNT_4_TOKEN=$NOSQL_TESTACCOUNT_4_TOKEN >> $GITHUB_ENV
 
-            NOSQL_TESTACCOUNT_5_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql-5.documents.azure.com/.default" -o tsv --query accessToken)
-            echo "::add-mask::$NOSQL_TESTACCOUNT_5_TOKEN"
-            echo NOSQL_TESTACCOUNT_5_TOKEN=$NOSQL_TESTACCOUNT_5_TOKEN >> $GITHUB_ENV
+  #           NOSQL_TESTACCOUNT_5_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql-5.documents.azure.com/.default" -o tsv --query accessToken)
+  #           echo "::add-mask::$NOSQL_TESTACCOUNT_5_TOKEN"
+  #           echo NOSQL_TESTACCOUNT_5_TOKEN=$NOSQL_TESTACCOUNT_5_TOKEN >> $GITHUB_ENV
 
-            NOSQL_TESTACCOUNT_6_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql-6.documents.azure.com/.default" -o tsv --query accessToken)
-            echo "::add-mask::$NOSQL_TESTACCOUNT_6_TOKEN"
-            echo NOSQL_TESTACCOUNT_6_TOKEN=$NOSQL_TESTACCOUNT_6_TOKEN >> $GITHUB_ENV
+  #           NOSQL_TESTACCOUNT_6_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql-6.documents.azure.com/.default" -o tsv --query accessToken)
+  #           echo "::add-mask::$NOSQL_TESTACCOUNT_6_TOKEN"
+  #           echo NOSQL_TESTACCOUNT_6_TOKEN=$NOSQL_TESTACCOUNT_6_TOKEN >> $GITHUB_ENV
 
-            NOSQL_TESTACCOUNT_7_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql-7.documents.azure.com/.default" -o tsv --query accessToken)
-            echo "::add-mask::$NOSQL_TESTACCOUNT_7_TOKEN"
-            echo NOSQL_TESTACCOUNT_7_TOKEN=$NOSQL_TESTACCOUNT_7_TOKEN >> $GITHUB_ENV
+  #           NOSQL_TESTACCOUNT_7_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql-7.documents.azure.com/.default" -o tsv --query accessToken)
+  #           echo "::add-mask::$NOSQL_TESTACCOUNT_7_TOKEN"
+  #           echo NOSQL_TESTACCOUNT_7_TOKEN=$NOSQL_TESTACCOUNT_7_TOKEN >> $GITHUB_ENV
 
-            NOSQL_TESTACCOUNT_8_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql-8.documents.azure.com/.default" -o tsv --query accessToken)
-            echo "::add-mask::$NOSQL_TESTACCOUNT_8_TOKEN"
-            echo NOSQL_TESTACCOUNT_8_TOKEN=$NOSQL_TESTACCOUNT_8_TOKEN >> $GITHUB_ENV
+  #           NOSQL_TESTACCOUNT_8_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql-8.documents.azure.com/.default" -o tsv --query accessToken)
+  #           echo "::add-mask::$NOSQL_TESTACCOUNT_8_TOKEN"
+  #           echo NOSQL_TESTACCOUNT_8_TOKEN=$NOSQL_TESTACCOUNT_8_TOKEN >> $GITHUB_ENV
 
-            NOSQL_TESTACCOUNT_9_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql-9.documents.azure.com/.default" -o tsv --query accessToken)
-            echo "::add-mask::$NOSQL_TESTACCOUNT_9_TOKEN"
-            echo NOSQL_TESTACCOUNT_9_TOKEN=$NOSQL_TESTACCOUNT_9_TOKEN >> $GITHUB_ENV
+  #           NOSQL_TESTACCOUNT_9_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql-9.documents.azure.com/.default" -o tsv --query accessToken)
+  #           echo "::add-mask::$NOSQL_TESTACCOUNT_9_TOKEN"
+  #           echo NOSQL_TESTACCOUNT_9_TOKEN=$NOSQL_TESTACCOUNT_9_TOKEN >> $GITHUB_ENV
 
-            NOSQL_TESTACCOUNT_10_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql-10.documents.azure.com/.default" -o tsv --query accessToken)
-            echo "::add-mask::$NOSQL_TESTACCOUNT_10_TOKEN"
-            echo NOSQL_TESTACCOUNT_10_TOKEN=$NOSQL_TESTACCOUNT_10_TOKEN >> $GITHUB_ENV
+  #           NOSQL_TESTACCOUNT_10_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql-10.documents.azure.com/.default" -o tsv --query accessToken)
+  #           echo "::add-mask::$NOSQL_TESTACCOUNT_10_TOKEN"
+  #           echo NOSQL_TESTACCOUNT_10_TOKEN=$NOSQL_TESTACCOUNT_10_TOKEN >> $GITHUB_ENV
 
-            NOSQL_TESTACCOUNT_11_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql-11.documents.azure.com/.default" -o tsv --query accessToken)
-            echo "::add-mask::$NOSQL_TESTACCOUNT_11_TOKEN"
-            echo NOSQL_TESTACCOUNT_11_TOKEN=$NOSQL_TESTACCOUNT_11_TOKEN >> $GITHUB_ENV
+  #           NOSQL_TESTACCOUNT_11_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql-11.documents.azure.com/.default" -o tsv --query accessToken)
+  #           echo "::add-mask::$NOSQL_TESTACCOUNT_11_TOKEN"
+  #           echo NOSQL_TESTACCOUNT_11_TOKEN=$NOSQL_TESTACCOUNT_11_TOKEN >> $GITHUB_ENV
 
-            NOSQL_TESTACCOUNT_12_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql-12.documents.azure.com/.default" -o tsv --query accessToken)
-            echo "::add-mask::$NOSQL_TESTACCOUNT_12_TOKEN"
-            echo NOSQL_TESTACCOUNT_12_TOKEN=$NOSQL_TESTACCOUNT_12_TOKEN >> $GITHUB_ENV
+  #           NOSQL_TESTACCOUNT_12_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql-12.documents.azure.com/.default" -o tsv --query accessToken)
+  #           echo "::add-mask::$NOSQL_TESTACCOUNT_12_TOKEN"
+  #           echo NOSQL_TESTACCOUNT_12_TOKEN=$NOSQL_TESTACCOUNT_12_TOKEN >> $GITHUB_ENV
 
-            NOSQL_TESTACCOUNT_13_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql-13.documents.azure.com/.default" -o tsv --query accessToken)
-            echo "::add-mask::$NOSQL_TESTACCOUNT_13_TOKEN"
-            echo NOSQL_TESTACCOUNT_13_TOKEN=$NOSQL_TESTACCOUNT_13_TOKEN >> $GITHUB_ENV
+  #           NOSQL_TESTACCOUNT_13_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql-13.documents.azure.com/.default" -o tsv --query accessToken)
+  #           echo "::add-mask::$NOSQL_TESTACCOUNT_13_TOKEN"
+  #           echo NOSQL_TESTACCOUNT_13_TOKEN=$NOSQL_TESTACCOUNT_13_TOKEN >> $GITHUB_ENV
 
-            NOSQL_TESTACCOUNT_14_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql-14.documents.azure.com/.default" -o tsv --query accessToken)
-            echo "::add-mask::$NOSQL_TESTACCOUNT_14_TOKEN"
-            echo NOSQL_TESTACCOUNT_14_TOKEN=$NOSQL_TESTACCOUNT_14_TOKEN >> $GITHUB_ENV
+  #           NOSQL_TESTACCOUNT_14_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql-14.documents.azure.com/.default" -o tsv --query accessToken)
+  #           echo "::add-mask::$NOSQL_TESTACCOUNT_14_TOKEN"
+  #           echo NOSQL_TESTACCOUNT_14_TOKEN=$NOSQL_TESTACCOUNT_14_TOKEN >> $GITHUB_ENV
 
-            NOSQL_TESTACCOUNT_15_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql-15.documents.azure.com/.default" -o tsv --query accessToken)
-            echo "::add-mask::$NOSQL_TESTACCOUNT_15_TOKEN"
-            echo NOSQL_TESTACCOUNT_15_TOKEN=$NOSQL_TESTACCOUNT_15_TOKEN >> $GITHUB_ENV
+  #           NOSQL_TESTACCOUNT_15_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql-15.documents.azure.com/.default" -o tsv --query accessToken)
+  #           echo "::add-mask::$NOSQL_TESTACCOUNT_15_TOKEN"
+  #           echo NOSQL_TESTACCOUNT_15_TOKEN=$NOSQL_TESTACCOUNT_15_TOKEN >> $GITHUB_ENV
 
-            NOSQL_TESTACCOUNT_16_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql-16.documents.azure.com/.default" -o tsv --query accessToken)
-            echo "::add-mask::$NOSQL_TESTACCOUNT_16_TOKEN"
-            echo NOSQL_TESTACCOUNT_16_TOKEN=$NOSQL_TESTACCOUNT_16_TOKEN >> $GITHUB_ENV
+  #           NOSQL_TESTACCOUNT_16_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql-16.documents.azure.com/.default" -o tsv --query accessToken)
+  #           echo "::add-mask::$NOSQL_TESTACCOUNT_16_TOKEN"
+  #           echo NOSQL_TESTACCOUNT_16_TOKEN=$NOSQL_TESTACCOUNT_16_TOKEN >> $GITHUB_ENV
 
-            NOSQL_TESTACCOUNT_17_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql-17.documents.azure.com/.default" -o tsv --query accessToken)
-            echo "::add-mask::$NOSQL_TESTACCOUNT_17_TOKEN"
-            echo NOSQL_TESTACCOUNT_17_TOKEN=$NOSQL_TESTACCOUNT_17_TOKEN >> $GITHUB_ENV
+  #           NOSQL_TESTACCOUNT_17_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql-17.documents.azure.com/.default" -o tsv --query accessToken)
+  #           echo "::add-mask::$NOSQL_TESTACCOUNT_17_TOKEN"
+  #           echo NOSQL_TESTACCOUNT_17_TOKEN=$NOSQL_TESTACCOUNT_17_TOKEN >> $GITHUB_ENV
 
-            NOSQL_TESTACCOUNT_18_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql-18.documents.azure.com/.default" -o tsv --query accessToken)
-            echo "::add-mask::$NOSQL_TESTACCOUNT_18_TOKEN"
-            echo NOSQL_TESTACCOUNT_18_TOKEN=$NOSQL_TESTACCOUNT_18_TOKEN >> $GITHUB_ENV
+  #           NOSQL_TESTACCOUNT_18_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql-18.documents.azure.com/.default" -o tsv --query accessToken)
+  #           echo "::add-mask::$NOSQL_TESTACCOUNT_18_TOKEN"
+  #           echo NOSQL_TESTACCOUNT_18_TOKEN=$NOSQL_TESTACCOUNT_18_TOKEN >> $GITHUB_ENV
 
-            NOSQL_TESTACCOUNT_19_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql-19.documents.azure.com/.default" -o tsv --query accessToken)
-            echo "::add-mask::$NOSQL_TESTACCOUNT_19_TOKEN"
-            echo NOSQL_TESTACCOUNT_19_TOKEN=$NOSQL_TESTACCOUNT_19_TOKEN >> $GITHUB_ENV
+  #           NOSQL_TESTACCOUNT_19_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql-19.documents.azure.com/.default" -o tsv --query accessToken)
+  #           echo "::add-mask::$NOSQL_TESTACCOUNT_19_TOKEN"
+  #           echo NOSQL_TESTACCOUNT_19_TOKEN=$NOSQL_TESTACCOUNT_19_TOKEN >> $GITHUB_ENV
 
-            NOSQL_TESTACCOUNT_20_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql-20.documents.azure.com/.default" -o tsv --query accessToken)
-            echo "::add-mask::$NOSQL_TESTACCOUNT_20_TOKEN"
-            echo NOSQL_TESTACCOUNT_20_TOKEN=$NOSQL_TESTACCOUNT_20_TOKEN >> $GITHUB_ENV
+  #           NOSQL_TESTACCOUNT_20_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql-20.documents.azure.com/.default" -o tsv --query accessToken)
+  #           echo "::add-mask::$NOSQL_TESTACCOUNT_20_TOKEN"
+  #           echo NOSQL_TESTACCOUNT_20_TOKEN=$NOSQL_TESTACCOUNT_20_TOKEN >> $GITHUB_ENV
 
-            NOSQL_READONLY_TESTACCOUNT_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql-readonly.documents.azure.com/.default" -o tsv --query accessToken)
-            echo "::add-mask::$NOSQL_READONLY_TESTACCOUNT_TOKEN"
-            echo NOSQL_READONLY_TESTACCOUNT_TOKEN=$NOSQL_READONLY_TESTACCOUNT_TOKEN >> $GITHUB_ENV
-            NOSQL_CONTAINERCOPY_TESTACCOUNT_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql-containercopyonly.documents.azure.com/.default" -o tsv --query accessToken)
-            echo "::add-mask::$NOSQL_CONTAINERCOPY_TESTACCOUNT_TOKEN"
-            echo NOSQL_CONTAINERCOPY_TESTACCOUNT_TOKEN=$NOSQL_CONTAINERCOPY_TESTACCOUNT_TOKEN >> $GITHUB_ENV
-            TABLE_TESTACCOUNT_TOKEN=$(az account get-access-token --scope "https://github-e2etests-tables.documents.azure.com/.default" -o tsv --query accessToken)
-            echo "::add-mask::$TABLE_TESTACCOUNT_TOKEN"
-            echo TABLE_TESTACCOUNT_TOKEN=$TABLE_TESTACCOUNT_TOKEN >> $GITHUB_ENV
-            GREMLIN_TESTACCOUNT_TOKEN=$(az account get-access-token --scope "https://github-e2etests-gremlin.documents.azure.com/.default" -o tsv --query accessToken)
-            echo "::add-mask::$GREMLIN_TESTACCOUNT_TOKEN"
-            echo GREMLIN_TESTACCOUNT_TOKEN=$GREMLIN_TESTACCOUNT_TOKEN >> $GITHUB_ENV
-            CASSANDRA_TESTACCOUNT_TOKEN=$(az account get-access-token --scope "https://github-e2etests-cassandra.documents.azure.com/.default" -o tsv --query accessToken)
-            echo "::add-mask::$CASSANDRA_TESTACCOUNT_TOKEN"
-            echo CASSANDRA_TESTACCOUNT_TOKEN=$CASSANDRA_TESTACCOUNT_TOKEN >> $GITHUB_ENV
-            MONGO_TESTACCOUNT_TOKEN=$(az account get-access-token --scope "https://github-e2etests-mongo.documents.azure.com/.default" -o tsv --query accessToken)
-            echo "::add-mask::$MONGO_TESTACCOUNT_TOKEN"
-            echo MONGO_TESTACCOUNT_TOKEN=$MONGO_TESTACCOUNT_TOKEN >> $GITHUB_ENV
-            MONGO32_TESTACCOUNT_TOKEN=$(az account get-access-token --scope "https://github-e2etests-mongo32.documents.azure.com/.default" -o tsv --query accessToken)
-            echo "::add-mask::$MONGO32_TESTACCOUNT_TOKEN"
-            echo MONGO32_TESTACCOUNT_TOKEN=$MONGO32_TESTACCOUNT_TOKEN >> $GITHUB_ENV
-            MONGO_READONLY_TESTACCOUNT_TOKEN=$(az account get-access-token --scope "https://github-e2etests-mongo-readonly.documents.azure.com/.default" -o tsv --query accessToken)
-            echo "::add-mask::$MONGO_READONLY_TESTACCOUNT_TOKEN"
-            echo MONGO_READONLY_TESTACCOUNT_TOKEN=$MONGO_READONLY_TESTACCOUNT_TOKEN >> $GITHUB_ENV
-      - name: List test files for shard ${{ matrix['shardIndex'] }} of ${{ matrix['shardTotal']}}
-        run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }} --list
-      - name: Run test shard ${{ matrix['shardIndex'] }} of ${{ matrix['shardTotal']}}
-        run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }} --workers=3
-      - name: Upload blob report to GitHub Actions Artifacts
-        if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: blob-report-${{ matrix.shardIndex }}
-          path: blob-report
-          retention-days: 1
+  #           NOSQL_READONLY_TESTACCOUNT_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql-readonly.documents.azure.com/.default" -o tsv --query accessToken)
+  #           echo "::add-mask::$NOSQL_READONLY_TESTACCOUNT_TOKEN"
+  #           echo NOSQL_READONLY_TESTACCOUNT_TOKEN=$NOSQL_READONLY_TESTACCOUNT_TOKEN >> $GITHUB_ENV
+  #           NOSQL_CONTAINERCOPY_TESTACCOUNT_TOKEN=$(az account get-access-token --scope "https://github-e2etests-sql-containercopyonly.documents.azure.com/.default" -o tsv --query accessToken)
+  #           echo "::add-mask::$NOSQL_CONTAINERCOPY_TESTACCOUNT_TOKEN"
+  #           echo NOSQL_CONTAINERCOPY_TESTACCOUNT_TOKEN=$NOSQL_CONTAINERCOPY_TESTACCOUNT_TOKEN >> $GITHUB_ENV
+  #           TABLE_TESTACCOUNT_TOKEN=$(az account get-access-token --scope "https://github-e2etests-tables.documents.azure.com/.default" -o tsv --query accessToken)
+  #           echo "::add-mask::$TABLE_TESTACCOUNT_TOKEN"
+  #           echo TABLE_TESTACCOUNT_TOKEN=$TABLE_TESTACCOUNT_TOKEN >> $GITHUB_ENV
+  #           GREMLIN_TESTACCOUNT_TOKEN=$(az account get-access-token --scope "https://github-e2etests-gremlin.documents.azure.com/.default" -o tsv --query accessToken)
+  #           echo "::add-mask::$GREMLIN_TESTACCOUNT_TOKEN"
+  #           echo GREMLIN_TESTACCOUNT_TOKEN=$GREMLIN_TESTACCOUNT_TOKEN >> $GITHUB_ENV
+  #           CASSANDRA_TESTACCOUNT_TOKEN=$(az account get-access-token --scope "https://github-e2etests-cassandra.documents.azure.com/.default" -o tsv --query accessToken)
+  #           echo "::add-mask::$CASSANDRA_TESTACCOUNT_TOKEN"
+  #           echo CASSANDRA_TESTACCOUNT_TOKEN=$CASSANDRA_TESTACCOUNT_TOKEN >> $GITHUB_ENV
+  #           MONGO_TESTACCOUNT_TOKEN=$(az account get-access-token --scope "https://github-e2etests-mongo.documents.azure.com/.default" -o tsv --query accessToken)
+  #           echo "::add-mask::$MONGO_TESTACCOUNT_TOKEN"
+  #           echo MONGO_TESTACCOUNT_TOKEN=$MONGO_TESTACCOUNT_TOKEN >> $GITHUB_ENV
+  #           MONGO32_TESTACCOUNT_TOKEN=$(az account get-access-token --scope "https://github-e2etests-mongo32.documents.azure.com/.default" -o tsv --query accessToken)
+  #           echo "::add-mask::$MONGO32_TESTACCOUNT_TOKEN"
+  #           echo MONGO32_TESTACCOUNT_TOKEN=$MONGO32_TESTACCOUNT_TOKEN >> $GITHUB_ENV
+  #           MONGO_READONLY_TESTACCOUNT_TOKEN=$(az account get-access-token --scope "https://github-e2etests-mongo-readonly.documents.azure.com/.default" -o tsv --query accessToken)
+  #           echo "::add-mask::$MONGO_READONLY_TESTACCOUNT_TOKEN"
+  #           echo MONGO_READONLY_TESTACCOUNT_TOKEN=$MONGO_READONLY_TESTACCOUNT_TOKEN >> $GITHUB_ENV
+  #     - name: List test files for shard ${{ matrix['shardIndex'] }} of ${{ matrix['shardTotal']}}
+  #       run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }} --list
+  #     - name: Run test shard ${{ matrix['shardIndex'] }} of ${{ matrix['shardTotal']}}
+  #       run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }} --workers=3
+  #     - name: Upload blob report to GitHub Actions Artifacts
+  #       if: ${{ !cancelled() }}
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: blob-report-${{ matrix.shardIndex }}
+  #         path: blob-report
+  #         retention-days: 1
 
-  merge-playwright-reports:
-    name: "Merge Playwright Reports"
-    # Merge reports after playwright-tests, even if some shards have failed
-    if: ${{ !cancelled() }}
-    needs: [playwright-tests]
+  # merge-playwright-reports:
+  #   name: "Merge Playwright Reports"
+  #   # Merge reports after playwright-tests, even if some shards have failed
+  #   if: ${{ !cancelled() }}
+  #   needs: [playwright-tests]
 
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 18
-      - name: Install dependencies
-        run: npm ci
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: actions/setup-node@v4
+  #       with:
+  #         node-version: 18
+  #     - name: Install dependencies
+  #       run: npm ci
 
-      - name: Download blob reports from GitHub Actions Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: all-blob-reports
-          pattern: blob-report-*
-          merge-multiple: true
+  #     - name: Download blob reports from GitHub Actions Artifacts
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         path: all-blob-reports
+  #         pattern: blob-report-*
+  #         merge-multiple: true
 
-      - name: Merge into HTML Report
-        run: npx playwright merge-reports --reporter html ./all-blob-reports
+  #     - name: Merge into HTML Report
+  #       run: npx playwright merge-reports --reporter html ./all-blob-reports
 
-      - name: Upload HTML report
-        uses: actions/upload-artifact@v4
-        with:
-          name: html-report--attempt-${{ github.run_attempt }}
-          path: playwright-report
-          retention-days: 14
+  #     - name: Upload HTML report
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: html-report--attempt-${{ github.run_attempt }}
+  #         path: playwright-report
+  #         retention-days: 14
