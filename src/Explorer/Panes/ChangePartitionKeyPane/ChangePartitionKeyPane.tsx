@@ -23,6 +23,7 @@ import { createCollection } from "Common/dataAccess/createCollection";
 import { DataTransferParams, initiateDataTransfer } from "Common/dataAccess/dataTransfers";
 import * as DataModels from "Contracts/DataModels";
 import * as ViewModels from "Contracts/ViewModels";
+import { buildResourceLink } from "Explorer/ContainerCopy/CopyJobUtils";
 import { BackupPolicyType } from "Explorer/ContainerCopy/Enums/CopyJobEnums";
 import {
   getPartitionKeyName,
@@ -141,7 +142,8 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
   };
 
   const handleEnablePitr = () => {
-    const featureUrl = `https://portal.azure.com/#@/resource/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/backupRestore`;
+    const sourceAccountLink = buildResourceLink(localAccount);
+    const featureUrl = `${sourceAccountLink}/backupRestore`;
     setIsEnablingPrerequisite(true);
     setPrerequisiteLoaderMessage(t(Keys.containerCopy.popoverOverlaySpinnerLabel));
     window.open(featureUrl, "_blank");

@@ -1,4 +1,5 @@
 import { configContext } from "ConfigContext";
+import { Keys, t } from "Localization";
 import { ApiType, userContext } from "UserContext";
 import * as NotificationConsoleUtils from "Utils/NotificationConsoleUtils";
 import {
@@ -143,37 +144,50 @@ const pollDataTransferJobOperation = async (
   if (status === "Cancelled") {
     removeFromPolling(jobName);
     clearMessage && clearMessage();
-    const cancelMessage = `Data transfer job ${jobName} cancelled`;
+    const cancelMessage = t(Keys.containerCopy.dataTransfers.polling.cancelConsoleMessage);
     NotificationConsoleUtils.logConsoleError(cancelMessage);
     throw new AbortError(cancelMessage);
   }
   if (status === "Paused") {
     removeFromPolling(jobName);
     clearMessage && clearMessage();
-    const pauseMessage = `Data transfer job ${jobName} paused`;
-    NotificationConsoleUtils.logConsoleInfo(pauseMessage);
+    NotificationConsoleUtils.logConsoleInfo(t(Keys.containerCopy.dataTransfers.polling.pauseConsoleMessage));
     return body;
   }
   if (status === "Failed" || status === "Faulted") {
     removeFromPolling(jobName);
     const errorMessage = body?.properties?.error
       ? JSON.stringify(body?.properties?.error)
-      : "Operation could not be completed";
+      : t(Keys.containerCopy.dataTransfers.polling.defaultErrorMessage);
     const error = new Error(errorMessage);
     clearMessage && clearMessage();
-    NotificationConsoleUtils.logConsoleError(`Data transfer job ${jobName} failed: ${errorMessage}`);
+    NotificationConsoleUtils.logConsoleError(
+      t(Keys.containerCopy.dataTransfers.polling.errorConsoleMessage, {
+        errorMessage: errorMessage,
+        jobName: jobName,
+      }),
+    );
     throw new AbortError(error);
   }
   if (status === "Completed") {
     removeFromPolling(jobName);
     clearMessage && clearMessage();
-    NotificationConsoleUtils.logConsoleInfo(`Data transfer job ${jobName} completed`);
+    NotificationConsoleUtils.logConsoleInfo(
+      t(Keys.containerCopy.dataTransfers.polling.completedConsoleMessage, {
+        jobName: jobName,
+      }),
+    );
     return body;
   }
   const processedCount = body.properties.processedCount;
   const totalCount = body.properties.totalCount;
-  const retryMessage = `Data transfer job ${jobName} in progress, total count: ${totalCount}, processed count: ${processedCount}`;
-  throw new Error(retryMessage);
+  throw new Error(
+    t(Keys.containerCopy.dataTransfers.polling.retryConsoleMessage, {
+      jobName: jobName,
+      processedCount: processedCount,
+      totalCount: totalCount,
+    }),
+  );
 };
 
 export const cancelDataTransferJob = async (

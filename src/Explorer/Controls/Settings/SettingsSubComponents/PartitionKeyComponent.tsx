@@ -173,20 +173,20 @@ export const PartitionKeyComponent: React.FC<PartitionKeyComponentProps> = ({
       action === CopyJobActions.cancel ? (
         <Stack tokens={{ childrenGap: 10 }}>
           <Stack.Item>
-            {/*t(Keys.controls.settings.partitionKeyEditor.confirmCancel1)*/}
+            {t(Keys.controls.settings.partitionKeyEditor.confirmCancel1)}
             <br />
             <b>{jobName}</b>
           </Stack.Item>
-          <Stack.Item>{/*t(Keys.controls.settings.partitionKeyEditor.confirmCancel2)*/}</Stack.Item>
+          <Stack.Item>{t(Keys.controls.settings.partitionKeyEditor.confirmCancel2)}</Stack.Item>
         </Stack>
       ) : action === CopyJobActions.complete ? (
         <Stack tokens={{ childrenGap: 10 }}>
           <Stack.Item>
-            {/*t(Keys.controls.settings.partitionKeyEditor.confirmComplete1)*/}
+            {t(Keys.controls.settings.partitionKeyEditor.confirmComplete1)}
             <br />
             <b>{jobName}</b>
           </Stack.Item>
-          <Stack.Item>{/*t(Keys.controls.settings.partitionKeyEditor.confrimComplete2)*/}</Stack.Item>
+          <Stack.Item>{t(Keys.controls.settings.partitionKeyEditor.confrimComplete2)}</Stack.Item>
         </Stack>
       ) : null;
 
