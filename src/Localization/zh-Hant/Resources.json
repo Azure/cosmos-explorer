@@ -78,7 +78,7 @@
         "description": "建立資料表並使用 PostgreSQL 殼層介面與資料互動"
       },
       "vcoreMongo": {
-        "title": "Mongo 殼層",
+        "title": "Mongo Shell",
         "description": "建立集合並使用 MongoDB 殼層介面與資料互動"
       }
     },
@@ -305,7 +305,7 @@
     "deleteContainer": "刪除 {{containerName}}",
     "newSqlQuery": "新增 SQL 查詢",
     "newQuery": "新增查詢",
-    "openMongoShell": "開啟 Mongo 殼層",
+    "openMongoShell": "開啟 Mongo Shell",
     "newShell": "新增殼層",
     "openCassandraShell": "開啟 Cassandra 殼層",
     "newStoredProcedure": "新增預存程序",
@@ -416,7 +416,7 @@
       "refreshGridFailed": "重新整理文件方格失敗"
     },
     "mongoShell": {
-      "title": "Mongo 殼層"
+      "title": "Mongo Shell"
     }
   },
   "panes": {
@@ -490,7 +490,7 @@
       "legacySdkInfo": "為確保與舊版 SDK 的相容性，已建立的容器將使用舊版分割配置，其支援大小最多僅 101 個位元組的資料分割索引鍵值。如果啟用此功能，您將無法使用階層式資料分割索引鍵。",
       "indexingOnInfo": "預設會對文件中的所有屬性編製索引，以獲得彈性且有效率的查詢。",
       "indexingOffInfo": "索引編製將會關閉。如果您不需要執行查詢或只有索引鍵值作業，建議您使用。",
-      "indexingOffWarning": "藉由建立此容器並關閉索引編製，您將無法進行任何索引編製原則變更。索引變更只允許在具有索引編製原則的容器上執行。",
+      "indexingOffWarning": "藉由建立此容器並關閉索引編製，您將無法進行任何索引原則的變更。索引變更只允許在具有索引原則的容器上執行。",
       "acknowledgeSpendErrorMonthly": "請認知每月預估支出。",
       "acknowledgeSpendErrorDaily": "請認知估計的每日支出。",
       "unshardedMaxRuError": "未分區的集合最多支援 10,000 個 RU",
@@ -737,12 +737,12 @@
       "addProperty": "新增屬性"
     },
     "addGlobalSecondaryIndex": {
-      "globalSecondaryIndexId": "全域次要索引容器識別碼",
+      "globalSecondaryIndexId": "全域從屬索引容器識別碼",
       "globalSecondaryIndexIdPlaceholder": "例如，indexbyEmailId",
       "projectionQuery": "投射查詢",
       "projectionQueryPlaceholder": "SELECT c.email, c.accountId FROM c",
-      "projectionQueryTooltip": "深入了解如何定義全域次要索引。",
-      "disabledTitle": "已在建立全域次要索引。請等候它完成，再建立新的工作。"
+      "projectionQueryTooltip": "深入了解如何定義全域從屬索引。",
+      "disabledTitle": "已在建立全域從屬索引。請等候它完成，再建立新的工作。"
     },
     "stringInput": {
       "inputMismatchError": "輸入 {{input}} 與選取的 {{selectedId}} 不符"
@@ -764,7 +764,7 @@
         "computedProperties": "計算屬性",
         "containerPolicies": "容器原則",
         "throughputBuckets": "輸送量貯體",
-        "globalSecondaryIndexPreview": "全域次要索引 (預覽)",
+        "globalSecondaryIndexPreview": "全域從屬索引 (預覽)",
         "maskingPolicyPreview": "遮罩原則"
       },
       "mongoNotifications": {
@@ -845,7 +845,7 @@
         "disclaimerCompoundIndexesLink": " 複合索引 ",
         "disclaimerSuffix": "僅用於排序查詢結果。如果您需要新增複合索引，您可以使用 Mongo Shell 建立一個複合索引。",
         "compoundNotSupported": "索引編輯器中尚不支援具有複合索引的集合。若要修改此集合的索引編製原則，請使用 Mongo Shell。",
-        "aadError": "若要使用索引編製原則編輯器，請登入",
+        "aadError": "若要使用索引原則編輯器，請登入",
         "aadErrorLink": "Azure 入口網站。",
         "refreshingProgress": "重新整理索引轉換進度",
         "canMakeMoreChangesZero": "當目前的索引轉換完成後，您可以進行更多索引變更。",
@@ -927,12 +927,12 @@
       },
       "globalSecondaryIndex": {
         "indexesDefined": "此容器已定義下列索引。",
-        "learnMoreSuffix": "關於如何定義全域次要索引，以及如何使用它們。",
-        "jsonAriaLabel": "全域次要索引 JSON",
+        "learnMoreSuffix": "關於如何定義全域從屬索引，以及如何使用它們。",
+        "jsonAriaLabel": "全域從屬索引 JSON",
         "addIndex": "新增索引",
-        "settingsTitle": "全域次要索引設定",
+        "settingsTitle": "全域從屬索引設定",
         "sourceContainer": "來源容器",
-        "indexDefinition": "全域次要索引定義"
+        "indexDefinition": "全域從屬索引定義"
       },
       "indexingPolicyRefresh": {
         "refreshFailed": "重新整理索引轉換進度失敗"

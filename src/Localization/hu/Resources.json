@@ -305,7 +305,7 @@
     "deleteContainer": "{{containerName}} törlése",
     "newSqlQuery": "Új SQL-lekérdezés",
     "newQuery": "Új lekérdezés",
-    "openMongoShell": "Mongo-felület megnyitása",
+    "openMongoShell": "Mongo Shell megnyitása",
     "newShell": "Új felület",
     "openCassandraShell": "Cassandra-felület megnyitása",
     "newStoredProcedure": "Új tárolt eljárás",
@@ -416,7 +416,7 @@
       "refreshGridFailed": "Nem sikerült frissíteni a dokumentumrácsot"
     },
     "mongoShell": {
-      "title": "Mongo-felület"
+      "title": "Mongo Shell"
     }
   },
   "panes": {
@@ -490,7 +490,7 @@
       "legacySdkInfo": "A régebbi SDK-kkal való kompatibilitás biztosítása érdekében a létrehozott tároló egy örökölt particionálási sémát fog használni, amely legfeljebb 101 bájt méretű partíciókulcs-értékeket támogat. Ha ez engedélyezve van, nem használhat hierarchikus partíciókulcsokat.",
       "indexingOnInfo": "A dokumentumok összes tulajdonsága alapértelmezés szerint indexelve lesz a rugalmas és hatékony lekérdezések érdekében.",
       "indexingOffInfo": "Az indexelés ki lesz kapcsolva. Akkor ajánlott, ha nem kell lekérdezéseket futtatnia, vagy csak kulcsérték-műveletekkel rendelkezik.",
-      "indexingOffWarning": "Ha úgy hozza létre ezt a tárolót, hogy az indexelés ki van kapcsolva, nem fogja tudni módosítani az indexelési szabályzatot. Az indexelési módosítások csak indexelési szabályzattal rendelkező tárolókon engedélyezettek.",
+      "indexingOffWarning": "Ha úgy hozza létre ezt a tárolót, hogy az indexelés ki van kapcsolva, nem fogja tudni módosítani az indexelési házirendet. Az indexelési módosítások csak indexelési szabályzattal rendelkező tárolókon engedélyezettek.",
       "acknowledgeSpendErrorMonthly": "Nyugtázza a becsült havi ráfordítást.",
       "acknowledgeSpendErrorDaily": "Nyugtázza a becsült napi ráfordítást.",
       "unshardedMaxRuError": "A horizontálisan nem skálázott gyűjtemények legfeljebb 10 000 kérelemegységet támogatnak",
@@ -621,7 +621,7 @@
       "accountId": "Fiókazonosító",
       "sessionId": "Munkamenet-azonosító",
       "popupsDisabledError": "Nem sikerült hitelesítést létrehozni ehhez a fiókhoz, mert a böngészőben le vannak tiltva az előugró ablakok.\nEngedélyezze az előugró ablakokat ehhez a webhelyhez, majd kattintson az Entra ID bejelentkezés gombra",
-      "failedToAcquireTokenError": "Nem sikerült automatikusan beszerezni az engedélyezési jogkivonatot. Kattintson az Entra ID bejelentkezés gombra az Entra ID RBAC-műveletek engedélyezéséhez"
+      "failedToAcquireTokenError": "Nem sikerült automatikusan beszerezni a hozzáférési jogkivonatot. Kattintson az Entra ID bejelentkezés gombra az Entra ID RBAC-műveletek engedélyezéséhez"
     },
     "saveQuery": {
       "panelTitle": "Lekérdezés mentése",
@@ -758,7 +758,7 @@
         "scale": "Skálázás",
         "conflictResolution": "Ütközésfeloldás",
         "settings": "Beállítások",
-        "indexingPolicy": "Indexelési szabályzat",
+        "indexingPolicy": "Indexelési házirend",
         "partitionKeys": "Partíciókulcsok",
         "partitionKeysPreview": "Partíciókulcsok (előzetes verzió)",
         "computedProperties": "Számított tulajdonságok",
@@ -843,7 +843,7 @@
       "mongoIndexing": {
         "disclaimer": "Több tulajdonságra szűrő lekérdezések esetén összetett index helyett hozzon létre több egymezős indexet.",
         "disclaimerCompoundIndexesLink": " Összetett indexek ",
-        "disclaimerSuffix": "csak a lekérdezési eredmények rendezésére szolgál. Ha összetett indexet kell hozzáadnia, a Mongo-felület használatával hozhat létre egyet.",
+        "disclaimerSuffix": "csak a lekérdezési eredmények rendezésére szolgál. Ha összetett indexet kell hozzáadnia, a Mongo Shell használatával hozhat létre egyet.",
         "compoundNotSupported": "Az összetett indexekkel rendelkező gyűjtemények még nem támogatottak az indexelőszerkesztőben. A gyűjtemény indexelési házirendjének módosításához használja a Mongo-felületet.",
         "aadError": "Az indexelési házirendszerkesztő használatához jelentkezzen be:",
         "aadErrorLink": "Azure Portal.",
@@ -911,7 +911,7 @@
         "learnMorePrefix": "a számított tulajdonságok definiálásáról és azok használatáról."
       },
       "indexingPolicy": {
-        "ariaLabel": "Indexelési szabályzat"
+        "ariaLabel": "Indexelési házirend"
       },
       "dataMasking": {
         "ariaLabel": "Adatmaszkolási házirend",

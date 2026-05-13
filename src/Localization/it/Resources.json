@@ -998,159 +998,159 @@
   "containerCopy": {
     "commandBar": {
       "feedbackButtonLabel": "Feedback",
-      "feedbackButtonAriaLabel": "Provide feedback on copy jobs",
-      "refreshButtonAriaLabel": "Refresh copy jobs",
-      "createCopyJobButtonLabel": "Create Copy Job",
-      "createCopyJobButtonAriaLabel": "Create a new container copy job"
+      "feedbackButtonAriaLabel": "Fornisci feedback sui processi di copia",
+      "refreshButtonAriaLabel": "Aggiorna processi di copia",
+      "createCopyJobButtonLabel": "Crea processo di copia",
+      "createCopyJobButtonAriaLabel": "Crea un nuovo processo di copia del contenitore"
     },
     "noCopyJobs": {
-      "title": "No copy jobs to show",
-      "createCopyJobButtonText": "Create a container copy job"
+      "title": "Nessun processo di copia da visualizzare",
+      "createCopyJobButtonText": "Crea un processo di copia del contenitore"
     },
     "jobDetails": {
       "panelTitle": "{{jobName}}",
-      "panelTitleDefault": "Job Details",
-      "errorTitle": "Error Details",
-      "selectedContainers": "Selected Containers"
+      "panelTitleDefault": "Dettagli processo",
+      "errorTitle": "Dettagli errore",
+      "selectedContainers": "Contenitori selezionati"
     },
     "createCopyJob": {
-      "panelTitle": "Create copy job"
+      "panelTitle": "Crea processo di copia"
     },
     "selectAccount": {
-      "description": "Please select a destination account to copy to.",
-      "subscriptionDropdownLabel": "Subscription",
-      "subscriptionDropdownPlaceholder": "Select a subscription",
+      "description": "Selezionare un account di destinazione in cui copiare.",
+      "subscriptionDropdownLabel": "Sottoscrizione",
+      "subscriptionDropdownPlaceholder": "Selezionare una sottoscrizione",
       "accountDropdownLabel": "Account",
-      "accountDropdownPlaceholder": "Select an account"
+      "accountDropdownPlaceholder": "Selezionare un account"
     },
     "migrationType": {
       "offline": {
-        "title": "Offline mode",
-        "description": "Offline container copy jobs let you copy data from a source container to a destination Cosmos DB container for supported APIs. To ensure data integrity between the source and destination, we recommend stopping updates on the source container before creating the copy job. Learn more about [offline copy jobs](https://learn.microsoft.com/azure/cosmos-db/how-to-container-copy?tabs=offline-copy&pivots=api-nosql)."
+        "title": "Modalità offline",
+        "description": "I processi di copia dei contenitori offline consentono di copiare i dati da un contenitore di origine a un contenitore di destinazione di Cosmos DB per le API supportate. Per garantire l'integrità dei dati tra origine e destinazione, è consigliabile arrestare gli aggiornamenti nel contenitore di origine prima di creare il processo di copia. Altre informazioni sui [processi di copia offline](https://learn.microsoft.com/azure/cosmos-db/how-to-container-copy?tabs=offline-copy&pivots=api-nosql)."
       },
       "online": {
-        "title": "Online mode",
-        "description": "Online container copy jobs let you copy data from a source container to a destination Cosmos DB NoSQL API container using the [All Versions and Delete](https://learn.microsoft.com/azure/cosmos-db/change-feed-modes?tabs=all-versions-and-deletes#all-versions-and-deletes-change-feed-mode-preview) change feed. This allows updates to continue on the source while data is copied. A brief downtime is required at the end to safely switch over client applications to the destination container. Learn more about [online copy jobs](https://learn.microsoft.com/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#getting-started)."
+        "title": "Modalità online",
+        "description": "I processi di copia dei contenitori online consentono di copiare i dati da un contenitore di origine a un contenitore di destinazione dell'API NoSQL di Cosmos DB usando il feed di modifiche [Tutte le versioni ed eliminazioni](https://learn.microsoft.com/azure/cosmos-db/change-feed-modes?tabs=all-versions-and-deletes#all-versions-and-deletes-change-feed-mode-preview). In questo modo gli aggiornamenti possono continuare nell'origine durante la copia dei dati. Alla fine è necessario un breve periodo di inattività per passare in modo sicuro le applicazioni client al contenitore di destinazione. Altre informazioni sui [processi di copia online](https://learn.microsoft.com/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#getting-started)."
       }
     },
     "selectContainers": {
-      "description": "Please select a source container and a destination container to copy to.",
-      "sourceContainerSubHeading": "Source container",
-      "targetContainerSubHeading": "Destination container",
+      "description": "Selezionare un contenitore di origine e un contenitore di destinazione in cui copiare.",
+      "sourceContainerSubHeading": "Contenitore di origine",
+      "targetContainerSubHeading": "Contenitore di destinazione",
       "databaseDropdownLabel": "Database",
-      "databaseDropdownPlaceholder": "Select a database",
-      "containerDropdownLabel": "Container",
-      "containerDropdownPlaceholder": "Select a container",
-      "createNewContainerSubHeading": "Configure the properties for the new container on destination account \"{{accountName}}\".",
-      "createNewContainerSubHeadingDefault": "Configure the properties for the new container.",
+      "databaseDropdownPlaceholder": "Selezionare un database",
+      "containerDropdownLabel": "Contenitore",
+      "containerDropdownPlaceholder": "Selezionare un contenitore",
+      "createNewContainerSubHeading": "Configurare le proprietà del nuovo contenitore nell'account di destinazione \"{{accountName}}\".",
+      "createNewContainerSubHeadingDefault": "Configurare le proprietà per il nuovo contenitore.",
       "createContainerButtonLabel": "Crea un nuovo contenitore",
-      "createContainerHeading": "Create new container"
+      "createContainerHeading": "Crea nuovo contenitore"
     },
     "preview": {
-      "jobNameLabel": "Job name",
-      "subscriptionLabel": "Destination subscription",
-      "accountLabel": "Destination account",
-      "sourceDatabaseLabel": "Source database",
-      "sourceContainerLabel": "Source container",
-      "targetDatabaseLabel": "Destination database",
-      "targetContainerLabel": "Destination container"
+      "jobNameLabel": "Nome processo",
+      "subscriptionLabel": "Sottoscrizione di destinazione",
+      "accountLabel": "Account di destinazione",
+      "sourceDatabaseLabel": "Database di origine",
+      "sourceContainerLabel": "Contenitore di origine",
+      "targetDatabaseLabel": "Database di destinazione",
+      "targetContainerLabel": "Contenitore di destinazione"
     },
     "assignPermissions": {
-      "crossAccountDescription": "To copy data from the source to the destination container, ensure that the managed identity of the source account has read-write access to the destination account by completing the following steps.",
-      "intraAccountOnlineDescription": "Follow the steps below to enable online copy on your \"{{accountName}}\" account.",
+      "crossAccountDescription": "Per copiare i dati dal contenitore di origine a quello di destinazione, assicurarsi che l'identità gestita dell'account di origine disponga dell'accesso in lettura/scrittura all'account di destinazione completando la procedura seguente.",
+      "intraAccountOnlineDescription": "Seguire questa procedura per abilitare la copia online nell'account \"{{accountName}}\".",
       "crossAccountConfiguration": {
-        "title": "Cross-account container copy",
-        "description": "Please follow the instruction below to grant requisite permissions to copy data from \"{{sourceAccount}}\" to \"{{destinationAccount}}\"."
+        "title": "Copia contenitore tra account",
+        "description": "Seguire le istruzioni indicate di seguito per concedere le autorizzazioni necessarie a copiare i dati da \"{{sourceAccount}}\" a \"{{destinationAccount}}\"."
       },
       "onlineConfiguration": {
-        "title": "Online container copy",
-        "description": "Please follow the instructions below to enable online copy on your \"{{accountName}}\" account."
+        "title": "Copia contenitore online",
+        "description": "Seguire le istruzioni seguenti per abilitare la copia online nell'account \"{{accountName}}\"."
       }
     },
-    "popoverOverlaySpinnerLabel": "Please wait while we process your request...",
+    "popoverOverlaySpinnerLabel": "Attendere il completamento dell'elaborazione della richiesta...",
     "addManagedIdentity": {
-      "title": "System-assigned managed identity enabled.",
-      "description": "A system-assigned managed identity is restricted to one per resource and is tied to the lifecycle of this resource. Once enabled, you can grant permissions to the managed identity by using Azure role-based access control (Azure RBAC). The managed identity is authenticated with Microsoft Entra ID, so you don't have to store any credentials in code.",
+      "title": "Identità gestita assegnata dal sistema abilitata.",
+      "description": "Un'identità gestita assegnata dal sistema è limitata a una per risorsa ed è legata al ciclo di vita di tale risorsa. Dopo l'abilitazione, è possibile concedere le autorizzazioni all'identità gestita usando il controllo degli accessi in base al ruolo di Azure (RBAC di Azure). L'identità gestita viene autenticata con Microsoft Entra ID, quindi non è necessario archiviare credenziali nel codice.",
       "descriptionHrefText": "Altre informazioni sulle identità gestite.",
       "descriptionHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
       "toggleLabel": "Identità gestita assegnata dal sistema",
-      "tooltipContent": "Learn more about",
-      "tooltipHrefText": "Managed Identities.",
+      "tooltipContent": "Altre informazioni",
+      "tooltipHrefText": "Identità gestite.",
       "tooltipHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
-      "userAssignedIdentityTooltip": "You can select an existing user assigned identity or create a new one.",
-      "userAssignedIdentityLabel": "You may also select a user assigned managed identity.",
+      "userAssignedIdentityTooltip": "È possibile selezionare un'identità assegnata dall'utente esistente o crearne una nuova.",
+      "userAssignedIdentityLabel": "È anche possibile selezionare un'identità gestita assegnata dall'utente.",
       "createUserAssignedIdentityLink": "Crea identità gestita assegnata dall'utente",
       "enablementTitle": "Abilitare l'identità gestita assegnata dal sistema",
-      "enablementDescription": "Enable system-assigned managed identity on the {{accountName}}. To confirm, click the \"Yes\" button."
+      "enablementDescription": "Abilitare l'identità gestita assegnata dal sistema nel {{accountName}}. Per confermare, fare clic sul pulsante \"Sì\"."
     },
     "defaultManagedIdentity": {
-      "title": "System-assigned managed identity set as default.",
-      "description": "Set the system-assigned managed identity as default for \"{{accountName}}\" by switching it on.",
-      "tooltipContent": "Learn more about",
-      "tooltipHrefText": "Default Managed Identities.",
+      "title": "Identità gestita assegnata dal sistema impostata come predefinita.",
+      "description": "Impostare l'identità gestita assegnata dal sistema come predefinita per \"{{accountName}}\" attivandola.",
+      "tooltipContent": "Altre informazioni",
+      "tooltipHrefText": "Identità gestite predefinite.",
       "tooltipHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
-      "popoverTitle": "System assigned managed identity set as default",
-      "popoverDescription": "Assign the system-assigned managed identity as the default for \"{{accountName}}\". To confirm, click the \"Yes\" button. "
+      "popoverTitle": "Identità gestita assegnata dal sistema impostata come predefinita",
+      "popoverDescription": "Assegnare l'identità gestita assegnata dal sistema come predefinita per \"{{accountName}}\". Per confermare, fare clic sul pulsante \"Sì\". "
     },
     "readWritePermissionAssigned": {
-      "title": "Read-write permissions assigned to the default identity.",
-      "description": "To allow data copy from source to the destination container, provide read-write access on the destination account to the default identity of the source account.",
-      "tooltipContent": "Learn more about",
-      "tooltipHrefText": "Read-write permissions.",
+      "title": "Autorizzazioni di lettura/scrittura assegnate all'identità predefinita.",
+      "description": "Per consentire la copia dei dati dal contenitore di origine a quello di destinazione, concedere all'identità predefinita dell'account di origine l'accesso in lettura/scrittura dell'account di destinazione.",
+      "tooltipContent": "Altre informazioni",
+      "tooltipHrefText": "Autorizzazioni di lettura/scrittura.",
       "tooltipHref": "https://learn.microsoft.com/azure/cosmos-db/nosql/how-to-connect-role-based-access-control",
-      "popoverTitle": "Assign read-write permissions to default identity.",
-      "popoverDescription": "Assign read-write permissions on the destination account to the default identity of the source account. To confirm, click the \"Yes\" button."
+      "popoverTitle": "Assegnare autorizzazioni di lettura/scrittura all'identità predefinita.",
+      "popoverDescription": "Assegnare all'identità predefinita dell'account di origine le autorizzazioni di lettura/scrittura dell'account di destinazione. Per confermare, fare clic sul pulsante \"Sì\"."
     },
     "pointInTimeRestore": {
-      "title": "Point In Time Restore enabled",
-      "description": "To facilitate online container copy jobs, please update your \"{{accessName}}\" backup policy from periodic to continuous backup. Enabling continuous backup is required for this functionality.",
-      "tooltipContent": "Learn more about",
-      "tooltipHrefText": "Continuous Backup",
+      "title": "Ripristino temporizzato abilitato",
+      "description": "Per agevolare i processi di copia online dei contenitori, aggiorna il criterio di backup \"{{accessName}}\" da backup periodico a backup continuo. Per questa funzionalità è necessario abilitare il backup continuo.",
+      "tooltipContent": "Altre informazioni",
+      "tooltipHrefText": "Backup continuo",
       "tooltipHref": "https://learn.microsoft.com/en-us/azure/cosmos-db/continuous-backup-restore-introduction",
-      "buttonText": "Enable Point In Time Restore"
+      "buttonText": "Abilita ripristino temporizzato"
     },
     "onlineCopyEnabled": {
-      "title": "Online copy enabled",
-      "description": "Enable online container copy by clicking the button below on your \"{{accountName}}\" account.",
-      "hrefText": "Learn more about online copy jobs",
+      "title": "Copia online abilitata",
+      "description": "Abilitare la copia online del contenitore facendo clic sul pulsante seguente nell'account \"{{accountName}}\".",
+      "hrefText": "Altre informazioni sui processi di copia online",
       "href": "https://learn.microsoft.com/en-us/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#enable-online-copy",
-      "buttonText": "Enable Online Copy",
-      "validateAllVersionsAndDeletesChangeFeedSpinnerLabel": "Validating All versions and deletes change feed mode (preview)...",
-      "enablingAllVersionsAndDeletesChangeFeedSpinnerLabel": "Enabling All versions and deletes change feed mode (preview)...",
-      "enablingOnlineCopySpinnerLabel": "Enabling online copy on your \"{{accountName}}\" account ..."
+      "buttonText": "Abilita copia online",
+      "validateAllVersionsAndDeletesChangeFeedSpinnerLabel": "Convalida della modalità feed di modifiche per tutte le versioni ed eliminazioni (anteprima)...",
+      "enablingAllVersionsAndDeletesChangeFeedSpinnerLabel": "Abilitazione della modalità feed di modifiche per tutte le versioni ed eliminazioni (anteprima)...",
+      "enablingOnlineCopySpinnerLabel": "Abilitazione della copia online nell'account \"{{accountName}}\"..."
     },
     "monitorJobs": {
       "columns": {
-        "lastUpdatedTime": "Date & time",
-        "name": "Job name",
-        "status": "Status",
-        "completionPercentage": "Completion %",
-        "duration": "Duration",
-        "error": "Error message",
-        "mode": "Mode",
-        "actions": "Actions"
+        "lastUpdatedTime": "Data e ora",
+        "name": "Nome processo",
+        "status": "Stato",
+        "completionPercentage": "% completamento",
+        "duration": "Durata",
+        "error": "Messaggio di errore",
+        "mode": "Modalità",
+        "actions": "Azioni"
       },
       "actions": {
-        "pause": "Pause",
-        "resume": "Resume",
-        "complete": "Complete",
-        "viewDetails": "View Details"
+        "pause": "Sospendi",
+        "resume": "Riprendi",
+        "complete": "Completamento",
+        "viewDetails": "Visualizza dettagli"
       },
       "status": {
-        "pending": "Queued",
-        "inProgress": "Running",
-        "running": "Running",
-        "partitioning": "Running",
-        "paused": "Paused",
-        "completed": "Completed",
-        "failed": "Failed",
-        "faulted": "Failed",
-        "skipped": "Cancelled",
-        "cancelled": "Cancelled"
+        "pending": "In coda",
+        "inProgress": "In esecuzione",
+        "running": "In esecuzione",
+        "partitioning": "In esecuzione",
+        "paused": "In pausa",
+        "completed": "Completato",
+        "failed": "Non riuscito",
+        "faulted": "Non riuscito",
+        "skipped": "Annullato",
+        "cancelled": "Annullato"
       },
       "dialog": {
-        "confirmButtonText": "Confirm",
-        "cancelButtonText": "Cancel"
+        "confirmButtonText": "Conferma",
+        "cancelButtonText": "Annulla"
       }
     }
   }
