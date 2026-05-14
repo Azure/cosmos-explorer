@@ -316,6 +316,10 @@
     "deleteUdf": "Delete User Defined Function"
   },
   "tabs": {
+    "tabMenu": {
+      "duplicateTab": "Duplicate tab",
+      "closeTab": "Close tab"
+    },
     "documents": {
       "newItem": "New Item",
       "newDocument": "New Document",

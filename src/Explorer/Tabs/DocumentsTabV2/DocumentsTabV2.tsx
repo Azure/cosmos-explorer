@@ -49,6 +49,8 @@ import { userContext } from "UserContext";
 import { logConsoleError, logConsoleInfo } from "Utils/NotificationConsoleUtils";
 import { Allotment } from "allotment";
 import { useClientWriteEnabled } from "hooks/useClientWriteEnabled";
+import { useTabs } from "hooks/useTabs";
+import ko from "knockout";
 import React, { KeyboardEventHandler, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { format } from "react-string-format";
 import DeleteDocumentIcon from "../../../../images/DeleteDocument.svg";
@@ -174,6 +176,25 @@ export class DocumentsTabV2 extends TabsBase {
       databaseResourceId: options.collection.databaseId,
       collectionResourceId: options.collection.id(),
     };
+  }
+
+  public canDuplicate(): boolean {
+    return true;
+  }
+
+  public duplicateTab(): void {
+    const newTab = new DocumentsTabV2({
+      partitionKey: this.partitionKey,
+      documentIds: ko.observableArray<DocumentId>([]),
+      tabKind: ViewModels.CollectionTabKind.Documents,
+      title: "Items",
+      collection: this.collection,
+      node: this.collection,
+      tabPath: `${this.collection.databaseId}>${this.collection.id()}>Documents`,
+      isPreferredApiMongoDB: userContext.apiType === "Mongo",
+      resourceTokenPartitionKey: this.resourceTokenPartitionKey,
+    });
+    useTabs.getState().activateNewTab(newTab);
   }
 
   public render(): JSX.Element {

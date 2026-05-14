@@ -1,4 +1,5 @@
 import { Spinner, SpinnerSize, TooltipHost } from "@fluentui/react";
+import { Menu, MenuItem, MenuList, MenuPopover, MenuTrigger } from "@fluentui/react-components";
 import { CollectionTabKind } from "Contracts/ViewModels";
 import Explorer from "Explorer/Explorer";
 import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
@@ -10,6 +11,7 @@ import { QuickstartTab } from "Explorer/Tabs/QuickstartTab";
 import { VcoreMongoConnectTab } from "Explorer/Tabs/VCoreMongoConnectTab";
 import { VcoreMongoQuickstartTab } from "Explorer/Tabs/VCoreMongoQuickstartTab";
 import { KeyboardAction, KeyboardActionGroup, useKeyboardActionGroup } from "KeyboardShortcuts";
+import { Keys, t } from "Localization";
 import { isFabricNative } from "Platform/Fabric/FabricUtil";
 import { userContext } from "UserContext";
 import { useTeachingBubble } from "hooks/useTeachingBubble";
@@ -86,74 +88,96 @@ function TabNav({ tab, active, tabKind }: { tab?: Tab; active: boolean; tabKind?
     }
   }, [active]);
   return (
-    <li
-      onMouseOver={() => setHovering(true)}
-      onMouseLeave={() => setHovering(false)}
-      className={active ? "active tabList" : "tabList"}
-      style={active ? { fontWeight: "bolder" } : {}}
-      role="presentation"
-    >
-      <span className="tabNavContentContainer">
-        <div className="tab_Content">
-          <TooltipHost content={useObservable(tab?.tabPath || ko.observable(""))}>
-            <span
-              className="contentWrapper"
-              onClick={() => {
-                if (tab) {
-                  tab.onTabClick();
-                } else if (tabKind !== undefined) {
-                  useTabs.getState().activateReactTab(tabKind);
-                }
-              }}
-              onKeyPress={({ nativeEvent: e }) => {
-                if (tab) {
-                  tab.onKeyPressActivate(undefined, e);
-                } else if (tabKind !== undefined) {
-                  onKeyPressReactTab(e, tabKind);
-                }
-              }}
-              aria-selected={active}
-              aria-expanded={active}
-              aria-controls={tabId}
-              tabIndex={0}
-              role="tab"
-              ref={focusTab}
-            >
-              <span className="statusIconContainer" style={{ width: tabKind === ReactTabKind.Home ? 0 : 18 }}>
-                {useObservable(tab?.isExecutionError || ko.observable(false)) && (
-                  <ErrorIcon tab={tab} active={active} />
-                )}
-                {useObservable(tab?.isExecutionWarning || ko.observable(false)) && (
-                  <WarningIcon tab={tab} active={active} />
-                )}
-                {isTabExecuting(tab, tabKind) && (
-                  <Spinner
-                    size={SpinnerSize.small}
-                    styles={{
-                      circle: {
-                        borderTopColor: "var(--colorNeutralForeground1)",
-                        borderLeftColor: "var(--colorNeutralForeground1)",
-                        borderBottomColor: "var(--colorNeutralForeground1)",
-                        borderRightColor: "var(--colorNeutralBackground1)",
-                      },
-                    }}
-                  />
-                )}
-                {isQueryErrorThrown(tab, tabKind) && (
-                  <TooltipHost content="Error">
-                    <img src={errorQuery} alt="Error" style={{ marginTop: 4, marginLeft: 4, width: 10, height: 11 }} />
-                  </TooltipHost>
-                )}
+    <Menu openOnContext>
+      <MenuTrigger disableButtonEnhancement>
+        <li
+          onMouseOver={() => setHovering(true)}
+          onMouseLeave={() => setHovering(false)}
+          className={active ? "active tabList" : "tabList"}
+          style={active ? { fontWeight: "bolder" } : {}}
+          role="presentation"
+        >
+          <span className="tabNavContentContainer">
+            <div className="tab_Content">
+              <TooltipHost content={useObservable(tab?.tabPath || ko.observable(""))}>
+                <span
+                  className="contentWrapper"
+                  onClick={() => {
+                    if (tab) {
+                      tab.onTabClick();
+                    } else if (tabKind !== undefined) {
+                      useTabs.getState().activateReactTab(tabKind);
+                    }
+                  }}
+                  onKeyPress={({ nativeEvent: e }) => {
+                    if (tab) {
+                      tab.onKeyPressActivate(undefined, e);
+                    } else if (tabKind !== undefined) {
+                      onKeyPressReactTab(e, tabKind);
+                    }
+                  }}
+                  aria-selected={active}
+                  aria-expanded={active}
+                  aria-controls={tabId}
+                  tabIndex={0}
+                  role="tab"
+                  ref={focusTab}
+                >
+                  <span className="statusIconContainer" style={{ width: tabKind === ReactTabKind.Home ? 0 : 18 }}>
+                    {useObservable(tab?.isExecutionError || ko.observable(false)) && (
+                      <ErrorIcon tab={tab} active={active} />
+                    )}
+                    {useObservable(tab?.isExecutionWarning || ko.observable(false)) && (
+                      <WarningIcon tab={tab} active={active} />
+                    )}
+                    {isTabExecuting(tab, tabKind) && (
+                      <Spinner
+                        size={SpinnerSize.small}
+                        styles={{
+                          circle: {
+                            borderTopColor: "var(--colorNeutralForeground1)",
+                            borderLeftColor: "var(--colorNeutralForeground1)",
+                            borderBottomColor: "var(--colorNeutralForeground1)",
+                            borderRightColor: "var(--colorNeutralBackground1)",
+                          },
+                        }}
+                      />
+                    )}
+                    {isQueryErrorThrown(tab, tabKind) && (
+                      <TooltipHost content="Error">
+                        <img
+                          src={errorQuery}
+                          alt="Error"
+                          style={{ marginTop: 4, marginLeft: 4, width: 10, height: 11 }}
+                        />
+                      </TooltipHost>
+                    )}
+                  </span>
+                  <span className="tabNavText">{tabTitle}</span>
+                </span>
+              </TooltipHost>
+              <span className="tabIconSection">
+                <CloseButton tab={tab} active={active} hovering={hovering} tabKind={tabKind} ariaLabel={tabTitle} />
               </span>
-              <span className="tabNavText">{tabTitle}</span>
-            </span>
-          </TooltipHost>
-          <span className="tabIconSection">
-            <CloseButton tab={tab} active={active} hovering={hovering} tabKind={tabKind} ariaLabel={tabTitle} />
+            </div>
           </span>
-        </div>
-      </span>
-    </li>
+        </li>
+      </MenuTrigger>
+      <MenuPopover>
+        <MenuList>
+          {tab?.canDuplicate() && (
+            <MenuItem onClick={() => tab.duplicateTab()}>{t(Keys.tabs.tabMenu.duplicateTab)}</MenuItem>
+          )}
+          <MenuItem
+            onClick={() => {
+              tab ? tab.onCloseTabButtonClick() : useTabs.getState().closeReactTab(tabKind);
+            }}
+          >
+            {t(Keys.tabs.tabMenu.closeTab)}
+          </MenuItem>
+        </MenuList>
+      </MenuPopover>
+    </Menu>
   );
 }
 

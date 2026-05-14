@@ -4,6 +4,7 @@ import { MessageTypes } from "Contracts/MessageTypes";
 import React from "react";
 import * as DataModels from "../../../Contracts/DataModels";
 import type { QueryTabOptions } from "../../../Contracts/ViewModels";
+import * as ViewModels from "../../../Contracts/ViewModels";
 import { useTabs } from "../../../hooks/useTabs";
 import Explorer from "../../Explorer";
 import { IQueryTabComponentProps, ITabAccessor, QueryTabComponent } from "../../Tabs/QueryTab/QueryTabComponent";
@@ -70,6 +71,30 @@ export class NewQueryTab extends TabsBase {
       splitterDirection: options.splitterDirection,
       queryViewSizePercent: options.queryViewSizePercent,
     });
+  }
+
+  public canDuplicate(): boolean {
+    return true;
+  }
+
+  public duplicateTab(): void {
+    const queryText = this.persistedState?.query?.text ?? "";
+    const id = useTabs.getState().getTabs(ViewModels.CollectionTabKind.Query).length + 1;
+    const newTab = new NewQueryTab(
+      {
+        tabKind: ViewModels.CollectionTabKind.Query,
+        title: `Query ${id}`,
+        tabPath: "",
+        collection: this.collection,
+        node: this.collection,
+        queryText,
+        partitionKey: this.partitionKey,
+        splitterDirection: this.persistedState?.splitterDirection,
+        queryViewSizePercent: this.persistedState?.queryViewSizePercent,
+      },
+      this.props,
+    );
+    useTabs.getState().activateNewTab(newTab);
   }
 
   public render(): JSX.Element {
