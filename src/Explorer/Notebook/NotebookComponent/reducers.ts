@@ -50,6 +50,7 @@ export const coreReducer = (state: CoreRecord, action: Action) => {
         .setIn(path.concat("language"), kernelspecs.language);
     }
     default:
+      //eslint-disable-next-line
       return nteractReducers.core(state as any, action as any);
   }
 };
