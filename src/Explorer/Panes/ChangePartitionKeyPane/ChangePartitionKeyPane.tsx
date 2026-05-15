@@ -301,7 +301,7 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
         {/* Migration Type */}
         <Stack data-test="migration-type-section">
           <Text className="panelTextBold" variant="small" style={{ marginBottom: 4 }}>
-            {t(Keys.containerCopy.migrationType.title)}
+            {t(Keys.containerCopy.migrationTypeTitle)}
           </Text>
           <Stack className="panelGroupSpacing" horizontal verticalAlign="center">
             <div role="radiogroup">
