@@ -144,14 +144,16 @@ const pollDataTransferJobOperation = async (
   if (status === "Cancelled") {
     removeFromPolling(jobName);
     clearMessage && clearMessage();
-    const cancelMessage = t(Keys.containerCopy.dataTransfers.polling.cancelConsoleMessage);
+    const cancelMessage = t(Keys.containerCopy.dataTransfers.polling.cancelConsoleMessage, { jobName: jobName });
     NotificationConsoleUtils.logConsoleError(cancelMessage);
     throw new AbortError(cancelMessage);
   }
   if (status === "Paused") {
     removeFromPolling(jobName);
     clearMessage && clearMessage();
-    NotificationConsoleUtils.logConsoleInfo(t(Keys.containerCopy.dataTransfers.polling.pauseConsoleMessage));
+    NotificationConsoleUtils.logConsoleInfo(
+      t(Keys.containerCopy.dataTransfers.polling.pauseConsoleMessage, { jobName: jobName }),
+    );
     return body;
   }
   if (status === "Failed" || status === "Faulted") {
