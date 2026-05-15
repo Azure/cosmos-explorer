@@ -247,10 +247,10 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
     const partitionKeyString = partitionKey.trim();
     const partitionKeyData: DataModels.PartitionKey = partitionKeyString
       ? {
-        paths: [partitionKeyString, ...(subPartitionKeys.length > 0 ? subPartitionKeys : [])],
-        kind: subPartitionKeys.length > 0 ? "MultiHash" : "Hash",
-        version: 2,
-      }
+          paths: [partitionKeyString, ...(subPartitionKeys.length > 0 ? subPartitionKeys : [])],
+          kind: subPartitionKeys.length > 0 ? "MultiHash" : "Hash",
+          version: 2,
+        }
       : undefined;
 
     const createCollectionParams: DataModels.CreateCollectionParams = {
