@@ -34,6 +34,8 @@
     "browse": "Procurar",
     "increaseValueBy1": "Aumentar o valor em 1",
     "decreaseValueBy1": "Diminuir valor em 1",
+    "on": "Ativado",
+    "off": "Desligado",
     "preview": "Pré-visualização"
   },
   "splashScreen": {
@@ -303,7 +305,7 @@
     "deleteContainer": "Excluir {{containerName}}",
     "newSqlQuery": "Nova Consulta SQL",
     "newQuery": "Nova Consulta",
-    "openMongoShell": "Abrir o Shell Mongo",
+    "openMongoShell": "Abrir o Mongo Shell",
     "newShell": "Novo Shell",
     "openCassandraShell": "Abrir o Shell Cassandra",
     "newStoredProcedure": "Novo Procedimento Armazenado",
@@ -762,7 +764,7 @@
         "computedProperties": "Propriedades Calculadas",
         "containerPolicies": "Políticas de Contêiner",
         "throughputBuckets": "Buckets de Taxa de Transferência",
-        "globalSecondaryIndexPreview": "Índice Secundário Global (Versão Prévia)",
+        "globalSecondaryIndexPreview": "Global Secondary Index",
         "maskingPolicyPreview": "Política de Mascaramento"
       },
       "mongoNotifications": {
@@ -811,7 +813,7 @@
         "quotaMaxOption": "Sua cota máxima atual é de {{maximumThroughput}} RU/s. Para exceder esse limite, você deve solicitar um aumento de cota, que será revisado pela equipe do Azure Cosmos DB.",
         "belowMinimumMessage": "Não é possível reduzir a taxa de transferência abaixo do mínimo atual de {{minimum}} RU/s. Para mais informações sobre esse limite, consulte nossa documentação de cotas de serviço.",
         "saveThroughputWarning": "Sua cobrança será afetada à medida que você atualizar as configurações de taxa de transferência. Revise a estimativa de custo atualizada abaixo antes de salvar as alterações",
-        "currentAutoscaleThroughput": "Taxa de transferência atual da escala automática:",
+        "currentAutoscaleThroughput": "Taxa de transferência de dimensionamento automático:",
         "targetAutoscaleThroughput": "Taxa de transferência de escala automática de destino:",
         "currentManualThroughput": "Taxa de transferência manual atual:",
         "targetManualThroughput": "Taxa de transferência manual de destino:",
@@ -841,7 +843,7 @@
       "mongoIndexing": {
         "disclaimer": "Para consultas que filtram várias propriedades, crie vários índices de campo único em vez de um índice composto.",
         "disclaimerCompoundIndexesLink": " Índices compostos ",
-        "disclaimerSuffix": "são usados apenas para classificar os resultados da consulta. Se você precisar adicionar um índice composto, poderá criar um usando o shell do Mongo.",
+        "disclaimerSuffix": "são usados apenas para classificar os resultados da consulta. Se você precisar adicionar um índice composto, poderá criar um usando o Mongo Shell.",
         "compoundNotSupported": "Coleções com índices compostos ainda não têm suporte no editor de indexação. Para modificar a política de indexação desta coleção, use o Mongo Shell.",
         "aadError": "Para usar o editor de políticas de indexação, faça logon no",
         "aadErrorLink": "portal do azure.",
@@ -991,6 +993,165 @@
       "dimensionFlatIndexError": "A dimensão máxima permitida para o índice simples é 505",
       "quantizationByteSizeRangeError": "O tamanho do byte de quantização deve ser maior que 0 e menor ou igual a 512",
       "indexingSearchListSizeRangeError": "O tamanho da lista de pesquisa de indexação deve ser maior ou igual a 25 e menor ou igual a 500"
+    }
+  },
+  "containerCopy": {
+    "commandBar": {
+      "feedbackButtonLabel": "Comentários",
+      "feedbackButtonAriaLabel": "Fornecer comentários sobre trabalhos de cópia",
+      "refreshButtonAriaLabel": "Atualizar trabalhos de cópia",
+      "createCopyJobButtonLabel": "Criar Trabalho de Cópia",
+      "createCopyJobButtonAriaLabel": "Criar um novo trabalho de cópia de contêiner"
+    },
+    "noCopyJobs": {
+      "title": "Não há trabalhos de cópia para mostrar",
+      "createCopyJobButtonText": "Criar um trabalho de cópia de contêiner"
+    },
+    "jobDetails": {
+      "panelTitle": "{{jobName}}",
+      "panelTitleDefault": "Detalhes do Trabalho",
+      "errorTitle": "Detalhes do Erro",
+      "selectedContainers": "Contêineres Selecionados"
+    },
+    "createCopyJob": {
+      "panelTitle": "Criar trabalho de cópia"
+    },
+    "selectAccount": {
+      "description": "Selecione uma conta de destino para a qual copiar.",
+      "subscriptionDropdownLabel": "Assinatura",
+      "subscriptionDropdownPlaceholder": "Selecione uma assinatura",
+      "accountDropdownLabel": "Conta",
+      "accountDropdownPlaceholder": "Selecionar uma conta"
+    },
+    "migrationType": {
+      "offline": {
+        "title": "Modo offline",
+        "description": "Os trabalhos de cópia de contêiner offline permitem copiar dados de um contêiner de origem para um contêiner de destino do Cosmos DB para APIs com suporte. Para garantir a integridade dos dados entre a origem e o destino, recomendamos interromper as atualizações no contêiner de origem antes de criar o trabalho de cópia. Saiba mais sobre [trabalhos de cópia offline](https://learn.microsoft.com/azure/cosmos-db/how-to-container-copy?tabs=offline-copy&pivots=api-nosql)."
+      },
+      "online": {
+        "title": "Modo online",
+        "description": "Os trabalhos de cópia online de contêiner permitem copiar dados de um contêiner de origem para um contêiner de destino da API NoSQL do Cosmos DB usando o feed de alterações [Todas as Versões e Excluir](https://learn.microsoft.com/azure/cosmos-db/change-feed-modes?tabs=all-versions-and-deletes#all-versions-and-deletes-change-feed-mode-preview). Isso permite que as atualizações continuem na fonte enquanto os dados são copiados. Um breve tempo de inatividade é necessário no final para alternar aplicativos cliente com segurança para o contêiner de destino. Saiba mais sobre [trabalhos de cópia online](https://learn.microsoft.com/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#getting-started)."
+      }
+    },
+    "selectContainers": {
+      "description": "Selecione um contêiner de origem e um contêiner de destino para o qual copiar.",
+      "sourceContainerSubHeading": "Contêiner de origem",
+      "targetContainerSubHeading": "Contêiner de destino",
+      "databaseDropdownLabel": "Banco de dados",
+      "databaseDropdownPlaceholder": "Selecionar um banco de dados",
+      "containerDropdownLabel": "Contêiner",
+      "containerDropdownPlaceholder": "Selecionar um contêiner",
+      "createNewContainerSubHeading": "Configure as propriedades do novo contêiner na conta de destino \"{{accountName}}\".",
+      "createNewContainerSubHeadingDefault": "Configure as propriedades para o novo contêiner.",
+      "createContainerButtonLabel": "Criar um novo contêiner",
+      "createContainerHeading": "Criar novo contêiner"
+    },
+    "preview": {
+      "jobNameLabel": "Nome do trabalho",
+      "subscriptionLabel": "Assinatura de destino",
+      "accountLabel": "Conta de destino",
+      "sourceDatabaseLabel": "Banco de dados de origem",
+      "sourceContainerLabel": "Contêiner de origem",
+      "targetDatabaseLabel": "Banco de dados de destino",
+      "targetContainerLabel": "Contêiner de destino"
+    },
+    "assignPermissions": {
+      "crossAccountDescription": "Para copiar dados da origem para o contêiner de destino, certifique-se de que a identidade gerenciada da conta de origem tenha acesso de leitura/gravação à conta de destino concluindo as etapas a seguir.",
+      "intraAccountOnlineDescription": "Siga as etapas abaixo para habilitar a cópia online em sua conta \"{{accountName}}\".",
+      "crossAccountConfiguration": {
+        "title": "Cópia de contêiner entre contas",
+        "description": "Siga as instruções abaixo para conceder permissões necessárias para copiar dados de \"{{sourceAccount}}\" para \"{{destinationAccount}}\"."
+      },
+      "onlineConfiguration": {
+        "title": "Cópia de contêiner online",
+        "description": "Siga as instruções abaixo para habilitar a cópia online em sua conta \"{{accountName}}\"."
+      }
+    },
+    "popoverOverlaySpinnerLabel": "Aguarde enquanto processemos a sua solicitação...",
+    "addManagedIdentity": {
+      "title": "Identidade gerenciada atribuída pelo sistema habilitada.",
+      "description": "A identidade gerenciada atribuída pelo sistema é restrita a uma por recurso e está vinculada ao ciclo de vida desse recurso. Uma vez habilitado, você pode conceder permissões à identidade gerenciada usando o controle de acesso baseado em função (RBAC) do Azure. A identidade gerenciada é autenticada com o Microsoft Entra ID, portanto, você não precisa armazenar credenciais no código.",
+      "descriptionHrefText": "Saiba mais sobre as Identidades gerenciadas.",
+      "descriptionHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
+      "toggleLabel": "Identidade gerenciada atribuída ao sistema",
+      "tooltipContent": "Saiba mais sobre",
+      "tooltipHrefText": "Identidades Gerenciadas.",
+      "tooltipHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
+      "userAssignedIdentityTooltip": "Você pode selecionar uma identidade atribuída pelo usuário existente ou criar uma nova.",
+      "userAssignedIdentityLabel": "Você também pode selecionar uma identidade gerenciada atribuída pelo usuário.",
+      "createUserAssignedIdentityLink": "Criar uma identidade gerenciada atribuída pelo usuário",
+      "enablementTitle": "Habilitar a identidade gerenciada atribuída pelo sistema",
+      "enablementDescription": "Habilitar a identidade gerenciada atribuída pelo sistema no {{accountName}}. Para confirmar, clique no botão \"Sim\"."
+    },
+    "defaultManagedIdentity": {
+      "title": "Identidade gerenciada atribuída pelo sistema definida como padrão.",
+      "description": "Defina a identidade gerenciada atribuída pelo sistema como padrão para \"{{accountName}}\" ativando essa opção.",
+      "tooltipContent": "Saiba mais sobre",
+      "tooltipHrefText": "Identidades Gerenciadas Padrão.",
+      "tooltipHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
+      "popoverTitle": "Identidade gerenciada atribuída pelo sistema definida como padrão",
+      "popoverDescription": "Atribua a identidade gerenciada atribuída pelo sistema como o padrão para \"{{accountName}}\". Para confirmar, clique no botão \"Sim\". "
+    },
+    "readWritePermissionAssigned": {
+      "title": "Permissões de leitura/gravação atribuídas à identidade padrão.",
+      "description": "Para permitir a cópia de dados da origem para o contêiner de destino, forneça acesso de leitura/gravação na conta de destino para a identidade padrão da conta de origem.",
+      "tooltipContent": "Saiba mais sobre",
+      "tooltipHrefText": "Permissões de leitura/gravação.",
+      "tooltipHref": "https://learn.microsoft.com/azure/cosmos-db/nosql/how-to-connect-role-based-access-control",
+      "popoverTitle": "Atribua permissões de leitura/gravação à identidade padrão.",
+      "popoverDescription": "Atribua permissões de leitura/gravação na conta de destino à identidade padrão da conta de origem. Para confirmar, clique no botão \"Sim\"."
+    },
+    "pointInTimeRestore": {
+      "title": "Restauração pontual habilitada",
+      "description": "Para facilitar trabalhos de cópia de contêiner online, atualize a política de backup \"{{accessName}}\" de backup periódico para contínuo. Habilitar o backup contínuo é necessário para essa funcionalidade.",
+      "tooltipContent": "Saiba mais sobre",
+      "tooltipHrefText": "Backup Contínuo",
+      "tooltipHref": "https://learn.microsoft.com/en-us/azure/cosmos-db/continuous-backup-restore-introduction",
+      "buttonText": "Habilitar Restauração Pontual"
+    },
+    "onlineCopyEnabled": {
+      "title": "Cópia online habilitada",
+      "description": "Habilite a cópia de contêiner online clicando no botão abaixo em sua conta \"{{accountName}}\".",
+      "hrefText": "Saiba mais sobre trabalhos de cópia online",
+      "href": "https://learn.microsoft.com/en-us/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#enable-online-copy",
+      "buttonText": "Habilitar Cópia Online",
+      "validateAllVersionsAndDeletesChangeFeedSpinnerLabel": "Validando Todas as versões e exclui o modo de feed de alterações (versão prévia)...",
+      "enablingAllVersionsAndDeletesChangeFeedSpinnerLabel": "Habilitando Todas as versões e excluindo o modo de feed de alterações (versão prévia)...",
+      "enablingOnlineCopySpinnerLabel": "Habilitando a cópia online em sua conta \"{{accountName}}\"..."
+    },
+    "monitorJobs": {
+      "columns": {
+        "lastUpdatedTime": "Data e hora",
+        "name": "Nome do trabalho",
+        "status": "Status",
+        "completionPercentage": "% de Conclusão",
+        "duration": "Duração",
+        "error": "Mensagem de erro",
+        "mode": "Modo",
+        "actions": "Ações"
+      },
+      "actions": {
+        "pause": "Pausar",
+        "resume": "Retomar",
+        "complete": "Completar",
+        "viewDetails": "Exibir Detalhes"
+      },
+      "status": {
+        "pending": "Na fila",
+        "inProgress": "Em execução",
+        "running": "Em execução",
+        "partitioning": "Em execução",
+        "paused": "Em pausa",
+        "completed": "Concluído",
+        "failed": "Com falha",
+        "faulted": "Com falha",
+        "skipped": "Cancelado",
+        "cancelled": "Cancelado"
+      },
+      "dialog": {
+        "confirmButtonText": "Confirmar",
+        "cancelButtonText": "Cancelar"
+      }
     }
   }
 }

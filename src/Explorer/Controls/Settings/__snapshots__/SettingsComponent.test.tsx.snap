@@ -670,7 +670,7 @@ exports[`SettingsComponent renders 1`] = `
             "data-test": "settings-tab-header/GlobalSecondaryIndexTab",
           }
         }
-        headerText="Global Secondary Index (Preview)"
+        headerText="Global Secondary Index"
         itemKey="GlobalSecondaryIndexTab"
         key="GlobalSecondaryIndexTab"
         style={
