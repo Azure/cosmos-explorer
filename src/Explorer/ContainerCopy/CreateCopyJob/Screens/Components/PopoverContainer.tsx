@@ -1,9 +1,9 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/display-name */
 import { DefaultButton, PrimaryButton, Stack, Text } from "@fluentui/react";
+import { Keys, t } from "Localization";
 import React from "react";
 import LoadingOverlay from "../../../../../Common/LoadingOverlay";
-import ContainerCopyMessages from "../../../ContainerCopyMessages";
 
 interface PopoverContainerProps {
   isLoading?: boolean;
@@ -22,7 +22,7 @@ const PopoverContainer: React.FC<PopoverContainerProps> = React.memo(
         tokens={{ childrenGap: 20 }}
         style={{ maxWidth: 450 }}
       >
-        <LoadingOverlay isLoading={isLoading} label={ContainerCopyMessages.popoverOverlaySpinnerLabel} />
+        <LoadingOverlay isLoading={isLoading} label={t(Keys.containerCopy.popoverOverlaySpinnerLabel)} />
         <Text variant="mediumPlus" className="themeText" style={{ fontWeight: 600 }}>
           {title}
         </Text>

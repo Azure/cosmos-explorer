@@ -1,9 +1,9 @@
 import { Stack } from "@fluentui/react";
 import { DatabaseModel } from "Contracts/DataModels";
+import { Keys, t } from "Localization";
 import React from "react";
 import { useDatabases } from "../../../../../hooks/useDatabases";
 import { useDataContainers } from "../../../../../hooks/useDataContainers";
-import ContainerCopyMessages from "../../../ContainerCopyMessages";
 import { useCopyJobContext } from "../../../Context/CopyJobContext";
 import { DatabaseContainerSection } from "./components/DatabaseContainerSection";
 import { dropDownChangeHandler } from "./Events/DropDownChangeHandler";
@@ -52,9 +52,9 @@ const SelectSourceAndTargetContainers = ({ showAddCollectionPanel }: SelectSourc
       className="selectSourceAndTargetContainers"
       tokens={{ childrenGap: 25 }}
     >
-      <span className="themeText">{ContainerCopyMessages.selectSourceAndTargetContainersDescription}</span>
+      <span className="themeText">{t(Keys.containerCopy.selectContainers.description)}</span>
       <DatabaseContainerSection
-        heading={ContainerCopyMessages.sourceContainerSubHeading}
+        heading={t(Keys.containerCopy.selectContainers.sourceContainerSubHeading)}
         databaseOptions={sourceDatabaseOptions}
         selectedDatabase={source?.databaseId}
         databaseDisabled={false}
@@ -66,7 +66,7 @@ const SelectSourceAndTargetContainers = ({ showAddCollectionPanel }: SelectSourc
         sectionType="source"
       />
       <DatabaseContainerSection
-        heading={ContainerCopyMessages.targetContainerSubHeading}
+        heading={t(Keys.containerCopy.selectContainers.targetContainerSubHeading)}
         databaseOptions={targetDatabaseOptions}
         selectedDatabase={target?.databaseId}
         databaseDisabled={false}

@@ -1,11 +1,11 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/display-name */
 import { Dropdown } from "@fluentui/react";
+import { Keys, t } from "Localization";
 import React, { useEffect } from "react";
 import { Subscription } from "../../../../../../Contracts/DataModels";
 import { useSubscriptions } from "../../../../../../hooks/useSubscriptions";
 import { userContext } from "../../../../../../UserContext";
-import ContainerCopyMessages from "../../../../ContainerCopyMessages";
 import { useCopyJobContext } from "../../../../Context/CopyJobContext";
 import FieldRow from "../../Components/FieldRow";
 
@@ -17,11 +17,11 @@ export const SubscriptionDropdown: React.FC<SubscriptionDropdownProps> = React.m
 
   const updateCopyJobState = (newSubscription: Subscription) => {
     setCopyJobState((prevState) => {
-      if (prevState.source?.subscription?.subscriptionId !== newSubscription.subscriptionId) {
+      if (prevState.target?.subscription?.subscriptionId !== newSubscription.subscriptionId) {
         return {
           ...prevState,
-          source: {
-            ...prevState.source,
+          target: {
+            ...prevState.target,
             subscription: newSubscription,
             account: null,
           },
@@ -33,7 +33,7 @@ export const SubscriptionDropdown: React.FC<SubscriptionDropdownProps> = React.m
 
   useEffect(() => {
     if (subscriptions && subscriptions.length > 0) {
-      const currentSubscriptionId = copyJobState?.source?.subscription?.subscriptionId;
+      const currentSubscriptionId = copyJobState?.target?.subscription?.subscriptionId;
       const predefinedSubscriptionId = userContext.subscriptionId;
       const selectedSubscriptionId = currentSubscriptionId || predefinedSubscriptionId;
 
@@ -61,13 +61,13 @@ export const SubscriptionDropdown: React.FC<SubscriptionDropdownProps> = React.m
     }
   };
 
-  const selectedSubscriptionId = copyJobState?.source?.subscription?.subscriptionId;
+  const selectedSubscriptionId = copyJobState?.target?.subscription?.subscriptionId;
 
   return (
-    <FieldRow label={ContainerCopyMessages.subscriptionDropdownLabel}>
+    <FieldRow label={t(Keys.containerCopy.selectAccount.subscriptionDropdownLabel)}>
       <Dropdown
-        placeholder={ContainerCopyMessages.subscriptionDropdownPlaceholder}
-        ariaLabel={ContainerCopyMessages.subscriptionDropdownLabel}
+        placeholder={t(Keys.containerCopy.selectAccount.subscriptionDropdownPlaceholder)}
+        ariaLabel={t(Keys.containerCopy.selectAccount.subscriptionDropdownLabel)}
         data-test="subscription-dropdown"
         options={subscriptionOptions}
         required
