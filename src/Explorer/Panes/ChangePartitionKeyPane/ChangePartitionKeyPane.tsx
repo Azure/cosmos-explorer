@@ -247,10 +247,10 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
     const partitionKeyString = partitionKey.trim();
     const partitionKeyData: DataModels.PartitionKey = partitionKeyString
       ? {
-          paths: [partitionKeyString, ...(subPartitionKeys.length > 0 ? subPartitionKeys : [])],
-          kind: subPartitionKeys.length > 0 ? "MultiHash" : "Hash",
-          version: 2,
-        }
+        paths: [partitionKeyString, ...(subPartitionKeys.length > 0 ? subPartitionKeys : [])],
+        kind: subPartitionKeys.length > 0 ? "MultiHash" : "Hash",
+        version: 2,
+      }
       : undefined;
 
     const createCollectionParams: DataModels.CreateCollectionParams = {
@@ -301,7 +301,7 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
         {/* Migration Type */}
         <Stack data-test="migration-type-section">
           <Text className="panelTextBold" variant="small" style={{ marginBottom: 4 }}>
-            Migration type
+            {t(Keys.containerCopy.migrationType.title)}
           </Text>
           <Stack className="panelGroupSpacing" horizontal verticalAlign="center">
             <div role="radiogroup">
@@ -317,7 +317,7 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
                 tabIndex={0}
                 onChange={() => setOnlineMode(false)}
               />
-              <span className="panelRadioBtnLabel">Offline mode</span>
+              <span className="panelRadioBtnLabel">{t(Keys.containerCopy.migrationType.offline.title)}</span>
 
               <input
                 className="panelRadioBtn"
@@ -330,7 +330,7 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
                 tabIndex={0}
                 onChange={() => setOnlineMode(true)}
               />
-              <span className="panelRadioBtnLabel">Online mode</span>
+              <span className="panelRadioBtnLabel">{t(Keys.containerCopy.migrationType.online.title)}</span>
             </div>
           </Stack>
           {migrationTypeContent && (
@@ -348,7 +348,7 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
           <Stack horizontal>
             <span className="mandatoryStar">*&nbsp;</span>
             <Text className="panelTextBold" variant="small">
-              Database id
+              {t(Keys.panes.addDatabase.databaseIdLabel)}
             </Text>
             <TooltipHost
               directionalHint={DirectionalHint.bottomLeftEdge}
@@ -691,7 +691,7 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
 
             {!onlinePrerequisitesMet && (
               <MessageBar messageBarType={MessageBarType.warning} data-test="online-prerequisites-warning">
-                Online migration prerequisites must be enabled before proceeding.
+                {t(Keys.containerCopy.onlineCopyEnabled.onlineMigrationPrerequisitesMessage)}
               </MessageBar>
             )}
           </Stack>
