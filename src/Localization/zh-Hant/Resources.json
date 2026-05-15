@@ -34,6 +34,8 @@
     "browse": "瀏覽",
     "increaseValueBy1": "將值增加 1",
     "decreaseValueBy1": "將值減少 1",
+    "on": "開啟",
+    "off": "關閉",
     "preview": "預覽"
   },
   "splashScreen": {
@@ -76,7 +78,7 @@
         "description": "建立資料表並使用 PostgreSQL 殼層介面與資料互動"
       },
       "vcoreMongo": {
-        "title": "Mongo 殼層",
+        "title": "Mongo Shell",
         "description": "建立集合並使用 MongoDB 殼層介面與資料互動"
       }
     },
@@ -303,7 +305,7 @@
     "deleteContainer": "刪除 {{containerName}}",
     "newSqlQuery": "新增 SQL 查詢",
     "newQuery": "新增查詢",
-    "openMongoShell": "開啟 Mongo 殼層",
+    "openMongoShell": "開啟 Mongo Shell",
     "newShell": "新增殼層",
     "openCassandraShell": "開啟 Cassandra 殼層",
     "newStoredProcedure": "新增預存程序",
@@ -414,7 +416,7 @@
       "refreshGridFailed": "重新整理文件方格失敗"
     },
     "mongoShell": {
-      "title": "Mongo 殼層"
+      "title": "Mongo Shell"
     }
   },
   "panes": {
@@ -488,7 +490,7 @@
       "legacySdkInfo": "為確保與舊版 SDK 的相容性，已建立的容器將使用舊版分割配置，其支援大小最多僅 101 個位元組的資料分割索引鍵值。如果啟用此功能，您將無法使用階層式資料分割索引鍵。",
       "indexingOnInfo": "預設會對文件中的所有屬性編製索引，以獲得彈性且有效率的查詢。",
       "indexingOffInfo": "索引編製將會關閉。如果您不需要執行查詢或只有索引鍵值作業，建議您使用。",
-      "indexingOffWarning": "藉由建立此容器並關閉索引編製，您將無法進行任何索引編製原則變更。索引變更只允許在具有索引編製原則的容器上執行。",
+      "indexingOffWarning": "藉由建立此容器並關閉索引編製，您將無法進行任何索引原則的變更。索引變更只允許在具有索引原則的容器上執行。",
       "acknowledgeSpendErrorMonthly": "請認知每月預估支出。",
       "acknowledgeSpendErrorDaily": "請認知估計的每日支出。",
       "unshardedMaxRuError": "未分區的集合最多支援 10,000 個 RU",
@@ -735,12 +737,12 @@
       "addProperty": "新增屬性"
     },
     "addGlobalSecondaryIndex": {
-      "globalSecondaryIndexId": "全域次要索引容器識別碼",
+      "globalSecondaryIndexId": "全域從屬索引容器識別碼",
       "globalSecondaryIndexIdPlaceholder": "例如，indexbyEmailId",
       "projectionQuery": "投射查詢",
       "projectionQueryPlaceholder": "SELECT c.email, c.accountId FROM c",
-      "projectionQueryTooltip": "深入了解如何定義全域次要索引。",
-      "disabledTitle": "已在建立全域次要索引。請等候它完成，再建立新的工作。"
+      "projectionQueryTooltip": "深入了解如何定義全域從屬索引。",
+      "disabledTitle": "已在建立全域從屬索引。請等候它完成，再建立新的工作。"
     },
     "stringInput": {
       "inputMismatchError": "輸入 {{input}} 與選取的 {{selectedId}} 不符"
@@ -762,7 +764,7 @@
         "computedProperties": "計算屬性",
         "containerPolicies": "容器原則",
         "throughputBuckets": "輸送量貯體",
-        "globalSecondaryIndexPreview": "全域次要索引 (預覽)",
+        "globalSecondaryIndexPreview": "Global Secondary Index",
         "maskingPolicyPreview": "遮罩原則"
       },
       "mongoNotifications": {
@@ -843,7 +845,7 @@
         "disclaimerCompoundIndexesLink": " 複合索引 ",
         "disclaimerSuffix": "僅用於排序查詢結果。如果您需要新增複合索引，您可以使用 Mongo Shell 建立一個複合索引。",
         "compoundNotSupported": "索引編輯器中尚不支援具有複合索引的集合。若要修改此集合的索引編製原則，請使用 Mongo Shell。",
-        "aadError": "若要使用索引編製原則編輯器，請登入",
+        "aadError": "若要使用索引原則編輯器，請登入",
         "aadErrorLink": "Azure 入口網站。",
         "refreshingProgress": "重新整理索引轉換進度",
         "canMakeMoreChangesZero": "當目前的索引轉換完成後，您可以進行更多索引變更。",
@@ -925,12 +927,12 @@
       },
       "globalSecondaryIndex": {
         "indexesDefined": "此容器已定義下列索引。",
-        "learnMoreSuffix": "關於如何定義全域次要索引，以及如何使用它們。",
-        "jsonAriaLabel": "全域次要索引 JSON",
+        "learnMoreSuffix": "關於如何定義全域從屬索引，以及如何使用它們。",
+        "jsonAriaLabel": "全域從屬索引 JSON",
         "addIndex": "新增索引",
-        "settingsTitle": "全域次要索引設定",
+        "settingsTitle": "全域從屬索引設定",
         "sourceContainer": "來源容器",
-        "indexDefinition": "全域次要索引定義"
+        "indexDefinition": "全域從屬索引定義"
       },
       "indexingPolicyRefresh": {
         "refreshFailed": "重新整理索引轉換進度失敗"
@@ -991,6 +993,165 @@
       "dimensionFlatIndexError": "平面索引允許的最大維度為 505",
       "quantizationByteSizeRangeError": "量化位元組大小必須大於 0 且小於或等於 512",
       "indexingSearchListSizeRangeError": "索引搜尋清單大小必須大於或等於 25 且小於或等於 500"
+    }
+  },
+  "containerCopy": {
+    "commandBar": {
+      "feedbackButtonLabel": "意見反應",
+      "feedbackButtonAriaLabel": "提供有關複製工作的意見反應",
+      "refreshButtonAriaLabel": "重新整理複製工作",
+      "createCopyJobButtonLabel": "建立複製工作",
+      "createCopyJobButtonAriaLabel": "建立新的容器複製工作"
+    },
+    "noCopyJobs": {
+      "title": "沒有可顯示的複製工作",
+      "createCopyJobButtonText": "建立容器複製工作"
+    },
+    "jobDetails": {
+      "panelTitle": "{{jobName}}",
+      "panelTitleDefault": "工作詳細資料",
+      "errorTitle": "錯誤詳細資料",
+      "selectedContainers": "已選取的容器"
+    },
+    "createCopyJob": {
+      "panelTitle": "建立複本工作"
+    },
+    "selectAccount": {
+      "description": "請選取要複製到的目的地帳戶。",
+      "subscriptionDropdownLabel": "訂用帳戶",
+      "subscriptionDropdownPlaceholder": "選取訂用帳戶",
+      "accountDropdownLabel": "帳戶",
+      "accountDropdownPlaceholder": "選取帳戶"
+    },
+    "migrationType": {
+      "offline": {
+        "title": "離線模式",
+        "description": "離線容器複製工作可讓您將資料從來源容器複製到目的地 Cosmos DB 容器，適用於支援的 API。為確保來源與目的地之間的資料完整性，我們建議您在建立複製工作之前，先停止來源容器上的更新。深入了解 [離線複製工作](https://learn.microsoft.com/azure/cosmos-db/how-to-container-copy?tabs=offline-copy&pivots=api-nosql)。"
+      },
+      "online": {
+        "title": "線上模式",
+        "description": "線上容器複製工作可讓您使用 [所有版本和刪除](https://learn.microsoft.com/azure/cosmos-db/change-feed-modes?tabs=all-versions-and-deletes#all-versions-and-deletes-change-feed-mode-preview) 變更摘要，將資料從來源容器複製到目的地 Cosmos DB NoSQL API 容器。這可讓您在複製資料的同時，繼續對來源進行更新。最後需要短暫停機，才能安全地將用戶端應用程式切換到目的地容器。深入了解 [線上複製工作](https://learn.microsoft.com/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#getting-started)。"
+      }
+    },
+    "selectContainers": {
+      "description": "請選取來源容器和要複製到的目的地容器。",
+      "sourceContainerSubHeading": "來源容器",
+      "targetContainerSubHeading": "目的地容器",
+      "databaseDropdownLabel": "資料庫",
+      "databaseDropdownPlaceholder": "選取資料庫",
+      "containerDropdownLabel": "容器",
+      "containerDropdownPlaceholder": "選取容器",
+      "createNewContainerSubHeading": "請在目的地帳戶「{{accountName}}」上設定新容器的屬性。",
+      "createNewContainerSubHeadingDefault": "設定新容器的屬性。",
+      "createContainerButtonLabel": "建立新容器",
+      "createContainerHeading": "建立新的容器"
+    },
+    "preview": {
+      "jobNameLabel": "工作名稱",
+      "subscriptionLabel": "目標訂閱",
+      "accountLabel": "目的地帳戶",
+      "sourceDatabaseLabel": "來源資料庫",
+      "sourceContainerLabel": "來源容器",
+      "targetDatabaseLabel": "目的地資料庫",
+      "targetContainerLabel": "目的地容器"
+    },
+    "assignPermissions": {
+      "crossAccountDescription": "若要將資料從來源複製到目的地容器，請完成下列步驟，確保來源帳戶的受控識別具有目的地帳戶的讀寫存取權。",
+      "intraAccountOnlineDescription": "請依照下列步驟，在您的「{{accountName}}」帳戶上啟用線上複製。",
+      "crossAccountConfiguration": {
+        "title": "跨帳戶容器複製",
+        "description": "請遵循下列指示，授與必要權限，以將資料從「{{sourceAccount}}」複製到「{{destinationAccount}}」。"
+      },
+      "onlineConfiguration": {
+        "title": "線上容器複製",
+        "description": "請遵循下列指示，在您的「{{accountName}}」帳戶上啟用線上複製。"
+      }
+    },
+    "popoverOverlaySpinnerLabel": "正在處理您的要求，請稍候...",
+    "addManagedIdentity": {
+      "title": "系統指派的受控識別已啟用。",
+      "description": "系統指派的受控識別每個資源僅限一個，且與此資源的生命週期相繫結。一旦啟用，您就可以使用 Azure 角色型存取控制 (Azure RBAC) 將權限授與受控識別。受控識別由 Microsoft Entra ID 驗證，因此您不需要在程式碼中儲存任何認證。",
+      "descriptionHrefText": "深入了解受控識別",
+      "descriptionHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
+      "toggleLabel": "系統指派的受控識別",
+      "tooltipContent": "深入了解",
+      "tooltipHrefText": "受控識別。",
+      "tooltipHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
+      "userAssignedIdentityTooltip": "您可以選取現有的使用者指派受控識別，或建立新的受控識別。",
+      "userAssignedIdentityLabel": "您也可以選取使用者指派的受控識別。",
+      "createUserAssignedIdentityLink": "建立使用者指派的受控識別",
+      "enablementTitle": "啟用系統指派的受控識別",
+      "enablementDescription": "啟用 {{accountName}} 上的系統指派的受控識別。若要確認，請按一下「是」按鈕。"
+    },
+    "defaultManagedIdentity": {
+      "title": "系統指派的受控識別設定為預設。",
+      "description": "請將系統指派的受控識別開啟，以將其設為「{{accountName}}」的預設值。",
+      "tooltipContent": "深入了解",
+      "tooltipHrefText": "預設受控識別。",
+      "tooltipHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
+      "popoverTitle": "系統指派的受控識別設定為預設",
+      "popoverDescription": "請將系統指派的受控識別指派為「{{accountName}}」的預設值。若要確認，請按一下「是」按鈕。"
+    },
+    "readWritePermissionAssigned": {
+      "title": "已指派給預設身分識別的讀寫權限。",
+      "description": "若要允許將資料從來源複製到目的地容器，請將目的地帳戶的讀寫存取權提供給來源帳戶的預設受控識別。",
+      "tooltipContent": "深入了解",
+      "tooltipHrefText": "讀寫權限。",
+      "tooltipHref": "https://learn.microsoft.com/azure/cosmos-db/nosql/how-to-connect-role-based-access-control",
+      "popoverTitle": "將讀寫權限指派給預設身分識別。",
+      "popoverDescription": "請將目的地帳戶的讀寫權限指派給來源帳戶的預設受控識別。若要確認，請按一下「是」按鈕。"
+    },
+    "pointInTimeRestore": {
+      "title": "已啟用時間點還原",
+      "description": "為輔助線上容器複製工作，請將您的「{{accessName}}」備份原則從定期備份更新為連續備份。此功能需要啟用連續備份。",
+      "tooltipContent": "深入了解",
+      "tooltipHrefText": "連續備份",
+      "tooltipHref": "https://learn.microsoft.com/en-us/azure/cosmos-db/continuous-backup-restore-introduction",
+      "buttonText": "啟用時間點還原"
+    },
+    "onlineCopyEnabled": {
+      "title": "已啟用線上複製",
+      "description": "按一下您「{{accountName}}」帳戶下方的按鈕，即可啟用線上容器複製。",
+      "hrefText": "深入了解線上複製工作",
+      "href": "https://learn.microsoft.com/en-us/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#enable-online-copy",
+      "buttonText": "啟用線上複製",
+      "validateAllVersionsAndDeletesChangeFeedSpinnerLabel": "驗證所有版本與刪除的變更摘要模式 (預覽)...",
+      "enablingAllVersionsAndDeletesChangeFeedSpinnerLabel": "啟用所有版本與刪除的變更摘要模式 (預覽)...",
+      "enablingOnlineCopySpinnerLabel": "正在啟用您「{{accountName}}」帳戶的線上複製..."
+    },
+    "monitorJobs": {
+      "columns": {
+        "lastUpdatedTime": "日期和時間",
+        "name": "工作名稱",
+        "status": "狀態",
+        "completionPercentage": "完成百分比",
+        "duration": "期間",
+        "error": "錯誤訊息",
+        "mode": "模式",
+        "actions": "動作"
+      },
+      "actions": {
+        "pause": "暫停",
+        "resume": "繼續",
+        "complete": "完成",
+        "viewDetails": "檢視詳細資料"
+      },
+      "status": {
+        "pending": "已加入佇列",
+        "inProgress": "執行中",
+        "running": "執行中",
+        "partitioning": "執行中",
+        "paused": "暫停",
+        "completed": "已完成",
+        "failed": "失敗",
+        "faulted": "失敗",
+        "skipped": "已取消",
+        "cancelled": "已取消"
+      },
+      "dialog": {
+        "confirmButtonText": "確認",
+        "cancelButtonText": "取消"
+      }
     }
   }
 }

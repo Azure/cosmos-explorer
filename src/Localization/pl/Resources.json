@@ -34,6 +34,8 @@
     "browse": "Przeglądaj",
     "increaseValueBy1": "Zwiększ wartość o 1",
     "decreaseValueBy1": "Zmniejsz wartość o 1",
+    "on": "Włączone",
+    "off": "Wyłączone",
     "preview": "Podgląd"
   },
   "splashScreen": {
@@ -76,7 +78,7 @@
         "description": "Utwórz tabelę i pracuj z danymi za pomocą powłoki interfejsu PostgreSQL"
       },
       "vcoreMongo": {
-        "title": "Powłoka Mongo",
+        "title": "Mongo Shell",
         "description": "Utwórz kolekcję i pracuj z danymi przy użyciu interfejsu powłoki bazy danych MongoDB"
       }
     },
@@ -303,7 +305,7 @@
     "deleteContainer": "Usuń {{containerName}}",
     "newSqlQuery": "Nowe zapytanie SQL",
     "newQuery": "Nowe zapytanie",
-    "openMongoShell": "Otwórz powłokę Mongo",
+    "openMongoShell": "Otwórz Mongo Shell",
     "newShell": "Nowa powłoka",
     "openCassandraShell": "Otwórz powłokę Cassandra",
     "newStoredProcedure": "Nowa procedura składowana",
@@ -326,7 +328,7 @@
       "documentDeleted": "Dokument został pomyślnie usunięty.",
       "deleteDocumentDialogTitle": "Usuń dokument",
       "deleteDocumentsDialogTitle": "Usuń dokumenty",
-      "throttlingError": "Nie można usunąć niektórych dokumentów z powodu błędu ograniczenia szybkości. Spróbuj ponownie później. Aby temu zapobiec w przyszłości, rozważ zwiększenie przepustowości kontenera lub bazy danych.",
+      "throttlingError": "Nie można usunąć niektórych dokumentów z powodu błędu ograniczenia szybkości. Spróbuj ponownie później. Aby temu zapobiec w przyszłości, rozważ zwiększenie przepływności kontenera lub bazy danych.",
       "deleteFailed": "Usuwanie dokumentów nie powiodło się ({{error}})",
       "missingShardProperty": "W dokumencie brakuje właściwości fragmentu: {{partitionKeyProperty}}",
       "refreshGridFailed": "Nie udało się odświeżyć siatki dokumentów",
@@ -353,7 +355,7 @@
       "requestTooLargeBase": "Niektóre żądania usunięcia nie powiodły się z powodu wyjątku „Żądanie za duże” (429)",
       "retriedSuccessfully": "ale pomyślnie ponowiono próbę.",
       "retryingNow": "Ponawianie próby teraz.",
-      "increaseThroughputTip": "Aby temu zapobiec w przyszłości, rozważ zwiększenie przepustowości kontenera lub bazy danych.",
+      "increaseThroughputTip": "Aby temu zapobiec w przyszłości, rozważ zwiększenie przepływności kontenera lub bazy danych.",
       "numberOfSelectedDocuments": "Liczba wybranych dokumentów: {{count}}",
       "mongoFilterPlaceholder": "Wpisz predykat zapytania (np. {\"id\":\"foo\"}), wybierz go z listy rozwijanej lub pozostaw pusty, aby zapytać o wszystkie dokumenty.",
       "sqlFilterPlaceholder": "Wpisz predykat zapytania (np. WHERE c.id=\"1\"), wybierz go z listy rozwijanej lub pozostaw pusty, aby zapytać o wszystkie dokumenty.",
@@ -414,7 +416,7 @@
       "refreshGridFailed": "Nie udało się odświeżyć siatki dokumentów"
     },
     "mongoShell": {
-      "title": "Powłoka Mongo"
+      "title": "Mongo Shell"
     }
   },
   "panes": {
@@ -488,7 +490,7 @@
       "legacySdkInfo": "Aby zapewnić zgodność ze starszymi zestawami SDK, utworzony kontener będzie korzystał ze starszego schematu partycjonowania, który obsługuje wartości klucza partycji o rozmiarze do 101 bajtów. Jeśli ta opcja jest włączona, nie będzie można używać hierarchicznych kluczy partycji.",
       "indexingOnInfo": "Wszystkie właściwości w dokumentach będą domyślnie indeksowane, co umożliwia elastyczne i wydajne zapytania.",
       "indexingOffInfo": "Indeksowanie zostanie wyłączone. Zalecane, jeśli nie musisz uruchamiać zapytań lub wykonujesz tylko operacje na wartościach klucza.",
-      "indexingOffWarning": "Tworząc ten kontener z wyłączonym indeksowaniem, nie będziesz mógł wprowadzać zmian w polityce indeksowania. Zmiany indeksowania są dozwolone tylko w kontenerze z zasadami indeksowania.",
+      "indexingOffWarning": "Tworząc ten kontener z wyłączonym indeksowaniem, nie będziesz mógł wprowadzać zmian w zasadach indeksowania. Zmiany indeksowania są dozwolone tylko w kontenerze z zasadami indeksowania.",
       "acknowledgeSpendErrorMonthly": "Potwierdź szacowane miesięczne wydatki.",
       "acknowledgeSpendErrorDaily": "Potwierdź szacowane dzienne wydatki.",
       "unshardedMaxRuError": "Kolekcje bez fragmentów obsługują do 10 000 jednostek żądań",
@@ -508,7 +510,7 @@
         "step1Body": "Baza danych jest nadrzędna względem kontenera. Możesz utworzyć nową bazę danych lub skorzystać z istniejącej. W tym poradniku tworzymy nową bazę o nazwie SampleDB.",
         "step1LearnMore": "Dowiedz się więcej o zasobach.",
         "step2Headline": "Ustawianie przepływności",
-        "step2Body": "Cosmos DB zaleca współdzielenie przepustowości na poziomie bazy danych. Autoskalowanie zapewnia elastyczną przepustowość w oparciu o maksymalną ustawioną wartość RU/s (Request Units).",
+        "step2Body": "Cosmos DB zaleca współdzielenie przepływności na poziomie bazy danych. Autoskalowanie zapewnia elastyczną przepływność w oparciu o maksymalną ustawioną wartość RU/s (Request Units).",
         "step2LearnMore": "Dowiedz się więcej o jednostkach RU/s.",
         "step3Headline": "Nadawanie nazwy kontenerowi",
         "step3Body": "Nadaj nazwę kontenerowi",
@@ -762,7 +764,7 @@
         "computedProperties": "Właściwości obliczane",
         "containerPolicies": "Zasady kontenera",
         "throughputBuckets": "Zasobniki przepływności",
-        "globalSecondaryIndexPreview": "Globalny indeks pomocniczy (wersja zapoznawcza)",
+        "globalSecondaryIndexPreview": "Global Secondary Index",
         "maskingPolicyPreview": "Zasady maskowania"
       },
       "mongoNotifications": {
@@ -795,7 +797,7 @@
         "perMonth": "/miesiąc"
       },
       "throughput": {
-        "manualToAutoscaleDisclaimer": "System określi początkową maksymalną wartość autoskalowania RU/s na podstawie bieżących ustawień ręcznej przepływności i pojemności magazynu zasobu. Po włączeniu autoskalowania można zmienić maksymalną liczbę jednostek RU/s.",
+        "manualToAutoscaleDisclaimer": "System określi początkową maksymalną wartość autoskalowania RU/s na podstawie bieżących ustawień ręcznej przepływności i pojemności magazynu zasobu. Po włączeniu przepływności z automatycznym skalowaniem można zmienić maksymalną liczbę jednostek RU/s.",
         "ttlWarningText": "System automatycznie usunie elementy na podstawie podanej wartości TTL (w sekundach), bez konieczności wykonywania operacji usuwania przez aplikację kliencką. Aby uzyskać więcej informacji, zobacz",
         "ttlWarningLinkText": "Czas wygaśnięcia (TTL) w usłudze Azure Cosmos DB",
         "unsavedIndexingPolicy": "zasady indeksowania",
@@ -804,17 +806,17 @@
         "unsavedEditorWarningPrefix": "Nie zapisano najnowszych zmian wprowadzonych w",
         "unsavedEditorWarningSuffix": ". Kliknij przycisk Zapisz, aby potwierdzić zmiany.",
         "updateDelayedApplyWarning": "Zamierzasz zażądać zwiększenia przepływności ponad wstępnie przydzieloną pojemność. Wykonanie tej operacji zajmie trochę czasu.",
-        "scalingUpDelayMessage": "Skalowanie w górę potrwa 4–6 godzin, ponieważ przekracza to, co Azure Cosmos DB może obecnie obsłużyć natychmiast, biorąc pod uwagę liczbę partycji fizycznych. Możesz natychmiast zwiększyć przepustowość do {{instantMaximumThroughput}} lub kontynuować z tą wartością i poczekać na zakończenie skalowania w górę.",
+        "scalingUpDelayMessage": "Skalowanie w górę potrwa 4–6 godzin, ponieważ przekracza to, co Azure Cosmos DB może obecnie obsłużyć natychmiast, biorąc pod uwagę liczbę partycji fizycznych. Możesz natychmiast zwiększyć przepływność do {{instantMaximumThroughput}} lub kontynuować z tą wartością i poczekać na zakończenie skalowania w górę.",
         "exceedPreAllocatedMessage": "Twoje żądanie zwiększenia przepływności przekracza wstępnie przydzieloną pojemność, co może potrwać dłużej niż oczekiwano. Masz do wyboru trzy opcje, aby kontynuować:",
         "instantScaleOption": "Możesz natychmiast skalować w górę do {{instantMaximumThroughput}} RU/s.",
         "asyncScaleOption": "Możesz asynchronicznie skalować w górę do dowolnej wartości w {{maximumThroughput}} RU/s w ciągu 4–6 godzin.",
         "quotaMaxOption": "Bieżący limit przydziału wynosi {{maximumThroughput}} RU/s. Aby przekroczony został ten limit, musisz zażądać zwiększenia limitu przydziału, a zespół usługi Azure Cosmos DB przeprowadzi przegląd.",
         "belowMinimumMessage": "Nie można obniżyć przepływności poniżej bieżącego minimum wynoszącego {{minimum}} RU/s. Aby uzyskać więcej informacji na temat tego limitu, zapoznaj się z naszą dokumentacją oferty usługi.",
         "saveThroughputWarning": "Twoje rozliczenie zmieni się po aktualizacji ustawień przepływności. Przejrzyj zaktualizowane oszacowanie kosztów poniżej przed zapisaniem zmian",
-        "currentAutoscaleThroughput": "Bieżąca przepływność autoskalowania:",
-        "targetAutoscaleThroughput": "Docelowa przepływność autoskalowania:",
-        "currentManualThroughput": "Bieżąca przepływność ręczna:",
-        "targetManualThroughput": "Docelowa przepływność ręczna:",
+        "currentAutoscaleThroughput": "Bieżąca przepływność z automatycznym skalowaniem:",
+        "targetAutoscaleThroughput": "Docelowa przepływność z automatycznym skalowaniem:",
+        "currentManualThroughput": "Bieżąca ręczna przepływność:",
+        "targetManualThroughput": "Docelowa ręczna przepływność:",
         "applyDelayedMessage": "Żądanie zwiększenia przepływności zostało pomyślnie przesłane. Ta operacja potrwa od 1 do 3 dni roboczych. Najnowszy status sprawdzisz w obszarze Powiadomienia.",
         "databaseLabel": "Baza danych:",
         "containerLabel": "Kontener:",
@@ -841,8 +843,8 @@
       "mongoIndexing": {
         "disclaimer": "W przypadku zapytań filtrujących po wielu właściwościach utwórz wiele indeksów pojedynczych pól zamiast indeksu złożonego.",
         "disclaimerCompoundIndexesLink": " Indeksy złożone ",
-        "disclaimerSuffix": "są używane tylko do sortowania wyników zapytania. Jeśli musisz dodać indeks złożony, możesz go utworzyć przy użyciu powłoki Mongo.",
-        "compoundNotSupported": "Kolekcje z indeksami złożonymi nie są jeszcze obsługiwane w edytorze indeksowania. Aby zmodyfikować zasady indeksowania dla tej kolekcji, użyj powłoki Mongo.",
+        "disclaimerSuffix": "są używane tylko do sortowania wyników zapytania. Jeśli musisz dodać indeks złożony, możesz go utworzyć przy użyciu Mongo Shell.",
+        "compoundNotSupported": "Kolekcje z indeksami złożonymi nie są jeszcze obsługiwane w edytorze indeksowania. Aby zmodyfikować zasady indeksowania dla tej kolekcji, użyj Mongo Shell.",
         "aadError": "Aby użyć edytora zasad indeksowania, zaloguj się do",
         "aadErrorLink": "azure portal.",
         "refreshingProgress": "Odświeżanie postępu przekształcania indeksu",
@@ -928,7 +930,7 @@
         "learnMoreSuffix": "o sposobie definiowania globalnych indeksów pomocniczych i sposobie ich używania.",
         "jsonAriaLabel": "Kod JSON globalnego indeksu pomocniczego",
         "addIndex": "Dodaj indeks",
-        "settingsTitle": "Globalne ustawienia indeksu pomocniczego",
+        "settingsTitle": "Ustawienia globalnego indeksu pomocniczego",
         "sourceContainer": "Kontener źródłowy",
         "indexDefinition": "Definicja globalnego indeksu pomocniczego"
       },
@@ -946,8 +948,8 @@
         "unlimited": "Bez ograniczeń",
         "instant": "Natychmiastowe",
         "fourToSixHrs": "4–6 godz.",
-        "autoscaleDescription": "Na podstawie użycia Twoja {{resourceType}} przepustowość będzie skalowana od",
-        "freeTierWarning": "Rozliczenia zostaną naliczone, jeśli przydzielisz więcej niż {{ru}} RU/s ręcznej przepływności lub jeśli zasób będzie skalowany powyżej {{ru}} RU/s za pomocą autoskalowania.",
+        "autoscaleDescription": "Na podstawie użycia Twoja {{resourceType}} przepływność będzie skalowana od",
+        "freeTierWarning": "Rozliczenia zostaną naliczone, jeśli przydzielisz więcej niż {{ru}} RU/s ręcznej przepływności lub jeśli zasób będzie skalowany powyżej {{ru}} RU/s przy wykorzystaniu przepływności z automatycznym skalowaniem.",
         "capacityCalculator": "Oszacuj wymagane jednostki RU/s za pomocą",
         "capacityCalculatorLink": " kalkulator pojemności",
         "fixedStorageNote": "W przypadku korzystania z kolekcji ze stałą pojemnością magazynu można skonfigurować do 10 000 RU/s.",
@@ -991,6 +993,165 @@
       "dimensionFlatIndexError": "Maksymalny dozwolony wymiar indeksu prostego to 505",
       "quantizationByteSizeRangeError": "Rozmiar bajtów kwantyzacji musi być większy od 0 i mniejszy lub równy 512",
       "indexingSearchListSizeRangeError": "Rozmiar listy wyszukiwania indeksowania musi być większy lub równy 25 i mniejszy lub równy 500"
+    }
+  },
+  "containerCopy": {
+    "commandBar": {
+      "feedbackButtonLabel": "Opinia",
+      "feedbackButtonAriaLabel": "Przekaż opinię na temat zadań kopiowania",
+      "refreshButtonAriaLabel": "Odśwież zadania kopiowania",
+      "createCopyJobButtonLabel": "Utwórz zadanie kopiowania",
+      "createCopyJobButtonAriaLabel": "Utwórz nowe zadanie kopiowania kontenera"
+    },
+    "noCopyJobs": {
+      "title": "Brak zadań kopiowania do wyświetlenia",
+      "createCopyJobButtonText": "Utwórz zadanie kopiowania kontenera"
+    },
+    "jobDetails": {
+      "panelTitle": "{{jobName}}",
+      "panelTitleDefault": "Szczegóły zadania",
+      "errorTitle": "Szczegóły błędu",
+      "selectedContainers": "Wybrane kontenery"
+    },
+    "createCopyJob": {
+      "panelTitle": "Tworzenie zadania kopiowania"
+    },
+    "selectAccount": {
+      "description": "Wybierz konto docelowe, do którego chcesz kopiować.",
+      "subscriptionDropdownLabel": "Subskrypcja",
+      "subscriptionDropdownPlaceholder": "Wybierz subskrypcję",
+      "accountDropdownLabel": "Konto",
+      "accountDropdownPlaceholder": "Wybierz konto"
+    },
+    "migrationType": {
+      "offline": {
+        "title": "Tryb offline",
+        "description": "Zadania kopiowania kontenerów w trybie offline umożliwiają kopiowanie danych z kontenera źródłowego do docelowego kontenera usługi Cosmos DB w przypadku obsługiwanych interfejsów API. Aby zapewnić integralność danych między źródłem i miejscem docelowym, zalecamy zatrzymanie aktualizacji w kontenerze źródłowym przed utworzeniem zadania kopiowania. Dowiedz się więcej o [zadaniach kopiowania w trybie offline](https://learn.microsoft.com/azure/cosmos-db/how-to-container-copy?tabs=offline-copy&pivots=api-nosql)."
+      },
+      "online": {
+        "title": "Tryb online",
+        "description": "Zadania kopiowania kontenerów online umożliwiają kopiowanie danych z kontenera źródłowego do docelowego kontenera interfejsu API NoSQL usługi Cosmos DB przy użyciu zestawienia zmian [Wszystkie wersje i usuwanie](https://learn.microsoft.com/azure/cosmos-db/change-feed-modes?tabs=all-versions-and-deletes#all-versions-and-deletes-change-feed-mode-preview). Umożliwia to kontynuowanie aktualizacji w źródle podczas kopiowania danych. Na końcu jest wymagany krótki przestój, aby bezpiecznie przełączyć aplikacje klienckie do kontenera docelowego. Dowiedz się więcej o [zadaniach kopiowania online](https://learn.microsoft.com/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#getting-started)."
+      }
+    },
+    "selectContainers": {
+      "description": "Wybierz kontener źródłowy i kontener docelowy do skopiowania.",
+      "sourceContainerSubHeading": "Kontener źródłowy",
+      "targetContainerSubHeading": "Kontener docelowy",
+      "databaseDropdownLabel": "Baza danych",
+      "databaseDropdownPlaceholder": "Wybierz bazę danych",
+      "containerDropdownLabel": "Kontener",
+      "containerDropdownPlaceholder": "Wybierz kontener",
+      "createNewContainerSubHeading": "Skonfiguruj właściwości nowego kontenera na koncie docelowym „{{accountName}}”.",
+      "createNewContainerSubHeadingDefault": "Skonfiguruj właściwości nowego kontenera.",
+      "createContainerButtonLabel": "Utwórz nowy kontener",
+      "createContainerHeading": "Utwórz nowy kontener"
+    },
+    "preview": {
+      "jobNameLabel": "Nazwa zadania",
+      "subscriptionLabel": "Subskrypcja docelowa",
+      "accountLabel": "Konto docelowe",
+      "sourceDatabaseLabel": "Źródłowa baza danych",
+      "sourceContainerLabel": "Kontener źródłowy",
+      "targetDatabaseLabel": "Docelowa baza danych",
+      "targetContainerLabel": "Kontener docelowy"
+    },
+    "assignPermissions": {
+      "crossAccountDescription": "Aby skopiować dane ze kontenera źródłowego do kontenera docelowego, upewnij się, że tożsamość zarządzana konta źródłowego ma dostęp do odczytu i zapisu na koncie docelowym, wykonując następujące kroki.",
+      "intraAccountOnlineDescription": "Wykonaj poniższe kroki, aby włączyć kopiowanie online na koncie „{{accountName}}”.",
+      "crossAccountConfiguration": {
+        "title": "Kopiowanie kontenera między kontami",
+        "description": "Postępuj zgodnie z instrukcjami poniżej, aby udzielić wymaganych uprawnień do kopiowania danych z lokalizacji konta źródłowego „{{sourceAccount}}” do konta docelowego „{{destinationAccount}}”."
+      },
+      "onlineConfiguration": {
+        "title": "Kopiowanie do kontenera w trybie online",
+        "description": "Postępuj zgodnie z poniższymi instrukcjami, aby włączyć kopiowanie online na koncie „{{accountName}}”."
+      }
+    },
+    "popoverOverlaySpinnerLabel": "Poczekaj na przetworzenie Twojego żądania...",
+    "addManagedIdentity": {
+      "title": "Włączono tożsamość zarządzaną przypisaną przez system.",
+      "description": "Tożsamość zarządzana przypisana przez system jest ograniczona do jednej na zasób i jest powiązana z cyklem życia danego zasobu. Po włączeniu uprawnienia dla tej tożsamości zarządzanej możesz przyznać za pomocą kontroli dostępu na podstawie ról na platformie Azure (Azure RBAC). Tożsamość zarządzana jest uwierzytelniana przy użyciu rozwiązania Microsoft Entra ID, więc nie trzeba przechowywać żadnych poświadczeń w kodzie.",
+      "descriptionHrefText": "Dowiedz się więcej o tożsamościach zarządzanych.",
+      "descriptionHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
+      "toggleLabel": "Tożsamość zarządzana przypisana przez system",
+      "tooltipContent": "Dowiedz się więcej o",
+      "tooltipHrefText": "Tożsamości zarządzane.",
+      "tooltipHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
+      "userAssignedIdentityTooltip": "Możesz wybrać istniejącą tożsamość przypisaną przez użytkownika lub utworzyć nową.",
+      "userAssignedIdentityLabel": "Możesz również wybrać tożsamość zarządzaną przypisaną przez użytkownika.",
+      "createUserAssignedIdentityLink": "Tworzenie tożsamości zarządzanej przypisanej przez użytkownika",
+      "enablementTitle": "Włącz tożsamość zarządzaną przypisaną przez system",
+      "enablementDescription": "Włącz tożsamość zarządzaną przypisaną przez system na koncie „{{accountName}}”. Aby potwierdzić, kliknij przycisk „Tak”."
+    },
+    "defaultManagedIdentity": {
+      "title": "Tożsamość zarządzana przypisana przez system jako wartość domyślna.",
+      "description": "Ustaw tożsamość zarządzaną przypisaną przez system jako domyślną dla konta „{{accountName}}”, przełączając się na nią.",
+      "tooltipContent": "Dowiedz się więcej o",
+      "tooltipHrefText": "Domyślne tożsamości zarządzane.",
+      "tooltipHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
+      "popoverTitle": "Tożsamość zarządzana przypisana przez system jako domyślna",
+      "popoverDescription": "Przypisz tożsamość zarządzaną przypisaną przez system jako domyślną dla „{{accountName}}”. Aby potwierdzić, kliknij przycisk „Tak”. "
+    },
+    "readWritePermissionAssigned": {
+      "title": "Uprawnienia do odczytu i zapisu przypisane do tożsamości domyślnej.",
+      "description": "Aby zezwolić na kopiowanie danych ze źródła do kontenera docelowego, zapewnij dostęp do odczytu i zapisu na koncie docelowym do domyślnej tożsamości konta źródłowego.",
+      "tooltipContent": "Dowiedz się więcej o",
+      "tooltipHrefText": "Uprawnienia do odczytu i zapisu.",
+      "tooltipHref": "https://learn.microsoft.com/azure/cosmos-db/nosql/how-to-connect-role-based-access-control",
+      "popoverTitle": "Przypisz uprawnienia do odczytu i zapisu do tożsamości domyślnej.",
+      "popoverDescription": "Przypisz uprawnienia do odczytu i zapisu na koncie docelowym do domyślnej tożsamości konta źródłowego. Aby potwierdzić, kliknij przycisk „Tak”."
+    },
+    "pointInTimeRestore": {
+      "title": "Włączono przywracanie do punktu w czasie",
+      "description": "Aby ułatwić wykonywanie zadań kopiowania kontenerów w trybie online, zaktualizuj zasady kopii zapasowych „{{accessName}}” z okresowych na ciągłe. Włączenie ciągłej kopii zapasowej jest wymagane dla tej funkcji.",
+      "tooltipContent": "Dowiedz się więcej o",
+      "tooltipHrefText": "Ciągła kopia zapasowa",
+      "tooltipHref": "https://learn.microsoft.com/pl-pl/azure/cosmos-db/continuous-backup-restore-introduction",
+      "buttonText": "Włącz przywracanie do określonego punktu w czasie"
+    },
+    "onlineCopyEnabled": {
+      "title": "Włączono kopiowanie w trybie online",
+      "description": "Włącz kopiowanie kontenerów online, klikając przycisk poniżej na koncie „{{accountName}}”.",
+      "hrefText": "Dowiedz się więcej o zadaniach kopiowania w trybie online",
+      "href": "https://learn.microsoft.com/pl-pl/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#enable-online-copy",
+      "buttonText": "Włącz kopiowanie online",
+      "validateAllVersionsAndDeletesChangeFeedSpinnerLabel": "Trwa weryfikacja wszystkich wersji i usunięć w trybie zestawienia zmian (wersja zapoznawcza)...",
+      "enablingAllVersionsAndDeletesChangeFeedSpinnerLabel": "Trwa włączanie wszystkich wersji i usunięć w trybie zestawienia zmian (wersja zapoznawcza)...",
+      "enablingOnlineCopySpinnerLabel": "Trwa włączanie kopii online na koncie „{{accountName}}”..."
+    },
+    "monitorJobs": {
+      "columns": {
+        "lastUpdatedTime": "Data i godzina",
+        "name": "Nazwa zadania",
+        "status": "Stan",
+        "completionPercentage": "Procent ukończenia",
+        "duration": "Czas trwania",
+        "error": "Komunikat o błędzie",
+        "mode": "Tryb",
+        "actions": "Akcje"
+      },
+      "actions": {
+        "pause": "Wstrzymaj",
+        "resume": "Wznów",
+        "complete": "Ukończone",
+        "viewDetails": "Wyświetl szczegóły"
+      },
+      "status": {
+        "pending": "W kolejce",
+        "inProgress": "Uruchomiono",
+        "running": "Uruchomiono",
+        "partitioning": "Uruchomiono",
+        "paused": "Wstrzymano",
+        "completed": "Ukończone",
+        "failed": "Zakończone niepowodzeniem",
+        "faulted": "Zakończone niepowodzeniem",
+        "skipped": "Anulowane",
+        "cancelled": "Anulowane"
+      },
+      "dialog": {
+        "confirmButtonText": "Potwierdź",
+        "cancelButtonText": "Anuluj"
+      }
     }
   }
 }
