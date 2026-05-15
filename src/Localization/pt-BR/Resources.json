@@ -764,7 +764,7 @@
         "computedProperties": "Propriedades Calculadas",
         "containerPolicies": "Políticas de Contêiner",
         "throughputBuckets": "Buckets de Taxa de Transferência",
-        "globalSecondaryIndexPreview": "Índice Secundário Global (Versão Prévia)",
+        "globalSecondaryIndexPreview": "Global Secondary Index",
         "maskingPolicyPreview": "Política de Mascaramento"
       },
       "mongoNotifications": {

@@ -764,7 +764,7 @@
         "computedProperties": "计算属性",
         "containerPolicies": "容器策略",
         "throughputBuckets": "吞吐量存储桶",
-        "globalSecondaryIndexPreview": "全局辅助索引(预览版)",
+        "globalSecondaryIndexPreview": "Global Secondary Index",
         "maskingPolicyPreview": "掩码策略"
       },
       "mongoNotifications": {

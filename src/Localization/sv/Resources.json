@@ -764,7 +764,7 @@
         "computedProperties": "Beräknade egenskaper",
         "containerPolicies": "Containerprinciper",
         "throughputBuckets": "Dataflödesbuckets",
-        "globalSecondaryIndexPreview": "Globalt sekundärt index (förhandsversion)",
+        "globalSecondaryIndexPreview": "Global Secondary Index",
         "maskingPolicyPreview": "Maskeringsprincip"
       },
       "mongoNotifications": {

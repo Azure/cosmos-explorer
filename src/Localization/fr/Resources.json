@@ -764,7 +764,7 @@
         "computedProperties": "Propriétés calculées",
         "containerPolicies": "Stratégies relatives aux conteneurs",
         "throughputBuckets": "Bacs de débit",
-        "globalSecondaryIndexPreview": "Index mondial du secteur secondaire (Aperçu)",
+        "globalSecondaryIndexPreview": "Global Secondary Index",
         "maskingPolicyPreview": "Stratégie de masquage"
       },
       "mongoNotifications": {

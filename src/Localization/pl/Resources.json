@@ -764,7 +764,7 @@
         "computedProperties": "Właściwości obliczane",
         "containerPolicies": "Zasady kontenera",
         "throughputBuckets": "Zasobniki przepływności",
-        "globalSecondaryIndexPreview": "Globalny indeks pomocniczy (wersja zapoznawcza)",
+        "globalSecondaryIndexPreview": "Global Secondary Index",
         "maskingPolicyPreview": "Zasady maskowania"
       },
       "mongoNotifications": {

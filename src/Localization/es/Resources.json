@@ -764,7 +764,7 @@
         "computedProperties": "Propiedades calculadas",
         "containerPolicies": "Directivas de contenedor",
         "throughputBuckets": "Depósitos de rendimiento",
-        "globalSecondaryIndexPreview": "Índice secundario global (versión preliminar)",
+        "globalSecondaryIndexPreview": "Global Secondary Index",
         "maskingPolicyPreview": "Directiva de enmascaramiento"
       },
       "mongoNotifications": {

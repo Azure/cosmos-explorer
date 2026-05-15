@@ -764,7 +764,7 @@
         "computedProperties": "Proprietà calcolate",
         "containerPolicies": "Criteri contenitore",
         "throughputBuckets": "Bucket di velocità effettiva",
-        "globalSecondaryIndexPreview": "Indice secondario globale (anteprima)",
+        "globalSecondaryIndexPreview": "Global Secondary Index",
         "maskingPolicyPreview": "Criteri di maschera"
       },
       "mongoNotifications": {

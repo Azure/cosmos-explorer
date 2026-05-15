@@ -764,7 +764,7 @@
         "computedProperties": "Vypočítané vlastnosti",
         "containerPolicies": "Zásady kontejneru",
         "throughputBuckets": "Kbelíky propustnosti",
-        "globalSecondaryIndexPreview": "Globální sekundární index (Preview)",
+        "globalSecondaryIndexPreview": "Global Secondary Index",
         "maskingPolicyPreview": "Zásady maskování"
       },
       "mongoNotifications": {
