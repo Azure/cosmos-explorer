@@ -764,7 +764,7 @@
         "computedProperties": "Вычисленные свойства",
         "containerPolicies": "Правила перевозки контейнеров",
         "throughputBuckets": "Группы пропускной способности",
-        "globalSecondaryIndexPreview": "Global Secondary Index",
+        "globalSecondaryIndexPreview": "Глобальный вторичный индекс",
         "maskingPolicyPreview": "Политика маскирования"
       },
       "mongoNotifications": {

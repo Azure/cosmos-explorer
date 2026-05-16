@@ -764,7 +764,7 @@
         "computedProperties": "計算屬性",
         "containerPolicies": "容器原則",
         "throughputBuckets": "輸送量貯體",
-        "globalSecondaryIndexPreview": "Global Secondary Index",
+        "globalSecondaryIndexPreview": "全域從屬索引",
         "maskingPolicyPreview": "遮罩原則"
       },
       "mongoNotifications": {

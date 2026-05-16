@@ -764,7 +764,7 @@
         "computedProperties": "Berekende eigenschappen",
         "containerPolicies": "Containerbeleidsregels",
         "throughputBuckets": "Doorvoerbuckets",
-        "globalSecondaryIndexPreview": "Global Secondary Index",
+        "globalSecondaryIndexPreview": "Globale secundaire index",
         "maskingPolicyPreview": "Beleid voor maskering"
       },
       "mongoNotifications": {

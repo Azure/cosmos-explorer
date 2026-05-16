@@ -764,7 +764,7 @@
         "computedProperties": "계산된 속성",
         "containerPolicies": "컨테이너 정책",
         "throughputBuckets": "처리량 버킷",
-        "globalSecondaryIndexPreview": "Global Secondary Index",
+        "globalSecondaryIndexPreview": "전역 보조 인덱스",
         "maskingPolicyPreview": "마스킹 정책"
       },
       "mongoNotifications": {

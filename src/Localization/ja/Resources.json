@@ -764,7 +764,7 @@
         "computedProperties": "計算されたプロパティ",
         "containerPolicies": "コンテナー ポリシー",
         "throughputBuckets": "スループット バケット",
-        "globalSecondaryIndexPreview": "Global Secondary Index",
+        "globalSecondaryIndexPreview": "グローバル セカンダリ インデックス",
         "maskingPolicyPreview": "マスキング ポリシー"
       },
       "mongoNotifications": {
