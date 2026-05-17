@@ -764,7 +764,7 @@
         "computedProperties": "Számított tulajdonságok",
         "containerPolicies": "Tárolószabályzatok",
         "throughputBuckets": "Átviteli sebesség gyűjtői",
-        "globalSecondaryIndexPreview": "Global Secondary Index",
+        "globalSecondaryIndexPreview": "Globális másodlagos index",
         "maskingPolicyPreview": "Maszkolási szabályzat"
       },
       "mongoNotifications": {

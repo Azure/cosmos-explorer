@@ -764,7 +764,7 @@
         "computedProperties": "Properti Terkomputasi",
         "containerPolicies": "Kebijakan Kontainer",
         "throughputBuckets": "Wadah Throughput",
-        "globalSecondaryIndexPreview": "Global Secondary Index",
+        "globalSecondaryIndexPreview": "Indeks Sekunder Global",
         "maskingPolicyPreview": "Kebijakan Masking"
       },
       "mongoNotifications": {

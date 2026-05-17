@@ -764,7 +764,7 @@
         "computedProperties": "Hesaplanan Özellikler",
         "containerPolicies": "Kapsayıcı İlkeleri",
         "throughputBuckets": "Aktarım Hızı Demetleri",
-        "globalSecondaryIndexPreview": "Global Secondary Index",
+        "globalSecondaryIndexPreview": "Global İkincil Endeks",
         "maskingPolicyPreview": "Veri Maskeleme İlkesi"
       },
       "mongoNotifications": {

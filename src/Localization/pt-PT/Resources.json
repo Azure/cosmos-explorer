@@ -764,7 +764,7 @@
         "computedProperties": "Propriedades Calculadas",
         "containerPolicies": "Políticas de Contentor",
         "throughputBuckets": "Registos de Débito",
-        "globalSecondaryIndexPreview": "Global Secondary Index",
+        "globalSecondaryIndexPreview": "Índice secundário global",
         "maskingPolicyPreview": "Política de Mascaramento"
       },
       "mongoNotifications": {
