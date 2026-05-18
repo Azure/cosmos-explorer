@@ -1,11 +1,15 @@
 import { configContext } from "ConfigContext";
+import { Keys, t } from "Localization";
 import { ApiType, userContext } from "UserContext";
 import * as NotificationConsoleUtils from "Utils/NotificationConsoleUtils";
 import {
   cancel,
+  complete,
   create,
   get,
   listByDatabaseAccount,
+  pause,
+  resume,
 } from "Utils/arm/generatedClients/dataTransferService/dataTransferJobs";
 import {
   CosmosCassandraDataTransferDataSourceSink,
@@ -31,6 +35,7 @@ export interface DataTransferParams {
   sourceCollectionName: string;
   targetDatabaseName: string;
   targetCollectionName: string;
+  mode?: "Offline" | "Online";
 }
 
 export const getDataTransferJobs = async (
@@ -80,6 +85,7 @@ export const initiateDataTransfer = async (params: DataTransferParams): Promise<
     sourceCollectionName,
     targetDatabaseName,
     targetCollectionName,
+    mode,
   } = params;
   const sourcePayload = createPayload(apiType, sourceDatabaseName, sourceCollectionName);
   const targetPayload = createPayload(apiType, targetDatabaseName, targetCollectionName);
@@ -87,6 +93,7 @@ export const initiateDataTransfer = async (params: DataTransferParams): Promise<
     properties: {
       source: sourcePayload,
       destination: targetPayload,
+      ...(mode ? { mode } : {}),
     },
   };
   return create(subscriptionId, resourceGroupName, accountName, jobName, body);
@@ -137,30 +144,52 @@ const pollDataTransferJobOperation = async (
   if (status === "Cancelled") {
     removeFromPolling(jobName);
     clearMessage && clearMessage();
-    const cancelMessage = `Data transfer job ${jobName} cancelled`;
+    const cancelMessage = t(Keys.containerCopy.dataTransfers.polling.cancelConsoleMessage, { jobName: jobName });
     NotificationConsoleUtils.logConsoleError(cancelMessage);
     throw new AbortError(cancelMessage);
+  }
+  if (status === "Paused") {
+    removeFromPolling(jobName);
+    clearMessage && clearMessage();
+    NotificationConsoleUtils.logConsoleInfo(
+      t(Keys.containerCopy.dataTransfers.polling.pauseConsoleMessage, { jobName: jobName }),
+    );
+    return body;
   }
   if (status === "Failed" || status === "Faulted") {
     removeFromPolling(jobName);
     const errorMessage = body?.properties?.error
       ? JSON.stringify(body?.properties?.error)
-      : "Operation could not be completed";
+      : t(Keys.containerCopy.dataTransfers.polling.defaultErrorMessage);
     const error = new Error(errorMessage);
     clearMessage && clearMessage();
-    NotificationConsoleUtils.logConsoleError(`Data transfer job ${jobName} failed: ${errorMessage}`);
+    NotificationConsoleUtils.logConsoleError(
+      t(Keys.containerCopy.dataTransfers.polling.errorConsoleMessage, {
+        errorMessage: errorMessage,
+        jobName: jobName,
+      }),
+    );
     throw new AbortError(error);
   }
   if (status === "Completed") {
     removeFromPolling(jobName);
     clearMessage && clearMessage();
-    NotificationConsoleUtils.logConsoleInfo(`Data transfer job ${jobName} completed`);
+    NotificationConsoleUtils.logConsoleInfo(
+      t(Keys.containerCopy.dataTransfers.polling.completedConsoleMessage, {
+        jobName: jobName,
+      }),
+    );
     return body;
   }
   const processedCount = body.properties.processedCount;
   const totalCount = body.properties.totalCount;
-  const retryMessage = `Data transfer job ${jobName} in progress, total count: ${totalCount}, processed count: ${processedCount}`;
-  throw new Error(retryMessage);
+  throw new Error(
+    t(Keys.containerCopy.dataTransfers.polling.retryConsoleMessage, {
+      jobName: jobName,
+      processedCount: processedCount,
+      totalCount: totalCount,
+    }),
+  );
 };
 
 export const cancelDataTransferJob = async (
@@ -172,6 +201,43 @@ export const cancelDataTransferJob = async (
   const cancelResult: DataTransferJobGetResults = await cancel(subscriptionId, resourceGroupName, accountName, jobName);
   updateDataTransferJob(cancelResult);
   removeFromPolling(cancelResult?.properties?.jobName);
+};
+
+export const pauseDataTransferJob = async (
+  subscriptionId: string,
+  resourceGroupName: string,
+  accountName: string,
+  jobName: string,
+): Promise<void> => {
+  const pauseResult: DataTransferJobGetResults = await pause(subscriptionId, resourceGroupName, accountName, jobName);
+  updateDataTransferJob(pauseResult);
+  removeFromPolling(pauseResult?.properties?.jobName);
+};
+
+export const resumeDataTransferJob = async (
+  subscriptionId: string,
+  resourceGroupName: string,
+  accountName: string,
+  jobName: string,
+): Promise<void> => {
+  const resumeResult: DataTransferJobGetResults = await resume(subscriptionId, resourceGroupName, accountName, jobName);
+  updateDataTransferJob(resumeResult);
+};
+
+export const completeDataTransferJob = async (
+  subscriptionId: string,
+  resourceGroupName: string,
+  accountName: string,
+  jobName: string,
+): Promise<void> => {
+  const completeResult: DataTransferJobGetResults = await complete(
+    subscriptionId,
+    resourceGroupName,
+    accountName,
+    jobName,
+  );
+  updateDataTransferJob(completeResult);
+  removeFromPolling(completeResult?.properties?.jobName);
 };
 
 const createPayload = (
