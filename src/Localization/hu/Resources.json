@@ -34,6 +34,8 @@
     "browse": "Tallózás",
     "increaseValueBy1": "Érték növelése 1-gyel",
     "decreaseValueBy1": "Érték csökkentése 1-gyel",
+    "on": "Be",
+    "off": "Ki",
     "preview": "Előnézet"
   },
   "splashScreen": {
@@ -303,7 +305,7 @@
     "deleteContainer": "{{containerName}} törlése",
     "newSqlQuery": "Új SQL-lekérdezés",
     "newQuery": "Új lekérdezés",
-    "openMongoShell": "Mongo-felület megnyitása",
+    "openMongoShell": "Mongo Shell megnyitása",
     "newShell": "Új felület",
     "openCassandraShell": "Cassandra-felület megnyitása",
     "newStoredProcedure": "Új tárolt eljárás",
@@ -414,7 +416,7 @@
       "refreshGridFailed": "Nem sikerült frissíteni a dokumentumrácsot"
     },
     "mongoShell": {
-      "title": "Mongo-felület"
+      "title": "Mongo Shell"
     }
   },
   "panes": {
@@ -488,7 +490,7 @@
       "legacySdkInfo": "A régebbi SDK-kkal való kompatibilitás biztosítása érdekében a létrehozott tároló egy örökölt particionálási sémát fog használni, amely legfeljebb 101 bájt méretű partíciókulcs-értékeket támogat. Ha ez engedélyezve van, nem használhat hierarchikus partíciókulcsokat.",
       "indexingOnInfo": "A dokumentumok összes tulajdonsága alapértelmezés szerint indexelve lesz a rugalmas és hatékony lekérdezések érdekében.",
       "indexingOffInfo": "Az indexelés ki lesz kapcsolva. Akkor ajánlott, ha nem kell lekérdezéseket futtatnia, vagy csak kulcsérték-műveletekkel rendelkezik.",
-      "indexingOffWarning": "Ha úgy hozza létre ezt a tárolót, hogy az indexelés ki van kapcsolva, nem fogja tudni módosítani az indexelési szabályzatot. Az indexelési módosítások csak indexelési szabályzattal rendelkező tárolókon engedélyezettek.",
+      "indexingOffWarning": "Ha úgy hozza létre ezt a tárolót, hogy az indexelés ki van kapcsolva, nem fogja tudni módosítani az indexelési házirendet. Az indexelési módosítások csak indexelési szabályzattal rendelkező tárolókon engedélyezettek.",
       "acknowledgeSpendErrorMonthly": "Nyugtázza a becsült havi ráfordítást.",
       "acknowledgeSpendErrorDaily": "Nyugtázza a becsült napi ráfordítást.",
       "unshardedMaxRuError": "A horizontálisan nem skálázott gyűjtemények legfeljebb 10 000 kérelemegységet támogatnak",
@@ -619,7 +621,7 @@
       "accountId": "Fiókazonosító",
       "sessionId": "Munkamenet-azonosító",
       "popupsDisabledError": "Nem sikerült hitelesítést létrehozni ehhez a fiókhoz, mert a böngészőben le vannak tiltva az előugró ablakok.\nEngedélyezze az előugró ablakokat ehhez a webhelyhez, majd kattintson az Entra ID bejelentkezés gombra",
-      "failedToAcquireTokenError": "Nem sikerült automatikusan beszerezni az engedélyezési jogkivonatot. Kattintson az Entra ID bejelentkezés gombra az Entra ID RBAC-műveletek engedélyezéséhez"
+      "failedToAcquireTokenError": "Nem sikerült automatikusan beszerezni a hozzáférési jogkivonatot. Kattintson az Entra ID bejelentkezés gombra az Entra ID RBAC-műveletek engedélyezéséhez"
     },
     "saveQuery": {
       "panelTitle": "Lekérdezés mentése",
@@ -756,13 +758,13 @@
         "scale": "Skálázás",
         "conflictResolution": "Ütközésfeloldás",
         "settings": "Beállítások",
-        "indexingPolicy": "Indexelési szabályzat",
+        "indexingPolicy": "Indexelési házirend",
         "partitionKeys": "Partíciókulcsok",
         "partitionKeysPreview": "Partíciókulcsok (előzetes verzió)",
         "computedProperties": "Számított tulajdonságok",
         "containerPolicies": "Tárolószabályzatok",
         "throughputBuckets": "Átviteli sebesség gyűjtői",
-        "globalSecondaryIndexPreview": "Globális másodlagos index (előzetes verzió)",
+        "globalSecondaryIndexPreview": "Global Secondary Index",
         "maskingPolicyPreview": "Maszkolási szabályzat"
       },
       "mongoNotifications": {
@@ -841,7 +843,7 @@
       "mongoIndexing": {
         "disclaimer": "Több tulajdonságra szűrő lekérdezések esetén összetett index helyett hozzon létre több egymezős indexet.",
         "disclaimerCompoundIndexesLink": " Összetett indexek ",
-        "disclaimerSuffix": "csak a lekérdezési eredmények rendezésére szolgál. Ha összetett indexet kell hozzáadnia, a Mongo-felület használatával hozhat létre egyet.",
+        "disclaimerSuffix": "csak a lekérdezési eredmények rendezésére szolgál. Ha összetett indexet kell hozzáadnia, a Mongo Shell használatával hozhat létre egyet.",
         "compoundNotSupported": "Az összetett indexekkel rendelkező gyűjtemények még nem támogatottak az indexelőszerkesztőben. A gyűjtemény indexelési házirendjének módosításához használja a Mongo-felületet.",
         "aadError": "Az indexelési házirendszerkesztő használatához jelentkezzen be:",
         "aadErrorLink": "Azure Portal.",
@@ -909,7 +911,7 @@
         "learnMorePrefix": "a számított tulajdonságok definiálásáról és azok használatáról."
       },
       "indexingPolicy": {
-        "ariaLabel": "Indexelési szabályzat"
+        "ariaLabel": "Indexelési házirend"
       },
       "dataMasking": {
         "ariaLabel": "Adatmaszkolási házirend",
@@ -991,6 +993,165 @@
       "dimensionFlatIndexError": "Az egybesimított index maximálisan megengedett dimenziója 505",
       "quantizationByteSizeRangeError": "A kvantálási bájtméretnek nagyobbnak kell lennie 0-nál, és legfeljebb 512 lehet",
       "indexingSearchListSizeRangeError": "Az indexelő keresési lista méretének 25-tel egyenlőnek vagy annál nagyobbnak és ugyanakkor 500-nál kisebbnek vagy azzal egyenlőnek kell lennie"
+    }
+  },
+  "containerCopy": {
+    "commandBar": {
+      "feedbackButtonLabel": "Visszajelzés",
+      "feedbackButtonAriaLabel": "Visszajelzés küldése a másolási feladatokról",
+      "refreshButtonAriaLabel": "Másolási feladatok frissítése",
+      "createCopyJobButtonLabel": "Másolási feladat létrehozása",
+      "createCopyJobButtonAriaLabel": "Új tárolómásolási feladat létrehozása"
+    },
+    "noCopyJobs": {
+      "title": "Nincsenek megjeleníthető másolási feladatok",
+      "createCopyJobButtonText": "Tárolómásolási feladat létrehozása"
+    },
+    "jobDetails": {
+      "panelTitle": "{{jobName}}",
+      "panelTitleDefault": "Feladat részletei",
+      "errorTitle": "Hiba részletei",
+      "selectedContainers": "Kiválasztott tárolók"
+    },
+    "createCopyJob": {
+      "panelTitle": "Másolási feladat létrehozása"
+    },
+    "selectAccount": {
+      "description": "Válassza ki a célfiókot, amelybe másolni szeretne.",
+      "subscriptionDropdownLabel": "Előfizetés",
+      "subscriptionDropdownPlaceholder": "Előfizetés kiválasztása",
+      "accountDropdownLabel": "Fiók",
+      "accountDropdownPlaceholder": "Fiók kiválasztása"
+    },
+    "migrationType": {
+      "offline": {
+        "title": "Offline mód",
+        "description": "Az offline tárolómásolási feladatok lehetővé teszik az adatok másolását egy forrástárolóból egy cél Cosmos DB-tárolóba a támogatott API-k esetében. Az adatintegritás megőrzése érdekében a forrás és a cél között javasoljuk, hogy a másolási feladat létrehozása előtt állítsa le a forrástároló frissítéseit. További információ az [offline másolási feladatokról](https://learn.microsoft.com/azure/cosmos-db/how-to-container-copy?tabs=offline-copy&pivots=api-nosql)."
+      },
+      "online": {
+        "title": "Online üzemmód",
+        "description": "Az online tárolómásolási feladatok lehetővé teszik, hogy adatokat másoljon egy forrástárolóból egy cél Cosmos DB NoSQL API-tárolóba a [Minden verzió és törlés](https://learn.microsoft.com/azure/cosmos-db/change-feed-modes?tabs=all-versions-and-deletes#all-versions-and-deletes-change-feed-mode-preview) változáscsatorna használatával. Ez lehetővé teszi, hogy a frissítések az adatok másolása közben is folytatódjanak a forráson. A végén rövid leállásra van szükség ahhoz, hogy biztonságosan átválthassa az ügyfélalkalmazásokat a céltárolóra. További információ az [online másolási feladatokról](https://learn.microsoft.com/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#getting-started)."
+      }
+    },
+    "selectContainers": {
+      "description": "Válasszon ki egy forrástárolót és egy céltárolót, amelybe másolni szeretne.",
+      "sourceContainerSubHeading": "Forrástároló",
+      "targetContainerSubHeading": "Céloldali tároló",
+      "databaseDropdownLabel": "Adatbázis",
+      "databaseDropdownPlaceholder": "Adatbázis kiválasztása",
+      "containerDropdownLabel": "Tároló",
+      "containerDropdownPlaceholder": "Válasszon ki egy tárolót",
+      "createNewContainerSubHeading": "Konfigurálja az új tároló tulajdonságait a(z) „{{accountName}}” célfiókban.",
+      "createNewContainerSubHeadingDefault": "Konfigurálja az új tároló tulajdonságait.",
+      "createContainerButtonLabel": "Új tároló létrehozása",
+      "createContainerHeading": "Új tároló létrehozása"
+    },
+    "preview": {
+      "jobNameLabel": "Feladat neve",
+      "subscriptionLabel": "Célelőfizetés",
+      "accountLabel": "Célfiók",
+      "sourceDatabaseLabel": "Forrásadatbázis",
+      "sourceContainerLabel": "Forrástároló",
+      "targetDatabaseLabel": "Céladatbázis neve: {0}",
+      "targetContainerLabel": "Céloldali tároló"
+    },
+    "assignPermissions": {
+      "crossAccountDescription": "Ahhoz, hogy adatokat másolhasson a forrásból a céltárolóba, az alábbi lépések végrehajtásával győződjön meg arról, hogy a forrásfiók felügyelt identitása olvasási-írási hozzáféréssel rendelkezik a célfiókhoz.",
+      "intraAccountOnlineDescription": "Kövesse az alábbi lépéseket az online másolás engedélyezéséhez a(z) „{{accountName}}” fiókjában.",
+      "crossAccountConfiguration": {
+        "title": "Fiókközi tárolómásolás",
+        "description": "Kövesse az alábbi utasítást ahhoz, hogy megadja a(z) „{{sourceAccount}}” helyről a(z) „{{destinationAccount}}” helyre végzett másoláshoz szükséges engedélyeket."
+      },
+      "onlineConfiguration": {
+        "title": "Online tárolómásolás",
+        "description": "Kövesse az alábbi utasításokat az online másolás engedélyezéséhez a(z) „{{accountName}}” fiókjában."
+      }
+    },
+    "popoverOverlaySpinnerLabel": "Kis türelmet, amíg feldolgozzuk a kérését...",
+    "addManagedIdentity": {
+      "title": "Rendszer által hozzárendelt felügyelt identitás engedélyezve.",
+      "description": "Erőforrásonként csak egy rendszer által hozzárendelt felügyelt identitás adható meg, és ennek életciklusa megegyezik az adott erőforráséval. Az engedélyezés után a felügyelt identitáshoz az Azure szerepköralapú hozzáférés-vezérlési (Azure RBAC) funkciójával rendelhet hozzá engedélyeket. A felügyelt identitást a Microsoft Entra ID hitelesíti, így nem kell hitelesítő adatokat tárolnia a programkódban.",
+      "descriptionHrefText": "További információ a felügyelt identitásokról.",
+      "descriptionHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
+      "toggleLabel": "Rendszer által hozzárendelt felügyelt identitás",
+      "tooltipContent": "További információ",
+      "tooltipHrefText": "Felügyelt identitások.",
+      "tooltipHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
+      "userAssignedIdentityTooltip": "Kiválaszthat egy meglévő felhasználó által hozzárendelt identitást, vagy létrehozhat egy újat.",
+      "userAssignedIdentityLabel": "Felhasználó által hozzárendelt felügyelt identitást is választhat.",
+      "createUserAssignedIdentityLink": "Felhasználó által hozzárendelt felügyelt identitás létrehozása",
+      "enablementTitle": "Rendszer által hozzárendelt felügyelt identitás engedélyezése",
+      "enablementDescription": "Rendszer által hozzárendelt felügyelt identitás engedélyezése a következőn: {{accountName}}. A megerősítéshez kattintson az „Igen” gombra."
+    },
+    "defaultManagedIdentity": {
+      "title": "Rendszer által hozzárendelt felügyelt identitás alapértelmezettként beállítva.",
+      "description": "Állítsa be a rendszer által hozzárendelt felügyelt identitást alapértelmezettként a(z) „{{accountName}}” fiókban a bekapcsolásával.",
+      "tooltipContent": "További információ",
+      "tooltipHrefText": "Alapértelmezett felügyelt identitások.",
+      "tooltipHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
+      "popoverTitle": "Rendszer által hozzárendelt felügyelt identitás alapértelmezettként beállítva",
+      "popoverDescription": "Rendelje hozzá alapértelmezettként a rendszer által hozzárendelt felügyelt identitást ehhez: „{{accountName}}”. A megerősítéshez kattintson az „Igen” gombra. "
+    },
+    "readWritePermissionAssigned": {
+      "title": "Az alapértelmezett identitáshoz rendelt olvasási-írási engedélyek.",
+      "description": "Ahhoz, hogy az adatokat a forrásból a céltárolóba másolhassa, adjon olvasási-írási hozzáférést a célfiókhoz a forrásfiók alapértelmezett identitása számára.",
+      "tooltipContent": "További információ",
+      "tooltipHrefText": "Olvasási-írási engedélyek.",
+      "tooltipHref": "https://learn.microsoft.com/azure/cosmos-db/nosql/how-to-connect-role-based-access-control",
+      "popoverTitle": "Olvasási és írási engedélyek hozzárendelése az alapértelmezett identitáshoz.",
+      "popoverDescription": "Rendeljen olvasási-írási engedélyeket a célfiókhoz a forrásfiók alapértelmezett identitása számára. A megerősítéshez kattintson az „Igen” gombra."
+    },
+    "pointInTimeRestore": {
+      "title": "Időponthoz kötött helyreállítás engedélyezve",
+      "description": "Az online tárolómásolási feladatok támogatásához frissítse a(z) „{{accessName}}” biztonsági mentési szabályzatát időszakosról folyamatos biztonsági mentésre. A folyamatos biztonsági mentést engedélyezni kell ehhez a funkcióhoz.",
+      "tooltipContent": "További információ",
+      "tooltipHrefText": "Folyamatos biztonsági mentés",
+      "tooltipHref": "https://learn.microsoft.com/en-us/azure/cosmos-db/continuous-backup-restore-introduction",
+      "buttonText": "Időponthoz kötött helyreállítás engedélyezése"
+    },
+    "onlineCopyEnabled": {
+      "title": "Online másolás engedélyezve",
+      "description": "Engedélyezze az online tárolómásolást az alábbi gombra kattintva a(z) „{{accountName}}” fiókjában.",
+      "hrefText": "További információ az online másolási feladatokról",
+      "href": "https://learn.microsoft.com/en-us/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#enable-online-copy",
+      "buttonText": "Online másolás engedélyezése",
+      "validateAllVersionsAndDeletesChangeFeedSpinnerLabel": "Az összes verzió és a törlések változáscsatorna-módjának ellenőrzése",
+      "enablingAllVersionsAndDeletesChangeFeedSpinnerLabel": "Az összes verzió és a törlések változáscsatorna-módjának engedélyezése...",
+      "enablingOnlineCopySpinnerLabel": "Az online másolás engedélyezése a(z) „{{accountName}}” fiókban ..."
+    },
+    "monitorJobs": {
+      "columns": {
+        "lastUpdatedTime": "Dátum és idő",
+        "name": "Feladat neve",
+        "status": "Állapot",
+        "completionPercentage": "Befejezés %",
+        "duration": "Időtartam",
+        "error": "Hibaüzenet",
+        "mode": "Mód",
+        "actions": "Műveletek"
+      },
+      "actions": {
+        "pause": "Szüneteltetés",
+        "resume": "Folytatás",
+        "complete": "Kész",
+        "viewDetails": "Részletek megtekintése"
+      },
+      "status": {
+        "pending": "Várólistára helyezve",
+        "inProgress": "Fut",
+        "running": "Fut",
+        "partitioning": "Fut",
+        "paused": "Felfüggesztve",
+        "completed": "Kész",
+        "failed": "Hibás",
+        "faulted": "Hibás",
+        "skipped": "Megszakítva",
+        "cancelled": "Megszakítva"
+      },
+      "dialog": {
+        "confirmButtonText": "Megerősítés",
+        "cancelButtonText": "Mégse"
+      }
     }
   }
 }

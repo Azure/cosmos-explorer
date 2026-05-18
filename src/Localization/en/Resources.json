@@ -764,7 +764,7 @@
         "computedProperties": "Computed Properties",
         "containerPolicies": "Container Policies",
         "throughputBuckets": "Throughput Buckets",
-        "globalSecondaryIndexPreview": "Global Secondary Index (Preview)",
+        "globalSecondaryIndexPreview": "Global Secondary Index",
         "maskingPolicyPreview": "Masking Policy"
       },
       "mongoNotifications": {

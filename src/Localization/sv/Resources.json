@@ -34,6 +34,8 @@
     "browse": "Bläddra",
     "increaseValueBy1": "Öka värdet med 1",
     "decreaseValueBy1": "Minska värdet med 1",
+    "on": "På",
+    "off": "Av",
     "preview": "Förhandsversion"
   },
   "splashScreen": {
@@ -76,7 +78,7 @@
         "description": "Skapa tabell och interagera med data med postgreSQL-gränssnittet"
       },
       "vcoreMongo": {
-        "title": "Mongo-gränssnitt",
+        "title": "Mongo Shell",
         "description": "Skapa en samling och interagera med data med hjälp av MongoDB:s gränssnitt"
       }
     },
@@ -326,7 +328,7 @@
       "documentDeleted": "Dokument har tagits bort.",
       "deleteDocumentDialogTitle": "Ta bort dokument",
       "deleteDocumentsDialogTitle": "Ta bort dokument",
-      "throttlingError": "Det gick inte att ta bort vissa dokument på grund av ett fel med hastighetsbegränsning. Försök igen senare. Om du vill undvika detta i framtiden, överväg att öka genomströmningen på din container eller databas.",
+      "throttlingError": "Det gick inte att ta bort vissa dokument på grund av ett fel med hastighetsbegränsning. Försök igen senare. Om du vill undvika detta i framtiden, överväg att öka dataflödet på din behållare eller databas.",
       "deleteFailed": "Det gick inte att ta bort dokument ({{error}})",
       "missingShardProperty": "Dokumentet saknar shardegenskapen: {{partitionKeyProperty}}",
       "refreshGridFailed": "Det gick inte att uppdatera dokumentrutnätet",
@@ -353,7 +355,7 @@
       "requestTooLargeBase": "Vissa borttagningsförfrågningar misslyckades på grund av undantaget \"Begäran är för stor\" (429)",
       "retriedSuccessfully": "men ett nytt försök har gjorts.",
       "retryingNow": "Försöker igen nu.",
-      "increaseThroughputTip": "Om du vill undvika detta i framtiden, överväg att öka genomströmningen på din container eller databas.",
+      "increaseThroughputTip": "Om du vill undvika detta i framtiden, överväg att öka dataflödet på din behållare eller databas.",
       "numberOfSelectedDocuments": "Antal markerade dokument: {{count}}",
       "mongoFilterPlaceholder": "Skriv ett frågepredikat (t.ex. {\"id\":\"foo\"}), välj ett från rullgardinslistan eller lämna tomt för att fråga alla dokument.",
       "sqlFilterPlaceholder": "Skriv ett frågepredikat (t.ex. WHERE c.id=\"1\"), välj ett från rullgardinslistan eller lämna tomt för att fråga alla dokument.",
@@ -414,7 +416,7 @@
       "refreshGridFailed": "Det gick inte att uppdatera dokumentrutnätet"
     },
     "mongoShell": {
-      "title": "Mongo-gränssnitt"
+      "title": "Mongo Shell"
     }
   },
   "panes": {
@@ -488,7 +490,7 @@
       "legacySdkInfo": "För att säkerställa kompatibilitet med äldre SDK:er använder den skapade containern ett äldre partitioneringsschema som stöder partitionsnyckelvärden med endast storlek upp till 101 byte. Om detta är aktiverat kan du inte använda hierarkiska partitionsnycklar.",
       "indexingOnInfo": "Alla egenskaper i dina dokument indexeras som standard för flexibla och effektiva frågor.",
       "indexingOffInfo": "Indexering inaktiveras. Rekommenderas om du inte behöver köra frågor eller bara har nyckelvärdesåtgärder.",
-      "indexingOffWarning": "Genom att skapa den här containern med indexering inaktiverad kan du inte göra några ändringar i indexeringsprincipen. Indexeringsändringar tillåts bara för en container med en indexeringsprincip.",
+      "indexingOffWarning": "Genom att skapa den här behållaren med indexering inaktiverad kan du inte göra några ändringar i indexeringspolicyn. Indexeringsändringar tillåts bara för en behållare med en indexeringspolicy.",
       "acknowledgeSpendErrorMonthly": "Bekräfta den uppskattade månadskostnaden.",
       "acknowledgeSpendErrorDaily": "Bekräfta den uppskattade dagliga kostnaden.",
       "unshardedMaxRuError": "Ej shardade samlingar stöder upp till 10 000 RU:er",
@@ -762,7 +764,7 @@
         "computedProperties": "Beräknade egenskaper",
         "containerPolicies": "Containerprinciper",
         "throughputBuckets": "Dataflödesbuckets",
-        "globalSecondaryIndexPreview": "Globalt sekundärt index (förhandsversion)",
+        "globalSecondaryIndexPreview": "Global Secondary Index",
         "maskingPolicyPreview": "Maskeringsprincip"
       },
       "mongoNotifications": {
@@ -821,7 +823,7 @@
         "applyShortDelayMessage": "En begäran om att öka dataflödet pågår för närvarande. Den här åtgärden tar lite tid att slutföra.",
         "applyLongDelayMessage": "En begäran om att öka dataflödet pågår för närvarande. Den här åtgärden tar 1–3 arbetsdagar att slutföra. Visa den senaste statusen i Meddelanden.",
         "throughputCapError": "Ditt konto har konfigurerats med en total dataflödesgräns på {{throughputCap}} RU/s. Det går inte att uppdatera eftersom det totala dataflödet skulle öka till {{newTotalThroughput}} RU/s. Ändra total dataflödesgräns i kostnadshantering.",
-        "throughputIncrementError": "Värdet måste vara i steg om 1000"
+        "throughputIncrementError": "Dataflödesvärdet måste vara i steg om 1000"
       },
       "conflictResolution": {
         "lwwDefault": "Senaste skrivsegrar (standard)",
@@ -841,9 +843,9 @@
       "mongoIndexing": {
         "disclaimer": "För frågor som filtrerar på flera egenskaper skapar du flera index för ett enda fält i stället för ett sammansatt index.",
         "disclaimerCompoundIndexesLink": " Sammansatta index ",
-        "disclaimerSuffix": "används endast för att sortera frågeresultat. Om du behöver lägga till ett sammansatt index kan du skapa ett med Hjälp av Mongo-gränssnittet.",
-        "compoundNotSupported": "Samlingar med sammansatta index stöds ännu inte i indexeringsredigeraren. Om du vill ändra indexeringsprincipen för den här samlingen använder du Mongo Shell.",
-        "aadError": "Om du vill använda redigeraren för indexeringsprincip loggar du in på",
+        "disclaimerSuffix": "används endast för att sortera frågeresultat. Om du behöver lägga till ett sammansatt index kan du skapa ett med Hjälp av Mongo Shell.",
+        "compoundNotSupported": "Samlingar med sammansatta index stöds ännu inte i indexeringsredigeraren. Om du vill ändra indexeringspolicyn för den här samlingen använder du Mongo Shell.",
+        "aadError": "Om du vill använda redigeraren för indexeringspolicy loggar du in på",
         "aadErrorLink": "azure portal.",
         "refreshingProgress": "Uppdaterar förlopp för indexeringstransformationen",
         "canMakeMoreChangesZero": "Du kan göra fler indexeringsändringar när den aktuella indextransformeringen är klar. ",
@@ -991,6 +993,165 @@
       "dimensionFlatIndexError": "Högsta tillåtna dimension för platt index är 505",
       "quantizationByteSizeRangeError": "Kvantiseringsbytestorleken måste vara större än 0 och högst 512",
       "indexingSearchListSizeRangeError": "Indexeringssöklistans storlek måste vara större än eller lika med 25 och mindre än eller lika med 500"
+    }
+  },
+  "containerCopy": {
+    "commandBar": {
+      "feedbackButtonLabel": "Feedback",
+      "feedbackButtonAriaLabel": "Ge feedback om kopieringsjobb",
+      "refreshButtonAriaLabel": "Uppdatera kopieringsjobb",
+      "createCopyJobButtonLabel": "Skapa kopieringsjobb",
+      "createCopyJobButtonAriaLabel": "Skapa ett nytt containerkopieringsjobb"
+    },
+    "noCopyJobs": {
+      "title": "Det finns inga kopieringsjobb att visa",
+      "createCopyJobButtonText": "Skapa ett containerkopieringsjobb"
+    },
+    "jobDetails": {
+      "panelTitle": "{{jobName}}",
+      "panelTitleDefault": "Jobbinformation",
+      "errorTitle": "Information om fel",
+      "selectedContainers": "Valda containrar"
+    },
+    "createCopyJob": {
+      "panelTitle": "Skapa kopieringsjobb"
+    },
+    "selectAccount": {
+      "description": "Välj ett målkonto att kopiera till.",
+      "subscriptionDropdownLabel": "Prenumeration",
+      "subscriptionDropdownPlaceholder": "Välj en prenumeration",
+      "accountDropdownLabel": "Konto",
+      "accountDropdownPlaceholder": "Välj ett konto"
+    },
+    "migrationType": {
+      "offline": {
+        "title": "Offlineläge",
+        "description": "Med offline-containerkopieringsjobb kan du kopiera data från en källcontainer till ett mål Cosmos DB container för API:er som stöds. För att säkerställa dataintegriteten mellan källan och målet rekommenderar vi att du stoppar uppdateringar på källcontainern innan du skapar kopieringsjobbet. Läs mer om [offlinekopieringsjobb](https://learn.microsoft.com/azure/cosmos-db/how-to-container-copy?tabs=offline-copy&pivots=api-nosql)."
+      },
+      "online": {
+        "title": "Onlineläge",
+        "description": "Med online-containerkopieringsjobb kan du kopiera data från en källcontainer till ett mål Cosmos DB NoSQL API-containern med ändringsflödet [Alla versioner och ta bort](https://learn.microsoft.com/azure/cosmos-db/change-feed-modes?tabs=all-versions-and-deletes#all-versions-and-deletes-change-feed-mode-preview). Detta gör att uppdateringar kan fortsätta på källan medan data kopieras. En kort stilleståndstid krävs i slutet för att på ett säkert sätt växla över klientprogram till målcontainern. Läs mer om [onlinekopieringsjobb](https://learn.microsoft.com/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#getting-started)."
+      }
+    },
+    "selectContainers": {
+      "description": "Välj en källcontainer och en målcontainer att kopiera till.",
+      "sourceContainerSubHeading": "Källcontainer",
+      "targetContainerSubHeading": "Målcontainer",
+      "databaseDropdownLabel": "Databas",
+      "databaseDropdownPlaceholder": "Välj en databas",
+      "containerDropdownLabel": "Container",
+      "containerDropdownPlaceholder": "Välj en container",
+      "createNewContainerSubHeading": "Konfigurera egenskaperna för den nya containern på målkontot \"{{accountName}}\".",
+      "createNewContainerSubHeadingDefault": "Konfigurera egenskaperna för den nya containern.",
+      "createContainerButtonLabel": "Skapa en ny container",
+      "createContainerHeading": "Skapa ny container"
+    },
+    "preview": {
+      "jobNameLabel": "Jobbnamn",
+      "subscriptionLabel": "Nytt abonnemang",
+      "accountLabel": "Målkonto",
+      "sourceDatabaseLabel": "Källdatabas",
+      "sourceContainerLabel": "Källcontainer",
+      "targetDatabaseLabel": "Måldatabas",
+      "targetContainerLabel": "Målcontainer"
+    },
+    "assignPermissions": {
+      "crossAccountDescription": "Om du vill kopiera data från källan till målcontainern kontrollerar du att källkontots hanterade identitet har läs- och skrivbehörighet till målkontot genom att utföra följande steg.",
+      "intraAccountOnlineDescription": "Följ stegen nedan för att aktivera onlinekopiering på ditt {{accountName}}-konto.",
+      "crossAccountConfiguration": {
+        "title": "Kopia av container för flera konton",
+        "description": "Följ anvisningarna nedan för att bevilja nödvändiga behörigheter för att kopiera data från \"{{sourceAccount}}\" till \"{{destinationAccount}}\"."
+      },
+      "onlineConfiguration": {
+        "title": "Onlinecontainerkopiering",
+        "description": "Följ anvisningarna nedan för att aktivera onlinekopiering på ditt {{accountName}}-konto."
+      }
+    },
+    "popoverOverlaySpinnerLabel": "Vänta medan vi behandlar din begäran...",
+    "addManagedIdentity": {
+      "title": "Systemtilldelad hanterad identitet har aktiverats.",
+      "description": "En systemtilldelad hanterad identitet begränsas till en per resurs och är bunden till resursens livscykel. När det är aktiverat kan du bevilja behörigheter till den hanterade identiteten med hjälp av Azure rollbaserad åtkomstkontroll (Azure RBAC). Den hanterade identiteten autentiseras med Microsoft Entra ID, så du behöver inte lagra några autentiseringsuppgifter i koden.",
+      "descriptionHrefText": "Mer information om hanterade identiteter.",
+      "descriptionHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
+      "toggleLabel": "Systemtilldelad hanterad identitet",
+      "tooltipContent": "Mer information om",
+      "tooltipHrefText": "Hanterade identiteter.",
+      "tooltipHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
+      "userAssignedIdentityTooltip": "Du kan välja en befintlig användartilldelade identitet eller skapa en ny.",
+      "userAssignedIdentityLabel": "Du kan också välja en användartilldelad hanterad identitet.",
+      "createUserAssignedIdentityLink": "Skapa användartilldelad hanterad identitet",
+      "enablementTitle": "Aktivera systemtilldelade hanterade identiteter",
+      "enablementDescription": "Aktivera systemtilldelad hanterad identitet på {{accountName}}. Bekräfta genom att klicka på knappen \"Ja\"."
+    },
+    "defaultManagedIdentity": {
+      "title": "Systemtilldelad hanterad identitet har angetts som standard.",
+      "description": "Ange den systemtilldelade hanterade identiteten som standard för \"{{accountName}}\" genom att aktivera den.",
+      "tooltipContent": "Mer information om",
+      "tooltipHrefText": "Hanterade standardidentiteter.",
+      "tooltipHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
+      "popoverTitle": "Systemtilldelade hanterade identiteter har angetts som standard",
+      "popoverDescription": "Tilldela den systemtilldelade hanterade identiteten som standard för \"{{accountName}}\". Bekräfta genom att klicka på knappen \"Ja\". "
+    },
+    "readWritePermissionAssigned": {
+      "title": "Läs- och skrivbehörigheter som tilldelats standardidentiteten.",
+      "description": "Om du vill tillåta datakopiering från källan till målcontainern anger du läs- och skrivåtkomst på målkontot till källkontots standardidentitet.",
+      "tooltipContent": "Mer information om",
+      "tooltipHrefText": "Läs- och skrivbehörigheter.",
+      "tooltipHref": "https://learn.microsoft.com/azure/cosmos-db/nosql/how-to-connect-role-based-access-control",
+      "popoverTitle": "Tilldela läs- och skrivbehörigheter till standardidentiteten.",
+      "popoverDescription": "Tilldela läs- och skrivbehörigheter för målkontot till standardidentiteten för källkontot. Bekräfta genom att klicka på knappen \"Ja\"."
+    },
+    "pointInTimeRestore": {
+      "title": "Återställning till tidpunkt har aktiverats",
+      "description": "Om du vill underlätta kopieringsjobb för onlinecontainer uppdaterar du säkerhetskopieringsprincipen \"{{accessName}}\" från periodisk till kontinuerlig säkerhetskopiering. Kontinuerlig säkerhetskopiering krävs för den här funktionen.",
+      "tooltipContent": "Mer information om",
+      "tooltipHrefText": "Kontinuerlig säkerhetskopiering",
+      "tooltipHref": "https://learn.microsoft.com/en-us/azure/cosmos-db/continuous-backup-restore-introduction",
+      "buttonText": "Aktivera återställning till tidpunkt"
+    },
+    "onlineCopyEnabled": {
+      "title": "Onlinekopiering har aktiverats",
+      "description": "Aktivera onlinecontainerkopiering genom att klicka på knappen nedan på ditt {{accountName}}-konto.",
+      "hrefText": "Läs mer om kopieringsjobb online",
+      "href": "https://learn.microsoft.com/en-us/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#enable-online-copy",
+      "buttonText": "Aktivera onlinekopiering",
+      "validateAllVersionsAndDeletesChangeFeedSpinnerLabel": "Verifierar alla versioner och tar bort ändringsflödesläge (förhandsversion)...",
+      "enablingAllVersionsAndDeletesChangeFeedSpinnerLabel": "Aktiverar alla versioner och tar bort ändringsflödesläge (förhandsversion)...",
+      "enablingOnlineCopySpinnerLabel": "Aktiverar onlinekopiering på ditt {{accountName}}-konto..."
+    },
+    "monitorJobs": {
+      "columns": {
+        "lastUpdatedTime": "Datum och tid",
+        "name": "Jobbnamn",
+        "status": "Status",
+        "completionPercentage": "Slutförande %",
+        "duration": "Varaktighet",
+        "error": "Felmeddelande",
+        "mode": "Läge",
+        "actions": "Åtgärder"
+      },
+      "actions": {
+        "pause": "Pausa",
+        "resume": "Återuppta",
+        "complete": "Slutfört",
+        "viewDetails": "Visa information"
+      },
+      "status": {
+        "pending": "I kö",
+        "inProgress": "Pågår",
+        "running": "Pågår",
+        "partitioning": "Pågår",
+        "paused": "Pausad",
+        "completed": "Slutfört",
+        "failed": "Misslyckades",
+        "faulted": "Misslyckades",
+        "skipped": "Avbrutet",
+        "cancelled": "Avbrutet"
+      },
+      "dialog": {
+        "confirmButtonText": "Bekräfta",
+        "cancelButtonText": "Avbryt"
+      }
     }
   }
 }

@@ -34,6 +34,8 @@
     "browse": "Gözat",
     "increaseValueBy1": "Değeri 1 artır",
     "decreaseValueBy1": "Değeri 1 azalt",
+    "on": "Açık",
+    "off": "Kapalı",
     "preview": "Önizleme"
   },
   "splashScreen": {
@@ -212,7 +214,7 @@
         },
         "throughput": {
           "title": "Aktarım Hızı Sağla",
-          "description": "Verimliliği nasıl yapılandıracağınızı öğrenin."
+          "description": "Aktarım hızını nasıl yapılandıracağınızı öğrenin."
         }
       },
       "gremlin": {
@@ -735,12 +737,12 @@
       "addProperty": "Özellik Ekle"
     },
     "addGlobalSecondaryIndex": {
-      "globalSecondaryIndexId": "Genel ikincil dizin kapsayıcı kimliği",
+      "globalSecondaryIndexId": "Global ikincil endeks kapsayıcı kimliği",
       "globalSecondaryIndexIdPlaceholder": "ör. indexbyEmailId",
       "projectionQuery": "Projeksiyon sorgusu",
       "projectionQueryPlaceholder": "SELECT c.email, c.accountId FROM c",
-      "projectionQueryTooltip": "Genel ikincil dizinleri tanımlama hakkında daha fazla bilgi edinin.",
-      "disabledTitle": "Genel ikincil dizin zaten oluşturuluyor. Yeni bir dizin oluşturmadan önce lütfen mevcut dizinin tamamlanmasını bekleyin."
+      "projectionQueryTooltip": "Global ikincil endeksleri tanımlama hakkında daha fazla bilgi edinin.",
+      "disabledTitle": "Global ikincil endeks zaten oluşturuluyor. Yeni bir endeks oluşturmadan önce lütfen mevcut dizinin tamamlanmasını bekleyin."
     },
     "stringInput": {
       "inputMismatchError": "{{input}} girişi seçilen {{selectedId}} ile eşleşmiyor"
@@ -762,7 +764,7 @@
         "computedProperties": "Hesaplanan Özellikler",
         "containerPolicies": "Kapsayıcı İlkeleri",
         "throughputBuckets": "Aktarım Hızı Demetleri",
-        "globalSecondaryIndexPreview": "Genel İkincil Dizini (Önizleme)",
+        "globalSecondaryIndexPreview": "Global Secondary Index",
         "maskingPolicyPreview": "Veri Maskeleme İlkesi"
       },
       "mongoNotifications": {
@@ -795,7 +797,7 @@
         "perMonth": "/ay"
       },
       "throughput": {
-        "manualToAutoscaleDisclaimer": "Başlangıç otomatik ölçeklendirme maksimum RU/sn değeri, mevcut el ile aktarım hızı ayarları ve kaynağınızın depolama durumuna göre sistem tarafından belirlenir. Otomatik ölçeklendirme etkinleştirildikten sonra maksimum RU/sn değerini değiştirebilirsiniz.",
+        "manualToAutoscaleDisclaimer": "Başlangıç otomatik ölçeklendirme maksimum RU/sn değeri, mevcut manuel aktarım hızı ayarları ve kaynağınızın depolama durumuna göre sistem tarafından belirlenir. Otomatik ölçeklendirme etkinleştirildikten sonra maksimum RU/sn değerini değiştirebilirsiniz.",
         "ttlWarningText": "Sistem, istemci uygulaması tarafından açıkça silme işlemi yapılmasına gerek kalmadan, girdiğiniz TTL değerine (saniye cinsinden) göre öğeleri otomatik olarak siler. Daha fazla bilgi için şu sayfaya bakın,",
         "ttlWarningLinkText": "Azure Cosmos DB'de Yaşam Süresi (TTL)",
         "unsavedIndexingPolicy": "Dizin oluşturma ilkesi",
@@ -813,8 +815,8 @@
         "saveThroughputWarning": "Aktarım hızı ayarlarınızı güncelleştirdiğinzde faturanız etkilenir. Değişiklikleri kaydetmeden önce lütfen aşağıdaki güncelleştirilmiş maliyet tahminini gözden geçirin",
         "currentAutoscaleThroughput": "Geçerli otomatik ölçeklendirme aktarım hızı:",
         "targetAutoscaleThroughput": "Hedef otomatik ölçeklendirme aktarım hızı:",
-        "currentManualThroughput": "Geçerli el ile aktarım hızı:",
-        "targetManualThroughput": "Hedef el ile aktarım hızı:",
+        "currentManualThroughput": "Geçerli manuel aktarım hızı:",
+        "targetManualThroughput": "Hedef manuel aktarım hızı:",
         "applyDelayedMessage": "Aktarım hızını artırma talebi başarıyla gönderildi. Bu işlem 1-3 iş günü sürebilir. En son durumu Bildirimler'den görüntüleyin.",
         "databaseLabel": "Veritabanı:",
         "containerLabel": "Kapsayıcı:",
@@ -925,12 +927,12 @@
       },
       "globalSecondaryIndex": {
         "indexesDefined": "Bu kapsayıcı için aşağıdaki dizinler tanımlanmıştır.",
-        "learnMoreSuffix": "Genel ikincil dizinlerin nasıl tanımlanacağı ve nasıl kullanılacağı hakkında.",
-        "jsonAriaLabel": "Genel İkincil Dizin JSON'u",
+        "learnMoreSuffix": "Global ikincil endekslerin nasıl tanımlanacağı ve nasıl kullanılacağı hakkında.",
+        "jsonAriaLabel": "Global İkincil Endeks JSON'u",
         "addIndex": "Dizin ekle",
-        "settingsTitle": "Genel İkincil Dizin Ayarları",
+        "settingsTitle": "Global İkincil Endeks Ayarları",
         "sourceContainer": "Kaynak kapsayıcı",
-        "indexDefinition": "Genel ikincil dizin tanımı"
+        "indexDefinition": "Global İkincil Endeks tanımı"
       },
       "indexingPolicyRefresh": {
         "refreshFailed": "Dizin dönüştürme ilerlemesi yenilenemedi"
@@ -947,7 +949,7 @@
         "instant": "Anında",
         "fourToSixHrs": "4-6 saat",
         "autoscaleDescription": "Kullanıma bağlı olarak {{resourceType}} aktarım hızınız şu aralıkta değişecektir",
-        "freeTierWarning": "El ile aktarım hızını {{ru}} RU/sn'den fazla sağlarsanız veya kaynak otomatik ölçeklendirme ile {{ru}} RU/sn'nin üzerine çıkarsa faturalandırma uygulanır.",
+        "freeTierWarning": "Manuel aktarım hızını {{ru}} RU/sn'den fazla sağlarsanız veya kaynak otomatik ölçeklendirme ile {{ru}} RU/sn'nin üzerine çıkarsa faturalandırma uygulanır.",
         "capacityCalculator": "Gerekli RU/sn miktarınızı şu şekilde tahmin edin",
         "capacityCalculatorLink": " kapasite hesaplayıcısı",
         "fixedStorageNote": "Sabit depolama kapasitesine sahip bir koleksiyon kullanırken, 10.000 RU/sn'ye kadar ayarlayabilirsiniz.",
@@ -979,7 +981,7 @@
       "quantizationByteSize": "Bölme bayt boyutu",
       "quantizationByteSizeTooltip": "Bu boş bırakılırsa {{containerName}} tarafından dinamik olarak ayarlanır veya sabit bir sayıya ayarlanabilir",
       "quantizationByteSizeTooltipContainerName": "kapsayıcı",
-      "quantizationByteSizeTooltipGlobalSecondaryIndexName": "genel ikincil dizin",
+      "quantizationByteSizeTooltipGlobalSecondaryIndexName": "global ikincil endeks",
       "quantizerType": "Bölme türü",
       "quantizerTypeTooltip": "Vektör dizini tarafından kullanılan bölme yöntemi.",
       "indexingSearchListSize": "Dizin arama listesi boyutu",
@@ -991,6 +993,165 @@
       "dimensionFlatIndexError": "Düz dizin için izin verilen boyut üst sınırı 505",
       "quantizationByteSizeRangeError": "Bölme bayt boyutu 0'dan büyük ve 512'den küçük veya buna eşit olmalıdır",
       "indexingSearchListSizeRangeError": "Dizin arama listesi boyutu 25'ten büyük veya buna eşit ve 500'den küçük veya buna eşit olmalıdır"
+    }
+  },
+  "containerCopy": {
+    "commandBar": {
+      "feedbackButtonLabel": "Geri bildirim",
+      "feedbackButtonAriaLabel": "Kopyalama işleri hakkında geri bildirim gönderin",
+      "refreshButtonAriaLabel": "Kopyalama işlerini yenile",
+      "createCopyJobButtonLabel": "Kopyalama İşi Oluştur",
+      "createCopyJobButtonAriaLabel": "Yeni kapsayıcı kopyalama işi oluştur"
+    },
+    "noCopyJobs": {
+      "title": "Gösterilecek kopyalama işi yok",
+      "createCopyJobButtonText": "Kapsayıcı kopyalama işi oluştur"
+    },
+    "jobDetails": {
+      "panelTitle": "{{jobName}}",
+      "panelTitleDefault": "İş Ayrıntıları",
+      "errorTitle": "Hata Ayrıntıları",
+      "selectedContainers": "Seçili Kapsayıcılar"
+    },
+    "createCopyJob": {
+      "panelTitle": "Kopyalama işi oluştur"
+    },
+    "selectAccount": {
+      "description": "Lütfen kopyalanacak hedef hesabı seçin.",
+      "subscriptionDropdownLabel": "Abonelik",
+      "subscriptionDropdownPlaceholder": "Abonelik seçin",
+      "accountDropdownLabel": "Hesap",
+      "accountDropdownPlaceholder": "Hesap seçin"
+    },
+    "migrationType": {
+      "offline": {
+        "title": "Çevrimdışı mod",
+        "description": "Çevrimdışı kapsayıcı kopyalama işleri, desteklenen API'ler için kaynak kapsayıcıdan hedef Cosmos DB kapsayıcısına veri kopyalamanızı sağlar. Kaynak ve hedef arasında veri bütünlüğünü sağlamak için, kopyalama işini oluşturmadan önce kaynak kapsayıcıdaki güncelleştirmeleri durdurmanızı öneririz. [Çevrimdışı kopyalama işleri](https://learn.microsoft.com/azure/cosmos-db/how-to-container-copy?tabs=offline-copy&pivots=api-nosql) hakkında daha fazla bilgi edinin."
+      },
+      "online": {
+        "title": "Çevrimiçi mod",
+        "description": "Çevrimiçi kapsayıcı kopyalama işleri, [Tüm Sürümler ve Sil](https://learn.microsoft.com/azure/cosmos-db/change-feed-modes?tabs=all-versions-and-deletes#all-versions-and-deletes-change-feed-mode-preview) değişiklik akışını kullanarak kaynak kapsayıcıdan hedef Cosmos DB NoSQL API kapsayıcısına veri kopyalamanızı sağlar. Bu, veriler kopyalanırken kaynakta güncelleştirmelerin devam etmesini sağlar. İstemci uygulamalarını güvenli bir şekilde hedef kapsayıcıya geçirmek için sonunda kısa bir kesinti süresi gerekir. [Çevrimiçi kopyalama işleri](https://learn.microsoft.com/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#getting-started) hakkında daha fazla bilgi edinin."
+      }
+    },
+    "selectContainers": {
+      "description": "Lütfen kopyalamak için bir kaynak kapsayıcı ve bir hedef kapsayıcı seçin.",
+      "sourceContainerSubHeading": "Kaynak kapsayıcı",
+      "targetContainerSubHeading": "Hedef kapsayıcı",
+      "databaseDropdownLabel": "Veritabanı",
+      "databaseDropdownPlaceholder": "Veritabanı seçin",
+      "containerDropdownLabel": "Kapsayıcı",
+      "containerDropdownPlaceholder": "Kapsayıcı seçin",
+      "createNewContainerSubHeading": "\"{{accountName}}\" hedef hesabındaki yeni kapsayıcının özelliklerini yapılandırın.",
+      "createNewContainerSubHeadingDefault": "Yeni kapsayıcının özelliklerini yapılandırın.",
+      "createContainerButtonLabel": "Yeni kapsayıcı oluştur",
+      "createContainerHeading": "Yeni kapsayıcı oluştur"
+    },
+    "preview": {
+      "jobNameLabel": "İş adı",
+      "subscriptionLabel": "Hedef abonelik",
+      "accountLabel": "Hedef hesap",
+      "sourceDatabaseLabel": "Kaynak veritabanı",
+      "sourceContainerLabel": "Kaynak kapsayıcı",
+      "targetDatabaseLabel": "Hedef veritabanı",
+      "targetContainerLabel": "Hedef kapsayıcı"
+    },
+    "assignPermissions": {
+      "crossAccountDescription": "Kaynaktan hedef kapsayıcıya veri kopyalamak için aşağıdaki adımları tamamlayarak kaynak hesabın yönetilen kimliğinin hedef hesaba okuma yazma erişimi olduğundan emin olun.",
+      "intraAccountOnlineDescription": "\"{{accountName}}\" hesabınızda çevrimiçi kopyalamayı etkinleştirmek için aşağıdaki adımları izleyin.",
+      "crossAccountConfiguration": {
+        "title": "Hesaplar arası kapsayıcı kopyalama",
+        "description": "Verileri \"{{sourceAccount}}\" konumundan \"{{destinationAccount}}\" konumuna kopyalamak için gerekli izinleri vermek üzere lütfen aşağıdaki yönergeyi izleyin."
+      },
+      "onlineConfiguration": {
+        "title": "Çevrimiçi kapsayıcı kopyalama",
+        "description": "\"{{accountName}}\" hesabınızda çevrimiçi kopyalamayı etkinleştirmek için lütfen aşağıdaki yönergeleri izleyin."
+      }
+    },
+    "popoverOverlaySpinnerLabel": "İsteğiniz işlenirken lütfen bekleyin...",
+    "addManagedIdentity": {
+      "title": "Sistem tarafından atanan yönetilen kimlik etkinleştirildi.",
+      "description": "Sistem tarafından atanan yönetilen kimlik, kaynak başına bir kimlikle sınırlıdır ve bu kaynağın yaşam döngüsüne bağlıdır. Etkinleştirildikten sonra, Azure rol tabanlı erişim denetimini (Azure RBAC) kullanarak yönetilen kimliğe izinler verebilirsiniz. Yönetilen kimlik Microsoft Entra ID ile doğrulandığından kimlik bilgilerini kodda depolamanız gerekmez.",
+      "descriptionHrefText": "Yönetilen kimlikler hakkında daha fazla bilgi edinin.",
+      "descriptionHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
+      "toggleLabel": "Sistem tarafından atanan yönetilen kimlik",
+      "tooltipContent": "Şunun hakkında daha fazla bilgi edinin:",
+      "tooltipHrefText": "Yönetilen Kimlikler.",
+      "tooltipHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
+      "userAssignedIdentityTooltip": "Mevcut bir kullanıcı tarafından atanan kimliği seçebilir veya yeni bir tane oluşturabilirsiniz.",
+      "userAssignedIdentityLabel": "Kullanıcı tarafından atanan bir yönetilen kimlik de seçebilirsiniz.",
+      "createUserAssignedIdentityLink": "Kullanıcı Tarafından Atanan Yönetilen Kimlik Oluştur",
+      "enablementTitle": "Sistem tarafından atanan yönetilen kimliği etkinleştir",
+      "enablementDescription": "{{accountName}} üzerinde sistem tarafından atanan yönetilen kimliği etkinleştirin. Onaylamak için \"Evet\" düğmesine tıklayın."
+    },
+    "defaultManagedIdentity": {
+      "title": "Sistem tarafından atanan yönetilen kimlik varsayılan olarak ayarlandı.",
+      "description": "Sistem tarafından atanan yönetilen kimliği açarak \"{{accountName}}\" için varsayılan olarak ayarlayın.",
+      "tooltipContent": "Şunun hakkında daha fazla bilgi edinin:",
+      "tooltipHrefText": "Varsayılan Yönetilen Kimlikler.",
+      "tooltipHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
+      "popoverTitle": "Sistem tarafından atanan yönetilen kimlik varsayılan olarak ayarlandı",
+      "popoverDescription": "Sistem tarafından atanan yönetilen kimliği \"{{accountName}}\" için varsayılan olarak atayın. Onaylamak için \"Evet\" düğmesine tıklayın. "
+    },
+    "readWritePermissionAssigned": {
+      "title": "Varsayılan kimliğe okuma yazma izinleri atandı.",
+      "description": "Kaynaktan hedef kapsayıcıya veri kopyalanmasına izin vermek için hedef hesapta kaynak hesabın varsayılan kimliğine okuma yazma erişimi verin.",
+      "tooltipContent": "Şunun hakkında daha fazla bilgi edinin:",
+      "tooltipHrefText": "Okuma yazma izinleri.",
+      "tooltipHref": "https://learn.microsoft.com/azure/cosmos-db/nosql/how-to-connect-role-based-access-control",
+      "popoverTitle": "Varsayılan kimliğe okuma yazma izinleri atayın.",
+      "popoverDescription": "Hedef hesaptaki okuma yazma izinlerini kaynak hesabın varsayılan kimliğine atayın. Onaylamak için \"Evet\" düğmesine tıklayın."
+    },
+    "pointInTimeRestore": {
+      "title": "Belirli Bir Noktaya Geri Yükleme etkinleştirildi",
+      "description": "Çevrimiçi kapsayıcı kopyalama işlerini kolaylaştırmak için lütfen \"{{accessName}}\" yedekleme ilkenizi periyodik yedeklemeden sürekli yedeklemeye güncelleştirin. Bu işlev için sürekli yedekleme etkinleştirilmelidir.",
+      "tooltipContent": "Şunun hakkında daha fazla bilgi edinin:",
+      "tooltipHrefText": "Sürekli Yedekleme",
+      "tooltipHref": "https://learn.microsoft.com/en-us/azure/cosmos-db/continuous-backup-restore-introduction",
+      "buttonText": "Belirli Bir Noktaya Geri Yüklemeyi Etkinleştir"
+    },
+    "onlineCopyEnabled": {
+      "title": "Çevrimiçi kopyalama etkinleştirildi",
+      "description": "\"{{accountName}}\" hesabınızda aşağıdaki düğmeye tıklayarak çevrimiçi kapsayıcı kopyalamayı etkinleştirin.",
+      "hrefText": "Çevrimiçi kopyalama işleri hakkında daha fazla bilgi edinin",
+      "href": "https://learn.microsoft.com/en-us/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#enable-online-copy",
+      "buttonText": "Çevrimiçi Kopyalamayı Etkinleştir",
+      "validateAllVersionsAndDeletesChangeFeedSpinnerLabel": "Tüm sürümler ve silmeler için değişiklik akışı modu doğrulanıyor (önizleme)...",
+      "enablingAllVersionsAndDeletesChangeFeedSpinnerLabel": "Tüm sürümler ve silmeler için değişiklik akışı modu etkinleştiriliyor (önizleme)...",
+      "enablingOnlineCopySpinnerLabel": "\"{{accountName}}\" hesabınızda çevrimiçi kopyalama etkinleştiriliyor ..."
+    },
+    "monitorJobs": {
+      "columns": {
+        "lastUpdatedTime": "Tarih ve saat",
+        "name": "İş adı",
+        "status": "Durum",
+        "completionPercentage": "Tamamlama yüzdesi",
+        "duration": "Süre",
+        "error": "Hata iletisi",
+        "mode": "Mod",
+        "actions": "Eylemler"
+      },
+      "actions": {
+        "pause": "Duraklat",
+        "resume": "Sürdür",
+        "complete": "Tamamlandı",
+        "viewDetails": "Ayrıntıları Görüntüle"
+      },
+      "status": {
+        "pending": "Sıraya alındı",
+        "inProgress": "Çalıştırılıyor",
+        "running": "Çalıştırılıyor",
+        "partitioning": "Çalıştırılıyor",
+        "paused": "Duraklatıldı",
+        "completed": "Tamamlandı",
+        "failed": "Başarısız oldu",
+        "faulted": "Başarısız oldu",
+        "skipped": "İptal edildi",
+        "cancelled": "İptal edildi"
+      },
+      "dialog": {
+        "confirmButtonText": "Onayla",
+        "cancelButtonText": "İptal"
+      }
     }
   }
 }
