@@ -22,8 +22,7 @@ export async function listSqlDatabases(
   try {
     console.log("{{cdbp}} in listSqlDatabases(): calling armRequest");
     return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
-  }
-  catch (error) {
+  } catch (error) {
     console.log("{{cdbp}} in listSqlDatabases(): ERROR: " + JSON.stringify(error));
     throw error;
   }

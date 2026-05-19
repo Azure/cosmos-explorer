@@ -138,9 +138,8 @@ export async function readDatabasesWithARM(accountOverride?: {
 
     console.log("{{cdbp}} in readDatabasesWithARM(): response: " + JSON.stringify(rpResponse));
     return rpResponse?.value?.map((database) => database.properties?.resource as DataModels.Database) ?? [];
-  }
-  catch (error) {
+  } catch (error) {
     console.log("{{cdbp}} in readDatabasesWithARM(): ERROR: " + JSON.stringify(error));
-    throw error
+    throw error;
   }
 }

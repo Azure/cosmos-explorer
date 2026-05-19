@@ -1200,17 +1200,17 @@ export default class Explorer {
     const databasesTask =
       userContext.apiType !== "Postgres" && userContext.apiType !== "VCoreMongo"
         ? (async () => {
-          if (userContext.authType === AuthType.ResourceToken) {
-            scenarioMonitor.skipPhase(MetricScenario.DatabaseLoad, ApplicationMetricPhase.CollectionsLoaded);
-            scenarioMonitor.skipPhase(MetricScenario.DatabaseLoad, ApplicationMetricPhase.DatabaseTreeRendered);
-            this.databasesRefreshed = this.refreshDatabaseForResourceToken().then(() => {
-              scenarioMonitor.completePhase(MetricScenario.DatabaseLoad, ApplicationMetricPhase.DatabasesFetched);
-            });
-          } else {
-            this.databasesRefreshed = this.refreshAllDatabases();
-          }
-          await this.databasesRefreshed;
-        })()
+            if (userContext.authType === AuthType.ResourceToken) {
+              scenarioMonitor.skipPhase(MetricScenario.DatabaseLoad, ApplicationMetricPhase.CollectionsLoaded);
+              scenarioMonitor.skipPhase(MetricScenario.DatabaseLoad, ApplicationMetricPhase.DatabaseTreeRendered);
+              this.databasesRefreshed = this.refreshDatabaseForResourceToken().then(() => {
+                scenarioMonitor.completePhase(MetricScenario.DatabaseLoad, ApplicationMetricPhase.DatabasesFetched);
+              });
+            } else {
+              this.databasesRefreshed = this.refreshAllDatabases();
+            }
+            await this.databasesRefreshed;
+          })()
         : Promise.resolve();
 
     const notebooksTask = !isFabricNative()
