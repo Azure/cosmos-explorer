@@ -760,7 +760,6 @@
         "settings": "Inställningar",
         "indexingPolicy": "Indexeringspolicy",
         "partitionKeys": "Partitionsnycklar",
-        "partitionKeysPreview": "Partitionsnycklar (förhandsversion)",
         "computedProperties": "Beräknade egenskaper",
         "containerPolicies": "Containerprinciper",
         "throughputBuckets": "Dataflödesbuckets",
@@ -895,6 +894,10 @@
       },
       "partitionKeyEditor": {
         "changePartitionKey": "Ändra {{partitionKeyName}}",
+        "confirmCancel1": "You are about to cancel the following copy job.",
+        "confirmCancel2": "Cancelling will stop the job immediately.",
+        "confirmComplete1": "You are about to complete the following copy job.",
+        "confrimComplete2": "Once completed, continuous data copy will stop after any pending documents are processed. To maintain data integrity, we recommend stopping updates to the source container before completing the job.",
         "currentPartitionKey": "Nuvarande {{partitionKeyName}}",
         "partitioning": "Partitionering",
         "hierarchical": "Hierarkiskt",
@@ -1033,6 +1036,7 @@
         "description": "Med online-containerkopieringsjobb kan du kopiera data från en källcontainer till ett mål Cosmos DB NoSQL API-containern med ändringsflödet [Alla versioner och ta bort](https://learn.microsoft.com/azure/cosmos-db/change-feed-modes?tabs=all-versions-and-deletes#all-versions-and-deletes-change-feed-mode-preview). Detta gör att uppdateringar kan fortsätta på källan medan data kopieras. En kort stilleståndstid krävs i slutet för att på ett säkert sätt växla över klientprogram till målcontainern. Läs mer om [onlinekopieringsjobb](https://learn.microsoft.com/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#getting-started)."
       }
     },
+    "migrationTypeTitle": "Migration type",
     "selectContainers": {
       "description": "Välj en källcontainer och en målcontainer att kopiera till.",
       "sourceContainerSubHeading": "Källcontainer",
@@ -1117,7 +1121,8 @@
       "buttonText": "Aktivera onlinekopiering",
       "validateAllVersionsAndDeletesChangeFeedSpinnerLabel": "Verifierar alla versioner och tar bort ändringsflödesläge (förhandsversion)...",
       "enablingAllVersionsAndDeletesChangeFeedSpinnerLabel": "Aktiverar alla versioner och tar bort ändringsflödesläge (förhandsversion)...",
-      "enablingOnlineCopySpinnerLabel": "Aktiverar onlinekopiering på ditt {{accountName}}-konto..."
+      "enablingOnlineCopySpinnerLabel": "Aktiverar onlinekopiering på ditt {{accountName}}-konto...",
+      "onlineMigrationPrerequisitesMessage": "Online migration prerequisites must be enabled before proceeding."
     },
     "monitorJobs": {
       "columns": {
@@ -1151,6 +1156,16 @@
       "dialog": {
         "confirmButtonText": "Bekräfta",
         "cancelButtonText": "Avbryt"
+      }
+    },
+    "dataTransfers": {
+      "polling": {
+        "cancelConsoleMessage": "Data transfer job \"{{jobName}}\" cancelled",
+        "completedConsoleMessage": "Data transfer job \"{{jobName}}\" completed",
+        "defaultErrorMessage": "Operation could not be completed",
+        "errorConsoleMessage": "Data transfer job \"{{jobName}}\" failed: {{errorMessage}}",
+        "pauseConsoleMessage": "Data transfer job \"{{jobName}}\" paused",
+        "retryConsoleMessage": "Data transfer job \"{{jobName}}\" in progress, total count: {{totalCount}}, processed count: {{processedCount}}"
       }
     }
   }

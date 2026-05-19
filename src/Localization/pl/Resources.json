@@ -760,7 +760,6 @@
         "settings": "Ustawienia",
         "indexingPolicy": "Zasady indeksowania",
         "partitionKeys": "Klucze partycji",
-        "partitionKeysPreview": "Klucze partycji (wersja zapoznawcza)",
         "computedProperties": "Właściwości obliczane",
         "containerPolicies": "Zasady kontenera",
         "throughputBuckets": "Zasobniki przepływności",
@@ -895,6 +894,10 @@
       },
       "partitionKeyEditor": {
         "changePartitionKey": "Zmień element {{partitionKeyName}}",
+        "confirmCancel1": "You are about to cancel the following copy job.",
+        "confirmCancel2": "Cancelling will stop the job immediately.",
+        "confirmComplete1": "You are about to complete the following copy job.",
+        "confrimComplete2": "Once completed, continuous data copy will stop after any pending documents are processed. To maintain data integrity, we recommend stopping updates to the source container before completing the job.",
         "currentPartitionKey": "Bieżący {{partitionKeyName}}",
         "partitioning": "Partycjonowanie",
         "hierarchical": "Hierarchiczne",
@@ -1033,6 +1036,7 @@
         "description": "Zadania kopiowania kontenerów online umożliwiają kopiowanie danych z kontenera źródłowego do docelowego kontenera interfejsu API NoSQL usługi Cosmos DB przy użyciu zestawienia zmian [Wszystkie wersje i usuwanie](https://learn.microsoft.com/azure/cosmos-db/change-feed-modes?tabs=all-versions-and-deletes#all-versions-and-deletes-change-feed-mode-preview). Umożliwia to kontynuowanie aktualizacji w źródle podczas kopiowania danych. Na końcu jest wymagany krótki przestój, aby bezpiecznie przełączyć aplikacje klienckie do kontenera docelowego. Dowiedz się więcej o [zadaniach kopiowania online](https://learn.microsoft.com/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#getting-started)."
       }
     },
+    "migrationTypeTitle": "Migration type",
     "selectContainers": {
       "description": "Wybierz kontener źródłowy i kontener docelowy do skopiowania.",
       "sourceContainerSubHeading": "Kontener źródłowy",
@@ -1117,7 +1121,8 @@
       "buttonText": "Włącz kopiowanie online",
       "validateAllVersionsAndDeletesChangeFeedSpinnerLabel": "Trwa weryfikacja wszystkich wersji i usunięć w trybie zestawienia zmian (wersja zapoznawcza)...",
       "enablingAllVersionsAndDeletesChangeFeedSpinnerLabel": "Trwa włączanie wszystkich wersji i usunięć w trybie zestawienia zmian (wersja zapoznawcza)...",
-      "enablingOnlineCopySpinnerLabel": "Trwa włączanie kopii online na koncie „{{accountName}}”..."
+      "enablingOnlineCopySpinnerLabel": "Trwa włączanie kopii online na koncie „{{accountName}}”...",
+      "onlineMigrationPrerequisitesMessage": "Online migration prerequisites must be enabled before proceeding."
     },
     "monitorJobs": {
       "columns": {
@@ -1151,6 +1156,16 @@
       "dialog": {
         "confirmButtonText": "Potwierdź",
         "cancelButtonText": "Anuluj"
+      }
+    },
+    "dataTransfers": {
+      "polling": {
+        "cancelConsoleMessage": "Data transfer job \"{{jobName}}\" cancelled",
+        "completedConsoleMessage": "Data transfer job \"{{jobName}}\" completed",
+        "defaultErrorMessage": "Operation could not be completed",
+        "errorConsoleMessage": "Data transfer job \"{{jobName}}\" failed: {{errorMessage}}",
+        "pauseConsoleMessage": "Data transfer job \"{{jobName}}\" paused",
+        "retryConsoleMessage": "Data transfer job \"{{jobName}}\" in progress, total count: {{totalCount}}, processed count: {{processedCount}}"
       }
     }
   }

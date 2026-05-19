@@ -760,7 +760,6 @@
         "settings": "Параметры",
         "indexingPolicy": "Политика индексации",
         "partitionKeys": "Ключи разделов",
-        "partitionKeysPreview": "Ключи разделов (предварительная версия)",
         "computedProperties": "Вычисленные свойства",
         "containerPolicies": "Правила перевозки контейнеров",
         "throughputBuckets": "Группы пропускной способности",
@@ -895,6 +894,10 @@
       },
       "partitionKeyEditor": {
         "changePartitionKey": "Изменить {{partitionKeyName}}",
+        "confirmCancel1": "You are about to cancel the following copy job.",
+        "confirmCancel2": "Cancelling will stop the job immediately.",
+        "confirmComplete1": "You are about to complete the following copy job.",
+        "confrimComplete2": "Once completed, continuous data copy will stop after any pending documents are processed. To maintain data integrity, we recommend stopping updates to the source container before completing the job.",
         "currentPartitionKey": "Текущий {{partitionKeyName}}",
         "partitioning": "Секционирование",
         "hierarchical": "Иерархический",
@@ -1033,6 +1036,7 @@
         "description": "Онлайн-задания копирования контейнеров позволяют копировать данные из исходного контейнера в целевой контейнер API NoSQL Cosmos DB с помощью канала изменений [Все версии и удаление](https://learn.microsoft.com/azure/cosmos-db/change-feed-modes?tabs=all-versions-and-deletes#all-versions-and-deletes-change-feed-mode-preview). Это позволяет продолжать обновление в источнике во время копирования данных. В конце потребуется кратковременный простой, чтобы безопасно переключить клиентские приложения на целевой контейнер. Подробнее об [заданиях онлайн-копирования](https://learn.microsoft.com/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#getting-started)."
       }
     },
+    "migrationTypeTitle": "Migration type",
     "selectContainers": {
       "description": "Выберите исходный и целевой контейнер для копирования.",
       "sourceContainerSubHeading": "Исходный контейнер",
@@ -1117,7 +1121,8 @@
       "buttonText": "Включить онлайн-копирование",
       "validateAllVersionsAndDeletesChangeFeedSpinnerLabel": "Проверка режима канала изменений для всех версий и удалений (предварительная версия)...",
       "enablingAllVersionsAndDeletesChangeFeedSpinnerLabel": "Включение режима канала изменений для всех версий и удалений (предварительная версия)...",
-      "enablingOnlineCopySpinnerLabel": "Включение онлайн-копирования для вашей учетной записи \"{{accountName}}\"..."
+      "enablingOnlineCopySpinnerLabel": "Включение онлайн-копирования для вашей учетной записи \"{{accountName}}\"...",
+      "onlineMigrationPrerequisitesMessage": "Online migration prerequisites must be enabled before proceeding."
     },
     "monitorJobs": {
       "columns": {
@@ -1151,6 +1156,16 @@
       "dialog": {
         "confirmButtonText": "Подтвердить",
         "cancelButtonText": "Отмена"
+      }
+    },
+    "dataTransfers": {
+      "polling": {
+        "cancelConsoleMessage": "Data transfer job \"{{jobName}}\" cancelled",
+        "completedConsoleMessage": "Data transfer job \"{{jobName}}\" completed",
+        "defaultErrorMessage": "Operation could not be completed",
+        "errorConsoleMessage": "Data transfer job \"{{jobName}}\" failed: {{errorMessage}}",
+        "pauseConsoleMessage": "Data transfer job \"{{jobName}}\" paused",
+        "retryConsoleMessage": "Data transfer job \"{{jobName}}\" in progress, total count: {{totalCount}}, processed count: {{processedCount}}"
       }
     }
   }

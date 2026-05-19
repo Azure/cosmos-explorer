@@ -760,7 +760,6 @@
         "settings": "Nastavení",
         "indexingPolicy": "Zásada indexování",
         "partitionKeys": "Klíče oddílu",
-        "partitionKeysPreview": "Klíče oddílů (Preview)",
         "computedProperties": "Vypočítané vlastnosti",
         "containerPolicies": "Zásady kontejneru",
         "throughputBuckets": "Kbelíky propustnosti",
@@ -895,6 +894,10 @@
       },
       "partitionKeyEditor": {
         "changePartitionKey": "Změnit: {{partitionKeyName}}",
+        "confirmCancel1": "You are about to cancel the following copy job.",
+        "confirmCancel2": "Cancelling will stop the job immediately.",
+        "confirmComplete1": "You are about to complete the following copy job.",
+        "confrimComplete2": "Once completed, continuous data copy will stop after any pending documents are processed. To maintain data integrity, we recommend stopping updates to the source container before completing the job.",
         "currentPartitionKey": "Aktuální {{partitionKeyName}}",
         "partitioning": "Dělení na oddíly",
         "hierarchical": "Hierarchický",
@@ -1033,6 +1036,7 @@
         "description": "Úlohy online kopírování kontejnerů umožňují kopírovat data ze zdrojového kontejneru do cílového kontejneru rozhraní API NoSQL služby Cosmos DB pomocí kanálu změn [Všechny verze a odstranění](https://learn.microsoft.com/azure/cosmos-db/change-feed-modes?tabs=all-versions-and-deletes#all-versions-and-deletes-change-feed-mode-preview). Díky tomu můžou aktualizace ve zdroji pokračovat i během kopírování dat. Na konci je potřeba krátký výpadek, aby bylo možné bezpečně přepnout klientské aplikace na cílový kontejner. Další informace o [úlohách online kopírování](https://learn.microsoft.com/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#getting-started)."
       }
     },
+    "migrationTypeTitle": "Migration type",
     "selectContainers": {
       "description": "Vyberte zdrojový a cílový kontejner, do kterého chcete kopírovat.",
       "sourceContainerSubHeading": "Zdrojový kontejner",
@@ -1117,7 +1121,8 @@
       "buttonText": "Povolit online kopírování",
       "validateAllVersionsAndDeletesChangeFeedSpinnerLabel": "Ověřuje se režim kanálu změn Všechny verze a odstranění (Preview)...",
       "enablingAllVersionsAndDeletesChangeFeedSpinnerLabel": "Povoluje se režim kanálu změn Všechny verze a odstranění (Preview)...",
-      "enablingOnlineCopySpinnerLabel": "Povoluje se online kopírování pro účet {{accountName}}..."
+      "enablingOnlineCopySpinnerLabel": "Povoluje se online kopírování pro účet {{accountName}}...",
+      "onlineMigrationPrerequisitesMessage": "Online migration prerequisites must be enabled before proceeding."
     },
     "monitorJobs": {
       "columns": {
@@ -1151,6 +1156,16 @@
       "dialog": {
         "confirmButtonText": "Potvrdit",
         "cancelButtonText": "Zrušit"
+      }
+    },
+    "dataTransfers": {
+      "polling": {
+        "cancelConsoleMessage": "Data transfer job \"{{jobName}}\" cancelled",
+        "completedConsoleMessage": "Data transfer job \"{{jobName}}\" completed",
+        "defaultErrorMessage": "Operation could not be completed",
+        "errorConsoleMessage": "Data transfer job \"{{jobName}}\" failed: {{errorMessage}}",
+        "pauseConsoleMessage": "Data transfer job \"{{jobName}}\" paused",
+        "retryConsoleMessage": "Data transfer job \"{{jobName}}\" in progress, total count: {{totalCount}}, processed count: {{processedCount}}"
       }
     }
   }
