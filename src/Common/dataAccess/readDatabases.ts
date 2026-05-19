@@ -26,6 +26,7 @@ export async function readDatabases(): Promise<DataModels.Database[]> {
     (userContext.fabricContext?.artifactInfo as FabricArtifactInfo[CosmosDbArtifactType.MIRRORED_KEY]).resourceTokenInfo
       .resourceTokens
   ) {
+    console.log("{{cdbp}} in readDatabases(): isFabricMirroredKey && has resourceTokens"); //CTODO should not get here
     const tokensData = (userContext.fabricContext.artifactInfo as FabricArtifactInfo[CosmosDbArtifactType.MIRRORED_KEY])
       .resourceTokenInfo;
 
@@ -59,6 +60,7 @@ export async function readDatabases(): Promise<DataModels.Database[]> {
     clearMessage();
     return databases;
   } else if (isFabricNative() && userContext.fabricContext?.databaseName) {
+    console.log("{{cdbp}} in readDatabases(): isFabricNative"); //CTODO should not get here
     const databaseId = userContext.fabricContext.databaseName;
     databases = [
       {
@@ -81,9 +83,15 @@ export async function readDatabases(): Promise<DataModels.Database[]> {
       userContext.apiType !== "Tables" &&
       !isFabric()
     ) {
+      console.log("{{cdbp}} in readDatabases(): authType == AAD, enableSDKOperations, apiType != Tables, !isFabric");
+      console.log("{{cdbp}} in readDatabases(): databaseaccount: " + userContext.databaseAccount);
+      console.log("{{cdbp}} in readDatabases(): calling readDatabasesWithARM");
       databases = await readDatabasesWithARM();
+      console.log("{{cdbp}} in readDatabases(): done readDatabasesWithARM");
     } else {
+      console.log("{{cdbp}} in readDatabases(): calling SDK");
       const sdkResponse = await client().databases.readAll().fetchAll();
+      console.log("{{cdbp}} in readDatabases(): done SDK");
       databases = sdkResponse.resources as DataModels.Database[];
     }
   } catch (error) {
@@ -108,22 +116,31 @@ export async function readDatabasesWithARM(accountOverride?: {
   const accountName = accountOverride?.accountName ?? userContext?.databaseAccount?.name ?? "";
   const apiType = accountOverride?.apiType ?? userContext.apiType;
 
-  switch (apiType) {
-    case "SQL":
-      rpResponse = await listSqlDatabases(subscriptionId, resourceGroup, accountName);
-      break;
-    case "Mongo":
-      rpResponse = await listMongoDBDatabases(subscriptionId, resourceGroup, accountName);
-      break;
-    case "Cassandra":
-      rpResponse = await listCassandraKeyspaces(subscriptionId, resourceGroup, accountName);
-      break;
-    case "Gremlin":
-      rpResponse = await listGremlinDatabases(subscriptionId, resourceGroup, accountName);
-      break;
-    default:
-      throw new Error(`Unsupported default experience type: ${apiType}`);
-  }
+  try {
+    switch (apiType) {
+      case "SQL":
+        console.log("{{cdbp}} in readDatabasesWithARM(): calling listSqlDatabases");
+        rpResponse = await listSqlDatabases(subscriptionId, resourceGroup, accountName);
+        console.log("{{cdbp}} in readDatabasesWithARM(): done listSqlDatabases");
+        break;
+      case "Mongo":
+        rpResponse = await listMongoDBDatabases(subscriptionId, resourceGroup, accountName);
+        break;
+      case "Cassandra":
+        rpResponse = await listCassandraKeyspaces(subscriptionId, resourceGroup, accountName);
+        break;
+      case "Gremlin":
+        rpResponse = await listGremlinDatabases(subscriptionId, resourceGroup, accountName);
+        break;
+      default:
+        throw new Error(`Unsupported default experience type: ${apiType}`);
+    }
 
-  return rpResponse?.value?.map((database) => database.properties?.resource as DataModels.Database) ?? [];
+    console.log("{{cdbp}} in readDatabasesWithARM(): response: " + JSON.stringify(rpResponse));
+    return rpResponse?.value?.map((database) => database.properties?.resource as DataModels.Database) ?? [];
+  }
+  catch (error) {
+    console.log("{{cdbp}} in readDatabasesWithARM(): ERROR: " + JSON.stringify(error));
+    throw error
+  }
 }

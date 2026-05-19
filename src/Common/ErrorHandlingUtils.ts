@@ -20,6 +20,7 @@ export const handleError = (
   consoleErrorPrefix?: string,
   options?: HandleErrorOptions,
 ): void => {
+  console.log("{{cdbp}} in handleError(): raw error: " + JSON.stringify(error)); //CTODO in case a stray error happens
   const errorMessage = getErrorMessage(error);
   const errorCode = error instanceof ARMError ? error.code : undefined;
 
