@@ -31,11 +31,6 @@ export type Features = {
   readonly mongoProxyAPIs?: string;
   readonly enableThroughputCap: boolean;
   readonly enableHierarchicalKeys: boolean;
-  readonly enableCopilot: boolean;
-  readonly copilotVersion?: string;
-  readonly disableCopilotPhoenixGateaway: boolean;
-  readonly enableCopilotFullSchema: boolean;
-  readonly copilotChatFixedMonacoEditorHeight: boolean;
   readonly enablePriorityBasedExecution: boolean;
   readonly disableConnectionStringLogin: boolean;
   readonly enableContainerCopy: boolean;
@@ -104,11 +99,6 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     notebooksDownBanner: "true" === get("notebooksDownBanner"),
     enableThroughputCap: "true" === get("enablethroughputcap"),
     enableHierarchicalKeys: "true" === get("enablehierarchicalkeys"),
-    enableCopilot: "true" === get("enablecopilot", "true"),
-    copilotVersion: get("copilotversion") ?? "v2.0",
-    disableCopilotPhoenixGateaway: "true" === get("disablecopilotphoenixgateaway"),
-    enableCopilotFullSchema: "true" === get("enablecopilotfullschema", "true"),
-    copilotChatFixedMonacoEditorHeight: "true" === get("copilotchatfixedmonacoeditorheight"),
     enablePriorityBasedExecution: "true" === get("enableprioritybasedexecution"),
     disableConnectionStringLogin: "true" === get("disableconnectionstringlogin"),
     enableContainerCopy: "true" === get("enablecontainercopy"),

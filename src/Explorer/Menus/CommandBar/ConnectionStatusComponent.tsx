@@ -14,15 +14,14 @@ import { useId } from "@fluentui/react-hooks";
 import { ActionButton, DefaultButton } from "@fluentui/react/lib/Button";
 import * as React from "react";
 import "../../../../less/hostedexplorer.less";
-import { ConnectionStatusType, ContainerStatusType, Notebook, PoolIdType } from "../../../Common/Constants";
+import { ConnectionStatusType, ContainerStatusType, Notebook } from "../../../Common/Constants";
 import Explorer from "../../Explorer";
 import { useNotebook } from "../../Notebook/useNotebook";
 import "../CommandBar/ConnectionStatusComponent.less";
 interface Props {
   container: Explorer;
-  poolId: PoolIdType;
 }
-export const ConnectionStatus: React.FC<Props> = ({ container, poolId }: Props): JSX.Element => {
+export const ConnectionStatus: React.FC<Props> = ({ container }: Props): JSX.Element => {
   const connectionInfo = useNotebook((state) => state.connectionInfo);
   const [second, setSecond] = React.useState("00");
   const [minute, setMinute] = React.useState("00");
@@ -94,7 +93,7 @@ export const ConnectionStatus: React.FC<Props> = ({ container, poolId }: Props):
     (connectionInfo.status === ConnectionStatusType.Connect || connectionInfo.status === ConnectionStatusType.Reconnect)
   ) {
     return (
-      <ActionButton className="commandReactBtn" onClick={() => container.allocateContainer(poolId)}>
+      <ActionButton className="commandReactBtn" onClick={() => container.allocateContainer()}>
         <TooltipHost content={toolTipContent}>
           <Stack className="connectionStatusContainer" horizontal>
             <Icon iconName="ConnectVirtualMachine" className="connectIcon" />
@@ -134,9 +133,7 @@ export const ConnectionStatus: React.FC<Props> = ({ container, poolId }: Props):
           id={buttonId}
           className={connectionInfo.status === ConnectionStatusType.Failed ? "commandReactBtn" : "connectedReactBtn"}
           onClick={(e: React.MouseEvent<HTMLSpanElement>) =>
-            connectionInfo.status === ConnectionStatusType.Failed
-              ? container.allocateContainer(poolId)
-              : e.preventDefault()
+            connectionInfo.status === ConnectionStatusType.Failed ? container.allocateContainer() : e.preventDefault()
           }
         >
           <Stack className="connectionStatusContainer" horizontal>

@@ -23,7 +23,9 @@ test.describe("Computed Properties", () => {
   });
 
   test.afterAll("Delete Test Database", async () => {
-    await context?.dispose();
+    if (!process.env.CI) {
+      await context?.dispose();
+    }
   });
 
   test("Add valid computed property", async ({ page }) => {

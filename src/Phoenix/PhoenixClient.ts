@@ -3,7 +3,6 @@ import { useDialog } from "Explorer/Controls/Dialog";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { userContext } from "UserContext";
 import { allowedJunoOrigins, validateEndpoint } from "Utils/EndpointUtils";
-import { useQueryCopilot } from "hooks/useQueryCopilot";
 import promiseRetry, { AbortError, Options } from "p-retry";
 import {
   Areas,
@@ -13,13 +12,12 @@ import {
   HttpStatusCodes,
   Notebook,
 } from "../Common/Constants";
-import { getErrorMessage, getErrorStack } from "../Common/ErrorHandlingUtils";
+import { getErrorMessage } from "../Common/ErrorHandlingUtils";
 import * as Logger from "../Common/Logger";
 import {
   ContainerConnectionInfo,
   ContainerInfo,
   IContainerData,
-  IDbAccountAllow,
   IMaxAllocationTimeExceeded,
   IPhoenixConnectionInfoResult,
   IPhoenixError,
@@ -149,9 +147,7 @@ export class PhoenixClient {
             dataExplorerArea: Areas.Notebook,
             message: getErrorMessage(error),
           });
-          shouldUseNotebookStates
-            ? useNotebook.getState().resetContainerConnection(connectionStatus)
-            : useQueryCopilot.getState().resetContainerConnection();
+          shouldUseNotebookStates ? useNotebook.getState().resetContainerConnection(connectionStatus) : undefined;
           shouldUseNotebookStates && useNotebook.getState().setIsRefreshed(!useNotebook.getState().isRefreshed);
           shouldUseNotebookStates &&
             useDialog
@@ -179,9 +175,7 @@ export class PhoenixClient {
       const connectionStatus: ContainerConnectionInfo = {
         status: ConnectionStatusType.Failed,
       };
-      shouldUseNotebookStates
-        ? useNotebook.getState().resetContainerConnection(connectionStatus)
-        : useQueryCopilot.getState().resetContainerConnection();
+      shouldUseNotebookStates ? useNotebook.getState().resetContainerConnection(connectionStatus) : undefined;
       shouldUseNotebookStates && useNotebook.getState().setIsRefreshed(!useNotebook.getState().isRefreshed);
       return {
         durationLeftInMinutes: undefined,
@@ -193,60 +187,11 @@ export class PhoenixClient {
 
   private async getContainerHealth(shouldUseNotebookStates: boolean, delayMs: number, containerData: IContainerData) {
     const containerInfo = await this.getContainerStatusAsync(shouldUseNotebookStates, containerData);
-    shouldUseNotebookStates
-      ? useNotebook.getState().setContainerStatus(containerInfo)
-      : useQueryCopilot.getState().setContainerStatus(containerInfo);
+    shouldUseNotebookStates ? useNotebook.getState().setContainerStatus(containerInfo) : undefined;
 
-    const containerStatus = shouldUseNotebookStates
-      ? useNotebook.getState().containerStatus?.status
-      : useQueryCopilot.getState().containerStatus?.status;
+    const containerStatus = shouldUseNotebookStates ? useNotebook.getState().containerStatus?.status : undefined;
     if (containerStatus === ContainerStatusType.Active) {
       this.scheduleContainerHeartbeat(shouldUseNotebookStates, delayMs, containerData);
-    }
-  }
-
-  public async getDbAccountAllowedStatus(): Promise<IDbAccountAllow> {
-    const startKey = TelemetryProcessor.traceStart(Action.PhoenixDBAccountAllowed, {
-      dataExplorerArea: Areas.Notebook,
-    });
-    let responseJson;
-    try {
-      const response = await window.fetch(`${this.getPhoenixControlPlanePathPrefix()}`, {
-        method: "GET",
-        headers: PhoenixClient.getHeaders(),
-      });
-      responseJson = await response?.json();
-      if (response.status !== HttpStatusCodes.OK) {
-        throw new Error(`Received status code: ${response?.status}`);
-      }
-      TelemetryProcessor.traceSuccess(
-        Action.PhoenixDBAccountAllowed,
-        {
-          dataExplorerArea: Areas.Notebook,
-        },
-        startKey,
-      );
-      return {
-        status: response.status,
-        message: responseJson?.message,
-        type: responseJson?.type,
-      };
-    } catch (error) {
-      TelemetryProcessor.traceFailure(
-        Action.PhoenixDBAccountAllowed,
-        {
-          dataExplorerArea: Areas.Notebook,
-          error: getErrorMessage(error),
-          errorStack: getErrorStack(error),
-        },
-        startKey,
-      );
-      Logger.logError(getErrorMessage(error), "PhoenixClient/IsDbAcountWhitelisted");
-      return {
-        status: HttpStatusCodes.Forbidden,
-        message: responseJson?.message,
-        type: responseJson?.type,
-      };
     }
   }
 

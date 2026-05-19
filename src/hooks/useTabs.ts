@@ -18,7 +18,6 @@ export interface TabsState {
   openedReactTabs: ReactTabKind[];
   activeTab: TabsBase | undefined;
   activeReactTab: ReactTabKind | undefined;
-  queryCopilotTabInitialInput: string;
   isTabExecuting: boolean;
   isQueryErrorThrown: boolean;
   activateTab: (tab: TabsBase) => void;
@@ -32,7 +31,6 @@ export interface TabsState {
   closeAllNotebookTabs: (hardClose: boolean) => void;
   openAndActivateReactTab: (tabKind: ReactTabKind) => void;
   closeReactTab: (tabKind: ReactTabKind) => void;
-  setQueryCopilotTabInitialInput: (input: string) => void;
   setIsTabExecuting: (state: boolean) => void;
   setIsQueryErrorThrown: (state: boolean) => void;
   getCurrentTabIndex: () => number;
@@ -48,7 +46,6 @@ export enum ReactTabKind {
   Connect,
   Home,
   Quickstart,
-  QueryCopilot,
 }
 
 export const useTabs: UseStore<TabsState> = create((set, get) => ({
@@ -56,7 +53,6 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
   openedReactTabs: [ReactTabKind.Home],
   activeTab: undefined as TabsBase,
   activeReactTab: ReactTabKind.Home,
-  queryCopilotTabInitialInput: "",
   isTabExecuting: false,
   isQueryErrorThrown: false,
   activateTab: (tab: TabsBase): void => {
@@ -184,7 +180,6 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
 
     set({ openedReactTabs: updatedOpenedReactTabs });
   },
-  setQueryCopilotTabInitialInput: (input: string) => set({ queryCopilotTabInitialInput: input }),
   setIsTabExecuting: (state: boolean) => {
     set({ isTabExecuting: state });
   },

@@ -1,4 +1,5 @@
 import Explorer from "Explorer/Explorer";
+import { Keys, t } from "Localization";
 import React from "react";
 import { userContext } from "UserContext";
 import { getDataTransferJobs } from "../../../Common/dataAccess/dataTransfers";
@@ -15,7 +16,6 @@ import {
   CreateJobRequest,
   DataTransferJobGetResults,
 } from "../../../Utils/arm/generatedClients/dataTransferService/types";
-import ContainerCopyMessages from "../ContainerCopyMessages";
 import {
   convertTime,
   convertToCamelCase,
@@ -35,7 +35,7 @@ export const openCreateCopyJobPanel = (explorer: Explorer) => {
   const sidePanelState = useSidePanel.getState();
   sidePanelState.setPanelHasConsole(false);
   sidePanelState.openSidePanel(
-    ContainerCopyMessages.createCopyJobPanelTitle,
+    t(Keys.containerCopy.createCopyJob.panelTitle),
     <CreateCopyJobScreensProvider explorer={explorer} />,
     "650px",
   );
@@ -45,7 +45,7 @@ export const openCopyJobDetailsPanel = (job: CopyJobType) => {
   const sidePanelState = useSidePanel.getState();
   sidePanelState.setPanelHasConsole(false);
   sidePanelState.openSidePanel(
-    ContainerCopyMessages.copyJobDetailsPanelTitle(job.Name),
+    job.Name || t(Keys.containerCopy.jobDetails.panelTitleDefault),
     <CopyJobDetails job={job} />,
     "650px",
   );
@@ -137,12 +137,12 @@ export const submitCreateCopyJob = async (state: CopyJobContextState, onSuccess:
       properties: {
         source: {
           component: "CosmosDBSql",
-          ...(isSameAccount ? {} : { remoteAccountName: source?.account?.name }),
           databaseName: source?.databaseId,
           containerName: source?.containerId,
         },
         destination: {
           component: "CosmosDBSql",
+          ...(isSameAccount ? {} : { remoteAccountName: target?.account?.name }),
           databaseName: target?.databaseId,
           containerName: target?.containerId,
         },
@@ -193,7 +193,7 @@ export const updateCopyJobStatus = async (job: CopyJobType, action: string): Pro
     const pattern = new RegExp(`'(${statusList.join("|")})'`, "g");
     const normalizedErrorMessage = errorMessage.replace(
       pattern,
-      `'${ContainerCopyMessages.MonitorJobs.Status.InProgress}'`,
+      `'${t(Keys.containerCopy.monitorJobs.status.inProgress)}'`,
     );
     logError(`Error updating copy job status: ${normalizedErrorMessage}`, "CopyJob/CopyJobActions.updateCopyJobStatus");
     throw error;

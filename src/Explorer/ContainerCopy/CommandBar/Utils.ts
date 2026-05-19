@@ -5,10 +5,10 @@ import RefreshIcon from "../../../../images/refresh-cosmos.svg";
 import SunIcon from "../../../../images/SunIcon.svg";
 import { configContext, Platform } from "../../../ConfigContext";
 import { useThemeStore } from "../../../hooks/useTheme";
+import { Keys, t } from "Localization";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../../Explorer";
 import * as Actions from "../Actions/CopyJobActions";
-import ContainerCopyMessages from "../ContainerCopyMessages";
 import { MonitorCopyJobsRefState } from "../MonitorCopyJobs/MonitorCopyJobRefState";
 import { CopyJobCommandBarBtnType } from "../Types/CopyJobTypes";
 
@@ -19,15 +19,15 @@ function getCopyJobBtns(explorer: Explorer, isDarkMode: boolean): CopyJobCommand
     {
       key: "createCopyJob",
       iconSrc: AddIcon,
-      label: ContainerCopyMessages.createCopyJobButtonLabel,
-      ariaLabel: ContainerCopyMessages.createCopyJobButtonAriaLabel,
+      label: t(Keys.containerCopy.commandBar.createCopyJobButtonLabel),
+      ariaLabel: t(Keys.containerCopy.commandBar.createCopyJobButtonAriaLabel),
       onClick: () => Actions.openCreateCopyJobPanel(explorer),
     },
     {
       key: "refresh",
       iconSrc: RefreshIcon,
-      label: ContainerCopyMessages.refreshButtonLabel,
-      ariaLabel: ContainerCopyMessages.refreshButtonAriaLabel,
+      label: t(Keys.common.refresh),
+      ariaLabel: t(Keys.containerCopy.commandBar.refreshButtonAriaLabel),
       onClick: () => monitorCopyJobsRef?.refreshJobList(),
     },
     {
@@ -48,8 +48,8 @@ function getCopyJobBtns(explorer: Explorer, isDarkMode: boolean): CopyJobCommand
     buttons.push({
       key: "feedback",
       iconSrc: FeedbackIcon,
-      label: ContainerCopyMessages.feedbackButtonLabel,
-      ariaLabel: ContainerCopyMessages.feedbackButtonAriaLabel,
+      label: t(Keys.containerCopy.commandBar.feedbackButtonLabel),
+      ariaLabel: t(Keys.containerCopy.commandBar.feedbackButtonAriaLabel),
       onClick: () => {
         explorer.openContainerCopyFeedbackBlade();
       },

@@ -457,13 +457,13 @@ describe("CopyJobActions", () => {
         jobName: "test-job",
         migrationType: "online" as any,
         source: {
-          subscription: {} as any,
+          subscriptionId: "sub-123",
           account: { id: "account-1", name: "source-account" } as any,
           databaseId: "source-db",
           containerId: "source-container",
         },
         target: {
-          subscriptionId: "sub-123",
+          subscription: {} as any,
           account: { id: "account-1", name: "target-account" } as any,
           databaseId: "target-db",
           containerId: "target-container",
@@ -498,7 +498,7 @@ describe("CopyJobActions", () => {
       );
 
       const callArgs = (dataTransferService.create as jest.Mock).mock.calls[0][4];
-      expect(callArgs.properties.source.remoteAccountName).toBeUndefined();
+      expect(callArgs.properties.destination.remoteAccountName).toBeUndefined();
 
       expect(mockRefreshJobList).toHaveBeenCalled();
       expect(mockOnSuccess).toHaveBeenCalled();
@@ -509,13 +509,13 @@ describe("CopyJobActions", () => {
         jobName: "cross-account-job",
         migrationType: "offline" as any,
         source: {
-          subscription: {} as any,
+          subscriptionId: "sub-123",
           account: { id: "account-1", name: "source-account" } as any,
           databaseId: "source-db",
           containerId: "source-container",
         },
         target: {
-          subscriptionId: "sub-456",
+          subscription: {} as any,
           account: { id: "account-2", name: "target-account" } as any,
           databaseId: "target-db",
           containerId: "target-container",
@@ -528,7 +528,7 @@ describe("CopyJobActions", () => {
       await submitCreateCopyJob(mockState, mockOnSuccess);
 
       const callArgs = (dataTransferService.create as jest.Mock).mock.calls[0][4];
-      expect(callArgs.properties.source.remoteAccountName).toBe("source-account");
+      expect(callArgs.properties.destination.remoteAccountName).toBe("target-account");
       expect(mockOnSuccess).toHaveBeenCalled();
     });
 
@@ -537,13 +537,13 @@ describe("CopyJobActions", () => {
         jobName: "failing-job",
         migrationType: "online" as any,
         source: {
-          subscription: {} as any,
+          subscriptionId: "sub-123",
           account: { id: "account-1", name: "source-account" } as any,
           databaseId: "source-db",
           containerId: "source-container",
         },
         target: {
-          subscriptionId: "sub-123",
+          subscription: {} as any,
           account: { id: "account-1", name: "target-account" } as any,
           databaseId: "target-db",
           containerId: "target-container",
@@ -566,13 +566,13 @@ describe("CopyJobActions", () => {
         jobName: "test-job",
         migrationType: "online" as any,
         source: {
-          subscription: {} as any,
+          subscriptionId: "sub-123",
           account: { id: "account-1", name: "source-account" } as any,
           databaseId: "source-db",
           containerId: "source-container",
         },
         target: {
-          subscriptionId: "sub-123",
+          subscription: {} as any,
           account: { id: "account-1", name: "target-account" } as any,
           databaseId: "target-db",
           containerId: "target-container",

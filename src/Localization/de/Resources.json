@@ -33,7 +33,10 @@
     "publish": "Veröffentlichen",
     "browse": "Durchsuchen",
     "increaseValueBy1": "Wert um 1 erhöhen",
-    "decreaseValueBy1": "Wert um 1 verringern"
+    "decreaseValueBy1": "Wert um 1 verringern",
+    "on": "Ein",
+    "off": "Aus",
+    "preview": "Vorschau"
   },
   "splashScreen": {
     "title": {
@@ -75,7 +78,7 @@
         "description": "Erstellen Sie eine Tabelle und interagieren Sie mit Daten über die Shellschnittstelle von PostgreSQL."
       },
       "vcoreMongo": {
-        "title": "Mongo-Shell",
+        "title": "Mongo Shell",
         "description": "Erstellen Sie eine Sammlung und interagieren Sie mit Daten über die Shellschnittstelle von MongoDB."
       }
     },
@@ -420,6 +423,7 @@
     "deleteDatabase": {
       "panelTitle": "{{databaseName}} löschen",
       "warningMessage": "Warnung! Die Aktion, die Sie ausführen möchten, kann nicht rückgängig gemacht werden. Wenn Sie fortfahren, werden diese Ressource und alle untergeordneten Ressourcen dauerhaft gelöscht.",
+      "copyableId": "{{databaseName}}-ID:",
       "confirmPrompt": "Durch Eingabe der {{databaseName}}-ID (Name) bestätigen",
       "inputMismatch": "Eingabe {{databaseName}} Name „{{input}}“ stimmt nicht mit dem ausgewählten {{databaseName}} „{{selectedId}}“ überein.",
       "feedbackTitle": "Helfen Sie uns, Azure Cosmos DB zu verbessern!",
@@ -427,6 +431,8 @@
     },
     "deleteCollection": {
       "panelTitle": "{{collectionName}} löschen",
+      "warningMessage": "Warnung! Die Aktion, die Sie ausführen möchten, kann nicht rückgängig gemacht werden. Wenn Sie fortfahren, werden diese Ressource und alle untergeordneten Ressourcen dauerhaft gelöscht.",
+      "copyableId": "{{collectionName}}-ID:",
       "confirmPrompt": "Durch Eingabe der {{collectionName}}-ID bestätigen",
       "inputMismatch": "Die Eingabe-ID {{input}} stimmt nicht mit der ausgewählten {{selectedId}} überein.",
       "feedbackTitle": "Helfen Sie uns, Azure Cosmos DB zu verbessern!",
@@ -438,21 +444,15 @@
       "keyspaceIdLabel": "Keyspace-ID",
       "databaseIdPlaceholder": "Neue {{databaseLabel}}-ID eingeben",
       "databaseTooltip": "{{databaseLabel}} ist ein logischer Container mit mindestens einem {{collectionsLabel}}",
-      "shareThroughput": "Durchsatz für {{collectionsLabel}} gemeinsam nutzen",
-      "shareThroughputTooltip": "Der bereitgestellte Durchsatz auf der {{databaseLabel}}-Ebene wird von allen {{collectionsLabel}} innerhalb von {{databaseLabel}} gemeinsam genutzt.",
       "greaterThanError": "Geben Sie für den Autopilot-Durchsatz einen Wert ein, der größer als {{minValue}} ist.",
       "acknowledgeSpendError": "Bestätigen Sie die geschätzten {{period}} Ausgaben.",
       "acknowledgeSpendErrorMonthly": "Bestätigen Sie die geschätzten monatlichen Ausgaben.",
-      "acknowledgeSpendErrorDaily": "Bestätigen Sie die geschätzten täglichen Ausgaben.",
-      "provisionSharedThroughputTitle": "Freigegebenen Durchsatz bereitstellen",
-      "provisionThroughputLabel": "Durchsatz bereitstellen"
+      "acknowledgeSpendErrorDaily": "Bestätigen Sie die geschätzten täglichen Ausgaben."
     },
     "addCollection": {
       "createNew": "Neu erstellen",
       "useExisting": "Vorhandene verwenden",
       "databaseTooltip": "Eine Datenbank entspricht einem Namespace. Das ist die Verwaltungseinheit für einen Satz von {{collectionName}}.",
-      "shareThroughput": "Durchsatz für {{collectionName}} gemeinsam nutzen",
-      "shareThroughputTooltip": "Der auf Datenbankebene konfigurierte Durchsatz wird von allen {{collectionName}} innerhalb der Datenbank gemeinsam genutzt.",
       "collectionIdLabel": "{{collectionName}} ID",
       "collectionIdTooltip": "Eindeutiger Bezeichner für {{collectionName}} und wird für id-basiertes Routing über REST und alle SDKs verwendet.",
       "collectionIdPlaceholder": "Beispiel: {{collectionName}}1",
@@ -471,7 +471,7 @@
       "sharded": "Mit Sharding",
       "addPartitionKey": "Hierarchischen Partitionsschlüssel hinzufügen",
       "hierarchicalPartitionKeyInfo": "Mit diesem Feature können Sie Ihre Daten mit bis zu drei Schlüsselebenen partitionieren, um eine bessere Datenverteilung zu erzielen. Erfordert .NET V3, Java V4 SDK oder JavaScript V3 SDK (Vorschauversion).",
-      "provisionDedicatedThroughput": "Dedizierten Durchsatz für {{collectionName}} bereitstellen",
+      "provisionDedicatedThroughput": "Dedizierten Durchsatz für diese {{collectionName}} bereitstellen",
       "provisionDedicatedThroughputTooltip": "Sie können optional dedizierten Durchsatz für eine {{collectionName}} in einer Datenbank bereitstellen, für die Durchsatz bereitgestellt wurde. Dieser dedizierte Durchsatz wird nicht für andere {{collectionNamePlural}} in der Datenbank freigegeben und zählt nicht zum Durchsatz, den Sie für die Datenbank bereitgestellt haben. Diese Durchsatzmenge wird zusätzlich zu dem Durchsatz, den Sie auf Datenbankebene bereitgestellt haben, in Rechnung gestellt.",
       "uniqueKeysPlaceholderMongo": "Durch Trennzeichen getrennte Pfade, z. B. firstName,address.zipCode",
       "uniqueKeysPlaceholderSql": "Durch Trennzeichen getrennte Pfade, z. B. /firstName,/address/zipCode",
@@ -737,7 +737,7 @@
       "addProperty": "Eigenschaft hinzufügen"
     },
     "addGlobalSecondaryIndex": {
-      "globalSecondaryIndexId": "Container-ID des globalen sekundären Indexes",
+      "globalSecondaryIndexId": "Container-ID des globalen sekundären Index",
       "globalSecondaryIndexIdPlaceholder": "Beispiel: indexbyEmailId",
       "projectionQuery": "Projektionsabfrage",
       "projectionQueryPlaceholder": "SELECT c.email, c.accountId FROM c",
@@ -764,8 +764,8 @@
         "computedProperties": "Berechnete Eigenschaften",
         "containerPolicies": "Containerrichtlinien",
         "throughputBuckets": "Durchsatzbuckets",
-        "globalSecondaryIndexPreview": "Globaler sekundärer Index (Vorschau)",
-        "maskingPolicyPreview": "Maskierungsrichtlinie (Vorschau)"
+        "globalSecondaryIndexPreview": "Global Secondary Index",
+        "maskingPolicyPreview": "Maskierungsrichtlinie"
       },
       "mongoNotifications": {
         "selectTypeWarning": "Bitte wählen Sie für jeden Index einen Typ aus.",
@@ -797,7 +797,7 @@
         "perMonth": "/Mo."
       },
       "throughput": {
-        "manualToAutoscaleDisclaimer": "Die maximale RU/s-Anzahl für die Autoskalierung wird vom System basierend auf den aktuellen manuellen Durchsatzeinstellungen und dem Speicher Ihrer Ressource festgelegt. Nachdem die Autoskalierung aktiviert wurde, können Sie die maximale RU/s-Anzahl ändern.",
+        "manualToAutoscaleDisclaimer": "Der Ausgangswert für maximale RU/s für die Autoskalierung wird vom System basierend auf den aktuellen Einstellungen für den manuellen Durchsatz und dem Speicher Ihrer Ressource festgelegt. Nachdem die Autoskalierung aktiviert wurde, können Sie den Wert für maximale RU/s ändern.",
         "ttlWarningText": "Das System löscht Elemente automatisch auf Grundlage des von Ihnen angegebenen TTL-Werts (in Sekunden), ohne dass eine Löschoperation explizit von einer Clientanwendung angefordert werden muss. Weitere Informationen finden Sie unter",
         "ttlWarningLinkText": "Gültigkeitsdauer (TTL) in Azure Cosmos DB",
         "unsavedIndexingPolicy": "Indizierungsrichtlinie",
@@ -809,12 +809,12 @@
         "scalingUpDelayMessage": "Das Hochskalieren dauert 4–6 Stunden, da es die sofortige Unterstützung von Azure Cosmos DB basierend auf Ihrer Anzahl physischer Partitionen übersteigt. Sie können Ihren Durchsatz sofort auf {{instantMaximumThroughput}} erhöhen oder mit dem aktuellen Wert fortfahren und warten, bis das Hochskalieren abgeschlossen ist.",
         "exceedPreAllocatedMessage": "Ihre Anfrage zur Erhöhung des Durchsatzes übersteigt die vorab zugewiesene Kapazität, was zu einer längeren Bearbeitungszeit als erwartet führen kann. Sie können aus drei Optionen wählen, um fortzufahren:",
         "instantScaleOption": "Sie können sofort auf {{instantMaximumThroughput}} RU/s hochskalieren.",
-        "asyncScaleOption": "Sie können asynchron innerhalb von 4–6 Stunden auf einen beliebigen Wert unter {{maximumThroughput}} RU/s skalieren.",
-        "quotaMaxOption": "Ihr aktuelles Kontingent liegt bei {{maximumThroughput}} RU/s. Um dieses Limit zu überschreiten, müssen Sie eine Kontingenterhöhung anfordern und das Azure Cosmos DB-Team wird diese prüfen.",
+        "asyncScaleOption": "Sie können asynchron innerhalb von 4–6 Stunden auf einen beliebigen Wert unter {{maximumThroughput}} RU/s hochskalieren.",
+        "quotaMaxOption": "Ihr aktuelles Kontingent liegt bei {{maximumThroughput}} RU/s. Um dieses Limit zu überschreiten, müssen Sie eine Kontingenterhöhung anfordern, und das Azure Cosmos DB-Team wird diese prüfen.",
         "belowMinimumMessage": "Sie können den Durchsatz nicht unter den aktuellen Mindestwert von {{minimum}} RU/s senken. Weitere Informationen zu diesem Limit finden Sie in unserer Dokumentation zum Serviceangebot.",
         "saveThroughputWarning": "Ihre Rechnung wird sich ändern, wenn Sie Ihre Durchsatzeinstellungen aktualisieren. Bitte überprüfen Sie die untenstehende aktualisierte Kostenschätzung, bevor Sie Ihre Änderungen speichern.",
-        "currentAutoscaleThroughput": "Aktueller Durchsatz der Autoskalierung:",
-        "targetAutoscaleThroughput": "Zieldurchsatz für Autoskalierung:",
+        "currentAutoscaleThroughput": "Aktueller Autoskalierungsdurchsatz:",
+        "targetAutoscaleThroughput": "Autoskalierungs-Zieldurchsatz:",
         "currentManualThroughput": "Aktueller manueller Durchsatz:",
         "targetManualThroughput": "Manueller Zieldurchsatz:",
         "applyDelayedMessage": "Die Anforderung zur Erhöhung des Durchsatzes wurde erfolgreich übermittelt. Dieser Vorgang dauert 1–3 Werktage. Die neuesten Statusinformationen finden Sie in den Benachrichtigungen.",
@@ -845,7 +845,7 @@
         "disclaimerCompoundIndexesLink": " Zusammengesetzte Indizes ",
         "disclaimerSuffix": "werden nur zum Sortieren von Abfrageergebnissen verwendet. Wenn Sie einen zusammengesetzten Index hinzufügen müssen, können Sie diesen mit der Mongo Shell erstellen.",
         "compoundNotSupported": "Sammlungen mit zusammengesetzten Indizes werden im Indizierungseditor derzeit noch nicht unterstützt. Um die Indizierungsrichtlinie für diese Sammlung zu ändern, verwenden Sie die Mongo Shell.",
-        "aadError": "Um den Indexierungsrichtlinien-Editor zu verwenden, melden Sie sich bei",
+        "aadError": "Um den Indizierungsrichtlinien-Editor zu verwenden, bitte anmelden bei",
         "aadErrorLink": "Azure-Portal.",
         "refreshingProgress": "Fortschritt der Indextransformation wird aktualisiert",
         "canMakeMoreChangesZero": "Sobald die aktuelle Indextransformation abgeschlossen ist, können Sie weitere Änderungen an der Indizierung vornehmen. ",
@@ -927,10 +927,10 @@
       },
       "globalSecondaryIndex": {
         "indexesDefined": "Für diesen Container sind die folgenden Indizes definiert.",
-        "learnMoreSuffix": "über die Definition globaler Sekundärindizes und deren Verwendung.",
+        "learnMoreSuffix": "über die Definition globaler sekundärer Indizes und ihre Verwendung.",
         "jsonAriaLabel": "JSON für globalen sekundären Index",
         "addIndex": "Index hinzufügen",
-        "settingsTitle": "Globale Einstellungen für sekundären Index",
+        "settingsTitle": "Einstellungen für globalen sekundären Index",
         "sourceContainer": "Quellcontainer",
         "indexDefinition": "Definition des globalen sekundären Index"
       },
@@ -949,7 +949,7 @@
         "instant": "Sofort",
         "fourToSixHrs": "4–6 Stunden",
         "autoscaleDescription": "Basierend auf der Nutzung wird Ihr {{resourceType}}-Durchsatz von",
-        "freeTierWarning": "Die Abrechnung erfolgt, wenn Sie mehr als {{ru}} RU/s manuellen Durchsatz bereitstellen oder wenn die Ressource mit Autoscale über {{ru}} RU/s skaliert.",
+        "freeTierWarning": "Eine Abrechnung findet statt, wenn Sie einen manuellen Durchsatz von mehr als {{ru}} RU/s bereitstellen oder wenn die Ressource mit Autoskalierung auf über {{ru}} RU/s skaliert wird.",
         "capacityCalculator": "Schätzen Sie Ihren erforderlichen RU/s mit",
         "capacityCalculatorLink": " Kapazitätsrechner",
         "fixedStorageNote": "Wenn Sie eine Sammlung mit fester Speicherkapazität verwenden, können Sie bis zu 10.000 RU/s festlegen.",
@@ -961,7 +961,196 @@
         "bucketLabel": "Bucket {{id}}",
         "dataExplorerQueryBucket": " (Daten-Explorer-Abfragebucket)",
         "active": "Aktiv",
-        "inactive": "Inaktiv"
+        "inactive": "Inaktiv",
+        "defaultBucketLabel": "Standard-Durchsatzbucket",
+        "defaultBucketPlaceholder": "Standard-Durchsatzbucket auswählen",
+        "defaultBucketTooltip": "Der Standard-Durchsatzbucket wird für Vorgänge verwendet, die keinen bestimmten Bucket angeben.",
+        "defaultBucketTooltipLearnMore": "Weitere Informationen.",
+        "noDefaultBucketSelected": "Kein Standard-Durchsatzbucket ausgewählt",
+        "bucketOptionLabel": "Bucket {{id}} – {{percentage}} %",
+        "bucketNotActive": "Bucket {{id}} ist nicht aktiv."
+      }
+    },
+    "vectorEmbeddingPolicies": {
+      "vectorEmbeddingTitle": "Vektoreinbettung {{index}}",
+      "path": "Pfad",
+      "dataType": "Datentyp",
+      "distanceFunction": "Distanzfunktion",
+      "dimensions": "Dimensionen",
+      "indexType": "Indextyp",
+      "quantizationByteSize": "Quantisierungs-Bytegröße",
+      "quantizationByteSizeTooltip": "Dies wird dynamisch von „{{containerName}}“ festgelegt, wenn es leer bleibt, oder es kann auf eine feste Zahl gesetzt werden.",
+      "quantizationByteSizeTooltipContainerName": "Container",
+      "quantizationByteSizeTooltipGlobalSecondaryIndexName": "Globaler sekundärer Index",
+      "quantizerType": "Quantisierertyp",
+      "quantizerTypeTooltip": "Die vom Vektorindex verwendete Quantisierungsmethode.",
+      "indexingSearchListSize": "Größe der Suchliste für die Indexierung",
+      "vectorIndexShardKey": "Shardschlüssel für Vektorindex",
+      "addVectorEmbedding": "Vektoreinbettung hinzufügen",
+      "pathEmptyError": "Der Pfad darf nicht leer sein.",
+      "pathDuplicateError": "Der Pfad wurde bereits definiert.",
+      "dimensionRangeError": "Die Dimension muss größer als 0 und kleiner oder gleich 4096 sein.",
+      "dimensionFlatIndexError": "Die maximal zulässige Dimension für einen Flat-Index ist 505.",
+      "quantizationByteSizeRangeError": "Die Quantisierungsbytegröße muss größer als 0 und kleiner oder gleich 512 sein.",
+      "indexingSearchListSizeRangeError": "Die Größe der Indizierungssuchliste muss größer oder gleich 25 und kleiner oder gleich 500 sein."
+    }
+  },
+  "containerCopy": {
+    "commandBar": {
+      "feedbackButtonLabel": "Feedback",
+      "feedbackButtonAriaLabel": "Feedback zu Kopieraufträgen geben",
+      "refreshButtonAriaLabel": "Kopieraufträge aktualisieren",
+      "createCopyJobButtonLabel": "Kopierauftrag erstellen",
+      "createCopyJobButtonAriaLabel": "Neuen Containerkopierauftrag erstellen"
+    },
+    "noCopyJobs": {
+      "title": "Keine Kopieraufträge zum Anzeigen vorhanden",
+      "createCopyJobButtonText": "Containerkopierauftrag erstellen"
+    },
+    "jobDetails": {
+      "panelTitle": "{{jobName}}",
+      "panelTitleDefault": "Auftragsdetails",
+      "errorTitle": "Fehlerdetails",
+      "selectedContainers": "Ausgewählte Container"
+    },
+    "createCopyJob": {
+      "panelTitle": "Kopierauftrag erstellen"
+    },
+    "selectAccount": {
+      "description": "Wählen Sie ein Zielkonto aus, in das kopiert werden soll.",
+      "subscriptionDropdownLabel": "Abonnement",
+      "subscriptionDropdownPlaceholder": "Abonnement auswählen",
+      "accountDropdownLabel": "Konto",
+      "accountDropdownPlaceholder": "Konto auswählen"
+    },
+    "migrationType": {
+      "offline": {
+        "title": "Offlinemodus",
+        "description": "Mit Offline-Containerkopieraufträgen können Sie Daten aus einem Quellcontainer in einen Cosmos DB-Zielcontainer für unterstützte APIs kopieren. Um die Datenintegrität zwischen Quelle und Ziel sicherzustellen, wird empfohlen, vor dem Erstellen des Kopierauftrags Updates für den Quellcontainer zu beenden. Weitere Informationen zu [Offlinekopieraufträgen](https://learn.microsoft.com/azure/cosmos-db/how-to-container-copy?tabs=offline-copy&pivots=api-nosql)."
+      },
+      "online": {
+        "title": "Onlinemodus",
+        "description": "Mit Onlinecontainerkopieraufträgen können Sie Daten mithilfe des Änderungsfeeds [Alle Versionen und Löschvorgänge](https://learn.microsoft.com/azure/cosmos-db/change-feed-modes?tabs=all-versions-and-deletes#all-versions-and-deletes-change-feed-mode-preview) aus einem Quellcontainer in einen Cosmos DB NoSQL-API-Zielcontainer kopieren. Dadurch können Updates in der Quelle fortgesetzt werden, während Daten kopiert werden. Am Ende ist eine kurze Downtime erforderlich, um sicher über Clientanwendungen zum Zielcontainer zu wechseln. Weitere Informationen zu [Onlinekopieraufträgen](https://learn.microsoft.com/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#getting-started)."
+      }
+    },
+    "selectContainers": {
+      "description": "Wählen Sie einen Quellcontainer und einen Zielcontainer aus, in den kopiert werden soll.",
+      "sourceContainerSubHeading": "Quellcontainer",
+      "targetContainerSubHeading": "Zielcontainer",
+      "databaseDropdownLabel": "Datenbank",
+      "databaseDropdownPlaceholder": "Datenbank auswählen",
+      "containerDropdownLabel": "Container",
+      "containerDropdownPlaceholder": "Container auswählen",
+      "createNewContainerSubHeading": "Konfigurieren Sie die Eigenschaften für den neuen Container im Zielkonto „{{accountName}}“.",
+      "createNewContainerSubHeadingDefault": "Konfigurieren Sie die Eigenschaften für den neuen Container.",
+      "createContainerButtonLabel": "Neuen Container erstellen",
+      "createContainerHeading": "Neuen Container erstellen"
+    },
+    "preview": {
+      "jobNameLabel": "Auftragsname",
+      "subscriptionLabel": "Zielabonnement",
+      "accountLabel": "Zielkonto",
+      "sourceDatabaseLabel": "Quelldatenbank",
+      "sourceContainerLabel": "Quellcontainer",
+      "targetDatabaseLabel": "Zieldatenbank",
+      "targetContainerLabel": "Zielcontainer"
+    },
+    "assignPermissions": {
+      "crossAccountDescription": "Um Daten aus der Quelle in den Zielcontainer zu kopieren, stellen Sie sicher, dass die verwaltete Identität des Quellkontos Lese-/Schreibzugriff auf das Zielkonto hat, indem Sie die folgenden Schritte ausführen.",
+      "intraAccountOnlineDescription": "Führen Sie die folgenden Schritte aus, um das Onlinekopieren für Ihr Konto „{{accountName}}“ zu aktivieren.",
+      "crossAccountConfiguration": {
+        "title": "Kontoübergreifende Containerkopie",
+        "description": "Befolgen Sie die Anweisungen unten, um die erforderlichen Berechtigungen zum Kopieren von Daten von „{{sourceAccount}}“ nach „{{destinationAccount}}“ zu erteilen."
+      },
+      "onlineConfiguration": {
+        "title": "Onlinecontainerkopie",
+        "description": "Befolgen Sie die nachstehenden Anweisungen, um das Onlinekopieren für Ihr Konto „{{accountName}}“ zu aktivieren."
+      }
+    },
+    "popoverOverlaySpinnerLabel": "Bitte warten Sie, während wir Ihre Anforderung verarbeiten ...",
+    "addManagedIdentity": {
+      "title": "Systemseitig zugewiesene verwaltete Identität aktiviert.",
+      "description": "Eine systemseitig zugewiesene verwaltete Identität ist auf eine pro Ressource beschränkt und an den Lebenszyklus dieser Ressource gebunden. Nach ihrer Aktivierung können Sie der verwalteten Identität mithilfe der rollenbasierten Azure-Zugriffssteuerung(Azure Role Based Access Control, Azure RBAC) Berechtigungen erteilen. Die verwaltete Identität über Microsoft Entra ID authentifiziert wird, sodass Sie keine Anmeldeinformationen im Code speichern müssen.",
+      "descriptionHrefText": "Weitere Informationen zu verwalteten Identitäten.",
+      "descriptionHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
+      "toggleLabel": "Systemseitig zugewiesene verwaltete Identität",
+      "tooltipContent": "Weitere Informationen zu",
+      "tooltipHrefText": "Verwaltete Identitäten.",
+      "tooltipHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
+      "userAssignedIdentityTooltip": "Sie können eine vorhandene benutzerseitig zugewiesene Identität auswählen oder eine neue erstellen.",
+      "userAssignedIdentityLabel": "Sie können auch eine benutzerseitig zugewiesene verwaltete Identität auswählen.",
+      "createUserAssignedIdentityLink": "Benutzerseitig zugewiesene verwaltete Identität erstellen",
+      "enablementTitle": "Systemseitig zugewiesene verwaltete Identität aktivieren",
+      "enablementDescription": "Aktivieren Sie die systemseitig zugewiesene verwaltete Identität für {{accountName}}. Klicken Sie zur Bestätigung auf die Schaltfläche „Ja“."
+    },
+    "defaultManagedIdentity": {
+      "title": "Systemseitig zugewiesene verwaltete Identität wurde als Standard festgelegt.",
+      "description": "Legen Sie die systemseitig zugewiesene verwaltete Identität als Standard für „{{accountName}}“ fest, indem Sie sie aktivieren.",
+      "tooltipContent": "Weitere Informationen zu",
+      "tooltipHrefText": "Verwaltete Standardidentitäten.",
+      "tooltipHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
+      "popoverTitle": "Systemseitig zugewiesene verwaltete Identität als Standard festlegen",
+      "popoverDescription": "Weisen Sie die systemseitig zugewiesene verwaltete Identität als Standard für „{{accountName}}“ zu. Klicken Sie zur Bestätigung auf die Schaltfläche „Ja“. "
+    },
+    "readWritePermissionAssigned": {
+      "title": "Der Standardidentität wurden Lese-/Schreibberechtigungen zugewiesen.",
+      "description": "Um das Kopieren von Daten aus der Quelle in den Zielcontainer zuzulassen, gewähren Sie der Standardidentität des Quellkontos Lese- und Schreibzugriff auf das Zielkonto.",
+      "tooltipContent": "Weitere Informationen zu",
+      "tooltipHrefText": "Lese-/Schreibberechtigungen.",
+      "tooltipHref": "https://learn.microsoft.com/azure/cosmos-db/nosql/how-to-connect-role-based-access-control",
+      "popoverTitle": "Weisen Sie der Standardidentität Lese-/Schreibberechtigungen zu.",
+      "popoverDescription": "Weisen Sie der Standardidentität des Quellkontos Lese-/Schreibberechtigungen für das Zielkonto zu. Klicken Sie zur Bestätigung auf die Schaltfläche „Ja“."
+    },
+    "pointInTimeRestore": {
+      "title": "Point-in-Time-Wiederherstellung aktiviert",
+      "description": "Um Aufträge zum Kopieren von Onlinecontainern zu vereinfachen, aktualisieren Sie Ihre Sicherungsrichtlinie „{{accessName}}“ von regelmäßigen auf fortlaufende Sicherungen. Für diese Funktionalität ist die Aktivierung der fortlaufenden Sicherung erforderlich.",
+      "tooltipContent": "Weitere Informationen zu",
+      "tooltipHrefText": "Fortlaufende Sicherung",
+      "tooltipHref": "https://learn.microsoft.com/en-us/azure/cosmos-db/continuous-backup-restore-introduction",
+      "buttonText": "Zeitpunktwiederherstellung aktivieren"
+    },
+    "onlineCopyEnabled": {
+      "title": "Onlinekopie aktiviert",
+      "description": "Aktivieren Sie das Kopieren von Onlinecontainern, indem Sie auf die Schaltfläche unten in Ihrem Konto „{{accountName}}“ klicken.",
+      "hrefText": "Weitere Informationen zu Onlinekopieraufträgen",
+      "href": "https://learn.microsoft.com/en-us/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#enable-online-copy",
+      "buttonText": "Onlinekopie aktivieren",
+      "validateAllVersionsAndDeletesChangeFeedSpinnerLabel": "Änderungsfeedmodus „Alle Versionen und Löschvorgänge“ (Vorschau) wird validiert ...",
+      "enablingAllVersionsAndDeletesChangeFeedSpinnerLabel": "Änderungsfeedmodus „Alle Versionen und Löschvorgänge“ (Vorschau) wird aktiviert",
+      "enablingOnlineCopySpinnerLabel": "Onlinekopie wird für Ihr Konto „{{accountName}}“ aktiviert ..."
+    },
+    "monitorJobs": {
+      "columns": {
+        "lastUpdatedTime": "Datum und Uhrzeit",
+        "name": "Auftragsname",
+        "status": "Status",
+        "completionPercentage": "Abschluss %",
+        "duration": "Dauer",
+        "error": "Fehlermeldung",
+        "mode": "Modus",
+        "actions": "Aktionen"
+      },
+      "actions": {
+        "pause": "Anhalten",
+        "resume": "Fortsetzen",
+        "complete": "Abschließen",
+        "viewDetails": "Details anzeigen"
+      },
+      "status": {
+        "pending": "In Warteschlange",
+        "inProgress": "Wird ausgeführt",
+        "running": "Wird ausgeführt",
+        "partitioning": "Wird ausgeführt",
+        "paused": "Angehalten",
+        "completed": "Abgeschlossen",
+        "failed": "Fehler",
+        "faulted": "Fehler",
+        "skipped": "Abgebrochen",
+        "cancelled": "Abgebrochen"
+      },
+      "dialog": {
+        "confirmButtonText": "Bestätigen",
+        "cancelButtonText": "Abbrechen"
       }
     }
   }

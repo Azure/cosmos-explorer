@@ -12,7 +12,7 @@ import { isFabric } from "Platform/Fabric/FabricUtil";
 import { userContext } from "UserContext";
 import * as React from "react";
 import create, { UseStore } from "zustand";
-import { ConnectionStatusType, PoolIdType } from "../../../Common/Constants";
+import { ConnectionStatusType } from "../../../Common/Constants";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../../Explorer";
 import { useSelectedNode } from "../../useSelectedNode";
@@ -136,9 +136,7 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
 
   // Add connection status if needed (using the hook values we got at the top level)
   if ((isPhoenixNotebooks || isPhoenixFeatures) && connectionInfo?.status !== ConnectionStatusType.Connect) {
-    uiFabricControlButtons.unshift(
-      CommandBarUtil.createConnectionStatus(container, PoolIdType.DefaultPoolId, "connectionStatus"),
-    );
+    uiFabricControlButtons.unshift(CommandBarUtil.createConnectionStatus(container, "connectionStatus"));
   }
 
   const rootStyle = {

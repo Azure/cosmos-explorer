@@ -16,7 +16,10 @@ import {
   getDataTypeOptions,
   getDistanceFunctionOptions,
   getIndexTypeOptions,
+  getQuantizerTypeOptions,
+  supportsQuantization,
 } from "Explorer/Controls/VectorSearch/VectorSearchUtils";
+import { Keys, t } from "Localization";
 import React, { FunctionComponent, useState } from "react";
 
 export interface IVectorEmbeddingPoliciesComponentProps {
@@ -46,6 +49,7 @@ export interface VectorEmbeddingPolicyData {
   indexingSearchListSizeError?: string;
   quantizationByteSize?: number;
   quantizationByteSizeError?: string;
+  quantizerType?: VectorIndex["quantizerType"];
 }
 
 type VectorEmbeddingPolicyProperty = "dataType" | "distanceFunction" | "indexType";
@@ -110,7 +114,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
   const onVectorEmbeddingPathError = (path: string, index?: number): string => {
     let error = "";
     if (!path) {
-      error = "Path should not be empty";
+      error = t(Keys.controls.vectorEmbeddingPolicies.pathEmptyError);
     }
     if (
       index >= 0 &&
@@ -119,7 +123,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
           dataIndex !== index && vectorEmbedding.path === path,
       )
     ) {
-      error = "Path is already defined";
+      error = t(Keys.controls.vectorEmbeddingPolicies.pathDuplicateError);
     }
     return error;
   };
@@ -127,10 +131,10 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
   const onVectorEmbeddingDimensionError = (dimension: number, indexType: VectorIndex["type"] | "none"): string => {
     let error = "";
     if (dimension <= 0 || dimension > 4096) {
-      error = "Dimension must be greater than 0 and less than or equal 4096";
+      error = t(Keys.controls.vectorEmbeddingPolicies.dimensionRangeError);
     }
     if (indexType === "flat" && dimension > 505) {
-      error = "Maximum allowed dimension for flat index is 505";
+      error = t(Keys.controls.vectorEmbeddingPolicies.dimensionFlatIndexError);
     }
     return error;
   };
@@ -138,7 +142,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
   const onQuantizationByteSizeError = (size: number): string => {
     let error = "";
     if (size < 1 || size > 512) {
-      error = "Quantization byte size must be greater than 0 and less than or equal to 512";
+      error = t(Keys.controls.vectorEmbeddingPolicies.quantizationByteSizeRangeError);
     }
     return error;
   };
@@ -146,7 +150,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
   const onIndexingSearchListSizeError = (size: number): string => {
     let error = "";
     if (size < 25 || size > 500) {
-      error = "Indexing search list size must be greater than or equal to 25 and less than or equal to 500";
+      error = t(Keys.controls.vectorEmbeddingPolicies.indexingSearchListSizeRangeError);
     }
     return error;
   };
@@ -155,11 +159,14 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
     const mergedData: VectorEmbeddingPolicyData[] = [];
     vectorEmbeddings?.forEach((embedding) => {
       const matchingIndex = displayIndexes ? vectorIndexes.find((index) => index.path === embedding.path) : undefined;
+      const matchingType = matchingIndex?.type;
+      const supportsQuantizer = supportsQuantization(matchingType);
       mergedData.push({
         ...embedding,
-        indexType: matchingIndex?.type || "none",
+        indexType: matchingType || "none",
         indexingSearchListSize: matchingIndex?.indexingSearchListSize || undefined,
         quantizationByteSize: matchingIndex?.quantizationByteSize || undefined,
+        quantizerType: supportsQuantizer ? matchingIndex?.quantizerType || "product" : undefined,
         vectorIndexShardKey: matchingIndex?.vectorIndexShardKey || undefined,
         pathError: onVectorEmbeddingPathError(embedding.path),
         dimensionsError: onVectorEmbeddingDimensionError(embedding.dimensions, matchingIndex?.type || "none"),
@@ -202,6 +209,9 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
             indexingSearchListSize: policy.indexingSearchListSize,
             quantizationByteSize: policy.quantizationByteSize,
             vectorIndexShardKey: policy.vectorIndexShardKey,
+            ...(supportsQuantization(policy.indexType) && policy.quantizerType
+              ? { quantizerType: policy.quantizerType }
+              : {}),
           }) as VectorIndex,
       );
     const validationPassed = vectorEmbeddingPolicyData.every(
@@ -245,6 +255,17 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
     } else {
       vectorEmbedding.indexingSearchListSize = undefined;
     }
+    if (supportsQuantization(vectorEmbedding.indexType)) {
+      vectorEmbedding.quantizerType = vectorEmbedding.quantizerType || "product";
+    } else {
+      vectorEmbedding.quantizerType = undefined;
+    }
+    setVectorEmbeddingPolicyData(vectorEmbeddings);
+  };
+
+  const onQuantizerTypeChange = (index: number, option: IDropdownOption): void => {
+    const vectorEmbeddings = [...vectorEmbeddingPolicyData];
+    vectorEmbeddings[index].quantizerType = option.key as VectorIndex["quantizerType"];
     setVectorEmbeddingPolicyData(vectorEmbeddings);
   };
 
@@ -306,8 +327,10 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
   };
 
   const getQuantizationByteSizeTooltipContent = (): string => {
-    const containerName: string = isGlobalSecondaryIndex ? "global secondary index" : "container";
-    return `This is dynamically set by the ${containerName} if left blank, or it can be set to a fixed number`;
+    const containerName = isGlobalSecondaryIndex
+      ? t(Keys.controls.vectorEmbeddingPolicies.quantizationByteSizeTooltipGlobalSecondaryIndexName)
+      : t(Keys.controls.vectorEmbeddingPolicies.quantizationByteSizeTooltipContainerName);
+    return t(Keys.controls.vectorEmbeddingPolicies.quantizationByteSizeTooltip, { containerName });
   };
 
   return (
@@ -319,7 +342,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
             disabled={isExistingPolicy(vectorEmbeddingPolicy)}
             key={index}
             isExpandedByDefault={true}
-            title={`Vector embedding ${index + 1}`}
+            title={t(Keys.controls.vectorEmbeddingPolicies.vectorEmbeddingTitle, { index: index + 1 })}
             showDelete={true}
             onDelete={() => onDelete(index)}
             disableDelete={false}
@@ -337,7 +360,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
               >
                 <Stack>
                   <Label disabled={isExistingPolicy(vectorEmbeddingPolicy)} styles={labelStyles}>
-                    Path
+                    {t(Keys.controls.vectorEmbeddingPolicies.path)}
                   </Label>
                   <TextField
                     disabled={isExistingPolicy(vectorEmbeddingPolicy)}
@@ -352,7 +375,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
                 </Stack>
                 <Stack>
                   <Label disabled={isExistingPolicy(vectorEmbeddingPolicy)} styles={labelStyles}>
-                    Data type
+                    {t(Keys.controls.vectorEmbeddingPolicies.dataType)}
                   </Label>
                   <Dropdown
                     disabled={isExistingPolicy(vectorEmbeddingPolicy)}
@@ -367,7 +390,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
                 </Stack>
                 <Stack>
                   <Label disabled={isExistingPolicy(vectorEmbeddingPolicy)} styles={labelStyles}>
-                    Distance function
+                    {t(Keys.controls.vectorEmbeddingPolicies.distanceFunction)}
                   </Label>
                   <Dropdown
                     disabled={isExistingPolicy(vectorEmbeddingPolicy)}
@@ -382,7 +405,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
                 </Stack>
                 <Stack>
                   <Label disabled={isExistingPolicy(vectorEmbeddingPolicy)} styles={labelStyles}>
-                    Dimensions
+                    {t(Keys.controls.vectorEmbeddingPolicies.dimensions)}
                   </Label>
                   <TextField
                     disabled={isExistingPolicy(vectorEmbeddingPolicy)}
@@ -399,7 +422,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
                 {displayIndexes && (
                   <Stack>
                     <Label disabled={isExistingPolicy(vectorEmbeddingPolicy)} styles={labelStyles}>
-                      Index type
+                      {t(Keys.controls.vectorEmbeddingPolicies.indexType)}
                     </Label>
                     <Dropdown
                       disabled={isExistingPolicy(vectorEmbeddingPolicy)}
@@ -415,19 +438,17 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
                       <Label
                         disabled={
                           isExistingPolicy(vectorEmbeddingPolicy) ||
-                          (vectorEmbeddingPolicy.indexType !== "quantizedFlat" &&
-                            vectorEmbeddingPolicy.indexType !== "diskANN")
+                          !supportsQuantization(vectorEmbeddingPolicy.indexType)
                         }
                         styles={labelStyles}
                       >
-                        Quantization byte size
+                        {t(Keys.controls.vectorEmbeddingPolicies.quantizationByteSize)}
                         <InfoTooltip>{getQuantizationByteSizeTooltipContent()}</InfoTooltip>
                       </Label>
                       <TextField
                         disabled={
                           isExistingPolicy(vectorEmbeddingPolicy) ||
-                          (vectorEmbeddingPolicy.indexType !== "quantizedFlat" &&
-                            vectorEmbeddingPolicy.indexType !== "diskANN")
+                          !supportsQuantization(vectorEmbeddingPolicy.indexType)
                         }
                         id={`vector-policy-quantizationByteSize-${index + 1}`}
                         styles={textFieldStyles}
@@ -440,11 +461,36 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
                     <Stack style={{ marginLeft: "10px" }}>
                       <Label
                         disabled={
+                          isExistingPolicy(vectorEmbeddingPolicy) ||
+                          !supportsQuantization(vectorEmbeddingPolicy.indexType)
+                        }
+                        styles={labelStyles}
+                      >
+                        {t(Keys.controls.vectorEmbeddingPolicies.quantizerType)}
+                        <InfoTooltip>{t(Keys.controls.vectorEmbeddingPolicies.quantizerTypeTooltip)}</InfoTooltip>
+                      </Label>
+                      <Dropdown
+                        disabled={
+                          isExistingPolicy(vectorEmbeddingPolicy) ||
+                          !supportsQuantization(vectorEmbeddingPolicy.indexType)
+                        }
+                        id={`vector-policy-quantizerType-${index + 1}`}
+                        styles={dropdownStyles}
+                        options={getQuantizerTypeOptions()}
+                        selectedKey={vectorEmbeddingPolicy.quantizerType ?? null}
+                        onChange={(_event: React.FormEvent<HTMLDivElement>, option: IDropdownOption) =>
+                          onQuantizerTypeChange(index, option)
+                        }
+                      />
+                    </Stack>
+                    <Stack style={{ marginLeft: "10px" }}>
+                      <Label
+                        disabled={
                           isExistingPolicy(vectorEmbeddingPolicy) || vectorEmbeddingPolicy.indexType !== "diskANN"
                         }
                         styles={labelStyles}
                       >
-                        Indexing search list size
+                        {t(Keys.controls.vectorEmbeddingPolicies.indexingSearchListSize)}
                       </Label>
                       <TextField
                         disabled={
@@ -465,7 +511,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
                         }
                         styles={labelStyles}
                       >
-                        Vector index shard key
+                        {t(Keys.controls.vectorEmbeddingPolicies.vectorIndexShardKey)}
                       </Label>
                       <TextField
                         disabled={
@@ -484,7 +530,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
           </CollapsibleSectionComponent>
         ))}
       <DefaultButton id={`add-vector-policy`} styles={{ root: { maxWidth: 170, fontSize: 12 } }} onClick={onAdd}>
-        Add vector embedding
+        {t(Keys.controls.vectorEmbeddingPolicies.addVectorEmbedding)}
       </DefaultButton>
     </Stack>
   );

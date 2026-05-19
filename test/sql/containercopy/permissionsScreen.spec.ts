@@ -10,17 +10,18 @@ test.describe("Container Copy - Permission Screen Verification", () => {
   let wrapper: Locator;
   let panel: Locator;
   let frame: Frame;
+  let sourceAccountName: string;
   let targetAccountName: string;
-  let expectedSourceAccountName: string;
 
   test.beforeEach("Setup for each test", async ({ browser }) => {
     page = await browser.newPage();
-    ({ wrapper, frame } = await ContainerCopy.open(page, TestAccount.SQLContainerCopyOnly));
+    ({ wrapper, frame } = await ContainerCopy.open(page, TestAccount.SQL));
     targetAccountName = getAccountName(TestAccount.SQLContainerCopyOnly);
+    sourceAccountName = getAccountName(TestAccount.SQL);
   });
 
   test.afterEach("Cleanup after each test", async () => {
-    await page.unroute(/.*/, (route) => route.continue());
+    await page.unrouteAll({ behavior: "ignoreErrors" });
     await page.close();
   });
 
@@ -34,6 +35,36 @@ test.describe("Container Copy - Permission Screen Verification", () => {
     await expect(createCopyJobButton).toBeVisible();
     await expect(wrapper.getByTestId("CommandBar/Button:Refresh")).toBeVisible();
     await expect(wrapper.getByTestId("CommandBar/Button:Feedback")).toBeVisible();
+
+    // Mock Resource Graph API — fires on auto-subscription selection to populate account dropdown
+    await page.route(
+      "https://management.azure.com/providers/Microsoft.ResourceGraph/resources?api-version=2021-03-01",
+      async (route) => {
+        const request = route.request();
+        if (
+          request.method() === "POST" &&
+          (request.postDataJSON()?.query as string) ===
+            "resources | where type =~ 'microsoft.documentdb/databaseaccounts'"
+        ) {
+          const response = await route.fetch();
+          const responseData = await response.json();
+          if (responseData.data && Array.isArray(responseData.data)) {
+            responseData.data = responseData.data.map((d: any) => {
+              d.properties.backupPolicy.type = "Periodic";
+              return d;
+            });
+          }
+          await route.fulfill({
+            status: 200,
+            contentType: "application/json",
+            body: JSON.stringify(responseData),
+          });
+        } else {
+          await route.continue();
+        }
+      },
+      { times: 2 },
+    );
 
     // Open the Create Copy Job panel
     await createCopyJobButton.click();
@@ -50,20 +81,12 @@ test.describe("Container Copy - Permission Screen Verification", () => {
 
     const allDropdownItems = await dropdownItemsWrapper.locator(`button.ms-Dropdown-item[role='option']`).all();
 
-    const filteredItems = [];
     for (const item of allDropdownItems) {
       const testContent = (await item.textContent()) ?? "";
-      if (testContent.trim() !== targetAccountName.trim()) {
-        filteredItems.push(item);
+      if (testContent.trim() === targetAccountName.trim()) {
+        await item.click();
+        break;
       }
-    }
-
-    if (filteredItems.length > 0) {
-      const firstDropdownItem = filteredItems[0];
-      expectedSourceAccountName = (await firstDropdownItem.textContent()) ?? "";
-      await firstDropdownItem.click();
-    } else {
-      throw new Error("No dropdown items available after filtering");
     }
 
     // Enable online migration mode
@@ -81,7 +104,7 @@ test.describe("Container Copy - Permission Screen Verification", () => {
     await expect(permissionScreen.getByText("Cross-account container copy", { exact: true })).toBeVisible();
 
     // Setup API mocking for the source account
-    await page.route(`**/Microsoft.DocumentDB/databaseAccounts/${expectedSourceAccountName}**`, async (route) => {
+    await page.route(`**/Microsoft.DocumentDB/databaseAccounts/${sourceAccountName}**`, async (route) => {
       const mockData = {
         identity: {
           type: "SystemAssigned",
@@ -139,7 +162,7 @@ test.describe("Container Copy - Permission Screen Verification", () => {
     // Verify new page opens with correct URL pattern
     page.context().on("page", async (newPage) => {
       const expectedUrlEndPattern = new RegExp(
-        `/providers/Microsoft.(DocumentDB|DocumentDb)/databaseAccounts/${expectedSourceAccountName}/backupRestore`,
+        `/providers/Microsoft.(DocumentDB|DocumentDb)/databaseAccounts/${sourceAccountName}/backupRestore`,
       );
       expect(newPage.url()).toMatch(expectedUrlEndPattern);
       await newPage.close();
@@ -158,8 +181,10 @@ test.describe("Container Copy - Permission Screen Verification", () => {
     await expect(pitrBtn).not.toBeVisible();
 
     // Setup additional API mocks for role assignments and permissions
+    // In the redesigned flow, role assignments are checked on the SOURCE account (current account = sourceAccountName).
+    // The destination account (selectedAccountName) manages identity; source account holds the role assignments.
     await page.route(
-      `**/Microsoft.DocumentDB/databaseAccounts/${expectedSourceAccountName}/sqlRoleAssignments*`,
+      `**/Microsoft.DocumentDB/databaseAccounts/${sourceAccountName}/sqlRoleAssignments*`,
       async (route) => {
         await route.fulfill({
           status: 200,
@@ -168,7 +193,7 @@ test.describe("Container Copy - Permission Screen Verification", () => {
             value: [
               {
                 principalId: "00-11-22-33",
-                roleDefinitionId: `Microsoft.DocumentDB/databaseAccounts/${expectedSourceAccountName}/77-88-99`,
+                roleDefinitionId: `Microsoft.DocumentDB/databaseAccounts/${sourceAccountName}/77-88-99`,
               },
             ],
           }),
@@ -183,14 +208,15 @@ test.describe("Container Copy - Permission Screen Verification", () => {
         body: JSON.stringify({
           value: [
             {
-              name: "00000000-0000-0000-0000-000000000001",
+              // Built-in Cosmos DB Data Contributor role (read-write), required by checkTargetHasReadWriteRoleOnSource
+              name: "00000000-0000-0000-0000-000000000002",
             },
           ],
         }),
       });
     });
 
-    await page.route(`**/Microsoft.DocumentDB/databaseAccounts/${targetAccountName}**`, async (route) => {
+    await page.route(`**/Microsoft.DocumentDB/databaseAccounts/${sourceAccountName}**`, async (route) => {
       const mockData = {
         identity: {
           type: "SystemAssigned",

@@ -112,10 +112,6 @@ describe("ScenarioMonitor", () => {
 
       // Complete all phases to emit (PlatformConfigured auto-started, deferred phases need start+complete)
       scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.PlatformConfigured);
-      scenarioMonitor.startPhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.CopilotConfigured);
-      scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.CopilotConfigured);
-      scenarioMonitor.startPhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.SampleDataLoaded);
-      scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.SampleDataLoaded);
       scenarioMonitor.startPhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.ExplorerInitialized);
       scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.ExplorerInitialized);
       scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, CommonMetricPhase.Interactive);
@@ -224,10 +220,6 @@ describe("ScenarioMonitor", () => {
 
       // Complete all required phases (PlatformConfigured + Interactive auto-started, deferred need start)
       scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.PlatformConfigured);
-      scenarioMonitor.startPhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.CopilotConfigured);
-      scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.CopilotConfigured);
-      scenarioMonitor.startPhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.SampleDataLoaded);
-      scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.SampleDataLoaded);
       scenarioMonitor.startPhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.ExplorerInitialized);
       scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.ExplorerInitialized);
       scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, CommonMetricPhase.Interactive);
@@ -237,13 +229,7 @@ describe("ScenarioMonitor", () => {
           scenario: MetricScenario.ApplicationLoad,
           healthy: true,
           timedOut: false,
-          completedPhases: expect.arrayContaining([
-            "PlatformConfigured",
-            "CopilotConfigured",
-            "SampleDataLoaded",
-            "ExplorerInitialized",
-            "Interactive",
-          ]),
+          completedPhases: expect.arrayContaining(["PlatformConfigured", "ExplorerInitialized", "Interactive"]),
         }),
       );
     });
@@ -266,10 +252,6 @@ describe("ScenarioMonitor", () => {
 
       // Complete ApplicationLoad (all phases including deferred)
       scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.PlatformConfigured);
-      scenarioMonitor.startPhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.CopilotConfigured);
-      scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.CopilotConfigured);
-      scenarioMonitor.startPhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.SampleDataLoaded);
-      scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.SampleDataLoaded);
       scenarioMonitor.startPhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.ExplorerInitialized);
       scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.ExplorerInitialized);
       scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, CommonMetricPhase.Interactive);

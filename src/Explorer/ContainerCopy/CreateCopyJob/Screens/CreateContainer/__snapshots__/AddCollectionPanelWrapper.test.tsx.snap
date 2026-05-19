@@ -3,19 +3,19 @@
 exports[`AddCollectionPanelWrapper Component Rendering should match snapshot 1`] = `
 <div>
   <div
-    class="ms-Stack addCollectionPanelWrapper css-109"
+    class="ms-Stack addCollectionPanelWrapper css-115"
   >
     <div
-      class="ms-StackItem addCollectionPanelHeader css-110"
+      class="ms-StackItem addCollectionPanelHeader css-116"
     >
       <span
-        class="themeText css-111"
+        class="themeText css-117"
       >
-        Select the properties for your container.
+        Configure the properties for the new container.
       </span>
     </div>
     <div
-      class="ms-StackItem addCollectionPanelBody css-110"
+      class="ms-StackItem addCollectionPanelBody css-116"
     >
       <div
         data-testid="add-collection-panel"
@@ -44,19 +44,19 @@ exports[`AddCollectionPanelWrapper Component Rendering should match snapshot 1`]
 exports[`AddCollectionPanelWrapper Component Rendering should match snapshot with both props 1`] = `
 <div>
   <div
-    class="ms-Stack addCollectionPanelWrapper css-109"
+    class="ms-Stack addCollectionPanelWrapper css-115"
   >
     <div
-      class="ms-StackItem addCollectionPanelHeader css-110"
+      class="ms-StackItem addCollectionPanelHeader css-116"
     >
       <span
-        class="themeText css-111"
+        class="themeText css-117"
       >
-        Select the properties for your container.
+        Configure the properties for the new container.
       </span>
     </div>
     <div
-      class="ms-StackItem addCollectionPanelBody css-110"
+      class="ms-StackItem addCollectionPanelBody css-116"
     >
       <div
         data-testid="add-collection-panel"
@@ -85,19 +85,19 @@ exports[`AddCollectionPanelWrapper Component Rendering should match snapshot wit
 exports[`AddCollectionPanelWrapper Component Rendering should match snapshot with explorer prop 1`] = `
 <div>
   <div
-    class="ms-Stack addCollectionPanelWrapper css-109"
+    class="ms-Stack addCollectionPanelWrapper css-115"
   >
     <div
-      class="ms-StackItem addCollectionPanelHeader css-110"
+      class="ms-StackItem addCollectionPanelHeader css-116"
     >
       <span
-        class="themeText css-111"
+        class="themeText css-117"
       >
-        Select the properties for your container.
+        Configure the properties for the new container.
       </span>
     </div>
     <div
-      class="ms-StackItem addCollectionPanelBody css-110"
+      class="ms-StackItem addCollectionPanelBody css-116"
     >
       <div
         data-testid="add-collection-panel"
@@ -126,19 +126,19 @@ exports[`AddCollectionPanelWrapper Component Rendering should match snapshot wit
 exports[`AddCollectionPanelWrapper Component Rendering should match snapshot with goBack prop 1`] = `
 <div>
   <div
-    class="ms-Stack addCollectionPanelWrapper css-109"
+    class="ms-Stack addCollectionPanelWrapper css-115"
   >
     <div
-      class="ms-StackItem addCollectionPanelHeader css-110"
+      class="ms-StackItem addCollectionPanelHeader css-116"
     >
       <span
-        class="themeText css-111"
+        class="themeText css-117"
       >
-        Select the properties for your container.
+        Configure the properties for the new container.
       </span>
     </div>
     <div
-      class="ms-StackItem addCollectionPanelBody css-110"
+      class="ms-StackItem addCollectionPanelBody css-116"
     >
       <div
         data-testid="add-collection-panel"

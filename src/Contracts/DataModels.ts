@@ -255,6 +255,7 @@ export interface VectorIndex {
   vectorIndexShardKey?: string[];
   indexingSearchListSize?: number;
   quantizationByteSize?: number;
+  quantizerType?: "product" | "spherical";
 }
 
 export interface FullTextIndex {
@@ -347,6 +348,7 @@ export interface Offer {
 export interface ThroughputBucket {
   id: number;
   maxThroughputPercentage: number;
+  isDefaultBucket?: boolean;
 }
 
 export interface SDKOfferDefinition extends Resource {
@@ -404,11 +406,22 @@ export interface AutoPilotOfferSettings {
   targetMaxThroughput?: number;
 }
 
+export interface AccountOverride {
+  subscriptionId: string;
+  resourceGroup: string;
+  accountName: string;
+  capabilities: Capability[];
+  capacityMode?: CapacityMode;
+  enableFreeTier?: boolean;
+  enableAnalyticalStorage?: boolean;
+}
+
 export interface CreateDatabaseParams {
   autoPilotMaxThroughput?: number;
   databaseId: string;
   databaseLevelThroughput?: boolean;
   offerThroughput?: number;
+  targetAccountOverride?: AccountOverride;
 }
 
 export interface CreateCollectionParamsBase {
@@ -428,6 +441,7 @@ export interface CreateCollectionParamsBase {
 export interface CreateCollectionParams extends CreateCollectionParamsBase {
   createNewDatabase: boolean;
   collectionId: string;
+  targetAccountOverride?: AccountOverride;
 }
 
 export interface CreateMaterializedViewsParams extends CreateCollectionParamsBase {
@@ -598,12 +612,6 @@ export interface IContainerData {
   forwardingId: string;
 }
 
-export interface IDbAccountAllow {
-  status: number;
-  message?: string;
-  type?: string;
-}
-
 export interface IResponse<T> {
   status: number;
   data: T;
@@ -733,10 +741,6 @@ export enum PhoenixErrorType {
   UnknownError = "UnknownError",
   PhoenixFlightFallback = "PhoenixFlightFallback",
   UserMissingPermissionsError = "UserMissingPermissionsError",
-}
-
-export interface CopilotEnabledConfiguration {
-  isEnabled: boolean;
 }
 
 export interface FeatureRegistration {

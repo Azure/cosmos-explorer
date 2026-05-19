@@ -9,6 +9,96 @@ import {
 } from "../../fx";
 import { TestDatabaseContext, createTestDB } from "../../testData";
 
+test.describe("Shared Throughput Option Removed from Creation Dialogs", () => {
+  let explorer: DataExplorer = null!;
+
+  test.beforeEach(async ({ page }) => {
+    explorer = await DataExplorer.open(page, TestAccount.SQL);
+  });
+
+  test("New Database panel should not show shared throughput checkbox", async () => {
+    // Open the "New Database" panel via the global command menu
+    const newDatabaseButton = await explorer.globalCommandButton("New Database");
+    await newDatabaseButton.click();
+
+    const panel = explorer.panel("New Database");
+    await panel.waitFor();
+
+    // Assert that no "Provision throughput" / "Provision shared throughput" checkbox is visible
+    const sharedThroughputCheckbox = panel.getByRole("checkbox", {
+      name: /Provision.*throughput|Share.*throughput/i,
+    });
+    await expect(sharedThroughputCheckbox).not.toBeAttached();
+
+    // Close the panel without submitting
+    const closeButton = explorer.frame.getByLabel("Close New Database");
+    await closeButton.click();
+    await panel.waitFor({ state: "detached" });
+  });
+
+  test("New Container panel should not show shared throughput checkbox when creating new database", async () => {
+    // Open the "New Container" panel
+    const newContainerButton = await explorer.globalCommandButton("New Container");
+    await newContainerButton.click();
+
+    const panel = explorer.panel("New Container");
+    await panel.waitFor();
+
+    // "Create new" database should be selected by default
+    const createNewRadio = panel.getByRole("radio", { name: /Create new/i });
+    await expect(createNewRadio).toBeChecked();
+
+    // Assert that no "Share throughput across containers" checkbox is visible
+    const shareThroughputCheckbox = panel.getByRole("checkbox", {
+      name: /Share throughput/i,
+    });
+    await expect(shareThroughputCheckbox).not.toBeAttached();
+
+    // Close the panel without submitting
+    const closeButton = explorer.frame.getByLabel("Close New Container");
+    await closeButton.click();
+    await panel.waitFor({ state: "detached" });
+  });
+
+  test("Dedicated throughput checkbox still appears for existing shared database", async () => {
+    // Create a database with shared throughput via SDK
+    const dbContext = await createTestDB({ throughput: 400 });
+
+    try {
+      // Wait for the database to appear
+      await explorer.waitForNode(dbContext.database.id);
+
+      // Open New Container panel
+      const newContainerButton = await explorer.globalCommandButton("New Container");
+      await newContainerButton.click();
+
+      const panel = explorer.panel("New Container");
+      await panel.waitFor();
+
+      // Select "Use existing" and pick the shared database
+      const useExistingRadio = panel.getByRole("radio", { name: /Use existing/i });
+      await useExistingRadio.click();
+
+      const databaseDropdown = panel.getByRole("combobox", { name: "Choose an existing database" });
+      await databaseDropdown.click();
+      await explorer.frame.getByRole("option", { name: dbContext.database.id }).click();
+
+      // Assert that "Provision dedicated throughput" checkbox IS visible for a shared database
+      const dedicatedThroughputCheckbox = panel.getByRole("checkbox", {
+        name: /Provision dedicated throughput/i,
+      });
+      await expect(dedicatedThroughputCheckbox).toBeVisible();
+
+      // Close the panel without submitting
+      const closeButton = explorer.frame.getByLabel("Close New Container");
+      await closeButton.click();
+      await panel.waitFor({ state: "detached" });
+    } finally {
+      await dbContext.dispose();
+    }
+  });
+});
+
 test.describe("Database with Shared Throughput", () => {
   let dbContext: TestDatabaseContext = null!;
   let explorer: DataExplorer = null!;

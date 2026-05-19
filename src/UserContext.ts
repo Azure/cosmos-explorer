@@ -1,5 +1,4 @@
 import { CosmosDbArtifactType, ResourceTokenInfo } from "Contracts/FabricMessagesContract";
-import { ParsedResourceTokenConnectionString } from "Platform/Hosted/Helpers/ResourceTokenUtils";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { traceOpen } from "Shared/Telemetry/TelemetryProcessor";
 import { useCarousel } from "hooks/useCarousel";
@@ -111,7 +110,6 @@ export interface UserContext {
   readonly postgresConnectionStrParams?: PostgresConnectionStrParams;
   readonly isReplica?: boolean;
   collectionCreationDefaults: CollectionCreationDefaults;
-  sampleDataConnectionInfo?: ParsedResourceTokenConnectionString;
   readonly selectedRegionalEndpoint?: string;
   readonly writeEnabledInSelectedRegion?: boolean;
   readonly vcoreMongoConnectionParams?: VCoreMongoConnectionParams;

@@ -33,7 +33,10 @@
     "publish": "Publiceren",
     "browse": "Bladeren",
     "increaseValueBy1": "Waarde verhogen met 1",
-    "decreaseValueBy1": "Waarde verlagen met 1"
+    "decreaseValueBy1": "Waarde verlagen met 1",
+    "on": "Aan",
+    "off": "Uit",
+    "preview": "Voorbeeld"
   },
   "splashScreen": {
     "title": {
@@ -75,7 +78,7 @@
         "description": "Een tabel maken en communiceren met gegevens met de shell-interface van PostgreSQL"
       },
       "vcoreMongo": {
-        "title": "Mongo-shell",
+        "title": "Mongo Shell",
         "description": "Een verzameling maken en communiceren met gegevens met behulp van de shell-interface van MongoDB"
       }
     },
@@ -302,7 +305,7 @@
     "deleteContainer": "{{containerName}} verwijderen",
     "newSqlQuery": "Nieuwe SQL-query",
     "newQuery": "Nieuwe query",
-    "openMongoShell": "Mongo-shell openen",
+    "openMongoShell": "Mongo Shell openen",
     "newShell": "Nieuwe shell",
     "openCassandraShell": "Cassandra-shell openen",
     "newStoredProcedure": "Nieuwe opgeslagen procedure",
@@ -413,13 +416,14 @@
       "refreshGridFailed": "Kan het raster met documenten niet vernieuwen"
     },
     "mongoShell": {
-      "title": "Mongo-shell"
+      "title": "Mongo Shell"
     }
   },
   "panes": {
     "deleteDatabase": {
       "panelTitle": "{{databaseName}} verwijderen",
       "warningMessage": "Waarschuwing! De actie die u gaat uitvoeren kan niet ongedaan worden gemaakt. Als u doorgaat, worden deze resource en alle onderliggende resources permanent verwijderd.",
+      "copyableId": "{{databaseName}} Id:",
       "confirmPrompt": "Bevestig door de {{databaseName}}-id (naam) te typen",
       "inputMismatch": "Invoernaam {{databaseName}} naam '{{input}}' komt niet overeen met de geselecteerde {{databaseName}} '{{selectedId}}'",
       "feedbackTitle": "Help ons Azure Cosmos DB te verbeteren.",
@@ -427,6 +431,8 @@
     },
     "deleteCollection": {
       "panelTitle": "{{collectionName}} verwijderen",
+      "warningMessage": "Waarschuwing! De actie die u gaat uitvoeren kan niet ongedaan worden gemaakt. Als u doorgaat, worden deze resource en alle onderliggende resources permanent verwijderd.",
+      "copyableId": "{{collectionName}} Id:",
       "confirmPrompt": "Bevestig door de {{collectionName}}-id te typen",
       "inputMismatch": "Invoer-id {{input}} komt niet overeen met de geselecteerde {{selectedId}}",
       "feedbackTitle": "Help ons Azure Cosmos DB te verbeteren.",
@@ -438,21 +444,15 @@
       "keyspaceIdLabel": "Keyspace-id",
       "databaseIdPlaceholder": "Typ een nieuwe {{databaseLabel}}-id",
       "databaseTooltip": "Een {{databaseLabel}} is een logische container van een of meer {{collectionsLabel}}",
-      "shareThroughput": "Doorvoer delen in {{collectionsLabel}}",
-      "shareThroughputTooltip": "Ingerichte doorvoer op het {{databaseLabel}} niveau wordt gedeeld in alle {{collectionsLabel}} binnen de {{databaseLabel}}.",
       "greaterThanError": "Voer een waarde in die groter is dan {{minValue}} voor autopilot-doorvoer",
       "acknowledgeSpendError": "Bevestig de geschatte {{period}} uitgaven.",
       "acknowledgeSpendErrorMonthly": "Bevestig de geschatte maandelijkse uitgaven.",
-      "acknowledgeSpendErrorDaily": "Bevestig de geschatte dagelijkse uitgaven.",
-      "provisionSharedThroughputTitle": "Gedeelde doorvoer inrichten",
-      "provisionThroughputLabel": "Inrichtingsdoorvoer"
+      "acknowledgeSpendErrorDaily": "Bevestig de geschatte dagelijkse uitgaven."
     },
     "addCollection": {
       "createNew": "Nieuw item maken",
       "useExisting": "Bestaand item gebruiken",
       "databaseTooltip": "Een database is gelijk aan een naamruimte. Het is de beheereenheid voor een set {{collectionName}}.",
-      "shareThroughput": "Doorvoer delen in {{collectionName}}",
-      "shareThroughputTooltip": "Doorvoer die op databaseniveau is geconfigureerd, wordt gedeeld over alle {{collectionName}} binnen de database.",
       "collectionIdLabel": "{{collectionName}} id",
       "collectionIdTooltip": "Unieke id voor de {{collectionName}} en gebruikt voor routering op basis van id's via REST en alle SDK's.",
       "collectionIdPlaceholder": "bijvoorbeeld {{collectionName}}1",
@@ -471,8 +471,8 @@
       "sharded": "Shard",
       "addPartitionKey": "Hiërarchische partitiesleutel toevoegen",
       "hierarchicalPartitionKeyInfo": "Met deze functie kunt u uw gegevens partitioneren met maximaal drie niveaus aan sleutels voor een betere distributie. Hiervoor is .NET V3, Java V4 SDK of preview javaScript V3 SDK vereist.",
-      "provisionDedicatedThroughput": "Toegewezen doorvoer inrichten voor deze {{collectionName}}",
-      "provisionDedicatedThroughputTooltip": "U kunt optioneel toegewezen doorvoer inrichten voor een {{collectionName}} binnen een database waarvoor doorvoer is ingericht. Dit toegewezen doorvoeraantal wordt niet gedeeld met andere {{collectionNamePlural}} in de database en telt niet mee voor de doorvoer die u voor de database hebt ingericht. Dit doorvoeraantal wordt in rekening gebracht naast het doorvoeraantal die u hebt ingericht op databaseniveau.",
+      "provisionDedicatedThroughput": "Speciale doorvoer inrichten voor deze {{collectionName}}",
+      "provisionDedicatedThroughputTooltip": "U kunt optioneel speciale doorvoer inrichten voor een {{collectionName}} binnen een database waarvoor doorvoer is ingericht. Dit speciale-doorvoeraantal wordt niet gedeeld met andere {{collectionNamePlural}} in de database en telt niet mee voor de doorvoer die u voor de database hebt ingericht. Dit doorvoeraantal wordt in rekening gebracht naast het doorvoeraantal die u hebt ingericht op databaseniveau.",
       "uniqueKeysPlaceholderMongo": "Door komma's gescheiden paden, bijvoorbeeld firstName,address.zipCode",
       "uniqueKeysPlaceholderSql": "Door komma's gescheiden paden, bijvoorbeeld /firstName,/address/zipCode",
       "addUniqueKey": "Unieke sleutel toevoegen",
@@ -494,7 +494,7 @@
       "acknowledgeSpendErrorMonthly": "Bevestig de geschatte maandelijkse uitgaven.",
       "acknowledgeSpendErrorDaily": "Bevestig de geschatte dagelijkse uitgaven.",
       "unshardedMaxRuError": "Geen shard verzamelingen ondersteunen maximaal 10.000 RU's",
-      "acknowledgeShareThroughputError": "Bevestig de geschatte kosten van deze toegewezen doorvoer.",
+      "acknowledgeShareThroughputError": "Bevestig de kostenraming van deze speciale doorvoer.",
       "vectorPolicyError": "Los fouten op in het containervectorbeleid",
       "fullTextSearchPolicyError": "Los fouten op in het zoekbeleid voor volledige tekst van container",
       "addingSampleDataSet": "Voorbeeldgegevensset toevoegen",
@@ -710,8 +710,8 @@
       "tableIdLabel": "Voer de CQL-opdracht in om de tabel te maken.",
       "enterTableId": "Tabel-id invoeren",
       "tableSchemaAriaLabel": "Tabelschema",
-      "provisionDedicatedThroughput": "Toegewezen doorvoer inrichten voor deze tabel",
-      "provisionDedicatedThroughputTooltip": "U kunt optioneel toegewijde doorvoer instellen voor een tabel binnen een sleutelruimte waarvoor doorvoer is ingesteld. Dit toegewezen doorvoeraantal wordt niet gedeeld met andere tabellen in de keyspace en telt niet mee voor de doorvoer die u hebt ingericht voor de keyspace. Dit doorvoeraantal wordt in rekening gebracht naast het doorvoeraantal die u hebt ingericht op het niveau van de keyspace."
+      "provisionDedicatedThroughput": "Speciale doorvoer inrichten voor deze tabel",
+      "provisionDedicatedThroughputTooltip": "U kunt optioneel speciale doorvoer instellen voor een tabel binnen een keyspace waarvoor doorvoer is ingesteld. Dit toegewezen doorvoeraantal wordt niet gedeeld met andere tabellen in de keyspace en telt niet mee voor de doorvoer die u hebt ingericht voor de keyspace. Dit doorvoeraantal wordt in rekening gebracht naast het doorvoeraantal die u hebt ingericht op het niveau van de keyspace."
     },
     "tables": {
       "addProperty": "Eigenschap toevoegen",
@@ -764,8 +764,8 @@
         "computedProperties": "Berekende eigenschappen",
         "containerPolicies": "Containerbeleidsregels",
         "throughputBuckets": "Doorvoerbuckets",
-        "globalSecondaryIndexPreview": "Globale secundaire index (preview)",
-        "maskingPolicyPreview": "Maskeringsbeleid (preview)"
+        "globalSecondaryIndexPreview": "Global Secondary Index",
+        "maskingPolicyPreview": "Beleid voor maskering"
       },
       "mongoNotifications": {
         "selectTypeWarning": "Selecteer een type voor elke index.",
@@ -813,8 +813,8 @@
         "quotaMaxOption": "Uw huidige quotumlimiet is {{maximumThroughput}} RU/s. Om deze limiet te overschrijden, moet u een quotumverhoging aanvragen; het Azure Cosmos DB-team zal dit beoordelen.",
         "belowMinimumMessage": "U kunt de doorvoer niet verlagen tot onder uw huidige minimum van {{minimum}} RU/s. Raadpleeg de documentatie bij de serviceofferte voor meer informatie over deze limiet.",
         "saveThroughputWarning": "Uw factuur wordt beïnvloed wanneer u uw doorvoerinstellingen bijwerkt. Controleer de bijgewerkte kostenraming hieronder voordat u uw wijzigingen opslaat",
-        "currentAutoscaleThroughput": "Huidige doorvoer voor automatische schaalaanpassing:",
-        "targetAutoscaleThroughput": "Doeldoorvoer voor automatische schaalaanpassing:",
+        "currentAutoscaleThroughput": "Huidig automatisch schalen van doorvoer:",
+        "targetAutoscaleThroughput": "Automatisch schalen van doorvoer van doel:",
         "currentManualThroughput": "Actuele handmatige doorvoer:",
         "targetManualThroughput": "Handmatige doorvoer van doel:",
         "applyDelayedMessage": "De aanvraag om de doorvoer te verhogen is ingediend. Deze bewerking duurt 1-3 werkdagen om te voltooien. Bekijk de meest recente status in Meldingen.",
@@ -889,7 +889,7 @@
         "freeTierLearnMore": "Meer informatie.",
         "throughputRuS": "Doorvoer (RU/s)",
         "autoScaleCustomSettings": "Uw account heeft aangepaste instellingen die het instellen van doorvoer op containerniveau verhinderen. Werk samen met uw contactpersoon van het Cosmos DB-engineeringteam om wijzigingen aan te brengen.",
-        "keyspaceSharedThroughput": "Deze gedeelde doorvoer van de tabel is geconfigureerd in de sleutelruimte",
+        "keyspaceSharedThroughput": "Deze gedeelde doorvoer van de tabel is geconfigureerd in de keyspace",
         "throughputRangeLabel": "Doorvoer ({{min}} - {{max}} RU/s)",
         "unlimited": "onbeperkt"
       },
@@ -961,7 +961,196 @@
         "bucketLabel": "Bucket {{id}}",
         "dataExplorerQueryBucket": " (Data Explorer-querybucket)",
         "active": "Actief",
-        "inactive": "Inactief"
+        "inactive": "Inactief",
+        "defaultBucketLabel": "Standaard doorvoerbucket",
+        "defaultBucketPlaceholder": "Een standaard doorvoerbucket selecteren",
+        "defaultBucketTooltip": "De standaard doorvoerbucket wordt gebruikt voor bewerkingen die geen bucket specificeren.",
+        "defaultBucketTooltipLearnMore": "Meer informatie.",
+        "noDefaultBucketSelected": "Er is geen standaard doorvoerbucket geselecteerd",
+        "bucketOptionLabel": "Bucket {{id}} - {{percentage}}%",
+        "bucketNotActive": "Bucket {{id}} is niet actief."
+      }
+    },
+    "vectorEmbeddingPolicies": {
+      "vectorEmbeddingTitle": "Vector insluiten {{index}}",
+      "path": "Pad",
+      "dataType": "Gegevenstype",
+      "distanceFunction": "Afstand functie",
+      "dimensions": "Afmetingen",
+      "indexType": "Indextype",
+      "quantizationByteSize": "Grootte van de kwantisatiebyte",
+      "quantizationByteSizeTooltip": "Dit wordt dynamisch ingesteld door de {{containerName}} als leeg wordt gelaten, of kan worden ingesteld op een vast getal",
+      "quantizationByteSizeTooltipContainerName": "container",
+      "quantizationByteSizeTooltipGlobalSecondaryIndexName": "globale secundaire index",
+      "quantizerType": "Kwantisatie-type",
+      "quantizerTypeTooltip": "De kwantisatiemethode die wordt gebruikt door de vectorindex.",
+      "indexingSearchListSize": "Grootte van zoeklijst indexeren",
+      "vectorIndexShardKey": "Shardsleutel voor vectorindex",
+      "addVectorEmbedding": "Vector insluiten toevoegen",
+      "pathEmptyError": "Pad mag niet leeg zijn",
+      "pathDuplicateError": "Poort is al gedefinieerd",
+      "dimensionRangeError": "Deze moet groter zijn dan 0 en kleiner dan of gelijk aan 4096",
+      "dimensionFlatIndexError": "De maximaal toegestane dimensie voor een platte index is 505",
+      "quantizationByteSizeRangeError": "De grootte van de kwantisatiebyte moet groter zijn dan 0 en kleiner dan of gelijk zijn aan 512",
+      "indexingSearchListSizeRangeError": "De grootte van de zoeklijst voor indexering moet groter zijn dan of gelijk zijn aan 25 en kleiner dan of gelijk zijn aan 500"
+    }
+  },
+  "containerCopy": {
+    "commandBar": {
+      "feedbackButtonLabel": "Feedback",
+      "feedbackButtonAriaLabel": "Feedback geven over kopieertaken",
+      "refreshButtonAriaLabel": "Kopieertaken vernieuwen",
+      "createCopyJobButtonLabel": "Kopieertaak maken",
+      "createCopyJobButtonAriaLabel": "Een nieuwe containerkopietaak maken"
+    },
+    "noCopyJobs": {
+      "title": "Geen kopieertaken om weer te geven",
+      "createCopyJobButtonText": "Een containerkopietaak maken"
+    },
+    "jobDetails": {
+      "panelTitle": "{{jobName}}",
+      "panelTitleDefault": "Taakdetails",
+      "errorTitle": "Foutdetails",
+      "selectedContainers": "Geselecteerde containers"
+    },
+    "createCopyJob": {
+      "panelTitle": "Kopieertaak maken"
+    },
+    "selectAccount": {
+      "description": "Selecteer een doelaccount waarnaar u wilt kopiëren.",
+      "subscriptionDropdownLabel": "Abonnement",
+      "subscriptionDropdownPlaceholder": "Een abonnement selecteren",
+      "accountDropdownLabel": "Account",
+      "accountDropdownPlaceholder": "Een account selecteren"
+    },
+    "migrationType": {
+      "offline": {
+        "title": "Offlinemodus",
+        "description": "Met offlinetaken voor het kopiëren van containers kunt u gegevens kopiëren van een broncontainer naar een doelcontainer Cosmos DB voor ondersteunde API's. Om de gegevensintegriteit tussen de bron en het doel te garanderen, raden we u aan om updates op de broncontainer te stoppen voordat u de kopieertaak maakt. Meer informatie over [offline kopieertaken](https://learn.microsoft.com/azure/cosmos-db/how-to-container-copy?tabs=offline-copy&pivots=api-nosql)."
+      },
+      "online": {
+        "title": "Onlinemodus",
+        "description": "Met online containerkopietaken kunt u gegevens kopiëren van een broncontainer naar een bestemming Cosmos DB NoSQL API-container met behulp van de wijzigingenfeed [Alle versies en verwijderen](https://learn.microsoft.com/azure/cosmos-db/change-feed-modes?tabs=all-versions-and-deletes#all-versions-and-deletes-change-feed-mode-preview) change feed. Hierdoor kunnen updates worden voortgezet op de bron terwijl gegevens worden gekopieerd. Aan het einde is een korte downtime vereist om veilig over te schakelen van clienttoepassingen naar de doelcontainer. Meer informatie over [online kopieertaken](https://learn.microsoft.com/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#getting-started)."
+      }
+    },
+    "selectContainers": {
+      "description": "Selecteer een broncontainer en een doelcontainer waarnaar u wilt kopiëren.",
+      "sourceContainerSubHeading": "Broncontainer",
+      "targetContainerSubHeading": "Doelcontainer",
+      "databaseDropdownLabel": "Database",
+      "databaseDropdownPlaceholder": "Een database selecteren",
+      "containerDropdownLabel": "Container",
+      "containerDropdownPlaceholder": "Een container selecteren",
+      "createNewContainerSubHeading": "Configureer de eigenschappen voor de nieuwe container in doelaccount {{accountName}}.",
+      "createNewContainerSubHeadingDefault": "Configureer de eigenschappen voor de nieuwe container.",
+      "createContainerButtonLabel": "Een nieuwe container maken",
+      "createContainerHeading": "Nieuwe container maken"
+    },
+    "preview": {
+      "jobNameLabel": "Taaknaam",
+      "subscriptionLabel": "Doelabonnement",
+      "accountLabel": "Doelaccount",
+      "sourceDatabaseLabel": "Brondatabase",
+      "sourceContainerLabel": "Broncontainer",
+      "targetDatabaseLabel": "Doeldatabase",
+      "targetContainerLabel": "Doelcontainer"
+    },
+    "assignPermissions": {
+      "crossAccountDescription": "Als u gegevens wilt kopiëren van de bron naar de doelcontainer, moet u ervoor zorgen dat de beheerde identiteit van het bronaccount lees-/schrijftoegang heeft tot het doelaccount door de volgende stappen uit te voeren.",
+      "intraAccountOnlineDescription": "Volg de onderstaande stappen om online kopiëren in te schakelen voor uw {{accountName}} account.",
+      "crossAccountConfiguration": {
+        "title": "Containerkopie voor meerdere accounts",
+        "description": "Volg de onderstaande instructies om de vereiste machtigingen te verlenen voor het kopiëren van gegevens van {{sourceAccount}} naar {{destinationAccount}}."
+      },
+      "onlineConfiguration": {
+        "title": "Onlinecontainer kopiëren",
+        "description": "Volg de onderstaande instructies om online kopiëren in te schakelen voor uw account {{accountName}}."
+      }
+    },
+    "popoverOverlaySpinnerLabel": "Een ogenblik geduld. Uw aanvraag wordt verwerkt...",
+    "addManagedIdentity": {
+      "title": "De door het systeem toegewezen beheerde identiteit is ingeschakeld.",
+      "description": "Een door het systeem toegewezen beheerde identiteit is beperkt tot één per resource en is gekoppeld aan de levenscyclus van deze resource. Zodra deze functie is ingeschakeld, kunt u machtigingen verlenen aan de beheerde identiteit met behulp van op rollen gebaseerd toegangsbeheer van Azure (Azure RBAC). De beheerde identiteit wordt geverifieerd met Microsoft Entra ID, zodat je geen referenties in code hoeft op te slaan.",
+      "descriptionHrefText": "Meer informatie over beheerde identiteiten.",
+      "descriptionHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
+      "toggleLabel": "Door het systeem toegewezen beheerde identiteit",
+      "tooltipContent": "Meer informatie over",
+      "tooltipHrefText": "Beheerde identiteiten.",
+      "tooltipHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
+      "userAssignedIdentityTooltip": "U kunt een bestaande door de gebruiker toegewezen identiteit selecteren of een nieuwe identiteit maken.",
+      "userAssignedIdentityLabel": "U kunt ook een door de gebruiker toegewezen beheerde identiteit selecteren.",
+      "createUserAssignedIdentityLink": "Door de gebruiker toegewezen beheerde identiteit maken",
+      "enablementTitle": "De door het systeem toegewezen beheerde identiteit inschakelen",
+      "enablementDescription": "Door het systeem toegewezen beheerde identiteit inschakelen op de {{accountName}}. Klik op de knop Ja om te bevestigen."
+    },
+    "defaultManagedIdentity": {
+      "title": "Door het systeem toegewezen beheerde identiteit, ingesteld als standaard.",
+      "description": "Stel de door het systeem toegewezen beheerde identiteit in als standaard voor {{accountName}} door deze in te schakelen.",
+      "tooltipContent": "Meer informatie over",
+      "tooltipHrefText": "Standaard beheerde identiteiten.",
+      "tooltipHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
+      "popoverTitle": "Door het systeem toegewezen beheerde identiteit ingesteld als standaard",
+      "popoverDescription": "Wijs de door het systeem toegewezen beheerde identiteit toe als de standaardwaarde voor {{accountName}}. Klik op de knop Ja om te bevestigen. "
+    },
+    "readWritePermissionAssigned": {
+      "title": "Lees-/schrijfmachtigingen toegewezen aan de standaardidentiteit.",
+      "description": "Als u het kopiëren van gegevens van de bron naar de doelcontainer wilt toestaan, geeft u lees-/schrijftoegang voor het doelaccount op tot de standaardidentiteit van het bronaccount.",
+      "tooltipContent": "Meer informatie over",
+      "tooltipHrefText": "Lees-/schrijfmachtigingen.",
+      "tooltipHref": "https://learn.microsoft.com/azure/cosmos-db/nosql/how-to-connect-role-based-access-control",
+      "popoverTitle": "Lees-/schrijfmachtigingen toewijzen aan de standaardidentiteit.",
+      "popoverDescription": "Wijs lees-/schrijfmachtigingen voor het doelaccount toe aan de standaardidentiteit van het bronaccount. Klik op de knop Ja om te bevestigen."
+    },
+    "pointInTimeRestore": {
+      "title": "Herstel naar een bepaald tijdstip ingeschakeld",
+      "description": "Werk uw {{accessName}} back-upbeleid bij van periodieke naar continue back-up om taken voor het kopiëren van onlinecontainers te vergemakkelijken. Voor deze functionaliteit is het inschakelen van continue back-up vereist.",
+      "tooltipContent": "Meer informatie over",
+      "tooltipHrefText": "Continue back-up",
+      "tooltipHref": "https://learn.microsoft.com/en-us/azure/cosmos-db/continuous-backup-restore-introduction",
+      "buttonText": "Herstel naar een bepaald tijdstip inschakelen"
+    },
+    "onlineCopyEnabled": {
+      "title": "Online kopiëren is ingeschakeld",
+      "description": "Schakel onlinecontainerkopie in door op de onderstaande knop in uw {{accountName}} account te klikken.",
+      "hrefText": "Meer informatie over online kopieertaken",
+      "href": "https://learn.microsoft.com/en-us/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#enable-online-copy",
+      "buttonText": "Online kopiëren inschakelen",
+      "validateAllVersionsAndDeletesChangeFeedSpinnerLabel": "Modus Alle versies en verwijderingen voor wijzigingenfeed (preview) valideren...",
+      "enablingAllVersionsAndDeletesChangeFeedSpinnerLabel": "Inschakelen van Alle versies en verwijderen van de wijzigingenfeed (preview)",
+      "enablingOnlineCopySpinnerLabel": "Online kopiëren inschakelen voor uw {{accountName}}-account... ..."
+    },
+    "monitorJobs": {
+      "columns": {
+        "lastUpdatedTime": "Datum en tijd",
+        "name": "Taaknaam",
+        "status": "Status",
+        "completionPercentage": "Voltooiings %",
+        "duration": "Duur",
+        "error": "Foutbericht",
+        "mode": "Modus",
+        "actions": "Acties"
+      },
+      "actions": {
+        "pause": "Onderbreken",
+        "resume": "Hervatten",
+        "complete": "Voltooien",
+        "viewDetails": "Details weergeven"
+      },
+      "status": {
+        "pending": "In de wachtrij",
+        "inProgress": "Uitvoeren...",
+        "running": "Uitvoeren...",
+        "partitioning": "Uitvoeren...",
+        "paused": "Onderbroken",
+        "completed": "Voltooid",
+        "failed": "Mislukt",
+        "faulted": "Mislukt",
+        "skipped": "Geannuleerd",
+        "cancelled": "Geannuleerd"
+      },
+      "dialog": {
+        "confirmButtonText": "Bevestigen",
+        "cancelButtonText": "Annuleren"
       }
     }
   }

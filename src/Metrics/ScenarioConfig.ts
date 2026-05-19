@@ -10,8 +10,6 @@ export enum CommonMetricPhase {
 export enum ApplicationMetricPhase {
   ExplorerInitialized = "ExplorerInitialized",
   PlatformConfigured = "PlatformConfigured",
-  CopilotConfigured = "CopilotConfigured",
-  SampleDataLoaded = "SampleDataLoaded",
   DatabasesFetched = "DatabasesFetched",
   CollectionsLoaded = "CollectionsLoaded",
   DatabaseTreeRendered = "DatabaseTreeRendered",

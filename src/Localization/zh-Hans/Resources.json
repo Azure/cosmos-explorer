@@ -33,7 +33,10 @@
     "publish": "发布",
     "browse": "浏览",
     "increaseValueBy1": "将值增加 1",
-    "decreaseValueBy1": "将值减少 1"
+    "decreaseValueBy1": "将值减少 1",
+    "on": "开",
+    "off": "关",
+    "preview": "预览"
   },
   "splashScreen": {
     "title": {
@@ -420,6 +423,7 @@
     "deleteDatabase": {
       "panelTitle": "删除 {{databaseName}}",
       "warningMessage": "警告!你将执行的操作无法撤消。继续操作将永久删除此资源及其所有子资源。",
+      "copyableId": "{{databaseName}} Id:",
       "confirmPrompt": "通过键入 {{databaseName}} ID(名称)进行确认",
       "inputMismatch": "输入的 {{databaseName}} 名称 '{{input}}' 与所选的 {{databaseName}} '{{selectedId}}' 不匹配",
       "feedbackTitle": "帮助我们改进 Azure Cosmos DB!",
@@ -427,6 +431,8 @@
     },
     "deleteCollection": {
       "panelTitle": "删除 {{collectionName}}",
+      "warningMessage": "警告!你将执行的操作无法撤消。继续操作将永久删除此资源及其所有子资源。",
+      "copyableId": "{{collectionName}} Id:",
       "confirmPrompt": "通过键入 {{collectionName}} ID 进行确认",
       "inputMismatch": "输入 id {{input}} 与所选 {{selectedId}} 不匹配",
       "feedbackTitle": "帮助我们改进 Azure Cosmos DB!",
@@ -438,21 +444,15 @@
       "keyspaceIdLabel": "键空间 ID",
       "databaseIdPlaceholder": "键入新的 {{databaseLabel}} ID",
       "databaseTooltip": "{{databaseLabel}} 是一个或多个 {{collectionsLabel}} 的逻辑容器",
-      "shareThroughput": "跨 {{collectionsLabel}} 共享吞吐量",
-      "shareThroughputTooltip": "{{databaseLabel}} 级别的预配吞吐量将在 {{databaseLabel}} 内的所有 {{collectionsLabel}} 之间共享。",
       "greaterThanError": "对于 autopilot 吞吐量，请输入大于 {{minValue}} 的值",
       "acknowledgeSpendError": "请确认估计的 {{period}} 支出。",
       "acknowledgeSpendErrorMonthly": "请确认估计的每月支出。",
-      "acknowledgeSpendErrorDaily": "请确认估计的每日支出。",
-      "provisionSharedThroughputTitle": "预配共享吞吐量",
-      "provisionThroughputLabel": "预配吞吐量"
+      "acknowledgeSpendErrorDaily": "请确认估计的每日支出。"
     },
     "addCollection": {
       "createNew": "新建",
       "useExisting": "使用现有项",
       "databaseTooltip": "数据库类似于命名空间。它是一组 {{collectionName}} 的管理单元。",
-      "shareThroughput": "跨 {{collectionName}} 共享吞吐量",
-      "shareThroughputTooltip": "在数据库级别配置的吞吐量将在数据库内的所有 {{collectionName}} 之间共享。",
       "collectionIdLabel": "{{collectionName}} id",
       "collectionIdTooltip": "{{collectionName}} 的唯一标识符，用于通过 REST 和所有 SDK 进行基于 ID 的路由。",
       "collectionIdPlaceholder": "例如，{{collectionName}}1",
@@ -764,8 +764,8 @@
         "computedProperties": "计算属性",
         "containerPolicies": "容器策略",
         "throughputBuckets": "吞吐量存储桶",
-        "globalSecondaryIndexPreview": "全局辅助索引(预览版)",
-        "maskingPolicyPreview": "掩码策略(预览版)"
+        "globalSecondaryIndexPreview": "Global Secondary Index",
+        "maskingPolicyPreview": "掩码策略"
       },
       "mongoNotifications": {
         "selectTypeWarning": "请为每个索引选择一个类型。",
@@ -889,7 +889,7 @@
         "freeTierLearnMore": "了解详细信息。",
         "throughputRuS": "吞吐量(RU/s)",
         "autoScaleCustomSettings": "你的帐户具有阻止在容器级别设置吞吐量的自定义设置。请与 Cosmos DB 工程团队联系点合作进行更改。",
-        "keyspaceSharedThroughput": "此表共享吞吐量是在密钥空间中配置的",
+        "keyspaceSharedThroughput": "此表共享吞吐量是在键空间中配置的",
         "throughputRangeLabel": "吞吐量({{min}} - {{max}} RU/秒)",
         "unlimited": "无限制"
       },
@@ -961,7 +961,196 @@
         "bucketLabel": "存储桶 {{id}}",
         "dataExplorerQueryBucket": " (数据资源管理器查询存储桶)",
         "active": "活动",
-        "inactive": "非活动"
+        "inactive": "非活动",
+        "defaultBucketLabel": "默认吞吐量存储桶",
+        "defaultBucketPlaceholder": "选择默认吞吐量存储桶",
+        "defaultBucketTooltip": "默认吞吐量存储桶用于未指定特定存储桶的操作。",
+        "defaultBucketTooltipLearnMore": "了解详细信息。",
+        "noDefaultBucketSelected": "未选择默认吞吐量存储桶",
+        "bucketOptionLabel": "存储桶 {{id}} - {{percentage}}%",
+        "bucketNotActive": "存储桶 {{id}} 未处于活动状态。"
+      }
+    },
+    "vectorEmbeddingPolicies": {
+      "vectorEmbeddingTitle": "矢量嵌入 {{index}}",
+      "path": "路径",
+      "dataType": "数据类型",
+      "distanceFunction": "距离函数",
+      "dimensions": "维度",
+      "indexType": "索引类型",
+      "quantizationByteSize": "量化字节大小",
+      "quantizationByteSizeTooltip": "如果留空，则由 {{containerName}} 动态设置此项，也可以设置为固定数字",
+      "quantizationByteSizeTooltipContainerName": "容器",
+      "quantizationByteSizeTooltipGlobalSecondaryIndexName": "全局辅助索引",
+      "quantizerType": "量化器类型",
+      "quantizerTypeTooltip": "矢量索引使用的量化方法。",
+      "indexingSearchListSize": "索引搜索列表大小",
+      "vectorIndexShardKey": "矢量索引分片键",
+      "addVectorEmbedding": "添加矢量嵌入",
+      "pathEmptyError": "路径不应为空",
+      "pathDuplicateError": "已定义路径",
+      "dimensionRangeError": "维度必须大于 0 且小于或等于 4096",
+      "dimensionFlatIndexError": "平面索引允许的最大维度为 505",
+      "quantizationByteSizeRangeError": "量化字节大小必须大于 0 且小于或等于 512",
+      "indexingSearchListSizeRangeError": "索引搜索列表大小必须大于或等于 25 且小于或等于 500"
+    }
+  },
+  "containerCopy": {
+    "commandBar": {
+      "feedbackButtonLabel": "反馈",
+      "feedbackButtonAriaLabel": "提供有关复制作业的反馈",
+      "refreshButtonAriaLabel": "刷新复制作业",
+      "createCopyJobButtonLabel": "创建复制作业",
+      "createCopyJobButtonAriaLabel": "创建新的容器复制作业"
+    },
+    "noCopyJobs": {
+      "title": "没有要显示的复制作业",
+      "createCopyJobButtonText": "创建容器复制作业"
+    },
+    "jobDetails": {
+      "panelTitle": "{{jobName}}",
+      "panelTitleDefault": "作业详细信息",
+      "errorTitle": "错误详细信息",
+      "selectedContainers": "所选容器"
+    },
+    "createCopyJob": {
+      "panelTitle": "创建复制作业"
+    },
+    "selectAccount": {
+      "description": "请选择要复制到的目标帐户。",
+      "subscriptionDropdownLabel": "订阅",
+      "subscriptionDropdownPlaceholder": "选择订阅",
+      "accountDropdownLabel": "帐户",
+      "accountDropdownPlaceholder": "选择帐户"
+    },
+    "migrationType": {
+      "offline": {
+        "title": "脱机模式",
+        "description": "借助脱机容器复制作业，可以将数据从源容器复制到受支持 API 的目标 Cosmos DB 容器。为了确保源和目标之间的数据完整性，建议在创建复制作业之前停止源容器上的更新。详细了解 [脱机复制作业](https://learn.microsoft.com/azure/cosmos-db/how-to-container-copy?tabs=offline-copy&pivots=api-nosql)。"
+      },
+      "online": {
+        "title": "联机模式",
+        "description": "借助联机容器复制作业，可以使用 [所有版本和删除](https://learn.microsoft.com/azure/cosmos-db/change-feed-modes?tabs=all-versions-and-deletes#all-versions-and-deletes-change-feed-mode-preview) 更改源将数据从源容器复制到目标 Cosmos DB NoSQL API 容器。此操作允许在复制数据时在源上继续更新。最后，需要短暂停机才能安全地将客户端应用程序切换到目标容器。详细了解 [联机复制作业](https://learn.microsoft.com/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#getting-started)。"
+      }
+    },
+    "selectContainers": {
+      "description": "请选择源容器和要复制到的目标容器。",
+      "sourceContainerSubHeading": "源容器",
+      "targetContainerSubHeading": "目标容器",
+      "databaseDropdownLabel": "数据库",
+      "databaseDropdownPlaceholder": "选择数据库",
+      "containerDropdownLabel": "容器",
+      "containerDropdownPlaceholder": "选择容器",
+      "createNewContainerSubHeading": "在目标帐户“{{accountName}}”上配置新容器的属性。",
+      "createNewContainerSubHeadingDefault": "配置新容器的属性。",
+      "createContainerButtonLabel": "创建新容器",
+      "createContainerHeading": "创建新容器"
+    },
+    "preview": {
+      "jobNameLabel": "作业名称",
+      "subscriptionLabel": "目标订阅",
+      "accountLabel": "目标帐户",
+      "sourceDatabaseLabel": "源数据库",
+      "sourceContainerLabel": "源容器",
+      "targetDatabaseLabel": "目标数据库",
+      "targetContainerLabel": "目标容器"
+    },
+    "assignPermissions": {
+      "crossAccountDescription": "要将数据从源容器复制到目标容器，请通过完成以下步骤来确保源帐户的托管标识对目标帐户具有读写访问权限。",
+      "intraAccountOnlineDescription": "按照以下步骤在“{{accountName}}”帐户上启用联机复制。",
+      "crossAccountConfiguration": {
+        "title": "跨帐户容器副本",
+        "description": "请按照以下说明授予将数据从“{{sourceAccount}}”复制到“{{destinationAccount}}”的必要权限。"
+      },
+      "onlineConfiguration": {
+        "title": "联机容器复制",
+        "description": "请按照以下说明在“{{accountName}}”帐户上启用联机复制。"
+      }
+    },
+    "popoverOverlaySpinnerLabel": "请稍候，我们正在处理你的请求...",
+    "addManagedIdentity": {
+      "title": "已启用系统分配的托管标识。",
+      "description": "系统分配的托管标识限制为每个资源一个，并与此资源的生命周期相关联。启用后，可以通过使用 Azure 基于角色的访问控制(Azure RBAC)向托管标识授予权限。托管标识使用 Microsoft Entra ID 进行身份验证，因此你无需在代码中存储任何凭据。",
+      "descriptionHrefText": "详细了解托管标识。",
+      "descriptionHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
+      "toggleLabel": "系统分配的托管标识",
+      "tooltipContent": "详细了解",
+      "tooltipHrefText": "托管标识。",
+      "tooltipHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
+      "userAssignedIdentityTooltip": "可以选择现有用户分配的标识或创建新标识。",
+      "userAssignedIdentityLabel": "还可以选择用户分配的托管标识。",
+      "createUserAssignedIdentityLink": "创建用户分配的托管标识",
+      "enablementTitle": "启用系统分配的托管标识",
+      "enablementDescription": "在 {{accountName}} 上启用系统分配的托管标识。如果要确认，请单击“是”按钮。"
+    },
+    "defaultManagedIdentity": {
+      "title": "已设为默认的系统分配的托管标识。",
+      "description": "通过将其打开，将系统分配的托管标识设置为“{{accountName}}”的默认标识。",
+      "tooltipContent": "详细了解",
+      "tooltipHrefText": "默认托管标识。",
+      "tooltipHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
+      "popoverTitle": "已设为默认的系统分配的托管标识",
+      "popoverDescription": "将系统分配的托管标识分配为“{{accountName}}”的默认标识。如果要确认，请单击“是”按钮。"
+    },
+    "readWritePermissionAssigned": {
+      "title": "分配给默认标识的读写权限。",
+      "description": "要允许数据从源复制到目标容器，请向源帐户的默认标识提供目标帐户上的读写访问权限。",
+      "tooltipContent": "详细了解",
+      "tooltipHrefText": "读写权限。",
+      "tooltipHref": "https://learn.microsoft.com/azure/cosmos-db/nosql/how-to-connect-role-based-access-control",
+      "popoverTitle": "将读写权限分配给默认标识。",
+      "popoverDescription": "将目标帐户的读写权限分配给源帐户的默认标识。如果要确认，请单击“是”按钮。"
+    },
+    "pointInTimeRestore": {
+      "title": "已启用时间点还原",
+      "description": "为了便于进行联机容器复制作业，请将“{{accessName}}”备份策略从定期更新为连续备份。此功能需要启用连续备份。",
+      "tooltipContent": "详细了解",
+      "tooltipHrefText": "连续备份",
+      "tooltipHref": "https://learn.microsoft.com/zh-cn/azure/cosmos-db/continuous-backup-restore-introduction",
+      "buttonText": "启用时间点还原"
+    },
+    "onlineCopyEnabled": {
+      "title": "已启用联机复制",
+      "description": "通过单击“{{accountName}}”帐户上的以下按钮启用联机容器复制。",
+      "hrefText": "了解有关联机复制作业的详细信息",
+      "href": "https://learn.microsoft.com/zh-cn/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#enable-online-copy",
+      "buttonText": "启用联机复制",
+      "validateAllVersionsAndDeletesChangeFeedSpinnerLabel": "正在验证所有版本和删除更改源模式(预览)...",
+      "enablingAllVersionsAndDeletesChangeFeedSpinnerLabel": "正在启用所有版本和删除更改源模式(预览)...",
+      "enablingOnlineCopySpinnerLabel": "正在“{{accountName}}”帐户上启用联机复制..."
+    },
+    "monitorJobs": {
+      "columns": {
+        "lastUpdatedTime": "日期和时间",
+        "name": "作业名称",
+        "status": "状态",
+        "completionPercentage": "完成 %",
+        "duration": "持续时间",
+        "error": "错误消息",
+        "mode": "模式",
+        "actions": "操作"
+      },
+      "actions": {
+        "pause": "暂停",
+        "resume": "恢复",
+        "complete": "完成",
+        "viewDetails": "查看详细信息"
+      },
+      "status": {
+        "pending": "已排队",
+        "inProgress": "正在运行",
+        "running": "正在运行",
+        "partitioning": "正在运行",
+        "paused": "已暂停",
+        "completed": "已完成",
+        "failed": "失败",
+        "faulted": "失败",
+        "skipped": "已取消",
+        "cancelled": "已取消"
+      },
+      "dialog": {
+        "confirmButtonText": "确认",
+        "cancelButtonText": "取消"
       }
     }
   }

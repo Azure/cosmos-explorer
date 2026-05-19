@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom";
 import { fireEvent, render, screen } from "@testing-library/react";
+import { Keys, t } from "Localization";
 import React from "react";
-import ContainerCopyMessages from "../../../ContainerCopyMessages";
 import PopoverMessage from "./PopoverContainer";
 
 jest.mock("../../../../../Common/LoadingOverlay", () => {
@@ -181,7 +181,7 @@ describe("PopoverMessage Component", () => {
     it("should use correct loading overlay label", () => {
       render(<PopoverMessage {...defaultProps} isLoading={true} />);
       const loadingOverlay = screen.getByTestId("loading-overlay");
-      expect(loadingOverlay).toHaveAttribute("aria-label", ContainerCopyMessages.popoverOverlaySpinnerLabel);
+      expect(loadingOverlay).toHaveAttribute("aria-label", t(Keys.containerCopy.popoverOverlaySpinnerLabel));
     });
   });
 

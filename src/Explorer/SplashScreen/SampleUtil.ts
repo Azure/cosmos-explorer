@@ -31,7 +31,6 @@ export const checkContainerExists = (databaseName: string, containerName: string
   hasContainer(databaseName, containerName, useDatabases.getState().databases);
 
 export enum SampleDataFile {
-  COPILOT = "Copilot",
   FABRIC_SAMPLE_DATA = "FabricSampleData",
   FABRIC_SAMPLE_VECTOR_DATA = "FabricSampleVectorData",
 }
@@ -43,9 +42,6 @@ const containerSettings: {
     indexingPolicy?: DataModels.IndexingPolicy;
   };
 } = {
-  [SampleDataFile.COPILOT]: {
-    partitionKeyString: "category",
-  },
   [SampleDataFile.FABRIC_SAMPLE_DATA]: {
     partitionKeyString: "categoryName",
   },
@@ -120,11 +116,6 @@ export const createContainer = async (
 export const importData = async (sampleDataFile: SampleDataFile, collection: ViewModels.Collection): Promise<void> => {
   let documents: JSONObject[] = undefined;
   switch (sampleDataFile) {
-    case SampleDataFile.COPILOT:
-      documents = (
-        await import(/* webpackChunkName: "queryCopilotSampleData" */ "../../../sampleData/queryCopilotSampleData.json")
-      ).data;
-      break;
     case SampleDataFile.FABRIC_SAMPLE_DATA:
       documents = (await import(/* webpackChunkName: "fabricSampleData" */ "../../../sampleData/fabricSampleData.json"))
         .default;

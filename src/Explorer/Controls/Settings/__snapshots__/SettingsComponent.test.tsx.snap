@@ -359,10 +359,13 @@ exports[`SettingsComponent renders 1`] = `
             onVectorEmbeddingPolicyChange={[Function]}
             onVectorEmbeddingPolicyDirtyChange={[Function]}
             onVectorEmbeddingPolicyValidationChange={[Function]}
+            onVectorIndexesChange={[Function]}
             resetShouldDiscardContainerPolicyChange={[Function]}
             shouldDiscardContainerPolicies={false}
             vectorEmbeddingPolicy={{}}
             vectorEmbeddingPolicyBaseline={{}}
+            vectorIndexes={[]}
+            vectorIndexesBaseline={[]}
           />
         </Stack>
       </PivotItem>
@@ -426,7 +429,7 @@ exports[`SettingsComponent renders 1`] = `
             "data-test": "settings-tab-header/PartitionKeyTab",
           }
         }
-        headerText="Partition Keys (preview)"
+        headerText="Partition Keys"
         itemKey="PartitionKeyTab"
         key="PartitionKeyTab"
         style={
@@ -667,7 +670,7 @@ exports[`SettingsComponent renders 1`] = `
             "data-test": "settings-tab-header/GlobalSecondaryIndexTab",
           }
         }
-        headerText="Global Secondary Index (Preview)"
+        headerText="Global Secondary Index"
         itemKey="GlobalSecondaryIndexTab"
         key="GlobalSecondaryIndexTab"
         style={

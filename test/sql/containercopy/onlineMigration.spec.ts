@@ -15,14 +15,14 @@ test.describe("Container Copy - Online Migration", () => {
   let wrapper: Locator;
   let panel: Locator;
   let frame: Frame;
-  let targetAccountName: string;
+  let sourceAccountName: string;
 
   test.beforeEach("Setup for online migration test", async ({ browser }) => {
     contexts = await createMultipleTestContainers({ accountType: TestAccount.SQLContainerCopyOnly, containerCount: 2 });
 
     page = await browser.newPage();
     ({ wrapper, frame } = await ContainerCopy.open(page, TestAccount.SQLContainerCopyOnly));
-    targetAccountName = getAccountName(TestAccount.SQLContainerCopyOnly);
+    sourceAccountName = getAccountName(TestAccount.SQLContainerCopyOnly);
   });
 
   test.afterEach("Cleanup after online migration test", async () => {
@@ -103,7 +103,7 @@ test.describe("Container Copy - Online Migration", () => {
 
     // Verify job preview and create the online migration job
     const previewContainer = panel.getByTestId("Panel:PreviewCopyJob");
-    await expect(previewContainer.getByTestId("source-account-name")).toHaveText(targetAccountName);
+    await expect(previewContainer.getByTestId("destination-account-name")).toHaveText(sourceAccountName);
 
     const jobNameInput = previewContainer.getByTestId("job-name-textfield");
     const onlineMigrationJobName = await jobNameInput.inputValue();
@@ -112,7 +112,7 @@ test.describe("Container Copy - Online Migration", () => {
 
     const copyJobCreationPromise = waitForApiResponse(
       page,
-      `${targetAccountName}/dataTransferJobs/${onlineMigrationJobName}`,
+      `${sourceAccountName}/dataTransferJobs/${onlineMigrationJobName}`,
       "PUT",
     );
     await copyButton.click();
@@ -149,7 +149,7 @@ test.describe("Container Copy - Online Migration", () => {
 
     const pauseResponse = await waitForApiResponse(
       page,
-      `${targetAccountName}/dataTransferJobs/${onlineMigrationJobName}/pause`,
+      `${sourceAccountName}/dataTransferJobs/${onlineMigrationJobName}/pause`,
       "POST",
     );
     expect(pauseResponse.ok()).toBe(true);

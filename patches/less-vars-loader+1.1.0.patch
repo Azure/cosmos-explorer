@@ -1,0 +1,13 @@
+diff --git a/node_modules/less-vars-loader/index.js b/node_modules/less-vars-loader/index.js
+index 14183c1..095c807 100644
+--- a/node_modules/less-vars-loader/index.js
++++ b/node_modules/less-vars-loader/index.js
+@@ -7,7 +7,7 @@ const entries = require('object.entries');
+ 
+ module.exports = function(source) {
+   this.cacheable && this.cacheable();
+-  const query = loaderUtils.parseQuery(this.query);
++  const query = loaderUtils.getOptions(this) || {};
+   const camelCaseKeys = !!(query.camelCase || query.camelcase);
+   const resolveVariables = !!(query.resolveVariables || query.resolvevariables);
+ 

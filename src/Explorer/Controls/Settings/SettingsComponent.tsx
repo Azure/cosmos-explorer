@@ -15,6 +15,7 @@ import {
 } from "Explorer/Controls/Settings/SettingsSubComponents/ThroughputInputComponents/ThroughputBucketsComponent";
 import { useIndexingPolicyStore } from "Explorer/Tabs/QueryTab/ResultsView";
 import { useDatabases } from "Explorer/useDatabases";
+import { Keys, t } from "Localization";
 import { isFabricNative } from "Platform/Fabric/FabricUtil";
 import { isVectorSearchEnabled } from "Utils/CapabilityUtils";
 import { isRunningOnPublicCloud } from "Utils/CloudUtils";
@@ -44,7 +45,6 @@ import { useCommandBar } from "../../Menus/CommandBar/CommandBarComponentAdapter
 import { SettingsTabV2 } from "../../Tabs/SettingsTabV2";
 import "./SettingsComponent.less";
 import { mongoIndexingPolicyAADError } from "./SettingsRenderUtils";
-import { Keys, t } from "Localization";
 import {
   ConflictResolutionComponent,
   ConflictResolutionComponentProps,
@@ -554,6 +554,19 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
   private onVectorEmbeddingPolicyChange = (newVectorEmbeddingPolicy: DataModels.VectorEmbeddingPolicy): void =>
     this.setState({ vectorEmbeddingPolicy: newVectorEmbeddingPolicy });
+
+  private onVectorIndexesChange = (newVectorIndexes: DataModels.VectorIndex[]): void => {
+    const currentIndexingPolicy: DataModels.IndexingPolicy =
+      this.state.indexingPolicyContent || ({} as DataModels.IndexingPolicy);
+    const newIndexingPolicy: DataModels.IndexingPolicy = {
+      ...currentIndexingPolicy,
+      vectorIndexes: newVectorIndexes,
+    };
+    this.setState({
+      indexingPolicyContent: newIndexingPolicy,
+      isIndexingPolicyDirty: true,
+    });
+  };
 
   private onFullTextPolicyChange = (newFullTextPolicy: DataModels.FullTextPolicy): void =>
     this.setState({ fullTextPolicy: newFullTextPolicy });
@@ -1332,6 +1345,9 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       onVectorEmbeddingPolicyChange: this.onVectorEmbeddingPolicyChange,
       onVectorEmbeddingPolicyDirtyChange: this.onVectorEmbeddingPolicyDirtyChange,
       onVectorEmbeddingPolicyValidationChange: this.onVectorEmbeddingPolicyValidationChange,
+      vectorIndexes: this.state.indexingPolicyContent?.vectorIndexes ?? [],
+      vectorIndexesBaseline: this.state.indexingPolicyContentBaseline?.vectorIndexes ?? [],
+      onVectorIndexesChange: this.onVectorIndexesChange,
       isVectorSearchEnabled: this.isVectorSearchEnabled,
       fullTextPolicy: this.state.fullTextPolicy,
       fullTextPolicyBaseline: this.state.fullTextPolicyBaseline,

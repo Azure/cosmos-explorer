@@ -3,20 +3,20 @@
 import { ChoiceGroup, IChoiceGroupOption, Stack, Text } from "@fluentui/react";
 import MarkdownRender from "@nteract/markdown";
 import { useCopyJobContext } from "Explorer/ContainerCopy/Context/CopyJobContext";
+import { Keys, t } from "Localization";
 import React from "react";
-import ContainerCopyMessages from "../../../../ContainerCopyMessages";
 import { CopyJobMigrationType } from "../../../../Enums/CopyJobEnums";
 
 interface MigrationTypeProps {}
 const options: IChoiceGroupOption[] = [
   {
     key: CopyJobMigrationType.Offline,
-    text: ContainerCopyMessages.migrationTypeOptions.offline.title,
+    text: t(Keys.containerCopy.migrationType.offline.title),
     styles: { root: { width: "33%" } },
   },
   {
     key: CopyJobMigrationType.Online,
-    text: ContainerCopyMessages.migrationTypeOptions.online.title,
+    text: t(Keys.containerCopy.migrationType.online.title),
     styles: { root: { width: "33%" } },
   },
 ];
@@ -47,8 +47,13 @@ export const MigrationType: React.FC<MigrationTypeProps> = React.memo(() => {
   };
 
   const selectedKey = copyJobState?.migrationType ?? "";
-  const selectedKeyLowercase = selectedKey.toLowerCase() as keyof typeof ContainerCopyMessages.migrationTypeOptions;
-  const selectedKeyContent = ContainerCopyMessages.migrationTypeOptions[selectedKeyLowercase];
+  const selectedKeyLowercase = selectedKey.toLowerCase() as "offline" | "online";
+  const migrationTypeDescriptionKey =
+    selectedKeyLowercase === "offline"
+      ? Keys.containerCopy.migrationType.offline.description
+      : selectedKeyLowercase === "online"
+      ? Keys.containerCopy.migrationType.online.description
+      : null;
 
   return (
     <Stack data-test="migration-type" className="migrationTypeContainer">
@@ -61,14 +66,14 @@ export const MigrationType: React.FC<MigrationTypeProps> = React.memo(() => {
           styles={choiceGroupStyles}
         />
       </Stack.Item>
-      {selectedKeyContent && (
+      {migrationTypeDescriptionKey && (
         <Stack.Item styles={{ root: { marginTop: 10 } }}>
           <Text
             variant="small"
             className="migrationTypeDescription"
             data-test={`migration-type-description-${selectedKeyLowercase}`}
           >
-            <MarkdownRender source={selectedKeyContent.description} linkTarget="_blank" />
+            <MarkdownRender source={t(migrationTypeDescriptionKey)} linkTarget="_blank" />
           </Text>
         </Stack.Item>
       )}
