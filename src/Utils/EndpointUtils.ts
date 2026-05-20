@@ -83,7 +83,10 @@ export const allowedEmulatorEndpoints: ReadonlyArray<string> = ["https://localho
 
 export const allowedArcadiaEndpoints: ReadonlyArray<string> = ["https://workspaceartifacts.projectarcadia.net"];
 
-export const allowedHostedExplorerEndpoints: ReadonlyArray<string> = ["https://cosmos.azure.com/"];
+export const allowedHostedExplorerEndpoints: ReadonlyArray<string> = [
+  "https://cosmos.azure.com",
+  "https://localhost:12900",
+];
 
 export const allowedMsalRedirectEndpoints: ReadonlyArray<string> = ["https://dataexplorer-preview.azurewebsites.net/"];
 
