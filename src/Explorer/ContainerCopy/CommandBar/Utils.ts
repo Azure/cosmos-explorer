@@ -5,7 +5,7 @@ import RefreshIcon from "../../../../images/refresh-cosmos.svg";
 import SunIcon from "../../../../images/SunIcon.svg";
 import { configContext, Platform } from "../../../ConfigContext";
 import { useThemeStore } from "../../../hooks/useTheme";
-import { Keys, t } from "../../../Localization";
+import { Keys, t } from "Localization";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../../Explorer";
 import * as Actions from "../Actions/CopyJobActions";
