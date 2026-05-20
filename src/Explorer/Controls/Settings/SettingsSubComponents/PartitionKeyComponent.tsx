@@ -1,7 +1,10 @@
 import {
   DefaultButton,
+  DirectionalHint,
   FontWeights,
+  IContextualMenuProps,
   IMessageBarStyles,
+  IconButton,
   Link,
   MessageBar,
   MessageBarType,
@@ -14,8 +17,16 @@ import * as React from "react";
 import * as ViewModels from "../../../../Contracts/ViewModels";
 
 import { handleError } from "Common/ErrorHandlingUtils";
-import { cancelDataTransferJob, pollDataTransferJob } from "Common/dataAccess/dataTransfers";
+import {
+  cancelDataTransferJob,
+  completeDataTransferJob,
+  pauseDataTransferJob,
+  pollDataTransferJob,
+  resumeDataTransferJob,
+} from "Common/dataAccess/dataTransfers";
 import { Platform, configContext } from "ConfigContext";
+import { CopyJobActions, CopyJobMigrationType } from "Explorer/ContainerCopy/Enums/CopyJobEnums";
+import { useDialog } from "Explorer/Controls/Dialog";
 import Explorer from "Explorer/Explorer";
 import { ChangePartitionKeyPane } from "Explorer/Panes/ChangePartitionKeyPane/ChangePartitionKeyPane";
 import { Keys, t } from "Localization";
@@ -94,11 +105,11 @@ export const PartitionKeyComponent: React.FC<PartitionKeyComponentProps> = ({
   const textSubHeadingStyle1 = {
     root: { color: "var(--colorNeutralForeground1)" },
   };
-  const startPollingforUpdate = (currentJob: DataTransferJobGetResults) => {
+  const startPollingforUpdate = async (currentJob: DataTransferJobGetResults) => {
     if (isCurrentJobInProgress(currentJob)) {
       const jobName = currentJob?.properties?.jobName;
       try {
-        pollDataTransferJob(
+        await pollDataTransferJob(
           jobName,
           userContext.subscriptionId,
           userContext.resourceGroup,
@@ -117,6 +128,124 @@ export const PartitionKeyComponent: React.FC<PartitionKeyComponentProps> = ({
       userContext.databaseAccount.name,
       currentJob?.properties?.jobName,
     );
+  };
+
+  const pauseRunningDataTransferJob = async (currentJob: DataTransferJobGetResults) => {
+    await pauseDataTransferJob(
+      userContext.subscriptionId,
+      userContext.resourceGroup,
+      userContext.databaseAccount.name,
+      currentJob?.properties?.jobName,
+    );
+  };
+
+  const resumePausedDataTransferJob = async (currentJob: DataTransferJobGetResults) => {
+    await resumeDataTransferJob(
+      userContext.subscriptionId,
+      userContext.resourceGroup,
+      userContext.databaseAccount.name,
+      currentJob?.properties?.jobName,
+    );
+    startPollingforUpdate(currentJob);
+  };
+
+  const completeOnlineDataTransferJob = async (currentJob: DataTransferJobGetResults) => {
+    await completeDataTransferJob(
+      userContext.subscriptionId,
+      userContext.resourceGroup,
+      userContext.databaseAccount.name,
+      currentJob?.properties?.jobName,
+    );
+  };
+
+  const isOnlineJob = (currentJob: DataTransferJobGetResults): boolean => {
+    const mode = (currentJob?.properties?.mode ?? "").toLowerCase();
+    return mode === CopyJobMigrationType.Online;
+  };
+
+  const showActionConfirmationDialog = (
+    currentJob: DataTransferJobGetResults,
+    action: CopyJobActions,
+    onConfirm: () => void,
+  ): void => {
+    const jobName = currentJob?.properties?.jobName;
+    const dialogBody =
+      action === CopyJobActions.cancel ? (
+        <Stack tokens={{ childrenGap: 10 }}>
+          <Stack.Item>
+            {t(Keys.controls.settings.partitionKeyEditor.confirmCancel1)}
+            <br />
+            <b>{jobName}</b>
+          </Stack.Item>
+          <Stack.Item>{t(Keys.controls.settings.partitionKeyEditor.confirmCancel2)}</Stack.Item>
+        </Stack>
+      ) : action === CopyJobActions.complete ? (
+        <Stack tokens={{ childrenGap: 10 }}>
+          <Stack.Item>
+            {t(Keys.controls.settings.partitionKeyEditor.confirmComplete1)}
+            <br />
+            <b>{jobName}</b>
+          </Stack.Item>
+          <Stack.Item>{t(Keys.controls.settings.partitionKeyEditor.confrimComplete2)}</Stack.Item>
+        </Stack>
+      ) : null;
+
+    useDialog
+      .getState()
+      .showOkCancelModalDialog("", null, t(Keys.common.confirm), onConfirm, t(Keys.common.cancel), null, dialogBody);
+  };
+
+  const getOnlineJobMenuProps = (currentJob: DataTransferJobGetResults): IContextualMenuProps => {
+    const jobStatus = currentJob?.properties?.status;
+    const isPaused = jobStatus === "Paused";
+
+    const items: IContextualMenuProps["items"] = [];
+
+    if (!isPaused) {
+      items.push({
+        key: CopyJobActions.pause,
+        text: t(Keys.containerCopy.monitorJobs.actions.pause),
+        iconProps: { iconName: "Pause" },
+        onClick: () => {
+          pauseRunningDataTransferJob(currentJob);
+        },
+      });
+    }
+
+    if (isPaused) {
+      items.push({
+        key: CopyJobActions.resume,
+        text: t(Keys.containerCopy.monitorJobs.actions.resume),
+        iconProps: { iconName: "Play" },
+        onClick: () => {
+          resumePausedDataTransferJob(currentJob);
+        },
+      });
+    }
+
+    items.push({
+      key: CopyJobActions.cancel,
+      text: t(Keys.common.cancel),
+      iconProps: { iconName: "Cancel" },
+      onClick: () =>
+        showActionConfirmationDialog(currentJob, CopyJobActions.cancel, () => cancelRunningDataTransferJob(currentJob)),
+    });
+
+    items.push({
+      key: CopyJobActions.complete,
+      text: t(Keys.containerCopy.monitorJobs.actions.complete),
+      iconProps: { iconName: "CheckMark" },
+      onClick: () =>
+        showActionConfirmationDialog(currentJob, CopyJobActions.complete, () =>
+          completeOnlineDataTransferJob(currentJob),
+        ),
+    });
+
+    return {
+      items,
+      directionalHint: DirectionalHint.leftTopEdge,
+      directionalHintFixed: false,
+    };
   };
 
   const isCurrentJobInProgress = (currentJob: DataTransferJobGetResults) => {
@@ -269,12 +398,26 @@ export const PartitionKeyComponent: React.FC<PartitionKeyComponentProps> = ({
                     },
                   }}
                 ></ProgressIndicator>
-                {isCurrentJobInProgress(portalDataTransferJob) && (
-                  <DefaultButton
-                    text={t(Keys.controls.settings.partitionKeyEditor.cancelButton)}
-                    onClick={() => cancelRunningDataTransferJob(portalDataTransferJob)}
-                  />
-                )}
+                {isCurrentJobInProgress(portalDataTransferJob) &&
+                  (isOnlineJob(portalDataTransferJob) ? (
+                    <IconButton
+                      data-test="online-job-action-menu"
+                      role="button"
+                      iconProps={{
+                        iconName: "More",
+                        styles: { root: { fontSize: "20px", fontWeight: "bold" } },
+                      }}
+                      menuProps={getOnlineJobMenuProps(portalDataTransferJob)}
+                      menuIconProps={{ iconName: "", className: "hidden" }}
+                      ariaLabel={t(Keys.containerCopy.monitorJobs.columns.actions)}
+                      title={t(Keys.containerCopy.monitorJobs.columns.actions)}
+                    />
+                  ) : (
+                    <DefaultButton
+                      text={t(Keys.controls.settings.partitionKeyEditor.cancelButton)}
+                      onClick={() => cancelRunningDataTransferJob(portalDataTransferJob)}
+                    />
+                  ))}
               </Stack>
             </Stack>
           )}
