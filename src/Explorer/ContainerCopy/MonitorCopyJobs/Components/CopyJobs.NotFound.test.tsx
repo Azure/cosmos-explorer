@@ -3,9 +3,9 @@ jest.mock("../../Actions/CopyJobActions");
 import "@testing-library/jest-dom";
 import { fireEvent, render, screen } from "@testing-library/react";
 import Explorer from "Explorer/Explorer";
+import { Keys, t } from "Localization";
 import React from "react";
 import * as Actions from "../../Actions/CopyJobActions";
-import ContainerCopyMessages from "../../ContainerCopyMessages";
 import CopyJobsNotFound from "./CopyJobs.NotFound";
 
 describe("CopyJobsNotFound", () => {
@@ -22,10 +22,10 @@ describe("CopyJobsNotFound", () => {
     const image = container.querySelector(".notFoundContainer .ms-Image");
     expect(image).toBeInTheDocument();
     expect(image).toHaveAttribute("style", "width: 100px; height: 100px;");
-    expect(getByText(ContainerCopyMessages.noCopyJobsTitle)).toBeInTheDocument();
+    expect(getByText(t(Keys.containerCopy.noCopyJobs.title))).toBeInTheDocument();
 
     const button = screen.getByRole("button", {
-      name: ContainerCopyMessages.createCopyJobButtonText,
+      name: t(Keys.containerCopy.noCopyJobs.createCopyJobButtonText),
     });
     expect(button).toBeInTheDocument();
     expect(button).toHaveClass("createCopyJobButton");
@@ -45,7 +45,7 @@ describe("CopyJobsNotFound", () => {
     render(<CopyJobsNotFound explorer={mockExplorer} />);
 
     const button = screen.getByRole("button", {
-      name: ContainerCopyMessages.createCopyJobButtonText,
+      name: t(Keys.containerCopy.noCopyJobs.createCopyJobButtonText),
     });
 
     fireEvent.click(button);
@@ -58,11 +58,11 @@ describe("CopyJobsNotFound", () => {
     render(<CopyJobsNotFound explorer={mockExplorer} />);
 
     const button = screen.getByRole("button", {
-      name: ContainerCopyMessages.createCopyJobButtonText,
+      name: t(Keys.containerCopy.noCopyJobs.createCopyJobButtonText),
     });
 
     expect(button).toBeInTheDocument();
-    expect(button.textContent).toBe(ContainerCopyMessages.createCopyJobButtonText);
+    expect(button.textContent).toBe(t(Keys.containerCopy.noCopyJobs.createCopyJobButtonText));
   });
 
   it("should use memo to prevent unnecessary re-renders", () => {

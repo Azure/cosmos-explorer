@@ -9,7 +9,8 @@ exports[`DefaultManagedIdentity Edge Cases should handle missing account name gr
       class="toggle-label"
     >
       Set the system-assigned managed identity as default for "" by switching it on.
-        
+       
+       
       <div
         data-testid="info-tooltip"
       >
@@ -71,8 +72,9 @@ exports[`DefaultManagedIdentity Edge Cases should handle null account 1`] = `
     <div
       class="toggle-label"
     >
-      Set the system-assigned managed identity as default for "undefined" by switching it on.
-        
+      Set the system-assigned managed identity as default for "" by switching it on.
+       
+       
       <div
         data-testid="info-tooltip"
       >
@@ -135,7 +137,8 @@ exports[`DefaultManagedIdentity Loading States should render loading state snaps
       class="toggle-label"
     >
       Set the system-assigned managed identity as default for "test-cosmos-account" by switching it on.
-        
+       
+       
       <div
         data-testid="info-tooltip"
       >
@@ -227,7 +230,8 @@ exports[`DefaultManagedIdentity Rendering should render correctly with default s
       class="toggle-label"
     >
       Set the system-assigned managed identity as default for "test-cosmos-account" by switching it on.
-        
+       
+       
       <div
         data-testid="info-tooltip"
       >
@@ -290,7 +294,8 @@ exports[`DefaultManagedIdentity Toggle Interactions should render toggle with ch
       class="toggle-label"
     >
       Set the system-assigned managed identity as default for "test-cosmos-account" by switching it on.
-        
+       
+       
       <div
         data-testid="info-tooltip"
       >

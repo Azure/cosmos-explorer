@@ -34,6 +34,8 @@
     "browse": "찾아보기",
     "increaseValueBy1": "값을 1만큼 늘리기",
     "decreaseValueBy1": "값을 1만큼 줄이기",
+    "on": "켜기",
+    "off": "끄기",
     "preview": "미리 보기"
   },
   "splashScreen": {
@@ -619,7 +621,7 @@
       "accountId": "계정 ID",
       "sessionId": "세션 ID",
       "popupsDisabledError": "브라우저에서 팝업이 차단되어 이 계정에 대한 권한 부여를 설정할 수 없습니다.\n이 사이트에 대해 팝업을 허용한 후 \"Entra ID에 로그인\" 버튼을 클릭하세요.",
-      "failedToAcquireTokenError": "권한 부여 토큰을 자동으로 가져오지 못했습니다. Entra ID RBAC 작업을 사용하려면 \"Entra ID 로그인\" 버튼을 클릭하세요."
+      "failedToAcquireTokenError": "인증 토큰을 자동으로 가져오지 못했습니다. Entra ID RBAC 작업을 활성화하려면 \"Entra ID 로그인\" 버튼을 클릭하세요."
     },
     "saveQuery": {
       "panelTitle": "쿼리 저장",
@@ -762,7 +764,7 @@
         "computedProperties": "계산된 속성",
         "containerPolicies": "컨테이너 정책",
         "throughputBuckets": "처리량 버킷",
-        "globalSecondaryIndexPreview": "전역 보조 인덱스(미리 보기)",
+        "globalSecondaryIndexPreview": "Global Secondary Index",
         "maskingPolicyPreview": "마스킹 정책"
       },
       "mongoNotifications": {
@@ -807,7 +809,7 @@
         "scalingUpDelayMessage": "실제 파티션 수에 따라 현재 Azure Cosmos DB가 즉시 지원할 수 있는 한도를 초과하므로 확장에는 4~6시간이 소요됩니다. 처리량을 {{instantMaximumThroughput}}(으)로 즉시 늘리거나, 이 값을 유지하며 확장이 완료될 때까지 기다릴 수 있습니다.",
         "exceedPreAllocatedMessage": "처리량 증가 요청이 미리 할당된 용량을 초과하여 예상보다 오래 걸릴 수 있습니다. 계속하기 위해 선택할 수 있는 세 가지 옵션이 있습니다.",
         "instantScaleOption": "{{instantMaximumThroughput}}RU/s까지 즉시 확장할 수 있습니다.",
-        "asyncScaleOption": "4~6시간 내에 {{maximumThroughput}}RU/s 이하의 값으로 비동기적으로 확장할 수 있습니다.",
+        "asyncScaleOption": "4~6시간 내에 {{maximumThroughput}}RU/s 미만의 모든 값으로 비동기적으로 확장할 수 있습니다.",
         "quotaMaxOption": "현재 할당량 최댓값은 {{maximumThroughput}}RU/s입니다. 이 한도를 초과하려면 할당량 증가를 요청해야 하며, Azure Cosmos DB 팀에서 검토합니다.",
         "belowMinimumMessage": "처리량을 현재 최소 {{minimum}}RU/s 미만으로 낮출 수 없습니다. 이 한도에 대한 자세한 내용은 서비스 견적 문서를 참고하세요.",
         "saveThroughputWarning": "처리량 설정을 변경하면 청구에 영향이 있습니다. 변경 내용을 저장하기 전에 아래에서 업데이트된 예상 비용을 검토하세요.",
@@ -841,8 +843,8 @@
       "mongoIndexing": {
         "disclaimer": "여러 속성을 필터링하는 쿼리의 경우 복합 인덱스 대신 여러 개의 단일 필드 인덱스를 만드세요.",
         "disclaimerCompoundIndexesLink": " 복합 인덱스 ",
-        "disclaimerSuffix": "쿼리 결과를 정렬하는 데만 사용됩니다. 복합 인덱스 추가가 필요한 경우 Mongo 셸을 사용하여 만들 수 있습니다.",
-        "compoundNotSupported": "복합 인덱스가 있는 컬렉션은 인덱싱 편집기에서 아직 지원되지 않습니다. 이 컬렉션의 인덱싱 정책을 수정하려면 Mongo 셸을 사용하세요.",
+        "disclaimerSuffix": "쿼리 결과를 정렬하는 데에만 사용됩니다. 복합 인덱스를 추가해야 하는 경우 MongoDB 셸을 사용하여 생성할 수 있습니다.",
+        "compoundNotSupported": "복합 인덱스가 있는 컬렉션은 아직 인덱싱 편집기에서 지원되지 않습니다. 이 컬렉션의 인덱싱 정책을 수정하려면 Mongo Shell을 사용하세요.",
         "aadError": "인덱싱 정책 편집기를 사용하려면 다음에 로그인하세요.",
         "aadErrorLink": "Azure Portal.",
         "refreshingProgress": "인덱스 변환 진행률 새로 고침",
@@ -991,6 +993,165 @@
       "dimensionFlatIndexError": "플랫 인덱스 최대 허용 차원은 505입니다.",
       "quantizationByteSizeRangeError": "양자화 바이트 크기는 0보다 크고 512 이하이어야 합니다.",
       "indexingSearchListSizeRangeError": "인덱싱 검색 목록 크기는 25보다 크거나 같고 500보다 작거나 같아야 합니다."
+    }
+  },
+  "containerCopy": {
+    "commandBar": {
+      "feedbackButtonLabel": "피드백",
+      "feedbackButtonAriaLabel": "복사 작업에 대한 의견 보내기",
+      "refreshButtonAriaLabel": "복사 작업 새로 고침",
+      "createCopyJobButtonLabel": "복사 작업 만들기",
+      "createCopyJobButtonAriaLabel": "새 컨테이너 복사 작업 만들기"
+    },
+    "noCopyJobs": {
+      "title": "표시할 복사 작업이 없음",
+      "createCopyJobButtonText": "컨테이너 복사 작업 만들기"
+    },
+    "jobDetails": {
+      "panelTitle": "{{jobName}}",
+      "panelTitleDefault": "작업 정보",
+      "errorTitle": "오류 세부 정보",
+      "selectedContainers": "선택된 컨테이너"
+    },
+    "createCopyJob": {
+      "panelTitle": "복사 작업 만들기"
+    },
+    "selectAccount": {
+      "description": "복사할 대상 계정을 선택하세요.",
+      "subscriptionDropdownLabel": "구독",
+      "subscriptionDropdownPlaceholder": "구독 선택",
+      "accountDropdownLabel": "계정",
+      "accountDropdownPlaceholder": "계정 선택"
+    },
+    "migrationType": {
+      "offline": {
+        "title": "오프라인 모드",
+        "description": "오프라인 컨테이너 복사 작업을 사용하면 지원되는 API에 대해 원본 컨테이너의 데이터를 대상 Cosmos DB 컨테이너로 복사할 수 있습니다. 원본과 대상 간의 데이터 무결성을 보장하려면 복사 작업을 만들기 전에 원본 컨테이너에서 업데이트를 중지하는 것이 좋습니다. [오프라인 복사 작업](https://learn.microsoft.com/azure/cosmos-db/how-to-container-copy?tabs=offline-copy&pivots=api-nosql)에서 자세히 알아보세요."
+      },
+      "online": {
+        "title": "온라인 모드",
+        "description": "온라인 컨테이너 복사 작업을 사용하면 [모든 버전 및 삭제](https://learn.microsoft.com/azure/cosmos-db/change-feed-modes?tabs=all-versions-and-deletes#all-versions-and-deletes-change-feed-mode-preview) 변경 피드를 통해 원본 컨테이너의 데이터를 대상 Cosmos DB NoSQL API 컨테이너로 복사할 수 있습니다. 이렇게 하면 데이터가 복사되는 동안에도 원본에서 업데이트를 계속할 수 있습니다. 클라이언트 애플리케이션을 대상 컨테이너로 안전하게 전환하려면 마지막에 잠시 가동 중지 시간이 필요합니다. [온라인 복사 작업](https://learn.microsoft.com/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#getting-started)에서 자세히 알아보세요."
+      }
+    },
+    "selectContainers": {
+      "description": "복사할 원본 컨테이너와 대상 컨테이너를 선택하세요.",
+      "sourceContainerSubHeading": "원본 컨테이너",
+      "targetContainerSubHeading": "대상 컨테이너",
+      "databaseDropdownLabel": "데이터베이스",
+      "databaseDropdownPlaceholder": "데이터베이스 선택",
+      "containerDropdownLabel": "컨테이너",
+      "containerDropdownPlaceholder": "컨테이너 선택",
+      "createNewContainerSubHeading": "대상 계정 '{{accountName}}'의 새 컨테이너의 속성을 구성합니다.",
+      "createNewContainerSubHeadingDefault": "새 컨테이너의 속성을 구성합니다.",
+      "createContainerButtonLabel": "새 컨테이너 만들기",
+      "createContainerHeading": "새 컨테이너 만들기"
+    },
+    "preview": {
+      "jobNameLabel": "작업 이름",
+      "subscriptionLabel": "대상 구독",
+      "accountLabel": "대상 계정",
+      "sourceDatabaseLabel": "원본 데이터베이스",
+      "sourceContainerLabel": "원본 컨테이너",
+      "targetDatabaseLabel": "대상 데이터베이스",
+      "targetContainerLabel": "대상 컨테이너"
+    },
+    "assignPermissions": {
+      "crossAccountDescription": "원본에서 대상 컨테이너로 데이터를 복사하려면 다음 단계를 완료하여 원본 계정의 관리 ID가 대상 계정에 대한 읽기-쓰기 액세스 권한을 갖도록 구성하세요.",
+      "intraAccountOnlineDescription": "'{{accountName}}' 계정에서 온라인 복사를 사용하도록 설정하려면 아래 단계를 따르세요.",
+      "crossAccountConfiguration": {
+        "title": "계정 간 컨테이너 복사",
+        "description": "아래 지침에 따라 '{{sourceAccount}}'에서 '{{destinationAccount}}'(으)로 데이터를 복사하는 데 필요한 권한을 부여하세요."
+      },
+      "onlineConfiguration": {
+        "title": "온라인 컨테이너 복사",
+        "description": "'{{accountName}}' 계정에서 온라인 복사를 사용하도록 설정하려면 아래 지침을 따르세요."
+      }
+    },
+    "popoverOverlaySpinnerLabel": "요청을 처리하는 동안 잠시 기다려 주세요...",
+    "addManagedIdentity": {
+      "title": "시스템 할당 관리 ID를 사용하도록 설정했습니다.",
+      "description": "시스템 할당 관리 ID는 리소스당 하나로 제한되며 이 리소스의 수명 주기에 연결됩니다. 사용하도록 설정하면 Azure RBAC(Azure 역할 기반 액세스 제어)를 사용하여 관리 ID에 권한을 부여할 수 있습니다. 관리 ID는 Microsoft Entra ID로 인증되므로 코드에 자격 증명을 저장할 필요가 없습니다.",
+      "descriptionHrefText": "관리 ID에 대해 자세히 알아보세요.",
+      "descriptionHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
+      "toggleLabel": "시스템이 할당한 관리 ID",
+      "tooltipContent": "자세한 정보",
+      "tooltipHrefText": "관리 ID입니다.",
+      "tooltipHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
+      "userAssignedIdentityTooltip": "기존 사용자 할당 ID를 선택하거나 새 ID를 만들 수 있습니다.",
+      "userAssignedIdentityLabel": "사용자가 할당한 관리 ID를 선택할 수도 있습니다.",
+      "createUserAssignedIdentityLink": "사용자가 할당한 관리 ID 만들기",
+      "enablementTitle": "시스템이 할당한 관리 ID 사용",
+      "enablementDescription": "{{accountName}}에 시스템이 할당한 관리 ID를 사용하도록 설정합니다. 확인하려면 '예' 단추를 클릭하세요."
+    },
+    "defaultManagedIdentity": {
+      "title": "기본값으로 설정된 시스템 할당 관리 ID입니다.",
+      "description": "시스템이 할당한 관리 ID를 켜서 '{{accountName}}'의 기본값으로 설정합니다.",
+      "tooltipContent": "자세한 정보",
+      "tooltipHrefText": "기본 관리 ID입니다.",
+      "tooltipHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
+      "popoverTitle": "기본값으로 설정된 시스템 할당 관리 ID",
+      "popoverDescription": "시스템이 할당한 관리 ID를 '{{accountName}}'의 기본값으로 설정합니다. 확인하려면 '예' 단추를 클릭하세요. "
+    },
+    "readWritePermissionAssigned": {
+      "title": "기본 ID에 할당된 읽기-쓰기 권한입니다.",
+      "description": "원본에서 대상 컨테이너로 데이터 복사를 허용하려면 원본 계정의 기본 ID에 대상 계정의 읽기-쓰기 액세스 권한을 제공하세요.",
+      "tooltipContent": "자세한 정보",
+      "tooltipHrefText": "읽기-쓰기 권한입니다.",
+      "tooltipHref": "https://learn.microsoft.com/azure/cosmos-db/nosql/how-to-connect-role-based-access-control",
+      "popoverTitle": "기본 ID에 읽기-쓰기 권한을 할당합니다.",
+      "popoverDescription": "대상 계정의 읽기-쓰기 권한을 원본 계정의 기본 ID에 할당합니다. 확인하려면 '예' 단추를 클릭하세요."
+    },
+    "pointInTimeRestore": {
+      "title": "지정 시간 복원 사용 설정됨",
+      "description": "온라인 컨테이너 복사 작업을 더 간편하게 수행하려면 '{{accessName}}' 백업 정책을 주기적 백업에서 지속적인 백업으로 업데이트하세요. 이 기능을 사용하려면 지속적인 백업을 사용하도록 설정해야 합니다.",
+      "tooltipContent": "자세한 정보",
+      "tooltipHrefText": "지속적인 백업",
+      "tooltipHref": "https://learn.microsoft.com/en-us/azure/cosmos-db/continuous-backup-restore-introduction",
+      "buttonText": "지정 시간 복원 사용"
+    },
+    "onlineCopyEnabled": {
+      "title": "온라인 복사 사용 설정됨",
+      "description": "'{{accountName}}' 계정에서 아래 단추를 클릭하여 온라인 컨테이너 복사를 사용하도록 설정하세요.",
+      "hrefText": "온라인 복사 작업에 대해 자세히 알아보기",
+      "href": "https://learn.microsoft.com/en-us/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#enable-online-copy",
+      "buttonText": "온라인 복사 사용",
+      "validateAllVersionsAndDeletesChangeFeedSpinnerLabel": "모든 버전 및 삭제 변경 피드 모드(미리 보기) 유효성 검사 중...",
+      "enablingAllVersionsAndDeletesChangeFeedSpinnerLabel": "모든 버전 및 삭제 변경 피드 모드(미리 보기) 사용 설정 중...",
+      "enablingOnlineCopySpinnerLabel": "'{{accountName}}' 계정에서 온라인 복사를 사용하도록 설정하는 중..."
+    },
+    "monitorJobs": {
+      "columns": {
+        "lastUpdatedTime": "날짜 및 시간",
+        "name": "작업 이름",
+        "status": "상태",
+        "completionPercentage": "완료율",
+        "duration": "기간",
+        "error": "오류 메시지",
+        "mode": "모드",
+        "actions": "작업"
+      },
+      "actions": {
+        "pause": "일시 중지",
+        "resume": "다시 시작",
+        "complete": "완료",
+        "viewDetails": "세부 정보 보기"
+      },
+      "status": {
+        "pending": "큐에 대기됨",
+        "inProgress": "실행하는 중",
+        "running": "실행하는 중",
+        "partitioning": "실행하는 중",
+        "paused": "일시 중지됨",
+        "completed": "완료",
+        "failed": "실패",
+        "faulted": "실패",
+        "skipped": "취소됨",
+        "cancelled": "취소됨"
+      },
+      "dialog": {
+        "confirmButtonText": "확인",
+        "cancelButtonText": "취소"
+      }
     }
   }
 }

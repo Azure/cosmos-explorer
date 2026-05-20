@@ -34,6 +34,8 @@
     "browse": "参照",
     "increaseValueBy1": "値を 1 増加",
     "decreaseValueBy1": "値を 1 減少",
+    "on": "オン",
+    "off": "オフ",
     "preview": "プレビュー"
   },
   "splashScreen": {
@@ -76,7 +78,7 @@
         "description": "PostgreSQL のシェル インターフェイスを使用して、テーブルを作成し、データを操作します"
       },
       "vcoreMongo": {
-        "title": "Mongo シェル",
+        "title": "Mongo Shell",
         "description": "MongoDB のシェル インターフェイスを使用して、コレクションを作成し、データを操作します"
       }
     },
@@ -303,7 +305,7 @@
     "deleteContainer": "{{containerName}} の削除",
     "newSqlQuery": "新しい SQL クエリ",
     "newQuery": "新しいクエリ",
-    "openMongoShell": "Mongo シェルを開く",
+    "openMongoShell": "Mongo Shell を開く",
     "newShell": "新しいシェル",
     "openCassandraShell": "Cassandra シェルを開く",
     "newStoredProcedure": "新しいストアド プロシージャ",
@@ -414,7 +416,7 @@
       "refreshGridFailed": "ドキュメント グリッドの更新に失敗しました"
     },
     "mongoShell": {
-      "title": "Mongo シェル"
+      "title": "Mongo Shell"
     }
   },
   "panes": {
@@ -762,7 +764,7 @@
         "computedProperties": "計算されたプロパティ",
         "containerPolicies": "コンテナー ポリシー",
         "throughputBuckets": "スループット バケット",
-        "globalSecondaryIndexPreview": "グローバル セカンダリ インデックス (プレビュー)",
+        "globalSecondaryIndexPreview": "Global Secondary Index",
         "maskingPolicyPreview": "マスキング ポリシー"
       },
       "mongoNotifications": {
@@ -841,8 +843,8 @@
       "mongoIndexing": {
         "disclaimer": "複数のプロパティでフィルター処理するクエリの場合は、複合インデックスではなく、複数の単一フィールド インデックスを作成してください。",
         "disclaimerCompoundIndexesLink": " 複合インデックス ",
-        "disclaimerSuffix": "は、クエリ結果の並べ替えにのみ使用されます。複合インデックスを追加する必要がある場合は、Mongo シェルを使用して作成できます。",
-        "compoundNotSupported": "複合インデックスを持つコレクションは、インデックス作成エディターではまだサポートされていません。このコレクションのインデックス作成ポリシーを変更するには、Mongo シェルを使用してください。",
+        "disclaimerSuffix": "は、クエリ結果の並べ替えにのみ使用されます。複合インデックスを追加する必要がある場合は、Mongo Shell を使用して作成できます。",
+        "compoundNotSupported": "複合インデックスを持つコレクションは、インデックス作成エディターではまだサポートされていません。このコレクションのインデックス作成ポリシーを変更するには、Mongo Shell を使用してください。",
         "aadError": "インデックス作成ポリシー エディターを使用するには、次にログインしてください:",
         "aadErrorLink": "Azure portal。",
         "refreshingProgress": "インデックス変換の進行状況を更新しています",
@@ -991,6 +993,165 @@
       "dimensionFlatIndexError": "フラット インデックスで許容される最大ディメンションは 505 です",
       "quantizationByteSizeRangeError": "量子化バイト サイズは 0 より大きく、512 以下である必要があります",
       "indexingSearchListSizeRangeError": "インデックス検索リスト サイズは 25 以上 500 以下である必要があります"
+    }
+  },
+  "containerCopy": {
+    "commandBar": {
+      "feedbackButtonLabel": "フィードバック",
+      "feedbackButtonAriaLabel": "コピー ジョブに関するフィードバックを提供する",
+      "refreshButtonAriaLabel": "コピー ジョブの更新",
+      "createCopyJobButtonLabel": "コピー ジョブの作成",
+      "createCopyJobButtonAriaLabel": "新しいコンテナー コピー ジョブの作成"
+    },
+    "noCopyJobs": {
+      "title": "表示するコピー ジョブはありません",
+      "createCopyJobButtonText": "コンテナー コピー ジョブの作成"
+    },
+    "jobDetails": {
+      "panelTitle": "{{jobName}}",
+      "panelTitleDefault": "ジョブの詳細",
+      "errorTitle": "エラーの詳細",
+      "selectedContainers": "選択したコンテナー"
+    },
+    "createCopyJob": {
+      "panelTitle": "コピー ジョブの作成"
+    },
+    "selectAccount": {
+      "description": "コピー先のアカウントを選択してください。",
+      "subscriptionDropdownLabel": "サブスクリプション",
+      "subscriptionDropdownPlaceholder": "サブスクリプションを選択します",
+      "accountDropdownLabel": "アカウント",
+      "accountDropdownPlaceholder": "アカウントの選択"
+    },
+    "migrationType": {
+      "offline": {
+        "title": "オフライン モード",
+        "description": "オフライン コンテナー コピー ジョブでは、サポートされている API のソース コンテナーからコピー先の Cosmos DB コンテナーにデータをコピーできます。ソースとコピー先の間でデータ整合性を確保するため、コピー ジョブを作成する前にソース コンテナーでの更新を停止することをお勧めします。[オフライン コピー ジョブ](https://learn.microsoft.com/azure/cosmos-db/how-to-container-copy?tabs=offline-copy&pivots=api-nosql) の詳細をご覧ください。"
+      },
+      "online": {
+        "title": "オンライン モード",
+        "description": "オンライン コンテナー コピー ジョブでは、[All Versions and Delete](https://learn.microsoft.com/azure/cosmos-db/change-feed-modes?tabs=all-versions-and-deletes#all-versions-and-deletes-change-feed-mode-preview) 変更フィードを使用して、ソース コンテナーからコピー先の Cosmos DB NoSQL API コンテナーにデータをコピーできます。これにより、データのコピー中もソースで更新を継続できます。クライアント アプリケーションをコピー先コンテナーに安全に切り替えるには、最後に短時間のダウンタイムが必要です。[online copy jobs](https://learn.microsoft.com/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#getting-started) についての詳細をご覧ください。"
+      }
+    },
+    "selectContainers": {
+      "description": "コピー元のコンテナーとコピー先のコンテナーを選択してください。",
+      "sourceContainerSubHeading": "ソース コンテナー",
+      "targetContainerSubHeading": "コピー先のコンテナー",
+      "databaseDropdownLabel": "データベース",
+      "databaseDropdownPlaceholder": "データベースの選択",
+      "containerDropdownLabel": "コンテナー",
+      "containerDropdownPlaceholder": "コンテナーの選択",
+      "createNewContainerSubHeading": "コピー先のアカウント \"{{accountName}}\" の新しいコンテナーのプロパティを構成します。",
+      "createNewContainerSubHeadingDefault": "新しいコンテナーのプロパティを構成します。",
+      "createContainerButtonLabel": "新しいコンテナーを作成する",
+      "createContainerHeading": "新しいコンテナーの作成"
+    },
+    "preview": {
+      "jobNameLabel": "ジョブ名",
+      "subscriptionLabel": "変換先サービス",
+      "accountLabel": "コピー先のアカウント",
+      "sourceDatabaseLabel": "ソース データベース",
+      "sourceContainerLabel": "ソース コンテナー",
+      "targetDatabaseLabel": "転送先データベース:",
+      "targetContainerLabel": "コピー先のコンテナー"
+    },
+    "assignPermissions": {
+      "crossAccountDescription": "ソースからコピー先のコンテナーにデータをコピーするには、次の手順を実行して、ソース アカウントのマネージド ID にコピー先のアカウントへの読み取り/書き込みアクセス許可があることを確認します。",
+      "intraAccountOnlineDescription": "\"{{accountName}}\" アカウントでオンライン コピーを有効にするには、次の手順に従ってください。",
+      "crossAccountConfiguration": {
+        "title": "アカウント間でのコンテナーのコピー",
+        "description": "\"{{sourceAccount}}\" から \"{{destinationAccount}}\" にデータをコピーするために必要なアクセス許可を付与するには、以下の手順に従ってください。"
+      },
+      "onlineConfiguration": {
+        "title": "オンライン コンテナー コピー",
+        "description": "\"{{accountName}}\" アカウントでオンライン コピーを有効にするには、以下の手順に従ってください。"
+      }
+    },
+    "popoverOverlaySpinnerLabel": "要求を処理しています。しばらくお待ちください...",
+    "addManagedIdentity": {
+      "title": "システム割り当てマネージド ID が有効化されました。",
+      "description": "システム割り当てマネージド ID は 1 つのリソースにつき 1 つに限定されており、このリソースのライフサイクルに関連付けられています。有効にすると、Azure ロールベースのアクセス制御 (Azure RBAC) を使用して、マネージド ID にアクセス許可を付与できます。マネージド ID は Microsoft Entra ID で認証されるため、コード内に資格情報を格納する必要はありません。",
+      "descriptionHrefText": "マネージド ID に関する詳細情報。",
+      "descriptionHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
+      "toggleLabel": "システム割り当てマネージド ID",
+      "tooltipContent": "次に関する詳細をご確認ください:",
+      "tooltipHrefText": "マネージド ID。",
+      "tooltipHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
+      "userAssignedIdentityTooltip": "既存のユーザー割り当てマネージド ID を選択するか、新しい ID を作成できます。",
+      "userAssignedIdentityLabel": "ユーザー割り当てマネージド ID を選択することもできます。",
+      "createUserAssignedIdentityLink": "ユーザー割り当てマネージド ID の作成",
+      "enablementTitle": "システム割り当てマネージド ID の有効化",
+      "enablementDescription": "{{accountName}} でシステム割り当てマネージド ID を有効にします。確認するには、[はい] ボタンをクリックします。"
+    },
+    "defaultManagedIdentity": {
+      "title": "システム割り当てマネージド ID は既定として設定されます。",
+      "description": "オンに切り替えて、システム割り当てマネージド ID を \"{{accountName}}\" の既定として設定します。",
+      "tooltipContent": "次に関する詳細をご確認ください:",
+      "tooltipHrefText": "既定のマネージド ID。",
+      "tooltipHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
+      "popoverTitle": "システム割り当てマネージド ID を既定として設定する",
+      "popoverDescription": "システム割り当てマネージド ID を \"{{accountName}}\" の既定として割り当てます。確認するには、[はい] ボタンをクリックします。"
+    },
+    "readWritePermissionAssigned": {
+      "title": "既定の ID に割り当てられた読み取り/書き込みアクセス許可。",
+      "description": "ソースからコピー先のコンテナーへのデータのコピーを許可するには、コピー先のアカウントでソース アカウントの既定の ID に読み取り/書き込みアクセス許可を付与します。",
+      "tooltipContent": "次に関する詳細をご確認ください:",
+      "tooltipHrefText": "読み取り/書き込みアクセス許可。",
+      "tooltipHref": "https://learn.microsoft.com/azure/cosmos-db/nosql/how-to-connect-role-based-access-control",
+      "popoverTitle": "既定の ID に読み取り/書き込みアクセス許可を割り当てます。",
+      "popoverDescription": "コピー先アカウントの読み取り/書き込みアクセス許可を、ソース アカウントの既定の ID に割り当てます。確認するには、[はい] ボタンをクリックします。"
+    },
+    "pointInTimeRestore": {
+      "title": "ポイントインタイム リストアが有効です",
+      "description": "オンライン コンテナー コピー ジョブを有効にするには、\"{{accessName}}\" バックアップ ポリシーを定期バックアップから継続的バックアップに更新してください。この機能を使用するには、継続的バックアップを有効にする必要があります。",
+      "tooltipContent": "次に関する詳細をご確認ください:",
+      "tooltipHrefText": "継続的バックアップ",
+      "tooltipHref": "https://learn.microsoft.com/en-us/azure/cosmos-db/continuous-backup-restore-introduction",
+      "buttonText": "ポイントインタイム リストアを有効にする"
+    },
+    "onlineCopyEnabled": {
+      "title": "オンライン コピーが有効",
+      "description": "\"{{accountName}}\" アカウントで下のボタンをクリックして、オンライン コンテナー コピーを有効にします。",
+      "hrefText": "オンライン コピー ジョブの詳細情報",
+      "href": "https://learn.microsoft.com/en-us/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#enable-online-copy",
+      "buttonText": "オンライン コピーを有効にする",
+      "validateAllVersionsAndDeletesChangeFeedSpinnerLabel": "すべてのバージョンを検証し、変更フィード モードを削除します (プレビュー)...",
+      "enablingAllVersionsAndDeletesChangeFeedSpinnerLabel": "すべてのバージョンおよび削除の変更フィード モード (プレビュー) を有効にしています",
+      "enablingOnlineCopySpinnerLabel": "\"{{accountName}}\" アカウントでオンライン コピーを有効にしています..."
+    },
+    "monitorJobs": {
+      "columns": {
+        "lastUpdatedTime": "日付と時刻",
+        "name": "ジョブ名",
+        "status": "状態",
+        "completionPercentage": "完了率",
+        "duration": "期間",
+        "error": "エラー メッセージ",
+        "mode": "モード",
+        "actions": "アクション"
+      },
+      "actions": {
+        "pause": "一時停止",
+        "resume": "再開",
+        "complete": "完了",
+        "viewDetails": "詳細の表示"
+      },
+      "status": {
+        "pending": "キューに登録済み",
+        "inProgress": "実行中",
+        "running": "実行中",
+        "partitioning": "実行中",
+        "paused": "一時停止",
+        "completed": "完了済み",
+        "failed": "失敗",
+        "faulted": "失敗",
+        "skipped": "取り消し済み",
+        "cancelled": "取り消し済み"
+      },
+      "dialog": {
+        "confirmButtonText": "確認",
+        "cancelButtonText": "キャンセル"
+      }
     }
   }
 }
