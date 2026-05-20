@@ -894,10 +894,10 @@
       },
       "partitionKeyEditor": {
         "changePartitionKey": "Cambiar {{partitionKeyName}}",
-        "confirmCancel1": "You are about to cancel the following copy job.",
-        "confirmCancel2": "Cancelling will stop the job immediately.",
-        "confirmComplete1": "You are about to complete the following copy job.",
-        "confrimComplete2": "Once completed, continuous data copy will stop after any pending documents are processed. To maintain data integrity, we recommend stopping updates to the source container before completing the job.",
+        "confirmCancel1": "Está a punto de cancelar el siguiente trabajo de copia.",
+        "confirmCancel2": "La cancelación detendrá el trabajo inmediatamente.",
+        "confirmComplete1": "Está a punto de completar el siguiente trabajo de copia.",
+        "confrimComplete2": "Una vez completada, la copia continua de datos se detendrá después de que se procesen los documentos pendientes. Para mantener la integridad de los datos, se recomienda detener las actualizaciones del contenedor de origen antes de completar el trabajo.",
         "currentPartitionKey": "Actual {{partitionKeyName}}",
         "partitioning": "Creación de particiones",
         "hierarchical": "Jerárquico",
@@ -1036,7 +1036,7 @@
         "description": "Los trabajos de copia de contenedores en línea permiten copiar datos de un contenedor de origen a un contenedor de destino de la API NoSQL de Cosmos DB mediante la fuente de cambios [Todas las versiones y eliminación](https://learn.microsoft.com/azure/cosmos-db/change-feed-modes?tabs=all-versions-and-deletes#all-versions-and-deletes-change-feed-mode-preview). Esto permite que las actualizaciones continúen en el origen mientras se copian los datos. Se requiere un breve tiempo de inactividad al final para cambiar de forma segura las aplicaciones cliente al contenedor de destino. Obtenga más información sobre [trabajos de copia online](https://learn.microsoft.com/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#getting-started)."
       }
     },
-    "migrationTypeTitle": "Migration type",
+    "migrationTypeTitle": "Tipo de migración",
     "selectContainers": {
       "description": "Seleccione un contenedor de origen y un contenedor de destino en el que copiar.",
       "sourceContainerSubHeading": "Contenedor de origen",
@@ -1122,7 +1122,7 @@
       "validateAllVersionsAndDeletesChangeFeedSpinnerLabel": "Validando todas las versiones y elimina el modo de fuente de cambios (versión preliminar)...",
       "enablingAllVersionsAndDeletesChangeFeedSpinnerLabel": "Habilitando todas las versiones y elimina el modo de fuente de cambios (versión preliminar)...",
       "enablingOnlineCopySpinnerLabel": "Habilitando la copia en línea en su cuenta \"{{accountName}}\"...",
-      "onlineMigrationPrerequisitesMessage": "Online migration prerequisites must be enabled before proceeding."
+      "onlineMigrationPrerequisitesMessage": "Los requisitos previos de migración en línea deben estar habilitados antes de continuar."
     },
     "monitorJobs": {
       "columns": {
@@ -1160,12 +1160,12 @@
     },
     "dataTransfers": {
       "polling": {
-        "cancelConsoleMessage": "Data transfer job \"{{jobName}}\" cancelled",
-        "completedConsoleMessage": "Data transfer job \"{{jobName}}\" completed",
-        "defaultErrorMessage": "Operation could not be completed",
-        "errorConsoleMessage": "Data transfer job \"{{jobName}}\" failed: {{errorMessage}}",
-        "pauseConsoleMessage": "Data transfer job \"{{jobName}}\" paused",
-        "retryConsoleMessage": "Data transfer job \"{{jobName}}\" in progress, total count: {{totalCount}}, processed count: {{processedCount}}"
+        "cancelConsoleMessage": "Trabajo de transferencia de datos \"{{jobName}}\" cancelado",
+        "completedConsoleMessage": "Trabajo de transferencia de datos \"{{jobName}}\" completado",
+        "defaultErrorMessage": "No se ha podido completar la operación",
+        "errorConsoleMessage": "El trabajo de transferencia de datos \"{{jobName}}\" ha fallado: {{errorMessage}}",
+        "pauseConsoleMessage": "Trabajo de transferencia de datos \"{{jobName}}\" pausado",
+        "retryConsoleMessage": "Trabajo de transferencia de datos \"{{jobName}}\" en curso, recuento total: {{totalCount}}, recuento procesado: {{processedCount}}"
       }
     }
   }

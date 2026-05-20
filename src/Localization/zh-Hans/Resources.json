@@ -1162,7 +1162,7 @@
       "polling": {
         "cancelConsoleMessage": "Data transfer job \"{{jobName}}\" cancelled",
         "completedConsoleMessage": "Data transfer job \"{{jobName}}\" completed",
-        "defaultErrorMessage": "Operation could not be completed",
+        "defaultErrorMessage": "无法完成操作",
         "errorConsoleMessage": "Data transfer job \"{{jobName}}\" failed: {{errorMessage}}",
         "pauseConsoleMessage": "Data transfer job \"{{jobName}}\" paused",
         "retryConsoleMessage": "Data transfer job \"{{jobName}}\" in progress, total count: {{totalCount}}, processed count: {{processedCount}}"

@@ -894,10 +894,10 @@
       },
       "partitionKeyEditor": {
         "changePartitionKey": "{{partitionKeyName}} の変更",
-        "confirmCancel1": "You are about to cancel the following copy job.",
-        "confirmCancel2": "Cancelling will stop the job immediately.",
-        "confirmComplete1": "You are about to complete the following copy job.",
-        "confrimComplete2": "Once completed, continuous data copy will stop after any pending documents are processed. To maintain data integrity, we recommend stopping updates to the source container before completing the job.",
+        "confirmCancel1": "次のコピー ジョブを取り消します。",
+        "confirmCancel2": "取り消すと、ジョブはすぐに停止します。",
+        "confirmComplete1": "次のコピー ジョブを完了します。",
+        "confrimComplete2": "完了すると、保留中のドキュメントが処理された後、継続的なデータ コピーが停止します。データの整合性を維持するには、ジョブを完了する前にソース コンテナーの更新を停止することをお勧めします。",
         "currentPartitionKey": "現在の {{partitionKeyName}}",
         "partitioning": "パーティション分割",
         "hierarchical": "階層",
@@ -1036,7 +1036,7 @@
         "description": "オンライン コンテナー コピー ジョブでは、[All Versions and Delete](https://learn.microsoft.com/azure/cosmos-db/change-feed-modes?tabs=all-versions-and-deletes#all-versions-and-deletes-change-feed-mode-preview) 変更フィードを使用して、ソース コンテナーからコピー先の Cosmos DB NoSQL API コンテナーにデータをコピーできます。これにより、データのコピー中もソースで更新を継続できます。クライアント アプリケーションをコピー先コンテナーに安全に切り替えるには、最後に短時間のダウンタイムが必要です。[online copy jobs](https://learn.microsoft.com/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#getting-started) についての詳細をご覧ください。"
       }
     },
-    "migrationTypeTitle": "Migration type",
+    "migrationTypeTitle": "移行の種類",
     "selectContainers": {
       "description": "コピー元のコンテナーとコピー先のコンテナーを選択してください。",
       "sourceContainerSubHeading": "ソース コンテナー",
@@ -1122,7 +1122,7 @@
       "validateAllVersionsAndDeletesChangeFeedSpinnerLabel": "すべてのバージョンを検証し、変更フィード モードを削除します (プレビュー)...",
       "enablingAllVersionsAndDeletesChangeFeedSpinnerLabel": "すべてのバージョンおよび削除の変更フィード モード (プレビュー) を有効にしています",
       "enablingOnlineCopySpinnerLabel": "\"{{accountName}}\" アカウントでオンライン コピーを有効にしています...",
-      "onlineMigrationPrerequisitesMessage": "Online migration prerequisites must be enabled before proceeding."
+      "onlineMigrationPrerequisitesMessage": "続行する前に、オンライン移行の前提条件を有効にする必要があります。"
     },
     "monitorJobs": {
       "columns": {
@@ -1160,12 +1160,12 @@
     },
     "dataTransfers": {
       "polling": {
-        "cancelConsoleMessage": "Data transfer job \"{{jobName}}\" cancelled",
-        "completedConsoleMessage": "Data transfer job \"{{jobName}}\" completed",
-        "defaultErrorMessage": "Operation could not be completed",
-        "errorConsoleMessage": "Data transfer job \"{{jobName}}\" failed: {{errorMessage}}",
-        "pauseConsoleMessage": "Data transfer job \"{{jobName}}\" paused",
-        "retryConsoleMessage": "Data transfer job \"{{jobName}}\" in progress, total count: {{totalCount}}, processed count: {{processedCount}}"
+        "cancelConsoleMessage": "データ転送ジョブ \"{{jobName}}\" が取り消されました",
+        "completedConsoleMessage": "データ転送ジョブ \"{{jobName}}\" が完了しました",
+        "defaultErrorMessage": "操作を完了できませんでした",
+        "errorConsoleMessage": "データ転送ジョブ \"{{jobName}}\" に失敗しました: {{errorMessage}}",
+        "pauseConsoleMessage": "データ転送ジョブ \"{{jobName}}\" が一時停止されました",
+        "retryConsoleMessage": "データ転送ジョブ \"{{jobName}}\" が進行中です。合計数: {{totalCount}}、処理された数: {{processedCount}}"
       }
     }
   }

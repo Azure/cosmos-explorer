@@ -894,10 +894,10 @@
       },
       "partitionKeyEditor": {
         "changePartitionKey": "Zmień element {{partitionKeyName}}",
-        "confirmCancel1": "You are about to cancel the following copy job.",
-        "confirmCancel2": "Cancelling will stop the job immediately.",
-        "confirmComplete1": "You are about to complete the following copy job.",
-        "confrimComplete2": "Once completed, continuous data copy will stop after any pending documents are processed. To maintain data integrity, we recommend stopping updates to the source container before completing the job.",
+        "confirmCancel1": "Zamierzasz anulować następujące zadanie kopiowania.",
+        "confirmCancel2": "Anulowanie spowoduje natychmiastowe zatrzymanie zadania.",
+        "confirmComplete1": "Zamierzasz ukończyć następujące zadanie kopiowania.",
+        "confrimComplete2": "Po zakończeniu ciągłe kopiowanie danych zostanie zatrzymane po przetworzeniu wszystkich oczekujących dokumentów. Aby zachować integralność danych, zalecamy zatrzymanie aktualizacji kontenera źródłowego przed ukończeniem zadania.",
         "currentPartitionKey": "Bieżący {{partitionKeyName}}",
         "partitioning": "Partycjonowanie",
         "hierarchical": "Hierarchiczne",
@@ -1036,7 +1036,7 @@
         "description": "Zadania kopiowania kontenerów online umożliwiają kopiowanie danych z kontenera źródłowego do docelowego kontenera interfejsu API NoSQL usługi Cosmos DB przy użyciu zestawienia zmian [Wszystkie wersje i usuwanie](https://learn.microsoft.com/azure/cosmos-db/change-feed-modes?tabs=all-versions-and-deletes#all-versions-and-deletes-change-feed-mode-preview). Umożliwia to kontynuowanie aktualizacji w źródle podczas kopiowania danych. Na końcu jest wymagany krótki przestój, aby bezpiecznie przełączyć aplikacje klienckie do kontenera docelowego. Dowiedz się więcej o [zadaniach kopiowania online](https://learn.microsoft.com/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#getting-started)."
       }
     },
-    "migrationTypeTitle": "Migration type",
+    "migrationTypeTitle": "Typ migracji",
     "selectContainers": {
       "description": "Wybierz kontener źródłowy i kontener docelowy do skopiowania.",
       "sourceContainerSubHeading": "Kontener źródłowy",
@@ -1122,7 +1122,7 @@
       "validateAllVersionsAndDeletesChangeFeedSpinnerLabel": "Trwa weryfikacja wszystkich wersji i usunięć w trybie zestawienia zmian (wersja zapoznawcza)...",
       "enablingAllVersionsAndDeletesChangeFeedSpinnerLabel": "Trwa włączanie wszystkich wersji i usunięć w trybie zestawienia zmian (wersja zapoznawcza)...",
       "enablingOnlineCopySpinnerLabel": "Trwa włączanie kopii online na koncie „{{accountName}}”...",
-      "onlineMigrationPrerequisitesMessage": "Online migration prerequisites must be enabled before proceeding."
+      "onlineMigrationPrerequisitesMessage": "Przed kontynuowaniem należy włączyć wymagania wstępne migracji w trybie online."
     },
     "monitorJobs": {
       "columns": {
@@ -1160,12 +1160,12 @@
     },
     "dataTransfers": {
       "polling": {
-        "cancelConsoleMessage": "Data transfer job \"{{jobName}}\" cancelled",
-        "completedConsoleMessage": "Data transfer job \"{{jobName}}\" completed",
-        "defaultErrorMessage": "Operation could not be completed",
-        "errorConsoleMessage": "Data transfer job \"{{jobName}}\" failed: {{errorMessage}}",
-        "pauseConsoleMessage": "Data transfer job \"{{jobName}}\" paused",
-        "retryConsoleMessage": "Data transfer job \"{{jobName}}\" in progress, total count: {{totalCount}}, processed count: {{processedCount}}"
+        "cancelConsoleMessage": "Anulowano zadanie transferu danych „{{jobName}}”",
+        "completedConsoleMessage": "Ukończono zadanie transferu danych „{{jobName}}”",
+        "defaultErrorMessage": "Nie można ukończyć operacji",
+        "errorConsoleMessage": "Zadanie transferu danych „{{jobName}}” nie powiodło się: {{errorMessage}}",
+        "pauseConsoleMessage": "Wstrzymano zadanie transferu danych „{{jobName}}”",
+        "retryConsoleMessage": "Zadanie transferu danych „{{jobName}}” jest w toku, łączna liczba: {{totalCount}}, liczba przetworzonych danych: {{processedCount}}"
       }
     }
   }
