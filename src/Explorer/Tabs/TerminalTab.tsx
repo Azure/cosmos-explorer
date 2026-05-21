@@ -46,16 +46,6 @@ export default class TerminalTab extends TabsBase {
         this.isAllPublicIPAddressesEnabled,
       );
     }
-
-    if (options.kind === ViewModels.TerminalKind.VCoreMongo) {
-      checkFirewallRules(
-        "2023-03-01-preview",
-        (rule) =>
-          rule.name.startsWith("AllowAllAzureServicesAndResourcesWithinAzureIps") ||
-          (rule.properties.startIpAddress === "0.0.0.0" && rule.properties.endIpAddress === "255.255.255.255"),
-        this.isAllPublicIPAddressesEnabled,
-      );
-    }
   }
 
   public getContainer(): Explorer {
