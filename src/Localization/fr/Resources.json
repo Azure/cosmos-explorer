@@ -34,6 +34,8 @@
     "browse": "Parcourir",
     "increaseValueBy1": "Augmenter la valeur de 1",
     "decreaseValueBy1": "Diminuer la valeur de 1",
+    "on": "Activé",
+    "off": "Désactivé",
     "preview": "Aperçu"
   },
   "splashScreen": {
@@ -76,7 +78,7 @@
         "description": "Créer un tableau et interagir avec les données à l’aide de l’interface d’interpréteur PostgreSQL"
       },
       "vcoreMongo": {
-        "title": "Interpréteur de commandes Mongo",
+        "title": "Mongo Shell",
         "description": "Créer une collection et interagir avec les données à l’aide de l’interface d’interpréteur MongoDB"
       }
     },
@@ -303,7 +305,7 @@
     "deleteContainer": "Supprimer {{containerName}}",
     "newSqlQuery": "Nouvelle requête SQL",
     "newQuery": "Nouvelle requête",
-    "openMongoShell": "Ouvrir l’interpréteur de commandes Mongo",
+    "openMongoShell": "Ouvrir Mongo Shell",
     "newShell": "Nouvel interpréteur de commandes",
     "openCassandraShell": "Ouvrir l’interpréteur de commandes Cassandra",
     "newStoredProcedure": "Nouvelle procédure stockée",
@@ -414,7 +416,7 @@
       "refreshGridFailed": "Nous n’avons pas pu actualiser la grille des documents"
     },
     "mongoShell": {
-      "title": "Interpréteur de commandes Mongo"
+      "title": "Mongo Shell"
     }
   },
   "panes": {
@@ -488,7 +490,7 @@
       "legacySdkInfo": "Pour garantir la compatibilité avec les anciens Kits de développement logiciels (SDK), le conteneur créé utilise un schéma de partitionnement hérité qui prend en charge des valeurs de clés de partition d’une taille maximale de 101 octets. Si cette option est activée, vous ne pouvez pas utiliser de clés de partition hiérarchiques.",
       "indexingOnInfo": "Toutes les propriétés de vos documents seront indexées par défaut pour permettre des requêtes flexibles et efficaces.",
       "indexingOffInfo": "L’indexation sera désactivée. Nous recommandons cette option si vous n’avez pas besoin d’exécuter des requêtes ou si vous n’effectuez que des opérations clé-valeur.",
-      "indexingOffWarning": "En créant ce conteneur avec l’indexation désactivée, vous ne pouvez pas modifier la stratégie d’indexation. Les modifications d’indexation ne sont autorisées que sur un conteneur disposant d’une stratégie d’indexation.",
+      "indexingOffWarning": "En créant ce conteneur avec l’indexation désactivée, vous ne pouvez pas modifier la politique d’indexation. Les modifications d’indexation ne sont autorisées que sur un conteneur disposant d’une politique d’indexation.",
       "acknowledgeSpendErrorMonthly": "Prenez en compte l’estimation des dépenses mensuelles.",
       "acknowledgeSpendErrorDaily": "Prenez en compte l’estimation des dépenses quotidiennes.",
       "unshardedMaxRuError": "Les collections non partitionnées prennent en charge un maximum de 10 000 RU",
@@ -756,13 +758,13 @@
         "scale": "Mise à l’échelle",
         "conflictResolution": "Résolution des conflits",
         "settings": "Paramètres",
-        "indexingPolicy": "Stratégie d'indexation",
+        "indexingPolicy": "Politique d'indexation",
         "partitionKeys": "Clés de partition",
         "partitionKeysPreview": "Clés de partition (aperçu)",
         "computedProperties": "Propriétés calculées",
         "containerPolicies": "Stratégies relatives aux conteneurs",
         "throughputBuckets": "Bacs de débit",
-        "globalSecondaryIndexPreview": "Indice mondial du secteur secondaire (Aperçu)",
+        "globalSecondaryIndexPreview": "Global Secondary Index",
         "maskingPolicyPreview": "Stratégie de masquage"
       },
       "mongoNotifications": {
@@ -798,7 +800,7 @@
         "manualToAutoscaleDisclaimer": "Le débit maximal initial de RU/s de mise à l'échelle automatique sera déterminé par le système, en fonction des paramètres de débit manuels actuels et du stockage de votre ressource. Une fois la mise à l'échelle automatique activée, vous pouvez modifier le nombre maximal d'unités de requête par seconde (RU/s).",
         "ttlWarningText": "Le système supprimera automatiquement les éléments en fonction de la valeur TTL (en secondes) que vous fournissez, sans qu'une opération de suppression explicite soit nécessaire de la part d'une application cliente. Pour plus d'informations, consultez,",
         "ttlWarningLinkText": "Durée de vie (TTL) dans Azure Cosmos DB",
-        "unsavedIndexingPolicy": "stratégie d'indexation",
+        "unsavedIndexingPolicy": "politique d'indexation",
         "unsavedDataMaskingPolicy": "Stratégie de masquage des données",
         "unsavedComputedProperties": "propriétés calculées",
         "unsavedEditorWarningPrefix": "Vous n'avez pas enregistré les dernières modifications apportées à votre",
@@ -841,9 +843,9 @@
       "mongoIndexing": {
         "disclaimer": "Pour les requêtes qui filtrent sur plusieurs propriétés, créez plusieurs index à champ unique au lieu d'un index composé.",
         "disclaimerCompoundIndexesLink": " Indices composés ",
-        "disclaimerSuffix": "ne servent qu'à trier les résultats des requêtes. Si vous devez ajouter un index composé, vous pouvez en créer un à l'aide du shell Mongo.",
-        "compoundNotSupported": "Les collections avec index composés ne sont pas encore prises en charge dans l'éditeur d'indexation. Pour modifier la stratégie d'indexation de cette collection, utilisez le shell Mongo.",
-        "aadError": "Pour utiliser l'éditeur de stratégie d'indexation, veuillez vous connecter à",
+        "disclaimerSuffix": "ne servent qu'à trier les résultats des requêtes. Si vous devez ajouter un index composé, vous pouvez en créer un à l'aide de Mongo Shell.",
+        "compoundNotSupported": "Les collections avec index composés ne sont pas encore prises en charge dans l'éditeur d'indexation. Pour modifier la politique d'indexation de cette collection, utilisez le shell Mongo.",
+        "aadError": "Pour utiliser l'éditeur de politique d'indexation, veuillez vous connecter à",
         "aadErrorLink": "Portail Azure.",
         "refreshingProgress": "Actualisation de la progression de la transformation de l'index",
         "canMakeMoreChangesZero": "Vous pourrez apporter d'autres modifications d'indexation une fois la transformation d'index actuelle terminée. ",
@@ -909,7 +911,7 @@
         "learnMorePrefix": "sur la manière de définir les propriétés calculées et de les utiliser."
       },
       "indexingPolicy": {
-        "ariaLabel": "Stratégie d'indexation"
+        "ariaLabel": "Politique d'indexation"
       },
       "dataMasking": {
         "ariaLabel": "Stratégie de masquage des données",
@@ -926,11 +928,11 @@
       "globalSecondaryIndex": {
         "indexesDefined": "Ce conteneur possède les index suivants définis pour lui.",
         "learnMoreSuffix": "sur la manière de définir les index secondaires globaux et de les utiliser.",
-        "jsonAriaLabel": "Index secondaire mondial JSON",
+        "jsonAriaLabel": "Index secondaire global JSON",
         "addIndex": "Ajouter un index",
-        "settingsTitle": "Paramètres d'indexation secondaire globale",
+        "settingsTitle": "Paramètres de l'index secondaire global",
         "sourceContainer": "Conteneur source",
-        "indexDefinition": "Définition globale des indices secondaires"
+        "indexDefinition": "Définition de l'index secondaire global"
       },
       "indexingPolicyRefresh": {
         "refreshFailed": "L'actualisation de la progression de la transformation de l'index a échoué"
@@ -991,6 +993,165 @@
       "dimensionFlatIndexError": "La dimension maximale autorisée pour l’index plat est de 505",
       "quantizationByteSizeRangeError": "La taille en octets de quantification doit être supérieure à 0 et inférieure ou égale à 512",
       "indexingSearchListSizeRangeError": "La taille de la liste de recherche d’indexation doit être comprise entre 25 et 500 inclus"
+    }
+  },
+  "containerCopy": {
+    "commandBar": {
+      "feedbackButtonLabel": "Commentaires",
+      "feedbackButtonAriaLabel": "Fournir des commentaires sur les travaux de copie",
+      "refreshButtonAriaLabel": "Actualiser les travaux de copie",
+      "createCopyJobButtonLabel": "Créer un travail de copie",
+      "createCopyJobButtonAriaLabel": "Créer un travail de copie de conteneur"
+    },
+    "noCopyJobs": {
+      "title": "Aucun travail de copie à afficher",
+      "createCopyJobButtonText": "Créer un travail de copie de conteneur"
+    },
+    "jobDetails": {
+      "panelTitle": "{{jobName}}",
+      "panelTitleDefault": "Détails du travail",
+      "errorTitle": "Détails de l’erreur",
+      "selectedContainers": "Conteneurs sélectionnés"
+    },
+    "createCopyJob": {
+      "panelTitle": "Créer un travail de copie"
+    },
+    "selectAccount": {
+      "description": "Sélectionnez un compte de destination vers lequel effectuer la copie.",
+      "subscriptionDropdownLabel": "Abonnement",
+      "subscriptionDropdownPlaceholder": "Sélectionner un abonnement",
+      "accountDropdownLabel": "Compte",
+      "accountDropdownPlaceholder": "Sélectionner un compte"
+    },
+    "migrationType": {
+      "offline": {
+        "title": "Mode hors connexion",
+        "description": "Les travaux de copie hors connexion de conteneur vous permettent de copier des données d’un conteneur source vers un conteneur Cosmos DB cible pour les API prises en charge. Pour garantir l’intégrité des données entre la source et la destination, nous vous recommandons d’arrêter les mises à jour sur le conteneur source avant de créer le travail de copie. En savoir plus sur les [travaux de copie hors ligne](https://learn.microsoft.com/azure/cosmos-db/how-to-container-copy?tabs=offline-copy&pivots=api-nosql)."
+      },
+      "online": {
+        "title": "Mode en ligne",
+        "description": "Les travaux de copie en ligne de conteneur vous permettent de copier des données d’un conteneur source vers un conteneur cible d’API NoSQL de Cosmos DB à l’aide du flux de modification [All Versions and Delete](https://learn.microsoft.com/azure/cosmos-db/change-feed-modes?tabs=all-versions-and-deletes#all-versions-and-deletes-change-feed-mode-preview). Cela vous permet de continuer à mettre à jour la source pendant la copie des données. Un bref temps d’arrêt est nécessaire à la fin pour basculer en toute sécurité les applications clientes vers le conteneur cible. En savoir plus sur les [travaux de copie en ligne](https://learn.microsoft.com/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#getting-started)."
+      }
+    },
+    "selectContainers": {
+      "description": "Veuillez sélectionner un conteneur source et un conteneur de destination vers lequel effectuer la copie.",
+      "sourceContainerSubHeading": "Conteneur source",
+      "targetContainerSubHeading": "Conteneur de destination",
+      "databaseDropdownLabel": "Base de données",
+      "databaseDropdownPlaceholder": "Sélectionner une base de données",
+      "containerDropdownLabel": "Conteneur",
+      "containerDropdownPlaceholder": "Sélectionner un conteneur",
+      "createNewContainerSubHeading": "Configurez les propriétés du nouveau conteneur sur le compte de destination « {{accountName}} ».",
+      "createNewContainerSubHeadingDefault": "Configurez les propriétés du nouveau conteneur.",
+      "createContainerButtonLabel": "Créer un conteneur",
+      "createContainerHeading": "Créer un conteneur"
+    },
+    "preview": {
+      "jobNameLabel": "Nom de travail",
+      "subscriptionLabel": "Abonnement de destination",
+      "accountLabel": "Compte de destination",
+      "sourceDatabaseLabel": "Base de données source",
+      "sourceContainerLabel": "Conteneur source",
+      "targetDatabaseLabel": "Base de données de destinations",
+      "targetContainerLabel": "Conteneur de destination"
+    },
+    "assignPermissions": {
+      "crossAccountDescription": "Pour copier des données de la source vers le conteneur de destination, vérifiez que l’identité managée du compte source dispose d’un accès en lecture-écriture au compte de destination en effectuant les étapes suivantes.",
+      "intraAccountOnlineDescription": "Suivez les étapes ci-dessous pour activer la copie en ligne sur votre compte « {{accountName}} ».",
+      "crossAccountConfiguration": {
+        "title": "Copie de conteneur entre comptes",
+        "description": "Veuillez suivre les instructions ci-dessous pour accorder les autorisations nécessaires afin de copier des données de « {{sourceAccount}} » vers « {{destinationAccount}} »."
+      },
+      "onlineConfiguration": {
+        "title": "Copie de conteneur en ligne",
+        "description": "Suivre les instructions ci-dessous pour activer la copie en ligne sur votre compte « {{accountName}} »."
+      }
+    },
+    "popoverOverlaySpinnerLabel": "Veuillez patienter pendant que nous traitons votre requête...",
+    "addManagedIdentity": {
+      "title": "Identité managée affectée par le système activée.",
+      "description": "Une identité managée affectée par le système est limitée à une par ressource et est liée au cycle de vie de cette ressource. Une fois activée, vous pouvez accorder des autorisations à l’identité managée à l’aide du contrôle d’accès en fonction du rôle Azure (RBAC Azure). L’identité managée est authentifiée avec Microsoft Entra ID, si bien que vous n’avez pas à stocker d’informations d’identification dans le code.",
+      "descriptionHrefText": "En savoir plus sur les identités managées.",
+      "descriptionHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
+      "toggleLabel": "Identité managée affectée par le système",
+      "tooltipContent": "Découvrir plus d’informations sur",
+      "tooltipHrefText": "Identités managées.",
+      "tooltipHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
+      "userAssignedIdentityTooltip": "Vous pouvez sélectionner une identité managée attribuée par l’utilisateur existante ou en créer une nouvelle.",
+      "userAssignedIdentityLabel": "Vous pouvez également sélectionner une identité managée affectée par l’utilisateur(-trice).",
+      "createUserAssignedIdentityLink": "Créer une identité managée affectée par l’utilisateur",
+      "enablementTitle": "Activer l’identité managée affectée par le système",
+      "enablementDescription": "Activer l’identité managée affectée par le système sur le {{accountName}}. Pour confirmer, cliquez sur le bouton « Oui »."
+    },
+    "defaultManagedIdentity": {
+      "title": "Identité managée affectée par le système définie par défaut.",
+      "description": "Définissez l’identité managée affectée par le système comme identité par défaut pour « {{accountName}} » en l’activant.",
+      "tooltipContent": "Découvrir plus d’informations sur",
+      "tooltipHrefText": "Identités managées par défaut.",
+      "tooltipHref": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview",
+      "popoverTitle": "Identité managée affectée par le système définie par défaut",
+      "popoverDescription": "Attribuer l’identité managée affectée par le système comme identité par défaut pour « {{accountName}} ». Pour confirmer, cliquez sur le bouton « Oui ». "
+    },
+    "readWritePermissionAssigned": {
+      "title": "Autorisations en lecture-écriture attribuées à l’identité par défaut.",
+      "description": "Pour autoriser la copie des données de la source vers le conteneur de destination, accordez un accès en lecture-écriture au compte de destination à l’identité par défaut du compte source.",
+      "tooltipContent": "Découvrir plus d’informations sur",
+      "tooltipHrefText": "Autorisation de lecture et d’écriture.",
+      "tooltipHref": "https://learn.microsoft.com/azure/cosmos-db/nosql/how-to-connect-role-based-access-control",
+      "popoverTitle": "Attribuer des autorisations de lecture et d’écriture à l’identité par défaut.",
+      "popoverDescription": "Attribuer des autorisations de lecture-écriture sur le compte de destination à l’identité par défaut du compte source. Pour confirmer, cliquez sur le bouton « Oui »."
+    },
+    "pointInTimeRestore": {
+      "title": "Restauration à un moment donné activée",
+      "description": "Pour faciliter les opérations de copie de conteneur en ligne, mettez à jour la stratégie de sauvegarde de votre compte « {{accessName}} » de la sauvegarde périodique à la sauvegarde continue. L’activation de la sauvegarde continue est requise pour cette fonctionnalité.",
+      "tooltipContent": "Découvrir plus d’informations sur",
+      "tooltipHrefText": "Sauvegarde continue",
+      "tooltipHref": "https://learn.microsoft.com/en-us/azure/cosmos-db/continuous-backup-restore-introduction",
+      "buttonText": "Activer la restauration à un moment donné"
+    },
+    "onlineCopyEnabled": {
+      "title": "Copie en ligne activée",
+      "description": "Activez la copie de conteneur en ligne en cliquant sur le bouton ci-dessous dans votre compte « {{accountName}} ».",
+      "hrefText": "En savoir plus sur les travaux de copie en ligne",
+      "href": "https://learn.microsoft.com/en-us/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#enable-online-copy",
+      "buttonText": "Activer la copie en ligne",
+      "validateAllVersionsAndDeletesChangeFeedSpinnerLabel": "Validation en cours du Mode de flux de modification de toutes les versions et suppressions (préversion)",
+      "enablingAllVersionsAndDeletesChangeFeedSpinnerLabel": "Activation en cours du Mode de flux de modification de toutes les versions et suppressions (préversion)...",
+      "enablingOnlineCopySpinnerLabel": "Activation de la copie en ligne sur votre compte « {{accountName}} » ..."
+    },
+    "monitorJobs": {
+      "columns": {
+        "lastUpdatedTime": "Date et heure",
+        "name": "Nom de travail",
+        "status": "Statut",
+        "completionPercentage": "% d’achèvement",
+        "duration": "Durée",
+        "error": "Message d’erreur",
+        "mode": "Mode",
+        "actions": "Actions"
+      },
+      "actions": {
+        "pause": "Suspendre",
+        "resume": "Reprendre",
+        "complete": "Terminé",
+        "viewDetails": "Afficher les détails"
+      },
+      "status": {
+        "pending": "En file d’attente",
+        "inProgress": "Exécution",
+        "running": "Exécution",
+        "partitioning": "Exécution",
+        "paused": "En pause",
+        "completed": "Terminé",
+        "failed": "Échec",
+        "faulted": "Échec",
+        "skipped": "Annulé",
+        "cancelled": "Annulé"
+      },
+      "dialog": {
+        "confirmButtonText": "Confirmer",
+        "cancelButtonText": "Annuler"
+      }
     }
   }
 }

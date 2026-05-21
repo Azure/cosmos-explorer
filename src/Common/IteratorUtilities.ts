@@ -19,22 +19,38 @@ export interface MinimalQueryIterator {
 // Pick<QueryIterator<any>, "fetchNext">;
 
 export function nextPage(documentsIterator: MinimalQueryIterator, firstItemIndex: number): Promise<QueryResults> {
-  TelemetryProcessor.traceStart(Action.ExecuteQuery);
-  return documentsIterator.fetchNext().then((response) => {
-    TelemetryProcessor.traceSuccess(Action.ExecuteQuery, { dataExplorerArea: Constants.Areas.Tab });
-    const documents = response.resources;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const headers = (response as any).headers || {}; // TODO this is a private key. Remove any
-    const itemCount = (documents && documents.length) || 0;
-    return {
-      documents,
-      hasMoreResults: response.hasMoreResults,
-      itemCount,
-      firstItemIndex: Number(firstItemIndex) + 1,
-      lastItemIndex: Number(firstItemIndex) + Number(itemCount),
-      headers,
-      activityId: response.activityId,
-      requestCharge: response.requestCharge,
-    };
-  });
+  const startKey = TelemetryProcessor.traceStart(Action.ExecuteQuery);
+  return documentsIterator
+    .fetchNext()
+    .then((response) => {
+      const durationMs = Date.now() - startKey;
+      TelemetryProcessor.traceSuccess(
+        Action.ExecuteQuery,
+        { dataExplorerArea: Constants.Areas.Tab, durationMs },
+        startKey,
+      );
+      const documents = response.resources;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const headers = (response as any).headers || {}; // TODO this is a private key. Remove any
+      const itemCount = (documents && documents.length) || 0;
+      return {
+        documents,
+        hasMoreResults: response.hasMoreResults,
+        itemCount,
+        firstItemIndex: Number(firstItemIndex) + 1,
+        lastItemIndex: Number(firstItemIndex) + Number(itemCount),
+        headers,
+        activityId: response.activityId,
+        requestCharge: response.requestCharge,
+      };
+    })
+    .catch((error) => {
+      const durationMs = Date.now() - startKey;
+      TelemetryProcessor.traceFailure(
+        Action.ExecuteQuery,
+        { dataExplorerArea: Constants.Areas.Tab, durationMs, error: error.message },
+        startKey,
+      );
+      throw error;
+    });
 }

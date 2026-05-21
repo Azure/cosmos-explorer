@@ -18,7 +18,7 @@ test.describe("Container Copy - Offline Migration", () => {
   let panel: Locator;
   let frame: Frame;
   let expectedJobName: string;
-  let targetAccountName: string;
+  let sourceAccountName: string;
   let expectedSubscriptionName: string;
   let expectedCopyJobNameInitial: string;
 
@@ -28,7 +28,7 @@ test.describe("Container Copy - Offline Migration", () => {
     page = await browser.newPage();
     ({ wrapper, frame } = await ContainerCopy.open(page, TestAccount.SQLContainerCopyOnly));
     expectedJobName = `offline_test_job_${Date.now()}`;
-    targetAccountName = getAccountName(TestAccount.SQLContainerCopyOnly);
+    sourceAccountName = getAccountName(TestAccount.SQLContainerCopyOnly);
   });
 
   test.afterEach("Cleanup after offline migration test", async () => {
@@ -53,7 +53,7 @@ test.describe("Container Copy - Offline Migration", () => {
 
     // Setup subscription and account
     const subscriptionDropdown = panel.getByTestId("subscription-dropdown");
-    const expectedAccountName = targetAccountName;
+    const expectedAccountName = sourceAccountName;
     expectedSubscriptionName = await subscriptionDropdown.locator("span.ms-Dropdown-title").innerText();
 
     await subscriptionDropdown.click();
@@ -185,8 +185,8 @@ test.describe("Container Copy - Offline Migration", () => {
     // Verify job preview details
     const previewContainer = panel.getByTestId("Panel:PreviewCopyJob");
     await expect(previewContainer).toBeVisible();
-    await expect(previewContainer.getByTestId("source-subscription-name")).toHaveText(expectedSubscriptionName);
-    await expect(previewContainer.getByTestId("source-account-name")).toHaveText(expectedAccountName);
+    await expect(previewContainer.getByTestId("destination-subscription-name")).toHaveText(expectedSubscriptionName);
+    await expect(previewContainer.getByTestId("destination-account-name")).toHaveText(expectedAccountName);
 
     const jobNameInput = previewContainer.getByTestId("job-name-textfield");
     await expect(jobNameInput).toHaveValue(new RegExp(expectedCopyJobNameInitial));

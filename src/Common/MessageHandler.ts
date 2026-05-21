@@ -1,8 +1,9 @@
+import { SeverityLevel } from "@microsoft/applicationinsights-web";
 import { FabricMessageTypes } from "Contracts/FabricMessageTypes";
 import Q from "q";
 import * as _ from "underscore";
-import * as Logger from "../Common/Logger";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
+import { trackTrace } from "../Shared/appInsights";
 import { getDataExplorerWindow } from "../Utils/WindowUtils";
 import * as Constants from "./Constants";
 
@@ -97,18 +98,66 @@ const _sendMessage = (message: any): void => {
     const portalChildWindow = getDataExplorerWindow(window) || window;
     if (portalChildWindow === window) {
       // Current window is a child of portal, send message to portal window
-      if (portalChildWindow.document.referrer) {
-        portalChildWindow.parent.postMessage(message, portalChildWindow.document.referrer);
+      const portalTargetOrigin = _getPortalTargetOrigin(portalChildWindow);
+      if (portalTargetOrigin) {
+        portalChildWindow.parent.postMessage(message, portalTargetOrigin);
       } else {
-        Logger.logError("Iframe failed to send message to portal", "MessageHandler");
+        _reportPostMessageFailure("Iframe failed to send message to portal: no target origin");
       }
     } else {
       // Current window is not a child of portal, send message to the child window instead (which is data explorer)
       if (portalChildWindow.location.origin) {
         portalChildWindow.postMessage(message, portalChildWindow.location.origin);
       } else {
-        Logger.logError("Iframe failed to send message to data explorer", "MessageHandler");
+        _reportPostMessageFailure("Iframe failed to send message to data explorer: no origin");
       }
     }
   }
+};
+
+/**
+ * Reports a postMessage failure to telemetry without routing through Logger.logError.
+ *
+ * IMPORTANT: Logger.logError calls sendMessage, which re-enters _sendMessage. If the
+ * failure here is itself "no target origin", that would cause infinite recursion
+ * ("too much recursion"). We call trackTrace directly so telemetry is preserved
+ * without triggering the recursive postMessage path.
+ */
+const _reportPostMessageFailure = (errorMessage: string): void => {
+  try {
+    trackTrace({ message: errorMessage, severityLevel: SeverityLevel.Error }, { area: "MessageHandler" });
+  } catch {
+    // Telemetry should never throw, but guard defensively so we never recurse.
+  }
+};
+
+/**
+ * Determines the portal's origin to use as postMessage targetOrigin.
+ *
+ * Primary source: document.referrer (the origin that loaded this iframe).
+ *
+ * Fallback: the `trustedAuthority` query string parameter that the Azure Portal
+ * embeds in the iframe URL. This is needed because some browser privacy modes
+ * (notably Firefox 's dynamic state partitioning / ETP Strict) can empty
+ * document.referrer for cross-origin third-party iframes. Without this fallback,
+ * postMessage would be called with an empty targetOrigin (which throws) and the
+ * error logger itself routes through sendMessage, causing infinite recursion.
+ *
+ * Returns an empty string when no trustworthy origin can be derived, in which
+ * case the caller must NOT call postMessage.
+ */
+const _getPortalTargetOrigin = (childWindow: Window): string => {
+  const referrer = childWindow.document.referrer;
+  if (referrer) {
+    return referrer;
+  }
+  try {
+    const trustedAuthority = new URLSearchParams(childWindow.location.search).get("trustedAuthority");
+    if (trustedAuthority) {
+      return new URL(trustedAuthority).origin;
+    }
+  } catch {
+    // Malformed URL — fall through and return empty string.
+  }
+  return "";
 };

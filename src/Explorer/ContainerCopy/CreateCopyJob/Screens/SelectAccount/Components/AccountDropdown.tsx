@@ -2,11 +2,11 @@
 /* eslint-disable react/display-name */
 import { Dropdown } from "@fluentui/react";
 import { configContext, Platform } from "ConfigContext";
+import { Keys, t } from "Localization";
 import React, { useEffect } from "react";
 import { DatabaseAccount } from "../../../../../../Contracts/DataModels";
 import { useDatabaseAccounts } from "../../../../../../hooks/useDatabaseAccounts";
 import { apiType, userContext } from "../../../../../../UserContext";
-import ContainerCopyMessages from "../../../../ContainerCopyMessages";
 import { useCopyJobContext } from "../../../../Context/CopyJobContext";
 import FieldRow from "../../Components/FieldRow";
 
@@ -25,7 +25,7 @@ export const normalizeAccountId = (id: string = "") => {
 export const AccountDropdown: React.FC<AccountDropdownProps> = () => {
   const { copyJobState, setCopyJobState } = useCopyJobContext();
 
-  const selectedSubscriptionId = copyJobState?.source?.subscription?.subscriptionId;
+  const selectedSubscriptionId = copyJobState?.target?.subscription?.subscriptionId;
   const allAccounts: DatabaseAccount[] = useDatabaseAccounts(selectedSubscriptionId);
   const sqlApiOnlyAccounts = (allAccounts || [])
     .filter((account) => apiType(account) === "SQL")
@@ -36,11 +36,11 @@ export const AccountDropdown: React.FC<AccountDropdownProps> = () => {
 
   const updateCopyJobState = (newAccount: DatabaseAccount) => {
     setCopyJobState((prevState) => {
-      if (prevState.source?.account?.id !== newAccount.id) {
+      if (prevState.target?.account?.id !== newAccount.id) {
         return {
           ...prevState,
-          source: {
-            ...prevState.source,
+          target: {
+            ...prevState.target,
             account: newAccount,
           },
         };
@@ -51,13 +51,13 @@ export const AccountDropdown: React.FC<AccountDropdownProps> = () => {
 
   useEffect(() => {
     if (sqlApiOnlyAccounts && sqlApiOnlyAccounts.length > 0 && selectedSubscriptionId) {
-      const currentAccountId = copyJobState?.source?.account?.id;
+      const currentAccountId = copyJobState?.target?.account?.id;
       const predefinedAccountId = normalizeAccountId(userContext.databaseAccount?.id);
       const selectedAccountId = currentAccountId || predefinedAccountId;
 
-      const targetAccount: DatabaseAccount | null =
+      const matchedAccount: DatabaseAccount | null =
         sqlApiOnlyAccounts.find((account) => account.id === selectedAccountId) || null;
-      updateCopyJobState(targetAccount || sqlApiOnlyAccounts[0]);
+      updateCopyJobState(matchedAccount || sqlApiOnlyAccounts[0]);
     }
   }, [sqlApiOnlyAccounts?.length, selectedSubscriptionId]);
 
@@ -77,13 +77,13 @@ export const AccountDropdown: React.FC<AccountDropdownProps> = () => {
   };
 
   const isAccountDropdownDisabled = !selectedSubscriptionId || accountOptions.length === 0;
-  const selectedAccountId = normalizeAccountId(copyJobState?.source?.account?.id ?? "");
+  const selectedAccountId = normalizeAccountId(copyJobState?.target?.account?.id ?? "");
 
   return (
-    <FieldRow label={ContainerCopyMessages.sourceAccountDropdownLabel}>
+    <FieldRow label={t(Keys.containerCopy.selectAccount.accountDropdownLabel)}>
       <Dropdown
-        placeholder={ContainerCopyMessages.sourceAccountDropdownPlaceholder}
-        ariaLabel={ContainerCopyMessages.sourceAccountDropdownLabel}
+        placeholder={t(Keys.containerCopy.selectAccount.accountDropdownPlaceholder)}
+        ariaLabel={t(Keys.containerCopy.selectAccount.accountDropdownLabel)}
         options={accountOptions}
         disabled={isAccountDropdownDisabled}
         required

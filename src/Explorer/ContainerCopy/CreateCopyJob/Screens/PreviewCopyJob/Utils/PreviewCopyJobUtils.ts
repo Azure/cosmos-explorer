@@ -1,5 +1,5 @@
 import { IColumn } from "@fluentui/react";
-import ContainerCopyMessages from "../../../../ContainerCopyMessages";
+import { Keys, t } from "Localization";
 
 const commonProps = {
   minWidth: 130,
@@ -17,25 +17,25 @@ export const getPreviewCopyJobDetailsListColumns = (): IColumn[] => {
   return [
     {
       key: "sourcedbname",
-      name: ContainerCopyMessages.sourceDatabaseLabel,
+      name: t(Keys.containerCopy.preview.sourceDatabaseLabel),
       fieldName: "sourceDatabaseName",
       ...commonProps,
     },
     {
       key: "sourcecolname",
-      name: ContainerCopyMessages.sourceContainerLabel,
+      name: t(Keys.containerCopy.preview.sourceContainerLabel),
       fieldName: "sourceContainerName",
       ...commonProps,
     },
     {
       key: "targetdbname",
-      name: ContainerCopyMessages.targetDatabaseLabel,
+      name: t(Keys.containerCopy.preview.targetDatabaseLabel),
       fieldName: "targetDatabaseName",
       ...commonProps,
     },
     {
       key: "targetcolname",
-      name: ContainerCopyMessages.targetContainerLabel,
+      name: t(Keys.containerCopy.preview.targetContainerLabel),
       fieldName: "targetContainerName",
       ...commonProps,
     },
