@@ -1,10 +1,8 @@
-import { Spinner, SpinnerSize, Stack, Text } from "@fluentui/react";
+import { Stack } from "@fluentui/react";
 
-import { NotebookWorkspaceConnectionInfo } from "Contracts/DataModels";
 import { MessageTypes } from "Contracts/ExplorerContracts";
-import { NotebookTerminalComponent } from "Explorer/Controls/Notebook/NotebookTerminalComponent";
-import Explorer from "Explorer/Explorer";
-import { useNotebook } from "Explorer/Notebook/useNotebook";
+import { TerminalKind } from "Contracts/ViewModels";
+import { CloudShellTerminalComponent } from "Explorer/Tabs/CloudShellTab/CloudShellTerminalComponent";
 import { QuickstartFirewallNotification } from "Explorer/Quickstart/QuickstartFirewallNotification";
 import { VcoreMongoQuickstartGuide } from "Explorer/Quickstart/VCoreMongoQuickstartGuide";
 import { checkFirewallRules } from "Explorer/Tabs/Shared/CheckFirewallRules";
@@ -12,21 +10,8 @@ import { userContext } from "UserContext";
 import React, { useEffect, useState } from "react";
 import FirewallRuleScreenshot from "../../../images/vcoreMongoFirewallRule.png";
 
-interface VCoreMongoQuickstartTabProps {
-  explorer: Explorer;
-}
-
-export const VcoreMongoQuickstartTab: React.FC<VCoreMongoQuickstartTabProps> = ({
-  explorer,
-}: VCoreMongoQuickstartTabProps): JSX.Element => {
-  const notebookServerInfo = useNotebook((state) => state.notebookServerInfo);
+export const VcoreMongoQuickstartTab: React.FC = (): JSX.Element => {
   const [isAllPublicIPAddressEnabled, setIsAllPublicIPAddressEnabled] = useState<boolean>(true);
-
-  const getNotebookServerInfo = (): NotebookWorkspaceConnectionInfo => ({
-    authToken: notebookServerInfo.authToken,
-    notebookServerEndpoint: `${notebookServerInfo.notebookServerEndpoint?.replace(/\/+$/, "")}/mongovcore`,
-    forwardingId: notebookServerInfo.forwardingId,
-  });
 
   useEffect(() => {
     checkFirewallRules(
@@ -37,10 +22,6 @@ export const VcoreMongoQuickstartTab: React.FC<VCoreMongoQuickstartTabProps> = (
       setIsAllPublicIPAddressEnabled,
     );
   });
-
-  useEffect(() => {
-    explorer.allocateContainer();
-  }, []);
 
   return (
     <Stack style={{ width: "100%" }} horizontal>
@@ -55,24 +36,13 @@ export const VcoreMongoQuickstartTab: React.FC<VCoreMongoQuickstartTabProps> = (
             shellName="MongoDB"
           />
         )}
-        {isAllPublicIPAddressEnabled && notebookServerInfo?.notebookServerEndpoint && (
-          <NotebookTerminalComponent
-            notebookServerInfo={getNotebookServerInfo()}
+        {isAllPublicIPAddressEnabled && (
+          <CloudShellTerminalComponent
             databaseAccount={userContext.databaseAccount}
             tabId="QuickstartVcoreMongoShell"
-            username={userContext.vcoreMongoConnectionParams.adminLogin}
+            username={userContext.vcoreMongoConnectionParams?.adminLogin}
+            shellType={TerminalKind.VCoreMongo}
           />
-        )}
-        {isAllPublicIPAddressEnabled && !notebookServerInfo?.notebookServerEndpoint && (
-          <Stack style={{ margin: "auto 0" }}>
-            <Text block style={{ margin: "auto" }}>
-              Connecting to the Mongo shell.
-            </Text>
-            <Text block style={{ margin: "auto" }}>
-              If the cluster was just created, this could take up to a minute.
-            </Text>
-            <Spinner styles={{ root: { marginTop: 16 } }} size={SpinnerSize.large}></Spinner>
-          </Stack>
         )}
       </Stack>
     </Stack>

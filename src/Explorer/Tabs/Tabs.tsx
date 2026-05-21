@@ -315,7 +315,7 @@ const getReactTabContent = (activeReactTab: ReactTabKind, explorer: Explorer): J
       }
     case ReactTabKind.Quickstart:
       return userContext.apiType === "VCoreMongo" ? (
-        <VcoreMongoQuickstartTab explorer={explorer} />
+        <VcoreMongoQuickstartTab />
       ) : (
         <QuickstartTab explorer={explorer} />
       );

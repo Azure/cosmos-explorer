@@ -1,3 +1,4 @@
+import { useTerminal } from "hooks/useTerminal";
 import React, { useEffect, useRef } from "react";
 import { Terminal } from "xterm";
 import { FitAddon } from "xterm-addon-fit";
@@ -59,7 +60,14 @@ export const CloudShellTerminalComponent: React.FC<CloudShellTerminalComponentPr
     });
     resizeObserver.observe(terminalRef.current);
 
-    socketRef.current = startCloudShellTerminal(terminal, props.shellType);
+    const initTerminal = async () => {
+      const socket = await startCloudShellTerminal(terminal, props.shellType);
+      socketRef.current = socket;
+      if (socket) {
+        useTerminal.getState().setSocket(socket);
+      }
+    };
+    initTerminal();
 
     // Cleanup function to close WebSocket and dispose terminal
     return () => {
@@ -73,6 +81,7 @@ export const CloudShellTerminalComponent: React.FC<CloudShellTerminalComponentPr
         resizeObserver.unobserve(terminalRef.current);
       }
       terminal.dispose(); // Clean up XTerm instance
+      useTerminal.getState().setSocket(undefined);
     };
   }, []);
 
