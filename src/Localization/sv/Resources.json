@@ -894,10 +894,10 @@
       },
       "partitionKeyEditor": {
         "changePartitionKey": "Ändra {{partitionKeyName}}",
-        "confirmCancel1": "You are about to cancel the following copy job.",
-        "confirmCancel2": "Cancelling will stop the job immediately.",
-        "confirmComplete1": "You are about to complete the following copy job.",
-        "confrimComplete2": "Once completed, continuous data copy will stop after any pending documents are processed. To maintain data integrity, we recommend stopping updates to the source container before completing the job.",
+        "confirmCancel1": "Du håller på att avbryta följande kopieringsjobb.",
+        "confirmCancel2": "Om du avbryter stoppas jobbet omedelbart.",
+        "confirmComplete1": "Du är på väg att slutföra följande kopieringsjobb.",
+        "confrimComplete2": "När detta är klart stoppas kontinuerlig datakopiering när eventuella väntande dokument har bearbetats. För att bevara dataintegriteten rekommenderar vi att du stoppar uppdateringar av källcontainern innan du slutför jobbet.",
         "currentPartitionKey": "Nuvarande {{partitionKeyName}}",
         "partitioning": "Partitionering",
         "hierarchical": "Hierarkiskt",
@@ -1036,7 +1036,7 @@
         "description": "Med online-containerkopieringsjobb kan du kopiera data från en källcontainer till ett mål Cosmos DB NoSQL API-containern med ändringsflödet [Alla versioner och ta bort](https://learn.microsoft.com/azure/cosmos-db/change-feed-modes?tabs=all-versions-and-deletes#all-versions-and-deletes-change-feed-mode-preview). Detta gör att uppdateringar kan fortsätta på källan medan data kopieras. En kort stilleståndstid krävs i slutet för att på ett säkert sätt växla över klientprogram till målcontainern. Läs mer om [onlinekopieringsjobb](https://learn.microsoft.com/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#getting-started)."
       }
     },
-    "migrationTypeTitle": "Migration type",
+    "migrationTypeTitle": "Migreringstyp",
     "selectContainers": {
       "description": "Välj en källcontainer och en målcontainer att kopiera till.",
       "sourceContainerSubHeading": "Källcontainer",
@@ -1122,7 +1122,7 @@
       "validateAllVersionsAndDeletesChangeFeedSpinnerLabel": "Verifierar alla versioner och tar bort ändringsflödesläge (förhandsversion)...",
       "enablingAllVersionsAndDeletesChangeFeedSpinnerLabel": "Aktiverar alla versioner och tar bort ändringsflödesläge (förhandsversion)...",
       "enablingOnlineCopySpinnerLabel": "Aktiverar onlinekopiering på ditt {{accountName}}-konto...",
-      "onlineMigrationPrerequisitesMessage": "Online migration prerequisites must be enabled before proceeding."
+      "onlineMigrationPrerequisitesMessage": "Förutsättningarna för onlinemigrering måste vara aktiverade innan du fortsätter."
     },
     "monitorJobs": {
       "columns": {
@@ -1160,12 +1160,12 @@
     },
     "dataTransfers": {
       "polling": {
-        "cancelConsoleMessage": "Data transfer job \"{{jobName}}\" cancelled",
-        "completedConsoleMessage": "Data transfer job \"{{jobName}}\" completed",
+        "cancelConsoleMessage": "Dataöverföringsjobbet {{jobName}} avbröts",
+        "completedConsoleMessage": "Dataöverföringsjobbet {{jobName}} slutfördes",
         "defaultErrorMessage": "Det gick inte att slutföra åtgärden",
-        "errorConsoleMessage": "Data transfer job \"{{jobName}}\" failed: {{errorMessage}}",
-        "pauseConsoleMessage": "Data transfer job \"{{jobName}}\" paused",
-        "retryConsoleMessage": "Data transfer job \"{{jobName}}\" in progress, total count: {{totalCount}}, processed count: {{processedCount}}"
+        "errorConsoleMessage": "Dataöverföringsjobbet {{jobName}} misslyckades: {{errorMessage}}",
+        "pauseConsoleMessage": "Dataöverföringsjobbet {{jobName}} pausades",
+        "retryConsoleMessage": "Dataöverföringsjobbet {{jobName}} pågår, totalt antal: {{totalCount}}, bearbetat antal: {{processedCount}}"
       }
     }
   }

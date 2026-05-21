@@ -894,10 +894,10 @@
       },
       "partitionKeyEditor": {
         "changePartitionKey": "{{partitionKeyName}} wijzigen",
-        "confirmCancel1": "You are about to cancel the following copy job.",
-        "confirmCancel2": "Cancelling will stop the job immediately.",
-        "confirmComplete1": "You are about to complete the following copy job.",
-        "confrimComplete2": "Once completed, continuous data copy will stop after any pending documents are processed. To maintain data integrity, we recommend stopping updates to the source container before completing the job.",
+        "confirmCancel1": "U staat op het punt de volgende kopieertaak te annuleren.",
+        "confirmCancel2": "Annuleren stopt de taak onmiddellijk.",
+        "confirmComplete1": "U staat op het punt de volgende kopieertaak te voltooien.",
+        "confrimComplete2": "Zodra dit is voltooid, stopt het continu kopiëren van gegevens nadat eventuele documenten in behandeling zijn verwerkt. Om de gegevensintegriteit te behouden, raden we u aan updates voor de broncontainer te stoppen voordat u de taak voltooit.",
         "currentPartitionKey": "Huidige {{partitionKeyName}}",
         "partitioning": "Partitionering",
         "hierarchical": "Hiërarchisch",
@@ -1036,7 +1036,7 @@
         "description": "Met online containerkopietaken kunt u gegevens kopiëren van een broncontainer naar een bestemming Cosmos DB NoSQL API-container met behulp van de wijzigingenfeed [Alle versies en verwijderen](https://learn.microsoft.com/azure/cosmos-db/change-feed-modes?tabs=all-versions-and-deletes#all-versions-and-deletes-change-feed-mode-preview) change feed. Hierdoor kunnen updates worden voortgezet op de bron terwijl gegevens worden gekopieerd. Aan het einde is een korte downtime vereist om veilig over te schakelen van clienttoepassingen naar de doelcontainer. Meer informatie over [online kopieertaken](https://learn.microsoft.com/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#getting-started)."
       }
     },
-    "migrationTypeTitle": "Migration type",
+    "migrationTypeTitle": "Migratietype",
     "selectContainers": {
       "description": "Selecteer een broncontainer en een doelcontainer waarnaar u wilt kopiëren.",
       "sourceContainerSubHeading": "Broncontainer",
@@ -1122,7 +1122,7 @@
       "validateAllVersionsAndDeletesChangeFeedSpinnerLabel": "Modus Alle versies en verwijderingen voor wijzigingenfeed (preview) valideren...",
       "enablingAllVersionsAndDeletesChangeFeedSpinnerLabel": "Inschakelen van Alle versies en verwijderen van de wijzigingenfeed (preview)",
       "enablingOnlineCopySpinnerLabel": "Online kopiëren inschakelen voor uw {{accountName}}-account... ...",
-      "onlineMigrationPrerequisitesMessage": "Online migration prerequisites must be enabled before proceeding."
+      "onlineMigrationPrerequisitesMessage": "Vereisten voor online migratie moeten zijn ingeschakeld voordat u verdergaat."
     },
     "monitorJobs": {
       "columns": {
@@ -1160,12 +1160,12 @@
     },
     "dataTransfers": {
       "polling": {
-        "cancelConsoleMessage": "Data transfer job \"{{jobName}}\" cancelled",
-        "completedConsoleMessage": "Data transfer job \"{{jobName}}\" completed",
+        "cancelConsoleMessage": "Gegevensoverdrachtstaak \"{{jobName}}\" geannuleerd",
+        "completedConsoleMessage": "Gegevensoverdrachtstaak \"{{jobName}}\" voltooid",
         "defaultErrorMessage": "De bewerking kan niet worden voltooid",
-        "errorConsoleMessage": "Data transfer job \"{{jobName}}\" failed: {{errorMessage}}",
-        "pauseConsoleMessage": "Data transfer job \"{{jobName}}\" paused",
-        "retryConsoleMessage": "Data transfer job \"{{jobName}}\" in progress, total count: {{totalCount}}, processed count: {{processedCount}}"
+        "errorConsoleMessage": "Gegevensoverdrachtstaak \"{{jobName}}\" mislukt: {{errorMessage}}",
+        "pauseConsoleMessage": "Gegevensoverdrachtstaak \"{{jobName}}\" onderbroken",
+        "retryConsoleMessage": "Gegevensoverdrachtstaak \"{{jobName}}\" wordt uitgevoerd, totaal aantal: {{totalCount}}, verwerkt aantal: {{processedCount}}"
       }
     }
   }

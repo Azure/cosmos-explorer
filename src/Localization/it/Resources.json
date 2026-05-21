@@ -894,10 +894,10 @@
       },
       "partitionKeyEditor": {
         "changePartitionKey": "Modifica {{partitionKeyName}}",
-        "confirmCancel1": "You are about to cancel the following copy job.",
-        "confirmCancel2": "Cancelling will stop the job immediately.",
-        "confirmComplete1": "You are about to complete the following copy job.",
-        "confrimComplete2": "Once completed, continuous data copy will stop after any pending documents are processed. To maintain data integrity, we recommend stopping updates to the source container before completing the job.",
+        "confirmCancel1": "Si sta per annullare il processo di copia seguente.",
+        "confirmCancel2": "L'annullamento arresterà immediatamente il processo.",
+        "confirmComplete1": "Si sta per completare il processo di copia seguente.",
+        "confrimComplete2": "Al termine, la copia continua dei dati verrà interrotta dopo l'elaborazione di eventuali documenti in sospeso. Per mantenere l'integrità dei dati, è consigliabile arrestare gli aggiornamenti al contenitore di origine prima di completare il processo.",
         "currentPartitionKey": "{{partitionKeyName}} corrente",
         "partitioning": "Partizionamento",
         "hierarchical": "Gerarchico",
@@ -1036,7 +1036,7 @@
         "description": "I processi di copia dei contenitori online consentono di copiare i dati da un contenitore di origine a un contenitore di destinazione dell'API NoSQL di Cosmos DB usando il feed di modifiche [Tutte le versioni ed eliminazioni](https://learn.microsoft.com/azure/cosmos-db/change-feed-modes?tabs=all-versions-and-deletes#all-versions-and-deletes-change-feed-mode-preview). In questo modo gli aggiornamenti possono continuare nell'origine durante la copia dei dati. Alla fine è necessario un breve periodo di inattività per passare in modo sicuro le applicazioni client al contenitore di destinazione. Altre informazioni sui [processi di copia online](https://learn.microsoft.com/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#getting-started)."
       }
     },
-    "migrationTypeTitle": "Migration type",
+    "migrationTypeTitle": "Tipo di migrazione",
     "selectContainers": {
       "description": "Selezionare un contenitore di origine e un contenitore di destinazione in cui copiare.",
       "sourceContainerSubHeading": "Contenitore di origine",
@@ -1122,7 +1122,7 @@
       "validateAllVersionsAndDeletesChangeFeedSpinnerLabel": "Convalida della modalità feed di modifiche per tutte le versioni ed eliminazioni (anteprima)...",
       "enablingAllVersionsAndDeletesChangeFeedSpinnerLabel": "Abilitazione della modalità feed di modifiche per tutte le versioni ed eliminazioni (anteprima)...",
       "enablingOnlineCopySpinnerLabel": "Abilitazione della copia online nell'account \"{{accountName}}\"...",
-      "onlineMigrationPrerequisitesMessage": "Online migration prerequisites must be enabled before proceeding."
+      "onlineMigrationPrerequisitesMessage": "Prima di procedere, è necessario abilitare i prerequisiti per la migrazione online."
     },
     "monitorJobs": {
       "columns": {
@@ -1160,12 +1160,12 @@
     },
     "dataTransfers": {
       "polling": {
-        "cancelConsoleMessage": "Data transfer job \"{{jobName}}\" cancelled",
-        "completedConsoleMessage": "Data transfer job \"{{jobName}}\" completed",
+        "cancelConsoleMessage": "Processo di trasferimento dati \"{{jobName}}\" annullato",
+        "completedConsoleMessage": "Processo di trasferimento dati \"{{jobName}}\" completato",
         "defaultErrorMessage": "Non è stato possibile completare l'operazione",
-        "errorConsoleMessage": "Data transfer job \"{{jobName}}\" failed: {{errorMessage}}",
-        "pauseConsoleMessage": "Data transfer job \"{{jobName}}\" paused",
-        "retryConsoleMessage": "Data transfer job \"{{jobName}}\" in progress, total count: {{totalCount}}, processed count: {{processedCount}}"
+        "errorConsoleMessage": "Processo di trasferimento dati \"{{jobName}}\" non riuscito: {{errorMessage}}",
+        "pauseConsoleMessage": "Processo di trasferimento dati \"{{jobName}}\" sospeso",
+        "retryConsoleMessage": "Processo di trasferimento dati \"{{jobName}}\" in corso, conteggio totale: {{totalCount}}, conteggio elaborato: {{processedCount}}"
       }
     }
   }

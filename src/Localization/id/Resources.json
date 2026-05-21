@@ -894,10 +894,10 @@
       },
       "partitionKeyEditor": {
         "changePartitionKey": "Ubah {{partitionKeyName}}",
-        "confirmCancel1": "You are about to cancel the following copy job.",
-        "confirmCancel2": "Cancelling will stop the job immediately.",
-        "confirmComplete1": "You are about to complete the following copy job.",
-        "confrimComplete2": "Once completed, continuous data copy will stop after any pending documents are processed. To maintain data integrity, we recommend stopping updates to the source container before completing the job.",
+        "confirmCancel1": "Anda akan segera membatalkan tugas penyalinan berikut.",
+        "confirmCancel2": "Membatalkan akan segera menghentikan tugas.",
+        "confirmComplete1": "Anda akan segera menyelesaikan tugas penyalinan berikut.",
+        "confrimComplete2": "Setelah selesai, penyalinan data berkelanjutan akan berhenti setelah semua dokumen yang tertunda diproses. Untuk menjaga integritas data, sebaiknya hentikan pembaruan ke kontainer sumber sebelum menyelesaikan tugas.",
         "currentPartitionKey": "{{partitionKeyName}} saat Ini",
         "partitioning": "Pemartisian",
         "hierarchical": "Hierarkis",
@@ -1036,7 +1036,7 @@
         "description": "Pekerjaan penyalinan kontainer online memungkinkan Anda menyalin data dari kontainer sumber ke kontainer API Cosmos DB NoSQL tujuan menggunakan umpan perubahan [Semua Versi dan Hapus](https://learn.microsoft.com/azure/cosmos-db/change-feed-modes?tabs=all-versions-and-deletes#all-versions-and-deletes-change-feed-mode-preview). Hal ini memungkinkan pembaruan untuk melanjutkan sumber saat data disalin. Waktu henti singkat diperlukan di akhir untuk mengalihkan aplikasi klien ke kontainer tujuan dengan aman. Pelajari selengkapnya tentang [pekerjaan penyalinan online](https://learn.microsoft.com/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#getting-started)."
       }
     },
-    "migrationTypeTitle": "Migration type",
+    "migrationTypeTitle": "Jenis migrasi",
     "selectContainers": {
       "description": "Pilih kontainer sumber dan kontainer tujuan yang akan digunakan untuk penyalinan.",
       "sourceContainerSubHeading": "Kontainer sumber",
@@ -1122,7 +1122,7 @@
       "validateAllVersionsAndDeletesChangeFeedSpinnerLabel": "Memvalidasi Semua versi dan penghapusan mengubah mode umpan (pratinjau)...",
       "enablingAllVersionsAndDeletesChangeFeedSpinnerLabel": "Mengaktifkan Semua versi dan menghapus mengubah mode umpan (pratinjau)...",
       "enablingOnlineCopySpinnerLabel": "Mengaktifkan penyalinan online di akun \"{{accountName}}\"...",
-      "onlineMigrationPrerequisitesMessage": "Online migration prerequisites must be enabled before proceeding."
+      "onlineMigrationPrerequisitesMessage": "Prasyarat migrasi online harus diaktifkan sebelum melanjutkan."
     },
     "monitorJobs": {
       "columns": {
@@ -1160,12 +1160,12 @@
     },
     "dataTransfers": {
       "polling": {
-        "cancelConsoleMessage": "Data transfer job \"{{jobName}}\" cancelled",
-        "completedConsoleMessage": "Data transfer job \"{{jobName}}\" completed",
+        "cancelConsoleMessage": "Tugas transfer data \"{{jobName}}\" dibatalkan",
+        "completedConsoleMessage": "Tugas transfer data \"{{jobName}}\" selesai",
         "defaultErrorMessage": "Operasi tidak dapat diselesaikan",
-        "errorConsoleMessage": "Data transfer job \"{{jobName}}\" failed: {{errorMessage}}",
-        "pauseConsoleMessage": "Data transfer job \"{{jobName}}\" paused",
-        "retryConsoleMessage": "Data transfer job \"{{jobName}}\" in progress, total count: {{totalCount}}, processed count: {{processedCount}}"
+        "errorConsoleMessage": "Tugas transfer data \"{{jobName}}\" gagal: {{errorMessage}}",
+        "pauseConsoleMessage": "Tugas transfer data \"{{jobName}}\" dijeda",
+        "retryConsoleMessage": "Tugas transfer data \"{{jobName}}\" sedang berlangsung, jumlah total: {{totalCount}}, jumlah diproses: {{processedCount}}"
       }
     }
   }

@@ -894,10 +894,10 @@
       },
       "partitionKeyEditor": {
         "changePartitionKey": "{{partitionKeyName}} Değiştir",
-        "confirmCancel1": "You are about to cancel the following copy job.",
-        "confirmCancel2": "Cancelling will stop the job immediately.",
-        "confirmComplete1": "You are about to complete the following copy job.",
-        "confrimComplete2": "Once completed, continuous data copy will stop after any pending documents are processed. To maintain data integrity, we recommend stopping updates to the source container before completing the job.",
+        "confirmCancel1": "Aşağıdaki kopyalama işini iptal etmek için varsınız.",
+        "confirmCancel2": "İptal etme işi hemen durdurur.",
+        "confirmComplete1": "Aşağıdaki kopyalama işini tamamlamak üzeresiniz.",
+        "confrimComplete2": "Tamamlandığında, bekleyen belgeler işlendiğinde sürekli veri kopyalama durur. Veri bütünlüğünü korumak için işi tamamlamadan önce kaynak kapsayıcıdaki güncelleştirmeleri durdurmanızı öneririz.",
         "currentPartitionKey": "Geçerli {{partitionKeyName}}",
         "partitioning": "Bölümleme",
         "hierarchical": "Hiyerarşik",
@@ -1036,7 +1036,7 @@
         "description": "Çevrimiçi kapsayıcı kopyalama işleri, [Tüm Sürümler ve Sil](https://learn.microsoft.com/azure/cosmos-db/change-feed-modes?tabs=all-versions-and-deletes#all-versions-and-deletes-change-feed-mode-preview) değişiklik akışını kullanarak kaynak kapsayıcıdan hedef Cosmos DB NoSQL API kapsayıcısına veri kopyalamanızı sağlar. Bu, veriler kopyalanırken kaynakta güncelleştirmelerin devam etmesini sağlar. İstemci uygulamalarını güvenli bir şekilde hedef kapsayıcıya geçirmek için sonunda kısa bir kesinti süresi gerekir. [Çevrimiçi kopyalama işleri](https://learn.microsoft.com/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#getting-started) hakkında daha fazla bilgi edinin."
       }
     },
-    "migrationTypeTitle": "Migration type",
+    "migrationTypeTitle": "Geçiş türü",
     "selectContainers": {
       "description": "Lütfen kopyalamak için bir kaynak kapsayıcı ve bir hedef kapsayıcı seçin.",
       "sourceContainerSubHeading": "Kaynak kapsayıcı",
@@ -1122,7 +1122,7 @@
       "validateAllVersionsAndDeletesChangeFeedSpinnerLabel": "Tüm sürümler ve silmeler için değişiklik akışı modu doğrulanıyor (önizleme)...",
       "enablingAllVersionsAndDeletesChangeFeedSpinnerLabel": "Tüm sürümler ve silmeler için değişiklik akışı modu etkinleştiriliyor (önizleme)...",
       "enablingOnlineCopySpinnerLabel": "\"{{accountName}}\" hesabınızda çevrimiçi kopyalama etkinleştiriliyor ...",
-      "onlineMigrationPrerequisitesMessage": "Online migration prerequisites must be enabled before proceeding."
+      "onlineMigrationPrerequisitesMessage": "Devam etmeden önce çevrimiçi geçiş önkoşullarının etkinleştirilmiş olması gerekir."
     },
     "monitorJobs": {
       "columns": {
@@ -1160,12 +1160,12 @@
     },
     "dataTransfers": {
       "polling": {
-        "cancelConsoleMessage": "Data transfer job \"{{jobName}}\" cancelled",
-        "completedConsoleMessage": "Data transfer job \"{{jobName}}\" completed",
+        "cancelConsoleMessage": "\"{{jobName}}\" veri aktarım işi iptal edildi",
+        "completedConsoleMessage": "\"{{jobName}}\" veri aktarım işi tamamlandı",
         "defaultErrorMessage": "İşlem tamamlanamadı",
-        "errorConsoleMessage": "Data transfer job \"{{jobName}}\" failed: {{errorMessage}}",
-        "pauseConsoleMessage": "Data transfer job \"{{jobName}}\" paused",
-        "retryConsoleMessage": "Data transfer job \"{{jobName}}\" in progress, total count: {{totalCount}}, processed count: {{processedCount}}"
+        "errorConsoleMessage": "\"{{jobName}}\" veri aktarım işi başarısız oldu: {{errorMessage}}",
+        "pauseConsoleMessage": "\"{{jobName}}\" veri aktarım işi duraklatıldı",
+        "retryConsoleMessage": "Veri aktarım işi \"{{jobName}}\" sürüyor, toplam sayı: {{totalCount}}, işlenen sayı: {{processedCount}}"
       }
     }
   }

@@ -894,10 +894,10 @@
       },
       "partitionKeyEditor": {
         "changePartitionKey": "„{{partitionKeyName}}“ ändern",
-        "confirmCancel1": "You are about to cancel the following copy job.",
-        "confirmCancel2": "Cancelling will stop the job immediately.",
-        "confirmComplete1": "You are about to complete the following copy job.",
-        "confrimComplete2": "Once completed, continuous data copy will stop after any pending documents are processed. To maintain data integrity, we recommend stopping updates to the source container before completing the job.",
+        "confirmCancel1": "Sie sind im Begriff, den folgenden Kopierauftrag abzubrechen.",
+        "confirmCancel2": "Durch das Abbrechen wird der Auftrag sofort beendet.",
+        "confirmComplete1": "Sie sind im Begriff, den folgenden Kopierauftrag abzuschließen.",
+        "confrimComplete2": "Nach Abschluss des Vorgangs wird die kontinuierliche Datenkopie beendet, nachdem alle ausstehenden Dokumente verarbeitet wurden. Um die Datenintegrität aufrechtzuerhalten, wird empfohlen, Aktualisierungen des Quellcontainers vor Abschluss des Auftrags zu beenden.",
         "currentPartitionKey": "Aktueller {{partitionKeyName}}",
         "partitioning": "Partitionierung",
         "hierarchical": "Hierarchisch",
@@ -1036,7 +1036,7 @@
         "description": "Mit Onlinecontainerkopieraufträgen können Sie Daten mithilfe des Änderungsfeeds [Alle Versionen und Löschvorgänge](https://learn.microsoft.com/azure/cosmos-db/change-feed-modes?tabs=all-versions-and-deletes#all-versions-and-deletes-change-feed-mode-preview) aus einem Quellcontainer in einen Cosmos DB NoSQL-API-Zielcontainer kopieren. Dadurch können Updates in der Quelle fortgesetzt werden, während Daten kopiert werden. Am Ende ist eine kurze Downtime erforderlich, um sicher über Clientanwendungen zum Zielcontainer zu wechseln. Weitere Informationen zu [Onlinekopieraufträgen](https://learn.microsoft.com/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#getting-started)."
       }
     },
-    "migrationTypeTitle": "Migration type",
+    "migrationTypeTitle": "Migrationstyp",
     "selectContainers": {
       "description": "Wählen Sie einen Quellcontainer und einen Zielcontainer aus, in den kopiert werden soll.",
       "sourceContainerSubHeading": "Quellcontainer",
@@ -1122,7 +1122,7 @@
       "validateAllVersionsAndDeletesChangeFeedSpinnerLabel": "Änderungsfeedmodus „Alle Versionen und Löschvorgänge“ (Vorschau) wird validiert ...",
       "enablingAllVersionsAndDeletesChangeFeedSpinnerLabel": "Änderungsfeedmodus „Alle Versionen und Löschvorgänge“ (Vorschau) wird aktiviert",
       "enablingOnlineCopySpinnerLabel": "Onlinekopie wird für Ihr Konto „{{accountName}}“ aktiviert ...",
-      "onlineMigrationPrerequisitesMessage": "Online migration prerequisites must be enabled before proceeding."
+      "onlineMigrationPrerequisitesMessage": "Die Voraussetzungen für die Onlinemigration müssen aktiviert sein, bevor Sie fortfahren können."
     },
     "monitorJobs": {
       "columns": {
@@ -1160,12 +1160,12 @@
     },
     "dataTransfers": {
       "polling": {
-        "cancelConsoleMessage": "Data transfer job \"{{jobName}}\" cancelled",
-        "completedConsoleMessage": "Data transfer job \"{{jobName}}\" completed",
+        "cancelConsoleMessage": "Datenübertragungsauftrag „{{jobName}}“ abgebrochen",
+        "completedConsoleMessage": "Datenübertragungsauftrag „{{jobName}}“ abgeschlossen",
         "defaultErrorMessage": "Vorgang konnte nicht abgeschlossen werden",
-        "errorConsoleMessage": "Data transfer job \"{{jobName}}\" failed: {{errorMessage}}",
-        "pauseConsoleMessage": "Data transfer job \"{{jobName}}\" paused",
-        "retryConsoleMessage": "Data transfer job \"{{jobName}}\" in progress, total count: {{totalCount}}, processed count: {{processedCount}}"
+        "errorConsoleMessage": "Fehler beim Datenübertragungsauftrag „{{jobName}}“: {{errorMessage}}",
+        "pauseConsoleMessage": "Datenübertragungsauftrag „{{jobName}}“ angehalten",
+        "retryConsoleMessage": "Der Datenübertragungsauftrag „{{jobName}}“ ist in Arbeit, Gesamtanzahl: {{totalCount}}, verarbeitete Anzahl: {{processedCount}}"
       }
     }
   }

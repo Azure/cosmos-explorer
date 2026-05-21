@@ -894,10 +894,10 @@
       },
       "partitionKeyEditor": {
         "changePartitionKey": "{{partitionKeyName}} módosítása",
-        "confirmCancel1": "You are about to cancel the following copy job.",
-        "confirmCancel2": "Cancelling will stop the job immediately.",
-        "confirmComplete1": "You are about to complete the following copy job.",
-        "confrimComplete2": "Once completed, continuous data copy will stop after any pending documents are processed. To maintain data integrity, we recommend stopping updates to the source container before completing the job.",
+        "confirmCancel1": "A következő másolási feladat megszakítására készül.",
+        "confirmCancel2": "A megszakítás azonnal leállítja a feladatot.",
+        "confirmComplete1": "A következő másolási feladat végrehajtására készül.",
+        "confrimComplete2": "Ha elkészült, a függőben lévő dokumentumok feldolgozása után a folyamatos adatmásolás leáll. Az adatintegritás megőrzése érdekében javasoljuk, hogy a feladat végrehajtása előtt állítsa le a forrástároló frissítéseit.",
         "currentPartitionKey": "Aktuális {{partitionKeyName}}",
         "partitioning": "Particionálás",
         "hierarchical": "Hierarchikus",
@@ -1036,7 +1036,7 @@
         "description": "Az online tárolómásolási feladatok lehetővé teszik, hogy adatokat másoljon egy forrástárolóból egy cél Cosmos DB NoSQL API-tárolóba a [Minden verzió és törlés](https://learn.microsoft.com/azure/cosmos-db/change-feed-modes?tabs=all-versions-and-deletes#all-versions-and-deletes-change-feed-mode-preview) változáscsatorna használatával. Ez lehetővé teszi, hogy a frissítések az adatok másolása közben is folytatódjanak a forráson. A végén rövid leállásra van szükség ahhoz, hogy biztonságosan átválthassa az ügyfélalkalmazásokat a céltárolóra. További információ az [online másolási feladatokról](https://learn.microsoft.com/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#getting-started)."
       }
     },
-    "migrationTypeTitle": "Migration type",
+    "migrationTypeTitle": "Áttelepítés típusa",
     "selectContainers": {
       "description": "Válasszon ki egy forrástárolót és egy céltárolót, amelybe másolni szeretne.",
       "sourceContainerSubHeading": "Forrástároló",
@@ -1122,7 +1122,7 @@
       "validateAllVersionsAndDeletesChangeFeedSpinnerLabel": "Az összes verzió és a törlések változáscsatorna-módjának ellenőrzése",
       "enablingAllVersionsAndDeletesChangeFeedSpinnerLabel": "Az összes verzió és a törlések változáscsatorna-módjának engedélyezése...",
       "enablingOnlineCopySpinnerLabel": "Az online másolás engedélyezése a(z) „{{accountName}}” fiókban ...",
-      "onlineMigrationPrerequisitesMessage": "Online migration prerequisites must be enabled before proceeding."
+      "onlineMigrationPrerequisitesMessage": "A folytatás előtt engedélyezni kell az online áttelepítés előfeltételeit."
     },
     "monitorJobs": {
       "columns": {
@@ -1160,12 +1160,12 @@
     },
     "dataTransfers": {
       "polling": {
-        "cancelConsoleMessage": "Data transfer job \"{{jobName}}\" cancelled",
-        "completedConsoleMessage": "Data transfer job \"{{jobName}}\" completed",
+        "cancelConsoleMessage": "A(z) {{jobName}} adatátviteli feladat megszakítva",
+        "completedConsoleMessage": "A(z) {{jobName}} adatátviteli feladat kész",
         "defaultErrorMessage": "A művelet nem fejezhető be",
-        "errorConsoleMessage": "Data transfer job \"{{jobName}}\" failed: {{errorMessage}}",
-        "pauseConsoleMessage": "Data transfer job \"{{jobName}}\" paused",
-        "retryConsoleMessage": "Data transfer job \"{{jobName}}\" in progress, total count: {{totalCount}}, processed count: {{processedCount}}"
+        "errorConsoleMessage": "A(z) {{jobName}} adatátviteli feladat meghiúsult: {{errorMessage}}",
+        "pauseConsoleMessage": "A(z) {{jobName}} adatátviteli feladat szüneteltetve",
+        "retryConsoleMessage": "Folyamatban van a(z) {{jobName}} adatátviteli feladat; teljes szám: {{totalCount}}, feldolgozottak száma: {{processedCount}}"
       }
     }
   }
