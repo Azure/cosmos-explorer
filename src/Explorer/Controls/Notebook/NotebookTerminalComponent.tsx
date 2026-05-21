@@ -2,13 +2,26 @@
  * Wrapper around Notebook server terminal
  */
 
+import { AuthType } from "../../../AuthType";
 import { useTerminal } from "hooks/useTerminal";
 import postRobot from "post-robot";
 import * as React from "react";
 import * as DataModels from "../../../Contracts/DataModels";
-import { TerminalProps } from "../../../Terminal/TerminalProps";
 import { userContext } from "../../../UserContext";
+import { ApiType } from "../../../UserContext";
 import * as StringUtils from "../../../Utils/StringUtils";
+
+interface TerminalProps {
+  authToken: string;
+  notebookServerEndpoint: string;
+  terminalEndpoint: string;
+  databaseAccount: DataModels.DatabaseAccount;
+  authType: AuthType;
+  apiType: ApiType;
+  subscriptionId: string;
+  tabId: string;
+  username?: string;
+}
 
 export interface NotebookTerminalComponentProps {
   notebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo;

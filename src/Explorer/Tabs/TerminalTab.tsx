@@ -7,8 +7,6 @@ import * as ViewModels from "../../Contracts/ViewModels";
 import { userContext } from "../../UserContext";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../Explorer";
-import { useNotebook } from "../Notebook/useNotebook";
-import { NotebookTerminalComponentAdapter } from "./ShellAdapters/NotebookTerminalComponentAdapter";
 import TabsBase from "./TabsBase";
 
 export interface TerminalTabOptions extends ViewModels.TabOptions {
@@ -29,41 +27,17 @@ export default class TerminalTab extends TabsBase {
     this.container = options.container;
     this.isAllPublicIPAddressesEnabled = ko.observable(true);
 
-    const commonArgs: [
-      () => DataModels.DatabaseAccount,
-      () => string,
-      () => string,
-      ko.Observable<boolean>,
-      ViewModels.TerminalKind,
-    ] = [
+    this.notebookTerminalComponentAdapter = new CloudShellTerminalComponentAdapter(
       () => userContext?.databaseAccount,
       () => this.tabId,
       () => this.getUsername(),
       this.isAllPublicIPAddressesEnabled,
       options.kind,
-    ];
+    );
 
-    if (userContext.features.enableCloudShell) {
-      this.notebookTerminalComponentAdapter = new CloudShellTerminalComponentAdapter(...commonArgs);
-
-      this.notebookTerminalComponentAdapter.parameters = ko.computed<boolean>(() => {
-        return this.isTemplateReady() && this.isAllPublicIPAddressesEnabled();
-      });
-    } else {
-      this.notebookTerminalComponentAdapter = new NotebookTerminalComponentAdapter(
-        () => this.getNotebookServerInfo(options),
-        ...commonArgs,
-      );
-
-      this.notebookTerminalComponentAdapter.parameters = ko.computed<boolean>(() => {
-        return (
-          this.isTemplateReady() &&
-          useNotebook.getState().isNotebookEnabled &&
-          useNotebook.getState().notebookServerInfo?.notebookServerEndpoint &&
-          this.isAllPublicIPAddressesEnabled()
-        );
-      });
-    }
+    this.notebookTerminalComponentAdapter.parameters = ko.computed<boolean>(() => {
+      return this.isTemplateReady() && this.isAllPublicIPAddressesEnabled();
+    });
 
     if (options.kind === ViewModels.TerminalKind.Postgres) {
       checkFirewallRules(
@@ -94,42 +68,6 @@ export default class TerminalTab extends TabsBase {
   }
   protected buildCommandBarOptions(): void {
     this.updateNavbarWithTabsButtons();
-  }
-
-  private getNotebookServerInfo(options: TerminalTabOptions): DataModels.NotebookWorkspaceConnectionInfo {
-    let endpointSuffix: string;
-
-    switch (options.kind) {
-      case ViewModels.TerminalKind.Default:
-        endpointSuffix = "";
-        break;
-
-      case ViewModels.TerminalKind.Mongo:
-        endpointSuffix = "mongo";
-        break;
-
-      case ViewModels.TerminalKind.Cassandra:
-        endpointSuffix = "cassandra";
-        break;
-
-      case ViewModels.TerminalKind.Postgres:
-        endpointSuffix = "postgresql";
-        break;
-
-      case ViewModels.TerminalKind.VCoreMongo:
-        endpointSuffix = "mongovcore";
-        break;
-
-      default:
-        throw new Error(`Terminal kind: ${options.kind} not supported`);
-    }
-
-    const info: DataModels.NotebookWorkspaceConnectionInfo = useNotebook.getState().notebookServerInfo;
-    return {
-      authToken: info.authToken,
-      notebookServerEndpoint: `${info.notebookServerEndpoint.replace(/\/+$/, "")}/${endpointSuffix}`,
-      forwardingId: info.forwardingId,
-    };
   }
 
   private getUsername(): string {
