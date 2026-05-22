@@ -77,15 +77,13 @@ test("Duplicate Query tab preserves query text in new tab", async () => {
   expect(editorText).toContain("duplicate-query-test");
 });
 
-test("Duplicate tab menu item is not shown for the Home tab", async () => {
-  // The Home tab (ReactTabKind) is never duplicable
+test("Right-click context menu does not appear for the Home tab", async () => {
+  // The Home tab (ReactTabKind) is never duplicable — no context menu should appear
   await explorer.tabNavHeader("Home").click({ button: "right" });
 
-  // "Close tab" should always appear
-  await expect(explorer.tabContextMenuItem("Close tab")).toBeVisible();
-
-  // "Duplicate tab" must NOT appear
+  // Neither menu item should be visible
   await expect(explorer.tabContextMenuItem("Duplicate tab")).not.toBeVisible();
+  await expect(explorer.tabContextMenuItem("Close tab")).not.toBeVisible();
 });
 
 test("Close tab from right-click menu closes the tab", async () => {
