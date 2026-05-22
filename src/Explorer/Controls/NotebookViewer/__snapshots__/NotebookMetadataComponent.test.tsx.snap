@@ -27,27 +27,13 @@ exports[`NotebookMetadataComponent renders liked notebook 1`] = `
     </StackItem>
     <StackItem>
       <Text>
-        <CustomizedIconButton
-          iconProps={
-            {
-              "iconName": "HeartFill",
-            }
-          }
+        <Icon
+          iconName="Heart"
         />
+         
         0
          likes
       </Text>
-    </StackItem>
-    <StackItem>
-      <CustomizedPrimaryButton
-        text="Download"
-      />
-    </StackItem>
-    <StackItem
-      grow={true}
-    />
-    <StackItem>
-      <InfoComponent />
     </StackItem>
   </Stack>
   <Stack
@@ -139,27 +125,13 @@ exports[`NotebookMetadataComponent renders un-liked notebook 1`] = `
     </StackItem>
     <StackItem>
       <Text>
-        <CustomizedIconButton
-          iconProps={
-            {
-              "iconName": "Heart",
-            }
-          }
+        <Icon
+          iconName="Heart"
         />
+         
         0
          likes
       </Text>
-    </StackItem>
-    <StackItem>
-      <CustomizedPrimaryButton
-        text="Download"
-      />
-    </StackItem>
-    <StackItem
-      grow={true}
-    />
-    <StackItem>
-      <InfoComponent />
     </StackItem>
   </Stack>
   <Stack
