@@ -74,6 +74,7 @@ export class NewMongoQueryTab extends NewQueryTab {
 
   public duplicateTab(): void {
     const id = useTabs.getState().getTabs(ViewModels.CollectionTabKind.Query).length + 1;
+    const queryText = this.iTabAccessor?.onSaveClickEvent() ?? this.persistedState?.query?.text ?? "";
     const newTab = new NewMongoQueryTab(
       {
         tabKind: ViewModels.CollectionTabKind.Query,
@@ -81,7 +82,7 @@ export class NewMongoQueryTab extends NewQueryTab {
         tabPath: "",
         collection: this.collection,
         node: this.collection,
-        queryText: this.persistedState?.query?.text ?? "",
+        queryText,
         partitionKey: this.partitionKey,
         splitterDirection: this.persistedState?.splitterDirection,
         queryViewSizePercent: this.persistedState?.queryViewSizePercent,

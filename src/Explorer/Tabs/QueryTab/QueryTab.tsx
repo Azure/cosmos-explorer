@@ -78,7 +78,7 @@ export class NewQueryTab extends TabsBase {
   }
 
   public duplicateTab(): void {
-    const queryText = this.persistedState?.query?.text ?? "";
+    const queryText = this.iTabAccessor?.onSaveClickEvent() ?? this.persistedState?.query?.text ?? "";
     const id = useTabs.getState().getTabs(ViewModels.CollectionTabKind.Query).length + 1;
     const newTab = new NewQueryTab(
       {
