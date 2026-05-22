@@ -616,6 +616,16 @@ export class DataExplorer {
     await page.goto(url);
     return DataExplorer.waitForExplorer(page);
   }
+
+  /** Returns the tab navigation <li> element for the given tab ID or React tab name (e.g. "tab0", "Home") */
+  tabNavHeader(tabId: string): Locator {
+    return this.frame.getByTestId(`TabNav:${tabId}`);
+  }
+
+  /** Returns a context menu item in the tab right-click menu by visible label */
+  tabContextMenuItem(label: string): Locator {
+    return this.frame.getByRole("menuitem", { name: label });
+  }
 }
 
 export async function waitForApiResponse(

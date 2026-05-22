@@ -91,6 +91,7 @@ function TabNav({ tab, active, tabKind }: { tab?: Tab; active: boolean; tabKind?
     <Menu openOnContext>
       <MenuTrigger disableButtonEnhancement>
         <li
+          data-test={`TabNav:${tab !== undefined ? tab.tabId : ReactTabKind[tabKind!]}`}
           onMouseOver={() => setHovering(true)}
           onMouseLeave={() => setHovering(false)}
           className={active ? "active tabList" : "tabList"}
