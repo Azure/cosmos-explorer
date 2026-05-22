@@ -21,6 +21,7 @@ import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { traceOpen } from "Shared/Telemetry/TelemetryProcessor";
 import { useCarousel } from "hooks/useCarousel";
 import { usePostgres } from "hooks/usePostgres";
+import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
 import * as React from "react";
 import ConnectIcon from "../../../images/Connect_color.svg";
@@ -212,6 +213,12 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
         dispose: useDatabases.subscribe(
           () => setState({}),
           (state) => state.sampleDataResourceTokenCollection,
+        ),
+      },
+      {
+        dispose: useQueryCopilot.subscribe(
+          () => setState({}),
+          (state) => state.copilotEnabled,
         ),
       },
     );

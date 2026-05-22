@@ -29,7 +29,7 @@ import { BrowseQueriesPane } from "../../Panes/BrowseQueriesPane/BrowseQueriesPa
 import { LoadQueryPane } from "../../Panes/LoadQueryPane/LoadQueryPane";
 import { SettingsPane, useDataPlaneRbac } from "../../Panes/SettingsPane/SettingsPane";
 import { useDatabases } from "../../useDatabases";
-import { SelectedNodeState } from "../../useSelectedNode";
+import { SelectedNodeState, useSelectedNode } from "../../useSelectedNode";
 import { ThemeToggleButton } from "./ThemeToggleButton";
 
 let counter = 0;
@@ -103,7 +103,9 @@ export function createStaticCommandBarButtons(
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: true,
-        disabled: selectedNodeState.isDatabaseNodeOrNoneSelected(),
+        disabled:
+          useSelectedNode.getState().isQueryCopilotCollectionSelected() ||
+          selectedNodeState.isDatabaseNodeOrNoneSelected(),
       };
 
       newStoredProcedureBtn.children = createScriptCommandButtons(selectedNodeState);
@@ -258,7 +260,8 @@ function createOpenSynapseLinkDialogButton(container: Explorer): CommandButtonCo
     onCommandClick: () => container.openEnableSynapseLinkDialog(),
     commandButtonLabel: label,
     hasPopup: false,
-    disabled: useNotebook.getState().isSynapseLinkUpdating,
+    disabled:
+      useSelectedNode.getState().isQueryCopilotCollectionSelected() || useNotebook.getState().isSynapseLinkUpdating,
     ariaLabel: label,
   };
 }
@@ -357,7 +360,9 @@ export function createScriptCommandButtons(selectedNodeState: SelectedNodeState)
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: true,
-      disabled: selectedNodeState.isDatabaseNodeOrNoneSelected(),
+      disabled:
+        useSelectedNode.getState().isQueryCopilotCollectionSelected() ||
+        selectedNodeState.isDatabaseNodeOrNoneSelected(),
       styles: {
         root: {
           backgroundColor: "var(--colorNeutralBackground1)",
@@ -391,7 +396,9 @@ export function createScriptCommandButtons(selectedNodeState: SelectedNodeState)
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: true,
-      disabled: selectedNodeState.isDatabaseNodeOrNoneSelected(),
+      disabled:
+        useSelectedNode.getState().isQueryCopilotCollectionSelected() ||
+        selectedNodeState.isDatabaseNodeOrNoneSelected(),
       styles: {
         root: {
           backgroundColor: "var(--colorNeutralBackground1)",
@@ -425,7 +432,9 @@ export function createScriptCommandButtons(selectedNodeState: SelectedNodeState)
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: true,
-      disabled: selectedNodeState.isDatabaseNodeOrNoneSelected(),
+      disabled:
+        useSelectedNode.getState().isQueryCopilotCollectionSelected() ||
+        selectedNodeState.isDatabaseNodeOrNoneSelected(),
       styles: {
         root: {
           backgroundColor: "var(--colorNeutralBackground1)",
@@ -460,7 +469,7 @@ function createOpenQueryButton(container: Explorer): CommandButtonComponentProps
     commandButtonLabel: label,
     ariaLabel: label,
     hasPopup: true,
-    disabled: false,
+    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
   };
 }
 
@@ -474,7 +483,7 @@ function createOpenQueryFromDiskButton(): CommandButtonComponentProps {
     commandButtonLabel: label,
     ariaLabel: label,
     hasPopup: true,
-    disabled: false,
+    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
   };
 }
 

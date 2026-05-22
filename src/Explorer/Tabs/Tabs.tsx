@@ -2,6 +2,7 @@ import { Spinner, SpinnerSize, TooltipHost } from "@fluentui/react";
 import { CollectionTabKind } from "Contracts/ViewModels";
 import Explorer from "Explorer/Explorer";
 import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
+import { QueryCopilotTab } from "Explorer/QueryCopilot/QueryCopilotTab";
 import { FabricHomeScreen } from "Explorer/SplashScreen/FabricHome";
 import { SplashScreen } from "Explorer/SplashScreen/SplashScreen";
 import { ConnectTab } from "Explorer/Tabs/ConnectTab";
@@ -75,6 +76,9 @@ function TabNav({ tab, active, tabKind }: { tab?: Tab; active: boolean; tabKind?
   const tabId = tab ? tab.tabId : "";
 
   const getReactTabTitle = (): ko.Observable<string> => {
+    if (tabKind === ReactTabKind.QueryCopilot) {
+      return ko.observable("Query");
+    }
     return ko.observable(ReactTabKind[tabKind]);
   };
 
@@ -319,6 +323,8 @@ const getReactTabContent = (activeReactTab: ReactTabKind, explorer: Explorer): J
       ) : (
         <QuickstartTab explorer={explorer} />
       );
+    case ReactTabKind.QueryCopilot:
+      return <QueryCopilotTab explorer={explorer} />;
     default:
       throw new Error(`Unsupported tab kind ${ReactTabKind[activeReactTab]}`);
   }

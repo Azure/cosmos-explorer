@@ -2525,14 +2525,26 @@ exports[`createSampleDataTreeNodes creates the expected tree nodes 1`] = `
       {
         "children": [
           {
-            "contextMenu": [],
+            "contextMenu": [
+              {
+                "iconSrc": {},
+                "label": "New SQL Query",
+                "onClick": [Function],
+              },
+            ],
             "isSelected": [Function],
             "label": "Items",
             "onClick": [Function],
           },
         ],
         "className": "collectionNode",
-        "contextMenu": [],
+        "contextMenu": [
+          {
+            "iconSrc": {},
+            "label": "New SQL Query",
+            "onClick": [Function],
+          },
+        ],
         "iconSrc": <DocumentMultipleRegular
           fontSize={16}
         />,

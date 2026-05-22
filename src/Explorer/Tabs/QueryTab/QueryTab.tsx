@@ -1,12 +1,19 @@
 import { sendMessage } from "Common/MessageHandler";
 import { ActionType, OpenQueryTab, TabKind } from "Contracts/ActionContracts";
 import { MessageTypes } from "Contracts/MessageTypes";
+import { CopilotProvider } from "Explorer/QueryCopilot/QueryCopilotContext";
+import { userContext } from "UserContext";
 import React from "react";
 import * as DataModels from "../../../Contracts/DataModels";
 import type { QueryTabOptions } from "../../../Contracts/ViewModels";
 import { useTabs } from "../../../hooks/useTabs";
 import Explorer from "../../Explorer";
-import { IQueryTabComponentProps, ITabAccessor, QueryTabComponent } from "../../Tabs/QueryTab/QueryTabComponent";
+import {
+  IQueryTabComponentProps,
+  ITabAccessor,
+  QueryTabComponent,
+  QueryTabCopilotComponent,
+} from "../../Tabs/QueryTab/QueryTabComponent";
 import TabsBase from "../TabsBase";
 
 export interface IQueryTabProps {
@@ -73,7 +80,13 @@ export class NewQueryTab extends TabsBase {
   }
 
   public render(): JSX.Element {
-    return <QueryTabComponent {...this.iQueryTabComponentProps} />;
+    return userContext.apiType === "SQL" ? (
+      <CopilotProvider>
+        <QueryTabCopilotComponent {...this.iQueryTabComponentProps} />
+      </CopilotProvider>
+    ) : (
+      <QueryTabComponent {...this.iQueryTabComponentProps} />
+    );
   }
 
   public onActivate(): void {

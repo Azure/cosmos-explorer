@@ -550,7 +550,7 @@ export default class Collection implements ViewModels.Collection {
 
   public onSchemaAnalyzerClick = async () => {
     if (useNotebook.getState().isPhoenixFeatures) {
-      await this.container.allocateContainer();
+      await this.container.allocateContainer(Constants.PoolIdType.DefaultPoolId);
     }
     useSelectedNode.getState().setSelectedNode(this);
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.SchemaAnalyzer);

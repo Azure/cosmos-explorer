@@ -1,0 +1,49 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Query copilot tab snapshot test should render with initial input 1`] = `
+<Stack
+  className="tab-pane"
+  style={
+    {
+      "width": "100%",
+    }
+  }
+>
+  <div
+    style={
+      {
+        "height": "100%",
+        "overflowY": "auto",
+      }
+    }
+  >
+    <Stack
+      className="tabPaneContentContainer"
+    >
+      <t
+        customClassName=""
+        onDragEnd={null}
+        onDragStart={null}
+        onSecondaryPaneSizeChange={null}
+        percentage={true}
+        primaryIndex={0}
+        primaryMinSize={30}
+        secondaryMinSize={70}
+        vertical={true}
+      >
+        <EditorReact
+          ariaLabel="Editing Query"
+          content="SELECT * FROM c"
+          isReadOnly={false}
+          language="sql"
+          lineNumbers="on"
+          onContentChanged={[Function]}
+          onContentSelected={[Function]}
+          wordWrap="on"
+        />
+        <QueryCopilotResults />
+      </t>
+    </Stack>
+  </div>
+</Stack>
+`;
