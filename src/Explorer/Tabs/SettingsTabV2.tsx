@@ -1,7 +1,6 @@
 import { ActionType, OpenCollectionTab, TabKind } from "Contracts/ActionContracts";
 import React from "react";
 import * as ViewModels from "../../Contracts/ViewModels";
-import { useTabs } from "../../hooks/useTabs";
 import { SettingsComponent } from "../Controls/Settings/SettingsComponent";
 import TabsBase from "./TabsBase";
 
@@ -22,21 +21,6 @@ export class CollectionSettingsTabV2 extends SettingsTabV2 {
       databaseResourceId: options.collection.databaseId,
       collectionResourceId: options.collection.id(),
     };
-  }
-
-  public canDuplicate(): boolean {
-    return true;
-  }
-
-  public duplicateTab(): void {
-    const newTab = new CollectionSettingsTabV2({
-      tabKind: ViewModels.CollectionTabKind.CollectionSettingsV2,
-      title: this.tabTitle(),
-      tabPath: "",
-      collection: this.collection,
-      node: this.collection,
-    });
-    useTabs.getState().activateNewTab(newTab);
   }
 
   public onActivate(): void {

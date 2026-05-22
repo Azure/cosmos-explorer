@@ -77,25 +77,6 @@ test("Duplicate Query tab preserves query text in new tab", async () => {
   expect(editorText).toContain("duplicate-query-test");
 });
 
-test("Duplicate Scale & Settings tab opens a second settings tab", async () => {
-  await explorer.openScaleAndSettings(context);
-
-  // Wait for the settings tab pane to be attached
-  const tab0 = explorer.tab("tab0");
-  await expect(tab0).toBeAttached({ timeout: 30_000 });
-
-  // Right-click the tab nav header
-  await explorer.tabNavHeader("tab0").click({ button: "right" });
-
-  const duplicateMenuItem = explorer.tabContextMenuItem("Duplicate tab");
-  await expect(duplicateMenuItem).toBeVisible();
-  await duplicateMenuItem.click();
-
-  // A second settings tab should appear
-  const tab1 = explorer.tab("tab1");
-  await expect(tab1).toBeAttached({ timeout: 30_000 });
-});
-
 test("Duplicate tab menu item is not shown for the Home tab", async () => {
   // The Home tab (ReactTabKind) is never duplicable
   await explorer.tabNavHeader("Home").click({ button: "right" });
