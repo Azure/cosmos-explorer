@@ -1,19 +1,19 @@
 import {
-  ActionButton,
-  Checkbox,
-  DefaultButton,
-  DirectionalHint,
-  Dropdown,
-  Icon,
-  IconButton,
-  IDropdownOption,
-  Link,
-  ProgressIndicator,
-  Separator,
-  Stack,
-  TeachingBubble,
-  Text,
-  TooltipHost,
+    ActionButton,
+    Checkbox,
+    DefaultButton,
+    DirectionalHint,
+    Dropdown,
+    Icon,
+    IconButton,
+    IDropdownOption,
+    Link,
+    ProgressIndicator,
+    Separator,
+    Stack,
+    TeachingBubble,
+    Text,
+    TooltipHost,
 } from "@fluentui/react";
 import * as Constants from "Common/Constants";
 import { createCollection } from "Common/dataAccess/createCollection";
@@ -24,21 +24,21 @@ import { AccountOverride } from "Contracts/DataModels";
 import { FullTextPoliciesComponent } from "Explorer/Controls/FullTextSeach/FullTextPoliciesComponent";
 import { VectorEmbeddingPoliciesComponent } from "Explorer/Controls/VectorSearch/VectorEmbeddingPoliciesComponent";
 import {
-  AllPropertiesIndexed,
-  AnalyticalStoreHeader,
-  ContainerVectorPolicyTooltipContent,
-  FullTextPolicyDefault,
-  getPartitionKey,
-  getPartitionKeyName,
-  getPartitionKeyPlaceHolder,
-  getPartitionKeyTooltipText,
-  isFreeTierAccount,
-  isSynapseLinkEnabled,
-  parseUniqueKeys,
-  scrollToSection,
-  SharedDatabaseDefault,
-  shouldShowAnalyticalStoreOptions,
-  UniqueKeysHeader,
+    AllPropertiesIndexed,
+    AnalyticalStoreHeader,
+    ContainerVectorPolicyTooltipContent,
+    FullTextPolicyDefault,
+    getPartitionKey,
+    getPartitionKeyName,
+    getPartitionKeyPlaceHolder,
+    getPartitionKeyTooltipText,
+    isFreeTierAccount,
+    isSynapseLinkEnabled,
+    parseUniqueKeys,
+    scrollToSection,
+    SharedDatabaseDefault,
+    shouldShowAnalyticalStoreOptions,
+    UniqueKeysHeader,
 } from "Explorer/Panes/AddCollectionPanel/AddCollectionPanelUtility";
 import { useSidePanel } from "hooks/useSidePanel";
 import { useTeachingBubble } from "hooks/useTeachingBubble";
@@ -154,6 +154,19 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
   componentDidUpdate(_prevProps: AddCollectionPanelProps, prevState: AddCollectionPanelState): void {
     if (this.state.errorMessage && this.state.errorMessage !== prevState.errorMessage) {
       scrollToSection("panelContainer");
+    }
+
+    // When the user selects a different "Use existing" database, lazily load its offer so
+    // the "Provision dedicated throughput" checkbox can appear even if the initial
+    // loadDatabaseOffers() call could not load this database's offer (e.g. due to a
+    // transient ARM error shortly after the database was created).
+    if (!this.state.createNewDatabase && this.state.selectedDatabaseId !== prevState.selectedDatabaseId) {
+      const selectedDatabase = useDatabases
+        .getState()
+        .databases?.find((database) => database.id() === this.state.selectedDatabaseId);
+      if (selectedDatabase && !selectedDatabase.offer()) {
+        selectedDatabase.loadOffer().then(() => this.forceUpdate()).catch(console.error);
+      }
     }
   }
 

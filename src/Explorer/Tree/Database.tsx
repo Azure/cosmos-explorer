@@ -256,8 +256,12 @@ export default class Database implements ViewModels.Database {
         databaseId: this.id(),
         databaseResourceId: this.self,
       };
-      this.offer(await readDatabaseOffer(params));
-      this.isOfferRead = true;
+      try {
+        this.offer(await readDatabaseOffer(params));
+        this.isOfferRead = true;
+      } catch {
+        // Don't propagate - leave isOfferRead false so it can be retried
+      }
     }
   }
 

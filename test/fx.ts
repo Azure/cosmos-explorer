@@ -438,7 +438,16 @@ export class DataExplorer {
    * There's only a single "primary" button, but we still require you to pass the label to confirm you're selecting the right button.
    */
   async globalCommandButton(label: string): Promise<Locator> {
-    await this.frame.getByTestId("GlobalCommands").click();
+    const globalCommands = this.frame.getByTestId("GlobalCommands");
+    // Prefer the explicit dropdown trigger so we always open the menu rather than
+    // triggering a primary action directly.  The SplitButton (wide sidebar) exposes
+    // "More commands" and the MenuButton (narrow sidebar) is labelled "New…".
+    const dropdownTrigger = globalCommands.getByRole("button", { name: "More commands" });
+    if (await dropdownTrigger.isVisible()) {
+      await dropdownTrigger.click();
+    } else {
+      await globalCommands.click();
+    }
     return this.frame.getByRole("menuitem", { name: label });
   }
 

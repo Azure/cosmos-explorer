@@ -144,11 +144,7 @@ function TabNav({ tab, active, tabKind }: { tab?: Tab; active: boolean; tabKind?
                 )}
                 {isQueryErrorThrown(tab, tabKind) && (
                   <TooltipHost content="Error">
-                    <img
-                      src={errorQuery}
-                      alt="Error"
-                      style={{ marginTop: 4, marginLeft: 4, width: 10, height: 11 }}
-                    />
+                    <img src={errorQuery} alt="Error" style={{ marginTop: 4, marginLeft: 4, width: 10, height: 11 }} />
                   </TooltipHost>
                 )}
               </span>
