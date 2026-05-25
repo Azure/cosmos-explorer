@@ -74,7 +74,8 @@ export class NotebookUtil {
     const cwd = (filepath && path.dirname(filepath)) || "/";
 
     const kernelSpecName =
-      notebook.getIn(["metadata", "kernelspec", "name"]) || notebook.getIn(["metadata", "language_info", "name"]);
+      (notebook.getIn(["metadata", "kernelspec", "name"]) as string | undefined) ||
+      (notebook.getIn(["metadata", "language_info", "name"]) as string | undefined);
 
     return {
       cwd,

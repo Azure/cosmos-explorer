@@ -23,6 +23,7 @@
     "jsx": "react",
     "moduleResolution": "node",
     "resolveJsonModule": true,
+    "skipLibCheck": true,
     "noEmit": true,
     "types": [
       "jest"

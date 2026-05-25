@@ -1,0 +1,73 @@
+diff --git a/node_modules/@nteract/commutable/src/structures.ts b/node_modules/@nteract/commutable/src/structures.ts
+index c0ff6cb..b0117b7 100644
+--- a/node_modules/@nteract/commutable/src/structures.ts
++++ b/node_modules/@nteract/commutable/src/structures.ts
+@@ -193,6 +193,7 @@ export function markCellDeleting(
+       ["cellMap", cellId],
+       nb
+         .getIn(["cellMap", cellId])
++        // @ts-ignore - immutable v4 getIn returns unknown
+         .setIn(["metadata", "nteract", "transient", "deleting"], true)
+     )
+   );
+@@ -215,6 +216,7 @@ export function markCellNotDeleting(
+       ["cellMap", cellId],
+       nb
+         .getIn(["cellMap", cellId])
++        // @ts-ignore - immutable v4 getIn returns unknown
+         .setIn(["metadata", "nteract", "transient", "deleting"], false)
+     )
+   );
+diff --git a/node_modules/@nteract/commutable/src/v3.ts b/node_modules/@nteract/commutable/src/v3.ts
+index 1ffa956..4e9078d 100644
+--- a/node_modules/@nteract/commutable/src/v3.ts
++++ b/node_modules/@nteract/commutable/src/v3.ts
+@@ -114,7 +114,7 @@ function createImmutableMarkdownCell(
+   return makeMarkdownCell({
+     cell_type: cell.cell_type,
+     source: demultiline(cell.source),
+-    metadata: immutableFromJS(cell.metadata)
++    metadata: immutableFromJS(cell.metadata) as any
+   });
+ }
+ 
+@@ -172,7 +172,7 @@ function createImmutableCodeCell(cell: CodeCell): ImmutableCodeCell {
+     source: demultiline(cell.input),
+     outputs: ImmutableList(cell.outputs.map(createImmutableOutput)),
+     execution_count: cell.prompt_number,
+-    metadata: immutableFromJS(cell.metadata)
++    metadata: immutableFromJS(cell.metadata) as any
+   });
+ }
+ 
+@@ -180,7 +180,7 @@ function createImmutableRawCell(cell: RawCell): ImmutableRawCell {
+   return makeRawCell({
+     cell_type: cell.cell_type,
+     source: demultiline(cell.source),
+-    metadata: immutableFromJS(cell.metadata)
++    metadata: immutableFromJS(cell.metadata) as any
+   });
+ }
+ 
+@@ -198,7 +198,7 @@ function createImmutableHeadingCell(cell: HeadingCell): ImmutableMarkdownCell {
+           )
+         )
+       : cell.source,
+-    metadata: immutableFromJS(cell.metadata)
++    metadata: immutableFromJS(cell.metadata) as any
+   });
+ }
+ 
+diff --git a/node_modules/@nteract/commutable/src/v4.ts b/node_modules/@nteract/commutable/src/v4.ts
+index a6dd478..dd9a741 100644
+--- a/node_modules/@nteract/commutable/src/v4.ts
++++ b/node_modules/@nteract/commutable/src/v4.ts
+@@ -227,7 +227,7 @@ export function fromJS(
+     cellMap: cellStructure.cellMap.asImmutable(),
+     nbformat_minor: notebook.nbformat_minor,
+     nbformat: 4,
+-    metadata: immutableFromJS(notebook.metadata)
++    metadata: immutableFromJS(notebook.metadata) as any
+   });
+ }
+ 
