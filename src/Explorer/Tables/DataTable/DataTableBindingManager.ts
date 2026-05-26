@@ -93,7 +93,7 @@ function createDataTable(
 
   for (var i = 0; i < tableEntityListViewModel.headers.length; i++) {
     jsonColTable.push({
-      sTitle: tableEntityListViewModel.headers[i],
+      sTitle: Utilities.htmlEncode(tableEntityListViewModel.headers[i]),
       data: tableEntityListViewModel.headers[i],
       aTargets: [i],
       mRender: bindColumn,
