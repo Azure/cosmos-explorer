@@ -82,4 +82,15 @@ describe("DocumentsTabV2.duplicateTab", () => {
     const newTab = activateNewTab.mock.calls[0][0];
     expect(newTab).not.toBe(tab);
   });
+
+  it("preserves the raw title (not the display title) to avoid double-prefixing", () => {
+    const tab = buildTab();
+    tab.duplicateTab();
+
+    const newTab = activateNewTab.mock.calls[0][0] as DocumentsTabV2;
+    // The original tabTitle() is "testC…Items" (collection "testContainer" is > 8 chars so it's truncated).
+    // If duplicateTab() incorrectly used tabTitle() as the new title, the duplicate's tabTitle()
+    // would double-prefix to "testC…testC…Items". Using the raw title "Items" keeps it "testC…Items".
+    expect(newTab.tabTitle()).toBe("testC\u2026Items");
+  });
 });
