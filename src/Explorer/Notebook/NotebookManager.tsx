@@ -17,16 +17,13 @@ import { JunoClient } from "../../Juno/JunoClient";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
-import { getFullName } from "../../Utils/UserUtils";
 import { useDialog } from "../Controls/Dialog";
 import Explorer from "../Explorer";
 import { CopyNotebookPane } from "../Panes/CopyNotebookPane/CopyNotebookPane";
 import { GitHubReposPanel } from "../Panes/GitHubReposPanel/GitHubReposPanel";
-import { PublishNotebookPane } from "../Panes/PublishNotebookPane/PublishNotebookPane";
 import { ResourceTreeAdapter } from "../Tree/ResourceTreeAdapter";
 import { InMemoryContentProvider } from "./NotebookComponent/ContentProviders/InMemoryContentProvider";
 import { NotebookContentProvider } from "./NotebookComponent/NotebookContentProvider";
-import { SnapshotRequest } from "./NotebookComponent/types";
 import { NotebookContainerClient } from "./NotebookContainerClient";
 import { NotebookContentClient } from "./NotebookContentClient";
 import { SchemaAnalyzerNotebook } from "./SchemaAnalyzer/SchemaAnalyzerUtils";
@@ -122,31 +119,6 @@ export default class NotebookManager {
     if (token) {
       this.junoClient.getPinnedRepos(token.scope);
     }
-  }
-
-  public async openPublishNotebookPane(
-    name: string,
-    content: NotebookPaneContent,
-    notebookContentRef: string,
-    onTakeSnapshot: (request: SnapshotRequest) => void,
-    onClosePanel: () => void,
-  ): Promise<void> {
-    useSidePanel
-      .getState()
-      .openSidePanel(
-        "Publish Notebook",
-        <PublishNotebookPane
-          explorer={this.params.container}
-          junoClient={this.junoClient}
-          name={name}
-          author={getFullName()}
-          notebookContent={content}
-          notebookContentRef={notebookContentRef}
-          onTakeSnapshot={onTakeSnapshot}
-        />,
-        "440px",
-        onClosePanel,
-      );
   }
 
   public openCopyNotebookPane(name: string, content: string): void {

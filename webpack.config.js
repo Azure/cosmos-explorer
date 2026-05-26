@@ -113,7 +113,6 @@ module.exports = function (_env = {}, argv = {}) {
     hostedExplorer: "./src/HostedExplorer.tsx",
     terminal: "./src/Terminal/index.ts",
     cellOutputViewer: "./src/CellOutputViewer/CellOutputViewer.tsx",
-    galleryViewer: "./src/GalleryViewer/GalleryViewer.tsx",
     selfServe: "./src/SelfServe/SelfServe.tsx",
     connectToGitHub: "./src/GitHub/GitHubConnector.ts",
     redirectBridge: "./src/redirectBridge.ts",
@@ -153,11 +152,6 @@ module.exports = function (_env = {}, argv = {}) {
       filename: "cellOutputViewer.html",
       template: "src/CellOutputViewer/cellOutputViewer.html",
       chunks: ["cellOutputViewer"],
-    }),
-    new HtmlWebpackPlugin({
-      filename: "gallery.html",
-      template: "src/GalleryViewer/galleryViewer.html",
-      chunks: ["galleryViewer"],
     }),
     new HtmlWebpackPlugin({
       filename: "connectToGitHub.html",
