@@ -85,7 +85,7 @@ export const allowedArcadiaEndpoints: ReadonlyArray<string> = ["https://workspac
 
 export const allowedHostedExplorerEndpoints: ReadonlyArray<string> = [
   "https://cosmos.azure.com",
-  "https://localhost:12900",
+  ...(process.env.NODE_ENV === "development" ? ["https://localhost:12900"] : []),
 ];
 
 export const allowedMsalRedirectEndpoints: ReadonlyArray<string> = ["https://dataexplorer-preview.azurewebsites.net/"];

@@ -17,6 +17,7 @@ import { FeedbackCommandButton } from "./Platform/Hosted/Components/FeedbackComm
 import { MeControl } from "./Platform/Hosted/Components/MeControl";
 import { SignInButton } from "./Platform/Hosted/Components/SignInButton";
 import "./Platform/Hosted/ConnectScreen.less";
+import { parseConnectionString } from "./Platform/Hosted/Helpers/ConnectionStringParser";
 import { isResourceTokenConnectionString } from "./Platform/Hosted/Helpers/ResourceTokenUtils";
 import { extractMasterKeyfromConnectionString } from "./Platform/Hosted/HostedUtils";
 import "./Shared/appInsights";
@@ -90,8 +91,11 @@ const App: React.FunctionComponent = () => {
       if (!allowedHostedExplorerEndpoints.includes(event.origin)) {
         return;
       }
-      if (event.data?.type === MSG_CONNECTION_STRING && event.data?.connectionString) {
-        connectWithConnectionString(event.data.connectionString);
+      if (event.data?.type === MSG_CONNECTION_STRING) {
+        const connStr: string = event.data.connectionString;
+        if (parseConnectionString(connStr)) {
+          connectWithConnectionString(connStr);
+        }
       }
     };
 
@@ -207,4 +211,9 @@ const App: React.FunctionComponent = () => {
   );
 };
 
-render(<App />, document.getElementById("App"));
+export { App };
+
+const appElement = document.getElementById("App");
+if (appElement) {
+  render(<App />, appElement);
+}
