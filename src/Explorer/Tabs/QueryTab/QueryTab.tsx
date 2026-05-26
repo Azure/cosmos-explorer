@@ -5,7 +5,7 @@ import React from "react";
 import * as DataModels from "../../../Contracts/DataModels";
 import type { QueryTabOptions } from "../../../Contracts/ViewModels";
 import * as ViewModels from "../../../Contracts/ViewModels";
-import { useTabs } from "../../../hooks/useTabs";
+import { useTabs } from "hooks/useTabs";
 import Explorer from "../../Explorer";
 import { IQueryTabComponentProps, ITabAccessor, QueryTabComponent } from "../../Tabs/QueryTab/QueryTabComponent";
 import TabsBase from "../TabsBase";
