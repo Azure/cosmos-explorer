@@ -35,16 +35,19 @@ const mockFetchEncryptedToken = fetchEncryptedToken as jest.MockedFunction<typeo
 
 (ConnectExplorer as jest.Mock).mockImplementation(() => <div data-testid="connect-explorer" />);
 
+import type { AccountInfo } from "@azure/msal-browser";
+import type { AadAuthFailure } from "./hooks/useAADAuth";
+
 const defaultAADAuth = {
   isLoggedIn: false,
   armToken: "",
   graphToken: "",
-  account: undefined,
+  account: undefined as AccountInfo | null | undefined,
   tenantId: "",
   logout: jest.fn(),
   login: jest.fn(),
   switchTenant: jest.fn(),
-  authFailure: undefined,
+  authFailure: undefined as AadAuthFailure | null | undefined,
 };
 
 beforeEach(() => {
