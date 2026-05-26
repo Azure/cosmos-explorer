@@ -187,7 +187,7 @@ export class DocumentsTabV2 extends TabsBase {
       partitionKey: this.partitionKey,
       documentIds: ko.observableArray<DocumentId>([]),
       tabKind: ViewModels.CollectionTabKind.Documents,
-      title: this.tabTitle(),
+      title: this.title,
       collection: this.collection,
       node: this.collection,
       tabPath: `${this.collection.databaseId}>${this.collection.id()}>Documents`,
