@@ -1,5 +1,6 @@
 import * as msal from "@azure/msal-browser";
 import { useBoolean } from "@fluentui/react-hooks";
+import { stringifyError } from "Common/ErrorHandlingUtils";
 import * as React from "react";
 import { ConfigContext } from "../ConfigContext";
 import {
@@ -77,7 +78,7 @@ export function useAADAuth(config?: ConfigContext): ReturnType {
       localStorage.setItem("cachedTenantId", response.tenantId);
     } catch (error) {
       setAuthFailure({
-        failureMessage: `Login failed: ${JSON.stringify(error)}`,
+        failureMessage: `Login failed: ${stringifyError(error)}`,
       });
     }
   }, [msalInstance, config]);
@@ -111,7 +112,7 @@ export function useAADAuth(config?: ConfigContext): ReturnType {
         localStorage.setItem("cachedTenantId", response.tenantId);
       } catch (error) {
         setAuthFailure({
-          failureMessage: `Tenant switch failed: ${JSON.stringify(error)}`,
+          failureMessage: `Tenant switch failed: ${stringifyError(error)}`,
         });
       }
     },
@@ -144,7 +145,7 @@ export function useAADAuth(config?: ConfigContext): ReturnType {
           failureLinkAction: acquireTokens,
         });
       } else {
-        const errorJson = JSON.stringify(error);
+        const errorJson = stringifyError(error);
         setAuthFailure({
           failureMessage: `We were unable to establish authorization for this account, due to the following error: \n${errorJson}`,
         });

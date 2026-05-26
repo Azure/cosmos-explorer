@@ -1,5 +1,6 @@
 import * as msal from "@azure/msal-browser";
 import { getEnvironmentScopeEndpoint } from "Common/EnvironmentUtility";
+import { stringifyError } from "Common/ErrorHandlingUtils";
 import { Action, ActionModifiers } from "Shared/Telemetry/TelemetryConstants";
 import { hasProxyServer, isDataplaneRbacSupported } from "Utils/APITypeUtils";
 import { AuthType } from "../AuthType";
@@ -154,9 +155,9 @@ export async function acquireMsalTokenForAccount(
       traceFailure(Action.SignInAad, {
         request: JSON.stringify(loginRequest),
         acquireTokenType: silent ? "silent" : "interactive",
-        errorMessage: JSON.stringify(error),
+        errorMessage: stringifyError(error),
       });
-      traceFailure(Action.AcquireMsalToken, { error: JSON.stringify(error) }, msalStartKey);
+      traceFailure(Action.AcquireMsalToken, { error: stringifyError(error) }, msalStartKey);
       // Mark expected failure for health metrics so timeout emits healthy
       if (isExpectedError(error)) {
         scenarioMonitor.markExpectedFailure();

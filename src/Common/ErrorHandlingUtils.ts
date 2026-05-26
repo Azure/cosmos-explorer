@@ -14,12 +14,21 @@ export interface HandleErrorOptions {
   redactedError?: string | ARMError | Error;
 }
 
+export const stringifyError = function (err: any) {
+  var plainObject: { [key: string]: any } = {};
+  Object.getOwnPropertyNames(err).forEach(function (key) {
+    plainObject[key] = err[key];
+  });
+  return JSON.stringify(plainObject, null, '\r\n');
+};
+
 export const handleError = (
   error: string | ARMError | Error,
   area: string,
   consoleErrorPrefix?: string,
   options?: HandleErrorOptions,
 ): void => {
+  console.log("{{cdbp}} in handleError(): raw error: " + stringifyError(error)); //CTODO in case a stray error happens
   const errorMessage = getErrorMessage(error);
   const errorCode = error instanceof ARMError ? error.code : undefined;
 
@@ -44,7 +53,7 @@ export const handleError = (
 export const getErrorMessage = (error: string | Error = ""): string => {
   let errorMessage = typeof error === "string" ? error : error.message;
   if (!errorMessage) {
-    errorMessage = JSON.stringify(error);
+    errorMessage = stringifyError(error);
   }
   return replaceKnownError(errorMessage);
 };

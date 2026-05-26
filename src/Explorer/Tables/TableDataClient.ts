@@ -4,7 +4,7 @@ import Q from "q";
 import { AuthType } from "../../AuthType";
 import * as Constants from "../../Common/Constants";
 import { CassandraProxyAPIs } from "../../Common/Constants";
-import { handleError } from "../../Common/ErrorHandlingUtils";
+import { handleError, stringifyError } from "../../Common/ErrorHandlingUtils";
 import * as HeadersUtility from "../../Common/HeadersUtility";
 import { createDocument } from "../../Common/dataAccess/createDocument";
 import { deleteDocument } from "../../Common/dataAccess/deleteDocument";
@@ -32,7 +32,7 @@ export interface CassandraTableKey {
 }
 
 export abstract class TableDataClient {
-  constructor() {}
+  constructor() { }
 
   public abstract createDocument(
     collection: ViewModels.Collection,
@@ -172,7 +172,7 @@ export class CassandraAPIDataClient extends TableDataClient {
           deferred.resolve(entity);
         },
         (error) => {
-          const errorText = error.responseJSON?.message ?? JSON.stringify(error);
+          const errorText = error.responseJSON?.message ?? stringifyError(error);
           handleError(errorText, "AddRowCassandra", `Error while adding new row to table ${collection.id()}`);
           deferred.reject(errorText);
         },
@@ -361,7 +361,7 @@ export class CassandraAPIDataClient extends TableDataClient {
           deferred.resolve();
         },
         (error) => {
-          const errorText = error.responseJSON?.message ?? JSON.stringify(error);
+          const errorText = error.responseJSON?.message ?? stringifyError(error);
           handleError(
             errorText,
             "CreateKeyspaceCassandra",
@@ -400,7 +400,7 @@ export class CassandraAPIDataClient extends TableDataClient {
               deferred.resolve();
             },
             (error) => {
-              const errorText = error.responseJSON?.message ?? JSON.stringify(error);
+              const errorText = error.responseJSON?.message ?? stringifyError(error);
               handleError(
                 errorText,
                 "CreateTableCassandra",
@@ -450,7 +450,7 @@ export class CassandraAPIDataClient extends TableDataClient {
           deferred.resolve(data);
         },
         (error: any) => {
-          const errorText = error.responseJSON?.message ?? JSON.stringify(error);
+          const errorText = error.responseJSON?.message ?? stringifyError(error);
           handleError(errorText, "FetchKeysCassandra", `Error fetching keys for table ${collection.id()}`);
           deferred.reject(errorText);
         },
@@ -492,7 +492,7 @@ export class CassandraAPIDataClient extends TableDataClient {
           deferred.resolve(data.columns);
         },
         (error: any) => {
-          const errorText = error.responseJSON?.message ?? JSON.stringify(error);
+          const errorText = error.responseJSON?.message ?? stringifyError(error);
           handleError(errorText, "FetchSchemaCassandra", `Error fetching schema for table ${collection.id()}`);
           deferred.reject(errorText);
         },
