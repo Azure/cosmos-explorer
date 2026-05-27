@@ -426,6 +426,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
                     </Label>
                     <Dropdown
                       disabled={isExistingPolicy(vectorEmbeddingPolicy)}
+                      id={`vector-policy-indexType-${index + 1}`}
                       required={true}
                       styles={dropdownStyles}
                       options={getIndexTypeOptions()}

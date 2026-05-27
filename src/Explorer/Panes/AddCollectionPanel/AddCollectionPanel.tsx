@@ -838,6 +838,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   scrollToSection("collapsibleVectorPolicySectionContent");
                 }}
                 tooltipContent={ContainerVectorPolicyTooltipContent()}
+                testId="container-vector-policy-section"
               >
                 <Stack id="collapsibleVectorPolicySectionContent" styles={{ root: { position: "relative" } }}>
                   <Stack styles={{ root: { paddingLeft: 40 } }}>
