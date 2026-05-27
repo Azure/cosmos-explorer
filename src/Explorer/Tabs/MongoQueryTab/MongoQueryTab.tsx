@@ -2,6 +2,7 @@ import { ActionType, TabKind } from "Contracts/ActionContracts";
 import React from "react";
 import MongoUtility from "../../../Common/MongoUtility";
 import * as ViewModels from "../../../Contracts/ViewModels";
+import { useTabs } from "../../../hooks/useTabs";
 import Explorer from "../../Explorer";
 import { NewQueryTab } from "../QueryTab/QueryTab";
 import { IQueryTabComponentProps, ITabAccessor, QueryTabComponent } from "../QueryTab/QueryTabComponent";
@@ -65,6 +66,30 @@ export class NewMongoQueryTab extends NewQueryTab {
   //eslint-disable-next-line
   public renderObjectForEditor(value: any, replacer: any, space: string | number): string {
     return MongoUtility.tojson(value, undefined, false);
+  }
+
+  public canDuplicate(): boolean {
+    return true;
+  }
+
+  public duplicateTab(): void {
+    const id = useTabs.getState().getTabs(ViewModels.CollectionTabKind.Query).length + 1;
+    const queryText = this.iTabAccessor?.onSaveClickEvent() ?? this.persistedState?.query?.text ?? "";
+    const newTab = new NewMongoQueryTab(
+      {
+        tabKind: ViewModels.CollectionTabKind.Query,
+        title: `Query ${id}`,
+        tabPath: "",
+        collection: this.collection,
+        node: this.collection,
+        queryText,
+        partitionKey: this.partitionKey,
+        splitterDirection: this.persistedState?.splitterDirection,
+        queryViewSizePercent: this.persistedState?.queryViewSizePercent,
+      },
+      this.mongoQueryTabProps,
+    );
+    useTabs.getState().activateNewTab(newTab);
   }
 
   public render(): JSX.Element {
