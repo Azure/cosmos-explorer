@@ -405,27 +405,19 @@ export default class Explorer {
         },
         startKey,
       );
-      console.log("{{cdbp}} in refreshAllDatabases(): done readDatabases");
       const currentDatabases = useDatabases.getState().databases;
-      console.log("{{cdbp}} in refreshAllDatabases(): currentDatabases: " + currentDatabases);
       const deltaDatabases = this.getDeltaDatabases(databases, currentDatabases);
-      console.log("{{cdbp}} in refreshAllDatabases(): deltaDatabases: " + deltaDatabases);
       let updatedDatabases = currentDatabases.filter(
         (database) => !deltaDatabases.toDelete.some((deletedDatabase) => deletedDatabase.id() === database.id()),
       );
-      console.log("{{cdbp}} in refreshAllDatabases(): updatedDatabases after filter: " + updatedDatabases);
       updatedDatabases = [...updatedDatabases, ...deltaDatabases.toAdd].sort((db1, db2) =>
         db1.id().localeCompare(db2.id()),
       );
-      console.log("{{cdbp}} in refreshAllDatabases(): updatedDatabases after sort: " + updatedDatabases);
       useDatabases.setState({ databases: updatedDatabases, databasesFetchedSuccessfully: true });
       scenarioMonitor.completePhase(MetricScenario.DatabaseLoad, ApplicationMetricPhase.DatabasesFetched);
 
-      console.log("{{cdbp}} in refreshAllDatabases(): calling refreshAndExpandNewDatabases");
       await this.refreshAndExpandNewDatabases(deltaDatabases.toAdd, updatedDatabases);
-      console.log("{{cdbp}} in refreshAllDatabases(): done refreshAndExpandNewDatabases");
     } catch (error) {
-      console.log("{{cdbp}} in refreshAllDatabases(): ERROR: " + JSON.stringify(error)); //CTODO this should be logged already but just in case
       const errorMessage = getErrorMessage(error);
       TelemetryProcessor.traceFailure(
         Action.LoadDatabases,
@@ -615,7 +607,6 @@ export default class Explorer {
         ? databases
         : databases.filter((db) => db.isDatabaseExpanded() || db.id() === Constants.SavedQueries.DatabaseName);
 
-    console.log("{{cdbp}} in refreshAndExpandNewDatabases(): databasesToLoad: " + databasesToLoad);
     const startKey: number = TelemetryProcessor.traceStart(Action.LoadCollections, {
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
@@ -624,7 +615,6 @@ export default class Explorer {
     try {
       await Promise.all(
         databasesToLoad.map(async (database: ViewModels.Database) => {
-          console.log("{{cdbp}} in refreshAndExpandNewDatabases(): loadCollections for database: " + database.id);
           await database.loadCollections(true);
           const isNewDatabase: boolean = _.some(newDatabases, (db: ViewModels.Database) => db.id() === database.id());
           if (isNewDatabase) {
@@ -644,7 +634,6 @@ export default class Explorer {
       // Start DatabaseTreeRendered — React render cycle will complete it in ResourceTree
       scenarioMonitor.startPhase(MetricScenario.DatabaseLoad, ApplicationMetricPhase.DatabaseTreeRendered);
     } catch (error) {
-      console.log("{{cdbp}} in refreshAndExpandNewDatabases(): ERROR: " + JSON.stringify(error)); //CTODO this should be logged already but just in case
       TelemetryProcessor.traceFailure(
         Action.LoadCollections,
         {
