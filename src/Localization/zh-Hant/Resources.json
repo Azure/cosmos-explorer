@@ -316,6 +316,10 @@
     "deleteUdf": "刪除使用者定義的函式"
   },
   "tabs": {
+    "tabMenu": {
+      "duplicateTab": "Duplicate tab",
+      "closeTab": "Close tab"
+    },
     "documents": {
       "newItem": "新增項目",
       "newDocument": "新增文件",

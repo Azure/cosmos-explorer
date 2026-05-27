@@ -316,6 +316,10 @@
     "deleteUdf": "Door de gebruiker gedefinieerde functie verwijderen"
   },
   "tabs": {
+    "tabMenu": {
+      "duplicateTab": "Duplicate tab",
+      "closeTab": "Close tab"
+    },
     "documents": {
       "newItem": "Nieuw item",
       "newDocument": "Nieuw document",

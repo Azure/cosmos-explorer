@@ -316,6 +316,10 @@
     "deleteUdf": "Felhasználó által definiált függvény törlése"
   },
   "tabs": {
+    "tabMenu": {
+      "duplicateTab": "Duplicate tab",
+      "closeTab": "Close tab"
+    },
     "documents": {
       "newItem": "Új elem",
       "newDocument": "Új dokumentum",

@@ -316,6 +316,10 @@
     "deleteUdf": "Удалить пользовательскую функцию"
   },
   "tabs": {
+    "tabMenu": {
+      "duplicateTab": "Duplicate tab",
+      "closeTab": "Close tab"
+    },
     "documents": {
       "newItem": "Новый элемент",
       "newDocument": "Новый документ",

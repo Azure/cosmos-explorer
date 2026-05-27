@@ -316,6 +316,10 @@
     "deleteUdf": "删除用户定义函数"
   },
   "tabs": {
+    "tabMenu": {
+      "duplicateTab": "Duplicate tab",
+      "closeTab": "Close tab"
+    },
     "documents": {
       "newItem": "新建项目",
       "newDocument": "新建文档",

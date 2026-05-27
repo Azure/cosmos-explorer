@@ -316,6 +316,10 @@
     "deleteUdf": "Kullanıcı Tanımlı İşlevi Sil"
   },
   "tabs": {
+    "tabMenu": {
+      "duplicateTab": "Duplicate tab",
+      "closeTab": "Close tab"
+    },
     "documents": {
       "newItem": "Yeni Öğe",
       "newDocument": "Yeni Belge",

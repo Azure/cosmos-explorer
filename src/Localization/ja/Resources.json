@@ -316,6 +316,10 @@
     "deleteUdf": "ユーザー定義関数の削除"
   },
   "tabs": {
+    "tabMenu": {
+      "duplicateTab": "Duplicate tab",
+      "closeTab": "Close tab"
+    },
     "documents": {
       "newItem": "新しい項目",
       "newDocument": "新規ドキュメント",

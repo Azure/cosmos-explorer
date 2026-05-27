@@ -316,6 +316,10 @@
     "deleteUdf": "Odstranit uživatelem definovanou funkci"
   },
   "tabs": {
+    "tabMenu": {
+      "duplicateTab": "Duplicate tab",
+      "closeTab": "Close tab"
+    },
     "documents": {
       "newItem": "Nová položka",
       "newDocument": "Nový dokument",

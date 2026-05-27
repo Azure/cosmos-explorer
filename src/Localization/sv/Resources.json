@@ -316,6 +316,10 @@
     "deleteUdf": "Ta bort användardefinierad funktion"
   },
   "tabs": {
+    "tabMenu": {
+      "duplicateTab": "Duplicate tab",
+      "closeTab": "Close tab"
+    },
     "documents": {
       "newItem": "Nytt objekt",
       "newDocument": "Nytt dokument",

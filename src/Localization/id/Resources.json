@@ -316,6 +316,10 @@
     "deleteUdf": "Hapus Fungsi yang Ditentukan Pengguna"
   },
   "tabs": {
+    "tabMenu": {
+      "duplicateTab": "Duplicate tab",
+      "closeTab": "Close tab"
+    },
     "documents": {
       "newItem": "Item Baru",
       "newDocument": "Dokumen Baru",

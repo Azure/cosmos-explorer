@@ -316,6 +316,10 @@
     "deleteUdf": "사용자 정의 함수 삭제"
   },
   "tabs": {
+    "tabMenu": {
+      "duplicateTab": "Duplicate tab",
+      "closeTab": "Close tab"
+    },
     "documents": {
       "newItem": "새 항목",
       "newDocument": "새 문서",
