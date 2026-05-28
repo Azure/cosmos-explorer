@@ -32,8 +32,23 @@ test.describe("Vector Policy under Scale & Settings", () => {
 
   test.afterEach("Clear vector policies", async () => {
     const { resource: containerDef } = await context.container.read();
+    if (!containerDef) {
+      return;
+    }
+
+    let dirty = false;
+
     if (containerDef.vectorEmbeddingPolicy?.vectorEmbeddings?.length) {
       containerDef.vectorEmbeddingPolicy.vectorEmbeddings = [];
+      dirty = true;
+    }
+
+    if (containerDef.indexingPolicy?.vectorIndexes?.length) {
+      containerDef.indexingPolicy.vectorIndexes = [];
+      dirty = true;
+    }
+
+    if (dirty) {
       await context.container.replace(containerDef);
     }
   });
