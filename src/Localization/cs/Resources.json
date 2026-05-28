@@ -317,8 +317,8 @@
   },
   "tabs": {
     "tabMenu": {
-      "duplicateTab": "Duplicate tab",
-      "closeTab": "Close tab"
+      "duplicateTab": "Duplikovat kartu",
+      "closeTab": "Zavřít kartu"
     },
     "documents": {
       "newItem": "Nová položka",

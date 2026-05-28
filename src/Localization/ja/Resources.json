@@ -317,8 +317,8 @@
   },
   "tabs": {
     "tabMenu": {
-      "duplicateTab": "Duplicate tab",
-      "closeTab": "Close tab"
+      "duplicateTab": "タブの複製",
+      "closeTab": "タブを閉じる"
     },
     "documents": {
       "newItem": "新しい項目",

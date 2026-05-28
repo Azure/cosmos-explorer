@@ -317,8 +317,8 @@
   },
   "tabs": {
     "tabMenu": {
-      "duplicateTab": "Duplicate tab",
-      "closeTab": "Close tab"
+      "duplicateTab": "Duplikasikan tab",
+      "closeTab": "Tutup tab"
     },
     "documents": {
       "newItem": "Item Baru",

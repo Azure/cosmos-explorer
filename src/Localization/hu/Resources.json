@@ -317,8 +317,8 @@
   },
   "tabs": {
     "tabMenu": {
-      "duplicateTab": "Duplicate tab",
-      "closeTab": "Close tab"
+      "duplicateTab": "Lap duplikálása",
+      "closeTab": "Lap bezárása"
     },
     "documents": {
       "newItem": "Új elem",

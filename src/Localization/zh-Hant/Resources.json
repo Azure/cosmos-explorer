@@ -317,8 +317,8 @@
   },
   "tabs": {
     "tabMenu": {
-      "duplicateTab": "Duplicate tab",
-      "closeTab": "Close tab"
+      "duplicateTab": "重複的索引標籤",
+      "closeTab": "關閉索引標籤"
     },
     "documents": {
       "newItem": "新增項目",

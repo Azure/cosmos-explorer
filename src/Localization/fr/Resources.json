@@ -317,8 +317,8 @@
   },
   "tabs": {
     "tabMenu": {
-      "duplicateTab": "Duplicate tab",
-      "closeTab": "Close tab"
+      "duplicateTab": "Dupliquer l’onglet",
+      "closeTab": "Fermer un onglet"
     },
     "documents": {
       "newItem": "Nouvel élément",

@@ -317,8 +317,8 @@
   },
   "tabs": {
     "tabMenu": {
-      "duplicateTab": "Duplicate tab",
-      "closeTab": "Close tab"
+      "duplicateTab": "Дублировать вкладку",
+      "closeTab": "Закрыть вкладку"
     },
     "documents": {
       "newItem": "Новый элемент",
