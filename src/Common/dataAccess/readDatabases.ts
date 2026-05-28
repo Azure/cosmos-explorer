@@ -1,3 +1,4 @@
+import { stringifyError } from "Common/stringifyError";
 import { CosmosDbArtifactType } from "Contracts/FabricMessagesContract";
 import { isFabric, isFabricMirroredKey, isFabricNative } from "Platform/Fabric/FabricUtil";
 import { AuthType } from "../../AuthType";
@@ -11,7 +12,7 @@ import { listGremlinDatabases } from "../../Utils/arm/generatedClients/cosmos/gr
 import { listMongoDBDatabases } from "../../Utils/arm/generatedClients/cosmos/mongoDBResources";
 import { listSqlDatabases } from "../../Utils/arm/generatedClients/cosmos/sqlResources";
 import { client } from "../CosmosClient";
-import { handleError, stringifyError } from "../ErrorHandlingUtils";
+import { handleError } from "../ErrorHandlingUtils";
 
 export async function readDatabases(): Promise<DataModels.Database[]> {
   let databases: DataModels.Database[];

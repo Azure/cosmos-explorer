@@ -1,3 +1,4 @@
+import { stringifyError } from "Common/stringifyError";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { SubscriptionType } from "../Contracts/SubscriptionType";
 import { isExpectedError } from "../Metrics/ErrorClassification";
@@ -13,14 +14,6 @@ export interface HandleErrorOptions {
   /** Optional redacted error to use for telemetry logging instead of the original error */
   redactedError?: string | ARMError | Error;
 }
-
-export const stringifyError = (error: unknown): string => {
-  const plainObject: Record<string, unknown> = {};
-  Object.getOwnPropertyNames(error as object).forEach((key) => {
-    plainObject[key] = (error as Record<string, unknown>)[key];
-  });
-  return JSON.stringify(plainObject, null, "\r\n");
-};
 
 export const handleError = (
   error: string | ARMError | Error,

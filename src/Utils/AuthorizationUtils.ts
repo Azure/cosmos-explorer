@@ -1,6 +1,6 @@
 import * as msal from "@azure/msal-browser";
 import { getEnvironmentScopeEndpoint } from "Common/EnvironmentUtility";
-import { stringifyError } from "Common/ErrorHandlingUtils";
+import { stringifyError } from "Common/stringifyError";
 import { Action, ActionModifiers } from "Shared/Telemetry/TelemetryConstants";
 import { hasProxyServer, isDataplaneRbacSupported } from "Utils/APITypeUtils";
 import { AuthType } from "../AuthType";

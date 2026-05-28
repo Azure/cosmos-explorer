@@ -6,7 +6,7 @@
   Generated from: https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/specification/cosmos-db/resource-manager/Microsoft.DocumentDB/DocumentDB/preview/2025-11-01-preview/cosmos-db.json
 */
 
-import { stringifyError } from "Common/ErrorHandlingUtils";
+import { stringifyError } from "Common/stringifyError";
 import { configContext } from "../../../../ConfigContext";
 import { armRequest } from "../../request";
 import * as Types from "./types";

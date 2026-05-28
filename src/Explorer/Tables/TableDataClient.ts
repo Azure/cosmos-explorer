@@ -1,10 +1,11 @@
 import { FeedOptions } from "@azure/cosmos";
+import { stringifyError } from "Common/stringifyError";
 import * as ko from "knockout";
 import Q from "q";
 import { AuthType } from "../../AuthType";
 import * as Constants from "../../Common/Constants";
 import { CassandraProxyAPIs } from "../../Common/Constants";
-import { handleError, stringifyError } from "../../Common/ErrorHandlingUtils";
+import { handleError } from "../../Common/ErrorHandlingUtils";
 import * as HeadersUtility from "../../Common/HeadersUtility";
 import { createDocument } from "../../Common/dataAccess/createDocument";
 import { deleteDocument } from "../../Common/dataAccess/deleteDocument";

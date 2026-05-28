@@ -5,7 +5,7 @@ Instead, generate ARM clients that consume this function with stricter typing.
 
 */
 
-import { stringifyError } from "Common/ErrorHandlingUtils";
+import { stringifyError } from "Common/stringifyError";
 import promiseRetry, { AbortError } from "p-retry";
 import { HttpHeaders } from "../../Common/Constants";
 import { configContext } from "../../ConfigContext";

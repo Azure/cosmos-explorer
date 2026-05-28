@@ -1,6 +1,6 @@
 import * as msal from "@azure/msal-browser";
 import { useBoolean } from "@fluentui/react-hooks";
-import { stringifyError } from "Common/ErrorHandlingUtils";
+import { stringifyError } from "Common/stringifyError";
 import * as React from "react";
 import { ConfigContext } from "../ConfigContext";
 import {
