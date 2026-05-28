@@ -32,7 +32,7 @@ export interface CassandraTableKey {
 }
 
 export abstract class TableDataClient {
-  constructor() { }
+  constructor() {}
 
   public abstract createDocument(
     collection: ViewModels.Collection,

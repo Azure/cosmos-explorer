@@ -14,12 +14,12 @@ export interface HandleErrorOptions {
   redactedError?: string | ARMError | Error;
 }
 
-export const stringifyError = function (err: any) {
-  var plainObject: { [key: string]: any } = {};
-  Object.getOwnPropertyNames(err).forEach(function (key) {
-    plainObject[key] = err[key];
+export const stringifyError = (error: unknown): string => {
+  const plainObject: Record<string, unknown> = {};
+  Object.getOwnPropertyNames(error as object).forEach((key) => {
+    plainObject[key] = (error as Record<string, unknown>)[key];
   });
-  return JSON.stringify(plainObject, null, '\r\n');
+  return JSON.stringify(plainObject, null, "\r\n");
 };
 
 export const handleError = (
