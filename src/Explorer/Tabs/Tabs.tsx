@@ -1,4 +1,5 @@
 import { Spinner, SpinnerSize, TooltipHost } from "@fluentui/react";
+import { Menu, MenuItem, MenuList, MenuPopover, MenuTrigger } from "@fluentui/react-components";
 import { CollectionTabKind } from "Contracts/ViewModels";
 import Explorer from "Explorer/Explorer";
 import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
@@ -10,6 +11,7 @@ import { QuickstartTab } from "Explorer/Tabs/QuickstartTab";
 import { VcoreMongoConnectTab } from "Explorer/Tabs/VCoreMongoConnectTab";
 import { VcoreMongoQuickstartTab } from "Explorer/Tabs/VCoreMongoQuickstartTab";
 import { KeyboardAction, KeyboardActionGroup, useKeyboardActionGroup } from "KeyboardShortcuts";
+import { Keys, t } from "Localization";
 import { isFabricNative } from "Platform/Fabric/FabricUtil";
 import { userContext } from "UserContext";
 import { useTeachingBubble } from "hooks/useTeachingBubble";
@@ -85,8 +87,9 @@ function TabNav({ tab, active, tabKind }: { tab?: Tab; active: boolean; tabKind?
       focusTab.current.focus();
     }
   }, [active]);
-  return (
+  const liElement = (
     <li
+      data-test={`TabNav:${tab !== undefined ? tab.tabId : ReactTabKind[tabKind!]}`}
       onMouseOver={() => setHovering(true)}
       onMouseLeave={() => setHovering(false)}
       className={active ? "active tabList" : "tabList"}
@@ -154,6 +157,22 @@ function TabNav({ tab, active, tabKind }: { tab?: Tab; active: boolean; tabKind?
         </div>
       </span>
     </li>
+  );
+
+  if (!tab?.canDuplicate()) {
+    return liElement;
+  }
+
+  return (
+    <Menu openOnContext>
+      <MenuTrigger disableButtonEnhancement>{liElement}</MenuTrigger>
+      <MenuPopover>
+        <MenuList>
+          <MenuItem onClick={() => tab.duplicateTab()}>{t(Keys.tabs.tabMenu.duplicateTab)}</MenuItem>
+          <MenuItem onClick={() => tab.onCloseTabButtonClick()}>{t(Keys.tabs.tabMenu.closeTab)}</MenuItem>
+        </MenuList>
+      </MenuPopover>
+    </Menu>
   );
 }
 

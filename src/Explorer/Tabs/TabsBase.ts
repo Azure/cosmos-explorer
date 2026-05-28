@@ -64,6 +64,14 @@ export default class TabsBase extends WaitsForTemplateViewModel {
   public getPersistedState = (): OpenTab | null => this.persistedState;
   public triggerPersistState: () => void = undefined;
 
+  public canDuplicate(): boolean {
+    return false;
+  }
+
+  public duplicateTab(): void {
+    // Subclasses override this to support tab duplication
+  }
+
   public onCloseTabButtonClick(): void {
     useTabs.getState().closeTab(this);
     TelemetryProcessor.trace(Action.Tab, ActionModifiers.Close, {
