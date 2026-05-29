@@ -317,8 +317,8 @@
   },
   "tabs": {
     "tabMenu": {
-      "duplicateTab": "Duplicate tab",
-      "closeTab": "Close tab"
+      "duplicateTab": "중복 탭",
+      "closeTab": "탭 닫기"
     },
     "documents": {
       "newItem": "새 항목",
