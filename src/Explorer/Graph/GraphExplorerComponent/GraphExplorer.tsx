@@ -1093,7 +1093,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
   public static reportToConsole(type: ConsoleDataType, msg: string, ...errorData: any[]): void | (() => void) {
     let errorDataStr = "";
     if (errorData && errorData.length > 0) {
-      console.error(msg, String(errorData));
+      console.error(msg + String(errorData));
       errorDataStr = ": " + stringifyError(errorData);
     }
 
