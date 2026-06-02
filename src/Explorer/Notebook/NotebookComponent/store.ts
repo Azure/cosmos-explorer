@@ -1,6 +1,7 @@
 import { AppState, epics as coreEpics, IContentProvider, reducers } from "@nteract/core";
 import { configuration } from "@nteract/mythic-configuration";
 import { makeConfigureStore } from "@nteract/myths";
+import { stringifyError } from "Common/stringifyError";
 import { AnyAction, compose, Dispatch, Middleware, MiddlewareAPI, Store } from "redux";
 import { Epic } from "redux-observable";
 import { Observable } from "rxjs";
@@ -44,7 +45,7 @@ export default function configureStore(
 
   const traceFailure = (title: string, error: any) => {
     if (error instanceof Error) {
-      onTraceFailure(title, `${error.message} ${JSON.stringify(error.stack)}`);
+      onTraceFailure(title, `${error.message} ${stringifyError(error.stack)}`);
       console.error(error);
     } else {
       onTraceFailure(title, error.message);
