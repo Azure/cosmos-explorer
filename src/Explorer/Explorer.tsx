@@ -2,10 +2,10 @@ import * as msal from "@azure/msal-browser";
 import { Link } from "@fluentui/react/lib/Link";
 import { isPublicInternetAccessAllowed } from "Common/DatabaseAccountUtility";
 import { sendMessage } from "Common/MessageHandler";
+import { stringifyError } from "Common/stringifyError";
 import { Platform, configContext } from "ConfigContext";
 import { MessageTypes } from "Contracts/ExplorerContracts";
 import { useDataPlaneRbac } from "Explorer/Panes/SettingsPane/SettingsPane";
-import { IGalleryItem } from "Juno/JunoClient";
 import {
   isFabricMirrored,
   isFabricMirroredKey,
@@ -52,13 +52,10 @@ import { useSidePanel } from "../hooks/useSidePanel";
 import { ReactTabKind, useTabs } from "../hooks/useTabs";
 import "./ComponentRegisterer";
 import { DialogProps, useDialog } from "./Controls/Dialog";
-import { GalleryTab as GalleryTabKind } from "./Controls/NotebookGallery/GalleryViewerComponent";
 import { useCommandBar } from "./Menus/CommandBar/CommandBarComponentAdapter";
 import * as FileSystemUtil from "./Notebook/FileSystemUtil";
-import { SnapshotRequest } from "./Notebook/NotebookComponent/types";
 import { NotebookContentItem, NotebookContentItemType } from "./Notebook/NotebookContentItem";
 import type NotebookManager from "./Notebook/NotebookManager";
-import { NotebookPaneContent } from "./Notebook/NotebookManager";
 import { NotebookUtil } from "./Notebook/NotebookUtil";
 import { useNotebook } from "./Notebook/useNotebook";
 import { AddCollectionPanel } from "./Panes/AddCollectionPanel/AddCollectionPanel";
@@ -291,7 +288,7 @@ export default class Explorer {
             "We were unable to establish authorization for this account, due to pop-ups being disabled in the browser.\nPlease enable pop-ups for this site and try again",
           );
         } else {
-          const errorJson = JSON.stringify(error);
+          const errorJson = stringifyError(error);
           logConsoleError(
             `Failed to perform authorization for this account, due to the following error: \n${errorJson}`,
           );
@@ -405,19 +402,27 @@ export default class Explorer {
         },
         startKey,
       );
+      console.log("{{cdbp}} in refreshAllDatabases(): done readDatabases");
       const currentDatabases = useDatabases.getState().databases;
+      console.log("{{cdbp}} in refreshAllDatabases(): currentDatabases: " + currentDatabases);
       const deltaDatabases = this.getDeltaDatabases(databases, currentDatabases);
+      console.log("{{cdbp}} in refreshAllDatabases(): deltaDatabases: " + deltaDatabases);
       let updatedDatabases = currentDatabases.filter(
         (database) => !deltaDatabases.toDelete.some((deletedDatabase) => deletedDatabase.id() === database.id()),
       );
+      console.log("{{cdbp}} in refreshAllDatabases(): updatedDatabases after filter: " + updatedDatabases);
       updatedDatabases = [...updatedDatabases, ...deltaDatabases.toAdd].sort((db1, db2) =>
         db1.id().localeCompare(db2.id()),
       );
+      console.log("{{cdbp}} in refreshAllDatabases(): updatedDatabases after sort: " + updatedDatabases);
       useDatabases.setState({ databases: updatedDatabases, databasesFetchedSuccessfully: true });
       scenarioMonitor.completePhase(MetricScenario.DatabaseLoad, ApplicationMetricPhase.DatabasesFetched);
 
+      console.log("{{cdbp}} in refreshAllDatabases(): calling refreshAndExpandNewDatabases");
       await this.refreshAndExpandNewDatabases(deltaDatabases.toAdd, updatedDatabases);
+      console.log("{{cdbp}} in refreshAllDatabases(): done refreshAndExpandNewDatabases");
     } catch (error) {
+      console.log("{{cdbp}} in refreshAllDatabases(): ERROR: " + stringifyError(error)); //CTODO this should be logged already but just in case
       const errorMessage = getErrorMessage(error);
       TelemetryProcessor.traceFailure(
         Action.LoadDatabases,
@@ -607,6 +612,7 @@ export default class Explorer {
         ? databases
         : databases.filter((db) => db.isDatabaseExpanded() || db.id() === Constants.SavedQueries.DatabaseName);
 
+    console.log("{{cdbp}} in refreshAndExpandNewDatabases(): databasesToLoad: " + databasesToLoad);
     const startKey: number = TelemetryProcessor.traceStart(Action.LoadCollections, {
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
@@ -615,6 +621,7 @@ export default class Explorer {
     try {
       await Promise.all(
         databasesToLoad.map(async (database: ViewModels.Database) => {
+          console.log("{{cdbp}} in refreshAndExpandNewDatabases(): loadCollections for database: " + database.id);
           await database.loadCollections(true);
           const isNewDatabase: boolean = _.some(newDatabases, (db: ViewModels.Database) => db.id() === database.id());
           if (isNewDatabase) {
@@ -634,6 +641,7 @@ export default class Explorer {
       // Start DatabaseTreeRendered — React render cycle will complete it in ResourceTree
       scenarioMonitor.startPhase(MetricScenario.DatabaseLoad, ApplicationMetricPhase.DatabaseTreeRendered);
     } catch (error) {
+      console.log("{{cdbp}} in refreshAndExpandNewDatabases(): ERROR: " + stringifyError(error)); //CTODO this should be logged already but just in case
       TelemetryProcessor.traceFailure(
         Action.LoadCollections,
         {
@@ -712,24 +720,6 @@ export default class Explorer {
 
     this.notebookToImport = { name, content }; // we'll try opening this notebook later on
     return Promise.resolve(false);
-  }
-
-  public async publishNotebook(
-    name: string,
-    content: NotebookPaneContent,
-    notebookContentRef?: string,
-    onTakeSnapshot?: (request: SnapshotRequest) => void,
-    onClosePanel?: () => void,
-  ): Promise<void> {
-    if (this.notebookManager) {
-      await this.notebookManager.openPublishNotebookPane(
-        name,
-        content,
-        notebookContentRef,
-        onTakeSnapshot,
-        onClosePanel,
-      );
-    }
   }
 
   public copyNotebook(name: string, content: string): void {
@@ -1049,45 +1039,6 @@ export default class Explorer {
     });
 
     useTabs.getState().activateNewTab(newTab);
-  }
-
-  public async openGallery(
-    selectedTab?: GalleryTabKind,
-    notebookUrl?: string,
-    galleryItem?: IGalleryItem,
-    isFavorite?: boolean,
-  ): Promise<void> {
-    const title = "Gallery";
-    const GalleryTab = await (await import(/* webpackChunkName: "GalleryTab" */ "./Tabs/GalleryTab")).default;
-    const galleryTab = useTabs
-      .getState()
-      .getTabs(ViewModels.CollectionTabKind.Gallery)
-      .find((tab) => tab.tabTitle() === title);
-
-    if (galleryTab instanceof GalleryTab) {
-      useTabs.getState().activateTab(galleryTab);
-    } else {
-      useTabs.getState().activateNewTab(
-        new GalleryTab(
-          {
-            tabKind: ViewModels.CollectionTabKind.Gallery,
-            title,
-            tabPath: title,
-            onLoadStartKey: undefined,
-            isTabsContentExpanded: ko.observable(true),
-          },
-          {
-            account: userContext.databaseAccount,
-            container: this,
-            junoClient: this.notebookManager?.junoClient,
-            selectedTab: selectedTab || GalleryTabKind.OfficialSamples,
-            notebookUrl,
-            galleryItem,
-            isFavorite,
-          },
-        ),
-      );
-    }
   }
 
   public async onNewCollectionClicked(

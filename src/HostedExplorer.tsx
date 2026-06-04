@@ -6,18 +6,22 @@ import { render } from "react-dom";
 import ChevronRight from "../images/chevron-right.svg";
 import "../less/hostedexplorer.less";
 import { AuthType } from "./AuthType";
+import { logError } from "./Common/Logger";
 import { DatabaseAccount } from "./Contracts/DataModels";
 import "./Explorer/Menus/NavBar/MeControlComponent.less";
 import { HostedExplorerChildFrame } from "./HostedExplorerChildFrame";
 import { AccountSwitcher } from "./Platform/Hosted/Components/AccountSwitcher";
-import { ConnectExplorer } from "./Platform/Hosted/Components/ConnectExplorer";
+import { ConnectExplorer, fetchEncryptedToken } from "./Platform/Hosted/Components/ConnectExplorer";
 import { DirectoryPickerPanel } from "./Platform/Hosted/Components/DirectoryPickerPanel";
 import { FeedbackCommandButton } from "./Platform/Hosted/Components/FeedbackCommandButton";
 import { MeControl } from "./Platform/Hosted/Components/MeControl";
 import { SignInButton } from "./Platform/Hosted/Components/SignInButton";
 import "./Platform/Hosted/ConnectScreen.less";
+import { parseConnectionString } from "./Platform/Hosted/Helpers/ConnectionStringParser";
+import { isResourceTokenConnectionString } from "./Platform/Hosted/Helpers/ResourceTokenUtils";
 import { extractMasterKeyfromConnectionString } from "./Platform/Hosted/HostedUtils";
 import "./Shared/appInsights";
+import { allowedHostedExplorerEndpoints } from "./Utils/EndpointUtils";
 import { useAADAuth } from "./hooks/useAADAuth";
 import { useConfig } from "./hooks/useConfig";
 import { useTokenMetadata } from "./hooks/usePortalAccessToken";
@@ -42,20 +46,71 @@ const App: React.FunctionComponent = () => {
 
   const ref = React.useRef<HTMLIFrameElement>();
 
+  const connectWithConnectionString = React.useCallback(
+    (connStr: string) => {
+      if (!connStr || authType) {
+        return;
+      }
+      setConnectionString(connStr);
+      if (isResourceTokenConnectionString(connStr)) {
+        setAuthType(AuthType.ResourceToken);
+      } else {
+        fetchEncryptedToken(connStr)
+          .then((token) => {
+            setEncryptedToken(token);
+            setAuthType(AuthType.ConnectionString);
+          })
+          .catch((error) => {
+            logError(
+              `Failed to connect with connection string: ${error}`,
+              "HostedExplorer/connectWithConnectionString",
+            );
+          });
+      }
+    },
+    [authType],
+  );
+
+  // Listen for connection string sent via postMessage (from TryCosmosDB)
+  React.useEffect(() => {
+    const MSG_READY = "tryCosmosDBReady";
+    const MSG_CONNECTION_STRING = "tryCosmosDBConnectionString";
+
+    // Signal to the opener that we are ready to receive a connection string
+    if (window.opener) {
+      try {
+        for (const origin of allowedHostedExplorerEndpoints) {
+          window.opener.postMessage({ type: MSG_READY }, origin);
+        }
+      } catch {
+        // opener may be cross-origin, ignore
+      }
+    }
+
+    const handler = (event: MessageEvent) => {
+      if (!allowedHostedExplorerEndpoints.includes(event.origin)) {
+        return;
+      }
+      if (event.data?.type === MSG_CONNECTION_STRING) {
+        const connStr: string = event.data.connectionString;
+        if (parseConnectionString(connStr)) {
+          connectWithConnectionString(connStr);
+        }
+      }
+    };
+
+    window.addEventListener("message", handler);
+    return () => window.removeEventListener("message", handler);
+  }, [connectWithConnectionString]);
+
   React.useEffect(() => {
     // If ref.current is undefined no iframe has been rendered
     if (ref.current) {
       // In hosted mode, we can set global properties directly on the child iframe.
       // This is not possible in the portal where the iframes have different origins
       const frameWindow = ref.current.contentWindow as HostedExplorerChildFrame;
-      // AAD authenticated uses ALWAYS using AAD authType
-      if (isLoggedIn) {
-        frameWindow.hostedConfig = {
-          authType: AuthType.AAD,
-          databaseAccount,
-          authorizationToken: armToken,
-        };
-      } else if (authType === AuthType.EncryptedToken) {
+
+      if (authType === AuthType.EncryptedToken) {
         frameWindow.hostedConfig = {
           authType: AuthType.EncryptedToken,
           encryptedToken,
@@ -73,12 +128,18 @@ const App: React.FunctionComponent = () => {
           authType: AuthType.ResourceToken,
           resourceToken: connectionString,
         };
+      } else if (isLoggedIn && !connectionString) {
+        frameWindow.hostedConfig = {
+          authType: AuthType.AAD,
+          databaseAccount,
+          authorizationToken: armToken,
+        };
       }
     }
   });
 
   const showExplorer =
-    (config && isLoggedIn && databaseAccount) ||
+    (config && isLoggedIn && databaseAccount && !connectionString) ||
     (encryptedTokenMetadata && encryptedTokenMetadata) ||
     (authType === AuthType.ResourceToken && connectionString);
 
@@ -99,12 +160,12 @@ const App: React.FunctionComponent = () => {
             {(isLoggedIn || encryptedTokenMetadata?.accountName) && (
               <img className="chevronRight" src={ChevronRight} alt="account separator" />
             )}
-            {isLoggedIn && (
+            {isLoggedIn && !connectionString && (
               <span className="accountSwitchComponentContainer">
                 <AccountSwitcher armToken={armToken} setDatabaseAccount={setDatabaseAccount} />
               </span>
             )}
-            {!isLoggedIn && encryptedTokenMetadata?.accountName && (
+            {(!isLoggedIn || connectionString) && encryptedTokenMetadata?.accountName && (
               <span className="accountSwitchComponentContainer">
                 <span className="accountNameHeader">{encryptedTokenMetadata?.accountName}</span>
               </span>
@@ -127,7 +188,9 @@ const App: React.FunctionComponent = () => {
         // It's possible this can be changed once all knockout code has been removed.
         <iframe
           // Setting key is needed so React will re-render this element on any account change
-          key={databaseAccount?.id || encryptedTokenMetadata?.accountName || authType}
+          key={
+            authType ? `${authType}-${encryptedTokenMetadata?.accountName || connectionString}` : databaseAccount?.id
+          }
           ref={ref}
           data-test="DataExplorerFrame"
           id="explorerMenu"
@@ -148,4 +211,9 @@ const App: React.FunctionComponent = () => {
   );
 };
 
-render(<App />, document.getElementById("App"));
+export { App };
+
+const appElement = document.getElementById("App");
+if (appElement) {
+  render(<App />, appElement);
+}

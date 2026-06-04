@@ -5,6 +5,7 @@ Instead, generate ARM clients that consume this function with stricter typing.
 
 */
 
+import { stringifyError } from "Common/stringifyError";
 import promiseRetry, { AbortError } from "p-retry";
 import { HttpHeaders } from "../../Common/Constants";
 import { configContext } from "../../ConfigContext";
@@ -50,7 +51,12 @@ interface Options {
   contentType?: string;
   customHeaders?: Record<string, string>;
   signal?: AbortSignal;
+  timeoutMs?: number;
 }
+
+const DEFAULT_ARM_TIMEOUT_MS = 5000;
+
+const isAbortError = (error: unknown): boolean => error instanceof Error && error.name === "AbortError";
 
 export async function armRequestWithoutPolling<T>({
   host,
@@ -62,6 +68,7 @@ export async function armRequestWithoutPolling<T>({
   contentType,
   customHeaders,
   signal,
+  timeoutMs,
 }: Options): Promise<{ result: T; operationStatusUrl: string }> {
   const url = new URL(path, host);
   url.searchParams.append("api-version", configContext.armAPIVersion || apiVersion);
@@ -71,6 +78,9 @@ export async function armRequestWithoutPolling<T>({
   }
 
   if (!userContext?.authorizationToken && !customHeaders?.["Authorization"]) {
+    console.log(
+      "{{cdbp}} in armRequestWithoutPolling(): condition '!userContext?.authorizationToken && !customHeaders?.['Authorization']' met, throwing 'No authority token provided' error",
+    );
     throw new Error("No authority token provided");
   }
 
@@ -84,10 +94,14 @@ export async function armRequestWithoutPolling<T>({
     method,
     headers,
     body: requestBody ? JSON.stringify(requestBody) : undefined,
-    ...(signal ? { signal } : {}),
+    signal,
   };
 
-  const response = signal ? await window.fetch(url.href, fetchInit) : await fetchWithTimeout(url.href, fetchInit);
+  const effectiveTimeoutMs = timeoutMs ?? DEFAULT_ARM_TIMEOUT_MS;
+  console.log(
+    `{{cdbp}} in armRequestWithoutPolling(): calling fetchWithRetry (method=${method}, timeoutMs=${effectiveTimeoutMs}, hasSignal=${!!signal})`,
+  );
+  const response = await fetchWithRetry(url.href, fetchInit, method, effectiveTimeoutMs, signal);
 
   if (!response.ok) {
     let error: ARMError;
@@ -101,9 +115,11 @@ export async function armRequestWithoutPolling<T>({
         error.code = errorResponse.code;
       }
     } catch (error) {
+      console.log("{{cdbp}} in armRequestWithoutPolling(): ERROR: " + stringifyError(error));
       throw new Error(await response.text());
     }
 
+    console.log("{{cdbp}} in armRequestWithoutPolling(): ERROR: " + stringifyError(error));
     throw error;
   }
 
@@ -123,6 +139,7 @@ export async function armRequest<T>({
   contentType,
   customHeaders,
   signal,
+  timeoutMs,
 }: Options): Promise<T> {
   const armRequestResult = await armRequestWithoutPolling<T>({
     host,
@@ -134,12 +151,52 @@ export async function armRequest<T>({
     contentType,
     customHeaders,
     signal,
+    timeoutMs,
   });
   const operationStatusUrl = armRequestResult.operationStatusUrl;
   if (operationStatusUrl) {
     return await promiseRetry(() => getOperationStatus(operationStatusUrl));
   }
   return armRequestResult.result;
+}
+
+/**
+ * Calls `fetchWithTimeout` once for non-idempotent methods. For idempotent GETs, retries
+ * up to {@link RETRY_TIMEOUT_MULTIPLIERS}.length attempts on timeout, escalating the timeout
+ * on each attempt. HTTP error responses (4xx/5xx) are NOT retried — they are surfaced by the
+ * caller's response.ok check. External `signal` cancellation aborts the retry loop immediately.
+ */
+async function fetchWithRetry(
+  url: string,
+  fetchInit: RequestInit,
+  method: Options["method"],
+  timeoutMs: number,
+  signal?: AbortSignal,
+): Promise<Response> {
+  if (method !== "GET") {
+    return fetchWithTimeout(url, fetchInit, timeoutMs);
+  }
+
+  const RETRY_TIMEOUT_MULTIPLIERS = [1, 2, 4];
+  const RETRY_BACKOFF_MS = 100;
+
+  return promiseRetry(
+    (attemptNumber: number) => {
+      const attemptTimeoutMs =
+        timeoutMs * RETRY_TIMEOUT_MULTIPLIERS[Math.min(attemptNumber - 1, RETRY_TIMEOUT_MULTIPLIERS.length - 1)];
+      console.log(`{{cdbp}} in fetchWithRetry(): calling fetchWithTimeout: attempt=${attemptNumber} url=${url}`);
+      return fetchWithTimeout(url, fetchInit, attemptTimeoutMs);
+    },
+    {
+      retries: RETRY_TIMEOUT_MULTIPLIERS.length - 1,
+      factor: 1,
+      minTimeout: RETRY_BACKOFF_MS,
+      maxTimeout: RETRY_BACKOFF_MS,
+      signal,
+      // Only retry on timeout aborts. Caller cancellation (external signal aborted) stops retries.
+      shouldRetry: (error) => isAbortError(error) && !signal?.aborted,
+    },
+  );
 }
 
 async function getOperationStatus(operationStatusUrl: string) {

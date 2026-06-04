@@ -2,7 +2,6 @@ import { Keys, t } from "Localization";
 import * as Constants from "../../../Common/Constants";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";
-import { isFabricNative } from "../../../Platform/Fabric/FabricUtil";
 import { userContext } from "../../../UserContext";
 import { isCapabilityEnabled } from "../../../Utils/CapabilityUtils";
 import { MongoIndex } from "../../../Utils/arm/generatedClients/cosmos/types";
@@ -185,9 +184,7 @@ export const getTabTitle = (tab: SettingsV2TabTypes): string => {
     case SettingsV2TabTypes.IndexingPolicyTab:
       return t(Keys.controls.settings.tabTitles.indexingPolicy);
     case SettingsV2TabTypes.PartitionKeyTab:
-      return isFabricNative()
-        ? t(Keys.controls.settings.tabTitles.partitionKeys)
-        : t(Keys.controls.settings.tabTitles.partitionKeysPreview);
+      return t(Keys.controls.settings.tabTitles.partitionKeys);
     case SettingsV2TabTypes.ComputedPropertiesTab:
       return t(Keys.controls.settings.tabTitles.computedProperties);
     case SettingsV2TabTypes.ContainerVectorPolicyTab:

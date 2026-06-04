@@ -1,11 +1,11 @@
 import "@testing-library/jest-dom";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { Keys, t } from "Localization";
 import React from "react";
 import { configContext, Platform } from "../../../../../../ConfigContext";
 import { DatabaseAccount } from "../../../../../../Contracts/DataModels";
 import * as useDatabaseAccountsHook from "../../../../../../hooks/useDatabaseAccounts";
 import { apiType, userContext } from "../../../../../../UserContext";
-import { Keys, t } from "Localization";
 import { CopyJobContext } from "../../../../Context/CopyJobContext";
 import { CopyJobMigrationType } from "../../../../Enums/CopyJobEnums";
 import { CopyJobContextProviderType, CopyJobContextState } from "../../../../Types/CopyJobTypes";

@@ -316,6 +316,10 @@
     "deleteUdf": "Delete User Defined Function"
   },
   "tabs": {
+    "tabMenu": {
+      "duplicateTab": "Duplicate tab",
+      "closeTab": "Close tab"
+    },
     "documents": {
       "newItem": "New Item",
       "newDocument": "New Document",
@@ -760,7 +764,6 @@
         "settings": "Settings",
         "indexingPolicy": "Indexing Policy",
         "partitionKeys": "Partition Keys",
-        "partitionKeysPreview": "Partition Keys (preview)",
         "computedProperties": "Computed Properties",
         "containerPolicies": "Container Policies",
         "throughputBuckets": "Throughput Buckets",
@@ -895,6 +898,10 @@
       },
       "partitionKeyEditor": {
         "changePartitionKey": "Change {{partitionKeyName}}",
+        "confirmCancel1": "You are about to cancel the following copy job.",
+        "confirmCancel2": "Cancelling will stop the job immediately.",
+        "confirmComplete1": "You are about to complete the following copy job.",
+        "confrimComplete2": "Once completed, continuous data copy will stop after any pending documents are processed. To maintain data integrity, we recommend stopping updates to the source container before completing the job.",
         "currentPartitionKey": "Current {{partitionKeyName}}",
         "partitioning": "Partitioning",
         "hierarchical": "Hierarchical",
@@ -1033,6 +1040,7 @@
         "description": "Online container copy jobs let you copy data from a source container to a destination Cosmos DB NoSQL API container using the [All Versions and Delete](https://learn.microsoft.com/azure/cosmos-db/change-feed-modes?tabs=all-versions-and-deletes#all-versions-and-deletes-change-feed-mode-preview) change feed. This allows updates to continue on the source while data is copied. A brief downtime is required at the end to safely switch over client applications to the destination container. Learn more about [online copy jobs](https://learn.microsoft.com/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#getting-started)."
       }
     },
+    "migrationTypeTitle": "Migration type",
     "selectContainers": {
       "description": "Please select a source container and a destination container to copy to.",
       "sourceContainerSubHeading": "Source container",
@@ -1117,7 +1125,8 @@
       "buttonText": "Enable Online Copy",
       "validateAllVersionsAndDeletesChangeFeedSpinnerLabel": "Validating All versions and deletes change feed mode (preview)...",
       "enablingAllVersionsAndDeletesChangeFeedSpinnerLabel": "Enabling All versions and deletes change feed mode (preview)...",
-      "enablingOnlineCopySpinnerLabel": "Enabling online copy on your \"{{accountName}}\" account ..."
+      "enablingOnlineCopySpinnerLabel": "Enabling online copy on your \"{{accountName}}\" account ...",
+      "onlineMigrationPrerequisitesMessage": "Online migration prerequisites must be enabled before proceeding."
     },
     "monitorJobs": {
       "columns": {
@@ -1151,6 +1160,16 @@
       "dialog": {
         "confirmButtonText": "Confirm",
         "cancelButtonText": "Cancel"
+      }
+    },
+    "dataTransfers": {
+      "polling": {
+        "cancelConsoleMessage": "Data transfer job \"{{jobName}}\" cancelled",
+        "completedConsoleMessage": "Data transfer job \"{{jobName}}\" completed",
+        "defaultErrorMessage": "Operation could not be completed",
+        "errorConsoleMessage": "Data transfer job \"{{jobName}}\" failed: {{errorMessage}}",
+        "pauseConsoleMessage": "Data transfer job \"{{jobName}}\" paused",
+        "retryConsoleMessage": "Data transfer job \"{{jobName}}\" in progress, total count: {{totalCount}}, processed count: {{processedCount}}"
       }
     }
   }
