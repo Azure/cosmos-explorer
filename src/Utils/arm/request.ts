@@ -5,7 +5,6 @@ Instead, generate ARM clients that consume this function with stricter typing.
 
 */
 
-import { stringifyError } from "Common/stringifyError";
 import promiseRetry, { AbortError } from "p-retry";
 import { HttpHeaders } from "../../Common/Constants";
 import { configContext } from "../../ConfigContext";
@@ -78,9 +77,6 @@ export async function armRequestWithoutPolling<T>({
   }
 
   if (!userContext?.authorizationToken && !customHeaders?.["Authorization"]) {
-    console.log(
-      "{{cdbp}} in armRequestWithoutPolling(): condition '!userContext?.authorizationToken && !customHeaders?.['Authorization']' met, throwing 'No authority token provided' error",
-    );
     throw new Error("No authority token provided");
   }
 
@@ -98,9 +94,6 @@ export async function armRequestWithoutPolling<T>({
   };
 
   const effectiveTimeoutMs = timeoutMs ?? DEFAULT_ARM_TIMEOUT_MS;
-  console.log(
-    `{{cdbp}} in armRequestWithoutPolling(): calling fetchWithRetry (method=${method}, timeoutMs=${effectiveTimeoutMs}, hasSignal=${!!signal})`,
-  );
   const response = await fetchWithRetry(url.href, fetchInit, method, effectiveTimeoutMs, signal);
 
   if (!response.ok) {
@@ -115,11 +108,9 @@ export async function armRequestWithoutPolling<T>({
         error.code = errorResponse.code;
       }
     } catch (error) {
-      console.log("{{cdbp}} in armRequestWithoutPolling(): ERROR: " + stringifyError(error));
       throw new Error(await response.text());
     }
 
-    console.log("{{cdbp}} in armRequestWithoutPolling(): ERROR: " + stringifyError(error));
     throw error;
   }
 
@@ -184,7 +175,6 @@ async function fetchWithRetry(
     (attemptNumber: number) => {
       const attemptTimeoutMs =
         timeoutMs * RETRY_TIMEOUT_MULTIPLIERS[Math.min(attemptNumber - 1, RETRY_TIMEOUT_MULTIPLIERS.length - 1)];
-      console.log(`{{cdbp}} in fetchWithRetry(): calling fetchWithTimeout: attempt=${attemptNumber} url=${url}`);
       return fetchWithTimeout(url, fetchInit, attemptTimeoutMs);
     },
     {
