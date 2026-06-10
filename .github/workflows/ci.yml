@@ -353,6 +353,13 @@ jobs:
             -s playwright-reports \
             --pattern "${KEY}/shards/*" \
             -d ./all-blob-reports
+          # az storage blob download-batch preserves the full blob path, so files
+          # land nested under all-blob-reports/{KEY}/shards/shard-N/report-*.zip.
+          # playwright merge-reports expects the .zip files directly in the target
+          # directory, so flatten the structure.
+          find ./all-blob-reports -type f -name "*.zip" -exec mv -t ./all-blob-reports {} +
+          find ./all-blob-reports -type d -empty -delete
+          ls -la ./all-blob-reports
 
       - name: Merge into HTML Report
         run: npx playwright merge-reports --reporter html ./all-blob-reports
