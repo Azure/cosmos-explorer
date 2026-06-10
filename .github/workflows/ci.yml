@@ -408,8 +408,7 @@ jobs:
             --jq '[.jobs[] | select(.name | startswith("Run Playwright Tests")) | select(.conclusion == "failure")] | length')
           if [ "$FAILED" -gt 0 ] || [ "$BROKEN" -gt 0 ]; then ICON="❌ failed"; else ICON="✅ passed"; fi
           SA_ENC=$(printf '%s' "$SA_ID" | jq -sRr @uri)
-          BLOB_PATH_ENC=$(printf 'playwright-reports/%s/report.zip' "$KEY" | jq -sRr @uri)
-          REPORT_URL="https://portal.azure.com/#view/Microsoft_Azure_Storage/BlobPropertiesBladeV2/storageAccountId/${SA_ENC}/path/${BLOB_PATH_ENC}"
+          CONTAINER_URL="https://portal.azure.com/#view/Microsoft_Azure_Storage/ContainerMenuBlade/~/overview/storageAccountId/${SA_ENC}/path/playwright-reports"
           NOTE=""
           [ "$BROKEN" -gt 0 ] && NOTE="
 
@@ -420,6 +419,6 @@ jobs:
           | :---: | :---: | :---: | :---: |
           | $PASSED | $FAILED | $FLAKY | ${DURATION}s |
 
-          📁 [Download report.zip]($REPORT_URL) (Azure sign-in required → click **Download** → unzip → open \`index.html\`) · [Workflow run]($RUN_URL)$NOTE"
+          📁 [Open report container]($CONTAINER_URL) (Azure sign-in required) → navigate to \`${KEY}/report.zip\` → click **Download** → unzip → open \`index.html\` · [Workflow run]($RUN_URL)$NOTE"
 
 
