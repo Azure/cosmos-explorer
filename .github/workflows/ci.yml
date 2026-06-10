@@ -299,6 +299,13 @@ jobs:
         run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }} --list
       - name: Run test shard ${{ matrix['shardIndex'] }} of ${{ matrix['shardTotal']}}
         run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }} --workers=3
+      - name: "Re-auth for upload (refresh OIDC token)"
+        if: ${{ !cancelled() }}
+        uses: Azure/login@v2
+        with:
+          client-id: ${{ secrets.E2E_TESTS_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       - name: Upload shard blob-report to Azure Storage
         if: ${{ !cancelled() }}
         env:
@@ -350,10 +357,6 @@ jobs:
             -s playwright-reports \
             --pattern "${KEY}/shards/*" \
             -d ./all-blob-reports
-          # az storage blob download-batch preserves the full blob path, so files
-          # land nested under all-blob-reports/{KEY}/shards/shard-N/report-*.zip.
-          # playwright merge-reports expects the .zip files directly in the target
-          # directory, so flatten the structure.
           find ./all-blob-reports -type f -name "*.zip" -exec mv -t ./all-blob-reports {} +
           find ./all-blob-reports -type d -empty -delete
           ls -la ./all-blob-reports
@@ -418,5 +421,3 @@ jobs:
 
           📁 **Report:** \`${KEY}/report.zip\`
           [Open container]($CONTAINER_URL) (Azure sign-in required) → click into \`${KEY}\` folder → click \`report.zip\` → **Download** → unzip → open \`index.html\` · [Workflow run]($RUN_URL)$NOTE"
-
-
