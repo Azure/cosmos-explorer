@@ -419,6 +419,7 @@ jobs:
           | :---: | :---: | :---: | :---: |
           | $PASSED | $FAILED | $FLAKY | ${DURATION}s |
 
-          📁 [Open report container]($CONTAINER_URL) (Azure sign-in required) → navigate to \`${KEY}/report.zip\` → click **Download** → unzip → open \`index.html\` · [Workflow run]($RUN_URL)$NOTE"
+          📁 **Report:** \`${KEY}/report.zip\`
+          [Open container]($CONTAINER_URL) (Azure sign-in required) → click into \`${KEY}\` folder → click \`report.zip\` → **Download** → unzip → open \`index.html\` · [Workflow run]($RUN_URL)$NOTE"
 
 
