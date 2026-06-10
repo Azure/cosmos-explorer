@@ -166,9 +166,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # TEMP: smoke-testing MSRC ci.yml changes. Revert to [1..20] / [20] before merging.
-        shardIndex: [1]
-        shardTotal: [1]
+        shardIndex: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+        shardTotal: [20]
     steps:
       - uses: actions/checkout@v4
       - name: Use Node.js 18.x
@@ -297,11 +296,9 @@ jobs:
             echo "::add-mask::$MONGO_READONLY_TESTACCOUNT_TOKEN"
             echo MONGO_READONLY_TESTACCOUNT_TOKEN=$MONGO_READONLY_TESTACCOUNT_TOKEN >> $GITHUB_ENV
       - name: List test files for shard ${{ matrix['shardIndex'] }} of ${{ matrix['shardTotal']}}
-        # TEMP: smoke-testing MSRC ci.yml changes. Revert before merging.
-        run: npx playwright test test/component-fixtures/searchableDropdown/searchableDropdown.spec.ts --project="Google Chrome" --grep "renders subscription dropdown with label and placeholder" --list
+        run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }} --list
       - name: Run test shard ${{ matrix['shardIndex'] }} of ${{ matrix['shardTotal']}}
-        # TEMP: smoke-testing MSRC ci.yml changes. Revert before merging.
-        run: npx playwright test test/component-fixtures/searchableDropdown/searchableDropdown.spec.ts --project="Google Chrome" --grep "renders subscription dropdown with label and placeholder" --workers=1
+        run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }} --workers=3
       - name: Upload shard blob-report to Azure Storage
         if: ${{ !cancelled() }}
         env:
