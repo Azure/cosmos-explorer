@@ -223,7 +223,7 @@
     "webpack": "5.104.1",
     "webpack-bundle-analyzer": "5.2.0",
     "webpack-cli": "5.1.4",
-    "webpack-dev-server": "5.2.3",
+    "webpack-dev-server": "5.2.4",
     "ws": "8.20.1"
   },
   "scripts": {
