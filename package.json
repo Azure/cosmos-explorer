@@ -108,7 +108,7 @@
     "react-youtube": "9.0.1",
     "reflect-metadata": "0.1.13",
     "rx-jupyter": "5.5.12",
-    "shell-quote": "1.7.3",
+    "shell-quote": "1.8.4",
     "styled-components": "5.0.1",
     "swr": "0.4.0",
     "terser-webpack-plugin": "5.3.9",
