@@ -333,11 +333,7 @@ const getReactTabContent = (activeReactTab: ReactTabKind, explorer: Explorer): J
         return <SplashScreen explorer={explorer} />;
       }
     case ReactTabKind.Quickstart:
-      return userContext.apiType === "VCoreMongo" ? (
-        <VcoreMongoQuickstartTab explorer={explorer} />
-      ) : (
-        <QuickstartTab explorer={explorer} />
-      );
+      return userContext.apiType === "VCoreMongo" ? <VcoreMongoQuickstartTab /> : <QuickstartTab />;
     default:
       throw new Error(`Unsupported tab kind ${ReactTabKind[activeReactTab]}`);
   }
