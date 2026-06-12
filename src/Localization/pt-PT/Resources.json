@@ -316,6 +316,10 @@
     "deleteUdf": "Eliminar Função Definida pelo Utilizador"
   },
   "tabs": {
+    "tabMenu": {
+      "duplicateTab": "Duplicar separador",
+      "closeTab": "Fechar separador"
+    },
     "documents": {
       "newItem": "Novo Item",
       "newDocument": "Novo Documento",
@@ -760,11 +764,10 @@
         "settings": "Definições",
         "indexingPolicy": "Política de Indexação",
         "partitionKeys": "Chaves de Partição",
-        "partitionKeysPreview": "Chaves de Partição (pré-visualização)",
         "computedProperties": "Propriedades Calculadas",
         "containerPolicies": "Políticas de Contentor",
         "throughputBuckets": "Registos de Débito",
-        "globalSecondaryIndexPreview": "Global Secondary Index",
+        "globalSecondaryIndexPreview": "Índice secundário global",
         "maskingPolicyPreview": "Política de Mascaramento"
       },
       "mongoNotifications": {
@@ -895,6 +898,10 @@
       },
       "partitionKeyEditor": {
         "changePartitionKey": "Alterar {{partitionKeyName}}",
+        "confirmCancel1": "Está prestes a cancelar a seguinte tarefa de cópia.",
+        "confirmCancel2": "O cancelamento interromperá a tarefa imediatamente.",
+        "confirmComplete1": "Está prestes a concluir a seguinte tarefa de cópia.",
+        "confrimComplete2": "Quando estiver concluído, a cópia contínua de dados irá parar após serem processados quaisquer documentos pendentes. Para manter a integridade dos dados, recomendamos que interrompa as atualizações no contentor de origem antes de concluir a tarefa.",
         "currentPartitionKey": "{{partitionKeyName}} atual",
         "partitioning": "Criação de Partições",
         "hierarchical": "Hierárquico",
@@ -1033,6 +1040,7 @@
         "description": "As tarefas de cópia de contentores online permitem-lhe copiar dados de um contentor de origem para um contentor de destino da API NoSQL do Cosmos DB usando o feed de alterações [All Versions and Delete](https://learn.microsoft.com/azure/cosmos-db/change-feed-modes?tabs=all-versions-and-deletes#all-versions-and-deletes-change-feed-mode-preview). Isto permite que as atualizações continuem na origem enquanto os dados são copiados. É necessário um breve período de inatividade no final para mudar em segurança as aplicações cliente para o contentor de destino. Saiba mais sobre [online copy jobs](https://learn.microsoft.com/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#getting-started)."
       }
     },
+    "migrationTypeTitle": "Tipo de migração",
     "selectContainers": {
       "description": "Selecione um contentor de origem e um contentor de destino para o qual copiar.",
       "sourceContainerSubHeading": "Contentor de origem",
@@ -1117,7 +1125,8 @@
       "buttonText": "Ativar Cópia Online",
       "validateAllVersionsAndDeletesChangeFeedSpinnerLabel": "A validar o modo de feed de alterações para todas as versões e eliminações (pré-visualização)...",
       "enablingAllVersionsAndDeletesChangeFeedSpinnerLabel": "A ativar o modo de feed de alterações para todas as versões e eliminações (pré-visualização)...",
-      "enablingOnlineCopySpinnerLabel": "A ativar a cópia online na sua conta \"{{accountName}}\"..."
+      "enablingOnlineCopySpinnerLabel": "A ativar a cópia online na sua conta \"{{accountName}}\"...",
+      "onlineMigrationPrerequisitesMessage": "Os pré-requisitos da migração online têm de estar ativados antes de continuar."
     },
     "monitorJobs": {
       "columns": {
@@ -1151,6 +1160,16 @@
       "dialog": {
         "confirmButtonText": "Confirmar",
         "cancelButtonText": "Cancelar"
+      }
+    },
+    "dataTransfers": {
+      "polling": {
+        "cancelConsoleMessage": "Tarefa de transferência de dados \"{{jobName}}\" cancelada",
+        "completedConsoleMessage": "Tarefa de transferência de dados \"{{jobName}}\" concluída",
+        "defaultErrorMessage": "Não foi possível concluir a operação",
+        "errorConsoleMessage": "Tarefa de transferência de dados \"{{jobName}}\" falhou: {{errorMessage}}",
+        "pauseConsoleMessage": "Tarefa de transferência de dados \"{{jobName}}\" em pausa",
+        "retryConsoleMessage": "Tarefa de transferência de dados \"{{jobName}}\" em curso, contagem total: {{totalCount}}, contagem processada: {{processedCount}}"
       }
     }
   }

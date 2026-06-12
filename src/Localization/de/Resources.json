@@ -316,6 +316,10 @@
     "deleteUdf": "Benutzerdefinierte Funktion löschen"
   },
   "tabs": {
+    "tabMenu": {
+      "duplicateTab": "Doppelte Registerkarte",
+      "closeTab": "Registerkarte schließen"
+    },
     "documents": {
       "newItem": "Neues Element",
       "newDocument": "Neues Dokument",
@@ -760,11 +764,10 @@
         "settings": "Einstellungen",
         "indexingPolicy": "Indizierungsrichtlinie",
         "partitionKeys": "Partitionsschlüssel",
-        "partitionKeysPreview": "Partitionsschlüssel (Vorschau)",
         "computedProperties": "Berechnete Eigenschaften",
         "containerPolicies": "Containerrichtlinien",
         "throughputBuckets": "Durchsatzbuckets",
-        "globalSecondaryIndexPreview": "Global Secondary Index",
+        "globalSecondaryIndexPreview": "Globaler sekundärer Index",
         "maskingPolicyPreview": "Maskierungsrichtlinie"
       },
       "mongoNotifications": {
@@ -895,6 +898,10 @@
       },
       "partitionKeyEditor": {
         "changePartitionKey": "„{{partitionKeyName}}“ ändern",
+        "confirmCancel1": "Sie sind im Begriff, den folgenden Kopierauftrag abzubrechen.",
+        "confirmCancel2": "Durch das Abbrechen wird der Auftrag sofort beendet.",
+        "confirmComplete1": "Sie sind im Begriff, den folgenden Kopierauftrag abzuschließen.",
+        "confrimComplete2": "Nach Abschluss des Vorgangs wird die kontinuierliche Datenkopie beendet, nachdem alle ausstehenden Dokumente verarbeitet wurden. Um die Datenintegrität aufrechtzuerhalten, wird empfohlen, Aktualisierungen des Quellcontainers vor Abschluss des Auftrags zu beenden.",
         "currentPartitionKey": "Aktueller {{partitionKeyName}}",
         "partitioning": "Partitionierung",
         "hierarchical": "Hierarchisch",
@@ -1033,6 +1040,7 @@
         "description": "Mit Onlinecontainerkopieraufträgen können Sie Daten mithilfe des Änderungsfeeds [Alle Versionen und Löschvorgänge](https://learn.microsoft.com/azure/cosmos-db/change-feed-modes?tabs=all-versions-and-deletes#all-versions-and-deletes-change-feed-mode-preview) aus einem Quellcontainer in einen Cosmos DB NoSQL-API-Zielcontainer kopieren. Dadurch können Updates in der Quelle fortgesetzt werden, während Daten kopiert werden. Am Ende ist eine kurze Downtime erforderlich, um sicher über Clientanwendungen zum Zielcontainer zu wechseln. Weitere Informationen zu [Onlinekopieraufträgen](https://learn.microsoft.com/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#getting-started)."
       }
     },
+    "migrationTypeTitle": "Migrationstyp",
     "selectContainers": {
       "description": "Wählen Sie einen Quellcontainer und einen Zielcontainer aus, in den kopiert werden soll.",
       "sourceContainerSubHeading": "Quellcontainer",
@@ -1117,7 +1125,8 @@
       "buttonText": "Onlinekopie aktivieren",
       "validateAllVersionsAndDeletesChangeFeedSpinnerLabel": "Änderungsfeedmodus „Alle Versionen und Löschvorgänge“ (Vorschau) wird validiert ...",
       "enablingAllVersionsAndDeletesChangeFeedSpinnerLabel": "Änderungsfeedmodus „Alle Versionen und Löschvorgänge“ (Vorschau) wird aktiviert",
-      "enablingOnlineCopySpinnerLabel": "Onlinekopie wird für Ihr Konto „{{accountName}}“ aktiviert ..."
+      "enablingOnlineCopySpinnerLabel": "Onlinekopie wird für Ihr Konto „{{accountName}}“ aktiviert ...",
+      "onlineMigrationPrerequisitesMessage": "Die Voraussetzungen für die Onlinemigration müssen aktiviert sein, bevor Sie fortfahren können."
     },
     "monitorJobs": {
       "columns": {
@@ -1151,6 +1160,16 @@
       "dialog": {
         "confirmButtonText": "Bestätigen",
         "cancelButtonText": "Abbrechen"
+      }
+    },
+    "dataTransfers": {
+      "polling": {
+        "cancelConsoleMessage": "Datenübertragungsauftrag „{{jobName}}“ abgebrochen",
+        "completedConsoleMessage": "Datenübertragungsauftrag „{{jobName}}“ abgeschlossen",
+        "defaultErrorMessage": "Vorgang konnte nicht abgeschlossen werden",
+        "errorConsoleMessage": "Fehler beim Datenübertragungsauftrag „{{jobName}}“: {{errorMessage}}",
+        "pauseConsoleMessage": "Datenübertragungsauftrag „{{jobName}}“ angehalten",
+        "retryConsoleMessage": "Der Datenübertragungsauftrag „{{jobName}}“ ist in Arbeit, Gesamtanzahl: {{totalCount}}, verarbeitete Anzahl: {{processedCount}}"
       }
     }
   }
