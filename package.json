@@ -108,7 +108,7 @@
     "react-youtube": "9.0.1",
     "reflect-metadata": "0.1.13",
     "rx-jupyter": "5.5.12",
-    "shell-quote": "1.7.3",
+    "shell-quote": "1.8.4",
     "styled-components": "5.0.1",
     "swr": "0.4.0",
     "terser-webpack-plugin": "5.3.9",
@@ -117,7 +117,7 @@
     "utility-types": "3.10.0",
     "uuid": "9.0.0",
     "web-vitals": "4.2.4",
-    "ws": "8.17.1",
+    "ws": "8.20.1",
     "zustand": "3.5.0"
   },
   "overrides": {
@@ -224,7 +224,7 @@
     "webpack-bundle-analyzer": "5.2.0",
     "webpack-cli": "5.1.4",
     "webpack-dev-server": "5.2.3",
-    "ws": "8.17.1"
+    "ws": "8.20.1"
   },
   "scripts": {
     "postinstall": "patch-package && npm run generate:i18n-keys",
