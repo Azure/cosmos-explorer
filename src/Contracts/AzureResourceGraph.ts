@@ -1,7 +1,7 @@
 export interface QueryRequestOptions {
   $skipToken?: string;
   $top?: number;
-  $allowPartialScopes: boolean;
+  allowPartialScopes: boolean;
   subscriptions?: string[];
 }
 
