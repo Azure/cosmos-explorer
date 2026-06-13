@@ -46,8 +46,8 @@ src/Explorer/DataSamples/DataSamplesUtil.test.ts
 src/Explorer/DataSamples/DataSamplesUtil.ts
 src/Explorer/Graph/GraphExplorerComponent/ArraysByKeyCache.test.ts
 src/Explorer/Graph/GraphExplorerComponent/ArraysByKeyCache.ts
-src/Explorer/Graph/GraphExplorerComponent/D3ForceGraph.test.ts
-src/Explorer/Graph/GraphExplorerComponent/D3ForceGraph.ts
+# src/Explorer/Graph/GraphExplorerComponent/D3ForceGraph.test.ts
+# src/Explorer/Graph/GraphExplorerComponent/D3ForceGraph.ts
 src/Explorer/Graph/GraphExplorerComponent/EdgeInfoCache.ts
 src/Explorer/Graph/GraphExplorerComponent/GraphData.test.ts
 src/Explorer/Graph/GraphExplorerComponent/GraphData.ts
