@@ -411,6 +411,7 @@ export enum CommandBarButton {
   ExecuteQuery = "Execute Query",
   UploadItem = "Upload Item",
   NewDocument = "New Document",
+  View = "View",
 }
 
 /** Helper class that provides locator methods for DataExplorer components, on top of a Frame */
