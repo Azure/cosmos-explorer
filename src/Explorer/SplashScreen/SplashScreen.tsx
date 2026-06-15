@@ -31,7 +31,6 @@ import LinkIcon from "../../../images/Link_blue.svg";
 import PowerShellIcon from "../../../images/PowerShell.svg";
 import QuickStartIcon from "../../../images/Quickstart_Lightning.svg";
 import VisualStudioIcon from "../../../images/VisualStudio.svg";
-import NotebookIcon from "../../../images/notebook/Notebook-resource.svg";
 import CollectionIcon from "../../../images/tree-collection.svg";
 import * as Constants from "../../Common/Constants";
 import { userContext } from "../../UserContext";
@@ -471,33 +470,10 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
     };
   };
 
-  const decorateOpenNotebookActivity = (activity: MostRecentActivity.OpenNotebookItem): SplashScreenItem => {
-    return {
-      info: activity.path,
-      iconSrc: NotebookIcon,
-      title: activity.name,
-      description: t(Keys.splashScreen.sections.notebook),
-      onClick: () => {
-        const notebookItem = container.createNotebookContentItemFile(activity.name, activity.path);
-        notebookItem && container.openNotebook(notebookItem);
-      },
-    };
-  };
-
   const createRecentItems = (): SplashScreenItem[] => {
-    return MostRecentActivity.getItems(userContext.databaseAccount?.name).map((activity) => {
-      switch (activity.type) {
-        default: {
-          const unknownActivity: never = activity;
-          throw new Error(`Unknown activity: ${unknownActivity}`);
-        }
-        case MostRecentActivity.Type.OpenNotebook:
-          return decorateOpenNotebookActivity(activity);
-
-        case MostRecentActivity.Type.OpenCollection:
-          return decorateOpenCollectionActivity(activity);
-      }
-    });
+    return MostRecentActivity.getItems(userContext.databaseAccount?.name).map((activity) =>
+      decorateOpenCollectionActivity(activity),
+    );
   };
 
   const onSplashScreenItemKeyPress = (event: React.KeyboardEvent, callback: () => void) => {

@@ -160,7 +160,6 @@ export interface Collection extends CollectionBase {
   onTableEntitiesClick(): void;
   onGraphDocumentsClick(): void;
   onMongoDBDocumentsClick(): void;
-  onSchemaAnalyzerClick(): void;
   openTab(): void;
 
   onSettingsClick: () => Promise<void>;

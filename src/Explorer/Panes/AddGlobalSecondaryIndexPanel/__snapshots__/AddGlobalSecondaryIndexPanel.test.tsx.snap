@@ -166,7 +166,6 @@ exports[`AddGlobalSecondaryIndexPanel render default panel 1`] = `
             "refreshNotebookList": [Function],
             "resourceTree": ResourceTreeAdapter {
               "container": [Circular],
-              "copyNotebook": [Function],
               "parameters": [Function],
             },
           }

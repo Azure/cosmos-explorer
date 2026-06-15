@@ -44,11 +44,7 @@
     "./src/Explorer/Graph/GraphExplorerComponent/GraphData.ts",
     "./src/Explorer/LazyMonaco.ts",
     "./src/Explorer/Menus/NotificationConsole/ConsoleData.tsx",
-    "./src/Explorer/Notebook/FileSystemUtil.ts",
-    "./src/Explorer/Notebook/NotebookComponent/ContentProviders/InMemoryContentProviderUtils.ts",
-    "./src/Explorer/Notebook/NotebookComponent/loadTransform.ts",
     "./src/Explorer/Notebook/NotebookContentItem.ts",
-    "./src/Explorer/Notebook/SchemaAnalyzer/SchemaAnalyzerSplashScreen.tsx",
     "./src/Explorer/OpenFullScreen.test.tsx",
     "./src/Explorer/OpenFullScreen.tsx",
     "./src/Explorer/Panes/PanelContainerComponent.test.tsx",
@@ -127,7 +123,6 @@
     "./src/Platform/Hosted/Components/SwitchSubscription.tsx"
   ],
   "include": [
-    "src/CellOutputViewer/transforms/**/*",
     "src/Common/Tooltip/**/*",
     "src/Controls/**/*",
     "src/Definitions/**/*",
@@ -138,7 +133,6 @@
     "src/Explorer/Controls/ResizeSensorReactComponent/**/*",
     "src/Explorer/Graph/GraphExplorerComponent/__mocks__/**/*",
     "src/Explorer/Menus/NavBar/**/*",
-    "src/Explorer/Notebook/NotebookComponent/__mocks__/**/*",
     "src/Explorer/Panes/RightPaneForm/**/*",
     "src/Libs/**/*",
     "src/Localization/**/*",

@@ -130,7 +130,6 @@ exports[`SettingsComponent renders 1`] = `
                   "refreshNotebookList": [Function],
                   "resourceTree": ResourceTreeAdapter {
                     "container": [Circular],
-                    "copyNotebook": [Function],
                     "parameters": [Function],
                   },
                 },
@@ -252,7 +251,6 @@ exports[`SettingsComponent renders 1`] = `
                   "refreshNotebookList": [Function],
                   "resourceTree": ResourceTreeAdapter {
                     "container": [Circular],
-                    "copyNotebook": [Function],
                     "parameters": [Function],
                   },
                 },
@@ -479,7 +477,6 @@ exports[`SettingsComponent renders 1`] = `
                   "refreshNotebookList": [Function],
                   "resourceTree": ResourceTreeAdapter {
                     "container": [Circular],
-                    "copyNotebook": [Function],
                     "parameters": [Function],
                   },
                 },
@@ -551,7 +548,6 @@ exports[`SettingsComponent renders 1`] = `
                 "refreshNotebookList": [Function],
                 "resourceTree": ResourceTreeAdapter {
                   "container": [Circular],
-                  "copyNotebook": [Function],
                   "parameters": [Function],
                 },
               }
@@ -720,7 +716,6 @@ exports[`SettingsComponent renders 1`] = `
                   "refreshNotebookList": [Function],
                   "resourceTree": ResourceTreeAdapter {
                     "container": [Circular],
-                    "copyNotebook": [Function],
                     "parameters": [Function],
                   },
                 },
@@ -792,7 +787,6 @@ exports[`SettingsComponent renders 1`] = `
                 "refreshNotebookList": [Function],
                 "resourceTree": ResourceTreeAdapter {
                   "container": [Circular],
-                  "copyNotebook": [Function],
                   "parameters": [Function],
                 },
               }

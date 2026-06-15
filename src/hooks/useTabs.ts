@@ -10,7 +10,6 @@ import {
 import create, { UseStore } from "zustand";
 import * as ViewModels from "../Contracts/ViewModels";
 import { CollectionTabKind } from "../Contracts/ViewModels";
-import NotebookTabV2 from "../Explorer/Tabs/NotebookV2Tab";
 import TabsBase from "../Explorer/Tabs/TabsBase";
 
 export interface TabsState {
@@ -133,7 +132,7 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
 
     get().persistTabsState();
   },
-  closeAllNotebookTabs: (hardClose): void => {
+  closeAllNotebookTabs: (): void => {
     const isNotebook = (tabKind: CollectionTabKind): boolean => {
       if (
         tabKind === CollectionTabKind.Notebook ||
@@ -148,10 +147,10 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
 
     const tabList = get().openedTabs;
     if (tabList && tabList.length > 0) {
-      tabList.forEach((tab: NotebookTabV2) => {
+      tabList.forEach((tab: TabsBase) => {
         const tabKind: CollectionTabKind = tab.tabKind;
         if (tabKind && isNotebook(tabKind)) {
-          tab.onCloseTabButtonClick(hardClose);
+          tab.onCloseTabButtonClick();
         }
       });
 

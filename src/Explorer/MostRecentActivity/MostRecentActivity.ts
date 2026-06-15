@@ -4,13 +4,6 @@ import { LocalStorageUtility, StorageKey } from "../../Shared/StorageUtility";
 
 export enum Type {
   OpenCollection = "OpenCollection",
-  OpenNotebook = "OpenNotebook",
-}
-
-export interface OpenNotebookItem {
-  type: Type.OpenNotebook;
-  name: string;
-  path: string;
 }
 
 export interface OpenCollectionItem {
@@ -19,7 +12,7 @@ export interface OpenCollectionItem {
   collectionId: string;
 }
 
-type Item = OpenNotebookItem | OpenCollectionItem;
+type Item = OpenCollectionItem;
 
 const itemsMaxNumber: number = 5;
 
@@ -42,14 +35,14 @@ const migrateOldData = () => {
                 componentName: AppStateComponentNames.MostRecentActivity,
                 globalAccountName: accountName,
               },
-              itemsMap[accountId].map((item) => {
-                if ((item.type as unknown as number) === 0) {
-                  item.type = Type.OpenCollection;
-                } else if ((item.type as unknown as number) === 1) {
-                  item.type = Type.OpenNotebook;
-                }
-                return item;
-              }),
+              itemsMap[accountId]
+                .filter((item) => (item.type as unknown as number) !== 1 && (item.type as string) !== "OpenNotebook")
+                .map((item) => {
+                  if ((item.type as unknown as number) === 0) {
+                    item.type = Type.OpenCollection;
+                  }
+                  return item;
+                }),
             );
           }
         });
@@ -97,7 +90,7 @@ export const getItems = (accountName: string): Item[] => {
       componentName: AppStateComponentNames.MostRecentActivity,
       globalAccountName: accountName,
     }) as Item[]) || []
-  );
+  ).filter((item) => item.type in Type);
 };
 
 export const collectionWasOpened = (

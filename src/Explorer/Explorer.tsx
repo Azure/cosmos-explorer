@@ -24,7 +24,7 @@ import { AuthType } from "../AuthType";
 import { BindingHandlersRegisterer } from "../Bindings/BindingHandlersRegisterer";
 import * as Constants from "../Common/Constants";
 import { Areas, ConnectionStatusType, HttpStatusCodes, Notebook } from "../Common/Constants";
-import { getErrorMessage, getErrorStack, handleError } from "../Common/ErrorHandlingUtils";
+import { getErrorMessage, getErrorStack } from "../Common/ErrorHandlingUtils";
 import * as Logger from "../Common/Logger";
 import { QueriesClient } from "../Common/QueriesClient";
 import { readCollection } from "../Common/dataAccess/readCollection";
@@ -43,28 +43,20 @@ import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants"
 import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
 import { updateUserContext, userContext } from "../UserContext";
 import { getCollectionName, getUploadName } from "../Utils/APITypeUtils";
-import { stringToBlob } from "../Utils/BlobUtils";
 import { isCapabilityEnabled } from "../Utils/CapabilityUtils";
-import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
-import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../Utils/NotificationConsoleUtils";
 import { useSidePanel } from "../hooks/useSidePanel";
 import { ReactTabKind, useTabs } from "../hooks/useTabs";
 import "./ComponentRegisterer";
 import { DialogProps, useDialog } from "./Controls/Dialog";
 import { useCommandBar } from "./Menus/CommandBar/CommandBarComponentAdapter";
-import * as FileSystemUtil from "./Notebook/FileSystemUtil";
-import { NotebookContentItem, NotebookContentItemType } from "./Notebook/NotebookContentItem";
 import type NotebookManager from "./Notebook/NotebookManager";
-import { NotebookUtil } from "./Notebook/NotebookUtil";
 import { useNotebook } from "./Notebook/useNotebook";
 import { AddCollectionPanel } from "./Panes/AddCollectionPanel/AddCollectionPanel";
 import { CassandraAddCollectionPane } from "./Panes/CassandraAddCollectionPane/CassandraAddCollectionPane";
 import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane/ExecuteSprocParamsPane";
-import { StringInputPane } from "./Panes/StringInputPane/StringInputPane";
 import { UploadItemsPane } from "./Panes/UploadItemsPane/UploadItemsPane";
 import { CassandraAPIDataClient, TableDataClient, TablesAPIDataClient } from "./Tables/TableDataClient";
-import NotebookV2Tab, { NotebookTabOptions } from "./Tabs/NotebookV2Tab";
 import TabsBase from "./Tabs/TabsBase";
 import TerminalTab from "./Tabs/TerminalTab";
 import Database from "./Tree/Database";
@@ -93,10 +85,6 @@ export default class Explorer {
   public notebookManager?: NotebookManager;
 
   private _isInitializingNotebooks: boolean;
-  private notebookToImport: {
-    name: string;
-    content: string;
-  };
 
   private static readonly MaxNbDatabasesToAutoExpand = 5;
   public phoenixClient: PhoenixClient;
@@ -652,312 +640,10 @@ export default class Explorer {
     }
   }
 
-  public uploadFile(
-    name: string,
-    content: string,
-    parent: NotebookContentItem,
-    isGithubTree?: boolean,
-  ): Promise<NotebookContentItem> {
-    if (!useNotebook.getState().isNotebookEnabled || !this.notebookManager?.notebookContentClient) {
-      const error = "Attempt to upload notebook, but notebook is not enabled";
-      handleError(error, "Explorer/uploadFile");
-      throw new Error(error);
-    }
-
-    const promise = this.notebookManager?.notebookContentClient.uploadFileAsync(name, content, parent, isGithubTree);
-    promise
-      .then(() => this.resourceTree.triggerRender())
-      .catch((reason) => useDialog.getState().showOkModalDialog("Unable to upload file", getErrorMessage(reason)));
-    return promise;
-  }
-
-  public async importAndOpen(path: string): Promise<boolean> {
-    const name = NotebookUtil.getName(path);
-    const item = NotebookUtil.createNotebookContentItem(name, path, "file");
-    const parent = this.resourceTree.myNotebooksContentRoot;
-
-    if (parent && parent.children && useNotebook.getState().isNotebookEnabled && this.notebookManager?.notebookClient) {
-      const existingItem = _.find(parent.children, (node) => node.name === name);
-      if (existingItem) {
-        return this.openNotebook(existingItem);
-      }
-
-      const content = await this.readFile(item);
-      const uploadedItem = await this.uploadFile(name, content, parent);
-      return this.openNotebook(uploadedItem);
-    }
-
-    return Promise.resolve(false);
-  }
-
-  public async importAndOpenContent(name: string, content: string): Promise<boolean> {
-    const parent = this.resourceTree.myNotebooksContentRoot;
-
-    if (parent && parent.children && useNotebook.getState().isNotebookEnabled && this.notebookManager?.notebookClient) {
-      if (this.notebookToImport && this.notebookToImport.name === name && this.notebookToImport.content === content) {
-        this.notebookToImport = undefined; // we don't want to try opening this notebook again
-      }
-
-      const existingItem = _.find(parent.children, (node) => node.name === name);
-      if (existingItem) {
-        return this.openNotebook(existingItem);
-      }
-
-      const uploadedItem = await this.uploadFile(name, content, parent);
-      return this.openNotebook(uploadedItem);
-    }
-
-    this.notebookToImport = { name, content }; // we'll try opening this notebook later on
-    return Promise.resolve(false);
-  }
-
-  public copyNotebook(name: string, content: string): void {
-    this.notebookManager?.openCopyNotebookPane(name, content);
-  }
-
-  /**
-   * Note: To keep it simple, this creates a disconnected NotebookContentItem that is not connected to the resource tree.
-   * Connecting it to a tree possibly requires the intermediate missing folders if the item is nested in a subfolder.
-   * Manually creating the missing folders between the root and its parent dir would break the UX: expanding a folder
-   * will not fetch its content if the children array exists (and has only one child which was manually created).
-   * Fetching the intermediate folders possibly involves a few chained async calls which isn't ideal.
-   *
-   * @param name
-   * @param path
-   */
-  public createNotebookContentItemFile(name: string, path: string): NotebookContentItem {
-    return NotebookUtil.createNotebookContentItem(name, path, "file");
-  }
-
-  public async openNotebook(notebookContentItem: NotebookContentItem): Promise<boolean> {
-    if (!notebookContentItem || !notebookContentItem.path) {
-      throw new Error(`Invalid notebookContentItem: ${notebookContentItem}`);
-    }
-    if (notebookContentItem.type === NotebookContentItemType.Notebook && useNotebook.getState().isPhoenixNotebooks) {
-      await this.allocateContainer();
-    }
-
-    const notebookTabs = useTabs
-      .getState()
-      .getTabs(
-        ViewModels.CollectionTabKind.NotebookV2,
-        (tab) =>
-          (tab as NotebookV2Tab).notebookPath &&
-          FileSystemUtil.isPathEqual((tab as NotebookV2Tab).notebookPath(), notebookContentItem.path),
-      ) as NotebookV2Tab[];
-    let notebookTab = notebookTabs && notebookTabs[0];
-
-    if (notebookTab) {
-      useTabs.getState().activateTab(notebookTab);
-    } else {
-      const options: NotebookTabOptions = {
-        account: userContext.databaseAccount,
-        tabKind: ViewModels.CollectionTabKind.NotebookV2,
-        node: undefined,
-        title: notebookContentItem.name,
-        tabPath: notebookContentItem.path,
-        collection: undefined,
-        masterKey: userContext.masterKey || "",
-        isTabsContentExpanded: ko.observable(true),
-        onLoadStartKey: undefined,
-        container: this,
-        notebookContentItem,
-      };
-
-      try {
-        const NotebookTabV2 = await import(/* webpackChunkName: "NotebookV2Tab" */ "./Tabs/NotebookV2Tab");
-        notebookTab = new NotebookTabV2.default(options);
-        useTabs.getState().activateNewTab(notebookTab);
-      } catch (reason) {
-        console.error("Import NotebookV2Tab failed!", reason);
-        return false;
-      }
-    }
-
-    return true;
-  }
-
-  public renameNotebook(notebookFile: NotebookContentItem, isGithubTree?: boolean): void {
-    if (!useNotebook.getState().isNotebookEnabled || !this.notebookManager?.notebookContentClient) {
-      const error = "Attempt to rename notebook, but notebook is not enabled";
-      handleError(error, "Explorer/renameNotebook");
-      throw new Error(error);
-    }
-
-    // Don't delete if tab is open to avoid accidental deletion
-    const openedNotebookTabs = useTabs
-      .getState()
-      .getTabs(ViewModels.CollectionTabKind.NotebookV2, (tab: NotebookV2Tab) => {
-        return tab.notebookPath && FileSystemUtil.isPathEqual(tab.notebookPath(), notebookFile.path);
-      });
-    if (openedNotebookTabs.length > 0) {
-      useDialog
-        .getState()
-        .showOkModalDialog("Unable to rename file", "This file is being edited. Please close the tab and try again.");
-    } else {
-      useSidePanel.getState().openSidePanel(
-        "Rename Notebook",
-        <StringInputPane
-          closePanel={() => {
-            useSidePanel.getState().closeSidePanel();
-            this.resourceTree.triggerRender();
-          }}
-          inputLabel="Enter new notebook name"
-          submitButtonLabel="Rename"
-          errorMessage="Could not rename notebook"
-          inProgressMessage="Renaming notebook to"
-          successMessage="Renamed notebook to"
-          paneTitle="Rename Notebook"
-          defaultInput={FileSystemUtil.stripExtension(notebookFile.name, "ipynb")}
-          onSubmit={(notebookFile: NotebookContentItem, input: string): Promise<NotebookContentItem> =>
-            this.notebookManager?.notebookContentClient.renameNotebook(notebookFile, input, isGithubTree)
-          }
-          notebookFile={notebookFile}
-        />,
-      );
-    }
-  }
-
-  public onCreateDirectory(parent: NotebookContentItem, isGithubTree?: boolean): void {
-    if (!useNotebook.getState().isNotebookEnabled || !this.notebookManager?.notebookContentClient) {
-      const error = "Attempt to create notebook directory, but notebook is not enabled";
-      handleError(error, "Explorer/onCreateDirectory");
-      throw new Error(error);
-    }
-
-    useSidePanel.getState().openSidePanel(
-      "Create new directory",
-      <StringInputPane
-        closePanel={() => {
-          useSidePanel.getState().closeSidePanel();
-          this.resourceTree.triggerRender();
-        }}
-        errorMessage="Could not create directory "
-        inProgressMessage="Creating directory "
-        successMessage="Created directory "
-        inputLabel="Enter new directory name"
-        paneTitle="Create new directory"
-        submitButtonLabel="Create"
-        defaultInput=""
-        onSubmit={(notebookFile: NotebookContentItem, input: string): Promise<NotebookContentItem> =>
-          this.notebookManager?.notebookContentClient.createDirectory(notebookFile, input, isGithubTree)
-        }
-        notebookFile={parent}
-      />,
-    );
-  }
-
-  public readFile(notebookFile: NotebookContentItem): Promise<string> {
-    if (!useNotebook.getState().isNotebookEnabled || !this.notebookManager?.notebookContentClient) {
-      const error = "Attempt to read file, but notebook is not enabled";
-      handleError(error, "Explorer/downloadFile");
-      throw new Error(error);
-    }
-
-    return this.notebookManager?.notebookContentClient.readFileContent(notebookFile.path);
-  }
-
-  public downloadFile(notebookFile: NotebookContentItem): Promise<void> {
-    if (!useNotebook.getState().isNotebookEnabled || !this.notebookManager?.notebookContentClient) {
-      const error = "Attempt to download file, but notebook is not enabled";
-      handleError(error, "Explorer/downloadFile");
-      throw new Error(error);
-    }
-
-    const clearMessage = NotificationConsoleUtils.logConsoleProgress(`Downloading ${notebookFile.path}`);
-
-    return this.notebookManager?.notebookContentClient.readFileContent(notebookFile.path).then(
-      (content: string) => {
-        const blob = stringToBlob(content, "text/plain");
-        if (navigator.msSaveBlob) {
-          // for IE and Edge
-          navigator.msSaveBlob(blob, notebookFile.name);
-        } else {
-          const downloadLink: HTMLAnchorElement = document.createElement("a");
-          const url = URL.createObjectURL(blob);
-          downloadLink.href = url;
-          downloadLink.target = "_self";
-          downloadLink.download = notebookFile.name;
-
-          // for some reason, FF displays the download prompt only when
-          // the link is added to the dom so we add and remove it
-          document.body.appendChild(downloadLink);
-          downloadLink.click();
-          downloadLink.remove();
-        }
-
-        clearMessage();
-      },
-      (error) => {
-        logConsoleError(`Could not download notebook ${getErrorMessage(error)}`);
-        clearMessage();
-      },
-    );
-  }
-
-  private refreshNotebookList = async (): Promise<void> => {
-    if (!useNotebook.getState().isNotebookEnabled || !this.notebookManager?.notebookContentClient) {
-      return;
-    }
-
-    await this.resourceTree.initialize();
-    await useNotebook.getState().initializeNotebooksTree(this.notebookManager);
-
-    this.notebookManager?.refreshPinnedRepos();
-    if (this.notebookToImport) {
-      this.importAndOpenContent(this.notebookToImport.name, this.notebookToImport.content);
-    }
+  private refreshNotebookList = (): Promise<void> => {
+    // Notebook authoring and listing have been removed.
+    return Promise.resolve();
   };
-
-  public deleteNotebookFile(item: NotebookContentItem, isGithubTree?: boolean): Promise<void> {
-    if (!useNotebook.getState().isNotebookEnabled || !this.notebookManager?.notebookContentClient) {
-      const error = "Attempt to delete notebook file, but notebook is not enabled";
-      handleError(error, "Explorer/deleteNotebookFile");
-      throw new Error(error);
-    }
-
-    // Don't delete if tab is open to avoid accidental deletion
-    const openedNotebookTabs = useTabs
-      .getState()
-      .getTabs(ViewModels.CollectionTabKind.NotebookV2, (tab: NotebookV2Tab) => {
-        return tab.notebookPath && FileSystemUtil.isPathEqual(tab.notebookPath(), item.path);
-      });
-    if (openedNotebookTabs.length > 0) {
-      useDialog
-        .getState()
-        .showOkModalDialog("Unable to delete file", "This file is being edited. Please close the tab and try again.");
-      return Promise.reject();
-    }
-
-    if (item.type === NotebookContentItemType.Directory && item.children && item.children.length > 0) {
-      useDialog.getState().openDialog({
-        isModal: true,
-        title: "Unable to delete file",
-        subText: "Directory is not empty.",
-        primaryButtonText: "Close",
-        secondaryButtonText: undefined,
-        onPrimaryButtonClick: () => useDialog.getState().closeDialog(),
-        onSecondaryButtonClick: undefined,
-      });
-      return Promise.reject();
-    }
-
-    return this.notebookManager?.notebookContentClient.deleteContentItem(item, isGithubTree).then(
-      () => logConsoleInfo(`Successfully deleted: ${item.path}`),
-      (reason) => logConsoleError(`Failed to delete "${item.path}": ${JSON.stringify(reason)}`),
-    );
-  }
-
-  // TODO: Delete this function when ResourceTreeAdapter is removed.
-  public async refreshContentItem(item: NotebookContentItem): Promise<void> {
-    if (!useNotebook.getState().isNotebookEnabled || !this.notebookManager?.notebookContentClient) {
-      const error = "Attempt to refresh notebook list, but notebook is not enabled";
-      handleError(error, "Explorer/refreshContentItem");
-      return Promise.reject(new Error(error));
-    }
-
-    await this.notebookManager?.notebookContentClient.updateItemChildrenInPlace(item);
-  }
 
   public openNotebookTerminal(kind: ViewModels.TerminalKind): void {
     this.connectToNotebookTerminal(kind);
@@ -1043,32 +729,6 @@ export default class Explorer {
       activeTab.onActivate(); // TODO only update tabs buttons?
     } else {
       useCommandBar.getState().setContextButtons([]);
-    }
-  }
-
-  public async handleOpenFileAction(path: string): Promise<void> {
-    if (useNotebook.getState().isPhoenixNotebooks === undefined) {
-      await useNotebook.getState().getPhoenixStatus();
-    }
-    if (useNotebook.getState().isPhoenixNotebooks) {
-      await this.allocateContainer();
-    }
-
-    // We still use github urls like https://github.com/Azure-Samples/cosmos-notebooks/blob/master/CSharp_quickstarts/GettingStarted_CSharp.ipynb
-    // when launching a notebook quickstart from Portal. In future we should just use gallery id and use Juno to fetch instead of directly
-    // calling GitHub. For now convert this url to a raw url and download content.
-    const gitHubInfo = fromContentUri(path);
-    if (gitHubInfo) {
-      const rawUrl = toRawContentUri(gitHubInfo.owner, gitHubInfo.repo, gitHubInfo.branch, gitHubInfo.path);
-      const response = await fetch(rawUrl);
-      if (response.status === Constants.HttpStatusCodes.OK) {
-        this.notebookToImport = {
-          name: NotebookUtil.getName(path),
-          content: await response.text(),
-        };
-
-        this.importAndOpenContent(this.notebookToImport.name, this.notebookToImport.content);
-      }
     }
   }
 

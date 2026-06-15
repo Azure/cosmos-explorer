@@ -111,7 +111,10 @@ run: `npm run compile`, `npm run compile:strict`, `npm run lint`, `npm run forma
 `npm test`, and a webpack build (`npm run build:ci`); manually verify the four shells
 still open.
 
-### Phase 1 — Decouple database shells to CloudShell-only
+### Phase 1 — Decouple database shells to CloudShell-only ✅ COMPLETED
+> **Status:** Completed and merged in `d19c7e0c` ("Remove Phoenix & Notebooks — Phase 1:
+> Decouple database shells to CloudShell (#2513)").
+
 Remove the legacy Phoenix notebook-server terminal path so shells no longer depend on
 notebook provisioning.
 - Rewire `TerminalTab` to always use `CloudShellTerminalComponentAdapter`; delete the
@@ -124,29 +127,77 @@ notebook provisioning.
   CloudShell. If unused, remove it and `src/Terminal/`; otherwise keep.
 - **Outcome:** Shells run purely on CloudShell. Phoenix no longer needed for terminals.
 
-### Phase 2 — Remove the in-app notebook authoring & rendering experience
-Delete the notebook tabs, the nteract rendering engine, panes, and the read-only viewer,
-and remove all UI entry points that open notebooks.
-- Delete: `src/Explorer/Notebook/NotebookComponent/`,
+### Phase 2 — Remove the in-app notebook authoring & rendering experience ✅ COMPLETED
+> **Status:** Implemented on branch `users/jawelton/removenotebooks-phase2-061526`. Full
+> verification sweep is green: `compile`, `compile:strict`, `lint` (0 errors), `format:check`,
+> `test` (1945 passing), and `build:ci` (webpack) all pass.
+>
+> **Implementation notes / deviations:**
+> - `src/Explorer/Panes/StringInputPane/` was also deleted — it became unused once
+>   `Explorer.renameNotebook` / `onCreateDirectory` were removed.
+> - Removing notebook-only npm deps stripped several **phantom (transitively-hoisted)**
+>   packages that surviving code still imports, so these were re-added as explicit direct
+>   dependencies: `xterm@4.19.0` + `xterm-addon-fit@0.5.0` (CloudShell), `d3-collection@1.0.7`
+>   (Graph `D3ForceGraph`), and `@nteract/myths@0.1.9` (needed by kept `@nteract/core`).
+> - Jest snapshots regenerated: `SettingsComponent`, `AddGlobalSecondaryIndexPanel`,
+>   `GitHubReposPanel` (all just dropped the removed `copyNotebook` function from the
+>   serialized Explorer); deleted-component snapshots removed with their dirs.
+> - `CommandBarComponentButtonFactory` / `ContextMenuButtonFactory` required no notebook-button
+>   removal — they only contained shell entries (kept).
+
+Delete the notebook tabs, the nteract rendering engine, panes, the read-only viewer, and
+Schema Analyzer (see decision below), and remove all UI entry points that open notebooks.
+
+> **Cross-phase coupling — revised approach (confirmed):** Several files the original plan
+> deferred to later phases are hard-coupled to the deletions above and must be handled here:
+> - **Schema Analyzer is pulled forward from Phase 3 into Phase 2.** `SchemaAnalyzer.tsx`
+>   renders through the nteract engine (`NotebookComponent/loadTransform`,
+>   `NotebookRenderer/outputs/SandboxOutputs`) and `SchemaAnalyzerTab extends NotebookTabBase`,
+>   so it cannot compile once the engine is deleted.
+> - **`NotebookContentClient.ts` and `FileSystemUtil.ts` are deleted here** (they depend on
+>   the deleted `@nteract` content providers and only serve removed authoring paths).
+> - **`NotebookManager.tsx` / `useNotebook.ts` get minimal edits** (full deletion stays in
+>   Phase 5): strip the content-provider / content-client / CopyNotebookPane / SchemaAnalyzer
+>   usages, keeping the GitHub / Juno / `NotebookContainerClient` wiring later phases need.
+> - **`NotebookContentItem.ts` and `NotebookUtil.ts` are DEFERRED, not deleted here.** They
+>   are still used by the surviving `useNotebook` store and the "My Notebooks" tree
+>   (`ResourceTreeAdapter`), and `NotebookUtil.getName`/`isNotebookFile` are still used by the
+>   GitHub client/content provider. They are removed in Phase 4/5 with their consumers.
+
+- Delete (engine/content): `src/Explorer/Notebook/NotebookComponent/`,
   `src/Explorer/Notebook/NotebookRenderer/`, `src/Explorer/Notebook/SecurityWarningBar/`,
   `NotebookClientV2.ts`, `notebookClientV2.test.ts`, `NotebookContentClient.ts`,
-  `NTeractUtil.ts`, `NotebookContentItem.ts`, `NotebookUtil.ts` (+ test),
-  `FileSystemUtil.ts`.
-- Delete tabs/panes/viewer: `src/Explorer/Tabs/NotebookV2Tab.ts`, `NotebookTabBase.ts`,
+  `NTeractUtil.ts`, `FileSystemUtil.ts`.
+- Delete (tabs/panes/viewer): `src/Explorer/Tabs/NotebookV2Tab.ts`, `NotebookTabBase.ts`,
   `src/Explorer/Panes/CopyNotebookPane/`, `src/Explorer/Controls/NotebookViewer/`,
-  `src/CellOutputViewer/` (+ `cellOutputViewer` webpack entry & HTML plugin).
+  `src/CellOutputViewer/` (+ `cellOutputViewer` webpack entry & HTML/inline plugins).
+- Delete (Schema Analyzer, pulled forward): `src/Explorer/Notebook/SchemaAnalyzer/` and
+  `src/Explorer/Tabs/SchemaAnalyzerTab.ts`; remove its command-bar button and any tree/menu
+  entry points.
+- Edit to decouple survivors: `NotebookManager.tsx` (see note above), `Explorer.tsx`
+  (remove `openNotebook*`, import/copy/rename/createDir/read/download/upload/delete/refresh
+  notebook methods + `notebookToImport`; KEEP `openNotebookTerminal` /
+  `connectToNotebookTerminal` and the Phoenix container methods for Phase 5),
+  `ResourceTreeAdapter.tsx` (drop `NotebookV2Tab` import + open/copy actions; neutralize node
+  click handlers — full "My Notebooks" tree removal remains Phase 5), `useTabs.ts` (drop
+  `NotebookTabV2`), `Contracts/ViewModels.ts` (fix notebook-tab interfaces that break compile;
+  keep `CollectionTabKind` enum values).
 - Remove notebook entry points: "New Notebook"/open-notebook buttons in
-  `CommandBarComponentButtonFactory` (+ test), `OpenActions.tsx`,
+  `CommandBarComponentButtonFactory` (+ test), `OpenActions.tsx` (`OpenSampleNotebook`),
   `ContextMenuButtonFactory.tsx`, splash-screen notebook cards & recent-notebook items
-  (`MostRecentActivity` OpenNotebook type), and the `openNotebook*` /
-  `createNotebookContentItemFile` methods on `Explorer`.
-- Remove notebook deps from `package.json`: `@nteract/*`, `@jupyterlab/*`,
-  `@phosphor/widgets`, `rx-jupyter` (and any now-unused transitive notebook-only libs).
-- **Outcome:** Notebooks can no longer be authored, opened, or rendered.
+  (`MostRecentActivity` `OpenNotebook` type).
+- `tsconfig.strict.json`: remove entries for deleted files (keep `NotebookContentItem.ts`).
+- Remove from `package.json` ONLY the notebook-only deps with **zero** remaining importers
+  after the deletions (e.g. `@jupyterlab/*`, `@phosphor/widgets`, and any `@nteract/*` not
+  still used). DEFER `@nteract/core`, `@nteract/commutable`, and `rx-jupyter` (still imported
+  by the kept `NotebookManager` / GitHub code) to Phase 4/5.
+- Update/delete affected tests; regenerate Jest snapshots (`treeNodeUtil`,
+  `SettingsComponent`, `StringInputPane`).
+- **Outcome:** Notebooks and Schema Analyzer can no longer be authored, opened, or rendered.
 
-### Phase 3 — Remove Schema Analyzer
-- Delete `src/Explorer/Notebook/SchemaAnalyzer/` and `src/Explorer/Tabs/SchemaAnalyzerTab.ts`.
-- Remove Schema Analyzer command-bar button and any tree/menu entry points.
+### Phase 3 — (folded into Phase 2)
+Schema Analyzer removal was pulled forward into Phase 2 because it is rendered by the nteract
+engine deleted there. No separate work remains for this phase.
 
 ### Phase 4 — Remove GitHub integration
 - Delete `src/GitHub/`, `src/Explorer/Controls/GitHub/`,
@@ -160,7 +211,13 @@ and remove all UI entry points that open notebooks.
 ### Phase 5 — Remove Phoenix and the notebook container/allocation core
 - Delete `src/Phoenix/`, `src/Explorer/Notebook/NotebookContainerClient.ts`,
   `src/Explorer/Notebook/NotebookManager.tsx`, `src/Explorer/Notebook/useNotebook.ts`,
-  `src/Utils/NotebookConfigurationUtils.ts`, `src/hooks/useNotebookSnapshotStore.ts`.
+  `src/Explorer/Notebook/NotebookContentItem.ts`, `src/Explorer/Notebook/NotebookUtil.ts`
+  (+ `NotebookUtil.test.ts`), `src/Utils/NotebookConfigurationUtils.ts`,
+  `src/hooks/useNotebookSnapshotStore.ts`. (`NotebookContentItem.ts` and `NotebookUtil.ts`
+  deletion was deferred from Phase 2 because the "My Notebooks" tree/store and the GitHub
+  client still referenced them; remove them here once those consumers are gone. If GitHub
+  was removed in Phase 4, `NotebookUtil`'s `getName`/`isNotebookFile` helpers were inlined
+  there.)
 - Remove from `Explorer.tsx`: `phoenixClient`, `notebookManager`, `_isInitializingNotebooks`,
   `initNotebooks`, `initiateAndRefreshNotebookList`, `refreshNotebookList`,
   `allocateContainer`, container heartbeat/connection logic, and notebook-server URL

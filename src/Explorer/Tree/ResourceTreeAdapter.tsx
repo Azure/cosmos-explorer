@@ -106,15 +106,6 @@ export class ResourceTreeAdapter implements ReactAdapter {
       type: NotebookContentItemType.Directory,
     };
 
-    // Only if notebook server is available we can refresh
-    if (useNotebook.getState().notebookServerInfo?.notebookServerEndpoint) {
-      refreshTasks.push(
-        this.container.refreshContentItem(this.myNotebooksContentRoot).then(() => {
-          this.triggerRender();
-          this.traceMyNotebookTreeInfo();
-        }),
-      );
-    }
     this.gitHubNotebooksContentRoot = {
       name: ResourceTreeAdapter.GitHubReposTitle,
       path: ResourceTreeAdapter.PseudoDirPath,
@@ -490,117 +481,17 @@ export class ResourceTreeAdapter implements ReactAdapter {
           (activeTab as any).notebookPath() === item.path
         );
       },
-      contextMenu: createFileContextMenu && this.createFileContextMenu(item),
+      contextMenu: createFileContextMenu && this.createFileContextMenu(),
       data: item,
     };
   }
 
-  private createFileContextMenu(item: NotebookContentItem): TreeNodeMenuItem[] {
-    let items: TreeNodeMenuItem[] = [
-      {
-        label: "Rename",
-        iconSrc: NotebookIcon,
-        onClick: () => this.container.renameNotebook(item),
-      },
-      {
-        label: "Delete",
-        iconSrc: DeleteIcon,
-        onClick: () => {
-          useDialog
-            .getState()
-            .showOkCancelModalDialog(
-              "Confirm delete",
-              `Are you sure you want to delete "${item.name}"`,
-              "Delete",
-              () => this.container.deleteNotebookFile(item).then(() => this.triggerRender()),
-              "Cancel",
-              undefined,
-            );
-        },
-      },
-      {
-        label: "Copy to ...",
-        iconSrc: CopyIcon,
-        onClick: () => this.copyNotebook(item),
-      },
-      {
-        label: "Download",
-        iconSrc: NotebookIcon,
-        onClick: () => this.container.downloadFile(item),
-      },
-    ];
-
-    if (item.type === NotebookContentItemType.Notebook) {
-      // Additional notebook-specific context menu items can be added here
-    }
-
-    // "Copy to ..." isn't needed if github locations are not available
-    if (!this.container.notebookManager?.gitHubOAuthService.isLoggedIn()) {
-      items = items.filter((item) => item.label !== "Copy to ...");
-    }
-
-    return items;
+  private createFileContextMenu(): TreeNodeMenuItem[] {
+    return [];
   }
 
-  private copyNotebook = async (item: NotebookContentItem) => {
-    const content = await this.container.readFile(item);
-    if (content) {
-      this.container.copyNotebook(item.name, content);
-    }
-  };
-
-  private createDirectoryContextMenu(item: NotebookContentItem): TreeNodeMenuItem[] {
-    let items: TreeNodeMenuItem[] = [
-      {
-        label: "Refresh",
-        iconSrc: RefreshIcon,
-        onClick: () => this.container.refreshContentItem(item).then(() => this.triggerRender()),
-      },
-      {
-        label: "Delete",
-        iconSrc: DeleteIcon,
-        onClick: () => {
-          useDialog
-            .getState()
-            .showOkCancelModalDialog(
-              "Confirm delete",
-              `Are you sure you want to delete "${item.name}?"`,
-              "Delete",
-              () => this.container.deleteNotebookFile(item).then(() => this.triggerRender()),
-              "Cancel",
-              undefined,
-            );
-        },
-      },
-      {
-        label: "Rename",
-        iconSrc: NotebookIcon,
-        onClick: () => this.container.renameNotebook(item),
-      },
-      {
-        label: "New Directory",
-        iconSrc: NewNotebookIcon,
-        onClick: () => this.container.onCreateDirectory(item),
-      },
-    ];
-
-    //disallow renaming of temporary notebook workspace
-    if (item?.path === useNotebook.getState().notebookBasePath) {
-      items = items.filter((item) => item.label !== "Rename");
-    }
-
-    // For GitHub paths remove "Delete", "Rename", "New Directory", "Upload File"
-    if (GitHubUtils.fromContentUri(item.path)) {
-      items = items.filter(
-        (item) =>
-          item.label !== "Delete" &&
-          item.label !== "Rename" &&
-          item.label !== "New Directory" &&
-          item.label !== "Upload File",
-      );
-    }
-
-    return items;
+  private createDirectoryContextMenu(): TreeNodeMenuItem[] {
+    return [];
   }
 
   private buildNotebookDirectoryNode(
@@ -615,11 +506,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
       className: "notebookHeader",
       isAlphaSorted: true,
       isLeavesParentsSeparate: true,
-      onClick: () => {
-        if (!item.children) {
-          this.container.refreshContentItem(item).then(() => this.triggerRender());
-        }
-      },
+      onClick: undefined,
       isSelected: () => {
         const activeTab = useTabs.getState().activeTab;
         return (
@@ -633,7 +520,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
       },
       contextMenu:
         createDirectoryContextMenu && item.path !== ResourceTreeAdapter.PseudoDirPath
-          ? this.createDirectoryContextMenu(item)
+          ? this.createDirectoryContextMenu()
           : undefined,
       data: item,
       children: this.buildChildNodes(item, onFileClick, createDirectoryContextMenu, createFileContextMenu),
