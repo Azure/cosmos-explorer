@@ -60,9 +60,6 @@ export const VectorEmbeddingSourceComponent: FunctionComponent<IVectorEmbeddingS
   discardChanges,
   onChange,
 }): JSX.Element => {
-  // The integrated-embedding capability gate lives at the parent's call site
-  // (VectorEmbeddingPoliciesComponent). Don't add a gate here — gating before the
-  // hooks below would violate the Rules of Hooks.
   const suffix = index + 1;
 
   const [sourcePathsRaw, setSourcePathsRaw] = useState<string>(initialEmbeddingSource?.sourcePaths?.join(", ") || "");
@@ -90,10 +87,7 @@ export const VectorEmbeddingSourceComponent: FunctionComponent<IVectorEmbeddingS
 
   const isValid = !hasAnyValue || (!sourcePathsError && !deploymentNameError && !modelNameError && !endpointError);
 
-  // Memoize the synthesized source so that equal field values yield the same object reference.
-  // Without this, every render would mint a new object literal, defeating the parent's
-  // reference-equality guard in onEmbeddingSourceChange and producing an infinite render loop
-  // once all five fields become valid.
+  // Memoize to avoid infinite render loops from parent's reference-equality check.
   const source = React.useMemo<VectorEmbeddingSource | undefined>(() => {
     if (!hasAnyValue || !isValid) {
       return undefined;
@@ -120,12 +114,6 @@ export const VectorEmbeddingSourceComponent: FunctionComponent<IVectorEmbeddingS
 
   React.useEffect(() => {
     onChange(source, isValid);
-    // `onChange` is intentionally omitted from the dependency array. The parent recreates
-    // its inline arrow on every render, and including it here would re-fire this effect
-    // on every parent render — feeding back into the parent's setState and producing an
-    // infinite loop. The effect's behavior depends only on `source` / `isValid`, which are
-    // memoized from local state, so capturing a stale `onChange` reference is safe: the
-    // underlying state mutation (setVectorEmbeddingPolicyData) is identity-stable.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [source, isValid]);
 

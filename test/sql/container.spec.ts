@@ -57,21 +57,17 @@ test("SQL container with vector embedding policy and embedding source", async ({
 
   const explorer = await DataExplorer.open(page, TestAccount.SQL);
 
-  // Open the New Container panel and check if the embedding source capability is available
-  // before proceeding. We must skip before whilePanelOpen to avoid a timeout on panel close.
   const newContainerButton = await explorer.globalCommandButton("New Container");
   await newContainerButton.click();
 
   const panel = explorer.panel("New Container");
   await panel.waitFor();
 
-  // Expand vector policy section and add a vector embedding to check for the embedding source accordion
   await panel.getByTestId("ContainerVectorPolicy/Section").click();
   await panel.getByTestId("VectorEmbedding/AddButton").click();
 
   const embeddingSourceSection = panel.getByTestId("VectorEmbeddingSource/Section/1");
   if ((await embeddingSourceSection.count()) === 0) {
-    // Close the panel before skipping
     await panel.getByRole("button", { name: "Close New Container" }).click();
     await panel.waitFor({ state: "detached" });
     test.skip(true, "Test account does not have the integrated embedding capability.");
@@ -85,7 +81,7 @@ test("SQL container with vector embedding policy and embedding source", async ({
   await panel.getByTestId("VectorEmbedding/Path/1").fill("/embedding");
   await panel.getByTestId("VectorEmbedding/Dimensions/1").fill("1536");
 
-  // Expand embedding source section and fill fields
+  // Expand embedding source and fill fields
   await embeddingSourceSection.click();
 
   await panel.getByTestId("VectorEmbeddingSource/SourcePaths/1").fill("/description");
@@ -102,7 +98,6 @@ test("SQL container with vector embedding policy and embedding source", async ({
   const databaseNode = await explorer.waitForNode(databaseId);
   const containerNode = await explorer.waitForContainerNode(databaseId, containerId);
 
-  // Cleanup
   await containerNode.openContextMenu();
   await containerNode.contextMenuItem("Delete Container").click();
   await explorer.whilePanelOpen(

@@ -1413,25 +1413,15 @@ export interface VectorEmbedding {
   /* The number of dimensions in the vector. */
   dimensions: number;
 
-  /* Optional configuration for Cosmos DB integrated embeddings (server-side
-     embedding generation via Microsoft Foundry). When set, Cosmos DB
-     auto-populates the vector field from the listed source paths.
-     TODO: This field was added manually pending an upstream Swagger update;
-     re-applying `npm run generateARMClients` will overwrite it. */
+  /* Added manually pending upstream Swagger update; `npm run generateARMClients` will overwrite. */
   embeddingSource?: VectorEmbeddingSource;
 }
 
-/* Configuration for Cosmos DB integrated embeddings. */
 export interface VectorEmbeddingSource {
-  /* Source field paths used as input for embedding generation. */
   sourcePaths: string[];
-  /* The Foundry deployment name. */
   deploymentName: string;
-  /* The Foundry model name. */
   modelName: string;
-  /* The Foundry endpoint URL. */
   endpoint: string;
-  /* Authentication type used by Cosmos DB to call Foundry. */
   authType: "Entra";
 }
 
