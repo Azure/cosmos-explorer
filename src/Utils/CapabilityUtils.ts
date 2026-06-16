@@ -34,3 +34,14 @@ export const isFullTextSearchPreviewFeaturesEnabled = (targetAccountOverride?: A
     isCapabilityEnabled(Constants.CapabilityNames.EnableNoSQLFullTextSearchPreviewFeatures, targetAccountOverride)
   );
 };
+
+// `enableEmbeddingGenerator` is a top-level boolean on the database account
+// (e.g. properties.enableEmbeddingGenerator), not an entry in
+// properties.capabilities[]. It's the Foundry integrated embedding generator
+// flag that gates the `embeddingSource` block inside a Container Vector Policy.
+export const isIntegratedEmbeddingEnabled = (targetAccountOverride?: AccountOverride): boolean => {
+  const { databaseAccount } = userContext;
+  const enableEmbeddingGenerator =
+    targetAccountOverride?.enableEmbeddingGenerator ?? databaseAccount?.properties?.enableEmbeddingGenerator;
+  return isVectorSearchEnabled(targetAccountOverride) && enableEmbeddingGenerator === true;
+};
