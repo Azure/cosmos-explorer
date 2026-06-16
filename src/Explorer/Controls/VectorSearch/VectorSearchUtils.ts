@@ -19,8 +19,6 @@ export const getQuantizerTypeOptions = (): IDropdownOption[] => [
 export const supportsQuantization = (indexType: VectorIndex["type"] | "none" | undefined): boolean =>
   indexType === "quantizedFlat" || indexType === "diskANN";
 
-// Parses a comma-separated path list, trims whitespace, drops blanks, and
-// prefixes a leading "/" on each entry if it isn't there already.
 export const parseSourcePaths = (raw: string): string[] => {
   if (!raw) {
     return [];

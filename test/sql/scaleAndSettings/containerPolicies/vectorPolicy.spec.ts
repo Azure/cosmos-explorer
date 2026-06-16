@@ -203,7 +203,7 @@ test.describe("Vector Policy under Scale & Settings", () => {
     await explorer.frame.getByTestId("VectorEmbedding/Path/1").fill("/embedding");
     await explorer.frame.getByTestId("VectorEmbedding/Dimensions/1").fill("1536");
 
-    // Expand embedding source section and fill fields
+    // Expand embedding source and fill fields
     await embeddingSourceSection.click();
 
     await explorer.frame.getByTestId("VectorEmbeddingSource/SourcePaths/1").fill("/description");
@@ -213,7 +213,6 @@ test.describe("Vector Policy under Scale & Settings", () => {
       .getByTestId("VectorEmbeddingSource/Endpoint/1")
       .fill("https://e2e-embedding.cognitiveservices.azure.com/");
 
-    // Save changes
     const saveButton = explorer.commandBarButton(CommandBarButton.Save);
     await expect(saveButton).toBeEnabled();
     await saveButton.click();
@@ -224,7 +223,6 @@ test.describe("Vector Policy under Scale & Settings", () => {
   });
 
   test("Existing embedding source fields are disabled after save", async () => {
-    // Ensure a policy with embedding source exists (from previous test or create one)
     const sourcePathsInput = explorer.frame.getByTestId("VectorEmbeddingSource/SourcePaths/1");
     if ((await sourcePathsInput.count()) === 0) {
       test.skip(true, "No embedding source present; previous test may have been skipped.");
