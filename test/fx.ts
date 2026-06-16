@@ -122,9 +122,6 @@ export async function getTestExplorerUrl(accountType: TestAccount, options?: Tes
   params.set("feature.enableCopilot", "false");
 
   const nosqlRbacToken = getNoSqlRbacToken();
-  //if (!nosqlRbacToken) {
-  //  throw new Error("No NOSQL RBAC token found.");
-  //}
 
   const nosqlReadOnlyRbacToken = process.env.NOSQL_READONLY_TESTACCOUNT_TOKEN;
   const nosqlContainerCopyRbacToken = process.env.NOSQL_CONTAINERCOPY_TESTACCOUNT_TOKEN;
