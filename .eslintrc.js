@@ -40,7 +40,7 @@ module.exports = {
     },
   ],
   rules: {
-    //CTODO uncomment when console debugging is reverted: "no-console": ["error", { allow: ["error", "warn", "dir"] }],
+    "no-console": ["error", { allow: ["error", "warn", "dir"] }],
     curly: "error",
     "@typescript-eslint/switch-exhaustiveness-check": "error",
     "@typescript-eslint/no-unused-vars": "error",

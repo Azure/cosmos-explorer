@@ -111,7 +111,6 @@ module.exports = function (_env = {}, argv = {}) {
     index: "./src/Index.tsx",
     quickstart: "./src/quickstart.ts",
     hostedExplorer: "./src/HostedExplorer.tsx",
-    terminal: "./src/Terminal/index.ts",
     cellOutputViewer: "./src/CellOutputViewer/CellOutputViewer.tsx",
     selfServe: "./src/SelfServe/SelfServe.tsx",
     connectToGitHub: "./src/GitHub/GitHubConnector.ts",
@@ -127,11 +126,6 @@ module.exports = function (_env = {}, argv = {}) {
       filename: "explorer.html",
       template: "src/explorer.html",
       chunks: ["main"],
-    }),
-    new HtmlWebpackPlugin({
-      filename: "terminal.html",
-      template: "src/Terminal/index.html",
-      chunks: ["terminal"],
     }),
     new HtmlWebpackPlugin({
       filename: "quickstart.html",

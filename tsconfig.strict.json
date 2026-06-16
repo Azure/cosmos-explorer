@@ -145,7 +145,6 @@
     "src/Platform/Emulator/**/*",
     "src/SelfServe/Documentation/**/*",
     "src/Shared/Telemetry/**/*",
-    "src/Terminal/**/*",
     "src/Utils/arm/**/*"
   ]
 }

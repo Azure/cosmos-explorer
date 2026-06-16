@@ -6,7 +6,6 @@
   Generated from: https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/specification/cosmos-db/resource-manager/Microsoft.DocumentDB/DocumentDB/preview/2025-11-01-preview/cosmos-db.json
 */
 
-import { stringifyError } from "Common/stringifyError";
 import { configContext } from "../../../../ConfigContext";
 import { armRequest } from "../../request";
 import * as Types from "./types";
@@ -19,14 +18,7 @@ export async function listSqlDatabases(
   accountName: string,
 ): Promise<Types.SqlDatabaseListResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases`;
-  console.log("{{cdbp}} in listSqlDatabases(): path: " + path);
-  try {
-    console.log("{{cdbp}} in listSqlDatabases(): calling armRequest");
-    return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
-  } catch (error) {
-    console.log("{{cdbp}} in listSqlDatabases(): ERROR: " + stringifyError(error));
-    throw error;
-  }
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
 }
 
 /* Gets the SQL database under an existing Azure Cosmos DB database account with the provided name. */

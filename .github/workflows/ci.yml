@@ -299,13 +299,26 @@ jobs:
         run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }} --list
       - name: Run test shard ${{ matrix['shardIndex'] }} of ${{ matrix['shardTotal']}}
         run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }} --workers=3
-      - name: Upload blob report to GitHub Actions Artifacts
+      - name: "Re-auth for upload (refresh OIDC token)"
         if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v4
+        uses: Azure/login@v2
         with:
-          name: blob-report-${{ matrix.shardIndex }}
-          path: blob-report
-          retention-days: 1
+          client-id: ${{ secrets.E2E_TESTS_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - name: Upload shard blob-report to Azure Storage
+        if: ${{ !cancelled() }}
+        env:
+          KEY: ${{ github.run_id }}-${{ github.run_attempt }}
+          SHARD: ${{ matrix.shardIndex }}
+        run: |
+          az storage blob upload-batch \
+            --account-name ${{ secrets.PREVIEW_STORAGE_ACCOUNT_NAME }} \
+            --auth-mode login \
+            -d playwright-reports \
+            -s blob-report \
+            --destination-path "${KEY}/shards/shard-${SHARD}" \
+            --overwrite true
 
   merge-playwright-reports:
     name: "Merge Playwright Reports"
@@ -317,6 +330,7 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
+      id-token: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -325,29 +339,67 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Download blob reports from GitHub Actions Artifacts
-        uses: actions/download-artifact@v4
+      - name: "Az CLI login"
+        uses: Azure/login@v2
         with:
-          path: all-blob-reports
-          pattern: blob-report-*
-          merge-multiple: true
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.PREVIEW_SUBSCRIPTION_ID }}
+
+      - name: Download all shard reports from Azure Storage
+        env:
+          KEY: ${{ github.run_id }}-${{ github.run_attempt }}
+        run: |
+          mkdir -p all-blob-reports
+          az storage blob download-batch \
+            --account-name ${{ secrets.PREVIEW_STORAGE_ACCOUNT_NAME }} \
+            --auth-mode login \
+            -s playwright-reports \
+            --pattern "${KEY}/shards/*" \
+            -d ./all-blob-reports
+          find ./all-blob-reports -type f -name "*.zip" -exec mv -t ./all-blob-reports {} +
+          find ./all-blob-reports -type d -empty -delete
+          ls -la ./all-blob-reports
 
       - name: Merge into HTML Report
         run: npx playwright merge-reports --reporter html ./all-blob-reports
 
-      - name: Upload HTML report
-        uses: actions/upload-artifact@v4
-        with:
-          name: html-report--attempt-${{ github.run_attempt }}
-          path: playwright-report
-          retention-days: 14
+      - name: Bundle merged report into a single zip
+        run: |
+          cd playwright-report
+          zip -r ../report.zip .
+          cd ..
+
+      - name: Upload report.zip to Azure Storage
+        env:
+          KEY: ${{ github.run_id }}-${{ github.run_attempt }}
+        run: |
+          az storage blob upload \
+            --account-name ${{ secrets.PREVIEW_STORAGE_ACCOUNT_NAME }} \
+            --auth-mode login \
+            -c playwright-reports \
+            -n "${KEY}/report.zip" \
+            -f report.zip \
+            --overwrite
+
+      - name: Clean up shard intermediates from Azure Storage
+        if: ${{ always() }}
+        env:
+          KEY: ${{ github.run_id }}-${{ github.run_attempt }}
+        run: |
+          az storage blob delete-batch \
+            --account-name ${{ secrets.PREVIEW_STORAGE_ACCOUNT_NAME }} \
+            --auth-mode login \
+            -s playwright-reports \
+            --pattern "${KEY}/shards/*"
 
       - name: Comment Playwright results on PR
         if: ${{ !cancelled() && github.event_name == 'pull_request' }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR: ${{ github.event.pull_request.number }}
-          REPORT_URL: https://dataexplorerpreview.z5.web.core.windows.net/playwright-reports/${{ github.run_id }}-${{ github.run_attempt }}/index.html
+          SA_ID: /subscriptions/${{ secrets.PREVIEW_SUBSCRIPTION_ID }}/resourceGroups/dataexplorer-preview/providers/Microsoft.Storage/storageAccounts/dataexplorerpreview
+          KEY: ${{ github.run_id }}-${{ github.run_attempt }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           PLAYWRIGHT_JSON_OUTPUT_NAME=results.json npx playwright merge-reports --reporter json ./all-blob-reports
@@ -355,6 +407,8 @@ jobs:
           BROKEN=$(gh api "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/attempts/${{ github.run_attempt }}/jobs" \
             --jq '[.jobs[] | select(.name | startswith("Run Playwright Tests")) | select(.conclusion == "failure")] | length')
           if [ "$FAILED" -gt 0 ] || [ "$BROKEN" -gt 0 ]; then ICON="❌ failed"; else ICON="✅ passed"; fi
+          SA_ENC=$(printf '%s' "$SA_ID" | jq -sRr @uri)
+          CONTAINER_URL="https://portal.azure.com/#view/Microsoft_Azure_Storage/ContainerMenuBlade/~/overview/storageAccountId/${SA_ENC}/path/playwright-reports"
           NOTE=""
           [ "$BROKEN" -gt 0 ] && NOTE="
 
@@ -365,38 +419,5 @@ jobs:
           | :---: | :---: | :---: | :---: |
           | $PASSED | $FAILED | $FLAKY | ${DURATION}s |
 
-          📊 [Open full report]($REPORT_URL) · [Workflow run]($RUN_URL)$NOTE"
-
-  publish-playwright-report:
-    name: "Publish Playwright Report to Blob"
-    if: ${{ !cancelled() }}
-    needs: [merge-playwright-reports]
-
-    runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      contents: read
-    steps:
-      - name: Download HTML report artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: html-report--attempt-${{ github.run_attempt }}
-          path: playwright-report
-
-      - name: "Az CLI login"
-        uses: Azure/login@v2
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.PREVIEW_SUBSCRIPTION_ID }}
-
-      - name: Upload Playwright report to blob storage
-        env:
-          KEY: ${{ github.run_id }}-${{ github.run_attempt }}
-          BASE: https://dataexplorerpreview.z5.web.core.windows.net
-        run: |
-          az storage blob upload-batch -d '$web' -s playwright-report \
-            --destination-path "playwright-reports/${KEY}" \
-            --account-name ${{ secrets.PREVIEW_STORAGE_ACCOUNT_NAME }} \
-            --auth-mode login --overwrite true
-          echo "📊 [Open Playwright report](${BASE}/playwright-reports/${KEY}/index.html)" >> $GITHUB_STEP_SUMMARY
+          📁 **Report:** \`${KEY}/report.zip\`
+          [Open container]($CONTAINER_URL) (Azure sign-in required) → click into \`${KEY}\` folder → click \`report.zip\` → **Download** → unzip → open \`index.html\` · [Workflow run]($RUN_URL)$NOTE"
