@@ -879,8 +879,8 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
 
   private renderPartitionKeyRateLimitingPolicy = (): JSX.Element => {
     return (
-      <Stack {...titleAndInputStackProps} style={{ maxWidth: "700px" }}>
-        <Stack horizontal>
+      <Stack {...checkBoxAndInputStackProps} style={{ maxWidth: "700px", marginTop: "25px" }}>
+        <Stack horizontal tokens={{ childrenGap: 10 }} style={{ alignItems: "start" }}>
           <ToolTipLabelComponent
             label={t(Keys.controls.settings.scale.rateLimitingPolicyTitle)}
             toolTipElement={null}
