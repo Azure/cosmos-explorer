@@ -800,17 +800,28 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
   <Stack
     style={
       {
+        "marginTop": "25px",
         "maxWidth": "700px",
       }
     }
     tokens={
       {
-        "childrenGap": 5,
+        "childrenGap": 10,
       }
     }
   >
     <Stack
       horizontal={true}
+      style={
+        {
+          "alignItems": "start",
+        }
+      }
+      tokens={
+        {
+          "childrenGap": 10,
+        }
+      }
     >
       <ToolTipLabelComponent
         label="Rate limiting policy"
@@ -1413,17 +1424,28 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
   <Stack
     style={
       {
+        "marginTop": "25px",
         "maxWidth": "700px",
       }
     }
     tokens={
       {
-        "childrenGap": 5,
+        "childrenGap": 10,
       }
     }
   >
     <Stack
       horizontal={true}
+      style={
+        {
+          "alignItems": "start",
+        }
+      }
+      tokens={
+        {
+          "childrenGap": 10,
+        }
+      }
     >
       <ToolTipLabelComponent
         label="Rate limiting policy"
@@ -2009,17 +2031,28 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
   <Stack
     style={
       {
+        "marginTop": "25px",
         "maxWidth": "700px",
       }
     }
     tokens={
       {
-        "childrenGap": 5,
+        "childrenGap": 10,
       }
     }
   >
     <Stack
       horizontal={true}
+      style={
+        {
+          "alignItems": "start",
+        }
+      }
+      tokens={
+        {
+          "childrenGap": 10,
+        }
+      }
     >
       <ToolTipLabelComponent
         label="Rate limiting policy"
