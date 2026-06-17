@@ -12,9 +12,11 @@ import {
   MessageBarType,
   ProgressIndicator,
   Separator,
+  Slider,
   Stack,
   Text,
   TextField,
+  Toggle,
 } from "@fluentui/react";
 import { Keys, t } from "Localization";
 import React from "react";
@@ -25,10 +27,10 @@ import * as TelemetryProcessor from "../../../../../Shared/Telemetry/TelemetryPr
 import { userContext } from "../../../../../UserContext";
 import * as AutoPilotUtils from "../../../../../Utils/AutoPilotUtils";
 import { autoPilotThroughput1K } from "../../../../../Utils/AutoPilotUtils";
+import { isHotPartitionKeyThrottlingEnabled } from "../../../../../Utils/CapabilityUtils";
 import { calculateEstimateNumber } from "../../../../../Utils/PricingUtils";
 import { Int32 } from "../../../../Panes/Tables/Validators/EntityPropertyValidationCommon";
 import {
-  PriceBreakdown,
   checkBoxAndInputStackProps,
   getChoiceGroupStyles,
   getEstimatedSpendingElement,
@@ -40,11 +42,12 @@ import {
   getUpdateThroughputBeyondSupportLimitMessage,
   manualToAutoscaleDisclaimerElement,
   noLeftPaddingCheckBoxStyle,
+  PriceBreakdown,
   relaxedSpacingStackProps,
   saveThroughputWarningMessage,
   titleAndInputStackProps,
 } from "../../SettingsRenderUtils";
-import { IsComponentDirtyResult, getSanitizedInputValue, isDirty } from "../../SettingsUtils";
+import { getSanitizedInputValue, IsComponentDirtyResult, isDirty } from "../../SettingsUtils";
 import { ToolTipLabelComponent } from "../ToolTipLabelComponent";
 
 export interface ThroughputInputAutoPilotV3Props {
@@ -82,6 +85,9 @@ export interface ThroughputInputAutoPilotV3Props {
   instantMaximumThroughput: number;
   softAllowedMaximumThroughput: number;
   isGlobalSecondaryIndex: boolean;
+  hotPartitionKeyRateLimitingPolicy?: DataModels.HotPartitionKeyRateLimitingPolicy;
+  hotPartitionKeyRateLimitingPolicyBaseline?: DataModels.HotPartitionKeyRateLimitingPolicy;
+  onHotPartitionKeyRateLimitingPolicyChange: (newPolicy: DataModels.HotPartitionKeyRateLimitingPolicy) => void;
 }
 
 interface ThroughputInputAutoPilotV3State {
@@ -135,6 +141,12 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
 
     if (this.props.isEnabled) {
       if (this.hasProvisioningTypeChanged()) {
+        isSaveable = true;
+        isDiscardable = true;
+      } else if (
+        isHotPartitionKeyThrottlingEnabled() &&
+        isDirty(this.props.hotPartitionKeyRateLimitingPolicy, this.props.hotPartitionKeyRateLimitingPolicyBaseline)
+      ) {
         isSaveable = true;
         isDiscardable = true;
       } else if (this.props.isAutoPilotSelected) {
@@ -865,6 +877,50 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     );
   };
 
+  private renderPartitionKeyRateLimitingPolicy = (): JSX.Element => {
+    return (
+      <Stack {...titleAndInputStackProps} style={{ maxWidth: "700px" }}>
+        <Stack horizontal>
+          <ToolTipLabelComponent
+            label={t(Keys.controls.settings.scale.rateLimitingPolicyTitle)}
+            toolTipElement={null}
+          />
+          <Toggle
+            onText={t(Keys.common.on)}
+            offText={t(Keys.common.off)}
+            checked={!!this.props.hotPartitionKeyRateLimitingPolicy}
+            onChange={(_ev, checked) => {
+              if (checked) {
+                this.props.onHotPartitionKeyRateLimitingPolicyChange({
+                  maximumPerPartitionKeyThroughputUtilizationPercent:
+                    this.props.hotPartitionKeyRateLimitingPolicyBaseline
+                      ?.maximumPerPartitionKeyThroughputUtilizationPercent ?? 75,
+                });
+              } else {
+                this.props.onHotPartitionKeyRateLimitingPolicyChange(null);
+              }
+            }}
+          />
+        </Stack>
+        <Slider
+          disabled={!this.props.hotPartitionKeyRateLimitingPolicy}
+          label={t(Keys.controls.settings.scale.rateLimitPolicyMaxThroughputUtilizationLabel)}
+          min={51}
+          max={100}
+          ariaValueText={(value: number) => `${value} percent`}
+          valueFormat={(value: number) => `${value}%`}
+          showValue
+          value={this.props.hotPartitionKeyRateLimitingPolicy?.maximumPerPartitionKeyThroughputUtilizationPercent ?? 75}
+          onChange={(value: number) =>
+            this.props.onHotPartitionKeyRateLimitingPolicyChange({
+              maximumPerPartitionKeyThroughputUtilizationPercent: value,
+            })
+          }
+        />
+      </Stack>
+    );
+  };
+
   public render(): JSX.Element {
     return (
       <Stack {...checkBoxAndInputStackProps}>
@@ -872,6 +928,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         {this.renderThroughputModeChoices()}
 
         {this.renderThroughputComponent()}
+        {isHotPartitionKeyThrottlingEnabled() && this.renderPartitionKeyRateLimitingPolicy()}
       </Stack>
     );
   }

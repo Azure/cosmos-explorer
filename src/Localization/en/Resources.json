@@ -894,7 +894,9 @@
         "autoScaleCustomSettings": "Your account has custom settings that prevents setting throughput at the container level. Please work with your Cosmos DB engineering team point of contact to make changes.",
         "keyspaceSharedThroughput": "This table shared throughput is configured at the keyspace",
         "throughputRangeLabel": "Throughput ({{min}} - {{max}} RU/s)",
-        "unlimited": "unlimited"
+        "unlimited": "unlimited",
+        "rateLimitingPolicyTitle": "Rate limiting policy",
+        "rateLimitPolicyMaxThroughputUtilizationLabel": "Max per partition key Throughput utilization"
       },
       "partitionKeyEditor": {
         "changePartitionKey": "Change {{partitionKeyName}}",

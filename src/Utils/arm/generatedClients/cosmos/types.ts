@@ -1096,6 +1096,11 @@ export interface CassandraViewCreateUpdateProperties {
   options?: CreateUpdateOptions;
 }
 
+export interface HotPartitionKeyRateLimitingPolicy {
+  /* Maximum throughput utilization for partition keys (in percent) */
+  maximumPerPartitionKeyThroughputUtilizationPercent: number;
+}
+
 /* Cosmos DB resource throughput object. Either throughput is required or autoscaleSettings is required, but not both. */
 export interface ThroughputSettingsResource {
   /* Value of the Cosmos DB resource throughput. Either throughput is required or autoscaleSettings is required, but not both. */
@@ -1113,6 +1118,8 @@ export interface ThroughputSettingsResource {
   readonly softAllowedMaximumThroughput?: string;
   /* Array of throughput bucket limits to be applied to the Cosmos DB container */
   throughputBuckets?: ThroughputBucketResource[];
+  /* Object describing the Rate Limiting policy for Hot Partition Keys */
+  hotPartitionKeyRateLimitingPolicy?: HotPartitionKeyRateLimitingPolicy | null;
 }
 
 /* Cosmos DB provisioned throughput settings object */

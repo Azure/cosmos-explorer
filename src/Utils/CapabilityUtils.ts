@@ -34,3 +34,10 @@ export const isFullTextSearchPreviewFeaturesEnabled = (targetAccountOverride?: A
     isCapabilityEnabled(Constants.CapabilityNames.EnableNoSQLFullTextSearchPreviewFeatures, targetAccountOverride)
   );
 };
+
+export const isHotPartitionKeyThrottlingEnabled = (targetAccountOverride?: AccountOverride): boolean => {
+  return (
+    userContext.apiType === "SQL" &&
+    isCapabilityEnabled(Constants.CapabilityNames.EnableHotPartitionKeyThrottling, targetAccountOverride)
+  );
+};
