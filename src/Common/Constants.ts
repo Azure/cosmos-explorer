@@ -88,6 +88,7 @@ export class CapabilityNames {
   public static readonly EnableDynamicDataMasking: string = "EnableDynamicDataMasking";
   public static readonly EnableNoSQLFullTextSearchPreviewFeatures: string = "EnableNoSQLFullTextSearchPreviewFeatures";
   public static readonly EnableOnlineCopyFeature: string = "EnableOnlineContainerCopy";
+  public static readonly EnableHotPartitionKeyThrottling: string = "EnableHotPartitionKeyThrottling";
 }
 
 export enum CapacityMode {
