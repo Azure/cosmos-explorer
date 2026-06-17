@@ -29,6 +29,9 @@ describe("ScaleComponent", () => {
     onScaleDiscardableChange: () => {
       return;
     },
+    onHotPartitionKeyRateLimitingPolicyChange: () => {
+      return;
+    },
   };
 
   it("autoScale disabled", () => {

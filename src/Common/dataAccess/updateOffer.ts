@@ -367,6 +367,10 @@ const createUpdateOfferBody = (params: UpdateOfferParams): ThroughputSettingsUpd
     body.properties.resource.throughputBuckets = throughputBuckets;
   }
 
+  if (params.hotPartitionKeyRateLimitingPolicy !== undefined) {
+    body.properties.resource.hotPartitionKeyRateLimitingPolicy = params.hotPartitionKeyRateLimitingPolicy;
+  }
+
   return body;
 };
 
@@ -407,6 +411,10 @@ const updateOfferWithSDK = async (params: UpdateOfferParams): Promise<Offer> => 
       [HttpHeaders.migrateOfferToManualThroughput]: "true",
     };
     newOffer.content.offerAutopilotSettings = { maxThroughput: 0 };
+  }
+
+  if (params.hotPartitionKeyRateLimitingPolicy !== undefined) {
+    newOffer.content.hotPartitionKeyRateLimitingPolicy = params.hotPartitionKeyRateLimitingPolicy;
   }
 
   const sdkResponse = await client()

@@ -17,26 +17,27 @@ import { useIndexingPolicyStore } from "Explorer/Tabs/QueryTab/ResultsView";
 import { useDatabases } from "Explorer/useDatabases";
 import { Keys, t } from "Localization";
 import { isFabric, isFabricNative } from "Platform/Fabric/FabricUtil";
+import * as React from "react";
+import { isHotPartitionKeyThrottlingEnabled, isVectorSearchEnabled } from "Utils/CapabilityUtils";
 import { isVectorSearchEnabled } from "Utils/CapabilityUtils";
 import { isRunningOnPublicCloud } from "Utils/CloudUtils";
 import { logConsoleError } from "Utils/NotificationConsoleUtils";
-import * as React from "react";
 import DiscardIcon from "../../../../images/discard.svg";
 import SaveIcon from "../../../../images/save-cosmos.svg";
 import { AuthType } from "../../../AuthType";
 import * as Constants from "../../../Common/Constants";
-import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
 import { getIndexTransformationProgress } from "../../../Common/dataAccess/getIndexTransformationProgress";
 import { readMongoDBCollectionThroughRP } from "../../../Common/dataAccess/readMongoDBCollection";
 import { updateCollection } from "../../../Common/dataAccess/updateCollection";
 import { updateOffer } from "../../../Common/dataAccess/updateOffer";
+import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import { trace, traceFailure, traceStart, traceSuccess } from "../../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../../UserContext";
-import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
 import { MongoDBCollectionResource, MongoIndex } from "../../../Utils/arm/generatedClients/cosmos/types";
+import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import {
   PartitionKeyComponent,
@@ -66,16 +67,16 @@ import {
   AddMongoIndexProps,
   ChangeFeedPolicyState,
   GeospatialConfigType,
-  MongoIndexTypes,
-  SettingsV2TabTypes,
-  TtlType,
   getMongoNotification,
   getTabTitle,
   hasDatabaseSharedThroughput,
   isDataMaskingEnabled,
   isDirty,
+  MongoIndexTypes,
   parseConflictResolutionMode,
   parseConflictResolutionProcedure,
+  SettingsV2TabTypes,
+  TtlType,
 } from "./SettingsUtils";
 interface SettingsV2TabInfo {
   tab: SettingsV2TabTypes;
@@ -104,6 +105,8 @@ export interface SettingsComponentState {
   throughputBuckets: DataModels.ThroughputBucket[];
   throughputBucketsBaseline: DataModels.ThroughputBucket[];
   throughputError: string;
+  hotPartitionKeyRateLimitingPolicy: DataModels.HotPartitionKeyRateLimitingPolicy;
+  hotPartitionKeyRateLimitingPolicyBaseline: DataModels.HotPartitionKeyRateLimitingPolicy;
 
   timeToLive: TtlType;
   timeToLiveBaseline: TtlType;
@@ -234,6 +237,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       throughputBuckets: undefined,
       throughputBucketsBaseline: undefined,
       throughputError: undefined,
+      hotPartitionKeyRateLimitingPolicy: null,
+      hotPartitionKeyRateLimitingPolicyBaseline: null,
 
       timeToLive: undefined,
       timeToLiveBaseline: undefined,
@@ -515,6 +520,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       throughput: this.state.throughputBaseline,
       throughputBuckets: this.state.throughputBucketsBaseline,
       throughputBucketsBaseline: this.state.throughputBucketsBaseline,
+      hotPartitionKeyRateLimitingPolicy: this.state.hotPartitionKeyRateLimitingPolicyBaseline,
+      hotPartitionKeyRateLimitingPolicyBaseline: this.state.hotPartitionKeyRateLimitingPolicyBaseline,
       timeToLive: this.state.timeToLiveBaseline,
       timeToLiveSeconds: this.state.timeToLiveSecondsBaseline,
       displayedTtlSeconds: this.state.displayedTtlSecondsBaseline,
@@ -909,12 +916,15 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       ] as DataModels.ComputedProperties;
     }
     const throughputBuckets = this.offer?.throughputBuckets;
+    const hotPartitionKeyRateLimitingPolicy = this.offer?.hotPartitionKeyRateLimitingPolicy ?? null;
 
     return {
       throughput: offerThroughput,
       throughputBaseline: offerThroughput,
       throughputBuckets,
       throughputBucketsBaseline: throughputBuckets,
+      hotPartitionKeyRateLimitingPolicy,
+      hotPartitionKeyRateLimitingPolicyBaseline: hotPartitionKeyRateLimitingPolicy,
       changeFeedPolicy: changeFeedPolicy,
       changeFeedPolicyBaseline: changeFeedPolicy,
       timeToLive: timeToLive,
@@ -1016,6 +1026,12 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.setState({ throughputBuckets });
   };
 
+  private onHotPartitionKeyRateLimitingPolicyChange = (
+    hotPartitionKeyRateLimitingPolicy: DataModels.HotPartitionKeyRateLimitingPolicy,
+  ): void => {
+    this.setState({ hotPartitionKeyRateLimitingPolicy });
+  };
+
   private onAutoPilotSelected = (isAutoPilotSelected: boolean): void =>
     this.setState({ isAutoPilotSelected: isAutoPilotSelected });
 
@@ -1031,6 +1047,9 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         currentOffer: this.database.offer(),
         autopilotThroughput: this.state.isAutoPilotSelected ? this.state.autoPilotThroughput : undefined,
         manualThroughput: this.state.isAutoPilotSelected ? undefined : this.state.throughput,
+        hotPartitionKeyRateLimitingPolicy: isHotPartitionKeyThrottlingEnabled()
+          ? this.state.hotPartitionKeyRateLimitingPolicy ?? null
+          : undefined,
       };
       if (this.hasProvisioningTypeChanged()) {
         if (this.state.isAutoPilotSelected) {
@@ -1269,6 +1288,9 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         autopilotThroughput: this.state.isAutoPilotSelected ? this.state.autoPilotThroughput : undefined,
         manualThroughput: this.state.isAutoPilotSelected ? undefined : this.state.throughput,
         throughputBuckets: this.throughputBucketsEnabled ? this.state.throughputBuckets : undefined,
+        hotPartitionKeyRateLimitingPolicy: isHotPartitionKeyThrottlingEnabled()
+          ? this.state.hotPartitionKeyRateLimitingPolicy ?? null
+          : undefined,
       };
       if (this.hasProvisioningTypeChanged()) {
         if (this.state.isAutoPilotSelected) {
@@ -1337,6 +1359,9 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       onScaleSaveableChange: this.onScaleSaveableChange,
       onScaleDiscardableChange: this.onScaleDiscardableChange,
       throughputError: this.state.throughputError,
+      hotPartitionKeyRateLimitingPolicy: this.state.hotPartitionKeyRateLimitingPolicy,
+      hotPartitionKeyRateLimitingPolicyBaseline: this.state.hotPartitionKeyRateLimitingPolicyBaseline,
+      onHotPartitionKeyRateLimitingPolicyChange: this.onHotPartitionKeyRateLimitingPolicyChange,
     };
     if (!this.isCollectionSettingsTab) {
       return (

@@ -348,6 +348,11 @@ export interface Offer {
   instantMaximumThroughput?: number;
   softAllowedMaximumThroughput?: number;
   throughputBuckets?: ThroughputBucket[];
+  hotPartitionKeyRateLimitingPolicy?: HotPartitionKeyRateLimitingPolicy;
+}
+
+export interface HotPartitionKeyRateLimitingPolicy {
+  maximumPerPartitionKeyThroughputUtilizationPercent: number;
 }
 
 export interface ThroughputBucket {
@@ -364,6 +369,7 @@ export interface SDKOfferDefinition extends Resource {
     offerIsRUPerMinuteThroughputEnabled?: boolean;
     collectionThroughputInfo?: OfferThroughputInfo;
     offerAutopilotSettings?: AutoPilotOfferSettings;
+    hotPartitionKeyRateLimitingPolicy?: HotPartitionKeyRateLimitingPolicy;
   };
   resource?: string;
   offerResourceId?: string;
@@ -509,6 +515,7 @@ export interface UpdateOfferParams {
   migrateToAutoPilot?: boolean;
   migrateToManual?: boolean;
   throughputBuckets?: ThroughputBucket[];
+  hotPartitionKeyRateLimitingPolicy?: HotPartitionKeyRateLimitingPolicy | null;
 }
 
 export interface Notification {
