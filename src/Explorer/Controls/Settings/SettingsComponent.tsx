@@ -19,7 +19,6 @@ import { Keys, t } from "Localization";
 import { isFabric, isFabricNative } from "Platform/Fabric/FabricUtil";
 import * as React from "react";
 import { isHotPartitionKeyThrottlingEnabled, isVectorSearchEnabled } from "Utils/CapabilityUtils";
-import { isVectorSearchEnabled } from "Utils/CapabilityUtils";
 import { isRunningOnPublicCloud } from "Utils/CloudUtils";
 import { logConsoleError } from "Utils/NotificationConsoleUtils";
 import DiscardIcon from "../../../../images/discard.svg";
