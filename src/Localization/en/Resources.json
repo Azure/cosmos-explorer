@@ -895,8 +895,11 @@
         "keyspaceSharedThroughput": "This table shared throughput is configured at the keyspace",
         "throughputRangeLabel": "Throughput ({{min}} - {{max}} RU/s)",
         "unlimited": "unlimited",
-        "rateLimitingPolicyTitle": "Rate limiting policy",
-        "rateLimitPolicyMaxThroughputUtilizationLabel": "Max per partition key Throughput utilization"
+        "rateLimitingPolicyTitle": "Override default rate limiting policy",
+        "rateLimitPolicyMaxThroughputUtilizationLabel": "Max partition key throughput utilization",
+        "rateLimitOverrideWarning1": "Overriding the default rate limiting is irreversible. Though you will be able to manually reset the value to its default, the policy will remain overriden at the value you set.",
+        "rateLimitOverrideWarning2": "Are you sure you wish to continue?",
+        "rateLimitConfirmOverride": "Confirm override"
       },
       "partitionKeyEditor": {
         "changePartitionKey": "Change {{partitionKeyName}}",
