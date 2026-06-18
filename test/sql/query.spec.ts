@@ -91,3 +91,51 @@ test("Query errors", async () => {
   await expect(queryTab.errorList.getByTestId("Row:1/Column:code")).toHaveText("SC2005");
   await expect(queryTab.errorList.getByTestId("Row:1/Column:location")).toHaveText("Line 3");
 });
+
+test("View button toggles between vertical and horizontal layout", async () => {
+  // The default layout is Horizontal (Allotment vertical={true} → split-view-vertical class)
+  const allotment = queryTab.locator.locator(".split-view-vertical, .split-view-horizontal");
+  await expect(allotment).toBeAttached();
+  await expect(allotment).toHaveClass(/split-view-vertical/);
+
+  // Click the main View button (not the chevron) to toggle to Vertical layout
+  const viewButton = explorer.commandBarButton(CommandBarButton.View);
+  await viewButton.click();
+
+  // After toggle, Allotment should have split-view-horizontal class (Vertical direction)
+  const allotmentAfterToggle = queryTab.locator.locator(".split-view-vertical, .split-view-horizontal");
+  await expect(allotmentAfterToggle).toHaveClass(/split-view-horizontal/);
+
+  // Click again to toggle back to Horizontal
+  await viewButton.click();
+  const allotmentAfterSecondToggle = queryTab.locator.locator(".split-view-vertical, .split-view-horizontal");
+  await expect(allotmentAfterSecondToggle).toHaveClass(/split-view-vertical/);
+});
+
+test("View dropdown allows selecting vertical or horizontal layout", async () => {
+  // The default layout is Horizontal (split-view-vertical)
+  const allotment = queryTab.locator.locator(".split-view-vertical, .split-view-horizontal");
+  await expect(allotment).toHaveClass(/split-view-vertical/);
+
+  // Find the View split button's menu trigger (chevron).
+  // The primary button has data-test, so navigate to the split button container and find the menu button.
+  const viewPrimaryButton = explorer.commandBarButton(CommandBarButton.View);
+  const splitContainer = viewPrimaryButton.locator("..");
+  const menuButton = splitContainer.locator('[aria-haspopup="true"]');
+  await menuButton.click();
+
+  // Select "Vertical" from the dropdown menu
+  await explorer.frame.getByRole("menuitem", { name: "Vertical" }).click();
+
+  // Verify the layout changed to Vertical (split-view-horizontal)
+  const allotmentAfterVertical = queryTab.locator.locator(".split-view-vertical, .split-view-horizontal");
+  await expect(allotmentAfterVertical).toHaveClass(/split-view-horizontal/);
+
+  // Open dropdown again and select "Horizontal"
+  await menuButton.click();
+  await explorer.frame.getByRole("menuitem", { name: "Horizontal" }).click();
+
+  // Verify it reverted to Horizontal (split-view-vertical)
+  const allotmentAfterHorizontal = queryTab.locator.locator(".split-view-vertical, .split-view-horizontal");
+  await expect(allotmentAfterHorizontal).toHaveClass(/split-view-vertical/);
+});
