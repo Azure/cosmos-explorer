@@ -1,6 +1,7 @@
 import {
   Checkbox,
   ChoiceGroup,
+  DefaultButton,
   FontIcon,
   IChoiceGroupOption,
   IMessageBarStyles,
@@ -18,6 +19,7 @@ import {
   TextField,
   Toggle,
 } from "@fluentui/react";
+import { useDialog } from "Explorer/Controls/Dialog";
 import { Keys, t } from "Localization";
 import React from "react";
 import * as DataModels from "../../../../../Contracts/DataModels";
@@ -90,10 +92,15 @@ export interface ThroughputInputAutoPilotV3Props {
   onHotPartitionKeyRateLimitingPolicyChange: (newPolicy: DataModels.HotPartitionKeyRateLimitingPolicy) => void;
 }
 
+interface IsThroughputComponentDirtyResult extends IsComponentDirtyResult {
+  priceHasChanged: boolean;
+}
+
 interface ThroughputInputAutoPilotV3State {
   spendAckChecked: boolean;
   exceedFreeTierThroughput: boolean;
 }
+
 export class ThroughputInputAutoPilotV3Component extends React.Component<
   ThroughputInputAutoPilotV3Props,
   ThroughputInputAutoPilotV3State
@@ -135,14 +142,16 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     this.shouldCheckComponentIsDirty = false;
   };
 
-  public IsComponentDirty = (): IsComponentDirtyResult => {
+  public IsComponentDirty = (): IsThroughputComponentDirtyResult => {
     let isSaveable = false;
     let isDiscardable = false;
+    let priceHasChanged = false;
 
     if (this.props.isEnabled) {
       if (this.hasProvisioningTypeChanged()) {
         isSaveable = true;
         isDiscardable = true;
+        priceHasChanged = true;
       } else if (
         isHotPartitionKeyThrottlingEnabled() &&
         isDirty(this.props.hotPartitionKeyRateLimitingPolicy, this.props.hotPartitionKeyRateLimitingPolicyBaseline)
@@ -152,6 +161,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
       } else if (this.props.isAutoPilotSelected) {
         if (isDirty(this.props.maxAutoPilotThroughput, this.props.maxAutoPilotThroughputBaseline)) {
           isDiscardable = true;
+          priceHasChanged = true;
           if (
             this.props.softAllowedMaximumThroughput
               ? this.props.maxAutoPilotThroughput <= this.props.softAllowedMaximumThroughput &&
@@ -165,6 +175,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         if (isDirty(this.props.throughput, this.props.throughputBaseline)) {
           isDiscardable = true;
           isSaveable = true;
+          priceHasChanged = true;
           if (
             !this.props.throughput ||
             this.props.throughput < this.props.minimum ||
@@ -177,7 +188,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         }
       }
     }
-    return { isSaveable, isDiscardable };
+    return { isSaveable, isDiscardable, priceHasChanged };
   };
 
   public constructor(props: ThroughputInputAutoPilotV3Props) {
@@ -210,7 +221,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
       return <></>;
     }
 
-    const isDirty: boolean = this.IsComponentDirty().isDiscardable;
+    const isDirty: boolean = this.IsComponentDirty().priceHasChanged;
     const regions = account?.properties?.readLocations?.length || 1;
     const multimaster = account?.properties?.enableMultipleWriteLocations || false;
 
@@ -858,7 +869,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
 
   private renderWarningMessage = (): JSX.Element => {
     let warningMessage: JSX.Element;
-    if (this.IsComponentDirty().isDiscardable) {
+    if (this.IsComponentDirty().priceHasChanged) {
       warningMessage = saveThroughputWarningMessage;
     }
 
@@ -889,34 +900,60 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
             onText={t(Keys.common.on)}
             offText={t(Keys.common.off)}
             checked={!!this.props.hotPartitionKeyRateLimitingPolicy}
+            disabled={!!this.props.hotPartitionKeyRateLimitingPolicy}
             onChange={(_ev, checked) => {
               if (checked) {
-                this.props.onHotPartitionKeyRateLimitingPolicyChange({
-                  maximumPerPartitionKeyThroughputUtilizationPercent:
-                    this.props.hotPartitionKeyRateLimitingPolicyBaseline
-                      ?.maximumPerPartitionKeyThroughputUtilizationPercent ?? 75,
-                });
-              } else {
-                this.props.onHotPartitionKeyRateLimitingPolicyChange(null);
+                useDialog.getState().showOkCancelModalDialog(
+                  t(Keys.controls.settings.scale.rateLimitConfirmOverride),
+                  "",
+                  t(Keys.common.yes),
+                  () =>
+                    this.props.onHotPartitionKeyRateLimitingPolicyChange({
+                      maximumPerPartitionKeyThroughputUtilizationPercent:
+                        this.props.hotPartitionKeyRateLimitingPolicyBaseline
+                          ?.maximumPerPartitionKeyThroughputUtilizationPercent ?? 75, //CTODO: move default to common const when we get final default value from backend team
+                    }),
+                  t(Keys.common.no),
+                  undefined,
+                  <>
+                    {t(Keys.controls.settings.scale.rateLimitOverrideWarning1)}
+                    <br />
+                    <br />
+                    {t(Keys.controls.settings.scale.rateLimitOverrideWarning2)}
+                  </>,
+                );
               }
             }}
           />
         </Stack>
-        <Slider
-          disabled={!this.props.hotPartitionKeyRateLimitingPolicy}
-          label={t(Keys.controls.settings.scale.rateLimitPolicyMaxThroughputUtilizationLabel)}
-          min={51}
-          max={100}
-          ariaValueText={(value: number) => `${value} percent`}
-          valueFormat={(value: number) => `${value}%`}
-          showValue
-          value={this.props.hotPartitionKeyRateLimitingPolicy?.maximumPerPartitionKeyThroughputUtilizationPercent ?? 75}
-          onChange={(value: number) =>
-            this.props.onHotPartitionKeyRateLimitingPolicyChange({
-              maximumPerPartitionKeyThroughputUtilizationPercent: value,
-            })
-          }
-        />
+        <Stack horizontal tokens={{ childrenGap: 10 }} style={{ alignItems: "end" }}>
+          <Slider
+            disabled={!this.props.hotPartitionKeyRateLimitingPolicy}
+            label={t(Keys.controls.settings.scale.rateLimitPolicyMaxThroughputUtilizationLabel)}
+            min={51}
+            max={100}
+            ariaValueText={(value: number) => `${value} percent`}
+            valueFormat={(value: number) => `${value}%`}
+            showValue
+            value={
+              this.props.hotPartitionKeyRateLimitingPolicy?.maximumPerPartitionKeyThroughputUtilizationPercent ?? 75
+            }
+            onChange={(value: number) =>
+              this.props.onHotPartitionKeyRateLimitingPolicyChange({
+                maximumPerPartitionKeyThroughputUtilizationPercent: value,
+              })
+            }
+            styles={{ root: { width: "75%" } }}
+          />
+          <DefaultButton
+            text="Reset to default"
+            onClick={() =>
+              this.props.onHotPartitionKeyRateLimitingPolicyChange({
+                maximumPerPartitionKeyThroughputUtilizationPercent: 75,
+              })
+            }
+          />
+        </Stack>
       </Stack>
     );
   };
