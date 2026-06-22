@@ -63,11 +63,13 @@ const dispatchPostMessage = (data: unknown, origin: string) => {
   window.dispatchEvent(event);
 };
 
+const FAKE_KEY: string = "<redacted-test-key>";
+
 describe("HostedExplorer tryCosmosDB postMessage handler", () => {
   it("accepts a valid SQL connection string from an allowed origin", async () => {
     render(<App />);
 
-    const validConnStr = "AccountEndpoint=https://myaccount.documents.azure.com:443/;AccountKey=dGVzdGtleQ==;";
+    const validConnStr = `AccountEndpoint=https://myaccount.documents.azure.com:443/;AccountKey=${FAKE_KEY};`;
 
     await act(async () => {
       dispatchPostMessage(
@@ -83,7 +85,7 @@ describe("HostedExplorer tryCosmosDB postMessage handler", () => {
   it("accepts a valid Mongo connection string from an allowed origin", async () => {
     render(<App />);
 
-    const mongoConnStr = "mongodb://myaccount:dGVzdGtleQ==@myaccount.documents.azure.com:10255";
+    const mongoConnStr = `mongodb://myaccount:${FAKE_KEY}@myaccount.documents.azure.com:10255`;
 
     await act(async () => {
       dispatchPostMessage(
@@ -99,8 +101,7 @@ describe("HostedExplorer tryCosmosDB postMessage handler", () => {
   it("accepts a valid Cassandra connection string from an allowed origin", async () => {
     render(<App />);
 
-    const cassandraConnStr =
-      "AccountEndpoint=https://myaccount.cassandra.cosmosdb.azure.com:443/;AccountKey=dGVzdGtleQ==;";
+    const cassandraConnStr = `AccountEndpoint=https://myaccount.cassandra.cosmosdb.azure.com:443/;AccountKey=${FAKE_KEY};`;
 
     await act(async () => {
       dispatchPostMessage(
@@ -116,8 +117,7 @@ describe("HostedExplorer tryCosmosDB postMessage handler", () => {
   it("accepts a valid Table connection string from an allowed origin", async () => {
     render(<App />);
 
-    const tableConnStr =
-      "DefaultEndpointsProtocol=https;AccountName=myaccount;AccountKey=dGVzdGtleQ==;TableEndpoint=https://myaccount.table.cosmosdb.azure.com:443/;";
+    const tableConnStr = `DefaultEndpointsProtocol=https;AccountName=myaccount;AccountKey=${FAKE_KEY};TableEndpoint=https://myaccount.table.cosmosdb.azure.com:443/;`;
 
     await act(async () => {
       dispatchPostMessage(
@@ -133,8 +133,7 @@ describe("HostedExplorer tryCosmosDB postMessage handler", () => {
   it("accepts a valid Gremlin connection string from an allowed origin", async () => {
     render(<App />);
 
-    const gremlinConnStr =
-      "AccountEndpoint=https://myaccount.documents.azure.com:443/;AccountKey=dGVzdGtleQ==;ApiKind=Gremlin;";
+    const gremlinConnStr = `AccountEndpoint=https://myaccount.documents.azure.com:443/;AccountKey=${FAKE_KEY};ApiKind=Gremlin;`;
 
     await act(async () => {
       dispatchPostMessage(
@@ -150,7 +149,7 @@ describe("HostedExplorer tryCosmosDB postMessage handler", () => {
   it("rejects messages from a disallowed origin", async () => {
     render(<App />);
 
-    const validConnStr = "AccountEndpoint=https://myaccount.documents.azure.com:443/;AccountKey=dGVzdGtleQ==;";
+    const validConnStr = `AccountEndpoint=https://myaccount.documents.azure.com:443/;AccountKey=${FAKE_KEY};`;
 
     await act(async () => {
       dispatchPostMessage(
@@ -198,7 +197,7 @@ describe("HostedExplorer tryCosmosDB postMessage handler", () => {
   it("ignores messages with an unrelated type", async () => {
     render(<App />);
 
-    const validConnStr = "AccountEndpoint=https://myaccount.documents.azure.com:443/;AccountKey=dGVzdGtleQ==;";
+    const validConnStr = `AccountEndpoint=https://myaccount.documents.azure.com:443/;AccountKey=${FAKE_KEY};`;
 
     await act(async () => {
       dispatchPostMessage({ type: "someOtherMessage", connectionString: validConnStr }, "https://cosmos.azure.com");
