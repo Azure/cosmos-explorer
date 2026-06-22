@@ -110,7 +110,6 @@ module.exports = function (_env = {}, argv = {}) {
     quickstart: "./src/quickstart.ts",
     hostedExplorer: "./src/HostedExplorer.tsx",
     selfServe: "./src/SelfServe/SelfServe.tsx",
-    connectToGitHub: "./src/GitHub/GitHubConnector.ts",
     redirectBridge: "./src/redirectBridge.ts",
     ...(mode !== "production" && { testExplorer: "./test/testExplorer/TestExplorer.ts" }),
     ...(mode !== "production" && {
@@ -138,11 +137,6 @@ module.exports = function (_env = {}, argv = {}) {
       filename: "hostedExplorer.html",
       template: "src/hostedExplorer.html",
       chunks: ["hostedExplorer"],
-    }),
-    new HtmlWebpackPlugin({
-      filename: "connectToGitHub.html",
-      template: "src/connectToGitHub.html",
-      chunks: ["connectToGitHub"],
     }),
     new HtmlWebpackPlugin({
       filename: "selfServe.html",

@@ -16,12 +16,10 @@ import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
 import { isPublicInternetAccessAllowed } from "../../Common/DatabaseAccountUtility";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
-import { IPinnedRepo } from "../../Juno/JunoClient";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
 import { isServerlessAccount } from "../../Utils/CapabilityUtils";
-import * as GitHubUtils from "../../Utils/GitHubUtils";
 import { useTabs } from "../../hooks/useTabs";
 import * as ResourceTreeContextMenuButtonFactory from "../ContextMenuButtonFactory";
 import { useDialog } from "../Controls/Dialog";
@@ -40,7 +38,6 @@ import UserDefinedFunction from "./UserDefinedFunction";
 
 export class ResourceTreeAdapter implements ReactAdapter {
   public static readonly MyNotebooksTitle = "My Notebooks";
-  public static readonly GitHubReposTitle = "GitHub repos";
 
   private static readonly DataTitle = "DATA";
   private static readonly NotebooksTitle = "NOTEBOOKS";
@@ -49,7 +46,6 @@ export class ResourceTreeAdapter implements ReactAdapter {
   public parameters: ko.Observable<number>;
 
   public myNotebooksContentRoot: NotebookContentItem;
-  public gitHubNotebooksContentRoot: NotebookContentItem;
 
   public constructor(private container: Explorer) {
     this.parameters = ko.observable(Date.now());
@@ -106,40 +102,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
       type: NotebookContentItemType.Directory,
     };
 
-    this.gitHubNotebooksContentRoot = {
-      name: ResourceTreeAdapter.GitHubReposTitle,
-      path: ResourceTreeAdapter.PseudoDirPath,
-      type: NotebookContentItemType.Directory,
-    };
-
     return Promise.all(refreshTasks);
-  }
-
-  public initializeGitHubRepos(pinnedRepos: IPinnedRepo[]): void {
-    if (this.gitHubNotebooksContentRoot) {
-      this.gitHubNotebooksContentRoot.children = [];
-      pinnedRepos?.forEach((pinnedRepo) => {
-        const repoFullName = GitHubUtils.toRepoFullName(pinnedRepo.owner, pinnedRepo.name);
-        const repoTreeItem: NotebookContentItem = {
-          name: repoFullName,
-          path: ResourceTreeAdapter.PseudoDirPath,
-          type: NotebookContentItemType.Directory,
-          children: [],
-        };
-
-        pinnedRepo.branches.forEach((branch) => {
-          repoTreeItem.children.push({
-            name: branch.name,
-            path: GitHubUtils.toContentUri(pinnedRepo.owner, pinnedRepo.name, branch.name, ""),
-            type: NotebookContentItemType.Directory,
-          });
-        });
-
-        this.gitHubNotebooksContentRoot.children.push(repoTreeItem);
-      });
-
-      this.triggerRender();
-    }
   }
 
   private buildDataTree(): LegacyTreeNode {

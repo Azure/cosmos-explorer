@@ -1,4 +1,3 @@
-import * as GitHubUtils from "../../Utils/GitHubUtils";
 import * as StringUtils from "../../Utils/StringUtils";
 import { NotebookContentItem, NotebookContentItemType } from "./NotebookContentItem";
 
@@ -51,36 +50,12 @@ export class NotebookUtil {
   }
 
   public static getFilePath(path: string, fileName: string): string {
-    const contentInfo = GitHubUtils.fromContentUri(path);
-    if (contentInfo) {
-      let path = fileName;
-      if (contentInfo.path) {
-        path = `${contentInfo.path}/${path}`;
-      }
-      return GitHubUtils.toContentUri(contentInfo.owner, contentInfo.repo, contentInfo.branch, path);
-    }
-
     return `${path}/${fileName}`;
   }
 
   public static getParentPath(filepath: string): undefined | string {
     const basename = NotebookUtil.getName(filepath);
     if (basename) {
-      const contentInfo = GitHubUtils.fromContentUri(filepath);
-      if (contentInfo) {
-        const parentPath = contentInfo.path.split(basename).shift();
-        if (parentPath === undefined) {
-          return undefined;
-        }
-
-        return GitHubUtils.toContentUri(
-          contentInfo.owner,
-          contentInfo.repo,
-          contentInfo.branch,
-          parentPath.replace(/\/$/, ""), // no trailling slash
-        );
-      }
-
       const parentPath = filepath.split(basename).shift();
       if (parentPath) {
         return parentPath.replace(/\/$/, ""); // no trailling slash
@@ -91,27 +66,10 @@ export class NotebookUtil {
   }
 
   public static getName(path: string): undefined | string {
-    let relativePath: string = path;
-    const contentInfo = GitHubUtils.fromContentUri(path);
-    if (contentInfo) {
-      relativePath = contentInfo.path;
-    }
-
-    return relativePath.split("/").pop();
+    return path.split("/").pop();
   }
 
   public static replaceName(path: string, newName: string): string {
-    const contentInfo = GitHubUtils.fromContentUri(path);
-    if (contentInfo) {
-      const contentName = contentInfo.path.split("/").pop();
-      if (!contentName) {
-        throw new Error(`Failed to extract name from github path ${contentInfo.path}`);
-      }
-
-      const basePath = contentInfo.path.split(contentName).shift();
-      return GitHubUtils.toContentUri(contentInfo.owner, contentInfo.repo, contentInfo.branch, `${basePath}${newName}`);
-    }
-
     const contentName = path.split("/").pop();
     if (!contentName) {
       throw new Error(`Failed to extract name from path ${path}`);
