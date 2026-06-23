@@ -1,4 +1,5 @@
 import { FeedOptions } from "@azure/cosmos";
+import { stringifyError } from "Common/stringifyError";
 import * as ko from "knockout";
 import Q from "q";
 import { AuthType } from "../../AuthType";
@@ -172,7 +173,7 @@ export class CassandraAPIDataClient extends TableDataClient {
           deferred.resolve(entity);
         },
         (error) => {
-          const errorText = error.responseJSON?.message ?? JSON.stringify(error);
+          const errorText = error.responseJSON?.message ?? stringifyError(error);
           handleError(errorText, "AddRowCassandra", `Error while adding new row to table ${collection.id()}`);
           deferred.reject(errorText);
         },
@@ -361,7 +362,7 @@ export class CassandraAPIDataClient extends TableDataClient {
           deferred.resolve();
         },
         (error) => {
-          const errorText = error.responseJSON?.message ?? JSON.stringify(error);
+          const errorText = error.responseJSON?.message ?? stringifyError(error);
           handleError(
             errorText,
             "CreateKeyspaceCassandra",
@@ -400,7 +401,7 @@ export class CassandraAPIDataClient extends TableDataClient {
               deferred.resolve();
             },
             (error) => {
-              const errorText = error.responseJSON?.message ?? JSON.stringify(error);
+              const errorText = error.responseJSON?.message ?? stringifyError(error);
               handleError(
                 errorText,
                 "CreateTableCassandra",
@@ -450,7 +451,7 @@ export class CassandraAPIDataClient extends TableDataClient {
           deferred.resolve(data);
         },
         (error: any) => {
-          const errorText = error.responseJSON?.message ?? JSON.stringify(error);
+          const errorText = error.responseJSON?.message ?? stringifyError(error);
           handleError(errorText, "FetchKeysCassandra", `Error fetching keys for table ${collection.id()}`);
           deferred.reject(errorText);
         },
@@ -492,7 +493,7 @@ export class CassandraAPIDataClient extends TableDataClient {
           deferred.resolve(data.columns);
         },
         (error: any) => {
-          const errorText = error.responseJSON?.message ?? JSON.stringify(error);
+          const errorText = error.responseJSON?.message ?? stringifyError(error);
           handleError(errorText, "FetchSchemaCassandra", `Error fetching schema for table ${collection.id()}`);
           deferred.reject(errorText);
         },

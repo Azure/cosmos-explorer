@@ -9,7 +9,7 @@ import { configContext } from "../../ConfigContext";
 import * as DataModels from "../../Contracts/DataModels";
 import { ContainerConnectionInfo, ContainerInfo } from "../../Contracts/DataModels";
 import { IPinnedRepo } from "../../Juno/JunoClient";
-import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
+import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
 import { getAuthorizationHeader } from "../../Utils/AuthorizationUtils";
@@ -234,32 +234,6 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
       galleryContentRoot,
       gitHubNotebooksContentRoot,
     });
-
-    if (get().notebookServerInfo?.notebookServerEndpoint) {
-      const updatedRoot = await notebookManager?.notebookContentClient?.updateItemChildren(myNotebooksContentRoot);
-      set({ myNotebooksContentRoot: updatedRoot });
-
-      if (updatedRoot?.children) {
-        // Count 1st generation children (tree is lazy-loaded)
-        const nodeCounts = { files: 0, notebooks: 0, directories: 0 };
-        updatedRoot.children.forEach((notebookItem) => {
-          switch (notebookItem.type) {
-            case NotebookContentItemType.File:
-              nodeCounts.files++;
-              break;
-            case NotebookContentItemType.Directory:
-              nodeCounts.directories++;
-              break;
-            case NotebookContentItemType.Notebook:
-              nodeCounts.notebooks++;
-              break;
-            default:
-              break;
-          }
-        });
-        TelemetryProcessor.trace(Action.RefreshResourceTreeMyNotebooks, ActionModifiers.Mark, { ...nodeCounts });
-      }
-    }
   },
   initializeGitHubRepos: (pinnedRepos: IPinnedRepo[]): void => {
     const gitHubNotebooksContentRoot = cloneDeep(get().gitHubNotebooksContentRoot);

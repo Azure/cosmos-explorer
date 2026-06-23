@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { FeedOptions, ItemDefinition, QueryIterator, Resource } from "@azure/cosmos";
+import { stringifyError } from "Common/stringifyError";
 import * as Q from "q";
 import * as React from "react";
 import LoadGraphIcon from "../../../../images/LoadGraph.png";
@@ -1092,8 +1093,8 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
   public static reportToConsole(type: ConsoleDataType, msg: string, ...errorData: any[]): void | (() => void) {
     let errorDataStr = "";
     if (errorData && errorData.length > 0) {
-      console.error(msg, errorData);
-      errorDataStr = ": " + JSON.stringify(errorData);
+      console.error(msg + String(errorData));
+      errorDataStr = ": " + stringifyError(errorData);
     }
 
     const consoleMessage = `${msg}${errorDataStr}`;

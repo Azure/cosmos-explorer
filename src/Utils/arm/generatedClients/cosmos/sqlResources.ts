@@ -6,9 +6,9 @@
   Generated from: https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/specification/cosmos-db/resource-manager/Microsoft.DocumentDB/DocumentDB/preview/2025-11-01-preview/cosmos-db.json
 */
 
+import { configContext } from "../../../../ConfigContext";
 import { armRequest } from "../../request";
 import * as Types from "./types";
-import { configContext } from "../../../../ConfigContext";
 const apiVersion = "2025-11-01-preview";
 
 /* Lists the SQL databases under an existing Azure Cosmos DB database account. */

@@ -115,7 +115,7 @@ export const getCopyJobs = async (): Promise<CopyJobType[]> => {
       });
     return formattedJobs;
   } catch (error) {
-    const errorContent = JSON.stringify(error.content || error.message || error);
+    const errorContent = String(error.content || error.message || error);
     if (errorContent.includes("signal is aborted without reason")) {
       throw {
         message: "Previous copy job request was cancelled.",

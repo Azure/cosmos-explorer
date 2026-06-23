@@ -1,3 +1,4 @@
+import { stringifyError } from "Common/stringifyError";
 import * as DataTables from "datatables.net";
 import * as ko from "knockout";
 import Q from "q";
@@ -37,7 +38,7 @@ function parseError(err: any): ErrorDataModel[] {
   try {
     return _parse(err);
   } catch (e) {
-    return [<ErrorDataModel>{ message: JSON.stringify(err) }];
+    return [<ErrorDataModel>{ message: stringifyError(err) }];
   }
 }
 

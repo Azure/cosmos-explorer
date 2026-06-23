@@ -1,26 +1,20 @@
-import postRobot from "post-robot";
 import create, { UseStore } from "zustand";
 
 interface TerminalState {
-  terminalWindow: Window;
-  setTerminal: (terminalWindow: Window) => void;
+  socket: WebSocket | undefined;
+  setSocket: (socket: WebSocket | undefined) => void;
   sendMessage: (message: string) => void;
 }
 
 export const useTerminal: UseStore<TerminalState> = create((set, get) => ({
-  terminalWindow: undefined,
-  setTerminal: (terminalWindow: Window) => {
-    set({ terminalWindow });
+  socket: undefined,
+  setSocket: (socket: WebSocket | undefined) => {
+    set({ socket });
   },
   sendMessage: (message: string) => {
-    const terminalWindow = get().terminalWindow;
-    postRobot.send(
-      terminalWindow,
-      "sendMessage",
-      { type: "stdin", content: [message] },
-      {
-        domain: window.location.origin,
-      },
-    );
+    const socket = get().socket;
+    if (socket && socket.readyState === WebSocket.OPEN) {
+      socket.send(message + "\r");
+    }
   },
 }));

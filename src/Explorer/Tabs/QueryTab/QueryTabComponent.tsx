@@ -13,7 +13,7 @@ import { CosmosFluentProvider } from "Explorer/Theme/ThemeUtil";
 import { KeyboardAction } from "KeyboardShortcuts";
 import { Keys, t } from "Localization";
 import { QueryConstants } from "Shared/Constants";
-import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
+import { LocalStorageUtility, StorageKey, getDefaultQueryResultsView } from "Shared/StorageUtility";
 import { Allotment } from "allotment";
 import { useClientWriteEnabled } from "hooks/useClientWriteEnabled";
 import { TabsState, useTabs } from "hooks/useTabs";
@@ -163,8 +163,11 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
       isExecuting: false,
       cancelQueryTimeoutID: undefined,
       currentTabActive: true,
-      queryResultsView:
-        props.splitterDirection === "vertical" ? SplitterDirection.Vertical : SplitterDirection.Horizontal,
+      queryResultsView: props.splitterDirection
+        ? props.splitterDirection === "vertical"
+          ? SplitterDirection.Vertical
+          : SplitterDirection.Horizontal
+        : getDefaultQueryResultsView(),
       queryViewSizePercent: props.queryViewSizePercent,
     };
     this.isCloseClicked = false;
@@ -486,6 +489,13 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
       commandButtonLabel: t(Keys.tabs.query.view),
       ariaLabel: t(Keys.tabs.query.view),
       hasPopup: true,
+      onCommandClick: () => {
+        const newDirection =
+          this.state.queryResultsView === SplitterDirection.Vertical
+            ? SplitterDirection.Horizontal
+            : SplitterDirection.Vertical;
+        this._setViewLayout(newDirection);
+      },
       children: [verticalButton, horizontalButton],
     };
   }

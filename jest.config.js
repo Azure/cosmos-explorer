@@ -70,7 +70,6 @@ module.exports = {
   moduleNameMapper: {
     "^.*[.](png|gif|less|css)$": "<rootDir>/mockModule",
     "(.*)$[.](svg)": "<rootDir>/mockModule/$1",
-    "@nteract/stateful-components/(.*)$": "<rootDir>/mockModule",
     "@fluentui/react/lib/(.*)$": "@fluentui/react/lib-commonjs/$1", // https://github.com/microsoft/fluentui/wiki/Version-8-release-notes
     "monaco-editor/(.*)$": "<rootDir>/__mocks__/monaco-editor",
     "^dnd-core$": "dnd-core/dist/cjs",

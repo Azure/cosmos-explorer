@@ -1,3 +1,4 @@
+import { stringifyError } from "Common/stringifyError";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { SubscriptionType } from "../Contracts/SubscriptionType";
 import { isExpectedError } from "../Metrics/ErrorClassification";
@@ -44,7 +45,7 @@ export const handleError = (
 export const getErrorMessage = (error: string | Error = ""): string => {
   let errorMessage = typeof error === "string" ? error : error.message;
   if (!errorMessage) {
-    errorMessage = JSON.stringify(error);
+    errorMessage = stringifyError(error);
   }
   return replaceKnownError(errorMessage);
 };

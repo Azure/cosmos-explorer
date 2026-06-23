@@ -38,7 +38,6 @@ exports[`GitHub Repos Panel should render Default properly 1`] = `
             "refreshNotebookList": [Function],
             "resourceTree": ResourceTreeAdapter {
               "container": [Circular],
-              "copyNotebook": [Function],
               "parameters": [Function],
             },
           },
