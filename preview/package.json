@@ -14,7 +14,7 @@
     "body-parser": "^2.2.2",
     "express": "^5.2.1",
     "follow-redirects": "^1.16.0",
-    "http-proxy-middleware": "^3.0.5",
+    "http-proxy-middleware": "^3.0.7",
     "node": "^20.19.5",
     "node-fetch": "^2.6.1",
     "path-to-regexp": "^0.1.13"
