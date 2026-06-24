@@ -2,6 +2,7 @@
   "compilerOptions": {
     "allowJs": true,
     "sourceMap": false,
+    "skipLibCheck": true,
     "noImplicitAny": true,
     "noImplicitThis": true,
     "noImplicitReturns": true,
