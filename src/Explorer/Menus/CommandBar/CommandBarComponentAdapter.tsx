@@ -5,14 +5,12 @@
  */
 import { CommandBar as FluentCommandBar, ICommandBarItemProps } from "@fluentui/react";
 import { makeStyles, useFluent } from "@fluentui/react-components";
-import { useNotebook } from "Explorer/Notebook/useNotebook";
 import { useDataPlaneRbac } from "Explorer/Panes/SettingsPane/SettingsPane";
 import { KeyboardActionGroup, useKeyboardActionGroup } from "KeyboardShortcuts";
 import { isFabric } from "Platform/Fabric/FabricUtil";
 import { userContext } from "UserContext";
 import * as React from "react";
 import create, { UseStore } from "zustand";
-import { ConnectionStatusType } from "../../../Common/Constants";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../../Explorer";
 import { useSelectedNode } from "../../useSelectedNode";
@@ -75,12 +73,6 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
   const setKeyboardHandlers = useKeyboardActionGroup(KeyboardActionGroup.COMMAND_BAR);
   const styles = useStyles();
 
-  const { connectionInfo, isPhoenixNotebooks, isPhoenixFeatures } = useNotebook((state) => ({
-    connectionInfo: state.connectionInfo,
-    isPhoenixNotebooks: state.isPhoenixNotebooks,
-    isPhoenixFeatures: state.isPhoenixFeatures,
-  }));
-
   // Subscribe to the store changes that affect button creation
   const dataPlaneRbacEnabled = useDataPlaneRbac((state) => state.dataPlaneRbacEnabled);
   const aadTokenUpdated = useDataPlaneRbac((state) => state.aadTokenUpdated);
@@ -133,11 +125,6 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
 
   const uiFabricControlButtons = CommandBarUtil.convertButton(controlButtons, "var(--colorNeutralBackground1)");
   uiFabricControlButtons.forEach((btn: ICommandBarItemProps) => (btn.iconOnly = true));
-
-  // Add connection status if needed (using the hook values we got at the top level)
-  if ((isPhoenixNotebooks || isPhoenixFeatures) && connectionInfo?.status !== ConnectionStatusType.Connect) {
-    uiFabricControlButtons.unshift(CommandBarUtil.createConnectionStatus(container, "connectionStatus"));
-  }
 
   const rootStyle = {
     root: {

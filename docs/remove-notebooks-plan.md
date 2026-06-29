@@ -235,7 +235,39 @@ engine deleted there. No separate work remains for this phase.
   pinned-repo methods.
 - Remove GitHub-related localization keys from **all** locale files (`en` + non-English).
 
-### Phase 5 — Remove Phoenix and the notebook container/allocation core
+### Phase 5 — Remove Phoenix and the notebook container/allocation core ✅ COMPLETED
+> **Status:** Implemented on branch `users/jawelton/removenotebooks-phase5-062926`. Full
+> verification sweep is green: `compile`, `compile:strict`, `lint` (0 errors), `format:check`,
+> `test` (1894 passing), and `build:ci` (webpack) all pass.
+>
+> **Implementation notes / deviations:**
+> - **`useNotebook.ts` was slim-renamed, not just deleted.** Its only surviving non-notebook
+>   state — `isSynapseLinkUpdating` (used by the Synapse Link enable flow + command bar) — was
+>   extracted into a new minimal store `src/Explorer/useSynapseLink.ts`; everything else
+>   (Phoenix/container/notebook state, `sparkClusterConnectionInfo`) was dropped.
+> - **`ResourceTreeAdapter.tsx` (+ test + snapshot) was fully deleted**, along with its
+>   `Explorer.tsx` field/instantiation — after the "My Notebooks" tree removal it was entirely
+>   notebook-only/dead (its last consumers were the deleted `NotebookManager` and `Explorer`).
+> - **Dead Phoenix-container command-bar UI removed:** `ConnectionStatusComponent` /
+>   `MemoryTrackerComponent` (+`.less`, + `Main.tsx` imports), `CommandBarUtil.createConnectionStatus`
+>   / `createMemoryTracker`, and the `CommandBarComponentAdapter` connection-status branch
+>   (they only rendered when `isPhoenix*` was true, now always false).
+> - **`isShellEnabled` simplified to `enableCloudShell`** in `CommandBarComponentButtonFactory`,
+>   `ContextMenuButtonFactory`, and `SplashScreen` (it derived from `isPhoenixFeatures`, always
+>   false). `createOpenTerminalButtonByKind`'s disable logic was rebased onto `enableCloudShell`.
+> - **Other dead survivors removed:** `useSelectedNode.isConnectedToContainer` (no consumers),
+>   `useTabs.closeAllNotebookTabs` (only caller was the deleted `useNotebook`), the dead
+>   `isNotebookEnabled` pass-through param in `treeNodeUtil`, and the stale `useNotebook` import
+>   in `Collection.ts`.
+> - **`useKnockoutExplorer.ts`:** removed the Phoenix MPAC flag block and the
+>   PhoenixNotebooks/PhoenixFeatures/NotebooksDownBanner flight assignments (the
+>   `userContext.features.*` field definitions in `extractFeatures.ts` stay for Phase 6).
+> - **Strict config:** removed `NotebookContentItem.ts` and `useNotebookSnapshotStore.ts`; added
+>   the new `useSynapseLink.ts`.
+> - **Phase 6 boundary held:** `Juno`, the `cosmosNotebooks` ARM client, `Constants.Notebook`,
+>   notebook `DataModels`/`ViewModels`/`ActionContracts`, telemetry actions, and locale strings
+>   were left untouched.
+
 - Delete `src/Phoenix/`, `src/Explorer/Notebook/NotebookContainerClient.ts`,
   `src/Explorer/Notebook/NotebookManager.tsx`, `src/Explorer/Notebook/useNotebook.ts`,
   `src/Explorer/Notebook/NotebookContentItem.ts`, `src/Explorer/Notebook/NotebookUtil.ts`

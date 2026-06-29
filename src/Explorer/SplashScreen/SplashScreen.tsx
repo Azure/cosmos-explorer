@@ -37,7 +37,6 @@ import { userContext } from "../../UserContext";
 import { getCollectionName } from "../../Utils/APITypeUtils";
 import Explorer from "../Explorer";
 import * as MostRecentActivity from "../MostRecentActivity/MostRecentActivity";
-import { useNotebook } from "../Notebook/useNotebook";
 import { useDatabases } from "../useDatabases";
 import { useSelectedNode } from "../useSelectedNode";
 
@@ -182,12 +181,6 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
 
   React.useEffect(() => {
     subscriptions.push(
-      {
-        dispose: useNotebook.subscribe(
-          () => setState({}),
-          (state) => state.isNotebookEnabled,
-        ),
-      },
       { dispose: useSelectedNode.subscribe(() => setState({})) },
       {
         dispose: useCarousel.subscribe(
@@ -609,7 +602,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
   };
 
   const getRecentItems = (): JSX.Element => {
-    const recentItems = createRecentItems()?.filter((item) => item.description !== "Notebook");
+    const recentItems = createRecentItems();
 
     return (
       <Stack>

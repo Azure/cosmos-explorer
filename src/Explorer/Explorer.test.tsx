@@ -26,9 +26,9 @@ jest.mock("./Controls/Dialog", () => ({
   },
 }));
 
-// Silence useNotebook subscription calls
-jest.mock("./Notebook/useNotebook", () => ({
-  useNotebook: {
+// Silence useSynapseLink state calls
+jest.mock("./useSynapseLink", () => ({
+  useSynapseLink: {
     subscribe: jest.fn(),
     getState: jest.fn().mockReturnValue(
       new Proxy(

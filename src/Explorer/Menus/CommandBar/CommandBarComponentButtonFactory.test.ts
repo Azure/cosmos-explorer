@@ -4,7 +4,6 @@ import { DatabaseAccount } from "../../../Contracts/DataModels";
 import { CollectionBase } from "../../../Contracts/ViewModels";
 import { updateUserContext } from "../../../UserContext";
 import Explorer from "../../Explorer";
-import { useNotebook } from "../../Notebook/useNotebook";
 import { useDatabases } from "../../useDatabases";
 import { useSelectedNode } from "../../useSelectedNode";
 import * as CommandBarComponentButtonFactory from "./CommandBarComponentButtonFactory";
@@ -97,11 +96,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
           },
         } as DatabaseAccount,
       });
-    });
-
-    afterEach(() => {
-      useNotebook.getState().setIsNotebookEnabled(false);
-      useNotebook.getState().setIsNotebooksEnabledForAccount(false);
     });
 
     it("Cassandra Api not available - button should be hidden", () => {
