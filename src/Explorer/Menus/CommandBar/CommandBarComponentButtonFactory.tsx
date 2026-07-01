@@ -19,7 +19,12 @@ import { AuthType } from "../../../AuthType";
 import * as Constants from "../../../Common/Constants";
 import { Platform, configContext } from "../../../ConfigContext";
 import * as ViewModels from "../../../Contracts/ViewModels";
-import { userContext, isVCoreMongoNativeAuthDisabled, VCoreMongoNativeAuthDisabledMessage, VCoreMongoNativeAuthLearnMoreUrl } from "../../../UserContext";
+import {
+  userContext,
+  isVCoreMongoNativeAuthDisabled,
+  VCoreMongoNativeAuthDisabledMessage,
+  VCoreMongoNativeAuthLearnMoreUrl,
+} from "../../../UserContext";
 import { isRunningOnNationalCloud } from "../../../Utils/CloudUtils";
 import { useSidePanel } from "../../../hooks/useSidePanel";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
