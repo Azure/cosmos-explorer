@@ -171,6 +171,18 @@ jobs:
         shardTotal: [20]
     steps:
       - uses: actions/checkout@v4
+      - name: "Az CLI test"
+        uses: Azure/login@v2
+        with:
+          client-id: ${{ secrets.E2ETESTS_CLIENT_ID }}
+          tenant-id: ${{ secrets.E2ETESTS_TENANT_ID }}
+          subscription-id: ${{ secrets.E2ETESTS_SUBSCRIPTION_ID }}
+      - name: Azure CLI script
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+          inlineScript: |
+            az account show
       - name: Use Node.js 18.x
         uses: actions/setup-node@v4
         with:
