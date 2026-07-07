@@ -45,29 +45,34 @@ export enum TestAccount {
 }
 
 export function getDefaultAccountName(accountType: TestAccount): string {
+  const accountNamePrefix = process.env.DE_TEST_ACCOUNT_PREFIX;
+  if (!accountNamePrefix) {
+    throw new Error("DE_TEST_ACCOUNT_PREFIX is not set");
+  }
+
   switch (accountType) {
     case TestAccount.Tables:
-      return "github-e2etests-tables";
+      return `${accountNamePrefix}-de-test-table-1`;
     case TestAccount.Cassandra:
-      return "github-e2etests-cassandra";
+      return `${accountNamePrefix}-de-test-cassandra-1`;
     case TestAccount.Gremlin:
-      return "github-e2etests-gremlin";
+      return `${accountNamePrefix}-de-test-gremlin-1`;
     case TestAccount.Mongo:
-      return "github-e2etests-mongo";
+      return `${accountNamePrefix}-de-test-mongo-1`;
     case TestAccount.MongoReadonly:
-      return "github-e2etests-mongo-readonly";
+      return `${accountNamePrefix}-de-test-mongo-readonly`;
     case TestAccount.Mongo32:
-      return "github-e2etests-mongo32";
+      return `${accountNamePrefix}-de-test-mongo32-1`;
     case TestAccount.SQLReadOnly:
-      return "github-e2etests-sql-readonly";
+      return `${accountNamePrefix}-de-test-sql-readonly`;
     case TestAccount.SQLContainerCopyOnly:
-      return "github-e2etests-sql-containercopyonly";
+      return `${accountNamePrefix}-de-test-sql-containercopy`;
     case TestAccount.SQL: {
       const shardIndex = process.env.PLAYWRIGHT_SHARD_INDEX ?? "";
       if (!shardIndex) {
         throw new Error("PLAYWRIGHT_SHARD_INDEX is not set");
       }
-      return "github-e2etests-sql-" + shardIndex;
+      return `${accountNamePrefix}-de-test-sql-${shardIndex}`;
     }
     default:
       throw new Error(`No default account name defined for account type ${accountType}`);
@@ -75,7 +80,7 @@ export function getDefaultAccountName(accountType: TestAccount): string {
 }
 
 export const resourceGroupName = process.env.DE_TEST_RESOURCE_GROUP ?? "de-e2e-tests";
-export const subscriptionId = process.env.DE_TEST_SUBSCRIPTION_ID ?? "69e02f2d-f059-4409-9eac-97e8a276ae2c";
+export const subscriptionId = process.env.DE_TEST_SUBSCRIPTION_ID ?? process.env.AZURE_SUBSCRIPTION_ID ?? "";
 export const TEST_AUTOSCALE_THROUGHPUT_RU = 1000;
 export const TEST_MANUAL_THROUGHPUT_RU = 800;
 export const TEST_AUTOSCALE_MAX_THROUGHPUT_RU_2K = 2000;
