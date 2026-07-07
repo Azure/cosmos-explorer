@@ -45,9 +45,9 @@ export enum TestAccount {
 }
 
 export function getDefaultAccountName(accountType: TestAccount): string {
-  const accountNamePrefix = process.env.DE_TEST_ACCOUNT_PREFIX;
+  const accountNamePrefix = process.env.DE_ACCOUNT_PREFIX;
   if (!accountNamePrefix) {
-    throw new Error("DE_TEST_ACCOUNT_PREFIX is not set");
+    throw new Error("DE_ACCOUNT_PREFIX is not set");
   }
 
   switch (accountType) {
