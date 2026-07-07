@@ -1,7 +1,7 @@
 import { DefaultAzureCredential } from "@azure/identity";
 import { Frame, Locator, Page, expect } from "@playwright/test";
 import crypto from "crypto";
-import { getNoSqlRbacToken } from "./NoSqlTestSetup";
+// import { getNoSqlRbacToken } from "./NoSqlTestSetup";
 import { TestContainerContext } from "./testData";
 
 const RETRY_COUNT = 3;
@@ -126,7 +126,8 @@ export async function getTestExplorerUrl(accountType: TestAccount, options?: Tes
   // For now, since we don't test copilot, we can disable the copilot APIs by setting the feature flag to false.
   params.set("feature.enableCopilot", "false");
 
-  const nosqlRbacToken = getNoSqlRbacToken();
+  //const nosqlRbacToken = getNoSqlRbacToken();
+  const nosqlRbacToken = process.env.NOSQL_TESTACCOUNT_TOKEN;
 
   const nosqlReadOnlyRbacToken = process.env.NOSQL_READONLY_TESTACCOUNT_TOKEN;
   const nosqlContainerCopyRbacToken = process.env.NOSQL_CONTAINERCOPY_TESTACCOUNT_TOKEN;
