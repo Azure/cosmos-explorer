@@ -163,7 +163,7 @@ jobs:
     env:
       NODE_TLS_REJECT_UNAUTHORIZED: 0
       AZURE_SUBSCRIPTION_ID: ${{ secrets.E2ETESTS_SUBSCRIPTION_ID }}
-      ACCOUNT_PREFIX: ${{ secrets.E2ETESTS_ACCOUNT_PREFIX }}
+      DE_ACCOUNT_PREFIX: ${{ secrets.E2ETESTS_ACCOUNT_PREFIX }}
     strategy:
       fail-fast: false
       matrix:
