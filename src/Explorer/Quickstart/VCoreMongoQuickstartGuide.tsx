@@ -298,7 +298,7 @@ export const VcoreMongoQuickstartGuide: React.FC = (): JSX.Element => {
                   hosted in the cloud, to Azure DocumentDB.&nbsp;
                   <Link
                     target="_blank"
-                    href="https://learn.microsoft.com/azure/cosmos-db/mongodb/vcore/migration-options"
+                    href="https://learn.microsoft.com/azure/documentdb/migration-options"
                   >
                     Learn more
                   </Link>

@@ -791,7 +791,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
 
   const vcoreMongoNextStepItems: { link: string; title: string; description: string }[] = [
     {
-      link: "https://learn.microsoft.com/azure/cosmos-db/mongodb/vcore/migration-options",
+      link: "https://learn.microsoft.com/azure/documentdb/migration-options",
       title: t(Keys.splashScreen.nextStepItems.vcoreMongo.migrateData),
       description: "",
     },
