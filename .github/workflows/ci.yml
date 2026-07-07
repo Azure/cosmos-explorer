@@ -195,27 +195,27 @@ jobs:
             SHARD_INDEX=${{ matrix.shardIndex }}
             echo PLAYWRIGHT_SHARD_INDEX=$SHARD_INDEX >> $GITHUB_ENV
 
-            NOSQL_TESTACCOUNT_1_TOKEN=$(az account get-access-token --scope "https://${DE_ACCOUNT_PREFIX}-de-test-sql-1.documents.azure.com/.default" -o tsv --query accessToken)
+            NOSQL_TESTACCOUNT_1_TOKEN=$(az account get-access-token --scope "https://$DE_ACCOUNT_PREFIX-de-test-sql-1.documents.azure.com/.default" -o tsv --query accessToken)
             echo "::add-mask::$NOSQL_TESTACCOUNT_1_TOKEN"
             echo NOSQL_TESTACCOUNT_1_TOKEN=$NOSQL_TESTACCOUNT_1_TOKEN >> $GITHUB_ENV
 
-            NOSQL_TESTACCOUNT_2_TOKEN=$(az account get-access-token --scope "https://${DE_ACCOUNT_PREFIX}-de-test-sql-2.documents.azure.com/.default" -o tsv --query accessToken)
+            NOSQL_TESTACCOUNT_2_TOKEN=$(az account get-access-token --scope "https://$DE_ACCOUNT_PREFIX-de-test-sql-2.documents.azure.com/.default" -o tsv --query accessToken)
             echo "::add-mask::$NOSQL_TESTACCOUNT_2_TOKEN"
             echo NOSQL_TESTACCOUNT_2_TOKEN=$NOSQL_TESTACCOUNT_2_TOKEN >> $GITHUB_ENV
 
-            NOSQL_TESTACCOUNT_3_TOKEN=$(az account get-access-token --scope "https://${DE_ACCOUNT_PREFIX}-de-test-sql-3.documents.azure.com/.default" -o tsv --query accessToken)
+            NOSQL_TESTACCOUNT_3_TOKEN=$(az account get-access-token --scope "https://$DE_ACCOUNT_PREFIX-de-test-sql-3.documents.azure.com/.default" -o tsv --query accessToken)
             echo "::add-mask::$NOSQL_TESTACCOUNT_3_TOKEN"
             echo NOSQL_TESTACCOUNT_3_TOKEN=$NOSQL_TESTACCOUNT_3_TOKEN >> $GITHUB_ENV
 
-            NOSQL_TESTACCOUNT_4_TOKEN=$(az account get-access-token --scope "https://${DE_ACCOUNT_PREFIX}-de-test-sql-4.documents.azure.com/.default" -o tsv --query accessToken)
+            NOSQL_TESTACCOUNT_4_TOKEN=$(az account get-access-token --scope "https://$DE_ACCOUNT_PREFIX-de-test-sql-4.documents.azure.com/.default" -o tsv --query accessToken)
             echo "::add-mask::$NOSQL_TESTACCOUNT_4_TOKEN"
             echo NOSQL_TESTACCOUNT_4_TOKEN=$NOSQL_TESTACCOUNT_4_TOKEN >> $GITHUB_ENV
 
-            NOSQL_TESTACCOUNT_5_TOKEN=$(az account get-access-token --scope "https://${DE_ACCOUNT_PREFIX}-de-test-sql-5.documents.azure.com/.default" -o tsv --query accessToken)
+            NOSQL_TESTACCOUNT_5_TOKEN=$(az account get-access-token --scope "https://$DE_ACCOUNT_PREFIX-de-test-sql-5.documents.azure.com/.default" -o tsv --query accessToken)
             echo "::add-mask::$NOSQL_TESTACCOUNT_5_TOKEN"
             echo NOSQL_TESTACCOUNT_5_TOKEN=$NOSQL_TESTACCOUNT_5_TOKEN >> $GITHUB_ENV
 
-            NOSQL_TESTACCOUNT_6_TOKEN=$(az account get-access-token --scope "https://${DE_ACCOUNT_PREFIX}-de-test-sql-6.documents.azure.com/.default" -o tsv --query accessToken)
+            NOSQL_TESTACCOUNT_6_TOKEN=$(az account get-access-token --scope "https://$DE_ACCOUNT_PREFIX-de-test-sql-6.documents.azure.com/.default" -o tsv --query accessToken)
             echo "::add-mask::$NOSQL_TESTACCOUNT_6_TOKEN"
             echo NOSQL_TESTACCOUNT_6_TOKEN=$NOSQL_TESTACCOUNT_6_TOKEN >> $GITHUB_ENV
 
@@ -275,7 +275,7 @@ jobs:
             echo "::add-mask::$NOSQL_TESTACCOUNT_20_TOKEN"
             echo NOSQL_TESTACCOUNT_20_TOKEN=$NOSQL_TESTACCOUNT_20_TOKEN >> $GITHUB_ENV
 
-            NOSQL_READONLY_TESTACCOUNT_TOKEN=$(az account get-access-token --scope "https://${DE_ACCOUNT_PREFIX}-de-test-sql-readonly.documents.azure.com/.default" -o tsv --query accessToken)
+            NOSQL_READONLY_TESTACCOUNT_TOKEN=$(az account get-access-token --scope "https://$DE_ACCOUNT_PREFIX-de-test-sql-readonly.documents.azure.com/.default" -o tsv --query accessToken)
             echo "::add-mask::$NOSQL_READONLY_TESTACCOUNT_TOKEN"
             echo NOSQL_READONLY_TESTACCOUNT_TOKEN=$NOSQL_READONLY_TESTACCOUNT_TOKEN >> $GITHUB_ENV
             NOSQL_CONTAINERCOPY_TESTACCOUNT_TOKEN=$(az account get-access-token --scope "https://${DE_ACCOUNT_PREFIX}-de-test-sql-containercopy.documents.azure.com/.default" -o tsv --query accessToken)
