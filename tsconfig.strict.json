@@ -92,6 +92,7 @@
     "./src/Utils/Base64Utils.ts",
     "./src/Utils/BlobUtils.ts",
     "./src/Utils/CapabilityUtils.ts",
+    "./src/Utils/CapabilityUtils.test.ts",
     "./src/Utils/CloudUtils.ts",
     "./src/Utils/EndpointUtils.ts",
     "./src/Utils/MessageValidation.test.ts",

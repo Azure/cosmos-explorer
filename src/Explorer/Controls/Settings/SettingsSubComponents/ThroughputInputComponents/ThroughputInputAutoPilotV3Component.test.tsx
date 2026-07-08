@@ -1,12 +1,24 @@
 import { shallow } from "enzyme";
 import React from "react";
+import * as Constants from "../../../../../Common/Constants";
 import * as DataModels from "../../../../../Contracts/DataModels";
+import { updateUserContext } from "../../../../../UserContext";
 import {
   ThroughputInputAutoPilotV3Component,
   ThroughputInputAutoPilotV3Props,
 } from "./ThroughputInputAutoPilotV3Component";
 
 describe("ThroughputInputAutoPilotV3Component", () => {
+  beforeAll(() => {
+    updateUserContext({
+      databaseAccount: {
+        properties: {
+          capabilities: [{ name: Constants.CapabilityNames.EnableHotPartitionKeyThrottling }],
+        },
+      } as DataModels.DatabaseAccount,
+    });
+  });
+
   const baseProps: ThroughputInputAutoPilotV3Props = {
     databaseAccount: {} as DataModels.DatabaseAccount,
     databaseName: "test",
@@ -45,6 +57,9 @@ describe("ThroughputInputAutoPilotV3Component", () => {
     instantMaximumThroughput: 5000,
     softAllowedMaximumThroughput: 1000000,
     isGlobalSecondaryIndex: false,
+    onHotPartitionKeyRateLimitingPolicyChange: () => {
+      return;
+    },
   };
 
   it("throughput input visible", () => {

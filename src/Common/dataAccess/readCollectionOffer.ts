@@ -112,6 +112,7 @@ const readCollectionOfferWithARM = async (databaseId: string, collectionId: stri
         : resource.softAllowedMaximumThroughput;
 
     const throughputBuckets = resource?.throughputBuckets;
+    const hotPartitionKeyRateLimitingPolicy = resource?.hotPartitionKeyRateLimitingPolicy;
 
     if (autoscaleSettings) {
       return {
@@ -123,6 +124,7 @@ const readCollectionOfferWithARM = async (databaseId: string, collectionId: stri
         instantMaximumThroughput,
         softAllowedMaximumThroughput,
         throughputBuckets,
+        hotPartitionKeyRateLimitingPolicy,
       };
     }
 
@@ -135,6 +137,7 @@ const readCollectionOfferWithARM = async (databaseId: string, collectionId: stri
       instantMaximumThroughput,
       softAllowedMaximumThroughput,
       throughputBuckets,
+      hotPartitionKeyRateLimitingPolicy,
     };
   }
 
