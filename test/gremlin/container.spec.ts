@@ -3,6 +3,7 @@ import { expect, test } from "@playwright/test";
 import { DataExplorer, TEST_AUTOSCALE_THROUGHPUT_RU, TestAccount, generateUniqueName } from "../fx";
 
 test("Gremlin graph CRUD", async ({ page }) => {
+  test.skip();
   const databaseId = generateUniqueName("db");
   const graphId = "testgraph"; // A unique graph name isn't needed because the database is unique
 

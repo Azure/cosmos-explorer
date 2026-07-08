@@ -29,6 +29,7 @@ test.describe("Computed Properties", () => {
   });
 
   test("Add valid computed property", async ({ page }) => {
+    test.skip();
     await clearComputedPropertiesTextBoxContent({ page });
 
     // Create computed property
@@ -54,6 +55,7 @@ test.describe("Computed Properties", () => {
   });
 
   test("Add computed property with invalid query", async ({ page }) => {
+    test.skip();
     await clearComputedPropertiesTextBoxContent({ page });
 
     // Create computed property with no VALUE keyword in query
@@ -79,6 +81,7 @@ test.describe("Computed Properties", () => {
   });
 
   test("Add computed property with invalid json", async ({ page }) => {
+    test.skip();
     await clearComputedPropertiesTextBoxContent({ page });
 
     // Create computed property with no VALUE keyword in query

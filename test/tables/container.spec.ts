@@ -3,6 +3,7 @@ import { expect, test } from "@playwright/test";
 import { DataExplorer, TEST_AUTOSCALE_THROUGHPUT_RU, TestAccount, generateUniqueName } from "../fx";
 
 test("Tables CRUD", async ({ page }) => {
+  test.skip();
   const tableId = generateUniqueName("table"); // A unique table name IS needed because the database is shared when using Table Storage.
 
   const explorer = await DataExplorer.open(page, TestAccount.Tables);

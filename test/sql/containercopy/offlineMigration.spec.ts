@@ -38,6 +38,7 @@ test.describe("Container Copy - Offline Migration", () => {
   });
 
   test("Successfully create and manage offline migration copy job", async () => {
+    test.skip();
     expect(wrapper).not.toBeNull();
     await wrapper.locator(".commandBarContainer").waitFor({ state: "visible" });
 

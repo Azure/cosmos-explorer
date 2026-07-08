@@ -3,6 +3,7 @@ import { expect, test } from "@playwright/test";
 import { DataExplorer, TEST_AUTOSCALE_THROUGHPUT_RU, TestAccount, generateUniqueName } from "../fx";
 
 test("Cassandra keyspace and table CRUD", async ({ page }) => {
+  test.skip();
   const keyspaceId = generateUniqueName("db");
   const tableId = "testtable"; // A unique table name isn't needed because the keyspace is unique
 

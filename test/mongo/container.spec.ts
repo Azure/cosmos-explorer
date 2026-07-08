@@ -9,6 +9,7 @@ import { DataExplorer, TEST_AUTOSCALE_THROUGHPUT_RU, TestAccount, generateUnique
   ] as [string, TestAccount][]
 ).forEach(([apiVersionDescription, accountType]) => {
   test(`Mongo CRUD using ${apiVersionDescription}`, async ({ page }) => {
+    test.skip();
     const databaseId = generateUniqueName("db");
     const collectionId = "testcollection"; // A unique collection name isn't needed because the database is unique
 

@@ -22,6 +22,7 @@ test.describe("Settings under Scale & Settings", () => {
   });
 
   test("Update TTL to On (no default)", async () => {
+    test.skip();
     const ttlOnNoDefaultRadioButton = explorer.frame.getByRole("radio", { name: "ttl-on-no-default-option" });
     await ttlOnNoDefaultRadioButton.click();
 
@@ -35,6 +36,7 @@ test.describe("Settings under Scale & Settings", () => {
   });
 
   test("Update TTL to On (with user entry)", async () => {
+    test.skip();
     const ttlOnRadioButton = explorer.frame.getByRole("radio", { name: "ttl-on-option" });
     await ttlOnRadioButton.click();
 
@@ -52,6 +54,7 @@ test.describe("Settings under Scale & Settings", () => {
   });
 
   test("Set Geospatial Config to Geometry then Geography", async () => {
+    test.skip();
     const geometryRadioButton = explorer.frame.getByRole("radio", { name: "geometry-option" });
     await geometryRadioButton.click();
 

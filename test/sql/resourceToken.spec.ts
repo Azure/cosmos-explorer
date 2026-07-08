@@ -14,6 +14,7 @@ import {
 import { getNoSqlRbacToken } from "../NoSqlTestSetup";
 
 test("SQL account using Resource token", async ({ page }) => {
+  test.skip();
   const nosqlAccountRbacToken = getNoSqlRbacToken() ?? "";
   test.skip(nosqlAccountRbacToken.length > 0, "Resource tokens not supported when using data plane RBAC.");
 

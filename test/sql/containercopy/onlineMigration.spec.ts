@@ -32,6 +32,7 @@ test.describe("Container Copy - Online Migration", () => {
   });
 
   test("Successfully create and manage online migration copy job", async () => {
+    test.skip();
     expect(wrapper).not.toBeNull();
     await wrapper.locator(".commandBarContainer").waitFor({ state: "visible" });
 

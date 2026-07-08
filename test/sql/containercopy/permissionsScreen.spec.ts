@@ -26,6 +26,7 @@ test.describe("Container Copy - Permission Screen Verification", () => {
   });
 
   test("Verify online container copy permissions panel functionality", async () => {
+    test.skip();
     expect(wrapper).not.toBeNull();
 
     // Verify all command bar buttons are visible

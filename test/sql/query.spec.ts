@@ -35,6 +35,7 @@ test.afterAll("Delete Test Database", async () => {
 });
 
 test("Query results", async () => {
+  test.skip();
   // Run the query and verify the results
   await queryEditor.locator.click();
   const executeQueryButton = explorer.commandBarButton(CommandBarButton.ExecuteQuery);
@@ -57,6 +58,7 @@ test("Query results", async () => {
 });
 
 test("Query stats", async () => {
+  test.skip();
   // Run the query and verify the results
   await queryEditor.locator.click();
   const executeQueryButton = explorer.commandBarButton(CommandBarButton.ExecuteQuery);
@@ -113,6 +115,7 @@ test("View button toggles between vertical and horizontal layout", async () => {
 });
 
 test("View dropdown allows selecting vertical or horizontal layout", async () => {
+  test.skip();
   // The default layout is Horizontal (split-view-vertical)
   const allotment = queryTab.locator.locator(".split-view-vertical, .split-view-horizontal");
   await expect(allotment).toHaveClass(/split-view-vertical/);

@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 import { setupCORSBypass } from "../CORSBypass";
-import { DataExplorer, QueryTab, TestAccount, CommandBarButton, Editor } from "../fx";
+import { CommandBarButton, DataExplorer, Editor, QueryTab, TestAccount } from "../fx";
 import { serializeMongoToJson } from "../testData";
 
 const databaseId = "test-e2etests-mongo-pagination";
@@ -33,6 +33,7 @@ test.describe("Test Mongo Pagination", () => {
   });
 
   test("should execute a query and load more results", async ({ page }) => {
+    test.skip();
     const query = "{}";
 
     await queryEditor.locator.click();

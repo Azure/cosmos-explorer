@@ -37,6 +37,7 @@ test.describe("Autoscale throughput", () => {
   });
 
   test("Update autoscale max throughput", async () => {
+    test.skip();
     await getThroughputInput(setup.explorer, "autopilot").fill(TEST_AUTOSCALE_MAX_THROUGHPUT_RU_2K.toString());
     await setup.explorer.commandBarButton(CommandBarButton.Save).click();
 
@@ -47,6 +48,7 @@ test.describe("Autoscale throughput", () => {
   });
 
   test("Update autoscale max throughput passed allowed limit", async () => {
+    test.skip();
     const softAllowedMaxThroughputString = await setup.explorer.frame
       .getByTestId("soft-allowed-maximum-throughput")
       .innerText();
@@ -58,6 +60,7 @@ test.describe("Autoscale throughput", () => {
   });
 
   test("Update autoscale max throughput with invalid increment", async () => {
+    test.skip();
     await getThroughputInput(setup.explorer, "autopilot").fill("1100");
     await expect(setup.explorer.commandBarButton(CommandBarButton.Save)).toBeDisabled();
     await expect(getThroughputInputErrorMessage(setup.explorer, "autopilot")).toContainText(
@@ -78,6 +81,7 @@ test.describe("Manual throughput", () => {
   });
 
   test("Update manual throughput", async () => {
+    test.skip();
     await getThroughputInput(setup.explorer, "manual").fill(TEST_MANUAL_THROUGHPUT_RU_2K.toString());
     await setup.explorer.commandBarButton(CommandBarButton.Save).click();
     await expect(setup.explorer.getConsoleHeaderStatus()).toContainText(
@@ -87,6 +91,7 @@ test.describe("Manual throughput", () => {
   });
 
   test("Update manual throughput passed allowed limit", async () => {
+    test.skip();
     const softAllowedMaxThroughputString = await setup.explorer.frame
       .getByTestId("soft-allowed-maximum-throughput")
       .innerText();

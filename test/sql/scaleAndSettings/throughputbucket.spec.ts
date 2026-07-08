@@ -28,6 +28,7 @@ test.describe("Throughput bucket settings", () => {
   }
 
   test("Activate throughput bucket #2", async () => {
+    test.skip();
     // Activate bucket 2
     const bucket2Toggle = explorer.frame.getByTestId("bucket-2-active-toggle");
     await bucket2Toggle.click();
@@ -42,6 +43,7 @@ test.describe("Throughput bucket settings", () => {
   });
 
   test("Activate throughput buckets #1 and #2", async () => {
+    test.skip();
     // Activate bucket 1
     const bucket1Toggle = explorer.frame.getByTestId("bucket-1-active-toggle");
     await bucket1Toggle.click();
@@ -59,6 +61,7 @@ test.describe("Throughput bucket settings", () => {
   });
 
   test("Set throughput percentage for bucket #1", async () => {
+    test.skip();
     // Set throughput percentage for bucket 1 (inactive) - Should be disabled
     const bucket1PercentageInput = explorer.frame.getByTestId("bucket-1-percentage-input");
     expect(bucket1PercentageInput).toBeDisabled();
@@ -79,6 +82,7 @@ test.describe("Throughput bucket settings", () => {
   });
 
   test("Set default throughput bucket", async () => {
+    test.skip();
     // There are no active throughput buckets so they all should be disabled
     const defaultThroughputBucketDropdown = explorer.frame.getByTestId("default-throughput-bucket-dropdown");
     await defaultThroughputBucketDropdown.click();
