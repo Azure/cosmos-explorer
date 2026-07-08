@@ -30,6 +30,8 @@ const mongoRbacToken = urlSearchParams.get("mongoRbacToken") || process.env.MONG
 const mongo32RbacToken = urlSearchParams.get("mongo32RbacToken") || process.env.MONGO32_TESTACCOUNT_TOKEN || "";
 const mongoReadOnlyRbacToken =
   urlSearchParams.get("mongoReadOnlyRbacToken") || process.env.MONGO_READONLY_TESTACCOUNT_TOKEN || "";
+const tenantId = urlSearchParams.get("tenantId") || process.env.AZURE_TENANT_ID || "";
+console.log(`DEBUG: Using tenantId: ${tenantId ? tenantId : "Not Present"}`);
 
 const initTestExplorer = async (): Promise<void> => {
   updateUserContext({
@@ -90,6 +92,7 @@ const initTestExplorer = async (): Promise<void> => {
       resourceGroup,
       authorizationToken: `Bearer ${authToken}`,
       aadToken: rbacToken,
+      tenantId,
       features: {},
       containerCopyEnabled: enablecontainercopy === "true",
       hasWriteAccess: true,

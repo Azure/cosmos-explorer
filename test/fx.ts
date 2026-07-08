@@ -123,6 +123,11 @@ export async function getTestExplorerUrl(accountType: TestAccount, options?: Tes
   params.set("subscriptionId", subscriptionId);
   params.set("token", token);
 
+  const tenantId = process.env.AZURE_TENANT_ID;
+  if (tenantId) {
+    params.set("tenantId", tenantId);
+  }
+
   // There seem to be occasional CORS issues with calling the copilot APIs (/api/tokens/sampledataconnection/v2, for example)
   // For now, since we don't test copilot, we can disable the copilot APIs by setting the feature flag to false.
   params.set("feature.enableCopilot", "false");
