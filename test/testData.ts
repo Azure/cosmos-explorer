@@ -141,8 +141,6 @@ async function createCosmosClientForSQLAccount(
       ? process.env.NOSQL_CONTAINERCOPY_TESTACCOUNT_TOKEN
       : "";
 
-  console.log(`DEBUG: RBAC Token: ${rbacToken ? "Present" : "Not Present"}`);
-
   if (rbacToken) {
     clientOptions.tokenProvider = async (): Promise<string> => {
       const AUTH_PREFIX = `type=aad&ver=1.0&sig=`;

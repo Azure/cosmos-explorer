@@ -116,7 +116,6 @@ export async function getTestExplorerUrl(accountType: TestAccount, options?: Tes
   // We can't retrieve AZ CLI credentials from the browser so we get them here.
   const token = await getAzureCLICredentialsToken();
   const accountName = getAccountName(accountType);
-  console.log(`DEBUG: Using account name: ${accountName} for account type: ${accountType}`);
   const params = new URLSearchParams();
   params.set("accountName", accountName);
   params.set("resourceGroup", resourceGroupName);
@@ -134,7 +133,6 @@ export async function getTestExplorerUrl(accountType: TestAccount, options?: Tes
 
   //const nosqlRbacToken = getNoSqlRbacToken();
   const nosqlRbacToken = process.env.NOSQL_TESTACCOUNT_TOKEN;
-  console.log(`DEBUG: Using nosqlRbacToken: ${nosqlRbacToken ? "Present" : "Not Present"}`);
 
   const nosqlReadOnlyRbacToken = process.env.NOSQL_READONLY_TESTACCOUNT_TOKEN;
   const nosqlContainerCopyRbacToken = process.env.NOSQL_CONTAINERCOPY_TESTACCOUNT_TOKEN;
