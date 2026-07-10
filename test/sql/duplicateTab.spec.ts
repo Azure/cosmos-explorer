@@ -19,7 +19,6 @@ test.beforeEach("Open Data Explorer", async ({ page }) => {
 });
 
 test("Duplicate Items tab opens a second Items tab", async () => {
-  test.skip();
   // Open Items tab
   const containerNode = await explorer.waitForContainerNode(context.database.id, context.container.id);
   await containerNode.expand();
@@ -47,7 +46,6 @@ test("Duplicate Items tab opens a second Items tab", async () => {
 });
 
 test("Duplicate Query tab preserves query text in new tab", async () => {
-  test.skip();
   // Open a new SQL query tab via container context menu
   const containerNode = await explorer.waitForContainerNode(context.database.id, context.container.id);
   await containerNode.openContextMenu();
@@ -80,7 +78,6 @@ test("Duplicate Query tab preserves query text in new tab", async () => {
 });
 
 test("Right-click context menu does not appear for the Home tab", async () => {
-  test.skip();
   // The Home tab (ReactTabKind) is never duplicable — no context menu should appear
   await explorer.tabNavHeader("Home").click({ button: "right" });
 
@@ -90,7 +87,6 @@ test("Right-click context menu does not appear for the Home tab", async () => {
 });
 
 test("Close tab from right-click menu closes the tab", async () => {
-  test.skip();
   // Open Items tab
   const containerNode = await explorer.waitForContainerNode(context.database.id, context.container.id);
   await containerNode.expand();

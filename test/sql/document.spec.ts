@@ -41,7 +41,6 @@ for (const { name, databaseId, containerId, documents } of documentTestCases) {
       const { documentId: docId, partitionKeys, skipCreateDelete } = document;
       test.describe(`Document ID: ${docId}`, () => {
         test(`should load and view document ${docId}`, async () => {
-          test.skip();
           const span = documentsTab.documentsListPane.getByText(docId, { exact: true }).nth(0);
           await span.waitFor();
           await expect(span).toBeVisible();
@@ -57,7 +56,6 @@ for (const { name, databaseId, containerId, documents } of documentTestCases) {
 
         const testOrSkip = skipCreateDelete ? test.skip : test;
         testOrSkip(`should be able to create and delete new document from ${docId}`, async ({ page }) => {
-          test.skip();
           const span = documentsTab.documentsListPane.getByText(docId, { exact: true }).nth(0);
           await span.waitFor();
           await expect(span).toBeVisible();
@@ -149,7 +147,6 @@ test.describe.serial("Upload Item", () => {
   });
 
   test("upload document", async () => {
-    test.skip();
     // Create file to upload
     const TestDataJsonString: string = JSON.stringify(TestData, null, 2);
     writeFileSync(uploadDocumentFilePath, TestDataJsonString);
@@ -186,7 +183,6 @@ test.describe.serial("Upload Item", () => {
   });
 
   test("upload invalid json", async () => {
-    test.skip();
     // Create file to upload
     let TestDataJsonString: string = JSON.stringify(TestData, null, 2);
     // Remove the first '[' so that it becomes invalid json

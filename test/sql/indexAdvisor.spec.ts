@@ -56,13 +56,11 @@ async function setupIndexAdvisorTab(page: Page, customQuery?: string) {
 }
 
 test("Index Advisor tab loads without errors", async ({ page }) => {
-  test.skip();
   const { indexAdvisorTab } = await setupIndexAdvisorTab(page);
   await expect(indexAdvisorTab).toHaveAttribute("aria-selected", "true");
 });
 
 test("Verify UI sections are collapsible", async ({ page }) => {
-  test.skip();
   const { explorer } = await setupIndexAdvisorTab(page);
 
   // Verify both section headers exist
@@ -86,7 +84,6 @@ test("Verify UI sections are collapsible", async ({ page }) => {
 });
 
 test("Verify SDK response structure - Case 1: Empty response", async ({ page }) => {
-  test.skip();
   const { explorer } = await setupIndexAdvisorTab(page);
 
   // Verify both section headers still exist even with no data
@@ -104,7 +101,6 @@ test("Verify SDK response structure - Case 1: Empty response", async ({ page }) 
 });
 
 test("Verify index suggestions and apply potential index", async ({ page }) => {
-  test.skip();
   const customQuery = 'SELECT * FROM c WHERE c.partitionKey = "partition_1" ORDER BY c.randomData';
   const { explorer } = await setupIndexAdvisorTab(page, customQuery);
 

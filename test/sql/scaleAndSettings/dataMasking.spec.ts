@@ -88,7 +88,6 @@ test.describe("Data Masking under Scale & Settings", () => {
   });
 
   test("Data Masking editor should contain default policy structure", async ({ page }) => {
-    test.skip();
     const explorer = await DataExplorer.open(page, TestAccount.SQL);
     const isTabAvailable = await navigateToDataMaskingTab(page, explorer);
 
@@ -109,7 +108,6 @@ test.describe("Data Masking under Scale & Settings", () => {
   });
 
   test("Data Masking editor should have correct default policy values", async ({ page }) => {
-    test.skip();
     const explorer = await DataExplorer.open(page, TestAccount.SQL);
     const isTabAvailable = await navigateToDataMaskingTab(page, explorer);
 

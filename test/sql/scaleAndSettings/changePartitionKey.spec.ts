@@ -28,7 +28,6 @@ test.describe("Change Partition Key", () => {
   });
 
   test("Change partition key path", async ({ page }) => {
-    test.skip();
     await expect(explorer.frame.getByText("/partitionKey")).toBeVisible();
     await expect(explorer.frame.getByText("Change partition key")).toBeVisible();
     await expect(explorer.frame.getByText(/To safeguard the integrity of/)).toBeVisible();

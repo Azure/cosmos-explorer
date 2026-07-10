@@ -73,7 +73,6 @@ test.describe("Vector Policy under Scale & Settings", () => {
   };
 
   test("Add new vector embedding policy", async () => {
-    test.skip();
     const existingCount = await getPolicyCount();
 
     // Click Add vector embedding button
@@ -103,7 +102,6 @@ test.describe("Vector Policy under Scale & Settings", () => {
   });
 
   test("Existing vector embedding policy fields are disabled", async () => {
-    test.skip();
     // Ensure there is at least one saved policy
     await ensureExistingPolicy();
 
@@ -117,7 +115,6 @@ test.describe("Vector Policy under Scale & Settings", () => {
   });
 
   test("New vector embedding policy fields are enabled while existing are disabled", async () => {
-    test.skip();
     // Ensure there is at least one saved policy
     const existingCount = await ensureExistingPolicy();
 
@@ -141,7 +138,6 @@ test.describe("Vector Policy under Scale & Settings", () => {
   });
 
   test("Delete existing vector embedding policy", async () => {
-    test.skip();
     // Ensure there is at least one saved policy to delete
     const existingCount = await ensureExistingPolicy();
 
@@ -175,7 +171,6 @@ test.describe("Vector Policy under Scale & Settings", () => {
   });
 
   test("Validation error for empty path", async () => {
-    test.skip();
     const existingCount = await getPolicyCount();
 
     const addButton = explorer.frame.locator("#add-vector-policy");

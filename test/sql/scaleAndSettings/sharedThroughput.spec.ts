@@ -17,7 +17,6 @@ test.describe("Shared Throughput Option Removed from Creation Dialogs", () => {
   });
 
   test("New Database panel should not show shared throughput checkbox", async () => {
-    test.skip();
     // Open the "New Database" panel via the global command menu
     const newDatabaseButton = await explorer.globalCommandButton("New Database");
     await newDatabaseButton.click();
@@ -38,7 +37,6 @@ test.describe("Shared Throughput Option Removed from Creation Dialogs", () => {
   });
 
   test("New Container panel should not show shared throughput checkbox when creating new database", async () => {
-    test.skip();
     // Open the "New Container" panel
     const newContainerButton = await explorer.globalCommandButton("New Container");
     await newContainerButton.click();
@@ -63,7 +61,6 @@ test.describe("Shared Throughput Option Removed from Creation Dialogs", () => {
   });
 
   test("Dedicated throughput checkbox still appears for existing shared database", async () => {
-    test.skip();
     // Create a database with shared throughput via SDK
     const dbContext = await createTestDB({ throughput: 400 });
 
@@ -103,7 +100,6 @@ test.describe("Shared Throughput Option Removed from Creation Dialogs", () => {
 });
 
 test.describe("Database with Shared Throughput", () => {
-  test.skip();
   let dbContext: TestDatabaseContext = null!;
   let explorer: DataExplorer = null!;
   const containerId = "sharedcontainer";
@@ -123,7 +119,6 @@ test.describe("Database with Shared Throughput", () => {
     });
 
     test("Create database with shared manual throughput and verify Scale node in UI", async () => {
-      test.skip();
       test.setTimeout(120000); // 2 minutes timeout
       // Create database with shared manual throughput (400 RU/s)
       dbContext = await createTestDB({ throughput: 400 });
@@ -142,7 +137,6 @@ test.describe("Database with Shared Throughput", () => {
     });
 
     test("Add container to shared database without dedicated throughput", async () => {
-      test.skip();
       // Create database with shared manual throughput
       dbContext = await createTestDB({ throughput: 400 });
 
@@ -196,7 +190,6 @@ test.describe("Database with Shared Throughput", () => {
     });
 
     test("Scale shared database manual throughput", async () => {
-      test.skip();
       // Create database with shared manual throughput (400 RU/s)
       dbContext = await createTestDB({ throughput: 400 });
 
@@ -222,7 +215,6 @@ test.describe("Database with Shared Throughput", () => {
     });
 
     test("Scale shared database from manual to autoscale", async () => {
-      test.skip();
       // Create database with shared manual throughput (400 RU/s)
       dbContext = await createTestDB({ throughput: 400 });
 
@@ -257,7 +249,6 @@ test.describe("Database with Shared Throughput", () => {
     });
 
     test("Create database with shared autoscale throughput and verify Scale node in UI", async () => {
-      test.skip();
       test.setTimeout(120000); // 2 minutes timeout
 
       // Create database with shared autoscale throughput (max 1000 RU/s)
@@ -277,7 +268,6 @@ test.describe("Database with Shared Throughput", () => {
     });
 
     test("Scale shared database autoscale throughput", async () => {
-      test.skip();
       // Create database with shared autoscale throughput (max 1000 RU/s)
       dbContext = await createTestDB({ maxThroughput: 1000 });
 
@@ -303,7 +293,6 @@ test.describe("Database with Shared Throughput", () => {
     });
 
     test("Scale shared database from autoscale to manual", async () => {
-      test.skip();
       // Create database with shared autoscale throughput (max 1000 RU/s)
       dbContext = await createTestDB({ maxThroughput: 1000 });
 

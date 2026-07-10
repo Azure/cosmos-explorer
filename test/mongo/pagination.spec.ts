@@ -33,7 +33,6 @@ test.describe("Test Mongo Pagination", () => {
   });
 
   test("should execute a query and load more results", async ({ page }) => {
-    test.skip();
     const query = "{}";
 
     await queryEditor.locator.click();
