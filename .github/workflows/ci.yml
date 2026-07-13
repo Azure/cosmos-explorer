@@ -198,12 +198,9 @@ jobs:
             echo PLAYWRIGHT_SHARD_INDEX=$SHARD_INDEX >> $GITHUB_ENV
 
             NOSQL_TESTACCOUNT=${DE_ACCOUNT_PREFIX}-de-test-sql-${SHARD_INDEX}.documents.azure.com
-
-            echo "Acquiring tokens for shard $SHARD_INDEX and account $NOSQL_TESTACCOUNT"
             NOSQL_TESTACCOUNT_TOKEN=$(az account get-access-token --scope "https://$NOSQL_TESTACCOUNT/.default" -o tsv --query accessToken)
             echo "::add-mask::$NOSQL_TESTACCOUNT_TOKEN"
             echo NOSQL_TESTACCOUNT_TOKEN=$NOSQL_TESTACCOUNT_TOKEN >> $GITHUB_ENV
-
             NOSQL_READONLY_TESTACCOUNT_TOKEN=$(az account get-access-token --scope "https://$DE_ACCOUNT_PREFIX-de-test-sql-readonly.documents.azure.com/.default" -o tsv --query accessToken)
             echo "::add-mask::$NOSQL_READONLY_TESTACCOUNT_TOKEN"
             echo NOSQL_READONLY_TESTACCOUNT_TOKEN=$NOSQL_READONLY_TESTACCOUNT_TOKEN >> $GITHUB_ENV
