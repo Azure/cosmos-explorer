@@ -33,8 +33,14 @@ import QuickStartIcon from "../../../images/Quickstart_Lightning.svg";
 import VisualStudioIcon from "../../../images/VisualStudio.svg";
 import CollectionIcon from "../../../images/tree-collection.svg";
 import * as Constants from "../../Common/Constants";
-import { userContext } from "../../UserContext";
+import {
+  isVCoreMongoNativeAuthDisabled,
+  userContext,
+  VCoreMongoNativeAuthDisabledMessage,
+  VCoreMongoNativeAuthLearnMoreUrl,
+} from "../../UserContext";
 import { getCollectionName } from "../../Utils/APITypeUtils";
+import { useDialog } from "../Controls/Dialog";
 import Explorer from "../Explorer";
 import * as MostRecentActivity from "../MostRecentActivity/MostRecentActivity";
 import { useNotebook } from "../Notebook/useNotebook";
@@ -413,11 +419,23 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
     }
 
     if (userContext.apiType === "VCoreMongo") {
+      const isNativeAuthDisabled = isVCoreMongoNativeAuthDisabled();
       return {
         iconSrc: PowerShellIcon,
         title: t(Keys.splashScreen.shell.vcoreMongo.title),
         description: t(Keys.splashScreen.shell.vcoreMongo.description),
-        onClick: () => container.openNotebookTerminal(TerminalKind.VCoreMongo),
+        onClick: () => {
+          if (isNativeAuthDisabled) {
+            useDialog
+              .getState()
+              .showOkModalDialog("Native Authentication Disabled", VCoreMongoNativeAuthDisabledMessage, {
+                linkText: "Learn more",
+                linkUrl: VCoreMongoNativeAuthLearnMoreUrl,
+              });
+          } else {
+            container.openNotebookTerminal(TerminalKind.VCoreMongo);
+          }
+        },
       };
     }
 
@@ -791,7 +809,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
 
   const vcoreMongoNextStepItems: { link: string; title: string; description: string }[] = [
     {
-      link: "https://learn.microsoft.com/azure/cosmos-db/mongodb/vcore/migration-options",
+      link: "https://learn.microsoft.com/azure/documentdb/migration-options",
       title: t(Keys.splashScreen.nextStepItems.vcoreMongo.migrateData),
       description: "",
     },

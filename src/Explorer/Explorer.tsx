@@ -33,7 +33,6 @@ import * as DataModels from "../Contracts/DataModels";
 import { ContainerConnectionInfo, IPhoenixServiceInfo, IProvisionData, IResponse } from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
 import { UploadDetailsRecord } from "../Contracts/ViewModels";
-import { GitHubOAuthService } from "../GitHub/GitHubOAuthService";
 import MetricScenario from "../Metrics/MetricEvents";
 import { ApplicationMetricPhase } from "../Metrics/ScenarioConfig";
 import { scenarioMonitor } from "../Metrics/ScenarioMonitor";
@@ -78,8 +77,6 @@ export default class Explorer {
 
   // Tabs
   public isTabsContentExpanded: ko.Observable<boolean>;
-
-  public gitHubOAuthService: GitHubOAuthService;
 
   // Notebooks
   public notebookManager?: NotebookManager;

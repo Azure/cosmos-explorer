@@ -199,7 +199,34 @@ Schema Analyzer (see decision below), and remove all UI entry points that open n
 Schema Analyzer removal was pulled forward into Phase 2 because it is rendered by the nteract
 engine deleted there. No separate work remains for this phase.
 
-### Phase 4 — Remove GitHub integration
+### Phase 4 — Remove GitHub integration ✅ COMPLETED
+> **Status:** Implemented on branch `users/jawelton/removenotebooks-phase3-062226`. Full
+> verification sweep is green: `compile`, `compile:strict`, `lint` (0 errors), `format:check`,
+> `test` (1900 passing), and `build:ci` (webpack) all pass.
+>
+> **Implementation notes / deviations:**
+> - **Localization was a no-op:** there are **zero** GitHub keys in any locale
+>   `Resources.json`. The GitHub UI strings were hardcoded literals that were deleted with
+>   their components, so no resource-file edits were needed.
+> - **`JunoClient` was trimmed, not deleted** (deletion stays in Phase 6). Removed only the
+>   GitHub-only members (`cachedPinnedRepos`, `subscribeToPinnedRepos`, `getPinnedRepos`,
+>   `updatePinnedRepos`, `deleteGitHubInfo`, `getGitHubToken`, `deleteAppAuthorization`,
+>   `getGitHubClientParams`, `IPinnedRepo`/`IPinnedBranch`) plus the now-orphaned private
+>   helpers `getNotebooksSubscriptionIdAccountUrl`/`getAccount`/`getSubscriptionId` and the
+>   `knockout` import. Kept the Schema (`requestSchema`/`getSchema`, used by `Database.tsx`)
+>   and gallery methods. Deleted `JunoClient.test.ts` (it only covered removed GitHub methods).
+> - **`src/Utils/JunoUtils.ts` (+ test) was also deleted** — its `toPinnedRepo`/`toGitHubRepo`
+>   helpers only converted GitHub pinned-repo shapes and had no other consumers.
+> - **`NotebookUtil.ts` (deferred to Phase 5) was edited here** to drop its `GitHubUtils`
+>   dependency: the dead `github://` content-URI branches in `getFilePath`/`getParentPath`/
+>   `getName`/`replaceName` were removed (its `isNotebookFile` consumer in `ResourceTreeAdapter`
+>   is unaffected). `NotebookUtil.test.ts` lost its github-uri cases.
+> - **`ConfigContext.ts`:** removed the GitHub-only config fields `GITHUB_CLIENT_ID`,
+>   `GITHUB_TEST_ENV_CLIENT_ID`, `GITHUB_CLIENT_SECRET` (their only consumers were deleted).
+> - **Telemetry deferred (as planned):** the `Action.NotebooksGitHub*` enum members were left
+>   in `TelemetryConstants.ts` for the Phase 6 cleanup (enum-numbering-safe); only their
+>   now-deleted usages were removed.
+
 - Delete `src/GitHub/`, `src/Explorer/Controls/GitHub/`,
   `src/Explorer/Panes/GitHubReposPanel/`, `src/Utils/GitHubUtils.ts`,
   `src/connectToGitHub.html`, and the `connectToGitHub` webpack entry & HTML plugin.
