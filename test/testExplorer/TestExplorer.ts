@@ -51,7 +51,7 @@ const initTestExplorer = async (): Promise<void> => {
     case "gremlin":
       rbacToken = gremlinRbacToken;
       break;
-    case "tables":
+    case "table":
       rbacToken = tableRbacToken;
       break;
     case "cassandra":
