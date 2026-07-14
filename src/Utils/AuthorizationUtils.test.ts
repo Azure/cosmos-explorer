@@ -48,6 +48,7 @@ describe("AuthorizationUtils", () => {
         partitionKeyDefault2: false,
         notebooksDownBanner: false,
         enableRestoreContainer: false,
+        mongoDisableNativeAuth: false,
       },
     });
   };

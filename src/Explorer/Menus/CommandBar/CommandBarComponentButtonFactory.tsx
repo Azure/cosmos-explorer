@@ -19,10 +19,16 @@ import { AuthType } from "../../../AuthType";
 import * as Constants from "../../../Common/Constants";
 import { Platform, configContext } from "../../../ConfigContext";
 import * as ViewModels from "../../../Contracts/ViewModels";
-import { userContext } from "../../../UserContext";
+import {
+  userContext,
+  isVCoreMongoNativeAuthDisabled,
+  VCoreMongoNativeAuthDisabledMessage,
+  VCoreMongoNativeAuthLearnMoreUrl,
+} from "../../../UserContext";
 import { isRunningOnNationalCloud } from "../../../Utils/CloudUtils";
 import { useSidePanel } from "../../../hooks/useSidePanel";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
+import { useDialog } from "../../Controls/Dialog";
 import Explorer from "../../Explorer";
 import { BrowseQueriesPane } from "../../Panes/BrowseQueriesPane/BrowseQueriesPane";
 import { LoadQueryPane } from "../../Panes/LoadQueryPane/LoadQueryPane";
@@ -498,12 +504,21 @@ function createOpenTerminalButtonByKind(
   const label = `Open ${terminalFriendlyName()} shell`;
   const tooltip =
     "This feature is not yet available in your account's region. View supported regions here: https://aka.ms/cosmos-enable-notebooks.";
-  const disableButton = !userContext.features.enableCloudShell;
+  const isNativeAuthDisabled = terminalKind === ViewModels.TerminalKind.VCoreMongo && isVCoreMongoNativeAuthDisabled();
+  const disableButton = !userContext.features.enableCloudShell || isNativeAuthDisabled;
+
   return {
     iconSrc: HostedTerminalIcon,
     iconAlt: label,
     onCommandClick: () => {
-      if (userContext.features.enableCloudShell) {
+      if (isNativeAuthDisabled) {
+        useDialog.getState().showOkModalDialog("Native Authentication Disabled", VCoreMongoNativeAuthDisabledMessage, {
+          linkText: "Learn more",
+          linkUrl: VCoreMongoNativeAuthLearnMoreUrl,
+        });
+        return;
+      }
+      if (useNotebook.getState().isNotebookEnabled || userContext.features.enableCloudShell) {
         container.openNotebookTerminal(terminalKind);
       }
     },
@@ -511,7 +526,7 @@ function createOpenTerminalButtonByKind(
     hasPopup: false,
     disabled: disableButton,
     ariaLabel: label,
-    tooltipText: !disableButton ? "" : tooltip,
+    tooltipText: isNativeAuthDisabled ? VCoreMongoNativeAuthDisabledMessage : !disableButton ? "" : tooltip,
   };
 }
 
