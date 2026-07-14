@@ -50,7 +50,7 @@ export const ThroughputComponent = (props: ThroughputComponentProps): JSX.Elemen
           isSharded={true}
           isFreeTier={isFreeTierAccount()}
           isQuickstart={false}
-          isGlobalSecondaryIndex={true}
+          isGlobalSecondaryIndexTarget={true}
           setThroughputValue={(throughput: number) => {
             globalSecondaryIndexThroughputOnChange(throughput);
           }}

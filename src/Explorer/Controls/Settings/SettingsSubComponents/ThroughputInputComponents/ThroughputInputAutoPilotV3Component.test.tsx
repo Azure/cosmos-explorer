@@ -44,7 +44,7 @@ describe("ThroughputInputAutoPilotV3Component", () => {
     },
     instantMaximumThroughput: 5000,
     softAllowedMaximumThroughput: 1000000,
-    isGlobalSecondaryIndex: false,
+    isGlobalSecondaryIndexTarget: false,
   };
 
   it("throughput input visible", () => {

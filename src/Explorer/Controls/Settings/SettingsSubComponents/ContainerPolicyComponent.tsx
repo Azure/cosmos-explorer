@@ -27,7 +27,6 @@ export interface ContainerPolicyComponentProps {
   isFullTextSearchEnabled: boolean;
   shouldDiscardContainerPolicies: boolean;
   resetShouldDiscardContainerPolicyChange: () => void;
-  isGlobalSecondaryIndex?: boolean;
 }
 
 export const ContainerPolicyComponent: React.FC<ContainerPolicyComponentProps> = ({
