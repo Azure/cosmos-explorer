@@ -518,7 +518,7 @@ function createOpenTerminalButtonByKind(
         });
         return;
       }
-      if (useNotebook.getState().isNotebookEnabled || userContext.features.enableCloudShell) {
+      if (userContext.features.enableCloudShell) {
         container.openNotebookTerminal(terminalKind);
       }
     },
