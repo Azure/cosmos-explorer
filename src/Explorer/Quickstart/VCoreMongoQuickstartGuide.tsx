@@ -296,10 +296,7 @@ export const VcoreMongoQuickstartGuide: React.FC = (): JSX.Element => {
                   <br />
                   Modernize your data seamlessly from an existing MongoDB cluster, whether it&apos;s on-premises or
                   hosted in the cloud, to Azure DocumentDB.&nbsp;
-                  <Link
-                    target="_blank"
-                    href="https://learn.microsoft.com/azure/cosmos-db/mongodb/vcore/migration-options"
-                  >
+                  <Link target="_blank" href="https://learn.microsoft.com/azure/documentdb/migration-options">
                     Learn more
                   </Link>
                 </Text>

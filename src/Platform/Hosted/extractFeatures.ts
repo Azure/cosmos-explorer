@@ -36,6 +36,7 @@ export type Features = {
   readonly enableContainerCopy: boolean;
   readonly enableCloudShell: boolean;
   readonly enableRestoreContainer: boolean; // only for Fabric
+  readonly mongoDisableNativeAuth: boolean;
 
   // can be set via both flight and feature flag
   autoscaleDefault: boolean;
@@ -103,6 +104,7 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     enableContainerCopy: "true" === get("enablecontainercopy"),
     enableRestoreContainer: "true" === get("enablerestorecontainer"),
     enableCloudShell: true,
+    mongoDisableNativeAuth: "true" === get("mongodisablenativeauth"),
   };
 }
 
