@@ -1,7 +1,6 @@
 import { DefaultAzureCredential } from "@azure/identity";
 import { Frame, Locator, Page, expect } from "@playwright/test";
 import crypto from "crypto";
-// import { getNoSqlRbacToken } from "./NoSqlTestSetup";
 import { TestContainerContext } from "./testData";
 
 const RETRY_COUNT = 3;
