@@ -101,13 +101,13 @@ jobs:
       - name: "Az CLI login"
         uses: azure/login@v1
         with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.PREVIEW_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.E2ETESTS_CLIENT_ID }}
+          tenant-id: ${{ secrets.E2ETESTS_TENANT_ID }}
+          subscription-id: ${{ secrets.E2ETESTS_SUBSCRIPTION_ID }}
       - name: Upload build to preview blob storage
-        run: az storage blob upload-batch -d '$web' -s 'dist' --account-name ${{ secrets.PREVIEW_STORAGE_ACCOUNT_NAME }} --destination-path "${{github.event.pull_request.head.sha || github.sha}}" --auth-mode login --overwrite true
+        run: az storage blob upload-batch -d '$web' -s 'dist' --account-name ${{ secrets.E2ETESTS_STORAGEACCOUNT_NAME }} --destination-path "${{github.event.pull_request.head.sha || github.sha}}" --auth-mode login --overwrite true
       - name: Upload preview config to blob storage
-        run: az storage blob upload -c '$web' -f ./preview/config.json --account-name ${{ secrets.PREVIEW_STORAGE_ACCOUNT_NAME }} --name "${{github.event.pull_request.head.sha || github.sha}}/config.json" --auth-mode login --overwrite true
+        run: az storage blob upload -c '$web' -f ./preview/config.json --account-name ${{ secrets.E2ETESTS_STORAGEACCOUNT_NAME }} --name "${{github.event.pull_request.head.sha || github.sha}}/config.json" --auth-mode login --overwrite true
   nuget:
     name: Publish Nuget
     if: github.ref == 'refs/heads/master' || contains(github.ref, 'hotfix/') || contains(github.ref, 'release/')
@@ -233,9 +233,9 @@ jobs:
         if: ${{ !cancelled() }}
         uses: Azure/login@v2
         with:
-          client-id: ${{ secrets.E2E_TESTS_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.E2ETESTS_CLIENT_ID }}
+          tenant-id: ${{ secrets.E2ETESTS_TENANT_ID }}
+          subscription-id: ${{ secrets.E2ETESTS_SUBSCRIPTION_ID }}
       - name: Upload shard blob-report to Azure Storage
         if: ${{ !cancelled() }}
         env:
@@ -243,7 +243,7 @@ jobs:
           SHARD: ${{ matrix.shardIndex }}
         run: |
           az storage blob upload-batch \
-            --account-name ${{ secrets.PREVIEW_STORAGE_ACCOUNT_NAME }} \
+            --account-name ${{ secrets.E2ETESTS_STORAGEACCOUNT_NAME }} \
             --auth-mode login \
             -d playwright-reports \
             -s blob-report \
@@ -272,9 +272,9 @@ jobs:
       - name: "Az CLI login"
         uses: Azure/login@v2
         with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.PREVIEW_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.E2ETESTS_CLIENT_ID }}
+          tenant-id: ${{ secrets.E2ETESTS_TENANT_ID }}
+          subscription-id: ${{ secrets.E2ETESTS_SUBSCRIPTION_ID }}
 
       - name: Download all shard reports from Azure Storage
         env:
@@ -282,7 +282,7 @@ jobs:
         run: |
           mkdir -p all-blob-reports
           az storage blob download-batch \
-            --account-name ${{ secrets.PREVIEW_STORAGE_ACCOUNT_NAME }} \
+            --account-name ${{ secrets.E2ETESTS_STORAGEACCOUNT_NAME }} \
             --auth-mode login \
             -s playwright-reports \
             --pattern "${KEY}/shards/*" \
@@ -305,7 +305,7 @@ jobs:
           KEY: ${{ github.run_id }}-${{ github.run_attempt }}
         run: |
           az storage blob upload \
-            --account-name ${{ secrets.PREVIEW_STORAGE_ACCOUNT_NAME }} \
+            --account-name ${{ secrets.E2ETESTS_STORAGEACCOUNT_NAME }} \
             --auth-mode login \
             -c playwright-reports \
             -n "${KEY}/report.zip" \
@@ -318,7 +318,7 @@ jobs:
           KEY: ${{ github.run_id }}-${{ github.run_attempt }}
         run: |
           az storage blob delete-batch \
-            --account-name ${{ secrets.PREVIEW_STORAGE_ACCOUNT_NAME }} \
+            --account-name ${{ secrets.E2ETESTS_STORAGEACCOUNT_NAME }} \
             --auth-mode login \
             -s playwright-reports \
             --pattern "${KEY}/shards/*"
@@ -328,7 +328,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR: ${{ github.event.pull_request.number }}
-          SA_ID: /subscriptions/${{ secrets.PREVIEW_SUBSCRIPTION_ID }}/resourceGroups/dataexplorer-preview/providers/Microsoft.Storage/storageAccounts/dataexplorerpreview
+          SA_ID: /subscriptions/${{ secrets.E2ETESTS_SUBSCRIPTION_ID }}/resourceGroups/dataexplorer-preview/providers/Microsoft.Storage/storageAccounts/${{ secrets.E2ETESTS_STORAGEACCOUNT_NAME }}
           KEY: ${{ github.run_id }}-${{ github.run_attempt }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
