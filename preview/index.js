@@ -46,7 +46,7 @@ const app = express();
 app.use("/api", api);
 app.use("/proxy", proxy);
 app.use("/commit", commit);
-app.get("/pull/:pr(\\d+)", (req, res) => {
+app.get("/pull/:pr", (req, res) => {
   const pr = req.params.pr;
   if (!/^\d+$/.test(pr)) {
     return res.status(400).send("Invalid pull request number");
