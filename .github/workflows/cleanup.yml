@@ -21,6 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       AZURE_SUBSCRIPTION_ID: ${{ secrets.E2ETESTS_SUBSCRIPTION_ID }}
+      E2ETESTS_RESOURCEGROUP_NAME : ${{ secrets.E2ETESTS_RESOURCEGROUP_NAME }}
     steps:
       - uses: actions/checkout@v4
       - name: "Az CLI login"
@@ -32,9 +33,6 @@ jobs:
 
       - name: Use Node.js 20.x
         uses: actions/setup-node@v4
-        env:
-         E2ETESTS_RESOURCEGROUP_NAME : ${{ secrets.E2ETESTS_RESOURCEGROUP_NAME }}
-
         with:
           node-version: 20.x
       - run: npm ci
