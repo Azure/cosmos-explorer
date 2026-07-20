@@ -3,7 +3,7 @@ const { CosmosDBManagementClient } = require("@azure/arm-cosmosdb");
 const ms = require("ms");
 
 const subscriptionId = process.env["AZURE_SUBSCRIPTION_ID"];
-const resourceGroupName = "de-e2e-tests";
+const resourceGroupName = process.env["E2ETESTS_RESOURCEGROUP_NAME"];
 
 const thirtyMinutesAgo = new Date(Date.now() - 1000 * 60 * 30).getTime();
 

@@ -11,10 +11,9 @@ import {
   resourceGroupName,
   subscriptionId,
 } from "../fx";
-import { getNoSqlRbacToken } from "../NoSqlTestSetup";
 
 test("SQL account using Resource token", async ({ page }) => {
-  const nosqlAccountRbacToken = getNoSqlRbacToken() ?? "";
+  const nosqlAccountRbacToken = process.env.NOSQL_TESTACCOUNT_TOKEN ?? "";
   test.skip(nosqlAccountRbacToken.length > 0, "Resource tokens not supported when using data plane RBAC.");
 
   const credentials = getAzureCLICredentials();

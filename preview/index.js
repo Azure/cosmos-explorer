@@ -5,7 +5,7 @@ const fetch = require("node-fetch");
 
 const backendEndpoint = "https://cdb-ms-mpac-pbe.cosmos.azure.com";
 const previewSiteEndpoint = "https://dataexplorer-preview.azurewebsites.net";
-const previewStorageWebsiteEndpoint = "https://dataexplorerpreview.z5.web.core.windows.net/";
+const previewStorageWebsiteEndpoint = "_REPLACE_STORAGE_WEBSITE_ENDPOINT_";
 const githubApiUrl = "https://api.github.com/repos/Azure/cosmos-explorer";
 const azurePortalMpacEndpoint = "https://ms.portal.azure.com/";
 
