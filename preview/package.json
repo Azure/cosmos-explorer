@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "deploy": "az webapp up --name \"dataexplorer-preview\" --subscription \"cosmosdb-portalteam-runners\" --resource-group \"dataexplorer-preview\" --runtime \"NODE:20-lts\" --sku P1V2",
+    "deploy": "az webapp up --name \"dataexplorer-preview\" --subscription \"cosmosdb-portalteam-runners\" --resource-group \"dataexplorer-preview\" --runtime \"NODE:22-lts\" --sku P1V2",
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -15,8 +15,6 @@
     "express": "^5.2.1",
     "follow-redirects": "^1.16.0",
     "http-proxy-middleware": "^3.0.7",
-    "node": "^20.19.5",
-    "node-fetch": "^2.6.1",
-    "path-to-regexp": "^0.1.13"
+    "node-fetch": "^2.6.1"
   }
 }
