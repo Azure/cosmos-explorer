@@ -110,6 +110,42 @@ describe("TreeNodeComponent", () => {
     expect(component).toMatchSnapshot();
   });
 
+  it("sets aria-selected=true on a selected selectable node", () => {
+    const node = generateTestNode("root", {
+      isSelected: () => true,
+    });
+    const component = shallow(<TreeNodeComponent openItems={[]} node={node} treeNodeId={node.id} />);
+    expect(component.find(TreeItem).first().props()["aria-selected"]).toBe(true);
+  });
+
+  it("sets aria-selected=false on an unselected selectable node", () => {
+    const node = generateTestNode("root", {
+      isSelected: () => false,
+    });
+    const component = shallow(<TreeNodeComponent openItems={[]} node={node} treeNodeId={node.id} />);
+    expect(component.find(TreeItem).first().props()["aria-selected"]).toBe(false);
+  });
+
+  it("does not set aria-selected on a non-selectable (grouping) node", () => {
+    const node = generateTestNode("root");
+    delete node.isSelected;
+    const component = shallow(<TreeNodeComponent openItems={[]} node={node} treeNodeId={node.id} />);
+    expect(component.find(TreeItem).first().props()["aria-selected"]).toBeUndefined();
+  });
+
+  it("sets aria-selected=false on a selected parent when a descendant is selected", () => {
+    const node = generateTestNode("root", {
+      isSelected: () => true,
+      children: [
+        generateTestNode("child1", {
+          isSelected: () => true,
+        }),
+      ],
+    });
+    const component = shallow(<TreeNodeComponent openItems={[]} node={node} treeNodeId={node.id} />);
+    expect(component.find(TreeItem).first().props()["aria-selected"]).toBe(false);
+  });
+
   it("renders an icon if the node has one", () => {
     const node = generateTestNode("root", {
       iconSrc: "the-icon.svg",
