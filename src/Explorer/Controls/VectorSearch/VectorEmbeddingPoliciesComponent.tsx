@@ -33,7 +33,7 @@ export interface IVectorEmbeddingPoliciesComponentProps {
   vectorIndexes?: VectorIndex[];
   discardChanges?: boolean;
   onChangesDiscarded?: () => void;
-  isGlobalSecondaryIndex?: boolean;
+  isGlobalSecondaryIndexTarget?: boolean;
 }
 
 export interface VectorEmbeddingPolicyData {
@@ -95,7 +95,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
   onVectorEmbeddingChange,
   discardChanges,
   onChangesDiscarded,
-  isGlobalSecondaryIndex,
+  isGlobalSecondaryIndexTarget,
 }): JSX.Element => {
   const isExistingPolicy = (policy: VectorEmbeddingPolicyData): boolean => {
     if (!vectorEmbeddingsBaseline || vectorEmbeddingsBaseline.length === 0) {
@@ -327,7 +327,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
   };
 
   const getQuantizationByteSizeTooltipContent = (): string => {
-    const containerName = isGlobalSecondaryIndex
+    const containerName = isGlobalSecondaryIndexTarget
       ? t(Keys.controls.vectorEmbeddingPolicies.quantizationByteSizeTooltipGlobalSecondaryIndexName)
       : t(Keys.controls.vectorEmbeddingPolicies.quantizationByteSizeTooltipContainerName);
     return t(Keys.controls.vectorEmbeddingPolicies.quantizationByteSizeTooltip, { containerName });

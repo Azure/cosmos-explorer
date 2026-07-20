@@ -180,7 +180,7 @@ exports[`SettingsComponent renders 1`] = `
             }
             isAutoPilotSelected={false}
             isFixedContainer={false}
-            isGlobalSecondaryIndex={true}
+            isGlobalSecondaryIndexTarget={true}
             onAutoPilotSelected={[Function]}
             onMaxAutoPilotThroughputChange={[Function]}
             onScaleDiscardableChange={[Function]}
@@ -350,7 +350,6 @@ exports[`SettingsComponent renders 1`] = `
             fullTextPolicy={{}}
             fullTextPolicyBaseline={{}}
             isFullTextSearchEnabled={true}
-            isGlobalSecondaryIndex={true}
             isVectorSearchEnabled={false}
             onFullTextPolicyChange={[Function]}
             onFullTextPolicyDirtyChange={[Function]}

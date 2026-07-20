@@ -9,7 +9,7 @@ describe("ScaleComponent", () => {
     collection: collection,
     database: undefined,
     isFixedContainer: false,
-    isGlobalSecondaryIndex: false,
+    isGlobalSecondaryIndexTarget: false,
     onThroughputChange: () => {
       return;
     },

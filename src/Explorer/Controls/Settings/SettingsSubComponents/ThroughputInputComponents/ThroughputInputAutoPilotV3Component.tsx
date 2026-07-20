@@ -81,7 +81,7 @@ export interface ThroughputInputAutoPilotV3Props {
   throughputError?: string;
   instantMaximumThroughput: number;
   softAllowedMaximumThroughput: number;
-  isGlobalSecondaryIndex: boolean;
+  isGlobalSecondaryIndexTarget: boolean;
 }
 
 interface ThroughputInputAutoPilotV3State {
@@ -427,7 +427,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
             toolTipElement={getToolTipContainer(this.props.infoBubbleText)}
           />
         </Label>
-        {!this.props.isGlobalSecondaryIndex && (
+        {!this.props.isGlobalSecondaryIndexTarget && (
           <>
             {this.overrideWithProvisionedThroughputSettings() && (
               <MessageBar

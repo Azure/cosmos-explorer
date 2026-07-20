@@ -88,12 +88,12 @@ export const AddGlobalSecondaryIndexPanel = (props: AddGlobalSecondaryIndexPanel
       });
 
       database.collections().forEach((collection: Collection) => {
-        const isGlobalSecondaryIndex: boolean = !!collection.materializedViewDefinition();
+        const isGlobalSecondaryIndexTarget: boolean = !!collection.materializedViewDefinition();
         sourceContainerOptions.push({
           key: collection.rid,
           text: collection.id(),
-          disabled: isGlobalSecondaryIndex,
-          ...(isGlobalSecondaryIndex && {
+          disabled: isGlobalSecondaryIndexTarget,
+          ...(isGlobalSecondaryIndexTarget && {
             title: "This is a global secondary index.",
           }),
           data: collection,
@@ -382,7 +382,7 @@ export const AddGlobalSecondaryIndexPanel = (props: AddGlobalSecondaryIndexPanel
                 setVectorIndexingPolicy,
                 vectorPolicyValidated,
                 setVectorPolicyValidated,
-                isGlobalSecondaryIndex: true,
+                isGlobalSecondaryIndexTarget: true,
               }}
             />
           )}
