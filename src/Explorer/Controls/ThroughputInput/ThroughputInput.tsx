@@ -19,7 +19,7 @@ export interface ThroughputInputProps {
   isFreeTier: boolean;
   showFreeTierExceedThroughputTooltip: boolean;
   isQuickstart?: boolean;
-  isGlobalSecondaryIndex?: boolean;
+  isGlobalSecondaryIndexTarget?: boolean;
   setThroughputValue: (throughput: number) => void;
   setIsAutoscale: (isAutoscale: boolean) => void;
   setIsThroughputCapExceeded: (isThroughputCapExceeded: boolean) => void;
@@ -32,7 +32,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
   isFreeTier,
   showFreeTierExceedThroughputTooltip,
   isQuickstart,
-  isGlobalSecondaryIndex,
+  isGlobalSecondaryIndexTarget,
   setThroughputValue,
   setIsAutoscale,
   setIsThroughputCapExceeded,
@@ -202,7 +202,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
         </Text>
         <InfoTooltip>{PricingUtils.getRuToolTipText()}</InfoTooltip>
       </Stack>
-      {!isGlobalSecondaryIndex && (
+      {!isGlobalSecondaryIndexTarget && (
         <Stack horizontal verticalAlign="center">
           <div role="radiogroup">
             <input
