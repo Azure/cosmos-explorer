@@ -27,4 +27,4 @@ src/Localization/Keys.generated.ts
 
 # Playwright-cli
 .claude/skills/playwright-cli/
-/playwright-cli/
+.playwright-cli/
