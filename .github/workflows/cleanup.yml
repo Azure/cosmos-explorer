@@ -21,11 +21,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       AZURE_SUBSCRIPTION_ID: ${{ secrets.E2ETESTS_SUBSCRIPTION_ID }}
+      E2ETESTS_RESOURCEGROUP_NAME : ${{ secrets.E2ETESTS_RESOURCEGROUP_NAME }}
     steps:
       - uses: actions/checkout@v4
-        env:
-         E2ETESTS_RESOURCEGROUP_NAME : ${{ secrets.E2ETESTS_RESOURCEGROUP_NAME }}
-
       - name: "Az CLI login"
         uses: azure/login@v2
         with:
