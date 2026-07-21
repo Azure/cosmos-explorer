@@ -24,3 +24,7 @@ src/Localization/Keys.generated.ts
 /playwright/.cache/
 .vscode/mcp.json
 .playwright-mcp/
+
+# Playwright-cli
+.claude/skills/playwright-cli/
+/playwright-cli/
