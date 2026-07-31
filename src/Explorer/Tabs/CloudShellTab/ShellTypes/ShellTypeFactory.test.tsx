@@ -7,6 +7,7 @@ import { CosmosDBShellHandler } from "./CosmosDBShellHandler";
 import { MongoShellHandler } from "./MongoShellHandler";
 import { PostgresShellHandler } from "./PostgresShellHandler";
 import { getCosmosDBShellCredential, getHandler, getKey } from "./ShellTypeFactory";
+import type { CosmosDBShellCredentialDiagnostics } from "./ShellTypeFactory";
 import { VCoreMongoShellHandler } from "./VCoreMongoShellHandler";
 
 interface UserContextType {
@@ -333,6 +334,29 @@ describe("ShellTypeHandlerFactory", () => {
       expect(listKeys).not.toHaveBeenCalled();
 
       (userContext as UserContextType).databaseAccount.name = "testDbName";
+    });
+
+    it("should populate a specific reason when both key fetches fail, for the shell to echo", async () => {
+      (listKeys as jest.Mock).mockRejectedValue(new Error("Forbidden"));
+      (getReadOnlyKeys as jest.Mock).mockRejectedValue(new Error("Forbidden"));
+      jest.spyOn(console, "error").mockImplementation(() => undefined);
+
+      const diagnostics: CosmosDBShellCredentialDiagnostics = {};
+      const credential = await getCosmosDBShellCredential(diagnostics);
+
+      expect(credential).toBeUndefined();
+      expect(diagnostics.reason).toContain("Forbidden");
+    });
+
+    it("should populate a reason when local auth is disabled and no token was resolved", async () => {
+      (userContext as UserContextType).databaseAccount.properties = { disableLocalAuth: true };
+      jest.spyOn(console, "warn").mockImplementation(() => undefined);
+
+      const diagnostics: CosmosDBShellCredentialDiagnostics = {};
+      const credential = await getCosmosDBShellCredential(diagnostics);
+
+      expect(credential).toBeUndefined();
+      expect(diagnostics.reason).toContain("local (key) auth is disabled");
     });
   });
 });

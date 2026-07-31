@@ -25,7 +25,10 @@ export interface CosmosDBShellCredential {
 export class CosmosDBShellHandler extends AbstractShellHandler {
   private _endpoint: string | undefined;
 
-  constructor(private credential: CosmosDBShellCredential | undefined) {
+  constructor(
+    private credential: CosmosDBShellCredential | undefined,
+    private unavailableReason?: string,
+  ) {
     super();
     this._endpoint = userContext?.databaseAccount?.properties?.documentEndpoint;
   }
@@ -91,7 +94,11 @@ export class CosmosDBShellHandler extends AbstractShellHandler {
       // token for the *.documents.azure.com audience). The interactive browser and
       // device-code flows are not usable from this embedded terminal either, so fail
       // fast with actionable guidance instead.
-      return `echo 'Unable to acquire a ${this.getShellName()} credential. Use "Login for Entra ID" in the Data Explorer toolbar, verify you have Cosmos DB data-plane RBAC access to this account, then reopen the shell.'`;
+      //
+      // There is no way to inspect the browser dev tools console from inside this remote
+      // terminal, so the specific reason (when known) is echoed here too.
+      const reasonSuffix = this.unavailableReason ? ` — ${this.unavailableReason}` : "";
+      return `echo 'Unable to acquire a ${this.getShellName()} credential${reasonSuffix}. Use "Login for Entra ID" in the Data Explorer toolbar, verify you have Cosmos DB data-plane RBAC access to this account, then reopen the shell.'`;
     }
 
     // Force gateway (HTTPS/443) connection mode. The shell otherwise defaults to

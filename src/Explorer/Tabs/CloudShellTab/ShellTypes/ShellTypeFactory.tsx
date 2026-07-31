@@ -27,11 +27,24 @@ export async function getHandler(shellType: TerminalKind): Promise<AbstractShell
       return new VCoreMongoShellHandler();
     case TerminalKind.Cassandra:
       return new CassandraShellHandler(await getKey(isDataplaneRbacEnabledForProxyApi(userContext)));
-    case TerminalKind.CosmosDB:
-      return new CosmosDBShellHandler(await getCosmosDBShellCredential());
+    case TerminalKind.CosmosDB: {
+      const diagnostics: CosmosDBShellCredentialDiagnostics = {};
+      const credential = await getCosmosDBShellCredential(diagnostics);
+      return new CosmosDBShellHandler(credential, diagnostics.reason);
+    }
     default:
       throw new Error(`Unsupported shell type: ${shellType}`);
   }
+}
+
+/**
+ * Populated by {@link getCosmosDBShellCredential} (and its helpers) with a human-readable
+ * explanation when no credential could be resolved, so the shell can echo a specific cause
+ * instead of a generic message. There is no way to inspect the browser dev tools console
+ * from inside the remote Cloud Shell terminal, so this is surfaced directly in the shell.
+ */
+export interface CosmosDBShellCredentialDiagnostics {
+  reason?: string;
 }
 
 /**
@@ -56,9 +69,14 @@ export async function getHandler(shellType: TerminalKind): Promise<AbstractShell
  * Returns `undefined` when nothing could be resolved, which makes the handler surface
  * actionable guidance instead of letting the tool attempt its own sign-in.
  */
-export async function getCosmosDBShellCredential(): Promise<CosmosDBShellCredential | undefined> {
+export async function getCosmosDBShellCredential(
+  diagnostics?: CosmosDBShellCredentialDiagnostics,
+): Promise<CosmosDBShellCredential | undefined> {
   const dbName = userContext.databaseAccount?.name;
   if (!dbName) {
+    if (diagnostics) {
+      diagnostics.reason = "no database account name is available";
+    }
     return undefined;
   }
 
@@ -70,21 +88,28 @@ export async function getCosmosDBShellCredential(): Promise<CosmosDBShellCredent
   }
 
   if (userContext.databaseAccount?.properties?.disableLocalAuth) {
-    console.warn(
-      "CloudShell: could not resolve an Entra ID token and local auth is disabled on this account, " +
-        "so no credential can be passed to the Cosmos DB shell.",
-    );
+    const reason =
+      "local (key) auth is disabled on this account and no Entra ID token could be resolved; sign in via " +
+      '"Login for Entra ID" in the toolbar and reopen the shell';
+    console.warn(`CloudShell: ${reason}.`);
+    if (diagnostics) {
+      diagnostics.reason = reason;
+    }
     return undefined;
   }
 
-  const key = await resolveAccountKey(dbName);
+  const key = await resolveAccountKey(dbName, diagnostics);
   if (!key) {
-    console.warn(
-      "CloudShell: no Entra ID token or account key could be resolved for the Cosmos DB shell. " +
-        "Data Explorer may be authenticating through the portal proxy (per-request tokens), which " +
-        "cannot be reused by the shell. Ensure you have either data-plane RBAC access (then use " +
-        '"Login for Entra ID") or permission to list the account keys.',
-    );
+    if (!diagnostics?.reason) {
+      const reason =
+        "no account key could be resolved. Data Explorer may be authenticating through the portal proxy " +
+        "(per-request tokens), which cannot be reused by the shell. Ensure you have either data-plane RBAC " +
+        'access (then use "Login for Entra ID") or permission to list the account keys';
+      console.warn(`CloudShell: ${reason}.`);
+      if (diagnostics) {
+        diagnostics.reason = reason;
+      }
+    }
     return undefined;
   }
   return { kind: "key", value: key };
@@ -134,7 +159,7 @@ function resolveAccountArmScope(): { subscriptionId: string; resourceGroup: stri
   return { subscriptionId, resourceGroup };
 }
 
-async function resolveAccountKey(dbName: string): Promise<string> {
+async function resolveAccountKey(dbName: string, diagnostics?: CosmosDBShellCredentialDiagnostics): Promise<string> {
   // Prefer the key Data Explorer already resolved for this account so the shell reuses the
   // exact credential DE is connected with and avoids a redundant ARM round-trip.
   if (userContext.masterKey) {
@@ -148,27 +173,45 @@ async function resolveAccountKey(dbName: string): Promise<string> {
   // and the shell cannot connect.
   const { subscriptionId, resourceGroup } = resolveAccountArmScope();
   if (!subscriptionId || !resourceGroup) {
-    console.error(
-      "CloudShell: cannot list Cosmos DB account keys because the subscription id or resource group " +
-        "could not be determined for this account.",
-    );
+    const reason = "the subscription id or resource group for this account could not be determined";
+    console.error(`CloudShell: cannot list Cosmos DB account keys because ${reason}.`);
+    if (diagnostics) {
+      diagnostics.reason = reason;
+    }
     return "";
   }
 
+  let listKeysErrorMessage: string | undefined;
   try {
     const keys = await listKeys(subscriptionId, resourceGroup, dbName);
     if (keys?.primaryMasterKey) {
       return keys.primaryMasterKey;
     }
+    listKeysErrorMessage = "the response did not include a usable key";
   } catch (error) {
+    listKeysErrorMessage = error instanceof Error ? error.message : String(error);
     console.error("Failed to list read-write account keys for the Cloud Shell; trying read-only keys", error);
   }
 
   try {
     const readOnlyKeys = await getReadOnlyKeys(subscriptionId, resourceGroup, dbName);
-    return readOnlyKeys?.primaryReadonlyMasterKey || "";
+    if (readOnlyKeys?.primaryReadonlyMasterKey) {
+      return readOnlyKeys.primaryReadonlyMasterKey;
+    }
+    if (diagnostics) {
+      diagnostics.reason =
+        `listing account keys failed (${listKeysErrorMessage}) and the read-only keys response did not ` +
+        "include a usable key either";
+    }
+    return "";
   } catch (readOnlyError) {
     console.error("Failed to list read-only account keys for the Cloud Shell", readOnlyError);
+    if (diagnostics) {
+      const readOnlyErrorMessage = readOnlyError instanceof Error ? readOnlyError.message : String(readOnlyError);
+      diagnostics.reason =
+        `listing the account keys failed (${listKeysErrorMessage}) and listing the read-only keys also failed ` +
+        `(${readOnlyErrorMessage}) — this is usually a missing listKeys/listReadOnlyKeys RBAC permission`;
+    }
     return "";
   }
 }

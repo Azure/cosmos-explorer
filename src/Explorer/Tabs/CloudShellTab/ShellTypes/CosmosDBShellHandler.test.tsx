@@ -111,5 +111,13 @@ describe("CosmosDBShellHandler", () => {
       expect(connectionCommand).toContain("Unable to acquire a Cosmos DB credential");
       expect(connectionCommand).toContain("Login for Entra ID");
     });
+
+    it("should echo the specific reason when one is provided", () => {
+      const handler = new CosmosDBShellHandler(undefined, "listing the account keys failed (Forbidden)");
+      const connectionCommand = handler.getConnectionCommand();
+
+      expect(connectionCommand).toContain("Unable to acquire a Cosmos DB credential");
+      expect(connectionCommand).toContain("listing the account keys failed (Forbidden)");
+    });
   });
 });
