@@ -29,7 +29,9 @@ export class CosmosDBShellHandler extends AbstractShellHandler {
    *    CosmosDBShell global tool targets net10.0, so `dotnet tool install`
    *    requires the .NET SDK 10.0+, which the Azure Cloud Shell host does not
    *    ship by default.
-   * 3. Install the CosmosDBShell global tool if it is not already available.
+   * 3. Install the CosmosDBShell global tool if it is not already available, or
+   *    update it to the latest release when it is (so an older cached install in
+   *    the persistent Cloud Shell $HOME picks up newer connect options).
    * 4. Persist the PATH/DOTNET_ROOT changes for future sessions.
    * 5. Export the credential as an environment variable so it never appears in
    *    the process arguments or shell history on the Cloud Shell host.
@@ -43,7 +45,7 @@ export class CosmosDBShellHandler extends AbstractShellHandler {
       "export PATH=$HOME/.dotnet:$HOME/.dotnet/tools:$PATH",
       "if ! command -v cosmosdbshell &> /dev/null; then echo '⚠️ cosmosdbshell not found. Installing .NET SDK 10 and CosmosDBShell...'; fi",
       "if ! command -v cosmosdbshell &> /dev/null && ! dotnet --list-sdks 2>/dev/null | grep -q '^10\\.'; then curl -sSL https://dot.net/v1/dotnet-install.sh | bash -s -- --channel 10.0 --install-dir $HOME/.dotnet; fi",
-      "if ! command -v cosmosdbshell &> /dev/null; then dotnet tool install --global CosmosDBShell --prerelease; fi",
+      "if ! command -v cosmosdbshell &> /dev/null; then dotnet tool install --global CosmosDBShell --prerelease; else dotnet tool update --global CosmosDBShell --prerelease; fi",
       "grep -qxF 'export DOTNET_ROOT=$HOME/.dotnet' ~/.bashrc || echo 'export DOTNET_ROOT=$HOME/.dotnet' >> ~/.bashrc",
       "grep -qxF 'export PATH=$HOME/.dotnet:$HOME/.dotnet/tools:$PATH' ~/.bashrc || echo 'export PATH=$HOME/.dotnet:$HOME/.dotnet/tools:$PATH' >> ~/.bashrc",
     ];
@@ -68,15 +70,28 @@ export class CosmosDBShellHandler extends AbstractShellHandler {
     // direct (TCP) mode for real accounts, and Azure Cloud Shell blocks the
     // direct-mode TCP ports, causing the connection to fail. `--verbose` surfaces
     // the full exception details when a connection attempt fails.
-    //
-    // Auth is supplied out-of-band via env vars (COSMOSDB_SHELL_TOKEN for Entra ID,
-    // COSMOSDB_SHELL_ACCOUNT_KEY for key auth), which the tool reads natively. We
-    // deliberately do NOT pass --connect-tenant here: it has no effect on the static
-    // token path, and if the token is ever missing it would push the tool into
-    // interactive browser / device-code auth, which cannot complete inside Azure
-    // Cloud Shell. Omitting it lets the tool fall back to DefaultAzureCredential
-    // (which uses the Cloud Shell's signed-in az session) instead.
-    return `cosmosdbshell --connect '${this._endpoint}' --connect-mode gateway --verbose`;
+    const args = [`--connect '${this._endpoint}'`, "--connect-mode gateway"];
+
+    // Credential selection:
+    // - A credential is available (`this.key`): it is exported out-of-band as an env
+    //   var (COSMOSDB_SHELL_ACCOUNT_KEY for key auth, COSMOSDB_SHELL_TOKEN for a cached
+    //   Entra token), which the tool reads natively — no connect flag needed.
+    // - No credential is available (`!this.key`): we force the Azure CLI credential.
+    //   Otherwise the tool falls back to DefaultAzureCredential, which in Azure Cloud
+    //   Shell always tries the managed identity (live IMDS endpoint) first — and that
+    //   fails outright for Cosmos with "AudienceNotSupported" because the Cloud Shell
+    //   MSI cannot mint a token for the *.documents.azure.com audience. Even when it
+    //   can, the MSI usually lacks Cosmos data-plane RBAC (403). `--connect-azure-cli`
+    //   deterministically uses the signed-in `az` session identity instead (and
+    //   attaches an ARM context for resource ops). It is mutually exclusive with the
+    //   credential env vars, which the tool rejects — but we only add it when none is
+    //   exported.
+    if (!this.key) {
+      args.push("--connect-azure-cli");
+    }
+
+    args.push("--verbose");
+    return `cosmosdbshell ${args.join(" ")}`;
   }
 
   public getTerminalSuppressedData(): string[] {

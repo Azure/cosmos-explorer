@@ -47,6 +47,7 @@ describe("CosmosDBShellHandler", () => {
 
       expect(Array.isArray(commands)).toBe(true);
       expect(commands.some((c) => c.includes("dotnet tool install --global CosmosDBShell --prerelease"))).toBe(true);
+      expect(commands.some((c) => c.includes("dotnet tool update --global CosmosDBShell --prerelease"))).toBe(true);
       expect(commands.some((c) => c.includes("$HOME/.dotnet/tools"))).toBe(true);
     });
 
@@ -90,6 +91,37 @@ describe("CosmosDBShellHandler", () => {
         "cosmosdbshell --connect 'https://test-account.documents.azure.com:443/' --connect-mode gateway --verbose",
       );
       expect(connectionCommand).not.toContain("--connect-tenant");
+    });
+
+    it("should use the Azure CLI credential on the Entra ID path when no token was fetched", () => {
+      (isCloudShellEntraAuthEnabled as jest.Mock).mockReturnValue(true);
+      const handler = new CosmosDBShellHandler("");
+      const connectionCommand = handler.getConnectionCommand();
+
+      expect(connectionCommand).toBe(
+        "cosmosdbshell --connect 'https://test-account.documents.azure.com:443/' --connect-mode gateway --connect-azure-cli --verbose",
+      );
+    });
+
+    it("should not use the Azure CLI credential when a token env var is exported", () => {
+      (isCloudShellEntraAuthEnabled as jest.Mock).mockReturnValue(true);
+      const handler = new CosmosDBShellHandler("aadToken123");
+
+      expect(handler.getConnectionCommand()).not.toContain("--connect-azure-cli");
+    });
+
+    it("should use the Azure CLI credential when no credential could be resolved on the key-auth path", () => {
+      (isCloudShellEntraAuthEnabled as jest.Mock).mockReturnValue(false);
+      const handler = new CosmosDBShellHandler("");
+
+      expect(handler.getConnectionCommand()).toContain("--connect-azure-cli");
+    });
+
+    it("should not use the Azure CLI credential when an account key env var is exported", () => {
+      (isCloudShellEntraAuthEnabled as jest.Mock).mockReturnValue(false);
+      const handler = new CosmosDBShellHandler("someKey");
+
+      expect(handler.getConnectionCommand()).not.toContain("--connect-azure-cli");
     });
 
     it("should return empty array for terminal suppressed data", () => {
