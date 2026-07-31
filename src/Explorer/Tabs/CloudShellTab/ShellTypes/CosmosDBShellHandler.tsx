@@ -4,10 +4,14 @@ import { AbstractShellHandler } from "./AbstractShellHandler";
 /**
  * A credential resolved by Data Explorer and handed to the Cosmos DB Shell.
  *
- * `token` is an Entra ID (AAD) bearer token scoped to the account's data plane and is
- * exported as COSMOSDB_SHELL_TOKEN; `key` is an account master key and is exported as
- * COSMOSDB_SHELL_ACCOUNT_KEY. The kind is tracked explicitly so the correct environment
- * variable is always used — exporting one as the other silently breaks authentication.
+ * - `token` is an Entra ID (AAD) bearer token scoped to the account's data plane. It is
+ *   exported as COSMOSDB_SHELL_TOKEN (a connection string cannot carry an AAD token) and
+ *   the connect command targets the bare account endpoint.
+ * - `key` is an account master (or read-only) key. It is delivered as a full connection
+ *   string (`AccountEndpoint=...;AccountKey=...;`) passed directly to `--connect`, so a
+ *   single string carries everything the tool needs.
+ *
+ * The kind is tracked explicitly so the correct delivery mechanism is always used.
  */
 export interface CosmosDBShellCredential {
   kind: "token" | "key";
@@ -44,8 +48,10 @@ export class CosmosDBShellHandler extends AbstractShellHandler {
    *    update it to the latest release when it is (so an older cached install in
    *    the persistent Cloud Shell $HOME picks up newer connect options).
    * 4. Persist the PATH/DOTNET_ROOT changes for future sessions.
-   * 5. Export the credential as an environment variable so it never appears in
-   *    the process arguments or shell history on the Cloud Shell host.
+   * 5. For an Entra ID token credential, export it as an environment variable so it never
+   *    appears in the process arguments or shell history on the Cloud Shell host. (A key
+   *    credential is instead delivered as a connection string on the connect command; see
+   *    getConnectionCommand.)
    *
    * Installation steps run conditionally only if cosmosdbshell is not already
    * present in the environment.
@@ -61,12 +67,12 @@ export class CosmosDBShellHandler extends AbstractShellHandler {
       "grep -qxF 'export PATH=$HOME/.dotnet:$HOME/.dotnet/tools:$PATH' ~/.bashrc || echo 'export PATH=$HOME/.dotnet:$HOME/.dotnet/tools:$PATH' >> ~/.bashrc",
     ];
 
-    if (this.credential) {
-      // Data Explorer already resolved a credential for this account; pass it to the shell
-      // out-of-band via an environment variable so it never appears in argv/ps/history on
-      // the remote Cloud Shell host (the CosmosDBShell tool reads both variables natively).
-      const envVar = this.credential.kind === "token" ? "COSMOSDB_SHELL_TOKEN" : "COSMOSDB_SHELL_ACCOUNT_KEY";
-      setUpCommands.push(`export ${envVar}='${this.credential.value}'`);
+    if (this.credential?.kind === "token") {
+      // Data Explorer resolved an Entra ID token; pass it to the shell out-of-band via an
+      // environment variable so it never appears in argv/ps/history on the remote Cloud
+      // Shell host (the CosmosDBShell tool reads COSMOSDB_SHELL_TOKEN natively). A key
+      // credential is delivered as a connection string on the connect line instead.
+      setUpCommands.push(`export COSMOSDB_SHELL_TOKEN='${this.credential.value}'`);
     }
 
     return setUpCommands;
@@ -93,10 +99,15 @@ export class CosmosDBShellHandler extends AbstractShellHandler {
     // direct-mode TCP ports, causing the connection to fail. `--verbose` surfaces
     // the full exception details when a connection attempt fails.
     //
-    // No credential flags are passed: the exported environment variable resolves to the
-    // account key (step 1) or the static token credential (step 3) in the tool's
-    // credential chain, both of which are terminal and require no interactive sign-in.
-    return `cosmosdbshell --connect '${this._endpoint}' --connect-mode gateway --verbose`;
+    // For a key credential, pass a full connection string (endpoint + key in one value)
+    // straight to `--connect`. The CosmosDBShell tool reads the connect argument without
+    // echoing it, so the key does not land in ps/history. For a token credential, connect
+    // to the bare endpoint and let the exported COSMOSDB_SHELL_TOKEN resolve the identity.
+    const connectTarget =
+      this.credential.kind === "key"
+        ? `AccountEndpoint=${this._endpoint};AccountKey=${this.credential.value};`
+        : this._endpoint;
+    return `cosmosdbshell --connect '${connectTarget}' --connect-mode gateway --verbose`;
   }
 
   public getTerminalSuppressedData(): string[] {

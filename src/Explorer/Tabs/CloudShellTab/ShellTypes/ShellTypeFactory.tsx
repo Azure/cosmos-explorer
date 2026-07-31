@@ -49,8 +49,9 @@ export async function getHandler(shellType: TerminalKind): Promise<AbstractShell
  *    it can never trigger an interactive popup.
  * 2. Account master key — the key Data Explorer already resolved (`userContext.masterKey`),
  *    or, if that is not populated, one fetched via ARM (`listKeys`, falling back to
- *    `getReadOnlyKeys` for read-only callers, mirroring `fetchAndUpdateKeys`). Skipped when
- *    the account has local auth disabled (keys do not exist).
+ *    `getReadOnlyKeys` on any failure for read-only callers). The key is handed to the
+ *    handler, which delivers it as a full connection string. Skipped when the account has
+ *    local auth disabled (keys do not exist).
  *
  * Returns `undefined` when nothing could be resolved, which makes the handler surface
  * actionable guidance instead of letting the tool attempt its own sign-in.
@@ -77,7 +78,16 @@ export async function getCosmosDBShellCredential(): Promise<CosmosDBShellCredent
   }
 
   const key = await resolveAccountKey(dbName);
-  return key ? { kind: "key", value: key } : undefined;
+  if (!key) {
+    console.warn(
+      "CloudShell: no Entra ID token or account key could be resolved for the Cosmos DB shell. " +
+        "Data Explorer may be authenticating through the portal proxy (per-request tokens), which " +
+        "cannot be reused by the shell. Ensure you have either data-plane RBAC access (then use " +
+        '"Login for Entra ID") or permission to list the account keys.',
+    );
+    return undefined;
+  }
+  return { kind: "key", value: key };
 }
 
 /**
@@ -102,6 +112,28 @@ async function resolveCosmosDataPlaneToken(): Promise<string> {
   }
 }
 
+/**
+ * Resolves the subscription id and resource group for the current account. These are
+ * normally populated on `userContext`, but in some hosting contexts they can be missing,
+ * so they are parsed from the account's ARM resource id as a fallback. The id has the form
+ * `/subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.DocumentDB/databaseAccounts/<name>`.
+ */
+function resolveAccountArmScope(): { subscriptionId: string; resourceGroup: string } {
+  let subscriptionId = userContext.subscriptionId;
+  let resourceGroup = userContext.resourceGroup;
+
+  const accountId = userContext.databaseAccount?.id;
+  if ((!subscriptionId || !resourceGroup) && accountId) {
+    const match = accountId.match(/\/subscriptions\/([^/]+)\/resourceGroups\/([^/]+)\//i);
+    if (match) {
+      subscriptionId = subscriptionId || match[1];
+      resourceGroup = resourceGroup || match[2];
+    }
+  }
+
+  return { subscriptionId, resourceGroup };
+}
+
 async function resolveAccountKey(dbName: string): Promise<string> {
   // Prefer the key Data Explorer already resolved for this account so the shell reuses the
   // exact credential DE is connected with and avoids a redundant ARM round-trip.
@@ -109,24 +141,34 @@ async function resolveAccountKey(dbName: string): Promise<string> {
     return userContext.masterKey;
   }
 
-  // Otherwise fetch it the same way DE's own `fetchAndUpdateKeys` does: try the read-write
-  // keys, and fall back to the read-only keys when the caller only has read access (ARM
-  // returns "AuthorizationFailed"). Without this fallback a read-only user gets no
-  // credential at all and the shell cannot connect.
+  // Otherwise fetch it via ARM, mirroring DE's own `fetchAndUpdateKeys`: try the read-write
+  // keys first, then fall back to the read-only keys. The fallback is attempted on any
+  // failure (not just "AuthorizationFailed") because a read-only caller can surface the
+  // missing-permission error in different shapes; without it such a user gets no credential
+  // and the shell cannot connect.
+  const { subscriptionId, resourceGroup } = resolveAccountArmScope();
+  if (!subscriptionId || !resourceGroup) {
+    console.error(
+      "CloudShell: cannot list Cosmos DB account keys because the subscription id or resource group " +
+        "could not be determined for this account.",
+    );
+    return "";
+  }
+
   try {
-    const keys = await listKeys(userContext.subscriptionId, userContext.resourceGroup, dbName);
-    return keys?.primaryMasterKey || "";
-  } catch (error) {
-    if (error?.code === "AuthorizationFailed") {
-      try {
-        const readOnlyKeys = await getReadOnlyKeys(userContext.subscriptionId, userContext.resourceGroup, dbName);
-        return readOnlyKeys?.primaryReadonlyMasterKey || "";
-      } catch (readOnlyError) {
-        console.error("Failed to list read-only account keys for the Cloud Shell", readOnlyError);
-        return "";
-      }
+    const keys = await listKeys(subscriptionId, resourceGroup, dbName);
+    if (keys?.primaryMasterKey) {
+      return keys.primaryMasterKey;
     }
-    console.error("Failed to list account keys for the Cloud Shell", error);
+  } catch (error) {
+    console.error("Failed to list read-write account keys for the Cloud Shell; trying read-only keys", error);
+  }
+
+  try {
+    const readOnlyKeys = await getReadOnlyKeys(subscriptionId, resourceGroup, dbName);
+    return readOnlyKeys?.primaryReadonlyMasterKey || "";
+  } catch (readOnlyError) {
+    console.error("Failed to list read-only account keys for the Cloud Shell", readOnlyError);
     return "";
   }
 }

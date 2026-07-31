@@ -13,8 +13,9 @@ jest.mock("../../../../UserContext", () => ({
 
 describe("CosmosDBShellHandler", () => {
   const mockKey = "testKey";
-  const expectedConnectionCommand =
-    "cosmosdbshell --connect 'https://test-account.documents.azure.com:443/' --connect-mode gateway --verbose";
+  const endpoint = "https://test-account.documents.azure.com:443/";
+  const tokenConnectionCommand = `cosmosdbshell --connect '${endpoint}' --connect-mode gateway --verbose`;
+  const keyConnectionCommand = `cosmosdbshell --connect 'AccountEndpoint=${endpoint};AccountKey=${mockKey};' --connect-mode gateway --verbose`;
   let cosmosDBShellHandler: CosmosDBShellHandler;
 
   beforeEach(() => {
@@ -53,11 +54,10 @@ describe("CosmosDBShellHandler", () => {
       expect(commands.some((c) => c === "export DOTNET_ROOT=$HOME/.dotnet")).toBe(true);
     });
 
-    it("should export the account key env var for a key credential", () => {
+    it("should not export any credential env var for a key credential", () => {
       const commands = cosmosDBShellHandler.getSetUpCommands();
 
-      expect(commands.some((c) => c === `export COSMOSDB_SHELL_ACCOUNT_KEY='${mockKey}'`)).toBe(true);
-      expect(commands.some((c) => c.includes("COSMOSDB_SHELL_TOKEN"))).toBe(false);
+      expect(commands.some((c) => c.includes("COSMOSDB_SHELL_"))).toBe(false);
     });
 
     it("should export the token env var for a token credential", () => {
@@ -68,14 +68,14 @@ describe("CosmosDBShellHandler", () => {
       expect(commands.some((c) => c.includes("COSMOSDB_SHELL_ACCOUNT_KEY"))).toBe(false);
     });
 
-    it("should generate proper connection command with endpoint for a key credential", () => {
-      expect(cosmosDBShellHandler.getConnectionCommand()).toBe(expectedConnectionCommand);
+    it("should deliver a key credential as a full connection string on the connect line", () => {
+      expect(cosmosDBShellHandler.getConnectionCommand()).toBe(keyConnectionCommand);
     });
 
-    it("should generate the same connection command for a token credential", () => {
+    it("should connect to the bare endpoint for a token credential", () => {
       const handler = new CosmosDBShellHandler({ kind: "token", value: "aadToken123" });
 
-      expect(handler.getConnectionCommand()).toBe(expectedConnectionCommand);
+      expect(handler.getConnectionCommand()).toBe(tokenConnectionCommand);
     });
 
     it("should never pass an interactive or ambient credential flag", () => {
