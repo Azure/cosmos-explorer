@@ -1,6 +1,7 @@
 import { TerminalKind } from "../../../../Contracts/ViewModels";
 import { userContext } from "../../../../UserContext";
 import { listKeys } from "../../../../Utils/arm/generatedClients/cosmos/databaseAccounts";
+import { acquireMsalTokenForAccount, getMsalInstance } from "../../../../Utils/AuthorizationUtils";
 import { CassandraShellHandler } from "./CassandraShellHandler";
 import { CosmosDBShellHandler } from "./CosmosDBShellHandler";
 import { MongoShellHandler } from "./MongoShellHandler";
@@ -33,11 +34,22 @@ jest.mock("../../../../Utils/arm/generatedClients/cosmos/databaseAccounts", () =
   listKeys: jest.fn(),
 }));
 
+jest.mock("../../../../Utils/AuthorizationUtils", () => {
+  const actual = jest.requireActual("../../../../Utils/AuthorizationUtils");
+  return {
+    ...actual,
+    getMsalInstance: jest.fn(),
+    acquireMsalTokenForAccount: jest.fn(),
+  };
+});
+
 describe("ShellTypeHandlerFactory", () => {
   const mockKey = "testKey";
 
   beforeEach(() => {
     (listKeys as jest.Mock).mockResolvedValue({ primaryMasterKey: mockKey });
+    (getMsalInstance as jest.Mock).mockResolvedValue({ getAllAccounts: () => [] });
+    (acquireMsalTokenForAccount as jest.Mock).mockResolvedValue("");
   });
 
   afterEach(() => {
@@ -136,8 +148,32 @@ describe("ShellTypeHandlerFactory", () => {
       expect(listKeys).not.toHaveBeenCalled();
     });
 
-    it("should return an empty string when Entra ID auth is requested but no cached token exists", async () => {
+    it("should return an empty string when Entra ID auth is requested but no cached token or account exists", async () => {
       (userContext as UserContextType).aadToken = undefined;
+      (getMsalInstance as jest.Mock).mockResolvedValue({ getAllAccounts: () => [] });
+
+      const key = await getKey(true);
+      expect(key).toBe("");
+      expect(acquireMsalTokenForAccount).not.toHaveBeenCalled();
+      expect(listKeys).not.toHaveBeenCalled();
+    });
+
+    it("should silently mint a Cosmos token when Entra ID auth is requested and an MSAL account is cached", async () => {
+      (userContext as UserContextType).aadToken = undefined;
+      (getMsalInstance as jest.Mock).mockResolvedValue({ getAllAccounts: () => [{ username: "user@contoso.com" }] });
+      (acquireMsalTokenForAccount as jest.Mock).mockResolvedValue("mintedToken123");
+
+      const key = await getKey(true);
+      expect(key).toBe("mintedToken123");
+      expect(acquireMsalTokenForAccount).toHaveBeenCalled();
+      expect(listKeys).not.toHaveBeenCalled();
+    });
+
+    it("should return an empty string when the silent token acquisition fails", async () => {
+      (userContext as UserContextType).aadToken = undefined;
+      (getMsalInstance as jest.Mock).mockResolvedValue({ getAllAccounts: () => [{ username: "user@contoso.com" }] });
+      (acquireMsalTokenForAccount as jest.Mock).mockRejectedValue(new Error("interaction_required"));
+      jest.spyOn(console, "error").mockImplementation(() => undefined);
 
       const key = await getKey(true);
       expect(key).toBe("");
