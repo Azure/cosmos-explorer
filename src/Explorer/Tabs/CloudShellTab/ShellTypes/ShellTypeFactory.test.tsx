@@ -1,7 +1,6 @@
 import { TerminalKind } from "../../../../Contracts/ViewModels";
 import { userContext } from "../../../../UserContext";
 import { listKeys } from "../../../../Utils/arm/generatedClients/cosmos/databaseAccounts";
-import { acquireMsalTokenForAccount } from "../../../../Utils/AuthorizationUtils";
 import { CassandraShellHandler } from "./CassandraShellHandler";
 import { CosmosDBShellHandler } from "./CosmosDBShellHandler";
 import { MongoShellHandler } from "./MongoShellHandler";
@@ -32,11 +31,6 @@ jest.mock("../../../../UserContext", () => ({
 
 jest.mock("../../../../Utils/arm/generatedClients/cosmos/databaseAccounts", () => ({
   listKeys: jest.fn(),
-}));
-
-jest.mock("../../../../Utils/AuthorizationUtils", () => ({
-  ...jest.requireActual("../../../../Utils/AuthorizationUtils"),
-  acquireMsalTokenForAccount: jest.fn(),
 }));
 
 describe("ShellTypeHandlerFactory", () => {
@@ -140,17 +134,14 @@ describe("ShellTypeHandlerFactory", () => {
       const key = await getKey(true);
       expect(key).toBe("aadToken123");
       expect(listKeys).not.toHaveBeenCalled();
-      expect(acquireMsalTokenForAccount).not.toHaveBeenCalled();
     });
 
-    it("should acquire a token when Entra ID auth is requested but no cached token exists", async () => {
+    it("should return an empty string when Entra ID auth is requested but no cached token exists", async () => {
       (userContext as UserContextType).aadToken = undefined;
-      (acquireMsalTokenForAccount as jest.Mock).mockResolvedValue("freshToken123");
 
       const key = await getKey(true);
-      expect(key).toBe("freshToken123");
+      expect(key).toBe("");
       expect(listKeys).not.toHaveBeenCalled();
-      expect(acquireMsalTokenForAccount).toHaveBeenCalled();
     });
 
     it("should return MongoShellHandler with primaryMasterKey for TerminalKind.Mongo when RBAC is disabled", async () => {
