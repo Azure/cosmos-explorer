@@ -63,8 +63,9 @@ export interface CosmosDBShellCredentialDiagnostics {
  * 2. Account master key — the key Data Explorer already resolved (`userContext.masterKey`),
  *    or, if that is not populated, one fetched via ARM (`listKeys`, falling back to
  *    `getReadOnlyKeys` on any failure for read-only callers). The key is handed to the
- *    handler, which delivers it as a full connection string. Skipped when the account has
- *    local auth disabled (keys do not exist).
+ *    handler, which exports it as COSMOSDB_SHELL_ACCOUNT_KEY on the same command line as
+ *    the `cosmosdbshell` invocation. Skipped when the account has local auth disabled
+ *    (keys do not exist).
  *
  * Returns `undefined` when nothing could be resolved, which makes the handler surface
  * actionable guidance instead of letting the tool attempt its own sign-in.

@@ -14,8 +14,8 @@ jest.mock("../../../../UserContext", () => ({
 describe("CosmosDBShellHandler", () => {
   const mockKey = "testKey";
   const endpoint = "https://test-account.documents.azure.com:443/";
-  const tokenConnectionCommand = `cosmosdbshell --connect '${endpoint}' --connect-mode gateway --verbose`;
-  const keyConnectionCommand = `cosmosdbshell --connect 'AccountEndpoint=${endpoint};AccountKey=${mockKey};' --connect-mode gateway --verbose`;
+  const tokenConnectionCommand = `export COSMOSDB_SHELL_TOKEN='aadToken123'; cosmosdbshell --connect '${endpoint}' --connect-mode gateway --verbose`;
+  const keyConnectionCommand = `export COSMOSDB_SHELL_ACCOUNT_KEY='${mockKey}'; cosmosdbshell --connect '${endpoint}' --connect-mode gateway --verbose`;
   let cosmosDBShellHandler: CosmosDBShellHandler;
 
   beforeEach(() => {
@@ -54,25 +54,24 @@ describe("CosmosDBShellHandler", () => {
       expect(commands.some((c) => c === "export DOTNET_ROOT=$HOME/.dotnet")).toBe(true);
     });
 
-    it("should not export any credential env var for a key credential", () => {
+    it("should not export any credential env var in setup commands for a key credential", () => {
       const commands = cosmosDBShellHandler.getSetUpCommands();
 
       expect(commands.some((c) => c.includes("COSMOSDB_SHELL_"))).toBe(false);
     });
 
-    it("should export the token env var for a token credential", () => {
+    it("should not export any credential env var in setup commands for a token credential", () => {
       const handler = new CosmosDBShellHandler({ kind: "token", value: "aadToken123" });
       const commands = handler.getSetUpCommands();
 
-      expect(commands.some((c) => c === `export COSMOSDB_SHELL_TOKEN='aadToken123'`)).toBe(true);
-      expect(commands.some((c) => c.includes("COSMOSDB_SHELL_ACCOUNT_KEY"))).toBe(false);
+      expect(commands.some((c) => c.includes("COSMOSDB_SHELL_"))).toBe(false);
     });
 
-    it("should deliver a key credential as a full connection string on the connect line", () => {
+    it("should export the account key and connect to the bare endpoint on the same command line", () => {
       expect(cosmosDBShellHandler.getConnectionCommand()).toBe(keyConnectionCommand);
     });
 
-    it("should connect to the bare endpoint for a token credential", () => {
+    it("should export the token and connect to the bare endpoint on the same command line", () => {
       const handler = new CosmosDBShellHandler({ kind: "token", value: "aadToken123" });
 
       expect(handler.getConnectionCommand()).toBe(tokenConnectionCommand);

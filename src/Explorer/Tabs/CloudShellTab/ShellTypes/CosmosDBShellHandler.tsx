@@ -4,14 +4,16 @@ import { AbstractShellHandler } from "./AbstractShellHandler";
 /**
  * A credential resolved by Data Explorer and handed to the Cosmos DB Shell.
  *
- * - `token` is an Entra ID (AAD) bearer token scoped to the account's data plane. It is
- *   exported as COSMOSDB_SHELL_TOKEN (a connection string cannot carry an AAD token) and
- *   the connect command targets the bare account endpoint.
- * - `key` is an account master (or read-only) key. It is delivered as a full connection
- *   string (`AccountEndpoint=...;AccountKey=...;`) passed directly to `--connect`, so a
- *   single string carries everything the tool needs.
+ * Both kinds are delivered the same way the Mongo shell delivers its credential: exported
+ * as an environment variable on the same command line as the `cosmosdbshell` invocation
+ * (`export VAR='...'; cosmosdbshell --connect <endpoint>`), immediately before the tool
+ * reads it, rather than as a separate setup step or embedded in a connection string.
  *
- * The kind is tracked explicitly so the correct delivery mechanism is always used.
+ * - `token` is an Entra ID (AAD) bearer token scoped to the account's data plane, exported
+ *   as COSMOSDB_SHELL_TOKEN.
+ * - `key` is an account master (or read-only) key, exported as COSMOSDB_SHELL_ACCOUNT_KEY.
+ *
+ * The kind is tracked explicitly so the correct environment variable is always used.
  */
 export interface CosmosDBShellCredential {
   kind: "token" | "key";
@@ -51,16 +53,16 @@ export class CosmosDBShellHandler extends AbstractShellHandler {
    *    update it to the latest release when it is (so an older cached install in
    *    the persistent Cloud Shell $HOME picks up newer connect options).
    * 4. Persist the PATH/DOTNET_ROOT changes for future sessions.
-   * 5. For an Entra ID token credential, export it as an environment variable so it never
-   *    appears in the process arguments or shell history on the Cloud Shell host. (A key
-   *    credential is instead delivered as a connection string on the connect command; see
-   *    getConnectionCommand.)
+   *
+   * The credential itself is not exported here: it travels on the same command line as
+   * the `cosmosdbshell` invocation (see getConnectionCommand), mirroring how the Mongo
+   * shell handler builds its connection command.
    *
    * Installation steps run conditionally only if cosmosdbshell is not already
    * present in the environment.
    */
   public getSetUpCommands(): string[] {
-    const setUpCommands = [
+    return [
       "export DOTNET_ROOT=$HOME/.dotnet",
       "export PATH=$HOME/.dotnet:$HOME/.dotnet/tools:$PATH",
       "if ! command -v cosmosdbshell &> /dev/null; then echo '⚠️ cosmosdbshell not found. Installing .NET SDK 10 and CosmosDBShell...'; fi",
@@ -69,16 +71,19 @@ export class CosmosDBShellHandler extends AbstractShellHandler {
       "grep -qxF 'export DOTNET_ROOT=$HOME/.dotnet' ~/.bashrc || echo 'export DOTNET_ROOT=$HOME/.dotnet' >> ~/.bashrc",
       "grep -qxF 'export PATH=$HOME/.dotnet:$HOME/.dotnet/tools:$PATH' ~/.bashrc || echo 'export PATH=$HOME/.dotnet:$HOME/.dotnet/tools:$PATH' >> ~/.bashrc",
     ];
+  }
 
-    if (this.credential?.kind === "token") {
-      // Data Explorer resolved an Entra ID token; pass it to the shell out-of-band via an
-      // environment variable so it never appears in argv/ps/history on the remote Cloud
-      // Shell host (the CosmosDBShell tool reads COSMOSDB_SHELL_TOKEN natively). A key
-      // credential is delivered as a connection string on the connect line instead.
-      setUpCommands.push(`export COSMOSDB_SHELL_TOKEN='${this.credential.value}'`);
-    }
+  private _getKeyConnectionCommand(key: string): string {
+    // Export the key immediately before invoking the tool, on the same command line, so it
+    // never appears as a --connect flag value or lands in a separate setup step. The tool
+    // reads the account key from COSMOSDB_SHELL_ACCOUNT_KEY and connects to the bare endpoint.
+    return `export COSMOSDB_SHELL_ACCOUNT_KEY='${key}'; cosmosdbshell --connect '${this._endpoint}' --connect-mode gateway --verbose`;
+  }
 
-    return setUpCommands;
+  private _getTokenConnectionCommand(token: string): string {
+    // Same pattern for the Entra ID token: exported right before the invocation so it never
+    // appears in argv/ps, then the tool reads it from COSMOSDB_SHELL_TOKEN.
+    return `export COSMOSDB_SHELL_TOKEN='${token}'; cosmosdbshell --connect '${this._endpoint}' --connect-mode gateway --verbose`;
   }
 
   public getConnectionCommand(): string {
@@ -105,16 +110,9 @@ export class CosmosDBShellHandler extends AbstractShellHandler {
     // direct (TCP) mode for real accounts, and Azure Cloud Shell blocks the
     // direct-mode TCP ports, causing the connection to fail. `--verbose` surfaces
     // the full exception details when a connection attempt fails.
-    //
-    // For a key credential, pass a full connection string (endpoint + key in one value)
-    // straight to `--connect`. The CosmosDBShell tool reads the connect argument without
-    // echoing it, so the key does not land in ps/history. For a token credential, connect
-    // to the bare endpoint and let the exported COSMOSDB_SHELL_TOKEN resolve the identity.
-    const connectTarget =
-      this.credential.kind === "key"
-        ? `AccountEndpoint=${this._endpoint};AccountKey=${this.credential.value};`
-        : this._endpoint;
-    return `cosmosdbshell --connect '${connectTarget}' --connect-mode gateway --verbose`;
+    return this.credential.kind === "key"
+      ? this._getKeyConnectionCommand(this.credential.value)
+      : this._getTokenConnectionCommand(this.credential.value);
   }
 
   public getTerminalSuppressedData(): string[] {
