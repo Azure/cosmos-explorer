@@ -46,9 +46,13 @@ jest.mock("../../../../Utils/AuthorizationUtils", () => {
 describe("ShellTypeHandlerFactory", () => {
   const mockKey = "testKey";
 
+  const mockMsalAccounts = (accounts: { username: string }[]): void => {
+    (getMsalInstance as jest.Mock).mockResolvedValue({ getAllAccounts: (): { username: string }[] => accounts });
+  };
+
   beforeEach(() => {
     (listKeys as jest.Mock).mockResolvedValue({ primaryMasterKey: mockKey });
-    (getMsalInstance as jest.Mock).mockResolvedValue({ getAllAccounts: () => [] });
+    mockMsalAccounts([]);
     (acquireMsalTokenForAccount as jest.Mock).mockResolvedValue("");
   });
 
@@ -150,7 +154,7 @@ describe("ShellTypeHandlerFactory", () => {
 
     it("should return an empty string when Entra ID auth is requested but no cached token or account exists", async () => {
       (userContext as UserContextType).aadToken = undefined;
-      (getMsalInstance as jest.Mock).mockResolvedValue({ getAllAccounts: () => [] });
+      mockMsalAccounts([]);
 
       const key = await getKey(true);
       expect(key).toBe("");
@@ -160,7 +164,7 @@ describe("ShellTypeHandlerFactory", () => {
 
     it("should silently mint a Cosmos token when Entra ID auth is requested and an MSAL account is cached", async () => {
       (userContext as UserContextType).aadToken = undefined;
-      (getMsalInstance as jest.Mock).mockResolvedValue({ getAllAccounts: () => [{ username: "user@contoso.com" }] });
+      mockMsalAccounts([{ username: "user@contoso.com" }]);
       (acquireMsalTokenForAccount as jest.Mock).mockResolvedValue("mintedToken123");
 
       const key = await getKey(true);
@@ -171,7 +175,7 @@ describe("ShellTypeHandlerFactory", () => {
 
     it("should return an empty string when the silent token acquisition fails", async () => {
       (userContext as UserContextType).aadToken = undefined;
-      (getMsalInstance as jest.Mock).mockResolvedValue({ getAllAccounts: () => [{ username: "user@contoso.com" }] });
+      mockMsalAccounts([{ username: "user@contoso.com" }]);
       (acquireMsalTokenForAccount as jest.Mock).mockRejectedValue(new Error("interaction_required"));
       jest.spyOn(console, "error").mockImplementation(() => undefined);
 
@@ -237,7 +241,7 @@ describe("ShellTypeHandlerFactory", () => {
 
     it("should return a silently minted token when an MSAL account is cached", async () => {
       (userContext as UserContextType).dataPlaneRbacEnabled = true;
-      (getMsalInstance as jest.Mock).mockResolvedValue({ getAllAccounts: () => [{ username: "user@contoso.com" }] });
+      mockMsalAccounts([{ username: "user@contoso.com" }]);
       (acquireMsalTokenForAccount as jest.Mock).mockResolvedValue("mintedToken123");
 
       const credential = await getCosmosDBShellCredential();
@@ -257,7 +261,7 @@ describe("ShellTypeHandlerFactory", () => {
 
     it("should fall back to the account key when the silent token acquisition throws", async () => {
       (userContext as UserContextType).dataPlaneRbacEnabled = true;
-      (getMsalInstance as jest.Mock).mockResolvedValue({ getAllAccounts: () => [{ username: "user@contoso.com" }] });
+      mockMsalAccounts([{ username: "user@contoso.com" }]);
       (acquireMsalTokenForAccount as jest.Mock).mockRejectedValue(new Error("interaction_required"));
       jest.spyOn(console, "error").mockImplementation(() => undefined);
 
