@@ -6,11 +6,11 @@ import { CassandraShellHandler } from "./CassandraShellHandler";
 import { CosmosDBShellHandler } from "./CosmosDBShellHandler";
 import { MongoShellHandler } from "./MongoShellHandler";
 import { PostgresShellHandler } from "./PostgresShellHandler";
-import { getHandler, getKey } from "./ShellTypeFactory";
+import { getCosmosDBShellCredential, getHandler, getKey } from "./ShellTypeFactory";
 import { VCoreMongoShellHandler } from "./VCoreMongoShellHandler";
 
 interface UserContextType {
-  databaseAccount: { name: string };
+  databaseAccount: { name: string; properties?: { disableLocalAuth?: boolean } };
   subscriptionId: string;
   resourceGroup: string;
   features: { enableAadDataPlane: boolean };
@@ -206,6 +206,94 @@ describe("ShellTypeHandlerFactory", () => {
       await expect(getHandler("UnknownShell" as unknown as TerminalKind)).rejects.toThrow(
         "Unsupported shell type: UnknownShell",
       );
+    });
+  });
+
+  describe("getCosmosDBShellCredential", () => {
+    beforeEach(() => {
+      (userContext as UserContextType).aadToken = undefined;
+      (userContext as UserContextType).apiType = "SQL";
+      (userContext as UserContextType).features.enableAadDataPlane = false;
+      (userContext as UserContextType).dataPlaneRbacEnabled = false;
+      (userContext as UserContextType).databaseAccount.properties = { disableLocalAuth: false };
+    });
+
+    it("should return the account key when Entra ID auth is not enabled", async () => {
+      const credential = await getCosmosDBShellCredential();
+
+      expect(credential).toEqual({ kind: "key", value: mockKey });
+      expect(listKeys).toHaveBeenCalledWith("testSubId", "testResourceGroup", "testDbName");
+    });
+
+    it("should return the cached aadToken when Entra ID auth is enabled", async () => {
+      (userContext as UserContextType).dataPlaneRbacEnabled = true;
+      (userContext as UserContextType).aadToken = "aadToken123";
+
+      const credential = await getCosmosDBShellCredential();
+
+      expect(credential).toEqual({ kind: "token", value: "aadToken123" });
+      expect(listKeys).not.toHaveBeenCalled();
+    });
+
+    it("should return a silently minted token when an MSAL account is cached", async () => {
+      (userContext as UserContextType).dataPlaneRbacEnabled = true;
+      (getMsalInstance as jest.Mock).mockResolvedValue({ getAllAccounts: () => [{ username: "user@contoso.com" }] });
+      (acquireMsalTokenForAccount as jest.Mock).mockResolvedValue("mintedToken123");
+
+      const credential = await getCosmosDBShellCredential();
+
+      expect(credential).toEqual({ kind: "token", value: "mintedToken123" });
+      expect(listKeys).not.toHaveBeenCalled();
+    });
+
+    it("should fall back to the account key when no token could be resolved", async () => {
+      (userContext as UserContextType).dataPlaneRbacEnabled = true;
+
+      const credential = await getCosmosDBShellCredential();
+
+      expect(acquireMsalTokenForAccount).not.toHaveBeenCalled();
+      expect(credential).toEqual({ kind: "key", value: mockKey });
+    });
+
+    it("should fall back to the account key when the silent token acquisition throws", async () => {
+      (userContext as UserContextType).dataPlaneRbacEnabled = true;
+      (getMsalInstance as jest.Mock).mockResolvedValue({ getAllAccounts: () => [{ username: "user@contoso.com" }] });
+      (acquireMsalTokenForAccount as jest.Mock).mockRejectedValue(new Error("interaction_required"));
+      jest.spyOn(console, "error").mockImplementation(() => undefined);
+
+      const credential = await getCosmosDBShellCredential();
+
+      expect(credential).toEqual({ kind: "key", value: mockKey });
+    });
+
+    it("should not fall back to the account key when local auth is disabled", async () => {
+      (userContext as UserContextType).databaseAccount.properties = { disableLocalAuth: true };
+      jest.spyOn(console, "warn").mockImplementation(() => undefined);
+
+      const credential = await getCosmosDBShellCredential();
+
+      expect(credential).toBeUndefined();
+      expect(listKeys).not.toHaveBeenCalled();
+    });
+
+    it("should return undefined when listing the account keys fails", async () => {
+      (listKeys as jest.Mock).mockRejectedValue(new Error("Forbidden"));
+      jest.spyOn(console, "error").mockImplementation(() => undefined);
+
+      const credential = await getCosmosDBShellCredential();
+
+      expect(credential).toBeUndefined();
+    });
+
+    it("should return undefined when the database name is missing", async () => {
+      (userContext as UserContextType).databaseAccount.name = "";
+
+      const credential = await getCosmosDBShellCredential();
+
+      expect(credential).toBeUndefined();
+      expect(listKeys).not.toHaveBeenCalled();
+
+      (userContext as UserContextType).databaseAccount.name = "testDbName";
     });
   });
 });

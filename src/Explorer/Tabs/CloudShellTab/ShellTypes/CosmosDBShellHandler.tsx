@@ -1,7 +1,18 @@
-import { configContext } from "../../../../ConfigContext";
 import { userContext } from "../../../../UserContext";
-import { isCloudShellEntraAuthEnabled } from "../../../../Utils/AuthorizationUtils";
 import { AbstractShellHandler } from "./AbstractShellHandler";
+
+/**
+ * A credential resolved by Data Explorer and handed to the Cosmos DB Shell.
+ *
+ * `token` is an Entra ID (AAD) bearer token scoped to the account's data plane and is
+ * exported as COSMOSDB_SHELL_TOKEN; `key` is an account master key and is exported as
+ * COSMOSDB_SHELL_ACCOUNT_KEY. The kind is tracked explicitly so the correct environment
+ * variable is always used — exporting one as the other silently breaks authentication.
+ */
+export interface CosmosDBShellCredential {
+  kind: "token" | "key";
+  value: string;
+}
 
 /**
  * Shell handler for the Azure Cosmos DB Shell (https://github.com/Azure/CosmosDBShell),
@@ -9,9 +20,8 @@ import { AbstractShellHandler } from "./AbstractShellHandler";
  */
 export class CosmosDBShellHandler extends AbstractShellHandler {
   private _endpoint: string | undefined;
-  private _isEntraIdEnabled: boolean = isCloudShellEntraAuthEnabled(userContext);
 
-  constructor(private key: string) {
+  constructor(private credential: CosmosDBShellCredential | undefined) {
     super();
     this._endpoint = userContext?.databaseAccount?.properties?.documentEndpoint;
   }
@@ -51,12 +61,12 @@ export class CosmosDBShellHandler extends AbstractShellHandler {
       "grep -qxF 'export PATH=$HOME/.dotnet:$HOME/.dotnet/tools:$PATH' ~/.bashrc || echo 'export PATH=$HOME/.dotnet:$HOME/.dotnet/tools:$PATH' >> ~/.bashrc",
     ];
 
-    if (this.key) {
-      // Entra ID (RBAC) uses a pre-fetched AAD bearer token; key auth uses the account master key.
-      // Passing the credential via an environment variable keeps it out of argv/ps/history on the
-      // remote Cloud Shell host (the CosmosDBShell tool reads these variables natively).
-      const envVar = this._isEntraIdEnabled ? "COSMOSDB_SHELL_TOKEN" : "COSMOSDB_SHELL_ACCOUNT_KEY";
-      setUpCommands.push(`export ${envVar}='${this.key}'`);
+    if (this.credential) {
+      // Data Explorer already resolved a credential for this account; pass it to the shell
+      // out-of-band via an environment variable so it never appears in argv/ps/history on
+      // the remote Cloud Shell host (the CosmosDBShell tool reads both variables natively).
+      const envVar = this.credential.kind === "token" ? "COSMOSDB_SHELL_TOKEN" : "COSMOSDB_SHELL_ACCOUNT_KEY";
+      setUpCommands.push(`export ${envVar}='${this.credential.value}'`);
     }
 
     return setUpCommands;
@@ -67,35 +77,26 @@ export class CosmosDBShellHandler extends AbstractShellHandler {
       return `echo '${this.getShellName()} endpoint not found.'`;
     }
 
+    if (!this.credential) {
+      // Never let the tool continue without a credential. With no account key and no
+      // COSMOSDB_SHELL_TOKEN exported, its credential chain would fall through to
+      // DefaultAzureCredential, which in Azure Cloud Shell tries the managed identity
+      // first and fails with "AudienceNotSupported" (the Cloud Shell MSI cannot mint a
+      // token for the *.documents.azure.com audience). The interactive browser and
+      // device-code flows are not usable from this embedded terminal either, so fail
+      // fast with actionable guidance instead.
+      return `echo 'Unable to acquire a ${this.getShellName()} credential. Use "Login for Entra ID" in the Data Explorer toolbar, verify you have Cosmos DB data-plane RBAC access to this account, then reopen the shell.'`;
+    }
+
     // Force gateway (HTTPS/443) connection mode. The shell otherwise defaults to
     // direct (TCP) mode for real accounts, and Azure Cloud Shell blocks the
     // direct-mode TCP ports, causing the connection to fail. `--verbose` surfaces
     // the full exception details when a connection attempt fails.
-    const args = [`--connect '${this._endpoint}'`, "--connect-mode gateway"];
-
-    // Credential selection:
-    // - A credential is available (`this.key`): it is exported out-of-band as an env
-    //   var (COSMOSDB_SHELL_ACCOUNT_KEY for key auth, COSMOSDB_SHELL_TOKEN for a cached
-    //   Entra token), which the tool reads natively — no connect flag needed.
-    // - No credential is available (`!this.key`): select the shell's interactive Entra
-    //   flow by supplying a tenant. InteractiveBrowserCredential cannot launch a browser
-    //   in the headless Cloud Shell, so the tool falls back to DeviceCodeCredential and
-    //   prints a login URL and code in the terminal. This does not depend on `az login`.
-    //   It also avoids DefaultAzureCredential, whose managed identity path fails for the
-    //   Cosmos audience with AudienceNotSupported in this environment.
-    if (!this.key) {
-      args.push(`--connect-tenant '${userContext.tenantId || "organizations"}'`);
-      if (configContext.AAD_ENDPOINT) {
-        args.push(`--connect-authority-host '${configContext.AAD_ENDPOINT}'`);
-      }
-      if (userContext.subscriptionId && userContext.resourceGroup) {
-        args.push(`--connect-subscription '${userContext.subscriptionId}'`);
-        args.push(`--connect-resource-group '${userContext.resourceGroup}'`);
-      }
-    }
-
-    args.push("--verbose");
-    return `cosmosdbshell ${args.join(" ")}`;
+    //
+    // No credential flags are passed: the exported environment variable resolves to the
+    // account key (step 1) or the static token credential (step 3) in the tool's
+    // credential chain, both of which are terminal and require no interactive sign-in.
+    return `cosmosdbshell --connect '${this._endpoint}' --connect-mode gateway --verbose`;
   }
 
   public getTerminalSuppressedData(): string[] {
