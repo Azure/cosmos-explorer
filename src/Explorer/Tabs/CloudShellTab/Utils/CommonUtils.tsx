@@ -46,6 +46,8 @@ export const getShellNameForDisplay = (terminalKind: TerminalKind): string => {
     case TerminalKind.Mongo:
     case TerminalKind.VCoreMongo:
       return "MongoDB";
+    case TerminalKind.CosmosDB:
+      return "Cosmos DB";
     default:
       return "";
   }

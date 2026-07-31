@@ -1,7 +1,9 @@
 import { TerminalKind } from "../../../../Contracts/ViewModels";
 import { userContext } from "../../../../UserContext";
 import { listKeys } from "../../../../Utils/arm/generatedClients/cosmos/databaseAccounts";
+import { acquireMsalTokenForAccount } from "../../../../Utils/AuthorizationUtils";
 import { CassandraShellHandler } from "./CassandraShellHandler";
+import { CosmosDBShellHandler } from "./CosmosDBShellHandler";
 import { MongoShellHandler } from "./MongoShellHandler";
 import { PostgresShellHandler } from "./PostgresShellHandler";
 import { getHandler, getKey } from "./ShellTypeFactory";
@@ -30,6 +32,11 @@ jest.mock("../../../../UserContext", () => ({
 
 jest.mock("../../../../Utils/arm/generatedClients/cosmos/databaseAccounts", () => ({
   listKeys: jest.fn(),
+}));
+
+jest.mock("../../../../Utils/AuthorizationUtils", () => ({
+  ...jest.requireActual("../../../../Utils/AuthorizationUtils"),
+  acquireMsalTokenForAccount: jest.fn(),
 }));
 
 describe("ShellTypeHandlerFactory", () => {
@@ -69,7 +76,7 @@ describe("ShellTypeHandlerFactory", () => {
       type DatabaseAccountType = { name: string };
       (userContext.databaseAccount as DatabaseAccountType).name = "";
 
-      const key = await getKey();
+      const key = await getKey(false);
       expect(key).toBe("");
       expect(listKeys).not.toHaveBeenCalled();
 
@@ -80,7 +87,7 @@ describe("ShellTypeHandlerFactory", () => {
     it("should return empty string when listKeys returns null", async () => {
       (listKeys as jest.Mock).mockResolvedValue(null);
 
-      const key = await getKey();
+      const key = await getKey(false);
       expect(key).toBe("");
     });
 
@@ -89,7 +96,7 @@ describe("ShellTypeHandlerFactory", () => {
         /* no primaryMasterKey */
       });
 
-      const key = await getKey();
+      const key = await getKey(false);
       expect(key).toBe("");
     });
   });
@@ -116,10 +123,34 @@ describe("ShellTypeHandlerFactory", () => {
       expect(handler).toBeInstanceOf(CassandraShellHandler);
     });
 
+    it("should return CosmosDBShellHandler with key for CosmosDB terminal kind", async () => {
+      const handler = await getHandler(TerminalKind.CosmosDB);
+      expect(handler).toBeInstanceOf(CosmosDBShellHandler);
+    });
+
     it("should get key successfully when database name exists", async () => {
-      const key = await getKey();
+      const key = await getKey(false);
       expect(key).toBe(mockKey);
       expect(listKeys).toHaveBeenCalledWith("testSubId", "testResourceGroup", "testDbName");
+    });
+
+    it("should return the aadToken without listing keys when Entra ID auth is requested", async () => {
+      (userContext as UserContextType).aadToken = "aadToken123";
+
+      const key = await getKey(true);
+      expect(key).toBe("aadToken123");
+      expect(listKeys).not.toHaveBeenCalled();
+      expect(acquireMsalTokenForAccount).not.toHaveBeenCalled();
+    });
+
+    it("should acquire a token when Entra ID auth is requested but no cached token exists", async () => {
+      (userContext as UserContextType).aadToken = undefined;
+      (acquireMsalTokenForAccount as jest.Mock).mockResolvedValue("freshToken123");
+
+      const key = await getKey(true);
+      expect(key).toBe("freshToken123");
+      expect(listKeys).not.toHaveBeenCalled();
+      expect(acquireMsalTokenForAccount).toHaveBeenCalled();
     });
 
     it("should return MongoShellHandler with primaryMasterKey for TerminalKind.Mongo when RBAC is disabled", async () => {

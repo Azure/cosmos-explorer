@@ -406,6 +406,7 @@ export enum TerminalKind {
   Cassandra = 2,
   Postgres = 3,
   VCoreMongo = 4,
+  CosmosDB = 5,
 }
 
 export interface DataExplorerInputsFrame {

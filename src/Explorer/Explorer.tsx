@@ -666,6 +666,10 @@ export default class Explorer {
         title = "Mongo Shell";
         break;
 
+      case ViewModels.TerminalKind.CosmosDB:
+        title = "Cosmos DB Shell";
+        break;
+
       default:
         throw new Error("Terminal kind: ${kind} not supported");
     }
