@@ -1,6 +1,6 @@
 import { TerminalKind } from "../../../../Contracts/ViewModels";
 import { userContext } from "../../../../UserContext";
-import { listKeys } from "../../../../Utils/arm/generatedClients/cosmos/databaseAccounts";
+import { getReadOnlyKeys, listKeys } from "../../../../Utils/arm/generatedClients/cosmos/databaseAccounts";
 import {
   acquireMsalTokenForAccount,
   getMsalInstance,
@@ -47,8 +47,10 @@ export async function getHandler(shellType: TerminalKind): Promise<AbstractShell
  * 1. Entra ID data-plane token — the cached `userContext.aadToken`, or a silently minted
  *    one. Silent acquisition is only attempted when an MSAL account is already cached so
  *    it can never trigger an interactive popup.
- * 2. Account master key via ARM `listKeys` — used when no token applies or none could be
- *    resolved, and skipped when the account has local auth disabled (keys do not exist).
+ * 2. Account master key — the key Data Explorer already resolved (`userContext.masterKey`),
+ *    or, if that is not populated, one fetched via ARM (`listKeys`, falling back to
+ *    `getReadOnlyKeys` for read-only callers, mirroring `fetchAndUpdateKeys`). Skipped when
+ *    the account has local auth disabled (keys do not exist).
  *
  * Returns `undefined` when nothing could be resolved, which makes the handler surface
  * actionable guidance instead of letting the tool attempt its own sign-in.
@@ -74,7 +76,7 @@ export async function getCosmosDBShellCredential(): Promise<CosmosDBShellCredent
     return undefined;
   }
 
-  const key = await tryGetPrimaryMasterKey(dbName);
+  const key = await resolveAccountKey(dbName);
   return key ? { kind: "key", value: key } : undefined;
 }
 
@@ -100,11 +102,30 @@ async function resolveCosmosDataPlaneToken(): Promise<string> {
   }
 }
 
-async function tryGetPrimaryMasterKey(dbName: string): Promise<string> {
+async function resolveAccountKey(dbName: string): Promise<string> {
+  // Prefer the key Data Explorer already resolved for this account so the shell reuses the
+  // exact credential DE is connected with and avoids a redundant ARM round-trip.
+  if (userContext.masterKey) {
+    return userContext.masterKey;
+  }
+
+  // Otherwise fetch it the same way DE's own `fetchAndUpdateKeys` does: try the read-write
+  // keys, and fall back to the read-only keys when the caller only has read access (ARM
+  // returns "AuthorizationFailed"). Without this fallback a read-only user gets no
+  // credential at all and the shell cannot connect.
   try {
     const keys = await listKeys(userContext.subscriptionId, userContext.resourceGroup, dbName);
     return keys?.primaryMasterKey || "";
   } catch (error) {
+    if (error?.code === "AuthorizationFailed") {
+      try {
+        const readOnlyKeys = await getReadOnlyKeys(userContext.subscriptionId, userContext.resourceGroup, dbName);
+        return readOnlyKeys?.primaryReadonlyMasterKey || "";
+      } catch (readOnlyError) {
+        console.error("Failed to list read-only account keys for the Cloud Shell", readOnlyError);
+        return "";
+      }
+    }
     console.error("Failed to list account keys for the Cloud Shell", error);
     return "";
   }

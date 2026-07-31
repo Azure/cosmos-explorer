@@ -1,6 +1,6 @@
 import { TerminalKind } from "../../../../Contracts/ViewModels";
 import { userContext } from "../../../../UserContext";
-import { listKeys } from "../../../../Utils/arm/generatedClients/cosmos/databaseAccounts";
+import { getReadOnlyKeys, listKeys } from "../../../../Utils/arm/generatedClients/cosmos/databaseAccounts";
 import { acquireMsalTokenForAccount, getMsalInstance } from "../../../../Utils/AuthorizationUtils";
 import { CassandraShellHandler } from "./CassandraShellHandler";
 import { CosmosDBShellHandler } from "./CosmosDBShellHandler";
@@ -16,6 +16,7 @@ interface UserContextType {
   features: { enableAadDataPlane: boolean };
   dataPlaneRbacEnabled: boolean;
   aadToken?: string;
+  masterKey?: string;
   apiType?: string;
 }
 
@@ -32,6 +33,7 @@ jest.mock("../../../../UserContext", () => ({
 
 jest.mock("../../../../Utils/arm/generatedClients/cosmos/databaseAccounts", () => ({
   listKeys: jest.fn(),
+  getReadOnlyKeys: jest.fn(),
 }));
 
 jest.mock("../../../../Utils/AuthorizationUtils", () => {
@@ -216,10 +218,43 @@ describe("ShellTypeHandlerFactory", () => {
   describe("getCosmosDBShellCredential", () => {
     beforeEach(() => {
       (userContext as UserContextType).aadToken = undefined;
+      (userContext as UserContextType).masterKey = undefined;
       (userContext as UserContextType).apiType = "SQL";
       (userContext as UserContextType).features.enableAadDataPlane = false;
       (userContext as UserContextType).dataPlaneRbacEnabled = false;
       (userContext as UserContextType).databaseAccount.properties = { disableLocalAuth: false };
+    });
+
+    it("should reuse the master key Data Explorer already resolved without calling ARM", async () => {
+      (userContext as UserContextType).masterKey = "cachedMasterKey";
+
+      const credential = await getCosmosDBShellCredential();
+
+      expect(credential).toEqual({ kind: "key", value: "cachedMasterKey" });
+      expect(listKeys).not.toHaveBeenCalled();
+      expect(getReadOnlyKeys).not.toHaveBeenCalled();
+    });
+
+    it("should fall back to the read-only keys when the caller lacks list-keys permission", async () => {
+      const authorizationFailed = Object.assign(new Error("AuthorizationFailed"), { code: "AuthorizationFailed" });
+      (listKeys as jest.Mock).mockRejectedValue(authorizationFailed);
+      (getReadOnlyKeys as jest.Mock).mockResolvedValue({ primaryReadonlyMasterKey: "readOnlyKey" });
+
+      const credential = await getCosmosDBShellCredential();
+
+      expect(credential).toEqual({ kind: "key", value: "readOnlyKey" });
+      expect(getReadOnlyKeys).toHaveBeenCalledWith("testSubId", "testResourceGroup", "testDbName");
+    });
+
+    it("should return undefined when both the read-write and read-only key fetches fail", async () => {
+      const authorizationFailed = Object.assign(new Error("AuthorizationFailed"), { code: "AuthorizationFailed" });
+      (listKeys as jest.Mock).mockRejectedValue(authorizationFailed);
+      (getReadOnlyKeys as jest.Mock).mockRejectedValue(new Error("Forbidden"));
+      jest.spyOn(console, "error").mockImplementation(() => undefined);
+
+      const credential = await getCosmosDBShellCredential();
+
+      expect(credential).toBeUndefined();
     });
 
     it("should return the account key when Entra ID auth is not enabled", async () => {
