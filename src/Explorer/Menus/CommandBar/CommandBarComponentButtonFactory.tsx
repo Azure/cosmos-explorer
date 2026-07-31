@@ -81,7 +81,11 @@ export function createStaticCommandBarButtons(
     }
   }
 
-  if (userContext.apiType === "SQL" && userContext.features.enableCloudShell) {
+  if (
+    userContext.apiType === "SQL" &&
+    userContext.features.enableCloudShell &&
+    userContext.features.enableCosmosDBShell
+  ) {
     addDivider();
     buttons.push(createOpenTerminalButtonByKind(container, ViewModels.TerminalKind.CosmosDB));
   }

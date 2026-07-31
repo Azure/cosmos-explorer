@@ -6,8 +6,8 @@ import { CassandraShellHandler } from "./CassandraShellHandler";
 import { CosmosDBShellHandler } from "./CosmosDBShellHandler";
 import { MongoShellHandler } from "./MongoShellHandler";
 import { PostgresShellHandler } from "./PostgresShellHandler";
-import { getCosmosDBShellCredential, getHandler, getKey } from "./ShellTypeFactory";
 import type { CosmosDBShellCredentialDiagnostics } from "./ShellTypeFactory";
+import { getCosmosDBShellCredential, getHandler, getKey } from "./ShellTypeFactory";
 import { VCoreMongoShellHandler } from "./VCoreMongoShellHandler";
 
 interface UserContextType {
