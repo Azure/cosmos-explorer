@@ -69,9 +69,17 @@ export async function getKey(useEntraIdAuth: boolean): Promise<string> {
       if (msalInstance.getAllAccounts().length === 0) {
         // No cached account to silently acquire against; a token request here would
         // require an interactive popup, which cannot complete in the Cloud Shell.
+        console.warn(
+          "CloudShell: no cached MSAL account available to mint a Cosmos data-plane token; " +
+            "the shell will fall back to the Azure CLI credential.",
+        );
         return "";
       }
-      return (await acquireMsalTokenForAccount(userContext.databaseAccount, true)) || "";
+      const token = (await acquireMsalTokenForAccount(userContext.databaseAccount, true)) || "";
+      if (!token) {
+        console.warn("CloudShell: silent Cosmos data-plane token acquisition returned an empty token.");
+      }
+      return token;
     } catch (error) {
       console.error("Failed to silently acquire a Cosmos data-plane token for the Cloud Shell", error);
       return "";

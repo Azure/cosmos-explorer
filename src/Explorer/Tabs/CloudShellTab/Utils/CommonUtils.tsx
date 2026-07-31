@@ -24,9 +24,15 @@ export const askConfirmation = async (terminal: Terminal, question: string): Pro
   terminal.focus();
   return new Promise<boolean>((resolve) => {
     const keyListener = terminal.onKey(({ key }: { key: string }) => {
+      const normalizedKey = key.toLowerCase();
+      // Only "y" or "n" are accepted. Any other key is ignored so an accidental
+      // keypress does not abort the flow; keep listening until a valid answer.
+      if (normalizedKey !== "y" && normalizedKey !== "n") {
+        return;
+      }
       keyListener.dispose();
       terminal.writeln(key);
-      return resolve(key.toLowerCase() === "y");
+      return resolve(normalizedKey === "y");
     });
   });
 };
