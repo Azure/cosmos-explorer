@@ -1,3 +1,4 @@
+import { configContext } from "../../../../ConfigContext";
 import { userContext } from "../../../../UserContext";
 import { isCloudShellEntraAuthEnabled } from "../../../../Utils/AuthorizationUtils";
 import { AbstractShellHandler } from "./AbstractShellHandler";
@@ -76,18 +77,21 @@ export class CosmosDBShellHandler extends AbstractShellHandler {
     // - A credential is available (`this.key`): it is exported out-of-band as an env
     //   var (COSMOSDB_SHELL_ACCOUNT_KEY for key auth, COSMOSDB_SHELL_TOKEN for a cached
     //   Entra token), which the tool reads natively — no connect flag needed.
-    // - No credential is available (`!this.key`): we force the Azure CLI credential.
-    //   Otherwise the tool falls back to DefaultAzureCredential, which in Azure Cloud
-    //   Shell always tries the managed identity (live IMDS endpoint) first — and that
-    //   fails outright for Cosmos with "AudienceNotSupported" because the Cloud Shell
-    //   MSI cannot mint a token for the *.documents.azure.com audience. Even when it
-    //   can, the MSI usually lacks Cosmos data-plane RBAC (403). `--connect-azure-cli`
-    //   deterministically uses the signed-in `az` session identity instead (and
-    //   attaches an ARM context for resource ops). It is mutually exclusive with the
-    //   credential env vars, which the tool rejects — but we only add it when none is
-    //   exported.
+    // - No credential is available (`!this.key`): select the shell's interactive Entra
+    //   flow by supplying a tenant. InteractiveBrowserCredential cannot launch a browser
+    //   in the headless Cloud Shell, so the tool falls back to DeviceCodeCredential and
+    //   prints a login URL and code in the terminal. This does not depend on `az login`.
+    //   It also avoids DefaultAzureCredential, whose managed identity path fails for the
+    //   Cosmos audience with AudienceNotSupported in this environment.
     if (!this.key) {
-      args.push("--connect-azure-cli");
+      args.push(`--connect-tenant '${userContext.tenantId || "organizations"}'`);
+      if (configContext.AAD_ENDPOINT) {
+        args.push(`--connect-authority-host '${configContext.AAD_ENDPOINT}'`);
+      }
+      if (userContext.subscriptionId && userContext.resourceGroup) {
+        args.push(`--connect-subscription '${userContext.subscriptionId}'`);
+        args.push(`--connect-resource-group '${userContext.resourceGroup}'`);
+      }
     }
 
     args.push("--verbose");

@@ -2,9 +2,17 @@ import { isCloudShellEntraAuthEnabled } from "../../../../Utils/AuthorizationUti
 import { CosmosDBShellHandler } from "./CosmosDBShellHandler";
 
 // Mock dependencies
+jest.mock("../../../../ConfigContext", () => ({
+  configContext: {
+    AAD_ENDPOINT: "https://login.microsoftonline.com/",
+  },
+}));
+
 jest.mock("../../../../UserContext", () => ({
   userContext: {
     tenantId: "test-tenant-id",
+    subscriptionId: "test-subscription-id",
+    resourceGroup: "test-resource-group",
     databaseAccount: {
       properties: {
         documentEndpoint: "https://test-account.documents.azure.com:443/",
@@ -93,35 +101,36 @@ describe("CosmosDBShellHandler", () => {
       expect(connectionCommand).not.toContain("--connect-tenant");
     });
 
-    it("should use the Azure CLI credential on the Entra ID path when no token was fetched", () => {
+    it("should use interactive Entra authentication when no token was fetched", () => {
       (isCloudShellEntraAuthEnabled as jest.Mock).mockReturnValue(true);
       const handler = new CosmosDBShellHandler("");
       const connectionCommand = handler.getConnectionCommand();
 
       expect(connectionCommand).toBe(
-        "cosmosdbshell --connect 'https://test-account.documents.azure.com:443/' --connect-mode gateway --connect-azure-cli --verbose",
+        "cosmosdbshell --connect 'https://test-account.documents.azure.com:443/' --connect-mode gateway --connect-tenant 'test-tenant-id' --connect-authority-host 'https://login.microsoftonline.com/' --connect-subscription 'test-subscription-id' --connect-resource-group 'test-resource-group' --verbose",
       );
+      expect(connectionCommand).not.toContain("--connect-azure-cli");
     });
 
-    it("should not use the Azure CLI credential when a token env var is exported", () => {
+    it("should not use interactive Entra authentication when a token env var is exported", () => {
       (isCloudShellEntraAuthEnabled as jest.Mock).mockReturnValue(true);
       const handler = new CosmosDBShellHandler("aadToken123");
 
-      expect(handler.getConnectionCommand()).not.toContain("--connect-azure-cli");
+      expect(handler.getConnectionCommand()).not.toContain("--connect-tenant");
     });
 
-    it("should use the Azure CLI credential when no credential could be resolved on the key-auth path", () => {
+    it("should use interactive Entra authentication when no credential could be resolved on the key-auth path", () => {
       (isCloudShellEntraAuthEnabled as jest.Mock).mockReturnValue(false);
       const handler = new CosmosDBShellHandler("");
 
-      expect(handler.getConnectionCommand()).toContain("--connect-azure-cli");
+      expect(handler.getConnectionCommand()).toContain("--connect-tenant 'test-tenant-id'");
     });
 
-    it("should not use the Azure CLI credential when an account key env var is exported", () => {
+    it("should not use interactive Entra authentication when an account key env var is exported", () => {
       (isCloudShellEntraAuthEnabled as jest.Mock).mockReturnValue(false);
       const handler = new CosmosDBShellHandler("someKey");
 
-      expect(handler.getConnectionCommand()).not.toContain("--connect-azure-cli");
+      expect(handler.getConnectionCommand()).not.toContain("--connect-tenant");
     });
 
     it("should return empty array for terminal suppressed data", () => {

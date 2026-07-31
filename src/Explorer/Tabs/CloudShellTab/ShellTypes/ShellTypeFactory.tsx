@@ -51,8 +51,8 @@ export async function getHandler(shellType: TerminalKind): Promise<AbstractShell
  * is not logged in ("Please run 'az login'"). The silent acquisition is only attempted
  * when an MSAL account is already cached, so it can never fall back to an interactive
  * popup (popups cannot complete inside the hosted Cloud Shell context). On any failure
- * an empty string is returned so no credential is exported and the shell tool falls
- * through to its Azure CLI credential.
+ * an empty string is returned so no credential is exported and the shell tool uses its
+ * interactive Entra flow, with device-code authentication as the headless fallback.
  */
 export async function getKey(useEntraIdAuth: boolean): Promise<string> {
   const dbName = userContext.databaseAccount.name;
@@ -71,7 +71,7 @@ export async function getKey(useEntraIdAuth: boolean): Promise<string> {
         // require an interactive popup, which cannot complete in the Cloud Shell.
         console.warn(
           "CloudShell: no cached MSAL account available to mint a Cosmos data-plane token; " +
-            "the shell will fall back to the Azure CLI credential.",
+            "the shell will use interactive device-code authentication.",
         );
         return "";
       }
