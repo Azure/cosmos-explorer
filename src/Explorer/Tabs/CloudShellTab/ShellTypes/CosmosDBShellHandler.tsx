@@ -110,6 +110,14 @@ export class CosmosDBShellHandler extends AbstractShellHandler {
     // direct (TCP) mode for real accounts, and Azure Cloud Shell blocks the
     // direct-mode TCP ports, causing the connection to fail. `--verbose` surfaces
     // the full exception details when a connection attempt fails.
+    //
+    // Surface which credential kind Explorer resolved in the browser console. A wrong
+    // guess here (e.g. a token when the account actually needs a key) otherwise fails
+    // silently inside the remote shell with no client-side signal to debug against.
+    console.warn(`CloudShell: connecting to Cosmos DB shell with a "${this.credential.kind}" credential`, {
+      endpoint: this._endpoint,
+    });
+
     return this.credential.kind === "key"
       ? this._getKeyConnectionCommand(this.credential.value)
       : this._getTokenConnectionCommand(this.credential.value);
