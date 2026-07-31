@@ -14,6 +14,13 @@ import {
 } from "../Models/DataModels";
 import { getLocale } from "../Utils/CommonUtils";
 
+// armRequest defaults to a 5s timeout with no retry for PUT/POST. Cloud Shell provisioning
+// (registering the provider, applying settings, and provisioning the console itself) can
+// legitimately take much longer than that on first use or when the console region differs
+// from the user's usual region, so a much more generous timeout is used for these calls to
+// avoid a spurious AbortError ("User aborted query.") aborting the whole session start.
+const CLOUDSHELL_ARM_TIMEOUT_MS = 30000;
+
 export const getUserSettings = async (): Promise<CloudShellSettings> => {
   return await armRequest<CloudShellSettings>({
     host: configContext.ARM_ENDPOINT,
@@ -51,6 +58,7 @@ export const putEphemeralUserSettings = async (
     method: "PUT",
     apiVersion: "2023-02-01-preview",
     body: ephemeralSettings,
+    timeoutMs: CLOUDSHELL_ARM_TIMEOUT_MS,
   });
 };
 
@@ -69,6 +77,7 @@ export const registerCloudShellProvider = async (subscriptionId: string) => {
     path: `/subscriptions/${subscriptionId}/providers/Microsoft.CloudShell/register`,
     method: "POST",
     apiVersion: "2022-12-01",
+    timeoutMs: CLOUDSHELL_ARM_TIMEOUT_MS,
   });
 };
 
@@ -88,6 +97,7 @@ export const provisionConsole = async (consoleLocation: string): Promise<Provisi
       "x-ms-console-preferred-location": consoleLocation,
     },
     body: data,
+    timeoutMs: CLOUDSHELL_ARM_TIMEOUT_MS,
   });
 };
 
