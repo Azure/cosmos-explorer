@@ -35,6 +35,7 @@ export type Features = {
   readonly disableConnectionStringLogin: boolean;
   readonly enableContainerCopy: boolean;
   readonly enableCloudShell: boolean;
+  readonly enableCosmosDBShell: boolean;
   readonly enableRestoreContainer: boolean; // only for Fabric
   readonly mongoDisableNativeAuth: boolean;
 
@@ -104,6 +105,7 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     enableContainerCopy: "true" === get("enablecontainercopy"),
     enableRestoreContainer: "true" === get("enablerestorecontainer"),
     enableCloudShell: true,
+    enableCosmosDBShell: "true" === get("enablecosmosdbshell"),
     mongoDisableNativeAuth: "true" === get("mongodisablenativeauth"),
   };
 }

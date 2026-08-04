@@ -127,6 +127,7 @@ describe("CloudShellClient", () => {
             vnetSettings: {},
           },
         },
+        timeoutMs: 30000,
       });
       expect(result).toEqual(mockResponse);
     });
@@ -154,6 +155,7 @@ describe("CloudShellClient", () => {
             vnetSettings: mockVNetSettings,
           },
         },
+        timeoutMs: 30000,
       });
     });
 
@@ -212,6 +214,7 @@ describe("CloudShellClient", () => {
         path: "/subscriptions/sub-id/providers/Microsoft.CloudShell/register",
         method: "POST",
         apiVersion: "2022-12-01",
+        timeoutMs: 30000,
       });
       expect(result).toEqual(mockResponse);
     });
@@ -227,6 +230,7 @@ describe("CloudShellClient", () => {
         path: "/subscriptions/sub-id/providers/Microsoft.CloudShell/register",
         method: "POST",
         apiVersion: "2022-12-01",
+        timeoutMs: 30000,
       });
     });
   });
@@ -251,6 +255,7 @@ describe("CloudShellClient", () => {
             osType: OsType.Linux,
           },
         },
+        timeoutMs: 30000,
       });
       expect(result).toEqual(mockResponse);
     });
@@ -274,6 +279,7 @@ describe("CloudShellClient", () => {
             osType: OsType.Linux,
           },
         },
+        timeoutMs: 30000,
       });
     });
   });
