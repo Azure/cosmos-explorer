@@ -1,6 +1,5 @@
 import { IDropdownOption } from "@fluentui/react";
 import { VectorIndex } from "Contracts/DataModels";
-import { Keys, t } from "Localization";
 
 const dataTypes = ["float32", "uint8", "int8", "float16"];
 const distanceFunctions = ["euclidean", "cosine", "dotproduct"];
@@ -10,8 +9,8 @@ export const getDataTypeOptions = (): IDropdownOption[] => createDropdownOptions
 export const getDistanceFunctionOptions = (): IDropdownOption[] => createDropdownOptionsFromLiterals(distanceFunctions);
 export const getIndexTypeOptions = (): IDropdownOption[] => createDropdownOptionsFromLiterals(indexTypes);
 export const getQuantizerTypeOptions = (): IDropdownOption[] => [
+  { key: "spherical", text: "Spherical" },
   { key: "product", text: "Product" },
-  { key: "spherical", text: `Spherical (${t(Keys.common.preview)})` },
 ];
 
 export const supportsQuantization = (indexType: VectorIndex["type"] | "none" | undefined): boolean =>

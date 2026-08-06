@@ -166,7 +166,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
         indexType: matchingType || "none",
         indexingSearchListSize: matchingIndex?.indexingSearchListSize || undefined,
         quantizationByteSize: matchingIndex?.quantizationByteSize || undefined,
-        quantizerType: supportsQuantizer ? matchingIndex?.quantizerType || "product" : undefined,
+        quantizerType: supportsQuantizer ? matchingIndex?.quantizerType || "spherical" : undefined,
         vectorIndexShardKey: matchingIndex?.vectorIndexShardKey || undefined,
         pathError: onVectorEmbeddingPathError(embedding.path),
         dimensionsError: onVectorEmbeddingDimensionError(embedding.dimensions, matchingIndex?.type || "none"),
@@ -256,7 +256,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
       vectorEmbedding.indexingSearchListSize = undefined;
     }
     if (supportsQuantization(vectorEmbedding.indexType)) {
-      vectorEmbedding.quantizerType = vectorEmbedding.quantizerType || "product";
+      vectorEmbedding.quantizerType = vectorEmbedding.quantizerType || "spherical";
     } else {
       vectorEmbedding.quantizerType = undefined;
     }
