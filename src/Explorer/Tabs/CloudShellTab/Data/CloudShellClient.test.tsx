@@ -348,6 +348,16 @@ describe("CloudShellClient", () => {
       const terminalId = "terminal-id";
       const size = { rows: 40, cols: 120 };
 
+      global.fetch = jest.fn().mockImplementationOnce(() => {
+        return {
+          ok: true,
+          status: 200,
+          json: jest.fn().mockResolvedValue({}),
+          text: jest.fn().mockResolvedValue(""),
+          headers: new Headers(),
+        } as unknown as Promise<Response>;
+      });
+
       await resizeTerminal(consoleUri, terminalId, size);
 
       expect(global.fetch).toHaveBeenCalledWith(
