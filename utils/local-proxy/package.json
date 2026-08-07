@@ -13,5 +13,9 @@
   "dependencies": {
     "express": "^4.21.1",
     "http-proxy-middleware": "^3.0.3"
+  },
+  "overrides": {
+    "path-to-regexp": "0.1.13",
+    "picomatch": "2.3.2"
   }
 }
