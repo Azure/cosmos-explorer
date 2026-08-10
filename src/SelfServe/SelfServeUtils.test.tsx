@@ -1,42 +1,60 @@
 import { NumberUiType, OnSaveResult, RefreshResult, SelfServeBaseClass, SmartUiInput } from "./SelfServeTypes";
-import { DecoratorProperties, mapToSmartUiDescriptor, updateContextWithDecorator } from "./SelfServeUtils";
+import {
+  DecoratorProperties,
+  mapToSmartUiDescriptor,
+  SelfServeType,
+  updateContextWithDecorator,
+} from "./SelfServeUtils";
 
 describe("SelfServeUtils", () => {
+  const getSelfServeTypeExample = (): SelfServeType => {
+    return SelfServeType.example;
+  };
+
   it("initialize should be declared for self serve classes", () => {
-    class Test extends SelfServeBaseClass {
+    class SelfServeExample extends SelfServeBaseClass {
       public initialize: () => Promise<Map<string, SmartUiInput>>;
       public onSave: (currentValues: Map<string, SmartUiInput>) => Promise<OnSaveResult>;
       public onRefresh: () => Promise<RefreshResult>;
+      public getSelfServeType = (): SelfServeType => getSelfServeTypeExample();
     }
-    expect(() => new Test().toSelfServeDescriptor()).toThrow("initialize() was not declared for the class 'Test'");
+    expect(() => new SelfServeExample().toSelfServeDescriptor()).toThrow(
+      "initialize() was not declared for the class 'SelfServeExample'",
+    );
   });
-
   it("onSave should be declared for self serve classes", () => {
-    class Test extends SelfServeBaseClass {
+    class SelfServeExample extends SelfServeBaseClass {
       public initialize = jest.fn();
       public onSave: () => Promise<OnSaveResult>;
       public onRefresh: () => Promise<RefreshResult>;
+      public getSelfServeType = (): SelfServeType => getSelfServeTypeExample();
     }
-    expect(() => new Test().toSelfServeDescriptor()).toThrow("onSave() was not declared for the class 'Test'");
+    expect(() => new SelfServeExample().toSelfServeDescriptor()).toThrow(
+      "onSave() was not declared for the class 'SelfServeExample'",
+    );
   });
 
   it("onRefresh should be declared for self serve classes", () => {
-    class Test extends SelfServeBaseClass {
+    class SelfServeExample extends SelfServeBaseClass {
       public initialize = jest.fn();
       public onSave = jest.fn();
       public onRefresh: () => Promise<RefreshResult>;
+      public getSelfServeType = (): SelfServeType => getSelfServeTypeExample();
     }
-    expect(() => new Test().toSelfServeDescriptor()).toThrow("onRefresh() was not declared for the class 'Test'");
+    expect(() => new SelfServeExample().toSelfServeDescriptor()).toThrow(
+      "onRefresh() was not declared for the class 'SelfServeExample'",
+    );
   });
 
   it("@IsDisplayable decorator must be present for self serve classes", () => {
-    class Test extends SelfServeBaseClass {
+    class SelfServeExample extends SelfServeBaseClass {
       public initialize = jest.fn();
       public onSave = jest.fn();
       public onRefresh = jest.fn();
+      public getSelfServeType = (): SelfServeType => getSelfServeTypeExample();
     }
-    expect(() => new Test().toSelfServeDescriptor()).toThrow(
-      "@IsDisplayable decorator was not declared for the class 'Test'",
+    expect(() => new SelfServeExample().toSelfServeDescriptor()).toThrow(
+      "@IsDisplayable decorator was not declared for the class 'SelfServeExample'",
     );
   });
 
