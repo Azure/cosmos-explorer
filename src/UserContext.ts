@@ -36,6 +36,7 @@ export interface Node {
 
 export interface PostgresConnectionStrParams {
   adminLogin: string;
+  databaseName: string;
   enablePublicIpAccess: boolean;
   nodes: Node[];
   isMarlinServerGroup: boolean;
