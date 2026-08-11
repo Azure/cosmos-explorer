@@ -2,6 +2,7 @@ import {
   DefaultButton,
   Dropdown,
   IDropdownOption,
+  ILabelStyleProps,
   IStyleFunctionOrObject,
   ITextFieldStyleProps,
   ITextFieldStyles,
@@ -18,6 +19,7 @@ import {
   getIndexTypeOptions,
   getQuantizerTypeOptions,
   supportsQuantization,
+  supportsQuantizationByteSize,
 } from "Explorer/Controls/VectorSearch/VectorSearchUtils";
 import { Keys, t } from "Localization";
 import React, { FunctionComponent, useState } from "react";
@@ -54,11 +56,13 @@ export interface VectorEmbeddingPolicyData {
 
 type VectorEmbeddingPolicyProperty = "dataType" | "distanceFunction" | "indexType";
 
-const labelStyles = {
-  root: {
-    fontSize: 12,
-    color: "var(--colorNeutralForeground1)",
-  },
+const labelStyles = (props: ILabelStyleProps) => {
+  return {
+    root: {
+      fontSize: 12,
+      color: props.disabled ? "var(--colorNeutralForeground3)" : "var(--colorNeutralForeground1)",
+    },
+  };
 };
 
 const textFieldStyles: IStyleFunctionOrObject<ITextFieldStyleProps, ITextFieldStyles> = {
@@ -260,12 +264,19 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
     } else {
       vectorEmbedding.quantizerType = undefined;
     }
+    if (!supportsQuantizationByteSize(vectorEmbedding.quantizerType)) {
+      vectorEmbedding.quantizationByteSize = undefined;
+    }
     setVectorEmbeddingPolicyData(vectorEmbeddings);
   };
 
   const onQuantizerTypeChange = (index: number, option: IDropdownOption): void => {
     const vectorEmbeddings = [...vectorEmbeddingPolicyData];
-    vectorEmbeddings[index].quantizerType = option.key as VectorIndex["quantizerType"];
+    const quantizerType = option.key as VectorIndex["quantizerType"];
+    vectorEmbeddings[index].quantizerType = quantizerType;
+    if (!supportsQuantizationByteSize(quantizerType)) {
+      vectorEmbeddings[index].quantizationByteSize = undefined;
+    }
     setVectorEmbeddingPolicyData(vectorEmbeddings);
   };
 
@@ -442,30 +453,6 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
                         }
                         styles={labelStyles}
                       >
-                        {t(Keys.controls.vectorEmbeddingPolicies.quantizationByteSize)}
-                        <InfoTooltip>{getQuantizationByteSizeTooltipContent()}</InfoTooltip>
-                      </Label>
-                      <TextField
-                        disabled={
-                          isExistingPolicy(vectorEmbeddingPolicy) ||
-                          !supportsQuantization(vectorEmbeddingPolicy.indexType)
-                        }
-                        id={`vector-policy-quantizationByteSize-${index + 1}`}
-                        styles={textFieldStyles}
-                        value={String(vectorEmbeddingPolicy.quantizationByteSize || "")}
-                        onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                          onQuantizationByteSizeChange(index, event)
-                        }
-                      />
-                    </Stack>
-                    <Stack style={{ marginLeft: "10px" }}>
-                      <Label
-                        disabled={
-                          isExistingPolicy(vectorEmbeddingPolicy) ||
-                          !supportsQuantization(vectorEmbeddingPolicy.indexType)
-                        }
-                        styles={labelStyles}
-                      >
                         {t(Keys.controls.vectorEmbeddingPolicies.quantizerType)}
                         <InfoTooltip>{t(Keys.controls.vectorEmbeddingPolicies.quantizerTypeTooltip)}</InfoTooltip>
                       </Label>
@@ -480,6 +467,32 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
                         selectedKey={vectorEmbeddingPolicy.quantizerType ?? null}
                         onChange={(_event: React.FormEvent<HTMLDivElement>, option: IDropdownOption) =>
                           onQuantizerTypeChange(index, option)
+                        }
+                      />
+                    </Stack>
+                    <Stack style={{ marginLeft: "10px" }}>
+                      <Label
+                        disabled={
+                          isExistingPolicy(vectorEmbeddingPolicy) ||
+                          !supportsQuantization(vectorEmbeddingPolicy.indexType) ||
+                          !supportsQuantizationByteSize(vectorEmbeddingPolicy.quantizerType)
+                        }
+                        styles={labelStyles}
+                      >
+                        {t(Keys.controls.vectorEmbeddingPolicies.quantizationByteSize)}
+                        <InfoTooltip>{getQuantizationByteSizeTooltipContent()}</InfoTooltip>
+                      </Label>
+                      <TextField
+                        disabled={
+                          isExistingPolicy(vectorEmbeddingPolicy) ||
+                          !supportsQuantization(vectorEmbeddingPolicy.indexType) ||
+                          !supportsQuantizationByteSize(vectorEmbeddingPolicy.quantizerType)
+                        }
+                        id={`vector-policy-quantizationByteSize-${index + 1}`}
+                        styles={textFieldStyles}
+                        value={String(vectorEmbeddingPolicy.quantizationByteSize || "")}
+                        onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                          onQuantizationByteSizeChange(index, event)
                         }
                       />
                     </Stack>
