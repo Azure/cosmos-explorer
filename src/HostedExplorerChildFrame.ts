@@ -15,8 +15,8 @@ export interface AAD {
 export interface ConnectionString {
   authType: AuthType.ConnectionString;
   // SQL, Tables, and Gremlin sign data-plane requests client-side with the master key and do not need the
-  // Portal Backend proxy, so they carry no encrypted token. Mongo and Cassandra still use the encrypted
-  // token because their operations go through the Portal Backend proxy.
+  // backend proxy, so they carry no encrypted token. Mongo and Cassandra still use the encrypted
+  // token because their operations go through the backend proxy.
   encryptedToken?: string;
   encryptedTokenMetadata: AccessInputMetadata;
   // Master key is used for the client-side signing path (SQL, Tables, Gremlin). Mongo/Cassandra leave it undefined.
