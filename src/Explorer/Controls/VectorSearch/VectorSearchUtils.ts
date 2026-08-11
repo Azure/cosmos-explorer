@@ -16,6 +16,9 @@ export const getQuantizerTypeOptions = (): IDropdownOption[] => [
 export const supportsQuantization = (indexType: VectorIndex["type"] | "none" | undefined): boolean =>
   indexType === "quantizedFlat" || indexType === "diskANN";
 
+export const supportsQuantizationByteSize = (quantizerType: VectorIndex["quantizerType"] | undefined): boolean =>
+  quantizerType === "product";
+
 function createDropdownOptionsFromLiterals<T extends string>(literals: T[]): IDropdownOption[] {
   return literals.map((value) => ({
     key: value,
