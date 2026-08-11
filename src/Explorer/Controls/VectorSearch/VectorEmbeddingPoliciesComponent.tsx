@@ -33,7 +33,7 @@ export interface IVectorEmbeddingPoliciesComponentProps {
   vectorIndexes?: VectorIndex[];
   discardChanges?: boolean;
   onChangesDiscarded?: () => void;
-  isGlobalSecondaryIndex?: boolean;
+  isGlobalSecondaryIndexTarget?: boolean;
 }
 
 export interface VectorEmbeddingPolicyData {
@@ -95,7 +95,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
   onVectorEmbeddingChange,
   discardChanges,
   onChangesDiscarded,
-  isGlobalSecondaryIndex,
+  isGlobalSecondaryIndexTarget,
 }): JSX.Element => {
   const isExistingPolicy = (policy: VectorEmbeddingPolicyData): boolean => {
     if (!vectorEmbeddingsBaseline || vectorEmbeddingsBaseline.length === 0) {
@@ -166,7 +166,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
         indexType: matchingType || "none",
         indexingSearchListSize: matchingIndex?.indexingSearchListSize || undefined,
         quantizationByteSize: matchingIndex?.quantizationByteSize || undefined,
-        quantizerType: supportsQuantizer ? matchingIndex?.quantizerType || "product" : undefined,
+        quantizerType: supportsQuantizer ? matchingIndex?.quantizerType || "spherical" : undefined,
         vectorIndexShardKey: matchingIndex?.vectorIndexShardKey || undefined,
         pathError: onVectorEmbeddingPathError(embedding.path),
         dimensionsError: onVectorEmbeddingDimensionError(embedding.dimensions, matchingIndex?.type || "none"),
@@ -256,7 +256,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
       vectorEmbedding.indexingSearchListSize = undefined;
     }
     if (supportsQuantization(vectorEmbedding.indexType)) {
-      vectorEmbedding.quantizerType = vectorEmbedding.quantizerType || "product";
+      vectorEmbedding.quantizerType = vectorEmbedding.quantizerType || "spherical";
     } else {
       vectorEmbedding.quantizerType = undefined;
     }
@@ -327,7 +327,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
   };
 
   const getQuantizationByteSizeTooltipContent = (): string => {
-    const containerName = isGlobalSecondaryIndex
+    const containerName = isGlobalSecondaryIndexTarget
       ? t(Keys.controls.vectorEmbeddingPolicies.quantizationByteSizeTooltipGlobalSecondaryIndexName)
       : t(Keys.controls.vectorEmbeddingPolicies.quantizationByteSizeTooltipContainerName);
     return t(Keys.controls.vectorEmbeddingPolicies.quantizationByteSizeTooltip, { containerName });

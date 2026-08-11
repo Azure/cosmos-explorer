@@ -14,7 +14,7 @@ export interface VectorSearchComponentProps {
   vectorIndexingPolicy: VectorIndex[];
   setVectorIndexingPolicy: React.Dispatch<React.SetStateAction<VectorIndex[]>>;
   setVectorPolicyValidated: React.Dispatch<React.SetStateAction<boolean>>;
-  isGlobalSecondaryIndex?: boolean;
+  isGlobalSecondaryIndexTarget?: boolean;
 }
 
 export const VectorSearchComponent = (props: VectorSearchComponentProps): JSX.Element => {
@@ -24,7 +24,7 @@ export const VectorSearchComponent = (props: VectorSearchComponentProps): JSX.El
     vectorIndexingPolicy,
     setVectorIndexingPolicy,
     setVectorPolicyValidated,
-    isGlobalSecondaryIndex,
+    isGlobalSecondaryIndexTarget,
   } = props;
 
   return (
@@ -52,7 +52,7 @@ export const VectorSearchComponent = (props: VectorSearchComponentProps): JSX.El
                 setVectorIndexingPolicy(vectorIndexingPolicy);
                 setVectorPolicyValidated(vectorPolicyValidated);
               }}
-              isGlobalSecondaryIndex={isGlobalSecondaryIndex}
+              isGlobalSecondaryIndexTarget={isGlobalSecondaryIndexTarget}
             />
           </Stack>
         </Stack>

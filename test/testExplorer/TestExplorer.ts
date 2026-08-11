@@ -3,7 +3,6 @@ import "../../less/hostedexplorer.less";
 import { DataExplorerInputsFrame } from "../../src/Contracts/ViewModels";
 import { updateUserContext } from "../../src/UserContext";
 import { get, listKeys } from "../../src/Utils/arm/generatedClients/cosmos/databaseAccounts";
-import { getNoSqlRbacToken } from "../NoSqlTestSetup";
 
 const urlSearchParams = new URLSearchParams(window.location.search);
 const resourceGroup = urlSearchParams.get("resourceGroup") || process.env.RESOURCE_GROUP || "";
@@ -16,7 +15,7 @@ const enablecontainercopy = urlSearchParams.get("enablecontainercopy");
 
 const nosqlRbacToken =
   urlSearchParams.get("nosqlRbacToken") ||
-  (enablecontainercopy ? process.env.NOSQL_CONTAINERCOPY_TESTACCOUNT_TOKEN : getNoSqlRbacToken()) ||
+  (enablecontainercopy ? process.env.NOSQL_CONTAINERCOPY_TESTACCOUNT_TOKEN : process.env.NOSQL_TESTACCOUNT_TOKEN) ||
   "";
 
 const nosqlReadOnlyRbacToken =
@@ -30,6 +29,7 @@ const mongoRbacToken = urlSearchParams.get("mongoRbacToken") || process.env.MONG
 const mongo32RbacToken = urlSearchParams.get("mongo32RbacToken") || process.env.MONGO32_TESTACCOUNT_TOKEN || "";
 const mongoReadOnlyRbacToken =
   urlSearchParams.get("mongoReadOnlyRbacToken") || process.env.MONGO_READONLY_TESTACCOUNT_TOKEN || "";
+const tenantId = urlSearchParams.get("tenantId") || process.env.AZURE_TENANT_ID || "";
 
 const initTestExplorer = async (): Promise<void> => {
   updateUserContext({
@@ -51,7 +51,7 @@ const initTestExplorer = async (): Promise<void> => {
     case "gremlin":
       rbacToken = gremlinRbacToken;
       break;
-    case "tables":
+    case "table":
       rbacToken = tableRbacToken;
       break;
     case "cassandra":
@@ -90,6 +90,7 @@ const initTestExplorer = async (): Promise<void> => {
       resourceGroup,
       authorizationToken: `Bearer ${authToken}`,
       aadToken: rbacToken,
+      tenantId,
       features: {},
       containerCopyEnabled: enablecontainercopy === "true",
       hasWriteAccess: true,

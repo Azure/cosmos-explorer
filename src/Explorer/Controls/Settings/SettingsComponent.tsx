@@ -179,7 +179,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   private shouldShowComputedPropertiesEditor: boolean;
   private shouldShowIndexingPolicyEditor: boolean;
   private shouldShowPartitionKeyEditor: boolean;
-  private isGlobalSecondaryIndex: boolean;
+  private isGlobalSecondaryIndexSource: boolean;
+  private isGlobalSecondaryIndexTarget: boolean;
   private isVectorSearchEnabled: boolean;
   private isFullTextSearchEnabled: boolean;
   private totalThroughputUsed: number;
@@ -197,8 +198,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.shouldShowComputedPropertiesEditor = userContext.apiType === "SQL";
       this.shouldShowIndexingPolicyEditor = userContext.apiType !== "Cassandra" && userContext.apiType !== "Mongo";
       this.shouldShowPartitionKeyEditor = userContext.apiType === "SQL" && isRunningOnPublicCloud();
-      this.isGlobalSecondaryIndex =
-        !!this.collection?.materializedViewDefinition() || !!this.collection?.materializedViews();
+      this.isGlobalSecondaryIndexSource = !!this.collection?.materializedViews();
+      this.isGlobalSecondaryIndexTarget = !!this.collection?.materializedViewDefinition();
       this.isVectorSearchEnabled = isVectorSearchEnabled() && !hasDatabaseSharedThroughput(this.collection);
       this.isFullTextSearchEnabled = userContext.apiType === "SQL";
 
@@ -1287,7 +1288,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       collection: this.collection,
       database: this.database,
       isFixedContainer: this.isFixedContainer,
-      isGlobalSecondaryIndex: this.isGlobalSecondaryIndex,
+      isGlobalSecondaryIndexTarget: this.isGlobalSecondaryIndexTarget,
       onThroughputChange: this.onThroughputChange,
       throughput: this.state.throughput,
       throughputBaseline: this.state.throughputBaseline,
@@ -1356,7 +1357,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       isFullTextSearchEnabled: this.isFullTextSearchEnabled,
       shouldDiscardContainerPolicies: this.state.shouldDiscardContainerPolicies,
       resetShouldDiscardContainerPolicyChange: this.resetShouldDiscardContainerPolicies,
-      isGlobalSecondaryIndex: this.isGlobalSecondaryIndex,
     };
 
     const indexingPolicyComponentProps: IndexingPolicyComponentProps = {
@@ -1509,7 +1509,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       });
     }
 
-    if (this.isGlobalSecondaryIndex) {
+    if (this.isGlobalSecondaryIndexTarget || this.isGlobalSecondaryIndexSource) {
       tabs.push({
         tab: SettingsV2TabTypes.GlobalSecondaryIndexTab,
         content: <GlobalSecondaryIndexComponent {...globalSecondaryIndexComponentProps} />,

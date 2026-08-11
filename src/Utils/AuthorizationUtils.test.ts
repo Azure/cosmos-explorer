@@ -17,6 +17,7 @@ describe("AuthorizationUtils", () => {
     updateUserContext({
       features: {
         enableContainerCopy: false,
+        enableCosmosDBShell: false,
         enableAadDataPlane: enabled,
         canExceedMaximumValue: false,
         cosmosdb: false,
