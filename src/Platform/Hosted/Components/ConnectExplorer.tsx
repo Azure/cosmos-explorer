@@ -1,5 +1,6 @@
 import { useBoolean } from "@fluentui/react-hooks";
 import { client } from "Common/CosmosClient";
+import { Keys, t } from "Localization";
 import { updateUserContext, userContext } from "UserContext";
 import * as React from "react";
 import ConnectImage from "../../../../images/HdeConnectCosmosDB.svg";
@@ -60,7 +61,7 @@ export const validateDirectConnectionStringConnectivity = async (
 ): Promise<string | undefined> => {
   const masterKey = extractAccountKeyFromConnectionString(connectionString);
   if (!metadata?.documentEndpoint || !masterKey) {
-    return "Unable to connect to the account with the provided connection string.";
+    return t(Keys.connectExplorer.errors.connectivityInvalid);
   }
 
   // Configure the client the same way the Data Explorer will, then issue a lightweight authenticated
@@ -76,7 +77,7 @@ export const validateDirectConnectionStringConnectivity = async (
     await client().getDatabaseAccount();
     return undefined;
   } catch {
-    return "Unable to connect to the account. Please verify the connection string is correct and that the account is reachable.";
+    return t(Keys.connectExplorer.errors.connectivityUnreachable);
   }
 };
 
@@ -148,9 +149,7 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
                   setEncryptedToken(encryptedToken);
                   setAuthType(AuthType.ConnectionString);
                 } catch (error) {
-                  setErrorMessage(
-                    "Failed to connect using the provided connection string. Please verify it is correct and try again.",
-                  );
+                  setErrorMessage(t(Keys.connectExplorer.errors.connectFailed));
                 }
               }}
             >

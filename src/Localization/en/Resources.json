@@ -1174,5 +1174,18 @@
         "retryConsoleMessage": "Data transfer job \"{{jobName}}\" in progress, total count: {{totalCount}}, processed count: {{processedCount}}"
       }
     }
+  },
+  "connectExplorer": {
+    "errors": {
+      "connectionStringMissing": "Connection string is missing.",
+      "accountNameMissing": "Account name is missing from the connection string.",
+      "endpointHostMissing": "Endpoint host is missing from the connection string.",
+      "endpointHostNotAllowed": "Endpoint host is not allowed.",
+      "accountNameMismatch": "Account name does not match the endpoint host.",
+      "accountKeyMissing": "Account key is missing from the connection string.",
+      "connectivityInvalid": "Unable to connect to the account with the provided connection string.",
+      "connectivityUnreachable": "Unable to connect to the account. Please verify the connection string is correct and that the account is reachable.",
+      "connectFailed": "Failed to connect using the provided connection string. Please verify it is correct and try again."
+    }
   }
 }

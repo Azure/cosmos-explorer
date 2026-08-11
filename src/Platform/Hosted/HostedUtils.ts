@@ -1,5 +1,6 @@
 import { AccountKind, CapabilityNames } from "../../Common/Constants";
 import { AccessInputMetadata, ApiKind } from "../../Contracts/DataModels";
+import { Keys, t } from "../../Localization";
 import { DefaultExperienceUtility } from "../../Shared/DefaultExperienceUtility";
 import { userContext } from "../../UserContext";
 
@@ -133,16 +134,16 @@ export function validateDirectConnectionStringLogin(
   metadata: AccessInputMetadata,
 ): string | undefined {
   if (!connectionString) {
-    return "Connection string is missing.";
+    return t(Keys.connectExplorer.errors.connectionStringMissing);
   }
 
   if (!metadata || !metadata.accountName) {
-    return "Account name is missing from the connection string.";
+    return t(Keys.connectExplorer.errors.accountNameMissing);
   }
 
   const host = extractEndpointHostFromConnectionString(connectionString);
   if (!host) {
-    return "Endpoint host is missing from the connection string.";
+    return t(Keys.connectExplorer.errors.endpointHostMissing);
   }
 
   // The host must belong to one of the allowlisted runtime endpoint zones.
@@ -150,17 +151,17 @@ export function validateDirectConnectionStringLogin(
     host.toLowerCase().endsWith(`.${zone.toLowerCase()}`),
   );
   if (!isAllowlistedHost) {
-    return "Endpoint host is not allowed.";
+    return t(Keys.connectExplorer.errors.endpointHostNotAllowed);
   }
 
   // The account name must be the first DNS label of the host.
   if (host.split(".")[0].toLowerCase() !== metadata.accountName.toLowerCase()) {
-    return "Account name does not match the endpoint host.";
+    return t(Keys.connectExplorer.errors.accountNameMismatch);
   }
 
   // Direct login signs requests with the account key, so it must be present in the connection string.
   if (!extractAccountKeyFromConnectionString(connectionString)) {
-    return "Account key is missing from the connection string.";
+    return t(Keys.connectExplorer.errors.accountKeyMissing);
   }
 
   return undefined;
