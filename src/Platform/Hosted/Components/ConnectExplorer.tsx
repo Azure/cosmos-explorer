@@ -52,9 +52,8 @@ export const isAccountRestrictedForConnectionStringLogin = async (connectionStri
 };
 
 // Verifies the account key can actually authenticate against the account by making a lightweight read of
-// the database account through the same Cosmos client the Data Explorer uses (client-side signing and
-// proxy routing). Returns undefined on success, or an error message when the client cannot connect, so
-// the caller can block opening the Data Explorer view.
+// the database account through the Cosmos client. Returns undefined on success, or an error message when 
+// the client cannot connect.
 export const validateDirectConnectionStringConnectivity = async (
   connectionString: string,
   metadata: AccessInputMetadata,
