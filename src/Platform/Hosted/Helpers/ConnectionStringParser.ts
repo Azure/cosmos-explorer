@@ -45,9 +45,7 @@ export function parseConnectionString(connectionString: string): AccessInputMeta
       }
 
       // For the APIs that log in directly through the Cosmos client (SQL, Tables, Gremlin), derive the
-      // endpoints client-side instead of Portal Backend's accessinputmetadata call. Tables
-      // connection strings only carry the table endpoint, so the document endpoint is always constructed
-      // from the account name. Gremlin also needs its graph endpoint for websocket queries.
+      // endpoints client-side instead of Portal Backend's accessinputmetadata call.
       if (accessInput.accountName) {
         if (
           accessInput.apiKind === ApiKind.SQL ||

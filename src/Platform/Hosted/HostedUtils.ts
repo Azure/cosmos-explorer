@@ -55,8 +55,7 @@ export function extractAccountKeyFromConnectionString(connectionString: string):
 }
 
 // SQL, Tables, and Gremlin can sign data-plane requests client-side with the account key, so they do
-// not need the Portal Backend proxy for connection-string login. Mongo and Cassandra still require the
-// proxy because they use wire protocols the browser cannot speak directly.
+// not need the Portal Backend proxy for connection-string login. Mongo and Cassandra still require the proxy.
 export function isDirectConnectionStringLoginApi(apiKind: ApiKind): boolean {
   return apiKind === ApiKind.SQL || apiKind === ApiKind.Table || apiKind === ApiKind.Graph;
 }
@@ -86,18 +85,10 @@ function extractHostToken(value: string, startIndex: number): string {
 }
 
 // Extracts the endpoint host from a connection string, mirroring ExtractEndpointHost in the Portal
-// Backend. Handles AccountEndpoint/TableEndpoint (URI or bare host), HostName, and mongodb:// segments.
+// Backend. Handles AccountEndpoint/TableEndpoint (URI or bare host) and HostName.
 export function extractEndpointHostFromConnectionString(connectionString: string): string | undefined {
   for (const part of connectionString.split(";")) {
     const trimmed = part.trim();
-
-    if (trimmed.toLowerCase().startsWith("mongodb://")) {
-      const atIndex = trimmed.indexOf("@");
-      if (atIndex >= 0 && atIndex < trimmed.length - 1) {
-        return extractHostToken(trimmed, atIndex + 1);
-      }
-      continue;
-    }
 
     const equalsIndex = trimmed.indexOf("=");
     if (equalsIndex < 0 || equalsIndex === trimmed.length - 1) {

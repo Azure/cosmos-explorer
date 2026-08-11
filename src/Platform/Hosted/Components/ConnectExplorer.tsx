@@ -64,8 +64,9 @@ export const validateDirectConnectionStringConnectivity = async (
     return t(Keys.connectExplorer.errors.connectivityInvalid);
   }
 
-  // Configure the client the same way the Data Explorer will, then issue a lightweight authenticated
-  // request. The Cosmos client signs locally with the master key and routes through the same proxy.
+  // The Cosmos client reads its connection settings from userContext, so write the master key and
+  // endpoint there. Then we issue a lightweight authenticated read to confirm the
+  // credentials work.
   updateUserContext({
     authType: AuthType.ConnectionString,
     masterKey,
