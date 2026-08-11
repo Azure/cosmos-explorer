@@ -14,10 +14,12 @@ export interface AAD {
 
 export interface ConnectionString {
   authType: AuthType.ConnectionString;
-  // Connection string uses still use encrypted token for Cassandra/Mongo APIs as they us the portal backend proxy
-  encryptedToken: string;
+  // SQL, Tables, and Gremlin sign data-plane requests client-side with the master key and do not need the
+  // Portal Backend proxy, so they carry no encrypted token. Mongo and Cassandra still use the encrypted
+  // token because their operations go through the Portal Backend proxy.
+  encryptedToken?: string;
   encryptedTokenMetadata: AccessInputMetadata;
-  // Master key is currently only used by Graph API. All other APIs use encrypted tokens and proxy with connection string
+  // Master key is used for the client-side signing path (SQL, Tables, Gremlin). Mongo/Cassandra leave it undefined.
   masterKey?: string;
 }
 

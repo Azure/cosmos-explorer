@@ -12,6 +12,8 @@ describe("ConnectionStringParser", () => {
 
     expect(metadata.accountName).toBe(mockAccountName);
     expect(metadata.apiKind).toBe(DataModels.ApiKind.SQL);
+    expect(metadata.documentEndpoint).toBe(`https://${mockAccountName}.documents.azure.com:443/`);
+    expect(metadata.apiEndpoint).toBeUndefined();
   });
 
   it("should parse a valid mongo account connection string", () => {
@@ -39,6 +41,8 @@ describe("ConnectionStringParser", () => {
 
     expect(metadata.accountName).toBe(mockAccountName);
     expect(metadata.apiKind).toBe(DataModels.ApiKind.Graph);
+    expect(metadata.documentEndpoint).toBe(`https://${mockAccountName}.documents.azure.com:443/`);
+    expect(metadata.apiEndpoint).toBe(`${mockAccountName}.gremlin.cosmos.azure.com:443`);
   });
 
   it("should parse a valid table account connection string", () => {
@@ -48,6 +52,20 @@ describe("ConnectionStringParser", () => {
 
     expect(metadata.accountName).toBe(mockAccountName);
     expect(metadata.apiKind).toBe(DataModels.ApiKind.Table);
+    // Tables data operations go through the document endpoint, which is constructed from the account name.
+    expect(metadata.documentEndpoint).toBe(`https://${mockAccountName}.documents.azure.com:443/`);
+    expect(metadata.apiEndpoint).toBeUndefined();
+  });
+
+  it("should parse a valid table account connection string using the cosmos.azure.com zone", () => {
+    const metadata = parseConnectionString(
+      `DefaultEndpointsProtocol=https;AccountName=${mockAccountName};AccountKey=${mockMasterKey};TableEndpoint=https://${mockAccountName}.table.cosmos.azure.com:443/;`,
+    );
+
+    expect(metadata.accountName).toBe(mockAccountName);
+    expect(metadata.apiKind).toBe(DataModels.ApiKind.Table);
+    expect(metadata.documentEndpoint).toBe(`https://${mockAccountName}.documents.azure.com:443/`);
+    expect(metadata.apiEndpoint).toBeUndefined();
   });
 
   it("should parse a valid cassandra account connection string", () => {
@@ -57,6 +75,9 @@ describe("ConnectionStringParser", () => {
 
     expect(metadata.accountName).toBe(mockAccountName);
     expect(metadata.apiKind).toBe(DataModels.ApiKind.Cassandra);
+    // Cassandra still uses the Portal Backend proxy, so no client-side endpoints are constructed.
+    expect(metadata.documentEndpoint).toBeUndefined();
+    expect(metadata.apiEndpoint).toBeUndefined();
   });
 
   it("should fail to parse an invalid connection string", () => {

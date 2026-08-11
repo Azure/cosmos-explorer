@@ -7,11 +7,15 @@ import ChevronRight from "../images/chevron-right.svg";
 import "../less/hostedexplorer.less";
 import { AuthType } from "./AuthType";
 import { logError } from "./Common/Logger";
-import { DatabaseAccount } from "./Contracts/DataModels";
+import { AccessInputMetadata, DatabaseAccount } from "./Contracts/DataModels";
 import "./Explorer/Menus/NavBar/MeControlComponent.less";
 import { HostedExplorerChildFrame } from "./HostedExplorerChildFrame";
 import { AccountSwitcher } from "./Platform/Hosted/Components/AccountSwitcher";
-import { ConnectExplorer, fetchEncryptedToken } from "./Platform/Hosted/Components/ConnectExplorer";
+import {
+  ConnectExplorer,
+  fetchEncryptedToken,
+  validateDirectConnectionStringConnectivity,
+} from "./Platform/Hosted/Components/ConnectExplorer";
 import { DirectoryPickerPanel } from "./Platform/Hosted/Components/DirectoryPickerPanel";
 import { FeedbackCommandButton } from "./Platform/Hosted/Components/FeedbackCommandButton";
 import { MeControl } from "./Platform/Hosted/Components/MeControl";
@@ -19,7 +23,12 @@ import { SignInButton } from "./Platform/Hosted/Components/SignInButton";
 import "./Platform/Hosted/ConnectScreen.less";
 import { parseConnectionString } from "./Platform/Hosted/Helpers/ConnectionStringParser";
 import { isResourceTokenConnectionString } from "./Platform/Hosted/Helpers/ResourceTokenUtils";
-import { extractMasterKeyfromConnectionString } from "./Platform/Hosted/HostedUtils";
+import {
+  extractAccountKeyFromConnectionString,
+  extractMasterKeyfromConnectionString,
+  isDirectConnectionStringLoginApi,
+  validateDirectConnectionStringLogin,
+} from "./Platform/Hosted/HostedUtils";
 import "./Shared/appInsights";
 import { allowedHostedExplorerEndpoints } from "./Utils/EndpointUtils";
 import { useAADAuth } from "./hooks/useAADAuth";
@@ -43,6 +52,10 @@ const App: React.FunctionComponent = () => {
   const [databaseAccount, setDatabaseAccount] = React.useState<DatabaseAccount>();
   const [authType, setAuthType] = React.useState<AuthType>(encryptedToken ? AuthType.EncryptedToken : undefined);
   const [connectionString, setConnectionString] = React.useState<string>();
+  // For SQL/Tables/Gremlin connection-string login, the account metadata is derived client-side from the
+  // connection string instead of the Portal Backend, so there is no encrypted token.
+  const [directLoginMetadata, setDirectLoginMetadata] = React.useState<AccessInputMetadata>();
+  const accountMetadata = encryptedTokenMetadata || directLoginMetadata;
 
   const ref = React.useRef<HTMLIFrameElement>();
 
@@ -54,19 +67,52 @@ const App: React.FunctionComponent = () => {
       setConnectionString(connStr);
       if (isResourceTokenConnectionString(connStr)) {
         setAuthType(AuthType.ResourceToken);
-      } else {
-        fetchEncryptedToken(connStr)
-          .then((token) => {
-            setEncryptedToken(token);
+        return;
+      }
+
+      const metadata = parseConnectionString(connStr);
+      if (metadata && isDirectConnectionStringLoginApi(metadata.apiKind)) {
+        // SQL, Tables, and Gremlin sign data-plane requests client-side with the account key, so we skip
+        // the Portal Backend proxy and use the metadata derived from the connection string directly.
+        // Validate the host and account client-side (mirrors the backend's ValidateHostAndAccount).
+        const validationError = validateDirectConnectionStringLogin(connStr, metadata);
+        if (validationError) {
+          logError(
+            `Rejected connection string for direct login: ${validationError}`,
+            "HostedExplorer/connectWithConnectionString",
+          );
+          return;
+        }
+        // Only open the view once we confirm the Cosmos client can actually connect.
+        validateDirectConnectionStringConnectivity(connStr, metadata)
+          .then((connectivityError) => {
+            if (connectivityError) {
+              logError(
+                `Rejected connection string for direct login: ${connectivityError}`,
+                "HostedExplorer/connectWithConnectionString",
+              );
+              return;
+            }
+            setDirectLoginMetadata(metadata);
             setAuthType(AuthType.ConnectionString);
           })
           .catch((error) => {
             logError(
-              `Failed to connect with connection string: ${error}`,
+              `Failed to validate connection string for direct login: ${error}`,
               "HostedExplorer/connectWithConnectionString",
             );
           });
+        return;
       }
+
+      fetchEncryptedToken(connStr)
+        .then((token) => {
+          setEncryptedToken(token);
+          setAuthType(AuthType.ConnectionString);
+        })
+        .catch((error) => {
+          logError(`Failed to connect with connection string: ${error}`, "HostedExplorer/connectWithConnectionString");
+        });
     },
     [authType],
   );
@@ -120,8 +166,10 @@ const App: React.FunctionComponent = () => {
         frameWindow.hostedConfig = {
           authType: AuthType.ConnectionString,
           encryptedToken,
-          encryptedTokenMetadata,
-          masterKey: extractMasterKeyfromConnectionString(connectionString),
+          encryptedTokenMetadata: accountMetadata,
+          masterKey: directLoginMetadata
+            ? extractAccountKeyFromConnectionString(connectionString)
+            : extractMasterKeyfromConnectionString(connectionString),
         };
       } else if (authType === AuthType.ResourceToken) {
         frameWindow.hostedConfig = {
@@ -140,7 +188,7 @@ const App: React.FunctionComponent = () => {
 
   const showExplorer =
     (config && isLoggedIn && databaseAccount && !connectionString) ||
-    (encryptedTokenMetadata && encryptedTokenMetadata) ||
+    accountMetadata ||
     (authType === AuthType.ResourceToken && connectionString);
 
   return (
@@ -157,7 +205,7 @@ const App: React.FunctionComponent = () => {
               Microsoft Azure
             </span>
             <span className="accontSplitter" /> <span className="serviceTitle">Cosmos DB</span>
-            {(isLoggedIn || encryptedTokenMetadata?.accountName) && (
+            {(isLoggedIn || accountMetadata?.accountName) && (
               <img className="chevronRight" src={ChevronRight} alt="account separator" />
             )}
             {isLoggedIn && !connectionString && (
@@ -165,9 +213,9 @@ const App: React.FunctionComponent = () => {
                 <AccountSwitcher armToken={armToken} setDatabaseAccount={setDatabaseAccount} />
               </span>
             )}
-            {(!isLoggedIn || connectionString) && encryptedTokenMetadata?.accountName && (
+            {(!isLoggedIn || connectionString) && accountMetadata?.accountName && (
               <span className="accountSwitchComponentContainer">
-                <span className="accountNameHeader">{encryptedTokenMetadata?.accountName}</span>
+                <span className="accountNameHeader">{accountMetadata?.accountName}</span>
               </span>
             )}
           </div>
@@ -201,7 +249,9 @@ const App: React.FunctionComponent = () => {
         ></iframe>
       )}
       {!isLoggedIn && !encryptedTokenMetadata && (
-        <ConnectExplorer {...{ login, setEncryptedToken, setAuthType, connectionString, setConnectionString }} />
+        <ConnectExplorer
+          {...{ login, setEncryptedToken, setAuthType, connectionString, setConnectionString, setDirectLoginMetadata }}
+        />
       )}
       {isLoggedIn && authFailure && <AadAuthorizationFailure {...{ authFailure }} />}
       {isLoggedIn && !authFailure && (
