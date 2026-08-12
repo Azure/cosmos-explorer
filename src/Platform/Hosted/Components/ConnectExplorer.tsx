@@ -29,6 +29,7 @@ interface Props {
 export const fetchEncryptedToken = async (connectionString: string): Promise<string> => {
   const headers = new Headers();
   headers.append(HttpHeaders.connectionString, connectionString);
+  headers.append(HttpHeaders.authorization, connectionString);
   const url = configContext.PORTAL_BACKEND_ENDPOINT + "/api/connectionstring/token/generatetoken";
   const response = await fetch(url, { headers, method: "POST" });
   if (!response.ok) {
