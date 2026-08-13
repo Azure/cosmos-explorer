@@ -236,3 +236,21 @@ export function useDataplaneRbacAuthorization(userContext: UserContext): boolean
 export function isDataplaneRbacEnabledForProxyApi(userContext: UserContext): boolean {
   return useDataplaneRbacAuthorization(userContext) && hasProxyServer(userContext.apiType);
 }
+
+/**
+ * Determines whether Cloud Shell connections should authenticate with an Entra ID
+ * token (COSMOSDB_SHELL_TOKEN) instead of the account master key.
+ *
+ * Returns true when data-plane RBAC authorization is in effect, or when the account
+ * has local (key) auth disabled — in the latter case a master key would be rejected
+ * by the service, so we must fall back to Entra ID even if the RBAC toggle is off.
+ *
+ * Unlike {@link isDataplaneRbacEnabledForProxyApi}, this does not require a proxy
+ * server, so it works for the SQL/CosmosDB API which connects directly to the
+ * data plane.
+ */
+export function isCloudShellEntraAuthEnabled(userContext: UserContext): boolean {
+  return (
+    useDataplaneRbacAuthorization(userContext) || userContext.databaseAccount?.properties?.disableLocalAuth === true
+  );
+}

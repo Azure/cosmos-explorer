@@ -17,11 +17,11 @@ import SynapseIcon from "../../../../images/synapse-link.svg";
 import VSCodeIcon from "../../../../images/vscode.svg";
 import { AuthType } from "../../../AuthType";
 import * as Constants from "../../../Common/Constants";
-import { Platform, configContext } from "../../../ConfigContext";
+import { configContext, Platform } from "../../../ConfigContext";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import {
-  userContext,
   isVCoreMongoNativeAuthDisabled,
+  userContext,
   VCoreMongoNativeAuthDisabledMessage,
   VCoreMongoNativeAuthLearnMoreUrl,
 } from "../../../UserContext";
@@ -79,6 +79,15 @@ export function createStaticCommandBarButtons(
       addDivider();
       buttons.push(loginButtonProps);
     }
+  }
+
+  if (
+    userContext.apiType === "SQL" &&
+    userContext.features.enableCloudShell &&
+    userContext.features.enableCosmosDBShell
+  ) {
+    addDivider();
+    buttons.push(createOpenTerminalButtonByKind(container, ViewModels.TerminalKind.CosmosDB));
   }
 
   if (!selectedNodeState.isDatabaseNodeOrNoneSelected()) {
@@ -498,6 +507,8 @@ function createOpenTerminalButtonByKind(
         return "PSQL";
       case ViewModels.TerminalKind.VCoreMongo:
         return "MongoDB (DocumentDB)";
+      case ViewModels.TerminalKind.CosmosDB:
+        return "Cosmos DB";
       default:
         return "";
     }
@@ -507,7 +518,9 @@ function createOpenTerminalButtonByKind(
     "This feature is not yet available in your account's region. View supported regions here: https://aka.ms/cosmos-enable-notebooks.";
   const isNativeAuthDisabled = terminalKind === ViewModels.TerminalKind.VCoreMongo && isVCoreMongoNativeAuthDisabled();
   const disableButton =
-    (!useNotebook.getState().isNotebooksEnabledForAccount && !useNotebook.getState().isNotebookEnabled) ||
+    (!useNotebook.getState().isNotebooksEnabledForAccount &&
+      !useNotebook.getState().isNotebookEnabled &&
+      !userContext.features.enableCloudShell) ||
     isNativeAuthDisabled;
   return {
     iconSrc: HostedTerminalIcon,

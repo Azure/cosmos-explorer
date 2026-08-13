@@ -1,19 +1,23 @@
 import { TerminalKind } from "../../../../Contracts/ViewModels";
 import { userContext } from "../../../../UserContext";
-import { listKeys } from "../../../../Utils/arm/generatedClients/cosmos/databaseAccounts";
+import { getReadOnlyKeys, listKeys } from "../../../../Utils/arm/generatedClients/cosmos/databaseAccounts";
+import { acquireMsalTokenForAccount, getMsalInstance } from "../../../../Utils/AuthorizationUtils";
 import { CassandraShellHandler } from "./CassandraShellHandler";
+import { CosmosDBShellHandler } from "./CosmosDBShellHandler";
 import { MongoShellHandler } from "./MongoShellHandler";
 import { PostgresShellHandler } from "./PostgresShellHandler";
-import { getHandler, getKey } from "./ShellTypeFactory";
+import type { CosmosDBShellCredentialDiagnostics } from "./ShellTypeFactory";
+import { getCosmosDBShellCredential, getHandler, getKey } from "./ShellTypeFactory";
 import { VCoreMongoShellHandler } from "./VCoreMongoShellHandler";
 
 interface UserContextType {
-  databaseAccount: { name: string };
+  databaseAccount: { name: string; properties?: { disableLocalAuth?: boolean } };
   subscriptionId: string;
   resourceGroup: string;
   features: { enableAadDataPlane: boolean };
   dataPlaneRbacEnabled: boolean;
   aadToken?: string;
+  masterKey?: string;
   apiType?: string;
 }
 
@@ -30,13 +34,29 @@ jest.mock("../../../../UserContext", () => ({
 
 jest.mock("../../../../Utils/arm/generatedClients/cosmos/databaseAccounts", () => ({
   listKeys: jest.fn(),
+  getReadOnlyKeys: jest.fn(),
 }));
+
+jest.mock("../../../../Utils/AuthorizationUtils", () => {
+  const actual = jest.requireActual("../../../../Utils/AuthorizationUtils");
+  return {
+    ...actual,
+    getMsalInstance: jest.fn(),
+    acquireMsalTokenForAccount: jest.fn(),
+  };
+});
 
 describe("ShellTypeHandlerFactory", () => {
   const mockKey = "testKey";
 
+  const mockMsalAccounts = (accounts: { username: string }[]): void => {
+    (getMsalInstance as jest.Mock).mockResolvedValue({ getAllAccounts: (): { username: string }[] => accounts });
+  };
+
   beforeEach(() => {
     (listKeys as jest.Mock).mockResolvedValue({ primaryMasterKey: mockKey });
+    mockMsalAccounts([]);
+    (acquireMsalTokenForAccount as jest.Mock).mockResolvedValue("");
   });
 
   afterEach(() => {
@@ -69,7 +89,7 @@ describe("ShellTypeHandlerFactory", () => {
       type DatabaseAccountType = { name: string };
       (userContext.databaseAccount as DatabaseAccountType).name = "";
 
-      const key = await getKey();
+      const key = await getKey(false);
       expect(key).toBe("");
       expect(listKeys).not.toHaveBeenCalled();
 
@@ -80,7 +100,7 @@ describe("ShellTypeHandlerFactory", () => {
     it("should return empty string when listKeys returns null", async () => {
       (listKeys as jest.Mock).mockResolvedValue(null);
 
-      const key = await getKey();
+      const key = await getKey(false);
       expect(key).toBe("");
     });
 
@@ -89,7 +109,7 @@ describe("ShellTypeHandlerFactory", () => {
         /* no primaryMasterKey */
       });
 
-      const key = await getKey();
+      const key = await getKey(false);
       expect(key).toBe("");
     });
   });
@@ -116,10 +136,55 @@ describe("ShellTypeHandlerFactory", () => {
       expect(handler).toBeInstanceOf(CassandraShellHandler);
     });
 
+    it("should return CosmosDBShellHandler with key for CosmosDB terminal kind", async () => {
+      const handler = await getHandler(TerminalKind.CosmosDB);
+      expect(handler).toBeInstanceOf(CosmosDBShellHandler);
+    });
+
     it("should get key successfully when database name exists", async () => {
-      const key = await getKey();
+      const key = await getKey(false);
       expect(key).toBe(mockKey);
       expect(listKeys).toHaveBeenCalledWith("testSubId", "testResourceGroup", "testDbName");
+    });
+
+    it("should return the aadToken without listing keys when Entra ID auth is requested", async () => {
+      (userContext as UserContextType).aadToken = "aadToken123";
+
+      const key = await getKey(true);
+      expect(key).toBe("aadToken123");
+      expect(listKeys).not.toHaveBeenCalled();
+    });
+
+    it("should return an empty string when Entra ID auth is requested but no cached token or account exists", async () => {
+      (userContext as UserContextType).aadToken = undefined;
+      mockMsalAccounts([]);
+
+      const key = await getKey(true);
+      expect(key).toBe("");
+      expect(acquireMsalTokenForAccount).not.toHaveBeenCalled();
+      expect(listKeys).not.toHaveBeenCalled();
+    });
+
+    it("should silently mint a Cosmos token when Entra ID auth is requested and an MSAL account is cached", async () => {
+      (userContext as UserContextType).aadToken = undefined;
+      mockMsalAccounts([{ username: "user@contoso.com" }]);
+      (acquireMsalTokenForAccount as jest.Mock).mockResolvedValue("mintedToken123");
+
+      const key = await getKey(true);
+      expect(key).toBe("mintedToken123");
+      expect(acquireMsalTokenForAccount).toHaveBeenCalled();
+      expect(listKeys).not.toHaveBeenCalled();
+    });
+
+    it("should return an empty string when the silent token acquisition fails", async () => {
+      (userContext as UserContextType).aadToken = undefined;
+      mockMsalAccounts([{ username: "user@contoso.com" }]);
+      (acquireMsalTokenForAccount as jest.Mock).mockRejectedValue(new Error("interaction_required"));
+      jest.spyOn(console, "error").mockImplementation(() => undefined);
+
+      const key = await getKey(true);
+      expect(key).toBe("");
+      expect(listKeys).not.toHaveBeenCalled();
     });
 
     it("should return MongoShellHandler with primaryMasterKey for TerminalKind.Mongo when RBAC is disabled", async () => {
@@ -148,6 +213,150 @@ describe("ShellTypeHandlerFactory", () => {
       await expect(getHandler("UnknownShell" as unknown as TerminalKind)).rejects.toThrow(
         "Unsupported shell type: UnknownShell",
       );
+    });
+  });
+
+  describe("getCosmosDBShellCredential", () => {
+    beforeEach(() => {
+      (userContext as UserContextType).aadToken = undefined;
+      (userContext as UserContextType).masterKey = undefined;
+      (userContext as UserContextType).apiType = "SQL";
+      (userContext as UserContextType).features.enableAadDataPlane = false;
+      (userContext as UserContextType).dataPlaneRbacEnabled = false;
+      (userContext as UserContextType).databaseAccount.properties = { disableLocalAuth: false };
+    });
+
+    it("should reuse the master key Data Explorer already resolved without calling ARM", async () => {
+      (userContext as UserContextType).masterKey = "cachedMasterKey";
+
+      const credential = await getCosmosDBShellCredential();
+
+      expect(credential).toEqual({ kind: "key", value: "cachedMasterKey" });
+      expect(listKeys).not.toHaveBeenCalled();
+      expect(getReadOnlyKeys).not.toHaveBeenCalled();
+    });
+
+    it("should fall back to the read-only keys when the caller lacks list-keys permission", async () => {
+      const authorizationFailed = Object.assign(new Error("AuthorizationFailed"), { code: "AuthorizationFailed" });
+      (listKeys as jest.Mock).mockRejectedValue(authorizationFailed);
+      (getReadOnlyKeys as jest.Mock).mockResolvedValue({ primaryReadonlyMasterKey: "readOnlyKey" });
+
+      const credential = await getCosmosDBShellCredential();
+
+      expect(credential).toEqual({ kind: "key", value: "readOnlyKey" });
+      expect(getReadOnlyKeys).toHaveBeenCalledWith("testSubId", "testResourceGroup", "testDbName");
+    });
+
+    it("should return undefined when both the read-write and read-only key fetches fail", async () => {
+      const authorizationFailed = Object.assign(new Error("AuthorizationFailed"), { code: "AuthorizationFailed" });
+      (listKeys as jest.Mock).mockRejectedValue(authorizationFailed);
+      (getReadOnlyKeys as jest.Mock).mockRejectedValue(new Error("Forbidden"));
+      jest.spyOn(console, "error").mockImplementation(() => undefined);
+
+      const credential = await getCosmosDBShellCredential();
+
+      expect(credential).toBeUndefined();
+    });
+
+    it("should return the account key when Entra ID auth is not enabled", async () => {
+      const credential = await getCosmosDBShellCredential();
+
+      expect(credential).toEqual({ kind: "key", value: mockKey });
+      expect(listKeys).toHaveBeenCalledWith("testSubId", "testResourceGroup", "testDbName");
+    });
+
+    it("should return the cached aadToken when Entra ID auth is enabled", async () => {
+      (userContext as UserContextType).dataPlaneRbacEnabled = true;
+      (userContext as UserContextType).aadToken = "aadToken123";
+
+      const credential = await getCosmosDBShellCredential();
+
+      expect(credential).toEqual({ kind: "token", value: "aadToken123" });
+      expect(listKeys).not.toHaveBeenCalled();
+    });
+
+    it("should return a silently minted token when an MSAL account is cached", async () => {
+      (userContext as UserContextType).dataPlaneRbacEnabled = true;
+      mockMsalAccounts([{ username: "user@contoso.com" }]);
+      (acquireMsalTokenForAccount as jest.Mock).mockResolvedValue("mintedToken123");
+
+      const credential = await getCosmosDBShellCredential();
+
+      expect(credential).toEqual({ kind: "token", value: "mintedToken123" });
+      expect(listKeys).not.toHaveBeenCalled();
+    });
+
+    it("should fall back to the account key when no token could be resolved", async () => {
+      (userContext as UserContextType).dataPlaneRbacEnabled = true;
+
+      const credential = await getCosmosDBShellCredential();
+
+      expect(acquireMsalTokenForAccount).not.toHaveBeenCalled();
+      expect(credential).toEqual({ kind: "key", value: mockKey });
+    });
+
+    it("should fall back to the account key when the silent token acquisition throws", async () => {
+      (userContext as UserContextType).dataPlaneRbacEnabled = true;
+      mockMsalAccounts([{ username: "user@contoso.com" }]);
+      (acquireMsalTokenForAccount as jest.Mock).mockRejectedValue(new Error("interaction_required"));
+      jest.spyOn(console, "error").mockImplementation(() => undefined);
+
+      const credential = await getCosmosDBShellCredential();
+
+      expect(credential).toEqual({ kind: "key", value: mockKey });
+    });
+
+    it("should not fall back to the account key when local auth is disabled", async () => {
+      (userContext as UserContextType).databaseAccount.properties = { disableLocalAuth: true };
+      jest.spyOn(console, "warn").mockImplementation(() => undefined);
+
+      const credential = await getCosmosDBShellCredential();
+
+      expect(credential).toBeUndefined();
+      expect(listKeys).not.toHaveBeenCalled();
+    });
+
+    it("should return undefined when listing the account keys fails", async () => {
+      (listKeys as jest.Mock).mockRejectedValue(new Error("Forbidden"));
+      jest.spyOn(console, "error").mockImplementation(() => undefined);
+
+      const credential = await getCosmosDBShellCredential();
+
+      expect(credential).toBeUndefined();
+    });
+
+    it("should return undefined when the database name is missing", async () => {
+      (userContext as UserContextType).databaseAccount.name = "";
+
+      const credential = await getCosmosDBShellCredential();
+
+      expect(credential).toBeUndefined();
+      expect(listKeys).not.toHaveBeenCalled();
+
+      (userContext as UserContextType).databaseAccount.name = "testDbName";
+    });
+
+    it("should populate a specific reason when both key fetches fail, for the shell to echo", async () => {
+      (listKeys as jest.Mock).mockRejectedValue(new Error("Forbidden"));
+      (getReadOnlyKeys as jest.Mock).mockRejectedValue(new Error("Forbidden"));
+      jest.spyOn(console, "error").mockImplementation(() => undefined);
+
+      const diagnostics: CosmosDBShellCredentialDiagnostics = {};
+      const credential = await getCosmosDBShellCredential(diagnostics);
+
+      expect(credential).toBeUndefined();
+      expect(diagnostics.reason).toContain("Forbidden");
+    });
+
+    it("should populate a reason when local auth is disabled and no token was resolved", async () => {
+      (userContext as UserContextType).databaseAccount.properties = { disableLocalAuth: true };
+      jest.spyOn(console, "warn").mockImplementation(() => undefined);
+
+      const diagnostics: CosmosDBShellCredentialDiagnostics = {};
+      const credential = await getCosmosDBShellCredential(diagnostics);
+
+      expect(credential).toBeUndefined();
+      expect(diagnostics.reason).toContain("local (key) auth is disabled");
     });
   });
 });
