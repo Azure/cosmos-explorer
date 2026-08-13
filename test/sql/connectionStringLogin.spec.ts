@@ -71,9 +71,9 @@ test.describe("SQL account using connection string login", () => {
     const accountName = getAccountName(TestAccount.SQL);
     const account = await context.armClient.databaseAccounts.get(resourceGroupName, accountName);
 
-    // A well-formed but incorrect base64 account key: the endpoint is valid, so the Cosmos client reaches
-    // the account but the data-plane request is rejected with 401 Unauthorized.
-    const wrongKey = Buffer.alloc(64).toString("base64");
+    // A well-formed but incorrect base64 account key (88-char, 64-byte): the endpoint is valid, so the
+    // Cosmos client reaches the account but the data-plane request is rejected with 401 Unauthorized.
+    const wrongKey = "A".repeat(86) + "==";
     const connectionString = `AccountEndpoint=${account.documentEndpoint};AccountKey=${wrongKey};`;
 
     await page.goto("https://localhost:1234/hostedExplorer.html");
