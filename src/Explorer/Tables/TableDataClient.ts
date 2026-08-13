@@ -552,6 +552,10 @@ export class CassandraAPIDataClient extends TableDataClient {
     const authorizationHeaderMetadata: ViewModels.AuthorizationTokenHeaderMetadata = getAuthorizationHeader();
     xhr.setRequestHeader(authorizationHeaderMetadata.header, authorizationHeaderMetadata.token);
 
+    if (userContext.authType === AuthType.EncryptedToken) {
+      xhr.setRequestHeader(Constants.HttpHeaders.authorization, userContext.accessToken);
+    }
+
     if (isDataplaneRbacEnabledForProxyApi(userContext)) {
       xhr.setRequestHeader(Constants.HttpHeaders.entraIdToken, userContext.aadToken);
     }
