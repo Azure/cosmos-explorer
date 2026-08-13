@@ -7,6 +7,7 @@ import {
   Editor,
   ONE_MINUTE_MS,
   TestAccount,
+  TestAuthType,
   generateUniqueName,
   getAccountName,
   getAzureCLICredentials,
@@ -14,7 +15,6 @@ import {
   subscriptionId,
 } from "../fx";
 
-const gremlinAccountRbacToken = process.env.GREMLIN_TESTACCOUNT_TOKEN ?? "";
 const databaseId = generateUniqueName("db");
 const graphId = "testgraph";
 const vertexId = "testvertex";
@@ -23,12 +23,9 @@ test.describe("Gremlin account using connection string login", () => {
   let database: Database = null!;
 
   test.beforeAll("Seed Test Database", async () => {
-    if (gremlinAccountRbacToken.length > 0) {
-      return;
-    }
     const credentials = getAzureCLICredentials();
     const armClient = new CosmosDBManagementClient(credentials, subscriptionId);
-    const accountName = getAccountName(TestAccount.Gremlin);
+    const accountName = getAccountName(TestAccount.Gremlin, TestAuthType.ConnectionString);
     const account = await armClient.databaseAccounts.get(resourceGroupName, accountName);
     const keys = await armClient.databaseAccounts.listKeys(resourceGroupName, accountName);
 
@@ -47,12 +44,9 @@ test.describe("Gremlin account using connection string login", () => {
   });
 
   test("reads a vertex after connection string login", async ({ page }) => {
-    // Connection string (account key) login is not supported when local auth is disabled for data plane RBAC.
-    test.skip(gremlinAccountRbacToken.length > 0);
-
     const credentials = getAzureCLICredentials();
     const armClient = new CosmosDBManagementClient(credentials, subscriptionId);
-    const accountName = getAccountName(TestAccount.Gremlin);
+    const accountName = getAccountName(TestAccount.Gremlin, TestAuthType.ConnectionString);
     const account = await armClient.databaseAccounts.get(resourceGroupName, accountName);
     const keys = await armClient.databaseAccounts.listKeys(resourceGroupName, accountName);
 

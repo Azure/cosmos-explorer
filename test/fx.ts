@@ -41,6 +41,14 @@ export enum TestAccount {
   SQL = "SQL",
   SQLReadOnly = "SQLReadOnly",
   SQLContainerCopyOnly = "SQLContainerCopyOnly",
+  SQLConnectionString = "SQLConnectionString",
+  TableConnectionString = "TableConnectionString",
+  GremlinConnectionString = "GremlinConnectionString",
+}
+
+export enum TestAuthType {
+  EntraID = "EntraID",
+  ConnectionString = "ConnectionString",
 }
 
 export function getDefaultAccountName(accountType: TestAccount): string {
@@ -66,6 +74,12 @@ export function getDefaultAccountName(accountType: TestAccount): string {
       return `${accountNamePrefix}-de-test-sql-readonly`;
     case TestAccount.SQLContainerCopyOnly:
       return `${accountNamePrefix}-de-test-sql-containercopy`;
+    case TestAccount.SQLConnectionString:
+      return `${accountNamePrefix}-de-test-sql-connstring-1`;
+    case TestAccount.TableConnectionString:
+      return `${accountNamePrefix}-de-test-table-connstring-1`;
+    case TestAccount.GremlinConnectionString:
+      return `${accountNamePrefix}-de-test-gremlin-connstring-1`;
     case TestAccount.SQL: {
       const shardIndex = process.env.PLAYWRIGHT_SHARD_INDEX ?? "";
       if (!shardIndex) {
@@ -96,7 +110,32 @@ function tryGetStandardName(accountType: TestAccount) {
   }
 }
 
-export function getAccountName(accountType: TestAccount) {
+// Maps a base API account type to its dedicated connection string (account key) account.
+const connectionStringAccountTypes: Partial<Record<TestAccount, TestAccount>> = {
+  [TestAccount.SQL]: TestAccount.SQLConnectionString,
+  [TestAccount.Tables]: TestAccount.TableConnectionString,
+  [TestAccount.Gremlin]: TestAccount.GremlinConnectionString,
+};
+
+export function getAccountName(accountType: TestAccount, authType: TestAuthType = TestAuthType.EntraID): string {
+  // Connection string (account key) login uses dedicated *-connstring accounts that are only
+  // provisioned in CI (resolved via DE_ACCOUNT_PREFIX). Local runs use DE_TEST_ACCOUNT_PREFIX and
+  // typically don't have those accounts, so they fall back to the standard API account for the same
+  // API (which also has key auth enabled).
+  if (authType === TestAuthType.ConnectionString) {
+    const connectionStringType = connectionStringAccountTypes[accountType];
+    if (!connectionStringType) {
+      throw new Error(`No connection string account defined for account type ${accountType}`);
+    }
+    const override = process.env[`DE_TEST_ACCOUNT_NAME_${connectionStringType.toLocaleUpperCase()}`];
+    if (override) {
+      return override;
+    }
+    if (!process.env.DE_TEST_ACCOUNT_PREFIX) {
+      return getAccountName(connectionStringType);
+    }
+  }
+
   return (
     process.env[`DE_TEST_ACCOUNT_NAME_${accountType.toLocaleUpperCase()}`] ??
     tryGetStandardName(accountType) ??

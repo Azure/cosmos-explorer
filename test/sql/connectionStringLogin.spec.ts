@@ -1,33 +1,52 @@
 import { expect, test } from "@playwright/test";
 
-import { DataExplorer, getAccountName, ONE_MINUTE_MS, resourceGroupName, TestAccount } from "../fx";
-import { createTestSQLContainer, TestContainerContext } from "../testData";
+import { CosmosDBManagementClient } from "@azure/arm-cosmosdb";
+import { CosmosClient, Database } from "@azure/cosmos";
+import {
+  DataExplorer,
+  ONE_MINUTE_MS,
+  TestAccount,
+  TestAuthType,
+  generateUniqueName,
+  getAccountName,
+  getAzureCLICredentials,
+  resourceGroupName,
+  subscriptionId,
+} from "../fx";
 
-const nosqlAccountRbacToken = process.env.NOSQL_TESTACCOUNT_TOKEN ?? "";
+const databaseId = generateUniqueName("db");
+const containerId = "testcontainer";
 const documentId = "testdoc1";
 
 test.describe("SQL account using connection string login", () => {
-  let context: TestContainerContext = null!;
+  let database: Database = null!;
 
   test.beforeAll("Seed Test Database", async () => {
-    if (nosqlAccountRbacToken.length > 0) {
-      return;
-    }
-    context = await createTestSQLContainer({ partitionKey: "/id" });
-    await context.container.items.upsert({ id: documentId });
+    const credentials = getAzureCLICredentials();
+    const armClient = new CosmosDBManagementClient(credentials, subscriptionId);
+    const accountName = getAccountName(TestAccount.SQL, TestAuthType.ConnectionString);
+    const account = await armClient.databaseAccounts.get(resourceGroupName, accountName);
+    const keys = await armClient.databaseAccounts.listKeys(resourceGroupName, accountName);
+
+    const client = new CosmosClient({ endpoint: account.documentEndpoint!, key: keys.primaryMasterKey });
+    database = (await client.databases.createIfNotExists({ id: databaseId })).database;
+    const { container } = await database.containers.createIfNotExists({
+      id: containerId,
+      partitionKey: { paths: ["/id"] },
+    });
+    await container.items.upsert({ id: documentId });
   });
 
   test.afterAll("Delete Test Database", async () => {
-    await context?.dispose();
+    await database?.delete();
   });
 
   test("reads a document after connection string login", async ({ page }) => {
-    // Connection string (account key) login is not supported when local auth is disabled for data plane RBAC.
-    test.skip(nosqlAccountRbacToken.length > 0);
-
-    const accountName = getAccountName(TestAccount.SQL);
-    const account = await context.armClient.databaseAccounts.get(resourceGroupName, accountName);
-    const keys = await context.armClient.databaseAccounts.listKeys(resourceGroupName, accountName);
+    const credentials = getAzureCLICredentials();
+    const armClient = new CosmosDBManagementClient(credentials, subscriptionId);
+    const accountName = getAccountName(TestAccount.SQL, TestAuthType.ConnectionString);
+    const account = await armClient.databaseAccounts.get(resourceGroupName, accountName);
+    const keys = await armClient.databaseAccounts.listKeys(resourceGroupName, accountName);
 
     // SQL signs data-plane requests client-side with the account key, so no encrypted token is issued.
     const connectionString = `AccountEndpoint=${account.documentEndpoint};AccountKey=${keys.primaryMasterKey};`;
@@ -40,12 +59,12 @@ test.describe("SQL account using connection string login", () => {
     await page.getByRole("button", { name: "Connect" }).click();
 
     const explorer = await DataExplorer.waitForExplorer(page);
-    const collectionNode = await explorer.waitForContainerNode(context.database.id, context.container.id);
+    const collectionNode = await explorer.waitForContainerNode(databaseId, containerId);
     await expect(collectionNode.element).toBeAttached();
     await collectionNode.expand();
 
     // Open the Items node to load the Documents tab and read the seeded document through the data plane.
-    const itemsNode = await explorer.waitForContainerItemsNode(context.database.id, context.container.id);
+    const itemsNode = await explorer.waitForContainerItemsNode(databaseId, containerId);
     await itemsNode.element.click();
 
     const documentsTab = explorer.documentsTab("tab0");
@@ -65,11 +84,10 @@ test.describe("SQL account using connection string login", () => {
   });
 
   test("shows an error when the connection string has the wrong account key", async ({ page }) => {
-    // Connection string (account key) login is not supported when local auth is disabled for data plane RBAC.
-    test.skip(nosqlAccountRbacToken.length > 0);
-
-    const accountName = getAccountName(TestAccount.SQL);
-    const account = await context.armClient.databaseAccounts.get(resourceGroupName, accountName);
+    const credentials = getAzureCLICredentials();
+    const armClient = new CosmosDBManagementClient(credentials, subscriptionId);
+    const accountName = getAccountName(TestAccount.SQL, TestAuthType.ConnectionString);
+    const account = await armClient.databaseAccounts.get(resourceGroupName, accountName);
 
     // A well-formed but incorrect base64 account key (88-char, 64-byte): the endpoint is valid, so the
     // Cosmos client reaches the account but the data-plane request is rejected with 401 Unauthorized.

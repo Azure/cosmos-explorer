@@ -6,14 +6,13 @@ import {
   DataExplorer,
   ONE_MINUTE_MS,
   TestAccount,
+  TestAuthType,
   generateUniqueName,
   getAccountName,
   getAzureCLICredentials,
   resourceGroupName,
   subscriptionId,
 } from "../fx";
-
-const tableAccountRbacToken = process.env.TABLE_TESTACCOUNT_TOKEN ?? "";
 
 // Tables API accounts store tables in a fixed "TablesDB" database, with each table as a container.
 const databaseId = "TablesDB";
@@ -25,12 +24,9 @@ test.describe("Tables account using connection string login", () => {
   let container: Container = null!;
 
   test.beforeAll("Seed Test Table", async () => {
-    if (tableAccountRbacToken.length > 0) {
-      return;
-    }
     const credentials = getAzureCLICredentials();
     const armClient = new CosmosDBManagementClient(credentials, subscriptionId);
-    const accountName = getAccountName(TestAccount.Tables);
+    const accountName = getAccountName(TestAccount.Tables, TestAuthType.ConnectionString);
     const account = await armClient.databaseAccounts.get(resourceGroupName, accountName);
     const keys = await armClient.databaseAccounts.listKeys(resourceGroupName, accountName);
 
@@ -52,12 +48,9 @@ test.describe("Tables account using connection string login", () => {
   });
 
   test("reads an entity after connection string login", async ({ page }) => {
-    // Connection string (account key) login is not supported when local auth is disabled for data plane RBAC.
-    test.skip(tableAccountRbacToken.length > 0);
-
     const credentials = getAzureCLICredentials();
     const armClient = new CosmosDBManagementClient(credentials, subscriptionId);
-    const accountName = getAccountName(TestAccount.Tables);
+    const accountName = getAccountName(TestAccount.Tables, TestAuthType.ConnectionString);
     const { connectionStrings = [] } = await armClient.databaseAccounts.listConnectionStrings(
       resourceGroupName,
       accountName,
