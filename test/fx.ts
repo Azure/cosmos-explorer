@@ -249,6 +249,13 @@ export async function getTestExplorerUrl(accountType: TestAccount, options?: Tes
         params.set("enableaaddataplane", "true");
       }
       break;
+
+    case TestAccount.SQLConnectionString:
+    case TestAccount.TableConnectionString:
+    case TestAccount.GremlinConnectionString:
+      // Connection string (account key) login navigates directly to hostedExplorer.html and doesn't
+      // use this iframe test-explorer URL or any RBAC/AAD data-plane token.
+      break;
   }
 
   if (iframeSrc) {
