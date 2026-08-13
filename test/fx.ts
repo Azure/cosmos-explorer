@@ -1,7 +1,14 @@
 import { DefaultAzureCredential } from "@azure/identity";
 import { Frame, Locator, Page, expect } from "@playwright/test";
-import crypto from "crypto";
+import crypto, { webcrypto } from "crypto";
 import { TestContainerContext } from "./testData";
+
+// The @azure/cosmos client signs requests with globalThis.crypto (Web Crypto API).
+// In Node.js >= 19 it's already available; only assign the polyfill for older versions.
+// This lives in fx.ts (imported by every spec) so the polyfill always runs.
+if (!globalThis.crypto) {
+  Object.defineProperty(globalThis, "crypto", { value: webcrypto, writable: true, configurable: true });
+}
 
 const RETRY_COUNT = 3;
 
