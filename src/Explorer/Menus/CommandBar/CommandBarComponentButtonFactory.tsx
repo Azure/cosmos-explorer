@@ -30,7 +30,6 @@ import { useSidePanel } from "../../../hooks/useSidePanel";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import { useDialog } from "../../Controls/Dialog";
 import Explorer from "../../Explorer";
-import { useNotebook } from "../../Notebook/useNotebook";
 import { BrowseQueriesPane } from "../../Panes/BrowseQueriesPane/BrowseQueriesPane";
 import { LoadQueryPane } from "../../Panes/LoadQueryPane/LoadQueryPane";
 import { SettingsPane, useDataPlaneRbac } from "../../Panes/SettingsPane/SettingsPane";
@@ -43,6 +42,7 @@ let counter = 0;
 export function createStaticCommandBarButtons(
   container: Explorer,
   selectedNodeState: SelectedNodeState,
+  isSynapseLinkUpdating = false,
 ): CommandButtonComponentProps[] {
   if (userContext.authType === AuthType.ResourceToken) {
     return createStaticCommandBarButtonsForResourceToken(container, selectedNodeState);
@@ -62,7 +62,7 @@ export function createStaticCommandBarButtons(
     userContext.apiType !== "Tables" &&
     userContext.apiType !== "Cassandra"
   ) {
-    const addSynapseLink = createOpenSynapseLinkDialogButton(container);
+    const addSynapseLink = createOpenSynapseLinkDialogButton(container, isSynapseLinkUpdating);
     if (addSynapseLink) {
       addDivider();
       buttons.push(addSynapseLink);
@@ -136,14 +136,13 @@ export function createContextCommandBarButtons(
   const buttons: CommandButtonComponentProps[] = [];
 
   if (!selectedNodeState.isDatabaseNodeOrNoneSelected() && userContext.apiType === "Mongo") {
-    const label =
-      useNotebook.getState().isShellEnabled || userContext.features.enableCloudShell ? "Open Mongo Shell" : "New Shell";
+    const label = userContext.features.enableCloudShell ? "Open Mongo Shell" : "New Shell";
     const newMongoShellBtn: CommandButtonComponentProps = {
       iconSrc: HostedTerminalIcon,
       iconAlt: label,
       onCommandClick: () => {
         const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
-        if (useNotebook.getState().isShellEnabled || userContext.features.enableCloudShell) {
+        if (userContext.features.enableCloudShell) {
           container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
         } else {
           selectedCollection && selectedCollection.onNewMongoShellClick();
@@ -157,7 +156,7 @@ export function createContextCommandBarButtons(
   }
 
   if (
-    (useNotebook.getState().isShellEnabled || userContext.features.enableCloudShell) &&
+    userContext.features.enableCloudShell &&
     !selectedNodeState.isDatabaseNodeOrNoneSelected() &&
     userContext.apiType === "Cassandra"
   ) {
@@ -252,7 +251,10 @@ function areScriptsSupported(): boolean {
   );
 }
 
-function createOpenSynapseLinkDialogButton(container: Explorer): CommandButtonComponentProps {
+function createOpenSynapseLinkDialogButton(
+  container: Explorer,
+  isSynapseLinkUpdating: boolean,
+): CommandButtonComponentProps {
   if (configContext.platform === Platform.Emulator) {
     return undefined;
   }
@@ -273,7 +275,7 @@ function createOpenSynapseLinkDialogButton(container: Explorer): CommandButtonCo
     onCommandClick: () => container.openEnableSynapseLinkDialog(),
     commandButtonLabel: label,
     hasPopup: false,
-    disabled: useNotebook.getState().isSynapseLinkUpdating,
+    disabled: isSynapseLinkUpdating,
     ariaLabel: label,
   };
 }
@@ -514,14 +516,9 @@ function createOpenTerminalButtonByKind(
     }
   };
   const label = `Open ${terminalFriendlyName()} shell`;
-  const tooltip =
-    "This feature is not yet available in your account's region. View supported regions here: https://aka.ms/cosmos-enable-notebooks.";
+  const tooltip = "Cloud Shell is not available for this account.";
   const isNativeAuthDisabled = terminalKind === ViewModels.TerminalKind.VCoreMongo && isVCoreMongoNativeAuthDisabled();
-  const disableButton =
-    (!useNotebook.getState().isNotebooksEnabledForAccount &&
-      !useNotebook.getState().isNotebookEnabled &&
-      !userContext.features.enableCloudShell) ||
-    isNativeAuthDisabled;
+  const disableButton = !userContext.features.enableCloudShell || isNativeAuthDisabled;
   return {
     iconSrc: HostedTerminalIcon,
     iconAlt: label,
@@ -533,7 +530,7 @@ function createOpenTerminalButtonByKind(
         });
         return;
       }
-      if (useNotebook.getState().isNotebookEnabled || userContext.features.enableCloudShell) {
+      if (userContext.features.enableCloudShell) {
         container.openNotebookTerminal(terminalKind);
       }
     },
