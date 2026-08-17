@@ -85,8 +85,8 @@ describe("CommandBarComponentButtonFactory tests", () => {
     });
   });
 
-  describe("Open Cassandra shell button", () => {
-    const openCassandraShellBtnLabel = "Open Cassandra shell";
+  describe("Open Cassandra Shell button", () => {
+    const openCassandraShellBtnLabel = "Open Cassandra Shell";
     const selectedNodeState = useSelectedNode.getState();
 
     beforeAll(() => {
@@ -141,14 +141,14 @@ describe("CommandBarComponentButtonFactory tests", () => {
   });
 
   describe("Open Postgres and vCore Mongo buttons", () => {
-    const openPostgresShellButtonLabel = "Open PSQL shell";
-    const openVCoreMongoShellButtonLabel = "Open MongoDB (DocumentDB) shell";
+    const openPostgresShellButtonLabel = "Open PSQL Shell";
+    const openVCoreMongoShellButtonLabel = "Open MongoDB (DocumentDB) Shell";
 
     beforeAll(() => {
       mockExplorer = {} as Explorer;
     });
 
-    it("creates Postgres shell button", () => {
+    it("creates Postgres Shell button", () => {
       const buttons = CommandBarComponentButtonFactory.createPostgreButtons(mockExplorer);
       const openPostgresShellButton = buttons.find(
         (button) => button.commandButtonLabel === openPostgresShellButtonLabel,
@@ -156,7 +156,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       expect(openPostgresShellButton).toBeDefined();
     });
 
-    it("creates vCore Mongo shell button", () => {
+    it("creates vCore Mongo Shell button", () => {
       const buttons = CommandBarComponentButtonFactory.createVCoreMongoButtons(mockExplorer);
       const openVCoreMongoShellButton = buttons.find(
         (button) => button.commandButtonLabel === openVCoreMongoShellButtonLabel,

@@ -125,3 +125,27 @@ export const connectTerminal = async (
 
   return resp.json();
 };
+
+export const resizeTerminal = async (
+  consoleUri: string,
+  terminalId: string,
+  size: { rows: number; cols: number },
+): Promise<void> => {
+  const targetUri = consoleUri + `/terminals/${terminalId}/size?cols=${size.cols}&rows=${size.rows}&version=2019-01-01`;
+  const resp = await fetch(targetUri, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "Content-Length": "2",
+      Authorization: userContext.authorizationToken,
+      "x-ms-client-request-id": uuidv4(),
+      "Accept-Language": getLocale(),
+    },
+    body: "{}", // empty body is necessary
+  });
+
+  if (!resp.ok) {
+    throw new Error(`Failed to resize terminal: ${resp.status} ${resp.statusText}`);
+  }
+};

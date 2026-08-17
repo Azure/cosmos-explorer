@@ -515,7 +515,7 @@ function createOpenTerminalButtonByKind(
         return "";
     }
   };
-  const label = `Open ${terminalFriendlyName()} shell`;
+  const label = `Open ${terminalFriendlyName()} Shell`;
   const tooltip = "Cloud Shell is not available for this account.";
   const isNativeAuthDisabled = terminalKind === ViewModels.TerminalKind.VCoreMongo && isVCoreMongoNativeAuthDisabled();
   const disableButton = !userContext.features.enableCloudShell || isNativeAuthDisabled;
