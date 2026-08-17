@@ -11,11 +11,7 @@ import { configContext } from "../../../ConfigContext";
 import { AccessInputMetadata } from "../../../Contracts/DataModels";
 import { parseConnectionString } from "../Helpers/ConnectionStringParser";
 import { isResourceTokenConnectionString } from "../Helpers/ResourceTokenUtils";
-import {
-  extractAccountKeyFromConnectionString,
-  isDirectConnectionStringLoginApi,
-  validateDirectConnectionStringLogin,
-} from "../HostedUtils";
+import { extractMasterKeyfromConnectionString, isDirectConnectionStringLoginApi } from "../HostedUtils";
 
 interface Props {
   connectionString: string;
@@ -52,21 +48,17 @@ export const isAccountRestrictedForConnectionStringLogin = async (connectionStri
   return (await response.text()).toLowerCase() === "true";
 };
 
-// Verifies the account key can actually authenticate against the account by making a lightweight read of
-// the database account through the Cosmos client. Returns undefined on success, or an error message when
-// the client cannot connect.
+// Verifies the connection string can actually authenticate against the account by making a lightweight
+// read of the database account through the Cosmos client. Throws on failure.
 export const validateDirectConnectionStringConnectivity = async (
   connectionString: string,
   metadata: AccessInputMetadata,
-): Promise<string | undefined> => {
-  const masterKey = extractAccountKeyFromConnectionString(connectionString);
+): Promise<void> => {
+  const masterKey = extractMasterKeyfromConnectionString(connectionString);
   if (!metadata?.documentEndpoint || !masterKey) {
-    return t(Keys.connectExplorer.errors.connectivityInvalid);
+    throw new Error(t(Keys.connectExplorer.errors.connectivityUnreachable));
   }
 
-  // The Cosmos client reads its connection settings from userContext, so write the master key and
-  // endpoint there. Then we issue a lightweight authenticated read to confirm the
-  // credentials work.
   updateUserContext({
     authType: AuthType.ConnectionString,
     masterKey,
@@ -76,9 +68,8 @@ export const validateDirectConnectionStringConnectivity = async (
 
   try {
     await client().getDatabaseAccount();
-    return undefined;
   } catch {
-    return t(Keys.connectExplorer.errors.connectivityUnreachable);
+    throw new Error(t(Keys.connectExplorer.errors.connectivityUnreachable));
   }
 };
 
@@ -125,23 +116,13 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
                 if (metadata && isDirectConnectionStringLoginApi(metadata.apiKind)) {
                   // SQL, Tables, and Gremlin sign data-plane requests client-side with the account key, so
                   // we skip the Portal Backend proxy and use the metadata parsed from the connection string.
-                  // Validate the host and account client-side (mirrors the backend's ValidateHostAndAccount).
-                  const validationError = validateDirectConnectionStringLogin(connectionString, metadata);
-                  if (validationError) {
-                    setErrorMessage(validationError);
-                    return;
+                  try {
+                    await validateDirectConnectionStringConnectivity(connectionString, metadata);
+                    setDirectLoginMetadata(metadata);
+                    setAuthType(AuthType.ConnectionString);
+                  } catch (error) {
+                    setErrorMessage(error.message);
                   }
-                  // Only open the view once we confirm the Cosmos client can actually connect.
-                  const connectivityError = await validateDirectConnectionStringConnectivity(
-                    connectionString,
-                    metadata,
-                  );
-                  if (connectivityError) {
-                    setErrorMessage(connectivityError);
-                    return;
-                  }
-                  setDirectLoginMetadata(metadata);
-                  setAuthType(AuthType.ConnectionString);
                   return;
                 }
 
@@ -150,7 +131,7 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
                   setEncryptedToken(encryptedToken);
                   setAuthType(AuthType.ConnectionString);
                 } catch (error) {
-                  setErrorMessage(t(Keys.connectExplorer.errors.connectFailed));
+                  setErrorMessage(t(Keys.connectExplorer.errors.connectivityUnreachable));
                 }
               }}
             >

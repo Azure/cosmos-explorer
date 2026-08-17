@@ -1,6 +1,5 @@
 import { AccountKind, CapabilityNames } from "../../Common/Constants";
 import { AccessInputMetadata, ApiKind } from "../../Contracts/DataModels";
-import { Keys, t } from "../../Localization";
 import { DefaultExperienceUtility } from "../../Shared/DefaultExperienceUtility";
 import { userContext } from "../../UserContext";
 
@@ -41,15 +40,9 @@ export function getDatabaseAccountKindFromExperience(apiExperience: typeof userC
   return AccountKind.GlobalDocumentDB;
 }
 
-export function extractMasterKeyfromConnectionString(connectionString: string): string | undefined {
-  // Only Gremlin uses the actual master key for connection to cosmos
-  const matchedParts = connectionString.match("AccountKey=(.*);ApiKind=Gremlin;$");
-  return (matchedParts && matchedParts.length > 1 && matchedParts[1]) || undefined;
-}
-
 // Extracts the account key from any Cosmos connection string. The account key value cannot contain a
 // semicolon, so we capture everything up to the next connection-string delimiter.
-export function extractAccountKeyFromConnectionString(connectionString: string): string | undefined {
+export function extractMasterKeyfromConnectionString(connectionString: string): string | undefined {
   const matchedParts = connectionString?.match(/AccountKey=([^;]*)/);
   return (matchedParts && matchedParts.length > 1 && matchedParts[1]) || undefined;
 }
@@ -58,102 +51,4 @@ export function extractAccountKeyFromConnectionString(connectionString: string):
 // not need the Portal Backend proxy for connection-string login. Mongo and Cassandra still require the proxy.
 export function isDirectConnectionStringLoginApi(apiKind: ApiKind): boolean {
   return apiKind === ApiKind.SQL || apiKind === ApiKind.Table || apiKind === ApiKind.Graph;
-}
-
-// DNS zones a SQL, Tables, or Gremlin connection-string endpoint host is allowed to belong to. Mirrors
-// the allowlist enforced by the Portal Backend's
-// ConnectionStringAccessProvider.ValidateHostAndAccount for the direct-login APIs. Both the newer
-// `table.cosmos.azure.com` and legacy `table.cosmosdb.azure.com` Tables zones are accepted.
-const directLoginAllowlistedEndpointZones = [
-  "documents.azure.com",
-  "table.cosmos.azure.com",
-  "table.cosmosdb.azure.com",
-];
-
-// Returns the substring of `value` starting at `startIndex` up to the first ':', '/', or '?'.
-// Mirrors ExtractHostToken in the Portal Backend.
-function extractHostToken(value: string, startIndex: number): string {
-  let end = value.length;
-  for (let i = startIndex; i < value.length; i++) {
-    const c = value[i];
-    if (c === ":" || c === "/" || c === "?") {
-      end = i;
-      break;
-    }
-  }
-  return value.substring(startIndex, end);
-}
-
-// Extracts the endpoint host from a connection string, mirroring ExtractEndpointHost in the Portal
-// Backend. Handles AccountEndpoint/TableEndpoint (URI or bare host) and HostName.
-export function extractEndpointHostFromConnectionString(connectionString: string): string | undefined {
-  for (const part of connectionString.split(";")) {
-    const trimmed = part.trim();
-
-    const equalsIndex = trimmed.indexOf("=");
-    if (equalsIndex < 0 || equalsIndex === trimmed.length - 1) {
-      continue;
-    }
-
-    const key = trimmed.substring(0, equalsIndex).trim().toLowerCase();
-    const value = trimmed.substring(equalsIndex + 1).trim();
-
-    if (key === "accountendpoint" || key === "tableendpoint") {
-      try {
-        return new URL(value).hostname;
-      } catch {
-        // Value may be a bare host without a scheme.
-        return extractHostToken(value, 0);
-      }
-    }
-
-    if (key === "hostname") {
-      return extractHostToken(value, 0);
-    }
-  }
-
-  return undefined;
-}
-
-// Client-side equivalent of the Portal Backend's ConnectionStringAccessProvider.ValidateHostAndAccount,
-// scoped to the direct-login APIs (SQL, Tables, Gremlin). Ensures the connection string parses to an
-// account name, exposes an endpoint host in an allowlisted DNS zone, that the account name matches the
-// first DNS label of that host, and that an account key is present. Returns an error message when
-// invalid, or undefined when the connection string is valid for direct login.
-export function validateDirectConnectionStringLogin(
-  connectionString: string,
-  metadata: AccessInputMetadata,
-): string | undefined {
-  if (!connectionString) {
-    return t(Keys.connectExplorer.errors.connectionStringMissing);
-  }
-
-  if (!metadata || !metadata.accountName) {
-    return t(Keys.connectExplorer.errors.accountNameMissing);
-  }
-
-  const host = extractEndpointHostFromConnectionString(connectionString);
-  if (!host) {
-    return t(Keys.connectExplorer.errors.endpointHostMissing);
-  }
-
-  // The host must belong to one of the allowlisted runtime endpoint zones.
-  const isAllowlistedHost = directLoginAllowlistedEndpointZones.some((zone) =>
-    host.toLowerCase().endsWith(`.${zone.toLowerCase()}`),
-  );
-  if (!isAllowlistedHost) {
-    return t(Keys.connectExplorer.errors.endpointHostNotAllowed);
-  }
-
-  // The account name must be the first DNS label of the host.
-  if (host.split(".")[0].toLowerCase() !== metadata.accountName.toLowerCase()) {
-    return t(Keys.connectExplorer.errors.accountNameMismatch);
-  }
-
-  // Direct login signs requests with the account key, so it must be present in the connection string.
-  if (!extractAccountKeyFromConnectionString(connectionString)) {
-    return t(Keys.connectExplorer.errors.accountKeyMissing);
-  }
-
-  return undefined;
 }

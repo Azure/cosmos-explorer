@@ -23,12 +23,7 @@ import { SignInButton } from "./Platform/Hosted/Components/SignInButton";
 import "./Platform/Hosted/ConnectScreen.less";
 import { parseConnectionString } from "./Platform/Hosted/Helpers/ConnectionStringParser";
 import { isResourceTokenConnectionString } from "./Platform/Hosted/Helpers/ResourceTokenUtils";
-import {
-  extractAccountKeyFromConnectionString,
-  extractMasterKeyfromConnectionString,
-  isDirectConnectionStringLoginApi,
-  validateDirectConnectionStringLogin,
-} from "./Platform/Hosted/HostedUtils";
+import { extractMasterKeyfromConnectionString, isDirectConnectionStringLoginApi } from "./Platform/Hosted/HostedUtils";
 import "./Shared/appInsights";
 import { allowedHostedExplorerEndpoints } from "./Utils/EndpointUtils";
 import { useAADAuth } from "./hooks/useAADAuth";
@@ -74,31 +69,14 @@ const App: React.FunctionComponent = () => {
       if (metadata && isDirectConnectionStringLoginApi(metadata.apiKind)) {
         // SQL, Tables, and Gremlin sign data-plane requests client-side with the account key, so we skip
         // the Portal Backend proxy and use the metadata derived from the connection string directly.
-        // Validate the host and account client-side (mirrors the backend's ValidateHostAndAccount).
-        const validationError = validateDirectConnectionStringLogin(connStr, metadata);
-        if (validationError) {
-          logError(
-            `Rejected connection string for direct login: ${validationError}`,
-            "HostedExplorer/connectWithConnectionString",
-          );
-          return;
-        }
-        // Only open the view once we confirm the Cosmos client can actually connect.
         validateDirectConnectionStringConnectivity(connStr, metadata)
-          .then((connectivityError) => {
-            if (connectivityError) {
-              logError(
-                `Rejected connection string for direct login: ${connectivityError}`,
-                "HostedExplorer/connectWithConnectionString",
-              );
-              return;
-            }
+          .then(() => {
             setDirectLoginMetadata(metadata);
             setAuthType(AuthType.ConnectionString);
           })
           .catch((error) => {
             logError(
-              `Failed to validate connection string for direct login: ${error}`,
+              `Failed to connect with connection string: ${error}`,
               "HostedExplorer/connectWithConnectionString",
             );
           });
@@ -167,9 +145,7 @@ const App: React.FunctionComponent = () => {
           authType: AuthType.ConnectionString,
           encryptedToken,
           encryptedTokenMetadata: accountMetadata,
-          masterKey: directLoginMetadata
-            ? extractAccountKeyFromConnectionString(connectionString)
-            : extractMasterKeyfromConnectionString(connectionString),
+          masterKey: extractMasterKeyfromConnectionString(connectionString),
         };
       } else if (authType === AuthType.ResourceToken) {
         frameWindow.hostedConfig = {

@@ -478,7 +478,6 @@ function configureHostedWithConnectionString(config: ConnectionString): Explorer
     });
   } else {
     // Legacy encrypted-token proxy path (Mongo, Cassandra).
-    // For legacy reasons lots of code expects a connection string login to look and act like an encrypted token login
     updateUserContext({
       authType: AuthType.EncryptedToken,
       accessToken: encodeURIComponent(config.encryptedToken),

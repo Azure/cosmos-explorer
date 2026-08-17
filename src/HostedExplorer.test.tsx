@@ -159,7 +159,7 @@ describe("HostedExplorer tryCosmosDB postMessage handler", () => {
   });
 
   it("does not open the Data Explorer when the Cosmos client cannot connect", async () => {
-    mockValidateDirectConnectionStringConnectivity.mockResolvedValue("Unable to connect to the account.");
+    mockValidateDirectConnectionStringConnectivity.mockRejectedValue(new Error("Unable to connect to the account."));
     const { container } = render(<App />);
 
     const validConnStr = `AccountEndpoint=https://${FAKE_ACCOUNT_NAME}.documents.azure.com:443/;AccountKey=${FAKE_KEY};`;
