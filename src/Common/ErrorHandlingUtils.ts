@@ -42,8 +42,8 @@ export const handleError = (
   }
 };
 
-export const getErrorMessage = (error: string | Error = ""): string => {
-  let errorMessage = typeof error === "string" ? error : error.message;
+export const getErrorMessage = (error: unknown = ""): string => {
+  let errorMessage = typeof error === "string" ? error : (error as Error)?.message;
   if (!errorMessage) {
     errorMessage = stringifyError(error);
   }

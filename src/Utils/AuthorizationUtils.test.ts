@@ -203,4 +203,38 @@ describe("AuthorizationUtils", () => {
       expect(AuthorizationUtils.getRedirectBridgeUrl()).toBe("https://cosmos.azure.com/redirectBridge.html");
     });
   });
+
+  describe("isAuthorizationError()", () => {
+    it.each([401, 403])("treats a Cosmos client `code` of %i as an authorization failure", (statusCode) => {
+      expect(
+        AuthorizationUtils.isAuthorizationError(Object.assign(new Error("Unauthorized"), { code: statusCode })),
+      ).toBe(true);
+    });
+
+    it.each([401, 403])("treats a `statusCode` of %i as an authorization failure", (statusCode) => {
+      expect(AuthorizationUtils.isAuthorizationError(Object.assign(new Error("Unauthorized"), { statusCode }))).toBe(
+        true,
+      );
+    });
+
+    it("handles a status reported as a string", () => {
+      expect(AuthorizationUtils.isAuthorizationError({ code: "403" })).toBe(true);
+    });
+
+    it.each([404, 429, 500, 503])("does not treat %i as an authorization failure", (statusCode) => {
+      expect(AuthorizationUtils.isAuthorizationError({ code: statusCode })).toBe(false);
+    });
+
+    it("does not treat a non numeric code as an authorization failure", () => {
+      expect(AuthorizationUtils.isAuthorizationError({ code: "ENOTFOUND" })).toBe(false);
+    });
+
+    it("does not treat a network failure as an authorization failure", () => {
+      expect(AuthorizationUtils.isAuthorizationError(new Error("Failed to fetch"))).toBe(false);
+    });
+
+    it("handles a missing error", () => {
+      expect(AuthorizationUtils.isAuthorizationError(undefined)).toBe(false);
+    });
+  });
 });

@@ -65,27 +65,35 @@
   visibility: visible;
 }
 .connectExplorerContainer .connectExplorer .connectExplorerContent .errorDetailsInfoTooltip .errorDetails {
-  bottom: 24px;
-  width: 165px;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 100%;
+  margin-left: 10px;
+  width: 320px;
+  max-height: 240px;
+  overflow-y: auto;
   visibility: hidden;
   background-color: #393939;
   color: #ffffff;
   position: absolute;
   z-index: 1;
-  left: -10px;
   padding: 6px;
+  text-align: left;
+  white-space: normal;
+  overflow-wrap: break-word;
 }
-.connectExplorerContainer .connectExplorer .connectExplorerContent .errorDetailsInfoTooltip .errorDetails:after {
-  border-width: 10px 10px 0px 10px;
-  bottom: -8px;
+.connectExplorerContainer .connectExplorer .connectExplorerContent .errorDetailsInfoTooltip:hover:after {
+  border-width: 8px 8px 8px 0px;
   content: "";
   position: absolute;
-  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 100%;
+  margin-left: 2px;
   border-style: solid;
-  left: 12px;
   width: 0;
   height: 0;
-  border-color: #3b3b3b transparent;
+  border-color: transparent #393939;
 }
 .connectExplorerContainer .connectExplorer .connectExplorerContent .errorDetailsInfoTooltip .errorImg {
   height: 14px;

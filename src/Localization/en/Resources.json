@@ -1177,8 +1177,7 @@
   },
   "connectExplorer": {
     "errors": {
-      "connectFailed": "Failed to connect using the provided connection string. Please verify it is correct and try again.",
-      "connectivityUnreachable": "Unable to connect to the account. Please verify the connection string is correct and that the account is reachable."
+      "connectFailed": "Failed to connect using the provided connection string. Please verify it is correct and try again."
     }
   }
 }

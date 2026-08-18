@@ -1,5 +1,6 @@
 import { initializeIcons } from "@fluentui/react";
 import { useBoolean } from "@fluentui/react-hooks";
+import { getErrorMessage } from "Common/ErrorHandlingUtils";
 import { AadAuthorizationFailure } from "Platform/Hosted/Components/AadAuthorizationFailure";
 import * as React from "react";
 import { render } from "react-dom";
@@ -47,6 +48,7 @@ const App: React.FunctionComponent = () => {
   const [databaseAccount, setDatabaseAccount] = React.useState<DatabaseAccount>();
   const [authType, setAuthType] = React.useState<AuthType>(encryptedToken ? AuthType.EncryptedToken : undefined);
   const [connectionString, setConnectionString] = React.useState<string>();
+  const [errorMessage, setErrorMessage] = React.useState<string>();
   // For SQL/Tables/Gremlin connection-string login, the account metadata is derived client-side from the
   // connection string instead of the Portal Backend, so there is no encrypted token.
   const [directLoginMetadata, setDirectLoginMetadata] = React.useState<AccessInputMetadata>();
@@ -59,6 +61,7 @@ const App: React.FunctionComponent = () => {
       if (!connStr || authType) {
         return;
       }
+      setErrorMessage(undefined);
       setConnectionString(connStr);
       if (isResourceTokenConnectionString(connStr)) {
         setAuthType(AuthType.ResourceToken);
@@ -75,10 +78,12 @@ const App: React.FunctionComponent = () => {
             setAuthType(AuthType.ConnectionString);
           })
           .catch((error) => {
+            const message = getErrorMessage(error);
             logError(
-              `Failed to connect with connection string: ${error}`,
+              `Failed to connect with connection string: ${message}`,
               "HostedExplorer/connectWithConnectionString",
             );
+            setErrorMessage(message);
           });
         return;
       }
@@ -89,7 +94,12 @@ const App: React.FunctionComponent = () => {
           setAuthType(AuthType.ConnectionString);
         })
         .catch((error) => {
-          logError(`Failed to connect with connection string: ${error}`, "HostedExplorer/connectWithConnectionString");
+          const message = getErrorMessage(error);
+          logError(
+            `Failed to connect with connection string: ${message}`,
+            "HostedExplorer/connectWithConnectionString",
+          );
+          setErrorMessage(message);
         });
     },
     [authType],
@@ -226,7 +236,16 @@ const App: React.FunctionComponent = () => {
       )}
       {!isLoggedIn && !encryptedTokenMetadata && (
         <ConnectExplorer
-          {...{ login, setEncryptedToken, setAuthType, connectionString, setConnectionString, setDirectLoginMetadata }}
+          {...{
+            login,
+            setEncryptedToken,
+            setAuthType,
+            connectionString,
+            setConnectionString,
+            setDirectLoginMetadata,
+            errorMessage,
+            setErrorMessage,
+          }}
         />
       )}
       {isLoggedIn && authFailure && <AadAuthorizationFailure {...{ authFailure }} />}
