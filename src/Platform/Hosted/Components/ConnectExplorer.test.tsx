@@ -20,7 +20,7 @@ it("shows the connect form", () => {
   const setConnectionString = jest.fn();
   const setEncryptedToken = jest.fn();
   const setAuthType = jest.fn();
-  const setDirectLoginMetadata = jest.fn();
+  const setAccountMetadata = jest.fn();
   const setErrorMessage = jest.fn();
 
   render(
@@ -31,7 +31,7 @@ it("shows the connect form", () => {
         setAuthType,
         connectionString,
         setConnectionString,
-        setDirectLoginMetadata,
+        setAccountMetadata,
         setErrorMessage,
       }}
     />,
@@ -47,7 +47,7 @@ it("hides the connection string link when feature.disableConnectionStringLogin i
   const setConnectionString = jest.fn();
   const setEncryptedToken = jest.fn();
   const setAuthType = jest.fn();
-  const setDirectLoginMetadata = jest.fn();
+  const setAccountMetadata = jest.fn();
   const setErrorMessage = jest.fn();
   const oldFeatures = userContext.features;
 
@@ -66,7 +66,7 @@ it("hides the connection string link when feature.disableConnectionStringLogin i
         setAuthType,
         connectionString,
         setConnectionString,
-        setDirectLoginMetadata,
+        setAccountMetadata,
         setErrorMessage,
       }}
     />,

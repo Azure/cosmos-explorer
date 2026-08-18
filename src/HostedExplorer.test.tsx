@@ -1,6 +1,6 @@
 jest.mock("./hooks/useAADAuth");
 jest.mock("./hooks/useConfig");
-jest.mock("./hooks/usePortalAccessToken");
+jest.mock("./Platform/Hosted/Helpers/PortalAccessData");
 jest.mock("./Platform/Hosted/Components/ConnectExplorer");
 jest.mock("./Shared/appInsights");
 jest.mock("./Platform/Hosted/Components/AccountSwitcher", () => ({
@@ -27,13 +27,13 @@ import { act, render } from "@testing-library/react";
 import React from "react";
 import { useAADAuth } from "./hooks/useAADAuth";
 import { useConfig } from "./hooks/useConfig";
-import { useTokenMetadata } from "./hooks/usePortalAccessToken";
 import { App } from "./HostedExplorer";
 import {
   ConnectExplorer,
   fetchEncryptedToken,
   validateDirectConnectionStringConnectivity,
 } from "./Platform/Hosted/Components/ConnectExplorer";
+import { fetchAccessData } from "./Platform/Hosted/Helpers/PortalAccessData";
 
 const mockFetchEncryptedToken = fetchEncryptedToken as jest.MockedFunction<typeof fetchEncryptedToken>;
 const mockValidateDirectConnectionStringConnectivity =
@@ -60,7 +60,7 @@ beforeEach(() => {
   jest.clearAllMocks();
   (useAADAuth as jest.Mock).mockReturnValue(defaultAADAuth);
   (useConfig as jest.Mock).mockReturnValue({});
-  (useTokenMetadata as jest.Mock).mockReturnValue(undefined);
+  (fetchAccessData as jest.Mock).mockResolvedValue(undefined);
   mockFetchEncryptedToken.mockResolvedValue("encrypted-token");
   mockValidateDirectConnectionStringConnectivity.mockResolvedValue(undefined);
 });
@@ -75,7 +75,7 @@ const FAKE_ACCOUNT_NAME: string = "-FakeAccount-";
 const FAKE_KEY: string = "<redacted-test-key>";
 
 describe("HostedExplorer tryCosmosDB postMessage handler", () => {
-  it("signs a valid SQL connection string client-side without calling the backend", async () => {
+  it("accepts a valid SQL connection string from an allowed origin", async () => {
     render(<App />);
 
     const validConnStr = `AccountEndpoint=https://${FAKE_ACCOUNT_NAME}.documents.azure.com:443/;AccountKey=${FAKE_KEY};`;
@@ -124,7 +124,7 @@ describe("HostedExplorer tryCosmosDB postMessage handler", () => {
     expect(mockFetchEncryptedToken).toHaveBeenCalledWith(cassandraConnStr);
   });
 
-  it("signs a valid Table connection string client-side without calling the backend", async () => {
+  it("accepts a valid Table connection string from an allowed origin", async () => {
     render(<App />);
 
     const tableConnStr = `DefaultEndpointsProtocol=https;AccountName=${FAKE_ACCOUNT_NAME};AccountKey=${FAKE_KEY};TableEndpoint=https://${FAKE_ACCOUNT_NAME}.table.cosmosdb.azure.com:443/;`;
@@ -141,7 +141,7 @@ describe("HostedExplorer tryCosmosDB postMessage handler", () => {
     expect(mockValidateDirectConnectionStringConnectivity).toHaveBeenCalled();
   });
 
-  it("signs a valid Gremlin connection string client-side without calling the backend", async () => {
+  it("accepts a valid Gremlin connection string from an allowed origin", async () => {
     render(<App />);
 
     const gremlinConnStr = `AccountEndpoint=https://${FAKE_ACCOUNT_NAME}.documents.azure.com:443/;AccountKey=${FAKE_KEY};ApiKind=Gremlin;`;
@@ -158,7 +158,7 @@ describe("HostedExplorer tryCosmosDB postMessage handler", () => {
     expect(mockValidateDirectConnectionStringConnectivity).toHaveBeenCalled();
   });
 
-  it("does not open the Data Explorer when the Cosmos client cannot connect", async () => {
+  it("does not open Data Explorer when the Cosmos client cannot connect", async () => {
     mockValidateDirectConnectionStringConnectivity.mockRejectedValue(new Error("Unable to connect to the account."));
     const { container } = render(<App />);
 

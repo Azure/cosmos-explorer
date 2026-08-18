@@ -22,7 +22,7 @@ interface Props {
   setEncryptedToken: (token: string) => void;
   setConnectionString: (connectionString: string) => void;
   setAuthType: (authType: AuthType) => void;
-  setDirectLoginMetadata: (metadata: AccessInputMetadata) => void;
+  setAccountMetadata: (metadata: AccessInputMetadata) => void;
   errorMessage?: string;
   setErrorMessage: (message: string) => void;
 }
@@ -99,7 +99,7 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
   setAuthType,
   connectionString,
   setConnectionString,
-  setDirectLoginMetadata,
+  setAccountMetadata,
   errorMessage,
   setErrorMessage,
 }: Props) => {
@@ -144,7 +144,7 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
                   // we skip the Portal Backend proxy and use the metadata parsed from the connection string.
                   try {
                     await validateDirectConnectionStringConnectivity(connectionString, metadata);
-                    setDirectLoginMetadata(metadata);
+                    setAccountMetadata(metadata);
                     setAuthType(AuthType.ConnectionString);
                   } catch (error) {
                     setErrorMessage(getErrorMessage(error));

@@ -1177,7 +1177,7 @@
   },
   "connectExplorer": {
     "errors": {
-      "connectFailed": "Failed to connect using the provided connection string. Please verify it is correct and try again."
+      "connectFailed": "Failed to connect using the provided connection string. Please verify it is correct and that the account is reachable, then try again."
     }
   }
 }

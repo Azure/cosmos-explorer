@@ -23,13 +23,13 @@ import { MeControl } from "./Platform/Hosted/Components/MeControl";
 import { SignInButton } from "./Platform/Hosted/Components/SignInButton";
 import "./Platform/Hosted/ConnectScreen.less";
 import { parseConnectionString } from "./Platform/Hosted/Helpers/ConnectionStringParser";
+import { fetchAccessData } from "./Platform/Hosted/Helpers/PortalAccessData";
 import { isResourceTokenConnectionString } from "./Platform/Hosted/Helpers/ResourceTokenUtils";
 import { extractMasterKeyfromConnectionString, isDirectConnectionStringLoginApi } from "./Platform/Hosted/HostedUtils";
 import "./Shared/appInsights";
 import { allowedHostedExplorerEndpoints } from "./Utils/EndpointUtils";
 import { useAADAuth } from "./hooks/useAADAuth";
 import { useConfig } from "./hooks/useConfig";
-import { useTokenMetadata } from "./hooks/usePortalAccessToken";
 
 initializeIcons();
 
@@ -37,7 +37,15 @@ const App: React.FunctionComponent = () => {
   // For handling encrypted portal tokens sent via query paramter
   const params = new URLSearchParams(window.location.search);
   const [encryptedToken, setEncryptedToken] = React.useState<string>(params && params.get("key"));
-  const encryptedTokenMetadata = useTokenMetadata(encryptedToken);
+  // Encrypted token logins resolve the account metadata through the Portal Backend, while SQL/Tables/Gremlin
+  // connection-string logins derive it client-side, so both paths write to the same value.
+  const [accountMetadata, setAccountMetadata] = React.useState<AccessInputMetadata>();
+
+  React.useEffect(() => {
+    if (encryptedToken) {
+      fetchAccessData(encryptedToken).then(setAccountMetadata);
+    }
+  }, [encryptedToken]);
 
   // For showing/hiding panel
   const [isOpen, { setTrue: openPanel, setFalse: dismissPanel }] = useBoolean(false);
@@ -49,10 +57,6 @@ const App: React.FunctionComponent = () => {
   const [authType, setAuthType] = React.useState<AuthType>(encryptedToken ? AuthType.EncryptedToken : undefined);
   const [connectionString, setConnectionString] = React.useState<string>();
   const [errorMessage, setErrorMessage] = React.useState<string>();
-  // For SQL/Tables/Gremlin connection-string login, the account metadata is derived client-side from the
-  // connection string instead of the Portal Backend, so there is no encrypted token.
-  const [directLoginMetadata, setDirectLoginMetadata] = React.useState<AccessInputMetadata>();
-  const accountMetadata = encryptedTokenMetadata || directLoginMetadata;
 
   const ref = React.useRef<HTMLIFrameElement>();
 
@@ -74,7 +78,7 @@ const App: React.FunctionComponent = () => {
         // the Portal Backend proxy and use the metadata derived from the connection string directly.
         validateDirectConnectionStringConnectivity(connStr, metadata)
           .then(() => {
-            setDirectLoginMetadata(metadata);
+            setAccountMetadata(metadata);
             setAuthType(AuthType.ConnectionString);
           })
           .catch((error) => {
@@ -148,7 +152,7 @@ const App: React.FunctionComponent = () => {
         frameWindow.hostedConfig = {
           authType: AuthType.EncryptedToken,
           encryptedToken,
-          encryptedTokenMetadata,
+          encryptedTokenMetadata: accountMetadata,
         };
       } else if (authType === AuthType.ConnectionString) {
         frameWindow.hostedConfig = {
@@ -222,9 +226,7 @@ const App: React.FunctionComponent = () => {
         // It's possible this can be changed once all knockout code has been removed.
         <iframe
           // Setting key is needed so React will re-render this element on any account change
-          key={
-            authType ? `${authType}-${encryptedTokenMetadata?.accountName || connectionString}` : databaseAccount?.id
-          }
+          key={authType ? `${authType}-${accountMetadata?.accountName || connectionString}` : databaseAccount?.id}
           ref={ref}
           data-test="DataExplorerFrame"
           id="explorerMenu"
@@ -234,7 +236,7 @@ const App: React.FunctionComponent = () => {
           src="explorer.html?v=1.0.1&platform=Hosted"
         ></iframe>
       )}
-      {!isLoggedIn && !encryptedTokenMetadata && (
+      {!isLoggedIn && !accountMetadata && (
         <ConnectExplorer
           {...{
             login,
@@ -242,7 +244,7 @@ const App: React.FunctionComponent = () => {
             setAuthType,
             connectionString,
             setConnectionString,
-            setDirectLoginMetadata,
+            setAccountMetadata,
             errorMessage,
             setErrorMessage,
           }}
