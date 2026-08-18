@@ -513,7 +513,7 @@ function createOpenTerminalButtonByKind(
         return "";
     }
   };
-  const label = `Open ${terminalFriendlyName()} shell`;
+  const label = `Open ${terminalFriendlyName()} Shell`;
   const tooltip =
     "This feature is not yet available in your account's region. View supported regions here: https://aka.ms/cosmos-enable-notebooks.";
   const isNativeAuthDisabled = terminalKind === ViewModels.TerminalKind.VCoreMongo && isVCoreMongoNativeAuthDisabled();
