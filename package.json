@@ -97,7 +97,7 @@
     "utility-types": "3.10.0",
     "uuid": "9.0.0",
     "web-vitals": "4.2.4",
-    "ws": "8.20.1",
+    "ws": "8.21.3",
     "xterm": "4.19.0",
     "xterm-addon-fit": "0.5.0",
     "zustand": "3.5.0"
@@ -206,7 +206,7 @@
     "webpack-bundle-analyzer": "5.2.0",
     "webpack-cli": "5.1.4",
     "webpack-dev-server": "5.2.5",
-    "ws": "8.20.1"
+    "ws": "8.21.3"
   },
   "scripts": {
     "postinstall": "patch-package && npm run generate:i18n-keys",
