@@ -468,7 +468,7 @@ function configureHostedWithConnectionString(config: ConnectionString): Explorer
     tags: {},
   };
   if (config.masterKey && !config.encryptedToken) {
-    // Direct client-side signing path (SQL, Tables, Gremlin). Requests are signed locally with the
+    // Direct client-side signing path (SQL, Table, Gremlin). Requests are signed locally with the
     // account key via the Cosmos client's tokenProvider, so no Portal Backend proxy or encrypted token
     // is required.
     updateUserContext({

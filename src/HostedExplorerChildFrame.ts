@@ -14,12 +14,12 @@ export interface AAD {
 
 export interface ConnectionString {
   authType: AuthType.ConnectionString;
-  // SQL, Tables, and Gremlin sign data-plane requests client-side with the master key and do not need the
+  // SQL, Table, and Gremlin sign data-plane requests client-side with the master key and do not need the
   // proxies, so they carry no encrypted token. Mongo and Cassandra still use the encrypted
   // token because their operations go through the proxies.
   encryptedToken?: string;
   encryptedTokenMetadata: AccessInputMetadata;
-  // Master key is used for the client-side signing path (SQL, Tables, Gremlin). Mongo/Cassandra leave it undefined.
+  // Master key is used for the client-side signing path (SQL, Table, Gremlin). Mongo/Cassandra leave it undefined.
   masterKey?: string;
 }
 

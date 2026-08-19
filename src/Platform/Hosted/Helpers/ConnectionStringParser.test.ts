@@ -62,7 +62,7 @@ describe("ConnectionStringParser", () => {
 
     expect(metadata.accountName).toBe(mockAccountName);
     expect(metadata.apiKind).toBe(DataModels.ApiKind.Table);
-    // Tables data operations go through the document endpoint, which is constructed from the account name.
+    // Table data operations go through the document endpoint, which is constructed from the account name.
     expect(metadata.documentEndpoint).toBe(`https://${mockAccountName}.documents.azure.com:443/`);
     expect(metadata.apiEndpoint).toBeUndefined();
   });

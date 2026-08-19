@@ -14,7 +14,7 @@ import {
   subscriptionId,
 } from "../fx";
 
-// Tables API accounts store tables in a fixed "TablesDB" database, with each table as a container.
+// Table API accounts store tables in a fixed "TablesDB" database, with each table as a container.
 const databaseId = "TablesDB";
 const tableId = generateUniqueName("table");
 const partitionKey = "testpartition";
@@ -56,7 +56,7 @@ test.describe("Tables account using connection string login", () => {
       accountName,
     );
 
-    // Tables sign data-plane requests client-side with the account key, so no encrypted token is issued.
+    // Table accounts sign data-plane requests client-side with the account key, so no encrypted token is issued.
     const connectionString = connectionStrings.find((cs) => cs.type === "Table")?.connectionString;
 
     await page.goto("https://localhost:1234/hostedExplorer.html");

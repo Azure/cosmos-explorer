@@ -66,7 +66,7 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
 
                 const metadata = parseConnectionString(connectionString);
                 if (metadata && isDirectConnectionStringLoginApi(metadata.apiKind)) {
-                  // SQL, Tables, and Gremlin sign data-plane requests client-side with the account key, so
+                  // SQL, Table, and Gremlin sign data-plane requests client-side with the account key, so
                   // we skip the Portal Backend proxy and use the metadata parsed from the connection string.
                   setAccountMetadata(metadata);
                   setAuthType(AuthType.ConnectionString);

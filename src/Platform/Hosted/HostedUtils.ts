@@ -46,7 +46,7 @@ export function extractMasterKeyFromDirectLoginConnectionString(connectionString
   return (matchedParts && matchedParts.length > 1 && matchedParts[1]) || undefined;
 }
 
-// SQL, Tables, and Gremlin can sign data-plane requests client-side with the account key, so they do
+// SQL, Table, and Gremlin can sign data-plane requests client-side with the account key, so they do
 // not need the Portal Backend proxy for connection-string login. Mongo and Cassandra still require the proxy.
 export function isDirectConnectionStringLoginApi(apiKind: ApiKind): boolean {
   return apiKind === ApiKind.SQL || apiKind === ApiKind.Table || apiKind === ApiKind.Graph;
