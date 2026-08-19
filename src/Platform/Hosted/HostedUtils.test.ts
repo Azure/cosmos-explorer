@@ -1,6 +1,6 @@
 import { AccessInputMetadata, ApiKind } from "../../Contracts/DataModels";
 import {
-  extractMasterKeyfromConnectionString,
+  extractMasterKeyFromDirectLoginConnectionString,
   getDatabaseAccountPropertiesFromMetadata,
   isDirectConnectionStringLoginApi,
 } from "./HostedUtils";
@@ -35,13 +35,13 @@ describe("getDatabaseAccountPropertiesFromMetadata", () => {
   });
 });
 
-describe("extractMasterKeyfromConnectionString", () => {
+describe("extractMasterKeyFromDirectLoginConnectionString", () => {
   const mockAccountName = "Test";
   const mockKey = "abc123+/=someKey==";
 
   it("extracts the account key from a SQL connection string", () => {
     expect(
-      extractMasterKeyfromConnectionString(
+      extractMasterKeyFromDirectLoginConnectionString(
         `AccountEndpoint=https://${mockAccountName}.documents.azure.com:443/;AccountKey=${mockKey};`,
       ),
     ).toBe(mockKey);
@@ -49,7 +49,7 @@ describe("extractMasterKeyfromConnectionString", () => {
 
   it("extracts the account key from a Table connection string", () => {
     expect(
-      extractMasterKeyfromConnectionString(
+      extractMasterKeyFromDirectLoginConnectionString(
         `DefaultEndpointsProtocol=https;AccountName=${mockAccountName};AccountKey=${mockKey};TableEndpoint=https://${mockAccountName}.table.cosmosdb.azure.com:443/;`,
       ),
     ).toBe(mockKey);
@@ -57,7 +57,7 @@ describe("extractMasterKeyfromConnectionString", () => {
 
   it("extracts the account key from a Gremlin connection string", () => {
     expect(
-      extractMasterKeyfromConnectionString(
+      extractMasterKeyFromDirectLoginConnectionString(
         `AccountEndpoint=https://${mockAccountName}.documents.azure.com:443/;AccountKey=${mockKey};ApiKind=Gremlin;`,
       ),
     ).toBe(mockKey);
@@ -65,12 +65,14 @@ describe("extractMasterKeyfromConnectionString", () => {
 
   it("returns undefined when there is no account key", () => {
     expect(
-      extractMasterKeyfromConnectionString(`AccountEndpoint=https://${mockAccountName}.documents.azure.com:443/;`),
+      extractMasterKeyFromDirectLoginConnectionString(
+        `AccountEndpoint=https://${mockAccountName}.documents.azure.com:443/;`,
+      ),
     ).toBeUndefined();
   });
 
   it("returns undefined for an empty connection string", () => {
-    expect(extractMasterKeyfromConnectionString("")).toBeUndefined();
+    expect(extractMasterKeyFromDirectLoginConnectionString("")).toBeUndefined();
   });
 });
 

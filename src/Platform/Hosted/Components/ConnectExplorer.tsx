@@ -5,10 +5,14 @@ import * as React from "react";
 import ConnectImage from "../../../../images/HdeConnectCosmosDB.svg";
 import ErrorImage from "../../../../images/error.svg";
 import { AuthType } from "../../../AuthType";
-import { HttpHeaders } from "../../../Common/Constants";
-import { configContext } from "../../../ConfigContext";
 import { AccessInputMetadata } from "../../../Contracts/DataModels";
+import { isAuthorizationError } from "../../../Utils/AuthorizationUtils";
 import { parseConnectionString } from "../Helpers/ConnectionStringParser";
+import {
+  fetchEncryptedToken,
+  isAccountRestrictedForConnectionStringLogin,
+  PortalBackendError,
+} from "../Helpers/PortalBackendClient";
 import { isResourceTokenConnectionString } from "../Helpers/ResourceTokenUtils";
 import { isDirectConnectionStringLoginApi } from "../HostedUtils";
 
@@ -20,36 +24,6 @@ interface Props {
   setAuthType: (authType: AuthType) => void;
   setAccountMetadata: (metadata: AccessInputMetadata) => void;
 }
-
-// Turns a failed Portal Backend response into an error that carries the message returned by the service.
-const errorFromResponse = async (response: Response): Promise<Error> =>
-  new Error((await response.text()) || response.statusText);
-
-export const fetchEncryptedToken = async (connectionString: string): Promise<string> => {
-  const headers = new Headers();
-  headers.append(HttpHeaders.connectionString, connectionString);
-  headers.append(HttpHeaders.authorization, connectionString);
-  const url = configContext.PORTAL_BACKEND_ENDPOINT + "/api/connectionstring/token/generatetoken";
-  const response = await fetch(url, { headers, method: "POST" });
-  if (!response.ok) {
-    throw await errorFromResponse(response);
-  }
-
-  const encryptedTokenResponse: string = await response.json();
-  return decodeURIComponent(encryptedTokenResponse);
-};
-
-export const isAccountRestrictedForConnectionStringLogin = async (connectionString: string): Promise<boolean> => {
-  const headers = new Headers();
-  headers.append(HttpHeaders.connectionString, connectionString);
-  const url = configContext.PORTAL_BACKEND_ENDPOINT + "/api/guest/accountrestrictions/checkconnectionstringlogin";
-  const response = await fetch(url, { headers, method: "POST" });
-  if (!response.ok) {
-    throw await errorFromResponse(response);
-  }
-
-  return (await response.text()).toLowerCase() === "true";
-};
 
 export const ConnectExplorer: React.FunctionComponent<Props> = ({
   setEncryptedToken,
@@ -109,7 +83,16 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
                   setEncryptedToken(encryptedToken);
                   setAuthType(AuthType.ConnectionString);
                 } catch (error) {
-                  setErrorMessage(getErrorMessage(error));
+                  // A 401 or 403 means the credentials or Portal Backend were not authorized.
+                  // Any other failure is on the backend, so rather than block the login
+                  // we sign in with the metadata parsed from the connection string.
+                  if (!metadata || (error instanceof PortalBackendError && isAuthorizationError(error.statusCode))) {
+                    setErrorMessage(getErrorMessage(error));
+                    return;
+                  }
+
+                  setAccountMetadata(metadata);
+                  setAuthType(AuthType.ConnectionString);
                 }
               }}
             >

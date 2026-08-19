@@ -48,7 +48,7 @@ export function parseConnectionString(connectionString: string): AccessInputMeta
         return undefined;
       }
 
-      // Tables connection strings only carry the table endpoint, so the document endpoint that data
+      // Table connection strings only carry the table endpoint, so the document endpoint that data plane
       // operations go through has to be derived from the account name. Gremlin accounts additionally
       // need the Gremlin endpoint, which is never part of the connection string.
       if (accessInput.accountName) {

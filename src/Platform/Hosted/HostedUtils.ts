@@ -40,9 +40,10 @@ export function getDatabaseAccountKindFromExperience(apiExperience: typeof userC
   return AccountKind.GlobalDocumentDB;
 }
 
-// Extracts the account key from any Cosmos connection string. The account key value cannot contain a
-// semicolon, so we capture everything up to the next connection-string delimiter.
-export function extractMasterKeyfromConnectionString(connectionString: string): string | undefined {
+// Returns the master key carried by SQL, Table, and Gremlin connection strings. Mongo and
+// Cassandra do not use an AccountKey token, so they must not be passed here. The key value cannot
+// contain a semicolon, so we capture everything up to the next delimiter.
+export function extractMasterKeyFromDirectLoginConnectionString(connectionString: string): string | undefined {
   const matchedParts = connectionString?.match(/AccountKey=([^;]*)/);
   return (matchedParts && matchedParts.length > 1 && matchedParts[1]) || undefined;
 }

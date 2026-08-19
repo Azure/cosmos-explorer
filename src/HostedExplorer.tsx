@@ -12,16 +12,19 @@ import { AccessInputMetadata, DatabaseAccount } from "./Contracts/DataModels";
 import "./Explorer/Menus/NavBar/MeControlComponent.less";
 import { HostedExplorerChildFrame } from "./HostedExplorerChildFrame";
 import { AccountSwitcher } from "./Platform/Hosted/Components/AccountSwitcher";
-import { ConnectExplorer, fetchEncryptedToken } from "./Platform/Hosted/Components/ConnectExplorer";
+import { ConnectExplorer } from "./Platform/Hosted/Components/ConnectExplorer";
 import { DirectoryPickerPanel } from "./Platform/Hosted/Components/DirectoryPickerPanel";
 import { FeedbackCommandButton } from "./Platform/Hosted/Components/FeedbackCommandButton";
 import { MeControl } from "./Platform/Hosted/Components/MeControl";
 import { SignInButton } from "./Platform/Hosted/Components/SignInButton";
 import "./Platform/Hosted/ConnectScreen.less";
 import { parseConnectionString } from "./Platform/Hosted/Helpers/ConnectionStringParser";
-import { fetchAccessData } from "./Platform/Hosted/Helpers/PortalAccessData";
+import { fetchAccessData, fetchEncryptedToken } from "./Platform/Hosted/Helpers/PortalBackendClient";
 import { isResourceTokenConnectionString } from "./Platform/Hosted/Helpers/ResourceTokenUtils";
-import { extractMasterKeyfromConnectionString, isDirectConnectionStringLoginApi } from "./Platform/Hosted/HostedUtils";
+import {
+  extractMasterKeyFromDirectLoginConnectionString,
+  isDirectConnectionStringLoginApi,
+} from "./Platform/Hosted/HostedUtils";
 import "./Shared/appInsights";
 import { allowedHostedExplorerEndpoints } from "./Utils/EndpointUtils";
 import { useAADAuth } from "./hooks/useAADAuth";
@@ -140,7 +143,7 @@ const App: React.FunctionComponent = () => {
           authType: AuthType.ConnectionString,
           encryptedToken,
           encryptedTokenMetadata: accountMetadata,
-          masterKey: extractMasterKeyfromConnectionString(connectionString),
+          masterKey: extractMasterKeyFromDirectLoginConnectionString(connectionString),
         };
       } else if (authType === AuthType.ResourceToken) {
         frameWindow.hostedConfig = {
