@@ -13,7 +13,6 @@ it("shows the connect form", () => {
   const setEncryptedToken = jest.fn();
   const setAuthType = jest.fn();
   const setAccountMetadata = jest.fn();
-  const setErrorMessage = jest.fn();
 
   render(
     <ConnectExplorer
@@ -24,7 +23,6 @@ it("shows the connect form", () => {
         connectionString,
         setConnectionString,
         setAccountMetadata,
-        setErrorMessage,
       }}
     />,
   );
@@ -40,7 +38,6 @@ it("hides the connection string link when feature.disableConnectionStringLogin i
   const setEncryptedToken = jest.fn();
   const setAuthType = jest.fn();
   const setAccountMetadata = jest.fn();
-  const setErrorMessage = jest.fn();
   const oldFeatures = userContext.features;
 
   const params = new URLSearchParams({
@@ -59,7 +56,6 @@ it("hides the connection string link when feature.disableConnectionStringLogin i
         connectionString,
         setConnectionString,
         setAccountMetadata,
-        setErrorMessage,
       }}
     />,
   );

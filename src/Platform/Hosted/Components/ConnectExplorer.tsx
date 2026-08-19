@@ -19,8 +19,6 @@ interface Props {
   setConnectionString: (connectionString: string) => void;
   setAuthType: (authType: AuthType) => void;
   setAccountMetadata: (metadata: AccessInputMetadata) => void;
-  errorMessage?: string;
-  setErrorMessage: (message: string) => void;
 }
 
 // Turns a failed Portal Backend response into an error that carries the message returned by the service.
@@ -60,10 +58,9 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
   connectionString,
   setConnectionString,
   setAccountMetadata,
-  errorMessage,
-  setErrorMessage,
 }: Props) => {
   const [isFormVisible, { setTrue: showForm }] = useBoolean(false);
+  const [errorMessage, setErrorMessage] = React.useState("");
   const enableConnectionStringLogin = !userContext.features.disableConnectionStringLogin;
 
   return (
@@ -128,7 +125,7 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
                     setConnectionString(event.target.value);
                   }}
                 />
-                {errorMessage && (
+                {errorMessage.length > 0 && (
                   <span className="errorDetailsInfoTooltip">
                     <img className="errorImg" src={ErrorImage} alt="Error notification" />
                     <span className="errorDetails">{errorMessage}</span>
@@ -149,12 +146,6 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
                 <p className="switchConnectTypeText" data-test="Link:SwitchConnectionType" onClick={showForm}>
                   Connect to your account with connection string
                 </p>
-              )}
-              {errorMessage && (
-                <span className="errorDetailsInfoTooltip">
-                  <img className="errorImg" src={ErrorImage} alt="Error notification" />
-                  <span className="errorDetails">{errorMessage}</span>
-                </span>
               )}
             </div>
           )}

@@ -52,7 +52,6 @@ const App: React.FunctionComponent = () => {
   const [databaseAccount, setDatabaseAccount] = React.useState<DatabaseAccount>();
   const [authType, setAuthType] = React.useState<AuthType>(encryptedToken ? AuthType.EncryptedToken : undefined);
   const [connectionString, setConnectionString] = React.useState<string>();
-  const [errorMessage, setErrorMessage] = React.useState<string>();
 
   const ref = React.useRef<HTMLIFrameElement>();
 
@@ -61,7 +60,6 @@ const App: React.FunctionComponent = () => {
       if (!connStr || authType) {
         return;
       }
-      setErrorMessage(undefined);
       setConnectionString(connStr);
       if (isResourceTokenConnectionString(connStr)) {
         setAuthType(AuthType.ResourceToken);
@@ -83,12 +81,10 @@ const App: React.FunctionComponent = () => {
           setAuthType(AuthType.ConnectionString);
         })
         .catch((error) => {
-          const message = getErrorMessage(error);
           logError(
-            `Failed to connect with connection string: ${message}`,
+            `Failed to connect with connection string: ${getErrorMessage(error)}`,
             "HostedExplorer/connectWithConnectionString",
           );
-          setErrorMessage(message);
         });
     },
     [authType],
@@ -230,8 +226,6 @@ const App: React.FunctionComponent = () => {
             connectionString,
             setConnectionString,
             setAccountMetadata,
-            errorMessage,
-            setErrorMessage,
           }}
         />
       )}
