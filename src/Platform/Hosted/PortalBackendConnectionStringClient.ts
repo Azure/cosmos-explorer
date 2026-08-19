@@ -1,24 +1,6 @@
-import { HttpHeaders } from "../../../Common/Constants";
-import { configContext } from "../../../ConfigContext";
-import { AccessInputMetadata } from "../../../Contracts/DataModels";
-
-// A failed Portal Backend response. Carries the status so callers can tell a rejected connection string
-// from a service failure.
-export class PortalBackendError extends Error {
-  constructor(
-    message: string,
-    public readonly statusCode: number,
-  ) {
-    super(message);
-    // Set the prototype explicitly so `instanceof` works.
-    // https://github.com/Microsoft/TypeScript/wiki/FAQ#why-doesnt-extending-built-ins-like-error-array-and-map-work
-    Object.setPrototypeOf(this, PortalBackendError.prototype);
-  }
-
-  static async fromResponse(response: Response): Promise<PortalBackendError> {
-    return new PortalBackendError(await response.text(), response.status);
-  }
-}
+import { HttpHeaders } from "../../Common/Constants";
+import { configContext } from "../../ConfigContext";
+import { AccessInputMetadata } from "../../Contracts/DataModels";
 
 export async function fetchAccessData(portalToken: string): Promise<AccessInputMetadata> {
   const headers = new Headers();
@@ -43,7 +25,7 @@ export async function fetchEncryptedToken(connectionString: string): Promise<str
   const url = configContext.PORTAL_BACKEND_ENDPOINT + "/api/connectionstring/token/generatetoken";
   const response = await fetch(url, { headers, method: "POST" });
   if (!response.ok) {
-    throw await PortalBackendError.fromResponse(response);
+    throw response;
   }
 
   const encryptedTokenResponse: string = await response.json();
@@ -56,7 +38,7 @@ export async function isAccountRestrictedForConnectionStringLogin(connectionStri
   const url = configContext.PORTAL_BACKEND_ENDPOINT + "/api/guest/accountrestrictions/checkconnectionstringlogin";
   const response = await fetch(url, { headers, method: "POST" });
   if (!response.ok) {
-    throw await PortalBackendError.fromResponse(response);
+    throw response;
   }
 
   return (await response.text()).toLowerCase() === "true";

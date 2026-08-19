@@ -7,9 +7,12 @@ import ErrorImage from "../../../../images/error.svg";
 import { AuthType } from "../../../AuthType";
 import { AccessInputMetadata } from "../../../Contracts/DataModels";
 import { parseConnectionString } from "../Helpers/ConnectionStringParser";
-import { fetchEncryptedToken, isAccountRestrictedForConnectionStringLogin } from "../Helpers/PortalBackendClient";
 import { isResourceTokenConnectionString } from "../Helpers/ResourceTokenUtils";
 import { isDirectConnectionStringLoginApi } from "../HostedUtils";
+import {
+  fetchEncryptedToken,
+  isAccountRestrictedForConnectionStringLogin,
+} from "../PortalBackendConnectionStringClient";
 
 interface Props {
   connectionString: string;

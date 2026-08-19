@@ -19,12 +19,12 @@ import { MeControl } from "./Platform/Hosted/Components/MeControl";
 import { SignInButton } from "./Platform/Hosted/Components/SignInButton";
 import "./Platform/Hosted/ConnectScreen.less";
 import { parseConnectionString } from "./Platform/Hosted/Helpers/ConnectionStringParser";
-import { fetchAccessData, fetchEncryptedToken } from "./Platform/Hosted/Helpers/PortalBackendClient";
 import { isResourceTokenConnectionString } from "./Platform/Hosted/Helpers/ResourceTokenUtils";
 import {
   extractMasterKeyFromDirectLoginConnectionString,
   isDirectConnectionStringLoginApi,
 } from "./Platform/Hosted/HostedUtils";
+import { fetchAccessData, fetchEncryptedToken } from "./Platform/Hosted/PortalBackendConnectionStringClient";
 import "./Shared/appInsights";
 import { allowedHostedExplorerEndpoints } from "./Utils/EndpointUtils";
 import { useAADAuth } from "./hooks/useAADAuth";
