@@ -36,7 +36,7 @@ const App: React.FunctionComponent = () => {
   // For handling encrypted portal tokens sent via query paramter
   const params = new URLSearchParams(window.location.search);
   const [encryptedToken, setEncryptedToken] = React.useState<string>(params && params.get("key"));
-  // Encrypted token logins resolve the account metadata through the Portal Backend, while SQL/Tables/Gremlin
+  // Encrypted token logins resolve the account metadata through the Portal Backend, while SQL/Table/Gremlin
   // connection-string logins derive it client-side, so both paths write to the same value.
   const [accountMetadata, setAccountMetadata] = React.useState<AccessInputMetadata>();
 

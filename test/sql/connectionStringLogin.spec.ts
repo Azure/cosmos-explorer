@@ -83,6 +83,25 @@ test.describe("SQL account using connection string login", () => {
     expect(resultData?.id).toEqual(documentId);
   });
 
+  test("does not call the Portal Backend during login", async ({ page }) => {
+    // SQL derives the account metadata from the connection string and signs data-plane requests with the
+    // account key, so neither the encrypted token nor the access metadata endpoint should be hit.
+    const portalBackendCalls: string[] = [];
+    page.on("request", (request) => {
+      if (request.url().includes("/api/connectionstring/")) {
+        portalBackendCalls.push(request.url());
+      }
+    });
+
+    await loginWithConnectionString(page, connectionString);
+
+    const explorer = await DataExplorer.waitForExplorer(page);
+    const collectionNode = await explorer.waitForContainerNode(databaseId, containerId);
+    await expect(collectionNode.element).toBeAttached();
+
+    expect(portalBackendCalls).toEqual([]);
+  });
+
   test("opens Data Explorer when the connection string has the wrong account key", async ({ page }) => {
     // A well-formed but incorrect base64 account key. The login is accepted
     // without checking the key against the account, so the user gets into Data Explorer either way and

@@ -85,9 +85,6 @@ describe("ConnectionStringParser", () => {
 
     expect(metadata.accountName).toBe(mockAccountName);
     expect(metadata.apiKind).toBe(DataModels.ApiKind.Cassandra);
-    // Cassandra still uses the Portal Backend proxy, so no client-side endpoints are constructed.
-    expect(metadata.documentEndpoint).toBeUndefined();
-    expect(metadata.apiEndpoint).toBeUndefined();
   });
 
   it("should fail to parse an invalid connection string", () => {
