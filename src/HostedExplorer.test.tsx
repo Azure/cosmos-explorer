@@ -1,6 +1,6 @@
 jest.mock("./hooks/useAADAuth");
 jest.mock("./hooks/useConfig");
-jest.mock("./Platform/Hosted/PortalBackendConnectionStringClient");
+jest.mock("./Common/PortalBackendClient");
 jest.mock("./Platform/Hosted/Components/ConnectExplorer");
 jest.mock("./Shared/appInsights");
 jest.mock("./Platform/Hosted/Components/AccountSwitcher", () => ({
@@ -25,11 +25,11 @@ jest.mock("./Platform/Hosted/Components/AadAuthorizationFailure", () => ({
 import "@testing-library/jest-dom";
 import { act, render } from "@testing-library/react";
 import React from "react";
+import { fetchAccessData, fetchEncryptedToken } from "./Common/PortalBackendClient";
 import { useAADAuth } from "./hooks/useAADAuth";
 import { useConfig } from "./hooks/useConfig";
 import { App } from "./HostedExplorer";
 import { ConnectExplorer } from "./Platform/Hosted/Components/ConnectExplorer";
-import { fetchAccessData, fetchEncryptedToken } from "./Platform/Hosted/PortalBackendConnectionStringClient";
 
 const mockFetchEncryptedToken = fetchEncryptedToken as jest.MockedFunction<typeof fetchEncryptedToken>;
 

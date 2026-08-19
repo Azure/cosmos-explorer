@@ -8,6 +8,7 @@ import ChevronRight from "../images/chevron-right.svg";
 import "../less/hostedexplorer.less";
 import { AuthType } from "./AuthType";
 import { logError } from "./Common/Logger";
+import { fetchAccessData, fetchEncryptedToken } from "./Common/PortalBackendClient";
 import { AccessInputMetadata, DatabaseAccount } from "./Contracts/DataModels";
 import "./Explorer/Menus/NavBar/MeControlComponent.less";
 import { HostedExplorerChildFrame } from "./HostedExplorerChildFrame";
@@ -24,7 +25,6 @@ import {
   extractMasterKeyFromDirectLoginConnectionString,
   isDirectConnectionStringLoginApi,
 } from "./Platform/Hosted/HostedUtils";
-import { fetchAccessData, fetchEncryptedToken } from "./Platform/Hosted/PortalBackendConnectionStringClient";
 import "./Shared/appInsights";
 import { allowedHostedExplorerEndpoints } from "./Utils/EndpointUtils";
 import { useAADAuth } from "./hooks/useAADAuth";

@@ -1,6 +1,6 @@
-import { HttpHeaders } from "../../Common/Constants";
-import { configContext } from "../../ConfigContext";
-import { AccessInputMetadata } from "../../Contracts/DataModels";
+import { configContext } from "../ConfigContext";
+import { AccessInputMetadata } from "../Contracts/DataModels";
+import { HttpHeaders } from "./Constants";
 
 export async function fetchAccessData(portalToken: string): Promise<AccessInputMetadata> {
   const headers = new Headers();

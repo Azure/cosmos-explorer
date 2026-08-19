@@ -5,14 +5,11 @@ import * as React from "react";
 import ConnectImage from "../../../../images/HdeConnectCosmosDB.svg";
 import ErrorImage from "../../../../images/error.svg";
 import { AuthType } from "../../../AuthType";
+import { fetchEncryptedToken, isAccountRestrictedForConnectionStringLogin } from "../../../Common/PortalBackendClient";
 import { AccessInputMetadata } from "../../../Contracts/DataModels";
 import { parseConnectionString } from "../Helpers/ConnectionStringParser";
 import { isResourceTokenConnectionString } from "../Helpers/ResourceTokenUtils";
 import { isDirectConnectionStringLoginApi } from "../HostedUtils";
-import {
-  fetchEncryptedToken,
-  isAccountRestrictedForConnectionStringLogin,
-} from "../PortalBackendConnectionStringClient";
 
 interface Props {
   connectionString: string;
