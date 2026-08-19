@@ -254,14 +254,3 @@ export function isCloudShellEntraAuthEnabled(userContext: UserContext): boolean 
     useDataplaneRbacAuthorization(userContext) || userContext.databaseAccount?.properties?.disableLocalAuth === true
   );
 }
-
-/**
- * True when an error is an authorization failure (401 Unauthorized or 403 Forbidden). The Cosmos client
- * reports the HTTP status on `ErrorResponse.code`; errors raised from a `fetch` response carry it on
- * `statusCode`.
- */
-export function isAuthorizationError(error: unknown): boolean {
-  const { code, statusCode } = (error ?? {}) as { code?: unknown; statusCode?: unknown };
-  const status = Number(statusCode ?? code);
-  return status === Constants.HttpStatusCodes.Unauthorized || status === Constants.HttpStatusCodes.Forbidden;
-}

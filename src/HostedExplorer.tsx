@@ -12,11 +12,7 @@ import { AccessInputMetadata, DatabaseAccount } from "./Contracts/DataModels";
 import "./Explorer/Menus/NavBar/MeControlComponent.less";
 import { HostedExplorerChildFrame } from "./HostedExplorerChildFrame";
 import { AccountSwitcher } from "./Platform/Hosted/Components/AccountSwitcher";
-import {
-  ConnectExplorer,
-  fetchEncryptedToken,
-  validateDirectConnectionStringConnectivity,
-} from "./Platform/Hosted/Components/ConnectExplorer";
+import { ConnectExplorer, fetchEncryptedToken } from "./Platform/Hosted/Components/ConnectExplorer";
 import { DirectoryPickerPanel } from "./Platform/Hosted/Components/DirectoryPickerPanel";
 import { FeedbackCommandButton } from "./Platform/Hosted/Components/FeedbackCommandButton";
 import { MeControl } from "./Platform/Hosted/Components/MeControl";
@@ -76,19 +72,8 @@ const App: React.FunctionComponent = () => {
       if (metadata && isDirectConnectionStringLoginApi(metadata.apiKind)) {
         // SQL, Tables, and Gremlin sign data-plane requests client-side with the account key, so we skip
         // the Portal Backend proxy and use the metadata derived from the connection string directly.
-        validateDirectConnectionStringConnectivity(connStr, metadata)
-          .then(() => {
-            setAccountMetadata(metadata);
-            setAuthType(AuthType.ConnectionString);
-          })
-          .catch((error) => {
-            const message = getErrorMessage(error);
-            logError(
-              `Failed to connect with connection string: ${message}`,
-              "HostedExplorer/connectWithConnectionString",
-            );
-            setErrorMessage(message);
-          });
+        setAccountMetadata(metadata);
+        setAuthType(AuthType.ConnectionString);
         return;
       }
 

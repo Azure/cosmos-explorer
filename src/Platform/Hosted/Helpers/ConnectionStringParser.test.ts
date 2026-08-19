@@ -16,6 +16,16 @@ describe("ConnectionStringParser", () => {
     expect(metadata.apiEndpoint).toBeUndefined();
   });
 
+  it("should keep the document endpoint given by the connection string", () => {
+    // The endpoint is taken from the connection string rather than rebuilt from the account name, so a
+    // string that omits the port keeps it omitted.
+    const metadata = parseConnectionString(
+      `AccountEndpoint=https://${mockAccountName}.documents.azure.com/;AccountKey=${mockMasterKey};`,
+    );
+
+    expect(metadata.documentEndpoint).toBe(`https://${mockAccountName}.documents.azure.com/`);
+  });
+
   it("should parse a valid mongo account connection string", () => {
     const metadata = parseConnectionString(
       `mongodb://${mockAccountName}:${mockMasterKey}@${mockAccountName}.documents.azure.com:10255`,

@@ -83,53 +83,17 @@ test.describe("SQL account using connection string login", () => {
     expect(resultData?.id).toEqual(documentId);
   });
 
-  test("shows an error when the connection string has the wrong account key", async ({ page }) => {
-    // A well-formed but incorrect base64 account key (88-char, 64-byte): the endpoint is valid, so the
-    // Cosmos client reaches the account but the data-plane request is rejected with 401 Unauthorized.
+  test("opens Data Explorer when the connection string has the wrong account key", async ({ page }) => {
+    // A well-formed but incorrect base64 account key. The login is accepted
+    // without checking the key against the account, so the user gets into Data Explorer either way and
+    // only the data-plane requests made from inside the explorer are rejected.
     const wrongKey = "A".repeat(86) + "==";
     await loginWithConnectionString(page, `AccountEndpoint=${documentEndpoint};AccountKey=${wrongKey};`);
 
-    // The connect form stays visible and surfaces the 401 returned by the account instead of opening Data Explorer.
-    await expect(page.locator(".errorDetails")).toContainText("The wrong key is being used", {
-      timeout: ONE_MINUTE_MS,
-    });
-  });
+    await DataExplorer.waitForExplorer(page);
 
-  test("opens the explorer when the connectivity check fails with a non-authorization error", async ({ page }) => {
-    // The pre-login connectivity check calls getDatabaseAccount from the top-level hosted explorer frame,
-    // which the dev server forwards from the proxy root. Failing only those requests with a 500 simulates a
-    // transient or internal service failure while leaving the requests Data Explorer makes from the iframe
-    // untouched, so the explorer still talks to the real account once the user is in.
-    const failedProxyTargets: string[] = [];
-    await page.route(
-      (url) => url.pathname === "/proxy",
-      async (route) => {
-        const request = route.request();
-        if (request.frame() !== page.mainFrame()) {
-          await route.continue();
-          return;
-        }
-
-        failedProxyTargets.push(request.headers()["x-ms-proxy-target"]);
-        await route.fulfill({
-          status: 500,
-          contentType: "application/json",
-          body: JSON.stringify({ code: "InternalServerError", message: "The service is temporarily unavailable." }),
-        });
-      },
-    );
-
-    // The account key is correct, so nothing about this login is a credential problem.
-    await loginWithConnectionString(page, connectionString);
-
-    // The failed check does not block login: the explorer opens and reads the account through the data plane.
-    const explorer = await DataExplorer.waitForExplorer(page);
-    const collectionNode = await explorer.waitForContainerNode(databaseId, containerId);
-    await expect(collectionNode.element).toBeAttached();
-
-    // The connectivity check ran against the endpoint from the connection string and did fail, and the
-    // transient failure was never surfaced to the user as a login error.
-    expect(failedProxyTargets).toContain(documentEndpoint);
+    // The connect form is replaced by the explorer rather than staying up with a login error.
+    await expect(page.locator("#connectExplorer")).toHaveCount(0);
     await expect(page.locator(".errorDetails")).toHaveCount(0);
   });
 });
