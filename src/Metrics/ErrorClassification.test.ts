@@ -1,7 +1,17 @@
 import { ARMError } from "../Utils/arm/request";
-import { isExpectedError } from "./ErrorClassification";
+import { classifyError, ErrorCategory, isExpectedError } from "./ErrorClassification";
 
 describe("ErrorClassification", () => {
+  describe("classifyError", () => {
+    it("returns a typed expected category", () => {
+      expect(classifyError({ status: 403 })).toBe(ErrorCategory.Expected);
+    });
+
+    it("returns a typed unexpected category", () => {
+      expect(classifyError({ status: 500 })).toBe(ErrorCategory.Unexpected);
+    });
+  });
+
   describe("isExpectedError", () => {
     describe("ARMError with expected codes", () => {
       it("returns true for AuthorizationFailed code", () => {
