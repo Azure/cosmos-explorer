@@ -164,7 +164,6 @@ export class InputTypeaheadComponent extends React.Component<
             <TextField
               multiline={useTextarea}
               rows={1}
-              id="input"
               defaultValue={defaultValue}
               ariaLabel="Input query"
               placeholder={placeholder}
