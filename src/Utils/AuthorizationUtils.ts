@@ -28,10 +28,6 @@ export function getAuthorizationHeader(): ViewModels.AuthorizationTokenHeaderMet
   }
 }
 
-export function isAuthorizationError(statusCode: number): boolean {
-  return statusCode === Constants.HttpStatusCodes.Unauthorized || statusCode === Constants.HttpStatusCodes.Forbidden;
-}
-
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export function decryptJWTToken(token: string) {
   if (!token) {

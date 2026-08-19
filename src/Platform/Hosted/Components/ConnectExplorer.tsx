@@ -6,13 +6,8 @@ import ConnectImage from "../../../../images/HdeConnectCosmosDB.svg";
 import ErrorImage from "../../../../images/error.svg";
 import { AuthType } from "../../../AuthType";
 import { AccessInputMetadata } from "../../../Contracts/DataModels";
-import { isAuthorizationError } from "../../../Utils/AuthorizationUtils";
 import { parseConnectionString } from "../Helpers/ConnectionStringParser";
-import {
-  fetchEncryptedToken,
-  isAccountRestrictedForConnectionStringLogin,
-  PortalBackendError,
-} from "../Helpers/PortalBackendClient";
+import { fetchEncryptedToken, isAccountRestrictedForConnectionStringLogin } from "../Helpers/PortalBackendClient";
 import { isResourceTokenConnectionString } from "../Helpers/ResourceTokenUtils";
 import { isDirectConnectionStringLoginApi } from "../HostedUtils";
 
@@ -78,22 +73,9 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
                   return;
                 }
 
-                try {
-                  const encryptedToken = await fetchEncryptedToken(connectionString);
-                  setEncryptedToken(encryptedToken);
-                  setAuthType(AuthType.ConnectionString);
-                } catch (error) {
-                  // A 401 or 403 means the credentials or Portal Backend were not authorized.
-                  // Any other failure is on the backend, so rather than block the login
-                  // we sign in with the metadata parsed from the connection string.
-                  if (!metadata || (error instanceof PortalBackendError && isAuthorizationError(error.statusCode))) {
-                    setErrorMessage(getErrorMessage(error));
-                    return;
-                  }
-
-                  setAccountMetadata(metadata);
-                  setAuthType(AuthType.ConnectionString);
-                }
+                const encryptedToken = await fetchEncryptedToken(connectionString);
+                setEncryptedToken(encryptedToken);
+                setAuthType(AuthType.ConnectionString);
               }}
             >
               <p className="connectExplorerContent connectStringText">Connect to your account with connection string</p>

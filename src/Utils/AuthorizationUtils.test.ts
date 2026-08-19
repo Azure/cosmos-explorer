@@ -76,22 +76,6 @@ describe("AuthorizationUtils", () => {
     });
   });
 
-  describe("isAuthorizationError()", () => {
-    it("should return true for 401 and 403", () => {
-      expect(AuthorizationUtils.isAuthorizationError(401)).toBe(true);
-      expect(AuthorizationUtils.isAuthorizationError(403)).toBe(true);
-    });
-
-    it("should return false for other statuses", () => {
-      expect(AuthorizationUtils.isAuthorizationError(404)).toBe(false);
-      expect(AuthorizationUtils.isAuthorizationError(500)).toBe(false);
-    });
-
-    it("should return false when there is no status", () => {
-      expect(AuthorizationUtils.isAuthorizationError(undefined)).toBe(false);
-    });
-  });
-
   describe("decryptJWTToken()", () => {
     it("should throw an error if token is undefined", () => {
       expect(() => AuthorizationUtils.decryptJWTToken(undefined)).toThrow();
