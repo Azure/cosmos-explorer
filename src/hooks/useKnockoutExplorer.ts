@@ -456,7 +456,7 @@ async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
     if (userContext.features.enableAadDataPlane) {
       console.warn(e);
     } else {
-      throw new Error(`List keys failed: ${e.message}`);
+      throw e;
     }
   }
   updateUserContext({
