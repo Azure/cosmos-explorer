@@ -1,11 +1,22 @@
 import { Terminal } from "xterm";
-import { registerTerminalResizeHandler } from "./CloudShellTerminalCore";
-import { resizeTerminal } from "./Data/CloudShellClient";
+import { Areas } from "../../../Common/Constants";
+import { TerminalKind } from "../../../Contracts/ViewModels";
+import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
+import { registerTerminalResizeHandler, startCloudShellTerminal } from "./CloudShellTerminalCore";
+import { resizeTerminal, verifyCloudShellProviderRegistration } from "./Data/CloudShellClient";
+import { askConfirmation } from "./Utils/CommonUtils";
 
 // Mock the CloudShell client so we can assert on backend resize calls without any network access.
 jest.mock("./Data/CloudShellClient");
+jest.mock("./Utils/CommonUtils", () => ({
+  ...jest.requireActual("./Utils/CommonUtils"),
+  askConfirmation: jest.fn(),
+}));
 
 const mockResizeTerminal = resizeTerminal as jest.Mock;
+const mockVerifyCloudShellProviderRegistration = verifyCloudShellProviderRegistration as jest.Mock;
+const mockAskConfirmation = askConfirmation as jest.Mock;
 
 const CONSOLE_URI = "https://shell.azure.com/console123";
 const TERMINAL_ID = "terminal-id";
@@ -34,6 +45,24 @@ const createMockTerminal = (cols: number, rows: number): MockTerminal => {
 
 const registerHandler = (terminal: MockTerminal): void =>
   registerTerminalResizeHandler(terminal as unknown as Terminal, CONSOLE_URI, TERMINAL_ID);
+
+describe("startCloudShellTerminal", () => {
+  it("tracks Cosmos DB Shell usage when initialization starts", async () => {
+    mockVerifyCloudShellProviderRegistration.mockResolvedValue({ registrationState: "Registered" });
+    mockAskConfirmation.mockResolvedValue(false);
+    const traceSpy = jest.spyOn(TelemetryProcessor, "trace");
+    const terminal = { writeln: jest.fn() } as unknown as Terminal;
+
+    await startCloudShellTerminal(terminal, TerminalKind.CosmosDB);
+
+    expect(traceSpy).toHaveBeenCalledWith(Action.OpenCloudShellTerminal, ActionModifiers.Mark, {
+      shellType: "CosmosDB",
+      dataExplorerArea: Areas.CloudShell,
+    });
+
+    traceSpy.mockRestore();
+  });
+});
 
 describe("registerTerminalResizeHandler", () => {
   beforeEach(() => {

@@ -36,6 +36,13 @@ let keepAliveID: NodeJS.Timeout = null;
  * Main function to start a CloudShell terminal
  */
 export const startCloudShellTerminal = async (terminal: Terminal, shellType: TerminalKind): Promise<WebSocket> => {
+  if (shellType === TerminalKind.CosmosDB) {
+    TelemetryProcessor.trace(Action.OpenCloudShellTerminal, ActionModifiers.Mark, {
+      shellType: TerminalKind[shellType],
+      dataExplorerArea: Areas.CloudShell,
+    });
+  }
+
   const startKey = TelemetryProcessor.traceStart(Action.CloudShellTerminalSession, {
     shellType: TerminalKind[shellType],
     dataExplorerArea: Areas.CloudShell,
