@@ -9,7 +9,6 @@ import {
   JSONObject,
 } from "@azure/cosmos";
 import { Buffer } from "node:buffer";
-import { webcrypto } from "node:crypto";
 import {
   generateUniqueName,
   getAccountName,
@@ -18,12 +17,6 @@ import {
   subscriptionId,
   TestAccount,
 } from "./fx";
-
-// In Node.js >= 19, globalThis.crypto is already available as a read-only getter.
-// Only assign the polyfill for older versions.
-if (!globalThis.crypto) {
-  Object.defineProperty(globalThis, "crypto", { value: webcrypto, writable: true, configurable: true });
-}
 
 export interface TestItem {
   id: string;
