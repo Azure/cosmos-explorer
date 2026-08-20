@@ -1,6 +1,6 @@
 jest.mock("./hooks/useAADAuth");
 jest.mock("./hooks/useConfig");
-jest.mock("./hooks/usePortalAccessToken");
+jest.mock("./Common/PortalBackendClient");
 jest.mock("./Platform/Hosted/Components/ConnectExplorer");
 jest.mock("./Shared/appInsights");
 jest.mock("./Platform/Hosted/Components/AccountSwitcher", () => ({
@@ -25,11 +25,11 @@ jest.mock("./Platform/Hosted/Components/AadAuthorizationFailure", () => ({
 import "@testing-library/jest-dom";
 import { act, render } from "@testing-library/react";
 import React from "react";
+import { fetchAccessData, fetchEncryptedToken } from "./Common/PortalBackendClient";
 import { useAADAuth } from "./hooks/useAADAuth";
 import { useConfig } from "./hooks/useConfig";
-import { useTokenMetadata } from "./hooks/usePortalAccessToken";
 import { App } from "./HostedExplorer";
-import { ConnectExplorer, fetchEncryptedToken } from "./Platform/Hosted/Components/ConnectExplorer";
+import { ConnectExplorer } from "./Platform/Hosted/Components/ConnectExplorer";
 
 const mockFetchEncryptedToken = fetchEncryptedToken as jest.MockedFunction<typeof fetchEncryptedToken>;
 
@@ -54,7 +54,7 @@ beforeEach(() => {
   jest.clearAllMocks();
   (useAADAuth as jest.Mock).mockReturnValue(defaultAADAuth);
   (useConfig as jest.Mock).mockReturnValue({});
-  (useTokenMetadata as jest.Mock).mockReturnValue(undefined);
+  (fetchAccessData as jest.Mock).mockResolvedValue(undefined);
   mockFetchEncryptedToken.mockResolvedValue("encrypted-token");
 });
 
@@ -81,7 +81,7 @@ describe("HostedExplorer tryCosmosDB postMessage handler", () => {
       await Promise.resolve();
     });
 
-    expect(mockFetchEncryptedToken).toHaveBeenCalledWith(validConnStr);
+    expect(mockFetchEncryptedToken).not.toHaveBeenCalled();
   });
 
   it("accepts a valid Mongo connection string from an allowed origin", async () => {
@@ -129,7 +129,7 @@ describe("HostedExplorer tryCosmosDB postMessage handler", () => {
       await Promise.resolve();
     });
 
-    expect(mockFetchEncryptedToken).toHaveBeenCalledWith(tableConnStr);
+    expect(mockFetchEncryptedToken).not.toHaveBeenCalled();
   });
 
   it("accepts a valid Gremlin connection string from an allowed origin", async () => {
@@ -145,7 +145,7 @@ describe("HostedExplorer tryCosmosDB postMessage handler", () => {
       await Promise.resolve();
     });
 
-    expect(mockFetchEncryptedToken).toHaveBeenCalledWith(gremlinConnStr);
+    expect(mockFetchEncryptedToken).not.toHaveBeenCalled();
   });
 
   it("rejects messages from a disallowed origin", async () => {

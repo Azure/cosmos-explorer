@@ -12,8 +12,20 @@ it("shows the connect form", () => {
   const setConnectionString = jest.fn();
   const setEncryptedToken = jest.fn();
   const setAuthType = jest.fn();
+  const setAccountMetadata = jest.fn();
 
-  render(<ConnectExplorer {...{ login, setEncryptedToken, setAuthType, connectionString, setConnectionString }} />);
+  render(
+    <ConnectExplorer
+      {...{
+        login,
+        setEncryptedToken,
+        setAuthType,
+        connectionString,
+        setConnectionString,
+        setAccountMetadata,
+      }}
+    />,
+  );
   expect(screen.queryByPlaceholderText("Please enter a connection string")).toBeNull();
   fireEvent.click(screen.getByText("Connect to your account with connection string"));
   expect(screen.queryByPlaceholderText("Please enter a connection string")).toBeDefined();
@@ -25,6 +37,7 @@ it("hides the connection string link when feature.disableConnectionStringLogin i
   const setConnectionString = jest.fn();
   const setEncryptedToken = jest.fn();
   const setAuthType = jest.fn();
+  const setAccountMetadata = jest.fn();
   const oldFeatures = userContext.features;
 
   const params = new URLSearchParams({
@@ -34,7 +47,18 @@ it("hides the connection string link when feature.disableConnectionStringLogin i
   const testFeatures = extractFeatures(params);
   updateUserContext({ features: testFeatures });
 
-  render(<ConnectExplorer {...{ login, setEncryptedToken, setAuthType, connectionString, setConnectionString }} />);
+  render(
+    <ConnectExplorer
+      {...{
+        login,
+        setEncryptedToken,
+        setAuthType,
+        connectionString,
+        setConnectionString,
+        setAccountMetadata,
+      }}
+    />,
+  );
   expect(screen.queryByPlaceholderText("Connect to your account with connection string")).toBeNull();
 
   updateUserContext({ features: oldFeatures });

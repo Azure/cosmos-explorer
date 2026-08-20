@@ -1,12 +1,15 @@
 import { useBoolean } from "@fluentui/react-hooks";
+import { getErrorMessage } from "Common/ErrorHandlingUtils";
 import { userContext } from "UserContext";
 import * as React from "react";
 import ConnectImage from "../../../../images/HdeConnectCosmosDB.svg";
 import ErrorImage from "../../../../images/error.svg";
 import { AuthType } from "../../../AuthType";
-import { HttpHeaders } from "../../../Common/Constants";
-import { configContext } from "../../../ConfigContext";
+import { fetchEncryptedToken, isAccountRestrictedForConnectionStringLogin } from "../../../Common/PortalBackendClient";
+import { AccessInputMetadata } from "../../../Contracts/DataModels";
+import { parseConnectionString } from "../Helpers/ConnectionStringParser";
 import { isResourceTokenConnectionString } from "../Helpers/ResourceTokenUtils";
+import { isDirectConnectionStringLoginApi } from "../HostedUtils";
 
 interface Props {
   connectionString: string;
@@ -14,32 +17,8 @@ interface Props {
   setEncryptedToken: (token: string) => void;
   setConnectionString: (connectionString: string) => void;
   setAuthType: (authType: AuthType) => void;
+  setAccountMetadata: (metadata: AccessInputMetadata) => void;
 }
-
-export const fetchEncryptedToken = async (connectionString: string): Promise<string> => {
-  const headers = new Headers();
-  headers.append(HttpHeaders.connectionString, connectionString);
-  const url = configContext.PORTAL_BACKEND_ENDPOINT + "/api/connectionstring/token/generatetoken";
-  const response = await fetch(url, { headers, method: "POST" });
-  if (!response.ok) {
-    throw response;
-  }
-
-  const encryptedTokenResponse: string = await response.json();
-  return decodeURIComponent(encryptedTokenResponse);
-};
-
-export const isAccountRestrictedForConnectionStringLogin = async (connectionString: string): Promise<boolean> => {
-  const headers = new Headers();
-  headers.append(HttpHeaders.connectionString, connectionString);
-  const url = configContext.PORTAL_BACKEND_ENDPOINT + "/api/guest/accountrestrictions/checkconnectionstringlogin";
-  const response = await fetch(url, { headers, method: "POST" });
-  if (!response.ok) {
-    throw response;
-  }
-
-  return (await response.text()).toLowerCase() === "true";
-};
 
 export const ConnectExplorer: React.FunctionComponent<Props> = ({
   setEncryptedToken,
@@ -47,6 +26,7 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
   setAuthType,
   connectionString,
   setConnectionString,
+  setAccountMetadata,
 }: Props) => {
   const [isFormVisible, { setTrue: showForm }] = useBoolean(false);
   const [errorMessage, setErrorMessage] = React.useState("");
@@ -67,15 +47,29 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
                 event.preventDefault();
                 setErrorMessage("");
 
-                if (await isAccountRestrictedForConnectionStringLogin(connectionString)) {
-                  setErrorMessage(
-                    "This account has been blocked from connection-string login. Please go to cosmos.azure.com/aad for AAD based login.",
-                  );
+                try {
+                  if (await isAccountRestrictedForConnectionStringLogin(connectionString)) {
+                    setErrorMessage(
+                      "This account has been blocked from connection-string login. Please go to cosmos.azure.com/aad for AAD based login.",
+                    );
+                    return;
+                  }
+                } catch (error) {
+                  setErrorMessage(getErrorMessage(error));
                   return;
                 }
 
                 if (isResourceTokenConnectionString(connectionString)) {
                   setAuthType(AuthType.ResourceToken);
+                  return;
+                }
+
+                const metadata = parseConnectionString(connectionString);
+                if (metadata && isDirectConnectionStringLoginApi(metadata.apiKind)) {
+                  // SQL, Table, and Gremlin sign data-plane requests client-side with the account key, so
+                  // we skip the Portal Backend proxy and use the metadata parsed from the connection string.
+                  setAccountMetadata(metadata);
+                  setAuthType(AuthType.ConnectionString);
                   return;
                 }
 
