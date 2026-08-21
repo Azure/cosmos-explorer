@@ -106,7 +106,6 @@
     "./src/hooks/useConfig.ts",
     "./src/hooks/useDirectories.tsx",
     "./src/hooks/useGraphPhoto.tsx",
-    "./src/hooks/usePortalAccessToken.tsx",
     "./src/hooks/useNotificationConsole.ts",
     "./src/hooks/useObservable.ts",
     "./src/hooks/useSidePanel.ts",
