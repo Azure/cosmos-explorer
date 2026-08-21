@@ -1,4 +1,6 @@
+import { HttpHeaders } from "../Common/Constants";
 import { configContext, Platform } from "../ConfigContext";
+import { userContext } from "../UserContext";
 import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import { fetchWithTimeout } from "../Utils/FetchWithTimeout";
 import { MetricScenario } from "./Constants";
@@ -40,10 +42,12 @@ describe("MetricEvents", () => {
 
     const callArgs = mockFetchWithTimeout.mock.calls[0];
     expect(callArgs[0]).toContain("/api/dataexplorer/metrics/health");
-    expect(callArgs[1]?.headers).toEqual({
+    expect(callArgs[1]?.headers).toMatchObject({
       "Content-Type": "application/json",
       authorization: "Bearer test-token",
     });
+
+    expect((callArgs[1]?.headers as Record<string, string>)[HttpHeaders.sessionId]).toBe(userContext.sessionId);
 
     const body = JSON.parse(callArgs[1]?.body as string);
     expect(body.scenario).toBe(MetricScenario.ApplicationLoad);

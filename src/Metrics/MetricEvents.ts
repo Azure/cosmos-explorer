@@ -1,7 +1,9 @@
 // Metrics module: scenario metric emission logic.
 import { MetricEvent, MetricScenario } from "Metrics/Constants";
+import { HttpHeaders } from "../Common/Constants";
 import { createUri } from "../Common/UrlUtility";
 import { configContext } from "../ConfigContext";
+import { userContext } from "../UserContext";
 import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import { fetchWithTimeout } from "../Utils/FetchWithTimeout";
 
@@ -21,7 +23,11 @@ const send = async (event: MetricEvent): Promise<Response> => {
 
   return await fetchWithTimeout(url, {
     method: "POST",
-    headers: { "Content-Type": "application/json", [authHeader.header]: authHeader.token },
+    headers: {
+      "Content-Type": "application/json",
+      [authHeader.header]: authHeader.token,
+      [HttpHeaders.sessionId]: userContext.sessionId,
+    },
     body: JSON.stringify(event),
   });
 };
