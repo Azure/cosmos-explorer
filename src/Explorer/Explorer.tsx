@@ -33,6 +33,7 @@ import * as DataModels from "../Contracts/DataModels";
 import { ContainerConnectionInfo, IPhoenixServiceInfo, IProvisionData, IResponse } from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
 import { UploadDetailsRecord } from "../Contracts/ViewModels";
+import { classifyError } from "../Metrics/ErrorClassification";
 import MetricScenario from "../Metrics/MetricEvents";
 import { ApplicationMetricPhase } from "../Metrics/ScenarioConfig";
 import { scenarioMonitor } from "../Metrics/ScenarioMonitor";
@@ -367,10 +368,19 @@ export default class Explorer {
       return;
     }
 
-    const collection: DataModels.Collection = await readCollection(databaseId, collectionId);
-    const resourceTokenCollection = new ResourceTokenCollection(this, databaseId, collection);
-    useDatabases.setState({ resourceTokenCollection });
-    useSelectedNode.getState().setSelectedNode(resourceTokenCollection);
+    try {
+      const collection: DataModels.Collection = await readCollection(databaseId, collectionId);
+      const resourceTokenCollection = new ResourceTokenCollection(this, databaseId, collection);
+      useDatabases.setState({ resourceTokenCollection });
+      useSelectedNode.getState().setSelectedNode(resourceTokenCollection);
+    } catch (error) {
+      scenarioMonitor.failPhase(
+        MetricScenario.DatabaseLoad,
+        ApplicationMetricPhase.DatabasesFetched,
+        classifyError(error),
+      );
+      throw error;
+    }
   }
 
   public async refreshAllDatabases(): Promise<void> {
@@ -412,7 +422,11 @@ export default class Explorer {
       );
       logConsoleError(`Error while refreshing databases: ${errorMessage}`);
       useDatabases.setState({ databasesFetchedSuccessfully: false });
-      scenarioMonitor.failPhase(MetricScenario.DatabaseLoad, ApplicationMetricPhase.DatabasesFetched);
+      scenarioMonitor.failPhase(
+        MetricScenario.DatabaseLoad,
+        ApplicationMetricPhase.DatabasesFetched,
+        classifyError(error),
+      );
     }
   }
 
@@ -625,7 +639,11 @@ export default class Explorer {
         },
         startKey,
       );
-      scenarioMonitor.failPhase(MetricScenario.DatabaseLoad, ApplicationMetricPhase.CollectionsLoaded);
+      scenarioMonitor.failPhase(
+        MetricScenario.DatabaseLoad,
+        ApplicationMetricPhase.CollectionsLoaded,
+        classifyError(error),
+      );
     }
   }
 

@@ -47,6 +47,7 @@ import {
   HostedExplorerChildFrame,
   ResourceToken,
 } from "../HostedExplorerChildFrame";
+import { classifyError } from "../Metrics/ErrorClassification";
 import MetricScenario from "../Metrics/MetricEvents";
 import { ApplicationMetricPhase } from "../Metrics/ScenarioConfig";
 import { scenarioMonitor } from "../Metrics/ScenarioMonitor";
@@ -83,6 +84,8 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
   useEffect(() => {
     const effect = async () => {
       if (platform) {
+        scenarioMonitor.start(MetricScenario.ApplicationLoad);
+
         //Updating phoenix feature flags for MPAC based of config context
         if (configContext.isPhoenixEnabled === true) {
           userContext.features.phoenixNotebooks = true;
@@ -101,7 +104,11 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
             explorer = await configureFabric();
           }
         } catch (error) {
-          scenarioMonitor.failPhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.PlatformConfigured);
+          scenarioMonitor.failPhase(
+            MetricScenario.ApplicationLoad,
+            ApplicationMetricPhase.PlatformConfigured,
+            classifyError(error),
+          );
           throw error;
         }
         scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.PlatformConfigured);
@@ -363,6 +370,11 @@ async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
         authority: `${configContext.AAD_ENDPOINT}${cachedTenantId}`,
       });
     } catch (authError) {
+      scenarioMonitor.failPhase(
+        MetricScenario.ApplicationLoad,
+        ApplicationMetricPhase.PlatformConfigured,
+        classifyError(authError),
+      );
       logConsoleError("Failed to acquire authorization token: " + authError);
     }
   }
@@ -444,7 +456,7 @@ async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
     if (userContext.features.enableAadDataPlane) {
       console.warn(e);
     } else {
-      throw new Error(`List keys failed: ${e.message}`);
+      throw e;
     }
   }
   updateUserContext({
@@ -682,14 +694,18 @@ export async function fetchAndUpdateKeys(subscriptionId: string, resourceGroup: 
   });
   let keys;
   try {
-    keys = await listKeys(subscriptionId, resourceGroup, account);
-    Logger.logInfo(`Keys fetched for ${userContext.apiType} account ${account}`, "Explorer/fetchAndUpdateKeys");
-    updateUserContext({
-      masterKey: keys.primaryMasterKey,
-    });
-    traceSuccess(Action.FetchAccountKeys, { accountName: account }, startKey);
-  } catch (error) {
-    if (error.code === "AuthorizationFailed") {
+    try {
+      keys = await listKeys(subscriptionId, resourceGroup, account);
+      Logger.logInfo(`Keys fetched for ${userContext.apiType} account ${account}`, "Explorer/fetchAndUpdateKeys");
+      updateUserContext({
+        masterKey: keys.primaryMasterKey,
+      });
+      traceSuccess(Action.FetchAccountKeys, { accountName: account }, startKey);
+    } catch (error) {
+      if (error.code !== "AuthorizationFailed") {
+        throw error;
+      }
+
       keys = await getReadOnlyKeys(subscriptionId, resourceGroup, account);
       Logger.logInfo(
         `Read only Keys fetched for ${userContext.apiType} account ${account}`,
@@ -699,15 +715,20 @@ export async function fetchAndUpdateKeys(subscriptionId: string, resourceGroup: 
         masterKey: keys.primaryReadonlyMasterKey,
       });
       traceSuccess(Action.FetchAccountKeys, { accountName: account, fallbackToReadOnly: true }, startKey);
-    } else {
-      logConsoleError(`Error occurred fetching keys for the account." ${error.message}`);
-      Logger.logError(
-        `Error during fetching keys or updating user context: ${error} for ${userContext.apiType} account ${account}`,
-        "Explorer/fetchAndUpdateKeys",
-      );
-      traceFailure(Action.FetchAccountKeys, { accountName: account, error: error.message }, startKey);
-      throw error;
     }
+  } catch (error) {
+    logConsoleError(`Error occurred fetching keys for the account." ${error.message}`);
+    Logger.logError(
+      `Error during fetching keys or updating user context: ${error} for ${userContext.apiType} account ${account}`,
+      "Explorer/fetchAndUpdateKeys",
+    );
+    traceFailure(Action.FetchAccountKeys, { accountName: account, error: error.message }, startKey);
+    scenarioMonitor.failPhase(
+      MetricScenario.ApplicationLoad,
+      ApplicationMetricPhase.PlatformConfigured,
+      classifyError(error),
+    );
+    throw error;
   }
 }
 
@@ -810,6 +831,11 @@ async function configurePortal(): Promise<Explorer> {
                 updateUserContext({ aadToken: aadToken });
                 useDataPlaneRbac.setState({ aadTokenUpdated: true });
               } catch (authError) {
+                scenarioMonitor.failPhase(
+                  MetricScenario.ApplicationLoad,
+                  ApplicationMetricPhase.PlatformConfigured,
+                  classifyError(authError),
+                );
                 Logger.logWarning(
                   `Failed to silently acquire authorization token from MSAL: ${authError} for ${userContext.apiType} account ${account}`,
                   "Explorer/configurePortal",

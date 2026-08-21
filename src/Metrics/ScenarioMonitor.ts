@@ -1,9 +1,11 @@
 import type { PhaseTimings, WebVitals } from "Metrics/Constants";
 import { Metric, onCLS, onFCP, onINP, onLCP, onTTFB } from "web-vitals";
+import { stringifyError } from "../Common/stringifyError";
 import { configContext } from "../ConfigContext";
 import { Action } from "../Shared/Telemetry/TelemetryConstants";
 import { traceFailure, traceMark, traceStart, traceSuccess } from "../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../UserContext";
+import { ErrorCategory } from "./ErrorClassification";
 import MetricScenario, { reportMetric } from "./MetricEvents";
 import { scenarioConfigs } from "./MetricScenarioConfigs";
 import { MetricPhase, ScenarioConfig, ScenarioContextSnapshot } from "./ScenarioConfig";
@@ -23,12 +25,27 @@ interface InternalScenarioContext {
   timeoutId?: number;
   emitted: boolean;
   hasExpectedFailure: boolean; // Flag for expected failures (auth, firewall, etc.)
+  expectedFailurePhases: Set<MetricPhase>;
+  documentWasHidden: boolean;
 }
 
 class ScenarioMonitor {
   private contexts = new Map<MetricScenario, InternalScenarioContext>();
   private vitals: WebVitals = {};
   private vitalsInitialized = false;
+  private visibilityListenerAttached = false;
+
+  private readonly handleVisibilityChange = () => {
+    if (!document.hidden) {
+      return;
+    }
+
+    this.contexts.forEach((ctx) => {
+      if (!ctx.emitted) {
+        this.markDocumentHidden(ctx);
+      }
+    });
+  };
 
   constructor() {
     this.initializeVitals();
@@ -85,7 +102,15 @@ class ScenarioMonitor {
       phases: new Map<MetricPhase, PhaseContext>(),
       emitted: false,
       hasExpectedFailure: false,
+      expectedFailurePhases: new Set<MetricPhase>(),
+      documentWasHidden: false,
     };
+
+    this.contexts.set(scenario, ctx);
+    this.ensureVisibilityListener();
+    if (document.hidden) {
+      this.markDocumentHidden(ctx);
+    }
 
     // Start all required phases at scenario start time, except deferred ones
     const deferredSet = new Set(config.deferredPhases ?? []);
@@ -110,12 +135,17 @@ class ScenarioMonitor {
     });
 
     ctx.timeoutId = window.setTimeout(() => {
+      if (document.hidden) {
+        this.markDocumentHidden(ctx);
+      }
       const missingPhases = ctx.config.requiredPhases.filter((p) => !ctx.completed.has(p));
 
       this.devLog(
         `timeout: ${scenario} | missing=[${missingPhases.join(", ")}] | completed=[${Array.from(ctx.completed).join(
           ", ",
-        )}] | documentHidden=${document.hidden} | hasExpectedFailure=${ctx.hasExpectedFailure}`,
+        )}] | expected=[${Array.from(ctx.expectedFailurePhases).join(", ")}] | documentHidden=${
+          document.hidden
+        } | hasExpectedFailure=${ctx.hasExpectedFailure}`,
       );
 
       traceMark(Action.MetricsScenario, {
@@ -123,15 +153,15 @@ class ScenarioMonitor {
         scenario,
         missingPhases: missingPhases.join(","),
         completedPhases: Array.from(ctx.completed).join(","),
+        expectedFailurePhases: Array.from(ctx.expectedFailurePhases).join(","),
         documentHidden: document.hidden,
         hasExpectedFailure: ctx.hasExpectedFailure,
       });
 
-      // If an expected failure occurred (auth, firewall, etc.), emit healthy instead of unhealthy
-      const healthy = ctx.hasExpectedFailure;
+      // Expected-only timeouts are healthy. Visible timeouts without expected evidence are unhealthy.
+      const healthy = ctx.hasExpectedFailure && ctx.failed.size === 0;
       this.emit(ctx, healthy, true);
     }, config.timeoutMs);
-    this.contexts.set(scenario, ctx);
   }
 
   startPhase(scenario: MetricScenario, phase: MetricPhase) {
@@ -220,16 +250,14 @@ class ScenarioMonitor {
     this.tryEmitIfReady(ctx);
   }
 
-  failPhase(scenario: MetricScenario, phase: MetricPhase) {
+  failPhase(scenario: MetricScenario, phase: MetricPhase, category: ErrorCategory = ErrorCategory.Unexpected) {
     const ctx = this.contexts.get(scenario);
-    if (!ctx || ctx.emitted) {
+    if (!ctx || ctx.emitted || !ctx.config.requiredPhases.includes(phase)) {
       return;
     }
 
-    // If an expected failure was flagged (auth, firewall, etc.), treat as success.
-    if (ctx.hasExpectedFailure) {
-      this.devLog(`phase_fail: ${scenario}.${phase} — expected failure, completing as healthy`);
-      this.completePhase(scenario, phase);
+    if (category === ErrorCategory.Expected) {
+      this.markExpectedFailure(scenario, phase);
       return;
     }
 
@@ -267,20 +295,59 @@ class ScenarioMonitor {
 
   /**
    * Marks that an expected failure occurred (auth, firewall, permissions, etc.).
-   * When the scenario times out with this flag set, it will emit healthy instead of unhealthy.
-   * This is called automatically from handleError when an expected error is detected.
+   * Expected evidence is scoped to one active scenario and phase. It does not complete
+   * the phase; the phase remains pending until it genuinely succeeds or the scenario times out.
    */
-  markExpectedFailure() {
-    // Set the flag on all active (non-emitted) scenarios
-    this.contexts.forEach((ctx) => {
-      if (!ctx.emitted) {
-        ctx.hasExpectedFailure = true;
-        traceMark(Action.MetricsScenario, {
-          event: "expected_failure_marked",
-          scenario: ctx.scenario,
-        });
-      }
+  markExpectedFailure(scenario: MetricScenario, phase: MetricPhase) {
+    const ctx = this.contexts.get(scenario);
+    if (!ctx || ctx.emitted || !ctx.config.requiredPhases.includes(phase)) {
+      return;
+    }
+
+    ctx.hasExpectedFailure = true;
+    if (ctx.expectedFailurePhases.has(phase)) {
+      return;
+    }
+    ctx.expectedFailurePhases.add(phase);
+    this.devLog(`expected_failure: ${scenario}.${phase}`);
+    traceMark(Action.MetricsScenario, {
+      event: "expected_failure_marked",
+      scenario,
+      phase,
     });
+  }
+
+  private markDocumentHidden(ctx: InternalScenarioContext) {
+    if (ctx.documentWasHidden) {
+      return;
+    }
+
+    ctx.documentWasHidden = true;
+    ctx.hasExpectedFailure = true;
+    this.devLog(`expected_failure: ${ctx.scenario} | document hidden`);
+    traceMark(Action.MetricsScenario, {
+      event: "expected_failure_marked",
+      scenario: ctx.scenario,
+      reason: "document_hidden",
+    });
+  }
+
+  private ensureVisibilityListener() {
+    if (this.visibilityListenerAttached) {
+      return;
+    }
+
+    document.addEventListener("visibilitychange", this.handleVisibilityChange);
+    this.visibilityListenerAttached = true;
+  }
+
+  private removeVisibilityListenerIfIdle() {
+    if (!this.visibilityListenerAttached || Array.from(this.contexts.values()).some((ctx) => !ctx.emitted)) {
+      return;
+    }
+
+    document.removeEventListener("visibilitychange", this.handleVisibilityChange);
+    this.visibilityListenerAttached = false;
   }
 
   private tryEmitIfReady(ctx: InternalScenarioContext) {
@@ -348,6 +415,7 @@ class ScenarioMonitor {
       durationMs: finalSnapshot.durationMs,
       completedPhases: finalSnapshot.completed.join(","),
       failedPhases: finalSnapshot.failedPhases?.join(","),
+      expectedFailurePhases: Array.from(ctx.expectedFailurePhases).join(","),
       lcp: finalSnapshot.vitals?.lcp,
       inp: finalSnapshot.vitals?.inp,
       cls: finalSnapshot.vitals?.cls,
@@ -384,10 +452,17 @@ class ScenarioMonitor {
       startTimeISO: finalSnapshot.startTimeISO,
       endTimeISO: finalSnapshot.endTimeISO,
       vitals: finalSnapshot.vitals,
+    }).catch((error: unknown) => {
+      traceFailure(Action.MetricsScenario, {
+        event: "scenario_report_failure",
+        scenario: ctx.scenario,
+        error: error instanceof Error ? stringifyError(error) : String(error),
+      });
     });
 
     // Cleanup performance entries
     this.cleanupPerformanceEntries(ctx);
+    this.removeVisibilityListenerIfIdle();
   }
 
   private cleanupPerformanceEntries(ctx: InternalScenarioContext) {
@@ -444,8 +519,14 @@ class ScenarioMonitor {
       if (ctx.timeoutId) {
         clearTimeout(ctx.timeoutId);
       }
+      this.cleanupPerformanceEntries(ctx);
     });
     this.contexts.clear();
+    if (this.visibilityListenerAttached) {
+      document.removeEventListener("visibilitychange", this.handleVisibilityChange);
+      this.visibilityListenerAttached = false;
+    }
+    this.vitals = {};
   }
 }
 

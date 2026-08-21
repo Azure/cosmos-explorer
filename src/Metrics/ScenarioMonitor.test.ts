@@ -3,11 +3,11 @@
  */
 
 import { updateUserContext } from "../UserContext";
+import { ErrorCategory } from "./ErrorClassification";
 import MetricScenario, { reportMetric } from "./MetricEvents";
 import { ApplicationMetricPhase, CommonMetricPhase } from "./ScenarioConfig";
 import { scenarioMonitor } from "./ScenarioMonitor";
 
-// Mock the MetricEvents module
 jest.mock("./MetricEvents", () => ({
   __esModule: true,
   default: {
@@ -17,7 +17,6 @@ jest.mock("./MetricEvents", () => ({
   reportMetric: jest.fn().mockResolvedValue({ ok: true }),
 }));
 
-// Mock configContext
 jest.mock("../ConfigContext", () => ({
   configContext: {
     platform: "Portal",
@@ -32,12 +31,32 @@ jest.mock("../ConfigContext", () => ({
 }));
 
 describe("ScenarioMonitor", () => {
+  let documentHidden = false;
+
+  const getMetric = (scenario: MetricScenario) => {
+    const call = (reportMetric as jest.Mock).mock.calls.find(([event]) => event.scenario === scenario);
+    return call?.[0];
+  };
+
+  const completeApplicationLoad = () => {
+    scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.PlatformConfigured);
+    scenarioMonitor.startPhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.ExplorerInitialized);
+    scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.ExplorerInitialized);
+    scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, CommonMetricPhase.Interactive);
+  };
+
+  beforeAll(() => {
+    Object.defineProperty(document, "hidden", {
+      configurable: true,
+      get: () => documentHidden,
+    });
+  });
+
   beforeEach(() => {
+    documentHidden = false;
     jest.clearAllMocks();
-    // Use legacy fake timers to avoid conflicts with performance API
     jest.useFakeTimers({ legacyFakeTimers: true });
 
-    // Ensure performance mock is available (setupTests.ts sets this but fake timers may override)
     if (typeof performance.mark !== "function") {
       Object.defineProperty(global, "performance", {
         writable: true,
@@ -55,220 +74,211 @@ describe("ScenarioMonitor", () => {
       });
     }
 
-    // Reset userContext
-    updateUserContext({
-      apiType: "SQL",
-    });
-
-    // Reset the scenario monitor to clear any previous state
+    updateUserContext({ apiType: "SQL" });
     scenarioMonitor.reset();
   });
 
   afterEach(() => {
-    // Reset scenarios before switching to real timers
     scenarioMonitor.reset();
     jest.useRealTimers();
   });
 
-  describe("markExpectedFailure", () => {
-    it("sets hasExpectedFailure flag on active scenarios", () => {
-      // Start a scenario
-      scenarioMonitor.start(MetricScenario.ApplicationLoad);
-
-      // Mark expected failure
-      scenarioMonitor.markExpectedFailure();
-
-      // Let timeout fire - should emit healthy because of expected failure
-      jest.advanceTimersByTime(10000);
-
-      expect(reportMetric).toHaveBeenCalledWith(
-        expect.objectContaining({
-          scenario: MetricScenario.ApplicationLoad,
-          healthy: true,
-          hasExpectedFailure: true,
-          timedOut: true,
-        }),
-      );
-    });
-
-    it("sets flag on multiple active scenarios", () => {
-      // Start two scenarios
-      scenarioMonitor.start(MetricScenario.ApplicationLoad);
-      scenarioMonitor.start(MetricScenario.DatabaseLoad);
-
-      // Mark expected failure - should affect both
-      scenarioMonitor.markExpectedFailure();
-
-      // Let timeouts fire
-      jest.advanceTimersByTime(10000);
-
-      expect(reportMetric).toHaveBeenCalledTimes(2);
-      expect(reportMetric).toHaveBeenCalledWith(expect.objectContaining({ healthy: true, hasExpectedFailure: true }));
-    });
-
-    it("does not affect already emitted scenarios", () => {
-      // Start scenario
-      scenarioMonitor.start(MetricScenario.ApplicationLoad);
-
-      // Complete all phases to emit (PlatformConfigured auto-started, deferred phases need start+complete)
-      scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.PlatformConfigured);
-      scenarioMonitor.startPhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.ExplorerInitialized);
-      scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.ExplorerInitialized);
-      scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, CommonMetricPhase.Interactive);
-
-      // Now mark expected failure - should not change anything
-      scenarioMonitor.markExpectedFailure();
-
-      // reportMetric was called when phases completed
-      expect(reportMetric).toHaveBeenCalledTimes(1);
-      expect(reportMetric).toHaveBeenCalledWith(expect.objectContaining({ healthy: true }));
-    });
+  afterAll(() => {
+    delete (document as unknown as { hidden?: boolean }).hidden;
   });
 
-  describe("timeout behavior", () => {
-    it("emits unhealthy on timeout without expected failure", () => {
-      scenarioMonitor.start(MetricScenario.ApplicationLoad);
+  it("does not apply an ApplicationLoad expected error to DatabaseLoad", () => {
+    scenarioMonitor.start(MetricScenario.ApplicationLoad);
+    scenarioMonitor.start(MetricScenario.DatabaseLoad);
 
-      // Let timeout fire without marking expected failure
-      jest.advanceTimersByTime(10000);
+    scenarioMonitor.failPhase(
+      MetricScenario.ApplicationLoad,
+      ApplicationMetricPhase.PlatformConfigured,
+      ErrorCategory.Expected,
+    );
+    jest.advanceTimersByTime(10000);
 
-      expect(reportMetric).toHaveBeenCalledWith(
-        expect.objectContaining({
-          scenario: MetricScenario.ApplicationLoad,
-          healthy: false,
-          timedOut: true,
-        }),
-      );
-    });
-
-    it("emits healthy on timeout with expected failure", () => {
-      scenarioMonitor.start(MetricScenario.ApplicationLoad);
-
-      // Mark expected failure
-      scenarioMonitor.markExpectedFailure();
-
-      // Let timeout fire
-      jest.advanceTimersByTime(10000);
-
-      expect(reportMetric).toHaveBeenCalledWith(
-        expect.objectContaining({
-          scenario: MetricScenario.ApplicationLoad,
-          healthy: true,
-          timedOut: true,
-          hasExpectedFailure: true,
-        }),
-      );
-    });
-
-    it("emits healthy even with partial phase completion and expected failure", () => {
-      scenarioMonitor.start(MetricScenario.ApplicationLoad);
-
-      // Complete one non-deferred phase
-      scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.PlatformConfigured);
-
-      // Mark expected failure
-      scenarioMonitor.markExpectedFailure();
-
-      // Let timeout fire (deferred phases and Interactive not completed)
-      jest.advanceTimersByTime(10000);
-
-      expect(reportMetric).toHaveBeenCalledWith(
-        expect.objectContaining({
-          healthy: true,
-          timedOut: true,
-          hasExpectedFailure: true,
-          completedPhases: expect.arrayContaining(["PlatformConfigured"]),
-        }),
-      );
-    });
+    expect(getMetric(MetricScenario.ApplicationLoad)).toEqual(
+      expect.objectContaining({ healthy: true, hasExpectedFailure: true, timedOut: true }),
+    );
+    expect(getMetric(MetricScenario.DatabaseLoad)).toEqual(
+      expect.objectContaining({ healthy: false, hasExpectedFailure: false, timedOut: true }),
+    );
   });
 
-  describe("failPhase behavior", () => {
-    it("emits unhealthy immediately on unexpected failure", () => {
-      scenarioMonitor.start(MetricScenario.DatabaseLoad);
+  it("emits unhealthy when an unexpected DatabaseLoad phase fails after expected evidence", () => {
+    scenarioMonitor.start(MetricScenario.DatabaseLoad);
+    scenarioMonitor.failPhase(
+      MetricScenario.DatabaseLoad,
+      ApplicationMetricPhase.DatabasesFetched,
+      ErrorCategory.Expected,
+    );
+    scenarioMonitor.startPhase(MetricScenario.DatabaseLoad, ApplicationMetricPhase.CollectionsLoaded);
 
-      // Fail a phase (simulating unexpected error)
-      scenarioMonitor.failPhase(MetricScenario.DatabaseLoad, ApplicationMetricPhase.DatabasesFetched);
+    scenarioMonitor.failPhase(
+      MetricScenario.DatabaseLoad,
+      ApplicationMetricPhase.CollectionsLoaded,
+      ErrorCategory.Unexpected,
+    );
 
-      // Should emit unhealthy immediately, not wait for timeout
-      expect(reportMetric).toHaveBeenCalledWith(
-        expect.objectContaining({
-          scenario: MetricScenario.DatabaseLoad,
-          healthy: false,
-          timedOut: false,
-        }),
-      );
-    });
-
-    it("does not emit twice after failPhase and timeout", () => {
-      scenarioMonitor.start(MetricScenario.DatabaseLoad);
-
-      // Fail a phase
-      scenarioMonitor.failPhase(MetricScenario.DatabaseLoad, ApplicationMetricPhase.DatabasesFetched);
-
-      // Let timeout fire
-      jest.advanceTimersByTime(10000);
-
-      // Should only have emitted once (from failPhase)
-      expect(reportMetric).toHaveBeenCalledTimes(1);
-    });
+    expect(reportMetric).toHaveBeenCalledTimes(1);
+    expect(getMetric(MetricScenario.DatabaseLoad)).toEqual(
+      expect.objectContaining({ healthy: false, hasExpectedFailure: true, timedOut: false }),
+    );
   });
 
-  describe("completePhase behavior", () => {
-    it("emits healthy when all phases complete", () => {
-      scenarioMonitor.start(MetricScenario.ApplicationLoad);
+  it("emits healthy once at timeout after multiple expected failures", () => {
+    scenarioMonitor.start(MetricScenario.DatabaseLoad);
+    scenarioMonitor.failPhase(
+      MetricScenario.DatabaseLoad,
+      ApplicationMetricPhase.DatabasesFetched,
+      ErrorCategory.Expected,
+    );
+    scenarioMonitor.startPhase(MetricScenario.DatabaseLoad, ApplicationMetricPhase.CollectionsLoaded);
+    scenarioMonitor.failPhase(
+      MetricScenario.DatabaseLoad,
+      ApplicationMetricPhase.CollectionsLoaded,
+      ErrorCategory.Expected,
+    );
 
-      // Complete all required phases (PlatformConfigured + Interactive auto-started, deferred need start)
-      scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.PlatformConfigured);
-      scenarioMonitor.startPhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.ExplorerInitialized);
-      scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.ExplorerInitialized);
-      scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, CommonMetricPhase.Interactive);
+    jest.advanceTimersByTime(10000);
 
-      expect(reportMetric).toHaveBeenCalledWith(
-        expect.objectContaining({
-          scenario: MetricScenario.ApplicationLoad,
-          healthy: true,
-          timedOut: false,
-          completedPhases: expect.arrayContaining(["PlatformConfigured", "ExplorerInitialized", "Interactive"]),
-        }),
-      );
-    });
-
-    it("does not emit until all phases complete", () => {
-      scenarioMonitor.start(MetricScenario.ApplicationLoad);
-
-      // Complete only one non-deferred phase
-      scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.PlatformConfigured);
-
-      expect(reportMetric).not.toHaveBeenCalled();
-    });
+    expect(reportMetric).toHaveBeenCalledTimes(1);
+    expect(getMetric(MetricScenario.DatabaseLoad)).toEqual(
+      expect.objectContaining({ healthy: true, hasExpectedFailure: true, timedOut: true }),
+    );
   });
 
-  describe("scenario isolation", () => {
-    it("expected failure on one scenario does not affect others after completion", () => {
-      // Start both scenarios
-      scenarioMonitor.start(MetricScenario.ApplicationLoad);
-      scenarioMonitor.start(MetricScenario.DatabaseLoad);
+  it("keeps an expected-erroring required phase pending", () => {
+    scenarioMonitor.start(MetricScenario.ApplicationLoad);
+    scenarioMonitor.failPhase(
+      MetricScenario.ApplicationLoad,
+      ApplicationMetricPhase.PlatformConfigured,
+      ErrorCategory.Expected,
+    );
+    scenarioMonitor.startPhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.ExplorerInitialized);
+    scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.ExplorerInitialized);
+    scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, CommonMetricPhase.Interactive);
 
-      // Complete ApplicationLoad (all phases including deferred)
-      scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.PlatformConfigured);
-      scenarioMonitor.startPhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.ExplorerInitialized);
-      scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.ExplorerInitialized);
-      scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, CommonMetricPhase.Interactive);
+    expect(reportMetric).not.toHaveBeenCalled();
 
-      // Now mark expected failure - should only affect DatabaseLoad
-      scenarioMonitor.markExpectedFailure();
+    jest.advanceTimersByTime(10000);
 
-      // Let DatabaseLoad timeout
-      jest.advanceTimersByTime(10000);
+    expect(getMetric(MetricScenario.ApplicationLoad)).toEqual(
+      expect.objectContaining({
+        healthy: true,
+        timedOut: true,
+        completedPhases: expect.not.arrayContaining([ApplicationMetricPhase.PlatformConfigured]),
+      }),
+    );
+  });
 
-      // ApplicationLoad emitted healthy on completion
-      // DatabaseLoad emits healthy on timeout (expected failure)
-      expect(reportMetric).toHaveBeenCalledTimes(2);
-      // Both should be healthy
-      const calls = (reportMetric as jest.Mock).mock.calls;
-      expect(calls[0][0].healthy).toBe(true);
-      expect(calls[1][0].healthy).toBe(true);
-    });
+  it("emits healthy with diagnostics when a phase succeeds after expected evidence", () => {
+    scenarioMonitor.start(MetricScenario.ApplicationLoad);
+    scenarioMonitor.markExpectedFailure(MetricScenario.ApplicationLoad, ApplicationMetricPhase.PlatformConfigured);
+
+    completeApplicationLoad();
+
+    expect(reportMetric).toHaveBeenCalledTimes(1);
+    expect(getMetric(MetricScenario.ApplicationLoad)).toEqual(
+      expect.objectContaining({
+        healthy: true,
+        hasExpectedFailure: true,
+        timedOut: false,
+        completedPhases: expect.arrayContaining([
+          ApplicationMetricPhase.PlatformConfigured,
+          ApplicationMetricPhase.ExplorerInitialized,
+          CommonMetricPhase.Interactive,
+        ]),
+      }),
+    );
+  });
+
+  it("keeps an unexpected result unhealthy when expected evidence arrives later", () => {
+    scenarioMonitor.start(MetricScenario.DatabaseLoad);
+    scenarioMonitor.failPhase(MetricScenario.DatabaseLoad, ApplicationMetricPhase.DatabasesFetched);
+    scenarioMonitor.markExpectedFailure(MetricScenario.DatabaseLoad, ApplicationMetricPhase.CollectionsLoaded);
+
+    jest.advanceTimersByTime(10000);
+
+    expect(reportMetric).toHaveBeenCalledTimes(1);
+    expect(getMetric(MetricScenario.DatabaseLoad)).toEqual(
+      expect.objectContaining({ healthy: false, hasExpectedFailure: false, timedOut: false }),
+    );
+  });
+
+  it("treats hidden-at-start and hidden-later timeouts as healthy expected outcomes", () => {
+    documentHidden = true;
+    scenarioMonitor.start(MetricScenario.ApplicationLoad);
+
+    documentHidden = false;
+    scenarioMonitor.start(MetricScenario.DatabaseLoad);
+    documentHidden = true;
+    document.dispatchEvent(new Event("visibilitychange"));
+    documentHidden = false;
+
+    jest.advanceTimersByTime(10000);
+
+    expect(getMetric(MetricScenario.ApplicationLoad)).toEqual(
+      expect.objectContaining({ healthy: true, hasExpectedFailure: true, timedOut: true }),
+    );
+    expect(getMetric(MetricScenario.DatabaseLoad)).toEqual(
+      expect.objectContaining({ healthy: true, hasExpectedFailure: true, timedOut: true }),
+    );
+  });
+
+  it("emits unhealthy when an unexpected failure occurs while hidden", () => {
+    documentHidden = true;
+    scenarioMonitor.start(MetricScenario.DatabaseLoad);
+
+    scenarioMonitor.failPhase(MetricScenario.DatabaseLoad, ApplicationMetricPhase.DatabasesFetched);
+
+    expect(reportMetric).toHaveBeenCalledTimes(1);
+    expect(getMetric(MetricScenario.DatabaseLoad)).toEqual(
+      expect.objectContaining({ healthy: false, hasExpectedFailure: true, timedOut: false }),
+    );
+  });
+
+  it("emits unhealthy on a visible timeout without expected evidence", () => {
+    scenarioMonitor.start(MetricScenario.ApplicationLoad);
+
+    jest.advanceTimersByTime(10000);
+
+    expect(getMetric(MetricScenario.ApplicationLoad)).toEqual(
+      expect.objectContaining({ healthy: false, hasExpectedFailure: false, timedOut: true }),
+    );
+  });
+
+  it("does not double emit when callbacks race after timeout", () => {
+    scenarioMonitor.start(MetricScenario.ApplicationLoad);
+    scenarioMonitor.markExpectedFailure(MetricScenario.ApplicationLoad, ApplicationMetricPhase.PlatformConfigured);
+    jest.advanceTimersByTime(10000);
+
+    completeApplicationLoad();
+    scenarioMonitor.failPhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.PlatformConfigured);
+
+    expect(reportMetric).toHaveBeenCalledTimes(1);
+    expect(getMetric(MetricScenario.ApplicationLoad)).toEqual(
+      expect.objectContaining({ healthy: true, timedOut: true }),
+    );
+  });
+
+  it("reset removes visibility listeners and clears scenario state", () => {
+    const removeEventListener = jest.spyOn(document, "removeEventListener");
+    scenarioMonitor.start(MetricScenario.ApplicationLoad);
+    scenarioMonitor.markExpectedFailure(MetricScenario.ApplicationLoad, ApplicationMetricPhase.PlatformConfigured);
+
+    scenarioMonitor.reset();
+
+    expect(removeEventListener).toHaveBeenCalledWith("visibilitychange", expect.any(Function));
+
+    scenarioMonitor.start(MetricScenario.ApplicationLoad);
+    jest.advanceTimersByTime(10000);
+
+    expect(reportMetric).toHaveBeenCalledTimes(1);
+    expect(getMetric(MetricScenario.ApplicationLoad)).toEqual(
+      expect.objectContaining({ healthy: false, hasExpectedFailure: false, timedOut: true }),
+    );
+    removeEventListener.mockRestore();
   });
 });

@@ -51,8 +51,13 @@ interface HttpError {
   status?: number;
 }
 
+export enum ErrorCategory {
+  Expected = "Expected",
+  Unexpected = "Unexpected",
+}
+
 /**
- * Determines if an error is an expected failure that should not mark the scenario as unhealthy.
+ * Classifies whether an error is an expected failure that should not mark the scenario as unhealthy.
  *
  * Expected failures include:
  * - Authentication/authorization errors (user not logged in, permissions)
@@ -60,20 +65,20 @@ interface HttpError {
  * - User-cancelled operations
  *
  * @param error - The error to classify
- * @returns true if the error is expected and should not affect health metrics
+ * @returns the health category for the error
  */
-export function isExpectedError(error: unknown): boolean {
+export function classifyError(error: unknown): ErrorCategory {
   if (!error) {
-    return false;
+    return ErrorCategory.Unexpected;
   }
 
   // Check ARMError code
   if (error instanceof ARMError && error.code !== undefined) {
     if (typeof error.code === "string" && EXPECTED_ARM_ERROR_CODES.has(error.code)) {
-      return true;
+      return ErrorCategory.Expected;
     }
     if (typeof error.code === "number" && EXPECTED_HTTP_STATUS_CODES.has(error.code)) {
-      return true;
+      return ErrorCategory.Expected;
     }
   }
 
@@ -81,7 +86,7 @@ export function isExpectedError(error: unknown): boolean {
   const msalError = error as MsalAuthError;
   if (msalError.errorCode && typeof msalError.errorCode === "string") {
     if (EXPECTED_MSAL_ERROR_CODES.has(msalError.errorCode)) {
-      return true;
+      return ErrorCategory.Expected;
     }
   }
 
@@ -89,21 +94,28 @@ export function isExpectedError(error: unknown): boolean {
   const httpError = error as HttpError;
   if (httpError.status && typeof httpError.status === "number") {
     if (EXPECTED_HTTP_STATUS_CODES.has(httpError.status)) {
-      return true;
+      return ErrorCategory.Expected;
     }
   }
 
   // Check for firewall error in message (the only message-based check)
   if (error instanceof Error && error.message) {
     if (FIREWALL_ERROR_PATTERN.test(error.message)) {
-      return true;
+      return ErrorCategory.Expected;
     }
   }
 
   // Check for string errors with firewall pattern
   if (typeof error === "string" && FIREWALL_ERROR_PATTERN.test(error)) {
-    return true;
+    return ErrorCategory.Expected;
   }
 
-  return false;
+  return ErrorCategory.Unexpected;
+}
+
+/**
+ * Determines if an error is an expected failure that should not mark the scenario as unhealthy.
+ */
+export function isExpectedError(error: unknown): boolean {
+  return classifyError(error) === ErrorCategory.Expected;
 }
