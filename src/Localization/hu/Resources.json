@@ -316,6 +316,10 @@
     "deleteUdf": "Felhasználó által definiált függvény törlése"
   },
   "tabs": {
+    "tabMenu": {
+      "duplicateTab": "Lap duplikálása",
+      "closeTab": "Lap bezárása"
+    },
     "documents": {
       "newItem": "Új elem",
       "newDocument": "Új dokumentum",
@@ -760,11 +764,10 @@
         "settings": "Beállítások",
         "indexingPolicy": "Indexelési házirend",
         "partitionKeys": "Partíciókulcsok",
-        "partitionKeysPreview": "Partíciókulcsok (előzetes verzió)",
         "computedProperties": "Számított tulajdonságok",
         "containerPolicies": "Tárolószabályzatok",
         "throughputBuckets": "Átviteli sebesség gyűjtői",
-        "globalSecondaryIndexPreview": "Global Secondary Index",
+        "globalSecondaryIndexPreview": "Globális másodlagos index",
         "maskingPolicyPreview": "Maszkolási szabályzat"
       },
       "mongoNotifications": {
@@ -895,6 +898,10 @@
       },
       "partitionKeyEditor": {
         "changePartitionKey": "{{partitionKeyName}} módosítása",
+        "confirmCancel1": "A következő másolási feladat megszakítására készül.",
+        "confirmCancel2": "A megszakítás azonnal leállítja a feladatot.",
+        "confirmComplete1": "A következő másolási feladat végrehajtására készül.",
+        "confrimComplete2": "Ha elkészült, a függőben lévő dokumentumok feldolgozása után a folyamatos adatmásolás leáll. Az adatintegritás megőrzése érdekében javasoljuk, hogy a feladat végrehajtása előtt állítsa le a forrástároló frissítéseit.",
         "currentPartitionKey": "Aktuális {{partitionKeyName}}",
         "partitioning": "Particionálás",
         "hierarchical": "Hierarchikus",
@@ -1033,6 +1040,7 @@
         "description": "Az online tárolómásolási feladatok lehetővé teszik, hogy adatokat másoljon egy forrástárolóból egy cél Cosmos DB NoSQL API-tárolóba a [Minden verzió és törlés](https://learn.microsoft.com/azure/cosmos-db/change-feed-modes?tabs=all-versions-and-deletes#all-versions-and-deletes-change-feed-mode-preview) változáscsatorna használatával. Ez lehetővé teszi, hogy a frissítések az adatok másolása közben is folytatódjanak a forráson. A végén rövid leállásra van szükség ahhoz, hogy biztonságosan átválthassa az ügyfélalkalmazásokat a céltárolóra. További információ az [online másolási feladatokról](https://learn.microsoft.com/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#getting-started)."
       }
     },
+    "migrationTypeTitle": "Áttelepítés típusa",
     "selectContainers": {
       "description": "Válasszon ki egy forrástárolót és egy céltárolót, amelybe másolni szeretne.",
       "sourceContainerSubHeading": "Forrástároló",
@@ -1117,7 +1125,8 @@
       "buttonText": "Online másolás engedélyezése",
       "validateAllVersionsAndDeletesChangeFeedSpinnerLabel": "Az összes verzió és a törlések változáscsatorna-módjának ellenőrzése",
       "enablingAllVersionsAndDeletesChangeFeedSpinnerLabel": "Az összes verzió és a törlések változáscsatorna-módjának engedélyezése...",
-      "enablingOnlineCopySpinnerLabel": "Az online másolás engedélyezése a(z) „{{accountName}}” fiókban ..."
+      "enablingOnlineCopySpinnerLabel": "Az online másolás engedélyezése a(z) „{{accountName}}” fiókban ...",
+      "onlineMigrationPrerequisitesMessage": "A folytatás előtt engedélyezni kell az online áttelepítés előfeltételeit."
     },
     "monitorJobs": {
       "columns": {
@@ -1151,6 +1160,16 @@
       "dialog": {
         "confirmButtonText": "Megerősítés",
         "cancelButtonText": "Mégse"
+      }
+    },
+    "dataTransfers": {
+      "polling": {
+        "cancelConsoleMessage": "A(z) {{jobName}} adatátviteli feladat megszakítva",
+        "completedConsoleMessage": "A(z) {{jobName}} adatátviteli feladat kész",
+        "defaultErrorMessage": "A művelet nem fejezhető be",
+        "errorConsoleMessage": "A(z) {{jobName}} adatátviteli feladat meghiúsult: {{errorMessage}}",
+        "pauseConsoleMessage": "A(z) {{jobName}} adatátviteli feladat szüneteltetve",
+        "retryConsoleMessage": "Folyamatban van a(z) {{jobName}} adatátviteli feladat; teljes szám: {{totalCount}}, feldolgozottak száma: {{processedCount}}"
       }
     }
   }
