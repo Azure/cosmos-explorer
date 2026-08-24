@@ -6,6 +6,7 @@ UI for Azure Cosmos DB. Powers the [Azure Portal](https://portal.azure.com/), ht
 
 ## Getting Started
 
+- Install Node.js 22.x.
 - `npm install`
 - `npm run build`
 
