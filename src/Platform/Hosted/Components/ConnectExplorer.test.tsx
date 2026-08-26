@@ -1,8 +1,5 @@
 jest.mock("../../../hooks/useDirectories");
 jest.mock("../../../Common/PortalBackendClient");
-// ScenarioMonitor subscribes to web-vitals on import, and onTTFB reads a navigation timing entry that
-// jsdom never produces, throwing from a timer that lands on whichever test happens to be running.
-jest.mock("web-vitals");
 import "@testing-library/jest-dom";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { extractFeatures } from "Platform/Hosted/extractFeatures";
@@ -16,8 +13,7 @@ const mockIsAccountRestricted = isAccountRestrictedForConnectionStringLogin as j
   typeof isAccountRestrictedForConnectionStringLogin
 >;
 
-// fetchEncryptedToken rejects with the raw Response. jsdom implements no part of the fetch API, so
-// there is no Response constructor to build one with.
+// fetchEncryptedToken rejects with the raw Response.
 const rejectWithResponse = (status: number, body: string) =>
   mockFetchEncryptedToken.mockRejectedValue({ status, text: async () => body } as Response);
 

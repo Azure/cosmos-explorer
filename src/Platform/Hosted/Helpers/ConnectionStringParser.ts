@@ -8,9 +8,7 @@ const DnsPort = "443";
 const isPpeZone = (zone: string): boolean => zone === PpeDnsSuffix || zone.endsWith(`.${PpeDnsSuffix}`);
 
 // Picks the DNS zone matching the kind of account the connection string came from, since a PPE
-// account's endpoints sit under PPE zones and every other account's do not. Returns undefined when the
-// config carries no zone of that kind, so the caller can reject the connection string rather than build
-// an endpoint the account does not own and send the account key there.
+// account's endpoints sit under PPE zones and every other account's do not.
 export const selectEndpointZone = (zones: ReadonlyArray<string>, isPpeAccount: boolean): string | undefined =>
   zones.find((zone) => isPpeZone(zone) === isPpeAccount);
 
