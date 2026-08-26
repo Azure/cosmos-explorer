@@ -1,10 +1,11 @@
+import { FluentProvider, Link, MessageBar, MessageBarBody, webLightTheme } from "@fluentui/react-components";
 import { useBoolean } from "@fluentui/react-hooks";
 import { getErrorMessage } from "Common/ErrorHandlingUtils";
 import { userContext } from "UserContext";
 import * as React from "react";
 import ConnectImage from "../../../../images/HdeConnectCosmosDB.svg";
-import ErrorImage from "../../../../images/error.svg";
 import { AuthType } from "../../../AuthType";
+import { HttpStatusCodes } from "../../../Common/Constants";
 import { fetchEncryptedToken, isAccountRestrictedForConnectionStringLogin } from "../../../Common/PortalBackendClient";
 import { AccessInputMetadata } from "../../../Contracts/DataModels";
 import { parseConnectionString } from "../Helpers/ConnectionStringParser";
@@ -30,6 +31,7 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
 }: Props) => {
   const [isFormVisible, { setTrue: showForm }] = useBoolean(false);
   const [errorMessage, setErrorMessage] = React.useState("");
+  const [isBlockedByFirewall, setIsBlockedByFirewall] = React.useState(false);
   const enableConnectionStringLogin = !userContext.features.disableConnectionStringLogin;
 
   return (
@@ -46,6 +48,7 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
               onSubmit={async (event) => {
                 event.preventDefault();
                 setErrorMessage("");
+                setIsBlockedByFirewall(false);
 
                 try {
                   if (await isAccountRestrictedForConnectionStringLogin(connectionString)) {
@@ -73,9 +76,24 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
                   return;
                 }
 
-                const encryptedToken = await fetchEncryptedToken(connectionString);
-                setEncryptedToken(encryptedToken);
-                setAuthType(AuthType.ConnectionString);
+                // Mongo and Cassandra go through the Portal Backend
+                try {
+                  const encryptedToken = await fetchEncryptedToken(connectionString);
+                  setEncryptedToken(encryptedToken);
+                  setAuthType(AuthType.ConnectionString);
+                } catch (error) {
+                  const errorDetails = await (error as Response).text();
+
+                  setErrorMessage(
+                    errorDetails
+                      ? `Couldn't authenticate with Cosmos DB: ${errorDetails}`
+                      : "Failed to connect to the account. Please check the connection string and try again.",
+                  );
+                  // A Forbidden usually means the account firewall dropped the request. The connection
+                  // string is exchanged by the Portal Backend rather than the browser, so the account has
+                  // to allowlist those services.
+                  setIsBlockedByFirewall((error as Response).status === HttpStatusCodes.Forbidden);
+                }
               }}
             >
               <p className="connectExplorerContent connectStringText">Connect to your account with connection string</p>
@@ -90,13 +108,26 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
                     setConnectionString(event.target.value);
                   }}
                 />
-                {errorMessage.length > 0 && (
-                  <span className="errorDetailsInfoTooltip">
-                    <img className="errorImg" src={ErrorImage} alt="Error notification" />
-                    <span className="errorDetails">{errorMessage}</span>
-                  </span>
-                )}
               </p>
+              {errorMessage.length > 0 && (
+                <FluentProvider theme={webLightTheme} className="connectErrorMessageBar">
+                  <MessageBar intent="error" layout="multiline">
+                    <MessageBarBody>
+                      <span className="errorDetails">{errorMessage}</span>
+                      {isBlockedByFirewall && (
+                        <Link
+                          className="errorHelpLink"
+                          href="https://learn.microsoft.com/azure/cosmos-db/how-to-configure-firewall#allow-requests-from-the-azure-portal"
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          Allow access from Azure Portal
+                        </Link>
+                      )}
+                    </MessageBarBody>
+                  </MessageBar>
+                </FluentProvider>
+              )}
               <p className="connectExplorerContent">
                 <input className="filterbtnstyle" type="submit" value="Connect" />
               </p>

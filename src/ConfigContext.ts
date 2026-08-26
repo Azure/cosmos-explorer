@@ -30,6 +30,13 @@ export interface ConfigContext {
   allowedCassandraProxyEndpoints: ReadonlyArray<string>;
   allowedMongoProxyEndpoints: ReadonlyArray<string>;
   allowedParentFrameOrigins: ReadonlyArray<string>;
+  SQL_DNS_ZONES: ReadonlyArray<string>;
+  MONGO_DNS_ZONES: ReadonlyArray<string>;
+  MONGO_COMPUTE_DNS_ZONES: ReadonlyArray<string>;
+  CASSANDRA_DNS_ZONES: ReadonlyArray<string>;
+  TABLE_DNS_ZONES: ReadonlyArray<string>;
+  DOCUMENT_ENDPOINT_ZONES: ReadonlyArray<string>;
+  GREMLIN_ENDPOINT_ZONES: ReadonlyArray<string>;
   gitSha?: string;
   proxyPath?: string;
   AAD_ENDPOINT: string;
@@ -81,6 +88,33 @@ let configContext: Readonly<ConfigContext> = {
     `^https:\\/\\/explorer\\.cosmos\\.sovcloud-api\\.sg$`,
     `^https:\\/\\/portal\\.sovcloud-azure\\.sg$`,
   ], // Webpack injects this at build time
+  SQL_DNS_ZONES: [
+    "documents.azure.com",
+    "sql.cosmosdb.azure.com",
+    "sql.cosmos.azure.com",
+    "sqlx.cosmosdb.azure.com",
+    "sqlx.cosmos.azure.com",
+    "documents-staging.windows-ppe.net",
+    "sql.cosmosdb.windows-ppe.net",
+    "sql.cosmos.windows-ppe.net",
+    "sqlx.cosmos.windows-ppe.net",
+  ],
+  MONGO_DNS_ZONES: ["documents.azure.com", "documents-staging.windows-ppe.net"],
+  MONGO_COMPUTE_DNS_ZONES: ["mongo.cosmos.azure.com", "mongo.cosmos.windows-ppe.net"],
+  CASSANDRA_DNS_ZONES: [
+    "cassandra.cosmosdb.azure.com",
+    "cassandra.cosmos.azure.com",
+    "cassandra.cosmosdb.windows-ppe.net",
+    "cassandra.cosmos.windows-ppe.net",
+  ],
+  TABLE_DNS_ZONES: [
+    "table.cosmosdb.azure.com",
+    "table.cosmos.azure.com",
+    "table.cosmosdb.windows-ppe.net",
+    "table.cosmos.windows-ppe.net",
+  ],
+  DOCUMENT_ENDPOINT_ZONES: ["documents.azure.com", "documents-staging.windows-ppe.net"],
+  GREMLIN_ENDPOINT_ZONES: ["gremlin.cosmos.azure.com", "gremlin.cosmos.windows-ppe.net"],
   gitSha: process.env.GIT_SHA,
   hostedExplorerURL: "https://cosmos.azure.com/",
   AAD_ENDPOINT: "https://login.microsoftonline.com/",
