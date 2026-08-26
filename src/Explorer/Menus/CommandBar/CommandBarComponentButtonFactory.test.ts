@@ -4,7 +4,6 @@ import { DatabaseAccount } from "../../../Contracts/DataModels";
 import { CollectionBase } from "../../../Contracts/ViewModels";
 import { updateUserContext } from "../../../UserContext";
 import Explorer from "../../Explorer";
-import { useNotebook } from "../../Notebook/useNotebook";
 import { useDatabases } from "../../useDatabases";
 import { useSelectedNode } from "../../useSelectedNode";
 import * as CommandBarComponentButtonFactory from "./CommandBarComponentButtonFactory";
@@ -35,6 +34,18 @@ describe("CommandBarComponentButtonFactory tests", () => {
         (button) => button.commandButtonLabel === enableAzureSynapseLinkBtnLabel,
       );
       expect(enableAzureSynapseLinkBtn).toBeDefined();
+    });
+
+    it("Button should be disabled while Synapse Link is updating", () => {
+      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(
+        mockExplorer,
+        selectedNodeState,
+        true,
+      );
+      const enableAzureSynapseLinkBtn = buttons.find(
+        (button) => button.commandButtonLabel === enableAzureSynapseLinkBtnLabel,
+      );
+      expect(enableAzureSynapseLinkBtn.disabled).toBe(true);
     });
 
     // TODO: Now that Tables API supports dataplane RBAC, calling createStaticCommandBarButtons will enable the
@@ -99,11 +110,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
       });
     });
 
-    afterEach(() => {
-      useNotebook.getState().setIsNotebookEnabled(false);
-      useNotebook.getState().setIsNotebooksEnabledForAccount(false);
-    });
-
     it("Cassandra Api not available - button should be hidden", () => {
       updateUserContext({
         databaseAccount: {
@@ -127,7 +133,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       expect(openCassandraShellBtn).toBeUndefined();
     });
 
-    it("Notebooks is not enabled and is unavailable - button should be shown and disabled", () => {
+    it("Cloud Shell is unavailable - button should be hidden", () => {
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
       const openCassandraShellBtn = buttons.find((button) => button.commandButtonLabel === openCassandraShellBtnLabel);
       expect(openCassandraShellBtn).toBeUndefined();

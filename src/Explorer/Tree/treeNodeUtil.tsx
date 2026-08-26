@@ -137,7 +137,6 @@ export const createResourceTokenTreeNodes = (collection: ViewModels.CollectionBa
 
 export const createDatabaseTreeNodes = (
   container: Explorer,
-  isNotebookEnabled: boolean,
   databases: ViewModels.Database[],
   refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void,
   searchText = "",
@@ -184,9 +183,7 @@ export const createDatabaseTreeNodes = (
       database
         .collections()
         .forEach((collection: ViewModels.Collection) =>
-          databaseNode.children.push(
-            buildCollectionNode(database, collection, isNotebookEnabled, container, refreshActiveTab),
-          ),
+          databaseNode.children.push(buildCollectionNode(database, collection, container, refreshActiveTab)),
         );
 
       if (database.collectionsContinuationToken) {
@@ -254,14 +251,13 @@ export const createDatabaseTreeNodes = (
 export const buildCollectionNode = (
   database: ViewModels.Database,
   collection: ViewModels.Collection,
-  isNotebookEnabled: boolean,
   container: Explorer,
   refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void,
 ): TreeNode => {
   let children: TreeNode[];
   // Flat Tree for Fabric
   if (!isFabricMirrored()) {
-    children = buildCollectionNodeChildren(database, collection, isNotebookEnabled, container, refreshActiveTab);
+    children = buildCollectionNodeChildren(database, collection, container, refreshActiveTab);
   }
 
   const collectionNode: TreeNode = {
@@ -310,7 +306,6 @@ export const buildCollectionNode = (
 const buildCollectionNodeChildren = (
   database: ViewModels.Database,
   collection: ViewModels.Collection,
-  isNotebookEnabled: boolean,
   container: Explorer,
   refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void,
 ): TreeNode[] => {

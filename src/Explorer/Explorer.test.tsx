@@ -10,6 +10,7 @@ import { Capability, DatabaseAccount } from "../Contracts/DataModels";
 import { updateUserContext, userContext } from "../UserContext";
 import { update } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
 import Explorer from "./Explorer";
+import { useCommandBar } from "./Menus/CommandBar/CommandBarComponentAdapter";
 
 const mockUpdate = update as jest.MockedFunction<typeof update>;
 
@@ -23,21 +24,6 @@ jest.mock("./Controls/Dialog", () => ({
       openDialog: mockOpenDialog,
       closeDialog: mockCloseDialog,
     })),
-  },
-}));
-
-// Silence useNotebook subscription calls
-jest.mock("./Notebook/useNotebook", () => ({
-  useNotebook: {
-    subscribe: jest.fn(),
-    getState: jest.fn().mockReturnValue(
-      new Proxy(
-        {},
-        {
-          get: () => jest.fn().mockResolvedValue(undefined),
-        },
-      ),
-    ),
   },
 }));
 
@@ -69,6 +55,7 @@ describe("Explorer.openEnableSynapseLinkDialog", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUpdate.mockResolvedValue(undefined);
+    useCommandBar.getState().setIsSynapseLinkUpdating(false);
     explorer = new Explorer();
   });
 
@@ -101,6 +88,19 @@ describe("Explorer.openEnableSynapseLinkDialog", () => {
       await dialogProps.onPrimaryButtonClick();
 
       expect(userContext.databaseAccount.properties.enableAnalyticalStorage).toBe(true);
+    });
+
+    it("should track Synapse Link update progress in the command bar store", async () => {
+      mockUpdate.mockImplementation(async () => {
+        expect(useCommandBar.getState().isSynapseLinkUpdating).toBe(true);
+        return {} as Awaited<ReturnType<typeof update>>;
+      });
+      explorer.openEnableSynapseLinkDialog();
+
+      const dialogProps = mockOpenDialog.mock.calls[0][0];
+      await dialogProps.onPrimaryButtonClick();
+
+      expect(useCommandBar.getState().isSynapseLinkUpdating).toBe(false);
     });
   });
 
