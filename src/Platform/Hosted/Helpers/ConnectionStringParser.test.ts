@@ -11,21 +11,27 @@ describe("ConnectionStringParser", () => {
   const mockAccountName = "Test";
   const mockMasterKey = "some-key";
 
-  // Keyed by ApiKind so adding an API to the enum fails to compile here rather than silently going
-  // untested.
+  // The shape of each api's connection string, parameterized by the dns zone the account sits in. What
+  // these tests are about is the zones, so keeping the shapes here stops them being restated once per zone.
+  const buildConnectionString = {
+    sql: (zone: string) => `AccountEndpoint=https://${mockAccountName}.${zone}:443/;AccountKey=${mockMasterKey};`,
+    mongo: (zone: string) => `mongodb://${mockAccountName}:${mockMasterKey}@${mockAccountName}.${zone}:10255`,
+    // A cassandra connection string can name the account host under either AccountEndpoint or HostName.
+    cassandra: (zone: string, hostKey = "AccountEndpoint") =>
+      `${hostKey}=${mockAccountName}.${zone};AccountKey=${mockMasterKey};`,
+    table: (zone: string) =>
+      `DefaultEndpointsProtocol=https;AccountName=${mockAccountName};AccountKey=${mockMasterKey};TableEndpoint=https://${mockAccountName}.${zone}:443/;`,
+    graph: (zone: string) =>
+      `AccountEndpoint=https://${mockAccountName}.${zone}:443/;AccountKey=${mockMasterKey};ApiKind=Gremlin;`,
+  };
+
   const connectionStringsByApiKind: Record<DataModels.ApiKind, string> = {
-    [DataModels.ApiKind
-      .SQL]: `AccountEndpoint=https://${mockAccountName}.documents.azure.com:443/;AccountKey=${mockMasterKey};`,
-    [DataModels.ApiKind
-      .MongoDB]: `mongodb://${mockAccountName}:${mockMasterKey}@${mockAccountName}.documents.azure.com:10255`,
-    [DataModels.ApiKind
-      .MongoDBCompute]: `mongodb://${mockAccountName}:${mockMasterKey}@${mockAccountName}.mongo.cosmos.azure.com:10255`,
-    [DataModels.ApiKind
-      .Cassandra]: `AccountEndpoint=${mockAccountName}.cassandra.cosmosdb.azure.com;AccountKey=${mockMasterKey};`,
-    [DataModels.ApiKind
-      .Table]: `DefaultEndpointsProtocol=https;AccountName=${mockAccountName};AccountKey=${mockMasterKey};TableEndpoint=https://${mockAccountName}.table.cosmosdb.azure.com:443/;`,
-    [DataModels.ApiKind
-      .Graph]: `AccountEndpoint=https://${mockAccountName}.documents.azure.com:443/;AccountKey=${mockMasterKey};ApiKind=Gremlin;`,
+    [DataModels.ApiKind.SQL]: buildConnectionString.sql("documents.azure.com"),
+    [DataModels.ApiKind.MongoDB]: buildConnectionString.mongo("documents.azure.com"),
+    [DataModels.ApiKind.MongoDBCompute]: buildConnectionString.mongo("mongo.cosmos.azure.com"),
+    [DataModels.ApiKind.Cassandra]: buildConnectionString.cassandra("cassandra.cosmosdb.azure.com"),
+    [DataModels.ApiKind.Table]: buildConnectionString.table("table.cosmosdb.azure.com"),
+    [DataModels.ApiKind.Graph]: buildConnectionString.graph("documents.azure.com"),
   };
 
   it("should parse a connection string for every api kind", () => {
@@ -44,7 +50,6 @@ describe("ConnectionStringParser", () => {
       "documents.azure.com",
       "sql.cosmosdb.azure.com",
       "sql.cosmos.azure.com",
-      "sqlx.cosmosdb.azure.com",
       "sqlx.cosmos.azure.com",
       "documents-staging.windows-ppe.net",
       "sql.cosmosdb.windows-ppe.net",
@@ -67,17 +72,6 @@ describe("ConnectionStringParser", () => {
     ]);
   });
 
-  it("should parse a valid sql account connection string", () => {
-    const metadata = parseConnectionString(
-      `AccountEndpoint=https://${mockAccountName}.documents.azure.com:443/;AccountKey=${mockMasterKey};`,
-    );
-
-    expect(metadata.accountName).toBe(mockAccountName);
-    expect(metadata.apiKind).toBe(DataModels.ApiKind.SQL);
-    expect(metadata.documentEndpoint).toBe(`https://${mockAccountName}.documents.azure.com:443/`);
-    expect(metadata.apiEndpoint).toBeUndefined();
-  });
-
   it("should keep the document endpoint given by the connection string", () => {
     // The endpoint is taken from the connection string rather than rebuilt from the account name, so a
     // string that omits the port keeps it omitted.
@@ -91,9 +85,7 @@ describe("ConnectionStringParser", () => {
   it.each(configContext.SQL_DNS_ZONES)(
     "should parse a sql account connection string using the %s zone",
     (dnsZone: string) => {
-      const metadata = parseConnectionString(
-        `AccountEndpoint=https://${mockAccountName}.${dnsZone}:443/;AccountKey=${mockMasterKey};`,
-      );
+      const metadata = parseConnectionString(buildConnectionString.sql(dnsZone));
 
       expect(metadata.accountName).toBe(mockAccountName);
       expect(metadata.apiKind).toBe(DataModels.ApiKind.SQL);
@@ -102,21 +94,10 @@ describe("ConnectionStringParser", () => {
     },
   );
 
-  it("should parse a valid mongo account connection string", () => {
-    const metadata = parseConnectionString(
-      `mongodb://${mockAccountName}:${mockMasterKey}@${mockAccountName}.documents.azure.com:10255`,
-    );
-
-    expect(metadata.accountName).toBe(mockAccountName);
-    expect(metadata.apiKind).toBe(DataModels.ApiKind.MongoDB);
-  });
-
   it.each(configContext.MONGO_DNS_ZONES)(
     "should parse a mongo account connection string using the %s zone",
     (dnsZone: string) => {
-      const metadata = parseConnectionString(
-        `mongodb://${mockAccountName}:${mockMasterKey}@${mockAccountName}.${dnsZone}:10255`,
-      );
+      const metadata = parseConnectionString(buildConnectionString.mongo(dnsZone));
 
       expect(metadata.accountName).toBe(mockAccountName);
       expect(metadata.apiKind).toBe(DataModels.ApiKind.MongoDB);
@@ -126,41 +107,31 @@ describe("ConnectionStringParser", () => {
   it.each(configContext.MONGO_COMPUTE_DNS_ZONES)(
     "should parse a compute mongo account connection string using the %s zone",
     (dnsZone: string) => {
-      const metadata = parseConnectionString(
-        `mongodb://${mockAccountName}:${mockMasterKey}@${mockAccountName}.${dnsZone}:10255`,
-      );
+      const metadata = parseConnectionString(buildConnectionString.mongo(dnsZone));
 
       expect(metadata.accountName).toBe(mockAccountName);
       expect(metadata.apiKind).toBe(DataModels.ApiKind.MongoDBCompute);
     },
   );
 
-  it("should parse a valid cassandra account connection string", () => {
-    const metadata = parseConnectionString(
-      `AccountEndpoint=${mockAccountName}.cassandra.cosmosdb.azure.com;AccountKey=${mockMasterKey};`,
-    );
-
-    expect(metadata.accountName).toBe(mockAccountName);
-    expect(metadata.apiKind).toBe(DataModels.ApiKind.Cassandra);
-  });
-
   it.each(
-    ["AccountEndpoint", "HostName"].flatMap((key) =>
-      configContext.CASSANDRA_DNS_ZONES.map((dnsZone) => [key, dnsZone]),
+    ["AccountEndpoint", "HostName"].flatMap((hostKey) =>
+      configContext.CASSANDRA_DNS_ZONES.map((dnsZone) => [hostKey, dnsZone]),
     ),
-  )("should parse a cassandra account connection string using %s and the %s zone", (key: string, dnsZone: string) => {
-    const metadata = parseConnectionString(`${key}=${mockAccountName}.${dnsZone};AccountKey=${mockMasterKey};`);
+  )(
+    "should parse a cassandra account connection string using %s and the %s zone",
+    (hostKey: string, dnsZone: string) => {
+      const metadata = parseConnectionString(buildConnectionString.cassandra(dnsZone, hostKey));
 
-    expect(metadata.accountName).toBe(mockAccountName);
-    expect(metadata.apiKind).toBe(DataModels.ApiKind.Cassandra);
-  });
+      expect(metadata.accountName).toBe(mockAccountName);
+      expect(metadata.apiKind).toBe(DataModels.ApiKind.Cassandra);
+    },
+  );
 
   it.each(configContext.TABLE_DNS_ZONES)(
     "should parse a table account connection string using the %s zone",
     (dnsZone: string) => {
-      const metadata = parseConnectionString(
-        `DefaultEndpointsProtocol=https;AccountName=${mockAccountName};AccountKey=${mockMasterKey};TableEndpoint=https://${mockAccountName}.${dnsZone}:443/;`,
-      );
+      const metadata = parseConnectionString(buildConnectionString.table(dnsZone));
 
       expect(metadata.accountName).toBe(mockAccountName);
       expect(metadata.apiKind).toBe(DataModels.ApiKind.Table);
@@ -168,32 +139,42 @@ describe("ConnectionStringParser", () => {
     },
   );
 
-  it("should construct the document endpoint for a table account from the account name", () => {
-    const metadata = parseConnectionString(
-      `DefaultEndpointsProtocol=https;AccountName=${mockAccountName};AccountKey=${mockMasterKey};TableEndpoint=https://${mockAccountName}.table.cosmosdb.azure.com:443/;`,
-    );
+  // A Mongo, Cassandra or Table connection string names the account in its own api's dns zone rather than
+  // giving the document endpoint, so the document endpoint that data plane operations go through is built
+  // from the account name, under a zone of the same kind as the one that matched.
+  const publicDocumentEndpoint = `https://${mockAccountName}.documents.azure.com:443/`;
+  const ppeDocumentEndpoint = `https://${mockAccountName}.documents-staging.windows-ppe.net:443/`;
+  const expectedDocumentEndpointByZone: Record<string, string> = {
+    "documents.azure.com": publicDocumentEndpoint,
+    "documents-staging.windows-ppe.net": ppeDocumentEndpoint,
+    "mongo.cosmos.azure.com": publicDocumentEndpoint,
+    "mongo.cosmos.windows-ppe.net": ppeDocumentEndpoint,
+    "cassandra.cosmosdb.azure.com": publicDocumentEndpoint,
+    "cassandra.cosmos.azure.com": publicDocumentEndpoint,
+    "cassandra.cosmosdb.windows-ppe.net": ppeDocumentEndpoint,
+    "cassandra.cosmos.windows-ppe.net": ppeDocumentEndpoint,
+    "table.cosmosdb.azure.com": publicDocumentEndpoint,
+    "table.cosmos.azure.com": publicDocumentEndpoint,
+    "table.cosmosdb.windows-ppe.net": ppeDocumentEndpoint,
+    "table.cosmos.windows-ppe.net": ppeDocumentEndpoint,
+  };
 
-    // Table connection strings only carry the table endpoint, so the document endpoint that data plane
-    // operations go through is built from the account name.
-    expect(metadata.documentEndpoint).toBe(`https://${mockAccountName}.documents.azure.com:443/`);
-  });
+  it.each([
+    ...configContext.MONGO_DNS_ZONES.map((dnsZone) => [dnsZone, buildConnectionString.mongo(dnsZone)]),
+    ...configContext.MONGO_COMPUTE_DNS_ZONES.map((dnsZone) => [dnsZone, buildConnectionString.mongo(dnsZone)]),
+    ...configContext.CASSANDRA_DNS_ZONES.map((dnsZone) => [dnsZone, buildConnectionString.cassandra(dnsZone)]),
+    ...configContext.TABLE_DNS_ZONES.map((dnsZone) => [dnsZone, buildConnectionString.table(dnsZone)]),
+  ])(
+    "should construct the document endpoint for an account in the %s zone",
+    (dnsZone: string, connectionString: string) => {
+      const metadata = parseConnectionString(connectionString);
 
-  it.each(["table.cosmosdb.windows-ppe.net", "table.cosmos.windows-ppe.net"])(
-    "should construct a PPE document endpoint for a table account in the %s zone",
-    (dnsZone: string) => {
-      const metadata = parseConnectionString(
-        `DefaultEndpointsProtocol=https;AccountName=${mockAccountName};AccountKey=${mockMasterKey};TableEndpoint=https://${mockAccountName}.${dnsZone}:443/;`,
-      );
-
-      // The constructed endpoint has to match the kind of zone the table endpoint we matched came from.
-      expect(metadata.documentEndpoint).toBe(`https://${mockAccountName}.documents-staging.windows-ppe.net:443/`);
+      expect(metadata.documentEndpoint).toBe(expectedDocumentEndpointByZone[dnsZone]);
     },
   );
 
   it("should parse a valid graph account connection string", () => {
-    const metadata = parseConnectionString(
-      `AccountEndpoint=https://${mockAccountName}.documents.azure.com:443/;AccountKey=${mockMasterKey};ApiKind=Gremlin;`,
-    );
+    const metadata = parseConnectionString(buildConnectionString.graph("documents.azure.com"));
 
     expect(metadata.accountName).toBe(mockAccountName);
     expect(metadata.apiKind).toBe(DataModels.ApiKind.Graph);
@@ -202,9 +183,7 @@ describe("ConnectionStringParser", () => {
   });
 
   it("should construct a PPE gremlin endpoint for a PPE graph account", () => {
-    const metadata = parseConnectionString(
-      `AccountEndpoint=https://${mockAccountName}.documents-staging.windows-ppe.net:443/;AccountKey=${mockMasterKey};ApiKind=Gremlin;`,
-    );
+    const metadata = parseConnectionString(buildConnectionString.graph("documents-staging.windows-ppe.net"));
 
     expect(metadata.accountName).toBe(mockAccountName);
     expect(metadata.apiKind).toBe(DataModels.ApiKind.Graph);
@@ -218,9 +197,7 @@ describe("ConnectionStringParser", () => {
     updateConfigContext({ DOCUMENT_ENDPOINT_ZONES: ["documents.azure.com"] });
 
     try {
-      const metadata = parseConnectionString(
-        `DefaultEndpointsProtocol=https;AccountName=${mockAccountName};AccountKey=${mockMasterKey};TableEndpoint=https://${mockAccountName}.table.cosmos.windows-ppe.net:443/;`,
-      );
+      const metadata = parseConnectionString(buildConnectionString.table("table.cosmos.windows-ppe.net"));
 
       // The account key travels to the constructed document endpoint, so a config carrying no PPE zone
       // has to fail on a PPE account rather than fall back to a zone the account does not own.
@@ -231,11 +208,11 @@ describe("ConnectionStringParser", () => {
   });
 
   it.each([
-    `AccountEndpoint=https://${mockAccountName}.documents.azure.com.attacker.example:443/;AccountKey=${mockMasterKey};`,
-    `mongodb://${mockAccountName}:${mockMasterKey}@${mockAccountName}.documents.azure.com.attacker.example:10255`,
-    `mongodb://${mockAccountName}:${mockMasterKey}@${mockAccountName}.mongo.cosmos.azure.com.attacker.example:10255`,
-    `AccountEndpoint=${mockAccountName}.cassandra.cosmosdb.azure.com.attacker.example;AccountKey=${mockMasterKey};`,
-    `DefaultEndpointsProtocol=https;AccountName=${mockAccountName};AccountKey=${mockMasterKey};TableEndpoint=https://${mockAccountName}.table.cosmosdb.azure.com.attacker.example:443/;`,
+    buildConnectionString.sql("documents.azure.com.attacker.example"),
+    buildConnectionString.mongo("documents.azure.com.attacker.example"),
+    buildConnectionString.mongo("mongo.cosmos.azure.com.attacker.example"),
+    buildConnectionString.cassandra("cassandra.cosmosdb.azure.com.attacker.example"),
+    buildConnectionString.table("table.cosmosdb.azure.com.attacker.example"),
   ])("should not accept a host that only begins with a known zone: %s", (connectionString: string) => {
     // The zone list is what keeps the account key from being sent somewhere arbitrary, so a host that
     // appends to an allowed zone must not pass as that zone.

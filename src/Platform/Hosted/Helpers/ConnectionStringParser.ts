@@ -4,7 +4,8 @@ import { AccessInputMetadata, ApiKind } from "../../../Contracts/DataModels";
 const PpeDnsSuffix = "windows-ppe.net";
 const DnsPort = "443";
 
-const isPpeZone = (zone: string): boolean => zone.endsWith(PpeDnsSuffix);
+// Match on a label boundary so a zone like "notwindows-ppe.net" is not taken for a PPE zone.
+const isPpeZone = (zone: string): boolean => zone === PpeDnsSuffix || zone.endsWith(`.${PpeDnsSuffix}`);
 
 // Picks the DNS zone matching the kind of account the connection string came from, since a PPE
 // account's endpoints sit under PPE zones and every other account's do not. Returns undefined when the
@@ -16,9 +17,10 @@ export const selectEndpointZone = (zones: ReadonlyArray<string>, isPpeAccount: b
 // Builds an alternation matching any of the given DNS zones, e.g. "(documents\.azure\.com|sql\.cosmos\.azure\.com)".
 // The group captures so callers can tell which zone matched, and with it whether the account is a PPE account.
 // The zone has to run to the end of the host, otherwise a host that merely starts with an allowed zone
-// would pass as that zone and the account key would travel to whatever was appended to it.
+// would pass as that zone and the account key would travel to whatever was appended to it. Zones come
+// from config, so every regex metacharacter is escaped rather than just the dots.
 export const dnsZoneAlternation = (zones: ReadonlyArray<string>): string =>
-  `(${zones.map((zone) => zone.replace(/\./g, "\\.")).join("|")})(?=[:/\\s]|$)`;
+  `(${zones.map((zone) => zone.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})(?=[:/\\s]|$)`;
 
 // The zone lists live in ConfigContext, which is populated asynchronously by initializeConfiguration,
 // so these are built per call rather than once at module load.
@@ -55,15 +57,19 @@ export function parseConnectionString(connectionString: string): AccessInputMeta
           const matches: string[] = connectionStringPart.match(endpointsRegex.mongo);
           accessInput.accountName = matches && matches.length > 1 && matches[2];
           accessInput.apiKind = ApiKind.MongoDB;
+          isPpeAccount = isPpeZone(matches[3]);
         } else if (RegExp(endpointsRegex.mongoCompute).test(connectionStringPart)) {
           const matches: string[] = connectionStringPart.match(endpointsRegex.mongoCompute);
           accessInput.accountName = matches && matches.length > 1 && matches[2];
           accessInput.apiKind = ApiKind.MongoDBCompute;
+          isPpeAccount = isPpeZone(matches[3]);
         } else if (endpointsRegex.cassandra.some((regex) => RegExp(regex).test(connectionStringPart))) {
           endpointsRegex.cassandra.forEach((regex) => {
-            if (RegExp(regex).test(connectionStringPart)) {
-              accessInput.accountName = connectionStringPart.match(regex)[1];
+            const matches: string[] = connectionStringPart.match(regex);
+            if (matches) {
+              accessInput.accountName = matches[1];
               accessInput.apiKind = ApiKind.Cassandra;
+              isPpeAccount = isPpeZone(matches[2]);
             }
           });
         } else if (RegExp(endpointsRegex.table).test(connectionStringPart)) {
@@ -80,11 +86,17 @@ export function parseConnectionString(connectionString: string): AccessInputMeta
         return undefined;
       }
 
-      // Table connection strings only carry the table endpoint, so the document endpoint that data plane
-      // operations go through has to be derived from the account name. Gremlin accounts additionally
-      // need the Gremlin endpoint, which is never part of the connection string.
+      // A Table, Mongo or Cassandra connection string names the account in its own api's dns zone rather
+      // than giving the document endpoint, so the document endpoint that data plane operations go through
+      // has to be built from the account name. SQL and Gremlin strings carry it and take it as given.
+      // Gremlin additionally needs the Gremlin endpoint, which is never part of the connection string.
       if (accessInput.accountName) {
-        if (accessInput.apiKind === ApiKind.Table) {
+        if (
+          accessInput.apiKind === ApiKind.Table ||
+          accessInput.apiKind === ApiKind.MongoDB ||
+          accessInput.apiKind === ApiKind.MongoDBCompute ||
+          accessInput.apiKind === ApiKind.Cassandra
+        ) {
           const documentEndpointZone = selectEndpointZone(configContext.DOCUMENT_ENDPOINT_ZONES, isPpeAccount);
           if (!documentEndpointZone) {
             return undefined;

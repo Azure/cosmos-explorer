@@ -92,7 +92,6 @@ let configContext: Readonly<ConfigContext> = {
     "documents.azure.com",
     "sql.cosmosdb.azure.com",
     "sql.cosmos.azure.com",
-    "sqlx.cosmosdb.azure.com",
     "sqlx.cosmos.azure.com",
     "documents-staging.windows-ppe.net",
     "sql.cosmosdb.windows-ppe.net",
