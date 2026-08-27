@@ -80,6 +80,63 @@ it("hides the connection string link when feature.disableConnectionStringLogin i
   updateUserContext({ features: oldFeatures });
 });
 
+it("rejects an unrecognized connection string before token exchange", async () => {
+  render(
+    <ConnectExplorer
+      {...{
+        login: jest.fn(),
+        setEncryptedToken: jest.fn(),
+        setAuthType: jest.fn(),
+        connectionString: "not-a-valid-connection-string",
+        setConnectionString: jest.fn(),
+        setAccountMetadata: jest.fn(),
+      }}
+    />,
+  );
+  fireEvent.click(screen.getByText("Connect to your account with connection string"));
+  fireEvent.click(screen.getByDisplayValue("Connect"));
+
+  expect(
+    await screen.findByText(
+      "We couldn't recognize this connection string. Verify that it is a valid Azure Cosmos DB connection string and try again.",
+    ),
+  ).toBeInTheDocument();
+  expect(mockIsAccountRestricted).not.toHaveBeenCalled();
+  expect(mockFetchEncryptedToken).not.toHaveBeenCalled();
+});
+
+it("shows that a connection is in progress", async () => {
+  let finishRestrictionCheck: (restricted: boolean) => void = () => undefined;
+  mockIsAccountRestricted.mockImplementation(
+    () =>
+      new Promise((resolve) => {
+        finishRestrictionCheck = resolve;
+      }),
+  );
+
+  render(
+    <ConnectExplorer
+      {...{
+        login: jest.fn(),
+        setEncryptedToken: jest.fn(),
+        setAuthType: jest.fn(),
+        connectionString: "AccountEndpoint=https://test.documents.azure.com:443/;AccountKey=some-key;",
+        setConnectionString: jest.fn(),
+        setAccountMetadata: jest.fn(),
+      }}
+    />,
+  );
+  fireEvent.click(screen.getByText("Connect to your account with connection string"));
+  fireEvent.click(screen.getByDisplayValue("Connect"));
+
+  const connectButton = screen.getByDisplayValue("Connecting...");
+  expect(connectButton).toBeDisabled();
+  expect(connectButton.closest("form")).toHaveAttribute("aria-busy", "true");
+
+  finishRestrictionCheck(false);
+  expect(await screen.findByDisplayValue("Connect")).toBeEnabled();
+});
+
 it("shows the error when the Portal Backend rejects the connection string", async () => {
   // Mongo and Cassandra are the APIs that still exchange the connection string for an encrypted token.
   const mongoConnectionString = "mongodb://test:key@test.documents.azure.com:10255";

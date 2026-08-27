@@ -32,6 +32,7 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
   const [isFormVisible, { setTrue: showForm }] = useBoolean(false);
   const [errorMessage, setErrorMessage] = React.useState("");
   const [isBlockedByFirewall, setIsBlockedByFirewall] = React.useState(false);
+  const [isConnecting, setIsConnecting] = React.useState(false);
   const enableConnectionStringLogin = !userContext.features.disableConnectionStringLogin;
 
   return (
@@ -45,54 +46,69 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
           {isFormVisible && enableConnectionStringLogin ? (
             <form
               id="connectWithConnectionString"
+              aria-busy={isConnecting}
               onSubmit={async (event) => {
                 event.preventDefault();
+                if (isConnecting) {
+                  return;
+                }
+
                 setErrorMessage("");
                 setIsBlockedByFirewall(false);
+                setIsConnecting(true);
 
                 try {
-                  if (await isAccountRestrictedForConnectionStringLogin(connectionString)) {
+                  if (isResourceTokenConnectionString(connectionString)) {
+                    setAuthType(AuthType.ResourceToken);
+                    return;
+                  }
+
+                  const metadata = parseConnectionString(connectionString);
+                  if (!metadata) {
                     setErrorMessage(
-                      "This account has been blocked from connection-string login. Please go to cosmos.azure.com/aad for AAD based login.",
+                      "We couldn't recognize this connection string. Verify that it is a valid Azure Cosmos DB connection string and try again.",
                     );
                     return;
                   }
-                } catch (error) {
-                  setErrorMessage(getErrorMessage(error));
-                  return;
-                }
 
-                if (isResourceTokenConnectionString(connectionString)) {
-                  setAuthType(AuthType.ResourceToken);
-                  return;
-                }
+                  try {
+                    if (await isAccountRestrictedForConnectionStringLogin(connectionString)) {
+                      setErrorMessage(
+                        "This account has been blocked from connection-string login. Please go to cosmos.azure.com/aad for AAD based login.",
+                      );
+                      return;
+                    }
+                  } catch (error) {
+                    setErrorMessage(getErrorMessage(error as Error));
+                    return;
+                  }
 
-                const metadata = parseConnectionString(connectionString);
-                if (metadata && isDirectConnectionStringLoginApi(metadata.apiKind)) {
-                  // SQL, Table, and Gremlin sign data-plane requests client-side with the account key, so
-                  // we skip the Portal Backend proxy and use the metadata parsed from the connection string.
-                  setAccountMetadata(metadata);
-                  setAuthType(AuthType.ConnectionString);
-                  return;
-                }
+                  if (isDirectConnectionStringLoginApi(metadata.apiKind)) {
+                    setAccountMetadata(metadata);
+                    setAuthType(AuthType.ConnectionString);
+                    return;
+                  }
 
-                // Mongo and Cassandra go through the Portal Backend
-                try {
-                  const encryptedToken = await fetchEncryptedToken(connectionString);
-                  setEncryptedToken(encryptedToken);
-                  setAuthType(AuthType.ConnectionString);
-                } catch (error) {
-                  const errorDetails = await (error as Response).text();
+                  // Mongo and Cassandra go through the Portal Backend
+                  try {
+                    const encryptedToken = await fetchEncryptedToken(connectionString);
+                    setEncryptedToken(encryptedToken);
+                    setAuthType(AuthType.ConnectionString);
+                  } catch (error) {
+                    const errorDetails = await (error as Response).text();
 
-                  setErrorMessage(
-                    errorDetails
-                      ? `Couldn't authenticate with Cosmos DB: ${errorDetails}`
-                      : "Failed to connect to the account. Please check the connection string and try again.",
-                  );
-                  // A Forbidden usually means the account firewall dropped the request. The connection
-                  // string is exchanged by the Portal Backend rather than the browser, so the account has
-                  // to allowlist those services.
-                  setIsBlockedByFirewall((error as Response).status === HttpStatusCodes.Forbidden);
+                    setErrorMessage(
+                      errorDetails
+                        ? `Couldn't authenticate with Cosmos DB: ${errorDetails}`
+                        : "Failed to connect to the account. Please check the connection string and try again.",
+                    );
+                    // A Forbidden usually means the account firewall dropped the request. The connection
+                    // string is exchanged by the Portal Backend rather than the browser, so the account has
+                    // to allowlist those services.
+                    setIsBlockedByFirewall((error as Response).status === HttpStatusCodes.Forbidden);
+                  }
+                } finally {
+                  setIsConnecting(false);
                 }
               }}
             >
@@ -129,7 +145,12 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
                 </FluentProvider>
               )}
               <p className="connectExplorerContent">
-                <input className="filterbtnstyle" type="submit" value="Connect" />
+                <input
+                  className="filterbtnstyle"
+                  type="submit"
+                  value={isConnecting ? "Connecting..." : "Connect"}
+                  disabled={isConnecting}
+                />
               </p>
               <p className="switchConnectTypeText" onClick={login}>
                 Sign In with Azure Account
