@@ -101,7 +101,7 @@ it("rejects an unrecognized connection string before token exchange", async () =
       "We couldn't recognize this connection string. Verify that it is a valid Azure Cosmos DB connection string and try again.",
     ),
   ).toBeInTheDocument();
-  expect(mockIsAccountRestricted).not.toHaveBeenCalled();
+  expect(mockIsAccountRestricted).toHaveBeenCalledWith("not-a-valid-connection-string");
   expect(mockFetchEncryptedToken).not.toHaveBeenCalled();
 });
 

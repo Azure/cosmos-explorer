@@ -58,6 +58,18 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
                 setIsConnecting(true);
 
                 try {
+                  try {
+                    if (await isAccountRestrictedForConnectionStringLogin(connectionString)) {
+                      setErrorMessage(
+                        "This account has been blocked from connection-string login. Please go to cosmos.azure.com/aad for AAD based login.",
+                      );
+                      return;
+                    }
+                  } catch (error) {
+                    setErrorMessage(getErrorMessage(error as Error));
+                    return;
+                  }
+
                   if (isResourceTokenConnectionString(connectionString)) {
                     setAuthType(AuthType.ResourceToken);
                     return;
@@ -68,18 +80,6 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
                     setErrorMessage(
                       "We couldn't recognize this connection string. Verify that it is a valid Azure Cosmos DB connection string and try again.",
                     );
-                    return;
-                  }
-
-                  try {
-                    if (await isAccountRestrictedForConnectionStringLogin(connectionString)) {
-                      setErrorMessage(
-                        "This account has been blocked from connection-string login. Please go to cosmos.azure.com/aad for AAD based login.",
-                      );
-                      return;
-                    }
-                  } catch (error) {
-                    setErrorMessage(getErrorMessage(error as Error));
                     return;
                   }
 
