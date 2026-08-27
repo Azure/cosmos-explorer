@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Cosmos Explorer",
   "main": "index.js",
+  "engines": {
+    "node": "22.x"
+  },
   "dependencies": {
     "@azure/arm-cosmosdb": "16.4.0",
     "@azure/cosmos": "4.7.0",
@@ -131,7 +134,7 @@
     "@types/hasher": "0.0.31",
     "@types/jest": "29.5.12",
     "@types/jquery": "3.5.29",
-    "@types/node": "18.19.0",
+    "@types/node": "22.14.1",
     "@types/post-robot": "10.0.1",
     "@types/q": "1.5.1",
     "@types/react": "17.0.44",
