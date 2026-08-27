@@ -35,14 +35,12 @@ const migrateOldData = () => {
                 componentName: AppStateComponentNames.MostRecentActivity,
                 globalAccountName: accountName,
               },
-              itemsMap[accountId]
-                .filter((item) => (item.type as unknown as number) !== 1 && (item.type as string) !== "OpenNotebook")
-                .map((item) => {
-                  if ((item.type as unknown as number) === 0) {
-                    item.type = Type.OpenCollection;
-                  }
-                  return item;
-                }),
+              itemsMap[accountId].map((item) => {
+                if ((item.type as unknown as number) === 0) {
+                  item.type = Type.OpenCollection;
+                }
+                return item;
+              }),
             );
           }
         });

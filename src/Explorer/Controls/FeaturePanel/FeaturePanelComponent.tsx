@@ -60,7 +60,6 @@ export const FeaturePanelComponent: React.FunctionComponent = () => {
       value: "true",
     },
     { key: "feature.ttl90days", label: "TTL 90 days", value: "true" },
-    { key: "feature.enablenotebooks", label: "Enable notebooks", value: "true" },
     {
       key: "feature.customportal",
       label: "Force Production portal (portal only)",
@@ -79,9 +78,6 @@ export const FeaturePanelComponent: React.FunctionComponent = () => {
     reactState?: [string, React.Dispatch<React.SetStateAction<string>>];
     onChange?: (_: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => void;
   }[] = [
-    { key: "feature.notebookserverurl", label: "Notebook server URL", placeholder: "https://notebookserver" },
-    { key: "feature.notebookservertoken", label: "Notebook server token", placeholder: "" },
-    { key: "feature.notebookbasepath", label: "Notebook base path", placeholder: "" },
     { key: "key", label: "Auth key", placeholder: "" },
     {
       key: "dataExplorerSource",
@@ -131,16 +127,6 @@ export const FeaturePanelComponent: React.FunctionComponent = () => {
       }),
   );
 
-  const onNotebookShortcut = (): void => {
-    booleanFeatures.find((f) => f.key === "feature.enablenotebooks").reactState[1](true);
-    stringFeatures
-      .find((f) => f.key === "feature.notebookserverurl")
-      .reactState[1]("https://localhost:10001/12345/notebook/");
-    stringFeatures.find((f) => f.key === "feature.notebookservertoken").reactState[1]("token");
-    stringFeatures.find((f) => f.key === "feature.notebookbasepath").reactState[1]("./notebooks");
-    setPlatform(platformOptions.find((o) => o.key === "Hosted"));
-  };
-
   const onPortalLocalDEShortcut = (): void => {
     setBaseUrl(baseUrlOptions.find((o) => o.key === "https://portal.azure.com"));
     setPlatform(platformOptions.find((o) => o.key === "Portal"));
@@ -178,7 +164,6 @@ export const FeaturePanelComponent: React.FunctionComponent = () => {
       </div>
       <Stack className="options" tokens={stackTokens}>
         <Stack horizontal horizontalAlign="space-between" tokens={stackTokens}>
-          <DefaultButton onClick={onNotebookShortcut}>Notebooks on localhost</DefaultButton>
           <DefaultButton onClick={onPortalLocalDEShortcut}>Portal points to local DE</DefaultButton>
           <DefaultButton onClick={onReset}>Reset</DefaultButton>
         </Stack>

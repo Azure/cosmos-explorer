@@ -103,7 +103,6 @@
       "learningResources": "Lernressourcen",
       "nextSteps": "Nächste Schritte",
       "tipsAndLearnMore": "Tipps und weitere Informationen",
-      "notebook": "Notebook",
       "needHelp": "Benötigen Sie Hilfe?"
     },
     "top3Items": {
@@ -663,34 +662,6 @@
       "statusColumn": "STATUS",
       "uploadStatus": "{{numSucceeded}} erstellt, {{numThrottled}} gedrosselt, {{numFailed}} Fehler",
       "uploadedFiles": "Hochgeladene Dateien"
-    },
-    "copyNotebook": {
-      "copyFailedError": "Fehler beim Kopieren von {{name}} nach {{destination}}",
-      "uploadFailedError": "Fehler beim Hochladen von „{{name}}“",
-      "location": "Speicherort",
-      "locationAriaLabel": "Speicherort",
-      "selectLocation": "Notizbuchspeicherort zum Kopieren auswählen",
-      "name": "Name"
-    },
-    "publishNotebook": {
-      "publishFailedError": "Fehler beim Veröffentlichen von {{notebookName}} im Katalog",
-      "publishDescription": "Nach der Veröffentlichung wird dieses Notebook im öffentlichen Katalog Azure Cosmos DB Notebooks angezeigt. Stellen Sie sicher, dass Sie alle vertraulichen Daten oder Ausgaben vor der Veröffentlichung entfernt haben.",
-      "publishPrompt": "Möchten Sie „{{name}}“ im Katalog veröffentlichen und freigeben?",
-      "coverImage": "Titelbild",
-      "coverImageUrl": "Titelbild-URL",
-      "name": "Name",
-      "description": "Beschreibung",
-      "tags": "Kategorien",
-      "tagsPlaceholder": "Optionales Tag 1, optionales Tag 2",
-      "preview": "Vorschau",
-      "urlType": "URL",
-      "customImage": "Benutzerdefiniertes Image",
-      "takeScreenshot": "Screenshot erstellen",
-      "useFirstDisplayOutput": "Erste Anzeigeausgabe verwenden",
-      "failedToCaptureOutput": "Fehler beim Erfassen der ersten Ausgabe",
-      "outputDoesNotExist": "Für keine der Zellen ist eine Ausgabe vorhanden.",
-      "failedToConvertError": "Fehler beim Konvertieren von {{fileName}} in das Base64-Format",
-      "failedToUploadError": "Fehler beim Hochladen von „{{fileName}}“"
     },
     "changePartitionKey": {
       "failedToStartError": "Fehler beim Starten des Datenübertragungsauftrags",

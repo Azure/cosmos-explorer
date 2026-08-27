@@ -103,7 +103,6 @@
       "learningResources": "Recursos de aprendizado",
       "nextSteps": "Próximas etapas",
       "tipsAndLearnMore": "Dicas e saiba mais",
-      "notebook": "Notebook",
       "needHelp": "Precisa de ajuda?"
     },
     "top3Items": {
@@ -663,34 +662,6 @@
       "statusColumn": "STATUS",
       "uploadStatus": "{{numSucceeded}} criado(s), {{numThrottled}} limitado(s), {{numFailed}} erro(s)",
       "uploadedFiles": "Arquivos carregados"
-    },
-    "copyNotebook": {
-      "copyFailedError": "Falha ao copiar {{name}} para {{destination}}",
-      "uploadFailedError": "Falha ao carregar {{name}}",
-      "location": "Localização",
-      "locationAriaLabel": "Localização",
-      "selectLocation": "Selecione um local do notebook para copiar",
-      "name": "Nome"
-    },
-    "publishNotebook": {
-      "publishFailedError": "Falha ao publicar {{notebookName}} na galeria",
-      "publishDescription": "Quando publicado, esse notebook aparecerá na galeria pública de notebooks do Azure Cosmos DB. Verifique se você removeu os dados confidenciais ou a saída antes de publicar.",
-      "publishPrompt": "Deseja publicar e compartilhar \"{{name}}\" na galeria?",
-      "coverImage": "Imagem de capa",
-      "coverImageUrl": "URL da imagem de capa",
-      "name": "Nome",
-      "description": "Descrição",
-      "tags": "Rótulos",
-      "tagsPlaceholder": "Marca opcional 1, marca opcional 2",
-      "preview": "Visualizar",
-      "urlType": "URL",
-      "customImage": "Imagem Personalizada",
-      "takeScreenshot": "Capturar Tela",
-      "useFirstDisplayOutput": "Usar a Primeira Saída de Exibição",
-      "failedToCaptureOutput": "Falha ao capturar a primeira saída",
-      "outputDoesNotExist": "A saída não existe para nenhuma das células.",
-      "failedToConvertError": "Falha ao converter {{fileName}} no formato base64",
-      "failedToUploadError": "Falha ao carregar {{fileName}}"
     },
     "changePartitionKey": {
       "failedToStartError": "Falha ao iniciar o trabalho de transferência de dados",

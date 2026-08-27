@@ -33,7 +33,6 @@ export class ArmApiVersions {
 }
 
 export class ArmResourceTypes {
-  public static readonly notebookWorkspaces = "Microsoft.DocumentDB/databaseAccounts/notebookWorkspaces";
   public static readonly synapseWorkspaces = "Microsoft.Synapse/workspaces";
 }
 
@@ -78,7 +77,6 @@ export class CapabilityNames {
   public static EnableGremlin: string = "EnableGremlin";
   public static EnableCassandra: string = "EnableCassandra";
   public static EnableAutoScale: string = "EnableAutoScale";
-  public static readonly EnableNotebooks: string = "EnableNotebooks";
   public static readonly EnableStorageAnalytics: string = "EnableStorageAnalytics";
   public static readonly EnableMongo: string = "EnableMongo";
   public static readonly EnableServerless: string = "EnableServerless";
@@ -109,14 +107,10 @@ export class Flights {
   public static readonly AutoscaleTest = "autoscaletest";
   public static readonly PartitionKeyTest = "partitionkeytest";
   public static readonly PKPartitionKeyTest = "pkpartitionkeytest";
-  public static readonly PhoenixNotebooks = "phoenixnotebooks";
-  public static readonly PhoenixFeatures = "phoenixfeatures";
-  public static readonly NotebooksDownBanner = "notebooksdownbanner";
 }
 
 export class AfecFeatures {
   public static readonly Spark = "spark-public-preview";
-  public static readonly Notebooks = "sparknotebooks-public-preview";
   public static readonly StorageAnalytics = "storageanalytics-public-preview";
 }
 
@@ -251,7 +245,6 @@ export class Areas {
   public static ContextualPane: string = "Contextual Pane";
   public static Tab: string = "Tab";
   public static ShareDialog: string = "Share Access Dialog";
-  public static Notebook: string = "Notebook";
   public static CloudShell: string = "Cloud Shell";
 }
 
@@ -433,61 +426,9 @@ export enum ConflictOperationType {
   Delete = "delete",
 }
 
-export enum ConnectionStatusType {
-  Connect = "Connect",
-  Connecting = "Connecting",
-  Connected = "Connected",
-  Failed = "Connection Failed",
-  Reconnect = "Reconnect",
-}
-
-export enum ContainerStatusType {
-  Active = "Active",
-  Disconnected = "Disconnected",
-}
-
-export enum PoolIdType {
-  DefaultPoolId = "default",
-}
-
 export const EmulatorMasterKey =
   //[SuppressMessage("Microsoft.Security", "CS002:SecretInNextLine", Justification="Well known public masterKey for emulator")]
   "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==";
-
-export class Notebook {
-  public static readonly defaultBasePath = "./notebooks";
-  public static readonly heartbeatDelayMs = 60000;
-  public static readonly containerStatusHeartbeatDelayMs = 30000;
-  public static readonly kernelRestartInitialDelayMs = 1000;
-  public static readonly kernelRestartMaxDelayMs = 20000;
-  public static readonly autoSaveIntervalMs = 300000;
-  public static readonly memoryGuageToGB = 1048576;
-  public static readonly lowMemoryThreshold = 0.8;
-  public static readonly remainingTimeForAlert = 10;
-  public static readonly retryAttempts = 3;
-  public static readonly retryAttemptDelayMs = 5000;
-  public static readonly temporarilyDownMsg = "Notebooks is currently not available. We are working on it.";
-  public static readonly mongoShellTemporarilyDownMsg =
-    "We have identified an issue with the Mongo Shell and it is unavailable right now. We are actively working on the mitigation.";
-  public static readonly cassandraShellTemporarilyDownMsg =
-    "We have identified an issue with the Cassandra Shell and it is unavailable right now. We are actively working on the mitigation.";
-  public static saveNotebookModalTitle = "Save notebook in temporary workspace";
-  public static saveNotebookModalContent =
-    "This notebook will be saved in the temporary workspace and will be removed when the session expires.";
-  public static newNotebookModalTitle = "Create notebook in temporary workspace";
-  public static newNotebookUploadModalTitle = "Upload notebook to temporary workspace";
-  public static newNotebookModalContent1 =
-    "A temporary workspace will be created to enable you to work with notebooks. When the session expires, any notebooks in the workspace will be removed.";
-  public static newNotebookModalContent2 =
-    "To save your work permanently, save your notebooks to a GitHub repository or download the notebooks to your local machine before the session ends. ";
-  public static galleryNotebookDownloadContent1 =
-    "To download, run, and make changes to this sample notebook, a temporary workspace will be created. When the session expires, any notebooks in the workspace will be removed.";
-  public static galleryNotebookDownloadContent2 =
-    "To save your work permanently, save your notebooks to a GitHub repository or download the Notebooks to your local machine before the session ends. ";
-  public static cosmosNotebookHomePageUrl = "https://aka.ms/cosmos-notebooks-limits";
-  public static cosmosNotebookGitDocumentationUrl = "https://aka.ms/cosmos-notebooks-github";
-  public static learnMore = "Learn more.";
-}
 
 export class SparkLibrary {
   public static readonly nameMinLength = 3;
@@ -506,14 +447,6 @@ export class TerminalQueryParams {
   public static readonly Token = "token";
   public static readonly SubscriptionId = "subscriptionId";
   public static readonly TerminalEndpoint = "terminalEndpoint";
-}
-
-export class JunoEndpoints {
-  public static readonly Test = "https://juno-test.documents-dev.windows-int.net";
-  public static readonly Test2 = "https://juno-test2.documents-dev.windows-int.net";
-  public static readonly Test3 = "https://juno-test3.documents-dev.windows-int.net";
-  public static readonly Prod = "https://tools.cosmos.azure.com";
-  public static readonly Stage = "https://tools-staging.cosmos.azure.com";
 }
 
 export class PriorityLevel {

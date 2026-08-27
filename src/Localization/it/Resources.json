@@ -103,7 +103,6 @@
       "learningResources": "Risorse di formazione",
       "nextSteps": "Passaggi successivi",
       "tipsAndLearnMore": "Suggerimenti e altre informazioni",
-      "notebook": "Notebook",
       "needHelp": "Serve aiuto?"
     },
     "top3Items": {
@@ -663,34 +662,6 @@
       "statusColumn": "STATO",
       "uploadStatus": "{{numSucceeded}} creati, {{numThrottled}} con limitazione, {{numFailed}} errori",
       "uploadedFiles": "File caricati"
-    },
-    "copyNotebook": {
-      "copyFailedError": "Non è stato possibile copiare {{name}} in {{destination}}",
-      "uploadFailedError": "Non è possibile caricare {{name}}",
-      "location": "Posizione",
-      "locationAriaLabel": "Posizione",
-      "selectLocation": "Selezionare una posizione del notebook in cui copiare",
-      "name": "Nome"
-    },
-    "publishNotebook": {
-      "publishFailedError": "Non è stato possibile pubblicare {{notebookName}} nella raccolta",
-      "publishDescription": "Quando viene pubblicato, questo notebook sarà visualizzato nella raccolta pubblica di Azure Cosmos DB. Assicurarsi di aver rimosso dati o output sensibili prima della pubblicazione.",
-      "publishPrompt": "Pubblicare e condividere \"{{name}}\" nella raccolta?",
-      "coverImage": "Immagine di copertina",
-      "coverImageUrl": "URL immagine di copertina",
-      "name": "Nome",
-      "description": "Descrizione",
-      "tags": "Tag",
-      "tagsPlaceholder": "Tag facoltativo 1, tag facoltativo 2",
-      "preview": "Anteprima",
-      "urlType": "URL",
-      "customImage": "Immagine personalizzata",
-      "takeScreenshot": "Crea screenshot",
-      "useFirstDisplayOutput": "Usa output prima visualizzazione",
-      "failedToCaptureOutput": "Non è stato possibile acquisire il primo output",
-      "outputDoesNotExist": "L'output non esiste per nessuna delle celle.",
-      "failedToConvertError": "Non è stato possibile convertire {{fileName}} nel formato base64",
-      "failedToUploadError": "Non è possibile caricare {{fileName}}"
     },
     "changePartitionKey": {
       "failedToStartError": "Non è stato possibile avviare il processo di trasferimento dati",

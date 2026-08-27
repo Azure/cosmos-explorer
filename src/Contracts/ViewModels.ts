@@ -136,8 +136,6 @@ export interface CollectionBase extends TreeNode {
 export interface Collection extends CollectionBase {
   defaultTtl: ko.Observable<number>;
   analyticalStorageTtl: ko.Observable<number>;
-  schema?: DataModels.ISchema;
-  requestSchema?: () => void;
   vectorEmbeddingPolicy: ko.Observable<DataModels.VectorEmbeddingPolicy>;
   fullTextPolicy: ko.Observable<DataModels.FullTextPolicy>;
   dataMaskingPolicy: ko.Observable<DataModels.DataMaskingPolicy>;
@@ -388,16 +386,10 @@ export enum CollectionTabKind {
   MongoShell = 10,
   DatabaseSettings = 11,
   Conflicts = 12,
-  Notebook = 13 /* Deprecated */,
   Terminal = 14,
-  NotebookV2 = 15,
   SparkMasterTab = 16 /* Deprecated */,
-  Gallery = 17 /* Deprecated */,
-  NotebookViewer = 18,
-  Schema = 19,
   CollectionSettingsV2 = 20,
   DatabaseSettingsV2 = 21,
-  SchemaAnalyzer = 22,
 }
 
 export enum TerminalKind {

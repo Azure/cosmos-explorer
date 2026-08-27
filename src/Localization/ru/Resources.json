@@ -103,7 +103,6 @@
       "learningResources": "Учебные материалы",
       "nextSteps": "Дальнейшие действия",
       "tipsAndLearnMore": "Советы и дополнительная информация",
-      "notebook": "Записная книжка",
       "needHelp": "Нужна помощь?"
     },
     "top3Items": {
@@ -663,34 +662,6 @@
       "statusColumn": "СТАТУС",
       "uploadStatus": "Создано: {{numSucceeded}}, отклонено в результате регулирования: {{numThrottled}}, ошибок: {{numFailed}}",
       "uploadedFiles": "Отправленные файлы"
-    },
-    "copyNotebook": {
-      "copyFailedError": "Не удалось скопировать {{name}} в {{destination}}",
-      "uploadFailedError": "Не удалось отправить {{name}}",
-      "location": "Расположение",
-      "locationAriaLabel": "Расположение",
-      "selectLocation": "Выберите место для копирования записной книжки",
-      "name": "Имя"
-    },
-    "publishNotebook": {
-      "publishFailedError": "Не удалось опубликовать {{notebookName}} в галерее",
-      "publishDescription": "После публикации эта записная книжка появится в общедоступной галерее записных книжек Azure Cosmos DB. Перед публикацией убедитесь, что удалили все конфиденциальные данные и результаты.",
-      "publishPrompt": "Хотите опубликовать \"{{name}}\" и поделиться ею в галерее?",
-      "coverImage": "Изображение обложки",
-      "coverImageUrl": "URL-адрес изображения обложки",
-      "name": "Имя",
-      "description": "Описание",
-      "tags": "Теги",
-      "tagsPlaceholder": "Необязательный тег 1, необязательный тег 2",
-      "preview": "Предварительный просмотр",
-      "urlType": "URL-адрес",
-      "customImage": "Пользовательское изображение",
-      "takeScreenshot": "Сделать снимок экрана",
-      "useFirstDisplayOutput": "Использовать вывод первого дисплея",
-      "failedToCaptureOutput": "Не удалось зафиксировать первый выданный результат",
-      "outputDoesNotExist": "Выданный результат отсутствует для всех ячеек.",
-      "failedToConvertError": "Не удалось преобразовать {{fileName}} в формат base64",
-      "failedToUploadError": "Не удалось отправить {{fileName}}"
     },
     "changePartitionKey": {
       "failedToStartError": "Не удалось запустить задание передачи данных",

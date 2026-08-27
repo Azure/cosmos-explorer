@@ -103,7 +103,6 @@
       "learningResources": "学习资源",
       "nextSteps": "后续步骤",
       "tipsAndLearnMore": "提示和详细信息",
-      "notebook": "笔记本",
       "needHelp": "需要帮助?"
     },
     "top3Items": {
@@ -663,34 +662,6 @@
       "statusColumn": "状态",
       "uploadStatus": "{{numSucceeded}} 已创建，{{numThrottled}} 受限，{{numFailed}} 个错误",
       "uploadedFiles": "已上传的文件"
-    },
-    "copyNotebook": {
-      "copyFailedError": "未能将 {{name}} 复制到 {{destination}}",
-      "uploadFailedError": "未能上传 {{name}}",
-      "location": "位置",
-      "locationAriaLabel": "位置",
-      "selectLocation": "选择要复制的笔记本位置",
-      "name": "名称"
-    },
-    "publishNotebook": {
-      "publishFailedError": "未能将 {{notebookName}} 发布到库",
-      "publishDescription": "发布后，此笔记本将显示在 Azure Cosmos DB 笔记本公共库中。在发布之前，请确保已移除任何敏感数据或输出。",
-      "publishPrompt": "是否要发布“{{name}}”并共享到库?",
-      "coverImage": "封面图像",
-      "coverImageUrl": "封面图像 URL",
-      "name": "名称",
-      "description": "说明",
-      "tags": "标记",
-      "tagsPlaceholder": "可选标记 1，可选标记 2",
-      "preview": "预览",
-      "urlType": "URL",
-      "customImage": "自定义映像",
-      "takeScreenshot": "生成屏幕快照",
-      "useFirstDisplayOutput": "使用第一个显示输出",
-      "failedToCaptureOutput": "未能捕获第一个输出",
-      "outputDoesNotExist": "任何单元格都不存在输出。",
-      "failedToConvertError": "未能将 {{fileName}} 转换为 base64 格式",
-      "failedToUploadError": "未能上传 {{fileName}}"
     },
     "changePartitionKey": {
       "failedToStartError": "未能启动数据传输作业",

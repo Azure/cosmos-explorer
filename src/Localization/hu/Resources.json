@@ -103,7 +103,6 @@
       "learningResources": "Tanulási források",
       "nextSteps": "Következő lépések",
       "tipsAndLearnMore": "Tippek és további információ",
-      "notebook": "Jegyzetfüzet",
       "needHelp": "Segítségre van szüksége?"
     },
     "top3Items": {
@@ -663,34 +662,6 @@
       "statusColumn": "ÁLLAPOT",
       "uploadStatus": "{{numSucceeded}} létrehozva, {{numThrottled}} szabályozva, {{numFailed}} hiba",
       "uploadedFiles": "Feltöltött fájlok"
-    },
-    "copyNotebook": {
-      "copyFailedError": "Nem sikerült a(z) {{name}} másolása ide: {{destination}}",
-      "uploadFailedError": "Nem sikerült a(z) {{name}} feltöltése",
-      "location": "Hely",
-      "locationAriaLabel": "Hely",
-      "selectLocation": "Jegyzetfüzet másolási helyének kiválasztása",
-      "name": "Név"
-    },
-    "publishNotebook": {
-      "publishFailedError": "Nem sikerült a(z) {{notebookName}} közzététele a katalógusban",
-      "publishDescription": "Közzétételkor ez a jegyzetfüzet megjelenik a Azure Cosmos DB jegyzetfüzetek nyilvános katalógusában. A közzététel előtt győződjön meg arról, hogy eltávolította a bizalmas adatokat vagy kimeneteket.",
-      "publishPrompt": "Közzéteszi és megosztja a(z) {{name}} dokumentumot a katalógusban?",
-      "coverImage": "Borítókép",
-      "coverImageUrl": "Borítókép URL-címe",
-      "name": "Név",
-      "description": "Leírás",
-      "tags": "Címkék",
-      "tagsPlaceholder": "Nem kötelező címke 1, nem kötelező címke 2",
-      "preview": "Előzetes verzió",
-      "urlType": "URL-cím",
-      "customImage": "Egyéni rendszerkép",
-      "takeScreenshot": "Képernyőkép készítése",
-      "useFirstDisplayOutput": "Első megjelenítési kimenet használata",
-      "failedToCaptureOutput": "Nem sikerült rögzíteni az első kimenetet",
-      "outputDoesNotExist": "A kimenet nem létezik egyik cellához sem.",
-      "failedToConvertError": "Nem sikerült a(z) {{fileName}} base64 formátumra való konvertálása",
-      "failedToUploadError": "Nem sikerült a(z) {{fileName}} feltöltése"
     },
     "changePartitionKey": {
       "failedToStartError": "Nem sikerült elindítani az adatátviteli feladatot",

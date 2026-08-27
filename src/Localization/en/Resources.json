@@ -103,7 +103,6 @@
       "learningResources": "Learning Resources",
       "nextSteps": "Next steps",
       "tipsAndLearnMore": "Tips & learn more",
-      "notebook": "Notebook",
       "needHelp": "Need help?"
     },
     "top3Items": {
@@ -667,34 +666,6 @@
       "statusColumn": "STATUS",
       "uploadStatus": "{{numSucceeded}} created, {{numThrottled}} throttled, {{numFailed}} errors",
       "uploadedFiles": "Uploaded files"
-    },
-    "copyNotebook": {
-      "copyFailedError": "Failed to copy {{name}} to {{destination}}",
-      "uploadFailedError": "Failed to upload {{name}}",
-      "location": "Location",
-      "locationAriaLabel": "Location",
-      "selectLocation": "Select a notebook location to copy",
-      "name": "Name"
-    },
-    "publishNotebook": {
-      "publishFailedError": "Failed to publish {{notebookName}} to gallery",
-      "publishDescription": "When published, this notebook will appear in the Azure Cosmos DB notebooks public gallery. Make sure you have removed any sensitive data or output before publishing.",
-      "publishPrompt": "Would you like to publish and share \"{{name}}\" to the gallery?",
-      "coverImage": "Cover image",
-      "coverImageUrl": "Cover image url",
-      "name": "Name",
-      "description": "Description",
-      "tags": "Tags",
-      "tagsPlaceholder": "Optional tag 1, Optional tag 2",
-      "preview": "Preview",
-      "urlType": "URL",
-      "customImage": "Custom Image",
-      "takeScreenshot": "Take Screenshot",
-      "useFirstDisplayOutput": "Use First Display Output",
-      "failedToCaptureOutput": "Failed to capture first output",
-      "outputDoesNotExist": "Output does not exist for any of the cells.",
-      "failedToConvertError": "Failed to convert {{fileName}} to base64 format",
-      "failedToUploadError": "Failed to upload {{fileName}}"
     },
     "changePartitionKey": {
       "failedToStartError": "Failed to start data transfer job",

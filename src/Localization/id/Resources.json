@@ -103,7 +103,6 @@
       "learningResources": "Sumber Daya Pembelajaran",
       "nextSteps": "Langkah berikutnya",
       "tipsAndLearnMore": "Tips & pelajari selengkapnya",
-      "notebook": "Buku catatan",
       "needHelp": "Perlu bantuan?"
     },
     "top3Items": {
@@ -663,34 +662,6 @@
       "statusColumn": "STATUS",
       "uploadStatus": "{{numSucceeded}} dibuat, {{numThrottled}} dibatasi, {{numFailed}} kesalahan",
       "uploadedFiles": "File yang diunggah"
-    },
-    "copyNotebook": {
-      "copyFailedError": "Gagal menyalin {{name}} ke {{destination}}",
-      "uploadFailedError": "Gagal mengunggah {{name}}",
-      "location": "Lokasi",
-      "locationAriaLabel": "Lokasi",
-      "selectLocation": "Pilih lokasi buku catatan untuk disalin",
-      "name": "Nama"
-    },
-    "publishNotebook": {
-      "publishFailedError": "Gagal menerbitkan {{notebookName}} ke galeri",
-      "publishDescription": "Saat diterbitkan, buku catatan ini akan muncul di galeri publik buku catatan Azure Cosmos DB. Pastikan Anda telah menghapus data atau output sensitif sebelum menerbitkan.",
-      "publishPrompt": "Apakah Anda ingin menerbitkan dan membagikan \"{{name}}\" ke galeri?",
-      "coverImage": "Gambar sampul",
-      "coverImageUrl": "Url gambar sampul",
-      "name": "Nama",
-      "description": "Deskripsi",
-      "tags": "Tag",
-      "tagsPlaceholder": "Tag opsional 1, Tag opsional 2",
-      "preview": "Pratinjau",
-      "urlType": "URL",
-      "customImage": "Gambar Kustom",
-      "takeScreenshot": "Ambil Cuplikan Layar",
-      "useFirstDisplayOutput": "Gunakan Output Tampilan Pertama",
-      "failedToCaptureOutput": "Gagal mengambil output pertama",
-      "outputDoesNotExist": "Output tidak ada untuk sel mana pun.",
-      "failedToConvertError": "Gagal mengonversi {{fileName}} ke format base64",
-      "failedToUploadError": "Gagal mengunggah {{fileName}}"
     },
     "changePartitionKey": {
       "failedToStartError": "Gagal memulai tugas transfer data",

@@ -103,7 +103,6 @@
       "learningResources": "学習リソース",
       "nextSteps": "次の手順",
       "tipsAndLearnMore": "ヒントと詳細の確認",
-      "notebook": "ノートブック",
       "needHelp": "ヘルプが必要ですか?"
     },
     "top3Items": {
@@ -663,34 +662,6 @@
       "statusColumn": "状態",
       "uploadStatus": "{{numSucceeded}} 件作成済み、{{numThrottled}} 件調整済み、{{numFailed}} 件のエラー",
       "uploadedFiles": "ファイルをアップロードしました"
-    },
-    "copyNotebook": {
-      "copyFailedError": "{{name}} を {{destination}} にコピーできませんでした",
-      "uploadFailedError": "{{name}} をアップロードできませんでした",
-      "location": "場所",
-      "locationAriaLabel": "場所",
-      "selectLocation": "コピーするノートブックの場所を選択する",
-      "name": "名前"
-    },
-    "publishNotebook": {
-      "publishFailedError": "{{notebookName}} をギャラリーに発行できませんでした",
-      "publishDescription": "公開すると、このノートブックは Azure Cosmos DB ノートブックのパブリック ギャラリーに表示されます。公開前に機密データや出力が削除されていることを確認してください。",
-      "publishPrompt": "\"{{name}}\" をギャラリーに公開して共有しますか?",
-      "coverImage": "カバー画像",
-      "coverImageUrl": "カバー画像の URL",
-      "name": "名前",
-      "description": "説明",
-      "tags": "タグ",
-      "tagsPlaceholder": "オプションのタグ 1、オプションのタグ 2",
-      "preview": "プレビュー",
-      "urlType": "URL",
-      "customImage": "カスタム イメージ",
-      "takeScreenshot": "スクリーンショットを撮る",
-      "useFirstDisplayOutput": "最初のディスプレイ出力を使用する",
-      "failedToCaptureOutput": "最初の出力をキャプチャできませんでした",
-      "outputDoesNotExist": "どのセルにも出力が存在しません。",
-      "failedToConvertError": "{{fileName}} を base64 形式に変換できませんでした",
-      "failedToUploadError": "{{fileName}} をアップロードできませんでした"
     },
     "changePartitionKey": {
       "failedToStartError": "データ転送ジョブの開始に失敗しました",

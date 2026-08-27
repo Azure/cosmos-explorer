@@ -103,7 +103,6 @@
       "learningResources": "Utbildningsresurser",
       "nextSteps": "Nästa steg",
       "tipsAndLearnMore": "Tips och läs mer",
-      "notebook": "Anteckningsbok",
       "needHelp": "Behöver du hjälp?"
     },
     "top3Items": {
@@ -663,34 +662,6 @@
       "statusColumn": "STATUS",
       "uploadStatus": "{{numSucceeded}} skapades,  {{numThrottled}} begränsades,  {{numFailed}} fel",
       "uploadedFiles": "Uppladdade filer"
-    },
-    "copyNotebook": {
-      "copyFailedError": "Det gick inte att kopiera {{name}} till {{destination}}",
-      "uploadFailedError": "Det gick inte att ladda upp {{name}}",
-      "location": "Plats",
-      "locationAriaLabel": "Plats",
-      "selectLocation": "Välj en plats för anteckningsbok att kopiera",
-      "name": "Namn"
-    },
-    "publishNotebook": {
-      "publishFailedError": "Det gick inte att publicera {{notebookName}} till galleriet",
-      "publishDescription": "När den här anteckningsboken publiceras visas den i det offentliga galleriet för Azure Cosmos DB notebook-filer. Kontrollera att du har tagit bort känsliga data eller utdata innan du publicerar.",
-      "publishPrompt": "Vill du publicera och dela {{name}} till galleriet?",
-      "coverImage": "Omslagsbild",
-      "coverImageUrl": "URL för omslagsbild",
-      "name": "Namn",
-      "description": "Beskrivning",
-      "tags": "Taggar",
-      "tagsPlaceholder": "Valfri tagg 1, valfri tagg 2",
-      "preview": "Förhandsversion",
-      "urlType": "Webbadress",
-      "customImage": "Anpassad avbildning",
-      "takeScreenshot": "Ta skärmbild",
-      "useFirstDisplayOutput": "Använd första visningsutdata",
-      "failedToCaptureOutput": "Det gick inte att samla in första utdata",
-      "outputDoesNotExist": "Utdata finns inte för någon av cellerna.",
-      "failedToConvertError": "Det gick inte att konvertera {{fileName}} till base64-format",
-      "failedToUploadError": "Det gick inte att ladda upp {{fileName}}"
     },
     "changePartitionKey": {
       "failedToStartError": "Det gick inte att starta dataöverföringsjobbet",

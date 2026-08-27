@@ -103,7 +103,6 @@
       "learningResources": "Zasoby szkoleniowe",
       "nextSteps": "Następne kroki",
       "tipsAndLearnMore": "Porady i dowiedz się więcej",
-      "notebook": "Notes",
       "needHelp": "Potrzebujesz pomocy?"
     },
     "top3Items": {
@@ -663,34 +662,6 @@
       "statusColumn": "STAN",
       "uploadStatus": "Utworzono: {{numSucceeded}}, ograniczono: {{numThrottled}}, błędy: {{numFailed}}",
       "uploadedFiles": "Przekazywane pliki"
-    },
-    "copyNotebook": {
-      "copyFailedError": "Nie można skopiować {{name}} do {{destination}}",
-      "uploadFailedError": "Nie można przekazać {{name}}",
-      "location": "Lokalizacja",
-      "locationAriaLabel": "Lokalizacja",
-      "selectLocation": "Wybierz lokalizację notesu do skopiowania",
-      "name": "Nazwa"
-    },
-    "publishNotebook": {
-      "publishFailedError": "Nie można opublikować {{notebookName}} w galerii",
-      "publishDescription": "Po opublikowaniu ten notes pojawi się w publicznej galerii notesów Azure Cosmos DB. Przed opublikowaniem upewnij się, że usunięto poufne dane lub dane wyjściowe.",
-      "publishPrompt": "Czy chcesz opublikować i udostępnić „{{name}}” w galerii?",
-      "coverImage": "Obraz okładki",
-      "coverImageUrl": "Adres URL obrazu tytułowego",
-      "name": "Nazwa",
-      "description": "Opis",
-      "tags": "Tagi",
-      "tagsPlaceholder": "Opcjonalny tag 1, opcjonalny tag 2",
-      "preview": "Podgląd",
-      "urlType": "Adres URL",
-      "customImage": "Obraz niestandardowy",
-      "takeScreenshot": "Zrób zrzut ekranu",
-      "useFirstDisplayOutput": "Użyj pierwszego wyświetlania danych wyjściowych",
-      "failedToCaptureOutput": "Nie można przechwycić pierwszych danych wyjściowych",
-      "outputDoesNotExist": "Dane wyjściowe nie istnieją dla żadnej komórki.",
-      "failedToConvertError": "Nie można przekonwertować {{fileName}} na format base64",
-      "failedToUploadError": "Nie można przekazać {{fileName}}"
     },
     "changePartitionKey": {
       "failedToStartError": "Nie udało się uruchomić zadania transferu danych",
