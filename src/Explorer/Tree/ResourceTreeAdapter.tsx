@@ -1,34 +1,20 @@
-import { TreeNodeMenuItem } from "Explorer/Controls/TreeComponent/TreeNodeComponent";
 import { collectionWasOpened } from "Explorer/MostRecentActivity/MostRecentActivity";
 import { shouldShowScriptNodes } from "Explorer/Tree/treeNodeUtil";
 import { getItemName } from "Utils/APITypeUtils";
 import * as ko from "knockout";
 import * as React from "react";
 import CosmosDBIcon from "../../../images/Azure-Cosmos-DB.svg";
-import DeleteIcon from "../../../images/delete.svg";
-import CopyIcon from "../../../images/notebook/Notebook-copy.svg";
-import NewNotebookIcon from "../../../images/notebook/Notebook-new.svg";
-import NotebookIcon from "../../../images/notebook/Notebook-resource.svg";
-import FileIcon from "../../../images/notebook/file-cosmos.svg";
-import RefreshIcon from "../../../images/refresh-cosmos.svg";
 import CollectionIcon from "../../../images/tree-collection.svg";
 import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
-import { isPublicInternetAccessAllowed } from "../../Common/DatabaseAccountUtility";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
-import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
-import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
 import { isServerlessAccount } from "../../Utils/CapabilityUtils";
 import { useTabs } from "../../hooks/useTabs";
 import * as ResourceTreeContextMenuButtonFactory from "../ContextMenuButtonFactory";
-import { useDialog } from "../Controls/Dialog";
 import { LegacyTreeComponent, LegacyTreeNode } from "../Controls/TreeComponent/LegacyTreeComponent";
 import Explorer from "../Explorer";
 import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
-import { NotebookContentItem, NotebookContentItemType } from "../Notebook/NotebookContentItem";
-import { NotebookUtil } from "../Notebook/NotebookUtil";
-import { useNotebook } from "../Notebook/useNotebook";
 import TabsBase from "../Tabs/TabsBase";
 import { useDatabases } from "../useDatabases";
 import { useSelectedNode } from "../useSelectedNode";
@@ -37,15 +23,9 @@ import Trigger from "./Trigger";
 import UserDefinedFunction from "./UserDefinedFunction";
 
 export class ResourceTreeAdapter implements ReactAdapter {
-  public static readonly MyNotebooksTitle = "My Notebooks";
-
   private static readonly DataTitle = "DATA";
-  private static readonly NotebooksTitle = "NOTEBOOKS";
-  private static readonly PseudoDirPath = "PsuedoDir";
 
   public parameters: ko.Observable<number>;
-
-  public myNotebooksContentRoot: NotebookContentItem;
 
   public constructor(private container: Explorer) {
     this.parameters = ko.observable(Date.now());
@@ -55,54 +35,13 @@ export class ResourceTreeAdapter implements ReactAdapter {
       () => this.triggerRender(),
       (state) => state.activeTab,
     );
-    useNotebook.subscribe(
-      () => this.triggerRender(),
-      (state) => state.isNotebookEnabled,
-    );
-
     useDatabases.subscribe(() => this.triggerRender());
     this.triggerRender();
-  }
-
-  private traceMyNotebookTreeInfo() {
-    const myNotebooksTree = this.myNotebooksContentRoot;
-    if (myNotebooksTree.children) {
-      // Count 1st generation children (tree is lazy-loaded)
-      const nodeCounts = { files: 0, notebooks: 0, directories: 0 };
-      myNotebooksTree.children.forEach((treeNode) => {
-        switch ((treeNode as NotebookContentItem).type) {
-          case NotebookContentItemType.File:
-            nodeCounts.files++;
-            break;
-          case NotebookContentItemType.Directory:
-            nodeCounts.directories++;
-            break;
-          case NotebookContentItemType.Notebook:
-            nodeCounts.notebooks++;
-            break;
-          default:
-            break;
-        }
-      });
-      TelemetryProcessor.trace(Action.RefreshResourceTreeMyNotebooks, ActionModifiers.Mark, { ...nodeCounts });
-    }
   }
 
   public renderComponent(): JSX.Element {
     const dataRootNode = this.buildDataTree();
     return <LegacyTreeComponent className="dataResourceTree" rootNode={dataRootNode} />;
-  }
-
-  public async initialize(): Promise<void[]> {
-    const refreshTasks: Promise<void>[] = [];
-
-    this.myNotebooksContentRoot = {
-      name: useNotebook.getState().notebookFolderName,
-      path: useNotebook.getState().notebookBasePath,
-      type: NotebookContentItemType.Directory,
-    };
-
-    return Promise.all(refreshTasks);
   }
 
   private buildDataTree(): LegacyTreeNode {
@@ -401,93 +340,6 @@ export class ResourceTreeAdapter implements ReactAdapter {
     };
 
     return traverse(schema);
-  }
-
-  private buildChildNodes(
-    item: NotebookContentItem,
-    onFileClick: (item: NotebookContentItem) => void,
-    createDirectoryContextMenu: boolean,
-    createFileContextMenu: boolean,
-  ): LegacyTreeNode[] {
-    if (!item || !item.children) {
-      return [];
-    } else {
-      return item.children.map((item) => {
-        const result =
-          item.type === NotebookContentItemType.Directory
-            ? this.buildNotebookDirectoryNode(item, onFileClick, createDirectoryContextMenu, createFileContextMenu)
-            : this.buildNotebookFileNode(item, onFileClick, createFileContextMenu);
-        result.timestamp = item.timestamp;
-        return result;
-      });
-    }
-  }
-
-  private buildNotebookFileNode(
-    item: NotebookContentItem,
-    onFileClick: (item: NotebookContentItem) => void,
-    createFileContextMenu: boolean,
-  ): LegacyTreeNode {
-    return {
-      label: item.name,
-      iconSrc: NotebookUtil.isNotebookFile(item.path) ? NotebookIcon : FileIcon,
-      className: "notebookHeader",
-      onClick: () => onFileClick(item),
-      isSelected: () => {
-        const activeTab = useTabs.getState().activeTab;
-        return (
-          activeTab &&
-          activeTab.tabKind === ViewModels.CollectionTabKind.NotebookV2 &&
-          /* TODO Redesign Tab interface so that resource tree doesn't need to know about NotebookV2Tab.
-             NotebookV2Tab could be dynamically imported, but not worth it to just get this type right.
-           */
-          (activeTab as any).notebookPath() === item.path
-        );
-      },
-      contextMenu: createFileContextMenu && this.createFileContextMenu(),
-      data: item,
-    };
-  }
-
-  private createFileContextMenu(): TreeNodeMenuItem[] {
-    return [];
-  }
-
-  private createDirectoryContextMenu(): TreeNodeMenuItem[] {
-    return [];
-  }
-
-  private buildNotebookDirectoryNode(
-    item: NotebookContentItem,
-    onFileClick: (item: NotebookContentItem) => void,
-    createDirectoryContextMenu: boolean,
-    createFileContextMenu: boolean,
-  ): LegacyTreeNode {
-    return {
-      label: item.name,
-      iconSrc: undefined,
-      className: "notebookHeader",
-      isAlphaSorted: true,
-      isLeavesParentsSeparate: true,
-      onClick: undefined,
-      isSelected: () => {
-        const activeTab = useTabs.getState().activeTab;
-        return (
-          activeTab &&
-          activeTab.tabKind === ViewModels.CollectionTabKind.NotebookV2 &&
-          /* TODO Redesign Tab interface so that resource tree doesn't need to know about NotebookV2Tab.
-             NotebookV2Tab could be dynamically imported, but not worth it to just get this type right.
-           */
-          (activeTab as any).notebookPath() === item.path
-        );
-      },
-      contextMenu:
-        createDirectoryContextMenu && item.path !== ResourceTreeAdapter.PseudoDirPath
-          ? this.createDirectoryContextMenu()
-          : undefined,
-      data: item,
-      children: this.buildChildNodes(item, onFileClick, createDirectoryContextMenu, createFileContextMenu),
-    };
   }
 
   public triggerRender() {

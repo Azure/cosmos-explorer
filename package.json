@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Cosmos Explorer",
   "main": "index.js",
+  "engines": {
+    "node": "22.x"
+  },
   "dependencies": {
     "@azure/arm-cosmosdb": "16.4.0",
     "@azure/cosmos": "4.7.0",
@@ -14,11 +17,7 @@
     "@fluentui/react": "8.119.0",
     "@fluentui/react-components": "9.54.2",
     "@microsoft/applicationinsights-web": "2.6.1",
-    "@nteract/commutable": "7.5.1",
-    "@nteract/core": "15.1.9",
-    "@nteract/fixtures": "2.3.0",
     "@nteract/markdown": "4.6.0",
-    "@nteract/myths": "0.1.9",
     "@octokit/request": "8.4.1",
     "@octokit/rest": "17.9.2",
     "@testing-library/jest-dom": "6.4.6",
@@ -87,7 +86,6 @@
     "react-window": "1.8.10",
     "react-youtube": "9.0.1",
     "reflect-metadata": "0.1.13",
-    "rx-jupyter": "5.5.12",
     "shell-quote": "1.10.0",
     "styled-components": "5.0.1",
     "swr": "0.4.0",
@@ -97,7 +95,7 @@
     "utility-types": "3.10.0",
     "uuid": "9.0.0",
     "web-vitals": "4.2.4",
-    "ws": "8.20.1",
+    "ws": "8.21.3",
     "xterm": "4.19.0",
     "xterm-addon-fit": "0.5.0",
     "zustand": "3.5.0"
@@ -136,7 +134,7 @@
     "@types/hasher": "0.0.31",
     "@types/jest": "29.5.12",
     "@types/jquery": "3.5.29",
-    "@types/node": "18.19.0",
+    "@types/node": "22.14.1",
     "@types/post-robot": "10.0.1",
     "@types/q": "1.5.1",
     "@types/react": "17.0.44",
@@ -149,6 +147,7 @@
     "@types/sinon": "2.3.3",
     "@types/styled-components": "5.1.32",
     "@types/underscore": "1.7.36",
+    "@types/uuid": "9.0.8",
     "@types/youtube-player": "5.5.6",
     "@typescript-eslint/eslint-plugin": "6.7.4",
     "@typescript-eslint/parser": "6.7.4",
@@ -206,7 +205,7 @@
     "webpack-bundle-analyzer": "5.2.0",
     "webpack-cli": "5.1.4",
     "webpack-dev-server": "5.2.5",
-    "ws": "8.20.1"
+    "ws": "8.21.3"
   },
   "scripts": {
     "postinstall": "patch-package && npm run generate:i18n-keys",

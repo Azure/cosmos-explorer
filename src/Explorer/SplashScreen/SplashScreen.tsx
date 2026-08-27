@@ -43,7 +43,6 @@ import { getCollectionName } from "../../Utils/APITypeUtils";
 import { useDialog } from "../Controls/Dialog";
 import Explorer from "../Explorer";
 import * as MostRecentActivity from "../MostRecentActivity/MostRecentActivity";
-import { useNotebook } from "../Notebook/useNotebook";
 import { useDatabases } from "../useDatabases";
 import { useSelectedNode } from "../useSelectedNode";
 
@@ -188,12 +187,6 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
 
   React.useEffect(() => {
     subscriptions.push(
-      {
-        dispose: useNotebook.subscribe(
-          () => setState({}),
-          (state) => state.isNotebookEnabled,
-        ),
-      },
       { dispose: useSelectedNode.subscribe(() => setState({})) },
       {
         dispose: useCarousel.subscribe(

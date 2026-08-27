@@ -4,7 +4,6 @@ import { CosmosDbArtifactType } from "Contracts/FabricMessagesContract";
 import { TreeNode } from "Explorer/Controls/TreeComponent/TreeNodeComponent";
 import Explorer from "Explorer/Explorer";
 import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
-import { useNotebook } from "Explorer/Notebook/useNotebook";
 import { DeleteDatabaseConfirmationPanel } from "Explorer/Panes/DeleteDatabaseConfirmationPanel";
 import TabsBase from "Explorer/Tabs/TabsBase";
 import StoredProcedure from "Explorer/Tree/StoredProcedure";
@@ -363,7 +362,7 @@ describe("createDatabaseTreeNodes", () => {
           },
         } as never,
       });
-      nodes = createDatabaseTreeNodes(explorer, false, useDatabases.getState().databases, refreshActiveTab, "");
+      nodes = createDatabaseTreeNodes(explorer, useDatabases.getState().databases, refreshActiveTab, "");
     });
 
     it("creates expected tree", () => {
@@ -371,11 +370,10 @@ describe("createDatabaseTreeNodes", () => {
     });
   });
 
-  it.each<[string, Platform, boolean, Partial<DataModels.DatabaseAccountExtendedProperties>, Partial<UserContext>]>([
+  it.each<[string, Platform, Partial<DataModels.DatabaseAccountExtendedProperties>, Partial<UserContext>]>([
     [
       "the SQL API, on Fabric read-only (mirrored)",
       Platform.Fabric,
-      false,
       { capabilities: [], enableMultipleWriteLocations: true },
       {
         fabricContext: {
@@ -387,7 +385,6 @@ describe("createDatabaseTreeNodes", () => {
     [
       "the SQL API, on Fabric non read-only (native)",
       Platform.Fabric,
-      false,
       { capabilities: [], enableMultipleWriteLocations: true },
       {
         fabricContext: {
@@ -399,7 +396,6 @@ describe("createDatabaseTreeNodes", () => {
     [
       "the SQL API, on Portal",
       Platform.Portal,
-      false,
       { capabilities: [], enableMultipleWriteLocations: true },
       {
         fabricContext: undefined,
@@ -408,7 +404,6 @@ describe("createDatabaseTreeNodes", () => {
     [
       "the Cassandra API, serverless, on Hosted",
       Platform.Hosted,
-      false,
       {
         capabilities: [
           { name: CapabilityNames.EnableCassandra, description: "" },
@@ -418,45 +413,34 @@ describe("createDatabaseTreeNodes", () => {
       { fabricContext: undefined },
     ],
     [
-      "the Mongo API, with Notebooks and Phoenix features, on Emulator",
+      "the Mongo API, on Emulator",
       Platform.Emulator,
-      true,
       {
         capabilities: [{ name: CapabilityNames.EnableMongo, description: "" }],
       },
       { fabricContext: undefined },
     ],
-  ])(
-    "generates the correct tree structure for %s",
-    (_, platform, isNotebookEnabled, dbAccountProperties, userContext) => {
-      useNotebook.setState({ isPhoenixFeatures: isNotebookEnabled });
-      updateConfigContext({ platform });
-      updateUserContext({
-        ...userContext,
-        databaseAccount: {
-          properties: {
-            enableMultipleWriteLocations: true,
-            ...dbAccountProperties,
-          },
-        } as unknown as DataModels.DatabaseAccount,
-      });
-      const nodes = createDatabaseTreeNodes(
-        explorer,
-        isNotebookEnabled,
-        useDatabases.getState().databases,
-        refreshActiveTab,
-        "",
-      );
-      expect(nodes).toMatchSnapshot();
-    },
-  );
+  ])("generates the correct tree structure for %s", (_, platform, dbAccountProperties, userContext) => {
+    updateConfigContext({ platform });
+    updateUserContext({
+      ...userContext,
+      databaseAccount: {
+        properties: {
+          enableMultipleWriteLocations: true,
+          ...dbAccountProperties,
+        },
+      } as unknown as DataModels.DatabaseAccount,
+    });
+    const nodes = createDatabaseTreeNodes(explorer, useDatabases.getState().databases, refreshActiveTab, "");
+    expect(nodes).toMatchSnapshot();
+  });
 
   // The above tests focused on the tree structure. The below tests focus on some core behaviors of the nodes.
   // They are not exhaustive, because exhaustive tests here require a lot of mocking and can become very brittle.
   // The goal is to cover some key behaviors like loading child nodes, opening tabs/side panels, etc.
 
   it("adds new collections to database as they appear", () => {
-    const nodes = createDatabaseTreeNodes(explorer, false, useDatabases.getState().databases, refreshActiveTab, "");
+    const nodes = createDatabaseTreeNodes(explorer, useDatabases.getState().databases, refreshActiveTab, "");
     const giganticDbNode = nodes.find((node) => node.label === giganticDb.id());
     expect(giganticDbNode).toBeDefined();
     expect(giganticDbNode.children.map((node) => node.label)).toStrictEqual(["schemaCollection", "load more"]);
@@ -488,7 +472,7 @@ describe("createDatabaseTreeNodes", () => {
           },
         } as unknown as DataModels.DatabaseAccount,
       });
-      nodes = createDatabaseTreeNodes(explorer, false, useDatabases.getState().databases, refreshActiveTab, "");
+      nodes = createDatabaseTreeNodes(explorer, useDatabases.getState().databases, refreshActiveTab, "");
       standardDbNode = nodes.find((node) => node.label === standardDb.id());
       sharedDbNode = nodes.find((node) => node.label === sharedDb.id());
       giganticDbNode = nodes.find((node) => node.label === giganticDb.id());
@@ -643,7 +627,7 @@ describe("createDatabaseTreeNodes", () => {
         setup();
 
         // Rebuild the nodes after changing the user/config context.
-        nodes = createDatabaseTreeNodes(explorer, false, useDatabases.getState().databases, refreshActiveTab, "");
+        nodes = createDatabaseTreeNodes(explorer, useDatabases.getState().databases, refreshActiveTab, "");
         standardDbNode = nodes.find((node) => node.label === standardDb.id());
         standardCollectionNode = standardDbNode.children.find((node) => node.label === standardCollection.id());
 

@@ -83,9 +83,9 @@ const App: React.FunctionComponent = () => {
           setEncryptedToken(token);
           setAuthType(AuthType.ConnectionString);
         })
-        .catch((error) => {
+        .catch(async (error) => {
           logError(
-            `Failed to connect with connection string: ${getErrorMessage(error)}`,
+            `Failed to connect with connection string: ${await (error as Response).text()}`,
             "HostedExplorer/connectWithConnectionString",
           );
         });
