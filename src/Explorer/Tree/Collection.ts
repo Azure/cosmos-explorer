@@ -5,7 +5,6 @@ import {
   TriggerDefinition,
   UserDefinedFunctionDefinition,
 } from "@azure/cosmos";
-import { useNotebook } from "Explorer/Notebook/useNotebook";
 import { DocumentsTabV2 } from "Explorer/Tabs/DocumentsTabV2/DocumentsTabV2";
 import { isFabricMirrored } from "Platform/Fabric/FabricUtil";
 import { useDataplaneRbacAuthorization } from "Utils/AuthorizationUtils";

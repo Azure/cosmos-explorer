@@ -5,14 +5,12 @@
  */
 import { CommandBar as FluentCommandBar, ICommandBarItemProps } from "@fluentui/react";
 import { makeStyles, useFluent } from "@fluentui/react-components";
-import { useNotebook } from "Explorer/Notebook/useNotebook";
 import { useDataPlaneRbac } from "Explorer/Panes/SettingsPane/SettingsPane";
 import { KeyboardActionGroup, useKeyboardActionGroup } from "KeyboardShortcuts";
 import { isFabric } from "Platform/Fabric/FabricUtil";
 import { userContext } from "UserContext";
 import * as React from "react";
 import create, { UseStore } from "zustand";
-import { ConnectionStatusType } from "../../../Common/Constants";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../../Explorer";
 import { useSelectedNode } from "../../useSelectedNode";
@@ -28,6 +26,8 @@ export interface CommandBarStore {
   setContextButtons: (contextButtons: CommandButtonComponentProps[]) => void;
   isHidden: boolean;
   setIsHidden: (isHidden: boolean) => void;
+  isSynapseLinkUpdating: boolean;
+  setIsSynapseLinkUpdating: (isSynapseLinkUpdating: boolean) => void;
 }
 
 export const useCommandBar: UseStore<CommandBarStore> = create((set) => ({
@@ -35,6 +35,8 @@ export const useCommandBar: UseStore<CommandBarStore> = create((set) => ({
   setContextButtons: (contextButtons: CommandButtonComponentProps[]) => set((state) => ({ ...state, contextButtons })),
   isHidden: false,
   setIsHidden: (isHidden: boolean) => set((state) => ({ ...state, isHidden })),
+  isSynapseLinkUpdating: false,
+  setIsSynapseLinkUpdating: (isSynapseLinkUpdating: boolean) => set({ isSynapseLinkUpdating }),
 }));
 
 const useStyles = makeStyles({
@@ -69,17 +71,12 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
   const selectedNodeState = useSelectedNode();
   const buttons = useCommandBar((state) => state.contextButtons);
   const isHidden = useCommandBar((state) => state.isHidden);
+  const isSynapseLinkUpdating = useCommandBar((state) => state.isSynapseLinkUpdating);
   // targetDocument is used by referenced components
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { targetDocument } = useFluent();
   const setKeyboardHandlers = useKeyboardActionGroup(KeyboardActionGroup.COMMAND_BAR);
   const styles = useStyles();
-
-  const { connectionInfo, isPhoenixNotebooks, isPhoenixFeatures } = useNotebook((state) => ({
-    connectionInfo: state.connectionInfo,
-    isPhoenixNotebooks: state.isPhoenixNotebooks,
-    isPhoenixFeatures: state.isPhoenixFeatures,
-  }));
 
   // Subscribe to the store changes that affect button creation
   const dataPlaneRbacEnabled = useDataPlaneRbac((state) => state.dataPlaneRbacEnabled);
@@ -87,8 +84,12 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
 
   // Memoize the expensive button creation
   const staticButtons = React.useMemo(() => {
-    return CommandBarComponentButtonFactory.createStaticCommandBarButtons(container, selectedNodeState);
-  }, [container, selectedNodeState, dataPlaneRbacEnabled, aadTokenUpdated]);
+    return CommandBarComponentButtonFactory.createStaticCommandBarButtons(
+      container,
+      selectedNodeState,
+      isSynapseLinkUpdating,
+    );
+  }, [container, selectedNodeState, dataPlaneRbacEnabled, aadTokenUpdated, isSynapseLinkUpdating]);
 
   if (userContext.apiType === "Postgres" || userContext.apiType === "VCoreMongo") {
     const buttons =
@@ -133,11 +134,6 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
 
   const uiFabricControlButtons = CommandBarUtil.convertButton(controlButtons, "var(--colorNeutralBackground1)");
   uiFabricControlButtons.forEach((btn: ICommandBarItemProps) => (btn.iconOnly = true));
-
-  // Add connection status if needed (using the hook values we got at the top level)
-  if ((isPhoenixNotebooks || isPhoenixFeatures) && connectionInfo?.status !== ConnectionStatusType.Connect) {
-    uiFabricControlButtons.unshift(CommandBarUtil.createConnectionStatus(container, "connectionStatus"));
-  }
 
   const rootStyle = {
     root: {
