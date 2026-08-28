@@ -160,7 +160,6 @@ export interface Collection extends CollectionBase {
   onTableEntitiesClick(): void;
   onGraphDocumentsClick(): void;
   onMongoDBDocumentsClick(): void;
-  onSchemaAnalyzerClick(): void;
   openTab(): void;
 
   onSettingsClick: () => Promise<void>;
@@ -407,6 +406,7 @@ export enum TerminalKind {
   Cassandra = 2,
   Postgres = 3,
   VCoreMongo = 4,
+  CosmosDB = 5,
 }
 
 export interface DataExplorerInputsFrame {

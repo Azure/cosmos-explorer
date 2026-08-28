@@ -4,8 +4,6 @@ require("dotenv/config");
 const path = require("path");
 const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const InlineChunkHtmlPlugin = require("react-dev-utils/InlineChunkHtmlPlugin");
-const HTMLInlineCSSWebpackPlugin = require("html-inline-css-webpack-plugin").default;
 const { EnvironmentPlugin } = require("webpack");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
@@ -111,10 +109,7 @@ module.exports = function (_env = {}, argv = {}) {
     index: "./src/Index.tsx",
     quickstart: "./src/quickstart.ts",
     hostedExplorer: "./src/HostedExplorer.tsx",
-    terminal: "./src/Terminal/index.ts",
-    cellOutputViewer: "./src/CellOutputViewer/CellOutputViewer.tsx",
     selfServe: "./src/SelfServe/SelfServe.tsx",
-    connectToGitHub: "./src/GitHub/GitHubConnector.ts",
     redirectBridge: "./src/redirectBridge.ts",
     ...(mode !== "production" && { testExplorer: "./test/testExplorer/TestExplorer.ts" }),
     ...(mode !== "production" && {
@@ -127,11 +122,6 @@ module.exports = function (_env = {}, argv = {}) {
       filename: "explorer.html",
       template: "src/explorer.html",
       chunks: ["main"],
-    }),
-    new HtmlWebpackPlugin({
-      filename: "terminal.html",
-      template: "src/Terminal/index.html",
-      chunks: ["terminal"],
     }),
     new HtmlWebpackPlugin({
       filename: "quickstart.html",
@@ -147,16 +137,6 @@ module.exports = function (_env = {}, argv = {}) {
       filename: "hostedExplorer.html",
       template: "src/hostedExplorer.html",
       chunks: ["hostedExplorer"],
-    }),
-    new HtmlWebpackPlugin({
-      filename: "cellOutputViewer.html",
-      template: "src/CellOutputViewer/cellOutputViewer.html",
-      chunks: ["cellOutputViewer"],
-    }),
-    new HtmlWebpackPlugin({
-      filename: "connectToGitHub.html",
-      template: "src/connectToGitHub.html",
-      chunks: ["connectToGitHub"],
     }),
     new HtmlWebpackPlugin({
       filename: "selfServe.html",
@@ -202,10 +182,6 @@ module.exports = function (_env = {}, argv = {}) {
       filename: "[name].[contenthash].css",
     }),
     ...htmlWebpackPlugins,
-    new InlineChunkHtmlPlugin(HtmlWebpackPlugin, [/cellOutputViewer/]),
-    new HTMLInlineCSSWebpackPlugin({
-      filter: (fileName) => fileName.includes("cellOutputViewer"),
-    }),
     new MonacoWebpackPlugin(),
     new CopyWebpackPlugin({
       patterns: [

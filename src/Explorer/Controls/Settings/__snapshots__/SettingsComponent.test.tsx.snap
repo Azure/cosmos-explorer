@@ -109,28 +109,17 @@ exports[`SettingsComponent renders 1`] = `
                 "computedProperties": [Function],
                 "conflictResolutionPolicy": [Function],
                 "container": Explorer {
-                  "_isInitializingNotebooks": false,
                   "databasesRefreshed": Promise {},
                   "isFixedCollectionWithSharedThroughputSupported": [Function],
                   "isTabsContentExpanded": [Function],
                   "onRefreshDatabasesKeyPress": [Function],
                   "onRefreshResourcesClick": [Function],
-                  "phoenixClient": PhoenixClient {
-                    "armResourceId": undefined,
-                    "retryOptions": {
-                      "maxTimeout": 5000,
-                      "minTimeout": 5000,
-                      "retries": 3,
-                    },
-                  },
                   "provideFeedbackEmail": [Function],
                   "queriesClient": QueriesClient {
                     "container": [Circular],
                   },
-                  "refreshNotebookList": [Function],
                   "resourceTree": ResourceTreeAdapter {
                     "container": [Circular],
-                    "copyNotebook": [Function],
                     "parameters": [Function],
                   },
                 },
@@ -181,7 +170,7 @@ exports[`SettingsComponent renders 1`] = `
             }
             isAutoPilotSelected={false}
             isFixedContainer={false}
-            isGlobalSecondaryIndex={true}
+            isGlobalSecondaryIndexTarget={true}
             onAutoPilotSelected={[Function]}
             onMaxAutoPilotThroughputChange={[Function]}
             onScaleDiscardableChange={[Function]}
@@ -231,28 +220,17 @@ exports[`SettingsComponent renders 1`] = `
                 "computedProperties": [Function],
                 "conflictResolutionPolicy": [Function],
                 "container": Explorer {
-                  "_isInitializingNotebooks": false,
                   "databasesRefreshed": Promise {},
                   "isFixedCollectionWithSharedThroughputSupported": [Function],
                   "isTabsContentExpanded": [Function],
                   "onRefreshDatabasesKeyPress": [Function],
                   "onRefreshResourcesClick": [Function],
-                  "phoenixClient": PhoenixClient {
-                    "armResourceId": undefined,
-                    "retryOptions": {
-                      "maxTimeout": 5000,
-                      "minTimeout": 5000,
-                      "retries": 3,
-                    },
-                  },
                   "provideFeedbackEmail": [Function],
                   "queriesClient": QueriesClient {
                     "container": [Circular],
                   },
-                  "refreshNotebookList": [Function],
                   "resourceTree": ResourceTreeAdapter {
                     "container": [Circular],
-                    "copyNotebook": [Function],
                     "parameters": [Function],
                   },
                 },
@@ -352,7 +330,6 @@ exports[`SettingsComponent renders 1`] = `
             fullTextPolicy={{}}
             fullTextPolicyBaseline={{}}
             isFullTextSearchEnabled={true}
-            isGlobalSecondaryIndex={true}
             isVectorSearchEnabled={false}
             onFullTextPolicyChange={[Function]}
             onFullTextPolicyDirtyChange={[Function]}
@@ -458,28 +435,17 @@ exports[`SettingsComponent renders 1`] = `
                 "computedProperties": [Function],
                 "conflictResolutionPolicy": [Function],
                 "container": Explorer {
-                  "_isInitializingNotebooks": false,
                   "databasesRefreshed": Promise {},
                   "isFixedCollectionWithSharedThroughputSupported": [Function],
                   "isTabsContentExpanded": [Function],
                   "onRefreshDatabasesKeyPress": [Function],
                   "onRefreshResourcesClick": [Function],
-                  "phoenixClient": PhoenixClient {
-                    "armResourceId": undefined,
-                    "retryOptions": {
-                      "maxTimeout": 5000,
-                      "minTimeout": 5000,
-                      "retries": 3,
-                    },
-                  },
                   "provideFeedbackEmail": [Function],
                   "queriesClient": QueriesClient {
                     "container": [Circular],
                   },
-                  "refreshNotebookList": [Function],
                   "resourceTree": ResourceTreeAdapter {
                     "container": [Circular],
-                    "copyNotebook": [Function],
                     "parameters": [Function],
                   },
                 },
@@ -530,28 +496,17 @@ exports[`SettingsComponent renders 1`] = `
             }
             explorer={
               Explorer {
-                "_isInitializingNotebooks": false,
                 "databasesRefreshed": Promise {},
                 "isFixedCollectionWithSharedThroughputSupported": [Function],
                 "isTabsContentExpanded": [Function],
                 "onRefreshDatabasesKeyPress": [Function],
                 "onRefreshResourcesClick": [Function],
-                "phoenixClient": PhoenixClient {
-                  "armResourceId": undefined,
-                  "retryOptions": {
-                    "maxTimeout": 5000,
-                    "minTimeout": 5000,
-                    "retries": 3,
-                  },
-                },
                 "provideFeedbackEmail": [Function],
                 "queriesClient": QueriesClient {
                   "container": [Circular],
                 },
-                "refreshNotebookList": [Function],
                 "resourceTree": ResourceTreeAdapter {
                   "container": [Circular],
-                  "copyNotebook": [Function],
                   "parameters": [Function],
                 },
               }
@@ -699,28 +654,17 @@ exports[`SettingsComponent renders 1`] = `
                 "computedProperties": [Function],
                 "conflictResolutionPolicy": [Function],
                 "container": Explorer {
-                  "_isInitializingNotebooks": false,
                   "databasesRefreshed": Promise {},
                   "isFixedCollectionWithSharedThroughputSupported": [Function],
                   "isTabsContentExpanded": [Function],
                   "onRefreshDatabasesKeyPress": [Function],
                   "onRefreshResourcesClick": [Function],
-                  "phoenixClient": PhoenixClient {
-                    "armResourceId": undefined,
-                    "retryOptions": {
-                      "maxTimeout": 5000,
-                      "minTimeout": 5000,
-                      "retries": 3,
-                    },
-                  },
                   "provideFeedbackEmail": [Function],
                   "queriesClient": QueriesClient {
                     "container": [Circular],
                   },
-                  "refreshNotebookList": [Function],
                   "resourceTree": ResourceTreeAdapter {
                     "container": [Circular],
-                    "copyNotebook": [Function],
                     "parameters": [Function],
                   },
                 },
@@ -771,28 +715,17 @@ exports[`SettingsComponent renders 1`] = `
             }
             explorer={
               Explorer {
-                "_isInitializingNotebooks": false,
                 "databasesRefreshed": Promise {},
                 "isFixedCollectionWithSharedThroughputSupported": [Function],
                 "isTabsContentExpanded": [Function],
                 "onRefreshDatabasesKeyPress": [Function],
                 "onRefreshResourcesClick": [Function],
-                "phoenixClient": PhoenixClient {
-                  "armResourceId": undefined,
-                  "retryOptions": {
-                    "maxTimeout": 5000,
-                    "minTimeout": 5000,
-                    "retries": 3,
-                  },
-                },
                 "provideFeedbackEmail": [Function],
                 "queriesClient": QueriesClient {
                   "container": [Circular],
                 },
-                "refreshNotebookList": [Function],
                 "resourceTree": ResourceTreeAdapter {
                   "container": [Circular],
-                  "copyNotebook": [Function],
                   "parameters": [Function],
                 },
               }

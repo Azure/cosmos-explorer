@@ -1,5 +1,6 @@
 import { initializeIcons } from "@fluentui/react";
 import { useBoolean } from "@fluentui/react-hooks";
+import { getErrorMessage } from "Common/ErrorHandlingUtils";
 import { AadAuthorizationFailure } from "Platform/Hosted/Components/AadAuthorizationFailure";
 import * as React from "react";
 import { render } from "react-dom";
@@ -7,11 +8,12 @@ import ChevronRight from "../images/chevron-right.svg";
 import "../less/hostedexplorer.less";
 import { AuthType } from "./AuthType";
 import { logError } from "./Common/Logger";
-import { DatabaseAccount } from "./Contracts/DataModels";
+import { fetchAccessData, fetchEncryptedToken } from "./Common/PortalBackendClient";
+import { AccessInputMetadata, DatabaseAccount } from "./Contracts/DataModels";
 import "./Explorer/Menus/NavBar/MeControlComponent.less";
 import { HostedExplorerChildFrame } from "./HostedExplorerChildFrame";
 import { AccountSwitcher } from "./Platform/Hosted/Components/AccountSwitcher";
-import { ConnectExplorer, fetchEncryptedToken } from "./Platform/Hosted/Components/ConnectExplorer";
+import { ConnectExplorer } from "./Platform/Hosted/Components/ConnectExplorer";
 import { DirectoryPickerPanel } from "./Platform/Hosted/Components/DirectoryPickerPanel";
 import { FeedbackCommandButton } from "./Platform/Hosted/Components/FeedbackCommandButton";
 import { MeControl } from "./Platform/Hosted/Components/MeControl";
@@ -19,12 +21,14 @@ import { SignInButton } from "./Platform/Hosted/Components/SignInButton";
 import "./Platform/Hosted/ConnectScreen.less";
 import { parseConnectionString } from "./Platform/Hosted/Helpers/ConnectionStringParser";
 import { isResourceTokenConnectionString } from "./Platform/Hosted/Helpers/ResourceTokenUtils";
-import { extractMasterKeyfromConnectionString } from "./Platform/Hosted/HostedUtils";
+import {
+  extractMasterKeyFromDirectLoginConnectionString,
+  isDirectConnectionStringLoginApi,
+} from "./Platform/Hosted/HostedUtils";
 import "./Shared/appInsights";
 import { allowedHostedExplorerEndpoints } from "./Utils/EndpointUtils";
 import { useAADAuth } from "./hooks/useAADAuth";
 import { useConfig } from "./hooks/useConfig";
-import { useTokenMetadata } from "./hooks/usePortalAccessToken";
 
 initializeIcons();
 
@@ -32,7 +36,15 @@ const App: React.FunctionComponent = () => {
   // For handling encrypted portal tokens sent via query paramter
   const params = new URLSearchParams(window.location.search);
   const [encryptedToken, setEncryptedToken] = React.useState<string>(params && params.get("key"));
-  const encryptedTokenMetadata = useTokenMetadata(encryptedToken);
+  // Encrypted token logins resolve the account metadata through the Portal Backend, while SQL/Table/Gremlin
+  // connection-string logins derive it client-side, so both paths write to the same value.
+  const [accountMetadata, setAccountMetadata] = React.useState<AccessInputMetadata>();
+
+  React.useEffect(() => {
+    if (encryptedToken) {
+      fetchAccessData(encryptedToken).then(setAccountMetadata);
+    }
+  }, [encryptedToken]);
 
   // For showing/hiding panel
   const [isOpen, { setTrue: openPanel, setFalse: dismissPanel }] = useBoolean(false);
@@ -54,19 +66,29 @@ const App: React.FunctionComponent = () => {
       setConnectionString(connStr);
       if (isResourceTokenConnectionString(connStr)) {
         setAuthType(AuthType.ResourceToken);
-      } else {
-        fetchEncryptedToken(connStr)
-          .then((token) => {
-            setEncryptedToken(token);
-            setAuthType(AuthType.ConnectionString);
-          })
-          .catch((error) => {
-            logError(
-              `Failed to connect with connection string: ${error}`,
-              "HostedExplorer/connectWithConnectionString",
-            );
-          });
+        return;
       }
+
+      const metadata = parseConnectionString(connStr);
+      if (metadata && isDirectConnectionStringLoginApi(metadata.apiKind)) {
+        // SQL, Table, and Gremlin sign data-plane requests client-side with the account key, so we skip
+        // the Portal Backend proxy and use the metadata derived from the connection string directly.
+        setAccountMetadata(metadata);
+        setAuthType(AuthType.ConnectionString);
+        return;
+      }
+
+      fetchEncryptedToken(connStr)
+        .then((token) => {
+          setEncryptedToken(token);
+          setAuthType(AuthType.ConnectionString);
+        })
+        .catch((error) => {
+          logError(
+            `Failed to connect with connection string: ${getErrorMessage(error)}`,
+            "HostedExplorer/connectWithConnectionString",
+          );
+        });
     },
     [authType],
   );
@@ -114,14 +136,14 @@ const App: React.FunctionComponent = () => {
         frameWindow.hostedConfig = {
           authType: AuthType.EncryptedToken,
           encryptedToken,
-          encryptedTokenMetadata,
+          encryptedTokenMetadata: accountMetadata,
         };
       } else if (authType === AuthType.ConnectionString) {
         frameWindow.hostedConfig = {
           authType: AuthType.ConnectionString,
           encryptedToken,
-          encryptedTokenMetadata,
-          masterKey: extractMasterKeyfromConnectionString(connectionString),
+          encryptedTokenMetadata: accountMetadata,
+          masterKey: extractMasterKeyFromDirectLoginConnectionString(connectionString),
         };
       } else if (authType === AuthType.ResourceToken) {
         frameWindow.hostedConfig = {
@@ -140,7 +162,7 @@ const App: React.FunctionComponent = () => {
 
   const showExplorer =
     (config && isLoggedIn && databaseAccount && !connectionString) ||
-    (encryptedTokenMetadata && encryptedTokenMetadata) ||
+    accountMetadata ||
     (authType === AuthType.ResourceToken && connectionString);
 
   return (
@@ -157,7 +179,7 @@ const App: React.FunctionComponent = () => {
               Microsoft Azure
             </span>
             <span className="accontSplitter" /> <span className="serviceTitle">Cosmos DB</span>
-            {(isLoggedIn || encryptedTokenMetadata?.accountName) && (
+            {(isLoggedIn || accountMetadata?.accountName) && (
               <img className="chevronRight" src={ChevronRight} alt="account separator" />
             )}
             {isLoggedIn && !connectionString && (
@@ -165,9 +187,9 @@ const App: React.FunctionComponent = () => {
                 <AccountSwitcher armToken={armToken} setDatabaseAccount={setDatabaseAccount} />
               </span>
             )}
-            {(!isLoggedIn || connectionString) && encryptedTokenMetadata?.accountName && (
+            {(!isLoggedIn || connectionString) && accountMetadata?.accountName && (
               <span className="accountSwitchComponentContainer">
-                <span className="accountNameHeader">{encryptedTokenMetadata?.accountName}</span>
+                <span className="accountNameHeader">{accountMetadata?.accountName}</span>
               </span>
             )}
           </div>
@@ -188,9 +210,7 @@ const App: React.FunctionComponent = () => {
         // It's possible this can be changed once all knockout code has been removed.
         <iframe
           // Setting key is needed so React will re-render this element on any account change
-          key={
-            authType ? `${authType}-${encryptedTokenMetadata?.accountName || connectionString}` : databaseAccount?.id
-          }
+          key={authType ? `${authType}-${accountMetadata?.accountName || connectionString}` : databaseAccount?.id}
           ref={ref}
           data-test="DataExplorerFrame"
           id="explorerMenu"
@@ -200,8 +220,17 @@ const App: React.FunctionComponent = () => {
           src="explorer.html?v=1.0.1&platform=Hosted"
         ></iframe>
       )}
-      {!isLoggedIn && !encryptedTokenMetadata && (
-        <ConnectExplorer {...{ login, setEncryptedToken, setAuthType, connectionString, setConnectionString }} />
+      {!isLoggedIn && !accountMetadata && (
+        <ConnectExplorer
+          {...{
+            login,
+            setEncryptedToken,
+            setAuthType,
+            connectionString,
+            setConnectionString,
+            setAccountMetadata,
+          }}
+        />
       )}
       {isLoggedIn && authFailure && <AadAuthorizationFailure {...{ authFailure }} />}
       {isLoggedIn && !authFailure && (

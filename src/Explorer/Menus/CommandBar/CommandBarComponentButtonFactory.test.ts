@@ -4,7 +4,6 @@ import { DatabaseAccount } from "../../../Contracts/DataModels";
 import { CollectionBase } from "../../../Contracts/ViewModels";
 import { updateUserContext } from "../../../UserContext";
 import Explorer from "../../Explorer";
-import { useNotebook } from "../../Notebook/useNotebook";
 import { useDatabases } from "../../useDatabases";
 import { useSelectedNode } from "../../useSelectedNode";
 import * as CommandBarComponentButtonFactory from "./CommandBarComponentButtonFactory";
@@ -35,6 +34,18 @@ describe("CommandBarComponentButtonFactory tests", () => {
         (button) => button.commandButtonLabel === enableAzureSynapseLinkBtnLabel,
       );
       expect(enableAzureSynapseLinkBtn).toBeDefined();
+    });
+
+    it("Button should be disabled while Synapse Link is updating", () => {
+      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(
+        mockExplorer,
+        selectedNodeState,
+        true,
+      );
+      const enableAzureSynapseLinkBtn = buttons.find(
+        (button) => button.commandButtonLabel === enableAzureSynapseLinkBtnLabel,
+      );
+      expect(enableAzureSynapseLinkBtn.disabled).toBe(true);
     });
 
     // TODO: Now that Tables API supports dataplane RBAC, calling createStaticCommandBarButtons will enable the
@@ -74,8 +85,8 @@ describe("CommandBarComponentButtonFactory tests", () => {
     });
   });
 
-  describe("Open Cassandra shell button", () => {
-    const openCassandraShellBtnLabel = "Open Cassandra shell";
+  describe("Open Cassandra Shell button", () => {
+    const openCassandraShellBtnLabel = "Open Cassandra Shell";
     const selectedNodeState = useSelectedNode.getState();
 
     beforeAll(() => {
@@ -97,11 +108,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
           },
         } as DatabaseAccount,
       });
-    });
-
-    afterEach(() => {
-      useNotebook.getState().setIsNotebookEnabled(false);
-      useNotebook.getState().setIsNotebooksEnabledForAccount(false);
     });
 
     it("Cassandra Api not available - button should be hidden", () => {
@@ -127,7 +133,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       expect(openCassandraShellBtn).toBeUndefined();
     });
 
-    it("Notebooks is not enabled and is unavailable - button should be shown and disabled", () => {
+    it("Cloud Shell is unavailable - button should be hidden", () => {
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
       const openCassandraShellBtn = buttons.find((button) => button.commandButtonLabel === openCassandraShellBtnLabel);
       expect(openCassandraShellBtn).toBeUndefined();
@@ -135,14 +141,14 @@ describe("CommandBarComponentButtonFactory tests", () => {
   });
 
   describe("Open Postgres and vCore Mongo buttons", () => {
-    const openPostgresShellButtonLabel = "Open PSQL shell";
-    const openVCoreMongoShellButtonLabel = "Open MongoDB (DocumentDB) shell";
+    const openPostgresShellButtonLabel = "Open PSQL Shell";
+    const openVCoreMongoShellButtonLabel = "Open MongoDB (DocumentDB) Shell";
 
     beforeAll(() => {
       mockExplorer = {} as Explorer;
     });
 
-    it("creates Postgres shell button", () => {
+    it("creates Postgres Shell button", () => {
       const buttons = CommandBarComponentButtonFactory.createPostgreButtons(mockExplorer);
       const openPostgresShellButton = buttons.find(
         (button) => button.commandButtonLabel === openPostgresShellButtonLabel,
@@ -150,7 +156,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       expect(openPostgresShellButton).toBeDefined();
     });
 
-    it("creates vCore Mongo shell button", () => {
+    it("creates vCore Mongo Shell button", () => {
       const buttons = CommandBarComponentButtonFactory.createVCoreMongoButtons(mockExplorer);
       const openVCoreMongoShellButton = buttons.find(
         (button) => button.commandButtonLabel === openVCoreMongoShellButtonLabel,

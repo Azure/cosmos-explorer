@@ -5,7 +5,7 @@ const fetch = require("node-fetch");
 
 const backendEndpoint = "https://cdb-ms-mpac-pbe.cosmos.azure.com";
 const previewSiteEndpoint = "https://dataexplorer-preview.azurewebsites.net";
-const previewStorageWebsiteEndpoint = "https://dataexplorerpreview.z5.web.core.windows.net/";
+const previewStorageWebsiteEndpoint = "_REPLACE_STORAGE_WEBSITE_ENDPOINT_";
 const githubApiUrl = "https://api.github.com/repos/Azure/cosmos-explorer";
 const azurePortalMpacEndpoint = "https://ms.portal.azure.com/";
 
@@ -46,7 +46,7 @@ const app = express();
 app.use("/api", api);
 app.use("/proxy", proxy);
 app.use("/commit", commit);
-app.get("/pull/:pr(\\d+)", (req, res) => {
+app.get("/pull/:pr", (req, res) => {
   const pr = req.params.pr;
   if (!/^\d+$/.test(pr)) {
     return res.status(400).send("Invalid pull request number");

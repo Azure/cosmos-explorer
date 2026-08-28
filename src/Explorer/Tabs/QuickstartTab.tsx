@@ -1,30 +1,17 @@
-import { Spinner, SpinnerSize, Stack, Text } from "@fluentui/react";
+import { Stack } from "@fluentui/react";
 
-import { NotebookWorkspaceConnectionInfo } from "Contracts/DataModels";
 import { MessageTypes } from "Contracts/ExplorerContracts";
-import { NotebookTerminalComponent } from "Explorer/Controls/Notebook/NotebookTerminalComponent";
-import Explorer from "Explorer/Explorer";
-import { useNotebook } from "Explorer/Notebook/useNotebook";
+import { TerminalKind } from "Contracts/ViewModels";
 import { QuickstartFirewallNotification } from "Explorer/Quickstart/QuickstartFirewallNotification";
 import { QuickstartGuide } from "Explorer/Quickstart/QuickstartGuide";
+import { CloudShellTerminalComponent } from "Explorer/Tabs/CloudShellTab/CloudShellTerminalComponent";
 import { checkFirewallRules } from "Explorer/Tabs/Shared/CheckFirewallRules";
 import { userContext } from "UserContext";
 import React, { useEffect, useState } from "react";
 import FirewallRuleScreenshot from "../../../images/firewallRule.png";
 
-interface QuickstartTabProps {
-  explorer: Explorer;
-}
-
-export const QuickstartTab: React.FC<QuickstartTabProps> = ({ explorer }: QuickstartTabProps): JSX.Element => {
-  const notebookServerInfo = useNotebook((state) => state.notebookServerInfo);
+export const QuickstartTab: React.FC = (): JSX.Element => {
   const [isAllPublicIPAddressEnabled, setIsAllPublicIPAddressEnabled] = useState<boolean>(true);
-
-  const getNotebookServerInfo = (): NotebookWorkspaceConnectionInfo => ({
-    authToken: notebookServerInfo.authToken,
-    notebookServerEndpoint: `${notebookServerInfo.notebookServerEndpoint?.replace(/\/+$/, "")}/postgresql`,
-    forwardingId: notebookServerInfo.forwardingId,
-  });
 
   useEffect(() => {
     checkFirewallRules(
@@ -33,10 +20,6 @@ export const QuickstartTab: React.FC<QuickstartTabProps> = ({ explorer }: Quicks
       setIsAllPublicIPAddressEnabled,
     );
   });
-
-  useEffect(() => {
-    explorer.allocateContainer();
-  }, []);
 
   return (
     <Stack style={{ width: "100%" }} horizontal>
@@ -51,23 +34,12 @@ export const QuickstartTab: React.FC<QuickstartTabProps> = ({ explorer }: Quicks
             shellName="PostgreSQL"
           />
         )}
-        {isAllPublicIPAddressEnabled && notebookServerInfo?.notebookServerEndpoint && (
-          <NotebookTerminalComponent
-            notebookServerInfo={getNotebookServerInfo()}
+        {isAllPublicIPAddressEnabled && (
+          <CloudShellTerminalComponent
             databaseAccount={userContext.databaseAccount}
             tabId="QuickstartPSQLShell"
+            shellType={TerminalKind.Postgres}
           />
-        )}
-        {isAllPublicIPAddressEnabled && !notebookServerInfo?.notebookServerEndpoint && (
-          <Stack style={{ margin: "auto 0" }}>
-            <Text block style={{ margin: "auto" }}>
-              Connecting to the PostgreSQL shell.
-            </Text>
-            <Text block style={{ margin: "auto" }}>
-              If the cluster was just created, this could take up to a minute.
-            </Text>
-            <Spinner styles={{ root: { marginTop: 16 } }} size={SpinnerSize.large}></Spinner>
-          </Stack>
         )}
       </Stack>
     </Stack>

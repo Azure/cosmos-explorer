@@ -42,9 +42,37 @@ export interface PostgresConnectionStrParams {
   isFreeTier: boolean;
 }
 
+export type VCoreMongoAuthMode = "NativeAuth" | "MicrosoftEntraID";
+
+export interface VCoreMongoAuthConfig {
+  allowedModes?: VCoreMongoAuthMode[];
+}
+
 export interface VCoreMongoConnectionParams {
   adminLogin: string;
   connectionString: string;
+  authConfig?: VCoreMongoAuthConfig;
+  isNativeAuthDisabled?: boolean;
+}
+
+export const VCoreMongoNativeAuthLearnMoreUrl = "https://go.microsoft.com/fwlink/?linkid=2340100";
+
+export const VCoreMongoNativeAuthDisabledMessage =
+  "Native DocumentDB authentication is disabled on this cluster. You can use MongoDB Shell with Entra ID authentication outside of the Azure portal.";
+
+export function isVCoreMongoNativeAuthDisabled(): boolean {
+  if (userContext.features?.mongoDisableNativeAuth) {
+    return true;
+  }
+  const params = userContext.vcoreMongoConnectionParams;
+  if (!params) {
+    return false;
+  }
+  if (params.isNativeAuthDisabled) {
+    return true;
+  }
+  const allowedModes = params.authConfig?.allowedModes || [];
+  return allowedModes.length > 0 && !allowedModes.includes("NativeAuth");
 }
 
 export interface FabricArtifactInfo {

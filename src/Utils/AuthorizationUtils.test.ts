@@ -17,6 +17,7 @@ describe("AuthorizationUtils", () => {
     updateUserContext({
       features: {
         enableContainerCopy: false,
+        enableCosmosDBShell: false,
         enableAadDataPlane: enabled,
         canExceedMaximumValue: false,
         cosmosdb: false,
@@ -48,6 +49,7 @@ describe("AuthorizationUtils", () => {
         partitionKeyDefault2: false,
         notebooksDownBanner: false,
         enableRestoreContainer: false,
+        mongoDisableNativeAuth: false,
       },
     });
   };

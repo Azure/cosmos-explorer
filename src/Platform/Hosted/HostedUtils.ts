@@ -40,8 +40,14 @@ export function getDatabaseAccountKindFromExperience(apiExperience: typeof userC
   return AccountKind.GlobalDocumentDB;
 }
 
-export function extractMasterKeyfromConnectionString(connectionString: string): string | undefined {
-  // Only Gremlin uses the actual master key for connection to cosmos
-  const matchedParts = connectionString.match("AccountKey=(.*);ApiKind=Gremlin;$");
+// Returns the master key carried by SQL, Table, and Gremlin connection strings.
+export function extractMasterKeyFromDirectLoginConnectionString(connectionString: string): string | undefined {
+  const matchedParts = connectionString?.match(/AccountKey=([^;]*)/);
   return (matchedParts && matchedParts.length > 1 && matchedParts[1]) || undefined;
+}
+
+// SQL, Table, and Gremlin can sign data-plane requests client-side with the account key, so they do
+// not need the Portal Backend proxy for connection-string login. Mongo and Cassandra still require the proxy.
+export function isDirectConnectionStringLoginApi(apiKind: ApiKind): boolean {
+  return apiKind === ApiKind.SQL || apiKind === ApiKind.Table || apiKind === ApiKind.Graph;
 }

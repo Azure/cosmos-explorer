@@ -1,8 +1,14 @@
 import { DefaultAzureCredential } from "@azure/identity";
 import { Frame, Locator, Page, expect } from "@playwright/test";
-import crypto from "crypto";
-import { getNoSqlRbacToken } from "./NoSqlTestSetup";
+import crypto, { webcrypto } from "crypto";
 import { TestContainerContext } from "./testData";
+
+// The @azure/cosmos client signs requests with globalThis.crypto (Web Crypto API).
+// In Node.js >= 19 it's already available; only assign the polyfill for older versions.
+// This lives in fx.ts (imported by every spec) so the polyfill always runs.
+if (!globalThis.crypto) {
+  Object.defineProperty(globalThis, "crypto", { value: webcrypto, writable: true, configurable: true });
+}
 
 const RETRY_COUNT = 3;
 
@@ -42,32 +48,51 @@ export enum TestAccount {
   SQL = "SQL",
   SQLReadOnly = "SQLReadOnly",
   SQLContainerCopyOnly = "SQLContainerCopyOnly",
+  SQLConnectionString = "SQLConnectionString",
+  TableConnectionString = "TableConnectionString",
+  GremlinConnectionString = "GremlinConnectionString",
+}
+
+export enum TestAuthType {
+  EntraID = "EntraID",
+  ConnectionString = "ConnectionString",
 }
 
 export function getDefaultAccountName(accountType: TestAccount): string {
+  const accountNamePrefix = process.env.DE_ACCOUNT_PREFIX;
+  if (!accountNamePrefix) {
+    throw new Error("DE_ACCOUNT_PREFIX is not set");
+  }
+
   switch (accountType) {
     case TestAccount.Tables:
-      return "github-e2etests-tables";
+      return `${accountNamePrefix}-de-test-table-1`;
     case TestAccount.Cassandra:
-      return "github-e2etests-cassandra";
+      return `${accountNamePrefix}-de-test-cassandra-1`;
     case TestAccount.Gremlin:
-      return "github-e2etests-gremlin";
+      return `${accountNamePrefix}-de-test-gremlin-1`;
     case TestAccount.Mongo:
-      return "github-e2etests-mongo";
+      return `${accountNamePrefix}-de-test-mongo-1`;
     case TestAccount.MongoReadonly:
-      return "github-e2etests-mongo-readonly";
+      return `${accountNamePrefix}-de-test-mongo-readonly`;
     case TestAccount.Mongo32:
-      return "github-e2etests-mongo32";
+      return `${accountNamePrefix}-de-test-mongo32-1`;
     case TestAccount.SQLReadOnly:
-      return "github-e2etests-sql-readonly";
+      return `${accountNamePrefix}-de-test-sql-readonly`;
     case TestAccount.SQLContainerCopyOnly:
-      return "github-e2etests-sql-containercopyonly";
+      return `${accountNamePrefix}-de-test-sql-containercopy`;
+    case TestAccount.SQLConnectionString:
+      return `${accountNamePrefix}-de-test-sql-connstring-1`;
+    case TestAccount.TableConnectionString:
+      return `${accountNamePrefix}-de-test-table-connstring-1`;
+    case TestAccount.GremlinConnectionString:
+      return `${accountNamePrefix}-de-test-gremlin-connstring-1`;
     case TestAccount.SQL: {
       const shardIndex = process.env.PLAYWRIGHT_SHARD_INDEX ?? "";
       if (!shardIndex) {
         throw new Error("PLAYWRIGHT_SHARD_INDEX is not set");
       }
-      return "github-e2etests-sql-" + shardIndex;
+      return `${accountNamePrefix}-de-test-sql-${shardIndex}`;
     }
     default:
       throw new Error(`No default account name defined for account type ${accountType}`);
@@ -75,7 +100,7 @@ export function getDefaultAccountName(accountType: TestAccount): string {
 }
 
 export const resourceGroupName = process.env.DE_TEST_RESOURCE_GROUP ?? "de-e2e-tests";
-export const subscriptionId = process.env.DE_TEST_SUBSCRIPTION_ID ?? "69e02f2d-f059-4409-9eac-97e8a276ae2c";
+export const subscriptionId = process.env.DE_TEST_SUBSCRIPTION_ID ?? process.env.AZURE_SUBSCRIPTION_ID ?? "";
 export const TEST_AUTOSCALE_THROUGHPUT_RU = 1000;
 export const TEST_MANUAL_THROUGHPUT_RU = 800;
 export const TEST_AUTOSCALE_MAX_THROUGHPUT_RU_2K = 2000;
@@ -92,7 +117,32 @@ function tryGetStandardName(accountType: TestAccount) {
   }
 }
 
-export function getAccountName(accountType: TestAccount) {
+// Maps a base API account type to its dedicated connection string (account key) account.
+const connectionStringAccountTypes: Partial<Record<TestAccount, TestAccount>> = {
+  [TestAccount.SQL]: TestAccount.SQLConnectionString,
+  [TestAccount.Tables]: TestAccount.TableConnectionString,
+  [TestAccount.Gremlin]: TestAccount.GremlinConnectionString,
+};
+
+export function getAccountName(accountType: TestAccount, authType: TestAuthType = TestAuthType.EntraID): string {
+  // Connection string (account key) login uses dedicated *-connstring accounts that are only
+  // provisioned in CI (resolved via DE_ACCOUNT_PREFIX). Local runs use DE_TEST_ACCOUNT_PREFIX and
+  // typically don't have those accounts, so they fall back to the standard API account for the same
+  // API (which also has key auth enabled).
+  if (authType === TestAuthType.ConnectionString) {
+    const connectionStringType = connectionStringAccountTypes[accountType];
+    if (!connectionStringType) {
+      throw new Error(`No connection string account defined for account type ${accountType}`);
+    }
+    const override = process.env[`DE_TEST_ACCOUNT_NAME_${connectionStringType.toLocaleUpperCase()}`];
+    if (override) {
+      return override;
+    }
+    if (!process.env.DE_TEST_ACCOUNT_PREFIX) {
+      return getAccountName(connectionStringType);
+    }
+  }
+
   return (
     process.env[`DE_TEST_ACCOUNT_NAME_${accountType.toLocaleUpperCase()}`] ??
     tryGetStandardName(accountType) ??
@@ -117,14 +167,16 @@ export async function getTestExplorerUrl(accountType: TestAccount, options?: Tes
   params.set("subscriptionId", subscriptionId);
   params.set("token", token);
 
+  const tenantId = process.env.AZURE_TENANT_ID;
+  if (tenantId) {
+    params.set("tenantId", tenantId);
+  }
+
   // There seem to be occasional CORS issues with calling the copilot APIs (/api/tokens/sampledataconnection/v2, for example)
   // For now, since we don't test copilot, we can disable the copilot APIs by setting the feature flag to false.
   params.set("feature.enableCopilot", "false");
 
-  const nosqlRbacToken = getNoSqlRbacToken();
-  if (!nosqlRbacToken) {
-    throw new Error("No NOSQL RBAC token found.");
-  }
+  const nosqlRbacToken = process.env.NOSQL_TESTACCOUNT_TOKEN;
 
   const nosqlReadOnlyRbacToken = process.env.NOSQL_READONLY_TESTACCOUNT_TOKEN;
   const nosqlContainerCopyRbacToken = process.env.NOSQL_CONTAINERCOPY_TESTACCOUNT_TOKEN;
@@ -203,6 +255,13 @@ export async function getTestExplorerUrl(accountType: TestAccount, options?: Tes
         params.set("mongoReadOnlyRbacToken", mongoReadOnlyRbacToken);
         params.set("enableaaddataplane", "true");
       }
+      break;
+
+    case TestAccount.SQLConnectionString:
+    case TestAccount.TableConnectionString:
+    case TestAccount.GremlinConnectionString:
+      // Connection string (account key) login navigates directly to hostedExplorer.html and doesn't
+      // use this iframe test-explorer URL or any RBAC/AAD data-plane token.
       break;
   }
 
@@ -411,6 +470,7 @@ export enum CommandBarButton {
   ExecuteQuery = "Execute Query",
   UploadItem = "Upload Item",
   NewDocument = "New Document",
+  View = "View",
 }
 
 /** Helper class that provides locator methods for DataExplorer components, on top of a Frame */

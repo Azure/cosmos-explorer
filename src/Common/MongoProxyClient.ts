@@ -22,7 +22,10 @@ const defaultHeaders = {
 
 function authHeaders() {
   if (userContext.authType === AuthType.EncryptedToken) {
-    return { [HttpHeaders.guestAccessToken]: userContext.accessToken };
+    return {
+      [HttpHeaders.guestAccessToken]: userContext.accessToken,
+      [HttpHeaders.authorization]: userContext.accessToken,
+    };
   } else {
     const headers: { [key: string]: string } = {
       [HttpHeaders.authorization]: userContext.authorizationToken,

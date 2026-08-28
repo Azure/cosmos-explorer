@@ -9,8 +9,6 @@ import {
 } from "Shared/AppStatePersistenceUtility";
 import create, { UseStore } from "zustand";
 import * as ViewModels from "../Contracts/ViewModels";
-import { CollectionTabKind } from "../Contracts/ViewModels";
-import NotebookTabV2 from "../Explorer/Tabs/NotebookV2Tab";
 import TabsBase from "../Explorer/Tabs/TabsBase";
 
 export interface TabsState {
@@ -28,7 +26,6 @@ export interface TabsState {
   refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void;
   closeTabsByComparator: (comparator: (tab: TabsBase) => boolean) => void;
   closeTab: (tab: TabsBase) => void;
-  closeAllNotebookTabs: (hardClose: boolean) => void;
   openAndActivateReactTab: (tabKind: ReactTabKind) => void;
   closeReactTab: (tabKind: ReactTabKind) => void;
   setIsTabExecuting: (state: boolean) => void;
@@ -132,33 +129,6 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
     }
 
     get().persistTabsState();
-  },
-  closeAllNotebookTabs: (hardClose): void => {
-    const isNotebook = (tabKind: CollectionTabKind): boolean => {
-      if (
-        tabKind === CollectionTabKind.Notebook ||
-        tabKind === CollectionTabKind.NotebookV2 ||
-        tabKind === CollectionTabKind.SchemaAnalyzer ||
-        tabKind === CollectionTabKind.Terminal
-      ) {
-        return true;
-      }
-      return false;
-    };
-
-    const tabList = get().openedTabs;
-    if (tabList && tabList.length > 0) {
-      tabList.forEach((tab: NotebookTabV2) => {
-        const tabKind: CollectionTabKind = tab.tabKind;
-        if (tabKind && isNotebook(tabKind)) {
-          tab.onCloseTabButtonClick(hardClose);
-        }
-      });
-
-      if (get().openedTabs.length === 0 && !isFabricMirrored()) {
-        set({ activeTab: undefined, activeReactTab: undefined });
-      }
-    }
   },
   openAndActivateReactTab: (tabKind: ReactTabKind) => {
     if (get().openedReactTabs.indexOf(tabKind) === -1) {

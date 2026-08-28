@@ -143,6 +143,7 @@ export async function getTokenFromAuthService(
       headers: {
         "content-type": "application/json",
         "x-ms-encrypted-auth-token": userContext.accessToken,
+        authorization: userContext.accessToken,
       },
       body: JSON.stringify({
         verb,

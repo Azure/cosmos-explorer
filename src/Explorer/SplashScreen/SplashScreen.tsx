@@ -31,14 +31,18 @@ import LinkIcon from "../../../images/Link_blue.svg";
 import PowerShellIcon from "../../../images/PowerShell.svg";
 import QuickStartIcon from "../../../images/Quickstart_Lightning.svg";
 import VisualStudioIcon from "../../../images/VisualStudio.svg";
-import NotebookIcon from "../../../images/notebook/Notebook-resource.svg";
 import CollectionIcon from "../../../images/tree-collection.svg";
 import * as Constants from "../../Common/Constants";
-import { userContext } from "../../UserContext";
+import {
+  isVCoreMongoNativeAuthDisabled,
+  userContext,
+  VCoreMongoNativeAuthDisabledMessage,
+  VCoreMongoNativeAuthLearnMoreUrl,
+} from "../../UserContext";
 import { getCollectionName } from "../../Utils/APITypeUtils";
+import { useDialog } from "../Controls/Dialog";
 import Explorer from "../Explorer";
 import * as MostRecentActivity from "../MostRecentActivity/MostRecentActivity";
-import { useNotebook } from "../Notebook/useNotebook";
 import { useDatabases } from "../useDatabases";
 import { useSelectedNode } from "../useSelectedNode";
 
@@ -183,12 +187,6 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
 
   React.useEffect(() => {
     subscriptions.push(
-      {
-        dispose: useNotebook.subscribe(
-          () => setState({}),
-          (state) => state.isNotebookEnabled,
-        ),
-      },
       { dispose: useSelectedNode.subscribe(() => setState({})) },
       {
         dispose: useCarousel.subscribe(
@@ -414,11 +412,23 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
     }
 
     if (userContext.apiType === "VCoreMongo") {
+      const isNativeAuthDisabled = isVCoreMongoNativeAuthDisabled();
       return {
         iconSrc: PowerShellIcon,
         title: t(Keys.splashScreen.shell.vcoreMongo.title),
         description: t(Keys.splashScreen.shell.vcoreMongo.description),
-        onClick: () => container.openNotebookTerminal(TerminalKind.VCoreMongo),
+        onClick: () => {
+          if (isNativeAuthDisabled) {
+            useDialog
+              .getState()
+              .showOkModalDialog("Native Authentication Disabled", VCoreMongoNativeAuthDisabledMessage, {
+                linkText: "Learn more",
+                linkUrl: VCoreMongoNativeAuthLearnMoreUrl,
+              });
+          } else {
+            container.openNotebookTerminal(TerminalKind.VCoreMongo);
+          }
+        },
       };
     }
 
@@ -471,33 +481,10 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
     };
   };
 
-  const decorateOpenNotebookActivity = (activity: MostRecentActivity.OpenNotebookItem): SplashScreenItem => {
-    return {
-      info: activity.path,
-      iconSrc: NotebookIcon,
-      title: activity.name,
-      description: t(Keys.splashScreen.sections.notebook),
-      onClick: () => {
-        const notebookItem = container.createNotebookContentItemFile(activity.name, activity.path);
-        notebookItem && container.openNotebook(notebookItem);
-      },
-    };
-  };
-
   const createRecentItems = (): SplashScreenItem[] => {
-    return MostRecentActivity.getItems(userContext.databaseAccount?.name).map((activity) => {
-      switch (activity.type) {
-        default: {
-          const unknownActivity: never = activity;
-          throw new Error(`Unknown activity: ${unknownActivity}`);
-        }
-        case MostRecentActivity.Type.OpenNotebook:
-          return decorateOpenNotebookActivity(activity);
-
-        case MostRecentActivity.Type.OpenCollection:
-          return decorateOpenCollectionActivity(activity);
-      }
-    });
+    return MostRecentActivity.getItems(userContext.databaseAccount?.name).map((activity) =>
+      decorateOpenCollectionActivity(activity),
+    );
   };
 
   const onSplashScreenItemKeyPress = (event: React.KeyboardEvent, callback: () => void) => {
@@ -815,7 +802,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
 
   const vcoreMongoNextStepItems: { link: string; title: string; description: string }[] = [
     {
-      link: "https://learn.microsoft.com/azure/cosmos-db/mongodb/vcore/migration-options",
+      link: "https://learn.microsoft.com/azure/documentdb/migration-options",
       title: t(Keys.splashScreen.nextStepItems.vcoreMongo.migrateData),
       description: "",
     },

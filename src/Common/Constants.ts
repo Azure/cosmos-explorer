@@ -6,7 +6,7 @@ export class EndpointsRegex {
   public static readonly mongo = "mongodb://.*:(.*)@(.*).documents.azure.com";
   public static readonly mongoCompute = "mongodb://.*:(.*)@(.*).mongo.cosmos.azure.com";
   public static readonly sql = "AccountEndpoint=https://(.*).documents.azure.com";
-  public static readonly table = "TableEndpoint=https://(.*).table.cosmosdb.azure.com";
+  public static readonly table = "TableEndpoint=https://(.*).table.cosmos(?:db)?.azure.com";
 }
 
 export class ApiEndpoints {

@@ -17,9 +17,6 @@ import { configContext, Platform } from "../../../ConfigContext";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
-import Explorer from "../../Explorer";
-import { ConnectionStatus } from "./ConnectionStatusComponent";
-import { MemoryTracker } from "./MemoryTrackerComponent";
 
 /**
  * Convert our NavbarButtonConfig to UI Fabric buttons
@@ -255,20 +252,6 @@ export const createDivider = (key: string): ICommandBarItemProps => {
     iconOnly: true,
     disabled: true,
     key: key,
-  };
-};
-
-export const createMemoryTracker = (key: string): ICommandBarItemProps => {
-  return {
-    key,
-    onRender: () => <MemoryTracker />,
-  };
-};
-
-export const createConnectionStatus = (container: Explorer, key: string): ICommandBarItemProps => {
-  return {
-    key,
-    onRender: () => <ConnectionStatus container={container} />,
   };
 };
 

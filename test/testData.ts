@@ -9,7 +9,6 @@ import {
   JSONObject,
 } from "@azure/cosmos";
 import { Buffer } from "node:buffer";
-import { webcrypto } from "node:crypto";
 import {
   generateUniqueName,
   getAccountName,
@@ -18,13 +17,6 @@ import {
   subscriptionId,
   TestAccount,
 } from "./fx";
-import { getNoSqlRbacToken } from "./NoSqlTestSetup";
-
-// In Node.js >= 19, globalThis.crypto is already available as a read-only getter.
-// Only assign the polyfill for older versions.
-if (!globalThis.crypto) {
-  Object.defineProperty(globalThis, "crypto", { value: webcrypto, writable: true, configurable: true });
-}
 
 export interface TestItem {
   id: string;
@@ -135,7 +127,7 @@ async function createCosmosClientForSQLAccount(
 
   const rbacToken =
     accountType === TestAccount.SQL
-      ? getNoSqlRbacToken()
+      ? process.env.NOSQL_TESTACCOUNT_TOKEN
       : accountType === TestAccount.SQLContainerCopyOnly
       ? process.env.NOSQL_CONTAINERCOPY_TESTACCOUNT_TOKEN
       : "";

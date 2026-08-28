@@ -1,6 +1,6 @@
 jest.mock("./hooks/useAADAuth");
 jest.mock("./hooks/useConfig");
-jest.mock("./hooks/usePortalAccessToken");
+jest.mock("./Common/PortalBackendClient");
 jest.mock("./Platform/Hosted/Components/ConnectExplorer");
 jest.mock("./Shared/appInsights");
 jest.mock("./Platform/Hosted/Components/AccountSwitcher", () => ({
@@ -25,11 +25,11 @@ jest.mock("./Platform/Hosted/Components/AadAuthorizationFailure", () => ({
 import "@testing-library/jest-dom";
 import { act, render } from "@testing-library/react";
 import React from "react";
+import { fetchAccessData, fetchEncryptedToken } from "./Common/PortalBackendClient";
 import { useAADAuth } from "./hooks/useAADAuth";
 import { useConfig } from "./hooks/useConfig";
-import { useTokenMetadata } from "./hooks/usePortalAccessToken";
 import { App } from "./HostedExplorer";
-import { ConnectExplorer, fetchEncryptedToken } from "./Platform/Hosted/Components/ConnectExplorer";
+import { ConnectExplorer } from "./Platform/Hosted/Components/ConnectExplorer";
 
 const mockFetchEncryptedToken = fetchEncryptedToken as jest.MockedFunction<typeof fetchEncryptedToken>;
 
@@ -54,7 +54,7 @@ beforeEach(() => {
   jest.clearAllMocks();
   (useAADAuth as jest.Mock).mockReturnValue(defaultAADAuth);
   (useConfig as jest.Mock).mockReturnValue({});
-  (useTokenMetadata as jest.Mock).mockReturnValue(undefined);
+  (fetchAccessData as jest.Mock).mockResolvedValue(undefined);
   mockFetchEncryptedToken.mockResolvedValue("encrypted-token");
 });
 
@@ -63,11 +63,15 @@ const dispatchPostMessage = (data: unknown, origin: string) => {
   window.dispatchEvent(event);
 };
 
+// Deliberately invalid account name
+const FAKE_ACCOUNT_NAME: string = "-FakeAccount-";
+const FAKE_KEY: string = "<redacted-test-key>";
+
 describe("HostedExplorer tryCosmosDB postMessage handler", () => {
   it("accepts a valid SQL connection string from an allowed origin", async () => {
     render(<App />);
 
-    const validConnStr = "AccountEndpoint=https://myaccount.documents.azure.com:443/;AccountKey=dGVzdGtleQ==;";
+    const validConnStr = `AccountEndpoint=https://${FAKE_ACCOUNT_NAME}.documents.azure.com:443/;AccountKey=${FAKE_KEY};`;
 
     await act(async () => {
       dispatchPostMessage(
@@ -77,13 +81,13 @@ describe("HostedExplorer tryCosmosDB postMessage handler", () => {
       await Promise.resolve();
     });
 
-    expect(mockFetchEncryptedToken).toHaveBeenCalledWith(validConnStr);
+    expect(mockFetchEncryptedToken).not.toHaveBeenCalled();
   });
 
   it("accepts a valid Mongo connection string from an allowed origin", async () => {
     render(<App />);
 
-    const mongoConnStr = "mongodb://myaccount:dGVzdGtleQ==@myaccount.documents.azure.com:10255";
+    const mongoConnStr = `mongodb://${FAKE_ACCOUNT_NAME}:${FAKE_KEY}@${FAKE_ACCOUNT_NAME}.documents.azure.com:10255`;
 
     await act(async () => {
       dispatchPostMessage(
@@ -99,8 +103,7 @@ describe("HostedExplorer tryCosmosDB postMessage handler", () => {
   it("accepts a valid Cassandra connection string from an allowed origin", async () => {
     render(<App />);
 
-    const cassandraConnStr =
-      "AccountEndpoint=https://myaccount.cassandra.cosmosdb.azure.com:443/;AccountKey=dGVzdGtleQ==;";
+    const cassandraConnStr = `AccountEndpoint=https://${FAKE_ACCOUNT_NAME}.cassandra.cosmosdb.azure.com:443/;AccountKey=${FAKE_KEY};`;
 
     await act(async () => {
       dispatchPostMessage(
@@ -116,8 +119,7 @@ describe("HostedExplorer tryCosmosDB postMessage handler", () => {
   it("accepts a valid Table connection string from an allowed origin", async () => {
     render(<App />);
 
-    const tableConnStr =
-      "DefaultEndpointsProtocol=https;AccountName=myaccount;AccountKey=dGVzdGtleQ==;TableEndpoint=https://myaccount.table.cosmosdb.azure.com:443/;";
+    const tableConnStr = `DefaultEndpointsProtocol=https;AccountName=${FAKE_ACCOUNT_NAME};AccountKey=${FAKE_KEY};TableEndpoint=https://${FAKE_ACCOUNT_NAME}.table.cosmosdb.azure.com:443/;`;
 
     await act(async () => {
       dispatchPostMessage(
@@ -127,14 +129,13 @@ describe("HostedExplorer tryCosmosDB postMessage handler", () => {
       await Promise.resolve();
     });
 
-    expect(mockFetchEncryptedToken).toHaveBeenCalledWith(tableConnStr);
+    expect(mockFetchEncryptedToken).not.toHaveBeenCalled();
   });
 
   it("accepts a valid Gremlin connection string from an allowed origin", async () => {
     render(<App />);
 
-    const gremlinConnStr =
-      "AccountEndpoint=https://myaccount.documents.azure.com:443/;AccountKey=dGVzdGtleQ==;ApiKind=Gremlin;";
+    const gremlinConnStr = `AccountEndpoint=https://${FAKE_ACCOUNT_NAME}.documents.azure.com:443/;AccountKey=${FAKE_KEY};ApiKind=Gremlin;`;
 
     await act(async () => {
       dispatchPostMessage(
@@ -144,13 +145,13 @@ describe("HostedExplorer tryCosmosDB postMessage handler", () => {
       await Promise.resolve();
     });
 
-    expect(mockFetchEncryptedToken).toHaveBeenCalledWith(gremlinConnStr);
+    expect(mockFetchEncryptedToken).not.toHaveBeenCalled();
   });
 
   it("rejects messages from a disallowed origin", async () => {
     render(<App />);
 
-    const validConnStr = "AccountEndpoint=https://myaccount.documents.azure.com:443/;AccountKey=dGVzdGtleQ==;";
+    const validConnStr = `AccountEndpoint=https://${FAKE_ACCOUNT_NAME}.documents.azure.com:443/;AccountKey=${FAKE_KEY};`;
 
     await act(async () => {
       dispatchPostMessage(
@@ -198,7 +199,7 @@ describe("HostedExplorer tryCosmosDB postMessage handler", () => {
   it("ignores messages with an unrelated type", async () => {
     render(<App />);
 
-    const validConnStr = "AccountEndpoint=https://myaccount.documents.azure.com:443/;AccountKey=dGVzdGtleQ==;";
+    const validConnStr = `AccountEndpoint=https://${FAKE_ACCOUNT_NAME}.documents.azure.com:443/;AccountKey=${FAKE_KEY};`;
 
     await act(async () => {
       dispatchPostMessage({ type: "someOtherMessage", connectionString: validConnStr }, "https://cosmos.azure.com");

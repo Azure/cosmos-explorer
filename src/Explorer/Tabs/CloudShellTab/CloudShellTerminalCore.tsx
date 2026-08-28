@@ -10,6 +10,7 @@ import {
   provisionConsole,
   putEphemeralUserSettings,
   registerCloudShellProvider,
+  resizeTerminal,
   verifyCloudShellProviderRegistration,
 } from "./Data/CloudShellClient";
 import { CloudShellProviderInfo, ProvisionConsoleResponse } from "./Models/DataModels";
@@ -26,6 +27,7 @@ const DEFAULT_FAIRFAX_CLOUDSHELL_REGION = "usgovvirginia";
 const POLLING_INTERVAL_MS = 2000;
 const MAX_RETRY_COUNT = 10;
 const MAX_PING_COUNT = 120 * 60; // 120 minutes (60 seconds/minute)
+const TERMINAL_RESIZE_DEBOUNCE_MS = 300;
 
 let pingCount = 0;
 let keepAliveID: NodeJS.Timeout = null;
@@ -96,6 +98,7 @@ export const startCloudShellTerminal = async (terminal: Terminal, shellType: Ter
       socketUri?: string;
       provisionConsoleResponse?: ProvisionConsoleResponse;
       targetUri?: string;
+      terminalId?: string;
     } = await provisionCloudShellSession(resolvedRegion, terminal);
 
     if (!sessionDetails.socketUri) {
@@ -107,6 +110,14 @@ export const startCloudShellTerminal = async (terminal: Terminal, shellType: Ter
     const shellHandler = await getHandler(shellType);
     // Configure WebSocket connection with shell-specific commands
     const socket = await establishTerminalConnection(terminal, shellHandler, sessionDetails.socketUri);
+
+    // Keep the backend PTY size in sync with the frontend terminal. Without this, resizing the
+    // browser window only re-fits the local xterm while the remote shell keeps its original
+    // column count, causing typed input to wrap/break at the wrong column.
+    const consoleUri = sessionDetails.provisionConsoleResponse?.properties?.uri;
+    if (consoleUri && sessionDetails.terminalId) {
+      registerTerminalResizeHandler(terminal, consoleUri, sessionDetails.terminalId);
+    }
 
     TelemetryProcessor.traceSuccess(
       Action.CloudShellTerminalSession,
@@ -160,12 +171,45 @@ export const determineCloudShellRegion = (): string => {
 };
 
 /**
+ * Registers a debounced handler that notifies the CloudShell backend whenever the frontend
+ * terminal is resized (e.g. after a browser window resize triggers FitAddon.fit()), keeping the
+ * remote PTY column/row count in sync with what the user sees.
+ */
+export const registerTerminalResizeHandler = (terminal: Terminal, consoleUri: string, terminalId: string): void => {
+  let debounceTimer: NodeJS.Timeout | null = null;
+  let lastCols = terminal.cols;
+  let lastRows = terminal.rows;
+
+  terminal.onResize(({ cols, rows }) => {
+    if (cols === lastCols && rows === lastRows) {
+      return;
+    }
+    lastCols = cols;
+    lastRows = rows;
+
+    if (debounceTimer) {
+      clearTimeout(debounceTimer);
+    }
+    debounceTimer = setTimeout(() => {
+      resizeTerminal(consoleUri, terminalId, { cols, rows }).catch((err) => {
+        console.warn("CloudShell: failed to resize backend terminal", err);
+      });
+    }, TERMINAL_RESIZE_DEBOUNCE_MS);
+  });
+};
+
+/**
  * Provisions a CloudShell session
  */
 export const provisionCloudShellSession = async (
   resolvedRegion: string,
   terminal: Terminal,
-): Promise<{ socketUri?: string; provisionConsoleResponse?: ProvisionConsoleResponse; targetUri?: string }> => {
+): Promise<{
+  socketUri?: string;
+  provisionConsoleResponse?: ProvisionConsoleResponse;
+  targetUri?: string;
+  terminalId?: string;
+}> => {
   // Apply user settings
   await putEphemeralUserSettings(userContext.subscriptionId, resolvedRegion);
 
@@ -217,7 +261,7 @@ export const provisionCloudShellSession = async (
     socketUri = `wss://${targetUriBodyArr[0]}/$hc/${targetUriBodyArr[1]}/terminals/${termId}`;
   }
 
-  return { socketUri, provisionConsoleResponse, targetUri };
+  return { socketUri, provisionConsoleResponse, targetUri, terminalId: termId };
 };
 
 /**

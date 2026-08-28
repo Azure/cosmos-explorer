@@ -6,6 +6,7 @@ import {
   provisionConsole,
   putEphemeralUserSettings,
   registerCloudShellProvider,
+  resizeTerminal,
   verifyCloudShellProviderRegistration,
 } from "./CloudShellClient";
 
@@ -127,6 +128,7 @@ describe("CloudShellClient", () => {
             vnetSettings: {},
           },
         },
+        timeoutMs: 30000,
       });
       expect(result).toEqual(mockResponse);
     });
@@ -154,6 +156,7 @@ describe("CloudShellClient", () => {
             vnetSettings: mockVNetSettings,
           },
         },
+        timeoutMs: 30000,
       });
     });
 
@@ -212,6 +215,7 @@ describe("CloudShellClient", () => {
         path: "/subscriptions/sub-id/providers/Microsoft.CloudShell/register",
         method: "POST",
         apiVersion: "2022-12-01",
+        timeoutMs: 30000,
       });
       expect(result).toEqual(mockResponse);
     });
@@ -227,6 +231,7 @@ describe("CloudShellClient", () => {
         path: "/subscriptions/sub-id/providers/Microsoft.CloudShell/register",
         method: "POST",
         apiVersion: "2022-12-01",
+        timeoutMs: 30000,
       });
     });
   });
@@ -251,6 +256,7 @@ describe("CloudShellClient", () => {
             osType: OsType.Linux,
           },
         },
+        timeoutMs: 30000,
       });
       expect(result).toEqual(mockResponse);
     });
@@ -274,6 +280,7 @@ describe("CloudShellClient", () => {
             osType: OsType.Linux,
           },
         },
+        timeoutMs: 30000,
       });
     });
   });
@@ -330,6 +337,68 @@ describe("CloudShellClient", () => {
 
       expect(global.fetch).toHaveBeenCalledWith(
         "https://shell.azure.com/console123/terminals?cols=80&rows=24&version=2019-01-01&shell=bash",
+        expect.any(Object),
+      );
+    });
+  });
+
+  describe("resizeTerminal", () => {
+    it("should call fetch with correct parameters", async () => {
+      const consoleUri = "https://shell.azure.com/console123";
+      const terminalId = "terminal-id";
+      const size = { rows: 40, cols: 120 };
+
+      global.fetch = jest.fn().mockImplementationOnce(() => {
+        return {
+          ok: true,
+          status: 200,
+          json: jest.fn().mockResolvedValue({}),
+          text: jest.fn().mockResolvedValue(""),
+          headers: new Headers(),
+        } as unknown as Promise<Response>;
+      });
+
+      await resizeTerminal(consoleUri, terminalId, size);
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        "https://shell.azure.com/console123/terminals/terminal-id/size?cols=120&rows=40&version=2019-01-01",
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "Content-Length": "2",
+            Authorization: "Bearer mock-token",
+            "x-ms-client-request-id": "mocked-uuid",
+            "Accept-Language": "en-US",
+          },
+          body: "{}",
+        },
+      );
+    });
+
+    it("should handle errors when terminal resize fails", async () => {
+      const consoleUri = "https://shell.azure.com/console123";
+      const terminalId = "terminal-id";
+      const size = { rows: 40, cols: 120 };
+
+      global.fetch = jest.fn().mockImplementationOnce(() => {
+        return {
+          ok: false,
+          status: 500,
+          statusText: "Internal Server Error",
+          json: jest.fn().mockRejectedValue(new Error("Failed to parse JSON")),
+          text: jest.fn().mockResolvedValue("Server Error"),
+          headers: new Headers(),
+        } as unknown as Promise<Response>;
+      });
+
+      await expect(resizeTerminal(consoleUri, terminalId, size)).rejects.toThrow(
+        "Failed to resize terminal: 500 Internal Server Error",
+      );
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        "https://shell.azure.com/console123/terminals/terminal-id/size?cols=120&rows=40&version=2019-01-01",
         expect.any(Object),
       );
     });

@@ -83,12 +83,6 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
   useEffect(() => {
     const effect = async () => {
       if (platform) {
-        //Updating phoenix feature flags for MPAC based of config context
-        if (configContext.isPhoenixEnabled === true) {
-          userContext.features.phoenixNotebooks = true;
-          userContext.features.phoenixFeatures = true;
-        }
-
         let explorer: Explorer;
         try {
           if (platform === Platform.Hosted) {
@@ -467,13 +461,24 @@ function configureHostedWithConnectionString(config: ConnectionString): Explorer
     properties: getDatabaseAccountPropertiesFromMetadata(config.encryptedTokenMetadata),
     tags: {},
   };
-  updateUserContext({
-    // For legacy reasons lots of code expects a connection string login to look and act like an encrypted token login
-    authType: AuthType.EncryptedToken,
-    accessToken: encodeURIComponent(config.encryptedToken),
-    databaseAccount,
-    masterKey: config.masterKey,
-  });
+  if (config.masterKey && !config.encryptedToken) {
+    // Direct client-side signing path (SQL, Table, Gremlin). Requests are signed locally with the
+    // account key via the Cosmos client's tokenProvider, so no Portal Backend proxy or encrypted token
+    // is required.
+    updateUserContext({
+      authType: AuthType.ConnectionString,
+      databaseAccount,
+      masterKey: config.masterKey,
+    });
+  } else {
+    // Legacy encrypted-token proxy path (Mongo, Cassandra).
+    updateUserContext({
+      authType: AuthType.EncryptedToken,
+      accessToken: encodeURIComponent(config.encryptedToken),
+      databaseAccount,
+      masterKey: config.masterKey,
+    });
+  }
   const explorer = new Explorer();
   return explorer;
 }
@@ -998,15 +1003,6 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
     }
     if (inputs.flights.indexOf(Flights.PKPartitionKeyTest) !== -1) {
       userContext.features.partitionKeyDefault2 = true;
-    }
-    if (inputs.flights.indexOf(Flights.PhoenixNotebooks) !== -1) {
-      userContext.features.phoenixNotebooks = true;
-    }
-    if (inputs.flights.indexOf(Flights.PhoenixFeatures) !== -1) {
-      userContext.features.phoenixFeatures = true;
-    }
-    if (inputs.flights.indexOf(Flights.NotebooksDownBanner) !== -1) {
-      userContext.features.notebooksDownBanner = true;
     }
   }
 

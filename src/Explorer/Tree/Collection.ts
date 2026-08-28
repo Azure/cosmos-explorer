@@ -5,7 +5,6 @@ import {
   TriggerDefinition,
   UserDefinedFunctionDefinition,
 } from "@azure/cosmos";
-import { useNotebook } from "Explorer/Notebook/useNotebook";
 import { DocumentsTabV2 } from "Explorer/Tabs/DocumentsTabV2/DocumentsTabV2";
 import { isFabricMirrored } from "Platform/Fabric/FabricUtil";
 import { useDataplaneRbacAuthorization } from "Utils/AuthorizationUtils";
@@ -546,52 +545,6 @@ export default class Collection implements ViewModels.Collection {
       });
       useTabs.getState().activateNewTab(mongoDocumentsTab);
     }
-  };
-
-  public onSchemaAnalyzerClick = async () => {
-    if (useNotebook.getState().isPhoenixFeatures) {
-      await this.container.allocateContainer();
-    }
-    useSelectedNode.getState().setSelectedNode(this);
-    this.selectedSubnodeKind(ViewModels.CollectionTabKind.SchemaAnalyzer);
-    const SchemaAnalyzerTab = await (await import("../Tabs/SchemaAnalyzerTab")).default;
-    TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
-      description: "Schema node",
-      databaseName: this.databaseId,
-      collectionName: this.id(),
-      dataExplorerArea: Constants.Areas.ResourceTree,
-    });
-
-    for (const tab of useTabs.getState().openedTabs) {
-      if (
-        tab instanceof SchemaAnalyzerTab &&
-        tab.collection?.databaseId === this.databaseId &&
-        tab.collection?.id() === this.id()
-      ) {
-        return useTabs.getState().activateTab(tab);
-      }
-    }
-
-    const startKey = TelemetryProcessor.traceStart(Action.Tab, {
-      databaseName: this.databaseId,
-      collectionName: this.id(),
-      dataExplorerArea: Constants.Areas.Tab,
-      tabTitle: "Schema",
-    });
-    this.documentIds([]);
-    useTabs.getState().activateNewTab(
-      new SchemaAnalyzerTab({
-        account: userContext.databaseAccount,
-        masterKey: userContext.masterKey || "",
-        container: this.container,
-        tabKind: ViewModels.CollectionTabKind.SchemaAnalyzer,
-        title: "Schema",
-        tabPath: "",
-        collection: this,
-        node: this,
-        onLoadStartKey: startKey,
-      }),
-    );
   };
 
   public onSettingsClick = async (): Promise<void> => {
