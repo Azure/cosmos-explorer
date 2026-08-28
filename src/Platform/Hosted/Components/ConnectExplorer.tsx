@@ -58,18 +58,20 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
                 setIsConnecting(true);
 
                 try {
-                  try {
-                    if (await isAccountRestrictedForConnectionStringLogin(connectionString)) {
-                      setErrorMessage(
-                        "This account has been blocked from connection-string login. Please go to cosmos.azure.com/aad for AAD based login.",
-                      );
-                      return;
-                    }
-                  } catch (error) {
-                    setErrorMessage(getErrorMessage(error as Error));
+                  if (await isAccountRestrictedForConnectionStringLogin(connectionString)) {
+                    setErrorMessage(
+                      "This account has been blocked from connection-string login. Please go to cosmos.azure.com/aad for AAD based login.",
+                    );
+                    setIsConnecting(false);
                     return;
                   }
+                } catch (error) {
+                  setErrorMessage(getErrorMessage(error as Error));
+                  setIsConnecting(false);
+                  return;
+                }
 
+                try {
                   if (isResourceTokenConnectionString(connectionString)) {
                     setAuthType(AuthType.ResourceToken);
                     return;
@@ -90,23 +92,21 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
                   }
 
                   // Mongo and Cassandra go through the Portal Backend
-                  try {
-                    const encryptedToken = await fetchEncryptedToken(connectionString);
-                    setEncryptedToken(encryptedToken);
-                    setAuthType(AuthType.ConnectionString);
-                  } catch (error) {
-                    const errorDetails = await (error as Response).text();
+                  const encryptedToken = await fetchEncryptedToken(connectionString);
+                  setEncryptedToken(encryptedToken);
+                  setAuthType(AuthType.ConnectionString);
+                } catch (error) {
+                  const errorDetails = await (error as Response).text();
 
-                    setErrorMessage(
-                      errorDetails
-                        ? `Couldn't authenticate with Cosmos DB: ${errorDetails}`
-                        : "Failed to connect to the account. Please check the connection string and try again.",
-                    );
-                    // A Forbidden usually means the account firewall dropped the request. The connection
-                    // string is exchanged by the Portal Backend rather than the browser, so the account has
-                    // to allowlist those services.
-                    setIsBlockedByFirewall((error as Response).status === HttpStatusCodes.Forbidden);
-                  }
+                  setErrorMessage(
+                    errorDetails
+                      ? `Couldn't authenticate with Cosmos DB: ${errorDetails}`
+                      : "Failed to connect to the account. Please check the connection string and try again.",
+                  );
+                  // A Forbidden usually means the account firewall dropped the request. The connection
+                  // string is exchanged by the Portal Backend rather than the browser, so the account has
+                  // to allowlist those services.
+                  setIsBlockedByFirewall((error as Response).status === HttpStatusCodes.Forbidden);
                 } finally {
                   setIsConnecting(false);
                 }
