@@ -20,7 +20,7 @@ import {
 
 import type { ChoiceItem } from "../SelfServeTypes";
 
-import { BladeType, generateBladeLink } from "../SelfServeUtils";
+import { BladeType, generateBladeLink, SelfServeType } from "../SelfServeUtils";
 import {
   deleteDedicatedGatewayResource,
   getCurrentProvisioningState,
@@ -396,6 +396,10 @@ export default class SqlX extends SelfServeBaseClass {
     }
     defaults.set("warningBanner", undefined);
     return defaults;
+  };
+
+  public getSelfServeType = (): SelfServeType => {
+    return SelfServeType.sqlx;
   };
 
   @Values({
