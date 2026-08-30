@@ -12,7 +12,7 @@ export interface GremlinSimpleClientParameters {
   password: string;
   successCallback: (result: Result) => void;
   progressCallback: (result: Result) => void;
-  failureCallback: (result: Result, error: string) => void;
+  failureCallback: (result: Result | null, error: string) => void;
   infoCallback: (msg: string) => void;
 }
 
@@ -62,14 +62,15 @@ export class GremlinSimpleClient {
   private static readonly requestChargeHeader = "x-ms-request-charge";
 
   public params: GremlinSimpleClientParameters;
-  private protocols: string | string[];
-  private ws: WebSocket;
+  private ws: WebSocket | undefined;
 
   public requestsToSend: { [requestId: string]: GremlinRequestMessage };
   public pendingRequests: { [requestId: string]: GremlinRequestMessage };
 
   constructor(params: GremlinSimpleClientParameters) {
     this.params = params;
+    this.ws = undefined;
+
     this.pendingRequests = {};
     this.requestsToSend = {};
   }
@@ -117,7 +118,7 @@ export class GremlinSimpleClient {
     }
   }
 
-  public decodeMessage(msg: MessageEvent): GremlinResponseMessage {
+  public decodeMessage(msg: MessageEvent): GremlinResponseMessage | null {
     if (msg.data === null) {
       return null;
     }
@@ -280,7 +281,7 @@ export class GremlinSimpleClient {
 
   public static utf8ToB64(utf8Str: string) {
     return btoa(
-      encodeURIComponent(utf8Str).replace(/%([0-9A-F]{2})/g, function (match, p1) {
+      encodeURIComponent(utf8Str).replace(/%([0-9A-F]{2})/g, function (_match, p1) {
         return String.fromCharCode(parseInt(p1, 16));
       }),
     );
@@ -305,7 +306,7 @@ export class GremlinSimpleClient {
     return binaryMessage;
   }
 
-  private onOpen(event: any) {
+  private onOpen(_event: any) {
     this.executeRequestsToSend();
   }
 
@@ -348,6 +349,6 @@ export class GremlinSimpleClient {
 
   private sendGremlinMessage(gremlinRequestMessage: GremlinRequestMessage) {
     const gremlinFrame = GremlinSimpleClient.buildGremlinMessage(gremlinRequestMessage);
-    this.ws.send(gremlinFrame);
+    this.ws && this.ws.send(gremlinFrame);
   }
 }
