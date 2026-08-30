@@ -222,6 +222,7 @@ export class EditorNodePropertiesComponent extends React.Component<EditorNodePro
                     this.props.onUpdateProperties(this.props.editedProperties);
                   }}
                   required
+                  aria-label="Select Type"
                 >
                   {EditorNodePropertiesComponent.VERTEX_PROPERTY_TYPES.map((type: string) => (
                     <option value={type} key={type}>
