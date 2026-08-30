@@ -6,7 +6,7 @@ describe("Cache arrays by key", () => {
     const key = "key";
     cache.insert(key, 1, 0);
     cache.clear();
-    expect(cache.retrieve(key, 0, 1)).toBe(null);
+    expect(cache.retrieve(key, 0, 1)).toBe(undefined);
   });
 
   it("should invalidate oldest key to keep cache size under maximum", () => {
@@ -21,7 +21,7 @@ describe("Cache arrays by key", () => {
     cache.insert(key1, 2, 4);
 
     expect(cache.retrieve(key1, 0, 3)).toEqual([0, 2, 4]);
-    expect(cache.retrieve(key2, 1, 1)).toEqual(null);
+    expect(cache.retrieve(key2, 1, 1)).toEqual(undefined);
   });
 
   it("should cache and retrieve cached page within boundaries", () => {
@@ -39,7 +39,7 @@ describe("Cache arrays by key", () => {
     const key = "key";
     cache.insert(key, 0, 0);
     cache.insert(key, 1, 1);
-    expect(cache.retrieve(key, 2, 1)).toEqual(null);
+    expect(cache.retrieve(key, 2, 1)).toEqual(undefined);
   });
 
   it("should not retrieve cached page overlapping boundaries", () => {
@@ -48,7 +48,7 @@ describe("Cache arrays by key", () => {
     cache.insert(key, 0, 0);
     cache.insert(key, 1, 1);
     cache.insert(key, 2, 2);
-    expect(cache.retrieve(key, 2, 4)).toEqual(null);
+    expect(cache.retrieve(key, 2, 4)).toEqual(undefined);
   });
 
   it("should not insert non-contiguous element", () => {
@@ -57,7 +57,7 @@ describe("Cache arrays by key", () => {
     cache.insert(key, 0, 0);
     cache.insert(key, 1, 1);
     cache.insert(key, 3, 3);
-    expect(cache.retrieve(key, 3, 1)).toEqual(null);
+    expect(cache.retrieve(key, 3, 1)).toEqual(undefined);
   });
 
   it("should cache multiple keys", () => {
