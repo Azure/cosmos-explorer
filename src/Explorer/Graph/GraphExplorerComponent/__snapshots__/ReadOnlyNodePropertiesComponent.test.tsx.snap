@@ -123,7 +123,7 @@ exports[`<ReadOnlyNodePropertiesComponent /> renders properties (with multiple v
       </td>
       <td
         className="valueCol"
-        title="abcd, 1234, true, false, undefined, null"
+        title="abcd, 1234, true, false, undefined"
       >
         <div
           className="propertyValue"
@@ -154,12 +154,6 @@ exports[`<ReadOnlyNodePropertiesComponent /> renders properties (with multiple v
           key="undefined"
         >
           undefined
-        </div>
-        <div
-          className="propertyValue isNull"
-          key="null"
-        >
-          null
         </div>
       </td>
     </tr>
