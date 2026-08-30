@@ -144,7 +144,7 @@ export const NewVertexComponent: FunctionComponent<INewVertexComponentProps> = (
                     className="edgeInput"
                     label={index === 0 && "Key"}
                     type="text"
-                    id="propertyKeyNewVertexPane"
+                    id={`propertyKeyNewVertexPane${index + 1}`}
                     componentRef={input}
                     required
                     placeholder="Key"
