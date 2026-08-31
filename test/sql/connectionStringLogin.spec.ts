@@ -115,4 +115,32 @@ test.describe("SQL account using connection string login", () => {
     await expect(page.locator("#connectExplorer")).toHaveCount(0);
     await expect(page.locator(".errorDetails")).toHaveCount(0);
   });
+
+  test("opens Data Explorer but loads no databases when the account rejects the client IP", async ({ page }) => {
+    // An account that refuses this client's IP.
+    const armClient = new CosmosDBManagementClient(getAzureCLICredentials(), subscriptionId);
+    const blockedAccountName = getAccountName(TestAccount.SQLConnectionStringPublicNetworkAccessDisabled);
+    const blockedAccount = await armClient.databaseAccounts.get(resourceGroupName, blockedAccountName);
+    const blockedKeys = await armClient.databaseAccounts.listKeys(resourceGroupName, blockedAccountName);
+
+    await loginWithConnectionString(
+      page,
+      `AccountEndpoint=${blockedAccount.documentEndpoint!};AccountKey=${blockedKeys.primaryMasterKey};`,
+    );
+
+    const explorer = await DataExplorer.waitForExplorer(page);
+
+    // Login is a client-side parse of the connection string, so nothing checks whether the account will
+    // accept requests from this IP before letting the user in.
+    await expect(page.locator("#connectExplorer")).toHaveCount(0);
+    await expect(page.locator(".errorDetails")).toHaveCount(0);
+
+    // The rejection surfaces once the tree tries to read the data plane, and only in the console.
+    const consoleMessages = await explorer.getNotificationConsoleMessages();
+    await expect(consoleMessages).toContainText("Error while refreshing databases", { timeout: ONE_MINUTE_MS });
+
+    // The tree is left with the static Home node and no database or container beneath it.
+    await expect(explorer.treeNode("Home").element).toBeAttached();
+    await expect(explorer.frame.locator("[data-test^='TreeNode:']")).toHaveCount(1);
+  });
 });
