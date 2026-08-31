@@ -103,7 +103,6 @@
       "learningResources": "學習資源",
       "nextSteps": "後續步驟",
       "tipsAndLearnMore": "提示與深入了解",
-      "notebook": "筆記本",
       "needHelp": "是否需要協助?"
     },
     "top3Items": {
@@ -663,34 +662,6 @@
       "statusColumn": "狀態",
       "uploadStatus": "{{numSucceeded}} 個已建立，{{numThrottled}} 個已節流，{{numFailed}} 個錯誤",
       "uploadedFiles": "上傳的檔案"
-    },
-    "copyNotebook": {
-      "copyFailedError": "無法將 {{name}} 複製到 {{destination}}",
-      "uploadFailedError": "無法上傳 {{name}}",
-      "location": "位置",
-      "locationAriaLabel": "位置",
-      "selectLocation": "選取要複製的筆記本位置",
-      "name": "名稱"
-    },
-    "publishNotebook": {
-      "publishFailedError": "無法將 {{notebookName}} 發佈至資源庫",
-      "publishDescription": "發佈後，此筆記本會出現在 Azure Cosmos DB 筆記本公用資源庫中。發佈前，請確定已移除任何敏感性資料或輸出。",
-      "publishPrompt": "您是否要發佈並共用 \"{{name}}\" 至資源庫?",
-      "coverImage": "封面影像",
-      "coverImageUrl": "封面影像 URL",
-      "name": "名稱",
-      "description": "描述",
-      "tags": "標籤",
-      "tagsPlaceholder": "選用標記 1，選用標記 2",
-      "preview": "預覽",
-      "urlType": "URL",
-      "customImage": "自訂映像",
-      "takeScreenshot": "擷取螢幕擷取畫面",
-      "useFirstDisplayOutput": "使用第一個顯示輸出",
-      "failedToCaptureOutput": "無法擷取第一個輸出",
-      "outputDoesNotExist": "任何儲存格的輸出都不存在。",
-      "failedToConvertError": "無法將 {{fileName}} 轉換為 base64 格式",
-      "failedToUploadError": "無法上傳 {{fileName}}"
     },
     "changePartitionKey": {
       "failedToStartError": "無法啟動資料傳輸工作",

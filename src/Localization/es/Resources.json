@@ -103,7 +103,6 @@
       "learningResources": "Recursos de aprendizaje",
       "nextSteps": "Siguientes pasos",
       "tipsAndLearnMore": "Sugerencias y más información",
-      "notebook": "Notebook",
       "needHelp": "¿Necesita ayuda?"
     },
     "top3Items": {
@@ -663,34 +662,6 @@
       "statusColumn": "ESTADO",
       "uploadStatus": "{{numSucceeded}} creado, {{numThrottled}} limitado, {{numFailed}} errores",
       "uploadedFiles": "Archivos cargados"
-    },
-    "copyNotebook": {
-      "copyFailedError": "No se pudo copiar {{name}} en {{destination}}",
-      "uploadFailedError": "Error al cargar {{name}}.",
-      "location": "Ubicación",
-      "locationAriaLabel": "Ubicación",
-      "selectLocation": "Seleccionar una ubicación de bloc de notas para copiar",
-      "name": "Nombre"
-    },
-    "publishNotebook": {
-      "publishFailedError": "No se pudo publicar {{notebookName}} en la galería",
-      "publishDescription": "Cuando se publique, este bloc de notas aparecerá en la galería pública de blocs de notas de Azure Cosmos DB. Asegúrese de que ha quitado los datos confidenciales o la salida antes de la publicación.",
-      "publishPrompt": "¿Desea publicar y compartir \"{{name}}\" en la galería?",
-      "coverImage": "Imagen de portada",
-      "coverImageUrl": "Dirección URL de la imagen de portada",
-      "name": "Nombre",
-      "description": "Descripción",
-      "tags": "Etiquetas",
-      "tagsPlaceholder": "Etiqueta opcional 1, etiqueta opcional 2",
-      "preview": "Versión preliminar",
-      "urlType": "URL",
-      "customImage": "Imagen personalizada",
-      "takeScreenshot": "Obtener recorte de pantalla",
-      "useFirstDisplayOutput": "Usar la primera salida de pantalla",
-      "failedToCaptureOutput": "No se pudo capturar la primera salida",
-      "outputDoesNotExist": "La salida no existe para ninguna de las celdas.",
-      "failedToConvertError": "No se pudo convertir {{fileName}} al formato base64",
-      "failedToUploadError": "No se pudo cargar {{fileName}}"
     },
     "changePartitionKey": {
       "failedToStartError": "No se pudo iniciar el trabajo de transferencia de datos",

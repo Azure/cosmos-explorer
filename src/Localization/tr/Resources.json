@@ -103,7 +103,6 @@
       "learningResources": "Öğrenme Kaynakları",
       "nextSteps": "Sonraki adımlar",
       "tipsAndLearnMore": "İpuçları & daha fazla bilgi edinin",
-      "notebook": "Not Defteri",
       "needHelp": "Yardıma mı ihtiyacınız var?"
     },
     "top3Items": {
@@ -663,34 +662,6 @@
       "statusColumn": "DURUM",
       "uploadStatus": "{{numSucceeded}} oluşturuldu, {{numThrottled}} kısıtlandı, {{numFailed}} hata",
       "uploadedFiles": "Karşıya yüklenen dosyalar"
-    },
-    "copyNotebook": {
-      "copyFailedError": "{{name}} öğesi {{destination}} hedefine kopyalanamadı",
-      "uploadFailedError": "{{name}} karşıya yüklenemedi",
-      "location": "Konum",
-      "locationAriaLabel": "Konum",
-      "selectLocation": "Kopyalamak için bir defter konumu seçin",
-      "name": "Ad"
-    },
-    "publishNotebook": {
-      "publishFailedError": "{{notebookName}} galeride yayımlanamadı",
-      "publishDescription": "Yayımlandığında, bu not defteri Azure Cosmos DB not defterleri genel galerisinde görünür. Yayımlamadan önce hassas verileri veya çıktıları kaldırdığınızdan emin olun.",
-      "publishPrompt": "“{{name}}” öğesini galeride yayımlamak ve paylaşmak istiyor musunuz?",
-      "coverImage": "Kapak resmi",
-      "coverImageUrl": "Kapak resmi URL’si",
-      "name": "Ad",
-      "description": "Açıklama",
-      "tags": "Etiketler",
-      "tagsPlaceholder": "İsteğe bağlı etiket 1, İsteğe bağlı etiket 2",
-      "preview": "Önizleme",
-      "urlType": "URL",
-      "customImage": "Özel Görüntü",
-      "takeScreenshot": "Ekran Görüntüsü Al",
-      "useFirstDisplayOutput": "İlk Görüntü Çıkışını Kullan",
-      "failedToCaptureOutput": "İlk çıkış yakalanamadı",
-      "outputDoesNotExist": "Hiçbir hücre için çıkış yok.",
-      "failedToConvertError": "{{fileName}} base64 biçimine dönüştürülemedi",
-      "failedToUploadError": "{{fileName}} karşıya yüklenemedi"
     },
     "changePartitionKey": {
       "failedToStartError": "Veri aktarım işi başlatılamadı",

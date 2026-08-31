@@ -103,7 +103,6 @@
       "learningResources": "Studijní materiály",
       "nextSteps": "Další kroky",
       "tipsAndLearnMore": "Tipy a další informace",
-      "notebook": "Poznámkový blok",
       "needHelp": "Potřebujete pomoc?"
     },
     "top3Items": {
@@ -663,34 +662,6 @@
       "statusColumn": "STAV",
       "uploadStatus": "Vytvořeno: {{numSucceeded}}, omezeno: {{numThrottled}}, počet chyb: {{numFailed}}",
       "uploadedFiles": "Nahrané soubory"
-    },
-    "copyNotebook": {
-      "copyFailedError": "Nepovedlo se zkopírovat {{name}} do {{destination}}",
-      "uploadFailedError": "Nepodařilo se nahrát {{name}}",
-      "location": "Umístění",
-      "locationAriaLabel": "Umístění",
-      "selectLocation": "Vyberte umístění poznámkového bloku ke kopírování.",
-      "name": "Název"
-    },
-    "publishNotebook": {
-      "publishFailedError": "Publikování do galerie se {{notebookName}} nezdařilo.",
-      "publishDescription": "Po publikování se tento poznámkový blok zobrazí ve veřejné galerii poznámkových bloků Azure Cosmos DB. Před publikováním se ujistěte, že jste odebrali všechna citlivá data nebo výstup.",
-      "publishPrompt": "Chcete {{name}} publikovat a nasdílet do galerie?",
-      "coverImage": "Titulní obrázek",
-      "coverImageUrl": "Adresa URL titulního obrázku",
-      "name": "Název",
-      "description": "Popis",
-      "tags": "Značky",
-      "tagsPlaceholder": "Volitelná značka 1, volitelná značka 2",
-      "preview": "Náhled",
-      "urlType": "Adresa URL",
-      "customImage": "Vlastní image",
-      "takeScreenshot": "Pořídit snímek obrazovky",
-      "useFirstDisplayOutput": "Použít první zobrazený výstup",
-      "failedToCaptureOutput": "Nepovedlo se zachytit první výstup.",
-      "outputDoesNotExist": "Pro žádnou z buněk neexistuje výstup.",
-      "failedToConvertError": "Nepovedlo se převést {{fileName}} do formátu base64",
-      "failedToUploadError": "Nepodařilo se nahrát {{fileName}}."
     },
     "changePartitionKey": {
       "failedToStartError": "Nepovedlo se spustit úlohu přenosu dat.",

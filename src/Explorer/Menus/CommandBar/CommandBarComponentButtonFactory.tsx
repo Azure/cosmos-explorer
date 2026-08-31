@@ -143,7 +143,7 @@ export function createContextCommandBarButtons(
       onCommandClick: () => {
         const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
         if (userContext.features.enableCloudShell) {
-          container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
+          container.openTerminal(ViewModels.TerminalKind.Mongo);
         } else {
           selectedCollection && selectedCollection.onNewMongoShellClick();
         }
@@ -165,7 +165,7 @@ export function createContextCommandBarButtons(
       iconSrc: HostedTerminalIcon,
       iconAlt: label,
       onCommandClick: () => {
-        container.openNotebookTerminal(ViewModels.TerminalKind.Cassandra);
+        container.openTerminal(ViewModels.TerminalKind.Cassandra);
       },
       commandButtonLabel: label,
       ariaLabel: label,
@@ -531,7 +531,7 @@ function createOpenTerminalButtonByKind(
         return;
       }
       if (userContext.features.enableCloudShell) {
-        container.openNotebookTerminal(terminalKind);
+        container.openTerminal(terminalKind);
       }
     },
     commandButtonLabel: label,

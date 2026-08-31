@@ -18,7 +18,6 @@ import { isServerlessAccount } from "Utils/CapabilityUtils";
 import { useTabs } from "hooks/useTabs";
 import React from "react";
 import { Platform, configContext } from "../../ConfigContext";
-import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { userContext } from "../../UserContext";
 import * as ResourceTreeContextMenuButtonFactory from "../ContextMenuButtonFactory";
@@ -347,11 +346,6 @@ const buildCollectionNodeChildren = (
     });
   }
 
-  const schemaNode: TreeNode = buildSchemaNode(collection, container, refreshActiveTab);
-  if (schemaNode) {
-    children.push(schemaNode);
-  }
-
   const onUpdateDatabase = () => useDatabases.getState().updateDatabase(database);
 
   if (shouldShowScriptNodes()) {
@@ -467,78 +461,4 @@ const buildTriggerNode = (
       onUpdateDatabase();
     },
   };
-};
-
-const buildSchemaNode = (
-  collection: ViewModels.Collection,
-  container: Explorer,
-  refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void,
-): TreeNode => {
-  if (collection.analyticalStorageTtl() === undefined) {
-    return undefined;
-  }
-
-  if (!collection.schema || !collection.schema.fields) {
-    return undefined;
-  }
-
-  return {
-    label: "Schema",
-    children: getSchemaNodes(collection.schema.fields),
-    onClick: () => {
-      collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Schema);
-      refreshActiveTab((tab: TabsBase) => tab.collection && tab.collection.rid === collection.rid);
-    },
-  };
-};
-
-const getSchemaNodes = (fields: DataModels.IDataField[]): TreeNode[] => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const schema: any = {};
-
-  //unflatten
-  fields.forEach((field: DataModels.IDataField) => {
-    const path: string[] = field.path.split(".");
-    const fieldProperties = [field.dataType.name, `HasNulls: ${field.hasNulls}`];
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let current: any = {};
-    path.forEach((name: string, pathIndex: number) => {
-      if (pathIndex === 0) {
-        if (schema[name] === undefined) {
-          if (pathIndex === path.length - 1) {
-            schema[name] = fieldProperties;
-          } else {
-            schema[name] = {};
-          }
-        }
-        current = schema[name];
-      } else {
-        if (current[name] === undefined) {
-          if (pathIndex === path.length - 1) {
-            current[name] = fieldProperties;
-          } else {
-            current[name] = {};
-          }
-        }
-        current = current[name];
-      }
-    });
-  });
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const traverse = (obj: any): TreeNode[] => {
-    const children: TreeNode[] = [];
-
-    if (obj !== undefined && !Array.isArray(obj) && typeof obj === "object") {
-      Object.entries(obj).forEach(([key, value]) => {
-        children.push({ label: key, children: traverse(value) });
-      });
-    } else if (Array.isArray(obj)) {
-      return [{ label: obj[0] }, { label: obj[1] }];
-    }
-
-    return children;
-  };
-
-  return traverse(schema);
 };

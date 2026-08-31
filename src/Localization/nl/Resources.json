@@ -103,7 +103,6 @@
       "learningResources": "Trainingsresources",
       "nextSteps": "Volgende stappen",
       "tipsAndLearnMore": "Tips & meer informatie",
-      "notebook": "Notitieboek",
       "needHelp": "Hulp nodig?"
     },
     "top3Items": {
@@ -663,34 +662,6 @@
       "statusColumn": "STATUS",
       "uploadStatus": "{{numSucceeded}} gemaakt, {{numThrottled}} beperkt, {{numFailed}} fouten",
       "uploadedFiles": "Geüploade bestanden"
-    },
-    "copyNotebook": {
-      "copyFailedError": "{{name}} kopiëren naar {{destination}} is mislukt",
-      "uploadFailedError": "Kan {{name}} niet uploaden",
-      "location": "Locatie",
-      "locationAriaLabel": "Locatie",
-      "selectLocation": "Notebooklocatie selecteren om te kopiëren",
-      "name": "Naam"
-    },
-    "publishNotebook": {
-      "publishFailedError": "{{notebookName}} publiceren naar galerie is mislukt",
-      "publishDescription": "Wanneer deze notebook wordt gepubliceerd, wordt het weergegeven in de Azure Cosmos DB notebooks openbaar galerie. Zorg ervoor dat u gevoelige gegevens of uitvoer hebt verwijderd voordat u publiceert.",
-      "publishPrompt": "Wilt u {{name}} publiceren en delen in de galerie?",
-      "coverImage": "Omslagafbeelding",
-      "coverImageUrl": "URL van omslagafbeelding",
-      "name": "Naam",
-      "description": "Beschrijving",
-      "tags": "Tags",
-      "tagsPlaceholder": "Optionele tag 1, optionele tag 2",
-      "preview": "Preview",
-      "urlType": "URL",
-      "customImage": "Aangepaste installatiekopie",
-      "takeScreenshot": "Schermopname maken",
-      "useFirstDisplayOutput": "Gebruik uitvoer van eerste weergave",
-      "failedToCaptureOutput": "Kan de eerste uitvoer niet vastleggen",
-      "outputDoesNotExist": "Uitvoer bestaat niet voor alle cellen.",
-      "failedToConvertError": "{{fileName}} converteren naar base64-indeling is mislukt",
-      "failedToUploadError": "Kan {{fileName}} niet uploaden"
     },
     "changePartitionKey": {
       "failedToStartError": "Kan de taak voor gegevensoverdracht niet starten",

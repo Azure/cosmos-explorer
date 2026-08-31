@@ -103,7 +103,6 @@
       "learningResources": "Ressources pédagogiques",
       "nextSteps": "Étapes suivantes",
       "tipsAndLearnMore": "Conseils et plus d’informations",
-      "notebook": "Bloc-notes",
       "needHelp": "Avez-vous besoin d’aide ?"
     },
     "top3Items": {
@@ -663,34 +662,6 @@
       "statusColumn": "ÉTAT",
       "uploadStatus": "{{numSucceeded}} créé(s), {{numThrottled}} limité(s), {{numFailed}} erreur(s)",
       "uploadedFiles": "Fichiers chargés"
-    },
-    "copyNotebook": {
-      "copyFailedError": "Nous n’avons pas pu copier {{name}} vers {{destination}}",
-      "uploadFailedError": "Nous n’avons pas pu charger {{name}}",
-      "location": "Emplacement",
-      "locationAriaLabel": "Emplacement",
-      "selectLocation": "Sélectionner un emplacement de bloc-notes vers lequel effectuer une copie",
-      "name": "Nom"
-    },
-    "publishNotebook": {
-      "publishFailedError": "Nous n’avons pas pu publier {{notebookName}} dans la galerie",
-      "publishDescription": "Une fois publié, ce bloc-notes apparaîtra dans la galerie publique de bloc-notes d’Azure Cosmos DB. Veillez à bien supprimer toutes les données sensibles et tout résultat avant la publication.",
-      "publishPrompt": "Voulez-vous publier et partager « {{name}} » dans la galerie ?",
-      "coverImage": "Image de couverture",
-      "coverImageUrl": "URL d’image de couverture",
-      "name": "Nom",
-      "description": "Description",
-      "tags": "Balises",
-      "tagsPlaceholder": "Balise facultative 1, Balise facultative 2",
-      "preview": "Aperçu",
-      "urlType": "URL",
-      "customImage": "Image personnalisée",
-      "takeScreenshot": "Prendre une capture d’écran",
-      "useFirstDisplayOutput": "Utiliser le résultat du premier affichage",
-      "failedToCaptureOutput": "Nous n’avons pas pu capturer le premier résultat",
-      "outputDoesNotExist": "Aucune des cellules ne présente de résultats.",
-      "failedToConvertError": "Nous n’avons pas pu convertir {{fileName}} au format base64",
-      "failedToUploadError": "Nous n’avons pas pu charger {{fileName}}"
     },
     "changePartitionKey": {
       "failedToStartError": "Nous n’avons pas pu démarrer la tâche de transfert de données",
