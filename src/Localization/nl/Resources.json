@@ -316,6 +316,10 @@
     "deleteUdf": "Door de gebruiker gedefinieerde functie verwijderen"
   },
   "tabs": {
+    "tabMenu": {
+      "duplicateTab": "Tabblad Dupliceren",
+      "closeTab": "Tabblad sluiten"
+    },
     "documents": {
       "newItem": "Nieuw item",
       "newDocument": "Nieuw document",
@@ -760,11 +764,10 @@
         "settings": "Instellingen",
         "indexingPolicy": "Indexeringsbeleid",
         "partitionKeys": "Partitiesleutels",
-        "partitionKeysPreview": "Partitiesleutels (preview)",
         "computedProperties": "Berekende eigenschappen",
         "containerPolicies": "Containerbeleidsregels",
         "throughputBuckets": "Doorvoerbuckets",
-        "globalSecondaryIndexPreview": "Global Secondary Index",
+        "globalSecondaryIndexPreview": "Globale secundaire index",
         "maskingPolicyPreview": "Beleid voor maskering"
       },
       "mongoNotifications": {
@@ -895,6 +898,10 @@
       },
       "partitionKeyEditor": {
         "changePartitionKey": "{{partitionKeyName}} wijzigen",
+        "confirmCancel1": "U staat op het punt de volgende kopieertaak te annuleren.",
+        "confirmCancel2": "Annuleren stopt de taak onmiddellijk.",
+        "confirmComplete1": "U staat op het punt de volgende kopieertaak te voltooien.",
+        "confrimComplete2": "Zodra dit is voltooid, stopt het continu kopiëren van gegevens nadat eventuele documenten in behandeling zijn verwerkt. Om de gegevensintegriteit te behouden, raden we u aan updates voor de broncontainer te stoppen voordat u de taak voltooit.",
         "currentPartitionKey": "Huidige {{partitionKeyName}}",
         "partitioning": "Partitionering",
         "hierarchical": "Hiërarchisch",
@@ -1033,6 +1040,7 @@
         "description": "Met online containerkopietaken kunt u gegevens kopiëren van een broncontainer naar een bestemming Cosmos DB NoSQL API-container met behulp van de wijzigingenfeed [Alle versies en verwijderen](https://learn.microsoft.com/azure/cosmos-db/change-feed-modes?tabs=all-versions-and-deletes#all-versions-and-deletes-change-feed-mode-preview) change feed. Hierdoor kunnen updates worden voortgezet op de bron terwijl gegevens worden gekopieerd. Aan het einde is een korte downtime vereist om veilig over te schakelen van clienttoepassingen naar de doelcontainer. Meer informatie over [online kopieertaken](https://learn.microsoft.com/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#getting-started)."
       }
     },
+    "migrationTypeTitle": "Migratietype",
     "selectContainers": {
       "description": "Selecteer een broncontainer en een doelcontainer waarnaar u wilt kopiëren.",
       "sourceContainerSubHeading": "Broncontainer",
@@ -1117,7 +1125,8 @@
       "buttonText": "Online kopiëren inschakelen",
       "validateAllVersionsAndDeletesChangeFeedSpinnerLabel": "Modus Alle versies en verwijderingen voor wijzigingenfeed (preview) valideren...",
       "enablingAllVersionsAndDeletesChangeFeedSpinnerLabel": "Inschakelen van Alle versies en verwijderen van de wijzigingenfeed (preview)",
-      "enablingOnlineCopySpinnerLabel": "Online kopiëren inschakelen voor uw {{accountName}}-account... ..."
+      "enablingOnlineCopySpinnerLabel": "Online kopiëren inschakelen voor uw {{accountName}}-account... ...",
+      "onlineMigrationPrerequisitesMessage": "Vereisten voor online migratie moeten zijn ingeschakeld voordat u verdergaat."
     },
     "monitorJobs": {
       "columns": {
@@ -1151,6 +1160,16 @@
       "dialog": {
         "confirmButtonText": "Bevestigen",
         "cancelButtonText": "Annuleren"
+      }
+    },
+    "dataTransfers": {
+      "polling": {
+        "cancelConsoleMessage": "Gegevensoverdrachtstaak \"{{jobName}}\" geannuleerd",
+        "completedConsoleMessage": "Gegevensoverdrachtstaak \"{{jobName}}\" voltooid",
+        "defaultErrorMessage": "De bewerking kan niet worden voltooid",
+        "errorConsoleMessage": "Gegevensoverdrachtstaak \"{{jobName}}\" mislukt: {{errorMessage}}",
+        "pauseConsoleMessage": "Gegevensoverdrachtstaak \"{{jobName}}\" onderbroken",
+        "retryConsoleMessage": "Gegevensoverdrachtstaak \"{{jobName}}\" wordt uitgevoerd, totaal aantal: {{totalCount}}, verwerkt aantal: {{processedCount}}"
       }
     }
   }
