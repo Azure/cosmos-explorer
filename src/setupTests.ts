@@ -6,6 +6,9 @@ import enableHooks from "jest-react-hooks-shallow";
 import { TextDecoder, TextEncoder } from "util";
 import i18n from "./i18n";
 import enResources from "./Localization/en/Resources.json";
+
+jest.mock("web-vitals");
+
 configure({ adapter: new Adapter() });
 initializeIcons();
 
