@@ -1,4 +1,4 @@
-import { Dropdown, IDropdownOption, Label, Stack, TextField } from "@fluentui/react";
+import { Dropdown, Icon, IDropdownOption, Label, Stack, TextField, TooltipHost } from "@fluentui/react";
 import { CollapsibleSectionComponent } from "Explorer/Controls/CollapsiblePanel/CollapsibleSectionComponent";
 import { VectorEmbeddingSource } from "Contracts/DataModels";
 import {
@@ -20,6 +20,23 @@ export interface IVectorEmbeddingSourceComponentProps {
 }
 
 const defaultAuthType: VectorEmbeddingSource["authType"] = "Entra";
+
+interface EmbeddingSourceLabelProps {
+  disabled: boolean;
+  label: string;
+  tooltip?: string;
+}
+
+const EmbeddingSourceLabel = ({ disabled, label, tooltip }: EmbeddingSourceLabelProps): JSX.Element => (
+  <Label disabled={disabled} styles={labelStyles}>
+    {label}
+    {tooltip && (
+      <TooltipHost content={tooltip} styles={{ root: { display: "inline-block", marginLeft: 4 } }}>
+        <Icon iconName="Info" ariaLabel={tooltip} tabIndex={0} />
+      </TooltipHost>
+    )}
+  </Label>
+);
 
 const validateSourcePaths = (raw: string): string => {
   const parsed = parseSourcePaths(raw);
@@ -128,9 +145,11 @@ export const VectorEmbeddingSourceComponent: FunctionComponent<IVectorEmbeddingS
       >
         <Stack style={{ marginLeft: "10px", marginTop: 4 }} tokens={{ childrenGap: 4 }}>
           <Stack>
-            <Label disabled={disabled} styles={labelStyles}>
-              {t(Keys.controls.vectorEmbeddingPolicies.sourcePaths)}
-            </Label>
+            <EmbeddingSourceLabel
+              disabled={disabled}
+              label={t(Keys.controls.vectorEmbeddingPolicies.sourcePaths)}
+              tooltip={t(Keys.controls.vectorEmbeddingPolicies.sourcePathsTooltip)}
+            />
             <TextField
               disabled={disabled}
               id={`vector-policy-embeddingSource-sourcePaths-${suffix}`}
@@ -143,13 +162,16 @@ export const VectorEmbeddingSourceComponent: FunctionComponent<IVectorEmbeddingS
             />
           </Stack>
           <Stack>
-            <Label disabled={disabled} styles={labelStyles}>
-              {t(Keys.controls.vectorEmbeddingPolicies.deploymentName)}
-            </Label>
+            <EmbeddingSourceLabel
+              disabled={disabled}
+              label={t(Keys.controls.vectorEmbeddingPolicies.deploymentName)}
+              tooltip={t(Keys.controls.vectorEmbeddingPolicies.deploymentNameTooltip)}
+            />
             <TextField
               disabled={disabled}
               id={`vector-policy-embeddingSource-deploymentName-${suffix}`}
               data-test={`VectorEmbeddingSource/DeploymentName/${suffix}`}
+              placeholder={t(Keys.controls.vectorEmbeddingPolicies.deploymentNamePlaceholder)}
               styles={textFieldStyles}
               value={deploymentName}
               onChange={(_event, newValue) => setDeploymentName(newValue || "")}
@@ -157,13 +179,16 @@ export const VectorEmbeddingSourceComponent: FunctionComponent<IVectorEmbeddingS
             />
           </Stack>
           <Stack>
-            <Label disabled={disabled} styles={labelStyles}>
-              {t(Keys.controls.vectorEmbeddingPolicies.modelName)}
-            </Label>
+            <EmbeddingSourceLabel
+              disabled={disabled}
+              label={t(Keys.controls.vectorEmbeddingPolicies.modelName)}
+              tooltip={t(Keys.controls.vectorEmbeddingPolicies.modelNameTooltip)}
+            />
             <TextField
               disabled={disabled}
               id={`vector-policy-embeddingSource-modelName-${suffix}`}
               data-test={`VectorEmbeddingSource/ModelName/${suffix}`}
+              placeholder={t(Keys.controls.vectorEmbeddingPolicies.modelNamePlaceholder)}
               styles={textFieldStyles}
               value={modelName}
               onChange={(_event, newValue) => setModelName(newValue || "")}

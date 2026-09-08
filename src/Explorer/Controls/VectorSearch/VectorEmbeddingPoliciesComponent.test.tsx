@@ -108,12 +108,12 @@ describe("VectorEmbeddingPoliciesComponent - embedding source", () => {
   });
 
   const expandSection = () => {
-    const header = screen.getByRole("button", { name: /Embedding source/ });
+    const header = screen.getByRole("button", { name: /Embedding Configuration/ });
     fireEvent.click(header);
   };
 
   test("renders the embedding source accordion collapsed by default with no errors", () => {
-    expect(screen.getByText("Embedding source (Preview)")).toBeInTheDocument();
+    expect(screen.getByText("Embedding Configuration (Preview)")).toBeInTheDocument();
     expect(view.container.querySelector("#vector-policy-embeddingSource-sourcePaths-1")).toBeNull();
     const lastCall = onChange.mock.calls[onChange.mock.calls.length - 1];
     expect(lastCall[2]).toBe(true);
@@ -127,6 +127,18 @@ describe("VectorEmbeddingPoliciesComponent - embedding source", () => {
     expect(view.container.querySelector("#vector-policy-embeddingSource-modelName-1")).not.toBeNull();
     expect(view.container.querySelector("#vector-policy-embeddingSource-endpoint-1")).not.toBeNull();
     expect(view.container.querySelector("#vector-policy-embeddingSource-authType-1")).not.toBeNull();
+    expect(screen.getByPlaceholderText("/title, /description")).toBeInTheDocument();
+    expect(screen.getAllByPlaceholderText("text-embedding-3-small")).toHaveLength(2);
+    expect(screen.getByPlaceholderText("https://<foundry-resource-name>.openai.azure.com/")).toBeInTheDocument();
+    expect(screen.getByText("Embedding model name")).toBeInTheDocument();
+    expect(screen.getByText("Microsoft Foundry Endpoint")).toBeInTheDocument();
+    expect(
+      screen.getByLabelText(
+        "The item property paths whose values are used as input for embedding generation. Enter multiple values separated by commas, for example /title, /description.",
+      ),
+    ).toBeInTheDocument();
+    expect(screen.getByLabelText("Microsoft Foundry model deployment name")).toBeInTheDocument();
+    expect(screen.getByLabelText("Microsoft Foundry model name")).toBeInTheDocument();
     expect(screen.queryByText("At least one source path is required")).toBeNull();
     expect(screen.queryByText("Deployment name is required")).toBeNull();
   });
@@ -270,7 +282,7 @@ describe("VectorEmbeddingPoliciesComponent - embedding source gating", () => {
           onVectorEmbeddingChange={jest.fn()}
         />,
       );
-      expect(screen.queryByText("Embedding source (Preview)")).toBeNull();
+      expect(screen.queryByText("Embedding Configuration (Preview)")).toBeNull();
       expect(view.container.querySelector("#vector-policy-embeddingSource-sourcePaths-1")).toBeNull();
       expect(view.container.querySelector("#vector-policy-embeddingSource-deploymentName-1")).toBeNull();
       expect(view.container.querySelector("#vector-policy-embeddingSource-modelName-1")).toBeNull();
