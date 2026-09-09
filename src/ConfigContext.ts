@@ -80,7 +80,7 @@ let configContext: Readonly<ConfigContext> = {
     `^https:\\/\\/cosmos-db-dataexplorer-germanycentral\\.azurewebsites\\.de$`,
     `^https:\\/\\/.*\\.fabric\\.microsoft\\.com$`,
     `^https:\\/\\/.*\\.powerbi\\.com$`,
-    `^https:\\/\\/dataexplorer-preview\\.azurewebsites\\.net$`,
+    `^https:\\/\\/dataexplorer-preview\\.portal\\.cosmos\\.azure\\.com$`,
     `^https:\\/\\/explorer\\.cosmos\\.sovcloud-api\\.fr$`,
     `^https:\\/\\/portal\\.sovcloud-azure\\.fr$`,
     `^https:\\/\\/explorer\\.cosmos\\.sovcloud-api\\.de$`,
