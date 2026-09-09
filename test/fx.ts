@@ -265,6 +265,7 @@ export async function getTestExplorerUrl(accountType: TestAccount, options?: Tes
 
     case TestAccount.SQLConnectionString:
     case TestAccount.SQLConnectionStringPublicNetworkAccessDisabled:
+    case TestAccount.MongoConnectionStringPublicNetworkAccessDisabled:
     case TestAccount.TableConnectionString:
     case TestAccount.GremlinConnectionString:
       // Connection string (account key) login navigates directly to hostedExplorer.html and doesn't
