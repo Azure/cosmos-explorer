@@ -55,41 +55,19 @@
 .connectExplorerContainer .connectExplorer .connectExplorerContent .inputToken::placeholder {
   font-style: italic;
 }
-.connectExplorerContainer .connectExplorer .connectExplorerContent .errorDetailsInfoTooltip {
-  position: relative;
-  display: inline-block;
-  padding-left: 4px;
-  vertical-align: top;
+.connectExplorerContainer .connectExplorer .connectErrorMessageBar {
+  /* Matches the width of the connection string input so the form stays balanced. */
+  width: 308px;
+  margin: 0px auto 8px auto;
+  text-align: left;
 }
-.connectExplorerContainer .connectExplorer .connectExplorerContent .errorDetailsInfoTooltip:hover .errorDetails {
-  visibility: visible;
+.connectExplorerContainer .connectExplorer .connectErrorMessageBar .errorDetails {
+  /* Service messages are diagnostics containing unbroken URIs and ids. */
+  overflow-wrap: anywhere;
 }
-.connectExplorerContainer .connectExplorer .connectExplorerContent .errorDetailsInfoTooltip .errorDetails {
-  bottom: 24px;
-  width: 165px;
-  visibility: hidden;
-  background-color: #393939;
-  color: #ffffff;
-  position: absolute;
-  z-index: 1;
-  left: -10px;
-  padding: 6px;
-}
-.connectExplorerContainer .connectExplorer .connectExplorerContent .errorDetailsInfoTooltip .errorDetails:after {
-  border-width: 10px 10px 0px 10px;
-  bottom: -8px;
-  content: "";
-  position: absolute;
-  right: 100%;
-  border-style: solid;
-  left: 12px;
-  width: 0;
-  height: 0;
-  border-color: #3b3b3b transparent;
-}
-.connectExplorerContainer .connectExplorer .connectExplorerContent .errorDetailsInfoTooltip .errorImg {
-  height: 14px;
-  width: 14px;
+.connectExplorerContainer .connectExplorer .connectErrorMessageBar .errorHelpLink {
+  display: block;
+  margin-top: 8px;
 }
 
 .filterbtnstyle {

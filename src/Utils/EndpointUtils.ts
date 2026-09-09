@@ -88,4 +88,6 @@ export const allowedHostedExplorerEndpoints: ReadonlyArray<string> = [
   ...(process.env.NODE_ENV === "development" ? ["https://localhost:12900"] : []),
 ];
 
-export const allowedMsalRedirectEndpoints: ReadonlyArray<string> = ["https://dataexplorer-preview.azurewebsites.net/"];
+export const allowedMsalRedirectEndpoints: ReadonlyArray<string> = [
+  "https://dataexplorer-preview.portal.cosmos.azure.com/",
+];
