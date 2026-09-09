@@ -1,6 +1,5 @@
 import { initializeIcons } from "@fluentui/react";
 import { useBoolean } from "@fluentui/react-hooks";
-import { getErrorMessage } from "Common/ErrorHandlingUtils";
 import { AadAuthorizationFailure } from "Platform/Hosted/Components/AadAuthorizationFailure";
 import * as React from "react";
 import { render } from "react-dom";

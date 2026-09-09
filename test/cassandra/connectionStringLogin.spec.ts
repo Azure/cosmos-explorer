@@ -2,15 +2,15 @@ import { Page, expect, test } from "@playwright/test";
 
 import { CosmosDBManagementClient } from "@azure/arm-cosmosdb";
 import {
-    CommandBarButton,
-    DataExplorer,
-    ONE_MINUTE_MS,
-    TestAccount,
-    generateUniqueName,
-    getAccountName,
-    getAzureCLICredentials,
-    resourceGroupName,
-    subscriptionId,
+  CommandBarButton,
+  DataExplorer,
+  ONE_MINUTE_MS,
+  TestAccount,
+  generateUniqueName,
+  getAccountName,
+  getAzureCLICredentials,
+  resourceGroupName,
+  subscriptionId,
 } from "../fx";
 
 const keyspaceId = generateUniqueName("keyspace");

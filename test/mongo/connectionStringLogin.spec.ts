@@ -2,15 +2,15 @@ import { Page, expect, test } from "@playwright/test";
 
 import { CosmosDBManagementClient } from "@azure/arm-cosmosdb";
 import {
-    CommandBarButton,
-    DataExplorer,
-    ONE_MINUTE_MS,
-    TestAccount,
-    generateUniqueName,
-    getAccountName,
-    getAzureCLICredentials,
-    resourceGroupName,
-    subscriptionId,
+  CommandBarButton,
+  DataExplorer,
+  ONE_MINUTE_MS,
+  TestAccount,
+  generateUniqueName,
+  getAccountName,
+  getAzureCLICredentials,
+  resourceGroupName,
+  subscriptionId,
 } from "../fx";
 
 const databaseId = generateUniqueName("db");
@@ -141,6 +141,31 @@ test.describe("Mongo account using connection string login", () => {
     await expect(page.locator("#connectExplorer")).toBeVisible();
     await expect(page.locator(".errorDetails")).toBeVisible({ timeout: ONE_MINUTE_MS });
     await expect(page.locator(".errorDetails")).not.toBeEmpty();
+  });
+
+  test("blocks Data Explorer when the account does not have Portal middleware services' IPs allowlisted", async ({
+    page,
+  }) => {
+    const blockedAccountName = getAccountName(TestAccount.MongoConnectionStringPublicNetworkAccessDisabled);
+    const { connectionStrings = [] } = await armClient.databaseAccounts.listConnectionStrings(
+      resourceGroupName,
+      blockedAccountName,
+    );
+
+    const blockedConnectionString = connectionStrings.find((cs) => cs.type === "MongoDB")?.connectionString;
+    if (!blockedConnectionString) {
+      throw new Error(`Account ${blockedAccountName} did not return a MongoDB connection string`);
+    }
+
+    await loginWithConnectionString(page, blockedConnectionString);
+
+    // Unlike SQL, Mongo exchanges the connection string through the Portal Backend before opening
+    // Data Explorer. The account firewall rejects that middleware request, so login remains blocked.
+    await expect(page.locator("#connectExplorer")).toBeVisible();
+    await expect(page.locator(".errorDetails")).toContainText("Couldn't authenticate with Cosmos DB", {
+      timeout: ONE_MINUTE_MS,
+    });
+    await expect(page.getByRole("link", { name: "Allow access from Azure Portal" })).toBeVisible();
   });
 
   test("shows an error when the connection string is malformed", async ({ page }) => {
