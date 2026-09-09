@@ -84,6 +84,7 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
                     );
                     return;
                   }
+
                   if (isDirectConnectionStringLoginApi(metadata.apiKind)) {
                     setAccountMetadata(metadata);
                     setAuthType(AuthType.ConnectionString);

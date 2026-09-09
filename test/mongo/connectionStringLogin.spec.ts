@@ -25,9 +25,7 @@ async function loginWithConnectionString(page: Page, connectionString: string): 
   await page.getByRole("button", { name: "Connect" }).click();
 }
 
-// Builds a Mongo connection string for an account that the caller controls the name and key of, so the
-// tests can point at a wrong key or an account that was never provisioned. The key is embedded raw, the
-// way Azure hands it out; URL encoding it would turn the base64 padding into %3D and fail to decode.
+// Builds a Mongo connection string for an account
 function buildMongoConnectionString(accountName: string, accountKey: string): string {
   return `mongodb://${accountName}:${accountKey}@${accountName}.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&appName=@${accountName}@`;
 }
@@ -89,7 +87,7 @@ test.describe("Mongo account using connection string login", () => {
     await collectionNode.expand();
 
     // Open the Documents node to load the tab and exercise the data plane, which for Mongo runs through
-    // the Portal Backend proxy using the encrypted token issued at login.
+    // the Portal Backend using the encrypted token issued at login.
     const documentsNode = await explorer.waitForContainerDocumentsNode(databaseId, collectionId);
     await documentsNode.element.click();
 
@@ -177,9 +175,8 @@ test.describe("Mongo account using connection string login", () => {
   });
 
   test("opens Data Explorer when the account does not exist", async ({ page }) => {
-    // The UTC timestamp keeps the account name unique to this run, so it cannot collide with a real
-    // account that someone provisioned in the meantime. The token is issued without checking that the
-    // account exists, so login succeeds and only the requests made from inside Data Explorer fail.
+    // The token is issued without checking that the account exists, so login succeeds and
+    // only the requests made from inside Data Explorer fail.
     const missingAccountName = `de-test-missing-${new Date().toISOString().replace(/[^0-9]/g, "")}`;
     await loginWithConnectionString(page, buildMongoConnectionString(missingAccountName, wrongAccountKey));
 

@@ -25,9 +25,7 @@ async function loginWithConnectionString(page: Page, connectionString: string): 
   await page.getByRole("button", { name: "Connect" }).click();
 }
 
-// Builds a Cassandra connection string for an account that the caller controls the name and key of, so
-// the tests can point at a wrong key or an account that was never provisioned. The key is embedded raw,
-// the way Azure hands it out; URL encoding it would turn the base64 padding into %3D and fail to decode.
+// Builds a Cassandra connection string for an account
 function buildCassandraConnectionString(accountName: string, accountKey: string): string {
   return `HostName=${accountName}.cassandra.cosmos.azure.com;Username=${accountName};Password=${accountKey};Port=10350`;
 }
@@ -155,9 +153,8 @@ test.describe("Cassandra account using connection string login", () => {
   });
 
   test("opens Data Explorer when the account does not exist", async ({ page }) => {
-    // The UTC timestamp keeps the account name unique to this run, so it cannot collide with a real
-    // account that someone provisioned in the meantime. The token is issued without checking that the
-    // account exists, so login succeeds and only the requests made from inside the explorer fail.
+    // The token is issued without checking that the account exists, so login succeeds
+    // and only the requests made from inside the explorer fail.
     const missingAccountName = `de-test-missing-${new Date().toISOString().replace(/[^0-9]/g, "")}`;
     await loginWithConnectionString(page, buildCassandraConnectionString(missingAccountName, wrongAccountKey));
 
