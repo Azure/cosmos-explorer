@@ -316,6 +316,10 @@
     "deleteUdf": "删除用户定义函数"
   },
   "tabs": {
+    "tabMenu": {
+      "duplicateTab": "复制选项卡",
+      "closeTab": "关闭选项卡"
+    },
     "documents": {
       "newItem": "新建项目",
       "newDocument": "新建文档",
@@ -760,11 +764,10 @@
         "settings": "设置",
         "indexingPolicy": "索引策略",
         "partitionKeys": "分区键",
-        "partitionKeysPreview": "分区键(预览版)",
         "computedProperties": "计算属性",
         "containerPolicies": "容器策略",
         "throughputBuckets": "吞吐量存储桶",
-        "globalSecondaryIndexPreview": "Global Secondary Index",
+        "globalSecondaryIndexPreview": "全局辅助索引",
         "maskingPolicyPreview": "掩码策略"
       },
       "mongoNotifications": {
@@ -895,6 +898,10 @@
       },
       "partitionKeyEditor": {
         "changePartitionKey": "更改 {{partitionKeyName}}",
+        "confirmCancel1": "即将取消以下复制作业。",
+        "confirmCancel2": "取消会立即停止该作业。",
+        "confirmComplete1": "即将完成以下复制作业。",
+        "confrimComplete2": "完成后，连续数据复制将在处理完所有待处理文档后停止。为保持数据完整性，建议在完成作业前先停止对源容器的更新。",
         "currentPartitionKey": "当前 {{partitionKeyName}}",
         "partitioning": "分区",
         "hierarchical": "分层",
@@ -1033,6 +1040,7 @@
         "description": "借助联机容器复制作业，可以使用 [所有版本和删除](https://learn.microsoft.com/azure/cosmos-db/change-feed-modes?tabs=all-versions-and-deletes#all-versions-and-deletes-change-feed-mode-preview) 更改源将数据从源容器复制到目标 Cosmos DB NoSQL API 容器。此操作允许在复制数据时在源上继续更新。最后，需要短暂停机才能安全地将客户端应用程序切换到目标容器。详细了解 [联机复制作业](https://learn.microsoft.com/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#getting-started)。"
       }
     },
+    "migrationTypeTitle": "迁移类型",
     "selectContainers": {
       "description": "请选择源容器和要复制到的目标容器。",
       "sourceContainerSubHeading": "源容器",
@@ -1117,7 +1125,8 @@
       "buttonText": "启用联机复制",
       "validateAllVersionsAndDeletesChangeFeedSpinnerLabel": "正在验证所有版本和删除更改源模式(预览)...",
       "enablingAllVersionsAndDeletesChangeFeedSpinnerLabel": "正在启用所有版本和删除更改源模式(预览)...",
-      "enablingOnlineCopySpinnerLabel": "正在“{{accountName}}”帐户上启用联机复制..."
+      "enablingOnlineCopySpinnerLabel": "正在“{{accountName}}”帐户上启用联机复制...",
+      "onlineMigrationPrerequisitesMessage": "必须先启用联机迁移先决条件，然后才能继续。"
     },
     "monitorJobs": {
       "columns": {
@@ -1151,6 +1160,16 @@
       "dialog": {
         "confirmButtonText": "确认",
         "cancelButtonText": "取消"
+      }
+    },
+    "dataTransfers": {
+      "polling": {
+        "cancelConsoleMessage": "数据传输作业“{{jobName}}”已取消",
+        "completedConsoleMessage": "数据传输作业“{{jobName}}”已完成",
+        "defaultErrorMessage": "无法完成操作",
+        "errorConsoleMessage": "数据传输作业“{{jobName}}”失败: {{errorMessage}}",
+        "pauseConsoleMessage": "数据传输作业“{{jobName}}”已暂停",
+        "retryConsoleMessage": "数据传输作业“{{jobName}}”正在进行中，总计数: {{totalCount}}，已处理计数: {{processedCount}}"
       }
     }
   }
