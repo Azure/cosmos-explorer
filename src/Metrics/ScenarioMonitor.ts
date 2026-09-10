@@ -27,6 +27,9 @@ interface InternalScenarioContext {
 
 class ScenarioMonitor {
   private contexts = new Map<MetricScenario, InternalScenarioContext>();
+  // Completions reported before start() created a context. Replayed on start() so that a
+  // React effect firing ahead of the scenario is not silently dropped.
+  private earlyCompletions = new Map<MetricScenario, Set<MetricPhase>>();
   private vitals: WebVitals = {};
   private vitalsInitialized = false;
 
@@ -127,11 +130,21 @@ class ScenarioMonitor {
         hasExpectedFailure: ctx.hasExpectedFailure,
       });
 
-      // If an expected failure occurred (auth, firewall, etc.), emit healthy instead of unhealthy
-      const healthy = ctx.hasExpectedFailure;
+      // Expected failures (auth, firewall, ...) are not our outage. Neither is a timeout in
+      // a backgrounded tab: browsers throttle timers and suspend rAF there, so phase
+      // completion is unreliable and the elapsed time is not the user's experience.
+      // documentHidden is still reported so these can be sliced out in telemetry.
+      const healthy = ctx.hasExpectedFailure || document.hidden;
       this.emit(ctx, healthy, true);
     }, config.timeoutMs);
     this.contexts.set(scenario, ctx);
+
+    // Replay completions that were reported before this scenario existed.
+    const early = this.earlyCompletions.get(scenario);
+    if (early) {
+      this.earlyCompletions.delete(scenario);
+      early.forEach((phase) => this.completePhase(scenario, phase));
+    }
   }
 
   startPhase(scenario: MetricScenario, phase: MetricPhase) {
@@ -185,9 +198,34 @@ class ScenarioMonitor {
 
   completePhase(scenario: MetricScenario, phase: MetricPhase) {
     const ctx = this.contexts.get(scenario);
-    const phaseCtx = ctx?.phases.get(phase);
-    if (!ctx || ctx.emitted || ctx.completed.has(phase) || !ctx.config.requiredPhases.includes(phase) || !phaseCtx) {
+
+    // The scenario has not been started yet. Remember the completion and replay it in
+    // start(); otherwise a one-shot React effect that fired early is lost forever.
+    if (!ctx) {
+      const config = scenarioConfigs[scenario];
+      if (config?.requiredPhases.includes(phase)) {
+        const pending = this.earlyCompletions.get(scenario) ?? new Set<MetricPhase>();
+        pending.add(phase);
+        this.earlyCompletions.set(scenario, pending);
+        this.devLog(`phase_complete_early: ${scenario}.${phase} — buffered until scenario start`);
+      }
       return;
+    }
+
+    if (ctx.emitted || ctx.completed.has(phase) || !ctx.config.requiredPhases.includes(phase)) {
+      return;
+    }
+
+    // The phase is required but has not been started yet (deferred phases are started
+    // explicitly, and the caller may run before that happens). Self-start it now so the
+    // completion is honoured instead of silently dropped.
+    let phaseCtx = ctx.phases.get(phase);
+    if (!phaseCtx) {
+      const lateStartMarkName = `scenario_${scenario}_${phase}_start`;
+      performance.mark(lateStartMarkName);
+      phaseCtx = { startMarkName: lateStartMarkName };
+      ctx.phases.set(phase, phaseCtx);
+      this.devLog(`phase_autostart: ${scenario}.${phase} — completed before startPhase()`);
     }
 
     const endMarkName = `scenario_${scenario}_${phase}_end`;
@@ -446,6 +484,7 @@ class ScenarioMonitor {
       }
     });
     this.contexts.clear();
+    this.earlyCompletions.clear();
   }
 }
 
