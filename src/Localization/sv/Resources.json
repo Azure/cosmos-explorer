@@ -990,6 +990,8 @@
       "quantizationByteSizeTooltipContainerName": "container",
       "quantizationByteSizeTooltipGlobalSecondaryIndexName": "globalt sekundärt index",
       "quantizerType": "Typ av kvantiserare",
+      "quantizerTypeProduct": "Produkt",
+      "quantizerTypeSpherical": "Sfärisk",
       "quantizerTypeTooltip": "Kvantiseringsmetoden som används av vektorindexet.",
       "indexingSearchListSize": "Storlek på söklista för indexering",
       "vectorIndexShardKey": "Shard-nyckel för vektorindex",

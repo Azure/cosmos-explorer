@@ -990,6 +990,8 @@
       "quantizationByteSizeTooltipContainerName": "컨테이너",
       "quantizationByteSizeTooltipGlobalSecondaryIndexName": "전역 보조 인덱스",
       "quantizerType": "양자화 유형",
+      "quantizerTypeProduct": "제품",
+      "quantizerTypeSpherical": "구형",
       "quantizerTypeTooltip": "벡터 인덱스에서 사용하는 양자화 방식입니다.",
       "indexingSearchListSize": "인덱싱 검색 목록 크기",
       "vectorIndexShardKey": "벡터 인덱스 샤드 키",

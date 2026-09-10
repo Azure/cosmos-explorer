@@ -990,6 +990,8 @@
       "quantizationByteSizeTooltipContainerName": "tároló",
       "quantizationByteSizeTooltipGlobalSecondaryIndexName": "globális másodlagos index",
       "quantizerType": "Kvantáló típusa",
+      "quantizerTypeProduct": "Szorzat",
+      "quantizerTypeSpherical": "Szférikus",
       "quantizerTypeTooltip": "A vektorindex által használt kvantálási módszer.",
       "indexingSearchListSize": "Keresési lista méretének indexelése",
       "vectorIndexShardKey": "Vektorindex szegmenskulcsa",
