@@ -111,10 +111,7 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
     effect().catch((error) => {
       // configurePortal now rejects instead of hanging forever, so this is reachable.
       // Without a handler it would surface only as an unhandled rejection.
-      Logger.logError(
-        error instanceof Error ? error.message : String(error),
-        "useKnockoutExplorer/configure",
-      );
+      Logger.logError(error instanceof Error ? error.message : String(error), "useKnockoutExplorer/configure");
     });
   }, [platform]);
 
