@@ -6,7 +6,6 @@ import * as React from "react";
 import CosmosDBIcon from "../../../images/Azure-Cosmos-DB.svg";
 import CollectionIcon from "../../../images/tree-collection.svg";
 import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
-import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { userContext } from "../../UserContext";
 import { isServerlessAccount } from "../../Utils/CapabilityUtils";
@@ -136,11 +135,6 @@ export class ResourceTreeAdapter implements ReactAdapter {
             .getState()
             .isDataNodeSelected(collection.databaseId, collection.id(), [ViewModels.CollectionTabKind.Settings]),
       });
-    }
-
-    const schemaNode: LegacyTreeNode = this.buildSchemaNode(collection);
-    if (schemaNode) {
-      children.push(schemaNode);
     }
 
     if (shouldShowScriptNodes()) {
@@ -273,73 +267,6 @@ export class ResourceTreeAdapter implements ReactAdapter {
           );
       },
     };
-  }
-
-  public buildSchemaNode(collection: ViewModels.Collection): LegacyTreeNode {
-    if (collection.analyticalStorageTtl() == undefined) {
-      return undefined;
-    }
-
-    if (!collection.schema || !collection.schema.fields) {
-      return undefined;
-    }
-
-    return {
-      label: "Schema",
-      children: this.getSchemaNodes(collection.schema.fields),
-      onClick: () => {
-        collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Schema);
-        useTabs.getState().refreshActiveTab((tab: TabsBase) => tab.collection && tab.collection.rid === collection.rid);
-      },
-    };
-  }
-
-  private getSchemaNodes(fields: DataModels.IDataField[]): LegacyTreeNode[] {
-    const schema: any = {};
-
-    //unflatten
-    fields.forEach((field: DataModels.IDataField, fieldIndex: number) => {
-      const path: string[] = field.path.split(".");
-      const fieldProperties = [field.dataType.name, `HasNulls: ${field.hasNulls}`];
-      let current: any = {};
-      path.forEach((name: string, pathIndex: number) => {
-        if (pathIndex === 0) {
-          if (schema[name] === undefined) {
-            if (pathIndex === path.length - 1) {
-              schema[name] = fieldProperties;
-            } else {
-              schema[name] = {};
-            }
-          }
-          current = schema[name];
-        } else {
-          if (current[name] === undefined) {
-            if (pathIndex === path.length - 1) {
-              current[name] = fieldProperties;
-            } else {
-              current[name] = {};
-            }
-          }
-          current = current[name];
-        }
-      });
-    });
-
-    const traverse = (obj: any): LegacyTreeNode[] => {
-      const children: LegacyTreeNode[] = [];
-
-      if (obj !== null && !Array.isArray(obj) && typeof obj === "object") {
-        Object.entries(obj).forEach(([key, value]) => {
-          children.push({ label: key, children: traverse(value) });
-        });
-      } else if (Array.isArray(obj)) {
-        return [{ label: obj[0] }, { label: obj[1] }];
-      }
-
-      return children;
-    };
-
-    return traverse(schema);
   }
 
   public triggerRender() {

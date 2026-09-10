@@ -1,4 +1,4 @@
-import { CassandraProxyEndpoints, JunoEndpoints, MongoProxyEndpoints, PortalBackendEndpoints } from "Common/Constants";
+import { CassandraProxyEndpoints, MongoProxyEndpoints, PortalBackendEndpoints } from "Common/Constants";
 import * as Logger from "../Common/Logger";
 
 export function validateEndpoint(
@@ -91,14 +91,3 @@ export const allowedHostedExplorerEndpoints: ReadonlyArray<string> = [
 export const allowedMsalRedirectEndpoints: ReadonlyArray<string> = [
   "https://dataexplorer-preview.portal.cosmos.azure.com/",
 ];
-
-export const allowedJunoOrigins: ReadonlyArray<string> = [
-  JunoEndpoints.Test,
-  JunoEndpoints.Test2,
-  JunoEndpoints.Test3,
-  JunoEndpoints.Prod,
-  JunoEndpoints.Stage,
-  "https://localhost",
-];
-
-export const allowedNotebookServerUrls: ReadonlyArray<string> = [];

@@ -1,4 +1,4 @@
-import { CapacityMode, ConnectionStatusType, ContainerStatusType } from "../Common/Constants";
+import { CapacityMode } from "../Common/Constants";
 
 export interface ArmEntity {
   id: string;
@@ -155,38 +155,6 @@ export interface Resource {
   id: string;
 }
 
-export interface IType {
-  name: string;
-  code: number;
-}
-
-export interface IDataField {
-  dataType: IType;
-  hasNulls: boolean;
-  isArray: boolean;
-  schemaType: IType;
-  name: string;
-  path: string;
-  maxRepetitionLevel: number;
-  maxDefinitionLevel: number;
-}
-
-export interface ISchema {
-  id: string;
-  accountName: string;
-  resource: string;
-  fields: IDataField[];
-}
-
-export interface ISchemaRequest {
-  id: string;
-  subscriptionId: string;
-  resourceGroup: string;
-  accountName: string;
-  resource: string;
-  status: string;
-}
-
 export interface Collection extends Resource {
   // Only in Mongo collections loaded via ARM
   shardKey?: {
@@ -204,8 +172,6 @@ export interface Collection extends Resource {
   vectorEmbeddingPolicy?: VectorEmbeddingPolicy;
   fullTextPolicy?: FullTextPolicy;
   dataMaskingPolicy?: DataMaskingPolicy;
-  schema?: ISchema;
-  requestSchema?: () => void;
   computedProperties?: ComputedProperties;
   materializedViews?: MaterializedView[];
   materializedViewDefinition?: MaterializedViewDefinition;
@@ -588,89 +554,6 @@ export interface OperationStatus {
   error?: { code: string; message: string };
 }
 
-export interface NotebookWorkspaceConnectionInfo {
-  authToken: string;
-  notebookServerEndpoint: string;
-  forwardingId: string;
-}
-
-export interface ContainerInfo {
-  durationLeftInMinutes: number;
-  phoenixServerInfo: NotebookWorkspaceConnectionInfo;
-  status: ContainerStatusType;
-}
-
-export interface IProvisionData {
-  cosmosEndpoint?: string;
-  poolId: string;
-  databaseId?: string;
-  containerId?: string;
-  mode?: string;
-}
-
-export interface IContainerData {
-  forwardingId: string;
-}
-
-export interface IResponse<T> {
-  status: number;
-  data: T;
-}
-
-export interface IPhoenixError {
-  message: string;
-  type: string;
-}
-
-export interface IMaxAllocationTimeExceeded extends IPhoenixError {
-  earliestAllocationTimestamp: string;
-  maxAllocationTimePerDayPerUserInMinutes: string;
-}
-
-export interface IMaxDbAccountsPerUserExceeded extends IPhoenixError {
-  maxSimultaneousConnectionsPerUser: string;
-}
-
-export interface IMaxUsersPerDbAccountExceeded extends IPhoenixError {
-  maxSimultaneousUsersPerDbAccount: string;
-}
-
-export interface IPhoenixConnectionInfoResult {
-  readonly phoenixServiceInfo?: IPhoenixServiceInfo;
-}
-
-export interface IPhoenixServiceInfo {
-  readonly authToken?: string;
-  readonly phoenixServiceUrl?: string;
-  readonly forwardingId?: string;
-}
-
-export interface NotebookWorkspaceFeedResponse {
-  value: NotebookWorkspace[];
-}
-
-export interface NotebookWorkspace {
-  id: string;
-  name: string;
-  properties: {
-    status: string;
-    notebookServerEndpoint: string;
-  };
-}
-
-export interface NotebookConfigurationEndpoints {
-  path: string;
-  endpoints: NotebookConfigurationEndpointInfo[];
-}
-
-export interface NotebookConfigurationEndpointInfo {
-  type: string;
-  endpoint: string;
-  username: string;
-  password: string;
-  token: string;
-}
-
 export interface SparkClusterConnectionInfo {
   userName: string;
   password: string;
@@ -711,16 +594,6 @@ export interface MongoParameters extends RpParameters {
   analyticalStorageTtl?: number;
 }
 
-export interface MemoryUsageInfo {
-  freeKB: number;
-  totalKB: number;
-}
-
-export interface ContainerConnectionInfo {
-  status: ConnectionStatusType;
-  //need to add ram and rom info
-}
-
 export interface FirewallRule {
   id: string;
   name: string;
@@ -729,18 +602,6 @@ export interface FirewallRule {
     startIpAddress: string;
     endIpAddress: string;
   };
-}
-
-export enum PhoenixErrorType {
-  MaxAllocationTimeExceeded = "MaxAllocationTimeExceeded",
-  MaxDbAccountsPerUserExceeded = "MaxDbAccountsPerUserExceeded",
-  MaxUsersPerDbAccountExceeded = "MaxUsersPerDbAccountExceeded",
-  AllocationValidationResult = "AllocationValidationResult",
-  RegionNotServicable = "RegionNotServicable",
-  SubscriptionNotAllowed = "SubscriptionNotAllowed",
-  UnknownError = "UnknownError",
-  PhoenixFlightFallback = "PhoenixFlightFallback",
-  UserMissingPermissionsError = "UserMissingPermissionsError",
 }
 
 export interface FeatureRegistration {

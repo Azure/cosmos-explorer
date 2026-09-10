@@ -17,9 +17,9 @@ export interface TerminalTabOptions extends ViewModels.TabOptions {
 }
 
 export default class TerminalTab extends TabsBase {
-  public readonly html = '<div style="height: 100%" data-bind="react:notebookTerminalComponentAdapter"></div>  ';
+  public readonly html = '<div style="height: 100%" data-bind="react:cloudShellTerminalComponentAdapter"></div>  ';
   private container: Explorer;
-  private notebookTerminalComponentAdapter: ReactAdapter;
+  private cloudShellTerminalComponentAdapter: ReactAdapter;
   private isAllPublicIPAddressesEnabled: ko.Observable<boolean>;
 
   constructor(options: TerminalTabOptions) {
@@ -27,7 +27,7 @@ export default class TerminalTab extends TabsBase {
     this.container = options.container;
     this.isAllPublicIPAddressesEnabled = ko.observable(true);
 
-    this.notebookTerminalComponentAdapter = new CloudShellTerminalComponentAdapter(
+    this.cloudShellTerminalComponentAdapter = new CloudShellTerminalComponentAdapter(
       () => userContext?.databaseAccount,
       () => this.tabId,
       () => this.getUsername(),
@@ -35,7 +35,7 @@ export default class TerminalTab extends TabsBase {
       options.kind,
     );
 
-    this.notebookTerminalComponentAdapter.parameters = ko.computed<boolean>(() => {
+    this.cloudShellTerminalComponentAdapter.parameters = ko.computed<boolean>(() => {
       return this.isTemplateReady() && this.isAllPublicIPAddressesEnabled();
     });
 

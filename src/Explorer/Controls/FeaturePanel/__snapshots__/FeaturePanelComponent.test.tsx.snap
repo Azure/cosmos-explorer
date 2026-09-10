@@ -35,11 +35,6 @@ exports[`Feature panel renders all flags 1`] = `
       <CustomizedDefaultButton
         onClick={[Function]}
       >
-        Notebooks on localhost
-      </CustomizedDefaultButton>
-      <CustomizedDefaultButton
-        onClick={[Function]}
-      >
         Portal points to local DE
       </CustomizedDefaultButton>
       <CustomizedDefaultButton
@@ -180,12 +175,6 @@ exports[`Feature panel renders all flags 1`] = `
         />
         <StyledCheckboxBase
           checked={false}
-          key="feature.enablenotebooks"
-          label="Enable notebooks"
-          onChange={[Function]}
-        />
-        <StyledCheckboxBase
-          checked={false}
           disabled={true}
           key="feature.customportal"
           label="Force Production portal (portal only)"
@@ -217,49 +206,6 @@ exports[`Feature panel renders all flags 1`] = `
         horizontalAlign="space-between"
       >
         <StyledTextFieldBase
-          key="feature.notebookserverurl"
-          label="Notebook server URL"
-          onChange={[Function]}
-          placeholder="https://notebookserver"
-          styles={
-            {
-              "fieldGroup": {
-                "width": 300,
-              },
-            }
-          }
-        />
-        <StyledTextFieldBase
-          key="feature.notebookservertoken"
-          label="Notebook server token"
-          onChange={[Function]}
-          placeholder=""
-          styles={
-            {
-              "fieldGroup": {
-                "width": 300,
-              },
-            }
-          }
-        />
-        <StyledTextFieldBase
-          key="feature.notebookbasepath"
-          label="Notebook base path"
-          onChange={[Function]}
-          placeholder=""
-          styles={
-            {
-              "fieldGroup": {
-                "width": 300,
-              },
-            }
-          }
-        />
-      </Stack>
-      <Stack
-        horizontalAlign="space-between"
-      >
-        <StyledTextFieldBase
           key="key"
           label="Auth key"
           onChange={[Function]}
@@ -286,6 +232,10 @@ exports[`Feature panel renders all flags 1`] = `
             }
           }
         />
+      </Stack>
+      <Stack
+        horizontalAlign="space-between"
+      >
         <StyledTextFieldBase
           key="feature.livyendpoint"
           label="Livy endpoint"

@@ -471,11 +471,11 @@ export default class Explorer {
     }
   }
 
-  public openNotebookTerminal(kind: ViewModels.TerminalKind): void {
-    this.connectToNotebookTerminal(kind);
+  public openTerminal(kind: ViewModels.TerminalKind): void {
+    this.connectToTerminal(kind);
   }
 
-  private connectToNotebookTerminal(kind: ViewModels.TerminalKind): void {
+  private connectToTerminal(kind: ViewModels.TerminalKind): void {
     let title: string;
 
     switch (kind) {
