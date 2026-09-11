@@ -171,6 +171,7 @@ jobs:
         with:
           same-branch-only: false
           poll-interval-seconds: 30
+          initial-wait-seconds: 30
 
   playwright-tests:
     name: "Run Playwright Tests (Shard ${{ matrix.shardIndex }} of ${{ matrix.shardTotal }})"
