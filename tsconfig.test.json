@@ -1,7 +1,9 @@
 {
   "extends": "./tsconfig.json",
-  "include": ["./test/**/*"],
+  "include": ["./test/**/*", "./playwright.config.ts", "./src/**/*.d.ts"],
   "compilerOptions": {
-    "module": "commonjs"
+    "module": "commonjs",
+    "lib": ["es2022", "dom"],
+    "types": ["jest", "node"]
   }
 }
