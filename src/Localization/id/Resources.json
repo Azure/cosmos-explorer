@@ -990,6 +990,8 @@
       "quantizationByteSizeTooltipContainerName": "kontainer",
       "quantizationByteSizeTooltipGlobalSecondaryIndexName": "indeks sekunder global",
       "quantizerType": "Tipe penguantisasi",
+      "quantizerTypeProduct": "Produk",
+      "quantizerTypeSpherical": "Bulat",
       "quantizerTypeTooltip": "Metode kuantisasi yang digunakan oleh indeks vektor.",
       "indexingSearchListSize": "Ukuran daftar pencarian pengindeks",
       "vectorIndexShardKey": "Kunci pecahan indeks vektor",

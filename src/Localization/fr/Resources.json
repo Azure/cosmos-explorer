@@ -990,6 +990,8 @@
       "quantizationByteSizeTooltipContainerName": "conteneur",
       "quantizationByteSizeTooltipGlobalSecondaryIndexName": "index secondaire global",
       "quantizerType": "Type de quantificateur",
+      "quantizerTypeProduct": "Produit",
+      "quantizerTypeSpherical": "Sphérique",
       "quantizerTypeTooltip": "Méthode de quantification utilisée par l’index vectoriel.",
       "indexingSearchListSize": "Taille de la liste de recherche pour l’indexation",
       "vectorIndexShardKey": "Clé de partition de l’index vectoriel",

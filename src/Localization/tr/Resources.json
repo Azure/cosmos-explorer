@@ -990,6 +990,8 @@
       "quantizationByteSizeTooltipContainerName": "kapsayıcı",
       "quantizationByteSizeTooltipGlobalSecondaryIndexName": "global ikincil endeks",
       "quantizerType": "Bölme türü",
+      "quantizerTypeProduct": "Ürün",
+      "quantizerTypeSpherical": "Küresel",
       "quantizerTypeTooltip": "Vektör dizini tarafından kullanılan bölme yöntemi.",
       "indexingSearchListSize": "Dizin arama listesi boyutu",
       "vectorIndexShardKey": "Vektör dizini parça anahtarı",

@@ -990,6 +990,8 @@
       "quantizationByteSizeTooltipContainerName": "контейнер",
       "quantizationByteSizeTooltipGlobalSecondaryIndexName": "глобальный вторичный индекс",
       "quantizerType": "Тип квантизатора",
+      "quantizerTypeProduct": "Продукт",
+      "quantizerTypeSpherical": "Сферические",
       "quantizerTypeTooltip": "Метод квантования, используемый векторным индексом.",
       "indexingSearchListSize": "Размер списка поиска при индексировании",
       "vectorIndexShardKey": "Ключ экстента векторного индекса",

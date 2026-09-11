@@ -990,6 +990,8 @@
       "quantizationByteSizeTooltipContainerName": "容器",
       "quantizationByteSizeTooltipGlobalSecondaryIndexName": "全局辅助索引",
       "quantizerType": "量化器类型",
+      "quantizerTypeProduct": "产品",
+      "quantizerTypeSpherical": "球形",
       "quantizerTypeTooltip": "矢量索引使用的量化方法。",
       "indexingSearchListSize": "索引搜索列表大小",
       "vectorIndexShardKey": "矢量索引分片键",

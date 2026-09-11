@@ -990,6 +990,8 @@
       "quantizationByteSizeTooltipContainerName": "コンテナー",
       "quantizationByteSizeTooltipGlobalSecondaryIndexName": "グローバル セカンダリ インデックス",
       "quantizerType": "量子化器の種類",
+      "quantizerTypeProduct": "製品",
+      "quantizerTypeSpherical": "球面",
       "quantizerTypeTooltip": "ベクター インデックスで使用される量子化方法。",
       "indexingSearchListSize": "インデックス検索リスト サイズ",
       "vectorIndexShardKey": "ベクター インデックス シャード キー",

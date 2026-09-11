@@ -990,6 +990,8 @@
       "quantizationByteSizeTooltipContainerName": "kontejner",
       "quantizationByteSizeTooltipGlobalSecondaryIndexName": "globální sekundární index",
       "quantizerType": "Typ kvantizéru",
+      "quantizerTypeProduct": "Produkt",
+      "quantizerTypeSpherical": "Sférický",
       "quantizerTypeTooltip": "Metoda kvantování používaná vektorovým indexem",
       "indexingSearchListSize": "Velikost seznamu vyhledávání při indexování",
       "vectorIndexShardKey": "Klíč shardu vektorového indexu",
