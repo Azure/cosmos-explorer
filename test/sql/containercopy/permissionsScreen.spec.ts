@@ -1,6 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { expect, Frame, Locator, Page, test } from "@playwright/test";
-import { set } from "lodash";
 import { ContainerCopy, getAccountName, TestAccount } from "../../fx";
 
 const VISIBLE_TIMEOUT_MS = 30 * 1000;
@@ -12,16 +10,76 @@ test.describe("Container Copy - Permission Screen Verification", () => {
   let frame: Frame;
   let sourceAccountName: string;
   let targetAccountName: string;
+  let backupPolicyType: "Periodic" | "Continuous";
+  let roleAssigned: boolean;
+  let completeRoleAssignment: () => void;
 
   test.beforeEach("Setup for each test", async ({ browser }) => {
     page = await browser.newPage();
-    ({ wrapper, frame } = await ContainerCopy.open(page, TestAccount.SQL));
     targetAccountName = getAccountName(TestAccount.SQLContainerCopyOnly);
     sourceAccountName = getAccountName(TestAccount.SQL);
+    backupPolicyType = "Periodic";
+    roleAssigned = false;
+
+    // Keep prerequisites independent of the shared accounts' current configuration.
+    await page.route(`**/Microsoft.DocumentDB/databaseAccounts/${sourceAccountName}?*`, async (route) => {
+      expect(route.request().method()).toBe("GET");
+      const response = await route.fetch();
+      expect(response.ok()).toBeTruthy();
+      const account = await response.json();
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          ...account,
+          identity: { type: "SystemAssigned", principalId: "00-11-22-33" },
+          properties: {
+            ...account.properties,
+            defaultIdentity: "SystemAssignedIdentity",
+            backupPolicy: { type: backupPolicyType },
+            capabilities: [{ name: "EnableOnlineContainerCopy" }],
+          },
+        }),
+      });
+    });
+
+    const roleAssignmentCompleted = new Promise<void>((resolve) => {
+      completeRoleAssignment = resolve;
+    });
+    await page.route(
+      `**/Microsoft.DocumentDB/databaseAccounts/${targetAccountName}/sqlRoleAssignments**`,
+      async (route) => {
+        const accountScope = new URL(route.request().url()).pathname.split("/sqlRoleAssignments")[0];
+        const roleDefinitionId = `${accountScope}/sqlRoleDefinitions/00000000-0000-0000-0000-000000000002`;
+        const assignment = {
+          id: `${accountScope}/sqlRoleAssignments/test-assignment`,
+          name: "test-assignment",
+          type: "Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments",
+          properties: { principalId: "00-11-22-33", roleDefinitionId, scope: `${accountScope}/` },
+        };
+        if (route.request().method() === "PUT") {
+          expect(route.request().postDataJSON().properties).toEqual(assignment.properties);
+          await roleAssignmentCompleted;
+          roleAssigned = true;
+          await route.fulfill({ json: assignment });
+        } else {
+          expect(route.request().method()).toBe("GET");
+          await route.fulfill({ json: { value: roleAssigned ? [assignment] : [] } });
+        }
+      },
+    );
+    await page.route(
+      `**/Microsoft.DocumentDB/databaseAccounts/${targetAccountName}/sqlRoleDefinitions/*`,
+      async (route) => {
+        await route.fulfill({ json: { name: "00000000-0000-0000-0000-000000000002" } });
+      },
+    );
+    ({ wrapper, frame } = await ContainerCopy.open(page, TestAccount.SQL));
   });
 
   test.afterEach("Cleanup after each test", async () => {
-    await page.unrouteAll({ behavior: "ignoreErrors" });
+    completeRoleAssignment?.();
+    await page.unrouteAll({ behavior: "wait" });
     await page.close();
   });
 
@@ -36,36 +94,6 @@ test.describe("Container Copy - Permission Screen Verification", () => {
     await expect(wrapper.getByTestId("CommandBar/Button:Refresh")).toBeVisible();
     await expect(wrapper.getByTestId("CommandBar/Button:Feedback")).toBeVisible();
 
-    // Mock Resource Graph API — fires on auto-subscription selection to populate account dropdown
-    await page.route(
-      "https://management.azure.com/providers/Microsoft.ResourceGraph/resources?api-version=2021-03-01",
-      async (route) => {
-        const request = route.request();
-        if (
-          request.method() === "POST" &&
-          (request.postDataJSON()?.query as string) ===
-            "resources | where type =~ 'microsoft.documentdb/databaseaccounts'"
-        ) {
-          const response = await route.fetch();
-          const responseData = await response.json();
-          if (responseData.data && Array.isArray(responseData.data)) {
-            responseData.data = responseData.data.map((d: any) => {
-              d.properties.backupPolicy.type = "Periodic";
-              return d;
-            });
-          }
-          await route.fulfill({
-            status: 200,
-            contentType: "application/json",
-            body: JSON.stringify(responseData),
-          });
-        } else {
-          await route.continue();
-        }
-      },
-      { times: 2 },
-    );
-
     // Open the Create Copy Job panel
     await createCopyJobButton.click();
     panel = frame.getByTestId("Panel:Create copy job");
@@ -79,15 +107,7 @@ test.describe("Container Copy - Permission Screen Verification", () => {
     const dropdownItemsWrapper = frame.locator("div.ms-Dropdown-items");
     expect(await dropdownItemsWrapper.getAttribute("aria-label")).toEqual("Account");
 
-    const allDropdownItems = await dropdownItemsWrapper.locator(`button.ms-Dropdown-item[role='option']`).all();
-
-    for (const item of allDropdownItems) {
-      const testContent = (await item.textContent()) ?? "";
-      if (testContent.trim() === targetAccountName.trim()) {
-        await item.click();
-        break;
-      }
-    }
+    await dropdownItemsWrapper.getByRole("option", { name: targetAccountName, exact: true }).click();
 
     // Enable online migration mode
     const migrationTypeContainer = panel.getByTestId("migration-type");
@@ -102,41 +122,6 @@ test.describe("Container Copy - Permission Screen Verification", () => {
     await expect(permissionScreen).toBeVisible();
     await expect(permissionScreen.getByText("Online container copy", { exact: true })).toBeVisible();
     await expect(permissionScreen.getByText("Cross-account container copy", { exact: true })).toBeVisible();
-
-    // Setup API mocking for the source account
-    await page.route(`**/Microsoft.DocumentDB/databaseAccounts/${sourceAccountName}**`, async (route) => {
-      const mockData = {
-        identity: {
-          type: "SystemAssigned",
-          principalId: "00-11-22-33",
-        },
-        properties: {
-          defaultIdentity: "SystemAssignedIdentity",
-          backupPolicy: {
-            type: "Continuous",
-          },
-          capabilities: [{ name: "EnableOnlineContainerCopy" }],
-        },
-      };
-      if (route.request().method() === "GET") {
-        const response = await route.fetch();
-        const actualData = await response.json();
-        const mergedData = { ...actualData };
-
-        set(mergedData, "identity", mockData.identity);
-        set(mergedData, "properties.defaultIdentity", mockData.properties.defaultIdentity);
-        set(mergedData, "properties.backupPolicy", mockData.properties.backupPolicy);
-        set(mergedData, "properties.capabilities", mockData.properties.capabilities);
-
-        await route.fulfill({
-          status: 200,
-          contentType: "application/json",
-          body: JSON.stringify(mergedData),
-        });
-      } else {
-        await route.continue();
-      }
-    });
 
     // Verify Point-in-Time Restore functionality
     const expandedOnlineAccordionHeader = permissionScreen
@@ -157,16 +142,13 @@ test.describe("Container Copy - Permission Screen Verification", () => {
 
     const pitrBtn = accordionPanel.getByTestId("pointInTimeRestore:PrimaryBtn");
     await expect(pitrBtn).toBeVisible();
+    const popupPromise = page.waitForEvent("popup");
     await pitrBtn.click({ force: true });
-
-    // Verify new page opens with correct URL pattern
-    page.context().on("page", async (newPage) => {
-      const expectedUrlEndPattern = new RegExp(
-        `/providers/Microsoft.(DocumentDB|DocumentDb)/databaseAccounts/${sourceAccountName}/backupRestore`,
-      );
-      expect(newPage.url()).toMatch(expectedUrlEndPattern);
-      await newPage.close();
-    });
+    const popup = await popupPromise;
+    await expect(popup).toHaveURL(
+      new RegExp(`/providers/Microsoft\\.(DocumentDB|DocumentDb)/databaseAccounts/${sourceAccountName}/backupRestore`),
+    );
+    await popup.close();
 
     const loadingOverlay = frame.locator("[data-test='loading-overlay']");
     await expect(loadingOverlay).toBeVisible();
@@ -180,81 +162,12 @@ test.describe("Container Copy - Permission Screen Verification", () => {
     await expect(refreshBtn).toBeVisible({ timeout: 5000 });
     await expect(pitrBtn).not.toBeVisible();
 
-    // Setup additional API mocks for role assignments and permissions
-    // In the redesigned flow, role assignments are checked on the SOURCE account (current account = sourceAccountName).
-    // The destination account (selectedAccountName) manages identity; source account holds the role assignments.
-    await page.route(
-      `**/Microsoft.DocumentDB/databaseAccounts/${sourceAccountName}/sqlRoleAssignments*`,
-      async (route) => {
-        await route.fulfill({
-          status: 200,
-          contentType: "application/json",
-          body: JSON.stringify({
-            value: [
-              {
-                principalId: "00-11-22-33",
-                roleDefinitionId: `Microsoft.DocumentDB/databaseAccounts/${sourceAccountName}/77-88-99`,
-              },
-            ],
-          }),
-        });
-      },
-    );
-
-    await page.route("**/Microsoft.DocumentDB/databaseAccounts/*/77-88-99**", async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: "application/json",
-        body: JSON.stringify({
-          value: [
-            {
-              // Built-in Cosmos DB Data Contributor role (read-write), required by checkTargetHasReadWriteRoleOnSource
-              name: "00000000-0000-0000-0000-000000000002",
-            },
-          ],
-        }),
-      });
-    });
-
-    await page.route(`**/Microsoft.DocumentDB/databaseAccounts/${sourceAccountName}**`, async (route) => {
-      const mockData = {
-        identity: {
-          type: "SystemAssigned",
-          principalId: "00-11-22-33",
-        },
-        properties: {
-          defaultIdentity: "SystemAssignedIdentity",
-          backupPolicy: {
-            type: "Continuous",
-          },
-          capabilities: [{ name: "EnableOnlineContainerCopy" }],
-        },
-      };
-
-      if (route.request().method() === "PATCH") {
-        await route.fulfill({
-          status: 200,
-          contentType: "application/json",
-          body: JSON.stringify({ status: "Succeeded" }),
-        });
-      } else if (route.request().method() === "GET") {
-        const response = await route.fetch();
-        const actualData = await response.json();
-        const mergedData = { ...actualData };
-        set(mergedData, "identity", mockData.identity);
-        set(mergedData, "properties.defaultIdentity", mockData.properties.defaultIdentity);
-        set(mergedData, "properties.backupPolicy", mockData.properties.backupPolicy);
-        set(mergedData, "properties.capabilities", mockData.properties.capabilities);
-
-        await route.fulfill({
-          status: 200,
-          contentType: "application/json",
-          body: JSON.stringify(mergedData),
-        });
-      } else {
-        await route.continue();
-      }
-    });
+    // Complete PITR explicitly, instead of racing its polling response against the next section.
+    backupPolicyType = "Continuous";
+    await refreshBtn.click({ force: true });
+    await expect(
+      permissionScreen.getByTestId("permission-group-container-onlineConfigs").getByAltText("Warning icon"),
+    ).toHaveCount(0);
 
     // Verify cross-account permissions functionality
     const expandedCrossAccordionHeader = permissionScreen
@@ -270,9 +183,11 @@ test.describe("Container Copy - Permission Screen Verification", () => {
       .locator("[role='tabpanel'], .fui-AccordionPanel, [data-test*='panel']")
       .first();
 
-    const toggleButton = crossAccordionPanel.getByTestId("btn-toggle");
+    const toggleButton = crossAccordionPanel.getByRole("switch");
     await expect(toggleButton).toBeVisible();
+    await toggleButton.scrollIntoViewIfNeeded();
     await toggleButton.click({ force: true });
+    await expect(toggleButton).toBeChecked();
 
     // Verify popover functionality
     const popover = frame.locator("[data-test='popover-container']");
@@ -283,12 +198,17 @@ test.describe("Container Copy - Permission Screen Verification", () => {
     await expect(yesButton).toBeVisible();
     await expect(noButton).toBeVisible();
 
+    await yesButton.scrollIntoViewIfNeeded();
     await yesButton.click({ force: true });
 
     // Verify loading states
     await expect(loadingOverlay).toBeVisible();
+    completeRoleAssignment();
     await expect(loadingOverlay).toBeHidden({ timeout: 10 * 1000 });
     await expect(popover).toBeHidden({ timeout: 10 * 1000 });
+    await expect(
+      permissionScreen.getByTestId("permission-group-container-crossAccountConfigs").getByAltText("Warning icon"),
+    ).toHaveCount(0);
 
     // Cancel the panel to clean up
     await panel.getByRole("button", { name: "Cancel" }).click({ force: true });

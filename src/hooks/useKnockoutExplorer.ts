@@ -108,7 +108,11 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
         scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.ExplorerInitialized);
       }
     };
-    effect();
+    effect().catch((error) => {
+      // configurePortal now rejects instead of hanging forever, so this is reachable.
+      // Without a handler it would surface only as an unhandled rejection.
+      Logger.logError(error instanceof Error ? error.message : String(error), "useKnockoutExplorer/configure");
+    });
   }, [platform]);
 
   useEffect(() => {
@@ -705,6 +709,13 @@ export async function fetchAndUpdateKeys(subscriptionId: string, resourceGroup: 
   }
 }
 
+// The portal configures Data Explorer with a single iframe message. If a dependency on the
+// portal side never resolves, that message is never posted — and without this timeout the
+// promise below stays pending forever, leaving the user on <LoadingExplorer /> with no
+// diagnostic while the ApplicationLoad health scenario times out mute (IcM 865096261).
+// Deliberately well above the 10s scenario budget so only genuinely stuck handshakes fail.
+const PORTAL_INIT_MESSAGE_TIMEOUT_MS = 30000;
+
 async function configurePortal(): Promise<Explorer> {
   const configureStartKey = traceStart(Action.ConfigurePortal, {
     dataExplorerArea: "ResourceTree",
@@ -714,7 +725,9 @@ async function configurePortal(): Promise<Explorer> {
   });
 
   let explorer: Explorer;
-  return new Promise((resolve) => {
+  let initMessageTimeoutId: number;
+
+  const explorerReady = new Promise<Explorer>((resolve) => {
     // In development mode, try to load the iframe message from session storage.
     // This allows webpack hot reload to function properly in the portal
     if (process.env.NODE_ENV === "development" && !window.location.search.includes("disablePortalInitCache")) {
@@ -849,6 +862,22 @@ async function configurePortal(): Promise<Explorer> {
 
     sendReadyMessage();
   });
+
+  const initMessageTimeout = new Promise<never>((_resolve, reject) => {
+    initMessageTimeoutId = window.setTimeout(() => {
+      const error = new Error(
+        `Portal did not send the Data Explorer init message within ${PORTAL_INIT_MESSAGE_TIMEOUT_MS}ms`,
+      );
+      traceFailure(Action.ConfigurePortal, { error: error.message }, configureStartKey);
+      reject(error);
+    }, PORTAL_INIT_MESSAGE_TIMEOUT_MS);
+  });
+
+  try {
+    return await Promise.race([explorerReady, initMessageTimeout]);
+  } finally {
+    window.clearTimeout(initMessageTimeoutId);
+  }
 }
 
 function shouldForwardMessage(message: PortalMessage, messageOrigin: string) {
