@@ -10,6 +10,9 @@ on:
       - master
       - hotfix/**
       - release/**
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 permissions:
   id-token: write
   contents: read
@@ -157,8 +160,29 @@ jobs:
           name: mpac-package
           path: "bin/Release/*.nupkg"
 
+  e2e-queue:
+    name: "Wait for E2E Environment"
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    permissions:
+      actions: read
+    outputs:
+      run-attempt: ${{ steps.admission.outputs.run-attempt }}
+    steps:
+      - name: Wait for earlier CI runs
+        uses: softprops/turnstyle@3805450be63b8c80577dc253e8c17e9132036df4 # v3.3.3
+        with:
+          same-branch-only: false
+          poll-interval-seconds: 30
+          initial-wait-seconds: 30
+      - name: Record admitted run attempt
+        id: admission
+        shell: bash
+        run: echo "run-attempt=$GITHUB_RUN_ATTEMPT" >> "$GITHUB_OUTPUT"
+
   playwright-tests:
     name: "Run Playwright Tests (Shard ${{ matrix.shardIndex }} of ${{ matrix.shardTotal }})"
+    needs: [e2e-queue]
     runs-on: ubuntu-latest
     env:
       NODE_TLS_REJECT_UNAUTHORIZED: 0
@@ -172,6 +196,16 @@ jobs:
         shardIndex: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
         shardTotal: [20]
     steps:
+      - name: Verify queue admission for this attempt
+        id: queue-admission
+        shell: bash
+        env:
+          E2E_QUEUE_RUN_ATTEMPT: ${{ needs.e2e-queue.outputs.run-attempt }}
+        run: |
+          if [[ -z "$E2E_QUEUE_RUN_ATTEMPT" || "$E2E_QUEUE_RUN_ATTEMPT" != "$GITHUB_RUN_ATTEMPT" ]]; then
+            echo "::error::The E2E queue did not admit this workflow attempt. Use 'Re-run all jobs' so the queue runs again before any Playwright shard."
+            exit 1
+          fi
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
       - name: Use Node.js 22.x
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
@@ -230,14 +264,14 @@ jobs:
       - name: Run test shard ${{ matrix['shardIndex'] }} of ${{ matrix['shardTotal']}}
         run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }} --workers=3
       - name: "Re-auth for upload (refresh OIDC token)"
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && steps.queue-admission.outcome == 'success' }}
         uses: Azure/login@7184910d9eb2b1c5e48f7073824a90609bb9b6d6 # v2.3.1
         with:
           client-id: ${{ secrets.E2ETESTS_CLIENT_ID }}
           tenant-id: ${{ secrets.E2ETESTS_TENANT_ID }}
           subscription-id: ${{ secrets.E2ETESTS_SUBSCRIPTION_ID }}
       - name: Upload shard blob-report to Azure Storage
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && steps.queue-admission.outcome == 'success' }}
         env:
           KEY: ${{ github.run_id }}-${{ github.run_attempt }}
           SHARD: ${{ matrix.shardIndex }}
