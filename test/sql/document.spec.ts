@@ -21,6 +21,26 @@ let documentsTab: DocumentsTab = null!;
 const chromeOnlyDocumentTag = "@document-chrome-only";
 const crossBrowserSmokeDocumentId = "singlePartitionKey";
 
+const waitForDocumentToLoad = async (documentId: string): Promise<void> => {
+  await expect
+    .poll(
+      async () => {
+        const resultText = await documentsTab.resultsEditor.text();
+        if (!resultText) {
+          return undefined;
+        }
+
+        try {
+          return JSON.parse(resultText)?.id;
+        } catch {
+          return undefined;
+        }
+      },
+      { timeout: ONE_MINUTE_MS },
+    )
+    .toBe(documentId);
+};
+
 for (const { name, databaseId, containerId, documents } of documentTestCases) {
   test.describe(`Test SQL Documents with ${name}`, () => {
     // test.skip(true, "Temporarily disabling all tests in this spec file");
@@ -50,7 +70,7 @@ for (const { name, databaseId, containerId, documents } of documentTestCases) {
           await expect(span).toBeVisible();
 
           await span.click();
-          await expect(documentsTab.resultsEditor.locator).toBeAttached({ timeout: 60 * 1000 });
+          await waitForDocumentToLoad(docId);
 
           const resultText = await documentsTab.resultsEditor.text();
           const resultData = JSON.parse(resultText!);
@@ -66,7 +86,7 @@ for (const { name, databaseId, containerId, documents } of documentTestCases) {
 
           await span.click();
           let newDocumentId;
-          await expect(documentsTab.resultsEditor.locator).toBeAttached({ timeout: 60 * 1000 });
+          await waitForDocumentToLoad(docId);
           await retry(async () => {
             const newDocumentButton = await explorer.waitForCommandBarButton("New Item", 5000);
             await expect(newDocumentButton).toBeVisible();
@@ -95,7 +115,7 @@ for (const { name, databaseId, containerId, documents } of documentTestCases) {
           await newSpan.waitFor();
 
           await newSpan.click();
-          await expect(documentsTab.resultsEditor.locator).toBeAttached({ timeout: 60 * 1000 });
+          await waitForDocumentToLoad(newDocumentId);
 
           const deleteButton = await explorer.waitForCommandBarButton("Delete", 5000);
           await deleteButton.click();
