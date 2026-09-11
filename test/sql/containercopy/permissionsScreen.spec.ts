@@ -102,37 +102,15 @@ test.describe("Container Copy - Permission Screen Verification", () => {
     await expect(permissionScreen.getByText("Online container copy", { exact: true })).toBeVisible();
     await expect(permissionScreen.getByText("Cross-account container copy", { exact: true })).toBeVisible();
 
-    // Mock source account updates and refreshes used by the permission actions.
-    await page.route(`**/Microsoft.DocumentDB/databaseAccounts/${sourceAccountName}**`, async (route) => {
-      const mockData = {
-        id: new URL(route.request().url()).pathname,
-        name: sourceAccountName,
-        location: "East US",
-        type: "Microsoft.DocumentDB/databaseAccounts",
-        kind: "GlobalDocumentDB",
-        identity: {
-          type: "SystemAssigned",
-          principalId: "00-11-22-33",
-        },
-        properties: {
-          defaultIdentity: "SystemAssignedIdentity",
-          backupPolicy: {
-            type: "Continuous",
-          },
-          capabilities: [{ name: "EnableOnlineContainerCopy" }],
-        },
-      };
-      if (route.request().method() === "PATCH") {
+    const sourceAccountRoute = `**/Microsoft.DocumentDB/databaseAccounts/${sourceAccountName}**`;
+
+    // Keep PITR polling deterministic without changing the source account state.
+    await page.route(sourceAccountRoute, async (route) => {
+      if (route.request().method() === "GET" && route.request().url().includes("api-version=2025-05-01-preview")) {
         await route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify({ status: "Succeeded" }),
-        });
-      } else if (route.request().method() === "GET") {
-        await route.fulfill({
-          status: 200,
-          contentType: "application/json",
-          body: JSON.stringify(mockData),
+          body: JSON.stringify({ properties: { backupPolicy: { type: "Periodic" } } }),
         });
       } else {
         await route.continue();
@@ -180,6 +158,7 @@ test.describe("Container Copy - Permission Screen Verification", () => {
 
     await expect(refreshBtn).toBeVisible({ timeout: 5000 });
     await expect(pitrBtn).not.toBeVisible();
+    await page.unroute(sourceAccountRoute);
 
     // Setup additional API mocks for role assignments and permissions
     // In the redesigned flow, role assignments are checked on the SOURCE account (current account = sourceAccountName).
@@ -215,6 +194,43 @@ test.describe("Container Copy - Permission Screen Verification", () => {
           ],
         }),
       });
+    });
+
+    // Return the completed identity state only for the managed-identity action.
+    await page.route(sourceAccountRoute, async (route) => {
+      const mockData = {
+        id: new URL(route.request().url()).pathname,
+        name: sourceAccountName,
+        location: "East US",
+        type: "Microsoft.DocumentDB/databaseAccounts",
+        kind: "GlobalDocumentDB",
+        identity: {
+          type: "SystemAssigned",
+          principalId: "00-11-22-33",
+        },
+        properties: {
+          defaultIdentity: "SystemAssignedIdentity",
+          backupPolicy: {
+            type: "Continuous",
+          },
+          capabilities: [{ name: "EnableOnlineContainerCopy" }],
+        },
+      };
+      if (route.request().method() === "PATCH") {
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({ status: "Succeeded" }),
+        });
+      } else if (route.request().method() === "GET") {
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify(mockData),
+        });
+      } else {
+        await route.continue();
+      }
     });
 
     // Verify cross-account permissions functionality
