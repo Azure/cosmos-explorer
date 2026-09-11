@@ -105,7 +105,7 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     enableContainerCopy: "true" === get("enablecontainercopy"),
     enableRestoreContainer: "true" === get("enablerestorecontainer"),
     enableCloudShell: true,
-    enableCosmosDBShell: "true" === get("enablecosmosdbshell"),
+    enableCosmosDBShell: "true" === get("enablecosmosdbshell", "true"),
     mongoDisableNativeAuth: "true" === get("mongodisablenativeauth"),
   };
 }
