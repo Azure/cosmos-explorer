@@ -28,6 +28,7 @@ export default defineConfig({
   projects: [
     {
       name: "firefox",
+      grepInvert: /@document-chrome-only/,
       use: {
         ...devices["Desktop Firefox"],
         launchOptions: {
@@ -50,6 +51,7 @@ export default defineConfig({
     },
     {
       name: "webkit",
+      grepInvert: /@document-chrome-only/,
       use: {
         ...devices["Desktop Safari"],
       },
@@ -66,6 +68,7 @@ export default defineConfig({
     },
     {
       name: "Microsoft Edge",
+      grepInvert: /@document-chrome-only/,
       use: {
         ...devices["Desktop Edge"],
         channel: "msedge",
