@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { expect, Frame, Locator, Page, test } from "@playwright/test";
-import { ContainerCopy, getAccountName, TestAccount } from "../../fx";
+import { ContainerCopy, getAccountName, resourceGroupName, subscriptionId, TestAccount } from "../../fx";
 
 const VISIBLE_TIMEOUT_MS = 30 * 1000;
 
@@ -160,11 +160,11 @@ test.describe("Container Copy - Permission Screen Verification", () => {
     await expect(pitrBtn).not.toBeVisible();
     await page.unroute(sourceAccountRoute);
 
-    // Setup additional API mocks for role assignments and permissions
-    // In the redesigned flow, role assignments are checked on the SOURCE account (current account = sourceAccountName).
-    // The destination account (selectedAccountName) manages identity; source account holds the role assignments.
+    // Setup additional API mocks for role assignments and permissions.
+    const targetAccountScope = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${targetAccountName}`;
+    const targetRoleDefinitionId = `${targetAccountScope}/sqlRoleDefinitions/77-88-99`;
     await page.route(
-      `**/Microsoft.DocumentDB/databaseAccounts/${sourceAccountName}/sqlRoleAssignments*`,
+      `**/Microsoft.DocumentDB/databaseAccounts/${targetAccountName}/sqlRoleAssignments*`,
       async (route) => {
         await route.fulfill({
           status: 200,
@@ -172,8 +172,14 @@ test.describe("Container Copy - Permission Screen Verification", () => {
           body: JSON.stringify({
             value: [
               {
-                principalId: "00-11-22-33",
-                roleDefinitionId: `Microsoft.DocumentDB/databaseAccounts/${sourceAccountName}/77-88-99`,
+                id: `${targetAccountScope}/sqlRoleAssignments/mock-role-assignment`,
+                name: "mock-role-assignment",
+                type: "Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments",
+                properties: {
+                  principalId: "00-11-22-33",
+                  roleDefinitionId: targetRoleDefinitionId,
+                  scope: `${targetAccountScope}/`,
+                },
               },
             ],
           }),
@@ -181,20 +187,25 @@ test.describe("Container Copy - Permission Screen Verification", () => {
       },
     );
 
-    await page.route("**/Microsoft.DocumentDB/databaseAccounts/*/77-88-99**", async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: "application/json",
-        body: JSON.stringify({
-          value: [
-            {
-              // Built-in Cosmos DB Data Contributor role (read-write), required by checkTargetHasReadWriteRoleOnSource
-              name: "00000000-0000-0000-0000-000000000002",
-            },
-          ],
-        }),
-      });
-    });
+    await page.route(
+      `**/Microsoft.DocumentDB/databaseAccounts/${targetAccountName}/sqlRoleDefinitions/77-88-99*`,
+      async (route) => {
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({
+            id: targetRoleDefinitionId,
+            name: "00000000-0000-0000-0000-000000000002",
+            type: "Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions",
+            assignableScopes: [targetAccountScope],
+            permissions: [],
+            resourceGroup: resourceGroupName,
+            roleName: "Cosmos DB Built-in Data Contributor",
+            typePropertiesType: "BuiltInRole",
+          }),
+        });
+      },
+    );
 
     // Return the completed identity state only for the managed-identity action.
     await page.route(sourceAccountRoute, async (route) => {
@@ -272,13 +283,25 @@ test.describe("Container Copy - Permission Screen Verification", () => {
         response.url().includes(`/databaseAccounts/${sourceAccountName}`) &&
         response.url().includes("api-version=2025-05-01-preview"),
     );
+    const roleAssignmentsPromise = page.waitForResponse(
+      (response) =>
+        response.request().method() === "GET" &&
+        response.url().includes(`/databaseAccounts/${targetAccountName}/sqlRoleAssignments`) &&
+        response.url().includes("api-version=2025-04-15"),
+    );
+    const roleDefinitionPromise = page.waitForResponse(
+      (response) =>
+        response.request().method() === "GET" &&
+        response.url().includes(`/databaseAccounts/${targetAccountName}/sqlRoleDefinitions/77-88-99`) &&
+        response.url().includes("api-version=2025-04-15"),
+    );
     await yesButton.click({ force: true });
-    const [identityUpdateResponse, accountRefreshResponse] = await Promise.all([
-      identityUpdatePromise,
-      accountRefreshPromise,
-    ]);
+    const [identityUpdateResponse, accountRefreshResponse, roleAssignmentsResponse, roleDefinitionResponse] =
+      await Promise.all([identityUpdatePromise, accountRefreshPromise, roleAssignmentsPromise, roleDefinitionPromise]);
     expect(identityUpdateResponse.ok()).toBe(true);
     expect(accountRefreshResponse.ok()).toBe(true);
+    expect(roleAssignmentsResponse.ok()).toBe(true);
+    expect(roleDefinitionResponse.ok()).toBe(true);
 
     // Verify the refreshed account state completes the permission section.
     await expect(popover).toBeHidden({ timeout: VISIBLE_TIMEOUT_MS });
