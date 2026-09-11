@@ -316,6 +316,10 @@
     "deleteUdf": "Usuń funkcję zdefiniowaną przez użytkownika"
   },
   "tabs": {
+    "tabMenu": {
+      "duplicateTab": "Duplikuj kartę",
+      "closeTab": "Zamknij kartę"
+    },
     "documents": {
       "newItem": "Nowy element",
       "newDocument": "Nowy dokument",
@@ -760,11 +764,10 @@
         "settings": "Ustawienia",
         "indexingPolicy": "Zasady indeksowania",
         "partitionKeys": "Klucze partycji",
-        "partitionKeysPreview": "Klucze partycji (wersja zapoznawcza)",
         "computedProperties": "Właściwości obliczane",
         "containerPolicies": "Zasady kontenera",
         "throughputBuckets": "Zasobniki przepływności",
-        "globalSecondaryIndexPreview": "Global Secondary Index",
+        "globalSecondaryIndexPreview": "Globalny indeks pomocniczy",
         "maskingPolicyPreview": "Zasady maskowania"
       },
       "mongoNotifications": {
@@ -895,6 +898,10 @@
       },
       "partitionKeyEditor": {
         "changePartitionKey": "Zmień element {{partitionKeyName}}",
+        "confirmCancel1": "Zamierzasz anulować następujące zadanie kopiowania.",
+        "confirmCancel2": "Anulowanie spowoduje natychmiastowe zatrzymanie zadania.",
+        "confirmComplete1": "Zamierzasz ukończyć następujące zadanie kopiowania.",
+        "confrimComplete2": "Po zakończeniu ciągłe kopiowanie danych zostanie zatrzymane po przetworzeniu wszystkich oczekujących dokumentów. Aby zachować integralność danych, zalecamy zatrzymanie aktualizacji kontenera źródłowego przed ukończeniem zadania.",
         "currentPartitionKey": "Bieżący {{partitionKeyName}}",
         "partitioning": "Partycjonowanie",
         "hierarchical": "Hierarchiczne",
@@ -1033,6 +1040,7 @@
         "description": "Zadania kopiowania kontenerów online umożliwiają kopiowanie danych z kontenera źródłowego do docelowego kontenera interfejsu API NoSQL usługi Cosmos DB przy użyciu zestawienia zmian [Wszystkie wersje i usuwanie](https://learn.microsoft.com/azure/cosmos-db/change-feed-modes?tabs=all-versions-and-deletes#all-versions-and-deletes-change-feed-mode-preview). Umożliwia to kontynuowanie aktualizacji w źródle podczas kopiowania danych. Na końcu jest wymagany krótki przestój, aby bezpiecznie przełączyć aplikacje klienckie do kontenera docelowego. Dowiedz się więcej o [zadaniach kopiowania online](https://learn.microsoft.com/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#getting-started)."
       }
     },
+    "migrationTypeTitle": "Typ migracji",
     "selectContainers": {
       "description": "Wybierz kontener źródłowy i kontener docelowy do skopiowania.",
       "sourceContainerSubHeading": "Kontener źródłowy",
@@ -1117,7 +1125,8 @@
       "buttonText": "Włącz kopiowanie online",
       "validateAllVersionsAndDeletesChangeFeedSpinnerLabel": "Trwa weryfikacja wszystkich wersji i usunięć w trybie zestawienia zmian (wersja zapoznawcza)...",
       "enablingAllVersionsAndDeletesChangeFeedSpinnerLabel": "Trwa włączanie wszystkich wersji i usunięć w trybie zestawienia zmian (wersja zapoznawcza)...",
-      "enablingOnlineCopySpinnerLabel": "Trwa włączanie kopii online na koncie „{{accountName}}”..."
+      "enablingOnlineCopySpinnerLabel": "Trwa włączanie kopii online na koncie „{{accountName}}”...",
+      "onlineMigrationPrerequisitesMessage": "Przed kontynuowaniem należy włączyć wymagania wstępne migracji w trybie online."
     },
     "monitorJobs": {
       "columns": {
@@ -1151,6 +1160,16 @@
       "dialog": {
         "confirmButtonText": "Potwierdź",
         "cancelButtonText": "Anuluj"
+      }
+    },
+    "dataTransfers": {
+      "polling": {
+        "cancelConsoleMessage": "Anulowano zadanie transferu danych „{{jobName}}”",
+        "completedConsoleMessage": "Ukończono zadanie transferu danych „{{jobName}}”",
+        "defaultErrorMessage": "Nie można ukończyć operacji",
+        "errorConsoleMessage": "Zadanie transferu danych „{{jobName}}” nie powiodło się: {{errorMessage}}",
+        "pauseConsoleMessage": "Wstrzymano zadanie transferu danych „{{jobName}}”",
+        "retryConsoleMessage": "Zadanie transferu danych „{{jobName}}” jest w toku, łączna liczba: {{totalCount}}, liczba przetworzonych danych: {{processedCount}}"
       }
     }
   }
