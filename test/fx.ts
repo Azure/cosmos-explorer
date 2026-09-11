@@ -23,7 +23,10 @@ export function generateUniqueName(baseName: string, options?: TestNameOptions):
   const timestamp = options?.timestampped === undefined ? true : options.timestampped;
   const prefixed = options?.prefixed === undefined ? true : options.prefixed;
 
-  const prefix = prefixed ? "t_" : "";
+  const runId = process.env.GITHUB_RUN_ID;
+  const runAttempt = process.env.GITHUB_RUN_ATTEMPT ?? "1";
+  const runPrefix = runId ? `${runId}_${runAttempt}_` : "";
+  const prefix = prefixed ? `t_${runPrefix}` : "";
   const suffix = timestamp ? `_${Date.now()}` : "";
   return `${prefix}${baseName}${crypto.randomBytes(length).toString("hex")}${suffix}`;
 }
