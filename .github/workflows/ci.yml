@@ -10,7 +10,11 @@ on:
       - master
       - hotfix/**
       - release/**
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 permissions:
+  actions: read
   id-token: write
   contents: read
 jobs:
@@ -157,8 +161,20 @@ jobs:
           name: mpac-package
           path: "bin/Release/*.nupkg"
 
+  e2e-queue:
+    name: "Wait for E2E Environment"
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - name: Wait for earlier CI runs
+        uses: softprops/turnstyle@3805450be63b8c80577dc253e8c17e9132036df4 # v3.3.3
+        with:
+          same-branch-only: false
+          poll-interval-seconds: 30
+
   playwright-tests:
     name: "Run Playwright Tests (Shard ${{ matrix.shardIndex }} of ${{ matrix.shardTotal }})"
+    needs: [e2e-queue]
     runs-on: ubuntu-latest
     env:
       NODE_TLS_REJECT_UNAUTHORIZED: 0
