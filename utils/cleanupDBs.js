@@ -5,10 +5,21 @@ const ms = require("ms");
 const subscriptionId = process.env["AZURE_SUBSCRIPTION_ID"];
 const resourceGroupName = process.env["E2ETESTS_RESOURCEGROUP_NAME"];
 
-const cleanupMinimumAge = ms(process.env["E2E_CLEANUP_MINIMUM_AGE"] || "6h");
-if (!cleanupMinimumAge) {
-  throw new Error("E2E_CLEANUP_MINIMUM_AGE must be a valid duration");
+function parseCleanupMinimumAge(configuredAge) {
+  let parsedAge;
+  try {
+    parsedAge = ms(configuredAge === undefined ? "6h" : configuredAge);
+  } catch {
+    parsedAge = undefined;
+  }
+
+  if (!Number.isFinite(parsedAge) || parsedAge <= 0) {
+    throw new Error("E2E_CLEANUP_MINIMUM_AGE must be a positive duration");
+  }
+
+  return parsedAge;
 }
+const cleanupMinimumAge = parseCleanupMinimumAge(process.env["E2E_CLEANUP_MINIMUM_AGE"]);
 const cleanupThreshold = Date.now() - cleanupMinimumAge;
 
 function shouldDeleteResource(name, timestamp, threshold = cleanupThreshold) {
@@ -150,4 +161,4 @@ if (require.main === module) {
     });
 }
 
-module.exports = { shouldDeleteResource };
+module.exports = { parseCleanupMinimumAge, shouldDeleteResource };
