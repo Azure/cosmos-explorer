@@ -1,11 +1,69 @@
+import { act, cleanup, fireEvent, render } from "@testing-library/react";
 import { DocumentsTabV2 } from "Explorer/Tabs/DocumentsTabV2/DocumentsTabV2";
 import * as ko from "knockout";
+import React from "react";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { updateUserContext } from "../../UserContext";
 import { useTabs } from "../../hooks/useTabs";
 import { container } from "../Controls/Settings/TestUtils";
 import DocumentId from "../Tree/DocumentId";
 import { NewQueryTab } from "./QueryTab/QueryTab";
+import { Tabs } from "./Tabs";
+import TabsBase from "./TabsBase";
+
+describe("Tab path tooltips", () => {
+  const renderActiveTab = () => {
+    const tab = Object.assign(
+      new TabsBase({ tabKind: ViewModels.CollectionTabKind.Query, title: "Query 1", tabPath: "" }),
+      { render: () => React.createElement("button", null, "Execute Query") },
+    );
+    tab.tabPath = ko.observable("t_34646986695_1_dbc3_1789160465183>testcontainer>Query 1");
+    useTabs.setState({ openedTabs: [tab], activeTab: tab });
+    return render(React.createElement(Tabs, { explorer: container }));
+  };
+
+  beforeEach(() => {
+    jest.useFakeTimers();
+    useTabs.setState({ openedTabs: [], openedReactTabs: [], activeTab: undefined, activeReactTab: undefined });
+  });
+
+  afterEach(() => {
+    cleanup();
+    jest.clearAllTimers();
+    jest.useRealTimers();
+    useTabs.setState({ openedTabs: [], activeTab: undefined });
+  });
+
+  it("focuses an activated tab without opening its path tooltip", () => {
+    const view = renderActiveTab();
+    expect(document.activeElement).toBe(view.getByRole("tab", { name: "Query 1" }));
+
+    act(() => jest.advanceTimersByTime(1000));
+    expect(document.querySelector(".ms-Tooltip")).toBeNull();
+  });
+
+  it.each(["hover", "focus"])("keeps the path tooltip available on later %s and dismissible with Escape", (trigger) => {
+    const view = renderActiveTab();
+    const tab = view.getByRole("tab", { name: "Query 1" });
+    act(() => jest.advanceTimersByTime(1000));
+
+    if (trigger === "hover") {
+      fireEvent.mouseEnter(tab);
+    } else {
+      act(() => {
+        view.getByRole("button", { name: "Execute Query" }).focus();
+        tab.focus();
+      });
+    }
+
+    act(() => jest.advanceTimersByTime(1000));
+    expect(document.querySelector(".ms-Tooltip")?.textContent).toContain("testcontainer>Query 1");
+
+    fireEvent.keyDown(tab, { key: "Escape", keyCode: 27, which: 27 });
+    expect(document.querySelector(".ms-Tooltip")).toBeNull();
+    expect(document.activeElement).toBe(tab);
+  });
+});
 
 describe("useTabs tests", () => {
   let database: ViewModels.Database;
