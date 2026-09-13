@@ -3,7 +3,7 @@ import { CollapsibleSectionComponent } from "Explorer/Controls/CollapsiblePanel/
 import { VectorEmbeddingSource } from "Contracts/DataModels";
 import {
   getAuthTypeOptions,
-  isValidHttpsUrl,
+  isValidFoundryEndpoint,
   parseSourcePaths,
 } from "Explorer/Controls/VectorSearch/VectorSearchUtils";
 import { dropdownStyles, labelStyles, textFieldStyles } from "Explorer/Controls/VectorSearch/vectorSearchStyles";
@@ -13,6 +13,7 @@ import React, { FunctionComponent, useState } from "react";
 
 export interface IVectorEmbeddingSourceComponentProps {
   index: number;
+  vectorPath: string;
   disabled: boolean;
   initialEmbeddingSource?: VectorEmbeddingSource;
   discardChanges?: boolean;
@@ -38,13 +39,19 @@ const EmbeddingSourceLabel = ({ disabled, label, tooltip }: EmbeddingSourceLabel
   </Label>
 );
 
-const validateSourcePaths = (raw: string): string => {
+const validateSourcePaths = (raw: string, vectorPath: string): string => {
   const parsed = parseSourcePaths(raw);
   if (parsed.length === 0) {
     return t(Keys.controls.vectorEmbeddingPolicies.sourcePathsRequiredError);
   }
   const seen = new Set<string>();
   for (const p of parsed) {
+    if (!p.startsWith("/")) {
+      return t(Keys.controls.vectorEmbeddingPolicies.sourcePathInvalidError);
+    }
+    if (p === vectorPath) {
+      return t(Keys.controls.vectorEmbeddingPolicies.sourcePathSameAsVectorPathError);
+    }
     if (seen.has(p)) {
       return t(Keys.controls.vectorEmbeddingPolicies.sourcePathDuplicateError);
     }
@@ -64,7 +71,7 @@ const validateEndpoint = (value: string | undefined): string => {
   if (!value || value.trim().length === 0) {
     return t(Keys.controls.vectorEmbeddingPolicies.endpointRequiredError);
   }
-  if (!isValidHttpsUrl(value.trim())) {
+  if (!isValidFoundryEndpoint(value.trim())) {
     return t(Keys.controls.vectorEmbeddingPolicies.endpointInvalidError);
   }
   return "";
@@ -72,6 +79,7 @@ const validateEndpoint = (value: string | undefined): string => {
 
 export const VectorEmbeddingSourceComponent: FunctionComponent<IVectorEmbeddingSourceComponentProps> = ({
   index,
+  vectorPath,
   disabled,
   initialEmbeddingSource,
   discardChanges,
@@ -93,7 +101,7 @@ export const VectorEmbeddingSourceComponent: FunctionComponent<IVectorEmbeddingS
     modelName.trim().length > 0 ||
     endpoint.trim().length > 0;
 
-  const sourcePathsError = hasAnyValue ? validateSourcePaths(sourcePathsRaw) : "";
+  const sourcePathsError = hasAnyValue ? validateSourcePaths(sourcePathsRaw, vectorPath) : "";
   const deploymentNameError = hasAnyValue
     ? validateRequired(deploymentName, Keys.controls.vectorEmbeddingPolicies.deploymentNameRequiredError)
     : "";
@@ -196,11 +204,11 @@ export const VectorEmbeddingSourceComponent: FunctionComponent<IVectorEmbeddingS
             />
           </Stack>
           <Stack>
-            <Label disabled={disabled} styles={labelStyles}>
+            <Label disabled={false} styles={labelStyles}>
               {t(Keys.controls.vectorEmbeddingPolicies.endpoint)}
             </Label>
             <TextField
-              disabled={disabled}
+              disabled={false}
               id={`vector-policy-embeddingSource-endpoint-${suffix}`}
               data-test={`VectorEmbeddingSource/Endpoint/${suffix}`}
               placeholder={t(Keys.controls.vectorEmbeddingPolicies.endpointPlaceholder)}

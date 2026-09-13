@@ -3,11 +3,13 @@ import { VectorEmbeddingSource, VectorIndex } from "Contracts/DataModels";
 import { Keys, t } from "Localization";
 
 const dataTypes = ["float32", "uint8", "int8", "float16"];
+const embeddingSourceDataTypes = ["float32", "float16"];
 const distanceFunctions = ["euclidean", "cosine", "dotproduct"];
 const indexTypes = ["none", "flat", "diskANN", "quantizedFlat"];
 const authTypes: VectorEmbeddingSource["authType"][] = ["Entra"];
 
-export const getDataTypeOptions = (): IDropdownOption[] => createDropdownOptionsFromLiterals(dataTypes);
+export const getDataTypeOptions = (hasEmbeddingSource = false): IDropdownOption[] =>
+  createDropdownOptionsFromLiterals(hasEmbeddingSource ? embeddingSourceDataTypes : dataTypes);
 export const getDistanceFunctionOptions = (): IDropdownOption[] => createDropdownOptionsFromLiterals(distanceFunctions);
 export const getIndexTypeOptions = (): IDropdownOption[] => createDropdownOptionsFromLiterals(indexTypes);
 export const getAuthTypeOptions = (): IDropdownOption[] => createDropdownOptionsFromLiterals(authTypes);
@@ -26,14 +28,14 @@ export const parseSourcePaths = (raw: string): string[] => {
   return raw
     .split(",")
     .map((p) => p.trim())
-    .filter((p) => p.length > 0)
-    .map((p) => (p.startsWith("/") ? p : `/${p}`));
+    .filter((p) => p.length > 0);
 };
 
-export const isValidHttpsUrl = (value: string): boolean => {
+export const isValidFoundryEndpoint = (value: string): boolean => {
   try {
     const url = new URL(value);
-    return url.protocol === "https:";
+    const allowedHostSuffixes = [".openai.azure.com", ".openai.azure.us", ".openai.azure.cn", ".services.ai.azure.com"];
+    return url.protocol === "https:" && allowedHostSuffixes.some((suffix) => url.hostname.endsWith(suffix));
   } catch {
     return false;
   }

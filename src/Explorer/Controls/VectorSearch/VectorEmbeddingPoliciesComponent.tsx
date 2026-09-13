@@ -41,6 +41,7 @@ export interface VectorEmbeddingPolicyData {
   distanceFunction: VectorEmbedding["distanceFunction"];
   dimensions: number;
   indexType: VectorIndex["type"] | "none";
+  dataTypeError: string;
   pathError: string;
   dimensionsError: string;
   vectorIndexShardKey?: string[];
@@ -54,6 +55,18 @@ export interface VectorEmbeddingPolicyData {
 }
 
 type VectorEmbeddingPolicyProperty = "dataType" | "distanceFunction" | "indexType";
+const embeddingSourceSupportedDataTypes: VectorEmbedding["dataType"][] = ["float32", "float16"];
+
+const getEmbeddingSourceDimensionLimit = (modelName: string | undefined): number | undefined => {
+  switch (modelName?.trim()) {
+    case "text-embedding-3-large":
+      return 3072;
+    case "text-embedding-3-small":
+      return 1536;
+    default:
+      return undefined;
+  }
+};
 
 export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddingPoliciesComponentProps> = ({
   vectorEmbeddingsBaseline,
@@ -95,13 +108,36 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
     return error;
   };
 
-  const onVectorEmbeddingDimensionError = (dimension: number, indexType: VectorIndex["type"] | "none"): string => {
+  const onVectorEmbeddingDataTypeError = (
+    dataType: VectorEmbedding["dataType"],
+    embeddingSource?: VectorEmbeddingSource,
+  ): string => {
+    if (embeddingSource && !embeddingSourceSupportedDataTypes.includes(dataType)) {
+      return t(Keys.controls.vectorEmbeddingPolicies.embeddingSourceDataTypeError);
+    }
+    return "";
+  };
+
+  const onVectorEmbeddingDimensionError = (
+    dimension: number,
+    indexType: VectorIndex["type"] | "none",
+    embeddingSource?: VectorEmbeddingSource,
+  ): string => {
     let error = "";
     if (dimension <= 0 || dimension > 4096) {
       error = t(Keys.controls.vectorEmbeddingPolicies.dimensionRangeError);
     }
     if (indexType === "flat" && dimension > 505) {
       error = t(Keys.controls.vectorEmbeddingPolicies.dimensionFlatIndexError);
+    }
+    if (embeddingSource?.modelName === "text-embedding-ada-002" && dimension !== 1536) {
+      error = t(Keys.controls.vectorEmbeddingPolicies.adaDimensionError);
+    }
+    const modelDimensionLimit = getEmbeddingSourceDimensionLimit(embeddingSource?.modelName);
+    if (modelDimensionLimit && (dimension <= 0 || dimension > modelDimensionLimit)) {
+      error = t(Keys.controls.vectorEmbeddingPolicies.modelDimensionRangeError, {
+        max: modelDimensionLimit,
+      });
     }
     return error;
   };
@@ -137,7 +173,12 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
         quantizerType: supportsQuantizer ? matchingIndex?.quantizerType || "product" : undefined,
         vectorIndexShardKey: matchingIndex?.vectorIndexShardKey || undefined,
         pathError: onVectorEmbeddingPathError(embedding.path),
-        dimensionsError: onVectorEmbeddingDimensionError(embedding.dimensions, matchingIndex?.type || "none"),
+        dataTypeError: onVectorEmbeddingDataTypeError(embedding.dataType, embedding.embeddingSource),
+        dimensionsError: onVectorEmbeddingDimensionError(
+          embedding.dimensions,
+          matchingIndex?.type || "none",
+          embedding.embeddingSource,
+        ),
         embeddingSource: embedding.embeddingSource,
         embeddingSourceValid: true,
       });
@@ -192,7 +233,10 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
       );
     const validationPassed = vectorEmbeddingPolicyData.every(
       (policy: VectorEmbeddingPolicyData) =>
-        policy.pathError === "" && policy.dimensionsError === "" && policy.embeddingSourceValid,
+        policy.pathError === "" &&
+        policy.dataTypeError === "" &&
+        policy.dimensionsError === "" &&
+        policy.embeddingSourceValid,
     );
 
     onVectorEmbeddingChange(vectorEmbeddings, vectorIndexes, validationPassed);
@@ -216,7 +260,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
     const vectorEmbeddings = [...vectorEmbeddingPolicyData];
     const vectorEmbedding = vectorEmbeddings[index];
     vectorEmbeddings[index].dimensions = value;
-    const error = onVectorEmbeddingDimensionError(value, vectorEmbedding.indexType);
+    const error = onVectorEmbeddingDimensionError(value, vectorEmbedding.indexType, vectorEmbedding.embeddingSource);
     vectorEmbeddings[index].dimensionsError = error;
     setVectorEmbeddingPolicyData(vectorEmbeddings);
   };
@@ -225,7 +269,11 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
     const vectorEmbeddings = [...vectorEmbeddingPolicyData];
     const vectorEmbedding = vectorEmbeddings[index];
     vectorEmbeddings[index].indexType = option.key as never;
-    const error = onVectorEmbeddingDimensionError(vectorEmbedding.dimensions, vectorEmbedding.indexType);
+    const error = onVectorEmbeddingDimensionError(
+      vectorEmbedding.dimensions,
+      vectorEmbedding.indexType,
+      vectorEmbedding.embeddingSource,
+    );
     vectorEmbeddings[index].dimensionsError = error;
     if (vectorEmbedding.indexType === "diskANN") {
       vectorEmbedding.indexingSearchListSize = 100;
@@ -280,6 +328,12 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
   ): void => {
     const vectorEmbeddings = [...vectorEmbeddingPolicyData];
     vectorEmbeddings[index][property] = option.key as never;
+    if (property === "dataType") {
+      vectorEmbeddings[index].dataTypeError = onVectorEmbeddingDataTypeError(
+        vectorEmbeddings[index].dataType,
+        vectorEmbeddings[index].embeddingSource,
+      );
+    }
     setVectorEmbeddingPolicyData(vectorEmbeddings);
   };
 
@@ -294,7 +348,15 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
           return prev;
         }
         const next = [...prev];
-        next[index] = { ...current, embeddingSource, embeddingSourceValid: isValid };
+        const dataType = embeddingSourceSupportedDataTypes.includes(current.dataType) ? current.dataType : "float32";
+        next[index] = {
+          ...current,
+          dataType,
+          dataTypeError: onVectorEmbeddingDataTypeError(dataType, embeddingSource),
+          dimensionsError: onVectorEmbeddingDimensionError(current.dimensions, current.indexType, embeddingSource),
+          embeddingSource,
+          embeddingSourceValid: isValid,
+        };
         return next;
       });
     },
@@ -311,6 +373,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
         distanceFunction: "euclidean",
         dimensions: 0,
         indexType: "none",
+        dataTypeError: "",
         pathError: onVectorEmbeddingPathError(""),
         dimensionsError: onVectorEmbeddingDimensionError(0, "none"),
         embeddingSource: undefined,
@@ -381,11 +444,12 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
                     disabled={isExistingPolicy(vectorEmbeddingPolicy)}
                     required={true}
                     styles={dropdownStyles}
-                    options={getDataTypeOptions()}
+                    options={getDataTypeOptions(!!vectorEmbeddingPolicy.embeddingSource)}
                     selectedKey={vectorEmbeddingPolicy.dataType}
                     onChange={(_event: React.FormEvent<HTMLDivElement>, option: IDropdownOption) =>
                       onVectorEmbeddingPolicyChange(index, option, "dataType")
                     }
+                    errorMessage={vectorEmbeddingPolicy.dataTypeError}
                   ></Dropdown>
                 </Stack>
                 <Stack>
@@ -529,6 +593,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
                 {isIntegratedEmbeddingEnabled() && (
                   <VectorEmbeddingSourceComponent
                     index={index}
+                    vectorPath={vectorEmbeddingPolicy.path}
                     disabled={isExistingPolicy(vectorEmbeddingPolicy)}
                     initialEmbeddingSource={vectorEmbeddingPolicy.embeddingSource}
                     discardChanges={discardChanges}

@@ -1014,14 +1014,19 @@
       "pathDuplicateError": "Path is already defined",
       "dimensionRangeError": "Dimension must be greater than 0 and less than or equal 4096",
       "dimensionFlatIndexError": "Maximum allowed dimension for flat index is 505",
+      "modelDimensionRangeError": "Dimension must be greater than 0 and less than or equal {{max}}",
+      "adaDimensionError": "Dimensions must be 1536",
       "quantizationByteSizeRangeError": "Quantization byte size must be greater than 0 and less than or equal to 512",
       "indexingSearchListSizeRangeError": "Indexing search list size must be greater than or equal to 25 and less than or equal to 500",
       "sourcePathsRequiredError": "At least one source path is required",
+      "sourcePathInvalidError": "Source paths must start with /",
       "sourcePathDuplicateError": "Source paths must be unique",
+      "sourcePathSameAsVectorPathError": "Source path must be different from vector path",
       "deploymentNameRequiredError": "Deployment name is required",
-      "modelNameRequiredError": "Model name is required",
-      "endpointRequiredError": "Endpoint is required",
-      "endpointInvalidError": "Endpoint must be a valid https:// URL"
+      "modelNameRequiredError": "Embedding model name is required",
+      "endpointRequiredError": "Microsoft Foundry Endpoint is required",
+      "endpointInvalidError": "Endpoint must be a valid Azure OpenAI or Foundry https:// URL",
+      "embeddingSourceDataTypeError": "Embedding generation supports only float32 or float16 data types"
     }
   },
   "containerCopy": {

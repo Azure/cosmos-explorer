@@ -150,30 +150,54 @@ describe("VectorEmbeddingPoliciesComponent - embedding source", () => {
     });
     await waitFor(() => {
       expect(screen.getByText("At least one source path is required")).toBeInTheDocument();
-      expect(screen.getByText("Model name is required")).toBeInTheDocument();
-      expect(screen.getByText("Endpoint is required")).toBeInTheDocument();
+      expect(screen.getByText("Embedding model name is required")).toBeInTheDocument();
+      expect(screen.getByText("Microsoft Foundry Endpoint is required")).toBeInTheDocument();
     });
     const last = onChange.mock.calls[onChange.mock.calls.length - 1];
     expect(last[2]).toBe(false);
   });
 
-  test("invalid endpoint shows the https:// error", async () => {
+  test("source paths must start with slash and differ from vector path", async () => {
+    expandSection();
+    fireEvent.change(view.container.querySelector("#vector-policy-embeddingSource-sourcePaths-1"), {
+      target: { value: "description" },
+    });
+    await waitFor(() => expect(screen.getByText("Source paths must start with /")).toBeInTheDocument());
+
+    fireEvent.change(view.container.querySelector("#vector-policy-embeddingSource-sourcePaths-1"), {
+      target: { value: "/vector2" },
+    });
+    await waitFor(() => expect(screen.getByText("Source path must be different from vector path")).toBeInTheDocument());
+  });
+
+  test("invalid endpoint shows the Azure OpenAI or Foundry URL error", async () => {
     expandSection();
     fireEvent.change(view.container.querySelector("#vector-policy-embeddingSource-endpoint-1"), {
       target: { value: "not-a-url" },
     });
-    await waitFor(() => expect(screen.getByText("Endpoint must be a valid https:// URL")).toBeInTheDocument());
+    await waitFor(() =>
+      expect(screen.getByText("Endpoint must be a valid Azure OpenAI or Foundry https:// URL")).toBeInTheDocument(),
+    );
 
     fireEvent.change(view.container.querySelector("#vector-policy-embeddingSource-endpoint-1"), {
       target: { value: "http://insecure.example.com" },
     });
-    await waitFor(() => expect(screen.getByText("Endpoint must be a valid https:// URL")).toBeInTheDocument());
+    await waitFor(() =>
+      expect(screen.getByText("Endpoint must be a valid Azure OpenAI or Foundry https:// URL")).toBeInTheDocument(),
+    );
+
+    fireEvent.change(view.container.querySelector("#vector-policy-embeddingSource-endpoint-1"), {
+      target: { value: "https://example.com" },
+    });
+    await waitFor(() =>
+      expect(screen.getByText("Endpoint must be a valid Azure OpenAI or Foundry https:// URL")).toBeInTheDocument(),
+    );
   });
 
   test("valid input propagates an embeddingSource with parsed sourcePaths", async () => {
     expandSection();
     fireEvent.change(view.container.querySelector("#vector-policy-embeddingSource-sourcePaths-1"), {
-      target: { value: "/description, title" },
+      target: { value: "/description, /title" },
     });
     fireEvent.change(view.container.querySelector("#vector-policy-embeddingSource-deploymentName-1"), {
       target: { value: "my-deployment" },
@@ -213,7 +237,7 @@ describe("VectorEmbeddingPoliciesComponent - embedding source", () => {
     fireEvent.change(sourcePaths, { target: { value: "/description" } });
     fireEvent.change(deploymentName, { target: { value: "d" } });
     fireEvent.change(modelName, { target: { value: "m" } });
-    fireEvent.change(endpoint, { target: { value: "https://x.example.com" } });
+    fireEvent.change(endpoint, { target: { value: "https://x.openai.azure.com" } });
 
     await waitFor(() => {
       const lastCall = onChange.mock.calls[onChange.mock.calls.length - 1];
@@ -263,6 +287,102 @@ describe("VectorEmbeddingPoliciesComponent - embedding source", () => {
     const stable = onChange.mock.calls.length;
     await new Promise((resolve) => setTimeout(resolve, 100));
     expect(onChange.mock.calls.length).toBe(stable);
+  });
+
+  test("model-specific dimension validation blocks out-of-range values", async () => {
+    expandSection();
+    fireEvent.change(view.container.querySelector("#vector-policy-dimension-1"), { target: { value: "3073" } });
+    fireEvent.change(view.container.querySelector("#vector-policy-embeddingSource-sourcePaths-1"), {
+      target: { value: "/description" },
+    });
+    fireEvent.change(view.container.querySelector("#vector-policy-embeddingSource-deploymentName-1"), {
+      target: { value: "text-embedding-3-large" },
+    });
+    fireEvent.change(view.container.querySelector("#vector-policy-embeddingSource-modelName-1"), {
+      target: { value: "text-embedding-3-large" },
+    });
+    fireEvent.change(view.container.querySelector("#vector-policy-embeddingSource-endpoint-1"), {
+      target: { value: "https://my-foundry.openai.azure.com" },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText("Dimension must be greater than 0 and less than or equal 3072")).toBeInTheDocument();
+      const lastCall = onChange.mock.calls[onChange.mock.calls.length - 1];
+      expect(lastCall[2]).toBe(false);
+    });
+  });
+
+  test("existing embedding source allows endpoint edit but keeps source fields read-only", async () => {
+    const existingEmbedding: VectorEmbedding[] = [
+      {
+        path: "/vector4",
+        dataType: "float32",
+        distanceFunction: "cosine",
+        dimensions: 1536,
+        embeddingSource: {
+          sourcePaths: ["/description"],
+          deploymentName: "text-embedding-3-small",
+          modelName: "text-embedding-3-small",
+          endpoint: "https://old.openai.azure.com",
+          authType: "Entra",
+        },
+      },
+    ];
+    const existingOnChange = jest.fn();
+    const existingView = render(
+      <VectorEmbeddingPoliciesComponent
+        vectorEmbeddingsBaseline={existingEmbedding}
+        vectorEmbeddings={existingEmbedding}
+        vectorIndexes={[]}
+        onVectorEmbeddingChange={existingOnChange}
+      />,
+    );
+
+    const sourcePaths = existingView.container.querySelector(
+      "#vector-policy-embeddingSource-sourcePaths-1",
+    ) as HTMLInputElement;
+    const endpoint = existingView.container.querySelector(
+      "#vector-policy-embeddingSource-endpoint-1",
+    ) as HTMLInputElement;
+    expect(sourcePaths).toBeDisabled();
+    expect(endpoint).not.toBeDisabled();
+
+    fireEvent.change(endpoint, { target: { value: "https://new.openai.azure.com" } });
+    await waitFor(() => {
+      const lastCall = existingOnChange.mock.calls[existingOnChange.mock.calls.length - 1];
+      expect(lastCall[2]).toBe(true);
+      expect(lastCall[0][0].embeddingSource.endpoint).toBe("https://new.openai.azure.com");
+    });
+  });
+
+  test("existing vector policy without an embedding source cannot add one", () => {
+    const existingEmbedding: VectorEmbedding[] = [
+      {
+        path: "/vector5",
+        dataType: "float32",
+        distanceFunction: "cosine",
+        dimensions: 1536,
+      },
+    ];
+    const existingView = render(
+      <VectorEmbeddingPoliciesComponent
+        vectorEmbeddingsBaseline={existingEmbedding}
+        vectorEmbeddings={existingEmbedding}
+        vectorIndexes={[]}
+        onVectorEmbeddingChange={jest.fn()}
+      />,
+    );
+
+    fireEvent.click(existingView.container.querySelector('[data-test="VectorEmbeddingSource/Section/1"]'));
+
+    expect(existingView.container.querySelector("#vector-policy-embeddingSource-sourcePaths-1")).toBeDisabled();
+    expect(existingView.container.querySelector("#vector-policy-embeddingSource-deploymentName-1")).toBeDisabled();
+    expect(existingView.container.querySelector("#vector-policy-embeddingSource-modelName-1")).toBeDisabled();
+    expect(existingView.container.querySelector("#vector-policy-embeddingSource-authType-1")).toHaveAttribute(
+      "aria-disabled",
+      "true",
+    );
+    expect(existingView.container.querySelector("#vector-policy-embeddingSource-endpoint-1")).not.toBeDisabled();
   });
 });
 
