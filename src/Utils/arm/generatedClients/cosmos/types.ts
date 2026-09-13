@@ -1412,6 +1412,17 @@ export interface VectorEmbedding {
 
   /* The number of dimensions in the vector. */
   dimensions: number;
+
+  /* Added manually pending upstream Swagger update; `npm run generateARMClients` will overwrite. */
+  embeddingSource?: VectorEmbeddingSource;
+}
+
+export interface VectorEmbeddingSource {
+  sourcePaths: string[];
+  deploymentName: string;
+  modelName: string;
+  endpoint: string;
+  authType: "Entra";
 }
 
 /* Represents the full text index path. */
