@@ -130,11 +130,11 @@ class ScenarioMonitor {
         hasExpectedFailure: ctx.hasExpectedFailure,
       });
 
-      // Expected failures (auth, firewall, ...) are not our outage. Neither is a timeout in
-      // a backgrounded tab: browsers throttle timers and suspend rAF there, so phase
-      // completion is unreliable and the elapsed time is not the user's experience.
-      // documentHidden is still reported so these can be sliced out in telemetry.
-      const healthy = ctx.hasExpectedFailure || document.hidden;
+      // Expected failures (auth, firewall, ...) are not our outage. A backgrounded tab is not
+      // excused here: timer throttling changes whether the timeout should raise an alert, but
+      // it does not establish that the load completed. documentHidden is reported with the
+      // event so alerting can apply that policy without the load being relabelled as healthy.
+      const healthy = ctx.hasExpectedFailure;
       this.emit(ctx, healthy, true);
     }, config.timeoutMs);
     this.contexts.set(scenario, ctx);
@@ -199,11 +199,14 @@ class ScenarioMonitor {
   completePhase(scenario: MetricScenario, phase: MetricPhase) {
     const ctx = this.contexts.get(scenario);
 
-    // The scenario has not been started yet. Remember the completion and replay it in
-    // start(); otherwise a one-shot React effect that fired early is lost forever.
+    // The scenario has not been started yet. Buffer the completion and replay it in start(),
+    // otherwise a one-shot React effect that fired early is lost forever. Only phases that
+    // start with the scenario are buffered: a deferred phase must be opened explicitly by its
+    // producer, so accepting one early would record a completion for work that had not begun.
     if (!ctx) {
       const config = scenarioConfigs[scenario];
-      if (config?.requiredPhases.includes(phase)) {
+      const isDeferred = config?.deferredPhases?.includes(phase) ?? false;
+      if (config?.requiredPhases.includes(phase) && !isDeferred) {
         const pending = this.earlyCompletions.get(scenario) ?? new Set<MetricPhase>();
         pending.add(phase);
         this.earlyCompletions.set(scenario, pending);
@@ -216,16 +219,18 @@ class ScenarioMonitor {
       return;
     }
 
-    // The phase is required but has not been started yet (deferred phases are started
-    // explicitly, and the caller may run before that happens). Self-start it now so the
-    // completion is honoured instead of silently dropped.
-    let phaseCtx = ctx.phases.get(phase);
+    // Completion for a phase that was never started. The producer ordering is wrong, and we
+    // cannot tell what the completion actually observed, so the phase is left open rather than
+    // backdated. Reported so the ordering bug is visible instead of silently skewing the metric.
+    const phaseCtx = ctx.phases.get(phase);
     if (!phaseCtx) {
-      const lateStartMarkName = `scenario_${scenario}_${phase}_start`;
-      performance.mark(lateStartMarkName);
-      phaseCtx = { startMarkName: lateStartMarkName };
-      ctx.phases.set(phase, phaseCtx);
-      this.devLog(`phase_autostart: ${scenario}.${phase} — completed before startPhase()`);
+      this.devLog(`phase_complete_unstarted: ${scenario}.${phase} — ignored, phase was never started`);
+      traceMark(Action.MetricsScenario, {
+        event: "phase_complete_unstarted",
+        scenario,
+        phase,
+      });
+      return;
     }
 
     const endMarkName = `scenario_${scenario}_${phase}_end`;
