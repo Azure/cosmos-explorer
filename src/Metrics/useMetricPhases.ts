@@ -43,31 +43,34 @@ export function useInteractive(scenario: MetricScenario, enabled = true) {
 /**
  * Hook to manage DatabaseLoad scenario phase completions.
  *
- * DatabaseTreeRendered is completed only for a render that carries the ready revision
- * published by the current load (Explorer.refreshAndExpandNewDatabases). An earlier render —
- * databases fetched but collections still loading — carries a stale revision and is ignored,
- * so it cannot be mistaken for the loaded tree. Each revision is acknowledged at most once,
- * which also discards stale callbacks from a superseded load.
+ * DatabaseTreeRendered is completed only for a render that carries the ready token published
+ * by the current load (Explorer.refreshAndExpandNewDatabases). An earlier render — databases
+ * fetched but collections still loading — carries the previous token and is ignored, so it
+ * cannot be mistaken for the loaded tree. Each token is acknowledged at most once, which also
+ * discards stale callbacks from a superseded load.
  *
- * An account with no databases still publishes a revision and renders an empty tree, so it
+ * The token is a fresh object compared by reference, so repeated refreshes cannot exhaust or
+ * wrap it the way an incrementing counter could.
+ *
+ * An account with no databases still publishes a token and renders an empty tree, so it
  * completes normally rather than stalling.
  */
 export function useDatabaseLoadScenario(databaseTreeNodes: unknown[], fetchSucceeded: boolean) {
-  const treeReadyRevision = useDatabases((state) => state.treeReadyRevision);
-  const acknowledgedRevision = React.useRef(0);
+  const treeReadyToken = useDatabases((state) => state.treeReadyToken);
+  const acknowledgedToken = React.useRef<object | undefined>(undefined);
 
-  // Track DatabaseTreeRendered phase. Runs after commit, so the tree carrying this revision
-  // is on screen by the time the phase is completed.
+  // Track DatabaseTreeRendered phase. Runs after commit, so the tree carrying this token is on
+  // screen by the time the phase is completed.
   React.useEffect(() => {
-    if (!fetchSucceeded || treeReadyRevision === 0) {
+    if (!fetchSucceeded || !treeReadyToken) {
       return;
     }
-    if (acknowledgedRevision.current >= treeReadyRevision) {
+    if (acknowledgedToken.current === treeReadyToken) {
       return;
     }
-    acknowledgedRevision.current = treeReadyRevision;
+    acknowledgedToken.current = treeReadyToken;
     scenarioMonitor.completePhase(MetricScenario.DatabaseLoad, ApplicationMetricPhase.DatabaseTreeRendered);
-  }, [databaseTreeNodes, fetchSucceeded, treeReadyRevision]);
+  }, [databaseTreeNodes, fetchSucceeded, treeReadyToken]);
 
   // Track Interactive phase
   useInteractive(MetricScenario.DatabaseLoad);

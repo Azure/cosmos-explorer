@@ -8,7 +8,7 @@
  * (ResourceTree.tsx), every completion arrived before the phase existed and was dropped:
  * missing in 1624 of 1627 DatabaseLoad timeouts over three days.
  *
- * The fix is on the producer side — a ready revision published once the load has produced the
+ * The fix is on the producer side — a ready token published once the load has produced the
  * data the tree is expected to show, acknowledged by the render that carries it. These tests
  * pin the monitor half of that contract: completions for phases that were never opened are
  * refused rather than backdated, so a render observed too early cannot stand in for the
@@ -45,7 +45,7 @@ const loadUpToTreeReady = () => {
   scenarioMonitor.completePhase(MetricScenario.DatabaseLoad, ApplicationMetricPhase.DatabasesFetched);
   scenarioMonitor.startPhase(MetricScenario.DatabaseLoad, ApplicationMetricPhase.CollectionsLoaded);
   scenarioMonitor.completePhase(MetricScenario.DatabaseLoad, ApplicationMetricPhase.CollectionsLoaded);
-  // Explorer publishes the ready revision immediately after opening the phase.
+  // Explorer publishes the ready token immediately after opening the phase.
   scenarioMonitor.startPhase(MetricScenario.DatabaseLoad, ApplicationMetricPhase.DatabaseTreeRendered);
 };
 
@@ -62,9 +62,9 @@ describe("DatabaseLoad phase accounting (IcM 865096261)", () => {
     jest.useRealTimers();
   });
 
-  it("completes healthy once the render carrying the ready revision is acknowledged", () => {
+  it("completes healthy once the render carrying the ready token is acknowledged", () => {
     loadUpToTreeReady();
-    // ResourceTree commits the revision-bearing render and acknowledges it.
+    // ResourceTree commits the token-bearing render and acknowledges it.
     scenarioMonitor.completePhase(MetricScenario.DatabaseLoad, ApplicationMetricPhase.DatabaseTreeRendered);
     scenarioMonitor.completePhase(MetricScenario.DatabaseLoad, CommonMetricPhase.Interactive);
 
