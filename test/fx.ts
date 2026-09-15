@@ -43,6 +43,7 @@ export enum TestAccount {
   Cassandra = "Cassandra",
   Gremlin = "Gremlin",
   Mongo = "Mongo",
+  MongoConnectionStringPublicNetworkAccessDisabled = "MongoConnectionStringPublicNetworkAccessDisabled",
   MongoReadonly = "MongoReadOnly",
   Mongo32 = "Mongo32",
   SQL = "SQL",
@@ -74,6 +75,8 @@ export function getDefaultAccountName(accountType: TestAccount): string {
       return `${accountNamePrefix}-de-test-gremlin-1`;
     case TestAccount.Mongo:
       return `${accountNamePrefix}-de-test-mongo-1`;
+    case TestAccount.MongoConnectionStringPublicNetworkAccessDisabled:
+      return `${accountNamePrefix}-de-test-mongo-connstring-nopublic-1`;
     case TestAccount.MongoReadonly:
       return `${accountNamePrefix}-de-test-mongo-readonly`;
     case TestAccount.Mongo32:
@@ -262,6 +265,7 @@ export async function getTestExplorerUrl(accountType: TestAccount, options?: Tes
 
     case TestAccount.SQLConnectionString:
     case TestAccount.SQLConnectionStringPublicNetworkAccessDisabled:
+    case TestAccount.MongoConnectionStringPublicNetworkAccessDisabled:
     case TestAccount.TableConnectionString:
     case TestAccount.GremlinConnectionString:
       // Connection string (account key) login navigates directly to hostedExplorer.html and doesn't
@@ -474,6 +478,7 @@ export enum CommandBarButton {
   ExecuteQuery = "Execute Query",
   UploadItem = "Upload Item",
   NewDocument = "New Document",
+  AddRow = "Add Row",
   View = "View",
 }
 
