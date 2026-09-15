@@ -316,6 +316,10 @@
     "deleteUdf": "Hapus Fungsi yang Ditentukan Pengguna"
   },
   "tabs": {
+    "tabMenu": {
+      "duplicateTab": "Duplikasikan tab",
+      "closeTab": "Tutup tab"
+    },
     "documents": {
       "newItem": "Item Baru",
       "newDocument": "Dokumen Baru",
@@ -760,11 +764,10 @@
         "settings": "Pengaturan",
         "indexingPolicy": "Kebijakan Pengindeksan",
         "partitionKeys": "Kunci Partisi",
-        "partitionKeysPreview": "Kunci Partisi (pratinjau)",
         "computedProperties": "Properti Terkomputasi",
         "containerPolicies": "Kebijakan Kontainer",
         "throughputBuckets": "Wadah Throughput",
-        "globalSecondaryIndexPreview": "Global Secondary Index",
+        "globalSecondaryIndexPreview": "Indeks Sekunder Global",
         "maskingPolicyPreview": "Kebijakan Masking"
       },
       "mongoNotifications": {
@@ -895,6 +898,10 @@
       },
       "partitionKeyEditor": {
         "changePartitionKey": "Ubah {{partitionKeyName}}",
+        "confirmCancel1": "Anda akan segera membatalkan tugas penyalinan berikut.",
+        "confirmCancel2": "Membatalkan akan segera menghentikan tugas.",
+        "confirmComplete1": "Anda akan segera menyelesaikan tugas penyalinan berikut.",
+        "confrimComplete2": "Setelah selesai, penyalinan data berkelanjutan akan berhenti setelah semua dokumen yang tertunda diproses. Untuk menjaga integritas data, sebaiknya hentikan pembaruan ke kontainer sumber sebelum menyelesaikan tugas.",
         "currentPartitionKey": "{{partitionKeyName}} saat Ini",
         "partitioning": "Pemartisian",
         "hierarchical": "Hierarkis",
@@ -1033,6 +1040,7 @@
         "description": "Pekerjaan penyalinan kontainer online memungkinkan Anda menyalin data dari kontainer sumber ke kontainer API Cosmos DB NoSQL tujuan menggunakan umpan perubahan [Semua Versi dan Hapus](https://learn.microsoft.com/azure/cosmos-db/change-feed-modes?tabs=all-versions-and-deletes#all-versions-and-deletes-change-feed-mode-preview). Hal ini memungkinkan pembaruan untuk melanjutkan sumber saat data disalin. Waktu henti singkat diperlukan di akhir untuk mengalihkan aplikasi klien ke kontainer tujuan dengan aman. Pelajari selengkapnya tentang [pekerjaan penyalinan online](https://learn.microsoft.com/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#getting-started)."
       }
     },
+    "migrationTypeTitle": "Jenis migrasi",
     "selectContainers": {
       "description": "Pilih kontainer sumber dan kontainer tujuan yang akan digunakan untuk penyalinan.",
       "sourceContainerSubHeading": "Kontainer sumber",
@@ -1117,7 +1125,8 @@
       "buttonText": "Aktifkan Penyalinan Online",
       "validateAllVersionsAndDeletesChangeFeedSpinnerLabel": "Memvalidasi Semua versi dan penghapusan mengubah mode umpan (pratinjau)...",
       "enablingAllVersionsAndDeletesChangeFeedSpinnerLabel": "Mengaktifkan Semua versi dan menghapus mengubah mode umpan (pratinjau)...",
-      "enablingOnlineCopySpinnerLabel": "Mengaktifkan penyalinan online di akun \"{{accountName}}\"..."
+      "enablingOnlineCopySpinnerLabel": "Mengaktifkan penyalinan online di akun \"{{accountName}}\"...",
+      "onlineMigrationPrerequisitesMessage": "Prasyarat migrasi online harus diaktifkan sebelum melanjutkan."
     },
     "monitorJobs": {
       "columns": {
@@ -1151,6 +1160,16 @@
       "dialog": {
         "confirmButtonText": "Konfirmasikan",
         "cancelButtonText": "Batal"
+      }
+    },
+    "dataTransfers": {
+      "polling": {
+        "cancelConsoleMessage": "Tugas transfer data \"{{jobName}}\" dibatalkan",
+        "completedConsoleMessage": "Tugas transfer data \"{{jobName}}\" selesai",
+        "defaultErrorMessage": "Operasi tidak dapat diselesaikan",
+        "errorConsoleMessage": "Tugas transfer data \"{{jobName}}\" gagal: {{errorMessage}}",
+        "pauseConsoleMessage": "Tugas transfer data \"{{jobName}}\" dijeda",
+        "retryConsoleMessage": "Tugas transfer data \"{{jobName}}\" sedang berlangsung, jumlah total: {{totalCount}}, jumlah diproses: {{processedCount}}"
       }
     }
   }

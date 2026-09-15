@@ -316,6 +316,10 @@
     "deleteUdf": "刪除使用者定義的函式"
   },
   "tabs": {
+    "tabMenu": {
+      "duplicateTab": "重複的索引標籤",
+      "closeTab": "關閉索引標籤"
+    },
     "documents": {
       "newItem": "新增項目",
       "newDocument": "新增文件",
@@ -760,11 +764,10 @@
         "settings": "設定",
         "indexingPolicy": "編製索引原則",
         "partitionKeys": "資料分割索引鍵",
-        "partitionKeysPreview": "磁碟分割索引鍵 (預覽)",
         "computedProperties": "計算屬性",
         "containerPolicies": "容器原則",
         "throughputBuckets": "輸送量貯體",
-        "globalSecondaryIndexPreview": "Global Secondary Index",
+        "globalSecondaryIndexPreview": "全域從屬索引",
         "maskingPolicyPreview": "遮罩原則"
       },
       "mongoNotifications": {
@@ -895,6 +898,10 @@
       },
       "partitionKeyEditor": {
         "changePartitionKey": "變更 {{partitionKeyName}}",
+        "confirmCancel1": "您即將取消下列複製工作。",
+        "confirmCancel2": "取消將立即停止作業。",
+        "confirmComplete1": "您即將完成下列複製作業。",
+        "confrimComplete2": "完成後，持續資料複製會在處理完任何擱置的文件後停止。為了維持資料完整性，建議您在完成作業前先停止對來源容器的更新。",
         "currentPartitionKey": "目前的 {{partitionKeyName}}",
         "partitioning": "資料分割",
         "hierarchical": "階層式",
@@ -1033,6 +1040,7 @@
         "description": "線上容器複製工作可讓您使用 [所有版本和刪除](https://learn.microsoft.com/azure/cosmos-db/change-feed-modes?tabs=all-versions-and-deletes#all-versions-and-deletes-change-feed-mode-preview) 變更摘要，將資料從來源容器複製到目的地 Cosmos DB NoSQL API 容器。這可讓您在複製資料的同時，繼續對來源進行更新。最後需要短暫停機，才能安全地將用戶端應用程式切換到目的地容器。深入了解 [線上複製工作](https://learn.microsoft.com/azure/cosmos-db/container-copy?tabs=online-copy&pivots=api-nosql#getting-started)。"
       }
     },
+    "migrationTypeTitle": "移轉類型",
     "selectContainers": {
       "description": "請選取來源容器和要複製到的目的地容器。",
       "sourceContainerSubHeading": "來源容器",
@@ -1117,7 +1125,8 @@
       "buttonText": "啟用線上複製",
       "validateAllVersionsAndDeletesChangeFeedSpinnerLabel": "驗證所有版本與刪除的變更摘要模式 (預覽)...",
       "enablingAllVersionsAndDeletesChangeFeedSpinnerLabel": "啟用所有版本與刪除的變更摘要模式 (預覽)...",
-      "enablingOnlineCopySpinnerLabel": "正在啟用您「{{accountName}}」帳戶的線上複製..."
+      "enablingOnlineCopySpinnerLabel": "正在啟用您「{{accountName}}」帳戶的線上複製...",
+      "onlineMigrationPrerequisitesMessage": "必須先啟用線上移轉必要條件，才能繼續。"
     },
     "monitorJobs": {
       "columns": {
@@ -1151,6 +1160,16 @@
       "dialog": {
         "confirmButtonText": "確認",
         "cancelButtonText": "取消"
+      }
+    },
+    "dataTransfers": {
+      "polling": {
+        "cancelConsoleMessage": "資料傳輸作業「{{jobName}}」已取消",
+        "completedConsoleMessage": "資料傳輸作業「{{jobName}}」已完成",
+        "defaultErrorMessage": "作業無法完成",
+        "errorConsoleMessage": "資料傳輸作業「{{jobName}}」已失敗: {{errorMessage}}",
+        "pauseConsoleMessage": "資料傳輸作業「{{jobName}}」已暫停",
+        "retryConsoleMessage": "資料傳輸作業「{{jobName}}」進行中，總計數: {{totalCount}}，已處理計數: {{processedCount}}"
       }
     }
   }
