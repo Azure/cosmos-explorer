@@ -79,7 +79,7 @@ export async function readCollections(databaseId: string): Promise<DataModels.Co
     Logger.logInfo(
       `readCollections: fetchAll completed for database ${databaseId}, count=${sdkResponse.resources
         ?.length}, durationMs=${Date.now() - fetchAllStart}, diagnostics=${JSON.stringify(
-        sdkResponse.diagnostics.clientSideRequestStatistics,
+        sdkResponse.diagnostics?.clientSideRequestStatistics,
       )}`,
       "readCollections",
     );
