@@ -7,6 +7,7 @@ import {
   ONE_MINUTE_MS,
   TestAccount,
   generateUniqueName,
+  getAccountName,
   getAzureCLICredentials,
   getConnectionStringAccountName,
   resourceGroupName,
