@@ -6,10 +6,9 @@ import {
   DataExplorer,
   ONE_MINUTE_MS,
   TestAccount,
-  TestAuthType,
   generateUniqueName,
-  getAccountName,
   getAzureCLICredentials,
+  getConnectionStringAccountName,
   resourceGroupName,
   subscriptionId,
 } from "../fx";
@@ -36,7 +35,7 @@ test.describe("SQL account using connection string login", () => {
   test.beforeAll("Seed Test Database", async () => {
     const credentials = getAzureCLICredentials();
     const armClient = new CosmosDBManagementClient(credentials, subscriptionId);
-    const accountName = getAccountName(TestAccount.SQL, TestAuthType.ConnectionString);
+    const accountName = getConnectionStringAccountName(TestAccount.SQL);
     const account = await armClient.databaseAccounts.get(resourceGroupName, accountName);
     const keys = await armClient.databaseAccounts.listKeys(resourceGroupName, accountName);
     documentEndpoint = account.documentEndpoint!;

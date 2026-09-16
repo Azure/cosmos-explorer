@@ -9,6 +9,7 @@ import {
   generateUniqueName,
   getAccountName,
   getAzureCLICredentials,
+  getConnectionStringAccountName,
   resourceGroupName,
   subscriptionId,
 } from "../fx";
@@ -44,7 +45,7 @@ test.describe("Mongo account using connection string login", () => {
   test.beforeAll("Seed Test Database", async () => {
     const credentials = getAzureCLICredentials();
     armClient = new CosmosDBManagementClient(credentials, subscriptionId);
-    accountName = getAccountName(TestAccount.Mongo);
+    accountName = getConnectionStringAccountName(TestAccount.Mongo);
 
     const { connectionStrings = [] } = await armClient.databaseAccounts.listConnectionStrings(
       resourceGroupName,

@@ -41,8 +41,10 @@ export async function getAzureCLICredentialsToken(): Promise<string> {
 export enum TestAccount {
   Tables = "Tables",
   Cassandra = "Cassandra",
+  CassandraConnectionString = "CassandraConnectionString",
   Gremlin = "Gremlin",
   Mongo = "Mongo",
+  MongoConnectionString = "MongoConnectionString",
   MongoConnectionStringPublicNetworkAccessDisabled = "MongoConnectionStringPublicNetworkAccessDisabled",
   MongoReadonly = "MongoReadOnly",
   Mongo32 = "Mongo32",
@@ -53,11 +55,6 @@ export enum TestAccount {
   SQLConnectionStringPublicNetworkAccessDisabled = "SQLConnectionStringPublicNetworkAccessDisabled",
   TableConnectionString = "TableConnectionString",
   GremlinConnectionString = "GremlinConnectionString",
-}
-
-export enum TestAuthType {
-  EntraID = "EntraID",
-  ConnectionString = "ConnectionString",
 }
 
 export function getDefaultAccountName(accountType: TestAccount): string {
@@ -71,10 +68,14 @@ export function getDefaultAccountName(accountType: TestAccount): string {
       return `${accountNamePrefix}-de-test-table-1`;
     case TestAccount.Cassandra:
       return `${accountNamePrefix}-de-test-cassandra-1`;
+    case TestAccount.CassandraConnectionString:
+      return `${accountNamePrefix}-de-test-cassandra-connstring-1`;
     case TestAccount.Gremlin:
       return `${accountNamePrefix}-de-test-gremlin-1`;
     case TestAccount.Mongo:
       return `${accountNamePrefix}-de-test-mongo-1`;
+    case TestAccount.MongoConnectionString:
+      return `${accountNamePrefix}-de-test-mongo-connstring-1`;
     case TestAccount.MongoConnectionStringPublicNetworkAccessDisabled:
       return `${accountNamePrefix}-de-test-mongo-connstring-nopublic-1`;
     case TestAccount.MongoReadonly:
@@ -123,37 +124,39 @@ function tryGetStandardName(accountType: TestAccount) {
   }
 }
 
-// Maps a base API account type to its dedicated connection string (account key) account.
-const connectionStringAccountTypes: Partial<Record<TestAccount, TestAccount>> = {
+type ConnectionStringTestAccount =
+  | TestAccount.SQL
+  | TestAccount.Tables
+  | TestAccount.Cassandra
+  | TestAccount.Gremlin
+  | TestAccount.Mongo;
+
+const connectionStringAccountTypes: Record<ConnectionStringTestAccount, TestAccount> = {
   [TestAccount.SQL]: TestAccount.SQLConnectionString,
   [TestAccount.Tables]: TestAccount.TableConnectionString,
+  [TestAccount.Cassandra]: TestAccount.CassandraConnectionString,
   [TestAccount.Gremlin]: TestAccount.GremlinConnectionString,
+  [TestAccount.Mongo]: TestAccount.MongoConnectionString,
 };
 
-export function getAccountName(accountType: TestAccount, authType: TestAuthType = TestAuthType.EntraID): string {
-  // Connection string (account key) login uses dedicated *-connstring accounts that are only
-  // provisioned in CI (resolved via DE_ACCOUNT_PREFIX). Local runs use DE_TEST_ACCOUNT_PREFIX and
-  // typically don't have those accounts, so they fall back to the standard API account for the same
-  // API (which also has key auth enabled).
-  if (authType === TestAuthType.ConnectionString) {
-    const connectionStringType = connectionStringAccountTypes[accountType];
-    if (!connectionStringType) {
-      throw new Error(`No connection string account defined for account type ${accountType}`);
-    }
-    const override = process.env[`DE_TEST_ACCOUNT_NAME_${connectionStringType.toLocaleUpperCase()}`];
-    if (override) {
-      return override;
-    }
-    if (!process.env.DE_TEST_ACCOUNT_PREFIX) {
-      return getAccountName(connectionStringType);
-    }
-  }
-
+export function getAccountName(accountType: TestAccount): string {
   return (
     process.env[`DE_TEST_ACCOUNT_NAME_${accountType.toLocaleUpperCase()}`] ??
     tryGetStandardName(accountType) ??
     getDefaultAccountName(accountType)
   );
+}
+
+export function getConnectionStringAccountName(accountType: ConnectionStringTestAccount): string {
+  const connectionStringType = connectionStringAccountTypes[accountType];
+  const override = process.env[`DE_TEST_ACCOUNT_NAME_${connectionStringType.toLocaleUpperCase()}`];
+  if (override) {
+    return override;
+  }
+
+  // Dedicated connection-string accounts are provisioned in CI. Local accounts normally support
+  // key authentication, so local runs use the standard account for the requested API.
+  return process.env.DE_TEST_ACCOUNT_PREFIX ? getAccountName(accountType) : getAccountName(connectionStringType);
 }
 
 type TestExplorerUrlOptions = {
@@ -265,6 +268,8 @@ export async function getTestExplorerUrl(accountType: TestAccount, options?: Tes
 
     case TestAccount.SQLConnectionString:
     case TestAccount.SQLConnectionStringPublicNetworkAccessDisabled:
+    case TestAccount.CassandraConnectionString:
+    case TestAccount.MongoConnectionString:
     case TestAccount.MongoConnectionStringPublicNetworkAccessDisabled:
     case TestAccount.TableConnectionString:
     case TestAccount.GremlinConnectionString:

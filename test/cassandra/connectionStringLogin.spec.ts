@@ -7,8 +7,8 @@ import {
   ONE_MINUTE_MS,
   TestAccount,
   generateUniqueName,
-  getAccountName,
   getAzureCLICredentials,
+  getConnectionStringAccountName,
   resourceGroupName,
   subscriptionId,
 } from "../fx";
@@ -44,7 +44,7 @@ test.describe("Cassandra account using connection string login", () => {
   test.beforeAll("Seed Test Keyspace", async () => {
     const credentials = getAzureCLICredentials();
     armClient = new CosmosDBManagementClient(credentials, subscriptionId);
-    accountName = getAccountName(TestAccount.Cassandra);
+    accountName = getConnectionStringAccountName(TestAccount.Cassandra);
 
     const { connectionStrings = [] } = await armClient.databaseAccounts.listConnectionStrings(
       resourceGroupName,
