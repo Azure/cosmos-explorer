@@ -38,6 +38,12 @@
     "off": "關閉",
     "preview": "預覽"
   },
+  "cosmosDBShell": {
+    "installingSdk": "Downloading and installing .NET SDK 10. First-time setup may take a few minutes.",
+    "installingShell": "Installing Cosmos DB Shell...",
+    "updatingShell": "Checking for Cosmos DB Shell updates...",
+    "connecting": "Connecting to your Cosmos DB account..."
+  },
   "splashScreen": {
     "title": {
       "default": "歡迎使用 Azure Cosmos DB",
