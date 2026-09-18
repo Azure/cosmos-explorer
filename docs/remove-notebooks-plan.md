@@ -276,15 +276,39 @@ engine deleted there. No separate work remains for this phase.
 - Remove notebook initialization from `useKnockoutExplorer.ts` and notebook tab handling
   in `useTabs.ts`.
 
-### Phase 6 — Remove residual clients, config, contracts, telemetry & strings
+### Phase 6 — Remove residual clients, config, contracts, telemetry & strings ✅ COMPLETED
+> **Status:** Implemented on branch `users/jawelton/remove-phoenix-phase6-082726`.
+> The final verification sweep is green: `npm run build` completed the format check,
+> lint, normal and strict TypeScript compilation, production webpack build, and consumer
+> copy; `npm test` passed 1946 tests with 5 skipped across 192 passing suites.
+>
+> **Implementation notes / deviations:**
+> - Deleting `JunoClient` also removed the remaining Juno-backed analytical-storage
+>   schema request/polling and resource-tree nodes, plus the now-unused `enableSchema`
+>   hosted feature. This was the only surviving Juno consumer.
+> - Notebook/Phoenix telemetry `Action` members remain as explicitly documented
+>   compatibility tombstones, following the safety precedent in `a36467f4`; removing
+>   them would renumber later implicit enum values. The unused `Areas.Notebook` value
+>   was removed.
+> - `ActionContracts.TabKind.SchemaAnalyzer` was removed while explicit numeric values
+>   were assigned to all surviving tab kinds, preserving the host-facing wire contract.
+> - Removed stale notebook terminology and dead UI artifacts from the feature panel,
+>   SQL/Mongo quickstart tours, recent-item handling, upload control, and CloudShell
+>   terminal entry-point/adapter names.
+> - Removed notebook resource keys from all 19 locales and deleted 52 notebook-only
+>   image assets.
+> - `@nteract/markdown` remains intentionally: the container-copy migration-type
+>   selector and change-partition-key pane use it to render localized Markdown help and
+>   documentation links.
+
 - Delete `src/Juno/` and `src/Utils/arm/generatedClients/cosmosNotebooks/`.
 - Remove notebook fields from `ConfigContext.ts`, `Constants.ts` (Notebook namespace),
   `DataModels.ts` (notebook/Phoenix/container interfaces), `ViewModels.ts`,
   `ActionContracts.ts`, and notebook feature flags from
   `extractFeatures.ts` (+ update test).
-- Remove notebook/Phoenix telemetry actions/areas from `TelemetryConstants.ts` (preserve
-  enum numbering if other systems depend on it — mirror the cautious approach in
-  `a36467f4`).
+- Remove notebook/Phoenix telemetry areas from `TelemetryConstants.ts`; retain obsolete
+  `Action` members as documented compatibility tombstones to preserve enum numbering,
+  mirroring the cautious approach in `a36467f4`.
 - Remove remaining notebook strings from **all** locale `Resources.json` files (`en` +
   every non-English locale) and any notebook images (e.g. `images/notebook/`).
 - Final full build + test sweep; update `EndpointUtils.ts` (`allowedNotebookServerUrls`)

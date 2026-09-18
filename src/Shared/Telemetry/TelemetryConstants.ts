@@ -53,6 +53,7 @@ export enum Action {
   SubscriptionSwitch,
   TenantSwitch,
   DefaultTenantSwitch,
+  // Deprecated notebook telemetry tombstones. Keep these members to preserve all later numeric values.
   CreateNotebookWorkspace,
   NotebookErrorNotification,
   CreateSparkCluster,
@@ -62,6 +63,7 @@ export enum Action {
   ClusterLibraryManage,
   ModifyOptionForThroughputWithSharedDatabase,
   EnableAzureSynapseLink,
+  // Deprecated notebook and Phoenix telemetry tombstones.
   CreateNewNotebook,
   OpenSampleNotebook,
   ExecuteCell,
@@ -93,12 +95,14 @@ export enum Action {
   OpenCloudShellTerminal,
   CreateMongoCollectionWithWildcardIndex,
   ClickCommandBarButton,
+  // Deprecated notebook telemetry tombstone.
   RefreshResourceTreeMyNotebooks,
   ClickResourceTreeNodeContextMenuItem,
   DiscardSettings,
   SettingsV2Updated,
   SettingsV2Discarded,
   MongoIndexUpdated,
+  // Deprecated notebook gallery telemetry tombstones.
   NotebooksGalleryPublish,
   NotebooksGalleryReportAbuse,
   NotebooksGalleryClickReportAbuse,
@@ -124,6 +128,7 @@ export enum Action {
   SelfServe,
   ExpandAddCollectionPaneAdvancedSection,
   ExpandAddGlobalSecondaryIndexPaneAdvancedSection,
+  // Deprecated Schema Analyzer telemetry tombstone.
   SchemaAnalyzerClickAnalyze,
   SelfServeComponent,
   LaunchQuickstart,
@@ -154,6 +159,7 @@ export enum Action {
   ReadDatabases,
   ReadCollections,
   LoadCollectionsPerDatabase,
+  // Deprecated notebook and Phoenix telemetry tombstones.
   RefreshNotebooksEnabled,
   CheckPhoenixStatus,
   CheckFeatureRegistration,
