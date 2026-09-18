@@ -227,6 +227,7 @@
     "build:ase": "gulp build:ase",
     "selfServeDocs": "typedoc",
     "compile": "tsc",
+    "compile:e2e": "tsc -p ./tsconfig.test.json",
     "compile:contracts": "tsc -p ./tsconfig.contracts.json",
     "compile:strict": "tsc -p ./tsconfig.strict.json",
     "format": "prettier --write \"{src,test}/**/*.{ts,tsx,html}\" \"*.{js,html}\"",
