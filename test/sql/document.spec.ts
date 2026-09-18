@@ -18,6 +18,29 @@ import { documentTestCases } from "./testCases";
 let explorer: DataExplorer = null!;
 let documentsTab: DocumentsTab = null!;
 
+const chromeOnlyDocumentTag = "@document-chrome-only";
+const crossBrowserSmokeDocumentId = "singlePartitionKey";
+
+const waitForDocumentToLoad = async (documentId: string): Promise<void> => {
+  await expect
+    .poll(
+      async () => {
+        const resultText = await documentsTab.resultsEditor.text();
+        if (!resultText) {
+          return undefined;
+        }
+
+        try {
+          return JSON.parse(resultText)?.id;
+        } catch {
+          return undefined;
+        }
+      },
+      { timeout: ONE_MINUTE_MS },
+    )
+    .toBe(documentId);
+};
+
 for (const { name, databaseId, containerId, documents } of documentTestCases) {
   test.describe(`Test SQL Documents with ${name}`, () => {
     // test.skip(true, "Temporarily disabling all tests in this spec file");
@@ -39,14 +62,15 @@ for (const { name, databaseId, containerId, documents } of documentTestCases) {
 
     for (const document of documents) {
       const { documentId: docId, partitionKeys, skipCreateDelete } = document;
+      const testDetails = { tag: docId === crossBrowserSmokeDocumentId ? [] : [chromeOnlyDocumentTag] };
       test.describe(`Document ID: ${docId}`, () => {
-        test(`should load and view document ${docId}`, async () => {
+        test(`should load and view document ${docId}`, testDetails, async () => {
           const span = documentsTab.documentsListPane.getByText(docId, { exact: true }).nth(0);
           await span.waitFor();
           await expect(span).toBeVisible();
 
           await span.click();
-          await expect(documentsTab.resultsEditor.locator).toBeAttached({ timeout: 60 * 1000 });
+          await waitForDocumentToLoad(docId);
 
           const resultText = await documentsTab.resultsEditor.text();
           const resultData = JSON.parse(resultText!);
@@ -55,14 +79,14 @@ for (const { name, databaseId, containerId, documents } of documentTestCases) {
         });
 
         const testOrSkip = skipCreateDelete ? test.skip : test;
-        testOrSkip(`should be able to create and delete new document from ${docId}`, async ({ page }) => {
+        testOrSkip(`should be able to create and delete new document from ${docId}`, testDetails, async () => {
           const span = documentsTab.documentsListPane.getByText(docId, { exact: true }).nth(0);
           await span.waitFor();
           await expect(span).toBeVisible();
 
           await span.click();
           let newDocumentId;
-          await page.waitForTimeout(5000);
+          await waitForDocumentToLoad(docId);
           await retry(async () => {
             const newDocumentButton = await explorer.waitForCommandBarButton("New Item", 5000);
             await expect(newDocumentButton).toBeVisible();
@@ -91,7 +115,7 @@ for (const { name, databaseId, containerId, documents } of documentTestCases) {
           await newSpan.waitFor();
 
           await newSpan.click();
-          await expect(documentsTab.resultsEditor.locator).toBeAttached({ timeout: 60 * 1000 });
+          await waitForDocumentToLoad(newDocumentId);
 
           const deleteButton = await explorer.waitForCommandBarButton("Delete", 5000);
           await deleteButton.click();
