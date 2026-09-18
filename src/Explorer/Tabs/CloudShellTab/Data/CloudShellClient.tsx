@@ -26,7 +26,7 @@ export const getUserSettings = async (): Promise<CloudShellSettings> => {
     host: configContext.ARM_ENDPOINT,
     path: `/providers/Microsoft.Portal/userSettings/cloudconsole`,
     method: "GET",
-    apiVersion: "2023-02-01-preview",
+    apiVersion: "2025-09-01-preview",
   });
 };
 
@@ -56,7 +56,7 @@ export const putEphemeralUserSettings = async (
     host: configContext.ARM_ENDPOINT,
     path: `/providers/Microsoft.Portal/userSettings/cloudconsole`,
     method: "PUT",
-    apiVersion: "2023-02-01-preview",
+    apiVersion: "2025-09-01-preview",
     body: ephemeralSettings,
     timeoutMs: CLOUDSHELL_ARM_TIMEOUT_MS,
   });
@@ -92,7 +92,7 @@ export const provisionConsole = async (consoleLocation: string): Promise<Provisi
     host: configContext.ARM_ENDPOINT,
     path: `providers/Microsoft.Portal/consoles/default`,
     method: "PUT",
-    apiVersion: "2023-02-01-preview",
+    apiVersion: "2025-09-01-preview",
     customHeaders: {
       "x-ms-console-preferred-location": consoleLocation,
     },
