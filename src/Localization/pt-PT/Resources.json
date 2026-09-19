@@ -39,10 +39,10 @@
     "preview": "Pré-visualização"
   },
   "cosmosDBShell": {
-    "installingSdk": "Downloading and installing .NET SDK 10. First-time setup may take a few minutes.",
-    "installingShell": "Installing Cosmos DB Shell...",
-    "updatingShell": "Checking for Cosmos DB Shell updates...",
-    "connecting": "Connecting to your Cosmos DB account..."
+    "installingSdk": "A transferir e instalar o .NET SDK 10. A primeira configuração poderá demorar alguns minutos.",
+    "installingShell": "A instalar o Cosmos DB Shell...",
+    "updatingShell": "A procurar atualizações do Cosmos DB Shell...",
+    "connecting": "A estabelecer ligação à sua conta do Cosmos DB..."
   },
   "splashScreen": {
     "title": {

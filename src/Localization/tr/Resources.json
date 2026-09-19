@@ -39,7 +39,7 @@
     "preview": "Önizleme"
   },
   "cosmosDBShell": {
-    "installingSdk": "Downloading and installing .NET SDK 10. First-time setup may take a few minutes.",
+    "installingSdk": ".NET SDK 10 indiriliyor ve yükleniyor. İlk kurulum birkaç dakika sürebilir.",
     "installingShell": "Installing Cosmos DB Shell...",
     "updatingShell": "Checking for Cosmos DB Shell updates...",
     "connecting": "Connecting to your Cosmos DB account..."

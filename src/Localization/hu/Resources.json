@@ -39,7 +39,7 @@
     "preview": "Előnézet"
   },
   "cosmosDBShell": {
-    "installingSdk": "Downloading and installing .NET SDK 10. First-time setup may take a few minutes.",
+    "installingSdk": "A .NET SDK 10 letöltése és telepítése. Az első beállítás eltarthat néhány percig.",
     "installingShell": "Installing Cosmos DB Shell...",
     "updatingShell": "Checking for Cosmos DB Shell updates...",
     "connecting": "Connecting to your Cosmos DB account..."
