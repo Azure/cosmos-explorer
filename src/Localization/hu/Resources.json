@@ -40,9 +40,9 @@
   },
   "cosmosDBShell": {
     "installingSdk": "A .NET SDK 10 letöltése és telepítése. Az első beállítás eltarthat néhány percig.",
-    "installingShell": "Installing Cosmos DB Shell...",
-    "updatingShell": "Checking for Cosmos DB Shell updates...",
-    "connecting": "Connecting to your Cosmos DB account..."
+    "installingShell": "Cosmos DB Shell telepítése...",
+    "updatingShell": "Cosmos DB Shell-frissítések keresése...",
+    "connecting": "Csatlakozás a Cosmos DB-fiókhoz..."
   },
   "splashScreen": {
     "title": {

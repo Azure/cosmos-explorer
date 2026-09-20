@@ -40,9 +40,9 @@
   },
   "cosmosDBShell": {
     "installingSdk": ".NET SDK 10 downloaden en installeren. De eerste installatie kan enkele minuten duren.",
-    "installingShell": "Installing Cosmos DB Shell...",
-    "updatingShell": "Checking for Cosmos DB Shell updates...",
-    "connecting": "Connecting to your Cosmos DB account..."
+    "installingShell": "Cosmos DB Shell installeren...",
+    "updatingShell": "Controleren op updates voor Cosmos DB Shell...",
+    "connecting": "Verbinding maken met uw Cosmos DB-account..."
   },
   "splashScreen": {
     "title": {

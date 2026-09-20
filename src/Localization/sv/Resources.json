@@ -40,9 +40,9 @@
   },
   "cosmosDBShell": {
     "installingSdk": "Laddar ned och installerar .NET SDK 10. Den första konfigurationen kan ta några minuter.",
-    "installingShell": "Installing Cosmos DB Shell...",
-    "updatingShell": "Checking for Cosmos DB Shell updates...",
-    "connecting": "Connecting to your Cosmos DB account..."
+    "installingShell": "Installerar Cosmos DB Shell...",
+    "updatingShell": "Söker efter Cosmos DB Shell-uppdateringar...",
+    "connecting": "Ansluter till ditt Cosmos DB-konto..."
   },
   "splashScreen": {
     "title": {
