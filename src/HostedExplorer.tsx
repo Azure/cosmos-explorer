@@ -1,6 +1,5 @@
 import { initializeIcons } from "@fluentui/react";
 import { useBoolean } from "@fluentui/react-hooks";
-import { getErrorMessage } from "Common/ErrorHandlingUtils";
 import { AadAuthorizationFailure } from "Platform/Hosted/Components/AadAuthorizationFailure";
 import * as React from "react";
 import { render } from "react-dom";
@@ -83,9 +82,9 @@ const App: React.FunctionComponent = () => {
           setEncryptedToken(token);
           setAuthType(AuthType.ConnectionString);
         })
-        .catch((error) => {
+        .catch(async (error) => {
           logError(
-            `Failed to connect with connection string: ${getErrorMessage(error)}`,
+            `Failed to connect with connection string: ${await (error as Response).text()}`,
             "HostedExplorer/connectWithConnectionString",
           );
         });

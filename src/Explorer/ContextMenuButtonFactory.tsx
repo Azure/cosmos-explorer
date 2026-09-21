@@ -28,7 +28,6 @@ import { userContext } from "../UserContext";
 import { getCollectionName, getDatabaseName } from "../Utils/APITypeUtils";
 import { useSidePanel } from "../hooks/useSidePanel";
 import Explorer from "./Explorer";
-import { useNotebook } from "./Notebook/useNotebook";
 import { DeleteCollectionConfirmationPane } from "./Panes/DeleteCollectionConfirmationPane/DeleteCollectionConfirmationPane";
 import { DeleteDatabaseConfirmationPanel } from "./Panes/DeleteDatabaseConfirmationPanel";
 import StoredProcedure from "./Tree/StoredProcedure";
@@ -120,23 +119,17 @@ export const createCollectionContextMenuButton = (
       iconSrc: HostedTerminalIcon,
       onClick: () => {
         const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
-        if (useNotebook.getState().isShellEnabled || userContext.features.enableCloudShell) {
+        if (userContext.features.enableCloudShell) {
           container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
         } else {
           selectedCollection && selectedCollection.onNewMongoShellClick();
         }
       },
-      label:
-        useNotebook.getState().isShellEnabled || userContext.features.enableCloudShell
-          ? t(Keys.contextMenu.openMongoShell)
-          : t(Keys.contextMenu.newShell),
+      label: userContext.features.enableCloudShell ? t(Keys.contextMenu.openMongoShell) : t(Keys.contextMenu.newShell),
     });
   }
 
-  if (
-    (useNotebook.getState().isShellEnabled || userContext.features.enableCloudShell) &&
-    userContext.apiType === "Cassandra"
-  ) {
+  if (userContext.features.enableCloudShell && userContext.apiType === "Cassandra") {
     items.push({
       iconSrc: HostedTerminalIcon,
       onClick: () => {

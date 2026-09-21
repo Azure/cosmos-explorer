@@ -1,5 +1,3 @@
-import { ConnectionStatusType } from "Common/Constants";
-import { useNotebook } from "Explorer/Notebook/useNotebook";
 import create, { UseStore } from "zustand";
 import * as ViewModels from "../Contracts/ViewModels";
 import { useTabs } from "../hooks/useTabs";
@@ -13,7 +11,6 @@ export interface SelectedNodeState {
     collectionId?: string,
     subnodeKinds?: ViewModels.CollectionTabKind[],
   ) => boolean;
-  isConnectedToContainer: () => boolean;
 }
 
 export const useSelectedNode: UseStore<SelectedNodeState> = create((set, get) => ({
@@ -60,8 +57,5 @@ export const useSelectedNode: UseStore<SelectedNodeState> = create((set, get) =>
       selectedSubnodeKind !== undefined &&
       subnodeKinds.includes(selectedSubnodeKind)
     );
-  },
-  isConnectedToContainer: (): boolean => {
-    return useNotebook.getState().connectionInfo?.status === ConnectionStatusType.Connected;
   },
 }));

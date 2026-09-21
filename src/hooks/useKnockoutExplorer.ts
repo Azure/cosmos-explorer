@@ -83,12 +83,6 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
   useEffect(() => {
     const effect = async () => {
       if (platform) {
-        //Updating phoenix feature flags for MPAC based of config context
-        if (configContext.isPhoenixEnabled === true) {
-          userContext.features.phoenixNotebooks = true;
-          userContext.features.phoenixFeatures = true;
-        }
-
         let explorer: Explorer;
         try {
           if (platform === Platform.Hosted) {
@@ -1009,15 +1003,6 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
     }
     if (inputs.flights.indexOf(Flights.PKPartitionKeyTest) !== -1) {
       userContext.features.partitionKeyDefault2 = true;
-    }
-    if (inputs.flights.indexOf(Flights.PhoenixNotebooks) !== -1) {
-      userContext.features.phoenixNotebooks = true;
-    }
-    if (inputs.flights.indexOf(Flights.PhoenixFeatures) !== -1) {
-      userContext.features.phoenixFeatures = true;
-    }
-    if (inputs.flights.indexOf(Flights.NotebooksDownBanner) !== -1) {
-      userContext.features.notebooksDownBanner = true;
     }
   }
 

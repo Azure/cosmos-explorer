@@ -39,6 +39,7 @@ export interface DatabaseAccountBackupPolicy {
 }
 
 export interface DatabaseAccountExtendedProperties {
+  apiProperties?: DatabaseAccountApiProperties;
   documentEndpoint?: string;
   disableLocalAuth?: boolean;
   tableEndpoint?: string;
@@ -68,6 +69,10 @@ export interface DatabaseAccountExtendedProperties {
   enableAllVersionsAndDeletesChangeFeed?: boolean;
   enableFullFidelityChangeFeed?: boolean;
   enableEmbeddingGenerator?: boolean;
+}
+
+export interface DatabaseAccountApiProperties {
+  serverVersion?: string;
 }
 
 export interface DatabaseAccountResponseLocation {

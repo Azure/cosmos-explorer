@@ -7,14 +7,14 @@ the **Phoenix** compute-container service and the **Juno** service, plus a **Git
 integration used to pin/browse notebook repositories. This functionality is being
 retired. The goal is to remove all notebooks/Phoenix/Juno/GitHub-for-notebooks code,
 dependencies, UI surfaces, telemetry, and configuration, while **preserving the
-database shell terminals** (Mongo / Cassandra / Postgres / VCoreMongo), which today
+database shell terminals** (Mongo / Cassandra / Postgres / VCoreMongo / Cosmos DB NoSQL), which today
 share the Terminal infrastructure with notebooks.
 
 This document is the implementation plan only. No code changes are made here.
 
 ## Scope decisions (confirmed)
 
-- **Database shells**: Keep the Mongo/Cassandra/Postgres/VCoreMongo shells, but migrate
+- **Database shells**: Keep the Mongo/Cassandra/Postgres/VCoreMongo/Cosmos DB NoSQL shells, but migrate
   them to use the **CloudShell** path exclusively. Remove the legacy Phoenix
   notebook-server shell path.
 - **GitHub integration**: Remove entirely (it exists only for notebook pinned repos).
@@ -108,7 +108,7 @@ This is a continuation of an in-progress removal effort. Reference commits:
 Each phase is independently buildable and shippable. Within each phase, **all
 references to removed code are also removed** so the tree compiles. After every phase
 run: `npm run compile`, `npm run compile:strict`, `npm run lint`, `npm run format:check`,
-`npm test`, and a webpack build (`npm run build:ci`); manually verify the four shells
+`npm test`, and a webpack build (`npm run build:ci`); manually verify the five shells
 still open.
 
 ### Phase 1 — Decouple database shells to CloudShell-only ✅ COMPLETED
@@ -235,7 +235,28 @@ engine deleted there. No separate work remains for this phase.
   pinned-repo methods.
 - Remove GitHub-related localization keys from **all** locale files (`en` + non-English).
 
-### Phase 5 — Remove Phoenix and the notebook container/allocation core
+### Phase 5 — Remove Phoenix and the notebook container/allocation core ✅ COMPLETED
+> **Status:** Implemented on branch `users/jawelton/remove-notebooks-phase5-081426`.
+> The automated verification sweep is green: `compile`, `compile:strict`, `lint`,
+> `format:check`, `test` (1931 passing, 5 skipped), and `build:ci` (webpack) all pass.
+>
+> **Implementation notes / deviations:**
+> - Removed the Phoenix-only connection status and memory tracker command-bar UI, which
+>   depended entirely on the deleted `useNotebook` container state.
+> - Moved the unrelated `isSynapseLinkUpdating` flag from `useNotebook` into the existing
+>   `useCommandBar` Zustand store and made static command creation react to it.
+> - Finished the deferred Phase 1 cleanup by replacing remaining mixed
+>   `isShellEnabled`/notebook availability checks with the `enableCloudShell` feature gate.
+>   The non-Phoenix Mongo fallback remains available when CloudShell is disabled.
+> - Removed the remaining direct nteract/runtime dependencies with no surviving importers:
+>   `@nteract/commutable`, `@nteract/core`, `@nteract/fixtures`, `@nteract/myths`, and
+>   `rx-jupyter`. Added `@types/uuid` explicitly because surviving CloudShell/UserContext
+>   code had previously received UUID declarations through the removed transitive graph.
+> - Preserved the newer Cosmos DB (NoSQL) Cloud Shell added after this roadmap was written;
+>   all terminal tabs still instantiate `CloudShellTerminalComponentAdapter`.
+> - Residual notebook/Phoenix config, contracts, telemetry, localization, Juno, generated
+>   ARM clients, and images remain intentionally deferred to Phase 6.
+
 - Delete `src/Phoenix/`, `src/Explorer/Notebook/NotebookContainerClient.ts`,
   `src/Explorer/Notebook/NotebookManager.tsx`, `src/Explorer/Notebook/useNotebook.ts`,
   `src/Explorer/Notebook/NotebookContentItem.ts`, `src/Explorer/Notebook/NotebookUtil.ts`
@@ -279,7 +300,7 @@ npm run format:check
 npm test
 npm run build:ci
 ```
-Plus manual smoke test: open Mongo, Cassandra, Postgres, and VCoreMongo shells.
+Plus manual smoke test: open Mongo, Cassandra, Postgres, VCoreMongo, and Cosmos DB NoSQL shells.
 
 ## Notes & considerations
 

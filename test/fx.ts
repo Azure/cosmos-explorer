@@ -49,6 +49,7 @@ export enum TestAccount {
   SQLReadOnly = "SQLReadOnly",
   SQLContainerCopyOnly = "SQLContainerCopyOnly",
   SQLConnectionString = "SQLConnectionString",
+  SQLConnectionStringPublicNetworkAccessDisabled = "SQLConnectionStringPublicNetworkAccessDisabled",
   TableConnectionString = "TableConnectionString",
   GremlinConnectionString = "GremlinConnectionString",
 }
@@ -83,6 +84,8 @@ export function getDefaultAccountName(accountType: TestAccount): string {
       return `${accountNamePrefix}-de-test-sql-containercopy`;
     case TestAccount.SQLConnectionString:
       return `${accountNamePrefix}-de-test-sql-connstring-1`;
+    case TestAccount.SQLConnectionStringPublicNetworkAccessDisabled:
+      return `${accountNamePrefix}-de-test-sql-connstring-nopublic-1`;
     case TestAccount.TableConnectionString:
       return `${accountNamePrefix}-de-test-table-connstring-1`;
     case TestAccount.GremlinConnectionString:
@@ -258,6 +261,7 @@ export async function getTestExplorerUrl(accountType: TestAccount, options?: Tes
       break;
 
     case TestAccount.SQLConnectionString:
+    case TestAccount.SQLConnectionStringPublicNetworkAccessDisabled:
     case TestAccount.TableConnectionString:
     case TestAccount.GremlinConnectionString:
       // Connection string (account key) login navigates directly to hostedExplorer.html and doesn't

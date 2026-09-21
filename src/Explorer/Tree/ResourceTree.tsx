@@ -18,12 +18,8 @@ import { userContext } from "UserContext";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
 import * as React from "react";
 import { useEffect, useMemo } from "react";
-import shallow from "zustand/shallow";
 import { useDatabaseLoadScenario } from "../../Metrics/useMetricPhases";
 import Explorer from "../Explorer";
-import { useNotebook } from "../Notebook/useNotebook";
-
-export const MyNotebooksTitle = "My Notebooks";
 
 interface ResourceTreeProps {
   explorer: Explorer;
@@ -39,13 +35,6 @@ export const SAMPLE_DATA_TREE_LABEL = "SAMPLE DATA";
 export const ResourceTree: React.FC<ResourceTreeProps> = ({ explorer }: ResourceTreeProps): JSX.Element => {
   const [openItems, setOpenItems] = React.useState<TreeItemValue[]>([]);
   const treeStyles = useTreeStyles();
-
-  const { isNotebookEnabled } = useNotebook(
-    (state) => ({
-      isNotebookEnabled: state.isNotebookEnabled,
-    }),
-    shallow,
-  );
 
   // We intentionally avoid using a state selector here because we want to re-render the tree if the active tab changes.
   const { refreshActiveTab } = useTabs();
@@ -65,24 +54,8 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ explorer }: Resource
   const databaseTreeNodes = useMemo(() => {
     return userContext.authType === AuthType.ResourceToken
       ? createResourceTokenTreeNodes(resourceTokenCollection)
-      : createDatabaseTreeNodes(
-          explorer,
-          isNotebookEnabled,
-          databases,
-          refreshActiveTab,
-          searchText,
-          sortOrder,
-          pinnedDatabaseIds,
-        );
-  }, [
-    resourceTokenCollection,
-    databases,
-    isNotebookEnabled,
-    refreshActiveTab,
-    searchText,
-    sortOrder,
-    pinnedDatabaseIds,
-  ]);
+      : createDatabaseTreeNodes(explorer, databases, refreshActiveTab, searchText, sortOrder, pinnedDatabaseIds);
+  }, [resourceTokenCollection, databases, refreshActiveTab, searchText, sortOrder, pinnedDatabaseIds]);
 
   const headerNodes: TreeNode[] = isFabricMirrored()
     ? []

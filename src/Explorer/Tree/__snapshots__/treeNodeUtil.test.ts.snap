@@ -363,7 +363,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
 ]
 `;
 
-exports[`createDatabaseTreeNodes generates the correct tree structure for the Mongo API, with Notebooks and Phoenix features, on Emulator 1`] = `
+exports[`createDatabaseTreeNodes generates the correct tree structure for the Mongo API, on Emulator 1`] = `
 [
   {
     "children": [
