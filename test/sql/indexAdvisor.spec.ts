@@ -41,9 +41,9 @@ async function setupIndexAdvisorTab(page: Page, customQuery?: string) {
   const queryEditor = queryTab.editor();
   await queryEditor.locator.waitFor({ timeout: 30 * 1000 });
   await queryTab.executeCTA.waitFor();
+  await queryEditor.locator.click();
 
   if (customQuery) {
-    await queryEditor.locator.click();
     await queryEditor.setText(customQuery);
   }
 
