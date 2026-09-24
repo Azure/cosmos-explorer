@@ -75,16 +75,14 @@ describe("stopword design guidance", () => {
       const removed = screen.getByRole("textbox", { name: "Words to keep" });
       expect(added.getAttribute("aria-invalid") === "true").toBe(addedInvalid);
       expect(removed.getAttribute("aria-invalid") === "true").toBe(removedInvalid);
-      if (addedInvalid) {
-        expect(added).toHaveAccessibleDescription(
-          /Stopwords cannot contain whitespace, punctuation, or control characters\./,
-        );
-      }
-      if (removedInvalid) {
-        expect(removed).toHaveAccessibleDescription(
-          "Stopwords cannot contain whitespace, punctuation, or control characters.",
-        );
-      }
+      expect(added).toHaveAccessibleDescription(
+        addedInvalid
+          ? /Stopwords cannot contain whitespace, punctuation, or control characters\./
+          : "Enter one word per line. Words cannot contain whitespace, punctuation, or control characters.",
+      );
+      expect(removed).toHaveAccessibleDescription(
+        removedInvalid ? "Stopwords cannot contain whitespace, punctuation, or control characters." : "",
+      );
       expect(screen.queryAllByRole("alert")).toHaveLength(Number(addedInvalid) + Number(removedInvalid));
     },
   );
