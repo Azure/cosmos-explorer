@@ -164,6 +164,9 @@ test.describe.serial("Live localhost full-text stopwords", () => {
     await panel.getByRole("button", { name: "Delete full text path 2", exact: true }).click();
     await expect(panel.getByRole("button", { name: "Add full text path", exact: true })).toBeFocused();
     await expect(panel.getByRole("textbox", { name: /^Path/ })).toHaveValue("/text");
+    await panel.getByRole("button", { name: "Add full text path", exact: true }).click();
+    await expect(panel.getByRole("textbox", { name: /^Path/ }).nth(1)).toBeFocused();
+    await panel.getByRole("button", { name: "Delete full text path 2", exact: true }).click();
     await panel.getByTestId("Panel/OkButton").click();
     await panel.waitFor({ state: "detached", timeout: 180000 });
     const createdResponse = await request.get(containerUrl, { headers });

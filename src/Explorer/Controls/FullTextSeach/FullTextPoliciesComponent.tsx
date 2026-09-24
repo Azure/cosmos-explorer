@@ -626,6 +626,9 @@ export const FullTextPoliciesComponent: React.FunctionComponent<FullTextPolicies
               color: "var(--colorNeutralForeground1)",
               backgroundColor: "transparent",
               borderColor: "var(--colorNeutralStroke1)",
+              selectors: {
+                ":after": { pointerEvents: "none" },
+              },
             },
             rootHovered: {
               color: "var(--colorNeutralForeground1)",
