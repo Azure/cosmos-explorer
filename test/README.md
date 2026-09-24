@@ -203,6 +203,10 @@ values, and Delete must be a separate keyboard target. Adding a path should focu
 its input; deleting should return focus to Add, which must still respond to a mouse
 click. Check the empty state and a long path name at narrow width. In wide Settings,
 the word lists should sit side by side; in the create panel they should stack.
+Controls should not stretch to fill the available workspace: language and stopword
+dropdowns and individual word-list boxes are at most 240px wide, path inputs at
+most 320px, and the Settings form at most 496px. They must still shrink to fit a
+narrow panel without clipping values, errors, or accessible labels.
 
 Verify modern policy fields with raw ARM JSON. Older typed management clients,
 including `az cosmosdb sql container show`, may omit fields unknown to their models

@@ -36,6 +36,11 @@ const useStyles = makeStyles({
     gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 200px), 1fr))",
     gap: tokens.spacingHorizontalL,
     minWidth: 0,
+    maxWidth: "496px",
+  },
+  wordField: {
+    minWidth: 0,
+    maxWidth: "240px",
   },
   hint: {
     color: tokens.colorNeutralForeground2,
@@ -120,7 +125,7 @@ export const StopwordSettings = ({
       {!filteringEnabled && <div role="status">{t("fullTextPolicy.stopFilterDisabled")}</div>}
       <Field label={t("fullTextPolicy.preset")} hint={presetDescription()}>
         <Dropdown
-          style={{ minWidth: 0, width: "100%" }}
+          style={{ minWidth: 0, width: "100%", maxWidth: 240 }}
           disabled={disabled || !filteringEnabled}
           value={spec.stopWordListKind ? presetLabel(spec.stopWordListKind) : t("fullTextPolicy.serviceDefault")}
           selectedOptions={[spec.stopWordListKind ?? ""]}
@@ -151,6 +156,7 @@ export const StopwordSettings = ({
       </Field>
       <div className={styles.wordLists}>
         <Field
+          className={styles.wordField}
           label={t("fullTextPolicy.addedWords")}
           hint={t("fullTextPolicy.addedWordsDescription")}
           validationState={addedWordsInvalid ? "error" : "none"}
@@ -169,6 +175,7 @@ export const StopwordSettings = ({
           />
         </Field>
         <Field
+          className={styles.wordField}
           label={t("fullTextPolicy.removedWords")}
           hint={t("fullTextPolicy.removedWordsDescription")}
           validationState={removedWordsInvalid ? "error" : "none"}

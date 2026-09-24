@@ -161,6 +161,8 @@ const textFieldStyles: IStyleFunctionOrObject<ITextFieldStyleProps, ITextFieldSt
     backgroundColor: "var(--colorNeutralBackground2)",
   },
   root: {
+    width: "100%",
+    maxWidth: 320,
     selectors: {
       input: {
         backgroundColor: "var(--colorNeutralBackground2)",
@@ -181,6 +183,7 @@ const textFieldStyles: IStyleFunctionOrObject<ITextFieldStyleProps, ITextFieldSt
 const dropdownStyles: Partial<IDropdownStyles> = {
   root: {
     width: "100%",
+    maxWidth: 240,
     marginTop: "10px",
     selectors: {
       "&:hover .ms-Dropdown-title": {

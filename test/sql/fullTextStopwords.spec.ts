@@ -1,4 +1,4 @@
-import { APIRequestContext, APIResponse, FrameLocator, Page, expect, test } from "@playwright/test";
+import { APIRequestContext, APIResponse, FrameLocator, Locator, Page, expect, test } from "@playwright/test";
 import { randomUUID } from "crypto";
 import { setTimeout as delay } from "timers/promises";
 
@@ -24,6 +24,19 @@ test.describe.serial("Live localhost full-text stopwords", () => {
   let page: Page;
   let frame: FrameLocator;
   let request: APIRequestContext;
+
+  const expectCompactWordControls = async (group: Locator): Promise<void> => {
+    for (const control of [
+      group.getByRole("combobox", { name: "Stopword list" }),
+      group.getByRole("textbox", { name: "Additional stopwords" }),
+      group.getByRole("textbox", { name: "Words to keep" }),
+    ]) {
+      const width = await control.evaluate(
+        (element) => (element.closest(".fui-Dropdown, .fui-Textarea") ?? element).getBoundingClientRect().width,
+      );
+      expect(width).toBeLessThanOrEqual(240);
+    }
+  };
 
   const waitForDeletion = async (response: APIResponse): Promise<void> => {
     const operationUrl = response.headers()["azure-asyncoperation"] ?? response.headers()["location"];
@@ -147,9 +160,14 @@ test.describe.serial("Live localhost full-text stopwords", () => {
     const defaults = panel.getByRole("group", { name: "Default stopwords" });
     await defaults.getByRole("textbox", { name: "Additional stopwords" }).fill("cosmos");
     await defaults.getByRole("textbox", { name: "Words to keep" }).fill("the");
+    await expectCompactWordControls(defaults);
+    expect((await panel.getByRole("combobox", { name: /^Default language/ }).boundingBox())?.width).toBeLessThanOrEqual(
+      240,
+    );
     await panel.getByRole("button", { name: "Add full text path" }).click();
     await expect(panel.getByRole("textbox", { name: /^Path/ })).toBeFocused();
     await panel.getByRole("textbox", { name: /^Path/ }).fill("/text");
+    expect((await panel.getByRole("textbox", { name: /^Path/ }).boundingBox())?.width).toBeLessThanOrEqual(320);
     const pathHeader = panel.getByRole("button", { name: /^\/text Inherits defaults/ });
     await expect(pathHeader.locator("button, [role=button]")).toHaveCount(0);
     await pathHeader.press("Space");
@@ -201,6 +219,7 @@ test.describe.serial("Live localhost full-text stopwords", () => {
     const settingsDefaults = frame.getByRole("group", { name: "Default stopwords" });
     await expect(settingsDefaults.getByRole("textbox", { name: "Additional stopwords" })).toHaveValue("cosmos");
     await expect(settingsDefaults.getByRole("textbox", { name: "Additional stopwords" })).toBeDisabled();
+    await expectCompactWordControls(settingsDefaults);
     await expect(frame.getByRole("textbox", { name: /^Path/ })).toBeDisabled();
     await frame.getByRole("button", { name: "Add full text path" }).click();
     const save = frame.getByTestId("CommandBar/Button:Save").and(frame.locator("button"));
@@ -208,6 +227,7 @@ test.describe.serial("Live localhost full-text stopwords", () => {
     await frame.getByRole("textbox", { name: /^Path/ }).nth(1).fill("/other");
     await frame.getByRole("checkbox", { name: "Inherit the container's language and stopwords" }).nth(1).uncheck();
     const other = frame.getByRole("group", { name: "Stopwords for /other" });
+    await expectCompactWordControls(other);
     await other.getByRole("combobox", { name: "Stopword list" }).click();
     await frame.getByRole("option", { name: "Basic", exact: true }).click();
     await other.getByRole("textbox", { name: "Additional stopwords" }).fill("invalid phrase");
