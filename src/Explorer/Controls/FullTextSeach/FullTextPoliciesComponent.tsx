@@ -1,6 +1,7 @@
 import {
   DefaultButton,
   Dropdown,
+  IButton,
   IDropdownOption,
   IDropdownStyles,
   IStyleFunctionOrObject,
@@ -9,12 +10,23 @@ import {
   Stack,
   TextField,
 } from "@fluentui/react";
-import { Checkbox, makeStyles, tokens, useId } from "@fluentui/react-components";
+import {
+  Accordion,
+  AccordionHeader,
+  AccordionItem,
+  AccordionPanel,
+  Button,
+  Checkbox,
+  makeStyles,
+  tokens,
+  useId,
+} from "@fluentui/react-components";
+import { DeleteRegular } from "@fluentui/react-icons";
 import { AccountOverride, FullTextIndex, FullTextPath, FullTextPolicy } from "Contracts/DataModels";
-import { CollapsibleSectionComponent } from "Explorer/Controls/CollapsiblePanel/CollapsibleSectionComponent";
 import {
   fullTextLanguages,
   getFullTextDefaultLanguage,
+  getStopwordValidationError,
   inheritFullTextPathAnalysis,
   isFullTextPolicyValid,
   isSupportedFullTextPolicy,
@@ -71,9 +83,63 @@ const useStyles = makeStyles({
     "& .fui-Checkbox__input:disabled ~ .fui-Checkbox__label": {
       color: tokens.colorNeutralForeground2,
     },
-    "& .collapsibleSection": {
-      marginTop: tokens.spacingVerticalM,
-    },
+  },
+  pathsHeading: {
+    marginTop: tokens.spacingVerticalXL,
+    marginBottom: tokens.spacingVerticalS,
+    fontSize: tokens.fontSizeBase400,
+    lineHeight: tokens.lineHeightBase400,
+    fontWeight: tokens.fontWeightSemibold,
+  },
+  pathSection: {
+    borderTop: `1px solid ${tokens.colorNeutralStroke2}`,
+    minWidth: 0,
+  },
+  pathHeaderRow: {
+    display: "flex",
+    alignItems: "center",
+    columnGap: tokens.spacingHorizontalS,
+  },
+  pathHeader: {
+    flex: 1,
+    minWidth: 0,
+    margin: 0,
+  },
+  pathHeaderButton: {
+    paddingLeft: 0,
+    paddingRight: tokens.spacingHorizontalS,
+    minHeight: "56px",
+    minWidth: 0,
+  },
+  pathIdentity: {
+    display: "grid",
+    rowGap: tokens.spacingVerticalXXS,
+    minWidth: 0,
+    textAlign: "left",
+  },
+  pathName: {
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+    fontWeight: tokens.fontWeightSemibold,
+  },
+  pathStatus: {
+    color: tokens.colorNeutralForeground2,
+    fontSize: tokens.fontSizeBase200,
+    lineHeight: tokens.lineHeightBase200,
+    fontWeight: tokens.fontWeightRegular,
+    whiteSpace: "normal",
+  },
+  pathError: {
+    color: tokens.colorPaletteRedForeground1,
+  },
+  pathPanel: {
+    margin: 0,
+    paddingBottom: tokens.spacingVerticalL,
+  },
+  pathFields: {
+    minWidth: 0,
+    paddingLeft: tokens.spacingHorizontalL,
   },
 });
 
@@ -252,6 +318,7 @@ export const FullTextPoliciesComponent: React.FunctionComponent<FullTextPolicies
   fullTextIndexes = emptyIndexes,
 }): JSX.Element => {
   const styles = useStyles();
+  const addPathButton = React.useRef<IButton>(null);
   const pathDescriptionId = useId("full-text-path-description");
   const incomingPolicy = fullTextPolicy ?? emptyPolicy;
   const [policy, setPolicy] = React.useState<FullTextPolicy>(incomingPolicy);
@@ -259,6 +326,7 @@ export const FullTextPoliciesComponent: React.FunctionComponent<FullTextPolicies
   const callbacks = React.useRef({ onFullTextPathChange, onChangesDiscarded });
   callbacks.current = { onFullTextPathChange, onChangesDiscarded };
   const canCustomize = allowStopwordCustomization && isFullTextSearchPreviewFeaturesEnabled(targetAccountOverride);
+  const showStopwords = canCustomize && (isEditing || policy.package === "standard");
   const supported = isSupportedFullTextPolicy(policy);
   const hasCustomization =
     policy.package === "standard" ||
@@ -376,7 +444,7 @@ export const FullTextPoliciesComponent: React.FunctionComponent<FullTextPolicies
             }}
           />
         )}
-        {canCustomize && (isEditing || policy.package === "standard") && (
+        {showStopwords && (
           <>
             {!isEditing && <div>{t("fullTextPolicy.customizeDescription")}</div>}
             {defaultsLocked && !readOnly && <div role="status">{t("fullTextPolicy.defaultLocked")}</div>}
@@ -391,114 +459,152 @@ export const FullTextPoliciesComponent: React.FunctionComponent<FullTextPolicies
             />
           </>
         )}
+        <h3 className={styles.pathsHeading}>
+          {t("fullTextPolicy.pathsHeading", { count: policy.fullTextPaths.length })}
+        </h3>
+        {policy.fullTextPaths.length === 0 && <div>{t("fullTextPolicy.emptyPaths")}</div>}
         {policy.fullTextPaths.map((path, index) => {
-          const pathLocked = readOnly || (isEditing && fullTextIndexes.some((entry) => entry.path === path.path));
+          const indexed = isEditing && fullTextIndexes.some((entry) => entry.path === path.path);
+          const pathLocked = readOnly || indexed;
           const inherited = path.language === undefined;
           const pathError = !path.path.trim()
             ? t("fullTextPolicy.pathRequired")
             : policy.fullTextPaths.some((entry, entryIndex) => entryIndex !== index && entry.path === path.path)
             ? t("fullTextPolicy.pathDuplicate")
             : undefined;
+          const needsAttention = !readOnly && (pathError || getStopwordValidationError(path, policy.package));
+          const analysisMode = t(inherited ? "fullTextPolicy.inheritsDefaults" : "fullTextPolicy.overridesDefaults");
+          const pathSummary = indexed
+            ? t("fullTextPolicy.indexedPathSummary", { mode: analysisMode })
+            : readOnly
+            ? t("fullTextPolicy.readOnlyPathSummary", { mode: analysisMode })
+            : analysisMode;
           return (
-            <CollapsibleSectionComponent
-              key={index}
-              isExpandedByDefault={true}
-              title={t("fullTextPolicy.pathTitle", { index: index + 1 })}
-              showDelete={!pathLocked}
-              deleteLabel={t("fullTextPolicy.deletePath", { index: index + 1 })}
-              onDelete={() =>
-                setPolicy((current) => ({
-                  ...current,
-                  fullTextPaths: current.fullTextPaths.filter((_path, pathIndex) => pathIndex !== index),
-                }))
-              }
-            >
-              <Stack horizontal tokens={{ childrenGap: 4 }}>
-                <Stack
-                  styles={{
-                    root: {
-                      margin: "0 0 12px 12px !important",
-                      paddingLeft: 12,
-                      flex: 1,
-                      minWidth: 0,
-                      borderLeft: "1px solid var(--colorNeutralStroke2)",
-                    },
-                  }}
-                >
-                  {pathLocked && !readOnly && <div role="status">{t("fullTextPolicy.pathLocked")}</div>}
-                  <Stack>
-                    <TextField
-                      label={t("fullTextPolicy.path")}
-                      ariaLabel={t("fullTextPolicy.path")}
-                      id={`full-text-policy-path-${index + 1}`}
-                      required={true}
-                      disabled={pathLocked}
-                      placeholder="/fullTextPath1"
-                      styles={textFieldStyles}
-                      onChange={(_event, value) =>
-                        updatePath(index, (current) => {
-                          const next = (value ?? "").trim();
-                          return {
-                            ...current,
-                            path: !current.path && next.length > 0 && !next.startsWith("/") ? `/${next}` : next,
-                          };
-                        })
-                      }
-                      value={path.path}
-                      errorMessage={pathError}
-                    />
-                  </Stack>
-                  {canCustomize && (isEditing || policy.package === "standard") && (
-                    <>
-                      <Checkbox
-                        label={t("fullTextPolicy.inherit")}
-                        aria-describedby={`${pathDescriptionId}-${index}`}
-                        disabled={pathLocked}
-                        checked={inherited}
-                        onChange={(_event, data) =>
-                          updatePath(index, (current) =>
-                            data.checked === true
-                              ? inheritFullTextPathAnalysis(current)
-                              : { ...current, language: defaultLanguage },
-                          )
-                        }
-                      />
-                      <div id={`${pathDescriptionId}-${index}`} style={{ color: "var(--colorNeutralForeground2)" }}>
-                        {t(inherited ? "fullTextPolicy.inheritedDescription" : "fullTextPolicy.overrideDescription")}
-                      </div>
-                    </>
-                  )}
-                  <Stack>
-                    <Dropdown
-                      label={t("fullTextPolicy.language")}
-                      disabled={pathLocked || inherited}
-                      styles={dropdownStyles}
-                      options={languageOptions(path.language ?? defaultLanguage)}
-                      selectedKey={path.language ?? defaultLanguage}
-                      onChange={(_event, option) => {
-                        if (option && typeof option.key === "string") {
-                          updatePath(index, (current) => ({ ...current, language: option.key.toString() }));
-                        }
+            <Accordion key={index} className={styles.pathSection} collapsible defaultOpenItems={["path"]}>
+              <AccordionItem value="path">
+                <div className={styles.pathHeaderRow}>
+                  <AccordionHeader
+                    as="h4"
+                    className={styles.pathHeader}
+                    button={{ className: styles.pathHeaderButton }}
+                  >
+                    <span className={styles.pathIdentity}>
+                      <span className={styles.pathName} title={path.path}>
+                        {path.path || t("fullTextPolicy.newPath")}
+                      </span>
+                      <span className={styles.pathStatus}>
+                        {pathSummary}
+                        {needsAttention && (
+                          <span className={styles.pathError}>
+                            {" - "}
+                            {t("fullTextPolicy.needsAttention")}
+                          </span>
+                        )}
+                      </span>
+                    </span>
+                  </AccordionHeader>
+                  {!pathLocked && (
+                    <Button
+                      appearance="subtle"
+                      icon={<DeleteRegular />}
+                      aria-label={t("fullTextPolicy.deletePath", { index: index + 1 })}
+                      title={t("fullTextPolicy.deletePath", { index: index + 1 })}
+                      onClick={() => {
+                        setPolicy((current) => ({
+                          ...current,
+                          fullTextPaths: current.fullTextPaths.filter((_path, pathIndex) => pathIndex !== index),
+                        }));
+                        addPathButton.current?.focus();
                       }}
-                    ></Dropdown>
-                  </Stack>
-                  {canCustomize && !inherited && (isEditing || policy.package === "standard") && (
-                    <StopwordSettings
-                      label={t("fullTextPolicy.pathStopwords", { path: path.path })}
-                      language={path.language}
-                      packageName={policy.package}
-                      spec={path}
-                      inheritedFilters={policy.defaultSpec?.filters}
-                      disabled={pathLocked}
-                      onChange={(spec) => updatePath(index, (current) => ({ ...spec, path: current.path }))}
                     />
                   )}
-                </Stack>
-              </Stack>
-            </CollapsibleSectionComponent>
+                </div>
+                <AccordionPanel className={styles.pathPanel}>
+                  <Stack className={styles.pathFields} tokens={{ childrenGap: 4 }}>
+                    {pathLocked && !readOnly && <div role="status">{t("fullTextPolicy.pathLocked")}</div>}
+                    <Stack>
+                      <TextField
+                        label={t("fullTextPolicy.path")}
+                        ariaLabel={t("fullTextPolicy.path")}
+                        id={`full-text-policy-path-${index + 1}`}
+                        required={true}
+                        disabled={pathLocked}
+                        placeholder="/fullTextPath1"
+                        styles={textFieldStyles}
+                        onChange={(_event, value) =>
+                          updatePath(index, (current) => {
+                            const next = (value ?? "").trim();
+                            return {
+                              ...current,
+                              path: !current.path && next.length > 0 && !next.startsWith("/") ? `/${next}` : next,
+                            };
+                          })
+                        }
+                        value={path.path}
+                        errorMessage={pathError}
+                      />
+                    </Stack>
+                    {showStopwords && (
+                      <>
+                        <Checkbox
+                          label={t("fullTextPolicy.inherit")}
+                          aria-describedby={`${pathDescriptionId}-${index}`}
+                          disabled={pathLocked}
+                          checked={inherited}
+                          onChange={(_event, data) =>
+                            updatePath(index, (current) =>
+                              data.checked === true
+                                ? inheritFullTextPathAnalysis(current)
+                                : { ...current, language: defaultLanguage },
+                            )
+                          }
+                        />
+                        <div id={`${pathDescriptionId}-${index}`} style={{ color: "var(--colorNeutralForeground2)" }}>
+                          {inherited
+                            ? t("fullTextPolicy.inheritedLanguageDescription", {
+                                language:
+                                  languageOptions(defaultLanguage).find((option) => option.key === defaultLanguage)
+                                    ?.text ?? defaultLanguage,
+                              })
+                            : t("fullTextPolicy.overrideDescription")}
+                        </div>
+                      </>
+                    )}
+                    {(!inherited || !showStopwords) && (
+                      <Stack>
+                        <Dropdown
+                          label={t("fullTextPolicy.language")}
+                          disabled={pathLocked || inherited}
+                          styles={dropdownStyles}
+                          options={languageOptions(path.language ?? defaultLanguage)}
+                          selectedKey={path.language ?? defaultLanguage}
+                          onChange={(_event, option) => {
+                            if (option && typeof option.key === "string") {
+                              updatePath(index, (current) => ({ ...current, language: option.key.toString() }));
+                            }
+                          }}
+                        ></Dropdown>
+                      </Stack>
+                    )}
+                    {showStopwords && !inherited && (
+                      <StopwordSettings
+                        label={t("fullTextPolicy.pathStopwords", { path: path.path })}
+                        language={path.language}
+                        packageName={policy.package}
+                        spec={path}
+                        inheritedFilters={policy.defaultSpec?.filters}
+                        disabled={pathLocked}
+                        onChange={(spec) => updatePath(index, (current) => ({ ...spec, path: current.path }))}
+                      />
+                    )}
+                  </Stack>
+                </AccordionPanel>
+              </AccordionItem>
+            </Accordion>
           );
         })}
         <DefaultButton
+          componentRef={addPathButton}
           id="add-full-text-policy"
           disabled={readOnly}
           styles={{
