@@ -197,6 +197,13 @@ explains disabled word fields, and errors are associated with the offending word
 list. These checks can use unsaved edits followed by Discard; no new container is
 needed for a visual-only audit.
 
+Check that collapsed path headers retain the path name, inheritance/index state,
+and any validation warning. Space/Enter must toggle expansion without losing
+values, and Delete must be a separate keyboard target. Adding a path should focus
+its input; deleting should return focus to Add, which must still respond to a mouse
+click. Check the empty state and a long path name at narrow width. In wide Settings,
+the word lists should sit side by side; in the create panel they should stack.
+
 Verify modern policy fields with raw ARM JSON. Older typed management clients,
 including `az cosmosdb sql container show`, may omit fields unknown to their models
 even when the service preserved them.
