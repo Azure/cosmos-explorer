@@ -9,7 +9,7 @@ import {
   Stack,
   TextField,
 } from "@fluentui/react";
-import { Checkbox } from "@fluentui/react-components";
+import { Checkbox, useId } from "@fluentui/react-components";
 import { AccountOverride, FullTextIndex, FullTextPath, FullTextPolicy } from "Contracts/DataModels";
 import { CollapsibleSectionComponent } from "Explorer/Controls/CollapsiblePanel/CollapsibleSectionComponent";
 import {
@@ -216,6 +216,7 @@ export const FullTextPoliciesComponent: React.FunctionComponent<FullTextPolicies
   isEditing = false,
   fullTextIndexes = emptyIndexes,
 }): JSX.Element => {
+  const pathDescriptionId = useId("full-text-path-description");
   const incomingPolicy = fullTextPolicy ?? emptyPolicy;
   const [policy, setPolicy] = React.useState<FullTextPolicy>(incomingPolicy);
   const initialPolicy = React.useRef(incomingPolicy);
@@ -345,6 +346,7 @@ export const FullTextPoliciesComponent: React.FunctionComponent<FullTextPolicies
             {defaultsLocked && !readOnly && <div role="status">{t("fullTextPolicy.defaultLocked")}</div>}
             <StopwordSettings
               label={t("fullTextPolicy.defaultStopwords")}
+              description={t("fullTextPolicy.defaultDescription")}
               language={defaultLanguage}
               packageName={policy.package}
               spec={{ ...policy.defaultSpec, language: defaultLanguage }}
@@ -410,18 +412,24 @@ export const FullTextPoliciesComponent: React.FunctionComponent<FullTextPolicies
                     />
                   </Stack>
                   {canCustomize && (isEditing || policy.package === "standard") && (
-                    <Checkbox
-                      label={t("fullTextPolicy.inherit")}
-                      disabled={pathLocked}
-                      checked={inherited}
-                      onChange={(_event, data) =>
-                        updatePath(index, (current) =>
-                          data.checked === true
-                            ? inheritFullTextPathAnalysis(current)
-                            : { ...current, language: defaultLanguage },
-                        )
-                      }
-                    />
+                    <>
+                      <Checkbox
+                        label={t("fullTextPolicy.inherit")}
+                        aria-describedby={`${pathDescriptionId}-${index}`}
+                        disabled={pathLocked}
+                        checked={inherited}
+                        onChange={(_event, data) =>
+                          updatePath(index, (current) =>
+                            data.checked === true
+                              ? inheritFullTextPathAnalysis(current)
+                              : { ...current, language: defaultLanguage },
+                          )
+                        }
+                      />
+                      <div id={`${pathDescriptionId}-${index}`} style={{ color: "var(--colorNeutralForeground2)" }}>
+                        {t(inherited ? "fullTextPolicy.inheritedDescription" : "fullTextPolicy.overrideDescription")}
+                      </div>
+                    </>
                   )}
                   <Stack>
                     <Dropdown

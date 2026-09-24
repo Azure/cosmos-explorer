@@ -6,6 +6,7 @@ import React from "react";
 
 interface StopwordSettingsProps {
   label: string;
+  description?: string;
   language: string;
   packageName: string | undefined;
   spec: FullTextAnalysisSpec;
@@ -16,6 +17,7 @@ interface StopwordSettingsProps {
 
 export const StopwordSettings = ({
   label,
+  description,
   language,
   packageName,
   spec,
@@ -44,6 +46,7 @@ export const StopwordSettings = ({
   return (
     <div role="group" aria-label={label} style={{ minWidth: 0, display: "grid", gap: 8 }}>
       <div style={{ paddingTop: 8, fontWeight: 600 }}>{label}</div>
+      {description && <div style={{ color: "var(--colorNeutralForeground2)" }}>{description}</div>}
       {packageName === "standard" && (
         <Checkbox
           label={t("fullTextPolicy.enableStopFilter")}
