@@ -6,12 +6,11 @@ test.describe("Throughput bucket settings", () => {
   let context: TestContainerContext = null!;
   let explorer: DataExplorer = null!;
 
-  test.beforeAll("Create Test Database", async () => {
+  test.beforeEach("Create Test Database", async () => {
     context = await createTestSQLContainer();
   });
 
-  test.beforeEach("Open Throughput Bucket Settings", async ({ browser }) => {
-    const page = await browser.newPage();
+  test.beforeEach("Open Throughput Bucket Settings", async ({ page }) => {
     explorer = await DataExplorer.open(page, TestAccount.SQL);
 
     // Click Scale & Settings and open Throughput Bucket Settings tab
@@ -22,7 +21,7 @@ test.describe("Throughput bucket settings", () => {
 
   // Delete database only if not running in CI
   if (!process.env.CI) {
-    test.afterAll("Delete Test Database", async () => {
+    test.afterEach("Delete Test Database", async () => {
       await context?.dispose();
     });
   }
@@ -61,12 +60,12 @@ test.describe("Throughput bucket settings", () => {
   test("Set throughput percentage for bucket #1", async () => {
     // Set throughput percentage for bucket 1 (inactive) - Should be disabled
     const bucket1PercentageInput = explorer.frame.getByTestId("bucket-1-percentage-input");
-    expect(bucket1PercentageInput).toBeDisabled();
+    await expect(bucket1PercentageInput).toBeDisabled();
 
     // Activate bucket 1
     const bucket1Toggle = explorer.frame.getByTestId("bucket-1-active-toggle");
     await bucket1Toggle.click();
-    expect(bucket1PercentageInput).toBeEnabled();
+    await expect(bucket1PercentageInput).toBeEnabled();
     await bucket1PercentageInput.fill("40");
 
     await explorer.commandBarButton(CommandBarButton.Save).click();
@@ -84,7 +83,7 @@ test.describe("Throughput bucket settings", () => {
     await defaultThroughputBucketDropdown.click();
 
     const bucket1Option = explorer.frame.getByRole("option", { name: "Bucket 1" });
-    expect(bucket1Option).toBeDisabled();
+    await expect(bucket1Option).toBeDisabled();
 
     // Activate bucket 1
     const bucket1Toggle = explorer.frame.getByTestId("bucket-1-active-toggle");
@@ -92,7 +91,7 @@ test.describe("Throughput bucket settings", () => {
 
     // Open dropdown again
     await defaultThroughputBucketDropdown.click();
-    expect(bucket1Option).toBeEnabled();
+    await expect(bucket1Option).toBeEnabled();
 
     // Select bucket 1 as default
     await bucket1Option.click();
