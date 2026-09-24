@@ -3,14 +3,8 @@ import { sendMessage } from "Common/MessageHandler";
 import { stringifyError } from "Common/stringifyError";
 import { MessageTypes } from "Contracts/ExplorerContracts";
 import { useDataPlaneRbac } from "Explorer/Panes/SettingsPane/SettingsPane";
-import {
-  isFabricMirrored,
-  isFabricMirroredKey,
-  isFabricNative,
-  scheduleRefreshFabricToken,
-} from "Platform/Fabric/FabricUtil";
+import { isFabricMirrored, isFabricMirroredKey, scheduleRefreshFabricToken } from "Platform/Fabric/FabricUtil";
 import { acquireMsalTokenForAccount } from "Utils/AuthorizationUtils";
-import { featureRegistered } from "Utils/FeatureRegistrationUtils";
 import { update } from "Utils/arm/generatedClients/cosmos/databaseAccounts";
 import * as ko from "knockout";
 import React from "react";
@@ -577,9 +571,6 @@ export default class Explorer {
       scenarioMonitor.start(MetricScenario.DatabaseLoad);
     }
 
-    // Run independent initialization tasks in parallel:
-    // - Database loading (ARM/SDK calls for databases + collections)
-    // - Feature registration check (ARM call — no dependency on databases)
     const databasesTask =
       userContext.apiType !== "Postgres" && userContext.apiType !== "VCoreMongo"
         ? (async () => {
@@ -596,15 +587,6 @@ export default class Explorer {
           })()
         : Promise.resolve();
 
-    const featureRegistrationTask =
-      userContext.authType === AuthType.AAD && userContext.apiType === "SQL" && !isFabricNative()
-        ? featureRegistered(userContext.subscriptionId, "ThroughputBucketing")
-        : Promise.resolve(false);
-
-    const [, throughputBucketsEnabled] = await Promise.all([databasesTask, featureRegistrationTask]);
-
-    if (throughputBucketsEnabled) {
-      updateUserContext({ throughputBucketsEnabled });
-    }
+    await databasesTask;
   }
 }

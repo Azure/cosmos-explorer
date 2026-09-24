@@ -78,7 +78,9 @@ export async function readCollections(databaseId: string): Promise<DataModels.Co
     const sdkResponse = await client().database(databaseId).containers.readAll().fetchAll();
     Logger.logInfo(
       `readCollections: fetchAll completed for database ${databaseId}, count=${sdkResponse.resources
-        ?.length}, durationMs=${Date.now() - fetchAllStart}`,
+        ?.length}, durationMs=${Date.now() - fetchAllStart}, diagnostics=${JSON.stringify(
+        sdkResponse.diagnostics?.clientSideRequestStatistics,
+      )}`,
       "readCollections",
     );
     traceSuccess(
@@ -88,6 +90,15 @@ export async function readCollections(databaseId: string): Promise<DataModels.Co
     );
     return sdkResponse.resources as DataModels.Collection[];
   } catch (error) {
+    const diagnostics = error instanceof Error && "diagnostics" in error ? error.diagnostics : undefined;
+    if (diagnostics && typeof diagnostics === "object" && "clientSideRequestStatistics" in diagnostics) {
+      Logger.logError(
+        `readCollections: fetchAll failed for database ${databaseId}, diagnostics=${JSON.stringify(
+          diagnostics.clientSideRequestStatistics,
+        )}`,
+        "readCollections",
+      );
+    }
     traceFailure(Action.ReadCollections, { databaseId, error: error?.message }, startKey);
     handleError(error, "ReadCollections", `Error while querying containers for database ${databaseId}`);
     throw error;
