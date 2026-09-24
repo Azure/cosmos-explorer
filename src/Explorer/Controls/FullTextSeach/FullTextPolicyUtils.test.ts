@@ -29,6 +29,141 @@ describe("full-text policy helpers", () => {
     ]);
   });
 
+  describe("complete supported language and stopword policy matrix", () => {
+    it.each(fullTextLanguages)("$value and $legacyId expose only their supported presets", ({ value, legacyId }) => {
+      for (const language of [value, legacyId]) {
+        expect(getStopwordPresets("standard", language)).toEqual(["none", "basic"]);
+        const expectedLegacy = value === "en-US" ? ["none", "extended"] : ["none"];
+        expect(getStopwordPresets("legacy", language)).toEqual(expectedLegacy);
+        expect(getStopwordPresets(undefined, language)).toEqual(expectedLegacy);
+        for (const packageName of ["standard", "legacy", undefined]) {
+          for (const preset of ["none", "basic", "extended"]) {
+            const valid = packageName === "standard" ? preset !== "extended" : expectedLegacy.includes(preset);
+            const spec = {
+              language,
+              stopWordListKind: preset,
+              addStopWords: ["catalog", "Catalog", "catalog", "caf\u00e9"],
+            };
+            expect(getStopwordValidationError(spec, packageName)).toBe(valid ? undefined : "invalidPreset");
+          }
+        }
+      }
+    });
+
+    const transitions = fullTextLanguages.flatMap((from) =>
+      fullTextLanguages.map((to) => ({ from: from.value, to: to.value })),
+    );
+    it.each(transitions)("$from -> $to preserves explicit path overrides and unknown fields", ({ from, to }) => {
+      const paths = [
+        { path: "/inherited" },
+        { path: "/override", language: from, stopWordListKind: "none", addStopWords: ["Original", "original"] },
+      ];
+      for (const shape of ["legacy", "modern", "both"]) {
+        const original: FullTextPolicy = {
+          ...(shape !== "modern" ? { defaultLanguage: from } : {}),
+          ...(shape !== "legacy"
+            ? {
+                package: "standard",
+                defaultSpec: {
+                  language: from,
+                  stopWordListKind: "none",
+                  addStopWords: ["keep", "Keep", "keep"],
+                  tokenizer: "word",
+                  filters: ["lowercase", "stop"],
+                  future: { preserved: true },
+                },
+              }
+            : {}),
+          fullTextPaths: paths,
+          futurePolicy: { preserved: true },
+        };
+        const changed = setFullTextDefaultLanguage(original, to);
+        expect(getFullTextDefaultLanguage(changed)).toBe(to);
+        expect(changed.fullTextPaths).toEqual(paths);
+        expect(changed.futurePolicy).toEqual({ preserved: true });
+        expect(getFullTextDefaultLanguage(original)).toBe(from);
+        expect(changed.defaultLanguage).toBe(shape === "modern" ? undefined : to);
+        expect(changed.defaultSpec).toEqual(shape === "legacy" ? undefined : { ...original.defaultSpec, language: to });
+        expect(isFullTextPolicyValid(changed)).toBe(true);
+      }
+    });
+
+    const listCases = fullTextLanguages.flatMap(({ value }) =>
+      [0, 1, 5, 20, 100, 1001].map((count) => ({ language: value, count })),
+    );
+    it.each(listCases)("$language preserves $count custom words without an invented cap", ({ language, count }) => {
+      const words = Array.from(
+        { length: count },
+        (_, index) => ["catalog", "Catalog", "caf\u00e9", "catalog"][index % 4],
+      );
+      for (const field of ["addStopWords", "removeStopWords"] as const) {
+        const spec = { language, stopWordListKind: "none", [field]: words };
+        expect(getStopwordValidationError(spec, "standard")).toBeUndefined();
+        expect(getStopwordValidationError(spec, "legacy")).toBeUndefined();
+        expect(spec[field]).toBe(words);
+      }
+    });
+
+    const forbidden = [
+      "two words",
+      "a\tb",
+      "a\nb",
+      "a\rb",
+      "a\u00a0b",
+      "a\u0000b",
+      "a\u007fb",
+      "a-b",
+      "can't",
+      "a\u2019b",
+      "a\u2014b",
+      "a/b",
+      "a,b",
+      "a.b",
+      "C++",
+      "$value",
+      "a_b",
+      "a:b",
+    ];
+    it.each(fullTextLanguages)("$value rejects forbidden characters anywhere in either list", ({ value: language }) => {
+      for (const field of ["addStopWords", "removeStopWords"] as const) {
+        for (const invalid of forbidden) {
+          const words = Array.from({ length: 20 }, () => "valid");
+          words[18] = invalid;
+          expect(getStopwordValidationError({ language, stopWordListKind: "none", [field]: words }, "standard")).toBe(
+            "invalidWord",
+          );
+        }
+        expect(getStopwordValidationError({ language, [field]: [] }, "standard")).toBe("presetRequired");
+        expect(getStopwordValidationError({ stopWordListKind: "none", [field]: ["valid"] }, "standard")).toBe(
+          "languageRequired",
+        );
+      }
+    });
+
+    it.each(fullTextLanguages)(
+      "$value removes only explicit stopword overrides when inheriting",
+      ({ value: language }) => {
+        const path = {
+          path: "/text",
+          language,
+          stopWordListKind: "none",
+          addStopWords: ["one", "two"],
+          removeStopWords: ["three"],
+          tokenizer: "word",
+          filters: ["lowercase", "stop"],
+          future: { unchanged: true },
+        };
+        expect(inheritFullTextPathAnalysis(path)).toEqual({
+          path: "/text",
+          tokenizer: "word",
+          filters: ["lowercase", "stop"],
+          future: { unchanged: true },
+        });
+        expect(path.addStopWords).toEqual(["one", "two"]);
+      },
+    );
+  });
+
   it("resolves defaults without changing the wire policy", () => {
     expect(getFullTextDefaultLanguage({ fullTextPaths: [] })).toBe("en-US");
     expect(getFullTextDefaultLanguage({ defaultLanguage: "fr-FR", fullTextPaths: [] })).toBe("fr-FR");

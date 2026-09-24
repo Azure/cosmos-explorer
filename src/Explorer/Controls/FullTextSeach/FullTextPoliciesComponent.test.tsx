@@ -6,7 +6,8 @@ import {
   ContainerPolicyComponentProps,
 } from "../Settings/SettingsSubComponents/ContainerPolicyComponent";
 import React from "react";
-import { updateUserContext } from "UserContext";
+import { ApiType, updateUserContext } from "UserContext";
+import { isFullTextSearchPreviewFeaturesEnabled } from "Utils/CapabilityUtils";
 import { FullTextPoliciesComponent, getFullTextLanguageOptions } from "./FullTextPoliciesComponent";
 
 describe("FullTextPoliciesComponent", () => {
@@ -187,6 +188,30 @@ describe("FullTextPoliciesComponent", () => {
     expect(screen.getByRole("group", { name: "Default stopwords" })).toBeVisible();
     expect(getFullTextLanguageOptions(true).map((option) => option.key)).toEqual(["en-US"]);
     expect(getFullTextLanguageOptions().map((option) => option.key)).toHaveLength(7);
+  });
+
+  const apiTypes: ApiType[] = ["SQL", "Mongo", "Gremlin", "Tables", "Cassandra", "Postgres", "VCoreMongo"];
+  it.each(apiTypes)("gates stopwords and languages correctly for %s and target-account overrides", (apiType) => {
+    for (const preview of [false, true]) {
+      const capabilities = preview
+        ? account.properties.capabilities
+        : [{ name: "EnableNoSQLFullTextSearch", description: "" }];
+      updateUserContext({ apiType, databaseAccount: { ...account, properties: { capabilities } } });
+      updateUserContext({ apiType });
+      expect(isFullTextSearchPreviewFeaturesEnabled()).toBe(apiType === "SQL" && preview);
+      expect(getFullTextLanguageOptions()).toHaveLength(apiType === "SQL" && preview ? 7 : 1);
+      expect(getFullTextLanguageOptions(true)).toHaveLength(1);
+      for (const targetPreview of [false, true]) {
+        const target = {
+          subscriptionId: "subscription",
+          resourceGroup: "group",
+          accountName: "target",
+          capabilities: targetPreview ? account.properties.capabilities : [],
+        };
+        expect(isFullTextSearchPreviewFeaturesEnabled(target)).toBe(apiType === "SQL" && targetPreview);
+        expect(getFullTextLanguageOptions(false, target)).toHaveLength(apiType === "SQL" && targetPreview ? 7 : 1);
+      }
+    }
   });
 
   it("preserves a custom policy when the preview capability is unavailable", () => {

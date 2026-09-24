@@ -3,6 +3,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { FullTextAnalysisSpec } from "Contracts/DataModels";
 import React from "react";
 import { StopwordSettings } from "./StopwordSettings";
+import { fullTextLanguages } from "./FullTextPolicyUtils";
 
 const spec: FullTextAnalysisSpec = {
   language: "en-US",
@@ -30,6 +31,87 @@ describe("stopword design guidance", () => {
     expect(screen.getByText("Used by full-text paths that inherit the container settings.")).toBeVisible();
     expect(screen.getByRole("textbox", { name: "Additional stopwords" })).toHaveValue("cosmos");
     expect(onChange).not.toHaveBeenCalled();
+  });
+
+  describe("multiword editor language matrix", () => {
+    it.each(fullTextLanguages)("$value edits either list losslessly at every tested size", ({ value: language }) => {
+      const changed = jest.fn();
+      const Harness = () => {
+        const [current, setCurrent] = React.useState<FullTextAnalysisSpec>({
+          ...spec,
+          language,
+          future: { retained: true },
+        });
+        return (
+          <StopwordSettings
+            label="Words"
+            language={language}
+            packageName="standard"
+            spec={current}
+            disabled={false}
+            onChange={(next) => {
+              changed(next);
+              setCurrent(next);
+            }}
+          />
+        );
+      };
+      render(<Harness />);
+      const added = screen.getByRole("textbox", { name: "Additional stopwords" });
+      const kept = screen.getByRole("textbox", { name: "Words to keep" });
+      for (const count of [0, 1, 5, 20, 100, 1001]) {
+        const words = Array.from(
+          { length: count },
+          (_, index) => ["catalog", "Catalog", "caf\u00e9", "catalog"][index % 4],
+        );
+        fireEvent.change(added, { target: { value: words.join("\r\n") } });
+        expect(added).toHaveValue(words.join("\n"));
+        expect(changed).toHaveBeenLastCalledWith(expect.objectContaining({ language, addStopWords: words }));
+        fireEvent.change(kept, { target: { value: words.join("\n") } });
+        expect(kept).toHaveValue(words.join("\n"));
+        expect(changed).toHaveBeenLastCalledWith(
+          expect.objectContaining({
+            language,
+            addStopWords: words,
+            removeStopWords: words,
+            future: { retained: true },
+          }),
+        );
+      }
+      fireEvent.click(screen.getByRole("checkbox", { name: "Enable stopword filtering" }));
+      expect(added).toBeDisabled();
+      expect(kept).toBeDisabled();
+      expect(changed).toHaveBeenLastCalledWith(expect.objectContaining({ filters: ["lowercase"] }));
+      fireEvent.click(screen.getByRole("checkbox", { name: "Enable stopword filtering" }));
+      expect(added).toBeEnabled();
+      expect(kept).toBeEnabled();
+      expect(added).toHaveValue(
+        Array.from({ length: 1001 }, (_, index) => ["catalog", "Catalog", "caf\u00e9", "catalog"][index % 4]).join(
+          "\n",
+        ),
+      );
+    });
+
+    it.each(fullTextLanguages)("$value associates a late error with only the offending list", ({ value: language }) => {
+      const words = Array.from({ length: 20 }, () => "valid");
+      words[18] = "invalid phrase";
+      const props = { label: "Words", language, packageName: "standard", disabled: false, onChange: jest.fn() };
+      const { rerender } = render(<StopwordSettings {...props} spec={{ ...spec, language, addStopWords: words }} />);
+      expect(screen.getByRole("textbox", { name: "Additional stopwords" })).toHaveAttribute("aria-invalid", "true");
+      expect(screen.getByRole("textbox", { name: "Words to keep" })).not.toHaveAttribute("aria-invalid", "true");
+      rerender(<StopwordSettings {...props} spec={{ ...spec, language, removeStopWords: words }} />);
+      expect(screen.getByRole("textbox", { name: "Words to keep" })).toHaveAttribute("aria-invalid", "true");
+      expect(screen.getByRole("textbox", { name: "Additional stopwords" })).not.toHaveAttribute("aria-invalid", "true");
+      rerender(
+        <StopwordSettings
+          {...props}
+          disabled
+          spec={{ ...spec, language, addStopWords: words, removeStopWords: words }}
+        />,
+      );
+      expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+      expect(screen.getByRole("textbox", { name: "Additional stopwords" })).toHaveValue(words.join("\n"));
+    });
   });
 
   it("explains why service-default word fields are disabled without selecting a preset", () => {

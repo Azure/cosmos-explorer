@@ -11,19 +11,54 @@ const resourceGroup = process.env.FULL_TEXT_TEST_RESOURCE_GROUP;
 const tenantId = process.env.FULL_TEXT_TEST_TENANT;
 const armToken = process.env.FULL_TEXT_TEST_ARM_TOKEN;
 const dataToken = process.env.FULL_TEXT_TEST_DATA_TOKEN;
+const languageCases = [
+  { locale: "en-US", label: "English (US)", commonWord: "the" },
+  { locale: "fr-FR", label: "French", commonWord: "le" },
+  { locale: "de-DE", label: "German", commonWord: "der" },
+  { locale: "es-ES", label: "Spanish", commonWord: "el" },
+  { locale: "it-IT", label: "Italian", commonWord: "il" },
+  { locale: "pt-PT", label: "Portuguese (Portugal)", commonWord: "o" },
+  { locale: "pt-BR", label: "Portuguese (Brazil)", commonWord: "o" },
+];
+const language = languageCases.find(({ locale }) => locale === (process.env.FULL_TEXT_TEST_LANGUAGE ?? "en-US"));
+const additionalWords = [
+  "cosmos",
+  "catalog",
+  "Catalog",
+  "catalog",
+  "products",
+  "inventory",
+  "shipping",
+  "delivery",
+  "orders",
+  "customers",
+  "checkout",
+  "basket",
+  "discount",
+  "payment",
+  "returns",
+  "service",
+  "support",
+  "details",
+  "description",
+  "caf\u00e9",
+];
+const overrideWords = ["galaxy", ...additionalWords.slice(1)];
 const origin = process.env.FULL_TEXT_TEST_ORIGIN ?? "https://localhost:1234";
 const enabled = !!(accountName && databaseId && subscriptionId && resourceGroup && tenantId && armToken && dataToken);
-test.use({ trace: "off", video: "off", screenshot: "off", launchOptions: { args: [] } });
+test.use({ trace: "off", video: "off", screenshot: "off", actionTimeout: 20000, launchOptions: { args: [] } });
 
 test.describe.serial("Live localhost full-text stopwords", () => {
   test.skip(!enabled, "Set FULL_TEXT_TEST_* variables for an explicitly approved live fixture.");
-  const containerId = `stopwords-e2e-${randomUUID()}`;
+  const runId = process.env.FULL_TEXT_TEST_RUN_ID;
+  const containerId = `stopwords-e2e-${runId ? `${runId}-` : ""}${randomUUID()}`;
   const accountPath = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}`;
   const containerUrl = `https://management.azure.com${accountPath}/sqlDatabases/${databaseId}/containers/${containerId}?api-version=2025-11-01-preview`;
   const headers = { Authorization: `Bearer ${armToken}` };
   let page: Page;
   let frame: FrameLocator;
   let request: APIRequestContext;
+  let ownsContainer = false;
 
   const expectCompactWordControls = async (group: Locator): Promise<void> => {
     const bounds: { width: number; x: number; y: number }[] = [];
@@ -71,6 +106,12 @@ test.describe.serial("Live localhost full-text stopwords", () => {
   };
 
   test.beforeAll(async ({ browser, playwright }) => {
+    if (runId && !/^[a-z0-9-]{1,30}$/.test(runId)) {
+      throw new Error("FULL_TEXT_TEST_RUN_ID must contain at most 30 lowercase letters, digits, or hyphens.");
+    }
+    if (!language) {
+      throw new Error("FULL_TEXT_TEST_LANGUAGE must be one of the seven supported locales.");
+    }
     expect(["localhost", "127.0.0.1"]).toContain(new URL(origin).hostname);
     request = await playwright.request.newContext();
     const accountResponse = await request.get(
@@ -84,6 +125,8 @@ test.describe.serial("Live localhost full-text stopwords", () => {
     );
     expect(capabilities).not.toContain("EnableServerless");
     expect(capabilities).toContain("EnableNoSQLFullTextSearchPreviewFeatures");
+    expect((await request.get(containerUrl, { headers })).status()).toBe(404);
+    ownsContainer = true;
     page = await browser.newPage({ ignoreHTTPSErrors: true, viewport: { width: 1440, height: 1000 } });
     frame = page.frameLocator('[data-test="DataExplorerFrame"]');
     await page.route(`${origin}/config.json`, (route) =>
@@ -116,8 +159,8 @@ test.describe.serial("Live localhost full-text stopwords", () => {
   test.afterAll(async () => {
     if (request) {
       try {
-        const existing = await request.get(containerUrl, { headers });
-        if (existing.status() !== 404) {
+        const existing = ownsContainer ? await request.get(containerUrl, { headers }) : undefined;
+        if (existing && existing.status() !== 404) {
           expect(existing.status()).toBe(200);
           const deletion = await request.delete(containerUrl, { headers });
           expect([200, 202, 204]).toContain(deletion.status());
@@ -150,22 +193,14 @@ test.describe.serial("Live localhost full-text stopwords", () => {
     await panel.getByRole("spinbutton", { name: "Container Required RU/s" }).fill("400");
     await panel.getByRole("button", { name: "Container Full Text Search Policy", exact: true }).click();
     await panel.getByRole("combobox", { name: /^Default language/ }).click();
-    for (const language of [
-      "English (US)",
-      "French",
-      "German",
-      "Spanish",
-      "Italian",
-      "Portuguese (Portugal)",
-      "Portuguese (Brazil)",
-    ]) {
-      await expect(frame.getByRole("option", { name: language, exact: true })).toBeVisible();
+    for (const { label } of languageCases) {
+      await expect(frame.getByRole("option", { name: label, exact: true })).toBeVisible();
     }
-    await frame.getByRole("option", { name: "English (US)", exact: true }).click();
+    await frame.getByRole("option", { name: language!.label, exact: true }).click();
     await panel.getByRole("checkbox", { name: "Customize stopwords with standard analysis" }).check();
     const defaults = panel.getByRole("group", { name: "Default stopwords" });
-    await defaults.getByRole("textbox", { name: "Additional stopwords" }).fill("cosmos");
-    await defaults.getByRole("textbox", { name: "Words to keep" }).fill("the");
+    await defaults.getByRole("textbox", { name: "Additional stopwords" }).fill(additionalWords.join("\n"));
+    await defaults.getByRole("textbox", { name: "Words to keep" }).fill(language!.commonWord);
     await expectCompactWordControls(defaults);
     expect((await panel.getByRole("combobox", { name: /^Default language/ }).boundingBox())?.width).toBeLessThanOrEqual(
       240,
@@ -199,10 +234,10 @@ test.describe.serial("Live localhost full-text stopwords", () => {
     expect(created.fullTextPolicy).toMatchObject({
       package: "standard",
       defaultSpec: {
-        language: "en-US",
+        language: language!.locale,
         stopWordListKind: "basic",
-        addStopWords: ["cosmos"],
-        removeStopWords: ["the"],
+        addStopWords: additionalWords,
+        removeStopWords: [language!.commonWord],
         tokenizer: "word",
         filters: ["lowercase", "stop"],
       },
@@ -215,7 +250,7 @@ test.describe.serial("Live localhost full-text stopwords", () => {
       (await frame.getByTestId(`TreeNodeContainer:${databaseId}/${containerId}`).getAttribute("aria-expanded")) !==
       "true"
     ) {
-      await node.click();
+      await frame.getByTestId(`TreeNodeContainer:${databaseId}/${containerId}`).press("ArrowRight");
     }
     await frame.getByTestId(`TreeNode:${databaseId}/${containerId}/Scale & Settings`).click();
     await page.mouse.move(1350, 900);
@@ -223,10 +258,14 @@ test.describe.serial("Live localhost full-text stopwords", () => {
     await frame.getByRole("tab", { name: "Scale", exact: true }).focus();
     await frame.getByRole("tab", { name: "Container Policies", exact: true }).click();
     const settingsDefaults = frame.getByRole("group", { name: "Default stopwords" });
-    await expect(settingsDefaults.getByRole("textbox", { name: "Additional stopwords" })).toHaveValue("cosmos");
+    await expect(settingsDefaults.getByRole("textbox", { name: "Additional stopwords" })).toHaveValue(
+      additionalWords.join("\n"),
+    );
     await expect(settingsDefaults.getByRole("textbox", { name: "Additional stopwords" })).toBeDisabled();
     await expectCompactWordControls(settingsDefaults);
     await expect(frame.getByRole("textbox", { name: /^Path/ })).toBeDisabled();
+    await expect(frame.getByRole("combobox", { name: /^Default language/ })).toBeDisabled();
+    await expect(frame.getByRole("combobox", { name: /^Default language/ })).toContainText(language!.label);
     await frame.getByRole("button", { name: "Add full text path" }).click();
     const save = frame.getByTestId("CommandBar/Button:Save").and(frame.locator("button"));
     await expect(save).toBeDisabled();
@@ -245,7 +284,7 @@ test.describe.serial("Live localhost full-text stopwords", () => {
     await expect(save).toBeDisabled();
     await otherHeader.press("Enter");
     await expect(other.getByRole("textbox", { name: "Additional stopwords" })).toHaveValue("invalid phrase");
-    await other.getByRole("textbox", { name: "Additional stopwords" }).fill("galaxy");
+    await other.getByRole("textbox", { name: "Additional stopwords" }).fill(overrideWords.join("\n"));
     await expect(save).toBeEnabled();
     await save.click();
     await expect(frame.getByTestId("notification-console/header-status")).toContainText(
@@ -255,17 +294,41 @@ test.describe.serial("Live localhost full-text stopwords", () => {
     await expect(save).toBeDisabled({ timeout: 180000 });
     const updated = (await (await request.get(containerUrl, { headers })).json()).properties.resource;
     expect(updated.fullTextPolicy.defaultSpec).toEqual(created.fullTextPolicy.defaultSpec);
-    expect(updated.fullTextPolicy.fullTextPaths[1].addStopWords).toEqual(["galaxy"]);
+    expect(updated.fullTextPolicy.fullTextPaths[1].addStopWords).toEqual(overrideWords);
     expect(updated.indexingPolicy.fullTextIndexes).toEqual([{ path: "/text" }]);
     await other.getByRole("textbox", { name: "Additional stopwords" }).fill("discardme");
     await frame.getByTestId("CommandBar/Button:Discard").and(frame.locator("button")).click();
-    await expect(other.getByRole("textbox", { name: "Additional stopwords" })).toHaveValue("galaxy");
+    await expect(other.getByRole("textbox", { name: "Additional stopwords" })).toHaveValue(overrideWords.join("\n"));
+    await page.reload();
+    const databaseNode = frame.getByTestId(`TreeNodeContainer:${databaseId}`);
+    await databaseNode.waitFor({ timeout: 90000 });
+    if ((await databaseNode.getAttribute("aria-expanded")) !== "true") {
+      await databaseNode.press("ArrowRight");
+    }
+    const containerNode = frame.getByTestId(`TreeNodeContainer:${databaseId}/${containerId}`);
+    await containerNode.waitFor({ timeout: 90000 });
+    if ((await containerNode.getAttribute("aria-expanded")) !== "true") {
+      await containerNode.press("ArrowRight");
+    }
+    await frame.getByTestId(`TreeNode:${databaseId}/${containerId}/Scale & Settings`).click();
+    await page.mouse.move(1350, 900);
+    await page.keyboard.press("Escape");
+    await frame.getByRole("tab", { name: "Container Policies", exact: true }).press("Enter");
+    await expect(settingsDefaults.getByRole("textbox", { name: "Additional stopwords" })).toHaveValue(
+      additionalWords.join("\n"),
+    );
+    await expect(settingsDefaults.getByRole("textbox", { name: "Words to keep" })).toHaveValue(language!.commonWord);
+    await expect(other.getByRole("textbox", { name: "Additional stopwords" })).toHaveValue(overrideWords.join("\n"));
+    await testInfo.attach("policy-roundtrip", {
+      body: JSON.stringify({ containerId, locale: language!.locale, created, updated }),
+      contentType: "application/json",
+    });
     await page.screenshot({ path: testInfo.outputPath("settings-roundtrip.png"), animations: "disabled" });
   });
 
   test("applies additional stopwords and words to keep to real uploaded items and browser queries", async () => {
     const testInfo = test.info();
-    await frame.getByTestId(`TreeNode:${databaseId}/${containerId}/Items`).click();
+    await frame.getByTestId(`TreeNodeContainer:${databaseId}/${containerId}/Items`).press("Enter");
     await page.mouse.move(1350, 900);
     await frame.getByTestId("CommandBar/Button:Upload Item").and(frame.locator("button")).click();
     await frame.locator("#importFileInput").setInputFiles({
@@ -275,7 +338,7 @@ test.describe.serial("Live localhost full-text stopwords", () => {
         JSON.stringify([
           { id: "a", pk: "one", text: "cosmos orbit" },
           { id: "b", pk: "one", text: "orbit" },
-          { id: "c", pk: "one", text: "the moon" },
+          { id: "c", pk: "one", text: `${language!.commonWord} moon` },
           { id: "d", pk: "one", text: "moon" },
         ]),
       ),
@@ -291,7 +354,7 @@ test.describe.serial("Live localhost full-text stopwords", () => {
     await editor.waitFor();
     for (const [term, expected] of [
       ["cosmos orbit", ["a", "b"]],
-      ["the moon", ["c"]],
+      [`${language!.commonWord} moon`, ["c"]],
     ] as const) {
       const query = `SELECT VALUE c.id FROM c WHERE FullTextContains(c.text, '${term}')`;
       await editor.evaluate((element, value) => {

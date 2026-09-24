@@ -14,6 +14,7 @@ import { handleError } from "Common/ErrorHandlingUtils";
 import { userContext } from "UserContext";
 import { readCollections } from "./readCollections";
 import { updateCollection } from "./updateCollection";
+import { fullTextLanguages } from "Explorer/Controls/FullTextSeach/FullTextPolicyUtils";
 
 jest.mock("Common/ErrorHandlingUtils", () => ({ handleError: jest.fn() }));
 
@@ -154,6 +155,55 @@ describe("createCollection", () => {
         expect(resource.fullTextPolicy).toEqual(policy);
       },
     );
+
+    it.each(
+      fullTextLanguages.flatMap(({ value }) =>
+        [AuthType.AAD, AuthType.MasterKey].map((authType) => ({ language: value, authType })),
+      ),
+    )("preserves 20-word $language policies through $authType create/read/update", async ({ language, authType }) => {
+      const words = Array.from({ length: 20 }, (_, index) => ["catalog", "Catalog", "caf\u00e9", "catalog"][index % 4]);
+      const localized = {
+        ...policy,
+        defaultLanguage: language,
+        defaultSpec: { ...policy.defaultSpec, language, addStopWords: words, removeStopWords: words },
+      };
+      const current = { ...resource, fullTextPolicy: localized };
+      updateUserContext({ authType });
+      sdkCreate.mockResolvedValue({ resource: current });
+      sdkRead.mockResolvedValue({ resources: [current] });
+      sdkReplace.mockResolvedValue({ resource: current });
+      jest.mocked(armRequest).mockResolvedValue({ properties: { resource: current } });
+      const created = await createCollection({
+        createNewDatabase: false,
+        databaseId: "database",
+        collectionId: "container",
+        databaseLevelThroughput: false,
+        offerThroughput: 400,
+        fullTextPolicy: localized,
+        indexingPolicy: current.indexingPolicy,
+      });
+      expect(created.fullTextPolicy).toEqual(localized);
+      const createPayload =
+        authType === AuthType.AAD ? jest.mocked(armRequest).mock.lastCall[0].body : sdkCreate.mock.lastCall[0];
+      expect(createPayload).toMatchObject(
+        authType === AuthType.AAD
+          ? { properties: { resource: { fullTextPolicy: localized } } }
+          : { fullTextPolicy: localized },
+      );
+      if (authType === AuthType.AAD) {
+        jest.mocked(armRequest).mockResolvedValueOnce({ value: [{ properties: { resource: current } }] });
+      }
+      expect((await readCollections("database"))[0].fullTextPolicy).toEqual(localized);
+      jest.mocked(armRequest).mockResolvedValue({ properties: { resource: current } });
+      await updateCollection("database", "container", { ...current, defaultTtl: 123 });
+      const updatePayload =
+        authType === AuthType.AAD ? jest.mocked(armRequest).mock.lastCall[0].body : sdkReplace.mock.lastCall[0];
+      expect(updatePayload).toMatchObject(
+        authType === AuthType.AAD
+          ? { properties: { resource: { ...current, defaultTtl: 123 } } }
+          : { ...current, defaultTtl: 123 },
+      );
+    });
   });
 
   it("should call ARM if logged in with AAD", async () => {

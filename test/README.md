@@ -208,6 +208,24 @@ dropdowns and individual word-list boxes are at most 240px wide, path inputs at
 most 320px, and the Settings form at most 496px. They must still shrink to fit a
 narrow panel without clipping values, errors, or accessible labels.
 
+Repeat the opt-in live workflow with `FULL_TEXT_TEST_LANGUAGE` set to each of
+`en-US`, `fr-FR`, `de-DE`, `es-ES`, `it-IT`, `pt-PT`, and `pt-BR` (English is the
+default). Run languages sequentially, not in parallel: each workflow provisions
+one uniquely named 400-RU/s container and confirms deletion before completion.
+An optional `FULL_TEXT_TEST_RUN_ID` (lowercase letters, digits, and hyphens, at
+most 30 characters) identifies the run's containers. The workflow checks 20-word
+lists with case differences, duplicates, and accented text through creation,
+indexed locks, an unindexed-path save, Discard, and full page reload. Query-result
+assertions intentionally fail if persisted custom words do not affect search as
+expected; do not replace their expected results with current backend behavior.
+
+For UI acceptance, exercise 0, 1, 5, 20, and 100 entries in **both** word lists and
+both creation/Settings. Test real newline paste, CRLF, middle edits, whole-line
+deletion, long and multilingual words, a late invalid entry, differing list
+lengths, filter off/on, and keyboard inspection of locked values. Include all
+default/path language combinations and service-default reset. A passing
+serialization test or tidy one-word screenshot is not multiword UX acceptance.
+
 Verify modern policy fields with raw ARM JSON. Older typed management clients,
 including `az cosmosdb sql container show`, may omit fields unknown to their models
 even when the service preserved them.
