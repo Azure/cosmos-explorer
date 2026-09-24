@@ -31,4 +31,25 @@ describe("stopword design guidance", () => {
     expect(screen.getByRole("textbox", { name: "Additional stopwords" })).toHaveValue("cosmos");
     expect(onChange).not.toHaveBeenCalled();
   });
+
+  it("explains why service-default word fields are disabled without selecting a preset", () => {
+    const props = {
+      label: "Default stopwords",
+      language: "en-US",
+      packageName: "standard",
+      disabled: false,
+      onChange: jest.fn(),
+    };
+    const { rerender } = render(
+      <StopwordSettings {...props} spec={{ language: "en-US", tokenizer: "word", filters: ["lowercase", "stop"] }} />,
+    );
+    expect(screen.getByRole("combobox", { name: "Stopword list" })).toHaveAccessibleDescription(
+      "Select a stopword list to customize the words below.",
+    );
+    expect(screen.getByRole("textbox", { name: "Additional stopwords" })).toBeDisabled();
+    expect(props.onChange).not.toHaveBeenCalled();
+    rerender(<StopwordSettings {...props} spec={spec} />);
+    expect(screen.queryByText("Select a stopword list to customize the words below.")).not.toBeInTheDocument();
+    expect(screen.getByRole("textbox", { name: "Additional stopwords" })).toBeEnabled();
+  });
 });

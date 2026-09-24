@@ -54,6 +54,7 @@
     "pathStopwords": "Stopwords for {{path}}",
     "preset": "Stopword list",
     "serviceDefault": "Use service default",
+    "selectListHint": "Select a stopword list to customize the words below.",
     "resetStopwords": "Use service default (clear custom words)",
     "enableStopFilter": "Enable stopword filtering",
     "stopFilterDisabled": "Stopword lists are inactive until the stop filter is enabled.",

@@ -66,7 +66,14 @@ export const StopwordSettings = ({
         />
       )}
       {!filteringEnabled && <div role="status">{t("fullTextPolicy.stopFilterDisabled")}</div>}
-      <Field label={t("fullTextPolicy.preset")}>
+      <Field
+        label={t("fullTextPolicy.preset")}
+        hint={
+          !disabled && filteringEnabled && spec.stopWordListKind === undefined
+            ? t("fullTextPolicy.selectListHint")
+            : undefined
+        }
+      >
         <Dropdown
           style={{ minWidth: 0, width: "100%" }}
           disabled={disabled || !filteringEnabled}
