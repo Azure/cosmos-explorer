@@ -1,5 +1,11 @@
 import { DefaultButton, Pivot, PivotItem, Stack } from "@fluentui/react";
-import { FullTextPolicy, VectorEmbedding, VectorEmbeddingPolicy, VectorIndex } from "Contracts/DataModels";
+import {
+  FullTextIndex,
+  FullTextPolicy,
+  VectorEmbedding,
+  VectorEmbeddingPolicy,
+  VectorIndex,
+} from "Contracts/DataModels";
 import {
   FullTextPoliciesComponent,
   getFullTextLanguageOptions,
@@ -24,6 +30,8 @@ export interface ContainerPolicyComponentProps {
   fullTextPolicyBaseline: FullTextPolicy;
   onFullTextPolicyChange: (newFullTextPolicy: FullTextPolicy) => void;
   onFullTextPolicyDirtyChange: (isFullTextPolicyDirty: boolean) => void;
+  onFullTextPolicyValidationChange: (isValid: boolean) => void;
+  fullTextIndexesBaseline?: FullTextIndex[];
   isFullTextSearchEnabled: boolean;
   shouldDiscardContainerPolicies: boolean;
   resetShouldDiscardContainerPolicyChange: () => void;
@@ -36,19 +44,20 @@ export const ContainerPolicyComponent: React.FC<ContainerPolicyComponentProps> =
   onVectorEmbeddingPolicyDirtyChange,
   onVectorEmbeddingPolicyValidationChange,
   vectorIndexes,
-  vectorIndexesBaseline,
   onVectorIndexesChange,
   isVectorSearchEnabled,
   fullTextPolicy,
   fullTextPolicyBaseline,
   onFullTextPolicyChange,
   onFullTextPolicyDirtyChange,
+  onFullTextPolicyValidationChange,
+  fullTextIndexesBaseline,
   isFullTextSearchEnabled,
   shouldDiscardContainerPolicies,
   resetShouldDiscardContainerPolicyChange,
 }) => {
   const [selectedTab, setSelectedTab] = React.useState<ContainerPolicyTabTypes>(
-    ContainerPolicyTabTypes.VectorPolicyTab,
+    isVectorSearchEnabled ? ContainerPolicyTabTypes.VectorPolicyTab : ContainerPolicyTabTypes.FullTextPolicyTab,
   );
   const [vectorEmbeddings, setVectorEmbeddings] = React.useState<VectorEmbedding[]>(
     vectorEmbeddingPolicy?.vectorEmbeddings ?? [],
@@ -79,7 +88,12 @@ export const ContainerPolicyComponent: React.FC<ContainerPolicyComponentProps> =
       setDiscardFullTextChanges(true);
       resetShouldDiscardContainerPolicyChange();
     }
-  });
+  }, [
+    shouldDiscardContainerPolicies,
+    vectorEmbeddingPolicyBaseline,
+    fullTextPolicyBaseline,
+    resetShouldDiscardContainerPolicyChange,
+  ]);
 
   const checkAndSendVectorEmbeddingPoliciesToSettings = (
     newVectorEmbeddings: VectorEmbedding[],
@@ -89,21 +103,18 @@ export const ContainerPolicyComponent: React.FC<ContainerPolicyComponentProps> =
     onVectorEmbeddingPolicyValidationChange(validationPassed);
     const isVectorDirty: boolean = isDirty(newVectorEmbeddings, vectorEmbeddingsBaseline);
     onVectorEmbeddingPolicyDirtyChange(isVectorDirty);
-    if (isVectorDirty) {
-      onVectorEmbeddingPolicyChange({ vectorEmbeddings: newVectorEmbeddings });
+    if (isDirty(newVectorEmbeddings, vectorEmbeddingPolicy?.vectorEmbeddings)) {
+      onVectorEmbeddingPolicyChange({ ...vectorEmbeddingPolicy, vectorEmbeddings: newVectorEmbeddings });
     }
-    if (isDirty(newVectorIndexes ?? [], vectorIndexesBaseline ?? [])) {
+    if (isDirty(newVectorIndexes ?? [], vectorIndexes ?? [])) {
       onVectorIndexesChange(newVectorIndexes);
     }
   };
 
-  const checkAndSendFullTextPolicyToSettings = (newFullTextPolicy: FullTextPolicy): void => {
-    if (isDirty(newFullTextPolicy, fullTextSearchPolicyBaseline)) {
-      onFullTextPolicyDirtyChange(true);
-      onFullTextPolicyChange(newFullTextPolicy);
-    } else {
-      resetShouldDiscardContainerPolicyChange();
-    }
+  const checkAndSendFullTextPolicyToSettings = (newFullTextPolicy: FullTextPolicy, validationPassed = true): void => {
+    onFullTextPolicyValidationChange(validationPassed);
+    onFullTextPolicyDirtyChange(isDirty(newFullTextPolicy, fullTextSearchPolicyBaseline));
+    onFullTextPolicyChange(newFullTextPolicy);
   };
 
   const onVectorChangesDiscarded = (): void => {
@@ -202,8 +213,11 @@ export const ContainerPolicyComponent: React.FC<ContainerPolicyComponentProps> =
               {fullTextSearchPolicy ? (
                 <FullTextPoliciesComponent
                   fullTextPolicy={fullTextSearchPolicy}
-                  onFullTextPathChange={(newFullTextPolicy: FullTextPolicy) =>
-                    checkAndSendFullTextPolicyToSettings(newFullTextPolicy)
+                  allowStopwordCustomization={true}
+                  isEditing={true}
+                  fullTextIndexes={fullTextIndexesBaseline}
+                  onFullTextPathChange={(newFullTextPolicy, _indexes, validationPassed) =>
+                    checkAndSendFullTextPolicyToSettings(newFullTextPolicy, validationPassed)
                   }
                   discardChanges={discardFullTextChanges}
                   onChangesDiscarded={onFullTextChangesDiscarded}
@@ -234,7 +248,7 @@ export const ContainerPolicyComponent: React.FC<ContainerPolicyComponentProps> =
                   }}
                   onClick={() => {
                     checkAndSendFullTextPolicyToSettings({
-                      defaultLanguage: getFullTextLanguageOptions()[0].key as never,
+                      defaultLanguage: String(getFullTextLanguageOptions()[0].key),
                       fullTextPaths: [],
                     });
                   }}

@@ -6,12 +6,23 @@ import {
   IStyleFunctionOrObject,
   ITextFieldStyleProps,
   ITextFieldStyles,
-  Label,
   Stack,
   TextField,
 } from "@fluentui/react";
+import { Checkbox } from "@fluentui/react-components";
 import { AccountOverride, FullTextIndex, FullTextPath, FullTextPolicy } from "Contracts/DataModels";
 import { CollapsibleSectionComponent } from "Explorer/Controls/CollapsiblePanel/CollapsibleSectionComponent";
+import {
+  fullTextLanguages,
+  getFullTextDefaultLanguage,
+  inheritFullTextPathAnalysis,
+  isFullTextPolicyValid,
+  isSupportedFullTextPolicy,
+  setFullTextDefaultLanguage,
+} from "Explorer/Controls/FullTextSeach/FullTextPolicyUtils";
+import { StopwordSettings } from "Explorer/Controls/FullTextSeach/StopwordSettings";
+import { CosmosFluentProvider } from "Explorer/Theme/ThemeUtil";
+import { t } from "Localization";
 import * as React from "react";
 import { isFullTextSearchPreviewFeaturesEnabled } from "Utils/CapabilityUtils";
 
@@ -26,20 +37,13 @@ export interface FullTextPoliciesComponentProps {
   onChangesDiscarded?: () => void;
   englishOnly?: boolean;
   targetAccountOverride?: AccountOverride;
+  allowStopwordCustomization?: boolean;
+  isEditing?: boolean;
+  fullTextIndexes?: FullTextIndex[];
 }
 
-export interface FullTextPolicyData {
-  path: string;
-  language: string;
-  pathError: string;
-}
-
-const labelStyles = {
-  root: {
-    fontSize: 12,
-    color: "var(--colorNeutralForeground1)",
-  },
-};
+const emptyPolicy: FullTextPolicy = { defaultLanguage: "en-US", fullTextPaths: [] };
+const emptyIndexes: FullTextIndex[] = [];
 
 const textFieldStyles: IStyleFunctionOrObject<ITextFieldStyleProps, ITextFieldStyles> = {
   fieldGroup: {
@@ -73,7 +77,7 @@ const textFieldStyles: IStyleFunctionOrObject<ITextFieldStyleProps, ITextFieldSt
 
 const dropdownStyles: Partial<IDropdownStyles> = {
   root: {
-    width: "40%",
+    width: "100%",
     marginTop: "10px",
     selectors: {
       "&:hover .ms-Dropdown-title": {
@@ -208,194 +212,288 @@ export const FullTextPoliciesComponent: React.FunctionComponent<FullTextPolicies
   onChangesDiscarded,
   englishOnly,
   targetAccountOverride,
+  allowStopwordCustomization = false,
+  isEditing = false,
+  fullTextIndexes = emptyIndexes,
 }): JSX.Element => {
-  const getFullTextPathError = (path: string, index?: number): string => {
-    let error = "";
-    if (!path) {
-      error = "Full text path should not be empty";
-    }
-    if (
-      index >= 0 &&
-      fullTextPathData?.find(
-        (fullTextPath: FullTextPolicyData, dataIndex: number) => dataIndex !== index && fullTextPath.path === path,
-      )
-    ) {
-      error = "Full text path is already defined";
-    }
-    return error;
-  };
-
-  const initializeData = (fullTextPolicy: FullTextPolicy): FullTextPolicyData[] => {
-    if (!fullTextPolicy) {
-      fullTextPolicy = { defaultLanguage: getFullTextLanguageOptions()[0].key as never, fullTextPaths: [] };
-    }
-
-    return fullTextPolicy.fullTextPaths.map((fullTextPath: FullTextPath) => ({
-      ...fullTextPath,
-      pathError: getFullTextPathError(fullTextPath.path),
-    }));
-  };
-
-  const [fullTextPathData, setFullTextPathData] = React.useState<FullTextPolicyData[]>(initializeData(fullTextPolicy));
-  const [defaultLanguage, setDefaultLanguage] = React.useState<string>(
-    fullTextPolicy
-      ? fullTextPolicy.defaultLanguage
-      : (getFullTextLanguageOptions(englishOnly, targetAccountOverride)[0].key as never),
-  );
+  const incomingPolicy = fullTextPolicy ?? emptyPolicy;
+  const [policy, setPolicy] = React.useState<FullTextPolicy>(incomingPolicy);
+  const initialPolicy = React.useRef(incomingPolicy);
+  const callbacks = React.useRef({ onFullTextPathChange, onChangesDiscarded });
+  callbacks.current = { onFullTextPathChange, onChangesDiscarded };
+  const canCustomize = allowStopwordCustomization && isFullTextSearchPreviewFeaturesEnabled(targetAccountOverride);
+  const supported = isSupportedFullTextPolicy(policy);
+  const hasCustomization =
+    policy.package === "standard" ||
+    policy.defaultSpec !== undefined ||
+    policy.fullTextPaths.some(
+      (path) =>
+        path.stopWordListKind !== undefined || path.addStopWords !== undefined || path.removeStopWords !== undefined,
+    );
+  const readOnly = !supported || (hasCustomization && !canCustomize);
+  const defaultsLocked = readOnly || (isEditing && fullTextIndexes.length > 0);
+  const defaultLanguage = getFullTextDefaultLanguage(policy);
+  const canToggleCustomization =
+    !isEditing &&
+    initialPolicy.current.defaultSpec === undefined &&
+    initialPolicy.current.package === undefined &&
+    initialPolicy.current.fullTextPaths.every((path) =>
+      Object.keys(path).every((key) => key === "path" || key === "language"),
+    );
 
   React.useEffect(() => {
-    propagateData();
-  }, [fullTextPathData, defaultLanguage]);
+    setPolicy(incomingPolicy);
+  }, [incomingPolicy]);
 
   React.useEffect(() => {
     if (discardChanges) {
-      setFullTextPathData(initializeData(fullTextPolicy));
-      setDefaultLanguage(fullTextPolicy.defaultLanguage);
-      onChangesDiscarded();
+      setPolicy(incomingPolicy);
+      callbacks.current.onChangesDiscarded?.();
     }
-  }, [discardChanges]);
+  }, [discardChanges, incomingPolicy]);
 
-  const propagateData = () => {
-    const newFullTextPolicy: FullTextPolicy = {
-      defaultLanguage: defaultLanguage,
-      fullTextPaths: fullTextPathData.map((policy: FullTextPolicyData) => ({
-        path: policy.path,
-        language: policy.language,
-      })),
-    };
-    const fullTextIndexes: FullTextIndex[] = fullTextPathData.map((policy) => ({
-      path: policy.path,
+  React.useEffect(() => {
+    callbacks.current.onFullTextPathChange(
+      policy,
+      isEditing ? fullTextIndexes : policy.fullTextPaths.map(({ path }) => ({ path })),
+      isFullTextPolicyValid(policy),
+    );
+  }, [policy, isEditing, fullTextIndexes, readOnly]);
+
+  const updatePath = (index: number, update: (path: FullTextPath) => FullTextPath): void =>
+    setPolicy((current) => ({
+      ...current,
+      fullTextPaths: current.fullTextPaths.map((path, pathIndex) => (pathIndex === index ? update(path) : path)),
     }));
-    const validationPassed = fullTextPathData.every((policy: FullTextPolicyData) => policy.pathError === "");
-    onFullTextPathChange(newFullTextPolicy, fullTextIndexes, validationPassed);
-  };
 
-  const onFullTextPathValueChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value.trim();
-    const fullTextPaths = [...fullTextPathData];
-    if (!fullTextPaths[index]?.path && !value.startsWith("/")) {
-      fullTextPaths[index].path = "/" + value;
-    } else {
-      fullTextPaths[index].path = value;
+  const languageOptions = (currentLanguage: string): IDropdownOption[] => {
+    const options = getFullTextLanguageOptions(englishOnly, targetAccountOverride);
+    if (!options.some((option) => option.key === currentLanguage)) {
+      options.push({ key: currentLanguage, text: currentLanguage, disabled: true });
     }
-    fullTextPaths[index].pathError = getFullTextPathError(value, index);
-    setFullTextPathData(fullTextPaths);
-  };
-
-  const onFullTextPathPolicyChange = (index: number, option: IDropdownOption): void => {
-    const policies = [...fullTextPathData];
-    policies[index].language = option.key as never;
-    setFullTextPathData(policies);
-  };
-
-  const onAdd = () => {
-    setFullTextPathData([
-      ...fullTextPathData,
-      {
-        path: "",
-        language: defaultLanguage,
-        pathError: getFullTextPathError(""),
-      },
-    ]);
-  };
-
-  const onDelete = (index: number) => {
-    const policies = fullTextPathData.filter((_uniqueKey, j) => index !== j);
-    setFullTextPathData(policies);
+    return options;
   };
 
   return (
-    <Stack tokens={{ childrenGap: 4 }}>
-      <Stack style={{ marginBottom: 10 }}>
-        <Label styles={labelStyles}>Default language</Label>
-        <Dropdown
-          required={true}
-          styles={dropdownStyles}
-          options={getFullTextLanguageOptions(englishOnly, targetAccountOverride)}
-          selectedKey={defaultLanguage}
-          onChange={(_event: React.FormEvent<HTMLDivElement>, option: IDropdownOption) =>
-            setDefaultLanguage(option.key as never)
-          }
-        ></Dropdown>
-      </Stack>
-      {fullTextPathData &&
-        fullTextPathData.length > 0 &&
-        fullTextPathData.map((fullTextPolicy: FullTextPolicyData, index: number) => (
-          <CollapsibleSectionComponent
-            key={index}
-            isExpandedByDefault={true}
-            title={`Full text path ${index + 1}`}
-            showDelete={true}
-            onDelete={() => onDelete(index)}
-          >
-            <Stack horizontal tokens={{ childrenGap: 4 }}>
-              <Stack
-                styles={{
-                  root: {
-                    margin: "0 0 6px 20px !important",
-                    paddingLeft: 20,
-                    width: "80%",
-                    borderLeft: "1px solid",
+    <CosmosFluentProvider>
+      <Stack tokens={{ childrenGap: 4 }}>
+        {readOnly && (
+          <div role="status">{t(supported ? "fullTextPolicy.capabilityRequired" : "fullTextPolicy.unsupported")}</div>
+        )}
+        <Stack style={{ marginBottom: 10 }}>
+          <Dropdown
+            label={t("fullTextPolicy.defaultLanguage")}
+            required={true}
+            disabled={defaultsLocked}
+            styles={dropdownStyles}
+            options={languageOptions(defaultLanguage)}
+            selectedKey={defaultLanguage}
+            onChange={(_event, option) => {
+              if (option && typeof option.key === "string") {
+                setPolicy((current) => setFullTextDefaultLanguage(current, option.key.toString()));
+              }
+            }}
+          ></Dropdown>
+        </Stack>
+        {canCustomize && canToggleCustomization && (
+          <Checkbox
+            label={t("fullTextPolicy.customize")}
+            checked={policy.package === "standard"}
+            disabled={readOnly}
+            onChange={(_event, data) => {
+              if (data.checked === true) {
+                setPolicy((current) => ({
+                  ...current,
+                  package: "standard",
+                  defaultSpec: {
+                    language: getFullTextDefaultLanguage(current),
+                    stopWordListKind: "basic",
+                    tokenizer: "word",
+                    filters: ["lowercase", "stop"],
                   },
-                }}
-              >
-                <Stack>
-                  <Label styles={labelStyles}>Path</Label>
-                  <TextField
-                    id={`full-text-policy-path-${index + 1}`}
-                    required={true}
-                    placeholder="/fullTextPath1"
-                    styles={textFieldStyles}
-                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => onFullTextPathValueChange(index, event)}
-                    value={fullTextPolicy.path || ""}
-                    errorMessage={fullTextPolicy.pathError}
-                  />
-                </Stack>
-                <Stack>
-                  <Label styles={labelStyles}>Language</Label>
-                  <Dropdown
-                    required={true}
-                    styles={dropdownStyles}
-                    options={getFullTextLanguageOptions(englishOnly, targetAccountOverride)}
-                    selectedKey={fullTextPolicy.language}
-                    onChange={(_event: React.FormEvent<HTMLDivElement>, option: IDropdownOption) =>
-                      onFullTextPathPolicyChange(index, option)
-                    }
-                  ></Dropdown>
+                  fullTextPaths: current.fullTextPaths.map((path) =>
+                    path.language === getFullTextDefaultLanguage(current) &&
+                    Object.keys(path).every((key) => key === "path" || key === "language")
+                      ? { path: path.path }
+                      : path,
+                  ),
+                }));
+              } else {
+                setPolicy((current) => {
+                  const language = getFullTextDefaultLanguage(current);
+                  const next = {
+                    ...current,
+                    defaultLanguage: language,
+                    fullTextPaths: current.fullTextPaths.map((path) => {
+                      const legacyPath = { ...inheritFullTextPathAnalysis(path), language: path.language ?? language };
+                      delete legacyPath.tokenizer;
+                      delete legacyPath.filters;
+                      return legacyPath;
+                    }),
+                  };
+                  delete next.package;
+                  delete next.defaultSpec;
+                  return next;
+                });
+              }
+            }}
+          />
+        )}
+        {canCustomize && (isEditing || policy.package === "standard") && (
+          <>
+            {!isEditing && <div>{t("fullTextPolicy.customizeDescription")}</div>}
+            {defaultsLocked && !readOnly && <div role="status">{t("fullTextPolicy.defaultLocked")}</div>}
+            <StopwordSettings
+              label={t("fullTextPolicy.defaultStopwords")}
+              language={defaultLanguage}
+              packageName={policy.package}
+              spec={{ ...policy.defaultSpec, language: defaultLanguage }}
+              disabled={defaultsLocked}
+              onChange={(defaultSpec) => setPolicy((current) => ({ ...current, defaultSpec }))}
+            />
+          </>
+        )}
+        {policy.fullTextPaths.map((path, index) => {
+          const pathLocked = readOnly || (isEditing && fullTextIndexes.some((entry) => entry.path === path.path));
+          const inherited = path.language === undefined;
+          const pathError = !path.path.trim()
+            ? t("fullTextPolicy.pathRequired")
+            : policy.fullTextPaths.some((entry, entryIndex) => entryIndex !== index && entry.path === path.path)
+            ? t("fullTextPolicy.pathDuplicate")
+            : undefined;
+          return (
+            <CollapsibleSectionComponent
+              key={index}
+              isExpandedByDefault={true}
+              title={t("fullTextPolicy.pathTitle", { index: index + 1 })}
+              showDelete={!pathLocked}
+              deleteLabel={t("fullTextPolicy.deletePath", { index: index + 1 })}
+              onDelete={() =>
+                setPolicy((current) => ({
+                  ...current,
+                  fullTextPaths: current.fullTextPaths.filter((_path, pathIndex) => pathIndex !== index),
+                }))
+              }
+            >
+              <Stack horizontal tokens={{ childrenGap: 4 }}>
+                <Stack
+                  styles={{
+                    root: {
+                      margin: "0 0 6px 20px !important",
+                      paddingLeft: 20,
+                      width: "80%",
+                      borderLeft: "1px solid",
+                    },
+                  }}
+                >
+                  {pathLocked && !readOnly && <div role="status">{t("fullTextPolicy.pathLocked")}</div>}
+                  <Stack>
+                    <TextField
+                      label={t("fullTextPolicy.path")}
+                      ariaLabel={t("fullTextPolicy.path")}
+                      id={`full-text-policy-path-${index + 1}`}
+                      required={true}
+                      disabled={pathLocked}
+                      placeholder="/fullTextPath1"
+                      styles={textFieldStyles}
+                      onChange={(_event, value) =>
+                        updatePath(index, (current) => {
+                          const next = (value ?? "").trim();
+                          return {
+                            ...current,
+                            path: !current.path && next.length > 0 && !next.startsWith("/") ? `/${next}` : next,
+                          };
+                        })
+                      }
+                      value={path.path}
+                      errorMessage={pathError}
+                    />
+                  </Stack>
+                  {canCustomize && (isEditing || policy.package === "standard") && (
+                    <Checkbox
+                      label={t("fullTextPolicy.inherit")}
+                      disabled={pathLocked}
+                      checked={inherited}
+                      onChange={(_event, data) =>
+                        updatePath(index, (current) =>
+                          data.checked === true
+                            ? inheritFullTextPathAnalysis(current)
+                            : { ...current, language: defaultLanguage },
+                        )
+                      }
+                    />
+                  )}
+                  <Stack>
+                    <Dropdown
+                      label={t("fullTextPolicy.language")}
+                      disabled={pathLocked || inherited}
+                      styles={dropdownStyles}
+                      options={languageOptions(path.language ?? defaultLanguage)}
+                      selectedKey={path.language ?? defaultLanguage}
+                      onChange={(_event, option) => {
+                        if (option && typeof option.key === "string") {
+                          updatePath(index, (current) => ({ ...current, language: option.key.toString() }));
+                        }
+                      }}
+                    ></Dropdown>
+                  </Stack>
+                  {canCustomize && !inherited && (isEditing || policy.package === "standard") && (
+                    <StopwordSettings
+                      label={t("fullTextPolicy.pathStopwords", { path: path.path })}
+                      language={path.language}
+                      packageName={policy.package}
+                      spec={path}
+                      inheritedFilters={policy.defaultSpec?.filters}
+                      disabled={pathLocked}
+                      onChange={(spec) => updatePath(index, (current) => ({ ...spec, path: current.path }))}
+                    />
+                  )}
                 </Stack>
               </Stack>
-            </Stack>
-          </CollapsibleSectionComponent>
-        ))}
-      <DefaultButton
-        id={`add-vector-policy`}
-        styles={{
-          root: {
-            maxWidth: 170,
-            fontSize: 12,
-            color: "var(--colorNeutralForeground1)",
-            backgroundColor: "transparent",
-            borderColor: "var(--colorNeutralStroke1)",
-          },
-          rootHovered: {
-            color: "var(--colorNeutralForeground1)",
-            backgroundColor: "transparent",
-            borderColor: "var(--colorNeutralForeground1)",
-          },
-          rootPressed: {
-            color: "var(--colorNeutralForeground1)",
-            backgroundColor: "transparent",
-            borderColor: "var(--colorNeutralForeground1)",
-          },
-          rootDisabled: {
-            backgroundColor: "transparent",
-          },
-        }}
-        onClick={onAdd}
-      >
-        Add full text path
-      </DefaultButton>
-    </Stack>
+            </CollapsibleSectionComponent>
+          );
+        })}
+        <DefaultButton
+          id="add-full-text-policy"
+          disabled={readOnly}
+          styles={{
+            root: {
+              maxWidth: 170,
+              fontSize: 12,
+              color: "var(--colorNeutralForeground1)",
+              backgroundColor: "transparent",
+              borderColor: "var(--colorNeutralStroke1)",
+            },
+            rootHovered: {
+              color: "var(--colorNeutralForeground1)",
+              backgroundColor: "transparent",
+              borderColor: "var(--colorNeutralForeground1)",
+            },
+            rootPressed: {
+              color: "var(--colorNeutralForeground1)",
+              backgroundColor: "transparent",
+              borderColor: "var(--colorNeutralForeground1)",
+            },
+            rootDisabled: {
+              backgroundColor: "transparent",
+            },
+          }}
+          onClick={() =>
+            setPolicy((current) => ({
+              ...current,
+              fullTextPaths: [
+                ...current.fullTextPaths,
+                current.package === "standard"
+                  ? { path: "" }
+                  : { path: "", language: getFullTextDefaultLanguage(current) },
+              ],
+            }))
+          }
+        >
+          {t("fullTextPolicy.addPath")}
+        </DefaultButton>
+      </Stack>
+    </CosmosFluentProvider>
   );
 };
 
@@ -405,28 +503,7 @@ export const getFullTextLanguageOptions = (
 ): IDropdownOption[] => {
   const multiLanguageSupportEnabled: boolean =
     isFullTextSearchPreviewFeaturesEnabled(targetAccountOverride) && !englishOnly;
-  const fullTextLanguageOptions: IDropdownOption[] = [
-    {
-      key: "en-US",
-      text: "English (US)",
-    },
-    ...(multiLanguageSupportEnabled
-      ? [
-          {
-            key: "fr-FR",
-            text: "French",
-          },
-          {
-            key: "de-DE",
-            text: "German",
-          },
-          {
-            key: "es-ES",
-            text: "Spanish",
-          },
-        ]
-      : []),
-  ];
-
-  return fullTextLanguageOptions;
+  return fullTextLanguages
+    .filter((language) => language.value === "en-US" || multiLanguageSupportEnabled)
+    .map(({ value, label }) => ({ key: value, text: t(`fullTextPolicy.${label}`) }));
 };

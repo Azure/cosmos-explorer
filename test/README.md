@@ -152,6 +152,47 @@ The UI allows you to select a specific test to run and to see the results of the
 
 See the [Playwright docs](https://playwright.dev/docs/running-tests) for more information on running tests.
 
+### Full-text stopword localhost acceptance
+
+`sql\fullTextStopwords.spec.ts` is opt-in and uses an **existing provisioned-throughput
+NoSQL database** on an account with `EnableNoSQLFullTextSearch` and
+`EnableNoSQLFullTextSearchPreviewFeatures`. Supply `FULL_TEXT_TEST_ACCOUNT`,
+`FULL_TEXT_TEST_DATABASE`, `FULL_TEXT_TEST_SUBSCRIPTION`, `FULL_TEXT_TEST_RESOURCE_GROUP`,
+`FULL_TEXT_TEST_TENANT`, and optionally `FULL_TEXT_TEST_ORIGIN` (default
+`https://localhost:1234`). Supply short-lived `FULL_TEXT_TEST_ARM_TOKEN` and
+`FULL_TEXT_TEST_DATA_TOKEN` in the process environment, never a committed file or URL.
+The data token needs a Cosmos data role scoped to the test database; ARM needs permission
+to create, update, and delete test containers.
+
+The spec creates one uniquely named 400 RU/s container, exercises the real Portal
+test harness, checks all seven language options, policy persistence, indexed locks,
+invalid input, Save/Discard, uploads synthetic items, and verifies query results.
+It deletes only that container and verifies removal. It never creates or deletes the
+database/account or changes network access. Approve network access separately and
+revoke temporary access after testing.
+
+Run `npx playwright test test\sql\fullTextStopwords.spec.ts --project "Microsoft Edge"`.
+For a nondefault localhost port, use a local Playwright config pointing at the running
+server rather than starting/reusing an unrelated server. The spec keeps browser security
+enabled and disables traces/video to avoid recording tokens. Sanitized screenshots and
+query-result attachments contain only synthetic test data.
+
+Configuration round trips do not prove query semantics: a failure in the second test
+must be reported separately from configuration acceptance, never replaced with a
+mocked response or weaker assertion.
+
+The Portal harness does not cover Hosted Entra sign-in. To validate that separately,
+run the dev server on **port 1234** and open `https://localhost:1234/hostedExplorer.html`.
+The development sign-in bridge redirects to `https://localhost:1234/redirectBridge.html`;
+a server on another port cannot complete that flow. Use real sign-in, directory,
+subscription, and account selection, then verify create, indexed locks, invalid
+input, Save/Discard, a full browser reload, and policy preservation during an unrelated
+Settings update. Do not substitute injected tokens or fabricated account capabilities.
+
+Verify modern policy fields with raw ARM JSON. Older typed management clients,
+including `az cosmosdb sql container show`, may omit fields unknown to their models
+even when the service preserved them.
+
 ### Testing with Data Plane RBAC Authentication
 
 By default, the tests will use key based authentication to access the database accounts. For APIs that support data plane RBAC, the

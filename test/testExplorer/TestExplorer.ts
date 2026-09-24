@@ -4,13 +4,33 @@ import { DataExplorerInputsFrame } from "../../src/Contracts/ViewModels";
 import { updateUserContext } from "../../src/UserContext";
 import { get, listKeys } from "../../src/Utils/arm/generatedClients/cosmos/databaseAccounts";
 
+interface LocalTestExplorerConfig {
+  accountName: string;
+  resourceGroup: string;
+  subscriptionId: string;
+  tenantId: string;
+  authorizationToken: string;
+  aadToken?: string;
+  iframeSrc?: string;
+}
+
+declare global {
+  interface Window {
+    cosmosExplorerTestConfig?: LocalTestExplorerConfig;
+  }
+}
+
+const localConfig = window.cosmosExplorerTestConfig;
 const urlSearchParams = new URLSearchParams(window.location.search);
-const resourceGroup = urlSearchParams.get("resourceGroup") || process.env.RESOURCE_GROUP || "";
-const subscriptionId = urlSearchParams.get("subscriptionId") || process.env.SUBSCRIPTION_ID || "";
-const accountName = urlSearchParams.get("accountName") || "portal-sql-runner-west-us";
+const resourceGroup =
+  localConfig?.resourceGroup || urlSearchParams.get("resourceGroup") || process.env.RESOURCE_GROUP || "";
+const subscriptionId =
+  localConfig?.subscriptionId || urlSearchParams.get("subscriptionId") || process.env.SUBSCRIPTION_ID || "";
+const accountName = localConfig?.accountName || urlSearchParams.get("accountName") || "portal-sql-runner-west-us";
 const selfServeType = urlSearchParams.get("selfServeType") || "example";
-const iframeSrc = urlSearchParams.get("iframeSrc") || "explorer.html?platform=Portal&disablePortalInitCache";
-const authToken = urlSearchParams.get("token");
+const iframeSrc =
+  localConfig?.iframeSrc || urlSearchParams.get("iframeSrc") || "explorer.html?platform=Portal&disablePortalInitCache";
+const authToken = localConfig?.authorizationToken || urlSearchParams.get("token");
 const enablecontainercopy = urlSearchParams.get("enablecontainercopy");
 
 const nosqlRbacToken =
@@ -29,7 +49,7 @@ const mongoRbacToken = urlSearchParams.get("mongoRbacToken") || process.env.MONG
 const mongo32RbacToken = urlSearchParams.get("mongo32RbacToken") || process.env.MONGO32_TESTACCOUNT_TOKEN || "";
 const mongoReadOnlyRbacToken =
   urlSearchParams.get("mongoReadOnlyRbacToken") || process.env.MONGO_READONLY_TESTACCOUNT_TOKEN || "";
-const tenantId = urlSearchParams.get("tenantId") || process.env.AZURE_TENANT_ID || "";
+const tenantId = localConfig?.tenantId || urlSearchParams.get("tenantId") || process.env.AZURE_TENANT_ID || "";
 
 const initTestExplorer = async (): Promise<void> => {
   updateUserContext({
@@ -68,15 +88,16 @@ const initTestExplorer = async (): Promise<void> => {
       break;
   }
 
+  rbacToken = localConfig?.aadToken || rbacToken;
   if (rbacToken.length > 0) {
     updateUserContext({
       dataPlaneRbacEnabled: true,
     });
-  } else {
-    console.error(`No RBAC token found for test account type ${testAccountType}`);
+  } else if (databaseAccount.properties.disableLocalAuth) {
+    throw new Error("An Entra data-plane token is required for this key-disabled test account.");
   }
 
-  const keys = await listKeys(subscriptionId, resourceGroup, accountName);
+  const keys = rbacToken ? undefined : await listKeys(subscriptionId, resourceGroup, accountName);
 
   // Disable the quickstart carousel.
   if (databaseAccount?.id) {
@@ -103,7 +124,7 @@ const initTestExplorer = async (): Promise<void> => {
       subscriptionType: 3,
       quotaId: "Internal_2014-09-01",
       isTryCosmosDBSubscription: false,
-      masterKey: keys.primaryMasterKey,
+      masterKey: keys?.primaryMasterKey,
       loadDatabaseAccountTimestamp: 1604663109836,
       dataExplorerVersion: "1.0.1",
       sharedThroughputMinimum: 400,
@@ -125,7 +146,6 @@ const initTestExplorer = async (): Promise<void> => {
     (event) => {
       // After we have received the "ready" message from the child iframe we can post configuration
       // This simulates the same action that happens in the portal
-      console.dir(event.data);
       if (event.data?.kind === "ready") {
         if (!iframe.contentWindow || !iframe.contentDocument) {
           throw new Error("iframe is not loaded");
