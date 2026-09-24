@@ -62,6 +62,15 @@ const useStyles = makeStyles({
       whiteSpace: "normal",
       overflowWrap: "anywhere",
     },
+    "& .fui-Textarea__textarea:disabled": {
+      color: tokens.colorNeutralForeground2,
+    },
+    "& .fui-Dropdown__button:disabled": {
+      color: tokens.colorNeutralForeground2,
+    },
+    "& .fui-Checkbox__input:disabled ~ .fui-Checkbox__label": {
+      color: tokens.colorNeutralForeground2,
+    },
     "& .collapsibleSection": {
       marginTop: tokens.spacingVerticalM,
     },
@@ -69,6 +78,9 @@ const useStyles = makeStyles({
 });
 
 const textFieldStyles: IStyleFunctionOrObject<ITextFieldStyleProps, ITextFieldStyles> = {
+  subComponentStyles: {
+    label: { root: { color: "var(--colorNeutralForeground1)" } },
+  },
   fieldGroup: {
     height: 27,
     backgroundColor: "var(--colorNeutralBackground2)",
