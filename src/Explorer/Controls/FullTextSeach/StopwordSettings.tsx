@@ -1,4 +1,4 @@
-import { Checkbox, Dropdown, Field, Option, Textarea } from "@fluentui/react-components";
+import { Checkbox, Dropdown, Field, makeStyles, Option, Textarea, tokens, useId } from "@fluentui/react-components";
 import { FullTextAnalysisSpec } from "Contracts/DataModels";
 import { getStopwordPresets, getStopwordValidationError } from "Explorer/Controls/FullTextSeach/FullTextPolicyUtils";
 import { t } from "Localization";
@@ -15,6 +15,34 @@ interface StopwordSettingsProps {
   onChange: (spec: FullTextAnalysisSpec) => void;
 }
 
+const useStyles = makeStyles({
+  root: {
+    minWidth: 0,
+    display: "grid",
+    rowGap: tokens.spacingVerticalM,
+  },
+  heading: {
+    fontWeight: tokens.fontWeightSemibold,
+    fontSize: tokens.fontSizeBase300,
+    lineHeight: tokens.lineHeightBase300,
+  },
+  introduction: {
+    display: "grid",
+    rowGap: tokens.spacingVerticalXS,
+  },
+  wordLists: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 200px), 1fr))",
+    gap: tokens.spacingHorizontalL,
+    minWidth: 0,
+  },
+  hint: {
+    color: tokens.colorNeutralForeground2,
+    fontSize: tokens.fontSizeBase200,
+    lineHeight: tokens.lineHeightBase200,
+  },
+});
+
 export const StopwordSettings = ({
   label,
   description,
@@ -25,6 +53,8 @@ export const StopwordSettings = ({
   disabled,
   onChange,
 }: StopwordSettingsProps): JSX.Element => {
+  const styles = useStyles();
+  const formatHintId = useId("stopword-format");
   const error = getStopwordValidationError(spec, packageName);
   const addedWordsInvalid =
     !disabled && getStopwordValidationError({ ...spec, removeStopWords: undefined }, packageName) === "invalidWord";
@@ -44,13 +74,30 @@ export const StopwordSettings = ({
         return preset;
     }
   };
+  const presetDescription = (): string | undefined => {
+    if (!filteringEnabled) {
+      return undefined;
+    }
+    switch (spec.stopWordListKind) {
+      case "none":
+        return t("fullTextPolicy.noneDescription");
+      case "basic":
+        return t("fullTextPolicy.basicDescription");
+      case "extended":
+        return t("fullTextPolicy.extendedDescription");
+      default:
+        return !disabled ? t("fullTextPolicy.selectListHint") : undefined;
+    }
+  };
   const updateWords = (field: "addStopWords" | "removeStopWords", value: string): void =>
     onChange({ ...spec, language, [field]: value === "" ? [] : value.split(/\r?\n/) });
 
   return (
-    <div role="group" aria-label={label} style={{ minWidth: 0, display: "grid", gap: 8 }}>
-      <div style={{ paddingTop: 8, fontWeight: 600 }}>{label}</div>
-      {description && <div style={{ color: "var(--colorNeutralForeground2)" }}>{description}</div>}
+    <div role="group" aria-label={label} className={styles.root}>
+      <div className={styles.introduction}>
+        <div className={styles.heading}>{label}</div>
+        {description && <div className={styles.hint}>{description}</div>}
+      </div>
       {packageName === "standard" && (
         <Checkbox
           label={t("fullTextPolicy.enableStopFilter")}
@@ -70,14 +117,7 @@ export const StopwordSettings = ({
         />
       )}
       {!filteringEnabled && <div role="status">{t("fullTextPolicy.stopFilterDisabled")}</div>}
-      <Field
-        label={t("fullTextPolicy.preset")}
-        hint={
-          !disabled && filteringEnabled && spec.stopWordListKind === undefined
-            ? t("fullTextPolicy.selectListHint")
-            : undefined
-        }
-      >
+      <Field label={t("fullTextPolicy.preset")} hint={presetDescription()}>
         <Dropdown
           style={{ minWidth: 0, width: "100%" }}
           disabled={disabled || !filteringEnabled}
@@ -108,37 +148,47 @@ export const StopwordSettings = ({
           ))}
         </Dropdown>
       </Field>
-      <Field
-        label={t("fullTextPolicy.addedWords")}
-        hint={t("fullTextPolicy.wordsHint")}
-        validationState={addedWordsInvalid ? "error" : "none"}
-        validationMessage={addedWordsInvalid ? { children: t("fullTextPolicy.invalidWord"), role: "alert" } : undefined}
-      >
-        <Textarea
-          style={{ width: "100%" }}
-          resize="vertical"
-          rows={3}
-          disabled={disabled || !filteringEnabled || spec.stopWordListKind === undefined}
-          value={(spec.addStopWords ?? []).join("\n")}
-          onChange={(_event, data) => updateWords("addStopWords", data.value)}
-        />
-      </Field>
-      <Field
-        label={t("fullTextPolicy.removedWords")}
-        validationState={removedWordsInvalid ? "error" : "none"}
-        validationMessage={
-          removedWordsInvalid ? { children: t("fullTextPolicy.invalidWord"), role: "alert" } : undefined
-        }
-      >
-        <Textarea
-          style={{ width: "100%" }}
-          resize="vertical"
-          rows={3}
-          disabled={disabled || !filteringEnabled || spec.stopWordListKind === undefined}
-          value={(spec.removeStopWords ?? []).join("\n")}
-          onChange={(_event, data) => updateWords("removeStopWords", data.value)}
-        />
-      </Field>
+      <div className={styles.wordLists}>
+        <Field
+          label={t("fullTextPolicy.addedWords")}
+          hint={t("fullTextPolicy.addedWordsDescription")}
+          validationState={addedWordsInvalid ? "error" : "none"}
+          validationMessage={
+            addedWordsInvalid ? { children: t("fullTextPolicy.invalidWord"), role: "alert" } : undefined
+          }
+        >
+          <Textarea
+            style={{ width: "100%" }}
+            resize="vertical"
+            rows={2}
+            aria-describedby={formatHintId}
+            disabled={disabled || !filteringEnabled || spec.stopWordListKind === undefined}
+            value={(spec.addStopWords ?? []).join("\n")}
+            onChange={(_event, data) => updateWords("addStopWords", data.value)}
+          />
+        </Field>
+        <Field
+          label={t("fullTextPolicy.removedWords")}
+          hint={t("fullTextPolicy.removedWordsDescription")}
+          validationState={removedWordsInvalid ? "error" : "none"}
+          validationMessage={
+            removedWordsInvalid ? { children: t("fullTextPolicy.invalidWord"), role: "alert" } : undefined
+          }
+        >
+          <Textarea
+            style={{ width: "100%" }}
+            resize="vertical"
+            rows={2}
+            aria-describedby={formatHintId}
+            disabled={disabled || !filteringEnabled || spec.stopWordListKind === undefined}
+            value={(spec.removeStopWords ?? []).join("\n")}
+            onChange={(_event, data) => updateWords("removeStopWords", data.value)}
+          />
+        </Field>
+      </div>
+      <div id={formatHintId} className={styles.hint}>
+        {t("fullTextPolicy.wordsHint")}
+      </div>
       {!disabled && error && error !== "invalidWord" && (
         <div role="alert" style={{ color: "var(--colorPaletteRedForeground1)" }}>
           {t(`fullTextPolicy.${error}`)}

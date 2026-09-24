@@ -209,7 +209,7 @@ export const ContainerPolicyComponent: React.FC<ContainerPolicyComponentProps> =
             style={{ marginTop: 20, color: "var(--colorNeutralForeground1)" }}
             headerText={t(Keys.controls.settings.containerPolicy.fullTextPolicy)}
           >
-            <Stack {...titleAndInputStackProps} styles={{ root: { position: "relative", maxWidth: "400px" } }}>
+            <Stack {...titleAndInputStackProps} styles={{ root: { position: "relative", maxWidth: "640px" } }}>
               {fullTextSearchPolicy ? (
                 <FullTextPoliciesComponent
                   fullTextPolicy={fullTextSearchPolicy}

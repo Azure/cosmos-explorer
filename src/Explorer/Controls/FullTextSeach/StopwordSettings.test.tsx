@@ -78,14 +78,41 @@ describe("stopword design guidance", () => {
       expect(added).toHaveAccessibleDescription(
         addedInvalid
           ? /Stopwords cannot contain whitespace, punctuation, or control characters\./
-          : "Enter one word per line. Words cannot contain whitespace, punctuation, or control characters.",
+          : "Also ignore these words. Enter one word per line. Words cannot contain whitespace, punctuation, or control characters.",
       );
       expect(removed).toHaveAccessibleDescription(
-        removedInvalid ? "Stopwords cannot contain whitespace, punctuation, or control characters." : "",
+        removedInvalid
+          ? /Stopwords cannot contain whitespace, punctuation, or control characters\./
+          : "Keep these words even if they are in the stopword list. Enter one word per line. Words cannot contain whitespace, punctuation, or control characters.",
       );
       expect(screen.queryAllByRole("alert")).toHaveLength(Number(addedInvalid) + Number(removedInvalid));
     },
   );
+
+  it.each([
+    ["none", "No built-in stopwords. Only your additional stopwords are ignored."],
+    ["basic", "Uses the built-in stopword list for this language."],
+    ["extended", "Uses the legacy English stopword list."],
+  ])("explains the %s preset without changing the policy", (stopWordListKind, description) => {
+    const onChange = jest.fn();
+    render(
+      <StopwordSettings
+        label="Default stopwords"
+        language="en-US"
+        packageName={stopWordListKind === "extended" ? "legacy" : "standard"}
+        spec={{ ...spec, stopWordListKind }}
+        disabled={false}
+        onChange={onChange}
+      />,
+    );
+    expect(screen.getByRole("combobox", { name: "Stopword list" })).toHaveAccessibleDescription(description);
+    expect(
+      screen.getAllByText(
+        "Enter one word per line. Words cannot contain whitespace, punctuation, or control characters.",
+      ),
+    ).toHaveLength(1);
+    expect(onChange).not.toHaveBeenCalled();
+  });
 
   it("does not mark locked values invalid or change serialization", () => {
     const onChange = jest.fn();
