@@ -9,7 +9,7 @@ import {
   Stack,
   TextField,
 } from "@fluentui/react";
-import { Checkbox, useId } from "@fluentui/react-components";
+import { Checkbox, makeStyles, tokens, useId } from "@fluentui/react-components";
 import { AccountOverride, FullTextIndex, FullTextPath, FullTextPolicy } from "Contracts/DataModels";
 import { CollapsibleSectionComponent } from "Explorer/Controls/CollapsiblePanel/CollapsibleSectionComponent";
 import {
@@ -44,6 +44,29 @@ export interface FullTextPoliciesComponentProps {
 
 const emptyPolicy: FullTextPolicy = { defaultLanguage: "en-US", fullTextPaths: [] };
 const emptyIndexes: FullTextIndex[] = [];
+
+const useStyles = makeStyles({
+  editor: {
+    minWidth: 0,
+    "& .fui-Field__label": {
+      paddingLeft: 0,
+      paddingRight: 0,
+      whiteSpace: "normal",
+    },
+    "& .fui-Checkbox": {
+      maxWidth: "100%",
+      minWidth: 0,
+    },
+    "& .fui-Checkbox__label": {
+      minWidth: 0,
+      whiteSpace: "normal",
+      overflowWrap: "anywhere",
+    },
+    "& .collapsibleSection": {
+      marginTop: tokens.spacingVerticalM,
+    },
+  },
+});
 
 const textFieldStyles: IStyleFunctionOrObject<ITextFieldStyleProps, ITextFieldStyles> = {
   fieldGroup: {
@@ -216,6 +239,7 @@ export const FullTextPoliciesComponent: React.FunctionComponent<FullTextPolicies
   isEditing = false,
   fullTextIndexes = emptyIndexes,
 }): JSX.Element => {
+  const styles = useStyles();
   const pathDescriptionId = useId("full-text-path-description");
   const incomingPolicy = fullTextPolicy ?? emptyPolicy;
   const [policy, setPolicy] = React.useState<FullTextPolicy>(incomingPolicy);
@@ -276,7 +300,7 @@ export const FullTextPoliciesComponent: React.FunctionComponent<FullTextPolicies
   };
 
   return (
-    <CosmosFluentProvider>
+    <CosmosFluentProvider className={styles.editor}>
       <Stack tokens={{ childrenGap: 4 }}>
         {readOnly && (
           <div role="status">{t(supported ? "fullTextPolicy.capabilityRequired" : "fullTextPolicy.unsupported")}</div>
@@ -381,10 +405,11 @@ export const FullTextPoliciesComponent: React.FunctionComponent<FullTextPolicies
                 <Stack
                   styles={{
                     root: {
-                      margin: "0 0 6px 20px !important",
-                      paddingLeft: 20,
-                      width: "80%",
-                      borderLeft: "1px solid",
+                      margin: "0 0 12px 12px !important",
+                      paddingLeft: 12,
+                      flex: 1,
+                      minWidth: 0,
+                      borderLeft: "1px solid var(--colorNeutralStroke2)",
                     },
                   }}
                 >
