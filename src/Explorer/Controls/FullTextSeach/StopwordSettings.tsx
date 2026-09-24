@@ -26,6 +26,10 @@ export const StopwordSettings = ({
   onChange,
 }: StopwordSettingsProps): JSX.Element => {
   const error = getStopwordValidationError(spec, packageName);
+  const addedWordsInvalid =
+    !disabled && getStopwordValidationError({ ...spec, removeStopWords: undefined }, packageName) === "invalidWord";
+  const removedWordsInvalid =
+    !disabled && getStopwordValidationError({ ...spec, addStopWords: undefined }, packageName) === "invalidWord";
   const effectiveFilters = spec.filters ?? (spec.tokenizer === undefined ? inheritedFilters : undefined) ?? [];
   const filteringEnabled = packageName !== "standard" || effectiveFilters.includes("stop");
   const presetLabel = (preset: string): string => {
@@ -104,7 +108,12 @@ export const StopwordSettings = ({
           ))}
         </Dropdown>
       </Field>
-      <Field label={t("fullTextPolicy.addedWords")} hint={t("fullTextPolicy.wordsHint")}>
+      <Field
+        label={t("fullTextPolicy.addedWords")}
+        hint={t("fullTextPolicy.wordsHint")}
+        validationState={addedWordsInvalid ? "error" : "none"}
+        validationMessage={addedWordsInvalid ? { children: t("fullTextPolicy.invalidWord"), role: "alert" } : undefined}
+      >
         <Textarea
           style={{ width: "100%" }}
           resize="vertical"
@@ -114,7 +123,13 @@ export const StopwordSettings = ({
           onChange={(_event, data) => updateWords("addStopWords", data.value)}
         />
       </Field>
-      <Field label={t("fullTextPolicy.removedWords")}>
+      <Field
+        label={t("fullTextPolicy.removedWords")}
+        validationState={removedWordsInvalid ? "error" : "none"}
+        validationMessage={
+          removedWordsInvalid ? { children: t("fullTextPolicy.invalidWord"), role: "alert" } : undefined
+        }
+      >
         <Textarea
           style={{ width: "100%" }}
           resize="vertical"
@@ -124,7 +139,7 @@ export const StopwordSettings = ({
           onChange={(_event, data) => updateWords("removeStopWords", data.value)}
         />
       </Field>
-      {!disabled && error && (
+      {!disabled && error && error !== "invalidWord" && (
         <div role="alert" style={{ color: "var(--colorPaletteRedForeground1)" }}>
           {t(`fullTextPolicy.${error}`)}
         </div>
