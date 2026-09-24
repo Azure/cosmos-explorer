@@ -86,8 +86,9 @@ const useStyles = makeStyles({
     },
   },
   pathsHeading: {
-    marginTop: tokens.spacingVerticalXL,
-    marginBottom: tokens.spacingVerticalS,
+    margin: 0,
+    paddingTop: tokens.spacingVerticalL,
+    paddingBottom: tokens.spacingVerticalS,
     fontSize: tokens.fontSizeBase400,
     lineHeight: tokens.lineHeightBase400,
     fontWeight: tokens.fontWeightSemibold,

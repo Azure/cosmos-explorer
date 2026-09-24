@@ -128,4 +128,32 @@ describe("stopword design guidance", () => {
     });
     expect(onChange).toHaveBeenCalledWith({ ...spec, addStopWords: ["Cosmos", "cosmos", "cosmos"] });
   });
+
+  it("keeps meanings but hides editing instructions for locked values", () => {
+    const props = {
+      label: "Default stopwords",
+      language: "en-US",
+      packageName: "standard",
+      spec,
+      onChange: jest.fn(),
+    };
+    const { rerender } = render(<StopwordSettings {...props} disabled />);
+    const added = screen.getByRole("textbox", { name: "Additional stopwords" });
+    expect(added).toHaveValue("cosmos");
+    expect(added).toBeDisabled();
+    expect(added).toHaveAccessibleDescription("Also ignore these words.");
+    expect(screen.getByRole("textbox", { name: "Words to keep" })).toHaveAccessibleDescription(
+      "Keep these words even if they are in the stopword list.",
+    );
+    expect(
+      screen.queryByText(
+        "Enter one word per line. Words cannot contain whitespace, punctuation, or control characters.",
+      ),
+    ).not.toBeInTheDocument();
+    rerender(<StopwordSettings {...props} disabled={false} />);
+    expect(added).toHaveAccessibleDescription(
+      "Also ignore these words. Enter one word per line. Words cannot contain whitespace, punctuation, or control characters.",
+    );
+    expect(props.onChange).not.toHaveBeenCalled();
+  });
 });

@@ -18,6 +18,7 @@ interface StopwordSettingsProps {
 const useStyles = makeStyles({
   root: {
     minWidth: 0,
+    paddingTop: tokens.spacingVerticalS,
     display: "grid",
     rowGap: tokens.spacingVerticalM,
   },
@@ -161,7 +162,7 @@ export const StopwordSettings = ({
             style={{ width: "100%" }}
             resize="vertical"
             rows={2}
-            aria-describedby={formatHintId}
+            aria-describedby={disabled ? undefined : formatHintId}
             disabled={disabled || !filteringEnabled || spec.stopWordListKind === undefined}
             value={(spec.addStopWords ?? []).join("\n")}
             onChange={(_event, data) => updateWords("addStopWords", data.value)}
@@ -179,16 +180,18 @@ export const StopwordSettings = ({
             style={{ width: "100%" }}
             resize="vertical"
             rows={2}
-            aria-describedby={formatHintId}
+            aria-describedby={disabled ? undefined : formatHintId}
             disabled={disabled || !filteringEnabled || spec.stopWordListKind === undefined}
             value={(spec.removeStopWords ?? []).join("\n")}
             onChange={(_event, data) => updateWords("removeStopWords", data.value)}
           />
         </Field>
       </div>
-      <div id={formatHintId} className={styles.hint}>
-        {t("fullTextPolicy.wordsHint")}
-      </div>
+      {!disabled && (
+        <div id={formatHintId} className={styles.hint}>
+          {t("fullTextPolicy.wordsHint")}
+        </div>
+      )}
       {!disabled && error && error !== "invalidWord" && (
         <div role="alert" style={{ color: "var(--colorPaletteRedForeground1)" }}>
           {t(`fullTextPolicy.${error}`)}
