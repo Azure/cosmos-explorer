@@ -26,15 +26,21 @@ test.describe.serial("Live localhost full-text stopwords", () => {
   let request: APIRequestContext;
 
   const expectCompactWordControls = async (group: Locator): Promise<void> => {
+    const bounds: { width: number; x: number; y: number }[] = [];
     for (const control of [
       group.getByRole("combobox", { name: "Stopword list" }),
       group.getByRole("textbox", { name: "Additional stopwords" }),
       group.getByRole("textbox", { name: "Words to keep" }),
     ]) {
-      const width = await control.evaluate(
-        (element) => (element.closest(".fui-Dropdown, .fui-Textarea") ?? element).getBoundingClientRect().width,
-      );
-      expect(width).toBeLessThanOrEqual(240);
+      const box = await control.evaluate((element) => {
+        const { width, x, y } = (element.closest(".fui-Dropdown, .fui-Textarea") ?? element).getBoundingClientRect();
+        return { width, x, y };
+      });
+      expect(box.width).toBeLessThanOrEqual(240);
+      bounds.push(box);
+    }
+    if (bounds[1].x !== bounds[2].x) {
+      expect(bounds[1].y).toEqual(bounds[2].y);
     }
   };
 

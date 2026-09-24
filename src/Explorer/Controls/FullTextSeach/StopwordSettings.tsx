@@ -33,6 +33,7 @@ const useStyles = makeStyles({
   },
   wordLists: {
     display: "grid",
+    alignItems: "start",
     gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 200px), 1fr))",
     gap: tokens.spacingHorizontalL,
     minWidth: 0,
