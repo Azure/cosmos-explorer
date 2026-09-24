@@ -171,7 +171,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
 
     beforeEach(() => {
       originalUserContext = { ...userContext };
-      mockExplorer = { openNotebookTerminal: jest.fn() } as unknown as Explorer;
+      mockExplorer = { openTerminal: jest.fn() } as unknown as Explorer;
       updateUserContext({
         authType: AuthType.AAD,
         databaseAccount: { kind: "DocumentDB", properties: { capabilities: [] } } as DatabaseAccount,
@@ -191,7 +191,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       expect(button).toBeDefined();
       expect(button.disabled).toBe(false);
       button.onCommandClick(new KeyboardEvent("keydown", { key: "Enter" }));
-      expect(mockExplorer.openNotebookTerminal).toHaveBeenCalledWith(TerminalKind.CosmosDB);
+      expect(mockExplorer.openTerminal).toHaveBeenCalledWith(TerminalKind.CosmosDB);
     });
 
     it("hides the shell when explicitly disabled by the feature flag", () => {
