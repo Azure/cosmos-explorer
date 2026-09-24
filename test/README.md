@@ -189,6 +189,14 @@ subscription, and account selection, then verify create, indexed locks, invalid
 input, Save/Discard, a full browser reload, and policy preservation during an unrelated
 Settings update. Do not substitute injected tokens or fabricated account capabilities.
 
+For visual acceptance, inspect both creation and Settings in light/dark themes and
+at 1440px, 768px, and 375px widths. Confirm that labels align with their fields,
+inheritance text wraps without clipping, default/override descriptions are clear,
+locked values remain readable without becoming editable, service-default selection
+explains disabled word fields, and errors are associated with the offending word
+list. These checks can use unsaved edits followed by Discard; no new container is
+needed for a visual-only audit.
+
 Verify modern policy fields with raw ARM JSON. Older typed management clients,
 including `az cosmosdb sql container show`, may omit fields unknown to their models
 even when the service preserved them.
