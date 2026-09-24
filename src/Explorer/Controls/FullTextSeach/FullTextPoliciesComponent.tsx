@@ -5,6 +5,7 @@ import {
   IDropdownOption,
   IDropdownStyles,
   IStyleFunctionOrObject,
+  ITextField,
   ITextFieldStyleProps,
   ITextFieldStyles,
   Stack,
@@ -319,6 +320,8 @@ export const FullTextPoliciesComponent: React.FunctionComponent<FullTextPolicies
 }): JSX.Element => {
   const styles = useStyles();
   const addPathButton = React.useRef<IButton>(null);
+  const newPathInput = React.useRef<ITextField>(null);
+  const focusNewPath = React.useRef(false);
   const pathDescriptionId = useId("full-text-path-description");
   const incomingPolicy = fullTextPolicy ?? emptyPolicy;
   const [policy, setPolicy] = React.useState<FullTextPolicy>(incomingPolicy);
@@ -356,6 +359,13 @@ export const FullTextPoliciesComponent: React.FunctionComponent<FullTextPolicies
       callbacks.current.onChangesDiscarded?.();
     }
   }, [discardChanges, incomingPolicy]);
+
+  React.useEffect(() => {
+    if (focusNewPath.current) {
+      focusNewPath.current = false;
+      newPathInput.current?.focus();
+    }
+  }, [policy.fullTextPaths.length]);
 
   React.useEffect(() => {
     callbacks.current.onFullTextPathChange(
@@ -526,7 +536,8 @@ export const FullTextPoliciesComponent: React.FunctionComponent<FullTextPolicies
                       <TextField
                         label={t("fullTextPolicy.path")}
                         ariaLabel={t("fullTextPolicy.path")}
-                        id={`full-text-policy-path-${index + 1}`}
+                        id={`${pathDescriptionId}-path-${index + 1}`}
+                        componentRef={index === policy.fullTextPaths.length - 1 ? newPathInput : undefined}
                         required={true}
                         disabled={pathLocked}
                         placeholder="/fullTextPath1"
@@ -629,7 +640,8 @@ export const FullTextPoliciesComponent: React.FunctionComponent<FullTextPolicies
               backgroundColor: "transparent",
             },
           }}
-          onClick={() =>
+          onClick={() => {
+            focusNewPath.current = true;
             setPolicy((current) => ({
               ...current,
               fullTextPaths: [
@@ -638,8 +650,8 @@ export const FullTextPoliciesComponent: React.FunctionComponent<FullTextPolicies
                   ? { path: "" }
                   : { path: "", language: getFullTextDefaultLanguage(current) },
               ],
-            }))
-          }
+            }));
+          }}
         >
           {t("fullTextPolicy.addPath")}
         </DefaultButton>
