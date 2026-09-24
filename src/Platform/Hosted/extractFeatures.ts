@@ -5,10 +5,8 @@ export type Features = {
   readonly enableChangeFeedPolicy: boolean;
   readonly enableFixedCollectionWithSharedThroughput: boolean;
   readonly enableKOPanel: boolean;
-  readonly enableNotebooks: boolean;
   readonly enableReactPane: boolean;
   readonly enableRightPanelV2: boolean;
-  readonly enableSchema: boolean;
   readonly enableSDKoperations: boolean;
   readonly enableSpark: boolean;
   readonly enableTtl: boolean;
@@ -17,12 +15,6 @@ export type Features = {
   readonly enableResourceGraph: boolean;
   readonly enableKoResourceTree: boolean;
   readonly hostedDataExplorer: boolean;
-  readonly junoEndpoint?: string;
-  readonly phoenixEndpoint?: string;
-  readonly notebookBasePath?: string;
-  readonly notebookServerToken?: string;
-  readonly notebookServerUrl?: string;
-  readonly sandboxNotebookOutputs: boolean;
   readonly selfServeType?: string;
   readonly showMinRUSurvey: boolean;
   readonly ttl90Days: boolean;
@@ -42,9 +34,6 @@ export type Features = {
   autoscaleDefault: boolean;
   partitionKeyDefault: boolean;
   partitionKeyDefault2: boolean;
-  phoenixNotebooks?: boolean;
-  phoenixFeatures?: boolean;
-  notebooksDownBanner: boolean;
 };
 
 export function extractFeatures(given = new URLSearchParams(window.location.search)): Features {
@@ -71,10 +60,8 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     enableChangeFeedPolicy: "true" === get("enablechangefeedpolicy"),
     enableFixedCollectionWithSharedThroughput: "true" === get("enablefixedcollectionwithsharedthroughput"),
     enableKOPanel: "true" === get("enablekopanel"),
-    enableNotebooks: "true" === get("enablenotebooks"),
     enableReactPane: "true" === get("enablereactpane"),
     enableRightPanelV2: "true" === get("enablerightpanelv2"),
-    enableSchema: "true" === get("enableschema"),
     enableSDKoperations: "true" === get("enablesdkoperations"),
     enableSpark: "true" === get("enablespark"),
     enableTtl: "true" === get("enablettl"),
@@ -83,19 +70,12 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     hostedDataExplorer: "true" === get("hosteddataexplorerenabled"),
     mongoProxyEndpoint: get("mongoproxyendpoint"),
     mongoProxyAPIs: get("mongoproxyapis"),
-    junoEndpoint: get("junoendpoint"),
-    phoenixEndpoint: get("phoenixendpoint"),
-    notebookBasePath: get("notebookbasepath"),
-    notebookServerToken: get("notebookservertoken"),
-    notebookServerUrl: get("notebookserverurl"),
-    sandboxNotebookOutputs: true,
     selfServeType: get("selfservetype"),
     showMinRUSurvey: "true" === get("showminrusurvey"),
     ttl90Days: "true" === get("ttl90days"),
     autoscaleDefault: "true" === get("autoscaledefault"),
     partitionKeyDefault: "true" === get("partitionkeytest"),
     partitionKeyDefault2: "true" === get("pkpartitionkeytest"),
-    notebooksDownBanner: "true" === get("notebooksDownBanner"),
     enableThroughputCap: "true" === get("enablethroughputcap"),
     enableHierarchicalKeys: "true" === get("enablehierarchicalkeys"),
     enablePriorityBasedExecution: "true" === get("enableprioritybasedexecution"),
