@@ -1,6 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 
-import { CommandBarButton, DataExplorer, TestAccount } from "../fx";
+import { CommandBarButton, DataExplorer, generateUniqueName, TestAccount } from "../fx";
 import { createTestSQLContainer, TestContainerContext } from "../testData";
 
 // Test container context for setup and cleanup
@@ -10,7 +10,10 @@ let CONTAINER_ID: string;
 
 // Set up test database and container with data before all tests
 test.beforeAll(async () => {
-  testContainer = await createTestSQLContainer({ includeTestData: true });
+  testContainer = await createTestSQLContainer({
+    includeTestData: true,
+    databaseName: generateUniqueName("db_tab_tooltip_with_a_long_resource_name"),
+  });
   DATABASE_ID = testContainer.database.id;
   CONTAINER_ID = testContainer.container.id;
 });

@@ -118,6 +118,7 @@ function tryGetStandardName(accountType: TestAccount) {
       : `${process.env.DE_TEST_ACCOUNT_PREFIX}-`;
     return `${actualPrefix}${accountType.toLocaleLowerCase()}`;
   }
+  return undefined;
 }
 
 // Maps a base API account type to its dedicated connection string (account key) account.
@@ -328,12 +329,12 @@ class TreeNode {
   async expand(): Promise<void> {
     const treeNodeContainer = this.frame.getByTestId(`TreeNodeContainer:${this.id}`);
     const tree = this.frame.getByTestId(`Tree:${this.id}`);
+    const expandIcon = this.element.locator(":scope > .fui-TreeItemLayout__expandIcon");
 
     // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
     const expandNode = async () => {
       if ((await treeNodeContainer.getAttribute("aria-expanded")) !== "true") {
-        // Click the node, to trigger loading and expansion
-        await this.element.click();
+        await expandIcon.click();
       }
 
       // Try three times to wait for the node to expand.
@@ -346,7 +347,7 @@ class TreeNode {
           // Just try again
           if ((await treeNodeContainer.getAttribute("aria-expanded")) !== "true") {
             // We might have collapsed the node, try expanding it again, then retry.
-            await this.element.click();
+            await expandIcon.click();
           }
         }
       }
