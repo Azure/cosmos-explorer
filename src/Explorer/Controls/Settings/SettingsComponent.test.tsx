@@ -1,5 +1,9 @@
 import { IndexingPolicy } from "@azure/cosmos";
-import { act } from "@testing-library/react";
+import "@testing-library/jest-dom";
+import { act, fireEvent, render, screen } from "@testing-library/react";
+import { FullTextPolicy } from "Contracts/DataModels";
+import { ContainerPolicyComponentProps } from "./SettingsSubComponents/ContainerPolicyComponent";
+import { logConsoleError } from "Utils/NotificationConsoleUtils";
 import { AuthType } from "AuthType";
 import { shallow } from "enzyme";
 import { useIndexingPolicyStore } from "Explorer/Tabs/QueryTab/ResultsView";
@@ -15,6 +19,7 @@ import { CollectionSettingsTabV2 } from "../../Tabs/SettingsTabV2";
 import { SettingsComponent, SettingsComponentProps, SettingsComponentState } from "./SettingsComponent";
 import { TtlType, isDirty } from "./SettingsUtils";
 import { collection } from "./TestUtils";
+let mockRenderRealContainerPolicy = false;
 jest.mock("../../../Common/dataAccess/getIndexTransformationProgress", () => ({
   getIndexTransformationProgress: jest.fn().mockReturnValue(undefined),
 }));
@@ -37,6 +42,211 @@ jest.mock("../../../Common/dataAccess/updateCollection", () => ({
 jest.mock("../../../Common/dataAccess/updateOffer", () => ({
   updateOffer: jest.fn().mockReturnValue({} as DataModels.Offer),
 }));
+jest.mock("Utils/NotificationConsoleUtils", () => ({
+  ...jest.requireActual("Utils/NotificationConsoleUtils"),
+  logConsoleError: jest.fn(),
+}));
+jest.mock("./SettingsSubComponents/ContainerPolicyComponent", () => ({
+  ContainerPolicyComponent: (props: ContainerPolicyComponentProps) => {
+    if (mockRenderRealContainerPolicy) {
+      const { ContainerPolicyComponent: ActualContainerPolicyComponent } = jest.requireActual<
+        typeof import("./SettingsSubComponents/ContainerPolicyComponent")
+      >("./SettingsSubComponents/ContainerPolicyComponent");
+      return <ActualContainerPolicyComponent {...props} />;
+    }
+    return (
+      <div>
+        <button onClick={() => props.onFullTextPolicyDirtyChange(true)}>Edit full-text</button>
+        <button onClick={() => props.onFullTextPolicyDirtyChange(false)}>Revert full-text</button>
+        <button onClick={() => props.onVectorEmbeddingPolicyDirtyChange(true)}>Edit vector</button>
+        <button onClick={() => props.onVectorEmbeddingPolicyDirtyChange(false)}>Revert vector</button>
+        <button onClick={() => props.onFullTextPolicyValidationChange(false)}>Invalid full-text</button>
+        <button onClick={() => props.onFullTextPolicyValidationChange(true)}>Valid full-text</button>
+      </div>
+    );
+  },
+}));
+
+describe("Settings full-text save lifecycle", () => {
+  const policy: FullTextPolicy = {
+    package: "standard",
+    defaultSpec: {
+      language: "en-US",
+      stopWordListKind: "basic",
+      filters: ["stop"],
+      addStopWords: ["cosmos"],
+      futureField: "preserve",
+    },
+    fullTextPaths: [{ path: "/text" }],
+  };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockRenderRealContainerPolicy = false;
+    updateUserContext({ apiType: "SQL" });
+  });
+
+  afterEach(() => {
+    mockRenderRealContainerPolicy = false;
+  });
+
+  const setup = async (persistedPolicy = policy) => {
+    const fixture = {
+      ...collection,
+      rawDataModel: { ...collection.rawDataModel, id: "test", fullTextPolicy: persistedPolicy },
+      id: ko.observable(collection.id()),
+      defaultTtl: ko.observable(collection.defaultTtl()),
+      analyticalStorageTtl: ko.observable(collection.analyticalStorageTtl()),
+      conflictResolutionPolicy: ko.observable(collection.conflictResolutionPolicy()),
+      changeFeedPolicy: ko.observable(collection.changeFeedPolicy()),
+      geospatialConfig: ko.observable(collection.geospatialConfig()),
+      computedProperties: ko.observable(collection.computedProperties()),
+      vectorEmbeddingPolicy: ko.observable(collection.vectorEmbeddingPolicy()),
+      dataMaskingPolicy: ko.observable(collection.dataMaskingPolicy()),
+      fullTextPolicy: ko.observable(persistedPolicy),
+      indexingPolicy: ko.observable({
+        ...collection.indexingPolicy(),
+        fullTextIndexes: [{ path: "/text" }],
+      }),
+    };
+    const settingsTab = new CollectionSettingsTabV2({
+      collection: fixture,
+      tabKind: ViewModels.CollectionTabKind.CollectionSettingsV2,
+      title: "Scale & Settings",
+      tabPath: "",
+      node: undefined,
+    });
+    const ref = React.createRef<SettingsComponent>();
+    await act(async () => {
+      render(<SettingsComponent ref={ref} settingsTab={settingsTab} />);
+    });
+    const settings = ref.current!;
+    fireEvent.click(screen.getByRole("tab", { name: "Container Policies" }));
+    return { settings, settingsTab, fixture };
+  };
+
+  it("keeps Save enabled when either policy remains dirty and disables it for invalid full-text", async () => {
+    const { settings } = await setup();
+    fireEvent.click(screen.getByRole("button", { name: "Edit full-text" }));
+    fireEvent.click(screen.getByRole("button", { name: "Revert vector" }));
+    expect(settings.isSaveSettingsButtonEnabled()).toBe(true);
+    fireEvent.click(screen.getByRole("button", { name: "Edit vector" }));
+    fireEvent.click(screen.getByRole("button", { name: "Revert full-text" }));
+    expect(settings.isSaveSettingsButtonEnabled()).toBe(true);
+    fireEvent.click(screen.getByRole("button", { name: "Invalid full-text" }));
+    expect(settings.isSaveSettingsButtonEnabled()).toBe(false);
+    await act(async () => settings.onSaveClick());
+    expect(updateCollection).not.toHaveBeenCalled();
+    expect(logConsoleError).toHaveBeenCalled();
+    fireEvent.click(screen.getByRole("button", { name: "Valid full-text" }));
+    expect(settings.isSaveSettingsButtonEnabled()).toBe(true);
+    fireEvent.click(screen.getByRole("button", { name: "Revert vector" }));
+    expect(settings.isSaveSettingsButtonEnabled()).toBe(false);
+  });
+
+  it("restores the complete baseline and clears dirty and invalid state on Discard", async () => {
+    const { settings } = await setup();
+    act(() =>
+      settings.setState({
+        fullTextPolicy: { ...policy, defaultSpec: { ...policy.defaultSpec, addStopWords: ["draft"] } },
+        isFullTextPolicyDirty: true,
+        isContainerPolicyDirty: true,
+        isFullTextPolicyValid: false,
+      }),
+    );
+    act(() => settings.onRevertClick());
+    expect(settings.state.fullTextPolicy).toEqual(policy);
+    expect(settings.state.isFullTextPolicyValid).toBe(true);
+    expect(settings.isDiscardSettingsButtonEnabled()).toBe(false);
+  });
+
+  it("preserves policy on unrelated saves, prevents duplicate requests, and uses the service response as baseline", async () => {
+    const { settings, fixture } = await setup();
+    const response = { ...fixture.rawDataModel, fullTextPolicy: { ...policy, serverField: "returned" } };
+    let resolveUpdate: (value: typeof response) => void;
+    jest.mocked(updateCollection).mockReturnValueOnce(
+      new Promise((resolve) => {
+        resolveUpdate = resolve;
+      }),
+    );
+    act(() => settings.setState({ isSubSettingsSaveable: true }));
+    let saving: Promise<void>;
+    act(() => {
+      saving = settings.onSaveClick();
+    });
+    await act(async () => settings.onSaveClick());
+    expect(updateCollection).toHaveBeenCalledTimes(1);
+    expect(updateCollection).toHaveBeenCalledWith(
+      "test",
+      "test",
+      expect.objectContaining({
+        fullTextPolicy: policy,
+        indexingPolicy: expect.objectContaining({ fullTextIndexes: [{ path: "/text" }] }),
+      }),
+    );
+    await act(async () => {
+      resolveUpdate!(response);
+      await saving;
+    });
+    expect(settings.state.fullTextPolicyBaseline).toEqual(response.fullTextPolicy);
+    expect(settings.state.fullTextPolicy).toEqual(response.fullTextPolicy);
+    expect(settings.isSaveSettingsButtonEnabled()).toBe(false);
+  });
+
+  it("keeps drafts and the original baseline after a service rejection", async () => {
+    const { settings, settingsTab } = await setup();
+    const draft = { ...policy, defaultSpec: { ...policy.defaultSpec, addStopWords: ["draft"] } };
+    act(() => settings.setState({ fullTextPolicy: draft, isFullTextPolicyDirty: true, isContainerPolicyDirty: true }));
+    jest.mocked(updateCollection).mockRejectedValueOnce(new Error("indexed analysis cannot change"));
+    await act(async () => settings.onSaveClick());
+    expect(settingsTab.isExecutionError()).toBe(true);
+    expect(settings.state.fullTextPolicy).toEqual(draft);
+    expect(settings.state.fullTextPolicyBaseline).toEqual(policy);
+    expect(settings.isSaveSettingsButtonEnabled()).toBe(true);
+  });
+
+  it.each([false, true])(
+    "preserves uneditable analysis while saving unrelated TTL changes with preview capability %s",
+    async (preview) => {
+      mockRenderRealContainerPolicy = true;
+      updateUserContext({
+        databaseAccount: {
+          id: "account",
+          name: "account",
+          type: "Microsoft.DocumentDB/databaseAccounts",
+          location: "westus",
+          kind: "GlobalDocumentDB",
+          properties: {
+            capabilities: preview ? [{ name: "EnableNoSQLFullTextSearchPreviewFeatures", description: "" }] : [],
+          },
+        },
+      });
+      const persisted = { ...policy, defaultSpec: { ...policy.defaultSpec, stopWordListKind: "extended" } };
+      const { settings, fixture } = await setup(persisted);
+      act(() =>
+        settings.setState({
+          timeToLive: TtlType.On,
+          timeToLiveSeconds: 3600,
+          displayedTtlSeconds: "3600",
+          isSubSettingsSaveable: true,
+        }),
+      );
+      expect(settings.isSaveSettingsButtonEnabled()).toBe(true);
+      jest.mocked(updateCollection).mockResolvedValueOnce({
+        ...fixture.rawDataModel,
+        defaultTtl: 3600,
+        fullTextPolicy: persisted,
+      });
+      await act(async () => settings.onSaveClick());
+      expect(updateCollection).toHaveBeenCalledWith(
+        "test",
+        "test",
+        expect.objectContaining({ defaultTtl: 3600, fullTextPolicy: persisted }),
+      );
+      expect(settings.state.fullTextPolicy).toEqual(persisted);
+    },
+  );
+});
 
 describe("SettingsComponent", () => {
   const baseProps: SettingsComponentProps = {
