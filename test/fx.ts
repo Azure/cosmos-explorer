@@ -118,6 +118,7 @@ function tryGetStandardName(accountType: TestAccount) {
       : `${process.env.DE_TEST_ACCOUNT_PREFIX}-`;
     return `${actualPrefix}${accountType.toLocaleLowerCase()}`;
   }
+  return undefined;
 }
 
 // Maps a base API account type to its dedicated connection string (account key) account.

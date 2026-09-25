@@ -42,6 +42,7 @@
     "./src/Explorer/Controls/FullTextSeach/StopwordSettings.tsx",
     "./src/Explorer/Controls/FullTextSeach/StopwordSettings.test.tsx",
     "./test/sql/fullTextStopwords.spec.ts",
+    "./test/sql/fullTextStopwords.ci.spec.ts",
     "./src/Explorer/Controls/SmartUi/InputUtils.ts",
     "./src/Explorer/Graph/GraphExplorerComponent/ArraysByKeyCache.test.ts",
     "./src/Explorer/Graph/GraphExplorerComponent/ArraysByKeyCache.ts",

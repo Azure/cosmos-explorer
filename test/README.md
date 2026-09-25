@@ -152,6 +152,38 @@ The UI allows you to select a specific test to run and to see the results of the
 
 See the [Playwright docs](https://playwright.dev/docs/running-tests) for more information on running tests.
 
+### Full-text stopword CI coverage
+
+`sql\fullTextStopwords.ci.spec.ts` runs in the normal Playwright CI shards and
+browser projects without opt-in variables or mocked ARM responses. It uses the
+existing SQL test-account configuration and requires
+`EnableNoSQLFullTextSearchPreviewFeatures` on every SQL shard account. A missing
+capability fails with an explicit prerequisite message rather than skipping.
+The test never changes account settings.
+
+The five cases cover multiword defaults (including case, order, and duplicates),
+invalid entries in each word list, Discard, and path overrides returning to
+inheritance. Saved policies are checked after a fresh app load. Each case creates
+an isolated 400-RU/s container and deletes its generated database in `afterEach`,
+including after failed setup or assertions. Setup and cleanup use ARM, like the
+policy operations; Settings still requires data-plane access. These tests do not
+assert search semantics.
+
+`resources\account.bicep` includes the capability for newly provisioned SQL test
+accounts. CI does not deploy that template: `.github\workflows\ci.yml` uses
+pre-existing `${DE_ACCOUNT_PREFIX}-de-test-sql-1` through `-20` accounts in the
+subscription/resource group configured by the `E2ETESTS_*` secrets. Their owner
+must enable and verify the capability before running this suite, preserving all
+existing capabilities. Do not redeploy the generic template over those accounts
+to enable a single capability. The suite checks the actual account metadata, not
+a feature flag or mocked response.
+
+Run it with:
+
+```powershell
+npx playwright test fullTextStopwords.ci.spec.ts --project "Microsoft Edge"
+```
+
 ### Full-text stopword localhost acceptance
 
 `sql\fullTextStopwords.spec.ts` is opt-in and uses an **existing provisioned-throughput
