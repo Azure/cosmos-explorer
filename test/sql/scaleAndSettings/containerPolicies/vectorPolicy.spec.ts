@@ -1,5 +1,11 @@
 import { expect, test } from "@playwright/test";
-import { CommandBarButton, DataExplorer, ONE_MINUTE_MS, TestAccount } from "../../../fx";
+import {
+  CommandBarButton,
+  DataExplorer,
+  getDropdownItemByNameOrPosition,
+  ONE_MINUTE_MS,
+  TestAccount,
+} from "../../../fx";
 import { createTestSQLContainer, TestContainerContext } from "../../../testData";
 
 test.describe("Vector Policy under Scale & Settings", () => {
@@ -26,8 +32,23 @@ test.describe("Vector Policy under Scale & Settings", () => {
 
   test.afterEach("Clear vector policies", async () => {
     const { resource: containerDef } = await context.container.read();
+    if (!containerDef) {
+      return;
+    }
+
+    let dirty = false;
+
     if (containerDef.vectorEmbeddingPolicy?.vectorEmbeddings?.length) {
       containerDef.vectorEmbeddingPolicy.vectorEmbeddings = [];
+      dirty = true;
+    }
+
+    if (containerDef.indexingPolicy?.vectorIndexes?.length) {
+      containerDef.indexingPolicy.vectorIndexes = [];
+      dirty = true;
+    }
+
+    if (dirty) {
       await context.container.replace(containerDef);
     }
   });
@@ -189,5 +210,120 @@ test.describe("Vector Policy under Scale & Settings", () => {
     // Verify save button is disabled due to validation error
     const saveButton = explorer.commandBarButton(CommandBarButton.Save);
     await expect(saveButton).toBeDisabled();
+  });
+
+  test("Quantizer type dropdown is disabled when index type is none", async () => {
+    const existingCount = await getPolicyCount();
+
+    const addButton = explorer.frame.locator("#add-vector-policy");
+    await addButton.click();
+
+    const newIndex = existingCount + 1;
+
+    const quantizerDropdownBtn = explorer.frame.locator(`#vector-policy-quantizerType-${newIndex}`);
+    await expect(quantizerDropdownBtn).toBeDisabled();
+  });
+
+  test("Quantizer type dropdown is disabled for flat index type", async () => {
+    const existingCount = await getPolicyCount();
+
+    const addButton = explorer.frame.locator("#add-vector-policy");
+    await addButton.click();
+
+    const newIndex = existingCount + 1;
+
+    await explorer.frame.locator(`#vector-policy-indexType-${newIndex}`).click();
+    // Use exact match because "flat" is also a substring of "quantizedFlat".
+    await explorer.frame.getByRole("option", { name: "flat", exact: true }).click();
+
+    const quantizerDropdownBtn = explorer.frame.locator(`#vector-policy-quantizerType-${newIndex}`);
+    await expect(quantizerDropdownBtn).toBeDisabled();
+  });
+
+  test("Quantizer type dropdown becomes enabled and defaults to Product for diskANN index type", async () => {
+    const existingCount = await getPolicyCount();
+
+    const addButton = explorer.frame.locator("#add-vector-policy");
+    await addButton.click();
+
+    const newIndex = existingCount + 1;
+
+    await explorer.frame.locator(`#vector-policy-indexType-${newIndex}`).click();
+    await (await getDropdownItemByNameOrPosition(explorer.frame, { name: "diskANN" })).click();
+
+    const quantizerDropdownBtn = explorer.frame.locator(`#vector-policy-quantizerType-${newIndex}`);
+    await expect(quantizerDropdownBtn).toBeEnabled();
+    await expect(quantizerDropdownBtn).toContainText("Product");
+  });
+
+  test("Quantizer type dropdown becomes enabled and defaults to Product for quantizedFlat index type", async () => {
+    const existingCount = await getPolicyCount();
+
+    const addButton = explorer.frame.locator("#add-vector-policy");
+    await addButton.click();
+
+    const newIndex = existingCount + 1;
+
+    await explorer.frame.locator(`#vector-policy-indexType-${newIndex}`).click();
+    await (await getDropdownItemByNameOrPosition(explorer.frame, { name: "quantizedFlat" })).click();
+
+    const quantizerDropdownBtn = explorer.frame.locator(`#vector-policy-quantizerType-${newIndex}`);
+    await expect(quantizerDropdownBtn).toBeEnabled();
+    await expect(quantizerDropdownBtn).toContainText("Product");
+  });
+
+  test("Quantizer type can be changed to Spherical (Preview)", async () => {
+    const existingCount = await getPolicyCount();
+
+    const addButton = explorer.frame.locator("#add-vector-policy");
+    await addButton.click();
+
+    const newIndex = existingCount + 1;
+
+    await explorer.frame.locator(`#vector-policy-path-${newIndex}`).fill("/embedding");
+    await explorer.frame.locator(`#vector-policy-dimension-${newIndex}`).fill("1536");
+
+    await explorer.frame.locator(`#vector-policy-indexType-${newIndex}`).click();
+    await (await getDropdownItemByNameOrPosition(explorer.frame, { name: "diskANN" })).click();
+
+    const quantizerDropdownBtn = explorer.frame.locator(`#vector-policy-quantizerType-${newIndex}`);
+    await quantizerDropdownBtn.click();
+    await (await getDropdownItemByNameOrPosition(explorer.frame, { position: 1 })).click();
+
+    await expect(quantizerDropdownBtn).not.toContainText("Product");
+  });
+
+  test("Saving a vector policy with diskANN and Spherical quantizer type persists", async () => {
+    const existingCount = await getPolicyCount();
+
+    const addButton = explorer.frame.locator("#add-vector-policy");
+    await addButton.click();
+
+    const newIndex = existingCount + 1;
+
+    await explorer.frame.locator(`#vector-policy-path-${newIndex}`).fill("/vecQuantizer");
+    await explorer.frame.locator(`#vector-policy-dimension-${newIndex}`).fill("1536");
+
+    await explorer.frame.locator(`#vector-policy-indexType-${newIndex}`).click();
+    await (await getDropdownItemByNameOrPosition(explorer.frame, { name: "diskANN" })).click();
+
+    const quantizerDropdownBtn = explorer.frame.locator(`#vector-policy-quantizerType-${newIndex}`);
+    await quantizerDropdownBtn.click();
+    await (await getDropdownItemByNameOrPosition(explorer.frame, { position: 1 })).click();
+
+    // Save
+    const saveButton = explorer.commandBarButton(CommandBarButton.Save);
+    await expect(saveButton).toBeEnabled();
+    await saveButton.click();
+    await expect(explorer.getConsoleHeaderStatus()).toContainText(`${context.container.id}`, {
+      timeout: 2 * ONE_MINUTE_MS,
+    });
+
+    await explorer.openScaleAndSettings(context);
+    await explorer.frame.getByTestId("settings-tab-header/ContainerVectorPolicyTab").click();
+    await explorer.frame.getByRole("tab", { name: "Vector Policy" }).click();
+
+    const savedQuantizerBtn = explorer.frame.locator(`#vector-policy-quantizerType-${newIndex}`);
+    await expect(savedQuantizerBtn).toContainText("Spherical");
   });
 });
