@@ -27,6 +27,9 @@ interface InternalScenarioContext {
 
 class ScenarioMonitor {
   private contexts = new Map<MetricScenario, InternalScenarioContext>();
+  // Completions reported before start() created a context. Replayed on start() so that a
+  // React effect firing ahead of the scenario is not silently dropped.
+  private earlyCompletions = new Map<MetricScenario, Set<MetricPhase>>();
   private vitals: WebVitals = {};
   private vitalsInitialized = false;
 
@@ -127,11 +130,21 @@ class ScenarioMonitor {
         hasExpectedFailure: ctx.hasExpectedFailure,
       });
 
-      // If an expected failure occurred (auth, firewall, etc.), emit healthy instead of unhealthy
+      // Expected failures (auth, firewall, ...) are not our outage. A backgrounded tab is not
+      // excused here: timer throttling changes whether the timeout should raise an alert, but
+      // it does not establish that the load completed. documentHidden is reported with the
+      // event so alerting can apply that policy without the load being relabelled as healthy.
       const healthy = ctx.hasExpectedFailure;
       this.emit(ctx, healthy, true);
     }, config.timeoutMs);
     this.contexts.set(scenario, ctx);
+
+    // Replay completions that were reported before this scenario existed.
+    const early = this.earlyCompletions.get(scenario);
+    if (early) {
+      this.earlyCompletions.delete(scenario);
+      early.forEach((phase) => this.completePhase(scenario, phase));
+    }
   }
 
   startPhase(scenario: MetricScenario, phase: MetricPhase) {
@@ -185,8 +198,38 @@ class ScenarioMonitor {
 
   completePhase(scenario: MetricScenario, phase: MetricPhase) {
     const ctx = this.contexts.get(scenario);
-    const phaseCtx = ctx?.phases.get(phase);
-    if (!ctx || ctx.emitted || ctx.completed.has(phase) || !ctx.config.requiredPhases.includes(phase) || !phaseCtx) {
+
+    // The scenario has not been started yet. Buffer the completion and replay it in start(),
+    // otherwise a one-shot React effect that fired early is lost forever. Only phases that
+    // start with the scenario are buffered: a deferred phase must be opened explicitly by its
+    // producer, so accepting one early would record a completion for work that had not begun.
+    if (!ctx) {
+      const config = scenarioConfigs[scenario];
+      const isDeferred = config?.deferredPhases?.includes(phase) ?? false;
+      if (config?.requiredPhases.includes(phase) && !isDeferred) {
+        const pending = this.earlyCompletions.get(scenario) ?? new Set<MetricPhase>();
+        pending.add(phase);
+        this.earlyCompletions.set(scenario, pending);
+        this.devLog(`phase_complete_early: ${scenario}.${phase} — buffered until scenario start`);
+      }
+      return;
+    }
+
+    if (ctx.emitted || ctx.completed.has(phase) || !ctx.config.requiredPhases.includes(phase)) {
+      return;
+    }
+
+    // Completion for a phase that was never started. The producer ordering is wrong, and we
+    // cannot tell what the completion actually observed, so the phase is left open rather than
+    // backdated. Reported so the ordering bug is visible instead of silently skewing the metric.
+    const phaseCtx = ctx.phases.get(phase);
+    if (!phaseCtx) {
+      this.devLog(`phase_complete_unstarted: ${scenario}.${phase} — ignored, phase was never started`);
+      traceMark(Action.MetricsScenario, {
+        event: "phase_complete_unstarted",
+        scenario,
+        phase,
+      });
       return;
     }
 
@@ -446,6 +489,7 @@ class ScenarioMonitor {
       }
     });
     this.contexts.clear();
+    this.earlyCompletions.clear();
   }
 }
 
