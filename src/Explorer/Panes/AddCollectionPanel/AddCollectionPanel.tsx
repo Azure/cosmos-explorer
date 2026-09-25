@@ -881,8 +881,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                       ) => {
                         this.setState({ fullTextPolicy, fullTextIndexes, fullTextPolicyValidated });
                       }}
-                      // Remove when multi language support on container create issue is fixed
-                      englishOnly={true}
+                      allowStopwordCustomization={true}
                     />
                   </Stack>
                 </Stack>
@@ -1230,16 +1229,14 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       return false;
     }
 
-    if (this.shouldShowVectorSearchParameters()) {
-      if (!this.state.vectorPolicyValidated) {
-        this.setState({ errorMessage: t(Keys.panes.addCollection.vectorPolicyError) });
-        return false;
-      }
+    if (this.shouldShowVectorSearchParameters() && !this.state.vectorPolicyValidated) {
+      this.setState({ errorMessage: t(Keys.panes.addCollection.vectorPolicyError) });
+      return false;
+    }
 
-      if (!this.state.fullTextPolicyValidated) {
-        this.setState({ errorMessage: t(Keys.panes.addCollection.fullTextSearchPolicyError) });
-        return false;
-      }
+    if (this.shouldShowFullTextSearchParameters() && !this.state.fullTextPolicyValidated) {
+      this.setState({ errorMessage: t(Keys.panes.addCollection.fullTextSearchPolicyError) });
+      return false;
     }
 
     return true;

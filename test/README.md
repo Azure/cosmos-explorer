@@ -152,6 +152,110 @@ The UI allows you to select a specific test to run and to see the results of the
 
 See the [Playwright docs](https://playwright.dev/docs/running-tests) for more information on running tests.
 
+### Full-text stopword CI coverage
+
+The `Full-text stopwords` suite in `sql\container.spec.ts` runs in the normal
+Playwright CI shards and browser projects without opt-in variables or mocked ARM
+responses. It uses the existing SQL test-account configuration and requires
+`EnableNoSQLFullTextSearchPreviewFeatures` on every SQL shard account. A missing
+capability fails with an explicit prerequisite message rather than skipping.
+The test never changes account settings.
+Trace and video recording are disabled for this test file because the harness URL
+contains authentication tokens.
+
+The five cases cover multiword defaults (including case, order, and duplicates),
+invalid entries in each word list, Discard, and path overrides returning to
+inheritance. Saved policies are checked after a fresh app load. Each case creates
+an isolated 400-RU/s container and deletes its generated database in `afterEach`,
+including after failed setup or assertions. Setup and cleanup use ARM, like the
+policy operations; Settings still requires data-plane access. These tests do not
+assert search semantics.
+
+The Settings-created CI policy uses legacy analysis, which does not expose the
+standard-only stop-filter toggle. Its inheritance case checks the outgoing policy
+contains only the inherited path, without hidden analysis overrides. Standard
+filter-toggle/reset behavior is covered by the unit regressions. Restoring
+inheritance resets all supported per-field analysis settings (including tokenizer
+and filters) rather than copying
+the current defaults; later default changes therefore still apply. Unknown fields
+are preserved, and unsupported policies remain read-only.
+
+`resources\account.bicep` includes the capability for newly provisioned SQL test
+accounts. CI does not deploy that template: `.github\workflows\ci.yml` uses
+pre-existing `${DE_ACCOUNT_PREFIX}-de-test-sql-1` through `-20` accounts in the
+subscription/resource group configured by the `E2ETESTS_*` secrets. Their owner
+must enable and verify the capability before running this suite, preserving all
+existing capabilities. Do not redeploy the generic template over those accounts
+to enable a single capability. The suite checks the actual account metadata, not
+a feature flag or mocked response.
+
+Run it with:
+
+```powershell
+npx playwright test container.spec.ts --grep "Full-text stopwords" --project "Microsoft Edge"
+```
+
+### Full-text stopword manual acceptance
+
+The CI cases above use the existing Playwright harness unchanged and cover policy
+management, not New Container or query semantics. Unit regressions cover creation,
+full-text-only accounts without vector capability, and unrelated Settings saves
+with preserved read-only or indexed analysis.
+
+For manual browser acceptance, use an approved provisioned-throughput NoSQL test
+account with `EnableNoSQLFullTextSearch` and
+`EnableNoSQLFullTextSearchPreviewFeatures`. Create only uniquely named test containers
+and remove them afterward. Do not change account capabilities, network access, or
+permissions as part of the test.
+
+To validate Hosted Entra sign-in, run the dev server on **port 1234** and open
+`https://localhost:1234/hostedExplorer.html`.
+The development sign-in bridge redirects to `https://localhost:1234/redirectBridge.html`;
+a server on another port cannot complete that flow. Use real sign-in, directory,
+subscription, and account selection, then verify create, indexed locks, invalid
+input, Save/Discard, a full browser reload, and policy preservation during an unrelated
+Settings update. Do not substitute injected tokens or fabricated account capabilities.
+
+Configuration round trips do not prove query semantics. Report search-result
+failures separately from configuration acceptance.
+
+For visual acceptance, inspect both creation and Settings in light/dark themes and
+at 1440px, 768px, and 375px widths. Confirm that labels align with their fields,
+inheritance text wraps without clipping, default/override descriptions are clear,
+locked values remain readable without becoming editable, service-default selection
+explains disabled word fields, and errors are associated with the offending word
+list. These checks can use unsaved edits followed by Discard; no new container is
+needed for a visual-only audit.
+
+Check that collapsed path headers retain the path name, inheritance/index state,
+and any validation warning. Space/Enter must toggle expansion without losing
+values, and Delete must be a separate keyboard target. Adding a path should focus
+its input; deleting should return focus to Add, which must still respond to a mouse
+click. Check the empty state and a long path name at narrow width. In wide Settings,
+the word lists should sit side by side; in the create panel they should stack.
+Controls should not stretch to fill the available workspace: language and stopword
+dropdowns and individual word-list boxes are at most 240px wide, path inputs at
+most 320px, and the Settings form at most 496px. They must still shrink to fit a
+narrow panel without clipping values, errors, or accessible labels.
+
+Repeat creation and policy management with each supported language: `en-US`,
+`fr-FR`, `de-DE`, `es-ES`, `it-IT`, `pt-PT`, and `pt-BR`. Check 20-word lists with
+case differences, duplicates, and accented text through creation, indexed locks,
+an unindexed-path save, Discard, and full page reload. Verify that persisted custom
+words affect search as expected; do not treat current backend behavior as the
+expected result merely because the policy was accepted.
+
+For UI acceptance, exercise 0, 1, 5, 20, and 100 entries in **both** word lists and
+both creation/Settings. Test real newline paste, CRLF, middle edits, whole-line
+deletion, long and multilingual words, a late invalid entry, differing list
+lengths, filter off/on, and keyboard inspection of locked values. Include all
+default/path language combinations and service-default reset. A passing
+serialization test or tidy one-word screenshot is not multiword UX acceptance.
+
+Verify modern policy fields with raw ARM JSON. Older typed management clients,
+including `az cosmosdb sql container show`, may omit fields unknown to their models
+even when the service preserved them.
+
 ### Testing with Data Plane RBAC Authentication
 
 By default, the tests will use key based authentication to access the database accounts. For APIs that support data plane RBAC, the
