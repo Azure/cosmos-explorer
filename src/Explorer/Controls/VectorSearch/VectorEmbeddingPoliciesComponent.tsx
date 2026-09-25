@@ -1,28 +1,24 @@
-import {
-  DefaultButton,
-  Dropdown,
-  IDropdownOption,
-  ILabelStyleProps,
-  IStyleFunctionOrObject,
-  ITextFieldStyleProps,
-  ITextFieldStyles,
-  Label,
-  Stack,
-  TextField,
-} from "@fluentui/react";
+import { DefaultButton, Dropdown, IDropdownOption, Label, Stack, TextField } from "@fluentui/react";
 import { InfoTooltip } from "Common/Tooltip/InfoTooltip";
-import { VectorEmbedding, VectorIndex } from "Contracts/DataModels";
+import { VectorEmbedding, VectorEmbeddingSource, VectorIndex } from "Contracts/DataModels";
 import { CollapsibleSectionComponent } from "Explorer/Controls/CollapsiblePanel/CollapsibleSectionComponent";
+import { VectorEmbeddingSourceComponent } from "Explorer/Controls/VectorSearch/VectorEmbeddingSourceComponent";
 import {
   getDataTypeOptions,
   getDistanceFunctionOptions,
   getIndexTypeOptions,
   getQuantizerTypeOptions,
   supportsQuantization,
-  supportsQuantizationByteSize,
 } from "Explorer/Controls/VectorSearch/VectorSearchUtils";
+import { dropdownStyles, labelStyles, textFieldStyles } from "Explorer/Controls/VectorSearch/vectorSearchStyles";
 import { Keys, t } from "Localization";
-import React, { FunctionComponent, useState } from "react";
+import React, { FunctionComponent, useCallback, useState } from "react";
+import { isIntegratedEmbeddingEnabled } from "Utils/CapabilityUtils";
+
+const generatePolicyId = (): string =>
+  typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
+    ? crypto.randomUUID()
+    : `vep-${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
 export interface IVectorEmbeddingPoliciesComponentProps {
   vectorEmbeddingsBaseline: VectorEmbedding[];
@@ -35,15 +31,17 @@ export interface IVectorEmbeddingPoliciesComponentProps {
   vectorIndexes?: VectorIndex[];
   discardChanges?: boolean;
   onChangesDiscarded?: () => void;
-  isGlobalSecondaryIndexTarget?: boolean;
+  isGlobalSecondaryIndex?: boolean;
 }
 
 export interface VectorEmbeddingPolicyData {
+  id: string;
   path: string;
   dataType: VectorEmbedding["dataType"];
   distanceFunction: VectorEmbedding["distanceFunction"];
   dimensions: number;
   indexType: VectorIndex["type"] | "none";
+  dataTypeError: string;
   pathError: string;
   dimensionsError: string;
   vectorIndexShardKey?: string[];
@@ -52,44 +50,22 @@ export interface VectorEmbeddingPolicyData {
   quantizationByteSize?: number;
   quantizationByteSizeError?: string;
   quantizerType?: VectorIndex["quantizerType"];
+  embeddingSource?: VectorEmbeddingSource;
+  embeddingSourceValid: boolean;
 }
 
 type VectorEmbeddingPolicyProperty = "dataType" | "distanceFunction" | "indexType";
+const embeddingSourceSupportedDataTypes: VectorEmbedding["dataType"][] = ["float32", "float16"];
 
-const labelStyles = (props: ILabelStyleProps) => {
-  return {
-    root: {
-      fontSize: 12,
-      color: props.disabled ? "var(--colorNeutralForeground3)" : "var(--colorNeutralForeground1)",
-    },
-  };
-};
-
-const textFieldStyles: IStyleFunctionOrObject<ITextFieldStyleProps, ITextFieldStyles> = {
-  fieldGroup: {
-    height: 27,
-  },
-  field: {
-    fontSize: 12,
-    padding: "0 8px",
-    backgroundColor: "var(--colorNeutralBackground1)",
-    color: "var(--colorNeutralForeground1)",
-  },
-};
-
-const dropdownStyles = {
-  title: {
-    height: 27,
-    lineHeight: "24px",
-    fontSize: 12,
-  },
-  dropdown: {
-    height: 27,
-    lineHeight: "24px",
-  },
-  dropdownItem: {
-    fontSize: 12,
-  },
+const getEmbeddingSourceDimensionLimit = (modelName: string | undefined): number | undefined => {
+  switch (modelName?.trim()) {
+    case "text-embedding-3-large":
+      return 3072;
+    case "text-embedding-3-small":
+      return 1536;
+    default:
+      return undefined;
+  }
 };
 
 export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddingPoliciesComponentProps> = ({
@@ -99,7 +75,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
   onVectorEmbeddingChange,
   discardChanges,
   onChangesDiscarded,
-  isGlobalSecondaryIndexTarget,
+  isGlobalSecondaryIndex,
 }): JSX.Element => {
   const isExistingPolicy = (policy: VectorEmbeddingPolicyData): boolean => {
     if (!vectorEmbeddingsBaseline || vectorEmbeddingsBaseline.length === 0) {
@@ -132,13 +108,36 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
     return error;
   };
 
-  const onVectorEmbeddingDimensionError = (dimension: number, indexType: VectorIndex["type"] | "none"): string => {
+  const onVectorEmbeddingDataTypeError = (
+    dataType: VectorEmbedding["dataType"],
+    embeddingSource?: VectorEmbeddingSource,
+  ): string => {
+    if (embeddingSource && !embeddingSourceSupportedDataTypes.includes(dataType)) {
+      return t(Keys.controls.vectorEmbeddingPolicies.embeddingSourceDataTypeError);
+    }
+    return "";
+  };
+
+  const onVectorEmbeddingDimensionError = (
+    dimension: number,
+    indexType: VectorIndex["type"] | "none",
+    embeddingSource?: VectorEmbeddingSource,
+  ): string => {
     let error = "";
     if (dimension <= 0 || dimension > 4096) {
       error = t(Keys.controls.vectorEmbeddingPolicies.dimensionRangeError);
     }
     if (indexType === "flat" && dimension > 505) {
       error = t(Keys.controls.vectorEmbeddingPolicies.dimensionFlatIndexError);
+    }
+    if (embeddingSource?.modelName === "text-embedding-ada-002" && dimension !== 1536) {
+      error = t(Keys.controls.vectorEmbeddingPolicies.adaDimensionError);
+    }
+    const modelDimensionLimit = getEmbeddingSourceDimensionLimit(embeddingSource?.modelName);
+    if (modelDimensionLimit && (dimension <= 0 || dimension > modelDimensionLimit)) {
+      error = t(Keys.controls.vectorEmbeddingPolicies.modelDimensionRangeError, {
+        max: modelDimensionLimit,
+      });
     }
     return error;
   };
@@ -167,13 +166,21 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
       const supportsQuantizer = supportsQuantization(matchingType);
       mergedData.push({
         ...embedding,
+        id: generatePolicyId(),
         indexType: matchingType || "none",
         indexingSearchListSize: matchingIndex?.indexingSearchListSize || undefined,
         quantizationByteSize: matchingIndex?.quantizationByteSize || undefined,
-        quantizerType: supportsQuantizer ? matchingIndex?.quantizerType || "spherical" : undefined,
+        quantizerType: supportsQuantizer ? matchingIndex?.quantizerType || "product" : undefined,
         vectorIndexShardKey: matchingIndex?.vectorIndexShardKey || undefined,
         pathError: onVectorEmbeddingPathError(embedding.path),
-        dimensionsError: onVectorEmbeddingDimensionError(embedding.dimensions, matchingIndex?.type || "none"),
+        dataTypeError: onVectorEmbeddingDataTypeError(embedding.dataType, embedding.embeddingSource),
+        dimensionsError: onVectorEmbeddingDimensionError(
+          embedding.dimensions,
+          matchingIndex?.type || "none",
+          embedding.embeddingSource,
+        ),
+        embeddingSource: embedding.embeddingSource,
+        embeddingSourceValid: true,
       });
     });
 
@@ -197,12 +204,18 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
   }, [discardChanges]);
 
   const propagateData = () => {
-    const vectorEmbeddings: VectorEmbedding[] = vectorEmbeddingPolicyData.map((policy: VectorEmbeddingPolicyData) => ({
-      path: policy.path,
-      dataType: policy.dataType,
-      dimensions: policy.dimensions,
-      distanceFunction: policy.distanceFunction,
-    }));
+    const vectorEmbeddings: VectorEmbedding[] = vectorEmbeddingPolicyData.map((policy: VectorEmbeddingPolicyData) => {
+      const base: VectorEmbedding = {
+        path: policy.path,
+        dataType: policy.dataType,
+        dimensions: policy.dimensions,
+        distanceFunction: policy.distanceFunction,
+      };
+      if (policy.embeddingSource) {
+        base.embeddingSource = policy.embeddingSource;
+      }
+      return base;
+    });
     const vectorIndexes: VectorIndex[] = vectorEmbeddingPolicyData
       .filter((policy: VectorEmbeddingPolicyData) => policy.indexType !== "none")
       .map(
@@ -219,7 +232,11 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
           }) as VectorIndex,
       );
     const validationPassed = vectorEmbeddingPolicyData.every(
-      (policy: VectorEmbeddingPolicyData) => policy.pathError === "" && policy.dimensionsError === "",
+      (policy: VectorEmbeddingPolicyData) =>
+        policy.pathError === "" &&
+        policy.dataTypeError === "" &&
+        policy.dimensionsError === "" &&
+        policy.embeddingSourceValid,
     );
 
     onVectorEmbeddingChange(vectorEmbeddings, vectorIndexes, validationPassed);
@@ -243,7 +260,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
     const vectorEmbeddings = [...vectorEmbeddingPolicyData];
     const vectorEmbedding = vectorEmbeddings[index];
     vectorEmbeddings[index].dimensions = value;
-    const error = onVectorEmbeddingDimensionError(value, vectorEmbedding.indexType);
+    const error = onVectorEmbeddingDimensionError(value, vectorEmbedding.indexType, vectorEmbedding.embeddingSource);
     vectorEmbeddings[index].dimensionsError = error;
     setVectorEmbeddingPolicyData(vectorEmbeddings);
   };
@@ -252,7 +269,11 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
     const vectorEmbeddings = [...vectorEmbeddingPolicyData];
     const vectorEmbedding = vectorEmbeddings[index];
     vectorEmbeddings[index].indexType = option.key as never;
-    const error = onVectorEmbeddingDimensionError(vectorEmbedding.dimensions, vectorEmbedding.indexType);
+    const error = onVectorEmbeddingDimensionError(
+      vectorEmbedding.dimensions,
+      vectorEmbedding.indexType,
+      vectorEmbedding.embeddingSource,
+    );
     vectorEmbeddings[index].dimensionsError = error;
     if (vectorEmbedding.indexType === "diskANN") {
       vectorEmbedding.indexingSearchListSize = 100;
@@ -260,23 +281,16 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
       vectorEmbedding.indexingSearchListSize = undefined;
     }
     if (supportsQuantization(vectorEmbedding.indexType)) {
-      vectorEmbedding.quantizerType = vectorEmbedding.quantizerType || "spherical";
+      vectorEmbedding.quantizerType = vectorEmbedding.quantizerType || "product";
     } else {
       vectorEmbedding.quantizerType = undefined;
-    }
-    if (!supportsQuantizationByteSize(vectorEmbedding.quantizerType)) {
-      vectorEmbedding.quantizationByteSize = undefined;
     }
     setVectorEmbeddingPolicyData(vectorEmbeddings);
   };
 
   const onQuantizerTypeChange = (index: number, option: IDropdownOption): void => {
     const vectorEmbeddings = [...vectorEmbeddingPolicyData];
-    const quantizerType = option.key as VectorIndex["quantizerType"];
-    vectorEmbeddings[index].quantizerType = quantizerType;
-    if (!supportsQuantizationByteSize(quantizerType)) {
-      vectorEmbeddings[index].quantizationByteSize = undefined;
-    }
+    vectorEmbeddings[index].quantizerType = option.key as VectorIndex["quantizerType"];
     setVectorEmbeddingPolicyData(vectorEmbeddings);
   };
 
@@ -314,20 +328,56 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
   ): void => {
     const vectorEmbeddings = [...vectorEmbeddingPolicyData];
     vectorEmbeddings[index][property] = option.key as never;
+    if (property === "dataType") {
+      vectorEmbeddings[index].dataTypeError = onVectorEmbeddingDataTypeError(
+        vectorEmbeddings[index].dataType,
+        vectorEmbeddings[index].embeddingSource,
+      );
+    }
     setVectorEmbeddingPolicyData(vectorEmbeddings);
   };
+
+  const onEmbeddingSourceChange = useCallback(
+    (index: number, embeddingSource: VectorEmbeddingSource | undefined, isValid: boolean): void => {
+      setVectorEmbeddingPolicyData((prev) => {
+        const current = prev[index];
+        if (!current) {
+          return prev;
+        }
+        if (current.embeddingSource === embeddingSource && current.embeddingSourceValid === isValid) {
+          return prev;
+        }
+        const next = [...prev];
+        const dataType = embeddingSourceSupportedDataTypes.includes(current.dataType) ? current.dataType : "float32";
+        next[index] = {
+          ...current,
+          dataType,
+          dataTypeError: onVectorEmbeddingDataTypeError(dataType, embeddingSource),
+          dimensionsError: onVectorEmbeddingDimensionError(current.dimensions, current.indexType, embeddingSource),
+          embeddingSource,
+          embeddingSourceValid: isValid,
+        };
+        return next;
+      });
+    },
+    [],
+  );
 
   const onAdd = () => {
     setVectorEmbeddingPolicyData([
       ...vectorEmbeddingPolicyData,
       {
+        id: generatePolicyId(),
         path: "",
         dataType: "float32",
         distanceFunction: "euclidean",
         dimensions: 0,
         indexType: "none",
+        dataTypeError: "",
         pathError: onVectorEmbeddingPathError(""),
         dimensionsError: onVectorEmbeddingDimensionError(0, "none"),
+        embeddingSource: undefined,
+        embeddingSourceValid: true,
       },
     ]);
   };
@@ -338,7 +388,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
   };
 
   const getQuantizationByteSizeTooltipContent = (): string => {
-    const containerName = isGlobalSecondaryIndexTarget
+    const containerName = isGlobalSecondaryIndex
       ? t(Keys.controls.vectorEmbeddingPolicies.quantizationByteSizeTooltipGlobalSecondaryIndexName)
       : t(Keys.controls.vectorEmbeddingPolicies.quantizationByteSizeTooltipContainerName);
     return t(Keys.controls.vectorEmbeddingPolicies.quantizationByteSizeTooltip, { containerName });
@@ -351,12 +401,13 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
         vectorEmbeddingPolicyData.map((vectorEmbeddingPolicy: VectorEmbeddingPolicyData, index: number) => (
           <CollapsibleSectionComponent
             disabled={isExistingPolicy(vectorEmbeddingPolicy)}
-            key={index}
+            key={vectorEmbeddingPolicy.id}
             isExpandedByDefault={true}
             title={t(Keys.controls.vectorEmbeddingPolicies.vectorEmbeddingTitle, { index: index + 1 })}
             showDelete={true}
             onDelete={() => onDelete(index)}
             disableDelete={false}
+            dataTest={`VectorEmbedding/Section/${index + 1}`}
           >
             <Stack horizontal tokens={{ childrenGap: 4 }}>
               <Stack
@@ -376,6 +427,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
                   <TextField
                     disabled={isExistingPolicy(vectorEmbeddingPolicy)}
                     id={`vector-policy-path-${index + 1}`}
+                    data-test={`VectorEmbedding/Path/${index + 1}`}
                     required={true}
                     placeholder="/vector1"
                     styles={textFieldStyles}
@@ -392,11 +444,12 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
                     disabled={isExistingPolicy(vectorEmbeddingPolicy)}
                     required={true}
                     styles={dropdownStyles}
-                    options={getDataTypeOptions()}
+                    options={getDataTypeOptions(!!vectorEmbeddingPolicy.embeddingSource)}
                     selectedKey={vectorEmbeddingPolicy.dataType}
                     onChange={(_event: React.FormEvent<HTMLDivElement>, option: IDropdownOption) =>
                       onVectorEmbeddingPolicyChange(index, option, "dataType")
                     }
+                    errorMessage={vectorEmbeddingPolicy.dataTypeError}
                   ></Dropdown>
                 </Stack>
                 <Stack>
@@ -421,6 +474,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
                   <TextField
                     disabled={isExistingPolicy(vectorEmbeddingPolicy)}
                     id={`vector-policy-dimension-${index + 1}`}
+                    data-test={`VectorEmbedding/Dimensions/${index + 1}`}
                     required={true}
                     styles={textFieldStyles}
                     value={String(vectorEmbeddingPolicy.dimensions || 0)}
@@ -453,6 +507,30 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
                         }
                         styles={labelStyles}
                       >
+                        {t(Keys.controls.vectorEmbeddingPolicies.quantizationByteSize)}
+                        <InfoTooltip>{getQuantizationByteSizeTooltipContent()}</InfoTooltip>
+                      </Label>
+                      <TextField
+                        disabled={
+                          isExistingPolicy(vectorEmbeddingPolicy) ||
+                          !supportsQuantization(vectorEmbeddingPolicy.indexType)
+                        }
+                        id={`vector-policy-quantizationByteSize-${index + 1}`}
+                        styles={textFieldStyles}
+                        value={String(vectorEmbeddingPolicy.quantizationByteSize || "")}
+                        onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                          onQuantizationByteSizeChange(index, event)
+                        }
+                      />
+                    </Stack>
+                    <Stack style={{ marginLeft: "10px" }}>
+                      <Label
+                        disabled={
+                          isExistingPolicy(vectorEmbeddingPolicy) ||
+                          !supportsQuantization(vectorEmbeddingPolicy.indexType)
+                        }
+                        styles={labelStyles}
+                      >
                         {t(Keys.controls.vectorEmbeddingPolicies.quantizerType)}
                         <InfoTooltip>{t(Keys.controls.vectorEmbeddingPolicies.quantizerTypeTooltip)}</InfoTooltip>
                       </Label>
@@ -467,32 +545,6 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
                         selectedKey={vectorEmbeddingPolicy.quantizerType ?? null}
                         onChange={(_event: React.FormEvent<HTMLDivElement>, option: IDropdownOption) =>
                           onQuantizerTypeChange(index, option)
-                        }
-                      />
-                    </Stack>
-                    <Stack style={{ marginLeft: "10px" }}>
-                      <Label
-                        disabled={
-                          isExistingPolicy(vectorEmbeddingPolicy) ||
-                          !supportsQuantization(vectorEmbeddingPolicy.indexType) ||
-                          !supportsQuantizationByteSize(vectorEmbeddingPolicy.quantizerType)
-                        }
-                        styles={labelStyles}
-                      >
-                        {t(Keys.controls.vectorEmbeddingPolicies.quantizationByteSize)}
-                        <InfoTooltip>{getQuantizationByteSizeTooltipContent()}</InfoTooltip>
-                      </Label>
-                      <TextField
-                        disabled={
-                          isExistingPolicy(vectorEmbeddingPolicy) ||
-                          !supportsQuantization(vectorEmbeddingPolicy.indexType) ||
-                          !supportsQuantizationByteSize(vectorEmbeddingPolicy.quantizerType)
-                        }
-                        id={`vector-policy-quantizationByteSize-${index + 1}`}
-                        styles={textFieldStyles}
-                        value={String(vectorEmbeddingPolicy.quantizationByteSize || "")}
-                        onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                          onQuantizationByteSizeChange(index, event)
                         }
                       />
                     </Stack>
@@ -538,11 +590,26 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
                     </Stack>
                   </Stack>
                 )}
+                {isIntegratedEmbeddingEnabled() && (
+                  <VectorEmbeddingSourceComponent
+                    index={index}
+                    vectorPath={vectorEmbeddingPolicy.path}
+                    disabled={isExistingPolicy(vectorEmbeddingPolicy)}
+                    initialEmbeddingSource={vectorEmbeddingPolicy.embeddingSource}
+                    discardChanges={discardChanges}
+                    onChange={(source, isValid) => onEmbeddingSourceChange(index, source, isValid)}
+                  />
+                )}
               </Stack>
             </Stack>
           </CollapsibleSectionComponent>
         ))}
-      <DefaultButton id={`add-vector-policy`} styles={{ root: { maxWidth: 170, fontSize: 12 } }} onClick={onAdd}>
+      <DefaultButton
+        id={`add-vector-policy`}
+        data-test="VectorEmbedding/AddButton"
+        styles={{ root: { maxWidth: 170, fontSize: 12 } }}
+        onClick={onAdd}
+      >
         {t(Keys.controls.vectorEmbeddingPolicies.addVectorEmbedding)}
       </DefaultButton>
     </Stack>
