@@ -38,6 +38,12 @@
     "off": "Nonaktif",
     "preview": "Pratinjau"
   },
+  "cosmosDBShell": {
+    "installingSdk": "Mengunduh dan menginstal .NET SDK 10. Penyiapan pertama kali mungkin memerlukan waktu beberapa menit.",
+    "installingShell": "Menginstal Cosmos DB Shell...",
+    "updatingShell": "Memeriksa pembaruan Cosmos DB Shell...",
+    "connecting": "Menyambungkan ke akun Cosmos DB Anda..."
+  },
   "splashScreen": {
     "title": {
       "default": "Selamat Datang di Azure Cosmos DB",
@@ -990,6 +996,8 @@
       "quantizationByteSizeTooltipContainerName": "kontainer",
       "quantizationByteSizeTooltipGlobalSecondaryIndexName": "indeks sekunder global",
       "quantizerType": "Tipe penguantisasi",
+      "quantizerTypeProduct": "Produk",
+      "quantizerTypeSpherical": "Bulat",
       "quantizerTypeTooltip": "Metode kuantisasi yang digunakan oleh indeks vektor.",
       "indexingSearchListSize": "Ukuran daftar pencarian pengindeks",
       "vectorIndexShardKey": "Kunci pecahan indeks vektor",
