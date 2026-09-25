@@ -172,6 +172,9 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
       itemType={isBranch ? "branch" : "leaf"}
       onOpenChange={onOpenChange}
       className={treeStyles.treeItem}
+      // Expose selection state to screen readers for selectable nodes so they announce "selected"/"not selected".
+      // Pure grouping nodes (no isSelected) omit the attribute, matching the ARIA single-select tree pattern.
+      aria-selected={node.isSelected ? shouldShowAsSelected : undefined}
     >
       <TreeItemLayout
         className={mergeClasses(
