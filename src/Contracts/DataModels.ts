@@ -67,6 +67,8 @@ export interface DatabaseAccountExtendedProperties {
   enablePriorityBasedExecution?: boolean;
   vcoreMongoEndpoint?: string;
   enableAllVersionsAndDeletesChangeFeed?: boolean;
+  enableFullFidelityChangeFeed?: boolean;
+  enableEmbeddingGenerator?: boolean;
 }
 
 export interface DatabaseAccountApiProperties {
@@ -419,6 +421,7 @@ export interface AccountOverride {
   capacityMode?: CapacityMode;
   enableFreeTier?: boolean;
   enableAnalyticalStorage?: boolean;
+  enableEmbeddingGenerator?: boolean;
 }
 
 export interface CreateDatabaseParams {
@@ -463,6 +466,15 @@ export interface VectorEmbedding {
   dimensions: number;
   distanceFunction: "euclidean" | "cosine" | "dotproduct";
   path: string;
+  embeddingSource?: VectorEmbeddingSource;
+}
+
+export interface VectorEmbeddingSource {
+  sourcePaths: string[];
+  deploymentName: string;
+  modelName: string;
+  endpoint: string;
+  authType: "Entra";
 }
 
 export interface FullTextPolicy {
