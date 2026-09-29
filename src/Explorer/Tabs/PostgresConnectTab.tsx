@@ -16,10 +16,11 @@ import React from "react";
 import { userContext } from "UserContext";
 
 export const PostgresConnectTab: React.FC = (): JSX.Element => {
-  const { adminLogin, nodes, enablePublicIpAccess } = userContext.postgresConnectionStrParams;
+  const { adminLogin, databaseName, nodes, enablePublicIpAccess } = userContext.postgresConnectionStrParams;
   const [usePgBouncerPort, setUsePgBouncerPort] = React.useState<boolean>(false);
   const [selectedNode, setSelectedNode] = React.useState<string>(nodes?.[0]?.value);
   const portNumber = usePgBouncerPort ? "6432" : "5432";
+  const dbName = databaseName ? databaseName : "citus";
 
   const onCopyBtnClicked = (selector: string): void => {
     const textfield: HTMLInputElement = document.querySelector(selector);
@@ -40,11 +41,11 @@ export const PostgresConnectTab: React.FC = (): JSX.Element => {
     text: node.text,
   }));
 
-  const postgresSQLConnectionURL = `postgres://${adminLogin}:{your_password}@${selectedNode}:${portNumber}/citus?sslmode=require`;
-  const psql = `psql "host=${selectedNode} port=${portNumber} dbname=citus user=${adminLogin} password={your_password} sslmode=require"`;
-  const jdbc = `jdbc:postgresql://${selectedNode}:${portNumber}/citus?user=${adminLogin}&password={your_password}&sslmode=require`;
-  const libpq = `host=${selectedNode} port=${portNumber} dbname=citus user=${adminLogin} password={your_password} sslmode=require`;
-  const adoDotNet = `Server=${selectedNode};Database=citus;Port=${portNumber};User Id=${adminLogin};Password={your_password};Ssl Mode=Require;`;
+  const postgresSQLConnectionURL = `postgres://${adminLogin}:{your_password}@${selectedNode}:${portNumber}/${dbName}?sslmode=require`;
+  const psql = `psql "host=${selectedNode} port=${portNumber} dbname=${dbName} user=${adminLogin} password={your_password} sslmode=require"`;
+  const jdbc = `jdbc:postgresql://${selectedNode}:${portNumber}/${dbName}?user=${adminLogin}&password={your_password}&sslmode=require`;
+  const libpq = `host=${selectedNode} port=${portNumber} dbname=${dbName} user=${adminLogin} password={your_password} sslmode=require`;
+  const adoDotNet = `Server=${selectedNode};Database=${dbName};Port=${portNumber};User Id=${adminLogin};Password={your_password};Ssl Mode=Require;`;
 
   return (
     <div style={{ width: "100%", padding: 16 }}>
