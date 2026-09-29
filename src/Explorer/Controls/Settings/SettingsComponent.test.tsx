@@ -258,7 +258,6 @@ describe("SettingsComponent", () => {
   it("should save throughput bucket changes when Save button is clicked", async () => {
     updateUserContext({
       apiType: "SQL",
-      throughputBucketsEnabled: true,
       authType: AuthType.AAD,
     });
 

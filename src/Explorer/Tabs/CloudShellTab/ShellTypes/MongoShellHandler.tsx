@@ -29,7 +29,7 @@ export class MongoShellHandler extends AbstractShellHandler {
   }
 
   public getSetUpCommands(): string[] {
-    return this.mongoShellSetupCommands();
+    return this.mongoShellSetupCommands(userContext.databaseAccount?.properties.apiProperties?.serverVersion);
   }
 
   public getConnectionCommand(): string {

@@ -39,6 +39,7 @@ export interface DatabaseAccountBackupPolicy {
 }
 
 export interface DatabaseAccountExtendedProperties {
+  apiProperties?: DatabaseAccountApiProperties;
   documentEndpoint?: string;
   disableLocalAuth?: boolean;
   tableEndpoint?: string;
@@ -66,6 +67,10 @@ export interface DatabaseAccountExtendedProperties {
   enablePriorityBasedExecution?: boolean;
   vcoreMongoEndpoint?: string;
   enableAllVersionsAndDeletesChangeFeed?: boolean;
+}
+
+export interface DatabaseAccountApiProperties {
+  serverVersion?: string;
 }
 
 export interface DatabaseAccountResponseLocation {

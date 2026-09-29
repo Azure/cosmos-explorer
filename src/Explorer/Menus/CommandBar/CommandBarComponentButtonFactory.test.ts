@@ -1,8 +1,9 @@
 import * as ko from "knockout";
+import { extractFeatures } from "Platform/Hosted/extractFeatures";
 import { AuthType } from "../../../AuthType";
 import { DatabaseAccount } from "../../../Contracts/DataModels";
-import { CollectionBase } from "../../../Contracts/ViewModels";
-import { updateUserContext } from "../../../UserContext";
+import { CollectionBase, TerminalKind } from "../../../Contracts/ViewModels";
+import { ApiType, updateUserContext, userContext } from "../../../UserContext";
 import Explorer from "../../Explorer";
 import { useDatabases } from "../../useDatabases";
 import { useSelectedNode } from "../../useSelectedNode";
@@ -162,6 +163,60 @@ describe("CommandBarComponentButtonFactory tests", () => {
         (button) => button.commandButtonLabel === openVCoreMongoShellButtonLabel,
       );
       expect(openVCoreMongoShellButton).toBeDefined();
+    });
+  });
+
+  describe("Open Cosmos DB Shell button", () => {
+    let originalUserContext: typeof userContext;
+
+    beforeEach(() => {
+      originalUserContext = { ...userContext };
+      mockExplorer = { openNotebookTerminal: jest.fn() } as unknown as Explorer;
+      updateUserContext({
+        authType: AuthType.AAD,
+        databaseAccount: { kind: "DocumentDB", properties: { capabilities: [] } } as DatabaseAccount,
+        features: extractFeatures(new URLSearchParams()),
+      });
+    });
+
+    afterEach(() => updateUserContext(originalUserContext));
+
+    const getShellButton = () =>
+      CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, useSelectedNode.getState()).find(
+        (button) => button.commandButtonLabel === "Open Cosmos DB Shell",
+      );
+
+    it("shows and opens the shell with default features", () => {
+      const button = getShellButton();
+      expect(button).toBeDefined();
+      expect(button.disabled).toBe(false);
+      button.onCommandClick(new KeyboardEvent("keydown", { key: "Enter" }));
+      expect(mockExplorer.openNotebookTerminal).toHaveBeenCalledWith(TerminalKind.CosmosDB);
+    });
+
+    it("hides the shell when explicitly disabled by the feature flag", () => {
+      updateUserContext({
+        features: extractFeatures(new URLSearchParams({ "feature.enableCosmosDBShell": "false" })),
+      });
+      expect(getShellButton()).toBeUndefined();
+    });
+
+    it("hides the shell when Cloud Shell is unavailable", () => {
+      updateUserContext({ features: { ...userContext.features, enableCloudShell: false } });
+      expect(getShellButton()).toBeUndefined();
+    });
+
+    it.each<ApiType>(["Mongo", "Cassandra", "Gremlin", "Tables", "Postgres", "VCoreMongo"])(
+      "hides the shell for the %s API",
+      (apiType) => {
+        updateUserContext({ apiType });
+        expect(getShellButton()).toBeUndefined();
+      },
+    );
+
+    it("hides the shell for resource token authentication", () => {
+      updateUserContext({ authType: AuthType.ResourceToken });
+      expect(getShellButton()).toBeUndefined();
     });
   });
 

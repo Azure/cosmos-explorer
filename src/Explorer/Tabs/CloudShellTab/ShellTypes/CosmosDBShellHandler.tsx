@@ -1,3 +1,4 @@
+import { ResourceKey, t } from "Localization/t";
 import { userContext } from "../../../../UserContext";
 import { AbstractShellHandler } from "./AbstractShellHandler";
 
@@ -65,12 +66,21 @@ export class CosmosDBShellHandler extends AbstractShellHandler {
     return [
       "export DOTNET_ROOT=$HOME/.dotnet",
       "export PATH=$HOME/.dotnet:$HOME/.dotnet/tools:$PATH",
-      "if ! command -v cosmosdbshell &> /dev/null; then echo '⚠️ cosmosdbshell not found. Installing .NET SDK 10 and CosmosDBShell...'; fi",
-      "if ! command -v cosmosdbshell &> /dev/null && ! dotnet --list-sdks 2>/dev/null | grep -q '^10\\.'; then curl -sSL https://dot.net/v1/dotnet-install.sh | bash -s -- --channel 10.0 --install-dir $HOME/.dotnet; fi",
-      "if ! command -v cosmosdbshell &> /dev/null; then dotnet tool install --global CosmosDBShell --prerelease; else dotnet tool update --global CosmosDBShell --prerelease; fi",
+      `if ! command -v cosmosdbshell &> /dev/null && ! dotnet --list-sdks 2>/dev/null | grep -q '^10\\.'; then ${this._getProgressCommand(
+        "cosmosDBShell.installingSdk",
+      )}; curl -sSL https://dot.net/v1/dotnet-install.sh | bash -s -- --channel 10.0 --install-dir $HOME/.dotnet; fi`,
+      `if ! command -v cosmosdbshell &> /dev/null; then ${this._getProgressCommand(
+        "cosmosDBShell.installingShell",
+      )}; dotnet tool install --global CosmosDBShell --prerelease; else ${this._getProgressCommand(
+        "cosmosDBShell.updatingShell",
+      )}; dotnet tool update --global CosmosDBShell --prerelease; fi`,
       "grep -qxF 'export DOTNET_ROOT=$HOME/.dotnet' ~/.bashrc || echo 'export DOTNET_ROOT=$HOME/.dotnet' >> ~/.bashrc",
       "grep -qxF 'export PATH=$HOME/.dotnet:$HOME/.dotnet/tools:$PATH' ~/.bashrc || echo 'export PATH=$HOME/.dotnet:$HOME/.dotnet/tools:$PATH' >> ~/.bashrc",
     ];
+  }
+
+  private _getProgressCommand(key: ResourceKey): string {
+    return `printf '%s\\n' '${t(key).replace(/'/g, "'\\''")}'`;
   }
 
   private _getKeyConnectionCommand(key: string): string {
@@ -118,9 +128,11 @@ export class CosmosDBShellHandler extends AbstractShellHandler {
       endpoint: this._endpoint,
     });
 
-    return this.credential.kind === "key"
-      ? this._getKeyConnectionCommand(this.credential.value)
-      : this._getTokenConnectionCommand(this.credential.value);
+    const connectionCommand =
+      this.credential.kind === "key"
+        ? this._getKeyConnectionCommand(this.credential.value)
+        : this._getTokenConnectionCommand(this.credential.value);
+    return `${this._getProgressCommand("cosmosDBShell.connecting")}; ${connectionCommand}`;
   }
 
   public getTerminalSuppressedData(): string[] {

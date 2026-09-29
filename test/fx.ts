@@ -497,13 +497,18 @@ export class DataExplorer {
     return new DocumentsTab(this.frame, tabId, tab, documentsTab);
   }
 
-  /** Select the primary global command button.
-   *
-   * There's only a single "primary" button, but we still require you to pass the label to confirm you're selecting the right button.
-   */
+  /** Select a global command from either the primary button or the overflow menu. */
   async globalCommandButton(label: string): Promise<Locator> {
-    await this.frame.getByTestId("GlobalCommands").click();
-    return this.frame.getByRole("menuitem", { name: label });
+    const globalCommands = this.frame.getByTestId("GlobalCommands");
+    const primaryButton = globalCommands.getByRole("button", { name: label, exact: true });
+    if (await primaryButton.isVisible()) {
+      return primaryButton;
+    }
+
+    await globalCommands.locator('button[aria-haspopup="menu"]:visible').click();
+    const menuItem = this.frame.getByRole("menuitem", { name: label, exact: true });
+    await menuItem.waitFor();
+    return menuItem;
   }
 
   /** Select the command bar button with the specified label */

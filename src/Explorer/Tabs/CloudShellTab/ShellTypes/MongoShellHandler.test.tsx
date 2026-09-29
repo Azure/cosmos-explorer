@@ -5,6 +5,9 @@ import { MongoShellHandler } from "./MongoShellHandler";
 // Define interfaces for type safety
 interface DatabaseAccountProperties {
   mongoEndpoint?: string;
+  apiProperties?: {
+    serverVersion?: string;
+  };
 }
 
 interface DatabaseAccount {
@@ -79,6 +82,17 @@ describe("MongoShellHandler", () => {
       expect(Array.isArray(commands)).toBe(true);
       expect(commands.length).toBe(7);
       expect(commands[1]).toContain("mongosh-2.5.6-linux-x64.tgz");
+    });
+
+    it("should download a MongoDB 3.6-compatible package for 3.6 accounts", () => {
+      const properties = (userContext as UserContextType).databaseAccount.properties;
+      const originalApiProperties = properties.apiProperties;
+      properties.apiProperties = { serverVersion: "3.6" };
+
+      const commands = mongoShellHandler.getSetUpCommands();
+
+      expect(commands[1]).toContain("mongosh-1.10.6-linux-x64.tgz");
+      properties.apiProperties = originalApiProperties;
     });
   });
 

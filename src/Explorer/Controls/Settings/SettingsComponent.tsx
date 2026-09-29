@@ -16,7 +16,7 @@ import {
 import { useIndexingPolicyStore } from "Explorer/Tabs/QueryTab/ResultsView";
 import { useDatabases } from "Explorer/useDatabases";
 import { Keys, t } from "Localization";
-import { isFabricNative } from "Platform/Fabric/FabricUtil";
+import { isFabric, isFabricNative } from "Platform/Fabric/FabricUtil";
 import { isVectorSearchEnabled } from "Utils/CapabilityUtils";
 import { isRunningOnPublicCloud } from "Utils/CloudUtils";
 import * as React from "react";
@@ -204,7 +204,11 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.isFullTextSearchEnabled = userContext.apiType === "SQL";
 
       this.changeFeedPolicyVisible = userContext.features.enableChangeFeedPolicy;
-      this.throughputBucketsEnabled = userContext.throughputBucketsEnabled;
+      this.throughputBucketsEnabled =
+        userContext.authType === AuthType.AAD &&
+        userContext.apiType === "SQL" &&
+        !userContext.features.enableSDKoperations &&
+        !isFabric();
 
       // Mongo container with system partition key still treat as "Fixed"
       this.isFixedContainer =
