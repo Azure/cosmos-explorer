@@ -4,9 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build:bridge": "webpack --config webpack.redirectBridge.config.js",
+    "predeploy": "npm run build:bridge",
     "deploy": "az webapp up --name \"dataexplorer-preview\" --subscription \"cosmosdb-portalteam-runners\" --resource-group \"dataexplorer-preview\" --runtime \"NODE:22-lts\" --sku P1V2",
     "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "pretest": "npm run build:bridge",
+    "test": "node --test redirectBridge.test.js"
   },
   "keywords": [],
   "author": "Microsoft Corporation",
