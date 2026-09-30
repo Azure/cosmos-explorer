@@ -1,8 +1,11 @@
 import * as msal from "@azure/msal-browser";
+import { Button, Spinner } from "@fluentui/react-components";
+import { ArrowClockwise20Regular } from "@fluentui/react-icons";
 import { sendMessage } from "Common/MessageHandler";
 import { stringifyError } from "Common/stringifyError";
 import { MessageTypes } from "Contracts/ExplorerContracts";
 import { useDataPlaneRbac } from "Explorer/Panes/SettingsPane/SettingsPane";
+import { t } from "Localization/t";
 import { isFabricMirrored, isFabricMirroredKey, scheduleRefreshFabricToken } from "Platform/Fabric/FabricUtil";
 import { acquireMsalTokenForAccount } from "Utils/AuthorizationUtils";
 import { update } from "Utils/arm/generatedClients/cosmos/databaseAccounts";
@@ -38,6 +41,7 @@ import { useCommandBar } from "./Menus/CommandBar/CommandBarComponentAdapter";
 import { AddCollectionPanel } from "./Panes/AddCollectionPanel/AddCollectionPanel";
 import { CassandraAddCollectionPane } from "./Panes/CassandraAddCollectionPane/CassandraAddCollectionPane";
 import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane/ExecuteSprocParamsPane";
+import { PanelInfoErrorComponent } from "./Panes/PanelInfoErrorComponent";
 import { UploadItemsPane } from "./Panes/UploadItemsPane/UploadItemsPane";
 import { CassandraAPIDataClient, TableDataClient, TablesAPIDataClient } from "./Tables/TableDataClient";
 import TabsBase from "./Tabs/TabsBase";
@@ -537,13 +541,50 @@ export default class Explorer {
           <CassandraAddCollectionPane explorer={this} cassandraApiClient={new CassandraAPIDataClient()} />,
         );
     } else {
-      const throughputCap = userContext.databaseAccount?.properties.capacity?.totalThroughputLimit;
-      throughputCap && throughputCap !== -1
-        ? await useDatabases.getState().loadAllOffers()
-        : await useDatabases.getState().loadDatabaseOffers();
-      useSidePanel
-        .getState()
-        .openSidePanel("New " + getCollectionName(), <AddCollectionPanel explorer={this} {...options} />);
+      const headerText = "New " + getCollectionName();
+      const loadingContent = (
+        <div className="panelFormWrapper">
+          <div className="panelMainContent">
+            <Spinner label={t("panes.addCollection.loadingThroughput")} />
+          </div>
+        </div>
+      );
+      const isCurrentPanel = (): boolean => {
+        const { isOpen, panelContent } = useSidePanel.getState();
+        return isOpen && panelContent === loadingContent;
+      };
+      useSidePanel.getState().openSidePanel(headerText, loadingContent);
+
+      try {
+        const throughputCap = userContext.databaseAccount?.properties.capacity?.totalThroughputLimit;
+        throughputCap && throughputCap !== -1
+          ? await useDatabases.getState().loadAllOffers()
+          : await useDatabases.getState().loadDatabaseOffers();
+        if (isCurrentPanel()) {
+          useSidePanel.getState().openSidePanel(headerText, <AddCollectionPanel explorer={this} {...options} />);
+        }
+      } catch {
+        if (isCurrentPanel()) {
+          useSidePanel.getState().openSidePanel(
+            headerText,
+            <div className="panelFormWrapper">
+              <PanelInfoErrorComponent
+                message={t("panes.addCollection.loadThroughputError")}
+                messageType="error"
+                showErrorDetails={true}
+              />
+              <div className="panelFooter">
+                <Button
+                  icon={<ArrowClockwise20Regular />}
+                  onClick={(): void => void this.onNewCollectionClicked(options)}
+                >
+                  {t("common.retry")}
+                </Button>
+              </div>
+            </div>,
+          );
+        }
+      }
     }
   }
 

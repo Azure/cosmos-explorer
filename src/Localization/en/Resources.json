@@ -460,6 +460,8 @@
       "acknowledgeSpendErrorDaily": "Please acknowledge the estimated daily spend."
     },
     "addCollection": {
+      "loadingThroughput": "Loading throughput settings...",
+      "loadThroughputError": "Unable to load throughput settings. Try again.",
       "createNew": "Create new",
       "useExisting": "Use existing",
       "databaseTooltip": "A database is analogous to a namespace. It is the unit of management for a set of {{collectionName}}.",

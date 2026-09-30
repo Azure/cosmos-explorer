@@ -9,6 +9,91 @@ import {
 } from "../../fx";
 import { TestDatabaseContext, createTestDB } from "../../testData";
 
+test("New Container shows loading and recovers from an offer error on retry", async ({ page }) => {
+  test.setTimeout(60000);
+  const accountId =
+    "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-rg/providers/Microsoft.DocumentDB/databaseAccounts/mock-account";
+  const databases = Array.from({ length: 6 }, (_, index) => ({
+    properties: { resource: { id: `mock-db-${index}`, _rid: `mock-rid-${index}`, _self: `dbs/mock-rid-${index}/` } },
+  }));
+  let releaseOfferResponse!: () => void;
+  const pendingOfferResponse = new Promise<void>((resolve) => {
+    releaseOfferResponse = resolve;
+  });
+  let failOffers = true;
+  const pageErrors: string[] = [];
+  page.on("pageerror", (error) => pageErrors.push(error.message));
+
+  await page.route("https://management.azure.com/**", async (route) => {
+    const pathname = new URL(route.request().url()).pathname;
+    if (pathname === accountId) {
+      await route.fulfill({
+        json: {
+          id: accountId,
+          name: "mock-account",
+          type: "Microsoft.DocumentDB/databaseAccounts",
+          kind: "GlobalDocumentDB",
+          location: "West US 2",
+          tags: { "DataExplorer:TestAccountType": "sql" },
+          properties: {
+            documentEndpoint: "https://mock-account.documents.azure.com/",
+            capabilities: [],
+            enableMultipleWriteLocations: false,
+            readLocations: [{ locationName: "West US 2" }],
+            writeLocations: [{ locationName: "West US 2" }],
+          },
+        },
+      });
+    } else if (pathname.endsWith("/listKeys")) {
+      await route.fulfill({ json: { primaryMasterKey: "mock-key" } });
+    } else if (pathname.endsWith("/sqlDatabases")) {
+      await route.fulfill({ json: { value: databases } });
+    } else if (pathname.endsWith("/throughputSettings/default")) {
+      if (failOffers) {
+        await pendingOfferResponse;
+        await route.fulfill({
+          status: 503,
+          json: { error: { code: "ServiceUnavailable", message: "Mock throughput read failed" } },
+        });
+      } else {
+        await route.fulfill({ status: 404, json: { error: { code: "NotFound", message: "No shared throughput" } } });
+      }
+    } else {
+      await route.fulfill({ json: { value: [] } });
+    }
+  });
+
+  const params = new URLSearchParams({
+    accountName: "mock-account",
+    resourceGroup: "mock-rg",
+    subscriptionId: "00000000-0000-0000-0000-000000000000",
+    token: "mock-token",
+    nosqlRbacToken: "mock-token",
+    "feature.enableCopilot": "false",
+  });
+  await page.goto(`https://localhost:1234/testExplorer.html?${params}`);
+  const explorer = await DataExplorer.waitForExplorer(page);
+  await explorer.waitForNode("mock-db-0");
+  await (await explorer.globalCommandButton("New Container")).click();
+  const panel = explorer.panel("New Container");
+  try {
+    await expect(panel).toBeVisible();
+    await expect(panel.getByRole("progressbar", { name: "Loading throughput settings..." })).toBeVisible();
+    await expect(panel.getByRole("radio", { name: /Create new/i })).toHaveCount(0);
+    await expect(panel.getByRole("button", { name: "OK", exact: true })).toHaveCount(0);
+  } finally {
+    releaseOfferResponse();
+  }
+
+  await expect(panel.getByRole("alert")).toContainText("Unable to load throughput settings. Try again.");
+  await expect(panel.getByRole("radio", { name: /Create new/i })).toHaveCount(0);
+  failOffers = false;
+  await panel.getByRole("button", { name: "Retry", exact: true }).click();
+  await expect(panel.getByRole("radio", { name: /Create new/i })).toBeChecked();
+  await expect(panel.getByRole("button", { name: "Retry", exact: true })).toHaveCount(0);
+  expect(pageErrors).toEqual([]);
+});
+
 test.describe("Shared Throughput Option Removed from Creation Dialogs", () => {
   let explorer: DataExplorer = null!;
 
