@@ -73,6 +73,10 @@ jobs:
           node-version: 22.x
       - run: npm ci
       - run: npm run test
+      - name: Install preview host dependencies
+        run: npm ci --prefix preview
+      - name: Build and test preview redirect bridge
+        run: npm test --prefix preview
   build:
     runs-on: ubuntu-latest
     name: "Build"

@@ -24,3 +24,4 @@ src/Localization/Keys.generated.ts
 /playwright/.cache/
 .vscode/mcp.json
 .playwright-mcp/
+preview/redirect-bridge/

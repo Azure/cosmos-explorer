@@ -2,6 +2,7 @@ const express = require("express");
 const { createProxyMiddleware } = require("http-proxy-middleware");
 const port = process.env.PORT || 3000;
 const fetch = require("node-fetch");
+const { installRedirectBridge } = require("./redirectBridge");
 
 const backendEndpoint = "https://cdb-ms-mpac-pbe.cosmos.azure.com";
 const previewSiteEndpoint = "https://dataexplorer-preview.portal.cosmos.azure.com";
@@ -43,6 +44,7 @@ const commit = createProxyMiddleware({
 
 const app = express();
 
+installRedirectBridge(app);
 app.use("/api", api);
 app.use("/proxy", proxy);
 app.use("/commit", commit);
@@ -77,6 +79,10 @@ app.get("/", (req, res) => {
     .catch(() => res.sendStatus(500));
 });
 
-app.listen(port, () => {
-  console.log(`Example app listening on port: ${port}`);
-});
+if (require.main === module) {
+  app.listen(port, () => {
+    console.log(`Example app listening on port: ${port}`);
+  });
+}
+
+module.exports = app;
