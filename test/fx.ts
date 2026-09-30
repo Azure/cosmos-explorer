@@ -1,6 +1,7 @@
 import { DefaultAzureCredential } from "@azure/identity";
 import { Frame, Locator, Page, expect } from "@playwright/test";
-import crypto, { webcrypto } from "crypto";
+import { webcrypto } from "crypto";
+import { generateUniqueName as generateUniqueResourceName } from "../utils/testResourceName";
 import { TestContainerContext } from "./testData";
 
 // The @azure/cosmos client signs requests with globalThis.crypto (Web Crypto API).
@@ -19,13 +20,7 @@ export interface TestNameOptions {
 }
 
 export function generateUniqueName(baseName: string, options?: TestNameOptions): string {
-  const length = options?.length ?? 1;
-  const timestamp = options?.timestampped === undefined ? true : options.timestampped;
-  const prefixed = options?.prefixed === undefined ? true : options.prefixed;
-
-  const prefix = prefixed ? "t_" : "";
-  const suffix = timestamp ? `_${Date.now()}` : "";
-  return `${prefix}${baseName}${crypto.randomBytes(length).toString("hex")}${suffix}`;
+  return generateUniqueResourceName(baseName, options, process.env);
 }
 
 export function getAzureCLICredentials(): DefaultAzureCredential {
