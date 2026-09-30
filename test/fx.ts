@@ -470,6 +470,7 @@ export enum CommandBarButton {
   ExecuteQuery = "Execute Query",
   UploadItem = "Upload Item",
   NewDocument = "New Document",
+  NewItem = "New Item",
   View = "View",
 }
 

@@ -4,6 +4,21 @@ This directory contains end-to-end tests for Cosmos Data Explorer.
 These tests **require** that you either deploy, or have access to, several Cosmos test Accounts.
 The tests run in [Playwright](https://playwright.dev/), using the official Playwright test framework.
 
+## Type-checking
+
+After installing dependencies, run this command from the repository root:
+
+```shell
+npm run compile:e2e
+```
+
+This checks all test TypeScript files and `playwright.config.ts` without emitting files,
+starting a browser, or connecting to Azure. It also loads the application declarations
+needed by code imported from the tests. CI runs this check in the Compile TypeScript job.
+
+`npm run compile` checks the application, not the E2E suite. Playwright's `--list` option
+checks test discovery but does not replace TypeScript type-checking.
+
 ## Required Resources
 
 To run all the tests, you need:
