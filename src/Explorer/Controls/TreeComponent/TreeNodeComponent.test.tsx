@@ -1,9 +1,71 @@
 import { TreeItem, TreeItemLayout } from "@fluentui/react-components";
+import type { Frame } from "@playwright/test";
 import PromiseSource from "Utils/PromiseSource";
 import { mount, shallow } from "enzyme";
 import React from "react";
 import { act } from "react-dom/test-utils";
+import { DataExplorer } from "../../../../test/fx";
 import { TreeNode, TreeNodeComponent } from "./TreeNodeComponent";
+
+jest.mock("@playwright/test", () => ({}));
+
+describe("Tree expansion helper", () => {
+  const createNode = () => {
+    const expandIcon = { click: jest.fn().mockResolvedValue(undefined) };
+    const row = { locator: jest.fn().mockReturnValue(expandIcon), click: jest.fn() };
+    const container = { getAttribute: jest.fn().mockResolvedValue("false") };
+    const tree = { waitFor: jest.fn().mockResolvedValue(undefined) };
+    const frame = {
+      getByTestId: jest.fn((id: string) => {
+        if (id === "TreeNode:root") {
+          return row;
+        }
+        if (id === "TreeNodeContainer:root") {
+          return container;
+        }
+        if (id === "Tree:root") {
+          return tree;
+        }
+        throw new Error(`Unexpected locator: ${id}`);
+      }),
+    } as unknown as Frame;
+    return { node: new DataExplorer(frame).treeNode("root"), row, container, tree, expandIcon };
+  };
+
+  it("clicks the expand icon rather than the row that contains menu actions", async () => {
+    const { node, row, expandIcon } = createNode();
+    await node.expand();
+    expect(row.locator).toHaveBeenCalledWith(":scope > .fui-TreeItemLayout__expandIcon");
+    expect(expandIcon.click).toHaveBeenCalledTimes(1);
+    expect(row.click).not.toHaveBeenCalled();
+  });
+
+  it("does not toggle a node that is already expanded", async () => {
+    const { node, row, container, tree, expandIcon } = createNode();
+    container.getAttribute.mockResolvedValue("true");
+    await node.expand();
+    expect(tree.waitFor).toHaveBeenCalled();
+    expect(expandIcon.click).not.toHaveBeenCalled();
+    expect(row.click).not.toHaveBeenCalled();
+  });
+
+  it("uses the expand icon again when a collapsed node needs a retry", async () => {
+    const { node, row, tree, expandIcon } = createNode();
+    tree.waitFor.mockRejectedValueOnce(new Error("Children are not visible yet"));
+    await node.expand();
+    expect(expandIcon.click).toHaveBeenCalledTimes(2);
+    expect(row.click).not.toHaveBeenCalled();
+  });
+
+  it("does not collapse a node that expanded while waiting for children", async () => {
+    const { node, container, tree, expandIcon } = createNode();
+    container.getAttribute.mockResolvedValueOnce("false").mockResolvedValue("true");
+    tree.waitFor.mockRejectedValueOnce(new Error("Children are not visible yet"));
+    await node.expand();
+    expect(expandIcon.click).toHaveBeenCalledTimes(1);
+    expect(tree.waitFor).toHaveBeenCalledTimes(2);
+  });
+});
 
 function generateTestNode(id: string, additionalProps?: Partial<TreeNode>): TreeNode {
   const node: TreeNode = {
