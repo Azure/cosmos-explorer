@@ -153,7 +153,6 @@ const baseCollection = {
   onDocumentDBDocumentsClick: jest.fn(),
   onNewQueryClick: jest.fn(),
   onConflictsClick: jest.fn(),
-  onSchemaAnalyzerClick: jest.fn(),
 } as unknown as ViewModels.Collection;
 
 /** A basic test database that can be expanded on in tests */
@@ -297,31 +296,6 @@ describe("createDatabaseTreeNodes", () => {
       id: ko.observable("schemaCollection"),
       container: explorer,
       databaseId: sharedDb.id(),
-      analyticalStorageTtl: ko.observable<number>(5),
-      schema: {
-        fields: [
-          {
-            path: "address.street",
-            dataType: { name: "string" },
-            hasNulls: false,
-          },
-          {
-            path: "address.line2",
-            dataType: { name: "string" },
-            hasNulls: true,
-          },
-          {
-            path: "address.zip",
-            dataType: { name: "number" },
-            hasNulls: false,
-          },
-          {
-            path: "orderId",
-            dataType: { name: "string" },
-            hasNulls: false,
-          },
-        ],
-      } as unknown,
     } as ViewModels.Collection;
 
     conflictsCollection = {

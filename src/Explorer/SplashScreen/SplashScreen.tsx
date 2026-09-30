@@ -407,7 +407,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
         iconSrc: PowerShellIcon,
         title: t(Keys.splashScreen.shell.postgres.title),
         description: t(Keys.splashScreen.shell.postgres.description),
-        onClick: () => container.openNotebookTerminal(TerminalKind.Postgres),
+        onClick: () => container.openTerminal(TerminalKind.Postgres),
       };
     }
 
@@ -426,7 +426,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
                 linkUrl: VCoreMongoNativeAuthLearnMoreUrl,
               });
           } else {
-            container.openNotebookTerminal(TerminalKind.VCoreMongo);
+            container.openTerminal(TerminalKind.VCoreMongo);
           }
         },
       };
@@ -620,7 +620,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ explorer }) => {
   };
 
   const getRecentItems = (): JSX.Element => {
-    const recentItems = createRecentItems()?.filter((item) => item.description !== "Notebook");
+    const recentItems = createRecentItems() ?? [];
 
     return (
       <Stack>
