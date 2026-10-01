@@ -1,4 +1,4 @@
-import { Locator, expect, test } from "@playwright/test";
+import { Locator, Page, expect, test } from "@playwright/test";
 import {
   CommandBarButton,
   DataExplorer,
@@ -9,7 +9,7 @@ import {
 } from "../../fx";
 import { TestDatabaseContext, createTestDB } from "../../testData";
 
-test("New Container bounds offer loading and recovers from an error on retry", async ({ page }) => {
+const verifyMockOfferLoading = async (page: Page, failureStatus: 429 | 503): Promise<DataExplorer> => {
   test.setTimeout(60000);
   const accountId =
     "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-rg/providers/Microsoft.DocumentDB/databaseAccounts/mock-account";
@@ -60,8 +60,14 @@ test("New Container bounds offer loading and recovers from an error on retry", a
           failedOfferReads += 1;
           await pendingOfferResponse;
           await route.fulfill({
-            status: 503,
-            json: { error: { code: "ServiceUnavailable", message: "Mock throughput read failed" } },
+            status: failureStatus,
+            headers: { "Retry-After": "1", "Access-Control-Expose-Headers": "Retry-After" },
+            json: {
+              error: {
+                code: failureStatus === 429 ? "429" : "ServiceUnavailable",
+                message: "Mock throughput read failed",
+              },
+            },
           });
         } else {
           successfulOfferReads += 1;
@@ -95,31 +101,115 @@ test("New Container bounds offer loading and recovers from an error on retry", a
     await expect(panel.getByRole("button", { name: "OK", exact: true })).toHaveCount(0);
     await expect.poll(() => activeOfferReads).toBe(4);
   } finally {
+    if (failureStatus === 429) {
+      failOffers = false;
+    }
     releaseOfferResponse();
   }
 
-  await expect(panel.getByRole("alert")).toContainText("Unable to load throughput settings. Try again.");
-  await expect(panel.getByRole("radio", { name: /Create new/i })).toHaveCount(0);
-  await panel.getByRole("button", { name: "More details", exact: true }).click();
-  const consoleContents = explorer.frame.getByTestId("NotificationConsole/Contents");
-  await expect(consoleContents).toBeVisible();
-  await expect(consoleContents).toContainText("Mock throughput read failed");
-  await expect
-    .poll(async () => {
-      const panelBounds = await panel.boundingBox();
-      const consoleBounds = await explorer.frame.locator("#explorerNotificationConsole").boundingBox();
-      return !!panelBounds && !!consoleBounds && panelBounds.y + panelBounds.height <= consoleBounds.y + 1;
-    })
-    .toBe(true);
-  await expect.poll(() => activeOfferReads).toBe(0);
-  expect(failedOfferReads).toBe(4);
-  failOffers = false;
-  await panel.getByRole("button", { name: "Retry", exact: true }).click();
+  if (failureStatus === 503) {
+    await expect(panel.getByRole("alert")).toContainText("Unable to load throughput settings. Try again.");
+    await expect(panel.getByRole("radio", { name: /Create new/i })).toHaveCount(0);
+    await panel.getByRole("button", { name: "More details", exact: true }).click();
+    const consoleContents = explorer.frame.getByTestId("NotificationConsole/Contents");
+    await expect(consoleContents).toBeVisible();
+    await expect(consoleContents).toContainText("Mock throughput read failed");
+    await expect
+      .poll(async () => {
+        const panelBounds = await panel.boundingBox();
+        const consoleBounds = await explorer.frame.locator("#explorerNotificationConsole").boundingBox();
+        return !!panelBounds && !!consoleBounds && panelBounds.y + panelBounds.height <= consoleBounds.y + 1;
+      })
+      .toBe(true);
+    await expect.poll(() => activeOfferReads).toBe(0);
+    expect(failedOfferReads).toBe(4);
+    failOffers = false;
+    await panel.getByRole("button", { name: "Retry", exact: true }).click();
+  }
   await expect(panel.getByRole("radio", { name: /Create new/i })).toBeChecked();
+  await expect(panel.getByRole("alert")).toHaveCount(0);
   await expect(panel.getByRole("button", { name: "Retry", exact: true })).toHaveCount(0);
+  expect(failedOfferReads).toBe(4);
   expect(successfulOfferReads).toBe(databases.length);
   expect(peakOfferReads).toBe(4);
   expect(pageErrors).toEqual([]);
+  return explorer;
+};
+
+test("New Container bounds offer loading and recovers from an error on retry", async ({ page }) => {
+  await verifyMockOfferLoading(page, 503);
+});
+
+test("New Container automatically retries throttled offer reads", async ({ page }) => {
+  await verifyMockOfferLoading(page, 429);
+});
+
+test("New Container completes an accepted create after status polling is throttled", async ({ page }) => {
+  const explorer = await verifyMockOfferLoading(page, 429);
+  const containerPath = "/sqlDatabases/mock-db-0/containers/polling-container";
+  const operationPath = `${containerPath}/operationResults/mock-operation`;
+  const container = {
+    properties: {
+      resource: {
+        id: "polling-container",
+        _rid: "mock-collection",
+        _self: "dbs/mock-rid-0/colls/mock-collection/",
+        partitionKey: { paths: ["/pk"], kind: "Hash" },
+      },
+    },
+  };
+  let createRequests = 0;
+  let created = false;
+  const pollMethods: string[] = [];
+
+  await page.route(
+    (url) => url.hostname === "management.azure.com" && url.pathname.endsWith(containerPath),
+    async (route) => {
+      if (route.request().method() === "PUT") {
+        createRequests += 1;
+        const operationUrl = new URL(route.request().url());
+        operationUrl.pathname += "/operationResults/mock-operation";
+        await route.fulfill({
+          status: 202,
+          headers: { location: operationUrl.href, "Access-Control-Expose-Headers": "Location" },
+          json: {},
+        });
+      } else {
+        await route.fulfill({ json: container });
+      }
+    },
+  );
+  await page.route(
+    (url) => url.hostname === "management.azure.com" && url.pathname.endsWith(operationPath),
+    async (route) => {
+      pollMethods.push(route.request().method());
+      if (pollMethods.length === 1) {
+        await route.fulfill({
+          status: 429,
+          headers: { "Retry-After": "1", "Access-Control-Expose-Headers": "Retry-After" },
+          json: { error: { code: "SubscriptionRequestsThrottled", message: "Status polling throttled" } },
+        });
+      } else {
+        created = true;
+        await route.fulfill({ json: container });
+      }
+    },
+  );
+  await page.route(
+    (url) => url.hostname === "management.azure.com" && url.pathname.endsWith("/sqlDatabases/mock-db-0/containers"),
+    (route) => route.fulfill({ json: { value: created ? [container] : [] } }),
+  );
+
+  const panel = explorer.panel("New Container");
+  await panel.getByRole("radio", { name: /Use existing/i }).click();
+  await panel.getByRole("combobox", { name: "Choose an existing database" }).click();
+  await explorer.frame.getByRole("option", { name: "mock-db-0", exact: true }).click();
+  await panel.getByRole("textbox", { name: "Container id, Example Container1" }).fill("polling-container");
+  await panel.getByRole("textbox", { name: "Partition key", exact: true }).fill("/pk");
+  await panel.getByTestId("Panel/OkButton").click();
+  await expect(panel).toBeHidden();
+  expect(createRequests).toBe(1);
+  expect(pollMethods).toEqual(["GET", "GET"]);
 });
 
 test.describe("Shared Throughput Option Removed from Creation Dialogs", () => {

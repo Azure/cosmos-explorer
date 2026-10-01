@@ -387,7 +387,7 @@ describe("Explorer.onNewCollectionClicked", () => {
       .mockResolvedValue({
         ok: false,
         status,
-        headers: { get: (name: string) => (name.toLowerCase() === "retry-after" ? "1" : null) },
+        headers: { get: (name: string) => (name.toLowerCase() === "retry-after" ? "0" : null) },
         json: async () => ({ error: { code, message: "Diagnostic offer response" } }),
       } as Response);
     useDatabases.setState({
@@ -402,7 +402,7 @@ describe("Explorer.onNewCollectionClicked", () => {
     const offerRequests = fetchMock.mock.calls.filter(([url]) =>
       String(url).includes("/sqlDatabases/other-run-db/throughputSettings/default"),
     );
-    expect(offerRequests).toHaveLength(1);
+    expect(offerRequests).toHaveLength(status === 429 ? 3 : 1);
     expect(useSidePanel.getState().isOpen).toBe(true);
     expect(useSidePanel.getState().panelContent?.type === AddCollectionPanel).toBe(opens);
   });
