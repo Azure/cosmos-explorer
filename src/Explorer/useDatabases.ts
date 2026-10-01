@@ -4,6 +4,7 @@ import * as ViewModels from "../Contracts/ViewModels";
 import * as LocalStorageUtility from "../Shared/LocalStorageUtility";
 import { StorageKey } from "../Shared/StorageUtility";
 import { userContext } from "../UserContext";
+import { loadOffers } from "./OfferLoader";
 import { useSelectedNode } from "./useSelectedNode";
 
 export type DatabaseSortOrder = "az" | "za";
@@ -137,19 +138,8 @@ export const useDatabases: UseStore<DatabasesState> = create((set, get) => ({
 
     return true;
   },
-  loadDatabaseOffers: async () => {
-    await Promise.all(get().databases.map((database: ViewModels.Database) => database.loadOffer()));
-  },
-  loadAllOffers: async () => {
-    await Promise.all(
-      get().databases.map(async (database: ViewModels.Database) => {
-        await Promise.all([database.loadOffer(), database.loadCollections()]);
-        await Promise.all(
-          (database.collections() || []).map((collection: ViewModels.Collection) => collection.loadOffer()),
-        );
-      }),
-    );
-  },
+  loadDatabaseOffers: () => loadOffers(get().databases, false),
+  loadAllOffers: () => loadOffers(get().databases, true),
   isFirstResourceCreated: () => {
     const databases = get().databases;
     if (databases.length === 0) {
