@@ -9,6 +9,135 @@ import {
 } from "../../fx";
 import { TestDatabaseContext, createTestDB } from "../../testData";
 
+test("New Container readiness reports preload errors before invoking form actions", async ({ page }) => {
+  await page.setContent(`
+    <section data-test="Panel:New Container">
+      <div role="alert">Unable to load throughput settings. Try again.</div>
+      <button>Retry</button>
+    </section>
+  `);
+  const explorer = new DataExplorer(page.mainFrame());
+  let actionCalls = 0;
+  const retryButton = page.getByRole("button", { name: "Retry", exact: true });
+  await retryButton.evaluate((element) => {
+    element.addEventListener("click", () => element.setAttribute("data-clicked", "true"));
+  });
+
+  await expect(
+    explorer.whilePanelOpen("New Container", async () => {
+      actionCalls += 1;
+      throw new Error("The form action ran before readiness");
+    }),
+  ).rejects.toThrow("New Container failed to load: Unable to load throughput settings. Try again.");
+  expect(actionCalls).toBe(0);
+  await expect(retryButton).not.toHaveAttribute("data-clicked", "true");
+});
+
+test("New Container readiness waits for the form, not an enabled submit button", async ({ page }) => {
+  await page.setContent(`
+    <section data-test="Panel:New Container">
+      <div role="progressbar">Loading throughput settings...</div>
+      <button hidden>Retry</button>
+      <form id="panelContainer" hidden>
+        <div role="alert">Free tier information</div>
+        <button data-test="Panel/OkButton" disabled>OK</button>
+      </form>
+    </section>
+  `);
+  const explorer = new DataExplorer(page.mainFrame());
+  let actionCalls = 0;
+  const opening = explorer.whilePanelOpen(
+    "New Container",
+    async (panel, okButton) => {
+      actionCalls += 1;
+      await expect(okButton).toBeDisabled();
+      await panel.evaluate((element) => element.remove());
+    },
+    { openTimeout: 5000, closeTimeout: 1000 },
+  );
+  const outcome = opening.catch((error: unknown) => error);
+  await expect(page.getByRole("progressbar")).toBeVisible();
+  expect(actionCalls).toBe(0);
+
+  await page.locator("form#panelContainer").evaluate((element) => element.removeAttribute("hidden"));
+  await expect(outcome).resolves.toBeUndefined();
+  expect(actionCalls).toBe(1);
+});
+
+test("New Container readiness reports an error appearing after loading starts", async ({ page }) => {
+  await page.setContent(`
+    <section data-test="Panel:New Container">
+      <div role="progressbar">Loading throughput settings...</div>
+      <div role="alert" hidden>Unable to load throughput settings. Try again.</div>
+      <button hidden>Retry</button>
+    </section>
+  `);
+  const explorer = new DataExplorer(page.mainFrame());
+  let settled = false;
+  const outcome = explorer.waitForNewContainerForm(5000).then(
+    () => {
+      settled = true;
+      return undefined;
+    },
+    (error: unknown) => {
+      settled = true;
+      return error;
+    },
+  );
+  await expect(page.getByRole("progressbar")).toBeVisible();
+  expect(settled).toBe(false);
+  await explorer.panel("New Container").evaluate((element) => {
+    element.querySelector('[role="progressbar"]')?.remove();
+    element.querySelectorAll("[hidden]").forEach((child) => child.removeAttribute("hidden"));
+  });
+  await expect(outcome).resolves.toMatchObject({
+    message: "New Container failed to load: Unable to load throughput settings. Try again.",
+  });
+});
+
+for (const state of ["loading", "absent"] as const) {
+  test(`New Container readiness times out explicitly when ${state}`, async ({ page }) => {
+    await page.setContent(
+      state === "loading"
+        ? '<section data-test="Panel:New Container"><div role="progressbar">Loading throughput settings...</div></section>'
+        : "<main>No panel</main>",
+    );
+    const explorer = new DataExplorer(page.mainFrame());
+    let actionCalls = 0;
+
+    await expect(
+      explorer.whilePanelOpen(
+        "New Container",
+        async () => {
+          actionCalls += 1;
+        },
+        { openTimeout: 100 },
+      ),
+    ).rejects.toThrow("New Container did not show its form or preload error within 100ms");
+    expect(actionCalls).toBe(0);
+  });
+}
+
+test("New Container readiness leaves other panel workflows unchanged", async ({ page }) => {
+  await page.setContent(`
+    <section data-test="Panel:New Database">
+      <button data-test="Panel/OkButton">OK</button>
+    </section>
+  `);
+  const explorer = new DataExplorer(page.mainFrame());
+  let actionCalls = 0;
+  await explorer.whilePanelOpen(
+    "New Database",
+    async (panel, okButton) => {
+      actionCalls += 1;
+      await expect(okButton).toBeVisible();
+      await panel.evaluate((element) => element.remove());
+    },
+    { openTimeout: 1000, closeTimeout: 1000 },
+  );
+  expect(actionCalls).toBe(1);
+});
+
 const verifyMockOfferLoading = async (page: Page, failureStatus: 429 | 503): Promise<DataExplorer> => {
   test.setTimeout(60000);
   const accountId =
@@ -109,6 +238,9 @@ const verifyMockOfferLoading = async (page: Page, failureStatus: 429 | 503): Pro
 
   if (failureStatus === 503) {
     await expect(panel.getByRole("alert")).toContainText("Unable to load throughput settings. Try again.");
+    await expect(explorer.waitForNewContainerForm()).rejects.toThrow(
+      "New Container failed to load: Unable to load throughput settings. Try again.",
+    );
     await expect(panel.getByRole("radio", { name: /Create new/i })).toHaveCount(0);
     await panel.getByRole("button", { name: "More details", exact: true }).click();
     const consoleContents = explorer.frame.getByTestId("NotificationConsole/Contents");
@@ -126,6 +258,7 @@ const verifyMockOfferLoading = async (page: Page, failureStatus: 429 | 503): Pro
     failOffers = false;
     await panel.getByRole("button", { name: "Retry", exact: true }).click();
   }
+  await explorer.waitForNewContainerForm();
   await expect(panel.getByRole("radio", { name: /Create new/i })).toBeChecked();
   await expect(panel.getByRole("alert")).toHaveCount(0);
   await expect(panel.getByRole("button", { name: "Retry", exact: true })).toHaveCount(0);
@@ -244,8 +377,7 @@ test.describe("Shared Throughput Option Removed from Creation Dialogs", () => {
     const newContainerButton = await explorer.globalCommandButton("New Container");
     await newContainerButton.click();
 
-    const panel = explorer.panel("New Container");
-    await panel.waitFor();
+    const panel = await explorer.waitForNewContainerForm();
 
     // "Create new" database should be selected by default
     const createNewRadio = panel.getByRole("radio", { name: /Create new/i });
@@ -275,8 +407,7 @@ test.describe("Shared Throughput Option Removed from Creation Dialogs", () => {
       const newContainerButton = await explorer.globalCommandButton("New Container");
       await newContainerButton.click();
 
-      const panel = explorer.panel("New Container");
-      await panel.waitFor();
+      const panel = await explorer.waitForNewContainerForm();
 
       // Select "Use existing" and pick the shared database
       const useExistingRadio = panel.getByRole("radio", { name: /Use existing/i });
