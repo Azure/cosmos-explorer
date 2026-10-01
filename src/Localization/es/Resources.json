@@ -38,6 +38,12 @@
     "off": "Desactivado",
     "preview": "Versión preliminar"
   },
+  "cosmosDBShell": {
+    "installingSdk": "Descargando e instalando el SDK de .NET 10. La configuración por primera vez puede tardar unos minutos.",
+    "installingShell": "Instalando Cosmos DB Shell...",
+    "updatingShell": "Comprobando si hay actualizaciones de Cosmos DB Shell...",
+    "connecting": "Conectándose a su cuenta de Cosmos DB..."
+  },
   "splashScreen": {
     "title": {
       "default": "Le presentamos Azure Cosmos DB",
@@ -990,6 +996,8 @@
       "quantizationByteSizeTooltipContainerName": "contenedor",
       "quantizationByteSizeTooltipGlobalSecondaryIndexName": "índice secundario global",
       "quantizerType": "Tipo de cuantificador",
+      "quantizerTypeProduct": "Producto",
+      "quantizerTypeSpherical": "Esférico",
       "quantizerTypeTooltip": "Método de cuantificación utilizado por el índice vectorial.",
       "indexingSearchListSize": "Tamaño de la lista de búsqueda de indexación",
       "vectorIndexShardKey": "Clave de partición de índice vectorial",

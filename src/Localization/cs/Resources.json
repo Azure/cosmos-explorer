@@ -38,6 +38,12 @@
     "off": "Vypnuto",
     "preview": "Preview"
   },
+  "cosmosDBShell": {
+    "installingSdk": "Stahování a instalace sady .NET SDK 10. První nastavení může trvat několik minut.",
+    "installingShell": "Instaluje se prostředí Cosmos DB Shell...",
+    "updatingShell": "Kontrolují se aktualizace prostředí Cosmos DB Shell...",
+    "connecting": "Připojování k vašemu účtu Cosmos DB..."
+  },
   "splashScreen": {
     "title": {
       "default": "Vítá vás Azure Cosmos DB",
@@ -990,6 +996,8 @@
       "quantizationByteSizeTooltipContainerName": "kontejner",
       "quantizationByteSizeTooltipGlobalSecondaryIndexName": "globální sekundární index",
       "quantizerType": "Typ kvantizéru",
+      "quantizerTypeProduct": "Produkt",
+      "quantizerTypeSpherical": "Sférický",
       "quantizerTypeTooltip": "Metoda kvantování používaná vektorovým indexem",
       "indexingSearchListSize": "Velikost seznamu vyhledávání při indexování",
       "vectorIndexShardKey": "Klíč shardu vektorového indexu",
