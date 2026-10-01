@@ -87,6 +87,17 @@ test("New Container shows loading and recovers from an offer error on retry", as
 
   await expect(panel.getByRole("alert")).toContainText("Unable to load throughput settings. Try again.");
   await expect(panel.getByRole("radio", { name: /Create new/i })).toHaveCount(0);
+  await panel.getByRole("button", { name: "More details", exact: true }).click();
+  const consoleContents = explorer.frame.getByTestId("NotificationConsole/Contents");
+  await expect(consoleContents).toBeVisible();
+  await expect(consoleContents).toContainText("Mock throughput read failed");
+  await expect
+    .poll(async () => {
+      const panelBounds = await panel.boundingBox();
+      const consoleBounds = await explorer.frame.locator("#explorerNotificationConsole").boundingBox();
+      return !!panelBounds && !!consoleBounds && panelBounds.y + panelBounds.height <= consoleBounds.y + 1;
+    })
+    .toBe(true);
   failOffers = false;
   await panel.getByRole("button", { name: "Retry", exact: true }).click();
   await expect(panel.getByRole("radio", { name: /Create new/i })).toBeChecked();

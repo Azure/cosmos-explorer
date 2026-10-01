@@ -12,6 +12,7 @@ import { AuthType } from "../AuthType";
 import { readDatabaseOffer } from "../Common/dataAccess/readDatabaseOffer";
 import { Capability, DatabaseAccount } from "../Contracts/DataModels";
 import { Database } from "../Contracts/ViewModels";
+import { useNotificationConsole } from "../hooks/useNotificationConsole";
 import { useSidePanel } from "../hooks/useSidePanel";
 import { updateUserContext, userContext } from "../UserContext";
 import { update } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
@@ -183,11 +184,13 @@ describe("Explorer.onNewCollectionClicked", () => {
   let originalContext: typeof userContext;
   let originalDatabases: ReturnType<typeof useDatabases.getState>;
   let originalPanel: ReturnType<typeof useSidePanel.getState>;
+  let originalConsole: ReturnType<typeof useNotificationConsole.getState>;
 
   beforeEach(() => {
     originalContext = { ...userContext };
     originalDatabases = useDatabases.getState();
     originalPanel = useSidePanel.getState();
+    originalConsole = useNotificationConsole.getState();
     updateUserContext({
       apiType: "SQL",
       databaseAccount: {
@@ -214,6 +217,7 @@ describe("Explorer.onNewCollectionClicked", () => {
     updateUserContext(originalContext);
     useDatabases.setState(originalDatabases, true);
     useSidePanel.setState(originalPanel, true);
+    useNotificationConsole.setState(originalConsole, true);
   });
 
   it("opens a loading panel immediately and waits before showing the form", async () => {
@@ -263,6 +267,24 @@ describe("Explorer.onNewCollectionClicked", () => {
     expect(view.getByRole("button", { name: "Retry" })).not.toBeNull();
     expect(view.queryByRole("progressbar")).toBeNull();
     expect(view.queryByRole("radio", { name: /Use existing/i })).toBeNull();
+  });
+
+  it("restores console space after a console-disabled panel and exposes error details", async () => {
+    useSidePanel.getState().setPanelHasConsole(false);
+    useNotificationConsole.setState({ isExpanded: false, consoleAnimationFinished: false });
+    jest.spyOn(useDatabases.getState(), "loadDatabaseOffers").mockRejectedValue(new Error("Offer unavailable"));
+    const view = render(React.createElement(SidePanel));
+
+    await act(async () => {
+      await explorer.onNewCollectionClicked();
+    });
+
+    expect(useSidePanel.getState().hasConsole).toBe(true);
+    const panel = document.querySelector<HTMLElement>('[data-test="Panel:New Container"]');
+    expect(panel?.style.height).toBe(`${window.innerHeight - 32}px`);
+    fireEvent.click(view.getByRole("button", { name: /more details/i }));
+    expect(useNotificationConsole.getState().isExpanded).toBe(true);
+    expect(panel?.style.height).toBe(`${window.innerHeight - 32 - 220}px`);
   });
 
   it("retries loading and preserves the requested database before showing the form", async () => {

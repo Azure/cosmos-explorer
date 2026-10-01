@@ -553,6 +553,7 @@ export default class Explorer {
         const { isOpen, panelContent } = useSidePanel.getState();
         return isOpen && panelContent === loadingContent;
       };
+      useSidePanel.getState().setPanelHasConsole(true);
       useSidePanel.getState().openSidePanel(headerText, loadingContent);
 
       try {
