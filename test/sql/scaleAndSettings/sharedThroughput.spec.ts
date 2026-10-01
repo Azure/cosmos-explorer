@@ -9,11 +9,11 @@ import {
 } from "../../fx";
 import { TestDatabaseContext, createTestDB } from "../../testData";
 
-test("New Container shows loading and recovers from an offer error on retry", async ({ page }) => {
+test("New Container bounds offer loading and recovers from an error on retry", async ({ page }) => {
   test.setTimeout(60000);
   const accountId =
     "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-rg/providers/Microsoft.DocumentDB/databaseAccounts/mock-account";
-  const databases = Array.from({ length: 6 }, (_, index) => ({
+  const databases = Array.from({ length: 100 }, (_, index) => ({
     properties: { resource: { id: `mock-db-${index}`, _rid: `mock-rid-${index}`, _self: `dbs/mock-rid-${index}/` } },
   }));
   let releaseOfferResponse!: () => void;
@@ -21,6 +21,10 @@ test("New Container shows loading and recovers from an offer error on retry", as
     releaseOfferResponse = resolve;
   });
   let failOffers = true;
+  let activeOfferReads = 0;
+  let peakOfferReads = 0;
+  let failedOfferReads = 0;
+  let successfulOfferReads = 0;
   const pageErrors: string[] = [];
   page.on("pageerror", (error) => pageErrors.push(error.message));
 
@@ -49,14 +53,22 @@ test("New Container shows loading and recovers from an offer error on retry", as
     } else if (pathname.endsWith("/sqlDatabases")) {
       await route.fulfill({ json: { value: databases } });
     } else if (pathname.endsWith("/throughputSettings/default")) {
-      if (failOffers) {
-        await pendingOfferResponse;
-        await route.fulfill({
-          status: 503,
-          json: { error: { code: "ServiceUnavailable", message: "Mock throughput read failed" } },
-        });
-      } else {
-        await route.fulfill({ status: 404, json: { error: { code: "NotFound", message: "No shared throughput" } } });
+      activeOfferReads += 1;
+      peakOfferReads = Math.max(peakOfferReads, activeOfferReads);
+      try {
+        if (failOffers) {
+          failedOfferReads += 1;
+          await pendingOfferResponse;
+          await route.fulfill({
+            status: 503,
+            json: { error: { code: "ServiceUnavailable", message: "Mock throughput read failed" } },
+          });
+        } else {
+          successfulOfferReads += 1;
+          await route.fulfill({ status: 404, json: { error: { code: "NotFound", message: "No shared throughput" } } });
+        }
+      } finally {
+        activeOfferReads -= 1;
       }
     } else {
       await route.fulfill({ json: { value: [] } });
@@ -81,6 +93,7 @@ test("New Container shows loading and recovers from an offer error on retry", as
     await expect(panel.getByRole("progressbar", { name: "Loading throughput settings..." })).toBeVisible();
     await expect(panel.getByRole("radio", { name: /Create new/i })).toHaveCount(0);
     await expect(panel.getByRole("button", { name: "OK", exact: true })).toHaveCount(0);
+    await expect.poll(() => activeOfferReads).toBe(4);
   } finally {
     releaseOfferResponse();
   }
@@ -98,10 +111,14 @@ test("New Container shows loading and recovers from an offer error on retry", as
       return !!panelBounds && !!consoleBounds && panelBounds.y + panelBounds.height <= consoleBounds.y + 1;
     })
     .toBe(true);
+  await expect.poll(() => activeOfferReads).toBe(0);
+  expect(failedOfferReads).toBe(4);
   failOffers = false;
   await panel.getByRole("button", { name: "Retry", exact: true }).click();
   await expect(panel.getByRole("radio", { name: /Create new/i })).toBeChecked();
   await expect(panel.getByRole("button", { name: "Retry", exact: true })).toHaveCount(0);
+  expect(successfulOfferReads).toBe(databases.length);
+  expect(peakOfferReads).toBe(4);
   expect(pageErrors).toEqual([]);
 });
 
