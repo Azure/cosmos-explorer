@@ -8,7 +8,6 @@ import {
   createTestSQLContainer,
   itemsPerPartition,
   partitionCount,
-  retry,
   setPartitionKeys,
   TestContainerContext,
   TestData,
@@ -85,28 +84,24 @@ for (const { name, databaseId, containerId, documents } of documentTestCases) {
           await expect(span).toBeVisible();
 
           await span.click();
-          let newDocumentId;
           await waitForDocumentToLoad(docId);
-          await retry(async () => {
-            const newDocumentButton = await explorer.waitForCommandBarButton(CommandBarButton.NewItem, 5000);
-            await expect(newDocumentButton).toBeVisible();
-            await expect(newDocumentButton).toBeEnabled();
-            await newDocumentButton.click();
+          const newDocumentButton = await explorer.waitForCommandBarButton(CommandBarButton.NewItem, 5000);
+          await expect(newDocumentButton).toBeVisible();
+          await expect(newDocumentButton).toBeEnabled();
+          await newDocumentButton.click();
 
-            await expect(documentsTab.resultsEditor.locator).toBeAttached({ timeout: 60 * 1000 });
+          await waitForDocumentToLoad("replace_with_new_document_id");
+          const saveButton = await explorer.waitForCommandBarButton(CommandBarButton.Save, 5000);
+          const newDocumentId = `${Date.now().toString()}-delete`;
+          const newDocument = {
+            id: newDocumentId,
+            ...setPartitionKeys(partitionKeys || []),
+          };
 
-            newDocumentId = `${Date.now().toString()}-delete`;
-
-            const newDocument = {
-              id: newDocumentId,
-              ...setPartitionKeys(partitionKeys || []),
-            };
-
-            await documentsTab.resultsEditor.setText(JSON.stringify(newDocument));
-            const saveButton = await explorer.waitForCommandBarButton(CommandBarButton.Save, 5000);
-            await saveButton.click({ timeout: 5000 });
-            await expect(saveButton).toBeHidden({ timeout: 5000 });
-          }, 3);
+          await documentsTab.resultsEditor.setText(JSON.stringify(newDocument));
+          await expect(saveButton).toBeEnabled();
+          await saveButton.click({ timeout: 5000 });
+          await expect(saveButton).toBeHidden({ timeout: 5000 });
 
           await documentsTab.setFilter(`WHERE c.id = "${newDocumentId}"`);
           await documentsTab.filterButton.click();

@@ -629,6 +629,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   const [initialDocumentContent, setInitialDocumentContent] = useState<string>(undefined);
   const [selectedDocumentContent, setSelectedDocumentContent] = useState<string>(undefined);
   const [selectedDocumentContentBaseline, setSelectedDocumentContentBaseline] = useState<string>(undefined);
+  const documentLoadGeneration = useRef(0);
 
   // Table user clicked on this row
   const [clickedRowIndex, setClickedRowIndex] = useState<number>(RESET_INDEX);
@@ -945,6 +946,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   );
 
   const initializeNewDocument = (): void => {
+    documentLoadGeneration.current++;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const newDocument: any = {
       id: "replace_with_new_document_id",
@@ -1627,13 +1629,20 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     loadDocument(currentDocumentIds[index]);
   };
 
-  let loadDocument = (documentId: DocumentId) =>
-    readDocument(_collection, documentId).then((content) => {
-      initDocumentEditor(documentId, content);
+  const loadDocument = async (documentId: DocumentId): Promise<void> => {
+    const generation = ++documentLoadGeneration.current;
+    const content = await (isPreferredApiMongoDB
+      ? MongoProxyClient.readDocument(_collection.databaseId, _collection as ViewModels.Collection, documentId)
+      : readDocument(_collection, documentId));
+    if (generation !== documentLoadGeneration.current) {
+      return;
+    }
 
-      // Update columns
+    initDocumentEditor(documentId, content);
+    if (!isPreferredApiMongoDB) {
       setColumnDefinitionsFromDocument(content);
-    });
+    }
+  };
 
   const initDocumentEditor = (documentId: DocumentId, documentContent: unknown): void => {
     if (documentId) {
@@ -1766,13 +1775,6 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
   // ********* Override here for mongo (from MongoDocumentsTab) **********
   if (isPreferredApiMongoDB) {
-    loadDocument = (documentId: DocumentId) =>
-      MongoProxyClient.readDocument(_collection.databaseId, _collection as ViewModels.Collection, documentId).then(
-        (content) => {
-          initDocumentEditor(documentId, content);
-        },
-      );
-
     renderObjectForEditor = (value: unknown): string => MongoUtility.tojson(value, null, false);
 
     const _hasShardKeySpecified = (document: unknown): boolean => {

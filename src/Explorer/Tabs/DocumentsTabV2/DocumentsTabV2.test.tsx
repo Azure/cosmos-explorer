@@ -1,10 +1,12 @@
 import { FeedResponse, ItemDefinition, Resource } from "@azure/cosmos";
-import { waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import * as MongoProxyClient from "Common/MongoProxyClient";
 import { deleteDocuments } from "Common/dataAccess/deleteDocument";
+import { readDocument } from "Common/dataAccess/readDocument";
 import { Platform, updateConfigContext } from "ConfigContext";
 import { CosmosDbArtifactType } from "Contracts/FabricMessagesContract";
 import { useDialog } from "Explorer/Controls/Dialog";
-import { EditorReactProps } from "Explorer/Controls/Editor/EditorReact";
+import { EditorReact, EditorReactProps } from "Explorer/Controls/Editor/EditorReact";
 import { ProgressModalDialog } from "Explorer/Controls/ProgressModalDialog";
 import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
 import {
@@ -67,7 +69,7 @@ jest.mock("Common/dataAccess/readDocument", () => ({
 }));
 
 jest.mock("Explorer/Controls/Editor/EditorReact", () => ({
-  EditorReact: (props: EditorReactProps) => <>{props.content}</>,
+  EditorReact: jest.fn((props: EditorReactProps) => <>{props.content}</>),
 }));
 
 const mockDialogState = {
@@ -394,33 +396,124 @@ describe("Documents tab (noSql API)", () => {
     });
   });
 
-  describe("Command bar buttons", () => {
-    const createMockProps = (): IDocumentsTabComponentProps => ({
-      isPreferredApiMongoDB: false,
-      documentIds: [],
-      collection: {
-        id: ko.observable<string>("foo"),
-        container: new Explorer(),
-        partitionKey: {
-          kind: "MultiHash",
-          paths: ["/pkey1", "/pkey2", "/pkey3"],
-          version: 2,
-        },
-        partitionKeyProperties: ["pkey1", "pkey2", "pkey3"],
-        partitionKeyPropertyHeaders: ["/pkey1", "/pkey2", "/pkey3"],
-      } as ViewModels.CollectionBase,
-      partitionKey: undefined,
-      onLoadStartKey: 0,
-      tabTitle: "",
-      onExecutionErrorChange: (isExecutionError: boolean): void => {
-        isExecutionError;
+  const createMockProps = (): IDocumentsTabComponentProps => ({
+    isPreferredApiMongoDB: false,
+    documentIds: [],
+    collection: {
+      id: ko.observable<string>("foo"),
+      container: new Explorer(),
+      partitionKey: {
+        kind: "MultiHash",
+        paths: ["/pkey1", "/pkey2", "/pkey3"],
+        version: 2,
       },
-      onIsExecutingChange: (isExecuting: boolean): void => {
-        isExecuting;
-      },
-      isTabActive: true,
+      partitionKeyProperties: ["pkey1", "pkey2", "pkey3"],
+      partitionKeyPropertyHeaders: ["/pkey1", "/pkey2", "/pkey3"],
+    } as ViewModels.CollectionBase,
+    partitionKey: undefined,
+    onLoadStartKey: 0,
+    tabTitle: "",
+    onExecutionErrorChange: (isExecutionError: boolean): void => {
+      isExecutionError;
+    },
+    onIsExecutingChange: (isExecuting: boolean): void => {
+      isExecuting;
+    },
+    isTabActive: true,
+  });
+
+  describe("Pending document reads", () => {
+    beforeEach(() => {
+      updateConfigContext({ platform: Platform.Hosted });
+      jest.mocked(readDocument).mockClear();
     });
 
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    it.each([
+      { api: "SQL", isPreferredApiMongoDB: false, editDraft: false },
+      { api: "SQL", isPreferredApiMongoDB: false, editDraft: true },
+      { api: "Mongo", isPreferredApiMongoDB: true, editDraft: false },
+      { api: "Mongo", isPreferredApiMongoDB: true, editDraft: true },
+    ])(
+      "$api keeps a new draft when an earlier document read completes (edited: $editDraft)",
+      async ({ isPreferredApiMongoDB, editDraft }) => {
+        let completeRead: (document: { id: string; property: string }) => void;
+        const pendingRead = new Promise<{ id: string; property: string }>((resolve) => {
+          completeRead = resolve;
+        });
+        const readDocumentMock = (
+          isPreferredApiMongoDB ? jest.spyOn(MongoProxyClient, "readDocument") : readDocument
+        ) as jest.Mock<Promise<unknown>>;
+        readDocumentMock.mockReturnValueOnce(pendingRead);
+        if (isPreferredApiMongoDB) {
+          const mongoDocument = { id: "id", _id: "id", _rid: "rid", _self: "self", _etag: "etag", _ts: 123 };
+          jest.spyOn(MongoProxyClient, "queryDocuments").mockResolvedValue({
+            documents: [mongoDocument],
+            continuationToken: undefined,
+            headers: new Headers(),
+          });
+        }
+
+        render(<DocumentsTabComponent {...createMockProps()} isPreferredApiMongoDB={isPreferredApiMongoDB} />);
+        await waitFor(() => expect(readDocumentMock).toHaveBeenCalledTimes(1));
+
+        act(() => {
+          useCommandBar
+            .getState()
+            .contextButtons.find((button) => button.id === NEW_DOCUMENT_BUTTON_ID)
+            .onCommandClick(undefined);
+        });
+        expect(screen.getByText(/replace_with_new_document_id/)).toBeDefined();
+        if (editDraft) {
+          act(() => {
+            jest.mocked(EditorReact).mock.lastCall[0].onContentChanged('{"id":"edited-draft"}');
+          });
+        }
+
+        await act(async () => {
+          completeRead({ id: "id", property: PROPERTY_VALUE });
+          await pendingRead;
+        });
+
+        expect(screen.getByText(editDraft ? /edited-draft/ : /replace_with_new_document_id/)).toBeDefined();
+        expect(useCommandBar.getState().contextButtons.find((button) => button.id === SAVE_BUTTON_ID)).toBeDefined();
+        expect(
+          useCommandBar.getState().contextButtons.find((button) => button.id === UPDATE_BUTTON_ID),
+        ).toBeUndefined();
+      },
+    );
+
+    it("keeps the newer read when document reads complete out of order", async () => {
+      let completeRead: (document: { id: string; property: string }) => void;
+      const pendingRead = new Promise<{ id: string; property: string }>((resolve) => {
+        completeRead = resolve;
+      });
+      const readDocumentMock = readDocument as jest.Mock<Promise<unknown>>;
+      readDocumentMock.mockReturnValueOnce(pendingRead);
+      readDocumentMock.mockResolvedValueOnce({ id: "id", property: "newer-content" });
+
+      render(<DocumentsTabComponent {...createMockProps()} />);
+      await waitFor(() => expect(readDocumentMock).toHaveBeenCalledTimes(1));
+      fireEvent.click(screen.getByRole("cell", { name: "id", exact: true }));
+      await waitFor(() => expect(readDocumentMock).toHaveBeenCalledTimes(2));
+      await screen.findByText(/newer-content/);
+
+      await act(async () => {
+        completeRead({ id: "id", property: "older-content" });
+        await pendingRead;
+      });
+
+      expect(screen.getByText(/newer-content/)).toBeDefined();
+      expect(screen.queryByText(/older-content/)).toBeNull();
+      expect(useCommandBar.getState().contextButtons.find((button) => button.id === UPDATE_BUTTON_ID)).toBeDefined();
+      expect(useCommandBar.getState().contextButtons.find((button) => button.id === SAVE_BUTTON_ID)).toBeUndefined();
+    });
+  });
+
+  describe("Command bar buttons", () => {
     let wrapper: ReactWrapper;
 
     beforeEach(async () => {
