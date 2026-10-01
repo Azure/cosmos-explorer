@@ -641,6 +641,13 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     ViewModels.DocumentExplorerState.noDocumentSelected,
   );
 
+  const clearDocumentEditor = useCallback((rowIndex?: number, content?: string): void => {
+    documentLoadGeneration.current++;
+    setClickedRowIndex(rowIndex);
+    setSelectedDocumentContent(content);
+    setEditorState(ViewModels.DocumentExplorerState.noDocumentSelected);
+  }, []);
+
   // State
   const clientWriteEnabled = useClientWriteEnabled((state) => state.clientWriteEnabled);
   const [tabStateData, setTabStateData] = useState<TabDivider>(() =>
@@ -1047,9 +1054,8 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
   const onRevertNewDocumentClick = useCallback((): void => {
     setInitialDocumentContent("");
-    setSelectedDocumentContent("");
-    setEditorState(ViewModels.DocumentExplorerState.noDocumentSelected);
-  }, [setInitialDocumentContent, setSelectedDocumentContent, setEditorState]);
+    clearDocumentEditor(undefined, "");
+  }, [clearDocumentEditor]);
 
   let onSaveExistingDocumentClick = useCallback((): Promise<void> => {
     const documentContent = JSON.parse(selectedDocumentContent);
@@ -1251,10 +1257,8 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
             const newDocumentIds = [...documentIds.filter((documentId) => !deletedIdsSet.has(documentId.id))];
             setDocumentIds(newDocumentIds);
 
-            setSelectedDocumentContent(undefined);
-            setClickedRowIndex(undefined);
+            clearDocumentEditor();
             setSelectedRows(new Set());
-            setEditorState(ViewModels.DocumentExplorerState.noDocumentSelected);
           },
           (error: Error) => {
             if (error instanceof MongoProxyClient.ThrottlingError) {
@@ -1280,7 +1284,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
         )
         .finally(() => setIsExecuting(false));
     },
-    [onExecutionErrorChange, _deleteDocuments, documentIds],
+    [onExecutionErrorChange, _deleteDocuments, documentIds, clearDocumentEditor],
   );
 
   const onDeleteExistingDocumentsClick = useCallback(async (): Promise<void> => {
@@ -1334,15 +1338,21 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
         addedIdsSet.forEach((item) => documents.add(item));
         setDocumentIds(Array.from(documents));
 
-        setSelectedDocumentContent(undefined);
-        setClickedRowIndex(undefined);
+        clearDocumentEditor();
         setSelectedRows(new Set());
-        setEditorState(ViewModels.DocumentExplorerState.noDocumentSelected);
       };
 
       _collection.container.openUploadItemsPane(onSuccessUpload);
     }
-  }, [_collection.container, documentIds, isPreferredApiMongoDB, newDocumentId, partitionKey, partitionKeyProperties]);
+  }, [
+    _collection.container,
+    documentIds,
+    isPreferredApiMongoDB,
+    newDocumentId,
+    partitionKey,
+    partitionKeyProperties,
+    clearDocumentEditor,
+  ]);
 
   // If editor state changes, update the nav
   useEffect(
@@ -1750,17 +1760,8 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
   const onSelectedRowsChange = (selectedRows: Set<TableRowId>) => {
     confirmDiscardingChange(() => {
-      if (selectedRows.size === 0) {
-        setSelectedDocumentContent(undefined);
-        setClickedRowIndex(undefined);
-        setEditorState(ViewModels.DocumentExplorerState.noDocumentSelected);
-      }
-
-      // Find if clickedRow is in selectedRows.If not, clear clickedRow and content
-      if (clickedRowIndex !== undefined && !selectedRows.has(clickedRowIndex)) {
-        setClickedRowIndex(undefined);
-        setSelectedDocumentContent(undefined);
-        setEditorState(ViewModels.DocumentExplorerState.noDocumentSelected);
+      if (selectedRows.size === 0 || (clickedRowIndex !== undefined && !selectedRows.has(clickedRowIndex))) {
+        clearDocumentEditor();
       }
 
       // If only one selection, we consider as a click
@@ -2055,16 +2056,14 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
         // If apply filter is pressed, reset current selected document
         if (applyFilterButtonPressed) {
-          setClickedRowIndex(RESET_INDEX);
-          setEditorState(ViewModels.DocumentExplorerState.noDocumentSelected);
-          setSelectedDocumentContent(undefined);
+          clearDocumentEditor(RESET_INDEX);
         }
       } catch (error) {
         console.error(error);
         useDialog.getState().showOkModalDialog(t(Keys.tabs.documents.refreshGridFailed), getErrorMessage(error));
       }
     },
-    [createIterator, filterContent],
+    [createIterator, filterContent, clearDocumentEditor],
   );
 
   /**

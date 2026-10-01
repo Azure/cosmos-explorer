@@ -2,6 +2,7 @@ import { FeedResponse, ItemDefinition, Resource } from "@azure/cosmos";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import * as MongoProxyClient from "Common/MongoProxyClient";
 import { deleteDocuments } from "Common/dataAccess/deleteDocument";
+import { queryDocuments } from "Common/dataAccess/queryDocuments";
 import { readDocument } from "Common/dataAccess/readDocument";
 import { Platform, updateConfigContext } from "ConfigContext";
 import { CosmosDbArtifactType } from "Contracts/FabricMessagesContract";
@@ -430,6 +431,89 @@ describe("Documents tab (noSql API)", () => {
 
     afterEach(() => {
       jest.restoreAllMocks();
+    });
+
+    it("keeps the editor cleared when a draft is discarded", async () => {
+      render(<DocumentsTabComponent {...createMockProps()} />);
+      await screen.findByText(new RegExp(PROPERTY_VALUE));
+
+      act(() => {
+        useCommandBar
+          .getState()
+          .contextButtons.find((button) => button.id === NEW_DOCUMENT_BUTTON_ID)
+          .onCommandClick(undefined);
+      });
+      act(() => {
+        useCommandBar
+          .getState()
+          .contextButtons.find((button) => button.id === DISCARD_BUTTON_ID)
+          .onCommandClick(undefined);
+      });
+
+      expect(screen.queryByText(/replace_with_new_document_id/)).toBeNull();
+      expect(useCommandBar.getState().contextButtons.find((button) => button.id === UPDATE_BUTTON_ID)).toBeUndefined();
+      expect(useCommandBar.getState().contextButtons.find((button) => button.id === SAVE_BUTTON_ID)).toBeUndefined();
+    });
+
+    it.each([
+      { api: "SQL", isPreferredApiMongoDB: false, action: "deselection" },
+      { api: "SQL", isPreferredApiMongoDB: false, action: "an empty filter result" },
+      { api: "Mongo", isPreferredApiMongoDB: true, action: "deselection" },
+      { api: "Mongo", isPreferredApiMongoDB: true, action: "an empty filter result" },
+    ])("$api keeps the editor cleared after $action", async ({ isPreferredApiMongoDB, action }) => {
+      let completeRead: (document: { id: string; property: string }) => void;
+      const pendingRead = new Promise<{ id: string; property: string }>((resolve) => {
+        completeRead = resolve;
+      });
+      const readDocumentMock = (
+        isPreferredApiMongoDB ? jest.spyOn(MongoProxyClient, "readDocument") : readDocument
+      ) as jest.Mock<Promise<unknown>>;
+      readDocumentMock.mockReturnValueOnce(pendingRead);
+      if (isPreferredApiMongoDB) {
+        const mongoDocument = { id: "id", _id: "id", _rid: "rid", _self: "self", _etag: "etag", _ts: 123 };
+        jest.spyOn(MongoProxyClient, "queryDocuments").mockResolvedValue({
+          documents: [mongoDocument],
+          continuationToken: undefined,
+          headers: new Headers(),
+        });
+      }
+
+      render(<DocumentsTabComponent {...createMockProps()} isPreferredApiMongoDB={isPreferredApiMongoDB} />);
+      await waitFor(() => expect(readDocumentMock).toHaveBeenCalledTimes(1));
+
+      if (action === "deselection") {
+        fireEvent.click(screen.getByRole("checkbox", { name: "Select row", exact: true }));
+      } else {
+        if (isPreferredApiMongoDB) {
+          jest.mocked(MongoProxyClient.queryDocuments).mockResolvedValueOnce({
+            documents: [],
+            continuationToken: undefined,
+            headers: new Headers(),
+          });
+        } else {
+          const queryDocumentsMock = queryDocuments as jest.Mock<unknown>;
+          queryDocumentsMock.mockReturnValueOnce({
+            fetchNext: () => Promise.resolve({ resources: [], hasMoreResults: false }),
+          });
+        }
+        fireEvent.click(screen.getByRole("button", { name: "Apply Filter", exact: true }));
+      }
+
+      await waitFor(() =>
+        expect(screen.queryAllByRole("cell", { name: "id", exact: true })).toHaveLength(
+          action === "deselection" ? 1 : 0,
+        ),
+      );
+      expect(useCommandBar.getState().contextButtons.find((button) => button.id === UPDATE_BUTTON_ID)).toBeUndefined();
+      await act(async () => {
+        completeRead({ id: "id", property: PROPERTY_VALUE });
+        await pendingRead;
+      });
+
+      expect(readDocumentMock).toHaveBeenCalledTimes(1);
+      expect(screen.queryByText(new RegExp(PROPERTY_VALUE))).toBeNull();
+      expect(useCommandBar.getState().contextButtons.find((button) => button.id === UPDATE_BUTTON_ID)).toBeUndefined();
+      expect(useCommandBar.getState().contextButtons.find((button) => button.id === SAVE_BUTTON_ID)).toBeUndefined();
     });
 
     it.each([

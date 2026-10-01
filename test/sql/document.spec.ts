@@ -120,6 +120,8 @@ for (const { name, databaseId, containerId, documents } of documentTestCases) {
 
           const deletedSpan = documentsTab.documentsListPane.getByText(newDocumentId, { exact: true }).nth(0);
           await expect(deletedSpan).toHaveCount(0);
+          await expect(documentsTab.resultsEditor.locator).not.toBeAttached();
+          await expect(explorer.frame.getByRole("menuitem", { name: "Update", exact: true })).toBeHidden();
         });
       });
     }
