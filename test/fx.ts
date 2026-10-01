@@ -460,6 +460,7 @@ export class DocumentsTab {
 }
 
 type PanelOpenOptions = {
+  openTimeout?: number;
   closeTimeout?: number;
 };
 
@@ -520,6 +521,25 @@ export class DataExplorer {
   /** Select the side panel with the specified title */
   panel(title: string): Locator {
     return this.frame.getByTestId(`Panel:${title}`);
+  }
+
+  async waitForNewContainerForm(timeout = ONE_MINUTE_MS): Promise<Locator> {
+    const panel = this.panel("New Container");
+    const form = panel.locator("form#panelContainer");
+    const retryButton = panel.getByRole("button", { name: "Retry", exact: true });
+    await expect(
+      form.or(retryButton).filter({ visible: true }).first(),
+      `New Container did not show its form or preload error within ${timeout}ms`,
+    ).toBeVisible({ timeout });
+
+    if (await retryButton.isVisible()) {
+      const details = (await panel.getByRole("alert").allInnerTexts())
+        .map((text) => text.trim())
+        .filter(Boolean)
+        .join("\n");
+      throw new Error(`New Container failed to load: ${details || "Retry is available."}`);
+    }
+    return panel;
   }
 
   async waitForNode(treeNodeId: string): Promise<TreeNode> {
@@ -600,7 +620,11 @@ export class DataExplorer {
     options ||= {};
 
     const panel = this.panel(title);
-    await panel.waitFor();
+    if (title === "New Container") {
+      await this.waitForNewContainerForm(options.openTimeout);
+    } else {
+      await panel.waitFor({ timeout: options.openTimeout });
+    }
     const okButton = panel.getByTestId("Panel/OkButton");
     await action(panel, okButton);
     await panel.waitFor({ state: "detached", timeout: options.closeTimeout });
