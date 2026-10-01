@@ -272,6 +272,235 @@ describe("ARM request", () => {
     });
   });
 
+  describe("operation status throttling", () => {
+    const operationUrl = "https://foo.com/operations/123?api-version=2001-01-01";
+    const requestOptions = { apiVersion: "2001-01-01", host: "https://foo.com", path: "foo", method: "PUT" } as const;
+    const response = (status: number, body: unknown = {}, headers: Record<string, string> = {}) => ({
+      ok: status >= 200 && status < 300,
+      status,
+      headers: new Headers(headers),
+      json: jest.fn().mockResolvedValue(body),
+    });
+
+    beforeEach(() => {
+      jest.useFakeTimers();
+      jest.setSystemTime(new Date("2026-10-01T00:00:00Z"));
+      updateUserContext({ authType: AuthType.AAD, authorizationToken: "some-token" });
+    });
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+      jest.useRealTimers();
+    });
+
+    it("retries a throttled status GET without resubmitting the accepted write", async () => {
+      const result = { status: "Succeeded" };
+      const fetchMock = jest
+        .fn()
+        .mockResolvedValueOnce(response(202, {}, { location: operationUrl }))
+        .mockResolvedValueOnce(
+          response(
+            429,
+            { error: { code: "SubscriptionRequestsThrottled", message: "Please retry" } },
+            { "Retry-After": "3" },
+          ),
+        )
+        .mockResolvedValueOnce(response(200, result));
+      window.fetch = fetchMock;
+      const outcome = armRequest(requestOptions).catch((error: unknown) => error);
+
+      await jest.advanceTimersByTimeAsync(2999);
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+      await jest.advanceTimersByTimeAsync(1);
+      await expect(outcome).resolves.toEqual(result);
+      expect(fetchMock).toHaveBeenCalledTimes(3);
+      expect(fetchMock.mock.calls[0][1].method).toBe("PUT");
+      expect(fetchMock.mock.calls.slice(1).map(([url, options]) => ({ url, method: options.method }))).toEqual([
+        { url: operationUrl, method: "GET" },
+        { url: operationUrl, method: "GET" },
+      ]);
+      expect(jest.getTimerCount()).toBe(0);
+    });
+
+    it("continues polling after a throttled read recovers to an in-progress response", async () => {
+      const result = { status: "Succeeded" };
+      const fetchMock = jest
+        .fn()
+        .mockResolvedValueOnce(response(202, {}, { location: operationUrl }))
+        .mockResolvedValueOnce(response(429, { code: "429", message: "Throttled" }, { "Retry-After": "1" }))
+        .mockResolvedValueOnce(response(202, { status: "InProgress" }))
+        .mockResolvedValueOnce(response(200, result));
+      window.fetch = fetchMock;
+      const outcome = armRequest({ ...requestOptions, method: "POST" }).catch((error: unknown) => error);
+
+      await jest.advanceTimersByTimeAsync(1999);
+      expect(fetchMock).toHaveBeenCalledTimes(3);
+      await jest.advanceTimersByTimeAsync(1);
+      await expect(outcome).resolves.toEqual(result);
+      expect(fetchMock.mock.calls.map(([, options]) => options.method)).toEqual(["POST", "GET", "GET", "GET"]);
+    });
+
+    it.each([true, false])(
+      "stops exhausted 429 retries and preserves the final error (wrapped=%s)",
+      async (wrapped) => {
+        const details = { code: "SubscriptionRequestsThrottled", message: "Status reads throttled" };
+        const throttled = response(429, wrapped ? { error: details } : details, { "Retry-After": "1" });
+        const fetchMock = jest
+          .fn()
+          .mockResolvedValueOnce(response(202, {}, { location: operationUrl }))
+          .mockResolvedValue(throttled);
+        window.fetch = fetchMock;
+        const outcome = armRequest(requestOptions).catch((error: unknown) => error);
+
+        await jest.runAllTimersAsync();
+        await expect(outcome).resolves.toBeInstanceOf(ARMError);
+        await expect(outcome).resolves.toMatchObject(details);
+        expect(fetchMock.mock.calls.map(([, options]) => options.method)).toEqual(["PUT", "GET", "GET", "GET"]);
+        expect(throttled.json).toHaveBeenCalledTimes(1);
+        expect(jest.getTimerCount()).toBe(0);
+      },
+    );
+
+    it.each([
+      { retryAfter: "31", reads: 1, elapsed: 0 },
+      { retryAfter: "20", reads: 2, elapsed: 20000 },
+      { retryAfter: "15", reads: 3, elapsed: 30000 },
+    ])(
+      "does not restart the polling backoff budget for Retry-After $retryAfter",
+      async ({ retryAfter, reads, elapsed }) => {
+        const started = Date.now();
+        const fetchMock = jest
+          .fn()
+          .mockResolvedValueOnce(response(202, {}, { location: operationUrl }))
+          .mockResolvedValue(response(429, { code: "429", message: "Throttled" }, { "Retry-After": retryAfter }));
+        window.fetch = fetchMock;
+        const outcome = armRequest(requestOptions).catch((error: unknown) => error);
+
+        await jest.runAllTimersAsync();
+        await expect(outcome).resolves.toMatchObject({ code: "429", message: "Throttled" });
+        expect(fetchMock).toHaveBeenCalledTimes(1 + reads);
+        expect(Date.now() - started).toBe(elapsed);
+      },
+    );
+
+    it.each([429, 202])("cancels the wait after polling HTTP %s without another request", async (status) => {
+      const controller = new AbortController();
+      const reason = new Error("Polling cancelled");
+      const fetchMock = jest
+        .fn()
+        .mockResolvedValueOnce(response(202, {}, { location: operationUrl }))
+        .mockResolvedValue(response(status, { status: "InProgress", code: "429" }, { "Retry-After": "10" }));
+      window.fetch = fetchMock;
+      const outcome = armRequest({ ...requestOptions, signal: controller.signal }).catch((error: unknown) => error);
+
+      await jest.advanceTimersByTimeAsync(50);
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+      controller.abort(reason);
+      await expect(outcome).resolves.toBe(reason);
+      await jest.advanceTimersByTimeAsync(30000);
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+      expect(jest.getTimerCount()).toBe(0);
+    });
+
+    it("does not start polling when cancellation arrives with the accepted response", async () => {
+      const controller = new AbortController();
+      const reason = new Error("Cancelled after acceptance");
+      const started = Date.now();
+      const fetchMock = jest.fn().mockImplementationOnce(async () => {
+        controller.abort(reason);
+        return response(202, {}, { location: operationUrl });
+      });
+      window.fetch = fetchMock;
+      const outcome = armRequest({ ...requestOptions, signal: controller.signal }).catch((error: unknown) => error);
+
+      await jest.runAllTimersAsync();
+      await expect(outcome).resolves.toBe(reason);
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+      expect(Date.now() - started).toBe(0);
+      expect(jest.getTimerCount()).toBe(0);
+    });
+
+    it("cancels an in-flight status request", async () => {
+      const controller = new AbortController();
+      const reason = new Error("Polling cancelled");
+      const fetchMock = jest
+        .fn()
+        .mockResolvedValueOnce(response(202, {}, { location: operationUrl }))
+        .mockImplementation(
+          (_url: string, init: RequestInit) =>
+            new Promise<Response>((_resolve, reject) => {
+              init.signal?.addEventListener("abort", () => reject(init.signal?.reason), { once: true });
+            }),
+        );
+      window.fetch = fetchMock;
+      const outcome = armRequest({ ...requestOptions, signal: controller.signal }).catch((error: unknown) => error);
+
+      await jest.advanceTimersByTimeAsync(50);
+      controller.abort(reason);
+      await expect(outcome).resolves.toBe(reason);
+      await jest.advanceTimersByTimeAsync(30000);
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+      expect(jest.getTimerCount()).toBe(0);
+    });
+
+    it("does not restart exhausted status-request timeout retries", async () => {
+      const failure = Object.assign(new Error("Status request timed out"), { name: "AbortError" });
+      const setTimeoutSpy = jest.spyOn(global, "setTimeout");
+      const fetchMock = jest
+        .fn()
+        .mockResolvedValueOnce(response(202, {}, { location: operationUrl }))
+        .mockRejectedValue(failure);
+      window.fetch = fetchMock;
+      const outcome = armRequest({ ...requestOptions, timeoutMs: 250 }).catch((error: unknown) => error);
+
+      await jest.runAllTimersAsync();
+      await expect(outcome).resolves.toBe(failure);
+      expect(fetchMock).toHaveBeenCalledTimes(4);
+      expect(setTimeoutSpy.mock.calls.map((call) => call[1])).toEqual(expect.arrayContaining([250, 500, 1000]));
+      expect(jest.getTimerCount()).toBe(0);
+    });
+
+    it("finishes on HTTP 204 without reading a response body", async () => {
+      const complete = response(204);
+      const fetchMock = jest
+        .fn()
+        .mockResolvedValueOnce(response(202, {}, { location: operationUrl }))
+        .mockResolvedValueOnce(complete);
+      window.fetch = fetchMock;
+
+      await expect(armRequest(requestOptions)).resolves.toBeUndefined();
+      expect(complete.json).not.toHaveBeenCalled();
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+    });
+
+    it.each(["Failed", "Canceled"])("does not retry terminal operation state %s", async (status) => {
+      const fetchMock = jest
+        .fn()
+        .mockResolvedValueOnce(response(202, {}, { location: operationUrl }))
+        .mockResolvedValue(response(200, { status, error: { code: "OperationFailed", message: "Operation stopped" } }));
+      window.fetch = fetchMock;
+      const outcome = armRequest(requestOptions).catch((error: unknown) => error);
+
+      await jest.runAllTimersAsync();
+      await expect(outcome).resolves.toMatchObject({ message: expect.stringContaining("Operation stopped") });
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+    });
+
+    it.each([400, 401, 403, 404, 500, 503])("does not retry non-throttling polling error HTTP %s", async (status) => {
+      const details = { code: "PollingFailed", message: "Status unavailable" };
+      const fetchMock = jest
+        .fn()
+        .mockResolvedValueOnce(response(202, {}, { location: operationUrl }))
+        .mockResolvedValue(response(status, { error: details }));
+      window.fetch = fetchMock;
+      const outcome = armRequest(requestOptions).catch((error: unknown) => error);
+
+      await jest.runAllTimersAsync();
+      await expect(outcome).resolves.toMatchObject(details);
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+    });
+  });
+
   describe("HTTP 429 retries", () => {
     const requestOptions = { apiVersion: "2001-01-01", host: "https://foo.com", path: "foo", method: "GET" } as const;
     const throttledResponse = (retryAfter?: string, code = "429", message = "Throttled") => ({

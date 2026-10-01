@@ -146,7 +146,10 @@ export async function armRequest<T>({
   });
   const operationStatusUrl = armRequestResult.operationStatusUrl;
   if (operationStatusUrl) {
-    return await promiseRetry(() => getOperationStatus(operationStatusUrl));
+    if (signal?.aborted) {
+      throw signal.reason ?? new DOMException("The operation was aborted.", "AbortError");
+    }
+    return await promiseRetry(() => getOperationStatus(operationStatusUrl, signal, timeoutMs), { signal });
   }
   return armRequestResult.result;
 }
@@ -228,20 +231,39 @@ async function fetchWithRetry(
   }
 }
 
-async function getOperationStatus(operationStatusUrl: string) {
+async function getOperationStatus(
+  operationStatusUrl: string,
+  signal?: AbortSignal,
+  timeoutMs = DEFAULT_ARM_TIMEOUT_MS,
+) {
   if (!userContext.authorizationToken) {
     throw new Error("No authority token provided");
   }
 
-  const response = await window.fetch(operationStatusUrl, {
-    headers: {
-      Authorization: userContext.authorizationToken,
-    },
-  });
+  let response: Response;
+  try {
+    response = await fetchWithRetry(
+      operationStatusUrl,
+      {
+        method: "GET",
+        headers: { Authorization: userContext.authorizationToken },
+        signal,
+      },
+      "GET",
+      timeoutMs,
+      signal,
+    );
+  } catch (error) {
+    if (isAbortError(error)) {
+      throw new AbortError(error as Error);
+    }
+    throw error;
+  }
 
   if (!response.ok) {
-    const errorResponse = (await response.json()) as ErrorResponse;
-    const error = new Error(errorResponse.message) as ARMError;
+    const parsedError = (await response.json()) as ParsedErrorResponse;
+    const errorResponse = "error" in parsedError ? parsedError.error : parsedError;
+    const error = new ARMError(errorResponse.message);
     error.code = errorResponse.code;
     throw new AbortError(error);
   }
