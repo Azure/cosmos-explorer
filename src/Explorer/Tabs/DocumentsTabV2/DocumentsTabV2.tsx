@@ -1669,6 +1669,9 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   };
 
   const _onEditorContentChange = (newContent: string): void => {
+    if (newContent !== selectedDocumentContent) {
+      documentLoadGeneration.current++;
+    }
     setSelectedDocumentContent(newContent);
 
     if (

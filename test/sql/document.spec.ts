@@ -77,6 +77,52 @@ for (const { name, databaseId, containerId, documents } of documentTestCases) {
           expect(resultData?.id).toEqual(docId);
         });
 
+        if (docId === crossBrowserSmokeDocumentId) {
+          test("should preserve unsaved edits when a same-row read completes", async ({ page }) => {
+            const documentRow = documentsTab.documentsListPane.getByText(docId, { exact: true }).first();
+            await documentRow.click();
+            await waitForDocumentToLoad(docId);
+            const originalContent = await documentsTab.resultsEditor.text();
+            const editedContent = JSON.stringify({ ...JSON.parse(originalContent!), unsavedRereadEdit: true });
+            const matchesDocumentUrl = (url: URL) => url.pathname.endsWith(`/docs/${encodeURIComponent(docId)}`);
+            let releaseRead!: () => void;
+            let readHeld = false;
+            const readGate = new Promise<void>((resolve) => {
+              releaseRead = resolve;
+            });
+            await page.route(matchesDocumentUrl, async (route) => {
+              if (route.request().method() !== "GET") {
+                await route.fallback();
+                return;
+              }
+              const response = await route.fetch();
+              readHeld = true;
+              await readGate;
+              await route.fulfill({ response });
+            });
+
+            try {
+              await documentRow.click();
+              await expect.poll(() => readHeld).toBe(true);
+              await documentsTab.resultsEditor.setText(editedContent);
+
+              const responsePromise = page.waitForResponse(
+                (response) => response.request().method() === "GET" && matchesDocumentUrl(new URL(response.url())),
+              );
+              releaseRead();
+              const response = await responsePromise;
+              expect(response.status()).toBe(200);
+              await response.finished();
+
+              await expect.poll(() => documentsTab.resultsEditor.text()).toBe(editedContent);
+              await expect(explorer.frame.getByRole("menuitem", { name: "Discard", exact: true })).toBeEnabled();
+            } finally {
+              releaseRead();
+              await page.unroute(matchesDocumentUrl);
+            }
+          });
+        }
+
         const testOrSkip = skipCreateDelete ? test.skip : test;
         testOrSkip(`should be able to create and delete new document from ${docId}`, testDetails, async () => {
           const span = documentsTab.documentsListPane.getByText(docId, { exact: true }).nth(0);

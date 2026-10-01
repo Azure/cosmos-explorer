@@ -4,6 +4,7 @@ import * as MongoProxyClient from "Common/MongoProxyClient";
 import { deleteDocuments } from "Common/dataAccess/deleteDocument";
 import { queryDocuments } from "Common/dataAccess/queryDocuments";
 import { readDocument } from "Common/dataAccess/readDocument";
+import { updateDocument } from "Common/dataAccess/updateDocument";
 import { Platform, updateConfigContext } from "ConfigContext";
 import { CosmosDbArtifactType } from "Contracts/FabricMessagesContract";
 import { useDialog } from "Explorer/Controls/Dialog";
@@ -67,6 +68,10 @@ jest.mock("Common/dataAccess/readDocument", () => ({
       property: PROPERTY_VALUE,
     }),
   ),
+}));
+
+jest.mock("Common/dataAccess/updateDocument", () => ({
+  updateDocument: jest.fn(),
 }));
 
 jest.mock("Explorer/Controls/Editor/EditorReact", () => ({
@@ -431,6 +436,93 @@ describe("Documents tab (noSql API)", () => {
 
     afterEach(() => {
       jest.restoreAllMocks();
+    });
+
+    it.each([
+      { api: "SQL", isPreferredApiMongoDB: false, content: '{"id":"id","property":"edited-content"}' },
+      { api: "SQL", isPreferredApiMongoDB: false, content: '{"id":"id","property":' },
+      { api: "Mongo", isPreferredApiMongoDB: true, content: '{"id":"id","property":"edited-content"}' },
+      { api: "Mongo", isPreferredApiMongoDB: true, content: '{"id":"id","property":' },
+      { api: "SQL", isPreferredApiMongoDB: false, content: undefined },
+      { api: "Mongo", isPreferredApiMongoDB: true, content: undefined },
+    ])("$api handles a content notification during a reread: $content", async ({ isPreferredApiMongoDB, content }) => {
+      let completeRead: (document: { id: string; property: string }) => void;
+      const pendingRead = new Promise<{ id: string; property: string }>((resolve) => {
+        completeRead = resolve;
+      });
+      const readDocumentMock = (
+        isPreferredApiMongoDB ? jest.spyOn(MongoProxyClient, "readDocument") : readDocument
+      ) as jest.Mock<Promise<unknown>>;
+      readDocumentMock.mockResolvedValueOnce({ id: "id", property: "initial-content" });
+      readDocumentMock.mockReturnValueOnce(pendingRead);
+      if (isPreferredApiMongoDB) {
+        const mongoDocument = { id: "id", _id: "id", _rid: "rid", _self: "self", _etag: "etag", _ts: 123 };
+        jest.spyOn(MongoProxyClient, "queryDocuments").mockResolvedValue({
+          documents: [mongoDocument],
+          continuationToken: undefined,
+          headers: new Headers(),
+        });
+      }
+
+      render(<DocumentsTabComponent {...createMockProps()} isPreferredApiMongoDB={isPreferredApiMongoDB} />);
+      await screen.findByText(/initial-content/);
+      fireEvent.click(screen.getByRole("cell", { name: "id", exact: true }));
+      await waitFor(() => expect(readDocumentMock).toHaveBeenCalledTimes(2));
+      act(() => {
+        const editorProps = jest.mocked(EditorReact).mock.lastCall[0];
+        editorProps.onContentChanged(content ?? editorProps.content);
+      });
+
+      await act(async () => {
+        completeRead({ id: "id", property: "reread-content" });
+        await pendingRead;
+      });
+
+      const expectedRereadContent = expect.stringContaining("reread-content");
+      expect(jest.mocked(EditorReact).mock.lastCall[0].content).toEqual(content ?? expectedRereadContent);
+      expect(useCommandBar.getState().contextButtons.find((button) => button.id === DISCARD_BUTTON_ID)).toMatchObject({
+        disabled: content === undefined,
+      });
+      expect(useCommandBar.getState().contextButtons.find((button) => button.id === SAVE_BUTTON_ID)).toBeUndefined();
+    });
+
+    it("keeps a completed update when an earlier reread completes", async () => {
+      let completeRead: (document: { id: string; property: string }) => void;
+      const pendingRead = new Promise<{ id: string; property: string }>((resolve) => {
+        completeRead = resolve;
+      });
+      const readDocumentMock = readDocument as jest.Mock<Promise<unknown>>;
+      readDocumentMock.mockResolvedValueOnce({ id: "id", property: "initial-content" });
+      readDocumentMock.mockReturnValueOnce(pendingRead);
+      const updateDocumentMock = updateDocument as jest.Mock<Promise<unknown>>;
+      updateDocumentMock.mockClear();
+      updateDocumentMock.mockResolvedValueOnce({ id: "id", _rid: "rid", property: "saved-content" });
+
+      render(<DocumentsTabComponent {...createMockProps()} />);
+      await screen.findByText(/initial-content/);
+      fireEvent.click(screen.getByRole("cell", { name: "id", exact: true }));
+      await waitFor(() => expect(readDocumentMock).toHaveBeenCalledTimes(2));
+      act(() => {
+        jest.mocked(EditorReact).mock.lastCall[0].onContentChanged('{"id":"id","property":"saved-content"}');
+      });
+      await act(async () => {
+        await useCommandBar
+          .getState()
+          .contextButtons.find((button) => button.id === UPDATE_BUTTON_ID)
+          .onCommandClick(undefined);
+      });
+
+      expect(updateDocumentMock).toHaveBeenCalledTimes(1);
+      expect(jest.mocked(EditorReact).mock.lastCall[0].content).toContain("saved-content");
+      await act(async () => {
+        completeRead({ id: "id", property: "stale-content" });
+        await pendingRead;
+      });
+
+      expect(jest.mocked(EditorReact).mock.lastCall[0].content).toContain("saved-content");
+      expect(useCommandBar.getState().contextButtons.find((button) => button.id === DISCARD_BUTTON_ID)).toMatchObject({
+        disabled: true,
+      });
     });
 
     it("keeps the editor cleared when a draft is discarded", async () => {
