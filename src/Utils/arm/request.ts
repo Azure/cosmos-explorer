@@ -151,11 +151,43 @@ export async function armRequest<T>({
   return armRequestResult.result;
 }
 
+const getThrottleRetryDelay = (response: Response, attempt: number): number => {
+  const retryAfter = response.headers?.get("Retry-After")?.trim();
+  if (retryAfter) {
+    if (/^\d+$/.test(retryAfter)) {
+      return Number(retryAfter) * 1000;
+    }
+    if (Number.isNaN(Number(retryAfter))) {
+      const retryAt = Date.parse(retryAfter);
+      if (Number.isFinite(retryAt)) {
+        return Math.max(0, retryAt - Date.now());
+      }
+    }
+  }
+  return Math.floor(1000 * 2 ** attempt * (1 + Math.random()));
+};
+
+const waitForRetry = (delayMs: number, signal?: AbortSignal): Promise<void> =>
+  new Promise((resolve, reject) => {
+    if (signal?.aborted) {
+      reject(signal.reason ?? new DOMException("The operation was aborted.", "AbortError"));
+      return;
+    }
+    const onAbort = (): void => {
+      clearTimeout(timeoutId);
+      signal?.removeEventListener("abort", onAbort);
+      reject(signal?.reason ?? new DOMException("The operation was aborted.", "AbortError"));
+    };
+    const timeoutId = setTimeout(() => {
+      signal?.removeEventListener("abort", onAbort);
+      resolve();
+    }, delayMs);
+    signal?.addEventListener("abort", onAbort, { once: true });
+  });
+
 /**
- * Calls `fetchWithTimeout` once for non-idempotent methods. For idempotent GETs, retries
- * up to {@link RETRY_TIMEOUT_MULTIPLIERS}.length attempts on timeout, escalating the timeout
- * on each attempt. HTTP error responses (4xx/5xx) are NOT retried — they are surfaced by the
- * caller's response.ok check. External `signal` cancellation aborts the retry loop immediately.
+ * GET timeout and HTTP 429 retries share three attempts and a 30-second backoff budget.
+ * Other responses and non-GET requests are not retried. Caller cancellation stops retries.
  */
 async function fetchWithRetry(
   url: string,
@@ -170,23 +202,30 @@ async function fetchWithRetry(
 
   const RETRY_TIMEOUT_MULTIPLIERS = [1, 2, 4];
   const RETRY_BACKOFF_MS = 100;
+  const MAX_BACKOFF_MS = 30000;
+  let backoffMs = 0;
 
-  return promiseRetry(
-    (attemptNumber: number) => {
-      const attemptTimeoutMs =
-        timeoutMs * RETRY_TIMEOUT_MULTIPLIERS[Math.min(attemptNumber - 1, RETRY_TIMEOUT_MULTIPLIERS.length - 1)];
-      return fetchWithTimeout(url, fetchInit, attemptTimeoutMs);
-    },
-    {
-      retries: RETRY_TIMEOUT_MULTIPLIERS.length - 1,
-      factor: 1,
-      minTimeout: RETRY_BACKOFF_MS,
-      maxTimeout: RETRY_BACKOFF_MS,
-      signal,
-      // Only retry on timeout aborts. Caller cancellation (external signal aborted) stops retries.
-      shouldRetry: (error) => isAbortError(error) && !signal?.aborted,
-    },
-  );
+  for (let attempt = 0; ; attempt += 1) {
+    const lastAttempt = attempt === RETRY_TIMEOUT_MULTIPLIERS.length - 1;
+    let delayMs: number;
+    try {
+      const response = await fetchWithTimeout(url, fetchInit, timeoutMs * RETRY_TIMEOUT_MULTIPLIERS[attempt]);
+      if (response.status !== 429 || lastAttempt) {
+        return response;
+      }
+      delayMs = getThrottleRetryDelay(response, attempt);
+      if (backoffMs + delayMs > MAX_BACKOFF_MS) {
+        return response;
+      }
+    } catch (error) {
+      if (lastAttempt || !isAbortError(error) || signal?.aborted || backoffMs + RETRY_BACKOFF_MS > MAX_BACKOFF_MS) {
+        throw error;
+      }
+      delayMs = RETRY_BACKOFF_MS;
+    }
+    backoffMs += delayMs;
+    await waitForRetry(delayMs, signal);
+  }
 }
 
 async function getOperationStatus(operationStatusUrl: string) {
