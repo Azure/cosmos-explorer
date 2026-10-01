@@ -1,8 +1,17 @@
+import "@testing-library/jest-dom";
+import { act, fireEvent, render, screen, within } from "@testing-library/react";
+import { createCollection } from "Common/dataAccess/createCollection";
 import { Capability } from "Contracts/DataModels";
 import { shallow } from "enzyme";
+import { Keys, t } from "Localization";
 import React from "react";
+import { updateUserContext } from "UserContext";
 import Explorer from "../../Explorer";
 import { AddCollectionPanel } from "./AddCollectionPanel";
+import * as AddCollectionPanelUtility from "./AddCollectionPanelUtility";
+
+jest.mock("Common/dataAccess/createCollection", () => ({ createCollection: jest.fn() }));
+jest.mock("Explorer/Controls/ThroughputInput/ThroughputInput", () => ({ ThroughputInput: () => null }));
 
 const props = {
   explorer: new Explorer(),
@@ -66,5 +75,68 @@ describe("AddCollectionPanel", () => {
       const wrapper = shallow(<AddCollectionPanel {...props} isCopyJobFlow={false} />);
       expect(wrapper).toBeDefined();
     });
+  });
+
+  describe("full-text creation validation", () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+      updateUserContext({ apiType: "SQL" });
+      jest.mocked(createCollection).mockResolvedValue(undefined);
+      jest.spyOn(AddCollectionPanelUtility, "scrollToSection").mockImplementation(() => undefined);
+      jest.spyOn(props.explorer, "refreshAllDatabases").mockResolvedValue(undefined);
+    });
+
+    afterEach(() => jest.restoreAllMocks());
+
+    it.each([false, true])(
+      "blocks invalid stopwords and allows correction with vector capability %s",
+      async (vector) => {
+        const { container } = render(
+          <AddCollectionPanel
+            {...props}
+            targetAccountOverride={{
+              subscriptionId: "subscription",
+              resourceGroup: "group",
+              accountName: "account",
+              capabilities: [
+                { name: "EnableNoSQLFullTextSearchPreviewFeatures", description: "" },
+                ...(vector ? [{ name: "EnableNoSQLVectorSearch", description: "" }] : []),
+              ],
+            }}
+          />,
+        );
+        fireEvent.change(screen.getByPlaceholderText("Type a new database id"), { target: { value: "database" } });
+        fireEvent.change(screen.getByPlaceholderText("e.g., Container1"), { target: { value: "container" } });
+        fireEvent.change(screen.getByPlaceholderText(/first partition key/), { target: { value: "/pk" } });
+        fireEvent.click(screen.getByRole("button", { name: "Container Full Text Search Policy" }));
+        fireEvent.click(screen.getByLabelText("Customize stopwords with standard analysis"));
+        fireEvent.click(screen.getByRole("button", { name: "Add full text path" }));
+        fireEvent.change(screen.getByLabelText("Path"), { target: { value: "/text" } });
+        const words = within(screen.getByRole("group", { name: "Default stopwords" })).getByRole("textbox", {
+          name: "Additional stopwords",
+        });
+        fireEvent.change(words, { target: { value: "two words" } });
+        const form = container.querySelector("form")!;
+        await act(async () => {
+          fireEvent.submit(form);
+        });
+        expect(createCollection).not.toHaveBeenCalled();
+        expect(screen.getByText(t(Keys.panes.addCollection.fullTextSearchPolicyError))).toBeVisible();
+        fireEvent.change(words, { target: { value: "cosmos" } });
+        await act(async () => {
+          fireEvent.submit(form);
+        });
+        expect(createCollection).toHaveBeenCalledTimes(1);
+        expect(createCollection).toHaveBeenCalledWith(
+          expect.objectContaining({
+            fullTextPolicy: expect.objectContaining({
+              defaultSpec: expect.objectContaining({ addStopWords: ["cosmos"] }),
+              fullTextPaths: [{ path: "/text" }],
+            }),
+          }),
+        );
+      },
+      10000,
+    );
   });
 });
