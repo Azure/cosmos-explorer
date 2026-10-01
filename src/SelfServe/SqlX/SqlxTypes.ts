@@ -10,6 +10,7 @@ export type SqlxServiceProps = {
   creationTime: string;
   status: string;
   instanceSize: string;
+  dedicatedGatewayType: string;
   instanceCount: number;
   sqlxEndPoint: string;
 };
@@ -26,6 +27,7 @@ export type UpdateDedicatedGatewayRequestParameters = {
 
 export type UpdateDedicatedGatewayRequestProperties = {
   instanceSize: string;
+  dedicatedGatewayType: string;
   instanceCount: number;
   serviceType: string;
 };
