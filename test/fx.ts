@@ -1,6 +1,7 @@
 import { DefaultAzureCredential } from "@azure/identity";
 import { Frame, Locator, Page, expect } from "@playwright/test";
-import crypto, { webcrypto } from "crypto";
+import { webcrypto } from "crypto";
+import { generateUniqueName as generateUniqueResourceName } from "../utils/testResourceName";
 import { TestContainerContext } from "./testData";
 
 // The @azure/cosmos client signs requests with globalThis.crypto (Web Crypto API).
@@ -19,13 +20,7 @@ export interface TestNameOptions {
 }
 
 export function generateUniqueName(baseName: string, options?: TestNameOptions): string {
-  const length = options?.length ?? 1;
-  const timestamp = options?.timestampped === undefined ? true : options.timestampped;
-  const prefixed = options?.prefixed === undefined ? true : options.prefixed;
-
-  const prefix = prefixed ? "t_" : "";
-  const suffix = timestamp ? `_${Date.now()}` : "";
-  return `${prefix}${baseName}${crypto.randomBytes(length).toString("hex")}${suffix}`;
+  return generateUniqueResourceName(baseName, options, process.env);
 }
 
 export function getAzureCLICredentials(): DefaultAzureCredential {
@@ -118,6 +113,7 @@ function tryGetStandardName(accountType: TestAccount) {
       : `${process.env.DE_TEST_ACCOUNT_PREFIX}-`;
     return `${actualPrefix}${accountType.toLocaleLowerCase()}`;
   }
+  return undefined;
 }
 
 // Maps a base API account type to its dedicated connection string (account key) account.
@@ -328,12 +324,12 @@ class TreeNode {
   async expand(): Promise<void> {
     const treeNodeContainer = this.frame.getByTestId(`TreeNodeContainer:${this.id}`);
     const tree = this.frame.getByTestId(`Tree:${this.id}`);
+    const expandIcon = this.element.locator(":scope > .fui-TreeItemLayout__expandIcon");
 
     // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
     const expandNode = async () => {
       if ((await treeNodeContainer.getAttribute("aria-expanded")) !== "true") {
-        // Click the node, to trigger loading and expansion
-        await this.element.click();
+        await expandIcon.click();
       }
 
       // Try three times to wait for the node to expand.
@@ -346,7 +342,7 @@ class TreeNode {
           // Just try again
           if ((await treeNodeContainer.getAttribute("aria-expanded")) !== "true") {
             // We might have collapsed the node, try expanding it again, then retry.
-            await this.element.click();
+            await expandIcon.click();
           }
         }
       }
@@ -474,6 +470,7 @@ export enum CommandBarButton {
   ExecuteQuery = "Execute Query",
   UploadItem = "Upload Item",
   NewDocument = "New Document",
+  NewItem = "New Item",
   View = "View",
 }
 
