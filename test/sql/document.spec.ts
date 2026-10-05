@@ -8,7 +8,6 @@ import {
   createTestSQLContainer,
   itemsPerPartition,
   partitionCount,
-  retry,
   setPartitionKeys,
   TestContainerContext,
   TestData,
@@ -78,6 +77,52 @@ for (const { name, databaseId, containerId, documents } of documentTestCases) {
           expect(resultData?.id).toEqual(docId);
         });
 
+        if (docId === crossBrowserSmokeDocumentId) {
+          test("should preserve unsaved edits when a same-row read completes", async ({ page }) => {
+            const documentRow = documentsTab.documentsListPane.getByText(docId, { exact: true }).first();
+            await documentRow.click();
+            await waitForDocumentToLoad(docId);
+            const originalContent = await documentsTab.resultsEditor.text();
+            const editedContent = JSON.stringify({ ...JSON.parse(originalContent!), unsavedRereadEdit: true });
+            const matchesDocumentUrl = (url: URL) => url.pathname.endsWith(`/docs/${encodeURIComponent(docId)}`);
+            let releaseRead!: () => void;
+            let readHeld = false;
+            const readGate = new Promise<void>((resolve) => {
+              releaseRead = resolve;
+            });
+            await page.route(matchesDocumentUrl, async (route) => {
+              if (route.request().method() !== "GET") {
+                await route.fallback();
+                return;
+              }
+              const response = await route.fetch();
+              readHeld = true;
+              await readGate;
+              await route.fulfill({ response });
+            });
+
+            try {
+              await documentRow.click();
+              await expect.poll(() => readHeld).toBe(true);
+              await documentsTab.resultsEditor.setText(editedContent);
+
+              const responsePromise = page.waitForResponse(
+                (response) => response.request().method() === "GET" && matchesDocumentUrl(new URL(response.url())),
+              );
+              releaseRead();
+              const response = await responsePromise;
+              expect(response.status()).toBe(200);
+              await response.finished();
+
+              await expect.poll(() => documentsTab.resultsEditor.text()).toBe(editedContent);
+              await expect(explorer.frame.getByRole("menuitem", { name: "Discard", exact: true })).toBeEnabled();
+            } finally {
+              releaseRead();
+              await page.unroute(matchesDocumentUrl);
+            }
+          });
+        }
+
         const testOrSkip = skipCreateDelete ? test.skip : test;
         testOrSkip(`should be able to create and delete new document from ${docId}`, testDetails, async () => {
           const span = documentsTab.documentsListPane.getByText(docId, { exact: true }).nth(0);
@@ -85,28 +130,24 @@ for (const { name, databaseId, containerId, documents } of documentTestCases) {
           await expect(span).toBeVisible();
 
           await span.click();
-          let newDocumentId;
           await waitForDocumentToLoad(docId);
-          await retry(async () => {
-            const newDocumentButton = await explorer.waitForCommandBarButton(CommandBarButton.NewItem, 5000);
-            await expect(newDocumentButton).toBeVisible();
-            await expect(newDocumentButton).toBeEnabled();
-            await newDocumentButton.click();
+          const newDocumentButton = await explorer.waitForCommandBarButton(CommandBarButton.NewItem, 5000);
+          await expect(newDocumentButton).toBeVisible();
+          await expect(newDocumentButton).toBeEnabled();
+          await newDocumentButton.click();
 
-            await expect(documentsTab.resultsEditor.locator).toBeAttached({ timeout: 60 * 1000 });
+          await waitForDocumentToLoad("replace_with_new_document_id");
+          const saveButton = await explorer.waitForCommandBarButton(CommandBarButton.Save, 5000);
+          const newDocumentId = `${Date.now().toString()}-delete`;
+          const newDocument = {
+            id: newDocumentId,
+            ...setPartitionKeys(partitionKeys || []),
+          };
 
-            newDocumentId = `${Date.now().toString()}-delete`;
-
-            const newDocument = {
-              id: newDocumentId,
-              ...setPartitionKeys(partitionKeys || []),
-            };
-
-            await documentsTab.resultsEditor.setText(JSON.stringify(newDocument));
-            const saveButton = await explorer.waitForCommandBarButton(CommandBarButton.Save, 5000);
-            await saveButton.click({ timeout: 5000 });
-            await expect(saveButton).toBeHidden({ timeout: 5000 });
-          }, 3);
+          await documentsTab.resultsEditor.setText(JSON.stringify(newDocument));
+          await expect(saveButton).toBeEnabled();
+          await saveButton.click({ timeout: 5000 });
+          await expect(saveButton).toBeHidden({ timeout: 5000 });
 
           await documentsTab.setFilter(`WHERE c.id = "${newDocumentId}"`);
           await documentsTab.filterButton.click();
@@ -125,6 +166,8 @@ for (const { name, databaseId, containerId, documents } of documentTestCases) {
 
           const deletedSpan = documentsTab.documentsListPane.getByText(newDocumentId, { exact: true }).nth(0);
           await expect(deletedSpan).toHaveCount(0);
+          await expect(documentsTab.resultsEditor.locator).not.toBeAttached();
+          await expect(explorer.frame.getByRole("menuitem", { name: "Update", exact: true })).toBeHidden();
         });
       });
     }
