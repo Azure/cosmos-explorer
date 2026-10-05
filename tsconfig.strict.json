@@ -44,6 +44,8 @@
     "./src/Explorer/Graph/GraphExplorerComponent/GraphData.ts",
     "./src/Explorer/LazyMonaco.ts",
     "./src/Explorer/Menus/NotificationConsole/ConsoleData.tsx",
+    "./src/Explorer/OfferLoader.test.ts",
+    "./src/Explorer/OfferLoader.ts",
     "./src/Explorer/OpenFullScreen.test.tsx",
     "./src/Explorer/OpenFullScreen.tsx",
     "./src/Explorer/Panes/PanelContainerComponent.test.tsx",
