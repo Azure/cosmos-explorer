@@ -3,18 +3,21 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
+  "engines": {
+    "node": "22.x"
+  },
   "scripts": {
+    "build": "node --check index.js && node --check app.js && node --check app.test.js && npm test",
     "deploy": "az webapp up --name \"dataexplorer-preview\" --subscription \"cosmosdb-portalteam-runners\" --resource-group \"dataexplorer-preview\" --runtime \"NODE:22-lts\" --sku P1V2",
     "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node --test app.test.js"
   },
   "keywords": [],
   "author": "Microsoft Corporation",
   "dependencies": {
-    "body-parser": "^2.2.2",
     "express": "^5.2.1",
-    "follow-redirects": "^1.16.0",
-    "http-proxy-middleware": "^3.0.7",
+    "httpxy": "0.5.5",
     "node-fetch": "^2.6.1"
   }
 }
