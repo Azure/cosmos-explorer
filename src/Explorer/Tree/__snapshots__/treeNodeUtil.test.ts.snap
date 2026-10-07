@@ -25,61 +25,6 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
             "label": "Rows",
             "onClick": [Function],
           },
-          {
-            "children": [
-              {
-                "children": [
-                  {
-                    "children": [
-                      {
-                        "label": "string",
-                      },
-                      {
-                        "label": "HasNulls: false",
-                      },
-                    ],
-                    "label": "street",
-                  },
-                  {
-                    "children": [
-                      {
-                        "label": "string",
-                      },
-                      {
-                        "label": "HasNulls: true",
-                      },
-                    ],
-                    "label": "line2",
-                  },
-                  {
-                    "children": [
-                      {
-                        "label": "number",
-                      },
-                      {
-                        "label": "HasNulls: false",
-                      },
-                    ],
-                    "label": "zip",
-                  },
-                ],
-                "label": "address",
-              },
-              {
-                "children": [
-                  {
-                    "label": "string",
-                  },
-                  {
-                    "label": "HasNulls: false",
-                  },
-                ],
-                "label": "orderId",
-              },
-            ],
-            "label": "Schema",
-            "onClick": [Function],
-          },
         ],
         "className": "collectionNode",
         "contextMenu": [
@@ -397,61 +342,6 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
             "id": "",
             "isSelected": [Function],
             "label": "Scale & Settings",
-            "onClick": [Function],
-          },
-          {
-            "children": [
-              {
-                "children": [
-                  {
-                    "children": [
-                      {
-                        "label": "string",
-                      },
-                      {
-                        "label": "HasNulls: false",
-                      },
-                    ],
-                    "label": "street",
-                  },
-                  {
-                    "children": [
-                      {
-                        "label": "string",
-                      },
-                      {
-                        "label": "HasNulls: true",
-                      },
-                    ],
-                    "label": "line2",
-                  },
-                  {
-                    "children": [
-                      {
-                        "label": "number",
-                      },
-                      {
-                        "label": "HasNulls: false",
-                      },
-                    ],
-                    "label": "zip",
-                  },
-                ],
-                "label": "address",
-              },
-              {
-                "children": [
-                  {
-                    "label": "string",
-                  },
-                  {
-                    "label": "HasNulls: false",
-                  },
-                ],
-                "label": "orderId",
-              },
-            ],
-            "label": "Schema",
             "onClick": [Function],
           },
         ],
@@ -819,61 +709,6 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "id": "",
             "isSelected": [Function],
             "label": "Settings",
-            "onClick": [Function],
-          },
-          {
-            "children": [
-              {
-                "children": [
-                  {
-                    "children": [
-                      {
-                        "label": "string",
-                      },
-                      {
-                        "label": "HasNulls: false",
-                      },
-                    ],
-                    "label": "street",
-                  },
-                  {
-                    "children": [
-                      {
-                        "label": "string",
-                      },
-                      {
-                        "label": "HasNulls: true",
-                      },
-                    ],
-                    "label": "line2",
-                  },
-                  {
-                    "children": [
-                      {
-                        "label": "number",
-                      },
-                      {
-                        "label": "HasNulls: false",
-                      },
-                    ],
-                    "label": "zip",
-                  },
-                ],
-                "label": "address",
-              },
-              {
-                "children": [
-                  {
-                    "label": "string",
-                  },
-                  {
-                    "label": "HasNulls: false",
-                  },
-                ],
-                "label": "orderId",
-              },
-            ],
-            "label": "Schema",
             "onClick": [Function],
           },
         ],
@@ -1333,61 +1168,6 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "id": "",
             "isSelected": [Function],
             "label": "Scale & Settings",
-            "onClick": [Function],
-          },
-          {
-            "children": [
-              {
-                "children": [
-                  {
-                    "children": [
-                      {
-                        "label": "string",
-                      },
-                      {
-                        "label": "HasNulls: false",
-                      },
-                    ],
-                    "label": "street",
-                  },
-                  {
-                    "children": [
-                      {
-                        "label": "string",
-                      },
-                      {
-                        "label": "HasNulls: true",
-                      },
-                    ],
-                    "label": "line2",
-                  },
-                  {
-                    "children": [
-                      {
-                        "label": "number",
-                      },
-                      {
-                        "label": "HasNulls: false",
-                      },
-                    ],
-                    "label": "zip",
-                  },
-                ],
-                "label": "address",
-              },
-              {
-                "children": [
-                  {
-                    "label": "string",
-                  },
-                  {
-                    "label": "HasNulls: false",
-                  },
-                ],
-                "label": "orderId",
-              },
-            ],
-            "label": "Schema",
             "onClick": [Function],
           },
           {
@@ -1939,61 +1719,6 @@ exports[`createDatabaseTreeNodes using NoSQL API on Hosted Platform creates expe
             "id": "",
             "isSelected": [Function],
             "label": "Scale & Settings",
-            "onClick": [Function],
-          },
-          {
-            "children": [
-              {
-                "children": [
-                  {
-                    "children": [
-                      {
-                        "label": "string",
-                      },
-                      {
-                        "label": "HasNulls: false",
-                      },
-                    ],
-                    "label": "street",
-                  },
-                  {
-                    "children": [
-                      {
-                        "label": "string",
-                      },
-                      {
-                        "label": "HasNulls: true",
-                      },
-                    ],
-                    "label": "line2",
-                  },
-                  {
-                    "children": [
-                      {
-                        "label": "number",
-                      },
-                      {
-                        "label": "HasNulls: false",
-                      },
-                    ],
-                    "label": "zip",
-                  },
-                ],
-                "label": "address",
-              },
-              {
-                "children": [
-                  {
-                    "label": "string",
-                  },
-                  {
-                    "label": "HasNulls: false",
-                  },
-                ],
-                "label": "orderId",
-              },
-            ],
-            "label": "Schema",
             "onClick": [Function],
           },
           {
