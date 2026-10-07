@@ -36,6 +36,23 @@ test.describe("Shared Throughput Option Removed from Creation Dialogs", () => {
     await panel.waitFor({ state: "detached" });
   });
 
+  test("New Database panel 'Database id' field has an accessible name", async () => {
+    // Regression guard for bug 4768133: the "Database id" label must be
+    // programmatically associated with the edit field, so the input's accessible
+    // name is "Database id" rather than falling back to its title attribute.
+    const newDatabaseButton = await explorer.globalCommandButton("New Database");
+    await newDatabaseButton.click();
+
+    const panel = explorer.panel("New Database");
+    await panel.waitFor();
+
+    await expect(panel.getByRole("textbox", { name: "Database id" })).toBeVisible();
+
+    const closeButton = explorer.frame.getByLabel("Close New Database");
+    await closeButton.click();
+    await panel.waitFor({ state: "detached" });
+  });
+
   test("New Container panel should not show shared throughput checkbox when creating new database", async () => {
     // Open the "New Container" panel
     const newContainerButton = await explorer.globalCommandButton("New Container");
