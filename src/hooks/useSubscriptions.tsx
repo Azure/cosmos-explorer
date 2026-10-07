@@ -35,6 +35,7 @@ export async function fetchSubscriptions(accessToken: string = ""): Promise<Subs
       (sub) => sub.state === "Enabled" || sub.state === "Warned" || sub.state === "PastDue",
     );
     subscriptions = [...subscriptions, ...validSubscriptions];
+    console.log("test")
   }
   return subscriptions.sort((a, b) => a.displayName.localeCompare(b.displayName));
 }
