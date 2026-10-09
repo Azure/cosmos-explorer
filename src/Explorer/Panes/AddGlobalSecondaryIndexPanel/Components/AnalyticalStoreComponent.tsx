@@ -1,20 +1,16 @@
-import { DefaultButton, Link, Stack, Text } from "@fluentui/react";
-import * as Constants from "Common/Constants";
-import Explorer from "Explorer/Explorer";
+import { Stack, Text } from "@fluentui/react";
 import {
   AnalyticalStorageContent,
   isSynapseLinkEnabled,
 } from "Explorer/Panes/AddCollectionPanel/AddCollectionPanelUtility";
 import React from "react";
-import { getCollectionName } from "Utils/APITypeUtils";
 
 export interface AnalyticalStoreComponentProps {
-  explorer: Explorer;
   enableAnalyticalStore: boolean;
   setEnableAnalyticalStore: React.Dispatch<React.SetStateAction<boolean>>;
 }
 export const AnalyticalStoreComponent = (props: AnalyticalStoreComponentProps): JSX.Element => {
-  const { explorer, enableAnalyticalStore, setEnableAnalyticalStore } = props;
+  const { enableAnalyticalStore, setEnableAnalyticalStore } = props;
 
   const onEnableAnalyticalStoreRadioButtonChange = (checked: boolean): void => {
     if (checked && !enableAnalyticalStore) {
@@ -71,29 +67,6 @@ export const AnalyticalStoreComponent = (props: AnalyticalStoreComponentProps): 
           <span className="panelRadioBtnLabel">Off</span>
         </div>
       </Stack>
-
-      {!isSynapseLinkEnabled() && (
-        <Stack className="panelGroupSpacing">
-          <Text variant="small">
-            Azure Synapse Link is required for creating an analytical store {getCollectionName().toLocaleLowerCase()}.
-            Enable Synapse Link for this Cosmos DB account.{" "}
-            <Link
-              href="https://aka.ms/cosmosdb-synapselink"
-              target="_blank"
-              aria-label={Constants.ariaLabelForLearnMoreLink.AzureSynapseLink}
-              className="capacitycalculator-link"
-            >
-              Learn more
-            </Link>
-          </Text>
-          <DefaultButton
-            text="Enable"
-            onClick={() => explorer.openEnableSynapseLinkDialog()}
-            style={{ height: 27, width: 80 }}
-            styles={{ label: { fontSize: 12 } }}
-          />
-        </Stack>
-      )}
     </Stack>
   );
 };

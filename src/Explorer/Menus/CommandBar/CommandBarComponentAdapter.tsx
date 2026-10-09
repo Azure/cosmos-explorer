@@ -8,8 +8,8 @@ import { makeStyles, useFluent } from "@fluentui/react-components";
 import { useDataPlaneRbac } from "Explorer/Panes/SettingsPane/SettingsPane";
 import { KeyboardActionGroup, useKeyboardActionGroup } from "KeyboardShortcuts";
 import { isFabric } from "Platform/Fabric/FabricUtil";
-import { userContext } from "UserContext";
 import * as React from "react";
+import { userContext } from "UserContext";
 import create, { UseStore } from "zustand";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../../Explorer";
@@ -26,8 +26,6 @@ export interface CommandBarStore {
   setContextButtons: (contextButtons: CommandButtonComponentProps[]) => void;
   isHidden: boolean;
   setIsHidden: (isHidden: boolean) => void;
-  isSynapseLinkUpdating: boolean;
-  setIsSynapseLinkUpdating: (isSynapseLinkUpdating: boolean) => void;
 }
 
 export const useCommandBar: UseStore<CommandBarStore> = create((set) => ({
@@ -35,8 +33,6 @@ export const useCommandBar: UseStore<CommandBarStore> = create((set) => ({
   setContextButtons: (contextButtons: CommandButtonComponentProps[]) => set((state) => ({ ...state, contextButtons })),
   isHidden: false,
   setIsHidden: (isHidden: boolean) => set((state) => ({ ...state, isHidden })),
-  isSynapseLinkUpdating: false,
-  setIsSynapseLinkUpdating: (isSynapseLinkUpdating: boolean) => set({ isSynapseLinkUpdating }),
 }));
 
 const useStyles = makeStyles({
@@ -71,7 +67,6 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
   const selectedNodeState = useSelectedNode();
   const buttons = useCommandBar((state) => state.contextButtons);
   const isHidden = useCommandBar((state) => state.isHidden);
-  const isSynapseLinkUpdating = useCommandBar((state) => state.isSynapseLinkUpdating);
   // targetDocument is used by referenced components
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { targetDocument } = useFluent();
@@ -84,12 +79,8 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
 
   // Memoize the expensive button creation
   const staticButtons = React.useMemo(() => {
-    return CommandBarComponentButtonFactory.createStaticCommandBarButtons(
-      container,
-      selectedNodeState,
-      isSynapseLinkUpdating,
-    );
-  }, [container, selectedNodeState, dataPlaneRbacEnabled, aadTokenUpdated, isSynapseLinkUpdating]);
+    return CommandBarComponentButtonFactory.createStaticCommandBarButtons(container, selectedNodeState);
+  }, [container, selectedNodeState, dataPlaneRbacEnabled, aadTokenUpdated]);
 
   if (userContext.apiType === "Postgres" || userContext.apiType === "VCoreMongo") {
     const buttons =

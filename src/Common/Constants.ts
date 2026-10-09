@@ -513,7 +513,6 @@ export class PriorityLevel {
 
 export class ariaLabelForLearnMoreLink {
   public static readonly AnalyticalStore = "Learn more about analytical store.";
-  public static readonly AzureSynapseLink = "Learn more about Azure Synapse Link.";
 }
 
 export class GlobalSecondaryIndexLabels {

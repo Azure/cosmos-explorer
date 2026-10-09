@@ -763,7 +763,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             <Separator className="panelSeparator" style={{ marginTop: -15, marginBottom: -4 }} />
           )}
 
-          {shouldShowAnalyticalStoreOptions() && (
+          {shouldShowAnalyticalStoreOptions() && isSynapseLinkEnabled(this.props.targetAccountOverride) && (
             <Stack className="panelGroupSpacing" style={{ marginTop: -4 }}>
               <Text className="panelTextBold" variant="small">
                 {AnalyticalStoreHeader()}
@@ -802,31 +802,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   <span className="panelRadioBtnLabel">{t(Keys.panes.addCollection.off)}</span>
                 </div>
               </Stack>
-
-              {!isSynapseLinkEnabled(this.props.targetAccountOverride) && (
-                <Stack className="panelGroupSpacing">
-                  <Text variant="small" style={{ color: "var(--colorNeutralForeground1)" }}>
-                    {t(Keys.panes.addCollection.analyticalStoreSynapseLinkRequired, {
-                      collectionName: getCollectionName().toLocaleLowerCase(),
-                    })}{" "}
-                    <br />
-                    <Link
-                      href="https://aka.ms/cosmosdb-synapselink"
-                      target="_blank"
-                      aria-label={Constants.ariaLabelForLearnMoreLink.AzureSynapseLink}
-                      className="capacitycalculator-link"
-                    >
-                      {t(Keys.common.learnMore)}
-                    </Link>
-                  </Text>
-                  <DefaultButton
-                    text={t(Keys.panes.addCollection.enable)}
-                    onClick={() => this.props.explorer.openEnableSynapseLinkDialog(this.props.targetAccountOverride)}
-                    style={{ height: 27, width: 80 }}
-                    styles={{ label: { fontSize: 12 } }}
-                  />
-                </Stack>
-              )}
             </Stack>
           )}
           {this.shouldShowVectorSearchParameters() && (
