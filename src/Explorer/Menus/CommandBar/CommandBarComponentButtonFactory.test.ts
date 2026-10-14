@@ -1,6 +1,7 @@
 import * as ko from "knockout";
 import { extractFeatures } from "Platform/Hosted/extractFeatures";
 import { AuthType } from "../../../AuthType";
+import { configContext, Platform, updateConfigContext } from "../../../ConfigContext";
 import { DatabaseAccount } from "../../../Contracts/DataModels";
 import { CollectionBase, TerminalKind } from "../../../Contracts/ViewModels";
 import { ApiType, updateUserContext, userContext } from "../../../UserContext";
@@ -146,6 +147,53 @@ describe("CommandBarComponentButtonFactory tests", () => {
       updateUserContext({ authType: AuthType.ResourceToken });
       expect(getShellButton()).toBeUndefined();
     });
+  });
+
+  describe("Enable Azure Synapse Link command", () => {
+    let originalUserContext: typeof userContext;
+    let originalPlatform: Platform;
+
+    beforeEach(() => {
+      originalUserContext = { ...userContext };
+      originalPlatform = configContext.platform;
+      mockExplorer = {} as Explorer;
+      updateUserContext({
+        authType: AuthType.AAD,
+        databaseAccount: {
+          id: "account",
+          name: "account",
+          location: "East US",
+          type: "Microsoft.DocumentDB/databaseAccounts",
+          kind: "GlobalDocumentDB",
+          properties: {
+            enableAnalyticalStorage: false,
+            capabilities: [],
+          },
+        },
+        features: extractFeatures(new URLSearchParams()),
+      });
+    });
+
+    afterEach(() => {
+      updateUserContext(originalUserContext);
+      updateConfigContext({ platform: originalPlatform });
+    });
+
+    it.each([Platform.Portal, Platform.Hosted])(
+      "does not return the command for an otherwise eligible account on %s",
+      (platform) => {
+        updateConfigContext({ platform });
+
+        const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(
+          mockExplorer,
+          useSelectedNode.getState(),
+        );
+        const labels = buttons.map((button) => button.commandButtonLabel);
+
+        expect(labels).toContain("Visual Studio Code");
+        expect(labels).not.toContain("Enable Azure Synapse Link");
+      },
+    );
   });
 
   describe("Resource token", () => {

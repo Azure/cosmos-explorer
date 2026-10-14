@@ -61,6 +61,7 @@ export enum Action {
   LibraryManage,
   ClusterLibraryManage,
   ModifyOptionForThroughputWithSharedDatabase,
+  EnableAzureSynapseLink,
   CreateNewNotebook,
   OpenSampleNotebook,
   ExecuteCell,
