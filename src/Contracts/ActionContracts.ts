@@ -2,14 +2,13 @@
  * Data Explorer tab kinds
  */
 export enum TabKind {
-  SQLDocuments,
-  MongoDocuments,
-  SchemaAnalyzer,
-  TableEntities,
-  Graph,
-  SQLQuery,
-  ScaleSettings,
-  MongoQuery,
+  SQLDocuments = 0,
+  MongoDocuments = 1,
+  TableEntities = 3,
+  Graph = 4,
+  SQLQuery = 5,
+  ScaleSettings = 6,
+  MongoQuery = 7,
 }
 
 /**
@@ -72,10 +71,6 @@ export interface OpenPane extends DataExplorerAction {
   paneKind: PaneKind | string;
 }
 
-export interface OpenSampleNotebook extends DataExplorerAction {
-  path: string;
-}
-
 /**
  * The types of actions that the DataExplorer supports performing upon opening.
  */
@@ -84,5 +79,4 @@ export enum ActionType {
   OpenCollectionTab,
   OpenPane,
   TransmitCachedData,
-  OpenSampleNotebook,
 }

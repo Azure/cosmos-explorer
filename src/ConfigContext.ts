@@ -1,9 +1,8 @@
-import { CassandraProxyEndpoints, JunoEndpoints, MongoProxyEndpoints, PortalBackendEndpoints } from "Common/Constants";
+import { CassandraProxyEndpoints, MongoProxyEndpoints, PortalBackendEndpoints } from "Common/Constants";
 import {
   allowedArcadiaEndpoints,
   allowedEmulatorEndpoints,
   allowedHostedExplorerEndpoints,
-  allowedJunoOrigins,
   allowedMsalRedirectEndpoints,
   defaultAllowedAadEndpoints,
   defaultAllowedArmEndpoints,
@@ -54,8 +53,6 @@ export interface ConfigContext {
   MONGO_PROXY_ENDPOINT: string;
   CASSANDRA_PROXY_ENDPOINT: string;
   PROXY_PATH?: string;
-  JUNO_ENDPOINT: string;
-  isPhoenixEnabled: boolean;
   hostedExplorerURL: string;
   armAPIVersion?: string;
   msalRedirectURI?: string;
@@ -125,11 +122,9 @@ let configContext: Readonly<ConfigContext> = {
   CATALOG_API_KEY: "",
   ARCADIA_ENDPOINT: "https://workspaceartifacts.projectarcadia.net",
   ARCADIA_LIVY_ENDPOINT_DNS_ZONE: "dev.azuresynapse.net",
-  JUNO_ENDPOINT: JunoEndpoints.Prod,
   PORTAL_BACKEND_ENDPOINT: PortalBackendEndpoints.Prod,
   MONGO_PROXY_ENDPOINT: MongoProxyEndpoints.Prod,
   CASSANDRA_PROXY_ENDPOINT: CassandraProxyEndpoints.Prod,
-  isPhoenixEnabled: false,
 };
 
 export function resetConfigContext(): void {
@@ -193,10 +188,6 @@ export function updateConfigContext(newContext: Partial<ConfigContext>): void {
 
   if (!validateEndpoint(newContext.CASSANDRA_PROXY_ENDPOINT, configContext.allowedCassandraProxyEndpoints)) {
     delete newContext.CASSANDRA_PROXY_ENDPOINT;
-  }
-
-  if (!validateEndpoint(newContext.JUNO_ENDPOINT, allowedJunoOrigins)) {
-    delete newContext.JUNO_ENDPOINT;
   }
 
   if (!validateEndpoint(newContext.hostedExplorerURL, allowedHostedExplorerEndpoints)) {

@@ -89,7 +89,7 @@ export const Upload: FunctionComponent<UploadProps> = ({
           onChange={onUpload}
           role="button"
         />
-        <a href="#" id="fileImportLinkNotebook" onClick={onImportLinkClick} onKeyPress={onImportLinkKeyPress}>
+        <a href="#" id="fileImportLink" onClick={onImportLinkClick} onKeyPress={onImportLinkKeyPress}>
           <Image className="fileImportImg" src={FolderIcon} alt={title} title={title} />
         </a>
       </Stack>
