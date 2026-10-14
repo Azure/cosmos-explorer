@@ -108,7 +108,11 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
         scenarioMonitor.completePhase(MetricScenario.ApplicationLoad, ApplicationMetricPhase.ExplorerInitialized);
       }
     };
-    effect();
+    effect().catch((error) => {
+      // configurePortal now rejects instead of hanging forever, so this is reachable.
+      // Without a handler it would surface only as an unhandled rejection.
+      Logger.logError(error instanceof Error ? error.message : String(error), "useKnockoutExplorer/configure");
+    });
   }, [platform]);
 
   useEffect(() => {
@@ -705,6 +709,14 @@ export async function fetchAndUpdateKeys(subscriptionId: string, resourceGroup: 
   }
 }
 
+// The portal configures Data Explorer with a single iframe message. If a dependency on the
+// portal side never resolves, that message is never posted and the promise below stays
+// pending, leaving the user on <LoadingExplorer /> while the ApplicationLoad health scenario
+// times out with no diagnostic (IcM 865096261). The watchdog below reports that, but
+// deliberately does not reject: a late init message must still be able to complete setup.
+// Well above the 10s scenario budget so only genuinely stuck handshakes are reported.
+const PORTAL_INIT_MESSAGE_WATCHDOG_MS = 30000;
+
 async function configurePortal(): Promise<Explorer> {
   const configureStartKey = traceStart(Action.ConfigurePortal, {
     dataExplorerArea: "ResourceTree",
@@ -714,7 +726,9 @@ async function configurePortal(): Promise<Explorer> {
   });
 
   let explorer: Explorer;
-  return new Promise((resolve) => {
+  let initMessageReceived = false;
+
+  const explorerReady = new Promise<Explorer>((resolve) => {
     // In development mode, try to load the iframe message from session storage.
     // This allows webpack hot reload to function properly in the portal
     if (process.env.NODE_ENV === "development" && !window.location.search.includes("disablePortalInitCache")) {
@@ -754,76 +768,90 @@ async function configurePortal(): Promise<Explorer> {
         const inputs = message?.inputs;
         const openAction = message?.openAction;
         if (inputs) {
-          updateContextsFromPortalMessage(inputs);
+          initMessageReceived = true;
+          try {
+            updateContextsFromPortalMessage(inputs);
 
-          const { databaseAccount: account, subscriptionId, resourceGroup } = userContext;
+            const { databaseAccount: account, subscriptionId, resourceGroup } = userContext;
 
-          if (userContext.apiType === "SQL") {
-            checkAndUpdateSelectedRegionalEndpoint();
-          }
-
-          let dataPlaneRbacEnabled;
-          if (isDataplaneRbacSupported(userContext.apiType)) {
-            if (LocalStorageUtility.hasItem(StorageKey.DataPlaneRbacEnabled)) {
-              const isDataPlaneRbacSetting = LocalStorageUtility.getEntryString(StorageKey.DataPlaneRbacEnabled);
-              Logger.logInfo(
-                `Local storage RBAC setting for ${userContext.apiType} account ${account.name} is ${isDataPlaneRbacSetting}`,
-                "Explorer/configurePortal",
-              );
-
-              if (isDataPlaneRbacSetting === Constants.RBACOptions.setAutomaticRBACOption) {
-                dataPlaneRbacEnabled = account.properties.disableLocalAuth;
-              } else {
-                dataPlaneRbacEnabled = isDataPlaneRbacSetting === Constants.RBACOptions.setTrueRBACOption;
-              }
-            } else {
-              Logger.logInfo(
-                `Local storage does not exist for ${userContext.apiType} account ${account.name} with disable local auth set to ${account.properties.disableLocalAuth} is ${dataPlaneRbacEnabled}`,
-                "Explorer/configurePortal",
-              );
-              dataPlaneRbacEnabled = account.properties.disableLocalAuth;
+            if (userContext.apiType === "SQL") {
+              checkAndUpdateSelectedRegionalEndpoint();
             }
-            Logger.logInfo(
-              `Data Plane RBAC value for ${userContext.apiType} account ${account.name} with disable local auth set to ${account.properties.disableLocalAuth} is ${dataPlaneRbacEnabled}`,
-              "Explorer/configurePortal",
-            );
 
-            if (!dataPlaneRbacEnabled) {
+            let dataPlaneRbacEnabled;
+            if (isDataplaneRbacSupported(userContext.apiType)) {
+              if (LocalStorageUtility.hasItem(StorageKey.DataPlaneRbacEnabled)) {
+                const isDataPlaneRbacSetting = LocalStorageUtility.getEntryString(StorageKey.DataPlaneRbacEnabled);
+                Logger.logInfo(
+                  `Local storage RBAC setting for ${userContext.apiType} account ${account.name} is ${isDataPlaneRbacSetting}`,
+                  "Explorer/configurePortal",
+                );
+
+                if (isDataPlaneRbacSetting === Constants.RBACOptions.setAutomaticRBACOption) {
+                  dataPlaneRbacEnabled = account.properties.disableLocalAuth;
+                } else {
+                  dataPlaneRbacEnabled = isDataPlaneRbacSetting === Constants.RBACOptions.setTrueRBACOption;
+                }
+              } else {
+                Logger.logInfo(
+                  `Local storage does not exist for ${userContext.apiType} account ${account.name} with disable local auth set to ${account.properties.disableLocalAuth} is ${dataPlaneRbacEnabled}`,
+                  "Explorer/configurePortal",
+                );
+                dataPlaneRbacEnabled = account.properties.disableLocalAuth;
+              }
+              Logger.logInfo(
+                `Data Plane RBAC value for ${userContext.apiType} account ${account.name} with disable local auth set to ${account.properties.disableLocalAuth} is ${dataPlaneRbacEnabled}`,
+                "Explorer/configurePortal",
+              );
+
+              if (!dataPlaneRbacEnabled) {
+                Logger.logInfo(
+                  `Calling fetch keys for ${userContext.apiType} account ${account.name}`,
+                  "Explorer/configurePortal",
+                );
+                await fetchAndUpdateKeys(subscriptionId, resourceGroup, account.name);
+              } else {
+                Logger.logInfo(
+                  `Trying to silently acquire MSAL token for ${userContext.apiType} account ${account.name}`,
+                  "Explorer/configurePortal",
+                );
+                try {
+                  const aadToken = await acquireMsalTokenForAccount(userContext.databaseAccount, true);
+                  updateUserContext({ aadToken: aadToken });
+                  useDataPlaneRbac.setState({ aadTokenUpdated: true });
+                } catch (authError) {
+                  Logger.logWarning(
+                    `Failed to silently acquire authorization token from MSAL: ${authError} for ${userContext.apiType} account ${account}`,
+                    "Explorer/configurePortal",
+                  );
+                  logConsoleError("Failed to silently acquire authorization token: " + authError);
+                }
+              }
+
+              updateUserContext({ dataPlaneRbacEnabled });
+              useDataPlaneRbac.setState({ dataPlaneRbacEnabled: dataPlaneRbacEnabled });
+            } else if (userContext.apiType !== "Postgres" && userContext.apiType !== "VCoreMongo") {
               Logger.logInfo(
                 `Calling fetch keys for ${userContext.apiType} account ${account.name}`,
                 "Explorer/configurePortal",
               );
               await fetchAndUpdateKeys(subscriptionId, resourceGroup, account.name);
-            } else {
-              Logger.logInfo(
-                `Trying to silently acquire MSAL token for ${userContext.apiType} account ${account.name}`,
-                "Explorer/configurePortal",
-              );
-              try {
-                const aadToken = await acquireMsalTokenForAccount(userContext.databaseAccount, true);
-                updateUserContext({ aadToken: aadToken });
-                useDataPlaneRbac.setState({ aadTokenUpdated: true });
-              } catch (authError) {
-                Logger.logWarning(
-                  `Failed to silently acquire authorization token from MSAL: ${authError} for ${userContext.apiType} account ${account}`,
-                  "Explorer/configurePortal",
-                );
-                logConsoleError("Failed to silently acquire authorization token: " + authError);
-              }
             }
 
-            updateUserContext({ dataPlaneRbacEnabled });
-            useDataPlaneRbac.setState({ dataPlaneRbacEnabled: dataPlaneRbacEnabled });
-          } else if (userContext.apiType !== "Postgres" && userContext.apiType !== "VCoreMongo") {
-            Logger.logInfo(
-              `Calling fetch keys for ${userContext.apiType} account ${account.name}`,
-              "Explorer/configurePortal",
-            );
-            await fetchAndUpdateKeys(subscriptionId, resourceGroup, account.name);
+            explorer = new Explorer();
+            traceSuccess(Action.ConfigurePortal, {}, configureStartKey);
+          } catch (error) {
+            // A valid init message arrived but setup threw. Leaving the promise pending would
+            // strand the user on <LoadingExplorer /> with nothing reported, so the shell is
+            // still created below: steps depending on the failed work surface their own errors.
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            traceFailure(Action.ConfigurePortal, { error: errorMessage }, configureStartKey);
+            logConsoleError(`Data Explorer initialization failed: ${errorMessage}`);
           }
 
-          explorer = new Explorer();
-          traceSuccess(Action.ConfigurePortal, {}, configureStartKey);
+          if (!explorer) {
+            explorer = new Explorer();
+          }
           resolve(explorer);
 
           if (openAction) {
@@ -849,6 +877,29 @@ async function configurePortal(): Promise<Explorer> {
 
     sendReadyMessage();
   });
+
+  // Report a handshake that has not produced an init message, without cancelling it. Rejecting
+  // here would abandon the caller while the listener stays live, so a late message would build
+  // an Explorer that setExplorer() never receives — the load would be unrecoverable rather
+  // than merely slow.
+  const watchdogId = window.setTimeout(() => {
+    if (initMessageReceived) {
+      return;
+    }
+    traceFailure(
+      Action.ConfigurePortal,
+      {
+        error: `Portal has not sent the Data Explorer init message after ${PORTAL_INIT_MESSAGE_WATCHDOG_MS}ms; still waiting`,
+      },
+      configureStartKey,
+    );
+  }, PORTAL_INIT_MESSAGE_WATCHDOG_MS);
+
+  try {
+    return await explorerReady;
+  } finally {
+    window.clearTimeout(watchdogId);
+  }
 }
 
 function shouldForwardMessage(message: PortalMessage, messageOrigin: string) {

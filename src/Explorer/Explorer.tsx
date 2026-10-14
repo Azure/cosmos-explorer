@@ -441,8 +441,12 @@ export default class Explorer {
         startKey,
       );
       scenarioMonitor.completePhase(MetricScenario.DatabaseLoad, ApplicationMetricPhase.CollectionsLoaded);
-      // Start DatabaseTreeRendered — React render cycle will complete it in ResourceTree
+      // Start DatabaseTreeRendered before publishing the token that triggers the render, so the
+      // phase is always open by the time ResourceTree acknowledges it. Publishing the token is
+      // what tells the tree "this is the data the current load is expected to show"; the phase
+      // is completed only for a render carrying that token.
       scenarioMonitor.startPhase(MetricScenario.DatabaseLoad, ApplicationMetricPhase.DatabaseTreeRendered);
+      useDatabases.setState({ treeReadyToken: {} });
     } catch (error) {
       TelemetryProcessor.traceFailure(
         Action.LoadCollections,
