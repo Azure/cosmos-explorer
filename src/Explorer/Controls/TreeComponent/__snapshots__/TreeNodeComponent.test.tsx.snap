@@ -111,6 +111,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
   treeNodeId="root"
 >
   <TreeItem
+    aria-selected={false}
     className=""
     data-test="TreeNodeContainer:root"
     itemType="branch"
@@ -120,6 +121,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
     <div
       aria-expanded={false}
       aria-level={0}
+      aria-selected={false}
       className="fui-TreeItem r15xhw3a"
       data-fui-tree-item-value="root"
       data-test="TreeNodeContainer:root"
@@ -218,6 +220,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
               "current": <div
                 aria-expanded="false"
                 aria-level="0"
+                aria-selected="false"
                 class="fui-TreeItem r15xhw3a"
                 data-fui-tree-item-value="root"
                 data-test="TreeNodeContainer:root"
@@ -1595,6 +1598,7 @@ exports[`TreeNodeComponent renders an icon if the node has one 1`] = `
 
 exports[`TreeNodeComponent renders selected parent node as selected if no descendant nodes are selected 1`] = `
 <TreeItem
+  aria-selected={true}
   className=""
   data-test="TreeNodeContainer:root"
   itemType="branch"
@@ -1678,6 +1682,7 @@ exports[`TreeNodeComponent renders selected parent node as selected if no descen
 
 exports[`TreeNodeComponent renders selected parent node as unselected if any descendant node is selected 1`] = `
 <TreeItem
+  aria-selected={false}
   className=""
   data-test="TreeNodeContainer:root"
   itemType="branch"
@@ -1762,6 +1767,7 @@ exports[`TreeNodeComponent renders selected parent node as unselected if any des
 
 exports[`TreeNodeComponent renders single selected leaf node as selected 1`] = `
 <TreeItem
+  aria-selected={true}
   className=""
   data-test="TreeNodeContainer:root"
   itemType="leaf"
