@@ -1,6 +1,7 @@
 import * as ko from "knockout";
 import { extractFeatures } from "Platform/Hosted/extractFeatures";
 import { AuthType } from "../../../AuthType";
+import { configContext, Platform, updateConfigContext } from "../../../ConfigContext";
 import { DatabaseAccount } from "../../../Contracts/DataModels";
 import { CollectionBase, TerminalKind } from "../../../Contracts/ViewModels";
 import { ApiType, updateUserContext, userContext } from "../../../UserContext";
@@ -13,78 +14,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
   let mockExplorer: Explorer;
 
   afterEach(() => useSelectedNode.getState().setSelectedNode(undefined));
-
-  describe("Enable Azure Synapse Link Button", () => {
-    const enableAzureSynapseLinkBtnLabel = "Enable Azure Synapse Link";
-    const selectedNodeState = useSelectedNode.getState();
-
-    beforeAll(() => {
-      mockExplorer = {} as Explorer;
-      updateUserContext({
-        databaseAccount: {
-          properties: {
-            capabilities: [{ name: "EnableMongo" }],
-          },
-        } as DatabaseAccount,
-      });
-    });
-
-    it("Button should be visible", () => {
-      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
-      const enableAzureSynapseLinkBtn = buttons.find(
-        (button) => button.commandButtonLabel === enableAzureSynapseLinkBtnLabel,
-      );
-      expect(enableAzureSynapseLinkBtn).toBeDefined();
-    });
-
-    it("Button should be disabled while Synapse Link is updating", () => {
-      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(
-        mockExplorer,
-        selectedNodeState,
-        true,
-      );
-      const enableAzureSynapseLinkBtn = buttons.find(
-        (button) => button.commandButtonLabel === enableAzureSynapseLinkBtnLabel,
-      );
-      expect(enableAzureSynapseLinkBtn.disabled).toBe(true);
-    });
-
-    // TODO: Now that Tables API supports dataplane RBAC, calling createStaticCommandBarButtons will enable the
-    //       Entra ID Login button, which causes this test to fail due to "Invalid hook call.". This seems to be
-    //       unsupported in jest and needs to be tested with react-hooks-testing-library.
-    //
-    // it("Button should not be visible for Tables API", () => {
-    //   updateUserContext({
-    //     databaseAccount: {
-    //       properties: {
-    //         capabilities: [{ name: "EnableTable" }],
-    //       },
-    //     } as DatabaseAccount,
-    //   });
-    //
-    //   const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
-    //  const enableAzureSynapseLinkBtn = buttons.find(
-    //    (button) => button.commandButtonLabel === enableAzureSynapseLinkBtnLabel,
-    //  );
-    //  expect(enableAzureSynapseLinkBtn).toBeUndefined();
-    //});
-
-    it("Button should not be visible for Cassandra API", () => {
-      updateUserContext({
-        databaseAccount: {
-          properties: {
-            capabilities: [{ name: "EnableCassandra" }],
-          },
-        } as DatabaseAccount,
-      });
-
-      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
-      const enableAzureSynapseLinkBtn = buttons.find(
-        (button) => button.commandButtonLabel === enableAzureSynapseLinkBtnLabel,
-      );
-      expect(enableAzureSynapseLinkBtn).toBeUndefined();
-    });
-  });
 
   describe("Open Cassandra Shell button", () => {
     const openCassandraShellBtnLabel = "Open Cassandra Shell";
@@ -218,6 +147,53 @@ describe("CommandBarComponentButtonFactory tests", () => {
       updateUserContext({ authType: AuthType.ResourceToken });
       expect(getShellButton()).toBeUndefined();
     });
+  });
+
+  describe("Enable Azure Synapse Link command", () => {
+    let originalUserContext: typeof userContext;
+    let originalPlatform: Platform;
+
+    beforeEach(() => {
+      originalUserContext = { ...userContext };
+      originalPlatform = configContext.platform;
+      mockExplorer = {} as Explorer;
+      updateUserContext({
+        authType: AuthType.AAD,
+        databaseAccount: {
+          id: "account",
+          name: "account",
+          location: "East US",
+          type: "Microsoft.DocumentDB/databaseAccounts",
+          kind: "GlobalDocumentDB",
+          properties: {
+            enableAnalyticalStorage: false,
+            capabilities: [],
+          },
+        },
+        features: extractFeatures(new URLSearchParams()),
+      });
+    });
+
+    afterEach(() => {
+      updateUserContext(originalUserContext);
+      updateConfigContext({ platform: originalPlatform });
+    });
+
+    it.each([Platform.Portal, Platform.Hosted])(
+      "does not return the command for an otherwise eligible account on %s",
+      (platform) => {
+        updateConfigContext({ platform });
+
+        const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(
+          mockExplorer,
+          useSelectedNode.getState(),
+        );
+        const labels = buttons.map((button) => button.commandButtonLabel);
+
+        expect(labels).toContain("Visual Studio Code");
+        expect(labels).not.toContain("Enable Azure Synapse Link");
+      },
+    );
   });
 
   describe("Resource token", () => {

@@ -548,7 +548,6 @@
       "enableAnalyticalStore": "Enable analytical store",
       "disableAnalyticalStore": "Disable analytical store",
       "on": "On",
-      "analyticalStoreSynapseLinkRequired": "Azure Synapse Link is required for creating an analytical store {{collectionName}}. Enable Synapse Link for this Cosmos DB account.",
       "enable": "Enable",
       "containerVectorPolicy": "Container Vector Policy",
       "containerFullTextSearchPolicy": "Container Full Text Search Policy",
