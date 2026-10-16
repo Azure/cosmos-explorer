@@ -10,18 +10,36 @@ afterEach(() => jest.restoreAllMocks());
 
 describe("proxy target policy", () => {
   it.each([
-    "account.documents.azure.com",
-    "account-westus.documents.azure.com",
-    "account.sql.cosmosdb.azure.com",
-    "account.sql.cosmos.azure.com",
-    "account.sqlx.cosmos.azure.com",
-    "account.documents.azure.us",
-    "account.documents.azure.cn",
-    "account.documents-staging.windows-ppe.net",
-    "account-westus.documents-staging.windows-ppe.net",
-    "account.sql.cosmosdb.windows-ppe.net",
-    "account.sql.cosmos.windows-ppe.net",
-    "account.sqlx.cosmos.windows-ppe.net",
+    // from Environment.Prod.json
+    "documents.azure.com",
+    "analytics.cosmos.azure.com",
+    "table.cosmosdb.azure.com",
+    "gremlin.cosmosdb.azure.com",
+    "cassandra.cosmosdb.azure.com",
+    "sql.cosmosdb.azure.com",
+    "sqlx.cosmos.azure.com",
+    "mongo.cosmos.azure.com",
+    "etcd.cosmosdb.azure.com",
+    "table.cosmos.azure.com",
+    "gremlin.cosmos.azure.com",
+    "cassandra.cosmos.azure.com",
+    "sql.cosmos.azure.com",
+    "etcd.cosmos.azure.com",
+    // from Environment.Stage.json
+    "documents-staging.windows-ppe.net",
+    "analytics.cosmos.windows-ppe.net",
+    "table.cosmosdb.windows-ppe.net",
+    "gremlin.cosmosdb.windows-ppe.net",
+    "cassandra.cosmosdb.windows-ppe.net",
+    "sql.cosmosdb.windows-ppe.net",
+    "sqlx.cosmos.windows-ppe.net",
+    "mongo.cosmos.windows-ppe.net",
+    "etcd.cosmosdb.windows-ppe.net",
+    "table.cosmos.windows-ppe.net",
+    "gremlin.cosmos.windows-ppe.net",
+    "cassandra.cosmos.windows-ppe.net",
+    "sql.cosmos.windows-ppe.net",
+    "etcd.cosmos.windows-ppe.net",
   ])("accepts the approved account or regional endpoint %s", (hostname) => {
     expect(parseProxyTarget(`https://${hostname}`)).toBe(`https://${hostname}`);
     expect(parseProxyTarget(`https://${hostname}:443/`)).toBe(`https://${hostname}`);
