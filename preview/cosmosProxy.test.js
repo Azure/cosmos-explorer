@@ -40,7 +40,8 @@ describe("proxy target policy", () => {
     "cassandra.cosmos.windows-ppe.net",
     "sql.cosmos.windows-ppe.net",
     "etcd.cosmos.windows-ppe.net",
-  ])("accepts the approved account or regional endpoint %s", (hostname) => {
+  ])("accepts the approved account or regional endpoint %s", (zone) => {
+    const hostname = `account.${zone}`;
     expect(parseProxyTarget(`https://${hostname}`)).toBe(`https://${hostname}`);
     expect(parseProxyTarget(`https://${hostname}:443/`)).toBe(`https://${hostname}`);
   });
