@@ -370,8 +370,8 @@ export const AddGlobalSecondaryIndexPanel = (props: AddGlobalSecondaryIndexPanel
               isCostAknowledgedOnChange,
             }}
           />
-          {shouldShowAnalyticalStoreOptions() && (
-            <AnalyticalStoreComponent {...{ explorer, enableAnalyticalStore, setEnableAnalyticalStore }} />
+          {shouldShowAnalyticalStoreOptions() && isSynapseLinkEnabled() && (
+            <AnalyticalStoreComponent {...{ enableAnalyticalStore, setEnableAnalyticalStore }} />
           )}
           {showVectorSearchParameters() && (
             <VectorSearchComponent
