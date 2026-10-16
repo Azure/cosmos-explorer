@@ -3,23 +3,24 @@ import { sendMessage } from "Common/MessageHandler";
 import { stringifyError } from "Common/stringifyError";
 import { MessageTypes } from "Contracts/ExplorerContracts";
 import { useDataPlaneRbac } from "Explorer/Panes/SettingsPane/SettingsPane";
-import { isFabricMirrored, isFabricMirroredKey, scheduleRefreshFabricToken } from "Platform/Fabric/FabricUtil";
-import { acquireMsalTokenForAccount } from "Utils/AuthorizationUtils";
-import { update } from "Utils/arm/generatedClients/cosmos/databaseAccounts";
 import * as ko from "knockout";
+import { isFabricMirrored, isFabricMirroredKey, scheduleRefreshFabricToken } from "Platform/Fabric/FabricUtil";
 import React from "react";
 import _ from "underscore";
+import { acquireMsalTokenForAccount } from "Utils/AuthorizationUtils";
 import { AuthType } from "../AuthType";
 import { BindingHandlersRegisterer } from "../Bindings/BindingHandlersRegisterer";
 import * as Constants from "../Common/Constants";
+import { readCollection } from "../Common/dataAccess/readCollection";
+import { readDatabases } from "../Common/dataAccess/readDatabases";
 import { getErrorMessage, getErrorStack } from "../Common/ErrorHandlingUtils";
 import * as Logger from "../Common/Logger";
 import { QueriesClient } from "../Common/QueriesClient";
-import { readCollection } from "../Common/dataAccess/readCollection";
-import { readDatabases } from "../Common/dataAccess/readDatabases";
 import * as DataModels from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
 import { UploadDetailsRecord } from "../Contracts/ViewModels";
+import { useSidePanel } from "../hooks/useSidePanel";
+import { ReactTabKind, useTabs } from "../hooks/useTabs";
 import MetricScenario from "../Metrics/MetricEvents";
 import { ApplicationMetricPhase } from "../Metrics/ScenarioConfig";
 import { scenarioMonitor } from "../Metrics/ScenarioMonitor";
@@ -29,9 +30,7 @@ import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
 import { updateUserContext, userContext } from "../UserContext";
 import { getCollectionName, getUploadName } from "../Utils/APITypeUtils";
 import { isCapabilityEnabled } from "../Utils/CapabilityUtils";
-import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../Utils/NotificationConsoleUtils";
-import { useSidePanel } from "../hooks/useSidePanel";
-import { ReactTabKind, useTabs } from "../hooks/useTabs";
+import { logConsoleError, logConsoleInfo } from "../Utils/NotificationConsoleUtils";
 import "./ComponentRegisterer";
 import { DialogProps, useDialog } from "./Controls/Dialog";
 import { useCommandBar } from "./Menus/CommandBar/CommandBarComponentAdapter";
@@ -134,62 +133,6 @@ export default class Explorer {
     }
 
     this.refreshExplorer();
-  }
-
-  public openEnableSynapseLinkDialog(targetAccountOverride?: DataModels.AccountOverride): void {
-    const subscriptionId = targetAccountOverride?.subscriptionId ?? userContext.subscriptionId;
-    const resourceGroup = targetAccountOverride?.resourceGroup ?? userContext.resourceGroup;
-    const accountName = targetAccountOverride?.accountName ?? userContext.databaseAccount.name;
-
-    const addSynapseLinkDialogProps: DialogProps = {
-      linkProps: {
-        linkText: "Learn more",
-        linkUrl: "https://aka.ms/cosmosdb-synapselink",
-      },
-      isModal: true,
-      title: `Enable Azure Synapse Link on your Cosmos DB account`,
-      subText: `Enable Azure Synapse Link to perform near real time analytical analytics on this account, without impacting the performance of your transactional workloads.
-      Azure Synapse Link brings together Cosmos Db Analytical Store and Synapse Analytics`,
-      primaryButtonText: "Enable Azure Synapse Link",
-      secondaryButtonText: "Cancel",
-
-      onPrimaryButtonClick: async () => {
-        const startTime = TelemetryProcessor.traceStart(Action.EnableAzureSynapseLink);
-        const clearInProgressMessage = logConsoleProgress(
-          "Enabling Azure Synapse Link for this account. This may take a few minutes before you can enable analytical store for this account.",
-        );
-        useCommandBar.getState().setIsSynapseLinkUpdating(true);
-        useDialog.getState().closeDialog();
-
-        try {
-          await update(subscriptionId, resourceGroup, accountName, {
-            properties: {
-              enableAnalyticalStorage: true,
-            },
-          });
-
-          clearInProgressMessage();
-          logConsoleInfo("Enabled Azure Synapse Link for this account");
-          TelemetryProcessor.traceSuccess(Action.EnableAzureSynapseLink, {}, startTime);
-          if (!targetAccountOverride) {
-            userContext.databaseAccount.properties.enableAnalyticalStorage = true;
-          }
-        } catch (error) {
-          clearInProgressMessage();
-          logConsoleError(`Enabling Azure Synapse Link for this account failed. ${getErrorMessage(error)}`);
-          TelemetryProcessor.traceFailure(Action.EnableAzureSynapseLink, {}, startTime);
-        } finally {
-          useCommandBar.getState().setIsSynapseLinkUpdating(false);
-        }
-      },
-
-      onSecondaryButtonClick: () => {
-        useDialog.getState().closeDialog();
-        TelemetryProcessor.traceCancel(Action.EnableAzureSynapseLink);
-      },
-    };
-    useDialog.getState().openDialog(addSynapseLinkDialogProps);
-    TelemetryProcessor.traceStart(Action.EnableAzureSynapseLink);
   }
 
   public async openLoginForEntraIDPopUp(): Promise<void> {
