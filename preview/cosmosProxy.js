@@ -6,16 +6,36 @@ const { createProxyMiddleware } = require("http-proxy-middleware");
 const ipaddr = require("ipaddr.js");
 
 const allowedEndpointZones = [
+  // from Environment.Prod.json
   "documents.azure.com",
+  "analytics.cosmos.azure.com",
+  "table.cosmosdb.azure.com",
+  "gremlin.cosmosdb.azure.com",
+  "cassandra.cosmosdb.azure.com",
   "sql.cosmosdb.azure.com",
-  "sql.cosmos.azure.com",
   "sqlx.cosmos.azure.com",
-  "documents.azure.us",
-  "documents.azure.cn",
+  "mongo.cosmos.azure.com",
+  "etcd.cosmosdb.azure.com",
+  "table.cosmos.azure.com",
+  "gremlin.cosmos.azure.com",
+  "cassandra.cosmos.azure.com",
+  "sql.cosmos.azure.com",
+  "etcd.cosmos.azure.com",
+  // from Environment.Stage.json
   "documents-staging.windows-ppe.net",
+  "analytics.cosmos.windows-ppe.net",
+  "table.cosmosdb.windows-ppe.net",
+  "gremlin.cosmosdb.windows-ppe.net",
+  "cassandra.cosmosdb.windows-ppe.net",
   "sql.cosmosdb.windows-ppe.net",
-  "sql.cosmos.windows-ppe.net",
   "sqlx.cosmos.windows-ppe.net",
+  "mongo.cosmos.windows-ppe.net",
+  "etcd.cosmosdb.windows-ppe.net",
+  "table.cosmos.windows-ppe.net",
+  "gremlin.cosmos.windows-ppe.net",
+  "cassandra.cosmos.windows-ppe.net",
+  "sql.cosmos.windows-ppe.net",
+  "etcd.cosmos.windows-ppe.net",
 ];
 
 const parseProxyTarget = (value) => {
