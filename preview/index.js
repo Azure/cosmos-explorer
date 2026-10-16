@@ -1,11 +1,12 @@
 const express = require("express");
 const { createProxyMiddleware } = require("http-proxy-middleware");
+const { createCosmosProxy } = require("./cosmosProxy");
 const port = process.env.PORT || 3000;
 const fetch = require("node-fetch");
 
 const backendEndpoint = "https://cdb-ms-mpac-pbe.cosmos.azure.com";
 const previewSiteEndpoint = "https://dataexplorer-preview.portal.cosmos.azure.com";
-const previewStorageWebsiteEndpoint = "_REPLACE_STORAGE_WEBSITE_ENDPOINT_";
+const previewStorageWebsiteEndpoint = "https://z1009depreview.z5.web.core.windows.net/";
 const githubApiUrl = "https://api.github.com/repos/Azure/cosmos-explorer";
 const azurePortalMpacEndpoint = "https://ms.portal.azure.com/";
 
@@ -21,18 +22,6 @@ const api = createProxyMiddleware({
   },
 });
 
-const proxy = createProxyMiddleware({
-  target: backendEndpoint,
-  changeOrigin: true,
-  secure: false,
-  logLevel: "debug",
-  pathRewrite: { "^/proxy": "" },
-  router: (req) => {
-    let newTarget = req.headers["x-ms-proxy-target"];
-    return newTarget;
-  },
-});
-
 const commit = createProxyMiddleware({
   target: previewStorageWebsiteEndpoint,
   changeOrigin: true,
@@ -44,7 +33,7 @@ const commit = createProxyMiddleware({
 const app = express();
 
 app.use("/api", api);
-app.use("/proxy", proxy);
+app.use("/proxy", createCosmosProxy());
 app.use("/commit", commit);
 app.get("/pull/:pr", (req, res) => {
   const pr = req.params.pr;

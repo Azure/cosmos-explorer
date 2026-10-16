@@ -74,6 +74,10 @@ jobs:
           node-version: 22.x
       - run: npm ci
       - run: npm run test
+      - name: Install preview test dependencies
+        run: npm ci --prefix preview
+      - name: Test preview proxy
+        run: npm test --prefix preview
   build:
     runs-on: ubuntu-latest
     name: "Build"
