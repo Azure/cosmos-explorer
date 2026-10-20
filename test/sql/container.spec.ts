@@ -17,6 +17,22 @@ import {
 // The test harness URL contains authentication tokens.
 test.use({ trace: "off", video: "off" });
 
+test("Database sorting has an accessible name and title for each keyboard action", async ({ page }) => {
+  const explorer = await DataExplorer.open(page, TestAccount.SQLReadOnly);
+  const descendingButton = explorer.frame.getByRole("button", { name: "Sort databases in descending order" });
+  await expect(descendingButton).toHaveAttribute("title", "Sort databases in descending order");
+  await descendingButton.focus();
+  await descendingButton.press("Enter");
+
+  const ascendingButton = explorer.frame.getByRole("button", { name: "Sort databases in ascending order" });
+  await expect(ascendingButton).toHaveAttribute("title", "Sort databases in ascending order");
+  await expect(ascendingButton).toBeFocused();
+  await ascendingButton.press("Space");
+
+  await expect(descendingButton).toHaveAttribute("title", "Sort databases in descending order");
+  await expect(descendingButton).toBeFocused();
+});
+
 test("SQL database and container CRUD", async ({ page }) => {
   const databaseId = generateUniqueName("db");
   const containerId = "testcontainer"; // A unique container name isn't needed because the database is unique
