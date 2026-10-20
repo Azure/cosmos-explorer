@@ -1,4 +1,5 @@
 import { AuthorizationToken } from "./FabricMessageTypes";
+import { Collection } from "./DataModels";
 
 // This is the version of these messages
 export const FABRIC_RPC_VERSION = "FabricMessageV3";
@@ -113,6 +114,7 @@ export interface InitializeMessageV3<T extends CosmosDbArtifactType> {
   isReadOnly: boolean;
   artifactType: T;
   artifactConnectionInfo: ArtifactConnectionInfo[T];
+  initialCollections?: Collection[];
 }
 export interface CosmosDBConnectionInfoResponse {
   endpoint: string;

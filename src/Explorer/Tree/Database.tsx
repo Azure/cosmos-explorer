@@ -1,6 +1,7 @@
 import * as ko from "knockout";
 import React from "react";
 import * as _ from "underscore";
+import { isFabricNative } from "Platform/Fabric/FabricUtil";
 import { AuthType } from "../../AuthType";
 import * as Constants from "../../Common/Constants";
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
@@ -39,6 +40,7 @@ export default class Database implements ViewModels.Database {
   public isSampleDB: boolean;
   public collectionsContinuationToken?: string;
   private isOfferRead: boolean;
+  private hasLoadedCollections = false;
 
   constructor(container: Explorer, data: DataModels.Database) {
     this.nodeKind = "Database";
@@ -127,7 +129,7 @@ export default class Database implements ViewModels.Database {
 
     await this.loadOffer();
 
-    if (this.collections()?.length === 0) {
+    if (this.collections()?.length === 0 && !(isFabricNative() && this.hasLoadedCollections)) {
       await this.loadCollections(true);
     }
 
@@ -221,6 +223,7 @@ export default class Database implements ViewModels.Database {
       }
 
       useDatabases.getState().updateDatabase(this);
+      this.hasLoadedCollections = true;
       TelemetryProcessor.traceSuccess(
         Action.LoadCollectionsPerDatabase,
         { dataExplorerArea: Constants.Areas.ResourceTree, databaseId: this.id(), collectionCount: collections?.length },

@@ -1,5 +1,8 @@
 import { HttpStatusCodes } from "../../Common/Constants";
+import * as collectionAccess from "../../Common/dataAccess/readCollections";
+import { Platform, updateConfigContext } from "../../ConfigContext";
 import * as DataModels from "../../Contracts/DataModels";
+import { CosmosDbArtifactType } from "../../Contracts/FabricMessagesContract";
 import { JunoClient } from "../../Juno/JunoClient";
 import { Features } from "../../Platform/Hosted/extractFeatures";
 import { updateUserContext, userContext } from "../../UserContext";
@@ -82,5 +85,63 @@ describe("Add Schema", () => {
       database.id(),
       collection.id,
     );
+  });
+});
+
+describe("Expanding an empty Fabric database", () => {
+  beforeEach(() => {
+    jest.useRealTimers();
+    jest.spyOn(Explorer.prototype, "refreshExplorer").mockResolvedValue(undefined);
+    updateConfigContext({ platform: Platform.Fabric });
+    updateUserContext({
+      fabricContext: {
+        artifactType: CosmosDbArtifactType.NATIVE,
+        artifactInfo: undefined,
+        databaseName: "database",
+        fabricClientRpcVersion: "FabricMessageV3",
+        isVisible: true,
+        isReadOnly: false,
+      },
+    });
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+    updateUserContext({ fabricContext: undefined });
+    updateConfigContext({ platform: Platform.Portal });
+  });
+
+  it("does not reload a successfully loaded empty snapshot on expansion, but still supports refresh", async () => {
+    const readCollections = jest.spyOn(collectionAccess, "readCollections").mockResolvedValue([]);
+    const database = new Database(createMockContainer(), {
+      id: "database",
+      _rid: "rid",
+      _self: "self",
+      _etag: "etag",
+      _ts: 1,
+    });
+    jest.spyOn(database, "loadOffer").mockResolvedValue(undefined);
+
+    await database.loadCollections(true);
+    await database.expandDatabase();
+    expect(readCollections).toHaveBeenCalledTimes(1);
+    expect(database.isDatabaseExpanded()).toBe(true);
+
+    await database.loadCollections(true);
+    expect(readCollections).toHaveBeenCalledTimes(2);
+  });
+
+  it("still fetches when expanding a database that has not loaded yet", async () => {
+    const readCollections = jest.spyOn(collectionAccess, "readCollections").mockResolvedValue([]);
+    const database = new Database(createMockContainer(), {
+      id: "database",
+      _rid: "rid",
+      _self: "self",
+      _etag: "etag",
+      _ts: 1,
+    });
+    jest.spyOn(database, "loadOffer").mockResolvedValue(undefined);
+    await database.expandDatabase();
+    expect(readCollections).toHaveBeenCalledTimes(1);
   });
 });

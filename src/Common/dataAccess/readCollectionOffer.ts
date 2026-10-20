@@ -1,4 +1,4 @@
-import { isFabric } from "Platform/Fabric/FabricUtil";
+import { isFabricMirrored, isFabricNative } from "Platform/Fabric/FabricUtil";
 import { AuthType } from "../../AuthType";
 import { Offer, ReadCollectionOfferParams } from "../../Contracts/DataModels";
 import { userContext } from "../../UserContext";
@@ -12,7 +12,7 @@ import { handleError } from "../ErrorHandlingUtils";
 import { readOfferWithSDK } from "./readOfferWithSDK";
 
 export const readCollectionOffer = async (params: ReadCollectionOfferParams): Promise<Offer> => {
-  if (isFabric()) {
+  if (isFabricMirrored()) {
     // Not exposing offers in Fabric
     return undefined;
   }
@@ -23,7 +23,8 @@ export const readCollectionOffer = async (params: ReadCollectionOfferParams): Pr
     if (
       userContext.authType === AuthType.AAD &&
       !userContext.features.enableSDKoperations &&
-      userContext.apiType !== "Tables"
+      userContext.apiType !== "Tables" &&
+      !isFabricNative()
     ) {
       return await readCollectionOfferWithARM(params.databaseId, params.collectionId);
     }

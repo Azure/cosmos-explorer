@@ -5,7 +5,7 @@ import { useCarousel } from "hooks/useCarousel";
 import { usePostgres } from "hooks/usePostgres";
 import { v4 as uuidv4 } from "uuid";
 import { AuthType } from "./AuthType";
-import { DatabaseAccount } from "./Contracts/DataModels";
+import { Collection, DatabaseAccount } from "./Contracts/DataModels";
 import { SubscriptionType } from "./Contracts/SubscriptionType";
 import { Features, extractFeatures } from "./Platform/Hosted/extractFeatures";
 import { CollectionCreation, CollectionCreationDefaults } from "./Shared/Constants";
@@ -90,6 +90,7 @@ export interface FabricContext<T extends CosmosDbArtifactType> {
   databaseName: string;
   artifactType: CosmosDbArtifactType;
   artifactInfo: FabricArtifactInfo[T];
+  initialCollections?: Collection[];
 }
 
 export type AdminFeedbackControlPolicy =

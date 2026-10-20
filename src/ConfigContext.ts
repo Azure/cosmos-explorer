@@ -87,6 +87,7 @@ let configContext: Readonly<ConfigContext> = {
     `^https:\\/\\/portal\\.sovcloud-azure\\.de$`,
     `^https:\\/\\/explorer\\.cosmos\\.sovcloud-api\\.sg$`,
     `^https:\\/\\/portal\\.sovcloud-azure\\.sg$`,
+    `^http:\\/\\/localhost:4302$`,
   ], // Webpack injects this at build time
   SQL_DNS_ZONES: [
     "documents.azure.com",

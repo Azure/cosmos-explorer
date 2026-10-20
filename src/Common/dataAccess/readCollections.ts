@@ -2,7 +2,7 @@ import { ContainerResponse } from "@azure/cosmos";
 import { Queries } from "Common/Constants";
 import * as Logger from "Common/Logger";
 import { CosmosDbArtifactType } from "Contracts/FabricMessagesContract";
-import { isFabric, isFabricMirroredKey } from "Platform/Fabric/FabricUtil";
+import { isFabric, isFabricMirroredKey, isFabricNative } from "Platform/Fabric/FabricUtil";
 import { AuthType } from "../../AuthType";
 import * as DataModels from "../../Contracts/DataModels";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
@@ -16,6 +16,17 @@ import { listSqlContainers } from "../../Utils/arm/generatedClients/cosmos/sqlRe
 import { listTables } from "../../Utils/arm/generatedClients/cosmos/tableResources";
 import { client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";
+
+function takeInitialCollections(databaseId: string): DataModels.Collection[] | undefined {
+  const context = userContext.fabricContext;
+  if (!isFabricNative() || context?.databaseName !== databaseId) {
+    return undefined;
+  }
+  const collections = context.initialCollections;
+  // Consume once so refreshes and container mutations always read live data.
+  context.initialCollections = undefined;
+  return collections;
+}
 
 export async function readCollections(databaseId: string): Promise<DataModels.Collection[]> {
   const clearMessage = logConsoleProgress(`Querying containers for database ${databaseId}`);
@@ -62,6 +73,16 @@ export async function readCollections(databaseId: string): Promise<DataModels.Co
   }
 
   try {
+    const initialCollections = takeInitialCollections(databaseId);
+    if (initialCollections !== undefined) {
+      traceSuccess(
+        Action.ReadCollections,
+        { databaseId, collectionCount: initialCollections.length, path: "Prefetch" },
+        startKey,
+      );
+      return initialCollections;
+    }
+
     if (
       userContext.authType === AuthType.AAD &&
       !userContext.features.enableSDKoperations &&
@@ -107,6 +128,20 @@ export async function readCollectionsWithPagination(
     paginated: true,
   });
   try {
+    const initialCollections = takeInitialCollections(databaseId);
+    // Larger lists must retain SDK continuation tokens and the configured page size.
+    if (
+      !continuationToken &&
+      initialCollections !== undefined &&
+      initialCollections.length <= Queries.containersPerPage
+    ) {
+      traceSuccess(
+        Action.ReadCollections,
+        { databaseId, collectionCount: initialCollections.length, paginated: true, path: "Prefetch" },
+        startKey,
+      );
+      return { collections: initialCollections, continuationToken: undefined };
+    }
     const sdkResponse = await client()
       .database(databaseId)
       .containers.query(

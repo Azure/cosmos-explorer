@@ -1,4 +1,4 @@
-import { isFabric, isFabricMirroredKey, isFabricNative } from "Platform/Fabric/FabricUtil";
+import { isFabric, isFabricMirroredKey } from "Platform/Fabric/FabricUtil";
 import { AuthType } from "../../AuthType";
 import { Offer, ReadDatabaseOfferParams } from "../../Contracts/DataModels";
 import { userContext } from "../../UserContext";
@@ -11,7 +11,7 @@ import { handleError } from "../ErrorHandlingUtils";
 import { readOfferWithSDK } from "./readOfferWithSDK";
 
 export const readDatabaseOffer = async (params: ReadDatabaseOfferParams): Promise<Offer> => {
-  if (isFabricMirroredKey() || isFabricNative()) {
+  if (isFabricMirroredKey()) {
     // For Fabric Mirroring, it is slow, because it requests the token and we don't need it.
     // For Fabric Native, it is not supported.
     console.error("Skiping readDatabaseOffer for Fabric");

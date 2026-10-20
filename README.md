@@ -47,6 +47,19 @@ The Cosmos emulator currently only runs in Windows environments. You can still d
 - Visit: https://ms.portal.azure.com/?dataExplorerSource=https%3A%2F%2Flocalhost%3A1234%2Fexplorer.html
 - You may have to manually visit https://localhost:1234/explorer.html first and click through any SSL certificate warnings
 
+### Fabric native startup
+
+Fabric V3 initialization optionally supplies `initialCollections`, a complete
+collection-resource snapshot fetched by the host while the iframe loads. DE stores
+it in the native Fabric context before constructing Explorer and consumes it once
+through the normal collection-loading path. Load telemetry and first-container
+opening are unchanged. Missing snapshots use the SDK; refreshes always read live
+data. With container pagination enabled, snapshots larger than the configured page
+size are discarded so SDK continuation tokens and page sizes remain unchanged.
+
+The host must omit the field on failure rather than sending an empty array, which
+represents a successfully fetched empty database. Older hosts need no changes.
+
 ### Testing
 
 #### Unit Tests

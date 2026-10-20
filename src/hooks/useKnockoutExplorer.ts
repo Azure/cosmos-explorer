@@ -632,6 +632,7 @@ const createExplorerFabric = (
       fabricContext: {
         ...userContext.fabricContext,
         databaseName: nativeParams.artifactConnectionInfo.databaseName,
+        initialCollections: nativeParams.initialCollections,
       },
     });
   }
