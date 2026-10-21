@@ -6,7 +6,7 @@
   "scripts": {
     "deploy": "az webapp up --name \"dataexplorer-preview\" --subscription \"cosmosdb-portalteam-runners\" --resource-group \"dataexplorer-preview\" --runtime \"NODE:22-lts\" --sku P1V2",
     "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --runInBand"
   },
   "keywords": [],
   "author": "Microsoft Corporation",
@@ -15,6 +15,16 @@
     "express": "^5.2.1",
     "follow-redirects": "^1.16.0",
     "http-proxy-middleware": "^3.0.7",
+    "ipaddr.js": "^2.5.0",
     "node-fetch": "^2.6.1"
+  },
+  "devDependencies": {
+    "jest": "29.7.0"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testMatch": [
+      "<rootDir>/*.test.js"
+    ]
   }
 }

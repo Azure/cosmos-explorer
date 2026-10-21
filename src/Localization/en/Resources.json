@@ -38,6 +38,10 @@
     "off": "Off",
     "preview": "Preview"
   },
+  "resourceTree": {
+    "sortAscending": "Sort databases in ascending order",
+    "sortDescending": "Sort databases in descending order"
+  },
   "fullTextPolicy": {
     "defaultLanguage": "Default language",
     "language": "Language",
@@ -548,7 +552,6 @@
       "enableAnalyticalStore": "Enable analytical store",
       "disableAnalyticalStore": "Disable analytical store",
       "on": "On",
-      "analyticalStoreSynapseLinkRequired": "Azure Synapse Link is required for creating an analytical store {{collectionName}}. Enable Synapse Link for this Cosmos DB account.",
       "enable": "Enable",
       "containerVectorPolicy": "Container Vector Policy",
       "containerFullTextSearchPolicy": "Container Full Text Search Policy",

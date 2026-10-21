@@ -1,11 +1,11 @@
 import "@testing-library/jest-dom";
 import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import { createCollection } from "Common/dataAccess/createCollection";
-import { Capability } from "Contracts/DataModels";
+import { AccountOverride, Capability, DatabaseAccount } from "Contracts/DataModels";
 import { shallow } from "enzyme";
 import { Keys, t } from "Localization";
 import React from "react";
-import { updateUserContext } from "UserContext";
+import { updateUserContext, userContext } from "UserContext";
 import Explorer from "../../Explorer";
 import { AddCollectionPanel } from "./AddCollectionPanel";
 import * as AddCollectionPanelUtility from "./AddCollectionPanelUtility";
@@ -34,24 +34,6 @@ describe("AddCollectionPanel", () => {
       const wrapper = shallow(<AddCollectionPanel {...props} targetAccountOverride={override} />);
       expect(wrapper).toBeDefined();
     });
-
-    it("should pass targetAccountOverride to openEnableSynapseLinkDialog button click", () => {
-      const mockOpenEnableSynapseLinkDialog = jest.fn();
-      const explorerWithMock = { ...props.explorer, openEnableSynapseLinkDialog: mockOpenEnableSynapseLinkDialog };
-      const override = {
-        subscriptionId: "override-sub",
-        resourceGroup: "override-rg",
-        accountName: "override-account",
-        capabilities: [] as Capability[],
-      };
-
-      const wrapper = shallow(
-        <AddCollectionPanel explorer={explorerWithMock as unknown as Explorer} targetAccountOverride={override} />,
-      );
-
-      // isSynapseLinkEnabled section requires specific conditions; verify the component exists
-      expect(wrapper).toBeDefined();
-    });
   });
 
   describe("externalDatabaseOptions prop", () => {
@@ -75,6 +57,70 @@ describe("AddCollectionPanel", () => {
       const wrapper = shallow(<AddCollectionPanel {...props} isCopyJobFlow={false} />);
       expect(wrapper).toBeDefined();
     });
+  });
+
+  describe("analytical store visibility", () => {
+    const originalContext = { databaseAccount: userContext.databaseAccount, apiType: userContext.apiType };
+    const account: DatabaseAccount = {
+      id: "account",
+      name: "account",
+      location: "East US",
+      type: "Microsoft.DocumentDB/databaseAccounts",
+      kind: "GlobalDocumentDB",
+      properties: {},
+    };
+    const legacyCapabilities: Capability[] = [{ name: "EnableStorageAnalytics", description: "" }];
+
+    afterEach(() => updateUserContext(originalContext));
+
+    it("hides analytical store controls when Synapse Link is not enabled", () => {
+      updateUserContext({ databaseAccount: { ...account, properties: { enableAnalyticalStorage: false } } });
+      render(<AddCollectionPanel {...props} />);
+
+      expect(screen.queryByRole("radio", { name: /analytical store/i })).not.toBeInTheDocument();
+      expect(screen.queryByRole("button", { name: /Enable.*Synapse Link/i })).not.toBeInTheDocument();
+    });
+
+    it.each([
+      { enableAnalyticalStorage: true, capabilities: [] },
+      { enableAnalyticalStorage: false, capabilities: legacyCapabilities },
+    ])("preserves analytical store controls for already-enabled accounts: %j", (properties) => {
+      updateUserContext({ databaseAccount: { ...account, properties } });
+      render(<AddCollectionPanel {...props} />);
+
+      const enableRadio = screen.getByRole("radio", { name: t(Keys.panes.addCollection.enableAnalyticalStore) });
+      expect(enableRadio).toBeEnabled();
+      fireEvent.click(enableRadio);
+      expect(enableRadio).toBeChecked();
+      fireEvent.click(screen.getByRole("radio", { name: t(Keys.panes.addCollection.disableAnalyticalStore) }));
+      expect(enableRadio).not.toBeChecked();
+      expect(screen.queryByRole("button", { name: /Enable.*Synapse Link/i })).not.toBeInTheDocument();
+    });
+
+    it.each([
+      { currentEnabled: true, targetEnabled: false, legacyTarget: false, visible: false },
+      { currentEnabled: false, targetEnabled: true, legacyTarget: false, visible: true },
+      { currentEnabled: false, targetEnabled: false, legacyTarget: true, visible: true },
+    ])(
+      "uses the copy destination rather than the current account: %j",
+      ({ currentEnabled, targetEnabled, legacyTarget, visible }) => {
+        updateUserContext({
+          databaseAccount: { ...account, properties: { enableAnalyticalStorage: currentEnabled } },
+        });
+        const targetAccountOverride: AccountOverride = {
+          subscriptionId: "target-subscription",
+          resourceGroup: "target-resource-group",
+          accountName: "target-account",
+          enableAnalyticalStorage: targetEnabled,
+          capabilities: legacyTarget ? legacyCapabilities : [],
+        };
+        render(<AddCollectionPanel {...props} isCopyJobFlow targetAccountOverride={targetAccountOverride} />);
+
+        expect(
+          screen.queryAllByRole("radio", { name: t(Keys.panes.addCollection.enableAnalyticalStore) }),
+        ).toHaveLength(visible ? 1 : 0);
+      },
+    );
   });
 
   describe("full-text creation validation", () => {

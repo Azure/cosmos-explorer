@@ -1,7 +1,7 @@
 import { OpenFullScreen } from "Explorer/OpenFullScreen";
 import { KeyboardAction } from "KeyboardShortcuts";
-import { isDataplaneRbacSupported } from "Utils/APITypeUtils";
 import * as React from "react";
+import { isDataplaneRbacSupported } from "Utils/APITypeUtils";
 import AddSqlQueryIcon from "../../../../images/AddSqlQuery_16x16.svg";
 import AddStoredProcedureIcon from "../../../../images/AddStoredProcedure.svg";
 import AddTriggerIcon from "../../../../images/AddTrigger.svg";
@@ -10,15 +10,14 @@ import BrowseQueriesIcon from "../../../../images/BrowseQuery.svg";
 import EntraIDIcon from "../../../../images/EntraID.svg";
 import FeedbackIcon from "../../../../images/Feedback-Command.svg";
 import HostedTerminalIcon from "../../../../images/Hosted-Terminal.svg";
-import OpenQueryFromDiskIcon from "../../../../images/OpenQueryFromDisk.svg";
 import OpenInTabIcon from "../../../../images/open-in-tab.svg";
+import OpenQueryFromDiskIcon from "../../../../images/OpenQueryFromDisk.svg";
 import SettingsIcon from "../../../../images/settings_15x15.svg";
-import SynapseIcon from "../../../../images/synapse-link.svg";
 import VSCodeIcon from "../../../../images/vscode.svg";
 import { AuthType } from "../../../AuthType";
-import * as Constants from "../../../Common/Constants";
 import { configContext, Platform } from "../../../ConfigContext";
 import * as ViewModels from "../../../Contracts/ViewModels";
+import { useSidePanel } from "../../../hooks/useSidePanel";
 import {
   isVCoreMongoNativeAuthDisabled,
   userContext,
@@ -26,7 +25,6 @@ import {
   VCoreMongoNativeAuthLearnMoreUrl,
 } from "../../../UserContext";
 import { isRunningOnNationalCloud } from "../../../Utils/CloudUtils";
-import { useSidePanel } from "../../../hooks/useSidePanel";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import { useDialog } from "../../Controls/Dialog";
 import Explorer from "../../Explorer";
@@ -42,7 +40,6 @@ let counter = 0;
 export function createStaticCommandBarButtons(
   container: Explorer,
   selectedNodeState: SelectedNodeState,
-  isSynapseLinkUpdating = false,
 ): CommandButtonComponentProps[] {
   if (userContext.authType === AuthType.ResourceToken) {
     return createStaticCommandBarButtonsForResourceToken(container, selectedNodeState);
@@ -62,11 +59,6 @@ export function createStaticCommandBarButtons(
     userContext.apiType !== "Tables" &&
     userContext.apiType !== "Cassandra"
   ) {
-    const addSynapseLink = createOpenSynapseLinkDialogButton(container, isSynapseLinkUpdating);
-    if (addSynapseLink) {
-      addDivider();
-      buttons.push(addSynapseLink);
-    }
     if (userContext.apiType !== "Gremlin") {
       const addVsCode = createOpenVsCodeDialogButton(container);
       buttons.push(addVsCode);
@@ -249,35 +241,6 @@ function areScriptsSupported(): boolean {
   return (
     configContext.platform !== Platform.Fabric && (userContext.apiType === "SQL" || userContext.apiType === "Gremlin")
   );
-}
-
-function createOpenSynapseLinkDialogButton(
-  container: Explorer,
-  isSynapseLinkUpdating: boolean,
-): CommandButtonComponentProps {
-  if (configContext.platform === Platform.Emulator) {
-    return undefined;
-  }
-
-  if (userContext?.databaseAccount?.properties?.enableAnalyticalStorage) {
-    return undefined;
-  }
-
-  const capabilities = userContext?.databaseAccount?.properties?.capabilities || [];
-  if (capabilities.some((capability) => capability.name === Constants.CapabilityNames.EnableStorageAnalytics)) {
-    return undefined;
-  }
-
-  const label = "Enable Azure Synapse Link";
-  return {
-    iconSrc: SynapseIcon,
-    iconAlt: label,
-    onCommandClick: () => container.openEnableSynapseLinkDialog(),
-    commandButtonLabel: label,
-    hasPopup: false,
-    disabled: isSynapseLinkUpdating,
-    ariaLabel: label,
-  };
 }
 
 function createOpenVsCodeDialogButton(container: Explorer): CommandButtonComponentProps {
