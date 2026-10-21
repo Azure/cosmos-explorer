@@ -17,6 +17,92 @@ import {
 // The test harness URL contains authentication tokens.
 test.use({ trace: "off", video: "off" });
 
+test.describe("Database sorting", () => {
+  const openExplorer = async (page: Page, databaseIds: string[]): Promise<DataExplorer> => {
+    const accountName = "database-sorting-test";
+    const subscriptionId = "00000000-0000-0000-0000-000000000000";
+    const resourceGroup = "database-sorting-test";
+    const accountId = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}`;
+
+    await page.route("https://management.azure.com/**", async (route) => {
+      const path = new URL(route.request().url()).pathname;
+      if (path === accountId) {
+        await route.fulfill({
+          json: {
+            id: accountId,
+            name: accountName,
+            location: "West US",
+            kind: "GlobalDocumentDB",
+            properties: {
+              documentEndpoint: `https://${accountName}.documents.azure.com/`,
+              capabilities: [],
+              disableLocalAuth: false,
+            },
+          },
+        });
+      } else if (path === `${accountId}/listKeys`) {
+        await route.fulfill({ json: { primaryMasterKey: Buffer.from("test-only-key").toString("base64") } });
+      } else if (path === `${accountId}/sqlDatabases`) {
+        await route.fulfill({
+          json: { value: databaseIds.map((id) => ({ name: id, properties: { resource: { id } } })) },
+        });
+      } else if (databaseIds.some((id) => path === `${accountId}/sqlDatabases/${id}/containers`)) {
+        await route.fulfill({ json: { value: [] } });
+      } else if (databaseIds.some((id) => path === `${accountId}/sqlDatabases/${id}/throughputSettings/default`)) {
+        await route.fulfill({
+          status: 404,
+          json: { code: "NotFound", message: "The test database has no shared throughput." },
+        });
+      } else {
+        throw new Error(`Unexpected ARM request in database sorting test: ${route.request().method()} ${path}`);
+      }
+    });
+
+    const params = new URLSearchParams({
+      accountName,
+      subscriptionId,
+      resourceGroup,
+      token: "test-only-token",
+      iframeSrc: "explorer.html?platform=Portal&disablePortalInitCache&feature.enableCopilot=false",
+    });
+    await page.goto(`https://127.0.0.1:1234/testExplorer.html?${params}`);
+    const explorer = await DataExplorer.waitForExplorer(page);
+    await expect(explorer.frame.getByRole("tree", { name: "CosmosDB resources" })).toBeVisible();
+    return explorer;
+  };
+
+  test("has an accessible name and title for each keyboard action", async ({ page }) => {
+    const explorer = await openExplorer(page, ["Charlie", "Alpha", "Bravo"]);
+    const databaseRows = explorer.frame
+      .getByRole("tree", { name: "CosmosDB resources" })
+      .getByRole("treeitem")
+      .filter({ has: explorer.frame.getByText(/^(Alpha|Bravo|Charlie)$/) });
+    await expect(databaseRows).toHaveText(["Alpha", "Bravo", "Charlie"]);
+
+    const descendingButton = explorer.frame.getByRole("button", { name: "Sort databases in descending order" });
+    await expect(descendingButton).toHaveAttribute("title", "Sort databases in descending order");
+    await descendingButton.focus();
+    await descendingButton.press("Enter");
+    await expect(databaseRows).toHaveText(["Charlie", "Bravo", "Alpha"]);
+
+    const ascendingButton = explorer.frame.getByRole("button", { name: "Sort databases in ascending order" });
+    await expect(ascendingButton).toHaveAttribute("title", "Sort databases in ascending order");
+    await expect(ascendingButton).toBeFocused();
+    await ascendingButton.press("Space");
+    await expect(databaseRows).toHaveText(["Alpha", "Bravo", "Charlie"]);
+
+    await expect(descendingButton).toHaveAttribute("title", "Sort databases in descending order");
+    await expect(descendingButton).toBeFocused();
+  });
+
+  test("is hidden with one database while search remains available", async ({ page }) => {
+    const explorer = await openExplorer(page, ["Alpha"]);
+    await expect(explorer.frame.getByRole("treeitem", { name: /Alpha/ })).toBeVisible();
+    await expect(explorer.frame.getByRole("button", { name: /Sort databases/ })).toHaveCount(0);
+    await expect(explorer.frame.getByPlaceholder("Search databases only")).toBeVisible();
+  });
+});
+
 test("SQL database and container CRUD", async ({ page }) => {
   const databaseId = generateUniqueName("db");
   const containerId = "testcontainer"; // A unique container name isn't needed because the database is unique
