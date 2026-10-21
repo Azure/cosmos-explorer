@@ -38,6 +38,10 @@
     "off": "Off",
     "preview": "Preview"
   },
+  "resourceTree": {
+    "sortAscending": "Sort databases in ascending order",
+    "sortDescending": "Sort databases in descending order"
+  },
   "fullTextPolicy": {
     "defaultLanguage": "Default language",
     "language": "Language",
