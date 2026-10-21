@@ -1,3 +1,8 @@
+import "@testing-library/jest-dom";
+import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
+import { AuthType } from "AuthType";
+import { DatabaseSortOrder, useDatabases } from "Explorer/useDatabases";
+import { updateUserContext, userContext } from "UserContext";
 import { shallow } from "enzyme";
 import React from "react";
 import * as DataModels from "../../Contracts/DataModels";
@@ -9,6 +14,8 @@ import {
 } from "../Controls/TreeComponent/LegacyTreeComponent";
 import Explorer from "../Explorer";
 import Collection from "./Collection";
+import Database from "./Database";
+import { ResourceTree } from "./ResourceTree";
 import { ResourceTreeAdapter } from "./ResourceTreeAdapter";
 
 const schema: DataModels.ISchema = {
@@ -236,5 +243,118 @@ describe("Resource tree for schema", () => {
     };
     const wrapper = shallow(<LegacyTreeComponent {...props} />);
     expect(wrapper).toMatchSnapshot();
+  });
+
+  describe("ResourceTree database sorting", () => {
+    const explorer = new Explorer();
+    const initialDatabasesState = useDatabases.getState();
+    const initialAuthType = userContext.authType;
+
+    beforeEach(() => {
+      updateUserContext({ authType: AuthType.AAD });
+      const databases = ["Charlie", "alpha", "Bravo"].map(
+        (id) => new Database(explorer, { id, _rid: id, _self: id, _ts: 0, _etag: "etag" }),
+      );
+      useDatabases.setState({ databases, sortOrder: "az", searchText: "", pinnedDatabaseIds: new Set() });
+    });
+
+    afterEach(() => {
+      cleanup();
+      useDatabases.setState(initialDatabasesState);
+      updateUserContext({ authType: initialAuthType });
+      localStorage.clear();
+    });
+
+    const displayedDatabaseNames = () =>
+      within(screen.getByRole("tree", { name: "CosmosDB resources" }))
+        .getAllByRole("treeitem")
+        .map((item) => item.textContent)
+        .filter((label) => label !== "Home");
+
+    it.each<{ order: DatabaseSortOrder; nextOrder: DatabaseSortOrder; action: string; nextAction: string }>([
+      {
+        order: "az",
+        nextOrder: "za",
+        action: "Sort databases in descending order",
+        nextAction: "Sort databases in ascending order",
+      },
+      {
+        order: "za",
+        nextOrder: "az",
+        action: "Sort databases in ascending order",
+        nextAction: "Sort databases in descending order",
+      },
+    ])("names the next sorting action when the current order is $order", ({ order, nextOrder, action, nextAction }) => {
+      useDatabases.setState({ sortOrder: order });
+      render(<ResourceTree explorer={explorer} />);
+
+      const button = screen.getByRole("button", { name: action });
+      expect(button).toHaveAttribute("title", action);
+      expect(displayedDatabaseNames()).toEqual(
+        order === "az" ? ["alpha", "Bravo", "Charlie"] : ["Charlie", "Bravo", "alpha"],
+      );
+
+      fireEvent.click(button);
+
+      expect(useDatabases.getState().sortOrder).toBe(nextOrder);
+      expect(screen.getByRole("button", { name: nextAction })).toBe(button);
+      expect(button).toHaveAttribute("title", nextAction);
+      expect(displayedDatabaseNames()).toEqual(
+        nextOrder === "az" ? ["alpha", "Bravo", "Charlie"] : ["Charlie", "Bravo", "alpha"],
+      );
+      expect(useDatabases.getState().databases.map((database) => database.id())).toEqual(["Charlie", "alpha", "Bravo"]);
+    });
+
+    it("keeps pinned databases first while reversing the unpinned database order", () => {
+      useDatabases.setState({ pinnedDatabaseIds: new Set(["Bravo"]) });
+      render(<ResourceTree explorer={explorer} />);
+
+      expect(displayedDatabaseNames()).toEqual(["Bravo", "alpha", "Charlie"]);
+      fireEvent.click(screen.getByRole("button", { name: "Sort databases in descending order" }));
+      expect(displayedDatabaseNames()).toEqual(["Bravo", "Charlie", "alpha"]);
+      fireEvent.click(screen.getByRole("button", { name: "Sort databases in ascending order" }));
+      expect(displayedDatabaseNames()).toEqual(["Bravo", "alpha", "Charlie"]);
+    });
+
+    it("reverses filtered database results and keeps the chosen order when the filter is cleared", () => {
+      render(<ResourceTree explorer={explorer} />);
+      const search = screen.getByPlaceholderText("Search databases only");
+      fireEvent.change(search, { target: { value: "r" } });
+
+      expect(displayedDatabaseNames()).toEqual(["Bravo", "Charlie"]);
+      fireEvent.click(screen.getByRole("button", { name: "Sort databases in descending order" }));
+      expect(displayedDatabaseNames()).toEqual(["Charlie", "Bravo"]);
+      fireEvent.change(search, { target: { value: "" } });
+      expect(displayedDatabaseNames()).toEqual(["Charlie", "Bravo", "alpha"]);
+    });
+
+    it("hides sorting when no databases are loaded", () => {
+      useDatabases.setState({ databases: [] });
+      render(<ResourceTree explorer={explorer} />);
+
+      expect(screen.queryByRole("button", { name: /Sort databases/ })).not.toBeInTheDocument();
+    });
+
+    it("hides sorting for one database without hiding database search", () => {
+      useDatabases.setState({ databases: useDatabases.getState().databases.slice(0, 1) });
+      render(<ResourceTree explorer={explorer} />);
+
+      expect(screen.queryByRole("button", { name: /Sort databases/ })).not.toBeInTheDocument();
+      expect(screen.getByPlaceholderText("Search databases only")).toBeInTheDocument();
+    });
+
+    it("shows sorting for exactly two databases", () => {
+      useDatabases.setState({ databases: useDatabases.getState().databases.slice(0, 2) });
+      render(<ResourceTree explorer={explorer} />);
+
+      expect(screen.getByRole("button", { name: "Sort databases in descending order" })).toBeInTheDocument();
+    });
+
+    it("hides sorting for resource token authentication", () => {
+      updateUserContext({ authType: AuthType.ResourceToken });
+      render(<ResourceTree explorer={explorer} />);
+
+      expect(screen.queryByRole("button", { name: /Sort databases/ })).not.toBeInTheDocument();
+    });
   });
 });
