@@ -1,7 +1,8 @@
 import { PortalBackendEndpoints } from "Common/Constants";
+import { CosmosDbArtifactType } from "Contracts/FabricMessagesContract";
 import { configContext, Platform, resetConfigContext, updateConfigContext } from "../ConfigContext";
 import { updateUserContext } from "../UserContext";
-import { endpoint, getTokenFromAuthService, requestPlugin } from "./CosmosClient";
+import { endpoint, getTokenFromAuthService, isEndpointDiscoveryEnabled, requestPlugin } from "./CosmosClient";
 
 describe("getTokenFromAuthService", () => {
   beforeEach(() => {
@@ -66,6 +67,38 @@ describe("endpoint", () => {
       endpoint: "baz",
     });
     expect(endpoint()).toEqual("baz");
+  });
+});
+
+describe("isEndpointDiscoveryEnabled", () => {
+  beforeEach(() => {
+    resetConfigContext();
+    updateUserContext({
+      fabricContext: undefined,
+      selectedRegionalEndpoint: undefined,
+    });
+  });
+
+  it("disables endpoint discovery for Fabric native", () => {
+    updateConfigContext({ platform: Platform.Fabric });
+    updateUserContext({
+      fabricContext: {
+        artifactType: CosmosDbArtifactType.NATIVE,
+        artifactInfo: undefined,
+        databaseName: "database",
+        fabricClientRpcVersion: "1.0",
+        isReadOnly: false,
+        isVisible: true,
+      },
+    });
+
+    expect(isEndpointDiscoveryEnabled()).toBe(false);
+  });
+
+  it("enables endpoint discovery when no regional endpoint is selected outside Fabric native", () => {
+    updateConfigContext({ platform: Platform.Hosted });
+
+    expect(isEndpointDiscoveryEnabled()).toBe(true);
   });
 });
 
