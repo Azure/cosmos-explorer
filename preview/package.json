@@ -13,7 +13,7 @@
   "dependencies": {
     "body-parser": "^2.2.2",
     "express": "^5.2.1",
-    "follow-redirects": "^1.16.0",
+    "follow-redirects": "^1.16.1",
     "http-proxy-middleware": "^3.0.7",
     "ipaddr.js": "^2.5.0",
     "node-fetch": "^2.6.1"
