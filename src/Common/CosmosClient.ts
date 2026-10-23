@@ -2,7 +2,7 @@ import * as Cosmos from "@azure/cosmos";
 import { getAuthorizationTokenUsingResourceTokens } from "Common/getAuthorizationTokenUsingResourceTokens";
 import { CosmosDbArtifactType } from "Contracts/FabricMessagesContract";
 import { AuthorizationToken } from "Contracts/FabricMessageTypes";
-import { checkDatabaseResourceTokensValidity, isFabricMirroredKey } from "Platform/Fabric/FabricUtil";
+import { checkDatabaseResourceTokensValidity, isFabricMirroredKey, isFabricNative } from "Platform/Fabric/FabricUtil";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { useDataplaneRbacAuthorization } from "Utils/AuthorizationUtils";
 import { AuthType } from "../AuthType";
@@ -131,6 +131,8 @@ export const endpoint = () => {
   );
 };
 
+export const isEndpointDiscoveryEnabled = (): boolean => !userContext.selectedRegionalEndpoint && !isFabricNative();
+
 export async function getTokenFromAuthService(
   verb: string,
   resourceType: string,
@@ -207,7 +209,7 @@ export function client(): Cosmos.CosmosClient {
     userAgentSuffix: "Azure Portal",
     defaultHeaders: _defaultHeaders,
     connectionPolicy: {
-      enableEndpointDiscovery: !userContext.selectedRegionalEndpoint,
+      enableEndpointDiscovery: isEndpointDiscoveryEnabled(),
       retryOptions: {
         maxRetryAttemptCount: LocalStorageUtility.getEntryNumber(StorageKey.RetryAttempts),
         fixedRetryIntervalInMilliseconds: LocalStorageUtility.getEntryNumber(StorageKey.RetryInterval),
