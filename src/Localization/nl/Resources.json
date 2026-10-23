@@ -38,6 +38,12 @@
     "off": "Uit",
     "preview": "Voorbeeld"
   },
+  "cosmosDBShell": {
+    "installingSdk": ".NET SDK 10 downloaden en installeren. De eerste installatie kan enkele minuten duren.",
+    "installingShell": "Cosmos DB Shell installeren...",
+    "updatingShell": "Controleren op updates voor Cosmos DB Shell...",
+    "connecting": "Verbinding maken met uw Cosmos DB-account..."
+  },
   "splashScreen": {
     "title": {
       "default": "Welkom bij Azure Cosmos DB",
@@ -990,6 +996,8 @@
       "quantizationByteSizeTooltipContainerName": "container",
       "quantizationByteSizeTooltipGlobalSecondaryIndexName": "globale secundaire index",
       "quantizerType": "Kwantisatie-type",
+      "quantizerTypeProduct": "Product",
+      "quantizerTypeSpherical": "Sferisch",
       "quantizerTypeTooltip": "De kwantisatiemethode die wordt gebruikt door de vectorindex.",
       "indexingSearchListSize": "Grootte van zoeklijst indexeren",
       "vectorIndexShardKey": "Shardsleutel voor vectorindex",

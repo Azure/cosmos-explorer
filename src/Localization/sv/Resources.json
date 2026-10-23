@@ -38,6 +38,12 @@
     "off": "Av",
     "preview": "Förhandsversion"
   },
+  "cosmosDBShell": {
+    "installingSdk": "Laddar ned och installerar .NET SDK 10. Den första konfigurationen kan ta några minuter.",
+    "installingShell": "Installerar Cosmos DB Shell...",
+    "updatingShell": "Söker efter Cosmos DB Shell-uppdateringar...",
+    "connecting": "Ansluter till ditt Cosmos DB-konto..."
+  },
   "splashScreen": {
     "title": {
       "default": "Välkommen till Azure Cosmos DB",
@@ -990,6 +996,8 @@
       "quantizationByteSizeTooltipContainerName": "container",
       "quantizationByteSizeTooltipGlobalSecondaryIndexName": "globalt sekundärt index",
       "quantizerType": "Typ av kvantiserare",
+      "quantizerTypeProduct": "Produkt",
+      "quantizerTypeSpherical": "Sfärisk",
       "quantizerTypeTooltip": "Kvantiseringsmetoden som används av vektorindexet.",
       "indexingSearchListSize": "Storlek på söklista för indexering",
       "vectorIndexShardKey": "Shard-nyckel för vektorindex",
