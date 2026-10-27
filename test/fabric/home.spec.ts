@@ -62,7 +62,7 @@ test.describe("Fabric Home keyboard activation", () => {
 
   test("hides Cosmos DB Shell for Fabric Native artifacts", async ({ page }) => {
     const explorer = page.frameLocator('iframe[title="Data Explorer"]');
-    await expect(explorer.getByRole("button", { name: "Open Cosmos DB Shell", exact: true })).toHaveCount(0);
+    await expect(explorer.getByRole("menuitem", { name: "Open Cosmos DB Shell", exact: true })).toHaveCount(0);
   });
 
   const actions = [
