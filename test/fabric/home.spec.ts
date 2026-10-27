@@ -60,6 +60,11 @@ test.describe("Fabric Home keyboard activation", () => {
     ).toBeVisible();
   });
 
+  test("hides Cosmos DB Shell for Fabric Native artifacts", async ({ page }) => {
+    const explorer = page.frameLocator('iframe[title="Data Explorer"]');
+    await expect(explorer.getByRole("menuitem", { name: "Open Cosmos DB Shell", exact: true })).toHaveCount(0);
+  });
+
   const actions = [
     { title: "New container" },
     { title: "Sample Data", container: "SampleData" },

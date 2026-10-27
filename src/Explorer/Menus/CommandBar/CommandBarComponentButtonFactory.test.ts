@@ -1,4 +1,5 @@
 import * as ko from "knockout";
+import { CosmosDbArtifactType, FABRIC_RPC_VERSION } from "Contracts/FabricMessagesContract";
 import { extractFeatures } from "Platform/Hosted/extractFeatures";
 import { AuthType } from "../../../AuthType";
 import { configContext, Platform, updateConfigContext } from "../../../ConfigContext";
@@ -97,9 +98,12 @@ describe("CommandBarComponentButtonFactory tests", () => {
 
   describe("Open Cosmos DB Shell button", () => {
     let originalUserContext: typeof userContext;
+    let originalPlatform: Platform;
 
     beforeEach(() => {
       originalUserContext = { ...userContext };
+      originalPlatform = configContext.platform;
+      updateConfigContext({ platform: Platform.Hosted });
       mockExplorer = { openNotebookTerminal: jest.fn() } as unknown as Explorer;
       updateUserContext({
         authType: AuthType.AAD,
@@ -108,7 +112,10 @@ describe("CommandBarComponentButtonFactory tests", () => {
       });
     });
 
-    afterEach(() => updateUserContext(originalUserContext));
+    afterEach(() => {
+      updateUserContext(originalUserContext);
+      updateConfigContext({ platform: originalPlatform });
+    });
 
     const getShellButton = () =>
       CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, useSelectedNode.getState()).find(
@@ -133,6 +140,43 @@ describe("CommandBarComponentButtonFactory tests", () => {
     it("hides the shell when Cloud Shell is unavailable", () => {
       updateUserContext({ features: { ...userContext.features, enableCloudShell: false } });
       expect(getShellButton()).toBeUndefined();
+    });
+
+    it.each([false, true])("hides the shell for Fabric Native artifacts (read-only: %s)", (isReadOnly) => {
+      updateConfigContext({ platform: Platform.Fabric });
+      updateUserContext({
+        fabricContext: {
+          fabricClientRpcVersion: FABRIC_RPC_VERSION,
+          isReadOnly,
+          isVisible: true,
+          databaseName: "test",
+          artifactType: CosmosDbArtifactType.NATIVE,
+          artifactInfo: undefined,
+        },
+      });
+
+      expect(getShellButton()).toBeUndefined();
+    });
+
+    it.each([Platform.Portal, Platform.Hosted])("shows the shell on %s", (platform) => {
+      updateConfigContext({ platform });
+      expect(getShellButton()).toBeDefined();
+    });
+
+    it("preserves the shell for Fabric mirrored AAD artifacts", () => {
+      updateConfigContext({ platform: Platform.Fabric });
+      updateUserContext({
+        fabricContext: {
+          fabricClientRpcVersion: FABRIC_RPC_VERSION,
+          isReadOnly: true,
+          isVisible: true,
+          databaseName: "test",
+          artifactType: CosmosDbArtifactType.MIRRORED_AAD,
+          artifactInfo: undefined,
+        },
+      });
+
+      expect(getShellButton()).toBeDefined();
     });
 
     it.each<ApiType>(["Mongo", "Cassandra", "Gremlin", "Tables", "Postgres", "VCoreMongo"])(
