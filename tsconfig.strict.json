@@ -106,6 +106,8 @@
     "./src/Utils/StringUtils.test.ts",
     "./src/Utils/StringUtils.ts",
     "./src/Utils/StyleUtils.ts",
+    "./src/Utils/UuidUtils.test.ts",
+    "./src/Utils/UuidUtils.ts",
     "./src/Utils/WindowUtils.test.ts",
     "./src/Utils/WindowUtils.ts",
     "./src/hooks/useConfig.ts",

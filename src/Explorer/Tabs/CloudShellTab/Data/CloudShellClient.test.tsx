@@ -25,8 +25,8 @@ declare global {
 const MOCK_ARM_ENDPOINT = "https://mock-management.azure.com";
 
 // Mock dependencies
-jest.mock("uuid", () => ({
-  v4: jest.fn().mockReturnValue("mocked-uuid"),
+jest.mock("../../../../Utils/UuidUtils", () => ({
+  createUuid: jest.fn().mockReturnValue("mocked-uuid"),
 }));
 
 jest.mock("../../../../ConfigContext", () => ({

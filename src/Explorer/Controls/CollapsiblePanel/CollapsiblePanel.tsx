@@ -34,8 +34,8 @@ export class CollapsiblePanel extends React.Component<CollapsiblePanelProps> {
 
   private getCollapsedFragment(): JSX.Element {
     return (
-      <div className="collapsibleNav nav">
-        <ul className="nav">
+      <div className="collapsibleNav nav" style={{ display: "block" }}>
+        <ul className="nav" style={{ display: "block" }}>
           <li className="collapsedBtn collapseExpandButton">
             <AccessibleElement
               className="collapsedIconContainer"
@@ -71,7 +71,7 @@ export class CollapsiblePanel extends React.Component<CollapsiblePanelProps> {
         <div className="panelHeader">
           <AccessibleElement
             as="span"
-            className={`collapsedIconContainer collapseExpandButton ${this.props.collapseToLeft ? "pull-right" : ""}`}
+            className={`collapsedIconContainer collapseExpandButton ${this.props.collapseToLeft ? "float-right" : ""}`}
             onActivated={() => this.toggleCollapse()}
             aria-label="Collapse panel"
           >

@@ -79,7 +79,6 @@ module.exports = {
     "d3-quadtree": "<rootDir>/node_modules/d3-quadtree/dist/d3-quadtree.min.js",
     "d3-scale-chromatic": "<rootDir>/node_modules/d3-scale-chromatic/dist/d3-scale-chromatic.min.js",
     "d3-zoom": "<rootDir>/node_modules/d3-zoom/dist/d3-zoom.min.js",
-    uuid: require.resolve("uuid"), // Force module uuid to resolve with the CJS entry point, because Jest does not support package.json.exports. See https://github.com/uuidjs/uuid/issues/451
   },
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
