@@ -38,6 +38,12 @@
     "off": "關閉",
     "preview": "預覽"
   },
+  "cosmosDBShell": {
+    "installingSdk": "正在下載並安裝 .NET SDK 10。第一次設定可能需要幾分鐘的時間。",
+    "installingShell": "正在安裝 Cosmos DB Shell...",
+    "updatingShell": "正在檢查 Cosmos DB Shell 是否有更新...",
+    "connecting": "正在連接至 Cosmos DB 帳戶..."
+  },
   "splashScreen": {
     "title": {
       "default": "歡迎使用 Azure Cosmos DB",
@@ -990,6 +996,8 @@
       "quantizationByteSizeTooltipContainerName": "容器",
       "quantizationByteSizeTooltipGlobalSecondaryIndexName": "全域從屬索引",
       "quantizerType": "量化器類型",
+      "quantizerTypeProduct": "產品",
+      "quantizerTypeSpherical": "球形",
       "quantizerTypeTooltip": "向量索引所使用的量化方法。",
       "indexingSearchListSize": "索引搜尋清單大小",
       "vectorIndexShardKey": "向量索引分區索引鍵",
