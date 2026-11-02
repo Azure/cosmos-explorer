@@ -382,7 +382,7 @@ export class NodePropertiesComponent extends React.Component<
     return (
       <div className="rightPaneHeader">
         {this.props.viewMode === Mode.READONLY_PROP && (
-          <span className="pull-right">{this.getConfirmDeleteButtonsFragment()}</span>
+          <span className="float-right">{this.getConfirmDeleteButtonsFragment()}</span>
         )}
       </div>
     );
@@ -399,7 +399,7 @@ export class NodePropertiesComponent extends React.Component<
   ): JSX.Element {
     if (isSectionExpanded) {
       return (
-        <div className="pull-right">
+        <div className="float-right">
           {this.props.viewMode === Mode.READONLY_PROP && !this.state.isDeleteConfirm && (
             <AccessibleElement
               className="rightPaneEditIcon rightPaneBtns editBtn"

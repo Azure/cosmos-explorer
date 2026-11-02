@@ -19,7 +19,7 @@ export class MiddlePaneComponent extends React.Component<MiddlePaneComponentProp
           <span className="paneTitle">Graph</span>
           <button
             style={{ border: "none", background: "none" }}
-            className="graphExpandCollapseBtn pull-right"
+            className="graphExpandCollapseBtn float-right"
             onClick={this.props.toggleExpandGraph}
             role="button"
             aria-expanded={this.props.isTabsContentExpanded}
