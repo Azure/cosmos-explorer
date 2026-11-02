@@ -1,9 +1,9 @@
 import { CosmosDbArtifactType, ResourceTokenInfo } from "Contracts/FabricMessagesContract";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { traceOpen } from "Shared/Telemetry/TelemetryProcessor";
+import { createUuid } from "Utils/UuidUtils";
 import { useCarousel } from "hooks/useCarousel";
 import { usePostgres } from "hooks/usePostgres";
-import { v4 as uuidv4 } from "uuid";
 import { AuthType } from "./AuthType";
 import { DatabaseAccount } from "./Contracts/DataModels";
 import { SubscriptionType } from "./Contracts/SubscriptionType";
@@ -162,7 +162,7 @@ const userContext: UserContext = {
   features,
   subscriptionType: CollectionCreation.DefaultSubscriptionType,
   collectionCreationDefaults: CollectionCreationDefaults,
-  sessionId: uuidv4(), // Default sessionId - will be overwritten if provided by host
+  sessionId: createUuid(), // Default sessionId - will be overwritten if provided by host
 };
 
 export function isAccountNewerThanThresholdInMs(createdAt: string, threshold: number) {

@@ -1,6 +1,6 @@
-import { v4 as uuidv4 } from "uuid";
 import { configContext } from "../../../../ConfigContext";
 import { userContext } from "../../../../UserContext";
+import { createUuid } from "../../../../Utils/UuidUtils";
 import { armRequest } from "../../../../Utils/arm/request";
 import {
   CloudShellProviderInfo,
@@ -113,7 +113,7 @@ export const connectTerminal = async (
       "Content-Type": "application/json",
       "Content-Length": "2",
       Authorization: userContext.authorizationToken,
-      "x-ms-client-request-id": uuidv4(),
+      "x-ms-client-request-id": createUuid(),
       "Accept-Language": getLocale(),
     },
     body: "{}", // empty body is necessary
@@ -139,7 +139,7 @@ export const resizeTerminal = async (
       "Content-Type": "application/json",
       "Content-Length": "2",
       Authorization: userContext.authorizationToken,
-      "x-ms-client-request-id": uuidv4(),
+      "x-ms-client-request-id": createUuid(),
       "Accept-Language": getLocale(),
     },
     body: "{}", // empty body is necessary
