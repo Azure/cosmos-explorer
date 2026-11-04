@@ -5,7 +5,26 @@ const ms = require("ms");
 const subscriptionId = process.env["AZURE_SUBSCRIPTION_ID"];
 const resourceGroupName = process.env["E2ETESTS_RESOURCEGROUP_NAME"];
 
-const thirtyMinutesAgo = new Date(Date.now() - 1000 * 60 * 30).getTime();
+function parseCleanupMinimumAge(configuredAge) {
+  let parsedAge;
+  try {
+    parsedAge = ms(configuredAge === undefined ? "6h" : configuredAge);
+  } catch {
+    parsedAge = undefined;
+  }
+
+  if (!Number.isFinite(parsedAge) || parsedAge <= 0) {
+    throw new Error("E2E_CLEANUP_MINIMUM_AGE must be a positive duration");
+  }
+
+  return parsedAge;
+}
+const cleanupMinimumAge = parseCleanupMinimumAge(process.env["E2E_CLEANUP_MINIMUM_AGE"]);
+const cleanupThreshold = Date.now() - cleanupMinimumAge;
+
+function shouldDeleteResource(name, timestamp, threshold = cleanupThreshold) {
+  return Boolean(name?.startsWith("t_") && timestamp && timestamp < threshold);
+}
 
 function friendlyTime(date) {
   try {
@@ -29,22 +48,27 @@ async function main() {
       for await (const database of mongoDatabases) {
         // Unfortunately Mongo does not provide a timestamp in ARM. There is no way to tell how old the DB is other thn encoding it in the ID :(
         const timestamp = Number(database.name.split("_").pop());
-        if (timestamp && timestamp < thirtyMinutesAgo) {
-          await client.mongoDBResources.beginDeleteMongoDBDatabaseAndWait(resourceGroupName, account.name, database.name);
+        if (shouldDeleteResource(database.name, timestamp)) {
+          await client.mongoDBResources.beginDeleteMongoDBDatabaseAndWait(
+            resourceGroupName,
+            account.name,
+            database.name,
+          );
           console.log(`DELETED: ${account.name} | ${database.name} | Age: ${friendlyTime(Date.now() - timestamp)}`);
         } else {
           console.log(`SKIPPED: ${account.name} | ${database.name} | Age: ${friendlyTime(Date.now() - timestamp)}`);
         }
       }
     } else if (account.capabilities.find((c) => c.name === "EnableCassandra")) {
-      const cassandraDatabases = client.cassandraResources.listCassandraKeyspaces(
-        resourceGroupName,
-        account.name,
-      );
+      const cassandraDatabases = client.cassandraResources.listCassandraKeyspaces(resourceGroupName, account.name);
       for await (const database of cassandraDatabases) {
         const timestamp = Number(database.resource.ts) * 1000;
-        if (timestamp && timestamp < thirtyMinutesAgo) {
-          await client.cassandraResources.beginDeleteCassandraKeyspaceAndWait(resourceGroupName, account.name, database.name);
+        if (shouldDeleteResource(database.name, timestamp)) {
+          await client.cassandraResources.beginDeleteCassandraKeyspaceAndWait(
+            resourceGroupName,
+            account.name,
+            database.name,
+          );
           console.log(`DELETED: ${account.name} | ${database.name} | Age: ${friendlyTime(Date.now() - timestamp)}`);
         } else {
           console.log(`SKIPPED: ${account.name} | ${database.name} | Age: ${friendlyTime(Date.now() - timestamp)}`);
@@ -54,7 +78,7 @@ async function main() {
       const tablesDatabase = client.tableResources.listTables(resourceGroupName, account.name);
       for await (const database of tablesDatabase) {
         const timestamp = Number(database.resource.ts) * 1000;
-        if (timestamp && timestamp < thirtyMinutesAgo) {
+        if (shouldDeleteResource(database.name, timestamp)) {
           await client.tableResources.beginDeleteTableAndWait(resourceGroupName, account.name, database.name);
           console.log(`DELETED: ${account.name} | ${database.name} | Age: ${friendlyTime(Date.now() - timestamp)}`);
         } else {
@@ -65,8 +89,12 @@ async function main() {
       const graphDatabases = client.gremlinResources.listGremlinDatabases(resourceGroupName, account.name);
       for await (const database of graphDatabases) {
         const timestamp = Number(database.resource.ts) * 1000;
-        if (timestamp && timestamp < thirtyMinutesAgo) {
-          await client.gremlinResources.beginDeleteGremlinDatabaseAndWait(resourceGroupName, account.name, database.name);
+        if (shouldDeleteResource(database.name, timestamp)) {
+          await client.gremlinResources.beginDeleteGremlinDatabaseAndWait(
+            resourceGroupName,
+            account.name,
+            database.name,
+          );
           console.log(`DELETED: ${account.name} | ${database.name} | Age: ${friendlyTime(Date.now() - timestamp)}`);
         } else {
           console.log(`SKIPPED: ${account.name} | ${database.name} | Age: ${friendlyTime(Date.now() - timestamp)}`);
@@ -92,7 +120,7 @@ async function deleteWithRetry(client, database, accountName) {
   while (attempt < maxRetries) {
     try {
       const timestamp = Number(database.resource.ts) * 1000;
-      if (timestamp && timestamp < thirtyMinutesAgo) {
+      if (shouldDeleteResource(database.name, timestamp)) {
         await client.sqlResources.beginDeleteSqlDatabaseAndWait(resourceGroupName, accountName, database.name);
         console.log(`DELETED: ${accountName} | ${database.name} | Age: ${friendlyTime(Date.now() - timestamp)}`);
       } else {
@@ -118,15 +146,19 @@ async function deleteWithRetry(client, database, accountName) {
 
 // Helper function to delay the retry attempts
 function delay(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-main()
-  .then(() => {
-    console.log("Completed");
-    process.exit(0);
-  })
-  .catch((err) => {
-    console.error(err);
-    process.exit(1);
-  });
+if (require.main === module) {
+  main()
+    .then(() => {
+      console.log("Completed");
+      process.exit(0);
+    })
+    .catch((err) => {
+      console.error(err);
+      process.exit(1);
+    });
+}
+
+module.exports = { parseCleanupMinimumAge, shouldDeleteResource };

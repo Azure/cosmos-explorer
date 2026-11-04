@@ -1,3 +1,4 @@
+import * as Localization from "Localization/t";
 import { CosmosDBShellHandler } from "./CosmosDBShellHandler";
 
 // Mock dependencies
@@ -14,8 +15,9 @@ jest.mock("../../../../UserContext", () => ({
 describe("CosmosDBShellHandler", () => {
   const mockKey = "testKey";
   const endpoint = "https://test-account.documents.azure.com:443/";
-  const tokenConnectionCommand = `export COSMOSDB_SHELL_TOKEN='aadToken123'; cosmosdbshell --connect '${endpoint}' --connect-mode gateway --verbose`;
-  const keyConnectionCommand = `export COSMOSDB_SHELL_ACCOUNT_KEY='${mockKey}'; cosmosdbshell --connect '${endpoint}' --connect-mode gateway --verbose`;
+  const connectionProgress = "printf '%s\\n' 'Connecting to your Cosmos DB account...'";
+  const tokenConnectionCommand = `${connectionProgress}; export COSMOSDB_SHELL_TOKEN='aadToken123'; cosmosdbshell --connect '${endpoint}' --connect-mode gateway --verbose`;
+  const keyConnectionCommand = `${connectionProgress}; export COSMOSDB_SHELL_ACCOUNT_KEY='${mockKey}'; cosmosdbshell --connect '${endpoint}' --connect-mode gateway --verbose`;
   let cosmosDBShellHandler: CosmosDBShellHandler;
 
   beforeEach(() => {
@@ -52,6 +54,32 @@ describe("CosmosDBShellHandler", () => {
 
       expect(commands.some((c) => c.includes("dotnet-install.sh") && c.includes("--channel 10.0"))).toBe(true);
       expect(commands.some((c) => c === "export DOTNET_ROOT=$HOME/.dotnet")).toBe(true);
+    });
+
+    it("should describe each setup step only in the corresponding command branch", () => {
+      const commands = cosmosDBShellHandler.getSetUpCommands();
+      const sdkCommand = commands.find((command) => command.includes("dotnet-install.sh"));
+      const shellCommand = commands.find((command) => command.includes("dotnet tool install"));
+
+      expect(sdkCommand).toContain(
+        "then printf '%s\\n' 'Downloading and installing .NET SDK 10. First-time setup may take a few minutes.'; curl",
+      );
+      expect(shellCommand).toContain("then printf '%s\\n' 'Installing Cosmos DB Shell...'; dotnet tool install");
+      expect(shellCommand).toContain(
+        "else printf '%s\\n' 'Checking for Cosmos DB Shell updates...'; dotnet tool update",
+      );
+      expect(commands).toHaveLength(6);
+    });
+
+    it("should quote localized progress messages safely for Bash", () => {
+      const translation = jest.spyOn(Localization, "t").mockReturnValue("Account's $HOME `command` %s");
+      try {
+        expect(cosmosDBShellHandler.getConnectionCommand()).toContain(
+          "printf '%s\\n' 'Account'\\''s $HOME `command` %s'; export",
+        );
+      } finally {
+        translation.mockRestore();
+      }
     });
 
     it("should not export any credential env var in setup commands for a key credential", () => {
@@ -107,6 +135,7 @@ describe("CosmosDBShellHandler", () => {
       const connectionCommand = handler.getConnectionCommand();
 
       expect(connectionCommand).not.toContain("cosmosdbshell --connect");
+      expect(connectionCommand).not.toContain("Connecting to your Cosmos DB account");
       expect(connectionCommand).toContain("Unable to acquire a Cosmos DB credential");
       expect(connectionCommand).toContain("Login for Entra ID");
     });

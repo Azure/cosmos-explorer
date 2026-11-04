@@ -1,6 +1,18 @@
 import { extractFeatures, hasFlag } from "./extractFeatures";
 
 describe("extractFeatures", () => {
+  it("enables Cosmos DB Shell by default", () => {
+    expect(extractFeatures(new URLSearchParams()).enableCosmosDBShell).toBe(true);
+  });
+
+  it.each(["feature.enableCosmosDBShell", "enableCosmosDBShell"])(
+    "respects explicit Cosmos DB Shell overrides via %s",
+    (key) => {
+      expect(extractFeatures(new URLSearchParams({ [key]: "false" })).enableCosmosDBShell).toBe(false);
+      expect(extractFeatures(new URLSearchParams({ [key]: "true" })).enableCosmosDBShell).toBe(true);
+    },
+  );
+
   it("correctly detects feature flags in a case insensitive manner", () => {
     const url = "https://localhost:10001/12345/notebook";
     const token = "super secret";

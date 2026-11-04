@@ -1,8 +1,11 @@
 import * as ko from "knockout";
+import { CosmosDbArtifactType, FABRIC_RPC_VERSION } from "Contracts/FabricMessagesContract";
+import { extractFeatures } from "Platform/Hosted/extractFeatures";
 import { AuthType } from "../../../AuthType";
+import { configContext, Platform, updateConfigContext } from "../../../ConfigContext";
 import { DatabaseAccount } from "../../../Contracts/DataModels";
-import { CollectionBase } from "../../../Contracts/ViewModels";
-import { updateUserContext } from "../../../UserContext";
+import { CollectionBase, TerminalKind } from "../../../Contracts/ViewModels";
+import { ApiType, updateUserContext, userContext } from "../../../UserContext";
 import Explorer from "../../Explorer";
 import { useDatabases } from "../../useDatabases";
 import { useSelectedNode } from "../../useSelectedNode";
@@ -12,78 +15,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
   let mockExplorer: Explorer;
 
   afterEach(() => useSelectedNode.getState().setSelectedNode(undefined));
-
-  describe("Enable Azure Synapse Link Button", () => {
-    const enableAzureSynapseLinkBtnLabel = "Enable Azure Synapse Link";
-    const selectedNodeState = useSelectedNode.getState();
-
-    beforeAll(() => {
-      mockExplorer = {} as Explorer;
-      updateUserContext({
-        databaseAccount: {
-          properties: {
-            capabilities: [{ name: "EnableMongo" }],
-          },
-        } as DatabaseAccount,
-      });
-    });
-
-    it("Button should be visible", () => {
-      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
-      const enableAzureSynapseLinkBtn = buttons.find(
-        (button) => button.commandButtonLabel === enableAzureSynapseLinkBtnLabel,
-      );
-      expect(enableAzureSynapseLinkBtn).toBeDefined();
-    });
-
-    it("Button should be disabled while Synapse Link is updating", () => {
-      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(
-        mockExplorer,
-        selectedNodeState,
-        true,
-      );
-      const enableAzureSynapseLinkBtn = buttons.find(
-        (button) => button.commandButtonLabel === enableAzureSynapseLinkBtnLabel,
-      );
-      expect(enableAzureSynapseLinkBtn.disabled).toBe(true);
-    });
-
-    // TODO: Now that Tables API supports dataplane RBAC, calling createStaticCommandBarButtons will enable the
-    //       Entra ID Login button, which causes this test to fail due to "Invalid hook call.". This seems to be
-    //       unsupported in jest and needs to be tested with react-hooks-testing-library.
-    //
-    // it("Button should not be visible for Tables API", () => {
-    //   updateUserContext({
-    //     databaseAccount: {
-    //       properties: {
-    //         capabilities: [{ name: "EnableTable" }],
-    //       },
-    //     } as DatabaseAccount,
-    //   });
-    //
-    //   const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
-    //  const enableAzureSynapseLinkBtn = buttons.find(
-    //    (button) => button.commandButtonLabel === enableAzureSynapseLinkBtnLabel,
-    //  );
-    //  expect(enableAzureSynapseLinkBtn).toBeUndefined();
-    //});
-
-    it("Button should not be visible for Cassandra API", () => {
-      updateUserContext({
-        databaseAccount: {
-          properties: {
-            capabilities: [{ name: "EnableCassandra" }],
-          },
-        } as DatabaseAccount,
-      });
-
-      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
-      const enableAzureSynapseLinkBtn = buttons.find(
-        (button) => button.commandButtonLabel === enableAzureSynapseLinkBtnLabel,
-      );
-      expect(enableAzureSynapseLinkBtn).toBeUndefined();
-    });
-  });
 
   describe("Open Cassandra Shell button", () => {
     const openCassandraShellBtnLabel = "Open Cassandra Shell";
@@ -163,6 +94,150 @@ describe("CommandBarComponentButtonFactory tests", () => {
       );
       expect(openVCoreMongoShellButton).toBeDefined();
     });
+  });
+
+  describe("Open Cosmos DB Shell button", () => {
+    let originalUserContext: typeof userContext;
+    let originalPlatform: Platform;
+
+    beforeEach(() => {
+      originalUserContext = { ...userContext };
+      originalPlatform = configContext.platform;
+      updateConfigContext({ platform: Platform.Hosted });
+      mockExplorer = { openNotebookTerminal: jest.fn() } as unknown as Explorer;
+      updateUserContext({
+        authType: AuthType.AAD,
+        databaseAccount: { kind: "DocumentDB", properties: { capabilities: [] } } as DatabaseAccount,
+        features: extractFeatures(new URLSearchParams()),
+      });
+    });
+
+    afterEach(() => {
+      updateUserContext(originalUserContext);
+      updateConfigContext({ platform: originalPlatform });
+    });
+
+    const getShellButton = () =>
+      CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, useSelectedNode.getState()).find(
+        (button) => button.commandButtonLabel === "Open Cosmos DB Shell",
+      );
+
+    it("shows and opens the shell with default features", () => {
+      const button = getShellButton();
+      expect(button).toBeDefined();
+      expect(button.disabled).toBe(false);
+      button.onCommandClick(new KeyboardEvent("keydown", { key: "Enter" }));
+      expect(mockExplorer.openNotebookTerminal).toHaveBeenCalledWith(TerminalKind.CosmosDB);
+    });
+
+    it("hides the shell when explicitly disabled by the feature flag", () => {
+      updateUserContext({
+        features: extractFeatures(new URLSearchParams({ "feature.enableCosmosDBShell": "false" })),
+      });
+      expect(getShellButton()).toBeUndefined();
+    });
+
+    it("hides the shell when Cloud Shell is unavailable", () => {
+      updateUserContext({ features: { ...userContext.features, enableCloudShell: false } });
+      expect(getShellButton()).toBeUndefined();
+    });
+
+    it.each([false, true])("hides the shell for Fabric Native artifacts (read-only: %s)", (isReadOnly) => {
+      updateConfigContext({ platform: Platform.Fabric });
+      updateUserContext({
+        fabricContext: {
+          fabricClientRpcVersion: FABRIC_RPC_VERSION,
+          isReadOnly,
+          isVisible: true,
+          databaseName: "test",
+          artifactType: CosmosDbArtifactType.NATIVE,
+          artifactInfo: undefined,
+        },
+      });
+
+      expect(getShellButton()).toBeUndefined();
+    });
+
+    it.each([Platform.Portal, Platform.Hosted])("shows the shell on %s", (platform) => {
+      updateConfigContext({ platform });
+      expect(getShellButton()).toBeDefined();
+    });
+
+    it("preserves the shell for Fabric mirrored AAD artifacts", () => {
+      updateConfigContext({ platform: Platform.Fabric });
+      updateUserContext({
+        fabricContext: {
+          fabricClientRpcVersion: FABRIC_RPC_VERSION,
+          isReadOnly: true,
+          isVisible: true,
+          databaseName: "test",
+          artifactType: CosmosDbArtifactType.MIRRORED_AAD,
+          artifactInfo: undefined,
+        },
+      });
+
+      expect(getShellButton()).toBeDefined();
+    });
+
+    it.each<ApiType>(["Mongo", "Cassandra", "Gremlin", "Tables", "Postgres", "VCoreMongo"])(
+      "hides the shell for the %s API",
+      (apiType) => {
+        updateUserContext({ apiType });
+        expect(getShellButton()).toBeUndefined();
+      },
+    );
+
+    it("hides the shell for resource token authentication", () => {
+      updateUserContext({ authType: AuthType.ResourceToken });
+      expect(getShellButton()).toBeUndefined();
+    });
+  });
+
+  describe("Enable Azure Synapse Link command", () => {
+    let originalUserContext: typeof userContext;
+    let originalPlatform: Platform;
+
+    beforeEach(() => {
+      originalUserContext = { ...userContext };
+      originalPlatform = configContext.platform;
+      mockExplorer = {} as Explorer;
+      updateUserContext({
+        authType: AuthType.AAD,
+        databaseAccount: {
+          id: "account",
+          name: "account",
+          location: "East US",
+          type: "Microsoft.DocumentDB/databaseAccounts",
+          kind: "GlobalDocumentDB",
+          properties: {
+            enableAnalyticalStorage: false,
+            capabilities: [],
+          },
+        },
+        features: extractFeatures(new URLSearchParams()),
+      });
+    });
+
+    afterEach(() => {
+      updateUserContext(originalUserContext);
+      updateConfigContext({ platform: originalPlatform });
+    });
+
+    it.each([Platform.Portal, Platform.Hosted])(
+      "does not return the command for an otherwise eligible account on %s",
+      (platform) => {
+        updateConfigContext({ platform });
+
+        const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(
+          mockExplorer,
+          useSelectedNode.getState(),
+        );
+        const labels = buttons.map((button) => button.commandButtonLabel);
+
+        expect(labels).toContain("Visual Studio Code");
+        expect(labels).not.toContain("Enable Azure Synapse Link");
+      },
+    );
   });
 
   describe("Resource token", () => {

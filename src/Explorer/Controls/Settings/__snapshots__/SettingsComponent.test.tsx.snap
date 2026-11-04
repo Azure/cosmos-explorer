@@ -333,6 +333,7 @@ exports[`SettingsComponent renders 1`] = `
             isVectorSearchEnabled={false}
             onFullTextPolicyChange={[Function]}
             onFullTextPolicyDirtyChange={[Function]}
+            onFullTextPolicyValidationChange={[Function]}
             onVectorEmbeddingPolicyChange={[Function]}
             onVectorEmbeddingPolicyDirtyChange={[Function]}
             onVectorEmbeddingPolicyValidationChange={[Function]}

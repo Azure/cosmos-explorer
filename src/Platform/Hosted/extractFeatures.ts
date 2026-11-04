@@ -16,7 +16,6 @@ export type Features = {
   readonly enableAadDataPlane: boolean;
   readonly enableResourceGraph: boolean;
   readonly enableKoResourceTree: boolean;
-  readonly enableThroughputBuckets: boolean;
   readonly hostedDataExplorer: boolean;
   readonly junoEndpoint?: string;
   readonly phoenixEndpoint?: string;
@@ -80,7 +79,6 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     enableSpark: "true" === get("enablespark"),
     enableTtl: "true" === get("enablettl"),
     enableKoResourceTree: "true" === get("enablekoresourcetree"),
-    enableThroughputBuckets: "true" === get("enablethroughputbuckets"),
     executeSproc: "true" === get("dataexplorerexecutesproc"),
     hostedDataExplorer: "true" === get("hosteddataexplorerenabled"),
     mongoProxyEndpoint: get("mongoproxyendpoint"),
@@ -105,7 +103,7 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     enableContainerCopy: "true" === get("enablecontainercopy"),
     enableRestoreContainer: "true" === get("enablerestorecontainer"),
     enableCloudShell: true,
-    enableCosmosDBShell: "true" === get("enablecosmosdbshell"),
+    enableCosmosDBShell: "true" === get("enablecosmosdbshell", "true"),
     mongoDisableNativeAuth: "true" === get("mongodisablenativeauth"),
   };
 }

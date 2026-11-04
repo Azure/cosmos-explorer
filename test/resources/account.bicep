@@ -20,7 +20,7 @@ param totalThroughputLimit int = 10000
 param testAccountType string
 
 var kind = (testAccountType == 'mongo' || testAccountType == 'mongo32') ? 'MongoDB' : 'GlobalDocumentDB'
-var capabilities = (testAccountType == 'tables') ? [{name: 'EnableTable'}] : (testAccountType == 'cassandra') ? [{name: 'EnableCassandra'}] : (testAccountType == 'gremlin') ? [{name: 'EnableGremlin'}] : []
+var capabilities = (testAccountType == 'tables') ? [{name: 'EnableTable'}] : (testAccountType == 'cassandra') ? [{name: 'EnableCassandra'}] : (testAccountType == 'gremlin') ? [{name: 'EnableGremlin'}] : (testAccountType == 'sql') ? [{name: 'EnableNoSQLFullTextSearchPreviewFeatures'}] : []
 var serverVersion = (testAccountType == 'mongo32') ? '3.2' : (testAccountType == 'mongo') ? '6.0' : null
 
 resource testCosmosAccount 'Microsoft.DocumentDB/databaseAccounts@2024-02-15-preview' = {

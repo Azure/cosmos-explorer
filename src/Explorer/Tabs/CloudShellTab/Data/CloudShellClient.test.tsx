@@ -85,7 +85,7 @@ describe("CloudShellClient", () => {
         host: MOCK_ARM_ENDPOINT,
         path: "/providers/Microsoft.Portal/userSettings/cloudconsole",
         method: "GET",
-        apiVersion: "2023-02-01-preview",
+        apiVersion: "2025-09-01-preview",
       });
       expect(result).toEqual(mockSettings);
     });
@@ -100,7 +100,7 @@ describe("CloudShellClient", () => {
         host: MOCK_ARM_ENDPOINT,
         path: "/providers/Microsoft.Portal/userSettings/cloudconsole",
         method: "GET",
-        apiVersion: "2023-02-01-preview",
+        apiVersion: "2025-09-01-preview",
       });
     });
   });
@@ -116,7 +116,7 @@ describe("CloudShellClient", () => {
         host: MOCK_ARM_ENDPOINT,
         path: "/providers/Microsoft.Portal/userSettings/cloudconsole",
         method: "PUT",
-        apiVersion: "2023-02-01-preview",
+        apiVersion: "2025-09-01-preview",
         body: {
           properties: {
             preferredOsType: OsType.Linux,
@@ -144,7 +144,7 @@ describe("CloudShellClient", () => {
         host: MOCK_ARM_ENDPOINT,
         path: "/providers/Microsoft.Portal/userSettings/cloudconsole",
         method: "PUT",
-        apiVersion: "2023-02-01-preview",
+        apiVersion: "2025-09-01-preview",
         body: {
           properties: {
             preferredOsType: OsType.Linux,
@@ -247,7 +247,7 @@ describe("CloudShellClient", () => {
         host: MOCK_ARM_ENDPOINT,
         path: "providers/Microsoft.Portal/consoles/default",
         method: "PUT",
-        apiVersion: "2023-02-01-preview",
+        apiVersion: "2025-09-01-preview",
         customHeaders: {
           "x-ms-console-preferred-location": "eastus",
         },
@@ -271,7 +271,7 @@ describe("CloudShellClient", () => {
         host: MOCK_ARM_ENDPOINT,
         path: "providers/Microsoft.Portal/consoles/default",
         method: "PUT",
-        apiVersion: "2023-02-01-preview",
+        apiVersion: "2025-09-01-preview",
         customHeaders: {
           "x-ms-console-preferred-location": "eastus",
         },
