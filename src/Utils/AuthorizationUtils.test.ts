@@ -34,7 +34,6 @@ describe("AuthorizationUtils", () => {
         executeSproc: false,
         enableResourceGraph: false,
         enableKoResourceTree: false,
-        enableThroughputBuckets: false,
         hostedDataExplorer: false,
         sandboxNotebookOutputs: true,
         showMinRUSurvey: false,

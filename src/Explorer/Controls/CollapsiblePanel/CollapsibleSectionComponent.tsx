@@ -14,6 +14,7 @@ export interface CollapsibleSectionProps {
   disabled?: boolean;
   disableDelete?: boolean;
   dataTest?: string;
+  deleteLabel?: string;
 }
 
 export interface CollapsibleSectionState {
@@ -78,6 +79,7 @@ export class CollapsibleSectionComponent extends React.Component<CollapsibleSect
           {this.props.showDelete && (
             <Stack.Item style={{ marginLeft: "auto" }}>
               <IconButton
+                ariaLabel={this.props.deleteLabel}
                 disabled={this.props.disableDelete ?? this.props.disabled}
                 id={`delete-${this.props.title.split(" ").join("-")}`}
                 iconProps={{ iconName: "Delete" }}

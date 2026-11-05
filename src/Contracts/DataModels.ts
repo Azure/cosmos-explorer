@@ -477,14 +477,26 @@ export interface VectorEmbeddingSource {
   authType: "Entra";
 }
 
-export interface FullTextPolicy {
-  defaultLanguage: string;
-  fullTextPaths: FullTextPath[];
+export interface FullTextAnalysisSpec {
+  language?: string;
+  stopWordListKind?: string;
+  addStopWords?: string[];
+  removeStopWords?: string[];
+  tokenizer?: string;
+  filters?: string[];
+  [key: string]: unknown;
 }
 
-export interface FullTextPath {
+export interface FullTextPolicy {
+  defaultLanguage?: string;
+  package?: string;
+  defaultSpec?: FullTextAnalysisSpec;
+  fullTextPaths: FullTextPath[];
+  [key: string]: unknown;
+}
+
+export interface FullTextPath extends FullTextAnalysisSpec {
   path: string;
-  language: string;
 }
 
 export interface ReadDatabaseOfferParams {

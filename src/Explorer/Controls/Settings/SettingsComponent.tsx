@@ -16,9 +16,10 @@ import {
 import { useIndexingPolicyStore } from "Explorer/Tabs/QueryTab/ResultsView";
 import { useDatabases } from "Explorer/useDatabases";
 import { Keys, t } from "Localization";
-import { isFabricNative } from "Platform/Fabric/FabricUtil";
+import { isFabric, isFabricNative } from "Platform/Fabric/FabricUtil";
 import { isVectorSearchEnabled } from "Utils/CapabilityUtils";
 import { isRunningOnPublicCloud } from "Utils/CloudUtils";
+import { logConsoleError } from "Utils/NotificationConsoleUtils";
 import * as React from "react";
 import DiscardIcon from "../../../../images/discard.svg";
 import SaveIcon from "../../../../images/save-cosmos.svg";
@@ -125,8 +126,11 @@ export interface SettingsComponentState {
   vectorEmbeddingPolicy: DataModels.VectorEmbeddingPolicy;
   vectorEmbeddingPolicyBaseline: DataModels.VectorEmbeddingPolicy;
   isVectorEmbeddingPolicyValid: boolean;
+  isVectorEmbeddingPolicyDirty: boolean;
   fullTextPolicy: DataModels.FullTextPolicy;
   fullTextPolicyBaseline: DataModels.FullTextPolicy;
+  isFullTextPolicyValid: boolean;
+  isFullTextPolicyDirty: boolean;
   shouldDiscardContainerPolicies: boolean;
   isContainerPolicyDirty: boolean;
 
@@ -204,7 +208,11 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.isFullTextSearchEnabled = userContext.apiType === "SQL";
 
       this.changeFeedPolicyVisible = userContext.features.enableChangeFeedPolicy;
-      this.throughputBucketsEnabled = userContext.throughputBucketsEnabled;
+      this.throughputBucketsEnabled =
+        userContext.authType === AuthType.AAD &&
+        userContext.apiType === "SQL" &&
+        !userContext.features.enableSDKoperations &&
+        !isFabric();
 
       // Mongo container with system partition key still treat as "Fixed"
       this.isFixedContainer =
@@ -248,8 +256,11 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       vectorEmbeddingPolicy: undefined,
       vectorEmbeddingPolicyBaseline: undefined,
       isVectorEmbeddingPolicyValid: true,
+      isVectorEmbeddingPolicyDirty: false,
       fullTextPolicy: undefined,
       fullTextPolicyBaseline: undefined,
+      isFullTextPolicyValid: true,
+      isFullTextPolicyDirty: false,
       shouldDiscardContainerPolicies: false,
       isContainerPolicyDirty: false,
 
@@ -375,7 +386,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       return false;
     }
 
-    if (!this.state.isVectorEmbeddingPolicyValid) {
+    if (!this.state.isVectorEmbeddingPolicyValid || !this.state.isFullTextPolicyValid) {
       return false;
     }
 
@@ -445,6 +456,14 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   };
 
   public onSaveClick = async (): Promise<void> => {
+    if (this.props.settingsTab.isExecuting()) {
+      return;
+    }
+    if (!this.state.isFullTextPolicyValid) {
+      this.props.settingsTab.isExecutionError(true);
+      logConsoleError(t(Keys.panes.addCollection.fullTextSearchPolicyError));
+      return;
+    }
     this.props.settingsTab.isExecutionError(false);
 
     this.props.settingsTab.isExecuting(true);
@@ -514,6 +533,9 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       autoPilotThroughput: this.state.autoPilotThroughputBaseline,
       isAutoPilotSelected: this.state.wasAutopilotOriginallySet,
       isVectorEmbeddingPolicyValid: true,
+      isVectorEmbeddingPolicyDirty: false,
+      isFullTextPolicyValid: true,
+      isFullTextPolicyDirty: false,
       shouldDiscardContainerPolicies: true,
       shouldDiscardIndexingPolicy: true,
       isScaleSaveable: false,
@@ -565,7 +587,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     };
     this.setState({
       indexingPolicyContent: newIndexingPolicy,
-      isIndexingPolicyDirty: true,
+      isIndexingPolicyDirty: isDirty(newIndexingPolicy, this.state.indexingPolicyContentBaseline),
     });
   };
 
@@ -669,13 +691,22 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.setState({ isSubSettingsDiscardable: isSubSettingsDiscardable });
 
   private onVectorEmbeddingPolicyDirtyChange = (isVectorEmbeddingPolicyDirty: boolean): void =>
-    this.setState({ isContainerPolicyDirty: isVectorEmbeddingPolicyDirty });
+    this.setState((state) => ({
+      isVectorEmbeddingPolicyDirty,
+      isContainerPolicyDirty: isVectorEmbeddingPolicyDirty || state.isFullTextPolicyDirty,
+    }));
 
   private onVectorEmbeddingPolicyValidationChange = (isVectorEmbeddingPolicyValid: boolean): void =>
     this.setState({ isVectorEmbeddingPolicyValid });
 
   private onFullTextPolicyDirtyChange = (isFullTextPolicyDirty: boolean): void =>
-    this.setState({ isContainerPolicyDirty: isFullTextPolicyDirty });
+    this.setState((state) => ({
+      isFullTextPolicyDirty,
+      isContainerPolicyDirty: isFullTextPolicyDirty || state.isVectorEmbeddingPolicyDirty,
+    }));
+
+  private onFullTextPolicyValidationChange = (isFullTextPolicyValid: boolean): void =>
+    this.setState({ isFullTextPolicyValid });
 
   private onIndexingPolicyDirtyChange = (isIndexingPolicyDirty: boolean): void =>
     this.setState({ isIndexingPolicyDirty: isIndexingPolicyDirty });
@@ -1147,6 +1178,11 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
       this.setState({
         dataMaskingContentBaseline: this.state.dataMaskingContent,
+        fullTextPolicy: updatedCollection.fullTextPolicy,
+        fullTextPolicyBaseline: updatedCollection.fullTextPolicy,
+        isFullTextPolicyDirty: false,
+        isFullTextPolicyValid: true,
+        isVectorEmbeddingPolicyDirty: false,
         isSubSettingsSaveable: false,
         isSubSettingsDiscardable: false,
         isContainerPolicyDirty: false,
@@ -1354,6 +1390,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       fullTextPolicyBaseline: this.state.fullTextPolicyBaseline,
       onFullTextPolicyChange: this.onFullTextPolicyChange,
       onFullTextPolicyDirtyChange: this.onFullTextPolicyDirtyChange,
+      onFullTextPolicyValidationChange: this.onFullTextPolicyValidationChange,
+      fullTextIndexesBaseline: this.state.indexingPolicyContentBaseline?.fullTextIndexes,
       isFullTextSearchEnabled: this.isFullTextSearchEnabled,
       shouldDiscardContainerPolicies: this.state.shouldDiscardContainerPolicies,
       resetShouldDiscardContainerPolicyChange: this.resetShouldDiscardContainerPolicies,

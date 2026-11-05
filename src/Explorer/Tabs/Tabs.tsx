@@ -1,4 +1,4 @@
-import { Spinner, SpinnerSize, TooltipHost } from "@fluentui/react";
+import { ITooltipHost, Spinner, SpinnerSize, TooltipHost } from "@fluentui/react";
 import { Menu, MenuItem, MenuList, MenuPopover, MenuTrigger } from "@fluentui/react-components";
 import { CollectionTabKind } from "Contracts/ViewModels";
 import Explorer from "Explorer/Explorer";
@@ -74,6 +74,7 @@ export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
 function TabNav({ tab, active, tabKind }: { tab?: Tab; active: boolean; tabKind?: ReactTabKind }) {
   const [hovering, setHovering] = useState(false);
   const focusTab = useRef<HTMLLIElement>() as MutableRefObject<HTMLLIElement>;
+  const tabTooltip = useRef<ITooltipHost>(null);
   const tabId = tab ? tab.tabId : "";
 
   const getReactTabTitle = (): ko.Observable<string> => {
@@ -85,6 +86,7 @@ function TabNav({ tab, active, tabKind }: { tab?: Tab; active: boolean; tabKind?
   useEffect(() => {
     if (active && focusTab.current) {
       focusTab.current.focus();
+      tabTooltip.current?.dismiss();
     }
   }, [active]);
   const liElement = (
@@ -98,7 +100,7 @@ function TabNav({ tab, active, tabKind }: { tab?: Tab; active: boolean; tabKind?
     >
       <span className="tabNavContentContainer">
         <div className="tab_Content">
-          <TooltipHost content={useObservable(tab?.tabPath || ko.observable(""))}>
+          <TooltipHost componentRef={tabTooltip} content={useObservable(tab?.tabPath || ko.observable(""))}>
             <span
               className="contentWrapper"
               onClick={() => {

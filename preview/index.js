@@ -1,5 +1,6 @@
 const express = require("express");
 const { createProxyMiddleware } = require("http-proxy-middleware");
+const { createCosmosProxy } = require("./cosmosProxy");
 const port = process.env.PORT || 3000;
 const fetch = require("node-fetch");
 
@@ -21,18 +22,6 @@ const api = createProxyMiddleware({
   },
 });
 
-const proxy = createProxyMiddleware({
-  target: backendEndpoint,
-  changeOrigin: true,
-  secure: false,
-  logLevel: "debug",
-  pathRewrite: { "^/proxy": "" },
-  router: (req) => {
-    let newTarget = req.headers["x-ms-proxy-target"];
-    return newTarget;
-  },
-});
-
 const commit = createProxyMiddleware({
   target: previewStorageWebsiteEndpoint,
   changeOrigin: true,
@@ -44,7 +33,7 @@ const commit = createProxyMiddleware({
 const app = express();
 
 app.use("/api", api);
-app.use("/proxy", proxy);
+app.use("/proxy", createCosmosProxy());
 app.use("/commit", commit);
 app.get("/pull/:pr", (req, res) => {
   const pr = req.params.pr;

@@ -141,7 +141,19 @@ const FabricHomeScreenButton: React.FC<FabricHomeScreenButtonProps & { className
 }) => {
   const styles = useStyles();
   return (
-    <div role="button" className={`${styles.buttonContainer} ${className}`} onClick={onClick} tabIndex={0}>
+    <div
+      role="button"
+      className={`${styles.buttonContainer} ${className}`}
+      onClick={onClick}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          event.stopPropagation();
+          onClick?.();
+        }
+      }}
+      tabIndex={0}
+    >
       <div className={styles.buttonUpperPart}>{icon}</div>
       <div aria-label={`${title} ${description}`} className={styles.buttonLowerPart}>
         <div>{title}</div>

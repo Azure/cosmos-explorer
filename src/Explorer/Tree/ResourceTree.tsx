@@ -13,6 +13,7 @@ import { TreeNode, TreeNodeComponent } from "Explorer/Controls/TreeComponent/Tre
 import { createDatabaseTreeNodes, createResourceTokenTreeNodes } from "Explorer/Tree/treeNodeUtil";
 import { useDatabases } from "Explorer/useDatabases";
 import { useSelectedNode } from "Explorer/useSelectedNode";
+import { t } from "Localization/t";
 import { isFabricMirrored } from "Platform/Fabric/FabricUtil";
 import { userContext } from "UserContext";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
@@ -114,6 +115,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ explorer }: Resource
   const toggleSortOrder = () => {
     setSortOrder(sortOrder === "az" ? "za" : "az");
   };
+  const sortActionLabel = sortOrder === "az" ? t("resourceTree.sortDescending") : t("resourceTree.sortAscending");
 
   return (
     <div className={treeStyles.treeContainer}>
@@ -127,12 +129,16 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ explorer }: Resource
             contentBefore={<Search20Regular />}
             style={{ flex: 1 }}
           />
-          <Button
-            appearance="subtle"
-            size="small"
-            icon={sortOrder === "az" ? <ArrowSortDown20Regular /> : <ArrowSortUp20Regular />}
-            onClick={toggleSortOrder}
-          />
+          {databases.length > 1 && (
+            <Button
+              appearance="subtle"
+              size="small"
+              aria-label={sortActionLabel}
+              title={sortActionLabel}
+              icon={sortOrder === "az" ? <ArrowSortDown20Regular /> : <ArrowSortUp20Regular />}
+              onClick={toggleSortOrder}
+            />
+          )}
         </div>
       )}
       <Tree

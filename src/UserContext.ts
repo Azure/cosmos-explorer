@@ -144,7 +144,6 @@ export interface UserContext {
   readonly feedbackPolicies?: AdminFeedbackPolicySettings;
   readonly dataPlaneRbacEnabled?: boolean;
   readonly refreshCosmosClient?: boolean;
-  throughputBucketsEnabled?: boolean;
   readonly sessionId: string;
 }
 
