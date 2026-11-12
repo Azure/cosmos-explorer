@@ -191,7 +191,7 @@ test.describe("Vector Policy under Scale & Settings", () => {
     await expect(saveButton).toBeDisabled();
   });
 
-  test("Add embedding source to vector embedding policy", async () => {
+  test("Save embedding source and keep only its endpoint editable after reload", async ({ page }) => {
     const addButton = explorer.frame.getByTestId("VectorEmbedding/AddButton");
     await addButton.click();
 
@@ -220,14 +220,12 @@ test.describe("Vector Policy under Scale & Settings", () => {
       `Successfully updated container ${context.container.id}`,
       { timeout: 2 * ONE_MINUTE_MS },
     );
-  });
+    explorer = await DataExplorer.open(page, TestAccount.SQL);
+    await explorer.openScaleAndSettings(context);
+    await explorer.frame.getByTestId("settings-tab-header/ContainerVectorPolicyTab").click();
+    await explorer.frame.getByRole("tab", { name: "Vector Policy" }).click();
 
-  test("Existing embedding source fields are disabled after save", async () => {
     const sourcePathsInput = explorer.frame.getByTestId("VectorEmbeddingSource/SourcePaths/1");
-    if ((await sourcePathsInput.count()) === 0) {
-      test.skip(true, "No embedding source present; previous test may have been skipped.");
-    }
-
     await expect(sourcePathsInput).toBeDisabled();
     await expect(sourcePathsInput).toHaveValue("/description");
 
@@ -240,7 +238,8 @@ test.describe("Vector Policy under Scale & Settings", () => {
     await expect(modelInput).toHaveValue("text-embedding-3-small");
 
     const endpointInput = explorer.frame.getByTestId("VectorEmbeddingSource/Endpoint/1");
-    await expect(endpointInput).toBeDisabled();
+    await expect(endpointInput).toBeEnabled();
     await expect(endpointInput).toHaveValue("https://e2e-embedding.cognitiveservices.azure.com/");
+    await expect(explorer.frame.getByRole("combobox", { name: "Authentication type" })).toBeDisabled();
   });
 });

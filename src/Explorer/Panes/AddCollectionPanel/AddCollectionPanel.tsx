@@ -818,6 +818,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 <Stack id="collapsibleVectorPolicySectionContent" styles={{ root: { position: "relative" } }}>
                   <Stack styles={{ root: { paddingLeft: 40 } }}>
                     <VectorEmbeddingPoliciesComponent
+                      targetAccountOverride={this.props.targetAccountOverride}
                       vectorEmbeddingsBaseline={[]}
                       vectorEmbeddings={this.state.vectorEmbeddingPolicy}
                       vectorIndexes={this.state.vectorIndexingPolicy}

@@ -1,6 +1,6 @@
 import { DefaultButton, Dropdown, IDropdownOption, Label, Stack, TextField } from "@fluentui/react";
 import { InfoTooltip } from "Common/Tooltip/InfoTooltip";
-import { VectorEmbedding, VectorEmbeddingSource, VectorIndex } from "Contracts/DataModels";
+import { AccountOverride, VectorEmbedding, VectorEmbeddingSource, VectorIndex } from "Contracts/DataModels";
 import { CollapsibleSectionComponent } from "Explorer/Controls/CollapsiblePanel/CollapsibleSectionComponent";
 import { VectorEmbeddingSourceComponent } from "Explorer/Controls/VectorSearch/VectorEmbeddingSourceComponent";
 import {
@@ -32,6 +32,7 @@ export interface IVectorEmbeddingPoliciesComponentProps {
   discardChanges?: boolean;
   onChangesDiscarded?: () => void;
   isGlobalSecondaryIndex?: boolean;
+  targetAccountOverride?: AccountOverride;
 }
 
 export interface VectorEmbeddingPolicyData {
@@ -76,6 +77,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
   discardChanges,
   onChangesDiscarded,
   isGlobalSecondaryIndex,
+  targetAccountOverride,
 }): JSX.Element => {
   const isExistingPolicy = (policy: VectorEmbeddingPolicyData): boolean => {
     if (!vectorEmbeddingsBaseline || vectorEmbeddingsBaseline.length === 0) {
@@ -348,7 +350,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
           return prev;
         }
         const next = [...prev];
-        const dataType = embeddingSourceSupportedDataTypes.includes(current.dataType) ? current.dataType : "float32";
+        const dataType = current.dataType;
         next[index] = {
           ...current,
           dataType,
@@ -444,7 +446,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
                     disabled={isExistingPolicy(vectorEmbeddingPolicy)}
                     required={true}
                     styles={dropdownStyles}
-                    options={getDataTypeOptions(!!vectorEmbeddingPolicy.embeddingSource)}
+                    options={getDataTypeOptions()}
                     selectedKey={vectorEmbeddingPolicy.dataType}
                     onChange={(_event: React.FormEvent<HTMLDivElement>, option: IDropdownOption) =>
                       onVectorEmbeddingPolicyChange(index, option, "dataType")
@@ -590,11 +592,17 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
                     </Stack>
                   </Stack>
                 )}
-                {isIntegratedEmbeddingEnabled() && (
+                {isIntegratedEmbeddingEnabled(targetAccountOverride) && (
                   <VectorEmbeddingSourceComponent
                     index={index}
                     vectorPath={vectorEmbeddingPolicy.path}
                     disabled={isExistingPolicy(vectorEmbeddingPolicy)}
+                    endpointDisabled={
+                      isExistingPolicy(vectorEmbeddingPolicy) &&
+                      !vectorEmbeddingsBaseline.some(
+                        (baseline) => baseline.path === vectorEmbeddingPolicy.path && !!baseline.embeddingSource,
+                      )
+                    }
                     initialEmbeddingSource={vectorEmbeddingPolicy.embeddingSource}
                     discardChanges={discardChanges}
                     onChange={(source, isValid) => onEmbeddingSourceChange(index, source, isValid)}

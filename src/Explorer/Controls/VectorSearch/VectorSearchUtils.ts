@@ -34,7 +34,13 @@ export const parseSourcePaths = (raw: string): string[] => {
 export const isValidFoundryEndpoint = (value: string): boolean => {
   try {
     const url = new URL(value);
-    const allowedHostSuffixes = [".openai.azure.com", ".openai.azure.us", ".openai.azure.cn", ".services.ai.azure.com"];
+    const allowedHostSuffixes = [
+      ".openai.azure.com",
+      ".openai.azure.us",
+      ".openai.azure.cn",
+      ".services.ai.azure.com",
+      ".cognitiveservices.azure.com",
+    ];
     return url.protocol === "https:" && allowedHostSuffixes.some((suffix) => url.hostname.endsWith(suffix));
   } catch {
     return false;

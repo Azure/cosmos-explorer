@@ -1,11 +1,13 @@
 import { IDropdownOption, MessageBar, MessageBarType, Spinner, SpinnerSize, Stack, Text } from "@fluentui/react";
 import { readDatabasesWithARM } from "Common/dataAccess/readDatabases";
-import { AccountOverride } from "Contracts/DataModels";
+import { configContext } from "ConfigContext";
+import { AccountOverride, DatabaseAccount } from "Contracts/DataModels";
 import Explorer from "Explorer/Explorer";
 import { useSidePanel } from "hooks/useSidePanel";
 import { produce } from "immer";
 import { Keys, t } from "Localization";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { armRequest } from "Utils/arm/request";
 import { AddCollectionPanel } from "../../../../Panes/AddCollectionPanel/AddCollectionPanel";
 import { useCopyJobContext } from "../../../Context/CopyJobContext";
 import { getAccountDetailsFromResourceId } from "../../../CopyJobUtils";
@@ -20,6 +22,11 @@ const AddCollectionPanelWrapper: React.FunctionComponent<AddCollectionPanelWrapp
   const [destinationDatabases, setDestinationDatabases] = useState<IDropdownOption[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [permissionError, setPermissionError] = useState<string | null>(null);
+  const [destinationEmbedding, setDestinationEmbedding] = useState<{
+    account: AccountOverride;
+    enabled: boolean;
+    failed?: boolean;
+  }>();
 
   const targetAccountOverride: AccountOverride | undefined = useMemo(() => {
     const accountId = copyJobState?.target?.account?.id;
@@ -38,8 +45,53 @@ const AddCollectionPanelWrapper: React.FunctionComponent<AddCollectionPanelWrapp
       capacityMode: copyJobState?.target?.account?.properties?.capacityMode,
       enableFreeTier: copyJobState?.target?.account?.properties?.enableFreeTier,
       enableAnalyticalStorage: copyJobState?.target?.account?.properties?.enableAnalyticalStorage,
+      enableEmbeddingGenerator: copyJobState?.target?.account?.properties?.enableEmbeddingGenerator ?? false,
     };
-  }, [copyJobState?.target?.account?.id]);
+  }, [copyJobState?.target?.account?.id, copyJobState?.target?.account?.properties]);
+
+  useEffect(() => {
+    if (!targetAccountOverride) {
+      setDestinationEmbedding(undefined);
+      return undefined;
+    }
+
+    let cancelled = false;
+    const { subscriptionId, resourceGroup, accountName } = targetAccountOverride;
+    // Resource Graph omits enableEmbeddingGenerator; read it from the destination's ARM account instead.
+    armRequest<DatabaseAccount>({
+      host: configContext.ARM_ENDPOINT,
+      path: `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}`,
+      method: "GET",
+      apiVersion: "2026-04-01-preview",
+    }).then(
+      (account) => {
+        if (!cancelled) {
+          setDestinationEmbedding({
+            account: targetAccountOverride,
+            enabled: account.properties?.enableEmbeddingGenerator === true,
+          });
+        }
+      },
+      () => {
+        if (!cancelled) {
+          setDestinationEmbedding({ account: targetAccountOverride, enabled: false, failed: true });
+        }
+      },
+    );
+    return () => {
+      cancelled = true;
+    };
+  }, [targetAccountOverride]);
+
+  const resolvedTargetAccountOverride = useMemo(
+    () =>
+      targetAccountOverride && {
+        ...targetAccountOverride,
+        enableEmbeddingGenerator:
+          destinationEmbedding?.account === targetAccountOverride && destinationEmbedding.enabled,
+      },
+    [targetAccountOverride, destinationEmbedding],
+  );
 
   useEffect(() => {
     const sidePanelStore = useSidePanel.getState();
@@ -111,7 +163,7 @@ const AddCollectionPanelWrapper: React.FunctionComponent<AddCollectionPanelWrapp
     [goBack],
   );
 
-  if (isLoading) {
+  if (isLoading || (targetAccountOverride && destinationEmbedding?.account !== targetAccountOverride)) {
     return (
       <Stack horizontalAlign="center" verticalAlign="center" styles={{ root: { padding: 20 } }}>
         <Spinner size={SpinnerSize.large} label="Loading destination account databases..." />
@@ -139,11 +191,16 @@ const AddCollectionPanelWrapper: React.FunctionComponent<AddCollectionPanelWrapp
         </Text>
       </Stack.Item>
       <Stack.Item className="addCollectionPanelBody">
+        {destinationEmbedding?.failed && (
+          <MessageBar messageBarType={MessageBarType.warning}>
+            {t("containerCopy.selectContainers.embeddingStatusLoadFailed")}
+          </MessageBar>
+        )}
         <AddCollectionPanel
           explorer={explorer}
           isCopyJobFlow={true}
           onSubmitSuccess={handleAddCollectionSuccess}
-          targetAccountOverride={targetAccountOverride}
+          targetAccountOverride={resolvedTargetAccountOverride}
           externalDatabaseOptions={destinationDatabases}
         />
       </Stack.Item>

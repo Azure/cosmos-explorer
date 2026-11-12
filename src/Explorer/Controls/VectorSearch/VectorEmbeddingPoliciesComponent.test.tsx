@@ -4,6 +4,7 @@ import { VectorEmbedding, VectorIndex } from "Contracts/DataModels";
 import React from "react";
 import * as CapabilityUtils from "Utils/CapabilityUtils";
 import { VectorEmbeddingPoliciesComponent } from "./VectorEmbeddingPoliciesComponent";
+import { isValidFoundryEndpoint } from "./VectorSearchUtils";
 
 // The embedding-source UI is gated behind the integrated-embedding capability.
 // Default the mock to `true` for the existing suites so they exercise the full UI;
@@ -141,6 +142,27 @@ describe("VectorEmbeddingPoliciesComponent - embedding source", () => {
     expect(screen.getByLabelText("Microsoft Foundry model name")).toBeInTheDocument();
     expect(screen.queryByText("At least one source path is required")).toBeNull();
     expect(screen.queryByText("Deployment name is required")).toBeNull();
+  });
+
+  test("identifies embedding inputs by their visible labels", () => {
+    expandSection();
+    expect(screen.getByRole("textbox", { name: /^Source paths/ })).toHaveAttribute(
+      "id",
+      "vector-policy-embeddingSource-sourcePaths-1",
+    );
+    expect(screen.getByRole("textbox", { name: /^Deployment name/ })).toHaveAttribute(
+      "id",
+      "vector-policy-embeddingSource-deploymentName-1",
+    );
+    expect(screen.getByRole("textbox", { name: /^Embedding model name/ })).toHaveAttribute(
+      "id",
+      "vector-policy-embeddingSource-modelName-1",
+    );
+    expect(screen.getByRole("textbox", { name: "Microsoft Foundry Endpoint" })).toHaveAttribute(
+      "id",
+      "vector-policy-embeddingSource-endpoint-1",
+    );
+    expect(screen.getByRole("combobox", { name: "Authentication type" })).toBeInTheDocument();
   });
 
   test("typing in one field surfaces required errors for the others", async () => {
@@ -347,6 +369,16 @@ describe("VectorEmbeddingPoliciesComponent - embedding source", () => {
     expect(sourcePaths).toBeDisabled();
     expect(endpoint).not.toBeDisabled();
 
+    for (const value of ["", "not-a-url"]) {
+      fireEvent.change(endpoint, { target: { value } });
+      await waitFor(() => {
+        const lastCall = existingOnChange.mock.calls[existingOnChange.mock.calls.length - 1];
+        expect(lastCall[2]).toBe(false);
+        expect(endpoint).toBeEnabled();
+        expect(sourcePaths).toBeDisabled();
+      });
+    }
+
     fireEvent.change(endpoint, { target: { value: "https://new.openai.azure.com" } });
     await waitFor(() => {
       const lastCall = existingOnChange.mock.calls[existingOnChange.mock.calls.length - 1];
@@ -355,34 +387,129 @@ describe("VectorEmbeddingPoliciesComponent - embedding source", () => {
     });
   });
 
-  test("existing vector policy without an embedding source cannot add one", () => {
-    const existingEmbedding: VectorEmbedding[] = [
-      {
-        path: "/vector5",
-        dataType: "float32",
-        distanceFunction: "cosine",
-        dimensions: 1536,
-      },
-    ];
-    const existingView = render(
-      <VectorEmbeddingPoliciesComponent
-        vectorEmbeddingsBaseline={existingEmbedding}
-        vectorEmbeddings={existingEmbedding}
-        vectorIndexes={[]}
-        onVectorEmbeddingChange={jest.fn()}
-      />,
-    );
+  test.each(["float32", "float16", "int8", "uint8"] as const)(
+    "existing %s vector policy without an embedding source cannot add one",
+    (dataType) => {
+      const existingEmbedding: VectorEmbedding[] = [
+        {
+          path: "/vector5",
+          dataType,
+          distanceFunction: "cosine",
+          dimensions: 1536,
+        },
+      ];
+      const existingView = render(
+        <VectorEmbeddingPoliciesComponent
+          vectorEmbeddingsBaseline={existingEmbedding}
+          vectorEmbeddings={existingEmbedding}
+          vectorIndexes={[]}
+          onVectorEmbeddingChange={jest.fn()}
+        />,
+      );
 
-    fireEvent.click(existingView.container.querySelector('[data-test="VectorEmbeddingSource/Section/1"]'));
+      fireEvent.click(existingView.container.querySelector('[data-test="VectorEmbeddingSource/Section/1"]'));
 
-    expect(existingView.container.querySelector("#vector-policy-embeddingSource-sourcePaths-1")).toBeDisabled();
-    expect(existingView.container.querySelector("#vector-policy-embeddingSource-deploymentName-1")).toBeDisabled();
-    expect(existingView.container.querySelector("#vector-policy-embeddingSource-modelName-1")).toBeDisabled();
-    expect(existingView.container.querySelector("#vector-policy-embeddingSource-authType-1")).toHaveAttribute(
-      "aria-disabled",
-      "true",
-    );
-    expect(existingView.container.querySelector("#vector-policy-embeddingSource-endpoint-1")).not.toBeDisabled();
+      expect(existingView.container.querySelector("#vector-policy-embeddingSource-sourcePaths-1")).toBeDisabled();
+      expect(existingView.container.querySelector("#vector-policy-embeddingSource-deploymentName-1")).toBeDisabled();
+      expect(existingView.container.querySelector("#vector-policy-embeddingSource-modelName-1")).toBeDisabled();
+      expect(existingView.container.querySelector("#vector-policy-embeddingSource-authType-1")).toHaveAttribute(
+        "aria-disabled",
+        "true",
+      );
+      expect(existingView.container.querySelector("#vector-policy-embeddingSource-endpoint-1")).toBeDisabled();
+    },
+  );
+});
+
+describe("VectorEmbeddingPoliciesComponent - preserve selected data type", () => {
+  test.each(["int8", "uint8"] as const)(
+    "preserves a new %s policy's type when its endpoint is edited and cleared",
+    (dataType) => {
+      const embeddings: VectorEmbedding[] = [
+        { path: "/vector", dataType, distanceFunction: "cosine", dimensions: 1536 },
+      ];
+      const onChange = jest.fn();
+      const view = render(
+        <VectorEmbeddingPoliciesComponent
+          vectorEmbeddingsBaseline={[]}
+          vectorEmbeddings={embeddings}
+          vectorIndexes={[]}
+          onVectorEmbeddingChange={onChange}
+        />,
+      );
+      fireEvent.click(screen.getByRole("button", { name: /Embedding Configuration/ }));
+      const endpoint = screen.getByRole("textbox", { name: "Microsoft Foundry Endpoint" });
+      expect(endpoint).toBeEnabled();
+
+      for (const value of ["not-a-url", "https://test.openai.azure.com", ""]) {
+        fireEvent.change(endpoint, { target: { value } });
+        const [policies, , valid] = onChange.mock.calls[onChange.mock.calls.length - 1];
+        expect(policies[0].dataType).toBe(dataType);
+        expect(valid).toBe(value === "");
+        expect(endpoint).toBeEnabled();
+        expect(view.container.querySelector("#vector-policy-path-1")).toBeEnabled();
+        expect(view.container.querySelector("#vector-policy-dimension-1")).toBeEnabled();
+        expect(screen.getByRole("textbox", { name: /^Source paths/ })).toBeEnabled();
+      }
+    },
+  );
+
+  test.each(["int8", "uint8"] as const)(
+    "shows an error for %s with an embedding source until the user selects a supported type",
+    (dataType) => {
+      const embeddings: VectorEmbedding[] = [
+        { path: "/vector", dataType, distanceFunction: "cosine", dimensions: 1536 },
+      ];
+      const onChange = jest.fn();
+      render(
+        <VectorEmbeddingPoliciesComponent
+          vectorEmbeddingsBaseline={[]}
+          vectorEmbeddings={embeddings}
+          onVectorEmbeddingChange={onChange}
+        />,
+      );
+      fireEvent.click(screen.getByRole("button", { name: /Embedding Configuration/ }));
+      fireEvent.change(screen.getByRole("textbox", { name: /^Source paths/ }), {
+        target: { value: "/description" },
+      });
+      fireEvent.change(screen.getByRole("textbox", { name: /^Deployment name/ }), {
+        target: { value: "my-deployment" },
+      });
+      fireEvent.change(screen.getByRole("textbox", { name: /^Embedding model name/ }), {
+        target: { value: "text-embedding-3-small" },
+      });
+      fireEvent.change(screen.getByRole("textbox", { name: "Microsoft Foundry Endpoint" }), {
+        target: { value: "https://test.cognitiveservices.azure.com/" },
+      });
+
+      const error = "Embedding generation supports only float32 or float16 data types";
+      expect(screen.getByText(error)).toBeVisible();
+      const [policies, , valid] = onChange.mock.calls[onChange.mock.calls.length - 1];
+      expect(policies[0].dataType).toBe(dataType);
+      expect(policies[0].embeddingSource).toBeDefined();
+      expect(valid).toBe(false);
+      const dataTypeDropdown = screen.getAllByRole("combobox")[0];
+      expect(dataTypeDropdown).toHaveTextContent(dataType);
+      fireEvent.click(dataTypeDropdown);
+      fireEvent.click(screen.getByRole("option", { name: "float32", exact: true }));
+
+      expect(screen.queryByText(error)).not.toBeInTheDocument();
+      const [updatedPolicies, , updatedValid] = onChange.mock.calls[onChange.mock.calls.length - 1];
+      expect(updatedPolicies[0].dataType).toBe("float32");
+      expect(updatedValid).toBe(true);
+    },
+  );
+});
+
+describe("embedding endpoint validation", () => {
+  test.each([
+    ["https://test.openai.azure.com/", true],
+    ["https://test.cognitiveservices.azure.com/", true],
+    ["http://test.cognitiveservices.azure.com/", false],
+    ["https://test.cognitiveservices.azure.com.example.org/", false],
+    ["https://testcognitiveservices.azure.com/", false],
+  ])("validates %s", (endpoint, valid) => {
+    expect(isValidFoundryEndpoint(endpoint as string)).toBe(valid);
   });
 });
 

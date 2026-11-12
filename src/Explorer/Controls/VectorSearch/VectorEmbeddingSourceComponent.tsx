@@ -15,6 +15,7 @@ export interface IVectorEmbeddingSourceComponentProps {
   index: number;
   vectorPath: string;
   disabled: boolean;
+  endpointDisabled: boolean;
   initialEmbeddingSource?: VectorEmbeddingSource;
   discardChanges?: boolean;
   onChange: (embeddingSource: VectorEmbeddingSource | undefined, isValid: boolean) => void;
@@ -24,12 +25,13 @@ const defaultAuthType: VectorEmbeddingSource["authType"] = "Entra";
 
 interface EmbeddingSourceLabelProps {
   disabled: boolean;
+  htmlFor: string;
   label: string;
   tooltip?: string;
 }
 
-const EmbeddingSourceLabel = ({ disabled, label, tooltip }: EmbeddingSourceLabelProps): JSX.Element => (
-  <Label disabled={disabled} styles={labelStyles}>
+const EmbeddingSourceLabel = ({ disabled, htmlFor, label, tooltip }: EmbeddingSourceLabelProps): JSX.Element => (
+  <Label disabled={disabled} htmlFor={htmlFor} styles={labelStyles}>
     {label}
     {tooltip && (
       <TooltipHost content={tooltip} styles={{ root: { display: "inline-block", marginLeft: 4 } }}>
@@ -81,6 +83,7 @@ export const VectorEmbeddingSourceComponent: FunctionComponent<IVectorEmbeddingS
   index,
   vectorPath,
   disabled,
+  endpointDisabled,
   initialEmbeddingSource,
   discardChanges,
   onChange,
@@ -155,6 +158,7 @@ export const VectorEmbeddingSourceComponent: FunctionComponent<IVectorEmbeddingS
           <Stack>
             <EmbeddingSourceLabel
               disabled={disabled}
+              htmlFor={`vector-policy-embeddingSource-sourcePaths-${suffix}`}
               label={t(Keys.controls.vectorEmbeddingPolicies.sourcePaths)}
               tooltip={t(Keys.controls.vectorEmbeddingPolicies.sourcePathsTooltip)}
             />
@@ -172,6 +176,7 @@ export const VectorEmbeddingSourceComponent: FunctionComponent<IVectorEmbeddingS
           <Stack>
             <EmbeddingSourceLabel
               disabled={disabled}
+              htmlFor={`vector-policy-embeddingSource-deploymentName-${suffix}`}
               label={t(Keys.controls.vectorEmbeddingPolicies.deploymentName)}
               tooltip={t(Keys.controls.vectorEmbeddingPolicies.deploymentNameTooltip)}
             />
@@ -189,6 +194,7 @@ export const VectorEmbeddingSourceComponent: FunctionComponent<IVectorEmbeddingS
           <Stack>
             <EmbeddingSourceLabel
               disabled={disabled}
+              htmlFor={`vector-policy-embeddingSource-modelName-${suffix}`}
               label={t(Keys.controls.vectorEmbeddingPolicies.modelName)}
               tooltip={t(Keys.controls.vectorEmbeddingPolicies.modelNameTooltip)}
             />
@@ -204,11 +210,15 @@ export const VectorEmbeddingSourceComponent: FunctionComponent<IVectorEmbeddingS
             />
           </Stack>
           <Stack>
-            <Label disabled={false} styles={labelStyles}>
+            <Label
+              disabled={endpointDisabled}
+              htmlFor={`vector-policy-embeddingSource-endpoint-${suffix}`}
+              styles={labelStyles}
+            >
               {t(Keys.controls.vectorEmbeddingPolicies.endpoint)}
             </Label>
             <TextField
-              disabled={false}
+              disabled={endpointDisabled}
               id={`vector-policy-embeddingSource-endpoint-${suffix}`}
               data-test={`VectorEmbeddingSource/Endpoint/${suffix}`}
               placeholder={t(Keys.controls.vectorEmbeddingPolicies.endpointPlaceholder)}
@@ -224,6 +234,7 @@ export const VectorEmbeddingSourceComponent: FunctionComponent<IVectorEmbeddingS
             </Label>
             <Dropdown
               disabled={disabled}
+              ariaLabel={t(Keys.controls.vectorEmbeddingPolicies.authType)}
               id={`vector-policy-embeddingSource-authType-${suffix}`}
               data-test={`VectorEmbeddingSource/AuthType/${suffix}`}
               styles={dropdownStyles}

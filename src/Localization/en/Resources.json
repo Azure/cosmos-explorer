@@ -1147,7 +1147,8 @@
       "createNewContainerSubHeading": "Configure the properties for the new container on destination account \"{{accountName}}\".",
       "createNewContainerSubHeadingDefault": "Configure the properties for the new container.",
       "createContainerButtonLabel": "Create a new container",
-      "createContainerHeading": "Create new container"
+      "createContainerHeading": "Create new container",
+      "embeddingStatusLoadFailed": "Unable to check whether integrated embedding is enabled for the destination account. You can create a container without embedding configuration, or close and reopen this pane to retry."
     },
     "preview": {
       "jobNameLabel": "Job name",
