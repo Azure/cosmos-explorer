@@ -51,7 +51,7 @@ export class CosmosDBShellHandler extends AbstractShellHandler {
    *    requires the .NET SDK 10.0+, which the Azure Cloud Shell host does not
    *    ship by default.
    * 3. Install the CosmosDBShell global tool if it is not already available, or
-   *    update it to the latest release when it is (so an older cached install in
+   *    update it to the latest stable release when it is (so an older cached install in
    *    the persistent Cloud Shell $HOME picks up newer connect options).
    * 4. Persist the PATH/DOTNET_ROOT changes for future sessions.
    *
@@ -71,9 +71,9 @@ export class CosmosDBShellHandler extends AbstractShellHandler {
       )}; curl -sSL https://dot.net/v1/dotnet-install.sh | bash -s -- --channel 10.0 --install-dir $HOME/.dotnet; fi`,
       `if ! command -v cosmosdbshell &> /dev/null; then ${this._getProgressCommand(
         "cosmosDBShell.installingShell",
-      )}; dotnet tool install --global CosmosDBShell --prerelease; else ${this._getProgressCommand(
+      )}; dotnet tool install --global CosmosDBShell; else ${this._getProgressCommand(
         "cosmosDBShell.updatingShell",
-      )}; dotnet tool update --global CosmosDBShell --prerelease; fi`,
+      )}; dotnet tool update --global CosmosDBShell; fi`,
       "grep -qxF 'export DOTNET_ROOT=$HOME/.dotnet' ~/.bashrc || echo 'export DOTNET_ROOT=$HOME/.dotnet' >> ~/.bashrc",
       "grep -qxF 'export PATH=$HOME/.dotnet:$HOME/.dotnet/tools:$PATH' ~/.bashrc || echo 'export PATH=$HOME/.dotnet:$HOME/.dotnet/tools:$PATH' >> ~/.bashrc",
     ];
