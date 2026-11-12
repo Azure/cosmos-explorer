@@ -36,10 +36,8 @@ export async function getAzureCLICredentialsToken(): Promise<string> {
 export enum TestAccount {
   Tables = "Tables",
   Cassandra = "Cassandra",
-  CassandraConnectionString = "CassandraConnectionString",
   Gremlin = "Gremlin",
   Mongo = "Mongo",
-  MongoConnectionString = "MongoConnectionString",
   MongoConnectionStringPublicNetworkAccessDisabled = "MongoConnectionStringPublicNetworkAccessDisabled",
   MongoReadonly = "MongoReadOnly",
   Mongo32 = "Mongo32",
@@ -63,14 +61,10 @@ export function getDefaultAccountName(accountType: TestAccount): string {
       return `${accountNamePrefix}-de-test-table-1`;
     case TestAccount.Cassandra:
       return `${accountNamePrefix}-de-test-cassandra-1`;
-    case TestAccount.CassandraConnectionString:
-      return `${accountNamePrefix}-de-test-cassandra-connstring-1`;
     case TestAccount.Gremlin:
       return `${accountNamePrefix}-de-test-gremlin-1`;
     case TestAccount.Mongo:
       return `${accountNamePrefix}-de-test-mongo-1`;
-    case TestAccount.MongoConnectionString:
-      return `${accountNamePrefix}-de-test-mongo-connstring-1`;
     case TestAccount.MongoConnectionStringPublicNetworkAccessDisabled:
       return `${accountNamePrefix}-de-test-mongo-connstring-nopublic-1`;
     case TestAccount.MongoReadonly:
@@ -120,19 +114,12 @@ function tryGetStandardName(accountType: TestAccount) {
   return undefined;
 }
 
-type ConnectionStringTestAccount =
-  | TestAccount.SQL
-  | TestAccount.Tables
-  | TestAccount.Cassandra
-  | TestAccount.Gremlin
-  | TestAccount.Mongo;
+type ConnectionStringTestAccount = TestAccount.SQL | TestAccount.Tables | TestAccount.Gremlin;
 
 const connectionStringAccountTypes: Record<ConnectionStringTestAccount, TestAccount> = {
   [TestAccount.SQL]: TestAccount.SQLConnectionString,
   [TestAccount.Tables]: TestAccount.TableConnectionString,
-  [TestAccount.Cassandra]: TestAccount.CassandraConnectionString,
   [TestAccount.Gremlin]: TestAccount.GremlinConnectionString,
-  [TestAccount.Mongo]: TestAccount.MongoConnectionString,
 };
 
 export function getAccountName(accountType: TestAccount): string {
@@ -264,8 +251,6 @@ export async function getTestExplorerUrl(accountType: TestAccount, options?: Tes
 
     case TestAccount.SQLConnectionString:
     case TestAccount.SQLConnectionStringPublicNetworkAccessDisabled:
-    case TestAccount.CassandraConnectionString:
-    case TestAccount.MongoConnectionString:
     case TestAccount.MongoConnectionStringPublicNetworkAccessDisabled:
     case TestAccount.TableConnectionString:
     case TestAccount.GremlinConnectionString:
