@@ -47,6 +47,62 @@ describe("AddCollectionPanel", () => {
     });
   });
 
+  describe("embedding configuration account selection", () => {
+    const originalContext = { databaseAccount: userContext.databaseAccount, apiType: userContext.apiType };
+    const capabilities: Capability[] = [{ name: "EnableNoSQLVectorSearch", description: "" }];
+
+    beforeEach(() => {
+      jest.spyOn(AddCollectionPanelUtility, "scrollToSection").mockImplementation(() => undefined);
+    });
+
+    afterEach(() => {
+      updateUserContext(originalContext);
+      jest.restoreAllMocks();
+    });
+
+    it.each([
+      { currentEnabled: true, targetEnabled: false, visible: false },
+      { currentEnabled: false, targetEnabled: true, visible: true },
+      { currentEnabled: true, targetEnabled: undefined, visible: true },
+      { currentEnabled: false, targetEnabled: undefined, visible: false },
+    ])(
+      "uses destination settings when supplied and current settings otherwise: %j",
+      ({ currentEnabled, targetEnabled, visible }) => {
+        updateUserContext({
+          apiType: "SQL",
+          databaseAccount: {
+            id: "current-account",
+            name: "current-account",
+            location: "East US",
+            type: "Microsoft.DocumentDB/databaseAccounts",
+            kind: "GlobalDocumentDB",
+            properties: { capabilities, enableEmbeddingGenerator: currentEnabled },
+          },
+        });
+        const targetAccountOverride: AccountOverride | undefined =
+          targetEnabled === undefined
+            ? undefined
+            : {
+                subscriptionId: "target-sub",
+                resourceGroup: "target-rg",
+                accountName: "target-account",
+                capabilities,
+                enableEmbeddingGenerator: targetEnabled,
+              };
+        render(
+          <AddCollectionPanel
+            {...props}
+            targetAccountOverride={targetAccountOverride}
+            isCopyJobFlow={!!targetAccountOverride}
+          />,
+        );
+        fireEvent.click(screen.getByRole("button", { name: "Container Vector Policy" }));
+        fireEvent.click(screen.getByRole("button", { name: "Add vector embedding" }));
+        expect(screen.queryAllByRole("button", { name: /Embedding Configuration/ })).toHaveLength(visible ? 1 : 0);
+      },
+    );
+  });
+
   describe("isCopyJobFlow prop", () => {
     it("should render with isCopyJobFlow=true", () => {
       const wrapper = shallow(<AddCollectionPanel {...props} isCopyJobFlow={true} />);

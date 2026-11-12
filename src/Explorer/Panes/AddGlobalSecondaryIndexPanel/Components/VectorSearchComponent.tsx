@@ -52,7 +52,7 @@ export const VectorSearchComponent = (props: VectorSearchComponentProps): JSX.El
                 setVectorIndexingPolicy(vectorIndexingPolicy);
                 setVectorPolicyValidated(vectorPolicyValidated);
               }}
-              isGlobalSecondaryIndexTarget={isGlobalSecondaryIndexTarget}
+              isGlobalSecondaryIndex={isGlobalSecondaryIndexTarget}
             />
           </Stack>
         </Stack>
