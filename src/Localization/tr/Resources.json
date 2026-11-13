@@ -38,6 +38,12 @@
     "off": "Kapalı",
     "preview": "Önizleme"
   },
+  "cosmosDBShell": {
+    "installingSdk": ".NET SDK 10 indiriliyor ve yükleniyor. İlk kurulum birkaç dakika sürebilir.",
+    "installingShell": "Cosmos DB Shell yükleniyor...",
+    "updatingShell": "Cosmos DB Shell güncelleştirmeleri denetleniyor...",
+    "connecting": "Cosmos DB hesabınıza bağlanılıyor"
+  },
   "splashScreen": {
     "title": {
       "default": "Azure Cosmos DB'ye hoş geldiniz",
@@ -990,6 +996,8 @@
       "quantizationByteSizeTooltipContainerName": "kapsayıcı",
       "quantizationByteSizeTooltipGlobalSecondaryIndexName": "global ikincil endeks",
       "quantizerType": "Bölme türü",
+      "quantizerTypeProduct": "Ürün",
+      "quantizerTypeSpherical": "Küresel",
       "quantizerTypeTooltip": "Vektör dizini tarafından kullanılan bölme yöntemi.",
       "indexingSearchListSize": "Dizin arama listesi boyutu",
       "vectorIndexShardKey": "Vektör dizini parça anahtarı",
