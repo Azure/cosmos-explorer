@@ -40,12 +40,13 @@ describe("CosmosDBShellHandler", () => {
       expect(cosmosDBShellHandler.getShellName()).toBe("Cosmos DB");
     });
 
-    it("should install the CosmosDBShell tool in setup commands", () => {
+    it("should install and update only stable CosmosDBShell releases in setup commands", () => {
       const commands = cosmosDBShellHandler.getSetUpCommands();
 
       expect(Array.isArray(commands)).toBe(true);
-      expect(commands.some((c) => c.includes("dotnet tool install --global CosmosDBShell --prerelease"))).toBe(true);
-      expect(commands.some((c) => c.includes("dotnet tool update --global CosmosDBShell --prerelease"))).toBe(true);
+      expect(commands.some((c) => c.includes("dotnet tool install --global CosmosDBShell;"))).toBe(true);
+      expect(commands.some((c) => c.includes("dotnet tool update --global CosmosDBShell;"))).toBe(true);
+      expect(commands.some((c) => c.includes("--prerelease"))).toBe(false);
       expect(commands.some((c) => c.includes("$HOME/.dotnet/tools"))).toBe(true);
     });
 
