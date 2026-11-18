@@ -6,10 +6,9 @@ import {
   DataExplorer,
   ONE_MINUTE_MS,
   TestAccount,
-  TestAuthType,
   generateUniqueName,
-  getAccountName,
   getAzureCLICredentials,
+  getConnectionStringAccountName,
   resourceGroupName,
   subscriptionId,
 } from "../fx";
@@ -26,7 +25,7 @@ test.describe("Tables account using connection string login", () => {
   test.beforeAll("Seed Test Table", async () => {
     const credentials = getAzureCLICredentials();
     const armClient = new CosmosDBManagementClient(credentials, subscriptionId);
-    const accountName = getAccountName(TestAccount.Tables, TestAuthType.ConnectionString);
+    const accountName = getConnectionStringAccountName(TestAccount.Tables);
     const account = await armClient.databaseAccounts.get(resourceGroupName, accountName);
     const keys = await armClient.databaseAccounts.listKeys(resourceGroupName, accountName);
 
@@ -50,7 +49,7 @@ test.describe("Tables account using connection string login", () => {
   test("reads an entity after connection string login", async ({ page }) => {
     const credentials = getAzureCLICredentials();
     const armClient = new CosmosDBManagementClient(credentials, subscriptionId);
-    const accountName = getAccountName(TestAccount.Tables, TestAuthType.ConnectionString);
+    const accountName = getConnectionStringAccountName(TestAccount.Tables);
     const { connectionStrings = [] } = await armClient.databaseAccounts.listConnectionStrings(
       resourceGroupName,
       accountName,
