@@ -31,6 +31,27 @@ describe("AddGlobalSecondaryIndexPanel", () => {
     expect(form).toBeDefined();
   });
 
+  it("shows partition key guidance and preserves hierarchical key editing", async () => {
+    jest.spyOn(AddCollectionPanelUtility, "scrollToSection").mockImplementation(() => undefined);
+    try {
+      render(<AddGlobalSecondaryIndexPanel {...props} />);
+
+      expect(await screen.findByText("Use Hierarchical Partition Key with /id as last level.")).toBeVisible();
+      const firstKey = screen.getByPlaceholderText(
+        "Required - first partition key e.g., /TenantId (Hierarchical Partition Key with /id as last level)",
+      );
+      fireEvent.change(firstKey, { target: { value: "/TenantId" } });
+      fireEvent.click(screen.getByRole("button", { name: "Add hierarchical partition key" }));
+      const lastKey = screen.getByPlaceholderText("second partition key e.g., /UserId");
+      fireEvent.change(lastKey, { target: { value: "/id" } });
+
+      expect(firstKey).toHaveValue("/TenantId");
+      expect(lastKey).toHaveValue("/id");
+    } finally {
+      jest.restoreAllMocks();
+    }
+  });
+
   describe("analytical store visibility", () => {
     const originalContext = { databaseAccount: userContext.databaseAccount, apiType: userContext.apiType };
     const account: DatabaseAccount = {
