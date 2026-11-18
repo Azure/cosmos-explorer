@@ -78,7 +78,7 @@ export const PartitionKeyComponent = (props: PartitionKeyComponentProps): JSX.El
         required
         size={40}
         className="panelTextField"
-        placeholder={t("panes.addGlobalSecondaryIndex.partitionKeyPlaceholder")}
+        placeholder={getPartitionKeyPlaceHolder()}
         aria-label={getPartitionKeyName()}
         pattern=".*"
         value={partitionKey}
