@@ -34,3 +34,12 @@ export const isFullTextSearchPreviewFeaturesEnabled = (targetAccountOverride?: A
     isCapabilityEnabled(Constants.CapabilityNames.EnableNoSQLFullTextSearchPreviewFeatures, targetAccountOverride)
   );
 };
+
+// Gates the `embeddingSource` block inside a Container Vector Policy.
+// Uses the top-level `enableEmbeddingGenerator` boolean (not capabilities[]).
+export const isIntegratedEmbeddingEnabled = (targetAccountOverride?: AccountOverride): boolean => {
+  const { databaseAccount } = userContext;
+  const enableEmbeddingGenerator =
+    targetAccountOverride?.enableEmbeddingGenerator ?? databaseAccount?.properties?.enableEmbeddingGenerator;
+  return isVectorSearchEnabled(targetAccountOverride) && enableEmbeddingGenerator === true;
+};

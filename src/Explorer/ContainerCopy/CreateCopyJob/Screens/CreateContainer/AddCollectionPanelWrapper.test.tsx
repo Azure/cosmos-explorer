@@ -1,28 +1,37 @@
 import "@testing-library/jest-dom";
-import { render, screen, waitFor } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
+import { readDatabasesWithARM } from "Common/dataAccess/readDatabases";
+import { configContext } from "ConfigContext";
+import { AccountOverride, DatabaseAccount } from "Contracts/DataModels";
 import { CopyJobMigrationType } from "Explorer/ContainerCopy/Enums/CopyJobEnums";
 import { CopyJobContextProviderType } from "Explorer/ContainerCopy/Types/CopyJobTypes";
 import Explorer from "Explorer/Explorer";
 import { useSidePanel } from "hooks/useSidePanel";
 import { Keys, t } from "Localization";
 import React from "react";
+import { updateUserContext, userContext } from "UserContext";
+import { armRequest } from "Utils/arm/request";
 import { useCopyJobContext } from "../../../Context/CopyJobContext";
 import AddCollectionPanelWrapper from "./AddCollectionPanelWrapper";
 
 jest.mock("hooks/useSidePanel");
 jest.mock("../../../Context/CopyJobContext");
+jest.mock("Common/dataAccess/readDatabases", () => ({ readDatabasesWithARM: jest.fn() }));
+jest.mock("Utils/arm/request", () => ({ armRequest: jest.fn() }));
 
 jest.mock("../../../../Panes/AddCollectionPanel/AddCollectionPanel", () => ({
   AddCollectionPanel: ({
     explorer,
     isCopyJobFlow,
     onSubmitSuccess,
+    targetAccountOverride,
   }: {
     explorer?: Explorer;
     isCopyJobFlow: boolean;
     onSubmitSuccess: (data: { databaseId: string; collectionId: string }) => void;
+    targetAccountOverride?: AccountOverride;
   }) => (
-    <div data-testid="add-collection-panel">
+    <div data-testid="add-collection-panel" data-target-account={JSON.stringify(targetAccountOverride)}>
       <div data-testid="explorer-prop">{explorer ? "explorer-present" : "no-explorer"}</div>
       <div data-testid="copy-job-flow">{isCopyJobFlow ? "true" : "false"}</div>
       <button
@@ -90,8 +99,32 @@ describe("AddCollectionPanelWrapper", () => {
     explorer: mockExplorer,
   } as unknown as CopyJobContextProviderType;
 
+  const selectDestinationAccount = (accountName = "target-account", properties: DatabaseAccount["properties"] = {}) => {
+    const account: DatabaseAccount = {
+      id: `/subscriptions/target-sub/resourceGroups/target-rg/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}`,
+      name: accountName,
+      location: "East US",
+      type: "Microsoft.DocumentDB/databaseAccounts",
+      kind: "GlobalDocumentDB",
+      properties,
+    };
+    mockUseCopyJobContext.mockReturnValue({
+      ...mockCopyJobContextValue,
+      copyJobState: {
+        ...mockCopyJobContextValue.copyJobState,
+        target: { ...mockCopyJobContextValue.copyJobState.target, account },
+      },
+    });
+    return account;
+  };
+
+  const getTargetAccountOverride = (): AccountOverride =>
+    JSON.parse(screen.getByTestId("add-collection-panel").getAttribute("data-target-account"));
+
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.mocked(readDatabasesWithARM).mockReset().mockResolvedValue([]);
+    jest.mocked(armRequest).mockReset().mockResolvedValue({ properties: {} });
 
     mockUseSidePanel.mockReturnValue(mockSidePanelState);
     mockUseSidePanel.getState = jest.fn().mockReturnValue(mockSidePanelState);
@@ -166,6 +199,170 @@ describe("AddCollectionPanelWrapper", () => {
   });
 
   describe("AddCollectionPanel Integration", () => {
+    it.each([true, false, undefined])(
+      "uses the ARM embedding flag %s when Resource Graph omits it",
+      async (enableEmbeddingGenerator) => {
+        const account = selectDestinationAccount("target-account", {
+          capabilities: [{ name: "EnableNoSQLVectorSearch", description: "" }],
+          enableFreeTier: true,
+          enableAnalyticalStorage: true,
+        });
+        jest.mocked(armRequest).mockResolvedValue({ properties: { enableEmbeddingGenerator } });
+        render(<AddCollectionPanelWrapper />);
+        await screen.findByTestId("add-collection-panel");
+
+        expect(armRequest).toHaveBeenCalledWith({
+          host: configContext.ARM_ENDPOINT,
+          path: account.id,
+          method: "GET",
+          apiVersion: "2026-04-01-preview",
+        });
+        expect(getTargetAccountOverride()).toEqual(
+          expect.objectContaining({
+            subscriptionId: "target-sub",
+            resourceGroup: "target-rg",
+            accountName: "target-account",
+            ...account.properties,
+            enableEmbeddingGenerator: enableEmbeddingGenerator ?? false,
+          }),
+        );
+      },
+    );
+
+    it("fetches destination metadata through the ARM client with the embedding-capable API version", async () => {
+      const account = selectDestinationAccount();
+      const originalFetch = window.fetch;
+      const originalToken = userContext.authorizationToken;
+      window.fetch = jest.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({ properties: { enableEmbeddingGenerator: true } }),
+      });
+      updateUserContext({ authorizationToken: "test-token" });
+      jest
+        .mocked(armRequest)
+        .mockImplementation(jest.requireActual<typeof import("Utils/arm/request")>("Utils/arm/request").armRequest);
+      try {
+        render(<AddCollectionPanelWrapper />);
+        await screen.findByTestId("add-collection-panel");
+        const url = new URL(account.id, configContext.ARM_ENDPOINT);
+        url.searchParams.set("api-version", "2026-04-01-preview");
+        expect(window.fetch).toHaveBeenCalledWith(
+          url.href,
+          expect.objectContaining({ method: "GET", headers: expect.objectContaining({ Authorization: "test-token" }) }),
+        );
+        expect(getTargetAccountOverride().enableEmbeddingGenerator).toBe(true);
+      } finally {
+        window.fetch = originalFetch;
+        updateUserContext({ authorizationToken: originalToken });
+      }
+    });
+
+    it("refreshes the same destination instead of trusting a stale Resource Graph flag", async () => {
+      selectDestinationAccount("target-account", { enableEmbeddingGenerator: true });
+      jest.mocked(armRequest).mockResolvedValue({ properties: { enableEmbeddingGenerator: false } });
+      const view = render(<AddCollectionPanelWrapper />);
+      await screen.findByTestId("add-collection-panel");
+      expect(getTargetAccountOverride().enableEmbeddingGenerator).toBe(false);
+
+      selectDestinationAccount("target-account", { enableEmbeddingGenerator: false });
+      jest.mocked(armRequest).mockResolvedValue({ properties: { enableEmbeddingGenerator: true } });
+      view.rerender(<AddCollectionPanelWrapper />);
+      await screen.findByTestId("add-collection-panel");
+      expect(getTargetAccountOverride().enableEmbeddingGenerator).toBe(true);
+    });
+
+    it("waits for destination metadata before displaying the creation form", async () => {
+      selectDestinationAccount();
+      let resolveAccount: (account: Partial<DatabaseAccount>) => void;
+      jest.mocked(armRequest).mockReturnValue(
+        new Promise((resolve) => {
+          resolveAccount = resolve;
+        }),
+      );
+      render(<AddCollectionPanelWrapper />);
+      await waitFor(() => expect(readDatabasesWithARM).toHaveBeenCalled());
+      expect(screen.queryByTestId("add-collection-panel")).not.toBeInTheDocument();
+
+      await act(async () => resolveAccount({ properties: { enableEmbeddingGenerator: true } }));
+      expect(getTargetAccountOverride().enableEmbeddingGenerator).toBe(true);
+    });
+
+    it.each(["success", "failure"])("ignores a late %s from the previous destination", async (outcome) => {
+      selectDestinationAccount("first-account");
+      let resolveFirst: (account: Partial<DatabaseAccount>) => void;
+      let rejectFirst: (error: Error) => void;
+      jest.mocked(armRequest).mockReturnValueOnce(
+        new Promise((resolve, reject) => {
+          resolveFirst = resolve;
+          rejectFirst = reject;
+        }),
+      );
+      const view = render(<AddCollectionPanelWrapper />);
+
+      selectDestinationAccount("second-account");
+      jest.mocked(armRequest).mockResolvedValue({ properties: { enableEmbeddingGenerator: true } });
+      view.rerender(<AddCollectionPanelWrapper />);
+      await screen.findByTestId("add-collection-panel");
+      await act(async () => {
+        if (outcome === "success") {
+          resolveFirst({ properties: { enableEmbeddingGenerator: false } });
+        } else {
+          rejectFirst(new Error("Previous account lookup failed"));
+        }
+      });
+
+      expect(getTargetAccountOverride()).toEqual(
+        expect.objectContaining({ accountName: "second-account", enableEmbeddingGenerator: true }),
+      );
+      expect(screen.queryByText(t("containerCopy.selectContainers.embeddingStatusLoadFailed"))).not.toBeInTheDocument();
+    });
+
+    it("does not display the previous destination's flag while the next account loads", async () => {
+      selectDestinationAccount("first-account");
+      jest.mocked(armRequest).mockResolvedValue({ properties: { enableEmbeddingGenerator: true } });
+      const view = render(<AddCollectionPanelWrapper />);
+      await screen.findByTestId("add-collection-panel");
+
+      selectDestinationAccount("second-account");
+      let resolveSecond: (account: Partial<DatabaseAccount>) => void;
+      jest.mocked(armRequest).mockReturnValueOnce(
+        new Promise((resolve) => {
+          resolveSecond = resolve;
+        }),
+      );
+      view.rerender(<AddCollectionPanelWrapper />);
+      expect(screen.queryByTestId("add-collection-panel")).not.toBeInTheDocument();
+
+      await act(async () => resolveSecond({ properties: { enableEmbeddingGenerator: false } }));
+      expect(getTargetAccountOverride()).toEqual(
+        expect.objectContaining({ accountName: "second-account", enableEmbeddingGenerator: false }),
+      );
+    });
+
+    it("preserves ordinary creation and warns when the embedding lookup fails", async () => {
+      selectDestinationAccount("target-account", { enableEmbeddingGenerator: true });
+      jest.mocked(armRequest).mockRejectedValue(new Error("Unsupported API version"));
+      render(<AddCollectionPanelWrapper />);
+      await screen.findByTestId("add-collection-panel");
+
+      expect(getTargetAccountOverride().enableEmbeddingGenerator).toBe(false);
+      expect(
+        await screen.findByText(t("containerCopy.selectContainers.embeddingStatusLoadFailed")),
+      ).toBeInTheDocument();
+      screen.getByTestId("submit-button").click();
+      expect(mockSetCopyJobState).toHaveBeenCalledTimes(1);
+    });
+
+    it("preserves database permission errors even if embedding metadata loads", async () => {
+      selectDestinationAccount();
+      jest.mocked(armRequest).mockResolvedValue({ properties: { enableEmbeddingGenerator: true } });
+      jest.mocked(readDatabasesWithARM).mockRejectedValue(new Error("AuthorizationFailed"));
+      render(<AddCollectionPanelWrapper />);
+
+      expect(await screen.findByText(/You do not have sufficient permissions/)).toBeInTheDocument();
+      expect(screen.queryByTestId("add-collection-panel")).not.toBeInTheDocument();
+    });
+
     it("should pass explorer prop to AddCollectionPanel", () => {
       render(<AddCollectionPanelWrapper explorer={mockExplorer} />);
 
