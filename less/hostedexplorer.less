@@ -314,6 +314,52 @@ body {
             height: 100vh;
             background-color: @BaseLight;
         }
+
+    }
+
+    header .items .trialControls {
+        display: flex;
+        margin-left: auto;
+        flex-shrink: 0;
+        .trialTimeRemaining {
+            align-self: center;
+            color: @BaseLight;
+            font-size: 12px;
+            padding: 0 @NavMediumSpace;
+        }
+        button, a[role="button"] {
+            color: @BaseLight;
+            height: @HeaderHeight;
+            &:hover { background-color: @BaseHigh; }
+            &:focus-visible { outline: 2px solid @BaseLight; outline-offset: -3px; }
+            &:disabled, &[aria-disabled="true"] { color: @BaseMedium; }
+        }
+        + .feedbackConnectSettingIcons { margin-left: 0; }
+    }
+
+    .screenReaderOnly {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+    }
+
+    @media (max-width: 700px) {
+        header .items.hasTrialControls .cosmosDBTitle {
+            min-width: 0;
+            overflow: hidden;
+            .title, .accontSplitter, .serviceTitle, .chevronRight { display: none; }
+            .accountSwitchComponentContainer { overflow: hidden; text-overflow: ellipsis; }
+        }
+        header .items .trialControls button,
+        header .items .trialControls a[role="button"] { min-width: 44px; padding: 0 6px; }
+    }
+
+    @media (forced-colors: active) {
+        header .items .trialControls button,
+        header .items .trialControls a[role="button"] { color: ButtonText; }
     }
 
     /************* Refactor below styles to avoid redundancy ****************/

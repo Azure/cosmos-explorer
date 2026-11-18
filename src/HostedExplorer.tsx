@@ -8,7 +8,8 @@ import "../less/hostedexplorer.less";
 import { AuthType } from "./AuthType";
 import { logError } from "./Common/Logger";
 import { fetchAccessData, fetchEncryptedToken } from "./Common/PortalBackendClient";
-import { AccessInputMetadata, DatabaseAccount } from "./Contracts/DataModels";
+import { configContext } from "./ConfigContext";
+import { AccessInputMetadata, ApiKind, DatabaseAccount } from "./Contracts/DataModels";
 import "./Explorer/Menus/NavBar/MeControlComponent.less";
 import { HostedExplorerChildFrame } from "./HostedExplorerChildFrame";
 import { AccountSwitcher } from "./Platform/Hosted/Components/AccountSwitcher";
@@ -17,6 +18,7 @@ import { DirectoryPickerPanel } from "./Platform/Hosted/Components/DirectoryPick
 import { FeedbackCommandButton } from "./Platform/Hosted/Components/FeedbackCommandButton";
 import { MeControl } from "./Platform/Hosted/Components/MeControl";
 import { SignInButton } from "./Platform/Hosted/Components/SignInButton";
+import { TrialControls } from "./Platform/Hosted/TryCosmosDB/TrialControls";
 import "./Platform/Hosted/ConnectScreen.less";
 import { parseConnectionString } from "./Platform/Hosted/Helpers/ConnectionStringParser";
 import { isResourceTokenConnectionString } from "./Platform/Hosted/Helpers/ResourceTokenUtils";
@@ -24,6 +26,8 @@ import {
   extractMasterKeyFromDirectLoginConnectionString,
   isDirectConnectionStringLoginApi,
 } from "./Platform/Hosted/HostedUtils";
+import { isTrialOwnerAuth, TrialOwnerAuth } from "./Platform/Hosted/TryCosmosDB/TryCosmosDB";
+import { useTrialManagement } from "./Platform/Hosted/TryCosmosDB/useTrialManagement";
 import "./Shared/appInsights";
 import { allowedHostedExplorerEndpoints } from "./Utils/EndpointUtils";
 import { useAADAuth } from "./hooks/useAADAuth";
@@ -54,8 +58,29 @@ const App: React.FunctionComponent = () => {
   const [databaseAccount, setDatabaseAccount] = React.useState<DatabaseAccount>();
   const [authType, setAuthType] = React.useState<AuthType>(encryptedToken ? AuthType.EncryptedToken : undefined);
   const [connectionString, setConnectionString] = React.useState<string>();
+  const [ownerAuth, setOwnerAuth] = React.useState<TrialOwnerAuth>();
+  const ownerConnection = React.useRef<string>();
 
   const ref = React.useRef<HTMLIFrameElement>();
+  React.useEffect(() => {
+    if (ownerConnection.current !== connectionString) {
+      setOwnerAuth(undefined);
+      ownerConnection.current = undefined;
+    }
+  }, [connectionString]);
+  React.useEffect(() => {
+    if (ownerAuth && accountMetadata && ownerAuth.accountName !== accountMetadata.accountName) {
+      setOwnerAuth(undefined);
+    }
+  }, [ownerAuth, accountMetadata]);
+  const management = useTrialManagement({
+    enabled: authType === AuthType.ConnectionString && accountMetadata?.apiKind === ApiKind.SQL,
+    connectionString,
+    accountName: accountMetadata?.accountName,
+    backendEndpoint: configContext.PORTAL_BACKEND_ENDPOINT,
+    ownerAuth,
+    onAuthRejected: () => setOwnerAuth(undefined),
+  });
 
   const connectWithConnectionString = React.useCallback(
     (connStr: string) => {
@@ -114,7 +139,26 @@ const App: React.FunctionComponent = () => {
       }
       if (event.data?.type === MSG_CONNECTION_STRING) {
         const connStr: string = event.data.connectionString;
-        if (parseConnectionString(connStr)) {
+        const metadata = typeof connStr === "string" ? parseConnectionString(connStr) : undefined;
+        if (metadata) {
+          if (
+            metadata.apiKind === ApiKind.SQL &&
+            !authType &&
+            window.opener &&
+            event.source === window.opener &&
+            isTrialOwnerAuth(event.data.ownerAuth)
+          ) {
+            const auth = event.data.ownerAuth;
+            ownerConnection.current = connStr;
+            setOwnerAuth({
+              provider: auth.provider,
+              token: auth.token,
+              expiresAt: auth.expiresAt,
+              accountName: auth.accountName,
+              resourceGroupName: auth.resourceGroupName,
+              backendEndpoint: auth.backendEndpoint,
+            });
+          }
           connectWithConnectionString(connStr);
         }
       }
@@ -122,7 +166,7 @@ const App: React.FunctionComponent = () => {
 
     window.addEventListener("message", handler);
     return () => window.removeEventListener("message", handler);
-  }, [connectWithConnectionString]);
+  }, [connectWithConnectionString, authType]);
 
   React.useEffect(() => {
     // If ref.current is undefined no iframe has been rendered
@@ -167,7 +211,7 @@ const App: React.FunctionComponent = () => {
   return (
     <>
       <header>
-        <div className="items" role="menubar">
+        <div className={`items${management.resource || management.error ? " hasTrialControls" : ""}`} role="menubar">
           <div className="cosmosDBTitle">
             <span
               className="title"
@@ -192,6 +236,7 @@ const App: React.FunctionComponent = () => {
               </span>
             )}
           </div>
+          <TrialControls management={management} />
           <FeedbackCommandButton />
           <div className="meControl">
             {isLoggedIn ? (
@@ -219,7 +264,7 @@ const App: React.FunctionComponent = () => {
           src="explorer.html?v=1.0.1&platform=Hosted"
         ></iframe>
       )}
-      {!isLoggedIn && !accountMetadata && (
+      {!accountMetadata && !isLoggedIn && (
         <ConnectExplorer
           {...{
             login,
