@@ -13,6 +13,12 @@ interface DatabasesState {
   resourceTokenCollection: ViewModels.CollectionBase;
   sampleDataResourceTokenCollection: ViewModels.CollectionBase;
   databasesFetchedSuccessfully: boolean; // Track if last database fetch was successful
+  // Republished each time a load has produced the data the resource tree is expected to show.
+  // The DatabaseTreeRendered phase is only completed for a render that carries the current
+  // token, so an earlier render (databases fetched, collections still loading) cannot be
+  // mistaken for the loaded tree. Compared by reference rather than counted, so there is no
+  // value to overflow or wrap; undefined means no load has reached that point yet.
+  treeReadyToken: object | undefined;
   searchText: string;
   sortOrder: DatabaseSortOrder;
   pinnedDatabaseIds: Set<string>;
@@ -52,6 +58,7 @@ export const useDatabases: UseStore<DatabasesState> = create((set, get) => ({
   resourceTokenCollection: undefined,
   sampleDataResourceTokenCollection: undefined,
   databasesFetchedSuccessfully: false,
+  treeReadyToken: undefined,
   searchText: "",
   sortOrder: loadSortOrder(),
   pinnedDatabaseIds: loadPinnedDatabases(),
