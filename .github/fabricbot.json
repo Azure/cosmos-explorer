@@ -1,0 +1,30 @@
+{
+  "version": "1.0",
+  "tasks": [
+    {
+      "taskType": "trigger",
+      "capabilityId": "AutoMerge",
+      "subCapability": "AutoMerge",
+      "version": "1.0",
+      "id": "LUEPwPETV",
+      "config": {
+        "taskName": "Auto Merge",
+        "label": "automerge",
+        "minMinutesOpen": "5",
+        "mergeType": "squash",
+        "deleteBranches": true,
+        "requireAllStatuses": true,
+        "requireSpecificCheckRuns": false,
+        "usePrDescriptionAsCommitMessage": true,
+        "requireAllStatuses_exemptList": [
+          "Azure Pipelines",
+          "Dependabot",
+          "GitHub Pages",
+          "Check Enforcer"
+        ],
+        "silentMode": true
+      }
+    }
+  ],
+  "userGroups": []
+}
