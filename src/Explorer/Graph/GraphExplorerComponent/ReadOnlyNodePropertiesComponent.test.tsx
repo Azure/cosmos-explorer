@@ -1,7 +1,6 @@
-import React from "react";
 import { shallow } from "enzyme";
+import React from "react";
 import { GraphHighlightedNodeData } from "./GraphExplorer";
-
 import {
   ReadOnlyNodePropertiesComponent,
   ReadOnlyNodePropertiesComponentProps,
@@ -44,7 +43,7 @@ describe("<ReadOnlyNodePropertiesComponent />", () => {
     const mockNode2 = {
       ...mockNode,
       properties: {
-        key3: ["abcd", 1234, true, false, undefined, null],
+        key3: ["abcd", 1234, true, false, undefined],
       },
     };
     const props: ReadOnlyNodePropertiesComponentProps = { node: mockNode2 };
