@@ -31,6 +31,37 @@ describe("AddGlobalSecondaryIndexPanel", () => {
     expect(form).toBeDefined();
   });
 
+  it("shows partition key guidance and preserves hierarchical key editing", async () => {
+    jest.spyOn(AddCollectionPanelUtility, "scrollToSection").mockImplementation(() => undefined);
+    try {
+      render(<AddGlobalSecondaryIndexPanel {...props} />);
+
+      expect(
+        await screen.findByText(
+          "Use hierarchical partition keys for global secondary indexes, with /id as the final level.",
+        ),
+      ).toBeVisible();
+      expect(screen.getByRole("link", { name: "Learn more." })).toHaveAttribute(
+        "href",
+        "https://aka.ms/cosmos-db-gsi-best-practices",
+      );
+      const firstKey = screen.getByPlaceholderText("Required - first partition key e.g., /TenantId");
+      fireEvent.change(firstKey, { target: { value: "/TenantId" } });
+      fireEvent.click(screen.getByRole("button", { name: "Add hierarchical partition key" }));
+      const secondKey = screen.getByPlaceholderText("second partition key e.g., /UserId");
+      fireEvent.change(secondKey, { target: { value: "/UserId" } });
+      fireEvent.click(screen.getByRole("button", { name: "Add hierarchical partition key" }));
+      const lastKey = screen.getByPlaceholderText("third partition key e.g., /id");
+      fireEvent.change(lastKey, { target: { value: "/id" } });
+
+      expect(firstKey).toHaveValue("/TenantId");
+      expect(secondKey).toHaveValue("/UserId");
+      expect(lastKey).toHaveValue("/id");
+    } finally {
+      jest.restoreAllMocks();
+    }
+  });
+
   describe("analytical store visibility", () => {
     const originalContext = { databaseAccount: userContext.databaseAccount, apiType: userContext.apiType };
     const account: DatabaseAccount = {
