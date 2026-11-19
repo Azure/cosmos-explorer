@@ -7,10 +7,9 @@ import {
   Editor,
   ONE_MINUTE_MS,
   TestAccount,
-  TestAuthType,
   generateUniqueName,
-  getAccountName,
   getAzureCLICredentials,
+  getConnectionStringAccountName,
   resourceGroupName,
   subscriptionId,
 } from "../fx";
@@ -25,7 +24,7 @@ test.describe("Gremlin account using connection string login", () => {
   test.beforeAll("Seed Test Database", async () => {
     const credentials = getAzureCLICredentials();
     const armClient = new CosmosDBManagementClient(credentials, subscriptionId);
-    const accountName = getAccountName(TestAccount.Gremlin, TestAuthType.ConnectionString);
+    const accountName = getConnectionStringAccountName(TestAccount.Gremlin);
     const account = await armClient.databaseAccounts.get(resourceGroupName, accountName);
     const keys = await armClient.databaseAccounts.listKeys(resourceGroupName, accountName);
 
@@ -46,7 +45,7 @@ test.describe("Gremlin account using connection string login", () => {
   test("reads a vertex after connection string login", async ({ page }) => {
     const credentials = getAzureCLICredentials();
     const armClient = new CosmosDBManagementClient(credentials, subscriptionId);
-    const accountName = getAccountName(TestAccount.Gremlin, TestAuthType.ConnectionString);
+    const accountName = getConnectionStringAccountName(TestAccount.Gremlin);
     const account = await armClient.databaseAccounts.get(resourceGroupName, accountName);
     const keys = await armClient.databaseAccounts.listKeys(resourceGroupName, accountName);
 
