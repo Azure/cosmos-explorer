@@ -148,7 +148,7 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
         <Stack>
           <Stack horizontal>
             <span className="mandatoryStar">*&nbsp;</span>
-            <Text className="panelTextBold" variant="small">
+            <Text id="database-id-label" className="panelTextBold" variant="small">
               {databaseIdLabel}
             </Text>
             <InfoTooltip>{databaseIdTooltipText}</InfoTooltip>
@@ -162,7 +162,7 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
             pattern={ValidCosmosDbIdInputPattern.source}
             title={ValidCosmosDbIdDescription}
             size={40}
-            aria-label={databaseIdLabel}
+            aria-labelledby="database-id-label"
             placeholder={databaseIdPlaceHolder}
             value={databaseId}
             onChange={handleonChangeDBId}
