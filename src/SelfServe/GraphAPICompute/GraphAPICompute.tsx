@@ -14,7 +14,7 @@ import {
 
 import type { ChoiceItem } from "../SelfServeTypes";
 
-import { BladeType, generateBladeLink } from "../SelfServeUtils";
+import { BladeType, generateBladeLink, SelfServeType } from "../SelfServeUtils";
 import {
   deleteComputeResource,
   getCurrentProvisioningState,
@@ -358,6 +358,10 @@ export default class GraphAPICompute extends SelfServeBaseClass {
 
     defaults.set("warningBanner", undefined);
     return defaults;
+  };
+
+  public getSelfServeType = (): SelfServeType => {
+    return SelfServeType.graphapicompute;
   };
 
   @Values({
