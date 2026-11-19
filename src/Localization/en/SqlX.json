@@ -1,5 +1,5 @@
 {
-    "DedicatedGatewayDescription": "Provision a dedicated gateway cluster for your Azure Cosmos DB account. A dedicated gateway is compute that is a front-end to data in your Azure Cosmos DB account. Your dedicated gateway automatically includes the integrated cache, which can improve read performance.",
+    "DedicatedGatewayDescription": "Provision a dedicated gateway cluster for your Azure Cosmos DB account. A dedicated gateway is compute that is a front-end to data in your Azure Cosmos DB account. You can configure your dedicated gateway cluster and choose which feature to deploy.",
     "DedicatedGateway": "Dedicated Gateway",
     "Provisioned": "Provisioned",
     "Deprovisioned": "Deprovisioned",
@@ -8,6 +8,7 @@
     "DedicatedGatewayPricing": "Learn more about dedicated gateway pricing.",
     "SKUs": "SKUs",
     "SKUsPlaceHolder": "Select SKUs",
+    "DedicatedGatewayTypePlaceHolder": "Select Dedicated Gateway Type",
     "NumberOfInstances": "Number of instances",
     "CosmosD4s": "Cosmos.D4s (General Purpose Cosmos Compute with 4 vCPUs, 16 GB Memory)",
     "CosmosD8s": "Cosmos.D8s (General Purpose Cosmos Compute with 8 vCPUs, 32 GB Memory)",
@@ -49,6 +50,8 @@
     "MetricsText": "Monitor the CPU and memory usage for the dedicated gateway instances in ",
     "MetricsBlade": "the metrics blade.",
     "MonitorUsage": "Monitor Usage",
+    "DedicatedGatewayTypeText": "Each dedicated gateway feature comes with different benefits. ",
+    "DedicatedGatewayTypeLink": "Learn more about the dedicated gateway features.",
     "ResizingDecisionText": "To understand if the dedicated gateway is the right size, ",
     "ResizingDecisionLink": "learn more about dedicated gateway sizing.",
     "WarningBannerOnUpdate": "Adding or modifying dedicated gateway instances may affect your bill.",
