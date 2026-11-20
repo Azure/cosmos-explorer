@@ -1,7 +1,6 @@
 import {
   Checkbox,
   ChoiceGroup,
-  DefaultButton,
   FontIcon,
   IChoiceGroupOption,
   IMessageBarStyles,
@@ -19,7 +18,6 @@ import {
   TextField,
   Toggle,
 } from "@fluentui/react";
-import { useDialog } from "Explorer/Controls/Dialog";
 import { Keys, t } from "Localization";
 import React from "react";
 import * as DataModels from "../../../../../Contracts/DataModels";
@@ -87,9 +85,9 @@ export interface ThroughputInputAutoPilotV3Props {
   instantMaximumThroughput: number;
   softAllowedMaximumThroughput: number;
   isGlobalSecondaryIndexTarget: boolean;
-  hotPartitionKeyRateLimitingPolicy?: DataModels.HotPartitionKeyRateLimitingPolicy;
-  hotPartitionKeyRateLimitingPolicyBaseline?: DataModels.HotPartitionKeyRateLimitingPolicy;
-  onHotPartitionKeyRateLimitingPolicyChange: (newPolicy: DataModels.HotPartitionKeyRateLimitingPolicy) => void;
+  hotPartitionKeyRateLimitingPolicy?: DataModels.HotPartitionKeyRateLimitingPolicy | null;
+  hotPartitionKeyRateLimitingPolicyBaseline?: DataModels.HotPartitionKeyRateLimitingPolicy | null;
+  onHotPartitionKeyRateLimitingPolicyChange: (newPolicy: DataModels.HotPartitionKeyRateLimitingPolicy | null) => void;
 }
 
 interface IsThroughputComponentDirtyResult extends IsComponentDirtyResult {
@@ -897,31 +895,19 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
             toolTipElement={null}
           />
           <Toggle
+            ariaLabel={t(Keys.controls.settings.scale.rateLimitingPolicyTitle)}
             onText={t(Keys.common.on)}
             offText={t(Keys.common.off)}
             checked={!!this.props.hotPartitionKeyRateLimitingPolicy}
-            disabled={!!this.props.hotPartitionKeyRateLimitingPolicy}
             onChange={(_ev, checked) => {
               if (checked) {
-                useDialog.getState().showOkCancelModalDialog(
-                  t(Keys.controls.settings.scale.rateLimitConfirmOverride),
-                  "",
-                  t(Keys.common.yes),
-                  () =>
-                    this.props.onHotPartitionKeyRateLimitingPolicyChange({
-                      maximumPerPartitionKeyThroughputUtilizationPercent:
-                        this.props.hotPartitionKeyRateLimitingPolicyBaseline
-                          ?.maximumPerPartitionKeyThroughputUtilizationPercent ?? 75, //CTODO: move default to common const when we get final default value from backend team
-                    }),
-                  t(Keys.common.no),
-                  undefined,
-                  <>
-                    {t(Keys.controls.settings.scale.rateLimitOverrideWarning1)}
-                    <br />
-                    <br />
-                    {t(Keys.controls.settings.scale.rateLimitOverrideWarning2)}
-                  </>,
-                );
+                this.props.onHotPartitionKeyRateLimitingPolicyChange({
+                  maximumPerPartitionKeyThroughputUtilizationPercent:
+                    this.props.hotPartitionKeyRateLimitingPolicyBaseline
+                      ?.maximumPerPartitionKeyThroughputUtilizationPercent ?? 75, //CTODO: move default to common const when we get final default value from backend team
+                });
+              } else {
+                this.props.onHotPartitionKeyRateLimitingPolicyChange(null);
               }
             }}
           />
@@ -944,14 +930,6 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
               })
             }
             styles={{ root: { width: "75%" } }}
-          />
-          <DefaultButton
-            text="Reset to default"
-            onClick={() =>
-              this.props.onHotPartitionKeyRateLimitingPolicyChange({
-                maximumPerPartitionKeyThroughputUtilizationPercent: 75,
-              })
-            }
           />
         </Stack>
       </Stack>

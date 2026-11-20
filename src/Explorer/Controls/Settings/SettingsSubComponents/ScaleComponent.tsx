@@ -36,9 +36,9 @@ export interface ScaleComponentProps {
   onScaleSaveableChange: (isScaleSaveable: boolean) => void;
   onScaleDiscardableChange: (isScaleDiscardable: boolean) => void;
   throughputError?: string;
-  hotPartitionKeyRateLimitingPolicy?: DataModels.HotPartitionKeyRateLimitingPolicy;
-  hotPartitionKeyRateLimitingPolicyBaseline?: DataModels.HotPartitionKeyRateLimitingPolicy;
-  onHotPartitionKeyRateLimitingPolicyChange: (newPolicy: DataModels.HotPartitionKeyRateLimitingPolicy) => void;
+  hotPartitionKeyRateLimitingPolicy?: DataModels.HotPartitionKeyRateLimitingPolicy | null;
+  hotPartitionKeyRateLimitingPolicyBaseline?: DataModels.HotPartitionKeyRateLimitingPolicy | null;
+  onHotPartitionKeyRateLimitingPolicyChange: (newPolicy: DataModels.HotPartitionKeyRateLimitingPolicy | null) => void;
 }
 
 export class ScaleComponent extends React.Component<ScaleComponentProps> {

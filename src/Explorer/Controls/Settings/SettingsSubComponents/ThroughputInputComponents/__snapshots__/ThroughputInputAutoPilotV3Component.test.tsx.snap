@@ -828,8 +828,8 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
         toolTipElement={null}
       />
       <StyledToggleBase
+        ariaLabel="Override default rate limiting policy"
         checked={false}
-        disabled={false}
         offText="Off"
         onChange={[Function]}
         onText="On"
@@ -865,10 +865,6 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
         }
         value={75}
         valueFormat={[Function]}
-      />
-      <CustomizedDefaultButton
-        onClick={[Function]}
-        text="Reset to default"
       />
     </Stack>
   </Stack>
@@ -1478,8 +1474,8 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
         toolTipElement={null}
       />
       <StyledToggleBase
+        ariaLabel="Override default rate limiting policy"
         checked={false}
-        disabled={false}
         offText="Off"
         onChange={[Function]}
         onText="On"
@@ -1515,10 +1511,6 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
         }
         value={75}
         valueFormat={[Function]}
-      />
-      <CustomizedDefaultButton
-        onClick={[Function]}
-        text="Reset to default"
       />
     </Stack>
   </Stack>
@@ -2111,8 +2103,8 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
         toolTipElement={null}
       />
       <StyledToggleBase
+        ariaLabel="Override default rate limiting policy"
         checked={false}
-        disabled={false}
         offText="Off"
         onChange={[Function]}
         onText="On"
@@ -2148,10 +2140,6 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
         }
         value={75}
         valueFormat={[Function]}
-      />
-      <CustomizedDefaultButton
-        onClick={[Function]}
-        text="Reset to default"
       />
     </Stack>
   </Stack>

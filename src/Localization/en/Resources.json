@@ -965,9 +965,7 @@
         "unlimited": "unlimited",
         "rateLimitingPolicyTitle": "Override default rate limiting policy",
         "rateLimitPolicyMaxThroughputUtilizationLabel": "Max partition key throughput utilization",
-        "rateLimitOverrideWarning1": "Overriding the default rate limiting is irreversible. Though you will be able to manually reset the value to its default, the policy will remain overriden at the value you set.",
-        "rateLimitOverrideWarning2": "Are you sure you wish to continue?",
-        "rateLimitConfirmOverride": "Confirm override"
+        "rateLimitPolicySaveMessage": "Hot partition key throttling policy saved successfully. Wait 10 minutes before attempting another change."
       },
       "partitionKeyEditor": {
         "changePartitionKey": "Change {{partitionKeyName}}",

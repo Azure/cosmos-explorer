@@ -1,3 +1,6 @@
+import "@testing-library/jest-dom";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { Keys, t } from "Localization";
 import { shallow } from "enzyme";
 import React from "react";
 import * as Constants from "../../../../../Common/Constants";
@@ -111,5 +114,71 @@ describe("ThroughputInputAutoPilotV3Component", () => {
     isComponentDirtyResult = throughputComponent.IsComponentDirty();
     expect(isComponentDirtyResult.isSaveable).toEqual(true);
     expect(isComponentDirtyResult.isDiscardable).toEqual(true);
+  });
+
+  const renderPolicyEditor = (
+    policy: DataModels.HotPartitionKeyRateLimitingPolicy | null = {
+      maximumPerPartitionKeyThroughputUtilizationPercent: 85,
+    },
+  ) => {
+    const ref = React.createRef<ThroughputInputAutoPilotV3Component>();
+    const onPolicyChange = jest.fn();
+    const PolicyEditor = () => {
+      const [currentPolicy, setCurrentPolicy] = React.useState<DataModels.HotPartitionKeyRateLimitingPolicy | null>(
+        policy,
+      );
+      return (
+        <ThroughputInputAutoPilotV3Component
+          {...baseProps}
+          ref={ref}
+          hotPartitionKeyRateLimitingPolicy={currentPolicy}
+          hotPartitionKeyRateLimitingPolicyBaseline={policy}
+          onHotPartitionKeyRateLimitingPolicyChange={(newPolicy) => {
+            onPolicyChange(newPolicy);
+            setCurrentPolicy(newPolicy);
+          }}
+        />
+      );
+    };
+    render(<PolicyEditor />);
+    return { onPolicyChange, ref };
+  };
+
+  it("removes the policy and makes the change saveable and discardable", () => {
+    const { onPolicyChange, ref } = renderPolicyEditor();
+    const toggle = screen.getByRole("switch", { name: t(Keys.controls.settings.scale.rateLimitingPolicyTitle) });
+    expect(toggle).toBeChecked();
+
+    fireEvent.click(toggle);
+
+    expect(onPolicyChange).toHaveBeenLastCalledWith(null);
+    expect(toggle).not.toBeChecked();
+    expect(screen.getByRole("slider")).toHaveAttribute("aria-disabled", "true");
+    expect(screen.queryByRole("button", { name: "Reset to default" })).not.toBeInTheDocument();
+    expect(ref.current.IsComponentDirty()).toMatchObject({ isSaveable: true, isDiscardable: true });
+  });
+
+  it("immediately restores the baseline value when re-enabling a removed policy", () => {
+    const { onPolicyChange, ref } = renderPolicyEditor();
+    const toggle = screen.getByRole("switch", { name: t(Keys.controls.settings.scale.rateLimitingPolicyTitle) });
+    fireEvent.click(toggle);
+    fireEvent.click(toggle);
+
+    expect(onPolicyChange).toHaveBeenCalledTimes(2);
+    expect(toggle).toBeChecked();
+    expect(onPolicyChange).toHaveBeenLastCalledWith({ maximumPerPartitionKeyThroughputUtilizationPercent: 85 });
+    expect(ref.current.IsComponentDirty()).toMatchObject({ isSaveable: false, isDiscardable: false });
+  });
+
+  it("immediately enables a new policy with the default utilization", () => {
+    const { onPolicyChange, ref } = renderPolicyEditor(null);
+    const toggle = screen.getByRole("switch", { name: t(Keys.controls.settings.scale.rateLimitingPolicyTitle) });
+
+    fireEvent.click(toggle);
+
+    expect(toggle).toBeChecked();
+    expect(onPolicyChange).toHaveBeenLastCalledWith({ maximumPerPartitionKeyThroughputUtilizationPercent: 75 });
+    expect(screen.queryByRole("button", { name: "Reset to default" })).not.toBeInTheDocument();
+    expect(ref.current.IsComponentDirty()).toMatchObject({ isSaveable: true, isDiscardable: true });
   });
 });

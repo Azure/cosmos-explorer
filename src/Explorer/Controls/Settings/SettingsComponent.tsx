@@ -104,8 +104,8 @@ export interface SettingsComponentState {
   throughputBuckets: DataModels.ThroughputBucket[];
   throughputBucketsBaseline: DataModels.ThroughputBucket[];
   throughputError: string;
-  hotPartitionKeyRateLimitingPolicy: DataModels.HotPartitionKeyRateLimitingPolicy;
-  hotPartitionKeyRateLimitingPolicyBaseline: DataModels.HotPartitionKeyRateLimitingPolicy;
+  hotPartitionKeyRateLimitingPolicy: DataModels.HotPartitionKeyRateLimitingPolicy | null;
+  hotPartitionKeyRateLimitingPolicyBaseline: DataModels.HotPartitionKeyRateLimitingPolicy | null;
 
   timeToLive: TtlType;
   timeToLiveBaseline: TtlType;
@@ -1026,7 +1026,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   };
 
   private onHotPartitionKeyRateLimitingPolicyChange = (
-    hotPartitionKeyRateLimitingPolicy: DataModels.HotPartitionKeyRateLimitingPolicy,
+    hotPartitionKeyRateLimitingPolicy: DataModels.HotPartitionKeyRateLimitingPolicy | null,
   ): void => {
     this.setState({ hotPartitionKeyRateLimitingPolicy });
   };

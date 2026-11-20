@@ -1,4 +1,5 @@
 import { OfferDefinition, RequestOptions } from "@azure/cosmos";
+import { Keys, t } from "Localization";
 import { isFabric } from "Platform/Fabric/FabricUtil";
 import { AuthType } from "../../AuthType";
 import { Offer, SDKOfferDefinition, ThroughputBucket, UpdateOfferParams } from "../../Contracts/DataModels";
@@ -70,6 +71,13 @@ export const updateOffer = async (params: UpdateOfferParams): Promise<Offer> => 
       updatedOffer = await updateOfferWithSDK(params);
     }
     logConsoleInfo(`Successfully updated offer for ${offerResourceText}`);
+    if (
+      params.hotPartitionKeyRateLimitingPolicy !== undefined &&
+      params.hotPartitionKeyRateLimitingPolicy?.maximumPerPartitionKeyThroughputUtilizationPercent !==
+        params.currentOffer.hotPartitionKeyRateLimitingPolicy?.maximumPerPartitionKeyThroughputUtilizationPercent
+    ) {
+      logConsoleInfo(t(Keys.controls.settings.scale.rateLimitPolicySaveMessage));
+    }
     return updatedOffer;
   } catch (error) {
     handleError(error, "UpdateCollection", `Error updating offer for ${offerResourceText}`);

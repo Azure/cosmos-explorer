@@ -30,6 +30,7 @@
     "./src/Common/Splitter.ts",
     "./src/Common/ThemeUtility.ts",
     "./src/Common/UrlUtility.ts",
+    "./src/Common/dataAccess/updateOffer.test.ts",
     "./src/ConfigContext.ts",
     "./src/Contracts/ActionContracts.ts",
     "./src/Contracts/DataModels.ts",
