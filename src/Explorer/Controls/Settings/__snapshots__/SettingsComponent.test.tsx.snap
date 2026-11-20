@@ -168,10 +168,13 @@ exports[`SettingsComponent renders 1`] = `
                 "vectorEmbeddingPolicy": [Function],
               }
             }
+            hotPartitionKeyRateLimitingPolicy={null}
+            hotPartitionKeyRateLimitingPolicyBaseline={null}
             isAutoPilotSelected={false}
             isFixedContainer={false}
             isGlobalSecondaryIndexTarget={true}
             onAutoPilotSelected={[Function]}
+            onHotPartitionKeyRateLimitingPolicyChange={[Function]}
             onMaxAutoPilotThroughputChange={[Function]}
             onScaleDiscardableChange={[Function]}
             onScaleSaveableChange={[Function]}

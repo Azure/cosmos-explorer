@@ -13,7 +13,7 @@ import { updateCollection } from "../../../Common/dataAccess/updateCollection";
 import { updateOffer } from "../../../Common/dataAccess/updateOffer";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";
-import { updateUserContext } from "../../../UserContext";
+import { updateUserContext, userContext } from "../../../UserContext";
 import Explorer from "../../Explorer";
 import { CollectionSettingsTabV2 } from "../../Tabs/SettingsTabV2";
 import { SettingsComponent, SettingsComponentProps, SettingsComponentState } from "./SettingsComponent";
@@ -423,6 +423,63 @@ describe("SettingsComponent", () => {
     state = wrapper.state() as SettingsComponentState;
     expect(isDirty(state.timeToLive, state.timeToLiveBaseline)).toEqual(false);
     expect(isDirty(state.throughput, state.throughputBaseline)).toEqual(false);
+  });
+
+  it("saves an explicitly null hot partition key policy and restores it on discard", async () => {
+    const originalAccount = userContext.databaseAccount;
+    const originalApiType = userContext.apiType;
+    updateUserContext({
+      databaseAccount: {
+        ...originalAccount,
+        properties: {
+          ...originalAccount?.properties,
+          capabilities: [{ name: "EnableHotPartitionKeyThrottling" }],
+        },
+      } as DataModels.DatabaseAccount,
+      apiType: "SQL",
+    });
+    const policy = { maximumPerPartitionKeyThroughputUtilizationPercent: 85 };
+    const originalOffer = collection.offer();
+    const fixture = {
+      ...collection,
+      offer: ko.observable({ ...originalOffer, hotPartitionKeyRateLimitingPolicy: policy }),
+    };
+    const settingsTab = new CollectionSettingsTabV2({
+      collection: fixture,
+      tabKind: ViewModels.CollectionTabKind.CollectionSettingsV2,
+      title: "Scale & Settings",
+      tabPath: "",
+      node: undefined,
+    });
+    const ref = React.createRef<SettingsComponent>();
+    try {
+      render(<SettingsComponent ref={ref} settingsTab={settingsTab} />);
+      fireEvent.click(screen.getByRole("tab", { name: "Scale" }));
+      const toggle = screen.getByRole("switch", { name: "Override default rate limiting policy" });
+      fireEvent.click(toggle);
+      expect(ref.current.isSaveSettingsButtonEnabled()).toBe(true);
+
+      act(() => ref.current.onRevertClick());
+      expect(toggle).toBeChecked();
+      expect(ref.current.state.hotPartitionKeyRateLimitingPolicy).toEqual(policy);
+
+      fireEvent.click(toggle);
+      jest.mocked(updateOffer).mockResolvedValueOnce({ ...originalOffer, hotPartitionKeyRateLimitingPolicy: null });
+      await act(async () => ref.current.onSaveClick());
+
+      expect(updateOffer).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          databaseId: fixture.databaseId,
+          collectionId: fixture.id(),
+          hotPartitionKeyRateLimitingPolicy: null,
+        }),
+      );
+      expect(ref.current.state.hotPartitionKeyRateLimitingPolicyBaseline).toBeNull();
+      expect(ref.current.isSaveSettingsButtonEnabled()).toBe(false);
+      expect(toggle).not.toBeChecked();
+    } finally {
+      updateUserContext({ databaseAccount: originalAccount, apiType: originalApiType });
+    }
   });
 
   it("getAnalyticalStorageTtl", () => {

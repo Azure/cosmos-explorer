@@ -797,6 +797,77 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
       </Stack>
     </StackItem>
   </Stack>
+  <Stack
+    style={
+      {
+        "marginTop": "25px",
+        "maxWidth": "700px",
+      }
+    }
+    tokens={
+      {
+        "childrenGap": 10,
+      }
+    }
+  >
+    <Stack
+      horizontal={true}
+      style={
+        {
+          "alignItems": "start",
+        }
+      }
+      tokens={
+        {
+          "childrenGap": 10,
+        }
+      }
+    >
+      <ToolTipLabelComponent
+        label="Override default rate limiting policy"
+        toolTipElement={null}
+      />
+      <StyledToggleBase
+        ariaLabel="Override default rate limiting policy"
+        checked={false}
+        offText="Off"
+        onChange={[Function]}
+        onText="On"
+      />
+    </Stack>
+    <Stack
+      horizontal={true}
+      style={
+        {
+          "alignItems": "end",
+        }
+      }
+      tokens={
+        {
+          "childrenGap": 10,
+        }
+      }
+    >
+      <StyledSliderBase
+        ariaValueText={[Function]}
+        disabled={true}
+        label="Max partition key throughput utilization"
+        max={100}
+        min={51}
+        onChange={[Function]}
+        showValue={true}
+        styles={
+          {
+            "root": {
+              "width": "75%",
+            },
+          }
+        }
+        value={75}
+        valueFormat={[Function]}
+      />
+    </Stack>
+  </Stack>
 </Stack>
 `;
 
@@ -1372,6 +1443,77 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
       </Stack>
     </StackItem>
   </Stack>
+  <Stack
+    style={
+      {
+        "marginTop": "25px",
+        "maxWidth": "700px",
+      }
+    }
+    tokens={
+      {
+        "childrenGap": 10,
+      }
+    }
+  >
+    <Stack
+      horizontal={true}
+      style={
+        {
+          "alignItems": "start",
+        }
+      }
+      tokens={
+        {
+          "childrenGap": 10,
+        }
+      }
+    >
+      <ToolTipLabelComponent
+        label="Override default rate limiting policy"
+        toolTipElement={null}
+      />
+      <StyledToggleBase
+        ariaLabel="Override default rate limiting policy"
+        checked={false}
+        offText="Off"
+        onChange={[Function]}
+        onText="On"
+      />
+    </Stack>
+    <Stack
+      horizontal={true}
+      style={
+        {
+          "alignItems": "end",
+        }
+      }
+      tokens={
+        {
+          "childrenGap": 10,
+        }
+      }
+    >
+      <StyledSliderBase
+        ariaValueText={[Function]}
+        disabled={true}
+        label="Max partition key throughput utilization"
+        max={100}
+        min={51}
+        onChange={[Function]}
+        showValue={true}
+        styles={
+          {
+            "root": {
+              "width": "75%",
+            },
+          }
+        }
+        value={75}
+        valueFormat={[Function]}
+      />
+    </Stack>
+  </Stack>
 </Stack>
 `;
 
@@ -1929,6 +2071,77 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
         </Text>
       </Stack>
     </StackItem>
+  </Stack>
+  <Stack
+    style={
+      {
+        "marginTop": "25px",
+        "maxWidth": "700px",
+      }
+    }
+    tokens={
+      {
+        "childrenGap": 10,
+      }
+    }
+  >
+    <Stack
+      horizontal={true}
+      style={
+        {
+          "alignItems": "start",
+        }
+      }
+      tokens={
+        {
+          "childrenGap": 10,
+        }
+      }
+    >
+      <ToolTipLabelComponent
+        label="Override default rate limiting policy"
+        toolTipElement={null}
+      />
+      <StyledToggleBase
+        ariaLabel="Override default rate limiting policy"
+        checked={false}
+        offText="Off"
+        onChange={[Function]}
+        onText="On"
+      />
+    </Stack>
+    <Stack
+      horizontal={true}
+      style={
+        {
+          "alignItems": "end",
+        }
+      }
+      tokens={
+        {
+          "childrenGap": 10,
+        }
+      }
+    >
+      <StyledSliderBase
+        ariaValueText={[Function]}
+        disabled={true}
+        label="Max partition key throughput utilization"
+        max={100}
+        min={51}
+        onChange={[Function]}
+        showValue={true}
+        styles={
+          {
+            "root": {
+              "width": "75%",
+            },
+          }
+        }
+        value={75}
+        valueFormat={[Function]}
+      />
+    </Stack>
   </Stack>
 </Stack>
 `;
