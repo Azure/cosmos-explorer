@@ -13,6 +13,7 @@ export interface CollapsibleSectionProps {
   onDelete?: () => void;
   disabled?: boolean;
   disableDelete?: boolean;
+  dataTest?: string;
   deleteLabel?: string;
 }
 
@@ -58,6 +59,7 @@ export class CollapsibleSectionComponent extends React.Component<CollapsibleSect
           tabIndex={0}
           role="button"
           aria-expanded={this.state.isExpanded}
+          data-test={this.props.dataTest}
         >
           <Icon iconName={this.state.isExpanded ? "ChevronDown" : "ChevronRight"} />
           <Label styles={{ root: { color: "var(--colorNeutralForeground1)" } }}>{this.props.title}</Label>

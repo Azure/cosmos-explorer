@@ -190,4 +190,56 @@ test.describe("Vector Policy under Scale & Settings", () => {
     const saveButton = explorer.commandBarButton(CommandBarButton.Save);
     await expect(saveButton).toBeDisabled();
   });
+
+  test("Save embedding source and keep only its endpoint editable after reload", async ({ page }) => {
+    const addButton = explorer.frame.getByTestId("VectorEmbedding/AddButton");
+    await addButton.click();
+
+    const embeddingSourceSection = explorer.frame.getByTestId("VectorEmbeddingSource/Section/1");
+    if ((await embeddingSourceSection.count()) === 0) {
+      test.skip(true, "Test account does not have the integrated embedding capability.");
+    }
+
+    await explorer.frame.getByTestId("VectorEmbedding/Path/1").fill("/embedding");
+    await explorer.frame.getByTestId("VectorEmbedding/Dimensions/1").fill("1536");
+
+    // Expand embedding source and fill fields
+    await embeddingSourceSection.click();
+
+    await explorer.frame.getByTestId("VectorEmbeddingSource/SourcePaths/1").fill("/description");
+    await explorer.frame.getByTestId("VectorEmbeddingSource/DeploymentName/1").fill("text-embedding-3-small");
+    await explorer.frame.getByTestId("VectorEmbeddingSource/ModelName/1").fill("text-embedding-3-small");
+    await explorer.frame
+      .getByTestId("VectorEmbeddingSource/Endpoint/1")
+      .fill("https://e2e-embedding.cognitiveservices.azure.com/");
+
+    const saveButton = explorer.commandBarButton(CommandBarButton.Save);
+    await expect(saveButton).toBeEnabled();
+    await saveButton.click();
+    await expect(explorer.getConsoleHeaderStatus()).toContainText(
+      `Successfully updated container ${context.container.id}`,
+      { timeout: 2 * ONE_MINUTE_MS },
+    );
+    explorer = await DataExplorer.open(page, TestAccount.SQL);
+    await explorer.openScaleAndSettings(context);
+    await explorer.frame.getByTestId("settings-tab-header/ContainerVectorPolicyTab").click();
+    await explorer.frame.getByRole("tab", { name: "Vector Policy" }).click();
+
+    const sourcePathsInput = explorer.frame.getByTestId("VectorEmbeddingSource/SourcePaths/1");
+    await expect(sourcePathsInput).toBeDisabled();
+    await expect(sourcePathsInput).toHaveValue("/description");
+
+    const deploymentInput = explorer.frame.getByTestId("VectorEmbeddingSource/DeploymentName/1");
+    await expect(deploymentInput).toBeDisabled();
+    await expect(deploymentInput).toHaveValue("text-embedding-3-small");
+
+    const modelInput = explorer.frame.getByTestId("VectorEmbeddingSource/ModelName/1");
+    await expect(modelInput).toBeDisabled();
+    await expect(modelInput).toHaveValue("text-embedding-3-small");
+
+    const endpointInput = explorer.frame.getByTestId("VectorEmbeddingSource/Endpoint/1");
+    await expect(endpointInput).toBeEnabled();
+    await expect(endpointInput).toHaveValue("https://e2e-embedding.cognitiveservices.azure.com/");
+    await expect(explorer.frame.getByRole("combobox", { name: "Authentication type" })).toBeDisabled();
+  });
 });
