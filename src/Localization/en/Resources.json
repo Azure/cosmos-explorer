@@ -814,6 +814,8 @@
       "projectionQuery": "Projection query",
       "projectionQueryPlaceholder": "SELECT c.email, c.accountId FROM c",
       "projectionQueryTooltip": "Learn more about defining global secondary indexes.",
+      "partitionKeyInfo": "Use hierarchical partition keys for global secondary indexes, with /id as the final level.",
+      "partitionKeyPlaceholderThird": "third partition key e.g., /id",
       "disabledTitle": "A global secondary index is already being created. Please wait for it to complete before creating another one."
     },
     "stringInput": {

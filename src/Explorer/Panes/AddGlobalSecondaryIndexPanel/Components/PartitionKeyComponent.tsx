@@ -1,10 +1,22 @@
-import { DefaultButton, DirectionalHint, Icon, IconButton, Link, Stack, Text, TooltipHost } from "@fluentui/react";
+import {
+  DefaultButton,
+  DirectionalHint,
+  Icon,
+  IconButton,
+  Link,
+  MessageBar,
+  MessageBarType,
+  Stack,
+  Text,
+  TooltipHost,
+} from "@fluentui/react";
 import * as Constants from "Common/Constants";
 import {
   getPartitionKeyName,
   getPartitionKeyPlaceHolder,
   getPartitionKeyTooltipText,
 } from "Explorer/Panes/AddCollectionPanel/AddCollectionPanelUtility";
+import { t } from "Localization/t";
 import React from "react";
 
 export interface PartitionKeyComponentProps {
@@ -38,6 +50,20 @@ export const PartitionKeyComponent = (props: PartitionKeyComponentProps): JSX.El
 
   return (
     <Stack>
+      <MessageBar
+        messageBarType={MessageBarType.info}
+        messageBarIconProps={{ iconName: "InfoSolid" }}
+        styles={({ theme }) => ({
+          root: { marginBottom: 8, minHeight: 36, backgroundColor: theme.palette.themeLighter, borderRadius: 4 },
+          icon: { color: theme.palette.themePrimary },
+          text: { color: theme.palette.themeDarker },
+        })}
+      >
+        {t("panes.addGlobalSecondaryIndex.partitionKeyInfo")}{" "}
+        <Link href="https://aka.ms/cosmos-db-gsi-best-practices" target="_blank" rel="noopener noreferrer">
+          {t("common.learnMore")}.
+        </Link>
+      </MessageBar>
       <Stack horizontal>
         <span className="mandatoryStar">*&nbsp;</span>
         <Text className="panelTextBold" variant="small">
@@ -85,7 +111,11 @@ export const PartitionKeyComponent = (props: PartitionKeyComponentProps): JSX.El
               tabIndex={subPartitionKeyIndex > 0 ? 1 : 0}
               className="panelTextField"
               autoComplete="off"
-              placeholder={getPartitionKeyPlaceHolder(subPartitionKeyIndex)}
+              placeholder={
+                subPartitionKeyIndex === 1
+                  ? t("panes.addGlobalSecondaryIndex.partitionKeyPlaceholderThird")
+                  : getPartitionKeyPlaceHolder(subPartitionKeyIndex)
+              }
               aria-label={getPartitionKeyName()}
               pattern={".*"}
               title={""}
