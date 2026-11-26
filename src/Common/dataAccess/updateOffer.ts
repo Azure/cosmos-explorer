@@ -1,4 +1,5 @@
 import { OfferDefinition, RequestOptions } from "@azure/cosmos";
+import { Keys, t } from "Localization";
 import { isFabric } from "Platform/Fabric/FabricUtil";
 import { AuthType } from "../../AuthType";
 import { Offer, SDKOfferDefinition, ThroughputBucket, UpdateOfferParams } from "../../Contracts/DataModels";
@@ -70,6 +71,13 @@ export const updateOffer = async (params: UpdateOfferParams): Promise<Offer> => 
       updatedOffer = await updateOfferWithSDK(params);
     }
     logConsoleInfo(`Successfully updated offer for ${offerResourceText}`);
+    if (
+      params.hotPartitionKeyRateLimitingPolicy !== undefined &&
+      params.hotPartitionKeyRateLimitingPolicy?.maximumPerPartitionKeyThroughputUtilizationPercent !==
+        params.currentOffer.hotPartitionKeyRateLimitingPolicy?.maximumPerPartitionKeyThroughputUtilizationPercent
+    ) {
+      logConsoleInfo(t(Keys.controls.settings.scale.rateLimitPolicySaveMessage));
+    }
     return updatedOffer;
   } catch (error) {
     handleError(error, "UpdateCollection", `Error updating offer for ${offerResourceText}`);
@@ -367,6 +375,10 @@ const createUpdateOfferBody = (params: UpdateOfferParams): ThroughputSettingsUpd
     body.properties.resource.throughputBuckets = throughputBuckets;
   }
 
+  if (params.hotPartitionKeyRateLimitingPolicy !== undefined) {
+    body.properties.resource.hotPartitionKeyRateLimitingPolicy = params.hotPartitionKeyRateLimitingPolicy;
+  }
+
   return body;
 };
 
@@ -407,6 +419,10 @@ const updateOfferWithSDK = async (params: UpdateOfferParams): Promise<Offer> => 
       [HttpHeaders.migrateOfferToManualThroughput]: "true",
     };
     newOffer.content.offerAutopilotSettings = { maxThroughput: 0 };
+  }
+
+  if (params.hotPartitionKeyRateLimitingPolicy !== undefined) {
+    newOffer.content.hotPartitionKeyRateLimitingPolicy = params.hotPartitionKeyRateLimitingPolicy;
   }
 
   const sdkResponse = await client()

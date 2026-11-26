@@ -2,7 +2,7 @@ import { Link, MessageBar, MessageBarType, Stack, Text, TextField } from "@fluen
 import { Keys, t } from "Localization";
 import * as React from "react";
 import * as Constants from "../../../../Common/Constants";
-import { Platform, configContext } from "../../../../ConfigContext";
+import { configContext, Platform } from "../../../../ConfigContext";
 import * as DataModels from "../../../../Contracts/DataModels";
 import * as ViewModels from "../../../../Contracts/ViewModels";
 import * as SharedConstants from "../../../../Shared/Constants";
@@ -36,6 +36,9 @@ export interface ScaleComponentProps {
   onScaleSaveableChange: (isScaleSaveable: boolean) => void;
   onScaleDiscardableChange: (isScaleDiscardable: boolean) => void;
   throughputError?: string;
+  hotPartitionKeyRateLimitingPolicy?: DataModels.HotPartitionKeyRateLimitingPolicy | null;
+  hotPartitionKeyRateLimitingPolicyBaseline?: DataModels.HotPartitionKeyRateLimitingPolicy | null;
+  onHotPartitionKeyRateLimitingPolicyChange: (newPolicy: DataModels.HotPartitionKeyRateLimitingPolicy | null) => void;
 }
 
 export class ScaleComponent extends React.Component<ScaleComponentProps> {
@@ -148,6 +151,9 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
       instantMaximumThroughput={this.offer?.instantMaximumThroughput}
       softAllowedMaximumThroughput={this.offer?.softAllowedMaximumThroughput}
       isGlobalSecondaryIndexTarget={this.props.isGlobalSecondaryIndexTarget}
+      hotPartitionKeyRateLimitingPolicy={this.props.hotPartitionKeyRateLimitingPolicy}
+      hotPartitionKeyRateLimitingPolicyBaseline={this.props.hotPartitionKeyRateLimitingPolicyBaseline}
+      onHotPartitionKeyRateLimitingPolicyChange={this.props.onHotPartitionKeyRateLimitingPolicyChange}
     />
   );
 

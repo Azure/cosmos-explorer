@@ -97,6 +97,39 @@ test.describe("Manual throughput", () => {
   });
 });
 
+test("Remove a hot partition key rate limiting policy", async ({ browser }) => {
+  const setup = await openScaleTab(browser);
+  try {
+    const policyToggle = setup.explorer.frame.getByRole("switch", { name: "Override default rate limiting policy" });
+    test.skip(!(await policyToggle.isVisible()), "Account does not support hot partition key throttling");
+    const policySaveMessage =
+      "Hot partition key throttling policy saved successfully. Wait 10 minutes before attempting another change.";
+
+    await policyToggle.click();
+    await setup.explorer.commandBarButton(CommandBarButton.Save).click();
+    await expect(setup.explorer.commandBarButton(CommandBarButton.Save)).toBeDisabled();
+    await expect(policyToggle).toBeChecked();
+    await expect(setup.explorer.getConsoleHeaderStatus()).toHaveText(policySaveMessage);
+
+    await policyToggle.click();
+    await expect(setup.explorer.commandBarButton(CommandBarButton.Save)).toBeEnabled();
+    await setup.explorer.commandBarButton(CommandBarButton.Save).click();
+    await expect(setup.explorer.commandBarButton(CommandBarButton.Save)).toBeDisabled();
+    await expect(policyToggle).not.toBeChecked();
+    await expect(setup.explorer.getConsoleHeaderStatus()).toHaveText(policySaveMessage);
+
+    const reopenedExplorer = await DataExplorer.open(setup.page, TestAccount.SQL);
+    await reopenedExplorer.openScaleAndSettings(setup.context);
+    await reopenedExplorer.frame.getByTestId("settings-tab-header/ScaleTab").click();
+    await expect(
+      reopenedExplorer.frame.getByRole("switch", { name: "Override default rate limiting policy" }),
+    ).not.toBeChecked();
+  } finally {
+    await cleanup(setup);
+    await setup.page.close();
+  }
+});
+
 const delayedApplyWarning = (explorer: DataExplorer): Locator =>
   explorer.frame.locator("#updateThroughputDelayedApplyWarningMessage");
 
