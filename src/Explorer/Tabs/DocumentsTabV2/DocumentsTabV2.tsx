@@ -629,6 +629,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   const [initialDocumentContent, setInitialDocumentContent] = useState<string>(undefined);
   const [selectedDocumentContent, setSelectedDocumentContent] = useState<string>(undefined);
   const [selectedDocumentContentBaseline, setSelectedDocumentContentBaseline] = useState<string>(undefined);
+  const documentLoadGeneration = useRef(0);
 
   // Table user clicked on this row
   const [clickedRowIndex, setClickedRowIndex] = useState<number>(RESET_INDEX);
@@ -639,6 +640,13 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   const [editorState, setEditorState] = useState<ViewModels.DocumentExplorerState>(
     ViewModels.DocumentExplorerState.noDocumentSelected,
   );
+
+  const clearDocumentEditor = useCallback((rowIndex?: number, content?: string): void => {
+    documentLoadGeneration.current++;
+    setClickedRowIndex(rowIndex);
+    setSelectedDocumentContent(content);
+    setEditorState(ViewModels.DocumentExplorerState.noDocumentSelected);
+  }, []);
 
   // State
   const clientWriteEnabled = useClientWriteEnabled((state) => state.clientWriteEnabled);
@@ -945,6 +953,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   );
 
   const initializeNewDocument = (): void => {
+    documentLoadGeneration.current++;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const newDocument: any = {
       id: "replace_with_new_document_id",
@@ -1045,9 +1054,8 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
   const onRevertNewDocumentClick = useCallback((): void => {
     setInitialDocumentContent("");
-    setSelectedDocumentContent("");
-    setEditorState(ViewModels.DocumentExplorerState.noDocumentSelected);
-  }, [setInitialDocumentContent, setSelectedDocumentContent, setEditorState]);
+    clearDocumentEditor(undefined, "");
+  }, [clearDocumentEditor]);
 
   let onSaveExistingDocumentClick = useCallback((): Promise<void> => {
     const documentContent = JSON.parse(selectedDocumentContent);
@@ -1249,10 +1257,8 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
             const newDocumentIds = [...documentIds.filter((documentId) => !deletedIdsSet.has(documentId.id))];
             setDocumentIds(newDocumentIds);
 
-            setSelectedDocumentContent(undefined);
-            setClickedRowIndex(undefined);
+            clearDocumentEditor();
             setSelectedRows(new Set());
-            setEditorState(ViewModels.DocumentExplorerState.noDocumentSelected);
           },
           (error: Error) => {
             if (error instanceof MongoProxyClient.ThrottlingError) {
@@ -1278,7 +1284,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
         )
         .finally(() => setIsExecuting(false));
     },
-    [onExecutionErrorChange, _deleteDocuments, documentIds],
+    [onExecutionErrorChange, _deleteDocuments, documentIds, clearDocumentEditor],
   );
 
   const onDeleteExistingDocumentsClick = useCallback(async (): Promise<void> => {
@@ -1332,15 +1338,21 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
         addedIdsSet.forEach((item) => documents.add(item));
         setDocumentIds(Array.from(documents));
 
-        setSelectedDocumentContent(undefined);
-        setClickedRowIndex(undefined);
+        clearDocumentEditor();
         setSelectedRows(new Set());
-        setEditorState(ViewModels.DocumentExplorerState.noDocumentSelected);
       };
 
       _collection.container.openUploadItemsPane(onSuccessUpload);
     }
-  }, [_collection.container, documentIds, isPreferredApiMongoDB, newDocumentId, partitionKey, partitionKeyProperties]);
+  }, [
+    _collection.container,
+    documentIds,
+    isPreferredApiMongoDB,
+    newDocumentId,
+    partitionKey,
+    partitionKeyProperties,
+    clearDocumentEditor,
+  ]);
 
   // If editor state changes, update the nav
   useEffect(
@@ -1627,13 +1639,20 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     loadDocument(currentDocumentIds[index]);
   };
 
-  let loadDocument = (documentId: DocumentId) =>
-    readDocument(_collection, documentId).then((content) => {
-      initDocumentEditor(documentId, content);
+  const loadDocument = async (documentId: DocumentId): Promise<void> => {
+    const generation = ++documentLoadGeneration.current;
+    const content = await (isPreferredApiMongoDB
+      ? MongoProxyClient.readDocument(_collection.databaseId, _collection as ViewModels.Collection, documentId)
+      : readDocument(_collection, documentId));
+    if (generation !== documentLoadGeneration.current) {
+      return;
+    }
 
-      // Update columns
+    initDocumentEditor(documentId, content);
+    if (!isPreferredApiMongoDB) {
       setColumnDefinitionsFromDocument(content);
-    });
+    }
+  };
 
   const initDocumentEditor = (documentId: DocumentId, documentContent: unknown): void => {
     if (documentId) {
@@ -1650,6 +1669,9 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   };
 
   const _onEditorContentChange = (newContent: string): void => {
+    if (newContent !== selectedDocumentContent) {
+      documentLoadGeneration.current++;
+    }
     setSelectedDocumentContent(newContent);
 
     if (
@@ -1741,17 +1763,8 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
   const onSelectedRowsChange = (selectedRows: Set<TableRowId>) => {
     confirmDiscardingChange(() => {
-      if (selectedRows.size === 0) {
-        setSelectedDocumentContent(undefined);
-        setClickedRowIndex(undefined);
-        setEditorState(ViewModels.DocumentExplorerState.noDocumentSelected);
-      }
-
-      // Find if clickedRow is in selectedRows.If not, clear clickedRow and content
-      if (clickedRowIndex !== undefined && !selectedRows.has(clickedRowIndex)) {
-        setClickedRowIndex(undefined);
-        setSelectedDocumentContent(undefined);
-        setEditorState(ViewModels.DocumentExplorerState.noDocumentSelected);
+      if (selectedRows.size === 0 || (clickedRowIndex !== undefined && !selectedRows.has(clickedRowIndex))) {
+        clearDocumentEditor();
       }
 
       // If only one selection, we consider as a click
@@ -1766,13 +1779,6 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
   // ********* Override here for mongo (from MongoDocumentsTab) **********
   if (isPreferredApiMongoDB) {
-    loadDocument = (documentId: DocumentId) =>
-      MongoProxyClient.readDocument(_collection.databaseId, _collection as ViewModels.Collection, documentId).then(
-        (content) => {
-          initDocumentEditor(documentId, content);
-        },
-      );
-
     renderObjectForEditor = (value: unknown): string => MongoUtility.tojson(value, null, false);
 
     const _hasShardKeySpecified = (document: unknown): boolean => {
@@ -2053,16 +2059,14 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
         // If apply filter is pressed, reset current selected document
         if (applyFilterButtonPressed) {
-          setClickedRowIndex(RESET_INDEX);
-          setEditorState(ViewModels.DocumentExplorerState.noDocumentSelected);
-          setSelectedDocumentContent(undefined);
+          clearDocumentEditor(RESET_INDEX);
         }
       } catch (error) {
         console.error(error);
         useDialog.getState().showOkModalDialog(t(Keys.tabs.documents.refreshGridFailed), getErrorMessage(error));
       }
     },
-    [createIterator, filterContent],
+    [createIterator, filterContent, clearDocumentEditor],
   );
 
   /**
